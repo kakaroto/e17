@@ -475,6 +475,28 @@ collections
 	  }
 	}
       }
+      part
+      {
+      name:"event_grab";
+      type:RECT;
+      repeat_events:1;
+	description
+	{
+	state:"default" 0.00;
+	visible:1;
+	color:0 0 0 0;
+	  rel1
+	  {
+	  relative:0.00 0.00;
+	  offset:0 0;
+	  }
+	  rel2
+	  {
+	  relative:1.00 1.00;
+	  offset:-1 -1;
+	  }
+	}
+      }
     }
     programs
     {
@@ -482,7 +504,7 @@ collections
       {
       name:"show_controls";
       signal:"mouse,in";
-      source:"item_clip";
+      source:"event_grab";
       action:STATE_SET "show" 0.0;
       transition:LINEAR 0.1;
       target:"controls_clip";
@@ -491,7 +513,7 @@ collections
       {
       name:"show_controls2";
       signal:"mouse,in";
-      source:"item_clip";
+      source:"event_grab";
       action:STATE_SET "hide" 0.0;
       transition:LINEAR 0.1;
       target:"item_clip";
@@ -509,7 +531,7 @@ collections
       {
       name:"hide_controls";
       signal:"mouse,out";
-      source:"controls_clip";
+      source:"event_grab";
       action:STATE_SET "default" 0.0;
       transition:LINEAR 0.1;
       target:"controls_clip";
@@ -518,7 +540,7 @@ collections
       {
       name:"hide_controls2";
       signal:"mouse,out";
-      source:"controls_clip";
+      source:"event_grab";
       action:STATE_SET "default" 0.0;
       transition:LINEAR 0.1;
       target:"item_clip";

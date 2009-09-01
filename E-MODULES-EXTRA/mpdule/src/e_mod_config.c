@@ -1,3 +1,6 @@
+/*
+ * vim:ts=8:sw=3:sts=8:noexpandtab:cino=>5n-3f0^-2{2
+ */
 #include <e.h>
 #include "e_mod_main.h"
 
@@ -6,6 +9,7 @@ struct _E_Config_Dialog_Data
   int poll_time;
   char *hostname;
   char *port;
+  int show_popup;
 };
 
 /* Protos */
@@ -49,6 +53,7 @@ _fill_data (Config_Item * ci, E_Config_Dialog_Data * cfdata)
   cfdata->hostname = strdup (ci->hostname);
   snprintf (buf, sizeof (buf), "%d", ci->port);
   cfdata->port = strdup (buf);
+  cfdata->show_popup = ci->show_popup;
 }
 
 static void *
@@ -104,6 +109,9 @@ _basic_create_widgets (E_Config_Dialog * cfd, Evas * evas,
   e_widget_frametable_object_append (of, port_entry, 0, 5, 1, 1, 1, 0, 1, 0);
   e_widget_list_object_append (o, of, 1, 1, 0.5);
 
+  ob = e_widget_check_add(evas, D_("Show Popup:"), &(cfdata->show_popup));
+  e_widget_frametable_object_append(of, ob, 0, 6, 1, 1, 1, 0, 1, 0);
+
   return o;
 }
 
@@ -118,6 +126,7 @@ _basic_apply_data (E_Config_Dialog * cfd, E_Config_Dialog_Data * cfdata)
     eina_stringshare_del (ci->hostname);
   ci->hostname = eina_stringshare_add (cfdata->hostname);
   ci->port = atoi (cfdata->port);
+  ci->show_popup = cfdata->show_popup;
   e_config_save_queue ();
   _mpdule_config_updated (ci);
   return 1;

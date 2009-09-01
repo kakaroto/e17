@@ -1,3 +1,6 @@
+/*
+ * vim:ts=8:sw=3:sts=8:noexpandtab:cino=>5n-3f0^-2{2
+ */
 #include <e.h>
 #include "e_mod_main.h"
 #if TIME_WITH_SYS_TIME
@@ -76,16 +79,16 @@ static void _mpdule_disconnect (Instance * inst);
 static void _mpdule_update_song (Instance * inst);
 static int  _mpdule_update_song_cb (void *data);
 static void _mpdule_popup_destroy (Instance * inst);
+static void _mpdule_popup_create (Instance * inst, const char *dir);
 
 static E_Gadcon_Client *
 _gc_init (E_Gadcon * gc, const char *name, const char *id, const char *style)
 {
-  Evas_Object *o, *o_popup;
+  Evas_Object *o;
   E_Gadcon_Client *gcc;
   Evas *evas;
   Instance *inst;
   char buf[4096];
-  int w, h;
 
   inst = E_NEW (Instance, 1);
 
@@ -106,17 +109,7 @@ _gc_init (E_Gadcon * gc, const char *name, const char *id, const char *style)
   inst->gcc = gcc;
   inst->mpdule = o;
 
-  inst->popup = e_gadcon_popup_new (inst->gcc);
-
-  evas = inst->popup->win->evas;
-  o_popup = edje_object_add (evas);
-  if (!e_theme_edje_object_set
-      (o_popup, "base/theme/modules/mpdule", "modules/mpdule/popup"))
-    edje_object_file_set (o_popup, buf, "modules/mpdule/popup");
-  evas_object_show (o_popup);
-  e_gadcon_popup_content_set (inst->popup, o_popup);
-  edje_object_size_min_calc (o_popup, &w, &h);
-  inst->o_popup = o_popup;
+  _mpdule_popup_create(inst, buf);
 
   evas_object_event_callback_add (o, EVAS_CALLBACK_MOUSE_DOWN,
 				  _mpdule_cb_mouse_down, inst);
@@ -133,16 +126,6 @@ _gc_init (E_Gadcon * gc, const char *name, const char *id, const char *style)
   edje_object_signal_callback_add (o, "mpdule,next", "", _mpdule_cb_next,
 				   inst);
   edje_object_signal_callback_add (o, "mpdule,previous", "",
-				   _mpdule_cb_previous, inst);
-  edje_object_signal_callback_add (o_popup, "mpdule,play", "",
-				   _mpdule_cb_play, inst);
-  edje_object_signal_callback_add (o_popup, "mpdule,stop", "",
-				   _mpdule_cb_stop, inst);
-  edje_object_signal_callback_add (o_popup, "mpdule,pause", "",
-				   _mpdule_cb_pause, inst);
-  edje_object_signal_callback_add (o_popup, "mpdule,next", "",
-				   _mpdule_cb_next, inst);
-  edje_object_signal_callback_add (o_popup, "mpdule,previous", "",
 				   _mpdule_cb_previous, inst);
   _mpdule_connect (inst);
   _mpdule_update_song (inst);
@@ -268,7 +251,7 @@ _mpdule_cb_mouse_in (void *data, Evas * e, Evas_Object * obj,
   Instance *inst;
   E_Gadcon_Popup *popup;
 
-  if (!(inst = data))
+  if ((!(inst = data)) || (!inst->ci->show_popup))
     return;
   popup = inst->popup;
   e_gadcon_popup_show (inst->popup);
@@ -281,7 +264,7 @@ _mpdule_cb_mouse_out (void *data, Evas * e, Evas_Object * obj,
   Instance *inst;
   E_Gadcon_Popup *popup;
 
-  if (!(inst = data))
+  if ((!(inst = data)) || ((!inst->ci->show_popup) && (inst->popup)))
     return;
   popup = inst->popup;
   e_gadcon_popup_hide (inst->popup);
@@ -328,6 +311,24 @@ _mpdule_config_updated (Config_Item * ci)
 	inst->update_timer =
 	  ecore_timer_add (ci->poll_time, _mpdule_update_song_cb,
 			   inst);
+      if (inst->ci->show_popup)
+	{
+	   if (!inst->popup)
+	     {
+		_mpdule_popup_create(inst, NULL);
+	     }
+	}
+      else
+	{
+	   if (inst->popup)
+	     {
+		_mpdule_popup_destroy(inst);
+	     }
+	   if (inst->o_popup)
+	     {
+		evas_object_del(inst->o_popup);
+	     }
+	}
       break;
     }
 }
@@ -433,6 +434,7 @@ _mpdule_config_item_get (const char *id)
   ci->poll_time = 1.0;
   ci->hostname = eina_stringshare_add ("localhost");
   ci->port = 6600;
+  ci->show_popup = 1;
 
   mpdule_config->items = eina_list_append (mpdule_config->items, ci);
   return ci;
@@ -699,6 +701,7 @@ e_modapi_init (E_Module * m)
   E_CONFIG_VAL (D, T, poll_time, DOUBLE);
   E_CONFIG_VAL (D, T, hostname, STR);
   E_CONFIG_VAL (D, T, port, INT);
+  E_CONFIG_VAL (D, T, show_popup, UCHAR);
 
   conf_edd = E_CONFIG_DD_NEW ("MPDule_Config", Config);
 #undef T
@@ -719,6 +722,7 @@ e_modapi_init (E_Module * m)
       ci->poll_time = 1.0;
       ci->hostname = eina_stringshare_add ("localhost");
       ci->port = 6600;
+      ci->show_popup = 1;
 
       mpdule_config->items = eina_list_append (mpdule_config->items, ci);
     }
@@ -776,4 +780,52 @@ _mpdule_popup_destroy (Instance * inst)
   if (!inst->popup)
     return;
   e_object_del (E_OBJECT (inst->popup));
+}
+
+static void
+_mpdule_popup_create (Instance * inst, const char *dir)
+{
+  Evas *evas;
+  Evas_Object *o_popup;
+  char buf[4096];
+  
+  if (inst->ci->show_popup)
+    {
+       inst->popup = e_gadcon_popup_new (inst->gcc);
+       evas = inst->popup->win->evas;
+       o_popup = edje_object_add (evas);
+       if (!e_theme_edje_object_set
+	     (o_popup, "base/theme/modules/mpdule", "modules/mpdule/popup"))
+	 {
+	    if (dir)
+	      {
+		 edje_object_file_set (o_popup, dir, "modules/mpdule/popup");
+	      }
+	    else
+	      {
+		 snprintf(buf, sizeof(buf), "%s/mpdule.edj",
+		       e_module_dir_get(mpdule_config->module));
+		 edje_object_file_set(o_popup, buf, "modules/mpdule/popup");
+	      }
+	 }
+       evas_object_show (o_popup);
+       e_gadcon_popup_content_set (inst->popup, o_popup);
+       edje_object_size_min_calc (o_popup, NULL, NULL);
+       inst->o_popup = o_popup;
+       edje_object_signal_callback_add (o_popup, "mpdule,play", "",
+				   _mpdule_cb_play, inst);
+       edje_object_signal_callback_add (o_popup, "mpdule,stop", "",
+				   _mpdule_cb_stop, inst);
+       edje_object_signal_callback_add (o_popup, "mpdule,pause", "",
+				   _mpdule_cb_pause, inst);
+       edje_object_signal_callback_add (o_popup, "mpdule,next", "",
+				   _mpdule_cb_next, inst);
+       edje_object_signal_callback_add (o_popup, "mpdule,previous", "",
+				   _mpdule_cb_previous, inst);
+    }
+  else
+    {
+       inst->popup = NULL;
+       inst->o_popup = NULL;
+    }
 }
