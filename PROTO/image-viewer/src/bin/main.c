@@ -19,7 +19,7 @@
 #endif
 
 #ifdef HAVE_LIBEXIF
-  #include <exif-data.h>
+  #include <libexif/exif-data.h>
 #endif
 
 #define DBG(...) EINA_ERROR_PDBG(__VA_ARGS__)
