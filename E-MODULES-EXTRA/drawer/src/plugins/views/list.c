@@ -431,7 +431,7 @@ _list_reconfigure(Instance *inst)
         e_box_thaw(inst->o_box);
      }
 
-   e_box_min_size_get(inst->o_box, &bw, &bh);
+   e_box_size_min_get(inst->o_box, &bw, &bh);
    edje_extern_object_min_size_set(inst->o_box, bw, bh);
    edje_object_size_min_calc(inst->o_con, &w, &h);
    edje_extern_object_min_size_set(inst->o_box, 1, 1);

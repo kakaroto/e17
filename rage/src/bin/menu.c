@@ -190,14 +190,14 @@ _menu_realize(Menu *m)
 	evas_object_show(mi->base);
 	if (mi->selected) miu = mi;
      }
-   e_box_min_size_get(m->box, &mw, &mh);
+   e_box_size_min_get(m->box, &mw, &mh);
    e_box_pack_options_set(m->box,
 			  1, 1, /* fill */
 			  1, 1, /* expand */
 			  0.5, 0.5, /* align */
 			  mw, mh, /* min */
 			  mw, mh /* max */);
-   e_box_min_size_get(o_box, &mw, &mh);
+   e_box_size_min_get(o_box, &mw, &mh);
    evas_object_geometry_get(o_box, NULL, NULL, &w, &h);
    evas_object_show(m->box);
    if (miu) _menu_item_select_update(m, miu);

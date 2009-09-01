@@ -272,7 +272,7 @@ _box_button_append(Instance *inst, const char *label,
    e_box_pack_end(inst->o_box, o);
    evas_object_show(o);   
    e_box_pack_options_set(o, 1, 0, 0, 0, 0.5, 0.5, mw, mh, 9999, 9999);
-   e_box_min_size_get(inst->o_box, &mw, NULL);
+   e_box_size_min_get(inst->o_box, &mw, NULL);
    evas_object_geometry_get(inst->o_scroll, NULL, NULL, NULL, &mh);
    evas_object_resize(inst->o_box, mw, mh);
 
