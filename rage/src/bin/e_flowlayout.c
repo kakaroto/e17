@@ -356,7 +356,7 @@ e_flowlayout_min_size_get(Evas_Object *obj, Evas_Coord *minw, Evas_Coord *minh)
 }
 
 EAPI void
-e_flowlayout_max_size_get(Evas_Object *obj, Evas_Coord *maxw, Evas_Coord *maxh)
+e_flowlayout_size_max_get(Evas_Object *obj, Evas_Coord *maxw, Evas_Coord *maxh)
 {
    E_Smart_Data *sd;
    
