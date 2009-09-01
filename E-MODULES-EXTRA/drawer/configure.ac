@@ -108,6 +108,7 @@ src/Makefile
 src/plugins/Makefile
 src/plugins/sources/Makefile
 src/plugins/views/Makefile
+src/plugins/composites/Makefile
 po/Makefile.in
 e_modules-drawer.spec
 module.desktop

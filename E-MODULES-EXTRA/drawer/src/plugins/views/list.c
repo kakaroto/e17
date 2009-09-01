@@ -290,6 +290,9 @@ drawer_view_render(Drawer_View *v, Evas *evas, Eina_List *items)
 		}
 	      e = _list_horizontal_entry_create(inst, si);
 	      break;
+           default:
+              e = NULL;
+              break;
 	  }
 	inst->entries = eina_list_append(inst->entries, e);
 	e_box_pack_end(inst->o_box, e->o_holder);

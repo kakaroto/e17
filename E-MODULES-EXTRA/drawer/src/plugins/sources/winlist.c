@@ -485,13 +485,12 @@ static int
 _winlist_border_focus_out_cb(void *data, int type, void *event)
 {
    E_Event_Border_Focus_Out *ev;
-   E_Border *bd;
    Instance *inst;
    Drawer_Event_Source_Main_Icon_Update *ev2;
 
    ev = event;
    inst = data;
-   if (!(bd = ev->border)) return 1;
+   if (!ev->border) return 1;
 
    ev2 = E_NEW(Drawer_Event_Source_Main_Icon_Update, 1);
    ev2->source = inst->source;
@@ -548,12 +547,11 @@ static int
 _winlist_border_icon_change_cb(void *data, int type, void *event)
 {
    E_Event_Border_Icon_Change *ev;
-   E_Border *bd;
    Instance *inst;
 
    ev = event;
    inst = data;
-   if (!(bd = ev->border)) return 1;
+   if (!ev->border) return 1;
 
    _winlist_event_update(inst);
 

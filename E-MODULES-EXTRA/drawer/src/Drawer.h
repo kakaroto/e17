@@ -146,8 +146,6 @@ struct _Drawer_Composite
         Evas_Object * (*render)          (Drawer_Composite *c, Evas *evas);
 
         /* optional */
-        /* Activates the given item */
-        void	    (*activate)          (Drawer_Composite *c, E_Zone *zone);
         /* Triggers a plugin-specific action on gadget middle-click */
         void	    (*trigger)           (Drawer_Composite *c, E_Zone *zone);
         /* Creates a context menu for the given item */

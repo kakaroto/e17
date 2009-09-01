@@ -347,6 +347,7 @@ _grid_reconfigure(Instance *inst)
     */
    evas_object_size_hint_min_get(edje_object_part_object_get(inst->o_box, "e.box.content"), &ww, &hh);
    evas_object_resize(inst->o_box, ww, hh);
+   edje_object_calc_force(inst->o_box);
    edje_extern_object_min_size_set(inst->o_scroll, ww, hh);
    edje_object_size_min_calc(inst->o_con, &w, &h);
    edje_extern_object_min_size_set(inst->o_con, w, h);

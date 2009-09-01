@@ -1147,7 +1147,6 @@ _drawer_composite_new(Instance *inst, const char *name)
 	goto init_done;
      }
 
-   c->func.activate = dlsym(p->handle, "drawer_composite_activate");
    c->func.trigger = dlsym(p->handle, "drawer_composite_trigger");
    c->func.context = dlsym(p->handle, "drawer_composite_context");
    c->func.description_get = dlsym(p->handle, "drawer_composite_description_get");
