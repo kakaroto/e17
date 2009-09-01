@@ -294,8 +294,11 @@ drawer_view_render(Drawer_View *v, Evas *evas, Eina_List *items)
               e = NULL;
               break;
 	  }
-	inst->entries = eina_list_append(inst->entries, e);
-	e_box_pack_end(inst->o_box, e->o_holder);
+        if (e)
+          {
+             inst->entries = eina_list_append(inst->entries, e);
+             e_box_pack_end(inst->o_box, e->o_holder);
+          }
      }
    e_box_thaw(inst->o_box);
    eina_stringshare_del(cat);
