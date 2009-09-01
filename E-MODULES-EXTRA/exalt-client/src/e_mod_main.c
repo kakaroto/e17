@@ -690,7 +690,7 @@ void response_cb(Exalt_DBus_Response* response, void* data )
         case EXALT_DBUS_RESPONSE_WIRELESS_WPASUPPLICANT_DRIVER_SET:
             printf("The new driver is supposed to be set to the interface %s\n",exalt_dbus_response_iface_get(response));
             break;
-        case EXALT_DBUS_RESPONSE_NETWORK_CONNECTION_GET:
+        case EXALT_DBUS_RESPONSE_NETWORK_CONFIGURATION_GET:
             if_network_dialog_update(inst, response);
             if_network_dialog_basic_update(inst, response);
             break;
@@ -781,10 +781,10 @@ void notify_cb(char* eth, Exalt_Enum_Action action, void* user_data)
         case EXALT_IFACE_ACTION_GATEWAY_NEW:
             exalt_dbus_eth_gateway_get(inst->conn,eth);
             break;
-        case EXALT_IFACE_ACTION_CONN_APPLY_START:
+        case EXALT_IFACE_ACTION_CONF_APPLY_START:
             edje_object_signal_emit(inst->o_exalt,"apply,start","exalt");
             break;
-        case EXALT_IFACE_ACTION_CONN_APPLY_DONE:
+        case EXALT_IFACE_ACTION_CONF_APPLY_DONE:
             edje_object_signal_emit(inst->o_exalt,"apply,stop","exalt");
             break;
         default: ;

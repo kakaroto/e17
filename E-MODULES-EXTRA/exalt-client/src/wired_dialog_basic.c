@@ -20,7 +20,7 @@ void if_wired_dialog_basic_create(Instance* inst)
     char buf[4096];
 
     inst->wired_basic.dialog = e_dialog_new(inst->gcc->gadcon->zone->container, "e", "exalt_wired_dialog_basic");
-    e_dialog_title_set(inst->wired_basic.dialog, D_("Wired Connection Settings"));
+    e_dialog_title_set(inst->wired_basic.dialog, D_("Wired Configuration Settings"));
     inst->wired_basic.dialog->data = inst;
 
     evas = e_win_evas_get(inst->wired_basic.dialog->win);
@@ -122,7 +122,7 @@ void if_wired_dialog_basic_update(Instance* inst,Exalt_DBus_Response *response)
         default: break;
     }
 
-    
+
 }
 
 
@@ -170,13 +170,13 @@ void if_wired_dialog_basic_cb_activate(void *data, void*data2)
 
     //else apply a new configuration
 
-    Exalt_Connection* conn = exalt_conn_new();
+    Exalt_Configuration* conf = exalt_conf_new();
 
-    exalt_conn_wireless_set(conn,0);
-    exalt_conn_mode_set(conn,EXALT_DHCP);
+    exalt_conf_wireless_set(conf,0);
+    exalt_conf_mode_set(conf,EXALT_DHCP);
 
-    exalt_dbus_eth_conn_apply(inst->conn,inst->wired_basic.iface->iface,conn);
-    exalt_conn_free(&conn);
+    exalt_dbus_eth_conf_apply(inst->conn,inst->wired_basic.iface->iface,conf);
+    exalt_conf_free(&conf);
 }
 
 void if_wired_dialog_basic_cb_deactivate(void *data, void*data2)

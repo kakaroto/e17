@@ -33,7 +33,7 @@ void if_wired_dialog_create(Instance* inst)
     char buf[4096];
 
     inst->wired.dialog = e_dialog_new(inst->gcc->gadcon->zone->container, "e", "exalt_wired_dialog");
-    e_dialog_title_set(inst->wired.dialog, D_("Wired Connection Settings"));
+    e_dialog_title_set(inst->wired.dialog, D_("Wired Configuration Settings"));
     inst->wired.dialog->data = inst;
 
     evas = e_win_evas_get(inst->wired.dialog->win);
@@ -311,22 +311,22 @@ void if_wired_dialog_cb_apply(void *data, E_Dialog *dialog)
 {
     Instance* inst = data;
 
-    Exalt_Connection* conn = exalt_conn_new();
+    Exalt_Configuration* conf = exalt_conf_new();
 
-    exalt_conn_wireless_set(conn,0);
+    exalt_conf_wireless_set(conf,0);
     if(inst->wired.dhcp != 0)
     {
-        exalt_conn_mode_set(conn,EXALT_STATIC);
-        exalt_conn_ip_set(conn,e_widget_entry_text_get(inst->wired.entry_ip));
-        exalt_conn_netmask_set(conn,e_widget_entry_text_get(inst->wired.entry_netmask));
-        exalt_conn_gateway_set(conn,e_widget_entry_text_get(inst->wired.entry_gateway));
+        exalt_conf_mode_set(conf,EXALT_STATIC);
+        exalt_conf_ip_set(conf,e_widget_entry_text_get(inst->wired.entry_ip));
+        exalt_conf_netmask_set(conf,e_widget_entry_text_get(inst->wired.entry_netmask));
+        exalt_conf_gateway_set(conf,e_widget_entry_text_get(inst->wired.entry_gateway));
     }
     else
-        exalt_conn_mode_set(conn,EXALT_DHCP);
-    exalt_conn_cmd_after_apply_set(conn,e_widget_entry_text_get(inst->wired.entry_cmd));
+        exalt_conf_mode_set(conf,EXALT_DHCP);
+    exalt_conf_cmd_after_apply_set(conf,e_widget_entry_text_get(inst->wired.entry_cmd));
 
-    exalt_dbus_eth_conn_apply(inst->conn,inst->wired.iface->iface,conn);
-    exalt_conn_free(&conn);
+    exalt_dbus_eth_conf_apply(inst->conn,inst->wired.iface->iface,conf);
+    exalt_conf_free(&conf);
 }
 
 void if_wired_dialog_cb_entry(void *data, void* data2)

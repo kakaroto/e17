@@ -216,20 +216,20 @@ void if_network_dialog_new_cb_apply(void *data, E_Dialog *dialog)
     Exalt_Wireless_Network_IE *ie;
     Eina_List *l;
 
-    Exalt_Connection* conn = exalt_conn_new();
+    Exalt_Configuration* conf = exalt_conf_new();
 
-    exalt_conn_wireless_set(conn,1);
-    exalt_conn_mode_set(conn,EXALT_STATIC);
-    exalt_conn_ip_set(conn, inst->network_new.ip);
-    exalt_conn_netmask_set(conn, inst->network_new.netmask);
-    exalt_conn_gateway_set(conn, inst->network_new.gateway);
-    exalt_conn_cmd_after_apply_set(conn, inst->network_new.cmd);
+    exalt_conf_wireless_set(conf,1);
+    exalt_conf_mode_set(conf,EXALT_STATIC);
+    exalt_conf_ip_set(conf, inst->network_new.ip);
+    exalt_conf_netmask_set(conf, inst->network_new.netmask);
+    exalt_conf_gateway_set(conf, inst->network_new.gateway);
+    exalt_conf_cmd_after_apply_set(conf, inst->network_new.cmd);
 
     //wireless part
-    Exalt_Connection_Network *n = exalt_conn_network_new();
-    exalt_conn_network_set(conn,n);
-    exalt_conn_network_essid_set(n, inst->network_new.essid);
-    exalt_conn_network_mode_set(n, MODE_IBSS);
+    Exalt_Configuration_Network *n = exalt_conf_network_new();
+    exalt_conf_network_set(conf,n);
+    exalt_conf_network_essid_set(n, inst->network_new.essid);
+    exalt_conf_network_mode_set(n, MODE_IBSS);
 
     switch(inst->network_new.enc)
     {
@@ -237,27 +237,27 @@ void if_network_dialog_new_cb_apply(void *data, E_Dialog *dialog)
 
             break;
         case EXALT_ENCRYPTION_WEP_HEXA:
-            exalt_conn_network_wep_hexa_set(n, 1);
+            exalt_conf_network_wep_hexa_set(n, 1);
         case EXALT_ENCRYPTION_WEP_ASCII:
-            exalt_conn_network_wep_set(n ,1);
-            exalt_conn_network_encryption_set(n, 1);
-            exalt_conn_network_key_set(n, inst->network_new.pwd);
+            exalt_conf_network_wep_set(n ,1);
+            exalt_conf_network_encryption_set(n, 1);
+            exalt_conf_network_key_set(n, inst->network_new.pwd);
             break;
         case EXALT_ENCRYPTION_WPA_PSK_TKIP_ASCII:
-            exalt_conn_network_encryption_set(n, 1);
-            exalt_conn_network_key_set(n, inst->network_new.pwd);
-            exalt_conn_network_wpa_set(n, 1);
+            exalt_conf_network_encryption_set(n, 1);
+            exalt_conf_network_key_set(n, inst->network_new.pwd);
+            exalt_conf_network_wpa_set(n, 1);
 
-            exalt_conn_network_wpa_type_set(n,WPA_TYPE_WPA);
-            exalt_conn_network_group_cypher_set(n, CYPHER_NAME_TKIP);
-            exalt_conn_network_pairwise_cypher_set(n, CYPHER_NAME_TKIP);
-            exalt_conn_network_auth_suites_set(n, AUTH_SUITES_PSK);
+            exalt_conf_network_wpa_type_set(n,WPA_TYPE_WPA);
+            exalt_conf_network_group_cypher_set(n, CYPHER_NAME_TKIP);
+            exalt_conf_network_pairwise_cypher_set(n, CYPHER_NAME_TKIP);
+            exalt_conf_network_auth_suites_set(n, AUTH_SUITES_PSK);
             break;
         default: ;
     }
 
-    exalt_dbus_eth_conn_apply(inst->conn,inst->network_new.iface->iface,conn);
-    exalt_conn_free(&conn);
+    exalt_dbus_eth_conf_apply(inst->conn,inst->network_new.iface->iface,conf);
+    exalt_conf_free(&conf);
 }
 
 void if_network_dialog_new_cb_cancel(void *data, E_Dialog *dialog)
