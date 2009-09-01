@@ -3,8 +3,6 @@
 
 
 
-
-
 Exalt_Regex* exalt_regex_new(const char* str_request, const char* str_regex, short debug)
 {
     Exalt_Regex *r = (Exalt_Regex*)malloc((unsigned int)sizeof(Exalt_Regex));
@@ -132,7 +130,7 @@ int exalt_regex_execute(Exalt_Regex* r)
         {
 	    if(r->debug)
 	    {
-            	print_error( __FILE__,__func__, __LINE__, "no match found"
+               EINA_LOG_DOM_WARN(EXALT_LOG_DOMAIN,  "no match found"
 					"str_request: %s"
 					"str_regex: %s\n\n", r->str_request,r->str_regex);
 	    }
@@ -149,7 +147,7 @@ int exalt_regex_execute(Exalt_Regex* r)
             if (text)
             {
                	regerror (err, &preg, text, size);
-               	print_error(__FILE__,__func__,__LINE__, "%s\n", text);
+               	EINA_LOG_DOM_WARN(EXALT_LOG_DOMAIN, "%s\n", text);
                	free (text);
                 EXALT_FREE(pmatch);
 		return 0;
@@ -163,7 +161,7 @@ int exalt_regex_execute(Exalt_Regex* r)
     }
     else
     {
-        print_error(__FILE__, __func__, __LINE__,"regcomp error");
+        EINA_LOG_DOM_WARN(EXALT_LOG_DOMAIN, "regcomp error");
         EXALT_FREE(pmatch);
         return 0;
     }

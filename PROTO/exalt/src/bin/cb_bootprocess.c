@@ -17,6 +17,8 @@
  */
 #include "cb_bootprocess.h"
 
+#define EXALT_LOG_DOMAIN exaltd_log_domain
+
 DBusMessage * dbus_cb_bootprocess_iface_add(E_DBus_Object *obj __UNUSED__, DBusMessage *msg)
 {
     DBusMessage *reply;

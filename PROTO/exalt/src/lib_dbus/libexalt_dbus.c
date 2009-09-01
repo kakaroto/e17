@@ -27,6 +27,8 @@ void _exalt_dbus_scan_notify(void *data, DBusMessage *msg);
  * @{
  */
 
+int exalt_dbus_log_domain;
+
 static int init = 0;
 
 /**
@@ -39,6 +41,10 @@ int exalt_dbus_init()
     if( ++init != 1) return init;
     ecore_init();
     e_dbus_init();
+    eina_log_init();
+    eina_log_level_set(EINA_LOG_LEVEL_DBG);
+
+    exalt_dbus_log_domain = eina_log_domain_register("EXALT-DBUS",EINA_COLOR_LIGHTRED);
 
     return 1;
 }

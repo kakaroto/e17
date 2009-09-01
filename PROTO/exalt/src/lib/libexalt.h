@@ -23,7 +23,7 @@
     {\
         if(!(test))\
         {\
-            print_error(__FILE__,__func__,__LINE__,"%s failed",#test);\
+            EINA_LOG_DOM_WARN(EXALT_LOG_DOMAIN, "%s failed\n",#test); \
         }\
     }while(0)
 
@@ -34,7 +34,7 @@
     {\
         if(!(test))\
         {\
-            print_error(__FILE__,__func__,__LINE__, "%s failed",#test);\
+            EINA_LOG_DOM_WARN(EXALT_LOG_DOMAIN, "%s failed\n",#test); \
             return 0;\
         }\
     }while(0)
@@ -44,7 +44,7 @@
     {\
         if(!(test))\
         {\
-            print_error(__FILE__,__func__,__LINE__,"%s failed",#test);\
+            EINA_LOG_DOM_WARN(EXALT_LOG_DOMAIN, "%s failed\n",#test); \
             return ;\
         }\
     }while(0)
@@ -56,7 +56,7 @@
     { \
         if(!(test))\
         {\
-            print_error(__FILE__,__func__, __LINE__,__VA_ARGS__ );\
+            EINA_LOG_DOM_WARN(EXALT_LOG_DOMAIN, __VA_ARGS__); \
             instr; \
         }\
     }while(0)
@@ -66,7 +66,7 @@
     { \
         if(!(test))\
         {\
-            print_error(__FILE__,__func__, __LINE__,"%s failed", #test );\
+            EINA_LOG_DOM_WARN(EXALT_LOG_DOMAIN, "%s failed\n",#test); \
             instr; \
         }\
     }while(0)
@@ -217,10 +217,6 @@ short exalt_admin_is();
 short exalt_key_is(const char* key, Exalt_Enum_Encryption_Mode encryption_mode);
 
 short exalt_dhcp_support_is();
-
-void print_error(const char* file,const char* fct, int line, const char* msg, ...);
-
-
 
 #endif
 

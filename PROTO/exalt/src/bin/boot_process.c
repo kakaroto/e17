@@ -16,7 +16,10 @@
  * =====================================================================================
  */
 
+
 #include "boot_process.h"
+
+#define EXALT_LOG_DOMAIN exaltd_log_domain
 
 
 /*

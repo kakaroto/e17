@@ -25,13 +25,14 @@
 /*
  * when we return a valid response, next args are the response
  */
-#define EXALT_DBUS_VALID 1;
+#define EXALT_DBUS_VALID 1
 /* when we return an error, the next args have to be an int32 with a error id
  * and the third args have to be a string with a description of the error
  */
-#define EXALT_DBUS_ERROR 0;
+#define EXALT_DBUS_ERROR 0
 
-
+extern int exalt_dbus_log_domain;
+#define EXALT_LOG_DOMAIN exalt_dbus_log_domain
 
 typedef struct _exalt_dbus_notify_data exalt_dbus_notify_data;
 typedef struct _exalt_dbus_notify_conn_applied_data exalt_dbus_notify_conn_applied_data;

@@ -18,6 +18,8 @@
 
 #include "cb_ethernet.h"
 
+#define EXALT_LOG_DOMAIN exaltd_log_domain
+
 DBusMessage * dbus_cb_eth_list_get(E_DBus_Object *obj , DBusMessage *msg)
 {
     return dbus_cb_eth_wireless_list_get(obj,msg,0);

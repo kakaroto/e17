@@ -1,6 +1,8 @@
 
 #include "cb_network.h"
 
+#define EXALT_LOG_DOMAIN exaltd_log_domain
+
 DBusMessage * dbus_cb_network_configuration_get(E_DBus_Object *obj __UNUSED__, DBusMessage *msg)
 {
     DBusMessage *reply;

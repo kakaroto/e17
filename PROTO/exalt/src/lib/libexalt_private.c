@@ -18,7 +18,6 @@
 
 #include "libexalt_private.h"
 
-
 Exalt_Ioctl_Key exalt_ioctl_key[] =
 {
     {SIOCSIFFLAGS, "SIOCSIFFLAGS"},

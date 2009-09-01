@@ -18,6 +18,8 @@
 
 #include "cb_dns.h"
 
+#define EXALT_LOG_DOMAIN exaltd_log_domain
+
 DBusMessage * dbus_cb_dns_list_get(E_DBus_Object *obj __UNUSED__, DBusMessage *msg)
 {
     DBusMessage *reply;

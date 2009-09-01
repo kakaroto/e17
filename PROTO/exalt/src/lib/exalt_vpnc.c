@@ -19,7 +19,6 @@
 #include "exalt_vpnc.h"
 #include "libexalt_private.h"
 
-
 struct Exalt_Vpnc
 {
     char* name;

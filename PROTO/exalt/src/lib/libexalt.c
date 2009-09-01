@@ -13,6 +13,7 @@ static int init = 0;
 
 Exalt_Ethernets exalt_eth_interfaces;
 
+#define EXALT_LOG_DOMAIN exalt_eth_interfaces.log_domain
 
 /**
  * @brief initialise the library
@@ -21,11 +22,13 @@ int exalt_init()
 {
     if( ++init != 1) return init;
 
+    eina_log_init();
+    eina_log_level_set(EINA_LOG_LEVEL_DBG);
+    exalt_eth_interfaces.log_domain = eina_log_domain_register("EXALT",EINA_COLOR_BLUE);
     exalt_eth_interfaces.is_launch = 0;
     exalt_eth_interfaces.ethernets = NULL;
 
     exalt_eth_interfaces.default_routes = NULL;
-
 
     exalt_eth_interfaces.eth_cb = NULL;
     exalt_eth_interfaces.eth_cb_user_data = NULL;
@@ -200,26 +203,6 @@ short exalt_vpnc_support_is()
 #endif
 }
 
-
-
-/**
- * @brief print an error
- * @param file the file
- * @param fct the function
- * @param line the line number
- * @param msg the message
- * @param ... a list of params
- */
-void print_error(const char* file,const char* fct, int line, const char* msg, ...)
-{
-    va_list ap;
-    va_start(ap,msg);
-    fprintf(stderr,"%s: %s (%d)\n",file,fct,line);
-    fprintf(stderr,"\t");
-    vfprintf(stderr,msg,ap);
-    fprintf(stderr,"\n\n");
-    va_end(ap);
-}
 
 /** @} */
 

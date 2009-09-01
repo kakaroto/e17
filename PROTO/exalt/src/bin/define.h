@@ -119,7 +119,7 @@
 #define EXALT_DBUS_CONFIGURATION_NOT_VALID_ID 70
 
 
-#define EXALT_DBUS_NETWORK_UNKNOWN "The wireless network is unknown"
+#define EXALT_DBUS_NETWORK_UNKNOWN "The wireless network doesn't have a know configuration"
 #define EXALT_DBUS_NETWORK_UNKNOWN_ID 200
 
 #endif   /* ----- #ifndef DEFINE_INC  ----- */

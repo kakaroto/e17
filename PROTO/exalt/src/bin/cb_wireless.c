@@ -18,6 +18,8 @@
 
 #include "cb_wireless.h"
 
+#define EXALT_LOG_DOMAIN exaltd_log_domain
+
 DBusMessage * dbus_cb_wireless_list_get(E_DBus_Object *obj __UNUSED__, DBusMessage *msg)
 {
     return dbus_cb_eth_wireless_list_get(obj,msg,1);

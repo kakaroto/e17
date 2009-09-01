@@ -33,6 +33,8 @@
 
 
 
+#define EXALT_LOG_DOMAIN exalt_eth_interfaces.log_domain
+
 // type use in the list exalt_eth_interfaces.default_routes
 // which is a list of the old default route
 // Exalt uses this list when the current default route become invalid (the interface is down for example) and try to find a previous yet available route.
@@ -49,6 +51,7 @@ struct Exalt_Ethernets
 {
     Eina_List* ethernets;
 
+    int log_domain;
     int we_version;
 
     short admin;

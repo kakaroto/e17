@@ -4,6 +4,8 @@
 #include "exalt_configuration.h"
 #include "libexalt_private.h"
 
+
+
 struct Exalt_Configuration
 {
     Exalt_Enum_Mode mode;

@@ -1,12 +1,11 @@
 /** @file exalt_ethernet.c */
 #include "exalt_ethernet.h"
-#include "libexalt_private.h"
 #include "../config.h"
+#include "libexalt_private.h"
 
 /*
  * Private functions headers
  */
-
 
 
 const char* _exalt_eth_save_ip_get(Exalt_Ethernet* eth);

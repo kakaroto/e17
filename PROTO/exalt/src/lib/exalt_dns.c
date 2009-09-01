@@ -8,6 +8,7 @@
  */
 
 
+
 Eina_List* exalt_dns_get_list()
 {
     FILE* f;

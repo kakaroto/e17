@@ -490,6 +490,7 @@ int exalt_dbus_valid_is(DBusMessage *msg)
 {
     int id;
     id = exalt_dbus_response_integer(msg,0);
+
     return id == EXALT_DBUS_VALID;
 }
 

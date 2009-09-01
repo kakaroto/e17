@@ -1,5 +1,7 @@
 
 #include "exalt_configuration_network.h"
+#include "libexalt_private.h"
+
 
 struct Exalt_Configuration_Network
 {

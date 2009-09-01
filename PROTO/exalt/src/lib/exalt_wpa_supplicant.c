@@ -17,7 +17,7 @@
  */
 
 #include "exalt_wpa_supplicant.h"
-
+#include "libexalt_private.h"
 
 /**
  * @brief open a connection with the wpa daemon
@@ -46,7 +46,7 @@ struct wpa_ctrl * exalt_wpa_open_connection(Exalt_Wireless *w)
     {
         int status;
         Ecore_Exe *exe;
-        print_error(__FILE__,__func__,__LINE__,"Could not connect to wpa_supplicant, try to launch it");
+        EINA_LOG_DOM_INFO(EXALT_LOG_DOMAIN, "Could not connect to wpa_supplicant, try to launch it");
 
         if(!ecore_file_exists(EXALT_WPA_CONF_FILE))
         {
@@ -69,10 +69,10 @@ struct wpa_ctrl * exalt_wpa_open_connection(Exalt_Wireless *w)
         exe = ecore_exe_run(buf, NULL);
         waitpid(ecore_exe_pid_get(exe), &status, 0);
         ecore_exe_free(exe);
-        print_error(__FILE__,__func__,__LINE__,"Re-try to connect to wpa_supplicant");
+        EINA_LOG_DOM_INFO(EXALT_LOG_DOMAIN, "Re-try to connect to wpa_supplicant");
         ctrl_conn = wpa_ctrl_open(cfile);
         EXALT_ASSERT_CUSTOM_RET(ctrl_conn!=NULL,free(cfile);return NULL);
-        print_error(__FILE__,__func__,__LINE__,"Connection succesfull");
+        EINA_LOG_DOM_INFO(EXALT_LOG_DOMAIN,"Connection succesfull");
     }
 
     wpa_ctrl_attach(ctrl_conn);

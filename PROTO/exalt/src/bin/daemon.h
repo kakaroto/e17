@@ -36,6 +36,8 @@
 #ifndef PATH_MAX
 #define PATH_MAX 1024
 #endif
+extern int exaltd_log_domain;
+
 
 typedef struct _dbus_object_item DBus_Object_Item;
 

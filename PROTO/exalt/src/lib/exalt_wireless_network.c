@@ -2,6 +2,7 @@
 #include "exalt_wireless_network.h"
 #include "libexalt_private.h"
 
+
 /*
  * TODO: update exalt_wireless_network_free()
  * */
