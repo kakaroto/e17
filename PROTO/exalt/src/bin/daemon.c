@@ -19,8 +19,14 @@
 #include "daemon.h"
 
 //list of dbus object, 1 per interface
-Eina_List* dbus_object_list = NULL;
+Eina_List *dbus_object_list = NULL;
 
+//list of interface which we search a favorite network
+//When the daemon is start, we launch a wireless network scan on each interface
+//and when we get the result we connect the interface to a favorite detected network
+//This list is used to tell: we search a favorite network for this interface
+//elt : Exalt_Ethernet *
+Eina_List *iface_wireless_search_favorite = NULL;
 
 
 void setup_del_iface(E_DBus_Connection *conn __UNUSED__,Exalt_Ethernet* eth)
@@ -263,47 +269,67 @@ void eth_cb(Exalt_Ethernet* eth, Exalt_Enum_Action action, void* data)
                 str=strdup("wext");
             exalt_wireless_wpasupplicant_driver_set(w,str);
             EXALT_FREE(str);
-        }
-        //then we load the command which will be run after a configuration is applied
 
-        //apply or not apply a connection ?
-        //load a connection
-        //if no connection is load, we create one
-        //if we didn't have load a connection or if the card is save as "up"
-        //  if is not up
-        //      we up the card
-        //  we wait than the card is up (with a timeout of 5 ms)
-        //  if the card is link
-        //      we apply the connection
-        //else
-        //  we down the card
-
-        Exalt_Configuration *c = exalt_eth_conf_load(CONF_FILE, exalt_eth_udi_get(eth));
-        short not_c = 0;
-        if(!c)
-        {
-            c = exalt_conf_new();
-            not_c = 1;
-        }
-        exalt_eth_configuration_set(eth,c);
-
-        if(not_c || exalt_eth_state_load(CONF_FILE, exalt_eth_udi_get(eth)) == EXALT_UP)
-        {
-            int i = 0;
-            if(!exalt_eth_up_is(eth))
-                exalt_eth_up(eth);
-            while(!exalt_eth_up_is(eth) && i<10)
+            if( exalt_eth_state_load(CONF_FILE, exalt_eth_udi_get(eth)) == EXALT_UP)
             {
-                usleep(500);
-                i++;
+                if(!exalt_eth_up_is(eth))
+                    exalt_eth_up(eth);
+                int i = 0;
+                while(!exalt_eth_up_is(eth) && i<10)
+                {
+                    usleep(500);
+                    i++;
+                }
+                //search a favorite network
+                iface_wireless_search_favorite = eina_list_append(iface_wireless_search_favorite,eth);
+                exalt_wireless_scan_start(eth);
             }
-
-            if(exalt_eth_link_is(eth) && exalt_eth_up_is(eth))
-                exalt_eth_conf_apply(eth, c);
+            else
+                exalt_eth_down(eth);
         }
         else
         {
-            exalt_eth_down(eth);
+            //then we load the command which will be run after a configuration is applied
+
+            //apply or not apply a connection ?
+            //load a connection
+            //if no connection is load, we create one
+            //if we didn't have load a connection or if the card is save as "up"
+            //  if is not up
+            //      we up the card
+            //  we wait than the card is up (with a timeout of 5 ms)
+            //  if the card is link
+            //      we apply the connection
+            //else
+            //  we down the card
+
+            Exalt_Configuration *c = exalt_eth_conf_load(CONF_FILE, exalt_eth_udi_get(eth));
+            short not_c = 0;
+            if(!c)
+            {
+                c = exalt_conf_new();
+                not_c = 1;
+            }
+            exalt_eth_configuration_set(eth,c);
+
+            if(not_c || exalt_eth_state_load(CONF_FILE, exalt_eth_udi_get(eth)) == EXALT_UP)
+            {
+                int i = 0;
+                if(!exalt_eth_up_is(eth))
+                    exalt_eth_up(eth);
+                while(!exalt_eth_up_is(eth) && i<10)
+                {
+                    usleep(500);
+                    i++;
+                }
+
+                if(exalt_eth_link_is(eth) && exalt_eth_up_is(eth))
+                    exalt_eth_conf_apply(eth, c);
+            }
+            else
+            {
+                exalt_eth_down(eth);
+            }
         }
     }
 
@@ -400,10 +426,58 @@ void wireless_scan_cb(Exalt_Ethernet* eth,Eina_List* networks, void* data)
     const char* name;
 
     Exalt_Wireless_Network *wi;
-    Eina_List* l;
+    Eina_List *l, *l2;
 
     conn = (E_DBus_Connection*) data;
     EXALT_ASSERT_RETURN_VOID(conn!=NULL);
+
+    //search if we search a favorite network for this interface
+    if(eina_list_data_find(iface_wireless_search_favorite, eth))
+    {
+        iface_wireless_search_favorite = eina_list_remove(iface_wireless_search_favorite, eth);
+
+        //first we look if the previous network where we was connected is detected
+        Exalt_Configuration *c = exalt_eth_conf_load(CONF_FILE, exalt_eth_udi_get(eth));
+        const char *essid = exalt_conf_network_essid_get(exalt_conf_network_get(c));
+        int find = 0;
+        if(c && essid)
+        {
+            EINA_LIST_FOREACH(networks, l, wi)
+            {
+                if(strcmp(essid, exalt_wireless_network_essid_get(wi)) == 0)
+                {
+                    find = 1;
+                    break;
+                }
+            }
+            if(find)
+                exalt_eth_conf_apply(eth, c);
+        }
+
+        //then we look in the favorite list
+        if(!find)
+        {
+            Eina_List *l_network = exalt_conf_network_list_load(CONF_FILE);
+            EINA_LIST_FOREACH(networks, l, wi)
+            {
+                EINA_LIST_FOREACH(l_network, l2, essid)
+                {
+                    if(strcmp(essid, exalt_wireless_network_essid_get(wi)) == 0)
+                    {
+                        Exalt_Configuration *c = exalt_conf_network_load(CONF_FILE, essid);
+                        if(exalt_conf_network_favoris_is(exalt_conf_network_get(c)))
+                        {
+                            find = 1;
+                            exalt_eth_conf_apply(eth, exalt_conf_network_load(CONF_FILE, essid));
+                            break;
+                        }
+                    }
+                }
+                if(find)
+                    break;
+            }
+        }
+    }
 
     //send a broadcast
     msg = dbus_message_new_signal(EXALTD_PATH_NOTIFY,EXALTD_INTERFACE_NOTIFY, "scan_notify");
