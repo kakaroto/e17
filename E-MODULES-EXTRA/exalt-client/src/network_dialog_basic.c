@@ -268,12 +268,12 @@ void if_network_dialog_basic_update(Instance* inst,Exalt_DBus_Response *response
             && inst->network_basic.network->is_connected
             && inst->network_basic.current_essid && essid
             && strcmp(inst->network_basic.current_essid, essid) == 0)
-        e_widget_button_label_set(inst->network_basic.btn, D_("Disconfect the interface"));
+        e_widget_button_label_set(inst->network_basic.btn, D_("Disconnect the interface"));
     else
     {
         snprintf(buf,1024,D_("Network: %s"),essid);
         e_widget_frametable_label_set(inst->network_basic.flist, buf);
-        e_widget_button_label_set(inst->network_basic.btn, D_("confect to the network"));
+        e_widget_button_label_set(inst->network_basic.btn, D_("Connect to the network"));
     }
 }
 

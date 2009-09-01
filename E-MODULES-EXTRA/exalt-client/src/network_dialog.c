@@ -107,6 +107,10 @@ void if_network_dialog_create(Instance* inst)
     inst->network.entry_cmd = e_widget_entry_add(evas,&(inst->network.cmd),if_network_dialog_cb_entry,inst,NULL);
     e_widget_frametable_object_append(flist, inst->network.entry_cmd, 2, 6, 1, 1, 1, 0, 1, 0);
 
+    lbl = e_widget_label_add(evas,D_("Add to favoris: "));
+    e_widget_frametable_object_append(flist, lbl, 0, 7, 2, 1, 1, 0, 1, 0);
+    inst->network.check_favoris = e_widget_check_add(evas, "", &(inst->network.favoris));
+    e_widget_frametable_object_append(flist, inst->network.check_favoris, 2, 7, 1, 1, 1, 0, 1, 0);
 
     inst->network.f_iface = flist;
 
@@ -448,6 +452,8 @@ void if_network_dialog_update(Instance* inst,Exalt_DBus_Response *response)
             e_widget_entry_text_set(inst->network.entry_pwd, exalt_conf_network_key_get(cn));
             e_widget_entry_text_set(inst->network.entry_login, exalt_conf_network_login_get(cn));
 
+            e_widget_check_checked_set(inst->network.check_favoris, exalt_conf_network_favoris_is(cn));
+
             //select the radio button in the wpa list
             Eina_List *l_ie=exalt_wireless_network_ie_get(inst->network.network->n);
             Eina_List *l;
@@ -685,6 +691,9 @@ void if_network_dialog_cb_apply(void *data, E_Dialog *dialog)
 
     if(exalt_conf->save_network)
         exalt_conf_network_save_when_apply_set(n, 1);
+
+    exalt_conf_network_favoris_set(n, inst->network.favoris);
+
     exalt_dbus_eth_conf_apply(inst->conn,inst->network.network->iface,conf);
 
     exalt_conf_free(&conf);

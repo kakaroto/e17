@@ -32,6 +32,7 @@ typedef struct _Network_Dialog_New Network_Dialog_New;
 typedef struct _Network_Dialog Network_Dialog;
 typedef struct _Network_Dialog_Basic Network_Dialog_Basic;
 typedef struct _DNS_Dialog DNS_Dialog;
+typedef struct _Network_Conf_Dialog Network_Conf_Dialog;
 
 /* Base config struct. Store Item Count, etc
  *
@@ -193,7 +194,9 @@ struct _Network_Dialog
     Evas_Object* entry_pwd;
     char* pwd;
 
-    Evas_Object *radio_wpa[32];
+    Evas_Object *check_favoris;
+    int favoris;
+
     //wep
     Evas_Object *radio_wep_hexa;
     Evas_Object *radio_wep_ascii;
@@ -201,6 +204,7 @@ struct _Network_Dialog
 
     //wpa
     int ie_choice;
+    Evas_Object *radio_wpa[32];
 
     Evas_Object* entry_cmd;
 
@@ -247,6 +251,18 @@ struct _DNS_Dialog
     Evas_Object *bt_delete;
 };
 
+struct _Network_Conf_Dialog
+{
+    E_Dialog *dialog;
+
+    Evas_Object *list;
+    Evas_Object *list_favoris;
+
+    Evas_Object *bt_delete;
+    Evas_Object *bt_add;
+    Evas_Object *bt_remove;
+};
+
 struct _Instance
 {
     /* pointer to this gadget's container */
@@ -267,6 +283,7 @@ struct _Instance
     Network_Dialog network;
     Network_Dialog_Basic network_basic;
     DNS_Dialog dns;
+    Network_Conf_Dialog network_conf;
 
     Exalt_DBus_Conn *conn;
 
@@ -348,7 +365,8 @@ void popup_update(Instance* inst, Exalt_DBus_Response* response);
 void popup_ip_update(Instance* inst, char* iface, char* ip);
 void popup_iface_add(Instance* inst, const char* iface, Iface_Type iface_type);
 void popup_iface_remove(Instance *inst, const char*  iface);
-void popup_cb_setup(void *data, void *data2);
+void popup_cb_dns(void *data, void *data2);
+void popup_cb_network(void *data, void *data2);
 void popup_cb_ifnet_sel(void *data);
 void popup_up_update(Instance* inst, char* iface, int is_up);
 void popup_link_update(Instance* inst, char* iface, int is_link);
@@ -471,6 +489,20 @@ void dns_dialog_cb_entry(void *data, void* data2);
 void dns_dialog_cb_add(void *data, void *data2);
 void dns_dialog_cb_replace(void *data, void *data2);
 void dns_dialog_cb_delete(void *data, void *data2);
+
+
+void network_conf_dialog_init(Instance* inst);
+void network_conf_dialog_create(Instance* inst);
+void network_conf_dialog_show(Instance* inst);
+void network_conf_dialog_hide(Instance *inst);
+void network_conf_dialog_cb_close(void *data, E_Dialog *dialog);
+void network_conf_dialog_cb_del(E_Win *win);
+void network_conf_dialog_cb_delete(void *data, void *data2);
+void network_conf_dialog_update(Instance* inst,Exalt_DBus_Response *response);
+void network_conf_dialog_cb_list(void *data);
+void network_conf_dialog_cb_list_favoris(void *data);
+void network_conf_dialog_cb_add(void *data, void *data2);
+void network_conf_dialog_cb_remove(void *data, void *data2);
 
 
 #endif

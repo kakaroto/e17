@@ -693,6 +693,10 @@ void response_cb(Exalt_DBus_Response* response, void* data )
         case EXALT_DBUS_RESPONSE_NETWORK_CONFIGURATION_GET:
             if_network_dialog_update(inst, response);
             if_network_dialog_basic_update(inst, response);
+            network_conf_dialog_update(inst, response);
+            break;
+        case EXALT_DBUS_RESPONSE_NETWORK_LIST_GET:
+            network_conf_dialog_update(inst, response);
             break;
         default: ;
     }

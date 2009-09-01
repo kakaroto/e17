@@ -19,7 +19,8 @@ module_la_SOURCES = e_mod_main.h \
 						  network_dialog_new.c \
 						  network_dialog.c \
 						  network_dialog_basic.c \
-						  dns_dialog.c
+						  dns_dialog.c \
+						  network_conf_dialog.c
 
 module_la_LIBADD = @E_LIBS@ @EXALT_LIBS@ @EXALT_DBUS_LIBS@ @E_NOTIFY_LIBS@
 module_la_LDFLAGS = -module -avoid-version

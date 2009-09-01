@@ -40,19 +40,23 @@ void popup_create(Instance* inst)
     e_widget_table_object_append(base, ilist,
             0, 0, 1, 1, 1, 1, 1, 1);
 
-    button = e_widget_button_add(evas, D_("DNS configuration"), NULL, popup_cb_setup,inst, NULL);
+    button = e_widget_button_add(evas, D_("DNS configuration"), NULL, popup_cb_dns,inst, NULL);
     e_widget_table_object_append(base, button,
             0, 1, 1, 1, 1, 1, 1, 1);
+
+    button = e_widget_button_add(evas, D_("Network configuration"), NULL, popup_cb_network,inst, NULL);
+    e_widget_table_object_append(base, button,
+            0, 2, 1, 1, 1, 1, 1, 1);
 
     //Some elive extra buttons
 #ifdef ELIVE
     button = e_widget_button_add(evas, D_("Modem dialer"), NULL, popup_cb_elive_modem,inst, NULL);
     e_widget_table_object_append(base, button,
-            0, 2, 1, 1, 1, 1, 1, 1);
+            0, 3, 1, 1, 1, 1, 1, 1);
 
     button = e_widget_button_add(evas, D_("Mobile Phone (3G)"), NULL, popup_cb_elive_mobile_phone,inst, NULL);
     e_widget_table_object_append(base, button,
-            0, 3, 1, 1, 1, 1, 1, 1);
+            0, 4, 1, 1, 1, 1, 1, 1);
 #endif
 
     edje_thaw();
@@ -63,12 +67,20 @@ void popup_create(Instance* inst)
     exalt_dbus_wireless_list_get(inst->conn);
 }
 
-void popup_cb_setup(void *data, void *data2)
+void popup_cb_dns(void *data, void *data2)
 {
     Instance *inst = data;
 
     popup_hide(inst);
     dns_dialog_show(inst);
+}
+
+void popup_cb_network(void *data, void *data2)
+{
+    Instance *inst = data;
+
+    popup_hide(inst);
+    network_conf_dialog_show(inst);
 }
 
 #ifdef ELIVE
@@ -278,6 +290,7 @@ void popup_cb_ifnet_sel(void *data)
             if_wireless_dialog_hide(inst);
             break;
     }
+    network_conf_dialog_hide(inst);
     if_network_dialog_new_hide(inst);
     popup_hide(inst);
 }
