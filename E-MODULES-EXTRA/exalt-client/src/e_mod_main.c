@@ -296,7 +296,7 @@ _gc_init(E_Gadcon *gc, const char *name, const char *id, const char *style)
         e_dialog_button_focus_num(dialog, 0);
 
         int mw,mh;
-        e_widget_min_size_get(flist, &mw, &mh);
+        e_widget_size_min_get(flist, &mw, &mh);
         e_dialog_content_set(dialog, flist, mw, mh);
 
         e_dialog_show(dialog);

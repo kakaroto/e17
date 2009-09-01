@@ -188,7 +188,7 @@ void if_network_dialog_set(Instance *inst, Popup_Elt* network)
     e_widget_table_object_append(inst->network.table,inst->network.f_iface,1,0,1,2,1,1,1,0);
 
     int mw,mh;
-    e_widget_min_size_get(inst->network.table, &mw, &mh);
+    e_widget_size_min_get(inst->network.table, &mw, &mh);
     e_dialog_content_set(inst->network.dialog, inst->network.table, mw, mh);
 
 

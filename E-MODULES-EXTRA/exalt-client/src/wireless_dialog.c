@@ -44,7 +44,7 @@ void if_wireless_dialog_create(Instance* inst)
 
     e_widget_list_object_append(list, flist, 1, 0, 0.5);
 
-    e_widget_min_size_get(list, &mw, &mh);
+    e_widget_size_min_get(list, &mw, &mh);
     e_dialog_content_set(inst->wireless.dialog, list, mw, mh);
 
     e_win_delete_callback_set(inst->wireless.dialog->win, if_wireless_dialog_cb_del);

@@ -132,12 +132,12 @@ void photo_config_dialog_refresh_local_dirs(void)
      }
 
    if (!eina_list_count(photo->config->local.dirs))
-     e_widget_min_size_set(ilist_dirs, 165, 120);
+     e_widget_size_min_set(ilist_dirs, 165, 120);
    else
      {
         int wmw, wmh;
-        e_widget_min_size_get(ilist_dirs, &wmw, &wmh);
-        e_widget_min_size_set(ilist_dirs, wmw, 120);
+        e_widget_size_min_get(ilist_dirs, &wmw, &wmh);
+        e_widget_size_min_set(ilist_dirs, wmw, 120);
      }
    
    e_widget_ilist_go(ilist_dirs);
@@ -222,8 +222,8 @@ _basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cf
    ob = e_widget_textblock_add(evas);
    cfdata->textblock_local_infos = ob;
    photo_config_dialog_refresh_local_infos();
-   e_widget_min_size_get(ob, &wmw, &wmh);
-   e_widget_min_size_set(ob, wmw, 40);
+   e_widget_size_min_get(ob, &wmw, &wmh);
+   e_widget_size_min_set(ob, wmw, 40);
    e_widget_frametable_object_append(of, ob, 0, 0, 3, 1, 1, 1, 1, 1);
 
    ob = e_widget_ilist_add(evas, 16, 16, NULL);
@@ -338,7 +338,7 @@ _advanced_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data 
    ob = e_widget_label_add(evas, D_("Pictures viewer"));
    e_widget_frametable_object_append(of, ob, 0, 1, 1, 1, 1, 1, 1, 1);
    ob = e_widget_entry_add(evas, &(cfdata->pictures_viewer), NULL, NULL, NULL);
-   e_widget_min_size_set(ob, 80, 25);
+   e_widget_size_min_set(ob, 80, 25);
    e_widget_frametable_object_append(of, ob, 1, 1, 1, 1, 1, 1, 1, 1);
 
    ob = e_widget_label_add(evas, D_("Images Quality"));

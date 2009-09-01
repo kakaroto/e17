@@ -173,12 +173,12 @@ news_config_dialog_feeds_refresh_feeds(void)
 
    /* ilist size */
    if (pos == -1)
-     e_widget_min_size_set(ilist, 165, 120);
+     e_widget_size_min_set(ilist, 165, 120);
    else
      {
         int wmw, wmh;
-        e_widget_min_size_get(ilist, &wmw, &wmh);
-        e_widget_min_size_set(ilist, wmw, 180);
+        e_widget_size_min_get(ilist, &wmw, &wmh);
+        e_widget_size_min_set(ilist, wmw, 180);
      }
 }
 
@@ -230,12 +230,12 @@ news_config_dialog_feeds_refresh_categories(void)
      e_widget_ilist_selected_set(ilist, pos_to_select);
 
    if (pos == -1)
-     e_widget_min_size_set(ilist, 165, 120);
+     e_widget_size_min_set(ilist, 165, 120);
    else
      {
         int wmw, wmh;
-        e_widget_min_size_get(ilist, &wmw, &wmh);
-        e_widget_min_size_set(ilist, wmw, 120);
+        e_widget_size_min_get(ilist, &wmw, &wmh);
+        e_widget_size_min_set(ilist, wmw, 120);
      }
 }
 
@@ -359,8 +359,8 @@ _basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cf
 
    ob = e_widget_textblock_add(evas);
    cfdata->textblock_feed_infos = ob;
-   e_widget_min_size_get(ob, &wmw, &wmh);
-   e_widget_min_size_set(ob, wmw, 40);
+   e_widget_size_min_get(ob, &wmw, &wmh);
+   e_widget_size_min_set(ob, wmw, 40);
    e_widget_frametable_object_append(of, ob, 0, 0, 6, 1, 1, 1, 0, 0);
 
    cfdata->selected_feed = NULL;

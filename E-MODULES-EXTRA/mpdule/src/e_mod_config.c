@@ -94,13 +94,13 @@ _basic_create_widgets (E_Config_Dialog * cfd, Evas * evas,
   e_widget_frametable_object_append (of, ob, 0, 2, 1, 1, 1, 0, 1, 0);
   hostname_entry =
     e_widget_entry_add (evas, &cfdata->hostname, NULL, NULL, NULL);
-  e_widget_min_size_set (hostname_entry, 150, 1);
+  e_widget_size_min_set (hostname_entry, 150, 1);
   e_widget_frametable_object_append (of, hostname_entry, 0, 3, 1, 1, 1, 0, 1,
 				     0);
   ob = e_widget_label_add (evas, D_ ("Port:"));
   e_widget_frametable_object_append (of, ob, 0, 4, 1, 1, 1, 0, 1, 0);
   port_entry = e_widget_entry_add (evas, &cfdata->port, NULL, NULL, NULL);
-  e_widget_min_size_set (hostname_entry, 150, 1);
+  e_widget_size_min_set (hostname_entry, 150, 1);
   e_widget_frametable_object_append (of, port_entry, 0, 5, 1, 1, 1, 0, 1, 0);
   e_widget_list_object_append (o, of, 1, 1, 0.5);
 

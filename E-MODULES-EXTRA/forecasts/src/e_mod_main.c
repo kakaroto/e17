@@ -1110,12 +1110,12 @@ _forecasts_popup_content_create(Instance *inst)
      }
 
    e_widget_list_object_append(o, ol, 1, 1, 0.5);
-   e_widget_min_size_get(o, &mw, &mh);
+   e_widget_size_min_get(o, &mw, &mh);
    if ((double) mw / mh > GOLDEN_RATIO)
      mh = mw / GOLDEN_RATIO;
    else if ((double) mw / mh < GOLDEN_RATIO - (double) 1)
      mw = mh * (GOLDEN_RATIO - (double) 1);
-   e_widget_min_size_set(o, mw, mh);
+   e_widget_size_min_set(o, mw, mh);
 
    e_gadcon_popup_content_set(inst->popup, o);
 }

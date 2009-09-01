@@ -114,7 +114,7 @@ _basic_create_widgets (E_Config_Dialog * cfd, Evas * evas,
   e_widget_ilist_selector_set (ob, 1);
   cfdata->il = ob;
   _load_boxes (cfd);
-  e_widget_min_size_set (ob, 160, 140);
+  e_widget_size_min_set (ob, 160, 140);
   e_widget_frametable_object_append (of, ob, 0, 0, 1, 4, 1, 1, 1, 1);
 
   ot = e_widget_table_add (evas, 0);

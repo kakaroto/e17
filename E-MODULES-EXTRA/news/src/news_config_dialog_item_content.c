@@ -137,9 +137,9 @@ news_config_dialog_item_content_refresh_feeds(News_Item *ni)
      }
    e_widget_ilist_thaw(ilist);
 
-   e_widget_min_size_get(ilist, &iw, &ih);
+   e_widget_size_min_get(ilist, &iw, &ih);
    if (iw < 200) iw = 200;
-   e_widget_min_size_set(ilist, iw, 250);
+   e_widget_size_min_set(ilist, iw, 250);
    
    e_widget_ilist_go(ilist);
    _cb_feed_change(cfdata, NULL);
@@ -194,9 +194,9 @@ news_config_dialog_item_content_refresh_selected_feeds(News_Item *ni)
    NEWS_ITEM_FEEDS_FOREACH_END();
    cfdata->ilist_selected_feeds_inrefresh = 0;
 
-   e_widget_min_size_get(ilist, &iw, &ih);
+   e_widget_size_min_get(ilist, &iw, &ih);
    if (iw < 200) iw = 200;
-   e_widget_min_size_set(ilist, iw, 250);
+   e_widget_size_min_set(ilist, iw, 250);
    
    e_widget_ilist_go(ilist);
    e_widget_ilist_thaw(ilist);

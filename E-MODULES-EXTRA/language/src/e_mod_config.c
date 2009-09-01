@@ -173,7 +173,7 @@ _basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cf
    ol = e_widget_list_add(evas, 0, 1);
       of = e_widget_framelist_add(evas, D_("Available Languages"), 1);
 	 ob = e_widget_ilist_add(evas, ILIST_ICON_WIDTH, ILIST_ICON_HEIGHT, &(cfdata->plang));
-	 e_widget_min_size_set(ob, 220, 160);
+	 e_widget_size_min_set(ob, 220, 160);
 	 e_widget_ilist_go(ob);
 	 e_widget_framelist_object_append(of, ob);
 	 cfdata->gui.o_plang = ob;
@@ -181,7 +181,7 @@ _basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cf
 
       of = e_widget_framelist_add(evas, D_("Selected Languages"), 0);
 	 ob = e_widget_ilist_add(evas, ILIST_ICON_WIDTH, ILIST_ICON_HEIGHT, &(cfdata->slang));
-	 e_widget_min_size_set(ob, 220, 160);
+	 e_widget_size_min_set(ob, 220, 160);
 	 e_widget_ilist_go(ob);
 	 e_widget_framelist_object_append(of, ob);
 	 cfdata->gui.o_slang = ob;
@@ -248,7 +248,7 @@ _advanced_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data 
    ol = e_widget_list_add(evas, 0, 1);
       of = e_widget_framelist_add(evas, D_("Available Languages"), 1);
 	 ob = e_widget_ilist_add(evas, ILIST_ICON_WIDTH, ILIST_ICON_HEIGHT, &(cfdata->plang));
-	 e_widget_min_size_set(ob, 220, 160);
+	 e_widget_size_min_set(ob, 220, 160);
 	 e_widget_ilist_go(ob);
 	 e_widget_framelist_object_append(of, ob);
 	 cfdata->gui.o_plang = ob;
@@ -256,7 +256,7 @@ _advanced_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data 
 
       of = e_widget_framelist_add(evas, D_("Selected Languages"), 0);
 	 ob = e_widget_ilist_add(evas, ILIST_ICON_WIDTH, ILIST_ICON_HEIGHT, &(cfdata->slang));
-	 e_widget_min_size_set(ob, 220, 160);
+	 e_widget_size_min_set(ob, 220, 160);
 	 e_widget_ilist_go(ob);
 	 e_widget_framelist_object_append(of, ob);
 	 cfdata->gui.o_slang = ob;
@@ -286,7 +286,7 @@ _advanced_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data 
    ol = e_widget_list_add(evas, 0, 1);
       of = e_widget_framelist_add(evas, D_("Keyboard Model"), 1);
 	 ob = e_widget_ilist_add(evas, 0, 0, &(cfdata->kb_model));
-	 e_widget_min_size_set(ob, 390, 80);
+	 e_widget_size_min_set(ob, 390, 80);
 	 e_widget_ilist_go(ob);
 	 cfdata->gui.o_kbd_model = ob;
 	 e_widget_framelist_object_append(of, ob);
@@ -294,7 +294,7 @@ _advanced_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data 
 
       of = e_widget_framelist_add(evas, D_("Layout Variant"), 0);
 	 ob = e_widget_ilist_add(evas, 0, 0, &(cfdata->kb_variant));
-	 e_widget_min_size_set(ob, 120, 80);
+	 e_widget_size_min_set(ob, 120, 80);
 	 e_widget_ilist_go(ob);
 	 cfdata->gui.o_kbd_variant = ob;
 	 e_widget_framelist_object_append(of, ob);

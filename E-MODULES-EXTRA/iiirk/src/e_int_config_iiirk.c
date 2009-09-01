@@ -287,8 +287,8 @@ _fill_apps(E_Config_Dialog_Data *cfdata)
    e_widget_ilist_thaw(cfdata->o_all);
    edje_thaw();
    evas_event_thaw(evas);
-   e_widget_min_size_get(cfdata->o_all, &w, NULL);
-   e_widget_min_size_set(cfdata->o_all, w, 240);
+   e_widget_size_min_get(cfdata->o_all, &w, NULL);
+   e_widget_size_min_set(cfdata->o_all, w, 240);
 }
 
 static void 
@@ -320,8 +320,8 @@ _fill_list(E_Config_Dialog_Data *cfdata)
    
    cfdata->apps = NULL;
    e_widget_ilist_go(cfdata->o_sel);
-   e_widget_min_size_get(cfdata->o_sel, &w, NULL);
-   e_widget_min_size_set(cfdata->o_sel, w, 240);
+   e_widget_size_min_get(cfdata->o_sel, &w, NULL);
+   e_widget_size_min_set(cfdata->o_sel, w, 240);
    e_widget_ilist_thaw(cfdata->o_sel);
    edje_thaw();
    evas_event_thaw(evas);
@@ -429,8 +429,8 @@ _cb_add(void *data, void *data2)
      }
 
    e_widget_ilist_go(cfdata->o_sel);
-   e_widget_min_size_get(cfdata->o_sel, &w, NULL);
-   e_widget_min_size_set(cfdata->o_sel, w, 240);
+   e_widget_size_min_get(cfdata->o_sel, &w, NULL);
+   e_widget_size_min_set(cfdata->o_sel, w, 240);
    e_widget_ilist_thaw(cfdata->o_sel);
    e_widget_ilist_unselect(cfdata->o_all);
    edje_thaw();
@@ -460,8 +460,8 @@ _cb_del(void *data, void *data2)
      }
    e_widget_ilist_unselect(cfdata->o_sel);
    e_widget_ilist_go(cfdata->o_sel);
-   e_widget_min_size_get(cfdata->o_sel, &w, NULL);
-   e_widget_min_size_set(cfdata->o_sel, w, 240);
+   e_widget_size_min_get(cfdata->o_sel, &w, NULL);
+   e_widget_size_min_set(cfdata->o_sel, w, 240);
    e_widget_ilist_thaw(cfdata->o_sel);
    edje_thaw();
    evas_event_thaw(evas);
@@ -500,8 +500,8 @@ _cb_up(void *data, void *data2)
 	  }
      }
    e_widget_ilist_go(cfdata->o_sel);
-   e_widget_min_size_get(cfdata->o_sel, &w, NULL);
-   e_widget_min_size_set(cfdata->o_sel, w, 240);
+   e_widget_size_min_get(cfdata->o_sel, &w, NULL);
+   e_widget_size_min_set(cfdata->o_sel, w, 240);
    e_widget_ilist_thaw(cfdata->o_sel);
    edje_thaw();
    evas_event_thaw(evas);
@@ -540,8 +540,8 @@ _cb_down(void *data, void *data2)
 	  }
      }
    e_widget_ilist_go(cfdata->o_sel);
-   e_widget_min_size_get(cfdata->o_sel, &w, NULL);
-   e_widget_min_size_set(cfdata->o_sel, w, 240);
+   e_widget_size_min_get(cfdata->o_sel, &w, NULL);
+   e_widget_size_min_set(cfdata->o_sel, w, 240);
    e_widget_ilist_thaw(cfdata->o_sel);
    edje_thaw();
    evas_event_thaw(evas);

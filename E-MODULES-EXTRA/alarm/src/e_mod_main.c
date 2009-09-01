@@ -667,7 +667,7 @@ _alarm_snooze(Alarm *al)
                             NULL, &(al->snooze.minute), 100);
    e_widget_list_object_append(o, ob, 0, 0, 1.0);
 
-   e_widget_min_size_get(o, &w, &h);
+   e_widget_size_min_get(o, &w, &h);
    e_dialog_content_set(dia, o, w, h);
 
    e_dialog_button_add(dia, D_("Ok"), NULL, _alarm_cb_dialog_snooze_ok, al);

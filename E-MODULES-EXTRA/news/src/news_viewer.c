@@ -208,12 +208,12 @@ news_viewer_refresh(News_Viewer *nv)
 
    /* ilist size */
    if (pos == -1)
-     e_widget_min_size_set(ilist, 100, 70);
+     e_widget_size_min_set(ilist, 100, 70);
    else
      {
 	int wmw;
-	e_widget_min_size_get(ilist, &wmw, NULL);
-	e_widget_min_size_set(ilist, wmw, 110);
+	e_widget_size_min_get(ilist, &wmw, NULL);
+	e_widget_size_min_set(ilist, wmw, 110);
      }
    
    if (nv->vfeeds.list_own)
@@ -343,7 +343,7 @@ _dialog_geometry_update(News_Viewer *nv)
    if (!nv->dialog.dia) return;
 
    /* dialog position : compute dia_x and dia_y */
-   e_widget_min_size_get(nv->dialog.tab, &tab_w, &tab_h);
+   e_widget_size_min_get(nv->dialog.tab, &tab_w, &tab_h);
    news_util_ecanvas_geometry_get(&canvas_w, &canvas_h);
    dia_x = (canvas_w - tab_w) / 2;
    dia_y = (canvas_h - tab_h) / 2;
@@ -377,7 +377,7 @@ _dialog_content_create(News_Viewer *nv)
    nv->dialog.ftab_feeds = of;
 
    ob = e_widget_button_add(evas, "", NULL, _vfeeds_cb_button_feed, nv, NULL);
-   e_widget_min_size_set(ob, 60, 60);
+   e_widget_size_min_set(ob, 60, 60);
    nv->vfeeds.button_feed = ob;
    e_widget_frametable_object_append(of, ob, 0, 0, 1, 2, 0, 0, 0, 0);
 
@@ -431,7 +431,7 @@ _dialog_content_create(News_Viewer *nv)
    nv->vcontent.tb = ob;
 
    ob = e_widget_scrollframe_simple_add(evas, nv->vcontent.tb);
-   e_widget_min_size_set(ob, 290, 200);
+   e_widget_size_min_set(ob, 290, 200);
    evas_object_event_callback_add(ob, EVAS_CALLBACK_MOUSE_DOWN,
                                   _vcontent_cb_mouse_down, nv);
    nv->vcontent.scrollframe = ob;
@@ -444,14 +444,14 @@ _dialog_content_create(News_Viewer *nv)
 
    ob = e_widget_ilist_add(evas, 16, 16, NULL);
    e_widget_ilist_selector_set(ob, 1);
-   e_widget_min_size_set(ob, 250, 140);
+   e_widget_size_min_set(ob, 250, 140);
    nv->varticles.ilist = ob;
    e_widget_framelist_object_append(of, ob);
 
    e_widget_list_object_append(o, of, 1, 1, 1.0);
  
    /* apply */
-   e_widget_min_size_get(o, &w, &h);
+   e_widget_size_min_get(o, &w, &h);
    e_dialog_content_set(nv->dialog.dia, o, w, h);
 
    return 1;

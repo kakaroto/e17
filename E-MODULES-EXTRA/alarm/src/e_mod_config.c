@@ -100,11 +100,11 @@ alarm_config_refresh_alarms_ilist(E_Config_Dialog_Data *cfdata)
         e_widget_ilist_append(cfdata->alarms_ilist, ic, buf, _cb_alarms_list, cfdata, NULL);
      }
 
-   e_widget_min_size_get(cfdata->alarms_ilist, &wmw, &wmh);
+   e_widget_size_min_get(cfdata->alarms_ilist, &wmw, &wmh);
    if (eina_list_count(alarm_config->alarms) > 0) 
-     e_widget_min_size_set(cfdata->alarms_ilist, wmw, 200);
+     e_widget_size_min_set(cfdata->alarms_ilist, wmw, 200);
    else 
-     e_widget_min_size_set(cfdata->alarms_ilist, 165, 100);
+     e_widget_size_min_set(cfdata->alarms_ilist, 165, 100);
    
    e_widget_ilist_go(cfdata->alarms_ilist);
    e_widget_ilist_selected_set(cfdata->alarms_ilist, pos);
@@ -250,7 +250,7 @@ _advanced_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data 
    e_widget_frametable_object_append(of, ob, 0, 1, 1, 1, 1, 1, 1, 1);
 
    ob = e_widget_entry_add(evas, &(cfdata->alarms_program_default), NULL, NULL, NULL);
-   e_widget_min_size_set(ob, 80, 25);
+   e_widget_size_min_set(ob, 80, 25);
    e_widget_frametable_object_append(of, ob, 0, 2, 1, 1, 1, 1, 1, 1);
 
    ob = e_widget_check_add(evas, D_("Auto-Remove alarms"), &(cfdata->alarms_autoremove_default));

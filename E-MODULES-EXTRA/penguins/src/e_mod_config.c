@@ -137,7 +137,7 @@ _basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cf
       l = eina_list_next(l);
    }
    e_widget_ilist_go(ol);
-   e_widget_min_size_set(ol, 155, 250);
+   e_widget_size_min_set(ol, 155, 250);
    e_widget_list_object_append(o, ol, 1, 1, 0.5);
 
    return o;

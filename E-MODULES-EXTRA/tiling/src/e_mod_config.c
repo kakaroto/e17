@@ -25,7 +25,7 @@ extern Config *tiling_config;
 #define ILIST(width, height) { \
                                 ob = e_widget_ilist_add(evas, 0, 0, NULL); \
                                 e_widget_ilist_multi_select_set(ob, 0); \
-                                e_widget_min_size_set(ob, width, height); \
+                                e_widget_size_min_set(ob, width, height); \
                              }
 #define ILIST_GO(selected) { \
                                 if (selected != -1) e_widget_ilist_selected_set(ob, selected); \
@@ -152,13 +152,13 @@ _fill_zone_config(E_Zone *zone, E_Config_Dialog_Data *cfdata)
 
    /* Get the correct sizes of desklist and scrollframe */
    int mw, mh;
-   e_widget_min_size_get(cfdata->o_desklist, &mw, &mh);
+   e_widget_size_min_get(cfdata->o_desklist, &mw, &mh);
    evas_object_resize(cfdata->o_desklist, mw, mh);
    if (mh > 150)
      mh = 150;
    mw += 32;
    mh += 32;
-   e_widget_min_size_set(cfdata->o_deskscroll, mw, mh);
+   e_widget_size_min_set(cfdata->o_deskscroll, mw, mh);
 }
 
 static void

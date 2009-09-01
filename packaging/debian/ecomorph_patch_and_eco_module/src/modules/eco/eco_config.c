@@ -664,7 +664,7 @@ _basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cf
 
    //list
    ob = e_widget_ilist_add(evas, 32, 32, NULL);
-   e_widget_min_size_set(ob, 200, 330);
+   e_widget_size_min_set(ob, 200, 330);
    e_widget_frametable_object_append(of, ob, 0, 0, 2, 1, 1, 1, 1, 1);
    eco_list_populate(ob);
 
@@ -693,7 +693,7 @@ _basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cf
 
    //widget container
    dialog_data->o_container = e_widget_add(evas);
-   e_widget_min_size_set(dialog_data->o_container, 500, 600);
+   e_widget_size_min_set(dialog_data->o_container, 500, 600);
    
    ob = e_widget_label_add(evas, _("Welcome !!"));
    dialog_data->o_content = ob;

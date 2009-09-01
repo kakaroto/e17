@@ -92,7 +92,7 @@ _basic_create(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cfdata)
    time_entry = e_widget_entry_add(evas, &cfdata->time_format, NULL, NULL, NULL);
    e_widget_on_change_hook_set(time_check, _cb_time_check, time_entry);
    e_widget_disabled_set(time_entry, !cfdata->show_time);
-   e_widget_min_size_set(time_entry, 150, 1);
+   e_widget_size_min_set(time_entry, 150, 1);
    e_widget_frametable_object_append(of, time_entry, 0, 1, 1, 1, 1, 0, 1, 0);
    ob =
      e_widget_label_add(evas, D_("Consult strftime(3) for format syntax"));
@@ -107,7 +107,7 @@ _basic_create(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cfdata)
                                    NULL, NULL, NULL);
    e_widget_on_change_hook_set(date_check, _cb_date_check, date_entry);
    e_widget_disabled_set(date_entry, !cfdata->show_date);
-   e_widget_min_size_set(date_entry, 150, 1);
+   e_widget_size_min_set(date_entry, 150, 1);
    e_widget_frametable_object_append(of, date_entry, 0, 1, 1, 1, 1, 0, 1, 0);
    ob =
      e_widget_label_add(evas, D_("Consult strftime(3) for format syntax"));
@@ -122,7 +122,7 @@ _basic_create(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cfdata)
                                       NULL, NULL, NULL);
    e_widget_on_change_hook_set(tooltip_check, _cb_tooltip_check, tooltip_entry);
    e_widget_disabled_set(tooltip_entry, !cfdata->show_tip);
-   e_widget_min_size_set(tooltip_entry, 150, 1);
+   e_widget_size_min_set(tooltip_entry, 150, 1);
    e_widget_frametable_object_append(of, tooltip_entry, 
                                      0, 1, 1, 1, 1, 0, 1, 0);
    ob =

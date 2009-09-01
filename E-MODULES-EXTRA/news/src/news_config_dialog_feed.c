@@ -155,8 +155,8 @@ news_config_dialog_feed_refresh_categories(News_Feed *feed)
      e_widget_ilist_selected_set(ilist, 0);
    _cb_category_list(cfdata);
 
-   e_widget_min_size_get(ilist, &w, NULL);
-   e_widget_min_size_set(ilist, w, 110);
+   e_widget_size_min_get(ilist, &w, NULL);
+   e_widget_size_min_set(ilist, w, 110);
 }
 
 void
@@ -209,8 +209,8 @@ news_config_dialog_feed_refresh_langs(News_Feed *feed)
    _cb_lang_change(cfdata, NULL);
    
 
-   e_widget_min_size_get(ilist, &w, NULL);
-   e_widget_min_size_set(ilist, w, 110);
+   e_widget_size_min_get(ilist, &w, NULL);
+   e_widget_size_min_set(ilist, w, 110);
 }
 
 /*
@@ -333,7 +333,7 @@ _common_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *c
    cfdata->gui.button_icon = ob;
    if (cfdata->icon)
      _icon_select_changed(cfdata);
-   e_widget_min_size_set(ob, 48, 48);
+   e_widget_size_min_set(ob, 48, 48);
    e_widget_frametable_object_append(of, ob, 0, 0, 1, 1, 0, 0, 0, 0);
 
    //ob = e_widget_check_add(evas, D_("Get from the server"), &(cfdata->icon_ovrw));
@@ -557,7 +557,7 @@ _icon_select(void *data1, void *data2)
      }
    evas_object_show(o);
    cfdata->gui.icon_sel = o;
-   e_widget_min_size_get(o, &mw, &mh);
+   e_widget_size_min_get(o, &mw, &mh);
    e_dialog_content_set(dia, o, mw, mh);
 
    /* buttons at the bottom */

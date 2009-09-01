@@ -109,7 +109,7 @@ _basic_create(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cfdata)
     e_widget_list_object_append(o, of, 1, 1, 0.5);
 
     int mw,mh;
-    e_widget_min_size_get(o, &mw, &mh);
+    e_widget_size_min_get(o, &mw, &mh);
     e_dialog_content_set((E_Dialog*)cfd, o, mw, mh);
 
     return o;

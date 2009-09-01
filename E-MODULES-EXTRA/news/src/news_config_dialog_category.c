@@ -138,7 +138,7 @@ _basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cf
    cfdata->gui.button_icon = ob;
    if (cfdata->icon)
      _icon_select_changed(cfdata);
-   e_widget_min_size_set(ob, 48, 48);
+   e_widget_size_min_set(ob, 48, 48);
    e_widget_framelist_object_append(of, ob);
    e_widget_list_object_append(o, of, 1, 1, 0.0);
 
@@ -221,7 +221,7 @@ _icon_select(void *data1, void *data2)
      }
    evas_object_show(o);
    cfdata->gui.icon_sel = o;
-   e_widget_min_size_get(o, &mw, &mh);
+   e_widget_size_min_get(o, &mw, &mh);
    e_dialog_content_set(dia, o, mw, mh);
 
    /* buttons at the bottom */

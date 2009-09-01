@@ -107,7 +107,7 @@ void if_network_dialog_new_create(Instance* inst)
     //
     e_widget_list_object_append(list, flist, 1, 0, 0.5);
 
-    e_widget_min_size_get(list, &mw, &mh);
+    e_widget_size_min_get(list, &mw, &mh);
     e_dialog_content_set(inst->network_new.dialog, list, mw, mh);
 
     e_win_delete_callback_set(inst->network_new.dialog->win, if_network_dialog_new_cb_del);

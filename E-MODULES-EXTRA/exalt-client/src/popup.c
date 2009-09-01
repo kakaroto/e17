@@ -36,7 +36,7 @@ void popup_create(Instance* inst)
     e_widget_ilist_go(ilist);
     e_widget_ilist_thaw(ilist);
 
-    e_widget_min_size_set(ilist, 240, 250);
+    e_widget_size_min_set(ilist, 240, 250);
     e_widget_table_object_append(base, ilist,
             0, 0, 1, 1, 1, 1, 1, 1);
 

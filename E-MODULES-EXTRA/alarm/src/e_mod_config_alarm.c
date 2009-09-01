@@ -192,12 +192,12 @@ _common_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *c
    ob = e_widget_label_add(evas, D_("Name"));
    e_widget_frametable_object_append(of, ob, 0, 1, 1, 1, 1, 1, 1, 1);
    ob = e_widget_entry_add(evas, &(cfdata->name), NULL, NULL, NULL);
-   e_widget_min_size_set(ob, 200, 25);
+   e_widget_size_min_set(ob, 200, 25);
    e_widget_frametable_object_append(of, ob, 1, 1, 1, 1, 1, 1, 1, 1);
    ob = e_widget_label_add(evas, D_("Description"));
    e_widget_frametable_object_append(of, ob, 0, 2, 1, 1, 1, 1, 1, 1);
    ob = e_widget_entry_add(evas, &(cfdata->description), NULL, NULL, NULL);
-   e_widget_min_size_set(ob, 250, 25);
+   e_widget_size_min_set(ob, 250, 25);
    e_widget_frametable_object_append(of, ob, 0, 3, 2, 1, 1, 1, 1, 1);
    
 
@@ -243,7 +243,7 @@ _common_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *c
    ob = e_widget_label_add(evas, D_("Date (YYYY/MM/DD)"));
    e_widget_frametable_object_append(of2, ob, 0, 1, 1, 1, 1, 1, 1, 1);
    cfdata->sched_gui.date = e_widget_entry_add(evas, &(cfdata->sched.date), NULL, NULL, NULL);
-   e_widget_min_size_set(cfdata->sched_gui.date, 100, 25);
+   e_widget_size_min_set(cfdata->sched_gui.date, 100, 25);
    e_widget_frametable_object_append(of2, cfdata->sched_gui.date, 0, 2, 1, 1, 1, 1, 1, 1);
    ob = e_widget_button_add(evas, D_("Today"), NULL, _cb_alarm_today, cfdata, NULL);
    e_widget_frametable_object_append(of2, ob, 0, 3, 1, 1, 1, 1, 1, 1);
@@ -434,7 +434,7 @@ _advanced_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data 
    e_widget_frametable_object_append(of, ob, 0, 7, 1, 1, 1, 1, 1, 1);
 
    ob = e_widget_entry_add(evas, &(cfdata->program), NULL, NULL, NULL);
-   e_widget_min_size_set(ob, 100, 25);
+   e_widget_size_min_set(ob, 100, 25);
    e_widget_frametable_object_append(of, ob, 0, 8, 1, 1, 1, 1, 1, 1);
 
    e_widget_table_object_append(o, of, 1, 1, 1, 1, 1, 1, 1, 1);

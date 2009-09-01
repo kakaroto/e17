@@ -32,7 +32,7 @@ void dns_dialog_create(Instance* inst)
     e_widget_ilist_go(ilist);
     e_widget_ilist_thaw(ilist);
 
-    e_widget_min_size_set(ilist, 300, 100);
+    e_widget_size_min_set(ilist, 300, 100);
     e_widget_frametable_object_append(flist, ilist,0, 0, 5, 1, 1, 1, 1, 1);
     //
 
@@ -51,7 +51,7 @@ void dns_dialog_create(Instance* inst)
     //
 
 
-    e_widget_min_size_get(flist, &mw, &mh);
+    e_widget_size_min_get(flist, &mw, &mh);
     e_dialog_content_set(inst->dns.dialog, flist, mw, mh);
 
     e_win_delete_callback_set(inst->dns.dialog->win, dns_dialog_cb_del);

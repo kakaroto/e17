@@ -124,7 +124,7 @@ _basic_create_widgets(E_Config_Dialog * cfd, Evas * evas, E_Config_Dialog_Data *
    ob = e_widget_label_add(evas, D_("Status Command"));
    e_widget_frametable_object_append(of, ob, 0, 0, 1, 1, 1, 0, 1, 0);
    ob = e_widget_entry_add(evas, &cfdata->status_cmd, NULL, NULL, NULL);
-   e_widget_min_size_set(ob, 150, 1);
+   e_widget_size_min_set(ob, 150, 1);
    e_widget_frametable_object_append(of, ob, 1, 0, 1, 1, 1, 0, 1, 0);
 
    ob = e_widget_label_add(evas, D_("(Example: ping -c 5 127.0.0.1)"));
@@ -134,19 +134,19 @@ _basic_create_widgets(E_Config_Dialog * cfd, Evas * evas, E_Config_Dialog_Data *
    ob = e_widget_radio_add (evas, D_ ("Expected Exitcode"), 0, rg);
    e_widget_frametable_object_append(of, ob, 0, 2, 1, 1, 1, 0, 1, 0);
    ob = e_widget_entry_add(evas, &cfdata->okstate_exitcode, NULL, NULL, NULL);
-   e_widget_min_size_set(ob, 150, 1);
+   e_widget_size_min_set(ob, 150, 1);
    e_widget_frametable_object_append(of, ob, 1, 2, 1, 1, 1, 0, 1, 0);
 
    ob = e_widget_radio_add (evas, D_ ("Expected String"), 1, rg);
    e_widget_frametable_object_append(of, ob, 0, 3, 1, 1, 1, 0, 1, 0);
    ob = e_widget_entry_add(evas, &cfdata->okstate_string, NULL, NULL, NULL);
-   e_widget_min_size_set(ob, 150, 1);
+   e_widget_size_min_set(ob, 150, 1);
    e_widget_frametable_object_append(of, ob, 1, 3, 1, 1, 1, 0, 1, 0);
 
    ob = e_widget_radio_add (evas, D_ ("Expected Lines"), 2, rg);
    e_widget_frametable_object_append(of, ob, 0, 4, 1, 1, 1, 0, 1, 0);
    ob = e_widget_entry_add(evas, &cfdata->okstate_lines, NULL, NULL, NULL);
-   e_widget_min_size_set(ob, 150, 1);
+   e_widget_size_min_set(ob, 150, 1);
    e_widget_frametable_object_append(of, ob, 1, 4, 1, 1, 1, 0, 1, 0);
 
    ob = e_widget_label_add(evas, D_("Poll Time"));
@@ -167,19 +167,19 @@ _basic_create_widgets(E_Config_Dialog * cfd, Evas * evas, E_Config_Dialog_Data *
    ob = e_widget_label_add(evas, D_("Display Name"));
    e_widget_frametable_object_append(of, ob, 0, 0, 1, 1, 1, 0, 1, 0);
    ob = e_widget_entry_add(evas, &cfdata->display_name, NULL, NULL, NULL);
-   e_widget_min_size_set(ob, 150, 1);
+   e_widget_size_min_set(ob, 150, 1);
    e_widget_frametable_object_append(of, ob, 1, 0, 1, 1, 1, 0, 1, 0);
 
    ob = e_widget_label_add(evas, D_("Icon Path"));
    e_widget_frametable_object_append(of, ob, 0, 1, 1, 1, 1, 0, 1, 0);
    ob = e_widget_entry_add(evas, &cfdata->icon_path, NULL, NULL, NULL);
-   e_widget_min_size_set(ob, 150, 1);
+   e_widget_size_min_set(ob, 150, 1);
    e_widget_frametable_object_append(of, ob, 1, 1, 1, 1, 1, 0, 1, 0);
 
    ob = e_widget_label_add(evas, D_("Doubleclick Command"));
    e_widget_frametable_object_append(of, ob, 0, 2, 1, 1, 1, 0, 1, 0);
    ob = e_widget_entry_add(evas, &cfdata->dblclk_cmd, NULL, NULL, NULL);
-   e_widget_min_size_set(ob, 150, 1);
+   e_widget_size_min_set(ob, 150, 1);
    e_widget_frametable_object_append(of, ob, 1, 2, 1, 1, 1, 0, 1, 0);
 
    ob = e_widget_check_add(evas, D_("Refresh after Command"), &(cfdata->refresh_after_dblclk_cmd));
