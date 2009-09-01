@@ -87,8 +87,14 @@ enum _exalt_dbus_response_type
     EXALT_DBUS_RESPONSE_WIRELESS_WPASUPPLICANT_DRIVER_SET,
     /** Response of exalt_dbus_wireless_scan() */
     EXALT_DBUS_RESPONSE_WIRELESS_SCAN,
-    /** Response of exalt_dbus_wireless_configuration_get */
-    EXALT_DBUS_RESPONSE_NETWORK_CONFIGURATION_GET
+    /** Response of exalt_dbus_network_configuration_get */
+    EXALT_DBUS_RESPONSE_NETWORK_CONFIGURATION_GET,
+    /** Response of exalt_dbus_network_list_get */
+    EXALT_DBUS_RESPONSE_NETWORK_LIST_GET,
+    /** Response of exalt_dbus_network_favoris_set */
+    EXALT_DBUS_RESPONSE_NETWORK_FAVORIS_SET,
+    /** Response of exalt_dbus_network_delete */
+    EXALT_DBUS_RESPONSE_NETWORK_DELETE
 };
 
 int exalt_dbus_response_msg_id_get(Exalt_DBus_Response *response);

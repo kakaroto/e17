@@ -112,7 +112,15 @@ int setup(E_DBus_Connection *conn)
     obj = e_dbus_object_add(conn, EXALTD_PATH_WIRELESSS, NULL);
     iface = e_dbus_interface_new(EXALTD_INTERFACE_WIRELESSS);
     e_dbus_interface_method_add(iface, "list", "", "a(s)", dbus_cb_wireless_list_get);
-    e_dbus_interface_method_add(iface, "network_configuration_get", "s", "isssssiissiiiiiiii", dbus_cb_network_configuration_get);
+    e_dbus_object_interface_attach(obj, iface);
+
+
+    obj = e_dbus_object_add(conn, EXALTD_PATH_NETWORK, NULL);
+    iface = e_dbus_interface_new(EXALTD_INTERFACE_NETWORK);
+    e_dbus_interface_method_add(iface, "list", "", "as", dbus_cb_network_list_get);
+    e_dbus_interface_method_add(iface, "configuration_get", "s", "isssssiissiiiiiiii", dbus_cb_network_configuration_get);
+    e_dbus_interface_method_add(iface, "favoris_set", "si", "", dbus_cb_network_favoris_set);
+    e_dbus_interface_method_add(iface, "delete", "s", "", dbus_cb_network_delete);
     e_dbus_object_interface_attach(obj, iface);
 
     return 1;

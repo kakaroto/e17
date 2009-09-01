@@ -85,6 +85,7 @@ Eina_List* exalt_dbus_response_list_get(Exalt_DBus_Response* response)
         case EXALT_DBUS_RESPONSE_DNS_LIST_GET:
         case EXALT_DBUS_RESPONSE_IFACE_WIRED_LIST:
         case EXALT_DBUS_RESPONSE_IFACE_WIRELESS_LIST:
+        case EXALT_DBUS_RESPONSE_NETWORK_LIST_GET:
             return response->l;
         default:
             print_error(__FILE__,__func__,__LINE__,"This type of response doesn't has a list\n");

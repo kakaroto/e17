@@ -126,6 +126,45 @@ Exalt_Configuration *exalt_conf_network_load(const char *file,const char *networ
     return data;
 }
 
+Eina_List *exalt_conf_network_list_load(const char* file)
+{
+    int nb_res,i;
+    Eet_File *f;
+    char **res;
+    int length = strlen("wireless_network_");
+    Eina_List *l = NULL;
+
+    f = eet_open(file, EET_FILE_MODE_READ);
+    EXALT_ASSERT_RETURN(f!=NULL);
+
+    res = eet_list(f,"wireless_network_*",&nb_res);
+
+    for(i=0;i<nb_res;i++)
+    {
+        char *s = strdup(res[i]+length);
+        if(s) l = eina_list_append(l, s);
+    }
+
+    eet_close(f);
+    return l;
+}
+
+void exalt_conf_network_delete(const char* file, const char *network)
+{
+    Eet_File *f;
+    char buf[1024];
+
+    f = eet_open(file, EET_FILE_MODE_READ_WRITE);
+    if(!f)
+        f = eet_open(file, EET_FILE_MODE_WRITE);
+    EXALT_ASSERT_RETURN_VOID(f!=NULL);
+
+    snprintf(buf, 1024, "wireless_network_%s", network);
+    eet_delete(f,buf);
+
+    eet_close(f);
+}
+
 /** @} */
 
 

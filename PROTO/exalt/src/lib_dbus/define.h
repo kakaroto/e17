@@ -46,6 +46,10 @@
 #define EXALTD_PATH_IFACES_WIRELESS "/org/exalt/interfaces/wireless"
 #define EXALTD_INTERFACE_IFACES_WIRELESS "org.exalt.interfaces.wireless"
 
+#define EXALTD_PATH_NETWORK "/org/exalt/network"
+#define EXALTD_INTERFACE_NETWORK "org.exalt.network"
+
+
 #define EXALTD_PATH_NOTIFY "/org/exalt/notify"
 #define EXALTD_INTERFACE_NOTIFY "org.exalt.notify"
 
@@ -72,6 +76,9 @@
 
 #define exalt_dbus_ifaces_wireless_call_new(member) dbus_message_new_method_call(EXALTD_SERVICE, \
         EXALTD_PATH_IFACES_WIRELESS, EXALTD_INTERFACE_IFACES_WIRELESS, member)
+
+#define exalt_dbus_ifaces_network_call_new(member) dbus_message_new_method_call(EXALTD_SERVICE, \
+        EXALTD_PATH_NETWORK, EXALTD_INTERFACE_NETWORK, member)
 
 
 /** Create a method for the read interface */

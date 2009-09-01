@@ -79,6 +79,20 @@ int exalt_conf_network_save(const char* file, Exalt_Configuration *c);
  */
 Exalt_Configuration *exalt_conf_network_load(const char *file,const char *network);
 
+/**
+ * @brief Load the list of wireless network saved
+ * @param file the configuration file
+ * @return Returns a list of essid (char *)
+ */
+Eina_List *exalt_conf_network_list_load(const char *file);
+
+/**
+ * @brief Delete a wireless network configuration
+ * @param fil the configuration file
+ * @param network the network's name (essid)
+ */
+void exalt_conf_network_delete(const char* file, const char *network);
+
 #endif
 
 /** @} */
