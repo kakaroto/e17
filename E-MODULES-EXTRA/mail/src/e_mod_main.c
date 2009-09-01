@@ -319,7 +319,7 @@ _mail_cb_mouse_in (void *data, Evas * e, Evas_Object * obj, void *event_info)
     {
        Evas_Coord mw, mh;
 
-       e_ilist_min_size_get (list, &mw, &mh);
+       e_ilist_size_min_get (list, &mw, &mh);
        evas_object_size_hint_min_set(list, mw, mh);
        e_gadcon_popup_content_set (inst->popup, list);
        e_gadcon_popup_show (inst->popup);
