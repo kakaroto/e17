@@ -16,6 +16,9 @@
 #define EXALT_WPA_IFACE_DIR "/var/run/wpa_supplicant"
 #define EXALT_TEMP_FILE "/tmp/exalt_temp"
 
+#define EXALT_LOG_WARN(...) EINA_LOG_DOM_WARN(EXALT_LOG_DOMAIN, __VA_ARGS__)
+#define EXALT_LOG_CRIT(...) EINA_LOG_DOM_CRIT(EXALT_LOG_DOMAIN, __VA_ARGS__)
+#define EXALT_LOG_INFO(...) EINA_LOG_DOM_INFO(EXALT_LOG_DOMAIN, __VA_ARGS__)
 
 
 #define EXALT_ASSERT(test) \
@@ -23,7 +26,7 @@
     {\
         if(!(test))\
         {\
-            EINA_LOG_DOM_WARN(EXALT_LOG_DOMAIN, "%s failed\n",#test); \
+            EXALT_LOG_WARN("%s failed\n",#test); \
         }\
     }while(0)
 
@@ -34,7 +37,7 @@
     {\
         if(!(test))\
         {\
-            EINA_LOG_DOM_WARN(EXALT_LOG_DOMAIN, "%s failed\n",#test); \
+            EXALT_LOG_WARN("%s failed\n",#test); \
             return 0;\
         }\
     }while(0)
@@ -44,7 +47,7 @@
     {\
         if(!(test))\
         {\
-            EINA_LOG_DOM_WARN(EXALT_LOG_DOMAIN, "%s failed\n",#test); \
+            EXALT_LOG_WARN("%s failed\n",#test); \
             return ;\
         }\
     }while(0)
@@ -56,7 +59,7 @@
     { \
         if(!(test))\
         {\
-            EINA_LOG_DOM_WARN(EXALT_LOG_DOMAIN, __VA_ARGS__); \
+            EXALT_LOG_WARN(__VA_ARGS__); \
             instr; \
         }\
     }while(0)
@@ -66,7 +69,7 @@
     { \
         if(!(test))\
         {\
-            EINA_LOG_DOM_WARN(EXALT_LOG_DOMAIN, "%s failed\n",#test); \
+            EXALT_LOG_WARN("%s failed\n",#test); \
             instr; \
         }\
     }while(0)

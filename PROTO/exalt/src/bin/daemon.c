@@ -163,6 +163,13 @@ int main(int argc, char** argv)
         argv++;
     }
 
+    e_dbus_init();
+    ecore_init();
+    exalt_init();
+
+    exaltd_log_domain = eina_log_domain_register("EXALT-DAEMON",EINA_COLOR_RED);
+
+
     if(daemon)
     {
         //redirect stderr and stdout >> /var/log/exald.log
@@ -173,18 +180,12 @@ int main(int argc, char** argv)
             stdout = fp;
         }
         else
-            EINA_LOG_DOM_WARN(EXALT_LOG_DOMAIN,"Can not create the log file: %s\n",EXALTD_LOGFILE);
+            EXALT_LOG_WARN("Can not create the log file: %s\n",EXALTD_LOGFILE);
     }
-
-    e_dbus_init();
-    ecore_init();
-    exalt_init();
-
-    exaltd_log_domain = eina_log_domain_register("EXALT-DAEMON",EINA_COLOR_RED);
 
     if(!exalt_admin_is())
     {
-        EINA_LOG_DOM_CRIT(EXALT_LOG_DOMAIN,"Please run as root. \n");
+        EXALT_LOG_CRIT("Please run as root. \n");
         e_dbus_shutdown();
         ecore_shutdown();
         return 1;
@@ -194,7 +195,7 @@ int main(int argc, char** argv)
     exaltd_conn = e_dbus_bus_get(DBUS_BUS_SYSTEM);
     if(!exaltd_conn)
     {
-        EINA_LOG_DOM_CRIT(EXALT_LOG_DOMAIN, "Can not connect to DBUS, maybe the daemon is not launch ?\n");
+        EXALT_LOG_CRIT("Can not connect to DBUS, maybe the daemon is not launch ?\n");
         e_dbus_shutdown();
         ecore_shutdown();
         return -1;
@@ -243,7 +244,7 @@ int main(int argc, char** argv)
             fclose(fp);
         }
         else
-            EINA_LOG_DOM_WARN(EXALT_LOG_DOMAIN, "Can not create the pid file: %s\n", EXALTD_PIDFILE);
+            EXALT_LOG_WARN("Can not create the pid file: %s\n", EXALTD_PIDFILE);
     }
 
     ecore_main_loop_begin();

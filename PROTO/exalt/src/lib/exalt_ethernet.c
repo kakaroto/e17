@@ -1124,7 +1124,7 @@ int _exalt_apply_timer(void *data)
 
         EXALT_ASSERT_RETURN(eth!=NULL);
 
-        EINA_LOG_DOM_INFO(EXALT_LOG_DOMAIN, "Run command : %s\n",cmd);
+        EXALT_LOG_INFO("Run command : %s\n",cmd);
         exe = ecore_exe_run(cmd, NULL);
         waitpid(ecore_exe_pid_get(exe), &status, 0);
         ecore_exe_free(exe);

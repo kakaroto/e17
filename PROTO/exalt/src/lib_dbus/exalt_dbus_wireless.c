@@ -241,7 +241,7 @@ static void _exalt_dbus_wireless_list_get_cb(void *data, DBusMessage *msg, DBusE
         response->is_error = 1;
         response->error_id = exalt_dbus_error_get_id(msg);
         response->error_msg = strdup(exalt_dbus_error_get_msg(msg));
-        EINA_LOG_DOM_INFO(EXALT_LOG_DOMAIN, "%d: %s\n",
+        EXALT_LOG_INFO("%d: %s\n",
                 exalt_dbus_error_get_id(msg),exalt_dbus_error_get_msg(msg));
     }
     else
@@ -272,7 +272,7 @@ static void _exalt_dbus_wireless_essid_get_cb(void *data, DBusMessage *msg, DBus
         response->is_error = 1;
         response->error_id = exalt_dbus_error_get_id(msg);
         response->error_msg = strdup(exalt_dbus_error_get_msg(msg));
-        EINA_LOG_DOM_INFO(EXALT_LOG_DOMAIN, "%d: %s\n",
+        EXALT_LOG_INFO("%d: %s\n",
                 exalt_dbus_error_get_id(msg),exalt_dbus_error_get_msg(msg));
     }
     else
@@ -303,7 +303,7 @@ static void _exalt_dbus_wireless_disconnect_cb(void *data, DBusMessage *msg, DBu
         response->is_error = 1;
         response->error_id = exalt_dbus_error_get_id(msg);
         response->error_msg = strdup(exalt_dbus_error_get_msg(msg));
-        EINA_LOG_DOM_INFO(EXALT_LOG_DOMAIN, "%d: %s\n",
+        EXALT_LOG_INFO("%d: %s\n",
                 exalt_dbus_error_get_id(msg),exalt_dbus_error_get_msg(msg));
     }
     else
@@ -332,7 +332,7 @@ static void _exalt_dbus_wireless_wpasupplicant_driver_get_cb(void *data, DBusMes
         response->is_error = 1;
         response->error_id = exalt_dbus_error_get_id(msg);
         response->error_msg = strdup(exalt_dbus_error_get_msg(msg));
-        EINA_LOG_DOM_INFO(EXALT_LOG_DOMAIN, "%d: %s\n",
+        EXALT_LOG_INFO("%d: %s\n",
                 exalt_dbus_error_get_id(msg),exalt_dbus_error_get_msg(msg));
     }
     else
@@ -361,7 +361,7 @@ static void _exalt_dbus_wireless_wpasupplicant_driver_set_cb(void *data, DBusMes
         response->is_error = 1;
         response->error_id = exalt_dbus_error_get_id(msg);
         response->error_msg = strdup(exalt_dbus_error_get_msg(msg));
-        EINA_LOG_DOM_INFO(EXALT_LOG_DOMAIN, "%d: %s\n",
+        EXALT_LOG_INFO("%d: %s\n",
                 exalt_dbus_error_get_id(msg),exalt_dbus_error_get_msg(msg));
     }
     else
@@ -389,7 +389,7 @@ static void _exalt_dbus_wireless_scan_cb(void *data, DBusMessage *msg, DBusError
         response->is_error = 1;
         response->error_id = exalt_dbus_error_get_id(msg);
         response->error_msg = strdup(exalt_dbus_error_get_msg(msg));
-        EINA_LOG_DOM_INFO(EXALT_LOG_DOMAIN, "%d: %s\n",
+        EXALT_LOG_INFO("%d: %s\n",
                 exalt_dbus_error_get_id(msg),exalt_dbus_error_get_msg(msg));
     }
     else

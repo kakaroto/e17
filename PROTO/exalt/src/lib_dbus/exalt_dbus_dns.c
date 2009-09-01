@@ -179,7 +179,7 @@ void _exalt_dbus_dns_add_cb(void *data, DBusMessage *msg, DBusError *error)
         response->is_error = 1;
         response->error_id = exalt_dbus_error_get_id(msg);
         response->error_msg = strdup(strdup(exalt_dbus_error_get_msg(msg)));
-        EINA_LOG_DOM_INFO(EXALT_LOG_DOMAIN, "%d: %s\n",
+        EXALT_LOG_INFO("%d: %s\n",
                 exalt_dbus_error_get_id(msg),exalt_dbus_error_get_msg(msg));
     }
     else
@@ -205,7 +205,7 @@ void _exalt_dbus_dns_del_cb(void *data, DBusMessage *msg, DBusError *error)
         response->error_id = exalt_dbus_error_get_id(msg);
         response->error_msg = strdup(strdup(exalt_dbus_error_get_msg(msg)));
 
-        EINA_LOG_DOM_INFO(EXALT_LOG_DOMAIN, "%d: %s\n",
+        EXALT_LOG_INFO("%d: %s\n",
                 exalt_dbus_error_get_id(msg),exalt_dbus_error_get_msg(msg));
     }
     else
@@ -230,7 +230,7 @@ void _exalt_dbus_dns_replace_cb(void *data, DBusMessage *msg, DBusError *error)
         response->is_error = 1;
         response->error_id = exalt_dbus_error_get_id(msg);
         response->error_msg = strdup(strdup(exalt_dbus_error_get_msg(msg)));
-        EINA_LOG_DOM_INFO(EXALT_LOG_DOMAIN, "%d: %s\n",
+        EXALT_LOG_INFO("%d: %s\n",
                 exalt_dbus_error_get_id(msg),exalt_dbus_error_get_msg(msg));
     }
     else
@@ -256,7 +256,7 @@ void _exalt_dbus_dns_get_list_cb(void *data, DBusMessage *msg, DBusError *error)
         response->is_error = 1;
         response->error_id = exalt_dbus_error_get_id(msg);
         response->error_msg = strdup(exalt_dbus_error_get_msg(msg));
-        EINA_LOG_DOM_INFO(EXALT_LOG_DOMAIN, "%d: %s\n",
+        EXALT_LOG_INFO("%d: %s\n",
                 exalt_dbus_error_get_id(msg),exalt_dbus_error_get_msg(msg));
     }
     else

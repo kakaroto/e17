@@ -130,7 +130,7 @@ int exalt_regex_execute(Exalt_Regex* r)
         {
 	    if(r->debug)
 	    {
-               EINA_LOG_DOM_WARN(EXALT_LOG_DOMAIN,  "no match found"
+               EXALT_LOG_WARN( "no match found"
 					"str_request: %s"
 					"str_regex: %s\n\n", r->str_request,r->str_regex);
 	    }
@@ -147,7 +147,7 @@ int exalt_regex_execute(Exalt_Regex* r)
             if (text)
             {
                	regerror (err, &preg, text, size);
-               	EINA_LOG_DOM_WARN(EXALT_LOG_DOMAIN, "%s\n", text);
+               	EXALT_LOG_WARN("%s\n", text);
                	free (text);
                 EXALT_FREE(pmatch);
 		return 0;
@@ -161,7 +161,7 @@ int exalt_regex_execute(Exalt_Regex* r)
     }
     else
     {
-        EINA_LOG_DOM_WARN(EXALT_LOG_DOMAIN, "regcomp error");
+        EXALT_LOG_WARN("regcomp error");
         EXALT_FREE(pmatch);
         return 0;
     }
