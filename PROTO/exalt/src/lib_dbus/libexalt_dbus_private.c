@@ -203,7 +203,7 @@ void _exalt_dbus_notify(void *data, DBusMessage *msg)
 
     EXALT_ASSERT_ADV(exalt_dbus_valid_is(msg),
             ,
-            "exalt_dbus_valid_is(msg) failed, error=%d (%s)",
+            "exalt_dbus_valid_is(msg) failed, error=%d (%s)\n",
             exalt_dbus_error_get_id(msg),
             exalt_dbus_error_get_msg(msg));
 
@@ -227,7 +227,7 @@ void _exalt_dbus_scan_notify(void *data, DBusMessage *msg)
 
     EXALT_ASSERT_ADV(exalt_dbus_valid_is(msg),
             ,
-            "exalt_dbus_valid_is(msg) failed, error=%d (%s)",
+            "exalt_dbus_valid_is(msg) failed, error=%d (%s)\n",
             exalt_dbus_error_get_id(msg),
             exalt_dbus_error_get_msg(msg));
 

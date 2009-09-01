@@ -40,7 +40,7 @@ Boot_Process_List *waiting_iface_load(const char* file)
                             data = malloc(sizeof(Boot_Process_List));
                             data->timeout = 30;
                             data->l=NULL,
-                    "f!=NULL failed");
+                    "f!=NULL failed\n");
 
     data = eet_data_read(f, edd, "boot process interface list");
     eet_close(f);
@@ -50,7 +50,7 @@ Boot_Process_List *waiting_iface_load(const char* file)
                             data = malloc(sizeof(Boot_Process_List));
                             data->timeout = 30;
                             data->l=NULL,
-                    "data!=NULL failed");
+                    "data!=NULL failed\n");
 
     return data;
 }

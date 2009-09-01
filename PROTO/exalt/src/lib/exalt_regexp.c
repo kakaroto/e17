@@ -118,7 +118,7 @@ int exalt_regex_execute(Exalt_Regex* r)
             	size_t size = end - start;
 
                 r->res[i] = (char*)malloc (sizeof (char) * (size + 1));
-                EXALT_ASSERT_ADV(r->res[i],EXALT_FREE(pmatch);return 0,"r->res[i] failed");
+                EXALT_ASSERT_ADV(r->res[i],EXALT_FREE(pmatch);return 0,"r->res[i] failed\n");
                 strncpy (r->res[i], &(r->str_request[start]), size);
                 r->res[i][size] = '\0';
             }

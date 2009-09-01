@@ -578,7 +578,7 @@ int exalt_eth_conf_apply(Exalt_Ethernet* eth, Exalt_Configuration *c)
     eth->apply_pid = fork();
     EXALT_ASSERT_ADV(eth->apply_pid>=0,
             eth->apply_pid = -1; _exalt_apply_timer(eth),
-            "eth->apply_pid>=0 failed");
+            "eth->apply_pid>=0 failed\n");
 
     if(eth->apply_pid == 0)
     {
@@ -949,7 +949,7 @@ int _exalt_rtlink_watch_cb(void *data, Ecore_Fd_Handler *fd_handler)
                 ifmsg = NLMSG_DATA(nh);
                 rtlen = RTM_PAYLOAD(nh);
                 EXALT_ASSERT_ADV(rtlen>=sizeof(struct ifinfomsg),break,
-                        "Bad rtnetlink packet (%d < %d)", rtlen,
+                        "Bad rtnetlink packet (%d < %d)\n", rtlen,
                         sizeof(struct ifinfomsg));
 
                 //printf("ifmsg: { %d, %d, %d, 0x%x, 0x%x }\n",
@@ -990,7 +990,7 @@ int _exalt_rtlink_watch_cb(void *data, Ecore_Fd_Handler *fd_handler)
                 ifaddr = NLMSG_DATA(nh);
                 rtlen = RTM_PAYLOAD(nh);
                 EXALT_ASSERT_ADV(rtlen>=sizeof(struct ifaddrmsg),break,
-                        "Bad rtnetlink packet (%d < %d)", rtlen,
+                        "Bad rtnetlink packet (%d < %d)\n", rtlen,
                         sizeof(struct ifaddrmsg));
 
                 eth = exalt_eth_get_ethernet_byifindex(ifaddr->ifa_index);
@@ -1025,7 +1025,7 @@ int _exalt_rtlink_watch_cb(void *data, Ecore_Fd_Handler *fd_handler)
                 ifroute = NLMSG_DATA(nh);
                 rtlen = RTM_PAYLOAD(nh);
                 EXALT_ASSERT_ADV(rtlen>=sizeof(struct rtmsg),break,
-                        "Bad rtnetlink packet (%d < %d)", rtlen,
+                        "Bad rtnetlink packet (%d < %d)\n", rtlen,
                         sizeof(struct rtmsg));
 
                 //test for each interface if the route has been modified
@@ -1234,7 +1234,7 @@ int _exalt_eth_apply_dhcp(Exalt_Ethernet* eth)
 
     return 1;
 #else
-    EXALT_ASSERT_ADV(0,return 0,"Your build of libexalt doesn't support dhcp");
+    EXALT_ASSERT_ADV(0,return 0,"Your build of libexalt doesn't support dhcp\n");
 #endif
 }
 

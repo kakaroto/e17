@@ -37,7 +37,7 @@ DBusMessage * dbus_cb_dns_list_get(E_DBus_Object *obj __UNUSED__, DBusMessage *m
                 EXALT_DBUS_DNS_ERROR_ID,
                 EXALT_DBUS_DNS_ERROR);
             return reply,
-            "dnss!=NULL failed");
+            "dnss!=NULL failed\n");
 
     dbus_args_valid_append(reply);
 

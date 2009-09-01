@@ -73,7 +73,7 @@ int exalt_dns_delete(const char* dns)
     EXALT_ASSERT_RETURN(fr!=NULL);
 
     fw = fopen(EXALT_RESOLVCONF_FILE, "w");
-    EXALT_ASSERT_ADV(fw!=NULL,EXALT_FCLOSE(fr);return 0,"f!=NULL failed");
+    EXALT_ASSERT_ADV(fw!=NULL,EXALT_FCLOSE(fr);return 0,"f!=NULL failed\n");
 
     sprintf(buf,"nameserver %s\n",dns);
     while(fgets(buf2,1024,fr))
@@ -103,7 +103,7 @@ int exalt_dns_replace(const char* old_dns, const char* new_dns)
     EXALT_ASSERT_RETURN(fr!=NULL);
 
     fw = fopen(EXALT_RESOLVCONF_FILE, "w");
-    EXALT_ASSERT_ADV(fw!=NULL,EXALT_FCLOSE(fr);return 0,"f!=NULL failed");
+    EXALT_ASSERT_ADV(fw!=NULL,EXALT_FCLOSE(fr);return 0,"f!=NULL failed\n");
 
     sprintf(buf,"nameserver %s\n",old_dns);
     sprintf(buf3,"nameserver %s\n",new_dns);

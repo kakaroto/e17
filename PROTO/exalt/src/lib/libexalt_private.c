@@ -85,13 +85,13 @@ short exalt_ioctl(void* argp, int request)
             if( (busy==1 || busy==3 || busy==5 ) && errno==11)//ressource not available
             {
                 busy++;
-                EXALT_ASSERT_ADV(0,,"ioctl(%s): %s (%d) (will retry)",ioctl_msg,strerror(errno),errno);
+                EXALT_ASSERT_ADV(0,,"ioctl(%s): %s (%d) (will retry)\n",ioctl_msg,strerror(errno),errno);
                 usleep(50000);
             }
             else
             {
                 close(fd);
-                //EXALT_ASSERT_ADV(0,,"ioctl(%s): %s (%d)",ioctl_msg,strerror(errno),errno);
+                //EXALT_ASSERT_ADV(0,,"ioctl(%s): %s (%d)\n",ioctl_msg,strerror(errno),errno);
                 return 0;
             }
         }

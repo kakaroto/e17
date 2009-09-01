@@ -53,7 +53,7 @@ int exalt_main()
 {
     struct sockaddr_nl addr;
 
-    EXALT_ASSERT_ADV(exalt_eth_interfaces.is_launch<=0,return 0,"Exalt is launch");
+    EXALT_ASSERT_ADV(exalt_eth_interfaces.is_launch<=0,return 0,"Exalt is launch\n");
 
     e_dbus_init();
     ecore_string_init();

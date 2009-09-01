@@ -493,7 +493,7 @@ void wireless_scan_cb(Exalt_Ethernet* eth,Eina_List* networks, void* data)
     name = exalt_eth_name_get(eth);
     EXALT_ASSERT_ADV(name!=NULL,
             dbus_message_unref(msg);return,
-            "name!=NULL failed");
+            "name!=NULL failed\n");
 
     dbus_args_valid_append(msg);
 

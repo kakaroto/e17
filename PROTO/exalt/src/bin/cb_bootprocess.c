@@ -119,7 +119,7 @@ DBusMessage * dbus_cb_bootprocess_iface_is(E_DBus_Object *obj __UNUSED__, DBusMe
 
     EXALT_ASSERT_ADV(dbus_message_iter_append_basic(&args, DBUS_TYPE_BOOLEAN, &is),
         return reply,
-        "dbus_message_iter_append_basic(&args, DBUS_TYPE_BOOLEAN, &is) failed");
+        "dbus_message_iter_append_basic(&args, DBUS_TYPE_BOOLEAN, &is) failed\n");
 
     return reply;
 }
@@ -139,7 +139,7 @@ DBusMessage * dbus_cb_bootprocess_timeout_get(E_DBus_Object *obj __UNUSED__, DBu
     dbus_message_iter_init_append(reply, &args);
     EXALT_ASSERT_ADV(dbus_message_iter_append_basic(&args, DBUS_TYPE_INT32, &timeout),
         return reply,
-        "dbus_message_iter_append_basic(&args, DBUS_TYPE_INT32, &timeout) failed");
+        "dbus_message_iter_append_basic(&args, DBUS_TYPE_INT32, &timeout) failed\n");
 
     return reply;
 }
