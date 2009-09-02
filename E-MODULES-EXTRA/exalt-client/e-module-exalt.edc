@@ -8,6 +8,7 @@ images
     image: "wireless_not_activate_link.png" COMP;
     image: "ethernet_not_activate_link.png" COMP;
     image: "encryption.png" COMP;
+    image: "delete.png" COMP;
 }
 
 collections
@@ -111,6 +112,29 @@ collections
             }
             part
             {
+                name: "global_status";
+                mouse_events: 0;
+                type: IMAGE;
+                description
+                {
+                    state: "default" 0.0;
+                    aspect: 1.0 1.0;
+                    aspect_preference: BOTH;
+                    rel1.relative: 0.6 0.1;
+                    rel2.relative: 0.9 0.4;
+                    visible: 1;
+                    color: 255 255 255 0;
+                    image.normal: "delete.png";
+                }
+                description
+                {
+                    state: "visible" 0.0;
+                    inherit: "default" 0.0;
+                    color: 255 255 255 255;
+                }
+            }
+            part
+            {
                 name: "event";
                 mouse_events: 1;
                 type: RECT;
@@ -181,6 +205,24 @@ collections
                 action: STATE_SET "default" 0.0;
                 target: "icon";
                 target: "icon_2";
+            }
+            program
+            {
+                name: "global_disconnect";
+                signal: "global,disconnect";
+                source: "exalt";
+                action: STATE_SET "visible" 0.0;
+                target: "global_status";
+                transition: LINEAR 0.5;
+            }
+            program
+            {
+                name: "global_connect";
+                signal: "global,connect";
+                source: "exalt";
+                action: STATE_SET "default" 0.0;
+                target: "global_status";
+                transition: LINEAR 0.5;
             }
         }
     }

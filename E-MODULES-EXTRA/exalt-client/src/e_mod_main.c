@@ -304,6 +304,8 @@ _gc_init(E_Gadcon *gc, const char *name, const char *id, const char *style)
 
     exalt_dbus_response_notify_set(inst->conn,response_cb,inst);
 
+    exalt_dbus_eth_all_disconnected_is(inst->conn);
+
     if_wired_dialog_init(inst);
     if_wired_dialog_basic_init(inst);
     if_network_dialog_init(inst);
@@ -564,7 +566,6 @@ _exalt_cb_menu_configure(void *data, E_Menu *mn, E_Menu_Item *mi)
     e_int_config_exalt_module(mn->zone->container, NULL);
 }
 
-
 void response_cb(Exalt_DBus_Response* response, void* data )
 {
     Instance* inst = data;
@@ -596,6 +597,9 @@ void response_cb(Exalt_DBus_Response* response, void* data )
     //printf("Question id: %d\n",exalt_dbus_response_msg_id_get(response));
     switch(exalt_dbus_response_type_get(response))
     {
+        case EXALT_DBUS_RESPONSE_ALL_IFACES_DISCONNECTED_IS:
+            if(exalt_dbus_response_is_get(response))
+                edje_object_signal_emit(inst->o_exalt, "global,disconnect", "exalt");
         case EXALT_DBUS_RESPONSE_DNS_LIST_GET:
             dns_dialog_update(inst, response);
             break;
@@ -675,6 +679,7 @@ void response_cb(Exalt_DBus_Response* response, void* data )
                 e_notification_body_set(notify,buf);
             }
             if_network_dialog_basic_update(inst,response);
+            popup_update(inst, response);
             break;
         case EXALT_DBUS_RESPONSE_IFACE_CONNECTED_IS:
             if_network_dialog_basic_update(inst,response);
@@ -716,6 +721,9 @@ void notify_cb(char* eth, Exalt_Enum_Action action, void* user_data)
 
     switch(action)
     {
+        case EXALT_IFACE_ACTION_ALL_IFACES_DISCONNECTED:
+            edje_object_signal_emit(inst->o_exalt, "global,disconnect", "exalt");
+            break;
         case EXALT_IFACE_ACTION_CONNECTED:
             if(exalt_conf->notification)
             {
@@ -727,6 +735,8 @@ void notify_cb(char* eth, Exalt_Enum_Action action, void* user_data)
                 e_notification_send(notify,NULL,NULL);
                 e_notification_unref(notify);
             }
+            exalt_dbus_eth_connected_is(inst->conn,eth);
+            edje_object_signal_emit(inst->o_exalt, "global,connect", "exalt");
             break;
         case EXALT_IFACE_ACTION_DISCONNECTED:
             if(exalt_conf->notification)
@@ -739,12 +749,14 @@ void notify_cb(char* eth, Exalt_Enum_Action action, void* user_data)
                 e_notification_send(notify,NULL,NULL);
                 e_notification_unref(notify);
             }
+            exalt_dbus_eth_connected_is(inst->conn,eth);
             break;
         case EXALT_WIRELESS_ACTION_CONNECTED:
             id = calloc(1,sizeof(int));
             *id = exalt_dbus_wireless_essid_get(inst->conn,eth);
             notification = eina_list_append(notification,id);
             exalt_dbus_eth_connected_is(inst->conn,eth);
+            edje_object_signal_emit(inst->o_exalt, "global,connect", "exalt");
             break;
         case EXALT_WIRELESS_ACTION_DISCONNECTED:
             if(exalt_conf->notification)

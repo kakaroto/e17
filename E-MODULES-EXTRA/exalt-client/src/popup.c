@@ -217,7 +217,10 @@ popup_iface_add(Instance* inst, const char* iface, Iface_Type iface_type)
     exalt_dbus_eth_connected_is(inst->conn, iface);
 
     if(iface_type == IFACE_WIRELESS)
+    {
+        exalt_dbus_wireless_essid_get(inst->conn, elt->iface);
         exalt_dbus_wireless_scan(inst->conn,elt->iface);
+    }
 }
 
 void popup_iface_label_create(Popup_Elt *elt, char *buf, int buf_size, char* ip)
@@ -306,14 +309,16 @@ popup_ip_update(Instance* inst, char* iface, char* ip)
     if(!inst->popup_ilist_obj || !iface)
         return;
 
-
     EINA_LIST_FOREACH(inst->l,l,elt)
     {
         if(elt && elt->type == POPUP_IFACE && elt->iface
                 && strcmp(elt->iface,iface)==0)
         {
-            popup_iface_label_create(elt,buf,1024,ip);
-            e_widget_ilist_nth_label_set(inst->popup_ilist_obj,i,buf);
+            if(elt->iface_type == IFACE_WIRED)
+            {
+                popup_iface_label_create(elt,buf,1024,ip);
+                e_widget_ilist_nth_label_set(inst->popup_ilist_obj,i,buf);
+            }
             break;
         }
         i++;
@@ -370,7 +375,29 @@ void popup_connected_update(Instance* inst, char* iface, int is_connected)
     popup_icon_update(inst,iface);
 }
 
+void popup_essid_update(Instance* inst, char* iface, char* essid)
+{
+    int i = 0;
+    char buf[1024];
+    Popup_Elt* elt;
+    Eina_List *l;
 
+    if(!inst->popup_ilist_obj || !iface)
+        return;
+
+
+    EINA_LIST_FOREACH(inst->l,l,elt)
+    {
+        if(elt && elt->type == POPUP_IFACE && elt->iface
+                && strcmp(elt->iface,iface)==0)
+        {
+            popup_iface_label_create(elt,buf,1024,essid);
+            e_widget_ilist_nth_label_set(inst->popup_ilist_obj,i,buf);
+            break;
+        }
+        i++;
+    }
+}
 
 void popup_icon_update(Instance* inst, const char* iface)
 {
@@ -442,6 +469,7 @@ void popup_update(Instance* inst, Exalt_DBus_Response* response)
                             ,"modules/exalt/icons/wireless");
                     exalt_dbus_eth_ip_get(inst->conn,iface);
                     exalt_dbus_eth_up_is(inst->conn,iface);
+                    exalt_dbus_wireless_essid_get(inst->conn, iface);
                     exalt_dbus_wireless_scan(inst->conn,iface);
                 }
             }
@@ -461,6 +489,10 @@ void popup_update(Instance* inst, Exalt_DBus_Response* response)
         case EXALT_DBUS_RESPONSE_IFACE_CONNECTED_IS:
             popup_connected_update(inst,exalt_dbus_response_iface_get(response),
                     exalt_dbus_response_is_get(response));
+            break;
+        case EXALT_DBUS_RESPONSE_WIRELESS_ESSID_GET:
+            popup_essid_update(inst, exalt_dbus_response_iface_get(response),
+                    exalt_dbus_response_string_get(response));
             break;
         default: ;
     }
@@ -660,12 +692,15 @@ void popup_notify_scan(char* iface, Eina_List* networks, void* user_data )
 
 
     elt = eina_list_data_get(first);
+    if(elt->scan_timer) ecore_timer_del(elt->scan_timer);
     elt->scan_timer  = ecore_timer_add(2,popup_scan_timer_cb,elt);
 }
 
 int popup_scan_timer_cb(void *data)
 {
     Popup_Elt* elt = data;
+
+    if(!elt) return;
 
     if(elt->scan_timer)
         ecore_timer_del(elt->scan_timer);
@@ -698,6 +733,11 @@ void popup_hide(Instance *inst)
         EINA_LIST_FOREACH(inst->l,l,elt)
         {
             elt->nb_use--;
+            if(elt->scan_timer)
+            {
+                ecore_timer_del(elt->scan_timer);
+                elt->scan_timer = NULL;
+            }
             popup_elt_free(elt);
         }
         eina_list_free(inst->l);
@@ -709,6 +749,7 @@ void popup_elt_free(Popup_Elt* elt)
 {
     if(elt->nb_use>0)
         return ;
+
     EXALT_FREE(elt->iface);
     EXALT_FREE(elt->essid);
     if(elt->icon)

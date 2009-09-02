@@ -271,6 +271,8 @@ struct _Instance
     /* evas_object used to display */
     Evas_Object *o_exalt;
 
+    Evas_Object *gc_icon;
+
     Eina_List* l;
 
     E_Gadcon_Popup  *popup;
