@@ -103,5 +103,21 @@ short exalt_ioctl(void* argp, int request);
 int _exalt_rtlink_essid_change(Exalt_Wireless *w);
 
 
+
+/**
+ * @brief apply the connection (the current essid, current password ...)
+ * @param w the interface
+ * @return Return 1 if the configuration is apply, else 0
+ */
+int exalt_wireless_conf_apply(Exalt_Wireless *w);
+
+/*
+ * @brief Called by exalt_eth_down() <br>
+ * Call exalt_wireless_disconnect()
+ * @param w the wireless interface
+ */
+void exalt_wireless_down(Exalt_Wireless *w);
+
+
 #endif   /* ----- #ifndef LIBEXALT_PRIVATE_INC  ----- */
 

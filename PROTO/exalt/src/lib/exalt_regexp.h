@@ -37,41 +37,41 @@ struct Exalt_Regex
  * @debug 1 if you want use the debug mode, else 0
  * @return Return a Exalt_Regex structure
  */
-Exalt_Regex* exalt_regex_new(const char* str_request, const char* str_regex,short debug);
+EAPI Exalt_Regex* exalt_regex_new(const char* str_request, const char* str_regex,short debug);
 /**
  * @brief change the request string
  * @param r the Exalt_Regex
  * @param str_request the new request string
  */
-void exalt_regex_set_request(Exalt_Regex* r,const char* str_request);
+EAPI void exalt_regex_set_request(Exalt_Regex* r,const char* str_request);
 /**
  * @brief change the regular expression
  * @param r the Exalt_Regex
  * @param str_regex the new regular expression
  */
-void exalt_regex_set_regex(Exalt_Regex* r,const char* str_regex);
+EAPI void exalt_regex_set_regex(Exalt_Regex* r,const char* str_regex);
 /**
  * @brief set the debug mode
  * @param r the Exalt_Regex
  * @param debug the new debig mode, 0 or 1
  */
-void exalt_regex_set_debug(Exalt_Regex *r, short debug);
+EAPI void exalt_regex_set_debug(Exalt_Regex *r, short debug);
 /**
  * @brief clear the current result
  * @param r the Exalt_Regex
  */
-void exalt_regex_clear_result(Exalt_Regex* r);
+EAPI void exalt_regex_clear_result(Exalt_Regex* r);
 /*
  * @brief free tje regex
  * @param r the Exalt_Regex
  */
-void exalt_regex_free(Exalt_Regex **r);
+EAPI void exalt_regex_free(Exalt_Regex **r);
 /*
  * @brief execute a regular expression
  * @param r the Exalt_Regex
  * @return Return 1 if the regular expression is found int the request string, else 0
  */
-int exalt_regex_execute(Exalt_Regex* r);
+EAPI int exalt_regex_execute(Exalt_Regex* r);
 
 #endif
 

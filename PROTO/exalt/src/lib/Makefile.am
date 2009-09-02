@@ -26,7 +26,6 @@ exalt_wireless.h \
 exalt_wireless_network.h \
 exalt_configuration.h \
 exalt_vpnc.h \
-exalt_wpa_supplicant.h \
 iw/iwlib.h \
 exalt_configuration_network.h
 

@@ -99,19 +99,19 @@ enum _exalt_dbus_response_type
     EXALT_DBUS_RESPONSE_ALL_IFACES_DISCONNECTED_IS
 };
 
-int exalt_dbus_response_msg_id_get(Exalt_DBus_Response *response);
-int exalt_dbus_response_error_is(Exalt_DBus_Response *response);
-Exalt_DBus_Response_Type exalt_dbus_response_type_get(Exalt_DBus_Response* response);
+EAPI int exalt_dbus_response_msg_id_get(Exalt_DBus_Response *response);
+EAPI int exalt_dbus_response_error_is(Exalt_DBus_Response *response);
+EAPI Exalt_DBus_Response_Type exalt_dbus_response_type_get(Exalt_DBus_Response* response);
 
-int exalt_dbus_response_error_id_get(Exalt_DBus_Response* response);
-char* exalt_dbus_response_error_msg_get(Exalt_DBus_Response* response);
+EAPI int exalt_dbus_response_error_id_get(Exalt_DBus_Response* response);
+EAPI char* exalt_dbus_response_error_msg_get(Exalt_DBus_Response* response);
 
-Eina_List* exalt_dbus_response_list_get(Exalt_DBus_Response* response);
-char* exalt_dbus_response_address_get(Exalt_DBus_Response* response);
-char* exalt_dbus_response_string_get(Exalt_DBus_Response* response);
-char* exalt_dbus_response_iface_get(Exalt_DBus_Response* response);
-int exalt_dbus_response_is_get(Exalt_DBus_Response* response);
-Exalt_Configuration *exalt_dbus_response_configuration_get(Exalt_DBus_Response* response);
+EAPI Eina_List* exalt_dbus_response_list_get(Exalt_DBus_Response* response);
+EAPI char* exalt_dbus_response_address_get(Exalt_DBus_Response* response);
+EAPI char* exalt_dbus_response_string_get(Exalt_DBus_Response* response);
+EAPI char* exalt_dbus_response_iface_get(Exalt_DBus_Response* response);
+EAPI int exalt_dbus_response_is_get(Exalt_DBus_Response* response);
+EAPI Exalt_Configuration *exalt_dbus_response_configuration_get(Exalt_DBus_Response* response);
 
 /** @} */
 

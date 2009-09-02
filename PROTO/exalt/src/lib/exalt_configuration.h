@@ -83,126 +83,126 @@ typedef enum Exalt_Enum_Mode
  * - dhcp mode
  * @return Returns the new Configuration
  */
-Exalt_Configuration* exalt_conf_new();
+EAPI Exalt_Configuration* exalt_conf_new();
 
 /**
  * @brief free a Configuration
  * Warning: This method doesn't free the network inside the Configuration.
  * @param c the Configuration
  */
-void exalt_conf_free(Exalt_Configuration** c);
+EAPI void exalt_conf_free(Exalt_Configuration** c);
 
 /**
  * @brief test if a Configuration is valid (valid address ...)
  * @param c the Configuration
  * @return Returns 1 if the Configuration is valid, else 0
  */
-short exalt_conf_valid_is(Exalt_Configuration* c);
+EAPI short exalt_conf_valid_is(Exalt_Configuration* c);
 
 /**
  * @brief set the mode (dhcp or static)
  */
-void exalt_conf_mode_set(
+EAPI void exalt_conf_mode_set(
         Exalt_Configuration* conf,
         Exalt_Enum_Mode mode);
 
 /**
  * @brief set the IP address
  */
-void exalt_conf_ip_set(
+EAPI void exalt_conf_ip_set(
         Exalt_Configuration* conf,
         const char* ip);
 
 /**
  * @brief set the netmask address
  */
-void exalt_conf_netmask_set(
+EAPI void exalt_conf_netmask_set(
         Exalt_Configuration* conf,
         const char* netmask);
 
 /**
  * @brief set the gateway address
  */
-void exalt_conf_gateway_set(
+EAPI void exalt_conf_gateway_set(
         Exalt_Configuration* conf,
         const char* gateway);
 
 /**
  * @brief set the command execute after the Configuration is applied
  */
-void exalt_conf_cmd_after_apply_set(
+EAPI void exalt_conf_cmd_after_apply_set(
         Exalt_Configuration* conf,
         const char* cmd);
 
 /**
  * @brief set if the Configuration has a wireless extension
  */
-void exalt_conf_wireless_set(
+EAPI void exalt_conf_wireless_set(
         Exalt_Configuration* conf,
         int is_wireless);
 
 /**
  * @brief set the essid
  */
-void exalt_conf_network_set(
+EAPI void exalt_conf_network_set(
         Exalt_Configuration* conf,
         Exalt_Configuration_Network* n);
 
 /**
  * @brief Returns the mode of the Configuration
  */
-Exalt_Enum_Mode exalt_conf_mode_get(Exalt_Configuration* conf);
+EAPI Exalt_Enum_Mode exalt_conf_mode_get(Exalt_Configuration* conf);
 
 
 /**
  * @brief return if the wep key is a hexa key
  * (else it is a plain text)
  */
-int exalt_conf_wireless_is(Exalt_Configuration* conf);
+EAPI int exalt_conf_wireless_is(Exalt_Configuration* conf);
 
 
 
 /**
  * @brief return the IP address of the Configuration
  */
-const char* exalt_conf_ip_get(Exalt_Configuration* conf);
+EAPI const char* exalt_conf_ip_get(Exalt_Configuration* conf);
 
 /**
  * @brief return the netmask address of the Configuration
  */
-const char* exalt_conf_netmask_get(Exalt_Configuration* conf);
+EAPI const char* exalt_conf_netmask_get(Exalt_Configuration* conf);
 
 /**
  * @brief return the gateway address of the Configuration
  */
-const char* exalt_conf_gateway_get(Exalt_Configuration* conf);
+EAPI const char* exalt_conf_gateway_get(Exalt_Configuration* conf);
 
 /**
  * @brief return the command execute after the Configuration is applied
  */
-const char* exalt_conf_cmd_after_apply_get(Exalt_Configuration* conf);
+EAPI const char* exalt_conf_cmd_after_apply_get(Exalt_Configuration* conf);
 
 /**
  * @brief return test if the Configuration has a wireless extension
  */
-int exalt_conf_wireless_is(Exalt_Configuration* conf);
+EAPI int exalt_conf_wireless_is(Exalt_Configuration* conf);
 
 /**
  * @brief return the network information (essid, encyption ...)
  */
-Exalt_Configuration_Network* exalt_conf_network_get(Exalt_Configuration* conf);
+EAPI Exalt_Configuration_Network* exalt_conf_network_get(Exalt_Configuration* conf);
 
 /**
  * @brief return the Configuration mode of the Configuration
  */
-Exalt_Enum_Configuration_Mode exalt_conf_Configuration_mode_get(Exalt_Configuration* conf);
+EAPI Exalt_Enum_Configuration_Mode exalt_conf_Configuration_mode_get(Exalt_Configuration* conf);
 
 
 /**
  * @brief create an eet descriptor of the structure Exalt_Configuration
  * @return Returns the descriptor
  */
-Eet_Data_Descriptor * exalt_conf_edd_new(Eet_Data_Descriptor* eed_network);
+EAPI Eet_Data_Descriptor * exalt_conf_edd_new(Eet_Data_Descriptor* eed_network);
 
 
 /** @} */

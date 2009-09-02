@@ -210,16 +210,16 @@
  * @{
  */
 
-int exalt_init();
-int exalt_main();
+EAPI int exalt_init();
+EAPI int exalt_main();
 
 
-short exalt_address_is(const char* ip);
-short exalt_essid_is(const char* essid);
-short exalt_admin_is();
-short exalt_key_is(const char* key, Exalt_Enum_Encryption_Mode encryption_mode);
+EAPI short exalt_address_is(const char* ip);
+EAPI short exalt_essid_is(const char* essid);
+EAPI short exalt_admin_is();
+EAPI short exalt_key_is(const char* key, Exalt_Enum_Encryption_Mode encryption_mode);
 
-short exalt_dhcp_support_is();
+EAPI short exalt_dhcp_support_is();
 
 #endif
 

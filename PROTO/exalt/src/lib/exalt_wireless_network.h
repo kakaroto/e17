@@ -71,47 +71,47 @@ enum Exalt_Wireless_Network_Mode
     MODE_UNKNOWN
 };
 
-Exalt_Wireless_Network* exalt_wireless_network_new(
+EAPI Exalt_Wireless_Network* exalt_wireless_network_new(
         Exalt_Wireless* wn2);
-void exalt_wireless_network_free(
+EAPI void exalt_wireless_network_free(
         Exalt_Wireless_Network** wn);
 
-Exalt_Wireless_Network_IE* exalt_wireless_network_ie_new();
-void exalt_wireless_network_ie_free(
+EAPI Exalt_Wireless_Network_IE* exalt_wireless_network_ie_new();
+EAPI void exalt_wireless_network_ie_free(
         Exalt_Wireless_Network_IE **ie);
 
 /**
  * @brief set the interface
  */
-void exalt_wireless_network_iface_set(
+EAPI void exalt_wireless_network_iface_set(
         Exalt_Wireless_Network *wn,
         Exalt_Wireless* w);
 
 /**
  * @brief set the interface
  */
-void exalt_wireless_network_iface_set(
+EAPI void exalt_wireless_network_iface_set(
         Exalt_Wireless_Network *wn,
         Exalt_Wireless* w);
 
 /**
  * @brief set the MAC address
  */
-void exalt_wireless_network_address_set(
+EAPI void exalt_wireless_network_address_set(
         Exalt_Wireless_Network *wn,
         const char* address);
 
 /**
  * @brief set the essid
  */
-void exalt_wireless_network_essid_set(
+EAPI void exalt_wireless_network_essid_set(
         Exalt_Wireless_Network *wn,
         const char* essid);
 
 /**
  * @brief set the mode
  */
-void exalt_wireless_network_mode_set(
+EAPI void exalt_wireless_network_mode_set(
         Exalt_Wireless_Network *wn,
         Exalt_Wireless_Network_Mode mode);
 
@@ -120,21 +120,21 @@ void exalt_wireless_network_mode_set(
 /**
  * @brief set if the wireless network is encrypted
  */
-void exalt_wireless_network_encryption_set(
+EAPI void exalt_wireless_network_encryption_set(
         Exalt_Wireless_Network *wn,
         int encryption_is);
 
 /**
  * @brief set the description (WPA/TKip ...))
  */
-void exalt_wireless_network_description_set(
+EAPI void exalt_wireless_network_description_set(
         Exalt_Wireless_Network *wn,
         const char* desc);
 
 /**
  * @brief set the quality
  */
-void exalt_wireless_network_quality_set(
+EAPI void exalt_wireless_network_quality_set(
         Exalt_Wireless_Network *wn,
         int quality);
 
@@ -142,32 +142,32 @@ void exalt_wireless_network_quality_set(
  * @brief set the list of ie
  * @param ie a list of Exalt_Wireless_Network_IE*
  */
-void exalt_wireless_network_ie_set(
+EAPI void exalt_wireless_network_ie_set(
         Exalt_Wireless_Network *wn,
         Eina_List* ie);
 
 /**
  * @brief get the interface
  */
-Exalt_Wireless* exalt_wireless_network_iface_get(
+EAPI Exalt_Wireless* exalt_wireless_network_iface_get(
         Exalt_Wireless_Network *wn);
 
 /**
  * @brief get the MAC address
  */
-const char* exalt_wireless_network_address_get(
+EAPI const char* exalt_wireless_network_address_get(
         Exalt_Wireless_Network *wn);
 
 /**
  * @brief get the essid
  */
-const char* exalt_wireless_network_essid_get(
+EAPI const char* exalt_wireless_network_essid_get(
         Exalt_Wireless_Network *wn);
 
 /**
  * @brief get the mode
  */
-Exalt_Wireless_Network_Mode exalt_wireless_network_mode_get(
+EAPI Exalt_Wireless_Network_Mode exalt_wireless_network_mode_get(
         Exalt_Wireless_Network *wn);
 
 
@@ -175,27 +175,27 @@ Exalt_Wireless_Network_Mode exalt_wireless_network_mode_get(
 /**
  * @brief get if the wireless network is encrypted
  */
-int exalt_wireless_network_encryption_is(
+EAPI int exalt_wireless_network_encryption_is(
         Exalt_Wireless_Network *wn);
 
 /**
  * @brief get the description
  */
-const char* exalt_wireless_network_description_get(
+EAPI const char* exalt_wireless_network_description_get(
         Exalt_Wireless_Network *wn);
 
 
 /**
  * @brief get the quality
  */
-int exalt_wireless_network_quality_get(
+EAPI int exalt_wireless_network_quality_get(
         Exalt_Wireless_Network *wn);
 
 /**
  * @brief get the ie list
  * @return a list of Exalt_Wireless_Network_IE*
  */
-Eina_List* exalt_wireless_network_ie_get(
+EAPI Eina_List* exalt_wireless_network_ie_get(
         Exalt_Wireless_Network *wn);
 
 
@@ -203,28 +203,28 @@ Eina_List* exalt_wireless_network_ie_get(
 /**
  * @brief set the description
  */
-void exalt_wireless_network_ie_description_set(
+EAPI void exalt_wireless_network_ie_description_set(
         Exalt_Wireless_Network_IE *ie,
         const char* desc);
 
 /**
  * @brief set the wpa type
  */
-void exalt_wireless_network_ie_wpa_type_set(
+EAPI void exalt_wireless_network_ie_wpa_type_set(
         Exalt_Wireless_Network_IE *ie,
         Exalt_Wireless_Network_Wpa_Type wpa_type);
 
 /**
  * @brief set the group cypher
  */
-void exalt_wireless_network_ie_group_cypher_set(
+EAPI void exalt_wireless_network_ie_group_cypher_set(
         Exalt_Wireless_Network_IE *ie,
         Exalt_Wireless_Network_Cypher_Name group_cypher);
 
 /**
  * @brief set a pairwise cypher
  */
-void exalt_wireless_network_ie_pairwise_cypher_set(
+EAPI void exalt_wireless_network_ie_pairwise_cypher_set(
         Exalt_Wireless_Network_IE *ie,
         Exalt_Wireless_Network_Cypher_Name pairwise_cypher,
         int i);
@@ -232,14 +232,14 @@ void exalt_wireless_network_ie_pairwise_cypher_set(
 /**
  * @brief set the number of pairwise cypher
  */
-void exalt_wireless_network_ie_pairwise_cypher_number_set(
+EAPI void exalt_wireless_network_ie_pairwise_cypher_number_set(
         Exalt_Wireless_Network_IE *ie,
         int number);
 
 /**
  * @brief set a authentification suite
  */
-void exalt_wireless_network_ie_auth_suites_set(
+EAPI void exalt_wireless_network_ie_auth_suites_set(
         Exalt_Wireless_Network_IE *ie,
         Exalt_Wireless_Network_Auth_Suites auth_suites,
         int i);
@@ -247,14 +247,14 @@ void exalt_wireless_network_ie_auth_suites_set(
 /**
  * @brief set the number of auth suites
  */
-void exalt_wireless_network_ie_auth_suites_number_set(
+EAPI void exalt_wireless_network_ie_auth_suites_number_set(
         Exalt_Wireless_Network_IE *ie,
         int number);
 
 /**
  * @brief retrieve the ie description
  */
-const char* exalt_wireless_network_ie_description_get(
+EAPI const char* exalt_wireless_network_ie_description_get(
         Exalt_Wireless_Network_IE *ie);
 
 
@@ -262,87 +262,87 @@ const char* exalt_wireless_network_ie_description_get(
 /**
  * @brief retrieve the wpa type
  */
-Exalt_Wireless_Network_Wpa_Type exalt_wireless_network_ie_wpa_type_get(
+EAPI Exalt_Wireless_Network_Wpa_Type exalt_wireless_network_ie_wpa_type_get(
         Exalt_Wireless_Network_IE *ie);
 
 /**
  * @brief retrieve group cypher
  */
-Exalt_Wireless_Network_Cypher_Name exalt_wireless_network_ie_group_cypher_get(
+EAPI Exalt_Wireless_Network_Cypher_Name exalt_wireless_network_ie_group_cypher_get(
         Exalt_Wireless_Network_IE *ie);
 
 /**
  * @brief retrieve a pairwise cypher
  */
-Exalt_Wireless_Network_Cypher_Name exalt_wireless_network_ie_pairwise_cypher_get(
+EAPI Exalt_Wireless_Network_Cypher_Name exalt_wireless_network_ie_pairwise_cypher_get(
         Exalt_Wireless_Network_IE *ie,
         int i);
 
 /**
  * @brief retrieve the number of pairwise cypher
  */
-int exalt_wireless_network_ie_pairwise_cypher_number_get(
+EAPI int exalt_wireless_network_ie_pairwise_cypher_number_get(
         Exalt_Wireless_Network_IE *ie);
 
 /**
  * @brief retrieve a auth suites
  */
-Exalt_Wireless_Network_Auth_Suites exalt_wireless_network_ie_auth_suites_get(
+EAPI Exalt_Wireless_Network_Auth_Suites exalt_wireless_network_ie_auth_suites_get(
         Exalt_Wireless_Network_IE *ie,
         int i);
 
 /**
  * @brief retrieve the number of auth suites
  */
-int exalt_wireless_network_ie_auth_suites_number_get(
+EAPI int exalt_wireless_network_ie_auth_suites_number_get(
         Exalt_Wireless_Network_IE *ie);
 
 /**
  * @brief get a string from a mode id
  */
-const char* exalt_wireless_network_name_from_mode_id(
+EAPI const char* exalt_wireless_network_name_from_mode_id(
         int id);
 
 /*
  * @brief get a string from a mode
  */
-const char* exalt_wireless_network_name_from_mode(
+EAPI const char* exalt_wireless_network_name_from_mode(
         Exalt_Wireless_Network_Mode mode);
 
 /*
  * @brief get a mode from a mode id
  */
-Exalt_Wireless_Network_Mode exalt_wireless_network_mode_from_mode_id(
+EAPI Exalt_Wireless_Network_Mode exalt_wireless_network_mode_from_mode_id(
         int id);
 
 /*
  * @brief get a string from a wpa type
  */
-const char* exalt_wireless_network_name_from_wpa_type(
+EAPI const char* exalt_wireless_network_name_from_wpa_type(
         Exalt_Wireless_Network_Wpa_Type wpa_type);
 
 /*
  * @brief get a string from a cypher name
  */
-const char* exalt_wireless_network_name_from_cypher_name(
+EAPI const char* exalt_wireless_network_name_from_cypher_name(
         Exalt_Wireless_Network_Cypher_Name cypher_name);
 
 /*
  * @brief get a string from a authentification suites
  */
-const char* exalt_wireless_network_name_from_auth_suites(
+EAPI const char* exalt_wireless_network_name_from_auth_suites(
         Exalt_Wireless_Network_Auth_Suites auth_suites);
 
 /*
  * @brief get a string from a security mode
  */
-const char* exalt_wireless_network_name_from_security(
+EAPI const char* exalt_wireless_network_name_from_security(
         Exalt_Wireless_Network_Security security);
 
 
-Eet_Data_Descriptor * exalt_wireless_network_ie_edd_new();
+EAPI Eet_Data_Descriptor * exalt_wireless_network_ie_edd_new();
 
-Eet_Data_Descriptor * exalt_wireless_network_edd_new(Eet_Data_Descriptor* edd_ie);
+EAPI Eet_Data_Descriptor * exalt_wireless_network_edd_new(Eet_Data_Descriptor* edd_ie);
 
 /** @} */
 

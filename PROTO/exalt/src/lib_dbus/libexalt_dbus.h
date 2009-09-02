@@ -66,19 +66,19 @@ typedef void (exalt_response_notify_cb) (Exalt_DBus_Response* response, void* us
 
 
 
-int exalt_dbus_init();
-Exalt_DBus_Conn*  exalt_dbus_connect();
+EAPI int exalt_dbus_init();
+EAPI Exalt_DBus_Conn*  exalt_dbus_connect();
 
-int exalt_dbus_exalt_service_exists(Exalt_DBus_Conn *conn);
-int exalt_dbus_service_exists(Exalt_DBus_Conn *conn, const char* service_name);
+EAPI int exalt_dbus_exalt_service_exists(Exalt_DBus_Conn *conn);
+EAPI int exalt_dbus_service_exists(Exalt_DBus_Conn *conn, const char* service_name);
 
 
-void exalt_dbus_free(Exalt_DBus_Conn** conn);
-void exalt_dbus_shutdown();
+EAPI void exalt_dbus_free(Exalt_DBus_Conn** conn);
+EAPI void exalt_dbus_shutdown();
 
-int exalt_dbus_notify_set(Exalt_DBus_Conn* conn, exalt_notify_cb* cb, void* user_data);
-int exalt_dbus_scan_notify_set(Exalt_DBus_Conn* conn, exalt_scan_notify_cb* cb, void* user_data);
-void exalt_dbus_response_notify_set(Exalt_DBus_Conn* conn, exalt_response_notify_cb* cb, void* user_data);
+EAPI int exalt_dbus_notify_set(Exalt_DBus_Conn* conn, exalt_notify_cb* cb, void* user_data);
+EAPI int exalt_dbus_scan_notify_set(Exalt_DBus_Conn* conn, exalt_scan_notify_cb* cb, void* user_data);
+EAPI void exalt_dbus_response_notify_set(Exalt_DBus_Conn* conn, exalt_response_notify_cb* cb, void* user_data);
 
 
 /** @} */
