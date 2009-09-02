@@ -17,6 +17,8 @@
  */
 
 #include "daemon.h"
+#include <Ecore_Getopt.h>
+#include "config.h"
 
 #define EXALT_LOG_DOMAIN exaltd_log_domain
 
@@ -32,6 +34,26 @@ Eina_List *dbus_object_list = NULL;
 //elt : Exalt_Ethernet *
 Eina_List *iface_wireless_search_favorite = NULL;
 
+
+static const Ecore_Getopt options = {
+    "exalt",
+    NULL,
+    VERSION,
+    "(C) 2009 Exalt, see AUTHORS.",
+    "LGPL with advertisement, see COPYING",
+    "Launch exalt, a network manager daemon\n\n",
+        1,
+        {
+            ECORE_GETOPT_VERSION('V', "version"),
+            ECORE_GETOPT_COPYRIGHT('R', "copyright"),
+            ECORE_GETOPT_LICENSE('L', "license"),
+            ECORE_GETOPT_STORE_BOOL('d', "nodaemon", "Do not run the daemon in the background"),
+            ECORE_GETOPT_STORE_STR('l', "logfile", "Specify the log file. Default : "EXALTD_LOGFILE),
+            ECORE_GETOPT_STORE_STR('p', "pidfile", "Specify the pid file. Default : "EXALTD_PIDFILE),
+            ECORE_GETOPT_HELP('h', "help"),
+            ECORE_GETOPT_SENTINEL
+        }
+};
 
 void setup_del_iface(E_DBus_Connection *conn __UNUSED__,Exalt_Ethernet* eth)
 {
@@ -139,48 +161,55 @@ int setup(E_DBus_Connection *conn)
 
 int main(int argc, char** argv)
 {
-    int daemon = 1;
+    unsigned char nodaemon = 0;
+    unsigned char exit_option = 0;
+    char *logfile = EXALTD_LOGFILE;
+    char *pidfile = EXALTD_PIDFILE;
     FILE *fp;
     int size;
     char buf[PATH_MAX];
 
-    argc--;
-    argv++;
-    while(argc)
-    {
-        if(strcmp(*argv, "--nodaemon")==0)
-        {
-            daemon = 0;
-        }
-        else if(strcmp(*argv,"--help")==0)
-        {
-            printf("Usage exalt-daemon [OPTION]\n" \
-                    "--nodaemon    doesn't run as a daemon\n" \
-                    "--help        display this help and exit\n");
-            exit(1);
-        }
-        argc--;
-        argv++;
-    }
-
     e_dbus_init();
     ecore_init();
     exalt_init();
-
     exaltd_log_domain = eina_log_domain_register("EXALT-DAEMON",EINA_COLOR_RED);
 
-
-    if(daemon)
+    //ecore_getopt
+    Ecore_Getopt_Value values[] = {
+        ECORE_GETOPT_VALUE_BOOL(exit_option),
+        ECORE_GETOPT_VALUE_BOOL(exit_option),
+        ECORE_GETOPT_VALUE_BOOL(exit_option),
+        ECORE_GETOPT_VALUE_BOOL(nodaemon),
+        ECORE_GETOPT_VALUE_STR(logfile),
+        ECORE_GETOPT_VALUE_STR(pidfile),
+        ECORE_GETOPT_VALUE_BOOL(exit_option),
+    };
+    ecore_app_args_set(argc, (const char **) argv);
+    int nonargs = ecore_getopt_parse(&options, values, argc, argv);
+    if (nonargs < 0)
+        return 1;
+    else if (nonargs != argc)
     {
-        //redirect stderr and stdout >> /var/log/exald.log
-        remove(EXALTD_LOGFILE);
-        if ((fp = fopen(EXALTD_LOGFILE, "w+")))
+        fputs("Invalid non-option argument", stderr);
+        ecore_getopt_help(stderr, &options);
+        return 1;
+    }
+
+    if(exit_option)
+        return 0;
+    //
+
+    if(!nodaemon)
+    {
+        //redirect stderr and stdout >> logfile
+        remove(logfile);
+        if ((fp = fopen(logfile, "w+")))
         {
             stderr = fp;
             stdout = fp;
         }
         else
-            EXALT_LOG_WARN("Can not create the log file: %s\n",EXALTD_LOGFILE);
+            EXALT_LOG_WARN("Can not create the log file: %s\n",logfile);
     }
 
     if(!exalt_admin_is())
@@ -208,7 +237,7 @@ int main(int argc, char** argv)
 
     exalt_main();
 
-    if(daemon)
+    if(!nodaemon)
     {
         //if we need waiting 1 or more card
         waiting_iface_list = NULL;
@@ -237,14 +266,14 @@ int main(int argc, char** argv)
 
         //create the pid file
         size = snprintf(buf, PATH_MAX, "%d\n", getpid());
-        if ((fp = fopen(EXALTD_PIDFILE, "w+")))
+        if ((fp = fopen(pidfile, "w+")))
         {
             int ret;
             ret = fwrite(buf, sizeof(char), size, fp);
             fclose(fp);
         }
         else
-            EXALT_LOG_WARN("Can not create the pid file: %s\n", EXALTD_PIDFILE);
+            EXALT_LOG_WARN("Can not create the pid file: %s\n", pidfile);
     }
 
     ecore_main_loop_begin();
