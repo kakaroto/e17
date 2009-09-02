@@ -5,8 +5,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Exalt-client module\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2009-09-01 09:36+0400\n"
-"PO-Revision-Date: 2009-09-01 12:56+0400\n"
+"POT-Creation-Date: 2009-09-02 09:22+0400\n"
+"PO-Revision-Date: 2009-09-02 09:40+0400\n"
 "Last-Translator: batden <batden@orange.fr>\n"
 "Language-Team: French <Enlightenment i18n French>\n"
 "MIME-Version: 1.0\n"
@@ -87,28 +87,32 @@ msgstr "Configuration"
 msgid "DNS configuration"
 msgstr "Configuration DNS"
 
-#: src/popup.c:49
+#: src/popup.c:47
+msgid "Network configuration"
+msgstr "Configuration du réseau"
+
+#: src/popup.c:53
 msgid "Modem dialer"
 msgstr "Modem numéroteur"
 
-#: src/popup.c:53
+#: src/popup.c:57
 msgid "Mobile Phone (3G)"
 msgstr "Téléphone mobile (3G)"
 
-#: src/popup.c:214
+#: src/popup.c:226
 msgid "No IP Address"
 msgstr "Aucune adresse IP"
 
-#: src/popup.c:218 src/wired_dialog.c:42
+#: src/popup.c:230 src/wired_dialog.c:42
 msgid "Wired interface"
 msgstr "Interface câblée"
 
-#: src/popup.c:221
+#: src/popup.c:233
 msgid "Wireless interface"
 msgstr "Interface sans fil"
 
 #: src/wired_dialog.c:36
-msgid "Wired Connection Settings"
+msgid "Wired Configuration Settings"
 msgstr "Paramétrage de la connexion câblée"
 
 #: src/wired_dialog.c:51 src/network_dialog.c:73 src/wireless_dialog.c:36
@@ -143,20 +147,20 @@ msgstr "Adresse passerelle: "
 msgid "Command: "
 msgstr "Commande: "
 
-#: src/wired_dialog.c:96 src/network_dialog.c:113 src/wireless_dialog.c:52
+#: src/wired_dialog.c:96 src/network_dialog.c:117 src/wireless_dialog.c:52
 msgid "OK"
 msgstr "OK"
 
-#: src/wired_dialog.c:97 src/network_dialog.c:114
+#: src/wired_dialog.c:97 src/network_dialog.c:118
 msgid "Apply"
 msgstr "Appliquer"
 
-#: src/wired_dialog.c:98 src/network_dialog.c:115
+#: src/wired_dialog.c:98 src/network_dialog.c:119
 msgid "Cancel"
 msgstr "Annuler"
 
 #: src/network_dialog.c:35
-msgid "Wireless Connection Settings"
+msgid "Wireless Configuration Settings"
 msgstr "Paramétrage de la connexion sans fil"
 
 #: src/network_dialog.c:43
@@ -179,35 +183,39 @@ msgstr "Qualité:"
 msgid "Wireless interface configuration"
 msgstr "Configuration de l'interface sans fil"
 
-#: src/network_dialog.c:214
+#: src/network_dialog.c:110
+msgid "Add to favoris: "
+msgstr "Ajouter aux favoris:"
+
+#: src/network_dialog.c:218
 msgid "WEP information"
 msgstr "Information WEP"
 
-#: src/network_dialog.c:216
+#: src/network_dialog.c:220
 msgid "Description: "
 msgstr "Description:"
 
-#: src/network_dialog.c:218
+#: src/network_dialog.c:222
 msgid "WEP"
 msgstr "WEP"
 
-#: src/network_dialog.c:234
+#: src/network_dialog.c:238
 msgid "Hexadecimal Key"
 msgstr "Clé hexadécimale"
 
-#: src/network_dialog.c:238
+#: src/network_dialog.c:242
 msgid "ASCII Key"
 msgstr "Clé ASCII"
 
-#: src/network_dialog.c:244 src/network_dialog.c:331
+#: src/network_dialog.c:248 src/network_dialog.c:335
 msgid "Password: "
 msgstr "Mot de passe:"
 
-#: src/network_dialog.c:267
+#: src/network_dialog.c:271
 msgid "WPA information"
 msgstr "Information WPA"
 
-#: src/network_dialog.c:322
+#: src/network_dialog.c:326
 msgid "Login: "
 msgstr "Login: "
 
@@ -237,7 +245,7 @@ msgstr "Fermer"
 
 #: src/wireless_dialog.c:21
 msgid "Wireless Interface Settings"
-msgstr "Paramétrage de la connexion sans fil"
+msgstr "Paramétrage de l'interface sans fil"
 
 #: src/wireless_dialog.c:27
 msgid "wireless interface"
