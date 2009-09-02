@@ -1,20 +1,3 @@
-/*
- * =====================================================================================
- *
- *       Filename:  exalt_dbus_dns.h
- *
- *    Description:  manage the dns list
- *
- *        Version:  1.0
- *        Created:  09/21/2007 09:02:16 PM CEST
- *       Revision:  none
- *       Compiler:  gcc
- *
- *         Author:   (Watchwolf), Atton Jonathan <watchwolf@watchwolf.fr>
- *        Company:
- *
- * =====================================================================================
- */
 
 /** @file exalt_dbus_dns.h */
 
@@ -25,7 +8,7 @@
 
 /**
  * @defgroup DNS
- * @brief configure your DNS
+ * @brief The purpose of these methods is to manage the list of DNS manually. Generally the DNS are get from a DHCP but in some cases we need to add or delete a DNS manually. These methods return a response which contains an error if the operation failed or success.  Some responses can have extra data as the list of DNS for exalt_dbus_dns_list_get().
  * @ingroup Exalt_DBus
  * @{
  */

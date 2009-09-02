@@ -26,7 +26,9 @@
 
 
 /**
- * @brief Returns the id of the message.
+ * @brief Returns the request id of the question.
+ * @param response the response
+ * @return Returns the id
  */
 int exalt_dbus_response_msg_id_get(Exalt_DBus_Response *response)
 {
@@ -34,7 +36,9 @@ int exalt_dbus_response_msg_id_get(Exalt_DBus_Response *response)
 }
 
 /**
- * @brief Returns true if a errors occurs
+ * @brief Returns true if an errors occurs
+ * @param response the response
+ * @return Returns 0 or 1
  */
 int exalt_dbus_response_error_is(Exalt_DBus_Response *response)
 {
@@ -43,6 +47,8 @@ int exalt_dbus_response_error_is(Exalt_DBus_Response *response)
 
 /**
  * @brief Returns the id of the error
+ * @param response the response
+ * @return Returns the id
  */
 int exalt_dbus_response_error_id_get(Exalt_DBus_Response* response)
 {
@@ -56,8 +62,10 @@ int exalt_dbus_response_error_id_get(Exalt_DBus_Response* response)
 
 /**
  * @brief Returns the error as a string
+ * @param response the response
+ * @return Returns the description of the error
  */
-char* exalt_dbus_response_error_msg_get(Exalt_DBus_Response* response)
+const char* exalt_dbus_response_error_msg_get(Exalt_DBus_Response* response)
 {
     if(response->is_error)
     {
@@ -68,7 +76,9 @@ char* exalt_dbus_response_error_msg_get(Exalt_DBus_Response* response)
 }
 
 /**
- * @brief Returns the type of the response (IP_GET ....)
+ * @brief Returns the type of the response (EXALT_DBUS_RESPONSE_IFACE_IP_GET ...)
+ * @param response the response
+ * @return Returns the type
  */
 Exalt_DBus_Response_Type exalt_dbus_response_type_get(Exalt_DBus_Response* response)
 {
@@ -77,6 +87,8 @@ Exalt_DBus_Response_Type exalt_dbus_response_type_get(Exalt_DBus_Response* respo
 
 /**
  * @brief Returns an Eina_List if the response is a list (for example if the question is exalt_dbus_eth_list_get())
+ * @param response the response
+ * @return Returns the list
  */
 Eina_List* exalt_dbus_response_list_get(Exalt_DBus_Response* response)
 {
@@ -94,43 +106,11 @@ Eina_List* exalt_dbus_response_list_get(Exalt_DBus_Response* response)
 }
 
 /**
- * @brief Returns an address if the response is an address (for example if the question is exalt_dbus_eth_ip_get())
+ * @brief Returns the interface about the question was (for example eth0 if you ask the IP address of the interface eth0)
+ * @param response the response
+ * @return Returns the interface name
  */
-char* exalt_dbus_response_address_get(Exalt_DBus_Response* response)
-{
-    switch(response->type)
-    {
-        case EXALT_DBUS_RESPONSE_IFACE_IP_GET:
-        case EXALT_DBUS_RESPONSE_IFACE_NETMASK_GET:
-        case EXALT_DBUS_RESPONSE_IFACE_GATEWAY_GET:
-            return response->address;
-        default:
-            print_error(__FILE__,__func__,__LINE__,"This type of response doesn't has an address\n");
-            return NULL;
-    }
-}
-
-/**
- * @brief Returns a simple string if the response is a string ( for example if the question is exalt_dbus_eth_command_get())
- */
-char* exalt_dbus_response_string_get(Exalt_DBus_Response* response)
-{
-    switch(response->type)
-    {
-        case EXALT_DBUS_RESPONSE_IFACE_CMD_GET:
-        case EXALT_DBUS_RESPONSE_WIRELESS_ESSID_GET:
-        case EXALT_DBUS_RESPONSE_WIRELESS_WPASUPPLICANT_DRIVER_GET:
-            return response->string;
-        default:
-            print_error(__FILE__,__func__,__LINE__,"This type of response doesn't has a simple string\n");
-            return NULL;
-    }
-}
-
-/**
- * @brief Returns the interface about the question was (force example eth0 if you ask the ip of the interface eth0)
- */
-char* exalt_dbus_response_iface_get(Exalt_DBus_Response* response)
+const char* exalt_dbus_response_iface_get(Exalt_DBus_Response* response)
 {
     switch(response->type)
     {
@@ -157,8 +137,50 @@ char* exalt_dbus_response_iface_get(Exalt_DBus_Response* response)
     }
 }
 
+
+
+/**
+ * @brief Returns an address if the response is an address (for example if the question is exalt_dbus_eth_ip_get())
+ * @param response the response
+ * @return Returns the address
+ */
+const char* exalt_dbus_response_address_get(Exalt_DBus_Response* response)
+{
+    switch(response->type)
+    {
+        case EXALT_DBUS_RESPONSE_IFACE_IP_GET:
+        case EXALT_DBUS_RESPONSE_IFACE_NETMASK_GET:
+        case EXALT_DBUS_RESPONSE_IFACE_GATEWAY_GET:
+            return response->address;
+        default:
+            print_error(__FILE__,__func__,__LINE__,"This type of response doesn't has an address\n");
+            return NULL;
+    }
+}
+
+/**
+ * @brief Returns a simple string if the response is a string ( for example if the question is exalt_dbus_eth_command_get())
+ * @param response the response
+ * @return Returns the string
+ */
+const char* exalt_dbus_response_string_get(Exalt_DBus_Response* response)
+{
+    switch(response->type)
+    {
+        case EXALT_DBUS_RESPONSE_IFACE_CMD_GET:
+        case EXALT_DBUS_RESPONSE_WIRELESS_ESSID_GET:
+        case EXALT_DBUS_RESPONSE_WIRELESS_WPASUPPLICANT_DRIVER_GET:
+            return response->string;
+        default:
+            print_error(__FILE__,__func__,__LINE__,"This type of response doesn't has a simple string\n");
+            return NULL;
+    }
+}
+
 /**
  * @brief Returns a boolean if the response is a boolean (for example if the question is exalt_dbus_eth_up_is())
+ * @param response the response
+ * @return Returns the boolean
  */
 int exalt_dbus_response_is_get(Exalt_DBus_Response* response)
 {
@@ -178,7 +200,9 @@ int exalt_dbus_response_is_get(Exalt_DBus_Response* response)
 }
 
 /**
- * @brief Returns a boolean the network configuration
+ * @brief Returns a the network configuration (for example if the question is exalt_dbus_network_configuration_get())
+ * @param response the response
+ * @return Returns the configuration
  */
 Exalt_Configuration *exalt_dbus_response_configuration_get(Exalt_DBus_Response* response)
 {

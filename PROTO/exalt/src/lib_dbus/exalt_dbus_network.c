@@ -1,3 +1,5 @@
+/** @file exalt_dbus_network.c */
+
 #include "exalt_dbus_network.h"
 #include "libexalt_dbus_private.h"
 
@@ -8,9 +10,18 @@ static void _exalt_dbus_network_favoris_set_cb(void *data, DBusMessage *msg, DBu
 static void _exalt_dbus_network_delete_cb(void *data, DBusMessage *msg, DBusError *error);
 
 /**
+ * @addtogroup Network
+ * @{
+ */
+
+
+
+/**
  * @brief Get the configuration of a wireless network
  * @param conn a Connection
  * @param essid the wireless network name
+ * @return Returns the request id
+ * @note the response will be EXALT_DBUS_RESPONSE_NETWORK_CONFIGURATION_GET() and the data will be a configuration
  */
 int exalt_dbus_network_configuration_get(Exalt_DBus_Conn *conn, const char *essid)
 {
@@ -39,8 +50,10 @@ int exalt_dbus_network_configuration_get(Exalt_DBus_Conn *conn, const char *essi
 }
 
 /**
- * @brief Get the list of wireless network
+ * @brief Get the list of wireless network configuration saved
  * @param conn a Connection
+ * @return Returns the request id
+ * @note the response will be EXALT_DBUS_RESPONSE_NETWORK_LIST_GET() and the data will be a list of essid (char*)
  */
 int exalt_dbus_network_list_get(Exalt_DBus_Conn *conn)
 {
@@ -65,10 +78,12 @@ int exalt_dbus_network_list_get(Exalt_DBus_Conn *conn)
 
 
 /**
- * @brief Get the configuration of a wireless network
+ * @brief Set if a configuration is favorite or not
  * @param conn a Connection
  * @param essid the wireless network name
  * @param favoris 1 or 0
+ * @return Returns the request id
+ * @note the response will be EXALT_DBUS_RESPONSE_NETWORK_FAVORIS_SET() and no data will be set
  */
 int exalt_dbus_network_favoris_set(Exalt_DBus_Conn *conn, const char *essid, int favoris)
 {
@@ -103,6 +118,8 @@ int exalt_dbus_network_favoris_set(Exalt_DBus_Conn *conn, const char *essid, int
  * @brief Delete the configuration of a wireless network
  * @param conn a Connection
  * @param essid the wireless network name
+ * @return Returns the request id
+ * @note the response will be EXALT_DBUS_RESPONSE_NETWORK_DELETE() and no data will be set
  */
 int exalt_dbus_network_delete(Exalt_DBus_Conn *conn, const char *essid)
 {
@@ -129,6 +146,8 @@ int exalt_dbus_network_delete(Exalt_DBus_Conn *conn, const char *essid)
 
     return msg_id->id;
 }
+
+/** @} */
 
 
 static void _exalt_dbus_network_configuration_get_cb(void *data, DBusMessage *msg, DBusError *error)

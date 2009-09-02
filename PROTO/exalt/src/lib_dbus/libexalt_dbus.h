@@ -29,7 +29,7 @@
  * @defgroup Exalt_DBus
  * @brief Exalt_DBus library.
  * This library allows to communicate with the exalt daemon by using DBus
- * The source code of exalt_command can be use to understand how using Exalt_CBus.
+ * The source code of exalt_command can be used to understand how using Exalt_DBus.
  */
 
 /**
@@ -41,16 +41,16 @@
 
 /**
  * @brief An exalt dbus connection
- * Contains a DBus connection and the callback functions.
+ * Contains a DBus connection and the callbacks functions.
  * @structinfo
  */
 typedef struct _Exalt_DBus_Conn Exalt_DBus_Conn;
 
 
-/** type of the callback function used when an ip address change, a new interface is add ... */
+/** type of the callback function used to notify a change, for example if an IP address change. */
 typedef void (exalt_notify_cb) (char* eth, Exalt_Enum_Action action, void* user_data);
-/** type of the callback function used to return the result of a network scan
- * networks is a list of essid (char*)
+/** type of the callback function used to return the result of a network scan <br>
+ * networks is a list of Exalt_Wireless_Network*
  */
 typedef void (exalt_scan_notify_cb) (char* eth, Eina_List* networks, void* user_data);
 
@@ -61,7 +61,7 @@ typedef void (exalt_scan_notify_cb) (char* eth, Eina_List* networks, void* user_
 #include "exalt_dbus_dns.h"
 #include "exalt_dbus_response.h"
 
-/** type of the callback function used when we receive a response */
+/** type of the callback function used to return a response */
 typedef void (exalt_response_notify_cb) (Exalt_DBus_Response* response, void* user_data);
 
 

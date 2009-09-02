@@ -1,7 +1,7 @@
 ## Process this file with automake to produce Makefile.in
 
 MYAPPNAME=exalt-daemon
-SUBDIRS = src data
+SUBDIRS = src data doc
 
 MAINTAINERCLEANFILES = Makefile.in aclocal.m4 config.guess \
                        config.h.in config.h.in~ config.sub configure \
@@ -19,4 +19,14 @@ COPYING
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = exalt_dbus.pc exalt.pc
 ACLOCAL_AMFLAGS = -I m4
+
+
+.PHONY: doc
+
+# Documentation
+
+doc:
+	@echo "entering doc/"
+	make -C doc doc
+
 

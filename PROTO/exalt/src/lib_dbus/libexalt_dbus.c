@@ -22,19 +22,21 @@
 void _exalt_dbus_notify(void *data,DBusMessage *msg);
 void _exalt_dbus_scan_notify(void *data, DBusMessage *msg);
 
+int exalt_dbus_log_domain;
+
+static int init = 0;
+
+
+
 /**
  * @addtogroup General
  * @{
  */
 
-int exalt_dbus_log_domain;
-
-static int init = 0;
-
 /**
  * @brief Initialise the library
  * Don't forget to create a connection with Exalt_DBus_Connect() after
- * @return Returns 0 if failed (if the exalt's service doesn't exist), else 1
+ * @return Returns 0 if failed (if the exalt's service doesn't exist), else 1 or more
  */
 int exalt_dbus_init()
 {
@@ -51,6 +53,7 @@ int exalt_dbus_init()
 
 /**
  * @brief test if the exalt dbus service exists
+ * @param conn a connection
  * @return Returns 1 if success, else 0
  */
 int exalt_dbus_exalt_service_exists(Exalt_DBus_Conn *conn)
@@ -60,6 +63,7 @@ int exalt_dbus_exalt_service_exists(Exalt_DBus_Conn *conn)
 
 /**
  * @brief test if a dbus service exists
+ * @param conn a connection
  * @param service_name the name of the service
  * @return Returns 1 if succes, else 0
  */
@@ -120,7 +124,7 @@ Exalt_DBus_Conn* exalt_dbus_connect()
 }
 
 /**
- * @brief Free a exalt DBus connection
+ * @brief Free an exalt DBus connection
  * @param conn a connection
  */
 void exalt_dbus_free(Exalt_DBus_Conn** conn)
@@ -149,8 +153,8 @@ void exalt_dbus_shutdown()
 }
 
 /**
- * @brief set the callback function which will be called when an ip address change, an interface is add ...
- * See Exalt_Enum_Action for more information
+ * @brief set the callback function used to notify a change, for example if an IP address change. <br>
+ * See Exalt_Enum_Action for more information.
  * @param conn a connection
  * @param cb the callback function
  * @param user_data the user data
@@ -179,7 +183,7 @@ int exalt_dbus_notify_set(Exalt_DBus_Conn* conn, exalt_notify_cb *cb, void* user
 }
 
 /**
- * @brief set the callback function which will be call to return the result of a network scan
+ * @brief set the callback function used to return the result of a network scan
  * @param conn
  * @param cb the callback function
  * @param user_data the user data
@@ -208,7 +212,7 @@ int exalt_dbus_scan_notify_set(Exalt_DBus_Conn* conn, exalt_scan_notify_cb *cb, 
 }
 
 /**
- * @brief set the callback function which will be call to return a response
+ * @brief set the callback function used to return a response
  * @param conn
  * @param cb the callback function
  * @param user_data the user data

@@ -1,21 +1,3 @@
-/*
- * =====================================================================================
- *
- *       Filename:  exalt_dbus_dns.c
- *
- *    Description:  manage the dns list
- *
- *        Version:  1.0
- *        Created:  09/21/2007 09:03:33 PM CEST
- *       Revision:  none
- *       Compiler:  gcc
- *
- *         Author:   (Watchwolf), Atton Jonathan <watchwolf@watchwolf.fr>
- *        Company:
- *
- * =====================================================================================
- */
-
 /** @file exalt_dbus_dns.c */
 
 #include "exalt_dbus_dns.h"
@@ -38,7 +20,8 @@ void _exalt_dbus_dns_get_list_cb(void *data, DBusMessage *msg, DBusError *error)
 /**
  * @brief get the DNS list
  * @param conn a connection
- * @return Returns 1 if success, else 0
+ * @return Returns the request id
+ * @note the response will be EXALT_DBUS_RESPONSE_DNS_LIST_GET() and the data will be a list of DNS (char*)
  */
 int exalt_dbus_dns_list_get(Exalt_DBus_Conn* conn)
 {
@@ -65,7 +48,8 @@ int exalt_dbus_dns_list_get(Exalt_DBus_Conn* conn)
  * @brief Add a new DNS
  * @param conn a connection
  * @param dns the new DNS ( a valid ip address)
- * @return Returns 1 if sucess, else 0
+ * @return Returns the request id
+ * @note the response will be EXALT_DBUS_RESPONSE_DNS_ADD() and no data will be set
  */
 int exalt_dbus_dns_add(Exalt_DBus_Conn* conn, const char* dns)
 {
@@ -95,7 +79,8 @@ int exalt_dbus_dns_add(Exalt_DBus_Conn* conn, const char* dns)
  * @brief Delete a DNS
  * @param conn a connection
  * @param dns a DNS ( a valid ip address)
- * @return Returns 1 if sucess, else 0
+ * @return Returns the request id
+ * @note the response will be EXALT_DBUS_RESPONSE_DNS_DEL() and no data will be set
  */
 int exalt_dbus_dns_delete(Exalt_DBus_Conn* conn, const char* dns)
 {
@@ -126,7 +111,8 @@ int exalt_dbus_dns_delete(Exalt_DBus_Conn* conn, const char* dns)
  * @param conn a connection
  * @param old_dns the old DNS (a valid ip address)
  * @param new_dns the new DNS (a valid ip address)
- * @return Returns 1 if sucess, else 0
+ * @return the request id
+ * @note the response will be EXALT_DBUS_RESPONSE_DNS_REPLACE() and no data will be set
  */
 int exalt_dbus_dns_replace(Exalt_DBus_Conn* conn, const char* old_dns, const char* new_dns)
 {

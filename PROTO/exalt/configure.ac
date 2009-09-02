@@ -29,6 +29,9 @@ AC_C_CONST
 AM_ENABLE_SHARED
 AM_PROG_LIBTOOL
 
+# doxygen program for documentation building
+EFL_CHECK_DOXYGEN([build_doc="yes"], [build_doc="no"])
+
 # Find edje_cc
 PKG_CHECK_MODULES(EDJE, [edje >= 0.5.0])
 AC_ARG_WITH(edje-cc,
@@ -163,6 +166,7 @@ AC_CONFIG_FILES([
 
 AC_OUTPUT([
 Makefile
+doc/Makefile
 src/Makefile
 src/bin/Makefile
 src/lib/Makefile
@@ -195,6 +199,8 @@ echo
 echo "  dhcp support (only dhclient is supported)...: $have_dhcp ($dhcp)"
 echo "  wpa_supplicant support......................: $have_wpa_supplicant ($wpa_supplicant)"
 #echo "  vpnc support...................: not yet implemented"
+echo
+echo "  Documentation........: ${build_doc}"
 echo
 echo "  Installation Path..............: $prefix"
 echo

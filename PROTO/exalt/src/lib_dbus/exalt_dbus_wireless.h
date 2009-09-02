@@ -24,8 +24,8 @@
 #include <libexalt_dbus.h>
 
 /**
- * @defgroup Wireless_interface
- * @brief Functions specific to a wireless interface.
+ * @defgroup Wireless_Interface
+ * @brief Methods specific to a wireless interface.
  * @ingroup Exalt_DBus
  * @{
  */

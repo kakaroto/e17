@@ -1,21 +1,3 @@
-/*
- * =====================================================================================
- *
- *       Filename:  exalt_dbus_ethernet.c
- *
- *    Description:  all functions about a ethernet interface (no wireless)
- *
- *        Version:  1.0
- *        Created:  08/29/2007 02:19:12 PM CEST
- *       Revision:  none
- *       Compiler:  gcc
- *
- *         Author:   (Watchwolf), Atton Jonathan <watchwolf@watchwolf.fr>
- *        Company:
- *
- * =====================================================================================
- */
-
 /** @file exalt_dbus_ethernet.c */
 
 #include "exalt_dbus_ethernet.h"
@@ -38,107 +20,15 @@ void _exalt_dbus_eth_cmd_set_cb(void *data, DBusMessage *msg, DBusError *error);
 void _exalt_dbus_eth_all_disconnected_is_cb(void *data, DBusMessage *msg, DBusError *error);
 
 /**
- * @addtogroup Ethernet_interface
+ * @addtogroup Ethernet_Interface
  * @{
  */
 
 /**
- * @brief Get the ip address of the interface eth
- * @param conn a connection
- * @param eth the interface name (eth0, ath32 ...)
- * @return Returns the ip address
- */
-int exalt_dbus_eth_ip_get(Exalt_DBus_Conn* conn, const char* eth)
-{
-    DBusMessage *msg;
-    char path[PATH_MAX];
-    char interface[PATH_MAX];
-    Exalt_DBus_Msg_Id *msg_id= malloc(sizeof(Exalt_DBus_Msg_Id));
-
-    EXALT_ASSERT_RETURN(conn!=NULL);
-    EXALT_ASSERT_RETURN(eth!=NULL);
-
-    snprintf(path,PATH_MAX,"%s/%s",EXALTD_PATH_IFACE,eth);
-    snprintf(interface,PATH_MAX,"%s.%s",EXALTD_INTERFACE_IFACE,eth);
-    msg = exalt_dbus_iface_call_new("ip_get",path,interface);
-
-
-    msg_id->id = exalt_dbus_msg_id_next(conn);
-    msg_id->conn = conn;
-    EXALT_ASSERT_CUSTOM_RET(e_dbus_message_send (conn->e_conn, msg, _exalt_dbus_eth_ip_get_cb,30,msg_id),
-            dbus_message_unref(msg); return 0);
-
-    dbus_message_unref(msg);
-
-    return msg_id->id;
-}
-
-
-/**
- * @brief Get the netmask address of the interface eth
- * @param conn a connection
- * @param eth the interface name (eth0, ath32 ...)
- * @return Returns the netmask address
- */
-int exalt_dbus_eth_netmask_get(Exalt_DBus_Conn* conn, const char* eth)
-{
-    DBusMessage *msg;
-    char path[PATH_MAX];
-    char interface[PATH_MAX];
-    Exalt_DBus_Msg_Id *msg_id= malloc(sizeof(Exalt_DBus_Msg_Id));
-
-    EXALT_ASSERT_RETURN(conn!=NULL);
-    EXALT_ASSERT_RETURN(eth!=NULL);
-
-    snprintf(path,PATH_MAX,"%s/%s",EXALTD_PATH_IFACE,eth);
-    snprintf(interface,PATH_MAX,"%s.%s",EXALTD_INTERFACE_IFACE,eth);
-    msg = exalt_dbus_iface_call_new("netmask_get",path,interface);
-
-    msg_id->id = exalt_dbus_msg_id_next(conn);
-    msg_id->conn = conn;
-    EXALT_ASSERT_CUSTOM_RET(e_dbus_message_send (conn->e_conn, msg, _exalt_dbus_eth_netmask_get_cb,30,msg_id),
-            dbus_message_unref(msg); return 0);
-
-    dbus_message_unref(msg);
-
-    return msg_id->id;
-}
-
-/**
- * @brief Get the gateway address of the interface eth
- * @param conn a connection
- * @param eth the interface name (eth0, ath32 ...)
- * @return Returns the gateway address
- */
-int exalt_dbus_eth_gateway_get(Exalt_DBus_Conn* conn, const char* eth)
-{
-    DBusMessage *msg;
-    char path[PATH_MAX];
-    char interface[PATH_MAX];
-    Exalt_DBus_Msg_Id *msg_id= malloc(sizeof(Exalt_DBus_Msg_Id));
-
-    EXALT_ASSERT_RETURN(conn!=NULL);
-    EXALT_ASSERT_RETURN(eth!=NULL);
-
-    snprintf(path,PATH_MAX,"%s/%s",EXALTD_PATH_IFACE,eth);
-    snprintf(interface,PATH_MAX,"%s.%s",EXALTD_INTERFACE_IFACE,eth);
-    msg = exalt_dbus_iface_call_new("gateway_get",path,interface);
-
-
-    msg_id->id = exalt_dbus_msg_id_next(conn);
-    msg_id->conn = conn;
-    EXALT_ASSERT_CUSTOM_RET(e_dbus_message_send (conn->e_conn, msg, _exalt_dbus_eth_gateway_get_cb,30,msg_id),
-            dbus_message_unref(msg); return 0);
-
-    dbus_message_unref(msg);
-
-    return msg_id->id;
-}
-
-/**
  * @brief Get the list of wired interface
  * @param conn a connection
- * @return Returns the list of interface name (char *)
+ * @return Returns the request id
+ * @note the response will be EXALT_DBUS_RESPONSE_IFACE_WIRED_LIST() and the data will be a list of interface (char*)
  */
 int exalt_dbus_eth_list_get(Exalt_DBus_Conn* conn)
 {
@@ -161,8 +51,10 @@ int exalt_dbus_eth_list_get(Exalt_DBus_Conn* conn)
 }
 
 /**
- * @brief Return yes if all interfaces are disconnected
+ * @brief Return true if all interfaces are disconnected
  * @param conn a connection
+ * @return Returns the request id
+ * @note the response will be EXALT_DBUS_RESPONSE_ALL_IFACES_DISCONNECTED_IS() and the data will be a boolean
  */
 int exalt_dbus_eth_all_disconnected_is(Exalt_DBus_Conn* conn)
 {
@@ -186,12 +78,13 @@ int exalt_dbus_eth_all_disconnected_is(Exalt_DBus_Conn* conn)
 
 
 /**
- * @brief test if an interface is a wireless interface
+ * @brief Get the IP address of the interface iface
  * @param conn a connection
- * @param eth the interface name
- * @return Returns 1 if yes, else 0
+ * @param iface the interface name (eth0, ath32 ...)
+ * @return Returns the request id
+ * @note the response will be EXALT_DBUS_RESPONSE_IFACE_IP_GET() and the data will be an IP address
  */
-int exalt_dbus_eth_wireless_is(Exalt_DBus_Conn* conn, const char* eth)
+int exalt_dbus_eth_ip_get(Exalt_DBus_Conn* conn, const char* iface)
 {
     DBusMessage *msg;
     char path[PATH_MAX];
@@ -199,10 +92,107 @@ int exalt_dbus_eth_wireless_is(Exalt_DBus_Conn* conn, const char* eth)
     Exalt_DBus_Msg_Id *msg_id= malloc(sizeof(Exalt_DBus_Msg_Id));
 
     EXALT_ASSERT_RETURN(conn!=NULL);
-    EXALT_ASSERT_RETURN(eth!=NULL);
+    EXALT_ASSERT_RETURN(iface!=NULL);
 
-    snprintf(path,PATH_MAX,"%s/%s",EXALTD_PATH_IFACE,eth);
-    snprintf(interface,PATH_MAX,"%s.%s",EXALTD_INTERFACE_IFACE,eth);
+    snprintf(path,PATH_MAX,"%s/%s",EXALTD_PATH_IFACE,iface);
+    snprintf(interface,PATH_MAX,"%s.%s",EXALTD_INTERFACE_IFACE,iface);
+    msg = exalt_dbus_iface_call_new("ip_get",path,interface);
+
+
+    msg_id->id = exalt_dbus_msg_id_next(conn);
+    msg_id->conn = conn;
+    EXALT_ASSERT_CUSTOM_RET(e_dbus_message_send (conn->e_conn, msg, _exalt_dbus_eth_ip_get_cb,30,msg_id),
+            dbus_message_unref(msg); return 0);
+
+    dbus_message_unref(msg);
+
+    return msg_id->id;
+}
+
+
+/**
+ * @brief Get the netmask address of the interface iface
+ * @param conn a connection
+ * @param iface the interface name (eth0, ath32 ...)
+ * @return Returns the request id
+ * @note the response will be EXALT_DBUS_RESPONSE_IFACE_NETMASK_GET() and the data will be an IP address
+ */
+int exalt_dbus_eth_netmask_get(Exalt_DBus_Conn* conn, const char* iface)
+{
+    DBusMessage *msg;
+    char path[PATH_MAX];
+    char interface[PATH_MAX];
+    Exalt_DBus_Msg_Id *msg_id= malloc(sizeof(Exalt_DBus_Msg_Id));
+
+    EXALT_ASSERT_RETURN(conn!=NULL);
+    EXALT_ASSERT_RETURN(iface!=NULL);
+
+    snprintf(path,PATH_MAX,"%s/%s",EXALTD_PATH_IFACE,iface);
+    snprintf(interface,PATH_MAX,"%s.%s",EXALTD_INTERFACE_IFACE,iface);
+    msg = exalt_dbus_iface_call_new("netmask_get",path,interface);
+
+    msg_id->id = exalt_dbus_msg_id_next(conn);
+    msg_id->conn = conn;
+    EXALT_ASSERT_CUSTOM_RET(e_dbus_message_send (conn->e_conn, msg, _exalt_dbus_eth_netmask_get_cb,30,msg_id),
+            dbus_message_unref(msg); return 0);
+
+    dbus_message_unref(msg);
+
+    return msg_id->id;
+}
+
+/**
+ * @brief Get the default gateway address of the interface iface
+ * @param conn a connection
+ * @param iface the interface name (eth0, ath32 ...)
+ * @return Returns the request id
+ * @note the response will be EXALT_DBUS_RESPONSE_IFACE_GATEWAY_GET() and the data will be an IP address
+ */
+int exalt_dbus_eth_gateway_get(Exalt_DBus_Conn* conn, const char* iface)
+{
+    DBusMessage *msg;
+    char path[PATH_MAX];
+    char interface[PATH_MAX];
+    Exalt_DBus_Msg_Id *msg_id= malloc(sizeof(Exalt_DBus_Msg_Id));
+
+    EXALT_ASSERT_RETURN(conn!=NULL);
+    EXALT_ASSERT_RETURN(iface!=NULL);
+
+    snprintf(path,PATH_MAX,"%s/%s",EXALTD_PATH_IFACE,iface);
+    snprintf(interface,PATH_MAX,"%s.%s",EXALTD_INTERFACE_IFACE,iface);
+    msg = exalt_dbus_iface_call_new("gateway_get",path,interface);
+
+
+    msg_id->id = exalt_dbus_msg_id_next(conn);
+    msg_id->conn = conn;
+    EXALT_ASSERT_CUSTOM_RET(e_dbus_message_send (conn->e_conn, msg, _exalt_dbus_eth_gateway_get_cb,30,msg_id),
+            dbus_message_unref(msg); return 0);
+
+    dbus_message_unref(msg);
+
+    return msg_id->id;
+}
+
+
+/**
+ * @brief test if an interface is a wireless interface
+ * @param conn a connection
+ * @param iface the interface name
+ * @return Returns the request id
+ * @note the response will be EXALT_DBUS_RESPONSE_IFACE_WIRELESS_IS() and the data will be a boolean
+ */
+int exalt_dbus_eth_wireless_is(Exalt_DBus_Conn* conn, const char* iface)
+{
+    DBusMessage *msg;
+    char path[PATH_MAX];
+    char interface[PATH_MAX];
+    Exalt_DBus_Msg_Id *msg_id= malloc(sizeof(Exalt_DBus_Msg_Id));
+
+    EXALT_ASSERT_RETURN(conn!=NULL);
+    EXALT_ASSERT_RETURN(iface!=NULL);
+
+    snprintf(path,PATH_MAX,"%s/%s",EXALTD_PATH_IFACE,iface);
+    snprintf(interface,PATH_MAX,"%s.%s",EXALTD_INTERFACE_IFACE,iface);
     msg = exalt_dbus_iface_call_new("wireless_is",path,interface);
 
 
@@ -221,10 +211,11 @@ int exalt_dbus_eth_wireless_is(Exalt_DBus_Conn* conn, const char* eth)
 /**
  * @brief test if an interface is up/activate
  * @param conn a connection
- * @param eth the interface name
- * @return Returns 1 if yes, else 0 the interface is down
+ * @param iface the interface name
+ * @return Returns the request id
+ * @note the response will be EXALT_DBUS_RESPONSE_IFACE_UP_IS() and the data will be a boolean
  */
-int exalt_dbus_eth_up_is(Exalt_DBus_Conn* conn, const char* eth)
+int exalt_dbus_eth_up_is(Exalt_DBus_Conn* conn, const char* iface)
 {
     DBusMessage *msg;
     char path[PATH_MAX];
@@ -232,10 +223,10 @@ int exalt_dbus_eth_up_is(Exalt_DBus_Conn* conn, const char* eth)
     Exalt_DBus_Msg_Id *msg_id= malloc(sizeof(Exalt_DBus_Msg_Id));
 
     EXALT_ASSERT_RETURN(conn!=NULL);
-    EXALT_ASSERT_RETURN(eth!=NULL);
+    EXALT_ASSERT_RETURN(iface!=NULL);
 
-    snprintf(path,PATH_MAX,"%s/%s",EXALTD_PATH_IFACE,eth);
-    snprintf(interface,PATH_MAX,"%s.%s",EXALTD_INTERFACE_IFACE,eth);
+    snprintf(path,PATH_MAX,"%s/%s",EXALTD_PATH_IFACE,iface);
+    snprintf(interface,PATH_MAX,"%s.%s",EXALTD_INTERFACE_IFACE,iface);
     msg = exalt_dbus_iface_call_new("up_is",path,interface);
 
 
@@ -251,12 +242,13 @@ int exalt_dbus_eth_up_is(Exalt_DBus_Conn* conn, const char* eth)
 }
 
 /**
- * @brief test if an interface use the dhcp mode (instead of static mode)
+ * @brief Test if an interface use the dhcp mode (instead of static mode)
  * @param conn a connection
- * @param eth the interface name
- * @return Returns 1 if yes, else 0 the interface use the static mode
+ * @param iface the interface name
+ * @return Returns the request id
+ * @note the response will be EXALT_DBUS_RESPONSE_IFACE_DHCP_IS() and the data will be a boolean
  */
-int exalt_dbus_eth_dhcp_is(Exalt_DBus_Conn* conn, const char* eth)
+int exalt_dbus_eth_dhcp_is(Exalt_DBus_Conn* conn, const char* iface)
 {
     DBusMessage *msg;
     char path[PATH_MAX];
@@ -264,10 +256,10 @@ int exalt_dbus_eth_dhcp_is(Exalt_DBus_Conn* conn, const char* eth)
     Exalt_DBus_Msg_Id *msg_id= malloc(sizeof(Exalt_DBus_Msg_Id));
 
     EXALT_ASSERT_RETURN(conn!=NULL);
-    EXALT_ASSERT_RETURN(eth!=NULL);
+    EXALT_ASSERT_RETURN(iface!=NULL);
 
-    snprintf(path,PATH_MAX,"%s/%s",EXALTD_PATH_IFACE,eth);
-    snprintf(interface,PATH_MAX,"%s.%s",EXALTD_INTERFACE_IFACE,eth);
+    snprintf(path,PATH_MAX,"%s/%s",EXALTD_PATH_IFACE,iface);
+    snprintf(interface,PATH_MAX,"%s.%s",EXALTD_INTERFACE_IFACE,iface);
     msg = exalt_dbus_iface_call_new("dhcp_is",path,interface);
 
 
@@ -283,13 +275,14 @@ int exalt_dbus_eth_dhcp_is(Exalt_DBus_Conn* conn, const char* eth)
 }
 
 /**
- * @brief test if an interface is link,
+ * @brief Test if an interface is linked,
  * a wireless interface is always link
  * @param conn a connection
- * @param eth the interface name
- * @return Returns 1 if the interface is link or if the interface is wireless, 0 if the interface is unlink
+ * @param iface the interface name
+ * @return Returns the request id
+ * @note the response will be EXALT_DBUS_RESPONSE_IFACE_LINK_IS() and the data will be a boolean
  */
-int exalt_dbus_eth_link_is(Exalt_DBus_Conn* conn, const char* eth)
+int exalt_dbus_eth_link_is(Exalt_DBus_Conn* conn, const char* iface)
 {
     DBusMessage *msg;
     char path[PATH_MAX];
@@ -297,10 +290,10 @@ int exalt_dbus_eth_link_is(Exalt_DBus_Conn* conn, const char* eth)
     Exalt_DBus_Msg_Id *msg_id= malloc(sizeof(Exalt_DBus_Msg_Id));
 
     EXALT_ASSERT_RETURN(conn!=NULL);
-    EXALT_ASSERT_RETURN(eth!=NULL);
+    EXALT_ASSERT_RETURN(iface!=NULL);
 
-    snprintf(path,PATH_MAX,"%s/%s",EXALTD_PATH_IFACE,eth);
-    snprintf(interface,PATH_MAX,"%s.%s",EXALTD_INTERFACE_IFACE,eth);
+    snprintf(path,PATH_MAX,"%s/%s",EXALTD_PATH_IFACE,iface);
+    snprintf(interface,PATH_MAX,"%s.%s",EXALTD_INTERFACE_IFACE,iface);
     msg = exalt_dbus_iface_call_new("link_is",path,interface);
 
 
@@ -319,10 +312,11 @@ int exalt_dbus_eth_link_is(Exalt_DBus_Conn* conn, const char* eth)
 /**
  * @brief Get the current status of the interface (connected or no)
  * @param conn a connection
- * @param eth a wireless interface name
- * @return Returns 1 if success, else 0
+ * @param iface a wireless interface name
+ * @return Returns the request id
+ * @note the response will be EXALT_DBUS_RESPONSE_IFACE_CONNECTED_IS and the data will be a boolean
  */
-int exalt_dbus_eth_connected_is(Exalt_DBus_Conn* conn, const char* eth)
+int exalt_dbus_eth_connected_is(Exalt_DBus_Conn* conn, const char* iface)
 {
     DBusMessage *msg;
     char path[PATH_MAX];
@@ -330,10 +324,10 @@ int exalt_dbus_eth_connected_is(Exalt_DBus_Conn* conn, const char* eth)
     Exalt_DBus_Msg_Id *msg_id= malloc(sizeof(Exalt_DBus_Msg_Id));
 
     EXALT_ASSERT_RETURN(conn!=NULL);
-    EXALT_ASSERT_RETURN(eth!=NULL);
+    EXALT_ASSERT_RETURN(iface!=NULL);
 
-    snprintf(path,PATH_MAX,"%s/%s",EXALTD_PATH_IFACE,eth);
-    snprintf(interface,PATH_MAX,"%s.%s",EXALTD_INTERFACE_IFACE,eth);
+    snprintf(path,PATH_MAX,"%s/%s",EXALTD_PATH_IFACE,iface);
+    snprintf(interface,PATH_MAX,"%s.%s",EXALTD_INTERFACE_IFACE,iface);
     msg = exalt_dbus_iface_call_new("connected_is",path,interface);
 
     msg_id->id = exalt_dbus_msg_id_next(conn);
@@ -351,10 +345,11 @@ int exalt_dbus_eth_connected_is(Exalt_DBus_Conn* conn, const char* eth)
 /**
  * @brief Up/activate an interface
  * @param conn a connection
- * @param eth the interface name
- * @return Returns 1 if success, else 0
+ * @param iface the interface name
+ * @return Returns the request id
+ * @note the response will be EXALT_DBUS_RESPONSE_IFACE_UP() and no data will be set
  */
-int exalt_dbus_eth_up(Exalt_DBus_Conn* conn, const char* eth)
+int exalt_dbus_eth_up(Exalt_DBus_Conn* conn, const char* iface)
 {
     DBusMessage *msg;
     char path[PATH_MAX];
@@ -362,10 +357,10 @@ int exalt_dbus_eth_up(Exalt_DBus_Conn* conn, const char* eth)
     Exalt_DBus_Msg_Id *msg_id= malloc(sizeof(Exalt_DBus_Msg_Id));
 
     EXALT_ASSERT_RETURN(conn!=NULL);
-    EXALT_ASSERT_RETURN(eth!=NULL);
+    EXALT_ASSERT_RETURN(iface!=NULL);
 
-    snprintf(path,PATH_MAX,"%s/%s",EXALTD_PATH_IFACE,eth);
-    snprintf(interface,PATH_MAX,"%s.%s",EXALTD_INTERFACE_IFACE,eth);
+    snprintf(path,PATH_MAX,"%s/%s",EXALTD_PATH_IFACE,iface);
+    snprintf(interface,PATH_MAX,"%s.%s",EXALTD_INTERFACE_IFACE,iface);
     msg = exalt_dbus_iface_call_new("up",path,interface);
 
 
@@ -383,10 +378,11 @@ int exalt_dbus_eth_up(Exalt_DBus_Conn* conn, const char* eth)
 /**
  * @brief Down/deactivate an interface
  * @param conn a connection
- * @param eth the interface name
- * @return Returns 1 if sucess, else 0
+ * @param iface the interface name
+ * @return Returns the request id
+ * @note the response will be EXALT_DBUS_RESPONSE_IFACE_DOWN() and no data will be set
  */
-int exalt_dbus_eth_down(Exalt_DBus_Conn* conn, const char* eth)
+int exalt_dbus_eth_down(Exalt_DBus_Conn* conn, const char* iface)
 {
     DBusMessage *msg;
     char path[PATH_MAX];
@@ -394,10 +390,10 @@ int exalt_dbus_eth_down(Exalt_DBus_Conn* conn, const char* eth)
     Exalt_DBus_Msg_Id *msg_id= malloc(sizeof(Exalt_DBus_Msg_Id));
 
     EXALT_ASSERT_RETURN(conn!=NULL);
-    EXALT_ASSERT_RETURN(eth!=NULL);
+    EXALT_ASSERT_RETURN(iface!=NULL);
 
-    snprintf(path,PATH_MAX,"%s/%s",EXALTD_PATH_IFACE,eth);
-    snprintf(interface,PATH_MAX,"%s.%s",EXALTD_INTERFACE_IFACE,eth);
+    snprintf(path,PATH_MAX,"%s/%s",EXALTD_PATH_IFACE,iface);
+    snprintf(interface,PATH_MAX,"%s.%s",EXALTD_INTERFACE_IFACE,iface);
     msg = exalt_dbus_iface_call_new("down",path,interface);
 
     msg_id->id = exalt_dbus_msg_id_next(conn);
@@ -413,13 +409,14 @@ int exalt_dbus_eth_down(Exalt_DBus_Conn* conn, const char* eth)
 
 /**
  * @brief Apply a configuration to the interface.
- * This function ask to the daemon for applying the configuration. When the configuration will be apply a message will be notify (see Exalt_Enum_Action)
+ * This function ask to the daemon for applying the configuration. When the configuration will be apply a message will be notify (EXALT_IFACE_ACTION_CONF_APPLY_DONE())
  * @param conn a configuration
- * @param eth the interface name
+ * @param iface the interface name
  * @param c the configuration
- * @return Returns 1 if success, else 0
+ * @return Returns the request id
+ * @note the response will be EXALT_DBUS_RESPONSE_IFACE_APPLY() and no data will be set
  */
-int exalt_dbus_eth_conf_apply(Exalt_DBus_Conn* conn, const char* eth, Exalt_Configuration* c)
+int exalt_dbus_eth_conf_apply(Exalt_DBus_Conn* conn, const char* iface, Exalt_Configuration* c)
 {
     DBusMessage *msg;
     char path[PATH_MAX];
@@ -427,12 +424,12 @@ int exalt_dbus_eth_conf_apply(Exalt_DBus_Conn* conn, const char* eth, Exalt_Conf
     Exalt_DBus_Msg_Id *msg_id= malloc(sizeof(Exalt_DBus_Msg_Id));
 
     EXALT_ASSERT_RETURN(conn!=NULL);
-    EXALT_ASSERT_RETURN(eth!=NULL);
+    EXALT_ASSERT_RETURN(iface!=NULL);
 
     EXALT_ASSERT_RETURN(exalt_conf_valid_is(c));
 
-    snprintf(path,PATH_MAX,"%s/%s",EXALTD_PATH_IFACE,eth);
-    snprintf(interface,PATH_MAX,"%s.%s",EXALTD_INTERFACE_IFACE,eth);
+    snprintf(path,PATH_MAX,"%s/%s",EXALTD_PATH_IFACE,iface);
+    snprintf(interface,PATH_MAX,"%s.%s",EXALTD_INTERFACE_IFACE,iface);
     msg = exalt_dbus_iface_call_new("apply",path,interface);
 
     msg_id->id = exalt_dbus_msg_id_next(conn);
@@ -453,8 +450,9 @@ int exalt_dbus_eth_conf_apply(Exalt_DBus_Conn* conn, const char* eth, Exalt_Conf
 /**
  * @brief Get the command which will be run after a configuration is applied
  * @param conn a configuration
- * @param eth a eth interface name
- * @return Returns the command
+ * @param iface the interface name
+ * @return Returns the request id
+ * @note the response will be EXALT_DBUS_RESPONSE_IFACE_CMD_GET() and the data will be a string
  */
 int exalt_dbus_eth_command_get(Exalt_DBus_Conn* conn, const char* eth)
 {
@@ -483,10 +481,12 @@ int exalt_dbus_eth_command_get(Exalt_DBus_Conn* conn, const char* eth)
 
 
 /**
- * @brief Set the command which will be run after a configuration is applied on eth.
+ * @brief Set the command which will be run after a configuration is applied on iface.
  * @param conn a connection
- * @param eth a eth interface name
+ * @param iface the interface name
  * @param cmd the new command
+ * @return Returns the request id
+ * @note the response will be EXALT_DBUS_RESPONSE_IFACE_CMD_SET() and no data will be set
  */
 int exalt_dbus_eth_command_set(Exalt_DBus_Conn* conn, const char* eth, const char* cmd)
 {
@@ -960,3 +960,4 @@ void _exalt_dbus_eth_connected_is_cb(void *data, DBusMessage *msg, DBusError *er
         id->conn-> response_notify -> cb(response,id->conn->response_notify->user_data);
     EXALT_FREE(data);
 }
+

@@ -30,7 +30,7 @@ static void _exalt_dbus_wireless_wpasupplicant_driver_set_cb(void *data, DBusMes
 static void _exalt_dbus_wireless_scan_cb(void *data, DBusMessage *msg, DBusError *error);
 
 /**
- * @addtogroup Wireless_interface
+ * @addtogroup Wireless_Interface
  * @{
  */
 
@@ -38,7 +38,8 @@ static void _exalt_dbus_wireless_scan_cb(void *data, DBusMessage *msg, DBusError
 /**
  * @brief Get the list of wireless interface
  * @param conn a Configuration
- * @return Returns the list of interface name (char *)
+ * @return Returns the request id
+ * @note the response will be EXALT_DBUS_RESPONSE_IFACE_WIRELESS_LIST() and the data will be a list of interface (char*)
  */
 int exalt_dbus_wireless_list_get(Exalt_DBus_Conn* conn)
 {
@@ -61,13 +62,14 @@ int exalt_dbus_wireless_list_get(Exalt_DBus_Conn* conn)
 }
 
 /**
- * @brief Start a scan
+ * @brief Start a wireless scan
  * The result will be notify (see exalt_dbus_scan_notify_set())
  * @param conn a Configuration
- * @param eth a wireless interface name
- * @return Returns 1 if success, else 0
+ * @param iface a wireless interface name
+ * @return Returns the request id
+ * @note the response will be EXALT_DBUS_RESPONSE_WIRELESS_SCAN() and no data will be set
  */
-int exalt_dbus_wireless_scan(Exalt_DBus_Conn* conn, const char* eth)
+int exalt_dbus_wireless_scan(Exalt_DBus_Conn* conn, const char* iface)
 {
     DBusMessage *msg;
     char path [PATH_MAX];
@@ -76,9 +78,10 @@ int exalt_dbus_wireless_scan(Exalt_DBus_Conn* conn, const char* eth)
     Exalt_DBus_Msg_Id *msg_id= malloc(sizeof(Exalt_DBus_Msg_Id));
 
     EXALT_ASSERT_RETURN(conn!=NULL);
+    EXALT_ASSERT_RETURN(iface!=NULL);
 
-    snprintf(path,PATH_MAX,"%s/%s",EXALTD_PATH_IFACE,eth);
-    snprintf(interface,PATH_MAX,"%s.%s",EXALTD_INTERFACE_IFACE,eth);
+    snprintf(path,PATH_MAX,"%s/%s",EXALTD_PATH_IFACE,iface);
+    snprintf(interface,PATH_MAX,"%s.%s",EXALTD_INTERFACE_IFACE,iface);
     msg = exalt_dbus_iface_call_new("scan",path,interface);
 
 
@@ -94,12 +97,13 @@ int exalt_dbus_wireless_scan(Exalt_DBus_Conn* conn, const char* eth)
 }
 
 /**
- * @brief Get the current essid of the interface eth
+ * @brief Get the current essid of the interface iface
  * @param conn a Configuration
- * @param eth a wireless interface name
- * @return Returns 1 if success, else 0
+ * @param iface a wireless interface name
+ * @return Returns the request id
+ * @note the response will be EXALT_DBUS_RESPONSE_WIRELESS_ESSID_GET() and the data will be a string.
  */
-int exalt_dbus_wireless_essid_get(Exalt_DBus_Conn* conn, const char* eth)
+int exalt_dbus_wireless_essid_get(Exalt_DBus_Conn* conn, const char* iface)
 {
     DBusMessage *msg;
     char path[PATH_MAX];
@@ -107,10 +111,10 @@ int exalt_dbus_wireless_essid_get(Exalt_DBus_Conn* conn, const char* eth)
     Exalt_DBus_Msg_Id *msg_id= malloc(sizeof(Exalt_DBus_Msg_Id));
 
     EXALT_ASSERT_RETURN(conn!=NULL);
-    EXALT_ASSERT_RETURN(eth!=NULL);
+    EXALT_ASSERT_RETURN(iface!=NULL);
 
-    snprintf(path,PATH_MAX,"%s/%s",EXALTD_PATH_IFACE,eth);
-    snprintf(interface,PATH_MAX,"%s.%s",EXALTD_INTERFACE_IFACE,eth);
+    snprintf(path,PATH_MAX,"%s/%s",EXALTD_PATH_IFACE,iface);
+    snprintf(interface,PATH_MAX,"%s.%s",EXALTD_INTERFACE_IFACE,iface);
     msg = exalt_dbus_iface_call_new("essid_get",path,interface);
 
     msg_id->id = exalt_dbus_msg_id_next(conn);
@@ -126,10 +130,11 @@ int exalt_dbus_wireless_essid_get(Exalt_DBus_Conn* conn, const char* eth)
 /**
  * @brief disconnect the wireless interface
  * @param conn a Configuration
- * @param eth a wireless interface name
- * @return Returns 1 if success, else 0
+ * @param iface a wireless interface name
+ * @return Returns the request id
+ * @note the response will be EXALT_DBUS_RESPONSE_WIRELESS_DISCONNECT() and no data will be set
  */
-int exalt_dbus_wireless_disconnect(Exalt_DBus_Conn* conn, const char* eth)
+int exalt_dbus_wireless_disconnect(Exalt_DBus_Conn* conn, const char* iface)
 {
     DBusMessage *msg;
     char path[PATH_MAX];
@@ -137,10 +142,10 @@ int exalt_dbus_wireless_disconnect(Exalt_DBus_Conn* conn, const char* eth)
     Exalt_DBus_Msg_Id *msg_id= malloc(sizeof(Exalt_DBus_Msg_Id));
 
     EXALT_ASSERT_RETURN(conn!=NULL);
-    EXALT_ASSERT_RETURN(eth!=NULL);
+    EXALT_ASSERT_RETURN(iface!=NULL);
 
-    snprintf(path,PATH_MAX,"%s/%s",EXALTD_PATH_IFACE,eth);
-    snprintf(interface,PATH_MAX,"%s.%s",EXALTD_INTERFACE_IFACE,eth);
+    snprintf(path,PATH_MAX,"%s/%s",EXALTD_PATH_IFACE,iface);
+    snprintf(interface,PATH_MAX,"%s.%s",EXALTD_INTERFACE_IFACE,iface);
     msg = exalt_dbus_iface_call_new("disconnect",path,interface);
 
     msg_id->id = exalt_dbus_msg_id_next(conn);
@@ -156,10 +161,11 @@ int exalt_dbus_wireless_disconnect(Exalt_DBus_Conn* conn, const char* eth)
 /**
  * @brief Get the current wpa_supplicant driver used by the interface
  * @param conn a Configuration
- * @param eth a wireless interface name
- * @return Returns a wpa_supplicant driver (wext, hostap ...)
+ * @param iface a wireless interface name
+ * @return Returns the request id
+ * @note the response will be EXALT_DBUS_RESPONSE_WIRELESS_WPASUPPLICANT_DRIVER_GET() and the data will be a string
  */
-int exalt_dbus_wireless_wpasupplicant_driver_get(Exalt_DBus_Conn* conn, const char* eth)
+int exalt_dbus_wireless_wpasupplicant_driver_get(Exalt_DBus_Conn* conn, const char* iface)
 {
     DBusMessage *msg;
     char path[PATH_MAX];
@@ -167,10 +173,10 @@ int exalt_dbus_wireless_wpasupplicant_driver_get(Exalt_DBus_Conn* conn, const ch
     Exalt_DBus_Msg_Id *msg_id= malloc(sizeof(Exalt_DBus_Msg_Id));
 
     EXALT_ASSERT_RETURN(conn!=NULL);
-    EXALT_ASSERT_RETURN(eth!=NULL);
+    EXALT_ASSERT_RETURN(iface!=NULL);
 
-    snprintf(path,PATH_MAX,"%s/%s",EXALTD_PATH_IFACE,eth);
-    snprintf(interface,PATH_MAX,"%s.%s",EXALTD_INTERFACE_IFACE,eth);
+    snprintf(path,PATH_MAX,"%s/%s",EXALTD_PATH_IFACE,iface);
+    snprintf(interface,PATH_MAX,"%s.%s",EXALTD_INTERFACE_IFACE,iface);
     msg = exalt_dbus_iface_call_new("wpasupplicant_driver_get",path,interface);
 
     msg_id->id = exalt_dbus_msg_id_next(conn);
@@ -187,9 +193,10 @@ int exalt_dbus_wireless_wpasupplicant_driver_get(Exalt_DBus_Conn* conn, const ch
 /**
  * @brief Set the wpa_supplicant driver used by the interface
  * @param conn a Configuration
- * @param eth a wirelss interface name
+ * @param iface a wirelss interface name
  * @param driver a driver (wext, hostap ...)
- * @return Returns 1 if success, else 0
+ * @return Returns the request id
+ * @note the response will be EXALT_DBUS_RESPONSE_WIRELESS_WPASUPPLICANT_DRIVER_SET() and no data will be set
  */
 int exalt_dbus_wireless_wpasupplicant_driver_set(Exalt_DBus_Conn* conn, const char* eth, const char* driver)
 {
