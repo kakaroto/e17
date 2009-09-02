@@ -483,8 +483,75 @@ cdef public class Edje(evas.c_evas.Object) [object PyEdje, type PyEdje_Type]:
         Appends an item to the BOX edje part, where some box's properties
         inherited. Like the color properties has some nice effect on the
         box's childrens.
+
+        @rtype: bool
         """
         return bool(edje_object_part_box_append(self.obj, part, obj.obj))
+
+    def part_box_prepend(self, char *part, c_evas.Object obj):
+        """Adds an item to a BOX part.
+
+        Prepends an item to the BOX edje part, where some box's properties
+        inherited. Like the color properties has some nice effect on the
+        box's childrens.
+
+        @rtype: bool
+        """
+        return bool(edje_object_part_box_prepend(self.obj, part, obj.obj))
+
+    def part_box_insert_at(self, char *part, c_evas.Object obj,
+                           unsigned int pos):
+        """Inserts an item at the given position in a BOX part.
+
+        @rtype: bool
+        """
+        return bool(edje_object_part_box_insert_at(self.obj, part, obj.obj,
+                    pos))
+
+    def part_box_insert_before(self, char *part, c_evas.Object obj,
+                               c_evas.Object reference):
+        """Inserts an item in a BOX part before the reference object.
+
+        @rtype: bool
+        """
+        return bool(edje_object_part_box_insert_before(self.obj, part, obj.obj,
+                                                       reference.obj))
+
+    def part_box_remove(self, char *part, c_evas.Object obj):
+        """Removes the object given from a BOX part.
+
+        Returns the object removed, or none if it wasn't found or is
+        internal to Edje.
+
+        @rtype: L{evas.c_evas.Object} or None
+        """
+        cdef evas.c_evas.Evas_Object *o
+        o = edje_object_part_box_remove(self.obj, part, obj.obj)
+        return evas.c_evas._Object_from_instance(<long>o)
+
+    def part_box_remove_at(self, char *part, unsigned int pos):
+        """Removes the object at the given position in a BOX part.
+
+        Returns the object removed, or None nothing was found at the
+        given position, or if the object was internal to Edje.
+
+        @rtype: L{evas.c_evas.Object} or None
+        """
+        cdef evas.c_evas.Evas_Object *o
+        o = edje_object_part_box_remove_at(self.obj, part, pos)
+        return evas.c_evas._Object_from_instance(<long>o)
+
+    def part_box_remove_all(self, char *part, int clear):
+        """Removes all objects from a BOX part.
+
+        @parm: B{part} BOX part to remove from.
+        @parm: B{clear} if 1, it will delete the objects it removes.
+
+        Note: this function doesn't remove items created from the theme.
+
+        @rtype: bool
+        """
+        return bool(edje_object_part_box_remove_all(self.obj, part, clear))
 
     def part_state_get(self, char *part):
         "@rtype: (name, value)"

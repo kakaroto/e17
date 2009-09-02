@@ -192,6 +192,12 @@ cdef extern from "Edje.h":
     evas.c_evas.Evas_Object *edje_object_part_swallow_get(evas.c_evas.Evas_Object *obj, char *part)
 
     evas.c_evas.Eina_Bool edje_object_part_box_append(evas.c_evas.Evas_Object *obj, char *part, evas.c_evas.Evas_Object *child)
+    evas.c_evas.Eina_Bool edje_object_part_box_prepend(evas.c_evas.Evas_Object *obj, char *part, evas.c_evas.Evas_Object *child)
+    evas.c_evas.Eina_Bool edje_object_part_box_insert_at(evas.c_evas.Evas_Object *obj, char *part, evas.c_evas.Evas_Object *child, unsigned int pos)
+    evas.c_evas.Eina_Bool edje_object_part_box_insert_before(evas.c_evas.Evas_Object *obj, char *part, evas.c_evas.Evas_Object *child, evas.c_evas.Evas_Object *reference)
+    evas.c_evas.Evas_Object *edje_object_part_box_remove(evas.c_evas.Evas_Object *obj, char *part, evas.c_evas.Evas_Object *child)
+    evas.c_evas.Evas_Object *edje_object_part_box_remove_at(evas.c_evas.Evas_Object *obj, char *part, unsigned int pos)
+    evas.c_evas.Eina_Bool edje_object_part_box_remove_all(evas.c_evas.Evas_Object *obj, char *part, int clear)
 
     char *edje_object_part_state_get(evas.c_evas.Evas_Object *obj, char *part, double *val_ret)
 
