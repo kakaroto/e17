@@ -40,7 +40,6 @@ struct Ewl_Callback
         Ewl_Callback_Function func;      /**< Function executed */
         void *user_data;                 /**< user specified data to pass to func */
         int references;                  /**< Reference counting */
-        int id;                          /**< id number of this callback */
 };
 
 
@@ -147,14 +146,14 @@ int              ewl_callbacks_init(void);
 void             ewl_callbacks_shutdown(void);
 unsigned int     ewl_callback_type_add(void);
 
-int              ewl_callback_append(Ewl_Widget *widget, unsigned int type,
+Ewl_Callback    *ewl_callback_append(Ewl_Widget *widget, unsigned int type,
                                         Ewl_Callback_Function func,
                                         void *user_data);
-int              ewl_callback_prepend(Ewl_Widget *widget,
+Ewl_Callback    *ewl_callback_prepend(Ewl_Widget *widget,
                                         unsigned int type,
                                         Ewl_Callback_Function func,
                                         void *user_data);
-int              ewl_callback_insert_after(Ewl_Widget *w, unsigned int t,
+Ewl_Callback    *ewl_callback_insert_after(Ewl_Widget *w, unsigned int t,
                                            Ewl_Callback_Function f,
                                            void *user_data,
                                            Ewl_Callback_Function after,
@@ -165,8 +164,8 @@ void             ewl_callback_call_with_event_data(Ewl_Widget *widget,
                                               unsigned int type,
                                               void *event_data);
 void             ewl_callback_del_type(Ewl_Widget *w, unsigned int t);
-void             ewl_callback_del_cb_id(Ewl_Widget *w, unsigned int t,
-                                        int cb_id);
+void             ewl_callback_del_callback(Ewl_Widget *w, unsigned int t,
+                                        Ewl_Callback *cb);
 void             ewl_callback_del(Ewl_Widget *w, unsigned int t,
                                         Ewl_Callback_Function f);
 void             ewl_callback_del_with_data(Ewl_Widget *w, unsigned int t,

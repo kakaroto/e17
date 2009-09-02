@@ -22,11 +22,10 @@ static Ewl_Callback *ewl_callback_get(Ewl_Widget *w, unsigned int type,
 
 static void ewl_callback_rm(Ewl_Widget *w, unsigned int t,
                                                 unsigned int pos);
-static int ewl_callback_insert(Ewl_Widget *w, unsigned int t,
+static Ewl_Callback *ewl_callback_insert(Ewl_Widget *w, unsigned int t,
                                 Ewl_Callback *cb, unsigned int pos);
 
 static int callback_type_count;
-static int callback_id = 0;
 static Ecore_Hash *cb_registration = NULL;
 
 /**
@@ -159,7 +158,7 @@ ewl_callback_rm(Ewl_Widget *w, unsigned int t, unsigned int pos)
         DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-static int
+Ewl_Callback *
 ewl_callback_insert(Ewl_Widget *w, unsigned int t,
                                 Ewl_Callback *cb, unsigned int pos)
 {
@@ -167,14 +166,14 @@ ewl_callback_insert(Ewl_Widget *w, unsigned int t,
         Ewl_Callback *old = NULL;
 
         DENTER_FUNCTION(DLEVEL_STABLE);
-        DCHECK_PARAM_PTR_RET(w, 0);
-        DCHECK_PARAM_PTR_RET(cb, 0);
-        DCHECK_TYPE_RET(w, EWL_WIDGET_TYPE, 0);
+        DCHECK_PARAM_PTR_RET(w, NULL);
+        DCHECK_PARAM_PTR_RET(cb, NULL);
+        DCHECK_TYPE_RET(w, EWL_WIDGET_TYPE, NULL);
 
         if (EWL_CALLBACK_LEN(w, t) == 255) {
                 DERROR("Maximum number of callbacks of one type "
                         "exceeded on a widget\n");
-                DRETURN_INT(0, DLEVEL_STABLE);
+                DRETURN_PTR(NULL, DLEVEL_STABLE);
         }
 
         if (t > EWL_CALLBACK_MAX)
@@ -189,7 +188,7 @@ ewl_callback_insert(Ewl_Widget *w, unsigned int t,
                 w->callbacks[place].len = 1;
                 EWL_CALLBACK_SET_DIRECT(w, t);
 
-                DRETURN_INT(cb->id, DLEVEL_STABLE);
+                DRETURN_PTR(cb, DLEVEL_STABLE);
         }
         w->callbacks[place].len ++;
 
@@ -228,7 +227,7 @@ ewl_callback_insert(Ewl_Widget *w, unsigned int t,
         if (pos <= EWL_CALLBACK_POS(w, t))
                 EWL_CALLBACK_POS(w, t)++;
 
-        DRETURN_INT(cb->id, DLEVEL_STABLE);
+        DRETURN_PTR(cb, DLEVEL_STABLE);
 }
 
 static Ewl_Callback *
@@ -272,18 +271,18 @@ ewl_callback_type_add(void)
         DRETURN_INT(++callback_type_count, DLEVEL_STABLE);
 }
 
-static int
+static Ewl_Callback *
 ewl_callback_position_insert(Ewl_Widget *w, unsigned int type,
                                 Ewl_Callback_Function func,
                                 unsigned int pos, void *user_data)
 {
-        int ret;
+        Ewl_Callback *ret;
         Ewl_Callback *cb, *found;
 
         DENTER_FUNCTION(DLEVEL_STABLE);
-        DCHECK_PARAM_PTR_RET(w, 0);
-        DCHECK_PARAM_PTR_RET(func, 0);
-        DCHECK_TYPE_RET(w, EWL_WIDGET_TYPE, 0);
+        DCHECK_PARAM_PTR_RET(w, NULL);
+        DCHECK_PARAM_PTR_RET(func, NULL);
+        DCHECK_TYPE_RET(w, EWL_WIDGET_TYPE, NULL);
 
         if (type < EWL_CALLBACK_MAX)
                 cb = alloca(sizeof(Ewl_Callback));
@@ -304,7 +303,6 @@ ewl_callback_position_insert(Ewl_Widget *w, unsigned int type,
                 }
                 found->func = func;
                 found->user_data = user_data;
-                found->id = ++callback_id;
                 ecore_hash_set(cb_registration, found, found);
         }
 
@@ -320,23 +318,25 @@ ewl_callback_position_insert(Ewl_Widget *w, unsigned int type,
  * @param t: the type of the callback that is being attached
  * @param f: the function to attach as a callback
  * @param user_data: the data to be passed to the callback function
- * @return Returns 0 on failure, the id of the new callback on success.
+ * @return Returns NULL on failure, a pointer to the new callback on success.
  * @brief Append a callback of the specified type
  *
  * Allocates a new callback for the specified widget that calls @a f with @a
  * user_data as the data parameter when event @a ta  occurs. This event is
  * placed at the end of the callback chain.
+ *
+ * @note Use the returned callback pointer only for ewl_callback_del_callback().
  */
-int
+Ewl_Callback *
 ewl_callback_append(Ewl_Widget *w, unsigned int t,
                     Ewl_Callback_Function f, void *user_data)
 {
-        int ret;
+        Ewl_Callback *ret;
 
         DENTER_FUNCTION(DLEVEL_STABLE);
-        DCHECK_PARAM_PTR_RET(w, 0);
-        DCHECK_PARAM_PTR_RET(f, 0);
-        DCHECK_TYPE_RET(w, EWL_WIDGET_TYPE, 0);
+        DCHECK_PARAM_PTR_RET(w, NULL);
+        DCHECK_PARAM_PTR_RET(f, NULL);
+        DCHECK_TYPE_RET(w, EWL_WIDGET_TYPE, NULL);
 
         ret = ewl_callback_position_insert(w, t, f,
                                 EWL_CALLBACK_LEN(w, t), user_data);
@@ -349,22 +349,22 @@ ewl_callback_append(Ewl_Widget *w, unsigned int t,
  * @param t: the type of the callback that is being attached
  * @param f: the function to attach as a callback
  * @param user_data: the data to be passed to the callback function
- * @return Returns 0 on failure, the id of the new callback on success.
+ * @return Returns 0 on failure, the pointer to the new callback on success.
  * @brief prepend a callback of the specified type
  *
  * Same functionality as ewl_callback_append, but the callback is placed at the
  * beginning of the callback chain.
  */
-int
+Ewl_Callback *
 ewl_callback_prepend(Ewl_Widget *w, unsigned int t,
                      Ewl_Callback_Function f, void *user_data)
 {
-        int ret;
+        Ewl_Callback *ret;
 
         DENTER_FUNCTION(DLEVEL_STABLE);
-        DCHECK_PARAM_PTR_RET(w, 0);
-        DCHECK_PARAM_PTR_RET(f, 0);
-        DCHECK_TYPE_RET(w, EWL_WIDGET_TYPE, 0);
+        DCHECK_PARAM_PTR_RET(w, NULL);
+        DCHECK_PARAM_PTR_RET(f, NULL);
+        DCHECK_TYPE_RET(w, EWL_WIDGET_TYPE, NULL);
 
         ret = ewl_callback_position_insert(w, t, f, 0, user_data);
 
@@ -384,19 +384,19 @@ ewl_callback_prepend(Ewl_Widget *w, unsigned int t,
  * Same functionality as ewl_callback_append, but the callback is placed after
  * the specified callback on the callback chain.
  */
-int
+Ewl_Callback *
 ewl_callback_insert_after(Ewl_Widget *w, unsigned int t,
                           Ewl_Callback_Function f, void *user_data,
                           Ewl_Callback_Function after, void *after_data)
 {
         Ewl_Callback *search;
-        int ret;
+        Ewl_Callback *ret;
         unsigned int pos = 0;
 
         DENTER_FUNCTION(DLEVEL_STABLE);
-        DCHECK_PARAM_PTR_RET(w, 0);
-        DCHECK_PARAM_PTR_RET(f, 0);
-        DCHECK_TYPE_RET(w, EWL_WIDGET_TYPE, 0);
+        DCHECK_PARAM_PTR_RET(w, NULL);
+        DCHECK_PARAM_PTR_RET(f, NULL);
+        DCHECK_TYPE_RET(w, EWL_WIDGET_TYPE, NULL);
 
         /*
          * position past the callback we want to insert after.
@@ -574,29 +574,31 @@ ewl_callback_del_type(Ewl_Widget *w, unsigned int t)
  * @internal
  * @param w: the widget to delete the id
  * @param t: the type of event the callback is attached to
- * @param cb_id: the id of the callback to delete
+ * @param cb: the reference of the callback to delete
  * @return Returns no value.
  * @brief Delete the specified callback id from the widget
  *
  * Delete the specified callback id from the widget @a w.
  */
 void
-ewl_callback_del_cb_id(Ewl_Widget *w, unsigned int t, int cb_id)
+ewl_callback_del_callback(Ewl_Widget *w, unsigned int t, Ewl_Callback *cb)
 {
-        Ewl_Callback *cb;
+        Ewl_Callback *cur;
         unsigned int i;
 
         DENTER_FUNCTION(DLEVEL_STABLE);
         DCHECK_PARAM_PTR(w);
+        DCHECK_PARAM_PTR(cb);
         DCHECK_TYPE(w, EWL_WIDGET_TYPE);
 
-        if (!EWL_CALLBACK_LEN(w, t) || cb_id > callback_id)
+        if (!EWL_CALLBACK_LEN(w, t))
                 DRETURN(DLEVEL_STABLE);
 
         for (i = 0; i < EWL_CALLBACK_LEN(w, t); i++)
         {
-                cb = ewl_callback_get(w, t, i);
-                if (cb && (cb->id == cb_id)) {
+                cur = ewl_callback_get(w, t, i);
+                if (cur && cur == cb)
+                {
                         ewl_callback_rm(w, t, i);
                         break;
                 }

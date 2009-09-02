@@ -101,7 +101,7 @@ static int
 test_id_append(char *buf, int len)
 {
         Ewl_Widget *w;
-        int id;
+        Ewl_Callback *id;
         int ret = 0;
 
         w = ewl_widget_new();
@@ -125,7 +125,7 @@ static int
 test_id_prepend(char *buf, int len)
 {
         Ewl_Widget *w;
-        int id;
+        Ewl_Callback *id;
         int ret = 0;
 
         w = ewl_widget_new();
@@ -149,7 +149,7 @@ static int
 test_id_insert_after(char *buf, int len)
 {
         Ewl_Widget *w;
-        int id;
+        Ewl_Callback *id;
         int ret = 0;
 
         w = ewl_widget_new();
@@ -175,7 +175,7 @@ static int
 test_id_shared(char *buf, int len)
 {
         Ewl_Widget *w;
-        int id, id2;
+        Ewl_Callback *id, *id2;
         int ret = 0;
 
         w = ewl_widget_new();
@@ -202,7 +202,7 @@ static int
 test_id_unique(char *buf, int len)
 {
         Ewl_Widget *w;
-        int id, id2;
+        Ewl_Callback *id, *id2;
         int ret = 0;
 
         w = ewl_widget_new();
@@ -259,13 +259,13 @@ static int
 test_id_del_call(char *buf, int len)
 {
         Ewl_Widget *w;
-        int id;
+        Ewl_Callback *id;
         int ret = 0;
 
         w = ewl_widget_new();
         id = ewl_callback_prepend(w, EWL_CALLBACK_CONFIGURE, base_callback,
                         NULL);
-        ewl_callback_del_cb_id(w, EWL_CALLBACK_CONFIGURE, id);
+        ewl_callback_del_callback(w, EWL_CALLBACK_CONFIGURE, id);
         ewl_callback_call(w, EWL_CALLBACK_CONFIGURE);
 
         if ((long)ewl_widget_data_get(w, w) != 1)
