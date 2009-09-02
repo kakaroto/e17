@@ -65,6 +65,8 @@ typedef enum Exalt_Enum_Action
     /** when a wired interface is disconnected */
     EXALT_IFACE_ACTION_DISCONNECTED,
 
+    /** when all interfaces are disconnected */
+    EXALT_IFACE_ACTION_ALL_IFACES_DISCONNECTED,
 
     /** when a wireless interface is connected */
     EXALT_WIRELESS_ACTION_CONNECTED,

@@ -32,7 +32,7 @@
     #define PATH_MAX 1024
 #endif
 
-#define EXALT_DBUS_ERROR_PRINT(error) if(error && dbus_error_is_set(error)) { print_error(__FILE__,__func__,__LINE__,error->name);return; }
+#define EXALT_DBUS_ERROR_PRINT(error) if(error && dbus_error_is_set(error)) { EXALT_LOG_ERR("%s\n",error->name);return; }
 
 #define EXALTD_PATH_DNS "/org/exalt/dns"
 #define EXALTD_INTERFACE_DNS "org.exalt.dns"

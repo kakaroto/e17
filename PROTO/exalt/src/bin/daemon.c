@@ -138,6 +138,7 @@ int setup(E_DBus_Connection *conn)
     obj = e_dbus_object_add(conn, EXALTD_PATH_WIREDS, NULL);
     iface = e_dbus_interface_new(EXALTD_INTERFACE_WIREDS);
     e_dbus_interface_method_add(iface, "list", "", "a(s)", dbus_cb_eth_list_get);
+    e_dbus_interface_method_add(iface, "all_disconnected", "", "b", dbus_cb_eth_all_disconnected_is);
     e_dbus_object_interface_attach(obj, iface);
 
 

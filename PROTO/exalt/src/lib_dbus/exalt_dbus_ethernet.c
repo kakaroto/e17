@@ -35,6 +35,7 @@ void _exalt_dbus_eth_down_cb(void *data, DBusMessage *msg, DBusError *error);
 void _exalt_dbus_eth_apply_cb(void *data, DBusMessage *msg, DBusError *error);
 void _exalt_dbus_eth_connected_is_cb(void *data, DBusMessage *msg, DBusError *error);
 void _exalt_dbus_eth_cmd_set_cb(void *data, DBusMessage *msg, DBusError *error);
+void _exalt_dbus_eth_all_disconnected_is_cb(void *data, DBusMessage *msg, DBusError *error);
 
 /**
  * @addtogroup Ethernet_interface
@@ -158,6 +159,31 @@ int exalt_dbus_eth_list_get(Exalt_DBus_Conn* conn)
 
     return msg_id->id;
 }
+
+/**
+ * @brief Return yes if all interfaces are disconnected
+ * @param conn a connection
+ */
+int exalt_dbus_eth_all_disconnected_is(Exalt_DBus_Conn* conn)
+{
+    DBusMessage *msg;
+    Exalt_DBus_Msg_Id *msg_id= malloc(sizeof(Exalt_DBus_Msg_Id));
+
+    EXALT_ASSERT_RETURN(conn!=NULL);
+
+    msg_id->id = exalt_dbus_msg_id_next(conn);
+    msg_id->conn = conn;
+
+    msg = exalt_dbus_ifaces_wired_call_new("all_disconnected");
+
+    EXALT_ASSERT_CUSTOM_RET(e_dbus_message_send (conn->e_conn, msg, _exalt_dbus_eth_all_disconnected_is_cb,30,msg_id),
+            dbus_message_unref(msg); return 0);
+
+    dbus_message_unref(msg);
+
+    return msg_id->id;
+}
+
 
 /**
  * @brief test if an interface is a wireless interface
@@ -614,6 +640,35 @@ void _exalt_dbus_eth_list_get_cb(void *data, DBusMessage *msg, DBusError *error)
         id->conn-> response_notify -> cb(response,id->conn->response_notify->user_data);
     EXALT_FREE(data);
 }
+
+void _exalt_dbus_eth_all_disconnected_is_cb(void *data, DBusMessage *msg, DBusError *error)
+{
+    Exalt_DBus_Msg_Id *id = data;
+
+    EXALT_DBUS_ERROR_PRINT(error);
+
+    Exalt_DBus_Response* response = calloc(1,sizeof(Exalt_DBus_Response));
+    response->type = EXALT_DBUS_RESPONSE_ALL_IFACES_DISCONNECTED_IS;
+    response->msg_id = id->id;
+    if(!exalt_dbus_valid_is(msg))
+    {
+        response->is_error = 1;
+        response->error_id = exalt_dbus_error_get_id(msg);
+        response->error_msg = strdup(exalt_dbus_error_get_msg(msg));
+        EXALT_LOG_INFO("%d: %s\n",
+                exalt_dbus_error_get_id(msg),exalt_dbus_error_get_msg(msg));
+    }
+    else
+    {
+        response -> is_error = 0;
+        response->is = exalt_dbus_response_boolean(msg,1);
+    }
+
+    if(id->conn->response_notify->cb)
+        id->conn-> response_notify -> cb(response,id->conn->response_notify->user_data);
+    EXALT_FREE(data);
+}
+
 
 void _exalt_dbus_eth_wireless_is_cb(void *data, DBusMessage *msg, DBusError *error)
 {

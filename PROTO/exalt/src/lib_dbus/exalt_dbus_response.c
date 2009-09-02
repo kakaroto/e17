@@ -169,6 +169,7 @@ int exalt_dbus_response_is_get(Exalt_DBus_Response* response)
         case EXALT_DBUS_RESPONSE_IFACE_DHCP_IS:
         case EXALT_DBUS_RESPONSE_IFACE_UP_IS:
         case EXALT_DBUS_RESPONSE_IFACE_CONNECTED_IS:
+        case EXALT_DBUS_RESPONSE_ALL_IFACES_DISCONNECTED_IS:
             return response->is;
         default:
             print_error(__FILE__,__func__,__LINE__,"This type of response doesn't has an boolean\n");

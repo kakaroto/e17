@@ -525,6 +525,24 @@ int _exalt_wireless_wpa_cb(void *data, Ecore_Fd_Handler *fd_handler)
             exalt_eth_interfaces.eth_cb(eth,
                     EXALT_WIRELESS_ACTION_DISCONNECTED,
                     exalt_eth_interfaces.eth_cb_user_data);
+
+        //all interfaces are disconnected
+        Eina_List *l;
+        Exalt_Ethernet *_eth;
+        int connected = 0;
+        EINA_LIST_FOREACH(exalt_eth_interfaces.ethernets, l, _eth)
+        {
+            if(exalt_eth_connected_is(_eth))
+            {
+                connected = 1;
+                break;
+            }
+        }
+        if(!connected && exalt_eth_interfaces.eth_cb)
+            exalt_eth_interfaces.eth_cb(eth,
+                    EXALT_IFACE_ACTION_ALL_IFACES_DISCONNECTED,
+                    exalt_eth_interfaces.eth_cb_user_data);
+
     }
 
     return 1;

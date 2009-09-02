@@ -94,7 +94,9 @@ enum _exalt_dbus_response_type
     /** Response of exalt_dbus_network_favoris_set */
     EXALT_DBUS_RESPONSE_NETWORK_FAVORIS_SET,
     /** Response of exalt_dbus_network_delete */
-    EXALT_DBUS_RESPONSE_NETWORK_DELETE
+    EXALT_DBUS_RESPONSE_NETWORK_DELETE,
+    /** Response of exalt_dbus_all_ifaces_disconnected_is */
+    EXALT_DBUS_RESPONSE_ALL_IFACES_DISCONNECTED_IS
 };
 
 int exalt_dbus_response_msg_id_get(Exalt_DBus_Response *response);

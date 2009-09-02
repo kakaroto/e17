@@ -79,6 +79,43 @@ DBusMessage * dbus_cb_eth_wireless_list_get(E_DBus_Object *obj __UNUSED__, DBusM
     return reply;
 }
 
+DBusMessage * dbus_cb_eth_all_disconnected_is(E_DBus_Object *obj __UNUSED__, DBusMessage *msg)
+{
+    DBusMessage *reply;
+    DBusMessageIter iter;
+    Exalt_Ethernet* eth;
+    Eina_List *interfaces,*l;
+    int connected = 0;
+
+    reply = dbus_message_new_method_return(msg);
+
+    interfaces = exalt_eth_list_get();
+    EXALT_ASSERT_CUSTOM_RET(interfaces!=NULL,
+            dbus_args_error_append(reply,
+                EXALT_DBUS_INTERFACE_LIST_ERROR_ID,
+                EXALT_DBUS_INTERFACE_LIST_ERROR);
+            return reply);
+
+
+    dbus_args_valid_append(reply);
+    dbus_message_iter_init_append(reply, &iter);
+
+    EINA_LIST_FOREACH(interfaces,l,eth)
+    {
+        if(exalt_eth_connected_is(eth))
+        {
+            connected = 1;
+            break;
+        }
+    }
+
+    connected = ! connected;
+    EXALT_ASSERT_CUSTOM_RET(dbus_message_iter_append_basic(&iter, DBUS_TYPE_BOOLEAN, &connected),
+            return reply);
+
+    return reply;
+}
+
 DBusMessage * dbus_cb_eth_ip_get(E_DBus_Object *obj __UNUSED__, DBusMessage *msg)
 {
     DBusMessage *reply;

@@ -750,8 +750,25 @@ void _exalt_eth_connected_status_update(Exalt_Ethernet *eth)
             exalt_eth_interfaces.eth_cb(eth,
                     EXALT_IFACE_ACTION_DISCONNECTED,
                     exalt_eth_interfaces.eth_cb_user_data);
-    }
 
+        //all interfaces are disconnected
+        Eina_List *l;
+        Exalt_Ethernet *_eth;
+        int connected = 0;
+        EINA_LIST_FOREACH(exalt_eth_interfaces.ethernets, l, _eth)
+        {
+            if(exalt_eth_connected_is(_eth))
+            {
+                connected = 1;
+                break;
+            }
+        }
+        if(!connected && exalt_eth_interfaces.eth_cb)
+            exalt_eth_interfaces.eth_cb(eth,
+                    EXALT_IFACE_ACTION_ALL_IFACES_DISCONNECTED,
+                    exalt_eth_interfaces.eth_cb_user_data);
+
+    }
 }
 
 /**
