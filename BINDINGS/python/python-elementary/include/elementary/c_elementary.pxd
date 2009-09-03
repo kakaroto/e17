@@ -158,7 +158,7 @@ cdef extern from "Elementary.h":
     void         elm_object_style_set(evas.c_evas.Evas_Object *obj, char *style)
     char*        elm_object_style_get(evas.c_evas.Evas_Object *obj)
     void         elm_object_disabled_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool disabled)
-    int          elm_object_disabled_get(evas.c_evas.Evas_Object *obj)
+    evas.c_evas.Eina_Bool elm_object_disabled_get(evas.c_evas.Evas_Object *obj)
 
     double       elm_scale_get()
     void         elm_scale_set(double scale)
@@ -242,6 +242,7 @@ cdef extern from "Elementary.h":
     void elm_button_icon_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Evas_Object *icon)
     evas.c_evas.Evas_Object *elm_button_icon_get(evas.c_evas.Evas_Object *obj)
     void elm_button_style_set(evas.c_evas.Evas_Object *obj, char *style)
+    char* elm_button_label_get(evas.c_evas.Evas_Object *obj)
     
     # Scroller object
     evas.c_evas.Evas_Object *elm_scroller_add(evas.c_evas.Evas_Object *parent)
@@ -480,9 +481,6 @@ cdef extern from "Elementary.h":
     void         elm_progressbar_value_set(evas.c_evas.Evas_Object *obj, double val)
     double       elm_progressbar_value_get(evas.c_evas.Evas_Object *obj)
 
- 
-    
-   
 # Forward declaration of some classes
 cdef class Object(evas.c_evas.Object)
 cdef class Hoversel(Object)

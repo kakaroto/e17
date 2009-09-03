@@ -32,6 +32,10 @@ cdef void _object_callback(void *data, c_evas.Evas_Object *obj, void *event_info
     except Exception, e:
         traceback.print_exc()
 
+cdef class Canvas(evas.c_evas.Canvas):
+    def __init__(self):
+        pass
+
 cdef class Object(evas.c_evas.Object):
     """
     elementary.Object
@@ -39,6 +43,12 @@ cdef class Object(evas.c_evas.Object):
     An abstract class to manage object and callback handling. All 
     widgets are based on this class
     """
+
+    def evas_get(self):
+        if self.evas is None:
+            self.evas = Canvas()
+            self.evas.obj = evas.c_evas.evas_object_evas_get(self.obj)
+        return self.evas
 
     def scale_set(self, scale):
         elm_object_scale_set(self.obj, scale)
@@ -57,12 +67,19 @@ cdef class Object(evas.c_evas.Object):
         return style
 
     def disabled_set(self, disabled):
-        elm_object_disabled_set(self.obj, disabled)
+        if disabled:
+            elm_object_disabled_set(self.obj, 1)
+        else:
+            elm_object_disabled_set(self.obj, 0)
 
     def disabled_get(self):
         cdef int disabled
         disabled = elm_object_disabled_get(self.obj)
-        return disabled
+        
+        if disabled == 1:
+            return True
+       
+        return False
     
     def focus(self):
         elm_object_focus(self.obj)
