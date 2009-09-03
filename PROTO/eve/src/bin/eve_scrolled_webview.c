@@ -60,6 +60,26 @@ static Evas_Smart_Class _parent_sc = EVAS_SMART_CLASS_INIT_NULL;
 static const char EDJE_PART_CONTENT[] = "eve.swallow.content";
 
 static void
+_ewk_webview_zoom_out(Evas_Object *webview)
+{
+   float zoom = ewk_webview_object_zoom_factor_get(webview);
+   zoom -= 0.25;
+   if (zoom < 0.25)
+     zoom = 0.25;
+   ewk_webview_object_zoom_factor_set(webview, zoom);
+}
+
+static void
+_ewk_webview_zoom_in(Evas_Object *webview)
+{
+   float zoom = ewk_webview_object_zoom_factor_get(webview);
+   zoom += 0.25;
+   if (zoom > 4.0)
+     zoom = 4.0;
+   ewk_webview_object_zoom_factor_set(webview, zoom);
+}
+
+static void
 _eve_scrolled_webview_on_key_down(void *data, Evas *e, Evas_Object *obj, void *event_info)
 {
    Evas_Event_Key_Down *ev = event_info;
@@ -79,6 +99,15 @@ _eve_scrolled_webview_on_key_down(void *data, Evas *e, Evas_Object *obj, void *e
      printf("Command:home\n");
    else if (strcmp(value, "End") == 0)
      printf("Command:end\n");
+   else if (evas_key_modifier_is_set(ev->modifiers, "Control"))
+     {
+	if (strcmp(value, "minus") == 0)
+	  _ewk_webview_zoom_out(obj);
+	else if (strcmp(value, "equal") == 0)
+	  _ewk_webview_zoom_in(obj);
+	else if (strcmp(value, "0") == 0)
+	  ewk_webview_object_zoom_factor_set(obj, 1.0);
+     }
    else
      ev->event_flags &= ~EVAS_EVENT_FLAG_ON_HOLD; /* unset on_hold */
 }
@@ -89,6 +118,29 @@ _eve_scrolled_webview_on_mouse_down(void *data, Evas *e, Evas_Object *obj, void 
    Eve_Scrolled_Webview_Data *priv = data;
 
    evas_object_focus_set(priv->webview, 1);
+}
+
+static void
+_eve_scrolled_webview_on_mouse_wheel(void *data, Evas *e, Evas_Object *obj, void *event_info)
+{
+   Eve_Scrolled_Webview_Data *priv = data;
+   Evas_Event_Mouse_Wheel *ev = event_info;
+
+   if (ev->event_flags & EVAS_EVENT_FLAG_ON_HOLD)
+     {
+	fprintf(stderr, "DBG: mouse wheel event z=%d is on hold, ignored.\n",
+		ev->z);
+	return;
+     }
+
+   if (!evas_key_modifier_is_set(ev->modifiers, "Control"))
+     return;
+
+   if (ev->z < 0)
+     _ewk_webview_zoom_out(obj);
+   else
+     _ewk_webview_zoom_in(obj);
+   ev->event_flags |= EVAS_EVENT_FLAG_ON_HOLD;
 }
 
 static void
@@ -171,6 +223,7 @@ _eve_scrolled_webview_smart_add(Evas_Object *o)
    } *itr, map[] = {
      {EVAS_CALLBACK_KEY_DOWN, _eve_scrolled_webview_on_key_down},
      {EVAS_CALLBACK_MOUSE_DOWN, _eve_scrolled_webview_on_mouse_down},
+     {EVAS_CALLBACK_MOUSE_WHEEL, _eve_scrolled_webview_on_mouse_wheel},
      {-1, NULL}
    };
    for (itr = map; itr->cb != NULL; itr++)
