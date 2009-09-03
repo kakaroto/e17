@@ -17,11 +17,11 @@ typedef struct _Eon_External Eon_External;
 typedef struct _Eon_Script Eon_Script;
 /* shapes */
 typedef struct _Eon_Shape Eon_Shape;
-typedef struct _Eon_Text Eon_Text;
 typedef struct _Eon_Square Eon_Square;
 typedef struct _Eon_Rect Eon_Rect;
 typedef struct _Eon_Circle Eon_Circle;
 typedef struct _Eon_Polygon Eon_Polygon;
+typedef struct _Eon_Text Eon_Text;
 /* paint objects */
 typedef struct _Eon_Paint Eon_Paint;
 typedef struct _Eon_Image Eon_Image;
@@ -60,8 +60,8 @@ EAPI int eon_shutdown(void);
 #include "eon_script.h"
 
 #include "eon_shape.h"
-#include "eon_text.h"
 #include "eon_square.h"
+#include "eon_text.h"
 #include "eon_rect.h"
 #include "eon_polygon.h"
 #include "eon_circle.h"

@@ -6,7 +6,7 @@ AM_CPPFLAGS = \
 -I. \
 -I$(top_srcdir)/src/include \
 -I$(top_srcdir)/src/engines/enesim/ \
-@ECORE_SDL_CFLAGS@ @SDL_CFLAGS@ @ETK_CFLAGS@
+@ECORE_SDL_CFLAGS@ @SDL_CFLAGS@ @EON_CFLAGS@
 
 noinst_LTLIBRARIES = libeon_engine_sdl.la
 

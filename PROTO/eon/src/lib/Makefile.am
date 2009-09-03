@@ -6,7 +6,7 @@ AUTOMAKE_OPTIONS = 1.4 foreign
 
 INCLUDES	= \
 -I. -I../.. -I$(top_srcdir)/src/include -Wall -g \
-@ETK_CFLAGS@
+@EON_CFLAGS@
 
 lib_LTLIBRARIES = libeon.la
 
@@ -14,7 +14,7 @@ EXTRA_DIST =
 
 libeon_la_SOURCES =
 
-libeon_la_LIBADD = @ETK_LIBS@ \
+libeon_la_LIBADD = @EON_LIBS@ \
 core/libeon_core.la \
 paint/libeon_paint.la \
 shape/libeon_shape.la \

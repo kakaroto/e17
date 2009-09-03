@@ -7,12 +7,6 @@
 /*============================================================================*
  *                                  Local                                     *
  *============================================================================*/
-struct _Eon_Engine_Enesim_Private
-{
-
-};
-
-
 static void _color_set(void *c, int color)
 {
 	uint32_t cmul;
@@ -102,7 +96,7 @@ static void paint_setup(Paint *p, int ox, int oy)
 /*============================================================================*
  *                                 Horswitch                                  *
  *============================================================================*/
-void * hswitch_create(Eon_Hswitch *hs)
+static void * hswitch_create(Eon_Hswitch *hs)
 {
 	Paint *p;
 
@@ -113,7 +107,7 @@ void * hswitch_create(Eon_Hswitch *hs)
 	return p;
 }
 
-Eina_Bool hswitch_setup(void *data, Eon_Shape *s)
+static Eina_Bool hswitch_setup(void *data, Eon_Shape *s)
 {
 	Paint *p = data;
 	Paint *tmp;
@@ -198,7 +192,7 @@ static void fade_delete(void *data)
 /*============================================================================*
  *                                 Sqpattern                                  *
  *============================================================================*/
-void * checker_create(Eon_Checker *sq)
+static void * checker_create(Eon_Checker *sq)
 {
 	Paint *p;
 
@@ -209,7 +203,7 @@ void * checker_create(Eon_Checker *sq)
 	return p;
 }
 
-Eina_Bool checker_setup(void *data, Eon_Shape *s)
+static Eina_Bool checker_setup(void *data, Eon_Shape *s)
 {
 	Paint *p = data;
 	Eon_Checker *sq = (Eon_Checker *)p->p;
@@ -235,7 +229,7 @@ static void checker_delete(void *data)
  *============================================================================*/
 
 /* FIXME do a real pattern! */
-void _image_pattern_span(void *data, void *span, int x, int y, unsigned int len)
+static void _image_pattern_span(void *data, void *span, int x, int y, unsigned int len)
 {
 	uint32_t *dst = span;
 	uint32_t color[2];
@@ -259,7 +253,7 @@ void _image_pattern_span(void *data, void *span, int x, int y, unsigned int len)
 	}
 }
 
-void * image_create(Eon_Image *i)
+static void * image_create(Eon_Image *i)
 {
 	Paint *p;
 
@@ -270,7 +264,7 @@ void * image_create(Eon_Image *i)
 	return p;
 }
 
-Eina_Bool image_setup(void *data, Eon_Shape *s)
+static Eina_Bool image_setup(void *data, Eon_Shape *s)
 {
 	Paint *p = data;
 	Eon_Image *i = (Eon_Image *)p->p;
@@ -299,142 +293,6 @@ static void image_delete(void *i)
 	//free(p->data);
 	free(p);
 }
-
-#if 0
-/* As enesim doesnt support prescaling on the fly while doing transformations
- * we need to create a scaled image before transforming
- */
-static void _image_transform(Enesim_Surface *dst, Eina_Rectangle *dclip, Context *c, Enesim_Surface *src, uint32_t sw, uint32_t sh, Eina_Rectangle *sgeom, Eina_Rectangle *sclip)
-{
-	Enesim_Cpu **cpus;
-	int numcpus;
-	Enesim_Operator drawer, tx;
-	uint32_t sstride, dstride;
-	uint32_t *s, *d, *t;
-	Enesim_Surface *realsrc = src;
-	int y;
-
-	cpus = enesim_cpu_get(&numcpus);
-	enesim_compositor_span_pixel_color_op_get(cpus[0], &drawer, c->rop, ENESIM_FORMAT_ARGB8888, ENESIM_FORMAT_ARGB8888, c->color);
-	enesim_transformer_1d_op_get(&tx, cpus[0], ENESIM_FORMAT_ARGB8888, ENESIM_MATRIX_AFFINE,  ENESIM_FAST, ENESIM_FORMAT_ARGB8888);
-
-	//printf("[%f %f %f]\n", c->matrix.m.xx, c->matrix.m.xy, c->matrix.m.xz);
-	//printf("[%f %f %f]\n", c->matrix.m.yx, c->matrix.m.yy, c->matrix.m.yz);
-	//printf("[%f %f %f]\n", c->matrix.m.zx, c->matrix.m.zy, c->matrix.m.zz);
-
-	/* setup a temporary surface */
-	/* downscale or upscale the image */
-	if (((sgeom->w != sw) || (sgeom->h != sh)))
-	{
-		Enesim_Surface *tmp;
-		Eina_Rectangle rclip;
-		Context rc;
-
-		rc.rop = ENESIM_FILL;
-		rc.color = 0xffffffff;
-
-		tmp = enesim_surface_new(ENESIM_FORMAT_ARGB8888, sgeom->w, sgeom->h);
-		eina_rectangle_coords_from(&rclip, 0, 0, sgeom->w, sgeom->h);
-		_image_scale(tmp, &rclip, &rc, src, sw, sh, &rclip, &rclip);
-		realsrc = tmp;
-	}
-	_image_setup(realsrc, &s, &sstride, dst, &d, &dstride);
-
-	t = malloc(dclip->w * sizeof(uint32_t));
-	d =  d + (dclip->y * dstride) + dclip->x;
-	y = 0;
-
-	//printf("DCLIP %d %d %d %d\n", dclip->x, dclip->y, dclip->w, dclip->h);
-	//printf("SGEOM %d %d %d %d\n", sgeom->x, sgeom->y, sgeom->w, sgeom->h);
-	//printf("SCLIP %d %d %d %d\n", sclip->x, sclip->y, sclip->w, sclip->h);
-	//printf("%d %d %d\n", w, h, sstride);
-	//printf("old at %d %d %d %d\n", srect->x, srect->y, srect->w, srect->h);
-	while (y < dclip->h)
-	{
-		memset(t, 0, sizeof(uint32_t) * dclip->w);
-#if !DEBUG
-		enesim_operator_transformer_1d(&tx, s,
-				sstride, sgeom->w, sgeom->h,
-				0, 0,
-				c->matrix.m.xx, c->matrix.m.xy, c->matrix.m.xz,
-				c->matrix.m.yx, c->matrix.m.yy, c->matrix.m.yz,
-				c->matrix.m.zx, c->matrix.m.zy, c->matrix.m.zz,
-				0, y, dclip->w, t);
-		enesim_operator_drawer_span(&drawer, d, dclip->w, t, c->color, NULL);
-		d += dstride;
-#else
-		enesim_operator_drawer_span(&drawer, d, dclip->w, s, 0, NULL);
-		s += sstride;
-		d += dstride;
-#endif
-		y++;
-	}
-	/* clean up */
-	free(t);
-	/* the temporary surface */
-	if (realsrc != src)
-	{
-		enesim_surface_delete(realsrc);
-	}
-}
-
-/*
- * surface: destintation surface
- * context: destination clipping?
- * srect: source rectangle (scaling??)
- * src: src image
- */
-void eon_enesim_image(void *surface, void *context, Enesim_Surface *src, Eina_Rectangle *srect)
-{
-	Enesim_Surface *dst = surface;
-	Context *c = context;
-	Eina_Rectangle dclip, sclip;
-	uint32_t sw, sh;
-	uint32_t dw, dh;
-
-#ifdef EON_DEBUG
-	printf("[Eon_Eon_Engine_Enesim] RENDERING AN IMAGE %d %d %d %d\n", srect->x, srect->y, srect->w, srect->h);
-#endif
-	enesim_surface_size_get(src, &sw, &sh);
-	enesim_surface_size_get(dst, &dw, &dh);
-	eina_rectangle_coords_from(&dclip, srect->x, srect->y, srect->w, srect->h);
-
-	/* the context has the clipping rect relative to the canvas */
-	//printf("ENTERING\n");
-	//printf("S = %d %d D = %d %d\n", sw, sh, dw, dh);
-	//printf("SGEOM %d %d %d %d\n", srect->x, srect->y, srect->w, srect->h);
-	//printf("DCLIP %d %d %d %d\n", dclip.x, dclip.y, dclip.w, dclip.h);
-	if (c->clip.used)
-	{
-		//printf("CLIP %d %d %d %d\n", c->clip.rect.x, c->clip.rect.y, c->clip.rect.w, c->clip.rect.h);
-		eina_rectangle_rescale_in(srect, &c->clip.rect, &sclip);
-		eina_rectangle_coords_from(&dclip, c->clip.rect.x, c->clip.rect.y, c->clip.rect.w, c->clip.rect.h);
-	}
-	//printf("SCLIP %d %d %d %d\n", sclip.x, sclip.y, sclip.w, sclip.h);
-	//printf("DCLIP %d %d %d %d\n", dclip.x, dclip.y, dclip.w, dclip.h);
-
-	/* transformed matrix */
-	if (c->matrix.used)
-	{
-		//printf("Transforming image  %d %d - %d %d\n", sw, sh, srect->w, srect->h);
-		_image_transform(dst, &dclip, c, src, sw, sh, srect, &sclip);
-	}
-	// TODO filter
-	/* downscale or upscale the image */
-	else if (((srect->w != sw) || (srect->h != sh)))
-	{
-		//printf("Scaling image  %d %d - %d %d\n", sw, sh, srect->w, srect->h);
-		_image_scale(dst, &dclip, c, src, sw, sh, srect, &sclip);
-		return;
-	}
-	/* no scale */
-	else
-	{
-		//printf("No scaling image  %d %d - %d %d\n", sw, sh, srect->w, srect->h);
-		_image_noscale(dst, &dclip, c, src, srect, &sclip);
-	}
-}
-#endif
 
 /*============================================================================*
  *                                  Common                                    *
@@ -485,7 +343,7 @@ static void shape_renderer_draw(Eon_Shape *s, Enesim_Surface *dst,  Enesim_Rende
 	}
 }
 
-void aliased_color_cb(Enesim_Scanline *sl, void *data)
+static void aliased_color_cb(Enesim_Scanline *sl, void *data)
 {
 	Shape_Drawer_Data *sdd = data;
 	uint32_t *ddata;
@@ -497,7 +355,7 @@ void aliased_color_cb(Enesim_Scanline *sl, void *data)
 	sdd->span(ddata, sl->data.alias.w, NULL, sdd->color, NULL);
 }
 
-void aliased_fill_cb(Enesim_Scanline *sl, void *data)
+static void aliased_fill_cb(Enesim_Scanline *sl, void *data)
 {
 	Shape_Drawer_Data *sdd = data;
 	int px, py;
@@ -590,7 +448,7 @@ static void * polygon_create(Eon_Polygon *ep)
 	return p;
 }
 
-void polygon_point_add(void *pd, int x, int y)
+static void polygon_point_add(void *pd, int x, int y)
 {
 	Polygon *p = pd;
 
@@ -600,7 +458,7 @@ void polygon_point_add(void *pd, int x, int y)
 	enesim_rasterizer_vertex_add(p->r, x, y);
 }
 
-void polygon_render(void *pd, void *cd, Eina_Rectangle *clip)
+static void polygon_render(void *pd, void *cd, Eina_Rectangle *clip)
 {
 	Polygon *p = pd;
 	Shape_Drawer_Data sdd;
@@ -698,6 +556,44 @@ static void circle_delete(void *ec)
 	free(ec);
 }
 /*============================================================================*
+ *                                  Text                                      *
+ *============================================================================*/
+/* Enesim doesnt have a text rasterizer, we use freetype here */
+typedef struct Text
+{
+	Eon_Text *t;
+} Text;
+
+
+static void * text_create(Eon_Text *et)
+{
+	Text *t;
+
+	printf("CREATE!!\n");
+	t = malloc(sizeof(Text));
+	t->t = et;
+
+	return t;
+}
+
+static void text_render(void *et, void *cd, Eina_Rectangle *clip)
+{
+	Text *t = et;
+	char *str;
+	int i;
+
+	printf("RENDER!! %p %p\n", t, t->t);
+	str = eon_text_string_get(t->t);
+	printf("%p\n", str);
+	/* TODO Move this into the shape object */
+	if (!str)
+		return;
+	for (i = 0; str[i]; i++)
+	{
+		printf("%c\n", str[i]);
+	}
+}
+/*============================================================================*
  *                                  Debug                                     *
  *============================================================================*/
 static void debug_rect(void *cd, uint32_t color, int x, int y, int w, int h)
@@ -719,58 +615,31 @@ static void debug_rect(void *cd, uint32_t color, int x, int y, int w, int h)
 		dst += stride;
 	}
 }
-
-static void _ctor(void *instance)
-{
-	Eon_Engine_Enesim *e;
-	Eon_Engine_Enesim_Private *prv;
-
-	e = (Eon_Engine_Enesim *) instance;
-	e->prv = prv = ekeko_type_instance_private_get(eon_engine_enesim_type_get(), instance);
-	e->parent.rect_create = rect_create;
-	e->parent.rect_render = rect_render;
-	e->parent.circle_create = circle_create;
-	e->parent.circle_render = circle_render;
-	e->parent.polygon_create = polygon_create;
-	e->parent.polygon_point_add = polygon_point_add;
-	e->parent.polygon_render = polygon_render;
-	e->parent.image_create = image_create;
-	e->parent.image_delete = image_delete;
-	e->parent.image_setup = image_setup;
-	e->parent.fade_create = fade_create;
-	e->parent.fade_delete = fade_delete;
-	e->parent.fade_setup = fade_setup;
-	e->parent.hswitch_create = hswitch_create;
-	e->parent.hswitch_delete = hswitch_delete;
-	e->parent.hswitch_setup = hswitch_setup;
-	e->parent.checker_create = checker_create;
-	e->parent.checker_delete = checker_delete;
-	e->parent.checker_setup = checker_setup;
-	e->parent.debug_rect = debug_rect;
-}
-
-static void _dtor(void *instance)
-{
-
-}
-
-
-/*============================================================================*
- *                                 Global                                     *
- *============================================================================*/
-Ekeko_Type * eon_engine_enesim_type_get(void)
-{
-	static Ekeko_Type *type = NULL;
-
-	if (!type)
-	{
-		type = ekeko_type_new(EON_TYPE_ENGINE_ENESIM, sizeof(Eon_Engine_Enesim),
-				sizeof(Eon_Engine_Enesim_Private), eon_engine_type_get(),
-				_ctor, _dtor, NULL);
-	}
-
-	return type;
-}
 /*============================================================================*
  *                                   API                                      *
  *============================================================================*/
+EAPI void eon_engine_enesim_setup(Eon_Engine *e)
+{
+	e->rect_create = rect_create;
+	e->rect_render = rect_render;
+	e->circle_create = circle_create;
+	e->circle_render = circle_render;
+	e->polygon_create = polygon_create;
+	e->polygon_point_add = polygon_point_add;
+	e->polygon_render = polygon_render;
+	e->text_create = text_create;
+	e->text_render = text_render;
+	e->image_create = image_create;
+	e->image_delete = image_delete;
+	e->image_setup = image_setup;
+	e->fade_create = fade_create;
+	e->fade_delete = fade_delete;
+	e->fade_setup = fade_setup;
+	e->hswitch_create = hswitch_create;
+	e->hswitch_delete = hswitch_delete;
+	e->hswitch_setup = hswitch_setup;
+	e->checker_create = checker_create;
+	e->checker_delete = checker_delete;
+	e->checker_setup = checker_setup;
+	e->debug_rect = debug_rect;
+}

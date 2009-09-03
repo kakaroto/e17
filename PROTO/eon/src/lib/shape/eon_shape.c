@@ -49,6 +49,7 @@ static void _child_append_cb(const Ekeko_Object *o, Ekeko_Event *e, void *data)
 	eng = eon_document_engine_get(d);
 	s = (Eon_Shape *)o;
 	prv = PRIVATE(s);
+	printf("%p %p\n", s, s->create);
 	prv->engine_data = s->create(eng, s);
 }
 

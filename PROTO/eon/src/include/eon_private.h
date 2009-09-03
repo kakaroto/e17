@@ -61,7 +61,7 @@ void eon_parser_register(const char *name, Eon_Parser *p);
 typedef void * Eon_Engine_Surface;
 void eon_engine_init(void);
 void eon_engine_shutdown(void);
-void eon_engine_register(const char *name, Eon_Type_Constructor n);
+void eon_engine_register(const char *name, Eon_Engine *);
 Eon_Engine * eon_engine_get(const char *name);
 
 /* Enesim engine */

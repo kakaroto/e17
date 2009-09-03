@@ -355,3 +355,8 @@ Ekeko_Object * eon_parser_script_new(Ekeko_Object *p)
 	return eon_script_new();
 }
 
+Ekeko_Object * eon_parser_text_new(Ekeko_Object *p)
+{
+	return eon_parser_shape_new(p, eon_text_type_get);
+}
+

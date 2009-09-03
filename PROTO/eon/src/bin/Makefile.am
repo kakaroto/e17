@@ -6,7 +6,7 @@ EXTRA_DIST =
 
 INCLUDES = \
 -I. -I../.. -I$(top_srcdir)/src/include -Wall -g \
-@ETK_CFLAGS@
+@EON_CFLAGS@
 
 bin_PROGRAMS = eon_player
 
@@ -17,7 +17,7 @@ eon_player_SOURCES = \
 eon_player.c
 
 eon_player_LDADD = $(top_builddir)/src/lib/libeon.la \
-@ETK_LIBS@ \
+@EON_LIBS@ \
 -lm
 
 if BUILD_ENGINE_SDL

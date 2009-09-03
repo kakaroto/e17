@@ -104,7 +104,6 @@ static void _prop_modify_cb(const Ekeko_Object *o, Ekeko_Event *e, void *data)
 	if (!strcmp(em->prop, "engine") && !prv->engine.backend)
 	{
 		prv->engine.backend = eon_engine_get(em->curr->value.string_value);
-		eon_engine_ref(prv->engine.backend, d);
 	}
 }
 
@@ -233,7 +232,6 @@ EAPI Eon_Document * eon_document_new(const char *engine, int w, int h, const cha
 	prv = PRIVATE(d);
 	/* the gfx engine */
 	prv->engine.backend = eon_engine_get(engine);
-	eon_engine_ref(prv->engine.backend, d);
 	prv->engine.data = eon_engine_document_create(prv->engine.backend, d, options);
 	/* the script engine */
 	prv->vm.sm = eon_script_get("neko");

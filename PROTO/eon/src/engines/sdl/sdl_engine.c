@@ -15,22 +15,8 @@
 /*============================================================================*
  *                                  Local                                     *
  *============================================================================*/
-#define EON_TYPE_ENGINE_SDL "Eon_Engine_SDL"
 //#define SDL_PURE
 #define SINGLE_BUFFER
-
-static Ekeko_Type *_engine_sdl_type_get(void);
-
-typedef struct _Engine_SDL_Private
-{
-
-} Engine_SDL_Private;
-
-typedef struct _Engine_SDL
-{
-	Eon_Engine_Enesim parent;
-	Engine_SDL_Private *prv;
-} Engine_SDL;
 
 typedef struct _Engine_SDL_Document
 {
@@ -265,12 +251,6 @@ static void * canvas_create(Eon_Canvas *c, void *dd, Eina_Bool root, int w, int 
 	return es;
 }
 
-
-static void _enesim_blit(void *s, void *context, void *src, Eina_Rectangle *srect)
-{
-	eon_enesim_image(s, context, src, srect);
-}
-
 static Eina_Bool canvas_flush(void *src, Eina_Rectangle *srect)
 {
 	Enesim_Surface *es = src;
@@ -346,43 +326,23 @@ static void _enesim_unlock(void *src)
 		_unlock(s);
 }
 
-
-
-static void _ctor(void *instance)
-{
-	Engine_SDL *e;
-	Engine_SDL_Private *prv;
-
-	e = (Engine_SDL *) instance;
-	e->prv = prv = ekeko_type_instance_private_get(_engine_sdl_type_get(), instance);
-	e->parent.parent.document_create = document_create;
-	e->parent.parent.canvas_create = canvas_create;
-	e->parent.parent.canvas_flush = canvas_flush;
-}
-
-static void _dtor(void *instance)
-{
-
-}
-static Ekeko_Type *_engine_sdl_type_get(void)
-{
-	static Ekeko_Type *type = NULL;
-
-	if (!type)
-	{
-		type = ekeko_type_new(EON_TYPE_ENGINE_SDL, sizeof(Engine_SDL),
-				sizeof(Engine_SDL_Private), eon_engine_enesim_type_get(),
-				_ctor, _dtor, NULL);
-	}
-
-	return type;
-}
+static Eon_Engine _sdl_engine = {
+	.document_create = document_create,
+	.canvas_create = canvas_create,
+	.canvas_flush = canvas_flush,
+};
 /*============================================================================*
  *                                 Global                                     *
  *============================================================================*/
 void engine_sdl_init(void)
 {
-	eon_engine_register("sdl", _engine_sdl_type_get);
+	eon_engine_enesim_setup(&_sdl_engine);
+	eon_engine_register("sdl", &_sdl_engine);
+}
+
+void engine_sdl_shutdown(void)
+{
+
 }
 /*============================================================================*
  *                                   API                                      *

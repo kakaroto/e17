@@ -5,7 +5,7 @@ if BUILD_SCRIPT_NEKO
 AM_CPPFLAGS = \
 -I. \
 -I$(top_srcdir)/src/include \
-@ETK_CFLAGS@
+@EON_CFLAGS@
 
 noinst_LTLIBRARIES = libeon_script_neko.la
 

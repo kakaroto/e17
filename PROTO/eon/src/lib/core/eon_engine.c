@@ -20,26 +20,7 @@
 /*============================================================================*
  *                                  Local                                     *
  *============================================================================*/
-struct _Eon_Engine_Private
-{
-
-};
-
 static Eina_Hash *_engines = NULL;
-
-static void _ctor(void *instance)
-{
-	Eon_Engine *e;
-	Eon_Engine_Private *prv;
-
-	e = (Eon_Engine*) instance;
-	e->private = prv = ekeko_type_instance_private_get(eon_engine_type_get(), instance);
-}
-
-static void _dtor(void *instance)
-{
-
-}
 /*============================================================================*
  *                                 Global                                     *
  *============================================================================*/
@@ -60,9 +41,9 @@ void eon_engine_shutdown(void)
 	/* TODO remove the hash */
 }
 
-void eon_engine_register(const char *name, Eon_Type_Constructor n)
+void eon_engine_register(const char *name, Eon_Engine *e)
 {
-	eina_hash_add(_engines, name, n);
+	eina_hash_add(_engines, name, e);
 }
 
 Eon_Engine * eon_engine_get(const char *name)
@@ -71,55 +52,14 @@ Eon_Engine * eon_engine_get(const char *name)
 	Ekeko_Type *t;
 	Eon_Type_Constructor n;
 
-	n = eina_hash_find(_engines, name);
-	if (!n)
-		return NULL;
-	/* get the engine's type */
-	t = n();
-	if (!t)
-		return NULL;
-	/* create the instance */
-	o = ekeko_type_instance_new(t);
-	if (!ekeko_type_instance_is_of(o, EON_TYPE_ENGINE))
-	{
-		ekeko_object_delete(o);
-	}
-	return (Eon_Engine *)o;
-}
-
-void eon_engine_ref(Eon_Engine *e, Eon_Document *d)
-{
-	/* register the needed callbacks */
-}
-
-void eon_engine_unref(Eon_Engine *e, Eon_Document *d)
-{
-	/* unregister every callback */
+	return eina_hash_find(_engines, name);
 }
 /*============================================================================*
  *                                   API                                      *
  *============================================================================*/
-EAPI Ekeko_Type *eon_engine_type_get(void)
-{
-	static Ekeko_Type *type = NULL;
-
-	if (!type)
-	{
-		type = ekeko_type_new(EON_TYPE_ENGINE, sizeof(Eon_Engine),
-				sizeof(Eon_Engine_Private), ekeko_object_type_get(),
-				_ctor, _dtor, NULL);
-	}
-
-	return type;
-
-}
-
 EAPI void * eon_engine_document_create(Eon_Engine *e, Eon_Document *d, const char *options)
 {
-	void *dd = e->document_create(d, options);
-
-	printf("%p\n", dd);
-	return dd;
+	return e->document_create(d, options);
 }
 
 EAPI void * eon_engine_canvas_create(Eon_Engine *e, void *cd, Eon_Canvas *c, Eina_Bool root, uint32_t w, uint32_t h)
@@ -173,6 +113,17 @@ EAPI void eon_engine_polygon_render(Eon_Engine *e, void *p, void *c, Eina_Rectan
 {
 	e->polygon_render(p, c, clip);
 }
+
+EAPI void * eon_engine_text_create(Eon_Engine *e, Eon_Text *t)
+{
+	return e->text_create(t);
+}
+
+EAPI void eon_engine_text_render(Eon_Engine *e, void *t, void *c, Eina_Rectangle *clip)
+{
+	e->text_render(t, c, clip);
+}
+
 /* Paint objects */
 EAPI void * eon_engine_image_create(Eon_Engine *e, Eon_Paint *p)
 {
@@ -233,6 +184,7 @@ EAPI void eon_engine_checker_delete(Eon_Engine *e, void *engine_data)
 {
 	e->checker_delete(engine_data);
 }
+
 /* Debug */
 EAPI void eon_engine_debug_rect(Eon_Engine *e, void *c, uint32_t color, int x,  int y, int w, int h)
 {

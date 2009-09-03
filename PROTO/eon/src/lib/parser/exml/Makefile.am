@@ -5,7 +5,7 @@ if BUILD_PARSER_EXML
 AM_CPPFLAGS = \
 -I. \
 -I$(top_srcdir)/src/include \
-@ETK_CFLAGS@ \
+@EON_CFLAGS@ \
 @EXML_CFLAGS@
 
 

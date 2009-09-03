@@ -377,6 +377,10 @@ Ekeko_Object * tag_create(char *tag, EXML *exml, Ekeko_Object *parent)
 	{
 		o = eon_parser_circle_new(parent);
 	}
+	else if (!strcmp(tag, "text"))
+	{
+		o = eon_parser_text_new(parent);
+	}
 	else if (!strcmp(tag, "image"))
 	{
 		o = (Ekeko_Object *)eon_image_new();
