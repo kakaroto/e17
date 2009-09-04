@@ -22,8 +22,8 @@
   #include <libexif/exif-data.h>
 #endif
 
-#define DBG(...) EINA_ERROR_PDBG(__VA_ARGS__)
-#define ERR(...) EINA_ERROR_PERR(__VA_ARGS__)
+#define DBG(...) EINA_LOG_DBG(__VA_ARGS__)
+#define ERR(...) EINA_LOG_ERR(__VA_ARGS__)
 
 typedef enum _IV_Image_Fit {
      PAN,
@@ -339,7 +339,7 @@ on_settings_slideshow_delay_change(void *data, Evas_Object *obj, void *event_inf
 {
    IV *iv = data;
 
-   iv->config->slideshow_delay = elm_slider_value_get(obj);
+   iv->config->slideshow_delay = elm_spinner_value_get(obj);
    config_save(iv);
    if (iv->flags.slideshow)
      {
@@ -1024,7 +1024,7 @@ on_idler(void *data)
 
 	if (iv->single_file)
 	  {
-	     Eina_List *l = eina_list_data_find_list(iv->cur_file, iv->single_file);
+	     Eina_List *l = eina_list_data_find_list(iv->files, iv->single_file);
 	     if (l) iv->cur_file = l;
 	     eina_stringshare_del(iv->single_file);
 	     iv->single_file = NULL;
@@ -1345,14 +1345,13 @@ on_settings_click(void *data, Evas_Object *obj, void *event_info)
 	elm_table_pack(tb, o, 0, row, 1, 1);
 	evas_object_show(o);
 
-	o = elm_slider_add(tb);
-	elm_slider_span_size_set(o, 120);
+	o = elm_spinner_add(tb);
 	evas_object_size_hint_weight_set(o, 1.0, 1.0);
 	evas_object_size_hint_align_set(o, -1, -1);
-	elm_slider_indicator_format_set(o, "%.2f");
-	elm_slider_min_max_set(o, 1.0, 10.0);
-	elm_slider_unit_format_set(o, "%1.1f seconds");
-	elm_slider_value_set(o, iv->config->slideshow_delay);
+	elm_spinner_step_set(o, 0.1);
+	elm_spinner_min_max_set(o, 1.0, 10.0);
+	elm_spinner_label_format_set(o, "%1.1f seconds");
+	elm_spinner_value_set(o, iv->config->slideshow_delay);
 	evas_object_smart_callback_add(o, "delay,changed",
 				       on_settings_slideshow_delay_change, iv);
 	evas_object_show(o);
@@ -1721,22 +1720,13 @@ config_init(IV *iv)
 {
    Eet_Data_Descriptor_Class eddc;
    
-   eddc.version = EET_DATA_DESCRIPTOR_CLASS_VERSION;
-   eddc.func.mem_alloc = NULL;
-   eddc.func.mem_free = NULL;
-   eddc.func.str_alloc = (char *(*)(const char *)) eina_stringshare_add;
-   eddc.func.str_free = (void (*)(const char *)) eina_stringshare_del;
-   eddc.func.list_next = (void *(*)(void *)) eina_list_next;
-   eddc.func.list_append = (void *(*)(void *l, void *d)) eina_list_append;
-   eddc.func.list_data = (void *(*)(void *)) eina_list_data_get;
-   eddc.func.list_free = (void *(*)(void *)) eina_list_free;
-   eddc.func.hash_foreach = NULL;
-   eddc.func.hash_add = NULL;
-   eddc.func.hash_free = NULL;
-   eddc.name = "IV_Config";
-   eddc.size = sizeof(IV_Config);
+   if (!eet_eina_file_data_descriptor_class_set(&eddc, "IV_Config", sizeof(IV_Config)))
+     {
+	ERR("Unable to create the config data descriptor!\n");
+	return iv_exit(iv);
+     }
 
-   iv->config_edd = eet_data_descriptor2_new(&eddc);
+   iv->config_edd = eet_data_descriptor_file_new(&eddc);
 #undef T
 #undef D
 #define T IV_Config 
@@ -1772,7 +1762,7 @@ elm_main(int argc, char **argv)
 {
    int i;
    IV *iv;
-   
+
    iv = calloc(1, sizeof(IV));
    config_init(iv);
 
