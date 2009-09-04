@@ -1,21 +1,3 @@
-/*
- * =====================================================================================
- *
- *       Filename:  libexalt_dbus_private.h
- *
- *    Description:  private functions/types
- *
- *        Version:  1.0
- *        Created:  09/03/2007 09:34:07 PM CEST
- *       Revision:  none
- *       Compiler:  gcc
- *
- *         Author:   (Watchwolf), Atton Jonathan <watchwolf@watchwolf.fr>
- *        Company:
- *
- * =====================================================================================
- */
-
 #ifndef  LIBEXALT_DBUS_PRIVATE_INC
 #define  LIBEXALT_DBUS_PRIVATE_INC
 

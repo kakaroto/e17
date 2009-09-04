@@ -1,20 +1,4 @@
-/*
- * =====================================================================================
- *
- *       Filename:  exalt_dbus_response.h
- *
- *    Description:
- *
- *        Version:  1.0
- *        Created:  03/10/08 16:58:46 UTC
- *       Revision:  none
- *       Compiler:  gcc
- *
- *         Author:  (Watchwolf), Atton Jonathan <watchwolf@watchwolf.fr>
- *        Company:
- *
- * =====================================================================================
- */
+/** @file exalt_dbus_response.h */
 
 #ifndef  EXALT_DBUS_RESPONSE_INC
 #define  EXALT_DBUS_RESPONSE_INC

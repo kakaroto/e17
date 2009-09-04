@@ -1,4 +1,3 @@
-
 /** @file exalt_dbus_dns.h */
 
 #ifndef  EXALT_DBUS_DNS_INC

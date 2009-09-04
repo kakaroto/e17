@@ -1,21 +1,3 @@
-/*
- * =====================================================================================
- *
- *       Filename:  exalt_dbus_wireless.h
- *
- *    Description: All functions about a wireless device
- *
- *        Version:  1.0
- *        Created:  08/31/2007 12:34:00 PM CEST
- *       Revision:  none
- *       Compiler:  gcc
- *
- *         Author:   (Watchwolf), Atton Jonathan <watchwolf@watchwolf.fr>
- *        Company:
- *
- * =====================================================================================
- */
-
 /** @file exalt_dbus_wireless.h */
 
 #ifndef  EXALT_DBUS_WIRELESS_INC
