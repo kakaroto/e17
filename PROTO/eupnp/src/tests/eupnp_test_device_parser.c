@@ -43,7 +43,7 @@ START_TEST(eupnp_xml_parse_complete)
    eupnp_log_init();
    eupnp_device_parser_init();
 
-   INFO("Test: complete xml parsing\n");
+   INFO("Test: complete xml parsing");
    FILE *xml;
    long size;
    char *buffer;
@@ -82,7 +82,7 @@ START_TEST(eupnp_xml_parse_partial)
    eupnp_log_init();
    eupnp_device_parser_init();
 
-   INFO("Incremental XML parsing\n");
+   INFO("Incremental XML parsing");
 
    Eupnp_Device_Info *device_info;
    FILE *xml;
@@ -111,13 +111,13 @@ START_TEST(eupnp_xml_parse_partial)
 	size = (size > BLOCK_READ) ? BLOCK_READ : size;
 	strncpy(tmp, buffer+walk, size);
 	tmp[size] = '\0';
-	INFO("Feeding with %ld chars: %s\n", size, tmp);
+	INFO("Feeding with %ld chars: %s", size, tmp);
 	fail_if(!eupnp_device_parse_xml_buffer(tmp, size, device_info));
 	walk += BLOCK_READ;
 
 	if (walk > fixed)
 	  {
-		INFO("Stopping feed\n");
+		INFO("Stopping feed");
 		break;
 	  }
      }

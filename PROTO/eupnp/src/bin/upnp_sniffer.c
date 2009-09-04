@@ -53,7 +53,7 @@ on_device_found(void *user_data, Eupnp_Event_Type event_type, void *event_data)
 {
    Eupnp_Device_Info *d = event_data;
 
-   INFO_D(_log_domain, "Device found: %s\n", d->udn);
+   INFO_D(_log_domain, "Device found: %s", d->udn);
 
    return EINA_TRUE;
 }
@@ -78,9 +78,9 @@ on_device_gone(void *user_data, Eupnp_Event_Type event_type, void *event_data)
 
    if (d)
      {
-	INFO_D(_log_domain, "Device gone\n");
-	INFO_D(_log_domain, "\tudn: %s\n", d->udn);
-	INFO_D(_log_domain, "\tlocation: %s\n", d->location);
+	INFO_D(_log_domain, "Device gone");
+	INFO_D(_log_domain, "\tudn: %s", d->udn);
+	INFO_D(_log_domain, "\tlocation: %s", d->location);
      }
 
    return EINA_FALSE;
@@ -96,10 +96,10 @@ on_service_found(void *user_data, Eupnp_Event_Type event_type, void *event_data)
 
    if (s)
      {
-	INFO_D(_log_domain, "Service found\n");
-	INFO_D(_log_domain, "\tudn: %s\n", s->udn);
-	INFO_D(_log_domain, "\ttype: %s\n", s->service_type);
-	INFO_D(_log_domain, "\tlocation: %s\n", s->location);
+	INFO_D(_log_domain, "Service found");
+	INFO_D(_log_domain, "\tudn: %s", s->udn);
+	INFO_D(_log_domain, "\ttype: %s", s->service_type);
+	INFO_D(_log_domain, "\tlocation: %s", s->location);
      }
 
    return EINA_TRUE;
@@ -115,10 +115,10 @@ on_service_gone(void *user_data, Eupnp_Event_Type event_type, void *event_data)
 
    if (s)
      {
-	INFO_D(_log_domain, "Service gone\n");
-	INFO_D(_log_domain, "\tudn: %s\n", s->udn);
-	INFO_D(_log_domain, "\ttype: %s\n", s->service_type);
-	INFO_D(_log_domain, "\tlocation: %s\n", s->location);
+	INFO_D(_log_domain, "Service gone");
+	INFO_D(_log_domain, "\tudn: %s", s->udn);
+	INFO_D(_log_domain, "\ttype: %s", s->service_type);
+	INFO_D(_log_domain, "\tlocation: %s", s->location);
      }
 
    return EINA_TRUE;
@@ -183,9 +183,9 @@ int main(void)
    eupnp_control_point_start(c);
 
    ret = 0;
-   INFO_D(_log_domain, "Started sniffing on the UPnP network.\n");
+   INFO_D(_log_domain, "Started sniffing on the UPnP network.");
    ecore_main_loop_begin();
-   INFO_D(_log_domain, "Shutting down application.\n");
+   INFO_D(_log_domain, "Shutting down application.");
 
    /* Shutdown procedure */
    eupnp_control_point_stop(c);

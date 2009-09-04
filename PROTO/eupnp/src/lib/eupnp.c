@@ -70,17 +70,17 @@ eupnp_init(void)
 
    if (!eupnp_ssdp_init())
      {
-	fprintf(stderr, "Failed to initialize eina array module\n");
+	fprintf(stderr, "Failed to initialize eupnp ssdp module.\n");
 	goto ssdp_init_error;
      }
 
    if (!eupnp_control_point_init())
      {
-	fprintf(stderr, "Failed to initialize eupnp control point module\n");
+	fprintf(stderr, "Failed to initialize eupnp control point module.\n");
 	goto control_point_init_error;
      }
 
-   INFO("Initializing eupnp library\n");
+   INFO("Initializing eupnp library");
 
    return ++_eupnp_main_count;
 
@@ -108,7 +108,7 @@ eupnp_shutdown(void)
 {
    if (_eupnp_main_count != 1) return --_eupnp_main_count;
 
-   INFO("Shutting down eupnp library\n");
+   INFO("Shutting down eupnp library");
 
    eupnp_control_point_shutdown();
    eupnp_ssdp_shutdown();

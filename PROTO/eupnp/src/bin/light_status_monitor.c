@@ -48,11 +48,11 @@ on_status_event(Eupnp_State_Variable *var, void *buffer, int size, void *data)
 	tmp = malloc(sizeof(char)*(size + 1));
 	memcpy(tmp, buffer, size);
 	tmp[size] = '\0';
-	INFO_D(_log_domain, "Status changed event data: %s\n", tmp);
+	INFO_D(_log_domain, "Status changed event data: %s", tmp);
 	free(tmp);
      }
    else
-	ERROR_D(_log_domain, "Status event incomplete.\n");
+	ERROR_D(_log_domain, "Status event incomplete.");
 
    return EINA_TRUE;
 }
@@ -72,7 +72,7 @@ on_switch_power_proxy_ready(Eupnp_Service_Proxy *proxy, void *data)
 							    EINA_FALSE, // Infinite subscription
 							    100,        // 100 seconds subscription
 							    NULL))
-     ERROR_D(_log_domain, "Failed to subscribe for events on Status variable.\n");
+     ERROR_D(_log_domain, "Failed to subscribe for events on Status variable.");
 }
 
 /*
@@ -149,15 +149,15 @@ int main(void)
 
    /* Send a test search for all devices*/
    if (!eupnp_control_point_discovery_request_send(c, 5, EUPNP_ST_SSDP_ALL))
-	ERROR_D(_log_domain, "Failed to perform MSearch.\n");
+	ERROR_D(_log_domain, "Failed to perform MSearch.");
    else
-	INFO_D(_log_domain, "MSearch sent sucessfully.\n");
+	INFO_D(_log_domain, "MSearch sent sucessfully.");
 
    ret = 0;
 
-   INFO_D(_log_domain, "Finished starting.\n");
+   INFO_D(_log_domain, "Finished starting.");
    ecore_main_loop_begin();
-   INFO_D(_log_domain, "Closing application.\n");
+   INFO_D(_log_domain, "Closing application.");
 
    /* Shutdown procedure */
    eupnp_control_point_stop(c);

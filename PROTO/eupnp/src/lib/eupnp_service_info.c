@@ -64,12 +64,12 @@ eupnp_service_info_init(void)
 
    if ((_log_dom = eina_log_domain_register("Eupnp.ServiceInfo", EINA_COLOR_BLUE)) < 0)
      {
-	ERROR("Failed to create logging domain for service info module.\n");
+	ERROR("Failed to create logging domain for service info module.");
 	eupnp_log_shutdown();
 	return 0;
      }
 
-   INFO_D(_log_dom, "Initializing service info module.\n");
+   INFO_D(_log_dom, "Initializing service info module.");
 
    return ++_eupnp_service_info_main_count;
 
@@ -87,7 +87,7 @@ eupnp_service_info_shutdown(void)
    if (_eupnp_service_info_main_count != 1)
       return --_eupnp_service_info_main_count;
 
-   INFO_D(_log_dom, "Shutting down service info module.\n");
+   INFO_D(_log_dom, "Shutting down service info module.");
 
    eina_log_domain_unregister(_log_dom);
    eupnp_log_shutdown();
@@ -135,7 +135,7 @@ eupnp_service_info_new(const char *udn, const char *location, const char *servic
 
    if (!d)
      {
-	ERROR_D(_log_dom, "Failed to allocate memory for service info\n");
+	ERROR_D(_log_dom, "Failed to allocate memory for service info");
 	if (resource && resource_free)
 	  resource_free(resource);
 	return NULL;
@@ -152,7 +152,7 @@ eupnp_service_info_new(const char *udn, const char *location, const char *servic
    d->_resource = resource;
    d->_resource_free = resource_free;
 
-   DEBUG_D(_log_dom, "Created new service %p\n", d);
+   DEBUG_D(_log_dom, "Created new service %p", d);
 
    return d;
 }
@@ -182,7 +182,7 @@ eupnp_service_info_free(Eupnp_Service_Info *d)
     * fill these members.
     */
    CHECK_NULL_RET(d);
-   DEBUG_D(_log_dom, "Freeing service info %p\n", d);
+   DEBUG_D(_log_dom, "Freeing service info %p", d);
 
    free((char *)d->id);
    free((char *)d->control_URL);
@@ -212,7 +212,7 @@ eupnp_service_info_ref(Eupnp_Service_Info *service_info)
 {
    CHECK_NULL_RET_VAL(service_info, NULL);
 
-   DEBUG_D(_log_dom, "Service %p refcount %d -> %d\n", service_info, service_info->refcount, service_info->refcount + 1);
+   DEBUG_D(_log_dom, "Service %p refcount %d -> %d", service_info, service_info->refcount, service_info->refcount + 1);
 
    service_info->refcount++;
 
@@ -235,7 +235,7 @@ eupnp_service_info_unref(Eupnp_Service_Info *service_info)
 	return;
      }
 
-   DEBUG_D(_log_dom, "Service %p refcount %d -> %d\n", service_info, service_info->refcount, service_info->refcount - 1);
+   DEBUG_D(_log_dom, "Service %p refcount %d -> %d", service_info, service_info->refcount, service_info->refcount - 1);
 
    service_info->refcount--;
 
@@ -248,12 +248,12 @@ eupnp_service_info_dump(Eupnp_Service_Info *service_info)
 {
    CHECK_NULL_RET(service_info);
 
-   INFO_D(_log_dom, "\tService dump\n");
-   INFO_D(_log_dom, "\t\tUDN: %s\n", service_info->udn);
-   INFO_D(_log_dom, "\t\tlocation: %s\n", service_info->location);
-   INFO_D(_log_dom, "\t\ttype: %s\n", service_info->service_type);
-   INFO_D(_log_dom, "\t\tid: %s\n", service_info->id);
-   INFO_D(_log_dom, "\t\tcontrol URL: %s\n", service_info->control_URL);
-   INFO_D(_log_dom, "\t\tscpd URL: %s\n", service_info->scpd_URL);
-   INFO_D(_log_dom, "\t\teventsub URL: %s\n", service_info->eventsub_URL);
+   INFO_D(_log_dom, "\tService dump");
+   INFO_D(_log_dom, "\t\tUDN: %s", service_info->udn);
+   INFO_D(_log_dom, "\t\tlocation: %s", service_info->location);
+   INFO_D(_log_dom, "\t\ttype: %s", service_info->service_type);
+   INFO_D(_log_dom, "\t\tid: %s", service_info->id);
+   INFO_D(_log_dom, "\t\tcontrol URL: %s", service_info->control_URL);
+   INFO_D(_log_dom, "\t\tscpd URL: %s", service_info->scpd_URL);
+   INFO_D(_log_dom, "\t\teventsub URL: %s", service_info->eventsub_URL);
 }

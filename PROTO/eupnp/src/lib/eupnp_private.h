@@ -31,7 +31,7 @@
 #define CHECK_NULL_RET(x)                                               \
     do {                                                                \
         if (x == NULL) {                                                \
-            WARN("%s == NULL!\n", XSTR(x));                             \
+            WARN("%s == NULL!", XSTR(x));                             \
             return;                                                     \
         }                                                               \
     } while (0)
@@ -39,7 +39,7 @@
 #define CHECK_NULL_RET_VAL(x, val)                                      \
     do {                                                                \
         if (x == NULL) {                                                \
-            WARN("%s == NULL!\n", XSTR(x));                             \
+            WARN("%s == NULL!", XSTR(x));                             \
             return val;                                                 \
         }                                                               \
     } while (0)

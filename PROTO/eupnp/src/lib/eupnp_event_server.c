@@ -51,7 +51,7 @@ static int _backends = 0;
 static void
 _client_data_ready(void *buffer, int size, void *data)
 {
-   DEBUG_D(_log_dom, "Event received, size %d!\n", size);
+   DEBUG_D(_log_dom, "Event received, size %d!", size);
 
    char *bcopy = NULL;
 
@@ -59,14 +59,14 @@ _client_data_ready(void *buffer, int size, void *data)
 
    if (!bcopy)
      {
-	DEBUG_D(_log_dom, "Failed to copy event notification data to buffer.\n");
+	DEBUG_D(_log_dom, "Failed to copy event notification data to buffer.");
 	return;
      }
 
    memcpy(bcopy, buffer, size);
    bcopy[size] = '\0';
 
-   DEBUG_D(_log_dom, "event is %s\n", bcopy);
+   DEBUG_D(_log_dom, "event is %s", bcopy);
 
    Eupnp_HTTP_Request *req = eupnp_http_request_parse(bcopy, bcopy, free);
 
@@ -74,8 +74,8 @@ _client_data_ready(void *buffer, int size, void *data)
      {
 	memcpy(bcopy, buffer, size);
 	bcopy[size] = '\0';
-	DEBUG_D(_log_dom, "Special case: %s\n", bcopy);
-	ERROR_D(_log_dom, "Could not parse event notification.\n");
+	DEBUG_D(_log_dom, "Special case: %s", bcopy);
+	ERROR_D(_log_dom, "Could not parse event notification.");
 	return;
      }
 
@@ -109,7 +109,7 @@ eupnp_event_server_init(void)
 
    if (!eupnp_event_bus_init())
      {
-	ERROR("Failed to initialize eupnp event bus library.\n");
+	ERROR("Failed to initialize eupnp event bus library.");
 	goto event_bus_fail;
      }
 
@@ -118,13 +118,13 @@ eupnp_event_server_init(void)
 
    if (!_host)
      {
-	ERROR("Could not find default host ip.\n");
+	ERROR("Could not find default host ip.");
 	goto host_ip_err;
      }
 
    if (asprintf(&_url, "http://%s:%d", _host, _port) < 0)
      {
-	ERROR("Could not mount listening url.\n");
+	ERROR("Could not mount listening url.");
 	goto listen_url_err;
      }
 
@@ -136,11 +136,11 @@ eupnp_event_server_init(void)
      {
 	// TODO try again with another port, change core to know if it was only
 	// a binding error.
-	ERROR("Could not create a new server\n");
+	ERROR("Could not create a new server");
 	goto server_creation_err;
      }
 
-   INFO_D(_log_dom, "Initializing event server module.\n");
+   INFO_D(_log_dom, "Initializing event server module.");
 
    return ++_event_server_init_count;
 
@@ -164,7 +164,7 @@ eupnp_event_server_shutdown(void)
 {
    if (_event_server_init_count != 1) return --_event_server_init_count;
 
-   INFO_D(_log_dom, "Shutting down event server module.\n");
+   INFO_D(_log_dom, "Shutting down event server module.");
    free((char *)_host);
    free((char *)_url);
    _port = -1;
@@ -199,7 +199,7 @@ eupnp_event_server_request_subscribe(Eupnp_Callback cb, void *data)
 
    if (!sub)
      {
-	ERROR_D(_log_dom, "Failed to subscribe on event bus.\n");
+	ERROR_D(_log_dom, "Failed to subscribe on event bus.");
 	return -1;
      }
 

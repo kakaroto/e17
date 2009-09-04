@@ -95,7 +95,7 @@ eupnp_control_point_init(void)
 
    if (!eupnp_event_bus_init())
      {
-	ERROR("Failed to initialize eupnp event bus module.\n");
+	ERROR("Failed to initialize eupnp event bus module.");
 	goto event_bus_init_error;
      }
 
@@ -104,11 +104,11 @@ eupnp_control_point_init(void)
 						   EUPNP_CALLBACK(_on_device_found),
 						   NULL)))
      {
-	ERROR( "Failed to subscribe to device found event.\n");
+	ERROR( "Failed to subscribe to device found event.");
 	goto subscribe_error;
      }
 
-   INFO_D(_log_dom, "Initializing control point module.\n");
+   INFO_D(_log_dom, "Initializing control point module.");
 
    return ++_eupnp_control_point_main_count;
 
@@ -136,7 +136,7 @@ eupnp_control_point_shutdown(void)
    if (_eupnp_control_point_main_count != 1)
       return --_eupnp_control_point_main_count;
 
-   INFO_D(_log_dom, "Shutting down control point module.\n");
+   INFO_D(_log_dom, "Shutting down control point module.");
 
    eupnp_event_bus_unsubscribe(_device_found);
    eupnp_event_bus_shutdown();
@@ -163,7 +163,7 @@ eupnp_control_point_new(void)
    if (!c)
      {
 	eina_error_set(EINA_ERROR_OUT_OF_MEMORY);
-	ERROR_D(_log_dom, "Could not allocate a new control point.\n");
+	ERROR_D(_log_dom, "Could not allocate a new control point.");
 	return NULL;
      }
 
@@ -171,7 +171,7 @@ eupnp_control_point_new(void)
 
    if (!c->ssdp_server)
      {
-	ERROR_D(_log_dom, "Could not create a ssdp instance for the control point.\n");
+	ERROR_D(_log_dom, "Could not create a ssdp instance for the control point.");
 	free(c);
 	return NULL;
      }
@@ -188,7 +188,7 @@ EAPI void
 eupnp_control_point_free(Eupnp_Control_Point *c)
 {
    CHECK_NULL_RET(c);
-   DEBUG_D(_log_dom, "Freeing control point %p\n", c);
+   DEBUG_D(_log_dom, "Freeing control point %p", c);
    if (c->ssdp_server) eupnp_ssdp_server_free(c->ssdp_server);
    free(c);
 }
@@ -197,7 +197,7 @@ EAPI Eina_Bool
 eupnp_control_point_start(Eupnp_Control_Point *c)
 {
    CHECK_NULL_RET_VAL(c, EINA_FALSE);
-   DEBUG_D(_log_dom, "Starting control point %p\n", c);
+   DEBUG_D(_log_dom, "Starting control point %p", c);
    eupnp_ssdp_server_start(c->ssdp_server);
    return EINA_TRUE;
 }
@@ -206,7 +206,7 @@ EAPI Eina_Bool
 eupnp_control_point_stop(Eupnp_Control_Point *c)
 {
    CHECK_NULL_RET_VAL(c, EINA_FALSE);
-   DEBUG_D(_log_dom, "Stopping control point %p\n", c);
+   DEBUG_D(_log_dom, "Stopping control point %p", c);
    eupnp_ssdp_server_stop(c->ssdp_server);
    return EINA_TRUE;
 }
@@ -226,7 +226,7 @@ eupnp_control_point_ssdp_socket_get(Eupnp_Control_Point *c)
 {
    CHECK_NULL_RET_VAL(c, -1);
    CHECK_NULL_RET_VAL(c->ssdp_server, -1);
-   DEBUG_D(_log_dom, "Retrieving control point %p socket %d\n", c, c->ssdp_server->udp_transport->socket);
+   DEBUG_D(_log_dom, "Retrieving control point %p socket %d", c, c->ssdp_server->udp_transport->socket);
    return c->ssdp_server->udp_transport->socket;
 }
 
@@ -245,6 +245,6 @@ eupnp_control_point_ssdp_socket_get(Eupnp_Control_Point *c)
 EAPI Eina_Bool
 eupnp_control_point_discovery_request_send(Eupnp_Control_Point *c, int mx, const char *search_target)
 {
-   DEBUG_D(_log_dom, "Discovery request sent for target %s with mx %d\n", search_target, mx);
+   DEBUG_D(_log_dom, "Discovery request sent for target %s with mx %d", search_target, mx);
    return eupnp_ssdp_discovery_request_send(c->ssdp_server, mx, search_target);
 }

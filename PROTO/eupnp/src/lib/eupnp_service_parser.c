@@ -40,7 +40,7 @@
         to = malloc(sizeof(char)*(len+1)); \
 	if (!to)                           \
 	  {                                \
-	     ERROR_D(_log_dom, "Could not alloc for device information\n"); \
+	     ERROR_D(_log_dom, "Could not alloc for device information"); \
 	     return;                       \
 	  }                                \
 	memcpy((char *)to, from, len);     \
@@ -68,17 +68,17 @@ _characters(void *state, const xmlChar *ch, int len)
 	  break;
 
 	case INSIDE_ACTION_NAME:
-	  DEBUG_D(_log_dom, "Writing action name\n");
+	  DEBUG_D(_log_dom, "Writing action name");
 	  COPY_CHARACTERS(s->building_action->name, ch, len);
 	  break;
 
 	case INSIDE_ACTION_ARGUMENT_NAME:
-	  DEBUG_D(_log_dom, "Writing action argument name\n");
+	  DEBUG_D(_log_dom, "Writing action argument name");
 	  COPY_CHARACTERS(s->building_arg->name, ch, len);
 	  break;
 
 	case INSIDE_ACTION_ARGUMENT_DIRECTION:
-	  DEBUG_D(_log_dom, "Writing action argument direction\n");
+	  DEBUG_D(_log_dom, "Writing action argument direction");
 	  if (!strncmp(ch, "in", 2))
 	    s->building_arg->direction = EUPNP_ARGUMENT_DIRECTION_IN;
 	  else
@@ -86,12 +86,12 @@ _characters(void *state, const xmlChar *ch, int len)
 	  break;
 
 	case INSIDE_ACTION_ARGUMENT_RETVAL:
-	  DEBUG_D(_log_dom, "Writing action argument retval\n");
+	  DEBUG_D(_log_dom, "Writing action argument retval");
 	  COPY_CHARACTERS(s->building_arg->retval, ch, len);
 	  break;
 
 	case INSIDE_ACTION_ARGUMENT_RELATEDSTATEVARIABLE:
-	  DEBUG_D(_log_dom, "Writing action argument related state variable\n");
+	  DEBUG_D(_log_dom, "Writing action argument related state variable");
 	  related = eupnp_service_proxy_state_variable_get(p, ch, len);
 
 	  if (!related)
@@ -100,7 +100,7 @@ _characters(void *state, const xmlChar *ch, int len)
 	       related = eupnp_service_state_variable_new(ch, len);
 	       if (!related)
 	         {
-		    ERROR_D(_log_dom, "Could not create state variable (related stage)\n");
+		    ERROR_D(_log_dom, "Could not create state variable (related stage)");
 		    break;
 		 }
 	       eupnp_service_proxy_state_variable_add(p, related);
@@ -111,12 +111,12 @@ _characters(void *state, const xmlChar *ch, int len)
 	  break;
 
 	case INSIDE_SERVICE_STATE_VARIABLE_NAME:
-	  DEBUG_D(_log_dom, "Writing state variable name\n");
+	  DEBUG_D(_log_dom, "Writing state variable name");
 	  COPY_CHARACTERS(s->building_state_var->name, ch, len);
 	  break;
 
 	case INSIDE_SERVICE_STATE_VARIABLE_DATATYPE:
-	  DEBUG_D(_log_dom, "Writing state variable data type\n");
+	  DEBUG_D(_log_dom, "Writing state variable data type");
 
 	  if (!strncmp(ch, "ui1", strlen("ui1")))
 	    s->building_state_var->data_type = EUPNP_DATA_TYPE_UI1;
@@ -196,27 +196,27 @@ _characters(void *state, const xmlChar *ch, int len)
 	  break;
 
 	case INSIDE_SERVICE_STATE_VARIABLE_DEFAULTVALUE:
-	  DEBUG_D(_log_dom, "Writing service state variable default value\n");
+	  DEBUG_D(_log_dom, "Writing service state variable default value");
 	  COPY_CHARACTERS(s->building_state_var->default_value, ch, len);
 	  break;
 
 	case INSIDE_SERVICE_STATE_VARIABLE_ALLOWEDVALUE_RANGE_MIN:
-	  DEBUG_D(_log_dom, "Writing allowed value range min\n");
+	  DEBUG_D(_log_dom, "Writing allowed value range min");
 	  COPY_CHARACTERS(s->building_state_var->range_min, ch, len);
 	  break;
 
 	case INSIDE_SERVICE_STATE_VARIABLE_ALLOWEDVALUE_RANGE_MAX:
-	  DEBUG_D(_log_dom, "Writing allowed value range max\n");
+	  DEBUG_D(_log_dom, "Writing allowed value range max");
 	  COPY_CHARACTERS(s->building_state_var->range_max, ch, len);
 	  break;
 
 	case INSIDE_SERVICE_STATE_VARIABLE_ALLOWEDVALUE_RANGE_STEP:
-	  DEBUG_D(_log_dom, "Writing allowed value range step\n");
+	  DEBUG_D(_log_dom, "Writing allowed value range step");
 	  COPY_CHARACTERS(s->building_state_var->range_step, ch, len);
 	  break;
 
 	case INSIDE_SERVICE_STATE_VARIABLE_ALLOWEDVALUE:
-	  DEBUG_D(_log_dom, "Writing allowed value enum value\n");
+	  DEBUG_D(_log_dom, "Writing allowed value enum value");
 	  COPY_CHARACTERS(s->building_allowed_value->value, ch, len);
 	  break;
      }
@@ -270,7 +270,7 @@ start_element_ns(void *state, const xmlChar *name, const xmlChar *prefix, const 
 
 	       if (!s->building_action)
 	         {
-		    ERROR_D(_log_dom, "Could not create action\n");
+		    ERROR_D(_log_dom, "Could not create action");
 		    break;
 		 }
 	    }
@@ -296,7 +296,7 @@ start_element_ns(void *state, const xmlChar *name, const xmlChar *prefix, const 
 
 	       if (!s->building_arg)
 	         {
-		    ERROR_D(_log_dom, "Could not create action argument.\n");
+		    ERROR_D(_log_dom, "Could not create action argument.");
 		    break;
 		 }
 	    }
@@ -336,7 +336,7 @@ start_element_ns(void *state, const xmlChar *name, const xmlChar *prefix, const 
 
 	       if (!s->building_state_var)
 	         {
-		    ERROR_D(_log_dom, "Could not create state variable\n");
+		    ERROR_D(_log_dom, "Could not create state variable");
 		    break;
 		 }
 	    }
@@ -361,7 +361,7 @@ start_element_ns(void *state, const xmlChar *name, const xmlChar *prefix, const 
 
 	       if (!s->building_allowed_value)
 	         {
-		    ERROR_D(_log_dom, "Could not build allowed value\n");
+		    ERROR_D(_log_dom, "Could not build allowed value");
 		    break;
 		 }
 	    }
@@ -393,7 +393,7 @@ end_element_ns(void *state, const xmlChar *name, const xmlChar *prefix, const xm
 
    if (s->state_skip)
      {
-	DEBUG_D(_log_dom, "Skipped\n");
+	DEBUG_D(_log_dom, "Skipped");
 	s->state_skip--;
 	return;
      }
@@ -419,7 +419,7 @@ end_element_ns(void *state, const xmlChar *name, const xmlChar *prefix, const xm
 	  if (s->building_action)
 	     eupnp_service_proxy_action_add(p, s->building_action);
 	  else
-	     ERROR_D(_log_dom, "Failed to add action\n");
+	     ERROR_D(_log_dom, "Failed to add action");
 
 	  s->building_action = NULL;
 	  s->state = INSIDE_ACTION_LIST;
@@ -436,7 +436,7 @@ end_element_ns(void *state, const xmlChar *name, const xmlChar *prefix, const xm
 	     eupnp_service_action_argument_add(s->building_action, s->building_arg);
 	  else
 	     // FIXME free action if argument is not present?
-	     ERROR_D(_log_dom, "Failed to add argument.\n");
+	     ERROR_D(_log_dom, "Failed to add argument.");
 
 	  s->building_arg = NULL;
 	  s->state = INSIDE_ACTION_ARGUMENT_LIST;
@@ -475,7 +475,7 @@ end_element_ns(void *state, const xmlChar *name, const xmlChar *prefix, const xm
 	  if ((s->building_state_var) && (s->building_allowed_value))
 	     eupnp_service_state_variable_allowed_value_add(s->building_state_var, s->building_allowed_value);
 	  else
-	     ERROR_D(_log_dom, "Failed to add allowed value\n");
+	     ERROR_D(_log_dom, "Failed to add allowed value");
 
 	  s->building_allowed_value = NULL;
 	  s->state = INSIDE_SERVICE_STATE_VARIABLE_ALLOWEDVALUE_LIST;
@@ -507,7 +507,7 @@ eupnp_service_parser_new(const char *first_chunk, int first_chunk_len, Eupnp_Ser
 
    if (!p)
      {
-	ERROR_D(_log_dom, "Failed to alloc for service parser\n");
+	ERROR_D(_log_dom, "Failed to alloc for service parser");
 	return NULL;
      }
 
@@ -573,7 +573,7 @@ eupnp_service_parse_finish(Eupnp_Service_Proxy *d)
 {
    if (!d) return;
    if (!d->xml_parser) return;
-   DEBUG_D(_log_dom, "Service SCPD parse finish\n");
+   DEBUG_D(_log_dom, "Service SCPD parse finish");
 
    Eina_Bool ret;
    Eupnp_Service_Parser *parser = d->xml_parser;
@@ -614,12 +614,12 @@ eupnp_service_parser_init(void)
 
    if ((_log_dom = eina_log_domain_register("Eupnp.ServiceParser", EINA_COLOR_BLUE)) < 0)
      {
-	fprintf(stderr, "Failed to create logging domain for service parser module.");
+	fprintf(stderr, "Failed to create logging domain for service parser module.\n");
 	eupnp_log_shutdown();
 	return 0;
      }
 
-   INFO_D(_log_dom, "Initializing service parser module.\n");
+   INFO_D(_log_dom, "Initializing service parser module.");
 
    return ++_eupnp_service_parser_init;
 }
@@ -630,7 +630,7 @@ eupnp_service_parser_shutdown(void)
    if (_eupnp_service_parser_init != 1)
       return --_eupnp_service_parser_init;
 
-   INFO_D(_log_dom, "Shutting down service parser module.\n");
+   INFO_D(_log_dom, "Shutting down service parser module.");
 
    eina_log_domain_unregister(_log_dom);
    eupnp_log_shutdown();
@@ -650,13 +650,13 @@ eupnp_service_parse_buffer(const char *buffer, int buffer_len, Eupnp_Service_Pro
    if (!s->xml_parser)
      {
 	/* Creates the parser, which parses the first chunk */
-	DEBUG_D(_log_dom, "Creating service parser.\n");
+	DEBUG_D(_log_dom, "Creating service parser.");
 
 	s->xml_parser = eupnp_service_parser_new(buffer, buffer_len, s);
 
 	if (!s->xml_parser)
           {
-	     ERROR_D(_log_dom, "Failed to parse first chunk\n");
+	     ERROR_D(_log_dom, "Failed to parse first chunk");
 	     goto parse_ret;
 	  }
 
@@ -678,7 +678,7 @@ eupnp_service_parse_buffer(const char *buffer, int buffer_len, Eupnp_Service_Pro
 
 	     if (!newbuf)
 	       {
-		  ERROR_D(_log_dom, "Could not realloc for concat chunk acum and buffer\n");
+		  ERROR_D(_log_dom, "Could not realloc for concat chunk acum and buffer");
 		  goto parse_ret;
 	       }
 
@@ -698,7 +698,7 @@ eupnp_service_parse_buffer(const char *buffer, int buffer_len, Eupnp_Service_Pro
 
 	     if (!parser->chunk_acum)
 	       {
-		  ERROR_D(_log_dom, "Could not realloc for successive small feeds case\n");
+		  ERROR_D(_log_dom, "Could not realloc for successive small feeds case");
 		  goto parse_ret;
 	       }
 
@@ -714,12 +714,12 @@ eupnp_service_parse_buffer(const char *buffer, int buffer_len, Eupnp_Service_Pro
 
    if (parser->state.state == FINISH)
      {
-	WARN_D(_log_dom, "Already finished parsing\n");
+	WARN_D(_log_dom, "Already finished parsing");
 	ret = EINA_TRUE;
 	goto parse_ret;
      }
 
-   DEBUG_D(_log_dom, "Parsing XML (%d) at %p\n", buffer_len, buffer);
+   DEBUG_D(_log_dom, "Parsing XML (%d) at %p", buffer_len, buffer);
 
    if (!xmlParseChunk(parser->ctx, buffer, buffer_len, 0))
      {

@@ -136,7 +136,7 @@ get_host_ip(const char *name)
 
    if (getifaddrs (&ifa_list) != 0)
      {
-	fprintf(stderr, "Failed to retrieve list of network interfaces:\n%s\n",
+	fprintf(stderr, "Failed to retrieve list of network interfaces:%s\n",
 		strerror (errno));
 	return NULL;
    }

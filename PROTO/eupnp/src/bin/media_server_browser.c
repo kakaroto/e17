@@ -51,14 +51,14 @@ action_response(Eupnp_Service_Proxy *proxy, void *data, const char *response, in
 
    if (!tmp)
      {
-	ERROR_D(_log_domain, "Failed to copy action response.\n");
+	ERROR_D(_log_domain, "Failed to copy action response.");
 	return;
      }
 
    memcpy(tmp, response, response_len);
    tmp[response_len] = '\0';
 
-   INFO_D(_log_domain, "Browse response: %s\n", response);
+   INFO_D(_log_domain, "Browse response: %s", response);
 
    free(tmp);
 }
@@ -82,7 +82,7 @@ on_proxy_ready(Eupnp_Service_Proxy *proxy, void *data)
 					"RequestedCount", EUPNP_TYPE_INT, 25,
 					"SortCriteria", EUPNP_TYPE_STRING, "dc:title",
 					NULL))
-      ERROR_D(_log_domain, "Failed to send proxy action.\n");
+      ERROR_D(_log_domain, "Failed to send proxy action.");
 }
 
 /*
@@ -155,16 +155,16 @@ int main(void)
    /* Send a test search for media server devices */
    if (!eupnp_control_point_discovery_request_send(c, 5, MEDIA_SERVER_DEVICE_TYPE))
      {
-	ERROR_D(_log_domain, "Failed to perform MSearch.\n");
+	ERROR_D(_log_domain, "Failed to perform MSearch.");
      }
    else
-	INFO_D(_log_domain, "MSearch sent sucessfully.\n");
+	INFO_D(_log_domain, "MSearch sent sucessfully.");
 
    ret = 0;
 
-   INFO_D(_log_domain, "Finished starting media server browser.\n");
+   INFO_D(_log_domain, "Finished starting media server browser.");
    ecore_main_loop_begin();
-   INFO_D(_log_domain, "Closing application.\n");
+   INFO_D(_log_domain, "Closing application.");
 
    /* Shutdown procedure */
    eupnp_control_point_stop(c);
