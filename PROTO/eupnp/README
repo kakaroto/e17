@@ -1,6 +1,6 @@
-Eupnp is a simple C upnp implementation that integrates with ecore
+Eupnp is a lightweight event-driven UPnP library.
 
 More info:
-   EUPnP:   http://trac.enlightenment.org/e/wiki/Eupnp
-    UPnP:   http://en.wikipedia.org/wiki/Upnp
+- Eupnp:   http://trac.enlightenment.org/e/wiki/Eupnp
+- UPnP:   http://en.wikipedia.org/wiki/Upnp
 
