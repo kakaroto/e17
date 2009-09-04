@@ -207,6 +207,40 @@ static void SP_MC(argb8888, argb8888, blend)(uint32_t *d, unsigned int len,
 	}
 }
 
+static void SP_MC(argb8888, a8, blend)(uint32_t *d, unsigned int len,
+		uint32_t *s, uint32_t color,
+		uint8_t *m)
+{
+	uint16_t ca = 256 - (color >> 24);
+	uint32_t *end = d + len;
+	while (d < end)
+	{
+		uint16_t ma = *m;
+
+		switch (ma)
+		{
+			case 0:
+			break;
+
+			case 255:
+			argb8888_blend(d, ca, color);
+			break;
+
+			default:
+			{
+				uint32_t mc;
+
+				mc = argb8888_mul_sym(ma, color);
+				ma = 256 - (mc >> 24);
+				argb8888_blend(d, ma, mc);
+			}
+			break;
+		}
+		d++;
+		m++;
+	}
+}
+
 static void SP_PM(argb8888, argb8888, argb8888, blend)(uint32_t *d, unsigned int len,
 		uint32_t *s, uint32_t color,
 		uint32_t *m)

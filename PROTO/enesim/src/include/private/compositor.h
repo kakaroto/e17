@@ -18,6 +18,21 @@
 #ifndef COMPOSITOR_H_
 #define COMPOSITOR_H_
 
+#define ENESIM_COMPOSITOR_SPAN(f) ((Enesim_Compositor_Span)(f))
+#define ENESIM_COMPOSITOR_POINT(f) ((Enesim_Compositor_Point)(f))
+
+#define PT_C(f, op) enesim_compositor_##f##_pt_color_##op
+#define PT_P(f, sf, op) enesim_compositor_##f##_pt_pixel_##sf##_##op
+#define PT_MC(f, mf, op) enesim_compositor_##f##_pt_mask_color_##mf##_##op
+#define PT_PC(f, sf, op) enesim_compositor_##f##_pt_pixel_color_##sf##_##op
+#define PT_PM(f, sf, mf, op) enesim_compositor_##f##_pt_pixel_mask_##sf##_##mf##_##op
+
+#define SP_C(f, op) enesim_compositor_##f##_sp_color_##op
+#define SP_P(f, sf, op) enesim_compositor_##f##_sp_pixel_##sf##_##op
+#define SP_MC(f, mf, op) enesim_compositor_##f##_sp_mask_color_##mf##_##op
+#define SP_PC(f, sf, op) enesim_compositor_##f##_sp_pixel_color_##sf##_##op
+#define SP_PM(f, sf, mf, op) enesim_compositor_##f##_sp_pixel_mask_##sf##_##mf##_##op
+
 void enesim_compositor_init(void);
 void enesim_compositor_shutdown(void);
 
@@ -139,6 +154,30 @@ static inline void SP_MC(argb8888, argb8888, fill)(uint32_t *d, uint32_t len,
 	}
 }
 
+static inline void SP_MC(argb8888, a8, fill)(uint32_t *d, uint32_t len,
+		uint32_t *s, uint32_t color, uint8_t *m)
+{
+	uint32_t *end = d + len;
+	while (d < end)
+	{
+		uint16_t a = *m;
+		switch (a)
+		{
+			case 0:
+			break;
+
+			case 255:
+			*d = color;
+			break;
+
+			default:
+			*d = argb8888_interp_256(a + 1, color, *d);
+			break;
+		}
+		d++;
+		m++;
+	}
+}
 
 static inline void SP_PM(argb8888, argb8888, argb8888, fill)(uint32_t *d,
 		uint32_t len, uint32_t *s, uint32_t color,
@@ -204,14 +243,6 @@ static void argb8888_sp_pixel_fill_argb8888_mmx(Enesim_Surface_Data *d,
 	}
 	_mm_empty();
 }
-#endif
-
-#if 0
-/* specific drawers */
-Eina_Bool enesim_drawer_generic_init(void);
-void enesim_drawer_generic_shutdown(void);
-Eina_Bool enesim_compositor_argb8888_init(void);
-void enesim_drawer_argb8888_shutdown(void);
 #endif
 
 #endif /* COMPOSITOR_H_*/

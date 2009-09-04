@@ -19,6 +19,8 @@
 #define ENESIM_CORE_H_
 
 typedef uint32_t Enesim_Color;
+#define ENESIM_COLOR_FULL 0xffffffff
+
 typedef uint8_t Enesim_Alpha;
 
 typedef enum _Enesim_Angle
@@ -49,9 +51,12 @@ typedef enum
 
 typedef enum _Enesim_Format
 {
-	ENESIM_FORMAT_ARGB8888,
-	ENESIM_FORMAT_A8,
-	ENESIM_FORMATS,
+	ENESIM_FORMAT_NONE,
+	ENESIM_FORMAT_ARGB8888,  /* argb32 */
+	ENESIM_FORMAT_ARGB8888_SPARSE,  /* argb32 with alpha-sparse pixels */
+	ENESIM_FORMAT_XRGB8888,  /* argb32 with alpha = 255 */
+	ENESIM_FORMAT_A8, /* assume all a8 is sparse? */
+	ENESIM_FORMATS
 } Enesim_Format;
 
 typedef enum _Enesim_Direction
@@ -62,15 +67,6 @@ typedef enum _Enesim_Direction
 	ENESIM_DIRECTION_XY,
 	ENESIM_DIRECTIONS
 } Enesim_Direction;
-/** Basic data type handlers */
-
-typedef enum _Enesim_Alpha_Flags
-{
-	ENESIM_ALPHA_ALL, /* 0 - 255 */
-	ENESIM_ALPHA_NONE, /* 255 */
-	ENESIM_ALPHA_SPARSE, /* 0 | 255 */
-	ENESIM_ALPHA_FLAGS,
-} Enesim_Alpha_Flags;
 
 EAPI int enesim_init(void);
 EAPI void enesim_shutdown(void);

@@ -13,7 +13,7 @@ void test_gradient1(Enesim_Surface *s)
 	sfmt = enesim_surface_format_get(s);
 	/* create a simple gradient */
 	enesim_surface_pixel_components_from(&color, sfmt, 0xff, 0xff, 0xff, 0xff);
-	if (!(span = enesim_compositor_span_color_get(ENESIM_FILL, sfmt, color)))
+	if (!(span = enesim_compositor_span_get(ENESIM_FILL, &sfmt, ENESIM_FORMAT_NONE, color, ENESIM_FORMAT_NONE)))
 		return;
 	for (i = 0; i < opt_height; i++)
 	{
@@ -50,7 +50,7 @@ void test_gradient2(Enesim_Surface *s)
 	sfmt = enesim_surface_format_get(s);
 	/* create a simple gradient */
 	enesim_surface_pixel_components_from(&color, sfmt, 0xaa, 0xff, 0xff, 0xff);
-	if (!(span = enesim_compositor_span_color_get(ENESIM_FILL, sfmt, color)))
+	if (!(span = enesim_compositor_span_get(ENESIM_FILL, &sfmt, ENESIM_FORMAT_NONE, color, ENESIM_FORMAT_NONE)))
 		return;
 	for (i = 0; i < opt_height; i++)
 	{
@@ -74,7 +74,7 @@ void test_gradient3(Enesim_Surface *s)
 	sfmt = enesim_surface_format_get(s);
 	/* create a simple gradient */
 	enesim_surface_pixel_components_from(&color, sfmt, 0xaa, 0xff, 0xff, 0xff);
-	if (!(span = enesim_compositor_span_color_get(ENESIM_FILL, sfmt, color)))
+	if (!(span = enesim_compositor_span_get(ENESIM_FILL, &sfmt, ENESIM_FORMAT_NONE, color, ENESIM_FORMAT_NONE)))
 		return;
 	for (i = 0; i < opt_height/2; i++)
 	{
@@ -100,12 +100,13 @@ Enesim_Surface * test_pattern1(int w)
 	uint32_t color;
 	uint32_t *sdata;
 	Enesim_Compositor_Span span;
+	Enesim_Format sfmt = opt_fmt;
 
 	int i;
 	int spaces = w / 2;
 
 	enesim_surface_pixel_components_from(&color, opt_fmt, 0xaa, 0xaa, 0xff, 0);
-	if (!(span = enesim_compositor_span_color_get(ENESIM_FILL, opt_fmt, color)))
+	if (!(span = enesim_compositor_span_get(ENESIM_FILL, &sfmt, ENESIM_FORMAT_NONE, color, ENESIM_FORMAT_NONE)))
 		return NULL;
 	s = enesim_surface_new(opt_fmt, w, w);
 
@@ -143,12 +144,13 @@ Enesim_Surface * test_pattern2(int w)
 	uint32_t color;
 	uint32_t *sdata;
 	Enesim_Compositor_Span span;
+	Enesim_Format sfmt = opt_fmt;
 
 	int i;
 	int spaces = w / 2;
 
 	enesim_surface_pixel_components_from(&color, opt_fmt, 0xaa, 0xaa, 0xff, 0);
-	if (!(span = enesim_compositor_span_color_get(ENESIM_FILL, opt_fmt, color)))
+	if (!(span = enesim_compositor_span_get(ENESIM_FILL, &sfmt, ENESIM_FORMAT_NONE, color, ENESIM_FORMAT_NONE)))
 		return NULL;
 	s = enesim_surface_new(opt_fmt, w, w);
 

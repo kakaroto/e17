@@ -23,9 +23,15 @@ void enesim_compositor_argb8888_init(void)
 	enesim_compositor_span_mask_color_register(SP_MC(argb8888, argb8888, fill),
 			ENESIM_FILL, ENESIM_FORMAT_ARGB8888,
 			ENESIM_FORMAT_ARGB8888);
+	enesim_compositor_span_mask_color_register(SP_MC(argb8888, a8, fill),
+			ENESIM_FILL, ENESIM_FORMAT_ARGB8888,
+			ENESIM_FORMAT_A8);
 	enesim_compositor_span_mask_color_register(SP_MC(argb8888, argb8888, blend),
 			ENESIM_BLEND, ENESIM_FORMAT_ARGB8888,
 			ENESIM_FORMAT_ARGB8888);
+	enesim_compositor_span_mask_color_register(SP_MC(argb8888, a8, blend),
+			ENESIM_BLEND, ENESIM_FORMAT_ARGB8888,
+			ENESIM_FORMAT_A8);
 	/* pixel mask */
 	enesim_compositor_span_pixel_mask_register(SP_PM(argb8888, argb8888, argb8888, fill),
 			ENESIM_FILL, ENESIM_FORMAT_ARGB8888,

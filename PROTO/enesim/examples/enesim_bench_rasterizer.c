@@ -79,11 +79,13 @@ static void _circle_bench(Eina_Rectangle *rect)
 	double start, end;
 	void *data = NULL;
 	uint32_t color = 0xaaaaaaa;
+	Enesim_Format dfmt = opt_fmt;
 
 	dst = enesim_surface_new(opt_fmt, opt_width, opt_height);
 	if (opt_debug)
 	{
-		rcmp.point = enesim_compositor_point_color_get(ENESIM_FILL, opt_fmt, color);
+		rcmp.point = enesim_compositor_point_get(ENESIM_FILL, &dfmt, ENESIM_FORMAT_NONE,
+				color, ENESIM_FORMAT_NONE);
 		rcmp.dst = dst;
 		cb = rasterizer_point_alias_callback;
 		data = &rcmp;
@@ -117,11 +119,13 @@ static void _circle_fill_bench(Eina_Rectangle *rect)
 	double start, end;
 	void *data = NULL;
 	uint32_t color = 0xaaaaaaa;
+	Enesim_Format dfmt = opt_fmt;
 
 	dst = enesim_surface_new(opt_fmt, opt_width, opt_height);
 	if (opt_debug)
 	{
-		rcmp.span = enesim_compositor_span_color_get(ENESIM_FILL, opt_fmt, color);
+		rcmp.span = enesim_compositor_span_get(ENESIM_FILL, &dfmt, ENESIM_FORMAT_NONE,
+				color, ENESIM_FORMAT_NONE);
 		rcmp.dst = dst;
 		cb = rasterizer_span_alias_callback;
 		data = &rcmp;

@@ -87,11 +87,14 @@ EAPI void enesim_renderer_compound_layer_add(Enesim_Renderer *r,
 {
 	Compound *c = (Compound *)r;
 	Layer *l;
+	Enesim_Format fmt = ENESIM_FORMAT_ARGB8888;
+	/* FIXME fix the resulting format */
 
 	l = malloc(sizeof(Layer));
 	l->r = rend;
 	/* FIXME what about the surface formats here? */
-	l->span = enesim_compositor_span_pixel_get(rop, ENESIM_FORMAT_ARGB8888, ENESIM_FORMAT_ARGB8888);
+	l->span = enesim_compositor_span_get(rop, &fmt, ENESIM_FORMAT_ARGB8888,
+			ENESIM_COLOR_FULL, ENESIM_FORMAT_NONE);
 	c->layers = eina_list_append(c->layers, l);
 }
 

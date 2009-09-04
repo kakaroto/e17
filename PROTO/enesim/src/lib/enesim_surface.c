@@ -82,7 +82,6 @@ enesim_surface_new_allocator_from(Enesim_Format f, int w, int h, Eina_Mempool *m
 	s->h = h;
 	s->stride = w;
 	s->format = f;
-	s->flags = ENESIM_ALPHA_ALL;
 	s->pool = mpool;
 	s->data = data;
 
@@ -265,7 +264,6 @@ EAPI Enesim_Surface * enesim_surface_sub_get(Enesim_Surface *s, Eina_Rectangle *
 		default:
 		break;
 	}
-	ss->flags = s->flags;
 	ss->format = s->format;
 	ss->stride = s->stride;
 	EINA_MAGIC_SET(s, ENESIM_MAGIC_SURFACE);
