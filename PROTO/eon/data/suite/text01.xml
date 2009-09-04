@@ -1,0 +1,4 @@
+<eon w="100%" h="100%">
+	<rect x="0%" y="0%" w="100%" h="100%" color="white"/>
+	<text str="Hello!" x="10" y="10" w="50" h="50"/>
+</eon>

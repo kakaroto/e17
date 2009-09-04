@@ -3,10 +3,14 @@
 
 #include "Eon_Enesim.h"
 
+#include <ft2build.h>
+#include FT_FREETYPE_H
 #include <limits.h>
 /*============================================================================*
  *                                  Local                                     *
  *============================================================================*/
+static FT_Library library;
+
 static void _color_set(void *c, int color)
 {
 	uint32_t cmul;
@@ -562,35 +566,81 @@ static void circle_delete(void *ec)
 typedef struct Text
 {
 	Eon_Text *t;
+	FT_Face face;
 } Text;
 
 
 static void * text_create(Eon_Text *et)
 {
 	Text *t;
+	FT_Error error;
 
-	printf("CREATE!!\n");
+	/* FIXME this is hardcoded for now, we need to create an eon_font
+	 * abstraction
+	 */
 	t = malloc(sizeof(Text));
 	t->t = et;
+	error = FT_New_Face(library, "/usr/share/fonts/truetype/ttf-bitstream-vera/Vera.ttf", 0, &t->face);
+
+	if (error)
+	{
+		printf("Error loading the font\n");
+		free(t);
+		return NULL;
+	}
+	FT_Set_Pixel_Sizes(t->face, /* handle to face object */
+		0, /* pixel_width */
+		16 ); /* pixel_height */ 
 
 	return t;
 }
 
+static void text_compose(FT_Bitmap *bmp, Enesim_Surface *dst, Enesim_Compositor_Span span, int left, int top)
+{
+	uint32_t *ddata;
+	int dstride;
+
+	ddata = enesim_surface_data_get(dst);
+	dstride = enesim_surface_stride_get(dst);
+	
+	printf("compose at %d %d %p\n", left, top, span);
+}
+
 static void text_render(void *et, void *cd, Eina_Rectangle *clip)
 {
+	FT_Error error;
 	Text *t = et;
 	char *str;
 	int i;
-
-	printf("RENDER!! %p %p\n", t, t->t);
+	FT_GlyphSlot slot;
+	int pen_x = 0;
+	int pen_y = 0;
+	Enesim_Compositor_Span span;
+	Enesim_Color color = 0xff000000;
+	Enesim_Rop rop;
+	
+	rop = eon_shape_rop_get((Eon_Shape *)t->t);
+	span = enesim_compositor_span_mask_color_get(rop, ENESIM_FORMAT_ARGB8888, ENESIM_FORMAT_A8, color);
+	//printf("RENDERING!!\n");
+	if (!t)
+		return;
 	str = eon_text_string_get(t->t);
-	printf("%p\n", str);
 	/* TODO Move this into the shape object */
 	if (!str)
 		return;
+	slot = t->face->glyph;
 	for (i = 0; str[i]; i++)
 	{
-		printf("%c\n", str[i]);
+		error = FT_Load_Char(t->face, str[i], FT_LOAD_RENDER);
+		if (error)
+		{
+			printf("error %d\n", error);
+			continue; /* ignore errors */
+		}
+		//printf("%c %d %d\n", str[i], slot->bitmap_left, slot->bitmap_top);
+		text_compose(&slot->bitmap, cd, span, pen_x + slot->bitmap_left, pen_y + slot->bitmap_top);
+		/* increment pen position */
+		pen_x += slot->advance.x >> 6; 
 	}
 }
 /*============================================================================*
@@ -620,6 +670,9 @@ static void debug_rect(void *cd, uint32_t color, int x, int y, int w, int h)
  *============================================================================*/
 EAPI void eon_engine_enesim_setup(Eon_Engine *e)
 {
+	enesim_init();
+	FT_Init_FreeType(&library);
+
 	e->rect_create = rect_create;
 	e->rect_render = rect_render;
 	e->circle_create = circle_create;
@@ -642,4 +695,9 @@ EAPI void eon_engine_enesim_setup(Eon_Engine *e)
 	e->checker_delete = checker_delete;
 	e->checker_setup = checker_setup;
 	e->debug_rect = debug_rect;
+}
+
+EAPI void eon_engine_enesim_cleanup(Eon_Engine *e)
+{
+	enesim_shutdown();
 }
