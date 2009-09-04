@@ -22,8 +22,9 @@
   #include <libexif/exif-data.h>
 #endif
 
-#define DBG(...) EINA_LOG_DBG(__VA_ARGS__)
-#define ERR(...) EINA_LOG_ERR(__VA_ARGS__)
+static int __log_domain = -1;
+#define DBG(...) EINA_LOG_DOM_DBG(__log_domain, __VA_ARGS__)
+#define ERR(...) EINA_LOG_DOM_ERR(__log_domain, __VA_ARGS__)
 
 typedef enum _IV_Image_Fit {
      PAN,
@@ -105,6 +106,8 @@ struct _IV
 
    int			 first_preview;
    int			 connection_retry;
+
+   int			 log_domain;
 
    Elm_Genlist_Item_Class *itc;
 #endif
@@ -1764,6 +1767,15 @@ elm_main(int argc, char **argv)
    IV *iv;
 
    iv = calloc(1, sizeof(IV));
+
+   __log_domain = eina_log_domain_register("IV", EINA_COLOR_BLUE);
+   if (!__log_domain)
+     {
+	EINA_LOG_ERR("Could not register log domain: IV");
+	elm_exit();
+	return 0;
+     }
+
    config_init(iv);
 
    for (i = 1; i < argc; i++)
@@ -1812,6 +1824,7 @@ elm_main(int argc, char **argv)
 
    elm_run();
 
+   eina_log_domain_unregister(__log_domain);
    iv_free(iv);
 
 #ifdef HAVE_ETHUMB
