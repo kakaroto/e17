@@ -26,7 +26,7 @@
     {\
         if(!(test))\
         {\
-            EXALT_LOG_WARN("%s failed\n",#test); \
+            EXALT_LOG_WARN("%s failed",#test); \
         }\
     }while(0)
 
@@ -37,7 +37,7 @@
     {\
         if(!(test))\
         {\
-            EXALT_LOG_WARN("%s failed\n",#test); \
+            EXALT_LOG_WARN("%s failed",#test); \
             return 0;\
         }\
     }while(0)
@@ -47,7 +47,7 @@
     {\
         if(!(test))\
         {\
-            EXALT_LOG_WARN("%s failed\n",#test); \
+            EXALT_LOG_WARN("%s failed",#test); \
             return ;\
         }\
     }while(0)
@@ -69,7 +69,7 @@
     { \
         if(!(test))\
         {\
-            EXALT_LOG_WARN("%s failed\n",#test); \
+            EXALT_LOG_WARN("%s failed",#test); \
             instr; \
         }\
     }while(0)
@@ -89,6 +89,7 @@
             const char* attribut)                       \
     {                                                   \
         EXALT_ASSERT_RETURN_VOID(s!=NULL);              \
+        EXALT_FREE(s->attribut);                        \
         if(attribut!=NULL)                              \
             s->attribut = strdup(attribut);             \
         else                                            \

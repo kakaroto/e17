@@ -132,7 +132,7 @@ int exalt_regex_execute(Exalt_Regex* r)
 	    {
                EXALT_LOG_WARN( "no match found"
 					"str_request: %s"
-					"str_regex: %s\n\n", r->str_request,r->str_regex);
+					"str_regex: %s", r->str_request,r->str_regex);
 	    }
             EXALT_FREE(pmatch);
 	    return 0;
@@ -147,7 +147,7 @@ int exalt_regex_execute(Exalt_Regex* r)
             if (text)
             {
                	regerror (err, &preg, text, size);
-               	EXALT_LOG_WARN("%s\n", text);
+               	EXALT_LOG_WARN("%s", text);
                	free (text);
                 EXALT_FREE(pmatch);
 		return 0;

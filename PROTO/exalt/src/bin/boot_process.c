@@ -1,21 +1,3 @@
-/*
- * =====================================================================================
- *
- *       Filename:  boot_process.c
- *
- *    Description:  configure the boot process, if the system wait until a iface get a ip address.
- *
- *        Version:  1.0
- *        Created:  01/02/2008 06:30:42 PM CET
- *       Revision:  none
- *       Compiler:  gcc
- *
- *         Author:  (Watchwolf), Atton Jonathan <watchwolf@watchwolf.fr>
- *        Company:
- *
- * =====================================================================================
- */
-
 
 #include "boot_process.h"
 

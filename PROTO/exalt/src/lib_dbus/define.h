@@ -23,7 +23,7 @@
 
 
 /** Print a DBusError message if the flag error is set */
-#define EXALT_DBUS_ERROR_PRINT(error) if(error && dbus_error_is_set(error)) { EXALT_LOG_ERR("%s\n",error->name);return; }
+#define EXALT_DBUS_ERROR_PRINT(error) if(error && dbus_error_is_set(error)) { EXALT_LOG_ERR("%s",error->name);return; }
 
 /** Path of the DBus object which allows to manage the DNS */
 #define EXALTD_PATH_DNS "/org/exalt/dns"

@@ -1,20 +1,3 @@
-/*
- * =====================================================================================
- *
- *       Filename:  daemon.c
- *
- *    Description:  defines globals funtions
- *
- *        Version:  1.0
- *        Created:  08/28/2007 04:27:45 PM CEST
- *       Revision:  none
- *       Compiler:  gcc
- *
- *         Author:   (Watchwolf), Atton Jonathan <watchwolf@watchwolf.fr>
- *        Company:
- *
- * =====================================================================================
- */
 
 #include "daemon.h"
 #include <Ecore_Getopt.h>
@@ -215,7 +198,7 @@ int main(int argc, char** argv)
 
     if(!exalt_admin_is())
     {
-        EXALT_LOG_CRIT("Please run as root. \n");
+        EXALT_LOG_CRIT("Please run as root.");
         e_dbus_shutdown();
         ecore_shutdown();
         return 1;
@@ -225,7 +208,7 @@ int main(int argc, char** argv)
     exaltd_conn = e_dbus_bus_get(DBUS_BUS_SYSTEM);
     if(!exaltd_conn)
     {
-        EXALT_LOG_CRIT("Can not connect to DBUS, maybe the daemon is not launch ?\n");
+        EXALT_LOG_CRIT("Can not connect to DBUS, maybe the daemon is not launch ?");
         e_dbus_shutdown();
         ecore_shutdown();
         return -1;
@@ -274,7 +257,7 @@ int main(int argc, char** argv)
             fclose(fp);
         }
         else
-            EXALT_LOG_WARN("Can not create the pid file: %s\n", pidfile);
+            EXALT_LOG_WARN("Can not create the pid file: %s", pidfile);
     }
 
     ecore_main_loop_begin();

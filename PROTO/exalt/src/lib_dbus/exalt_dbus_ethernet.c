@@ -540,7 +540,7 @@ void _exalt_dbus_eth_ip_get_cb(void *data, DBusMessage *msg, DBusError *error)
         response->is_error = 1;
         response->error_id = exalt_dbus_error_get_id(msg);
         response->error_msg = strdup(exalt_dbus_error_get_msg(msg));
-        EXALT_LOG_INFO("%d: %s\n",
+        EXALT_LOG_INFO("%d: %s",
                 exalt_dbus_error_get_id(msg),exalt_dbus_error_get_msg(msg));
     }
     else
@@ -570,7 +570,7 @@ void _exalt_dbus_eth_netmask_get_cb(void *data, DBusMessage *msg, DBusError *err
         response->is_error = 1;
         response->error_id = exalt_dbus_error_get_id(msg);
         response->error_msg = strdup(exalt_dbus_error_get_msg(msg));
-        EXALT_LOG_INFO("%d: %s\n",
+        EXALT_LOG_INFO("%d: %s",
                 exalt_dbus_error_get_id(msg),exalt_dbus_error_get_msg(msg));
     }
     else
@@ -600,7 +600,7 @@ void _exalt_dbus_eth_gateway_get_cb(void *data, DBusMessage *msg, DBusError *err
         response->is_error = 1;
         response->error_id = exalt_dbus_error_get_id(msg);
         response->error_msg = strdup(exalt_dbus_error_get_msg(msg));
-        EXALT_LOG_INFO("%d: %s\n",
+        EXALT_LOG_INFO("%d: %s",
                 exalt_dbus_error_get_id(msg),exalt_dbus_error_get_msg(msg));
     }
     else
@@ -627,7 +627,7 @@ void _exalt_dbus_eth_list_get_cb(void *data, DBusMessage *msg, DBusError *error)
         response->is_error = 1;
         response->error_id = exalt_dbus_error_get_id(msg);
         response->error_msg = strdup(exalt_dbus_error_get_msg(msg));
-        EXALT_LOG_INFO("%d: %s\n",
+        EXALT_LOG_INFO("%d: %s",
                 exalt_dbus_error_get_id(msg),exalt_dbus_error_get_msg(msg));
     }
     else
@@ -655,7 +655,7 @@ void _exalt_dbus_eth_all_disconnected_is_cb(void *data, DBusMessage *msg, DBusEr
         response->is_error = 1;
         response->error_id = exalt_dbus_error_get_id(msg);
         response->error_msg = strdup(exalt_dbus_error_get_msg(msg));
-        EXALT_LOG_INFO("%d: %s\n",
+        EXALT_LOG_INFO("%d: %s",
                 exalt_dbus_error_get_id(msg),exalt_dbus_error_get_msg(msg));
     }
     else
@@ -686,7 +686,7 @@ void _exalt_dbus_eth_wireless_is_cb(void *data, DBusMessage *msg, DBusError *err
         response->is_error = 1;
         response->error_id = exalt_dbus_error_get_id(msg);
         response->error_msg = strdup(exalt_dbus_error_get_msg(msg));
-        EXALT_LOG_INFO("%d: %s\n",
+        EXALT_LOG_INFO("%d: %s",
                 exalt_dbus_error_get_id(msg),exalt_dbus_error_get_msg(msg));
     }
     else
@@ -715,7 +715,7 @@ void _exalt_dbus_eth_link_is_cb(void *data, DBusMessage *msg, DBusError *error)
         response->is_error = 1;
         response->error_id = exalt_dbus_error_get_id(msg);
         response->error_msg = strdup(exalt_dbus_error_get_msg(msg));
-        EXALT_LOG_INFO("%d: %s\n",
+        EXALT_LOG_INFO("%d: %s",
                 exalt_dbus_error_get_id(msg),exalt_dbus_error_get_msg(msg));
     }
     else
@@ -744,7 +744,7 @@ void _exalt_dbus_eth_dhcp_is_cb(void *data, DBusMessage *msg, DBusError *error)
         response->is_error = 1;
         response->error_id = exalt_dbus_error_get_id(msg);
         response->error_msg = strdup(exalt_dbus_error_get_msg(msg));
-        EXALT_LOG_INFO("%d: %s\n",
+        EXALT_LOG_INFO("%d: %s",
                 exalt_dbus_error_get_id(msg),exalt_dbus_error_get_msg(msg));
     }
     else
@@ -773,7 +773,7 @@ void _exalt_dbus_eth_up_is_cb(void *data, DBusMessage *msg, DBusError *error)
         response->is_error = 1;
         response->error_id = exalt_dbus_error_get_id(msg);
         response->error_msg = strdup(exalt_dbus_error_get_msg(msg));
-        EXALT_LOG_INFO("%d: %s\n",
+        EXALT_LOG_INFO("%d: %s",
                 exalt_dbus_error_get_id(msg),exalt_dbus_error_get_msg(msg));
     }
     else
@@ -803,7 +803,7 @@ void _exalt_dbus_eth_cmd_get_cb(void *data, DBusMessage *msg, DBusError *error)
         response->is_error = 1;
         response->error_id = exalt_dbus_error_get_id(msg);
         response->error_msg = strdup(exalt_dbus_error_get_msg(msg));
-        EXALT_LOG_INFO("%d: %s\n",
+        EXALT_LOG_INFO("%d: %s",
                 exalt_dbus_error_get_id(msg),exalt_dbus_error_get_msg(msg));
     }
     else
@@ -832,7 +832,7 @@ void _exalt_dbus_eth_cmd_set_cb(void *data, DBusMessage *msg, DBusError *error)
         response->is_error = 1;
         response->error_id = exalt_dbus_error_get_id(msg);
         response->error_msg = strdup(exalt_dbus_error_get_msg(msg));
-        EXALT_LOG_INFO("%d: %s\n",
+        EXALT_LOG_INFO("%d: %s",
                 exalt_dbus_error_get_id(msg),exalt_dbus_error_get_msg(msg));
     }
     else
@@ -862,7 +862,7 @@ void _exalt_dbus_eth_apply_cb(void *data, DBusMessage *msg, DBusError *error)
         response->is_error = 1;
         response->error_id = exalt_dbus_error_get_id(msg);
         response->error_msg = strdup(exalt_dbus_error_get_msg(msg));
-        EXALT_LOG_INFO("%d: %s\n",
+        EXALT_LOG_INFO("%d: %s",
                 exalt_dbus_error_get_id(msg),exalt_dbus_error_get_msg(msg));
     }
     else
@@ -891,7 +891,7 @@ void _exalt_dbus_eth_up_cb(void *data, DBusMessage *msg, DBusError *error)
         response->is_error = 1;
         response->error_id = exalt_dbus_error_get_id(msg);
         response->error_msg = strdup(exalt_dbus_error_get_msg(msg));
-        EXALT_LOG_INFO("%d: %s\n",
+        EXALT_LOG_INFO("%d: %s",
                 exalt_dbus_error_get_id(msg),exalt_dbus_error_get_msg(msg));
     }
     else
@@ -919,7 +919,7 @@ void _exalt_dbus_eth_down_cb(void *data, DBusMessage *msg, DBusError *error)
         response->is_error = 1;
         response->error_id = exalt_dbus_error_get_id(msg);
         response->error_msg = strdup(exalt_dbus_error_get_msg(msg));
-        EXALT_LOG_INFO("%d: %s\n",
+        EXALT_LOG_INFO("%d: %s",
                 exalt_dbus_error_get_id(msg),exalt_dbus_error_get_msg(msg));
     }
     else
@@ -948,7 +948,7 @@ void _exalt_dbus_eth_connected_is_cb(void *data, DBusMessage *msg, DBusError *er
         response->is_error = 1;
         response->error_id = exalt_dbus_error_get_id(msg);
         response->error_msg = strdup(exalt_dbus_error_get_msg(msg));
-        EXALT_LOG_INFO("%d: %s\n",
+        EXALT_LOG_INFO("%d: %s",
                 exalt_dbus_error_get_id(msg),exalt_dbus_error_get_msg(msg));
     }
     else
