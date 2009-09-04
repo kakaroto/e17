@@ -47,7 +47,7 @@ static void _setup(void)
 
    evas_object_textblock_text_markup_set
      (o,
-           "<center><h1>Title</h1></center><br>"
+      "<center><h1>Title</h1></center><br>"
       "<p><tab>A pragraph here <red>red text</red> and stuff.</p>"
       "<p>And escaping &lt; and &gt; as well as &amp; as <h1>normal.</h1></p>"
       "<p>If you want a newline use &lt;br&gt;<br>woo a new line!</p>"
@@ -69,6 +69,12 @@ static void _setup(void)
       "<color=#00f font_size=12>L</><color=#fff font_size=14>O</>"
       "<color=#ff0 font_size=16>R</><color=#0ff font_size=18> Bla Rai</>"
       "<color=#f0f font_size=20> Stuff</>.</p>"
+      "<backing=on backing_color=#f00 linesize=20>20 Linesize<br>"
+      "<backing=on backing_color=#0f0 linesize=40>40 Linesize<br>"
+      "<backing=on backing_color=#f00 linerelsize=100%>100 percent Linerelsize<br>"
+      "<backing=on backing_color=#0f0 linerelsize=150%>150 percent Linerelsize<br>"
+      "<backing=on backing_color=#00f linerelsize=200%>200 percent Linerelsize<br>"
+      "<backing=off linerelsize=0%>"
       "<blockquote>"
       "(日本語 カタカナ ひらがな) "
       "<style=outline color=#fff outline_color=#000>Round about the cauldron go;</> "
@@ -83,7 +89,7 @@ static void _setup(void)
       "In the cauldron boil and bake; "
       "<style=outline_shadow color=#fff outline_color=#8228 shadow_color=#005>Eye of newt and toe of frog,</> "
       "<underline=on underline_color=#00f>Wool of bat and tongue of dog,</> "
-      "<backing=on backing_color=#fff8>Adder's fork and blind-worm's sting,</> "
+      "<backing=on backing_color=#ff08>Adder's fork and blind-worm's sting,</> "
       "<underline=double underline_color=#f00 underline2_color=#00f>Lizard's leg and owlet's wing,</> "
       "<color=#808 font_size=20>For a charm of powerful trouble, "
       "Like a hell-broth boil and bubble. "
