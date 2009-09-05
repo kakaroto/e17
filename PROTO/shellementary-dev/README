@@ -1,0 +1,18 @@
+DEVELOPENMENT VERSION!! DO NOT TRANSLATE!! JUST FOR TESTING! USE PYTHON VERSION INSTEAD IF YOU WANT TO USE IT IN YOUR SCRIPTS!
+
+
+Shellementary application
+
+This is an application made as a replacement for "zenity" but in Elementary.
+It supports now most of parameters of zenity(and i plan to add all)
+
+WHY THIS NAME?
+
+Because it is made in Elementary toolkit and it is made for use in shell scripts. :)
+
+INSTALLATION
+
+To build and install it, do the following:
+	./autogen.sh
+	make
+	make install (as root)

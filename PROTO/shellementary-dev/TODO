@@ -1,0 +1,38 @@
+TODO in C:
+
+shelm_dlg_textinfo.c
+shelm_dlg_list.c
+shelm_dlg_question.c
+shelm_dlg_scale.c
+shelm_dlg_clock.c
+shelm_dlg_genlist.c
+shelm_dlg_progressbar.c
+shelm_dlg_filechooser.c
+
+TODO:
+
+add support for window timeout - so it will close the window after several seconds if argument set
+
+add support for setting window icon - on titlebar
+
+add support for transparent background - only nontransparent pixmap is now allowed
+
+add filedialog with support for - custom default filename, multiselect, directory select and save dialog
+
+add progressbar dialog with support for custom percentage, pulsate, autoclose and autokill
+
+add toggles dialog - MINOR - not sure what it will be for :)
+
+add wizard dialog with support for custom number of steps + several page layouts
+
+add pager dialog - MINOR - not sure what it will be for
+
+add innerwindow dialog - MINOR - ...
+
+add hoversel dialog - MINOR...
+
+more options for some current dialogs:
+
+list: checklist, radiolist, tree support, multiselect support, editable items
+
+and maybe some more.. when i'll finish this, i'll add some new things here :)

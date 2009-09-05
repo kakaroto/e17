@@ -1,0 +1,4 @@
+src/bin/shelm.c
+src/bin/shelm_about.c
+src/bin/shelm_dlg_entry.c
+src/bin/shelm_dlg_simpleicon.c
