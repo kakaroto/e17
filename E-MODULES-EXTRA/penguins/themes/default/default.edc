@@ -191,72 +191,46 @@ data
 }
 collections
 {
-   group
-   {
-      name: "icon";
-      parts
-      {
-         part
-         {
-            name: "icon_";
+   group { name: "icon";
+      parts {
+         part { name: "icon_";
             type: IMAGE;
             mouse_events: 0;
-            description
-            {
-               state: "default" 0.0;
+            description { state: "default" 0.0;
                color: 255 255 255 255;
-               rel1
-               {
+               rel1 {
                   relative: 0.0 0.0;
                   offset: 0 0;
                }
-               rel2
-               {
+               rel2 {
                   relative: 1.0 1.0;
                   offset: 0 0;
                }
-               image 
-               {
-                  normal: "icon.png";
-               }
+               image.normal: "icon.png";
             }
          }
       }
    }
-   group
-   {
-      name: "anims";
-      parts
-      {
-         part
-         {
-            name: "penguins";
+   group { name: "anims";
+      parts {
+         part { name: "penguins";
             type: IMAGE;
             mouse_events: 1;
-            description
-            {
+            description {
                state: "default" 0.0;
                color: 255 255 255 255;
-               rel1
-               {
+               rel1 {
                   relative: 0.0 0.0;
                   offset: 0 0;
                }
-               rel2
-               {
+               rel2 {
                   relative: 1.0 1.0;
                   offset: 0 0;
                }
-               image
-               {
-                  normal: "walker1a.png";
-               }
+               image.normal: "walker1a.png";
             }
-            description
-            {
-               state: "walker" 0.0;
-               image
-               {
+            description { state: "walker" 0.0;
+               image {
                   normal: "walker0a.png";
                   tween: "walker1a.png";
                   tween: "walker2a.png";
@@ -267,11 +241,8 @@ collections
                   tween: "walker7a.png";
                }
             }
-            description
-            {
-               state: "walker" 1.0;
-               image
-               {
+            description { state: "walker" 1.0;
+               image {
                   normal: "walker0b.png";
                   tween: "walker1b.png";
                   tween: "walker2b.png";
@@ -282,11 +253,8 @@ collections
                   tween: "walker7b.png";
                }
             }
-            description
-            {
-               state: "faller" 0.0;
-               image
-               {
+            description { state: "faller" 0.0;
+               image {
                   normal: "faller0.png";
                   tween: "faller1.png";
                   tween: "faller2.png";
@@ -297,11 +265,8 @@ collections
                   tween: "faller7.png";
                }
             }
-            description
-            {
-               state: "faller" 1.0;
-               image
-               {
+            description { state: "faller" 1.0;
+               image {
                   normal: "faller0.png";
                   tween: "faller1.png";
                   tween: "faller2.png";
@@ -312,11 +277,8 @@ collections
                   tween: "faller7.png";
                }
             }
-            description
-            {
-               state: "floater" 0.0;
-               image
-               {
+            description { state: "floater" 0.0;
+               image {
                   normal: "floater0.png";
                   tween: "floater1.png";
                   tween: "floater2.png";
@@ -327,11 +289,8 @@ collections
                   tween: "floater7.png";
                }
             }
-            description
-            {
-               state: "floater" 1.0;
-               image
-               {
+            description { state: "floater" 1.0;
+               image {
                   normal: "floater0.png";
                   tween: "floater1.png";
                   tween: "floater2.png";
@@ -342,11 +301,8 @@ collections
                   tween: "floater7.png";
                }
             }
-            description
-            {
-               state: "climber" 0.0;
-               image
-               {
+            description { state: "climber" 0.0;
+               image {
                   normal: "climber0a.png";
                   tween: "climber1a.png";
                   tween: "climber2a.png";
@@ -357,11 +313,8 @@ collections
                   tween: "climber7a.png";
                }
             }
-            description
-            {
-               state: "climber" 1.0;
-               image
-               {
+            description { state: "climber" 1.0;
+               image {
                   normal: "climber0b.png";
                   tween: "climber1b.png";
                   tween: "climber2b.png";
@@ -372,11 +325,8 @@ collections
                   tween: "climber7b.png";
                }
             }
-            description
-            {
-               state: "bomber" 0.0;
-               image
-               {
+            description { state: "bomber" 0.0;
+               image {
                   normal: "bomber15.png";
                   tween: "bomber0.png";
                   tween: "bomber1.png";
@@ -396,11 +346,8 @@ collections
                   tween: "bomber14.png";
                }
             }
-            description
-            {
-               state: "bomber" 1.0;
-               image
-               {
+            description { state: "bomber" 1.0;
+               image {
                   normal: "bomber15.png";
                   tween: "bomber0.png";
                   tween: "bomber1.png";
@@ -420,11 +367,8 @@ collections
                   tween: "bomber14.png";
                }
             }
-            description
-            {
-               state: "splatter" 0.0;
-               image
-               {
+            description { state: "splatter" 0.0;
+               image {
                   normal:"splat15.png";
                   tween: "splat2.png";
                   tween: "splat3.png";
@@ -451,11 +395,8 @@ collections
                   tween: "splat14.png";
                }
             }
-            description
-            {
-               state: "splatter" 1.0;
-               image
-               {
+            description { state: "splatter" 1.0;
+               image {
                   normal:"splat15.png";
                   tween: "splat2.png";
                   tween: "splat3.png";
@@ -482,11 +423,8 @@ collections
                   tween: "splat14.png";
                }
             }
-            description
-            {
-               state: "flyer" 0.0;
-               image
-               {
+            description { state: "flyer" 0.0;
+               image {
                   normal: "flyer0.png";
                   tween: "flyer1.png";
                   tween: "flyer2.png";
@@ -497,11 +435,8 @@ collections
                   tween: "flyer7.png";
                }
             }
-            description
-            {
-               state: "flyer" 1.0;
-               image
-               {
+            description { state: "flyer" 1.0;
+               image {
                   normal: "flyer0.png";
                   tween: "flyer1.png";
                   tween: "flyer2.png";
@@ -512,22 +447,16 @@ collections
                   tween: "flyer7.png";
                }
             }
-            description
-            {
-               state: "angel" 0.0;
-               image
-               {
+            description { state: "angel" 0.0;
+               image {
                   normal: "angel0.png";
                   tween: "angel1.png";
                   tween: "angel2.png";
                   tween: "angel3.png";
                }
             }
-            description
-            {
-               state: "custom_1" 0.0;
-               image
-               {
+            description { state: "custom_1" 0.0;
+               image {
                   normal: "digger0.png";
                   tween: "digger1.png";
                   tween: "digger2.png";
@@ -544,11 +473,8 @@ collections
                   tween: "digger13.png";
                }
             }
-            description
-            {
-               state: "custom_1" 1.0;
-               image
-               {
+            description { state: "custom_1" 1.0;
+               image {
                   normal: "digger0.png";
                   tween: "digger1.png";
                   tween: "digger2.png";
@@ -565,11 +491,8 @@ collections
                   tween: "digger13.png";
                }
             }
-            description
-            {
-               state: "reader" 0.0;
-               image
-               {
+            description { state: "reader" 0.0;
+               image {
                   normal: "reader0.png";
                   tween: "reader1.png";
                   tween: "reader2.png";
@@ -586,11 +509,9 @@ collections
             }
          }
       }
-      programs //****************************
-      {
-         program
-         {
-            name: "stop_all";
+      /****************************/
+      programs { 
+         program { name: "stop_all";
             action: ACTION_STOP;
             target: "falling_left";
             target: "falling_right";
@@ -604,23 +525,17 @@ collections
          /****************************
          * Mouse click
          ****************************/
-         program
-         {
-            name: "left_click";
+         program { name: "left_click";
             signal: "mouse,down,1";
             source: "penguins";
             action: SIGNAL_EMIT "click_l" "penguins";
          }
-         program
-         {
-            name: "center_click";
+         program { name: "center_click";
             signal: "mouse,down,2";
             source: "penguins";
             action: SIGNAL_EMIT "click_c" "penguins";
          }
-         program
-         {
-            name: "right_click";
+         program { name: "right_click";
             signal: "mouse,down,3";
             source: "penguins";
             action: SIGNAL_EMIT "click_r" "penguins";
@@ -628,9 +543,7 @@ collections
          /****************************
          * Faller
          ****************************/
-         program 
-         {
-            name: "start_falling_right";
+         program  { name: "start_falling_right";
             signal: "start_falling_right";
             source: "epenguins";
             action: STATE_SET "faller" 0.0;
@@ -639,17 +552,13 @@ collections
             after: "stop_all";
             after: "falling_right";
          }
-         program
-         {
-            name: "falling_right";
+         program { name: "falling_right";
             action: STATE_SET "faller" 0.0;
             transition: LINEAR 0.5;
             target: "penguins";
             after: "falling_right";
          }
-         program 
-         {
-            name: "start_falling_left";
+         program  { name: "start_falling_left";
             signal: "start_falling_left";
             source: "epenguins";
             action: STATE_SET "faller" 1.0;
@@ -658,9 +567,7 @@ collections
             after: "stop_all";
             after: "falling_left";
          }
-         program
-         {
-            name: "falling_left";
+         program { name: "falling_left";
             action: STATE_SET "faller" 1.0;
             transition: LINEAR 0.5;
             target: "penguins";
@@ -669,9 +576,7 @@ collections
          /****************************
          * Floater
          ****************************/
-         program 
-         {
-            name: "start_floating_right";
+         program  { name: "start_floating_right";
             signal: "start_floating_right";
             source: "epenguins";
             action: STATE_SET "floater" 0.0;
@@ -680,17 +585,13 @@ collections
             after: "stop_all";
             after: "floating_right";
          }
-         program
-         {
-            name: "floating_right";
+         program { name: "floating_right";
             action: STATE_SET "floater" 0.0;
             transition: LINEAR 0.25;
             target: "penguins";
             after: "floating_right";
          }
-         program 
-         {
-            name: "start_floating_left";
+         program  { name: "start_floating_left";
             signal: "start_floating_left";
             source: "epenguins";
             action: STATE_SET "floater" 1.0;
@@ -699,9 +600,7 @@ collections
             after: "stop_all";
             after: "floating_left";
          }
-         program
-         {
-            name: "floating_left";
+         program { name: "floating_left";
             action: STATE_SET "floater" 1.0;
             transition: LINEAR 0.25;
             target: "penguins";
@@ -710,9 +609,7 @@ collections
          /****************************
           * Walker
           ****************************/ 
-         program
-         {
-            name: "start_walking_right";
+         program { name: "start_walking_right";
             signal: "start_walking_right";
             source: "epenguins";
             action: STATE_SET "walker" 0.0;
@@ -721,17 +618,13 @@ collections
             after: "stop_all";
             after: "walking_right";
          }
-         program
-         {
-            name: "walking_right";
+         program { name: "walking_right";
             action: STATE_SET "walker" 0.0;
             transition: LINEAR 0.8;
             target: "penguins";
             after: "walking_right";
          }
-         program
-         {
-            name: "start_walking_left";
+         program { name: "start_walking_left";
             signal: "start_walking_left";
             source: "epenguins";
             action: STATE_SET "walker" 1.0;
@@ -740,9 +633,7 @@ collections
             after: "stop_all";
             after: "walking_left";
          }
-         program
-         {
-            name: "walking_left";
+         program { name: "walking_left";
             action: STATE_SET "walker" 1.0;
             transition: LINEAR 0.8;
             target: "penguins";
@@ -751,9 +642,7 @@ collections
          /****************************
          * Climber
          ****************************/ 
-         program
-         {
-            name: "start_climbing_right";
+         program { name: "start_climbing_right";
             signal: "start_climbing_right";
             source: "epenguins";
             action: STATE_SET "climber" 0.0;
@@ -762,17 +651,13 @@ collections
             after: "stop_all";
             after: "climbing_right";
          }
-         program
-         {
-            name: "climbing_right";
+         program { name: "climbing_right";
             action: STATE_SET "climber" 0.0;
             transition: LINEAR 1;
             target: "penguins";
             after: "climbing_right";
          }
-         program
-         {
-            name: "start_climbing_left";
+         program { name: "start_climbing_left";
             signal: "start_climbing_left";
             source: "epenguins";
             action: STATE_SET "climber" 1.0;
@@ -781,9 +666,7 @@ collections
             after: "stop_all";
             after: "climbing_left";
          }
-         program
-         {
-            name: "climbing_left";
+         program { name: "climbing_left";
             action: STATE_SET "climber" 1.0;
             transition: LINEAR 1;
             target: "penguins";
@@ -792,9 +675,7 @@ collections
          /****************************
          * Flyer
          ****************************/ 
-         program
-         {
-            name: "start_flying_right";
+         program { name: "start_flying_right";
             signal: "start_flying_right";
             source: "epenguins";
             action: STATE_SET "flyer" 0.0;
@@ -803,17 +684,13 @@ collections
             after: "stop_all";
             after: "flying_right";
          }
-         program
-         {
-            name: "flying_right";
+         program { name: "flying_right";
             action: STATE_SET "flyer" 0.0;
             transition: LINEAR 1;
             target: "penguins";
             after: "flying_right";
          }
-         program
-         {
-            name: "start_flying_left";
+         program { name: "start_flying_left";
             signal: "start_flying_left";
             source: "epenguins";
             action: STATE_SET "flyer" 1.0;
@@ -822,9 +699,7 @@ collections
             after: "stop_all";
             after: "flying_left";
          }
-         program
-         {
-            name: "flying_left";
+         program { name: "flying_left";
             action: STATE_SET "flyer" 1.0;
             transition: LINEAR 1;
             target: "penguins";
@@ -833,9 +708,7 @@ collections
          /****************************
          * Bomber
          ****************************/ 
-         program
-         {
-            name: "start_bombing_right";
+         program { name: "start_bombing_right";
             signal: "start_bombing_right";
             source: "epenguins";
             action: STATE_SET "bomber" 0.0;
@@ -844,9 +717,7 @@ collections
             after: "stop_all";
             after: "bombing_done";
          }
-         program
-         {
-            name: "start_bombing_left";
+         program { name: "start_bombing_left";
             signal: "start_bombing_left";
             source: "epenguins";
             action: STATE_SET "bomber" 1.0;
@@ -855,17 +726,13 @@ collections
             after: "stop_all";
             after: "bombing_done";
          }
-         program
-         {
-            name: "bombing_done";
+         program { name: "bombing_done";
             action: SIGNAL_EMIT "bombing_done" "edje";
          }
          /****************************
          * Splatter
          ****************************/ 
-         program
-         {
-            name: "start_splatting_right";
+         program { name: "start_splatting_right";
             signal: "start_splatting_right";
             source: "epenguins";
             action: STATE_SET "splatter" 0.0;
@@ -874,9 +741,7 @@ collections
             after: "stop_all";
             after: "splatting_done";
          }
-         program
-         {
-            name: "start_splatting_left";
+         program { name: "start_splatting_left";
             signal: "start_splatting_left";
             source: "epenguins";
             action: STATE_SET "splatter" 1.0;
@@ -885,17 +750,13 @@ collections
             after: "stop_all";
             after: "splatting_done";
          }
-         program
-         {
-            name: "splatting_done";
+         program { name: "splatting_done";
             action: SIGNAL_EMIT "splatting_done" "edje";
          }
          /****************************
          * Angel (optional)
          ****************************/
-         program
-         {
-            name: "start_angel";
+         program { name: "start_angel";
             signal: "start_angel";
             source: "epenguins";
             action: STATE_SET "angel" 0.0;
@@ -903,9 +764,7 @@ collections
             target: "penguins";
             after: "angel";
          }
-         program
-         {
-            name: "angel";
+         program { name: "angel";
             action: STATE_SET "angel" 0.0;
             transition: LINEAR 0.5;
             target: "penguins";
@@ -915,17 +774,13 @@ collections
          * Customs programs
          * Every theme must have this program set
          *****************************************/ 
-         program
-         {
-            name: "custom_done";
+         program { name: "custom_done";
             action: SIGNAL_EMIT "custom_done" "edje";
          }
          /****************************
          * Custom_1 - digger
          ****************************/ 
-         program
-         {
-            name: "start_custom_1_right";
+         program { name: "start_custom_1_right";
             signal: "start_custom_1_right";
             source: "epenguins";
             action: STATE_SET "custom_1" 0.0;
@@ -934,9 +789,7 @@ collections
             after: "stop_all";
             after: "custom_done";
          }
-         program
-         {
-            name: "start_custom_1_left";
+         program { name: "start_custom_1_left";
             signal: "start_custom_1_left";
             source: "epenguins";
             action: STATE_SET "custom_1" 1.0;
@@ -948,9 +801,7 @@ collections
          /****************************
          * Custom_2 - reader
          ****************************/ 
-         program
-         {
-            name: "start_custom_2_right";
+         program { name: "start_custom_2_right";
             signal: "start_custom_2_right";
             source: "epenguins";
             action: STATE_SET "reader" 0.0;
@@ -959,9 +810,7 @@ collections
             after: "stop_all";
             after: "custom_done";
          }
-         program
-         {
-            name: "start_custom_2_left";
+         program { name: "start_custom_2_left";
             signal: "start_custom_2_left";
             source: "epenguins";
             action: STATE_SET "reader" 0.0;
