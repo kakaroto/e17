@@ -600,6 +600,7 @@ void response_cb(Exalt_DBus_Response* response, void* data )
         case EXALT_DBUS_RESPONSE_ALL_IFACES_DISCONNECTED_IS:
             if(exalt_dbus_response_is_get(response))
                 edje_object_signal_emit(inst->o_exalt, "global,disconnect", "exalt");
+            break;
         case EXALT_DBUS_RESPONSE_DNS_LIST_GET:
             dns_dialog_update(inst, response);
             break;
