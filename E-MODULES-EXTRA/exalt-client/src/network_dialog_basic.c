@@ -215,7 +215,7 @@ void if_network_dialog_basic_hide(Instance *inst)
 
 void if_network_dialog_basic_update(Instance* inst,Exalt_DBus_Response *response)
 {
-    char* string;
+    const char* string;
     int boolean;
     char buf[1024];
     Exalt_Configuration_Network *cn;

@@ -223,7 +223,7 @@ popup_iface_add(Instance* inst, const char* iface, Iface_Type iface_type)
     }
 }
 
-void popup_iface_label_create(Popup_Elt *elt, char *buf, int buf_size, char* ip)
+void popup_iface_label_create(Popup_Elt *elt, char *buf, int buf_size, const char* ip)
 {
     if(!ip)
         ip = D_("No IP Address");
@@ -299,7 +299,7 @@ void popup_cb_ifnet_sel(void *data)
 }
 
     void
-popup_ip_update(Instance* inst, char* iface, char* ip)
+popup_ip_update(Instance* inst, const char* iface, const char* ip)
 {
     int i = 0;
     char buf[1024];
@@ -325,7 +325,7 @@ popup_ip_update(Instance* inst, char* iface, char* ip)
     }
 }
 
-void popup_up_update(Instance* inst, char* iface, int is_up)
+void popup_up_update(Instance* inst, const char* iface, int is_up)
 {
     int i;
     Popup_Elt* elt;
@@ -342,7 +342,7 @@ void popup_up_update(Instance* inst, char* iface, int is_up)
     popup_icon_update(inst,iface);
 }
 
-void popup_link_update(Instance* inst, char* iface, int is_link)
+void popup_link_update(Instance* inst, const char* iface, int is_link)
 {
     Popup_Elt* elt;
     Eina_List *l;
@@ -358,7 +358,7 @@ void popup_link_update(Instance* inst, char* iface, int is_link)
     popup_icon_update(inst,iface);
 }
 
-void popup_connected_update(Instance* inst, char* iface, int is_connected)
+void popup_connected_update(Instance* inst, const char* iface, int is_connected)
 {
     Popup_Elt* elt;
     Eina_List *l;
@@ -375,7 +375,7 @@ void popup_connected_update(Instance* inst, char* iface, int is_connected)
     popup_icon_update(inst,iface);
 }
 
-void popup_essid_update(Instance* inst, char* iface, char* essid)
+void popup_essid_update(Instance* inst, const char* iface, const char* essid)
 {
     int i = 0;
     char buf[1024];

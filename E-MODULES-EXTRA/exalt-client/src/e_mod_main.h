@@ -299,6 +299,13 @@ struct _Instance
     Config_Item *conf_item;
 };
 
+enum Encryption_Enum
+{
+    ENCRYPTION_NONE,
+    ENCRYPTION_WEP_ASCII,
+    ENCRYPTION_WEP_HEXA
+};
+
 enum _Iface_Type
 {
     IFACE_WIRELESS,
@@ -364,16 +371,16 @@ void popup_show(Instance* inst);
 void popup_hide(Instance *inst);
 void popup_create(Instance* inst);
 void popup_update(Instance* inst, Exalt_DBus_Response* response);
-void popup_ip_update(Instance* inst, char* iface, char* ip);
+void popup_ip_update(Instance* inst, const char* iface, const char* ip);
 void popup_iface_add(Instance* inst, const char* iface, Iface_Type iface_type);
 void popup_iface_remove(Instance *inst, const char*  iface);
 void popup_cb_dns(void *data, void *data2);
 void popup_cb_network(void *data, void *data2);
 void popup_cb_ifnet_sel(void *data);
-void popup_up_update(Instance* inst, char* iface, int is_up);
-void popup_link_update(Instance* inst, char* iface, int is_link);
+void popup_up_update(Instance* inst, const char* iface, int is_up);
+void popup_link_update(Instance* inst, const char* iface, int is_link);
 void popup_icon_update(Instance* inst, const char* iface);
-void popup_iface_label_create(Popup_Elt *elt, char *buf, int buf_size, char* ip);
+void popup_iface_label_create(Popup_Elt *elt, char *buf, int buf_size, const char* ip);
 void popup_notify_scan(char* iface, Eina_List* networks, void* user_data );
 void popup_network_interval_get(Instance* inst, const char* iface, int *id_first, int* id_last, Eina_List** first, Eina_List** last);
 void popup_iface_essid_create(Popup_Elt *elt, char *buf, int buf_size, int quality);

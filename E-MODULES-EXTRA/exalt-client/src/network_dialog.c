@@ -372,7 +372,7 @@ void if_network_dialog_cb_del(E_Win *win)
 
 void if_network_dialog_update(Instance* inst,Exalt_DBus_Response *response)
 {
-    char* string;
+    const char* string;
     int boolean;
     Exalt_Configuration_Network *cn;
     Exalt_Configuration *c;

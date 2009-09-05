@@ -148,7 +148,7 @@ void if_wired_dialog_hide(Instance *inst)
 
 void if_wired_dialog_update(Instance* inst,Exalt_DBus_Response *response)
 {
-    char* string;
+    const char* string;
     int boolean;
     if(!inst->wired.dialog)
         return ;

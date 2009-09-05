@@ -30,17 +30,17 @@ void if_network_dialog_new_create(Instance* inst)
 
     //
     rg = e_widget_radio_group_new(&(inst->network_new.enc));
-    o = e_widget_radio_add(evas, D_("No encryption (danger)"), EXALT_ENCRYPTION_NONE, rg);
+    o = e_widget_radio_add(evas, D_("No encryption (danger)"), ENCRYPTION_NONE, rg);
     evas_object_smart_callback_add(o, "changed", if_network_dialog_new_disabled_update, inst);
     e_widget_frametable_object_append(flist, o, 0, 0, 3, 1, 1, 0, 1, 0);
     inst->network_new.radio_noenc = o;
 
-    o = e_widget_radio_add(evas, D_("WEP plain text"), EXALT_ENCRYPTION_WEP_ASCII, rg);
+    o = e_widget_radio_add(evas, D_("WEP plain text"), ENCRYPTION_WEP_ASCII, rg);
     evas_object_smart_callback_add(o, "changed", if_network_dialog_new_disabled_update, inst);
     e_widget_frametable_object_append(flist, o, 0, 1, 3, 1, 1, 0, 1, 0);
     inst->network_new.radio_wep_ascii = o;
 
-    o = e_widget_radio_add(evas, D_("WEP hexadecimal"), EXALT_ENCRYPTION_WEP_HEXA, rg);
+    o = e_widget_radio_add(evas, D_("WEP hexadecimal"), ENCRYPTION_WEP_HEXA, rg);
     evas_object_smart_callback_add(o, "changed", if_network_dialog_new_disabled_update, inst);
     e_widget_frametable_object_append(flist, o, 0, 2, 3, 1, 1, 0, 1, 0);
     inst->network_new.radio_wep_hexa = o;
@@ -184,7 +184,7 @@ void if_network_dialog_new_hide(Instance *inst)
 
 void if_network_dialog_new_update(Instance* inst,Exalt_DBus_Response *response)
 {
-    char* string;
+    const char* string;
     int boolean;
     if(!inst->network_new.dialog)
         return ;
@@ -233,17 +233,17 @@ void if_network_dialog_new_cb_apply(void *data, E_Dialog *dialog)
 
     switch(inst->network_new.enc)
     {
-        case EXALT_ENCRYPTION_NONE:
+        case ENCRYPTION_NONE:
 
             break;
-        case EXALT_ENCRYPTION_WEP_HEXA:
+        case ENCRYPTION_WEP_HEXA:
             exalt_conf_network_wep_hexa_set(n, 1);
-        case EXALT_ENCRYPTION_WEP_ASCII:
+        case ENCRYPTION_WEP_ASCII:
             exalt_conf_network_wep_set(n ,1);
             exalt_conf_network_encryption_set(n, 1);
             exalt_conf_network_key_set(n, inst->network_new.pwd);
             break;
-        case EXALT_ENCRYPTION_WPA_PSK_TKIP_ASCII:
+        /*case EXALT_ENCRYPTION_WPA_PSK_TKIP_ASCII:
             exalt_conf_network_encryption_set(n, 1);
             exalt_conf_network_key_set(n, inst->network_new.pwd);
             exalt_conf_network_wpa_set(n, 1);
@@ -253,6 +253,7 @@ void if_network_dialog_new_cb_apply(void *data, E_Dialog *dialog)
             exalt_conf_network_pairwise_cypher_set(n, CYPHER_NAME_TKIP);
             exalt_conf_network_auth_suites_set(n, AUTH_SUITES_PSK);
             break;
+            */
         default: ;
     }
 
@@ -290,9 +291,9 @@ void if_network_dialog_new_disabled_update(void *data, Evas_Object *obj, void *e
 
     switch(inst->network_new.enc)
     {
-        case EXALT_ENCRYPTION_WEP_ASCII:
-        case EXALT_ENCRYPTION_WEP_HEXA:
-        case EXALT_ENCRYPTION_WPA_PSK_TKIP_ASCII:
+        case ENCRYPTION_WEP_ASCII:
+        case ENCRYPTION_WEP_HEXA:
+        /*case EXALT_ENCRYPTION_WPA_PSK_TKIP_ASCII: */
             evas_object_show(inst->network_new.lbl_pwd);
             evas_object_show(inst->network_new.entry_pwd);
             is_pwd = 1;
