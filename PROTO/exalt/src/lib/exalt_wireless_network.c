@@ -7,11 +7,6 @@
  * TODO: update exalt_wireless_network_free()
  * */
 
-/**
- * @addtogroup Exalt_Wireless_Network
- * @{
- */
-
 typedef struct Exalt_Wireless_Network_Mode_List Exalt_Wireless_Network_Mode_List;
 typedef struct Exalt_Wireless_Network_Security_List Exalt_Wireless_Network_Security_List;
 typedef struct Exalt_Wireless_Network_Auth_Suites_List Exalt_Wireless_Network_Auth_Suites_List;
@@ -50,65 +45,6 @@ struct Exalt_Wireless_Network_IE
         auth_suites[EXALT_WIRELESS_NETWORK_AUTH_SUITES_NUM];
     int auth_suites_number;
 };
-
-Eet_Data_Descriptor * exalt_wireless_network_ie_edd_new()
-{
-    Eet_Data_Descriptor *edd;
-    Exalt_Wireless_Network_IE ie;
-    edd = eet_data_descriptor_new("ie", sizeof(Exalt_Wireless_Network_IE),
-            (void*(*)(void*))eina_list_next,
-            (void*(*)(void*,void*))eina_list_append,
-            (void*(*)(void*))eina_list_data_get,
-            (void*(*)(void*))eina_list_free,
-            (void(*)(void*,int(*)(void*,const char*,void*,void*),void*))eina_hash_foreach,
-            (void*(*)(void*,const char*,void*))eina_hash_add,
-            (void(*)(void*))eina_hash_free);
-
-    EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Exalt_Wireless_Network_IE, "description", description, EET_T_STRING);
-    EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Exalt_Wireless_Network_IE, "wpa_type", wpa_type, EET_T_INT);
-    EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Exalt_Wireless_Network_IE, "group_cypher", group_cypher, EET_T_INT);
-
-    eet_data_descriptor_element_add(edd,"pairwise_cypher",EET_T_INT,
-            EET_G_ARRAY, (char *)(&(ie.pairwise_cypher)) - (char *)(&(ie)),
-            sizeof(ie.pairwise_cypher)/sizeof(ie.pairwise_cypher[0]),
-            NULL, NULL);
-    EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Exalt_Wireless_Network_IE, "pairwise_cypher_number", pairwise_cypher_number, EET_T_INT);
-
-    eet_data_descriptor_element_add(edd,"auth_suites",EET_T_INT,
-            EET_G_ARRAY, (char *)(&(ie.auth_suites)) - (char *)(&(ie)),
-            sizeof(ie.auth_suites)/sizeof(ie.auth_suites[0]),
-            NULL, NULL);
-    EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Exalt_Wireless_Network_IE, "auth_suites_number", auth_suites_number, EET_T_INT);
-
-    return edd;
-}
-
-Eet_Data_Descriptor * exalt_wireless_network_edd_new(Eet_Data_Descriptor* edd_ie)
-{
-    Eet_Data_Descriptor *edd;
-
-    EXALT_ASSERT_RETURN(edd_ie!=NULL);
-
-    edd = eet_data_descriptor_new("Network", sizeof(Exalt_Wireless_Network),
-            (void*(*)(void*))eina_list_next,
-            (void*(*)(void*,void*))eina_list_append,
-            (void*(*)(void*))eina_list_data_get,
-            (void*(*)(void*))eina_list_free,
-            (void(*)(void*,int(*)(void*,const char*,void*,void*),void*))eina_hash_foreach,
-            (void*(*)(void*,const char*,void*))eina_hash_add,
-            (void(*)(void*))eina_hash_free);
-
-    EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Exalt_Wireless_Network, "address", address, EET_T_STRING);
-    EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Exalt_Wireless_Network, "essid", essid, EET_T_STRING);
-    EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Exalt_Wireless_Network, "encryption", encryption, EET_T_INT);
-    EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Exalt_Wireless_Network, "mode", mode, EET_T_INT);
-    EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Exalt_Wireless_Network, "description", description, EET_T_STRING);
-
-    EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Exalt_Wireless_Network, "quality", quality, EET_T_INT);
-
-    EET_DATA_DESCRIPTOR_ADD_LIST(edd, Exalt_Wireless_Network, "ies", ie, edd_ie);
-    return edd;
-}
 
 struct Exalt_Wireless_Network_Mode_List
 {
@@ -179,13 +115,72 @@ Exalt_Wireless_Network_Wpa_Type_List exalt_wireless_network_wpa_type_tab[]=
     {WPA_TYPE_WPA2,"WPA2"}
 };
 
-
-
 /**
- * @brief Create a new exalt_Wireless_Network structure
- * @param w the interface which be associated to the new network
- * @return Returns the new network
+ * @addtogroup Exalt_Wireless_Network
+ * @{
  */
+
+
+Eet_Data_Descriptor * exalt_wireless_network_ie_edd_new()
+{
+    Eet_Data_Descriptor *edd;
+    Exalt_Wireless_Network_IE ie;
+    edd = eet_data_descriptor_new("ie", sizeof(Exalt_Wireless_Network_IE),
+            (void*(*)(void*))eina_list_next,
+            (void*(*)(void*,void*))eina_list_append,
+            (void*(*)(void*))eina_list_data_get,
+            (void*(*)(void*))eina_list_free,
+            (void(*)(void*,int(*)(void*,const char*,void*,void*),void*))eina_hash_foreach,
+            (void*(*)(void*,const char*,void*))eina_hash_add,
+            (void(*)(void*))eina_hash_free);
+
+    EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Exalt_Wireless_Network_IE, "description", description, EET_T_STRING);
+    EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Exalt_Wireless_Network_IE, "wpa_type", wpa_type, EET_T_INT);
+    EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Exalt_Wireless_Network_IE, "group_cypher", group_cypher, EET_T_INT);
+
+    eet_data_descriptor_element_add(edd,"pairwise_cypher",EET_T_INT,
+            EET_G_ARRAY, (char *)(&(ie.pairwise_cypher)) - (char *)(&(ie)),
+            sizeof(ie.pairwise_cypher)/sizeof(ie.pairwise_cypher[0]),
+            NULL, NULL);
+    EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Exalt_Wireless_Network_IE, "pairwise_cypher_number", pairwise_cypher_number, EET_T_INT);
+
+    eet_data_descriptor_element_add(edd,"auth_suites",EET_T_INT,
+            EET_G_ARRAY, (char *)(&(ie.auth_suites)) - (char *)(&(ie)),
+            sizeof(ie.auth_suites)/sizeof(ie.auth_suites[0]),
+            NULL, NULL);
+    EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Exalt_Wireless_Network_IE, "auth_suites_number", auth_suites_number, EET_T_INT);
+
+    return edd;
+}
+
+Eet_Data_Descriptor * exalt_wireless_network_edd_new(Eet_Data_Descriptor* edd_ie)
+{
+    Eet_Data_Descriptor *edd;
+
+    EXALT_ASSERT_RETURN(edd_ie!=NULL);
+
+    edd = eet_data_descriptor_new("Network", sizeof(Exalt_Wireless_Network),
+            (void*(*)(void*))eina_list_next,
+            (void*(*)(void*,void*))eina_list_append,
+            (void*(*)(void*))eina_list_data_get,
+            (void*(*)(void*))eina_list_free,
+            (void(*)(void*,int(*)(void*,const char*,void*,void*),void*))eina_hash_foreach,
+            (void*(*)(void*,const char*,void*))eina_hash_add,
+            (void(*)(void*))eina_hash_free);
+
+    EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Exalt_Wireless_Network, "address", address, EET_T_STRING);
+    EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Exalt_Wireless_Network, "essid", essid, EET_T_STRING);
+    EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Exalt_Wireless_Network, "encryption", encryption, EET_T_INT);
+    EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Exalt_Wireless_Network, "mode", mode, EET_T_INT);
+    EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Exalt_Wireless_Network, "description", description, EET_T_STRING);
+
+    EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Exalt_Wireless_Network, "quality", quality, EET_T_INT);
+
+    EET_DATA_DESCRIPTOR_ADD_LIST(edd, Exalt_Wireless_Network, "ies", ie, edd_ie);
+    return edd;
+}
+
+
 Exalt_Wireless_Network* exalt_wireless_network_new(
         Exalt_Wireless* w)
 {
@@ -196,10 +191,6 @@ Exalt_Wireless_Network* exalt_wireless_network_new(
     return wn;
 }
 
-/**
- * @brief free Exalt_Wireless_Network
- * @param data the Exalt_Wireless_Network
- */
 void exalt_wireless_network_free(
         Exalt_Wireless_Network** wn)
 {
@@ -224,10 +215,6 @@ void exalt_wireless_network_free(
     EXALT_FREE(wn2);
 }
 
-/**
- * @brief Create a new exalt_Wireless_Network_IE structure
- * @return Returns the new network IE structure
- */
 Exalt_Wireless_Network_IE* exalt_wireless_network_ie_new()
 {
     Exalt_Wireless_Network_IE* ie = calloc(1,sizeof(Exalt_Wireless_Network_IE));
@@ -235,10 +222,6 @@ Exalt_Wireless_Network_IE* exalt_wireless_network_ie_new()
     return ie;
 }
 
-/**
- * @brief free Exalt_Wireless_Network_IE
- * @param data the Exalt_Wireless_Network_IE
- */
 void exalt_wireless_network_ie_free(
         Exalt_Wireless_Network_IE** ie)
 {
@@ -246,7 +229,7 @@ void exalt_wireless_network_ie_free(
     EXALT_FREE((*ie)->description);
     EXALT_FREE(*ie);
 }
-
+/// @cond
 #define EXALT_FCT_NAME exalt_wireless_network
 #define EXALT_STRUCT_TYPE Exalt_Wireless_Network
 
@@ -292,7 +275,7 @@ EXALT_GET(auth_suites_number,int)
 
 #undef EXALT_FCT_NAME
 #undef EXALT_STRUCT_TYPE
-
+/// @endcond
 
 const char* exalt_wireless_network_name_from_mode_id(
         int id)

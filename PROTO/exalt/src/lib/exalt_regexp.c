@@ -1,6 +1,10 @@
+/** @file exalt_regexp.c */
 #include "./exalt_regexp.h"
 #include "libexalt_private.h"
 
+/**
+ * @addtogroup Exalt_Regexp
+ */
 
 
 Exalt_Regex* exalt_regex_new(const char* str_request, const char* str_regex, short debug)
@@ -168,4 +172,5 @@ int exalt_regex_execute(Exalt_Regex* r)
 }
 
 
+/** @} */
 

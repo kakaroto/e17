@@ -1,21 +1,3 @@
-/*
- * =====================================================================================
- *
- *       Filename:  exalt_vpnc.h
- *
- *    Description:  manage a vpn connection using vpnc
- *
- *        Version:  1.0
- *        Created:  11/21/2007 02:34:23 PM CET
- *       Revision:  none
- *       Compiler:  gcc
- *
- *         Author:   (Watchwolf), Atton Jonathan <watchwolf@watchwolf.fr>
- *        Company:
- *
- * =====================================================================================
- */
-
 #ifndef  EXALT_VPNC_INC
 #define  EXALT_VPNC_INC
 

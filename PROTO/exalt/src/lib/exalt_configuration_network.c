@@ -1,6 +1,13 @@
 
+/** @file exalt_configuration_network.c */
+
 #include "exalt_configuration_network.h"
 #include "libexalt_private.h"
+
+/**
+ * @addtogroup Exalt_Configuration_Network
+ * @{
+ */
 
 
 struct Exalt_Configuration_Network
@@ -58,9 +65,10 @@ void exalt_conf_network_print(Exalt_Configuration_Network *cn)
     printf("Auth Suites\t:\t%d\n",exalt_conf_network_auth_suites_get(cn));
     printf("Favoris\t:\t%d\n",exalt_conf_network_favoris_is(cn));
 }
-
+/// @cond
 #define EXALT_FCT_NAME exalt_conf_network
 #define EXALT_STRUCT_TYPE Exalt_Configuration_Network
+/// @endcond
 
 EXALT_STRING_SET(essid)
 EXALT_SET(encryption, int)
@@ -124,4 +132,4 @@ Eet_Data_Descriptor * exalt_conf_network_edd_new()
     return edd;
 }
 
-
+/** @} */

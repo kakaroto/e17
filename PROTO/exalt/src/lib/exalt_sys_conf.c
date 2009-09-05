@@ -6,7 +6,7 @@
 
 typedef struct Exalt_Eth_Save
 {
-    Exalt_Enum_State state;
+    int state;
     char* driver;
     Exalt_Configuration *conf;
 }Exalt_Eth_Save;
@@ -45,11 +45,11 @@ int exalt_eth_save(const char* file, Exalt_Ethernet* eth)
     return _exalt_eet_eth_save(file, &s, exalt_eth_udi_get(eth));
 }
 
-Exalt_Enum_State exalt_eth_state_load(const char* file, const char* udi)
+int exalt_eth_state_load(const char* file, const char* udi)
 {
     Exalt_Eth_Save *s = _exalt_eet_eth_load(file, udi);
     EXALT_ASSERT_RETURN(s!=NULL);
-    Exalt_Enum_State st = s->state;
+    int st = s->state;
     EXALT_FREE(s->driver);
     exalt_conf_free(&(s->conf));
     EXALT_FREE(s);

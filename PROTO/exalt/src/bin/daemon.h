@@ -57,11 +57,8 @@ E_DBus_Connection* exaltd_conn;
 int main(int argc, char** argv);
 int setup(E_DBus_Connection *conn);
 Exalt_Ethernet* dbus_get_eth(DBusMessage* msg);
-Exalt_Wireless_Network* dbus_get_wirelessnetwork(DBusMessage* msg);
-Exalt_Wireless_Network* get_wirelessnetwork(Exalt_Ethernet* eth, char* essid);
 void eth_cb(Exalt_Ethernet* eth, Exalt_Enum_Action action, void* data);
 void wireless_scan_cb(Exalt_Ethernet* eth, Eina_List* networks, void* data);
-
 
 DBusMessage* conf_from_dbusmessage(Exalt_Configuration *c, DBusMessage *msg,DBusMessage *reply);
 

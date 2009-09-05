@@ -1,3 +1,4 @@
+/** @file exalt_regexp.h */
 #ifndef REGEX_H
 #define REGEX_H
 
@@ -7,17 +8,25 @@
 #include <string.h>
 #include <regex.h>
 
+/**
+ * @defgroup Exalt_Regexp
+ * @brief Create and execute a regular expression.
+ * @ingroup Exalt
+ * @{
+ */
 
-/** partial ip regexp (only 1 number) */
+
+/** Partial IP regexp (only 1 number) */
 #define REGEXP_IP_PARTIAL "([01]?[0-9][0-9]?|2[0-4][0-9]|25[0-5])"
-/** ip regexp */
+/** Complete IP IP regexp */
 #define REGEXP_IP   REGEXP_IP_PARTIAL "\\."  REGEXP_IP_PARTIAL "\\."  REGEXP_IP_PARTIAL "\\."  REGEXP_IP_PARTIAL
-/** ip regexp when the string request contains only a ip */
+/** IP regexp when the string request contains only a ip */
 #define REGEXP_IS_IP "^"  REGEXP_IP "$"
 
-/** regexp to test if a key is a correct WEP hexadecimal key */
+/** Regexp to test if a key is a correct WEP hexadecimal key */
 #define REGEXP_IS_WEP_HEXA "^[0-9A-F]{10}$|^[0-9A-F]{26}$"
 
+/** Represents an regular expression */
 typedef struct Exalt_Regex Exalt_Regex;
 
 struct Exalt_Regex
@@ -31,47 +40,49 @@ struct Exalt_Regex
 };
 
 /**
- * @brief create a new regex
+ * @brief Create a new regexp
  * @param str_request the request string
  * @param str_regex the regular expression
  * @debug 1 if you want use the debug mode, else 0
- * @return Return a Exalt_Regex structure
+ * @return Returns a Exalt_Regexp structure
  */
 EAPI Exalt_Regex* exalt_regex_new(const char* str_request, const char* str_regex,short debug);
 /**
- * @brief change the request string
- * @param r the Exalt_Regex
+ * @brief Update the request string
+ * @param r the Exalt_Regexp
  * @param str_request the new request string
  */
 EAPI void exalt_regex_set_request(Exalt_Regex* r,const char* str_request);
 /**
- * @brief change the regular expression
- * @param r the Exalt_Regex
+ * @brief Update the regular expression
+ * @param r the Exalt_Regexp
  * @param str_regex the new regular expression
  */
 EAPI void exalt_regex_set_regex(Exalt_Regex* r,const char* str_regex);
 /**
- * @brief set the debug mode
- * @param r the Exalt_Regex
- * @param debug the new debig mode, 0 or 1
+ * @brief Activate/deactivate the debug mode
+ * @param r the Exalt_Regexp
+ * @param debug the new debug mode status, 0 or 1
  */
 EAPI void exalt_regex_set_debug(Exalt_Regex *r, short debug);
 /**
- * @brief clear the current result
- * @param r the Exalt_Regex
+ * @brief Clear the current result
+ * @param r the Exalt_Regexp
  */
 EAPI void exalt_regex_clear_result(Exalt_Regex* r);
-/*
- * @brief free tje regex
- * @param r the Exalt_Regex
+/**
+ * @brief Free the regexp
+ * @param r the Exalt_Regexp
  */
 EAPI void exalt_regex_free(Exalt_Regex **r);
-/*
- * @brief execute a regular expression
- * @param r the Exalt_Regex
- * @return Return 1 if the regular expression is found int the request string, else 0
+/**
+ * @brief Execute a regular expression
+ * @param r the Exalt_Regexp
+ * @return Return 1 if the regular expression is found in the request string, else 0
  */
 EAPI int exalt_regex_execute(Exalt_Regex* r);
+
+/** @} */
 
 #endif
 

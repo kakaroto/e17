@@ -7,7 +7,7 @@
 
 /**
  * @defgroup Exalt_DNS
- * @brief manage the dns list (add, delete, print)
+ * @brief Manage the dns list (add, delete, load, print). You do not need to init the library (exalt_init()) to use these methods.
  * @ingroup Exalt
  * @{
  */
@@ -15,33 +15,33 @@
 #define EXALT_RESOLVCONF_FILE "/etc/resolv.conf"
 
 /**
- * @brief get the dns list
- * @return Return the dns list
+ * @brief Get the dns list
+ * @return Returns the dns list, list of char*
  */
 EAPI Eina_List* exalt_dns_get_list();
 
 /**
- * @brief add a dns
+ * @brief Add a dns
  * @param dns the news dns
- * @return Return 1 if the dns is add, else 0
+ * @return Returns 1 if the dns is added, else 0
  */
 EAPI int exalt_dns_add(const char* dns);
 /**
- * @brief delete a dns
+ * @brief Delete a dns
  * @param dns the dns
- * @return Return 1 if the dns is delete, else 0
+ * @return Returns 1 if the dns is deleted, else 0
  */
 EAPI int exalt_dns_delete(const char* dns);
 /**
- * @brief replace a dns by a new
+ * @brief Replace a dns by a new
  * @param old_dns the old dns
  * @param new_dns the new dns
- * @return Return 1 if the dns is replace, else 0
+ * @return Returns 1 if the dns is replaced, else 0
  */
 EAPI int exalt_dns_replace(const char* old_dns, const char* new_dns);
 
 /**
- * @brief print the dns list in the standard output
+ * @brief Print the dns list in the standard output
  */
 EAPI void exalt_dns_printf();
 

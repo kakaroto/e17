@@ -1,21 +1,3 @@
-/*
- * =====================================================================================
- *
- *       Filename:  exalt_wpa_supplicant.h
- *
- *    Description:
- *
- *        Version:  1.0
- *        Created:  03/04/2009 08:30:40 PM CET
- *       Revision:  none
- *       Compiler:  gcc
- *
- *         Author:  (Watchwolf), Atton Jonathan <watchwolf@watchwolf.fr>
- *        Company:
- *
- * =====================================================================================
- */
-
 #ifndef  EXALT_WPA_SUPPLICANT_INC
 #define  EXALT_WPA_SUPPLICANT_INC
 

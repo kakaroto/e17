@@ -4,20 +4,18 @@
 #include "config.h"
 #include <E_Hal.h>
 
+#define EXALT_LOG_DOMAIN exalt_eth_interfaces.log_domain
+static int init = 0;
+
+Exalt_Ethernets exalt_eth_interfaces;
+
+
 /**
  * @addtogroup Exalt_General
  * @{
  */
 
-static int init = 0;
 
-Exalt_Ethernets exalt_eth_interfaces;
-
-#define EXALT_LOG_DOMAIN exalt_eth_interfaces.log_domain
-
-/**
- * @brief initialise the library
- */
 int exalt_init()
 {
     if( ++init != 1) return init;
@@ -45,10 +43,6 @@ int exalt_init()
     return 1;
 }
 
-/**
- * @brief Launch the library
- * load cards and watch events
- */
 int exalt_main()
 {
     struct sockaddr_nl addr;
@@ -92,11 +86,6 @@ int exalt_main()
 
 
 
-/**
- * @brief test if a string is a valid address
- * @param ip the string ip
- * return Return 1 if sucess, else 0
- */
 short exalt_address_is(const char* ip)
 {
     Exalt_Regex *r;
@@ -110,11 +99,6 @@ short exalt_address_is(const char* ip)
     return res;
 }
 
-/**
- * @brief test if a string is a valid essid
- * @param essid the essid
- * @return Return 1 if success, else 0
- */
 short exalt_essid_is(const char* essid)
 {
     if(!essid) return 0;
@@ -126,8 +110,9 @@ short exalt_essid_is(const char* essid)
  * @param key the key
  * @param encryption_mode the password mode (WEP, WPA ...)
  * @return Return 1 if success, else 0
+ * TODO: REWRITE
  */
-short exalt_key_is(const char* key, Exalt_Enum_Encryption_Mode encryption_mode)
+/*short exalt_key_is(const char* key, Exalt_Enum_Encryption_Mode encryption_mode)
 {
     Exalt_Regex *r;
     short res;
@@ -165,31 +150,14 @@ short exalt_key_is(const char* key, Exalt_Enum_Encryption_Mode encryption_mode)
     }
 
     return 0;
-}
+}*/
 
-/**
- * @brief return if you have the administrator right
- * @return Return 1 if yes, else 0
- */
 short exalt_admin_is()
 {
     return exalt_eth_interfaces.admin;
 }
 
-/**
- * @brief return if libexalt is built with the support of dhcp
- * @return Return 1 if yes, else 0
- */
-short exalt_dhcp_support_is()
-{
-#ifdef HAVE_DHCP
-    return 1;
-#else
-    return 0;
-#endif
-}
-
-
+/// @cond
 /**
  * @brief return if libexalt is built with the support of vpnc
  * @return Return 1 if yes, else 0
@@ -202,7 +170,7 @@ short exalt_vpnc_support_is()
     return 0;
 #endif
 }
-
+/// @endcond
 
 /** @} */
 

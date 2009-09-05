@@ -5,7 +5,7 @@
 
 /**
  * @defgroup Exalt_Configuration
- * @brief The Exalt_Configuration struct contains all information about a configuration (dhcp or static mode, ip, essid ...)
+ * @brief The Exalt_Configuration structure contains the information about a configuration (DHCP or static mode, IP address ...). This structure is used to apply a new configuration to an interface.
  * @ingroup Exalt
  * @{
  */
@@ -16,53 +16,7 @@
  */
 typedef struct Exalt_Configuration Exalt_Configuration;
 
-/** Define the list of state */
-typedef enum Exalt_Enum_State
-{
-    /** down/deactivate */
-    EXALT_DOWN,
-    /** up/activate */
-    EXALT_UP,
-} Exalt_Enum_State;
-
-/** Define the list of encryption mode */
-typedef enum Exalt_Enum_Encryption_Mode
-{
-    /** no encryption */
-    EXALT_ENCRYPTION_NONE,
-    /** WEP ASCII encryption */
-    EXALT_ENCRYPTION_WEP_ASCII,
-    /** WEP Hexadecimal encryption */
-    EXALT_ENCRYPTION_WEP_HEXA,
-    /** WPA PSK CCMP (ASCII mode) */
-    EXALT_ENCRYPTION_WPA_PSK_CCMP_ASCII,
-    /** WPA PSK TKIP (ASCII mode) */
-    EXALT_ENCRYPTION_WPA_PSK_TKIP_ASCII,
-    /** WPA2 PSK CCMP (ASCII mode) */
-    EXALT_ENCRYPTION_WPA2_PSK_CCMP_ASCII,
-    /** WPA2 PSK TKIP (ASCII mode) */
-    EXALT_ENCRYPTION_WPA2_PSK_TKIP_ASCII
-} Exalt_Enum_Encryption_Mode;
-
-/** Define the list of Configuration mode*/
-typedef enum Exalt_Enum_Configuration_Mode
-{
-    /** Ad-Hoc Configuration mode*/
-    EXALT_Configuration_ADHOC,
-    /** Managed Configuration mode*/
-    EXALT_Configuration_MANAGED
-} Exalt_Enum_Configuration_Mode;
-
-/** Define the list of security mode */
-typedef enum Exalt_Enum_Security_Mode
-{
-    /** Open security mode */
-    EXALT_SECURITY_OPEN,
-    /** Shared security mode */
-    EXALT_SECURITY_SHARED
-} Exalt_Enum_Security_Mode;
-
-/** Define the list of mode */
+/** The both mode : DHCP or static */
 typedef enum Exalt_Enum_Mode
 {
     /** Static mode */
@@ -87,119 +41,136 @@ EAPI Exalt_Configuration* exalt_conf_new();
 
 /**
  * @brief free a Configuration
- * Warning: This method doesn't free the network inside the Configuration.
  * @param c the Configuration
  */
 EAPI void exalt_conf_free(Exalt_Configuration** c);
 
 /**
- * @brief test if a Configuration is valid (valid address ...)
+ * @brief test if a configuration is valid (valid address ...)
  * @param c the Configuration
  * @return Returns 1 if the Configuration is valid, else 0
+ * TODO: UPDATE this method to take care of the wireless configuration
  */
 EAPI short exalt_conf_valid_is(Exalt_Configuration* c);
 
 /**
  * @brief set the mode (dhcp or static)
+ * @param c the configuration
+ * @param mode the new mode
  */
 EAPI void exalt_conf_mode_set(
-        Exalt_Configuration* conf,
+        Exalt_Configuration* c,
         Exalt_Enum_Mode mode);
 
 /**
  * @brief set the IP address
+ * @param c the configuration
+ * @param ip the new IP address
  */
 EAPI void exalt_conf_ip_set(
-        Exalt_Configuration* conf,
+        Exalt_Configuration* c,
         const char* ip);
 
 /**
  * @brief set the netmask address
+ * @param c the configuration
+ * @param netmask the new netmask address
  */
 EAPI void exalt_conf_netmask_set(
-        Exalt_Configuration* conf,
+        Exalt_Configuration* c,
         const char* netmask);
 
 /**
  * @brief set the gateway address
+ * @param c the configuration
+ * @param gateway the new gateway address
  */
 EAPI void exalt_conf_gateway_set(
-        Exalt_Configuration* conf,
+        Exalt_Configuration* c,
         const char* gateway);
 
 /**
  * @brief set the command execute after the Configuration is applied
+ * @param c the configuration
+ * @param cmd the new commmand
  */
 EAPI void exalt_conf_cmd_after_apply_set(
-        Exalt_Configuration* conf,
+        Exalt_Configuration* c,
         const char* cmd);
 
 /**
  * @brief set if the Configuration has a wireless extension
+ * @param c the configuration
+ * @param is_wireless 1 or 0.
  */
 EAPI void exalt_conf_wireless_set(
-        Exalt_Configuration* conf,
+        Exalt_Configuration* c,
         int is_wireless);
 
 /**
- * @brief set the essid
+ * @brief set the network extension
+ * @param c the configuration
+ * @param n the wireless network configuration
  */
 EAPI void exalt_conf_network_set(
-        Exalt_Configuration* conf,
+        Exalt_Configuration* c,
         Exalt_Configuration_Network* n);
 
 /**
  * @brief Returns the mode of the Configuration
+ * @param c the configuration
+ * @return Returns the mode : DHCP or static
  */
-EAPI Exalt_Enum_Mode exalt_conf_mode_get(Exalt_Configuration* conf);
+EAPI Exalt_Enum_Mode exalt_conf_mode_get(Exalt_Configuration* c);
 
 
 /**
- * @brief return if the wep key is a hexa key
- * (else it is a plain text)
- */
-EAPI int exalt_conf_wireless_is(Exalt_Configuration* conf);
-
-
-
-/**
- * @brief return the IP address of the Configuration
- */
-EAPI const char* exalt_conf_ip_get(Exalt_Configuration* conf);
-
-/**
- * @brief return the netmask address of the Configuration
- */
-EAPI const char* exalt_conf_netmask_get(Exalt_Configuration* conf);
-
-/**
- * @brief return the gateway address of the Configuration
- */
-EAPI const char* exalt_conf_gateway_get(Exalt_Configuration* conf);
-
-/**
- * @brief return the command execute after the Configuration is applied
- */
-EAPI const char* exalt_conf_cmd_after_apply_get(Exalt_Configuration* conf);
-
-/**
- * @brief return test if the Configuration has a wireless extension
+ * @brief Test if the configuration has a wireless extension
+ * @param c the configuration
+ * @return Returns 1 if the configuration has a wireless extension, else 0
  */
 EAPI int exalt_conf_wireless_is(Exalt_Configuration* conf);
 
+
+
 /**
- * @brief return the network information (essid, encyption ...)
+ * @brief Returns the IP address of the Configuration
+ * @param c the configuration
+ * @return Returns the IP address
  */
-EAPI Exalt_Configuration_Network* exalt_conf_network_get(Exalt_Configuration* conf);
+EAPI const char* exalt_conf_ip_get(Exalt_Configuration* c);
 
 /**
- * @brief return the Configuration mode of the Configuration
+ * @brief Returns the netmask address of the Configuration
+ * @param c the configuration
+ * @return Returns the netmask address
  */
-EAPI Exalt_Enum_Configuration_Mode exalt_conf_Configuration_mode_get(Exalt_Configuration* conf);
-
+EAPI const char* exalt_conf_netmask_get(Exalt_Configuration* c);
 
 /**
- * @brief create an eet descriptor of the structure Exalt_Configuration
+ * @brief Returns the gateway address of the Configuration
+ * @param c the configuration
+ * @return Returns the gateway address
+ */
+EAPI const char* exalt_conf_gateway_get(Exalt_Configuration* c);
+
+/**
+ * @brief Returns the command execute after the Configuration is applied
+ * @param c the configuration
+ * @return Returns the command
+ */
+EAPI const char* exalt_conf_cmd_after_apply_get(Exalt_Configuration* c);
+
+/**
+ * @brief Returns the wireless network information (essid, encryption ...)
+ * @param c the configuration
+ * @param Returns the wireless network extension
+ */
+EAPI Exalt_Configuration_Network* exalt_conf_network_get(Exalt_Configuration* c);
+
+/**
+ * @brief Create an eet descriptor of the structure Exalt_Configuration
+ * @param edd_network the eet dsecriptor of the wireless network extension
  * @return Returns the descriptor
  */
 EAPI Eet_Data_Descriptor * exalt_conf_edd_new(Eet_Data_Descriptor* eed_network);

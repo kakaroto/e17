@@ -1,21 +1,3 @@
-/*
- * =====================================================================================
- *
- *       Filename:  exalt_vpnc.c
- *
- *    Description:  Manage a vpn conenction using vpnc
- *
- *        Version:  1.0
- *        Created:  11/21/2007 02:35:15 PM CET
- *       Revision:  none
- *       Compiler:  gcc
- *
- *         Author:   (Watchwolf), Atton Jonathan <watchwolf@watchwolf.fr>
- *        Company:
- *
- * =====================================================================================
- */
-
 #include "exalt_vpnc.h"
 #include "libexalt_private.h"
 

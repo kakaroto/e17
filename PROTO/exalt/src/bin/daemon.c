@@ -217,7 +217,7 @@ int main(int argc, char** argv)
     setup(exaltd_conn);
 
     exalt_eth_cb_set(eth_cb,exaltd_conn);
-    exalt_eth_scan_cb_set(wireless_scan_cb,exaltd_conn);
+    exalt_wireless_scan_cb_set(wireless_scan_cb,exaltd_conn);
 
     exalt_main();
 
@@ -290,7 +290,7 @@ void eth_cb(Exalt_Ethernet* eth, Exalt_Enum_Action action, void* data)
             exalt_wireless_wpasupplicant_driver_set(w,str);
             EXALT_FREE(str);
 
-            if( exalt_eth_state_load(CONF_FILE, exalt_eth_udi_get(eth)) == EXALT_UP)
+            if( exalt_eth_state_load(CONF_FILE, exalt_eth_udi_get(eth)) == 1) //up
             {
                 if(!exalt_eth_up_is(eth))
                     exalt_eth_up(eth);
@@ -332,7 +332,7 @@ void eth_cb(Exalt_Ethernet* eth, Exalt_Enum_Action action, void* data)
             }
             exalt_eth_configuration_set(eth,c);
 
-            if(not_c || exalt_eth_state_load(CONF_FILE, exalt_eth_udi_get(eth)) == EXALT_UP)
+            if(not_c || exalt_eth_state_load(CONF_FILE, exalt_eth_udi_get(eth)) == 1) //up
             {
                 int i = 0;
                 if(!exalt_eth_up_is(eth))
@@ -371,7 +371,7 @@ void eth_cb(Exalt_Ethernet* eth, Exalt_Enum_Action action, void* data)
     }
 
 
-    if ( action == EXALT_IFACE_ACTION_UP && exalt_eth_link_is(eth) && (time(NULL) - exalt_eth_dontapplyafterup_get(eth)>2) )
+    if ( action == EXALT_IFACE_ACTION_UP && exalt_eth_link_is(eth) )
     {
         Exalt_Configuration *c = exalt_eth_conf_load(CONF_FILE, exalt_eth_udi_get(eth));
         if(!c)
@@ -718,54 +718,6 @@ Exalt_Ethernet* dbus_get_eth(DBusMessage* msg)
 
     return NULL;
 }
-
-Exalt_Wireless_Network* dbus_get_wirelessnetwork(DBusMessage* msg)
-{
-    DBusMessageIter args;
-    char* essid = NULL;
-    Exalt_Ethernet* eth;
-    Exalt_Wireless_Network* wi;
-
-    if(!dbus_message_iter_init(msg, &args))
-        return NULL;
-
-    //search the interface
-    if(!(eth = dbus_get_eth(msg)))
-        return NULL;
-
-    if (DBUS_TYPE_STRING != dbus_message_iter_get_arg_type(&args))
-        return NULL;
-    else
-        dbus_message_iter_get_basic(&args, &essid);
-
-    //search the interface
-    wi = get_wirelessnetwork(eth,essid);
-
-    return wi;
-}
-
-Exalt_Wireless_Network* get_wirelessnetwork(Exalt_Ethernet* eth, char* essid)
-{
-    Exalt_Wireless* w;
-    Exalt_Wireless_Network* wi;
-    Eina_List *networks,*l;
-
-    EXALT_ASSERT_RETURN(eth!=NULL);
-    EXALT_ASSERT_RETURN(essid!=NULL);
-
-    EXALT_ASSERT_RETURN(exalt_eth_wireless_is(eth)!=0);
-    w = exalt_eth_wireless_get(eth);
-
-    networks = exalt_wireless_networks_get(w);
-
-    EINA_LIST_FOREACH(networks,l,wi)
-    {
-        if(strcmp(essid,exalt_wireless_network_essid_get(wi))==0 )
-            return wi;
-    }
-    return NULL;
-}
-
 
 DBusMessage* conf_from_dbusmessage(Exalt_Configuration* c,DBusMessage *msg,DBusMessage *reply)
 {

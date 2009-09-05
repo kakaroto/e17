@@ -40,9 +40,6 @@ void _exalt_eth_connected_status_update(Exalt_Ethernet *eth);
 
 void _exalt_eth_dhcp_daemon_kill(Exalt_Ethernet *eth);
 
-/**
- * @addtogroup Exalt_Ethernet
- */
 
 struct Exalt_Ethernet
 {
@@ -56,6 +53,8 @@ struct Exalt_Ethernet
 
     short connected;
 
+    //The current configuration of the interface
+    ///we compare this configuration to the configuration retrieve from the kernel to detect a change
     char* _save_ip;
     char* _save_netmask;
     char* _save_gateway;
@@ -65,14 +64,13 @@ struct Exalt_Ethernet
     pid_t apply_pid;
 
     Ecore_Timer *apply_timer;
-
-    time_t dont_apply_after_up;
 };
 
 /**
-  * Create an ethernet interface struct with a wireless exntesion if the interface is a wireless
-  * Returns null if the interface is a wired interface and we have a wireless interface with the same device.
-  */
+ * @addtogroup Exalt_Ethernet
+ */
+
+
 Exalt_Ethernet* exalt_eth_new(const char* name, const char* device)
 {
     struct iwreq wrq;
@@ -90,7 +88,7 @@ Exalt_Ethernet* exalt_eth_new(const char* name, const char* device)
         eth->wireless = exalt_wireless_new(eth);
 
     //test if we have a interface with the same device
-    //Some wifi driver as the generic linux driver create 2 interface for a wireless interface
+    //Some wifi driver as the generic linux driver create 2 interfaces for a wireless interface
     //A wired and a wireless interface, only the wireless interface is interesting
 
     Exalt_Ethernet *eth_res = NULL;
@@ -119,7 +117,7 @@ Exalt_Ethernet* exalt_eth_new(const char* name, const char* device)
         eth = NULL;
     }
 
-    //delete the dhcp pid file if ti exists
+    //delete the dhcp pid file if it exists
 #ifdef HAVE_DHCP
     char buf[1024];
     snprintf(buf,1024,DHCLIENT_PID_FILE,exalt_eth_name_get(eth));
@@ -132,13 +130,11 @@ Exalt_Ethernet* exalt_eth_new(const char* name, const char* device)
     return eth;
 }
 
-
 void exalt_eth_ethernets_free()
 {
     e_dbus_connection_close(exalt_eth_interfaces.dbus_conn);
     eina_list_free(exalt_eth_interfaces.ethernets);
 }
-
 
 void exalt_eth_free(void *data)
 {
@@ -157,7 +153,6 @@ void exalt_eth_free(void *data)
 }
 
 
-
 int exalt_eth_ethernet_is(char* name)
 {
     struct ifreq ifr;
@@ -170,7 +165,6 @@ int exalt_eth_ethernet_is(char* name)
 
     return ifr.ifr_hwaddr.sa_family == ARPHRD_ETHER;
 }
-
 
 void exalt_eth_up(Exalt_Ethernet* eth)
 {
@@ -187,19 +181,6 @@ void exalt_eth_up(Exalt_Ethernet* eth)
     if( !exalt_ioctl(&ifr, SIOCSIFFLAGS))
         return ;
 }
-
-void exalt_eth_dontapplyafterup_set(Exalt_Ethernet * eth, time_t t)
-{
-    EXALT_ASSERT(eth!=NULL);
-    eth->dont_apply_after_up = t;
-}
-
-time_t exalt_eth_dontapplyafterup_get(Exalt_Ethernet* eth)
-{
-    EXALT_ASSERT(eth!=NULL);
-    return eth->dont_apply_after_up;
-}
-
 
 void exalt_eth_down(Exalt_Ethernet* eth)
 {
@@ -228,15 +209,6 @@ Eina_List* exalt_eth_list_get()
 {
     return exalt_eth_interfaces.ethernets;
 }
-
-
-
-
-Exalt_Ethernet* exalt_eth_get_ethernet_bypos(int pos)
-{
-    return eina_list_nth(exalt_eth_interfaces.ethernets,pos);
-}
-
 
 
 Exalt_Ethernet* exalt_eth_get_ethernet_byname(const char* name)
@@ -284,9 +256,10 @@ Exalt_Ethernet* exalt_eth_get_ethernet_byifindex(int ifindex)
     return NULL;
 }
 
-
+/// @cond
 #define EXALT_FCT_NAME exalt_eth
 #define EXALT_STRUCT_TYPE Exalt_Ethernet
+/// @endcond
 
     EXALT_GET(name,const char*)
     EXALT_GET(device,const char*)
@@ -537,13 +510,6 @@ int exalt_eth_wireless_is(Exalt_Ethernet* eth)
 
 
 
-
-int exalt_eth_scan_cb_set(Exalt_Wifi_Scan_Cb fct, void * user_data)
-{
-    exalt_eth_interfaces.wireless_scan_cb = fct;
-    exalt_eth_interfaces.wireless_scan_cb_user_data = user_data;
-    return 1;
-}
 
 int exalt_eth_cb_set(Exalt_Eth_Cb fct, void * user_data)
 {

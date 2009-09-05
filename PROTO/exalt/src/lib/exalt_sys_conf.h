@@ -4,7 +4,7 @@
 
 /**
  * @defgroup Exalt_System_Configuration
- * @brief all functions to save or load a configuration
+ * @brief Methods to save or load a configuration from the configuration file
  * @ingroup Exalt
  * @{
  */
@@ -25,18 +25,12 @@
 #define EXALT_WPA_CONF_FILE  EXALT_WPA_CONF_FILE_DIR "/wpa_supplicant.conf"
 /** the file with interfaces of the wpa_supplicant daemon */
 #define EXALT_WPA_INTERFACE_DIR "/var/run/wpa_supplicant"
-/** the header of the wpa_supplicant configuration file */
-#define EXALT_WPA_CONF_HEADER "ctrl_interface=" EXALT_WPA_INTERFACE_DIR "\n" \
-    "ctrl_interface_group=0\n" \
-"eapol_version=1\n" \
-"ap_scan=1\n" \
-"fast_reauth=1\n"
 
 
 /**
- * @brief save the configuration of a card
+ * @brief Save the configuration of an interface
  * @param file the configuration file
- * @param eth the card
+ * @param eth the interface
  * @return Return 1 if success, else 0
  */
 EAPI int exalt_eth_save(const char* file, Exalt_Ethernet* eth);
@@ -46,12 +40,12 @@ EAPI int exalt_eth_save(const char* file, Exalt_Ethernet* eth);
  * @param udi the hal udi of the interface
  * @return Returns the state
  */
-EAPI Exalt_Enum_State exalt_eth_state_load(const char* file, const char* udi);
+EAPI int exalt_eth_state_load(const char* file, const char* udi);
 /**
  * @brief Load the configuration of an interface from the configuration file
  * @param file the configuration file
  * @param udi the hal udi of the interface
- * @return Returns the state
+ * @return Returns the configuration
  */
 EAPI Exalt_Configuration *exalt_eth_conf_load(const char* file, const char* udi);
 
@@ -59,7 +53,8 @@ EAPI Exalt_Configuration *exalt_eth_conf_load(const char* file, const char* udi)
  * @brief Load the driver of an wireless interface from the configuration file
  * @param file the configuration file
  * @param udi the hal udi of the interface
- * @return Returns the state
+ * @return Returns the driver
+ * @note If the result is NULL, you should use the driver "wext".
  */
 EAPI char* exalt_eth_driver_load(const char* file, const char* udi);
 
@@ -88,7 +83,7 @@ EAPI Eina_List *exalt_conf_network_list_load(const char *file);
 
 /**
  * @brief Delete a wireless network configuration
- * @param fil the configuration file
+ * @param file the configuration file
  * @param network the network's name (essid)
  */
 EAPI void exalt_conf_network_delete(const char* file, const char *network);

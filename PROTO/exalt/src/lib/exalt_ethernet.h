@@ -2,24 +2,23 @@
 #ifndef EXALT_ETHERNET_H
 #define EXALT_ETHERNET_H
 
-/**
- * @brief informations about an interface
- * @structinfo
- */
-typedef struct Exalt_Ethernet Exalt_Ethernet;
+//The type of the main variable used by Exalt. It contains the list of interfaces, callbacks functions ...
+typedef struct Exalt_Ethernets Exalt_Ethernets;
+extern Exalt_Ethernets exalt_eth_interfaces;
 
 /**
  * @defgroup Exalt_Ethernet
- * @brief the Exalt_Ethernet struct contains all informations about an ethernet interface.
+ * @brief The Exalt_Ethernet structure contains represents an ethernet interface. From this structure we can activate/deactivate an interface, get his IP address, test if the interface is linked or not ... An exalt_ethernet interface() can have the extension Exalt_Wireless() to defines a wireless interface.
  * @ingroup Exalt
  * @{
  */
 
 /**
- * @brief all interfaces
+ * @brief Information about an interface.
  * @structinfo
  */
-typedef struct Exalt_Ethernets Exalt_Ethernets;
+typedef struct Exalt_Ethernet Exalt_Ethernet;
+
 
 #include "libexalt.h"
 #include "exalt_wireless.h"
@@ -38,292 +37,281 @@ typedef struct Exalt_Ethernets Exalt_Ethernets;
 #include <sys/wait.h>
 #include <time.h>
 
-extern Exalt_Ethernets exalt_eth_interfaces;
 
-/** Define the list of notify action */
+/** The list of actions notify when a change occurs. */
 typedef enum Exalt_Enum_Action
 {
-    /** when we load the interface list */
+    /** For each interface when we init exalt. These interfaces are new for exalt but not new for the system */
     EXALT_IFACE_ACTION_NEW ,
-    /** when we have a new interface */
+    /** When a new interface appears */
     EXALT_IFACE_ACTION_ADD,
-    /** when we have a remove interface */
+    /** When an interface disappear */
     EXALT_IFACE_ACTION_REMOVE,
-    /** when a known interface is up */
+    /** When an interface is up/activate */
     EXALT_IFACE_ACTION_UP ,
-    /** when a known interface is down */
+    /** When an interface is down/deactivate */
     EXALT_IFACE_ACTION_DOWN,
-    /** when a interface is link */
+    /** When an interface is linked */
     EXALT_IFACE_ACTION_LINK ,
-    /** when a interface is unlink */
+    /** When an interface is unlinked */
     EXALT_IFACE_ACTION_UNLINK,
-    /** when an essid change */
+    /** When an essid change. Available only if the interface is wireless */
     EXALT_WIRELESS_ACTION_ESSIDCHANGE ,
 
-    /** when a wired interface is connected */
+    /** When a wired interface is connected */
     EXALT_IFACE_ACTION_CONNECTED,
-    /** when a wired interface is disconnected */
+    /** When a wired interface is disconnected */
     EXALT_IFACE_ACTION_DISCONNECTED,
 
-    /** when all interfaces are disconnected */
+    /** When all interfaces are disconnected */
     EXALT_IFACE_ACTION_ALL_IFACES_DISCONNECTED,
 
-    /** when a wireless interface is connected */
+    /** When a wireless interface is connected */
     EXALT_WIRELESS_ACTION_CONNECTED,
-    /** when a wireless interface is disconnected */
+    /** When a wireless interface is disconnected */
     EXALT_WIRELESS_ACTION_DISCONNECTED,
 
-    /** when we have a new address */
+    /** When we have a new IP address */
     EXALT_IFACE_ACTION_ADDRESS_NEW ,
-    /** when we have a new netmask */
+    /** >hen we have a new netmask address */
     EXALT_IFACE_ACTION_NETMASK_NEW ,
-    /** when we have a new gateway */
+    /** When we have a new default gateway address */
     EXALT_IFACE_ACTION_GATEWAY_NEW,
 
 
-    /** when we start applying a configuration */
+    /** When we start applying a configuration */
     EXALT_IFACE_ACTION_CONF_APPLY_START,
-    /** when the configuration is applied */
+    /** When the configuration is applied */
     EXALT_IFACE_ACTION_CONF_APPLY_DONE,
 
-    /** when we configure if we want wait (or not) that the interface is init during the boot process (only used by the daemon exaltd) */
+    /** When we configure if we want wait (or not) that the interface is init during the boot process (only used by the daemon exaltd) */
     EXALTD_IFACE_WAITINGBOOT_CHANGE,
-    /** when the value of the timeout change (only used by the daemon exaltd) */
+    /** When the value of the timeout change (only used by the daemon exaltd) */
     EXALTD_IFACE_WAITINGBOOT_TIMEOUT_CHANGE
 } Exalt_Enum_Action;
 
-/** callback function used for notification when a new interface is add, new essid ... */
+/** Callback function used for notification when a new interface is add, new essid ... */
 typedef void (*Exalt_Eth_Cb) (Exalt_Ethernet* eth, Exalt_Enum_Action action, void* user_data);
 
 
-/** callback function used for notification during a scan */
-typedef void (*Exalt_Wifi_Scan_Cb) (Exalt_Ethernet* eth, Eina_List* networks, void* user_data);
-
-
 /**
- * @brief create a Exalt_Ethernet structure
+ * @brief Create an Exalt_Ethernet structure
  * @param name the name of the interface (eth0, ath3 ...)
- * @return Return a new Exalt_Ethernet structure
+ * @param device the device name retrieve from HAL
+ * @return Returns a new Exalt_Ethernet structure or NULL.
+ * @note Some wireless drivers create 2 interfaces for one device : a wireless and a wired. In this case we only keep the wireless interface.
  */
 EAPI Exalt_Ethernet* exalt_eth_new(const char* name, const char* device);
 
 /**
- * @brief free exalt_eth_interfaces
+ * @brief Free exalt_eth_interfaces, the main variable which contains the list of interfaces, callbacks functions ...
  */
 EAPI void exalt_eth_ethernets_free();
 
 /**
- * @brief free a Exalt_Ethernet structure
- * @param data a Exalt_Ethernet* structure
+ * @brief Free an Exalt_Ethernet structure
+ * @param data an Exalt_Ethernet* structure
  */
 EAPI void exalt_eth_free(void* data);
 
 /**
- * @brief up the interface "eth"
- * @param eth the interface
- */
-EAPI void exalt_eth_up(Exalt_Ethernet* eth);
-/**
- * @brief down the interface eth"
- * @param eth the interface
- */
-EAPI void exalt_eth_down(Exalt_Ethernet* eth);
-/**
- * @brief get if the interface is activated
- * @param eth the interface
- * @return Returns 1 if the interface is activated, else 0
- */
-EAPI int exalt_eth_up_is(Exalt_Ethernet * eth);
-
-/**
- * @brief test if an interface is an ethernet interface
+ * @brief Test if an interface is an ethernet interface
  * @param name the name of the interface
- * @return Return 1 if yes else 0
+ * @return Returns 1 if the interface is an ethernet interface, else 0
  */
 EAPI int exalt_eth_ethernet_is(char* name);
 
 /**
- * @brief print interface informations in the standard output
+ * @brief Print the description of each interface in the standard output
  */
 EAPI void exalt_eth_printf();
 
 /**
- * @brief get if the interface is connected
- * @param eth the interface
- * @return Returns 1 if the interface is connected, else 0
- */
-EAPI short exalt_eth_connected_is(Exalt_Ethernet * eth);
-
-/**
- * @brief set if the interface is connected
- * @param eth the interface
- * @param connected 1 if connected, else 0
- */
-EAPI void exalt_eth_connected_set(Exalt_Ethernet *eth, short connected);
-
-
-/**
- * @brief get the list of all interfaces
- * @return Return a list of Exalt_Ethernet structure
+ * @brief Get the list of all interfaces
+ * @return Returns a list of Exalt_Ethernet* structure
  */
 EAPI Eina_List* exalt_eth_list_get();
 /**
- * @brief get an interface by his name
- * @param name the name
+ * @brief Get an interface by his name
+ * @param name the name (eth0 ...)
  * @return Returns the interface
  */
 EAPI Exalt_Ethernet* exalt_eth_get_ethernet_byname(const char* name);
 /**
- * @brief get an interface by his position in the interface list
- * @param pos the position
- * @return Returns the interface
- */
-EAPI Exalt_Ethernet* exalt_eth_get_ethernet_bypos(int pos);
-/**
- * @brief get an interface by his udi
+ * @brief Get an interface by his udi
  * @param udi the udi
  * @return Returns the interface
+ * @note The UDI is an identification number created by hal for each device.
  */
 EAPI Exalt_Ethernet* exalt_eth_get_ethernet_byudi(const char* udi);
 /**
- * @brief get an interface by his ifindex
+ * @brief Get an interface by his ifindex
  * @param ifindex the ifindex
  * @return Returns the interface
+ * @note the ifindex is an identification number used by the kernel.
  */
 EAPI Exalt_Ethernet* exalt_eth_get_ethernet_byifindex(int ifindex);
 
 /**
- * @brief test if an interface is link
- * @param eth the interface
- * @return Return 1 if yes, else 0
- */
-EAPI short exalt_eth_link_is(Exalt_Ethernet *eth);
-/**
- * @brief get the name of the interface "eth" (eth0, eth1 ...)
+ * @brief Get the name of the interface "eth"
  * @param eth the interface
  * @return Returns the name
  */
 EAPI const char* exalt_eth_name_get(Exalt_Ethernet* eth);
 /**
- * @brief get the device name of the interface "eth" (eth0, eth1 ...)
+ * @brief Get the device name of the interface "eth"
  * @param eth the interface
  * @return Returns the device name
  */
 EAPI const char* exalt_eth_device_get(Exalt_Ethernet* eth);
 /**
- * @brief get the ip address of the interface "eth"
- * @param eth the interface
- * @return Returns the ip address (don't forget to free the IP address)
- */
-EAPI char* exalt_eth_ip_get(Exalt_Ethernet* eth);
-/**
- * @brief get the netmask address of the interface "eth"
- * @param eth the interface
- * @return Returns the netmask address (dont forget to free the address)
- */
-EAPI char* exalt_eth_netmask_get(Exalt_Ethernet* eth);
-/**
- * @brief get the default gateway address of the interface "eth"
- * @param eth the interface
- * @return Returns the gateway address (don't forget to free the address)
- */
-EAPI char* exalt_eth_gateway_get(Exalt_Ethernet* eth);
-/**
- * @brief remove the default gateway of the interface eth
- * @param eth the interface
- * @return Returns 1 if all defaults gateways of the interface are removed, else 0
- */
-EAPI int exalt_eth_gateway_delete(Exalt_Ethernet* eth);
-/**
- * @brief get the udi of the interface "eth" (eth0, eth1 ...)
+ * @brief Get the udi of the interface "eth"
  * @param eth the interface
  * @return Returns the udi
+ * @note The UDI is an identification number created by hal for each device.
  */
 EAPI const char* exalt_eth_udi_get(Exalt_Ethernet* eth);
 /**
- * @brief get the ifindex of the interface "eth" (eth0, eth1 ...)
+ * @brief Get the ifindex of the interface "eth"
  * @param eth the interface
  * @return Returns the ifindex
+ * @note the ifindex is an identification number used by the kernel.
  */
 EAPI int exalt_eth_ifindex_get(Exalt_Ethernet* eth);
 
-/**
- * @brief get if the interface "eth" use DHCP or static (look the configuration file)
- * @param eth the interface
- * @return Returns 1 if the interface use DHCP, 0 if static, -1 if unknow
- */
-EAPI int exalt_eth_dhcp_is(Exalt_Ethernet * eth);
 
 /**
- * @brief get if the interface "eth" is a wireless interface
+ * @brief Test if the interface "eth" is a wireless interface
  * @param eth the interface
  * @return Returns 1 if the interface is a wireless interface, else 0
  */
 EAPI int exalt_eth_wireless_is(Exalt_Ethernet* eth);
 /**
- * @brief get the wireless structure of the interface "eth"
+ * @brief Get the wireless structure of the interface "eth"
  * @param eth the interface
  * @return Returns the wireless structure
  */
 EAPI Exalt_Wireless* exalt_eth_wireless_get(Exalt_Ethernet* eth);
 
+
+
 /**
- * @brief set the callback function
- * This callback will be called when we have a new interface, new ip address ..
- * see the type Exalt_Enum_Action for a list of notifications
+ * @brief Up/activate an interface
+ * @param eth the interface
+ */
+EAPI void exalt_eth_up(Exalt_Ethernet* eth);
+/**
+ * @brief Down/deactivate an interface
+ * @param eth the interface
+ */
+EAPI void exalt_eth_down(Exalt_Ethernet* eth);
+/**
+ * @brief Test if an interface is up/activated
+ * @param eth the interface
+ * @return Returns 1 if the interface is activated, else 0
+ */
+EAPI int exalt_eth_up_is(Exalt_Ethernet * eth);
+
+
+
+/**
+ * @brief Test if the interface is connected
+ * @param eth the interface
+ * @return Returns 1 if the interface is connected, else 0
+ * @note A wired interface is connected if :
+ *  - the interface is up
+ *  - the interface is linked
+ *  - the interface has an IP address
+ * @note A wireless interface is connected if :
+ *  - wpa_supplicant tell than the interface is connected
+ */
+EAPI short exalt_eth_connected_is(Exalt_Ethernet * eth);
+
+/**
+ * @brief Set if the interface is connected
+ * @param eth the interface
+ * @param connected 1 if connected, else 0
+ * @note This state is automatically updated by the library but you can force the value.
+ */
+EAPI void exalt_eth_connected_set(Exalt_Ethernet *eth, short connected);
+
+
+
+
+/**
+ * @brief Test if an interface is linked
+ * @param eth the interface
+ * @return Returns 1 if the interface is linked, else 0
+ */
+EAPI short exalt_eth_link_is(Exalt_Ethernet *eth);
+/**
+ * @brief Get the IP address of the interface "eth"
+ * @param eth the interface
+ * @return Returns the IP address
+ * @note Do not forget to free the IP address
+ */
+EAPI char* exalt_eth_ip_get(Exalt_Ethernet* eth);
+/**
+ * @brief Get the netmask address of the interface "eth"
+ * @param eth the interface
+ * @return Returns the netmask address
+ * @note Do not forget to free the address
+ */
+EAPI char* exalt_eth_netmask_get(Exalt_Ethernet* eth);
+/**
+ * @brief Get the default gateway address of the interface "eth"
+ * @param eth the interface
+ * @return Returns the gateway address
+ * @note Do no forget to free the address
+ */
+EAPI char* exalt_eth_gateway_get(Exalt_Ethernet* eth);
+/**
+ * @brief Remove the default gateway of the interface eth
+ * @param eth the interface
+ * @return Returns 1 if all defaults gateways of the interface are removed, else 0
+ */
+EAPI int exalt_eth_gateway_delete(Exalt_Ethernet* eth);
+/**
+ * @brief Test if the interface "eth" use the DHCP or static mode
+ * @param eth the interface
+ * @return Returns 1 if the interface use the DHCP mode, 0 if static, -1 if unknown
+ * @note The method look in the configuration file.
+ */
+EAPI int exalt_eth_dhcp_is(Exalt_Ethernet * eth);
+
+
+/**
+ * @brief Set the callback function <br>
+ * This callback will be called when we have a new interface, new IP address ... <br>
+ * See the type Exalt_Enum_Action for a list of notifications
  * @param fct function called
  * @param user_data user data
  * @return Returns 1 if success, else 0
  */
 EAPI int exalt_eth_cb_set(Exalt_Eth_Cb fct, void* user_data);
-/**
- * @brief set the callback scan function
- * this callback is called when a scan is finish,
- * the scan must be started with the function exalt_wireless_scan_start()
- * @param fct function called
- * @param user_data user data
- * @return Returns 1 if success, else 0
- */
-EAPI int exalt_eth_scan_cb_set(Exalt_Wifi_Scan_Cb fct, void* user_data);
 
 /**
- * @brief apply the configuration for the interface "eth"
+ * @brief Apply the configuration to the interface "eth"
  * @param eth the interface
  * @param c the configuration
- * @return Returns 1 if the configuration is apply, else 0
+ * @return Returns 1 if the configuration is applied, else 0
  */
 EAPI int exalt_eth_conf_apply(Exalt_Ethernet* eth, Exalt_Configuration* c);
 /**
- * @brief get the configuration of the interface "eth"
+ * @brief Get the current configuration of the interface "eth"
  * @param eth the interface
  * @return Returns the configuration
  */
 EAPI Exalt_Configuration* exalt_eth_configuration_get(Exalt_Ethernet* eth);
 /**
- * @brief set the configuration of the interface "eth"
- * this function doesn't apply the configuration, only set the variable
+ * @brief Set the configuration of the interface "eth" <br>
+ * This function doesn't apply the configuration, only set the variable
  * @param eth the interface
  * @param c the configuration
  * @return returns 1 if the connexion is set, else 0
  */
 EAPI short exalt_eth_configuration_set(Exalt_Ethernet* eth, Exalt_Configuration* c);
 
-
-/**
- * @brief set the time in seconds when you up the interface
- * then the daemon will use this value to know if it will apply or not the configuration when it will get the notification from the kernel
- * the daemon use a timeout of x secondes
- * if(current_time - value > x) apply a configuration
- * @param eth the interface
- * @param the value in seconds
- */
-EAPI void exalt_eth_dontapplyafterup_set(Exalt_Ethernet * eth, time_t t);
-/**
- * @brief see exalt_eth_set_dontapplyafterup
- * @param eth the interface
- * @return Returns the value
- */
-EAPI time_t exalt_eth_dontapplyafterup_get(Exalt_Ethernet* eth);
 
 /** @} */
 

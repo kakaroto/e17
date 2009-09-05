@@ -44,7 +44,7 @@ typedef struct default_route
     char* gateway;
 }Default_Route;
 
-/**
+/*
  * Main struct of exalt
  */
 struct Exalt_Ethernets
@@ -66,7 +66,7 @@ struct Exalt_Ethernets
     Exalt_Eth_Cb eth_cb;
     void * eth_cb_user_data;
 
-    Exalt_Wifi_Scan_Cb wireless_scan_cb;
+    Exalt_Wireless_Scan_Cb wireless_scan_cb;
     void* wireless_scan_cb_user_data;
 };
 

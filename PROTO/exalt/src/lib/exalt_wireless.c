@@ -77,9 +77,10 @@ void exalt_wireless_free(Exalt_Wireless** w)
 }
 
 
-
+/// @cond
 #define EXALT_FCT_NAME exalt_wireless
 #define EXALT_STRUCT_TYPE Exalt_Wireless
+///@endcond
 
 EXALT_STRING_SET(wpasupplicant_driver)
 EXALT_GET(wpasupplicant_driver,const char*)
@@ -592,5 +593,12 @@ int _exalt_wireless_scan(Exalt_Wireless *w)
 }
 
 
+
+int exalt_wireless_scan_cb_set(Exalt_Wireless_Scan_Cb fct, void * user_data)
+{
+    exalt_eth_interfaces.wireless_scan_cb = fct;
+    exalt_eth_interfaces.wireless_scan_cb_user_data = user_data;
+    return 1;
+}
 
 

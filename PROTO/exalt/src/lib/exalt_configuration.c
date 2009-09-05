@@ -83,9 +83,10 @@ short exalt_conf_valid_is(Exalt_Configuration* c)
 
 
 
-
+/// @cond
 #define EXALT_FCT_NAME exalt_conf
 #define EXALT_STRUCT_TYPE Exalt_Configuration
+/// @endcond
 
 EXALT_SET(mode,Exalt_Enum_Mode)
 EXALT_STRING_SET(ip)

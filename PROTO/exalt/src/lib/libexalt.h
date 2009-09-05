@@ -3,7 +3,12 @@
 #ifndef COMMON_H
 #define COMMON_H
 
-
+/**
+ * @defgroup Exalt_Macros
+ * @brief A list of macros used by libexalt, libexalt_dbus and the daemon
+ * @ingroup Exalt
+ * @{
+ */
 #define EXALT_FREE(p) do { if(p){ free(p); p=NULL;} }while(0)
 #define EXALT_PCLOSE(p) do {if(p){pclose(p); p=NULL;} }while(0)
 #define EXALT_DELETE_TIMER(a) do {if(a) {ecore_timer_del(a); a=NULL; } }while(0)
@@ -80,6 +85,7 @@
 #define EXALT_STRING_SET(attribut)                      \
     EXALT_STRING_SET1(EXALT_FCT_NAME,attribut)
 
+/// @cond
 #define EXALT_STRING_SET1(exalt_file_name,attribut)     \
     EXALT_STRING_SET2(exalt_file_name,attribut)
 
@@ -95,11 +101,12 @@
         else                                            \
             s->attribut=NULL;                           \
     }
-
+/// @endcond
 
 #define EXALT_SET(attribut,type)                        \
     EXALT_SET1(EXALT_FCT_NAME,attribut,type)
 
+/// @cond
 #define EXALT_SET1(exalt_file_name,attribut,type)       \
     EXALT_SET2(exalt_file_name,attribut,type)
 
@@ -111,10 +118,12 @@
         EXALT_ASSERT_RETURN_VOID(s!=NULL);              \
         s->attribut=attribut;                           \
     }
+/// @endcond
 
 #define EXALT_TAB_SET(attribut,type)                    \
     EXALT_TAB_SET1(EXALT_FCT_NAME,attribut,type)
 
+/// @cond
 #define EXALT_TAB_SET1(exalt_file_name,attribut,type)   \
     EXALT_TAB_SET2(exalt_file_name,attribut,type)
 
@@ -127,12 +136,12 @@
         EXALT_ASSERT_RETURN_VOID(s!=NULL);              \
         s->attribut[i]=attribut;                        \
     }
-
+/// @endcond
 
 
 #define EXALT_GET(attribut,type)                        \
     EXALT_GET1(EXALT_FCT_NAME,attribut,type)
-
+/// @cond
 #define EXALT_GET1(exalt_file_name,attribut,type)       \
     EXALT_GET2(exalt_file_name,attribut,type)
 
@@ -143,10 +152,10 @@
         EXALT_ASSERT_RETURN(s!=NULL);                   \
         return s->attribut;                             \
     }
-
+/// @endcond
 #define EXALT_TAB_GET(attribut,type)                    \
     EXALT_TAB_GET1(EXALT_FCT_NAME,attribut,type)
-
+/// @cond
 #define EXALT_TAB_GET1(exalt_file_name,attribut,type)   \
     EXALT_TAB_GET2(exalt_file_name,attribut,type)
 
@@ -158,11 +167,11 @@
         EXALT_ASSERT_RETURN(s!=NULL);                   \
         return s->attribut[i];                          \
     }
-
+/// @endcond
 
 #define EXALT_IS(attribut,type)                         \
     EXALT_IS1(EXALT_FCT_NAME,attribut,type)
-
+/// @cond
 #define EXALT_IS1(exalt_file_name,attribut,type)        \
     EXALT_IS2(exalt_file_name,attribut,type)
 
@@ -173,7 +182,8 @@
         EXALT_ASSERT_RETURN(s!=NULL);                   \
         return s->attribut;                             \
     }
-
+/// @endcond
+/** @} */
 
 #include <netinet/in.h>
 #include <arpa/inet.h>
@@ -199,27 +209,54 @@
 
 /**
  * @defgroup Exalt
- * @brief Exalt is a low level library used by the daemon exalt and some parts are using by apps.<br>
- * This library allows to manages ethernet and wireless interface.
+ * @brief Exalt is a low level library used by the daemon exalt and some parts are using by applications.<br>
+ * This library allows to manages the ethernets and wireless interfaces.
  */
 
 
 /**
  * @defgroup Exalt_General
- * @brief Some functions
+ * @brief Main functions and some utils.
  * @ingroup Exalt
  * @{
  */
 
+/**
+ * @brief initialise the library
+ */
 EAPI int exalt_init();
+/**
+ * @brief Launch the library
+ * load cards and watch events
+ */
 EAPI int exalt_main();
 
-
-EAPI short exalt_address_is(const char* ip);
+/**
+ * @brief Test if a string is a valid address
+ * @param address the string
+ * return Return 1 if sucess, else 0
+ */
+EAPI short exalt_address_is(const char* address);
+/**
+ * @brief Test if a string is a valid essid
+ * @param essid the essid
+ * @return Return 1 if success, else 0
+ */
 EAPI short exalt_essid_is(const char* essid);
-EAPI short exalt_admin_is();
-EAPI short exalt_key_is(const char* key, Exalt_Enum_Encryption_Mode encryption_mode);
 
+/**
+ * @brief Test if we have the administrator rights
+ * @return Return 1 if yes, else 0
+ */
+EAPI short exalt_admin_is();
+
+
+//EAPI short exalt_key_is(const char* key, Exalt_Enum_Encryption_Mode encryption_mode);
+
+/**
+ * @brief Test if libexalt is built with the support of dhcp
+ * @return Return 1 if yes, else 0
+ */
 EAPI short exalt_dhcp_support_is();
 
 #endif
