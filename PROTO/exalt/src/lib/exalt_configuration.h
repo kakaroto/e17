@@ -12,7 +12,6 @@
 
 /**
  * @brief Information about a Configuration
- * @structinfo
  */
 typedef struct Exalt_Configuration Exalt_Configuration;
 

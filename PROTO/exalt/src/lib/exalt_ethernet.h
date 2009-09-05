@@ -15,7 +15,6 @@ extern Exalt_Ethernets exalt_eth_interfaces;
 
 /**
  * @brief Information about an interface.
- * @structinfo
  */
 typedef struct Exalt_Ethernet Exalt_Ethernet;
 

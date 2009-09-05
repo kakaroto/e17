@@ -9,7 +9,6 @@
 
 /**
  * @brief informations about a vpnc connection
- * @structinfo
  */
 typedef struct Exalt_Vpnc Exalt_Vpnc;
 

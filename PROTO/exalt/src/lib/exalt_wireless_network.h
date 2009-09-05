@@ -15,7 +15,6 @@
 
 /**
  * @brief Information about a wireless network
- * @structinfo
  */
 typedef struct Exalt_Wireless_Network Exalt_Wireless_Network;
 /**

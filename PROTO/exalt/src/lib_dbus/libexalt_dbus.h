@@ -25,7 +25,6 @@
 /**
  * @brief An exalt dbus connection
  * Contains a DBus connection and the callbacks functions.
- * @structinfo
  */
 typedef struct _Exalt_DBus_Conn Exalt_DBus_Conn;
 

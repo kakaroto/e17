@@ -11,7 +11,6 @@
 
 /**
  * @brief Information about a wireless interface. This structure is an extension of Exalt_Ethernet()
- * @structinfo
  */
 typedef struct Exalt_Wireless Exalt_Wireless;
 

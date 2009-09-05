@@ -240,6 +240,11 @@ int _exalt_eet_eth_save(const char* file, Exalt_Eth_Save* s, const char* udi)
 Eet_Data_Descriptor * _exalt_eth_save_edd_new(Eet_Data_Descriptor* edd_conf)
 {
     Eet_Data_Descriptor *edd;
+    /*Eet_Data_Descriptor_Class eddc;
+
+    eet_eina_file_data_descriptor_class_set(&eddc, "Interface", sizeof(Exalt_Eth_Save));
+    edd = eet_data_descriptor_file_new(&eddc);
+    */
 
     edd = eet_data_descriptor_new("Interface", sizeof(Exalt_Eth_Save),
             (void*(*)(void*))eina_list_next,

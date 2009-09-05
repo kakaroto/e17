@@ -1,5 +1,5 @@
 /* Author:  (Watchwolf), Atton Jonathan <watchwolf@watchwolf.fr>
- * Description: A code example : how using libexalt_dbus to get the configuration of each interface.
+ * Description: A code example : How to retrieve the configuration of each interface
  *      This example requires the daemon exalt-daemon.
  */
 
@@ -158,3 +158,4 @@ int main()
     ecore_main_loop_begin();
     return 1;
 }
+
