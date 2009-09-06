@@ -320,7 +320,7 @@ int
 main(int argc, char **argv)
 {
     ecore_init();
-    eina_stringshare_init();
+    eina_init();
     e_dbus_init();
    
     if (!e_nm_get(cb_nm, (void *)0xdeadbeef))
@@ -334,7 +334,7 @@ main(int argc, char **argv)
     e_nm_free(nm);
    
     e_dbus_shutdown();
-    eina_stringshare_shutdown();
+    eina_shutdown();
     ecore_shutdown();
     return 0;
 }

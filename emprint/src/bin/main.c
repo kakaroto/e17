@@ -71,7 +71,7 @@ int
 main(int argc, char **argv) 
 {
    /* initialize eina */
-   if (!eina_stringshare_init()) 
+   if (!eina_init())
      exit(EXIT_FAILURE);
 
    /* allocate a structure to hold our options */
@@ -146,8 +146,8 @@ main(int argc, char **argv)
    /* shutdown ecore */
    ecore_shutdown();
 
-   /* shutdown eina_stringshare */
-   eina_stringshare_shutdown();
+   /* shutdown eina */
+   eina_shutdown();
 
    return EXIT_SUCCESS;
 }

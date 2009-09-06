@@ -26,7 +26,7 @@ int exalt_dbus_init()
     if( ++init != 1) return init;
     ecore_init();
     e_dbus_init();
-    eina_log_init();
+    eina_init();
     eina_log_level_set(EINA_LOG_LEVEL_DBG);
 
     exalt_dbus_log_domain = eina_log_domain_register("EXALT-DBUS",EINA_COLOR_LIGHTRED);
@@ -131,7 +131,10 @@ void exalt_dbus_free(Exalt_DBus_Conn** conn)
 void exalt_dbus_shutdown()
 {
     if( --init ) return;
+    eina_log_domain_unregister(exalt_dbus_log_domain);
+    exalt_dbus_log_domain = -1;
     e_dbus_shutdown();
+    eina_shutdown();
     ecore_shutdown();
 }
 

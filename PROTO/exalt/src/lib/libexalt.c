@@ -20,7 +20,7 @@ int exalt_init()
 {
     if( ++init != 1) return init;
 
-    eina_log_init();
+    eina_init();
     eina_log_level_set(EINA_LOG_LEVEL_DBG);
     exalt_eth_interfaces.log_domain = eina_log_domain_register("EXALT",EINA_COLOR_BLUE);
     exalt_eth_interfaces.is_launch = 0;

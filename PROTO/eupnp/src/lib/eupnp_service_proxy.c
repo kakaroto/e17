@@ -239,9 +239,9 @@ eupnp_service_proxy_init(void)
    if (_eupnp_service_proxy_init_count)
       return ++_eupnp_service_proxy_init_count;
 
-   if (!eina_array_init())
+   if (!eina_init())
      {
-	fprintf(stderr, "Failed to initialize eina array module.\n");
+	fprintf(stderr, "Failed to initialize eina module.\n");
 	return 0;
      }
 
@@ -280,7 +280,7 @@ eupnp_service_proxy_init(void)
    log_dom_error:
       eupnp_log_shutdown();
    error_init_error:
-      eina_array_shutdown();
+      eina_shutdown();
 
    return 0;
 }
@@ -297,7 +297,7 @@ eupnp_service_proxy_shutdown(void)
    eupnp_service_parser_shutdown();
    eina_log_domain_unregister(_log_dom);
    eupnp_log_shutdown();
-   eina_array_shutdown();
+   eina_shutdown();
 
    return --_eupnp_service_proxy_init_count;
 }

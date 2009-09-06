@@ -103,30 +103,23 @@ eupnp_event_bus_init(void)
 {
    if (_eupnp_event_bus_main_count) return ++_eupnp_event_bus_main_count;
 
-   if (!eina_error_init())
+   if (!eina_init())
      {
-	fprintf(stderr, "Failed to initialize eina error module.\n");
+	fprintf(stderr, "Failed to initialize eina module.\n");
 	return _eupnp_event_bus_main_count;
      }
 
    if (!eupnp_log_init())
      {
 	fprintf(stderr, "Failed to initialize eupnp log module.\n");
-	eina_error_shutdown();
+	eina_shutdown();
 	return _eupnp_event_bus_main_count;
      }
 
    if ((_log_dom = eina_log_domain_register("Eupnp.EventBus", EINA_COLOR_BLUE)) < 0)
      {
 	ERROR("Failed to create event bus logging domain.");
-	eupnp_log_shutdown();
-	return _eupnp_event_bus_main_count;
-     }
-
-   if (!eina_list_init())
-     {
-	ERROR("Failed to initialize eina list module");
-	eupnp_log_shutdown();
+	eupnp_shutdown();
 	return _eupnp_event_bus_main_count;
      }
 
@@ -148,10 +141,9 @@ eupnp_event_bus_shutdown(void)
    INFO_D(_log_dom, "Shutting down event bus module.");
 
    eupnp_event_bus_clear_subscribers();
-   eina_list_shutdown();
    eina_log_domain_unregister(_log_dom);
    eupnp_log_shutdown();
-   eina_error_shutdown();
+   eina_shutdown();
 
    return --_eupnp_event_bus_main_count;
 }

@@ -432,9 +432,9 @@ eupnp_ssdp_init(void)
 {
 if (_eupnp_ssdp_main_count) return ++_eupnp_ssdp_main_count;
 
-   if (!eina_error_init())
+   if (!eina_init())
      {
-	fprintf(stderr, "Failed to initialize eina error module.\n");
+	fprintf(stderr, "Failed to initialize eina module.\n");
 	return 0;
      }
 
@@ -448,18 +448,6 @@ if (_eupnp_ssdp_main_count) return ++_eupnp_ssdp_main_count;
      {
 	ERROR("Failed to create logging domain for ssdp module.");
 	goto log_dom_error;
-     }
-
-   if (!eina_array_init())
-     {
-	ERROR("Failed to initialize eina array module");
-	goto array_init_error;
-     }
-
-   if (!eina_stringshare_init())
-     {
-	ERROR("Failed to initialize eina stringshare module");
-	goto stringshare_init_error;
      }
 
    if (!eupnp_event_bus_init())
@@ -494,15 +482,11 @@ if (_eupnp_ssdp_main_count) return ++_eupnp_ssdp_main_count;
    device_info_init_error:
       eupnp_event_bus_shutdown();
    event_bus_init_error:
-      eina_stringshare_shutdown();
-   stringshare_init_error:
-      eina_array_shutdown();
-   array_init_error:
       eina_log_domain_unregister(_log_dom);
    log_dom_error:
       eupnp_log_shutdown();
    log_init_err:
-      eina_error_shutdown();
+      eina_shutdown();
 
    return 0;
 }
@@ -522,11 +506,9 @@ eupnp_ssdp_shutdown(void)
    eupnp_service_info_shutdown();
    eupnp_device_info_shutdown();
    eupnp_event_bus_shutdown();
-   eina_stringshare_shutdown();
-   eina_array_shutdown();
    eina_log_domain_unregister(_log_dom);
    eupnp_log_shutdown();
-   eina_error_shutdown();
+   eina_shutdown();
 
    return --_eupnp_ssdp_main_count;
 }

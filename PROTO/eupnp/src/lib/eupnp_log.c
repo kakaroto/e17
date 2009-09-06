@@ -48,9 +48,9 @@ eupnp_log_init(void)
 {
    if (_eupnp_log_init_count) return ++_eupnp_log_init_count;
 
-   if (!eina_log_init())
+   if (!eina_init())
      {
-	fprintf(stderr, "Failed to initialize eina error module.\n");
+	fprintf(stderr, "Failed to initialize eina module.\n");
 	return 0;
      }
 
@@ -59,7 +59,7 @@ eupnp_log_init(void)
    if (EUPNP_LOGGING_DOM_GLOBAL < 0)
      {
 	fprintf(stderr, "Failed to register global error domain.\n");
-	eina_log_shutdown();
+	eina_shutdown();
 	return 0;
      }
 
@@ -77,7 +77,7 @@ eupnp_log_shutdown(void)
    if (_eupnp_log_init_count != 1) return --_eupnp_log_init_count;
 
    eina_log_domain_unregister(EUPNP_LOGGING_DOM_GLOBAL);
-   eina_log_shutdown();
+   eina_shutdown();
 
    return --_eupnp_log_init_count;
 }

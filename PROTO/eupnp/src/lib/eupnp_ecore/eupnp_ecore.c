@@ -481,9 +481,9 @@ eupnp_ecore_init(void)
 {
    if (_eupnp_ecore_init_count) return ++_eupnp_ecore_init_count;
 
-   if (!eina_list_init())
+   if (!eina_init())
      {
-	fprintf(stderr, "Failed to initialize eina list.\n");
+	fprintf(stderr, "Failed to initialize eina.\n");
 	return 0;
      }
 
@@ -567,7 +567,7 @@ eupnp_ecore_init(void)
    con_fail:
 	ecore_shutdown();
    ecore_init_fail:
-	eina_list_shutdown();
+	eina_shutdown();
 
    return 0;
 }
@@ -594,7 +594,6 @@ eupnp_ecore_shutdown(void)
    ecore_con_url_shutdown();
    ecore_con_shutdown();
    ecore_shutdown();
-   eina_list_shutdown();
 
    if (srv_clients)
      {
@@ -606,6 +605,8 @@ eupnp_ecore_shutdown(void)
 	     free(d);
 	  }
      }
+
+   eina_shutdown();
 
    return --_eupnp_ecore_init_count;
 }

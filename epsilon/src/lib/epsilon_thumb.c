@@ -43,7 +43,7 @@ epsilon_request_init(void)
 	/*
 	 * Init required subsystems.
 	 */
-        if (!eina_stringshare_init()) goto init_error;
+        if (!eina_init()) goto init_error;
 	if (!ecore_init()) goto init_error;
 	if (!ecore_ipc_init()) goto con_init_error;
 	if (!epsilon_init()) goto init_error;

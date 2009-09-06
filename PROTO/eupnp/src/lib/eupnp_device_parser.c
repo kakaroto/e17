@@ -672,10 +672,10 @@ eupnp_device_parser_init(void)
 
    xmlInitParser();
 
-   if (!eina_error_init())
+   if (!eina_init())
      {
 	fprintf(stderr, "Failed to initialize eina error module.\n");
-	goto eina_error_init_error;
+	goto eina_init_error;
      }
 
    if (!eupnp_log_init())
@@ -715,8 +715,8 @@ eupnp_device_parser_init(void)
    log_dom_error:
       eupnp_log_shutdown();
    eupnp_log_init_error:
-      eina_error_shutdown();
-   eina_error_init_error:
+      eina_shutdown();
+   eina_init_error:
       xmlCleanupParser();
 }
 
@@ -733,7 +733,7 @@ eupnp_device_parser_shutdown(void)
    eupnp_service_info_shutdown();
    eina_log_domain_unregister(_log_dom);
    eupnp_log_shutdown();
-   eina_error_shutdown();
+   eina_shutdown();
 
    /* http://xmlsoft.org/html/libxml-parser.html#xmlCleanupParser
     *

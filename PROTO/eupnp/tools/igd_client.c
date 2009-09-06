@@ -184,7 +184,7 @@ elm_main(int argc, char **argv)
 	return 0;
      }
 
-   if (!eina_list_init())
+   if (!eina_init())
      {
 	fprintf(stderr, "Failed to initialize eina error module.\n");
 	goto list_init_error;
@@ -229,14 +229,14 @@ elm_main(int argc, char **argv)
    eupnp_control_point_stop(c);
    eupnp_control_point_free(c);
    eupnp_control_point_shutdown();
-   eina_list_shutdown();
+   eina_shutdown();
    eupnp_ecore_shutdown();
    return 0;
 
    eupnp_cp_alloc_error:
       eupnp_control_point_shutdown();
    eupnp_cp_init_error:
-      eina_list_shutdown();
+      eina_shutdown();
    list_init_error:
       eupnp_ecore_shutdown();
    return -1;

@@ -69,9 +69,9 @@ eupnp_control_point_init(void)
    if (_eupnp_control_point_main_count)
       return ++_eupnp_control_point_main_count;
 
-   if (!eina_error_init())
+   if (!eina_init())
      {
-	fprintf(stderr, "Failed to initialize eina error module.\n");
+	fprintf(stderr, "Failed to initialize eina module.\n");
 	return _eupnp_control_point_main_count;
      }
 
@@ -121,7 +121,7 @@ eupnp_control_point_init(void)
    error_init_error:
 	eupnp_ssdp_shutdown();
    ssdp_init_err:
-	eina_error_shutdown();
+	eina_shutdown();
    return 0;
 }
 
@@ -143,7 +143,7 @@ eupnp_control_point_shutdown(void)
    eina_log_domain_unregister(_log_dom);
    eupnp_log_shutdown();
    eupnp_ssdp_shutdown();
-   eina_error_shutdown();
+   eina_shutdown();
 
    return --_eupnp_control_point_main_count;
 }

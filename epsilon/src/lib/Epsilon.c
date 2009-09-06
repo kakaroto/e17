@@ -147,7 +147,7 @@ epsilon_init (void)
   char plugin_path[PATH_MAX];
 
   if (epsilon_init_count) return ++epsilon_init_count;
-  eina_stringshare_init();
+  eina_init();
 
   home = getenv("HOME");
   base_len = snprintf(buf, sizeof(buf), "%s/.thumbnails", home);
