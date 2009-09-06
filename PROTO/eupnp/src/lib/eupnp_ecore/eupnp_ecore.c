@@ -44,6 +44,13 @@ static Ecore_Event_Handler *cli_added_handler = NULL;
 static Ecore_Event_Handler *cli_del_handler = NULL;
 static Eina_List *srv_clients = NULL;
 
+typedef struct _Eupnp_Ecore_Server Eupnp_Ecore_Server;
+
+struct _Eupnp_Ecore_Server {
+   Ecore_Con_Server *server;
+   Eupnp_Client_Data_Cb cb;
+   void *data;
+};
 
 typedef int (*Eupnp_Ecore_Fd_Handler_Cb) (void *data, Ecore_Fd_Handler *handler);
 typedef int (*Eupnp_Ecore_Timer_Cb) (void *data);
@@ -51,39 +58,39 @@ typedef int (*Eupnp_Ecore_Idler_Cb) (void *data);
 
 
 static Eupnp_Fd_Handler
-_adaptor_ecore_fd_handler_add(int fd, Eupnp_Fd_Flags flags, Eupnp_Fd_Handler_Cb cb, void *data)
+_ecore_fd_handler_add(int fd, Eupnp_Fd_Flags flags, Eupnp_Fd_Handler_Cb cb, void *data)
 {
    return ecore_main_fd_handler_add(fd, flags, ((Eupnp_Ecore_Fd_Handler_Cb)cb), data, NULL, NULL);
 }
 
 static Eina_Bool
-_adaptor_ecore_fd_handler_del(Eupnp_Fd_Handler handler)
+_ecore_fd_handler_del(Eupnp_Fd_Handler handler)
 {
    ecore_main_fd_handler_del(handler);
    return EINA_TRUE;
 }
 
 static Eupnp_Timer
-_adaptor_ecore_timer_add(double interval, Eupnp_Timer_Cb timer, void *data)
+_ecore_timer_add(double interval, Eupnp_Timer_Cb timer, void *data)
 {
    return ecore_timer_add(interval, ((Eupnp_Ecore_Timer_Cb)timer), data);
 }
 
 static Eina_Bool
-_adaptor_ecore_timer_del(Eupnp_Timer timer)
+_ecore_timer_del(Eupnp_Timer timer)
 {
    ecore_timer_del(timer);
    return EINA_TRUE;
 }
 
 static Eupnp_Idler
-_adaptor_ecore_idler_add(Eupnp_Idler_Cb idler_func, void *data)
+_ecore_idler_add(Eupnp_Idler_Cb idler_func, void *data)
 {
    return ecore_idler_add(((Eupnp_Ecore_Idler_Cb)idler_func), data);
 }
 
 static Eina_Bool
-_adaptor_ecore_idler_del(Eupnp_Idler idler)
+_ecore_idler_del(Eupnp_Idler idler)
 {
    ecore_idler_del(idler);
    return EINA_TRUE;
@@ -99,7 +106,7 @@ struct _Eupnp_Ecore_Request {
 };
 
 static int
-_request_data(void *data, int type, void *event)
+_ecore_request_data_cb(void *data, int type, void *event)
 {
    Ecore_Con_Event_Url_Data *e = event;
    Ecore_Con_Url *url_con = e->url_con;
@@ -113,7 +120,7 @@ _request_data(void *data, int type, void *event)
 }
 
 static int
-_request_completed(void *data, int type, void *event)
+_ecore_request_completed_cb(void *data, int type, void *event)
 {
    Eupnp_Request_Completed_Cb completed_cb = data;
    Ecore_Con_Event_Url_Complete *e = event;
@@ -165,7 +172,7 @@ _request_completed(void *data, int type, void *event)
 }
 
 static Eupnp_Request
-_adaptor_ecore_request(const char *url, const char *req, Eina_Array *additional_headers, const char *content_type, size_t body_length, const char *body, Eupnp_Request_Data_Cb data_cb, Eupnp_Request_Completed_Cb completed_cb, void *data)
+_ecore_request(const char *url, const char *req, Eina_Array *additional_headers, const char *content_type, size_t body_length, const char *body, Eupnp_Request_Data_Cb data_cb, Eupnp_Request_Completed_Cb completed_cb, void *data)
 {
    CHECK_NULL_RET_VAL(url, NULL);
    CHECK_NULL_RET_VAL(data_cb, NULL);
@@ -234,7 +241,7 @@ _adaptor_ecore_request(const char *url, const char *req, Eina_Array *additional_
 }
 
 static void
-_request_free(Eupnp_Request request)
+_ecore_request_free(Eupnp_Request request)
 {
    CHECK_NULL_RET(request);
    Eupnp_Ecore_Request *dl = request;
@@ -242,13 +249,6 @@ _request_free(Eupnp_Request request)
    free(dl);
 }
 
-typedef struct _Eupnp_Ecore_Server Eupnp_Ecore_Server;
-
-struct _Eupnp_Ecore_Server {
-   Ecore_Con_Server *server;
-   Eupnp_Client_Data_Cb cb;
-   void *data;
-};
 
 static Eupnp_Server
 _ecore_server_add(const char *name, int port, Eupnp_Client_Data_Cb cb, void *data)
@@ -272,7 +272,7 @@ _ecore_server_add(const char *name, int port, Eupnp_Client_Data_Cb cb, void *dat
 
    if (!server->server)
      {
-	DEBUG_D(_log_dom, "Failed to create ecore con server for %s:%s", name, port);
+	DEBUG_D(_log_dom, "Failed to create ecore con server for %s:%d", name, port);
 	free(server);
 	return NULL;
      }
@@ -305,7 +305,7 @@ struct _Client_Data {
 };
 
 static Client_Data *
-_srv_client_get(Ecore_Con_Client *client)
+_ecore_srv_client_get(Ecore_Con_Client *client)
 {
    Eina_List *l;
    Client_Data *d;
@@ -318,13 +318,13 @@ _srv_client_get(Ecore_Con_Client *client)
 }
 
 static int
-_srv_headers_len(const char *msg)
+_ecore_srv_headers_len(const char *msg)
 {
    return strstr(msg, "\r\n\r\n") - msg - 4; /* Subtract 4 chars (\r\n\r\n) */
 }
 
 static void
-_srv_respond_ok(Ecore_Con_Client *client)
+_ecore_srv_respond_ok(Ecore_Con_Client *client)
 {
    char *response = NULL;
    int len;
@@ -350,7 +350,7 @@ _srv_respond_ok(Ecore_Con_Client *client)
 }
 
 static void
-_srv_find_total_len(Client_Data *d)
+_ecore_srv_find_total_len(Client_Data *d)
 {
    char *tmp = malloc(sizeof(char)*(d->buf_len + 1));
    if (!tmp) return;
@@ -369,10 +369,10 @@ _srv_find_total_len(Client_Data *d)
 }
 
 static int
-_srv_client_data(void *data, int type, void *event)
+_ecore_srv_client_data_cb(void *data, int type, void *event)
 {
    Ecore_Con_Event_Client_Data *e = event;
-   Client_Data *d = _srv_client_get(e->client);
+   Client_Data *d = _ecore_srv_client_get(e->client);
    DEBUG_D(_log_dom, "Data for client %p (%p)", e->client, d);
 
    if (!d)
@@ -395,18 +395,18 @@ _srv_client_data(void *data, int type, void *event)
    d->buf_len += e->size;
 
    if (!d->total_len)
-      _srv_find_total_len(d);
+      _ecore_srv_find_total_len(d);
 
-   if ((d->buf_len - _srv_headers_len(d->buf)) >= d->total_len)
-      _srv_respond_ok(d->client);
+   if ((d->buf_len - _ecore_srv_headers_len(d->buf)) >= d->total_len)
+      _ecore_srv_respond_ok(d->client);
 
-   DEBUG_D(_log_dom, "Total len is %d, buf len is %d", d->total_len, d->buf_len - _srv_headers_len(d->buf));
+   DEBUG_D(_log_dom, "Total len is %d, buf len is %d", d->total_len, d->buf_len - _ecore_srv_headers_len(d->buf));
 
    return 1;
 }
 
 static int
-_srv_client_add(void *data, int type, void *event)
+_ecore_srv_client_add_cb(void *data, int type, void *event)
 {
    Ecore_Con_Event_Client_Add *e = event;
    Client_Data *d = NULL;
@@ -431,7 +431,7 @@ _srv_client_add(void *data, int type, void *event)
 }
 
 static int
-_srv_client_del(void *data, int type, void *event)
+_ecore_srv_client_del_cb(void *data, int type, void *event)
 {
    Ecore_Con_Event_Client_Del *e = event;
    DEBUG_D(_log_dom, "Client del event %p at ip %s", e->client, ecore_con_client_ip_get(e->client));
@@ -517,31 +517,31 @@ eupnp_ecore_init(void)
 	goto log_dom_fail;
      }
 
-   eupnp_core_fd_handler_add_func_set(_adaptor_ecore_fd_handler_add);
-   eupnp_core_fd_handler_del_func_set(_adaptor_ecore_fd_handler_del);
-   eupnp_core_timer_add_func_set(_adaptor_ecore_timer_add);
-   eupnp_core_timer_del_func_set(_adaptor_ecore_timer_del);
-   eupnp_core_idler_add_func_set(_adaptor_ecore_idler_add);
-   eupnp_core_idler_del_func_set(_adaptor_ecore_idler_del);
-   eupnp_core_request_func_set(_adaptor_ecore_request);
-   eupnp_core_request_free_func_set(_request_free);
+   eupnp_core_fd_handler_add_func_set(_ecore_fd_handler_add);
+   eupnp_core_fd_handler_del_func_set(_ecore_fd_handler_del);
+   eupnp_core_timer_add_func_set(_ecore_timer_add);
+   eupnp_core_timer_del_func_set(_ecore_timer_del);
+   eupnp_core_idler_add_func_set(_ecore_idler_add);
+   eupnp_core_idler_del_func_set(_ecore_idler_del);
+   eupnp_core_request_func_set(_ecore_request);
+   eupnp_core_request_free_func_set(_ecore_request_free);
    eupnp_core_server_add_func_set(_ecore_server_add);
    eupnp_core_server_free_func_set(_ecore_server_free);
    eupnp_core_server_listen_url_get_func_set(_ecore_server_url_get);
 
-   data_handler = ecore_event_handler_add(ECORE_CON_EVENT_URL_DATA, _request_data, NULL);
+   data_handler = ecore_event_handler_add(ECORE_CON_EVENT_URL_DATA, _ecore_request_data_cb, NULL);
    if (!data_handler) goto data_handler_err;
 
-   completed_handler = ecore_event_handler_add(ECORE_CON_EVENT_URL_COMPLETE, _request_completed, NULL);
+   completed_handler = ecore_event_handler_add(ECORE_CON_EVENT_URL_COMPLETE, _ecore_request_completed_cb, NULL);
    if (!completed_handler) goto completed_handler_fail;
 
-   cli_data_handler = ecore_event_handler_add(ECORE_CON_EVENT_CLIENT_DATA, _srv_client_data, NULL);
+   cli_data_handler = ecore_event_handler_add(ECORE_CON_EVENT_CLIENT_DATA, _ecore_srv_client_data_cb, NULL);
    if (!cli_data_handler) goto cli_handler_err;
 
-   cli_added_handler = ecore_event_handler_add(ECORE_CON_EVENT_CLIENT_ADD, _srv_client_add, NULL);
+   cli_added_handler = ecore_event_handler_add(ECORE_CON_EVENT_CLIENT_ADD, _ecore_srv_client_add_cb, NULL);
    if (!cli_added_handler) goto cli_added_handler_err;
 
-   cli_del_handler = ecore_event_handler_add(ECORE_CON_EVENT_CLIENT_DEL, _srv_client_del, NULL);
+   cli_del_handler = ecore_event_handler_add(ECORE_CON_EVENT_CLIENT_DEL, _ecore_srv_client_del_cb, NULL);
    if (!cli_del_handler) goto cli_del_handler_err;
 
    INFO_D(_log_dom, "Initializing eupnp-ecore library.");
