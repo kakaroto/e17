@@ -24,9 +24,9 @@
 
 #include <Eina.h>
 
-EAPI char       *current_date_http_string_get();
-EAPI int         random_port_get();
-EAPI const char *default_host_ip_get();
+EAPI char       *eupnp_utils_current_date_http_string_get();
+EAPI int         eupnp_utils_random_port_get();
+EAPI const char *eupnp_utils_default_host_ip_get();
 
 EAPI int         eupnp_utils_url_base_get(const char *url);
 EAPI Eina_Bool   eupnp_utils_url_is_relative(const char *url);

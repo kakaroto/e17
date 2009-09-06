@@ -328,7 +328,7 @@ _ecore_srv_respond_ok(Ecore_Con_Client *client)
 {
    char *response = NULL;
    int len;
-   char *date = (char *)current_date_http_string_get();
+   char *date = (char *)eupnp_utils_current_date_http_string_get();
 
    if ((len = asprintf(&response, "HTTP/1.1 200 OK\r\n"
 			   "Date: %s\r\n"

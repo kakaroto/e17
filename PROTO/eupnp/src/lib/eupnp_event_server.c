@@ -113,8 +113,8 @@ eupnp_event_server_init(void)
 	goto event_bus_fail;
      }
 
-   _host = (char *)default_host_ip_get();
-   _port = random_port_get();
+   _host = (char *)eupnp_utils_default_host_ip_get();
+   _port = eupnp_utils_random_port_get();
 
    if (!_host)
      {

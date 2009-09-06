@@ -45,7 +45,7 @@
 
 
 EAPI char *
-current_date_http_string_get()
+eupnp_utils_current_date_http_string_get()
 {
    struct tm tm;
    time_t t = time(NULL);
@@ -62,7 +62,7 @@ current_date_http_string_get()
 }
 
 EAPI int
-random_port_get()
+eupnp_utils_random_port_get()
 {
    srand(time(NULL));
    return (49152 + rand() / (RAND_MAX / (65535 - 49152 + 1) + 1));
@@ -199,7 +199,7 @@ get_host_ip(const char *name)
 *
 */
 EAPI const char *
-default_host_ip_get(void)
+eupnp_utils_default_host_ip_get(void)
 {
    FILE *fp;
    int ret;
