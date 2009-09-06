@@ -114,11 +114,6 @@ struct Ewl_Color_Set
 };
 
 /**
- * Function pointer for the Ewl widget drag
- */
-typedef void *(*Ewl_Widget_Drag)(void);
-
-/**
  * The class that all widgets should inherit. Provides reference to a parent
  * widget/container, callbacks, and appearance information.
  */
