@@ -1098,7 +1098,7 @@ IPC_GroupInfo(const char *params)
 	if (group)
 	   GroupShow(group);
 	else
-	   IpcPrintf("Error: no such group: %s", params);
+	   IpcPrintf("Error: no such group: %s\n", params);
      }
    else
      {
@@ -1119,7 +1119,7 @@ IPC_GroupOps(const char *params)
 
    if (!params)
      {
-	IpcPrintf("Error: no window specified");
+	IpcPrintf("Error: no window specified\n");
 	return;
      }
 
@@ -1130,48 +1130,48 @@ IPC_GroupOps(const char *params)
 
    if (!operation[0])
      {
-	IpcPrintf("Error: no operation specified");
+	IpcPrintf("Error: no operation specified\n");
 	return;
      }
 
    ewin = EwinFindByExpr(windowid);
    if (!ewin)
      {
-	IpcPrintf("Error: no such window: %s", windowid);
+	IpcPrintf("Error: no such window: %s\n", windowid);
 	return;
      }
 
    if (!strcmp(operation, "start"))
      {
 	BuildWindowGroup(&ewin, 1, -1);
-	IpcPrintf("start %8x", win);
+	IpcPrintf("start %8x\n", win);
      }
    else if (!strcmp(operation, "add"))
      {
 	group = GroupFind2(groupid);
 	AddEwinToGroup(ewin, group);
-	IpcPrintf("add %8x", win);
+	IpcPrintf("add %8x\n", win);
      }
    else if (!strcmp(operation, "del"))
      {
 	group = GroupFind2(groupid);
 	RemoveEwinFromGroup(ewin, group);
-	IpcPrintf("del %8x", win);
+	IpcPrintf("del %8x\n", win);
      }
    else if (!strcmp(operation, "break"))
      {
 	group = GroupFind2(groupid);
 	BreakWindowGroup(ewin, group);
-	IpcPrintf("break %8x", win);
+	IpcPrintf("break %8x\n", win);
      }
    else if (!strcmp(operation, "showhide"))
      {
 	ShowHideWinGroups(ewin, -1, SET_TOGGLE);
-	IpcPrintf("showhide %8x", win);
+	IpcPrintf("showhide %8x\n", win);
      }
    else
      {
-	IpcPrintf("Error: no such operation: %s", operation);
+	IpcPrintf("Error: no such operation: %s\n", operation);
 	return;
      }
    GroupsSave();
@@ -1188,7 +1188,7 @@ IPC_Group(const char *params)
 
    if (!params)
      {
-	IpcPrintf("Error: no group specified");
+	IpcPrintf("Error: no group specified\n");
 	return;
      }
 
@@ -1197,20 +1197,20 @@ IPC_Group(const char *params)
 
    if (!operation[0])
      {
-	IpcPrintf("Error: no operation specified");
+	IpcPrintf("Error: no operation specified\n");
 	return;
      }
 
    group = GroupFind2(groupid);
    if (!group)
      {
-	IpcPrintf("Error: no such group: %s", groupid);
+	IpcPrintf("Error: no such group: %s\n", groupid);
 	return;
      }
 
    if (!param1[0])
      {
-	IpcPrintf("Error: no mode specified");
+	IpcPrintf("Error: no mode specified\n");
 	return;
      }
 
@@ -1222,11 +1222,11 @@ IPC_Group(const char *params)
 
    if (onoff == -1 && strcmp(param1, "?"))
      {
-	IpcPrintf("Error: unknown mode specified");
+	IpcPrintf("Error: unknown mode specified\n");
      }
    else if (!strcmp(operation, "num_members"))
      {
-	IpcPrintf("num_members: %d", group->num_members);
+	IpcPrintf("num_members: %d\n", group->num_members);
 	onoff = -1;
      }
    else if (!strcmp(operation, "iconify"))
@@ -1280,14 +1280,14 @@ IPC_Group(const char *params)
      }
    else
      {
-	IpcPrintf("Error: no such operation: %s", operation);
+	IpcPrintf("Error: no such operation: %s\n", operation);
 	onoff = -1;
      }
 
    if (onoff == 1)
-      IpcPrintf("%s: on", operation);
+      IpcPrintf("%s: on\n", operation);
    else if (onoff == 0)
-      IpcPrintf("%s: off", operation);
+      IpcPrintf("%s: off\n", operation);
 }
 
 #if ENABLE_DIALOGS

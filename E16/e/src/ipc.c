@@ -108,9 +108,9 @@ SetEwinBoolean(const char *txt, char *item, const char *value, int set)
    else if (!strcmp(value, "off"))
       vnew = 0;
    else if (!strcmp(value, "?"))
-      IpcPrintf("%s: %s", txt, (vold) ? "on" : "off");
+      IpcPrintf("%s: %s\n", txt, (vold) ? "on" : "off");
    else
-      IpcPrintf("Error: %s", value);
+      IpcPrintf("Error: %s\n", value);
 
    if (vnew != vold)
      {
@@ -163,7 +163,7 @@ IPC_Screen(const char *params)
 static void
 IPC_Nop(const char *params __UNUSED__)
 {
-   IpcPrintf("nop");
+   IpcPrintf("nop\n");
 }
 
 /* Should be elsewhere */
@@ -438,18 +438,18 @@ IpcWinop(const WinOp * wop, EWin * ewin, const char *prm)
      {
      default:
 	/* We should not get here */
-	IpcPrintf("Error: unknown operation");
+	IpcPrintf("Error: unknown operation\n");
 	return;
 
      case EWIN_OP_BORDER:
 	if (!param1[0])
 	  {
-	     IpcPrintf("Error: no border specified");
+	     IpcPrintf("Error: no border specified\n");
 	     goto done;
 	  }
 	if (!strcmp(param1, "?"))
 	  {
-	     IpcPrintf("window border: %s", BorderGetName(ewin->border));
+	     IpcPrintf("window border: %s\n", BorderGetName(ewin->border));
 	     goto done;
 	  }
 	EwinOpSetBorder(ewin, OPSRC_USER, param1);
@@ -458,12 +458,12 @@ IpcWinop(const WinOp * wop, EWin * ewin, const char *prm)
      case EWIN_OP_TITLE:
 	if (!prm[0])
 	  {
-	     IpcPrintf("Error: no title specified");
+	     IpcPrintf("Error: no title specified\n");
 	     goto done;
 	  }
 	if (!strcmp(prm, "?"))
 	  {
-	     IpcPrintf("title: %s", EwinGetIcccmName(ewin));
+	     IpcPrintf("title: %s\n", EwinGetIcccmName(ewin));
 	     goto done;
 	  }
 	HintsSetWindowName(EwinGetClientWin(ewin), prm);
@@ -502,7 +502,7 @@ IpcWinop(const WinOp * wop, EWin * ewin, const char *prm)
      case EWIN_OP_FOCUS:
 	if (!strcmp(param1, "?"))
 	  {
-	     IpcPrintf("focused: %s", (ewin == GetFocusEwin())? "yes" : "no");
+	     IpcPrintf("focused: %s\n", (ewin == GetFocusEwin())? "yes" : "no");
 	     goto done;
 	  }
 	EwinOpActivate(ewin, OPSRC_USER, 1);
@@ -511,7 +511,7 @@ IpcWinop(const WinOp * wop, EWin * ewin, const char *prm)
      case EWIN_OP_DESK:
 	if (!param1[0])
 	  {
-	     IpcPrintf("Error: no desktop supplied");
+	     IpcPrintf("Error: no desktop supplied\n");
 	     goto done;
 	  }
 	if (!strncmp(param1, "next", 1))
@@ -524,7 +524,7 @@ IpcWinop(const WinOp * wop, EWin * ewin, const char *prm)
 	  }
 	else if (!strcmp(param1, "?"))
 	  {
-	     IpcPrintf("window desk: %d", EoGetDeskNum(ewin));
+	     IpcPrintf("window desk: %d\n", EoGetDeskNum(ewin));
 	  }
 	else
 	  {
@@ -535,12 +535,12 @@ IpcWinop(const WinOp * wop, EWin * ewin, const char *prm)
      case EWIN_OP_AREA:
 	if (!param1[0])
 	  {
-	     IpcPrintf("Error: no area supplied");
+	     IpcPrintf("Error: no area supplied\n");
 	     goto done;
 	  }
 	if (!strcmp(param1, "?"))
 	  {
-	     IpcPrintf("window area: %d %d", ewin->area_x, ewin->area_y);
+	     IpcPrintf("window area: %d %d\n", ewin->area_x, ewin->area_y);
 	  }
 	else if (!strcmp(param1, "move"))
 	  {
@@ -561,7 +561,7 @@ IpcWinop(const WinOp * wop, EWin * ewin, const char *prm)
      case EWIN_OP_MOVE:
 	if (!param1[0])
 	  {
-	     IpcPrintf("Error: no coords supplied");
+	     IpcPrintf("Error: no coords supplied\n");
 	     goto done;
 	  }
 	if (!strcmp(param1, "ptr"))
@@ -574,11 +574,11 @@ IpcWinop(const WinOp * wop, EWin * ewin, const char *prm)
 	  }
 	else if (!strcmp(param1, "?"))
 	  {
-	     IpcPrintf("window location: %d %d", EoGetX(ewin), EoGetY(ewin));
+	     IpcPrintf("window location: %d %d\n", EoGetX(ewin), EoGetY(ewin));
 	  }
 	else if (!strcmp(param1, "??"))
 	  {
-	     IpcPrintf("client location: %d %d",
+	     IpcPrintf("client location: %d %d\n",
 		       EoGetX(ewin) + ewin->border->border.left,
 		       EoGetY(ewin) + ewin->border->border.top);
 	  }
@@ -614,11 +614,11 @@ IpcWinop(const WinOp * wop, EWin * ewin, const char *prm)
 	  }
 	else if (!strcmp(param1, "?"))
 	  {
-	     IpcPrintf("window size: %d %d", ewin->client.w, ewin->client.h);
+	     IpcPrintf("window size: %d %d\n", ewin->client.w, ewin->client.h);
 	  }
 	else if (!strcmp(param1, "??"))
 	  {
-	     IpcPrintf("frame size: %d %d", EoGetW(ewin), EoGetH(ewin));
+	     IpcPrintf("frame size: %d %d\n", EoGetW(ewin), EoGetH(ewin));
 	  }
 	else
 	  {
@@ -678,7 +678,7 @@ IpcWinop(const WinOp * wop, EWin * ewin, const char *prm)
      case EWIN_OP_LAYER:
 	if (!strcmp(param1, "?"))
 	  {
-	     IpcPrintf("window layer: %d", EoGetLayer(ewin));
+	     IpcPrintf("window layer: %d\n", EoGetLayer(ewin));
 	     goto done;
 	  }
 	val = atoi(param1);
@@ -697,7 +697,7 @@ IpcWinop(const WinOp * wop, EWin * ewin, const char *prm)
 	a = OpacityToPercent(ewin->ewmh.opacity);
 	if (!strcmp(param1, "?"))
 	  {
-	     IpcPrintf("opacity: %u", a);
+	     IpcPrintf("opacity: %u\n", a);
 	     goto done;
 	  }
 	b = a;
@@ -721,7 +721,7 @@ IpcWinop(const WinOp * wop, EWin * ewin, const char *prm)
 	a = OpacityToPercent(ewin->props.focused_opacity);
 	if (!strcmp(param1, "?"))
 	  {
-	     IpcPrintf("focused_opacity: %u", a);
+	     IpcPrintf("focused_opacity: %u\n", a);
 	     goto done;
 	  }
 	b = a;
@@ -866,7 +866,7 @@ IPC_WinOps(const char *params)
 
    if (!params)
      {
-	IpcPrintf("Error: no window specified");
+	IpcPrintf("Error: no window specified\n");
 	return;
      }
 
@@ -877,14 +877,14 @@ IPC_WinOps(const char *params)
 
    if (!operation[0])
      {
-	IpcPrintf("Error: no operation specified");
+	IpcPrintf("Error: no operation specified\n");
 	return;
      }
 
    wop = EwinOpFind(operation);
    if (!wop)
      {
-	IpcPrintf("Error: unknown operation");
+	IpcPrintf("Error: unknown operation\n");
 	return;
      }
 

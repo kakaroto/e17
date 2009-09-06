@@ -1,5 +1,6 @@
 /*
  * Copyright (C) 2000-2007 Carsten Haitzler, Geoff Harrison and various contributors
+ * Copyright (C) 2004-2009 Kim Woelders
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -980,9 +981,9 @@ FxIpc(const char *params)
 	else if (!strcmp(word2, "off"))
 	   FX_Op(word1, FX_OP_STOP);
 	else if (!strcmp(word2, "?"))
-	   IpcPrintf("%s: %s", word1, FX_IsOn(word1) ? "on" : "off");
+	   IpcPrintf("%s: %s\n", word1, FX_IsOn(word1) ? "on" : "off");
 	else
-	   IpcPrintf("Error: unknown mode specified");
+	   IpcPrintf("Error: unknown mode specified\n");
      }
 }
 

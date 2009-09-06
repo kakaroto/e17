@@ -2270,7 +2270,7 @@ BackgroundSet1(const char *name, const char *params)
 			      0, 0, 0, NULL, 0, 0, 0, 0, 0);
 	if (!bg)
 	  {
-	     IpcPrintf("Error: could not create background '%s'.", name);
+	     IpcPrintf("Error: could not create background '%s'\n", name);
 	     return;
 	  }
      }
@@ -2345,7 +2345,7 @@ BackgroundSet1(const char *name, const char *params)
      }
    else
      {
-	IpcPrintf("Error: unknown background value type '%s'.", type);
+	IpcPrintf("Error: unknown background value type '%s'\n", type);
      }
    autosave();
 }
@@ -2469,7 +2469,7 @@ BackgroundsIpc(const char *params)
 	     IpcPrintf("%s\n", buf);
 	  }
 	else
-	   IpcPrintf("Error: background '%s' does not exist.", prm);
+	   IpcPrintf("Error: background '%s' does not exist\n", prm);
      }
    else if (!strcmp(cmd, "use"))
      {
@@ -2493,7 +2493,7 @@ BackgroundsIpc(const char *params)
 	     IpcPrintf("%s\n", buf);
 	  }
 	else
-	   IpcPrintf("Error: background '%s' does not exist.", prm);
+	   IpcPrintf("Error: background '%s' does not exist\n", prm);
      }
    else if (!strncmp(cmd, "xset", 2))
      {
