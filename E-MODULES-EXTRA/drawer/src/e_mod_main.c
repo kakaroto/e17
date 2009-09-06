@@ -657,15 +657,21 @@ _drawer_shelf_update(Instance *inst, Drawer_Source_Item *si)
 static void
 _drawer_popup_create(Instance *inst)
 {
+   char theme[1024];
+
+   if (e_config->use_composite)
+     snprintf(theme, sizeof(theme), "modules/drawer/container");
+   else
+     snprintf(theme, sizeof(theme), "modules/drawer/container_noncomposite");
    inst->popup = e_gadcon_popup_new(inst->gcc);
    if (!(e_theme_edje_object_set(inst->popup->o_bg,
-	       "base/theme/modules/drawer", "modules/drawer/container")))
+	       "base/theme/modules/drawer", theme)))
      {
 	char buf[4096];
 
 	snprintf(buf, sizeof(buf), "%s/e-module-drawer.edj", drawer_conf->module->dir);
-	if (edje_file_group_exists(buf, "modules/drawer/container"))
-	  edje_object_file_set(inst->popup->o_bg, buf, "modules/drawer/container");
+	if (edje_file_group_exists(buf, theme))
+	  edje_object_file_set(inst->popup->o_bg, buf, theme);
 	else
 	  e_theme_edje_object_set(inst->popup->o_bg, "base/theme/gadman", "e/gadman/popup");
      }
