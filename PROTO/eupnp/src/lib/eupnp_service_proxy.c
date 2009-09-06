@@ -196,7 +196,7 @@ _subscribe_completed(Eupnp_Request request, void *data, const Eupnp_HTTP_Request
 
 _unsubscribe_data_ready(void *buffer, int size, void *data)
 {
-   DEBUG_D(_log_dom, "Unsubscription data %s", data);
+   DEBUG_D(_log_dom, "Unsubscription data %s", (char *)data);
 }
 
 _unsubscribe_completed(Eupnp_Request request, void *data, const Eupnp_HTTP_Request *req)
