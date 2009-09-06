@@ -21,7 +21,6 @@
  * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-#define DECLARE_WIN 1
 #include "E.h"
 #include "edebug.h"
 #include "util.h"
@@ -58,62 +57,6 @@ static Win          win_first = NULL;
 static Win          win_last = NULL;
 
 #define WinBgInvalidate(win) if (win->bg_owned > 0) win->bg_owned = -1
-
-#if !EXPOSE_WIN
-Window
-WinGetXwin(const Win win)
-{
-   return win->xwin;
-}
-
-int
-WinGetX(const Win win)
-{
-   return win->x;
-}
-
-int
-WinGetY(const Win win)
-{
-   return win->y;
-}
-
-int
-WinGetW(const Win win)
-{
-   return win->w;
-}
-
-int
-WinGetH(const Win win)
-{
-   return win->h;
-}
-
-int
-WinGetBorderWidth(const Win win)
-{
-   return win->bw;
-}
-
-int
-WinGetDepth(const Win win)
-{
-   return win->depth;
-}
-
-Visual             *
-WinGetVisual(const Win win)
-{
-   return win->visual;
-}
-
-Colormap
-WinGetCmap(const Win win)
-{
-   return win->cmap;
-}
-#endif
 
 void
 EXInit(void)

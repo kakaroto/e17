@@ -79,8 +79,6 @@ Time                EGetTimestamp(void);
 
 typedef void        (EventCallbackFunc) (Win win, XEvent * ev, void *prm);
 
-#define EXPOSE_WIN 1
-#if EXPOSE_WIN || DECLARE_WIN
 typedef struct {
    EventCallbackFunc  *func;
    void               *prm;
@@ -114,11 +112,9 @@ struct _xwin {
    Pixmap              bgpmap;
    unsigned int        bgcol;
 };
-#endif
 
 Win                 ELookupXwin(Window xwin);
 
-#if EXPOSE_WIN
 #define             WinGetXwin(win)		((win)->xwin)
 #define             WinGetPmap(win)		((win)->bgpmap)
 #define             WinGetX(win)		((win)->x)
@@ -130,17 +126,6 @@ Win                 ELookupXwin(Window xwin);
 #define             WinGetVisual(win)		((win)->visual)
 #define             WinGetCmap(win)		((win)->cmap)
 #define             WinIsShaped(win)		((win)->num_rect != 0)
-#else
-Window              WinGetXwin(const Win win);
-int                 WinGetX(const Win win);
-int                 WinGetY(const Win win);
-int                 WinGetW(const Win win);
-int                 WinGetH(const Win win);
-int                 WinGetBorderWidth(const Win win);
-int                 WinGetDepth(const Win win);
-Visual             *WinGetVisual(const Win win);
-Colormap            WinGetCmap(const Win win);
-#endif
 
 Win                 ECreateWinFromXwin(Window xwin);
 void                EDestroyWin(Win win);
