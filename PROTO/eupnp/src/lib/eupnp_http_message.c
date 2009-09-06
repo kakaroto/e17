@@ -149,7 +149,7 @@ eupnp_http_datagram_header_next_parse(const char **line_start, const char **hkey
 
    if (*(end+2) != '\n')
      {
-	DEBUG("Header parsing error: character after carrier is not \. Possibly headers end");
+	DEBUG("Header parsing error: character after carrier is not \\n Possibly headers end");
 	return EINA_FALSE;
      }
 
