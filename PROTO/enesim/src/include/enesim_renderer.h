@@ -30,6 +30,7 @@ EAPI Eina_Bool enesim_renderer_state_setup(Enesim_Renderer *r);
 EAPI void enesim_renderer_state_cleanup(Enesim_Renderer *r);
 EAPI void enesim_renderer_span_fill(Enesim_Renderer *r, int x, int y,
 	unsigned int len, uint32_t *dst);
+EAPI void enesim_renderer_origin_set(Enesim_Renderer *r, int x, int y);
 
 typedef enum _Enesim_Shape_Draw_Mode
 {

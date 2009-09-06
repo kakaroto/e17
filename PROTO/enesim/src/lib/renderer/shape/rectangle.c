@@ -328,12 +328,8 @@ static void _span_rounded_color_outlined_paint_filled_affine(Enesim_Renderer *p,
 		fpaint->span(fpaint, x, y, len, dst);
 
 #if 1
-	yy = eina_f16p16_int_from(y);
-	xx = eina_f16p16_int_from(x);
-	yy = eina_f16p16_mul(p->matrix.values.yx, xx) +
-			eina_f16p16_mul(p->matrix.values.yy, yy) + p->matrix.values.yz;
-	xx = eina_f16p16_mul(p->matrix.values.xx, xx) +
-			eina_f16p16_mul(p->matrix.values.xy, yy) + p->matrix.values.xz;
+        renderer_affine_setup(p, x, y, &xx, &yy);
+
 #else
 	xx = (axx * x) + (axy * y) + axz;
 	yy = (ayx * x) + (ayy * y) + ayz;
@@ -469,11 +465,13 @@ static void _span_rounded_color_outlined_paint_filled_proj(Enesim_Renderer *p, i
 	}
 	if ((rect->base.draw_mode == ENESIM_SHAPE_DRAW_MODE_STROKE_FILL) && do_inner && fpaint)
 		fpaint->span(fpaint, x, y, len, dst);
-
+#if 1
+	renderer_projective_setup(p, x, y, &xx, &yy, &zz);
+#else
 	xx = (axx * x) + (axy * y) + axz;
 	yy = (ayx * x) + (ayy * y) + ayz;
 	zz = (azx * x) + (azy * y) + azz;
-
+#endif
 	while (d < e)
 	{
 		unsigned int q0 = 0;

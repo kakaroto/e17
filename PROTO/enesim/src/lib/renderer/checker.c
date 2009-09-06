@@ -86,9 +86,6 @@ static void _span_affine(Enesim_Renderer *r, int x, int y, unsigned int len, uin
 	Eina_F16p16 yy, xx, ww, hh, ww2, hh2;
 	uint32_t *end = dst + len;
 
-	/* translate to the origin */
-	y -= s->base.oy;
-	x -= s->base.ox;
 	renderer_affine_setup(r, x, y, &xx, &yy);
 	/* TODO move this to the state setup */
 	ww = eina_f16p16_int_from(s->sw);
@@ -174,8 +171,6 @@ static void _span_projective(Enesim_Renderer *r, int x, int y, unsigned int len,
 	uint32_t *end = dst + len;
 
 	/* translate to the origin */
-	y -= s->base.oy;
-	x -= s->base.ox;
 	renderer_projective_setup(r, x, y, &xx, &yy, &zz);
 	/* TODO move this to the state setup */
 	ww = eina_f16p16_int_from(s->sw);
