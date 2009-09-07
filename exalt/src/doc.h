@@ -60,6 +60,84 @@
  * @li WPA1 or WPA2 personnal
  * @li WPA1 or WPA2 enterprise TLS. This configuration has not been tested because I don't have the hardware. If you have some problems, can test it ... Please contact me.
  *
+ *
+ * A module for Enlightenment DR17 exists but it is not distribute with this package but it is avaible in the official enlightenment svn : trunk/E-MODULES-EXTRA/exalt-client. The module is called exalt-client and use Exalt_DBus to communicate with the daemon.
+ *
+ *
+ * @section exalt_install Install & configure
+ *
+ * <b>Install</b>
+ *
+ * You have to install Exalt before Exalt-client :
+ *
+ * @code
+ * cd exalt
+ * ./autogen.sh
+ * make
+ * as root: make install
+ * @endcode
+ *
+ * @code
+ * cd exalt-client
+ * ./autogen.sh
+ * make
+ * as root: make install
+ * @endcode
+ *
+ *
+ * If you want the support of wpa_supplicant or dhcp, you need wpa_supplicant and dhclient. During the autogen.sh Exalt tries to find these commands in your path. Maybe these commands are only in the path of the user root. You can specify the path with:
+ * @code
+ * ./autogen.sh --with-wpa_supplicant=/sbin/wpa_supplicant --with-dhcp=/sbin/dhclient
+ * @endcode
+ *
+ *
+ *
+ * <b>Configure</b>
+ *
+ * In order to use the daemon you will have to configure the exalt dbus service. The dbus configuration file should be :
+ * @code
+ * /etc/dbus-1/system.d/exalt.conf
+ * @endcode
+ *
+ * You can use this default configuration or create your own custom file. The file is avaible here : data/daemon/dbus/exalt.conf
+ *
+ * @code
+ * <!DOCTYPE busconfig PUBLIC
+ * "-//freedesktop//DTD D-BUS Bus Configuration 1.0//EN"
+ * "http://www.freedesktop.org/standards/dbus/1.0/busconfig.dtd">
+ * <busconfig>
+ *      <policy user="root">
+ *      <allow own="org.e.Exalt"/>
+ *                <allow send_destination="org.e.Exalt"/>
+ *                <allow send_interface="org.e.Exalt"/>
+ *        </policy>
+ *        <policy at_console="true">
+ *                <allow send_destination="org.e.Exalt"/>
+ *                <allow send_interface="org.e.Exalt"/>
+ *        </policy>
+ *        <policy context="default">
+ *                <!-- <deny own="org.e.Exalt"/> -->
+ *                <!-- <deny send_destination="org.e.Exalt"/> -->
+ *                <!-- <deny send_interface="org.e.Exalt"/> -->
+ *                <allow own="org.e.Exalt"/>
+ *                <allow send_destination="org.e.Exalt"/>
+ *                <allow send_interface="org.e.Exalt"/>
+ *        </policy>
+ *  </busconfig>
+ *  @endcode
+ *
+ * <b>Gentoo</b>
+ *
+ * If you want add the daemon in your init, you can use the script in daemon/data/init.d/gentoo:
+ * @code
+ * cp data/daemon/data/init.d/gentoo /etc/init.d/exaltd
+ * rc-update add exaltd default
+ * @endcode
+ *
+ * <b>Others</b>
+ *
+ * I'm sorry, I don't have a script for others distribution, if you have one you can send me it :)
+ *
  * @section exalt_global_archi Architecture
  *
  * @image html "../archi.png" "Architecture of Exalt"
