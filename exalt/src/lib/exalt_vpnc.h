@@ -1,7 +1,7 @@
 #ifndef  EXALT_VPNC_INC
 #define  EXALT_VPNC_INC
 
-#include "libexalt.h"
+#include "Exalt.h"
 #include <stdlib.h>
 #include <string.h>
 

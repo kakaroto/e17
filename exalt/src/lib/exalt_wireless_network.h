@@ -29,7 +29,7 @@ typedef enum Exalt_Wireless_Network_Mode Exalt_Wireless_Network_Mode;
 typedef enum Exalt_Wireless_Network_Eap Exalt_Wireless_Network_Eap;
 
 #include "exalt_wireless.h"
-#include "libexalt.h"
+#include "Exalt.h"
 #include "exalt_configuration.h"
 #include <Eina.h>
 

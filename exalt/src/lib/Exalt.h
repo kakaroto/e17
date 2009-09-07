@@ -1,7 +1,7 @@
-/** @file libexalt.h */
+/** @file Exalt.h */
 
-#ifndef COMMON_H
-#define COMMON_H
+#ifndef EXALT_H
+#define EXALT_H
 
 /**
  * @defgroup Exalt_Macros

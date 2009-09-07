@@ -1,21 +1,3 @@
-/*
- * =====================================================================================
- *
- *       Filename:  cb_dns.c
- *
- *    Description:  DNS functions
- *
- *        Version:  1.0
- *        Created:  09/21/2007 09:20:59 PM CEST
- *       Revision:  none
- *       Compiler:  gcc
- *
- *         Author:   (Watchwolf), Atton Jonathan <watchwolf@watchwolf.fr>
- *        Company:
- *
- * =====================================================================================
- */
-
 #include "cb_dns.h"
 
 #define EXALT_LOG_DOMAIN exaltd_log_domain

@@ -1,20 +1,3 @@
-/*
- * =====================================================================================
- *
- *       Filename:  cb_bootprocess.c
- *
- *    Description:  dbus callback about the boot process
- *
- *        Version:  1.0
- *        Created:  01/02/2008 06:44:24 PM CET
- *       Revision:  none
- *       Compiler:  gcc
- *
- *         Author:  (Watchwolf), Atton Jonathan <watchwolf@watchwolf.fr>
- *        Company:
- *
- * =====================================================================================
- */
 #include "cb_bootprocess.h"
 
 #define EXALT_LOG_DOMAIN exaltd_log_domain

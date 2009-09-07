@@ -19,7 +19,7 @@ extern Exalt_Ethernets exalt_eth_interfaces;
 typedef struct Exalt_Ethernet Exalt_Ethernet;
 
 
-#include "libexalt.h"
+#include "Exalt.h"
 #include "exalt_wireless.h"
 #include "exalt_wireless_network.h"
 #include "exalt_configuration.h"

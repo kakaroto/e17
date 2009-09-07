@@ -1,12 +1,12 @@
-/** @file libexalt_dbus.h */
+/** @file Exalt_dbus.h */
 
-#ifndef  LIBEXALT_DBUS_INC
-#define  LIBEXALT_DBUS_INC
+#ifndef  EXALT_DBUS_INC
+#define  EXALT_DBUS_INC
 
 #include <E_DBus.h>
 #include <Ecore_Data.h>
 #include <string.h>
-#include <libexalt.h>
+#include <Exalt.h>
 
 /**
  * @defgroup Exalt_DBus
@@ -65,6 +65,6 @@ EAPI void exalt_dbus_response_notify_set(Exalt_DBus_Conn* conn, exalt_response_n
 
 /** @} */
 
-#endif   /* ----- #ifndef LIBEXALT_DBUS_INC  ----- */
+#endif   /* ----- #ifndef EXALT_DBUS_INC  ----- */
 
 

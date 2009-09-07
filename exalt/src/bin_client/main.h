@@ -1,23 +1,4 @@
 /*
- * =====================================================================================
- *
- *       Filename:  main.h
- *
- *    Description:
- *
- *        Version:  1.0
- *        Created:  11/02/09 20:22:59 UTC
- *       Revision:  none
- *       Compiler:  gcc
- *
- *         Author:  (Watchwolf), Atton Jonathan <watchwolf@watchwolf.fr>
- *        Company:
- *
- * =====================================================================================
- */
-
-
-/*
  * TODO FIXME
  * disabled widgets when the conf is invalid (wait the possibility in elementary)
  * add wireless panels
@@ -46,7 +27,7 @@ enum _iface_type
 
 
 
-#include <libexalt_dbus.h>
+#include <Exalt_dbus.h>
 #include <Elementary.h>
 #include "wired.h"
 #include "wireless.h"

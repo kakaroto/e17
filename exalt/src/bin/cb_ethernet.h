@@ -1,26 +1,8 @@
-/*
- * =====================================================================================
- *
- *       Filename:  cb_functions.h
- *
- *    Description:  All callbacks functions are defined here
- *
- *        Version:  1.0
- *        Created:  08/29/2007 01:48:40 PM CEST
- *       Revision:  none
- *       Compiler:  gcc
- *
- *         Author:   (Watchwolf), Atton Jonathan <watchwolf@watchwolf.fr>
- *        Company:
- *
- * =====================================================================================
- */
-
 #ifndef  CB_FUNCTIONS_INC
 #define  CB_FUNCTIONS_INC
 
 #include "daemon.h"
-#include <libexalt.h>
+#include <Exalt.h>
 
 DBusMessage * dbus_cb_eth_wireless_list_get(E_DBus_Object *obj __UNUSED__, DBusMessage *msg, int is_wireless);
 

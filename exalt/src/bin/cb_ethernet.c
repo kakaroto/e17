@@ -1,21 +1,3 @@
-/*
- * =====================================================================================
- *
- *       Filename:  cb_functions.c
- *
- *    Description:  all callback functions are defined here
- *
- *        Version:  1.0
- *        Created:  08/29/2007 01:48:10 PM CEST
- *       Revision:  none
- *       Compiler:  gcc
- *
- *         Author:   (Watchwolf), Atton Jonathan <watchwolf@watchwolf.fr>
- *        Company:
- *
- * =====================================================================================
- */
-
 #include "cb_ethernet.h"
 
 #define EXALT_LOG_DOMAIN exaltd_log_domain

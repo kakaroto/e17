@@ -1,21 +1,3 @@
-/*
- * =====================================================================================
- *
- *       Filename:  cb_bootprocess.h
- *
- *    Description:  cb callback about the boot process
- *
- *        Version:  1.0
- *        Created:  01/02/2008 06:44:36 PM CET
- *       Revision:  none
- *       Compiler:  gcc
- *
- *         Author:  (Watchwolf), Atton Jonathan <watchwolf@watchwolf.fr>
- *        Company:
- *
- * =====================================================================================
- */
-
 #ifndef  CB_BOOTPROCESS_INC
 #define  CB_BOOTPROCESS_INC
 

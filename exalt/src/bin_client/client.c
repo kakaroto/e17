@@ -1,21 +1,3 @@
-/*
- * =====================================================================================
- *
- *       Filename:  client.c
- *
- *    Description:
- *
- *        Version:  1.0
- *        Created:  11/02/09 12:06:00 UTC
- *       Revision:  none
- *       Compiler:  gcc
- *
- *         Author:  (Watchwolf), Atton Jonathan <watchwolf@watchwolf.fr>
- *        Company:
- *
- * =====================================================================================
- */
-
 #include "main.h"
 #include "config.h"
 

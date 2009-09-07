@@ -1,21 +1,3 @@
-/*
- * =====================================================================================
- *
- *       Filename:  wired.h
- *
- *    Description:
- *
- *        Version:  1.0
- *        Created:  04/01/2009 06:59:40 PM CEST
- *       Revision:  none
- *       Compiler:  gcc
- *
- *         Author:  (Watchwolf), Atton Jonathan <watchwolf@watchwolf.fr>
- *        Company:
- *
- * =====================================================================================
- */
-
 #ifndef  WIRED_INC
 #define  WIRED_INC
 

@@ -1,21 +1,3 @@
-/*
- * =====================================================================================
- *
- *       Filename:  iface_list.c
- *
- *    Description:
- *
- *        Version:  1.0
- *        Created:  24/03/09 21:38:14 CET
- *       Revision:  none
- *       Compiler:  gcc
- *
- *         Author:  (Watchwolf), Atton Jonathan <watchwolf@watchwolf.fr>
- *        Company:
- *
- * =====================================================================================
- */
-
 #include "iface_list.h"
 #include "config.h"
 #include "wired.h"

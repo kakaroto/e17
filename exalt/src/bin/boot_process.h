@@ -1,21 +1,3 @@
-/*
- * =====================================================================================
- *
- *       Filename:  boot_process.h
- *
- *    Description:  configure the boot process, if the system wait until a card get a ip address.
- *
- *        Version:  1.0
- *        Created:  01/02/2008 06:28:04 PM CET
- *       Revision:  none
- *       Compiler:  gcc
- *
- *         Author:  (Watchwolf), Atton Jonathan <watchwolf@watchwolf.fr>
- *        Company:
- *
- * =====================================================================================
- */
-
 #ifndef  BOOT_PROCESS_INC
 #define  BOOT_PROCESS_INC
 

@@ -1,4 +1,3 @@
-
 #include "cb_network.h"
 
 #define EXALT_LOG_DOMAIN exaltd_log_domain

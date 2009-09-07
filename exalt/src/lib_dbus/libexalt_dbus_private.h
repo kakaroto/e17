@@ -1,8 +1,7 @@
 #ifndef  LIBEXALT_DBUS_PRIVATE_INC
 #define  LIBEXALT_DBUS_PRIVATE_INC
 
-#include "libexalt_dbus.h"
-#include <libexalt.h>
+#include "Exalt_dbus.h"
 
 /*
  * when we return a valid response, next args are the response

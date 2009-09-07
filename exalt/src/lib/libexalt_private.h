@@ -20,7 +20,7 @@
 #define  LIBEXALT_PRIVATE_INC
 
 #include "../config.h"
-#include "libexalt.h"
+#include "Exalt.h"
 #include <string.h>
 #include "nettools/proc.h"
 #include "iw/iwlib.h"

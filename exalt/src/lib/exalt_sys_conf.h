@@ -15,7 +15,7 @@
 #include <fcntl.h>
 #include <unistd.h>
 #include <Ecore_File.h>
-#include "libexalt.h"
+#include "Exalt.h"
 #include <Eet.h>
 #include <Evas.h>
 

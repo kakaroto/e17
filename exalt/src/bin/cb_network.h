@@ -1,4 +1,3 @@
-
 #ifndef  CB_NETWORK_INC
 #define  CB_NETWORK_INC
 

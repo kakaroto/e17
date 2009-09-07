@@ -1,4 +1,3 @@
-
 #include "daemon.h"
 #include <Ecore_Getopt.h>
 #include "config.h"

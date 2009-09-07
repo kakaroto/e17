@@ -1,5 +1,5 @@
 /** @file libexalt_dbus.c */
-#include "libexalt_dbus.h"
+#include "Exalt_dbus.h"
 #include "libexalt_dbus_private.h"
 
 void _exalt_dbus_notify(void *data,DBusMessage *msg);

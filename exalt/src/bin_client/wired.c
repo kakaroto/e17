@@ -1,21 +1,3 @@
-/*
- * =====================================================================================
- *
- *       Filename:  wired_dialog.c
- *
- *    Description:
- *
- *        Version:  1.0
- *        Created:  12/23/2008 10:15:31 AM UTC
- *       Revision:  none
- *       Compiler:  gcc
- *
- *         Author:  (Watchwolf), Atton Jonathan <watchwolf@watchwolf.fr>
- *        Company:
- *
- * =====================================================================================
- */
-
 #include "wired.h"
 
 Wired* wired_new(Evas_Object *win)

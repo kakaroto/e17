@@ -16,7 +16,7 @@
 typedef enum _exalt_dbus_response_type Exalt_DBus_Response_Type;
 typedef struct _exalt_dbus_response Exalt_DBus_Response;
 
-#include "libexalt_dbus.h"
+#include "Exalt_dbus.h"
 
 /**
  * The type of response

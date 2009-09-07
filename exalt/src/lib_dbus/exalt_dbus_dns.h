@@ -3,7 +3,7 @@
 #ifndef  EXALT_DBUS_DNS_INC
 #define  EXALT_DBUS_DNS_INC
 
-#include "libexalt_dbus.h"
+#include "Exalt_dbus.h"
 
 /**
  * @defgroup DNS

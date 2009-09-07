@@ -26,7 +26,7 @@ typedef enum Exalt_Enum_Mode
 
 
 
-#include "libexalt.h"
+#include "Exalt.h"
 #include <Eet.h>
 #include "exalt_configuration_network.h"
 

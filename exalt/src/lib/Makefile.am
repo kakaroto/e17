@@ -17,7 +17,7 @@ EXTRA_DIST = iw/iwlib_custom.c iw/wireless.h
 EXALTHEADERS = \
 nettools/proc.h \
 wpa_supplicant/wpa_ctrl.h \
-libexalt.h \
+Exalt.h \
 exalt_dns.h \
 exalt_ethernet.h \
 exalt_regexp.h \

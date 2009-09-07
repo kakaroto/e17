@@ -1,5 +1,5 @@
 /** @file libexalt.c */
-#include "libexalt.h"
+#include "Exalt.h"
 #include "libexalt_private.h"
 #include "config.h"
 #include <E_Hal.h>

@@ -2,7 +2,7 @@
 #ifndef DNS_H
 #define DNS_H
 
-#include "libexalt.h"
+#include "Exalt.h"
 #include <string.h>
 
 /**

@@ -4,7 +4,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include "libexalt.h"
+#include "Exalt.h"
 #include <string.h>
 #include <regex.h>
 

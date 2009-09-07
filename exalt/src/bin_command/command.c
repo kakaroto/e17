@@ -1,22 +1,3 @@
-/*
- * =====================================================================================
- *
- *       Filename:  command.c
- *
- *    Description:
- *
- *        Version:  1.0
- *        Created:  02/10/08 17:20:12 UTC
- *       Revision:  none
- *       Compiler:  gcc
- *
- *         Author:  (Watchwolf), Atton Jonathan <watchwolf@watchwolf.fr>
- *        Company:
- *
- * =====================================================================================
- */
-
-
 #define print_response_error() \
     if(!exalt_dbus_response_error_is(response)) \
     { \

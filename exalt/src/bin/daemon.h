@@ -1,27 +1,9 @@
-/*
- * =====================================================================================
- *
- *       Filename:  daemon.h
- *
- *    Description:  define globals functions
- *
- *        Version:  1.0
- *        Created:  08/28/2007 04:26:56 PM CEST
- *       Revision:  none
- *       Compiler:  gcc
- *
- *         Author:   (Watchwolf), Atton Jonathan <watchwolf@watchwolf.fr>
- *        Company:
- *
- * =====================================================================================
- */
-
 #ifndef  DAEMON_INC
 #define  DAEMON_INC
 
 
 #include <stdio.h>
-#include <libexalt.h>
+#include <Exalt.h>
 
 #include "define.h"
 #include "cb_ethernet.h"

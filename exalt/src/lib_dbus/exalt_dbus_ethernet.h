@@ -3,7 +3,7 @@
 #ifndef  EXALT_DBUS_ETHERNET_INC
 #define  EXALT_DBUS_ETHERNET_INC
 
-#include "libexalt_dbus.h"
+#include "Exalt_dbus.h"
 #include "define.h"
 
 /**

@@ -1,21 +1,3 @@
-/*
- * =====================================================================================
- *
- *       Filename:  wireless.c
- *
- *    Description:
- *
- *        Version:  1.0
- *        Created:  04/05/2009 12:52:08 PM CEST
- *       Revision:  none
- *       Compiler:  gcc
- *
- *         Author:  (Watchwolf), Atton Jonathan <watchwolf@watchwolf.fr>
- *        Company:
- *
- * =====================================================================================
- */
-
 #include "wireless.h"
 
 

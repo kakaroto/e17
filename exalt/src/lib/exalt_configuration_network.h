@@ -15,7 +15,7 @@
  */
 typedef struct Exalt_Configuration_Network Exalt_Configuration_Network;
 
-#include "libexalt.h"
+#include "Exalt.h"
 
 
 /**

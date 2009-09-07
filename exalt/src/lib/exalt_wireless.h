@@ -16,7 +16,7 @@ typedef struct Exalt_Wireless Exalt_Wireless;
 
 
 
-#include "libexalt.h"
+#include "Exalt.h"
 #include "exalt_wireless_network.h"
 #include <Ecore_Data.h>
 #include <Ecore.h>
