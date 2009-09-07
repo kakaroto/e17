@@ -11,18 +11,6 @@
  *============================================================================*/
 static FT_Library library;
 
-static void _color_set(void *c, int color)
-{
-	uint32_t cmul;
-	uint8_t a = color >> 24;
-	if (a != 256)
-	{
-		cmul = (color & 0xff000000) + (((((color) >> 8) & 0xff) * a) & 0xff00) +
-			(((((color) & 0x00ff00ff) * a) >> 8) & 0x00ff00ff);
-	}
-	else
-		color = cmul;
-}
 /*============================================================================*
  *                                  Paint                                    *
  *============================================================================*/
@@ -324,13 +312,15 @@ static void shape_renderer_draw(Eon_Shape *s, Enesim_Surface *dst,  Enesim_Rende
 	uint32_t *ddata;
 	uint32_t *fdata;
 	int stride;
+	Enesim_Format dfmt;
 
+	dfmt = enesim_surface_format_get(dst);
 	ddata = enesim_surface_data_get(dst);
 	stride = enesim_surface_stride_get(dst);
 	ddata = ddata + (clip->y * stride) + clip->x;
 
 	color = eon_shape_color_get(s);
-	span = enesim_compositor_span_pixel_color_get(rop, ENESIM_FORMAT_ARGB8888, ENESIM_FORMAT_ARGB8888, color);
+	span = enesim_compositor_span_get(rop, &dfmt, ENESIM_FORMAT_ARGB8888, color, ENESIM_FORMAT_NONE);
 
 	dh = clip->h;
 	dy = clip->y;
@@ -345,6 +335,7 @@ static void shape_renderer_draw(Eon_Shape *s, Enesim_Surface *dst,  Enesim_Rende
 		ddata += stride;
 		free(fdata);
 	}
+	/* TODO set the format again */
 }
 
 static void aliased_color_cb(Enesim_Scanline *sl, void *data)
@@ -411,7 +402,9 @@ static void shape_setup(Eon_Shape *s, Shape_Drawer_Data *d, Enesim_Surface *dst)
 {
 	Enesim_Rop rop;
 	Eon_Paint *p;
+	Enesim_Format dfmt;
 
+	dfmt = enesim_surface_format_get(dst);
 	rop = eon_shape_rop_get(s);
 	d->color = eon_shape_color_get(s);
 	d->dst = dst;
@@ -420,7 +413,7 @@ static void shape_setup(Eon_Shape *s, Shape_Drawer_Data *d, Enesim_Surface *dst)
 	/* color based */
 	if (!p)
 	{
-		d->span = enesim_compositor_span_color_get(rop, ENESIM_FORMAT_ARGB8888, d->color);
+		d->span = enesim_compositor_span_get(rop, &dfmt, ENESIM_FORMAT_NONE, d->color, ENESIM_FORMAT_NONE);
 		d->cb = aliased_color_cb;
 	}
 	/* paint based */
@@ -429,9 +422,10 @@ static void shape_setup(Eon_Shape *s, Shape_Drawer_Data *d, Enesim_Surface *dst)
 		/* TODO paint + color */
 		d->paint = eon_paint_engine_data_get(p);
 		enesim_renderer_state_setup(d->paint->r);
-		d->span = enesim_compositor_span_pixel_color_get(rop, ENESIM_FORMAT_ARGB8888, ENESIM_FORMAT_ARGB8888, d->color);
+		d->span = enesim_compositor_span_get(rop, &dfmt, ENESIM_FORMAT_ARGB8888, d->color, ENESIM_FORMAT_NONE);
 		d->cb = aliased_fill_cb;
 	}
+	/* TODO set the format again */
 }
 /*============================================================================*
  *                                  Polygon                                   *
@@ -481,34 +475,40 @@ static void polygon_delete(void *ep)
 /*============================================================================*
  *                                   Rect                                     *
  *============================================================================*/
-static void * rect_create(Eon_Rect *r)
+typedef struct Rectangle
 {
+	Eon_Rect *er;
+	Enesim_Renderer *r;
+} Rectangle;
+
+static void * rect_create(Eon_Rect *er)
+{
+	Rectangle *r;
+
+	r = malloc(sizeof(Rectangle));
+	r->er = er;
+	r->r = enesim_renderer_rectangle_new();
+
 	return r;
 }
 
 static void rect_render(void *er, void *cd, Eina_Rectangle *clip)
 {
-	Enesim_Scanline sl;
-	Eon_Rect *r = er;
-	Shape_Drawer_Data sdd;
-	uint32_t *dst;
-	uint32_t stride;
+	Rectangle *r = er;
+	Eina_Rectangle geom;
+	float rad;
 
-	shape_setup((Eon_Shape *)r, &sdd, cd);
-	stride = enesim_surface_stride_get(sdd.dst);
-	sl.type = ENESIM_SCANLINE_ALIAS;
-	sl.data.alias.x = clip->x;
-	sl.data.alias.y = clip->y;
-	sl.data.alias.w = clip->w;
+	shape_renderer_setup((Eon_Shape *)r->er, r->r);
+	ekeko_renderable_geometry_get((Ekeko_Renderable *)r->er, &geom);
+	rad = eon_rect_corner_radius_get(r->er);
 
-	/* we are using the same functions as the other rasterizers
-	 * but the surface pointer calculations has to be done on every callback
-	 */
-	while (clip->h--)
-	{
-		sdd.cb(&sl, &sdd);
-		sl.data.alias.y++;
-	}
+	enesim_renderer_origin_set(r->r, geom.x, geom.y);
+	enesim_renderer_rectangle_size_set(r->r, geom.w, geom.h);
+	enesim_renderer_rectangle_corner_radius_set(r->r, rad);
+	/* FIXME fix this */
+	enesim_renderer_rectangle_corners_set(r->r, 1, 1, 1, 1);
+	enesim_renderer_state_setup(r->r);
+	shape_renderer_draw((Eon_Shape *)r->er, cd, r->r, clip);
 }
 /*============================================================================*
  *                                 Circle                                     *
@@ -538,8 +538,7 @@ static void circle_render(void *ec, void *cd, Eina_Rectangle *clip)
 	Circle *c = ec;
 	Eon_Coord x;
 	Eon_Coord y;
-	int radius;
-	Shape_Drawer_Data sdd;
+	float radius;
 	int dh, dy;
 
 	shape_renderer_setup((Eon_Shape *)c->c, c->r);
@@ -590,20 +589,36 @@ static void * text_create(Eon_Text *et)
 	}
 	FT_Set_Pixel_Sizes(t->face, /* handle to face object */
 		0, /* pixel_width */
-		16 ); /* pixel_height */ 
+		16 ); /* pixel_height */
 
 	return t;
 }
 
-static void text_compose(FT_Bitmap *bmp, Enesim_Surface *dst, Enesim_Compositor_Span span, int left, int top)
+static void text_boundings_get(void *et, Eina_Rectangle *r)
 {
+
+}
+
+static void text_compose(Text *t, FT_Bitmap *bmp, Enesim_Surface *dst, Enesim_Compositor_Span span, int left, int top)
+{
+	Enesim_Color color;
 	uint32_t *ddata;
 	int dstride;
+	int y = bmp->rows;
+	uint8_t *mask = bmp->buffer;
 
+	color = eon_shape_color_get((Eon_Shape *)t->t);
 	ddata = enesim_surface_data_get(dst);
 	dstride = enesim_surface_stride_get(dst);
-	
-	printf("compose at %d %d %p\n", left, top, span);
+
+	ddata = ddata + (top * dstride) + left;
+	//printf("compose at %d %d %p %d\n", left, top, span, y);
+	while (y--)
+	{
+		span(ddata, bmp->width, NULL, color, mask);
+		mask += bmp->pitch;
+		ddata += dstride;
+	}
 }
 
 static void text_render(void *et, void *cd, Eina_Rectangle *clip)
@@ -613,21 +628,32 @@ static void text_render(void *et, void *cd, Eina_Rectangle *clip)
 	char *str;
 	int i;
 	FT_GlyphSlot slot;
-	int pen_x = 0;
-	int pen_y = 0;
+	int pen_x;
+	int pen_y;
 	Enesim_Compositor_Span span;
-	Enesim_Color color = 0xff000000;
+	Enesim_Color color;
 	Enesim_Rop rop;
-	
-	rop = eon_shape_rop_get((Eon_Shape *)t->t);
-	span = enesim_compositor_span_mask_color_get(rop, ENESIM_FORMAT_ARGB8888, ENESIM_FORMAT_A8, color);
-	//printf("RENDERING!!\n");
+	Enesim_Format fmt;
+	Enesim_Surface *dst = cd;
+	Eina_Rectangle geom;
+
 	if (!t)
 		return;
 	str = eon_text_string_get(t->t);
 	/* TODO Move this into the shape object */
 	if (!str)
 		return;
+
+
+	ekeko_renderable_geometry_get((Ekeko_Renderable *)t->t, &geom);
+	pen_x = geom.x;
+	pen_y = geom.y + 16;
+
+	color = eon_shape_color_get((Eon_Shape *)t->t);
+	rop = eon_shape_rop_get((Eon_Shape *)t->t);
+	fmt = enesim_surface_format_get(dst);
+	span = enesim_compositor_span_get(rop, &fmt, ENESIM_FORMAT_NONE, color, ENESIM_FORMAT_A8);
+
 	slot = t->face->glyph;
 	for (i = 0; str[i]; i++)
 	{
@@ -638,11 +664,14 @@ static void text_render(void *et, void *cd, Eina_Rectangle *clip)
 			continue; /* ignore errors */
 		}
 		//printf("%c %d %d\n", str[i], slot->bitmap_left, slot->bitmap_top);
-		text_compose(&slot->bitmap, cd, span, pen_x + slot->bitmap_left, pen_y + slot->bitmap_top);
+		text_compose(t, &slot->bitmap, cd, span,
+				pen_x + slot->bitmap_left, pen_y - slot->bitmap_top);
 		/* increment pen position */
-		pen_x += slot->advance.x >> 6; 
+		pen_x += slot->advance.x >> 6;
 	}
+	/* TODO set the format again */
 }
+
 /*============================================================================*
  *                                  Debug                                     *
  *============================================================================*/
@@ -650,10 +679,13 @@ static void debug_rect(void *cd, uint32_t color, int x, int y, int w, int h)
 {
 	Enesim_Compositor_Span span;
 	Enesim_Surface *s = cd;
+	Enesim_Format fmt;
 	uint32_t *dst;
 	uint32_t stride;
 
-	span = enesim_compositor_span_color_get(ENESIM_FILL, ENESIM_FORMAT_ARGB8888, color);
+	fmt = enesim_surface_format_get(s);
+	span = enesim_compositor_span_get(ENESIM_FILL, &fmt,
+			ENESIM_FORMAT_NONE, color, ENESIM_FORMAT_NONE);
 
 	dst = enesim_surface_data_get(s);
 	stride = enesim_surface_stride_get(s);
@@ -664,6 +696,7 @@ static void debug_rect(void *cd, uint32_t color, int x, int y, int w, int h)
 		span(dst, w, NULL, color, NULL);
 		dst += stride;
 	}
+	/* TODO set the format again */
 }
 /*============================================================================*
  *                                   API                                      *

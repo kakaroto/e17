@@ -17,13 +17,67 @@
  */
 #include "Eon.h"
 #include "eon_private.h"
+
+#include <fontconfig.h>
+#include <ft2build.h>
+#include FT_FREETYPE_H
+
+/* TODO create a cache for fonts */
 /*============================================================================*
  *                                  Local                                     *
  *============================================================================*/
+typedef struct _Eon_Font
+{
+	const char *file;
+	FT_Face face;
+} Eon_Font;
+
+static FT_Library library;
 /*============================================================================*
  *                                 Global                                     *
  *============================================================================*/
-//void eon_font_boundings_get(???, const char *text, Eina_Rectangle *rect);
+/* TODO use fontconfig to retrieve the font mathcing the pattern, instead of
+ * a file
+ */
+Eon_Font * eon_font_load(const char *name)
+{
+	Eon_Font *font;
+	FcPattern *pat;
+	FcFontSet *set;
+	FcResult res;
+	FT_Error err;
+	FT_Face face;
+
+	pat = FcNameParse((FcChar8 *)name);
+	set = FcFontSort(NULL, pat, FcTrue, NULL, &res);
+	if (!set)
+		goto sort_failed;
+
+	err = FT_New_Face(library, file, 0, &face);
+
+	/* TODO the face loading can be done on a font engine */
+	/* load the fonts */
+	FcFontSetDestroy(set);
+
+sort_failed:
+	FcPatternDestroy(pat);
+}
+
+void eon_font_boundings_get(Eon_Font *f, const char *text, Eina_Rectangle *rect)
+{
+
+}
+
+void eon_font_init(void)
+{
+	FT_Init_FreeType(&library);
+}
+
+void eon_font_shutdown(void)
+{
+
+}
+
 /*============================================================================*
  *                                   API                                      *
  *============================================================================*/

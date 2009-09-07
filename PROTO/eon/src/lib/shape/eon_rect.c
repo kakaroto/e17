@@ -12,7 +12,7 @@
 #define PRIVATE(d) ((Eon_Rect_Private *)((Eon_Rect *)(d))->private)
 struct _Eon_Rect_Private
 {
-
+	float radius;
 };
 
 static void _geometry_calc(const Ekeko_Object *o, Ekeko_Event *e, void *data)
@@ -77,6 +77,7 @@ EAPI Ekeko_Type *eon_rect_type_get(void)
 		type = ekeko_type_new(EON_TYPE_RECT, sizeof(Eon_Rect),
 				sizeof(Eon_Rect_Private), eon_square_type_get(),
 				_ctor, _dtor, eon_shape_appendable);
+		EON_RECT_CORNER_RADIUS = EKEKO_TYPE_PROP_SINGLE_ADD(type, "radius", EKEKO_PROPERTY_FLOAT, OFFSET(Eon_Rect_Private, radius));
 	}
 
 	return type;
@@ -91,3 +92,19 @@ EAPI Eon_Rect * eon_rect_new(Eon_Canvas *c)
 
 	return r;
 }
+
+EAPI void eon_rect_corner_radius_set(Eon_Rect *r, float rad)
+{
+	Ekeko_Value v;
+
+	ekeko_value_float_from(&v, rad);
+	ekeko_object_property_value_set((Ekeko_Object *)r, "radius", &v);
+}
+
+EAPI float eon_rect_corner_radius_get(Eon_Rect *r)
+{
+	Eon_Rect_Private *prv = PRIVATE(r);
+
+	return prv->radius;
+}
+

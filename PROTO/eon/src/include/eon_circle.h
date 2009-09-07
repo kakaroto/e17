@@ -39,8 +39,8 @@ EAPI void eon_circle_x_set(Eon_Circle *c, int x);
 EAPI void eon_circle_y_get(Eon_Circle *c, Eon_Coord *coord);
 EAPI void eon_circle_y_set(Eon_Circle *c, int y);
 EAPI void eon_circle_y_rel_set(Eon_Circle *c, int y);
-EAPI int eon_circle_radius_get(Eon_Circle *c);
-EAPI void eon_circle_radius_set(Eon_Circle *c, int r);
+EAPI float eon_circle_radius_get(Eon_Circle *c);
+EAPI void eon_circle_radius_set(Eon_Circle *c, float r);
 EAPI void eon_circle_radius_rel_set(Eon_Circle *c, int r);
 
 /* shape wrappers */

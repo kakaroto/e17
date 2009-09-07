@@ -31,6 +31,8 @@ struct _Eon_Rect
  *============================================================================*/
 EAPI Ekeko_Type *eon_rect_type_get(void);
 EAPI Eon_Rect * eon_rect_new(Eon_Canvas *c);
+EAPI void eon_rect_corner_radius_set(Eon_Rect *r, float rad);
+EAPI float eon_rect_corner_radius_get(Eon_Rect *r);
 
 /* square wrappers */
 #define eon_rect_x_rel_set(r, x) eon_square_x_rel_set((Eon_Square *)(r), x)

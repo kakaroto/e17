@@ -16,7 +16,7 @@ struct _Eon_Circle_Private
 {
 	Eon_Coord x;
 	Eon_Coord y;
-	int radius;
+	float radius;
 };
 
 static void _update_geometry(Eon_Circle *p)
@@ -24,7 +24,7 @@ static void _update_geometry(Eon_Circle *p)
 	Eon_Circle_Private *prv = PRIVATE(p);
 	Eina_Rectangle geom;
 
-	eina_rectangle_coords_from(&geom, prv->x.final - prv->radius, prv ->y.final - prv->radius, prv->radius << 1, prv->radius << 1);
+	eina_rectangle_coords_from(&geom, prv->x.final - prv->radius, prv ->y.final - prv->radius, prv->radius * 2, prv->radius * 2);
 	ekeko_renderable_geometry_set((Ekeko_Renderable *)p, &geom);
 }
 
@@ -157,7 +157,7 @@ EAPI Ekeko_Type *eon_circle_type_get(void)
 				_ctor, _dtor, eon_shape_appendable);
 		EON_CIRCLE_X = EKEKO_TYPE_PROP_SINGLE_ADD(type, "x", EON_PROPERTY_COORD, OFFSET(Eon_Circle_Private, x));
 		EON_CIRCLE_Y = EKEKO_TYPE_PROP_SINGLE_ADD(type, "y", EON_PROPERTY_COORD, OFFSET(Eon_Circle_Private, y));
-		EON_CIRCLE_RADIUS = EKEKO_TYPE_PROP_SINGLE_ADD(type, "radius", EKEKO_PROPERTY_INT, OFFSET(Eon_Circle_Private, radius));
+		EON_CIRCLE_RADIUS = EKEKO_TYPE_PROP_SINGLE_ADD(type, "radius", EKEKO_PROPERTY_FLOAT, OFFSET(Eon_Circle_Private, radius));
 	}
 
 	return type;
@@ -174,15 +174,15 @@ EAPI Eon_Circle * eon_circle_new(Eon_Canvas *c)
 }
 
 
-EAPI void eon_circle_radius_set(Eon_Circle *c, int radius)
+EAPI void eon_circle_radius_set(Eon_Circle *c, float radius)
 {
 	Ekeko_Value v;
 
-	ekeko_value_int_from(&v, radius);
+	ekeko_value_float_from(&v, radius);
 	ekeko_object_property_value_set((Ekeko_Object *)c, "radius", &v);
 }
 
-EAPI int eon_circle_radius_get(Eon_Circle *c)
+EAPI float eon_circle_radius_get(Eon_Circle *c)
 {
 	Eon_Circle_Private *prv;
 

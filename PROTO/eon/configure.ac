@@ -103,12 +103,13 @@ PKG_CHECK_MODULES(ENESIM, [enesim >= 0.0.1])
 PKG_CHECK_MODULES(EMAGE, [emage >= 0.0.1])
 PKG_CHECK_MODULES(ETCH, [etch >= 0.0.1])
 PKG_CHECK_MODULES([FREETYPE], [freetype2 >= 9.3.0])
+PKG_CHECK_MODULES([FONTCONFIG], [fontconfig])
 ################################################################################
 ##                               Scripting                                    ##
 ################################################################################
-## Neko 
+## Neko
 NEKO_LIBS=
-AC_CHECK_LIB(neko, val_callEx, 
+AC_CHECK_LIB(neko, val_callEx,
              [ AC_CHECK_HEADERS(neko.h neko_vm.h, have_neko="yes", have_neko="no") ],
              have_neko="yes")
 if test "x$have_neko" = "xyes"; then
@@ -171,8 +172,8 @@ fi
 AC_SUBST(requirements)
 AC_SUBST(packagesrcdir)
 
-EON_CFLAGS="$EINA_CFLAGS $EKEKO_CFLAGS $ECORE_CFLAGS $ENESIM_CFLAGS $ETCH_CFLAGS $EMAGE_CFLAGS $ESHM_CFLAGS $FREETYPE_CFLAGS"
-EON_LIBS="$EINA_LIBS $EKEKO_LIBS $ECORE_LIBS $ENESIM_LIBS $ETCH_LIBS $EMAGE_LIBS $ESHM_LIBS $FREETYPE_LIBS"
+EON_CFLAGS="$EINA_CFLAGS $EKEKO_CFLAGS $ECORE_CFLAGS $ENESIM_CFLAGS $ETCH_CFLAGS $EMAGE_CFLAGS $ESHM_CFLAGS $FREETYPE_CFLAGS $FONTCONFIG_CFLAGS"
+EON_LIBS="$EINA_LIBS $EKEKO_LIBS $ECORE_LIBS $ENESIM_LIBS $ETCH_LIBS $EMAGE_LIBS $ESHM_LIBS $FREETYPE_LIBS $FONTCONFIG_LIBS"
 AC_SUBST(EON_CFLAGS)
 AC_SUBST(EON_LIBS)
 
