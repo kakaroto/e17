@@ -26,6 +26,7 @@ typedef enum Exalt_Wireless_Network_Cypher_Name Exalt_Wireless_Network_Cypher_Na
 typedef enum Exalt_Wireless_Network_Auth_Suites Exalt_Wireless_Network_Auth_Suites;
 typedef enum Exalt_Wireless_Network_Security Exalt_Wireless_Network_Security;
 typedef enum Exalt_Wireless_Network_Mode Exalt_Wireless_Network_Mode;
+typedef enum Exalt_Wireless_Network_Eap Exalt_Wireless_Network_Eap;
 
 #include "exalt_wireless.h"
 #include "libexalt.h"
@@ -65,6 +66,12 @@ enum Exalt_Wireless_Network_Auth_Suites
     AUTH_SUITES_UNKNOWN
 };
 #define EXALT_WIRELESS_NETWORK_AUTH_SUITES_NUM 4
+
+enum Exalt_Wireless_Network_Eap
+{
+    EAP_UNKNOWN,
+    EAP_TLS
+};
 
 /**
  * @brief The list of security mode
@@ -330,6 +337,18 @@ EAPI void exalt_wireless_network_ie_auth_suites_number_set(
         int number);
 
 /**
+ * @brief Set the EAP
+ * @param ie the wpa element
+ * @param eap the new eap
+ */
+EAPI void exalt_wireless_network_ie_eap_set(
+        Exalt_Wireless_Network_IE *ie,
+        Exalt_Wireless_Network_Eap eap);
+
+
+
+
+/**
  * @brief Get the description
  * @param ie the wpa element
  * @return Returns the description
@@ -391,6 +410,16 @@ EAPI Exalt_Wireless_Network_Auth_Suites exalt_wireless_network_ie_auth_suites_ge
 EAPI int exalt_wireless_network_ie_auth_suites_number_get(
         Exalt_Wireless_Network_IE *ie);
 
+/**
+ * @brief Get the EAP
+ * @param ie the wpa element
+ * @return Returns the eap
+ */
+EAPI Exalt_Wireless_Network_Eap exalt_wireless_network_ie_eap_get(
+        Exalt_Wireless_Network_IE *ie);
+
+
+
 
 /**
  * @brief Get a string from a mode id
@@ -448,6 +477,13 @@ EAPI const char* exalt_wireless_network_name_from_auth_suites(
 EAPI const char* exalt_wireless_network_name_from_security(
         Exalt_Wireless_Network_Security security);
 
+/**
+ * @brief Get a string from an EAP
+ * @param eap the eap
+ * @return Returns a string which describes the eap
+ */
+EAPI const char* exalt_wireless_network_name_from_security(
+        Exalt_Wireless_Network_Security security);
 
 /**
  * @brief Create an eet descriptor for a wpa element

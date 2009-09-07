@@ -393,7 +393,7 @@ void eth_cb(Exalt_Ethernet* eth, Exalt_Enum_Action action, void* data)
         exalt_eth_save(CONF_FILE, eth);
 
 
-    if( action==EXALT_IFACE_ACTION_CONF_APPLY_DONE)
+    if( action==EXALT_IFACE_ACTION_CONF_APPLY_DONE || action==EXALT_IFACE_ACTION_CONF_APPLY_START)
     {
         //printf("apply DONE !!!\n");
         //save the new configuration
@@ -518,7 +518,7 @@ void wireless_scan_cb(Exalt_Ethernet* eth,Eina_List* networks, void* data)
     {
         EXALT_ASSERT_RETURN_VOID(dbus_message_iter_open_container(&args,
                     DBUS_TYPE_ARRAY,
-                    "(ssiisia(siiiaiiai))",
+                    "(ssiisia(siiiaiiaii))",
                     &iter_array));
 
         EINA_LIST_FOREACH(networks, l, wi)
@@ -596,7 +596,7 @@ void wireless_scan_cb(Exalt_Ethernet* eth,Eina_List* networks, void* data)
 
             EXALT_ASSERT_RETURN_VOID(dbus_message_iter_open_container(&iter_w,
                         DBUS_TYPE_ARRAY,
-                        "(siiiaiiai)",
+                        "(siiiaiiaii)",
                         &iter_array_ie));
 
             l_ie = exalt_wireless_network_ie_get(wi);
@@ -687,6 +687,13 @@ void wireless_scan_cb(Exalt_Ethernet* eth,Eina_List* networks, void* data)
                             dbus_message_unref(msg);return );
                 }
                 dbus_message_iter_close_container (&iter_ie,&iter_integer);
+
+                integer = exalt_wireless_network_ie_eap_get(ie);
+                EXALT_ASSERT_CUSTOM_RET(
+                        dbus_message_iter_append_basic(&iter_ie,
+                            DBUS_TYPE_INT32,
+                            &integer),
+                        dbus_message_unref(msg);return );
 
                 dbus_message_iter_close_container (&iter_array_ie,&iter_ie);
             }
@@ -825,10 +832,6 @@ DBusMessage* conf_from_dbusmessage(Exalt_Configuration* c,DBusMessage *msg,DBusM
 
         dbus_message_iter_next(&args);
         dbus_message_iter_get_basic(&args, &string);
-        exalt_conf_network_login_set(n,string);
-
-        dbus_message_iter_next(&args);
-        dbus_message_iter_get_basic(&args, &string);
         exalt_conf_network_key_set(n,string);
 
         dbus_message_iter_next(&args);
@@ -858,6 +861,22 @@ DBusMessage* conf_from_dbusmessage(Exalt_Configuration* c,DBusMessage *msg,DBusM
         dbus_message_iter_next(&args);
         dbus_message_iter_get_basic(&args, &integer);
         exalt_conf_network_auth_suites_set(n,integer);
+
+        dbus_message_iter_next(&args);
+        dbus_message_iter_get_basic(&args, &integer);
+        exalt_conf_network_eap_set(n,integer);
+
+        dbus_message_iter_next(&args);
+        dbus_message_iter_get_basic(&args, &string);
+        exalt_conf_network_ca_cert_set(n,string);
+
+        dbus_message_iter_next(&args);
+        dbus_message_iter_get_basic(&args, &string);
+        exalt_conf_network_client_cert_set(n,string);
+
+        dbus_message_iter_next(&args);
+        dbus_message_iter_get_basic(&args, &string);
+        exalt_conf_network_private_key_set(n,string);
 
         dbus_message_iter_next(&args);
         dbus_message_iter_get_basic(&args, &integer);

@@ -90,14 +90,6 @@ int exalt_dbus_conf_encaps(Exalt_Configuration* c, DBusMessage *msg)
                     &integer),
                 dbus_message_unref(msg);return 0);
 
-        string = exalt_conf_network_login_get(n);
-        if(!string)
-            string="";
-        EXALT_ASSERT_CUSTOM_RET(
-                dbus_message_iter_append_basic(&args,
-                    DBUS_TYPE_STRING, &string),
-                dbus_message_unref(msg); return 0);
-
         string = exalt_conf_network_key_get(n);
         if(!string)
             string="";
@@ -154,6 +146,37 @@ int exalt_dbus_conf_encaps(Exalt_Configuration* c, DBusMessage *msg)
                 dbus_message_iter_append_basic(&args,
                     DBUS_TYPE_INT32,
                     &integer),
+                dbus_message_unref(msg);return 0);
+
+        integer = exalt_conf_network_eap_get(n);
+        EXALT_ASSERT_CUSTOM_RET(
+                dbus_message_iter_append_basic(&args,
+                    DBUS_TYPE_INT32,
+                    &integer),
+                dbus_message_unref(msg);return 0);
+
+        string = exalt_conf_network_ca_cert_get(n);
+        if(!string) string ="";
+        EXALT_ASSERT_CUSTOM_RET(
+                dbus_message_iter_append_basic(&args,
+                    DBUS_TYPE_STRING,
+                    &string),
+                dbus_message_unref(msg);return 0);
+
+        string = exalt_conf_network_client_cert_get(n);
+        if(!string) string="";
+        EXALT_ASSERT_CUSTOM_RET(
+                dbus_message_iter_append_basic(&args,
+                    DBUS_TYPE_STRING,
+                    &string),
+                dbus_message_unref(msg);return 0);
+
+        string = exalt_conf_network_private_key_get(n);
+        if(!string) string ="";
+        EXALT_ASSERT_CUSTOM_RET(
+                dbus_message_iter_append_basic(&args,
+                    DBUS_TYPE_STRING,
+                    &string),
                 dbus_message_unref(msg);return 0);
 
         integer = exalt_conf_network_favoris_is(n);
@@ -214,12 +237,6 @@ void _exalt_dbus_scan_notify(void *data, DBusMessage *msg)
             exalt_dbus_error_get_id(msg),
             exalt_dbus_error_get_msg(msg));
 
-    /*
-     * the first argument is the interface name
-     * next we have an array of array
-     * the second array contains all information
-     * about a network (essid, quality ..)
-     */
     EXALT_STRDUP(eth,exalt_dbus_response_string(msg,1));
 
     dbus_message_iter_init(msg, &iter);
@@ -322,6 +339,11 @@ void _exalt_dbus_scan_notify(void *data, DBusMessage *msg)
                     exalt_wireless_network_ie_auth_suites_set(ie,integer,i);
                     dbus_message_iter_next(&iter_integer);
                 }
+
+                dbus_message_iter_next(&iter_ie);
+                dbus_message_iter_get_basic(&iter_ie, &integer);
+                exalt_wireless_network_ie_eap_set(ie,integer);
+
                 dbus_message_iter_next(&iter_ie_array);
             }
 

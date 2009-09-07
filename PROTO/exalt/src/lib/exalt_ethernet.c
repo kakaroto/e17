@@ -1140,7 +1140,6 @@ int _exalt_eth_apply_static(Exalt_Ethernet *eth)
     strncpy(ifr.ifr_name,exalt_eth_name_get(eth),sizeof(ifr.ifr_name));
 
     //apply the ip
-    printf("APPLY IP: %s\n",exalt_conf_ip_get(c));
     sin.sin_addr.s_addr = inet_addr (exalt_conf_ip_get(c));
     ifr.ifr_addr = *(struct sockaddr *) &sin;
     if( !exalt_ioctl(&ifr, SIOCSIFADDR) )

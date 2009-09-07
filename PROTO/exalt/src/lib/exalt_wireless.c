@@ -329,6 +329,48 @@ int exalt_wireless_conf_apply(Exalt_Wireless *w)
         exalt_wpa_ctrl_command(ctrl_conn,buf_cmd,buf_res,buf_len);
         //
 
+
+        if(exalt_conf_network_auth_suites_get(n) == AUTH_SUITES_EAP)
+        {
+            //
+            switch(exalt_conf_network_eap_get(n))
+            {
+                case EAP_TLS: s = "TLS"; break;
+                case EAP_UNKNOWN: EXALT_LOG_WARN("EAP_UNKNOWN"); break;
+            }
+
+            buf_len=sizeof(buf_res)-1;
+            snprintf(buf_cmd,1024,"SET_NETWORK %d eap %s",
+                    network_id,
+                    s);
+            exalt_wpa_ctrl_command(ctrl_conn,buf_cmd,buf_res,buf_len);
+            //
+
+            buf_len=sizeof(buf_res)-1;
+            snprintf(buf_cmd,1024,"SET_NETWORK %d ca_cert %s",
+                    network_id,
+                    exalt_conf_network_ca_cert_get(n));
+            exalt_wpa_ctrl_command(ctrl_conn,buf_cmd,buf_res,buf_len);
+
+            buf_len=sizeof(buf_res)-1;
+            snprintf(buf_cmd,1024,"SET_NETWORK %d client_cert %s",
+                    network_id,
+                    exalt_conf_network_client_cert_get(n));
+            exalt_wpa_ctrl_command(ctrl_conn,buf_cmd,buf_res,buf_len);
+
+            buf_len=sizeof(buf_res)-1;
+            snprintf(buf_cmd,1024,"SET_NETWORK %d private_key %s",
+                    network_id,
+                    exalt_conf_network_private_key_get(n));
+            exalt_wpa_ctrl_command(ctrl_conn,buf_cmd,buf_res,buf_len);
+
+            buf_len=sizeof(buf_res)-1;
+            snprintf(buf_cmd,1024,"SET_NETWORK %d private_key_passwd %s",
+                    network_id,
+                    exalt_conf_network_key_get(n));
+            exalt_wpa_ctrl_command(ctrl_conn,buf_cmd,buf_res,buf_len);
+        }
+
         //
         switch(exalt_conf_network_group_cypher_get(n))
         {
@@ -337,6 +379,7 @@ int exalt_wireless_conf_apply(Exalt_Wireless *w)
             case CYPHER_NAME_UNKNOWN: EXALT_LOG_WARN("CYPHER_NAME_UNKNOWN"); break;
             case CYPHER_NAME_NONE: EXALT_LOG_WARN("CYPHER_NAME_NONE"); break;
         }
+
         buf_len=sizeof(buf_res)-1;
         snprintf(buf_cmd,1024,"SET_NETWORK %d group %s",
                 network_id,
@@ -559,7 +602,6 @@ int _exalt_wireless_scan(Exalt_Wireless *w)
     char buf[100000];
     size_t buf_len;
     Exalt_Wireless_Network *n;
-    Eina_List *l, *l_next;
 
     memcpy(buf,"\0",sizeof("\0"));
 
@@ -567,11 +609,10 @@ int _exalt_wireless_scan(Exalt_Wireless *w)
 
     _exalt_wireless_wpa_connect(w);
 
-    EINA_LIST_FOREACH_SAFE(w->networks,l,l_next,n);
+    EINA_LIST_FREE(w->networks,n);
     {
         if(n)
             exalt_wireless_network_free(&n);
-        w->networks = eina_list_remove_list(w->networks, l);
     }
 
 
@@ -580,6 +621,29 @@ int _exalt_wireless_scan(Exalt_Wireless *w)
 
     w->networks = exalt_wpa_parse_scan_results(w->monitor,buf,w);
 
+    //TODO: Code used to add a custom networks to do some tests  !!!!
+    /*Exalt_Wireless_Network *_n = exalt_wireless_network_new(w);
+    exalt_wireless_network_address_set(_n, "TEST MAC ADDRESS");
+    exalt_wireless_network_essid_set(_n, "Network used to do some tests");
+    exalt_wireless_network_encryption_set(_n, 1);
+    exalt_wireless_network_description_set(_n,"EAP tests");
+    exalt_wireless_network_quality_set(_n, 87);
+    exalt_wireless_network_mode_set(_n, MODE_INFRASTRUCTURE);
+
+    Exalt_Wireless_Network_IE *ie = exalt_wireless_network_ie_new();
+    Eina_List *l_ie = eina_list_append(NULL, ie);
+    exalt_wireless_network_ie_set(_n, l_ie);
+    exalt_wireless_network_ie_description_set(ie, "EAP test network");
+    exalt_wireless_network_ie_wpa_type_set(ie, WPA_TYPE_WPA);
+    exalt_wireless_network_ie_group_cypher_set(ie, CYPHER_NAME_TKIP);
+    exalt_wireless_network_ie_pairwise_cypher_set(ie, CYPHER_NAME_TKIP, 0);
+    exalt_wireless_network_ie_pairwise_cypher_number_set(ie, 1);
+    exalt_wireless_network_ie_auth_suites_set(ie, AUTH_SUITES_EAP, 0);
+    exalt_wireless_network_ie_auth_suites_number_set(ie, 1);
+    exalt_wireless_network_ie_eap_set(ie, EAP_TLS);
+
+    w->networks = eina_list_append(w->networks, _n);
+    */
     //printf("# SCAN RESULT %d\n",eina_list_count(w->networks));
 
     w->scanning = 0;

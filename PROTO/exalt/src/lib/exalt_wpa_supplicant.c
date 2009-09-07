@@ -315,7 +315,6 @@ void exalt_wpa_parse_flag(char* buf, Exalt_Wireless_Network_IE *ie)
             p_end++;
         }
         p_end[0]='\0';
-        //printf("HAHA %d %s\n",param_id,p);
         if(param_id==0 && strcmp(p,"WPA")==0)
         {
             exalt_wireless_network_ie_wpa_type_set(ie,WPA_TYPE_WPA);
@@ -351,6 +350,10 @@ void exalt_wpa_parse_flag(char* buf, Exalt_Wireless_Network_IE *ie)
         {
             exalt_wireless_network_ie_pairwise_cypher_set(ie,CYPHER_NAME_CCMP,0);
             exalt_wireless_network_ie_pairwise_cypher_number_set(ie,1);
+        }
+        else if(param_id==2 && strcmp(p,"TLS")==0)
+        {
+            exalt_wireless_network_ie_eap_set(ie,EAP_TLS);
         }
         param_id++;
         //jump -

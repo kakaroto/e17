@@ -12,7 +12,7 @@ typedef struct Exalt_Wireless_Network_Security_List Exalt_Wireless_Network_Secur
 typedef struct Exalt_Wireless_Network_Auth_Suites_List Exalt_Wireless_Network_Auth_Suites_List;
 typedef struct Exalt_Wireless_Network_Wpa_Type_List Exalt_Wireless_Network_Wpa_Type_List;
 typedef struct Exalt_Wireless_Network_Cypher_Name_List Exalt_Wireless_Network_Cypher_Name_List;
-
+typedef struct Exalt_Wireless_Network_Eap_List Exalt_Wireless_Network_Eap_List;
 
 struct Exalt_Wireless_Network
 {
@@ -44,6 +44,8 @@ struct Exalt_Wireless_Network_IE
     Exalt_Wireless_Network_Auth_Suites
         auth_suites[EXALT_WIRELESS_NETWORK_AUTH_SUITES_NUM];
     int auth_suites_number;
+
+    Exalt_Wireless_Network_Eap eap;
 };
 
 struct Exalt_Wireless_Network_Mode_List
@@ -74,6 +76,12 @@ struct Exalt_Wireless_Network_Wpa_Type_List
 struct Exalt_Wireless_Network_Cypher_Name_List
 {
     Exalt_Wireless_Network_Cypher_Name cypher_name;
+    char* name;
+};
+
+struct Exalt_Wireless_Network_Eap_List
+{
+    Exalt_Wireless_Network_Eap eap;
     char* name;
 };
 
@@ -112,7 +120,13 @@ Exalt_Wireless_Network_Wpa_Type_List exalt_wireless_network_wpa_type_tab[]=
 {
     {WPA_TYPE_UNKNOWN,"unknown"},
     {WPA_TYPE_WPA,"WPA"},
-    {WPA_TYPE_WPA2,"WPA2"}
+    {WPA_TYPE_WPA2,"WPA2"},
+};
+
+Exalt_Wireless_Network_Eap_List exalt_wireless_network_eap_tab[]=
+{
+    {EAP_UNKNOWN,"unknown"},
+    {EAP_TLS,"TLS"}
 };
 
 /**
@@ -264,6 +278,7 @@ EXALT_TAB_SET(pairwise_cypher,Exalt_Wireless_Network_Cypher_Name)
 EXALT_SET(pairwise_cypher_number,int)
 EXALT_TAB_SET(auth_suites,Exalt_Wireless_Network_Auth_Suites)
 EXALT_SET(auth_suites_number,int)
+EXALT_SET(eap, Exalt_Wireless_Network_Eap)
 
 EXALT_GET(description,const char*)
 EXALT_GET(wpa_type,Exalt_Wireless_Network_Wpa_Type)
@@ -272,6 +287,7 @@ EXALT_TAB_GET(pairwise_cypher,Exalt_Wireless_Network_Cypher_Name)
 EXALT_GET(pairwise_cypher_number,int)
 EXALT_TAB_GET(auth_suites,Exalt_Wireless_Network_Auth_Suites)
 EXALT_GET(auth_suites_number,int)
+EXALT_GET(eap,Exalt_Wireless_Network_Eap)
 
 #undef EXALT_FCT_NAME
 #undef EXALT_STRUCT_TYPE
@@ -355,6 +371,18 @@ const char* exalt_wireless_network_name_from_security(
 
     return exalt_wireless_network_name_from_security(SECURITY_NONE);
 }
+
+const char* exalt_wireless_network_name_from_eap(
+        Exalt_Wireless_Network_Eap eap)
+{
+    int i;
+    for(i = 0; i < sizeof(exalt_wireless_network_eap_tab) / sizeof(Exalt_Wireless_Network_Eap_List);i++)
+        if(exalt_wireless_network_eap_tab[i].eap == eap)
+            return exalt_wireless_network_eap_tab[i].name;
+
+    return exalt_wireless_network_name_from_eap(EAP_UNKNOWN);
+}
+
 
 /** @} */
 

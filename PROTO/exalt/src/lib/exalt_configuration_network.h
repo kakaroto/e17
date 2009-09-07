@@ -55,6 +55,7 @@ EAPI void exalt_conf_network_mode_set(Exalt_Configuration_Network *cn, Exalt_Wir
  * @brief Set the key
  * @param cn the network configuration
  * @param essid the new encryption key
+ * @note In the case of the auth suite is WPA-EAP, the key is used as the private key password for the certificate
  */
 EAPI void exalt_conf_network_key_set(Exalt_Configuration_Network *cn, const char* key);
 /**
@@ -122,8 +123,34 @@ EAPI void exalt_conf_network_pairwise_cypher_set(Exalt_Configuration_Network *cn
  * @note Used only if the encryption is WPA or WPA2
  */
 EAPI void exalt_conf_network_auth_suites_set(Exalt_Configuration_Network *cn, Exalt_Wireless_Network_Auth_Suites auth_suites);
-
-
+/**
+ * @brief Set the eap
+ * @param cn the network configuration
+ * @param eap the new eap
+ * @note Used only if the encryption is WPA or WPA2  and the auth suite is WPA-EAP
+ */
+EAPI void exalt_conf_network_eap_set(Exalt_Configuration_Network *cn, Exalt_Wireless_Network_Eap eap);
+/**
+ * @brief Set the ca certificate
+ * @param cn the network configuration
+ * @param cert the new certificate
+ * @note Used only if the encryption is WPA or WPA2  and the auth suite is WPA-EAP
+ */
+EAPI void exalt_conf_network_ca_cert_set(Exalt_Configuration_Network *cn, const char *cert);
+/**
+ * @brief Set the client certificate
+ * @param cn the network configuration
+ * @param cert the new certificate
+ * @note Used only if the encryption is WPA or WPA2  and the auth suite is WPA-EAP
+ */
+EAPI void exalt_conf_network_client_cert_set(Exalt_Configuration_Network *cn, const char *cert);
+/**
+ * @brief Set the private key file
+ * @param cn the network configuration
+ * @param key the private key
+ * @note Used only if the encryption is WPA or WPA2  and the auth suite is WPA-EAP
+ */
+EAPI void exalt_conf_network_private_key_set(Exalt_Configuration_Network *cn, const char *key);
 
 
 
@@ -223,6 +250,36 @@ EAPI Exalt_Wireless_Network_Cypher_Name exalt_conf_network_group_cypher_get(Exal
  * @note Used only if the encryption is WPA or WPA2
  */
 EAPI Exalt_Wireless_Network_Cypher_Name exalt_conf_network_pairwise_cypher_get(Exalt_Configuration_Network* cn);
+/**
+ * @brief Get the eap
+ * @param cn the network configuration
+ * @return Returns the eap
+ * @note Used only if the encryption is WPA or WPA2 and the auth suite is WPA-EAP
+ */
+EAPI Exalt_Wireless_Network_Eap exalt_conf_network_eap_get(Exalt_Configuration_Network* cn);
+/**
+ * @brief Get the ca certificate
+ * @param cn the network configuration
+ * @return Returns the ca certificate
+ * @note Used only if the encryption is WPA or WPA2 and the auth suite is WPA-EAP
+ */
+EAPI const char* exalt_conf_network_ca_cert_get(Exalt_Configuration_Network* cn);
+/**
+ * @brief Get the client certificate
+ * @param cn the network configuration
+ * @return Returns the client certificate
+ * @note Used only if the encryption is WPA or WPA2 and the auth suite is WPA-EAP
+ */
+EAPI const char* exalt_conf_network_client_cert_get(Exalt_Configuration_Network* cn);
+/**
+ * @brief Get private key
+ * @param cn the network configuration
+ * @return Returns the private key
+ * @note Used only if the encryption is WPA or WPA2 and the auth suite is WPA-EAP
+ */
+EAPI const char* exalt_conf_network_private_key_get(Exalt_Configuration_Network* cn);
+
+
 
 /**
  * @brief Get the authentication suites

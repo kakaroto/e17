@@ -90,11 +90,6 @@ DBusMessage * dbus_cb_network_configuration_get(E_DBus_Object *obj __UNUSED__, D
     EXALT_ASSERT_CUSTOM_RET(dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &string),
             return reply);
 
-    string = exalt_conf_network_login_get(cn);
-    if(!string) string = "";
-    EXALT_ASSERT_CUSTOM_RET(dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &string),
-            return reply);
-
     integer = exalt_conf_network_wep_is(cn);
     EXALT_ASSERT_CUSTOM_RET(dbus_message_iter_append_basic(&args, DBUS_TYPE_INT32, &integer),
             return reply);
@@ -121,6 +116,25 @@ DBusMessage * dbus_cb_network_configuration_get(E_DBus_Object *obj __UNUSED__, D
 
     integer = exalt_conf_network_auth_suites_get(cn);
     EXALT_ASSERT_CUSTOM_RET(dbus_message_iter_append_basic(&args, DBUS_TYPE_INT32, &integer),
+            return reply);
+
+    integer = exalt_conf_network_eap_get(cn);
+    EXALT_ASSERT_CUSTOM_RET(dbus_message_iter_append_basic(&args, DBUS_TYPE_INT32, &integer),
+            return reply);
+
+    string = exalt_conf_network_ca_cert_get(cn);
+    if(!string) string = "";
+    EXALT_ASSERT_CUSTOM_RET(dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &string),
+            return reply);
+
+    string = exalt_conf_network_client_cert_get(cn);
+    if(!string) string = "";
+    EXALT_ASSERT_CUSTOM_RET(dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &string),
+            return reply);
+
+    string = exalt_conf_network_private_key_get(cn);
+    if(!string) string = "";
+    EXALT_ASSERT_CUSTOM_RET(dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &string),
             return reply);
 
     integer = exalt_conf_network_favoris_is(cn);

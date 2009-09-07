@@ -186,7 +186,6 @@ static void _exalt_dbus_network_configuration_get_cb(void *data, DBusMessage *ms
         exalt_conf_network_encryption_set(cn, exalt_dbus_response_integer(msg, ++i));
         exalt_conf_network_mode_set(cn, exalt_dbus_response_integer(msg, ++i));
         exalt_conf_network_key_set(cn, exalt_dbus_response_string(msg, ++i));
-        exalt_conf_network_login_set(cn, exalt_dbus_response_string(msg, ++i));
 
         exalt_conf_network_wep_set(cn, exalt_dbus_response_integer(msg, ++i));
         exalt_conf_network_wep_hexa_set(cn, exalt_dbus_response_integer(msg, ++i));
@@ -196,6 +195,10 @@ static void _exalt_dbus_network_configuration_get_cb(void *data, DBusMessage *ms
         exalt_conf_network_group_cypher_set(cn, exalt_dbus_response_integer(msg, ++i));
         exalt_conf_network_pairwise_cypher_set(cn, exalt_dbus_response_integer(msg, ++i));
         exalt_conf_network_auth_suites_set(cn, exalt_dbus_response_integer(msg, ++i));
+        exalt_conf_network_eap_set(cn, exalt_dbus_response_integer(msg, ++i));
+        exalt_conf_network_ca_cert_set(cn, exalt_dbus_response_string(msg, ++i));
+        exalt_conf_network_client_cert_set(cn, exalt_dbus_response_string(msg, ++i));
+        exalt_conf_network_private_key_set(cn, exalt_dbus_response_string(msg, ++i));
 
         exalt_conf_network_favoris_set(cn, exalt_dbus_response_integer(msg, ++i));
         exalt_conf_network_save_when_apply_set(cn, exalt_dbus_response_integer(msg, ++i));

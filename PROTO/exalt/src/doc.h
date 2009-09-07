@@ -48,15 +48,25 @@
  * @li Exalt : A low level library for managing the list of interfaces (list the interfaces, set a configuration, get the current configuration, save the configuration ...)
  * @li Exalt_DBus : A high level library that hide the DBus API of the daemon.
  *
- * The daemon provides an DBus API to the clients. The aims of the daemon are :
+ * The daemon provides a DBus API to the clients. The aims of the daemon are :
  * @li Gives an easy way to an application for managing the network interfaces. The application does not need to be run as root as the commands will be execute by the daemon, that's means all users can manage the interfaces.
  * @li Manages the comportment of an interface. If an interface is linked, apply the last known configuration for example.
  * @li informs the clients when an event occurs. For example if an interface is unlinked.
+ *
+ *
+ * Currently Exalt is compatible :
+ * @li classic wired ethernet interface
+ * @li WEP with an hexadecimal or a ascii key
+ * @li WPA1 or WPA2 personnal
+ * @li WPA1 or WPA2 enterprise TLS. This configuration has not been tested because I don't have the hardware. If you have some problems, can test it ... Please contact me.
  *
  * @section exalt_global_archi Architecture
  *
  * @image html "../archi.png" "Architecture of Exalt"
  *
+ * @section exalt_contact Contact
+ *
+ * Jonathan Atton alias Watchwolf <jonathan[dot]atton[at]gmail[dot]com>
  */
 
 /**
