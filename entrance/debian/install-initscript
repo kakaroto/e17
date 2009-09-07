@@ -35,12 +35,12 @@ case "$1" in
 		     "manager" >& 2
 		exit 0
 	fi
-	start-stop-daemon --start --verbose --pidfile "$PIDFILE" \
+	start-stop-daemon --start --verbose -m --pidfile "$PIDFILE" \
         		--exec "$DAEMON"
 	;;
 
  	stop)
-	start-stop-daemon --stop --verbose --pidfile "$PIDFILE" \
+	start-stop-daemon --stop --verbose -m --pidfile "$PIDFILE" \
         		--exec "$DAEMON"
 	rm -f "$PIDFILE"
 	;;
@@ -61,7 +61,7 @@ case "$1" in
  	status)
 	[ ! -f "$PIDFILE" ] && exit 3
 	if [ start-stop-daemon --status --verbose --signal \
-	     --pidfile "$PIDFILE" --exec "$DAEMON" ]; then
+	     -m --pidfile "$PIDFILE" --exec "$DAEMON" ]; then
 		exit 1
 	fi
 	;;
