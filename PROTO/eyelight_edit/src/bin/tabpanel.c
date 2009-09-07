@@ -5,7 +5,7 @@
 static void _tb_presentation(void *data, Evas_Object *obj, void *event_info);
 static void _tb_slidelist(void *data, Evas_Object *obj, void *event_info);
 
-Evas_Object *_pager;
+static Evas_Object *_pager;
 
 Evas_Object *tabpanel_create()
 {

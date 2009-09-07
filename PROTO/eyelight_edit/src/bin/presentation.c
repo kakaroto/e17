@@ -27,9 +27,11 @@ static void _scroll_move_resize_cb(void *data, Evas *e, Evas_Object *obj, void *
 static void _pres_move_resize_cb(void *data, Evas *e, Evas_Object *obj, void *event_info);
 static void _thumb_done_cb(Eyelight_Viewer *pres, int id_slide, Eyelight_Thumb* thumb, void* user_data);
 
-Evas_Object *_pres_shadow = NULL;
-Evas_Object *_pres_rect;
-Evas_Object *_pres_vbox;
+static Evas_Object *_pres_shadow = NULL;
+static Evas_Object *_pres_rect;
+static Evas_Object *_pres_clip;
+static Evas_Object *_pres_vbox;
+static Evas_Object *_pres_scroll;
 
 Evas_Object *presentation_create()
 {
@@ -48,11 +50,12 @@ Evas_Object *presentation_create()
     elm_scroller_content_min_limit(sc, 0, 0);
     evas_object_size_hint_weight_set(sc, 1.0, 1.0);
     evas_object_size_hint_align_set(sc, -1.0, -1.0);
-    elm_scroller_policy_set(sc, ELM_SCROLLER_POLICY_ON, ELM_SCROLLER_POLICY_ON);
+    elm_scroller_policy_set(sc, ELM_SCROLLER_POLICY_AUTO, ELM_SCROLLER_POLICY_AUTO);
     evas_object_show(sc);
 
     //the slider which zoom the presentation
     sl = elm_slider_add(win);
+    _pres_scroll = sc;
     elm_slider_label_set(sl, "Zoom");
     elm_slider_span_size_set(sl, 80);
     elm_slider_indicator_format_set(sl, "%3.0f");
@@ -75,12 +78,16 @@ Evas_Object *presentation_create()
     evas_object_event_callback_add(_pres_rect, EVAS_CALLBACK_MOUSE_WHEEL, _scroll_mouse_wheel_cb, sl);
     evas_object_event_callback_add(_pres_rect, EVAS_CALLBACK_KEY_DOWN, _scroll_key_down_cb, NULL);
 
-        //TODO: free cpl
-    Evas_Object_Couple *cpl = calloc(1,sizeof(Evas_Object_Couple));
-    cpl->left = sc;
-    cpl->right = _pres_rect;
-    evas_object_event_callback_add(sc, EVAS_CALLBACK_RESIZE, _scroll_move_resize_cb, cpl);
-    evas_object_event_callback_add(sc, EVAS_CALLBACK_MOVE, _scroll_move_resize_cb, cpl);
+    evas_object_event_callback_add(sc, EVAS_CALLBACK_RESIZE, _scroll_move_resize_cb, sc);
+    evas_object_event_callback_add(sc, EVAS_CALLBACK_MOVE, _scroll_move_resize_cb, sc);
+    //
+
+    //rectangle on top of the scroll which retrieves the mouse wheel  and keys events
+    _pres_clip = evas_object_rectangle_add(evas_object_evas_get(win));
+    evas_object_repeat_events_set(_pres_clip,1);
+    evas_object_show(_pres_clip);
+    evas_object_smart_member_add(_pres_clip, sc);
+    evas_object_raise(_pres_clip);
     //
 
     //the presentation
@@ -93,6 +100,8 @@ Evas_Object *presentation_create()
 
     pres = eyelight_object_add(evas_object_evas_get(win));
     eyelight_viewer_thumbnails_done_cb_set(eyelight_object_pres_get(pres), _thumb_done_cb, NULL);
+    eyelight_viewer_slide_change_cb_set(eyelight_object_pres_get(pres), utils_slide_change_cb, NULL);
+    eyelight_edit_edit_mode_set(eyelight_object_pres_get(pres), utils_edit_cb, NULL);
     eyelight_object_event_set(pres,1);
     evas_object_size_hint_min_set(pres, 1024/2,768/2);
     evas_object_size_hint_max_set(pres, 1024/2,768/2);
@@ -101,6 +110,7 @@ Evas_Object *presentation_create()
     evas_object_event_callback_add(pres, EVAS_CALLBACK_MOVE, _pres_move_resize_cb, pres);
     evas_object_show(pres);
     elm_box_pack_end(box, pres);
+    //elm_scroller_content_set(sc, pres);
     //
 
     //shadow
@@ -111,8 +121,9 @@ Evas_Object *presentation_create()
     evas_object_move(_pres_shadow,x,y);
     evas_object_resize(_pres_shadow,w,h);
     evas_object_show(_pres_shadow);
+    evas_object_smart_member_add(_pres_shadow, pres);
     evas_object_lower(_pres_shadow);
-    evas_object_clip_set(_pres_shadow, box);
+    evas_object_clip_set(_pres_shadow, _pres_clip);
     evas_object_repeat_events_set(_pres_shadow,1);
     //
 
@@ -171,12 +182,15 @@ static void _pres_move_resize_cb(void *data, Evas *e, Evas_Object *obj, void *ev
 
 static void _scroll_move_resize_cb(void *data, Evas *e, Evas_Object *obj, void *event_info)
 {
-    Evas_Object_Couple *cpl = (Evas_Object_Couple*) data;
+    Evas_Object *sc = (Evas_Object*) data;
     int x,y,w,h;
 
-    evas_object_geometry_get(cpl->left,&x,&y,&w,&h);
-    evas_object_resize(cpl->right,w,h);
-    evas_object_move(cpl->right,x,y);
+    evas_object_geometry_get(sc,&x,&y,&w,&h);
+    evas_object_resize(_pres_rect,w,h);
+    evas_object_move(_pres_rect,x,y);
+
+    evas_object_resize(_pres_clip,w,h);
+    evas_object_move(_pres_clip,x,y);
 }
 
 static void _scroll_key_down_cb(void *data, Evas *e, Evas_Object *obj, void *event_info)
@@ -206,3 +220,12 @@ static void _scroll_mouse_wheel_cb(void *data, Evas *e, Evas_Object *obj, void *
     elm_slider_value_set(sl,value);
     presentation_resize(1024*(value/100),768*(value/100));
 }
+
+void presentation_thumbscroll_set(int thumbscroll)
+{
+    if(!thumbscroll)
+        elm_widget_scroll_hold_push(_pres_vbox);
+    else
+        elm_widget_scroll_hold_pop(_pres_vbox);
+}
+

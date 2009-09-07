@@ -62,16 +62,33 @@ struct list_item {
     //used by slides_list
     Elm_Genlist_Item *item;
     Evas_Object *icon;
+    int *icon_data;
 
     //used by slides_grid;
     Evas_Object *grid_icon;
+    int *grid_icon_data;
 };
 
 extern Eina_List *l_slides;
 
+//edit
 void utils_slide_insert(List_Item *item_prev);
 void utils_slide_delete(List_Item *item);
 void utils_slide_move(int id_slide, int id_after);
+void utils_edit_cb(void *data, Evas_Object *o, const char *emission, const char *source);
+void utils_edit_area_up(void *data, Evas_Object *obj, void *event_info);
+void utils_edit_area_down(void *data, Evas_Object *obj, void *event_info);
+void utils_obj_unselect();
+void utils_slide_change_cb(Eyelight_Viewer *pres, int old_slide, int new_slide, void *data);
+void utils_edit_area_add(void *data, Evas_Object *obj, void *event_info);
+void utils_edit_area_delete(void *data, Evas_Object *obj, void *event_info);
+void utils_edit_area_image_add(void *data, Evas_Object *obj, void *event_info);
+void utils_edit_image_file_change(void *data, Evas_Object *obj, void *event_info);
+void utils_edit_image_border_change(void *data, Evas_Object *obj, void *event_info);
+void utils_edit_image_shadow_change(void *data, Evas_Object *obj, void *event_info);
+char *utils_file_move_in_pres(const char *file);
+//
+
 
 Evas_Object *toolbar_create();
 
@@ -83,5 +100,12 @@ Evas_Object *slideshow_create();
 Evas_Object *tabpanel_create();
 
 void slide_menu_show(List_Item *item, int x, int y);
+
+Evas_Object *rightpanel_create();
+void rightpanel_area_show();
+void rightpanel_empty_show();
+void rightpanel_image_show();
+void rightpanel_image_data_set(const char* file, int border, int shadow);
+
 #endif   /* ----- #ifndef MAIN_INC  ----- */
 

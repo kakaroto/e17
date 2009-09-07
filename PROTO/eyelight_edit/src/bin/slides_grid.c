@@ -3,8 +3,8 @@
 
 #define SLIDER_ZOOM_MAX 0.5
 
-Evas_Object *grid = NULL;
-Evas_Object *_sc_rect;
+static Evas_Object *grid = NULL;
+static Evas_Object *_sc_rect;
 
 static void _slider_zoom_cb(void *data, Evas_Object *obj, void *event_info);
 static void _grid_region_cb(Evas_Object *obj, int *x, int *y, int *w, int *h, void *data);
@@ -104,7 +104,9 @@ void slides_grid_update()
         {
             int w = item->thumb->w;
             int h = item->thumb->h;
+            if(item->grid_icon_data) free(item->grid_icon_data);
             int *image = calloc(w*h, sizeof(int));
+            item->grid_icon_data = image;
             memcpy(image, item->thumb->thumb, sizeof(int)*w*h);
 
             const Evas_Object *o_image = edje_object_part_object_get(o, "object.icon");
@@ -133,7 +135,9 @@ void slides_grid_append_relative(List_Item *item, List_Item *previous)
     {
         int w = item->thumb->w;
         int h = item->thumb->h;
+        if(item->grid_icon_data) free(item->grid_icon_data);
         int *image = calloc(w*h, sizeof(int));
+        item->grid_icon_data = image;
         memcpy(image, item->thumb->thumb, sizeof(int)*w*h);
 
         const Evas_Object *o_image = edje_object_part_object_get(o, "object.icon");
@@ -172,7 +176,9 @@ void slides_grid_thumb_done_cb(int id_slide)
     {
         int w = item->thumb->w;
         int h = item->thumb->h;
+        if(item->grid_icon_data) free(item->grid_icon_data);
         int *image = calloc(w*h, sizeof(int));
+        item->grid_icon_data = image;
         memcpy(image, item->thumb->thumb, sizeof(int)*w*h);
 
         const Evas_Object *o_image = edje_object_part_object_get(o, "object.icon");

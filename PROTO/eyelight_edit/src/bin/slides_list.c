@@ -22,19 +22,18 @@
 #include "../../config.h"
 
 
-char *_slides_list_label_get(const void *data, Evas_Object *obj, const char *part);
-Evas_Object *_slides_list_icon_get(const void *data, Evas_Object *obj, const char *part);
+static char *_slides_list_label_get(const void *data, Evas_Object *obj, const char *part);
+static Evas_Object *_slides_list_icon_get(const void *data, Evas_Object *obj, const char *part);
 static Eina_Bool _slides_list_state_get(const void *data, Evas_Object *obj, const char *part);
 static void _slides_list_del(const void *data, Evas_Object *obj);
 static void _slides_list_sel(void *data, Evas_Object *obj, void *event_info);
-int _thumbnails_load_idle(void *data);
 static void _slider_zoom_cb(void *data, Evas_Object *obj, void *event_info);
 static void _slide_add_cb(void *data, Evas_Object *obj, void *event_info);
 static void _item_menu_cb(void *data, Evas_Object *o, const char *emission, const char *source);
 
-Elm_Genlist_Item_Class itc_slides;
-Evas_Object *slides_list;
-Evas_Object *_sl = NULL;
+static Elm_Genlist_Item_Class itc_slides;
+static Evas_Object *slides_list;
+static Evas_Object *_sl = NULL;
 
 #define SLIDER_ZOOM_MAX 0.2
 
@@ -115,7 +114,7 @@ void slides_list_update()
     }
 }
 
-char *_slides_list_label_get(const void *data, Evas_Object *obj, const char *part)
+static char *_slides_list_label_get(const void *data, Evas_Object *obj, const char *part)
 {
     Eina_List *l;
     List_Item *l_item;
@@ -136,7 +135,7 @@ char *_slides_list_label_get(const void *data, Evas_Object *obj, const char *par
     return strdup(title);
 }
 
-Evas_Object *_slides_list_icon_get(const void *data, Evas_Object *obj, const char *part)
+static Evas_Object *_slides_list_icon_get(const void *data, Evas_Object *obj, const char *part)
 {
     List_Item *item = (List_Item*) data;
     char buf[PATH_MAX];
@@ -163,7 +162,9 @@ Evas_Object *_slides_list_icon_get(const void *data, Evas_Object *obj, const cha
     {
         int w = item->thumb->w;
         int h = item->thumb->h;
+        if(item->icon_data) free(item->icon_data);
         int *image = calloc(w*h, sizeof(int));
+        item->icon_data = image;
         memcpy(image, item->thumb->thumb, sizeof(int)*w*h);
 
         const Evas_Object *o_image = edje_object_part_object_get(o, "object.icon");

@@ -1,9 +1,9 @@
 
 #include "main.h"
 
-Evas_Object *hover = NULL;
-Evas_Object *icon_hover_placement = NULL;
-Evas_Object *icon = NULL;
+static Evas_Object *hover = NULL;
+static Evas_Object *icon_hover_placement = NULL;
+static Evas_Object *icon = NULL;
 
 static void _delete_cb(void *data, Evas_Object *obj, void *event_info);
 static void _insert_before_cb(void *data, Evas_Object *obj, void *event_info);

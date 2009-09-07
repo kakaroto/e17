@@ -22,6 +22,7 @@
 #include "main.h"
 
 Evas_Object *presentation_create();
+void presentation_thumbscroll_set(int thumbscroll);
 
 #endif   /* ----- #ifndef PRESENTATION_INC  ----- */
 

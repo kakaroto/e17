@@ -63,6 +63,7 @@ static void _pres_fileselector_done(void *data, Evas_Object *obj, void *event_in
 
    if (selected)
    {
+       utils_obj_unselect();
        eyelight_object_presentation_file_set(pres,selected);
        eyelight_object_thumbnails_size_set(pres, 1024/2, 768/2);
        slides_list_update();

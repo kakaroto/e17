@@ -57,16 +57,29 @@ static void win_main(void)
     Evas_Object *tabpanel = tabpanel_create();
     elm_table_pack(tb, tabpanel, 1, 1, 1, 1);
 
-    evas_object_resize(win, 700, 600);
+    Evas_Object *rightpanel = rightpanel_create();
+    elm_table_pack(tb, rightpanel, 2, 1, 1, 1);
+
+    evas_object_resize(win, 900, 700);
+    evas_object_move(win, 0, 0);
     evas_object_show(win);
 }
 
 int elm_main(int argc, char **argv)
 {
+    Eina_List *l;
+    List_Item *item;
+
     win_main();
 
     elm_run();
 
+    EINA_LIST_FOREACH(l_slides,l,item)
+    {
+        if(item->icon_data) free(item->icon_data);
+        if(item->grid_icon_data) free(item->grid_icon_data);
+        free(item);
+    }
     elm_shutdown();
     return 0;
 }
