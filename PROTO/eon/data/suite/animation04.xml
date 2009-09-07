@@ -7,7 +7,7 @@
 		</anim>
 		<image file="tiger.png" x="0%" y="0%" w="100%" h="100%" coordspace="0"/>
 		<!--<image file="eon.png" x="0%" y="0%" w="100%" h="100%" coordpsace="1"/>-->
-		<sqpattern x="0%" y="0%" color1="white" color2="red" id="sq01" coordspace="1"/>
+		<checker x="0%" y="0%" color1="white" color2="red" id="sq01" coordspace="1"/>
 	</hswitch>
 	<rect x="0%" y="0%" w="100%" h="100%" color="white"/>
 	<!-- rectangles -->

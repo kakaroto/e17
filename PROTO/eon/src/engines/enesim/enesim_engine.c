@@ -561,11 +561,22 @@ static void circle_delete(void *ec)
 /*============================================================================*
  *                                  Text                                      *
  *============================================================================*/
+/* rambling ...
+ * The text/font support can be a little tricky
+ * we could create a hash for each file-face tuple with a pointer to a hash
+ * that will store each glyph metrics and image based on the char.
+ * the kerning will be handled on the bounding box and the rendering functions
+ * but no on the calculations of the positions
+ * What about text selection? we need a way to get fast the char on a position
+ * + length
+ */
+
 /* Enesim doesnt have a text rasterizer, we use freetype here */
 typedef struct Text
 {
 	Eon_Text *t;
 	FT_Face face;
+	// Eon_Font font;
 } Text;
 
 
@@ -594,7 +605,8 @@ static void * text_create(Eon_Text *et)
 	return t;
 }
 
-static void text_boundings_get(void *et, Eina_Rectangle *r)
+/* cache the position for each char and its glyph */
+static void text_setup(Text *t)
 {
 
 }
@@ -621,15 +633,62 @@ static void text_compose(Text *t, FT_Bitmap *bmp, Enesim_Surface *dst, Enesim_Co
 	}
 }
 
+#if 0
+/* called whenever the font has changed */
+static void text_font_set(void *et, Eon_Font *f)
+{
+
+}
+
+/* given a text retrieve the bounding box */
+static void text_boundings_get(void *et, Eina_Rectangle *r)
+{
+	Text *t = et;
+	char *str;
+	int i;
+
+	if (!t)
+		return;
+	str = eon_text_string_get(t->t);
+	/* TODO Move this into the shape object */
+	if (!str)
+		return;
+	for (i = 0; str[i]; i++)
+	{
+		FT_BBox glyph_bbox;
+		FT_UInt gindex;
+
+		/* TODO handle kerning */
+		/* TODO this can be cached */
+		gindex = FT_Get_Char_Index(t->face, str[i]);
+
+		/* load glyph image into the slot without rendering */
+		error = FT_Load_Glyph(t->face, glyph_index, FT_LOAD_DEFAULT );
+		if (error) continue; /* ignore errors, jump to next glyph */
+		/* extract glyph image and store it in our table */
+		error = FT_Get_Glyph(t->face->glyph, &glyphs[num_glyphs]);
+		/* get the bounding box of the glyph */
+		FT_Glyph_Get_CBox(glyphs[n], ft_glyph_bbox_pixels, &glyph_bbox);
+		/* move it to the real x, y */
+		glyph_bbox.xMin += pos[n].x;
+		glyph_bbox.xMax += pos[n].x;
+		glyph_bbox.yMin += pos[n].y;
+		glyph_bbox.yMax += pos[n].y;
+		/* compare agains global max, min x/y and update */
+	}
+	/* the rect will min,max x/y */
+}
+#endif
+
 static void text_render(void *et, void *cd, Eina_Rectangle *clip)
 {
 	FT_Error error;
 	Text *t = et;
-	char *str;
-	int i;
 	FT_GlyphSlot slot;
 	int pen_x;
 	int pen_y;
+	char *str;
+	int i;
 	Enesim_Compositor_Span span;
 	Enesim_Color color;
 	Enesim_Rop rop;
@@ -647,7 +706,7 @@ static void text_render(void *et, void *cd, Eina_Rectangle *clip)
 
 	ekeko_renderable_geometry_get((Ekeko_Renderable *)t->t, &geom);
 	pen_x = geom.x;
-	pen_y = geom.y + 16;
+	pen_y = geom.y + 16; // we can use this to place the text on a vertical align
 
 	color = eon_shape_color_get((Eon_Shape *)t->t);
 	rop = eon_shape_rop_get((Eon_Shape *)t->t);
@@ -668,6 +727,9 @@ static void text_render(void *et, void *cd, Eina_Rectangle *clip)
 				pen_x + slot->bitmap_left, pen_y - slot->bitmap_top);
 		/* increment pen position */
 		pen_x += slot->advance.x >> 6;
+		/* LTR */
+		//if (pen_x > clip->w)
+		//	break;
 	}
 	/* TODO set the format again */
 }

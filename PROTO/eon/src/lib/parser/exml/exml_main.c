@@ -396,7 +396,7 @@ Ekeko_Object * tag_create(char *tag, EXML *exml, Ekeko_Object *parent)
 		o = (Ekeko_Object *)eon_fade_new();
 		ekeko_object_child_append(parent, o);
 	}
-	else if (!strcmp(tag, "sqpattern"))
+	else if (!strcmp(tag, "checker"))
 	{
 		o = (Ekeko_Object *)eon_checker_new();
 		ekeko_object_child_append(parent, o);

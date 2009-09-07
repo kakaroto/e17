@@ -43,7 +43,7 @@
 #define EON_TYPE_TRANSITION "Eon_Transition"
 #define EON_TYPE_HSWITCH "Eon_Hswitch"
 #define EON_TYPE_FADE "Eon_Fade"
-#define EON_TYPE_CHECKER "Eon_Sqpattern"
+#define EON_TYPE_CHECKER "Eon_Checker"
 
 #define EON_TYPE_FILTER "Eon_Filter"
 #define EON_TYPE_FILTER_EFFECT "Eon_Filter_Effect"
