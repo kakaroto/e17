@@ -142,9 +142,6 @@ struct _Network_Dialog_New
     Evas_Object *lbl_pwd;
     Evas_Object *entry_pwd;
     char *pwd;
-    Evas_Object *lbl_login;
-    Evas_Object *entry_login;
-    char *login;
 
 
     Evas_Object *entry_ip;
@@ -162,6 +159,9 @@ struct _Network_Dialog
 {
     E_Dialog *dialog;
     Popup_Elt* network;
+
+    E_Dialog *fsel_win;
+    Evas_Object *fsel;
 
     Evas_Object* table;
     Evas_Object* f_iface;
@@ -187,12 +187,24 @@ struct _Network_Dialog
     Evas_Object* entry_gateway;
     char* gateway;
 
-    Evas_Object* lbl_login;
-    Evas_Object* entry_login;
-    char* login;
     Evas_Object* lbl_pwd;
     Evas_Object* entry_pwd;
     char* pwd;
+
+    Evas_Object* lbl_ca_cert;
+    Evas_Object* entry_ca_cert;
+    char *ca_cert;
+    char *fs_ca_cert;
+
+    Evas_Object* lbl_client_cert;
+    Evas_Object* entry_client_cert;
+    char* client_cert;
+    char *fs_client_cert;
+
+    Evas_Object* lbl_private_key;
+    Evas_Object* entry_private_key;
+    char* private_key;
+    char *fs_private_key;
 
     Evas_Object *check_favoris;
     int favoris;
@@ -223,16 +235,31 @@ struct _Network_Dialog_Basic
     Evas_Object *btn;
     Evas_Object *icon;
 
+    E_Dialog *fsel_win;
+    Evas_Object *fsel;
+
     char *current_essid;
 
-    //the second flist, whith the entry for the password and the login
+    //the second flist, whith the entry for the password
     Evas_Object *frame;
-    Evas_Object* lbl_login;
-    Evas_Object* entry_login;
-    char* login;
     Evas_Object* lbl_pwd;
     Evas_Object* entry_pwd;
     char* pwd;
+
+    Evas_Object* lbl_ca_cert;
+    Evas_Object* entry_ca_cert;
+    char *ca_cert;
+    char *fs_ca_cert;
+
+    Evas_Object* lbl_client_cert;
+    Evas_Object* entry_client_cert;
+    char* client_cert;
+    char *fs_client_cert;
+
+    Evas_Object* lbl_private_key;
+    Evas_Object* entry_private_key;
+    char* private_key;
+    char *fs_private_key;
 
     //wep
     int wep_key_hexa;
@@ -469,7 +496,16 @@ void if_network_dialog_cb_entry(void *data, void* data2);
 void if_network_dialog_cb_cancel(void *data, E_Dialog *dialog);
 void if_network_dialog_cb_ok(void *data, E_Dialog *dialog);
 void if_network_dialog_cb_apply(void *data, E_Dialog *dialog);
-
+void if_network_dialog_cb_ca_cert(void *data, void *data2);
+void if_network_dialog_cb_fs_ca_cert(void *data, Evas_Object *obj);
+void if_network_dialog_cb_fs_ca_cert_ok(void *data, E_Dialog *dialog);
+void if_network_dialog_cb_client_cert(void *data, void *data2);
+void if_network_dialog_cb_fs_client_cert(void *data, Evas_Object *obj);
+void if_network_dialog_cb_fs_client_cert_ok(void *data, E_Dialog *dialog);
+void if_network_dialog_cb_private_key(void *data, void *data2);
+void if_network_dialog_cb_fs_private_key(void *data, Evas_Object *obj);
+void if_network_dialog_cb_fs_private_key_ok(void *data, E_Dialog *dialog);
+void if_network_dialog_cb_fs_cancel(void *data, E_Dialog *dialog );
 
 void if_network_dialog_basic_init(Instance* inst);
 void if_network_dialog_basic_create(Instance* inst);
@@ -484,6 +520,17 @@ void if_network_dialog_basic_cb_connect(void *data, void*data2);
 void if_network_dialog_basic_cb_disconnect(void *data, void*data2);
 Evas_Object* if_network_dialog_basic_wep_new(Instance* inst,Exalt_Wireless_Network* n);
 Evas_Object* if_network_dialog_basic_wpa_new(Instance* inst,Exalt_Wireless_Network* n);
+void if_network_basic_dialog_cb_ca_cert(void *data, void *data2);
+void if_network_basic_dialog_cb_fs_ca_cert(void *data, Evas_Object *obj);
+void if_network_basic_dialog_cb_fs_ca_cert_ok(void *data, E_Dialog *dialog);
+void if_network_basic_dialog_cb_client_cert(void *data, void *data2);
+void if_network_basic_dialog_cb_fs_client_cert(void *data, Evas_Object *obj);
+void if_network_basic_dialog_cb_fs_client_cert_ok(void *data, E_Dialog *dialog);
+void if_network_basic_dialog_cb_private_key(void *data, void *data2);
+void if_network_basic_dialog_cb_fs_private_key(void *data, Evas_Object *obj);
+void if_network_basic_dialog_cb_fs_private_key_ok(void *data, E_Dialog *dialog);
+void if_network_basic_dialog_cb_fs_cancel(void *data, E_Dialog *dialog );
+
 
 void dns_dialog_init(Instance* inst);
 void dns_dialog_create(Instance* inst);

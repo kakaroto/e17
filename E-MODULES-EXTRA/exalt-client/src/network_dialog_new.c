@@ -68,11 +68,6 @@ void if_network_dialog_new_create(Instance* inst)
     inst->network_new.entry_pwd = e_widget_entry_add(evas,&(inst->network_new.pwd),if_network_dialog_new_cb_entry,inst,NULL);
     e_widget_frametable_object_append(flist, inst->network_new.entry_pwd, 1, 6, 2, 1, 1, 0, 1, 0);
 
-    lbl = e_widget_label_add(evas,D_("Login: "));
-    inst->network_new.lbl_login = lbl;
-    e_widget_frametable_object_append(flist, lbl, 0, 7, 1, 1, 1, 0, 1, 0);
-    inst->network_new.entry_login = e_widget_entry_add(evas,&(inst->network_new.login),if_network_dialog_new_cb_entry,inst,NULL);
-    e_widget_frametable_object_append(flist, inst->network_new.entry_login, 1, 7, 2, 1, 1, 0, 1, 0);
     //
     e_widget_list_object_append(list, flist, 1, 0, 0.5);
 
@@ -142,7 +137,6 @@ void if_network_dialog_new_set(Instance *inst, Popup_Elt* iface)
     e_widget_radio_toggle_set(inst->network_new.radio_wep_ascii,1);
     e_widget_entry_text_set(inst->network_new.entry_essid,"");
     e_widget_entry_text_set(inst->network_new.entry_pwd,"");
-    e_widget_entry_text_set(inst->network_new.entry_login,"");
     e_widget_entry_text_set(inst->network_new.entry_ip,"192.168.0.1");
     e_widget_entry_text_set(inst->network_new.entry_netmask,"255.255.255.0");
     e_widget_entry_text_set(inst->network_new.entry_gateway,"192.168.0.254");
@@ -282,12 +276,9 @@ void if_network_dialog_new_disabled_update(void *data, Evas_Object *obj, void *e
     Instance *inst;
     inst = data;
     short is_pwd = 0;
-    short is_login = 0;
 
     evas_object_hide(inst->network_new.lbl_pwd);
     evas_object_hide(inst->network_new.entry_pwd);
-    evas_object_hide(inst->network_new.lbl_login);
-    evas_object_hide(inst->network_new.entry_login);
 
     switch(inst->network_new.enc)
     {
@@ -306,7 +297,6 @@ void if_network_dialog_new_disabled_update(void *data, Evas_Object *obj, void *e
     if(exalt_address_is(inst->network_new.ip)
             && exalt_address_is(inst->network_new.netmask)
             && (!is_pwd || strlen(inst->network_new.pwd)>0)
-            && (!is_login || strlen(inst->network_new.login)>0)
             && strlen(inst->network_new.essid)>0)
     {
         e_dialog_button_disable_num_set(inst->network_new.dialog,0,0);

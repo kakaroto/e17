@@ -70,7 +70,9 @@ Evas_Object* if_network_dialog_basic_wep_new(Instance* inst,Exalt_Wireless_Netwo
     Evas_Object* flist = e_widget_frametable_add(evas, D_("WEP information"), 0);
 
     int i = 0;
-    inst->network_basic.entry_login = NULL;
+    inst->network_basic.entry_ca_cert = NULL;
+    inst->network_basic.entry_client_cert = NULL;
+    inst->network_basic.entry_private_key = NULL;
 
     inst->network_basic.wep_key_hexa = 1;
     E_Radio_Group* rg = e_widget_radio_group_new(&(inst->network_basic.wep_key_hexa));
@@ -109,7 +111,6 @@ Evas_Object* if_network_dialog_basic_wpa_new(Instance* inst,Exalt_Wireless_Netwo
     Evas_Object* flist = e_widget_frametable_add(evas, D_("WPA information"), 0);
 
 
-    //see if the first IE need a login
     l_ie=exalt_wireless_network_ie_get(n);
     int ie_number = 0;
     int radio_number = 0;
@@ -123,24 +124,64 @@ Evas_Object* if_network_dialog_basic_wpa_new(Instance* inst,Exalt_Wireless_Netwo
     }
 
     i = 0;
-    inst->network_basic.entry_login = NULL;
+    inst->network_basic.entry_ca_cert = NULL;
+    inst->network_basic.entry_client_cert = NULL;
+    inst->network_basic.entry_private_key = NULL;
 
-    if(is_eap)
-    {
-        lbl = e_widget_label_add(evas,D_("Login: "));
-        e_widget_frametable_object_append(flist, lbl, 0, i, 1, 1, 1, 0, 0, 0);
-        inst->network_basic.lbl_login = lbl;
-        inst->network_basic.entry_login = e_widget_entry_add(evas,&(inst->network_basic.login),NULL,NULL,NULL);
-        e_widget_frametable_object_append(flist, inst->network_basic.entry_login, 2, i, 1, 1, 1, 0, 1, 0);
-
-        i++;
-    }
 
     lbl = e_widget_label_add(evas,D_("Password: "));
     e_widget_frametable_object_append(flist, lbl, 0, i, 1, 1, 1, 0, 0, 0);
     inst->network_basic.lbl_pwd = lbl;
     inst->network_basic.entry_pwd = e_widget_entry_add(evas,&(inst->network_basic.pwd),NULL,NULL,NULL);
     e_widget_frametable_object_append(flist, inst->network_basic.entry_pwd, 2, i, 1, 1, 1, 0, 1, 0);
+    i++;
+
+    if(is_eap)
+    {
+        Evas_Object *bt;
+
+        lbl = e_widget_label_add(evas,D_("CA certificate: "));
+        e_widget_frametable_object_append(flist, lbl, 0, i, 2, 1, 1, 0, 1, 0);
+        inst->network_basic.lbl_ca_cert = lbl;
+        inst->network_basic.entry_ca_cert = e_widget_entry_add(evas,&(inst->network_basic.ca_cert),NULL,inst,NULL);
+        e_widget_frametable_object_append(flist, inst->network_basic.entry_ca_cert, 2, i, 1, 1, 1, 0, 1, 0);
+        e_widget_entry_readonly_set(inst->network_basic.entry_ca_cert, 1);
+
+        bt = e_widget_button_add(evas, "...", NULL, if_network_basic_dialog_cb_ca_cert, inst, inst);
+        e_widget_frametable_object_append(flist, bt, 3, i, 1, 1, 1, 0, 1, 0);
+
+        i++;
+
+        lbl = e_widget_label_add(evas,D_("Client certificate: "));
+        e_widget_frametable_object_append(flist, lbl, 0, i, 2, 1, 1, 0, 1, 0);
+        inst->network_basic.lbl_client_cert = lbl;
+        inst->network_basic.entry_client_cert = e_widget_entry_add(evas,&(inst->network_basic.client_cert),NULL,inst,NULL);
+        e_widget_disabled_set(inst->network_basic.entry_client_cert, 1);
+        e_widget_frametable_object_append(flist, inst->network_basic.entry_client_cert, 2, i, 1, 1, 1, 0, 1, 0);
+        e_widget_entry_readonly_set(inst->network_basic.entry_client_cert, 1);
+
+        bt = e_widget_button_add(evas, "...", NULL, if_network_basic_dialog_cb_client_cert, inst, inst);
+        e_widget_frametable_object_append(flist, bt, 3, i, 1, 1, 1, 0, 1, 0);
+
+        i++;
+
+        lbl = e_widget_label_add(evas,D_("Private key: "));
+        e_widget_frametable_object_append(flist, lbl, 0, i, 2, 1, 1, 0, 1, 0);
+        inst->network_basic.lbl_private_key = lbl;
+        inst->network_basic.entry_private_key = e_widget_entry_add(evas,&(inst->network_basic.private_key),NULL,inst,NULL);
+        e_widget_disabled_set(inst->network_basic.entry_private_key, 1);
+        e_widget_frametable_object_append(flist, inst->network_basic.entry_private_key, 2, i, 1, 1, 1, 0, 1, 0);
+        e_widget_entry_readonly_set(inst->network_basic.entry_private_key, 1);
+
+        bt = e_widget_button_add(evas, "...", NULL, if_network_basic_dialog_cb_private_key, inst, inst);
+        e_widget_frametable_object_append(flist, bt, 3, i, 1, 1, 1, 0, 1, 0);
+        i++;
+
+        lbl = e_widget_label_add(evas,D_("                       "));
+        e_widget_frametable_object_append(flist, lbl, 2, i, 1, 1, 1, 0, 1, 0);
+
+        i++;
+    }
 
     return flist;
 }
@@ -157,7 +198,6 @@ void if_network_dialog_basic_set(Instance *inst, Popup_Elt* network)
     inst->network_basic.network = network;
     network->nb_use++;
 
-    //by default the login and password entry are deleted
     if(inst->network_basic.frame)
         evas_object_del(inst->network_basic.frame);
 
@@ -209,6 +249,11 @@ void if_network_dialog_basic_hide(Instance *inst)
                 popup_elt_free(inst->network_basic.network);
             }
             inst->network_basic.network = NULL;
+            if(inst->network_basic.fsel_win)
+            {
+                e_object_del(E_OBJECT(inst->network_basic.fsel_win));
+                inst->network_basic.fsel_win = NULL;
+            }
         }
     }
 }
@@ -258,7 +303,9 @@ void if_network_dialog_basic_update(Instance* inst,Exalt_DBus_Response *response
             c = exalt_dbus_response_configuration_get(response);
             cn = exalt_conf_network_get(c);
             e_widget_entry_text_set(inst->network_basic.entry_pwd, exalt_conf_network_key_get(cn));
-            e_widget_entry_text_set(inst->network_basic.entry_login, exalt_conf_network_login_get(cn));
+            e_widget_entry_text_set(inst->network_basic.entry_ca_cert, exalt_conf_network_ca_cert_get(cn));
+            e_widget_entry_text_set(inst->network_basic.entry_client_cert, exalt_conf_network_client_cert_get(cn));
+            e_widget_entry_text_set(inst->network_basic.entry_private_key, exalt_conf_network_private_key_get(cn));
         default: break;
     }
 
@@ -275,6 +322,155 @@ void if_network_dialog_basic_update(Instance* inst,Exalt_DBus_Response *response
         e_widget_frametable_label_set(inst->network_basic.flist, buf);
         e_widget_button_label_set(inst->network_basic.btn, D_("Connect to the network"));
     }
+}
+
+void if_network_basic_dialog_cb_ca_cert(void *data, void *data2)
+{
+    Instance *inst;
+    inst = data;
+    Evas *evas;
+    Evas_Object *fsel;
+
+    inst->network_basic.fsel_win = e_dialog_new(inst->gcc->gadcon->zone->container, "e", "exalt_fsel");
+    e_dialog_title_set(inst->network_basic.fsel_win, D_("Select the company certificate"));
+    inst->network_basic.fsel_win->data = inst;
+
+    evas =  e_win_evas_get(inst->network_basic.fsel_win->win);
+
+    //
+    fsel = e_widget_fsel_add(evas, "~/", "/", inst->network_basic.fs_ca_cert, NULL, if_network_basic_dialog_cb_fs_ca_cert, inst, NULL, NULL, 0);
+    inst->network_basic.fsel = fsel;
+    //
+
+    //
+    e_dialog_button_add(inst->network_basic.fsel_win, D_("OK"), NULL, if_network_basic_dialog_cb_fs_ca_cert_ok, inst);
+    e_dialog_button_add(inst->network_basic.fsel_win, D_("Cancel"), NULL, if_network_basic_dialog_cb_fs_cancel, inst);
+    //
+
+    int mw,mh;
+    e_widget_size_min_get(fsel, &mw, &mh);
+    e_dialog_content_set(inst->network_basic.fsel_win, fsel, mw, mh);
+
+    e_dialog_resizable_set(inst->network_basic.fsel_win, 1);
+    e_dialog_show(inst->network_basic.fsel_win);
+}
+
+void if_network_basic_dialog_cb_fs_ca_cert_ok(void *data, E_Dialog *dialog)
+{
+    Instance *inst = data;
+    if_network_basic_dialog_cb_fs_ca_cert(inst, inst->network_basic.fsel);
+}
+
+void if_network_basic_dialog_cb_fs_ca_cert(void *data, Evas_Object *obj)
+{
+    Instance *inst = data;
+    e_widget_entry_text_set(inst->network_basic.entry_ca_cert, e_widget_fsel_selection_path_get(obj));
+
+    e_object_del(E_OBJECT(inst->network_basic.fsel_win));
+    inst->network_basic.fsel_win = NULL;
+}
+
+void if_network_basic_dialog_cb_client_cert(void *data, void *data2)
+{
+    Instance *inst;
+    inst = data;
+    Evas *evas;
+    Evas_Object *fsel;
+
+    inst->network_basic.fsel_win = e_dialog_new(inst->gcc->gadcon->zone->container, "e", "exalt_fsel");
+    e_dialog_title_set(inst->network_basic.fsel_win, D_("Select the client certificate"));
+    inst->network_basic.fsel_win->data = inst;
+
+    evas =  e_win_evas_get(inst->network_basic.fsel_win->win);
+
+    //
+    fsel = e_widget_fsel_add(evas, "~/", "/", inst->network_basic.fs_client_cert, NULL, if_network_basic_dialog_cb_fs_client_cert, inst, NULL, NULL, 0);
+    inst->network_basic.fsel = fsel;
+    //
+
+    //
+    e_dialog_button_add(inst->network_basic.fsel_win, D_("OK"), NULL, if_network_basic_dialog_cb_fs_client_cert_ok, inst);
+    e_dialog_button_add(inst->network_basic.fsel_win, D_("Cancel"), NULL, if_network_basic_dialog_cb_fs_cancel, inst);
+    //
+
+    int mw,mh;
+    e_widget_size_min_get(fsel, &mw, &mh);
+    e_dialog_content_set(inst->network_basic.fsel_win, fsel, mw, mh);
+
+    e_dialog_resizable_set(inst->network_basic.fsel_win, 1);
+    e_dialog_show(inst->network_basic.fsel_win);
+}
+
+void if_network_basic_dialog_cb_fs_client_cert_ok(void *data, E_Dialog *dialog)
+{
+    Instance *inst = data;
+    if_network_basic_dialog_cb_fs_client_cert(inst, inst->network_basic.fsel);
+}
+
+
+void if_network_basic_dialog_cb_fs_client_cert(void *data, Evas_Object *obj)
+{
+    Instance *inst = data;
+    e_widget_entry_text_set(inst->network_basic.entry_client_cert, e_widget_fsel_selection_path_get(obj));
+
+    e_object_del(E_OBJECT(inst->network_basic.fsel_win));
+    inst->network_basic.fsel_win = NULL;
+}
+
+
+void if_network_basic_dialog_cb_private_key(void *data, void *data2)
+{
+    Instance *inst;
+    inst = data;
+    Evas *evas;
+    Evas_Object *fsel;
+
+    inst->network_basic.fsel_win = e_dialog_new(inst->gcc->gadcon->zone->container, "e", "exalt_fsel");
+    e_dialog_title_set(inst->network_basic.fsel_win, D_("Select the client certificate"));
+    inst->network_basic.fsel_win->data = inst;
+
+    evas =  e_win_evas_get(inst->network_basic.fsel_win->win);
+
+    //
+    fsel = e_widget_fsel_add(evas, "~/", "/", inst->network_basic.fs_private_key, NULL, if_network_basic_dialog_cb_fs_private_key, inst, NULL, NULL, 0);
+    inst->network_basic.fsel = fsel;
+    //
+
+    //
+    e_dialog_button_add(inst->network_basic.fsel_win, D_("OK"), NULL, if_network_basic_dialog_cb_fs_private_key_ok, inst);
+    e_dialog_button_add(inst->network_basic.fsel_win, D_("Cancel"), NULL, if_network_basic_dialog_cb_fs_cancel, inst);
+    //
+
+    int mw,mh;
+    e_widget_size_min_get(fsel, &mw, &mh);
+    e_dialog_content_set(inst->network_basic.fsel_win, fsel, mw, mh);
+
+    e_dialog_resizable_set(inst->network_basic.fsel_win, 1);
+    e_dialog_show(inst->network_basic.fsel_win);
+}
+
+void if_network_basic_dialog_cb_fs_private_key_ok(void *data, E_Dialog *dialog)
+{
+    Instance *inst = data;
+    if_network_basic_dialog_cb_fs_private_key(inst, inst->network_basic.fsel);
+}
+
+
+void if_network_basic_dialog_cb_fs_private_key(void *data, Evas_Object *obj)
+{
+    Instance *inst = data;
+    e_widget_entry_text_set(inst->network_basic.entry_private_key, e_widget_fsel_selection_path_get(obj));
+
+    e_object_del(E_OBJECT(inst->network_basic.fsel_win));
+    inst->network_basic.fsel_win = NULL;
+}
+
+
+void if_network_basic_dialog_cb_fs_cancel(void *data, E_Dialog *dialog)
+{
+    Instance *inst = data;
+    e_object_del(E_OBJECT(inst->network_basic.fsel_win));
+    inst->network_basic.fsel_win = NULL;
 }
 
 
@@ -341,8 +537,14 @@ void if_network_dialog_basic_cb_connect(void *data, void*data2)
 
     exalt_conf_network_key_set(n,
             e_widget_entry_text_get(inst->network_basic.entry_pwd));
-    exalt_conf_network_login_set(n,
-            e_widget_entry_text_get(inst->network_basic.entry_login));
+
+    exalt_conf_network_ca_cert_set(n,
+            e_widget_entry_text_get(inst->network_basic.entry_ca_cert));
+    exalt_conf_network_client_cert_set(n,
+            e_widget_entry_text_get(inst->network_basic.entry_client_cert));
+    exalt_conf_network_private_key_set(n,
+            e_widget_entry_text_get(inst->network_basic.entry_private_key));
+
 
     exalt_conf_network_essid_set(n,
             exalt_wireless_network_essid_get(inst->network_basic.network->n));
@@ -366,7 +568,8 @@ void if_network_dialog_basic_cb_connect(void *data, void*data2)
                 exalt_wireless_network_ie_pairwise_cypher_get(ie, 0));
         exalt_conf_network_auth_suites_set(n,
                 exalt_wireless_network_ie_auth_suites_get(ie, 0));
-
+        exalt_conf_network_eap_set(n,
+                exalt_wireless_network_ie_eap_get(ie));
     }
     else if(exalt_conf_network_encryption_is(n))
         exalt_conf_network_wep_set(n, 1);
