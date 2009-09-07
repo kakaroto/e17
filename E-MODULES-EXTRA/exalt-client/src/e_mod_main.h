@@ -1,8 +1,8 @@
 #ifndef E_MOD_MAIN_H
 #define E_MOD_MAIN_H
 
-#include <libexalt_dbus.h>
-#include <libexalt.h>
+#include <Exalt_DBus.h>
+#include <Exalt.h>
 #include <e.h>
 #include <E_Notify.h>
 
