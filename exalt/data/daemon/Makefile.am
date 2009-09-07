@@ -1,2 +1,0 @@
-filesdir = $(pkgdatadir)
-SUBDIRS = dbus

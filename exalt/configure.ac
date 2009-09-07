@@ -12,7 +12,7 @@ AC_CANONICAL_BUILD
 AC_CANONICAL_HOST
 AC_CANONICAL_TARGET
 
-AM_INIT_AUTOMAKE(exalt, 0.8)
+AM_INIT_AUTOMAKE(exalt, 0.9)
 
 AC_PREREQ(2.52)
 
@@ -175,8 +175,6 @@ src/bin_command/Makefile
 src/bin_client/Makefile
 data/Makefile
 data/icons/Makefile
-data/daemon/Makefile
-data/daemon/dbus/Makefile
 exalt.pc
 exalt_dbus.pc
 ]
@@ -207,6 +205,10 @@ echo
 echo "Now type 'make' ('gmake' on some systems) to compile $PACKAGE,"
 echo "and then afterwards as root (or the user who will install this), type"
 echo "'make install'. Change users with 'su' or 'sudo' appropriately."
+echo
+echo
+echo
+echo "PLEASE READ THE README !"
 echo
 
 
