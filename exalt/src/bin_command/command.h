@@ -3,7 +3,7 @@
 
 #include <stdlib.h>
 #include <string.h>
-#include <Exalt_dbus.h>
+#include <Exalt_DBus.h>
 #include <Exalt.h>
 #include <Eina.h>
 

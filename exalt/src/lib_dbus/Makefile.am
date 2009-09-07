@@ -16,7 +16,7 @@ lib_LTLIBRARIES = libexalt_dbus.la
 EXTRA_DIST =
 
 EXALT_DBUSHEADERS = \
-libexalt_dbus.h \
+Exalt_DBus.h \
 define.h \
 exalt_dbus_ethernet.h \
 exalt_dbus_wireless.h\

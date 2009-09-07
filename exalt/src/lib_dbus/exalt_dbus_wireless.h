@@ -3,7 +3,7 @@
 #ifndef  EXALT_DBUS_WIRELESS_INC
 #define  EXALT_DBUS_WIRELESS_INC
 
-#include <Exalt_dbus.h>
+#include <Exalt_DBus.h>
 
 /**
  * @defgroup Wireless_Interface

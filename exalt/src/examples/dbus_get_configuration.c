@@ -5,7 +5,7 @@
 
 //gcc -o dbus_get_configuration dbus_get_conguration.c `pkg-config --libs exalt_dbus exalt ecore --cflags exalt_dbus exalt ecore` -Wall -g
 
-#include <libexalt_dbus.h>
+#include <Exalt_DBus.h>
 
 // The configuration of one interface
 typedef struct configuration
@@ -32,7 +32,7 @@ void response_cb(Exalt_DBus_Response* response, void* data)
     Exalt_DBus_Conn *conn = (Exalt_DBus_Conn*) data;
     Eina_List *l;
     char *s;
-    char *iface = NULL;
+    const char *iface = NULL;
     Configuration *c = NULL;
 
     // If the response is one of these types

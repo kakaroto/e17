@@ -27,7 +27,7 @@ enum _iface_type
 
 
 
-#include <Exalt_dbus.h>
+#include <Exalt_DBus.h>
 #include <Elementary.h>
 #include "wired.h"
 #include "wireless.h"

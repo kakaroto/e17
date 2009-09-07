@@ -5,7 +5,7 @@
 
 //gcc -o dbus_wireless_scan dbus_wireless_scan.c `pkg-config --libs exalt_dbus exalt ecore --cflags exalt_dbus exalt ecore` -Wall -g
 
-#include <libexalt_dbus.h>
+#include <Exalt_DBus.h>
 
 void network_list_notify_scan(char* iface, Eina_List* networks, void* user_data )
 {

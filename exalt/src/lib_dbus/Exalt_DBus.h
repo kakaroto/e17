@@ -1,4 +1,4 @@
-/** @file Exalt_dbus.h */
+/** @file Exalt_DBus.h */
 
 #ifndef  EXALT_DBUS_INC
 #define  EXALT_DBUS_INC

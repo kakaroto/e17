@@ -6,7 +6,7 @@
 
 //gcc -o dbus_notifications dbus_notifications.c `pkg-config --libs exalt_dbus exalt ecore --cflags exalt_dbus exalt ecore` -Wall -g
 
-#include <libexalt_dbus.h>
+#include <Exalt_DBus.h>
 
 void notify_cb(char* iface, Exalt_Enum_Action action, void* data)
 {
