@@ -1,8 +1,16 @@
 #!/bin/sh
-# Author: Horms <horms@verge.net.au>
+### BEGIN INIT INFO
+# Provides:          entrance
+# Should-Start:      console-screen acpid dbus hal network-manager
+# Required-Start:    $local_fs $remote_fs
+# Required-Stop:     $local_fs $remote_fs
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+# Short-Description: The Enlightenment Display Manager
+# Description:       Debian init script for the enlightenment Display Manager
+### END INIT INFO
 #
-# Debian init script for entrance
-# based on /etc/init.d/skeleton
+# Author:       Simon Horman <horms@verge.net.au>
 #
 
 # Change to false to run even if entrance is not the default display manager
