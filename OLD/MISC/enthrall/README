@@ -1,3 +1,19 @@
 $Id$
 
 No documentation yet, go read the source :)
+
+---------
+
+2 pass encoding with mencoder using X264, if an AVI file is created
+
+ * input file name : test.avi
+ * output file name : test.mp4 (mp4 container),
+                      use test.mkv for using a matroska container
+ * bitrate: 900kbps
+ * use all the threads
+ * good options for compression
+ * slow
+
+mencoder test.avi -o /dev/null  -ovc x264 -x264encopts subq=7:partitions=all:8x8dct:me=umh:frameref=6:bframes=3:b_pyramid:weight_b:pass=1:bitrate=900:threads=auto
+
+mencoder test.avi -o test.mp4 -of lavf -ovc x264 -x264encopts subq=7:partitions=all:8x8dct:me=umh:frameref=15:bframes=3:b_pyramid:weight_b:pass=2:bitrate=900:threads=auto
