@@ -18,6 +18,7 @@
 #define EON_SHAPE_STROKE_COLOR_CHANGED "stroke_colorChanged"
 #define EON_SHAPE_STROKE_PAINT_CHANGED "stroke_paintChanged"
 #define EON_SHAPE_STROKE_WIDTH_CHANGED "stroke_widthChanged"
+#define EON_SHAPE_DRAW_MODE_CHANGED "draw_modeChanged"
 /*============================================================================*
  *                               Properties                                   *
  *============================================================================*/
@@ -29,6 +30,7 @@ extern Ekeko_Property_Id EON_SHAPE_FILL_PAINT;
 extern Ekeko_Property_Id EON_SHAPE_STROKE_COLOR;
 extern Ekeko_Property_Id EON_SHAPE_STROKE_PAINT;
 extern Ekeko_Property_Id EON_SHAPE_STROKE_WIDTH;
+extern Ekeko_Property_Id EON_SHAPE_DRAW_MODE;
 /*============================================================================*
  *                                 Class                                      *
  *============================================================================*/
@@ -39,6 +41,7 @@ struct _Eon_Shape
 	Eon_Shape_Private *private;
 	void *(*create)(Eon_Engine *e, Eon_Shape *s);
 	void (*render)(Eon_Shape *s, Eon_Engine *e, void *engine_data, void *canvas_data, Eina_Rectangle *clip);
+	Eina_Bool (*is_inside)(Eon_Shape *s, int x, int y);
 };
 
 EAPI Ekeko_Type *eon_shape_type_get(void);
@@ -63,6 +66,9 @@ EAPI void eon_shape_stroke_color_set(Eon_Shape *s, Eon_Color color);
 EAPI Eon_Color eon_shape_stroke_color_get(Eon_Shape *s);
 EAPI void eon_shape_stroke_width_set(Eon_Shape *s, float width);
 EAPI float eon_shape_stroke_width_get(Eon_Shape *s);
+
+EAPI void eon_shape_draw_mode_set(Eon_Shape *s, Enesim_Shape_Draw_Mode draw_mode);
+EAPI Enesim_Shape_Draw_Mode eon_shape_draw_mode_get(Eon_Shape *s);
 
 #define eon_shape_show(s) ekeko_renderable_show(EKEKO_RENDERABLE((s)))
 #define eon_shape_hide(s) ekeko_renderable_hide(EKEKO_RENDERABLE((s)))

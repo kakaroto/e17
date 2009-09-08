@@ -32,6 +32,9 @@ struct _Eon_Shape_Private
 		Eon_Paint *paint;
 		Eon_Color color;
 	} fill;
+	Enesim_Shape_Draw_Mode draw_mode;
+	Enesim_Matrix matrix, imatrix;
+
 	void *engine_data;
 };
 
@@ -131,6 +134,17 @@ static void _paint_change(const Ekeko_Object *o, Ekeko_Event *e, void *data)
 	eon_shape_change(s);
 }
 
+
+static Eina_Bool _is_inside(Ekeko_Renderable *r, int x, int y)
+{
+	Eon_Shape *s = r;
+	/* handle the transformation */
+	/* call the shape's is_inside */
+	if (s->is_inside)
+		return s->is_inside(s, x, y);
+	return EINA_TRUE;
+}
+
 static void _ctor(void *instance)
 {
 	Eon_Shape *s;
@@ -138,10 +152,14 @@ static void _ctor(void *instance)
 
 	s = (Eon_Shape*) instance;
 	s->private = prv = ekeko_type_instance_private_get(eon_shape_type_get(), instance);
+	/* methods override */
 	s->parent.render = _render;
+	s->parent.is_inside = _is_inside;
+	/* default values */
 	prv->rop = ENESIM_BLEND;
-	/* the default color, useful for pixel_color operations */
+	prv->draw_mode = ENESIM_SHAPE_DRAW_MODE_STROKE_FILL;
 	prv->color = 0xffffffff;
+	/* the events */
 	ekeko_event_listener_add((Ekeko_Object *)s, EKEKO_EVENT_OBJECT_APPEND, _child_append_cb, EINA_FALSE, NULL);
 	ekeko_event_listener_add((Ekeko_Object *)s, EON_SHAPE_COLOR_CHANGED, _color_change, EINA_FALSE, NULL);
 	ekeko_event_listener_add((Ekeko_Object *)s, EON_SHAPE_ROP_CHANGED, _rop_change, EINA_FALSE, NULL);
@@ -204,6 +222,31 @@ void eon_shape_change(Eon_Shape *s)
 	ekeko_canvas_damage_add((Ekeko_Canvas *)parent, &geom);
 }
 
+void eon_shape_geometry_set(Eon_Shape *s, Eina_Rectangle *rect)
+{
+	Eon_Shape_Private *prv;
+	Eina_Rectangle r;
+	Enesim_Quad q;
+	float x1, y1, x2, y2, x3, y3, x4, y4;
+
+	prv = PRIVATE(s);
+	/* TODO matrix operation should be:
+	 * - multiply w,h * matrix
+	 * - translate the result to x, y
+	 */
+	/* TODO check that the matrix is not identity */
+	/* compute the final geometry multiplying by the context matrix */
+	eina_rectangle_coords_from(&r, 0, 0, rect->w, rect->h);
+	/* get the largest rectangle that fits on the matrix */
+	enesim_matrix_rect_transform(&prv->imatrix, &r, &q);
+	enesim_quad_coords_get(&q, &x1, &y1, &x2, &y2, &x3, &y3, &x4, &y4);
+	enesim_quad_rectangle_to(&q, &r);
+	r.x = rect->x;
+	r.y = rect->y;
+
+	ekeko_renderable_geometry_set((Ekeko_Renderable *)s, &r);
+}
+
 Eina_Bool eon_shape_appendable(void *instance, void *child)
 {
 	if (!ekeko_type_instance_is_of(child, EON_TYPE_ANIMATION))
@@ -223,6 +266,7 @@ Ekeko_Property_Id EON_SHAPE_FILL_PAINT;
 Ekeko_Property_Id EON_SHAPE_STROKE_COLOR;
 Ekeko_Property_Id EON_SHAPE_STROKE_PAINT;
 Ekeko_Property_Id EON_SHAPE_STROKE_WIDTH;
+Ekeko_Property_Id EON_SHAPE_DRAW_MODE;
 
 EAPI Ekeko_Type *eon_shape_type_get(void)
 {
@@ -241,6 +285,7 @@ EAPI Ekeko_Type *eon_shape_type_get(void)
 		EON_SHAPE_STROKE_PAINT = EKEKO_TYPE_PROP_SINGLE_ADD(type, "stroke_paint", EKEKO_PROPERTY_OBJECT, OFFSET(Eon_Shape_Private, stroke.paint));
 		EON_SHAPE_STROKE_COLOR = EKEKO_TYPE_PROP_SINGLE_ADD(type, "stroke_color", EON_PROPERTY_COLOR, OFFSET(Eon_Shape_Private, stroke.color));
 		EON_SHAPE_STROKE_WIDTH = EKEKO_TYPE_PROP_SINGLE_ADD(type, "stroke_width", EKEKO_PROPERTY_FLOAT, OFFSET(Eon_Shape_Private, stroke.width));
+		EON_SHAPE_DRAW_MODE = EKEKO_TYPE_PROP_SINGLE_ADD(type, "draw_mode", EKEKO_PROPERTY_INT, OFFSET(Eon_Shape_Private, draw_mode));
 	}
 
 	return type;
@@ -374,37 +419,18 @@ EAPI float eon_shape_stroke_width_get(Eon_Shape *s)
 	return prv->stroke.width;
 }
 
-#if 0
-/* Code taken from the old image object */
-static void _geometry_calc(const Ekeko_Object *o, Ekeko_Event *e, void *data)
+EAPI void eon_shape_draw_mode_set(Eon_Shape *s, Enesim_Shape_Draw_Mode draw_mode)
 {
-	Eon_Image *i = (Eon_Image *)o;
-	Eon_Image_Private *prv = PRIVATE(i);
-	Eina_Rectangle r;
-	Eon_Coord x, y, w, h;
-	Enesim_Quad q;
-	float x1, y1, x2, y2, x3, y3, x4, y4;
+	Ekeko_Value v;
 
-	/* TODO matrix operation should be:
-	 * - multiply w,h * matrix
-	 * - translate the result to x, y
-	 */
-	/* TODO check that the matrix is not identity */
-	/* compute the final geometry multiplying by the context matrix */
-	eon_square_coords_get((Eon_Square *)i, &x, &y, &w, &h);
-	eina_rectangle_coords_from(&r, 0, 0, w.final,
-			h.final);
-	/* get the largest rectangle that fits on the matrix */
-	enesim_matrix_rect_transform(&prv->matrix, &r, &q);
-	enesim_quad_coords_get(&q, &x1, &y1, &x2, &y2, &x3, &y3, &x4, &y4);
-	enesim_quad_rectangle_to(&q, &r);
-	r.x = x.final;
-	r.y = y.final;
-
-#if EON_DEBUG
-	printf("[Eon_Image] Setting geometry of size %d %d %d %d\n",
-			r.x, r.y, r.w, r.h);
-#endif
-	ekeko_renderable_geometry_set((Ekeko_Renderable *)i, &r);
+	ekeko_value_int_from(&v, draw_mode);
+	ekeko_object_property_value_set((Ekeko_Object *)s, "draw_mode", &v);
 }
-#endif
+
+EAPI Enesim_Shape_Draw_Mode eon_shape_draw_mode_get(Eon_Shape *s)
+{
+	Eon_Shape_Private *prv;
+
+	prv = PRIVATE(s);
+	return prv->draw_mode;
+}

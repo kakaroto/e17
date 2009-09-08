@@ -381,6 +381,7 @@ static void shape_renderer_setup(Eon_Shape *s, Enesim_Renderer *r)
 	Paint *pa;
 	float stroke;
 	Eon_Color color;
+	Enesim_Shape_Draw_Mode mode;
 
 	/* the fill properties */
 	p = eon_shape_fill_paint_get(s);
@@ -394,8 +395,10 @@ static void shape_renderer_setup(Eon_Shape *s, Enesim_Renderer *r)
 	color = eon_shape_stroke_color_get(s);
 	enesim_renderer_shape_outline_weight_set(r, stroke);
 	enesim_renderer_shape_outline_color_set(r, color);
+
 	/* common fill/stroke properties */
-	enesim_renderer_shape_draw_mode_set(r, ENESIM_SHAPE_DRAW_MODE_STROKE_FILL);
+	mode = eon_shape_draw_mode_get(s);
+	enesim_renderer_shape_draw_mode_set(r, mode);
 }
 
 static void shape_setup(Eon_Shape *s, Shape_Drawer_Data *d, Enesim_Surface *dst)

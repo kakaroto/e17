@@ -94,7 +94,7 @@ case "$host_os" in
     ;;
 esac
 
-requirements="eina-0 ekeko ecore enesim emage etch freetype"
+requirements="eina-0 ekeko ecore enesim emage etch freetype2 fontconfig"
 
 PKG_CHECK_MODULES(EINA, [eina-0 >= 0.0.1])
 PKG_CHECK_MODULES(EKEKO, [ekeko])

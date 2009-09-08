@@ -39,6 +39,33 @@ static void _render(Eon_Shape *s, Eon_Engine *eng, void *engine_data, void *canv
 	eon_engine_rect_render(eng, engine_data, canvas_data, clip);
 }
 
+static Eina_Bool _is_inside(Eon_Shape *s, int x, int y)
+{
+	Eon_Rect *r = s;
+	Eon_Rect_Private *prv;
+	Enesim_Shape_Draw_Mode mode;
+
+	/* TODO handle the rounded corners */
+	mode = eon_shape_draw_mode_get(s);
+	if (mode == ENESIM_SHAPE_DRAW_MODE_STROKE)
+	{
+		float sw;
+		Eon_Coord cx, cy, cw, ch;
+
+		sw = eon_shape_stroke_width_get(s);
+		eon_square_coords_get((Eon_Square *)s, &cx, &cy, &cw, &ch);
+
+		if (x > (cx.final + sw) && (x < cx.final + cw.final - sw) &&
+				y > (cy.final + sw) &&
+				y < (cy.final + ch.final + sw))
+			return EINA_FALSE;
+		else
+			return EINA_TRUE;
+	}
+
+	return EINA_TRUE;
+}
+
 static void _ctor(void *instance)
 {
 	Eon_Rect *r;
@@ -48,6 +75,8 @@ static void _ctor(void *instance)
 	r->private = prv = ekeko_type_instance_private_get(eon_rect_type_get(), instance);
 	r->parent.parent.render = _render;
 	r->parent.parent.create = eon_engine_rect_create;
+	r->parent.parent.is_inside = _is_inside;
+	/* events */
 	ekeko_event_listener_add((Ekeko_Object *)r, EON_SQUARE_X_CHANGED, _geometry_calc, EINA_FALSE, NULL);
 	ekeko_event_listener_add((Ekeko_Object *)r, EON_SQUARE_Y_CHANGED, _geometry_calc, EINA_FALSE, NULL);
 	ekeko_event_listener_add((Ekeko_Object *)r, EON_SQUARE_W_CHANGED, _geometry_calc, EINA_FALSE, NULL);
