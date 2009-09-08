@@ -39,6 +39,7 @@
 typedef struct Eyelight_Viewer Eyelight_Viewer;
 typedef struct Eyelight_Thumb Eyelight_Thumb;
 typedef void (*Eyelight_Thumbnails_slide_done_cb) (Eyelight_Viewer *pres, int id_slide, Eyelight_Thumb* thumb, void* user_data);
+typedef void (*Eyelight_Slide_Change_Cb) (Eyelight_Viewer *pres, int old_slide, int new_slide, void *data);
 
 struct Eyelight_Thumb
 {
@@ -109,5 +110,7 @@ EAPI void eyelight_viewer_tableofcontents_select(Eyelight_Viewer* pres);
  * Set the callback called when eyelight has create a new thumbnail of a slide
  */
 EAPI void eyelight_viewer_thumbnails_done_cb_set(Eyelight_Viewer* pres, Eyelight_Thumbnails_slide_done_cb cb, void *user_data);
+
+EAPI void eyelight_viewer_slide_change_cb_set(Eyelight_Viewer* pres, Eyelight_Slide_Change_Cb cb, void *data);
 #endif   /* ----- #ifndef EYELIGHT_INC  ----- */
 

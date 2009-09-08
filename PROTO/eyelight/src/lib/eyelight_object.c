@@ -68,13 +68,29 @@ Evas_Object *eyelight_object_title_add(Eyelight_Viewer *pres, Eyelight_Slide *sl
         evas_object_show(o_title);
         edje_object_part_box_append(slide->obj,"area.title",o_title);
 
+        if(pres->edit_mode)
+        {
+            edje_object_signal_emit(o_title, "edit,mode,1", "eyelight");
+            if(pres->edit_mode)
+            {
+                Eyelight_Edit *edit = calloc(1,sizeof(Eyelight_Edit));
+                edit->obj = o_title;
+                edit->node = node;
+                edit->slide = slide;
+                edit->data = pres->edit_data;
+                slide->edits = eina_list_append(slide->edits, edit);
+
+                if(pres->edit_cb)
+                    edje_object_signal_callback_add(o_title, "select", "image", pres->edit_cb, edit);
+            }
+        }
+
         slide->items_all = eina_list_append(
                 slide->items_all,
                 o_title);
 
         return o_title;
     }
-
     return NULL;
 }
 
@@ -98,6 +114,23 @@ Evas_Object *eyelight_object_subtitle_add(Eyelight_Viewer *pres, Eyelight_Slide 
         edje_object_scale_set(o_subtitle, pres->current_scale);
         evas_object_show(o_subtitle);
         edje_object_part_box_append(slide->obj,"area.subtitle",o_subtitle);
+
+        if(pres->edit_mode)
+        {
+            edje_object_signal_emit(o_subtitle, "edit,mode,1", "eyelight");
+            if(pres->edit_mode)
+            {
+                Eyelight_Edit *edit = calloc(1,sizeof(Eyelight_Edit));
+                edit->obj = o_subtitle;
+                edit->node = node;
+                edit->slide = slide;
+                edit->data = pres->edit_data;
+                slide->edits = eina_list_append(slide->edits, edit);
+
+                if(pres->edit_cb)
+                    edje_object_signal_callback_add(o_subtitle, "select", "image", pres->edit_cb, edit);
+            }
+        }
 
         slide->items_all = eina_list_append(
                 slide->items_all,
@@ -131,6 +164,23 @@ Evas_Object *eyelight_object_header_image_add(Eyelight_Viewer *pres, Eyelight_Sl
         evas_object_show(o_header_image);
         edje_object_part_box_append(slide->obj,"area.header_image",o_header_image);
 
+        if(pres->edit_mode)
+        {
+            edje_object_signal_emit(o_header_image, "edit,mode,1", "eyelight");
+            if(pres->edit_mode)
+            {
+                Eyelight_Edit *edit = calloc(1,sizeof(Eyelight_Edit));
+                edit->obj = o_header_image;
+                edit->node = node;
+                edit->slide = slide;
+                edit->data = pres->edit_data;
+                slide->edits = eina_list_append(slide->edits, edit);
+
+                if(pres->edit_cb)
+                    edje_object_signal_callback_add(o_header_image, "select", "image", pres->edit_cb, edit);
+            }
+        }
+
         slide->items_all = eina_list_append(
                 slide->items_all,
                 o_header_image);
@@ -161,6 +211,23 @@ Evas_Object *eyelight_object_foot_text_add(Eyelight_Viewer *pres, Eyelight_Slide
         edje_object_scale_set(o_foot_text, pres->current_scale);
         evas_object_show(o_foot_text);
         edje_object_part_box_append(slide->obj,"area.foot_text",o_foot_text);
+
+        if(pres->edit_mode)
+        {
+            edje_object_signal_emit(o_foot_text, "edit,mode,1", "eyelight");
+            if(pres->edit_mode)
+            {
+                Eyelight_Edit *edit = calloc(1,sizeof(Eyelight_Edit));
+                edit->obj = o_foot_text;
+                edit->node = node;
+                edit->slide = slide;
+                edit->data = pres->edit_data;
+                slide->edits = eina_list_append(slide->edits, edit);
+
+                if(pres->edit_cb)
+                    edje_object_signal_callback_add(o_foot_text, "select", "image", pres->edit_cb, edit);
+            }
+        }
 
         slide->items_all = eina_list_append(
                 slide->items_all,
@@ -194,6 +261,23 @@ Evas_Object *eyelight_object_foot_image_add(Eyelight_Viewer *pres, Eyelight_Slid
         edje_object_scale_set(o_foot_image, pres->current_scale);
         evas_object_show(o_foot_image);
         edje_object_part_box_append(slide->obj,"area.foot_image",o_foot_image);
+
+        if(pres->edit_mode)
+        {
+            edje_object_signal_emit(o_foot_image, "edit,mode,1", "eyelight");
+            if(pres->edit_mode)
+            {
+                Eyelight_Edit *edit = calloc(1,sizeof(Eyelight_Edit));
+                edit->obj = o_foot_image;
+                edit->node = node;
+                edit->slide = slide;
+                edit->data = pres->edit_data;
+                slide->edits = eina_list_append(slide->edits, edit);
+
+                if(pres->edit_cb)
+                    edje_object_signal_callback_add(o_foot_image, "select", "image", pres->edit_cb, edit);
+            }
+        }
 
         slide->items_all = eina_list_append(
                 slide->items_all,
@@ -229,7 +313,7 @@ Evas_Object *eyelight_object_pages_add(Eyelight_Viewer *pres, Eyelight_Slide *sl
 
 
 
-Evas_Object *eyelight_object_item_text_add(Eyelight_Viewer *pres, Eyelight_Slide *slide, int id_slide, const char *area, const char *text)
+Evas_Object *eyelight_object_item_text_add(Eyelight_Viewer *pres, Eyelight_Slide *slide, int id_slide, Eyelight_Node *node, const char *area, const char *text)
 {
     char buf[EYELIGHT_BUFLEN];
 
@@ -246,6 +330,23 @@ Evas_Object *eyelight_object_item_text_add(Eyelight_Viewer *pres, Eyelight_Slide
     evas_object_show(o_text);
     edje_object_part_box_append(o_area,buf,o_text);
 
+    if(pres->edit_mode)
+    {
+        edje_object_signal_emit(o_text, "edit,mode,1", "eyelight");
+        if(pres->edit_mode)
+        {
+            Eyelight_Edit *edit = calloc(1,sizeof(Eyelight_Edit));
+            edit->obj = o_text;
+            edit->node = node;
+            edit->slide = slide;
+            edit->data = pres->edit_data;
+            slide->edits = eina_list_append(slide->edits, edit);
+
+            if(pres->edit_cb)
+                edje_object_signal_callback_add(o_text, "select", "image", pres->edit_cb, edit);
+        }
+    }
+
     slide->items_all = eina_list_append(
             slide->items_all,
             o_text);
@@ -253,7 +354,7 @@ Evas_Object *eyelight_object_item_text_add(Eyelight_Viewer *pres, Eyelight_Slide
 }
 
 
-Evas_Object *eyelight_object_item_image_add(Eyelight_Viewer *pres, Eyelight_Slide *slide, int id_slide, const char *area, const char *image, int border, int shadow)
+Evas_Object *eyelight_object_item_image_add(Eyelight_Viewer *pres, Eyelight_Slide *slide, int id_slide, Eyelight_Node *node, const char *area, const char *image, int border, int shadow)
 {
     char buf[EYELIGHT_BUFLEN];
 
@@ -278,6 +379,23 @@ Evas_Object *eyelight_object_item_image_add(Eyelight_Viewer *pres, Eyelight_Slid
         edje_object_signal_emit(o_image, "border,show","eyelight");
     if(shadow)
         edje_object_signal_emit(o_image, "shadow,show","eyelight");
+    if(pres->edit_mode)
+    {
+        edje_object_signal_emit(o_image, "edit,mode,1", "eyelight");
+        if(pres->edit_mode)
+        {
+            Eyelight_Edit *edit = calloc(1,sizeof(Eyelight_Edit));
+            edit->obj = o_image;
+            edit->node = node;
+            edit->slide = slide;
+            edit->data = pres->edit_data;
+            slide->edits = eina_list_append(slide->edits, edit);
+
+            if(pres->edit_cb)
+                edje_object_signal_callback_add(o_image, "select", "image", pres->edit_cb, edit);
+        }
+    }
+
 
     slide->items_all = eina_list_append(
             slide->items_all,
@@ -349,7 +467,7 @@ void _video_obj_replay_cb(void *data, Evas_Object *o, void *event_info)
     }
 }
 
-Evas_Object *eyelight_object_item_presentation_add(Eyelight_Viewer *pres, Eyelight_Slide *slide, int id_slide, const char *area, const char *presentation, const char *theme, int border, int shadow)
+Evas_Object *eyelight_object_item_presentation_add(Eyelight_Viewer *pres, Eyelight_Slide *slide, int id_slide, Eyelight_Node *node, const char *area, const char *presentation, const char *theme, int border, int shadow)
 {
     char buf[EYELIGHT_BUFLEN];
 
@@ -378,6 +496,23 @@ Evas_Object *eyelight_object_item_presentation_add(Eyelight_Viewer *pres, Eyelig
     evas_object_show(o_pres);
     edje_object_part_box_append(o_area,buf,o_pres);
 
+    if(pres->edit_mode)
+    {
+        edje_object_signal_emit(o_pres, "edit,mode,1", "eyelight");
+        if(pres->edit_mode)
+        {
+            Eyelight_Edit *edit = calloc(1,sizeof(Eyelight_Edit));
+            edit->obj = o_pres;
+            edit->node = node;
+            edit->slide = slide;
+            edit->data = pres->edit_data;
+            slide->edits = eina_list_append(slide->edits, edit);
+
+            if(pres->edit_cb)
+                edje_object_signal_callback_add(o_pres, "select", "image", pres->edit_cb, edit);
+        }
+    }
+
     slide->items_edje = eina_list_append(
             slide->items_edje, o_inter);
 
@@ -388,7 +523,7 @@ Evas_Object *eyelight_object_item_presentation_add(Eyelight_Viewer *pres, Eyelig
 }
 
 /** */
-Evas_Object *eyelight_object_item_video_add(Eyelight_Viewer *pres, Eyelight_Slide *slide, int id_slide, const char *area, const char *video, int alpha, int autoplay, int replay, int border, int shadow)
+Evas_Object *eyelight_object_item_video_add(Eyelight_Viewer *pres, Eyelight_Slide *slide, int id_slide, Eyelight_Node *node, const char *area, const char *video, int alpha, int autoplay, int replay, int border, int shadow)
 {
     char buf[EYELIGHT_BUFLEN];
 
@@ -445,7 +580,22 @@ Evas_Object *eyelight_object_item_video_add(Eyelight_Viewer *pres, Eyelight_Slid
         edje_object_signal_emit(o_video, "shadow,show","eyelight");
     if(border)
         edje_object_signal_emit(o_video, "border,show","eyelight");
+    if(pres->edit_mode)
+    {
+        edje_object_signal_emit(o_video, "edit,mode,1", "eyelight");
+        if(pres->edit_mode)
+        {
+            Eyelight_Edit *edit = calloc(1,sizeof(Eyelight_Edit));
+            edit->obj = o_video;
+            edit->node = node;
+            edit->slide = slide;
+            edit->data = pres->edit_data;
+            slide->edits = eina_list_append(slide->edits, edit);
 
+            if(pres->edit_cb)
+                edje_object_signal_callback_add(o_video, "select", "image", pres->edit_cb, edit);
+        }
+    }
 
     EYELIGHT_FREE(video_path);
     edje_object_part_swallow(o_video,"object.swallow",o_inter);
@@ -467,7 +617,7 @@ Evas_Object *eyelight_object_item_video_add(Eyelight_Viewer *pres, Eyelight_Slid
     return o_video;
 }
 
-Evas_Object *eyelight_object_item_simple_text_add(Eyelight_Viewer *pres, Eyelight_Slide *slide, int id_slide, const char *area, int depth, const char *text)
+Evas_Object *eyelight_object_item_simple_text_add(Eyelight_Viewer *pres, Eyelight_Slide *slide, int id_slide, Eyelight_Node *node, const char *area, int depth, const char *text)
 {
     char buf[EYELIGHT_BUFLEN];
 
@@ -488,6 +638,23 @@ Evas_Object *eyelight_object_item_simple_text_add(Eyelight_Viewer *pres, Eyeligh
     int i;
     for(i=0;i<depth;i++)
         edje_object_signal_emit(o_text,"increase,depth","eyelight");
+
+    if(pres->edit_mode)
+    {
+        edje_object_signal_emit(o_text, "edit,mode,1", "eyelight");
+        if(pres->edit_mode)
+        {
+            Eyelight_Edit *edit = calloc(1,sizeof(Eyelight_Edit));
+            edit->obj = o_text;
+            edit->node = node;
+            edit->slide = slide;
+            edit->data = pres->edit_data;
+            slide->edits = eina_list_append(slide->edits, edit);
+
+            if(pres->edit_cb)
+                edje_object_signal_callback_add(o_text, "select", "image", pres->edit_cb, edit);
+        }
+    }
 
     slide->items_all = eina_list_append(
             slide->items_all,
@@ -530,7 +697,7 @@ Evas_Object *eyelight_object_item_summary_text_add(Eyelight_Viewer *pres, Eyelig
     return o_text;
 }
 
-Evas_Object *eyelight_object_item_numbering_text_add(Eyelight_Viewer *pres, Eyelight_Slide *slide, int id_slide, const char *area, char *numbering_id, int depth, const char *text)
+Evas_Object *eyelight_object_item_numbering_text_add(Eyelight_Viewer *pres, Eyelight_Slide *slide, int id_slide, Eyelight_Node *node, const char *area, char *numbering_id, int depth, const char *text)
 {
     char buf[EYELIGHT_BUFLEN],buf2[EYELIGHT_BUFLEN];
 
@@ -556,6 +723,22 @@ Evas_Object *eyelight_object_item_numbering_text_add(Eyelight_Viewer *pres, Eyel
     int i;
     for(i=0;i<depth;i++)
         edje_object_signal_emit(o_text,"increase,depth","eyelight");
+    if(pres->edit_mode)
+    {
+        edje_object_signal_emit(o_text, "edit,mode,1", "eyelight");
+        if(pres->edit_mode)
+        {
+            Eyelight_Edit *edit = calloc(1,sizeof(Eyelight_Edit));
+            edit->obj = o_text;
+            edit->node = node;
+            edit->slide = slide;
+            edit->data = pres->edit_data;
+            slide->edits = eina_list_append(slide->edits, edit);
+
+            if(pres->edit_cb)
+                edje_object_signal_callback_add(o_text, "select", "image", pres->edit_cb, edit);
+        }
+    }
 
     slide->items_all = eina_list_append(
             slide->items_all,
@@ -564,7 +747,7 @@ Evas_Object *eyelight_object_item_numbering_text_add(Eyelight_Viewer *pres, Eyel
 }
 
 
-Evas_Object *eyelight_object_item_edje_add(Eyelight_Viewer *pres, Eyelight_Slide *slide, int id_slide, const char *area, const char *edje_file, const char *edje_group)
+Evas_Object *eyelight_object_item_edje_add(Eyelight_Viewer *pres, Eyelight_Slide *slide, int id_slide, Eyelight_Node *node, const char *area, const char *edje_file, const char *edje_group)
 {
     char buf[EYELIGHT_BUFLEN];
 
@@ -594,6 +777,23 @@ Evas_Object *eyelight_object_item_edje_add(Eyelight_Viewer *pres, Eyelight_Slide
     evas_object_show(o_edje);
     edje_object_part_box_append(o_area,buf,o_edje);
 
+    if(pres->edit_mode)
+    {
+        edje_object_signal_emit(o_edje, "edit,mode,1", "eyelight");
+        if(pres->edit_mode)
+        {
+            Eyelight_Edit *edit = calloc(1,sizeof(Eyelight_Edit));
+            edit->obj = o_edje;
+            edit->node = node;
+            edit->slide = slide;
+            edit->data = pres->edit_data;
+            slide->edits = eina_list_append(slide->edits, edit);
+
+            if(pres->edit_cb)
+                edje_object_signal_callback_add(o_edje, "select", "image", pres->edit_cb, edit);
+        }
+    }
+
     slide->items_edje = eina_list_append(
             slide->items_edje,
             o_inter);
@@ -603,7 +803,7 @@ Evas_Object *eyelight_object_item_edje_add(Eyelight_Viewer *pres, Eyelight_Slide
     return o_edje;
 }
 
-Evas_Object *eyelight_object_custom_area_add(Eyelight_Viewer *pres, Eyelight_Slide *slide, int id_slide, const char *area, double rel1_x, double rel1_y, double rel2_x, double rel2_y)
+Evas_Object *eyelight_object_custom_area_add(Eyelight_Viewer *pres, Eyelight_Slide *slide, int id_slide, Eyelight_Node *node, const char *area, double rel1_x, double rel1_y, double rel2_x, double rel2_y)
 {
     char buf[EYELIGHT_BUFLEN];
 
@@ -633,12 +833,35 @@ Evas_Object *eyelight_object_custom_area_add(Eyelight_Viewer *pres, Eyelight_Sli
 
     if(pres->with_border)
         edje_object_signal_emit(o_area,"border,show", "eyelight");
+    if(pres->edit_mode)
+    {
+        edje_object_signal_emit(o_area, "edit,mode,1", "eyelight");
+        if(pres->edit_mode)
+        {
+            Eyelight_Edit *edit = calloc(1,sizeof(Eyelight_Edit));
+            edit->obj = o_area;
+            edit->node = node;
+            edit->slide = slide;
+            edit->data = pres->edit_data;
+            slide->edits = eina_list_append(slide->edits, edit);
 
+            if(pres->edit_cb)
+            {
+                edje_object_signal_callback_add(o_area, "select", "area", pres->edit_cb, edit);
+                edje_object_signal_callback_add(o_area, "move,start", "area", pres->edit_cb, edit);
+                edje_object_signal_callback_add(o_area, "move,end", "area", pres->edit_cb, edit);
+                edje_object_signal_callback_add(o_area, "resize,start", "area", pres->edit_cb, edit);
+                edje_object_signal_callback_add(o_area, "resize,end", "area", pres->edit_cb, edit);
+                edje_object_signal_callback_add(o_area, "move", "area", pres->edit_cb, edit);
+            }
+        }
+    }
 
     Eyelight_Custom_Area *custom_area = calloc(1,sizeof(Eyelight_Custom_Area));
     custom_area->obj = o_area;
-    custom_area->name = (char*)area;
+    custom_area->name = strdup(area);
 
+    node->obj = o_area;
     slide->custom_areas = eina_list_append(
             slide->custom_areas,
             custom_area);

@@ -20,9 +20,7 @@
 #define  EYELIGHT_COMPILER_PARSER_INC
 
 
-typedef struct eyelight_node Eyelight_Node;
 typedef struct eyelight_compiler Eyelight_Compiler;
-typedef enum eyelight_node_name Eyelight_Node_Name;
 typedef struct Eyelight_Name_Key Eyelight_Name_Key;
 typedef struct Eyelight_Prop_Value_Type Eyelight_Prop_Value_Type;
 typedef enum Eyelight_Value_Type Eyelight_Value_Type;
@@ -41,47 +39,14 @@ typedef struct eyelight_video Eyelight_Video;
 
 #include "eyelight_viewer.h"
 
-enum eyelight_node_name
+struct Eyelight_Edit
 {
-    EYELIGHT_NAME_NONE,
-    EYELIGHT_NAME_ROOT,
-    EYELIGHT_NAME_SLIDE,
-    EYELIGHT_NAME_ITEMS,
-    EYELIGHT_NAME_ITEM,
-    EYELIGHT_NAME_AREA,
-    EYELIGHT_NAME_EDJ,
-    EYELIGHT_NAME_VIDEO,
-    EYELIGHT_NAME_TITLE,
-    EYELIGHT_NAME_SUBTITLE,
-    EYELIGHT_NAME_HEADER_IMAGE,
-    EYELIGHT_NAME_FOOT_IMAGE,
-    EYELIGHT_NAME_FOOT_TEXT,
-    EYELIGHT_NAME_LAYOUT,
-    EYELIGHT_NAME_NAME,
-    EYELIGHT_NAME_TEXT,
-    EYELIGHT_NAME_IMAGE,
-    EYELIGHT_NAME_FILE,
-    EYELIGHT_NAME_GROUP,
-    EYELIGHT_NAME_TRANSITION,
-    EYELIGHT_NAME_TRANSITION_NEXT,
-    EYELIGHT_NAME_TRANSITION_PREVIOUS,
-    EYELIGHT_NAME_CUSTOM_AREA,
-    EYELIGHT_NAME_SIZE,
-    EYELIGHT_NAME_SCALE,
-    EYELIGHT_NAME_BORDER,
-    EYELIGHT_NAME_NUMBERING,
-    EYELIGHT_NAME_RELATIVE,
-    EYELIGHT_NAME_ALPHA,
-    EYELIGHT_NAME_AUTOPLAY,
-    EYELIGHT_NAME_REPLAY,
-    EYELIGHT_NAME_SHADOW,
-    EYELIGHT_NAME_SUMMARY,
-    EYELIGHT_NAME_CHAPTER,
-    EYELIGHT_NAME_SECTION,
-    EYELIGHT_NAME_TEXT_SUMMARY,
-    EYELIGHT_NAME_PRESENTATION,
-    EYELIGHT_NAME_THEME
+    Eyelight_Slide *slide;
+    Eyelight_Node *node;
+    Evas_Object *obj;
+    void *data;
 };
+
 
 struct Eyelight_Name_Key
 {
@@ -273,6 +238,7 @@ struct eyelight_node
         char* value;
     };
     Eyelight_Node * father;
+    Evas_Object *obj;
     Eina_List *l;
 };
 

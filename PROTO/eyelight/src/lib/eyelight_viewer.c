@@ -70,7 +70,7 @@ int eyelight_viewer_presentation_file_set(Eyelight_Viewer *pres, const char* pre
     int i;
     for(i=0; i<pres->size; i++)
     {
-        pres->slides = eina_list_append(pres->slides, calloc(1, sizeof(Eyelight_Slide)));
+        pres->slides = eina_list_append(pres->slides, eyelight_slide_new(pres));
     }
 
     if(eyelight_viewer_size_get(pres)>0)
@@ -103,7 +103,7 @@ int eyelight_viewer_new_presentation_file_set(Eyelight_Viewer *pres, const char*
     int i;
     for(i=0; i<pres->size; i++)
     {
-        pres->slides = eina_list_append(pres->slides, calloc(1, sizeof(Eyelight_Slide)));
+        pres->slides = eina_list_append(pres->slides, eyelight_slide_new(pres));
     }
 
 
@@ -214,6 +214,15 @@ void eyelight_viewer_destroy(Eyelight_Viewer**pres)
 }
 
 /**
+ * Create a new slide
+ */
+Eyelight_Slide* eyelight_slide_new(Eyelight_Viewer *pres)
+{
+    Eyelight_Slide *slide = calloc(1,sizeof(Eyelight_Slide));
+    return slide;
+}
+
+/**
  * clean a slide
  * The method does not destroy slide
  */
@@ -222,6 +231,7 @@ void eyelight_slide_clean(Eyelight_Slide *slide)
     Evas_Object *o;
     Eyelight_Video *video;
     Eyelight_Custom_Area *area;
+    Eyelight_Edit *edit;
 
     evas_object_del(slide->obj);
     slide->obj=NULL;
@@ -241,9 +251,12 @@ void eyelight_slide_clean(Eyelight_Slide *slide)
     EINA_LIST_FREE(slide->custom_areas, area)
     {
         evas_object_del(area->obj);
+        EYELIGHT_FREE(area->name);
         EYELIGHT_FREE(area);
     }
 
+    EINA_LIST_FREE(slide->edits, edit)
+        free(edit);
 }
 
 /*
@@ -682,6 +695,10 @@ void eyelight_viewer_slide_next(Eyelight_Viewer*pres)
     pres->slide_with_transition[1] = slide_next;
     slide_next->obj = eyelight_viewer_slide_get(pres,slide_next, pres->current+1);
     pres->current++;
+
+    if(pres->slide_change_cb)
+        pres->slide_change_cb(pres, pres->current-1, pres->current, pres->slide_change_data);
+
     eyelight_viewer_clear (pres);
 }
 
@@ -722,11 +739,14 @@ void eyelight_viewer_slide_previous(Eyelight_Viewer*pres)
     pres->slide_with_transition[1] = slide_prev;
     slide_prev->obj = eyelight_viewer_slide_get(pres,slide_prev,pres->current-1);
     pres->current--;
+    if(pres->slide_change_cb)
+        pres->slide_change_cb(pres, pres->current+1, pres->current, pres->slide_change_data);
     eyelight_viewer_clear (pres);
 }
 
 void eyelight_viewer_slide_goto(Eyelight_Viewer* pres, int slide_id)
 {
+    int old_slide = pres->current;
     Eyelight_Slide *slide = eina_list_nth(pres->slides, slide_id);
     if(!slide) return ;
 
@@ -744,6 +764,10 @@ void eyelight_viewer_slide_goto(Eyelight_Viewer* pres, int slide_id)
     pres->current = slide_id;
     pres->slide_with_transition[0] = NULL;
     pres->slide_with_transition[1] = NULL;
+
+    if(pres->slide_change_cb)
+        pres->slide_change_cb(pres, old_slide, pres->current, pres->slide_change_data);
+
     eyelight_viewer_clear (pres);
 }
 
@@ -753,3 +777,8 @@ void eyelight_viewer_thumbnails_done_cb_set(Eyelight_Viewer* pres, Eyelight_Thum
     pres->thumbnails.done_cb_data = user_data;
 }
 
+void eyelight_viewer_slide_change_cb_set(Eyelight_Viewer* pres, Eyelight_Slide_Change_Cb cb, void *user_data)
+{
+    pres->slide_change_cb = cb;
+    pres->slide_change_data = user_data;
+}

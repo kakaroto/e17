@@ -47,6 +47,9 @@ struct Eyelight_Slide
     const char* transition_effect_previous;
 
     Eyelight_Thumb thumb;
+
+    //list of Eyelight_Edit
+    Eina_List *edits;
 };
 
 struct Eyelight_Viewer
@@ -78,6 +81,7 @@ struct Eyelight_Viewer
     Evas_Object *smart_obj;
 
     int with_border;
+    int edit_mode;
 
     //list of type Eyelight_Slide
     Eina_List* slides;
@@ -89,6 +93,9 @@ struct Eyelight_Viewer
     Eyelight_Slide* slide_with_transition[2];
 
     Eyelight_Thumbnails thumbnails;
+
+    Eyelight_Slide_Change_Cb slide_change_cb;
+    void *slide_change_data;
 
     //expose
     Evas_Object** expose_image_thumbnails;
@@ -117,9 +124,14 @@ struct Eyelight_Viewer
     Evas_Object* tableofcontents_background;
     int tableofcontents_is_next_program;
     int tableofcontents_is_previous_program;
+
+    //edit mode
+    Edje_Signal_Cb edit_cb;
+    void *edit_data;
 };
 
 void eyelight_slide_clean(Eyelight_Slide *slide);
+Eyelight_Slide* eyelight_slide_new(Eyelight_Viewer *pres);
 
 Evas_Object* eyelight_viewer_slide_load(Eyelight_Viewer*pres,Eyelight_Slide *slide, int pos);
 Evas_Object* eyelight_viewer_slide_get(Eyelight_Viewer*pres,Eyelight_Slide *slide, int pos);

@@ -267,7 +267,7 @@ void eyelight_compile_block_item(Eyelight_Viewer *pres, Eyelight_Slide *slide, i
         {
             if(!numbering)
                 eyelight_object_item_simple_text_add(
-                        pres,slide,id_slide,area,depth,
+                        pres,slide,id_slide,node_item, area,depth,
                         eyelight_retrieve_value_of_prop(node,0));
             else if(strcmp(numbering,"normal")==0)
             {
@@ -276,7 +276,7 @@ void eyelight_compile_block_item(Eyelight_Viewer *pres, Eyelight_Slide *slide, i
                         numbering_id);
 
                 eyelight_object_item_numbering_text_add(
-                        pres,slide, id_slide,area,dec,depth,
+                        pres,slide, id_slide, node_item, area,dec,depth,
                         eyelight_retrieve_value_of_prop(node,0));
             }
             else //roman
@@ -287,7 +287,7 @@ void eyelight_compile_block_item(Eyelight_Viewer *pres, Eyelight_Slide *slide, i
                         numbering_id);
                 eyelight_decimal_to_roman(dec,roman);
                 eyelight_object_item_numbering_text_add(
-                        pres,slide,id_slide,area,roman,depth,
+                        pres,slide,id_slide,node_item,area,roman,depth,
                         eyelight_retrieve_value_of_prop(node,0));
 
             }
@@ -324,7 +324,7 @@ void eyelight_compile_block_image(Eyelight_Viewer *pres, Eyelight_Slide *slide,i
         shadow = atoi(eyelight_retrieve_value_of_prop(node_shadow,0));
 
 
-    eyelight_object_item_image_add(pres,slide,id_slide,area,
+    eyelight_object_item_image_add(pres,slide,id_slide,node_image, area,
             eyelight_retrieve_value_of_prop(node_image_file,0),
             border,shadow);
 }
@@ -366,7 +366,7 @@ void eyelight_compile_block_video(Eyelight_Viewer *pres, Eyelight_Slide *slide, 
 
     if(node_file)
     {
-        eyelight_object_item_video_add(pres, slide, id_slide, area,
+        eyelight_object_item_video_add(pres, slide, id_slide, node_edj, area,
                                 eyelight_retrieve_value_of_prop(node_file,0),alpha,autoplay,replay,border,shadow);
     }
 }
@@ -409,7 +409,7 @@ void eyelight_compile_block_presentation(Eyelight_Viewer *pres, Eyelight_Slide *
         border = atoi(eyelight_retrieve_value_of_prop(node_border,0));
 
 
-    eyelight_object_item_presentation_add(pres, slide, id_slide, area, presentation, theme, border, shadow);
+    eyelight_object_item_presentation_add(pres, slide, id_slide, node_pres, area, presentation, theme, border, shadow);
 
     EYELIGHT_FREE(presentation);
     EYELIGHT_FREE(theme);
@@ -427,7 +427,7 @@ void eyelight_compile_block_edj(Eyelight_Viewer *pres, Eyelight_Slide *slide, in
     node_group = eyelight_retrieve_node_prop(node_edj,EYELIGHT_NAME_GROUP);
     if(node_group && node_file)
     {
-        eyelight_object_item_edje_add(pres,slide,id_slide,area,
+        eyelight_object_item_edje_add(pres,slide,id_slide,node_edj, area,
                 eyelight_retrieve_value_of_prop(node_file,0),
                 eyelight_retrieve_value_of_prop(node_group,0));
     }
@@ -478,7 +478,7 @@ int eyelight_compile_block_items(Eyelight_Viewer *pres, Eyelight_Slide *slide, i
                     case EYELIGHT_NAME_TEXT:
                         if(!numbering)
                             eyelight_object_item_simple_text_add(
-                                    pres,slide,id_slide,area,depth,
+                                    pres,slide,id_slide,node, area,depth,
                                     eyelight_retrieve_value_of_prop(node,0));
                         else if(strcmp(numbering,"normal")==0)
                         {
@@ -487,7 +487,7 @@ int eyelight_compile_block_items(Eyelight_Viewer *pres, Eyelight_Slide *slide, i
                                     numbering_id);
 
                             eyelight_object_item_numbering_text_add(
-                                    pres,slide,id_slide,area,dec,depth,
+                                    pres,slide,id_slide,node, area,dec,depth,
                                     eyelight_retrieve_value_of_prop(node,0));
                         }
                         else //roman
@@ -498,7 +498,7 @@ int eyelight_compile_block_items(Eyelight_Viewer *pres, Eyelight_Slide *slide, i
                                     numbering_id);
                             eyelight_decimal_to_roman(dec,roman);
                             eyelight_object_item_numbering_text_add(
-                                    pres,slide,id_slide,area,roman,depth,
+                                    pres,slide,id_slide,node,area,roman,depth,
                                     eyelight_retrieve_value_of_prop(node,0));
                         }
                         numbering_id++;
@@ -584,15 +584,15 @@ void eyelight_compile_block_area(Eyelight_Viewer *pres, Eyelight_Slide *slide, i
                 switch(node->name)
                 {
                     case EYELIGHT_NAME_TEXT:
-                        eyelight_object_item_text_add(pres, slide, id_slide, area,
+                        eyelight_object_item_text_add(pres, slide, id_slide, node, area,
                                 eyelight_retrieve_value_of_prop(node,0));
                         break;
                     case EYELIGHT_NAME_IMAGE:
-                        eyelight_object_item_image_add(pres,slide,id_slide, area,
-                                eyelight_retrieve_value_of_prop(node,0),0,0);
+                        eyelight_object_item_image_add(pres,slide,id_slide, node, area,
+                                eyelight_retrieve_value_of_prop(node,0), 0,0);
                         break;
                     case EYELIGHT_NAME_VIDEO:
-                        eyelight_object_item_video_add(pres,slide, id_slide, area,
+                        eyelight_object_item_video_add(pres,slide, id_slide, node, area,
                                 eyelight_retrieve_value_of_prop(node,0),255,0,1,0,0);
                 }
                 break;
@@ -620,6 +620,7 @@ void eyelight_compile_block_slide(Eyelight_Viewer *pres, Eyelight_Node* node_sli
 
     eyelight_object_pages_add(pres,slide,slide_number,slide_number, nb_slides);
 
+    //first we compile all custom area
     EINA_LIST_FOREACH(node_slide->l, l, node)
     {
         switch(node->type)
@@ -635,11 +636,20 @@ void eyelight_compile_block_slide(Eyelight_Viewer *pres, Eyelight_Node* node_sli
                             double rel2_x = atof(eyelight_retrieve_value_of_prop(node,3));
                             double rel2_y = atof(eyelight_retrieve_value_of_prop(node,4));
 
-                            eyelight_object_custom_area_add(pres, slide, slide_number,name,rel1_x,rel1_y,rel2_x,rel2_y);
+                            Evas_Object *o = eyelight_object_custom_area_add(pres, slide, slide_number,node, name,rel1_x,rel1_y,rel2_x,rel2_y);
                         }
                         break;
                 }
                 break;
+            default: ;
+        }
+    }
+
+
+    EINA_LIST_FOREACH(node_slide->l, l, node)
+    {
+        switch(node->type)
+        {
             case EYELIGHT_NODE_TYPE_BLOCK:
                 switch(node->name)
                 {
@@ -648,6 +658,7 @@ void eyelight_compile_block_slide(Eyelight_Viewer *pres, Eyelight_Node* node_sli
                         break;
                 }
                 break;
+            default: ;
         }
     }
 }
