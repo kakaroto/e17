@@ -481,6 +481,16 @@ cdef extern from "Elementary.h":
     void         elm_progressbar_value_set(evas.c_evas.Evas_Object *obj, double val)
     double       elm_progressbar_value_get(evas.c_evas.Evas_Object *obj)
 
+    # Spinner
+    evas.c_evas.Evas_Object *elm_spinner_add(evas.c_evas.Evas_Object *parent)
+    void         elm_spinner_label_format_set(evas.c_evas.Evas_Object *obj, char *format)
+    char        *elm_spinner_label_format_get(evas.c_evas.Evas_Object *obj)
+    void         elm_spinner_min_max_set(evas.c_evas.Evas_Object *obj, double min, double max)
+    void         elm_spinner_step_set(evas.c_evas.Evas_Object *obj, double step)
+    void         elm_spinner_value_set(evas.c_evas.Evas_Object *obj, double val)
+    double       elm_spinner_value_get(evas.c_evas.Evas_Object *obj)
+    void         elm_spinner_wrap_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool wrap)
+
 # Forward declaration of some classes
 cdef class Object(evas.c_evas.Object)
 cdef class Hoversel(Object)

@@ -20,7 +20,9 @@ from c_elementary import Object, Window, Background, Icon, \
     Box, Button, Scroller, Label, Toggle, Frame, Table, \
     Clock, Layout, Hover, Entry, AnchorView, AnchorBlock, Bubble, \
     Photo, Hoversel, Toolbar, ToolbarItem, List, ListItem, Slider, \
-    Radio, Check, Pager, InnerWindow, Image, init, shutdown, run, exit
+    Radio, Check, Pager, InnerWindow, Image, Spinner, init, shutdown, run, \
+    exit, scale_get, scale_set, finger_size_get, finger_size_set, \
+    coords_finger_size_adjust, theme_overlay_add, theme_extension_add
 
 ELM_WIN_BASIC = 0
 ELM_WIN_DIALOG_BASIC = 1

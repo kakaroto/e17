@@ -992,6 +992,42 @@ def inner_window_clicked(obj, event, data):
     win.resize(320, 320)
     win.show()
     
+def spinner_clicked(obj, event, data):
+    win = elementary.Window("spinner", elementary.ELM_WIN_BASIC)
+    win.title_set("Spinner test")
+    win.autodel_set(True)
+
+    bg = elementary.Background(win)
+    win.resize_object_add(bg)
+    bg.size_hint_weight_set(1.0, 1.0)
+    bg.show()
+
+    bx = elementary.Box(win)
+    bx.size_hint_weight_set(1.0, 1.0)
+    win.resize_object_add(bx)
+    bx.show()
+
+    sp = elementary.Spinner(win)
+    sp.label_format_set("%1.1f units")
+    sp.step_set(1.3)
+    sp.wrap_set(1)
+    sp.min_max_set(-50.0, 250.0)
+    sp.size_hint_align_set(-1.0, 0.5)
+    sp.size_hint_weight_set(1.0, 1.0)
+    bx.pack_end(sp)
+    sp.show()
+
+    sp2 = elementary.Spinner(win)
+    sp2.label_format_set("Disabled %.0f")
+    sp2.disabled_set(1)
+    sp2.min_max_set(-50.0, 250.0)
+    sp2.size_hint_align_set(-1.0, 0.5)
+    sp2.size_hint_weight_set(1.0, 1.0)
+    bx.pack_end(sp2)
+    sp2.show()
+
+    win.show()
+
 if __name__ == "__main__":
     elementary.init()
     win = elementary.Window("test", elementary.ELM_WIN_BASIC)
@@ -1041,7 +1077,8 @@ if __name__ == "__main__":
                ("Pager", pager_clicked),
                ("Radio", radio_clicked),
                ("Check", check_clicked),
-               ("InnerWindow", inner_window_clicked)]
+               ("InnerWindow", inner_window_clicked),
+               ("Spinner", spinner_clicked)]
     
     
     
