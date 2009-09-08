@@ -32,6 +32,8 @@ static const Ecore_Getopt options = {
     ('g', "geometry", "geometry to use in x:y:w:h form.", "X:Y:W:H",
      ecore_getopt_callback_geometry_parse, NULL),
     ECORE_GETOPT_STORE_STR
+    ('U', "user-agent", "custom user agent to use"),
+    ECORE_GETOPT_STORE_STR
     ('t', "theme", "path to read the theme file from"),
     ECORE_GETOPT_COUNT('v', "verbose", "be more verbose"),
     ECORE_GETOPT_VERSION('V', "version"),
@@ -117,9 +119,10 @@ int
 main(int argc, char *argv[])
 {
    Eina_Rectangle geometry = {0, 0, 0, 0};
-   Evas_Object *o;
+   Evas_Object *o, *webview;
    char *engine = NULL;
    char *theme = NULL;
+   char *user_agent = NULL;
    char *url = "http://www.google.com";
    int verbose = 0;
    unsigned char quit_option = 0;
@@ -130,6 +133,7 @@ main(int argc, char *argv[])
      ECORE_GETOPT_VALUE_BOOL(quit_option),
      ECORE_GETOPT_VALUE_BOOL(is_fullscreen),
      ECORE_GETOPT_VALUE_PTR_CAST(geometry),
+     ECORE_GETOPT_VALUE_STR(user_agent),
      ECORE_GETOPT_VALUE_STR(theme),
      ECORE_GETOPT_VALUE_INT(verbose),
      ECORE_GETOPT_VALUE_BOOL(quit_option),
@@ -187,15 +191,21 @@ main(int argc, char *argv[])
    o = eve_navigator_add(app.evas);
    if (theme)
      eve_navigator_theme_file_set(o, theme);
+
+   webview = eve_navigator_webview_get(o);
+
+   if (user_agent)
+     ewk_webview_object_custom_user_agent_set(webview, user_agent);
+
    evas_object_resize(o, geometry.w, geometry.h);
    ecore_evas_object_associate(app.ee, o, 0);
    evas_object_event_callback_add
      (o, EVAS_CALLBACK_DEL, _eve_navitagator_on_del, &app);
    evas_object_event_callback_add
      (o, EVAS_CALLBACK_KEY_DOWN, _eve_navigator_on_key_down, &app);
-   evas_object_focus_set(eve_navigator_webview_get(o), 1);
+   evas_object_focus_set(webview, 1);
    ewk_callback_title_changed_add
-      (eve_navigator_webview_get(o), _eve_navigator_on_title_changed, &app);
+     (webview, _eve_navigator_on_title_changed, &app);
    evas_object_show(o);
    app.navigator = o;
 
