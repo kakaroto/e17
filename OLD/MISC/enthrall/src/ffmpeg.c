@@ -272,7 +272,7 @@ enthrall_ffmpeg_encode_frame (void     *engine,
 
   if (img_convert_ctx == NULL) 
     img_convert_ctx = sws_getContext(c->width, c->height, 
-                                     PIX_FMT_ARGB, 
+                                     PIX_FMT_RGBA, 
                                      c->width, c->height, 
                                      c->pix_fmt, 
                                      SWS_BICUBIC, 

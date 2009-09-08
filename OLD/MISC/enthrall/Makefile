@@ -1,5 +1,5 @@
 BIN = src/enthrall
-SRC = src/enthrall.c src/theora.c  src/ffmpeg.c src/rgb2yuv420.c
+SRC = src/enthrall.c src/theora.c src/ffmpeg.c src/rgb2yuv420.c
 OBJ = $(SRC:%.c=%.o)
 PREFIX = /usr/local
 
