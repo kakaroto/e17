@@ -35,12 +35,27 @@ lighting_control_win_create(void)
    elm_win_resize_object_add(win, box);
    evas_object_show(box);
 
+   Evas_Object *devices_box;
+   devices_box = elm_box_add(win);
+   evas_object_size_hint_weight_set(devices_box, 1.0, 1.0);
+   evas_object_size_hint_align_set(devices_box, -1.0, -1.0);
+   elm_box_pack_start(box, devices_box);
+   evas_object_show(devices_box);
+
+   Evas_Object *label;
+   label = elm_label_add(win);
+   elm_label_label_set(label, "Devices");
+   evas_object_size_hint_weight_set(label, 0.0, 0.0);
+   evas_object_size_hint_align_set(label, 0.5, 0.5);
+   elm_box_pack_start(devices_box, label);
+   evas_object_show(label);
+
    Evas_Object *devices;
-   devices = elm_list_add(box);
+   devices = elm_list_add(win);
    elm_list_always_select_mode_set(devices, EINA_TRUE);
-   evas_object_size_hint_weight_set(devices, 1.0, 1.0);
    evas_object_size_hint_align_set(devices, -1.0, -1.0);
-   elm_box_pack_start(box, devices);
+   evas_object_size_hint_weight_set(devices, 1.0, 1.0);
+   elm_box_pack_end(devices_box, devices);
    evas_object_show(devices);
 
    // FIXME REMOVE ME
@@ -49,14 +64,14 @@ lighting_control_win_create(void)
    elm_list_go(devices);
 
    Evas_Object *controls;
-   controls = elm_box_add(box);
+   controls = elm_box_add(win);
    evas_object_size_hint_weight_set(controls, 1.0, 1.0);
    elm_box_pack_end(box, controls);
    evas_object_show(controls);
 
    /* Dimming control */
    Evas_Object *dimm;
-   dimm = elm_slider_add(controls);
+   dimm = elm_slider_add(win);
    elm_slider_label_set(dimm, "Dimming");
    elm_slider_unit_format_set(dimm, "%%");
    elm_slider_min_max_set(dimm, 0, 100);
@@ -68,7 +83,7 @@ lighting_control_win_create(void)
    evas_object_show(dimm);
 
    Evas_Object *set;
-   set = elm_check_add(controls);
+   set = elm_check_add(win);
    elm_check_label_set(set, "Light status");
    elm_check_state_set(set, EINA_FALSE);
    evas_object_size_hint_weight_set(set, 1.0, 1.0);
@@ -76,6 +91,5 @@ lighting_control_win_create(void)
    elm_box_pack_end(controls, set);
    evas_object_show(set);
 
-   evas_object_resize(win, 400, 200);
    evas_object_show(win);
 }
