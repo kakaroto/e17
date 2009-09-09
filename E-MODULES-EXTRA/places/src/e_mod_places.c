@@ -239,11 +239,7 @@ places_fill_box(Evas_Object *box)
       //choose icon
       vol->icon = "e/icons/drive-harddisk";
       if (!strcmp(vol->drive_type, "cdrom"))
-      {
          vol->icon = "e/icons/drive-optical";
-         if (!strcmp(vol->fstype, "udf"))
-            edje_object_signal_emit(o, "icon,tag,dvd", "places");
-      }
       else if (!strcmp(vol->model, "\"PSP\" MS"))
          vol->icon = "modules/places/icon/psp";
       else if (!strcmp(vol->drive_type, "sd_mmc"))
@@ -252,12 +248,20 @@ places_fill_box(Evas_Object *box)
          vol->icon = "modules/places/icon/ms";
       else if (!strcmp(vol->model, "iPod"))
          vol->icon = "modules/places/icon/ipod";
-      else if (!strcmp(vol->fstype, "ext3"))
+      else if (!strcmp(vol->bus, "usb") && !strcmp(vol->drive_type, "disk"))
+         vol->icon = "e/icons/drive-removable-media";
+
+      //set partition type tag
+      if (!strcmp(vol->fstype, "ext2") || !strcmp(vol->fstype, "ext3") ||
+          !strcmp(vol->fstype, "ext4") || !strcmp(vol->fstype, "reiserfs"))
          edje_object_signal_emit(o, "icon,tag,ext3", "places");
-      else if (!strcmp(vol->fstype, "vfat") || !strcmp(vol->fstype, "ntfs"))
+      else if (!strcmp(vol->fstype, "vfat") || !strcmp(vol->fstype, "ntfs") ||
+               !strcmp(vol->fstype, "ntfs-3g"))
          edje_object_signal_emit(o, "icon,tag,fat", "places");
       else if (!strcmp(vol->fstype, "hfs") || !strcmp(vol->fstype, "hfsplus"))
          edje_object_signal_emit(o, "icon,tag,hfs", "places");
+      else if (!strcmp(vol->fstype, "udf"))
+            edje_object_signal_emit(o, "icon,tag,dvd", "places");
 
       //set icon
       icon = edje_object_add(evas_object_evas_get(box));
