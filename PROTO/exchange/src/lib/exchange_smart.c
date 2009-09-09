@@ -123,7 +123,7 @@ EAPI unsigned char
 exchange_smart_object_remote_group_set(Evas_Object *obj, const char *group)
 {
    Exchange_Smart_Data *sd;
-   //EINA_ERROR_PDBG("group:%s\n", group);
+   //EINA_LOG_DBG("group:%s\n", group);
 
    sd = evas_object_smart_data_get(obj);
    if (!sd) return 0;
@@ -146,7 +146,7 @@ EAPI unsigned char
 exchange_smart_object_local_path_set(Evas_Object *obj, const char *user_dir)
 {
    Exchange_Smart_Data *sd;
-   //EINA_ERROR_PDBG("user:'%s' system: '%s'\n", user, system);
+   //EINA_LOG_DBG("user:'%s' system: '%s'\n", user, system);
 
    if (!obj) return 0;
    sd = evas_object_smart_data_get(obj);
@@ -169,7 +169,7 @@ EAPI unsigned char
 exchange_smart_object_offset_set(Evas_Object *obj, int x, int y)
 {
    Exchange_Smart_Data *sd;
-   //EINA_ERROR_PDBG("x:%d y:%d\n", x, y);
+   //EINA_LOG_DBG("x:%d y:%d\n", x, y);
 
    sd = evas_object_smart_data_get(obj);
    if (!sd) return 0;
@@ -237,7 +237,7 @@ _list_complete_cb(Eina_List *results, void *data)
    Exchange_Smart_Data *sd = data;
    char buf[255];
    
-   EINA_ERROR_PDBG("POPULATING... %d\n", eina_list_count(results));
+   EINA_LOG_DBG("POPULATING... %d\n", eina_list_count(results));
    
    /* Populate the List */
    evas_object_text_text_set(sd->obj_lbl, "");
@@ -287,8 +287,8 @@ exchange_smart_init(void)
 {
    char buf[4096]; //TODO FIXME MAX_PATH
 
-   eina_error_log_level_set(EINA_ERROR_LEVEL_WARN);
-   EINA_ERROR_PDBG("\n");
+   eina_error_log_level_set(EINA_LOG_LEVEL_WARN);
+   EINA_LOG_DBG("\n");
 
    /* check theme file */
    if (!_smart_theme)
@@ -403,7 +403,7 @@ _exchange_smart_add(Evas_Object *obj)
 static void
 _exchange_smart_del(Evas_Object *obj)
 {
-   EINA_ERROR_PDBG("%p\n", obj);
+   EINA_LOG_DBG("%p\n", obj);
    Exchange_Smart_Data *sd;
 
    if (!obj) return;
@@ -421,7 +421,7 @@ _exchange_smart_del(Evas_Object *obj)
 static void
 _exchange_smart_move(Evas_Object *obj, Evas_Coord x, Evas_Coord y)
 {
-   //EINA_ERROR_PDBG("\n");
+   //EINA_LOG_DBG("\n");
    Exchange_Smart_Data *sd;
 
    if (!obj) return;
@@ -440,7 +440,7 @@ _exchange_smart_move(Evas_Object *obj, Evas_Coord x, Evas_Coord y)
 static void
 _exchange_smart_resize(Evas_Object *obj, Evas_Coord w, Evas_Coord h)
 {
-   //EINA_ERROR_PDBG("\n");
+   //EINA_LOG_DBG("\n");
    Exchange_Smart_Data *sd;
 
    if (!obj) return;
@@ -458,7 +458,7 @@ _exchange_smart_resize(Evas_Object *obj, Evas_Coord w, Evas_Coord h)
 static void
 _exchange_smart_show(Evas_Object *obj)
 {
-   //EINA_ERROR_PDBG("\n");
+   //EINA_LOG_DBG("\n");
    Exchange_Smart_Data *sd;
 
    if (!obj) return;
@@ -471,7 +471,7 @@ _exchange_smart_show(Evas_Object *obj)
 static void
 _exchange_smart_hide(Evas_Object *obj)
 {
-   //EINA_ERROR_PDBG("\n");
+   //EINA_LOG_DBG("\n");
    Exchange_Smart_Data *sd;
 
    if (!obj) return;
@@ -485,7 +485,7 @@ _exchange_smart_hide(Evas_Object *obj)
 static void
 _exchange_smart_color_set(Evas_Object *obj, int r, int g, int b, int a)
 {
-   //EINA_ERROR_PDBG("\n");
+   //EINA_LOG_DBG("\n");
    Exchange_Smart_Data *sd;
 
    if (!obj) return;
@@ -499,7 +499,7 @@ _exchange_smart_color_set(Evas_Object *obj, int r, int g, int b, int a)
 static void
 _exchange_smart_clip_set(Evas_Object *obj, Evas_Object *clip)
 {
-   //EINA_ERROR_PDBG("\n");
+   //EINA_LOG_DBG("\n");
    Exchange_Smart_Data *sd;
 
    if (!obj) return;
@@ -513,7 +513,7 @@ _exchange_smart_clip_set(Evas_Object *obj, Evas_Object *clip)
 static void
 _exchange_smart_clip_unset(Evas_Object *obj)
 {
-   //EINA_ERROR_PDBG("\n");
+   //EINA_LOG_DBG("\n");
    Exchange_Smart_Data *sd;
 
    if (!obj) return;
@@ -595,7 +595,7 @@ _download_thumb_complete_cb(void *data, const char *file, int status)
 {
    Evas_Object *elem = data;
 
-   EINA_ERROR_PDBG("THUMB COMPLETE %d %s\n", status, file);
+   EINA_LOG_DBG("THUMB COMPLETE %d %s\n", status, file);
    //TODO check if download finish well
    edje_object_signal_emit(elem, "set,idle", "exchange");
    _exchange_smart_thumb_swallow(elem, file);
@@ -605,7 +605,7 @@ int
 _download_thumb_progress_cb(void *data, const char *file, long int dltotal, long int dlnow, long int ultotal, long int ulnow)
 {
    //Evas_Object *elem = data;
-   //EINA_ERROR_PDBG("DOWNLOAD THUMB PROGRESS '%s' dltotal: %ld dlnow: %ld\n", file, dltotal, dlnow);
+   //EINA_LOG_DBG("DOWNLOAD THUMB PROGRESS '%s' dltotal: %ld dlnow: %ld\n", file, dltotal, dlnow);
    return 0;
 }
 
@@ -615,7 +615,7 @@ _exchange_smart_thumb_swallow(Evas_Object *elem, const char *thumb)
    Evas_Object *img;
    Evas_Coord w, h;
 
-   //EINA_ERROR_PDBG("SWALLOW %s\n", thumb);
+   //EINA_LOG_DBG("SWALLOW %s\n", thumb);
    img = evas_object_image_add(evas_object_evas_get(elem));
    evas_object_image_file_set(img, thumb, NULL);
    evas_object_image_size_get(img, &w, &h);
@@ -732,7 +732,7 @@ _exchange_smart_element_update(Evas_Object *elem, Exchange_Object *td, Exchange_
             edje_object_signal_emit(elem, "use,enable","exchange");
          }
       }
-      EINA_ERROR_PDBG("CHECKING: %s %s(%s %s)\n", td->name, td->version, buf, local_ver);
+      EINA_LOG_DBG("CHECKING: %s %s(%s %s)\n", td->name, td->version, buf, local_ver);
       if (local_ver) free(local_ver);
    }
    else
@@ -790,7 +790,7 @@ _download_theme_complete_cb(void *data, const char *file, int status)
 
    if (!obj || !sd) return;
 
-   EINA_ERROR_PDBG("[status %d] %s\n", status, file);
+   EINA_LOG_DBG("[status %d] %s\n", status, file);
    edje_object_signal_emit(obj, "set,idle","exchange");
    edje_object_signal_emit(obj, "gauge,hide","exchange");
    edje_object_part_text_set(obj, "btn_download.text", "Completed");
@@ -811,7 +811,7 @@ _download_theme_progress_cb(void *data, const char *file, long int dltotal, long
    if (count++ > 100) count = 0;
    else return 0;
 
-   //EINA_ERROR_PDBG("'%s' dltotal: %ld dlnow: %ld ultotal: %ld ulnow: %ld\n", file, dltotal, dlnow, ultotal, ulnow);
+   //EINA_LOG_DBG("'%s' dltotal: %ld dlnow: %ld ultotal: %ld ulnow: %ld\n", file, dltotal, dlnow, ultotal, ulnow);
 
    if (dltotal && dlnow)
       edje_object_part_drag_size_set(obj, "gauge.bar", (float)dlnow / (float)dltotal, 0.0);
@@ -833,8 +833,8 @@ _exchange_smart_button_click_cb(void *data, Evas_Object *obj, const char *em, co
    if (!strcmp(src, "btn_download") && td->url)
    {
       snprintf(dst, sizeof(dst),"%s/%s.edj", sd->local_dir, td->name);
-      EINA_ERROR_PDBG("DOWNLOAD URL %s\n", td->url);
-      EINA_ERROR_PDBG("DOWNLOAD DST %s\n", dst);
+      EINA_LOG_DBG("DOWNLOAD URL %s\n", td->url);
+      EINA_LOG_DBG("DOWNLOAD DST %s\n", dst);
 
       edje_object_signal_emit(obj, "set,updated","exchange");
       edje_object_signal_emit(obj, "set,busy","exchange");
