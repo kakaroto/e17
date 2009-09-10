@@ -718,6 +718,15 @@ DeskGet(unsigned int desk)
 }
 
 Desk               *
+DeskGetValid(unsigned int desk)
+{
+   if (desk >= Conf.desks.num)
+      desk = 0;
+
+   return _DeskGet(desk);
+}
+
+Desk               *
 DeskGetRelative(Desk * dsk, int inc)
 {
    unsigned int        desk;
@@ -846,7 +855,7 @@ ChangeNumberOfDesktops(unsigned int quantity)
 	for (j = 0; j < num; j++)
 	  {
 	     if (EoGetDeskNum(lst[j]) >= quantity)
-		EwinMoveToDesktop(lst[j], _DeskGet(quantity - 1));
+		EwinMoveToDesktop(lst[j], _DeskGet(0));
 	  }
 
 	while (Conf.desks.num > quantity)

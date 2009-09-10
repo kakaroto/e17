@@ -1429,7 +1429,7 @@ SnapshotEwinApply(EWin * ewin)
       EoSetSticky(ewin, sn->sticky);
 
    if (use_flags & SNAP_USE_DESK)
-      EoSetDesk(ewin, DeskGet(sn->desktop));
+      EoSetDesk(ewin, DeskGetValid(sn->desktop));
 
    if (use_flags & SNAP_USE_SIZE)
      {

@@ -62,6 +62,7 @@ struct _desk {
 
 /* desktops.c */
 Desk               *DeskGet(unsigned int desk);
+Desk               *DeskGetValid(unsigned int desk);
 Desk               *DeskGetRelative(Desk * dsk, int inc);
 void                DeskGetArea(const Desk * dsk, int *ax, int *ay);
 void                DeskSetArea(Desk * dsk, int ax, int ay);

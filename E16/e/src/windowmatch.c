@@ -671,7 +671,7 @@ WindowMatchEwinOpsAction(EWin * ewin, int op, const char *args)
 	break;
 
      case EWIN_OP_DESK:
-	EoSetDesk(ewin, DeskGet(atoi(args)));
+	EoSetDesk(ewin, DeskGetValid(atoi(args)));
 	break;
 
 #if 0				/* Causes crash */
