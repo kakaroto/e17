@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2009-08-04 20:23+0200\n"
+"POT-Creation-Date: 2009-09-10 19:33+0200\n"
 "PO-Revision-Date: 2009-05-16 22:36+0200\n"
 "Last-Translator: Massimo Maiurana <maiurana@gmail.com>\n"
 "Language-Team: none\n"
@@ -42,7 +42,7 @@ msgstr ""
 "Mandrake - mandrake@mandrake.net\n"
 "Kim Woelders - kim@woelders.dk\n"
 
-#: src/aclass.c:209 src/backgrounds.c:236 src/borders.c:641 src/buttons.c:181
+#: src/aclass.c:211 src/backgrounds.c:236 src/borders.c:641 src/buttons.c:181
 #: src/cursors.c:170 src/iclass.c:337 src/tclass.c:113 src/tooltips.c:135
 #, c-format
 msgid "%u references remain\n"
@@ -587,55 +587,55 @@ msgstr ""
 "Cliccare quí per abbassare questo desktop\n"
 "in fondo.\n"
 
-#: src/desktops.c:2316
+#: src/desktops.c:2325
 msgid "Number of virtual desktops:\n"
 msgstr "Numero di desktop virtuali:\n"
 
-#: src/desktops.c:2341
+#: src/desktops.c:2350
 msgid "Slide desktops around when changing"
 msgstr "Scorri desktop al cambio"
 
-#: src/desktops.c:2347
+#: src/desktops.c:2356
 msgid "Desktop Slide speed:\n"
 msgstr "Velocitá scorrimento desktop:\n"
 
-#: src/desktops.c:2361
+#: src/desktops.c:2370
 msgid "Wrap desktops around"
 msgstr "Concatena desktop estremi"
 
-#: src/desktops.c:2369
+#: src/desktops.c:2378
 msgid "Display desktop dragbar"
 msgstr "Mostra barra trascinamento desktop"
 
-#: src/desktops.c:2375
+#: src/desktops.c:2384
 msgid "Drag bar position:"
 msgstr "Posizione barra trascinamento:"
 
-#: src/desktops.c:2379
+#: src/desktops.c:2388
 msgid "Top"
 msgstr "Alto"
 
-#: src/desktops.c:2385
+#: src/desktops.c:2394
 msgid "Bottom"
 msgstr "Basso"
 
-#: src/desktops.c:2391 src/pager.c:1924 src/pager.c:1949 src/pager.c:1974
+#: src/desktops.c:2400 src/pager.c:1924 src/pager.c:1949 src/pager.c:1974
 msgid "Left"
 msgstr "Sinistra"
 
-#: src/desktops.c:2397 src/pager.c:1936 src/pager.c:1961 src/pager.c:1986
+#: src/desktops.c:2406 src/pager.c:1936 src/pager.c:1961 src/pager.c:1986
 msgid "Right"
 msgstr "Destra"
 
-#: src/desktops.c:2405 src/menus-misc.c:582
+#: src/desktops.c:2414 src/menus-misc.c:582
 msgid "Desks"
 msgstr "Desktop"
 
-#: src/desktops.c:2406
+#: src/desktops.c:2415
 msgid "Multiple Desktop Settings"
 msgstr "Impostazioni desktop multipli"
 
-#: src/desktops.c:2409
+#: src/desktops.c:2418
 msgid ""
 "Enlightenment Multiple Desktop\n"
 "Settings Dialog\n"
@@ -643,43 +643,43 @@ msgstr ""
 "Finestra configurazione desktop\n"
 "multipli di Enlightenment\n"
 
-#: src/desktops.c:2500
+#: src/desktops.c:2509
 msgid "Virtual Desktop size:\n"
 msgstr "Dimensione desktop virtuale:\n"
 
-#: src/desktops.c:2536
+#: src/desktops.c:2545
 msgid "Wrap virtual desktops around"
 msgstr "Concatena desktop virtuali estremi"
 
-#: src/desktops.c:2543
+#: src/desktops.c:2552
 msgid "Edge Flip Mode:"
 msgstr "Cambio desktop con puntatore al confine:"
 
-#: src/desktops.c:2546
+#: src/desktops.c:2555
 msgid "Off"
 msgstr "Disattivato"
 
-#: src/desktops.c:2551
+#: src/desktops.c:2560
 msgid "On"
 msgstr "Attivato"
 
-#: src/desktops.c:2556
+#: src/desktops.c:2565
 msgid "Only when moving window"
 msgstr "Solo trascinando finestre"
 
-#: src/desktops.c:2562
+#: src/desktops.c:2571
 msgid "Resistance at edge of screen:\n"
 msgstr "Resistenza al confine dello schermo:\n"
 
-#: src/desktops.c:2574
+#: src/desktops.c:2583
 msgid "Areas"
 msgstr "Aree"
 
-#: src/desktops.c:2575
+#: src/desktops.c:2584
 msgid "Virtual Desktop Settings"
 msgstr "Impostazione desktop virtuali"
 
-#: src/desktops.c:2578
+#: src/desktops.c:2587
 msgid ""
 "Enlightenment Virtual Desktop\n"
 "Settings Dialog\n"
@@ -830,31 +830,31 @@ msgstr ""
 "Finestra configurazione del\n"
 "fuoco di Enlightenment\n"
 
-#: src/fx.c:934
+#: src/fx.c:935
 msgid "Effects"
 msgstr "Effetti"
 
-#: src/fx.c:937
+#: src/fx.c:938
 msgid "Enable Effect: Raindrops"
 msgstr "Abilita effetto: Pioggia"
 
-#: src/fx.c:941
+#: src/fx.c:942
 msgid "Ripples"
 msgstr "Increspature"
 
-#: src/fx.c:945
+#: src/fx.c:946
 msgid "Waves"
 msgstr "Onde"
 
-#: src/fx.c:951
+#: src/fx.c:952
 msgid "FX"
 msgstr "Effetti"
 
-#: src/fx.c:952
+#: src/fx.c:953
 msgid "Special FX Settings"
 msgstr "Impostazione effetti speciali"
 
-#: src/fx.c:955
+#: src/fx.c:956
 msgid ""
 "Enlightenment Special Effects\n"
 "Settings Dialog\n"

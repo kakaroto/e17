@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: bosnian\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2009-08-04 20:23+0200\n"
+"POT-Creation-Date: 2009-09-10 19:33+0200\n"
 "PO-Revision-Date: 2004-08-26 00:52+0200\n"
 "Last-Translator: Kemal Šanjta <gomez@lugzdk.ba>\n"
 "Language-Team: Bosnian <lokal@linux.org.ba>\n"
@@ -53,7 +53,7 @@ msgstr ""
 "Mandrake - mandrake@mandrake.net\n"
 "Kim Woelders - kim@woelders.dk\n"
 
-#: src/aclass.c:209 src/backgrounds.c:236 src/borders.c:641 src/buttons.c:181
+#: src/aclass.c:211 src/backgrounds.c:236 src/borders.c:641 src/buttons.c:181
 #: src/cursors.c:170 src/iclass.c:337 src/tclass.c:113 src/tooltips.c:135
 #, c-format
 msgid "%u references remain\n"
@@ -596,57 +596,57 @@ msgstr ""
 "Kliknite ovdje da spustite ovaj desktop\n"
 "na dno.\n"
 
-#: src/desktops.c:2316
+#: src/desktops.c:2325
 msgid "Number of virtual desktops:\n"
 msgstr "Broj virtualnih Desktopa:\n"
 
-#: src/desktops.c:2341
+#: src/desktops.c:2350
 msgid "Slide desktops around when changing"
 msgstr "Klizaj prozore okolo kada mijenjam"
 
-#: src/desktops.c:2347
+#: src/desktops.c:2356
 #, fuzzy
 msgid "Desktop Slide speed:\n"
 msgstr "Brzina klizanja Desktop-a: (sporo)\n"
 
-#: src/desktops.c:2361
+#: src/desktops.c:2370
 msgid "Wrap desktops around"
 msgstr "Uvij prozore okolo"
 
-#: src/desktops.c:2369
+#: src/desktops.c:2378
 msgid "Display desktop dragbar"
 msgstr "Prikaži dektop dragbar"
 
-#: src/desktops.c:2375
+#: src/desktops.c:2384
 msgid "Drag bar position:"
 msgstr "Dragbar pozicija:"
 
-#: src/desktops.c:2379
+#: src/desktops.c:2388
 msgid "Top"
 msgstr "Vrh"
 
-#: src/desktops.c:2385
+#: src/desktops.c:2394
 msgid "Bottom"
 msgstr "Dno"
 
-#: src/desktops.c:2391 src/pager.c:1924 src/pager.c:1949 src/pager.c:1974
+#: src/desktops.c:2400 src/pager.c:1924 src/pager.c:1949 src/pager.c:1974
 msgid "Left"
 msgstr "Lijevo"
 
-#: src/desktops.c:2397 src/pager.c:1936 src/pager.c:1961 src/pager.c:1986
+#: src/desktops.c:2406 src/pager.c:1936 src/pager.c:1961 src/pager.c:1986
 msgid "Right"
 msgstr "Desno"
 
-#: src/desktops.c:2405 src/menus-misc.c:582
+#: src/desktops.c:2414 src/menus-misc.c:582
 #, fuzzy
 msgid "Desks"
 msgstr "Desktop"
 
-#: src/desktops.c:2406
+#: src/desktops.c:2415
 msgid "Multiple Desktop Settings"
 msgstr "Osobine višestrukih desktopa"
 
-#: src/desktops.c:2409
+#: src/desktops.c:2418
 msgid ""
 "Enlightenment Multiple Desktop\n"
 "Settings Dialog\n"
@@ -654,43 +654,43 @@ msgstr ""
 "Enlightenment Višestruki Dektop\n"
 "dijalog osobina\n"
 
-#: src/desktops.c:2500
+#: src/desktops.c:2509
 msgid "Virtual Desktop size:\n"
 msgstr "Veličina virtualnog Desktopa:\n"
 
-#: src/desktops.c:2536
+#: src/desktops.c:2545
 msgid "Wrap virtual desktops around"
 msgstr "Uvij vitrualne desktope okolo"
 
-#: src/desktops.c:2543
+#: src/desktops.c:2552
 msgid "Edge Flip Mode:"
 msgstr ""
 
-#: src/desktops.c:2546
+#: src/desktops.c:2555
 msgid "Off"
 msgstr ""
 
-#: src/desktops.c:2551
+#: src/desktops.c:2560
 msgid "On"
 msgstr ""
 
-#: src/desktops.c:2556
+#: src/desktops.c:2565
 msgid "Only when moving window"
 msgstr ""
 
-#: src/desktops.c:2562
+#: src/desktops.c:2571
 msgid "Resistance at edge of screen:\n"
 msgstr "Otpor precrtavanja ekrana:\n"
 
-#: src/desktops.c:2574
+#: src/desktops.c:2583
 msgid "Areas"
 msgstr ""
 
-#: src/desktops.c:2575
+#: src/desktops.c:2584
 msgid "Virtual Desktop Settings"
 msgstr "Osobine virtualnih Desktopa"
 
-#: src/desktops.c:2578
+#: src/desktops.c:2587
 msgid ""
 "Enlightenment Virtual Desktop\n"
 "Settings Dialog\n"
@@ -840,31 +840,31 @@ msgstr ""
 "Enlightenment usmjeravanje\n"
 "Dijalog osobina\n"
 
-#: src/fx.c:934
+#: src/fx.c:935
 msgid "Effects"
 msgstr "Efekti"
 
-#: src/fx.c:937
+#: src/fx.c:938
 msgid "Enable Effect: Raindrops"
 msgstr "Uključi efekt: Raindrops"
 
-#: src/fx.c:941
+#: src/fx.c:942
 msgid "Ripples"
 msgstr "Talasi"
 
-#: src/fx.c:945
+#: src/fx.c:946
 msgid "Waves"
 msgstr "Valovi"
 
-#: src/fx.c:951
+#: src/fx.c:952
 msgid "FX"
 msgstr ""
 
-#: src/fx.c:952
+#: src/fx.c:953
 msgid "Special FX Settings"
 msgstr "Specijalne FX osobine"
 
-#: src/fx.c:955
+#: src/fx.c:956
 msgid ""
 "Enlightenment Special Effects\n"
 "Settings Dialog\n"

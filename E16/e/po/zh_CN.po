@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: e16\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2009-08-04 20:23+0200\n"
+"POT-Creation-Date: 2009-09-10 19:33+0200\n"
 "PO-Revision-Date: 2009-07-06 09:05+0000\n"
 "Last-Translator: Careone <zzbusagain@yahoo.com.cn>\n"
 "Language-Team: Chinese/Simplified <i18n-translation@lists.linux.net.cn>\n"
@@ -44,7 +44,7 @@ msgstr ""
 "Mandrake - mandrake@mandrake.net\n"
 "Kim Woelders - kim@woelders.dk\n"
 
-#: src/aclass.c:209 src/backgrounds.c:236 src/borders.c:641 src/buttons.c:181
+#: src/aclass.c:211 src/backgrounds.c:236 src/borders.c:641 src/buttons.c:181
 #: src/cursors.c:170 src/iclass.c:337 src/tclass.c:113 src/tooltips.c:135
 #, c-format
 msgid "%u references remain\n"
@@ -553,55 +553,55 @@ msgstr ""
 "点击这里来下降桌面\n"
 "到底部。\n"
 
-#: src/desktops.c:2316
+#: src/desktops.c:2325
 msgid "Number of virtual desktops:\n"
 msgstr "虚拟桌面的数量：\n"
 
-#: src/desktops.c:2341
+#: src/desktops.c:2350
 msgid "Slide desktops around when changing"
 msgstr "更改桌面时拉幕式切换"
 
-#: src/desktops.c:2347
+#: src/desktops.c:2356
 msgid "Desktop Slide speed:\n"
 msgstr "桌面切换速度：\n"
 
-#: src/desktops.c:2361
+#: src/desktops.c:2370
 msgid "Wrap desktops around"
 msgstr "包围桌面"
 
-#: src/desktops.c:2369
+#: src/desktops.c:2378
 msgid "Display desktop dragbar"
 msgstr "显示桌面拖拽栏"
 
-#: src/desktops.c:2375
+#: src/desktops.c:2384
 msgid "Drag bar position:"
 msgstr "拖动栏位置："
 
-#: src/desktops.c:2379
+#: src/desktops.c:2388
 msgid "Top"
 msgstr "顶部"
 
-#: src/desktops.c:2385
+#: src/desktops.c:2394
 msgid "Bottom"
 msgstr "底部"
 
-#: src/desktops.c:2391 src/pager.c:1924 src/pager.c:1949 src/pager.c:1974
+#: src/desktops.c:2400 src/pager.c:1924 src/pager.c:1949 src/pager.c:1974
 msgid "Left"
 msgstr "左侧"
 
-#: src/desktops.c:2397 src/pager.c:1936 src/pager.c:1961 src/pager.c:1986
+#: src/desktops.c:2406 src/pager.c:1936 src/pager.c:1961 src/pager.c:1986
 msgid "Right"
 msgstr "右侧"
 
-#: src/desktops.c:2405 src/menus-misc.c:582
+#: src/desktops.c:2414 src/menus-misc.c:582
 msgid "Desks"
 msgstr "桌面"
 
-#: src/desktops.c:2406
+#: src/desktops.c:2415
 msgid "Multiple Desktop Settings"
 msgstr "多桌面设置"
 
-#: src/desktops.c:2409
+#: src/desktops.c:2418
 msgid ""
 "Enlightenment Multiple Desktop\n"
 "Settings Dialog\n"
@@ -609,43 +609,43 @@ msgstr ""
 "Enlightenment 多桌面\n"
 "设置对话框\n"
 
-#: src/desktops.c:2500
+#: src/desktops.c:2509
 msgid "Virtual Desktop size:\n"
 msgstr "虚拟桌面大小：\n"
 
-#: src/desktops.c:2536
+#: src/desktops.c:2545
 msgid "Wrap virtual desktops around"
 msgstr "包围虚拟桌面"
 
-#: src/desktops.c:2543
+#: src/desktops.c:2552
 msgid "Edge Flip Mode:"
 msgstr "边缘翻转模式："
 
-#: src/desktops.c:2546
+#: src/desktops.c:2555
 msgid "Off"
 msgstr "关闭"
 
-#: src/desktops.c:2551
+#: src/desktops.c:2560
 msgid "On"
 msgstr "开启"
 
-#: src/desktops.c:2556
+#: src/desktops.c:2565
 msgid "Only when moving window"
 msgstr "仅移动窗口时开启"
 
-#: src/desktops.c:2562
+#: src/desktops.c:2571
 msgid "Resistance at edge of screen:\n"
 msgstr "抵抗屏幕边界\n"
 
-#: src/desktops.c:2574
+#: src/desktops.c:2583
 msgid "Areas"
 msgstr "区域"
 
-#: src/desktops.c:2575
+#: src/desktops.c:2584
 msgid "Virtual Desktop Settings"
 msgstr "虚拟桌面设置"
 
-#: src/desktops.c:2578
+#: src/desktops.c:2587
 msgid ""
 "Enlightenment Virtual Desktop\n"
 "Settings Dialog\n"
@@ -781,31 +781,31 @@ msgstr ""
 "Enlightenment 焦点\n"
 "设置对话框\n"
 
-#: src/fx.c:934
+#: src/fx.c:935
 msgid "Effects"
 msgstr "效果"
 
-#: src/fx.c:937
+#: src/fx.c:938
 msgid "Enable Effect: Raindrops"
 msgstr "启用效果：雨滴"
 
-#: src/fx.c:941
+#: src/fx.c:942
 msgid "Ripples"
 msgstr "波纹"
 
-#: src/fx.c:945
+#: src/fx.c:946
 msgid "Waves"
 msgstr "波浪"
 
-#: src/fx.c:951
+#: src/fx.c:952
 msgid "FX"
 msgstr "FX"
 
-#: src/fx.c:952
+#: src/fx.c:953
 msgid "Special FX Settings"
 msgstr "特殊 FX 设置"
 
-#: src/fx.c:955
+#: src/fx.c:956
 msgid ""
 "Enlightenment Special Effects\n"
 "Settings Dialog\n"
