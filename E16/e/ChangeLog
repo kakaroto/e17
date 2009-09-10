@@ -5072,3 +5072,17 @@ Add some window size sanity checks.
 Fix font configuration file search order (default should be fonts.cfg).
 edox: Add -help option, remove cruft, move some lines of code.
 Update translations from launchpad (ar, es, nl, sk).
+
+-------------------------------------------------------------------------------
+
+Tue Sep  8 19:22:07 CEST 2009
+
+--- 1.0.1 ---
+Use render for restart cursor only if an ARGB visual is available.
+Fix issue with placement of windows present before e16 is started.
+Prepare to eliminate special e16keyedit data parser.
+Add missing newlines on IPC messages.
+Remove some obsolete code.
+Fix crash when snapshot or match places window on invalid desk
+ (noted by Ted Baltz).
+
