@@ -19,7 +19,7 @@ EXTRA_DIST = README AUTHORS COPYING esmart.spec esmart.spec.in \
 	     esmart_text_entry.pc.in \
 	     esmart_thumb.pc.in \
 	     esmart_trans_x11.pc.in \
-	     esmart_xpixmap.pc.in
+	     esmart_xpixmap.pc.in autogen.sh
 
 pkgconfigdir = $(libdir)/pkgconfig
 
