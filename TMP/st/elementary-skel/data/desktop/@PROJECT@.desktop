@@ -1,0 +1,9 @@
+[Desktop Entry]
+Encoding=UTF-8
+Name=@PROJECT@
+Comment=@PROJECT_DESCRIPTION@
+Exec=@PROJECT@
+Icon=@PROJECT@
+Terminal=false
+Type=Application
+Categories=Application;Utility;
