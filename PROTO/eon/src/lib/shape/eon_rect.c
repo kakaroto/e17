@@ -28,7 +28,7 @@ static void _geometry_calc(const Ekeko_Object *o, Ekeko_Event *e, void *data)
 	printf("[Eon_Rect] Setting geometry of size %d %d %d %d\n",
 			x.final, y.final, w.final, h.final);
 #endif
-	ekeko_renderable_geometry_set((Ekeko_Renderable *)r, &geom);
+	eon_shape_geometry_set((Eon_Shape *)r, &geom);
 }
 
 static void _render(Eon_Shape *s, Eon_Engine *eng, void *engine_data, void *canvas_data, Eina_Rectangle *clip)
@@ -44,16 +44,42 @@ static Eina_Bool _is_inside(Eon_Shape *s, int x, int y)
 	Eon_Rect *r = s;
 	Eon_Rect_Private *prv;
 	Enesim_Shape_Draw_Mode mode;
+	Enesim_Matrix_Type mtype;
+	Enesim_Matrix m;
+	Eon_Coord cx, cy, cw, ch;
+
+
+	eon_square_coords_get((Eon_Square *)s, &cx, &cy, &cw, &ch);
+        /* handle the transformation */
+	eon_shape_matrix_get(s, &m);
+        mtype = enesim_matrix_type_get(&m);
+        if (mtype != ENESIM_MATRIX_IDENTITY)
+	{
+		Eina_Rectangle rrect;
+		Eina_Rectangle point;
+
+		eina_rectangle_coords_from(&rrect, cx.final, cy.final,
+				cw.final, ch.final);
+		eina_rectangle_coords_from(&point, x, y, 1, 1);
+
+		if (!eina_rectangles_intersect(&rrect, &point))
+		{
+			printf("IS NOT INSIDE!\n");
+			return EINA_FALSE;
+		}
+		else
+		{
+			printf("IS INSIDE!\n");
+		}
+	}
 
 	/* TODO handle the rounded corners */
 	mode = eon_shape_draw_mode_get(s);
 	if (mode == ENESIM_SHAPE_DRAW_MODE_STROKE)
 	{
 		float sw;
-		Eon_Coord cx, cy, cw, ch;
 
 		sw = eon_shape_stroke_width_get(s);
-		eon_square_coords_get((Eon_Square *)s, &cx, &cy, &cw, &ch);
 
 		if (x > (cx.final + sw) && (x < cx.final + cw.final - sw) &&
 				y > (cy.final + sw) &&
@@ -81,6 +107,7 @@ static void _ctor(void *instance)
 	ekeko_event_listener_add((Ekeko_Object *)r, EON_SQUARE_Y_CHANGED, _geometry_calc, EINA_FALSE, NULL);
 	ekeko_event_listener_add((Ekeko_Object *)r, EON_SQUARE_W_CHANGED, _geometry_calc, EINA_FALSE, NULL);
 	ekeko_event_listener_add((Ekeko_Object *)r, EON_SQUARE_H_CHANGED, _geometry_calc, EINA_FALSE, NULL);
+	ekeko_event_listener_add((Ekeko_Object *)r, EON_SHAPE_MATRIX_CHANGED, _geometry_calc, EINA_FALSE, NULL);
 }
 
 static void _dtor(void *rect)

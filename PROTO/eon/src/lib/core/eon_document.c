@@ -233,10 +233,12 @@ EAPI Eon_Document * eon_document_new(const char *engine, int w, int h, const cha
 	/* the gfx engine */
 	prv->engine.backend = eon_engine_get(engine);
 	prv->engine.data = eon_engine_document_create(prv->engine.backend, d, options);
+#if 0
 	/* the script engine */
 	prv->vm.sm = eon_script_get("neko");
-	/* FIXME only initializa whenever we have a script element */
+	/* FIXME only initialize whenever we have a script element */
 	prv->vm.data = prv->vm.sm->init();
+#endif
 	/* the main canvas */
 	c = ekeko_type_instance_new(eon_canvas_type_get());
 	ekeko_object_child_append((Ekeko_Object *)d, (Ekeko_Object *)c);

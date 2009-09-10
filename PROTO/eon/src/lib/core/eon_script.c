@@ -76,7 +76,7 @@ void eon_script_init(void)
 {
 	_scripts = eina_hash_string_superfast_new(NULL);
 #ifdef BUILD_SCRIPT_NEKO
-	script_neko_init();
+	//script_neko_init();
 #endif
 }
 

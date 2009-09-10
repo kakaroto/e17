@@ -25,7 +25,7 @@ static void _update_geometry(Eon_Circle *p)
 	Eina_Rectangle geom;
 
 	eina_rectangle_coords_from(&geom, prv->x.final - prv->radius, prv ->y.final - prv->radius, prv->radius * 2, prv->radius * 2);
-	ekeko_renderable_geometry_set((Ekeko_Renderable *)p, &geom);
+	eon_shape_geometry_set((Eon_Shape *)p, &geom);
 }
 
 /* Just informs that the x.final property has to be recalculated */
@@ -104,6 +104,52 @@ static void _radius_change(const Ekeko_Object *o, Ekeko_Event *e, void *data)
 	_update_geometry(s);
 }
 
+static void _matrix_change(const Ekeko_Object *o, Ekeko_Event *e, void *data)
+{
+	Eon_Circle *s = (Eon_Circle *)o;
+	_update_geometry(s);
+}
+
+static Eina_Bool _is_inside(Eon_Shape *s, int x, int y)
+{
+	Eon_Circle *c = (Eon_Circle *)s;
+	Eon_Circle_Private *prv = PRIVATE(c);
+	Enesim_Shape_Draw_Mode mode;
+	float x2, y2, r2;
+
+	x2 = (x - prv->x.final);
+	x2 *= x2;
+
+	y2 = (y - prv->y.final);
+	y2 *= y2;
+
+	r2 = prv->radius * prv->radius;
+
+	mode = eon_shape_draw_mode_get(s);
+	if (mode == ENESIM_SHAPE_DRAW_MODE_STROKE)
+	{
+		float r3;
+		float sw;
+
+		/* the inner radius */
+		sw = eon_shape_stroke_width_get(s);
+		r3 = prv->radius - sw;
+		r3 *= r3;
+		
+		if (x2 + y2 <= r2 && x2 + y2 >= r3)
+			return EINA_TRUE;
+		else
+			return EINA_FALSE;
+	}
+	else
+	{
+		if (x2 + y2 <= r2)
+			return EINA_TRUE;
+		else
+			return EINA_FALSE;
+	}
+}
+
 static void _render(Eon_Shape *s, Eon_Engine *eng, void *engine_data, void *canvas_data, Eina_Rectangle *clip)
 {
 	Eon_Circle *p;
@@ -126,10 +172,12 @@ static void _ctor(void *instance)
 	p->private = prv = ekeko_type_instance_private_get(eon_polygon_type_get(), instance);
 	p->parent.render = _render;
 	p->parent.create = eon_engine_circle_create;
+	p->parent.is_inside = _is_inside;
 	/* events */
 	ekeko_event_listener_add((Ekeko_Object *)p, EON_CIRCLE_X_CHANGED, _x_change, EINA_FALSE, NULL);
 	ekeko_event_listener_add((Ekeko_Object *)p, EON_CIRCLE_Y_CHANGED, _y_change, EINA_FALSE, NULL);
 	ekeko_event_listener_add((Ekeko_Object *)p, EON_CIRCLE_RADIUS_CHANGED, _radius_change, EINA_FALSE, NULL);
+	ekeko_event_listener_add((Ekeko_Object *)p, EON_SHAPE_MATRIX_CHANGED, _matrix_change, EINA_FALSE, NULL);
 }
 
 static void _dtor(void *polygon)

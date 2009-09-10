@@ -59,7 +59,6 @@ static void _event_callback(const Ekeko_Object *o, Ekeko_Event *e, void *data)
 
 static void _object_id_get(char *value, char *attr, void *data)
 {
-	printf("called\n");
 }
 
 static void _anim_id_get(char *value, char *attr, void *data)

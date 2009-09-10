@@ -19,6 +19,7 @@
 #define EON_SHAPE_STROKE_PAINT_CHANGED "stroke_paintChanged"
 #define EON_SHAPE_STROKE_WIDTH_CHANGED "stroke_widthChanged"
 #define EON_SHAPE_DRAW_MODE_CHANGED "draw_modeChanged"
+#define EON_SHAPE_MATRIX_CHANGED "matrixChanged"
 /*============================================================================*
  *                               Properties                                   *
  *============================================================================*/
@@ -31,6 +32,7 @@ extern Ekeko_Property_Id EON_SHAPE_STROKE_COLOR;
 extern Ekeko_Property_Id EON_SHAPE_STROKE_PAINT;
 extern Ekeko_Property_Id EON_SHAPE_STROKE_WIDTH;
 extern Ekeko_Property_Id EON_SHAPE_DRAW_MODE;
+extern Ekeko_Property_Id EON_SHAPE_MATRIX;
 /*============================================================================*
  *                                 Class                                      *
  *============================================================================*/
@@ -69,6 +71,9 @@ EAPI float eon_shape_stroke_width_get(Eon_Shape *s);
 
 EAPI void eon_shape_draw_mode_set(Eon_Shape *s, Enesim_Shape_Draw_Mode draw_mode);
 EAPI Enesim_Shape_Draw_Mode eon_shape_draw_mode_get(Eon_Shape *s);
+
+EAPI void eon_canvas_matrix_set(Eon_Canvas *c, Enesim_Matrix *m);
+EAPI void eon_canvas_matrix_get(Eon_Canvas *c, Enesim_Matrix *m);
 
 #define eon_shape_show(s) ekeko_renderable_show(EKEKO_RENDERABLE((s)))
 #define eon_shape_hide(s) ekeko_renderable_hide(EKEKO_RENDERABLE((s)))

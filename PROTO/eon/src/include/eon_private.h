@@ -90,6 +90,7 @@ void * eon_shape_engine_data_get(Eon_Shape *s);
 void eon_shape_engine_data_set(Eon_Shape *s, void *engine_data);
 void eon_shape_change(Eon_Shape *s);
 Eina_Bool eon_shape_appendable(void *instance, void *child);
+void eon_shape_geometry_set(Eon_Shape *s, Eina_Rectangle *rect);
 
 /* Coord */
 void eon_coord_change(const Ekeko_Object *o, Eon_Coord *dst, Eon_Coord *curr,

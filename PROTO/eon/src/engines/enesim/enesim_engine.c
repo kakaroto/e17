@@ -382,6 +382,7 @@ static void shape_renderer_setup(Eon_Shape *s, Enesim_Renderer *r)
 	float stroke;
 	Eon_Color color;
 	Enesim_Shape_Draw_Mode mode;
+	Enesim_Matrix m;
 
 	/* the fill properties */
 	p = eon_shape_fill_paint_get(s);
@@ -399,6 +400,10 @@ static void shape_renderer_setup(Eon_Shape *s, Enesim_Renderer *r)
 	/* common fill/stroke properties */
 	mode = eon_shape_draw_mode_get(s);
 	enesim_renderer_shape_draw_mode_set(r, mode);
+
+	/* the transformation matrix */
+	eon_shape_inverse_matrix_get(s, &m);
+	enesim_renderer_transform_set(r, &m);
 }
 
 static void shape_setup(Eon_Shape *s, Shape_Drawer_Data *d, Enesim_Surface *dst)
@@ -500,13 +505,16 @@ static void rect_render(void *er, void *cd, Eina_Rectangle *clip)
 	Rectangle *r = er;
 	Eina_Rectangle geom;
 	float rad;
+	Eon_Coord cx, cy, cw, ch;
 
 	shape_renderer_setup((Eon_Shape *)r->er, r->r);
-	ekeko_renderable_geometry_get((Ekeko_Renderable *)r->er, &geom);
+	eon_square_coords_get((Eon_Square *)r->er, &cx, &cy, &cw, &ch);
 	rad = eon_rect_corner_radius_get(r->er);
 
-	enesim_renderer_origin_set(r->r, geom.x, geom.y);
-	enesim_renderer_rectangle_size_set(r->r, geom.w, geom.h);
+	//printf("%d %d\n", cx.final, cy.final);
+	enesim_renderer_origin_set(r->r, cx.final, cy.final);
+	//enesim_renderer_origin_set(r->r, 0, 0);
+	enesim_renderer_rectangle_size_set(r->r, cw.final, ch.final);
 	enesim_renderer_rectangle_corner_radius_set(r->r, rad);
 	/* FIXME fix this */
 	enesim_renderer_rectangle_corners_set(r->r, 1, 1, 1, 1);

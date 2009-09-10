@@ -197,6 +197,101 @@ EAPI void eon_paint_matrix_get(Eon_Paint *p, Enesim_Matrix *m)
 	*m = prv->matrix;
 }
 
+EAPI void eon_paint_coordspace_set(Eon_Paint *p, Eon_Paint_Coordspace cs)
+{
+	Ekeko_Value v;
+
+	ekeko_value_int_from(&v, cs);
+	ekeko_object_property_value_set((Ekeko_Object *)p, "coordspace", &v);
+}
+
+EAPI Eon_Paint_Coordspace eon_paint_coordspace_get(Eon_Paint *p)
+{
+	Eon_Paint_Private *prv = PRIVATE(p);
+
+	return prv->coordspace;
+}
+
+EAPI void eon_paint_x_rel_set(Eon_Paint *p, int x)
+{
+	Eon_Coord coord;
+	Ekeko_Value v;
+
+	eon_coord_set(&coord, x, EON_COORD_RELATIVE);
+	eon_value_coord_from(&v, &coord);
+	ekeko_object_property_value_set((Ekeko_Object *)p, "x", &v);
+}
+
+EAPI void eon_paint_x_set(Eon_Paint *p, int x)
+{
+	Eon_Coord coord;
+	Ekeko_Value v;
+
+	eon_coord_set(&coord, x, EON_COORD_ABSOLUTE);
+	eon_value_coord_from(&v, &coord);
+	ekeko_object_property_value_set((Ekeko_Object *)p, "x", &v);
+}
+
+EAPI void eon_paint_y_set(Eon_Paint *p, int y)
+{
+	Eon_Coord coord;
+	Ekeko_Value v;
+
+	eon_coord_set(&coord, y, EON_COORD_ABSOLUTE);
+	eon_value_coord_from(&v, &coord);
+	ekeko_object_property_value_set((Ekeko_Object *)p, "y", &v);
+}
+
+EAPI void eon_paint_y_rel_set(Eon_Paint *p, int y)
+{
+	Eon_Coord coord;
+	Ekeko_Value v;
+
+	eon_coord_set(&coord, y, EON_COORD_RELATIVE);
+	eon_value_coord_from(&v, &coord);
+	ekeko_object_property_value_set((Ekeko_Object *)p, "y", &v);
+}
+
+EAPI void eon_paint_w_set(Eon_Paint *p, int w)
+{
+	Eon_Coord coord;
+	Ekeko_Value v;
+
+	eon_coord_set(&coord, w, EON_COORD_ABSOLUTE);
+	eon_value_coord_from(&v, &coord);
+	ekeko_object_property_value_set((Ekeko_Object *)p, "w", &v);
+}
+
+EAPI void eon_paint_w_rel_set(Eon_Paint *p, int w)
+{
+	Eon_Coord coord;
+	Ekeko_Value v;
+
+	eon_coord_set(&coord, w, EON_COORD_RELATIVE);
+	eon_value_coord_from(&v, &coord);
+	ekeko_object_property_value_set((Ekeko_Object *)p, "w", &v);
+}
+
+EAPI void eon_paint_h_set(Eon_Paint *p, int h)
+{
+	Eon_Coord coord;
+	Ekeko_Value v;
+
+	eon_coord_set(&coord, h, EON_COORD_ABSOLUTE);
+	eon_value_coord_from(&v, &coord);
+	ekeko_object_property_value_set((Ekeko_Object *)p, "h", &v);
+}
+
+EAPI void eon_paint_h_rel_set(Eon_Paint *p, int h)
+{
+	Eon_Coord coord;
+	Ekeko_Value v;
+
+	eon_coord_set(&coord, h, EON_COORD_RELATIVE);
+	eon_value_coord_from(&v, &coord);
+	ekeko_object_property_value_set((Ekeko_Object *)p, "h", &v);
+}
+
 EAPI void eon_paint_coords_get(Eon_Paint *p, Eon_Coord *x, Eon_Coord *y, Eon_Coord *w, Eon_Coord *h)
 {
 	Eon_Paint_Private *prv = PRIVATE(p);
@@ -207,15 +302,4 @@ EAPI void eon_paint_coords_get(Eon_Paint *p, Eon_Coord *x, Eon_Coord *y, Eon_Coo
 	*h = prv->h;
 }
 
-EAPI Eon_Paint_Coordspace eon_paint_coordspace_get(Eon_Paint *p)
-{
-	Eon_Paint_Private *prv = PRIVATE(p);
 
-	return prv->coordspace;
-}
-
-EAPI void eon_paint_x_set(Eon_Paint *p, int x)
-{
-	Eon_Coord;
-
-}

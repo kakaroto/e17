@@ -52,7 +52,19 @@ struct _Eon_Paint
  *                                Functions                                   *
  *============================================================================*/
 EAPI Ekeko_Type *eon_paint_type_get(void);
-EAPI void eon_paint_coords_get(Eon_Paint *p, Eon_Coord *x, Eon_Coord *y, Eon_Coord *w, Eon_Coord *h);
+EAPI void eon_paint_coords_get(Eon_Paint *p, Eon_Coord *x, Eon_Coord *y,
+		Eon_Coord *w, Eon_Coord *h);
+
 EAPI Eon_Paint_Coordspace eon_paint_coordspace_get(Eon_Paint *p);
+EAPI void eon_paint_coordspace_set(Eon_Paint *p, Eon_Paint_Coordspace cs);
+
+EAPI void eon_paint_x_rel_set(Eon_Paint *p, int x);
+EAPI void eon_paint_x_set(Eon_Paint *p, int x);
+EAPI void eon_paint_y_set(Eon_Paint *p, int y);
+EAPI void eon_paint_y_rel_set(Eon_Paint *p, int y);
+EAPI void eon_paint_w_set(Eon_Paint *p, int w);
+EAPI void eon_paint_w_rel_set(Eon_Paint *p, int w);
+EAPI void eon_paint_h_set(Eon_Paint *p, int h);
+EAPI void eon_paint_h_rel_set(Eon_Paint *p, int h);
 
 #endif /* EON_PAINT_H_ */
