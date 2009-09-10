@@ -43,7 +43,7 @@ void eyelight_viewer_slideshow_start(Eyelight_Viewer* pres,int select)
     o = edje_object_add(pres->evas);
     pres->slideshow_background = o;
     if(edje_object_file_set(o, pres->theme, "eyelight/slideshow") ==  0)
-        printf("eyelight_viewer_slideshow_start(), edje_object_file_set() erreur! 1\n");
+        WARN("eyelight_viewer_slideshow_start(), edje_object_file_set() erreur!");
 
     data = edje_object_data_get(o, "nb_slides");
     pres->slideshow_nb_slides = atoi(data);

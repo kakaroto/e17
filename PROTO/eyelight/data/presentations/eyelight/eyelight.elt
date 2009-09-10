@@ -13,6 +13,8 @@ transition: fade_content;
 
 slide
 {
+    // do not display the area 'top'. This area is defined in the layout 'title'
+    ignore_area: "header_image";
     layout: title;
     custom_area: "top" 0.15 -0.2 0.85 0.5;
     header_image: "";

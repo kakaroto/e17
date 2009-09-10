@@ -34,7 +34,7 @@ void eyelight_viewer_gotoslide_start(Eyelight_Viewer* pres)
     o = edje_object_add(pres->evas);
     pres->gotoslide_object = o;
     if(edje_object_file_set(o, pres->theme, "eyelight/gotoslide") ==  0)
-        printf("eyelight_viewer_gotoslide_start(), edje_object_file_set() erreur! 1\n");
+        WARN("eyelight_viewer_gotoslide_start(), edje_object_file_set() erreur!");
     evas_object_show(o);
     evas_object_resize(o, pres->current_size_w, pres->current_size_h);
     evas_object_smart_member_add(o, pres->smart_obj);

@@ -6,6 +6,8 @@
 #include "eyelight_compiler_parser.h"
 #include <locale.h>
 
+static void _eyelight_save(Eyelight_Node *node, FILE *file, char *tabs);
+
 
 /*
  * @brief get the name of a token
@@ -22,6 +24,20 @@ Eyelight_Node_Name eyelight_name_get(char* p)
     return EYELIGHT_NAME_NONE;
 }
 
+/*
+ * @brief Get the string which correspond to the id
+ */
+const char *eyelight_string_name_get(Eyelight_Node_Name name)
+{
+    int i;
+    for (i = 0; i < sizeof (eyelight_name_keys) / sizeof (Eyelight_Name_Key); ++i)
+        if (eyelight_name_keys[i].name == name)
+        {
+            return eyelight_name_keys[i].keyname;
+        }
+
+    return NULL;
+}
 
 /*
  * @brief remove the first and last " of a string
@@ -55,7 +71,7 @@ char* eyelight_source_fetch(char* file, char** p_end)
     input = fopen(file,"r");
     if(!input)
     {
-        fprintf(stderr,"Can't open the file %s\n",file);
+        ERR("Can't open the file %s",file);
         exit(EXIT_FAILURE);
     }
 
@@ -121,7 +137,7 @@ void eyelight_if_open_block(Eyelight_Compiler *compiler,char* p)
         compiler->last_open_block++;
         if(compiler->last_open_block>=EYELIGHT_BUFLEN)
         {
-            fprintf(stderr,"You can't have more than %d block imbricate \n",EYELIGHT_BUFLEN);
+            ERR("You can't have more than %d block imbricate ",EYELIGHT_BUFLEN);
             exit (EXIT_FAILURE);
         }
 
@@ -139,7 +155,7 @@ void eyelight_if_close_block(Eyelight_Compiler *compiler,char* p)
         compiler->last_open_block--;
         if(compiler->last_open_block<-1)
         {
-            fprintf(stderr,"(line %d): you close a block never open \n",compiler->line);
+            ERR("(line %d): you close a block never open ",compiler->line);
             exit (EXIT_FAILURE);
         }
     }
@@ -346,7 +362,7 @@ void eyelight_parse(Eyelight_Compiler* compiler,char *p, char* end)
         {
             if(!current_node->type==EYELIGHT_NODE_TYPE_BLOCK)
             {
-                fprintf(stderr,"(line %d) A block can not be declare here. \n",compiler->line);
+                ERR("(line %d) A block can not be declare here. ",compiler->line);
                 exit(EXIT_FAILURE);
             }
             name = eyelight_name_get(previous_token);
@@ -356,7 +372,7 @@ void eyelight_parse(Eyelight_Compiler* compiler,char *p, char* end)
             }
             else
             {
-                fprintf(stderr,"(line %d) The type of the block is not specified or invalid\n",compiler->line);
+                ERR("(line %d) The type of the block is not specified or invalid",compiler->line);
                 exit(EXIT_FAILURE);
             }
             EYELIGHT_FREE(previous_token);
@@ -370,7 +386,7 @@ void eyelight_parse(Eyelight_Compiler* compiler,char *p, char* end)
         {
             if(!current_node->type==EYELIGHT_NODE_TYPE_BLOCK)
             {
-                fprintf(stderr,"(line %d) A property can not be declare here. \n",compiler->line);
+                ERR("(line %d) A property can not be declare here.",compiler->line);
                 exit(EXIT_FAILURE);
             }
 
@@ -404,7 +420,7 @@ void eyelight_parse(Eyelight_Compiler* compiler,char *p, char* end)
             }
             else
             {
-                fprintf(stderr,"(line %d) The property %s is invalid in a block %d\n",compiler->line,previous_token,current_node->name);
+                ERR("(line %d) The property %s is invalid in a block %d",compiler->line,previous_token,current_node->name);
                 exit(EXIT_FAILURE);
             }
             EYELIGHT_FREE(previous_token);
@@ -414,13 +430,13 @@ void eyelight_parse(Eyelight_Compiler* compiler,char *p, char* end)
             int i;
             if(!current_node->type == EYELIGHT_NODE_TYPE_PROP)
             {
-                fprintf(stderr,"(line %d) A value can not be declare here. \n",compiler->line);
+                ERR("(line %d) A value can not be declare here.",compiler->line);
                 exit (EXIT_FAILURE);
             }
 
             if(value_size!=eyelight_get_nb_value_of_prop(current_node->name))
             {
-                fprintf(stderr,"(line %d) Expected %d values for the property %d but got %d. \n", compiler->line, eyelight_get_nb_value_of_prop(current_node->name),current_node->name,value_size);
+                ERR("(line %d) Expected %d values for the property %d but got %d.", compiler->line, eyelight_get_nb_value_of_prop(current_node->name),current_node->name,value_size);
                 exit(EXIT_FAILURE);
             }
             for(i=0;i<value_size;i++)
@@ -433,7 +449,7 @@ void eyelight_parse(Eyelight_Compiler* compiler,char *p, char* end)
                 switch(type)
                 {
                     case EYELIGHT_VALUE_TYPE_NONE:
-                        fprintf(stderr,"Internal error.\n");
+                        ERR("Internal error.");
                         exit(EXIT_FAILURE);
                         break;
 
@@ -447,7 +463,7 @@ void eyelight_parse(Eyelight_Compiler* compiler,char *p, char* end)
                                     (v == LONG_MAX || v == LONG_MIN))
                                 || (errno != 0 && v == 0))
                         {
-                            fprintf(stderr,"(line %d) The %d st value of the property %d has to be a float\n",compiler->line,i,current_node->name);
+                            ERR("(line %d) The %d st value of the property %d has to be a float",compiler->line,i,current_node->name);
                             exit(EXIT_FAILURE);
                         }
                         break;
@@ -459,7 +475,7 @@ void eyelight_parse(Eyelight_Compiler* compiler,char *p, char* end)
                                     (v == LONG_MAX || v == LONG_MIN))
                                 || (errno != 0 && v == 0))
                         {
-                            fprintf(stderr,"(line %d) The %d st value of the property %d has to be an integer\n",compiler->line,i,current_node->name);
+                            ERR("(line %d) The %d st value of the property %d has to be an integer",compiler->line,i,current_node->name);
                             exit(EXIT_FAILURE);
                         }
                         break;
@@ -491,7 +507,7 @@ void eyelight_parse(Eyelight_Compiler* compiler,char *p, char* end)
         {
             if(value_size>=EYELIGHT_BUFLEN)
             {
-                fprintf(stderr,"(line %d) You can't have more than %d values. \n",compiler->line, EYELIGHT_BUFLEN);
+                ERR("(line %d) You can't have more than %d values.",compiler->line, EYELIGHT_BUFLEN);
                 exit(EXIT_FAILURE);
             }
             value_list[value_size] = strdup(token);
@@ -509,7 +525,7 @@ void eyelight_parse(Eyelight_Compiler* compiler,char *p, char* end)
 
     for(i=compiler->last_open_block;i>=0;i--)
     {
-        fprintf(stderr,"(line %d), you forgot to close this block (line %d).\n",compiler->line, compiler->open_block[i]);
+        ERR("(line %d), you forgot to close this block (line %d).",compiler->line, compiler->open_block[i]);
         error = 1;
     }
 
@@ -517,3 +533,55 @@ void eyelight_parse(Eyelight_Compiler* compiler,char *p, char* end)
         exit (EXIT_FAILURE);
 }
 
+/*
+ * @brief save the presentation in an elt file
+ */
+int eyelight_save(Eyelight_Node *root, const char *file)
+{
+    FILE *f;
+    char buf[EYELIGHT_BUFLEN];
+    buf[0] = '\0';
+
+    f = fopen(file,"w");
+    EYELIGHT_ASSERT_RETURN(f != NULL);
+    _eyelight_save(root,f, buf);
+    fclose(f);
+
+    return 1;
+}
+
+static void _eyelight_save(Eyelight_Node *node,FILE *file, char *tabs)
+{
+    Eina_List *l;
+    Eyelight_Node *_node;
+
+    switch(node->type)
+    {
+        case EYELIGHT_NODE_TYPE_BLOCK:
+            if(node->name != EYELIGHT_NAME_ROOT)
+            {
+                fprintf(file, "%s%s {\n", tabs, eyelight_string_name_get(node->name), tabs);
+                strcat(tabs,"\t");
+            }
+            EINA_LIST_FOREACH(node->l, l, _node)
+                _eyelight_save(_node, file, tabs);
+            if(node->name != EYELIGHT_NAME_ROOT)
+            {
+                tabs[strlen(tabs)-1]='\0';
+                fprintf(file,"%s}\n",tabs);
+            }
+            break;
+        case EYELIGHT_NODE_TYPE_PROP:
+            if(eyelight_string_name_get(node->name))
+            {
+                fprintf(file, "%s%s : ", tabs, eyelight_string_name_get(node->name),tabs);
+                EINA_LIST_FOREACH(node->l, l, _node)
+                    _eyelight_save(_node, file, tabs);
+                fprintf(file,";\n");
+            }
+            break;
+        case EYELIGHT_NODE_TYPE_VALUE:
+            fprintf(file, "\"%s\" ", node->value);
+            break;
+    }
+}

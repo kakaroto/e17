@@ -140,7 +140,7 @@ int* _eyelight_viewer_thumbnails_create(Eyelight_Viewer* pres,int pos,int size_w
     pres_copy->elt_file = pres->elt_file;
 
     for(i=0;i<pres_copy->size;i++)
-        pres_copy->slides = eina_list_append(pres_copy->slides, calloc(1,sizeof(Eyelight_Slide)));
+        pres_copy->slides = eina_list_append(pres_copy->slides, eyelight_slide_new(pres_copy));
 
     slide = eina_list_nth(pres_copy->slides, pos);
     //create a thumbnail of the slide

@@ -26,7 +26,7 @@ typedef struct Eyelight_Prop_Value_Type Eyelight_Prop_Value_Type;
 typedef enum Eyelight_Value_Type Eyelight_Value_Type;
 typedef struct Eyelight_Valid_Prop_Block Eyelight_Valid_Prop_Block;
 typedef struct Eyelight_Prop_Nb_Value Eyelight_Prop_Nb_Value;
-typedef struct eyelight_custom_area Eyelight_Custom_Area;
+typedef struct eyelight_area Eyelight_Area;
 typedef struct eyelight_video Eyelight_Video;
 
 #include <stdio.h>
@@ -76,6 +76,7 @@ static const Eyelight_Name_Key eyelight_name_keys[] = {
     { "transition", EYELIGHT_NAME_TRANSITION },
     { "transition_next", EYELIGHT_NAME_TRANSITION_NEXT },
     { "transition_previous", EYELIGHT_NAME_TRANSITION_PREVIOUS },
+    { "ignore_area", EYELIGHT_NAME_IGNORE_AREA },
     { "custom_area", EYELIGHT_NAME_CUSTOM_AREA },
     { "size", EYELIGHT_NAME_SIZE },
     { "scale", EYELIGHT_NAME_SCALE },
@@ -123,6 +124,7 @@ static const Eyelight_Valid_Prop_Block eyelight_valid_prop_block[] =
     { EYELIGHT_NAME_SLIDE, EYELIGHT_NAME_TRANSITION },
     { EYELIGHT_NAME_SLIDE, EYELIGHT_NAME_TRANSITION_NEXT },
     { EYELIGHT_NAME_SLIDE, EYELIGHT_NAME_TRANSITION_PREVIOUS },
+    { EYELIGHT_NAME_SLIDE, EYELIGHT_NAME_IGNORE_AREA },
     { EYELIGHT_NAME_SLIDE, EYELIGHT_NAME_CUSTOM_AREA },
     { EYELIGHT_NAME_AREA, EYELIGHT_NAME_NAME },
     { EYELIGHT_NAME_AREA, EYELIGHT_NAME_TEXT },
@@ -238,8 +240,11 @@ struct eyelight_node
         char* value;
     };
     Eyelight_Node * father;
-    Evas_Object *obj;
     Eina_List *l;
+
+    //additional fields
+    Evas_Object *obj;
+    Eyelight_Area *area;
 };
 
 struct eyelight_compiler
@@ -264,10 +269,14 @@ struct eyelight_compiler
     Eyelight_Node *node_summary_items;
 };
 
-struct eyelight_custom_area
+struct eyelight_area
 {
     char *name;
+
     Evas_Object *obj;
+
+    Eyelight_Node *node_def;
+    Eyelight_Node *node_area;
 };
 
 struct eyelight_video
@@ -286,6 +295,8 @@ struct eyelight_video
 Eyelight_Compiler* eyelight_elt_load(char *input_file);
 
 Eyelight_Node_Name eyelight_name_get(char* p);
+const char *eyelight_string_name_get(Eyelight_Node_Name name);
+int eyelight_save(Eyelight_Node *root, const char *file);
 
 Eyelight_Compiler* eyelight_compiler_new(char* input_file, int display_areas);
 void eyelight_compiler_free(Eyelight_Compiler **p_compiler);
@@ -305,6 +316,10 @@ void eyelight_compile(Eyelight_Viewer *pres, Eyelight_Slide *slide, int id_slide
 void eyelight_parse(Eyelight_Compiler* compiler,char *p, char* end);
 
 char *eyelight_compile_image_path_new(Eyelight_Viewer *pres, const char *image);
+void eyelight_theme_areas_create(Eyelight_Viewer *pres, Eyelight_Slide *slide);
+Eina_List *eyelight_theme_areas_get(Eyelight_Slide *slide);
+void eyelight_theme_area_desc_get(Eyelight_Slide *slide, const char* area_name,
+        char **rel1_x, char **rel1_y, char **rel2_x, char **rel2_y);
 
 /**
  * Remove a quote " at the start and the end of p
@@ -316,9 +331,13 @@ char* eyelight_remove_quote(char* p);
  */
 char* eyelight_source_fetch(char* file, char** p_end);
 
+
 char* eyelight_retrieve_value_of_prop(Eyelight_Node* node,int i);
 Eyelight_Node* eyelight_retrieve_node_prop(Eyelight_Node* current, Eyelight_Node_Name p);
 int eyelight_number_item_in_block(Eyelight_Node* current);
+Eyelight_Node *eyelight_ignore_area_is(Eyelight_Slide *slide, const char *area);
+
+Eyelight_Area *eyelight_retrieve_area_from_node(Eyelight_Slide *slide, Eyelight_Node *node);
 
 int eyelight_decimal_to_roman(char *dec, char *rom);
 

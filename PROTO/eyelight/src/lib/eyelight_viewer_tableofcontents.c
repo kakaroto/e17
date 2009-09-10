@@ -44,7 +44,7 @@ void eyelight_viewer_tableofcontents_start(Eyelight_Viewer* pres,int select)
     pres->tableofcontents_background = o;
     if(edje_object_file_set(o, pres->theme, "eyelight/tableofcontents") ==  0)
     {
-        fprintf(stderr,"table of contents is not supported by the theme\n");
+        WARN("table of contents is not supported by the theme");
         return ;
     }
 

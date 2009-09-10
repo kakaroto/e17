@@ -44,7 +44,7 @@ void eyelight_viewer_expose_start(Eyelight_Viewer* pres,int select)
     o = edje_object_add(pres->evas);
     pres->expose_background = o;
     if(edje_object_file_set(o, pres->theme, "eyelight/expose") ==  0)
-        printf("eyelight_viewer_expose_start(), edje_object_file_set() erreur! 1\n");
+        WARN("eyelight_viewer_expose_start(), edje_object_file_set() erreur! 1");
 
 
     data = edje_object_data_get(o, "nb_cols");

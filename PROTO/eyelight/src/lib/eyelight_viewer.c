@@ -19,7 +19,28 @@
 #include "eyelight_viewer.h"
 #include "../../config.h"
 
+int LOG_DOMAIN;
+
 void _eyelight_viewer_end_transition_cb(void *data, Evas_Object *o, const char *emission, const char *source);
+
+static int count = 0;
+
+int eyelight_init()
+{
+    if(count>0) return ++count;
+
+    LOG_DOMAIN = eina_log_domain_register("Eyelight",EINA_COLOR_BLUE);
+
+    return ++count;
+}
+
+int eyelight_shutdown()
+{
+    if(count>1) return --count;
+
+    eina_log_domain_unregister(LOG_DOMAIN);
+    return --count;
+}
 
 /*
  * @create a new viewer
@@ -81,9 +102,9 @@ int eyelight_viewer_presentation_file_set(Eyelight_Viewer *pres, const char* pre
     eyelight_viewer_thumbnails_background_load_stop(pres);
     eyelight_viewer_thumbnails_background_load_start(pres);
 
-    printf("## Presentation file: %s\n",pres->elt_file);
-    printf("## Theme: %s\n",pres->theme);
-    printf("## Number of slides: %d\n\n",pres->size);
+    DBG("## Presentation file: %s",pres->elt_file);
+    DBG("## Theme: %s",pres->theme);
+    DBG("## Number of slides: %d",pres->size);
 }
 
 int eyelight_viewer_new_presentation_file_set(Eyelight_Viewer *pres, const char* presentation)
@@ -112,9 +133,9 @@ int eyelight_viewer_new_presentation_file_set(Eyelight_Viewer *pres, const char*
     eyelight_viewer_thumbnails_background_load_stop(pres);
     eyelight_viewer_thumbnails_background_load_start(pres);
 
-    printf("## Presentation file: %s\n",pres->elt_file);
-    printf("## Theme: %s\n",pres->theme);
-    printf("## Number of slides: %d\n\n",pres->size);
+    DBG("## Presentation file: %s",pres->elt_file);
+    DBG("## Theme: %s",pres->theme);
+    DBG("## Number of slides: %d",pres->size);
 }
 
 /**
@@ -129,7 +150,7 @@ int eyelight_viewer_theme_file_set(Eyelight_Viewer *pres, const char* theme)
     if(!ecore_file_exists(pres->theme))
     {
         EYELIGHT_FREE(pres->theme);
-        fprintf(stderr,"The theme doesn't exists , use the default\n");
+        INFO("The theme doesn't exists , use the default");
         theme = PACKAGE_DATA_DIR"/themes/default/theme.edj";
         pres->theme = strdup(theme);
     }
@@ -219,6 +240,7 @@ void eyelight_viewer_destroy(Eyelight_Viewer**pres)
 Eyelight_Slide* eyelight_slide_new(Eyelight_Viewer *pres)
 {
     Eyelight_Slide *slide = calloc(1,sizeof(Eyelight_Slide));
+    slide->pres = pres;
     return slide;
 }
 
@@ -230,7 +252,7 @@ void eyelight_slide_clean(Eyelight_Slide *slide)
 {
     Evas_Object *o;
     Eyelight_Video *video;
-    Eyelight_Custom_Area *area;
+    Eyelight_Area *area;
     Eyelight_Edit *edit;
 
     evas_object_del(slide->obj);
@@ -248,7 +270,7 @@ void eyelight_slide_clean(Eyelight_Slide *slide)
         EYELIGHT_FREE(video);
     }
 
-    EINA_LIST_FREE(slide->custom_areas, area)
+    EINA_LIST_FREE(slide->areas, area)
     {
         evas_object_del(area->obj);
         EYELIGHT_FREE(area->name);
@@ -603,11 +625,11 @@ Evas_Object* eyelight_viewer_slide_load(Eyelight_Viewer*pres,Eyelight_Slide *sli
 
     if(!edje_file_group_exists(pres->theme,buf))
     {
-        printf("The layout \"%s\" doesnt exists !\n",layout);
+        WARN("The layout \"%s\" doesnt exists !",layout);
         return slide->obj;
     }
     if(edje_object_file_set(slide->obj, pres->theme, buf) ==  0)
-        printf("eyelight_viewer_slide_load(), edje_object_file_set() erreur! %d \n",
+        ERR("edje_object_file_set() erreur! %d",
                 edje_object_load_error_get(slide->obj));
 
     if(pres->with_border)

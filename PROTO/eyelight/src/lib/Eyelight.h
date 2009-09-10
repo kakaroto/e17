@@ -48,6 +48,10 @@ struct Eyelight_Thumb
     int h;
 };
 
+
+EAPI int eyelight_init();
+EAPI int eyelight_shutdown();
+
 EAPI Eyelight_Viewer* eyelight_viewer_new(Evas* evas, const char* pres, const char* theme,int with_boder);
 EAPI void eyelight_viewer_destroy(Eyelight_Viewer**pres);
 EAPI void eyelight_viewer_clean(Eyelight_Viewer *pres);

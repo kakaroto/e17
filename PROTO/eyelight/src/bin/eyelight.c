@@ -375,6 +375,9 @@ int main(int argc, char*argv[])
         return EXIT_FAILURE;
     }
 
+    eina_log_level_set(5);
+    eyelight_init();
+
     Ecore_Getopt_Value values[] = {
         ECORE_GETOPT_VALUE_BOOL(exit_option),
         ECORE_GETOPT_VALUE_BOOL(exit_option),
@@ -474,13 +477,13 @@ int main(int argc, char*argv[])
 
     ecore_main_loop_begin ();
 
+    eyelight_shutdown();
     ecore_evas_shutdown ();
     ecore_shutdown ();
     evas_shutdown ();
 
     return 1;
 }
-
 
 static void app_resize(Ecore_Evas *ee)
 {

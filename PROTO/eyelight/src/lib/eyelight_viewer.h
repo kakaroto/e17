@@ -19,8 +19,71 @@
 #ifndef  EYELIGHT_VIEWER_INC
 #define  EYELIGHT_VIEWER_INC
 
-
+extern int LOG_DOMAIN;
 typedef struct Eyelight_Slide Eyelight_Slide;
+
+#define INFO(s, ...) EINA_LOG_DOM_INFO(LOG_DOMAIN,s, ##__VA_ARGS__)
+#define WARN(s, ...) EINA_LOG_DOM_WARN(LOG_DOMAIN,s, ##__VA_ARGS__)
+#define DBG(s, ...) EINA_LOG_DOM_DBG(LOG_DOMAIN,s, ##__VA_ARGS__)
+#define ERR(s, ...) EINA_LOG_DOM_ERR(LOG_DOMAIN,s, ##__VA_ARGS__)
+
+
+
+#define EYELIGHT_ASSERT(test) \
+    do\
+    {\
+        if(!(test))\
+        {\
+            WARN("%s failed",#test); \
+        }\
+    }while(0)
+
+
+
+#define EYELIGHT_ASSERT_RETURN(test) \
+    do\
+    {\
+        if(!(test))\
+        {\
+            WARN("%s failed",#test); \
+            return 0;\
+        }\
+    }while(0)
+
+#define EYELIGHT_ASSERT_RETURN_VOID(test) \
+    do\
+    {\
+        if(!(test))\
+        {\
+            WARN("%s failed",#test); \
+            return ;\
+        }\
+    }while(0)
+
+
+
+#define EYELIGHT_ASSERT_ADV(test, instr, ...) \
+    do \
+    { \
+        if(!(test))\
+        {\
+            WARN(__VA_ARGS__); \
+            instr; \
+        }\
+    }while(0)
+
+#define EYELIGHT_ASSERT_CUSTOM_RET(test, instr) \
+    do \
+    { \
+        if(!(test))\
+        {\
+            WARN("%s failed",#test); \
+            instr; \
+        }\
+    }while(0)
+
+
+
 
 #include "Eyelight.h"
 #include <Eet.h>
@@ -40,8 +103,11 @@ struct Eyelight_Slide
     // List of type  Eyelight_Video*;
     // Items of type video
     Eina_List *items_video;
-    // List of type Eyelight_Custom_Area
-    Eina_List *custom_areas;
+    // List of type Eyelight_Area
+    Eina_List *areas;
+
+    //the node of the slide
+    Eyelight_Node *node;
 
     const char* transition_effect_next;
     const char* transition_effect_previous;
@@ -50,6 +116,8 @@ struct Eyelight_Slide
 
     //list of Eyelight_Edit
     Eina_List *edits;
+
+    Eyelight_Viewer *pres;
 };
 
 struct Eyelight_Viewer
@@ -128,6 +196,9 @@ struct Eyelight_Viewer
     //edit mode
     Edje_Signal_Cb edit_cb;
     void *edit_data;
+
+    //log
+    int log_domain;
 };
 
 void eyelight_slide_clean(Eyelight_Slide *slide);
