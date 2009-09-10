@@ -35,7 +35,10 @@ eyelight_compiler.c \
 eyelight_object.c \
 eyelight_parser.c \
 eyelight_smart.c \
-eyelight_edit.c
+edit/edit.c \
+edit/edit_area.c \
+edit/edit_slide.c \
+edit/edit_image.c
 
 libeyelight_la_DEPENDENCIES = $(top_builddir)/config.h
 libeyelight_la_LDFLAGS = @eyelight_libs@

@@ -60,7 +60,7 @@ enum eyelight_node_name
  */
 
 /**
- * @brief Extension of the eyelight smart object. Return The Eyelight_Viewer* object.
+ * @brief Extension of the eyelight smart object. Returns The Eyelight_Viewer* object.
  * @param obj the eyelight smart object
  * @return Returns the Eyelgiht_Viewer* object
  */
