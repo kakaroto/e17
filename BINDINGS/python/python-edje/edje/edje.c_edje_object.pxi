@@ -553,6 +553,49 @@ cdef public class Edje(evas.c_evas.Object) [object PyEdje, type PyEdje_Type]:
         """
         return bool(edje_object_part_box_remove_all(self.obj, part, clear))
 
+    def part_table_pack(self, char *part, c_evas.Object child, short col, short row, short colspan, short rowspan):
+        """Pack an object inside a TABLE part.
+
+        @parm: B{part} TABLE part to pack in.
+        @parm: B{child} Object to pack.
+
+        @rtype: bool
+        """
+        return bool(edje_object_part_table_pack(self.obj, part, child.obj, col, row, colspan, rowspan))
+
+    def part_table_unpack(self, char *part, c_evas.Object child):
+        """Remove an object from a TABLE part.
+
+        @parm: B{part} TABLE part to remove from.
+        @parm: B{child} Object to remove.
+
+        @rtype: bool
+        """
+        return bool(edje_object_part_table_unpack(self.obj, part, child.obj))
+
+    def part_table_col_row_size_get(self, char *part):
+        """Returns the size in columns/rows of the TABLE part.
+
+        @parm: B{part} TABLE part to get the size of.
+
+        @rtype: tuple of int
+        """
+        cdef int c, r
+        edje_object_part_table_col_row_size_get(self.obj, part, &c, &r)
+        return (c, r)
+
+    def part_table_clear(self, char *part, int clear):
+        """Clears a TABLE part.
+
+        @parm: B{part} TABLE part to clear all its elements from.
+        @parm: B{clear} Delete objects when removed from the table.
+
+        Note: This function will not remove the elements defined by the theme.
+
+        @rtype: bool
+        """
+        return bool(edje_object_part_table_clear(self.obj, part, clear))
+
     def part_state_get(self, char *part):
         "@rtype: (name, value)"
         cdef double sv
