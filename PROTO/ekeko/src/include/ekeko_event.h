@@ -104,6 +104,8 @@ typedef struct _Ekeko_Event_Mouse
 	{
 		unsigned int x;
 		unsigned int y;
+		unsigned int prev_x;
+		unsigned int prev_y;
 	} screen;
 } Ekeko_Event_Mouse;
 

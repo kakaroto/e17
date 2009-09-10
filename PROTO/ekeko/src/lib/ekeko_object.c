@@ -180,6 +180,7 @@ void object_event_listener_add(Ekeko_Object *obj, const char *type,
 	lst = eina_list_append(events, oe);
 	if (!events)
 		eina_hash_add(prv->listeners, type, lst);
+	events = lst;
 }
 
 void object_event_listener_remove(Ekeko_Object *obj, const char *type,
@@ -187,17 +188,23 @@ void object_event_listener_remove(Ekeko_Object *obj, const char *type,
 {
 	Ekeko_Object_Private *prv;
 	Object_Event *oe;
-	Eina_List *events;
-	Eina_Iterator *it;
+	Eina_List *events, *l;
 
 	prv = PRIVATE(obj);
 	events = eina_hash_find(prv->listeners, type);
-	it = eina_list_iterator_new(events);
-	while (eina_iterator_next(it, (void **)&oe))
+	for (l = events; l; l = eina_list_next(l))
 	{
-		if ((oe->bubble == bubble) && (oe->data == data) && (oe->el == el))
+		oe = eina_list_data_get(l);
+		if ((oe->bubble == bubble) && (oe->data == data) &&
+			(oe->el == el))
 		{
-			eina_list_remove(events, oe);
+			Eina_List *lst;
+
+			lst = eina_list_remove_list(events, l);
+			if (!lst)
+				eina_hash_del(prv->listeners, type, events);
+
+			free(oe);
 			return;
 		}
 	}

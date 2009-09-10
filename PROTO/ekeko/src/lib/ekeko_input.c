@@ -30,7 +30,10 @@ struct _Ekeko_Input
 		unsigned int button;
 		unsigned int x;
 		unsigned int y;
+		unsigned int px;
+		unsigned int py;
 		Eina_Bool inside;
+		Ekeko_Renderable *grabbed;
 		Ekeko_Renderable *r;
 	} pointer;
 	/* TODO keep the last modifiers */
@@ -78,7 +81,16 @@ EAPI void ekeko_input_feed_mouse_move(Ekeko_Input *i, unsigned int x, unsigned i
 	py = i->pointer.y;
 	i->pointer.x = x;
 	i->pointer.y = y;
-	/* TODO grabbed */
+
+	if (i->pointer.grabbed)
+	{
+		Ekeko_Event_Mouse em;
+
+		event_mouse_move_init(&em, (Ekeko_Object *)i->pointer.grabbed,
+				NULL, i, x, y, px, py);
+		ekeko_event_dispatch((Ekeko_Event *)&em);
+		return;
+	}
 	/* TODO handle the subcanvas
 	 * if mouse in an object and canvas(obj) != canvas => in canvas(obj) ?
 	 * if mouse out an object and canvas(obj) != canvas => out canvas(obj) ?
@@ -91,7 +103,8 @@ EAPI void ekeko_input_feed_mouse_move(Ekeko_Input *i, unsigned int x, unsigned i
 		{
 			Ekeko_Event_Mouse em;
 
-			event_mouse_move_init(&em, (Ekeko_Object *)r, NULL, i, x, y);
+			event_mouse_move_init(&em, (Ekeko_Object *)r, NULL, i,
+					x, y, px, py);
 			ekeko_event_dispatch((Ekeko_Event *)&em);
 		}
 	}
@@ -110,7 +123,7 @@ EAPI void ekeko_input_feed_mouse_move(Ekeko_Input *i, unsigned int x, unsigned i
 		{
 			Ekeko_Event_Mouse em;
 
-			event_mouse_in_init(&em, (Ekeko_Object *)r, (Ekeko_Object *)i->pointer.r, i);
+			event_mouse_in_init(&em, (Ekeko_Object *)r, (Ekeko_Object *)r, i);
 			ekeko_event_dispatch((Ekeko_Event *)&em);
 
 		}
@@ -145,9 +158,10 @@ EAPI void ekeko_input_feed_mouse_down(Ekeko_Input *i)
 	/* store the coordinates where the mouse buton down was done to
 	 * trigger the click later
 	 */
+	i->pointer.grabbed = r;
 	i->pointer.downx = i->pointer.x;
 	i->pointer.downy = i->pointer.y;
-	event_mouse_down_init(&em, (Ekeko_Object *)r, (Ekeko_Object *)i->pointer.r, i);
+	event_mouse_down_init(&em, (Ekeko_Object *)r, (Ekeko_Object *)r, i);
 	ekeko_event_dispatch((Ekeko_Event *)&em);
 }
 
@@ -156,21 +170,21 @@ EAPI void ekeko_input_feed_mouse_up(Ekeko_Input *i)
 	Ekeko_Renderable *r;
 	Ekeko_Event_Mouse em;
 
-	if (!i->pointer.inside)
-		return;
-	r = ekeko_canvas_renderable_get_at_coord(i->c, i->pointer.x, i->pointer.y);
-	if (!r)
-		return;
-	event_mouse_up_init(&em, (Ekeko_Object *)r, (Ekeko_Object *)i->pointer.r, i);
+	/* send the event to the grabbed object */
+	r = i->pointer.grabbed;
+	event_mouse_up_init(&em, (Ekeko_Object *)r, (Ekeko_Object *)r, i);
 	ekeko_event_dispatch((Ekeko_Event *)&em);
 	/* in case the down coordinates are the same as the current coordinates
 	 * send a click event
 	 */
-	if ((i->pointer.downx == i->pointer.x) && (i->pointer.downy == i->pointer.y))
+	if ((i->pointer.downx == i->pointer.x) &&
+			 (i->pointer.downy == i->pointer.y))
 	{
-		event_mouse_click_init(&em, (Ekeko_Object *)r, (Ekeko_Object *)i->pointer.r, i);
+		event_mouse_click_init(&em, (Ekeko_Object *)r,
+				(Ekeko_Object *)r, i);
 		ekeko_event_dispatch((Ekeko_Event *)&em);
 	}
+	i->pointer.grabbed = NULL;
 }
 
 EAPI void ekeko_input_feed_key_up(Ekeko_Input *i, Ekeko_Key key, Ekeko_Key_Mod mod)
