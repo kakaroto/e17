@@ -1,9 +1,75 @@
 images {
     image: "images/shadow.png" COMP;
     image: "images/pres_size.png" COMP;
+    image: "images/background.png" COMP;
 }
 
 collections {
+    group {
+        name: "background";
+        parts {
+            part {
+                name: "background";
+                description {
+                    state: "default" 0.0;
+                    image.normal: "images/background.png";
+                }
+            }
+        }
+    }
+    group {
+        name: "main";
+        parts {
+            part {
+                name: "object.presentation";
+                type: SWALLOW;
+                description {
+                    state: "default" 0.0;
+                    rel1.to_y: "object.menubar";
+                    rel1.relative: 0.2 0.2;
+                }
+            }
+            part {
+                name: "object.list";
+                type: SWALLOW;
+                description {
+                    state: "default" 0.0;
+                    rel1.offset: 0 50;
+                    rel2.relative: 0.15 1.0;
+                    rel2.offset: 0 -40;
+                }
+            }
+            part {
+                name: "object.menubar";
+                type: SWALLOW;
+                description {
+                    state: "default" 0.0;
+                    rel2.relative: 1.0 0.0;
+                    rel2.offset: 0 40;
+                }
+            }
+            part {
+                name: "object.actions";
+                type: SWALLOW;
+                description {
+                    state: "default" 0.0;
+                    rel1.relative: 0.85 0.0;
+                    rel1.offset: 0 50;
+                    rel2.offset: 0 -40;
+                }
+            }
+            part {
+                name: "object.params";
+                type: SWALLOW;
+                description {
+                    state: "default" 0.0;
+                    rel1.relative: 0.85 0.0;
+                    rel1.offset: 0 100;
+                    rel2.offset: 0 -40;
+                }
+            }
+        }
+    }
     group {
         name: "list/slides/icon";
         parts {

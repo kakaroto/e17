@@ -5,6 +5,7 @@
 static void _tb_open(void *data, Evas_Object *obj, void *event_info);
 static void _pres_fileselector_done(void *data, Evas_Object *obj, void *event_info);
 static void _tb_slideshow(void *data, Evas_Object *obj, void *event_info);
+static void _tb_save(void *data, Evas_Object *obj, void *event_info);
 
 Evas_Object *toolbar_create()
 {
@@ -17,6 +18,7 @@ Evas_Object *toolbar_create()
     Elm_Toolbar_Item *item_empty = elm_toolbar_item_add(tb, NULL, "", NULL, tb);
     elm_toolbar_item_add(tb, NULL, D_("Open a presentation"), _tb_open, item_empty);
     elm_toolbar_item_add(tb, NULL, D_("Slideshow"), _tb_slideshow, item_empty);
+    elm_toolbar_item_add(tb, NULL, D_("Save"), _tb_save, item_empty);
 
     evas_object_show(tb);
     return tb;
@@ -54,6 +56,15 @@ static void _tb_slideshow(void *data, Evas_Object *obj, void *event_info)
     elm_toolbar_item_select(item_empty);
 
     slideshow_create();
+}
+
+static void _tb_save(void *data, Evas_Object *obj, void *event_info)
+{
+    Elm_Toolbar_Item *item_empty= (Elm_Toolbar_Item*) data;
+    elm_toolbar_item_select(item_empty);
+
+    const char* pres_file = eyelight_object_presentation_file_get(pres);
+    utils_save(pres_file);
 }
 
 

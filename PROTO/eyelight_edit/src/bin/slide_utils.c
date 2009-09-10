@@ -27,6 +27,16 @@ static void _utils_area_delete_cb(void *data, Evas_Object *obj, void *event_info
 static void _utils_area_delete_cancel_cb(void *data, Evas_Object *obj, void *event_info);
 static void _utils_edit_area_image_add_cb(void *data, Evas_Object *obj, void *event_info);
 static void _utils_edit_image_file_change_cb(void *data, Evas_Object *obj, void *event_info);
+static void _utils_object_delete_cancel_cb(void *data, Evas_Object *obj, void *event_info);
+static void _utils_object_delete_cb(void *data, Evas_Object *obj, void *event_info);
+
+void utils_save(const char *file)
+{
+    if(!eyelight_edit_save(eyelight_object_pres_get(pres), file))
+    {
+        printf("SAVE ERROR %s\n",file);
+    }
+}
 
 void utils_slide_insert(List_Item *item_prev)
 {
@@ -210,8 +220,12 @@ void utils_edit_cb(void *data, Evas_Object *o, const char *emission, const char 
     switch(eyelight_edit_name_get(_current_obj))
     {
         case EYELIGHT_NAME_CUSTOM_AREA:
+        case EYELIGHT_NAME_THEME_AREA:
             if(strcmp(emission, "select") == 0)
+            {
                 rightpanel_area_show();
+                rightpanel_area_layout_set(eyelight_edit_area_layout_get(_current_obj));
+            }
             if(strcmp(emission, "move,start") == 0
                     || strcmp(emission, "resize,start") == 0)
             {
@@ -283,7 +297,7 @@ void utils_edit_cb(void *data, Evas_Object *o, const char *emission, const char 
                 rightpanel_image_data_set(file, border, shadow);
             }
             break;
-        default: printf("DEFAULT\n");
+        default: printf("DEFAULT %p %d\n", _current_obj, eyelight_edit_name_get(_current_obj));
     }
 }
 
@@ -303,7 +317,8 @@ void utils_obj_unselect()
 
 void utils_edit_area_up(void *data, Evas_Object *obj, void *event_info)
 {
-    if(eyelight_edit_name_get(_current_obj) != EYELIGHT_NAME_CUSTOM_AREA)
+    if(eyelight_edit_name_get(_current_obj) != EYELIGHT_NAME_CUSTOM_AREA
+            && eyelight_edit_name_get(_current_obj) != EYELIGHT_NAME_THEME_AREA)
         return ;
 
     eyelight_edit_area_up(_current_obj);
@@ -311,7 +326,8 @@ void utils_edit_area_up(void *data, Evas_Object *obj, void *event_info)
 
 void utils_edit_area_down(void *data, Evas_Object *obj, void *event_info)
 {
-    if(eyelight_edit_name_get(_current_obj) != EYELIGHT_NAME_CUSTOM_AREA)
+    if(eyelight_edit_name_get(_current_obj) != EYELIGHT_NAME_CUSTOM_AREA
+            && eyelight_edit_name_get(_current_obj) != EYELIGHT_NAME_THEME_AREA)
         return ;
 
     eyelight_edit_area_down(_current_obj);
@@ -322,11 +338,18 @@ void utils_edit_area_add(void *data, Evas_Object *obj, void *event_info)
     eyelight_edit_area_add(eyelight_object_pres_get(pres), eyelight_object_current_id_get(pres));
 }
 
+void utils_edit_slide_default_areas_reinit(void *data, Evas_Object *obj, void *event_info)
+{
+    utils_obj_unselect();
+    eyelight_edit_slide_default_areas_reinit(eyelight_object_pres_get(pres), eyelight_object_current_id_get(pres));
+}
+
 void utils_edit_area_delete(void *data, Evas_Object *obj, void *event_info)
 {
     Evas_Object *lbl, *tb, *bt;
 
-    if(eyelight_edit_name_get(_current_obj) != EYELIGHT_NAME_CUSTOM_AREA)
+    if(eyelight_edit_name_get(_current_obj) != EYELIGHT_NAME_CUSTOM_AREA
+            && eyelight_edit_name_get(_current_obj) != EYELIGHT_NAME_THEME_AREA)
         return ;
 
     _inwin_delete_slide = elm_win_inwin_add(win);
@@ -357,7 +380,6 @@ void utils_edit_area_delete(void *data, Evas_Object *obj, void *event_info)
     evas_object_smart_callback_add(bt, "clicked", _utils_area_delete_cancel_cb, NULL);
     elm_table_pack(tb, bt, 1, 4, 1, 1);
     evas_object_show(bt);
-
 }
 
 static void _utils_area_delete_cancel_cb(void *data, Evas_Object *obj, void *event_info)
@@ -367,15 +389,17 @@ static void _utils_area_delete_cancel_cb(void *data, Evas_Object *obj, void *eve
 
 static void _utils_area_delete_cb(void *data, Evas_Object *obj, void *event_info)
 {
-    eyelight_edit_area_delete(eyelight_object_pres_get(pres), _current_obj);
-    _current_obj = NULL;
+    Eyelight_Edit *current_obj = _current_obj;
+    utils_obj_unselect();
+    eyelight_edit_area_delete(current_obj);
     evas_object_del(_inwin_delete_slide);
 }
 
 
 void utils_edit_area_image_add(void *data, Evas_Object *obj, void *event_info)
 {
-    if(eyelight_edit_name_get(_current_obj) != EYELIGHT_NAME_CUSTOM_AREA)
+    if(eyelight_edit_name_get(_current_obj) != EYELIGHT_NAME_CUSTOM_AREA
+            && eyelight_edit_name_get(_current_obj) != EYELIGHT_NAME_THEME_AREA)
         return ;
 
     Evas_Object *inwin, *fs;
@@ -413,6 +437,50 @@ static void _utils_edit_area_image_add_cb(void *data, Evas_Object *obj, void *ev
 
     evas_object_del(data);
 }
+
+void utils_edit_area_layout_vertical_set (void *data, Evas_Object *obj, void *event_info)
+{
+    rightpanel_area_layout_set(D_("Vertical"));
+    eyelight_edit_area_layout_set(_current_obj, "vertical");
+}
+
+void utils_edit_area_layout_vertical_homogeneous_set (void *data, Evas_Object *obj, void *event_info)
+{
+    rightpanel_area_layout_set(D_("Vertical homogeneous"));
+    eyelight_edit_area_layout_set(_current_obj, "vertical_homogeneous");
+}
+
+void utils_edit_area_layout_vertical_flow_set (void *data, Evas_Object *obj, void *event_info)
+{
+    rightpanel_area_layout_set(D_("Vertical flow"));
+    eyelight_edit_area_layout_set(_current_obj, "vertical_flow");
+}
+
+void utils_edit_area_layout_horizontal_set (void *data, Evas_Object *obj, void *event_info)
+{
+    rightpanel_area_layout_set(D_("Horizontal"));
+    eyelight_edit_area_layout_set(_current_obj, "horizontal");
+}
+
+void utils_edit_area_layout_horizontal_homogeneous_set (void *data, Evas_Object *obj, void *event_info)
+{
+    rightpanel_area_layout_set(D_("Horizontal homogenous"));
+    eyelight_edit_area_layout_set(_current_obj, "horizontal_homogeneous");
+}
+
+void utils_edit_area_layout_horizontal_flow_set (void *data, Evas_Object *obj, void *event_info)
+{
+    rightpanel_area_layout_set(D_("Horizontal flow"));
+    eyelight_edit_area_layout_set(_current_obj, "horizontal_flow");
+}
+
+void utils_edit_area_layout_stack_set (void *data, Evas_Object *obj, void *event_info)
+{
+    rightpanel_area_layout_set(D_("Stack"));
+    eyelight_edit_area_layout_set(_current_obj, "stack");
+}
+
+
 
 
 void utils_edit_image_file_change(void *data, Evas_Object *obj, void *event_info)
@@ -511,11 +579,66 @@ char *utils_file_move_in_pres(const char *file)
     }
     else
     {
-        char *_file = file + strlen(dir) + 1;
+        const char *_file = file + strlen(dir) + 1;
         res = strdup(_file);
     }
     return res;
 }
 
+void utils_edit_object_delete(void *data, Evas_Object *obj, void *event_info)
+{
+    Evas_Object *lbl, *tb, *bt;
+
+    _inwin_delete_slide = elm_win_inwin_add(win);
+    evas_object_show(_inwin_delete_slide);
+    elm_win_inwin_style_set(_inwin_delete_slide, "minimal");
+
+    tb = elm_table_add(win);
+    elm_win_inwin_content_set(_inwin_delete_slide, tb);
+
+    lbl = elm_label_add(win);
+    elm_label_label_set(lbl, D_("Are you sure you want to delete this object ?"));
+    elm_table_pack(tb, lbl, 0, 2, 2, 1);
+    evas_object_show(lbl);
+
+    bt= elm_button_add(win);
+    elm_button_label_set(bt, "Invisible button to add a vertical space");
+    elm_table_pack(tb, bt, 0, 3, 1, 1);
+
+    bt= elm_button_add(win);
+    elm_button_label_set(bt, D_("Yes, Delete the object"));
+    evas_object_smart_callback_add(bt, "clicked", _utils_object_delete_cb, NULL);
+    evas_object_color_set(bt, 255, 0, 0, 255);
+    elm_table_pack(tb, bt, 0, 4, 1, 1);
+    evas_object_show(bt);
+
+    bt= elm_button_add(win);
+    elm_button_label_set(bt, D_("No, do not delete the object"));
+    evas_object_smart_callback_add(bt, "clicked", _utils_object_delete_cancel_cb, NULL);
+    elm_table_pack(tb, bt, 1, 4, 1, 1);
+    evas_object_show(bt);
+}
+
+static void _utils_object_delete_cancel_cb(void *data, Evas_Object *obj, void *event_info)
+{
+    evas_object_del(_inwin_delete_slide);
+}
+
+static void _utils_object_delete_cb(void *data, Evas_Object *obj, void *event_info)
+{
+    Eyelight_Edit *current_obj = _current_obj;
+    utils_obj_unselect();
+    eyelight_edit_object_delete(current_obj);
+    evas_object_del(_inwin_delete_slide);
+}
 
 
+void utils_edit_object_down(void *data, Evas_Object *obj, void *event_info)
+{
+    eyelight_edit_object_down(eyelight_object_pres_get(pres), _current_obj);
+}
+
+void utils_edit_object_up(void *data, Evas_Object *obj, void *event_info)
+{
+    eyelight_edit_object_up(eyelight_object_pres_get(pres), _current_obj);
+}

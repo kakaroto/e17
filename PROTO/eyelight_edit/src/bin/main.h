@@ -72,6 +72,10 @@ struct list_item {
 extern Eina_List *l_slides;
 
 //edit
+
+void utils_save(const char *file);
+
+
 void utils_slide_insert(List_Item *item_prev);
 void utils_slide_delete(List_Item *item);
 void utils_slide_move(int id_slide, int id_after);
@@ -81,12 +85,27 @@ void utils_edit_area_down(void *data, Evas_Object *obj, void *event_info);
 void utils_obj_unselect();
 void utils_slide_change_cb(Eyelight_Viewer *pres, int old_slide, int new_slide, void *data);
 void utils_edit_area_add(void *data, Evas_Object *obj, void *event_info);
+void utils_edit_slide_default_areas_reinit(void *data, Evas_Object *obj, void *event_info);
 void utils_edit_area_delete(void *data, Evas_Object *obj, void *event_info);
 void utils_edit_area_image_add(void *data, Evas_Object *obj, void *event_info);
+void utils_edit_area_layout_vertical_set (void *data, Evas_Object *obj, void *event_info);
+void utils_edit_area_layout_vertical_homogeneous_set (void *data, Evas_Object *obj, void *event_info);
+void utils_edit_area_layout_vertical_flow_set (void *data, Evas_Object *obj, void *event_info);
+void utils_edit_area_layout_horizontal_set (void *data, Evas_Object *obj, void *event_info);
+void utils_edit_area_layout_horizontal_homogeneous_set (void *data, Evas_Object *obj, void *event_info);
+void utils_edit_area_layout_horizontal_flow_set (void *data, Evas_Object *obj, void *event_info);
+void utils_edit_area_layout_stack_set (void *data, Evas_Object *obj, void *event_info);
+void utils_edit_area_defaults_init(void *data, Evas_Object *obj, void *event_info);
+
+
+
 void utils_edit_image_file_change(void *data, Evas_Object *obj, void *event_info);
 void utils_edit_image_border_change(void *data, Evas_Object *obj, void *event_info);
 void utils_edit_image_shadow_change(void *data, Evas_Object *obj, void *event_info);
 char *utils_file_move_in_pres(const char *file);
+void utils_edit_object_down(void *data, Evas_Object *obj, void *event_info);
+void utils_edit_object_up(void *data, Evas_Object *obj, void *event_info);
+void utils_edit_object_delete(void *data, Evas_Object *obj, void *event_info);
 //
 
 
@@ -106,6 +125,7 @@ void rightpanel_area_show();
 void rightpanel_empty_show();
 void rightpanel_image_show();
 void rightpanel_image_data_set(const char* file, int border, int shadow);
+void rightpanel_area_layout_set(const char *layout);
 
 #endif   /* ----- #ifndef MAIN_INC  ----- */
 

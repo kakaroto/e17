@@ -33,6 +33,9 @@ static void win_main(void)
 {
     Evas_Object *bg, *tb;
 
+        //TODO delete
+    elm_finger_size_set(1);
+
     win = elm_win_add(NULL, "Eyelight", ELM_WIN_BASIC);
     elm_win_title_set(win, "Eyelight - presentation viewer");
 
@@ -70,6 +73,10 @@ int elm_main(int argc, char **argv)
     Eina_List *l;
     List_Item *item;
 
+
+    eina_log_level_set(5);
+    eyelight_init();
+
     win_main();
 
     elm_run();
@@ -80,6 +87,7 @@ int elm_main(int argc, char **argv)
         if(item->grid_icon_data) free(item->grid_icon_data);
         free(item);
     }
+    eyelight_shutdown();
     elm_shutdown();
     return 0;
 }
