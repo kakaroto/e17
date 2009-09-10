@@ -10,6 +10,7 @@ MAINTAINERCLEANFILES = Makefile.in aclocal.m4 config.guess \
 bin_SCRIPTS = 
 
 EXTRA_DIST = README AUTHORS COPYING esmart.spec esmart.spec.in \
+	     autogen.sh \
 	     esmart_container.pc.in \
 	     esmart_draggies.pc.in \
 	     esmart_file_dialog.pc.in \
