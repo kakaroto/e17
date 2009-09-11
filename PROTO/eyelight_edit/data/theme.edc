@@ -1,22 +1,9 @@
 images {
     image: "images/shadow.png" COMP;
     image: "images/pres_size.png" COMP;
-    image: "images/background.png" COMP;
 }
 
 collections {
-    group {
-        name: "background";
-        parts {
-            part {
-                name: "background";
-                description {
-                    state: "default" 0.0;
-                    image.normal: "images/background.png";
-                }
-            }
-        }
-    }
     group {
         name: "main";
         parts {

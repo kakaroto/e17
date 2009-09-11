@@ -303,6 +303,7 @@ void utils_edit_cb(void *data, Evas_Object *o, const char *emission, const char 
 
 void utils_slide_change_cb(Eyelight_Viewer *pres, int old_slide, int new_slide, void *data)
 {
+    _current_obj = NULL;
     utils_obj_unselect();
 }
 
@@ -311,7 +312,6 @@ void utils_obj_unselect()
     if(!_current_obj) return;
 
     eyelight_edit_obj_unselect(_current_obj);
-    _current_obj = NULL;
     rightpanel_empty_show();
 }
 
