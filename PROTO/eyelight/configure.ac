@@ -6,7 +6,7 @@ AC_CANONICAL_TARGET
 AC_CANONICAL_BUILD
 AC_CANONICAL_HOST
 
-AM_INIT_AUTOMAKE(eyelight, 0.2)
+AM_INIT_AUTOMAKE(eyelight, 0.5)
 AM_CONFIG_HEADER(config.h)
 
 AC_PROG_CC
@@ -38,6 +38,10 @@ AC_ARG_WITH(edje-cc,
   ]
 )
 
+# doxygen program for documentation building
+
+EFL_CHECK_DOXYGEN([build_doc="yes"], [build_doc="no"])
+
 PKG_CHECK_MODULES(EYELIGHT, [
                         ecore >= 0.9.9.037,
                         ecore-evas >= 0.9.9.038,
@@ -61,6 +65,7 @@ AC_MSG_RESULT(${EDJE_CC})
 AC_OUTPUT([
 Makefile
 eyelight.pc
+doc/Makefile
 src/Makefile
 src/lib/Makefile
 src/bin/Makefile
@@ -81,6 +86,7 @@ echo
 echo "Configuration Options Summary:"
 echo
 echo "  Installation Path...................: $prefix"
+echo "  Documentation.......................: ${build_doc}"
 echo
 echo "Now type 'make' ('gmake' on some systems) to compile $PACKAGE,"
 echo "and then afterwards as root (or the user who will install this), type"

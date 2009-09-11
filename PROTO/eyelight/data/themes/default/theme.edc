@@ -1865,15 +1865,16 @@ collections
                     color: 255 255 255 255;
                     rel1
                     {
-                        relative: -0.1 -0.4;
+                        relative: -0.1 0.0;
                         to: "object.title";
                     }
                     rel2
                     {
-                        relative: 1.1 1.1;
+                        relative: 1.1 1.0;
                         to: "object.title";
                     }
                     image.normal: "title_background.png";
+                    image.border: 2 2 2 2;
                 }
             }
             part
@@ -1920,12 +1921,12 @@ collections
                     color: 255 255 255 255;
                     rel1
                     {
-                        relative: -0.1 -0.4;
+                        relative: -0.1 0.0;
                         to: "object.subtitle";
                     }
                     rel2
                     {
-                        relative: 1.1 1.1;
+                        relative: 1.1 1.0;
                         to: "object.subtitle";
                     }
                     image.normal: "subtitle_background.png";

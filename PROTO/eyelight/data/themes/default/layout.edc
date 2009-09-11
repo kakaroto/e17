@@ -37,7 +37,6 @@ part                            \
         }                       \
         box {                   \
             layout: _layout;    \
-            align: 0.0 0.0;     \
         }                       \
     }                           \
     description                 \
@@ -289,7 +288,7 @@ program                         \
         data {
             item: "areas" "title subtitle header_image foot_image foot_text bottom pages";
             item: "title" "0.05 0.4 0.99 0.52";
-            item: "subtitle" "0.05 0.5 0.99 0.6";
+            item: "subtitle" "0.05 0.5 0.99 0.55";
             item: "header_image" "0.2 0.05 0.8 0.18";
             item: "foot_image" "0.03 0.9 0.2 0.995";
             item: "foot_text" "0.2 0.95 0.8 1.0";

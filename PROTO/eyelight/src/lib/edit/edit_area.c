@@ -271,10 +271,10 @@ void eyelight_edit_area_add(Eyelight_Viewer *pres, int id_slide)
     node_area = eyelight_node_new(EYELIGHT_NODE_TYPE_BLOCK, EYELIGHT_NAME_AREA, node);
     //add the name
     Eyelight_Node *node_name = eyelight_node_new(EYELIGHT_NODE_TYPE_PROP, EYELIGHT_NAME_NAME, node_area);
-    Eyelight_Node *node_name_value = eyelight_node_new(EYELIGHT_NODE_TYPE_BLOCK, EYELIGHT_NAME_NONE, node_name);
+    Eyelight_Node *node_name_value = eyelight_node_new(EYELIGHT_NODE_TYPE_VALUE, EYELIGHT_NAME_NONE, node_name);
     node_name_value->value = strdup(buf);
 
-    eyelight_compile_block_area(pres, slide, id_slide, node_area, -1);
+    eyelight_compile_block_area(pres, slide, node_area, -1);
 
     edje_object_signal_emit(node_area->obj, "select", "eyelight");
 }

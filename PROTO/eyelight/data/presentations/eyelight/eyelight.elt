@@ -127,7 +127,7 @@ section: " Two files";
 slide
 {
     title: " Creating a presentation";
-    subtitle: " a beautifull presentation !";
+    subtitle: " a beautiful presentation !";
     transition_previous: "horizontal";
     transition_next: vertical;
     area

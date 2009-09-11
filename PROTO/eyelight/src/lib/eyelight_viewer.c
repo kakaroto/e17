@@ -625,7 +625,7 @@ Evas_Object* eyelight_viewer_slide_load(Eyelight_Viewer*pres,Eyelight_Slide *sli
 
     if(!edje_file_group_exists(pres->theme,buf))
     {
-        WARN("The layout \"%s\" doesnt exists !",layout);
+        WARN("The layout \"%s\" does not exists !",layout);
         return slide->obj;
     }
     if(edje_object_file_set(slide->obj, pres->theme, buf) ==  0)
@@ -768,9 +768,12 @@ void eyelight_viewer_slide_previous(Eyelight_Viewer*pres)
 
 void eyelight_viewer_slide_goto(Eyelight_Viewer* pres, int slide_id)
 {
+    EYELIGHT_ASSERT_RETURN_VOID(pres!=NULL);
+    EYELIGHT_ASSERT_RETURN_VOID(slide_id>=0);
+    EYELIGHT_ASSERT_RETURN_VOID(slide_id<eyelight_viewer_size_get(pres));
+
     int old_slide = pres->current;
     Eyelight_Slide *slide = eina_list_nth(pres->slides, slide_id);
-    if(!slide) return ;
 
     eyelight_viewer_transitions_stop(pres);
 
@@ -787,10 +790,10 @@ void eyelight_viewer_slide_goto(Eyelight_Viewer* pres, int slide_id)
     pres->slide_with_transition[0] = NULL;
     pres->slide_with_transition[1] = NULL;
 
-    if(pres->slide_change_cb)
-        pres->slide_change_cb(pres, old_slide, pres->current, pres->slide_change_data);
-
     eyelight_viewer_clear (pres);
+
+    if(pres->slide_change_cb)
+        pres->slide_change_cb(pres, old_slide, slide_id, pres->slide_change_data);
 }
 
 void eyelight_viewer_thumbnails_done_cb_set(Eyelight_Viewer* pres, Eyelight_Thumbnails_slide_done_cb cb, void *user_data)

@@ -1,6 +1,6 @@
 ACLOCAL_AMFLAGS = -I m4
 
-SUBDIRS = src data
+SUBDIRS = src data doc
 
 MAINTAINERCLEANFILES = \
 Makefile.in \
@@ -36,4 +36,12 @@ gendoc
 
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = eyelight.pc
+
+.PHONY: doc
+
+# Documentation
+
+doc:
+	@echo "entering doc/"
+	make -C doc doc
 
