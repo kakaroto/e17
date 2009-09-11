@@ -30,12 +30,13 @@ EOF_USAGE
 
 
 if test $# -lt 7; then
-    if test ! -x "./ui"; then
-        if ! make 2>/dev/null >/dev/null; then
-            usage
-        fi
+    echo "No parameters given, compiling graphical user interface. Wait..."
+    if ! make 2>/dev/null >/dev/null; then
+        echo "ERROR: could not compile graphical user interface, run manually."
+        usage
     fi
     if test -x "./ui"; then
+        echo "Running graphical user interface..."
         exec ./ui
     fi
     usage
