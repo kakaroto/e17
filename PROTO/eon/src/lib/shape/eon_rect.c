@@ -44,34 +44,11 @@ static Eina_Bool _is_inside(Eon_Shape *s, int x, int y)
 	Eon_Rect *r = s;
 	Eon_Rect_Private *prv;
 	Enesim_Shape_Draw_Mode mode;
-	Enesim_Matrix_Type mtype;
-	Enesim_Matrix m;
 	Eon_Coord cx, cy, cw, ch;
-
+	Eina_Rectangle rrect;
+	Eina_Rectangle point;
 
 	eon_square_coords_get((Eon_Square *)s, &cx, &cy, &cw, &ch);
-        /* handle the transformation */
-	eon_shape_matrix_get(s, &m);
-        mtype = enesim_matrix_type_get(&m);
-        if (mtype != ENESIM_MATRIX_IDENTITY)
-	{
-		Eina_Rectangle rrect;
-		Eina_Rectangle point;
-
-		eina_rectangle_coords_from(&rrect, cx.final, cy.final,
-				cw.final, ch.final);
-		eina_rectangle_coords_from(&point, x, y, 1, 1);
-
-		if (!eina_rectangles_intersect(&rrect, &point))
-		{
-			printf("IS NOT INSIDE!\n");
-			return EINA_FALSE;
-		}
-		else
-		{
-			printf("IS INSIDE!\n");
-		}
-	}
 
 	/* TODO handle the rounded corners */
 	mode = eon_shape_draw_mode_get(s);
@@ -88,6 +65,28 @@ static Eina_Bool _is_inside(Eon_Shape *s, int x, int y)
 		else
 			return EINA_TRUE;
 	}
+	else
+	{
+		Enesim_Matrix_Type mtype;
+		Enesim_Matrix m;
+
+		eon_shape_matrix_get(s, &m);
+        	mtype = enesim_matrix_type_get(&m);
+	        if (mtype == ENESIM_MATRIX_IDENTITY)
+			return EINA_TRUE;
+
+	}
+        /* we only handle the special case for a non-identity
+	 * transformation, the bounding box of a rect non transformed
+	 * is the same rect
+	 */
+
+	eina_rectangle_coords_from(&rrect, cx.final, cy.final,
+			cw.final, ch.final);
+	eina_rectangle_coords_from(&point, x, y, 1, 1);
+
+	if (!eina_rectangles_intersect(&rrect, &point))
+		return EINA_FALSE;
 
 	return EINA_TRUE;
 }

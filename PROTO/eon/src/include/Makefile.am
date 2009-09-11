@@ -28,6 +28,7 @@ eon_script.h \
 eon_square.h \
 eon_transition.h \
 eon_shape.h \
+eon_stripes.h \
 eon_text.h \
 eon_value.h \
 eon_widget.h \

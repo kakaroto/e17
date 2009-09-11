@@ -182,7 +182,7 @@ static void fade_delete(void *data)
 	free(p);
 }
 /*============================================================================*
- *                                 Sqpattern                                  *
+ *                                   Checker                                  *
  *============================================================================*/
 static void * checker_create(Eon_Checker *sq)
 {
@@ -210,6 +210,48 @@ static Eina_Bool checker_setup(void *data, Eon_Shape *s)
 }
 
 static void checker_delete(void *data)
+{
+	Paint *p = data;
+
+	enesim_renderer_delete(p->r);
+	free(p);
+}
+/*============================================================================*
+ *                                   Stripes                                  *
+ *============================================================================*/
+static void * stripes_create(Eon_Stripes *s)
+{
+	Paint *p;
+
+	p = calloc(1, sizeof(Paint));
+	p->p = (Eon_Paint *)s;
+	p->r = enesim_renderer_stripes_new();
+
+	return p;
+}
+
+static Eina_Bool stripes_setup(void *data, Eon_Shape *s)
+{
+	Paint *p = data;
+	Eon_Stripes *st = (Eon_Checker *)p->p;
+	int dx, dy;
+	float th1, th2;
+	Enesim_Color c1, c2;
+
+	paint_coords_get(p->p, s, &dx, &dy, NULL, NULL);
+	paint_setup(p, dx, dy);
+	th1 = eon_stripes_thickness1_get(st);
+	th2 = eon_stripes_thickness2_get(st);
+
+	c1 = eon_stripes_color1_get(st);
+	c2 = eon_stripes_color2_get(st);
+	enesim_renderer_stripes_color_set(p->r, c1, c2);
+	enesim_renderer_stripes_thickness_set(p->r, th1, th2);
+
+	return EINA_TRUE;
+}
+
+static void stripes_delete(void *data)
 {
 	Paint *p = data;
 
@@ -800,6 +842,9 @@ EAPI void eon_engine_enesim_setup(Eon_Engine *e)
 	e->checker_create = checker_create;
 	e->checker_delete = checker_delete;
 	e->checker_setup = checker_setup;
+	e->stripes_create = stripes_create;
+	e->stripes_delete = stripes_delete;
+	e->stripes_setup = stripes_setup;
 	e->debug_rect = debug_rect;
 }
 

@@ -29,6 +29,7 @@ typedef struct _Eon_Transition Eon_Transition;
 typedef struct _Eon_Hswitch Eon_Hswitch;
 typedef struct _Eon_Fade Eon_Fade;
 typedef struct _Eon_Checker Eon_Checker;
+typedef struct _Eon_Stripes Eon_Stripes;
 
 typedef struct _Eon_Filter Eon_Filter;
 /* filter effects */
@@ -72,6 +73,7 @@ EAPI int eon_shutdown(void);
 #include "eon_hswitch.h"
 #include "eon_fade.h"
 #include "eon_checker.h"
+#include "eon_stripes.h"
 
 #include "eon_filter.h"
 #include "eon_displace.h"

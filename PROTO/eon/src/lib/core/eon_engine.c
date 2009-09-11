@@ -185,6 +185,21 @@ EAPI void eon_engine_checker_delete(Eon_Engine *e, void *engine_data)
 	e->checker_delete(engine_data);
 }
 
+EAPI void * eon_engine_stripes_create(Eon_Engine *e, Eon_Paint *p)
+{
+	return e->stripes_create((Eon_Stripes *)p);
+}
+
+EAPI Eina_Bool eon_engine_stripes_setup(Eon_Engine *e, void *engine_data, Eon_Shape *s)
+{
+	return e->stripes_setup(engine_data, s);
+}
+
+EAPI void eon_engine_stripes_delete(Eon_Engine *e, void *engine_data)
+{
+	e->stripes_delete(engine_data);
+}
+
 /* Debug */
 EAPI void eon_engine_debug_rect(Eon_Engine *e, void *c, uint32_t color, int x,  int y, int w, int h)
 {

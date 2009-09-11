@@ -34,6 +34,10 @@ struct _Eon_Shape_Private
 	} fill;
 	Enesim_Shape_Draw_Mode draw_mode;
 	Enesim_Matrix matrix, imatrix;
+	/* this is for the chidlren classes that go through our
+	 * matrix interface
+	 */
+	Eina_Rectangle srect;
 
 	void *engine_data;
 };
@@ -154,16 +158,13 @@ static Eina_Bool _is_inside(Ekeko_Renderable *r, int x, int y)
 	mtype = enesim_matrix_type_get(&prv->imatrix);
 	if (mtype != ENESIM_MATRIX_IDENTITY)
 	{
-		Eina_Rectangle geom;
 		float fx, fy;
 
-		ekeko_renderable_geometry_get(r, &geom);
-		//x -= geom.x;
-		//y -= geom.y;
+		x -= prv->srect.x;
+		y -= prv->srect.y;
 		enesim_matrix_point_transform(&prv->imatrix, x, y, &fx, &fy);
-		printf("%d %d -> %g %g\n", x, y, fx, fy);
-		x = fx;
-		y = fy;
+		x = fx + prv->srect.x;
+		y = fy + prv->srect.y;
 	}
 	/* call the shape's is_inside */
 	if (s->is_inside)
@@ -282,26 +283,18 @@ void eon_shape_geometry_set(Eon_Shape *s, Eina_Rectangle *rect)
 		Eina_Rectangle r;
 		Enesim_Quad q;
 		float x1, y1, x2, y2, x3, y3, x4, y4;
-#if 0
-		eina_rectangle_coords_from(&r, 0, 0, rect->w, rect->h);
-#else
-		eina_rectangle_coords_from(&r, rect->x, rect->y, rect->w, rect->h);
 
-#endif
+		eina_rectangle_coords_from(&r, 0, 0, rect->w, rect->h);
 		/* get the largest rectangle that fits on the matrix */
 		enesim_matrix_rect_transform(&prv->matrix, &r, &q);
 		enesim_quad_coords_get(&q, &x1, &y1, &x2, &y2, &x3, &y3, &x4, &y4);
 		enesim_quad_rectangle_to(&q, &r);
-#if 0
 		r.x += rect->x - 1;
 		r.y += rect->y - 1;
-#else
-		r.x -= 1;
-		r.y -= 1;
-#endif
 		r.w += 2;
 		r.h += 2;
 
+		prv->srect = *rect;
 		ekeko_renderable_geometry_set((Ekeko_Renderable *)s, &r);
 	}
 }
