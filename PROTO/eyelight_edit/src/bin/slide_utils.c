@@ -568,20 +568,23 @@ char *utils_file_move_in_pres(const char *file)
         const char* file_name = ecore_file_file_get(file);
         char buf[PATH_MAX];
         res = calloc(PATH_MAX, sizeof(char));
-        snprintf(buf, PATH_MAX, "%s/images", dir);
+        snprintf(buf, PATH_MAX, "%s/images/", dir);
         if(!ecore_file_exists(buf))
             ecore_file_mkdir(buf);
+
+        snprintf(buf, PATH_MAX, "%s/images/%s", dir, file_name);
+        ecore_file_cp(file, buf);
+
         snprintf(res,PATH_MAX,"images/%s", file_name);
-
-        ecore_file_cp(file, res);
-
-        free(dir);
     }
     else
     {
         const char *_file = file + strlen(dir) + 1;
         res = strdup(_file);
     }
+
+    EYELIGHT_FREE(dir);
+
     return res;
 }
 
