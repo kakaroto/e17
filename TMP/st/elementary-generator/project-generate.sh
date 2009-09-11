@@ -1,11 +1,10 @@
 #!/bin/bash
 
-for a in "$@"; do
-    if test "x$a" = "x-h" -o "x$a" = "x--help"; then
-        LICENSES=`ls -1 licenses/ | cut -d/ -f2 | tr '\n' ' '`
-        TEMPLATES=`ls -1 main_templates/*.c | cut -d/ -f2 | cut -d. -f1 | tr '\n' ' '`
+usage() {
+    LICENSES=`ls -1 licenses/ | cut -d/ -f2 | tr '\n' ' '`
+    TEMPLATES=`ls -1 main_templates/*.c | cut -d/ -f2 | cut -d. -f1 | tr '\n' ' '`
 
-        cat <<EOF_USAGE
+    cat <<EOF_USAGE
 Usage:
 
    $0 <project-dir> <project-name> <description> <author> <email> <license> <main_template>
@@ -26,9 +25,29 @@ Where:
    <main_template> is one of: $TEMPLATES
 
 EOF_USAGE
-        exit 0
+    exit 0
+}
+
+
+if test $# -lt 7; then
+    if test ! -x "./ui"; then
+        if ! make 2>/dev/null >/dev/null; then
+            usage
+        fi
+    fi
+    if test -x "./ui"; then
+        exec ./ui
+    fi
+    usage
+fi
+
+for a in "$@"; do
+    if test "x$a" = "x-h" -o "x$a" = "x--help"; then
+        usage
     fi
 done
+
+
 
 DIR=${1:?Missing directory}
 PROJECT=${2:?Missing project name}
@@ -45,6 +64,11 @@ die_simple() {
 
 die() {
     echo "ERROR: $*" >&2
+
+    if test "x$GENERATOR_BATCH" = "x1"; then
+        exit 1
+    fi
+
     echo -n "Clean $DIR? [Y/n]"
     read clean
     if test "x$clean" = "xn" -o "x$clean" = "xN"; then
@@ -75,6 +99,12 @@ if test -d "$DIR"; then
     die_simple " $DIR already exists."
 fi
 
+dname=`dirname "$DIR"`
+if test "x$dname" = "x."; then
+    dname="$PWD"
+fi
+bname=`basename "$DIR"`
+DIR="$dname/$bname"
 mkdir -p "$DIR" || die "mkdir $DIR failed"
 
 PROJECT_DESCRIPTION_ESCAPED=`echo "$PROJECT_DESCRIPTION" | sed -e 's:/:\\\/:g' `
@@ -113,7 +143,7 @@ cp_dir() {
     done
 }
 
-(cd skel; cp_dir)
+(cd skel/ && cp_dir)
 
 cp "licenses/$LICENSE" "$DIR/COPYING" || die "could not copy license file."
 cp_file_dst "main_templates/$MAIN_TEMPLATE.c" "src/bin/main.c"

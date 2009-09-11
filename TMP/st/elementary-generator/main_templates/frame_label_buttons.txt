@@ -1,2 +1,3 @@
 A window with a frame that contains a box with one label and two buttons.<br><br>
-One button quits the application, while the other button increases a counter that is diplayed in the label.
+One button quits the application, while the other button increases a counter that is displayed in the label.<br><br>
+<hilight>Author:</hilight> Gustavo Sverzut Barbieri
