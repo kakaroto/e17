@@ -2,8 +2,8 @@
 
 for a in "$@"; do
     if test "x$a" = "x-h" -o "x$a" = "x--help"; then
-        LICENSES=`ls -1 COPYING.* | cut -d. -f2 | tr '\n' ' '`
-        TEMPLATES=`ls -1 src/bin/main-*.c | cut -d- -f2- | cut -d. -f1 | tr '\n' ' '`
+        LICENSES=`ls -1 licenses/ | cut -d/ -f2 | tr '\n' ' '`
+        TEMPLATES=`ls -1 main_templates/*.c | cut -d/ -f2 | cut -d. -f1 | tr '\n' ' '`
 
         cat <<EOF_USAGE
 Usage:
@@ -26,6 +26,7 @@ Where:
    <main_template> is one of: $TEMPLATES
 
 EOF_USAGE
+        exit 0
     fi
 done
 
@@ -55,14 +56,14 @@ die() {
     exit 1
 }
 
-if test ! -f "COPYING.$LICENSE"; then
-    LICENSES=`ls -1 COPYING.* | cut -d. -f2 | tr '\n' ' '`
-    die_simple "Unknown license $LICENSE, use one of COPYING.* ($LICENSES)"
+if test ! -f "licenses/$LICENSE"; then
+    LICENSES=`ls -1 licenses/ | cut -d/ -f2 | tr '\n' ' '`
+    die_simple "Unknown license $LICENSE, use one of licenses/ ($LICENSES)"
 fi
 
-if test ! -f "src/bin/main-${MAIN_TEMPLATE}.c"; then
-    TEMPLATES=`ls -1 src/bin/main-*.c | cut -d- -f2- | cut -d. -f1 | tr '\n' ' '`
-    die_simple "Unknown main template $MAIN_TEMPLATE, use one of src/bin/main-*.c ($TEMPLATES)"
+if test ! -f "main_templates/${MAIN_TEMPLATE}.c"; then
+    TEMPLATES=`ls -1 main_templates/*.c | cut -d/ -f2 | cut -d. -f1 | tr '\n' ' '`
+    die_simple "Unknown main template $MAIN_TEMPLATE, use one of main_templates/*.c ($TEMPLATES)"
 fi
 
 YEAR=`date +"%Y"`
@@ -78,7 +79,6 @@ mkdir -p "$DIR" || die "mkdir $DIR failed"
 
 PROJECT_DESCRIPTION_ESCAPED=`echo "$PROJECT_DESCRIPTION" | sed -e 's:/:\\\/:g' `
 
-BLACKLIST_RE="\(~$\|COPYING[.]\|project-generate[.]sh\|src/bin/main-\)"
 REPLACE_SED="s/@PROJECT@/$PROJECT/g;s/@PROJECT_@/$PROJECT_/g;s/@PROJECT_NAME@/$PROJECT_NAME/g;s/@PROJECT_DESCRIPTION@/$PROJECT_DESCRIPTION_ESCAPED/g;s/@LICENSE@/$LICENSE/g;s/@YEAR@/$YEAR/g;s/@AUTHOR_NAME@/$AUTHOR_NAME/g;s/@AUTHOR_EMAIL@/$AUTHOR_EMAIL/g"
 
 cp_file_dst() {
@@ -90,10 +90,6 @@ cp_file_dst() {
 
 cp_file() {
     src=${1:?missing file}
-    if echo "$src" | grep -e "$BLACKLIST_RE" 2>/dev/null >/dev/null; then
-        echo "I: '$src' (blacklisted)"
-        return
-    fi
     dst=`echo "$src" | sed -e "$REPLACE_SED"`
     cp_file_dst "$src" "$dst"
 }
@@ -117,14 +113,14 @@ cp_dir() {
     done
 }
 
-cp_dir
+(cd skel; cp_dir)
 
-cp "COPYING.$LICENSE" "$DIR/COPYING" || die "could not copy license file."
-cp_file_dst "src/bin/main-$MAIN_TEMPLATE.c" "src/bin/main.c"
+cp "licenses/$LICENSE" "$DIR/COPYING" || die "could not copy license file."
+cp_file_dst "main_templates/$MAIN_TEMPLATE.c" "src/bin/main.c"
 
 chmod +x "$DIR/autogen.sh" || die "could not chmod autogen.sh"
 
-TEMPLATE_DESCRIPTION_STR=`cat src/bin/main-$MAIN_TEMPLATE.txt | sed 's/\(.\{,72\}\)\([ ]\|$\)/\1<br>/g;s/\(\(<br>\)\+\)/<br>/g;s/<br>/\\n/g'`
+TEMPLATE_DESCRIPTION_STR=`cat main_templates/$MAIN_TEMPLATE.txt | sed 's/\(.\{,72\}\)\([ ]\|$\)/\1<br>/g;s/\(\(<br>\)\+\)/<br>/g;s/<br>/\\n/g'`
 
 cat <<EOF
 
