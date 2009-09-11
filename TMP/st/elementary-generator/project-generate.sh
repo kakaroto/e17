@@ -106,17 +106,26 @@ if test "x$dname" = "x."; then
 fi
 bname=`basename "$DIR"`
 DIR="$dname/$bname"
-mkdir -p "$DIR" || die "mkdir $DIR failed"
 
 PROJECT_DESCRIPTION_ESCAPED=`echo "$PROJECT_DESCRIPTION" | sed -e 's:/:\\\/:g' `
 
 REPLACE_SED="s/@PROJECT@/$PROJECT/g;s/@PROJECT_@/$PROJECT_/g;s/@PROJECT_NAME@/$PROJECT_NAME/g;s/@PROJECT_DESCRIPTION@/$PROJECT_DESCRIPTION_ESCAPED/g;s/@LICENSE@/$LICENSE/g;s/@YEAR@/$YEAR/g;s/@AUTHOR_NAME@/$AUTHOR_NAME/g;s/@AUTHOR_EMAIL@/$AUTHOR_EMAIL/g"
 
+create_dir() {
+    d="$DIR/$1"
+    echo "D: '$1' -> '$d'"
+    if test "x$DRY_RUN" = "x"; then
+        mkdir -p "$d" || die "could not mkdir '$d'"
+    fi
+}
+
 cp_file_dst() {
     src="$1"
     dst="$2"
     echo "F: '$src' -> '$DIR/$dst'"
-    sed "$src" -e "$REPLACE_SED" > "$DIR/$dst" || die "could not create '$DIR/$dst'"
+    if test "x$DRY_RUN" = "x"; then
+        sed "$src" -e "$REPLACE_SED" > "$DIR/$dst" || die "could not create '$DIR/$dst'"
+    fi
 }
 
 cp_file() {
@@ -132,8 +141,9 @@ cp_dir() {
     else
         BASE="$1"
         EXP="$BASE/*"
-        mkdir -p "$DIR/$BASE" || die "could not mkdir '$DIR/$BASE'"
-        echo "D: '$BASE' -> '$DIR/$BASE'"
+        if test "x$DRY_RUN" = "x"; then
+            create_dir "$BASE"
+        fi
     fi
     for f in $EXP; do
         if test -f "$f"; then
@@ -144,12 +154,15 @@ cp_dir() {
     done
 }
 
+create_dir ""
 (cd skel/ && cp_dir)
 
-cp "licenses/$LICENSE" "$DIR/COPYING" || die "could not copy license file."
+cp_file_dst "licenses/$LICENSE" "COPYING"
 cp_file_dst "main_templates/$MAIN_TEMPLATE.c" "src/bin/main.c"
 
-chmod +x "$DIR/autogen.sh" || die "could not chmod autogen.sh"
+if test "x$DRY_RUN" = "x"; then
+    chmod +x "$DIR/autogen.sh" || die "could not chmod autogen.sh"
+fi
 
 TEMPLATE_DESCRIPTION_STR=`cat main_templates/$MAIN_TEMPLATE.txt | sed 's/\(.\{,72\}\)\([ ]\|$\)/\1<br>/g;s/\(\(<br>\)\+\)/<br>/g;s/<br>/\\n/g'`
 
