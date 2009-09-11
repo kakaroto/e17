@@ -1,3 +1,5 @@
+.PHONY: run clean
+
 CFLAGS := $(shell pkg-config --cflags elementary) -Wall
 LDFLAGS := $(shell pkg-config --libs elementary)
 
@@ -6,3 +8,6 @@ ui: ui.c
 
 run: ui
 	./ui
+
+clean:
+	-rm ui
