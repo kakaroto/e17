@@ -21,13 +21,13 @@ def pop_existent(client, files):
 
 def request_next(client, files):
     if pop_existent(client, files):
-        id = client.generate(generated_cb, files, client)
+        id = client.generate(generated_cb, files)
         print "generating id=%d" % id
     else:
         print "nothing left to generate."
         ecore.main_loop_quit()
 
-def generated_cb(id, file, key, tpath, tkey, success, files, client):
+def generated_cb(client, id, file, key, tpath, tkey, success, files):
     if success:
         print "id=%d (%s, %s) successfully generated %s, %s" % \
             (id, file, key, tpath, tkey)

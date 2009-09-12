@@ -20,15 +20,18 @@ cdef extern from "Eina.h":
 
 cdef extern from "Ethumb_Client.h":
     ctypedef struct Ethumb_Client
-    ctypedef void (*connect_callback_t)(Ethumb_Client *client, Eina_Bool success, void *data)
-    ctypedef void (*generated_callback_t)(int id, char *file, char *key, char *thumb_path, char *thumb_key, Eina_Bool success, void *data)
+    ctypedef void (*Ethumb_Client_Connect_Cb)(void *data, Ethumb_Client *client, Eina_Bool success)
+    ctypedef void (*Ethumb_Client_Die_Cb)(void *data, Ethumb_Client *client)
+    ctypedef void (*Ethumb_Client_Generate_Cb)(void *data, Ethumb_Client *client, int id, char *file, char *key, char *thumb_path, char *thumb_key, Eina_Bool success)
+    ctypedef void (*Ethumb_Client_Generate_Cancel_Cb)(void *data, Eina_Bool success)
+    ctypedef void (*Eina_Free_Cb)(void *data)
 
     int ethumb_client_init()
     ethumb_client_shutdown()
 
-    Ethumb_Client *ethumb_client_connect(connect_callback_t cb, void *data, void (*free_data)(void *))
+    Ethumb_Client *ethumb_client_connect(Ethumb_Client_Connect_Cb cb, void *data, Eina_Free_Cb free_data)
     void ethumb_client_disconnect(Ethumb_Client *client)
-    void ethumb_client_on_server_die_callback_set(Ethumb_Client *client, void (*on_server_die_cb)(Ethumb_Client *client, void *data), void *data)
+    void ethumb_client_on_server_die_callback_set(Ethumb_Client *client, Ethumb_Client_Die_Cb server_die_cb, void *data, Eina_Free_Cb free_data)
 
     void ethumb_client_fdo_set(Ethumb_Client *client, int s)
 
@@ -63,9 +66,9 @@ cdef extern from "Ethumb_Client.h":
     void ethumb_client_thumb_path_set(Ethumb_Client *client, char *path, char *key)
     void ethumb_client_thumb_path_get(Ethumb_Client *client, char **path, char **key)
     Eina_Bool ethumb_client_thumb_exists(Ethumb_Client *client)
-    int ethumb_client_generate(Ethumb_Client *client, generated_callback_t generated_cb, void *data, void (*free_data)(void *))
-    void ethumb_client_queue_remove(Ethumb_Client *client, int id, void (*queue_remove_cb)(Eina_Bool success, void *data), void *data)
-    void ethumb_client_queue_clear(Ethumb_Client *client)
+    int ethumb_client_generate(Ethumb_Client *client, Ethumb_Client_Generate_Cb generated_cb, void *data, Eina_Free_Cb free_data)
+    void ethumb_client_generate_cancel(Ethumb_Client *client, int id, Ethumb_Client_Generate_Cancel_Cb cancel_cb, void *data, Eina_Free_Cb free_data)
+    void ethumb_client_generate_cancel_all(Ethumb_Client *client)
 
 cdef class Client:
     cdef Ethumb_Client *obj

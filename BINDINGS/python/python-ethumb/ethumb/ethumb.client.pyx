@@ -28,7 +28,7 @@ def shutdown():
 def init():
     return ethumb_client_init()
 
-cdef void _connect_cb(Ethumb_Client *client, Eina_Bool success, void *data) with gil:
+cdef void _connect_cb(void *data, Ethumb_Client *client, Eina_Bool success) with gil:
     cdef Client self = <Client>data
     s = bool(<unsigned int>success)
     try:
@@ -43,7 +43,7 @@ cdef void _connect_cb(Ethumb_Client *client, Eina_Bool success, void *data) with
     self._on_connect_callback = None
 
 
-cdef void _on_server_die_cb(Ethumb_Client *client, void *data) with gil:
+cdef void _on_server_die_cb(void *data, Ethumb_Client *client) with gil:
     cdef Client self = <Client>data
     if self._on_server_die_callback is not None:
         try:
@@ -58,20 +58,16 @@ cdef void _on_server_die_cb(Ethumb_Client *client, void *data) with gil:
     self._on_server_die_callback = None
 
 
-cdef void _generated_cb(int id, char *file, char *key, char *thumb_path, char *thumb_key, Eina_Bool success, void *data) with gil:
+cdef void _generated_cb(void *data, Ethumb_Client *client, int id, char *file, char *key, char *thumb_path, char *thumb_key, Eina_Bool success) with gil:
     obj = <object>data
     (self, func, args, kargs) = obj
     f = str_from_c(file)
     k = str_from_c(key)
     tp = str_from_c(thumb_path)
     tk = str_from_c(thumb_key)
-    s = success != 0
-    if success:
-        s = True
-    else:
-        s = False
+    s = bool(success != 0)
     try:
-        func(id, f, k, tp, tk, s, *args, **kargs)
+        func(self, id, f, k, tp, tk, s, *args, **kargs)
     except Exception, e:
         traceback.print_exc()
 
@@ -137,7 +133,7 @@ cdef class Client:
                 raise SystemError("Error connecting to server.")
             else:
                 ethumb_client_on_server_die_callback_set(
-                    self.obj, _on_server_die_cb, <void*>self)
+                    self.obj, _on_server_die_cb, <void*>self, NULL)
 
     def __dealloc__(self):
         if self.obj != NULL:
@@ -569,7 +565,7 @@ cdef class Client:
 
         @parm: B{func} function to call on generation completion, even
            if failed or succeeded. Signature is:
-              C{func(id, file, key, thumb_path, thumb_key, status, *args, **kargs)}
+              C{func(self, id, file, key, thumb_path, thumb_key, status, *args, **kargs)}
            with status being True for successful generation or
            False on failure.
 
@@ -597,24 +593,24 @@ cdef class Client:
             raise SystemError("could not generate thumbnail. "
                               "Did you set the file?")
 
-    def cancel(self, int id):
-        """Cancel thumbnail request.
+    def generate_cancel(self, int id):
+        """Cancel thumbnail request given its id.
 
         Calling this function aborts thumbnail generation and B{func}
         given to L{generate()} will not be called!
 
         @parm: B{id} identifier returned by L{generate()}
         """
-        ethumb_client_queue_remove(self.obj, id, NULL, NULL)
+        ethumb_client_generate_cancel(self.obj, id, NULL, NULL, NULL)
 
-    def clear(self):
-        """Clear request queue.
+    def generate_cancel_all(self):
+        """Clear request queue, canceling all generation requests.
 
         This will abort all existing requests, no B{func} given to
         L{generate()} will be called.
 
         Same as calling L{cancel()} in all exising requests.
         """
-        ethumb_client_queue_clear(self.obj)
+        ethumb_client_generate_cancel_all(self.obj)
 
 init()
