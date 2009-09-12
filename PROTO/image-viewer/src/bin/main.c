@@ -139,8 +139,8 @@ static int  on_idler(void *data);
 static void slideshow_on(IV *iv);
 static void slideshow_off(IV *iv);
 #ifdef HAVE_ETHUMB
-static void on_thumb_generate(long id, const char *file, const char *key, const char *thumb_path, const char *thumb_key, Eina_Bool success, void *data);
-static void on_thumb_die(Ethumb_Client *client, void *data);
+static void on_thumb_generate(void *data, Ethumb_Client *client, int id, const char *file, const char *key, const char *thumb_path, const char *thumb_key, Eina_Bool success);
+static void on_thumb_die(void *data, Ethumb_Client *client);
 #endif
 
 static void
@@ -631,7 +631,7 @@ thumb_queue_process(IV *iv)
 	     const char *thumb_path;
 
 	     ethumb_client_thumb_path_get(iv->ethumb_client, &thumb_path, NULL);
-	     on_thumb_generate(0, file, NULL, thumb_path, NULL, EINA_TRUE, iv);
+	     on_thumb_generate(iv, iv->ethumb_client, 0, file, NULL, thumb_path, NULL, EINA_TRUE);
 	  }
 	else if (ethumb_client_generate(iv->ethumb_client, on_thumb_generate, iv, NULL) == -1)
 	  continue;
@@ -639,7 +639,7 @@ thumb_queue_process(IV *iv)
 }
 
 static void
-on_thumb_generate(long id, const char *file, const char *key, const char *thumb_path, const char *thumb_key, Eina_Bool success, void *data)
+on_thumb_generate(void *data, Ethumb_Client *client, int id, const char *file, const char *key, const char *thumb_path, const char *thumb_key, Eina_Bool success)
 {
    IV *iv = data;
    IV_Thumb_Info *info;
@@ -657,7 +657,7 @@ on_thumb_generate(long id, const char *file, const char *key, const char *thumb_
 }
 
 static void
-on_thumb_connect(Ethumb_Client *e, Eina_Bool success, void *data)
+on_thumb_connect(void *data, Ethumb_Client *e, Eina_Bool success)
 {
    IV *iv = data;
 
@@ -669,7 +669,7 @@ on_thumb_connect(Ethumb_Client *e, Eina_Bool success, void *data)
 	return;
      }
 
-   ethumb_client_on_server_die_callback_set(iv->ethumb_client, on_thumb_die, iv);
+   ethumb_client_on_server_die_callback_set(iv->ethumb_client, on_thumb_die, iv, NULL);
    thumb_queue_process(iv);
 
    if (!iv->gui.preview_genlist)
@@ -677,7 +677,7 @@ on_thumb_connect(Ethumb_Client *e, Eina_Bool success, void *data)
 }
 
 static void
-on_thumb_die(Ethumb_Client *client, void *data)
+on_thumb_die(void *data, Ethumb_Client *client)
 {
    IV *iv;
 
