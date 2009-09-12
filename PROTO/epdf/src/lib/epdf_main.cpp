@@ -18,7 +18,7 @@ epdf_init (void)
   if (!(globalParams = new GlobalParams()))
     return 0;
 
-  if (!eina_list_init())
+  if (!eina_init())
     {
       delete (globalParams);
       return 0;
@@ -35,7 +35,7 @@ epdf_shutdown()
     goto beach;
 
   delete globalParams;
-  eina_list_shutdown();
+  eina_shutdown();
 
  beach:
   return --_epdf_main_count;
