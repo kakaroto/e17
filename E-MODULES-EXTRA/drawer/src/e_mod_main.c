@@ -112,9 +112,9 @@ static void _drawer_menu_post_cb(void *data, E_Menu *menu);
 static void _drawer_menu_configure_cb(void *data, E_Menu *mn, E_Menu_Item *mi);
 static void _drawer_thumbnail_del_cb(void *data, Evas *e __UNUSED__, Evas_Object *obj __UNUSED__, void *event __UNUSED__);
 static void _drawer_changed_size_hints_cb(void *data, Evas *e, Evas_Object *obj, void *event_info);
-static void _drawer_thumb_connect_cb(Ethumb_Client *e, Eina_Bool success, void *data);
-static void _drawer_thumb_die_cb(Ethumb_Client *e, void *data);
-static void _drawer_thumb_generate_cb(long id, const char *file, const char *key, const char *thumb_path, const char *thumb_key, Eina_Bool success, void *data);
+static void _drawer_thumb_connect_cb(void *data, Ethumb_Client *e, Eina_Bool success);
+static void _drawer_thumb_die_cb(void *data, Ethumb_Client *e);
+static void _drawer_thumb_generate_cb(void *data, Ethumb_Client *e, int id, const char *file, const char *key, const char *thumb_path, const char *thumb_key, Eina_Bool success);
 static void _drawer_thumb_object_del_cb(void *data, Evas *evas, Evas_Object *obj, void *event_info);
 
 
@@ -1505,8 +1505,8 @@ _drawer_thumb_process(Drawer_Thumb_Data *td)
         const char *thumb_path;
 
         ethumb_client_thumb_path_get(ethumb_client, &thumb_path, NULL);
-        _drawer_thumb_generate_cb(0, td->file, NULL, thumb_path,
-                                  NULL, EINA_TRUE, td);
+        _drawer_thumb_generate_cb(td, ethumb_client, 0, td->file, NULL,
+				  thumb_path, NULL, EINA_TRUE);
      }
    else if (ethumb_client_generate(ethumb_client, _drawer_thumb_generate_cb, td, _drawer_thumb_data_free) == -1)
      _drawer_thumb_data_free(td);
@@ -1831,7 +1831,7 @@ _drawer_changed_size_hints_cb(void *data, Evas *e, Evas_Object *obj, void *event
 }
 
 static void
-_drawer_thumb_connect_cb(Ethumb_Client *e, Eina_Bool success, void *data)
+_drawer_thumb_connect_cb(void *data, Ethumb_Client *e, Eina_Bool success)
 {
    if (!success)
      {
@@ -1840,19 +1840,19 @@ _drawer_thumb_connect_cb(Ethumb_Client *e, Eina_Bool success, void *data)
      }
 
    ethumb_client = e;
-   ethumb_client_on_server_die_callback_set(ethumb_client, _drawer_thumb_die_cb, data);
+   ethumb_client_on_server_die_callback_set(ethumb_client, _drawer_thumb_die_cb, data, NULL);
    _drawer_thumb_process(data);
 }
 
 static void
-_drawer_thumb_die_cb(Ethumb_Client *e, void *data)
+_drawer_thumb_die_cb(void *data, Ethumb_Client *e)
 {
    ethumb_client = NULL;
    ethumb_client_connect(_drawer_thumb_connect_cb, data, _drawer_thumb_data_free);
 }
 
 static void
-_drawer_thumb_generate_cb(long id, const char *file, const char *key, const char *thumb_path, const char *thumb_key, Eina_Bool success, void *data)
+_drawer_thumb_generate_cb(void *data, Ethumb_Client *client, int id, const char *file, const char *key, const char *thumb_path, const char *thumb_key, Eina_Bool success)
 {
    Drawer_Thumb_Data *td = data;
    Evas_Object *o = NULL;
