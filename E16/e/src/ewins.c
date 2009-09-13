@@ -1938,7 +1938,7 @@ EwinSlideIn(void *data)
  */
 static struct {
    unsigned int        flags;
-   EWin                ewin_old;
+   Desk               *desk;
 } EWinChanges;
 
 void
@@ -1951,8 +1951,7 @@ void
 EwinChangesStart(EWin * ewin)
 {
    EWinChanges.flags = 0;
-   /* Brute force :) */
-   EWinChanges.ewin_old = *ewin;
+   EWinChanges.desk = EoGetDesk(ewin);
 }
 
 void
@@ -1972,7 +1971,7 @@ EwinChangesProcess(EWin * ewin)
 	Desk               *desk, *pdesk;
 
 	desk = EoGetDesk(ewin);
-	pdesk = EoGetDesk(&EWinChanges.ewin_old);
+	pdesk = EWinChanges.desk;
 	if (desk != pdesk && !EoIsSticky(ewin))
 	  {
 	     EoSetDesk(ewin, pdesk);

@@ -70,8 +70,6 @@ static ImageClass  *ImageclassGetFallback(void);
 #ifdef ENABLE_THEME_TRANSPARENCY
 
 static EImageColorModifier *icm = NULL;
-static unsigned char gray[256];
-static unsigned char alpha[256];
 
 static int          prev_alpha = -1;
 
@@ -91,6 +89,8 @@ static void
 TransparencyMakeColorModifier(void)
 {
    int                 i;
+   unsigned char       gray[256];
+   unsigned char       alpha[256];
 
    for (i = 0; i < 256; i++)
      {
