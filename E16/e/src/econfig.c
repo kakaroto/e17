@@ -218,7 +218,7 @@ ConfigurationLoad(void)
    /* NB! We have to assign the defaults even if it doesn't exist */
 
    /* Load module configs */
-   pml = ModuleListGet(&nml);
+   MODULE_LIST_GET(pml, nml);
    for (i = 0; i < nml; i++)
      {
 	pm = pml[i];
@@ -227,7 +227,7 @@ ConfigurationLoad(void)
 	for (j = 0; j < ncl; j++)
 	   CfgItemLoad(ecf, pm->name, pcl + j);
      }
-   ModuleListFree(pml);
+   MODULE_LIST_FREE(pml);
 
    if (ecf)
       e16_db_close(ecf);
@@ -250,7 +250,7 @@ ConfigurationSave(void)
       return;
 
    /* Load module configs */
-   pml = ModuleListGet(&nml);
+   MODULE_LIST_GET(pml, nml);
    for (i = 0; i < nml; i++)
      {
 	pm = pml[i];
@@ -259,7 +259,7 @@ ConfigurationSave(void)
 	for (j = 0; j < ncl; j++)
 	   CfgItemSave(ecf, pm->name, pcl + j);
      }
-   ModuleListFree(pml);
+   MODULE_LIST_FREE(pml);
 
    e16_db_close(ecf);
    e16_db_flush();

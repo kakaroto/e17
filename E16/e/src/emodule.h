@@ -69,8 +69,9 @@ void                EModuleRegister(EModule * em);
 extern const EModule *const p_modules[];
 extern int          n_modules;
 
-const EModule      *const *ModuleListGet(int *num);
-void                ModuleListFree(const EModule * const *lst);
+#define MODULE_LIST_GET(lst, num) \
+    do { lst = p_modules; num = n_modules; } while (0)
+#define MODULE_LIST_FREE(lst)
 
 int                 ModuleConfigSet(const char *name, const char *item,
 				    const char *params);

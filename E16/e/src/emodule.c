@@ -32,18 +32,6 @@ EModuleRegister(EModule * em)
 }
 #endif
 
-const EModule      *const *
-ModuleListGet(int *num)
-{
-   *num = n_modules;
-   return p_modules;
-}
-
-void
-ModuleListFree(const EModule * const *lst __UNUSED__)
-{
-}
-
 static const EModule *
 EModuleFind(const char *name)
 {
@@ -191,11 +179,11 @@ ModulesConfigShow(void)
    const EModule      *const *pml;
 
    /* Load module configs */
-   pml = ModuleListGet(&nml);
+   MODULE_LIST_GET(pml, nml);
    for (i = 0; i < nml; i++)
      {
 	/* Somewhat inefficient but ... later */
 	ModuleConfigShow(pml[i]->name, NULL);
      }
-   ModuleListFree(pml);
+   MODULE_LIST_FREE(pml);
 }
