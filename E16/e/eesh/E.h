@@ -50,8 +50,6 @@ char               *CommsGet(Client * c, XEvent * ev);
 Client             *ClientCreate(Window win);
 void                ClientDestroy(Client * c);
 
-void                Alert(const char *fmt, ...);
-
 #define Ecalloc     calloc
 #define Emalloc     malloc
 #define Erealloc    realloc

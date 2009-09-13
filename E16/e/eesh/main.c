@@ -144,7 +144,7 @@ main(int argc, char **argv)
    disp = XOpenDisplay(display_name);
    if (!disp)
      {
-	Alert("Failed to connect to X server\n");
+	fprintf(stderr, "Failed to connect to X server\n");
 	exit(1);
      }
 
@@ -242,16 +242,6 @@ main(int argc, char **argv)
    ClientDestroy(me);
 
    return 0;
-}
-
-void
-Alert(const char *fmt, ...)
-{
-   va_list             ap;
-
-   va_start(ap, fmt);
-   vfprintf(stderr, fmt, ap);
-   va_end(ap);
 }
 
 #if !USE_LIBC_STRDUP
