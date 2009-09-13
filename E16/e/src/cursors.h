@@ -27,19 +27,18 @@
 #include "etypes.h"
 
 /* cursors.c */
-#define ECSR_NONE           0
-#define ECSR_ROOT           1
-#define ECSR_GRAB           2
-#define ECSR_PGRAB          3
-#define ECSR_ACT_MOVE       4
-#define ECSR_ACT_RESIZE     5
-#define ECSR_ACT_RESIZE_H   6
-#define ECSR_ACT_RESIZE_V   7
-#define ECSR_ACT_RESIZE_TL  8
-#define ECSR_ACT_RESIZE_TR  9
-#define ECSR_ACT_RESIZE_BL 10
-#define ECSR_ACT_RESIZE_BR 11
-#define ECSR_COUNT         12
+#define ECSR_ROOT           0
+#define ECSR_GRAB           1
+#define ECSR_PGRAB          2
+#define ECSR_ACT_MOVE       3
+#define ECSR_ACT_RESIZE     4
+#define ECSR_ACT_RESIZE_H   5
+#define ECSR_ACT_RESIZE_V   6
+#define ECSR_ACT_RESIZE_TL  7
+#define ECSR_ACT_RESIZE_TR  8
+#define ECSR_ACT_RESIZE_BL  9
+#define ECSR_ACT_RESIZE_BR 10
+#define ECSR_COUNT         11
 
 ECursor            *ECursorAlloc(const char *name);
 void                ECursorFree(ECursor * ec);

@@ -36,6 +36,10 @@ struct _ecursor {
    char               *name;
    Cursor              cursor;
    unsigned int        ref_count;
+   char               *file;
+   unsigned int        bg;
+   unsigned int        fg;
+   int                 native_id;
 };
 
 static Ecore_List  *cursor_list = NULL;
@@ -91,72 +95,29 @@ ECreatePixmapCursor(Pixmap cpmap, Pixmap cmask, unsigned int w, unsigned int h,
    return curs;
 }
 
-static ECursor     *
+static void
 ECursorCreate(const char *name, const char *image, int native_id,
 	      unsigned int fg, unsigned int bg)
 {
-   Cursor              curs;
-   Pixmap              pmap, mask;
-   int                 xh, yh;
-   unsigned int        w, h, ww, hh;
-   char               *img, msk[FILEPATH_LEN_MAX];
    ECursor            *ec;
 
    if ((!name) || (!image && native_id == -1))
-      return NULL;
+      return;
 
-   if (image)
-     {
-	img = FindFile(image, Mode.theme.path);
-	if (!img)
-	   return NULL;
+   ec = ECALLOC(ECursor, 1);
+   if (!ec)
+      return;
 
-	Esnprintf(msk, sizeof(msk), "%s.mask", img);
-	pmap = 0;
-	mask = 0;
-	xh = 0;
-	yh = 0;
-	XReadBitmapFile(disp, WinGetXwin(VROOT), msk, &w, &h, &mask, &xh, &yh);
-	XReadBitmapFile(disp, WinGetXwin(VROOT), img, &w, &h, &pmap, &xh, &yh);
-	XQueryBestCursor(disp, WinGetXwin(VROOT), w, h, &ww, &hh);
-	curs = None;
-	if ((w <= ww) && (h <= hh) && (pmap))
-	  {
-	     if (xh < 0 || xh >= (int)w)
-		xh = (int)w / 2;
-	     if (yh < 0 || yh >= (int)h)
-		yh = (int)h / 2;
-	     curs = ECreatePixmapCursor(pmap, mask, w, h, xh, yh, fg, bg);
-	  }
-
-	if (!curs)
-	   Eprintf("*** Failed to create cursor \"%s\" from %s,%s\n",
-		   name, img, msk);
-
-	if (pmap)
-	   EFreePixmap(pmap);
-	if (mask)
-	   EFreePixmap(mask);
-	Efree(img);
-
-	if (!curs)
-	   return NULL;
-     }
-   else
-     {
-	curs = (native_id == 999) ? None : XCreateFontCursor(disp, native_id);
-     }
-
-   ec = EMALLOC(ECursor, 1);
    ec->name = Estrdup(name);
-   ec->cursor = curs;
-   ec->ref_count = 0;
+
+   ec->file = Estrdup(image);
+   ec->fg = fg;
+   ec->bg = bg;
+   ec->native_id = native_id;
 
    if (!cursor_list)
       cursor_list = ecore_list_new();
    ecore_list_prepend(cursor_list, ec);
-
-   return ec;
 }
 
 static void
@@ -174,8 +135,70 @@ ECursorDestroy(ECursor * ec)
    ecore_list_node_remove(cursor_list, ec);
 
    Efree(ec->name);
+   Efree(ec->file);
 
    Efree(ec);
+}
+
+static ECursor     *
+ECursorRealize(ECursor * ec)
+{
+   Pixmap              pmap, mask;
+   int                 xh, yh;
+   unsigned int        w, h, ww, hh;
+   char               *img, msk[FILEPATH_LEN_MAX];
+
+   if (ec->file)
+     {
+	img = FindFile(ec->file, Mode.theme.path);
+	_EFREE(ec->file);	/* Ok or not - we never need file again */
+	if (!img)
+	   goto done;
+
+	Esnprintf(msk, sizeof(msk), "%s.mask", img);
+	pmap = 0;
+	mask = 0;
+	xh = 0;
+	yh = 0;
+	XReadBitmapFile(disp, WinGetXwin(VROOT), msk, &w, &h, &mask, &xh, &yh);
+	XReadBitmapFile(disp, WinGetXwin(VROOT), img, &w, &h, &pmap, &xh, &yh);
+	XQueryBestCursor(disp, WinGetXwin(VROOT), w, h, &ww, &hh);
+	if ((w <= ww) && (h <= hh) && (pmap))
+	  {
+	     if (xh < 0 || xh >= (int)w)
+		xh = (int)w / 2;
+	     if (yh < 0 || yh >= (int)h)
+		yh = (int)h / 2;
+	     ec->cursor =
+		ECreatePixmapCursor(pmap, mask, w, h, xh, yh, ec->fg, ec->bg);
+	  }
+
+	if (ec->cursor == None)
+	  {
+	     Eprintf("*** Failed to create cursor \"%s\" from %s,%s\n",
+		     ec->name, img, msk);
+	  }
+
+	if (pmap)
+	   EFreePixmap(pmap);
+	if (mask)
+	   EFreePixmap(mask);
+	Efree(img);
+     }
+   else
+     {
+	ec->cursor = (ec->native_id == 999) ?
+	   None : XCreateFontCursor(disp, ec->native_id);
+     }
+
+ done:
+   if (ec->cursor == None)
+     {
+	ECursorDestroy(ec);
+	ec = NULL;
+     }
+
+   return ec;
 }
 
 static int
@@ -201,8 +224,15 @@ ECursorAlloc(const char *name)
       return NULL;
 
    ec = ECursorFind(name);
-   if (ec)
-      ec->ref_count++;
+   if (!ec)
+      return NULL;
+
+   if (ec->cursor == None)
+      ec = ECursorRealize(ec);
+   if (!ec)
+      return NULL;
+
+   ec->ref_count++;
 
    return ec;
 }
@@ -312,12 +342,38 @@ ECursorGetByName(const char *name, const char *name2, unsigned int fallback)
    return XCreateFontCursor(disp, fallback);
 }
 
+typedef struct {
+   const char         *pri;
+   const char         *sec;
+   unsigned int        fallback;
+} ECDataRec;
+
+static const ECDataRec ECData[ECSR_COUNT] = {
+   {"DEFAULT", NULL, XC_left_ptr},
+   {"GRAB", NULL, XC_crosshair},
+   {"PGRAB", NULL, XC_X_cursor},
+   {"GRAB_MOVE", NULL, XC_fleur},
+   {"GRAB_RESIZE", NULL, XC_sizing},
+   {"RESIZE_H", NULL, XC_sb_h_double_arrow},
+   {"RESIZE_V", NULL, XC_sb_v_double_arrow},
+   {"RESIZE_TL", "RESIZE_BR", XC_top_left_corner},
+   {"RESIZE_TR", "RESIZE_BL", XC_top_right_corner},
+   {"RESIZE_BL", "RESIZE_TR", XC_bottom_left_corner},
+   {"RESIZE_BR", "RESIZE_TL", XC_bottom_right_corner},
+};
+
 static Cursor       ECsrs[ECSR_COUNT];
 
 Cursor
 ECsrGet(int which)
 {
-   return (which >= 0 && which < ECSR_COUNT) ? ECsrs[which] : None;
+   if (which < 0 || which >= ECSR_COUNT)
+      return None;
+   if (ECsrs[which] == 1)
+      ECsrs[which] = ECursorGetByName(ECData[which].pri, ECData[which].sec,
+				      ECData[which].fallback);
+
+   return ECsrs[which];
 }
 
 void
@@ -332,24 +388,10 @@ ECsrApply(int which, Window win)
 static void
 CursorsInit(void)
 {
-   ECsrs[ECSR_NONE] = None;
-   ECsrs[ECSR_ROOT] = ECursorGetByName("DEFAULT", NULL, XC_left_ptr);
-   ECsrs[ECSR_GRAB] = ECursorGetByName("GRAB", NULL, XC_crosshair);
-   ECsrs[ECSR_PGRAB] = ECursorGetByName("PGRAB", NULL, XC_X_cursor);
-   ECsrs[ECSR_ACT_MOVE] = ECursorGetByName("GRAB_MOVE", NULL, XC_fleur);
-   ECsrs[ECSR_ACT_RESIZE] = ECursorGetByName("GRAB_RESIZE", NULL, XC_sizing);
-   ECsrs[ECSR_ACT_RESIZE_H] =
-      ECursorGetByName("RESIZE_H", NULL, XC_sb_h_double_arrow);
-   ECsrs[ECSR_ACT_RESIZE_V] =
-      ECursorGetByName("RESIZE_V", NULL, XC_sb_v_double_arrow);
-   ECsrs[ECSR_ACT_RESIZE_TL] =
-      ECursorGetByName("RESIZE_TL", "RESIZE_BR", XC_top_left_corner);
-   ECsrs[ECSR_ACT_RESIZE_TR] =
-      ECursorGetByName("RESIZE_TR", "RESIZE_BL", XC_top_right_corner);
-   ECsrs[ECSR_ACT_RESIZE_BL] =
-      ECursorGetByName("RESIZE_BL", "RESIZE_TR", XC_bottom_left_corner);
-   ECsrs[ECSR_ACT_RESIZE_BR] =
-      ECursorGetByName("RESIZE_BR", "RESIZE_TL", XC_bottom_right_corner);
+   int                 i;
+
+   for (i = 0; i < ECSR_COUNT; i++)
+      ECsrs[i] = 1;
 }
 
 /*
