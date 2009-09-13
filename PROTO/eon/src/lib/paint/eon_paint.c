@@ -23,6 +23,7 @@ struct _Eon_Paint_Private
 	Enesim_Matrix matrix;
 	Enesim_Matrix inverse;
 	Eon_Paint_Coordspace coordspace;
+	Eon_Paint_Matrixspace matrixspace;
 	void *engine_data;
 };
 
@@ -137,12 +138,26 @@ Eina_Bool eon_paint_appendable(Ekeko_Object *p, Ekeko_Object *child)
 		return EINA_TRUE;
 }
 
-void eon_paint_matrix_inv_get(Eon_Paint *p, Enesim_Matrix *m)
+void eon_paint_inverse_matrix_get(Eon_Paint *p, Eon_Shape *s, Enesim_Matrix *m)
 {
 	Eon_Paint_Private *prv = PRIVATE(p);
-	*m = prv->inverse;
-}
 
+	switch (prv->matrixspace)
+	{
+		case EON_MATRIXSPACE_OBJECT:
+		eon_shape_inverse_matrix_get(s, m);
+		break;
+
+		case EON_MATRIXSPACE_USER:
+		*m = prv->inverse;
+		break;
+
+		case EON_MATRIXSPACE_COMPOSE:
+		/* TODO */
+		*m = prv->inverse;
+		break;
+	}
+}
 /*============================================================================*
  *                                   API                                      *
  *============================================================================*/
@@ -152,6 +167,7 @@ Ekeko_Property_Id EON_PAINT_Y;
 Ekeko_Property_Id EON_PAINT_W;
 Ekeko_Property_Id EON_PAINT_H;
 Ekeko_Property_Id EON_PAINT_COORDSPACE;
+Ekeko_Property_Id EON_PAINT_MATRIXSPACE;
 
 EAPI Ekeko_Type *eon_paint_type_get(void)
 {
@@ -168,6 +184,7 @@ EAPI Ekeko_Type *eon_paint_type_get(void)
 		EON_PAINT_W = EKEKO_TYPE_PROP_SINGLE_ADD(type, "w", EON_PROPERTY_COORD, OFFSET(Eon_Paint_Private, w));
 		EON_PAINT_H = EKEKO_TYPE_PROP_SINGLE_ADD(type, "h", EON_PROPERTY_COORD, OFFSET(Eon_Paint_Private, h));
 		EON_PAINT_COORDSPACE = EKEKO_TYPE_PROP_SINGLE_ADD(type, "coordspace", EKEKO_PROPERTY_INT, OFFSET(Eon_Paint_Private, coordspace));
+		EON_PAINT_MATRIXSPACE = EKEKO_TYPE_PROP_SINGLE_ADD(type, "matrixspace", EKEKO_PROPERTY_INT, OFFSET(Eon_Paint_Private, matrixspace));
 	}
 
 	return type;
@@ -302,4 +319,18 @@ EAPI void eon_paint_coords_get(Eon_Paint *p, Eon_Coord *x, Eon_Coord *y, Eon_Coo
 	*h = prv->h;
 }
 
+EAPI void eon_paint_matrixspace_set(Eon_Paint *p, Eon_Paint_Matrixspace cs)
+{
+	Ekeko_Value v;
+
+	ekeko_value_int_from(&v, cs);
+	ekeko_object_property_value_set((Ekeko_Object *)p, "matrixspace", &v);
+}
+
+EAPI Eon_Paint_Matrixspace eon_paint_matrixspace_get(Eon_Paint *p)
+{
+	Eon_Paint_Private *prv = PRIVATE(p);
+
+	return prv->matrixspace;
+}
 

@@ -69,7 +69,6 @@ Eina_Bool eon_transition_paint_get(Eon_Transition *t, Eon_Paint **p1, Eon_Paint 
 	*step = ((float)(prv->step * (num - 1))) - pos;
 	*p1 = eina_list_nth(prv->paints, pos);
 	*p2 = eina_list_nth(prv->paints, pos + 1);
-	//printf("step = %g (%g) pos = %d %d\n", *step, prv->step, pos, pos + 1);
 
 	return EINA_TRUE;
 }

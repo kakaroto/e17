@@ -58,7 +58,7 @@ static void paint_coords_get(Eon_Paint *p, Eon_Shape *s, int *x, int *y, int *w,
 	/* setup the renderer correctly */
 	if (eon_paint_coordspace_get(p) == EON_COORDSPACE_OBJECT)
 	{
-		ekeko_renderable_geometry_get((Ekeko_Renderable *)s, &geom);
+		eon_shape_geometry_get(s, &geom);
 	}
 	else
 	{
@@ -72,16 +72,13 @@ static void paint_coords_get(Eon_Paint *p, Eon_Shape *s, int *x, int *y, int *w,
 	coord_calculate(&py, geom.y, geom.h, y);
 	length_calculate(&pw, geom.w, w);
 	length_calculate(&ph, geom.h, h);
-#if 0
-	printf("CSPACE = %d [%d %d %d %d] -> %d %d %d %d\n", eon_paint_coordspace_get(p), geom.x, geom.y, geom.w, geom.h, x ? *x : -1, y ? *y : -1, w ? *w : -1, h ? *h : -1);
-#endif
 }
 
-static void paint_setup(Paint *p, int ox, int oy)
+static void paint_setup(Paint *p, Eon_Shape *s, int ox, int oy)
 {
 	Enesim_Matrix m;
 
-	eon_paint_matrix_inv_get(p->p, &m);
+	eon_paint_inverse_matrix_get(p->p, s, &m);
 	enesim_renderer_transform_set(p->r, &m);
 	enesim_renderer_origin_set(p->r, ox, oy);
 }
@@ -123,6 +120,7 @@ static Eina_Bool hswitch_setup(void *data, Eon_Shape *s)
 	enesim_renderer_hswitch_w_set(p->r, dw);
 	enesim_renderer_hswitch_h_set(p->r, dh);
 	enesim_renderer_hswitch_step_set(p->r, step);
+
 	return EINA_TRUE;
 }
 
@@ -142,9 +140,8 @@ static void * fade_create(Eon_Fade *f)
 
 	p = calloc(1, sizeof(Paint));
 	p->p = (Eon_Paint *)f;
-#if 0
 	p->r = enesim_renderer_transition_new();
-#endif
+
 	return p;
 }
 
@@ -155,8 +152,8 @@ static Eina_Bool fade_setup(void *data, Eon_Shape *s)
 	Eon_Fade *f = (Eon_Fade *)p->p;
 	Eon_Paint *p1, *p2;
 	float step;
-	int dw, dh;
-#if 0
+	int dx, dy;
+
 	if (!eon_transition_paint_get((Eon_Transition *)f, &p1, &p2, &step))
 		return EINA_FALSE;
 	if (!eon_paint_setup(p1, s))
@@ -164,13 +161,15 @@ static Eina_Bool fade_setup(void *data, Eon_Shape *s)
 	if (!eon_paint_setup(p2, s))
 		return EINA_FALSE;
 
-	paint_coords_get(p->p, s, NULL, NULL, &dw, &dh);
+	paint_coords_get(p->p, s, &dx, &dy, NULL, NULL);
+	paint_setup(p, s, dx, dy);
+
 	tmp = eon_paint_engine_data_get(p1);
 	enesim_renderer_transition_source_set(p->r, tmp->r);
 	tmp = eon_paint_engine_data_get(p2);
 	enesim_renderer_transition_target_set(p->r, tmp->r);
 	enesim_renderer_transition_value_set(p->r, step);
-#endif
+
 	return EINA_TRUE;
 }
 
@@ -202,10 +201,11 @@ static Eina_Bool checker_setup(void *data, Eon_Shape *s)
 	int dx, dy;
 
 	paint_coords_get(p->p, s, &dx, &dy, NULL, NULL);
-	paint_setup(p, dx, dy);
+	paint_setup(p, s, dx, dy);
 	enesim_renderer_checker_color1_set(p->r, eon_checker_color1_get(sq));
 	enesim_renderer_checker_color2_set(p->r, eon_checker_color2_get(sq));
 	enesim_renderer_checker_size_set(p->r, 20, 20);
+
 	return EINA_TRUE;
 }
 
@@ -239,7 +239,7 @@ static Eina_Bool stripes_setup(void *data, Eon_Shape *s)
 	Enesim_Color c1, c2;
 
 	paint_coords_get(p->p, s, &dx, &dy, NULL, NULL);
-	paint_setup(p, dx, dy);
+	paint_setup(p, s, dx, dy);
 	th1 = eon_stripes_thickness1_get(st);
 	th2 = eon_stripes_thickness2_get(st);
 
@@ -310,10 +310,9 @@ static Eina_Bool image_setup(void *data, Eon_Shape *s)
 		return EINA_FALSE;
 	}
 	paint_coords_get(p->p, s, &dx, &dy, &dw, &dh);
-	paint_setup(p, dx, dy);
+	paint_setup(p, s, dx, dy);
 	enesim_renderer_surface_w_set(p->r, dw);
 	enesim_renderer_surface_h_set(p->r, dh);
-	enesim_renderer_origin_set(p->r, dx, dy);
 	enesim_renderer_surface_src_set(p->r, eon_image_surface_get(i));
 
 	return EINA_TRUE;

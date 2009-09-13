@@ -17,6 +17,7 @@
 #define EON_PAINT_H_CHANGED "hChanged"
 #define EON_PAINT_MATRIX_CHANGED "matrixChanged"
 #define EON_PAINT_COORDSPACE_CHANGED "coordspaceChanged"
+#define EON_PAINT_MATRIXSPACE_CHANGED "matrixspaceChanged"
 /*============================================================================*
  *                               Properties                                   *
  *============================================================================*/
@@ -26,6 +27,7 @@ extern Ekeko_Property_Id EON_PAINT_W;
 extern Ekeko_Property_Id EON_PAINT_H;
 extern Ekeko_Property_Id EON_PAINT_MATRIX;
 extern Ekeko_Property_Id EON_PAINT_COORDSPACE;
+extern Ekeko_Property_Id EON_PAINT_MATRIXSPACE;
 /*============================================================================*
  *                                 Class                                      *
  *============================================================================*/
@@ -34,6 +36,13 @@ typedef enum _Eon_Paint_Coordspace
 	EON_COORDSPACE_OBJECT,
 	EON_COORDSPACE_USER,
 } Eon_Paint_Coordspace;
+
+typedef enum _Eon_Paint_Matrixspace
+{
+	EON_MATRIXSPACE_OBJECT, /* use the same object's matrix */
+	EON_MATRIXSPACE_USER, /* use the paint's matrix as is */
+	EON_MATRIXSPACE_COMPOSE, /* compose paint's matrix with object's matrix */
+} Eon_Paint_Matrixspace;
 
 typedef struct _Eon_Paint_Private Eon_Paint_Private;
 struct _Eon_Paint

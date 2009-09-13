@@ -62,7 +62,6 @@ static void _file_change(const Ekeko_Object *o, Ekeko_Event *e, void *data)
 	Eon_Image *i = (Eon_Image *)o;
 	Eon_Image_Private *prv = PRIVATE(o);
 
-	printf("FILE CHANGED!!\n");
 	if (em->state != EVENT_MUTATION_STATE_POST)
 		return;
 	prv->src.loaded = EINA_FALSE;

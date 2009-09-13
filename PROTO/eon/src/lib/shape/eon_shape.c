@@ -34,8 +34,8 @@ struct _Eon_Shape_Private
 	} fill;
 	Enesim_Shape_Draw_Mode draw_mode;
 	Enesim_Matrix matrix, imatrix;
-	/* this is for the chidlren classes that go through our
-	 * matrix interface
+	/* this is for the children classes that go through our
+	 * matrix interface, here we store the untransformed geometry
 	 */
 	Eina_Rectangle srect;
 
@@ -111,8 +111,26 @@ static void _color_change(const Ekeko_Object *o, Ekeko_Event *e, void *data)
 
 static void _filter_change(const Ekeko_Object *o, Ekeko_Event *e, void *data)
 {
-	printf("CALLEEEEEEEEEEEEE\n");
 }
+
+static void _trans_append(const Ekeko_Object *o, Ekeko_Event *e, void *data)
+{
+        if (ekeko_type_instance_is_of(o, EON_TYPE_PAINT))
+	{
+		ekeko_event_listener_add(o, EKEKO_EVENT_PROP_MODIFY,
+				_ext_paint_change, EINA_FALSE, data);
+	}
+}
+
+static void _trans_removed(const Ekeko_Object *o, Ekeko_Event *e, void *data)
+{
+        if (ekeko_type_instance_is_of(o, EON_TYPE_PAINT))
+	{
+		ekeko_event_listener_remove(o, EKEKO_EVENT_PROP_MODIFY,
+				_ext_paint_change, EINA_FALSE, data);
+	}
+}
+
 
 static void _paint_change(const Ekeko_Object *o, Ekeko_Event *e, void *data)
 {
@@ -120,6 +138,7 @@ static void _paint_change(const Ekeko_Object *o, Ekeko_Event *e, void *data)
 	Eon_Shape *s = (Eon_Shape *)o;
 	Ekeko_Object *prev, *curr;
 
+	/* FIXME instead of this recursive changes, use the bubbling! :) */
 	/* in case the paint reference has changed, unregister all the callbacks
 	 * from the previous one and register the callbacks for the new one
 	 */
@@ -127,14 +146,31 @@ static void _paint_change(const Ekeko_Object *o, Ekeko_Event *e, void *data)
 	curr = em->curr->value.object;
 	if (prev)
 	{
-		ekeko_event_listener_remove(prev, EKEKO_EVENT_PROP_MODIFY, _ext_paint_change, EINA_FALSE, o);
-		/* TODO check that the prev paint doesnt have any other reference, if so
-		 * delete it
-		 */
+		ekeko_event_listener_remove(prev, EKEKO_EVENT_PROP_MODIFY,
+				_ext_paint_change, EINA_FALSE, o);
+		ekeko_event_listener_remove(prev, EKEKO_EVENT_PROP_MODIFY,
+				_ext_paint_change, EINA_TRUE, o);
+		/* in case a child is appended we change */
+		ekeko_event_listener_remove(prev,
+				EKEKO_EVENT_OBJECT_APPEND,
+				_trans_append, EINA_FALSE, o);
+		/* TODO in case a child is removed we change */
+		/* TODO for each child get notified too */
 	}
 	if (curr)
-		ekeko_event_listener_add(curr, EKEKO_EVENT_PROP_MODIFY, _ext_paint_change, EINA_FALSE, o);
-
+	{
+		/* in case the paint object changes we change */
+		ekeko_event_listener_add(curr, EKEKO_EVENT_PROP_MODIFY,
+				_ext_paint_change, EINA_FALSE, o);
+		/* in case some child's property changes we change */
+		ekeko_event_listener_add(curr, EKEKO_EVENT_PROP_MODIFY,
+				_ext_paint_change, EINA_TRUE, o);
+		/* in case a child is appended we change */
+		ekeko_event_listener_add(curr, EKEKO_EVENT_OBJECT_APPEND,
+				_trans_append, EINA_FALSE, o);
+		/* TODO in case a child is removed we change */
+		/* TODO for each child get notified too */
+	}
 	eon_shape_change(s);
 }
 
@@ -276,6 +312,7 @@ void eon_shape_geometry_set(Eon_Shape *s, Eina_Rectangle *rect)
 	mtype = enesim_matrix_type_get(&prv->matrix);
 	if (mtype == ENESIM_MATRIX_IDENTITY)
 	{
+		prv->srect = *rect;
 		ekeko_renderable_geometry_set((Ekeko_Renderable *)s, rect);
 	}
 	else
@@ -297,6 +334,14 @@ void eon_shape_geometry_set(Eon_Shape *s, Eina_Rectangle *rect)
 		prv->srect = *rect;
 		ekeko_renderable_geometry_set((Ekeko_Renderable *)s, &r);
 	}
+}
+
+void eon_shape_geometry_get(Eon_Shape *s, Eina_Rectangle *rect)
+{
+	Eon_Shape_Private *prv;
+
+	prv = PRIVATE(s);
+	*rect = prv->srect;
 }
 
 Eina_Bool eon_shape_appendable(void *instance, void *child)
