@@ -662,9 +662,9 @@ eupnp_device_parse_check_finished(Eupnp_Device_Info *d)
  *
  */
 
-int EUPNP_ERROR_DEVICE_PARSER_INSUFFICIENT_FEED = 0;
+EAPI int EUPNP_ERROR_DEVICE_PARSER_INSUFFICIENT_FEED = 0;
 
-int
+EAPI int
 eupnp_device_parser_init(void)
 {
    if (_eupnp_device_parser_init_count)
@@ -718,10 +718,12 @@ eupnp_device_parser_init(void)
       eina_shutdown();
    eina_init_error:
       xmlCleanupParser();
+
+   return 0;
 }
 
 
-int
+EAPI int
 eupnp_device_parser_shutdown(void)
 {
    if (_eupnp_device_parser_init_count != 1)
@@ -750,7 +752,7 @@ eupnp_device_parser_shutdown(void)
 /*
  * @return EINA_TRUE if parsed succesfully, EINA_FALSE otherwise.
  */
-Eina_Bool
+EAPI Eina_Bool
 eupnp_device_parse_xml_buffer(const char *buffer, int buffer_len, Eupnp_Device_Info *d)
 {
    Eina_Bool ret = EINA_FALSE;
