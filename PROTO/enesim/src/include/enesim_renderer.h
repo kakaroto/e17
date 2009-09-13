@@ -81,7 +81,11 @@ EAPI void enesim_renderer_checker_color1_set(Enesim_Renderer *r, uint32_t color)
 EAPI void enesim_renderer_checker_color2_set(Enesim_Renderer *r, uint32_t color);
 EAPI void enesim_renderer_checker_size_set(Enesim_Renderer *r, int w, int h);
 
-EAPI void enesim_renderer_transition_value_set(Enesim_Renderer *r, float value);
+EAPI Enesim_Renderer * enesim_renderer_transition_new(void);
+EAPI void enesim_renderer_transition_value_set(Enesim_Renderer *r, float interp_value);
+EAPI void enesim_renderer_transition_source_set(Enesim_Renderer *r, Enesim_Renderer *r0);
+EAPI void enesim_renderer_transition_target_set(Enesim_Renderer *r, Enesim_Renderer *r1);
+EAPI void enesim_renderer_transition_offset_set(Enesim_Renderer *r, int x, int y);
 
 EAPI Enesim_Renderer * enesim_renderer_stripes_new(void);
 EAPI void enesim_renderer_stripes_color_set(Enesim_Renderer *p,

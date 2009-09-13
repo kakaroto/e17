@@ -49,7 +49,10 @@ EAPI void enesim_matrix_fixed_values_get(Enesim_Matrix *m, Eina_F16p16 *a,
 EAPI void enesim_matrix_f16p16_matrix_to(Enesim_Matrix *m,
 		Enesim_F16p16_Matrix *fm);
 
-EAPI void enesim_matrix_compose(Enesim_Matrix *m1, Enesim_Matrix *m2, Enesim_Matrix *dst);
+EAPI void enesim_matrix_compose(Enesim_Matrix *m1, Enesim_Matrix *m2,
+		Enesim_Matrix *dst);
+EAPI void enesim_f16p16_matrix_compose(Enesim_F16p16_Matrix *m1,
+		Enesim_F16p16_Matrix *m2, Enesim_F16p16_Matrix *dst);
 EAPI void enesim_matrix_translate(Enesim_Matrix *t, float tx, float ty);
 EAPI void enesim_matrix_scale(Enesim_Matrix *t, float sx, float sy);
 EAPI void enesim_matrix_rotate(Enesim_Matrix *t, float rad);

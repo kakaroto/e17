@@ -87,9 +87,11 @@ static inline void renderer_affine_setup(Enesim_Renderer *r, int x, int y,
 	yy = eina_f16p16_int_from(y);
 
 	*fpx = eina_f16p16_mul(r->matrix.values.xx, xx) +
-			eina_f16p16_mul(r->matrix.values.xy, yy) + r->matrix.values.xz;
+			eina_f16p16_mul(r->matrix.values.xy, yy) +
+			r->matrix.values.xz;
 	*fpy = eina_f16p16_mul(r->matrix.values.yx, xx) +
-			eina_f16p16_mul(r->matrix.values.yy, yy) + r->matrix.values.yz;
+			eina_f16p16_mul(r->matrix.values.yy, yy) +
+			r->matrix.values.yz;
 }
 
 static inline void renderer_projective_setup(Enesim_Renderer *r, int x, int y,
@@ -104,11 +106,14 @@ static inline void renderer_projective_setup(Enesim_Renderer *r, int x, int y,
 	yy = eina_f16p16_int_from(y);
 
 	*fpy = eina_f16p16_mul(r->matrix.values.yx, xx) +
-			eina_f16p16_mul(r->matrix.values.yy, yy) + r->matrix.values.yz;
+			eina_f16p16_mul(r->matrix.values.yy, yy) +
+			r->matrix.values.yz;
 	*fpx = eina_f16p16_mul(r->matrix.values.xx, xx) +
-			eina_f16p16_mul(r->matrix.values.xy, yy) + r->matrix.values.xz;
+			eina_f16p16_mul(r->matrix.values.xy, yy) +
+			r->matrix.values.xz;
 	*fpz = eina_f16p16_mul(r->matrix.values.zx, xx) +
-			eina_f16p16_mul(r->matrix.values.zy, yy) + r->matrix.values.zz;
+			eina_f16p16_mul(r->matrix.values.zy, yy) +
+			r->matrix.values.zz;
 }
 
 void enesim_renderer_shape_init(Enesim_Renderer *r);

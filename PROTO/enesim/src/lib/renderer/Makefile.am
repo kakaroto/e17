@@ -19,7 +19,8 @@ shape.c \
 importer.c \
 perlin.c \
 gradient.c \
-compound.c
+compound.c \
+transition.c
 
 libenesim_renderer_la_LIBADD = \
 gradient/libenesim_renderer_gradient.la \

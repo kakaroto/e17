@@ -315,6 +315,55 @@ EAPI void enesim_matrix_compose(Enesim_Matrix *m1, Enesim_Matrix *m2, Enesim_Mat
  * To be documented
  * FIXME: To be fixed
  */
+EAPI void enesim_f16p16_matrix_compose(Enesim_F16p16_Matrix *m1,
+		Enesim_F16p16_Matrix *m2, Enesim_F16p16_Matrix *dst)
+{
+	Eina_F16p16 a11, a12, a13, a21, a22, a23, a31, a32, a33;
+
+	a11 = eina_f16p16_mul(MATRIX_XX(m1), MATRIX_XX(m2)) +
+			eina_f16p16_mul(MATRIX_XY(m1), MATRIX_YX(m2)) +
+			eina_f16p16_mul(MATRIX_XZ(m1), MATRIX_ZX(m2));
+	a12 = eina_f16p16_mul(MATRIX_XX(m1), MATRIX_XY(m2)) +
+			eina_f16p16_mul(MATRIX_XY(m1), MATRIX_YY(m2)) +
+			eina_f16p16_mul(MATRIX_XZ(m1), MATRIX_ZY(m2));
+	a13 = eina_f16p16_mul(MATRIX_XX(m1), MATRIX_XZ(m2)) +
+			eina_f16p16_mul(MATRIX_XY(m1), MATRIX_YZ(m2)) +
+			eina_f16p16_mul(MATRIX_XZ(m1), MATRIX_ZZ(m2));
+
+	a21 = eina_f16p16_mul(MATRIX_YX(m1), MATRIX_XX(m2)) +
+			eina_f16p16_mul(MATRIX_YY(m1), MATRIX_YX(m2)) +
+			eina_f16p16_mul(MATRIX_YZ(m1), MATRIX_ZX(m2));
+	a22 = eina_f16p16_mul(MATRIX_YX(m1), MATRIX_XY(m2)) +
+			eina_f16p16_mul(MATRIX_YY(m1), MATRIX_YY(m2)) +
+			eina_f16p16_mul(MATRIX_YZ(m1), MATRIX_ZY(m2));
+	a23 = eina_f16p16_mul(MATRIX_YX(m1), MATRIX_XZ(m2)) +
+			eina_f16p16_mul(MATRIX_YY(m1), MATRIX_YZ(m2)) +
+			eina_f16p16_mul(MATRIX_YZ(m1), MATRIX_ZZ(m2));
+
+	a31 = eina_f16p16_mul(MATRIX_ZX(m1), MATRIX_XX(m2)) +
+			eina_f16p16_mul(MATRIX_ZY(m1), MATRIX_YX(m2)) +
+			eina_f16p16_mul(MATRIX_ZZ(m1), MATRIX_ZX(m2));
+	a32 = eina_f16p16_mul(MATRIX_ZX(m1), MATRIX_XY(m2)) +
+			eina_f16p16_mul(MATRIX_ZY(m1), MATRIX_YY(m2)) +
+			eina_f16p16_mul(MATRIX_ZZ(m1), MATRIX_ZY(m2));
+	a33 = eina_f16p16_mul(MATRIX_ZX(m1), MATRIX_XZ(m2)) +
+			eina_f16p16_mul(MATRIX_ZY(m1), MATRIX_YZ(m2)) +
+			eina_f16p16_mul(MATRIX_ZZ(m1), MATRIX_ZZ(m2));
+
+	MATRIX_XX(dst) = a11;
+	MATRIX_XY(dst) = a12;
+	MATRIX_XZ(dst) = a13;
+	MATRIX_YX(dst) = a21;
+	MATRIX_YY(dst) = a22;
+	MATRIX_YZ(dst) = a23;
+	MATRIX_ZX(dst) = a31;
+	MATRIX_ZY(dst) = a32;
+	MATRIX_ZZ(dst) = a33;
+}
+/**
+ * To be documented
+ * FIXME: To be fixed
+ */
 EAPI void enesim_matrix_translate(Enesim_Matrix *m, float tx, float ty)
 {
 	MATRIX_XX(m) = 1;
@@ -355,6 +404,7 @@ EAPI void enesim_matrix_rotate(Enesim_Matrix *m, float rad)
 #else
 	/* normalize the angle between -pi,pi */
 	rad = fmod(rad + M_PI, 2 * M_PI) - M_PI;
+	printf("rad = %g\n", rad);
 	c = _cos(rad);
 	s = _sin(rad);
 #endif
