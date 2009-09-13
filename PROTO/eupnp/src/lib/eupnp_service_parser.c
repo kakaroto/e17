@@ -501,6 +501,12 @@ error(void *state, const char *msg, ...)
 static Eupnp_Service_Parser *
 eupnp_service_parser_new(const char *first_chunk, int first_chunk_len, Eupnp_Service_Proxy *d)
 {
+   if (first_chunk_len < 4)
+     {
+	WARN_D(_log_dom, "First chunk length less than 4 chars, user must provide more than 4.");
+	return NULL;
+     }
+
    Eupnp_Service_Parser *p;
 
    p = malloc(sizeof(Eupnp_Service_Parser));
@@ -532,24 +538,12 @@ eupnp_service_parser_new(const char *first_chunk, int first_chunk_len, Eupnp_Ser
    p->state.building_allowed_value = NULL;
    p->state.send_events = EINA_TRUE; // default is YES
 
-   if (first_chunk_len < 4)
-     {
-	p->chunk_acum = malloc(sizeof(char)*first_chunk_len);
-	memcpy(p->chunk_acum, first_chunk, first_chunk_len);
-	p->chunk_acum_len = first_chunk_len;
-	p->ctx = NULL;
-	return p;
-     }
-
    p->ctx = xmlCreatePushParserCtxt(&p->handler, &p->state, first_chunk,
 				    first_chunk_len, NULL);
 
    // Force first chunk parse. When not forced, the parser gets lazy on the
    // first time and doesn't parse one-big-chunk feeds.
    xmlParseChunk(p->ctx, NULL, 0, 0);
-
-   p->chunk_acum = NULL;
-   p->chunk_acum_len = 0;
 
    if (!p->ctx)
      {
@@ -598,6 +592,9 @@ eupnp_service_parse_check_finished(Eupnp_Service_Proxy *d)
  * Public API
  */
 
+EAPI int EUPNP_ERROR_SERVICE_PARSER_INSUFFICIENT_FEED = 0;
+
+
 EAPI int
 eupnp_service_parser_init(void)
 {
@@ -606,22 +603,37 @@ eupnp_service_parser_init(void)
 
    xmlInitParser();
 
+   if (!eina_init())
+     {
+	fprintf(stderr, "Failed to initialize eina error module.\n");
+	return 0;
+     }
+
+   EUPNP_ERROR_SERVICE_PARSER_INSUFFICIENT_FEED = eina_error_msg_register("Parser feeded with less than 4 chars. Feed it with at least 4 chars");
+
    if (!eupnp_log_init())
      {
 	fprintf(stderr, "Could not initialize eupnp error module.\n");
-	return 0;
+	goto log_init_error;
      }
 
    if ((_log_dom = eina_log_domain_register("Eupnp.ServiceParser", EINA_COLOR_BLUE)) < 0)
      {
 	fprintf(stderr, "Failed to create logging domain for service parser module.\n");
-	eupnp_log_shutdown();
-	return 0;
+	goto log_dom_error;
      }
 
    INFO_D(_log_dom, "Initializing service parser module.");
 
    return ++_eupnp_service_parser_init;
+
+
+   log_dom_error:
+     eupnp_log_shutdown();
+   log_init_error:
+     eina_shutdown();
+
+   return 0;
 }
 
 EAPI int
@@ -669,49 +681,11 @@ eupnp_service_parse_buffer(const char *buffer, int buffer_len, Eupnp_Service_Pro
    if (!parser->ctx)
      {
 	// first_chunk_len < 4 case
-	size_t cat_size = parser->chunk_acum_len + buffer_len;
-	if ((cat_size > 4) && (parser->chunk_acum))
-	  {
-	     char *newbuf = realloc(parser->chunk_acum,
-				    sizeof(char)*parser->chunk_acum_len +
-				    sizeof(char*));
-
-	     if (!newbuf)
-	       {
-		  ERROR_D(_log_dom, "Could not realloc for concat chunk acum and buffer");
-		  goto parse_ret;
-	       }
-
-	     ((char *)newbuf)[parser->chunk_acum_len+1] = buffer;
-	     parser->ctx = xmlCreatePushParserCtxt(&parser->handler,
-						   &parser->state,
-						   newbuf,
-						   cat_size,
-						   NULL);
-	     ret = EINA_TRUE;
-	     goto parse_ret;
-	  }
-	else
-	  {
-	     // Not enough length to create the push ctxt
-	     parser->chunk_acum = realloc(parser->chunk_acum, sizeof(char)*buffer_len);
-
-	     if (!parser->chunk_acum)
-	       {
-		  ERROR_D(_log_dom, "Could not realloc for successive small feeds case");
-		  goto parse_ret;
-	       }
-
-	     strncat((char *)parser->chunk_acum + parser->chunk_acum_len, buffer, buffer_len);
-
-	     ret = EINA_TRUE;
-	     goto parse_ret;
-	  }
+	eina_error_set(EUPNP_ERROR_SERVICE_PARSER_INSUFFICIENT_FEED);
+	return EINA_FALSE;
      }
 
    // Progressive feeds
-   //
-
    if (parser->state.state == FINISH)
      {
 	WARN_D(_log_dom, "Already finished parsing");

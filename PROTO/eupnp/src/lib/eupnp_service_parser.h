@@ -77,9 +77,9 @@ struct _Eupnp_Service_Parser {
    Eupnp_Service_Parser_State state;
    xmlSAXHandler handler;
    xmlParserCtxtPtr ctx;
-   char *chunk_acum;
-   int chunk_acum_len;
 };
+
+EAPI extern int EUPNP_ERROR_SERVICE_PARSER_INSUFFICIENT_FEED;
 
 EAPI int       eupnp_service_parser_init(void);
 EAPI int       eupnp_service_parser_shutdown(void);

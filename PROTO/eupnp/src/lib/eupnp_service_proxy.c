@@ -100,15 +100,26 @@ _data_ready(void *buffer, int size, void *data)
    DEBUG_D(_log_dom, "Data ready for proxy %p, with xml parser at %p", proxy, proxy->xml_parser);
 
    if (eupnp_service_parse_buffer(buffer, size, proxy))
-     DEBUG_D(_log_dom, "Parsed SCPD XML successfully");
-   else
-     ERROR_D(_log_dom, "Failed to parse SCPD XML");
-
-   if (!proxy->xml_parser)
      {
-	DEBUG_D(_log_dom, "Finished building service proxy %p, forwarding to ready callback.", proxy);
-	proxy->ready_cb(proxy, proxy->ready_cb_data);
+	DEBUG_D(_log_dom, "Parsed XML successfully at buffer %p for proxy %p", buffer, proxy);
+
+	if (!proxy->xml_parser)
+	  {
+	     DEBUG_D(_log_dom, "Finished building service proxy %p, forwarding to ready callback.", proxy);
+	     proxy->ready_cb(proxy, proxy->ready_cb_data);
+	  }
      }
+   else
+     {
+	if (eina_error_get() == EUPNP_ERROR_SERVICE_PARSER_INSUFFICIENT_FEED)
+	  {
+	     // TODO treat size < 4 case
+	     WARN_D(_log_dom, "Len < 4 case.");
+	  }
+
+	ERROR_D(_log_dom, "Failed to parse XML at buffer %p for proxy %p", buffer, proxy);
+     }
+
    eupnp_service_proxy_unref(proxy);
 }
 
