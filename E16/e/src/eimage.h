@@ -62,8 +62,8 @@ int                 EImageHasAlpha(EImage * im);
 void                EImageGetSize(EImage * im, int *pw, int *ph);
 void               *EImageGetData(EImage * im);
 
-void                EImageFill(EImage * im, int x, int y, int w, int h, int r,
-			       int g, int b, int a);
+void                EImageFill(EImage * im, int x, int y, int w, int h,
+			       unsigned int color);
 void                EImageOrientate(EImage * im, int orientation);
 
 void                EImageBlend(EImage * im, EImage * src, int flags,

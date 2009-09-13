@@ -501,12 +501,13 @@ _xfs_FdcSetDrawable(TextState * ts, unsigned long draw)
 }
 
 static void
-_xfs_FdcSetColor(TextState * ts, EColor * xc)
+_xfs_FdcSetColor(TextState * ts, unsigned int color)
 {
    FontCtxXfs         *fdc = (FontCtxXfs *) ts->fdc;
+   unsigned int        pixel;
 
-   EAllocColor(WinGetCmap(fdc->win), xc);
-   XSetForeground(disp, fdc->gc, xc->pixel);
+   pixel = EAllocColor(WinGetCmap(fdc->win), color);
+   XSetForeground(disp, fdc->gc, pixel);
 }
 
 const FontOps       FontOpsXfs = {
@@ -605,12 +606,13 @@ _xfont_FdcSetDrawable(TextState * ts, unsigned long draw)
 }
 
 static void
-_xfont_FdcSetColor(TextState * ts, EColor * xc)
+_xfont_FdcSetColor(TextState * ts, unsigned int color)
 {
    FontCtxXfont       *fdc = (FontCtxXfont *) ts->fdc;
+   unsigned int        pixel;
 
-   EAllocColor(WinGetCmap(fdc->win), xc);
-   XSetForeground(disp, fdc->gc, xc->pixel);
+   pixel = EAllocColor(WinGetCmap(fdc->win), color);
+   XSetForeground(disp, fdc->gc, pixel);
 }
 
 static void
@@ -635,18 +637,18 @@ TsTextDraw(TextState * ts, int x, int y, const char *text, int len)
 {
    if (ts->style.effect == 1)
      {
-	ts->ops->FdcSetColor(ts, &(ts->bg_col));
+	ts->ops->FdcSetColor(ts, ts->bg_col);
 	ts->ops->TextDraw(ts, x + 1, y + 1, text, len);
      }
    else if (ts->style.effect == 2)
      {
-	ts->ops->FdcSetColor(ts, &(ts->bg_col));
+	ts->ops->FdcSetColor(ts, ts->bg_col);
 	ts->ops->TextDraw(ts, x - 1, y, text, len);
 	ts->ops->TextDraw(ts, x + 1, y, text, len);
 	ts->ops->TextDraw(ts, x, y - 1, text, len);
 	ts->ops->TextDraw(ts, x, y + 1, text, len);
      }
-   ts->ops->FdcSetColor(ts, &(ts->fg_col));
+   ts->ops->FdcSetColor(ts, ts->fg_col);
    ts->ops->TextDraw(ts, x, y, text, len);
 }
 

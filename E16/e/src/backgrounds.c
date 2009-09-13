@@ -49,7 +49,7 @@ struct _background {
    char               *name;
    Pixmap              pmap;
    time_t              last_viewed;
-   EColor              bg_solid;
+   unsigned int        bg_solid;
    char                bg_tile;
    BgPart              bg;
    BgPart              top;
@@ -76,7 +76,7 @@ BackgroundGetUniqueString(const Background * bg)
    int                 r, g, b;
    int                 n1, n2, n3, n4, n5, f1, f2, f3, f4, f5, f6;
 
-   GET_COLOR(&(bg->bg_solid), r, g, b);
+   COLOR32_TO_RGB(bg->bg_solid, r, g, b);
    n1 = (r << 24) | (g << 16) | (b << 8) | (bg->bg_tile << 7)
       | (bg->bg.keep_aspect << 6) | (bg->top.keep_aspect << 5);
    n2 = (bg->bg.xjust << 16) | (bg->bg.yjust);
@@ -282,8 +282,8 @@ BackgroundDelete(Background * bg)
 #endif /* ENABLE_DIALOGS */
 
 static Background  *
-BackgroundCreate(const char *name, EColor * solid, const char *bgn, char tile,
-		 char keep_aspect, int xjust, int yjust, int xperc,
+BackgroundCreate(const char *name, unsigned int solid, const char *bgn,
+		 char tile, char keep_aspect, int xjust, int yjust, int xperc,
 		 int yperc, const char *top, char tkeep_aspect, int txjust,
 		 int tyjust, int txperc, int typerc)
 {
@@ -293,13 +293,15 @@ BackgroundCreate(const char *name, EColor * solid, const char *bgn, char tile,
    if (!bg)
       return NULL;
 
+   if (!name)
+     {
+	name = "NONE";
+	bg->external = 1;
+     }
    bg->name = Estrdup(name);
 
-   SET_COLOR(&(bg->bg_solid), 160, 160, 160);
-   if (solid)
-      bg->bg_solid = *solid;
-   else
-      bg->external = 1;
+   COLOR32_FROM_RGB(bg->bg_solid, 160, 160, 160);
+   bg->bg_solid = solid;
    if (bgn)
       bg->bg.file = Estrdup(bgn);
    bg->bg_tile = tile;
@@ -356,9 +358,7 @@ BackgroundCmp(Background * bg, Background * bgx)
    else if (bg->top.file || bgx->top.file)
       return 1;
 
-   if ((bg->bg_solid.red != bgx->bg_solid.red) ||
-       (bg->bg_solid.green != bgx->bg_solid.green) ||
-       (bg->bg_solid.blue != bgx->bg_solid.blue))
+   if (bg->bg_solid != bgx->bg_solid)
       return 1;
    if (bg->bg_tile != bgx->bg_tile)
       return 1;
@@ -400,20 +400,16 @@ BackgroundInvalidate(Background * bg, int refresh)
 }
 
 static int
-BackgroundModify(Background * bg, EColor * solid, const char *bgn, char tile,
-		 char keep_aspect, int xjust, int yjust, int xperc,
+BackgroundModify(Background * bg, unsigned int solid, const char *bgn,
+		 char tile, char keep_aspect, int xjust, int yjust, int xperc,
 		 int yperc, const char *top, char tkeep_aspect, int txjust,
 		 int tyjust, int txperc, int typerc)
 {
    int                 updated = 0;
 
-   if (solid->red != bg->bg_solid.red)
+   if (solid != bg->bg_solid)
       updated = 1;
-   if (solid->green != bg->bg_solid.green)
-      updated = 1;
-   if (solid->blue != bg->bg_solid.blue)
-      updated = 1;
-   bg->bg_solid = *solid;
+   bg->bg_solid = solid;
 
    if ((bg->bg.file) && (bgn))
      {
@@ -576,22 +572,24 @@ BackgroundRealize(Background * bg, Win win, Drawable draw, unsigned int rw,
 
    if (!hasbg && !hasfg)
      {
+	unsigned int        pixel;
+
 	/* Solid color only */
-	EAllocColor(WinGetCmap(VROOT), &bg->bg_solid);
+	pixel = EAllocColor(WinGetCmap(VROOT), bg->bg_solid);
 
 	if (!is_win)
 	  {
 	     gc = EXCreateGC(draw, 0, NULL);
 	     XSetClipMask(disp, gc, 0);
 	     XSetFillStyle(disp, gc, FillSolid);
-	     XSetForeground(disp, gc, bg->bg_solid.pixel);
+	     XSetForeground(disp, gc, pixel);
 	     XFillRectangle(disp, draw, gc, 0, 0, rw, rh);
 	     EXFreeGC(gc);
 	  }
 	if (ppmap)
 	   *ppmap = None;
 	if (ppixel)
-	   *ppixel = bg->bg_solid.pixel;
+	   *ppixel = pixel;
 	return;
      }
 
@@ -650,8 +648,7 @@ BackgroundRealize(Background * bg, Win win, Drawable draw, unsigned int rw,
 	if (!hasbg || !bg->bg_tile)
 	  {
 	     /* Fill solid */
-	     EImageFill(im, 0, 0, rw, rh, bg->bg_solid.red, bg->bg_solid.green,
-			bg->bg_solid.blue, 255);
+	     EImageFill(im, 0, 0, rw, rh, bg->bg_solid);
 	  }
 	if (hasbg)
 	  {
@@ -753,7 +750,7 @@ BrackgroundCreateFromImage(const char *bgid, const char *file,
 {
    Background         *bg;
    EImage             *im, *im2;
-   EColor              color;
+   unsigned int        color;
    char                tile = 1, keep_asp = 0;
    int                 width, height;
    int                 scalex = 0, scaley = 0;
@@ -852,9 +849,9 @@ BrackgroundCreateFromImage(const char *bgid, const char *file,
 	keep_asp = 1;
      }
 
-   SET_COLOR(&color, 0, 0, 0);
+   COLOR32_FROM_RGB(color, 0, 0, 0);
 
-   bg = BackgroundCreate(bgid, &color, file, tile,
+   bg = BackgroundCreate(bgid, color, file, tile,
 			 keep_asp, justx, justy,
 			 scalex, scaley, NULL, 0, 0, 0, 0, 0);
 
@@ -966,7 +963,7 @@ BackgroundGetInfoString1(const Background * bg, char *buf, int len)
 {
    int                 r, g, b;
 
-   GET_COLOR(&(bg->bg_solid), r, g, b);
+   COLOR32_TO_RGB(bg->bg_solid, r, g, b);
    Esnprintf(buf, len,
 	     "%s ref_count %u keepim %u\n"
 	     " bg.solid\t %i %i %i \n"
@@ -991,7 +988,7 @@ BackgroundGetInfoString2(const Background * bg, char *buf, int len)
 {
    int                 r, g, b;
 
-   GET_COLOR(&(bg->bg_solid), r, g, b);
+   COLOR32_TO_RGB(bg->bg_solid, r, g, b);
    Esnprintf(buf, len,
 	     "%s %i %i %i %s %i %i %i %i %i %i %s %i %i %i %i %i",
 	     bg->name, r, g, b, S(bg->bg.file), bg->bg_tile,
@@ -1064,7 +1061,7 @@ BackgroundsConfigLoad(FILE * fs)
 {
    int                 err = 0;
    Background         *bg = 0;
-   EColor              color;
+   unsigned int        color;
    char                s[FILEPATH_LEN_MAX];
    char                s2[FILEPATH_LEN_MAX];
    int                 ii1;
@@ -1077,7 +1074,7 @@ BackgroundsConfigLoad(FILE * fs)
    char                ignore = 0;
    int                 desk;
 
-   SET_COLOR(&color, 0, 0, 0);
+   COLOR32_FROM_RGB(color, 0, 0, 0);
 
    while (GetLine(s, sizeof(s), fs))
      {
@@ -1086,7 +1083,7 @@ BackgroundsConfigLoad(FILE * fs)
 	  {
 	  case CONFIG_CLOSE:
 	     if (!ignore && !bg && name)
-		bg = BackgroundCreate(name, &color, bg1, i1, i2, i3, i4, i5,
+		bg = BackgroundCreate(name, color, bg1, i1, i2, i3, i4, i5,
 				      i6, bg2, j1, j2, j3, j4, j5);
 	     goto done;
 
@@ -1110,7 +1107,7 @@ BackgroundsConfigLoad(FILE * fs)
 
 	  case BG_DESKNUM:
 	     if (!ignore && !bg && name)
-		bg = BackgroundCreate(name, &color, bg1, i1, i2, i3, i4, i5,
+		bg = BackgroundCreate(name, color, bg1, i1, i2, i3, i4, i5,
 				      i6, bg2, j1, j2, j3, j4, j5);
 	     if (!bg)
 		break;
@@ -1139,7 +1136,7 @@ BackgroundsConfigLoad(FILE * fs)
 	  case BG_RGB:
 	     r = g = b = 0;
 	     sscanf(s, "%*s %d %d %d", &r, &g, &b);
-	     SET_COLOR(&color, r, g, b);
+	     COLOR32_FROM_RGB(color, r, g, b);
 	     if (ignore)
 		bg->bg_solid = color;
 	     break;
@@ -1238,7 +1235,7 @@ BackgroundsConfigSave(void)
 	fprintf(fs, "5 999\n");
 
 	fprintf(fs, "100 %s\n", bg->name);
-	GET_COLOR(&(bg->bg_solid), r, g, b);
+	COLOR32_TO_RGB(bg->bg_solid, r, g, b);
 	fprintf(fs, "560 %d %d %d\n", r, g, b);
 
 	if ((bg->bg.file) && (!bg->bg.real_file))
@@ -1367,8 +1364,7 @@ BackgroundsSighan(int sig, void *prm __UNUSED__)
 	EDirMake(EDirUserCache(), "cached/bgsel");
 	EDirMake(EDirUserCache(), "cached/img");
 	/* create a fallback background in case no background is found */
-	BackgroundCreate("NONE", NULL, NULL, 0, 0, 0, 0, 0, 0, NULL, 0, 0, 0, 0,
-			 0);
+	BackgroundCreate(NULL, 0, NULL, 0, 0, 0, 0, 0, 0, NULL, 0, 0, 0, 0, 0);
 	break;
 
      case ESIGNAL_CONFIGURE:
@@ -1439,7 +1435,7 @@ CB_ConfigureBG(Dialog * d __UNUSED__, int val, void *data __UNUSED__)
 	Conf.backgrounds.user = tmp_userbg;
 	Conf.hints.set_xroot_info_on_root_window = tmp_root_hint;
 
-	SET_COLOR(&(tmp_bg->bg_solid), tmp_bg_r, tmp_bg_g, tmp_bg_b);
+	COLOR32_FROM_RGB(tmp_bg->bg_solid, tmp_bg_r, tmp_bg_g, tmp_bg_b);
 	tmp_bg->bg_tile = tmp_bg_tile;
 	tmp_bg->bg.keep_aspect = tmp_bg_keep_aspect;
 	tmp_bg->bg.xjust = tmp_bg_xjust;
@@ -1468,7 +1464,7 @@ CB_DesktopMiniDisplayRedraw(Dialog * d __UNUSED__, int val __UNUSED__,
    int                 w, h;
    DItem              *di;
    Win                 win;
-   EColor              color;
+   unsigned int        color;
    const char         *fbg, *ffg;
 
    if (!tmp_bg)
@@ -1481,8 +1477,8 @@ CB_DesktopMiniDisplayRedraw(Dialog * d __UNUSED__, int val __UNUSED__,
    pmap = EGetWindowBackgroundPixmap(win);
    fbg = (tmp_bg_image) ? BackgroundGetBgFile(tmp_bg) : NULL;
    ffg = (tmp_bg_image) ? BackgroundGetFgFile(tmp_bg) : NULL;
-   SET_COLOR(&color, tmp_bg_r, tmp_bg_g, tmp_bg_b);
-   bg = BackgroundCreate("TEMP", &color,
+   COLOR32_FROM_RGB(color, tmp_bg_r, tmp_bg_g, tmp_bg_b);
+   bg = BackgroundCreate("TEMP", color,
 			 fbg, tmp_bg_tile, tmp_bg_keep_aspect,
 			 tmp_bg_xjust, tmp_bg_yjust,
 			 tmp_bg_xperc, tmp_bg_yperc,
@@ -1501,7 +1497,7 @@ BG_GetValues(void)
 {
    tmp_bg_image = (tmp_bg->bg.file) ? 1 : 0;
 
-   GET_COLOR(&(tmp_bg->bg_solid), tmp_bg_r, tmp_bg_g, tmp_bg_b);
+   COLOR32_TO_RGB(tmp_bg->bg_solid, tmp_bg_r, tmp_bg_g, tmp_bg_b);
    tmp_bg_tile = tmp_bg->bg_tile;
    tmp_bg_keep_aspect = tmp_bg->bg.keep_aspect;
    tmp_bg_xjust = tmp_bg->bg.xjust;
@@ -1567,14 +1563,14 @@ CB_ConfigureNewBG(Dialog * d __UNUSED__, int val __UNUSED__,
 		  void *data __UNUSED__)
 {
    char                s[1024];
-   EColor              color;
+   unsigned int        color;
    int                 lower, upper;
 
    Esnprintf(s, sizeof(s), "__NEWBG_%i", (unsigned)time(NULL));
 
-   SET_COLOR(&color, tmp_bg_r, tmp_bg_g, tmp_bg_b);
+   COLOR32_FROM_RGB(color, tmp_bg_r, tmp_bg_g, tmp_bg_b);
 
-   tmp_bg = BackgroundCreate(s, &color,
+   tmp_bg = BackgroundCreate(s, color,
 			     tmp_bg->bg.file, tmp_bg_tile, tmp_bg_keep_aspect,
 			     tmp_bg_xjust, tmp_bg_yjust,
 			     tmp_bg_xperc, tmp_bg_yperc,
@@ -2257,7 +2253,7 @@ BackgroundSet1(const char *name, const char *params)
    char                type[FILEPATH_LEN_MAX];
    int                 len, value;
    Background         *bg;
-   EColor              color;
+   unsigned int        color;
 
    if (!p || !p[0])
       return;
@@ -2265,8 +2261,8 @@ BackgroundSet1(const char *name, const char *params)
    bg = BackgroundFind(name);
    if (!bg)
      {
-	SET_COLOR(&color, 0, 0, 0);
-	bg = BackgroundCreate(name, &color, NULL, 0, 0, 0,
+	COLOR32_FROM_RGB(color, 0, 0, 0);
+	bg = BackgroundCreate(name, color, NULL, 0, 0, 0,
 			      0, 0, 0, NULL, 0, 0, 0, 0, 0);
 	if (!bg)
 	  {
@@ -2287,7 +2283,7 @@ BackgroundSet1(const char *name, const char *params)
 
 	r = g = b = 0;
 	sscanf(p, "%i %i %i", &r, &g, &b);
-	SET_COLOR(&(bg->bg_solid), r, g, b);
+	COLOR32_FROM_RGB(bg->bg_solid, r, g, b);
      }
    else if (!strcmp(type, "bg.file"))
      {
@@ -2354,7 +2350,7 @@ static void
 BackgroundSet2(const char *name, const char *params)
 {
    Background         *bg;
-   EColor              color;
+   unsigned int        color;
    unsigned int        i;
    int                 r, g, b;
    char                bgf[FILEPATH_LEN_MAX], topf[FILEPATH_LEN_MAX];
@@ -2372,18 +2368,18 @@ BackgroundSet2(const char *name, const char *params)
 	      &r, &g, &b,
 	      bgf, &tile, &keep_aspect, &xjust, &yjust, &xperc, &yperc,
 	      topf, &tkeep_aspect, &txjust, &tyjust, &txperc, &typerc);
-   SET_COLOR(&color, r, g, b);
+   COLOR32_FROM_RGB(color, r, g, b);
 
    bg = BackgroundFind(name);
    if (bg)
      {
-	BackgroundModify(bg, &color, bgf, tile, keep_aspect, xjust,
+	BackgroundModify(bg, color, bgf, tile, keep_aspect, xjust,
 			 yjust, xperc, yperc, topf, tkeep_aspect,
 			 txjust, tyjust, txperc, typerc);
      }
    else
      {
-	bg = BackgroundCreate(name, &color, bgf, tile, keep_aspect, xjust,
+	bg = BackgroundCreate(name, color, bgf, tile, keep_aspect, xjust,
 			      yjust, xperc, yperc, topf, tkeep_aspect,
 			      txjust, tyjust, txperc, typerc);
      }

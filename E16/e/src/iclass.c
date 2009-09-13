@@ -45,7 +45,8 @@ struct _imagestate {
    char                rotate;
    EImage             *im;
    EImageBorder       *border;
-   EColor              bg, hi, lo, hihi, lolo;
+   unsigned int        bg, hi, lo, hihi, lolo;
+   unsigned int        bg_pixel, hi_pixel, lo_pixel, hihi_pixel, lolo_pixel;
 };
 
 typedef struct {
@@ -175,11 +176,11 @@ ImagestateColorsSetGray(ImageState * is,
 			unsigned int hihi, unsigned int hi,
 			unsigned int bg, unsigned int lo, unsigned int lolo)
 {
-   SET_COLOR(&(is->hihi), hihi, hihi, hihi);
-   SET_COLOR(&(is->hi), hi, hi, hi);
-   SET_COLOR(&(is->bg), bg, bg, bg);
-   SET_COLOR(&(is->lo), lo, lo, lo);
-   SET_COLOR(&(is->lolo), lolo, lolo, lolo);
+   COLOR32_FROM_RGB(is->hihi, hihi, hihi, hihi);
+   COLOR32_FROM_RGB(is->hi, hi, hi, hi);
+   COLOR32_FROM_RGB(is->bg, bg, bg, bg);
+   COLOR32_FROM_RGB(is->lo, lo, lo, lo);
+   COLOR32_FROM_RGB(is->lolo, lolo, lolo, lolo);
 }
 
 static ImageState  *
@@ -233,11 +234,11 @@ ImagestateColorsAlloc(ImageState * is)
    if (!is || is->got_colors)
       return;
 
-   EAllocColor(WinGetCmap(VROOT), &is->bg);
-   EAllocColor(WinGetCmap(VROOT), &is->hi);
-   EAllocColor(WinGetCmap(VROOT), &is->lo);
-   EAllocColor(WinGetCmap(VROOT), &is->hihi);
-   EAllocColor(WinGetCmap(VROOT), &is->lolo);
+   is->bg_pixel = EAllocColor(WinGetCmap(VROOT), is->bg);
+   is->hi_pixel = EAllocColor(WinGetCmap(VROOT), is->hi);
+   is->lo_pixel = EAllocColor(WinGetCmap(VROOT), is->lo);
+   is->hihi_pixel = EAllocColor(WinGetCmap(VROOT), is->hihi);
+   is->lolo_pixel = EAllocColor(WinGetCmap(VROOT), is->lolo);
 
    is->got_colors = 1;
 }
@@ -582,24 +583,15 @@ ImageclassConfigLoad(FILE * fs)
 	     is->rotate = strtoul(s2, NULL, 0);
 	     continue;
 	  case ICLASS_BEVEL:
-#define _R(x) (((x) >> 16) & 0xff)
-#define _G(x) (((x) >>  8) & 0xff)
-#define _B(x) (((x)      ) & 0xff)
-#define INT_TO_COLOR(xc, rgb) \
-    do { (&(xc))->red = _R(rgb); (&(xc))->green = _G(rgb); (&(xc))->blue = _B(rgb); } while(0)
 	     {
-		int                 n, bevel, hihi, hi, bg, lo, lolo;
+		int                 n, bevel;
 
 		n = sscanf(p2, "%i %i %i %i %i %i",
-			   &bevel, &hihi, &hi, &bg, &lo, &lolo);
+			   &bevel, &is->hihi, &is->hi, &is->bg, &is->lo,
+			   &is->lolo);
 		if (n < 6)
 		   goto not_ok;
 		is->bevelstyle = bevel;
-		INT_TO_COLOR(is->hihi, hihi);
-		INT_TO_COLOR(is->hi, hi);
-		INT_TO_COLOR(is->bg, bg);
-		INT_TO_COLOR(is->lo, lo);
-		INT_TO_COLOR(is->lolo, lolo);
 	     }
 	     continue;
 	  default:
@@ -995,87 +987,87 @@ ImagestateDrawBevel(ImageState * is, Drawable win, GC gc,
    switch (is->bevelstyle)
      {
      case BEVEL_AMIGA:
-	XSetForeground(disp, gc, is->hihi.pixel);
+	XSetForeground(disp, gc, is->hihi_pixel);
 	LINE(0, 0, w - 2, 0);
 	LINE(0, 0, 0, h - 2);
-	XSetForeground(disp, gc, is->lolo.pixel);
+	XSetForeground(disp, gc, is->lolo_pixel);
 	LINE(1, h - 1, w - 1, h - 1);
 	LINE(w - 1, 1, w - 1, h - 1);
 	break;
      case BEVEL_MOTIF:
-	XSetForeground(disp, gc, is->hi.pixel);
+	XSetForeground(disp, gc, is->hi_pixel);
 	LINE(0, 0, w - 1, 0);
 	LINE(0, 0, 0, h - 1);
 	LINE(1, 1, w - 2, 1);
 	LINE(1, 1, 1, h - 2);
-	XSetForeground(disp, gc, is->lo.pixel);
+	XSetForeground(disp, gc, is->lo_pixel);
 	LINE(0, h - 1, w - 1, h - 1);
 	LINE(w - 1, 1, w - 1, h - 1);
 	LINE(1, h - 2, w - 2, h - 2);
 	LINE(w - 2, 2, w - 2, h - 2);
 	break;
      case BEVEL_NEXT:
-	XSetForeground(disp, gc, is->hihi.pixel);
+	XSetForeground(disp, gc, is->hihi_pixel);
 	LINE(0, 0, w - 1, 0);
 	LINE(0, 0, 0, h - 1);
-	XSetForeground(disp, gc, is->hi.pixel);
+	XSetForeground(disp, gc, is->hi_pixel);
 	LINE(1, 1, w - 2, 1);
 	LINE(1, 1, 1, h - 2);
-	XSetForeground(disp, gc, is->lolo.pixel);
+	XSetForeground(disp, gc, is->lolo_pixel);
 	LINE(1, h - 1, w - 1, h - 1);
 	LINE(w - 1, 1, w - 1, h - 1);
-	XSetForeground(disp, gc, is->lo.pixel);
+	XSetForeground(disp, gc, is->lo_pixel);
 	LINE(2, h - 2, w - 2, h - 2);
 	LINE(w - 2, 2, w - 2, h - 2);
 	break;
      case BEVEL_DOUBLE:
-	XSetForeground(disp, gc, is->hi.pixel);
+	XSetForeground(disp, gc, is->hi_pixel);
 	LINE(0, 0, w - 2, 0);
 	LINE(0, 0, 0, h - 2);
-	XSetForeground(disp, gc, is->lo.pixel);
+	XSetForeground(disp, gc, is->lo_pixel);
 	LINE(1, 1, w - 3, 1);
 	LINE(1, 1, 1, h - 3);
-	XSetForeground(disp, gc, is->lo.pixel);
+	XSetForeground(disp, gc, is->lo_pixel);
 	LINE(1, h - 1, w - 1, h - 1);
 	LINE(w - 1, 1, w - 1, h - 1);
-	XSetForeground(disp, gc, is->hi.pixel);
+	XSetForeground(disp, gc, is->hi_pixel);
 	LINE(2, h - 2, w - 2, h - 2);
 	LINE(w - 2, 2, w - 2, h - 2);
 	break;
      case BEVEL_WIDEDOUBLE:
-	XSetForeground(disp, gc, is->hihi.pixel);
+	XSetForeground(disp, gc, is->hihi_pixel);
 	LINE(0, 0, w - 1, 0);
 	LINE(0, 0, 0, h - 1);
-	XSetForeground(disp, gc, is->hi.pixel);
+	XSetForeground(disp, gc, is->hi_pixel);
 	LINE(1, 1, w - 2, 1);
 	LINE(1, 1, 1, h - 2);
 	LINE(3, h - 4, w - 4, h - 4);
 	LINE(w - 4, 3, w - 4, h - 4);
-	XSetForeground(disp, gc, is->lolo.pixel);
+	XSetForeground(disp, gc, is->lolo_pixel);
 	LINE(1, h - 1, w - 1, h - 1);
 	LINE(w - 1, 1, w - 1, h - 1);
-	XSetForeground(disp, gc, is->lo.pixel);
+	XSetForeground(disp, gc, is->lo_pixel);
 	LINE(2, h - 2, w - 2, h - 2);
 	LINE(w - 2, 2, w - 2, h - 2);
 	LINE(3, 3, w - 4, 3);
 	LINE(3, 3, 3, h - 4);
 	break;
      case BEVEL_THINPOINT:
-	XSetForeground(disp, gc, is->hi.pixel);
+	XSetForeground(disp, gc, is->hi_pixel);
 	LINE(0, 0, w - 2, 0);
 	LINE(0, 0, 0, h - 2);
-	XSetForeground(disp, gc, is->lo.pixel);
+	XSetForeground(disp, gc, is->lo_pixel);
 	LINE(1, h - 1, w - 1, h - 1);
 	LINE(w - 1, 1, w - 1, h - 1);
-	XSetForeground(disp, gc, is->hihi.pixel);
+	XSetForeground(disp, gc, is->hihi_pixel);
 	LINE(0, 0, 1, 0);
 	LINE(0, 0, 0, 1);
-	XSetForeground(disp, gc, is->lolo.pixel);
+	XSetForeground(disp, gc, is->lolo_pixel);
 	LINE(w - 2, h - 1, w - 1, h - 1);
 	LINE(w - 1, h - 2, w - 1, h - 1);
 	break;
      case BEVEL_THICKPOINT:
-	XSetForeground(disp, gc, is->hi.pixel);
+	XSetForeground(disp, gc, is->hi_pixel);
 	RECT(x, y, w - 1, h - 1);
 	break;
      default:
@@ -1092,7 +1084,7 @@ ImagestateDrawNoImg(ImageState * is, Drawable draw, int x, int y, int w, int h)
 
    gc = EXCreateGC(draw, 0, NULL);
    XSetFillStyle(disp, gc, FillSolid);
-   XSetForeground(disp, gc, is->bg.pixel);
+   XSetForeground(disp, gc, is->bg_pixel);
    XFillRectangle(disp, draw, gc, x, y, w, h);
    if (is->bevelstyle != BEVEL_NONE)
       ImagestateDrawBevel(is, draw, gc, x, y, w, h);
@@ -1191,7 +1183,7 @@ ITApply(Win win, ImageClass * ic, ImageState * is,
 
 	if (is->bevelstyle == BEVEL_NONE && !text)
 	  {
-	     ESetWindowBackground(win, is->bg.pixel);
+	     ESetWindowBackground(win, is->bg_pixel);
 	  }
 	else
 	  {
@@ -1351,17 +1343,17 @@ ImageclassGetFallback(void)
 
    ic->active.normal = ImagestateCreate(NULL);
    ImagestateColorsSetGray(ic->active.normal, 255, 255, 0, 0, 0);
-   SET_COLOR(&(ic->active.normal->bg), 180, 140, 160);
+   COLOR32_FROM_RGB(ic->active.normal->bg, 180, 140, 160);
    ic->active.normal->bevelstyle = BEVEL_AMIGA;
 
    ic->active.hilited = ImagestateCreate(NULL);
    ImagestateColorsSetGray(ic->active.hilited, 255, 255, 0, 0, 0);
-   SET_COLOR(&(ic->active.hilited->bg), 230, 190, 210);
+   COLOR32_FROM_RGB(ic->active.hilited->bg, 230, 190, 210);
    ic->active.hilited->bevelstyle = BEVEL_AMIGA;
 
    ic->active.clicked = ImagestateCreate(NULL);
    ImagestateColorsSetGray(ic->active.clicked, 0, 0, 0, 255, 255);
-   SET_COLOR(&(ic->active.clicked->bg), 230, 190, 210);
+   COLOR32_FROM_RGB(ic->active.clicked->bg, 230, 190, 210);
    ic->active.clicked->bevelstyle = BEVEL_AMIGA;
 
    ic->padding.left = 4;

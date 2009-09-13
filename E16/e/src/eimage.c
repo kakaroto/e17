@@ -232,9 +232,12 @@ EImageGetData(EImage * im)
 }
 
 void
-EImageFill(EImage * im, int x, int y, int w, int h, int r, int g, int b, int a)
+EImageFill(EImage * im, int x, int y, int w, int h, unsigned int color)
 {
+   int                 a, r, g, b;
+
    imlib_context_set_image(im);
+   COLOR32_TO_ARGB(color, a, r, g, b);
    imlib_context_set_color(r, g, b, a);
    imlib_context_set_blend(0);
    imlib_image_fill_rectangle(x, y, w, h);

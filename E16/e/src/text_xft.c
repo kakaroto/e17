@@ -151,15 +151,12 @@ _xft_FdcSetDrawable(TextState * ts, unsigned long draw)
 }
 
 void
-_xft_FdcSetColor(TextState * ts, EColor * ec)
+_xft_FdcSetColor(TextState * ts, unsigned int color)
 {
    FontCtxXft         *fdc = (FontCtxXft *) ts->fdc;
    XRenderColor        xrc;
 
-   xrc.red = ec->red << 8;
-   xrc.green = ec->green << 8;
-   xrc.blue = ec->blue << 8;
-   xrc.alpha = 65535;
+   COLOR32_TO_ARGB16(color, xrc.alpha, xrc.red, xrc.green, xrc.blue);
 
    XftColorAllocValue(disp, WinGetVisual(fdc->win), WinGetCmap(fdc->win),
 		      &xrc, &(fdc->xftc));

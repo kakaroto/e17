@@ -1128,7 +1128,7 @@ ContainerDraw(Container * ct)
 	/* Start out with blank image */
 	im = EImageCreate(ib_w0, ib_h0);
 	EImageSetHasAlpha(im, 1);
-	EImageFill(im, 0, 0, ib_w0, ib_h0, 0, 0, 0, 0);
+	EImageFill(im, 0, 0, ib_w0, ib_h0, 0);
      }
 
    for (i = 0; i < ct->num_objs; i++)

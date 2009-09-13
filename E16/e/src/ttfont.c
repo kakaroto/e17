@@ -178,11 +178,11 @@ _ift_FdcSetDrawable(TextState * ts, unsigned long draw)
 }
 
 static void
-_ift_FdcSetColor(TextState * ts __UNUSED__, EColor * ec)
+_ift_FdcSetColor(TextState * ts, unsigned int color)
 {
    FontCtxIft         *fdc = (FontCtxIft *) ts->fdc;
 
-   GET_COLOR(ec, fdc->r, fdc->g, fdc->b);
+   COLOR32_TO_RGB(color, fdc->r, fdc->g, fdc->b);
 }
 
 const FontOps       FontOps_ift = {

@@ -330,12 +330,12 @@ TextclassConfigLoad(FILE * fs)
 	  case TEXT_FG_COL:
 	     r = g = b = 0;
 	     sscanf(s, "%*s %i %i %i", &r, &g, &b);
-	     SET_COLOR(&ts->fg_col, r, g, b);
+	     COLOR32_FROM_RGB(ts->fg_col, r, g, b);
 	     continue;
 	  case TEXT_BG_COL:
 	     r = g = b = 0;
 	     sscanf(s, "%*s %i %i %i", &r, &g, &b);
-	     SET_COLOR(&ts->bg_col, r, g, b);
+	     COLOR32_FROM_RGB(ts->bg_col, r, g, b);
 	     continue;
 	  default:
 	     ConfigParseError("TextClass", s);
@@ -364,7 +364,7 @@ TextclassGetFallback(void)
 
    tc->norm.normal =
       TextstateCreate("-*-helvetica-medium-r-*-*-12-*-*-*-*-*-*-*");
-   SET_COLOR(&(tc->norm.normal->fg_col), 0, 0, 0);
+   COLOR32_FROM_RGB(tc->norm.normal->fg_col, 0, 0, 0);
    TextclassPopulate(tc);
 
    return tc;

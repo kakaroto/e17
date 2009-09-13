@@ -40,11 +40,9 @@ struct _ecursor {
 
 static Ecore_List  *cursor_list = NULL;
 
-#define ColorToPixel(ec) (0xff000000 + (ec->red << 16) + (ec->green <<8) + ec->blue)
-
 static              Cursor
 ECreatePixmapCursor(Pixmap cpmap, Pixmap cmask, unsigned int w, unsigned int h,
-		    int xh, int yh, EColor * fg, EColor * bg)
+		    int xh, int yh, unsigned int fg, unsigned int bg)
 {
    Cursor              curs;
 
@@ -66,8 +64,8 @@ ECreatePixmapCursor(Pixmap cpmap, Pixmap cmask, unsigned int w, unsigned int h,
    gcv.fill_style = FillOpaqueStippled;
    gcv.stipple = cpmap;
    gcv.clip_mask = cmask;
-   gcv.foreground = ColorToPixel(fg);
-   gcv.background = ColorToPixel(bg);
+   gcv.foreground = fg;
+   gcv.background = bg;
    XChangeGC(disp, gc,
 	     GCForeground | GCBackground | GCFillStyle | GCStipple | GCClipMask,
 	     &gcv);
@@ -82,8 +80,10 @@ ECreatePixmapCursor(Pixmap cpmap, Pixmap cmask, unsigned int w, unsigned int h,
 #else
    XColor              fgxc, bgxc;
 
-   EAllocXColor(WinGetCmap(VROOT), &fgxc, fg);
-   EAllocXColor(WinGetCmap(VROOT), &bgxc, bg);
+   COLOR32_TO_RGB16(fg, fgxc.red, fgxc.green, fgxc.blue);
+   COLOR32_TO_RGB16(bg, bgxc.red, bgxc.green, bgxc.blue);
+   XAllocColor(disp, WinGetCmap(VROOT), &fgxc);
+   XAllocColor(disp, WinGetCmap(VROOT), &bgxc);
 
    curs = XCreatePixmapCursor(disp, cpmap, cmask, &fgxc, &bgxc, xh, yh);
    w = h = 0;
@@ -93,7 +93,7 @@ ECreatePixmapCursor(Pixmap cpmap, Pixmap cmask, unsigned int w, unsigned int h,
 
 static ECursor     *
 ECursorCreate(const char *name, const char *image, int native_id,
-	      EColor * fg, EColor * bg)
+	      unsigned int fg, unsigned int bg)
 {
    Cursor              curs;
    Pixmap              pmap, mask;
@@ -218,7 +218,7 @@ static int
 ECursorConfigLoad(FILE * fs)
 {
    int                 err = 0;
-   EColor              clr, clr2;
+   unsigned int        clr, clr2;
    char                s[FILEPATH_LEN_MAX];
    char                s2[FILEPATH_LEN_MAX];
    char               *p2;
@@ -227,8 +227,8 @@ ECursorConfigLoad(FILE * fs)
    char                file[FILEPATH_LEN_MAX], *pfile;
    int                 native_id = -1;
 
-   SET_COLOR(&clr, 0, 0, 0);
-   SET_COLOR(&clr2, 255, 255, 255);
+   COLOR32_FROM_RGB(clr, 0, 0, 0);
+   COLOR32_FROM_RGB(clr2, 255, 255, 255);
 
    pname = pfile = NULL;
 
@@ -242,13 +242,13 @@ ECursorConfigLoad(FILE * fs)
 	     i2 = atoi(s2);
 	     if (i2 != CONFIG_OPEN)
 		goto done;
-	     SET_COLOR(&clr, 0, 0, 0);
-	     SET_COLOR(&clr2, 255, 255, 255);
+	     COLOR32_FROM_RGB(clr, 0, 0, 0);
+	     COLOR32_FROM_RGB(clr2, 255, 255, 255);
 	     pname = pfile = NULL;
 	     native_id = -1;
 	     break;
 	  case CONFIG_CLOSE:
-	     ECursorCreate(pname, pfile, native_id, &clr, &clr2);
+	     ECursorCreate(pname, pfile, native_id, clr, clr2);
 	     err = 0;
 	     break;
 
@@ -264,12 +264,12 @@ ECursorConfigLoad(FILE * fs)
 	  case CURS_BG_RGB:
 	     r = g = b = 0;
 	     sscanf(p2, "%d %d %d", &r, &g, &b);
-	     SET_COLOR(&clr, r, g, b);
+	     COLOR32_FROM_RGB(clr, r, g, b);
 	     break;
 	  case CURS_FG_RGB:
 	     r = g = b = 255;
 	     sscanf(p2, "%d %d %d", &r, &g, &b);
-	     SET_COLOR(&clr2, r, g, b);
+	     COLOR32_FROM_RGB(clr2, r, g, b);
 	     break;
 	  case XBM_FILE:
 	     strcpy(file, s2);

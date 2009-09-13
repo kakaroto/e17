@@ -218,19 +218,27 @@ Pixmap              EWindowGetShapePixmap(Win win);
 Bool                EQueryPointer(Win win, int *px, int *py,
 				  Window * pchild, unsigned int *pmask);
 
-typedef struct {
-   unsigned long       pixel;
-   unsigned char       alpha, red, green, blue;
-} EColor;
+unsigned int        EAllocColor(Colormap cmap, unsigned int argb);
 
-void                EAllocColor(Colormap cmap, EColor * pec);
-void                EAllocXColor(Colormap cmap, XColor * pxc, EColor * pec);
+#define _A(x)   (((x) >> 24) & 0xff)
+#define _R(x)   (((x) >> 16) & 0xff)
+#define _G(x)   (((x) >>  8) & 0xff)
+#define _B(x)   (((x)      ) & 0xff)
+#define _A16(x) (((x) >> 16) & 0xff00)
+#define _R16(x) (((x) >>  8) & 0xff00)
+#define _G16(x) (((x)      ) & 0xff00)
+#define _B16(x) (((x) <<  8) & 0xff00)
 
-#define SET_COLOR(xc, _r, _g, _b) \
-    do { (xc)->red = _r; (xc)->green = _g; (xc)->blue = _b; } while(0)
-
-#define GET_COLOR(xc, _r, _g, _b) \
-    do { _r = (xc)->red; _g = (xc)->green; _b = (xc)->blue; } while(0)
+#define COLOR32_FROM_RGB(c, r, g, b) \
+    c = (0xff000000 | (((r) & 0xff) << 16) | (((g) & 0xff) << 8) | ((b) & 0xff))
+#define COLOR32_TO_RGB(c, r, g, b) \
+  do { r = _R(c); g = _G(c); b = _B(c); } while (0)
+#define COLOR32_TO_ARGB(c, a, r, g, b) \
+  do { a = _A(c); r = _R(c); g = _G(c); b = _B(c); } while (0)
+#define COLOR32_TO_RGB16(c, r, g, b) \
+  do { r = _R16(c); g = _G16(c); b = _B16(c); } while (0)
+#define COLOR32_TO_ARGB16(c, a, r, g, b) \
+  do { a = _A16(c); r = _R16(c); g = _G16(c); b = _B16(c); } while (0)
 
 Window              EXWindowGetParent(Window xwin);
 int                 EXGetGeometry(Window xwin, Window * root_return,

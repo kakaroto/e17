@@ -1623,22 +1623,15 @@ EXSendEvent(Window xwin, long event_mask, XEvent * ev)
    XSendEvent(disp, xwin, False, event_mask, ev);
 }
 
-void
-EAllocColor(Colormap cmap, EColor * pec)
+unsigned int
+EAllocColor(Colormap cmap, unsigned int argb)
 {
    XColor              xc;
 
-   EAllocXColor(cmap, &xc, pec);
-   pec->pixel = xc.pixel;
-}
+   COLOR32_TO_RGB16(argb, xc.red, xc.green, xc.blue);
+   XAllocColor(disp, cmap, &xc);
 
-void
-EAllocXColor(Colormap cmap, XColor * pxc, EColor * pec)
-{
-   pxc->red = pec->red << 8;
-   pxc->green = pec->green << 8;
-   pxc->blue = pec->blue << 8;
-   XAllocColor(disp, cmap, pxc);
+   return xc.pixel;
 }
 
 /*

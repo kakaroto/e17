@@ -141,25 +141,18 @@ static Font         font = None;	/* Used in mode 1 (technical) */
     rl[3].x = (_x)+(_w)-1; rl[3].y = (_y)+1;      rl[3].width = 1;    rl[3].height = (_h)-2; \
   } while(0)
 
-#define _R(x) (((x) >> 16) & 0xff)
-#define _G(x) (((x) >>  8) & 0xff)
-#define _B(x) (((x)      ) & 0xff)
-
 static unsigned int
 _ShapeGetColor(void)
 {
    static char         color_valid = 0;
    static unsigned int color_value = 0;
    static unsigned int color_pixel;
-   EColor              color;
 
    if (color_valid && color_value == Conf.movres.color)
       goto done;
 
    color_value = Conf.movres.color;
-   SET_COLOR(&color, _R(color_value), _G(color_value), _B(color_value));
-   EAllocColor(WinGetCmap(VROOT), &color);
-   color_pixel = color.pixel;
+   color_pixel = EAllocColor(WinGetCmap(VROOT), color_value);
    color_valid = 1;
 
  done:
