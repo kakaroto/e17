@@ -1425,12 +1425,7 @@ ImageclassIpc(const char *params)
 	return;
      }
 
-   if (!strcmp(param2, "create"))
-     {
-	/* Not implemented */
-	return;
-     }
-   else if (!strcmp(param2, "free_pixmap"))
+   if (!strcmp(param2, "free_pixmap"))
      {
 	Pixmap              pmap;
 
@@ -1446,17 +1441,7 @@ ImageclassIpc(const char *params)
 	return;
      }
 
-   if (!strcmp(param2, "delete"))
-     {
-#if ENABLE_DESTROY
-	ImageclassDestroy(ic);
-#endif
-     }
-   else if (!strcmp(param2, "modify"))
-     {
-	/* Not implemented */
-     }
-   else if (!strcmp(param2, "get_padding"))
+   if (!strcmp(param2, "get_padding"))
      {
 	IpcPrintf("%i %i %i %i\n",
 		  ic->padding.left, ic->padding.right,

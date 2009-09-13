@@ -407,12 +407,6 @@ TextclassIpc(const char *params)
 	return;
      }
 
-   if (!strcmp(param2, "create"))
-     {
-	/* Not implemented */
-	return;
-     }
-
    tc = TextclassFind(param1, 0);
    if (!tc)
      {
@@ -420,17 +414,7 @@ TextclassIpc(const char *params)
 	return;
      }
 
-   if (!strcmp(param2, "delete"))
-     {
-#if ENABLE_DESTROY
-	TextclassDestroy(tc);
-#endif
-     }
-   else if (!strcmp(param2, "modify"))
-     {
-	/* Not implemented */
-     }
-   else if (!strcmp(param2, "apply"))
+   if (!strcmp(param2, "apply"))
      {
 	Window              xwin;
 	Win                 win;

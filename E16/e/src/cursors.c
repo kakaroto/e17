@@ -427,16 +427,7 @@ CursorsIpc(const char *params)
 	p += len;
      }
 
-   if (!strncmp(cmd, "add", 3))
-     {
-	/* TBD */
-	IpcPrintf("Not implemented\n");
-     }
-   else if (!strncmp(cmd, "del", 3))
-     {
-	ECursorDestroy(ECursorFind(prm));
-     }
-   else if (!strncmp(cmd, "list", 2))
+   if (!strncmp(cmd, "list", 2))
      {
 	ECORE_LIST_FOR_EACH(cursor_list, ec) IpcPrintf("%s\n", ec->name);
      }
@@ -447,8 +438,6 @@ static const IpcItem CursorIpcArray[] = {
     CursorsIpc,
     "cursor", "csr",
     "Cursor functions",
-    "  cursor add <classname> ...        Create cursor\n"
-    "  cursor del <classname>            Delete cursor\n"
     "  cursor list                       Show all cursors\n"}
 };
 #define N_IPC_FUNCS (sizeof(CursorIpcArray)/sizeof(IpcItem))
