@@ -594,8 +594,7 @@ EDirMake(const char *base, const char *name)
    Esnprintf(s, sizeof(s), "%s/%s", base, name);
    if (!exists(s))
       E_md(s);
-   else
-      EDirCheck(s);
+   EDirCheck(s);
 }
 
 static void
@@ -685,7 +684,7 @@ ECheckEprog(const char *name)
 		"The reason this could be missing is due to badly created\n"
 		"packages, someone manually deleting that program or perhaps\n"
 		"an error in installing Enlightenment.\n"), s);
-	EExit(0);
+	EExit(1);
      }
 
    if (!canexec(s))
@@ -696,6 +695,6 @@ ECheckEprog(const char *name)
 		"This is a fatal error and Enlightenment will cease to run.\n"
 		"Please rectify this situation and ensure it is installed\n"
 		"correctly.\n"), s);
-	EExit(0);
+	EExit(1);
      }
 }
