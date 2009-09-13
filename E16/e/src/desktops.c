@@ -1452,8 +1452,6 @@ DeskGotoByEwin(EWin * ewin)
 /*
  * Areas
  */
-static int          area_w = 3;
-static int          area_h = 3;
 
 void
 DesksFixArea(int *ax, int *ay)
@@ -1461,31 +1459,31 @@ DesksFixArea(int *ax, int *ay)
    if (*ax < 0)
      {
 	if (Conf.desks.areas_wraparound)
-	   *ax = area_w - 1;
+	   *ax = Conf.desks.areas_nx - 1;
 	else
 	   *ax = 0;
      }
-   else if (*ax >= area_w)
+   else if (*ax >= Conf.desks.areas_nx)
      {
 	if (Conf.desks.areas_wraparound)
 	   *ax = 0;
 	else
-	   *ax = area_w - 1;
+	   *ax = Conf.desks.areas_nx - 1;
      }
 
    if (*ay < 0)
      {
 	if (Conf.desks.areas_wraparound)
-	   *ay = area_h - 1;
+	   *ay = Conf.desks.areas_ny - 1;
 	else
 	   *ay = 0;
      }
-   else if (*ay >= area_h)
+   else if (*ay >= Conf.desks.areas_ny)
      {
 	if (Conf.desks.areas_wraparound)
 	   *ay = 0;
 	else
-	   *ay = area_h - 1;
+	   *ay = Conf.desks.areas_ny - 1;
      }
 }
 
@@ -1493,7 +1491,7 @@ static int
 AreaXYToLinear(int ax, int ay)
 {
    DesksFixArea(&ax, &ay);
-   return (ay * area_w) + ax;
+   return (ay * Conf.desks.areas_nx) + ax;
 }
 
 static void
@@ -1501,10 +1499,10 @@ AreaLinearToXY(int a, int *ax, int *ay)
 {
    if (a < 0)
       a = 0;
-   else if (a >= (area_w * area_h))
-      a = (area_w * area_h) - 1;
-   *ay = a / area_w;
-   *ax = a - (*ay * area_w);
+   else if (a >= (Conf.desks.areas_nx * Conf.desks.areas_ny))
+      a = (Conf.desks.areas_nx * Conf.desks.areas_ny) - 1;
+   *ay = a / Conf.desks.areas_nx;
+   *ax = a - (*ay * Conf.desks.areas_nx);
 }
 
 static void
@@ -1514,8 +1512,8 @@ SetAreaSize(int aw, int ah)
       aw = 1;
    if (ah < 1)
       ah = 1;
-   Conf.desks.areas_nx = area_w = aw;
-   Conf.desks.areas_ny = area_h = ah;
+   Conf.desks.areas_nx = aw;
+   Conf.desks.areas_ny = ah;
    HintsSetViewportConfig();
    EdgeWindowsShow();
    ModulesSignal(ESIGNAL_AREA_CONFIGURED, NULL);
@@ -1524,8 +1522,8 @@ SetAreaSize(int aw, int ah)
 void
 DesksGetAreaSize(int *aw, int *ah)
 {
-   *aw = area_w;
-   *ah = area_h;
+   *aw = Conf.desks.areas_nx;
+   *ah = Conf.desks.areas_ny;
 }
 
 static void
