@@ -198,7 +198,7 @@ IPC_DialogOK(const char *params)
 }
 
 static int
-CfgStrlistIndex(const char **list, const char *str)
+CfgStrlistIndex(const char *const *list, const char *str)
 {
    int                 i;
 
@@ -208,15 +208,15 @@ CfgStrlistIndex(const char **list, const char *str)
    return -1;
 }
 
-static const char  *MovResCfgMoveModes[] = {
+static const char  *const MovResCfgMoveModes[] = {
    "opaque", "lined", "box", "shaded", "semi-solid", "translucent", NULL
 };
 
-static const char  *MovResCfgResizeModes[] = {
+static const char  *const MovResCfgResizeModes[] = {
    "opaque", "lined", "box", "shaded", "semi-solid", NULL
 };
 
-static const char  *MovResCfgInfoModes[] = {
+static const char  *const MovResCfgInfoModes[] = {
    "never", "center", "corner", NULL
 };
 

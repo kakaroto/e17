@@ -204,7 +204,7 @@ void
 ConfigurationLoad(void)
 {
    int                 i, nml, j, ncl;
-   const EModule     **pml, *pm;
+   const EModule      *const *pml, *pm;
    const CfgItem      *pcl;
    char                buf[4096];
    ECfgFile           *ecf;
@@ -237,7 +237,7 @@ void
 ConfigurationSave(void)
 {
    int                 i, nml, j, ncl;
-   const EModule     **pml, *pm;
+   const EModule      *const *pml, *pm;
    const CfgItem      *pcl;
    char                buf[4096];
    ECfgFile           *ecf;

@@ -70,7 +70,7 @@ extern const EModule ModTransparency;
 extern const EModule ModWarplist;
 extern const EModule ModWindowMatch;
 
-const EModule      *p_modules[] = {
+const EModule      *const p_modules[] = {
    &ModAclass,
    &ModBackgrounds,
    &ModButtons,

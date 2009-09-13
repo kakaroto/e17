@@ -66,11 +66,11 @@ typedef enum {
 void                EModuleRegister(EModule * em);
 #endif
 
-extern const EModule *p_modules[];
+extern const EModule *const p_modules[];
 extern int          n_modules;
 
-const EModule     **ModuleListGet(int *num);
-void                ModuleListFree(const EModule ** lst);
+const EModule      *const *ModuleListGet(int *num);
+void                ModuleListFree(const EModule * const *lst);
 
 int                 ModuleConfigSet(const char *name, const char *item,
 				    const char *params);

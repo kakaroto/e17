@@ -32,7 +32,7 @@ EModuleRegister(EModule * em)
 }
 #endif
 
-const EModule     **
+const EModule      *const *
 ModuleListGet(int *num)
 {
    *num = n_modules;
@@ -40,7 +40,7 @@ ModuleListGet(int *num)
 }
 
 void
-ModuleListFree(const EModule ** lst __UNUSED__)
+ModuleListFree(const EModule * const *lst __UNUSED__)
 {
 }
 
@@ -188,7 +188,7 @@ void
 ModulesConfigShow(void)
 {
    int                 i, nml;
-   const EModule     **pml;
+   const EModule      *const *pml;
 
    /* Load module configs */
    pml = ModuleListGet(&nml);

@@ -70,20 +70,20 @@ static int          WindowMatchEobjOpsParse(EObj * eo, const char *ops);
 
 static Ecore_List  *wm_list = NULL;
 
-static const char  *MatchType[] = {
+static const char  *const MatchType[] = {
    NULL, "Title", "Name", "Class", "Size", "Width", "Height", "Prop", NULL
 };
 
-static const char  *MatchProp[] = {
+static const char  *const MatchProp[] = {
    NULL, "Transient", "Shaped", "FixedSize", "FixedWidth", "FixedHeight", NULL
 };
 
-static const char  *MatchOp[] = {
+static const char  *const MatchOp[] = {
    NULL, "Border", "Icon", "Winop", NULL
 };
 
 static int
-MatchFind(const char **list, const char *str)
+MatchFind(const char *const *list, const char *str)
 {
    int                 i;
 
