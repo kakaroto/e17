@@ -1,0 +1,7 @@
+Enna have been removed from E SVN (at svn rev 42500). Development continue in geexbox repositories.
+You can find more informations here :
+http://enna.geexbox.org
+
+And you can get development version here :
+hg clone http://hg.geexbox.org/enna
+
