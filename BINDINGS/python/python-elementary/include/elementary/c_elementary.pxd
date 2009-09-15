@@ -352,13 +352,17 @@ cdef extern from "Elementary.h":
     void elm_hoversel_hover_parent_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Evas_Object
             *parent)
     void elm_hoversel_label_set(evas.c_evas.Evas_Object *obj, char *label)
+    char * elm_hoversel_label_get(evas.c_evas.Evas_Object *obj)
     void elm_hoversel_icon_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Evas_Object *icon)
+    evas.c_evas.Evas_Object * elm_hoversel_icon_get(evas.c_evas.Evas_Object *obj)
     void elm_hoversel_hover_begin(evas.c_evas.Evas_Object *obj)
     void elm_hoversel_hover_end(evas.c_evas.Evas_Object *obj)
+    void elm_hoversel_clear(evas.c_evas.Evas_Object *obj)
     Elm_Hoversel_Item *elm_hoversel_item_add(evas.c_evas.Evas_Object *obj, char *label, char
             *icon_file, Elm_Icon_Type icon_type, void (*func)(void *data, evas.c_evas.Evas_Object *obj, void *event_info), void *data)
     void elm_hoversel_item_del(Elm_Hoversel_Item *item)
     void* elm_hoversel_item_data_get(Elm_Hoversel_Item *it)
+    char * elm_hoversel_item_label_get(Elm_Hoversel_Item *it)
 
     # Toolbar object
     evas.c_evas.Evas_Object *elm_toolbar_add(evas.c_evas.Evas_Object *parent)

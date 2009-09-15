@@ -28,7 +28,7 @@ cdef void _hoversel_callback(void *data, c_evas.Evas_Object *obj, void *event_in
         if mapping is not None:
             callback = mapping["callback"] 
             if callback is not None and callable(callback):
-                callback(mapping["class"], "clicked")
+                callback(mapping["class"], "clicked", mapping["data"])
         else:
             print "ERROR: no callback available for the hoversel-item"
     except Exception, e:
@@ -45,11 +45,15 @@ cdef class HoverselItem:
         mapping = dict()
         mapping["class"] = hoversel
         mapping["callback"] = callback
+        mapping["data"] = data
         _hoversel_callback_mapping[<long>self.item] = mapping
 
     def delete(self):
         """Delete the hoversel item"""
         elm_hoversel_item_del(self.item)
+
+    def label_get(self):
+        return elm_hoversel_item_label_get(self.item)
 
 cdef class Hoversel(Object):
     def __init__(self, c_evas.Object parent):
@@ -73,14 +77,25 @@ cdef class Hoversel(Object):
     def label_set(self, label):
         elm_hoversel_label_set(self.obj, label)
         
+    def label_get(self):
+        return elm_hoversel_label_get(self.obj)
+
     def icon_set(self, c_evas.Object icon):
         elm_hoversel_icon_set(self.obj, icon.obj)
+
+    def icon_get(self):
+        cdef c_evas.Evas_Object *o
+        o = elm_hoversel_icon_get(self.obj)
+        return evas._Object_from_instance(<long>o)
 
     def hover_begin(self):
         elm_hoversel_hover_begin(self.obj)
     
     def hover_end(self):
         elm_hoversel_hover_end(self.obj)
+
+    def clear(self):
+        elm_hoversel_clear(self.obj)
     
     def item_add(self, label, icon_file, icon_type, callback, data = None):
         return HoverselItem(self, label, icon_file, icon_type, callback, data)
