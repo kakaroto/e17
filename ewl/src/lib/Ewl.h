@@ -33,7 +33,6 @@ extern"C" {
 #include <ewl_row.h>
 
 #include <ewl_grid.h>
-#include <ewl_table.h>
 
 #include <ewl_label.h>
 #include <ewl_stock.h>

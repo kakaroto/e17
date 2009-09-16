@@ -55,7 +55,6 @@ SUBDIRS				= \
 	shadow \
 	spinner \
 	statusbar \
-	table \
 	text \
 	text_format \
 	text_editor \

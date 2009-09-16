@@ -391,7 +391,6 @@ src/bin/tests/seeker/Makefile
 src/bin/tests/shadow/Makefile
 src/bin/tests/spinner/Makefile
 src/bin/tests/statusbar/Makefile
-src/bin/tests/table/Makefile
 src/bin/tests/text/Makefile
 src/bin/tests/text_format/Makefile
 src/bin/tests/text_editor/Makefile

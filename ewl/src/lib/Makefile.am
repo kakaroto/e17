@@ -92,7 +92,6 @@ EWLHEADERS = \
 	ewl_spinner.h \
 	ewl_statusbar.h \
 	ewl_stock.h \
-	ewl_table.h \
 	ewl_text.h \
 	ewl_text_context.h \
 	ewl_text_fmt.h \
@@ -181,7 +180,6 @@ EWLSOURCES= \
 	ewl_spinner.c \
 	ewl_statusbar.c \
 	ewl_stock.c \
-	ewl_table.c \
 	ewl_text.c \
 	ewl_text_context.c \
 	ewl_text_fmt.c \
