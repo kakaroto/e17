@@ -40,7 +40,7 @@ cdef class HoverselItem:
 
     def __init__(self, c_evas.Object hoversel, label, icon_file, icon_type, callback, data = None):
         self.item = elm_hoversel_item_add(hoversel.obj, label, icon_file, icon_type,_hoversel_callback, NULL)
-       
+
         # Create the mapping
         mapping = dict()
         mapping["class"] = hoversel
@@ -52,6 +52,9 @@ cdef class HoverselItem:
         """Delete the hoversel item"""
         elm_hoversel_item_del(self.item)
 
+    def icon_set(self, icon_file, icon_group, icon_type):
+        elm_hoversel_item_icon_set(self.item, icon_file, icon_group, icon_type)
+
     def label_get(self):
         return elm_hoversel_item_label_get(self.item)
 
@@ -62,41 +65,55 @@ cdef class Hoversel(Object):
     property clicked:
         def __set__(self, value):
             self._callback_add("clicked",value)
-    
+
     property selected:
         def __set__(self, value):
             self._callback_add("selected", value)
-            
+
     property dismissed:
         def __set__(self, value):
             self._callback_add("dismissed", value)
-                
+
     def hover_parent_set(self, c_evas.Object parent):
         elm_hoversel_hover_parent_set(self.obj, parent.obj)
-    
+
     def label_set(self, label):
         elm_hoversel_label_set(self.obj, label)
-        
+
     def label_get(self):
         return elm_hoversel_label_get(self.obj)
+
+    property label:
+        def __get__(self):
+            return self.label_get()
+
+        def __set__(self, value):
+            self.label_set(value)
 
     def icon_set(self, c_evas.Object icon):
         elm_hoversel_icon_set(self.obj, icon.obj)
 
     def icon_get(self):
-        cdef c_evas.Evas_Object *o
-        o = elm_hoversel_icon_get(self.obj)
-        return evas._Object_from_instance(<long>o)
+        cdef c_evas.Evas_Object *icon
+        icon = elm_hoversel_icon_get(self.obj)
+        return evas.c_evas._Object_from_instance(<long> icon)
+
+    property icon:
+        def __get__(self):
+            return self.icon_get()
+
+        def __set__(self, value):
+            self.icon_set(value)
 
     def hover_begin(self):
         elm_hoversel_hover_begin(self.obj)
-    
+
     def hover_end(self):
         elm_hoversel_hover_end(self.obj)
 
     def clear(self):
         elm_hoversel_clear(self.obj)
-    
+
     def item_add(self, label, icon_file, icon_type, callback, data = None):
         return HoverselItem(self, label, icon_file, icon_type, callback, data)
 

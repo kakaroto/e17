@@ -19,19 +19,41 @@
 cdef class Check(Object):
     def __init__(self, c_evas.Object parent):
         self._set_obj(elm_check_add(parent.obj))
-    
+
     def label_set(self, label):
         elm_check_label_set(self.obj, label)
-        
+
+    def label_get(self):
+        return elm_check_label_get(self.obj)
+
+    property label:
+        def __get__(self):
+            return self.label_get()
+
+        def __set__(self, value):
+            self.label_set(value)
+
     def icon_set(self, c_evas.Object icon):
         elm_check_icon_set(self.obj, icon.obj)
-        
+
+    def icon_get(self):
+        cdef c_evas.Evas_Object *icon
+        icon = elm_check_icon_get(self.obj)
+        return evas.c_evas._Object_from_instance(<long> icon)
+
+    property icon:
+        def __get__(self):
+            return self.icon_get()
+
+        def __set__(self, value):
+            self.icon_set(value)
+
     def state_set(self, value):
         if value:
             elm_check_state_set(self.obj, 1)
         else:
             elm_check_state_set(self.obj, 0)
-        
+
     def state_get(self):
         cdef c_evas.Eina_Bool state
         state = elm_check_state_get(self.obj)
@@ -39,4 +61,11 @@ cdef class Check(Object):
             return False
         else:
             return True
+
+    property state:
+        def __get__(self):
+            return self.state_get()
+
+        def __set__(self, value):
+            self.state_set(value)
 
