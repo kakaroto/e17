@@ -444,6 +444,7 @@ create_template(App *app, int row)
 	  continue;
 
 	strncpy(buf, de->d_name, p - de->d_name);
+	buf[p - de->d_name] = '\0';
 
 	elm_hoversel_item_add
 	  (o, buf, NULL, ELM_ICON_NONE, on_template_changed, app);
