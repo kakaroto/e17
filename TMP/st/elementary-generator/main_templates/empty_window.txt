@@ -1,0 +1,2 @@
+An empty window window with standard background.<br><br>
+<hilight>Author:</hilight> Gustavo Sverzut Barbieri
