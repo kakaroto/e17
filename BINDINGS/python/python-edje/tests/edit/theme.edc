@@ -1,0 +1,166 @@
+collections {
+   group {
+      name: "main";
+      min: 123 456;
+      max: 789 999;
+
+      parts {
+         part {
+            name: "main_rect";
+            type: RECT;
+            mouse_events: 0;
+            description {
+               state: "default" 0.0;
+               color: 255 255 255 255;
+               rel1 {
+                  relative: 0.0 0.0;
+                  offset: 0 0;
+               }
+               rel2 {
+                  relative: 0.5 0.5;
+                  offset: -1 -1;
+               }
+            }
+         }
+         part {
+            name: "main_text";
+            type: TEXT;
+            mouse_events: 0;
+            description {
+               state: "default" 0.0;
+               color: 255 255 255 255;
+               rel1 {
+                  relative: 0.0 0.0;
+                  offset: 0 0;
+               }
+               rel2 {
+                  relative: 0.5 0.5;
+                  offset: -1 -1;
+               }
+            }
+         }
+         part {
+            name: "main_image";
+            type: IMAGE;
+            mouse_events: 0;
+            description {
+               state: "default" 0.0;
+               color: 255 255 255 255;
+               rel1 {
+                  relative: 0.0 0.0;
+                  offset: 0 0;
+               }
+               rel2 {
+                  relative: 0.5 0.5;
+                  offset: -1 -1;
+               }
+            }
+         }
+         part {
+            name: "main_swallow";
+            type: SWALLOW;
+            mouse_events: 0;
+            description {
+               state: "default" 0.0;
+               color: 255 255 255 255;
+               rel1 {
+                  relative: 0.0 0.0;
+                  offset: 0 0;
+               }
+               rel2 {
+                  relative: 0.5 0.5;
+                  offset: -1 -1;
+               }
+            }
+         }
+         part {
+            name: "main_textblock";
+            type: TEXTBLOCK;
+            mouse_events: 0;
+            description {
+               state: "default" 0.0;
+               color: 255 255 255 255;
+               rel1 {
+                  relative: 0.0 0.0;
+                  offset: 0 0;
+               }
+               rel2 {
+                  relative: 0.5 0.5;
+                  offset: -1 -1;
+               }
+            }
+         }
+         part {
+            name: "main_gradient";
+            type: GRADIENT;
+            mouse_events: 0;
+            description {
+               state: "default" 0.0;
+               color: 255 255 255 255;
+               rel1 {
+                  relative: 0.0 0.0;
+                  offset: 0 0;
+               }
+               rel2 {
+                  relative: 0.5 0.5;
+                  offset: -1 -1;
+               }
+            }
+         }
+         part {
+            name: "main_group";
+            type: GROUP;
+            mouse_events: 0;
+            description {
+               state: "default" 0.0;
+               color: 255 255 255 255;
+               rel1 {
+                  relative: 0.0 0.0;
+                  offset: 0 0;
+               }
+               rel2 {
+                  relative: 0.5 0.5;
+                  offset: -1 -1;
+               }
+            }
+         }
+         part {
+            name: "main_box";
+            type: BOX;
+            mouse_events: 0;
+            description {
+               state: "default" 0.0;
+               color: 255 255 255 255;
+               box.layout: "horizontal";
+               rel1 {
+                  relative: 0.0 0.0;
+                  offset: 0 0;
+               }
+               rel2 {
+                  relative: 0.5 0.5;
+                  offset: -1 -1;
+               }
+            }
+         }
+         part {
+            name: "main_table";
+            type: TABLE;
+            mouse_events: 0;
+            description {
+               state: "default" 0.0;
+               color: 255 255 255 255;
+               rel1 {
+                  relative: 0.0 0.0;
+                  offset: 0 0;
+               }
+               rel2 {
+                  relative: 0.5 0.5;
+                  offset: -1 -1;
+               }
+            }
+         }
+      }
+   }
+
+#include "groups.edc"
+}

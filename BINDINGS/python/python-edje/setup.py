@@ -65,6 +65,20 @@ edjemodule = Extension('edje.c_edje',
                                 ],
                        **pkgconfig('"edje >= 0.9.9.050"'))
 
+edjeeditmodule = Extension('edje.edit.c_edit',
+                       sources=['edje/edit/c_edit.pyx',
+                                ],
+                       depends=['edje/edit/c_edit_object.pxi',
+                                'edje/edit/c_edit_object_group.pxi',
+                                'edje/edit/c_edit_object_data.pxi',
+                                'edje/edit/c_edit_object_color_class.pxi',
+                                'edje/edit/c_edit_object_text_style.pxi',
+                                'edje/edit/c_edit_object_part.pxi',
+                                'edje/edit/c_edit_object_state.pxi',
+                                'include/edje/edit/c_edit.pxd',
+                                ],
+                       **pkgconfig('"edje >= 0.9.9.050"'))
+
 
 trove_classifiers = [
     "Development Status :: 3 - Alpha",
@@ -143,7 +157,7 @@ setup(name='python-edje',
       packages=find_packages(),
       install_requires=['python-evas>=0.3.1'],
       setup_requires=['python-evas>=0.3.1'],
-      ext_modules=[edjemodule],
+      ext_modules=[edjemodule, edjeeditmodule],
       zip_safe=False,
       cmdclass={'build_ext': edje_build_ext,},
       )

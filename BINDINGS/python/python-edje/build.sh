@@ -1,7 +1,7 @@
 #!/bin/sh
 
 PREFIX="$HOME/usr"
-PYX_FILES="edje/edje.c_edje.pyx"
+PYX_FILES="edje/edje.c_edje.pyx edje/edit/c_edit.pyx"
 
 for arg in $@; do
     case $arg in

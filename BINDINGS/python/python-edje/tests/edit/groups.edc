@@ -1,0 +1,41 @@
+   group {
+      name: "g1";
+      parts {
+         part {
+            name: "g1_p1";
+            type: RECT;
+            mouse_events: 0;
+            description {
+               state: "default" 0.0;
+            }
+         }
+      }
+   }
+
+   group {
+      name: "g2";
+      parts {
+         part {
+            name: "g2_p1";
+            type: RECT;
+            mouse_events: 0;
+            description {
+               state: "default" 0.0;
+            }
+         }
+      }
+   }
+
+   group {
+      name: "g3";
+      parts {
+         part {
+            name: "g3_p1";
+            type: RECT;
+            mouse_events: 0;
+            description {
+               state: "default" 0.0;
+            }
+         }
+      }
+   }

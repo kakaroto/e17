@@ -1,0 +1,195 @@
+# Copyright (C) 2007-2008 Tiago Falcao
+#
+# This file is part of Python-Edje.
+#
+# Python-Edje is free software; you can redistribute it and/or
+# modify it under the terms of the GNU Lesser General Public
+# License as published by the Free Software Foundation; either
+# version 2.1 of the License, or (at your option) any later version.
+#
+# Python-Edje is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+# Lesser General Public License for more details.
+#
+# You should have received a copy of the GNU Lesser General Public License
+# along with this Python-Edje.  If not, see <http://www.gnu.org/licenses/>.
+
+# This file is included verbatim by edje.edit.pyx
+
+cdef class EdjeEdit(edje.c_edje.Edje): # [object PyEdjeEdit, type PyEdjeEdit_Type]:
+    def compiler_get(self):
+        """@rtype: str"""
+        cdef char *s
+        s = edje_edit_compiler_get(self.obj)
+        if s != NULL:
+            r = s
+            edje_edit_string_free(s)
+            return r
+
+    def save(self):
+        """@rtype: bool"""
+        cdef int r
+        r = edje_edit_save(self.obj)
+        if r == 0:
+            return False
+        return True
+
+    def print_internal_status(self):
+        edje_edit_print_internal_status(self.obj)
+
+    # Group
+
+    property current_group:
+        """@rtype: bool"""
+        def __get__(self):
+            return Group(self)
+
+    def group_add(self, char *name):
+        """@rtype: bool"""
+        cdef unsigned char r
+        r = edje_edit_group_add(self.obj, name)
+        if r == 0:
+            return False
+        return True
+
+    def group_exist(self, char *name):
+        """@rtype: bool"""
+        cdef unsigned char r
+        r = edje_edit_group_exist(self.obj, name)
+        if r == 0:
+            return False
+        return True
+
+    # Data
+
+    property data:
+        def __get__(self):
+            "@rtype: list of str"
+            cdef evas.c_evas.Eina_List *lst, *itr
+            ret = []
+            lst = edje_edit_data_list_get(self.obj)
+            itr = lst
+            while itr:
+                ret.append(<char*>itr.data)
+                itr = itr.next
+            edje_edit_string_list_free(lst)
+            return ret
+
+    def data_get(self, char *name):
+        return Data(self, name)
+
+    def data_add(self, char *name, char *value):
+        cdef unsigned char r
+        r = edje_edit_data_add(self.obj, name, value)
+        if r == 0:
+            return False
+        return True
+
+    def data_del(self, char *name):
+        cdef unsigned char r
+        r = edje_edit_data_del(self.obj, name)
+        if r == 0:
+            return False
+        return True
+
+    # Text Style
+
+    property text_styles:
+        def __get__(self):
+            "@rtype: list of str"
+            cdef evas.c_evas.Eina_List *lst, *itr
+            ret = []
+            lst = edje_edit_styles_list_get(self.obj)
+            itr = lst
+            while itr:
+                ret.append(<char*>itr.data)
+                itr = itr.next
+            edje_edit_string_list_free(lst)
+            return ret
+
+    def text_style_get(self, char *name):
+        return Text_Style(self, name)
+
+    def text_style_add(self, char *name):
+        cdef unsigned char r
+        r = edje_edit_style_add(self.obj, name)
+        if r == 0:
+            return False
+        return True
+
+    def text_style_del(self, char *name):
+        edje_edit_style_del(self.obj, name)
+        return True
+
+    # Color Class
+
+    property color_classes:
+        def __get__(self):
+            "@rtype: list of str"
+            cdef evas.c_evas.Eina_List *lst, *itr
+            ret = []
+            lst = edje_edit_color_classes_list_get(self.obj)
+            itr = lst
+            while itr:
+                ret.append(<char*>itr.data)
+                itr = itr.next
+            edje_edit_string_list_free(lst)
+            return ret
+
+    def color_class_get(self, char *name):
+        return Color_Class(self, name)
+
+    def color_class_add(self, char *name):
+        cdef unsigned char r
+        r = edje_edit_color_class_add(self.obj, name)
+        if r == 0:
+            return False
+        return True
+
+    def color_class_del(self, char *name):
+        cdef unsigned char r
+        r = edje_edit_color_class_del(self.obj, name)
+        if r == 0:
+            return False
+        return True
+
+    # Part
+
+    property parts:
+        def __get__(self):
+            "@rtype: list of str"
+            cdef evas.c_evas.Eina_List *lst, *itr
+            ret = []
+            lst = edje_edit_parts_list_get(self.obj)
+            itr = lst
+            while itr:
+                ret.append(<char*>itr.data)
+                itr = itr.next
+            edje_edit_string_list_free(lst)
+            return ret
+
+    def part_get(self, char *name):
+        if self.part_exist(name):
+            return Part(self, name)
+
+    def part_add(self, char *name, int type):
+        cdef unsigned char r
+        r = edje_edit_part_add(self.obj, name, <edje.c_edje.Edje_Part_Type>type)
+        if r == 0:
+            return False
+        return True
+
+    def part_del(self, char *name):
+        cdef unsigned char r
+        r = edje_edit_part_del(self.obj, name)
+        if r == 0:
+            return False
+        return True
+
+    def part_exist(self, char *name):
+        cdef unsigned char r
+        r = edje_edit_part_exist(self.obj, name)
+        if r == 0:
+            return False
+        return True
