@@ -47,3 +47,11 @@ cdef class Spinner(Object):
             elm_spinner_wrap_set(self.obj, 1)
         else:
             elm_spinner_wrap_set(self.obj, 0)
+
+    property changed:
+        def __set__(self, value):
+            self._callback_add("changed", value)
+
+    property delay_changed:
+        def __set__(self, value):
+            self._callback_add("delay,changed", value)
