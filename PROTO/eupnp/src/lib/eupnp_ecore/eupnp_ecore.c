@@ -331,10 +331,12 @@ _ecore_srv_respond_ok(Ecore_Con_Client *client)
    char *date = (char *)eupnp_utils_current_date_http_string_get();
 
    if ((len = asprintf(&response, "HTTP/1.1 200 OK\r\n"
-			   "Date: %s\r\n"
-			   "Content-Length: 0\r\n\r\n", date)) < 0)
+		       "Date: %s\r\n"
+		       "Content-Length: 0\r\n"
+		       "Connection: close\r\n\r\n", date)) < 0)
      {
 	ERROR_D(_log_dom, "Failed to send ok message.");
+	free(date);
 	return;
      }
 
