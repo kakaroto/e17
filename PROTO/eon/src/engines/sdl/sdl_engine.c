@@ -115,8 +115,6 @@ static int _out_cb(void *data, int type, void *event)
 	return 1;
 }
 
-
-/* TODO handle parameters */
 static void * document_create(Eon_Document *d, const char *options)
 {
 	Engine_SDL_Document *sdoc;
@@ -131,7 +129,7 @@ static void * document_create(Eon_Document *d, const char *options)
 	return sdoc;
 }
 
-static void _delete(Eon_Document *d, void *data)
+static void document_delete(void *data)
 {
 	ecore_sdl_shutdown();
 }
@@ -328,6 +326,7 @@ static void _enesim_unlock(void *src)
 
 static Eon_Engine _sdl_engine = {
 	.document_create = document_create,
+	.document_delete = document_delete,
 	.canvas_create = canvas_create,
 	.canvas_flush = canvas_flush,
 };

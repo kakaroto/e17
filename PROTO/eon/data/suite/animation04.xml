@@ -11,5 +11,5 @@
 	</hswitch>
 	<rect x="0%" y="0%" w="100%" h="100%" color="white"/>
 	<!-- rectangles -->
-	<rect id="r01" x="10%" y="10%" w="80%" h="80%" color="0xaa0000aa" fill="#hs01"/>
+	<rect id="r01" x="10%" y="10%" w="80%" h="80%" fill_paint="#hs01"/>
 </eon>

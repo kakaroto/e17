@@ -16,66 +16,65 @@
  * If not, see <http://www.gnu.org/licenses/>.
  */
 #include "Eon.h"
-#include "Emage.h"
 #include "eon_private.h"
-
-/* TODO
- * instead of handling only two images we can do the logic for a list
- * of images at the end the renderer only needs two but we can fake that :)
- */
-
-#define EON_HSWITCH_DEBUG 0
+#define EON_FILTER_DEBUG 0
 /*============================================================================*
  *                                  Local                                     *
  *============================================================================*/
-#define PRIVATE(d) ((Eon_Hswitch_Private *)((Eon_Hswitch *)(d))->private)
-
-struct _Eon_Hswitch_Private
+#define PRIVATE(d) ((Eon_Filter_Private *)((Eon_Filter *)(d))->prv)
+struct _Eon_Filter_Private
 {
-
+	Eon_Paint *src;
 };
 
 static void _ctor(void *instance)
 {
-	Eon_Hswitch *i;
-	Eon_Hswitch_Private *prv;
+	Eon_Filter *i;
+	Eon_Filter_Private *prv;
 
-	i = (Eon_Hswitch *) instance;
-	i->private = prv = ekeko_type_instance_private_get(eon_hswitch_type_get(), instance);
-	i->parent.parent.create = eon_engine_hswitch_create;
-	i->parent.parent.setup = eon_engine_hswitch_setup;
-	i->parent.parent.delete = eon_engine_hswitch_delete;
+	i = (Eon_Filter *)instance;
+	i->prv = prv = ekeko_type_instance_private_get(eon_filter_type_get(), instance);
 }
 
-static void _dtor(void *hswitch)
+static void _dtor(void *filter)
 {
 
 }
 /*============================================================================*
  *                                 Global                                     *
  *============================================================================*/
+
 /*============================================================================*
  *                                   API                                      *
  *============================================================================*/
-EAPI Ekeko_Type *eon_hswitch_type_get(void)
+Ekeko_Property_Id EON_FILTER_SRC;
+
+EAPI Ekeko_Type *eon_filter_type_get(void)
 {
 	static Ekeko_Type *type = NULL;
 
 	if (!type)
 	{
-		type = ekeko_type_new(EON_TYPE_HSWITCH, sizeof(Eon_Hswitch),
-				sizeof(Eon_Hswitch_Private), eon_transition_type_get(),
-				_ctor, _dtor, eon_transition_appendable);
+		type = ekeko_type_new(EON_TYPE_FILTER, sizeof(Eon_Filter),
+				sizeof(Eon_Filter_Private), eon_paint_type_get(),
+				_ctor, _dtor, NULL);
+		EON_FILTER_SRC = EKEKO_TYPE_PROP_SINGLE_ADD(type, "src", EKEKO_PROPERTY_OBJECT, OFFSET(Eon_Filter_Private, src));
 	}
 
 	return type;
 }
 
-EAPI Eon_Hswitch * eon_hswitch_new(void)
+EAPI void eon_filter_src_set(Eon_Filter *f, Eon_Paint *src)
 {
-	Eon_Hswitch *hs;
+	Ekeko_Value v;
 
-	hs = ekeko_type_instance_new(eon_hswitch_type_get());
+	ekeko_value_object_from(&v, (Ekeko_Object *)src);
+	ekeko_object_property_value_set((Ekeko_Object *)f, "filter", &v);
+}
 
-	return hs;
+EAPI Eon_Paint * eon_filter_src_get(Eon_Filter *f)
+{
+	Eon_Filter_Private *prv = PRIVATE(f);
+
+	return prv->src;
 }

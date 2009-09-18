@@ -31,6 +31,9 @@ void eon_engine_init(void)
 #ifdef BUILD_ENGINE_SDL
 	engine_sdl_init();
 #endif
+#ifdef BUILD_ENGINE_IPC
+	engine_remote_init();
+#endif
 #ifdef BUILD_ENGINE_BUFFER
 	engine_buffer_init();
 #endif

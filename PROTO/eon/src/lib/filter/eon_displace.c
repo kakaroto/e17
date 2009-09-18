@@ -1,10 +1,19 @@
-/*
- * TODO
- * + On ekeko we need some kind of notifier whenever a property is an object
- * eon_displace.c
+/* EON - Canvas and Toolkit library
+ * Copyright (C) 2008-2009 Jorge Luis Zapata
  *
- *  Created on: 07-may-2009
- *      Author: jl
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library.
+ * If not, see <http://www.gnu.org/licenses/>.
  */
 #include "Eon.h"
 #include "eon_private.h"
@@ -15,16 +24,8 @@
 #define PRIVATE(d) ((Eon_Displace_Private *)((Eon_Displace *)(d))->private)
 struct _Eon_Displace_Private
 {
-	Eon_Filter *src;
 	Eon_Filter *map;
-	Enesim_Operator op;
 };
-
-/* TODO callback whenever this object is referenced */
-/* create the enesim operator */
-/* TODO callback whenever this object is unreferenced */
-/* delete the enesim operator */
-
 
 static void _ctor(void *instance)
 {
@@ -55,7 +56,6 @@ static Eina_Bool _appendable(void *instance, void *child)
 /*============================================================================*
  *                                   API                                      *
  *============================================================================*/
-Ekeko_Property_Id EON_DISPLACE_SRC;
 Ekeko_Property_Id EON_DISPLACE_MAP;
 
 EAPI Ekeko_Type *eon_displace_type_get(void)
@@ -78,20 +78,14 @@ EAPI Eon_Displace * eon_displace_new(Eon_Canvas *c)
 {
 	Eon_Displace *fe;
 
-	fe= ekeko_type_instance_new(eon_displace_type_get());
+	fe = ekeko_type_instance_new(eon_displace_type_get());
 	ekeko_object_child_append((Ekeko_Object *)c, (Ekeko_Object *)fe);
 
 	return fe;
 }
 
-EAPI void eon_displace_map_set(Eon_Displace *d, Eon_Filter *f)
+EAPI void eon_displace_map_set(Eon_Displace *d, Eon_Paint *p)
 {
 	Eon_Displace_Private *prv = PRIVATE(d);
-	prv->map = f;
-}
 
-EAPI void eon_displace_src_set(Eon_Displace *d, Eon_Filter *f)
-{
-	Eon_Displace_Private *prv = PRIVATE(d);
-	prv->src = f;
 }

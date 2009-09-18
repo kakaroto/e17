@@ -117,6 +117,10 @@ int main(int argc, char **argv)
 			case 'o':
 			options = strdup(optarg);
 			break;
+			
+			case 'e':
+			engine = strdup(optarg);
+			break;
 
 			default:
 			help();

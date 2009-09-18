@@ -103,7 +103,7 @@ static Eina_Bool hswitch_setup(void *data, Eon_Shape *s)
 	Eon_Hswitch *hs = (Eon_Hswitch *)p->p;
 	Eon_Paint *p1, *p2;
 	float step;
-	int dw, dh;
+	int dx, dy, dw, dh;
 
 	if (!eon_transition_paint_get((Eon_Transition *)hs, &p1, &p2, &step))
 		return EINA_FALSE;
@@ -112,7 +112,9 @@ static Eina_Bool hswitch_setup(void *data, Eon_Shape *s)
 	if (!eon_paint_setup(p2, s))
 		return EINA_FALSE;
 
-	paint_coords_get(p->p, s, NULL, NULL, &dw, &dh);
+	paint_coords_get(p->p, s, &dx, &dy, &dw, &dh);
+	paint_setup(p, s, dx, dy);
+
 	tmp = eon_paint_engine_data_get(p1);
 	enesim_renderer_hswitch_left_set(p->r, tmp->r);
 	tmp = eon_paint_engine_data_get(p2);
@@ -419,6 +421,7 @@ static void aliased_fill_cb(Enesim_Scanline *sl, void *data)
 static void shape_renderer_setup(Eon_Shape *s, Enesim_Renderer *r)
 {
 	Eon_Paint *p;
+	Eon_Filter *f;
 	Paint *pa;
 	float stroke;
 	Eon_Color color;
@@ -445,6 +448,17 @@ static void shape_renderer_setup(Eon_Shape *s, Enesim_Renderer *r)
 	/* the transformation matrix */
 	eon_shape_inverse_matrix_get(s, &m);
 	enesim_renderer_transform_set(r, &m);
+#if 0
+	/* the filter */
+	f = eon_shape_filter_get(s);
+	if (f)
+	{
+		/* in case of a filter render we should draw into a temporary
+		 * buffer, call the filter renderer to only draw the clipping
+		 * area and compose as usual
+		 */
+	}
+#endif
 }
 
 static void shape_setup(Eon_Shape *s, Shape_Drawer_Data *d, Enesim_Surface *dst)
@@ -552,9 +566,7 @@ static void rect_render(void *er, void *cd, Eina_Rectangle *clip)
 	eon_square_coords_get((Eon_Square *)r->er, &cx, &cy, &cw, &ch);
 	rad = eon_rect_corner_radius_get(r->er);
 
-	//printf("%d %d\n", cx.final, cy.final);
 	enesim_renderer_origin_set(r->r, cx.final, cy.final);
-	//enesim_renderer_origin_set(r->r, 0, 0);
 	enesim_renderer_rectangle_size_set(r->r, cw.final, ch.final);
 	enesim_renderer_rectangle_corner_radius_set(r->r, rad);
 	/* FIXME fix this */
@@ -582,9 +594,6 @@ static void * circle_create(Eon_Circle *ec)
 	return c;
 }
 
-/* TODO instead of reseting the rasterizer and add the vertex every time
- * just add a callback for radius, x and y change and reset there
- */
 static void circle_render(void *ec, void *cd, Eina_Rectangle *clip)
 {
 	Circle *c = ec;

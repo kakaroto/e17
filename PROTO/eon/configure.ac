@@ -155,15 +155,24 @@ AM_CONDITIONAL(BUILD_CACHE_EHSM, test "x$have_eshm" = "xyes")
 PKG_CHECK_MODULES(ECORE_SDL, [ecore-sdl >= 0.9.9], [have_ecore_sdl=yes], [have_ecore_sdl=no])
 PKG_CHECK_MODULES(SDL, [sdl], [have_sdl=yes], [have_sdl=no])
 if test "x$have_ecore_sdl" = "xyes" && test "x$have_sdl" = "xyes"; then
-	have_engine_sdl=yes
+	build_engine_sdl=yes
 	AC_DEFINE(BUILD_ENGINE_SDL, [1], [Build support for SDL engine])
 else
-	have_engine_sdl=no
+	build_engine_sdl=no
 fi
-AM_CONDITIONAL(BUILD_ENGINE_SDL, test "x$have_engine_sdl" = "xyes")
+AM_CONDITIONAL(BUILD_ENGINE_SDL, test "x$build_engine_sdl" = "xyes")
+
+PKG_CHECK_MODULES(ECORE_IPC, [ecore-ipc], [have_ecore_ipc=yes], [have_ecore_ipc=no])
+if test "x$have_ecore_ipc" = "xyes"; then
+	build_engine_ipc=yes
+	AC_DEFINE(BUILD_ENGINE_IPC, [1], [Build support for IPC engine])
+else
+	build_engine_ipc=no
+fi
+AM_CONDITIONAL(BUILD_ENGINE_IPC, test "x$build_engine_ipc" = "xyes")
 
 ## Check for the possible engines
-if test x$have_engine_sdl = xno ; then
+if test "x$build_engine_sdl" = "xno" && test "x$build_engine_ipc" = "xyes"; then
   AC_MSG_ERROR(No engine to compile)
 fi
 
@@ -186,6 +195,7 @@ eon.pc
 src/Makefile
 src/lib/Makefile
 src/lib/core/Makefile
+src/lib/filter/Makefile
 src/lib/paint/Makefile
 src/lib/shape/Makefile
 src/lib/widget/Makefile
@@ -199,6 +209,7 @@ src/include/Makefile
 src/engines/Makefile
 src/engines/sdl/Makefile
 src/engines/enesim/Makefile
+src/engines/remote/Makefile
 src/bin/Makefile
 ])
 
@@ -217,7 +228,8 @@ echo "Configuration Options Summary:"
 echo "Installation Path.........: $prefix"
 echo
 echo "Engines:"
-echo "  SDL Engine..................................: $have_engine_sdl"
+echo "  SDL Engine..................................: $build_engine_sdl"
+echo "  Remote Engine...............................: $build_engine_ipc"
 echo
 echo "Parsers:"
 echo "  Expat Parser................................: $have_expat"

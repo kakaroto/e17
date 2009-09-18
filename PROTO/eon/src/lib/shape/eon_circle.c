@@ -1,10 +1,20 @@
-/*
- * eon_circle.c
+/* EON - Canvas and Toolkit library
+ * Copyright (C) 2008-2009 Jorge Luis Zapata
  *
- *  Created on: 28-jun-2009
- *      Author: jl
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library.
+ * If not, see <http://www.gnu.org/licenses/>.
  */
-
 #include "Eon.h"
 #include "eon_private.h"
 #include <limits.h>
@@ -135,7 +145,7 @@ static Eina_Bool _is_inside(Eon_Shape *s, int x, int y)
 		sw = eon_shape_stroke_width_get(s);
 		r3 = prv->radius - sw;
 		r3 *= r3;
-		
+
 		if (x2 + y2 <= r2 && x2 + y2 >= r3)
 			return EINA_TRUE;
 		else
