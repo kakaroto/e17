@@ -22,38 +22,45 @@ _hoversel_callback_mapping = dict()
 # TODO
 # - data handling for the hoversel item is currently missing
 
-cdef void _hoversel_callback(void *data, c_evas.Evas_Object *obj, void *event_info) with gil:
-    try:
-        mapping = _hoversel_callback_mapping.get(<long>event_info)
-        if mapping is not None:
-            callback = mapping["callback"] 
-            if callback is not None and callable(callback):
-                callback(mapping["class"], "clicked", mapping["data"])
-        else:
-            print "ERROR: no callback available for the hoversel-item"
-    except Exception, e:
-        traceback.print_exc()
+cdef void _hoversel_callback(void *cbt, c_evas.Evas_Object *obj, void *event_info) with gil:
+    (hoversel, callback, data, it) = <object>cbt
+    callback(data, hoversel, it)
 
 cdef class HoverselItem:
     """A item for the hoversel widget"""
     cdef Elm_Hoversel_Item *item
+    cdef object cbt
 
     def __init__(self, c_evas.Object hoversel, label, icon_file, icon_type, callback, data = None):
-        self.item = elm_hoversel_item_add(hoversel.obj, label, icon_file, icon_type,_hoversel_callback, NULL)
-
-        # Create the mapping
-        mapping = dict()
-        mapping["class"] = hoversel
-        mapping["callback"] = callback
-        mapping["data"] = data
-        _hoversel_callback_mapping[<long>self.item] = mapping
+        if callback:
+            self.cbt = (hoversel, callback, data, self)
+            self.item = elm_hoversel_item_add(hoversel.obj, label, icon_file,
+                                              icon_type,_hoversel_callback,
+                                              <void*>self.cbt)
+        else:
+            self.item = elm_hoversel_item_add(hoversel.obj, label, icon_file,
+                                              icon_type, NULL, NULL)
 
     def delete(self):
         """Delete the hoversel item"""
         elm_hoversel_item_del(self.item)
+        self.cbt = None
 
     def icon_set(self, icon_file, icon_group, icon_type):
         elm_hoversel_item_icon_set(self.item, icon_file, icon_group, icon_type)
+
+    def icon_get(self):
+        cdef char *cicon_file
+        cdef char *cicon_group
+        cdef Elm_Icon_Type cicon_type
+        icon_file = None
+        icon_group = None
+        elm_hoversel_item_icon_get(self.item, &cicon_file, &cicon_group, &cicon_type)
+        if cicon_file != NULL:
+            icon_file = cicon_file
+        if cicon_group != NULL:
+            icon_group = cicon_group
+        return (icon_file, icon_group, cicon_type)
 
     def label_get(self):
         return elm_hoversel_item_label_get(self.item)

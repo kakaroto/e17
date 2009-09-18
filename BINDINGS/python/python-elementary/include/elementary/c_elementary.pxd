@@ -365,6 +365,7 @@ cdef extern from "Elementary.h":
     char *elm_hoversel_item_label_get(Elm_Hoversel_Item *it)
     void elm_hoversel_item_icon_set(Elm_Hoversel_Item *it, char *icon_file,
                                     char *icon_group, Elm_Icon_Type icon_type)
+    void elm_hoversel_item_icon_get(Elm_Hoversel_Item *it, char **icon_file, char **icon_group, Elm_Icon_Type *icon_type)
 
     # Toolbar object
     evas.c_evas.Evas_Object *elm_toolbar_add(evas.c_evas.Evas_Object *parent)
