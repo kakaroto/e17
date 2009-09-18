@@ -115,11 +115,14 @@ on_generator_stderr(void *data, int type, void *event)
 {
    App *app = data;
    Ecore_Exe_Event_Data *e = event;
-
+   int i;
    if (app->exe != e->exe)
      return 1;
 
    printf("XXXX TODO: show inwin with error message: [close] [try again]\n");
+
+   for (i = 0; e->lines[i].line != NULL; i++)
+       ERR(e->lines[i].line);
 
    return 1;
 }
