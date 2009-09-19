@@ -473,8 +473,11 @@ cdef extern from "Elementary.h":
    
     # Fileselector widget
     evas.c_evas.Evas_Object *elm_fileselector_add(evas.c_evas.Evas_Object *parent)
-    char*  elm_fileselector_selected_get(evas.c_evas.Evas_Object *obj)
+    void         elm_fileselector_is_save_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool is_save)
+    evas.c_evas.Eina_Bool elm_fileselector_is_save_get(evas.c_evas.Evas_Object *obj)
+    char        *elm_fileselector_selected_get(evas.c_evas.Evas_Object *obj)
     void         elm_fileselector_path_set(evas.c_evas.Evas_Object *obj, char *path)
+    char        *elm_fileselector_path_get(evas.c_evas.Evas_Object *obj)
     void         elm_fileselector_expandable_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool expand)
 
     # Progressbar widget

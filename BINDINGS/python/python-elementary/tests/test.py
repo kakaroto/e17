@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+import os
 import elementary
 import edje
 import evas
@@ -1028,6 +1029,66 @@ def spinner_clicked(obj, event, data):
 
     win.show()
 
+def fileselector_clicked(obj, event, data):
+    win = elementary.Window("fileselector", elementary.ELM_WIN_BASIC)
+    win.title_set("File selector test")
+    win.autodel_set(True)
+
+    bg = elementary.Background(win)
+    win.resize_object_add(bg)
+    bg.size_hint_weight_set(1.0, 1.0)
+    bg.show()
+
+    vbox = elementary.Box(win)
+    win.resize_object_add(vbox)
+    vbox.size_hint_weight_set(1.0, 1.0)
+    vbox.show()
+
+    fs = elementary.Fileselector(win)
+    fs.is_save_set(True)
+    fs.expandable_set(False)
+    fs.path_set(os.getenv("HOME"))
+    fs.size_hint_weight_set(1.0, 1.0)
+    fs.size_hint_align_set(-1.0, -1.0)
+    vbox.pack_end(fs)
+    fs.show()
+
+    def fs_cb_done(obj, event_info, data):
+        if event_info is not None:
+            print "Selected file:", event_info
+        else:
+            data.delete()
+    fs.done = (fs_cb_done, win)
+    def fs_cb_selected(obj, event_info, data):
+        print "Selected file:", event_info
+        print "or:", obj.selected_get()
+    fs.selected = (fs_cb_selected, win)
+
+    hbox = elementary.Box(win)
+    hbox.horizontal_set(True)
+    vbox.pack_end(hbox)
+    hbox.show()
+
+    bt = elementary.Button(win)
+    bt.label_set("Toggle is_save")
+    def bt_cb_is_save(obj, event, data):
+        print "Toggle is save"
+        data.is_save_set(not data.is_save_get())
+    bt.clicked = (bt_cb_is_save, fs)
+    hbox.pack_end(bt)
+    bt.show()
+
+    bt = elementary.Button(win)
+    bt.label_set("sel get")
+    def bt_cb_sel_get(obj, event, data):
+        print "Get Selected:", data.selected_get()
+    bt.clicked = (bt_cb_sel_get, fs)
+    hbox.pack_end(bt)
+    bt.show()
+
+    win.resize(240, 350)
+    win.show()
+
 if __name__ == "__main__":
     elementary.init()
     win = elementary.Window("test", elementary.ELM_WIN_BASIC)
@@ -1078,7 +1139,8 @@ if __name__ == "__main__":
                ("Radio", radio_clicked),
                ("Check", check_clicked),
                ("InnerWindow", inner_window_clicked),
-               ("Spinner", spinner_clicked)]
+               ("Spinner", spinner_clicked),
+               ("File selector", fileselector_clicked)]
     
     
     
