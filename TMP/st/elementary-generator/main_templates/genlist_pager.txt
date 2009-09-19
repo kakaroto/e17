@@ -1,0 +1,3 @@
+A window with a list and a pager.<br><br>
+Select an item in the list, select the corresponded page.<br><br>
+<hilight>Author:</hilight> Jonathan Atton
