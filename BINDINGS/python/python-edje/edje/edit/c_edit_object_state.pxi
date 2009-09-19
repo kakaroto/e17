@@ -396,3 +396,70 @@ cdef class State:
         else:
             edje_edit_state_text_fit_y_set(self.edje.obj, self.part, self.name,
                                            0)
+
+    def image_get(self):
+        cdef char *img
+        img = edje_edit_state_image_get(self.edje.obj, self.part, self.name)
+        if img == NULL:
+            return None
+        r = img
+        edje_edit_string_free(img)
+        return r
+
+    def image_set(self, char *image):
+        edje_edit_state_image_set(self.edje.obj, self.part, self.name, image)
+
+    def image_border_get(self):
+        cdef int l, r, t, b
+        edje_edit_state_image_border_get(self.edje.obj, self.part, self.name,
+                                         &l, &r, &t, &b)
+        return (l, r, t, b)
+
+    def image_border_set(self, int l, int r, int t, int b):
+        edje_edit_state_image_border_set(self.edje.obj, self.part, self.name,
+                                         l, r, t, b)
+
+    def image_border_fill_get(self):
+        cdef unsigned char r
+        r = edje_edit_state_image_border_fill_get(self.edje.obj, self.part,
+                                                  self.name)
+        if r == 0:
+            return False
+        return True
+
+    def image_border_fill_set(self, fill):
+        if fill:
+            edje_edit_state_image_border_fill_set(self.edje.obj, self.part,
+                                                  self.name, 1)
+        else:
+            edje_edit_state_image_border_fill_set(self.edje.obj, self.part,
+                                                  self.name, 0)
+
+    property tweens:
+        def __get__(self):
+            "@rtype: list of str"
+            cdef evas.c_evas.Eina_List *lst, *itr
+            ret = []
+            lst = edje_edit_state_tweens_list_get(self.edje.obj, self.part,
+                                                  self.name)
+            itr = lst
+            while itr:
+                ret.append(<char*>itr.data)
+                itr = itr.next
+            edje_edit_string_list_free(lst)
+            return ret
+
+    def tween_add(self, char *img):
+        cdef unsigned char r
+        r = edje_edit_state_tween_add(self.edje.obj, self.part, self.name, img)
+        if r == 0:
+            return False
+        return True
+
+    def tween_del(self, char *img):
+        cdef unsigned char r
+        r = edje_edit_state_tween_del(self.edje.obj, self.part, self.name, img)
+        if r == 0:
+            return False
+        return True
+

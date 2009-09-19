@@ -25,11 +25,11 @@ cdef class Part:
         def __get__(self):
             return self._name
         def __set__(self, name):
-            self._name = name
+            self.rename(name)
 
     def __init__(self, EdjeEdit edje, char *name):
         self.edje = edje
-        self.name = name
+        self._name = name
 
     def restack_below(self):
         cdef unsigned char r

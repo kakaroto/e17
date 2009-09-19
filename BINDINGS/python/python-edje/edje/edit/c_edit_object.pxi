@@ -193,3 +193,28 @@ cdef class EdjeEdit(edje.c_edje.Edje): # [object PyEdjeEdit, type PyEdjeEdit_Typ
         if r == 0:
             return False
         return True
+
+    # Image
+
+    property images:
+        def __get__(self):
+            "@rtype: list of str"
+            cdef evas.c_evas.Eina_List *lst, *itr
+            ret = []
+            lst = edje_edit_images_list_get(self.obj)
+            itr = lst
+            while itr:
+                ret.append(<char*>itr.data)
+                itr = itr.next
+            edje_edit_string_list_free(lst)
+            return ret
+
+    def image_id_get(self, char *image):
+        return edje_edit_image_id_get(self.obj, image)
+
+    def image_add(self, char *image):
+        cdef unsigned char r
+        r = edje_edit_image_add(self.obj, image)
+        if r == 0:
+            return False
+        return True
