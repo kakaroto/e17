@@ -61,7 +61,7 @@ main(int argc, char **argv)
       einfo = (Evas_Engine_Info_XRender_X11 *) evas_engine_info_get(evas);
 
       /* the following is specific to the engine */
-      einfo->info.display = disp;
+      einfo->info.connection = disp;
       einfo->info.visual = DefaultVisual(disp, DefaultScreen(disp));
       einfo->info.drawable = win;
       evas_engine_info_set(evas, (Evas_Engine_Info *) einfo);

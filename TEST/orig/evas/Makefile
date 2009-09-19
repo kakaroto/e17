@@ -20,7 +20,7 @@ evas_xrender_x11_test \
 evas_xrender_xcb_test \
 evas_software_ddraw_test
 
-all: evas_buffer_test
+all: evas_buffer_test evas_software_x11_test evas_fb_test evas_gl_x11_test evas_xrender_x11_test
 
 test_ecore_evas_associate_SRCS = test-ecore-evas-associate.c
 test_ecore_evas_associate_OBJS = $(test_ecore_evas_associate_SRCS:.c=.o)
