@@ -185,52 +185,22 @@ ContainerDestroy(Container * ct, int exiting)
 static void
 ContainerReconfigure(Container * ct)
 {
-   ImageClass         *ic, *ic2;
-   EImageBorder       *pad;
-   EWin               *ewin;
-   int                 extra;
    unsigned int        wmin, hmin, wmax, hmax;
 
-   ewin = ct->ewin;
-
-   wmin = hmin = 8;
    wmax = hmax = 16384;
 
-   extra = 0;
    if (ct->orientation)
      {
-	ic = ImageclassFind("ICONBOX_VERTICAL", 0);
-	pad = ImageclassGetPadding(ic);
-	if (ic)
-	   extra = pad->left + pad->right;
-	if (ct->draw_icon_base)
-	  {
-	     ic2 = ImageclassFind("DEFAULT_ICON_BUTTON", 0);
-	     pad = ImageclassGetPadding(ic2);
-	     if (ic2)
-		extra += pad->left + pad->right;
-	  }
-	wmax = wmin = ct->iconsize + ct->scroll_thickness + extra;
-	ct->iwin_maxl_min = hmin;
+	wmax = wmin = ct->iwin_fixh + ct->scroll_thickness;
+	hmin = ct->iwin_maxl_min;
      }
    else
      {
-	ic = ImageclassFind("ICONBOX_HORIZONTAL", 0);
-	pad = ImageclassGetPadding(ic);
-	if (ic)
-	   extra = pad->top + pad->bottom;
-	if (ct->draw_icon_base)
-	  {
-	     ic2 = ImageclassFind("DEFAULT_ICON_BUTTON", 0);
-	     pad = ImageclassGetPadding(ic2);
-	     if (ic2)
-		extra += pad->top + pad->bottom;
-	  }
-	hmax = hmin = ct->iconsize + ct->scroll_thickness + extra;
-	ct->iwin_maxl_min = wmin;
+	hmax = hmin = ct->iwin_fixh + ct->scroll_thickness;
+	wmin = ct->iwin_maxl_min;
      }
 
-   ICCCM_SetSizeConstraints(ewin, wmin, hmin, wmax, hmax, 0, 0, 1, 1,
+   ICCCM_SetSizeConstraints(ct->ewin, wmin, hmin, wmax, hmax, 0, 0, 1, 1,
 			    0.0, 65535.0);
 }
 
@@ -275,6 +245,7 @@ _ContainerEwinMoveResize(EWin * ewin, int resize)
    ct->w = ewin->client.w;
    ct->h = ewin->client.h;
 
+   ContainerReconfigure(ct);
    ContainerDraw(ct);
    ct->do_update = 0;
 }
@@ -306,8 +277,6 @@ ContainerShow(Container * ct)
    ct->ewin = ewin;
    if (!ewin)
       return;
-
-   ContainerReconfigure(ct);
 
    if (ewin->state.placed)
      {
@@ -519,6 +488,25 @@ ContainerLayoutImageWin(Container * ct)
       ct->iwin_maxl = yo - item_pad;
    else
       ct->iwin_maxl = xo - item_pad;
+
+   if (ct->orientation)
+     {
+	ct->iwin_fixh = ct->iconsize;
+	if (ct->ic_box)
+	   ct->iwin_fixh += pad->left + pad->right;
+	if (ct->draw_icon_base)
+	   ct->iwin_fixh += padl + padr;
+	ct->iwin_maxl_min = 8;
+     }
+   else
+     {
+	ct->iwin_fixh = ct->iconsize;
+	if (ct->ic_box)
+	   ct->iwin_fixh += pad->top + pad->bottom;
+	if (ct->draw_icon_base)
+	   ct->iwin_fixh += padt + padb;
+	ct->iwin_maxl_min = 8;
+     }
 
    if (ct->iwin_maxl < ct->iwin_maxl_min)
       ct->iwin_maxl = ct->iwin_maxl_min;
@@ -1034,6 +1022,15 @@ ContainerLayout(Container * ct, int *px, int *py, int *pw, int *ph)
 
    ContainerFixPos(ct);
 
+   if (ct->orientation)
+     {
+	w = ct->iwin_fixh + ct->scroll_thickness;
+     }
+   else
+     {
+	h = ct->iwin_fixh + ct->scroll_thickness;
+     }
+
    *px = x;
    *py = y;
    *pw = w;
@@ -1049,9 +1046,6 @@ ContainerDraw(Container * ct)
    int                 ib_x0, ib_y0, ib_w0, ib_h0;
    EImage             *im;
    int                 ww, hh;
-
-   if (!ct->ic_box)
-      ContainerLayoutImageWin(ct);
 
    w = ct->w;
    h = ct->h;
@@ -1504,7 +1498,6 @@ CB_ConfigureContainer(Dialog * d __UNUSED__, int val, void *data __UNUSED__)
 	ct->auto_resize_anchor = tmp_ib_autoresize_anchor;
 	ct->anim_mode = tmp_ib_anim_mode;
 
-	ContainerReconfigure(ct);
 	ContainerRedraw(ct);
 	ContainersConfigSave();
      }
