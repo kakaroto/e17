@@ -1,7 +1,7 @@
 m4_define([pkg_version],  [0.6])
-#m4_define([pkg_revision], [901])
+m4_define([pkg_revision], [901])
 m4_define([pkg_version],  m4_ifdef([pkg_revision], [pkg_version.pkg_revision], [pkg_version]))
-m4_define([rpm_revision], m4_ifdef([pkg_revision], [0.`date '+%y%m%d'`], [1]))
+m4_define([rpm_revision], m4_ifdef([pkg_revision], ["0.%(date '+%y%m%d')"], [1]))
 
 AC_INIT(e16keyedit, [pkg_version], [enlightenment-devel@lists.sourceforge.net])
 AM_INIT_AUTOMAKE([foreign])
