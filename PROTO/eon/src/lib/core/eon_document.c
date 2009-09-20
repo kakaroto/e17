@@ -19,6 +19,7 @@
 #include "eon_private.h"
 /*
  * TODO remove the engine from the list of attributes
+ * TODO rename this object to just Eon instead of Eon_Document
  */
 /*============================================================================*
  *                                  Local                                     *
@@ -36,7 +37,7 @@ struct _Eon_Document_Private
 		Eon_Engine *backend;
 	} engine;
 	Eina_Rectangle size;
-	Eon_Canvas *canvas;
+	Eon_Canvas *canvas; /* we should use the childs instead of this */
 	Eina_Hash *ids;
 	Etch *etch;
 	Ecore_Timer *anim_cb;
@@ -76,6 +77,7 @@ static int _animation_cb(void *data)
 	etch_timer_tick(prv->etch);
 	return 1;
 }
+
 /* Called whenever a child is appended to the document */
 static void _child_append_cb(const Ekeko_Object *o, Ekeko_Event *e, void *data)
 {
@@ -140,11 +142,40 @@ static Eina_Bool _appendable(void *parent, void *child)
 {
 	Eon_Document_Private *prv = PRIVATE(parent);
 
+	/* we only allow style and canvas children */
+	if ((!ekeko_type_instance_is_of(child, EON_TYPE_CANVAS)) &&
+			(!ekeko_type_instance_is_of(child, EON_TYPE_CANVAS)))
+		return EINA_FALSE;
+	/* we should use the childs list instead as we might have more than one canvas */
 	if (prv->canvas)
 		return EINA_FALSE;
-	if (!ekeko_type_instance_is_of(child, EON_TYPE_CANVAS))
-		return EINA_FALSE;
 	return EINA_TRUE;
+}
+
+static Eon_Document * _document_new(const char *engine, int w, int h, const char *options)
+{
+	Eon_Document *d;
+	Eon_Document_Private *prv;
+	Ekeko_Value v;
+
+	d = ekeko_type_instance_new(eon_document_type_get());
+	if (!d)
+		return NULL;
+
+	prv = PRIVATE(d);
+	/* the gfx engine */
+	prv->engine.backend = eon_engine_get(engine);
+	prv->engine.data = eon_engine_document_create(prv->engine.backend, d, options);
+#if 0
+	/* the script engine */
+	prv->vm.sm = eon_script_get("neko");
+	/* FIXME only initialize whenever we have a script element */
+	prv->vm.data = prv->vm.sm->init();
+#endif
+	_documents = eina_list_append(_documents, d);
+
+	return d;
+
 }
 /*============================================================================*
  *                                 Global                                     *
@@ -176,7 +207,7 @@ Etch * eon_document_etch_get(Eon_Document *d)
 void eon_document_script_execute(Eon_Document *d, const char *fname, Ekeko_Object *o)
 {
 	Eon_Document_Private *prv;
-	
+
 	prv = PRIVATE(d);
 	if (!prv->vm.sm || !prv->vm.sm->execute)
 		return;
@@ -221,29 +252,27 @@ Ekeko_Type *eon_document_type_get(void)
 EAPI Eon_Document * eon_document_new(const char *engine, int w, int h, const char *options)
 {
 	Eon_Document *d;
-	Eon_Document_Private *prv;
 	Eon_Canvas *c;
-	Ekeko_Value v;
+	Eon_Style *s;
 
-	d = ekeko_type_instance_new(eon_document_type_get());
-	if (!d)
-		return NULL;
-
-	prv = PRIVATE(d);
-	/* the gfx engine */
-	prv->engine.backend = eon_engine_get(engine);
-	prv->engine.data = eon_engine_document_create(prv->engine.backend, d, options);
-#if 0
-	/* the script engine */
-	prv->vm.sm = eon_script_get("neko");
-	/* FIXME only initialize whenever we have a script element */
-	prv->vm.data = prv->vm.sm->init();
-#endif
+	d = _document_new(engine, w, h, options);
+	/* the main style */
+	s = eon_style_new();
+	ekeko_object_child_append((Ekeko_Object *)d, (Ekeko_Object *)s);
 	/* the main canvas */
 	c = ekeko_type_instance_new(eon_canvas_type_get());
 	ekeko_object_child_append((Ekeko_Object *)d, (Ekeko_Object *)c);
-	_documents = eina_list_append(_documents, d);
+	/* FIXME if we call this first we segv */
 	eon_document_resize(d, w, h);
+
+	return d;
+}
+
+EAPI Eon_Document * eon_document_void_new(const char *engine, int w, int h, const char *options)
+{
+	Eon_Document *d;
+
+	d = _document_new(engine, w, h, options);
 
 	return d;
 }

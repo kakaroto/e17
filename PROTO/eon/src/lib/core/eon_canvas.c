@@ -465,14 +465,12 @@ static void _child_append_cb(const Ekeko_Object *o, Ekeko_Event *e, void *data)
 
 static Eina_Bool _appendable(void *instance, void *child)
 {
-#if 0
-	if (!strcmp(name, "EonRect"))
-		return EINA_TRUE;
-	else if (!strcmp(name, "EonCanvas"))
-		return EINA_TRUE;
-	else
+	if ((!ekeko_type_instance_is_of(child, EON_TYPE_CANVAS)) &&
+			(!ekeko_type_instance_is_of(child, EON_TYPE_PAINT)) &&
+			(!ekeko_type_instance_is_of(child, EON_TYPE_SHAPE)) &&
+			(!ekeko_type_instance_is_of(child, EON_TYPE_EXTERNAL)) &&
+			(!ekeko_type_instance_is_of(child, EON_TYPE_ANIMATION)))
 		return EINA_FALSE;
-#endif
 	return EINA_TRUE;
 }
 

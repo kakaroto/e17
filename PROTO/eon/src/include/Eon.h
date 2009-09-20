@@ -32,6 +32,7 @@ typedef struct _Eon_Animation_Basic Eon_Animation_Basic;
 typedef struct _Eon_Animation_Matrix Eon_Animation_Matrix;
 typedef struct _Eon_External Eon_External;
 typedef struct _Eon_Script Eon_Script;
+typedef struct _Eon_Style Eon_Style;
 /* shapes */
 typedef struct _Eon_Shape Eon_Shape;
 typedef struct _Eon_Square Eon_Square;
@@ -76,6 +77,7 @@ EAPI int eon_shutdown(void);
 #include "eon_anim_matrix.h"
 #include "eon_external.h"
 #include "eon_script.h"
+#include "eon_style.h"
 
 #include "eon_shape.h"
 #include "eon_square.h"

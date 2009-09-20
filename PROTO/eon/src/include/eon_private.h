@@ -41,6 +41,7 @@
 #define EON_TYPE_ANIMATION_MATRIX "Eon_Animation_Matrix"
 #define EON_TYPE_EXTERNAL "Eon_External"
 #define EON_TYPE_SCRIPT "Eon_Script"
+#define EON_TYPE_STYLE "Eon_Style"
 
 #define EON_TYPE_SHAPE "Eon_Shape"
 #define EON_TYPE_TEXT "Eon_Text"
@@ -139,5 +140,7 @@ void eon_cache_image_load(const char *file, Enesim_Surface **s,
 		Enesim_Format f, Emage_Load_Callback cb, void *data,
 		const char *options);
 
+/* Style */
+Eon_Style * eon_style_new(void);
 
 #endif

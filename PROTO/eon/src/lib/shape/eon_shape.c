@@ -25,7 +25,6 @@
 
 struct _Eon_Shape_Private
 {
-	void *context;
 	Eon_Color color; /* FIXME the color should be double state? */
 	Eon_Filter *filter;
 	Enesim_Rop rop;
@@ -61,7 +60,7 @@ static void _child_append_cb(const Ekeko_Object *o, Ekeko_Event *e, void *data)
 	Eon_Document *d;
 	Eon_Engine *eng;
 
-	/* when this shape is appended to a canvas, try to setup the context */
+	/* when this shape is appended to a canvas */
 	d = eon_canvas_document_get((Eon_Canvas *)em->related);
 	/* FIXME in case the canvas doesnt have a document */
 	eng = eon_document_engine_get(d);
