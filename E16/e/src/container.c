@@ -48,6 +48,14 @@ static void         ContainerEventArrow1Win(Win win, XEvent * ev, void *prm);
 static void         ContainerEventArrow2Win(Win win, XEvent * ev, void *prm);
 static void         ContainerEventIconWin(Win win, XEvent * ev, void *prm);
 
+/* Widget state */
+#define WS_HILITE 0x01
+#define WS_CLICK  0x02
+
+static const unsigned char _ic_state[4] =
+   { STATE_NORMAL, STATE_HILITED, STATE_CLICKED, STATE_CLICKED };
+#define ST(b) _ic_state[b]
+
 ContainerCfg        Conf_containers;
 
 static Ecore_List  *container_list = NULL;
@@ -106,14 +114,12 @@ ContainerCreate(const char *name)
    ct->h = 0;
    ct->pos = 0;
    ct->iwin_maxl = 1;
-   ct->arrow1_hilited = 0;
-   ct->arrow1_clicked = 0;
-   ct->arrow2_hilited = 0;
-   ct->arrow2_clicked = 0;
-   ct->icon_clicked = 0;
-   ct->scrollbar_hilited = 0;
-   ct->scrollbar_clicked = 0;
+
+   ct->scrollbar_state = 0;
+   ct->arrow1_state = 0;
+   ct->arrow2_state = 0;
    ct->scrollbox_clicked = 0;
+   ct->icon_clicked = 0;
 
    ct->win = ECreateClientWindow(VROOT, 0, 0, 1, 1);
    ct->icon_win = ECreateWindow(ct->win, 0, 0, 128, 26, 0);
@@ -868,121 +874,52 @@ ContainerLayoutScroll(Container * ct)
 static void
 ContainerDrawScroll(Container * ct)
 {
-   ImageClass         *ic;
-   int                 state;
+   ImageClass         *ic_base, *ic_knob, *ic_snob, *ic_arr1, *ic_arr2;
 
    ContainerLayoutScroll(ct);
 
    if (!WinIsMapped(ct->scroll_win))
       return;
 
-   switch (ct->orientation)
+   ic_snob = ic_arr1 = ic_arr2 = NULL;
+   if (ct->orientation)
      {
-     default:
-	ic = ImageclassFind("ICONBOX_SCROLLBAR_BASE_VERTICAL", 1);
-	ImageclassApply(ic, ct->scroll_win, 0, 0, STATE_NORMAL, ST_ICONBOX);
-
-	ic = ImageclassFind("ICONBOX_SCROLLBAR_KNOB_VERTICAL", 1);
-	if (ic)
-	  {
-	     state = STATE_NORMAL;
-	     if (ct->scrollbar_hilited)
-		state = STATE_HILITED;
-	     if (ct->scrollbar_clicked)
-		state = STATE_CLICKED;
-	     ImageclassApply(ic, ct->scrollbar_win, 0, 0, state, ST_ICONBOX);
-	  }
-
-	ic = ImageclassFind("ICONBOX_SCROLLKNOB_VERTICAL", 0);
-	if (ic && WinIsMapped(ct->scrollbarknob_win))
-	  {
-	     state = STATE_NORMAL;
-	     if (ct->scrollbar_hilited)
-		state = STATE_HILITED;
-	     if (ct->scrollbar_clicked)
-		state = STATE_CLICKED;
-	     ImageclassApply(ic, ct->scrollbarknob_win, 0, 0, state,
-			     ST_ICONBOX);
-	  }
-
+	ic_base = ImageclassFind("ICONBOX_SCROLLBAR_BASE_VERTICAL", 1);
+	ic_knob = ImageclassFind("ICONBOX_SCROLLBAR_KNOB_VERTICAL", 1);
+	if (WinIsMapped(ct->scrollbarknob_win))
+	   ic_snob = ImageclassFind("ICONBOX_SCROLLKNOB_VERTICAL", 0);
 	if (WinIsMapped(ct->arrow1_win))
 	  {
-	     ic = ImageclassFind("ICONBOX_ARROW_UP", 1);
-	     if (ic)
-	       {
-		  state = STATE_NORMAL;
-		  if (ct->arrow1_hilited)
-		     state = STATE_HILITED;
-		  if (ct->arrow1_clicked)
-		     state = STATE_CLICKED;
-		  ImageclassApply(ic, ct->arrow1_win, 0, 0, state, ST_ICONBOX);
-	       }
-
-	     ic = ImageclassFind("ICONBOX_ARROW_DOWN", 1);
-	     if (ic)
-	       {
-		  state = STATE_NORMAL;
-		  if (ct->arrow2_hilited)
-		     state = STATE_HILITED;
-		  if (ct->arrow2_clicked)
-		     state = STATE_CLICKED;
-		  ImageclassApply(ic, ct->arrow2_win, 0, 0, state, ST_ICONBOX);
-	       }
+	     ic_arr1 = ImageclassFind("ICONBOX_ARROW_UP", 1);
+	     ic_arr2 = ImageclassFind("ICONBOX_ARROW_DOWN", 1);
 	  }
-	break;
-
-     case 0:
-	ic = ImageclassFind("ICONBOX_SCROLLBAR_BASE_HORIZONTAL", 1);
-	ImageclassApply(ic, ct->scroll_win, 0, 0, STATE_NORMAL, ST_ICONBOX);
-
-	ic = ImageclassFind("ICONBOX_SCROLLBAR_KNOB_HORIZONTAL", 1);
-	if (ic)
-	  {
-	     state = STATE_NORMAL;
-	     if (ct->scrollbar_hilited)
-		state = STATE_HILITED;
-	     if (ct->scrollbar_clicked)
-		state = STATE_CLICKED;
-	     ImageclassApply(ic, ct->scrollbar_win, 0, 0, state, ST_ICONBOX);
-	  }
-
-	ic = ImageclassFind("ICONBOX_SCROLLKNOB_HORIZONTAL", 0);
-	if (ic && WinIsMapped(ct->scrollbarknob_win))
-	  {
-	     state = STATE_NORMAL;
-	     if (ct->scrollbar_hilited)
-		state = STATE_HILITED;
-	     if (ct->scrollbar_clicked)
-		state = STATE_CLICKED;
-	     ImageclassApply(ic, ct->scrollbarknob_win, 0, 0, state,
-			     ST_ICONBOX);
-	  }
-
+     }
+   else
+     {
+	ic_base = ImageclassFind("ICONBOX_SCROLLBAR_BASE_HORIZONTAL", 1);
+	ic_knob = ImageclassFind("ICONBOX_SCROLLBAR_KNOB_HORIZONTAL", 1);
+	if (WinIsMapped(ct->scrollbarknob_win))
+	   ic_snob = ImageclassFind("ICONBOX_SCROLLKNOB_HORIZONTAL", 0);
 	if (WinIsMapped(ct->arrow1_win))
 	  {
-	     ic = ImageclassFind("ICONBOX_ARROW_LEFT", 1);
-	     if (ic)
-	       {
-		  state = STATE_NORMAL;
-		  if (ct->arrow1_hilited)
-		     state = STATE_HILITED;
-		  if (ct->arrow1_clicked)
-		     state = STATE_CLICKED;
-		  ImageclassApply(ic, ct->arrow1_win, 0, 0, state, ST_ICONBOX);
-	       }
-
-	     ic = ImageclassFind("ICONBOX_ARROW_RIGHT", 1);
-	     if (ic)
-	       {
-		  state = STATE_NORMAL;
-		  if (ct->arrow2_hilited)
-		     state = STATE_HILITED;
-		  if (ct->arrow2_clicked)
-		     state = STATE_CLICKED;
-		  ImageclassApply(ic, ct->arrow2_win, 0, 0, state, ST_ICONBOX);
-	       }
+	     ic_arr1 = ImageclassFind("ICONBOX_ARROW_LEFT", 1);
+	     ic_arr2 = ImageclassFind("ICONBOX_ARROW_RIGHT", 1);
 	  }
-	break;
+     }
+
+   ImageclassApply(ic_base, ct->scroll_win, 0, 0, STATE_NORMAL, ST_ICONBOX);
+   ImageclassApply(ic_knob, ct->scrollbar_win, 0, 0, ST(ct->scrollbar_state),
+		   ST_ICONBOX);
+   if (WinIsMapped(ct->scrollbarknob_win))
+      ImageclassApply(ic_snob, ct->scrollbarknob_win, 0, 0,
+		      ST(ct->scrollbar_state), ST_ICONBOX);
+
+   if (WinIsMapped(ct->arrow1_win))
+     {
+	ImageclassApply(ic_arr1, ct->arrow1_win, 0, 0, ST(ct->arrow1_state),
+			ST_ICONBOX);
+	ImageclassApply(ic_arr2, ct->arrow2_win, 0, 0, ST(ct->arrow2_state),
+			ST_ICONBOX);
      }
 }
 
@@ -1342,27 +1279,26 @@ ContainerEventScrollbarWin(Win win __UNUSED__, XEvent * ev, void *prm)
 	     px = ev->xbutton.x_root;
 	     py = ev->xbutton.y_root;
 	     pos0 = ct->pos;
-	     ct->scrollbar_clicked = 1;
+	     ct->scrollbar_state |= WS_CLICK;
 	  }
 	else if (ev->xbutton.button == 3)
 	   ContainerShowMenu(ct, ev->xbutton.x, ev->xbutton.y);
 	goto draw_scoll;
 
      case ButtonRelease:
-	if (ct->scrollbar_clicked)
-	   ct->scrollbar_clicked = 0;
+	ct->scrollbar_state &= ~WS_CLICK;
 	goto draw_scoll;
 
      case EnterNotify:
-	ct->scrollbar_hilited = 1;
+	ct->scrollbar_state |= WS_HILITE;
 	goto draw_scoll;
 
      case LeaveNotify:
-	ct->scrollbar_hilited = 0;
+	ct->scrollbar_state &= ~WS_HILITE;
 	goto draw_scoll;
 
      case MotionNotify:
-	if (!ct->scrollbar_clicked)
+	if (!(ct->scrollbar_state & WS_CLICK))
 	   break;
 
 	if (ct->orientation)
@@ -1422,25 +1358,25 @@ ContainerEventArrow1Win(Win win __UNUSED__, XEvent * ev, void *prm)
      {
      case ButtonPress:
 	if (ev->xbutton.button == 1)
-	   ct->arrow1_clicked = 1;
+	   ct->arrow1_state |= WS_CLICK;
 	else if (ev->xbutton.button == 3)
 	   ContainerShowMenu(ct, ev->xbutton.x, ev->xbutton.y);
 	goto draw_scoll;
 
      case ButtonRelease:
-	if (!ct->arrow1_clicked)
+	if (!(ct->arrow1_state & WS_CLICK))
 	   goto draw_scoll;
-	ct->arrow1_clicked = 0;
+	ct->arrow1_state &= ~WS_CLICK;
 	if (ContainerScroll(ct, -8))
 	   return;
 	goto draw_scoll;
 
      case EnterNotify:
-	ct->arrow1_hilited = 1;
+	ct->arrow1_state |= WS_HILITE;
 	goto draw_scoll;
 
      case LeaveNotify:
-	ct->arrow1_hilited = 0;
+	ct->arrow1_state &= ~WS_HILITE;
 	goto draw_scoll;
 
       draw_scoll:
@@ -1458,25 +1394,25 @@ ContainerEventArrow2Win(Win win __UNUSED__, XEvent * ev, void *prm)
      {
      case ButtonPress:
 	if (ev->xbutton.button == 1)
-	   ct->arrow2_clicked = 1;
+	   ct->arrow2_state |= WS_CLICK;
 	else if (ev->xbutton.button == 3)
 	   ContainerShowMenu(ct, ev->xbutton.x, ev->xbutton.y);
 	goto draw_scoll;
 
      case ButtonRelease:
-	if (!ct->arrow2_clicked)
+	if (!(ct->arrow2_state & WS_CLICK))
 	   goto draw_scoll;
-	ct->arrow2_clicked = 0;
+	ct->arrow2_state &= ~WS_CLICK;
 	if (ContainerScroll(ct, 8))
 	   return;
 	goto draw_scoll;
 
      case EnterNotify:
-	ct->arrow2_hilited = 1;
+	ct->arrow2_state |= WS_HILITE;
 	goto draw_scoll;
 
      case LeaveNotify:
-	ct->arrow2_hilited = 0;
+	ct->arrow2_state &= ~WS_HILITE;
 	goto draw_scoll;
 
       draw_scoll:

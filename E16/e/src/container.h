@@ -84,14 +84,11 @@ struct _container {
    ImageClass         *ic_item_base;
    EImage             *im_item_base;
 
-   char                arrow1_hilited;
-   char                arrow1_clicked;
-   char                arrow2_hilited;
-   char                arrow2_clicked;
-   char                icon_clicked;
-   char                scrollbar_hilited;
-   char                scrollbar_clicked;
+   unsigned char       scrollbar_state;
+   unsigned char       arrow1_state;
+   unsigned char       arrow2_state;
    char                scrollbox_clicked;
+   char                icon_clicked;
 
    Win                 win;
    Win                 cover_win;
