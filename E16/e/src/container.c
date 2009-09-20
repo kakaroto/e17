@@ -1304,20 +1304,20 @@ ContainerEventScrollbarWin(Win win __UNUSED__, XEvent * ev, void *prm)
 	  }
 	else if (ev->xbutton.button == 3)
 	   ContainerShowMenu(ct, ev->xbutton.x, ev->xbutton.y);
-	break;
+	goto draw_scoll;
 
      case ButtonRelease:
 	if (ct->scrollbar_clicked)
 	   ct->scrollbar_clicked = 0;
-	break;
+	goto draw_scoll;
 
      case EnterNotify:
 	ct->scrollbar_hilited = 1;
-	break;
+	goto draw_scoll;
 
      case LeaveNotify:
 	ct->scrollbar_hilited = 0;
-	break;
+	goto draw_scoll;
 
      case MotionNotify:
 	if (!ct->scrollbar_clicked)
@@ -1348,9 +1348,12 @@ ContainerEventScrollbarWin(Win win __UNUSED__, XEvent * ev, void *prm)
 	dp = pos0 + (dp * ct->max) / bs - ct->pos;
 	if (dp)
 	   ContainerScroll(ct, dp);
-	return;
+	break;
+
+      draw_scoll:
+	ContainerDrawScroll(ct);
+	break;
      }
-   ContainerDrawScroll(ct);
 }
 
 static void
@@ -1380,25 +1383,28 @@ ContainerEventArrow1Win(Win win __UNUSED__, XEvent * ev, void *prm)
 	   ct->arrow1_clicked = 1;
 	else if (ev->xbutton.button == 3)
 	   ContainerShowMenu(ct, ev->xbutton.x, ev->xbutton.y);
-	break;
+	goto draw_scoll;
 
      case ButtonRelease:
 	if (!ct->arrow1_clicked)
-	   break;
+	   goto draw_scoll;
 	ct->arrow1_clicked = 0;
 	if (ContainerScroll(ct, -8))
 	   return;
-	break;
+	goto draw_scoll;
 
      case EnterNotify:
 	ct->arrow1_hilited = 1;
-	break;
+	goto draw_scoll;
 
      case LeaveNotify:
 	ct->arrow1_hilited = 0;
+	goto draw_scoll;
+
+      draw_scoll:
+	ContainerDrawScroll(ct);
 	break;
      }
-   ContainerDrawScroll(ct);
 }
 
 static void
@@ -1413,25 +1419,28 @@ ContainerEventArrow2Win(Win win __UNUSED__, XEvent * ev, void *prm)
 	   ct->arrow2_clicked = 1;
 	else if (ev->xbutton.button == 3)
 	   ContainerShowMenu(ct, ev->xbutton.x, ev->xbutton.y);
-	break;
+	goto draw_scoll;
 
      case ButtonRelease:
 	if (!ct->arrow2_clicked)
-	   break;
+	   goto draw_scoll;
 	ct->arrow2_clicked = 0;
 	if (ContainerScroll(ct, 8))
 	   return;
-	break;
+	goto draw_scoll;
 
      case EnterNotify:
 	ct->arrow2_hilited = 1;
-	break;
+	goto draw_scoll;
 
      case LeaveNotify:
 	ct->arrow2_hilited = 0;
+	goto draw_scoll;
+
+      draw_scoll:
+	ContainerDrawScroll(ct);
 	break;
      }
-   ContainerDrawScroll(ct);
 }
 
 static void
