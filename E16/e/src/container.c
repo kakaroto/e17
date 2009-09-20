@@ -105,7 +105,7 @@ ContainerCreate(const char *name)
    ct->w = 0;
    ct->h = 0;
    ct->pos = 0;
-   ct->max = 1;
+   ct->iwin_maxl = 1;
    ct->arrow1_hilited = 0;
    ct->arrow1_clicked = 0;
    ct->arrow2_hilited = 0;
@@ -211,7 +211,7 @@ ContainerReconfigure(Container * ct)
 		extra += pad->left + pad->right;
 	  }
 	wmax = wmin = ct->iconsize + ct->scroll_thickness + extra;
-	ct->max_min = hmin;
+	ct->iwin_maxl_min = hmin;
      }
    else
      {
@@ -227,7 +227,7 @@ ContainerReconfigure(Container * ct)
 		extra += pad->top + pad->bottom;
 	  }
 	hmax = hmin = ct->iconsize + ct->scroll_thickness + extra;
-	ct->max_min = wmin;
+	ct->iwin_maxl_min = wmin;
      }
 
    ICCCM_SetSizeConstraints(ewin, wmin, hmin, wmax, hmax, 0, 0, 1, 1,
@@ -516,12 +516,12 @@ ContainerLayoutImageWin(Container * ct)
      }
 
    if (ct->orientation)
-      ct->max = yo - item_pad;
+      ct->iwin_maxl = yo - item_pad;
    else
-      ct->max = xo - item_pad;
+      ct->iwin_maxl = xo - item_pad;
 
-   if (ct->max < ct->max_min)
-      ct->max = ct->max_min;
+   if (ct->iwin_maxl < ct->iwin_maxl_min)
+      ct->iwin_maxl = ct->iwin_maxl_min;
 }
 
 static void
@@ -547,14 +547,14 @@ ContainerDrawScroll(Container * ct)
 	   bs = ct->h;
 	if (pad)
 	   bs -= pad->top + pad->bottom;
-	bw = (ct->h * bs) / ct->max;
+	bw = (ct->h * bs) / ct->iwin_maxl;
 	if (bs < 1)
 	   bs = 1;
 	if (bw > bs)
 	   bw = bs;
 	if (bw < 1)
 	   bw = 1;
-	bx = ((ct->pos * bs) / ct->max);
+	bx = (ct->pos * bs) / ct->iwin_maxl;
 	if (pad)
 	   bx += pad->top;
 	if ((ct->scrollbar_hide) && (bw == bs))
@@ -758,14 +758,14 @@ ContainerDrawScroll(Container * ct)
 	   bs = ct->w;
 	if (pad)
 	   bs -= pad->left + pad->right;
-	bw = (ct->w * bs) / ct->max;
+	bw = (ct->w * bs) / ct->iwin_maxl;
 	if (bs < 1)
 	   bs = 1;
 	if (bw > bs)
 	   bw = bs;
 	if (bw < 1)
 	   bw = 1;
-	bx = ((ct->pos * bs) / ct->max);
+	bx = (ct->pos * bs) / ct->iwin_maxl;
 	if (pad)
 	   bx += pad->left;
 	if ((ct->scrollbar_hide) && (bw == bs))
@@ -970,9 +970,9 @@ ContainerFixPos(Container * ct)
    int                 v;
 
    if (ct->orientation)
-      v = ct->max - ct->h;
+      v = ct->iwin_maxl - ct->h;
    else
-      v = ct->max - ct->w;
+      v = ct->iwin_maxl - ct->w;
 
    if (ct->pos > v)
       ct->pos = v;
@@ -996,41 +996,38 @@ ContainerLayout(Container * ct, int *px, int *py, int *pw, int *ph)
 
    if (ct->auto_resize)
      {
-	int                 add = 0;
 	int                 bl, br, bt, bb;
 
-	EwinBorderGetSize(ct->ewin, &bl, &br, &bt, &bb);
+	EwinBorderGetSize(ewin, &bl, &br, &bt, &bb);
 
 	if (ct->orientation)
 	  {
-	     add = ct->max;
-	     if (ct->ewin->border)
+	     h = ct->iwin_maxl;
+	     if (ewin->border)
 	       {
-		  if ((bt + bb + add) > WinGetH(VROOT))
-		     add = WinGetH(VROOT) - (bt + bb);
+		  if ((bt + bb + h) > WinGetH(VROOT))
+		     h = WinGetH(VROOT) - (bt + bb);
 	       }
-	     y += (((ct->ewin->client.h - add) * ct->auto_resize_anchor) >> 10);
-	     h = add;
-	     if (ct->ewin->border)
+	     y += (((ewin->client.h - h) * ct->auto_resize_anchor) >> 10);
+	     if (ewin->border)
 	       {
-		  if ((EoGetY(ct->ewin) + bt + bb + add) > WinGetH(VROOT))
-		     y = WinGetH(VROOT) - (bt + bb + add);
+		  if ((EoGetY(ewin) + bt + bb + h) > WinGetH(VROOT))
+		     y = WinGetH(VROOT) - (bt + bb + h);
 	       }
 	  }
 	else
 	  {
-	     add = ct->max;
-	     if (ct->ewin->border)
+	     w = ct->iwin_maxl;
+	     if (ewin->border)
 	       {
-		  if ((bl + br + add) > WinGetW(VROOT))
-		     add = WinGetW(VROOT) - (bl + br);
+		  if ((bl + br + w) > WinGetW(VROOT))
+		     w = WinGetW(VROOT) - (bl + br);
 	       }
-	     x += (((ct->ewin->client.w - add) * ct->auto_resize_anchor) >> 10);
-	     w = add;
-	     if (ct->ewin->border)
+	     x += (((ewin->client.w - w) * ct->auto_resize_anchor) >> 10);
+	     if (ewin->border)
 	       {
-		  if ((EoGetX(ct->ewin) + bl + br + add) > WinGetW(VROOT))
-		     x = WinGetW(VROOT) - (bl + br + add);
+		  if ((EoGetX(ewin) + bl + br + w) > WinGetW(VROOT))
+		     x = WinGetW(VROOT) - (bl + br + w);
 	       }
 	  }
      }
@@ -1078,8 +1075,8 @@ ContainerDraw(Container * ct)
 	ib_y0 = ib_ylt - ct->pos;
 	ib_w0 = ib_ww;
 	ib_h0 = ib_hh;
-	if (ib_h0 < ct->max)
-	   ib_h0 = ct->max;
+	if (ib_h0 < ct->iwin_maxl)
+	   ib_h0 = ct->iwin_maxl;
      }
    else
      {
@@ -1092,8 +1089,8 @@ ContainerDraw(Container * ct)
 	ib_x0 = ib_xlt - ct->pos;
 	ib_y0 = ib_ylt;
 	ib_w0 = ib_ww;
-	if (ib_w0 < ct->max)
-	   ib_w0 = ct->max;
+	if (ib_w0 < ct->iwin_maxl)
+	   ib_w0 = ct->iwin_maxl;
 	ib_h0 = ib_hh;
      }
 
@@ -1345,7 +1342,7 @@ ContainerEventScrollbarWin(Win win __UNUSED__, XEvent * ev, void *prm)
 		bs = 1;
 	     dp = ev->xmotion.x_root - px;
 	  }
-	dp = pos0 + (dp * ct->max) / bs - ct->pos;
+	dp = pos0 + (dp * ct->iwin_maxl) / bs - ct->pos;
 	if (dp)
 	   ContainerScroll(ct, dp);
 	break;

@@ -78,7 +78,8 @@ struct _container {
    EWin               *ewin;
    int                 w, h;
    int                 pos;
-   int                 max, max_min;
+   int                 iwin_maxl, iwin_maxl_min;
+   int                 iwin_fixh;
    ImageClass         *ic_box;
    ImageClass         *ic_item_base;
    EImage             *im_item_base;
