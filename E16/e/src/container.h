@@ -113,6 +113,7 @@ struct _container {
 
    /* State flags */
    char                do_update;
+   int                 scroll_thickness_set;
 };
 
 extern ContainerCfg Conf_containers;

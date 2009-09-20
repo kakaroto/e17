@@ -191,12 +191,12 @@ ContainerReconfigure(Container * ct)
 
    if (ct->orientation)
      {
-	wmax = wmin = ct->iwin_fixh + ct->scroll_thickness;
+	wmax = wmin = ct->iwin_fixh + ct->scroll_thickness_set;
 	hmin = ct->iwin_maxl_min;
      }
    else
      {
-	hmax = hmin = ct->iwin_fixh + ct->scroll_thickness;
+	hmax = hmin = ct->iwin_fixh + ct->scroll_thickness_set;
 	wmin = ct->iwin_maxl_min;
      }
 
@@ -227,10 +227,13 @@ static void
 _ContainerEwinLayout(EWin * ewin, int *px, int *py, int *pw, int *ph)
 {
    Container          *ct = (Container *) ewin->data;
+   int                 w, h;
 
+   w = ct->w;
+   h = ct->h;
    ContainerLayout(ct, px, py, pw, ph);
 
-   if (*pw != ct->w || *ph != ct->h)
+   if (*pw != w || *ph != h)
       ct->do_update = 1;
 }
 
@@ -685,6 +688,7 @@ ContainerLayoutScroll(Container * ct)
 	  {
 	     EUnmapWindow(ct->scrollbarknob_win);
 	  }
+	ct->scroll_thickness_set = ct->scroll_thickness;
 	break;
 
      case 0:
@@ -849,12 +853,14 @@ ContainerLayoutScroll(Container * ct)
 	  {
 	     EUnmapWindow(ct->scrollbarknob_win);
 	  }
+	ct->scroll_thickness_set = ct->scroll_thickness;
 	break;
 
       do_hide_sb:
 	EUnmapWindow(ct->scroll_win);
 	EUnmapWindow(ct->arrow1_win);
 	EUnmapWindow(ct->arrow2_win);
+	ct->scroll_thickness_set = 0;
 	break;
      }
 }
@@ -1006,10 +1012,10 @@ ContainerLayout(Container * ct, int *px, int *py, int *pw, int *ph)
    y = *py;
    w = *pw;
    h = *ph;
-   ICCCM_SizeMatch(ewin, w, h, &w, &h);
 
-   ContainerLayoutImageWin(ct);
+   ContainerLayoutImageWin(ct);	/* Find iwin_maxl, iwin_fixh */
 
+   /* Possibly change "length" if autosizing */
    if (ct->auto_resize)
      {
 	int                 bl, br, bt, bb;
@@ -1018,7 +1024,7 @@ ContainerLayout(Container * ct, int *px, int *py, int *pw, int *ph)
 
 	if (ct->orientation)
 	  {
-	     h = ct->iwin_maxl;
+	     ct->h = h = ct->iwin_maxl;
 	     if (ewin->border)
 	       {
 		  if ((bt + bb + h) > WinGetH(VROOT))
@@ -1033,7 +1039,7 @@ ContainerLayout(Container * ct, int *px, int *py, int *pw, int *ph)
 	  }
 	else
 	  {
-	     w = ct->iwin_maxl;
+	     ct->w = w = ct->iwin_maxl;
 	     if (ewin->border)
 	       {
 		  if ((bl + br + w) > WinGetW(VROOT))
@@ -1047,16 +1053,33 @@ ContainerLayout(Container * ct, int *px, int *py, int *pw, int *ph)
 	       }
 	  }
      }
+   else
+     {
+	if (ct->orientation)
+	  {
+	     if (h < ct->iwin_maxl_min)
+		h = ct->iwin_maxl_min;
+	     ct->h = h;
+	  }
+	else
+	  {
+	     if (w < ct->iwin_maxl_min)
+		w = ct->iwin_maxl_min;
+	     ct->w = w;
+	  }
+     }
 
+   ContainerLayoutScroll(ct);	/* Find scroll_thickness_set, uses h/w, iwin_maxl */
    ContainerFixPos(ct);
 
+   /* Possibly change "height" if hiding scrollbar */
    if (ct->orientation)
      {
-	w = ct->iwin_fixh + ct->scroll_thickness;
+	ct->w = w = ct->iwin_fixh + ct->scroll_thickness_set;
      }
    else
      {
-	h = ct->iwin_fixh + ct->scroll_thickness;
+	ct->h = h = ct->iwin_fixh + ct->scroll_thickness_set;
      }
 
    *px = x;
@@ -1089,8 +1112,8 @@ ContainerDraw(Container * ct)
      {
 	ib_ic_cover = ImageclassFind("ICONBOX_COVER_VERTICAL", 0);
 	if (ct->scrollbar_side == 0)
-	   ib_xlt = ct->scroll_thickness;
-	ib_ww -= ct->scroll_thickness;
+	   ib_xlt = ct->scroll_thickness_set;
+	ib_ww -= ct->scroll_thickness_set;
 
 	/* Geometry of icon window (including invisible parts) */
 	ib_x0 = ib_xlt;
@@ -1104,8 +1127,8 @@ ContainerDraw(Container * ct)
      {
 	ib_ic_cover = ImageclassFind("ICONBOX_COVER_HORIZONTAL", 0);
 	if (ct->scrollbar_side == 0)
-	   ib_ylt = ct->scroll_thickness;
-	ib_hh -= ct->scroll_thickness;
+	   ib_ylt = ct->scroll_thickness_set;
+	ib_hh -= ct->scroll_thickness_set;
 
 	/* Geometry of icon window (including invisible parts) */
 	ib_x0 = ib_xlt - ct->pos;
