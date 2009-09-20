@@ -513,13 +513,12 @@ ContainerLayoutImageWin(Container * ct)
 }
 
 static void
-ContainerDrawScroll(Container * ct)
+ContainerLayoutScroll(Container * ct)
 {
    ImageClass         *ic, *ic_sbb;
    EImageBorder       *pad;
    int                 arrow_mode = ct->arrow_side;
    int                 bs, bw, bx;
-   int                 state;
 
    switch (ct->orientation)
      {
@@ -670,22 +669,9 @@ ContainerDrawScroll(Container * ct)
 	       }
 	  }
 
-	ImageclassApply(ic_sbb, ct->scroll_win, 0, 0, STATE_NORMAL, ST_ICONBOX);
-
 	EMoveResizeWindow(ct->scrollbar_win,
 			  (ct->scroll_thickness - ct->bar_thickness) / 2, bx,
 			  ct->bar_thickness, bw);
-
-	ic = ImageclassFind("ICONBOX_SCROLLBAR_KNOB_VERTICAL", 1);
-	if (ic)
-	  {
-	     state = STATE_NORMAL;
-	     if (ct->scrollbar_hilited)
-		state = STATE_HILITED;
-	     if (ct->scrollbar_clicked)
-		state = STATE_CLICKED;
-	     ImageclassApply(ic, ct->scrollbar_win, 0, 0, state, ST_ICONBOX);
-	  }
 
 	ic = ImageclassFind("ICONBOX_SCROLLKNOB_VERTICAL", 0);
 	if ((ic) && (bw > ct->knob_length))
@@ -694,43 +680,10 @@ ContainerDrawScroll(Container * ct)
 	     EMoveResizeWindow(ct->scrollbarknob_win, 0,
 			       (bw - ct->knob_length) / 2, ct->bar_thickness,
 			       ct->knob_length);
-
-	     state = STATE_NORMAL;
-	     if (ct->scrollbar_hilited)
-		state = STATE_HILITED;
-	     if (ct->scrollbar_clicked)
-		state = STATE_CLICKED;
-	     ImageclassApply(ic, ct->scrollbarknob_win, 0, 0, state,
-			     ST_ICONBOX);
 	  }
 	else
 	  {
 	     EUnmapWindow(ct->scrollbarknob_win);
-	  }
-
-	if (arrow_mode < 3)
-	  {
-	     ic = ImageclassFind("ICONBOX_ARROW_UP", 1);
-	     if (ic)
-	       {
-		  state = STATE_NORMAL;
-		  if (ct->arrow1_hilited)
-		     state = STATE_HILITED;
-		  if (ct->arrow1_clicked)
-		     state = STATE_CLICKED;
-		  ImageclassApply(ic, ct->arrow1_win, 0, 0, state, ST_ICONBOX);
-	       }
-
-	     ic = ImageclassFind("ICONBOX_ARROW_DOWN", 1);
-	     if (ic)
-	       {
-		  state = STATE_NORMAL;
-		  if (ct->arrow2_hilited)
-		     state = STATE_HILITED;
-		  if (ct->arrow2_clicked)
-		     state = STATE_CLICKED;
-		  ImageclassApply(ic, ct->arrow2_win, 0, 0, state, ST_ICONBOX);
-	       }
 	  }
 	break;
 
@@ -884,7 +837,97 @@ ContainerDrawScroll(Container * ct)
 			  (ct->scroll_thickness - ct->bar_thickness) / 2, bw,
 			  ct->bar_thickness);
 
-	ImageclassApply(ic_sbb, ct->scroll_win, 0, 0, STATE_NORMAL, ST_ICONBOX);
+	ic = ImageclassFind("ICONBOX_SCROLLKNOB_HORIZONTAL", 0);
+	if ((ic) && (bw > ct->knob_length))
+	  {
+	     EMapWindow(ct->scrollbarknob_win);
+	     EMoveResizeWindow(ct->scrollbarknob_win,
+			       (bw - ct->knob_length) / 2, 0, ct->knob_length,
+			       ct->bar_thickness);
+	  }
+	else
+	  {
+	     EUnmapWindow(ct->scrollbarknob_win);
+	  }
+	break;
+
+      do_hide_sb:
+	EUnmapWindow(ct->scroll_win);
+	EUnmapWindow(ct->arrow1_win);
+	EUnmapWindow(ct->arrow2_win);
+	break;
+     }
+}
+
+static void
+ContainerDrawScroll(Container * ct)
+{
+   ImageClass         *ic;
+   int                 state;
+
+   ContainerLayoutScroll(ct);
+
+   if (!WinIsMapped(ct->scroll_win))
+      return;
+
+   switch (ct->orientation)
+     {
+     default:
+	ic = ImageclassFind("ICONBOX_SCROLLBAR_BASE_VERTICAL", 1);
+	ImageclassApply(ic, ct->scroll_win, 0, 0, STATE_NORMAL, ST_ICONBOX);
+
+	ic = ImageclassFind("ICONBOX_SCROLLBAR_KNOB_VERTICAL", 1);
+	if (ic)
+	  {
+	     state = STATE_NORMAL;
+	     if (ct->scrollbar_hilited)
+		state = STATE_HILITED;
+	     if (ct->scrollbar_clicked)
+		state = STATE_CLICKED;
+	     ImageclassApply(ic, ct->scrollbar_win, 0, 0, state, ST_ICONBOX);
+	  }
+
+	ic = ImageclassFind("ICONBOX_SCROLLKNOB_VERTICAL", 0);
+	if (ic && WinIsMapped(ct->scrollbarknob_win))
+	  {
+	     state = STATE_NORMAL;
+	     if (ct->scrollbar_hilited)
+		state = STATE_HILITED;
+	     if (ct->scrollbar_clicked)
+		state = STATE_CLICKED;
+	     ImageclassApply(ic, ct->scrollbarknob_win, 0, 0, state,
+			     ST_ICONBOX);
+	  }
+
+	if (WinIsMapped(ct->arrow1_win))
+	  {
+	     ic = ImageclassFind("ICONBOX_ARROW_UP", 1);
+	     if (ic)
+	       {
+		  state = STATE_NORMAL;
+		  if (ct->arrow1_hilited)
+		     state = STATE_HILITED;
+		  if (ct->arrow1_clicked)
+		     state = STATE_CLICKED;
+		  ImageclassApply(ic, ct->arrow1_win, 0, 0, state, ST_ICONBOX);
+	       }
+
+	     ic = ImageclassFind("ICONBOX_ARROW_DOWN", 1);
+	     if (ic)
+	       {
+		  state = STATE_NORMAL;
+		  if (ct->arrow2_hilited)
+		     state = STATE_HILITED;
+		  if (ct->arrow2_clicked)
+		     state = STATE_CLICKED;
+		  ImageclassApply(ic, ct->arrow2_win, 0, 0, state, ST_ICONBOX);
+	       }
+	  }
+	break;
+
+     case 0:
+	ic = ImageclassFind("ICONBOX_SCROLLBAR_BASE_HORIZONTAL", 1);
+	ImageclassApply(ic, ct->scroll_win, 0, 0, STATE_NORMAL, ST_ICONBOX);
 
 	ic = ImageclassFind("ICONBOX_SCROLLBAR_KNOB_HORIZONTAL", 1);
 	if (ic)
@@ -898,13 +941,8 @@ ContainerDrawScroll(Container * ct)
 	  }
 
 	ic = ImageclassFind("ICONBOX_SCROLLKNOB_HORIZONTAL", 0);
-	if ((ic) && (bw > ct->knob_length))
+	if (ic && WinIsMapped(ct->scrollbarknob_win))
 	  {
-	     EMapWindow(ct->scrollbarknob_win);
-	     EMoveResizeWindow(ct->scrollbarknob_win,
-			       (bw - ct->knob_length) / 2, 0, ct->knob_length,
-			       ct->bar_thickness);
-
 	     state = STATE_NORMAL;
 	     if (ct->scrollbar_hilited)
 		state = STATE_HILITED;
@@ -913,12 +951,8 @@ ContainerDrawScroll(Container * ct)
 	     ImageclassApply(ic, ct->scrollbarknob_win, 0, 0, state,
 			     ST_ICONBOX);
 	  }
-	else
-	  {
-	     EUnmapWindow(ct->scrollbarknob_win);
-	  }
 
-	if (arrow_mode < 3)
+	if (WinIsMapped(ct->arrow1_win))
 	  {
 	     ic = ImageclassFind("ICONBOX_ARROW_LEFT", 1);
 	     if (ic)
@@ -942,12 +976,6 @@ ContainerDrawScroll(Container * ct)
 		  ImageclassApply(ic, ct->arrow2_win, 0, 0, state, ST_ICONBOX);
 	       }
 	  }
-	break;
-
-      do_hide_sb:
-	EUnmapWindow(ct->scroll_win);
-	EUnmapWindow(ct->arrow1_win);
-	EUnmapWindow(ct->arrow2_win);
 	break;
      }
 }
