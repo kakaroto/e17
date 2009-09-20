@@ -38,38 +38,47 @@ static int          real_rows = 0;
 
 typedef struct
 {
+   const char         *name_short;
+   const char         *name_long;
+} Modifier;
+
+typedef struct
+{
    const char         *text;
    gchar               param_tpe;
    const char         *params;
    const char         *command;
 } ActionOpt;
 
-static const char  *mod_str[] = {
-   "",
-   "CTRL",
-   "ALT",
-   "SHIFT",
-   "CTRL+ALT",
-   "CTRL+SHIFT",
-   "ALT+SHIFT",
-   "CTRL+ALT+SHIFT",
-   "WIN",
-   "MOD3",
-   "MOD4",
-   "MOD5",
-   "WIN+SHIFT",
-   "WIN+CTRL",
-   "WIN+ALT",
-   "MOD4+SHIFT",
-   "MOD4+CTRL",
-   "MOD4+CTRL+SHIFT",
-   "MOD5+SHIFT",
-   "MOD5+CTRL",
-   "MOD5+CTRL+SHIFT",
-};
-#define N_MODIFIERS (sizeof(mod_str)/sizeof(char*))
-
 /* *INDENT-OFF* */
+static const Modifier modifiers[] = {
+   {"-",   ""},
+   {"C",   "CTRL"},
+   {"S",   "SHIFT"},
+   {"A",   "ALT"},
+   {"CS",  "CTRL+SHIFT"},
+   {"CA",  "CTRL+ALT"},
+   {"SA",  "ALT+SHIFT"},
+   {"CSA", "CTRL+ALT+SHIFT"},
+   {"2",   "MOD2"},
+   {"3",   "MOD3"},
+   {"4",   "MOD4"},
+   {"5",   "MOD5"},
+   {"C2",  "MOD2+CTRL"},
+   {"S2",  "MOD2+SHIFT"},
+   {"A2",  "MOD2+ALT"},
+   {"C4",  "MOD4+CTRL"},
+   {"S4",  "MOD4+SHIFT"},
+   {"A4",  "MOD4+ALT"},
+   {"CS4", "MOD4+CTRL+SHIFT"},
+   {"C5",  "MOD5+CTRL"},
+   {"S5",  "MOD5+SHIFT"},
+   {"A5",  "MOD5+ALT"},
+   {"CS5", "MOD5+CTRL+SHIFT"},
+};
+#define N_MODIFIERS (sizeof(modifiers)/sizeof(Modifier))
+#define MOD_TEXT(mod) modifiers[mod].name_long
+
 static const ActionOpt actions_default[] = {
     {"Run command", 1, NULL, "exec "},
 
@@ -161,7 +170,7 @@ static unsigned int *action_index_to_row = NULL;
 static unsigned int *action_row_to_index = NULL;
 
 static int
-match_action_by_binding(int opcode, const char *params)
+match_action_by_binding(const char *params)
 {
    int                 k, len;
 
@@ -191,6 +200,20 @@ match_action_by_selection(const char *text)
      }
 
    return -1;
+}
+
+static unsigned
+mod_short_to_index(const char *name_short)
+{
+   unsigned int        k;
+
+   for (k = 0; k < N_MODIFIERS; k++)
+     {
+	if (!strcmp(name_short, modifiers[k].name_short))
+	   return k;
+     }
+
+   return 0;			/* Discard modifier */
 }
 
 static void
@@ -248,7 +271,7 @@ e_cb_modifier(GtkWidget * widget __UNUSED__, gpointer data)
    gint                value;
 
    value = (gint) (glong) data;
-   gtk_clist_set_text(GTK_CLIST(clist), last_row, 0, mod_str[value]);
+   gtk_clist_set_text(GTK_CLIST(clist), last_row, 0, MOD_TEXT(value));
 }
 
 static gchar       *
@@ -314,13 +337,12 @@ on_save_data(GtkWidget * widget __UNUSED__, gpointer data __UNUSED__)
    char               *buf = NULL;
    int                 i;
 
-   buf = dupcat(buf, "set_keybindings ");
+   buf = dupcat(buf, "ac kb set\nAclass KEYBINDINGS global\n");
+
    for (i = 0; i < real_rows; i++)
      {
 	char                tmp[1024];
 	char               *params;
-	char                params_tmp[1024];
-	char               *action;
 	char               *key;
 	char               *mod;
 	int                 modifier = 0;
@@ -329,26 +351,24 @@ on_save_data(GtkWidget * widget __UNUSED__, gpointer data __UNUSED__)
 	gtk_clist_get_text(GTK_CLIST(clist), i, 0, &mod);
 	for (j = 0; j < 21; j++)
 	  {
-	     if (!strcmp(mod_str[j], mod))
+	     if (!strcmp(MOD_TEXT(j), mod))
 	       {
 		  modifier = j;
 	       }
 	  }
 	gtk_clist_get_text(GTK_CLIST(clist), i, 1, &key);
-	gtk_clist_get_text(GTK_CLIST(clist), i, 2, &action);
-	j = match_action_by_selection(action);
 	gtk_clist_get_text(GTK_CLIST(clist), i, 3, &params);
 
-	if (*params == '*')
-	   continue;
-	snprintf(tmp, sizeof(tmp), "%s %i %i %s\n", key, modifier, 0, params);
+	snprintf(tmp, sizeof(tmp), "%s %s %s %s\n", "KeyDown",
+		 modifiers[modifier].name_short, key, params);
 	buf = dupcat(buf, tmp);
      }
 
 #if DEBUG > 0
    printf("%s", buf);
-#else
+#endif
    CommsSend(buf);
+#if 0
    CommsSend("save_config");
 #endif
    free(buf);
@@ -371,7 +391,7 @@ selection_made(GtkWidget * my_clist __UNUSED__, gint row,
    gtk_option_menu_set_history(GTK_OPTION_MENU(act_mod), 0);
    for (i = 1; i < 21; i++)
      {
-	if (!strcmp(mod_str[i], modstring))
+	if (!strcmp(MOD_TEXT(i), modstring))
 	  {
 	     gtk_option_menu_set_history(GTK_OPTION_MENU(act_mod), i);
 	  }
@@ -627,52 +647,44 @@ create_list_window(void)
 
    {
       char               *msg, *buf;
-      int                 i, j, k, modifier, opcode;
+      int                 i, j, k, modifier;
+      char                event[128], mod[128], key[128], *params;
+      const char         *stuff[4];
+      int                 len;
 
-      CommsSend("get_keybindings");
+      CommsSend("ac kb");
       msg = wait_for_ipc_msg();
       i = 0;
       while ((buf = get_line(msg, i++)))
 	{
-	   /* stuff[0] = modifier */
-	   /* stuff[1] = key */
-	   /* stuff[2] = action */
-	   /* stuff[3] = params */
-	   char                key[128], *params;
-	   const char         *stuff[4];
-	   int                 len;
-
 	   if (strlen(buf) < 1)
 	      break;
 
-	   opcode = modifier = -1;
-	   j = sscanf(buf, "%127s %d %d %n", key, &modifier, &opcode, &len);
+	   j = sscanf(buf, "%127s %127s %127s %n", event, mod, key, &len);
 #if DEBUG > 0
 	   printf("buf(%d): %s\n", j, buf);
 #endif
-	   if (j < 3 || opcode < 0)
+	   if (j < 3)
 	      continue;
-
-	   if (modifier < 0 || modifier >= (int)N_MODIFIERS)
+	   if (strcmp(event, "KeyDown"))
 	      continue;
 
 	   params = buf + len;
-	   if (opcode == 9 && !strncmp(params, "named ", 6))	/* Hack for e16 < 0.16.8 */
-	      params += 6;
-
 #if DEBUG > 0
-	   printf("key: %s, mod: %s, opc=%d, params: %s\n", key,
-		  mod_str[modifier], opcode, params);
+	   printf("event: %s, mod: %s, key: %s, params: %s\n",
+		  event, mod, key, params);
 #endif
 
-	   k = match_action_by_binding(opcode, params);
+	   modifier = mod_short_to_index(mod);
+
+	   k = match_action_by_binding(params);
 
 #if DEBUG > 1
 	   printf("key: %s, mod: %s, act=%d, params: %s\n", key,
-		  mod_str[modifier], k, params);
+		  MOD_TEXT(modifier), k, params);
 #endif
 
-	   stuff[0] = mod_str[modifier];
+	   stuff[0] = MOD_TEXT(modifier);
 	   stuff[1] = key;
 	   stuff[2] = (k >= 0) ? actions[k].text : "* Not recognised *";
 	   stuff[3] = params;
@@ -759,7 +771,7 @@ create_list_window(void)
 
       for (i = 1; i < 21; i++)
 	{
-	   mi = gtk_menu_item_new_with_label(mod_str[i]);
+	   mi = gtk_menu_item_new_with_label(MOD_TEXT(i));
 	   gtk_widget_show(mi);
 	   gtk_signal_connect(GTK_OBJECT(mi), "activate",
 			      GTK_SIGNAL_FUNC(e_cb_modifier),
