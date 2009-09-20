@@ -27,8 +27,9 @@ typedef struct _client
 
 Client             *e_client = NULL;
 
-static Window       comms_win = 0;
-static Window       my_win = 0;
+static Window       root_win = None;
+static Window       comms_win = None;
+static Window       my_win = None;
 static GdkWindow   *gdkwin = NULL;
 static GdkWindow   *gdkwin2 = NULL;
 static void         (*msg_receive_callback) (gchar * msg) = NULL;
@@ -216,7 +217,12 @@ CommsFilter(GdkXEvent * gdk_xevent, GdkEvent * event, gpointer data)
 static void
 CommsSetup(void)
 {
-   my_win = XCreateSimpleWindow(GDK_DISPLAY(), GDK_ROOT_WINDOW(),
+   char               *str;
+
+   str = getenv("ENL_WM_ROOT");
+   root_win = (str) ? strtoul(str, NULL, 0) : GDK_ROOT_WINDOW();
+
+   my_win = XCreateSimpleWindow(GDK_DISPLAY(), root_win,
 				-100, -100, 5, 5, 0, 0, 0);
 }
 
@@ -236,7 +242,7 @@ CommsFindCommsWindow(void)
    if (a != None)
      {
 	s = NULL;
-	XGetWindowProperty(GDK_DISPLAY(), GDK_ROOT_WINDOW(), a, 0, 14, False,
+	XGetWindowProperty(GDK_DISPLAY(), root_win, a, 0, 14, False,
 			   AnyPropertyType, &ar, &format, &num, &after, &s);
 	if (s)
 	  {
