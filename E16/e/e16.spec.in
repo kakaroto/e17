@@ -1,7 +1,7 @@
 Summary: The Enlightenment window manager, DR16.
 Name: @PACKAGE@
 Version: @VERSION@
-Release: @E_RPM_REVISION@%{?_rpm_add_date:.%(date '+%y%m%d')}%{?_rpm_pkg_ext:%{_rpm_pkg_ext}}%{?_vendorsuffix:.%{_vendorsuffix}}
+Release: @E_RPM_REVISION@%{?_rpm_pkg_ext:%{_rpm_pkg_ext}}%{?_vendorsuffix:.%{_vendorsuffix}}
 License: BSD
 Group: User Interface/Desktops
 URL: http://www.enlightenment.org/
