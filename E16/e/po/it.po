@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2009-09-10 19:33+0200\n"
+"POT-Creation-Date: 2009-09-20 14:22+0200\n"
 "PO-Revision-Date: 2009-05-16 22:36+0200\n"
 "Last-Translator: Massimo Maiurana <maiurana@gmail.com>\n"
 "Language-Team: none\n"
@@ -43,7 +43,7 @@ msgstr ""
 "Kim Woelders - kim@woelders.dk\n"
 
 #: src/aclass.c:211 src/backgrounds.c:236 src/borders.c:641 src/buttons.c:181
-#: src/cursors.c:170 src/iclass.c:337 src/tclass.c:113 src/tooltips.c:135
+#: src/cursors.c:131 src/iclass.c:338 src/tclass.c:113 src/tooltips.c:135
 #, c-format
 msgid "%u references remain\n"
 msgstr "%u riferimenti rimasti\n"
@@ -178,7 +178,7 @@ msgstr "Attenzione !!!"
 msgid "OK"
 msgstr "OK"
 
-#: src/backgrounds.c:1521
+#: src/backgrounds.c:1517
 #, c-format
 msgid ""
 "Background definition information:\n"
@@ -189,11 +189,11 @@ msgstr ""
 "Nome: %s\n"
 "File: %s\n"
 
-#: src/backgrounds.c:1522
+#: src/backgrounds.c:1518
 msgid "-NONE-"
 msgstr "-NESSUNO-"
 
-#: src/backgrounds.c:1695 src/backgrounds.c:1697
+#: src/backgrounds.c:1691 src/backgrounds.c:1693
 msgid ""
 "No\n"
 "Background"
@@ -201,40 +201,40 @@ msgstr ""
 "Nessuno\n"
 "sfondo"
 
-#: src/backgrounds.c:1791 src/backgrounds.c:2221
+#: src/backgrounds.c:1787 src/backgrounds.c:2217
 #, c-format
 msgid "Unused backgrounds freed after %2i:%02i:%02i"
 msgstr "Liberamento sfondi inutilizzati dopo %2i:%02i:%02i"
 
-#: src/backgrounds.c:2007
+#: src/backgrounds.c:2003
 msgid "Use background image"
 msgstr "Usa immagine di sfondo"
 
-#: src/backgrounds.c:2011
+#: src/backgrounds.c:2007
 msgid "Keep aspect on scale"
 msgstr "Mantieni aspetto dopo la scalatura"
 
-#: src/backgrounds.c:2015
+#: src/backgrounds.c:2011
 msgid "Tile image across background"
 msgstr "Affianca immagine sullo sfondo"
 
-#: src/backgrounds.c:2024
+#: src/backgrounds.c:2020
 msgid "Move to Front\n"
 msgstr "Sposta all'inizio\n"
 
-#: src/backgrounds.c:2029
+#: src/backgrounds.c:2025
 msgid "Duplicate\n"
 msgstr "Duplica\n"
 
-#: src/backgrounds.c:2033
+#: src/backgrounds.c:2029
 msgid "Unlist\n"
 msgstr "Rimuovi dalla lista\n"
 
-#: src/backgrounds.c:2038
+#: src/backgrounds.c:2034
 msgid "Delete File\n"
 msgstr "Elimina file\n"
 
-#: src/backgrounds.c:2049
+#: src/backgrounds.c:2045
 msgid ""
 "Background\n"
 "Image\n"
@@ -247,59 +247,59 @@ msgstr ""
 "immagine di\n"
 "sfondo\n"
 
-#: src/backgrounds.c:2106
+#: src/backgrounds.c:2102
 msgid "BG Colour\n"
 msgstr "Colore dello sfondo\n"
 
-#: src/backgrounds.c:2111
+#: src/backgrounds.c:2107
 msgid "Red:\n"
 msgstr "Rosso:\n"
 
-#: src/backgrounds.c:2122
+#: src/backgrounds.c:2118
 msgid "Green:\n"
 msgstr "Verde:\n"
 
-#: src/backgrounds.c:2133
+#: src/backgrounds.c:2129
 msgid "Blue:\n"
 msgstr "Blu:\n"
 
-#: src/backgrounds.c:2166
+#: src/backgrounds.c:2162
 msgid "Pre-scan BG's"
 msgstr "Pre-analisi degli sfondi"
 
-#: src/backgrounds.c:2174
+#: src/backgrounds.c:2170
 msgid "Sort by File"
 msgstr "Ordina per nome file"
 
-#: src/backgrounds.c:2179
+#: src/backgrounds.c:2175
 msgid "Sort by Attr."
 msgstr "Ordina per attributi"
 
-#: src/backgrounds.c:2185
+#: src/backgrounds.c:2181
 msgid "Sort by Image"
 msgstr "Ordina per immagine"
 
-#: src/backgrounds.c:2205
+#: src/backgrounds.c:2201
 msgid "Use dithering in Hi-Colour"
 msgstr "Usa dithering in Hi-Color"
 
-#: src/backgrounds.c:2209
+#: src/backgrounds.c:2205
 msgid "Background overrides theme"
 msgstr "Lo sfondo sostituisce quello del tema"
 
-#: src/backgrounds.c:2214
+#: src/backgrounds.c:2210
 msgid "Enable background transparency compatibility mode"
 msgstr "Abilita modo compatibilitá trasparenza sfondo"
 
-#: src/backgrounds.c:2238 src/mod-trans.c:204
+#: src/backgrounds.c:2234 src/mod-trans.c:204
 msgid "Background"
 msgstr "Sfondo"
 
-#: src/backgrounds.c:2239
+#: src/backgrounds.c:2235
 msgid "Desktop Background Settings"
 msgstr "Impostazione sfondo del desktop"
 
-#: src/backgrounds.c:2242
+#: src/backgrounds.c:2238
 msgid ""
 "Enlightenment Desktop\n"
 "Background Settings Dialog\n"
@@ -414,118 +414,118 @@ msgstr ""
 msgid "Enlightenment Starting..."
 msgstr "Avvio di Enlightenment... "
 
-#: src/container.c:1207
+#: src/container.c:1186
 msgid "Settings..."
 msgstr "Impostazioni..."
 
-#: src/container.c:1211 src/dialog.c:856 src/pager.c:1013 config/strings.c:30
+#: src/container.c:1190 src/dialog.c:856 src/pager.c:1013 config/strings.c:30
 #: config/strings.c:124
 msgid "Close"
 msgstr "Chiudi"
 
-#: src/container.c:1216 config/strings.c:85
+#: src/container.c:1195 config/strings.c:85
 msgid "Create New Iconbox"
 msgstr "Crea nuovo Iconbox"
 
-#: src/container.c:1513 src/container.c:1586
+#: src/container.c:1499 src/container.c:1572
 #, c-format
 msgid "Icon size: %2d"
 msgstr "Dimensione icone: %2d"
 
-#: src/container.c:1550
+#: src/container.c:1536
 msgid "Transparent background"
 msgstr "Sfondo trasparente"
 
-#: src/container.c:1554
+#: src/container.c:1540
 msgid "Hide inner border"
 msgstr "Nascondi bordi interni"
 
-#: src/container.c:1558
+#: src/container.c:1544
 msgid "Draw base image behind Icons"
 msgstr "Disegna immagine base dietro le icone"
 
-#: src/container.c:1562
+#: src/container.c:1548
 msgid "Hide scrollbar when not needed"
 msgstr "Nascondi cursori scorrimento se non necessari"
 
-#: src/container.c:1566
+#: src/container.c:1552
 msgid "Automatically resize to fit Icons"
 msgstr "Ridimensiona automaticamente per contenere icone"
 
-#: src/container.c:1573
+#: src/container.c:1559
 msgid "Alignment of anchoring when automatically resizing:"
 msgstr "Allineamento ancoraggio in ridimensionamento automatico:"
 
-#: src/container.c:1604
+#: src/container.c:1590
 msgid "Orientation:"
 msgstr "Orientamento:"
 
-#: src/container.c:1609
+#: src/container.c:1595
 msgid "Scrollbar side:"
 msgstr "Lato cursore di scorrimento:"
 
-#: src/container.c:1614
+#: src/container.c:1600
 msgid "Scrollbar arrows:"
 msgstr "Freccie di scorrimento:"
 
-#: src/container.c:1617
+#: src/container.c:1603
 msgid "Horizontal"
 msgstr "Orizzontale"
 
-#: src/container.c:1622
+#: src/container.c:1608
 msgid "Left / Top"
 msgstr "Sinistra / Alto"
 
-#: src/container.c:1627
+#: src/container.c:1613
 msgid "Start"
 msgstr "Inizio"
 
-#: src/container.c:1632
+#: src/container.c:1618
 msgid "Vertical"
 msgstr "Verticale"
 
-#: src/container.c:1638
+#: src/container.c:1624
 msgid "Right / Bottom"
 msgstr "Destra / Basso"
 
-#: src/container.c:1644
+#: src/container.c:1630
 msgid "Both ends"
 msgstr "Entrambe estremitá"
 
-#: src/container.c:1652
+#: src/container.c:1638
 msgid "End"
 msgstr "Fine"
 
-#: src/container.c:1660 src/focus.c:841
+#: src/container.c:1646 src/focus.c:841
 msgid "None"
 msgstr "Nessuno"
 
-#: src/container.c:1670
+#: src/container.c:1656
 msgid "Show icon names"
 msgstr "Mostra nome icone"
 
-#: src/container.c:1674
+#: src/container.c:1660
 msgid "Animate when iconifying to this Iconbox"
 msgstr "Anima iconificazione verso Iconbox"
 
-#: src/container.c:1684
+#: src/container.c:1670
 msgid "Icon image display policy (if one operation fails, try the next):"
 msgstr ""
 "Regole visualizzazione immagine icone (se una fallisce passa alla seguente):"
 
-#: src/container.c:1689
+#: src/container.c:1675
 msgid "Snapshot Windows, Use application icon, Use Enlightenment Icon"
 msgstr "Miniatura, icona applicazione, icona di Enlightenment"
 
-#: src/container.c:1696
+#: src/container.c:1682
 msgid "Use application icon, Use Enlightenment Icon, Snapshot Window"
 msgstr "Icona applicazione, icona di Enlightenment, miniatura"
 
-#: src/container.c:1701
+#: src/container.c:1687
 msgid "Use Enlightenment Icon, Snapshot Window"
 msgstr "Icona di Enlightenment, miniatura"
 
-#: src/container.c:1714
+#: src/container.c:1700
 msgid ""
 "Enlightenment Iconbox\n"
 "Settings Dialog\n"
@@ -587,55 +587,55 @@ msgstr ""
 "Cliccare quí per abbassare questo desktop\n"
 "in fondo.\n"
 
-#: src/desktops.c:2325
+#: src/desktops.c:2323
 msgid "Number of virtual desktops:\n"
 msgstr "Numero di desktop virtuali:\n"
 
-#: src/desktops.c:2350
+#: src/desktops.c:2348
 msgid "Slide desktops around when changing"
 msgstr "Scorri desktop al cambio"
 
-#: src/desktops.c:2356
+#: src/desktops.c:2354
 msgid "Desktop Slide speed:\n"
 msgstr "Velocitá scorrimento desktop:\n"
 
-#: src/desktops.c:2370
+#: src/desktops.c:2368
 msgid "Wrap desktops around"
 msgstr "Concatena desktop estremi"
 
-#: src/desktops.c:2378
+#: src/desktops.c:2376
 msgid "Display desktop dragbar"
 msgstr "Mostra barra trascinamento desktop"
 
-#: src/desktops.c:2384
+#: src/desktops.c:2382
 msgid "Drag bar position:"
 msgstr "Posizione barra trascinamento:"
 
-#: src/desktops.c:2388
+#: src/desktops.c:2386
 msgid "Top"
 msgstr "Alto"
 
-#: src/desktops.c:2394
+#: src/desktops.c:2392
 msgid "Bottom"
 msgstr "Basso"
 
-#: src/desktops.c:2400 src/pager.c:1924 src/pager.c:1949 src/pager.c:1974
+#: src/desktops.c:2398 src/pager.c:1924 src/pager.c:1949 src/pager.c:1974
 msgid "Left"
 msgstr "Sinistra"
 
-#: src/desktops.c:2406 src/pager.c:1936 src/pager.c:1961 src/pager.c:1986
+#: src/desktops.c:2404 src/pager.c:1936 src/pager.c:1961 src/pager.c:1986
 msgid "Right"
 msgstr "Destra"
 
-#: src/desktops.c:2414 src/menus-misc.c:582
+#: src/desktops.c:2412 src/menus-misc.c:582
 msgid "Desks"
 msgstr "Desktop"
 
-#: src/desktops.c:2415
+#: src/desktops.c:2413
 msgid "Multiple Desktop Settings"
 msgstr "Impostazioni desktop multipli"
 
-#: src/desktops.c:2418
+#: src/desktops.c:2416
 msgid ""
 "Enlightenment Multiple Desktop\n"
 "Settings Dialog\n"
@@ -643,43 +643,43 @@ msgstr ""
 "Finestra configurazione desktop\n"
 "multipli di Enlightenment\n"
 
-#: src/desktops.c:2509
+#: src/desktops.c:2507
 msgid "Virtual Desktop size:\n"
 msgstr "Dimensione desktop virtuale:\n"
 
-#: src/desktops.c:2545
+#: src/desktops.c:2543
 msgid "Wrap virtual desktops around"
 msgstr "Concatena desktop virtuali estremi"
 
-#: src/desktops.c:2552
+#: src/desktops.c:2550
 msgid "Edge Flip Mode:"
 msgstr "Cambio desktop con puntatore al confine:"
 
-#: src/desktops.c:2555
+#: src/desktops.c:2553
 msgid "Off"
 msgstr "Disattivato"
 
-#: src/desktops.c:2560
+#: src/desktops.c:2558
 msgid "On"
 msgstr "Attivato"
 
-#: src/desktops.c:2565
+#: src/desktops.c:2563
 msgid "Only when moving window"
 msgstr "Solo trascinando finestre"
 
-#: src/desktops.c:2571
+#: src/desktops.c:2569
 msgid "Resistance at edge of screen:\n"
 msgstr "Resistenza al confine dello schermo:\n"
 
-#: src/desktops.c:2583
+#: src/desktops.c:2581
 msgid "Areas"
 msgstr "Aree"
 
-#: src/desktops.c:2584
+#: src/desktops.c:2582
 msgid "Virtual Desktop Settings"
 msgstr "Impostazione desktop virtuali"
 
-#: src/desktops.c:2587
+#: src/desktops.c:2585
 msgid ""
 "Enlightenment Virtual Desktop\n"
 "Settings Dialog\n"
@@ -1175,7 +1175,7 @@ msgstr ""
 "%s deve essere una directory in cui si hanno\n"
 "permessi di lettura, scrittura e esecuzione.\n"
 
-#: src/main.c:679
+#: src/main.c:678
 #, c-format
 msgid ""
 "!!!!!!!! ERROR ERROR ERROR ERROR !!!!!!!!\n"
@@ -1204,7 +1204,7 @@ msgstr ""
 "creato male, qualcuno che ha cancellato manualmente quel\n"
 "programma, o forse un errore nell'installazione di Enlightenment.\n"
 
-#: src/main.c:693
+#: src/main.c:692
 #, c-format
 msgid ""
 "!!!!!!!! ERROR ERROR ERROR ERROR !!!!!!!!\n"
