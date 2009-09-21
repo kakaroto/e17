@@ -50,7 +50,7 @@ e_int_config_apps_iiirk(E_Container *con)
 	    e_user_homedir_get());
    data = E_NEW(E_Config_Data, 1);
    data->title = eina_stringshare_add(D_("IIirk Applications"));
-   data->dialog = eina_stringshare_add("_e_modules_iiirk_config_dialog");
+   data->dialog = eina_stringshare_add("applications/iiirk_applications");
    data->icon = eina_stringshare_add("enlightenment/iiirk_applications");
    data->filename = eina_stringshare_add(buf);
 
@@ -65,7 +65,7 @@ e_int_config_apps_iiirk_other(E_Container *con, const char *path)
    if (!path) return NULL;
    data = E_NEW(E_Config_Data, 1);
    data->title = eina_stringshare_add(D_("IIirk Applications"));
-   data->dialog = eina_stringshare_add("_config_apps_iiirk_dialog");
+   data->dialog = eina_stringshare_add("internal/iiirk_other");
    data->icon = eina_stringshare_add("enlightenment/iiirk_applications");
    data->filename = eina_stringshare_add(path);
 
@@ -79,7 +79,7 @@ _create_dialog(E_Container *con, E_Config_Data *data)
    E_Config_Dialog *cfd;
    E_Config_Dialog_View *v;
 
-   if (e_config_dialog_find("Iirk", data->dialog)) 
+   if (e_config_dialog_find("E", data->dialog)) 
      {
 	if (data->title) eina_stringshare_del(data->title);
 	if (data->dialog) eina_stringshare_del(data->dialog);

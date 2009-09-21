@@ -40,7 +40,7 @@ e_int_config_bling_module(E_Container *con)
    char buf[4096];
 
    b = bling_mod->data;
-   if (e_config_dialog_find("E", "_e_modules_bling_config_dialog")) return NULL;
+   if (e_config_dialog_find("E", "appearance/bling")) return NULL;
    v = E_NEW(E_Config_Dialog_View, 1);
 
    
@@ -53,7 +53,7 @@ e_int_config_bling_module(E_Container *con)
 
    snprintf(buf, sizeof(buf), "%s/module.edj", e_module_dir_get(b->module));
    cfd = e_config_dialog_new(con, "Bling Configuration",
-                             "Bling", "_e_modules_bling_config_dialog", buf, 0, v, b);
+                             "Bling", "appearance/bling", buf, 0, v, b);
 
    b->config_dialog = cfd;
    return cfd;

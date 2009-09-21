@@ -57,7 +57,7 @@ e_int_config_tiling_module(E_Container *con)
    E_Config_Dialog_View *v;
    char buf[4096];
 
-   if (e_config_dialog_find("E", "_e_mod_tiling_config_dialog")) return NULL;
+   if (e_config_dialog_find("E", "windows/tiling")) return NULL;
    v = E_NEW(E_Config_Dialog_View, 1);
    
    v->create_cfdata = _create_data;
@@ -68,7 +68,7 @@ e_int_config_tiling_module(E_Container *con)
    snprintf(buf, sizeof(buf), "%s/e-module-tiling.edj", e_module_dir_get(tiling_module));
    cfd = e_config_dialog_new(con,
 			     D_("Tiling Configuration"),
-			     "E", "_e_mod_tiling_config_dialog",
+			     "E", "windows/tiling",
 			     buf, 0, v, NULL);
    return cfd;
 }

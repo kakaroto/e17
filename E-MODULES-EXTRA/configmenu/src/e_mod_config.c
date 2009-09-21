@@ -22,7 +22,7 @@ e_int_config_config_module(E_Container *con)
    char buf[4096];
 
    /* is this config dialog already visible ? */
-   if (e_config_dialog_find("Config", "_e_module_config_cfg_dlg")) return NULL;
+   if (e_config_dialog_find("Config", "advanced/config")) return NULL;
 
    v = E_NEW(E_Config_Dialog_View, 1);
    if (!v) return NULL;
@@ -37,7 +37,7 @@ e_int_config_config_module(E_Container *con)
 
    /* create new config dialog */
    cfd = e_config_dialog_new(con, D_("Config Menu Module"), "Config", 
-                             "_e_module_config_cfg_dlg", buf, 0, v, NULL);
+                             "advanced/config", buf, 0, v, NULL);
 
    e_dialog_resizable_set(cfd->dia, 1);
    config_conf->cfd = cfd;

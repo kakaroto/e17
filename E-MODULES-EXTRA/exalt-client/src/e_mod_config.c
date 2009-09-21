@@ -24,7 +24,7 @@ e_int_config_exalt_module(E_Container *con, const char *params __UNUSED__)
     char buf[4096];
 
     /* is this config dialog already visible ? */
-    if (e_config_dialog_find("exalt", "_e_module_exalt_cfg_dlg")) return NULL;
+    if (e_config_dialog_find("exalt", "extensions/exalt")) return NULL;
 
     v = E_NEW(E_Config_Dialog_View, 1);
     if (!v) return NULL;
@@ -39,7 +39,7 @@ e_int_config_exalt_module(E_Container *con, const char *params __UNUSED__)
 
     /* create new config dialog */
     cfd = e_config_dialog_new(con, D_("Exalt Configuration"), "exalt",
-            "_e_module_exalt_cfg_dlg", buf, 0, v, NULL);
+			      "extensions/exalt", buf, 0, v, NULL);
 
     //e_dialog_resizable_set(cfd->dia, 1);
     exalt_conf->cfd = cfd;

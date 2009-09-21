@@ -22,7 +22,7 @@ e_int_config_skel_module(E_Container *con)
    char buf[4096];
 
    /* is this config dialog already visible ? */
-   if (e_config_dialog_find("Skel", "_e_module_skel_cfg_dlg")) return NULL;
+   if (e_config_dialog_find("Skel", "advanced/skel")) return NULL;
 
    v = E_NEW(E_Config_Dialog_View, 1);
    if (!v) return NULL;
@@ -37,7 +37,7 @@ e_int_config_skel_module(E_Container *con)
 
    /* create new config dialog */
    cfd = e_config_dialog_new(con, D_("Skeleton Module"), "Skel", 
-                             "_e_module_skel_cfg_dlg", buf, 0, v, NULL);
+                             "advanced/skel", buf, 0, v, NULL);
 
    e_dialog_resizable_set(cfd->dia, 1);
    skel_conf->cfd = cfd;

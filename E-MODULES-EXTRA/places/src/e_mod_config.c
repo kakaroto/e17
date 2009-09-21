@@ -34,7 +34,7 @@ e_int_config_places_module(E_Container *con)
    char buf[4096];
 
    /* is this config dialog already visible ? */
-   if (e_config_dialog_find("Places", "_e_module_places_cfg_dlg")) return NULL;
+   if (e_config_dialog_find("Places", "fileman/places")) return NULL;
 
    v = E_NEW(E_Config_Dialog_View, 1);
    if (!v) return NULL;
@@ -49,7 +49,7 @@ e_int_config_places_module(E_Container *con)
 
    /* create new config dialog */
    cfd = e_config_dialog_new(con, D_("Places Configuration"), "Places", 
-                             "_e_module_places_cfg_dlg", buf, 0, v, NULL);
+                             "fileman/places", buf, 0, v, NULL);
    places_conf->cfd = cfd;
    return cfd;
 }
