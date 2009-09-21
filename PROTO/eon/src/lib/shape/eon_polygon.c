@@ -77,7 +77,7 @@ static void _appended_cb(const Ekeko_Object *o, Ekeko_Event *e, void *data)
 		eng = eon_document_engine_get(d);
 		/* iterate over the list of points and add them to the engine */
 
-		ed = eon_shape_engine_data_get((Eon_Shape *)o);
+		ed = eon_paint_engine_data_get((Eon_Paint *)o);
 		it = eina_list_iterator_new(prv->points);
 		while (eina_iterator_next(it, (void **)&coord))
 		{
@@ -112,8 +112,8 @@ static void _ctor(void *instance)
 
 	p = (Eon_Polygon*) instance;
 	p->private = prv = ekeko_type_instance_private_get(eon_polygon_type_get(), instance);
-	p->parent.render = _render;
-	p->parent.create = eon_engine_polygon_create;
+	p->parent.parent.render = _render;
+	p->parent.parent.create = eon_engine_polygon_create;
 	/* setup the limits */
 	prv->xmin = prv->ymin = INT_MAX;
 	prv->xmax = prv->ymax = INT_MIN;
@@ -194,7 +194,7 @@ EAPI void eon_polygon_point_add(Eon_Polygon *p, int x, int y)
 		if (!d)
 			return;
 		eng = eon_document_engine_get(d);
-		eon_engine_polygon_point_add(eng, eon_shape_engine_data_get((Eon_Shape *)p), x, y);
+		eon_engine_polygon_point_add(eng, eon_paint_engine_data_get((Eon_Paint *)p), x, y);
 		_update_geometry(p);
 	}
 }

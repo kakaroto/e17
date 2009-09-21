@@ -33,13 +33,6 @@ typedef struct _Eon_Animation_Matrix Eon_Animation_Matrix;
 typedef struct _Eon_External Eon_External;
 typedef struct _Eon_Script Eon_Script;
 typedef struct _Eon_Style Eon_Style;
-/* shapes */
-typedef struct _Eon_Shape Eon_Shape;
-typedef struct _Eon_Square Eon_Square;
-typedef struct _Eon_Rect Eon_Rect;
-typedef struct _Eon_Circle Eon_Circle;
-typedef struct _Eon_Polygon Eon_Polygon;
-typedef struct _Eon_Text Eon_Text;
 /* paint objects */
 typedef struct _Eon_Paint Eon_Paint;
 typedef struct _Eon_Image Eon_Image;
@@ -48,6 +41,14 @@ typedef struct _Eon_Hswitch Eon_Hswitch;
 typedef struct _Eon_Fade Eon_Fade;
 typedef struct _Eon_Checker Eon_Checker;
 typedef struct _Eon_Stripes Eon_Stripes;
+/* shapes */
+typedef struct _Eon_Shape Eon_Shape;
+typedef struct _Eon_Square Eon_Square;
+typedef struct _Eon_Rect Eon_Rect;
+typedef struct _Eon_Circle Eon_Circle;
+typedef struct _Eon_Polygon Eon_Polygon;
+typedef struct _Eon_Text Eon_Text;
+
 
 typedef struct _Eon_Filter Eon_Filter;
 /* filter effects */
@@ -79,13 +80,6 @@ EAPI int eon_shutdown(void);
 #include "eon_script.h"
 #include "eon_style.h"
 
-#include "eon_shape.h"
-#include "eon_square.h"
-#include "eon_text.h"
-#include "eon_rect.h"
-#include "eon_polygon.h"
-#include "eon_circle.h"
-
 #include "eon_paint.h"
 #include "eon_image.h"
 #include "eon_transition.h"
@@ -93,6 +87,13 @@ EAPI int eon_shutdown(void);
 #include "eon_fade.h"
 #include "eon_checker.h"
 #include "eon_stripes.h"
+
+#include "eon_shape.h"
+#include "eon_square.h"
+#include "eon_text.h"
+#include "eon_rect.h"
+#include "eon_polygon.h"
+#include "eon_circle.h"
 
 #include "eon_filter.h"
 #include "eon_displace.h"

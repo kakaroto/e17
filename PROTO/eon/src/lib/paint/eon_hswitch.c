@@ -43,7 +43,7 @@ static void _ctor(void *instance)
 	i = (Eon_Hswitch *) instance;
 	i->private = prv = ekeko_type_instance_private_get(eon_hswitch_type_get(), instance);
 	i->parent.parent.create = eon_engine_hswitch_create;
-	i->parent.parent.setup = eon_engine_hswitch_setup;
+	//i->parent.parent.setup = eon_engine_hswitch_setup;
 	i->parent.parent.delete = eon_engine_hswitch_delete;
 }
 

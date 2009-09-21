@@ -92,7 +92,7 @@ static void _click_cb(const Ekeko_Object *o, Ekeko_Event *e, void *data)
 	{
 		Eon_Canvas *c;
 
-		c = eon_shape_canvas_get((Eon_Shape *)data);
+		c = eon_paint_canvas_get((Eon_Shape *)data);
 		f1 = _filter_add(c);
 		f2 = _filter_add(c);
 		curr = f1;

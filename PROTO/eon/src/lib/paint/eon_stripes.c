@@ -37,7 +37,7 @@ static void _ctor(void *instance)
 	sq = (Eon_Stripes *)instance;
 	sq->private = prv = ekeko_type_instance_private_get(eon_stripes_type_get(), instance);
 	sq->parent.create = eon_engine_stripes_create;
-	sq->parent.setup = eon_engine_stripes_setup;
+	//sq->parent.setup = eon_engine_stripes_setup;
 	sq->parent.delete = eon_engine_stripes_delete;
 }
 

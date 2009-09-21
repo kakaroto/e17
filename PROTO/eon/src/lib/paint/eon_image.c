@@ -90,7 +90,7 @@ static void _ctor(void *instance)
 	i = (Eon_Image*) instance;
 	i->private = prv = ekeko_type_instance_private_get(eon_image_type_get(), instance);
 	i->parent.create = eon_engine_image_create;
-	i->parent.setup = eon_engine_image_setup;
+	//i->parent.setup = eon_engine_image_setup;
 	i->parent.delete = eon_engine_image_delete;
 	ekeko_event_listener_add((Ekeko_Object *)i, EON_IMAGE_FILE_CHANGED, _file_change, EINA_FALSE, NULL);
 }

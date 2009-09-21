@@ -180,14 +180,14 @@ static void _ctor(void *instance)
 
 	p = (Eon_Circle*) instance;
 	p->private = prv = ekeko_type_instance_private_get(eon_polygon_type_get(), instance);
-	p->parent.render = _render;
-	p->parent.create = eon_engine_circle_create;
-	p->parent.is_inside = _is_inside;
+	p->parent.parent.render = _render;
+	p->parent.parent.create = eon_engine_circle_create;
+	p->parent.parent.is_inside = _is_inside;
 	/* events */
 	ekeko_event_listener_add((Ekeko_Object *)p, EON_CIRCLE_X_CHANGED, _x_change, EINA_FALSE, NULL);
 	ekeko_event_listener_add((Ekeko_Object *)p, EON_CIRCLE_Y_CHANGED, _y_change, EINA_FALSE, NULL);
 	ekeko_event_listener_add((Ekeko_Object *)p, EON_CIRCLE_RADIUS_CHANGED, _radius_change, EINA_FALSE, NULL);
-	ekeko_event_listener_add((Ekeko_Object *)p, EON_SHAPE_MATRIX_CHANGED, _matrix_change, EINA_FALSE, NULL);
+	ekeko_event_listener_add((Ekeko_Object *)p, EON_PAINT_MATRIX_CHANGED, _matrix_change, EINA_FALSE, NULL);
 }
 
 static void _dtor(void *polygon)

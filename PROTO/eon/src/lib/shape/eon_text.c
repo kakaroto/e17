@@ -72,8 +72,8 @@ static void _ctor(void *instance)
 
 	t = (Eon_Text *) instance;
 	t->private = prv = ekeko_type_instance_private_get(eon_text_type_get(), instance);
-	t->parent.parent.render = _render;
-	t->parent.parent.create = eon_engine_text_create;
+	t->parent.parent.parent.render = _render;
+	t->parent.parent.parent.create = eon_engine_text_create;
 	/* events */
 	ekeko_event_listener_add((Ekeko_Object *)t, EON_SQUARE_X_CHANGED, _geometry_calc, EINA_FALSE, NULL);
 	ekeko_event_listener_add((Ekeko_Object *)t, EON_SQUARE_Y_CHANGED, _geometry_calc, EINA_FALSE, NULL);

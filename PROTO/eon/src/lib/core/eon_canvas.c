@@ -481,7 +481,7 @@ Eon_Document * eon_canvas_document_get(Eon_Canvas *c)
 	return prv->doc;
 }
 
-void * eon_canvas_surface_get(Eon_Canvas *c)
+void * eon_canvas_engine_data_get(Eon_Canvas *c)
 {
 	Eon_Canvas_Private *prv;
 

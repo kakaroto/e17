@@ -62,7 +62,7 @@ static void paint_coords_get(Eon_Paint *p, Eon_Shape *s, int *x, int *y, int *w,
 	}
 	else
 	{
-		/* FIXME we should get the topmost canvas uints not the parent
+		/* FIXME we should get the topmost canvas units not the parent
 		 * canvas
 		 */
 		ekeko_renderable_geometry_get((Ekeko_Renderable *)eon_shape_canvas_topmost_get(s), &geom);
@@ -362,7 +362,7 @@ static void shape_renderer_draw(Eon_Shape *s, Enesim_Surface *dst,  Enesim_Rende
 	stride = enesim_surface_stride_get(dst);
 	ddata = ddata + (clip->y * stride) + clip->x;
 
-	color = eon_shape_color_get(s);
+	color = eon_paint_color_get(s);
 	span = enesim_compositor_span_get(rop, &dfmt, ENESIM_FORMAT_ARGB8888, color, ENESIM_FORMAT_NONE);
 
 	dh = clip->h;
@@ -446,7 +446,7 @@ static void shape_renderer_setup(Eon_Shape *s, Enesim_Renderer *r)
 	enesim_renderer_shape_draw_mode_set(r, mode);
 
 	/* the transformation matrix */
-	eon_shape_inverse_matrix_get(s, &m);
+	eon_paint_inverse_matrix_get(s, &m);
 	enesim_renderer_transform_set(r, &m);
 #if 0
 	/* the filter */
@@ -468,8 +468,8 @@ static void shape_setup(Eon_Shape *s, Shape_Drawer_Data *d, Enesim_Surface *dst)
 	Enesim_Format dfmt;
 
 	dfmt = enesim_surface_format_get(dst);
-	rop = eon_shape_rop_get(s);
-	d->color = eon_shape_color_get(s);
+	rop = eon_paint_rop_get(s);
+	d->color = eon_paint_color_get(s);
 	d->dst = dst;
 	d->shape = s;
 	p = eon_shape_fill_paint_get(s);
@@ -573,6 +573,13 @@ static void rect_render(void *er, void *cd, Eina_Rectangle *clip)
 	enesim_renderer_rectangle_corners_set(r->r, 1, 1, 1, 1);
 	enesim_renderer_state_setup(r->r);
 	shape_renderer_draw((Eon_Shape *)r->er, cd, r->r, clip);
+}
+static void rect_delete(void *er)
+{
+	Rectangle *r = er;
+
+	enesim_renderer_delete(r->r);
+	free(er);
 }
 /*============================================================================*
  *                                 Circle                                     *
@@ -680,7 +687,7 @@ static void text_compose(Text *t, FT_Bitmap *bmp, Enesim_Surface *dst, Enesim_Co
 	int y = bmp->rows;
 	uint8_t *mask = bmp->buffer;
 
-	color = eon_shape_color_get((Eon_Shape *)t->t);
+	color = eon_paint_color_get((Eon_Shape *)t->t);
 	ddata = enesim_surface_data_get(dst);
 	dstride = enesim_surface_stride_get(dst);
 
@@ -769,8 +776,8 @@ static void text_render(void *et, void *cd, Eina_Rectangle *clip)
 	pen_x = geom.x;
 	pen_y = geom.y + 16; // we can use this to place the text on a vertical align
 
-	color = eon_shape_color_get((Eon_Shape *)t->t);
-	rop = eon_shape_rop_get((Eon_Shape *)t->t);
+	color = eon_paint_color_get((Eon_Shape *)t->t);
+	rop = eon_paint_rop_get((Eon_Shape *)t->t);
 	fmt = enesim_surface_format_get(dst);
 	span = enesim_compositor_span_get(rop, &fmt, ENESIM_FORMAT_NONE, color, ENESIM_FORMAT_A8);
 
@@ -831,6 +838,7 @@ EAPI void eon_engine_enesim_setup(Eon_Engine *e)
 
 	e->rect_create = rect_create;
 	e->rect_render = rect_render;
+	e->rect_delete = rect_delete;
 	e->circle_create = circle_create;
 	e->circle_render = circle_render;
 	e->polygon_create = polygon_create;

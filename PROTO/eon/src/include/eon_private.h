@@ -95,12 +95,9 @@ void eon_document_script_load(Eon_Document *d, const char *file);
 
 /* Canvas */
 Eon_Document * eon_canvas_document_get(Eon_Canvas *c);
+void * eon_canvas_engine_data_get(Eon_Canvas *c);
 
 /* Shape */
-Eon_Canvas * eon_shape_canvas_get(Eon_Shape *s);
-void * eon_shape_engine_data_get(Eon_Shape *s);
-void eon_shape_engine_data_set(Eon_Shape *s, void *engine_data);
-void eon_shape_change(Eon_Shape *s);
 Eina_Bool eon_shape_appendable(void *instance, void *child);
 void eon_shape_geometry_set(Eon_Shape *s, Eina_Rectangle *rect);
 
@@ -113,6 +110,7 @@ void eon_coord_length_change(const Ekeko_Object *o, Eon_Coord *dst, Eon_Coord *c
 		const char *levent, Event_Listener el);
 
 /* Paint */
+void eon_paint_change(Eon_Paint *p);
 void * eon_paint_engine_data_get(Eon_Paint *p);
 Eon_Canvas * eon_paint_canvas_get(Eon_Paint *p);
 Eina_Bool eon_paint_appendable(Ekeko_Object *p, Ekeko_Object *child);

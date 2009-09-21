@@ -43,7 +43,7 @@ static void _ctor(void *instance)
 	f = (Eon_Fade *) instance;
 	f->private = prv = ekeko_type_instance_private_get(eon_fade_type_get(), instance);
 	f->parent.parent.create = eon_engine_fade_create;
-	f->parent.parent.setup = eon_engine_fade_setup;
+	//f->parent.parent.setup = eon_engine_fade_setup;
 	f->parent.parent.delete = eon_engine_fade_delete;
 }
 

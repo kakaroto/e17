@@ -87,7 +87,7 @@ EAPI void eon_engine_circle_render(Eon_Engine *e, void *r, void *c, Eina_Rectang
 
 EAPI void * eon_engine_polygon_create(Eon_Engine *e, Eon_Polygon *p);
 EAPI void eon_engine_polygon_point_add(Eon_Engine *e, void *pd, int x, int y);
-EAPI void eon_polygon_render(Eon_Engine *e, void *p, void *c, Eina_Rectangle *clip);
+EAPI void eon_engine_polygon_render(Eon_Engine *e, void *p, void *c, Eina_Rectangle *clip);
 
 EAPI void * eon_engine_text_create(Eon_Engine *e, Eon_Text *t);
 EAPI void eon_engine_text_render(Eon_Engine *e, void *c, void *t, Eina_Rectangle *clip);

@@ -50,9 +50,10 @@ static void _render(Eon_Shape *s, Eon_Engine *eng, void *engine_data, void *canv
 	eon_engine_rect_render(eng, engine_data, canvas_data, clip);
 }
 
-static Eina_Bool _is_inside(Eon_Shape *s, int x, int y)
+static Eina_Bool _is_inside(Eon_Paint *p, int x, int y)
 {
-	Eon_Rect *r = s;
+	Eon_Shape *s = (Eon_Shape *)p;
+	Eon_Rect *r = (Eon_Rect *)p;
 	Eon_Rect_Private *prv;
 	Enesim_Shape_Draw_Mode mode;
 	Eon_Coord cx, cy, cw, ch;
@@ -81,7 +82,7 @@ static Eina_Bool _is_inside(Eon_Shape *s, int x, int y)
 		Enesim_Matrix_Type mtype;
 		Enesim_Matrix m;
 
-		eon_shape_matrix_get(s, &m);
+		eon_paint_matrix_get(p, &m);
         	mtype = enesim_matrix_type_get(&m);
 	        if (mtype == ENESIM_MATRIX_IDENTITY)
 			return EINA_TRUE;
@@ -109,15 +110,15 @@ static void _ctor(void *instance)
 
 	r = (Eon_Rect*) instance;
 	r->private = prv = ekeko_type_instance_private_get(eon_rect_type_get(), instance);
-	r->parent.parent.render = _render;
-	r->parent.parent.create = eon_engine_rect_create;
-	r->parent.parent.is_inside = _is_inside;
+	r->parent.parent.parent.render = _render;
+	r->parent.parent.parent.create = eon_engine_rect_create;
+	r->parent.parent.parent.is_inside = _is_inside;
 	/* events */
 	ekeko_event_listener_add((Ekeko_Object *)r, EON_SQUARE_X_CHANGED, _geometry_calc, EINA_FALSE, NULL);
 	ekeko_event_listener_add((Ekeko_Object *)r, EON_SQUARE_Y_CHANGED, _geometry_calc, EINA_FALSE, NULL);
 	ekeko_event_listener_add((Ekeko_Object *)r, EON_SQUARE_W_CHANGED, _geometry_calc, EINA_FALSE, NULL);
 	ekeko_event_listener_add((Ekeko_Object *)r, EON_SQUARE_H_CHANGED, _geometry_calc, EINA_FALSE, NULL);
-	ekeko_event_listener_add((Ekeko_Object *)r, EON_SHAPE_MATRIX_CHANGED, _geometry_calc, EINA_FALSE, NULL);
+	ekeko_event_listener_add((Ekeko_Object *)r, EON_PAINT_MATRIX_CHANGED, _geometry_calc, EINA_FALSE, NULL);
 }
 
 static void _dtor(void *rect)

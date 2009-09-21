@@ -21,6 +21,8 @@
 /*============================================================================*
  *                                 Events                                     *
  *============================================================================*/
+#define EON_PAINT_ROP_CHANGED "ropChanged"
+#define EON_PAINT_COLOR_CHANGED "colorChanged"
 #define EON_PAINT_X_CHANGED "xChanged"
 #define EON_PAINT_Y_CHANGED "yChanged"
 #define EON_PAINT_W_CHANGED "wChanged"
@@ -31,6 +33,8 @@
 /*============================================================================*
  *                               Properties                                   *
  *============================================================================*/
+extern Ekeko_Property_Id EON_PAINT_COLOR;
+extern Ekeko_Property_Id EON_PAINT_ROP;
 extern Ekeko_Property_Id EON_PAINT_X;
 extern Ekeko_Property_Id EON_PAINT_Y;
 extern Ekeko_Property_Id EON_PAINT_W;
@@ -57,14 +61,16 @@ typedef enum _Eon_Paint_Matrixspace
 typedef struct _Eon_Paint_Private Eon_Paint_Private;
 struct _Eon_Paint
 {
-	Ekeko_Object parent;
+	Ekeko_Renderable parent;
 	Eon_Paint_Private *private;
-	/* Called whenever a shape object references a paint object */
-	void *(*create)(Eon_Engine *e, Eon_Paint *p);
-	/* Called whenever a shape needs to be rendered and has a paint object as
-	 * the fill property */
-	Eina_Bool (*setup)(Eon_Engine *e, void *engine_data, Eon_Shape *s);
-	/* Called whenever the last shape object unreferences this paint object */
+	/* called whenever the engine wants to instantiate a new paint object */
+	void *(*create)(Eon_Engine *e, Eon_Paint *s);
+	/* called whenever the paint is going to be rendered */
+	void (*render)(Eon_Paint *p, Eon_Engine *e, void *engine_data,
+			void *canvas_data, Eina_Rectangle *clip);
+	/* called to check if the point is inside the paint */
+	Eina_Bool (*is_inside)(Eon_Paint *p, int x, int y);
+	/* called whenever the paint is going to be destroyed */
 	void (*delete)(Eon_Engine *e, void *engine_data);
 };
 /*============================================================================*
@@ -85,5 +91,14 @@ EAPI void eon_paint_w_set(Eon_Paint *p, int w);
 EAPI void eon_paint_w_rel_set(Eon_Paint *p, int w);
 EAPI void eon_paint_h_set(Eon_Paint *p, int h);
 EAPI void eon_paint_h_rel_set(Eon_Paint *p, int h);
+
+EAPI void eon_paint_color_set(Eon_Paint *s, Eon_Color color);
+EAPI Eon_Color eon_paint_color_get(Eon_Paint *s);
+
+EAPI void eon_paint_rop_set(Eon_Paint *s, Enesim_Rop rop);
+EAPI Enesim_Rop eon_paint_rop_get(Eon_Paint *s);
+
+EAPI void eon_paint_matrix_set(Eon_Paint *s, Enesim_Matrix *m);
+EAPI void eon_paint_matrix_get(Eon_Paint *s, Enesim_Matrix *m);
 
 #endif /* EON_PAINT_H_ */

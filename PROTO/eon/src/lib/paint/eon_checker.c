@@ -37,7 +37,7 @@ static void _ctor(void *instance)
 	sq = (Eon_Checker *)instance;
 	sq->private = prv = ekeko_type_instance_private_get(eon_checker_type_get(), instance);
 	sq->parent.create = eon_engine_checker_create;
-	sq->parent.setup = eon_engine_checker_setup;
+	//sq->parent.setup = eon_engine_checker_setup;
 	sq->parent.delete = eon_engine_checker_delete;
 }
 
