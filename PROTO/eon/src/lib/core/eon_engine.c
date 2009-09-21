@@ -60,7 +60,8 @@ Eon_Engine * eon_engine_get(const char *name)
 /*============================================================================*
  *                                   API                                      *
  *============================================================================*/
-EAPI void * eon_engine_document_create(Eon_Engine *e, Eon_Document *d, const char *options)
+EAPI void * eon_engine_document_create(Eon_Engine *e, Eon_Document *d,
+		const char *options)
 {
 	return e->document_create(d, options);
 }
@@ -78,6 +79,11 @@ EAPI Eina_Bool eon_engine_canvas_blit(Eon_Engine *e, void *sc, Eina_Rectangle *s
 EAPI Eina_Bool eon_engine_canvas_flush(Eon_Engine *e, void *c, Eina_Rectangle *r)
 {
 	return e->canvas_flush(c, r);
+}
+
+EAPI void eon_engine_canvas_delete(Eon_Engine *e, void *c)
+{
+	return e->canvas_delete(c);
 }
 
 EAPI void * eon_engine_rect_create(Eon_Engine *e, Eon_Rect *r)

@@ -26,6 +26,7 @@ eon_polygon.h \
 eon_rect.h \
 eon_script.h \
 eon_square.h \
+eon_style.h \
 eon_transition.h \
 eon_shape.h \
 eon_stripes.h \

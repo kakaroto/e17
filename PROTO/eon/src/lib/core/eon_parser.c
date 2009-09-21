@@ -15,37 +15,63 @@
  * License along with this library.
  * If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef EON_EXTERNAL_H_
-#define EON_EXTERNAL_H_
-
+#include "Eon.h"
+#include "eon_private.h"
 /*============================================================================*
- *                                 Events                                     *
+ *                                  Local                                     *
  *============================================================================*/
-#define EON_EXTERNAL_FILE_CHANGED "fileChanged"
+static Eina_Hash *_parsers = NULL;
 /*============================================================================*
- *                               Properties                                   *
+ *                                 Global                                     *
  *============================================================================*/
-extern Ekeko_Property_Id EON_EXTERNAL_FILE;
-/*============================================================================*
- *                                 Class                                      *
- *============================================================================*/
-typedef struct _Eon_External_Private Eon_External_Private;
-struct _Eon_External
+void eon_parser_init(void)
 {
-	Ekeko_Object parent;
-	Eon_External_Private *private;
-};
+	_parsers = eina_hash_string_superfast_new(NULL);
+#ifdef BUILD_PARSER_EXPAT
+	parser_expat_init();
+#endif
+#ifdef BUILD_PARSER_EXML
+	parser_exml_init();
+#endif
+}
 
-typedef struct _Eon_Parser
+void eon_parser_shutdown(void)
 {
-	Eina_Bool (*file_load)(Eon_Document *doc, Ekeko_Object **o, const char *file);
-} Eon_Parser;
+	/* TODO remove the hash */
+}
+
+void eon_parser_register(const char *name, Eon_Parser *p)
+{
+	printf("Parser with name %s registered\n", name);
+	eina_hash_add(_parsers, name, p);
+}
 /*============================================================================*
- *                                Functions                                   *
+ *                                   API                                      *
  *============================================================================*/
-EAPI Ekeko_Type *eon_external_type_get(void);
-EAPI Eon_External * eon_external_new(Eon_Canvas *c);
-EAPI void eon_external_file_set(Eon_External *e, const char *file);
+EAPI Eina_Bool eon_parser_load(Eon_Document *doc, Ekeko_Object **o, const char *file)
+{
+	Eina_Iterator *it;
+	Eon_Parser *p;
 
+	if (!_parsers)
+		return;
+	if (!o)
+		return;
 
-#endif /* EON_EXTERNAL_H_ */
+	it = eina_hash_iterator_data_new(_parsers);
+	while (eina_iterator_next(it, (void **)&p))
+	{
+		if (p->file_load(doc, o, file))
+		{
+			break;
+		}
+	}
+	eina_iterator_free(it);
+
+	if (!o || !*o)
+		return EINA_FALSE;
+
+	ekeko_object_dump(*o, ekeko_object_dump_printf);
+
+	return EINA_TRUE;
+}

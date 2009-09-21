@@ -18,7 +18,6 @@
 #include "Eon.h"
 #include "eon_private.h"
 /*
- * TODO remove the engine from the list of attributes
  * TODO rename this object to just Eon instead of Eon_Document
  */
 /*============================================================================*
@@ -37,7 +36,9 @@ struct _Eon_Document_Private
 		Eon_Engine *backend;
 	} engine;
 	Eina_Rectangle size;
-	Eon_Canvas *canvas; /* we should use the childs instead of this */
+	/* we should use the childs instead of this */
+	Eon_Canvas *canvas;
+	Eon_Style *style;
 	Eina_Hash *ids;
 	Etch *etch;
 	Ecore_Timer *anim_cb;
@@ -86,27 +87,14 @@ static void _child_append_cb(const Ekeko_Object *o, Ekeko_Event *e, void *data)
 	Eon_Document_Private *prv = PRIVATE(d);
 
 	ekeko_event_listener_add(e->target, EKEKO_OBJECT_ID_CHANGED, _id_change, EINA_FALSE, d);
-	/* check that the child is of type target */
-	if (!ekeko_type_instance_is_of(e->target, EON_TYPE_CANVAS))
+	/* check that the parent is the document */
+	if (em->related != o)
 		return;
-	/* if we dont have a canvas yet call the document engine */
-	if (!prv->canvas)
-	{
+	/* assign the correct pointers */
+	if (!prv->canvas && ekeko_type_instance_is_of(e->target, EON_TYPE_CANVAS))
 		prv->canvas = (Eon_Canvas *)e->target;
-	}
-}
-
-static void _prop_modify_cb(const Ekeko_Object *o, Ekeko_Event *e, void *data)
-{
-	Ekeko_Event_Mutation *em = (Ekeko_Event_Mutation *)e;
-	Eon_Document *d = (Eon_Document *)o;
-	Eon_Document_Private *prv = PRIVATE(d);
-
-	/* When the engine property changes set it up */
-	if (!strcmp(em->prop, "engine") && !prv->engine.backend)
-	{
-		prv->engine.backend = eon_engine_get(em->curr->value.string_value);
-	}
+	if (!prv->style && ekeko_type_instance_is_of(e->target, EON_TYPE_STYLE))
+		prv->style = (Eon_Style *)e->target;
 }
 
 static void _ctor(void *instance)
@@ -130,7 +118,6 @@ static void _ctor(void *instance)
 	prv->ids = eina_hash_string_superfast_new(NULL);
 	/* the event listeners */
 	ekeko_event_listener_add((Ekeko_Object *)dc, EKEKO_EVENT_OBJECT_APPEND, _child_append_cb, EINA_TRUE, NULL);
-	ekeko_event_listener_add((Ekeko_Object *)dc, EKEKO_EVENT_PROP_MODIFY, _prop_modify_cb, EINA_FALSE, NULL);
 }
 
 static void _dtor(void *canvas)
@@ -144,11 +131,14 @@ static Eina_Bool _appendable(void *parent, void *child)
 
 	/* we only allow style and canvas children */
 	if ((!ekeko_type_instance_is_of(child, EON_TYPE_CANVAS)) &&
-			(!ekeko_type_instance_is_of(child, EON_TYPE_CANVAS)))
+			(!ekeko_type_instance_is_of(child, EON_TYPE_STYLE)))
 		return EINA_FALSE;
 	/* we should use the childs list instead as we might have more than one canvas */
-	if (prv->canvas)
+	if (prv->canvas && ekeko_type_instance_is_of(child, EON_TYPE_CANVAS))
 		return EINA_FALSE;
+	if (prv->style && ekeko_type_instance_is_of(child, EON_TYPE_STYLE))
+		return EINA_FALSE;
+
 	return EINA_TRUE;
 }
 
@@ -166,6 +156,7 @@ static Eon_Document * _document_new(const char *engine, int w, int h, const char
 	/* the gfx engine */
 	prv->engine.backend = eon_engine_get(engine);
 	prv->engine.data = eon_engine_document_create(prv->engine.backend, d, options);
+	eon_document_resize(d, w, h);
 #if 0
 	/* the script engine */
 	prv->vm.sm = eon_script_get("neko");
@@ -242,7 +233,6 @@ Ekeko_Type *eon_document_type_get(void)
 		type = ekeko_type_new(EON_TYPE_DOCUMENT, sizeof(Eon_Document),
 				sizeof(Eon_Document_Private), ekeko_object_type_get(), _ctor,
 				_dtor, _appendable);
-		EKEKO_TYPE_PROP_SINGLE_ADD(type, "engine", EKEKO_PROPERTY_STRING, OFFSET(Eon_Document_Private, engine.name));
 		EON_DOCUMENT_SIZE = EKEKO_TYPE_PROP_SINGLE_ADD(type, "size", EKEKO_PROPERTY_RECTANGLE, OFFSET(Eon_Document_Private, size));
 	}
 
@@ -262,8 +252,6 @@ EAPI Eon_Document * eon_document_new(const char *engine, int w, int h, const cha
 	/* the main canvas */
 	c = ekeko_type_instance_new(eon_canvas_type_get());
 	ekeko_object_child_append((Ekeko_Object *)d, (Ekeko_Object *)c);
-	/* FIXME if we call this first we segv */
-	eon_document_resize(d, w, h);
 
 	return d;
 }
@@ -285,6 +273,14 @@ EAPI Eon_Canvas * eon_document_canvas_get(Eon_Document *d)
 	return prv->canvas;
 }
 
+EAPI Eon_Style * eon_document_style_get(Eon_Document *d)
+{
+	Eon_Document_Private *prv;
+
+	prv = PRIVATE(d);
+	return prv->style;
+}
+
 EAPI void eon_document_size_get(Eon_Document *d, int *w, int *h)
 {
 	Eon_Document_Private *prv;
@@ -294,6 +290,7 @@ EAPI void eon_document_size_get(Eon_Document *d, int *w, int *h)
 	if (h) *h = prv->size.h;
 }
 
+/* FIXME this is wrong! the document isnt resized from outside */
 EAPI void eon_document_resize(Eon_Document *d, int w, int h)
 {
 	Ekeko_Value v;

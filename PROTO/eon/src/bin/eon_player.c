@@ -75,6 +75,7 @@ int main(int argc, char **argv)
 	Eon_Document *doc;
 	Eon_External *ext;
 	Eon_Canvas *canvas;
+	Eon_Style *style;
 	int w = 320;
 	int h = 240;
 
@@ -130,12 +131,11 @@ int main(int argc, char **argv)
 	}
 	/* create the context */
 	eon_init();
-	doc = eon_document_new(engine, w, h, options);
+	doc = eon_document_void_new(engine, w, h, options);
+	eon_parser_load(doc, &doc, file);
 	/* create the canvas */
 	canvas = eon_document_canvas_get(doc);
-	/* create the external object */
-	ext = eon_external_new(canvas);
-	eon_external_file_set(ext, file);
+	style = eon_document_style_get(doc);
 	/* create the ui */
 	ui_setup(canvas);
 	eon_loop();

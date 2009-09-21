@@ -22,7 +22,6 @@ Eon_Document *doc;
  * attributes of type VALUE are relative to another attribute, how to handle it?
  *
  */
-char *engine = "sdl";
 char *image_dir = "./";
 
 void parse(EXML *exml, Ekeko_Object *doc);
@@ -359,9 +358,15 @@ Ekeko_Object * tag_create(char *tag, EXML *exml, Ekeko_Object *parent)
 #if PARSER_DEBUG
 	printf("[PARSER] creating tag %s for parent %s\n", tag, ekeko_object_type_name_get(parent));
 #endif
-	if (!strcmp(tag, "eon"))
+	if (!strcmp(tag, "canvas"))
 	{
-		o = (Ekeko_Object *)eon_canvas_new((Eon_Canvas *)parent);
+		o = ekeko_type_instance_new(eon_canvas_type_get());
+		ekeko_object_child_append(parent, o);
+	}
+	else if (!strcmp(tag, "style"))
+	{
+		o = eon_style_new();
+		ekeko_object_child_append(parent, o);
 	}
 	else if (!strcmp(tag, "script"))
 	{
@@ -471,7 +476,7 @@ void parse(EXML *exml, Ekeko_Object *parent)
 	exml_goto_node(exml, n);
 }
 
-static Eina_Bool file_load(Eon_Canvas *canvas, const char *file)
+static Eina_Bool file_load(Eon_Document *d, Ekeko_Object **o, const char *file)
 {
 	EXML *exml;
 	EXML_Node *n;
@@ -486,19 +491,24 @@ static Eina_Bool file_load(Eon_Canvas *canvas, const char *file)
 		return EINA_FALSE;
 	}
 	n = exml_get(exml);
+	/* FIXME we should actually compare the name with the type name */
 	if (!n || strcmp(n->tag, "eon"))
 	{
 		printf("no eon file\n");
 		return EINA_FALSE;
 	}
-	doc = eon_canvas_document_get(canvas);
-	ecore_hash_for_each_node(n->attributes, attributes_set, canvas);
+	if (!*o)
+	{
+		*o = tag_create(n->tag, exml, NULL);
+	}
+	doc = d;
+	ecore_hash_for_each_node(n->attributes, attributes_set, *o);
 	/* parse the file */
 	tag = exml_down(exml);
 	while (tag)
 	{
 		/* children */
-		parse(exml, (Ekeko_Object *)canvas);
+		parse(exml, *o);
 		/* siblings */
 		tag = exml_next(exml);
 	}
@@ -510,65 +520,15 @@ static Eina_Bool file_load(Eon_Canvas *canvas, const char *file)
 	}
 	eina_iterator_free(it);
 	exml_destroy(exml);
-	return EINA_TRUE;
-}
 
-
-Eina_Bool tree_get(Eon_External *e, const char *file)
-{
-	return EINA_TRUE;
-}
-
-Eina_Bool subtree_get(Eon_External *e, const char *file)
-{
-	EXML *exml;
-	EXML_Node *n;
-	Eina_Iterator *it;
-	Parser_Callback *pc;
-	char *tag;
-
-	exml = exml_new();
-	if (!exml_file_read(exml, file))
-	{
-		printf("no file\n");
-		return EINA_FALSE;
-	}
-	n = exml_get(exml);
-	if (!n || strcmp(n->tag, "eon"))
-	{
-		printf("no eon file\n");
-		return EINA_FALSE;
-	}
-	/*
-	doc = eon_canvas_document_get(canvas);*/
-	/* parse the file */
-	tag = exml_down(exml);
-	while (tag)
-	{
-		/* children */
-		parse(exml, (Ekeko_Object *)e);
-		/* siblings */
-		tag = exml_next(exml);
-	}
-	/* call the after callbacks */
-	it = eina_list_iterator_new(parsed_cb);
-	while (eina_iterator_next(it, &pc))
-	{
-		pc->cb(pc->value, pc->attr, pc->data);
-	}
-	eina_iterator_free(it);
-	exml_destroy(exml);
 	return EINA_TRUE;
 }
 
 Eon_Parser p = {
 		.file_load = file_load,
-		.tree_get = tree_get,
-		.subtree_get = subtree_get,
 };
 
 void parser_exml_init(void)
 {
-	printf("exml init\n");
 	eon_parser_register("exml", &p);
 }

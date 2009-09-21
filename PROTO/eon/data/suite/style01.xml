@@ -17,6 +17,8 @@
 	</style>
 	<canvas w="100%" h="100%">
 		<rect x="0%" y="0%" w="100%" h="100%" color="white"/>
-		<circle id="sh01" x="50%" y="50%" radius="100" fill_paint="#hs01" stroke_width="5" stroke_color="black"/>
+		<circle id="sh01" x="50%" y="50%" radius="100"
+				fill_paint="#hs01" stroke_width="5"
+				stroke_color="black"/>
 	</canvas>
 </eon>

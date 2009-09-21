@@ -103,13 +103,14 @@ void * eon_paint_engine_data_get(Eon_Paint *p)
  */
 Eon_Canvas * eon_paint_canvas_get(Eon_Paint *p)
 {
-	Ekeko_Object *o;
+	Ekeko_Object *o = p;
 
-	o = ekeko_object_parent_get((Ekeko_Object *)p);
-	while (!ekeko_type_instance_is_of(o, EON_TYPE_CANVAS))
+	do
 	{
 		o = ekeko_object_parent_get(o);
-	}
+		if (!o)
+			break;
+	} while (!ekeko_type_instance_is_of(o, EON_TYPE_CANVAS));
 	return (Eon_Canvas *)o;
 }
 

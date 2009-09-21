@@ -77,6 +77,7 @@ EAPI void * eon_engine_document_create(Eon_Engine *e, Eon_Document *d, const cha
 EAPI Eina_Bool eon_engine_canvas_blit(Eon_Engine *e, void *sc, Eina_Rectangle *r, void *c, Eina_Rectangle *sr);
 EAPI Eina_Bool eon_engine_canvas_flush(Eon_Engine *e, void *c, Eina_Rectangle *r);
 EAPI void * eon_engine_canvas_create(Eon_Engine *e, void *dd, Eon_Canvas *c, Eina_Bool root, uint32_t w, uint32_t h);
+EAPI void eon_engine_canvas_delete(Eon_Engine *e, void *c);
 
 EAPI void * eon_engine_rect_create(Eon_Engine *e, Eon_Rect *r);
 EAPI void eon_engine_rect_render(Eon_Engine *e, void *r, void *c, Eina_Rectangle *clip);

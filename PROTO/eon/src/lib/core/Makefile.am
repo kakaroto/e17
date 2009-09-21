@@ -24,4 +24,5 @@ eon_main.c \
 eon_value.c \
 eon_cache.c \
 eon_font.c \
-eon_style.c
+eon_style.c \
+eon_parser.c

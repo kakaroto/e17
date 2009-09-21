@@ -20,33 +20,23 @@
 
 typedef struct _Engine_SDL_Document
 {
+	/* main surface */
+	SDL_Surface *s;
+	 // FIXME remove this?
 	Eon_Canvas *root;
 	/* options */
 	char resizable:1;
 	char dbuffer:1;
+	Ecore_Event_Handler *handler_rz;
 } Engine_SDL_Document;
 
 typedef struct _Engine_SDL_Canvas
 {
-
+	Engine_SDL_Document *sdoc;
+	/* mouse, key, etc handlers */
+	Ecore_Event_Handler *handlers[7];
+	Enesim_Surface *s;
 } Engine_SDL_Canvas;
-
-
-static void _rect(void *surface, void *context, int x, int y, int w, int h)
-{
-	SDL_Rect rect;
-	uint32_t color;
-
-#ifdef EON_DEBUG
-	printf("RENDERING A RECTANGLE at %d %d %d %d\n", x, y, w, h);
-#endif
-	rect.x = x;
-	rect.y = y;
-	rect.w = w;
-	rect.h = h;
-
-	SDL_FillRect(surface, &rect, color);
-}
 
 static int _sdl_event(void *data)
 {
@@ -90,7 +80,6 @@ static int _key_down_cb(void *data, int type, void *event)
 {
 	Ekeko_Input *input = (Ekeko_Input *)data;
 
-	printf("key down\n");
 	ekeko_input_feed_key_down(input, 0, 0);
 	return 1;
 }
@@ -115,9 +104,33 @@ static int _out_cb(void *data, int type, void *event)
 	return 1;
 }
 
+static void _sdl_surface_new(Engine_SDL_Document *sdoc, int w, int h)
+{
+	Uint32 flags = SDL_SRCALPHA;
+
+	if (sdoc->resizable)
+		flags |= SDL_RESIZABLE;
+	/* the destination surface */
+	printf("[SDL] Setting video mode to %d %d\n", w, h);
+#ifdef SINGLE_BUFFER
+	sdoc->s = SDL_SetVideoMode(w, h, 32, flags);
+#else
+	sdoc->s = SDL_SetVideoMode(w, h, 32, SDL_SRCALPHA | SDL_DOUBLEBUF);
+#endif
+}
+
+static void _document_size_cb(const Ekeko_Object *o, Ekeko_Event *e, void *data)
+{
+	Engine_SDL_Document *sdoc = data;
+	Ekeko_Event_Mutation *em = (Ekeko_Event_Mutation *)e;
+
+	_sdl_surface_new(sdoc,  em->curr->value.rect.w, em->curr->value.rect.h);
+}
+
 static void * document_create(Eon_Document *d, const char *options)
 {
 	Engine_SDL_Document *sdoc;
+	Uint32 flags = SDL_SRCALPHA;
 
 	printf("[SDL] Initializing SDL\n");
 	sdoc = calloc(1, sizeof(Engine_SDL_Document));
@@ -126,6 +139,15 @@ static void * document_create(Eon_Document *d, const char *options)
 		if (!strcmp(options, "resizable"))
 			sdoc->resizable = 1;
 	}
+	ecore_sdl_init(NULL);
+	SDL_Init(SDL_INIT_VIDEO);
+	/* whenever the size property changes recreate the surface */
+	ekeko_event_listener_add((Ekeko_Object *)d,
+			EON_DOCUMENT_SIZE_CHANGED, _document_size_cb,
+			EINA_FALSE, sdoc);
+	/* called whenever the wm changes the window */
+	ecore_event_handler_add(ECORE_SDL_EVENT_RESIZE, _resize_cb, d);
+
 	return sdoc;
 }
 
@@ -190,19 +212,12 @@ static Eina_Bool _flush(void *src, Eina_Rectangle *srect)
 static void _root_canvas_create(Ekeko_Canvas *c)
 {
 	Ekeko_Input *input;
-	Eon_Document *d;
 
-	d = eon_canvas_document_get(c);
-	ecore_sdl_init(NULL);
-	SDL_Init(SDL_INIT_VIDEO);
 	/* Ecore_sdl interval isnt enough */
 	SDL_EnableKeyRepeat(10, 10);
-
 	/* add the input */
 	input = ekeko_canvas_input_new((Ekeko_Canvas *)c);
 	/* add the callbacks */
-	//ecore_event_handler_add(ECORE_SDL_EVENT_RESIZE, _resize_cb, canvas);
-	ecore_event_handler_add(ECORE_SDL_EVENT_RESIZE, _resize_cb, d);
 	ecore_event_handler_add(ECORE_SDL_EVENT_GOT_FOCUS, _in_cb, input);
 	ecore_event_handler_add(ECORE_SDL_EVENT_LOST_FOCUS, _out_cb, input);
 	ecore_event_handler_add(ECORE_EVENT_MOUSE_BUTTON_DOWN, _mouse_down_cb, input);
@@ -224,29 +239,22 @@ static void * canvas_create(Eon_Canvas *c, void *dd, Eina_Bool root, int w, int 
 	es = enesim_surface_new(ENESIM_FORMAT_ARGB8888, w, h);
 	if (root)
 	{
-		SDL_Surface *s;
-		Uint32 flags;
-
 		/* only register the events once */
 		if (!sdoc->root)
 		{
 			_root_canvas_create(c);
 			sdoc->root = c;
 		}
-		flags = SDL_SRCALPHA;
-		if (sdoc->resizable)
-			flags |= SDL_RESIZABLE;
-		/* the destination surface */
-		printf("[SDL] Setting video mode to %d %d\n", w, h);
-#ifdef SINGLE_BUFFER
-		s = SDL_SetVideoMode(w, h, 32, flags);
-#else
-		s = SDL_SetVideoMode(w, h, 32, SDL_SRCALPHA | SDL_DOUBLEBUF);
-#endif
-		printf("%p %p\n", es, s);
-		enesim_surface_private_set(es, s);
+		enesim_surface_private_set(es, sdoc->s);
 	}
 	return es;
+}
+
+static void canvas_delete(void *c)
+{
+	/* TODO handle correctly the deletion of a canvas, delete
+	 * every handler, etc */
+	enesim_surface_delete(c);
 }
 
 static Eina_Bool canvas_flush(void *src, Eina_Rectangle *srect)
@@ -329,6 +337,7 @@ static Eon_Engine _sdl_engine = {
 	.document_delete = document_delete,
 	.canvas_create = canvas_create,
 	.canvas_flush = canvas_flush,
+	.canvas_delete = canvas_delete,
 };
 /*============================================================================*
  *                                 Global                                     *

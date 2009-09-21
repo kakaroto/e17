@@ -134,21 +134,6 @@ static Eina_Bool _flush(Ekeko_Canvas *c, Eina_Rectangle *r)
 	}
 }
 
-static void _document_surface_create(const Ekeko_Object *o, Ekeko_Event *e, void *data)
-{
-	Eon_Engine *eng;
-	Eon_Canvas *c;
-	Eon_Canvas_Private *prv;
-	Ekeko_Event_Mutation *em = (Ekeko_Event_Mutation *)e;
-	void *doc_data;
-
-	doc_data = eon_document_engine_data_get((Eon_Document *)o);
-	eng = eon_document_engine_get((Eon_Document *)o);
-	c = data;
-	prv = PRIVATE(c);
-	prv->engine_data = eon_engine_canvas_create(eng, doc_data, c, prv->root, em->curr->value.rect.w, em->curr->value.rect.h);
-}
-
 static void _geometry_change(const Ekeko_Object *o, Ekeko_Event *e, void *data)
 {
 	Ekeko_Event_Mutation *em = (Ekeko_Event_Mutation *)e;
@@ -166,26 +151,15 @@ static void _geometry_change(const Ekeko_Object *o, Ekeko_Event *e, void *data)
 		printf("EEEEEEEEEEEEERRRRRRRRRRRRRRROOOOOOOOOOR\n");
 		exit(1);
 	}
-	if (prv->root)
-	{
-		return;
-	}
-	/* the canvas surface size should be:
-	 * document.w, document.h for root
-	 * and w, h for non root (not the transformed size)
-	 */
+
+	/* TODO add the x and y too */
+	/* TODO check that the w and h have changed */
 	w = prv->w.final;
 	h = prv->h.final;
 	eng = eon_document_engine_get(prv->doc);
 	doc_data = eon_document_engine_data_get(prv->doc);
-	/* TODO add a callback whenever the matrix is set and put the above code */
-#if 0
-	if (!prv->context)
-	{
-		prv->context = func->context->create();
-		func->context->matrix_set(prv->context, &prv->inverse);
-	}
-#endif
+	if (prv->engine_data)
+		eon_engine_canvas_delete(eng, prv->engine_data);
 	prv->engine_data = eon_engine_canvas_create(eng, doc_data, (Eon_Canvas *)o, prv->root, w, h);
 }
 
@@ -437,6 +411,9 @@ static void _child_append_cb(const Ekeko_Object *o, Ekeko_Event *e, void *data)
 	c = (Eon_Canvas *)o;
 	prv = PRIVATE(c);
 
+	/* TODO whenever we attach to any parent, update the final oordinates
+	 * in case the user has already set them up before attaching
+	 */
 	/* in case the parent is a document retrieve the engine
 	 * in case the parent is a canvas retrieve the engine from the relative
 	 * document
@@ -454,12 +431,6 @@ static void _child_append_cb(const Ekeko_Object *o, Ekeko_Event *e, void *data)
 	{
 		prv->doc = (Eon_Document *)em->related;
 		prv->root = EINA_TRUE;
-		/* whenever the document changes geometry we should set up
-		 * the surface again
-		 */
-		ekeko_event_listener_add((Ekeko_Object *)em->related,
-				EON_DOCUMENT_SIZE_CHANGED, _document_surface_create,
-				EINA_FALSE, c);
 	}
 }
 
@@ -509,6 +480,15 @@ Eon_Document * eon_canvas_document_get(Eon_Canvas *c)
 	prv = PRIVATE(c);
 	return prv->doc;
 }
+
+void * eon_canvas_surface_get(Eon_Canvas *c)
+{
+	Eon_Canvas_Private *prv;
+
+	prv = PRIVATE(c);
+	return prv->engine_data;
+}
+
 /*============================================================================*
  *                                   API                                      *
  *============================================================================*/
@@ -658,16 +638,6 @@ EAPI void eon_canvas_h_get(Eon_Canvas *c, Eon_Coord *h)
 
 	prv = PRIVATE(c);
 	*h = prv->h;
-}
-
-/* FIXME
- * do we really need this? */
-EAPI void * eon_canvas_surface_get(Eon_Canvas *c)
-{
-	Eon_Canvas_Private *prv;
-
-	prv = PRIVATE(c);
-	return prv->engine_data;
 }
 
 EAPI void eon_canvas_matrix_set(Eon_Canvas *c, Enesim_Matrix *m)
