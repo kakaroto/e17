@@ -83,6 +83,12 @@ static void
 _bling_shutdown(Bling *b)
 {
    composite_shutdown();
+   if (e_config->use_composite)
+     {
+        e_config->use_composite = 0;
+        e_config_save_queue();
+     }
+   
    b->module = NULL;
    free(b->config);
    E_CONFIG_DD_FREE(b->conf_edd);
