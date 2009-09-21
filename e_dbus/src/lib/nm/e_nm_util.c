@@ -116,7 +116,7 @@ property_basic(DBusMessageIter *iter, const char *sig, void *value)
 
   if ((value) && (!sig))
   {
-    _EDBUS_LOG_ERR("Can't have value and no sig");
+    E_DBUS_LOG_ERR("Can't have value and no sig");
     return NULL;
   }
   if (sig)
