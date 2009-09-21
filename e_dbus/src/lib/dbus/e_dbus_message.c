@@ -18,7 +18,7 @@ cb_pending(DBusPendingCall *pending, void *user_data)
 
   if (!dbus_pending_call_get_completed(pending))
   {
-    printf("NOT COMPLETED\n");
+    E_DBUS_LOG_INFO("E-dbus: NOT COMPLETED");
     free(data);
     dbus_message_unref(msg);
     dbus_pending_call_unref(pending);

@@ -1,6 +1,6 @@
 #include "E_Nm.h"
 #include "e_nm_private.h"
-
+#include "e_dbus_private.h"
 #include <string.h>
 
 static const Property properties[] = {
@@ -24,7 +24,7 @@ cb_state_changed(void *data, DBusMessage *msg)
   dbus_message_get_args(msg, &err, DBUS_TYPE_UINT32, &state, DBUS_TYPE_INVALID);
   if (dbus_error_is_set(&err))
   {
-    printf("Error: %s - %s\n", err.name, err.message);
+    E_DBUS_LOG_ERR("%s - %s", err.name, err.message);
     return;
   }
 
@@ -59,7 +59,7 @@ cb_device_added(void *data, DBusMessage *msg)
   dbus_message_get_args(msg, &err, DBUS_TYPE_OBJECT_PATH, &device, DBUS_TYPE_INVALID);
   if (dbus_error_is_set(&err))
   {
-    printf("Error: %s - %s\n", err.name, err.message);
+    E_DBUS_LOG_ERR("%s - %s", err.name, err.message);
     return;
   }
 
@@ -80,7 +80,7 @@ cb_device_removed(void *data, DBusMessage *msg)
   dbus_message_get_args(msg, &err, DBUS_TYPE_OBJECT_PATH, &device, DBUS_TYPE_INVALID);
   if (dbus_error_is_set(&err))
   {
-    printf("Error: %s - %s\n", err.name, err.message);
+    E_DBUS_LOG_ERR("%s - %s", err.name, err.message);
     return;
   }
 
@@ -149,36 +149,36 @@ e_nm_dump(E_NM *nm)
   const char *conn;
 
   if (!nm) return;
-  printf("E_NM:\n");
-  printf("wireless_enabled         : %d\n", nm->wireless_enabled);
-  printf("wireless_hardware_enabled: %d\n", nm->wireless_hardware_enabled);
-  printf("active_connections       :\n");
+  INFO("E_NM:");
+  INFO("wireless_enabled         : %d", nm->wireless_enabled);
+  INFO("wireless_hardware_enabled: %d", nm->wireless_hardware_enabled);
+  INFO("active_connections       :");
   if (nm->active_connections)
   {
     ecore_list_first_goto(nm->active_connections);
     while ((conn = ecore_list_next(nm->active_connections)))
-      printf(" - %s\n", conn);
+      INFO(" - %s", conn);
   }
-  printf("state                    : ");
+  INFO("state                    : ");
   switch (nm->state)
   {
     case E_NM_STATE_UNKNOWN:
-      printf("E_NM_STATE_UNKNOWN\n");
+      INFO("E_NM_STATE_UNKNOWN");
       break;
     case E_NM_STATE_ASLEEP:
-      printf("E_NM_STATE_ASLEEP\n");
+      INFO("E_NM_STATE_ASLEEP");
       break;
     case E_NM_STATE_CONNECTING:
-      printf("E_NM_STATE_CONNECTING\n");
+      INFO("E_NM_STATE_CONNECTING");
       break;
     case E_NM_STATE_CONNECTED:
-      printf("E_NM_STATE_CONNECTED\n");
+      INFO("E_NM_STATE_CONNECTED");
       break;
     case E_NM_STATE_DISCONNECTED:
-      printf("E_NM_STATE_DISCONNECTED\n");
+      INFO("E_NM_STATE_DISCONNECTED");
       break;
   }
-  printf("\n");
+  INFO("");
 }
 
 EAPI void

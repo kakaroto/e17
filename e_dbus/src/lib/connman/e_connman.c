@@ -92,7 +92,7 @@ e_connman_manager_sync_elements(void)
    else
      return FALSE;
 
-   DBG("sync_manager: %s (%s)\n", unique_name, bus_name);
+   DBG("sync_manager: %s (%s)", unique_name, bus_name);
 
    return TRUE;
 }
@@ -110,10 +110,10 @@ _e_connman_system_name_owner_exit(void)
 static void
 _e_connman_system_name_owner_enter(const char *uid)
 {
-   DBG("enter connman at %s (old was %s)\n", uid, unique_name);
+   DBG("E-Dbus connman: enter connman at %s (old was %s)", uid, unique_name);
    if (unique_name && strcmp(unique_name, uid) == 0)
      {
-	DBG("same unique_name for connman, ignore.\n");
+	DBG("E-Dbus connman: same unique_name for connman, ignore.");
 	return;
      }
 
@@ -139,7 +139,7 @@ _e_connman_system_name_owner_changed(void *data, DBusMessage *msg)
 			      DBUS_TYPE_STRING, &to,
 			      DBUS_TYPE_INVALID))
      {
-	ERR("could not get NameOwnerChanged arguments: %s: %s\n",
+	ERR("E-Dbus connman: could not get NameOwnerChanged arguments: %s: %s",
 	    err.name, err.message);
 	dbus_error_free(&err);
 	return;
@@ -148,20 +148,20 @@ _e_connman_system_name_owner_changed(void *data, DBusMessage *msg)
    if (strcmp(name, bus_name) != 0)
      return;
 
-   DBG("NameOwnerChanged from=[%s] to=[%s]\n", from, to);
+   DBG("E-Dbus connman: NameOwnerChanged from=[%s] to=[%s]", from, to);
 
    if (from[0] == '\0' && to[0] != '\0')
      _e_connman_system_name_owner_enter(to);
    else if (from[0] != '\0' && to[0] == '\0')
      {
-	DBG("exit connman at %s\n", from);
+	DBG("E-Dbus connman: exit connman at %s", from);
 	if (strcmp(unique_name, from) != 0)
-	  DBG("%s was not the known name %s, ignored.\n", from, unique_name);
+	  DBG("E-Dbus connman: %s was not the known name %s, ignored.", from, unique_name);
 	else
 	  _e_connman_system_name_owner_exit();
      }
    else
-     DBG("unknow change from %s to %s\n", from, to);
+     DBG("E-Dbus connman: unknow change from %s to %s", from, to);
 }
 
 static void
@@ -183,7 +183,7 @@ _e_connman_get_name_owner(void *data, DBusMessage *msg, DBusError *err)
    dbus_message_iter_get_basic(&itr, &uid);
    if (!uid)
      {
-	ERR("no name owner!\n");
+	ERR("E-Dbus connman: no name owner!");
 	return;
      }
 
@@ -220,9 +220,14 @@ e_connman_system_init(E_DBus_Connection *edbus_conn)
 
    if (init_count > 1)
      return init_count;
+   
+   _e_dbus_connman_log_dom = eina_log_domain_register("e_dbus_connman",EINA_LOG_DEFAULT_COLOR);
 
-   if (!eina_init())
-     fputs("ERROR: Error during the initialization of eina.\n", stderr);
+   if(_e_dbus_connman_log_dom < 0) 
+     {
+       E_DBUS_LOG_ERR("E-Dbus connman error : impossible to create a log domain for edbus_connman module");
+       return -1;
+     }
 
    if (E_CONNMAN_EVENT_MANAGER_IN == 0)
      E_CONNMAN_EVENT_MANAGER_IN = ecore_event_type_new();
@@ -339,7 +344,7 @@ e_connman_system_shutdown(void)
 {
    if (init_count == 0)
      {
-	fputs("ERROR: connman system already shutdown.\n", stderr);
+	E_DBUS_LOG_ERR("E-Dbus connman Error: connman system already shut down.");
 	return 0;
      }
    init_count--;
@@ -397,7 +402,7 @@ e_connman_system_shutdown(void)
      _e_connman_system_name_owner_exit();
 
    e_connman_elements_shutdown();
-   eina_shutdown();
+   eina_log_domain_unregister(_e_dbus_connman_log_dom);
    e_connman_conn = NULL;
 
    return init_count;

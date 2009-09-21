@@ -13,7 +13,7 @@ e_connman_device_get(const char *path)
 
    if (!e_connman_element_is_device(device))
      {
-	WRN("path '%s' is not a device!\n", path);
+	WRN("E-Dbus connman: path '%s' is not a device!", path);
 	return NULL;
      }
 
@@ -23,7 +23,7 @@ e_connman_device_get(const char *path)
 static void
 _e_connman_device_network_create_callback(void *user_data, DBusMessage *msg, DBusError *err)
 {
-   WRN("FIXME need to receive the network object path\n");
+   WRN("E-Dbus connman: FIXME need to receive the network object path");
 }
 
 /**

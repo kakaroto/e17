@@ -35,7 +35,7 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-
+   EAPI extern int E_DBUS_DOMAIN_GLOBAL;
    EAPI extern int E_DBUS_EVENT_SIGNAL;
 
    typedef struct E_DBus_Connection E_DBus_Connection;

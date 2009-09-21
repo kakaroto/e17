@@ -1,6 +1,6 @@
 #include "E_Nm.h"
 #include "e_nm_private.h"
-
+#include "e_dbus_private.h"
 #include <string.h>
 
 static void
@@ -26,7 +26,7 @@ cb_settings(void *data, DBusMessage *msg, DBusError *err)
   d = data;
   if (dbus_error_is_set(err))
   {
-    printf("Error: %s - %s\n", err->name, err->message);
+    E_DBUS_LOG_ERR("%s - %s", err->name, err->message);
     d->cb_func(d->data, NULL);
     free(d);
     return;
@@ -46,7 +46,7 @@ cb_secrets(void *data, DBusMessage *msg, DBusError *err)
   d = data;
   if (dbus_error_is_set(err))
   {
-    printf("Error: %s - %s\n", err->name, err->message);
+    E_DBUS_LOG_ERR("%s - %s", err->name, err->message);
     d->cb_func(d->data, NULL);
     free(d);
     return;
@@ -100,10 +100,10 @@ e_nms_connection_dump(E_NMS_Connection *conn)
 {
   if (!conn) return;
 
-  printf("E_NMS_Connection:\n");
-  printf("service_name: %s\n", conn->service_name);
-  printf("path        : %s\n", conn->path);
-  printf("\n");
+  E_DBUS_LOG_INFO("E_NMS_Connection:");
+  E_DBUS_LOG_INFO("service_name: %s", conn->service_name);
+  E_DBUS_LOG_INFO("path        : %s", conn->path);
+  E_DBUS_LOG_INFO("");
 }
 
 EAPI int

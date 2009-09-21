@@ -1,6 +1,6 @@
 #include "E_Nm.h"
 #include "e_nm_private.h"
-
+#include "e_dbus_private.h"
 static void
 check_done(Reply_Data *d, Ecore_List *list)
 {
@@ -47,7 +47,7 @@ cb_nm_devices(void *data, void *reply, DBusError *err)
   nm = d->object;
   if (dbus_error_is_set(err))
   {
-    printf("Error: %s - %s\n", err->name, err->message);
+    E_DBUS_LOG_ERR("%s - %s", err->name, err->message);
     d->cb_func(d->data, NULL);
     free(d);
     return;

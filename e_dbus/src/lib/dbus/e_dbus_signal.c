@@ -69,7 +69,7 @@ cb_name_owner(void *data, DBusMessage *msg, DBusError *err)
 
  error:
   if (err)
-    DEBUG(1, "ERROR: %s %s\n", err->name, err->message);
+    E_DBUS_LOG_ERR("Error: %s %s", err->name, err->message);
 /* FIXME: this is bad. the handler gets silently freed and the caller has no
  * idea that it was freed - or if, or when.
   conn->signal_handlers = eina_list_remove(conn->signal_handlers, sh);
@@ -82,11 +82,11 @@ static int
 _match_append(char *buf, int size, int *used, const char *keyword, int keyword_size, const char *value, int value_size)
 {
    if(value == NULL)
-	return 1;   
+	return 1;
 
    if (*used + keyword_size + value_size + sizeof(",=''") >= size)
      {
-	DEBUG(1, "ERROR: cannot add match %s='%s': too long!\n", keyword, value);
+	E_DBUS_LOG_ERR("cannot add match %s='%s': too long!", keyword, value);
 	return 0;
      }
 
@@ -156,7 +156,7 @@ e_dbus_signal_handler_add(E_DBus_Connection *conn, const char *sender, const cha
   sh = malloc(sizeof(*sh) + len);
   if (!sh)
     {
-       DEBUG(1, "ERROR: could not allocate signal handler.\n");
+       E_DBUS_LOG_ERR("could not allocate signal handler.");
        return NULL;
     }
 

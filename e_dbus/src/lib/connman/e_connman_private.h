@@ -40,12 +40,17 @@ extern const char *e_connman_prop_wifi_mode;
 extern const char *e_connman_prop_wifi_passphrase;
 extern const char *e_connman_prop_wifi_security;
 extern const char *e_connman_prop_wifi_ssid;
+extern int _e_dbus_connman_log_dom;
 
+#undef DBG
+#undef INF
+#undef WRN
+#undef ERR
 
-#define DBG(...) EINA_ERROR_PDBG(__VA_ARGS__)
-#define INF(...) EINA_ERROR_PINFO(__VA_ARGS__)
-#define WRN(...) EINA_ERROR_PWARN(__VA_ARGS__)
-#define ERR(...) EINA_ERROR_PERR(__VA_ARGS__)
+#define DBG(...) EINA_LOG_DOM_DBG(_e_dbus_connman_log_dom , __VA_ARGS__)
+#define INF(...) EINA_LOG_DOM_INFO(_e_dbus_connman_log_dom , __VA_ARGS__)
+#define WRN(...) EINA_LOG_DOM_WARN(_e_dbus_connman_log_dom , __VA_ARGS__)
+#define ERR(...) EINA_LOG_DOM_ERR(_e_dbus_connman_log_dom , __VA_ARGS__)
 
 static inline bool
 __dbus_callback_check_and_init(const char *file, int line, const char *function, DBusMessage *msg, DBusMessageIter *itr, DBusError *err)
@@ -53,21 +58,21 @@ __dbus_callback_check_and_init(const char *file, int line, const char *function,
    if (!msg)
      {
 	if (err)
-	  eina_error_print(EINA_ERROR_LEVEL_ERR, file, function, line,
-			   "an error was reported by server: "
-			   "name=\"%s\", message=\"%s\"\n",
-			   err->name, err->message);
+	  ERROR(file, function, line,
+		"an error was reported by server: "
+		"name=\"%s\", message=\"%s\"",
+		err->name, err->message);
 	else
-	  eina_error_print(EINA_ERROR_LEVEL_ERR, file, function, line,
-			   "callback without message arguments!\n");
+	  ERROR(file, function, line,
+		"callback without message arguments!");
 
 	return 0;
      }
 
    if (!dbus_message_iter_init(msg, itr))
      {
-	eina_error_print(EINA_ERROR_LEVEL_ERR, file, function, line,
-			 "could not init iterator.\n");
+       ERROR(file, function, line,
+	     "could not init iterator.");
 	return 0;
      }
 
@@ -84,9 +89,9 @@ __dbus_iter_type_check(const char *file, int line, const char *function, int typ
    if (type == expected)
      return 1;
 
-   eina_error_print(EINA_ERROR_LEVEL_ERR, file, function, line,
-		    "expected type %s (%c) but got %c instead!\n",
-		    expected_name, expected, type);
+   ERROR(file, function, line,
+	 "expected type %s (%c) but got %c instead!",
+	 expected_name, expected, type);
 
    return 0;
 }

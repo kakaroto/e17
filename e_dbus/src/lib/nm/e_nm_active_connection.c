@@ -1,6 +1,6 @@
 #include "E_Nm.h"
 #include "e_nm_private.h"
-
+#include "e_dbus_private.h"
 #include <string.h>
 
 static const Property active_connection_properties[] = {
@@ -58,28 +58,28 @@ e_nm_active_connection_dump(E_NM_Active_Connection *conn)
   const char *device;
 
   if (!conn) return;
-  printf("E_NM_Active_Connection:\n");
-  printf("service_name   : %s\n", conn->service_name);
-  printf("connection     : %s\n", conn->connection);
-  printf("specific_object: %s\n", conn->specific_object);
-  printf("devices        :\n");
+  E_DBUS_LOG_INFO("E_NM_Active_Connection:");
+  E_DBUS_LOG_INFO("service_name   : %s", conn->service_name);
+  E_DBUS_LOG_INFO("connection     : %s", conn->connection);
+  E_DBUS_LOG_INFO("specific_object: %s", conn->specific_object);
+  E_DBUS_LOG_INFO("devices        :");
   ecore_list_first_goto(conn->devices);
   while ((device = ecore_list_next(conn->devices)))
-    printf(" - %s\n", device);
-  printf("state          : ");
+    E_DBUS_LOG_INFO(" - %s", device);
+  E_DBUS_LOG_INFO("state          : ");
   switch (conn->state)
   {
     case E_NM_ACTIVE_CONNECTION_STATE_UNKNOWN:
-      printf("E_NM_ACTIVE_CONNECTION_STATE_UNKNOWN\n");
+      E_DBUS_LOG_INFO("E_NM_ACTIVE_CONNECTION_STATE_UNKNOWN");
       break;
     case E_NM_ACTIVE_CONNECTION_STATE_ACTIVATING:
-      printf("E_NM_ACTIVE_CONNECTION_STATE_ACTIVATING\n");
+      E_DBUS_LOG_INFO("E_NM_ACTIVE_CONNECTION_STATE_ACTIVATING");
       break;
     case E_NM_ACTIVE_CONNECTION_STATE_ACTIVATED:
-      printf("E_NM_ACTIVE_CONNECTION_STATE_ACTIVATED\n");
+      E_DBUS_LOG_INFO("E_NM_ACTIVE_CONNECTION_STATE_ACTIVATED");
       break;
   }
-  printf("default        : %d\n", conn->def);
-  printf("\n");
+  E_DBUS_LOG_INFO("default        : %d", conn->def);
+  E_DBUS_LOG_INFO("");
 }
 

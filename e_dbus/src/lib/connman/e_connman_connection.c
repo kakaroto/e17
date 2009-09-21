@@ -13,7 +13,7 @@ e_connman_connection_get(const char *path)
 
    if (!e_connman_element_is_connection(connection))
      {
-	WRN("path '%s' is not a connection!\n", path);
+	WRN("path '%s' is not a connection!", path);
 	return NULL;
      }
 

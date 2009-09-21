@@ -13,7 +13,7 @@ e_connman_network_get(const char *path)
 
    if (!e_connman_element_is_network(network))
      {
-	WRN("path '%s' is not a network!\n", path);
+	WRN("E-Dbus connman: path '%s' is not a network!", path);
 	return NULL;
      }
 

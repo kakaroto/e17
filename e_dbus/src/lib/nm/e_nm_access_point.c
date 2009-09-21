@@ -1,6 +1,6 @@
 #include "E_Nm.h"
 #include "e_nm_private.h"
-
+#include "e_dbus_private.h"
 #include <string.h>
 
 static const Property access_point_properties[] = {
@@ -84,90 +84,92 @@ e_nm_access_point_free(E_NM_Access_Point *access_point)
 EAPI void
 e_nm_access_point_dump(E_NM_Access_Point *ap)
 {
+  char buffer[1024];
   unsigned char *c;
 
   if (!ap) return;
-  printf("E_NM_Access_Point:\n");
-  printf("flags      :");
+  E_DBUS_LOG_INFO("E_NM_Access_Point:");
+  E_DBUS_LOG_INFO("flags      :");
   if (ap->flags & E_NM_802_11_AP_FLAGS_PRIVACY)
-    printf(" E_NM_802_11_AP_FLAGS_PRIVACY");
+    E_DBUS_LOG_INFO(" E_NM_802_11_AP_FLAGS_PRIVACY");
   if (ap->flags == E_NM_802_11_AP_FLAGS_NONE)
-    printf(" E_NM_802_11_AP_FLAGS_NONE");
-  printf("\n");
-  printf("wpa_flags  :");
+    E_DBUS_LOG_INFO(" E_NM_802_11_AP_FLAGS_NONE");
+  E_DBUS_LOG_INFO("");
+  E_DBUS_LOG_INFO("wpa_flags  :");
   if (ap->wpa_flags & E_NM_802_11_AP_SEC_PAIR_WEP40)
-    printf(" E_NM_802_11_AP_SEC_PAIR_WEP40");
+    E_DBUS_LOG_INFO(" E_NM_802_11_AP_SEC_PAIR_WEP40");
   if (ap->wpa_flags & E_NM_802_11_AP_SEC_PAIR_WEP104)
-    printf(" E_NM_802_11_AP_SEC_PAIR_WEP104");
+    E_DBUS_LOG_INFO(" E_NM_802_11_AP_SEC_PAIR_WEP104");
   if (ap->wpa_flags & E_NM_802_11_AP_SEC_PAIR_TKIP)
-    printf(" E_NM_802_11_AP_SEC_PAIR_TKIP");
+    E_DBUS_LOG_INFO(" E_NM_802_11_AP_SEC_PAIR_TKIP");
   if (ap->wpa_flags & E_NM_802_11_AP_SEC_PAIR_CCMP)
-    printf(" E_NM_802_11_AP_SEC_PAIR_CCMP");
+    E_DBUS_LOG_INFO(" E_NM_802_11_AP_SEC_PAIR_CCMP");
   if (ap->wpa_flags & E_NM_802_11_AP_SEC_GROUP_WEP40)
-    printf(" E_NM_802_11_AP_SEC_GROUP_WEP40");
+    E_DBUS_LOG_INFO(" E_NM_802_11_AP_SEC_GROUP_WEP40");
   if (ap->wpa_flags & E_NM_802_11_AP_SEC_GROUP_WEP104)
-    printf(" E_NM_802_11_AP_SEC_GROUP_WEP104");
+    E_DBUS_LOG_INFO(" E_NM_802_11_AP_SEC_GROUP_WEP104");
   if (ap->wpa_flags & E_NM_802_11_AP_SEC_GROUP_TKIP)
-    printf(" E_NM_802_11_AP_SEC_GROUP_TKIP");
+    E_DBUS_LOG_INFO(" E_NM_802_11_AP_SEC_GROUP_TKIP");
   if (ap->wpa_flags & E_NM_802_11_AP_SEC_GROUP_CCMP)
-    printf(" E_NM_802_11_AP_SEC_GROUP_CCMP");
+    E_DBUS_LOG_INFO(" E_NM_802_11_AP_SEC_GROUP_CCMP");
   if (ap->wpa_flags & E_NM_802_11_AP_SEC_KEY_MGMT_PSK)
-    printf(" E_NM_802_11_AP_SEC_KEY_MGMT_PSK");
+    E_DBUS_LOG_INFO(" E_NM_802_11_AP_SEC_KEY_MGMT_PSK");
   if (ap->wpa_flags & E_NM_802_11_AP_SEC_KEY_MGMT_802_1X)
-    printf(" E_NM_802_11_AP_SEC_KEY_MGMT_802_1X");
+    E_DBUS_LOG_INFO(" E_NM_802_11_AP_SEC_KEY_MGMT_802_1X");
   if (ap->wpa_flags == E_NM_802_11_AP_SEC_NONE)
-    printf(" E_NM_802_11_AP_SEC_NONE");
-  printf("\n");
-  printf("rsn_flags  :");
+    E_DBUS_LOG_INFO(" E_NM_802_11_AP_SEC_NONE");
+  E_DBUS_LOG_INFO("");
+  E_DBUS_LOG_INFO("rsn_flags  :");
   if (ap->rsn_flags & E_NM_802_11_AP_SEC_PAIR_WEP40)
-    printf(" E_NM_802_11_AP_SEC_PAIR_WEP40");
+    E_DBUS_LOG_INFO(" E_NM_802_11_AP_SEC_PAIR_WEP40");
   if (ap->rsn_flags & E_NM_802_11_AP_SEC_PAIR_WEP104)
-    printf(" E_NM_802_11_AP_SEC_PAIR_WEP104");
+    E_DBUS_LOG_INFO(" E_NM_802_11_AP_SEC_PAIR_WEP104");
   if (ap->rsn_flags & E_NM_802_11_AP_SEC_PAIR_TKIP)
-    printf(" E_NM_802_11_AP_SEC_PAIR_TKIP");
+    E_DBUS_LOG_INFO(" E_NM_802_11_AP_SEC_PAIR_TKIP");
   if (ap->rsn_flags & E_NM_802_11_AP_SEC_PAIR_CCMP)
-    printf(" E_NM_802_11_AP_SEC_PAIR_CCMP");
+    E_DBUS_LOG_INFO(" E_NM_802_11_AP_SEC_PAIR_CCMP");
   if (ap->rsn_flags & E_NM_802_11_AP_SEC_GROUP_WEP40)
-    printf(" E_NM_802_11_AP_SEC_GROUP_WEP40");
+    E_DBUS_LOG_INFO(" E_NM_802_11_AP_SEC_GROUP_WEP40");
   if (ap->rsn_flags & E_NM_802_11_AP_SEC_GROUP_WEP104)
-    printf(" E_NM_802_11_AP_SEC_GROUP_WEP104");
+    E_DBUS_LOG_INFO(" E_NM_802_11_AP_SEC_GROUP_WEP104");
   if (ap->rsn_flags & E_NM_802_11_AP_SEC_GROUP_TKIP)
-    printf(" E_NM_802_11_AP_SEC_GROUP_TKIP");
+    E_DBUS_LOG_INFO(" E_NM_802_11_AP_SEC_GROUP_TKIP");
   if (ap->rsn_flags & E_NM_802_11_AP_SEC_GROUP_CCMP)
-    printf(" E_NM_802_11_AP_SEC_GROUP_CCMP");
+    E_DBUS_LOG_INFO(" E_NM_802_11_AP_SEC_GROUP_CCMP");
   if (ap->rsn_flags & E_NM_802_11_AP_SEC_KEY_MGMT_PSK)
-    printf(" E_NM_802_11_AP_SEC_KEY_MGMT_PSK");
+    E_DBUS_LOG_INFO(" E_NM_802_11_AP_SEC_KEY_MGMT_PSK");
   if (ap->rsn_flags & E_NM_802_11_AP_SEC_KEY_MGMT_802_1X)
-    printf(" E_NM_802_11_AP_SEC_KEY_MGMT_802_1X");
+    E_DBUS_LOG_INFO(" E_NM_802_11_AP_SEC_KEY_MGMT_802_1X");
   if (ap->rsn_flags == E_NM_802_11_AP_SEC_NONE)
-    printf(" E_NM_802_11_AP_SEC_NONE");
-  printf("\n");
-  printf("ssid       : ");
+    E_DBUS_LOG_INFO(" E_NM_802_11_AP_SEC_NONE");
+  E_DBUS_LOG_INFO("");
+  strcpy(buffer, "ssid       : ");
   if (ap->ssid)
   {
+
     ecore_list_first_goto(ap->ssid);
     while ((c = ecore_list_next(ap->ssid)))
-      printf("%c", *c);
-    printf("\n");
+      snprintf("%s%c", buffer, *c);
   }
-  printf("frequency  : %u\n", ap->frequency);
-  printf("hw_address : %s\n", ap->hw_address);
-  printf("mode       : ");
+  E_DBUS_LOG_INFO("%s", buffer);
+  E_DBUS_LOG_INFO("frequency  : %u", ap->frequency);
+  E_DBUS_LOG_INFO("hw_address : %s", ap->hw_address);
+  E_DBUS_LOG_INFO("mode       : ");
   switch (ap->mode)
   {
     case E_NM_802_11_MODE_UNKNOWN:
-      printf("E_NM_802_11_MODE_UNKNOWN\n");
+      E_DBUS_LOG_INFO("E_NM_802_11_MODE_UNKNOWN");
       break;
     case E_NM_802_11_MODE_ADHOC:
-      printf("E_NM_802_11_MODE_ADHOC\n");
+      E_DBUS_LOG_INFO("E_NM_802_11_MODE_ADHOC");
       break;
     case E_NM_802_11_MODE_INFRA:
-      printf("E_NM_802_11_MODE_INFRA\n");
+      E_DBUS_LOG_INFO("E_NM_802_11_MODE_INFRA");
       break;
   }
-  printf("max_bitrate: %u\n", ap->max_bitrate);
-  printf("strength   : %u\n", ap->strength);
-  printf("\n");
+  E_DBUS_LOG_INFO("max_bitrate: %u", ap->max_bitrate);
+  E_DBUS_LOG_INFO("strength   : %u", ap->strength);
+  E_DBUS_LOG_INFO("");
 }
 
 EAPI void

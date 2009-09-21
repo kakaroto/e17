@@ -13,7 +13,7 @@ e_connman_profile_get(const char *path)
 
    if (!e_connman_element_is_profile(profile))
      {
-	WRN("path '%s' is not a profile!\n", path);
+	WRN("E-Dbus connman: path '%s' is not a profile!", path);
 	return NULL;
      }
 

@@ -5,7 +5,7 @@
 
 #include "E_Nm.h"
 #include "e_nm_private.h"
-
+#include "e_dbus_private.h"
 #include <string.h>
 
 static void property_device_type(Property_Data *data, DBusMessageIter *iter);
@@ -57,7 +57,7 @@ cb_state_changed(void *data, DBusMessage *msg)
                         DBUS_TYPE_INVALID);
   if (dbus_error_is_set(&err))
   {
-    printf("Error: %s - %s\n", err.name, err.message);
+    E_DBUS_LOG_ERR("%s - %s", err.name, err.message);
     return;
   }
 
@@ -107,7 +107,7 @@ cb_wireless_access_point_added(void *data, DBusMessage *msg)
                         DBUS_TYPE_INVALID);
   if (dbus_error_is_set(&err))
   {
-    printf("Error: %s - %s\n", err.name, err.message);
+    E_DBUS_LOG_ERR("%s - %s", err.name, err.message);
     return;
   }
 
@@ -131,7 +131,7 @@ cb_wireless_access_point_removed(void *data, DBusMessage *msg)
                         DBUS_TYPE_INVALID);
   if (dbus_error_is_set(&err))
   {
-    printf("Error: %s - %s\n", err.name, err.message);
+    E_DBUS_LOG_ERR("%s - %s", err.name, err.message);
     return;
   }
 
@@ -237,7 +237,7 @@ cb_access_points(void *data, void *reply, DBusError *err)
   dev = d->object;
   if (dbus_error_is_set(err))
   {
-    printf("Error: %s - %s\n", err->name, err->message);
+    E_DBUS_LOG_ERR("%s - %s", err->name, err->message);
     d->cb_func(d->data, NULL);
     free(d);
     return;
@@ -320,100 +320,100 @@ EAPI void
 e_nm_device_dump(E_NM_Device *dev)
 {
   if (!dev) return;
-  printf("E_NM_Device:\n");
-  printf("udi                  : %s\n", dev->udi);
-  printf("interface            : %s\n", dev->interface);
-  printf("driver               : %s\n", dev->driver);
-  printf("capabilities         :");
+  E_DBUS_LOG_INFO("E_NM_Device:");
+  E_DBUS_LOG_INFO("udi                  : %s", dev->udi);
+  E_DBUS_LOG_INFO("interface            : %s", dev->interface);
+  E_DBUS_LOG_INFO("driver               : %s", dev->driver);
+  E_DBUS_LOG_INFO("capabilities         :");
   if (dev->capabilities & E_NM_DEVICE_CAP_NM_SUPPORTED)
-    printf(" E_NM_DEVICE_CAP_NM_SUPPORTED");
+    E_DBUS_LOG_INFO(" E_NM_DEVICE_CAP_NM_SUPPORTED");
   if (dev->capabilities & E_NM_DEVICE_CAP_CARRIER_DETECT)
-    printf(" E_NM_DEVICE_CAP_CARRIER_DETECT");
+    E_DBUS_LOG_INFO(" E_NM_DEVICE_CAP_CARRIER_DETECT");
   if (dev->capabilities == E_NM_DEVICE_CAP_NONE)
-    printf(" E_NM_DEVICE_CAP_NONE");
-  printf("\n");
-  printf("ip4_address          : %s\n", ip4_address2str(dev->ip4_address));
-  printf("state                : ");
+    E_DBUS_LOG_INFO(" E_NM_DEVICE_CAP_NONE");
+  E_DBUS_LOG_INFO("");
+  E_DBUS_LOG_INFO("ip4_address          : %s", ip4_address2str(dev->ip4_address));
+  E_DBUS_LOG_INFO("state                : ");
   switch (dev->state)
   {
     case E_NM_DEVICE_STATE_UNKNOWN:
-      printf("E_NM_DEVICE_STATE_UNKNOWN\n");
+      E_DBUS_LOG_INFO("E_NM_DEVICE_STATE_UNKNOWN");
       break;
     case E_NM_DEVICE_STATE_UNMANAGED:
-      printf("E_NM_DEVICE_STATE_UNMANAGED\n");
+      E_DBUS_LOG_INFO("E_NM_DEVICE_STATE_UNMANAGED");
       break;
     case E_NM_DEVICE_STATE_UNAVAILABLE:
-      printf("E_NM_DEVICE_STATE_UNAVAILABLE\n");
+      E_DBUS_LOG_INFO("E_NM_DEVICE_STATE_UNAVAILABLE");
       break;
     case E_NM_DEVICE_STATE_DISCONNECTED:
-      printf("E_NM_DEVICE_STATE_DISCONNECTED\n");
+      E_DBUS_LOG_INFO("E_NM_DEVICE_STATE_DISCONNECTED");
       break;
     case E_NM_DEVICE_STATE_PREPARE:
-      printf("E_NM_DEVICE_STATE_PREPARE\n");
+      E_DBUS_LOG_INFO("E_NM_DEVICE_STATE_PREPARE");
       break;
     case E_NM_DEVICE_STATE_CONFIG:
-      printf("E_NM_DEVICE_STATE_CONFIG\n");
+      E_DBUS_LOG_INFO("E_NM_DEVICE_STATE_CONFIG");
       break;
     case E_NM_DEVICE_STATE_NEED_AUTH:
-      printf("E_NM_DEVICE_STATE_NEED_AUTH\n");
+      E_DBUS_LOG_INFO("E_NM_DEVICE_STATE_NEED_AUTH");
       break;
     case E_NM_DEVICE_STATE_IP_CONFIG:
-      printf("E_NM_DEVICE_STATE_IP_CONFIG\n");
+      E_DBUS_LOG_INFO("E_NM_DEVICE_STATE_IP_CONFIG");
       break;
     case E_NM_DEVICE_STATE_ACTIVATED:
-      printf("E_NM_DEVICE_STATE_ACTIVATED\n");
+      E_DBUS_LOG_INFO("E_NM_DEVICE_STATE_ACTIVATED");
       break;
     case E_NM_DEVICE_STATE_FAILED:
-      printf("E_NM_DEVICE_STATE_FAILED\n");
+      E_DBUS_LOG_INFO("E_NM_DEVICE_STATE_FAILED");
       break;
   }
-  printf("ip4_config           : %s\n", dev->ip4_config);
-  printf("dhcp4_config         : %s\n", dev->dhcp4_config);
-  printf("managed              : %d\n", dev->managed);
-  printf("device_type          : %u\n", dev->device_type);
+  E_DBUS_LOG_INFO("ip4_config           : %s", dev->ip4_config);
+  E_DBUS_LOG_INFO("dhcp4_config         : %s", dev->dhcp4_config);
+  E_DBUS_LOG_INFO("managed              : %d", dev->managed);
+  E_DBUS_LOG_INFO("device_type          : %u", dev->device_type);
   switch (dev->device_type)
   {
     case E_NM_DEVICE_TYPE_WIRED:
-      printf("hw_address           : %s\n", dev->wired.hw_address);
-      printf("speed                : %u\n", dev->wired.speed);
-      printf("carrier              : %d\n", dev->wired.carrier);
+      E_DBUS_LOG_INFO("hw_address           : %s", dev->wired.hw_address);
+      E_DBUS_LOG_INFO("speed                : %u", dev->wired.speed);
+      E_DBUS_LOG_INFO("carrier              : %d", dev->wired.carrier);
       break;
     case E_NM_DEVICE_TYPE_WIRELESS:
-      printf("hw_address           : %s\n", dev->wireless.hw_address);
-      printf("mode                 : ");
+      E_DBUS_LOG_INFO("hw_address           : %s", dev->wireless.hw_address);
+      E_DBUS_LOG_INFO("mode                 : ");
       switch (dev->wireless.mode)
       {
         case E_NM_802_11_MODE_UNKNOWN:
-          printf("E_NM_802_11_MODE_UNKNOWN\n");
+          E_DBUS_LOG_INFO("E_NM_802_11_MODE_UNKNOWN");
           break;
         case E_NM_802_11_MODE_ADHOC:
-          printf("E_NM_802_11_MODE_ADHOC\n");
+          E_DBUS_LOG_INFO("E_NM_802_11_MODE_ADHOC");
           break;
         case E_NM_802_11_MODE_INFRA:
-          printf("E_NM_802_11_MODE_INFRA\n");
+          E_DBUS_LOG_INFO("E_NM_802_11_MODE_INFRA");
           break;
       }
-      printf("bitrate              : %u\n", dev->wireless.bitrate);
-      printf("active_access_point  : %s\n", dev->wireless.active_access_point);
-      printf("wireless_capabilities:");
+      E_DBUS_LOG_INFO("bitrate              : %u", dev->wireless.bitrate);
+      E_DBUS_LOG_INFO("active_access_point  : %s", dev->wireless.active_access_point);
+      E_DBUS_LOG_INFO("wireless_capabilities:");
       if (dev->wireless.wireless_capabilities & E_NM_802_11_DEVICE_CAP_CIPHER_WEP40)
-        printf(" E_NM_802_11_DEVICE_CAP_CIPHER_WEP40");
+        E_DBUS_LOG_INFO(" E_NM_802_11_DEVICE_CAP_CIPHER_WEP40");
       if (dev->wireless.wireless_capabilities & E_NM_802_11_DEVICE_CAP_CIPHER_WEP104)
-        printf(" E_NM_802_11_DEVICE_CAP_CIPHER_WEP104");
+        E_DBUS_LOG_INFO(" E_NM_802_11_DEVICE_CAP_CIPHER_WEP104");
       if (dev->wireless.wireless_capabilities & E_NM_802_11_DEVICE_CAP_CIPHER_TKIP)
-        printf(" E_NM_802_11_DEVICE_CAP_CIPHER_TKIP");
+        E_DBUS_LOG_INFO(" E_NM_802_11_DEVICE_CAP_CIPHER_TKIP");
       if (dev->wireless.wireless_capabilities & E_NM_802_11_DEVICE_CAP_CIPHER_CCMP)
-        printf(" E_NM_802_11_DEVICE_CAP_CIPHER_CCMP");
+        E_DBUS_LOG_INFO(" E_NM_802_11_DEVICE_CAP_CIPHER_CCMP");
       if (dev->wireless.wireless_capabilities & E_NM_802_11_DEVICE_CAP_WPA)
-        printf(" E_NM_802_11_DEVICE_CAP_WPA");
+        E_DBUS_LOG_INFO(" E_NM_802_11_DEVICE_CAP_WPA");
       if (dev->wireless.wireless_capabilities & E_NM_802_11_DEVICE_CAP_RSN)
-        printf(" E_NM_802_11_DEVICE_CAP_RSN");
+        E_DBUS_LOG_INFO(" E_NM_802_11_DEVICE_CAP_RSN");
       if (dev->wireless.wireless_capabilities == E_NM_802_11_DEVICE_CAP_NONE)
-        printf(" E_NM_802_11_DEVICE_CAP_NONE");
-      printf("\n");
+        E_DBUS_LOG_INFO(" E_NM_802_11_DEVICE_CAP_NONE");
+      E_DBUS_LOG_INFO("");
       break;
   }
-  printf("\n");
+  E_DBUS_LOG_INFO("");
 }
 
 EAPI int

@@ -1,4 +1,5 @@
 #include <E_Hal.h>
+#include <e_dbus_private.h>
 
 #define e_hal_device_call_new(udi, member) dbus_message_new_method_call(E_HAL_SENDER, udi, E_HAL_DEVICE_INTERFACE, member)
 #define e_hal_device_volume_call_new(udi, member) dbus_message_new_method_call(E_HAL_SENDER, udi, E_HAL_DEVICE_VOLUME_INTERFACE, member)
@@ -139,7 +140,7 @@ unmarshal_device_get_all_properties(DBusMessage *msg, DBusError *err)
         }
         break;
       default:
-        printf("Error: unexpected property type (%s): %c\n", name, dbus_message_iter_get_arg_type(&v_iter));
+        E_DBUS_LOG_WARN("Ehal Error: unexpected property type (%s): %c", name, dbus_message_iter_get_arg_type(&v_iter));
         break;
     }
     eina_hash_add(ret->properties, name, prop);

@@ -1,13 +1,14 @@
 #include "E_Nm.h"
 #include "e_nm_private.h"
 #include "E_DBus.h"
+#include "e_dbus_private.h"
 #include <string.h>
 #include <Ecore_Data.h>
 
 #define CHECK_SIGNATURE(msg, err, sig)                       \
   if (dbus_error_is_set((err)))                              \
   {                                                          \
-    printf("Error: %s - %s\n", (err)->name, (err)->message); \
+    E_DBUS_LOG_ERR("%s - %s", (err)->name, (err)->message);  \
     return NULL;                                             \
   }                                                          \
                                                              \
@@ -61,7 +62,7 @@ find_property_cb(const char *sig)
     if (!strcmp(t->sig, sig))
       return t->func;
   }
-  fprintf(stderr, "Missing property parser for sig: %s\n", sig);
+  E_DBUS_LOG_ERR("Missing property parser for sig: %s", sig);
   return NULL;
 }
 
@@ -88,7 +89,7 @@ property_string(DBusMessageIter *iter, const char *sig, void *value)
 
   if ((value) && (!sig))
   {
-    printf("Error: Can't have value and no sig\n");
+    E_DBUS_LOG_ERR("Can't have value and no sig");
     return NULL;
   }
   dbus_message_iter_get_basic(iter, &str);
@@ -115,7 +116,7 @@ property_basic(DBusMessageIter *iter, const char *sig, void *value)
 
   if ((value) && (!sig))
   {
-    printf("Error: Can't have value and no sig\n");
+    _EDBUS_LOG_ERR("Can't have value and no sig");
     return NULL;
   }
   if (sig)
@@ -166,7 +167,7 @@ property_array(DBusMessageIter *iter, const char *sig, void *value)
 
   if ((value) && (!sig))
   {
-    printf("Error: Can't have value and no sig\n");
+    E_DBUS_LOG_ERR("Can't have value and no sig");
     return NULL;
   }
 
@@ -239,7 +240,7 @@ property(void *data, DBusMessage *msg, DBusError *err)
   d = data;
   if (dbus_error_is_set(err))
   {
-    printf("Error: %s - %s\n", err->name, err->message);
+    E_DBUS_LOG_ERR("%s - %s", err->name, err->message);
     goto error;
   }
   if (!dbus_message_has_signature(msg, "v")) goto error;

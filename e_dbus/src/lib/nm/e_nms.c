@@ -1,6 +1,6 @@
 #include "E_Nm.h"
 #include "e_nm_private.h"
-
+#include "e_dbus_private.h"
 #include <string.h>
 
 static const Property nms_properties[] = {
@@ -22,7 +22,7 @@ cb_nms_connections(void *data, void *reply, DBusError *err)
   nmsi = d->object;
   if (dbus_error_is_set(err))
   {
-    printf("Error: %s - %s\n", err->name, err->message);
+    E_DBUS_LOG_ERR("%s - %s", err->name, err->message);
     d->cb_func(d->data, NULL);
     free(d);
     return;
@@ -50,7 +50,7 @@ cb_new_connection(void *data, DBusMessage *msg)
   dbus_message_get_args(msg, &err, DBUS_TYPE_OBJECT_PATH, &conn, DBUS_TYPE_INVALID);
   if (dbus_error_is_set(&err))
   {
-    printf("Error: %s - %s\n", err.name, err.message);
+    E_DBUS_LOG_ERR("%s - %s", err.name, err.message);
     return;
   }
 
@@ -77,7 +77,7 @@ add_basic(DBusMessageIter *iter, E_NM_Variant *variant)
   switch (variant->type)
   {
     case 'a':
-      printf("Error: No support for array of array\n");
+      E_DBUS_LOG_ERR("No support for array of array");
       break;
     case 's':
     case 'o':
@@ -225,18 +225,18 @@ EAPI void
 e_nms_dump(E_NMS *nms)
 {
   if (!nms) return;
-  printf("E_NMS:\n");
-  printf("unmanaged_devices:\n");
+  E_DBUS_LOG_INFO("E_NMS:");
+  E_DBUS_LOG_INFO("unmanaged_devices:");
   if (nms->unmanaged_devices)
   {
     const char *dev;
 
     ecore_list_first_goto(nms->unmanaged_devices);
     while ((dev = ecore_list_next(nms->unmanaged_devices)))
-      printf(" - %s\n", dev);
+      INFO(" - %s", dev);
   }
-  printf("hostname         : %s\n", nms->hostname);
-  printf("\n");
+  INFO("hostname         : %s", nms->hostname);
+  INFO("");
 }
 
 EAPI int
@@ -281,11 +281,11 @@ cb(void *data, DBusMessage *msg, DBusError *err)
 {
   if (dbus_error_is_set(err))
   {
-    printf("Error: %s - %s\n", err->name, err->message);
+    E_DBUS_LOG_ERR("%s - %s", err->name, err->message);
   }
   else
   {
-    printf("Yay!\n");
+    E_DBUS_LOG_ERR("Yay!");
   }
 }
 
