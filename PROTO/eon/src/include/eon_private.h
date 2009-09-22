@@ -99,9 +99,10 @@ void * eon_canvas_engine_data_get(Eon_Canvas *c);
 
 /* Shape */
 Eina_Bool eon_shape_appendable(void *instance, void *child);
-void eon_shape_geometry_set(Eon_Shape *s, Eina_Rectangle *rect);
 
 /* Coord */
+void eon_coord_length_calculate(Eon_Coord *sl, int plength, int *l);
+void eon_coord_calculate(Eon_Coord *sc, int pc, int plength, int *c);
 void eon_coord_change(const Ekeko_Object *o, Eon_Coord *dst, Eon_Coord *curr,
 		Eon_Coord *prev, int coord, int length, Ekeko_Object *parent,
 		const char *cevent, const char *levent, Event_Listener el);
@@ -113,7 +114,16 @@ void eon_coord_length_change(const Ekeko_Object *o, Eon_Coord *dst, Eon_Coord *c
 void eon_paint_change(Eon_Paint *p);
 void * eon_paint_engine_data_get(Eon_Paint *p);
 Eon_Canvas * eon_paint_canvas_get(Eon_Paint *p);
+Eon_Canvas * eon_paint_canvas_topmost_get(Eon_Paint *p);
 Eina_Bool eon_paint_appendable(Ekeko_Object *p, Ekeko_Object *child);
+void eon_paint_geometry_set(Eon_Paint *p, Eina_Rectangle *rect);
+void eon_paint_geometry_get(Eon_Paint *p, Eina_Rectangle *rect);
+void eon_paint_style_coords_get(Eon_Paint *p, Eon_Paint *rel, int *x, int *y,
+		int *w, int *h);
+void eon_paint_style_inverse_matrix_get(Eon_Paint *p, Eon_Paint *rel,
+		Enesim_Matrix *m);
+void eon_paint_inverse_matrix_get(Eon_Paint *p, Enesim_Matrix *m);
+
 
 /* Transition */
 Eina_Bool eon_transition_appendable(Ekeko_Object *t, Ekeko_Object *child);

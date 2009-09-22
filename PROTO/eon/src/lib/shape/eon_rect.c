@@ -39,7 +39,7 @@ static void _geometry_calc(const Ekeko_Object *o, Ekeko_Event *e, void *data)
 	printf("[Eon_Rect] Setting geometry of size %d %d %d %d\n",
 			x.final, y.final, w.final, h.final);
 #endif
-	eon_shape_geometry_set((Eon_Shape *)r, &geom);
+	eon_paint_geometry_set((Eon_Shape *)r, &geom);
 }
 
 static void _render(Eon_Shape *s, Eon_Engine *eng, void *engine_data, void *canvas_data, Eina_Rectangle *clip)

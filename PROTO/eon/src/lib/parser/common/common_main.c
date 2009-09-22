@@ -194,6 +194,8 @@ Eina_Bool eon_parser_color_str_from(Eon_Color *c, char *v)
 {
 	if (!strcmp(v, "white"))
 		eon_color_set(c, 0xff, 0xff, 0xff, 0xff);
+	else if (!strcmp(v, "black"))
+		eon_color_set(c, 0xff, 0x00, 0x00, 0x00);
 	else if (!strcmp(v, "red"))
 		eon_color_set(c, 0xff, 0xff, 0x00, 0x00);
 	else if (!strcmp(v, "blue"))

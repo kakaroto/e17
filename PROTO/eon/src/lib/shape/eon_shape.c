@@ -41,10 +41,6 @@ struct _Eon_Shape_Private
 		Eon_Color color;
 	} fill;
 	Enesim_Shape_Draw_Mode draw_mode;
-	/* this is for the children classes that go through our
-	 * matrix interface, here we store the untransformed geometry
-	 */
-	Eina_Rectangle srect;
 };
 
 static void _child_append_cb(const Ekeko_Object *o, Ekeko_Event *e, void *data)

@@ -35,7 +35,7 @@ static void _update_geometry(Eon_Circle *p)
 	Eina_Rectangle geom;
 
 	eina_rectangle_coords_from(&geom, prv->x.final - prv->radius, prv ->y.final - prv->radius, prv->radius * 2, prv->radius * 2);
-	eon_shape_geometry_set((Eon_Shape *)p, &geom);
+	eon_paint_geometry_set((Eon_Shape *)p, &geom);
 }
 
 /* Just informs that the x.final property has to be recalculated */

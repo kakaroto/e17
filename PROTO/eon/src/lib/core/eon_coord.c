@@ -20,143 +20,31 @@
 /*============================================================================*
  *                                  Local                                     *
  *============================================================================*/
-#if 0
-static inline void _coord_changed(Ekeko_Object *o, Ekeko_Event_Mutation *em,
-		Eon_Coord *coord, Eon_Coord *ccoord, Eon_Coord *clength,
-		Eina_Bool *relative)
+/* TODO this might be inlined */
+void eon_coord_length_calculate(Eon_Coord *sl, int plength, int *l)
 {
-	Eon_Coord *c, *p;
-
-	c = em->curr->value.pointer_value;
-	p = em->prev->value.pointer_value;
-	if (c->type == EON_COORD_RELATIVE)
+	if (sl->type == EON_COORD_RELATIVE)
 	{
-		coord->final = ccoord->final + ((clength->final * coord->value) / 100);
-		if (p->type == EON_COORD_ABSOLUTE)
-		{
-			*relative = EINA_TRUE;
-		}
+		*l = sl->value * plength / 100;
 	}
 	else
 	{
-		coord->final = coord->value;
-		if (p->type == EON_COORD_RELATIVE)
-		{
-			*relative = EINA_FALSE;
-		}
+		*l = sl->value;
 	}
 }
 
-static inline _parent_coord_changed(Eon_Coord *coord, Eon_Coord *ccoord, Eon_Coord *clength)
+/* TODO this might be inlined */
+void eon_coord_calculate(Eon_Coord *sc, int pc, int plength, int *c)
 {
-	if (coord->type == EON_COORD_RELATIVE)
+	if (sc->type == EON_COORD_RELATIVE)
 	{
-		coord->final = ccoord->final + ((clength->final * coord->value) / 100);
-	}
-}
-
-static inline _parent_length_changed(Eon_Coord *length, Eon_Coord *clength)
-{
-	if (length->type == EON_COORD_RELATIVE)
-	{
-		length->final = (clength->final * length->value) / 100;
-	}
-}
-
-static inline void _length_changed(Ekeko_Object *o, Ekeko_Event_Mutation *em,
-		Eon_Coord *length, Eon_Coord *clength, Eina_Bool *relative)
-{
-	Eon_Coord *c, *p;
-
-	c = em->curr->value.pointer_value;
-	p = em->prev->value.pointer_value;
-	if (c->type == EON_COORD_RELATIVE)
-	{
-		length->final = (clength->final * length->value) / 100;
-		if (p->type == EON_COORD_ABSOLUTE)
-		{
-			*relative = EINA_TRUE;
-		}
+		*c = pc + ((sc->value * plength) / 100);
 	}
 	else
 	{
-		length->final = length->value;
-		if (p->type == EON_COORD_RELATIVE)
-		{
-			*relative = EINA_FALSE;
-		}
+		*c = sc->value;
 	}
 }
-/*============================================================================*
- *                                 Global                                     *
- *============================================================================*/
-/* x, y, w, and h are the object's coordinates
- * o is the object we want to change
- * em has the parent's event
- */
-Eina_Bool eon_coord_parent_changed(Ekeko_Object *o, Ekeko_Event_Mutation *em,
-		Eon_Coord *x, Eon_Coord *y, Eon_Coord *w, Eon_Coord *h,
-		Eon_Coord *cx, Eon_Coord *cy, Eon_Coord *cw, Eon_Coord *ch)
-{
-	if (em->state == EVENT_MUTATION_STATE_POST)
-		return EINA_FALSE;
-
-	printf("[Eon_Coord] PROPERTY %s\n", em->prop);
-	if (!strcmp(em->prop, "x"))
-	{
-		_parent_coord_changed(x, cx, cw);
-		return EINA_TRUE;
-	}
-	else if (!strcmp(em->prop, "y"))
-	{
-		_parent_coord_changed(y, cy, ch);
-		return EINA_TRUE;
-	}
-	else if (!strcmp(em->prop, "w"))
-	{
-		_parent_length_changed(w, cw);
-		return EINA_TRUE;
-	}
-	else if (!strcmp(em->prop, "h"))
-	{
-		_parent_length_changed(h, ch);
-		return EINA_TRUE;
-	}
-	return EINA_FALSE;
-}
-
-/* Useful function to check whenever a coordinate has changed to be relative
- * or absolute, usually called on the modified event
- */
-Eina_Bool eon_coord_modified(Ekeko_Object *o, Ekeko_Event_Mutation *em,
-		Eon_Coord *x, Eon_Coord *y, Eon_Coord *w, Eon_Coord *h,
-		Eon_Coord *cx, Eon_Coord *cy, Eon_Coord *cw, Eon_Coord *ch,
-		Eina_Bool *relative)
-{
-	//printf("[EON_Coord] Coord Modified %d %d %d %d - %d %d %d %d\n", x->final, y->final, w->final, h->final, cx->final, cy->final, cw->final, ch->final);
-	if (!strcmp(em->prop, "x"))
-	{
-		_coord_changed(o, em, x, cx, cw, relative);
-		return EINA_TRUE;
-	}
-	else if (!strcmp(em->prop, "y"))
-	{
-		_coord_changed(o, em, y, cy, ch, relative);
-		return EINA_TRUE;
-	}
-	else if (!strcmp(em->prop, "w"))
-	{
-		_length_changed(o, em, w, cw, relative);
-		return EINA_TRUE;
-	}
-	else if (!strcmp(em->prop, "h"))
-	{
-		_length_changed(o, em, h, ch, relative);
-		return EINA_TRUE;
-	}
-	return EINA_FALSE;
-}
-#endif
 
 void eon_coord_length_change(const Ekeko_Object *o, Eon_Coord *dst, Eon_Coord *curr,
 		Eon_Coord *prev, int length, Ekeko_Object *parent,

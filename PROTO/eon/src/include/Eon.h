@@ -48,12 +48,9 @@ typedef struct _Eon_Rect Eon_Rect;
 typedef struct _Eon_Circle Eon_Circle;
 typedef struct _Eon_Polygon Eon_Polygon;
 typedef struct _Eon_Text Eon_Text;
-
-
-typedef struct _Eon_Filter Eon_Filter;
 /* filter effects */
+typedef struct _Eon_Filter Eon_Filter;
 typedef struct _Eon_Displace Eon_Displace;
-
 
 /* TODO use this generic names */
 typedef struct _Eon_Engine Eon_Engine;
