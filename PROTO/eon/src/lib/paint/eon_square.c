@@ -159,7 +159,6 @@ static void _h_change(const Ekeko_Object *o, Ekeko_Event *e, void *data)
 			EON_CANVAS_H_CHANGED, _h_inform);
 }
 
-
 static void _ctor(void *instance)
 {
 	Eon_Square *s;
@@ -181,7 +180,38 @@ static void _dtor(void *rect)
 /*============================================================================*
  *                                 Global                                     *
  *============================================================================*/
+void eon_square_style_coords_get(Eon_Square *s, Eon_Paint *p, int *x, int *y,
+		int *w, int *h)
+{
+	Eon_Coord px, py, pw, ph;
+	Eina_Rectangle geom;
+	Eon_Paint *sp = (Eon_Paint *)s;
 
+	/* FIXME when a paint has relative coordinates and the parent is not
+	 * renderable but another style what to do?
+	 */
+	/* setup the renderer correctly */
+	if (eon_paint_coordspace_get(sp) == EON_COORDSPACE_OBJECT)
+	{
+		eon_paint_geometry_get(p, &geom);
+	}
+	else
+	{
+		Ekeko_Renderable *r;
+
+		/* FIXME we should get the topmost canvas units not the parent
+		 * canvas
+		 */
+		r = (Ekeko_Renderable *)eon_paint_canvas_topmost_get(p);
+		ekeko_renderable_geometry_get(r, &geom);
+	}
+	eon_square_coords_get(p, &px, &py, &pw, &ph);
+
+	if (x) eon_coord_calculate(&px, geom.x, geom.w, x);
+	if (y) eon_coord_calculate(&py, geom.y, geom.h, y);
+	if (w) eon_coord_length_calculate(&pw, geom.w, w);
+	if (h) eon_coord_length_calculate(&ph, geom.h, h);
+}
 /*============================================================================*
  *                                   API                                      *
  *============================================================================*/
@@ -197,7 +227,7 @@ EAPI Ekeko_Type *eon_square_type_get(void)
 	if (!type)
 	{
 		type = ekeko_type_new(EON_TYPE_SQUARE, sizeof(Eon_Square),
-				sizeof(Eon_Square_Private), eon_shape_type_get(),
+				sizeof(Eon_Square_Private), eon_paint_type_get(),
 				_ctor, _dtor, NULL);
 		EON_SQUARE_X = EKEKO_TYPE_PROP_SINGLE_ADD(type, "x", EON_PROPERTY_COORD, OFFSET(Eon_Square_Private, x));
 		EON_SQUARE_Y = EKEKO_TYPE_PROP_SINGLE_ADD(type, "y", EON_PROPERTY_COORD, OFFSET(Eon_Square_Private, y));

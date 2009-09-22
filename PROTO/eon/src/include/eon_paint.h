@@ -23,10 +23,6 @@
  *============================================================================*/
 #define EON_PAINT_ROP_CHANGED "ropChanged"
 #define EON_PAINT_COLOR_CHANGED "colorChanged"
-#define EON_PAINT_X_CHANGED "xChanged"
-#define EON_PAINT_Y_CHANGED "yChanged"
-#define EON_PAINT_W_CHANGED "wChanged"
-#define EON_PAINT_H_CHANGED "hChanged"
 #define EON_PAINT_MATRIX_CHANGED "matrixChanged"
 #define EON_PAINT_COORDSPACE_CHANGED "coordspaceChanged"
 #define EON_PAINT_MATRIXSPACE_CHANGED "matrixspaceChanged"
@@ -35,10 +31,6 @@
  *============================================================================*/
 extern Ekeko_Property_Id EON_PAINT_COLOR;
 extern Ekeko_Property_Id EON_PAINT_ROP;
-extern Ekeko_Property_Id EON_PAINT_X;
-extern Ekeko_Property_Id EON_PAINT_Y;
-extern Ekeko_Property_Id EON_PAINT_W;
-extern Ekeko_Property_Id EON_PAINT_H;
 extern Ekeko_Property_Id EON_PAINT_MATRIX;
 extern Ekeko_Property_Id EON_PAINT_COORDSPACE;
 extern Ekeko_Property_Id EON_PAINT_MATRIXSPACE;
@@ -77,20 +69,9 @@ struct _Eon_Paint
  *                                Functions                                   *
  *============================================================================*/
 EAPI Ekeko_Type *eon_paint_type_get(void);
-EAPI void eon_paint_coords_get(Eon_Paint *p, Eon_Coord *x, Eon_Coord *y,
-		Eon_Coord *w, Eon_Coord *h);
 
 EAPI Eon_Paint_Coordspace eon_paint_coordspace_get(Eon_Paint *p);
 EAPI void eon_paint_coordspace_set(Eon_Paint *p, Eon_Paint_Coordspace cs);
-
-EAPI void eon_paint_x_rel_set(Eon_Paint *p, int x);
-EAPI void eon_paint_x_set(Eon_Paint *p, int x);
-EAPI void eon_paint_y_set(Eon_Paint *p, int y);
-EAPI void eon_paint_y_rel_set(Eon_Paint *p, int y);
-EAPI void eon_paint_w_set(Eon_Paint *p, int w);
-EAPI void eon_paint_w_rel_set(Eon_Paint *p, int w);
-EAPI void eon_paint_h_set(Eon_Paint *p, int h);
-EAPI void eon_paint_h_rel_set(Eon_Paint *p, int h);
 
 EAPI void eon_paint_color_set(Eon_Paint *s, Eon_Color color);
 EAPI Eon_Color eon_paint_color_get(Eon_Paint *s);

@@ -110,9 +110,9 @@ static void _ctor(void *instance)
 
 	r = (Eon_Rect*) instance;
 	r->private = prv = ekeko_type_instance_private_get(eon_rect_type_get(), instance);
-	r->parent.parent.parent.render = _render;
-	r->parent.parent.parent.create = eon_engine_rect_create;
-	r->parent.parent.parent.is_inside = _is_inside;
+	r->parent.parent.render = _render;
+	r->parent.parent.create = eon_engine_rect_create;
+	r->parent.parent.is_inside = _is_inside;
 	/* events */
 	ekeko_event_listener_add((Ekeko_Object *)r, EON_SQUARE_X_CHANGED, _geometry_calc, EINA_FALSE, NULL);
 	ekeko_event_listener_add((Ekeko_Object *)r, EON_SQUARE_Y_CHANGED, _geometry_calc, EINA_FALSE, NULL);
@@ -142,7 +142,7 @@ EAPI Ekeko_Type *eon_rect_type_get(void)
 	if (!type)
 	{
 		type = ekeko_type_new(EON_TYPE_RECT, sizeof(Eon_Rect),
-				sizeof(Eon_Rect_Private), eon_square_type_get(),
+				sizeof(Eon_Rect_Private), eon_shape_type_get(),
 				_ctor, _dtor, eon_shape_appendable);
 		EON_RECT_CORNER_RADIUS = EKEKO_TYPE_PROP_SINGLE_ADD(type, "radius", EKEKO_PROPERTY_FLOAT, OFFSET(Eon_Rect_Private, radius));
 	}

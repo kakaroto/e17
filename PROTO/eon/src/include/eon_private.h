@@ -151,4 +151,12 @@ void eon_cache_image_load(const char *file, Enesim_Surface **s,
 /* Style */
 Eon_Style * eon_style_new(void);
 
+/* Circle */
+void eon_circle_style_coords_get(Eon_Circle *c, Eon_Paint *p,
+		int *cx, int *cy, float *rad);
+
+/* Square */
+void eon_square_style_coords_get(Eon_Square *s, Eon_Paint *p, int *x, int *y,
+		int *w, int *h);
+
 #endif

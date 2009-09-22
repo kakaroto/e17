@@ -33,7 +33,7 @@ extern Ekeko_Property_Id EON_RECT_CORNER_RADIUS;
 typedef struct _Eon_Rect_Private Eon_Rect_Private;
 struct _Eon_Rect
 {
-	Eon_Square parent;
+	Eon_Shape parent;
 	Eon_Rect_Private *private;
 };
 /*============================================================================*

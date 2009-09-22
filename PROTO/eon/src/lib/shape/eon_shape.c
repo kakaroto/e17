@@ -43,23 +43,6 @@ struct _Eon_Shape_Private
 	Enesim_Shape_Draw_Mode draw_mode;
 };
 
-static void _child_append_cb(const Ekeko_Object *o, Ekeko_Event *e, void *data)
-{
-	Ekeko_Event_Mutation *em = (Ekeko_Event_Mutation *)e;
-	Eon_Shape *s;
-	Eon_Shape_Private *prv;
-	Eon_Document *d;
-	Eon_Engine *eng;
-
-	/* when this shape is appended to a canvas */
-	d = eon_canvas_document_get((Eon_Canvas *)em->related);
-	/* FIXME in case the canvas doesnt have a document */
-	eng = eon_document_engine_get(d);
-	s = (Eon_Shape *)o;
-	prv = PRIVATE(s);
-	//prv->engine_data = s->create(eng, s);
-}
-
 static void _ext_paint_change(const Ekeko_Object *o, Ekeko_Event *e, void *data)
 {
 	/* mark this shape a changed */
@@ -87,7 +70,6 @@ static void _trans_removed(const Ekeko_Object *o, Ekeko_Event *e, void *data)
 				_ext_paint_change, EINA_FALSE, data);
 	}
 }
-
 
 static void _paint_change(const Ekeko_Object *o, Ekeko_Event *e, void *data)
 {
@@ -141,7 +123,6 @@ static void _ctor(void *instance)
 	/* default values */
 	prv->draw_mode = ENESIM_SHAPE_DRAW_MODE_STROKE_FILL;
 	/* the events */
-	ekeko_event_listener_add((Ekeko_Object *)s, EKEKO_EVENT_OBJECT_APPEND, _child_append_cb, EINA_FALSE, NULL);
 	ekeko_event_listener_add((Ekeko_Object *)s, EON_SHAPE_FILTER_CHANGED, _filter_change, EINA_FALSE, NULL);
 	ekeko_event_listener_add((Ekeko_Object *)s, EON_SHAPE_FILL_PAINT_CHANGED, _paint_change, EINA_FALSE, NULL);
 	ekeko_event_listener_add((Ekeko_Object *)s, EON_SHAPE_STROKE_PAINT_CHANGED, _paint_change, EINA_FALSE, NULL);

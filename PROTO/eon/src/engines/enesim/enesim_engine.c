@@ -575,9 +575,8 @@ static void rect_style(Paint *p, Paint *rel)
 {
 	int dx, dy, dw, dh;
 
-	eon_paint_style_coords_get(p->p, rel->p, &dx, &dy, &dw, &dh);
+	eon_square_style_coords_get((Eon_Square *)p->p, rel->p, &dx, &dy, &dw, &dh);
 	enesim_renderer_rectangle_size_set(p->r, dw, dh);
-	enesim_renderer_rectangle_size_set(p->r, 320, 240);
 
 	rect_setup(p);
 	paint_style_setup(p, rel, dx, dy);
@@ -586,8 +585,6 @@ static void rect_style(Paint *p, Paint *rel)
 static void rect_render(void *er, void *cd, Eina_Rectangle *clip)
 {
 	Paint *p = er;
-	Eina_Rectangle geom;
-
 	Eon_Coord cx, cy, cw, ch;
 
 	eon_square_coords_get((Eon_Square *)p->p, &cx, &cy, &cw, &ch);
@@ -616,20 +613,18 @@ static void * rect_create(Eon_Rect *er)
 static void circle_setup(Paint *p)
 {
 	Eon_Circle *c = (Eon_Circle *)p->p;
-	float radius;
-	Eon_Coord x;
-	Eon_Coord y;
 
 	shape_renderer_setup(p);
-	eon_circle_x_get(c, &x);
-	eon_circle_y_get(c, &y);
-	radius = eon_circle_radius_get(c);
-	enesim_renderer_circle_center_set(p->r, x.final, y.final);
-	enesim_renderer_circle_radius_set(p->r, radius);
 }
 
 static void circle_style(Paint *p, Paint *rel)
 {
+	int cx, cy;
+	float radius;
+
+	eon_circle_style_coords_get((Eon_Circle *)p->p, rel->p, &cx, &cy, &radius);
+	enesim_renderer_circle_center_set(p->r, cx, cy);
+	enesim_renderer_circle_radius_set(p->r, radius);
 	circle_setup(p);
 	paint_style_setup(p, rel, 0, 0);
 }
@@ -637,7 +632,15 @@ static void circle_style(Paint *p, Paint *rel)
 static void circle_render(void *ec, void *cd, Eina_Rectangle *clip)
 {
 	Paint *p = ec;
+	Eon_Coord x;
+	Eon_Coord y;
+	float radius;
 
+	eon_circle_x_get((Eon_Circle *)p->p, &x);
+	eon_circle_y_get((Eon_Circle *)p->p, &y);
+	radius = eon_circle_radius_get((Eon_Circle *)p->p);
+	enesim_renderer_circle_center_set(p->r, x.final, y.final);
+	enesim_renderer_circle_radius_set(p->r, radius);
 	circle_setup(p);
 	paint_renderer_setup(p, 0, 0);
 	enesim_renderer_state_setup(p->r);

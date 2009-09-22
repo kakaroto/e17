@@ -38,7 +38,7 @@ extern Ekeko_Property_Id EON_SQUARE_H;
 typedef struct _Eon_Square_Private Eon_Square_Private;
 struct _Eon_Square
 {
-	Eon_Shape parent;
+	Eon_Paint parent;
 	Eon_Square_Private *private;
 };
 /*============================================================================*

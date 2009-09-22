@@ -30,7 +30,6 @@ struct _Eon_Paint_Private
 {
 	Eon_Color color; /* FIXME the color should be double state? */
 	Enesim_Rop rop;
-	Eon_Coord x, y, w, h;
 	Enesim_Matrix matrix;
 	Enesim_Matrix inverse;
 	Eon_Paint_Coordspace coordspace;
@@ -145,145 +144,6 @@ static void _render(Ekeko_Renderable *r, Eina_Rectangle *rect)
 	p->render(p, eng, prv->engine_data, surface, rect);
 }
 
-/*
- * This code is taken from eon_square.c
- * as the paint objects now support x, y, w, h coords we should support this
- * too
- */
-#if 0
-/* Just informs that the x.final property has to be recalculated */
-static void _x_inform(const Ekeko_Object *o, Ekeko_Event *e, void *data)
-{
-	Eon_Paint_Private *prv = PRIVATE(data);
-	Ekeko_Value v;
-
-	printf("[Eon_Square] Informing X change\n");
-	eon_value_coord_from(&v, &prv->x);
-	ekeko_object_property_value_set((Ekeko_Object *)data, "x", &v);
-}
-
-/* Just informs that the y.final property has to be recalculated */
-static void _y_inform(const Ekeko_Object *o, Ekeko_Event *e, void *data)
-{
-	Eon_Paint_Private *prv = PRIVATE(data);
-	Ekeko_Value v;
-
-	printf("[Eon_Square] Informing Y change\n");
-	eon_value_coord_from(&v, &prv->y);
-	ekeko_object_property_value_set((Ekeko_Object *)data, "y", &v);
-}
-
-/* Just informs that the w.final property has to be recalculated */
-static void _w_inform(const Ekeko_Object *o, Ekeko_Event *e, void *data)
-{
-	Eon_Paint_Private *prv = PRIVATE(data);
-	Ekeko_Value v;
-
-	printf("[Eon_Square] Informing W change\n");
-	eon_value_coord_from(&v, &prv->w);
-	ekeko_object_property_value_set((Ekeko_Object *)data, "w", &v);
-}
-
-/* Just informs that the h.final property has to be recalculated */
-static void _h_inform(const Ekeko_Object *o, Ekeko_Event *e, void *data)
-{
-	Eon_Paint_Private *prv = PRIVATE(data);
-	Ekeko_Value v;
-
-	printf("[Eon_Square] Informing H change\n");
-	eon_value_coord_from(&v, &prv->h);
-	ekeko_object_property_value_set((Ekeko_Object *)data, "h", &v);
-}
-
-/* Called whenever the x property changes */
-static void _x_change(const Ekeko_Object *o, Ekeko_Event *e, void *data)
-{
-	Ekeko_Event_Mutation *em = (Ekeko_Event_Mutation *)e;
-	Eon_Paint *s = (Eon_Paint *)o;
-	Eon_Paint_Private *prv = PRIVATE(o);
-	Ekeko_Object *parent;
-	Eon_Coord x, w;
-
-	if (em->state == EVENT_MUTATION_STATE_POST)
-		return;
-
-	if (!(parent = ekeko_object_parent_get(o)))
-		return;
-
-	eon_canvas_x_get((Eon_Canvas *)parent, &x);
-	eon_canvas_w_get((Eon_Canvas *)parent, &w);
-	eon_coord_change(o, &prv->x, em->curr->value.pointer_value,
-			em->prev->value.pointer_value, x.final, w.final, parent,
-			EON_CANVAS_X_CHANGED, EON_CANVAS_W_CHANGED,
-			_x_inform);
-}
-
-/* Called whenever the y property changes */
-static void _y_change(const Ekeko_Object *o, Ekeko_Event *e, void *data)
-{
-	Ekeko_Event_Mutation *em = (Ekeko_Event_Mutation *)e;
-	Eon_Paint *s = (Eon_Paint *)o;
-	Eon_Paint_Private *prv = PRIVATE(o);
-	Ekeko_Object *parent;
-	Eon_Coord y, h;
-
-	if (em->state == EVENT_MUTATION_STATE_POST)
-		return;
-
-	if (!(parent = ekeko_object_parent_get(o)))
-		return;
-
-	eon_canvas_y_get((Eon_Canvas *)parent, &y);
-	eon_canvas_h_get((Eon_Canvas *)parent, &h);
-	eon_coord_change(o, &prv->y, em->curr->value.pointer_value,
-			em->prev->value.pointer_value, y.final, h.final, parent,
-			EON_CANVAS_Y_CHANGED, EON_CANVAS_H_CHANGED,
-			_y_inform);
-}
-
-/* Called whenever the w property changes */
-static void _w_change(const Ekeko_Object *o, Ekeko_Event *e, void *data)
-{
-	Ekeko_Event_Mutation *em = (Ekeko_Event_Mutation *)e;
-	Eon_Paint *s = (Eon_Paint *)o;
-	Eon_Paint_Private *prv = PRIVATE(o);
-	Ekeko_Object *parent;
-	Eon_Coord w;
-
-	if (em->state == EVENT_MUTATION_STATE_POST)
-		return;
-
-	if (!(parent = ekeko_object_parent_get(o)))
-		return;
-
-	eon_canvas_w_get((Eon_Canvas *)parent, &w);
-	eon_coord_length_change(o, &prv->w, em->curr->value.pointer_value,
-			em->prev->value.pointer_value, w.final, parent,
-			EON_CANVAS_W_CHANGED, _w_inform);
-}
-
-/* Called whenever the h property changes */
-static void _h_change(const Ekeko_Object *o, Ekeko_Event *e, void *data)
-{
-	Ekeko_Event_Mutation *em = (Ekeko_Event_Mutation *)e;
-	Eon_Paint *s = (Eon_Paint *)o;
-	Eon_Paint_Private *prv = PRIVATE(o);
-	Ekeko_Object *parent;
-	Eon_Coord h;
-
-	if (em->state == EVENT_MUTATION_STATE_POST)
-		return;
-
-	if (!(parent = ekeko_object_parent_get(o)))
-		return;
-
-	eon_canvas_h_get((Eon_Canvas *)parent, &h);
-	eon_coord_length_change(o, &prv->h, em->curr->value.pointer_value,
-			em->prev->value.pointer_value, h.final, parent,
-			EON_CANVAS_H_CHANGED, _h_inform);
-}
-#endif
-
 static void _ctor(void *instance)
 {
 	Eon_Paint *p;
@@ -302,13 +162,6 @@ static void _ctor(void *instance)
 	ekeko_event_listener_add((Ekeko_Object *)p, EON_PAINT_ROP_CHANGED, _rop_change, EINA_FALSE, NULL);
 	ekeko_event_listener_add((Ekeko_Object *)p, EON_PAINT_MATRIX_CHANGED, _matrix_change, EINA_FALSE, NULL);
 	ekeko_event_listener_add((Ekeko_Object *)p, EKEKO_EVENT_OBJECT_APPEND, _child_append_cb, EINA_FALSE, NULL);
-	/* code taken from eon_square */
-#if 0
-	ekeko_event_listener_add((Ekeko_Object *)p, EON_PAINT_X_CHANGED, _x_change, EINA_FALSE, NULL);
-	ekeko_event_listener_add((Ekeko_Object *)p, EON_PAINT_Y_CHANGED, _y_change, EINA_FALSE, NULL);
-	ekeko_event_listener_add((Ekeko_Object *)p, EON_PAINT_W_CHANGED, _w_change, EINA_FALSE, NULL);
-	ekeko_event_listener_add((Ekeko_Object *)p, EON_PAINT_H_CHANGED, _h_change, EINA_FALSE, NULL);
-#endif
 }
 
 static void _dtor(void *paint)
@@ -424,41 +277,6 @@ void eon_paint_style_inverse_matrix_get(Eon_Paint *p, Eon_Paint *rel,
 	}
 }
 
-void eon_paint_style_coords_get(Eon_Paint *p, Eon_Paint *rel, int *x, int *y,
-		int *w, int *h)
-{
-	Eon_Coord px, py, pw, ph;
-	Eina_Rectangle geom;
-
-	/* FIXME when a paint has relative coordinates and the parent is not
-	 * renderable but another style what to do?
-	 */
-	/* setup the renderer correctly */
-	if (eon_paint_coordspace_get(p) == EON_COORDSPACE_OBJECT)
-	{
-		eon_paint_geometry_get(rel, &geom);
-	}
-	else
-	{
-		Ekeko_Renderable *r;
-
-		/* FIXME we should get the topmost canvas units not the parent
-		 * canvas
-		 */
-		r = (Ekeko_Renderable *)eon_paint_canvas_topmost_get(rel);
-		ekeko_renderable_geometry_get(r, &geom);
-	}
-	/* THIS IS WRONG, we are always using the paint's coords which are
-	 * always 0
-	 */
-	eon_paint_coords_get(p, &px, &py, &pw, &ph);
-	if (x) eon_coord_calculate(&px, geom.x, geom.w, x);
-	if (y) eon_coord_calculate(&py, geom.y, geom.h, y);
-	if (w) eon_coord_length_calculate(&pw, geom.w, w);
-	if (h) eon_coord_length_calculate(&ph, geom.h, h);
-}
-
-
 void eon_paint_inverse_matrix_get(Eon_Paint *p, Enesim_Matrix *m)
 {
 	Eon_Paint_Private *prv;
@@ -521,10 +339,6 @@ void eon_paint_geometry_get(Eon_Paint *p, Eina_Rectangle *rect)
 Ekeko_Property_Id EON_PAINT_COLOR;
 Ekeko_Property_Id EON_PAINT_ROP;
 Ekeko_Property_Id EON_PAINT_MATRIX;
-Ekeko_Property_Id EON_PAINT_X;
-Ekeko_Property_Id EON_PAINT_Y;
-Ekeko_Property_Id EON_PAINT_W;
-Ekeko_Property_Id EON_PAINT_H;
 Ekeko_Property_Id EON_PAINT_COORDSPACE;
 Ekeko_Property_Id EON_PAINT_MATRIXSPACE;
 
@@ -540,10 +354,6 @@ EAPI Ekeko_Type *eon_paint_type_get(void)
 		EON_PAINT_COLOR = EKEKO_TYPE_PROP_SINGLE_ADD(type, "color", EON_PROPERTY_COLOR, OFFSET(Eon_Paint_Private, color));
 		EON_PAINT_ROP = EKEKO_TYPE_PROP_SINGLE_ADD(type, "rop", EKEKO_PROPERTY_INT, OFFSET(Eon_Paint_Private, rop));
 		EON_PAINT_MATRIX = EKEKO_TYPE_PROP_SINGLE_ADD(type, "matrix", EON_PROPERTY_MATRIX, OFFSET(Eon_Paint_Private, matrix));
-		EON_PAINT_X = EKEKO_TYPE_PROP_SINGLE_ADD(type, "x", EON_PROPERTY_COORD, OFFSET(Eon_Paint_Private, x));
-		EON_PAINT_Y = EKEKO_TYPE_PROP_SINGLE_ADD(type, "y", EON_PROPERTY_COORD, OFFSET(Eon_Paint_Private, y));
-		EON_PAINT_W = EKEKO_TYPE_PROP_SINGLE_ADD(type, "w", EON_PROPERTY_COORD, OFFSET(Eon_Paint_Private, w));
-		EON_PAINT_H = EKEKO_TYPE_PROP_SINGLE_ADD(type, "h", EON_PROPERTY_COORD, OFFSET(Eon_Paint_Private, h));
 		EON_PAINT_COORDSPACE = EKEKO_TYPE_PROP_SINGLE_ADD(type, "coordspace", EKEKO_PROPERTY_INT, OFFSET(Eon_Paint_Private, coordspace));
 		EON_PAINT_MATRIXSPACE = EKEKO_TYPE_PROP_SINGLE_ADD(type, "matrixspace", EKEKO_PROPERTY_INT, OFFSET(Eon_Paint_Private, matrixspace));
 	}
@@ -588,96 +398,6 @@ EAPI Eon_Paint_Coordspace eon_paint_coordspace_get(Eon_Paint *p)
 	Eon_Paint_Private *prv = PRIVATE(p);
 
 	return prv->coordspace;
-}
-
-EAPI void eon_paint_x_rel_set(Eon_Paint *p, int x)
-{
-	Eon_Coord coord;
-	Ekeko_Value v;
-
-	eon_coord_set(&coord, x, EON_COORD_RELATIVE);
-	eon_value_coord_from(&v, &coord);
-	ekeko_object_property_value_set((Ekeko_Object *)p, "x", &v);
-}
-
-EAPI void eon_paint_x_set(Eon_Paint *p, int x)
-{
-	Eon_Coord coord;
-	Ekeko_Value v;
-
-	eon_coord_set(&coord, x, EON_COORD_ABSOLUTE);
-	eon_value_coord_from(&v, &coord);
-	ekeko_object_property_value_set((Ekeko_Object *)p, "x", &v);
-}
-
-EAPI void eon_paint_y_set(Eon_Paint *p, int y)
-{
-	Eon_Coord coord;
-	Ekeko_Value v;
-
-	eon_coord_set(&coord, y, EON_COORD_ABSOLUTE);
-	eon_value_coord_from(&v, &coord);
-	ekeko_object_property_value_set((Ekeko_Object *)p, "y", &v);
-}
-
-EAPI void eon_paint_y_rel_set(Eon_Paint *p, int y)
-{
-	Eon_Coord coord;
-	Ekeko_Value v;
-
-	eon_coord_set(&coord, y, EON_COORD_RELATIVE);
-	eon_value_coord_from(&v, &coord);
-	ekeko_object_property_value_set((Ekeko_Object *)p, "y", &v);
-}
-
-EAPI void eon_paint_w_set(Eon_Paint *p, int w)
-{
-	Eon_Coord coord;
-	Ekeko_Value v;
-
-	eon_coord_set(&coord, w, EON_COORD_ABSOLUTE);
-	eon_value_coord_from(&v, &coord);
-	ekeko_object_property_value_set((Ekeko_Object *)p, "w", &v);
-}
-
-EAPI void eon_paint_w_rel_set(Eon_Paint *p, int w)
-{
-	Eon_Coord coord;
-	Ekeko_Value v;
-
-	eon_coord_set(&coord, w, EON_COORD_RELATIVE);
-	eon_value_coord_from(&v, &coord);
-	ekeko_object_property_value_set((Ekeko_Object *)p, "w", &v);
-}
-
-EAPI void eon_paint_h_set(Eon_Paint *p, int h)
-{
-	Eon_Coord coord;
-	Ekeko_Value v;
-
-	eon_coord_set(&coord, h, EON_COORD_ABSOLUTE);
-	eon_value_coord_from(&v, &coord);
-	ekeko_object_property_value_set((Ekeko_Object *)p, "h", &v);
-}
-
-EAPI void eon_paint_h_rel_set(Eon_Paint *p, int h)
-{
-	Eon_Coord coord;
-	Ekeko_Value v;
-
-	eon_coord_set(&coord, h, EON_COORD_RELATIVE);
-	eon_value_coord_from(&v, &coord);
-	ekeko_object_property_value_set((Ekeko_Object *)p, "h", &v);
-}
-
-EAPI void eon_paint_coords_get(Eon_Paint *p, Eon_Coord *x, Eon_Coord *y, Eon_Coord *w, Eon_Coord *h)
-{
-	Eon_Paint_Private *prv = PRIVATE(p);
-
-	*x = prv->x;
-	*y = prv->y;
-	*w = prv->w;
-	*h = prv->h;
 }
 
 EAPI void eon_paint_matrixspace_set(Eon_Paint *p, Eon_Paint_Matrixspace cs)

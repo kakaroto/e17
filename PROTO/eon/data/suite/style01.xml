@@ -4,7 +4,6 @@
 	<canvas w="100%" h="100%">
 		<rect x="0%" y="0%" w="100%" h="100%"
 				fill_color="white" draw_mode="0"/>
-		
 		<rect id="r01" x="10%" y="10%" w="20%" h="20%"
 				radius="10"
 				fill_color="blue"
@@ -18,7 +17,7 @@
 				draw_mode="1"
 				coordspace="1"/>
 		<circle id="sh01" x="50%" y="50%" radius="100"
-				fill_paint="#r01" 
+				fill_paint="#r01"
 				stroke_width="5" stroke_color="red"
 				draw_mode="2"/>
 	</canvas>
