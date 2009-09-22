@@ -137,3 +137,10 @@ cdef class Part:
                 edje_edit_part_repeat_events_set(self.edje.obj, self.name, 1)
             else:
                 edje_edit_part_repeat_events_set(self.edje.obj, self.name, 0)
+
+    property effect:
+        def __get__(self):
+            return edje_edit_part_effect_get(self.edje.obj, self.name)
+
+        def __set__(self, effect):
+            edje_edit_part_effect_set(self.edje.obj, self.name, effect)
