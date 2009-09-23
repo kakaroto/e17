@@ -22,10 +22,11 @@ eon_filter.h \
 eon_hswitch.h \
 eon_image.h \
 eon_paint.h \
+eon_paint_square.h \
 eon_polygon.h \
 eon_rect.h \
 eon_script.h \
-eon_square.h \
+eon_shape_square.h \
 eon_style.h \
 eon_transition.h \
 eon_shape.h \

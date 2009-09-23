@@ -3,6 +3,13 @@ ST = Short Term
 MT = Mid Term
 LT = Long Term
 
+Core
+====
++ Merge eon_shape_sauqre and eon_paint_square, define an interface
++ Make the Eon_Canvas be a child of Eon_Paint, make the Ekeko_Canvas an interface
++ Replace every foo_new(Canvas *) with a foo_new(Document *d) so the document
+  element works as a factory to trigger "new object" event
+
 Bin
 ===
 + Create an Eon builder (LT)

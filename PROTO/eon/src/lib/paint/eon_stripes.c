@@ -29,6 +29,11 @@ struct _Eon_Stripes_Private
 	float thickness1, thickness2;
 };
 
+static void _render(Eon_Paint *p, Eon_Engine *eng, void *engine_data, void *canvas_data, Eina_Rectangle *clip)
+{
+	eon_engine_stripes_render(eng, engine_data, canvas_data, clip);
+}
+
 static void _ctor(void *instance)
 {
 	Eon_Stripes *sq;
@@ -36,9 +41,9 @@ static void _ctor(void *instance)
 
 	sq = (Eon_Stripes *)instance;
 	sq->private = prv = ekeko_type_instance_private_get(eon_stripes_type_get(), instance);
-	sq->parent.create = eon_engine_stripes_create;
-	//sq->parent.setup = eon_engine_stripes_setup;
-	sq->parent.delete = eon_engine_stripes_delete;
+	sq->parent.parent.create = eon_engine_stripes_create;
+	sq->parent.parent.render = _render;
+	sq->parent.parent.delete = eon_engine_stripes_delete;
 }
 
 static void _dtor(void *image)
@@ -63,7 +68,7 @@ EAPI Ekeko_Type *eon_stripes_type_get(void)
 	if (!type)
 	{
 		type = ekeko_type_new(EON_TYPE_STRIPES, sizeof(Eon_Stripes),
-				sizeof(Eon_Stripes_Private), eon_paint_type_get(),
+				sizeof(Eon_Stripes_Private), eon_paint_square_type_get(),
 				_ctor, _dtor, eon_paint_appendable);
 		EON_STRIPES_COLOR1 = EKEKO_TYPE_PROP_SINGLE_ADD(type, "color1", EON_PROPERTY_COLOR, OFFSET(Eon_Stripes_Private, color1));
 		EON_STRIPES_COLOR2 = EKEKO_TYPE_PROP_SINGLE_ADD(type, "color2", EON_PROPERTY_COLOR, OFFSET(Eon_Stripes_Private, color2));

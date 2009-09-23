@@ -64,6 +64,7 @@ static void _loader_callback(Enesim_Surface *s, void *data, int error)
 
 		ekeko_value_bool_from(&v, EINA_TRUE);
 		ekeko_object_property_value_set((Ekeko_Object *)i, "loaded", &v);
+		eon_paint_change((Eon_Paint *)i);
 	}
 }
 
@@ -82,6 +83,11 @@ static void _file_change(const Ekeko_Object *o, Ekeko_Event *e, void *data)
 	eon_cache_image_load(em->curr->value.string_value, &prv->src.img, ENESIM_FORMAT_ARGB8888, _loader_callback, i, NULL);
 }
 
+static void _render(Eon_Paint *p, Eon_Engine *eng, void *engine_data, void *canvas_data, Eina_Rectangle *clip)
+{
+	eon_engine_image_render(eng, engine_data, canvas_data, clip);
+}
+
 static void _ctor(void *instance)
 {
 	Eon_Image *i;
@@ -89,9 +95,9 @@ static void _ctor(void *instance)
 
 	i = (Eon_Image*) instance;
 	i->private = prv = ekeko_type_instance_private_get(eon_image_type_get(), instance);
-	i->parent.create = eon_engine_image_create;
-	//i->parent.setup = eon_engine_image_setup;
-	i->parent.delete = eon_engine_image_delete;
+	i->parent.parent.create = eon_engine_image_create;
+	i->parent.parent.delete = eon_engine_image_delete;
+	i->parent.parent.render = _render;
 	ekeko_event_listener_add((Ekeko_Object *)i, EON_IMAGE_FILE_CHANGED, _file_change, EINA_FALSE, NULL);
 }
 
@@ -140,7 +146,7 @@ EAPI Ekeko_Type *eon_image_type_get(void)
 	if (!type)
 	{
 		type = ekeko_type_new(EON_TYPE_IMAGE, sizeof(Eon_Image),
-				sizeof(Eon_Image_Private), eon_paint_type_get(),
+				sizeof(Eon_Image_Private), eon_paint_square_type_get(),
 				_ctor, _dtor, eon_paint_appendable);
 		EON_IMAGE_FILE = EKEKO_TYPE_PROP_DOUBLE_ADD(type, "file", EKEKO_PROPERTY_STRING,
 				OFFSET(Eon_Image_Private, file.curr), OFFSET(Eon_Image_Private, file.prev),

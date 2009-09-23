@@ -31,7 +31,7 @@ extern Ekeko_Property_Id EON_TRANSITION_STEP;
 typedef struct _Eon_Transition_Private Eon_Transition_Private;
 struct _Eon_Transition
 {
-	Eon_Paint parent;
+	Eon_Paint_Square parent;
 	Eon_Transition_Private *private;
 };
 /*============================================================================*

@@ -46,24 +46,24 @@ struct _Eon_Engine
 	void * (*text_create)(Eon_Text *t);
 	void (*text_render)(void *p, void *c, Eina_Rectangle *clip);
 	/* image callbacks */
-	void * (*image_create)(Eon_Image *i);
-	Eina_Bool (*image_setup)(void *i, Eon_Shape *s);
+	void * (*image_create)(Eon_Paint *p);
+	void (*image_render)(void *d, void *c, Eina_Rectangle *clip);
 	void (*image_delete)(void *i);
 	/* hswitch callbacks */
-	void * (*hswitch_create)(Eon_Hswitch *i);
-	Eina_Bool (*hswitch_setup)(void *i, Eon_Shape *s);
+	void * (*hswitch_create)(Eon_Paint *p);
+	void (*hswitch_render)(void *d, void *c, Eina_Rectangle *clip);
 	void (*hswitch_delete)(void *i);
 	/* fade callbacks */
-	void * (*fade_create)(Eon_Hswitch *i);
-	Eina_Bool (*fade_setup)(void *i, Eon_Shape *s);
+	void * (*fade_create)(Eon_Paint *p);
+	void (*fade_render)(void *d, void *c, Eina_Rectangle *clip);
 	void (*fade_delete)(void *i);
 	/* checker callbacks */
-	void * (*checker_create)(Eon_Checker *i);
-	Eina_Bool (*checker_setup)(void *i, Eon_Shape *s);
+	void * (*checker_create)(Eon_Paint *p);
+	void (*checker_render)(void *d, void *c, Eina_Rectangle *clip);
 	void (*checker_delete)(void *i);
 	/* stripes callbacks */
-	void * (*stripes_create)(Eon_Stripes *i);
-	Eina_Bool (*stripes_setup)(void *i, Eon_Shape *s);
+	void * (*stripes_create)(Eon_Paint *p);
+	void (*stripes_render)(void *d, void *c, Eina_Rectangle *clip);
 	void (*stripes_delete)(void *i);
 	/* debug */
 	void (*debug_rect)(void *c, uint32_t color, int x, int y, int w, int h);
@@ -93,23 +93,23 @@ EAPI void * eon_engine_text_create(Eon_Engine *e, Eon_Text *t);
 EAPI void eon_engine_text_render(Eon_Engine *e, void *c, void *t, Eina_Rectangle *clip);
 
 EAPI void * eon_engine_image_create(Eon_Engine *e, Eon_Paint *p);
-EAPI Eina_Bool eon_engine_image_setup(Eon_Engine *e, void *engine_data, Eon_Shape *s);
+EAPI void eon_engine_image_render(Eon_Engine *e, void *d, void *c, Eina_Rectangle *clip);
 EAPI void eon_engine_image_delete(Eon_Engine *e, void *engine_data);
 
 EAPI void * eon_engine_hswitch_create(Eon_Engine *e, Eon_Paint *p);
-EAPI Eina_Bool eon_engine_hswitch_setup(Eon_Engine *e, void *engine_data, Eon_Shape *s);
+EAPI void eon_engine_hswitch_render(Eon_Engine *e, void *d, void *c, Eina_Rectangle *clip);
 EAPI void eon_engine_hswitch_delete(Eon_Engine *e, void *engine_data);
 
 EAPI void * eon_engine_fade_create(Eon_Engine *e, Eon_Paint *p);
-EAPI Eina_Bool eon_engine_fade_setup(Eon_Engine *e, void *engine_data, Eon_Shape *s);
+EAPI void eon_engine_fade_render(Eon_Engine *e, void *d, void *c, Eina_Rectangle *clip);
 EAPI void eon_engine_fade_delete(Eon_Engine *e, void *engine_data);
 
 EAPI void * eon_engine_checker_create(Eon_Engine *e, Eon_Paint *p);
-EAPI Eina_Bool eon_engine_checker_setup(Eon_Engine *e, void *engine_data, Eon_Shape *s);
+EAPI void eon_engine_checker_render(Eon_Engine *e, void *d, void *c, Eina_Rectangle *clip);
 EAPI void eon_engine_checker_delete(Eon_Engine *e, void *engine_data);
 
 EAPI void * eon_engine_stripes_create(Eon_Engine *e, Eon_Paint *p);
-EAPI Eina_Bool eon_engine_stripes_setup(Eon_Engine *e, void *engine_data, Eon_Shape *s);
+EAPI void eon_engine_stripes_render(Eon_Engine *e, void *d, void *c, Eina_Rectangle *clip);
 EAPI void eon_engine_stripes_delete(Eon_Engine *e, void *engine_data);
 
 EAPI void eon_engine_debug_rect(Eon_Engine *e, void *c, uint32_t color, int x, int y, int w, int h);

@@ -41,6 +41,9 @@ struct _Eon_Paint_Private
 	void *engine_data;
 };
 
+/* This is pointless, we should create the engine backend data whenever the
+ * paint is referenced or appended to a canvas?
+ */
 static void _child_append_cb(const Ekeko_Object *o, Ekeko_Event *e, void *data)
 {
 	Ekeko_Event_Mutation *em = (Ekeko_Event_Mutation *)e;
@@ -48,23 +51,12 @@ static void _child_append_cb(const Ekeko_Object *o, Ekeko_Event *e, void *data)
 	Eon_Paint_Private *prv;
 	Eon_Document *d;
 	Eon_Engine *eng;
-	Eon_Canvas *c;
-	Eon_Style *s;
 
-	/* FIXME we should fix how an object is actually created on the engine */
-	c = eon_paint_canvas_get((Eon_Paint *)o);
-	if (c)
-		d = eon_canvas_document_get(c);
-	else
-	{
-		//s = ekeko_object_parent_get((Ekeko_Object *)o);
-		return;
-	}
-
-
-	/* FIXME in case the canvas doesnt have a document */
-	eng = eon_document_engine_get(d);
 	p = (Eon_Paint *)o;
+	d = eon_paint_document_get(p);
+	if (!d)
+		return;
+	eng = eon_document_engine_get(d);
 	prv = PRIVATE(p);
 	prv->engine_data = p->create(eng, p);
 }
@@ -177,20 +169,7 @@ void * eon_paint_engine_data_get(Eon_Paint *p)
 	return prv->engine_data;
 }
 
-void eon_paint_create(Eon_Paint *p)
-{
-	Eon_Paint_Private *prv = PRIVATE(p);
-	Eon_Canvas *c;
-	Eon_Document *d;
-	Eon_Engine *eng;
-
-	c = eon_paint_canvas_get(p);
-	d = eon_canvas_document_get(c);
-	/* FIXME in case the canvas doesnt have a document */
-	eng = eon_document_engine_get(d);
-	prv->engine_data = p->create(eng, p);
-}
-
+/* FIXME remove this */
 Eina_Bool eon_paint_setup(Eon_Paint *p, Eon_Shape *s)
 {
 #if 0
@@ -243,8 +222,7 @@ void eon_paint_change(Eon_Paint *p)
 	Ekeko_Object *parent;
 	Eina_Rectangle geom;
 
-	/* TODO only add a damage in case its parent is a canvas */
-	/* add a damage here */
+	/* Only add a damage in case its parent is a canvas */
 	c = eon_paint_canvas_get(p);
 	if (!c)
 		return;
@@ -333,6 +311,20 @@ void eon_paint_geometry_get(Eon_Paint *p, Eina_Rectangle *rect)
 	*rect = prv->srect;
 }
 
+/* TODO Once the document is converted to a factory remove this
+ * and always append a document
+ */
+Eon_Document * eon_paint_document_get(Eon_Paint *p)
+{
+	Ekeko_Object *o = (Ekeko_Object *)p;
+
+	do
+	{
+		o = ekeko_object_parent_get(o);
+	} while (o && !ekeko_type_instance_is_of(o, EON_TYPE_DOCUMENT));
+
+	return (Eon_Document *)o;
+}
 /*============================================================================*
  *                                   API                                      *
  *============================================================================*/
@@ -359,16 +351,6 @@ EAPI Ekeko_Type *eon_paint_type_get(void)
 	}
 
 	return type;
-}
-
-EAPI Eon_Paint * eon_paint_new(Eon_Canvas *c)
-{
-	Eon_Paint *r;
-
-	r = ekeko_type_instance_new(eon_paint_type_get());
-	ekeko_object_child_append((Ekeko_Object *)c, (Ekeko_Object *)r);
-
-	return r;
 }
 
 EAPI void eon_paint_matrix_set(Eon_Paint *p, Enesim_Matrix *m)

@@ -38,27 +38,16 @@ typedef struct _Eon_Animation_Callback_Container
 	Eon_Animation_Callback cb;
 } Eon_Animation_Callback_Container;
 
-
-
-static inline Eon_Document * _document_get(Ekeko_Object *o)
+static inline Eon_Document * _document_get(Ekeko_Object *obj)
 {
-	Eon_Document *doc;
+	Ekeko_Object *o = (Ekeko_Object *)obj;
 
-	/* canvas */
-	if (ekeko_type_instance_is_of(o, EON_TYPE_CANVAS))
+	do
 	{
-		doc = eon_canvas_document_get((Eon_Canvas *)o);
-	}
-	/* shape */
-	else
-	{
-		Ekeko_Object *parent;
+		o = ekeko_object_parent_get(o);
+	} while (o && !ekeko_type_instance_is_of(o, EON_TYPE_DOCUMENT));
 
-		parent = ekeko_object_parent_get(o);
-		if (!parent) return NULL;
-		doc = _document_get(parent);
-	}
-	return doc;
+	return (Eon_Document *)o;
 }
 
 static void _etch_callback(const Etch_Data *curr, const Etch_Data *prev, void *data)

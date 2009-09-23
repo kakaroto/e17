@@ -32,7 +32,7 @@ extern Ekeko_Property_Id EON_TEXT_STR;
 typedef struct _Eon_Text_Private Eon_Text_Private;
 struct _Eon_Text
 {
-	Eon_Shape parent;
+	Eon_Shape_Square parent;
 	Eon_Text_Private *private;
 };
 /*============================================================================*

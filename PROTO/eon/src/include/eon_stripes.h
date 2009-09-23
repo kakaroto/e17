@@ -33,7 +33,7 @@ extern Ekeko_Property_Id EON_STRIPES_THICKNESS2;
 typedef struct _Eon_Stripes_Private Eon_Stripes_Private;
 struct _Eon_Stripes
 {
-	Eon_Paint parent;
+	Eon_Paint_Square parent;
 	Eon_Stripes_Private *private;
 };
 /*============================================================================*

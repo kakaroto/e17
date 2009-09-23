@@ -35,6 +35,9 @@ typedef struct _Eon_Script Eon_Script;
 typedef struct _Eon_Style Eon_Style;
 /* paint objects */
 typedef struct _Eon_Paint Eon_Paint;
+typedef struct _Eon_Paint_Square Eon_Paint_Square;
+typedef struct _Eon_Compound Eon_Compound;
+typedef struct _Eon_Compound_Layer Eon_Compound_Layer;
 typedef struct _Eon_Image Eon_Image;
 typedef struct _Eon_Transition Eon_Transition;
 typedef struct _Eon_Hswitch Eon_Hswitch;
@@ -43,7 +46,7 @@ typedef struct _Eon_Checker Eon_Checker;
 typedef struct _Eon_Stripes Eon_Stripes;
 /* shapes */
 typedef struct _Eon_Shape Eon_Shape;
-typedef struct _Eon_Square Eon_Square;
+typedef struct _Eon_Shape_Square Eon_Shape_Square;
 typedef struct _Eon_Rect Eon_Rect;
 typedef struct _Eon_Circle Eon_Circle;
 typedef struct _Eon_Polygon Eon_Polygon;
@@ -78,6 +81,9 @@ EAPI int eon_shutdown(void);
 #include "eon_style.h"
 
 #include "eon_paint.h"
+#include "eon_paint_square.h"
+#include "eon_compound.h"
+#include "eon_compound_layer.h"
 #include "eon_image.h"
 #include "eon_transition.h"
 #include "eon_hswitch.h"
@@ -86,7 +92,7 @@ EAPI int eon_shutdown(void);
 #include "eon_stripes.h"
 
 #include "eon_shape.h"
-#include "eon_square.h"
+#include "eon_shape_square.h"
 #include "eon_text.h"
 #include "eon_rect.h"
 #include "eon_polygon.h"

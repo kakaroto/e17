@@ -16,71 +16,66 @@
  * If not, see <http://www.gnu.org/licenses/>.
  */
 #include "Eon.h"
-#include "Emage.h"
 #include "eon_private.h"
-
-/* TODO
- * instead of handling only two images we can do the logic for a list
- * of images at the end the renderer only needs two but we can fake that :)
- */
-
-#define EON_HSWITCH_DEBUG 0
 /*============================================================================*
  *                                  Local                                     *
  *============================================================================*/
-#define PRIVATE(d) ((Eon_Hswitch_Private *)((Eon_Hswitch *)(d))->private)
-
-struct _Eon_Hswitch_Private
+struct _Eon_Compound_Private
 {
 
 };
 
 static void _render(Eon_Paint *p, Eon_Engine *eng, void *engine_data, void *canvas_data, Eina_Rectangle *clip)
 {
-	eon_engine_hswitch_render(eng, engine_data, canvas_data, clip);
+	//eon_engine_compound_render(eng, engine_data, canvas_data, clip);
 }
 
 static void _ctor(void *instance)
 {
-	Eon_Hswitch *i;
-	Eon_Hswitch_Private *prv;
+	Eon_Compound *c;
+	Eon_Compound_Private *prv;
 
-	i = (Eon_Hswitch *) instance;
-	i->private = prv = ekeko_type_instance_private_get(eon_hswitch_type_get(), instance);
-	i->parent.parent.parent.create = eon_engine_hswitch_create;
-	i->parent.parent.parent.render = _render;
-	i->parent.parent.parent.delete = eon_engine_hswitch_delete;
+	c = (Eon_Compound *) instance;
+	c->private = prv = ekeko_type_instance_private_get(eon_compound_type_get(), instance);
+	//f->parent.parent.parent.create = eon_engine_fade_create;
+	//f->parent.parent.parent.render = _render;
+	//f->parent.parent.parent.delete = eon_engine_fade_delete;
 }
 
-static void _dtor(void *hswitch)
+static Eina_Bool _appendable(void *o, void *child)
+{
+	if (ekeko_type_instance_is_of(child, EON_TYPE_COMPOUND_LAYER))
+		return EINA_TRUE;
+	else
+		return eon_paint_appendable(o, child);
+}
+
+static void _dtor(void *fade)
 {
 
 }
 /*============================================================================*
- *                                 Global                                     *
- *============================================================================*/
-/*============================================================================*
  *                                   API                                      *
  *============================================================================*/
-EAPI Ekeko_Type *eon_hswitch_type_get(void)
+EAPI Ekeko_Type *eon_compound_type_get(void)
 {
 	static Ekeko_Type *type = NULL;
 
 	if (!type)
 	{
-		type = ekeko_type_new(EON_TYPE_HSWITCH, sizeof(Eon_Hswitch),
-				sizeof(Eon_Hswitch_Private), eon_transition_type_get(),
-				_ctor, _dtor, eon_transition_appendable);
+		type = ekeko_type_new(EON_TYPE_COMPOUND, sizeof(Eon_Compound),
+				sizeof(Eon_Compound_Private), eon_paint_square_type_get(),
+				_ctor, _dtor, _appendable);
 	}
 
 	return type;
 }
 
-EAPI Eon_Hswitch * eon_hswitch_new(void)
+EAPI Eon_Compound * eon_compound_new(void)
 {
-	Eon_Hswitch *hs;
+	Eon_Compound *c;
 
-	hs = ekeko_type_instance_new(eon_hswitch_type_get());
+	c = ekeko_type_instance_new(eon_compound_type_get());
 
-	return hs;
+	return c;
 }

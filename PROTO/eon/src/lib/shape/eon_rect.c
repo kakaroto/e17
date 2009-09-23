@@ -26,13 +26,14 @@ struct _Eon_Rect_Private
 	float radius;
 };
 
+/* FIXME this can be go away */
 static void _geometry_calc(const Ekeko_Object *o, Ekeko_Event *e, void *data)
 {
 	Eon_Rect *r = (Eon_Rect *)o;
 	Eina_Rectangle geom;
 	Eon_Coord x, y, w, h;
 
-	eon_square_coords_get((Eon_Square *)r, &x, &y, &w, &h);
+	eon_shape_square_coords_get((Eon_Shape_Square *)r, &x, &y, &w, &h);
 	eina_rectangle_coords_from(&geom, x.final, y.final, w.final,
 			h.final);
 #ifdef EON_DEBUG
@@ -42,7 +43,7 @@ static void _geometry_calc(const Ekeko_Object *o, Ekeko_Event *e, void *data)
 	eon_paint_geometry_set((Eon_Shape *)r, &geom);
 }
 
-static void _render(Eon_Shape *s, Eon_Engine *eng, void *engine_data, void *canvas_data, Eina_Rectangle *clip)
+static void _render(Eon_Paint *p, Eon_Engine *eng, void *engine_data, void *canvas_data, Eina_Rectangle *clip)
 {
 #ifdef EON_DEBUG
 	printf("[Eon_Rect] Rendering rectangle %p into canvas\n", r);
@@ -60,7 +61,7 @@ static Eina_Bool _is_inside(Eon_Paint *p, int x, int y)
 	Eina_Rectangle rrect;
 	Eina_Rectangle point;
 
-	eon_square_coords_get((Eon_Square *)s, &cx, &cy, &cw, &ch);
+	eon_shape_square_coords_get((Eon_Shape_Square *)s, &cx, &cy, &cw, &ch);
 
 	/* TODO handle the rounded corners */
 	mode = eon_shape_draw_mode_get(s);
@@ -110,14 +111,14 @@ static void _ctor(void *instance)
 
 	r = (Eon_Rect*) instance;
 	r->private = prv = ekeko_type_instance_private_get(eon_rect_type_get(), instance);
-	r->parent.parent.render = _render;
-	r->parent.parent.create = eon_engine_rect_create;
-	r->parent.parent.is_inside = _is_inside;
+	r->parent.parent.parent.render = _render;
+	r->parent.parent.parent.create = eon_engine_rect_create;
+	r->parent.parent.parent.is_inside = _is_inside;
 	/* events */
-	ekeko_event_listener_add((Ekeko_Object *)r, EON_SQUARE_X_CHANGED, _geometry_calc, EINA_FALSE, NULL);
-	ekeko_event_listener_add((Ekeko_Object *)r, EON_SQUARE_Y_CHANGED, _geometry_calc, EINA_FALSE, NULL);
-	ekeko_event_listener_add((Ekeko_Object *)r, EON_SQUARE_W_CHANGED, _geometry_calc, EINA_FALSE, NULL);
-	ekeko_event_listener_add((Ekeko_Object *)r, EON_SQUARE_H_CHANGED, _geometry_calc, EINA_FALSE, NULL);
+	ekeko_event_listener_add((Ekeko_Object *)r, EON_SHAPE_SQUARE_X_CHANGED, _geometry_calc, EINA_FALSE, NULL);
+	ekeko_event_listener_add((Ekeko_Object *)r, EON_SHAPE_SQUARE_Y_CHANGED, _geometry_calc, EINA_FALSE, NULL);
+	ekeko_event_listener_add((Ekeko_Object *)r, EON_SHAPE_SQUARE_W_CHANGED, _geometry_calc, EINA_FALSE, NULL);
+	ekeko_event_listener_add((Ekeko_Object *)r, EON_SHAPE_SQUARE_H_CHANGED, _geometry_calc, EINA_FALSE, NULL);
 	ekeko_event_listener_add((Ekeko_Object *)r, EON_PAINT_MATRIX_CHANGED, _geometry_calc, EINA_FALSE, NULL);
 }
 
@@ -142,7 +143,7 @@ EAPI Ekeko_Type *eon_rect_type_get(void)
 	if (!type)
 	{
 		type = ekeko_type_new(EON_TYPE_RECT, sizeof(Eon_Rect),
-				sizeof(Eon_Rect_Private), eon_shape_type_get(),
+				sizeof(Eon_Rect_Private), eon_shape_square_type_get(),
 				_ctor, _dtor, eon_shape_appendable);
 		EON_RECT_CORNER_RADIUS = EKEKO_TYPE_PROP_SINGLE_ADD(type, "radius", EKEKO_PROPERTY_FLOAT, OFFSET(Eon_Rect_Private, radius));
 	}

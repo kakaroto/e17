@@ -252,7 +252,7 @@ static void * canvas_create(Eon_Canvas *c, void *dd, Eina_Bool root, int w, int 
 		/* only register the events once */
 		if (!sdoc->root)
 		{
-			_root_canvas_create(c);
+			_root_canvas_create((Ekeko_Canvas *)c);
 			sdoc->root = c;
 		}
 		enesim_surface_private_set(es, sdoc->s);

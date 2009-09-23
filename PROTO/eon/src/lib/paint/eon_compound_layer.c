@@ -17,38 +17,22 @@
  */
 #include "Eon.h"
 #include "eon_private.h"
-
-/* TODO
- * instead of handling only two images we can do the logic for a list
- * of images at the end the renderer only needs two but we can fake that :)
- */
-
-#define EON_FADE_DEBUG 0
 /*============================================================================*
  *                                  Local                                     *
  *============================================================================*/
-#define PRIVATE(d) ((Eon_Fade_Private *)((Eon_Hswitch *)(d))->private)
-
-struct _Eon_Fade_Private
+struct _Eon_Compound_Layer_Private
 {
-
+	Enesim_Rop rop;
+	Eon_Paint *paint;
 };
-
-static void _render(Eon_Paint *p, Eon_Engine *eng, void *engine_data, void *canvas_data, Eina_Rectangle *clip)
-{
-	eon_engine_fade_render(eng, engine_data, canvas_data, clip);
-}
 
 static void _ctor(void *instance)
 {
-	Eon_Fade *f;
-	Eon_Fade_Private *prv;
+	Eon_Compound_Layer *l;
+	Eon_Compound_Layer_Private *prv;
 
-	f = (Eon_Fade *) instance;
-	f->private = prv = ekeko_type_instance_private_get(eon_fade_type_get(), instance);
-	f->parent.parent.parent.create = eon_engine_fade_create;
-	f->parent.parent.parent.render = _render;
-	f->parent.parent.parent.delete = eon_engine_fade_delete;
+	l = (Eon_Compound_Layer *) instance;
+	l->private = prv = ekeko_type_instance_private_get(eon_compound_layer_type_get(), instance);
 }
 
 static void _dtor(void *fade)
@@ -56,30 +40,27 @@ static void _dtor(void *fade)
 
 }
 /*============================================================================*
- *                                 Global                                     *
- *============================================================================*/
-/*============================================================================*
  *                                   API                                      *
  *============================================================================*/
-EAPI Ekeko_Type *eon_fade_type_get(void)
+EAPI Ekeko_Type *eon_compound_layer_type_get(void)
 {
 	static Ekeko_Type *type = NULL;
 
 	if (!type)
 	{
-		type = ekeko_type_new(EON_TYPE_FADE, sizeof(Eon_Fade),
-				sizeof(Eon_Fade_Private), eon_transition_type_get(),
-				_ctor, _dtor, eon_transition_appendable);
+		type = ekeko_type_new(EON_TYPE_COMPOUND_LAYER, sizeof(Eon_Compound_Layer),
+				sizeof(Eon_Compound_Layer_Private), ekeko_object_type_get(),
+				_ctor, _dtor, NULL);
 	}
 
 	return type;
 }
 
-EAPI Eon_Fade * eon_fade_new(void)
+EAPI Eon_Compound_Layer * eon_compound_layer_new(void)
 {
-	Eon_Fade *f;
+	Eon_Compound_Layer *l;
 
-	f = ekeko_type_instance_new(eon_fade_type_get());
+	l = ekeko_type_instance_new(eon_compound_layer_type_get());
 
-	return f;
+	return l;
 }

@@ -29,16 +29,21 @@ struct _Eon_Checker_Private
 	Eon_Color color1, color2;
 };
 
+static void _render(Eon_Paint *p, Eon_Engine *eng, void *engine_data, void *canvas_data, Eina_Rectangle *clip)
+{
+	eon_engine_checker_render(eng, engine_data, canvas_data, clip);
+}
+
 static void _ctor(void *instance)
 {
-	Eon_Checker *sq;
+	Eon_Checker *ch;
 	Eon_Checker_Private *prv;
 
-	sq = (Eon_Checker *)instance;
-	sq->private = prv = ekeko_type_instance_private_get(eon_checker_type_get(), instance);
-	sq->parent.create = eon_engine_checker_create;
-	//sq->parent.setup = eon_engine_checker_setup;
-	sq->parent.delete = eon_engine_checker_delete;
+	ch = (Eon_Checker *)instance;
+	ch->private = prv = ekeko_type_instance_private_get(eon_checker_type_get(), instance);
+	ch->parent.parent.create = eon_engine_checker_create;
+	ch->parent.parent.delete = eon_engine_checker_delete;
+	ch->parent.parent.render = _render;
 }
 
 static void _dtor(void *image)
@@ -63,7 +68,7 @@ EAPI Ekeko_Type *eon_checker_type_get(void)
 	if (!type)
 	{
 		type = ekeko_type_new(EON_TYPE_CHECKER, sizeof(Eon_Checker),
-				sizeof(Eon_Checker_Private), eon_paint_type_get(),
+				sizeof(Eon_Checker_Private), eon_paint_square_type_get(),
 				_ctor, _dtor, eon_paint_appendable);
 		EON_CHECKER_COLOR1 = EKEKO_TYPE_PROP_SINGLE_ADD(type, "color1", EON_PROPERTY_COLOR, OFFSET(Eon_Checker_Private, color1));
 		EON_CHECKER_COLOR2 = EKEKO_TYPE_PROP_SINGLE_ADD(type, "color2", EON_PROPERTY_COLOR, OFFSET(Eon_Checker_Private, color2));

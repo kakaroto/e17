@@ -103,7 +103,7 @@ EAPI Ekeko_Type *eon_transition_type_get(void)
 	if (!type)
 	{
 		type = ekeko_type_new(EON_TYPE_TRANSITION, sizeof(Eon_Transition),
-				sizeof(Eon_Transition_Private), eon_paint_type_get(),
+				sizeof(Eon_Transition_Private), eon_paint_square_type_get(),
 				_ctor, _dtor, NULL);
 		EON_TRANSITION_STEP = EKEKO_TYPE_PROP_SINGLE_ADD(type, "step", EKEKO_PROPERTY_FLOAT, OFFSET(Eon_Transition_Private, step));
 	}

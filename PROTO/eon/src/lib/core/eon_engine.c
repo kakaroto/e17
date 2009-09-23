@@ -139,9 +139,9 @@ EAPI void * eon_engine_image_create(Eon_Engine *e, Eon_Paint *p)
 	return e->image_create((Eon_Image *)p);
 }
 
-EAPI Eina_Bool eon_engine_image_setup(Eon_Engine *e, void *engine_data, Eon_Shape *s)
+EAPI void eon_engine_image_render(Eon_Engine *e, void *d, void *c, Eina_Rectangle *clip)
 {
-	return e->image_setup(engine_data, s);
+	return e->image_render(d, c, clip);
 }
 
 EAPI void eon_engine_image_delete(Eon_Engine *e, void *engine_data)
@@ -154,9 +154,9 @@ EAPI void * eon_engine_hswitch_create(Eon_Engine *e, Eon_Paint *p)
 	return e->hswitch_create((Eon_Hswitch *)p);
 }
 
-EAPI Eina_Bool eon_engine_hswitch_setup(Eon_Engine *e, void *engine_data, Eon_Shape *s)
+EAPI void eon_engine_hswitch_render(Eon_Engine *e, void *d, void *c, Eina_Rectangle *clip)
 {
-	return e->hswitch_setup(engine_data, s);
+	return e->hswitch_render(d, c, clip);
 }
 
 EAPI void eon_engine_hswitch_delete(Eon_Engine *e, void *engine_data)
@@ -169,9 +169,9 @@ EAPI void * eon_engine_fade_create(Eon_Engine *e, Eon_Paint *p)
 	return e->fade_create((Eon_Hswitch *)p);
 }
 
-EAPI Eina_Bool eon_engine_fade_setup(Eon_Engine *e, void *engine_data, Eon_Shape *s)
+EAPI void eon_engine_fade_render(Eon_Engine *e, void *d, void *c, Eina_Rectangle *clip)
 {
-	return e->fade_setup(engine_data, s);
+	return e->fade_render(d, c, clip);
 }
 
 EAPI void eon_engine_fade_delete(Eon_Engine *e, void *engine_data)
@@ -184,9 +184,9 @@ EAPI void * eon_engine_checker_create(Eon_Engine *e, Eon_Paint *p)
 	return e->checker_create((Eon_Checker *)p);
 }
 
-EAPI Eina_Bool eon_engine_checker_setup(Eon_Engine *e, void *engine_data, Eon_Shape *s)
+EAPI void eon_engine_checker_render(Eon_Engine *e, void *d, void *c, Eina_Rectangle *clip)
 {
-	return e->checker_setup(engine_data, s);
+	return e->checker_render(d, c, clip);
 }
 
 EAPI void eon_engine_checker_delete(Eon_Engine *e, void *engine_data)
@@ -199,9 +199,9 @@ EAPI void * eon_engine_stripes_create(Eon_Engine *e, Eon_Paint *p)
 	return e->stripes_create((Eon_Stripes *)p);
 }
 
-EAPI Eina_Bool eon_engine_stripes_setup(Eon_Engine *e, void *engine_data, Eon_Shape *s)
+EAPI void eon_engine_stripes_render(Eon_Engine *e, void *d, void *c, Eina_Rectangle *clip)
 {
-	return e->stripes_setup(engine_data, s);
+	return e->stripes_render(d, c, clip);
 }
 
 EAPI void eon_engine_stripes_delete(Eon_Engine *e, void *engine_data)

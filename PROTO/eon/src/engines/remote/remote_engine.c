@@ -2,7 +2,7 @@
 #include "eon_private.h"
 
 #include <Ecore_Ipc.h>
-/* 
+/*
  * This engine is a just a prototype of what a remote canvas should be
  * Basically we need to send some basic stuff, like when an object is created,
  * deleted, when a property changes, child appended, child removed, etc.
@@ -99,11 +99,11 @@ static void * document_create(Eon_Document *d, const char *options)
 	}
 	rdoc = calloc(1, sizeof(Engine_Remote_Document));
 
-	ecore_event_handler_add(ECORE_IPC_EVENT_SERVER_ADD, 
+	ecore_event_handler_add(ECORE_IPC_EVENT_SERVER_ADD,
 		handler_server_add, NULL);
-	ecore_event_handler_add(ECORE_IPC_EVENT_SERVER_DEL, 
+	ecore_event_handler_add(ECORE_IPC_EVENT_SERVER_DEL,
 		handler_server_del, NULL);
-	ecore_event_handler_add(ECORE_IPC_EVENT_SERVER_DATA, 
+	ecore_event_handler_add(ECORE_IPC_EVENT_SERVER_DATA,
 		handler_server_data, NULL);
 
 	rdoc->srv = srv;
@@ -151,7 +151,7 @@ static Eina_Bool canvas_flush(void *src, Eina_Rectangle *srect)
 static void object_delete(void *data)
 {
 	Object *ob = (Object *)data;
-	
+
 	ekeko_event_listener_remove(ob->o, EKEKO_EVENT_PROP_MODIFY, _mutation_cb, EINA_FALSE, ob);
 	/* remove every callback */
 	/* delete the object */
@@ -168,6 +168,7 @@ static void paint_setup(void *pd, Eon_Shape *s)
 }
 
 static Eon_Engine _remote_engine = {
+#if 0
 	.document_create = document_create,
 	.document_delete = document_delete,
 	.canvas_create = canvas_create,
@@ -197,6 +198,7 @@ static Eon_Engine _remote_engine = {
 	.stripes_delete = object_delete,
 	.stripes_setup = paint_setup,
 	//.debug_rect = debug_rect,
+#endif
 };
 
 /*============================================================================*

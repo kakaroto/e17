@@ -35,7 +35,7 @@ static void _geometry_calc(const Ekeko_Object *o, Ekeko_Event *e, void *data)
 	Eina_Rectangle geom;
 	Eon_Coord x, y, w, h;
 
-	eon_square_coords_get((Eon_Square *)r, &x, &y, &w, &h);
+	eon_shape_square_coords_get((Eon_Shape_Square *)r, &x, &y, &w, &h);
 	eina_rectangle_coords_from(&geom, x.final, y.final, w.final,
 			h.final);
 #ifdef EON_DEBUG
@@ -72,11 +72,11 @@ static void _ctor(void *instance)
 
 	t = (Eon_Text *) instance;
 	t->private = prv = ekeko_type_instance_private_get(eon_text_type_get(), instance);
-	t->parent.parent.render = _render;
-	t->parent.parent.create = eon_engine_text_create;
+	t->parent.parent.parent.render = _render;
+	t->parent.parent.parent.create = eon_engine_text_create;
 	/* events */
-	ekeko_event_listener_add((Ekeko_Object *)t, EON_SQUARE_X_CHANGED, _geometry_calc, EINA_FALSE, NULL);
-	ekeko_event_listener_add((Ekeko_Object *)t, EON_SQUARE_Y_CHANGED, _geometry_calc, EINA_FALSE, NULL);
+	ekeko_event_listener_add((Ekeko_Object *)t, EON_SHAPE_SQUARE_X_CHANGED, _geometry_calc, EINA_FALSE, NULL);
+	ekeko_event_listener_add((Ekeko_Object *)t, EON_SHAPE_SQUARE_Y_CHANGED, _geometry_calc, EINA_FALSE, NULL);
 	ekeko_event_listener_add((Ekeko_Object *)t, EON_TEXT_STR_CHANGED, _str_change, EINA_FALSE, NULL);
 }
 
@@ -108,7 +108,7 @@ EAPI Ekeko_Type *eon_text_type_get(void)
 	if (!type)
 	{
 		type = ekeko_type_new(EON_TYPE_TEXT, sizeof(Eon_Text),
-				sizeof(Eon_Text_Private), eon_square_type_get(),
+				sizeof(Eon_Text_Private), eon_shape_square_type_get(),
 				_ctor, _dtor, _appendable);
 		EON_TEXT_STR = EKEKO_TYPE_PROP_SINGLE_ADD(type, "str", EKEKO_PROPERTY_STRING, OFFSET(Eon_Text_Private, str));
 	}

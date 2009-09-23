@@ -44,12 +44,16 @@
 #define EON_TYPE_STYLE "Eon_Style"
 
 #define EON_TYPE_SHAPE "Eon_Shape"
+#define EON_TYPE_SHAPE_SQUARE "Eon_Shape_Square"
 #define EON_TYPE_TEXT "Eon_Text"
 #define EON_TYPE_RECT "Eon_Rect"
 #define EON_TYPE_POLYGON "Eon_Polygon"
 #define EON_TYPE_CIRCLE "Eon_Circle"
 
 #define EON_TYPE_PAINT "Eon_Paint"
+#define EON_TYPE_PAINT_SQUARE "Eon_Paint_Square"
+#define EON_TYPE_COMPOUND "Eon_Compound"
+#define EON_TYPE_COMPOUND_LAYER "Eon_Compound_Layer"
 #define EON_TYPE_IMAGE "Eon_Image"
 #define EON_TYPE_TRANSITION "Eon_Transition"
 #define EON_TYPE_HSWITCH "Eon_Hswitch"
@@ -123,6 +127,7 @@ void eon_paint_style_coords_get(Eon_Paint *p, Eon_Paint *rel, int *x, int *y,
 void eon_paint_style_inverse_matrix_get(Eon_Paint *p, Eon_Paint *rel,
 		Enesim_Matrix *m);
 void eon_paint_inverse_matrix_get(Eon_Paint *p, Enesim_Matrix *m);
+Eon_Document * eon_paint_document_get(Eon_Paint *p);
 
 
 /* Transition */
@@ -155,8 +160,11 @@ Eon_Style * eon_style_new(void);
 void eon_circle_style_coords_get(Eon_Circle *c, Eon_Paint *p,
 		int *cx, int *cy, float *rad);
 
-/* Square */
-void eon_square_style_coords_get(Eon_Square *s, Eon_Paint *p, int *x, int *y,
+/* Paint Square */
+void eon_paint_square_style_coords_get(Eon_Paint_Square *s, Eon_Paint *p, int *x, int *y,
+		int *w, int *h);
+/* Shape Square */
+void eon_shape_square_style_coords_get(Eon_Shape_Square *s, Eon_Paint *p, int *x, int *y,
 		int *w, int *h);
 
 #endif

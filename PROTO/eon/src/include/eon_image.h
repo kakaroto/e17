@@ -34,7 +34,7 @@ extern Ekeko_Property_Id EON_IMAGE_LOADED;
 typedef struct _Eon_Image_Private Eon_Image_Private;
 struct _Eon_Image
 {
-	Eon_Paint parent;
+	Eon_Paint_Square parent;
 	Eon_Image_Private *private;
 };
 /*============================================================================*
