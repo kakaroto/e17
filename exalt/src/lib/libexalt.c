@@ -50,6 +50,7 @@ int exalt_main()
     EXALT_ASSERT_ADV(exalt_eth_interfaces.is_launch<=0,return 0,"Exalt is launch\n");
 
     e_dbus_init();
+    e_hal_init();
     ecore_string_init();
 
     exalt_eth_interfaces.dbus_conn = e_dbus_bus_get(DBUS_BUS_SYSTEM);
