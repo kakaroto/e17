@@ -809,7 +809,10 @@ eupnp_service_proxy_action_send(Eupnp_Service_Proxy *proxy, const char *action, 
    CHECK_NULL_RET_VAL(action, EINA_FALSE);
 
    if (!eupnp_service_proxy_has_action(proxy, action))
-      return EINA_FALSE;
+     {
+	ERROR_D(_log_dom, "Proxy does not contain the requested action.");
+	return EINA_FALSE;
+     }
 
    char *message = NULL;
    char *url = NULL;
