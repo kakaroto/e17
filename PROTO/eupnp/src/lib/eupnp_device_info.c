@@ -151,7 +151,7 @@ eupnp_device_info_embedded_device_list_clear(Eupnp_Device_Info *d)
  * @return On error, returns 0. Otherwise, returns the number of times the
  * module has been initialized.
  */
-int
+EAPI int
 eupnp_device_info_init(void)
 {
    if (_eupnp_device_info_main_count)
@@ -216,7 +216,7 @@ eupnp_device_info_init(void)
  *
  * @return 0 if completely shutted down the module.
  */
-int
+EAPI int
 eupnp_device_info_shutdown(void)
 {
    if (_eupnp_device_info_main_count != 1)
@@ -244,7 +244,7 @@ eupnp_device_info_shutdown(void)
  *
  * @return On success, a Eupnp_Device_Info instance. Otherwise, NULL.
  */
-Eupnp_Device_Info *
+EAPI Eupnp_Device_Info *
 eupnp_device_info_new(const char *udn, const char *location, void *resource, void (* resource_free)(void *resource))
 {
    Eupnp_Device_Info *d;
@@ -293,7 +293,7 @@ eupnp_device_info_new(const char *udn, const char *location, void *resource, voi
  *
  * @param d Eupnp_Device_Info instance
  */
-void
+EAPI void
 eupnp_device_info_free(Eupnp_Device_Info *d)
 {
    CHECK_NULL_RET(d);
@@ -336,7 +336,7 @@ eupnp_device_info_free(Eupnp_Device_Info *d)
  *
  * @return The reference to the object
  */
-Eupnp_Device_Info *
+EAPI Eupnp_Device_Info *
 eupnp_device_info_ref(Eupnp_Device_Info *device_info)
 {
    CHECK_NULL_RET_VAL(device_info, NULL);
@@ -353,7 +353,7 @@ eupnp_device_info_ref(Eupnp_Device_Info *device_info)
  *
  * @param device_info Instance to dereference
  */
-void
+EAPI void
 eupnp_device_info_unref(Eupnp_Device_Info *device_info)
 {
    CHECK_NULL_RET(device_info);
@@ -372,7 +372,7 @@ eupnp_device_info_unref(Eupnp_Device_Info *device_info)
       eupnp_device_info_free(device_info);
 }
 
-void
+EAPI void
 eupnp_device_info_icon_add(Eupnp_Device_Info *device_info, Eupnp_Device_Icon *icon)
 {
    CHECK_NULL_RET(device_info);
@@ -381,7 +381,7 @@ eupnp_device_info_icon_add(Eupnp_Device_Info *device_info, Eupnp_Device_Icon *ic
    device_info->icons = eina_inlist_append(device_info->icons, EINA_INLIST_GET(icon));
 }
 
-void
+EAPI void
 eupnp_device_info_service_add(Eupnp_Device_Info *device_info, Eupnp_Service_Info *service)
 {
    CHECK_NULL_RET(device_info);
@@ -391,7 +391,24 @@ eupnp_device_info_service_add(Eupnp_Device_Info *device_info, Eupnp_Service_Info
    device_info->services = eina_inlist_append(device_info->services, EINA_INLIST_GET(service));
 }
 
-void
+EAPI const Eupnp_Service_Info *
+eupnp_device_info_service_get_by_type(const Eupnp_Device_Info *device_info, const char *service_type)
+{
+   CHECK_NULL_RET_VAL(device_info, NULL);
+   CHECK_NULL_RET_VAL(service_type, NULL);
+
+   Eupnp_Service_Info *s;
+
+   EINA_INLIST_FOREACH(device_info->services, s)
+     {
+	if (!strcmp(s->service_type, service_type))
+	   return (const Eupnp_Service_Info *)s;
+     }
+
+   return NULL;
+}
+
+EAPI void
 eupnp_device_info_device_add(Eupnp_Device_Info *device_info, Eupnp_Device_Info *device)
 {
    CHECK_NULL_RET(device_info);
@@ -401,7 +418,7 @@ eupnp_device_info_device_add(Eupnp_Device_Info *device_info, Eupnp_Device_Info *
    device_info->embedded_devices = eina_inlist_append(device_info->embedded_devices, EINA_INLIST_GET(device));
 }
 
-void
+EAPI void
 eupnp_device_info_fetch(Eupnp_Device_Info *device_info)
 {
    CHECK_NULL_RET(device_info);
@@ -418,8 +435,8 @@ eupnp_device_info_fetch(Eupnp_Device_Info *device_info)
       ERROR_D(_log_dom, "Could not add a new download job for device %p", device_info);
 }
 
-void
-eupnp_device_info_dump(Eupnp_Device_Info *device_info)
+EAPI void
+eupnp_device_info_dump(const Eupnp_Device_Info *device_info)
 {
    CHECK_NULL_RET(device_info);
 

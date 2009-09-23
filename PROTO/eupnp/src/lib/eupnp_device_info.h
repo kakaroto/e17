@@ -81,7 +81,8 @@ EAPI void                  eupnp_device_info_unref(Eupnp_Device_Info *device_inf
 EAPI void                  eupnp_device_info_fetch(Eupnp_Device_Info *device_info) EINA_ARG_NONNULL(1);
 EAPI void                  eupnp_device_info_icon_add(Eupnp_Device_Info *device_info, Eupnp_Device_Icon *icon) EINA_ARG_NONNULL(1,2);
 EAPI void                  eupnp_device_info_service_add(Eupnp_Device_Info *device_info, Eupnp_Service_Info *service) EINA_ARG_NONNULL(1,2);
+EAPI const Eupnp_Service_Info *eupnp_device_info_service_get_by_type(const Eupnp_Device_Info *device_info, const char *service_type) EINA_ARG_NONNULL(1,2);
 EAPI void                  eupnp_device_info_device_add(Eupnp_Device_Info *device, Eupnp_Device_Info *new) EINA_ARG_NONNULL(1,2);
-EAPI void                  eupnp_device_info_dump(Eupnp_Device_Info *device_info) EINA_ARG_NONNULL(1);
+EAPI void                  eupnp_device_info_dump(const Eupnp_Device_Info *device_info) EINA_ARG_NONNULL(1);
 
 #endif /* _EUPNP_DEVICE_INFO_H */
