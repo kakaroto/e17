@@ -26,6 +26,8 @@
 /*============================================================================*
  *                               Properties                                   *
  *============================================================================*/
+extern Ekeko_Property_Id EON_COMPOUND_LAYER_ROP;
+extern Ekeko_Property_Id EON_COMPOUND_LAYER_PAINT;
 /*============================================================================*
  *                                 Class                                      *
  *============================================================================*/
@@ -40,5 +42,8 @@ struct _Eon_Compound_Layer
  *============================================================================*/
 EAPI Ekeko_Type * eon_compound_layer_type_get(void);
 EAPI Eon_Compound_Layer * eon_compound_layer_new(void);
+
+Enesim_Rop eon_compound_layer_rop_get(Eon_Compound_Layer *l);
+Eon_Paint * eon_compound_layer_paint_get(Eon_Compound_Layer *l);
 
 #endif /* EON_COMPOUND_LAYER_H_ */

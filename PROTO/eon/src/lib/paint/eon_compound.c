@@ -27,7 +27,7 @@ struct _Eon_Compound_Private
 
 static void _render(Eon_Paint *p, Eon_Engine *eng, void *engine_data, void *canvas_data, Eina_Rectangle *clip)
 {
-	//eon_engine_compound_render(eng, engine_data, canvas_data, clip);
+	eon_engine_compound_render(eng, engine_data, canvas_data, clip);
 }
 
 static void _ctor(void *instance)
@@ -37,9 +37,9 @@ static void _ctor(void *instance)
 
 	c = (Eon_Compound *) instance;
 	c->private = prv = ekeko_type_instance_private_get(eon_compound_type_get(), instance);
-	//f->parent.parent.parent.create = eon_engine_fade_create;
-	//f->parent.parent.parent.render = _render;
-	//f->parent.parent.parent.delete = eon_engine_fade_delete;
+	c->parent.parent.create = eon_engine_compound_create;
+	c->parent.parent.render = _render;
+	c->parent.parent.delete = eon_engine_compound_delete;
 }
 
 static Eina_Bool _appendable(void *o, void *child)

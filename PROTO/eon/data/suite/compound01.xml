@@ -2,13 +2,13 @@
 	<style>
 		<circle id="bkg" x="0%" y="0%" w="100%" h="100%" fill_color="blue" draw_mode="0"/>
 		<circle id="c01" x="0%" y="0%" w="20%" h="20%" fill_color="0xaa5555aa" draw_mode="0"/>
-		<compound x="0%" y="0%" w="100%" h="100%">
+		<compound id="co01" x="0%" y="0%" w="100%" h="100%">
 			<layer paint="#bkg" rop="fill"/>
 			<layer paint="#c01" rop="blend"/>
 		</compound>
 	</style>
 	<canvas w="100%" h="100%">
 		<rect x="0%" y="0%" w="100%" h="100%" fill_color="white"/>
-		<rect fill_paint="#co01" x="10%" y="10%" w="80%" h="90%" />
+		<rect fill_paint="#co01" x="10%" y="10%" w="80%" h="90%" stroke_color="red" stroke_width="5" draw_mode="2"/>
 	</canvas>
 </eon>

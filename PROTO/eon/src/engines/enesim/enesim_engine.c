@@ -87,7 +87,74 @@ static void paint_renderer_draw(Eon_Paint *s, Enesim_Surface *dst,  Enesim_Rende
 	}
 	/* TODO set the format again */
 }
+/*============================================================================*
+ *                                   Fade                                     *
+ *============================================================================*/
+static void compound_setup(Paint *p)
+{
+	Paint *tmp;
+	Eon_Compound *c = (Eon_Compound *)p->p;
+	Eon_Paint *pl;
+	Ekeko_Object *o;
 
+	enesim_renderer_compound_clear(p->r);
+	/* get every child of the paint object and append the referenced paint */
+	/* FIXME this might be slow, better setup a post mutation event */
+	o = ekeko_object_child_first_get((Ekeko_Object *)c);
+	while (o)
+	{
+		if (ekeko_type_instance_is_of(o, EON_TYPE_COMPOUND_LAYER))
+		{
+			Eon_Compound_Layer *l = (Eon_Compound_Layer *)p;
+			Enesim_Rop rop;
+			Eon_Paint *ref;
+			Paint *pref;
+
+			rop = eon_compound_layer_rop_get(l);
+			ref = eon_compound_layer_paint_get(l);
+			printf("Adding layer %p %p\n", l, ref);
+			pref = eon_paint_engine_data_get(ref);
+			enesim_renderer_compound_layer_add(p->r, pref->r, rop);
+			//pref->style_setup(pref)
+		}
+		o = ekeko_object_next(o);
+	}
+}
+
+static void compound_style(Paint *p, Paint *rel)
+{
+	int dx, dy;
+
+	eon_paint_square_style_coords_get((Eon_Paint_Square *)p->p,
+			rel->p, &dx, &dy, NULL, NULL);
+	paint_style_setup(p, rel, dx, dy);
+	compound_setup(p);
+}
+
+static void compound_render(void *d, void *cd, Eina_Rectangle *clip)
+{
+	Paint *p = (Paint *)d;
+	Eina_Rectangle geom;
+	Eon_Coord cx, cy;
+
+	eon_paint_square_coords_get((Eon_Paint_Square *)p->p, &cx, &cy, NULL, NULL);
+	paint_renderer_setup(p, cx.final, cy.final);
+	compound_setup(p);
+	enesim_renderer_state_setup(p->r);
+	paint_renderer_draw(p->p, cd, p->r, clip);
+}
+
+static void * compound_create(Eon_Paint *c)
+{
+	Paint *p;
+
+	p = calloc(1, sizeof(Paint));
+	p->p = c;
+	p->r = enesim_renderer_compound_new();
+	p->style_setup = compound_style;
+
+	return p;
+}
 /*============================================================================*
  *                                 Horswitch                                  *
  *============================================================================*/
@@ -905,6 +972,9 @@ EAPI void eon_engine_enesim_setup(Eon_Engine *e)
 	e->stripes_create = stripes_create;
 	e->stripes_delete = paint_delete;
 	e->stripes_render = stripes_render;
+	e->compound_create = compound_create;
+	e->compound_delete = paint_delete;
+	e->compound_render = compound_render;
 	e->debug_rect = debug_rect;
 }
 

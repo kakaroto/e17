@@ -65,6 +65,10 @@ struct _Eon_Engine
 	void * (*stripes_create)(Eon_Paint *p);
 	void (*stripes_render)(void *d, void *c, Eina_Rectangle *clip);
 	void (*stripes_delete)(void *i);
+	/* compound callbacks */
+	void * (*compound_create)(Eon_Paint *p);
+	void (*compound_render)(void *d, void *c, Eina_Rectangle *clip);
+	void (*compound_delete)(void *i);
 	/* debug */
 	void (*debug_rect)(void *c, uint32_t color, int x, int y, int w, int h);
 };
@@ -111,6 +115,10 @@ EAPI void eon_engine_checker_delete(Eon_Engine *e, void *engine_data);
 EAPI void * eon_engine_stripes_create(Eon_Engine *e, Eon_Paint *p);
 EAPI void eon_engine_stripes_render(Eon_Engine *e, void *d, void *c, Eina_Rectangle *clip);
 EAPI void eon_engine_stripes_delete(Eon_Engine *e, void *engine_data);
+
+EAPI void * eon_engine_compound_create(Eon_Engine *e, Eon_Paint *p);
+EAPI void eon_engine_compound_render(Eon_Engine *e, void *d, void *c, Eina_Rectangle *clip);
+EAPI void eon_engine_compound_delete(Eon_Engine *e, void *engine_data);
 
 EAPI void eon_engine_debug_rect(Eon_Engine *e, void *c, uint32_t color, int x, int y, int w, int h);
 

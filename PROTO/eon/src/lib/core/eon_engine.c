@@ -209,6 +209,21 @@ EAPI void eon_engine_stripes_delete(Eon_Engine *e, void *engine_data)
 	e->stripes_delete(engine_data);
 }
 
+EAPI void * eon_engine_compound_create(Eon_Engine *e, Eon_Paint *p)
+{
+	return e->compound_create((Eon_Stripes *)p);
+}
+
+EAPI void eon_engine_compound_render(Eon_Engine *e, void *d, void *c, Eina_Rectangle *clip)
+{
+	return e->compound_render(d, c, clip);
+}
+
+EAPI void eon_engine_compound_delete(Eon_Engine *e, void *engine_data)
+{
+	e->compound_delete(engine_data);
+}
+
 /* Debug */
 EAPI void eon_engine_debug_rect(Eon_Engine *e, void *c, uint32_t color, int x,  int y, int w, int h)
 {
