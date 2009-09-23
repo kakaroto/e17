@@ -18,6 +18,7 @@
 
 cdef class Clock(Object):
     def __init__(self, c_evas.Object parent):
+        Object.__init__(self, parent.evas)
         self._set_obj(elm_clock_add(parent.obj))
         
     def time_set(self, hours, minutes, seconds):

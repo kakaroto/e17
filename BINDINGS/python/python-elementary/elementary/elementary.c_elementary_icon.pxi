@@ -27,6 +27,7 @@ cdef class Icon(Object):
         """
         @parm: B{parent} Parent Object
         """
+        Object.__init__(self, parent.evas)
         self._set_obj(elm_icon_add(parent.obj))
 
 

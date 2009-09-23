@@ -33,6 +33,7 @@ def Entry_utf8_to_markup(str):
 
 cdef class Entry(Object):
     def __init__(self, c_evas.Object parent):
+        Object.__init__(self, parent.evas)
         self._set_obj(elm_entry_add(parent.obj))
 
     property changed:

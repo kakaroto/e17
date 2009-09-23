@@ -21,7 +21,7 @@ _pager_mapping = dict()
 
 cdef class Pager(Object):
     def __init__(self, c_evas.Object parent):
-    #    assert parent == None
+        Object.__init__(self, parent.evas)
         self._set_obj(elm_pager_add(parent.obj))
         
     def content_push(self, c_evas.Object content):

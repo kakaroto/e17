@@ -18,6 +18,7 @@
 
 cdef class Notepad(Object):
     def __init__(self, c_evas.Object parent):
+        Object.__init__(self, parent.evas)
         self._set_obj(elm_notepad_add(parent.obj))
 
     def file_set(self, file, format):

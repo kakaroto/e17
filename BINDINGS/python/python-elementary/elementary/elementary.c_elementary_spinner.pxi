@@ -18,6 +18,7 @@
 
 cdef class Spinner(Object):
     def __init__(self, c_evas.Object parent):
+        Object.__init__(self, parent.evas)
         self._set_obj(elm_spinner_add(parent.obj))
 
     def label_format_set(self, format):

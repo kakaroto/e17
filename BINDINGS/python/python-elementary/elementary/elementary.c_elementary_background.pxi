@@ -29,6 +29,7 @@ cdef class Background(Object):
         
         @parm: B{parent} Parent window
         """
+        Object.__init__(self, parent.evas)
         self._set_obj(elm_bg_add(parent.obj))
         
     def file_set(self, filename, group = ""):

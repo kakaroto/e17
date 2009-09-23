@@ -29,6 +29,7 @@ cdef class Fileselector(Object):
     cdef object cbts
 
     def __init__(self, c_evas.Object parent):
+        Object.__init__(self, parent.evas)
         self._set_obj(elm_fileselector_add(parent.obj))
         self.cbts = []
         

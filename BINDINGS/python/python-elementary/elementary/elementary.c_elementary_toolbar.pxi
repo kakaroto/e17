@@ -66,6 +66,7 @@ cdef class Toolbar(Object):
     A toolbar
     """
     def __init__(self, c_evas.Object parent):
+        Object.__init__(self, parent.evas)
         self._set_obj(elm_toolbar_add(parent.obj))
 
     def scrollable_set(self, scrollable):

@@ -18,6 +18,7 @@
 
 cdef class Layout(Object):
     def __init__(self, c_evas.Object parent):
+        Object.__init__(self, parent.evas)
         self._set_obj(elm_layout_add(parent.obj))
         
     def file_set(self, filename, group):

@@ -43,13 +43,6 @@ cdef class Object(evas.c_evas.Object):
     An abstract class to manage object and callback handling. All 
     widgets are based on this class
     """
-
-    def evas_get(self):
-        if self.evas is None:
-            self.evas = Canvas()
-            self.evas.obj = evas.c_evas.evas_object_evas_get(self.obj)
-        return self.evas
-
     def scale_set(self, scale):
         elm_object_scale_set(self.obj, scale)
         

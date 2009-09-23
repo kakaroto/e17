@@ -67,6 +67,7 @@ cdef class HoverselItem:
 
 cdef class Hoversel(Object):
     def __init__(self, c_evas.Object parent):
+        Object.__init__(self, parent.evas)
         self._set_obj(elm_hoversel_add(parent.obj))
 
     property clicked:

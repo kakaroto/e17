@@ -21,6 +21,7 @@ cdef class InnerWindow(Window):
     An inner window 
     """
     def __init__(self, c_evas.Object parent):
+        Object.__init__(self, parent.evas)
         self._set_obj(elm_win_inwin_add(parent.obj))
         
     def activate(self):

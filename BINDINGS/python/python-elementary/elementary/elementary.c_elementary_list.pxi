@@ -170,6 +170,7 @@ cdef class ListItem:
 
 cdef class List(Object):
     def __init__(self, c_evas.Object parent):
+        Object.__init__(self, parent.evas)
         self._set_obj(elm_list_add(parent.obj))
     
     def item_append(self, label, c_evas.Object icon, c_evas.Object end, callback, data = None):

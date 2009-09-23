@@ -18,6 +18,7 @@
 
 cdef class AnchorView(Object):
     def __init__(self, c_evas.Object parent):
+        Object.__init__(self, parent.evas)
         self._set_obj(elm_anchorview_add(parent.obj))
 
     # TODO

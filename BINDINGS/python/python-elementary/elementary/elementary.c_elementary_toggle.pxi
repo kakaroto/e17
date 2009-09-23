@@ -23,6 +23,7 @@ cdef class Toggle(Object):
     cdef int state_ptr
     
     def __init__(self, c_evas.Object parent):
+        Object.__init__(self, parent.evas)
         self._set_obj(elm_toggle_add(parent.obj))
         
         # set the state pointer for the toggle widget to always

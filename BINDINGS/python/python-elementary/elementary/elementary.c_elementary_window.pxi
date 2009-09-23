@@ -29,17 +29,17 @@ cdef class Window(Object):
         @parm: B{type} Type of the Window 
         """
         self._set_obj(elm_win_add(NULL, name, type))
-    
+
+        cdef c_evas.Evas *e
+        e = c_evas.evas_object_evas_get(self.obj)
+        canvas = evas.c_evas._Canvas_from_instance(<long>e)
+        c_evas.Object.__init__(self, canvas)
+
     property canvas:
         def __get__(self):
-            """
-            Returns the canvas used by the window
-
-            @rtype Canvas
-            """
-            cdef c_evas.Evas *e
-            e = c_evas.evas_object_evas_get(self.obj)
-            return evas.c_evas._Canvas_from_instance(<long>e)
+            import warnings
+            warnings.warn("use evas or evas_get() instead.", DeprecationWarning)
+            return self.evas
 
     property destroy:
         def __set__(self, value):

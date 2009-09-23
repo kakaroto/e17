@@ -18,6 +18,7 @@
 
 cdef class Box(Object):
     def __init__(self, c_evas.Object parent):
+        Object.__init__(self, parent.evas)
         self._set_obj(elm_box_add(parent.obj))
 
     def horizontal_set(self,horizontal):

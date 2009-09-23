@@ -18,6 +18,7 @@
 
 cdef class Scroller(Object):
     def __init__(self, c_evas.Object parent):
+        Object.__init__(self, parent.evas)
         self._set_obj(elm_scroller_add(parent.obj))
 
     def content_set(self, c_evas.Object child):
