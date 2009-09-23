@@ -1,16 +1,18 @@
 #include <Eina.h>
 #include <Elementary.h>
 
+Evas_Object *devices;
+Evas_Object *dimm;
+Evas_Object *set;
+
 static void
 lighting_control_win_del_cb(void *data, Evas_Object *obj, void *event_info)
 {
    elm_exit();
 }
 
-static void
-cb(void *data, Evas_Object *obj, void *event_info)
-{
-}
+void dimm_changed(void *data, Evas_Object *obj, void *event_info);
+void check_changed(void *data, Evas_Object *obj, void *event_info);
 
 void
 lighting_control_win_create(void)
@@ -50,18 +52,12 @@ lighting_control_win_create(void)
    elm_box_pack_start(devices_box, label);
    evas_object_show(label);
 
-   Evas_Object *devices;
    devices = elm_list_add(win);
    elm_list_always_select_mode_set(devices, EINA_TRUE);
    evas_object_size_hint_align_set(devices, -1.0, -1.0);
    evas_object_size_hint_weight_set(devices, 1.0, 1.0);
    elm_box_pack_end(devices_box, devices);
    evas_object_show(devices);
-
-   // FIXME REMOVE ME
-   elm_list_item_append(devices, "Device 1", NULL, NULL, cb, NULL);
-   elm_list_item_append(devices, "Device 2", NULL, NULL, cb, NULL);
-   elm_list_go(devices);
 
    Evas_Object *controls;
    controls = elm_box_add(win);
@@ -70,7 +66,6 @@ lighting_control_win_create(void)
    evas_object_show(controls);
 
    /* Dimming control */
-   Evas_Object *dimm;
    dimm = elm_slider_add(win);
    elm_slider_label_set(dimm, "Dimming");
    elm_slider_unit_format_set(dimm, "%%");
@@ -80,15 +75,16 @@ lighting_control_win_create(void)
    evas_object_size_hint_weight_set(dimm, 1.0, 1.0);
    evas_object_size_hint_align_set(dimm, 0.5, 0.5);
    elm_box_pack_start(controls, dimm);
+   evas_object_smart_callback_add(dimm, "delay,changed", dimm_changed, NULL);
    evas_object_show(dimm);
 
-   Evas_Object *set;
    set = elm_check_add(win);
    elm_check_label_set(set, "Light status");
    elm_check_state_set(set, EINA_FALSE);
    evas_object_size_hint_weight_set(set, 1.0, 1.0);
    evas_object_size_hint_weight_set(set, 0.5, 0.5);
    elm_box_pack_end(controls, set);
+   evas_object_smart_callback_add(set, "changed", check_changed, NULL);
    evas_object_show(set);
 
    evas_object_show(win);
