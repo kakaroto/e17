@@ -51,6 +51,6 @@ EAPI Eupnp_Service_Info   *eupnp_service_info_new(const char *udn, const char *l
 EAPI void                  eupnp_service_info_free(Eupnp_Service_Info *d) EINA_ARG_NONNULL(1);
 EAPI Eupnp_Service_Info   *eupnp_service_info_ref(Eupnp_Service_Info *service_info) EINA_ARG_NONNULL(1);
 EAPI void                  eupnp_service_info_unref(Eupnp_Service_Info *service_info) EINA_ARG_NONNULL(1);
-EAPI void                  eupnp_service_info_dump(Eupnp_Service_Info *service_info) EINA_ARG_NONNULL(1);
+EAPI void                  eupnp_service_info_dump(const Eupnp_Service_Info *service_info) EINA_ARG_NONNULL(1);
 
 #endif /* _EUPNP_SERVICE_INFO_H */

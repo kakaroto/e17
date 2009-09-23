@@ -244,7 +244,7 @@ eupnp_service_info_unref(Eupnp_Service_Info *service_info)
 }
 
 EAPI void
-eupnp_service_info_dump(Eupnp_Service_Info *service_info)
+eupnp_service_info_dump(const Eupnp_Service_Info *service_info)
 {
    CHECK_NULL_RET(service_info);
 
