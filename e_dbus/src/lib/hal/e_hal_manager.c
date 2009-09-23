@@ -1,4 +1,5 @@
 #include "E_Hal.h"
+#include "e_hal_private.h"
 
 #define e_hal_manager_call_new(member) dbus_message_new_method_call(E_HAL_SENDER, E_HAL_MANAGER_PATH, E_HAL_MANAGER_INTERFACE, member)
 

@@ -1,6 +1,5 @@
 #include "E_Notify.h"
 #include "e_notify_private.h"
-#include "e_dbus_private.h"
 
 static E_DBus_Connection *client_conn;
 static int init_count = 0;
@@ -23,7 +22,7 @@ e_notification_init(void)
   
   if(_e_dbus_notification_log_dom < 0)
     {
-      E_DBUS_LOG_ERR("E-Dbus-notification Error: Impossible to create e_dbus_motification domain");
+      ERR("E-Dbus-notification Error: Impossible to create e_dbus_motification domain");
       e_dbus_shutdown();
       return 0;
     }

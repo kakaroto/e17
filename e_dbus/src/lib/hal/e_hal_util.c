@@ -1,5 +1,6 @@
 #include <E_Hal.h>
 #include <string.h>
+#include "e_hal_private.h"
 
 /**
  * @internal

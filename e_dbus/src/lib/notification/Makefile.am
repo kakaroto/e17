@@ -9,6 +9,8 @@ if BUILD_ENOTIFY
 lib_LTLIBRARIES = libenotify.la
 include_HEADERS = E_Notify.h E_Notification_Daemon.h
 
+noinst_HEADERS = e_notify_private.h
+
 libenotify_la_SOURCES = \
 E_Notify.h \
 E_Notification_Daemon.h \

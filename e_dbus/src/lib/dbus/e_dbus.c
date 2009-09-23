@@ -18,7 +18,7 @@
  *  listen for NameOwnerChanged signals for names we have SignalHandler's for
  *    remap SH to listen for signals from new owner
  */
-int _E_DBUS_LOG_DOM_GLOBAL = -1;
+int _e_dbus_log_dom = -1;
 static int connection_slot = -1;
 
 static int init = 0;
@@ -56,12 +56,12 @@ e_dbus_fd_handler(void *data, Ecore_Fd_Handler *fd_handler)
   E_DBus_Handler_Data *hd;
   unsigned int condition = 0;
 
-  E_DBUS_LOG_DBG("fd handler (%ld)!", (long int)fd_handler);
+  DBG("fd handler (%ld)!", (long int)fd_handler);
 
   hd = data;
 
   if (!hd->enabled) {
-    E_DBUS_LOG_DBG("handler disabled");
+    DBG("handler disabled");
     if (hd->fd_handler) ecore_main_fd_handler_del(hd->fd_handler);
     hd->fd_handler = NULL;
     return 0;
@@ -70,7 +70,7 @@ e_dbus_fd_handler(void *data, Ecore_Fd_Handler *fd_handler)
   if (ecore_main_fd_handler_active_get(fd_handler, ECORE_FD_WRITE)) condition |= DBUS_WATCH_WRITABLE;
   if (ecore_main_fd_handler_active_get(fd_handler, ECORE_FD_ERROR)) condition |= DBUS_WATCH_ERROR;
 
-  if (condition & DBUS_WATCH_ERROR) E_DBUS_LOG_DBG("DBUS watch error");
+  if (condition & DBUS_WATCH_ERROR) DBG("DBUS watch error");
   dbus_watch_handle(hd->watch, condition);
   hd = NULL;
 
@@ -85,7 +85,7 @@ e_dbus_fd_handler_add(E_DBus_Handler_Data *hd)
   Ecore_Fd_Handler_Flags eflags;
 
   if (hd->fd_handler) return;
-  E_DBUS_LOG_DBG("fd handler add (%d)", hd->fd);
+  DBG("fd handler add (%d)", hd->fd);
 
   dflags = dbus_watch_get_flags(hd->watch);
   eflags = ECORE_FD_ERROR;
@@ -109,7 +109,7 @@ e_dbus_handler_data_free(void *data)
 {
   E_DBus_Handler_Data *hd = data;
   
-  E_DBUS_LOG_DBG("e_dbus_handler_data_free");
+  DBG("e_dbus_handler_data_free");
   if (hd->fd_handler)
   {
     hd->cd->fd_handlers = eina_list_remove(hd->cd->fd_handlers, hd->cd->fd_handlers);
@@ -134,7 +134,7 @@ e_dbus_connection_data_watch_add(E_DBus_Connection *cd, DBusWatch *watch)
 #else
   hd->fd = dbus_watch_get_fd(hd->watch);
 #endif
-  E_DBUS_LOG_DBG("watch add (enabled: %d)", hd->enabled);
+  DBG("watch add (enabled: %d)", hd->enabled);
   if (hd->enabled) e_dbus_fd_handler_add(hd);
 }
 
@@ -151,11 +151,11 @@ e_dbus_connection_new(DBusConnection *conn)
   conn_name = dbus_bus_get_unique_name(conn);
   if (conn_name)
   {
-    E_DBUS_LOG_DBG("Connected! Name: %s", conn_name);
+    DBG("Connected! Name: %s", conn_name);
     cd->conn_name = strdup(conn_name);
   }
   else
-    E_DBUS_LOG_DBG("Not connected");
+    DBG("Not connected");
 
   cd->shared_type = -1;
   cd->fd_handlers = NULL;
@@ -170,7 +170,7 @@ e_dbus_connection_free(void *data)
   E_DBus_Connection *cd = data;
   Ecore_Fd_Handler *fd_handler;
   Ecore_Timer *timer;
-  E_DBUS_LOG_DBG("e_dbus_connection free!");
+  DBG("e_dbus_connection free!");
 
   EINA_LIST_FREE(cd->fd_handlers, fd_handler)
     ecore_main_fd_handler_del(fd_handler);
@@ -195,12 +195,12 @@ static void
 cb_main_wakeup(void *data)
 {
   E_DBus_Connection *cd;
-  E_DBUS_LOG_DBG("wakeup main!");
+  DBG("wakeup main!");
 
   cd = data;
 
   if (!cd->idler) cd->idler = ecore_idler_add(e_dbus_idler, cd);
-  else E_DBUS_LOG_DBG("already idling");
+  else DBG("already idling");
 }
 
 static void
@@ -208,7 +208,7 @@ cb_dispatch_status(DBusConnection *conn, DBusDispatchStatus new_status, void *da
 {
   E_DBus_Connection *cd;
 
-  E_DBUS_LOG_DBG("dispatch status: %d!", new_status);
+  DBG("dispatch status: %d!", new_status);
   cd = data;
 
   if (new_status == DBUS_DISPATCH_DATA_REMAINS && !cd->idler) cd->idler = ecore_idler_add(e_dbus_idler, cd);
@@ -238,12 +238,12 @@ e_dbus_timeout_handler(void *data)
 
   if (dbus_timeout_get_enabled(td->timeout)) 
   {
-    E_DBUS_LOG_DBG("timeout_handler (not enabled, ending)");
+    DBG("timeout_handler (not enabled, ending)");
     td->handler = NULL;
     return 0;
   }
 
-  E_DBUS_LOG_DBG("timeout handler!");
+  DBG("timeout handler!");
   dbus_timeout_handle(td->timeout);
   return 1;
 }
@@ -252,7 +252,7 @@ static void
 e_dbus_timeout_data_free(void *timeout_data)
 {
   E_DBus_Timeout_Data *td = timeout_data;
-  E_DBUS_LOG_DBG("e_dbus_timeout_data_free");
+  DBG("e_dbus_timeout_data_free");
   if (td->handler) ecore_timer_del(td->handler);
   free(td);
 }
@@ -264,7 +264,7 @@ cb_timeout_add(DBusTimeout *timeout, void *data)
   E_DBus_Timeout_Data *td;
   
   cd = data;
-  E_DBUS_LOG_DBG("timeout add!");
+  DBG("timeout add!");
   td = calloc(1, sizeof(E_DBus_Timeout_Data));
   td->cd = cd;
   dbus_timeout_set_data(timeout, (void *)td, e_dbus_timeout_data_free);
@@ -282,7 +282,7 @@ static void
 cb_timeout_del(DBusTimeout *timeout, void *data)
 {
   E_DBus_Timeout_Data *td;
-  E_DBUS_LOG_DBG("timeout del!");
+  DBG("timeout del!");
 
   td = (E_DBus_Timeout_Data *)dbus_timeout_get_data(timeout);
 
@@ -300,7 +300,7 @@ static void
 cb_timeout_toggle(DBusTimeout *timeout, void *data)
 {
   E_DBus_Timeout_Data *td;
-  E_DBUS_LOG_DBG("timeout toggle!");
+  DBG("timeout toggle!");
 
   td = (E_DBus_Timeout_Data *)dbus_timeout_get_data(timeout);
 
@@ -324,7 +324,7 @@ cb_watch_add(DBusWatch *watch, void *data)
   E_DBus_Connection *cd;
   cd = data;
 
-  E_DBUS_LOG_DBG("cb_watch_add");
+  DBG("cb_watch_add");
   e_dbus_connection_data_watch_add(cd, watch);
 
   return true;
@@ -335,7 +335,7 @@ cb_watch_del(DBusWatch *watch, void *data)
 {
   E_DBus_Handler_Data *hd;
 
-  E_DBUS_LOG_DBG("cb_watch_del");
+  DBG("cb_watch_del");
   hd = (E_DBus_Handler_Data *)dbus_watch_get_data(watch);
 
   if (hd->fd_handler) 
@@ -351,7 +351,7 @@ cb_watch_toggle(DBusWatch *watch, void *data)
 {
   E_DBus_Handler_Data *hd;
 
-  E_DBUS_LOG_DBG("cb_watch_toggle");
+  DBG("cb_watch_toggle");
   hd = dbus_watch_get_data(watch);
 
   if (!hd) return;
@@ -371,25 +371,25 @@ static DBusHandlerResult
 e_dbus_filter(DBusConnection *conn, DBusMessage *message, void *user_data)
 {
   E_DBus_Connection *cd = user_data;
-  E_DBUS_LOG_DBG("-----------------");
-  E_DBUS_LOG_DBG("Message!");
+  DBG("-----------------");
+  DBG("Message!");
 
-  E_DBUS_LOG_DBG("type: %s", dbus_message_type_to_string(dbus_message_get_type(message)));
-  E_DBUS_LOG_DBG("path: %s", dbus_message_get_path(message));
-  E_DBUS_LOG_DBG("interface: %s", dbus_message_get_interface(message));
-  E_DBUS_LOG_DBG("member: %s", dbus_message_get_member(message));
-  E_DBUS_LOG_DBG("sender: %s", dbus_message_get_sender(message));
+  DBG("type: %s", dbus_message_type_to_string(dbus_message_get_type(message)));
+  DBG("path: %s", dbus_message_get_path(message));
+  DBG("interface: %s", dbus_message_get_interface(message));
+  DBG("member: %s", dbus_message_get_member(message));
+  DBG("sender: %s", dbus_message_get_sender(message));
 
   switch (dbus_message_get_type(message))
   {
     case DBUS_MESSAGE_TYPE_METHOD_CALL:
-      E_DBUS_LOG_DBG("signature: %s", dbus_message_get_signature(message));
+      DBG("signature: %s", dbus_message_get_signature(message));
       break;
     case DBUS_MESSAGE_TYPE_METHOD_RETURN:
-      E_DBUS_LOG_DBG("reply serial %d", dbus_message_get_reply_serial(message));
+      DBG("reply serial %d", dbus_message_get_reply_serial(message));
       break;
     case DBUS_MESSAGE_TYPE_ERROR:
-      E_DBUS_LOG_DBG("error: %s", dbus_message_get_error_name(message));
+      DBG("error: %s", dbus_message_get_error_name(message));
       break;
     case DBUS_MESSAGE_TYPE_SIGNAL:
       dbus_message_ref(message);
@@ -404,7 +404,7 @@ e_dbus_filter(DBusConnection *conn, DBusMessage *message, void *user_data)
     default:
       break;
   }
-  E_DBUS_LOG_DBG("-----------------");
+  DBG("-----------------");
 
   return DBUS_HANDLER_RESULT_NOT_YET_HANDLED;
 }
@@ -419,13 +419,13 @@ e_dbus_idler(void *data)
 
   if (DBUS_DISPATCH_COMPLETE == dbus_connection_get_dispatch_status(cd->conn))
   {
-    E_DBUS_LOG_DBG("done dispatching!");
+    DBG("done dispatching!");
     cd->idler = NULL;
     return 0;
   }
   e_dbus_idler_active++;
   dbus_connection_ref(cd->conn);
-  E_DBUS_LOG_DBG("dispatch!");
+  DBG("dispatch!");
   dbus_connection_dispatch(cd->conn);
   dbus_connection_unref(cd->conn);
   e_dbus_idler_active--;
@@ -466,7 +466,7 @@ e_dbus_bus_get(DBusBusType type)
   conn = dbus_bus_get_private(type, &err);
   if (dbus_error_is_set(&err))
   {
-    E_DBUS_LOG_ERR("Error connecting to bus: %s", err.message);
+    ERR("Error connecting to bus: %s", err.message);
     dbus_error_free(&err);
     return NULL;
   }
@@ -474,7 +474,7 @@ e_dbus_bus_get(DBusBusType type)
   econn = e_dbus_connection_setup(conn);
   if (!econn)
   {
-    E_DBUS_LOG_ERR("Error setting up dbus connection.");
+    ERR("Error setting up dbus connection.");
     dbus_connection_close(conn);
     dbus_connection_unref(conn);
     return NULL;
@@ -539,7 +539,7 @@ e_dbus_connection_setup(DBusConnection *conn)
 EAPI void
 e_dbus_connection_close(E_DBus_Connection *conn)
 {
-  E_DBUS_LOG_DBG("e_dbus_connection_close");
+  DBG("e_dbus_connection_close");
 
   if (e_dbus_idler_active)
   {
@@ -606,12 +606,11 @@ e_dbus_init(void)
       fprintf(stderr,"E-dbus: Enable to initialize the eina module");
       return -1;
     }
-  
- _E_DBUS_LOG_DOM_GLOBAL = eina_log_domain_register("e_dbus",E_DBUS_COLOR_DEFAULT);
 
-  if(_E_DBUS_LOG_DOM_GLOBAL < 0)
+  _e_dbus_log_dom = eina_log_domain_register("e_dbus",E_DBUS_COLOR_DEFAULT);
+  if(_e_dbus_log_dom < 0)
     {
-      EINA_LOG_ERR("E-dbus: Enable to create a log domain\n");
+      EINA_LOG_ERR("Enable to create a 'e_dbus' log domain");
       eina_shutdown();
       return -1;
     }
@@ -629,7 +628,8 @@ e_dbus_shutdown(void)
 {
   if (--init) return init;
   e_dbus_object_shutdown();
-  eina_log_domain_unregister(_E_DBUS_LOG_DOM_GLOBAL);
+  eina_log_domain_unregister(_e_dbus_log_dom);
+  _e_dbus_log_dom = -1;
   eina_shutdown();
   return init;
 }

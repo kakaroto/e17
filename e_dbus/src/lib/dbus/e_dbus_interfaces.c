@@ -16,7 +16,7 @@ _dbus_peer_call(E_DBus_Connection *conn, const char *method_name, const char *de
     (destination, path, "org.freedesktop.DBus.Peer", method_name);
   if (!msg)
     {
-      E_DBUS_LOG_ERR("E-dbus Error: failed to create message for method call: %s() at "
+      ERR("E-dbus Error: failed to create message for method call: %s() at "
 	    "\"%s\" at \"%s\"",
 	    method_name, destination, path);
        return NULL;
@@ -26,7 +26,7 @@ _dbus_peer_call(E_DBus_Connection *conn, const char *method_name, const char *de
   dbus_message_unref(msg);
 
   if (!ret)
-    E_DBUS_LOG_ERR("E-dbus Error: could not %s() \"%s\" at \"%s\".",
+    ERR("E-dbus Error: could not %s() \"%s\" at \"%s\".",
 	  method_name, destination, path);
   
   return ret;
@@ -69,7 +69,7 @@ _dbus_message_property_method_call(E_DBus_Connection *conn, const char *method_n
 
   if (!conn)
     {
-      E_DBUS_LOG_ERR("E-dbus Error: no connection for call of %s", method_name);
+      ERR("E-dbus Error: no connection for call of %s", method_name);
        return NULL;
     }
 
@@ -77,7 +77,7 @@ _dbus_message_property_method_call(E_DBus_Connection *conn, const char *method_n
     (destination, path, "org.freedesktop.DBus.Properties", method_name);
   if (!msg)
     {
-      E_DBUS_LOG_ERR("E-dbus Error: failed to create message for method call: %s() at "
+      ERR("E-dbus Error: failed to create message for method call: %s() at "
 	    "\"%s\" at \"%s\"",
 	    method_name, destination, path);
       return NULL;
@@ -110,7 +110,7 @@ e_dbus_properties_get_all(E_DBus_Connection *conn, const char *destination, cons
   dbus_message_unref(msg);
 
   if (!ret)
-    E_DBUS_LOG_ERR("ERROR: failed to call GetAll() at \"%s\" at \"%s\"",
+    ERR("ERROR: failed to call GetAll() at \"%s\" at \"%s\"",
 	  destination, path);
 
   return ret;
@@ -141,7 +141,7 @@ e_dbus_properties_get(E_DBus_Connection *conn, const char *destination, const ch
   dbus_message_unref(msg);
 
   if (!ret)
-    E_DBUS_LOG_ERR("E-dbus Error: failed to call Get() at \"%s\" at \"%s\"",
+    ERR("E-dbus Error: failed to call Get() at \"%s\" at \"%s\"",
 	  destination, path);
 
   return ret;
@@ -197,7 +197,7 @@ e_dbus_properties_set(E_DBus_Connection *conn, const char *destination, const ch
   dbus_message_unref(msg);
 
   if (!ret)
-    E_DBUS_LOG_ERR("E-dbus Error: failed to call Set() at \"%s\" at \"%s\"",
+    ERR("E-dbus Error: failed to call Set() at \"%s\" at \"%s\"",
 	  destination, path);
 
   return ret;

@@ -9,11 +9,14 @@ if BUILD_EHAL
 lib_LTLIBRARIES = libehal.la
 include_HEADERS = E_Hal.h
 
+noinst_HEADERS = e_hal_private.h
+
 libehal_la_SOURCES = \
 E_Hal.h \
 e_hal_device.c  \
 e_hal_manager.c \
-e_hal_util.c 
+e_hal_util.c \
+e_hal_main.c
 
 libehal_la_LIBADD = \
 @EDBUS_LIBS@ \

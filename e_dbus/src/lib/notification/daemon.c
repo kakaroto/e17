@@ -1,7 +1,6 @@
 #include "E_Notify.h"
 #include "E_Notification_Daemon.h"
 #include "e_notify_private.h"
-#include "e_dbus_private.h"
 #include <string.h>
 
 static int e_notification_daemon_bus_init(E_Notification_Daemon *daemon);

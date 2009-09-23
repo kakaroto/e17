@@ -5,12 +5,14 @@
 #include "Ecore_Data.h"
 #include "eina_log.h"
 
-#define E_DBUS_COLOR_DEFAULT "\033[36m"
-extern int _E_DBUS_LOG_DOM_GLOBAL ;
-#define E_DBUS_LOG_DBG(...)   EINA_LOG_DOM_DBG(_E_DBUS_LOG_DOM_GLOBAL , __VA_ARGS__)
-#define E_DBUS_LOG_INFO(...)    EINA_LOG_DOM_INFO(_E_DBUS_LOG_DOM_GLOBAL , __VA_ARGS__)
-#define E_DBUS_LOG_WARN(...) EINA_LOG_DOM_WARN(_E_DBUS_LOG_DOM_GLOBAL , __VA_ARGS__)
-#define E_DBUS_LOG_ERR(...)   EINA_LOG_DOM_ERR(_E_DBUS_LOG_DOM_GLOBAL , __VA_ARGS__)
+#ifndef E_DBUS_COLOR_DEFAULT
+#define E_DBUS_COLOR_DEFAULT EINA_COLOR_CYAN
+#endif
+extern int _e_dbus_log_dom;
+#define DBG(...)   EINA_LOG_DOM_DBG(_e_dbus_log_dom, __VA_ARGS__)
+#define INFO(...)    EINA_LOG_DOM_INFO(_e_dbus_log_dom, __VA_ARGS__)
+#define WARN(...) EINA_LOG_DOM_WARN(_e_dbus_log_dom, __VA_ARGS__)
+#define ERR(...)   EINA_LOG_DOM_ERR(_e_dbus_log_dom, __VA_ARGS__)
 
 
 struct E_DBus_Connection

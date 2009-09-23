@@ -104,6 +104,9 @@ typedef struct E_Hal_Capability E_Hal_Manager_New_Capability;
 extern "C" {
 #endif
 
+   EAPI int e_hal_init(void);
+   EAPI int e_hal_shutdown(void);
+
 /* org.freedesktop.Hal.Device */
    EAPI DBusPendingCall *e_hal_device_get_property(E_DBus_Connection *conn, const char *udi, const char *property, E_DBus_Callback_Func cb_func, void *data);
    EAPI DBusPendingCall *e_hal_device_get_all_properties(E_DBus_Connection *conn, const char *udi, E_DBus_Callback_Func cb_func, void *data);

@@ -10,7 +10,7 @@ _dbus_message_method_call(const char *method_name)
      ("org.freedesktop.DBus", "/org/freedesktop/DBus", "org.freedesktop.DBus",
       method_name);
    if (!msg)
-     E_DBUS_LOG_ERR("E-dbus Error: failed to create message for method call: %s",
+     ERR("E-dbus Error: failed to create message for method call: %s",
 	   method_name);
    return msg;
 }
@@ -23,7 +23,7 @@ _dbus_call__void(E_DBus_Connection *conn, const const char *method_name, E_DBus_
 
   if (!conn)
     {
-      E_DBUS_LOG_ERR("E.dbus Error: no connection for call of %s", method_name);
+      ERR("E.dbus Error: no connection for call of %s", method_name);
       return NULL;
     }
   
@@ -34,7 +34,7 @@ _dbus_call__void(E_DBus_Connection *conn, const const char *method_name, E_DBus_
   dbus_message_unref(msg);
 
   if (!ret)
-    E_DBUS_LOG_ERR("E-dbus Error: failed to call %s()", method_name);
+    ERR("E-dbus Error: failed to call %s()", method_name);
 
   return ret;
 }
@@ -47,7 +47,7 @@ _dbus_call__str(E_DBus_Connection *conn, const const char *method_name, const ch
 
   if (!conn)
     {
-      E_DBUS_LOG_ERR("E-dbus Error: no connection for call of %s", method_name);
+      ERR("E-dbus Error: no connection for call of %s", method_name);
        return NULL;
     }
 
@@ -59,7 +59,7 @@ _dbus_call__str(E_DBus_Connection *conn, const const char *method_name, const ch
   dbus_message_unref(msg);
 
   if (!ret)
-    E_DBUS_LOG_ERR("E-dbus Error: failed to call %s(\"%s\")", method_name, str);
+    ERR("E-dbus Error: failed to call %s(\"%s\")", method_name, str);
   
   return ret;
 }
@@ -73,7 +73,7 @@ e_dbus_request_name(E_DBus_Connection *conn, const char *name, unsigned int flag
 
   if (!conn)
     {
-       E_DBUS_LOG_ERR("E-dbus Error: no connection for call of RequestName");
+       ERR("E-dbus Error: no connection for call of RequestName");
        return NULL;
     }
 
@@ -130,7 +130,7 @@ e_dbus_start_service_by_name(E_DBus_Connection *conn, const char *name, unsigned
 
    if (!conn)
      {
-       E_DBUS_LOG_ERR("ERROR: no connection for call of %s", method_name);
+       ERR("ERROR: no connection for call of %s", method_name);
 	return NULL;
      }
 
@@ -145,7 +145,7 @@ e_dbus_start_service_by_name(E_DBus_Connection *conn, const char *name, unsigned
    dbus_message_unref(msg);
 
    if (!ret)
-     E_DBUS_LOG_ERR("E-dbus Error: failed to call %s(\"%s\")", method_name, name);
+     ERR("E-dbus Error: failed to call %s(\"%s\")", method_name, name);
 
    return ret;
 }
