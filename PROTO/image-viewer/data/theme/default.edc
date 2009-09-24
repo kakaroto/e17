@@ -3,8 +3,8 @@
  */
 collections {
    group { name: "iv/main";
-      script {
-	 public controls_visible;
+      lua_script {
+	 state = { visible_controls = 0 }
       }
       parts {
          part { name: "iv.swallow.image";
@@ -108,8 +108,8 @@ collections {
 	 program { name: "init";
 	    signal: "load";
 	    source: "";
-	    script {
-	       set_int(controls_visible, 0);
+	    lua_script {
+	       state.visible_controls = 0;
 	    }
 	 }
 	 program { name: "upper_edge_in";
@@ -119,22 +119,22 @@ collections {
 	 }
 
 	 program { name: "set_controls_show";
-	    script {
-	       set_int(controls_visible, 1);
+	    lua_script {
+	       state.visible_controls = 1;
 	    }
 	 }
 	 program { name: "set_controls_hide";
-	    script {
-	       set_int(controls_visible, 0);
+	    lua_script {
+	       state.visible_controls = 0;
 	    }
 	 }
 	 program { name: "lower_edge_in";
 	    signal: "mouse,in";
 	    source: "lower_edge";
-	    script {
-		if (get_int(controls_visible) == 0) {
-		    run_program(PROGRAM:"show_controls");
-		}
+	    lua_script {
+	       if state.visible_controls == 0 then
+	          ed:program_run("show_controls")
+	       end
 	    }
 	 }
 	 program { name: "show_controls";
