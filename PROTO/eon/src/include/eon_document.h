@@ -21,6 +21,13 @@
  *                                 Events                                     *
  *============================================================================*/
 #define EON_DOCUMENT_SIZE_CHANGED "sizeChanged"
+#define EON_DOCUMENT_OBJECT_NEW "ObjectNew"
+
+typedef struct _Eon_Document_Object_New
+{
+	Ekeko_Event ev;
+	char *name;
+} Eon_Document_Object_New;
 /*============================================================================*
  *                               Properties                                   *
  *============================================================================*/

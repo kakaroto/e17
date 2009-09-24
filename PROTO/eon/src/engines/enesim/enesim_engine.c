@@ -90,11 +90,9 @@ static void paint_renderer_draw(Eon_Paint *s, Enesim_Surface *dst,  Enesim_Rende
 /*============================================================================*
  *                                   Fade                                     *
  *============================================================================*/
-static void compound_setup(Paint *p)
+static void compound_setup(Paint *p, Paint *rel)
 {
-	Paint *tmp;
 	Eon_Compound *c = (Eon_Compound *)p->p;
-	Eon_Paint *pl;
 	Ekeko_Object *o;
 
 	enesim_renderer_compound_clear(p->r);
@@ -105,17 +103,16 @@ static void compound_setup(Paint *p)
 	{
 		if (ekeko_type_instance_is_of(o, EON_TYPE_COMPOUND_LAYER))
 		{
-			Eon_Compound_Layer *l = (Eon_Compound_Layer *)p;
+			Eon_Compound_Layer *l = (Eon_Compound_Layer *)o;
 			Enesim_Rop rop;
 			Eon_Paint *ref;
 			Paint *pref;
 
 			rop = eon_compound_layer_rop_get(l);
 			ref = eon_compound_layer_paint_get(l);
-			printf("Adding layer %p %p\n", l, ref);
 			pref = eon_paint_engine_data_get(ref);
 			enesim_renderer_compound_layer_add(p->r, pref->r, rop);
-			//pref->style_setup(pref)
+			pref->style_setup(pref, rel);
 		}
 		o = ekeko_object_next(o);
 	}
@@ -128,7 +125,7 @@ static void compound_style(Paint *p, Paint *rel)
 	eon_paint_square_style_coords_get((Eon_Paint_Square *)p->p,
 			rel->p, &dx, &dy, NULL, NULL);
 	paint_style_setup(p, rel, dx, dy);
-	compound_setup(p);
+	compound_setup(p, rel);
 }
 
 static void compound_render(void *d, void *cd, Eina_Rectangle *clip)
@@ -139,7 +136,7 @@ static void compound_render(void *d, void *cd, Eina_Rectangle *clip)
 
 	eon_paint_square_coords_get((Eon_Paint_Square *)p->p, &cx, &cy, NULL, NULL);
 	paint_renderer_setup(p, cx.final, cy.final);
-	compound_setup(p);
+	compound_setup(p, p);
 	enesim_renderer_state_setup(p->r);
 	paint_renderer_draw(p->p, cd, p->r, clip);
 }

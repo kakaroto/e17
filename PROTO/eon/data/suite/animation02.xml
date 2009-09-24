@@ -1,7 +1,7 @@
 <eon>
 	<canvas w="100%" h="100%" id="canvas01">
-		<rect x="0" y="0" w="100%" h="100%" color="white"/>
-		<rect x="20%" y="50%" w="20%" h="20%" color="0xaaaa0000">
+		<rect x="0" y="0" w="100%" h="100%" fill_color="white"/>
+		<rect x="20%" y="50%" w="20%" h="20%" fill_color="0xaaaa0000">
 			<anim name="y" begin="#anim01.start" repeat="-1">
 				<key value="50%" start="0" calc="0"/>
 				<key value="0%" start="1s" calc="0"/>
@@ -23,13 +23,13 @@
 				<key value="0x00000000" start="0.4s" calc="0"/>
 			</anim>
 		</rect>
-		<rect x="20%" y="50%" w="20%" h="20%" color="red">
+		<rect x="20%" y="50%" w="20%" h="20%" fill_color="red">
 			<anim id="anim01" name="y" begin="click" repeat="-1">
 				<key value="50%" start="0" calc="0"/>
 				<key value="0%" start="1s" calc="0"/>
 			</anim>
 		</rect>
-		<rect x="60%" y="50%" w="20%" h="20%" color="red">
+		<rect x="60%" y="50%" w="20%" h="20%" fill_color="red">
 			<anim id="anim05" name="y" begin="click" repeat="1">
 				<key value="50%" start="0" calc="0"/>
 				<key value="0%" start="1s" calc="0"/>

@@ -200,7 +200,31 @@ static void _dtor(void *polygon)
 void eon_circle_style_coords_get(Eon_Circle *c, Eon_Paint *p,
 		int *cx, int *cy, float *rad)
 {
+	Eina_Rectangle geom;
+	Eon_Paint *sc = (Eon_Paint *)c;
+	Eon_Circle_Private *prv = PRIVATE(c);
 
+	/* FIXME when a paint has relative coordinates and the parent is not
+	 * renderable but another style what to do?
+	 */
+	/* setup the renderer correctly */
+	if (eon_paint_coordspace_get(sc) == EON_COORDSPACE_OBJECT)
+	{
+		eon_paint_geometry_get(p, &geom);
+	}
+	else
+	{
+		Ekeko_Renderable *r;
+
+		/* FIXME we should get the topmost canvas units not the parent
+		 * canvas
+		 */
+		r = (Ekeko_Renderable *)eon_paint_canvas_topmost_get(p);
+		ekeko_renderable_geometry_get(r, &geom);
+	}
+	if (cx) eon_coord_calculate(&prv->x, geom.x, geom.w, cx);
+	if (cy) eon_coord_calculate(&prv->y, geom.y, geom.h, cy);
+	if (rad) *rad = prv->radius;
 }
 /*============================================================================*
  *                                   API                                      *

@@ -293,10 +293,12 @@ void eon_paint_geometry_set(Eon_Paint *p, Eina_Rectangle *rect)
 		enesim_matrix_rect_transform(&prv->matrix, &r, &q);
 		enesim_quad_coords_get(&q, &x1, &y1, &x2, &y2, &x3, &y3, &x4, &y4);
 		enesim_quad_rectangle_to(&q, &r);
-		r.x += rect->x - 1;
-		r.y += rect->y - 1;
-		r.w += 2;
-		r.h += 2;
+		/* FIXME this increment isnt enough for scaling, the offset should be calculated
+		 * from the matrix itself */
+		r.x += rect->x - prv->matrix.xx;
+		r.y += rect->y - prv->matrix.yy;
+		r.w += prv->matrix.xx;
+		r.h += prv->matrix.yy;
 
 		prv->srect = *rect;
 		ekeko_renderable_geometry_set((Ekeko_Renderable *)p, &r);

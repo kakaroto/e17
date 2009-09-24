@@ -22,6 +22,7 @@
  *============================================================================*/
 static Ecore_Idle_Enterer *_idler = NULL;
 static int _count = 0;
+static Eina_Hash *_types = NULL;
 
 static int _emage_idler_cb(void *data)
 {
@@ -31,6 +32,21 @@ static int _emage_idler_cb(void *data)
 /*============================================================================*
  *                                 Global                                     *
  *============================================================================*/
+/* Initial code for the document object factory */
+void eon_type_register(Ekeko_Type *t, char *name)
+{
+	eina_hash_add(_types, name, t);
+}
+
+void eon_type_unregister(Ekeko_Type *t)
+{
+	/* TODO */
+}
+
+Ekeko_Type * eon_type_get(char *name)
+{
+	return eina_hash_find(_types, name);
+}
 /*============================================================================*
  *                                   API                                      *
  *============================================================================*/
@@ -47,6 +63,8 @@ EAPI int eon_init(void)
 		eon_script_init();
 		/* create the Emage idler */
 		_idler = ecore_idle_enterer_add(_emage_idler_cb, NULL);
+		/* The type registry */ 
+		_types = eina_hash_string_superfast_new(NULL);
 done:
 	return ++_count;
 }

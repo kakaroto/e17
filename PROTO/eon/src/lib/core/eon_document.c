@@ -97,6 +97,14 @@ static void _child_append_cb(const Ekeko_Object *o, Ekeko_Event *e, void *data)
 		prv->style = (Eon_Style *)e->target;
 }
 
+static void _object_new(Eon_Document_Object_New *ev, char *name, Ekeko_Object *o)
+{
+	Ekeko_Event *ee = (Ekeko_Event *)ev;
+
+	ev->name = name;
+	ekeko_event_init(ee, EON_DOCUMENT_OBJECT_NEW, o, EINA_FALSE);
+}
+
 static void _ctor(void *instance)
 {
 	Eon_Document *dc;
@@ -219,6 +227,7 @@ void eon_document_script_load(Eon_Document *d, const char *file)
 		return;
 	prv->vm.sm->load(prv->vm.data, file);
 }
+
 /*============================================================================*
  *                                   API                                      *
  *============================================================================*/
@@ -324,3 +333,25 @@ EAPI void eon_document_play(Eon_Document *d)
 
 	prv->anim_cb = ecore_timer_add(1.0f/30.0f, _animation_cb, d);
 }
+
+
+EAPI Ekeko_Object * eon_document_object_new(Eon_Document *d, const char *name)
+{
+	Ekeko_Object *o;
+	Ekeko_Type *t;
+
+	/* find the hash of types */
+	t = eon_type_get(name);
+	if (!t) return NULL;
+	o = ekeko_type_instance_new(t);
+	if (o)
+	{
+		/* send the event of a new object */
+		Eon_Document_Object_New ev;
+
+		_object_new(&ev, name, o);
+		ekeko_object_event_dispatch(d, (Ekeko_Event *)&ev);
+	}
+	return o;
+}
+
