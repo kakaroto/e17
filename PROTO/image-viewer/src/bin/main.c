@@ -325,14 +325,19 @@ on_controls_click(void *data, Evas_Object *obj, const char *emission, const char
 }
 
 static void
-on_image_click(void *data, Evas_Object *obj, void *event_info)
+on_image_click(void *data, Evas *a, Evas_Object *obj, void *event_info)
 {
    IV *iv = data;
+   Evas_Event_Mouse_Down *ev = event_info;
 
    if (iv->config->fit == PAN || iv->config->fit == ZOOM)
      return;
 
-   iv->flags.next = EINA_TRUE;
+   if (ev->button == 3)
+     iv->flags.prev = EINA_TRUE;
+   if (ev->button== 1)
+     iv->flags.next = EINA_TRUE;  
+
    iv->flags.hide_controls = EINA_TRUE;
    if (!iv->idler)
      iv->idler = ecore_idler_add(on_idler, iv);
@@ -947,7 +952,7 @@ read_image(IV *iv, IV_Image_Dest dest)
 		   iv->gui.prev_img = img;
 		   break;
 	       }
-	     evas_object_smart_callback_add(img, "clicked", on_image_click, iv);
+	     evas_object_event_callback_add(img, EVAS_CALLBACK_MOUSE_DOWN, on_image_click, iv);
 	     if (event)
 	       eina_hash_del_by_key(iv->file_events, l->data);
 	     break;
@@ -1156,7 +1161,7 @@ on_idler(void *data)
 
 	     if (iv->gui.prev_img)
 	       {
-		  evas_object_smart_callback_del(iv->gui.prev_img, "clicked", on_image_click);
+		  evas_object_event_callback_del(iv->gui.prev_img, EVAS_CALLBACK_MOUSE_DOWN, on_image_click);
 		  evas_object_del(iv->gui.prev_img);
 	       }
 	     iv->gui.prev_img = iv->gui.img;
@@ -1195,7 +1200,7 @@ on_idler(void *data)
 
 	     if (iv->gui.next_img)
 	       {
-		  evas_object_smart_callback_del(iv->gui.next_img, "clicked", on_image_click);
+		  evas_object_event_callback_del(iv->gui.next_img, EVAS_CALLBACK_MOUSE_DOWN, on_image_click);
 		  evas_object_del(iv->gui.next_img);
 	       }
 	     iv->gui.next_img = iv->gui.img;
@@ -1222,20 +1227,20 @@ on_idler(void *data)
 
 	if (iv->gui.prev_img)
 	  {
-	     evas_object_smart_callback_del(iv->gui.prev_img, "clicked", on_image_click);
+	     evas_object_event_callback_del(iv->gui.prev_img, EVAS_CALLBACK_MOUSE_DOWN, on_image_click);
 	     evas_object_del(iv->gui.prev_img);
 	     iv->gui.prev_img = NULL;
 	  }
 	if (iv->gui.next_img)
 	  {
-	     evas_object_smart_callback_del(iv->gui.next_img, "clicked", on_image_click);
+	     evas_object_event_callback_del(iv->gui.next_img, EVAS_CALLBACK_MOUSE_DOWN, on_image_click);
 	     evas_object_del(iv->gui.next_img);
 	     iv->gui.next_img = NULL;
 	  }
 
 	if (iv->gui.img)
 	  {
-	     evas_object_smart_callback_del(iv->gui.img, "clicked", on_image_click);
+	     evas_object_event_callback_del(iv->gui.img, EVAS_CALLBACK_MOUSE_DOWN, on_image_click);
 	     evas_object_del(iv->gui.img);
 	     iv->gui.img = NULL;
 	  }
