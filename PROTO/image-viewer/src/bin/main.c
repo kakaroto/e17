@@ -709,8 +709,9 @@ on_file_add_tick(void *data)
 {
    IV *iv = data;
 
-   if (iv && !iv->idler)
-     iv->idler = ecore_idler_add(on_idler, iv);
+   if (iv->file_events)
+     eina_hash_free(iv->file_events);
+   iv->file_events = eina_hash_string_superfast_new(NULL);
 
    return ECORE_CALLBACK_CANCEL;
 }
@@ -831,10 +832,9 @@ on_file_monitor_event(void *data, Ecore_File_Monitor *em, Ecore_File_Event event
 	  {
 	     if (iv->file_add_timer)
 	       ecore_timer_del(iv->file_add_timer);
-	     iv->file_add_timer = ecore_timer_add(1.0, on_file_add_tick, iv);
+	     iv->file_add_timer = ecore_timer_add(60.0, on_file_add_tick, iv);
 	  }
-	else
-	  iv->idler = ecore_idler_add(on_idler, iv);
+	iv->idler = ecore_idler_add(on_idler, iv);
      }
 }
 
@@ -1714,6 +1714,8 @@ iv_free(IV *iv)
       eina_stringshare_del(file);
    EINA_LIST_FREE(iv->file_monitors, monitor)
       ecore_file_monitor_del(monitor);
+   if (iv->file_add_timer)
+     ecore_timer_del(iv->file_add_timer);
    eina_hash_free(iv->file_events);
 
    eina_stringshare_del(iv->theme_file);
