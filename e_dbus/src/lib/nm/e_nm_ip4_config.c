@@ -41,11 +41,20 @@ e_nm_ip4_config_get(E_NM *nm, const char *ip4_config,
 EAPI void
 e_nm_ip4_config_free(E_NM_IP4_Config *config)
 {
+  Eina_List *l;
+  void *data;
+
   if (!config) return;
-  if (config->addresses) ecore_list_destroy(config->addresses);
-  if (config->nameservers) ecore_list_destroy(config->nameservers);
-  if (config->domains) ecore_list_destroy(config->domains);
-  if (config->routes) ecore_list_destroy(config->routes);
+  EINA_LIST_FREE(config->addresses, l)
+    EINA_LIST_FREE(l, data)
+      free(data);
+  EINA_LIST_FREE(config->nameservers, data)
+    free(data);
+  EINA_LIST_FREE(config->domains, data)
+    free(data);
+  EINA_LIST_FREE(config->routes, l)
+    EINA_LIST_FREE(l, data)
+      free(data);
   free(config);
 }
 
@@ -54,60 +63,47 @@ e_nm_ip4_config_dump(E_NM_IP4_Config *config)
 {
   unsigned int *u;
   const char   *domain;
-  Ecore_List   *list;
+  Eina_List    *list, *l;
 
   if (!config) return;
-  E_DBUS_LOG_INFO("E_NM_IP4_Config:");
-  if (config->addresses)
+  printf("E_NM_IP4_Config:\n");
+  printf("addresses  :\n");
+  EINA_LIST_FOREACH(config->addresses, l, list)
   {
     char buffer[1024];
+    Eina_List *l2;
 
-    E_DBUS_LOG_INFO("addresses  :");
-    ecore_list_first_goto(config->addresses);
-    while ((list = ecore_list_next(config->addresses)))
+    strcpy(buffer, " -");
+    EINA_LIST_FOREACH(list, l2, u)
     {
-      strcpy(buffer, " -");
-      ecore_list_first_goto(list);
-      while ((u = ecore_list_next(list)))
-	{
-	   strcat(buffer, " ");
-	   strcat(buffer, ip4_address2str(*u));
-	}
-      E_DBUS_LOG_INFO(buffer);
+      strcat(buffer, " ");
+      strcat(buffer, ip4_address2str(*u));
     }
+    printf("%s\n", buffer);
   }
-  if (config->nameservers)
+  printf("nameservers:\n");
+  EINA_LIST_FOREACH(config->nameservers, l, u)
   {
-    E_DBUS_LOG_INFO("nameservers:");
-    ecore_list_first_goto(config->nameservers);
-    while ((u = ecore_list_next(config->nameservers)))
-      E_DBUS_LOG_INFO(" - %s", ip4_address2str(*u));
+    printf(" - %s\n", ip4_address2str(*u));
   }
-  if (config->domains)
+  printf("domains    :\n");
+  EINA_LIST_FOREACH(config->domains, l, domain)
   {
-    E_DBUS_LOG_INFO("domains    :");
-    ecore_list_first_goto(config->domains);
-    while ((domain = ecore_list_next(config->domains)))
-      E_DBUS_LOG_INFO(" - %s", domain);
+    printf(" - %s\n", domain);
   }
-  if (config->routes)
+  printf("routes     :\n");
+  EINA_LIST_FOREACH(config->routes, l, list)
   {
-    E_DBUS_LOG_INFO("routes     :");
-    ecore_list_first_goto(config->routes);
-    while ((list = ecore_list_next(config->routes)))
-    {
-      char buffer[1024];
+    char buffer[1024];
+    Eina_List *l2;
 
-      strcpy(buffer, " -");
-      ecore_list_first_goto(list);
-      while ((u = ecore_list_next(list)))
-	{
-	   strcat(buffer, " ");
-	   strcat(buffer, ip4_address2str(*u));
-	}
-      E_DBUS_LOG_INFO("%s", buffer);
+    strcpy(buffer, " -");
+    EINA_LIST_FOREACH(list, l2, u)
+    {
+      strcat(buffer, " ");
+      strcat(buffer, ip4_address2str(*u));
     }
+    printf("%s\n", buffer);
   }
-  E_DBUS_LOG_INFO("");
 }
 

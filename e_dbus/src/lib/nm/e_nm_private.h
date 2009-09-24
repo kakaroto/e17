@@ -48,7 +48,7 @@ struct E_NM_Internal
   int  (*properties_changed)(E_NM *nm);
   int  (*device_added)(E_NM *nm, const char *device);
   int  (*device_removed)(E_NM *nm, const char *device);
-  Ecore_List *handlers;
+  Eina_List *handlers;
 
   void *data;
 };
@@ -65,7 +65,7 @@ struct E_NM_Device_Internal
   /* TODO: Save some bytes by having internal wired and wireless object */
   int  (*access_point_added)(E_NM_Device *device, const char *access_point);
   int  (*access_point_removed)(E_NM_Device *device, const char *access_point);
-  Ecore_List *handlers;
+  Eina_List *handlers;
 
   void *data;
 };
@@ -78,7 +78,7 @@ struct E_NM_Access_Point_Internal
   E_NM_Internal *nmi;
 
   int  (*properties_changed)(E_NM_Access_Point *device);
-  Ecore_List *handlers;
+  Eina_List *handlers;
 
   void *data;
 };
@@ -100,7 +100,7 @@ struct E_NMS_Internal
 
   int  (*new_connection)(E_NMS *nms, const char *service_name, const char *connection);
   int  (*properties_changed)(E_NMS *nms);
-  Ecore_List *handlers;
+  Eina_List *handlers;
 
   void *data;
 };
@@ -111,9 +111,9 @@ struct E_NMS_Connection_Internal
   E_NMS_Connection conn;
   E_NM_Internal *nmi;
 
-  int  (*updated)(E_NMS_Connection *conn, Ecore_Hash *settings);
+  int  (*updated)(E_NMS_Connection *conn, Eina_Hash *settings);
 /* TODO:  int  (*removed)(E_NMS_Connection *conn); */
-  Ecore_List *handlers;
+  Eina_List *handlers;
 
   void *data;
 };
@@ -167,7 +167,7 @@ void  parse_properties(void *data, const Property *properties, DBusMessage *msg)
 
 void *cb_nm_object_path_list(DBusMessage *msg, DBusError *err);
 void  free_nm_object_path_list(void *data);
-Ecore_Hash *parse_settings(DBusMessage *msg);
+Eina_Hash *parse_settings(DBusMessage *msg);
 
 int   check_arg_type(DBusMessageIter *iter, char type);
 

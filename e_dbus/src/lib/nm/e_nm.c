@@ -24,7 +24,7 @@ cb_state_changed(void *data, DBusMessage *msg)
   dbus_message_get_args(msg, &err, DBUS_TYPE_UINT32, &state, DBUS_TYPE_INVALID);
   if (dbus_error_is_set(&err))
   {
-    E_DBUS_LOG_ERR("%s - %s", err.name, err.message);
+    ERR("%s - %s", err.name, err.message);
     return;
   }
 
@@ -59,7 +59,7 @@ cb_device_added(void *data, DBusMessage *msg)
   dbus_message_get_args(msg, &err, DBUS_TYPE_OBJECT_PATH, &device, DBUS_TYPE_INVALID);
   if (dbus_error_is_set(&err))
   {
-    E_DBUS_LOG_ERR("%s - %s", err.name, err.message);
+    ERR("%s - %s", err.name, err.message);
     return;
   }
 
@@ -80,7 +80,7 @@ cb_device_removed(void *data, DBusMessage *msg)
   dbus_message_get_args(msg, &err, DBUS_TYPE_OBJECT_PATH, &device, DBUS_TYPE_INVALID);
   if (dbus_error_is_set(&err))
   {
-    E_DBUS_LOG_ERR("%s - %s", err.name, err.message);
+    ERR("%s - %s", err.name, err.message);
     return;
   }
 
@@ -109,11 +109,11 @@ e_nm_get(int (*cb_func)(void *data, E_NM *nm), void *data)
 
   nmi->conn = e_dbus_bus_get(DBUS_BUS_SYSTEM);
   if (!nmi->conn) goto error;
-  nmi->handlers = ecore_list_new();
-  ecore_list_append(nmi->handlers, e_nm_signal_handler_add(nmi->conn, "StateChanged", cb_state_changed, nmi));
-  ecore_list_append(nmi->handlers, e_nm_signal_handler_add(nmi->conn, "PropertiesChanged", cb_properties_changed, nmi));
-  ecore_list_append(nmi->handlers, e_nm_signal_handler_add(nmi->conn, "DeviceAdded", cb_device_added, nmi));
-  ecore_list_append(nmi->handlers, e_nm_signal_handler_add(nmi->conn, "DeviceRemoved", cb_device_removed, nmi));
+  nmi->handlers = NULL;
+  nmi->handlers = eina_list_append(nmi->handlers, e_nm_signal_handler_add(nmi->conn, "StateChanged", cb_state_changed, nmi));
+  nmi->handlers = eina_list_append(nmi->handlers, e_nm_signal_handler_add(nmi->conn, "PropertiesChanged", cb_properties_changed, nmi));
+  nmi->handlers = eina_list_append(nmi->handlers, e_nm_signal_handler_add(nmi->conn, "DeviceAdded", cb_device_added, nmi));
+  nmi->handlers = eina_list_append(nmi->handlers, e_nm_signal_handler_add(nmi->conn, "DeviceRemoved", cb_device_removed, nmi));
 
   return property_get(nmi->conn, d);
 
@@ -127,18 +127,14 @@ EAPI void
 e_nm_free(E_NM *nm)
 {
   E_NM_Internal *nmi;
+  void *data;
 
   if (!nm) return;
   nmi = (E_NM_Internal *)nm;
-  if (nmi->nm.active_connections) ecore_list_destroy(nmi->nm.active_connections);
-  if (nmi->handlers)
-  {
-    E_DBus_Signal_Handler *sh;
-
-    while ((sh = ecore_list_first_remove(nmi->handlers)))
-      e_dbus_signal_handler_del(nmi->conn, sh);
-    ecore_list_destroy(nmi->handlers);
-  }
+  EINA_LIST_FREE(nmi->nm.active_connections, data)
+    free(data);
+  EINA_LIST_FREE(nmi->handlers, data)
+    e_dbus_signal_handler_del(nmi->conn, data);
   e_dbus_connection_close(nmi->conn);
   free(nmi);
 }
@@ -147,38 +143,34 @@ EAPI void
 e_nm_dump(E_NM *nm)
 {
   const char *conn;
+  Eina_List *l;
 
   if (!nm) return;
-  INFO("E_NM:");
-  INFO("wireless_enabled         : %d", nm->wireless_enabled);
-  INFO("wireless_hardware_enabled: %d", nm->wireless_hardware_enabled);
-  INFO("active_connections       :");
-  if (nm->active_connections)
-  {
-    ecore_list_first_goto(nm->active_connections);
-    while ((conn = ecore_list_next(nm->active_connections)))
-      INFO(" - %s", conn);
-  }
-  INFO("state                    : ");
+  printf("E_NM:\n");
+  printf("wireless_enabled         : %d\n", nm->wireless_enabled);
+  printf("wireless_hardware_enabled: %d\n", nm->wireless_hardware_enabled);
+  printf("active_connections       :\n");
+  EINA_LIST_FOREACH(nm->active_connections, l, conn)
+    printf(" - %s\n", conn);
+  printf("state                    : ");
   switch (nm->state)
   {
     case E_NM_STATE_UNKNOWN:
-      INFO("E_NM_STATE_UNKNOWN");
+      printf("E_NM_STATE_UNKNOWN\n");
       break;
     case E_NM_STATE_ASLEEP:
-      INFO("E_NM_STATE_ASLEEP");
+      printf("E_NM_STATE_ASLEEP\n");
       break;
     case E_NM_STATE_CONNECTING:
-      INFO("E_NM_STATE_CONNECTING");
+      printf("E_NM_STATE_CONNECTING\n");
       break;
     case E_NM_STATE_CONNECTED:
-      INFO("E_NM_STATE_CONNECTED");
+      printf("E_NM_STATE_CONNECTED\n");
       break;
     case E_NM_STATE_DISCONNECTED:
-      INFO("E_NM_STATE_DISCONNECTED");
+      printf("E_NM_STATE_DISCONNECTED\n");
       break;
   }
-  INFO("");
 }
 
 EAPI void

@@ -3,12 +3,11 @@
 #include "E_DBus.h"
 #include "e_dbus_private.h"
 #include <string.h>
-#include <Ecore_Data.h>
 
 #define CHECK_SIGNATURE(msg, err, sig)                       \
   if (dbus_error_is_set((err)))                              \
   {                                                          \
-    E_DBUS_LOG_ERR("%s - %s", (err)->name, (err)->message);  \
+    ERR("%s - %s", (err)->name, (err)->message);  \
     return NULL;                                             \
   }                                                          \
                                                              \
@@ -62,7 +61,7 @@ find_property_cb(const char *sig)
     if (!strcmp(t->sig, sig))
       return t->func;
   }
-  E_DBUS_LOG_ERR("Missing property parser for sig: %s", sig);
+  ERR("Missing property parser for sig: %s", sig);
   return NULL;
 }
 
@@ -89,7 +88,7 @@ property_string(DBusMessageIter *iter, const char *sig, void *value)
 
   if ((value) && (!sig))
   {
-    E_DBUS_LOG_ERR("Can't have value and no sig");
+    ERR("Can't have value and no sig");
     return NULL;
   }
   dbus_message_iter_get_basic(iter, &str);
@@ -116,7 +115,7 @@ property_basic(DBusMessageIter *iter, const char *sig, void *value)
 
   if ((value) && (!sig))
   {
-    E_DBUS_LOG_ERR("Can't have value and no sig");
+    ERR("Can't have value and no sig");
     return NULL;
   }
   if (sig)
@@ -160,32 +159,27 @@ static E_NM_Variant *
 property_array(DBusMessageIter *iter, const char *sig, void *value)
 {
   DBusMessageIter   a_iter;
-  Ecore_List      **list;
+  Eina_List      **list;
   Property_Cb       func;
   E_NM_Variant    *var = NULL;
   const char       *subsig = NULL;
 
   if ((value) && (!sig))
   {
-    E_DBUS_LOG_ERR("Can't have value and no sig");
+    ERR("Can't have value and no sig");
     return NULL;
   }
 
   dbus_message_iter_recurse(iter, &a_iter);
   if (sig)
   {
-
     if (!check_arg_type(iter, sig[0])) return NULL;
     subsig = (sig + 1);
     func = find_property_cb(subsig);
     if (!func) return NULL;
     if (!value) value = &var;
-    list = (Ecore_List **)value;
-    *list = ecore_list_new();
-    if (subsig[0] == 'a') 
-      ecore_list_free_cb_set(*list, ECORE_FREE_CB(ecore_list_destroy));
-    else
-      ecore_list_free_cb_set(*list, free);
+    list = (Eina_List **)value;
+    *list = NULL;
   }
   else
   {
@@ -194,9 +188,8 @@ property_array(DBusMessageIter *iter, const char *sig, void *value)
     if (!func) return NULL;
     var = malloc(sizeof(E_NM_Variant));
     var->type = dbus_message_iter_get_arg_type(iter);
-    list = (Ecore_List **)&var->a;
-    *list = ecore_list_new();
-    ecore_list_free_cb_set(*list, ECORE_FREE_CB(property_free));
+    list = (Eina_List **)&var->a;
+    *list = NULL;
   }
 
   while (dbus_message_iter_get_arg_type(&a_iter) != DBUS_TYPE_INVALID)
@@ -204,7 +197,7 @@ property_array(DBusMessageIter *iter, const char *sig, void *value)
     void *subvar;
 
     subvar = (*func)(&a_iter, subsig, NULL);
-    if (subvar) ecore_list_append(*list, subvar);
+    if (subvar) *list = eina_list_append(*list, subvar);
     dbus_message_iter_next(&a_iter);
   }
 
@@ -218,7 +211,12 @@ property_free(E_NM_Variant *var)
   if ((var->type == 's') || (var->type == 'o'))
     free(var->s);
   else if (var->type == 'a')
-    ecore_list_destroy(var->a);
+  {
+    E_NM_Variant *v;
+
+    EINA_LIST_FREE(var->a, v)
+      property_free(v);
+  }
   free(var);
 }
 
@@ -240,7 +238,7 @@ property(void *data, DBusMessage *msg, DBusError *err)
   d = data;
   if (dbus_error_is_set(err))
   {
-    E_DBUS_LOG_ERR("%s - %s", err->name, err->message);
+    ERR("%s - %s", err->name, err->message);
     goto error;
   }
   if (!dbus_message_has_signature(msg, "v")) goto error;
@@ -420,40 +418,45 @@ cb_nm_object_path(DBusMessage *msg, DBusError *err)
 void *
 cb_nm_object_path_list(DBusMessage *msg, DBusError *err)
 {
-  Ecore_List *devices;
+  Eina_List *devices = NULL;
+  char *dev;
+
   DBusMessageIter iter, sub;
 
   CHECK_SIGNATURE(msg, err, "ao");
 
   dbus_message_iter_init(msg, &iter);
 
-  devices = ecore_list_new();
   dbus_message_iter_recurse(&iter, &sub);
   while (dbus_message_iter_get_arg_type(&sub) != DBUS_TYPE_INVALID)
   {
-    char *dev = NULL;
-
+    dev = NULL;
     if (!check_arg_type(&sub, 'o')) goto error;
     dbus_message_iter_get_basic(&sub, &dev);
-    if (dev) ecore_list_append(devices, dev);
+    if (dev) devices = eina_list_append(devices, strdup(dev));
     dbus_message_iter_next(&sub);
   }
 
+  printf("Hm: devices create = %p\n", devices);
   return devices;
 error:
-  ecore_list_destroy(devices);
+  EINA_LIST_FREE(devices, dev)
+    free(dev);
   return NULL;
 }
 
 void
 free_nm_object_path_list(void *data)
 {
-  Ecore_List *list = data;
+  Eina_List *list = data;
+  char      *s;
 
-  if (list) ecore_list_destroy(list);
+  printf("Hm: devices delete = %p\n", list);
+  EINA_LIST_FREE(list, s)
+    free(s);
 }
 
-Ecore_Hash *
+Eina_Hash *
 parse_settings(DBusMessage *msg)
 {
   Eina_Hash *settings;

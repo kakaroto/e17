@@ -8,7 +8,7 @@
 #ifndef E_DBUS_COLOR_DEFAULT
 #define E_DBUS_COLOR_DEFAULT EINA_COLOR_CYAN
 #endif
-extern int _e_dbus_log_dom;
+EAPI extern int _e_dbus_log_dom;
 #define DBG(...)   EINA_LOG_DOM_DBG(_e_dbus_log_dom, __VA_ARGS__)
 #define INFO(...)    EINA_LOG_DOM_INFO(_e_dbus_log_dom, __VA_ARGS__)
 #define WARN(...) EINA_LOG_DOM_WARN(_e_dbus_log_dom, __VA_ARGS__)

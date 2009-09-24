@@ -2,7 +2,7 @@
 #define E_NM_H
 
 #include <E_DBus.h>
-#include <Ecore_Data.h>
+#include <Eina.h>
 
 /*
  * TODO:
@@ -170,7 +170,7 @@ struct E_NM
 {
   int         wireless_enabled; /* writeable*/
   int         wireless_hardware_enabled;
-  Ecore_List *active_connections;
+  Eina_List  *active_connections;
   E_NM_State  state;
 };
 
@@ -181,7 +181,7 @@ struct E_NM_Access_Point
   E_NM_802_11_Ap_Flags  flags;
   E_NM_802_11_Ap_Sec    wpa_flags;
   E_NM_802_11_Ap_Sec    rsn_flags;
-  Ecore_List           *ssid; /* unsigned char */
+  Eina_List            *ssid; /* unsigned char */
   unsigned int          frequency;
   char                 *hw_address;
   E_NM_802_11_Mode      mode;
@@ -225,10 +225,10 @@ struct E_NM_Device
 typedef struct E_NM_IP4_Config E_NM_IP4_Config;
 struct E_NM_IP4_Config
 {
-  Ecore_List *addresses;  /* list unsigned int */
-  Ecore_List *nameservers;/* unsigned int */
-  Ecore_List *domains;    /* char* */
-  Ecore_List *routes;     /* list unsigned int */
+  Eina_List  *addresses;  /* list unsigned int */
+  Eina_List  *nameservers;/* unsigned int */
+  Eina_List  *domains;    /* char* */
+  Eina_List  *routes;     /* list unsigned int */
 };
 
 /* TODO typedef struct E_NM_DHCP4_Config E_NM_DHCP4_Config; */
@@ -244,7 +244,7 @@ typedef struct E_NMS E_NMS;
 struct E_NMS
 {
   const char *service_name;
-  Ecore_List *unmanaged_devices; /* object_path */
+  Eina_List  *unmanaged_devices; /* object_path */
   char       *hostname;
 };
 
@@ -262,7 +262,7 @@ struct E_NM_Active_Connection
   char                         *service_name;
   char                         *connection; /* object_path */
   char                         *specific_object; /* object_path */
-  Ecore_List                   *devices; /* object_path */
+  Eina_List                    *devices; /* object_path */
   E_NM_Active_Connection_State  state;
   int                           def; /* default */
 };
@@ -280,7 +280,7 @@ struct E_NM_Variant
     char               *s;
     unsigned long long  t;
     int                 b;
-    Ecore_List         *a;
+    Eina_List          *a;
   };
   char type;
 };
@@ -296,7 +296,7 @@ extern "C" {
 
    EAPI int   e_nm_wireless_enabled_set(E_NM *nm, int enabled);
 
-   EAPI int   e_nm_get_devices(E_NM *nm, int (*cb_func)(void *data, Ecore_List *list), void *data);
+   EAPI int   e_nm_get_devices(E_NM *nm, int (*cb_func)(void *data, Eina_List  *list), void *data);
    /* TODO: Add return value cb */
    EAPI int   e_nm_activate_connection(E_NM *nm, const char *service_name, const char *connection, E_NM_Device *device, const char *specific_object);
    EAPI int   e_nm_deactivate_connection(E_NM *nm, E_NM_Active_Connection *connection);
@@ -327,7 +327,7 @@ extern "C" {
    EAPI void  e_nm_device_free(E_NM_Device *device);
    EAPI void  e_nm_device_dump(E_NM_Device *device);
 
-   EAPI int   e_nm_device_wireless_get_access_points(E_NM_Device *device, int (*cb_func)(void *data, Ecore_List *access_points), void *data);
+   EAPI int   e_nm_device_wireless_get_access_points(E_NM_Device *device, int (*cb_func)(void *data, Eina_List  *access_points), void *data);
 
    EAPI void  e_nm_device_data_set(E_NM_Device *device, void *data);
    EAPI void *e_nm_device_data_get(E_NM_Device *device);
@@ -350,14 +350,14 @@ extern "C" {
    EAPI void   e_nms_free(E_NMS *nms);
    EAPI void   e_nms_dump(E_NMS *nms);
    EAPI int    e_nms_list_connections(E_NMS *nms,
-                                      int (*cb_func)(void *data, Ecore_List *list),
+                                      int (*cb_func)(void *data, Eina_List  *list),
                                       void *data);
 
    EAPI void   e_nms_callback_new_connection_set(E_NMS *nms, int (*cb_func)(E_NMS *nms, const char *service_name, const char *connection));
 
    /* org.freedesktop.NetworkManagerSettings.System */
    EAPI int    e_nms_system_save_hostname(E_NMS *nms, const char *hostname);
-   EAPI int    e_nms_system_add_connection(E_NMS *nms, Ecore_Hash *settings);
+   EAPI int    e_nms_system_add_connection(E_NMS *nms, Eina_Hash *settings);
 
    EAPI void   e_nms_system_callback_properties_changed_set(E_NMS *nms, int (*cb_func)(E_NMS *nms));
 
@@ -370,9 +370,9 @@ extern "C" {
    /* TODO: e_nms_connection_delete */
 
    EAPI int  e_nms_connection_get_settings(E_NMS_Connection *conn, int (*cb_func)(void *data, Eina_Hash *settings), void *data);
-   EAPI int  e_nms_connection_secrets_get_secrets(E_NMS_Connection *connection, const char *setting_name, Ecore_List *hints, int request_new, int (*cb_func)(void *data, Eina_Hash *secrets), void *data);
+   EAPI int  e_nms_connection_secrets_get_secrets(E_NMS_Connection *connection, const char *setting_name, Eina_List  *hints, int request_new, int (*cb_func)(void *data, Eina_Hash *secrets), void *data);
 
-   EAPI void  e_nms_connection_callback_updated_set(E_NMS_Connection *connection, int (*cb_func)(E_NMS_Connection *conn, Ecore_Hash *settings));
+   EAPI void  e_nms_connection_callback_updated_set(E_NMS_Connection *connection, int (*cb_func)(E_NMS_Connection *conn, Eina_Hash *settings));
    /* TODO: e_nms_connection_callback_removed_set */
 
    /* org.freedesktop.NetworkManager.Connection.Active api */

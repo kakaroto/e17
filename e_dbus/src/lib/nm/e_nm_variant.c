@@ -47,17 +47,22 @@ e_nm_variant_array_new(int type, const void *value, int size)
 
   variant = malloc(sizeof(E_NM_Variant));
   variant->type = 'a';
-  variant->a = ecore_list_new();
-  ecore_list_free_cb_set(variant->a, ECORE_FREE_CB(e_nm_variant_free));
+  variant->a = NULL;
   for (i = 0; i < size; i++)
-    ecore_list_append(variant->a, e_nm_variant_new(type, &(value[i])));
+    variant->a = eina_list_append(variant->a, e_nm_variant_new(type, &(value[i])));
   return variant;
 }
 
 EAPI void
 e_nm_variant_free(E_NM_Variant *variant)
 {
-  if (variant->type == 'a') ecore_list_destroy(variant->a);
+  if (variant->type == 'a')
+  {
+    void *data;
+
+    EINA_LIST_FREE(variant->a, data)
+      e_nm_variant_free(data);
+  }
   else if ((variant->type == 's') || (variant->type == 'o')) free(variant->s);
   free(variant);
 }

@@ -54,8 +54,7 @@ e_nm_access_point_get(E_NM *nm, const char *access_point,
   d->object = strdup(access_point);
   d->interface = E_NM_INTERFACE_ACCESSPOINT;
 
-  ap->handlers = ecore_list_new();
-  ecore_list_append(ap->handlers, e_nm_access_point_signal_handler_add(nmi->conn, access_point, "PropertiesChanged", cb_properties_changed, ap));
+  ap->handlers = eina_list_append(ap->handlers, e_nm_access_point_signal_handler_add(nmi->conn, access_point, "PropertiesChanged", cb_properties_changed, ap));
  
   return property_get(nmi->conn, d);
 }
@@ -64,112 +63,100 @@ EAPI void
 e_nm_access_point_free(E_NM_Access_Point *access_point)
 {
   E_NM_Access_Point_Internal *ap;
+  void *data;
 
   if (!access_point) return;
   ap = (E_NM_Access_Point_Internal *)access_point;
   if (ap->ap.path) free(ap->ap.path);
-  if (ap->ap.ssid) ecore_list_destroy(ap->ap.ssid);
+  EINA_LIST_FREE(ap->ap.ssid, data)
+    free(data);
   if (ap->ap.hw_address) free(ap->ap.hw_address);
-  if (ap->handlers)
-  {
-    E_DBus_Signal_Handler *sh;
-
-    while ((sh = ecore_list_first_remove(ap->handlers)))
-      e_dbus_signal_handler_del(ap->nmi->conn, sh);
-    ecore_list_destroy(ap->handlers);
-  }
+  EINA_LIST_FREE(ap->handlers, data)
+    e_dbus_signal_handler_del(ap->nmi->conn, data);
   free(ap);
 }
 
 EAPI void
 e_nm_access_point_dump(E_NM_Access_Point *ap)
 {
+  Eina_List *l;
   char buffer[1024];
-  unsigned char *c;
+  char *c;
 
   if (!ap) return;
-  E_DBUS_LOG_INFO("E_NM_Access_Point:");
-  E_DBUS_LOG_INFO("flags      :");
+  INFO("E_NM_Access_Point:");
+  INFO("flags      :");
   if (ap->flags & E_NM_802_11_AP_FLAGS_PRIVACY)
-    E_DBUS_LOG_INFO(" E_NM_802_11_AP_FLAGS_PRIVACY");
+    INFO(" E_NM_802_11_AP_FLAGS_PRIVACY");
   if (ap->flags == E_NM_802_11_AP_FLAGS_NONE)
-    E_DBUS_LOG_INFO(" E_NM_802_11_AP_FLAGS_NONE");
-  E_DBUS_LOG_INFO("");
-  E_DBUS_LOG_INFO("wpa_flags  :");
+    INFO(" E_NM_802_11_AP_FLAGS_NONE");
+  INFO("wpa_flags  :");
   if (ap->wpa_flags & E_NM_802_11_AP_SEC_PAIR_WEP40)
-    E_DBUS_LOG_INFO(" E_NM_802_11_AP_SEC_PAIR_WEP40");
+    INFO(" E_NM_802_11_AP_SEC_PAIR_WEP40");
   if (ap->wpa_flags & E_NM_802_11_AP_SEC_PAIR_WEP104)
-    E_DBUS_LOG_INFO(" E_NM_802_11_AP_SEC_PAIR_WEP104");
+    INFO(" E_NM_802_11_AP_SEC_PAIR_WEP104");
   if (ap->wpa_flags & E_NM_802_11_AP_SEC_PAIR_TKIP)
-    E_DBUS_LOG_INFO(" E_NM_802_11_AP_SEC_PAIR_TKIP");
+    INFO(" E_NM_802_11_AP_SEC_PAIR_TKIP");
   if (ap->wpa_flags & E_NM_802_11_AP_SEC_PAIR_CCMP)
-    E_DBUS_LOG_INFO(" E_NM_802_11_AP_SEC_PAIR_CCMP");
+    INFO(" E_NM_802_11_AP_SEC_PAIR_CCMP");
   if (ap->wpa_flags & E_NM_802_11_AP_SEC_GROUP_WEP40)
-    E_DBUS_LOG_INFO(" E_NM_802_11_AP_SEC_GROUP_WEP40");
+    INFO(" E_NM_802_11_AP_SEC_GROUP_WEP40");
   if (ap->wpa_flags & E_NM_802_11_AP_SEC_GROUP_WEP104)
-    E_DBUS_LOG_INFO(" E_NM_802_11_AP_SEC_GROUP_WEP104");
+    INFO(" E_NM_802_11_AP_SEC_GROUP_WEP104");
   if (ap->wpa_flags & E_NM_802_11_AP_SEC_GROUP_TKIP)
-    E_DBUS_LOG_INFO(" E_NM_802_11_AP_SEC_GROUP_TKIP");
+    INFO(" E_NM_802_11_AP_SEC_GROUP_TKIP");
   if (ap->wpa_flags & E_NM_802_11_AP_SEC_GROUP_CCMP)
-    E_DBUS_LOG_INFO(" E_NM_802_11_AP_SEC_GROUP_CCMP");
+    INFO(" E_NM_802_11_AP_SEC_GROUP_CCMP");
   if (ap->wpa_flags & E_NM_802_11_AP_SEC_KEY_MGMT_PSK)
-    E_DBUS_LOG_INFO(" E_NM_802_11_AP_SEC_KEY_MGMT_PSK");
+    INFO(" E_NM_802_11_AP_SEC_KEY_MGMT_PSK");
   if (ap->wpa_flags & E_NM_802_11_AP_SEC_KEY_MGMT_802_1X)
-    E_DBUS_LOG_INFO(" E_NM_802_11_AP_SEC_KEY_MGMT_802_1X");
+    INFO(" E_NM_802_11_AP_SEC_KEY_MGMT_802_1X");
   if (ap->wpa_flags == E_NM_802_11_AP_SEC_NONE)
-    E_DBUS_LOG_INFO(" E_NM_802_11_AP_SEC_NONE");
-  E_DBUS_LOG_INFO("");
-  E_DBUS_LOG_INFO("rsn_flags  :");
+    INFO(" E_NM_802_11_AP_SEC_NONE");
+  INFO("rsn_flags  :");
   if (ap->rsn_flags & E_NM_802_11_AP_SEC_PAIR_WEP40)
-    E_DBUS_LOG_INFO(" E_NM_802_11_AP_SEC_PAIR_WEP40");
+    INFO(" E_NM_802_11_AP_SEC_PAIR_WEP40");
   if (ap->rsn_flags & E_NM_802_11_AP_SEC_PAIR_WEP104)
-    E_DBUS_LOG_INFO(" E_NM_802_11_AP_SEC_PAIR_WEP104");
+    INFO(" E_NM_802_11_AP_SEC_PAIR_WEP104");
   if (ap->rsn_flags & E_NM_802_11_AP_SEC_PAIR_TKIP)
-    E_DBUS_LOG_INFO(" E_NM_802_11_AP_SEC_PAIR_TKIP");
+    INFO(" E_NM_802_11_AP_SEC_PAIR_TKIP");
   if (ap->rsn_flags & E_NM_802_11_AP_SEC_PAIR_CCMP)
-    E_DBUS_LOG_INFO(" E_NM_802_11_AP_SEC_PAIR_CCMP");
+    INFO(" E_NM_802_11_AP_SEC_PAIR_CCMP");
   if (ap->rsn_flags & E_NM_802_11_AP_SEC_GROUP_WEP40)
-    E_DBUS_LOG_INFO(" E_NM_802_11_AP_SEC_GROUP_WEP40");
+    INFO(" E_NM_802_11_AP_SEC_GROUP_WEP40");
   if (ap->rsn_flags & E_NM_802_11_AP_SEC_GROUP_WEP104)
-    E_DBUS_LOG_INFO(" E_NM_802_11_AP_SEC_GROUP_WEP104");
+    INFO(" E_NM_802_11_AP_SEC_GROUP_WEP104");
   if (ap->rsn_flags & E_NM_802_11_AP_SEC_GROUP_TKIP)
-    E_DBUS_LOG_INFO(" E_NM_802_11_AP_SEC_GROUP_TKIP");
+    INFO(" E_NM_802_11_AP_SEC_GROUP_TKIP");
   if (ap->rsn_flags & E_NM_802_11_AP_SEC_GROUP_CCMP)
-    E_DBUS_LOG_INFO(" E_NM_802_11_AP_SEC_GROUP_CCMP");
+    INFO(" E_NM_802_11_AP_SEC_GROUP_CCMP");
   if (ap->rsn_flags & E_NM_802_11_AP_SEC_KEY_MGMT_PSK)
-    E_DBUS_LOG_INFO(" E_NM_802_11_AP_SEC_KEY_MGMT_PSK");
+    INFO(" E_NM_802_11_AP_SEC_KEY_MGMT_PSK");
   if (ap->rsn_flags & E_NM_802_11_AP_SEC_KEY_MGMT_802_1X)
-    E_DBUS_LOG_INFO(" E_NM_802_11_AP_SEC_KEY_MGMT_802_1X");
+    INFO(" E_NM_802_11_AP_SEC_KEY_MGMT_802_1X");
   if (ap->rsn_flags == E_NM_802_11_AP_SEC_NONE)
-    E_DBUS_LOG_INFO(" E_NM_802_11_AP_SEC_NONE");
-  E_DBUS_LOG_INFO("");
+    INFO(" E_NM_802_11_AP_SEC_NONE");
   strcpy(buffer, "ssid       : ");
-  if (ap->ssid)
-  {
-
-    ecore_list_first_goto(ap->ssid);
-    while ((c = ecore_list_next(ap->ssid)))
-      snprintf("%s%c", buffer, *c);
-  }
-  E_DBUS_LOG_INFO("%s", buffer);
-  E_DBUS_LOG_INFO("frequency  : %u", ap->frequency);
-  E_DBUS_LOG_INFO("hw_address : %s", ap->hw_address);
-  E_DBUS_LOG_INFO("mode       : ");
+  EINA_LIST_FOREACH(ap->ssid, l, c)
+    strcat(buffer, c);
+  INFO("%s", buffer);
+  INFO("frequency  : %u", ap->frequency);
+  INFO("hw_address : %s", ap->hw_address);
+  INFO("mode       : ");
   switch (ap->mode)
   {
     case E_NM_802_11_MODE_UNKNOWN:
-      E_DBUS_LOG_INFO("E_NM_802_11_MODE_UNKNOWN");
+      INFO("E_NM_802_11_MODE_UNKNOWN");
       break;
     case E_NM_802_11_MODE_ADHOC:
-      E_DBUS_LOG_INFO("E_NM_802_11_MODE_ADHOC");
+      INFO("E_NM_802_11_MODE_ADHOC");
       break;
     case E_NM_802_11_MODE_INFRA:
-      E_DBUS_LOG_INFO("E_NM_802_11_MODE_INFRA");
+      INFO("E_NM_802_11_MODE_INFRA");
       break;
   }
-  E_DBUS_LOG_INFO("max_bitrate: %u", ap->max_bitrate);
-  E_DBUS_LOG_INFO("strength   : %u", ap->strength);
-  E_DBUS_LOG_INFO("");
+  INFO("max_bitrate: %u", ap->max_bitrate);
+  INFO("strength   : %u", ap->strength);
 }
 
 EAPI void

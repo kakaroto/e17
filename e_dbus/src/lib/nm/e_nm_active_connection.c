@@ -43,43 +43,45 @@ e_nm_active_connection_get(E_NM *nm, const char *connection,
 EAPI void
 e_nm_active_connection_free(E_NM_Active_Connection *conn)
 {
+  void *data;
+
   if (!conn) return;
   if (conn->path) free(conn->path);
   if (conn->service_name) free(conn->service_name);
   if (conn->connection) free(conn->connection);
   if (conn->specific_object) free(conn->specific_object);
-  if (conn->devices) ecore_list_destroy(conn->devices);
+  EINA_LIST_FREE(conn->devices, data)
+    free(data);
   free(conn);
 }
 
 EAPI void
 e_nm_active_connection_dump(E_NM_Active_Connection *conn)
 {
+  Eina_List  *l;
   const char *device;
 
   if (!conn) return;
-  E_DBUS_LOG_INFO("E_NM_Active_Connection:");
-  E_DBUS_LOG_INFO("service_name   : %s", conn->service_name);
-  E_DBUS_LOG_INFO("connection     : %s", conn->connection);
-  E_DBUS_LOG_INFO("specific_object: %s", conn->specific_object);
-  E_DBUS_LOG_INFO("devices        :");
-  ecore_list_first_goto(conn->devices);
-  while ((device = ecore_list_next(conn->devices)))
-    E_DBUS_LOG_INFO(" - %s", device);
-  E_DBUS_LOG_INFO("state          : ");
+  printf("E_NM_Active_Connection:\n");
+  printf("service_name   : %s\n", conn->service_name);
+  printf("connection     : %s\n", conn->connection);
+  printf("specific_object: %s\n", conn->specific_object);
+  printf("devices        :\n");
+  EINA_LIST_FOREACH(conn->devices, l, device)
+    printf(" - %s\n", device);
+  printf("state          : ");
   switch (conn->state)
   {
     case E_NM_ACTIVE_CONNECTION_STATE_UNKNOWN:
-      E_DBUS_LOG_INFO("E_NM_ACTIVE_CONNECTION_STATE_UNKNOWN");
+      printf("E_NM_ACTIVE_CONNECTION_STATE_UNKNOWN\n");
       break;
     case E_NM_ACTIVE_CONNECTION_STATE_ACTIVATING:
-      E_DBUS_LOG_INFO("E_NM_ACTIVE_CONNECTION_STATE_ACTIVATING");
+      printf("E_NM_ACTIVE_CONNECTION_STATE_ACTIVATING\n");
       break;
     case E_NM_ACTIVE_CONNECTION_STATE_ACTIVATED:
-      E_DBUS_LOG_INFO("E_NM_ACTIVE_CONNECTION_STATE_ACTIVATED");
+      printf("E_NM_ACTIVE_CONNECTION_STATE_ACTIVATED\n");
       break;
   }
-  E_DBUS_LOG_INFO("default        : %d", conn->def);
-  E_DBUS_LOG_INFO("");
+  printf("default        : %d\n", conn->def);
 }
 
