@@ -39,8 +39,7 @@ struct _Eon_Stripes
 /*============================================================================*
  *                                Functions                                   *
  *============================================================================*/
-EAPI Ekeko_Type *eon_stripes_type_get(void);
-EAPI Eon_Stripes * eon_stripes_new(void);
+EAPI Eon_Stripes * eon_stripes_new(Eon_Document *d);
 EAPI Eon_Color eon_stripes_color1_get(Eon_Stripes *sq);
 EAPI Eon_Color eon_stripes_color2_get(Eon_Stripes *sq);
 EAPI void eon_stripes_color1_set(Eon_Stripes *sq, Eon_Color color);

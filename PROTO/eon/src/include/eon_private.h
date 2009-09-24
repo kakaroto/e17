@@ -167,4 +167,9 @@ void eon_paint_square_style_coords_get(Eon_Paint_Square *s, Eon_Paint *p, int *x
 void eon_shape_square_style_coords_get(Eon_Shape_Square *s, Eon_Paint *p, int *x, int *y,
 		int *w, int *h);
 
+/* Core */
+void eon_type_register(Ekeko_Type *t, char *name);
+void eon_type_unregister(Ekeko_Type *t);
+Ekeko_Type * eon_type_get(char *name);
+
 #endif

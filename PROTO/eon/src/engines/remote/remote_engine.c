@@ -81,6 +81,13 @@ static void _mutation_cb(const Ekeko_Object *o, Ekeko_Event *ev, void *data)
 	ecore_ipc_server_send(rdoc->srv, 2, em->prop_id, ob->id, 0, 0, NULL, 0);
 }
 
+static void _object_new_cb(const Ekeko_Object *o, Ekeko_Event *ev, void *data)
+{
+	Eon_Document_Object_New *e = (Eon_Document_Object_New *)ev;
+
+	printf("[REMOTE] Creating a new object %s %p\n", e->name, ev->target);
+}
+
 static void * document_create(Eon_Document *d, const char *options)
 {
 	Ecore_Ipc_Server *srv;
@@ -98,6 +105,7 @@ static void * document_create(Eon_Document *d, const char *options)
 		exit(1);
 	}
 	rdoc = calloc(1, sizeof(Engine_Remote_Document));
+	ekeko_event_listener_add(d, EON_DOCUMENT_OBJECT_NEW, _object_new_cb, EINA_FALSE, NULL);
 
 	ecore_event_handler_add(ECORE_IPC_EVENT_SERVER_ADD,
 		handler_server_add, NULL);
@@ -168,9 +176,9 @@ static void paint_setup(void *pd, Eon_Shape *s)
 }
 
 static Eon_Engine _remote_engine = {
-#if 0
 	.document_create = document_create,
 	.document_delete = document_delete,
+#if 0
 	.canvas_create = canvas_create,
 	.canvas_flush = canvas_flush,
 	.rect_create = object_create,

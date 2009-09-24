@@ -371,7 +371,7 @@ Ekeko_Object * tag_create(char *tag, EXML *exml, Ekeko_Object *parent)
 #endif
 	if (!strcmp(tag, "canvas"))
 	{
-		o = ekeko_type_instance_new(eon_canvas_type_get());
+		o = eon_canvas_new(doc);
 		ekeko_object_child_append(parent, o);
 	}
 	else if (!strcmp(tag, "style"))
@@ -386,11 +386,15 @@ Ekeko_Object * tag_create(char *tag, EXML *exml, Ekeko_Object *parent)
 	}
 	else if (!strcmp(tag, "rect"))
 	{
-		o = eon_parser_rect_new(parent);
+		o = eon_rect_new(doc);
+		ekeko_object_child_append(parent, o);
+		ekeko_renderable_show((Ekeko_Renderable *)o);
 	}
 	else if (!strcmp(tag, "circle"))
 	{
-		o = eon_parser_circle_new(parent);
+		o = eon_circle_new(doc);
+		ekeko_object_child_append(parent, o);
+		ekeko_renderable_show((Ekeko_Renderable *)o);
 	}
 	else if (!strcmp(tag, "text"))
 	{
@@ -421,19 +425,19 @@ Ekeko_Object * tag_create(char *tag, EXML *exml, Ekeko_Object *parent)
 	}
 	else if (!strcmp(tag, "fade"))
 	{
-		o = (Ekeko_Object *)eon_fade_new();
+		o = (Ekeko_Object *)eon_fade_new(doc);
 		ekeko_object_child_append(parent, o);
 		ekeko_renderable_show((Ekeko_Renderable *)o);
 	}
 	else if (!strcmp(tag, "checker"))
 	{
-		o = (Ekeko_Object *)eon_checker_new();
+		o = (Ekeko_Object *)eon_checker_new(doc);
 		ekeko_object_child_append(parent, o);
 		ekeko_renderable_show((Ekeko_Renderable *)o);
 	}
 	else if (!strcmp(tag, "stripes"))
 	{
-		o = (Ekeko_Object *)eon_stripes_new();
+		o = (Ekeko_Object *)eon_stripes_new(doc);
 		ekeko_object_child_append(parent, o);
 		ekeko_renderable_show((Ekeko_Renderable *)o);
 	}

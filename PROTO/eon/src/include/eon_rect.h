@@ -39,8 +39,7 @@ struct _Eon_Rect
 /*============================================================================*
  *                                Functions                                   *
  *============================================================================*/
-EAPI Ekeko_Type *eon_rect_type_get(void);
-EAPI Eon_Rect * eon_rect_new(Eon_Canvas *c);
+EAPI Eon_Rect * eon_rect_new(Eon_Document *d);
 EAPI void eon_rect_corner_radius_set(Eon_Rect *r, float rad);
 EAPI float eon_rect_corner_radius_get(Eon_Rect *r);
 

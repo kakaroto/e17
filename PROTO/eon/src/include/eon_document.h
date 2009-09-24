@@ -52,5 +52,6 @@ EAPI void eon_document_size_get(Eon_Document *d, int *w, int *h);
 EAPI void eon_document_resize(Eon_Document *d, int w, int h);
 EAPI void eon_document_pause(Eon_Document *d);
 EAPI void eon_document_play(Eon_Document *d);
+EAPI Ekeko_Object * eon_document_object_new(Eon_Document *d, const char *name);
 
 #endif /* EON_DOCUMENT_H_ */

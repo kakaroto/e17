@@ -45,8 +45,7 @@ struct _Eon_Canvas
 /*============================================================================*
  *                                Functions                                   *
  *============================================================================*/
-EAPI Ekeko_Type *eon_canvas_type_get(void);
-EAPI Eon_Canvas * eon_canvas_new(Eon_Canvas *c);
+EAPI Eon_Canvas * eon_canvas_new(Eon_Document *c);
 EAPI Eon_Document * eon_canvas_document_get(Eon_Canvas *c);
 EAPI void eon_canvas_x_get(Eon_Canvas *c, Eon_Coord *x);
 EAPI void eon_canvas_x_rel_set(Eon_Canvas *c, int x);

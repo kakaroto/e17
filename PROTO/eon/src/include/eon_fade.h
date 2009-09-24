@@ -36,8 +36,7 @@ struct _Eon_Fade
 /*============================================================================*
  *                                Functions                                   *
  *============================================================================*/
-EAPI Ekeko_Type *eon_fade_type_get(void);
-EAPI Eon_Fade * eon_fade_new(void);
+EAPI Eon_Fade * eon_fade_new(Eon_Document *d);
 
 /* paint wrappers */
 #define eon_fade_matrix_set(i, m) eon_paint_matrix_set((Eon_Paint *)(i), m)

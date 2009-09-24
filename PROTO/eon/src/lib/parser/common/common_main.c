@@ -341,16 +341,16 @@ Ekeko_Object * eon_parser_polygon_new(Ekeko_Object *p)
 {
 	return eon_parser_shape_new(p, eon_polygon_type_get);
 }
-
+#if 0
 Ekeko_Object * eon_parser_rect_new(Ekeko_Object *p)
 {
 	return eon_parser_shape_new(p, eon_rect_type_get);
 }
-
 Ekeko_Object * eon_parser_circle_new(Ekeko_Object *p)
 {
 	return eon_parser_shape_new(p, eon_circle_type_get);
 }
+#endif
 
 Ekeko_Object * eon_parser_script_new(Ekeko_Object *p)
 {

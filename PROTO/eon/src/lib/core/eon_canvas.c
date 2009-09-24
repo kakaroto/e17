@@ -22,6 +22,8 @@
  *============================================================================*/
 #define BOUNDING_DEBUG 0
 #define PRIVATE(d) ((Eon_Canvas_Private *)((Eon_Canvas *)(d))->private)
+
+static Ekeko_Type *_type;
 struct _Eon_Canvas_Private
 {
 	Eon_Coord x, y, w, h;
@@ -450,7 +452,7 @@ static void _ctor(void *instance)
 	Eon_Canvas_Private *prv;
 
 	c = (Eon_Canvas*) instance;
-	c->private = prv = ekeko_type_instance_private_get(eon_canvas_type_get(), instance);
+	c->private = prv = ekeko_type_instance_private_get(_type, instance);
 	c->parent.flush = _flush;
 	c->parent.parent.render = _subcanvas_render;
 	c->parent.parent.is_inside= _subcanvas_is_inside;
@@ -488,6 +490,33 @@ void * eon_canvas_engine_data_get(Eon_Canvas *c)
 	return prv->engine_data;
 }
 
+void eon_canvas_init(void)
+{
+	_type = ekeko_type_new(EON_TYPE_CANVAS, sizeof(Eon_Canvas),
+			sizeof(Eon_Canvas_Private), ekeko_canvas_type_get(),
+			_ctor, _dtor, _appendable);
+
+	EON_CANVAS_X = EKEKO_TYPE_PROP_SINGLE_ADD(_type, "x",
+			EON_PROPERTY_COORD, OFFSET(Eon_Canvas_Private, x));
+	EON_CANVAS_Y = EKEKO_TYPE_PROP_SINGLE_ADD(_type, "y",
+			EON_PROPERTY_COORD, OFFSET(Eon_Canvas_Private, y));
+	EON_CANVAS_W = EKEKO_TYPE_PROP_SINGLE_ADD(_type, "w",
+			EON_PROPERTY_COORD, OFFSET(Eon_Canvas_Private, w));
+	EON_CANVAS_H = EKEKO_TYPE_PROP_SINGLE_ADD(_type, "h",
+			EON_PROPERTY_COORD, OFFSET(Eon_Canvas_Private, h));
+	EON_CANVAS_MATRIX = EKEKO_TYPE_PROP_SINGLE_ADD(_type, "matrix",
+			EON_PROPERTY_MATRIX,
+			OFFSET(Eon_Canvas_Private, matrix));
+
+	eon_type_register(_type, EON_TYPE_CANVAS);
+}
+
+void eon_canvas_shutdown(void)
+{
+	eon_type_unregister(_type);
+}
+
+
 /*============================================================================*
  *                                   API                                      *
  *============================================================================*/
@@ -497,35 +526,14 @@ Ekeko_Property_Id EON_CANVAS_W;
 Ekeko_Property_Id EON_CANVAS_H;
 Ekeko_Property_Id EON_CANVAS_MATRIX;
 
-EAPI Ekeko_Type *eon_canvas_type_get(void)
+EAPI Eon_Canvas * eon_canvas_new(Eon_Document *d)
 {
-	static Ekeko_Type *type = NULL;
+	Eon_Canvas *c;
 
-	if (!type)
-	{
-		type = ekeko_type_new(EON_TYPE_CANVAS, sizeof(Eon_Canvas),
-				sizeof(Eon_Canvas_Private), ekeko_canvas_type_get(),
-				_ctor, _dtor, _appendable);
-		EON_CANVAS_X = EKEKO_TYPE_PROP_SINGLE_ADD(type, "x", EON_PROPERTY_COORD, OFFSET(Eon_Canvas_Private, x));
-		EON_CANVAS_Y = EKEKO_TYPE_PROP_SINGLE_ADD(type, "y", EON_PROPERTY_COORD, OFFSET(Eon_Canvas_Private, y));
-		EON_CANVAS_W = EKEKO_TYPE_PROP_SINGLE_ADD(type, "w", EON_PROPERTY_COORD, OFFSET(Eon_Canvas_Private, w));
-		EON_CANVAS_H = EKEKO_TYPE_PROP_SINGLE_ADD(type, "h", EON_PROPERTY_COORD, OFFSET(Eon_Canvas_Private, h));
-		EON_CANVAS_MATRIX = EKEKO_TYPE_PROP_SINGLE_ADD(type, "matrix", EON_PROPERTY_MATRIX, OFFSET(Eon_Canvas_Private, matrix));
-	}
+	c = eon_document_object_new(d, EON_TYPE_CANVAS);
 
-	return type;
+	return c;
 }
-
-EAPI Eon_Canvas * eon_canvas_new(Eon_Canvas *c)
-{
-	Eon_Canvas *sc;
-
-	sc = ekeko_type_instance_new(eon_canvas_type_get());
-	ekeko_object_child_append((Ekeko_Object *)c, (Ekeko_Object *)sc);
-
-	return sc;
-}
-
 
 EAPI void eon_canvas_x_rel_set(Eon_Canvas *c, int x)
 {

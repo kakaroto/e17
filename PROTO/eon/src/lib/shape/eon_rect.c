@@ -21,6 +21,8 @@
  *                                  Local                                     *
  *============================================================================*/
 #define PRIVATE(d) ((Eon_Rect_Private *)((Eon_Rect *)(d))->private)
+
+static Ekeko_Type *_type;
 struct _Eon_Rect_Private
 {
 	float radius;
@@ -110,7 +112,7 @@ static void _ctor(void *instance)
 	Eon_Rect_Private *prv;
 
 	r = (Eon_Rect*) instance;
-	r->private = prv = ekeko_type_instance_private_get(eon_rect_type_get(), instance);
+	r->private = prv = ekeko_type_instance_private_get(_type, instance);
 	r->parent.parent.parent.render = _render;
 	r->parent.parent.parent.create = eon_engine_rect_create;
 	r->parent.parent.parent.is_inside = _is_inside;
@@ -129,34 +131,34 @@ static void _dtor(void *rect)
 /*============================================================================*
  *                                 Global                                     *
  *============================================================================*/
+void eon_rect_init(void)
+{
+	_type = ekeko_type_new(EON_TYPE_RECT, sizeof(Eon_Rect),
+			sizeof(Eon_Rect_Private), eon_shape_square_type_get(),
+			_ctor, _dtor, eon_shape_appendable);
+	/* the properties */
+	EON_RECT_CORNER_RADIUS = EKEKO_TYPE_PROP_SINGLE_ADD(_type, "radius",
+			EKEKO_PROPERTY_FLOAT,
+			OFFSET(Eon_Rect_Private, radius));
 
+	eon_type_register(_type, EON_TYPE_RECT);
+}
+
+void eon_rect_shutdown(void)
+{
+	eon_type_unregister(_type);
+}
 /*============================================================================*
  *                                   API                                      *
  *============================================================================*/
 Ekeko_Property_Id EON_RECT_CORNERS;
 Ekeko_Property_Id EON_RECT_CORNER_RADIUS;
 
-EAPI Ekeko_Type *eon_rect_type_get(void)
-{
-	static Ekeko_Type *type = NULL;
-
-	if (!type)
-	{
-		type = ekeko_type_new(EON_TYPE_RECT, sizeof(Eon_Rect),
-				sizeof(Eon_Rect_Private), eon_shape_square_type_get(),
-				_ctor, _dtor, eon_shape_appendable);
-		EON_RECT_CORNER_RADIUS = EKEKO_TYPE_PROP_SINGLE_ADD(type, "radius", EKEKO_PROPERTY_FLOAT, OFFSET(Eon_Rect_Private, radius));
-	}
-
-	return type;
-}
-
-EAPI Eon_Rect * eon_rect_new(Eon_Canvas *c)
+EAPI Eon_Rect * eon_rect_new(Eon_Document *d)
 {
 	Eon_Rect *r;
 
-	r = ekeko_type_instance_new(eon_rect_type_get());
-	ekeko_object_child_append((Ekeko_Object *)c, (Ekeko_Object *)r);
+	r = eon_document_object_new(d, EON_TYPE_RECT);
 
 	return r;
 }

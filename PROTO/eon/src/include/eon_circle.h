@@ -42,8 +42,7 @@ struct _Eon_Circle
 /*============================================================================*
  *                                Functions                                   *
  *============================================================================*/
-EAPI Ekeko_Type *eon_circle_type_get(void);
-EAPI Eon_Circle * eon_circle_new(Eon_Canvas *c);
+EAPI Eon_Circle * eon_circle_new(Eon_Document *d);
 EAPI void eon_circle_x_get(Eon_Circle *c, Eon_Coord *coord);
 EAPI void eon_circle_x_rel_set(Eon_Circle *c, int x);
 EAPI void eon_circle_x_set(Eon_Circle *c, int x);

@@ -22,6 +22,8 @@
  *                                  Local                                     *
  *============================================================================*/
 #define PRIVATE(d) ((Eon_Circle_Private *)((Eon_Circle *)(d))->private)
+
+static Ekeko_Type *_type;
 struct _Eon_Circle_Private
 {
 	Eon_Coord x;
@@ -226,6 +228,29 @@ void eon_circle_style_coords_get(Eon_Circle *c, Eon_Paint *p,
 	if (cy) eon_coord_calculate(&prv->y, geom.y, geom.h, cy);
 	if (rad) *rad = prv->radius;
 }
+
+void eon_circle_init(void)
+{
+	_type = ekeko_type_new(EON_TYPE_CIRCLE, sizeof(Eon_Circle),
+			sizeof(Eon_Circle_Private), eon_shape_type_get(),
+			_ctor, _dtor, eon_shape_appendable);
+	EON_CIRCLE_X = EKEKO_TYPE_PROP_SINGLE_ADD(_type, "x",
+			EON_PROPERTY_COORD,
+			OFFSET(Eon_Circle_Private, x));
+	EON_CIRCLE_Y = EKEKO_TYPE_PROP_SINGLE_ADD(_type, "y",
+			EON_PROPERTY_COORD,
+			OFFSET(Eon_Circle_Private, y));
+	EON_CIRCLE_RADIUS = EKEKO_TYPE_PROP_SINGLE_ADD(_type, "radius",
+			EKEKO_PROPERTY_FLOAT,
+			OFFSET(Eon_Circle_Private, radius));
+
+	eon_type_register(_type, EON_TYPE_CIRCLE);
+}
+
+void eon_circle_shutdown(void)
+{
+	eon_type_unregister(_type);
+}
 /*============================================================================*
  *                                   API                                      *
  *============================================================================*/
@@ -233,33 +258,14 @@ Ekeko_Property_Id EON_CIRCLE_X;
 Ekeko_Property_Id EON_CIRCLE_Y;
 Ekeko_Property_Id EON_CIRCLE_RADIUS;
 
-EAPI Ekeko_Type *eon_circle_type_get(void)
+EAPI Eon_Circle * eon_circle_new(Eon_Document *d)
 {
-	static Ekeko_Type *type = NULL;
+	Eon_Circle *c;
 
-	if (!type)
-	{
-		type = ekeko_type_new(EON_TYPE_CIRCLE, sizeof(Eon_Circle),
-				sizeof(Eon_Circle_Private), eon_shape_type_get(),
-				_ctor, _dtor, eon_shape_appendable);
-		EON_CIRCLE_X = EKEKO_TYPE_PROP_SINGLE_ADD(type, "x", EON_PROPERTY_COORD, OFFSET(Eon_Circle_Private, x));
-		EON_CIRCLE_Y = EKEKO_TYPE_PROP_SINGLE_ADD(type, "y", EON_PROPERTY_COORD, OFFSET(Eon_Circle_Private, y));
-		EON_CIRCLE_RADIUS = EKEKO_TYPE_PROP_SINGLE_ADD(type, "radius", EKEKO_PROPERTY_FLOAT, OFFSET(Eon_Circle_Private, radius));
-	}
+	c = eon_document_object_new(d, EON_TYPE_CIRCLE);
 
-	return type;
+	return c;
 }
-
-EAPI Eon_Circle * eon_circle_new(Eon_Canvas *c)
-{
-	Eon_Circle *p;
-
-	p = ekeko_type_instance_new(eon_circle_type_get());
-	ekeko_object_child_append((Ekeko_Object *)c, (Ekeko_Object *)p);
-
-	return p;
-}
-
 
 EAPI void eon_circle_radius_set(Eon_Circle *c, float radius)
 {

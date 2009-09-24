@@ -29,6 +29,7 @@
  *============================================================================*/
 #define PRIVATE(d) ((Eon_Fade_Private *)((Eon_Hswitch *)(d))->private)
 
+static Ekeko_Type *_type;
 struct _Eon_Fade_Private
 {
 
@@ -45,7 +46,7 @@ static void _ctor(void *instance)
 	Eon_Fade_Private *prv;
 
 	f = (Eon_Fade *) instance;
-	f->private = prv = ekeko_type_instance_private_get(eon_fade_type_get(), instance);
+	f->private = prv = ekeko_type_instance_private_get(_type, instance);
 	f->parent.parent.parent.create = eon_engine_fade_create;
 	f->parent.parent.parent.render = _render;
 	f->parent.parent.parent.delete = eon_engine_fade_delete;
@@ -58,28 +59,27 @@ static void _dtor(void *fade)
 /*============================================================================*
  *                                 Global                                     *
  *============================================================================*/
+void eon_fade_init(void)
+{
+	_type = ekeko_type_new(EON_TYPE_FADE, sizeof(Eon_Fade),
+			sizeof(Eon_Fade_Private), eon_transition_type_get(),
+			_ctor, _dtor, eon_transition_appendable);
+
+	eon_type_register(_type, EON_TYPE_FADE);
+}
+
+void eon_fade_shutdown(void)
+{
+	eon_type_unregister(_type);
+}
 /*============================================================================*
  *                                   API                                      *
  *============================================================================*/
-EAPI Ekeko_Type *eon_fade_type_get(void)
-{
-	static Ekeko_Type *type = NULL;
-
-	if (!type)
-	{
-		type = ekeko_type_new(EON_TYPE_FADE, sizeof(Eon_Fade),
-				sizeof(Eon_Fade_Private), eon_transition_type_get(),
-				_ctor, _dtor, eon_transition_appendable);
-	}
-
-	return type;
-}
-
-EAPI Eon_Fade * eon_fade_new(void)
+EAPI Eon_Fade * eon_fade_new(Eon_Document *d)
 {
 	Eon_Fade *f;
 
-	f = ekeko_type_instance_new(eon_fade_type_get());
+	f = eon_document_object_new(d, EON_TYPE_FADE);
 
 	return f;
 }

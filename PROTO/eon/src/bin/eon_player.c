@@ -47,12 +47,13 @@ static void _play_click_cb(const Ekeko_Object *o, Ekeko_Event *e, void *data)
 	eon_document_play(doc);
 }
 
-void ui_setup(Eon_Canvas *c)
+void ui_setup(Eon_Document *d, Eon_Canvas *c)
 {
 	Eon_Rect *r;
 	Eon_Checker *ch;
 
-	r = eon_rect_new(c);
+	r = eon_rect_new(d);
+	ekeko_object_child_append((Ekeko_Object *)c, (Ekeko_Object *)r);
 	eon_rect_x_set(r, 0);
 	eon_rect_y_set(r, 0);
 	eon_rect_w_rel_set(r, 100);
@@ -61,7 +62,8 @@ void ui_setup(Eon_Canvas *c)
 	eon_rect_show(r);
 	ekeko_event_listener_add((Ekeko_Object *)r, EKEKO_EVENT_UI_MOUSE_DOWN, _pause_click_cb, EINA_FALSE, c);
 
-	r = eon_rect_new(c);
+	r = eon_rect_new(d);
+	ekeko_object_child_append((Ekeko_Object *)c, (Ekeko_Object *)r);
 	eon_rect_x_set(r, 0);
 	eon_rect_y_rel_set(r, 95);
 	eon_rect_w_rel_set(r, 100);
@@ -138,7 +140,7 @@ int main(int argc, char **argv)
 	canvas = eon_document_canvas_get(doc);
 	style = eon_document_style_get(doc);
 	/* create the ui */
-	ui_setup(canvas);
+	ui_setup(doc, canvas);
 	eon_loop();
 	eon_shutdown();
 
