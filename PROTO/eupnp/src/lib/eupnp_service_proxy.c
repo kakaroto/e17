@@ -106,7 +106,7 @@ _data_ready(void *buffer, int size, void *data)
 	if (!proxy->xml_parser)
 	  {
 	     DEBUG_D(_log_dom, "Finished building service proxy %p, forwarding to ready callback.", proxy);
-	     proxy->ready_cb(proxy, proxy->ready_cb_data);
+	     proxy->ready_cb(proxy->ready_cb_data, proxy);
 	  }
      }
    else
@@ -146,7 +146,7 @@ _request_data_ready(void *buffer, int size, void *data)
 
    DEBUG_D(_log_dom, "Request data ready for proxy %p", proxy);
 
-   req->response_cb(proxy, req->data, buffer, size);
+   req->response_cb(req->data, buffer, size);
 }
 
 static void

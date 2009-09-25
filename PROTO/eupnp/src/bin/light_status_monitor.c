@@ -63,7 +63,7 @@ on_status_event(Eupnp_State_Variable *var, void *buffer, int size, void *data)
  * variable.
  */
 static void
-on_switch_power_proxy_ready(Eupnp_Service_Proxy *proxy, void *data)
+on_switch_power_proxy_ready(void *data, Eupnp_Service_Proxy *proxy)
 {
    if (!eupnp_service_proxy_state_variable_events_subscribe(proxy,
 							    "Status",   // variable name

@@ -43,7 +43,7 @@ is_dimmable_light(Eupnp_Device_Info *device)
 }
 
 static void
-dimm_proxy_ready_cb(Eupnp_Service_Proxy *proxy, void *data)
+dimm_proxy_ready_cb(void *data, Eupnp_Service_Proxy *proxy)
 {
    Light_Control *c = data;
    INF("Received Dimming proxy %p for light control %p, device %p", proxy, c, c->device);
@@ -51,7 +51,7 @@ dimm_proxy_ready_cb(Eupnp_Service_Proxy *proxy, void *data)
 }
 
 static void
-basic_proxy_ready_cb(Eupnp_Service_Proxy *proxy, void *data)
+basic_proxy_ready_cb(void *data, Eupnp_Service_Proxy *proxy)
 {
    Light_Control *c = data;
    INF("Received SwitchPower proxy %p for light control %p, device %p", proxy, c, c->device);
@@ -217,14 +217,14 @@ on_device_gone(void *user_data, Eupnp_Event_Type event_type, void *event_data)
 void lighting_control_win_create(void);
 
 void
-check_response_cb(Eupnp_Service_Proxy *proxy, void *data, const char *response_data, int response_len)
+check_response_cb(void *data, const char *response_data, int response_len)
 {
    // TODO treat response message and update check button accordingly
    DBG("Status change response.");
 }
 
 void
-dimm_response_cb(Eupnp_Service_Proxy *proxy, void *data, const char *response_data, int response_len)
+dimm_response_cb(void *data, const char *response_data, int response_len)
 {
    // TODO treat response message and update check button accordingly
    char *tmp = malloc(sizeof(char)*(response_len + 1));

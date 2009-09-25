@@ -35,8 +35,8 @@ typedef struct _Eupnp_State_Variable_Allowed_Value Eupnp_State_Variable_Allowed_
 typedef struct _Eupnp_Event_Subscriber Eupnp_Event_Subscriber;
 
 typedef Eina_Bool (*Eupnp_State_Variable_Event_Cb)(Eupnp_State_Variable *var, void *buffer, int size, void *data);
-typedef void (*Eupnp_Service_Proxy_Ready_Cb)(Eupnp_Service_Proxy *proxy, void *data);
-typedef void (*Eupnp_Action_Response_Cb)(Eupnp_Service_Proxy *proxy, void *data, const char *response_data, int response_len);
+typedef void (*Eupnp_Service_Proxy_Ready_Cb)(void *data, Eupnp_Service_Proxy *proxy);
+typedef void (*Eupnp_Action_Response_Cb)(void *data, const char *response_data, int response_len);
 
 #define EUPNP_STATE_VARIABLE_EVENT_CB(f) ((Eupnp_State_Variable_Event_Cb)f)
 #define EUPNP_SERVICE_PROXY_READY_CB(f) ((Eupnp_Service_Proxy_Ready_Cb)f)

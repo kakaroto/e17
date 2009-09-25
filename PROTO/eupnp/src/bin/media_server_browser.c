@@ -45,7 +45,7 @@ static _log_domain = -1;
  * @note To see this XML response, turn on debug as taught below before main().
  */
 static void
-action_response(Eupnp_Service_Proxy *proxy, void *data, const char *response, int response_len)
+action_response(void *data, const char *response, int response_len)
 {
    char *tmp = malloc(sizeof(char)*(response_len + 1));
 
@@ -71,7 +71,7 @@ action_response(Eupnp_Service_Proxy *proxy, void *data, const char *response, in
  * and the response is forwarded to the assigned action_response() callback.
  */
 static void
-on_proxy_ready(Eupnp_Service_Proxy *proxy, void *data)
+on_proxy_ready(void *data, Eupnp_Service_Proxy *proxy)
 {
    if (!eupnp_service_proxy_action_send(proxy, "Browse", EUPNP_ACTION_RESPONSE_CB(action_response),
 					NULL, // data
