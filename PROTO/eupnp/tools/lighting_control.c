@@ -237,13 +237,15 @@ dimm_response_cb(void *data, const char *response_data, int response_len)
 void
 dimm_changed(void *data, Evas_Object *obj, void *event_info)
 {
-   INF("Dimm should be working on %p", selected_device);
-
    if (!selected_device) return;
 
    Light_Control *c = elm_list_item_data_get(selected_device);
 
-   DBG("Dimm light control %p %p %p %p", c, c->device, c->dimm_proxy, c->basic_proxy);
+   if (!c->dimm_proxy)
+     {
+	DBG("Dimming proxy for %p not ready.", c);
+	return;
+     }
 
    if (!eupnp_service_proxy_action_send(c->dimm_proxy, "SetLoadLevelTarget", dimm_response_cb, c,
 				   "newLoadlevelTarget", EUPNP_TYPE_INT, (int) elm_slider_value_get(dimm),
@@ -256,7 +258,6 @@ dimm_changed(void *data, Evas_Object *obj, void *event_info)
 void
 check_changed(void *data, Evas_Object *obj, void *event_info)
 {
-   INF("Check should be working on %p", selected_device);
    if (!selected_device) return;
 
    Light_Control *c = elm_list_item_data_get(selected_device);
