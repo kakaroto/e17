@@ -15,31 +15,32 @@
  * License along with this library.
  * If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef EON_TEXT_H_
-#define EON_TEXT_H_
-
+#ifndef EON_TRIGGER_H_
+#define EON_TRIGGER_H_
 /*============================================================================*
  *                                 Events                                     *
  *============================================================================*/
-#define EON_TEXT_STR_CHANGED "strChanged"
+#define EON_TRIGGER_EVENT_CHANGED "eventChanged"
+#define EON_TRIGGER_TARGET_CHANGED "targetChanged"
 /*============================================================================*
  *                               Properties                                   *
  *============================================================================*/
-extern Ekeko_Property_Id EON_TEXT_STR;
+extern Ekeko_Property_Id EON_TRIGGER_EVENT;
+extern Ekeko_Property_Id EON_TRIGGER_TARGET;
 /*============================================================================*
  *                                 Class                                      *
  *============================================================================*/
-typedef struct _Eon_Text_Private Eon_Text_Private;
-struct _Eon_Text
+typedef struct _Eon_Trigger_Private Eon_Trigger_Private;
+struct _Eon_Trigger_Object
 {
-	Eon_Shape_Square parent;
-	Eon_Text_Private *private;
+	Ekeko_Object parent;
+	Eon_Trigger_Private *private;
 };
 /*============================================================================*
  *                                Functions                                   *
  *============================================================================*/
-EAPI Eon_Text * eon_text_new(Eon_Document *d);
-EAPI void eon_text_string_set(Eon_Text *t, const char *str);
-EAPI const char * eon_text_string_get(Eon_Text *t);
+EAPI Eon_Trigger_Object * eon_trigger_new(Eon_Document *d);
+EAPI void eon_trigger_event_set(Eon_Trigger_Object *t, const char *event);
+EAPI void eon_trigger_target_set(Eon_Trigger_Object *t, Ekeko_Object *o);
 
-#endif /* EON_TEXT_H_ */
+#endif /* EON_TRIGGER_H_ */

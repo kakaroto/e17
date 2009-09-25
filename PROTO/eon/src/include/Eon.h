@@ -33,6 +33,8 @@ typedef struct _Eon_Animation_Matrix Eon_Animation_Matrix;
 typedef struct _Eon_External Eon_External;
 typedef struct _Eon_Script Eon_Script;
 typedef struct _Eon_Style Eon_Style;
+typedef struct _Eon_Trigger_Object Eon_Trigger_Object; // FIXME called object by now until we remove the trigger value
+typedef struct _Eon_Setter Eon_Setter;
 /* paint objects */
 typedef struct _Eon_Paint Eon_Paint;
 typedef struct _Eon_Paint_Square Eon_Paint_Square;
@@ -79,6 +81,8 @@ EAPI int eon_shutdown(void);
 #include "eon_external.h"
 #include "eon_script.h"
 #include "eon_style.h"
+#include "eon_setter.h"
+#include "eon_trigger.h"
 
 #include "eon_paint.h"
 #include "eon_paint_square.h"

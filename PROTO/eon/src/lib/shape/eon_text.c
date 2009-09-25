@@ -21,6 +21,8 @@
  *                                  Local                                     *
  *============================================================================*/
 #define PRIVATE(d) ((Eon_Text_Private *)((Eon_Text *)(d))->private)
+
+static Ekeko_Type *_type;
 struct _Eon_Text_Private
 {
 	Eon_Coord x, y;
@@ -71,7 +73,7 @@ static void _ctor(void *instance)
 	Eon_Text_Private *prv;
 
 	t = (Eon_Text *) instance;
-	t->private = prv = ekeko_type_instance_private_get(eon_text_type_get(), instance);
+	t->private = prv = ekeko_type_instance_private_get(_type, instance);
 	t->parent.parent.parent.render = _render;
 	t->parent.parent.parent.create = eon_engine_text_create;
 	/* events */
@@ -96,32 +98,29 @@ static Eina_Bool _appendable(void *instance, void *child)
 /*============================================================================*
  *                                 Global                                     *
  *============================================================================*/
+void eon_text_init(void)
+{
+	_type = ekeko_type_new(EON_TYPE_TEXT, sizeof(Eon_Text),
+			sizeof(Eon_Text_Private), eon_shape_square_type_get(),
+			_ctor, _dtor, _appendable);
+	EON_TEXT_STR = EKEKO_TYPE_PROP_SINGLE_ADD(_type, "str",
+			EKEKO_PROPERTY_STRING, OFFSET(Eon_Text_Private, str));
+}
+
+void eon_text_shutdown(void)
+{
+
+}
 /*============================================================================*
  *                                   API                                      *
  *============================================================================*/
 Ekeko_Property_Id EON_TEXT_STR;
 
-EAPI Ekeko_Type *eon_text_type_get(void)
-{
-	static Ekeko_Type *type = NULL;
-
-	if (!type)
-	{
-		type = ekeko_type_new(EON_TYPE_TEXT, sizeof(Eon_Text),
-				sizeof(Eon_Text_Private), eon_shape_square_type_get(),
-				_ctor, _dtor, _appendable);
-		EON_TEXT_STR = EKEKO_TYPE_PROP_SINGLE_ADD(type, "str", EKEKO_PROPERTY_STRING, OFFSET(Eon_Text_Private, str));
-	}
-
-	return type;
-}
-
-EAPI Eon_Text * eon_text_new(Eon_Canvas *c)
+EAPI Eon_Text * eon_text_new(Eon_Document *d)
 {
 	Eon_Text *t;
 
-	t = ekeko_type_instance_new(eon_text_type_get());
-	ekeko_object_child_append((Ekeko_Object *)c, (Ekeko_Object *)t);
+	t = eon_document_object_new(d, EON_TYPE_TEXT);
 
 	return t;
 }

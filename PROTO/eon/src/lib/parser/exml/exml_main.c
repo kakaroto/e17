@@ -398,7 +398,9 @@ Ekeko_Object * tag_create(char *tag, EXML *exml, Ekeko_Object *parent)
 	}
 	else if (!strcmp(tag, "text"))
 	{
-		o = eon_parser_text_new(parent);
+		o = eon_text_new(doc);
+		ekeko_object_child_append(parent, o);
+		ekeko_renderable_show((Ekeko_Renderable *)o);
 	}
 	else if (!strcmp(tag, "layer"))
 	{

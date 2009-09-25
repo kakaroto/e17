@@ -15,31 +15,32 @@
  * License along with this library.
  * If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef EON_TEXT_H_
-#define EON_TEXT_H_
-
+#ifndef EON_SETTER_H_
+#define EON_SETTER_H_
 /*============================================================================*
  *                                 Events                                     *
  *============================================================================*/
-#define EON_TEXT_STR_CHANGED "strChanged"
+#define EON_SETTER_VALUE_CHANGED "valueChanged"
+#define EON_SETTER_PROPERTY_CHANGED "propertyChanged"
 /*============================================================================*
  *                               Properties                                   *
  *============================================================================*/
-extern Ekeko_Property_Id EON_TEXT_STR;
+extern Ekeko_Property_Id EON_SETTER_VALUE;
+extern Ekeko_Property_Id EON_SETTER_PROPERTY;
 /*============================================================================*
  *                                 Class                                      *
  *============================================================================*/
-typedef struct _Eon_Text_Private Eon_Text_Private;
-struct _Eon_Text
+typedef struct _Eon_Setter_Private Eon_Setter_Private;
+struct _Eon_Setter
 {
-	Eon_Shape_Square parent;
-	Eon_Text_Private *private;
+	Ekeko_Object parent;
+	Eon_Setter_Private *private;
 };
 /*============================================================================*
  *                                Functions                                   *
  *============================================================================*/
-EAPI Eon_Text * eon_text_new(Eon_Document *d);
-EAPI void eon_text_string_set(Eon_Text *t, const char *str);
-EAPI const char * eon_text_string_get(Eon_Text *t);
+EAPI Eon_Setter * eon_setter_new(Eon_Document *d);
+EAPI void eon_setter_property_set(Eon_Setter *k, const char *name);
+EAPI void eon_setter_value_set(Eon_Setter *k, Ekeko_Value *val);
 
-#endif /* EON_TEXT_H_ */
+#endif /* EON_SETTER_H_ */

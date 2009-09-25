@@ -15,31 +15,58 @@
  * License along with this library.
  * If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef EON_TEXT_H_
-#define EON_TEXT_H_
+#include "Eon.h"
+#include "eon_private.h"
+/*============================================================================*
+ *                                  Local                                     *
+ *============================================================================*/
+#define PRIVATE(d) ((Eon_Trigger_Private *)((Eon_Trigger_Object *)(d))->private)
 
-/*============================================================================*
- *                                 Events                                     *
- *============================================================================*/
-#define EON_TEXT_STR_CHANGED "strChanged"
-/*============================================================================*
- *                               Properties                                   *
- *============================================================================*/
-extern Ekeko_Property_Id EON_TEXT_STR;
-/*============================================================================*
- *                                 Class                                      *
- *============================================================================*/
-typedef struct _Eon_Text_Private Eon_Text_Private;
-struct _Eon_Text
+static Ekeko_Type *_type;
+struct _Eon_Trigger_Private
 {
-	Eon_Shape_Square parent;
-	Eon_Text_Private *private;
+	char *name;
+	Ekeko_Value v;
 };
-/*============================================================================*
- *                                Functions                                   *
- *============================================================================*/
-EAPI Eon_Text * eon_text_new(Eon_Document *d);
-EAPI void eon_text_string_set(Eon_Text *t, const char *str);
-EAPI const char * eon_text_string_get(Eon_Text *t);
 
-#endif /* EON_TEXT_H_ */
+static void _ctor(Ekeko_Object *o)
+{
+	Eon_Trigger_Object *t;
+	Eon_Trigger_Private *prv;
+
+	t = (Eon_Trigger *)o;
+	t->private = prv = ekeko_type_instance_private_get(_type, instance);
+	/* default values */
+}
+
+static void _dtor(Ekeko_Object *o)
+{
+
+}
+/*============================================================================*
+ *                                 Global                                     *
+ *============================================================================*/
+void eon_trigger_init(void)
+{
+	_type = ekeko_type_new(EON_TYPE_TRIGGER, sizeof(Eon_Trigger_Object),
+			sizeof(Eon_Trigger_Private), ekeko_object_type_get(),
+			_ctor, _dtor, NULL);
+	eon_type_register(_type, EON_TYPE_TRIGGER);
+}
+
+void eon_trigger_shutdown(void)
+{
+	eon_type_unregister(_type);
+}
+/*============================================================================*
+ *                                   API                                      *
+ *============================================================================*/
+Eon_Trigger_Object * eon_trigger_new(Eon_Document *d)
+{
+	Eon_Trigger_Object *t;
+
+	t = eon_document_object_new(d, EON_TYPE_TRIGGER);
+
+	return t;
+}
+

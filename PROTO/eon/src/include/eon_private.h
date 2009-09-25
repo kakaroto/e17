@@ -42,6 +42,8 @@
 #define EON_TYPE_EXTERNAL "Eon_External"
 #define EON_TYPE_SCRIPT "Eon_Script"
 #define EON_TYPE_STYLE "Eon_Style"
+#define EON_TYPE_TRIGGER "Eon_Trigger"
+#define EON_TYPE_SETTER "Eon_Setter"
 
 #define EON_TYPE_SHAPE "Eon_Shape"
 #define EON_TYPE_SHAPE_SQUARE "Eon_Shape_Square"
