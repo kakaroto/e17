@@ -27,9 +27,9 @@ typedef enum
 	EKEKO_PROPERTY_VALUE_DUAL_STATE   /**< Dual state property */   //!< PROPERTY_VALUE_DUAL_STATE
 } Type_Property_Type;
 
-typedef void (*Ekeko_Type_Constructor)(void *);
-typedef void (*Ekeko_Type_Destructor)(void *);
-typedef Eina_Bool (*Ekeko_Type_Appendable)(void *parent, void *child);
+typedef void (*Ekeko_Type_Constructor)(Ekeko_Object *);
+typedef void (*Ekeko_Type_Destructor)(Ekeko_Object *);
+typedef Eina_Bool (*Ekeko_Type_Appendable)(Ekeko_Object *parent, Ekeko_Object *child);
 
 Ekeko_Type *ekeko_type_new(char *name, size_t size, size_t priv_size, Ekeko_Type *parent,
 		Ekeko_Type_Constructor ctor, Ekeko_Type_Destructor dtor, Ekeko_Type_Appendable append);

@@ -118,7 +118,7 @@ static Ekeko_Object * _prev_renderable_up(Ekeko_Object *o)
 }
 
 /* called whenever a double state property has changed */
-static void _visibility_change(const Ekeko_Object *o, Ekeko_Event *e, void *data)
+static void _visibility_change(Ekeko_Object *o, Ekeko_Event *e, void *data)
 {
 	Ekeko_Event_Mutation *em = (Ekeko_Event_Mutation *)e;
 	Ekeko_Renderable_Private *prv = PRIVATE(o);
@@ -138,7 +138,7 @@ static void _visibility_change(const Ekeko_Object *o, Ekeko_Event *e, void *data
 	ekeko_canvas_damage_add(prv->canvas, &prv->geometry.prev);
 }
 
-static void _geometry_change(const Ekeko_Object *o, Ekeko_Event *e, void *data)
+static void _geometry_change(Ekeko_Object *o, Ekeko_Event *e, void *data)
 {
 	Ekeko_Event_Mutation *em = (Ekeko_Event_Mutation *)e;
 	Ekeko_Renderable_Private *prv = PRIVATE(o);
@@ -157,7 +157,7 @@ static void _geometry_change(const Ekeko_Object *o, Ekeko_Event *e, void *data)
 	ekeko_canvas_damage_add(prv->canvas, &em->prev->value.rect);
 }
 
-static void _parent_set_cb(const Ekeko_Object *o, Ekeko_Event *e, void *data)
+static void _parent_set_cb(Ekeko_Object *o, Ekeko_Event *e, void *data)
 {
 	Ekeko_Event_Mutation *em = (Ekeko_Event_Mutation *)e;
 	Ekeko_Renderable_Private *prv;
@@ -210,13 +210,13 @@ static void _parent_set_cb(const Ekeko_Object *o, Ekeko_Event *e, void *data)
 	/* TODO propagate the change of zindex to the next sibling */
 }
 
-static void _ctor(void *instance)
+static void _ctor(Ekeko_Object *o)
 {
 	Ekeko_Renderable *rend;
 	Ekeko_Renderable_Private *prv;
 
-	rend = EKEKO_RENDERABLE(instance);
-	rend->private = prv = ekeko_type_instance_private_get(ekeko_renderable_type_get(), instance);
+	rend = EKEKO_RENDERABLE(o);
+	rend->private = prv = ekeko_type_instance_private_get(ekeko_renderable_type_get(), o);
 	/* register to an event where this child is appended to a canvas parent */
 	ekeko_event_listener_add(EKEKO_OBJECT(rend), EKEKO_RENDERABLE_VISIBILITY_CHANGED, _visibility_change, EINA_FALSE, NULL);
 	ekeko_event_listener_add(EKEKO_OBJECT(rend), EKEKO_RENDERABLE_GEOMETRY_CHANGED, _geometry_change, EINA_FALSE, NULL);
@@ -226,7 +226,7 @@ static void _ctor(void *instance)
 #endif
 }
 
-static void _dtor(void *instance)
+static void _dtor(Ekeko_Object *o)
 {
 
 }

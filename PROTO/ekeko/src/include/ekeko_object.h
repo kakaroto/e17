@@ -59,7 +59,7 @@ EAPI Ekeko_Object * ekeko_object_child_last_get(Ekeko_Object *o);
 EAPI Ekeko_Object * ekeko_object_next(Ekeko_Object *o);
 EAPI Ekeko_Object * ekeko_object_prev(Ekeko_Object *o);
 
-EAPI void ekeko_object_event_dispatch(const Ekeko_Object *object, Ekeko_Event *evt);
+EAPI void ekeko_object_event_dispatch(Ekeko_Object *object, Ekeko_Event *evt);
 EAPI const char * ekeko_object_type_name_get(const Ekeko_Object *obj);
 EAPI Ekeko_Object * ekeko_object_parent_get(const Ekeko_Object *o);
 EAPI Ekeko_Property * ekeko_object_property_get(Ekeko_Object *o, const char *prop_name);

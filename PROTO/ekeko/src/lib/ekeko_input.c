@@ -195,7 +195,7 @@ EAPI void ekeko_input_feed_key_up(Ekeko_Input *i, Ekeko_Key key, Ekeko_Key_Mod m
 	r = ekeko_canvas_focus_get(i->c);
 	if (!r) return;
 
-	ekeko_key_up_init(&ek, r, i, key, mod);
+	ekeko_key_up_init(&ek, (Ekeko_Object *)r, i, key, mod);
 	ekeko_event_dispatch((Ekeko_Event *)&ek);
 }
 
@@ -207,6 +207,6 @@ EAPI void ekeko_input_feed_key_down(Ekeko_Input *i, Ekeko_Key key, Ekeko_Key_Mod
 	r = ekeko_canvas_focus_get(i->c);
 	if (!r) return;
 
-	ekeko_key_down_init(&ek, r, i, key, mod);
+	ekeko_key_down_init(&ek, (Ekeko_Object *)r, i, key, mod);
 	ekeko_event_dispatch((Ekeko_Event *)&ek);
 }

@@ -21,7 +21,7 @@
 typedef struct _Ekeko_Event
 {
 	const char *type;
-	const Ekeko_Object *target;
+	Ekeko_Object *target;
 	Eina_Bool bubbles;
 	Eina_Bool stop;
 } Ekeko_Event;
@@ -65,7 +65,7 @@ typedef struct _Ekeko_Event_Mutation
 {
 	Ekeko_Event event;
 	Ekeko_Event_Mutation_State state; /* pre/post (async) curr (async/sync) */
-	const Ekeko_Object *related; /* parent in case of child_append/remove */
+	Ekeko_Object *related; /* parent in case of child_append/remove */
 	Ekeko_Value *prev; /* previous value */
 	Ekeko_Value *curr; /* current value */
 	const char *prop; /* property name */
@@ -89,7 +89,8 @@ typedef struct _Ekeko_Event_Mutation
 typedef struct _Ekeko_Event_Ui
 {
 	Ekeko_Event event;
-	const Ekeko_Object *related;
+	/* Why do we need the related? */
+	Ekeko_Object *related;
 	const Ekeko_Input *i;
 	/* TODO for now this isnt needed but whenever the keyboard event
 	 * is finished we might find duplicate things on the mouse
@@ -142,12 +143,12 @@ typedef struct _Ekeko_Event_Key
 	Ekeko_Key key;
 } Ekeko_Event_Key;
 
-typedef void (*Event_Listener)(const Ekeko_Object *, Ekeko_Event *, void * data);
+typedef void (*Event_Listener)(Ekeko_Object *, Ekeko_Event *, void * data);
 
 EAPI void ekeko_event_listener_add(Ekeko_Object *o, const char *type, Event_Listener el, Eina_Bool bubble, void *data);
 EAPI void ekeko_event_listener_remove(Ekeko_Object *o, const char *type, Event_Listener el, Eina_Bool bubble, void *data);
 EAPI void ekeko_event_dispatch(Ekeko_Event *e);
 EAPI void ekeko_event_stop(Ekeko_Event *e);
-EAPI void ekeko_event_init(Ekeko_Event *e, const char *type, const Ekeko_Object *o, Eina_Bool bubbles);
+EAPI void ekeko_event_init(Ekeko_Event *e, const char *type, Ekeko_Object *o, Eina_Bool bubbles);
 
 #endif /* EKEKO_EVENT_H_ */

@@ -58,13 +58,11 @@ typedef struct _Object_Event
 	void *data;
 } Object_Event;
 
-static void _ctor(void *instance)
+static void _ctor(Ekeko_Object *obj)
 {
-	Ekeko_Object *obj;
 	Ekeko_Object_Private *prv;
 
-	obj = (Ekeko_Object*) instance;
-	obj->private = prv = ekeko_type_instance_private_get(ekeko_object_type_get(), instance);
+	obj->private = prv = ekeko_type_instance_private_get(ekeko_object_type_get(), obj);
 	prv->listeners = eina_hash_string_superfast_new(NULL);
 	prv->user = eina_hash_string_superfast_new(NULL);
 	prv->children = NULL;
@@ -77,14 +75,14 @@ static void _ctor(void *instance)
 #endif
 }
 
-static void _dtor(void *object)
+static void _dtor(Ekeko_Object *obj)
 {
 #ifdef EKEKO_DEBUG
 	printf("[Ekeko_Object] dtor %p\n", object);
 #endif
 }
 
-static void _event_dispatch(const Ekeko_Object *obj, Ekeko_Event *e, Eina_Bool bubble)
+static void _event_dispatch(Ekeko_Object *obj, Ekeko_Event *e, Eina_Bool bubble)
 {
 	Eina_List *listeners;
 	Eina_Iterator *it;
@@ -434,7 +432,7 @@ EAPI void * ekeko_object_user_data_get(Ekeko_Object *object, const char *name)
 	return eina_hash_find(prv->user, name);
 }
 
-EAPI void ekeko_object_event_dispatch(const Ekeko_Object *obj, Ekeko_Event *e)
+EAPI void ekeko_object_event_dispatch(Ekeko_Object *obj, Ekeko_Event *e)
 {
 	Ekeko_Object_Private *prv;
 
@@ -557,7 +555,7 @@ EAPI Ekeko_Object * ekeko_object_child_get_at(Ekeko_Object *o, unsigned int inde
 	Ekeko_Object *child;
 
 	a = eina_inlist_accessor_new(prv->children);
-	eina_accessor_data_get(a, index, &child);
+	eina_accessor_data_get(a, index, (void **)&child);
 
 	return child;
 }
@@ -571,11 +569,11 @@ EAPI Ekeko_Object * ekeko_object_child_last_get(Ekeko_Object *o)
 	Ekeko_Object_Private *chprv;
 
 	prv = PRIVATE(o);
-	chprv = prv->children;
+	chprv = (Ekeko_Object_Private *)prv->children;
 	if (!chprv) return NULL;
 	else
 	{
-		chprv = chprv->__in_list.last;
+		chprv = (Ekeko_Object_Private *)chprv->__in_list.last;
 		return chprv->rel;
 	}
 }
@@ -586,7 +584,7 @@ EAPI Ekeko_Object * ekeko_object_child_first_get(Ekeko_Object *o)
 	Ekeko_Object_Private *chprv;
 
 	prv = PRIVATE(o);
-	chprv = prv->children;
+	chprv = (Ekeko_Object_Private *)prv->children;
 	if (!chprv) return NULL;
 	else return chprv->rel;
 }

@@ -39,19 +39,19 @@ struct _Ekeko_Canvas_Private
 	Ekeko_Renderable *focused;
 };
 
-void _subcanvas_in(const Ekeko_Object *o, Ekeko_Event *e, void *data)
+void _subcanvas_in(Ekeko_Object *o, Ekeko_Event *e, void *data)
 {
 	printf("SUBCANVAS in\n");
 	/* TODO feed the mouse in into this canvas */
 }
 
-void _subcanvas_out(const Ekeko_Object *o, Ekeko_Event *e, void *data)
+void _subcanvas_out(Ekeko_Object *o, Ekeko_Event *e, void *data)
 {
 	printf("SUBCANVAS out\n");
 	/* TODO feed the mouse out into this canvas */
 }
 
-void _subcanvas_move(const Ekeko_Object *o, Ekeko_Event *e, void *data)
+void _subcanvas_move(Ekeko_Object *o, Ekeko_Event *e, void *data)
 {
 	printf("SUBCANVAS move\n");
 	/* TODO feed the mouse move into this canvas */
@@ -126,7 +126,7 @@ static inline void _renderable_append(Ekeko_Canvas *c, Ekeko_Renderable *r,
 	}
 }
 
-static void _child_removed(const Ekeko_Object *o, Ekeko_Event *e, void *data)
+static void _child_removed(Ekeko_Object *o, Ekeko_Event *e, void *data)
 {
 	Ekeko_Event_Mutation *em = (Ekeko_Event_Mutation *)e;
 	Ekeko_Canvas *c = (Ekeko_Canvas *)data;
@@ -151,7 +151,7 @@ static void _child_removed(const Ekeko_Object *o, Ekeko_Event *e, void *data)
 	eina_tiler_rect_add(prv->tiler, &geom);
 }
 
-static void _child_geometry_change(const Ekeko_Object *o, Ekeko_Event *e, void *data)
+static void _child_geometry_change(Ekeko_Object *o, Ekeko_Event *e, void *data)
 {
 	Ekeko_Event_Mutation *em = (Ekeko_Event_Mutation *)e;
 	Ekeko_Canvas *c = (Ekeko_Canvas *)data;
@@ -173,7 +173,7 @@ static void _child_geometry_change(const Ekeko_Object *o, Ekeko_Event *e, void *
 
 }
 
-static void _child_visibility_change(const Ekeko_Object *o, Ekeko_Event *e, void *data)
+static void _child_visibility_change(Ekeko_Object *o, Ekeko_Event *e, void *data)
 {
 	Ekeko_Event_Mutation *em = (Ekeko_Event_Mutation *)e;
 	Ekeko_Canvas *c = (Ekeko_Canvas *)data;
@@ -193,7 +193,7 @@ static void _child_visibility_change(const Ekeko_Object *o, Ekeko_Event *e, void
 	_renderable_append(c, r, &cgeom, &rgeom, em->curr->value.bool_value);
 }
 
-static void _geometry_change(const Ekeko_Object *o, Ekeko_Event *e, void *data)
+static void _geometry_change(Ekeko_Object *o, Ekeko_Event *e, void *data)
 {
 	Ekeko_Event_Mutation *em = (Ekeko_Event_Mutation *)e;
 	Ekeko_Canvas_Private *prv;
@@ -223,7 +223,7 @@ static void _geometry_change(const Ekeko_Object *o, Ekeko_Event *e, void *data)
 }
 
 /* Called whenever the process has finished on this element */
-static void _process_cb(const Ekeko_Object *o, Ekeko_Event *e, void *data)
+static void _process_cb(Ekeko_Object *o, Ekeko_Event *e, void *data)
 {
 	Ekeko_Canvas *c;
 	Ekeko_Canvas_Private *prv;
@@ -280,7 +280,7 @@ static void _process_cb(const Ekeko_Object *o, Ekeko_Event *e, void *data)
 	eina_tiler_clear(prv->tiler);
 }
 
-static void _redraw_change(const Ekeko_Object *o, Ekeko_Event *e, void *data)
+static void _redraw_change(Ekeko_Object *o, Ekeko_Event *e, void *data)
 {
 	Ekeko_Event_Mutation *em = (Ekeko_Event_Mutation *)e;
 	Ekeko_Canvas_Private *prv;
@@ -291,7 +291,7 @@ static void _redraw_change(const Ekeko_Object *o, Ekeko_Event *e, void *data)
 	em->curr->value.bool_value = EINA_FALSE;
 }
 
-static void _child_append_cb(const Ekeko_Object *o, Ekeko_Event *e, void *data)
+static void _child_append_cb(Ekeko_Object *o, Ekeko_Event *e, void *data)
 {
 	Ekeko_Event_Mutation *em = (Ekeko_Event_Mutation *)e;
 	Ekeko_Canvas_Private *prv;
@@ -351,13 +351,13 @@ static void _child_append_cb(const Ekeko_Object *o, Ekeko_Event *e, void *data)
 	ekeko_event_listener_add((Ekeko_Object *)e->target, EKEKO_EVENT_OBJECT_REMOVE, _child_removed, EINA_FALSE, o);
 }
 
-static void _ctor(void *instance)
+static void _ctor(Ekeko_Object *o)
 {
 	Ekeko_Canvas *canvas;
 	Ekeko_Canvas_Private *prv;
 
-	canvas = (Ekeko_Canvas*) instance;
-	canvas->private = prv = ekeko_type_instance_private_get(ekeko_canvas_type_get(), instance);
+	canvas = (Ekeko_Canvas *)o;
+	canvas->private = prv = ekeko_type_instance_private_get(ekeko_canvas_type_get(), o);
 	prv->renderables = NULL;
 	prv->tiler = eina_tiler_new(0, 0);
 	/* register to an event where some child is appended to this parent */
@@ -372,7 +372,7 @@ static void _ctor(void *instance)
 #endif
 }
 
-static void _dtor(void *canvas)
+static void _dtor(Ekeko_Object *o)
 {
 #ifdef EKEKO_DEBUG
 	printf("[Ekeko_Canvas] dtor %p\n", canvas);
@@ -559,7 +559,6 @@ EAPI void ekeko_canvas_focus_set(Ekeko_Canvas *c, Ekeko_Renderable *r)
 	Ekeko_Canvas_Private *prv;
 
 	prv = PRIVATE(c);
-	printf("FOCUS = %p\n", r);
 	prv->focused = r;
 }
 
