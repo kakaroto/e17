@@ -120,17 +120,6 @@ PKG_CHECK_MODULES([EFREET_MIME], efreet-mime,
    ]
 )
 
-PKG_CHECK_MODULES([EPSILON], epsilon,
-   [
-      have_epsilon="Yes"
-   ],
-   [
-      have_epsilon="No"
-      echo "Epsilon was not found by pkg-config!";
-      AC_MSG_ERROR([Ephoto needs epsilon to compile.])
-   ]
-)
-
 PKG_CHECK_MODULES([EINA], eina-0,
    [
       have_eina="Yes"
@@ -154,7 +143,7 @@ PKG_CHECK_MODULES([ETHUMB], ethumb_client,
 )
 
 AC_OUTPUT([
-Makefile 
+Makefile
 ephoto.spec
 data/Makefile
 data/themes/Makefile
