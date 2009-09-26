@@ -125,6 +125,10 @@ case "$host_os" in
       ;;
 esac
 
+# Eina
+
+PKG_CHECK_MODULES([EINA], eina-0)
+
 # Evas
 
 PKG_CHECK_MODULES([EVAS], evas)

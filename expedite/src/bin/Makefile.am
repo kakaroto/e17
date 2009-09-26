@@ -6,6 +6,7 @@ AM_CPPFLAGS = \
 -DPACKAGE_BIN_DIR=\"$(bindir)\" \
 -DPACKAGE_LIB_DIR=\"$(libdir)\" \
 -DPACKAGE_DATA_DIR=\"$(datadir)/$(PACKAGE)\" \
+@EINA_CFLAGS@ \
 @EVAS_CFLAGS@ \
 @x_cflags@ \
 @SDL_CFLAGS@ \
@@ -78,7 +79,7 @@ poly_blend.c
 
 expedite_CFLAGS = @WIN32_CFLAGS@
 expedite_CXXFLAGS = @EXPEDITE_CXXFLAGS@
-expedite_LDADD = @EVAS_LIBS@ @SDL_LIBS@ @x_libs@ @gdi_libs@ @ddraw_libs@ @ddraw_16_libs@ @d3d_libs@ @wince_16_libs@ @glew_libs@ @DIRECTFB_LIBS@ @XCB_LIBS@ @EVIL_LIBS@ @quartz_libs@ -lm
+expedite_LDADD = @SDL_LIBS@ @x_libs@ @gdi_libs@ @ddraw_libs@ @ddraw_16_libs@ @d3d_libs@ @wince_16_libs@ @glew_libs@ @DIRECTFB_LIBS@ @XCB_LIBS@ @EVAS_LIBS@ @EINA_LIBS@ @EVIL_LIBS@ @quartz_libs@ -lm
 expedite_LDFLAGS = @lt_enable_auto_import@
 
 if BUILD_SOFTWARE_XLIB
