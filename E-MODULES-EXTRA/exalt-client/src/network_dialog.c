@@ -88,7 +88,7 @@ void if_network_dialog_create(Instance* inst)
     inst->network.entry_cmd = e_widget_entry_add(evas,&(inst->network.cmd),if_network_dialog_cb_entry,inst,NULL);
     e_widget_frametable_object_append(flist, inst->network.entry_cmd, 2, 6, 1, 1, 1, 0, 1, 0);
 
-    lbl = e_widget_label_add(evas,D_("Add to favoris: "));
+    lbl = e_widget_label_add(evas,D_("Add to favorites: "));
     e_widget_frametable_object_append(flist, lbl, 0, 7, 2, 1, 1, 0, 1, 0);
     inst->network.check_favoris = e_widget_check_add(evas, "", &(inst->network.favoris));
     e_widget_frametable_object_append(flist, inst->network.check_favoris, 2, 7, 1, 1, 1, 0, 1, 0);
