@@ -20,6 +20,7 @@
 /*============================================================================*
  *                                  Local                                     *
  *============================================================================*/
+static Ekeko_Type *_type;
 struct _Eon_Compound_Private
 {
 
@@ -36,7 +37,7 @@ static void _ctor(void *instance)
 	Eon_Compound_Private *prv;
 
 	c = (Eon_Compound *) instance;
-	c->private = prv = ekeko_type_instance_private_get(eon_compound_type_get(), instance);
+	c->private = prv = ekeko_type_instance_private_get(_type, instance);
 	c->parent.parent.create = eon_engine_compound_create;
 	c->parent.parent.render = _render;
 	c->parent.parent.delete = eon_engine_compound_delete;
@@ -55,27 +56,31 @@ static void _dtor(void *fade)
 
 }
 /*============================================================================*
- *                                   API                                      *
+ *                                 Global                                     *
  *============================================================================*/
-EAPI Ekeko_Type *eon_compound_type_get(void)
+void eon_compound_init(void)
 {
-	static Ekeko_Type *type = NULL;
+	_type = ekeko_type_new(EON_TYPE_COMPOUND, sizeof(Eon_Compound),
+			sizeof(Eon_Compound_Private),
+			eon_paint_square_type_get(),
+			_ctor, _dtor, _appendable);
 
-	if (!type)
-	{
-		type = ekeko_type_new(EON_TYPE_COMPOUND, sizeof(Eon_Compound),
-				sizeof(Eon_Compound_Private), eon_paint_square_type_get(),
-				_ctor, _dtor, _appendable);
-	}
-
-	return type;
+	eon_type_register(_type, EON_TYPE_COMPOUND);
 }
 
-EAPI Eon_Compound * eon_compound_new(void)
+void eon_compound_shutdown(void)
+{
+	eon_type_unregister(_type);
+}
+
+/*============================================================================*
+ *                                   API                                      *
+ *============================================================================*/
+EAPI Eon_Compound * eon_compound_new(Eon_Document *d)
 {
 	Eon_Compound *c;
 
-	c = ekeko_type_instance_new(eon_compound_type_get());
+	c = eon_document_object_new(d, EON_TYPE_COMPOUND);
 
 	return c;
 }

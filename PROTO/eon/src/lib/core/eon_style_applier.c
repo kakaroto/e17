@@ -15,27 +15,50 @@
  * License along with this library.
  * If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef EON_STYLE_H_
-#define EON_STYLE_H_
+#include "Eon.h"
+#include "eon_private.h"
 /*============================================================================*
- *                                 Events                                     *
+ *                                  Local                                     *
  *============================================================================*/
-#define EON_STYLE_TYPE_CHANGED "styleChanged"
-/*============================================================================*
- *                               Properties                                   *
- *============================================================================*/
-extern Ekeko_Property_Id EON_STYLE_TYPE;
-/*============================================================================*
- *                                 Class                                      *
- *============================================================================*/
-typedef struct _Eon_Style_Private Eon_Style_Private;
-struct _Eon_Style
+#define PRIVATE(d) ((Eon_Style_Applier_Private *)((Eon_Style_Applier *)(d))->prv)
+
+struct _Eon_Style_Applier_Private
 {
-	Ekeko_Object parent;
-	Eon_Style_Private *prv;
 };
+
+static void _ctor(Ekeko_Object *o)
+{
+	Eon_Style_Applier *s;
+	Eon_Style_Applier_Private *prv;
+
+	s = (Eon_Style_Applier *)o;
+	s->prv = prv = ekeko_type_instance_private_get(
+			eon_style_applier_type_get(), o);
+}
+
+static void _dtor(Ekeko_Object *o)
+{
+
+}
 /*============================================================================*
- *                                Functions                                   *
+ *                                 Global                                     *
  *============================================================================*/
-EAPI Eon_Style * eon_style_new(Eon_Document *d);
-#endif
+/*============================================================================*
+ *                                   API                                      *
+ *============================================================================*/
+EAPI Ekeko_Type * eon_style_applier_type_get(void)
+{
+	static Ekeko_Type *type = NULL;
+
+	if (!type)
+	{
+		type = ekeko_type_new(EON_TYPE_STYLE_APPLIER,
+				sizeof(Eon_Style_Applier),
+				sizeof(Eon_Style_Applier_Private),
+				ekeko_object_type_get(),
+				_ctor, _dtor, NULL);
+
+	}
+
+	return type;
+}

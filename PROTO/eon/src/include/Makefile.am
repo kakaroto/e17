@@ -26,12 +26,15 @@ eon_paint_square.h \
 eon_polygon.h \
 eon_rect.h \
 eon_script.h \
+eon_setter.h \
 eon_shape_square.h \
 eon_style.h \
+eon_style_applier.h \
 eon_transition.h \
 eon_shape.h \
 eon_stripes.h \
 eon_text.h \
+eon_trigger.h \
 eon_value.h \
 eon_widget.h \
 eon_button.h \

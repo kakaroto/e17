@@ -28,6 +28,8 @@
  *                                  Local                                     *
  *============================================================================*/
 #define PRIVATE(d) ((Eon_Image_Private *)((Eon_Image *)(d))->private)
+
+static Ekeko_Type *_type;
 struct _Eon_Image_Private
 {
 	struct
@@ -94,11 +96,12 @@ static void _ctor(void *instance)
 	Eon_Image_Private *prv;
 
 	i = (Eon_Image*) instance;
-	i->private = prv = ekeko_type_instance_private_get(eon_image_type_get(), instance);
+	i->private = prv = ekeko_type_instance_private_get(_type, instance);
 	i->parent.parent.create = eon_engine_image_create;
 	i->parent.parent.delete = eon_engine_image_delete;
 	i->parent.parent.render = _render;
-	ekeko_event_listener_add((Ekeko_Object *)i, EON_IMAGE_FILE_CHANGED, _file_change, EINA_FALSE, NULL);
+	ekeko_event_listener_add((Ekeko_Object *)i, EON_IMAGE_FILE_CHANGED,
+			 _file_change, EINA_FALSE, NULL);
 }
 
 static void _dtor(void *image)
@@ -133,35 +136,40 @@ Enesim_Surface * eon_image_surface_get(Eon_Image *i)
 
 	return prv->src.img;
 }
+
+void eon_image_init(void)
+{
+	_type = ekeko_type_new(EON_TYPE_IMAGE, sizeof(Eon_Image),
+			sizeof(Eon_Image_Private),
+			eon_paint_square_type_get(),
+			_ctor, _dtor, eon_paint_appendable);
+	EON_IMAGE_FILE = EKEKO_TYPE_PROP_DOUBLE_ADD(_type, "file",
+			EKEKO_PROPERTY_STRING,
+			OFFSET(Eon_Image_Private, file.curr),
+			OFFSET(Eon_Image_Private, file.prev),
+			OFFSET(Eon_Image_Private, file.changed));
+	EON_IMAGE_LOADED = EKEKO_TYPE_PROP_SINGLE_ADD(_type, "loaded",
+			EKEKO_PROPERTY_BOOL,
+			OFFSET(Eon_Image_Private, src.loaded));
+
+	eon_type_register(_type, EON_TYPE_IMAGE);
+}
+
+void eon_image_shutdown(void)
+{
+	eon_type_unregister(_type);
+}
 /*============================================================================*
  *                                   API                                      *
  *============================================================================*/
 Ekeko_Property_Id EON_IMAGE_FILE;
 Ekeko_Property_Id EON_IMAGE_LOADED;
 
-EAPI Ekeko_Type *eon_image_type_get(void)
-{
-	static Ekeko_Type *type = NULL;
-
-	if (!type)
-	{
-		type = ekeko_type_new(EON_TYPE_IMAGE, sizeof(Eon_Image),
-				sizeof(Eon_Image_Private), eon_paint_square_type_get(),
-				_ctor, _dtor, eon_paint_appendable);
-		EON_IMAGE_FILE = EKEKO_TYPE_PROP_DOUBLE_ADD(type, "file", EKEKO_PROPERTY_STRING,
-				OFFSET(Eon_Image_Private, file.curr), OFFSET(Eon_Image_Private, file.prev),
-				OFFSET(Eon_Image_Private, file.changed));
-		EON_IMAGE_LOADED = EKEKO_TYPE_PROP_SINGLE_ADD(type, "loaded", EKEKO_PROPERTY_BOOL, OFFSET(Eon_Image_Private, src.loaded));
-	}
-
-	return type;
-}
-
-EAPI Eon_Image * eon_image_new(void)
+EAPI Eon_Image * eon_image_new(Eon_Document *d)
 {
 	Eon_Image *i;
 
-	i = ekeko_type_instance_new(eon_image_type_get());
+	i = eon_document_object_new(d, EON_TYPE_IMAGE);
 
 	return i;
 }

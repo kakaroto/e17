@@ -256,7 +256,7 @@ EAPI Eon_Document * eon_document_new(const char *engine, int w, int h, const cha
 
 	d = _document_new(engine, w, h, options);
 	/* the main style */
-	s = eon_style_new();
+	s = eon_style_new(d);
 	ekeko_object_child_append((Ekeko_Object *)d, (Ekeko_Object *)s);
 	/* the main canvas */
 	c = eon_canvas_new(d);

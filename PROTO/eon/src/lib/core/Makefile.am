@@ -14,15 +14,18 @@ eon_anim_key.c \
 eon_anim_basic.c \
 eon_anim_matrix.c \
 eon_document.c \
+eon_cache.c \
 eon_canvas.c \
 eon_clock.c \
 eon_coord.c \
 eon_external.c \
-eon_script.c \
 eon_engine.c \
-eon_main.c \
-eon_value.c \
-eon_cache.c \
 eon_font.c \
+eon_main.c \
+eon_parser.c \
+eon_setter.c \
+eon_script.c \
 eon_style.c \
-eon_parser.c
+eon_style_applier.c \
+eon_trigger.c \
+eon_value.c

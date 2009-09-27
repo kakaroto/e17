@@ -33,7 +33,7 @@ extern Ekeko_Property_Id EON_SETTER_PROPERTY;
 typedef struct _Eon_Setter_Private Eon_Setter_Private;
 struct _Eon_Setter
 {
-	Ekeko_Object parent;
+	Eon_Style_Applier parent;
 	Eon_Setter_Private *private;
 };
 /*============================================================================*

@@ -36,7 +36,6 @@ struct _Eon_Compound
 /*============================================================================*
  *                                Functions                                   *
  *============================================================================*/
-EAPI Ekeko_Type *eon_compound_type_get(void);
-EAPI Eon_Compound * eon_compound_new(void);
+EAPI Eon_Compound * eon_compound_new(Eon_Document *d);
 
 #endif /* EON_COMPOUND_H_ */

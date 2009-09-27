@@ -34,6 +34,7 @@ struct _Eon_Paint_Private
 	Enesim_Matrix inverse;
 	Eon_Paint_Coordspace coordspace;
 	Eon_Paint_Matrixspace matrixspace;
+	Eon_Style *style;
 	/* this is for the children classes that go through our
 	 * matrix interface, here we store the untransformed geometry
 	 */
@@ -335,6 +336,7 @@ Ekeko_Property_Id EON_PAINT_ROP;
 Ekeko_Property_Id EON_PAINT_MATRIX;
 Ekeko_Property_Id EON_PAINT_COORDSPACE;
 Ekeko_Property_Id EON_PAINT_MATRIXSPACE;
+Ekeko_Property_Id EON_PAINT_STYLE;
 
 EAPI Ekeko_Type *eon_paint_type_get(void)
 {
@@ -345,11 +347,24 @@ EAPI Ekeko_Type *eon_paint_type_get(void)
 		type = ekeko_type_new(EON_TYPE_PAINT, sizeof(Eon_Paint),
 				sizeof(Eon_Paint_Private), ekeko_renderable_type_get(),
 				_ctor, _dtor, NULL);
-		EON_PAINT_COLOR = EKEKO_TYPE_PROP_SINGLE_ADD(type, "color", EON_PROPERTY_COLOR, OFFSET(Eon_Paint_Private, color));
-		EON_PAINT_ROP = EKEKO_TYPE_PROP_SINGLE_ADD(type, "rop", EKEKO_PROPERTY_INT, OFFSET(Eon_Paint_Private, rop));
-		EON_PAINT_MATRIX = EKEKO_TYPE_PROP_SINGLE_ADD(type, "matrix", EON_PROPERTY_MATRIX, OFFSET(Eon_Paint_Private, matrix));
-		EON_PAINT_COORDSPACE = EKEKO_TYPE_PROP_SINGLE_ADD(type, "coordspace", EKEKO_PROPERTY_INT, OFFSET(Eon_Paint_Private, coordspace));
-		EON_PAINT_MATRIXSPACE = EKEKO_TYPE_PROP_SINGLE_ADD(type, "matrixspace", EKEKO_PROPERTY_INT, OFFSET(Eon_Paint_Private, matrixspace));
+		EON_PAINT_COLOR = EKEKO_TYPE_PROP_SINGLE_ADD(type, "color",
+				 EON_PROPERTY_COLOR,
+				OFFSET(Eon_Paint_Private, color));
+		EON_PAINT_ROP = EKEKO_TYPE_PROP_SINGLE_ADD(type, "rop",
+				EKEKO_PROPERTY_INT,
+				OFFSET(Eon_Paint_Private, rop));
+		EON_PAINT_MATRIX = EKEKO_TYPE_PROP_SINGLE_ADD(type, "matrix",
+				EON_PROPERTY_MATRIX,
+				OFFSET(Eon_Paint_Private, matrix));
+		EON_PAINT_COORDSPACE = EKEKO_TYPE_PROP_SINGLE_ADD(type,
+				"coordspace", EKEKO_PROPERTY_INT,
+				OFFSET(Eon_Paint_Private, coordspace));
+		EON_PAINT_MATRIXSPACE = EKEKO_TYPE_PROP_SINGLE_ADD(type,
+				"matrixspace", EKEKO_PROPERTY_INT,
+				OFFSET(Eon_Paint_Private, matrixspace));
+		EON_PAINT_STYLE = EKEKO_TYPE_PROP_SINGLE_ADD(type, "style",
+				EKEKO_PROPERTY_OBJECT,
+				OFFSET(Eon_Paint_Private, style));
 	}
 
 	return type;
@@ -429,4 +444,20 @@ EAPI Enesim_Rop eon_paint_rop_get(Eon_Paint *p)
 
 	prv = PRIVATE(p);
 	return prv->rop;
+}
+
+EAPI void eon_paint_style_set(Eon_Paint *p, Eon_Style *s)
+{
+	Ekeko_Value v;
+
+	ekeko_value_object_from(&v, s);
+	ekeko_object_property_value_set((Ekeko_Object *)p, "style", &v);
+}
+
+EAPI Eon_Style * eon_paint_style_get(Eon_Paint *p)
+{
+	Eon_Paint_Private *prv;
+
+	prv = PRIVATE(p);
+	return prv->style;
 }

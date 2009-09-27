@@ -42,6 +42,7 @@
 #define EON_TYPE_EXTERNAL "Eon_External"
 #define EON_TYPE_SCRIPT "Eon_Script"
 #define EON_TYPE_STYLE "Eon_Style"
+#define EON_TYPE_STYLE_APPLIER "Eon_Style_Applier"
 #define EON_TYPE_TRIGGER "Eon_Trigger"
 #define EON_TYPE_SETTER "Eon_Setter"
 
@@ -156,7 +157,6 @@ void eon_cache_image_load(const char *file, Enesim_Surface **s,
 		const char *options);
 
 /* Style */
-Eon_Style * eon_style_new(void);
 
 /* Circle */
 void eon_circle_style_coords_get(Eon_Circle *c, Eon_Paint *p,

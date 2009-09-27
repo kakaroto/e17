@@ -26,6 +26,7 @@
 #define EON_PAINT_MATRIX_CHANGED "matrixChanged"
 #define EON_PAINT_COORDSPACE_CHANGED "coordspaceChanged"
 #define EON_PAINT_MATRIXSPACE_CHANGED "matrixspaceChanged"
+#define EON_PAINT_STYLE_CHANGED "styleChanged"
 /*============================================================================*
  *                               Properties                                   *
  *============================================================================*/
@@ -34,6 +35,7 @@ extern Ekeko_Property_Id EON_PAINT_ROP;
 extern Ekeko_Property_Id EON_PAINT_MATRIX;
 extern Ekeko_Property_Id EON_PAINT_COORDSPACE;
 extern Ekeko_Property_Id EON_PAINT_MATRIXSPACE;
+extern Ekeko_Property_Id EON_PAINT_STYLE;
 /*============================================================================*
  *                                 Class                                      *
  *============================================================================*/
@@ -81,5 +83,8 @@ EAPI Enesim_Rop eon_paint_rop_get(Eon_Paint *s);
 
 EAPI void eon_paint_matrix_set(Eon_Paint *s, Enesim_Matrix *m);
 EAPI void eon_paint_matrix_get(Eon_Paint *s, Enesim_Matrix *m);
+
+EAPI void eon_paint_style_set(Eon_Paint *p, Eon_Style *s);
+EAPI Eon_Style * eon_paint_style_get(Eon_Paint *p);
 
 #endif /* EON_PAINT_H_ */

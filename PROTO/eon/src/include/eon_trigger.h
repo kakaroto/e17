@@ -33,7 +33,7 @@ extern Ekeko_Property_Id EON_TRIGGER_TARGET;
 typedef struct _Eon_Trigger_Private Eon_Trigger_Private;
 struct _Eon_Trigger_Object
 {
-	Ekeko_Object parent;
+	Eon_Style_Applier parent;
 	Eon_Trigger_Private *private;
 };
 /*============================================================================*

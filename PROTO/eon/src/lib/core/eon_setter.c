@@ -29,8 +29,13 @@ struct _Eon_Setter_Private
 	Ekeko_Value value;
 };
 
-/* Calle whenever we need to set the value */
-static void _enable(Ekeko_Object *o, Ekeko_Object *rel)
+static void _unset(Ekeko_Object *o, Ekeko_Object *rel)
+{
+
+}
+
+/* Called whenever we need to set the value */
+static void _set(Ekeko_Object *o, Ekeko_Object *rel)
 {
 	Eon_Setter *s = (Eon_Setter *)o;
 	Eon_Setter_Private *prv = PRIVATE(o);
@@ -38,6 +43,7 @@ static void _enable(Ekeko_Object *o, Ekeko_Object *rel)
 	/* TODO create a value and set it
 	ekeko_object_property_set(rel, prv->name, prv->value);
 	*/
+	printf("SETTING %s\n", prv->name);
 }
 
 static void _ctor(Ekeko_Object *o)
@@ -46,8 +52,10 @@ static void _ctor(Ekeko_Object *o)
 	Eon_Setter_Private *prv;
 
 	s = (Eon_Setter *)o;
-	s->private = prv = ekeko_type_instance_private_get(_type, instance);
+	s->private = prv = ekeko_type_instance_private_get(_type, o);
 	/* default values */
+	s->parent.set = _set;
+	s->parent.unset = _unset;
 }
 
 static void _dtor(Ekeko_Object *o)
@@ -59,15 +67,16 @@ static void _dtor(Ekeko_Object *o)
  *============================================================================*/
 void eon_setter_init(void)
 {
-	_type = ekeko_type_new(EON_TYPE_SETTER, sizeof(Eon_Animation),
-			sizeof(Eon_Animation_Private), ekeko_object_type_get(),
+	_type = ekeko_type_new(EON_TYPE_SETTER, sizeof(Eon_Setter),
+			sizeof(Eon_Setter_Private),
+			eon_style_applier_type_get(),
 			_ctor, _dtor, NULL);
 	EON_SETTER_PROPERTY = EKEKO_TYPE_PROP_SINGLE_ADD(_type, "name",
 			EKEKO_PROPERTY_STRING,
 			OFFSET(Eon_Setter_Private, name));
 	EON_SETTER_VALUE = EKEKO_TYPE_PROP_SINGLE_ADD(_type, "value",
 			EKEKO_PROPERTY_VALUE,
-			OFFSET(Eon_Setter_Key_Private, value));
+			OFFSET(Eon_Setter_Private, value));
 
 	eon_type_register(_type, EON_TYPE_SETTER);
 }

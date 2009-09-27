@@ -376,7 +376,12 @@ Ekeko_Object * tag_create(char *tag, EXML *exml, Ekeko_Object *parent)
 	}
 	else if (!strcmp(tag, "style"))
 	{
-		o = eon_style_new();
+		o = eon_style_new(doc);
+		ekeko_object_child_append(parent, o);
+	}
+	else if (!strcmp(tag, "setter"))
+	{
+		o = eon_setter_new(doc);
 		ekeko_object_child_append(parent, o);
 	}
 	else if (!strcmp(tag, "script"))
@@ -409,13 +414,13 @@ Ekeko_Object * tag_create(char *tag, EXML *exml, Ekeko_Object *parent)
 	}
 	else if (!strcmp(tag, "compound"))
 	{
-		o = (Ekeko_Object *)eon_compound_new();
+		o = (Ekeko_Object *)eon_compound_new(doc);
 		ekeko_object_child_append(parent, o);
 		ekeko_renderable_show((Ekeko_Renderable *)o);
 	}
 	else if (!strcmp(tag, "image"))
 	{
-		o = (Ekeko_Object *)eon_image_new();
+		o = (Ekeko_Object *)eon_image_new(doc);
 		ekeko_object_child_append(parent, o);
 		ekeko_renderable_show((Ekeko_Renderable *)o);
 	}
