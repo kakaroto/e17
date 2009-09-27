@@ -5,8 +5,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Exalt-client module\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2009-09-09 07:16+0400\n"
-"PO-Revision-Date: 2009-09-09 09:09+0400\n"
+"POT-Creation-Date: 2009-09-27 08:48+0400\n"
+"PO-Revision-Date: 2009-09-27 09:44+0400\n"
 "Last-Translator: batden <batden@orange.fr>\n"
 "Language-Team: French <Enlightenment i18n French>\n"
 "MIME-Version: 1.0\n"
@@ -201,7 +201,7 @@ msgid "Wireless interface configuration"
 msgstr "Configuration de l'interface sans fil"
 
 #: src/network_dialog.c:91
-msgid "Add to favoris: "
+msgid "Add to favorites: "
 msgstr "Ajouter aux favoris:"
 
 #: src/network_dialog.c:203
