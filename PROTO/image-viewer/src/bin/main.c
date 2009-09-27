@@ -1722,7 +1722,8 @@ iv_free(IV *iv)
       ecore_file_monitor_del(monitor);
    if (iv->file_add_timer)
      ecore_timer_del(iv->file_add_timer);
-   eina_hash_free(iv->file_events);
+   if (iv->file_events)
+     eina_hash_free(iv->file_events);
 
    eina_stringshare_del(iv->theme_file);
 
