@@ -1,0 +1,13 @@
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+libdir=@libdir@
+includedir=@includedir@
+datarootdir=@datarootdir@
+datadir=@datadir@
+
+Name: E Photo manager
+Description: no description atm.
+Requires: @requirements@
+Version: @VERSION@
+Libs: -L${libdir} -lephoto_manager
+Cflags: -I${includedir} -I${includedir}/ephoto_manager
