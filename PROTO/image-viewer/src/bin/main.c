@@ -737,6 +737,8 @@ on_file_monitor_event(void *data, Ecore_File_Monitor *em, Ecore_File_Event event
       case ECORE_FILE_EVENT_MODIFIED:
 	 dir = ecore_file_dir_get(path);
 
+	 if (!iv->file_events)
+	   iv->file_events = eina_hash_string_superfast_new(NULL);
 	 eina_hash_add(iv->file_events, path, &event);
 	 EINA_LIST_FOREACH(iv->files, l, p2)
 	   {
@@ -884,7 +886,8 @@ read_image(IV *iv, IV_Image_Dest dest)
 	DBG("%d : %s\n", dest, (char *) l->data);
 	img = elm_image_add(iv->gui.ly);
 	succ = elm_image_file_set(img, l->data, NULL);
-	event = eina_hash_find(iv->file_events, l->data);
+	if (iv->file_events)
+	  event = eina_hash_find(iv->file_events, l->data);
 	if (succ)
 	  {
 	     int orientation = 0;
@@ -960,18 +963,16 @@ read_image(IV *iv, IV_Image_Dest dest)
 	else
 	  {
 	     Eina_List *cur = l;
-	     if (iv->cur_file == l)
-	       iv->cur_file = (l->next) ? l->next : l->prev;
 	     switch (dest)
 	       {
 		case IMAGE_CURRENT:
-		   l = iv->cur_file;
+		   l = iv->cur_file->next ? iv->cur_file->next : iv->cur_file->prev;
 		   break;
 		case IMAGE_NEXT:
-		   l = iv->cur_file->next;
+		   l = l->next ? l->next : iv->files;
 		   break;
 		case IMAGE_PREV:
-		   l = iv->cur_file->prev;
+		   l = l->prev ? l->prev : eina_list_last(iv->files);
 		   break;
 	       }
 	     if (event) break;
@@ -1834,8 +1835,6 @@ elm_main(int argc, char **argv)
 	  }
 	else iv->cur_file = iv->files;
      }
-   iv->file_events = eina_hash_string_superfast_new(NULL);
-
    create_main_win(iv);
 
 #ifdef HAVE_ETHUMB
