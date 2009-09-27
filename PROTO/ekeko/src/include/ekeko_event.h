@@ -54,6 +54,19 @@ typedef struct _Ekeko_Event
 #define EKEKO_EVENT_OBJECT_REMOVE "ObjectRemove"
 #define EKEKO_EVENT_OBJECT_PROCESS "ObjectProcess"
 
+#define EKEKO_EVENT_OBJECT_REFERENCED "ObjectReferenced"
+/* Whenever an object gets referenced by another via a property of type
+ * object
+ * target: Object that gets referenced
+ * related: The object that has the property
+ */
+#define EKEKO_EVENT_OBJECT_UNREFERENCED "ObjectUnreferenced"
+/* Whenever an object gets unreferenced by another via a property of type
+ * object
+ * target: Object that gets referenced
+ * related: The object that has the property
+ */
+
 typedef enum _Ekeko_Event_Mutation_State
 {
 	EVENT_MUTATION_STATE_PRE,
