@@ -2,7 +2,9 @@
 
 static void move_left(void *data, Evas_Object *obj, const char *emission, const char *source);
 static void move_right(void *data, Evas_Object *obj, const char *emission, const char *source);
-static Eina_List *get_image_files(const char *directory);
+static int get_thumbnails(void *data);
+static Ecore_Idler *idler;
+static DIR *direc;
 
 /*Show the Image Browser*/
 void show_image_browser(void)
@@ -51,53 +53,48 @@ static void move_right(void *data, Evas_Object *obj, const char *emission, const
 /*They will be passed to create_thumbnail for creation*/
 void populate_thumbnails(void)
 {
-	char *dir, *image;
-	char cwd[PATH_MAX];
+	char *dir, cwd[PATH_MAX];
 
 	dir = getcwd(cwd, PATH_MAX);
-	em->images = get_image_files(cwd);
-			
-	while(eina_list_data_get(em->images))
-	{
-		image = eina_list_data_get(em->images);
-
-		ephoto_table_pack(em->image_browser_tbl, image); 
-		em->images = eina_list_next(em->images);
-	}
+	direc = opendir(dir);
+	idler = ecore_idler_add(get_thumbnails, strdup(dir));
 }
 
-/*Get Images From A Certain Directory*/
-/*Parameter Directory Is The Directory To Get Images From*/
-static Eina_List *get_image_files(const char *directory)
+static int get_thumbnails(void *data)
 {
-	Eina_List *ls; 
-	Eina_List *images = NULL;
-	char path[PATH_MAX], *file;
+	const char *type;
+	char *dir, path[PATH_MAX];
+	int i;
+	struct dirent *d;
 
-	if (ecore_file_is_dir(directory))
+	dir = data;
+
+	for (i = 0; i <= 8; i++)
 	{
-		ls = ecore_file_ls(directory);
-		file = eina_list_data_get(ls);
-		while (file)
+		d = readdir(direc);
+		if (!d)
 		{
-			const char *type;
-				
-			if (strcmp(directory, "/"))
-				snprintf(path, PATH_MAX, "%s/%s",
-						directory, file);
-			else
-				snprintf(path, PATH_MAX, "%s%s",
-						directory, file);
+			ecore_idler_del(idler);
+			closedir(direc);
+			return 0;
+		}
+		else
+		{
+			if (strcmp(dir, "/"))
+                                snprintf(path, PATH_MAX, "%s/%s",
+                                                dir, d->d_name);
+                        else
+                                snprintf(path, PATH_MAX, "%s%s",
+                                                dir, d->d_name);
 			type = efreet_mime_type_get((const char *)path);
 			if (!strncmp(type, "image", 5))
-				images = eina_list_append(images, strdup(path));
-			ls = eina_list_next(ls);
-			file = eina_list_data_get(ls);
+			{
+				em->images = eina_list_append(em->images, strdup(path));
+				ephoto_table_pack(em->image_browser_tbl, strdup(path));
+			}
 		}
-		eina_list_free(ls);
 	}
-	else
-		images = NULL;
-	return images;
+
+	return 1;
 }
 
