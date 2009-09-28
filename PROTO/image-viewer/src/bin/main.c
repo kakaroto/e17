@@ -26,6 +26,11 @@ static int __log_domain = -1;
 #define DBG(...) EINA_LOG_DOM_DBG(__log_domain, __VA_ARGS__)
 #define ERR(...) EINA_LOG_DOM_ERR(__log_domain, __VA_ARGS__)
 
+#define IV_FILE(o) ((IV_File *) o)
+#define IV_FILE_NEXT(o) IV_FILE(EINA_INLIST_GET(o)->next)
+#define IV_FILE_PREV(o) IV_FILE(EINA_INLIST_GET(o)->prev)
+#define IV_FILE_LAST(o) IV_FILE(EINA_INLIST_GET(o)->last)
+
 typedef enum _IV_Image_Fit {
      PAN,
      FIT,
@@ -46,19 +51,21 @@ typedef enum _IV_Image_Bg {
 
 typedef struct _IV IV;
 typedef struct _IV_Config IV_Config;
-typedef struct _IV_Thumb_Info IV_Thumb_Info;
+typedef struct _IV_File IV_File;
+typedef struct _IV_Files_Account IV_Files_Account;
 
 struct _IV
 {
-   Eina_List  *files, *cur_file, *dirs;
-   Eina_List  *file_monitors;
-   Eina_Hash  *file_events;
-   const char *single_file;
+   Eina_Inlist *files;
+   IV_Files_Account *account;
+
+   Eina_List  *dirs, *file_monitors;
+   IV_File    *single_file;
    const char *theme_file;
 
    Ecore_Idler *idler;
 
-   Ecore_Timer *slideshow_timer, *cursor_timer, *file_add_timer;
+   Ecore_Timer *slideshow_timer, *cursor_timer;
 
    Ecore_Event_Handler *on_win_move_handler;
 
@@ -93,19 +100,14 @@ struct _IV
 #endif
    } flags;
 
-
    IV_Config            *config;
    Eet_Data_Descriptor  *config_edd;
    Ecore_Timer          *config_save;
 
 #ifdef HAVE_ETHUMB
-   Eina_List		*thumb_info;
    Eina_List		*preview_files;
-   Eina_List		*insert_before;
-   Eina_Hash		*preview_items;
    Ethumb_Client        *ethumb_client;
 
-   int			 first_preview;
    int			 connection_retry;
 
    int			 log_domain;
@@ -125,14 +127,35 @@ struct _IV_Config {
      IV_Image_Bg  image_bg;
 };
 
-struct _IV_Thumb_Info
+struct _IV_File
 {
-   const char *thumb_path;
-   const char *file;
-
+   EINA_INLIST;
    IV *iv;
+   IV_Files_Account *account;
 
-   Elm_Genlist_Item *item;
+   const char *file_path;
+#ifdef HAVE_ETHUMB
+   const char *thumb_path;
+   Elm_Genlist_Item *gl_item;
+#endif
+
+   /* for adding new files */
+   IV_File *insert_before;
+   double change_time;
+
+   struct {
+	Eina_Bool changed : 1;
+#ifdef HAVE_ETHUMB
+	Eina_Bool thumb_generating : 1;
+#endif
+   } flags;
+};
+
+struct _IV_Files_Account
+{
+   int count;
+
+   IV_File *current;
 };
 
 /* Prototypes */
@@ -140,7 +163,7 @@ static int  on_idler(void *data);
 static void slideshow_on(IV *iv);
 static void slideshow_off(IV *iv);
 #ifdef HAVE_ETHUMB
-static void on_thumb_generate(void *data, Ethumb_Client *client, int id, const char *file, const char *key, const char *thumb_path, const char *thumb_key, Eina_Bool success);
+static void on_thumb_generate(void *data, Ethumb_Client *client, int id, const char *file_path, const char *key, const char *thumb_path, const char *thumb_key, Eina_Bool success);
 static void on_thumb_die(void *data, Ethumb_Client *client);
 #endif
 
@@ -188,6 +211,26 @@ set_image_bg_style(IV *iv)
 	 elm_object_style_set(iv->gui.bg, "checkers");
 	 break;
      }
+}
+
+static IV_File *
+create_iv_file(IV *iv, const char *path)
+{
+   IV_File *file = calloc(1, sizeof(IV_File));
+
+   file->iv = iv;
+   file->file_path = eina_stringshare_add(path);
+   file->account = iv->account;
+
+   return file;
+}
+
+static void
+iv_file_free(IV_File *file)
+{
+   eina_stringshare_del(file->file_path);
+   eina_stringshare_del(file->thumb_path);
+   free(file);
 }
 
 static int
@@ -496,9 +539,10 @@ unfullscreen(IV *iv)
 }
 
 static void
-set_image_text(IV *iv, const char *text)
+set_image_text(IV *iv, IV_File *file)
 {
    char buf[1024];
+   const char *text = ecore_file_file_get(file->file_path);
 
    edje_object_part_text_set(iv->gui.file_label, "iv.text.label", text);
 
@@ -527,22 +571,22 @@ on_next_click(void *data, Evas_Object *obj, void *event_info)
 #ifdef HAVE_ETHUMB
 char *iv_gl_label_get(const void *data, Evas_Object *obj, const char *part)
 {
-   const IV_Thumb_Info *info = data;
+   const IV_File *file = data;
    if (!strcmp(part, "elm.text"))
-     return strdup(ecore_file_file_get(info->file));
+     return strdup(ecore_file_file_get(file->file_path));
    else if (!strcmp(part, "elm.text.sub"))
-     return ecore_file_dir_get(info->file);
+     return ecore_file_dir_get(file->file_path);
 
    return NULL;
 }
 
 Evas_Object *iv_gl_icon_get(const void *data, Evas_Object *obj, const char *part)
 {
-   const IV_Thumb_Info *info = data;
+   const IV_File *file = data;
    if (!strcmp(part, "elm.swallow.icon"))
      {
         Evas_Object *ic = elm_icon_add(obj);
-        elm_icon_file_set(ic, info->thumb_path, NULL);
+        elm_icon_file_set(ic, file->thumb_path, NULL);
         elm_icon_scale_set(ic, 0, 1);
 	evas_object_size_hint_min_set(ic, 64, 64);
         evas_object_show(ic);
@@ -582,11 +626,11 @@ preview_window_create(IV *iv)
 static void
 on_thumb_sel(void *data, Evas_Object *obj, void *event_info)
 {
-   IV_Thumb_Info *info = data;
-   IV *iv = info->iv;
+   IV_File *file = data;
+   IV *iv = file->iv;
 
-   elm_genlist_item_show(info->item);
-   iv->cur_file = eina_list_data_find_list(iv->files, info->file);
+   elm_genlist_item_show(file->gl_item);
+   iv->account->current = file;
    iv->flags.current = EINA_TRUE;
    if (iv->config->auto_hide_previews)
      iv->flags.hide_previews = EINA_TRUE;
@@ -594,42 +638,24 @@ on_thumb_sel(void *data, Evas_Object *obj, void *event_info)
      iv->idler = ecore_idler_add(on_idler, iv);
 }
 
-static Eina_Bool
-thumb_free(const Eina_Hash *hash, const void *key, void *data, void *fdata)
-{
-   IV_Thumb_Info *info = data;
-
-   eina_stringshare_del(info->file);
-   eina_stringshare_del(info->thumb_path);
-
-   free(info);
-
-   return EINA_TRUE;
-}
-
 static void
-thumb_remove(IV *iv, const char *path)
+thumb_remove(IV_File *file)
 {
-   IV_Thumb_Info *info;
+   eina_stringshare_del(file->thumb_path);
+   elm_genlist_item_del(file->gl_item);
 
-   if (!iv->preview_items) return;
-   info = eina_hash_find(iv->preview_items, path);
-   if (info)
-     {
-	eina_hash_del_by_key(iv->preview_items, path);
-	elm_genlist_item_del(info->item);
-	thumb_free(NULL, NULL, info, NULL);
-     }
+   file->thumb_path = NULL;
+   file->gl_item = NULL;
 }
 
 static void
 thumb_queue_process(IV *iv)
 {
-   const char *file;
+   IV_File *file;
 
    EINA_LIST_FREE(iv->preview_files, file)
      {
-	if (!ethumb_client_file_set(iv->ethumb_client, file, NULL))
+	if (!ethumb_client_file_set(iv->ethumb_client, file->file_path, NULL))
 	  continue;
 
 	if (ethumb_client_thumb_exists(iv->ethumb_client))
@@ -637,29 +663,38 @@ thumb_queue_process(IV *iv)
 	     const char *thumb_path;
 
 	     ethumb_client_thumb_path_get(iv->ethumb_client, &thumb_path, NULL);
-	     on_thumb_generate(iv, iv->ethumb_client, 0, file, NULL, thumb_path, NULL, EINA_TRUE);
+	     on_thumb_generate(file, iv->ethumb_client, 0, file->file_path, NULL, thumb_path, NULL, EINA_TRUE);
 	  }
-	else if (ethumb_client_generate(iv->ethumb_client, on_thumb_generate, iv, NULL) == -1)
-	  continue;
+	else
+	  {
+	     file->flags.thumb_generating = 1;
+	     if (ethumb_client_generate(iv->ethumb_client, on_thumb_generate, file, NULL) == -1)
+	       continue;
+	  }
      }
 }
 
 static void
-on_thumb_generate(void *data, Ethumb_Client *client, int id, const char *file, const char *key, const char *thumb_path, const char *thumb_key, Eina_Bool success)
+on_thumb_generate(void *data, Ethumb_Client *client, int id, const char *file_path, const char *key, const char *thumb_path, const char *thumb_key, Eina_Bool success)
 {
-   IV *iv = data;
-   IV_Thumb_Info *info;
+   IV_File *file = data;
 
+   file->flags.thumb_generating = 0;
    if (!success) return;
 
-   info = calloc(1, sizeof(IV_Thumb_Info));
-   info->thumb_path = eina_stringshare_add(thumb_path);
-   info->file = eina_stringshare_add(file);
-   info->iv = iv;
+   file->thumb_path = eina_stringshare_add(thumb_path);
+   if (file->insert_before)
+     file->gl_item = elm_genlist_item_insert_before(
+	 file->iv->gui.preview_genlist, file->iv->itc, file,
+	 file->insert_before->gl_item, ELM_GENLIST_ITEM_NONE,
+	 on_thumb_sel, file);
+   else
+     file->gl_item = elm_genlist_item_append(
+	 file->iv->gui.preview_genlist, file->iv->itc, file, NULL,
+	 ELM_GENLIST_ITEM_NONE, on_thumb_sel, file);
 
-   iv->thumb_info = eina_list_append(iv->thumb_info, info);
-   if (!iv->idler)
-     iv->idler = ecore_idler_add(on_idler, iv);
+   if (file->account->current == file)
+     elm_genlist_item_selected_set(file->gl_item, EINA_TRUE);
 }
 
 static void
@@ -671,15 +706,15 @@ on_thumb_connect(void *data, Ethumb_Client *e, Eina_Bool success)
      {
 	iv->connection_retry--;
 	iv->ethumb_client = NULL;
-	ERR("Error connecting to ethumbd, thumbnails will not be available!\n");
+	ERR("Error connecting to ethumbd, thumbnails will not be available!");
 	return;
      }
 
-   ethumb_client_on_server_die_callback_set(iv->ethumb_client, on_thumb_die, iv, NULL);
-   thumb_queue_process(iv);
-
    if (!iv->gui.preview_genlist)
      preview_window_create(iv);
+
+   ethumb_client_on_server_die_callback_set(iv->ethumb_client, on_thumb_die, iv, NULL);
+   thumb_queue_process(iv);
 }
 
 static void
@@ -688,7 +723,7 @@ on_thumb_die(void *data, Ethumb_Client *client)
    IV *iv;
 
    iv->ethumb_client = ethumb_client_connect(on_thumb_connect, iv, NULL);
-   ERR("Connection to ethumbd lost!\n");
+   ERR("Connection to ethumbd lost!");
 }
 
 static void
@@ -709,124 +744,111 @@ toggle_previews(IV *iv)
 }
 #endif
 
-static int
-on_file_add_tick(void *data)
-{
-   IV *iv = data;
-
-   if (iv->file_events)
-     eina_hash_free(iv->file_events);
-   iv->file_events = eina_hash_string_superfast_new(NULL);
-
-   return ECORE_CALLBACK_CANCEL;
-}
-
 static void
 on_file_monitor_event(void *data, Ecore_File_Monitor *em, Ecore_File_Event event, const char *path)
 {
    IV *iv = data;
-   Eina_List *l, *l_next;
-   Eina_Bool delay = EINA_FALSE;
-   const char *p2, *cur_path;
+   IV_File *file;
+   const char *cur_path;
    char *dir = NULL;
 
-   cur_path = iv->cur_file->data;
+   cur_path = iv->account->current->file_path;
    switch(event)
      {
       case ECORE_FILE_EVENT_CREATED_FILE:
       case ECORE_FILE_EVENT_MODIFIED:
 	 dir = ecore_file_dir_get(path);
 
-	 if (!iv->file_events)
-	   iv->file_events = eina_hash_string_superfast_new(NULL);
-	 eina_hash_add(iv->file_events, path, &event);
-	 EINA_LIST_FOREACH(iv->files, l, p2)
+	 EINA_INLIST_FOREACH(iv->files, file)
 	   {
-	      if (strncmp(dir, p2, strlen(dir)))
+	      if (strncmp(dir, file->file_path, strlen(dir)))
 		continue;
 
-	      if (!strcmp(path, p2))
+	      if (!strcmp(path, file->file_path))
 		{
 #ifdef HAVE_ETHUMB
-		   iv->insert_before = eina_list_append(
-		       iv->insert_before, eina_stringshare_add(p2));
-		   iv->insert_before = eina_list_append(
-		       iv->insert_before, eina_stringshare_add(path));
-		   iv->preview_files = eina_list_append(iv->preview_files, path);
+		   thumb_remove(file);
+		   if (!eina_list_data_find_list(iv->preview_files, file) && !file->flags.thumb_generating)
+		     {
+			if (IV_FILE_NEXT(file))
+			  file->insert_before = IV_FILE_NEXT(file);
+			iv->preview_files = eina_list_append(iv->preview_files, file);
+		     }
 #endif
+		   file->change_time = ecore_time_get();
+		   file->flags.changed = 1;
 		   iv->flags.current = EINA_TRUE;
 		   break;
 		}
-	      else if (strcmp(path, p2) < 0)
+	      else if (strcmp(path, file->file_path) < 0)
 		{
-		   iv->files = eina_list_prepend_relative_list(
-		       iv->files, eina_stringshare_add(path), l);
+		   IV_File *new = create_iv_file(iv, path);
+		   iv->files = eina_inlist_prepend_relative(iv->files, EINA_INLIST_GET(new), EINA_INLIST_GET(file));
+		   iv->account->count++;
 #ifdef HAVE_ETHUMB
-		   iv->insert_before = eina_list_append(
-		       iv->insert_before, eina_stringshare_add(p2));
-		   iv->insert_before = eina_list_append(
-		       iv->insert_before, eina_stringshare_add(path));
-		   iv->preview_files = eina_list_append(iv->preview_files, path);
+		   new->insert_before = file;
+		   iv->preview_files = eina_list_append(iv->preview_files, new);
 #endif
+		   new->change_time = ecore_time_get();
+		   new->flags.changed = 1;
 		   iv->flags.current = EINA_TRUE;
-		   delay = EINA_TRUE;
 		   break;
 		}
 	   }
 	 if (!iv->flags.current)
 	   {
-	      iv->files = eina_list_append(iv->files,
-					   eina_stringshare_add(path));
+	      IV_File *new = create_iv_file(iv, path);
+	      new->change_time = ecore_time_get();
+	      new->flags.changed = 1;
+	      iv->files = eina_inlist_append(iv->files, EINA_INLIST_GET(new));
+	      iv->account->count++;
 #ifdef HAVE_ETHUMB
-	      iv->preview_files = eina_list_append(iv->preview_files, path);
+	      iv->preview_files = eina_list_append(iv->preview_files, new);
 #endif
 	   }
 	 free(dir);
 	 break;
       case ECORE_FILE_EVENT_DELETED_FILE:
-	 EINA_LIST_FOREACH_SAFE(iv->files, l, l_next, p2)
+	 EINA_INLIST_FOREACH(iv->files, file)
 	   {
-	      if (!strcmp(path, p2))
+	      if (!strcmp(path, file->file_path))
 		{
-		   iv->files = eina_list_remove_list(iv->files, l);
-		   if (p2 == cur_path)
+		   if (file->file_path == cur_path)
 		     {
-			if (iv->cur_file == l)
+			if (iv->account->current == file)
 			  {
-			     if (l_next)
-			       iv->cur_file = l_next;
+			     if (IV_FILE_NEXT(file))
+			       iv->account->current = IV_FILE_NEXT(file);
 			     else
-			       iv->cur_file = iv->files;
+			       iv->account->current = IV_FILE(iv->files);
 			  }
 		     }
 #ifdef HAVE_ETHUMB
-		   thumb_remove(iv, p2);
+		   thumb_remove(file);
 #endif
-		   eina_stringshare_del(p2);
+		   iv->files = eina_inlist_remove(iv->files, EINA_INLIST_GET(file));
+		   iv->account->count--;
+		   iv_file_free(file);
 		   iv->flags.current = EINA_TRUE;
 		   break;
 		}
 	   }
 	 break;
       case ECORE_FILE_EVENT_DELETED_SELF:
-	 EINA_LIST_FOREACH_SAFE(iv->files, l, l_next, p2)
+	 EINA_INLIST_FOREACH(iv->files, file)
 	   {
-	      if (!strncmp(path, p2, strlen(path)))
+	      if (!strncmp(path, file->file_path, strlen(path)))
 		{
-		   if (p2 == cur_path)
+		   if (file->file_path == cur_path)
 		     cur_path = NULL;
 #ifdef HAVE_ETHUMB
-		   thumb_remove(iv, p2);
+		   thumb_remove(file);
 #endif
-		   eina_stringshare_del(p2);
-		   iv->files = eina_list_remove_list(iv->files, l);
+		   iv->files = eina_inlist_remove(iv->files, EINA_INLIST_GET(file));
+		   iv->account->count--;
+		   iv_file_free(file);
 		   iv->flags.current = EINA_TRUE;
 		}
-	   }
-	 if (iv->flags.current)
-	   {
-	      if (cur_path)
-		iv->cur_file = eina_list_data_find_list(iv->files, cur_path);
 	   }
 	 break;
       default:
@@ -834,65 +856,53 @@ on_file_monitor_event(void *data, Ecore_File_Monitor *em, Ecore_File_Event event
      }
 
    if (!iv->idler && iv->flags.current)
-     {
-	if (delay)
-	  {
-	     if (iv->file_add_timer)
-	       ecore_timer_del(iv->file_add_timer);
-	     iv->file_add_timer = ecore_timer_add(60.0, on_file_add_tick, iv);
-	  }
-	iv->idler = ecore_idler_add(on_idler, iv);
-     }
+     iv->idler = ecore_idler_add(on_idler, iv);
 }
 
 static void
 read_image(IV *iv, IV_Image_Dest dest)
 {
    Evas_Object *img;
-   Eina_List *l;
+   IV_File *f;
 
    switch (dest)
      {
       case IMAGE_CURRENT:
-	 l = iv->cur_file;
+	 f = iv->account->current;
 	 break;
       case IMAGE_NEXT:
-	 l = iv->cur_file->next;
+	 f = IV_FILE_NEXT(iv->account->current);
 
-	 if (!l)
+	 if (!f)
 	   {
-	      l = iv->files;
-	      if (l == iv->cur_file)
-		l = NULL;
+	      f = IV_FILE(iv->files);
+	      if (f == iv->account->current)
+		f = NULL;
 	   }
 	 break;
       case IMAGE_PREV:
-	 l = iv->cur_file->prev;
+	 f = IV_FILE_PREV(iv->account->current);
 
-	 if (!l)
+	 if (!f)
 	   {
-	      l = eina_list_last(iv->files);
-	      if (l == iv->cur_file)
-		l = NULL;
+	      f = IV_FILE_LAST(iv->account->current);
+	      if (f == iv->account->current)
+		f = NULL;
 	   }
 	 break;
      }
 
-   while (l)
+   while (f)
      {
 	Eina_Bool succ = EINA_FALSE;
-	Ecore_File_Event *event = NULL;
 
-	DBG("%d : %s\n", dest, (char *) l->data);
 	img = elm_image_add(iv->gui.ly);
-	succ = elm_image_file_set(img, l->data, NULL);
-	if (iv->file_events)
-	  event = eina_hash_find(iv->file_events, l->data);
+	succ = elm_image_file_set(img, f->file_path, NULL);
 	if (succ)
 	  {
 	     int orientation = 0;
 #ifdef HAVE_LIBEXIF
-	     ExifData  *exif = exif_data_new_from_file(l->data);
+	     ExifData  *exif = exif_data_new_from_file(f->file_path);
 	     ExifEntry *entry = NULL;
 	     ExifByteOrder bo;
 	    
@@ -944,7 +954,7 @@ read_image(IV *iv, IV_Image_Dest dest)
 		case IMAGE_CURRENT:
 		   iv->gui.img = img;
 		   image_configure(iv);
-		   set_image_text(iv, ecore_file_file_get(l->data));
+		   set_image_text(iv, f);
 		   elm_scroller_content_set(iv->gui.scroller, img);
 		   evas_object_show(img);
 		   break;
@@ -956,31 +966,38 @@ read_image(IV *iv, IV_Image_Dest dest)
 		   break;
 	       }
 	     evas_object_event_callback_add(img, EVAS_CALLBACK_MOUSE_DOWN, on_image_click, iv);
-	     if (event)
-	       eina_hash_del_by_key(iv->file_events, l->data);
+	     f->flags.changed = 0;
 	     break;
 	  }
 	else
 	  {
-	     Eina_List *cur = l;
+	     IV_File *cur = f;
 	     switch (dest)
 	       {
 		case IMAGE_CURRENT:
-		   l = iv->cur_file->next ? iv->cur_file->next : iv->cur_file->prev;
-		   break;
 		case IMAGE_NEXT:
-		   l = l->next ? l->next : iv->files;
+		   f = IV_FILE_NEXT(iv->account->current) ?
+		      IV_FILE_NEXT(iv->account->current) :
+		      IV_FILE_PREV(iv->account->current);
 		   break;
 		case IMAGE_PREV:
-		   l = l->prev ? l->prev : eina_list_last(iv->files);
+		   f = IV_FILE_PREV(iv->account->current) ?
+		      IV_FILE_PREV(iv->account->current) :
+		      IV_FILE_LAST(iv->account->current);
 		   break;
 	       }
-	     if (event) break;
+	     if (f->flags.changed)
+	       {
+		  if (f->change_time - ecore_time_get() > 60)
+		    f->flags.changed = 0;
+		  break;
+	       }
 #ifdef HAVE_ETHUMB
-	     thumb_remove(iv, cur->data);
+	     thumb_remove(cur);
 #endif
-	     eina_stringshare_del(cur->data);
-	     iv->files = eina_list_remove_list(iv->files, cur);
+	     eina_stringshare_del(cur->file_path);
+	     iv->files = eina_inlist_remove(iv->files, EINA_INLIST_GET(cur));
+	     iv->account->count--;
 	     evas_object_del(img);
 	  }
      }
@@ -993,11 +1010,10 @@ trash_image(IV *iv)
    char *realpath;
    char buf[4096];
 
-   if (!iv->cur_file)
+   if (!iv->account->current)
      return;
 
-   realpath = ecore_file_realpath(iv->cur_file->data);
-   snprintf(buf, sizeof(buf), "file://%s", realpath);
+   snprintf(buf, sizeof(buf), "file://%s", iv->account->current->file_path);
    uri = efreet_uri_decode(buf);
 
    if (uri)
@@ -1014,9 +1030,6 @@ on_idler(void *data)
 {
    IV *iv = data;
    Eina_Bool renew = EINA_FALSE;
-#ifdef HAVE_ETHUMB
-   IV_Thumb_Info *info;
-#endif
 
    if (iv->dirs)
      {
@@ -1040,8 +1053,14 @@ on_idler(void *data)
 	     free(file);
 	     /* XXX: recursive scanning with an option */
 	     if (!ecore_file_is_dir(buf))
-	       iv->files = eina_list_append(iv->files,
-					    eina_stringshare_add(buf));
+	       {
+		  IV_File *new = create_iv_file(iv, buf);
+		  iv->files = eina_inlist_append(iv->files, EINA_INLIST_GET(new));
+		  iv->account->count++;
+#ifdef HAVE_ETHUMB
+		  iv->preview_files = eina_list_append(iv->preview_files, new);
+#endif
+	       }
 	  }
 
 	iv->file_monitors = eina_list_append(
@@ -1050,51 +1069,47 @@ on_idler(void *data)
 
 	if (iv->single_file)
 	  {
-	     Eina_List *l = eina_list_data_find_list(iv->files, iv->single_file);
-	     if (l) iv->cur_file = l;
-	     eina_stringshare_del(iv->single_file);
+	     iv->account->current = iv->single_file;
 	     iv->single_file = NULL;
 	  }
 
 	if (!renew && iv->dirs)
 	  renew = EINA_TRUE;
 
-	if (!iv->cur_file) iv->cur_file = iv->files;
+	if (!iv->account->current) iv->account->current = IV_FILE(iv->files);
      }
 
    /* Display the first image */
-   if (iv->cur_file)
+   if (iv->account->current)
      {
 	if (!iv->gui.img)
 	  read_image(iv, IMAGE_CURRENT);
 	else
 	  {
-	     if (iv->cur_file->next || iv->cur_file->prev)
+	     if (IV_FILE_NEXT(iv->account->current) ||
+		 IV_FILE_PREV(iv->account->current))
 	       {
 		  if (!iv->gui.prev_img)
 		    {
 		       read_image(iv, IMAGE_PREV);
 
 		       if (iv->gui.prev_img)
-			 evas_object_show(iv->gui.prev_bt);
+			 elm_object_disabled_set(iv->gui.prev_bt, 0);
 		       else
-			 evas_object_hide(iv->gui.prev_bt);
+			 elm_object_disabled_set(iv->gui.prev_bt, 1);
 		    }
 		  if (!iv->gui.next_img)
 		    {
 		       read_image(iv, IMAGE_NEXT);
 
 		       if (iv->gui.next_img)
-			 evas_object_show(iv->gui.next_bt);
+			 elm_object_disabled_set(iv->gui.next_bt, 0);
 		       else
-			 evas_object_hide(iv->gui.next_bt);
+			 elm_object_disabled_set(iv->gui.next_bt, 1);
 		    }
 	       }
 
 #ifdef HAVE_ETHUMB
-	     if ((iv->first_preview-- == 2) && !iv->dirs)
-	       iv->preview_files = eina_list_clone(iv->files);
-
 	     if (iv->preview_files && iv->connection_retry)
 	       {
 		  if (iv->ethumb_client)
@@ -1102,45 +1117,13 @@ on_idler(void *data)
 		  else
 		    iv->ethumb_client = ethumb_client_connect(on_thumb_connect, iv, NULL);
 	       }
-
-	     if (iv->thumb_info && iv->gui.preview_genlist)
-	       {
-		  Eina_List *l;
-		  IV_Thumb_Info *info2;
-
-		  EINA_LIST_FREE(iv->thumb_info, info)
-		    {
-		       if (iv->insert_before &&
-			   (l = eina_list_data_find_list(iv->insert_before, info->file)) &&
-			   (info2 = eina_hash_find(iv->preview_items, l->data)))
-			 {
-			    info->item = elm_genlist_item_insert_before(
-				iv->gui.preview_genlist, iv->itc, info, info2->item,
-				ELM_GENLIST_ITEM_NONE, on_thumb_sel, info);
-
-			    eina_stringshare_del(l->data);
-			    eina_stringshare_del(l->next->data);
-			    iv->insert_before = eina_list_remove_list(iv->insert_before, l->next);
-			    iv->insert_before = eina_list_remove_list(iv->insert_before, l);
-			 }
-		       else
-			 info->item = elm_genlist_item_append(
-			     iv->gui.preview_genlist, iv->itc, info, NULL,
-			     ELM_GENLIST_ITEM_NONE, on_thumb_sel, info);
-		       eina_hash_add(iv->preview_items, info->file, info);
-
-		       if ((iv->first_preview-- == 1) &&
-			   !strcmp(info->file, iv->cur_file->data))
-			 elm_genlist_item_selected_set(info->item, EINA_TRUE);
-		    }
-	       }
-
 #endif
 	  }
      }
 
-   if (!renew && iv->cur_file && 
-       (!iv->gui.img || ((iv->cur_file->prev || iv->cur_file->next) &&
+   if (!renew && iv->account->current && 
+       (!iv->gui.img || ((IV_FILE_PREV(iv->account->current) ||
+			  IV_FILE_NEXT(iv->account->current)) &&
 			 (!iv->gui.prev_img || !iv->gui.next_img))))
      renew = EINA_TRUE;
 
@@ -1150,10 +1133,8 @@ on_idler(void *data)
 	  {
 	     iv->flags.next = EINA_FALSE;
 
-	     if (iv->cur_file->next)
-	       iv->cur_file = iv->cur_file->next;
-	     else
-	       iv->cur_file = iv->files;
+	     iv->account->current = IV_FILE_NEXT(iv->account->current) ?
+		IV_FILE_NEXT(iv->account->current) : IV_FILE(iv->files);
 
 	     record_visible_region(iv);
 
@@ -1170,16 +1151,15 @@ on_idler(void *data)
 
 	     iv->gui.img = iv->gui.next_img;
 	     image_configure(iv);
-	     set_image_text(iv, ecore_file_file_get(iv->cur_file->data));
+	     set_image_text(iv, iv->account->current);
 	     elm_scroller_content_set(iv->gui.scroller, iv->gui.img);
 	     elm_scroller_region_show(iv->gui.scroller, iv->gui.region.x, iv->gui.region.y, iv->gui.region.w, iv->gui.region.h);
 	     evas_object_show(iv->gui.img);
 	     iv->gui.next_img = NULL;
 
 #ifdef HAVE_ETHUMB
-	     info = eina_hash_find(iv->preview_items, iv->cur_file->data);
-	     if (info)
-	       elm_genlist_item_selected_set(info->item, EINA_TRUE);
+	     elm_genlist_item_selected_set(iv->account->current->gl_item,
+					   EINA_TRUE);
 #endif
 	  }
      }
@@ -1189,10 +1169,8 @@ on_idler(void *data)
 	  {
 	     iv->flags.prev = EINA_FALSE;
 
-	     if (iv->cur_file->prev)
-	       iv->cur_file = iv->cur_file->prev;
-	     else
-	       iv->cur_file = eina_list_last(iv->files);
+	     iv->account->current = IV_FILE_PREV(iv->account->current) ?
+		IV_FILE_PREV(iv->account->current) : IV_FILE(iv->files->last);
 
 	     record_visible_region(iv);
 
@@ -1209,16 +1187,15 @@ on_idler(void *data)
 
 	     iv->gui.img = iv->gui.prev_img;
 	     image_configure(iv);
-	     set_image_text(iv, ecore_file_file_get(iv->cur_file->data));
+	     set_image_text(iv, iv->account->current);
 	     elm_scroller_content_set(iv->gui.scroller, iv->gui.img);
 	     elm_scroller_region_show(iv->gui.scroller, iv->gui.region.x, iv->gui.region.y, iv->gui.region.w, iv->gui.region.h);
 	     evas_object_show(iv->gui.img);
 	     iv->gui.prev_img = NULL;
 
 #ifdef HAVE_ETHUMB
-	     info = eina_hash_find(iv->preview_items, iv->cur_file->data);
-	     if (info)
-	       elm_genlist_item_selected_set(info->item, EINA_TRUE);
+	     elm_genlist_item_selected_set(iv->account->current->gl_item,
+					   EINA_TRUE);
 #endif
 	  }
      }
@@ -1248,7 +1225,9 @@ on_idler(void *data)
 
 	record_visible_region(iv);
 
+	/* XXX: this is necessary for some reason, bug in elm? */
 	elm_scroller_content_set(iv->gui.scroller, NULL);
+
 	read_image(iv, IMAGE_CURRENT);
 	renew = EINA_TRUE;
      }
@@ -1545,10 +1524,10 @@ on_key_down(void *data, Evas *a, Evas_Object *obj, void *event_info)
    else if (!strcmp(ev->keyname, "e"))
      {
 	char buf[4096];
-	if (iv->cur_file)
+	if (iv->account->current)
 	  {
 	     Ecore_Exe *exe;
-	     snprintf(buf, sizeof(buf), "%s -a %s", iv->config->image_editor, (char *) iv->cur_file->data);
+	     snprintf(buf, sizeof(buf), "%s -a %s", iv->config->image_editor, (char *) iv->account->current->file_path);
 	     exe = ecore_exe_run(buf, NULL);
 	     ecore_exe_free(exe);
 	  }
@@ -1712,18 +1691,22 @@ static void
 iv_free(IV *iv)
 {
    Ecore_File_Monitor *monitor;
-   const char *file;
+   IV_File *file;
+   const char *path;
 
-   EINA_LIST_FREE(iv->files, file)
-      eina_stringshare_del(file);
-   EINA_LIST_FREE(iv->dirs, file)
-      eina_stringshare_del(file);
+   while(iv->files)
+     {
+	file = IV_FILE(iv->files);
+	iv->files = eina_inlist_remove(iv->files, iv->files);
+	iv_file_free(file);
+     }
+   EINA_LIST_FREE(iv->dirs, path)
+      eina_stringshare_del(path);
    EINA_LIST_FREE(iv->file_monitors, monitor)
       ecore_file_monitor_del(monitor);
-   if (iv->file_add_timer)
-     ecore_timer_del(iv->file_add_timer);
-   if (iv->file_events)
-     eina_hash_free(iv->file_events);
+
+   if (iv->preview_files)
+     eina_list_free(iv->preview_files);
 
    eina_stringshare_del(iv->theme_file);
 
@@ -1737,8 +1720,6 @@ iv_free(IV *iv)
      ethumb_client_disconnect(iv->ethumb_client);
    if (iv->gui.preview_genlist)
      elm_genlist_clear(iv->gui.preview_genlist);
-   eina_hash_foreach(iv->preview_items, thumb_free, NULL);
-   eina_hash_free(iv->preview_items);
    free(iv->itc);
 #endif
 
@@ -1752,7 +1733,7 @@ config_init(IV *iv)
    
    if (!eet_eina_file_data_descriptor_class_set(&eddc, "IV_Config", sizeof(IV_Config)))
      {
-	ERR("Unable to create the config data descriptor!\n");
+	ERR("Unable to create the config data descriptor!");
 	return iv_exit(iv);
      }
 
@@ -1794,6 +1775,7 @@ elm_main(int argc, char **argv)
    IV *iv;
 
    iv = calloc(1, sizeof(IV));
+   iv->account = calloc(1, sizeof(IV_Files_Account));
 
    __log_domain = eina_log_domain_register("IV", EINA_COLOR_BLUE);
    if (!__log_domain)
@@ -1807,42 +1789,57 @@ elm_main(int argc, char **argv)
 
    for (i = 1; i < argc; i++)
      {
+	char *real;
+
 	if (!strncmp(argv[i], "file://", 7))
 	  argv[i] = argv[i] + 7;
 	if (!ecore_file_exists(argv[i]))
 	  continue;
+
+	real = ecore_file_realpath(argv[i]);
 	if (ecore_file_is_dir(argv[i]))
 	  iv->dirs = eina_list_append(iv->dirs,
-				      eina_stringshare_add(argv[i]));
+				      eina_stringshare_add(real));
 	else
-	  iv->files = eina_list_append(iv->files,
-				       eina_stringshare_add(argv[i]));
+	  {
+	     IV_File *file = create_iv_file(iv, real);
+	     iv->files = eina_inlist_append(iv->files, EINA_INLIST_GET(file));
+	     iv->account->count++;
+#ifdef HAVE_ETHUMB
+	     iv->preview_files = eina_list_append(iv->preview_files, file);
+#endif
+	  }
+	free(real);
      }
 
    if (!iv->dirs)
      {
 	if (!iv->files)
-	  iv->dirs = eina_list_append(iv->dirs, eina_stringshare_add("."));
-	else if (eina_list_count(iv->files) == 1)
 	  {
-	     char *path = ecore_file_realpath(iv->files->data);
+	     char *real = ecore_file_realpath(".");
+	     iv->dirs = eina_list_append(iv->dirs, eina_stringshare_add(real));
+	     free(real);
+	  }
+	else if (iv->account->count == 1)
+	  {
+	     const char *path = IV_FILE(iv->files)->file_path;
 	     char *dir = ecore_file_dir_get(path);
 
 	     iv->dirs = eina_list_append(iv->dirs, eina_stringshare_add(dir));
-	     iv->single_file = eina_stringshare_add(path);
-	     iv->files = eina_list_remove_list(iv->files, iv->files);
+	     iv->single_file = IV_FILE(iv->files);
+	     iv->files = eina_inlist_remove(iv->files, iv->files);
+#ifdef HAVE_ETHUMB
+	     iv->preview_files = eina_list_remove(iv->preview_files, iv->preview_files);
+#endif
 	     free(dir);
-	     free(path);
 	  }
-	else iv->cur_file = iv->files;
+	else iv->account->current = IV_FILE(iv->files);
      }
    create_main_win(iv);
 
 #ifdef HAVE_ETHUMB
    ethumb_client_init();
    iv->connection_retry = 3;
-   iv->first_preview = 2;
-   iv->preview_items = eina_hash_string_superfast_new(NULL);
 #endif
 
    iv->flags.fit_changed = EINA_TRUE;
