@@ -1027,7 +1027,6 @@ static void
 trash_image(IV *iv)
 {
    Efreet_Uri *uri;
-   char *realpath;
    char buf[4096];
 
    if (!iv->account->current)
@@ -1041,8 +1040,6 @@ trash_image(IV *iv)
 	efreet_trash_delete_uri(uri, 0);
 	efreet_uri_free(uri);
      }
-
-   free(realpath);
 }
 
 static int
