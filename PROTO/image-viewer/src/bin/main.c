@@ -767,7 +767,8 @@ on_file_monitor_event(void *data, Ecore_File_Monitor *em, Ecore_File_Event event
 	      if (!strcmp(path, file->file_path))
 		{
 #ifdef HAVE_ETHUMB
-		   thumb_remove(file);
+		   if (file->thumb_path)
+		     thumb_remove(file);
 		   if (!eina_list_data_find_list(iv->preview_files, file) && !file->flags.thumb_generating)
 		     {
 			if (IV_FILE_NEXT(file))
@@ -824,7 +825,8 @@ on_file_monitor_event(void *data, Ecore_File_Monitor *em, Ecore_File_Event event
 			  }
 		     }
 #ifdef HAVE_ETHUMB
-		   thumb_remove(file);
+		   if (file->thumb_path)
+		     thumb_remove(file);
 #endif
 		   iv->files = eina_inlist_remove(iv->files, EINA_INLIST_GET(file));
 		   iv->account->count--;
@@ -842,7 +844,8 @@ on_file_monitor_event(void *data, Ecore_File_Monitor *em, Ecore_File_Event event
 		   if (file->file_path == cur_path)
 		     cur_path = NULL;
 #ifdef HAVE_ETHUMB
-		   thumb_remove(file);
+		   if (file->thumb_path)
+		     thumb_remove(file);
 #endif
 		   iv->files = eina_inlist_remove(iv->files, EINA_INLIST_GET(file));
 		   iv->account->count--;
@@ -986,17 +989,20 @@ read_image(IV *iv, IV_Image_Dest dest)
 		      IV_FILE_LAST(iv->account->current);
 		   break;
 	       }
-	     if (f->flags.changed)
+	     if (cur->flags.changed)
 	       {
 		  if (f->change_time - ecore_time_get() > 60)
 		    f->flags.changed = 0;
 		  break;
 	       }
+	     iv->account->current = f;
 #ifdef HAVE_ETHUMB
-	     thumb_remove(cur);
+	     if (cur->thumb_path)
+	       thumb_remove(cur);
 #endif
 	     eina_stringshare_del(cur->file_path);
 	     iv->files = eina_inlist_remove(iv->files, EINA_INLIST_GET(cur));
+	     iv_file_free(cur);
 	     iv->account->count--;
 	     evas_object_del(img);
 	  }
@@ -1847,8 +1853,8 @@ elm_main(int argc, char **argv)
 
    elm_run();
 
-   eina_log_domain_unregister(__log_domain);
    iv_free(iv);
+   eina_log_domain_unregister(__log_domain);
 
 #ifdef HAVE_ETHUMB
    ethumb_client_shutdown();
