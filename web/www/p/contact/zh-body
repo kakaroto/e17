@@ -1,0 +1,344 @@
+<h1>联系</h1>
+
+<h2><b class="contentheading">邮件列表及存档</b></h2>
+
+<p>
+Enlightenment 项目有几个可以帮助您的邮件列表。以下表格中包含了一个简单总结，其中包括列表存档。
+如果您需要订阅、退订或修改订阅设置，只需轻点 &quot;邮件列表&quot; 栏中的列表名称，即可进入订阅详情页面。
+</p>
+
+<center>
+<table class='tab'>
+<tr><th class='tab'>邮件列表</th>
+<th class='tab'>存档</th>
+<th class='tab'>描述</th>
+</tr>
+<tr>
+<td class='tab1'><a href="http://lists.sourceforge.net/lists/listinfo/enlightenment-announce">Enlightenment 公告列表(announce)</a></td>
+<td class='tab1'><a href="http://sourceforge.net/mailarchive/forum.php?forum_name=enlightenment-announce">SourceForge</a>，<a href="http://marc.theaimsgroup.com/?l=enlightenment-announce&r=1&w=2">MARC</a></td>
+<td class='tab1'>接收关于新版本发布的通知。</td>
+</tr>
+<tr>
+<td class='tab2'><a href="http://lists.sourceforge.net/lists/listinfo/enlightenment-users">Enlightenment 用户列表(users)</a></td>
+<td class='tab2'><a href="http://sourceforge.net/mailarchive/forum.php?forum_name=enlightenment-users">SourceForge</a>，<a href="http://marc.theaimsgroup.com/?l=enlightenment-users&r=1&w=2">MARC</a></td>
+<td class='tab2'>讨论与 E 相关的问题、帮助、评论、反馈等内容。</td>
+</tr>
+<tr>
+<td class='tab1'><a href="http://lists.sourceforge.net/lists/listinfo/enlightenment-devel">Enlightenment 开发列表(devel)</a></td>
+<td class='tab1'><a href="http://sourceforge.net/mailarchive/forum.php?forum_name=enlightenment-devel">SourceForge</a>，<a href="http://marc.theaimsgroup.com/?l=enlightenment-devel&r=1&w=2">MARC</a></td>
+<td class='tab1'>仅开发者订阅，如果您的消息不与代码直接相关，请发送至用户列表。</td>
+</tr>
+<tr>     
+<td class='tab2'><a href="http://lists.sourceforge.net/lists/listinfo/enlightenment-svn">Enlightenment SVN Commit 列表</a></td>
+<td class='tab2'><a href="http://sourceforge.net/mailarchive/forum.php?forum_name=enlightenment-svn">SourceForge</a></td>
+<td class='tab2'>获得 SVN 更新的全部信息。</td>
+</tr>
+<tr>
+<td class='tab1'><a href="http://lists.sourceforge.net/lists/listinfo/enlightenment-intl">Enlightenment 国际化支持列表(intl)</a></td>
+<td class='tab1'><a href="http://sourceforge.net/mailarchive/forum.php?forum_name=enlightenment-intl">SourceForge</a></td>
+<td class='tab1'>本地化(l10n)和国际化(i18n)列表。请将您的翻译发送至此列表。</td>
+</tr>
+<tr>
+<td class='tab2'><a href="http://lists.sourceforge.net/lists/listinfo/enlightenment-bugs">Enlightenment Bug Traker 提示</a></td>
+<td class='tab2'><a href="http://sourceforge.net/mailarchive/forum.php?forum_name=enlightenment-bugs">SourceForge</a></td>
+<td class='tab2'>获得提交至 Trac 的全部 bug 信息。</td>
+</tr>
+</table>
+</center>
+  
+    
+<hr noshade="noshade" style="width: 200px;" />
+<h2>IRC</h2>
+
+<p>
+您总是可以在 #e 频道获得帮助，这是 FreeNode IRC 网络上的 Enlightenment 频道 。从 <a href="http://freenode.org/irc_servers.shtml"> 
+FreeNode 服务器列表</a> 选择并连接到其上，然后加入 #e 频道即可。
+</p>
+
+<hr noshade="noshade" style="width: 200px;" />
+<h2>Bugs</h2>
+<p>如果您遇到了 Bug、缺少需要的特性或者是觉得文档难以理解，请不要犹豫使用 <a href="http://trac.enlightenment.org/e/report">Enlightenment Trac</a> 
+向我们提交 Bug。</p>
+
+<hr noshade="noshade" style="width: 200px;" />
+<h2>人员</h2>
+
+<?php
+$devspath = "/var/www/web/devs"; 
+
+//Exclude accounts that aren't actually devs
+$exclude = array('ewww');
+
+class dev 
+{ 
+    var $login, $irc_nick, $name, $location, $e_mail, $www, $managing; 
+    
+    public function dev ($infopath) 
+    { 
+        if (!($content = file ($infopath, FILE_IGNORE_NEW_LINES|FILE_SKIP_EMPTY_LINES))) return; 
+
+        while (list (, $line) = each ($content)) 
+        { 
+            $delimiter = strpos ($line, ":"); 
+            $desc = strtolower (trim (substr ($line, 0, $delimiter))); 
+            $info = trim (substr ($line, $delimiter+1)); 
+            switch ($desc) 
+            { 
+                case "login":        $this->login = $info;        break; 
+                case "irc nick":    $this->irc_nick = $info;    break; 
+                case "name":        $this->name = $info;        break; 
+                case "location":    $this->location = $info;    break; 
+                case "e-mail":        $this->e_mail = $info;        break; 
+                case "www":            $this->www = $info;            break; 
+                case "managing":    $this->managing = $info;    break; 
+            } 
+        } 
+    } 
+} 
+
+if ($dh = opendir ($devspath)) 
+{ 
+    while ($dir = readdir ($dh)) 
+    {    
+        if (($dir[0] == ".") || $dir == "CVS") continue; 
+        if (is_dir ($devspath."/".$dir) && !in_array($dir,$exclude)) 
+            $devdirs [] = $dir; 
+    } 
+    closedir ($dh); 
+} 
+
+//sort ($devdirs); 
+while (list (, $dev) = each ($devdirs)) 
+{    $infopath = "$devspath/$dev/info.txt"; 
+    if (file_exists ($infopath)) 
+    {
+        $newdev = new dev ($infopath);
+        $developers[strtolower($newdev->irc_nick)] = $newdev;
+    }
+}
+
+//sort by the irc nick which is the key
+ksort($developers);
+
+// output! 
+/*while (list ($key, $val) = each ($developers)) 
+{ 
+    echo "<br/>=================<br/>"; 
+    echo "LOGIN    = ".$val->login."<br/>"; 
+    echo "IRC      = ".$val->irc_nick."<br/>"; 
+    echo "NAME    = ".$val->name."<br/>"; 
+    echo "LOCATION = ".$val->location."<br/>"; 
+    echo "EMAIL    = ".$val->e_mail."<br/>"; 
+    echo "WWW      = ".$val->www."<br/>"; 
+    echo "MANAGING = ".$val->managing."<br/><br/>"; 
+} */
+?>
+
+<table class='main'>
+<tr>
+<td class='main'><div class="main">
+
+<center>
+<table class='tab'>
+<tr>
+<th class='tab' width='100px'>姓名</th>
+<th class='tab'>Managing</th>
+<th class='tab' width='100px'>IRC 昵称</th>
+<th class='tab' width='160px'>位置</th>
+<th class='tab' width='100px'>网站</th>
+</tr>
+
+<?php
+  $i=0;
+  while (list ($key, $val) = each ($developers))
+  {
+    if($i++%2)
+      $class='tab1';
+    else
+      $class='tab2';
+  
+    echo "<tr>";
+    echo "<td class='$class'>".$val->name."</td>";
+    echo "<td class='$class'>".$val->managing."</td>";
+    echo "<td class='$class'>".$val->irc_nick."</td>";
+    echo "<td class='$class'>".$val->location."</td>";
+    echo "<td class='$class'>";
+    if(strstr($val->www, "http://"))
+    {
+      if($val->www[strlen($val->www)-1] == '/')
+        $val->www = substr($val->www, 0, -1);
+        
+      echo "<a href='".$val->www."'>".
+        str_replace(array('http://', 'www.'),'',$val->www)."</a>";
+    }
+    echo "</td>";
+    echo "</tr>";
+  }
+?>  
+</table>
+
+<h2>非活跃成员列表</h2>
+<center>
+<table class='tab'>
+<th class='tab' width='130'>姓名</th>
+<th class='tab'>组织</th>
+<th class='tab' width='130px'>IRC 昵称</th>
+<th class='tab' width='130px'>站点</th>
+</tr>
+<tr>
+<td class='tab1'><a href="mailto:mandrake@user.sourceforge.net">Mandrake</a></td>
+<td class='tab1'>Core Dev Team</td>
+<td class='tab1'>mandrake</td>
+<td class='tab1'><a href="http://www.mandrake.net/">mandrake.net</a></td>
+</tr>
+<tr>
+<td class='tab2'><a href="mailto:crosendahl@trustlab.com">Christopher Rosendahl</a></td>
+<td class='tab2'>Ewl, Ewd, Etcher</td>
+<td class='tab2'>smugg</td>
+<td class='tab2'>N</td>
+</tr>
+<tr>
+<td class='tab1'><a href="mailto:enilsenNO@SPAMportalen.no">Espen Nilsen</a></td>
+<td class='tab1'>EWL Contribs</td>
+<td class='tab1'>ymer|SpNlsn</td>
+<td class='tab1'>N</td>
+</tr>
+<tr>
+<td class='tab2'><a href="mailto:tillsan@users.sourceforge.net">Till Adam</a></td>
+<td class='tab2'>E17, EVAS DFB</td>
+<td class='tab2'>tillsan</td>
+<td class='tab2'>N</td>
+</tr>
+<tr>
+<td class='tab1'><a href="mailto:redalb@users.sourceforge.net">Klaas Bosteels</a></td>
+<td class='tab1'>Etox</td>
+<td class='tab1'>redalb</td>
+<td class='tab1'>N</td>
+</tr>
+<tr>
+<td class='tab2'><a href="mailto:lofwyrm@users.sourceforge.net">Adam Kisiel</a></td>
+<td class='tab2'>Etox</td>
+<td class='tab2'>lofwyrm</td>
+<td class='tab2'>N</td>
+</tr>
+<tr>
+<td class='tab1'><a href="mailto:burra@users.sourceforge.net">Burra</a></td>
+<td class='tab1'>Ecore</td>
+<td class='tab1'>burra</td>
+<td class='tab1'>N</td>
+</tr>
+<tr>
+<td class='tab2'><a href="mailto:marini@pcmenelao.mi.infn.it%3E">Franz Marini</a></td>
+<td class='tab2'>Imlib2 Contributions</td>
+<td class='tab2'></td>
+<td class='tab2'>N</td>
+</tr>
+<tr>
+<td class='tab1'><a href="mailto:horms@users.sourceforge.net">Horms</a></td>
+<td class='tab1'>Dev Team</td>
+<td class='tab1'>horms</td>
+<td class='tab1'>N</td>
+</tr>
+<tr>
+<td class='tab2'><a href="mailto:dphase@users.sourceforge.net">Joshua Deere</a></td>
+<td class='tab2'>Retina</td>
+<td class='tab2'>dphase</td>
+<td class='tab2'>N</td>
+</tr>
+<tr>
+<td class='tab1'><a href="mailto:x5rings@users.sourceforge.net">Chris Thomas</a></td>
+<td class='tab1'>Elogin</td>
+<td class='tab1'>x5rings</td>
+<td class='tab1'>N</td>
+</tr>
+<tr>
+<td class='tab2'><a href="mailto:muhri@users.sourceforge.net">Maher Awamy</a></td>
+<td class='tab2'>Imlib/Evas perl bindings</td>
+<td class='tab2'>muhri</td>
+<td class='tab2'><a href="http://www.muhri.net/">muhri.net</a></td>
+</tr>
+<tr>
+<td class='tab1'><a href="mailto:gilbertt@users.sourceforge.net">Tom Gilbert</a></td>
+<td class='tab1'>Epplets API, Giblib, Feh, CamE, Geist, Gozer, Gom, Scrot</td>
+<td class='tab1'>gilbertt</td>
+<td class='tab1'><a href="http://www.linuxbrit.co.uk/">linuxbrit.co.uk</a></td>
+</tr>
+<tr>
+<td class='tab2'><a href="mailto:kirth@hole.org">Kirth</a></td>
+<td class='tab2'>Ports and Package Team</td>
+<td class='tab2'>kirth</td>
+<td class='tab2'>N</td>
+</tr>
+<tr>
+<td class='tab1'><a href="mailto:ljlane@users.sourceforge.net">Laurence J. Lane</a></td>
+<td class='tab1'>Ports and Package Team</td>
+<td class='tab1'>ljlane</td>
+<td class='tab1'>N</td>
+</tr>
+<tr>
+<td class='tab2'><a href="mailto:stauff@users.sourceforge.net">Platon Fomichev</a></td>
+<td class='tab2'>Ports and Package Team</td>
+<td class='tab2'>stauff</td>
+<td class='tab2'>N</td>
+</tr>
+<tr>
+<td class='tab1'><a href="mailto:sfrost@users.sourceforge.net">Stephen Frost</a></td>
+<td class='tab1'>Ports and Package Team</td>
+<td class='tab1'>sfrost</td>
+<td class='tab1'>N</td>
+</tr>
+<tr>
+<td class='tab2'><a href="mailto:andrew@neep.com.au">Andrew</a></td>
+<td class='tab2'>Web and Doc Team </td>
+<td class='tab2'>Andrew </td>
+<td class='tab2'>N</td>
+</tr>
+<tr>
+<td class='tab1'><a href="mailto:cK@whoop.org">Christian Kreibich</a></td>
+<td class='tab1'>EFSD Owner,  Web Team</td>
+<td class='tab1'>cK </td>
+<td class='tab1'><a href="http://www.whoop.org/">whoop.org</a></td>
+</tr>
+<tr>
+<td class='tab2'><a href="mailto:winterlight@hendryx.com">Hendryx</a></td>
+<td class='tab2'>Web and Doc Team</td>
+<td class='tab2'>Hendryx</td>
+<td class='tab2'><a href="http://www.hendyrx.com/">hendyrx.com</a></td>
+</tr>
+<tr>
+<td class='tab1'><a href="mailto:alphafemale@radiant.net">S. J. Black</a></td>
+<td class='tab1'>Doc Team</td>
+<td class='tab1'>alpha female</td>
+<td class='tab1'>N</td>
+</tr>
+<tr>
+<td class='tab2'><a target="_self" href="mailto:term@NOSPAM-THANKSusers.sourceforge.net">Term</a></td>
+<td class='tab2'>Web Team</td>
+<td class='tab2'>term</td>
+<td class='tab2'><a href="http://www.twistedpath.org/">twistedpath.org</a></td>
+</tr>
+<tr>
+<td class='tab1'><a href="mailto:trip@ga.prestige.net">Tim Fabiniak</a></td>
+<td class='tab1'>Web Team</td>
+<td class='tab1'>minion2</td>
+<td class='tab1'>N</td>
+</tr>
+<tr>
+<td class='tab2'>Dan Sinclair</td>
+<td class='tab2'>Ewl, Efreet, EwlBook</td>
+<td class='tab2'>dj2</td>
+<td class='tab2'><a href="http://everburning.com/">everburning.com</a></td>
+</tr>
+<tr>
+<td class='tab1'>Sthithaprajna Garapaty</td>
+<td class='tab1'>taskbar module</td>
+<td class='tab1'>iamsthitha</td>
+<td class='tab1'>N</td>
+</tr>
+</table>
+</center>
+
+</div></td>
+</tr>
+</table>
+

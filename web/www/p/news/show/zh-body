@@ -1,0 +1,16 @@
+<?php
+require_once 'p/news/class.news.php';
+
+$news = new news;
+$new = $news->get_one($_GET['news_id']);
+
+echo "<h1>".$new['title']."</h1>\n";
+echo "<div class='post'>\n";
+echo "<p class='news-date'>".$new['date']."</p>\n";
+echo "<p class='tiny'><a href='mailto:".$new['email']."'>".$new['author']."</a> - ".$new['date']."</p>";
+echo "<p class='news-content'>".$new['content']."</p>\n";
+echo "</div>\n";
+
+?>
+
+<p><a href='p.php?p=news&l=en' title='阅读存档'>阅读存档</a></p>

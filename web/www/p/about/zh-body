@@ -1,0 +1,84 @@
+<table class='main'>
+ <tr>
+  <td class='main'>
+   <div class="main">
+    <h1>关于 Enlightenment</h1>
+    <p>我们致力于提供先进的图形函数库、工具和环境。目前项目正在努力构建三个不同的组件：
+    Enlightenment DR16、Enlightenment DR17 以及 Enlightenment 构架函数库(EFL)。
+    Enlightenment 窗口管理器本身在很长时间就以提供优秀的函数库以及相应的工具著称，例如 Imlib、
+    Imlib2 和 FNLib 来提供远远超出窗口管理器本身的功能。现在，在 DR17 桌面 Shell 的开发中我们将
+     目标锁定于打造一个全新的函数库和工具集，以提供比其他任何图形函数库都更加强大灵活的功能 - 它就是
+    Enlightenment 构架函数库(EFL, the Enlightenment Foundation Libraries)。
+    </p>
+    
+    <center>
+     <p>
+      <a href="http://enlightenment.org/i/rephorm-desktop.png">
+       <img src="http://enlightenment.org/i/tn2_rephorm-desktop.png" class="shot" height="50" width="300" />
+      </a>
+     </p>
+    </center>
+    
+    <h2>Enlightenment DR16</h2>
+    <p>Enlightenment 窗口管理器 DR16，也被称作 e16，首次发布于 2000 年。
+     尽管传言中它已经不再更新，我们还是2009年09月10日发布了它的 1.0.1 版。DR16 由于其低额外开销、高图形化程
+     度、广泛的主题支持、极佳的可定制性和毫不张扬的界面被众多的普通用户和艺术工作者所选用。几乎全部窗口管理操作
+     均可不使用鼠标操作，包括通过
+    <a href="http://sourceforge.net/project/showfiles.php?group_id=2">e16keyedit</a>启动应
+     用程序。它还被广泛地移植到多种平台之上，包括 Linux、FreeBSD、IRIX、Solaris X86 及 Sparc、HP-UX、 
+    AIX、OS/2 等。</p>
+
+    <center>
+     <p>
+      <a href="http://enlightenment.org/i/benr-desktop.png">
+       <img src="http://enlightenment.org/i/tn2_benr-desktop.png" class="shot" height="50" width="300" />
+      </a>
+     </p>
+    </center>
+
+    <h2>Enlightenment DR17</h2>
+    <p>Enlightenment DR17 代表了窗口管理器已经进入了下一代：桌面 Shell。DR17 将通过一个高度图形化
+     的可定制构架提供文件与环境之间的无缝集成。它虽然无发与 GNOME 或 KDE 这样巨大的项目相比，却是一个全新的基
+     于 EFL 的图形化桌面解决方案。</p>
+
+    <p> DR17 仍处于开发之中，其中的大部分程序已经提供了开发快照，其余的部分也均已经可通过 SVN 获取，例如 
+    Entice、Entrance 和 Evidence 等。</p>
+
+    <center>
+     <p>
+      <a href="http://enlightenment.org/i/az-desktop.png">
+       <img src="http://enlightenment.org/i/tn2_az-desktop.png" class="shot" height="50" width="300" />
+      </a>
+     </p>
+    </center>
+
+    <h2>Enlightenment 构架函数库</h2>
+    <p>In developing DR17 it was made clear that we needed an entirely new set of libraries and tools. 
+    Raster had a bold vision of what was possible and where he wanted the next release to go, starting 
+    with Imlib2 and EVAS, and eventually growing into new libraries largely based on, or around, EVAS. 
+    It became clear that the usefulness of these libraries and tools went far beyond the DR17 release 
+    itself, just as Imlib did in DR16. Thus the collective library back-end of DR17 was given the 
+    independent title: the Enlightenment Foundation Libraries, or EFL for short. </p>          
+   
+    <p>The EFL contains solutions for almost any graphical interface task, far beyond just rendering 
+    images. EVAS provides a highly optimized canvas library. Ecore provides a simple and modular 
+    abstraction interface and advanced event management including timers. EDB provides a compact 
+    database format for intuitive and easy configuration management, including the storing of binaries. 
+    EET provides an integrated and flexible container that ends the traditions of providing 
+    themes in tarballs. Edje provides a revolutionary library and tool set for <i>completely</i> 
+    abstracting application interfaces from their code, including a complex and flexible method of 
+    designing interfaces. EWL provides a complete widget library built on all the other 
+    components of the EFL.</p>
+    
+    <center>
+     <p>
+      <a href="http://enlightenment.org/i/trill-desktop.png">
+       <img src="http://enlightenment.org/i/tn2_trill-desktop.png" class="shot" height="50" width="300" />
+      </a>
+     </p>
+    </center>
+   </div>
+  </td>
+ </tr>
+</table>
+

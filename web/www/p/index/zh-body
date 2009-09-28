@@ -2,20 +2,17 @@
  <tr>
   <td class='main'>
    <div class="main">
-    <h3>什么是 Enlightenment ？</h3>
+    <h3>什么是 Enlightenment ?</h3>
     <p>
-     Enlightenment is a window manager. Enlightenment is a desktop shell.
-     Enlightenment is the building blocks to create beautiful applications.
-     Enlightenment, or simply <em><strong>e</strong></em>, is a group of people trying to make a new generation of software.
+     Enlightenment 是一个窗口管理器，Enlightenment 是一个桌面 shell。
+     Enlightenment 是用以创建漂亮应用程序的积木。
+     Enlightenment，或者简称为 <em><strong>e</strong></em>，是一个团队正试图创造的新一代软件。
     </p>
 
     <p>
-     If you want to learn more about the history behind the Enlightenment
-     Project check out the <?php a("about", "about");?> pages. For the casual
-     user there are various <?php a("support", "support");?> resources
-     available. For anyone looking to help out with the project the <?php a("contribute",
-     "contributing");?> pages should give you a good idea where to start
-     looking.
+       如果您想了解 Enlightenment 项目背后的更多历史信息，请查看 <?php a("about", "关于");?> 页面。 
+       我们还为用户准备了多样的 <?php a("support", "支持");?> 信息资源。
+       对于希望帮助此项目的，<?php a("contribute", "贡献");?> 页面是开始的好地方。
     </p>
    </div>
   </td>
@@ -24,7 +21,7 @@
    <div class="main">
     <center>
      <?php img("logo.png", "E"); ?>
-     <?php blink("i/logo-s.png", "DOWNLOAD E", "download"); ?>
+     <?php blink("i/logo-s.png", "下载 E", "下载"); ?>
     </center>
    </div>
   </td>

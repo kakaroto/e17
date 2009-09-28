@@ -1,0 +1,124 @@
+<table class='main'>
+ <tr>
+  <td class='main' colspan=3>
+   <div class="main">
+    <h1>下载 Enlightenment DR16</h1>
+    <p>根据您的不同需要，有多种方式可以获得Enlightenment。</p>
+
+    <p>DR16 的最新版本为 1.0.1，发布于2009年09月10日。
+     您可以在
+    <a href="http://sourceforge.net/project/showfiles.php?group_id=2">SourceForge
+     下载页面</a></p> 找到当前或历史版本的 DR16、核心主题、epplets、e16menuedit、e16keyedit
+     以及imlib2。
+    <p>DR16 可以在多种类 Unix 平台上运行(*nix)，请选择您所需要的版本。</p>
+
+    <center>
+     <table class='tab'>
+      <tbody>
+       <tr>
+        <th class="tab">发行版/平台</td>
+        <th class="tab">文件</td>
+        <th class="tab">注释</td>
+       </tr>
+
+       <tr class="team-dark">
+        <td class='tab1'>Enlightenment Source Code TAR.GZ</td>
+        <td class='tab1'>
+         <a href="http://prdownloads.sourceforge.net/enlightenment/e16-1.0.1.tar.gz?download">e16-1.0.1.tar.gz</a>
+        </td>
+        <td class='tab1'>&nbsp;</td>
+       </tr>
+
+       <tr class="team-light">
+        <td class='tab2'>Source Package RPM</td>
+        <td class='tab2'>
+         <a href="http://prdownloads.sourceforge.net/enlightenment/e16-1.0.1-1.fc10.src.rpm?download">e16-1.0.1-1.fc10.src.rpm</a>
+        </td>
+        <td class='tab2'>&nbsp;</td>
+       </tr>
+
+       <tr class="team-dark">
+        <td class='tab1'>Linux i386 Binary RPM</td>
+        <td class='tab1'>
+         <a href="http://prdownloads.sourceforge.net/enlightenment/e16-1.0.1-1.fc10.i386.rpm?download">e16-1.0.1-1.fc10.i386.rpm</a>
+        </td>
+        <td class='tab1'>&nbsp;</td>
+       </tr>
+
+       <tr class="team-light">
+        <td class='tab2'>Gentoo Linux</td>
+        <td class='tab2'>
+         <a href="http://packages.gentoo.org/package/x11-wm/enlightenment">e16 ebuilds</a>
+        </td>
+        <td class='tab2'>&nbsp;</td>
+       </tr>
+
+       <tr class="team-dark">
+        <td class='tab1'>Debian GNU/Linux DEB</td>
+        <td class='tab1'>
+         <a href="http://packages.debian.org/e16">e16 packages</a>
+        </td>
+        <td class='tab1'>&nbsp;</td>
+       </tr>
+
+       <tr class="team-light">
+        <td class='tab2'>SUSE Linux (PackMan)</td>
+        <td class='tab2'><a href="http://packman.links2linux.de/index.php4?action=638">E DR16.8</a></td>
+        <td class='tab2'>&nbsp;</td>
+       </tr>
+
+      </tbody>
+     </table>
+    </center>
+
+    <hr>
+
+    <h1>下载 Enlightenment DR17 和 EFL</h1>
+    <p>DR17 和 EFL 目前仍为正式发布，提供的多种发行版的软件包是基于 SVN 仓库和开发快照 
+    tarball 发布的。
+     如果您希望使用 SVN，请查看 <?php a('contribute', "贡献");?> 页面获得相关信息。</p>
+
+    <hr>
+  </td>
+ </tr>
+ <tr>
+  <td class='main'>
+   <div class="main">
+    <p><h2>发布</h2></p>
+    <p>最新的发布版本可以在这里找到：</p>
+    <p><a href="http://download.enlightenment.org/releases">发布</a></p>
+   </div>
+  </td>
+
+  <td class='main'>
+   <div class="main">
+    <p><h2>SVN &amp; 和开发快照</h2></p>
+    <p><?php img("aspara.png", "开发快照");?></p>
+    <p><?php a("contribute", "SVN");?> 信息在此处。</p>
+    <p>开发快照可在
+    <a href="http://download.enlightenment.org/snapshots">download.enlightenment.org/snapshots</a>下载。</p>
+    <p><a href="http://download.enlightenment.org/snapshots/LATEST">最新开发快照</a></p>
+   </div>
+  </td>
+
+  <td class='main'>
+   <div class="main">
+    <p><h2>软件包</h2></p>
+    <p>现有以下平台的官方软件包：
+    <a href="http://packages.enlightenment.org/">Debian</a>，
+    <a href="http://packages.enlightenment.org/">Ubuntu</a>，
+    <a href="http://packages.enlightenment.org/">Fedora</a>。</p>
+    <p>非官方软件包：
+    Debian, <a href="http://ubuntuforums.org/showthread.php?t=97199&highlight=E17+cvs">Ubuntu</a>，
+    <a href="http://sps.nus.edu.sg/~didierbe">Fedora</a>，
+    <a href="http://wiki.archlinux.org/index.php/E17">ArchLinux</a> 和
+    <a href="http://gentoo-wiki.com/HOWTO_emerge_e17">Gentoo</a>。另有一部分FreeBSD
+     移植。</p>
+
+    <p>我们不对这些软件包作出能够按照预期工作的保证。如果您在使用通过软件包运行 DR17 或 EFL 时出现
+     任何问题，请首先与相关维护者联系，在不是软件包所致的情况下再与 Enlightenment 项目组联系。</p>
+   </div>
+  </td>
+ </tr>
+</table>
+

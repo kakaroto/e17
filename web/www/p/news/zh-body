@@ -1,0 +1,27 @@
+<h1>Enlightenment 新闻</h1>
+
+<?php
+require_once 'class.news.php';
+
+setlocale(LC_ALL, 'zh_CN');
+
+$news = new news;
+$list = $news->get(10);
+foreach($list as $new)
+{
+   if (($new = $news->read_content($new)) !== NULL)
+   {
+     echo "<div class='post'>\n";
+     echo "<p class='news-title'><a href='p.php?p=news/show&l=".$_GET['l']."&news_id=$new[id]'>".$new['title']."</a></p>";
+     echo "<p class='tiny'><a href='mailto:".$new['email']."'>".$new['author']."</a> - ".$new['date']."</p>";
+     echo "<div class='news-content'>".$new['content']."</div>\n";
+     echo "</div>\n";
+   }
+}
+
+if ($news->has_archives() == true)
+{
+   echo "<p><a href='p.php?p=news/archives&l=".$_GET['l']."' title='阅读存档'>阅读存档</a></p>";
+}
+
+?>
