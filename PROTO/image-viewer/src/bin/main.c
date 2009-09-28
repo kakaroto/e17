@@ -165,6 +165,7 @@ static void slideshow_off(IV *iv);
 #ifdef HAVE_ETHUMB
 static void on_thumb_generate(void *data, Ethumb_Client *client, int id, const char *file_path, const char *key, const char *thumb_path, const char *thumb_key, Eina_Bool success);
 static void on_thumb_die(void *data, Ethumb_Client *client);
+static void on_preview_close_click(void *data, Evas_Object *obj, void *event_info);
 #endif
 
 static void
@@ -603,11 +604,16 @@ Eina_Bool iv_gl_state_get(const void *data, Evas_Object *obj, const char *part)
 static void
 preview_window_create(IV *iv)
 {
+   Evas_Object *bx, *bt, *ic;
+
    iv->gui.preview_win = elm_win_inwin_add(iv->gui.win);
    elm_object_style_set(iv->gui.preview_win, "shadow_fill");
    evas_object_size_hint_weight_set(elm_bg_add(iv->gui.preview_win), 1.0, 1.0);
 
-   iv->gui.preview_genlist = elm_genlist_add(iv->gui.preview_win);
+   bx = elm_box_add(iv->gui.preview_win);
+   evas_object_show(bx);
+
+   iv->gui.preview_genlist = elm_genlist_add(bx);
    elm_genlist_always_select_mode_set(iv->gui.preview_genlist, 1);
    evas_object_size_hint_align_set(iv->gui.preview_genlist, -1.0, -1.0);
    evas_object_size_hint_weight_set(iv->gui.preview_genlist, 1.0, 1.0);
@@ -620,9 +626,45 @@ preview_window_create(IV *iv)
    iv->itc->func.state_get = iv_gl_state_get;
    iv->itc->func.del       = NULL;
 
-   elm_win_inwin_content_set(iv->gui.preview_win, iv->gui.preview_genlist);
+   ic = elm_icon_add(bx);
+   elm_icon_standard_set(ic, "close");
+   bt = elm_button_add(bx);
+   elm_icon_scale_set(ic, 0, 0);
+   elm_button_icon_set(bt, ic);
+   elm_button_label_set(bt, "Close");
+   evas_object_smart_callback_add(bt, "clicked",
+				  on_preview_close_click, iv);
+   evas_object_show(bt);
+
+   elm_box_pack_start(bx, iv->gui.preview_genlist);
+   elm_box_pack_end(bx, bt);
+   elm_win_inwin_content_set(iv->gui.preview_win, bx);
 }
 
+static void
+toggle_previews(IV *iv)
+{
+   if (!iv->ethumb_client) return;
+   if (!iv->gui.preview_genlist)
+     preview_window_create(iv);
+
+   if (evas_object_visible_get(iv->gui.preview_win))
+     evas_object_hide(iv->gui.preview_win);
+   else
+     {
+	elm_win_inwin_activate(iv->gui.preview_win);
+	if (!iv->idler)
+	  iv->idler = ecore_idler_add(on_idler, iv);
+     }
+}
+
+static void
+on_preview_close_click(void *data, Evas_Object *obj, void *event_info)
+{
+   IV *iv = data;
+
+   evas_object_hide(iv->gui.preview_win);
+}
 static void
 on_thumb_sel(void *data, Evas_Object *obj, void *event_info)
 {
@@ -727,20 +769,12 @@ on_thumb_die(void *data, Ethumb_Client *client)
 }
 
 static void
-toggle_previews(IV *iv)
+on_show_previews(void *data, Evas_Object *obj, const char *emission, const char *source)
 {
-   if (!iv->ethumb_client) return;
-   if (!iv->gui.preview_genlist)
-     preview_window_create(iv);
+   IV *iv = data;
 
-   if (evas_object_visible_get(iv->gui.preview_win))
-     evas_object_hide(iv->gui.preview_win);
-   else
-     {
-	elm_win_inwin_activate(iv->gui.preview_win);
-	if (!iv->idler)
-	  iv->idler = ecore_idler_add(on_idler, iv);
-     }
+   if (iv->gui.preview_win && (!evas_object_visible_get(iv->gui.preview_win)))
+     toggle_previews(iv);
 }
 #endif
 
@@ -1612,6 +1646,11 @@ create_main_win(IV *iv)
    evas_object_show(o);
    iv->gui.ly = o;
 
+#ifdef HAVE_ETHUMB
+   edje_object_signal_callback_add(elm_layout_edje_get(o),
+				   "iv,state,show_previews", "iv", on_show_previews, iv);
+#endif
+
    o = elm_scroller_add(iv->gui.ly);
    evas_object_size_hint_weight_set(o, 1.0, 1.0);
    elm_win_resize_object_add(iv->gui.win, o);
@@ -1623,7 +1662,7 @@ create_main_win(IV *iv)
    evas_object_size_hint_weight_set(o, 1.0, 1.0);
    elm_layout_content_set(iv->gui.ly, "iv.swallow.controls", o);
    edje_object_signal_callback_add(elm_layout_edje_get(o),
-				   "iv,action,click", "", on_controls_click, iv);
+				   "iv,action,click", "iv", on_controls_click, iv);
    evas_object_show(o);
    iv->gui.controls = o;
 
