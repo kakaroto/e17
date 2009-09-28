@@ -975,10 +975,11 @@ read_image(IV *iv, IV_Image_Dest dest)
 	else
 	  {
 	     IV_File *cur = f;
+	     Eina_Bool same_file = 0;
 	     switch (dest)
 	       {
-		case IMAGE_CURRENT:
 		case IMAGE_NEXT:
+		case IMAGE_CURRENT:
 		   f = IV_FILE_NEXT(iv->account->current) ?
 		      IV_FILE_NEXT(iv->account->current) :
 		      IV_FILE_PREV(iv->account->current);
@@ -995,16 +996,29 @@ read_image(IV *iv, IV_Image_Dest dest)
 		    f->flags.changed = 0;
 		  break;
 	       }
-	     iv->account->current = f;
 #ifdef HAVE_ETHUMB
 	     if (cur->thumb_path)
 	       thumb_remove(cur);
+	     if (iv->preview_files)
+	       {
+		  Eina_List *l = eina_list_data_find_list(iv->preview_files, cur);
+		  if (l)
+		    iv->preview_files = eina_list_remove_list(iv->preview_files, l);
+	       }
 #endif
+	     /* If the new file is the same as the current one, we ran out of files */
+	     if (cur == f)
+	       same_file = 1;
+	     else if (dest == IMAGE_CURRENT)
+	       iv->account->current = f;
+
 	     eina_stringshare_del(cur->file_path);
 	     iv->files = eina_inlist_remove(iv->files, EINA_INLIST_GET(cur));
 	     iv_file_free(cur);
 	     iv->account->count--;
 	     evas_object_del(img);
+
+	     if (same_file) break;
 	  }
      }
 }
