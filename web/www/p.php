@@ -23,7 +23,7 @@
           <a href="http://www.enlightenment.org"></a>
         </td>
         <td id="header_menu">
-	  <table cellspacing="0" cellpadding="0"><tr>
+	  <table cellspacing="0" cellpadding="0" align="right"><tr>
 	    <?php echo(nav_button("main1", ""));?>
 	    <?php echo(nav_button("main2", ""));?>
 	    <?php echo(nav_button("main3", ""));?>

@@ -64,6 +64,7 @@ html, body {
 #header_menu {
   background-image        : url(ti/header_menu_background.png);
   font                    : normal 10pt verdana,'Bitstream Vera Sans',helvetica,arial,sans-serif;
+  text-align              : right;
 }
 
 #header_last {
@@ -76,8 +77,8 @@ td.nav_passive {
   height                  : 63px;
   font-family             : "Bitstream Vera","Vera","Trebuchet MS",Trebuchet,Tahoma,sans-serif;
   font-size               : 11px;
-  padding                 : 20px 10px 10px 10px;
-  vertical-align          : bottom;
+  padding                 : 20px 10px 20px 10px;
+  vertical-align          : middle;
 }
 
 td.nav_active {
@@ -87,8 +88,8 @@ td.nav_active {
   font-family             : "Bitstream Vera","Vera","Trebuchet MS",Trebuchet,Tahoma,sans-serif;
   font-size               : 11px;
   font-weight             : bold;
-  padding                 : 20px 10px 10px 10px;
-  vertical-align          : bottom;
+  padding                 : 20px 10px 20px 10px;
+  vertical-align          : middle;
 }
 
 #header_menu a {
