@@ -484,25 +484,15 @@ zoom_set(IV *iv, Eina_Bool increase)
 
    record_visible_region(iv);
    scale = iv->config->img_scale;
-   if (iv->config->img_scale >= 1)
-     {
-	if (increase)
-	  iv->config->img_scale += 0.5;
-	else
-	  iv->config->img_scale -= 0.5;
-     }
+   if (increase)
+     iv->config->img_scale = iv->config->img_scale * 1.1;
    else
-     {
-	if (increase)
-	  iv->config->img_scale += 0.05;
-	else
-	  iv->config->img_scale -= 0.05;
-     }
+     iv->config->img_scale = iv->config->img_scale / 1.1;
 
-   if (iv->config->img_scale > 0.96 && iv->config->img_scale < 1.5)
+   if (iv->config->img_scale > 0.97 && iv->config->img_scale < 1.04)
      iv->config->img_scale = 1.0;
-   else if (iv->config->img_scale < 0.05)
-     iv->config->img_scale = 0.05;
+   else if (iv->config->img_scale < 0.01)
+     iv->config->img_scale = 0.01;
 
    iv->gui.region.x *=  (double) iv->config->img_scale / scale;
    iv->gui.region.y *=  (double) iv->config->img_scale / scale;
