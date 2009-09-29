@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Shellementary\n"
 "POT-Creation-Date: 2009-07-06 13:28+CEST\n"
-"PO-Revision-Date: 2009-07-07 08:58+0400\n"
+"PO-Revision-Date: 2009-09-29 10:12+0400\n"
 "Last-Translator: batden <batden@orange.fr>\n"
 "Language-Team: French <Enlightenment i18n French>\n"
 "MIME-Version: 1.0\n"
@@ -36,7 +36,7 @@ msgstr "Annuler"
 #: shellementary.in:721
 #: shellementary.in:799
 msgid "OK"
-msgstr "OK"
+msgstr "O.K."
 
 #: shellementary.in:425
 msgid "Text information"
@@ -76,11 +76,11 @@ msgstr "Fermer"
 
 #: shellementary.in:924
 msgid "OPTIONS FOR ALL DIALOGS"
-msgstr "OPTIONS GÉNÉRALES DES DIALOGUES"
+msgstr "OPTIONS GÉNÉRALES DES BOÎTES DE DIALOGUE"
 
 #: shellementary.in:924
 msgid "These are options which you can use for all dialogs."
-msgstr "Voici les options utilisables pour tous les dialogues."
+msgstr "Voici les options utilisables pour toutes les boîtes de dialogue."
 
 #: shellementary.in:926
 msgid "Set window title."
@@ -108,11 +108,11 @@ msgstr "Afficher la fenêtre à propos."
 
 #: shellementary.in:934
 msgid "OPTIONS TO SHOW DIALOGS"
-msgstr "OPTIONS D'AFFICHAGE DES DIALOGUES"
+msgstr "OPTIONS D'AFFICHAGE DES BOÎTES DE DIALOGUE"
 
 #: shellementary.in:934
 msgid "These are options with which you can show dialogs."
-msgstr "Voici les options utilisables pour afficher les dialogues."
+msgstr "Voici les options utilisables pour afficher les boîtes de dialogue."
 
 #: shellementary.in:936
 msgid "Show entry dialog."
@@ -245,7 +245,7 @@ msgstr "Argument permettant d'inverser le curseur."
 
 #: shellementary.in:977
 msgid "Set slider unit format - for example \"value: %0.1f\", that will print value: 156.1 or %0.2f will print 156.12, %0.3f 156.125 etc."
-msgstr "Spécifier le format de l'unité - par exemple \"valeur: %0.1f\", affichera: 156.1 ou %0.2f affichera 156.12, %0.3f 156.125 etc."
+msgstr "Spécifier le format de l'unité - par exemple \"valeur: %0.1f\", affichera: 156.1 ou %0.2f affichera 156.12, %0.3f 156.125, etc."
 
 #: shellementary.in:978
 msgid "Set slider label."
@@ -257,7 +257,7 @@ msgstr "Spécifier l'icone du curseur."
 
 #: shellementary.in:980
 msgid "If set, slider will be vertical."
-msgstr "Argument permettant d'afficher le  curseur verticalement."
+msgstr "Argument permettant d'afficher le curseur verticalement."
 
 #: shellementary.in:1020
 msgid "Error!"
