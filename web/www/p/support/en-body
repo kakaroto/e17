@@ -10,14 +10,10 @@
 <h3><a href="http://wiki.enlightenment.org/index.php/Main_Page">Wiki</a></h3>
 <p>Frequently updated tutorials and guides for both users and developers.</p>
 <ul>
-<li><a href="http://wiki.enlightenment.org/index.php/Enlightenment">
-Enlightenment</a></li>
-<li><a href="http://wiki.enlightenment.org/index.php/E17_User_Guide">DR17 User
-Guide</a></li>
-<li><a href="http://wiki.enlightenment.org/index.php/Enlightenment_Foundation_Libraries">
-EFL Overview</a></li>
-<li><a href="http://wiki.enlightenment.org/index.php/Install_EFL_from_CVS_guide">
-Installing the EFL</a></li>
+<li><a href="http://wiki.enlightenment.org/index.php/Enlightenment">Enlightenment</a></li>
+<li><a href="http://wiki.enlightenment.org/index.php/E17_User_Guide">DR17 User Guide</a></li>
+<li><a href="http://wiki.enlightenment.org/index.php/Enlightenment_Foundation_Libraries"> EFL Overview</a></li>
+<li><a href="http://wiki.enlightenment.org/index.php/Install_EFL_from_CVS_guide"> Installing the EFL</a></li>
 <li><a href="http://wiki.enlightenment.org/index.php/Main_Page">[more]</a></li>
 </ul>
 </div>

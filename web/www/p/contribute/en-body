@@ -1,3 +1,7 @@
+<table class='main'>
+ <tr>
+  <td class='main'>
+   <div class="main">
 <h1>Contributing</h1>
 
 <p>If you're looking to help out on the project you're in the right place.
@@ -20,4 +24,7 @@ for more information on how to use SVN.</p>
 <a href="http://docs.enlightenment.org">documentation</a>. Any bugs
 identified, or features desired, can be entered into the
 <a href="http://trac.enlightenment.org/e">Tracker</a>.</p>
-
+   </div>
+  </td>
+ </tr>
+</table>      

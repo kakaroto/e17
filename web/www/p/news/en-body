@@ -1,3 +1,7 @@
+<table class='main'>
+ <tr>
+  <td class='main'>
+   <div class="main">
 <h1>Enlightenment News</h1>
 
 <?php
@@ -25,3 +29,8 @@ if ($news->has_archives() == true)
 }
 
 ?>
+   </div>
+  </td>
+ </tr>
+</table>
+      

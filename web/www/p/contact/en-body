@@ -1,3 +1,7 @@
+<table class='main'>
+ <tr>
+  <td class='main'>
+   <div class="main">
 <h1>Contact</h1>
 
 <h2><b class="contentheading">Mailing Lists and Archives</b></h2>
@@ -346,4 +350,8 @@ ksort($developers);
 </div></td>
 </tr>
 </table>
-
+   </div>
+  </td>
+ </tr>
+</table>
+      
