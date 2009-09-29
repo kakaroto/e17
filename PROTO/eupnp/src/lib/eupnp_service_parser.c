@@ -24,9 +24,9 @@
 #endif
 
 #include <string.h>
+#include <libxml/SAX2.h>
 
 #include "Eupnp.h"
-#include "eupnp_service_parser.h"
 #include "eupnp_log.h"
 
 
@@ -36,6 +36,57 @@
 
 static int _eupnp_service_parser_init = 0;
 static int _log_dom = -1;
+
+typedef struct _Eupnp_Service_Parser_State Eupnp_Service_Parser_State;
+typedef struct _Eupnp_Service_Parser Eupnp_Service_Parser;
+
+typedef enum {
+   START,
+   INSIDE_XMLVER,
+   INSIDE_SCPD,
+   INSIDE_SPECVERSION,
+   INSIDE_SPECVERSION_MAJOR,
+   INSIDE_SPECVERSION_MINOR,
+   INSIDE_ACTION_LIST,
+   INSIDE_ACTION,
+   INSIDE_ACTION_NAME,
+   INSIDE_ACTION_ARGUMENT,
+   INSIDE_ACTION_ARGUMENT_LIST,
+   INSIDE_ACTION_ARGUMENT_NAME,
+   INSIDE_ACTION_ARGUMENT_DIRECTION,
+   INSIDE_ACTION_ARGUMENT_RETVAL,
+   INSIDE_ACTION_ARGUMENT_RELATEDSTATEVARIABLE,
+   INSIDE_SERVICE_STATE_TABLE,
+   INSIDE_SERVICE_STATE_VARIABLE,
+   INSIDE_SERVICE_STATE_VARIABLE_NAME,
+   INSIDE_SERVICE_STATE_VARIABLE_DATATYPE,
+   INSIDE_SERVICE_STATE_VARIABLE_DEFAULTVALUE,
+   INSIDE_SERVICE_STATE_VARIABLE_ALLOWEDVALUE_LIST,
+   INSIDE_SERVICE_STATE_VARIABLE_ALLOWEDVALUE,
+   INSIDE_SERVICE_STATE_VARIABLE_ALLOWEDVALUE_RANGE,
+   INSIDE_SERVICE_STATE_VARIABLE_ALLOWEDVALUE_RANGE_MIN,
+   INSIDE_SERVICE_STATE_VARIABLE_ALLOWEDVALUE_RANGE_MAX,
+   INSIDE_SERVICE_STATE_VARIABLE_ALLOWEDVALUE_RANGE_STEP,
+   FINISH,
+   ERROR
+} Eupnp_Service_Parser_State_Enum;
+
+struct _Eupnp_Service_Parser_State {
+   Eupnp_Service_Parser_State_Enum state;
+   int state_skip;
+   void *data;
+   Eupnp_Service_Action *building_action;
+   Eupnp_Service_Action_Argument *building_arg;
+   Eupnp_State_Variable *building_state_var;
+   Eupnp_State_Variable_Allowed_Value *building_allowed_value;
+   Eina_Bool send_events;
+};
+
+struct _Eupnp_Service_Parser {
+   Eupnp_Service_Parser_State state;
+   xmlSAXHandler handler;
+   xmlParserCtxtPtr ctx;
+};
 
 static Eupnp_Service_Action *
 eupnp_service_action_new(void)

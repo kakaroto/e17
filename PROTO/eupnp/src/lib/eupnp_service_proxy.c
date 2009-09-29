@@ -34,7 +34,6 @@
 #include "eupnp_log.h"
 #include "eupnp_core.h"
 #include "eupnp_event_server.h"
-#include "eupnp_service_parser.h"
 #include "eupnp_service_info.h"
 #include "eupnp_http_message.h"
 #include "eupnp_soap.h"
@@ -453,6 +452,7 @@ eupnp_event_subscriber_free(Eupnp_Event_Subscriber *subscriber)
 
 static int _eupnp_service_proxy_init_count = 0;
 static int _log_dom = -1;
+extern int EUPNP_ERROR_SERVICE_PARSER_INSUFFICIENT_FEED;
 
 /*
  * Callbacks for SCPD XML download

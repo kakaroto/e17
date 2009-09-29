@@ -31,7 +31,6 @@
 #include "eupnp_device_info.h"
 #include "eupnp_service_info.h"
 #include "eupnp_service_proxy.h"
-#include "eupnp_device_parser.h"
 #include "eupnp_event_bus.h"
 #include "eupnp_private.h"
 
@@ -41,6 +40,7 @@
 
 static int _eupnp_device_info_main_count = 0;
 static int _log_dom = -1;
+extern int EUPNP_ERROR_DEVICE_PARSER_INSUFFICIENT_FEED;
 
 static void
 device_data_ready(void *buffer, int size, void *data)

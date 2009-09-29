@@ -25,33 +25,95 @@
 
 #include <stdio.h>
 #include <string.h>
+#include <libxml/SAX2.h>
 
 #include <Eina.h>
 
 #include "Eupnp.h"
-#include "eupnp_device_parser.h"
+#include "eupnp_log.h"
+#include "eupnp_device_info.h"
+#include "eupnp_service_info.h"
 #include "eupnp_private.h"
 
 /*
  * Private API
  */
 
-#define COPY_CHARACTERS(to, from, len)     \
-   if (!to)                                \
-     {                                     \
-        to = malloc(sizeof(char)*(len+1)); \
-	if (!to)                           \
-	  {                                \
-	     ERROR_D(_log_dom, "Could not alloc for device information"); \
-	     return;                       \
-	  }                                \
-	memcpy((char *)to, from, len);     \
-	((char *)to)[len] = '\0';          \
+#define COPY_CHARACTERS(to, from, len)                          \
+   if (!to)                                                     \
+     {                                                          \
+        to = malloc(sizeof(char)*(len+1));                      \
+	if (!to)                                                \
+	  {                                                     \
+	     ERROR_D(_log_dom,                                  \
+	             "Could not alloc for device information"); \
+	     return;                                            \
+	  }                                                     \
+	memcpy((char *)to, from, len);                          \
+	((char *)to)[len] = '\0';                               \
      }
 
 
 static int _eupnp_device_parser_init_count = 0;
 static int _log_dom = -1;
+
+typedef struct _Eupnp_Device_Parser_State Eupnp_Device_Parser_State;
+typedef struct _Eupnp_Device_Parser Eupnp_Device_Parser;
+
+typedef enum {
+   START,
+   INSIDE_ROOT,
+   INSIDE_SPEC_VERSION,
+   INSIDE_SPEC_VERSION_MAJOR,
+   INSIDE_SPEC_VERSION_MINOR,
+   INSIDE_URLBASE,
+   INSIDE_DEVICE,
+   INSIDE_DEVICETYPE,
+   INSIDE_DEVICE_FRIENDLYNAME,
+   INSIDE_MANUFACTURER,
+   INSIDE_MANUFACTURER_URL,
+   INSIDE_MODEL_DESCRIPTION,
+   INSIDE_MODEL_NAME,
+   INSIDE_MODEL_URL,
+   INSIDE_SERIAL_NUMBER,
+   INSIDE_UDN,
+   INSIDE_UPC,
+   INSIDE_ICON_LIST,
+   INSIDE_ICON,
+   INSIDE_ICON_MIMETYPE,
+   INSIDE_ICON_WIDTH,
+   INSIDE_ICON_HEIGHT,
+   INSIDE_ICON_DEPTH,
+   INSIDE_ICON_URL,
+   INSIDE_PRESENTATION_URL,
+   INSIDE_DEVICELIST,
+   INSIDE_SERVICELIST,
+   INSIDE_SERVICE,
+   INSIDE_SERVICE_TYPE,
+   INSIDE_SERVICE_ID,
+   INSIDE_SERVICE_SCPDURL,
+   INSIDE_SERVICE_CONTROL_URL,
+   INSIDE_SERVICE_EVENTSUB_URL,
+   FINISH,
+   ERROR
+} Eupnp_Device_Parser_State_Enum;
+
+struct _Eupnp_Device_Parser_State {
+   Eupnp_Device_Parser_State *parent;
+   Eupnp_Device_Parser_State_Enum state;
+   /* Building Context */
+   int state_skip; /* Used for skipping unknown tags */
+   Eupnp_Device_Info *device;
+   Eupnp_Service_Info *service;
+   Eupnp_Device_Icon *icon;
+   xmlParserCtxtPtr ctx;
+};
+
+struct _Eupnp_Device_Parser {
+   Eupnp_Device_Parser_State state;
+   xmlSAXHandler handler;
+   xmlParserCtxtPtr ctx;
+};
 
 /*
  * Finishes parsing embedded devices by adding missing fields with inherited
@@ -662,9 +724,9 @@ eupnp_device_parse_check_finished(Eupnp_Device_Info *d)
  *
  */
 
-EAPI int EUPNP_ERROR_DEVICE_PARSER_INSUFFICIENT_FEED = 0;
+int EUPNP_ERROR_DEVICE_PARSER_INSUFFICIENT_FEED = 0;
 
-EAPI int
+int
 eupnp_device_parser_init(void)
 {
    if (_eupnp_device_parser_init_count)
@@ -723,7 +785,7 @@ eupnp_device_parser_init(void)
 }
 
 
-EAPI int
+int
 eupnp_device_parser_shutdown(void)
 {
    if (_eupnp_device_parser_init_count != 1)
@@ -752,7 +814,7 @@ eupnp_device_parser_shutdown(void)
 /*
  * @return EINA_TRUE if parsed succesfully, EINA_FALSE otherwise.
  */
-EAPI Eina_Bool
+Eina_Bool
 eupnp_device_parse_xml_buffer(const char *buffer, int buffer_len, Eupnp_Device_Info *d)
 {
    Eina_Bool ret = EINA_FALSE;

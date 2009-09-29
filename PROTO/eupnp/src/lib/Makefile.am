@@ -18,9 +18,7 @@ EUPNPHEADERS = \
 	eupnp_udp_transport.h \
 	eupnp_control_point.h \
 	eupnp_device_info.h \
-	eupnp_device_parser.h \
 	eupnp_service_info.h \
-	eupnp_service_parser.h \
 	eupnp_service_proxy.h \
 	eupnp_event_bus.h \
 	eupnp_event_server.h \
@@ -37,8 +35,8 @@ libeupnp_la_SOURCES = \
 	eupnp_http_message.c \
 	eupnp_udp_transport.c \
 	eupnp_control_point.c \
-	eupnp_device_info.c \
 	eupnp_device_parser.c \
+	eupnp_device_info.c \
 	eupnp_service_info.c \
 	eupnp_service_parser.c \
 	eupnp_service_proxy.c \
