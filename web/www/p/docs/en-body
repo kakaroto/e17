@@ -35,13 +35,18 @@
   you're a user, developer, or just someone looking for some good bathroom
   material, if you are in need of answers, you should find something of
   interest below.
- </p>
+</p>
   
- <p>
+<p>
   There is also a <a href="http://trac.enlightenment.org/e/wiki">wiki</a>
   available (please note that some pages still reside in the old <a href="http://wiki.enlightenment.org/">wiki</a>)
- </p>
+</p>
 
+<p>
+API documentation auto-generated daily from SVN source for EFL libraries:
+</p>
+
+<center>
 <table border=0 cellpadding=0 cellspacing=10>
  <tr>
   <td>
@@ -83,9 +88,14 @@
   </td>
  </tr>
 </table>
-
 <hr>
+</center>
 
+<p>
+Documentation for applications auto-generated daily from SVN:
+</p>
+
+<center>
 <table border=0 cellpadding=0 cellspacing=10>
  <tr>
   <td>
@@ -99,6 +109,7 @@
   </td>
  </tr>
 </table>
+</center>
 
 <h2>EFL Beta Manuals</h2>
  <p>
