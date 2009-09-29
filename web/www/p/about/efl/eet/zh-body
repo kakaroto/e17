@@ -1,0 +1,29 @@
+<table class='main'><tr><td class='main'><div class="main">
+	<h1>Eet</h1>
+			
+	<p>Eet is primarily a data encoding, decoding and storage library. It is meant
+	to be very programmer friendly, removing lots of work from loading and saving
+	data held in data structures. It can store multiple chunks of data in a single
+	file and random-access retrieve the data very efficiently, encode and decode
+	image data and any other kind of data. Files are compact and efficient as well as
+	being portable between platforms (e.g. take a file written on a 32-bit x86 system
+	and move it to a 64-bit PPC system and it will "just work"). Eet is portable
+	between many architectures and operating systems and can function on embedded
+	systems all the way up to multi-CPU server farms.</p>
+	
+	<p>The result of this is a tiny (52Kb on x86-32, 56Kb on ARM4) library that
+	removes a lot of the need to parse configuration, and handle storage efficiently
+	as well as transport stored data to other locations without loss.</p>
+	
+	<p>Eet has very few requirements. On UNIX, beyond the normal libc and system
+	compiling tools and headers, you will need libjpeg (also know as jpeglib) and its
+	headers and build packages, as well as zlib (libz) and its headers and build
+	packages.</p>
+	
+	<p>Download Latest Source Release <b>(1.1.0)</b>:
+	<ul>
+	<li><a href=http://download.enlightenment.org/releases/eet-1.1.0.tar.gz>eet-1.1.0.tar.gz</a></li>
+	<li><a href=http://download.enlightenment.org/releases/eet-1.1.0.tar.bz2>eet-1.1.0.tar.bz2</a></li>
+	</ul></p>
+	
+</div></td></tr></table>

@@ -1,0 +1,124 @@
+<h1>文档</h1>
+
+<div class="section-plug">
+<div class="left-border">
+<div class="right-border">
+<h3>EFL API 文档</h3>
+<p>各种函数库的 doxygen API 文档</p>
+  <ul>
+   <li>Imlib2 [<a href="http://docs.enlightenment.org/api/imlib2/html">HTML</a>] 
+        [<a href="http://docs.enlightenment.org/api/imlib2/imlib2-reference.pdf">PDF</a>]</li>
+   <li>Eet [<a href="http://docs.enlightenment.org/api/eet/html">HTML</a>] 
+        [<a href="http://docs.enlightenment.org/api/eet/eet-reference.pdf">PDF</a>]</li>
+   <li>Evas [<a href="http://docs.enlightenment.org/api/evas/html">HTML</a>] 
+        [<a href="http://docs.enlightenment.org/api/evas/evas-reference.pdf">PDF</a>]</li>
+   <li>Ecore [<a href="http://docs.enlightenment.org/api/ecore/html">HTML</a>] 
+        [<a href="http://docs.enlightenment.org/api/ecore/ecore-reference.pdf">PDF</a>]</li>
+   <li>Edje [<a href="http://docs.enlightenment.org/api/edje/html">HTML</a>] 
+        [<a href="http://docs.enlightenment.org/api/edje/edje-reference.pdf">PDF</a>]</li>
+   <li>Embryo [<a href="http://docs.enlightenment.org/api/embryo/html">HTML</a>] 
+        [<a href="http://docs.enlightenment.org/api/embryo/embryo-reference.pdf">PDF</a>]</li>
+   <li>Epeg [<a href="http://docs.enlightenment.org/api/epeg/html">HTML</a>] 
+        [<a href="http://docs.enlightenment.org/api/epeg/epeg-reference.pdf">PDF</a>]</li>
+   <li>Epsilon [<a href="http://docs.enlightenment.org/api/epsilon/html">HTML</a>] 
+        [<a href="http://docs.enlightenment.org/api/epsilon/epsilon-reference.pdf">PDF</a>]</li>
+   <li>E_DBus [<a href="http://docs.enlightenment.org/api/e_dbus/html">HTML</a>] 
+        [<a href="http://docs.enlightenment.org/api/e_dbus/e_dbus-reference.pdf">PDF</a>]</li>
+   <li>Ewl [<a href="http://docs.enlightenment.org/api/ewl/html">HTML</a>] 
+        [<a href="http://docs.enlightenment.org/api/ewl/ewl-reference.pdf">PDF</a>]</li>
+   <li>Etk [<a href="http://docs.enlightenment.org/api/etk/html">HTML</a>]</li>
+   <li>Emotion [<a href="http://docs.enlightenment.org/api/emotion/html">HTML</a>] 
+        [<a href="http://docs.enlightenment.org/api/emotion/emotion-reference.pdf">PDF</a>]</li>
+   <li>Engrave [<a href="http://docs.enlightenment.org/api/engrave/html">HTML</a>] 
+        [<a href="http://docs.enlightenment.org/api/engrave/engrave-reference.pdf">PDF</a>]</li>
+   <li>Efreet [<a href="http://docs.enlightenment.org/api/efreet/html">HTML</a>] 
+        [<a href="http://docs.enlightenment.org/api/efreet/efreet-reference.pdf">PDF</a>]</li>
+   <li>Ethumb [<a href="http://docs.enlightenment.org/api/ethumb/html">HTML</a>] 
+        [<a href="http://docs.enlightenment.org/api/ethumb/ethumb-reference.pdf">PDF</a>]</li>
+  </ul>
+</div>
+</div>
+</div>
+
+<p>
+  Enlightenment 项目不仅提供了一个窗口管理工具，无论您是一位用户还是一位开发者，甚至仅仅是路过此处，都可以在此处找到您可能需要的内容。
+ </p>
+  
+ <p>
+  另外还有一个 <a href="http://trac.enlightenment.org/e/wiki">wiki</a>
+  可供使用(请注意仍有一些页面处在 <a href="http://wiki.enlightenment.org/">旧的 wiki</a> 之中)。
+ </p>
+
+<h2>EFL Beta 手册</h2>
+ <p>
+   这个手册仍在编写之中，所以其中仍有部分过时的代码示例，但对于概念的描述应当是准确的。
+ </p>
+
+<h3>EFL 简介[<a
+  href="http://trac.enlightenment.org/e/wiki/IntroductionToEFL">HTML</a>] [<a
+  href="http://homepages.pathfinder.gr/kazanaki/contrib/concepts.pdf">PDF</a>]</h3>
+ <p>
+   这是一个高层次的 EFL 函数库概览。其中描述了 EFL 背后的理念，如果您不知道为什么要关注它，那么请这篇文档正是为您所准备。<br />
+  作者：<a href="mailto:kkapelonPLEASE@NOSPAMfreemail.gr">Kostis Kapelonis</a>
+ </p>
+
+<h3>The EFL Cookbook [<a
+  href="http://docs.enlightenment.org/books/cookbook/eflcookbook.html">HTML</a>] [<a
+  href="http://docs.enlightenment.org/books/cookbook/eflcookbook.pdf">PDF</a>]</h3>
+ <p>
+   类似于 O'Reilly 的 Cookbook 形式的 EFL 开发文档。其中给出了所有的组件的样例代码。
+   这部社区文档欢迎任何人的贡献。它已被翻译为以下几种语言：<br />
+   <ul>
+    <li>西班牙语：[<a
+       href="http://docs.enlightenment.org/books/cookbook/eflcookbook.es.html">HTML</a>]
+       [<a href="http://docs.enlightenment.org/books/cookbook/eflcookbook.es.pdf">PDF</a>]</li>
+    <li>法语：[<a 
+       href="http://docs.enlightenment.org/books/cookbook/eflcookbook.fr.html">HTML</a>]
+       [<a href="http://docs.enlightenment.org/books/cookbook/eflcookbook.fr.pdf">PDF</a>]</li>
+    <li>巴西葡萄牙语：[<a 
+       href="http://docs.enlightenment.org/books/cookbook/eflcookbook.pt-BR.html">HTML</a>]
+       [<a href="http://docs.enlightenment.org/books/cookbook/eflcookbook.pt-BR.pdf">PDF</a>]</li>
+   </ul>
+   如果您对帮助此文档感兴趣，请联系 <a href="mailto:benrNO@SPAMcuddletech.com">benr</a>。
+ </p>
+
+<h3>The Ewl Book [<a
+  href="http://docs.enlightenment.org/books/ewlbook/ewlbook.pdf">PDF</a>]</h3>
+ <p>
+  The Ewl book 是 Enlightnened Widget Library (Ewl) 的简介。
+   此文档试图帮助您开始使用 EWL 并给予您一个更普遍适用的部件视角。<br />
+   您还可以得到它的西班牙语版本：[<a
+    href="http://docs.enlightenment.org/books/ewlbook/ewlbook.es.pdf">PDF</a>].<br />
+   作者：<a href="mailto:dj2NO@SPAMeverburning.com">Dan 'dj2' Sinclair</a>
+ </p>
+
+<h3>Building Interfaces with Edje: The Edje Developers Guide [<a
+  href="http://docs.enlightenment.org/books/edjebook/edjebook.pdf">PDF</a>]</h3>
+ <p>
+  A complete guide to designing interfaces using Edje and utilizing them
+  effectively in your EVAS applications. Includes a complete overview of
+  Edje Data Collections (EDC) and the Edje API, including sample code and
+  reference material. Utilizing Edje effectively can simplify and streamline
+  application development and make nearly any application completely
+  skinable by even non-programmers.<br />
+  Written by <a href="mailto:benrNO@SPAMcuddletech.com">Ben 'technikolor' Rockwood</a>.
+ </p>
+
+<h2>Enlightenment DR16 Documentation</h2>
+ <p>
+  There is ample documentation available from Enlightenment itself. eDox is
+  DR16's "built in" docuemenation and tutorial system. This system was removed
+  from the main distribution with the release of DR16.7 in order to shrink the
+  size of the distribution and applications installed disk usage. If you are
+  new to Enlightenment, please <a
+  href="http://sourceforge.net/project/showfiles.php?group_id=2&package_id=116678&release_id=234365">download
+  and install the enlightenment-docs package (aka: eDox)</a>.
+ </p>
+
+<h3>EtherDox [<a href="http://etherdoxproject.com">HTML</a>]</h3>
+ <p>
+  Assorted articles on DR16 theming building toward a complete set of
+  documents for the DR16 themer.<br />
+  Written by <a href="mailto:peteNO@SPAMlowatts.demon.co.uk">monkiboi</a>.
+ </p>
+

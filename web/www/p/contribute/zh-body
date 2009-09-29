@@ -1,0 +1,18 @@
+<h1>贡献</h1>
+
+<p>如果您正在寻找如何帮助这个社区，那么这里就是您要找的地方。
+我们一直在寻找愿意帮助编写代码、翻译、撰写文档、帮助新用户、回答论坛问题或验证 bug 的人们。
+如果您对其中的一些内容感兴趣，请继续往下阅读。</p>
+
+<p>Enlightenment 的全部开发都处于 SVN 仓库。您可以通过
+<a href="http://trac.enlightenment.org/e/browser/trunk">Trac</a> 界面浏览它。
+您可以使用开发快照工作，但是它们总是比 SVN 中的当前版本落后。报告的任何 bug 都应当基于当前的 SVN 版本。</p>
+
+<p>请查看 <a href=http://svn.enlightenment.org>svn.enlightenment.org</a>
+以了解关于使用 SVN 的信息。</p>
+
+<p>关于 EFL 函数库的更多信息，请参阅
+<a href="http://wiki.enlightenment.org">wiki</a> 和
+<a href="http://docs.enlightenment.org">文档</a>。Bug 和期望特性都可以通过
+<a href="http://trac.enlightenment.org/e">Tracker</a> 报告。</p>
+

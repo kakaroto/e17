@@ -24,7 +24,7 @@
      尽管传言中它已经不再更新，我们还是2009年09月10日发布了它的 1.0.1 版。DR16 由于其低额外开销、高图形化程
      度、广泛的主题支持、极佳的可定制性和毫不张扬的界面被众多的普通用户和艺术工作者所选用。几乎全部窗口管理操作
      均可不使用鼠标操作，包括通过
-    <a href="http://sourceforge.net/project/showfiles.php?group_id=2">e16keyedit</a>启动应
+    <a href="http://sourceforge.net/project/showfiles.php?group_id=2">e16keyedit</a> 启动应
      用程序。它还被广泛地移植到多种平台之上，包括 Linux、FreeBSD、IRIX、Solaris X86 及 Sparc、HP-UX、 
     AIX、OS/2 等。</p>
 
@@ -37,11 +37,10 @@
     </center>
 
     <h2>Enlightenment DR17</h2>
-    <p>Enlightenment DR17 代表了窗口管理器已经进入了下一代：桌面 Shell。DR17 将通过一个高度图形化
-     的可定制构架提供文件与环境之间的无缝集成。它虽然无发与 GNOME 或 KDE 这样巨大的项目相比，却是一个全新的基
-     于 EFL 的图形化桌面解决方案。</p>
+    <p>Enlightenment DR17 代表了窗口管理器已经进入了下一代：桌面 Shell。DR17 将通过一个高度图形化的可定制构架提供文件与环境之间的无缝集成。
+     它虽然无发与 GNOME 或 KDE 这样巨大的项目相比，却是一个全新的基于 EFL 的图形化桌面解决方案。</p>
 
-    <p> DR17 仍处于开发之中，其中的大部分程序已经提供了开发快照，其余的部分也均已经可通过 SVN 获取，例如 
+    <p>DR17 仍处于开发之中，其中的大部分程序已经提供了开发快照，其余的部分也均已经可通过 SVN 获取，例如 
     Entice、Entrance 和 Evidence 等。</p>
 
     <center>
@@ -53,23 +52,16 @@
     </center>
 
     <h2>Enlightenment 构架函数库</h2>
-    <p>In developing DR17 it was made clear that we needed an entirely new set of libraries and tools. 
-    Raster had a bold vision of what was possible and where he wanted the next release to go, starting 
-    with Imlib2 and EVAS, and eventually growing into new libraries largely based on, or around, EVAS. 
-    It became clear that the usefulness of these libraries and tools went far beyond the DR17 release 
-    itself, just as Imlib did in DR16. Thus the collective library back-end of DR17 was given the 
-    independent title: the Enlightenment Foundation Libraries, or EFL for short. </p>          
+    <p>在 DR17 的开发过程中我们明确地意识到需要一组全新的函数库和工具。Raster 首先在 Imlib2 和 EVAS
+     中首先展示了他所希望达成目标的概览，并最终发展出了一套基于 EVAS 的全新函数库。
+     这组函数库的用途将远远超过 DR17 本身，就如同 Imlib 的作用远不止于 DR16。因此他们被给予了一个独立的名称：
+    Enlightenment 构架函数库(the Enlightenment Foundation Libraries，简称 EFL)。</p>          
    
-    <p>The EFL contains solutions for almost any graphical interface task, far beyond just rendering 
-    images. EVAS provides a highly optimized canvas library. Ecore provides a simple and modular 
-    abstraction interface and advanced event management including timers. EDB provides a compact 
-    database format for intuitive and easy configuration management, including the storing of binaries. 
-    EET provides an integrated and flexible container that ends the traditions of providing 
-    themes in tarballs. Edje provides a revolutionary library and tool set for <i>completely</i> 
-    abstracting application interfaces from their code, including a complex and flexible method of 
-    designing interfaces. EWL provides a complete widget library built on all the other 
-    components of the EFL.</p>
-    
+    <p>EFL 提供了图形界面所需的绝大多数解决方案。EVAS 本身提供了一个高度优化的 canvas 函数库，Ecore
+     提供了一个包含计时器等高级事件管理能力的简洁模块模型，EDB 提供了包括存储二进制文件在内的易于配置管理的紧凑数据库格式，
+    EET 提供了以 tarball 形式发布主题的集成式的可定制容器。Edje 提供了一组革命性的函数库和工具使得程序界面和代码
+    <i>完全</i> 分离，并由此诞生了一个新的界面设计方法。EWL 提供了一个基于其他 EFL 部件的组件函数库。</p>
+
     <center>
      <p>
       <a href="http://enlightenment.org/i/trill-desktop.png">
