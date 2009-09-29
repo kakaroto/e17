@@ -244,7 +244,7 @@ ECursorFree(ECursor * ec)
       ec->ref_count--;
 }
 
-static int
+int
 ECursorConfigLoad(FILE * fs)
 {
    int                 err = 0;
@@ -362,7 +362,9 @@ static const ECDataRec ECData[ECSR_COUNT] = {
    {"RESIZE_BR", "RESIZE_TL", XC_bottom_right_corner},
 };
 
-static Cursor       ECsrs[ECSR_COUNT];
+static Cursor       ECsrs[ECSR_COUNT] = {
+   1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
+};
 
 Cursor
 ECsrGet(int which)
@@ -380,34 +382,6 @@ void
 ECsrApply(int which, Window win)
 {
    XDefineCursor(disp, win, ECsrGet(which));
-}
-
-/*
- * Set up some basic cursors
- */
-static void
-CursorsInit(void)
-{
-   int                 i;
-
-   for (i = 0; i < ECSR_COUNT; i++)
-      ECsrs[i] = 1;
-}
-
-/*
- * Cursor module
- */
-
-static void
-CursorSighan(int sig, void *prm __UNUSED__)
-{
-   switch (sig)
-     {
-     case ESIGNAL_INIT:
-	ConfigFileLoad("cursors.cfg", Mode.theme.path, ECursorConfigLoad, 1);
-	CursorsInit();
-	break;
-     }
 }
 
 static void
@@ -448,7 +422,7 @@ static const IpcItem CursorIpcArray[] = {
 extern const EModule ModCursors;
 const EModule       ModCursors = {
    "cursor", "csr",
-   CursorSighan,
+   NULL,
    {N_IPC_FUNCS, CursorIpcArray}
    ,
    {0, NULL}

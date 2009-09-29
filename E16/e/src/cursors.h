@@ -46,4 +46,6 @@ void                ECursorApply(ECursor * ec, Win win);
 Cursor              ECsrGet(int which);
 void                ECsrApply(int which, Window win);
 
+int                 ECursorConfigLoad(FILE * fs);
+
 #endif /* _CURSORS_H_ */

@@ -27,6 +27,7 @@
 #include "borders.h"
 #include "buttons.h"
 #include "conf.h"
+#include "cursors.h"
 #include "file.h"
 #include "iclass.h"
 #include "menus.h"
@@ -337,6 +338,11 @@ ConfigFileRead(FILE * fs)
 		    case CONFIG_CLOSE:
 		       goto done;
 
+		    case CONFIG_CURSOR:
+		       err = ECursorConfigLoad(fs);
+		       if (err)
+			  ConfigAlertLoad("Cursor");
+		       break;
 		    case CONFIG_IMAGECLASS:
 		       err = ImageclassConfigLoad(fs);
 		       if (err)
@@ -545,6 +551,7 @@ ThemeConfigLoad(void)
 {
    static const char  *const config_files[] = {
       "init.cfg",
+      "cursors.cfg",
       "textclasses.cfg",
       "imageclasses.cfg",
       "desktops.cfg",
