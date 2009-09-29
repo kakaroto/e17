@@ -45,22 +45,14 @@ static _log_domain = -1;
  * @note To see this XML response, turn on debug as taught below before main().
  */
 static void
-action_response(void *data, const char *response, int response_len)
+action_response(void *data, Eina_Inlist *evented_vars)
 {
-   char *tmp = malloc(sizeof(char)*(response_len + 1));
+   INFO_D(_log_domain, "Browse response. %p", evented_vars);
 
-   if (!tmp)
-     {
-	ERROR_D(_log_domain, "Failed to copy action response.");
-	return;
-     }
+   Eupnp_Service_Action_Argument *arg;
 
-   memcpy(tmp, response, response_len);
-   tmp[response_len] = '\0';
-
-   INFO_D(_log_domain, "Browse response: %s", response);
-
-   free(tmp);
+   EINA_INLIST_FOREACH(evented_vars, arg)
+     INFO_D(_log_domain, "%s: %s", arg->name, arg->value);
 }
 
 

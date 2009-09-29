@@ -27,6 +27,7 @@
 #include <stdlib.h>
 #include <stdarg.h>
 #include <string.h>
+#include <libxml/SAX2.h>
 
 #include "Eupnp.h"
 #include "eupnp_service_proxy.h"
@@ -36,20 +37,395 @@
 #include "eupnp_service_parser.h"
 #include "eupnp_service_info.h"
 #include "eupnp_http_message.h"
+#include "eupnp_soap.h"
 #include "eupnp_private.h"
-
 
 /*
  * Private API
  */
+
+/*
+ * Appends an argument to a soap call message.
+ *
+ * FIXME The error above introduces a leak for pointer message.
+ */
+#define SOAP_ARGUMENT_APPEND(message, arg_name, arg_fmt, arg_type, arg_list) \
+	       ((asprintf(&message,                                          \
+		 "%s<%s>" arg_fmt "</%s>",                                   \
+		 message,                                                    \
+		 arg_name,                                                   \
+		 va_arg(arg_list, arg_type),                                 \
+		 arg_name) < 0) ? EINA_FALSE : EINA_TRUE)
+
+
+/*
+ * Allocates and copies 'len' characters from 'from' to 'to'.
+ *
+ * Used internally for action response XML parsing.
+ */
+#define COPY_CHARACTERS(to, from, len)                          \
+   if (!to)                                                     \
+     {                                                          \
+        to = malloc(sizeof(char)*(len+1));                      \
+	if (!to)                                                \
+	  {                                                     \
+	     ERROR_D(_action_log_dom,                           \
+	             "Could not alloc for action information"); \
+	     return;                                            \
+	  }                                                     \
+	memcpy((char *)to, from, len);                          \
+	((char *)to)[len] = '\0';                               \
+     }
+
+/*
+ * Action response XML parsing and action request structures
+ */
+
+typedef struct _Eupnp_Action_Resp_Parser_State Eupnp_Action_Resp_Parser_State;
+typedef struct _Eupnp_Action_Resp_Parser Eupnp_Action_Resp_Parser;
 typedef struct _Eupnp_Action_Request Eupnp_Action_Request;
+
+typedef enum {
+   START_,
+   INSIDE_ENVELOPE,
+   INSIDE_BODY,
+   INSIDE_ACTION_RESPONSE,
+   INSIDE_ACTION_ARG,
+   FINISH_,
+   ERROR_
+} Eupnp_Action_Resp_Parser_State_Enum;
+
+struct _Eupnp_Action_Resp_Parser_State {
+   Eupnp_Action_Resp_Parser_State_Enum state;
+   int state_skip; /* Used for skipping unknown tags */
+   Eupnp_Service_Action_Argument *arg;
+   Eina_Inlist *evented_vars;
+   xmlParserCtxtPtr ctx;
+};
+
+struct _Eupnp_Action_Resp_Parser {
+   Eupnp_Action_Resp_Parser_State state;
+   xmlSAXHandler handler;
+   xmlParserCtxtPtr ctx;
+};
 
 struct _Eupnp_Action_Request {
    Eupnp_Action_Response_Cb response_cb;
    void *data;
    Eupnp_Service_Proxy *proxy;
+   Eupnp_Action_Resp_Parser *xml_parser;
+   Eina_Inlist *evented_vars;
 };
 
+static int _action_log_dom = -1;
+
+/*
+ * Creates a new action parser state.
+ */
+static void
+eupnp_action_resp_parser_state_new(Eupnp_Action_Resp_Parser_State *s)
+{
+   s->state = START_;
+   s->state_skip = 0;
+   s->arg = NULL;
+   s->ctx = NULL;
+   s->evented_vars = NULL;
+}
+
+/*
+ * SAX callback for writing OUT arguments received on action response.
+ */
+static void
+_characters(void *state, const xmlChar *ch, int len)
+{
+   Eupnp_Action_Resp_Parser_State *s = state;
+
+   switch(s->state)
+     {
+	case INSIDE_ACTION_ARG:
+	  if (s->arg->value)
+	    {
+	       // SAX feeds us action OUT arg data progressively, concatenate.
+	       char *tmp;
+	       char *copy = NULL;
+
+	       COPY_CHARACTERS(copy, ch, len);
+
+	       if (asprintf(&tmp, "%s%s", s->arg->value, copy) < 0)
+	         {
+		    ERROR_D(_action_log_dom, "Failed to concatenate result.");
+		    free(copy);
+		    break;
+		 }
+
+	       free((char *)s->arg->value);
+	       free(copy);
+	       s->arg->value = tmp;
+	    }
+	  else
+	    // First data chunk, possibly the only one
+	    COPY_CHARACTERS(s->arg->value, ch, len);
+
+	  DEBUG_D(_action_log_dom, "Writing variable %s value: %s", s->arg->name, s->arg->value);
+	  break;
+     }
+}
+
+/*
+ * Prints action response XML parsing error to stdout.
+ *
+ * FIXME Make it print using the parser assigned logger.
+ */
+static void
+error(void *state, const char *msg, ...)
+{
+   va_list args;
+   va_start(args, msg);
+   vfprintf(stdout, msg, args);
+   va_end(args);
+}
+
+/*
+ * SAX callback for the start element event.
+ */
+static void
+start_element_ns(void *state, const xmlChar *name, const xmlChar *prefix, const xmlChar *URI, int nb_namespaces, const xmlChar **namespaces, int nb_attributes, int nb_defaulted, const xmlChar **attributes)
+{
+   DEBUG_D(_action_log_dom, "Start NS at %s, prefix=%s, uri=%s, ndefs=%d, nattrs=%d", name, prefix, URI, nb_namespaces, nb_attributes);
+
+   Eupnp_Action_Resp_Parser_State *s = state;
+
+   switch (s->state)
+     {
+	case START_:
+	  if (!strcmp(name, "Envelope"))
+	     s->state = INSIDE_ENVELOPE;
+	  else
+	     s->state = ERROR_;
+	  break;
+
+	case INSIDE_ENVELOPE:
+	  if (!strcmp(name, "Body"))
+	     s->state = INSIDE_BODY;
+	  else
+	     s->state_skip++;
+	  break;
+
+	case INSIDE_BODY:
+	  // Found the first child of body. This tag name should be action +
+	  // "Response".
+	  // TODO Check if name == action + "Response", here we're just skipping
+	  s->state = INSIDE_ACTION_RESPONSE;
+	  break;
+
+	case INSIDE_ACTION_RESPONSE:
+	  s->arg = eupnp_service_action_argument_new();
+	  s->arg->name = strdup(name);
+	  DEBUG_D(_action_log_dom, "Writing variable %s", s->arg->name);
+	  s->state = INSIDE_ACTION_ARG;
+	  break;
+
+	case INSIDE_ACTION_ARG:
+	  break;
+
+	default:
+	   s->state_skip++;
+     }
+}
+
+/*
+ * SAX callback for the end element event.
+ */
+static void
+end_element_ns(void *state, const xmlChar *name, const xmlChar *prefix, const xmlChar *URI)
+{
+   Eupnp_Action_Resp_Parser_State *s = state;
+
+   DEBUG_D(_action_log_dom, "End element at %s, prefix=%s, URI=%s", name, prefix, URI);
+
+   if (s->state_skip)
+     {
+	s->state_skip--;
+	return;
+     }
+
+   switch(s->state)
+     {
+	case INSIDE_ENVELOPE:
+	  s->state = FINISH_;
+	  break;
+
+	case INSIDE_BODY:
+	  s->state = INSIDE_ENVELOPE;
+	  break;
+
+	case INSIDE_ACTION_RESPONSE:
+	  s->state = INSIDE_BODY;
+	  break;
+
+	case INSIDE_ACTION_ARG:
+	  // Finished parsing an OUT arg, append it to the list and move
+	  // back to find more args.
+	  DEBUG_D(_action_log_dom, "Added variable %p:%s to evented vars list", s->arg, s->arg->name);
+	  s->evented_vars = eina_inlist_append(s->evented_vars, EINA_INLIST_GET(s->arg));
+	  s->arg = NULL;
+	  s->state = INSIDE_ACTION_RESPONSE;
+	  break;
+     }
+}
+
+/*
+ * Creates a new action response XML parser.
+ */
+static Eupnp_Action_Resp_Parser *
+eupnp_action_resp_parser_new(const char *first_chunk, int first_chunk_len, Eupnp_Action_Request *req)
+{
+   if (first_chunk_len < 4)
+     {
+	WARN_D(_action_log_dom, "First chunk length less than 4 chars, user must provide more than 4.");
+	return NULL;
+     }
+
+   Eupnp_Action_Resp_Parser *p;
+
+   p = malloc(sizeof(Eupnp_Action_Resp_Parser));
+
+   if (!p)
+     {
+	ERROR_D(_action_log_dom, "Failed to alloc for action resp parser");
+	return NULL;
+     }
+
+   memset(&p->handler, 0, sizeof(xmlSAXHandler));
+
+   p->handler.initialized = XML_SAX2_MAGIC;
+   p->handler.characters = &_characters;
+   p->handler.error = &error;
+   p->handler.startElementNs = &start_element_ns;
+   p->handler.endElementNs = &end_element_ns;
+
+   eupnp_action_resp_parser_state_new(&p->state);
+
+   p->ctx = xmlCreatePushParserCtxt(&p->handler, &p->state, first_chunk,
+				    first_chunk_len, NULL);
+
+   p->state.ctx = p->ctx;
+
+   /*
+    * Force first chunk parse. When not forced, the parser gets lazy on the
+    * first time and doesn't parse one-big-chunk feeds.
+    */
+   xmlParseChunk(p->ctx, NULL, 0, 0);
+
+   if (!p->ctx)
+     {
+	free(p);
+	return NULL;
+     }
+
+   return p;
+}
+
+/*
+ * Frees an action response XML parser.
+ */
+static void
+eupnp_action_resp_parser_free(Eupnp_Action_Resp_Parser *p)
+{
+   if (!p) return;
+   if (p->ctx) xmlFreeParserCtxt(p->ctx);
+   free(p);
+}
+
+/*
+ * Finishes parsing an action response.
+ */
+static Eina_Bool
+eupnp_action_resp_parse_finish(Eupnp_Action_Request *req)
+{
+   DEBUG_D(_action_log_dom, "Action resp parse finish");
+   Eupnp_Action_Resp_Parser *parser = req->xml_parser;
+
+   Eina_Bool ret;
+   ret = xmlParseChunk(parser->ctx, NULL, 0, 1);
+   req->evented_vars = parser->state.evented_vars;
+   req->xml_parser = NULL;
+   eupnp_action_resp_parser_free(parser);
+   return !ret;
+}
+
+static void
+eupnp_action_resp_parse_check_finished(Eupnp_Action_Request *req)
+{
+   Eupnp_Action_Resp_Parser *p = req->xml_parser;
+   if (p->state.state == FINISH_)
+      eupnp_action_resp_parse_finish(req);
+}
+
+/*
+ * High level action response parsing function. This function is supposed to be
+ * called progressively if you don't have all data ready at once. You can also
+ * send all data in just one call.
+ *
+ * @note Always send initially buffer_len > 4. If you do not have the required 4
+ * characters, accumulate in a buffer and send later (libxml-2 constraint).
+ */
+static Eina_Bool
+eupnp_action_resp_parse_xml_buffer(const char *buffer, int buffer_len, Eupnp_Action_Request *req)
+{
+   Eina_Bool ret = EINA_FALSE;
+   CHECK_NULL_RET_VAL(buffer, ret);
+   CHECK_NULL_RET_VAL(req, ret);
+   if (!buffer_len) return ret;
+
+   Eupnp_Action_Resp_Parser *parser = NULL;
+
+   if (!req->xml_parser)
+     {
+	req->xml_parser = eupnp_action_resp_parser_new(buffer, buffer_len, req);
+
+	if (!req->xml_parser)
+	  {
+	     ERROR_D(_action_log_dom, "Failed to parse first chunk.");
+	     goto parse_ret;
+	  }
+
+	ret = EINA_TRUE;
+	goto parse_ret;
+     }
+
+   parser = req->xml_parser;
+
+   if (!parser->ctx)
+     {
+	ERROR_D(_action_log_dom, "chunk_len < 4 case.");
+	return EINA_FALSE;
+     }
+
+   // Progressive feeds
+   if (parser->state.state == FINISH_)
+     {
+	WARN_D(_action_log_dom, "Already finished parsing");
+	ret = EINA_TRUE;
+	goto parse_ret;
+     }
+
+   DEBUG_D(_action_log_dom, "Parsing XML (%d) at %p", buffer_len, buffer);
+
+   if (!xmlParseChunk(parser->ctx, buffer, buffer_len, 1))
+     {
+	ret = EINA_TRUE;
+	goto parse_ret;
+     }
+
+   parse_ret:
+     eupnp_action_resp_parse_check_finished(req);
+     return ret;
+}
+
+/*
+ * Event notification subscription structure
+ */
 struct _Eupnp_Event_Subscriber {
    void *data;
    Eupnp_State_Variable_Event_Cb cb;
@@ -61,6 +437,9 @@ struct _Eupnp_Event_Subscriber {
    int sid_len;
 };
 
+/*
+ * Frees an event subscription structure when the subscription process is over.
+ */
 static void
 eupnp_event_subscriber_free(Eupnp_Event_Subscriber *subscriber)
 {
@@ -72,26 +451,13 @@ eupnp_event_subscriber_free(Eupnp_Event_Subscriber *subscriber)
    free(subscriber);
 }
 
-#define SOAP_ENVELOPE_BEGIN "<?xml version=\"1.0\"?><s:Envelope xmlns:s=\"http://schemas.xmlsoap.org/soap/envelope/\" s:encodingStyle=\"http://schemas.xmlsoap.org/soap/encoding/\">"
-#define SOAP_BODY_BEGIN     "<s:Body>"
-#define SOAP_BODY_END       "</s:Body>"
-#define SOAP_ENVELOPE_END   "</s:Envelope>"
-
-#define SOAP_ARGUMENT_APPEND(message, arg_name, arg_fmt, arg_type, arg_list) \
-	       ((asprintf(&message,                                          \
-		 "%s<%s>" arg_fmt "</%s>",                                   \
-		 message,                                                    \
-		 arg_name,                                                   \
-		 va_arg(arg_list, arg_type),                                 \
-		 arg_name) < 0) ? EINA_FALSE : EINA_TRUE)
-// FIXME The error above introduces a leak for pointer message.
-
 static int _eupnp_service_proxy_init_count = 0;
 static int _log_dom = -1;
 
 /*
- * Callbacks for SCPD xml download
+ * Callbacks for SCPD XML download
  */
+
 static void
 _data_ready(void *buffer, int size, void *data)
 {
@@ -146,7 +512,20 @@ _request_data_ready(void *buffer, int size, void *data)
 
    DEBUG_D(_log_dom, "Request data ready for proxy %p", proxy);
 
-   req->response_cb(req->data, buffer, size);
+   if (eupnp_action_resp_parse_xml_buffer(buffer, size, req))
+     {
+	DEBUG_D(_log_dom, "Parsed action response XML buffer successfully %p, req %p", buffer, req);
+
+	if (!req->xml_parser)
+	  {
+	     // parser == NULL means the action response XML parsing is
+	     // complete, so forward it to the user.
+	     DEBUG_D(_log_dom, "Finished parsing action response. %p", req);
+	     req->response_cb(req->data, req->evented_vars);
+	  }
+     }
+   else
+     ERROR_D(_log_dom, "Failed to parse action XML at buffer %p for proxy %p", buffer, proxy);
 }
 
 static void
@@ -268,6 +647,12 @@ eupnp_service_proxy_init(void)
 	goto log_dom_error;
      }
 
+   if ((_action_log_dom = eina_log_domain_register("Eupnp.ActionParser", EINA_COLOR_BLUE)) < 0)
+     {
+	ERROR("Failed to create logging domain for action parser module.");
+	goto log_dom_error;
+     }
+
    if (!eupnp_service_parser_init())
      {
 	ERROR("Could not initialize eupnp service parser module.");
@@ -284,6 +669,8 @@ eupnp_service_proxy_init(void)
 
    return ++_eupnp_service_proxy_init_count;
 
+   action_resp_error:
+      eupnp_event_server_shutdown();
    evt_server_error:
       eupnp_service_parser_shutdown();
    service_parser_init_error:
@@ -507,6 +894,7 @@ eupnp_service_action_argument_new(void)
    arg->direction = EUPNP_ARGUMENT_DIRECTION_IN;
    arg->related_state_variable = NULL;
    arg->retval = NULL;
+   arg->value = NULL;
 
    return arg;
 }
@@ -517,6 +905,7 @@ eupnp_service_action_argument_free(Eupnp_Service_Action_Argument *arg)
    CHECK_NULL_RET(arg);
    free((char *)arg->name);
    free(arg->retval);
+   free((char *)arg->value);
    free(arg);
 }
 
@@ -870,6 +1259,8 @@ eupnp_service_proxy_action_send(Eupnp_Service_Proxy *proxy, const char *action, 
    req->data = data;
    req->proxy = eupnp_service_proxy_ref(proxy);
    req->response_cb = response_cb;
+   req->xml_parser = NULL;
+   req->evented_vars = NULL;
 
    /* Build message body */
 

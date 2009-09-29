@@ -25,6 +25,7 @@ EUPNPHEADERS = \
 	eupnp_event_bus.h \
 	eupnp_event_server.h \
 	eupnp_core.h
+	eupnp_soap.h
 
 noinst_HEADERS = eupnp_private.h
 

@@ -217,21 +217,25 @@ on_device_gone(void *user_data, Eupnp_Event_Type event_type, void *event_data)
 void lighting_control_win_create(void);
 
 void
-check_response_cb(void *data, const char *response_data, int response_len)
+check_response_cb(void *data, Eina_Inlist *evented_vars)
 {
-   // TODO treat response message and update check button accordingly
-   DBG("Status change response.");
+   DBG("Status change response. %p", evented_vars);
+
+   Eupnp_Service_Action_Argument *arg;
+
+   EINA_INLIST_FOREACH(evented_vars, arg)
+     DBG("%s: %s", arg->name, arg->value);
 }
 
 void
-dimm_response_cb(void *data, const char *response_data, int response_len)
+dimm_response_cb(void *data, Eina_Inlist *evented_vars)
 {
-   // TODO treat response message and update check button accordingly
-   char *tmp = malloc(sizeof(char)*(response_len + 1));
-   memcpy(tmp, response_data, response_len);
-   tmp[response_len] = '\0';
-   DBG("Dimm change response. %s", tmp);
-   free(tmp);
+   DBG("Dimm change response. %p", evented_vars);
+
+   Eupnp_Service_Action_Argument *arg;
+
+   EINA_INLIST_FOREACH(evented_vars, arg)
+     DBG("%s: %s", arg->name, arg->value);
 }
 
 void
