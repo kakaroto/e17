@@ -10,18 +10,25 @@
 <h3>EFL API Docs</h3>
 <p>Generated doxygen API documentation for various libraries.</p>
   <ul>
+   <li>[<a href="http://docs.enlightenment.org/auto/ecore">Ecore</a>]</li>
+   <li>[<a href="http://docs.enlightenment.org/auto/edje">Edje</a>]</li>
+   <li>[<a href="http://docs.enlightenment.org/auto/eet">Eet</a>]</li>
+   <li>[<a href="http://docs.enlightenment.org/auto/efreet">Efreet</a>]</li>
+   <li>[<a href="http://docs.enlightenment.org/auto/eina">Eina</a>]</li>
+   <li>[<a href="http://docs.enlightenment.org/auto/elementary">Elementary</a>]</li>
+   <li>[<a href="http://docs.enlightenment.org/auto/embryo">Embryo</a>]</li>
+   <li>[<a href="http://docs.enlightenment.org/auto/epdf">Epdf</a>]</li>
+   <li>[<a href="http://docs.enlightenment.org/auto/ephoto_manager">Ephoto Manager</a>]</li>
+   <li>[<a href="http://docs.enlightenment.org/auto/ethumb">Ethumb</a>]</li>
+   <li>[<a href="http://docs.enlightenment.org/auto/evas">Evas</a>]</li>
+   <li>[<a href="http://docs.enlightenment.org/auto/evil">Evil</a>]</li>
+   <li>[<a href="http://docs.enlightenment.org/auto/exalt">Exalt</a>]</li>
+   <li>[<a href="http://docs.enlightenment.org/auto/eyelight">Eyelight</a>]</li>
+   
+   <hr>
+  
    <li>Imlib2 [<a href="http://docs.enlightenment.org/api/imlib2/html">HTML</a>] 
         [<a href="http://docs.enlightenment.org/api/imlib2/imlib2-reference.pdf">PDF</a>]</li>
-   <li>Eet [<a href="http://docs.enlightenment.org/api/eet/html">HTML</a>] 
-        [<a href="http://docs.enlightenment.org/api/eet/eet-reference.pdf">PDF</a>]</li>
-   <li>Evas [<a href="http://docs.enlightenment.org/api/evas/html">HTML</a>] 
-        [<a href="http://docs.enlightenment.org/api/evas/evas-reference.pdf">PDF</a>]</li>
-   <li>Ecore [<a href="http://docs.enlightenment.org/api/ecore/html">HTML</a>] 
-        [<a href="http://docs.enlightenment.org/api/ecore/ecore-reference.pdf">PDF</a>]</li>
-   <li>Edje [<a href="http://docs.enlightenment.org/api/edje/html">HTML</a>] 
-        [<a href="http://docs.enlightenment.org/api/edje/edje-reference.pdf">PDF</a>]</li>
-   <li>Embryo [<a href="http://docs.enlightenment.org/api/embryo/html">HTML</a>] 
-        [<a href="http://docs.enlightenment.org/api/embryo/embryo-reference.pdf">PDF</a>]</li>
    <li>Epeg [<a href="http://docs.enlightenment.org/api/epeg/html">HTML</a>] 
         [<a href="http://docs.enlightenment.org/api/epeg/epeg-reference.pdf">PDF</a>]</li>
    <li>Epsilon [<a href="http://docs.enlightenment.org/api/epsilon/html">HTML</a>] 
@@ -35,10 +42,6 @@
         [<a href="http://docs.enlightenment.org/api/emotion/emotion-reference.pdf">PDF</a>]</li>
    <li>Engrave [<a href="http://docs.enlightenment.org/api/engrave/html">HTML</a>] 
         [<a href="http://docs.enlightenment.org/api/engrave/engrave-reference.pdf">PDF</a>]</li>
-   <li>Efreet [<a href="http://docs.enlightenment.org/api/efreet/html">HTML</a>] 
-        [<a href="http://docs.enlightenment.org/api/efreet/efreet-reference.pdf">PDF</a>]</li>
-   <li>Ethumb [<a href="http://docs.enlightenment.org/api/ethumb/html">HTML</a>] 
-        [<a href="http://docs.enlightenment.org/api/ethumb/ethumb-reference.pdf">PDF</a>]</li>
   </ul>
 </div>
 </div>
