@@ -34,6 +34,279 @@
  * Private API
  */
 
+static int _eupnp_service_parser_init = 0;
+static int _log_dom = -1;
+
+static Eupnp_Service_Action *
+eupnp_service_action_new(void)
+{
+   Eupnp_Service_Action *a;
+
+   a = malloc(sizeof(Eupnp_Service_Action));
+
+   if (!a)
+     {
+	ERROR_D(_log_dom, "Could not alloc for service action");
+	return NULL;
+     }
+
+   a->name = NULL;
+   a->arguments = NULL;
+
+   return a;
+}
+
+static void
+eupnp_service_action_argument_free(Eupnp_Service_Action_Argument *arg)
+{
+   CHECK_NULL_RET(arg);
+   free((char *)arg->name);
+   free(arg->retval);
+   free((char *)arg->value);
+   free(arg);
+}
+
+void
+eupnp_service_action_free(Eupnp_Service_Action *a)
+{
+   if (!a) return;
+
+   free((char *)a->name);
+
+   if (a->arguments)
+     {
+	Eupnp_Service_Action_Argument *item;
+
+	while (item = (void *)a->arguments)
+	  {
+	     a->arguments = eina_inlist_remove(a->arguments, a->arguments);
+	     eupnp_service_action_argument_free(item);
+	  }
+     }
+
+   free(a);
+}
+
+Eupnp_Service_Action_Argument *
+eupnp_service_action_argument_new(void)
+{
+   Eupnp_Service_Action_Argument *arg;
+   arg = malloc(sizeof(Eupnp_Service_Action_Argument));
+
+   CHECK_NULL_RET_VAL(arg, NULL);
+
+   arg->name = NULL;
+   arg->direction = EUPNP_ARGUMENT_DIRECTION_IN;
+   arg->related_state_variable = NULL;
+   arg->retval = NULL;
+   arg->value = NULL;
+
+   return arg;
+}
+
+static void
+eupnp_service_action_argument_dump(const Eupnp_Service_Action_Argument *arg)
+{
+   CHECK_NULL_RET(arg);
+
+   INFO_D(_log_dom, "\t\tArgument dump");
+   INFO_D(_log_dom, "\t\t\tname: %s", arg->name);
+   INFO_D(_log_dom, "\t\t\tdirection: %d", arg->direction);
+   if (arg->related_state_variable)
+     INFO_D(_log_dom, "\t\t\trelated state var: %s", arg->related_state_variable->name);
+   INFO_D(_log_dom, "\t\t\tretval: %s", (char *)arg->retval);
+}
+
+static void
+eupnp_service_action_dump(const Eupnp_Service_Action *a)
+{
+   if (!a) return;
+
+   INFO_D(_log_dom, "\tAction dump");
+   INFO_D(_log_dom, "\t\tname: %s", a->name);
+
+   if (a->arguments)
+     {
+	Eupnp_Service_Action_Argument *arg;
+
+	EINA_INLIST_FOREACH(a->arguments, arg)
+	   eupnp_service_action_argument_dump(arg);
+     }
+}
+
+static Eupnp_State_Variable *
+eupnp_service_state_variable_new1(void)
+{
+   Eupnp_State_Variable *st;
+
+   st = malloc(sizeof(Eupnp_State_Variable));
+
+   if (!st)
+     {
+	ERROR_D(_log_dom, "Could not alloc for new state variable");
+	return NULL;
+     }
+
+   st->name = NULL;
+   st->send_events = EINA_TRUE;
+   st->data_type = EUPNP_DATA_TYPE_STRING;
+   st->default_value = NULL;
+   st->allowed_value_list = NULL;
+   st->range_min = NULL;
+   st->range_max = NULL;
+   st->range_step = NULL;
+
+   return st;
+}
+
+static Eupnp_State_Variable *
+eupnp_service_state_variable_new(const char *name, int name_len)
+{
+   Eupnp_State_Variable *st;
+
+   st = eupnp_service_state_variable_new1();
+
+   if (!st)
+     {
+	ERROR_D(_log_dom, "Could not alloc for new state variable");
+	return NULL;
+     }
+
+   st->name = malloc(sizeof(char)*(name_len+1));
+
+   if (!st->name)
+     {
+	ERROR_D(_log_dom, "Could not alloc for state var name");
+	free(st);
+	return NULL;
+     }
+
+   memcpy((char *)st->name, name, name_len);
+   ((char *)st->name)[name_len] = '\0';
+
+   return st;
+}
+
+static void
+eupnp_service_state_variable_allowed_value_free(Eupnp_State_Variable_Allowed_Value *value)
+{
+   CHECK_NULL_RET(value);
+   free((char *)value->value);
+   free(value);
+}
+
+void
+eupnp_service_state_variable_free(Eupnp_State_Variable *st)
+{
+   CHECK_NULL_RET(st);
+
+   free((char *)st->name);
+   free((char *)st->default_value);
+   free((char *)st->range_min);
+   free((char *)st->range_max);
+   free((char *)st->range_step);
+
+   if (st->allowed_value_list)
+     {
+	Eupnp_State_Variable_Allowed_Value *item;
+
+	while (item = (void *)st->allowed_value_list)
+	  {
+	     st->allowed_value_list = eina_inlist_remove(st->allowed_value_list,
+						         st->allowed_value_list);
+	     eupnp_service_state_variable_allowed_value_free(item);
+	  }
+     }
+
+   free(st);
+}
+
+static void
+eupnp_service_state_variable_dump(const Eupnp_State_Variable *st)
+{
+   CHECK_NULL_RET(st);
+
+   INFO_D(_log_dom, "\t\tState variable dump");
+   INFO_D(_log_dom, "\t\t\tname: %s", st->name);
+   INFO_D(_log_dom, "\t\t\tsendEvents: %d", st->send_events);
+   INFO_D(_log_dom, "\t\t\tdefault value: %s", (char *)st->default_value);
+   INFO_D(_log_dom, "\t\t\trange min: %s", (char *)st->range_min);
+   INFO_D(_log_dom, "\t\t\trange max: %s", (char *)st->range_max);
+   INFO_D(_log_dom, "\t\t\trange step: %s", (char *)st->range_step);
+   INFO_D(_log_dom, "\t\t\tdata type: %d", st->data_type);
+
+   if (st->allowed_value_list)
+   {
+      Eupnp_State_Variable_Allowed_Value *item;
+      INFO_D(_log_dom, "\t\t\tAllowed value list:");
+
+      EINA_INLIST_FOREACH(st->allowed_value_list, item)
+	INFO_D(_log_dom, "\t\t\t\t%s", item->value);
+   }
+}
+
+static Eina_Bool
+eupnp_service_state_variable_allowed_value_add(Eupnp_State_Variable *st, Eupnp_State_Variable_Allowed_Value *v)
+{
+   CHECK_NULL_RET_VAL(st, EINA_FALSE);
+   CHECK_NULL_RET_VAL(v, EINA_FALSE);
+
+   st->allowed_value_list = eina_inlist_append(st->allowed_value_list, EINA_INLIST_GET(v));
+
+   return EINA_TRUE;
+}
+
+static Eina_Bool
+eupnp_service_action_argument_add(Eupnp_Service_Action *action, Eupnp_Service_Action_Argument *arg)
+{
+   CHECK_NULL_RET_VAL(action, EINA_FALSE);
+   CHECK_NULL_RET_VAL(arg, EINA_FALSE);
+
+   action->arguments = eina_inlist_append(action->arguments, EINA_INLIST_GET(arg));
+
+   return EINA_TRUE;
+}
+
+static Eupnp_State_Variable_Allowed_Value *
+eupnp_service_state_variable_allowed_value_new(void)
+{
+   Eupnp_State_Variable_Allowed_Value *v;
+
+   v = malloc(sizeof(Eupnp_State_Variable_Allowed_Value));
+
+   if (!v)
+     {
+	ERROR_D(_log_dom, "Could not alloc for allowed value");
+	return NULL;
+     }
+
+   v->value = NULL;
+
+   return v;
+}
+
+static Eina_Bool
+eupnp_service_proxy_action_add(Eupnp_Service_Proxy *proxy, Eupnp_Service_Action *action)
+{
+   CHECK_NULL_RET_VAL(proxy, EINA_FALSE);
+   CHECK_NULL_RET_VAL(action, EINA_FALSE);
+
+   proxy->actions = eina_inlist_append(proxy->actions, EINA_INLIST_GET(action));
+
+   return EINA_TRUE;
+}
+
+static Eina_Bool
+eupnp_service_proxy_state_variable_add(Eupnp_Service_Proxy *proxy, Eupnp_State_Variable *st)
+{
+   CHECK_NULL_RET_VAL(proxy, EINA_FALSE);
+   CHECK_NULL_RET_VAL(st, EINA_FALSE);
+
+   proxy->state_table = eina_inlist_append(proxy->state_table, EINA_INLIST_GET(st));
+
+   return EINA_TRUE;
+}
+
 #define COPY_CHARACTERS(to, from, len)     \
    if (!to)                                \
      {                                     \
@@ -46,9 +319,6 @@
 	memcpy((char *)to, from, len);     \
 	((char *)to)[len] = '\0';          \
      }
-
-static int _eupnp_service_parser_init = 0;
-static int _log_dom = -1;
 
 static void
 _characters(void *state, const xmlChar *ch, int len)

@@ -135,40 +135,13 @@ struct _Eupnp_State_Variable_Allowed_Value {
 EAPI int                    eupnp_service_proxy_init(void);
 EAPI int                    eupnp_service_proxy_shutdown(void);
 
-EAPI Eupnp_Service_Action  *eupnp_service_action_new(void);
-EAPI void                   eupnp_service_action_free(Eupnp_Service_Action *a);
-EAPI Eina_Bool              eupnp_service_action_argument_add(Eupnp_Service_Action *action, Eupnp_Service_Action_Argument *arg);
-EAPI void                   eupnp_service_action_dump(Eupnp_Service_Action *a);
-
-EAPI Eupnp_State_Variable  *eupnp_service_state_variable_new(const char *name, int name_len);
-EAPI Eupnp_State_Variable  *eupnp_service_state_variable_new1();
-EAPI void                   eupnp_service_state_variable_free(Eupnp_State_Variable *st);
-EAPI void                   eupnp_service_state_variable_dump(Eupnp_State_Variable *st);
-EAPI Eina_Bool              eupnp_service_state_variable_allowed_value_add(Eupnp_State_Variable *st, Eupnp_State_Variable_Allowed_Value *v);
-
-EAPI Eupnp_State_Variable_Allowed_Value *eupnp_service_state_variable_allowed_value_new(void);
-EAPI void                                eupnp_service_state_variable_allowed_value_free(Eupnp_State_Variable_Allowed_Value *value);
-
-EAPI Eupnp_Service_Action_Argument   *eupnp_service_action_argument_new(void);
-EAPI void                             eupnp_service_action_argument_free(Eupnp_Service_Action_Argument *arg);
-EAPI void                             eupnp_service_action_argument_dump(Eupnp_Service_Action_Argument *arg);
-
-EAPI void                   eupnp_service_proxy_new(Eupnp_Service_Info *service, Eupnp_Service_Proxy_Ready_Cb ready_cb, void *data);
-EAPI void                   eupnp_service_proxy_free(Eupnp_Service_Proxy *proxy);
-EAPI Eupnp_Service_Proxy   *eupnp_service_proxy_ref(Eupnp_Service_Proxy *proxy);
-EAPI void                   eupnp_service_proxy_unref(Eupnp_Service_Proxy *proxy);
-EAPI void                   eupnp_service_proxy_fetch(Eupnp_Service_Proxy *proxy, const char *base_url, const char *scpd_url);
-EAPI Eina_Bool              eupnp_service_proxy_action_add(Eupnp_Service_Proxy *proxy, Eupnp_Service_Action *action);
-EAPI Eina_Bool              eupnp_service_proxy_state_variable_add(Eupnp_Service_Proxy *proxy, Eupnp_State_Variable *st);
-EAPI Eupnp_State_Variable  *eupnp_service_proxy_state_variable_get(Eupnp_Service_Proxy *proxy, const char *name, int name_len);
-EAPI void                   eupnp_service_proxy_dump(Eupnp_Service_Proxy *proxy);
-EAPI void                   eupnp_service_proxy_actions_dump(Eupnp_Service_Proxy *proxy);
-EAPI void                   eupnp_service_proxy_state_table_dump(Eupnp_Service_Proxy *proxy);
-
-EAPI Eina_Bool              eupnp_service_proxy_has_action(Eupnp_Service_Proxy *proxy, const char *action);
-EAPI Eina_Bool              eupnp_service_proxy_action_send(Eupnp_Service_Proxy *proxy, const char *action, Eupnp_Action_Response_Cb response_cb, void *data, ...);
-
-EAPI Eina_Bool               eupnp_service_proxy_has_variable(Eupnp_Service_Proxy *proxy, const char *variable_name);
+EAPI void                    eupnp_service_proxy_new(Eupnp_Service_Info *service, Eupnp_Service_Proxy_Ready_Cb ready_cb, void *data);
+EAPI Eupnp_Service_Proxy    *eupnp_service_proxy_ref(Eupnp_Service_Proxy *proxy);
+EAPI void                    eupnp_service_proxy_unref(Eupnp_Service_Proxy *proxy);
+EAPI Eupnp_State_Variable   *eupnp_service_proxy_state_variable_get(const Eupnp_Service_Proxy *proxy, const char *name, int name_len);
+EAPI Eina_Bool               eupnp_service_proxy_has_action(const Eupnp_Service_Proxy *proxy, const char *action);
+EAPI Eina_Bool               eupnp_service_proxy_has_variable(const Eupnp_Service_Proxy *proxy, const char *variable_name);
+EAPI Eina_Bool               eupnp_service_proxy_action_send(Eupnp_Service_Proxy *proxy, const char *action, Eupnp_Action_Response_Cb response_cb, void *data, ...);
 EAPI Eupnp_Event_Subscriber *eupnp_service_proxy_state_variable_events_subscribe(Eupnp_Service_Proxy *proxy, const char *var_name, Eupnp_State_Variable_Event_Cb cb, Eina_Bool auto_renew, Eina_Bool infinite_subscription, int timeout, void *data);
 EAPI Eina_Bool               eupnp_service_proxy_state_variable_events_unsubscribe(Eupnp_Event_Subscriber *subscriber);
 
