@@ -44,19 +44,22 @@
 Display            *disp;
 Root                VRoot;
 
-Window              win_main, win_title, win_exit, win_next, win_prev, win_text,
-   win_cover;
-Imlib_Image         im_text;
-Imlib_Image         im_title;
-Imlib_Image         im_prev1, im_prev2;
-Imlib_Image         im_next1, im_next2;
-Imlib_Image         im_exit1, im_exit2;
+static Window       win_main = None, win_text = None;
+static Window       win_title = None, win_exit = None;
+static Window       win_next = None, win_prev = None;
+
+static Imlib_Image  im_title = NULL;
+static Imlib_Image  im_prev1 = NULL, im_prev2 = NULL;
+static Imlib_Image  im_next1 = NULL, im_next2 = NULL;
+static Imlib_Image  im_exit1 = NULL, im_exit2 = NULL;
 
 static const char   doxdir[] = ENLIGHTENMENT_ROOT "/E-docs";
 char               *docdir = NULL;
 
 static Atom         ATOM_WM_DELETE_WINDOW = None;
 static Atom         ATOM_WM_PROTOCOLS = None;
+
+static char         show_top_bar = 1;
 
 static              Window
 FindRootWindow(Display * dpy)
@@ -322,6 +325,9 @@ main(int argc, char **argv)
       docdir = strdup(doxdir);
    s = EMALLOC(char, strlen(docdir) + strlen(docfile) + 2 + 20);
 
+   if (strstr(docdir, "/ABOUT"))
+      show_top_bar = 0;
+
    sprintf(s, "%s/%s", docdir, docfile);
    findLocalizedFile(s);
 
@@ -345,22 +351,8 @@ main(int argc, char **argv)
 
    VRootInit();
 
-   im_title = ImageLoadDox("title.png");
-   imlib_context_set_image(im_title);
-   ibd.left = 50;
-   ibd.right = 2;
-   ibd.top = 2;
-   ibd.bottom = 2;
-   imlib_image_set_border(&ibd);
+   t = (show_top_bar) ? 16 : 0;
 
-   im_prev1 = ImageLoadDox("prev1.png");
-   im_prev2 = ImageLoadDox("prev2.png");
-   im_next1 = ImageLoadDox("next1.png");
-   im_next2 = ImageLoadDox("next2.png");
-   im_exit1 = ImageLoadDox("exit1.png");
-   im_exit2 = ImageLoadDox("exit2.png");
-
-   t = 16;
    wx = (VRoot.w - w) / 2;
    wy = (VRoot.h - (h + t)) / 2;
 #ifdef USE_XINERAMA
@@ -393,39 +385,57 @@ main(int argc, char **argv)
      }
 #endif
    win_main = CreateWindow(VRoot.win, wx, wy, w, h + t);
-   win_title =
-      XCreateSimpleWindow(disp, win_main, 0, 0, (w - 64 - 64 - t), t, 0, 0, 0);
-   win_prev =
-      XCreateSimpleWindow(disp, win_main, (w - 64 - 64 - t), 0, 64, t, 0, 0, 0);
-   win_next =
-      XCreateSimpleWindow(disp, win_main, (w - 64 - 64 - t) + 64, 0, 64, t, 0,
-			  0, 0);
-   win_exit =
-      XCreateSimpleWindow(disp, win_main, (w - 64 - 64 - t) + 64 + 64, 0, t, t,
-			  0, 0, 0);
-   win_text = XCreateSimpleWindow(disp, win_main, 0, t, w, h, 0, 0, 0);
-
    XSelectInput(disp, win_main, KeyPressMask | KeyReleaseMask);
-   XSelectInput(disp, win_prev, ButtonPressMask | ButtonReleaseMask);
-   XSelectInput(disp, win_next, ButtonPressMask | ButtonReleaseMask);
-   XSelectInput(disp, win_exit, ButtonPressMask | ButtonReleaseMask);
+   win_text = XCreateSimpleWindow(disp, win_main, 0, t, w, h, 0, 0, 0);
    XSelectInput(disp, win_text, ButtonPressMask | ButtonReleaseMask |
 		PointerMotionMask);
 
    draw = XCreatePixmap(disp, win_text, w, h, VRoot.depth);
 
-   ApplyImage1(win_title, im_title);
-   ApplyImage1(win_prev, im_prev1);
-   ApplyImage1(win_next, im_next1);
-   ApplyImage1(win_exit, im_exit1);
-
    l = RenderPage(draw, pagenum, w, h);
    UPDATE_NOW;
 
-   XMapWindow(disp, win_title);
-   XMapWindow(disp, win_prev);
-   XMapWindow(disp, win_next);
-   XMapWindow(disp, win_exit);
+   if (show_top_bar)
+     {
+	win_title = XCreateSimpleWindow(disp, win_main,
+					0, 0, (w - 64 - 64 - t), t, 0, 0, 0);
+	win_prev = XCreateSimpleWindow(disp, win_main,
+				       (w - 64 - 64 - t), 0, 64, t, 0, 0, 0);
+	win_next = XCreateSimpleWindow(disp, win_main,
+				       (w - 64 - 64 - t) + 64, 0, 64, t,
+				       0, 0, 0);
+	win_exit = XCreateSimpleWindow(disp, win_main,
+				       (w - 64 - 64 - t) + 64 + 64, 0, t, t,
+				       0, 0, 0);
+	XSelectInput(disp, win_prev, ButtonPressMask | ButtonReleaseMask);
+	XSelectInput(disp, win_next, ButtonPressMask | ButtonReleaseMask);
+	XSelectInput(disp, win_exit, ButtonPressMask | ButtonReleaseMask);
+
+	im_title = ImageLoadDox("title.png");
+	imlib_context_set_image(im_title);
+	ibd.left = 50;
+	ibd.right = 2;
+	ibd.top = 2;
+	ibd.bottom = 2;
+	imlib_image_set_border(&ibd);
+
+	im_prev1 = ImageLoadDox("prev1.png");
+	im_prev2 = ImageLoadDox("prev2.png");
+	im_next1 = ImageLoadDox("next1.png");
+	im_next2 = ImageLoadDox("next2.png");
+	im_exit1 = ImageLoadDox("exit1.png");
+	im_exit2 = ImageLoadDox("exit2.png");
+
+	ApplyImage1(win_title, im_title);
+	ApplyImage1(win_prev, im_prev1);
+	ApplyImage1(win_next, im_next1);
+	ApplyImage1(win_exit, im_exit1);
+
+	XMapWindow(disp, win_title);
+	XMapWindow(disp, win_prev);
+	XMapWindow(disp, win_next);
+	XMapWindow(disp, win_exit);
+     }
    XMapWindow(disp, win_text);
    XMapWindow(disp, win_main);
 
