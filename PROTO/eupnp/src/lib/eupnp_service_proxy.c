@@ -1088,6 +1088,7 @@ eupnp_service_proxy_action_send(Eupnp_Service_Proxy *proxy, const char *action, 
 
    Eupnp_Request request;
 
+   // FIXME This strdup below introduces a leak
    request = eupnp_core_http_request_send(url,
 					  NULL,
 					  add_headers,
