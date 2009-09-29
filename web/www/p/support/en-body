@@ -1,3 +1,7 @@
+<table class='main'>
+ <tr>
+  <td class='main'>
+   <div class="main">
 <h1>Support</h1>
 
 <div class="section-plug">
@@ -61,3 +65,8 @@ and people hanging out in #e on irc.freenode.net.</p>
 
 <p>If you've found a bug in something you can report it to the <a
 href="http://trac.enlightenment.org/e/report">Bug Tracker</a>.</p>
+   </div>
+  </td>
+ </tr>
+</table>
+      
