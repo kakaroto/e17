@@ -148,6 +148,7 @@ void ephoto_table_pack(Evas_Object *obj, char *image)
 	Evas_Imaging_Image *i;
 	Evas_Object *img;
 	int w, h;
+	const char *thumb;
 
 	sd = evas_object_smart_data_get(obj);
 	
@@ -185,7 +186,13 @@ void ephoto_table_pack(Evas_Object *obj, char *image)
 	if (w > 120 || h > 120)
 	{
 		ethumb_client_file_set(em->thumb_cli, image, NULL);
-		ethumb_client_generate(em->thumb_cli, thumb_generated, img, NULL);
+		if (!ethumb_client_thumb_exists(em->thumb_cli))
+			ethumb_client_generate(em->thumb_cli, thumb_generated, img, NULL);
+		else
+                {
+                	ethumb_client_thumb_path_get(em->thumb_cli, &thumb, NULL);
+                        thumb_generated(img, em->thumb_cli, 0, image, NULL, thumb, NULL, EINA_TRUE);
+                }
 	}
 	else
 		thumb_generated(img, em->thumb_cli, 0, image, NULL, image, NULL, EINA_TRUE);
@@ -257,6 +264,7 @@ static void _table_smart_change_page(Smart_Data *sd, int direction)
 	Evas_Imaging_Image *im;
 	Evas_Object *i, *img;
         char *image, text[PATH_MAX];
+	const char *thumb;
 	int w, h, j, vis, head, back, pages, remain;
 	Eina_List *iterator, *iteratorb;
 
@@ -395,7 +403,13 @@ static void _table_smart_change_page(Smart_Data *sd, int direction)
 			if (w > 120 || h > 120)
 			{
 				ethumb_client_file_set(em->thumb_cli, image, NULL);
-				ethumb_client_generate(em->thumb_cli, thumb_generated, img, NULL);
+				if (!ethumb_client_thumb_exists(em->thumb_cli))
+                        		ethumb_client_generate(em->thumb_cli, thumb_generated, img, NULL);
+                		else
+                                {
+                                        ethumb_client_thumb_path_get(em->thumb_cli, &thumb, NULL);
+                                        thumb_generated(img, em->thumb_cli, 0, image, NULL, thumb, NULL, EINA_TRUE);
+                                }				
 			}
 			else
 				thumb_generated(img, em->thumb_cli, 0, image, NULL, image, NULL, EINA_TRUE);
@@ -423,6 +437,7 @@ static void _table_smart_reconfigure(Smart_Data *sd)
 	Evas_Imaging_Image *im;
 	Evas_Object *i, *img;
 	char *image;
+	const char *thumb;
 	int w, h, j;
 	Eina_List *iterator, *iteratorb;
 
@@ -496,7 +511,13 @@ static void _table_smart_reconfigure(Smart_Data *sd)
 			if (w > 120 || h > 120)
 			{
 				ethumb_client_file_set(em->thumb_cli, image, NULL);
-				ethumb_client_generate(em->thumb_cli, thumb_generated, img, NULL);
+				if (!ethumb_client_thumb_exists(em->thumb_cli))
+                                        ethumb_client_generate(em->thumb_cli, thumb_generated, img, NULL);
+                                else
+				{
+					ethumb_client_thumb_path_get(em->thumb_cli, &thumb, NULL);
+                                        thumb_generated(img, em->thumb_cli, 0, image, NULL, thumb, NULL, EINA_TRUE);
+                                }
 			}
 			else
 				thumb_generated(img, em->thumb_cli, 0, image, NULL, image, NULL, EINA_TRUE);
