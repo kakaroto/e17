@@ -79,21 +79,26 @@ static void thumb_generated(void *data, Ethumb_Client *client, int id, const cha
 					Eina_Bool success)
 {
 	Evas_Imaging_Image *i;
-	Evas_Object *img, *timg, *o;
+	Evas_Object *img, *edje, *o;
 	int tmiw, tmih, tmaw, tmah, w, h;
 	
 	if (success)
 	{
 		img = data;
 
+		edje = edje_object_add(em->e);
+        	edje_object_file_set(edje, PACKAGE_DATA_DIR "/themes/default/ephoto.edj", "/ephoto/thumb/image");
+        	edje_object_signal_emit(edje, "ephoto.thumb.visible", "ephoto");
+		evas_object_show(edje);
+
 		o = ephoto_image_add();
+		evas_object_event_callback_add(o, EVAS_CALLBACK_MOUSE_UP, image_clicked, img);
 		evas_object_show(o);
+		edje_object_part_swallow(edje, "ephoto.swallow.content", o);
+		edje_object_part_swallow(img, "ephoto.swallow.content", edje);
 
-		timg = ephoto_image_edje_object_get(o);
-		edje_object_part_swallow(img, "ephoto.swallow.content", timg);
-
-		edje_object_size_min_get(timg, &tmiw, &tmih);
-       		edje_object_size_max_get(timg, &tmaw, &tmah);
+		edje_object_size_min_get(edje, &tmiw, &tmih);
+       		edje_object_size_max_get(edje, &tmaw, &tmah);
 
 		i = evas_imaging_image_load(file, NULL);
 		evas_imaging_image_size_get(i, &w, &h);
@@ -105,6 +110,9 @@ static void thumb_generated(void *data, Ethumb_Client *client, int id, const cha
 	        	evas_object_resize(o, tmiw, tmih);
        		 	evas_object_size_hint_min_set(o, tmiw, tmih);
         		evas_object_size_hint_max_set(o, tmiw, tmih);
+			evas_object_resize(edje, tmiw, tmih);
+                        evas_object_size_hint_min_set(edje, tmiw, tmih);
+                        evas_object_size_hint_max_set(edje, tmiw, tmih);
 		}
 		else
 		{
@@ -113,19 +121,25 @@ static void thumb_generated(void *data, Ethumb_Client *client, int id, const cha
         	        evas_object_resize(o, tmiw, tmih);
         	        evas_object_size_hint_min_set(o, tmiw, tmih);
 	                evas_object_size_hint_max_set(o, tmiw, tmih);
+			evas_object_resize(edje, tmiw, tmih);
+                        evas_object_size_hint_min_set(edje, tmiw, tmih);
+                        evas_object_size_hint_max_set(edje, tmiw, tmih);
 		}
 	}
 }
 
 static void image_clicked(void *data, Evas *e, Evas_Object *obj, void *event_info)
 {
+	Evas_Object *img;
+
+	img = data;
+
+	if (img == em->sel)
+		return;
 	if (em->sel)
 		edje_object_signal_emit(em->sel, "ephoto.thumb.deselected", "ephoto");
-	edje_object_signal_emit(obj, "ephoto.thumb.selected", "ephoto");
-	evas_object_resize(obj, 214, 156);
-	evas_object_size_hint_min_set(obj, 214, 156);
-        evas_object_size_hint_max_set(obj, 214, 156);
-	em->sel = obj;
+	edje_object_signal_emit(img, "ephoto.thumb.selected", "ephoto");
+	em->sel = img;
 }
 
 void ephoto_table_pack(Evas_Object *obj, char *image)
@@ -159,7 +173,6 @@ void ephoto_table_pack(Evas_Object *obj, char *image)
 	edje_object_file_set(img, PACKAGE_DATA_DIR "/themes/default/ephoto.edj", "/ephoto/thumb/shadow");
 	evas_object_move(img, sd->tw, sd->th);
 	evas_object_show(img);
-	evas_object_event_callback_add(img, EVAS_CALLBACK_MOUSE_UP, image_clicked, NULL);
 	edje_object_signal_emit(img, "ephoto.thumb.visible", "ephoto");
 
 	evas_object_resize(img, sd->item_w, sd->item_h);

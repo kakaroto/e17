@@ -5,14 +5,12 @@ typedef struct _Image_Smart_Data Ephoto_Image_Smart_Data;
 
 struct _Image_Smart_Data
 {
-	Evas_Object *edje;
 	Evas_Object *image;
 	Evas_Object *border;
 	Evas_Coord x, y, w, h;
 	Evas_Object *obj;	
 	char fill_inside : 1;
 	char use_border: 1;
-	int preferredw, preferredh;
 };
 
 static void ephoto_image_smart_reconfigure(Ephoto_Image_Smart_Data *sd);
@@ -48,8 +46,6 @@ void ephoto_image_file_set(Evas_Object *obj, const char *file, int w, int h)
 	evas_object_image_file_set(sd->image, file, NULL);
 	evas_object_image_preload(sd->image, TRUE);
 	ephoto_image_smart_reconfigure(sd);
-	sd->preferredw = w;
-	sd->preferredh = h;
 }
 
 void ephoto_image_fill_inside_set(Evas_Object *obj, int fill)
@@ -66,15 +62,6 @@ void ephoto_image_fill_inside_set(Evas_Object *obj, int fill)
 	else
 		sd->fill_inside = 0;
 	ephoto_image_smart_reconfigure(sd);
-}
-
-Evas_Object *ephoto_image_edje_object_get(Evas_Object *obj)
-{
-        Ephoto_Image_Smart_Data *sd;
-
-	sd = evas_object_smart_data_get(obj);
-
-        return sd->edje;
 }
 
 void ephoto_image_size_get(Evas_Object *obj, int *w, int *h)
@@ -118,11 +105,9 @@ static void ephoto_image_smart_reconfigure(Ephoto_Image_Smart_Data *sd)
 	x = sd->x + ((sd->w - w) / 2);
 	y = sd->y + ((sd->h - h) / 2);
 
-	evas_object_move(sd->edje, x, y);
-        evas_object_resize(sd->edje, sd->preferredw, sd->preferredh);
 	evas_object_move(sd->image, x, y);
-	evas_object_image_fill_set(sd->image, 0, 0, sd->preferredw, sd->preferredh);
-	evas_object_resize(sd->image, sd->preferredw, sd->preferredh);
+	evas_object_image_fill_set(sd->image, 0, 0, w, h);
+	evas_object_resize(sd->image, w, h);
 }
 
 static void ephoto_image_smart_init(void)
@@ -160,21 +145,13 @@ ephoto_image_smart_add(Evas_Object *obj)
 	if (!sd)
 		return;
 
-	sd->edje = edje_object_add(em->e);
-        edje_object_file_set(sd->edje, PACKAGE_DATA_DIR "/themes/default/ephoto.edj", "/ephoto/thumb/image");
-        edje_object_signal_emit(sd->edje, "ephoto.thumb.visible", "ephoto");
-	evas_object_smart_member_add(sd->edje, obj);
-
-	sd->image = evas_object_image_filled_add(em->e);
+	sd->image = evas_object_image_add(em->e);
 	evas_object_image_smooth_scale_set(sd->image, TRUE);
 	sd->x = 0;
 	sd->y = 0;
 	sd->w = 0;
 	sd->h = 0;
 	sd->fill_inside = 1;
-	sd->preferredw = 0;
-	sd->preferredh = 0;
-	edje_object_part_swallow(sd->edje, "ephoto.swallow.content", sd->image);	
 	evas_object_smart_member_add(sd->image, obj);
 	evas_object_smart_data_set(obj, sd);
 }
@@ -185,7 +162,6 @@ static void ephoto_image_smart_del(Evas_Object *obj)
 
 	sd = evas_object_smart_data_get(obj);
 	evas_object_del(sd->image);
-	evas_object_del(sd->edje);
 	free(sd);
 }
 
@@ -220,7 +196,6 @@ static void ephoto_image_smart_show(Evas_Object *obj)
 	Ephoto_Image_Smart_Data *sd;
 
 	sd = evas_object_smart_data_get(obj);
-	evas_object_show(sd->edje);
 	evas_object_show(sd->image);
 }
 
@@ -229,7 +204,6 @@ static void ephoto_image_smart_hide(Evas_Object *obj)
 	Ephoto_Image_Smart_Data *sd;
 
 	sd = evas_object_smart_data_get(obj);
-	evas_object_hide(sd->edje);
 	evas_object_hide(sd->image);
 }
 
@@ -247,7 +221,7 @@ static void ephoto_image_smart_clip_set(Evas_Object *obj, Evas_Object *clip)
 	Ephoto_Image_Smart_Data *sd;
 
 	sd = evas_object_smart_data_get(obj);
-	evas_object_clip_set(sd->edje, clip);
+	evas_object_clip_set(sd->image, clip);
 }
 
 static void ephoto_image_smart_clip_unset(Evas_Object *obj)
@@ -255,5 +229,5 @@ static void ephoto_image_smart_clip_unset(Evas_Object *obj)
 	Ephoto_Image_Smart_Data *sd;
 
 	sd = evas_object_smart_data_get(obj);
-	evas_object_clip_unset(sd->edje);
+	evas_object_clip_unset(sd->image);
 }
