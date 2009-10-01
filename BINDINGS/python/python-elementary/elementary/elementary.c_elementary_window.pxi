@@ -26,7 +26,7 @@ cdef class Window(Object):
     def __init__(self, name, type):
         """
         @parm: B{name} Name of the window
-        @parm: B{type} Type of the Window 
+        @parm: B{type} Type of the Window
         """
         self._set_obj(elm_win_add(NULL, name, type))
 

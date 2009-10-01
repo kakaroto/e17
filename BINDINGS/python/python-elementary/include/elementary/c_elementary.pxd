@@ -125,8 +125,26 @@ ctypedef struct Elm_Genlist_Item_Class:
 """
 cdef extern from "Elementary.h":
     cdef struct Elm_Entry_Anchor_Info
-    cdef struct Elm_Entry_Anchorview_Info
-    cdef struct Elm_Entry_Anchorblock_Info
+    ctypedef struct Elm_Entry_Anchorview_Info:
+        char *name
+        int   button
+        evas.c_evas.Evas_Object *hover
+        evas.c_evas.Eina_Rectangle anchor, hover_parent
+        evas.c_evas.Eina_Bool hover_left
+        evas.c_evas.Eina_Bool hover_right
+        evas.c_evas.Eina_Bool hover_top
+        evas.c_evas.Eina_Bool hover_bottom
+
+    ctypedef struct Elm_Entry_Anchorblock_Info:
+        char *name
+        int   button
+        evas.c_evas.Evas_Object *hover
+        evas.c_evas.Eina_Rectangle anchor, hover_parent
+        evas.c_evas.Eina_Bool hover_left
+        evas.c_evas.Eina_Bool hover_right
+        evas.c_evas.Eina_Bool hover_top
+        evas.c_evas.Eina_Bool hover_bottom
+
     cdef struct Elm_Hoversel_Item
     cdef struct Elm_Toolbar_Item
     cdef struct Elm_List_Item
@@ -492,6 +510,12 @@ cdef extern from "Elementary.h":
     void         elm_progressbar_unit_format_set(evas.c_evas.Evas_Object *obj, char *format)
     void         elm_progressbar_value_set(evas.c_evas.Evas_Object *obj, double val)
     double       elm_progressbar_value_get(evas.c_evas.Evas_Object *obj)
+
+    # Separator
+    evas.c_evas.Evas_Object *elm_separator_add(evas.c_evas.Evas_Object *parent)
+    void elm_separator_horizontal_set(evas.c_evas.Evas_Object *obj,
+                                      evas.c_evas.Eina_Bool)
+    evas.c_evas.Eina_Bool elm_separator_horizontal_get(evas.c_evas.Evas_Object *obj)
 
     # Spinner
     evas.c_evas.Evas_Object *elm_spinner_add(evas.c_evas.Evas_Object *parent)

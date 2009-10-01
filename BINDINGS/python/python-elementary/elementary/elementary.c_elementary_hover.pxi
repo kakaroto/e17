@@ -17,26 +17,29 @@
 #
 
 cdef class Hover(Object):
-    def __init__(self, c_evas.Object parent):
-        Object.__init__(self, parent.evas)
-        self._set_obj(elm_hover_add(parent.obj))
-        
+    def __init__(self, c_evas.Object parent, obj = True):
+        if obj is None:
+            Object.__init__(self, parent.evas)
+            self._set_obj(elm_hover_add(parent.obj))
+        else:
+            self._set_obj(<c_evas.Evas_Object*>obj)
+
     property clicked:
         def __set__(self, value):
             self._callback_add("clicked",value)
-        
+
     def target_set(self, c_evas.Object target):
         elm_hover_target_set(self.obj, target.obj)
-        
+
     def parent_set(self, c_evas.Object parent):
         elm_hover_parent_set(self.obj, parent.obj)
-        
+
     def content_set(self, swallow, c_evas.Object content):
         elm_hover_content_set(self.obj, swallow, content.obj)
-        
+
     def style_set(self, style):
         elm_hover_style_set(self.obj, style)
-    
+
     def best_content_location_get(self, axis):
         cdef char* str
         str = elm_hover_best_content_location_get(self.obj, axis)

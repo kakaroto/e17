@@ -240,62 +240,62 @@ def toggles_clicked(obj, event, *args, **kargs):
     ic.show()
     
     win.show()
-    
+
 def table_clicked(obj, event, *args, **kargs):
     win = elementary.Window("table", elementary.ELM_WIN_BASIC)
     win.title_set("Table")
     win.autodel_set(True)
-    
+
     bg = elementary.Background(win)
     win.resize_object_add(bg)
     bg.size_hint_weight_set(1.0, 1.0)
     bg.show()
-    
+
     tb = elementary.Table(win)
     win.resize_object_add(tb)
     tb.size_hint_weight_set(1.0, 1.0)
     tb.show()
-    
+
     bt = elementary.Button(win)
     bt.label_set("Button 1")
     bt.size_hint_weight_set(1.0, 1.0)
     bt.size_hint_align_set(-1.0, -1.0)
     tb.pack(bt, 0, 0, 1, 1)
     bt.show()
-    
+
     bt = elementary.Button(win)
     bt.label_set("Button 2")
     bt.size_hint_weight_set(1.0, 1.0)
     bt.size_hint_align_set(-1.0, -1.0)
     tb.pack(bt, 1, 0, 1, 1)
     bt.show()
-    
+
     bt = elementary.Button(win)
     bt.label_set("Button 3")
     bt.size_hint_weight_set(1.0, 1.0)
     bt.size_hint_align_set(-1.0, -1.0)
     tb.pack(bt, 2, 0, 1, 1)
     bt.show()
-    
+
     bt = elementary.Button(win)
     bt.label_set("Button 4")
     bt.size_hint_weight_set(1.0, 1.0)
     bt.size_hint_align_set(-1.0, -1.0)
-    tb.pack(bt, 0, 1, 1, 1)
+    tb.pack(bt, 0, 1, 2, 1)
     bt.show()
     
     bt = elementary.Button(win)
     bt.label_set("Button 5")
     bt.size_hint_weight_set(1.0, 1.0)
     bt.size_hint_align_set(-1.0, -1.0)
-    tb.pack(bt, 2, 1, 1, 1)
+    tb.pack(bt, 2, 1, 1, 3)
     bt.show()
     
     bt = elementary.Button(win)
     bt.label_set("Button 6")
     bt.size_hint_weight_set(1.0, 1.0)
     bt.size_hint_align_set(-1.0, -1.0)
-    tb.pack(bt, 0, 2, 1, 1)
+    tb.pack(bt, 0, 2, 2, 2)
     bt.show()
     
     win.show()
@@ -556,12 +556,15 @@ def my_entry_bt_3(obj, event, data):
 
 def my_entry_bt_4(obj, event, data):
     data.entry_insert("Insert some <b>BOLD</> text")
-    
+
+def anchor_test(obj, event, data):
+    data.entry_insert("ANCHOR CLICKED")
+
 def entry_clicked(obj, event, *args, **kargs):
     win = elementary.Window("entry", elementary.ELM_WIN_BASIC)
     win.title_set("Entry")
     win.autodel_set(True)
-    
+
     bg = elementary.Background(win)
     win.resize_object_add(bg)
     bg.size_hint_weight_set(1.0, 1.0)
@@ -571,26 +574,26 @@ def entry_clicked(obj, event, *args, **kargs):
     win.resize_object_add(bx)
     bx.size_hint_weight_set(1.0, 1.0)
     bx.show()
-    
+
     en = elementary.Entry(win)
     en.line_wrap_set(False)
     en.entry_set("This is an entry widget in this window that<br>"
-		       "uses markup <b>like this</> for styling and<br>"
-		       "formatting <em>like this</>, as well as<br>"
-		       "<a href=X><link>links in the text</></a>, so enter text<br>"
-		       "in here to edit it. By the way, links are<br>"
-		       "called <a href=anc-02>Anchors</a> so you will need<br>"
-		       "to refer to them this way.")
+                 "uses markup <b>like this</> for styling and<br>"
+                 "formatting <em>like this</>, as well as<br>"
+                 "<a href=X><link>links in the text</></a>, so enter text<br>"
+                 "in here to edit it. By the way, links are<br>"
+                 "called <a href=anc-02>Anchors</a> so you will need<br>"
+                 "to refer to them this way.")
     en.size_hint_weight_set(1.0, 1.0)
     en.size_hint_align_set(-1.0, -1.0)
     bx.pack_end(en)
     en.show()
-    
+
     bx2 = elementary.Box(win)
-    bx.horizontal_set(True)
+    bx2.horizontal_set(True)
     bx2.size_hint_weight_set(1.0, 0.0)
     bx2.size_hint_align_set(-1.0, -1.0)
-    
+
     bt = elementary.Button(win)
     bt.label_set("Clear")
     bt.clicked = (my_entry_bt_1, en)
@@ -598,7 +601,7 @@ def entry_clicked(obj, event, *args, **kargs):
     bt.size_hint_weight_set(1.0, 0.0)
     bx2.pack_end(bt)
     bt.show()
-    
+
     bt = elementary.Button(win)
     bt.label_set("Print")
     bt.clicked = (my_entry_bt_2, en)
@@ -606,7 +609,7 @@ def entry_clicked(obj, event, *args, **kargs):
     bt.size_hint_weight_set(1.0, 0.0)
     bx2.pack_end(bt)
     bt.show()
-    
+
     bt = elementary.Button(win)
     bt.label_set("Selection")
     bt.clicked = (my_entry_bt_3, en)
@@ -614,7 +617,7 @@ def entry_clicked(obj, event, *args, **kargs):
     bt.size_hint_weight_set(1.0, 0.0)
     bx2.pack_end(bt)
     bt.show()
-    
+
     bt = elementary.Button(win)
     bt.label_set("Insert")
     bt.clicked = (my_entry_bt_4, en)
@@ -622,54 +625,166 @@ def entry_clicked(obj, event, *args, **kargs):
     bt.size_hint_weight_set(1.0, 0.0)
     bx2.pack_end(bt)
     bt.show()
-    
+
     bx.pack_end(bx2)
     bx2.show()
-    
+
     en.focus()
     win.show()
-    
+
 def entry_scrolled_clicked(obj, event, *args, **kargs):
     win = elementary.Window("entry", elementary.ELM_WIN_BASIC)
-    win.title_set("Entry")
+    win.title_set("Entry Scrolled")
     win.autodel_set(True)
-    
+
     bg = elementary.Background(win)
     win.resize_object_add(bg)
     bg.size_hint_weight_set(1.0, 1.0)
     bg.show()
 
     bx = elementary.Box(win)
-    win.resize_object_add(bx)
     bx.size_hint_weight_set(1.0, 1.0)
+    win.resize_object_add(bx)
     bx.show()
-    
+
+    sc = elementary.Scroller(win)
+    sc.content_min_limit(0, 1)
+    sc.policy_set(elementary.ELM_SCROLLER_POLICY_OFF,
+                  elementary.ELM_SCROLLER_POLICY_OFF)
+    sc.bounce_set(False, False)
+    sc.size_hint_weight_set(1.0, 0.0)
+    sc.size_hint_align_set(-1.0, -1.0)
+    bx.pack_end(sc)
+
+    en = elementary.Entry(win)
+    en.single_line_set(True)
+    en.entry_set("Disable entry")
+    en.size_hint_weight_set(1.0, 0.0)
+    en.size_hint_align_set(-1.0, 0.5)
+    en.disabled_set(True)
+    sc.content_set(en)
+    en.show()
+
+    sc.show()
+
+    sc = elementary.Scroller(win)
+    sc.content_min_limit(0, 1)
+    sc.policy_set(elementary.ELM_SCROLLER_POLICY_OFF,
+                  elementary.ELM_SCROLLER_POLICY_OFF)
+    sc.bounce_set(False, False)
+    sc.size_hint_weight_set(1.0, 0.0)
+    sc.size_hint_align_set(-1.0, -1.0)
+    bx.pack_end(sc)
+
+    en = elementary.Entry(win)
+    en.password_set(True)
+    en.entry_set("Access denied, give up!")
+    en.size_hint_weight_set(1.0, 0.0)
+    en.size_hint_align_set(-1.0, 0.5)
+    en.disabled_set(True)
+    sc.content_set(en)
+    en.show()
+
+    sc.show()
+
     sc = elementary.Scroller(win)
     sc.size_hint_weight_set(1.0, 1.0)
     sc.size_hint_align_set(-1.0, -1.0)
+    sc.policy_set(elementary.ELM_SCROLLER_POLICY_ON,
+                  elementary.ELM_SCROLLER_POLICY_ON)
+    sc.bounce_set(False, True)
     bx.pack_end(sc)
-    
+
     en = elementary.Entry(win)
-    en.line_wrap_set(False)
+    #TODO
+    #en.context_menu_item_add("Hello", None, elementary.ELM_ICON_NONE, None, None)
+    #en.context_menu_item_add("World", None, elementary.ELM_ICON_NONE, None, None)
+    en.entry_set(
+               "Multi-line disabled entry widget :)<br>"
+               "We can use markup <b>like this</> for styling and<br>"
+               "formatting <em>like this</>, as well as<br>"
+               "<a href=X><link>links in the text</></a>, but it won't be editable or clickable.")
+    en.size_hint_weight_set(1.0, 1.0)
+    en.size_hint_align_set(-1.0, -1.0)
+    en.disabled_set(True)
+    sc.content_set(en)
+    en.show()
+
+    sc.show()
+
+    sp = elementary.Separator(win)
+    sp.horizontal_set(True)
+    bx.pack_end(sp)
+    sp.show()
+
+    sc = elementary.Scroller(win)
+    sc.content_min_limit(0, 1)
+    sc.policy_set(elementary.ELM_SCROLLER_POLICY_OFF,
+                  elementary.ELM_SCROLLER_POLICY_OFF)
+    sc.bounce_set(False, False)
+    sc.size_hint_weight_set(1.0, 0.0)
+    sc.size_hint_align_set(-1.0, -1.0)
+    bx.pack_end(sc)
+
+    en = elementary.Entry(win)
+    en.single_line_set(True)
+    en.entry_set("This is a single line")
+    en.size_hint_weight_set(1.0, 0.0)
+    en.size_hint_align_set(-1.0, 0.5)
+    en.select_all()
+    sc.content_set(en)
+    en.show()
+
+    sc.show()
+
+    sc = elementary.Scroller(win)
+    sc.content_min_limit(0, 1)
+    sc.policy_set(elementary.ELM_SCROLLER_POLICY_OFF,
+                  elementary.ELM_SCROLLER_POLICY_OFF)
+    sc.bounce_set(False, False)
+    sc.size_hint_weight_set(1.0, 0.0)
+    sc.size_hint_align_set(-1.0, -1.0)
+    bx.pack_end(sc)
+
+    en = elementary.Entry(win)
+    en.password_set(True)
+    en.entry_set("Password here")
+    en.size_hint_weight_set(1.0, 0.0)
+    en.size_hint_align_set(-1.0, 0.0)
+    sc.content_set(en)
+    en.show()
+
+    sc.show()
+
+    sc = elementary.Scroller(win)
+    sc.size_hint_weight_set(1.0, 1.0)
+    sc.size_hint_align_set(-1.0, -1.0)
+    sc.policy_set(elementary.ELM_SCROLLER_POLICY_ON,
+                  elementary.ELM_SCROLLER_POLICY_ON)
+    sc.bounce_set(False, True)
+    bx.pack_end(sc)
+
+    en = elementary.Entry(win)
     en.entry_set("This is an entry widget in this window that<br>"
-		       "uses markup <b>like this</> for styling and<br>"
-		       "formatting <em>like this</>, as well as<br>"
-		       "<a href=X><link>links in the text</></a>, so enter text<br>"
-		       "in here to edit it. By the way, links are<br>"
-		       "called <a href=anc-02>Anchors</a> so you will need<br>"
-		       "to refer to them this way.")
+                "uses markup <b>like this</> for styling and<br>"
+                "formatting <em>like this</>, as well as<br>"
+                "<a href=X><link>links in the text</></a>, so enter text<br>"
+                "in here to edit it. By the way, links are<br>"
+                "called <a href=anc-02>Anchors</a> so you will need<br>"
+                "to refer to them this way. At the end here is a really long line to test line wrapping to see if it works. But just in case this line is not long enough I will add more here to really test it out, as Elementary really needs some good testing to see if entry widgets work as advertised.")
+    en._callback_add("anchor,clicked", (anchor_test, en))
     en.size_hint_weight_set(1.0, 1.0)
     en.size_hint_align_set(-1.0, -1.0)
     sc.content_set(en)
     en.show()
 
     sc.show()
-    
+
     bx2 = elementary.Box(win)
-    bx.horizontal_set(True)
+    bx2.horizontal_set(True)
     bx2.size_hint_weight_set(1.0, 0.0)
     bx2.size_hint_align_set(-1.0, -1.0)
-    
+
     bt = elementary.Button(win)
     bt.label_set("Clear")
     bt.clicked = (my_entry_bt_1, en)
@@ -677,7 +792,7 @@ def entry_scrolled_clicked(obj, event, *args, **kargs):
     bt.size_hint_weight_set(1.0, 0.0)
     bx2.pack_end(bt)
     bt.show()
-    
+
     bt = elementary.Button(win)
     bt.label_set("Print")
     bt.clicked = (my_entry_bt_2, en)
@@ -685,7 +800,7 @@ def entry_scrolled_clicked(obj, event, *args, **kargs):
     bt.size_hint_weight_set(1.0, 0.0)
     bx2.pack_end(bt)
     bt.show()
-    
+
     bt = elementary.Button(win)
     bt.label_set("Selection")
     bt.clicked = (my_entry_bt_3, en)
@@ -693,7 +808,7 @@ def entry_scrolled_clicked(obj, event, *args, **kargs):
     bt.size_hint_weight_set(1.0, 0.0)
     bx2.pack_end(bt)
     bt.show()
-    
+
     bt = elementary.Button(win)
     bt.label_set("Insert")
     bt.clicked = (my_entry_bt_4, en)
@@ -701,13 +816,15 @@ def entry_scrolled_clicked(obj, event, *args, **kargs):
     bt.size_hint_weight_set(1.0, 0.0)
     bx2.pack_end(bt)
     bt.show()
-    
+
     bx.pack_end(bx2)
     bx2.show()
-    
-    en.focus()
+
+    win.resize(320, 300)
+
+    win.focus()
     win.show()
-    
+
 
 def notepad_clicked(obj, event, *args, **kargs):
     win = elementary.Window("notepad", elementary.ELM_WIN_BASIC)
@@ -724,35 +841,255 @@ def notepad_clicked(obj, event, *args, **kargs):
     bx.size_hint_weight_set(1.0, 1.0)
     bx.show()
 
+def my_anchorview_bt(obj, event, data):
+    data.hover_end()
+
+def my_anchorview_anchor(obj, ei, av):
+    if ei:
+       bt = elementary.Button(obj)
+       bt.label_set(ei.name)
+       ei.hover.content_set("middle", bt)
+       bt.show()
+       if (ei.hover_top):
+           bx = elementary.Box(obj)
+           bt = elementary.Button(obj)
+           bt.label_set("Top 1")
+           bx.pack_end(bt)
+           bt.clicked = (my_anchorview_bt, av)
+           bt.show()
+           bt = elementary.Button(obj)
+           bt.label_set("Top 2")
+           bx.pack_end(bt)
+           bt.clicked = (my_anchorview_bt, av)
+           bt.show()
+           bt.label_set("Top 3")
+           bx.pack_end(bt)
+           bt.clicked = (my_anchorview_bt, av)
+           bt.show()
+           ei.hover.content_set("top", bx)
+           bx.show()
+       if (ei.hover_bottom):
+           bt = elementary.Button(obj)
+           bt.label_set("Bot")
+           ei.hover.content_set("bottom", bt)
+           bt.clicked = (my_anchorview_bt, av)
+           bt.show()
+       if (ei.hover_left):
+           bt = elementary.Button(obj)
+           bt.label_set("Left")
+           ei.hover.content_set("left", bt)
+           bt.clicked = (my_anchorview_bt, av)
+           bt.show()
+       if (ei.hover_right):
+           bt = elementary.Button(obj)
+           bt.label_set("Right")
+           ei.hover.content_set("right", bt)
+           bt.clicked = (my_anchorview_bt, av)
+           bt.show()
+
+
 def anchorview_clicked(obj, event, *args, **kargs):
     win = elementary.Window("anchorview", elementary.ELM_WIN_BASIC)
     win.title_set("Anchorview")
     win.autodel_set(True)
-    
+
     bg = elementary.Background(win)
     win.resize_object_add(bg)
     bg.size_hint_weight_set(1.0, 1.0)
     bg.show()
 
-    bx = elementary.Box(win)
-    win.resize_object_add(bx)
-    bx.size_hint_weight_set(1.0, 1.0)
-    bx.show()
+    av = elementary.AnchorView(win)
+    av.hover_style_set("popout")
+    av.hover_parent_set(win)
+    av.text_set("This is an entry widget in this window that<br>"
+                "uses markup <b>like this</> for styling and<br>"
+                "formatting <em>like this</>, as well as<br>"
+                "<a href=X><link>links in the text</></a>, so enter text<br>"
+                "in here to edit it. By the way, links are<br>"
+                "called <a href=anc-02>Anchors</a> so you will need<br>"
+                "to refer to them this way.")
+    av.size_hint_weight_set(1.0, 1.0)
+    av.clicked = (my_anchorview_anchor, av)
+    win.resize_object_add(av)
+    av.show()
+
+    win.resize(320, 300)
+
+    win.focus()
+    win.show()
+
+def my_anchorblock_bt(obj, event, data):
+    data.hover_end()
+
+def my_anchorblock_anchor(obj, ei, ab):
+    if ei:
+       bt = elementary.Button(obj)
+       bt.label_set(ei.name)
+       ei.hover.content_set("middle", bt)
+       bt.show()
+       if (ei.hover_top):
+           bx = elementary.Box(obj)
+           bt = elementary.Button(obj)
+           bt.label_set("Top 1")
+           bx.pack_end(bt)
+           bt.clicked = (my_anchorblock_bt, ab)
+           bt.show()
+           bt = elementary.Button(obj)
+           bt.label_set("Top 2")
+           bx.pack_end(bt)
+           bt.clicked = (my_anchorblock_bt, ab)
+           bt.show()
+           bt = elementary.Button(obj)
+           bt.label_set("Top 3")
+           bx.pack_end(bt)
+           bt.clicked = (my_anchorblock_bt, ab)
+           bt.show()
+           ei.hover.content_set("top", bx)
+           bx.show()
+       if (ei.hover_bottom):
+           bt = elementary.Button(obj)
+           bt.label_set("Bot")
+           ei.hover.content_set("bottom", bt)
+           bt.clicked = (my_anchorblock_bt, ab)
+           bt.show()
+       if (ei.hover_left):
+           bt = elementary.Button(obj)
+           bt.label_set("Left")
+           ei.hover.content_set("left", bt)
+           bt.clicked = (my_anchorblock_bt, ab)
+           bt.show()
+       if (ei.hover_right):
+           bt = elementary.Button(obj)
+           bt.label_set("Right")
+           ei.hover.content_set("right", bt)
+           bt.clicked = (my_anchorblock_bt, ab)
+           bt.show()
+
+def my_anchorblock_edge_left(obj, event, data):
+    print "left"
+def my_anchorblock_edge_right(obj, event, data):
+    print "right"
+def my_anchorblock_edge_top(obj, event, data):
+    print "top"
+def my_anchorblock_edge_bottom(obj, event, data):
+    print "bottom"
+
+def my_anchorblock_scroll(obj, event, data):
+   (x, y, w, h) = obj.region_get()
+   (vw, vh) = obj.child_size_get()
+   print "scroll %ix%i +%i+%i in %ix%i" % (w, h, x, y, vw, vh)
 
 def anchorblock_clicked(obj, event, *args, **kargs):
     win = elementary.Window("anchorblock", elementary.ELM_WIN_BASIC)
     win.title_set("Anchorblock")
     win.autodel_set(True)
-    
+
     bg = elementary.Background(win)
     win.resize_object_add(bg)
     bg.size_hint_weight_set(1.0, 1.0)
     bg.show()
 
+    sc = elementary.Scroller(win)
+    sc.size_hint_weight_set(1.0, 1.0)
+    win.resize_object_add(sc)
+
+    sc._callback_add("edge_left", my_anchorblock_edge_left)
+    sc._callback_add("edge_right", my_anchorblock_edge_right)
+    sc._callback_add("edge_top", my_anchorblock_edge_top)
+    sc._callback_add("edge_bottom", my_anchorblock_edge_bottom)
+    sc._callback_add("scroll", my_anchorblock_scroll)
+
     bx = elementary.Box(win)
-    win.resize_object_add(bx)
     bx.size_hint_weight_set(1.0, 1.0)
+    bx.size_hint_align_set(-1.0, -1.0)
+    sc.content_set(bx)
     bx.show()
+
+    ic = elementary.Icon(win)
+    ic.file_set("images/logo_small.png")
+    ic.scale_set(0, 0)
+    ic.size_hint_aspect_set(evas.EVAS_ASPECT_CONTROL_VERTICAL, 1, 1)
+
+    bb = elementary.Bubble(win)
+    bb.label_set("Message 3")
+    bb.info_set("10:32 4/11/2008")
+    bb.icon_set(ic)
+    ic.show()
+    bb.size_hint_weight_set(1.0, 0.0)
+    bb.size_hint_align_set(-1.0, -1.0)
+    ab = elementary.AnchorBlock(win)
+    ab.hover_style_set("popout")
+    ab.hover_parent_set(win)
+    ab.text_set("Hi there. This is the most recent message in the "
+                "list of messages. It has one <a href=tel:+614321234>+61 432 1234</a> "
+                "(phone number) to click on.")
+    ab.clicked = (my_anchorblock_anchor, ab)
+    bb.content_set(ab)
+    ab.show()
+    bx.pack_end(bb)
+    bb.show()
+
+    ic = elementary.Icon(win)
+    ic.file_set("images/logo_small.png")
+    ic.size_hint_aspect_set(evas.EVAS_ASPECT_CONTROL_VERTICAL, 1, 1)
+
+    bb = elementary.Bubble(win)
+    bb.label_set("Message 2")
+    bb.info_set("7:16 27/10/2008")
+    bb.icon_set(ic)
+    ic.show()
+    bb.size_hint_weight_set(1.0, 0.0)
+    bb.size_hint_align_set(-1.0, -1.0)
+    ab = elementary.AnchorBlock(win)
+    ab.hover_style_set("popout")
+    ab.hover_parent_set(win)
+    ab.text_set("Hey what are you doing? This is the second last message "
+                "Hi there. This is the most recent message in the "
+                "list. It's a longer one so it can wrap more and "
+                "contains a <a href=contact:john>John</a> contact "
+                "link in it to test popups on links. The idea is that "
+                "all SMS's are scanned for things that look like phone "
+                "numbers or names that are in your contacts list, and "
+                "if they are, they become clickable links that pop up "
+                "a menus of obvious actions to perform on this piece "
+                "of information. This of course can be later explicitly "
+                "done by links maybe running local apps or even being "
+                "web URL's too that launch the web browser and point it "
+                "to that URL.")
+    ab.clicked = (my_anchorblock_anchor, ab)
+    bb.content_set(ab)
+    ab.show()
+    bx.pack_end(bb)
+    bb.show()
+
+    ic = elementary.Icon(win)
+    ic.file_set("images/logo_small.png")
+    ic.scale_set(0, 0)
+    ic.size_hint_aspect_set(evas.EVAS_ASPECT_CONTROL_VERTICAL, 1, 1)
+
+    bb = elementary.Bubble(win)
+    bb.label_set("Message 1")
+    bb.info_set("20:47 18/6/2008")
+    bb.icon_set(ic)
+    ic.show()
+    bb.size_hint_weight_set(1.0, 0.0)
+    bb.size_hint_align_set(-1.0, -1.0)
+    ab = elementary.AnchorBlock(win)
+    ab.hover_style_set("popout")
+    ab.hover_parent_set(win)
+    ab.text_set("This is a short message")
+    ab.clicked = (my_anchorblock_anchor, ab)
+    bb.content_set(ab)
+    ab.show()
+    bx.pack_end(bb)
+    bb.show()
+
+    sc.show()
+
+    win.resize(320, 300)
+
+    win.focus()
+    win.show()
 
 def tb_1(obj, event, *args, **kargs):
     print "toolbar-item: test 1"

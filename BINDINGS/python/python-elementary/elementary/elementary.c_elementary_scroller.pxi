@@ -48,16 +48,6 @@ cdef class Scroller(Object):
         return (w, h)
 
     def bounce_set(self, h, v):
-        cdef int h_bounce
-        cdef int v_bounce
-        h_bounce = 0
-        v_bounce = 0
-        
-        if h:
-            h_bounce = 1
-        if v:
-            v_bounce = 1
-
-        elm_scroller_bounce_set(self.obj, h_bounce, v_bounce)
+        elm_scroller_bounce_set(self.obj, h, v)
 
 

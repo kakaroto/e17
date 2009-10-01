@@ -16,19 +16,15 @@
 # along with python-elementary.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-cdef object _callback_mappings
-_callback_mappings = dict()
 
-cdef void _object_callback(void *data, c_evas.Evas_Object *obj, void *event_info) with gil:
+cdef void _object_callback(void *cbt, c_evas.Evas_Object *o, void *event_info) with gil:
     try:
-        mapping = _callback_mappings.get(<long>obj,None)
-        if mapping is not None:
-            func = mapping.get(<char*>data,None)
-        
-            if not callable(func):
-                raise TypeError("func is not callable")
-        
-            func(mapping["__class__"],<char*>data, mapping.get("__data__", None))
+        (event, obj, callback, data) = <object>cbt
+        if not callable(callback):
+            raise TypeError("callback is not callable")
+        #Use old parameters order not to break existing programs
+        callback(obj, <long>event_info, data)
+        # should be: callback(data, obj, <long>event_info)
     except Exception, e:
         traceback.print_exc()
 
@@ -37,6 +33,7 @@ cdef class Canvas(evas.c_evas.Canvas):
         pass
 
 cdef class Object(evas.c_evas.Object):
+    cdef object _elmcallbacks
     """
     elementary.Object
 
@@ -45,7 +42,7 @@ cdef class Object(evas.c_evas.Object):
     """
     def scale_set(self, scale):
         elm_object_scale_set(self.obj, scale)
-        
+
     def scale_get(self):
         cdef double scale
         scale = elm_object_scale_get(self.obj)
@@ -60,23 +57,14 @@ cdef class Object(evas.c_evas.Object):
         return style
 
     def disabled_set(self, disabled):
-        if disabled:
-            elm_object_disabled_set(self.obj, 1)
-        else:
-            elm_object_disabled_set(self.obj, 0)
+        elm_object_disabled_set(self.obj, disabled)
 
     def disabled_get(self):
-        cdef int disabled
-        disabled = elm_object_disabled_get(self.obj)
-        
-        if disabled == 1:
-            return True
-       
-        return False
-    
+        return elm_object_disabled_get(self.obj)
+
     def focus(self):
         elm_object_focus(self.obj)
-    
+
     def _callback_add(self, event, args):
         """Add a callback for this object
 
@@ -86,11 +74,8 @@ cdef class Object(evas.c_evas.Object):
         @parm: B{event} Name of the event
         @parm: B{func} Function should be called, when the event occured
         """
-        
-        # implement per object event <> func list in global var _callback_mappings
-        # _object_callback looks for the object, saved in Evas_Object in the callback list
-        # and calls every func that matched the event
-        
+        cdef object cbt
+
         # if func is an array with two elements the first element is the callback
         # function and the second the data
         # This allows to assign a callback function to a widget with one line ...
@@ -100,42 +85,39 @@ cdef class Object(evas.c_evas.Object):
                 data = args[1]
         else:
             callback = args
-            
+            data = None
+
         if not callable(callback):
             raise TypeError("callback is not callable")
-        
-        mapping = _callback_mappings.get(<long>self.obj, None)
-        if mapping is None:
-            mapping = dict()
-            mapping["__class__"] =  self
-            mapping[event] = callback
-            mapping["__data__"] = data
-            _callback_mappings[<long>self.obj] = mapping
-        else:
-            mapping[event] = callback
-            _callback_mappings[<long>self.obj] = mapping
-        
+
+        cbt = (event, self, callback, data)
+        if self._elmcallbacks is None:
+            self._elmcallbacks = []
+        self._elmcallbacks.append(cbt)
         # register callback
-        e = event
-        c_evas.evas_object_smart_callback_add(self.obj, event, _object_callback, <char *>e)
-            
+        c_evas.evas_object_smart_callback_add(self.obj, event, _object_callback,
+                                              <void *>cbt)
+
     def _callback_remove(self, event):
         """Removes all callback functions for the event
-        
+
         Will remove all callback functions for the specified event. 
 
         @parm: B{event} Name of the event whose events should be removed
         """
+        if self._elmcallbacks:
+            for i, cbt in enumerate(self._elmcallbacks):
+                if cbt is not None:
+                    (ev, obj, callback, data) = <object>cbt
+                    if event == ev:
+                        c_evas.evas_object_smart_callback_del(self.obj, event,
+                                                              _object_callback)
+                        self._elmcallbacks[i] = None
 
-        mapping = _callback_mappings.get(<long>self.obj, None)
-        if mapping is not None:
-            mapping.pop(event)
-            _callback_mappings[<long>self.obj] = mapping
-            
     def _get_obj_addr(self):
         """
         Return the adress of the internal save Evas_Object
-        
+
         @return: Address of saved Evas_Object
         """
         return <long>self.obj

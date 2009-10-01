@@ -16,12 +16,6 @@
 # along with python-elementary.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-cdef object _hoversel_callback_mapping
-_hoversel_callback_mapping = dict()
-
-# TODO
-# - data handling for the hoversel item is currently missing
-
 cdef void _hoversel_callback(void *cbt, c_evas.Evas_Object *obj, void *event_info) with gil:
     (hoversel, callback, data, it) = <object>cbt
     callback(data, hoversel, it)
