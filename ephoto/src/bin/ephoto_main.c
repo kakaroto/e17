@@ -35,6 +35,8 @@ void create_main_window(void)
 static void
 window_shown(void *data, Evas *e, Evas_Object *obj, void *event_info)
 {
+	add_image_browser();
+	add_flow_view();
 	show_image_browser();
 	evas_object_event_callback_del(em->bg, EVAS_CALLBACK_SHOW, window_shown);
 }

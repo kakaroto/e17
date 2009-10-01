@@ -11,6 +11,8 @@ ephoto_SOURCES = \
 		 ephoto_main.c \
 		 ephoto_image.c \
 		 ephoto_image_browser.c \
+		 ephoto_flow.c \
+		 ephoto_flow_browser.c \
 		 ephoto_table.c
 
 ephoto_CFLAGS = @EVAS_CFLAGS@ @EDJE_CFLAGS@ @EINA_CFLAGS@ @EFREET_MIME_CFLAGS@ @ETHUMB_CFLAGS@ -Wall -g

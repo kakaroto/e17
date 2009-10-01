@@ -7,23 +7,19 @@ static Ecore_Idler *idler;
 static DIR *direc;
 
 /*Show the Image Browser*/
-void show_image_browser(void)
+void add_image_browser(void)
 {
 	Evas_Object *o;
 	int x, y, w, h;
 
 	o = edje_object_add(em->e);
 	edje_object_file_set(o, PACKAGE_DATA_DIR "/themes/default/ephoto.edj", "/ephoto/image/browser");
-	edje_object_part_swallow(em->bg, "ephoto.swallow.content", o);
-	evas_object_show(o);
 	em->image_browser = o;
 
 	edje_object_part_geometry_get(em->bg, "ephoto.swallow.content", &x, &y, &w, &h);
 
 	o = ephoto_table_add(em->e);
 	ephoto_table_padding_set(o, 20, 20);
-	ephoto_table_viewport_set(o, w, h);
-	evas_object_show(o);
 	edje_object_part_swallow(em->image_browser, "ephoto.swallow.content", o);
 	em->image_browser_tbl = o;
 
@@ -32,9 +28,22 @@ void show_image_browser(void)
         edje_object_signal_callback_add(em->image_browser, "mouse,up,1", "move_right", move_right, NULL);
 }
 
+void show_image_browser(void)
+{
+	int w, h;
+	evas_object_show(em->image_browser);
+	evas_object_show(em->image_browser_tbl);
+	edje_object_part_swallow(em->bg, "ephoto.swallow.content", em->image_browser);
+	edje_object_part_geometry_get(em->bg, "ephoto.swallow.content", 0, 0, &w, &h);
+	reshow_table_items(em->image_browser_tbl);
+	ephoto_table_viewport_set(em->image_browser_tbl, w, h);
+}
+
 void hide_image_browser(void)
 {
 	evas_object_hide(em->image_browser);
+	evas_object_hide(em->image_browser_tbl);
+	edje_object_part_unswallow(em->bg, em->image_browser);
 }
 
 static void move_left(void *data, Evas_Object *obj, const char *emission, const char *source)

@@ -47,23 +47,6 @@ static void thumb_generated(void *data, Ethumb_Client *client, int id, const cha
                                         const char *thumb_path, const char *thumb_key,
                                         Eina_Bool success);
 
-Evas_Object *ephoto_table_add(Evas *e)
-{
-	_table_smart_init();
-	return evas_object_smart_add(e, _smart);
-}
-
-void ephoto_table_padding_set(Evas_Object *obj, int paddingw, int paddingh)
-{
-	Smart_Data *sd;
-	
-	sd = evas_object_smart_data_get(obj);
-	if (!sd)
-		return;
-	sd->paddingw = paddingw;
-	sd->paddingh = paddingh;
-}
-
 static void connect_callback(void *data, Ethumb_Client *client, Eina_Bool success)
 {
 	printf("Connected to ethumb client: %d\n", success);
@@ -85,6 +68,7 @@ static void thumb_generated(void *data, Ethumb_Client *client, int id, const cha
 	if (success)
 	{
 		img = data;
+		evas_object_event_callback_add(img, EVAS_CALLBACK_MOUSE_DOWN, image_clicked, NULL);
 
 		edje = edje_object_add(em->e);
         	edje_object_file_set(edje, PACKAGE_DATA_DIR "/themes/default/ephoto.edj", "/ephoto/thumb/image");
@@ -92,7 +76,6 @@ static void thumb_generated(void *data, Ethumb_Client *client, int id, const cha
 		evas_object_show(edje);
 
 		o = ephoto_image_add();
-		evas_object_event_callback_add(o, EVAS_CALLBACK_MOUSE_UP, image_clicked, img);
 		evas_object_show(o);
 		edje_object_part_swallow(edje, "ephoto.swallow.content", o);
 		edje_object_part_swallow(img, "ephoto.swallow.content", edje);
@@ -130,16 +113,87 @@ static void thumb_generated(void *data, Ethumb_Client *client, int id, const cha
 
 static void image_clicked(void *data, Evas *e, Evas_Object *obj, void *event_info)
 {
-	Evas_Object *img;
+	Eina_List *node;
+	Evas_Event_Mouse_Down *ev;
+	Smart_Data *sd;
 
-	img = data;
+	ev = event_info;
+	sd = evas_object_smart_data_get(em->image_browser_tbl);
 
-	if (img == em->sel)
+	if (ev->flags == EVAS_BUTTON_DOUBLE_CLICK)
+	{
+		edje_object_signal_emit(em->image_browser, "ephoto.browser.hidden", "ephoto");
+		node = evas_object_data_get(obj, "image");
+		if (sd->items)
+		{
+			Eina_List *iterator;
+			Evas_Object *o, *i;;
+
+			iterator = sd->items;
+		
+			while(eina_list_data_get(iterator))
+			{
+				o = eina_list_data_get(iterator);
+				i = edje_object_part_swallow_get(o, "ephoto.swallow.content");
+				edje_object_signal_emit(i, "ephoto.thumb.hidden", "ephoto");
+				edje_object_signal_emit(o, "ephoto.thumb.hidden", "ephoto");
+				iterator = eina_list_next(iterator);
+			}
+		}
+		hide_image_browser();
+		show_flow_view(node, sd->images);
+		return;
+	}
+
+	if (obj == em->sel)
 		return;
 	if (em->sel)
 		edje_object_signal_emit(em->sel, "ephoto.thumb.deselected", "ephoto");
-	edje_object_signal_emit(img, "ephoto.thumb.selected", "ephoto");
-	em->sel = img;
+	edje_object_signal_emit(obj, "ephoto.thumb.selected", "ephoto");
+	em->sel = obj;
+}
+
+void reshow_table_items(Evas_Object *obj)
+{
+	Smart_Data *sd;
+
+	sd = evas_object_smart_data_get(obj);
+	if (!sd)
+                return;
+	if (sd->items)
+        {
+        	Eina_List *iterator;
+                Evas_Object *o, *i;;
+
+                iterator = sd->items;
+
+                while(eina_list_data_get(iterator))
+                {
+                	o = eina_list_data_get(iterator);
+                        i = edje_object_part_swallow_get(o, "ephoto.swallow.content");
+                        edje_object_signal_emit(i, "ephoto.thumb.visible", "ephoto");
+                        edje_object_signal_emit(o, "ephoto.thumb.visible", "ephoto");
+                        iterator = eina_list_next(iterator);
+                }
+         }
+}
+
+
+Evas_Object *ephoto_table_add(Evas *e)
+{
+	_table_smart_init();
+	return evas_object_smart_add(e, _smart);
+}
+
+void ephoto_table_padding_set(Evas_Object *obj, int paddingw, int paddingh)
+{
+	Smart_Data *sd;
+	
+	sd = evas_object_smart_data_get(obj);
+	if (!sd)
+		return;
+	sd->paddingw = paddingw;
+	sd->paddingh = paddingh;
 }
 
 void ephoto_table_pack(Evas_Object *obj, char *image)
@@ -151,6 +205,7 @@ void ephoto_table_pack(Evas_Object *obj, char *image)
 	const char *thumb;
 
 	sd = evas_object_smart_data_get(obj);
+
 	
 	sd->images = eina_list_append(sd->images, strdup(image));
 
@@ -175,6 +230,7 @@ void ephoto_table_pack(Evas_Object *obj, char *image)
 	evas_object_move(img, sd->tw, sd->th);
 	evas_object_show(img);
 	edje_object_signal_emit(img, "ephoto.thumb.visible", "ephoto");
+	evas_object_data_set(img, "image", eina_list_nth_list(sd->images, eina_list_count(sd->images)-1));
 
 	evas_object_resize(img, sd->item_w, sd->item_h);
         evas_object_size_hint_min_set(img, sd->item_w, sd->item_h);
@@ -392,6 +448,7 @@ static void _table_smart_change_page(Smart_Data *sd, int direction)
 			evas_object_show(img);
 			evas_object_event_callback_add(img, EVAS_CALLBACK_MOUSE_UP, image_clicked, NULL);
 			edje_object_signal_emit(img, "ephoto.thumb.visible", "ephoto");
+			evas_object_data_set(img, "image", iteratorb);
 
 			evas_object_resize(img, sd->item_w, sd->item_h);
        			evas_object_size_hint_min_set(img, sd->item_w, sd->item_h);
@@ -469,6 +526,7 @@ static void _table_smart_reconfigure(Smart_Data *sd)
 		else
 		{
 			evas_object_show(i);
+			edje_object_signal_emit(i, "ephoto.thumb.visible", "ephoto");
 			evas_object_move(i, sd->tw, sd->th);
 			edje_object_signal_emit(i, "ephoto.thumb.visible", "ephoto");
 
@@ -500,6 +558,7 @@ static void _table_smart_reconfigure(Smart_Data *sd)
 			evas_object_show(img);
 			evas_object_event_callback_add(img, EVAS_CALLBACK_MOUSE_UP, image_clicked, NULL);
 			edje_object_signal_emit(img, "ephoto.thumb.visible", "ephoto");
+			evas_object_data_set(img, "image", iteratorb);
 
 			evas_object_resize(img, sd->item_w, sd->item_h);
        			evas_object_size_hint_min_set(img, sd->item_w, sd->item_h);
@@ -672,6 +731,7 @@ static void _table_smart_show(Evas_Object *obj)
 	sd = evas_object_smart_data_get(obj);
 	if (!sd)
 		return;
+
 	evas_object_show(sd->obj);
 }
 
@@ -682,6 +742,7 @@ static void _table_smart_hide(Evas_Object *obj)
 	sd = evas_object_smart_data_get(obj);
 	if (!sd)
 		return;
+
 	evas_object_hide(sd->obj);
 }
 
