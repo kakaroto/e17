@@ -491,8 +491,13 @@ static void _table_smart_reconfigure(Smart_Data *sd)
 
 	        if (sd->visible_items+1 > sd->items_per_page)
 		{
-                	evas_object_hide(i);
-			edje_object_signal_emit(i, "ephoto.thumb.hidden", "ephoto");
+			while(eina_list_data_get(iterator) != NULL)
+			{
+				i = eina_list_data_get(iterator);
+                		evas_object_hide(i);
+				edje_object_signal_emit(i, "ephoto.thumb.hidden", "ephoto");
+				iterator = eina_list_next(iterator);
+			}
 		}
 		else
 		{
