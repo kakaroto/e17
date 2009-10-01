@@ -83,6 +83,7 @@ extern "C"
 
 extern Evas *evas;
 extern int   win_w, win_h;
+extern int   loops;
 
 void         srnd(void);
 unsigned int rnd(void);
@@ -103,7 +104,7 @@ int          engine_abort(void);
        }
 
 #define FPS_STD(x) \
-   if ((f >= LOOPS) && (!done)) \
+   if ((f >= loops) && (!done)) \
        { \
 	  double fps; \
 	  fps = (double)f / t; \

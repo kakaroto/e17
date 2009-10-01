@@ -9,6 +9,7 @@ struct _Evas_Object_Image_Preload
 
 Evas *evas = NULL;
 int win_w = 720, win_h = 420;
+int loops = LOOPS;
 
 static char *datadir = NULL;
 static int go = 1;
@@ -1172,6 +1173,11 @@ _profile_parse(int argc, char **argv)
 		  return 0;
 	       }
 	  }
+	else if ((!strcmp(argv[i], "-c")) && (i < (argc - 1)))
+          {
+             i++;
+             loops = atoi(argv[i]);
+          }
      }
    return 1;
 }
@@ -1271,6 +1277,7 @@ _engine_args(int argc, char **argv)
 		"Options:\n"
 		"  -datadir path/to/data\n"
 		"  -a (autorun all tests)\n"
+                "  -c NUM (loop count for test)\n"
                 "  -l (list tests)\n"
 		"  -t TEST-NUM\n"
 		"  -e ENGINE\n"
