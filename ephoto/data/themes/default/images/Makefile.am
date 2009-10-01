@@ -17,4 +17,5 @@ sb_runnerv.png \
 move_left.png \
 move_right.png \
 selected.png \	
-thumb_shadow.png
+thumb_shadow.png \
+left_arrow.png
