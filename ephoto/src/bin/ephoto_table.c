@@ -42,10 +42,24 @@ static void _table_smart_color_set(Evas_Object *obj, int r, int g, int b, int a)
 static void _table_smart_clip_set(Evas_Object *obj, Evas_Object *clip);
 static void _table_smart_clip_unset(Evas_Object *obj);
 
+static void move_left(void *data, Evas_Object *obj, const char *emission, const char *source);
+static void move_right(void *data, Evas_Object *obj, const char *emission, const char *source);
 static void connect_callback(void *data, Ethumb_Client *client, Eina_Bool success);
 static void thumb_generated(void *data, Ethumb_Client *client, int id, const char *file, const char *key, 
                                         const char *thumb_path, const char *thumb_key,
                                         Eina_Bool success);
+
+static void move_left(void *data, Evas_Object *obj, const char *emission, const char *source)
+{
+	ephoto_table_prev_page(em->image_browser);
+	printf("Left\n");
+}
+
+static void move_right(void *data, Evas_Object *obj, const char *emission, const char *source)
+{
+	ephoto_table_next_page(em->image_browser);
+	printf("Right\n");
+}
 
 static void connect_callback(void *data, Ethumb_Client *client, Eina_Bool success)
 {
@@ -118,28 +132,12 @@ static void image_clicked(void *data, Evas *e, Evas_Object *obj, void *event_inf
 	Smart_Data *sd;
 
 	ev = event_info;
-	sd = evas_object_smart_data_get(em->image_browser_tbl);
+	sd = evas_object_smart_data_get(em->image_browser);
 
 	if (ev->flags == EVAS_BUTTON_DOUBLE_CLICK)
 	{
 		edje_object_signal_emit(em->image_browser, "ephoto.browser.hidden", "ephoto");
 		node = evas_object_data_get(obj, "image");
-		if (sd->items)
-		{
-			Eina_List *iterator;
-			Evas_Object *o, *i;;
-
-			iterator = sd->items;
-		
-			while(eina_list_data_get(iterator))
-			{
-				o = eina_list_data_get(iterator);
-				i = edje_object_part_swallow_get(o, "ephoto.swallow.content");
-				edje_object_signal_emit(i, "ephoto.thumb.hidden", "ephoto");
-				edje_object_signal_emit(o, "ephoto.thumb.hidden", "ephoto");
-				iterator = eina_list_next(iterator);
-			}
-		}
 		hide_image_browser();
 		show_flow_view(node, sd->images);
 		return;
@@ -152,32 +150,6 @@ static void image_clicked(void *data, Evas *e, Evas_Object *obj, void *event_inf
 	edje_object_signal_emit(obj, "ephoto.thumb.selected", "ephoto");
 	em->sel = obj;
 }
-
-void reshow_table_items(Evas_Object *obj)
-{
-	Smart_Data *sd;
-
-	sd = evas_object_smart_data_get(obj);
-	if (!sd)
-                return;
-	if (sd->items)
-        {
-        	Eina_List *iterator;
-                Evas_Object *o, *i;;
-
-                iterator = sd->items;
-
-                while(eina_list_data_get(iterator))
-                {
-                	o = eina_list_data_get(iterator);
-                        i = edje_object_part_swallow_get(o, "ephoto.swallow.content");
-                        edje_object_signal_emit(i, "ephoto.thumb.visible", "ephoto");
-                        edje_object_signal_emit(o, "ephoto.thumb.visible", "ephoto");
-                        iterator = eina_list_next(iterator);
-                }
-         }
-}
-
 
 Evas_Object *ephoto_table_add(Evas *e)
 {
@@ -194,6 +166,7 @@ void ephoto_table_padding_set(Evas_Object *obj, int paddingw, int paddingh)
 		return;
 	sd->paddingw = paddingw;
 	sd->paddingh = paddingh;
+	sd->items_per_page = (sd->visiblew / (sd->item_w+sd->paddingw)) * (sd->visibleh / (sd->item_h+sd->paddingh));
 }
 
 void ephoto_table_pack(Evas_Object *obj, char *image)
@@ -205,7 +178,6 @@ void ephoto_table_pack(Evas_Object *obj, char *image)
 	const char *thumb;
 
 	sd = evas_object_smart_data_get(obj);
-
 	
 	sd->images = eina_list_append(sd->images, strdup(image));
 
@@ -220,15 +192,15 @@ void ephoto_table_pack(Evas_Object *obj, char *image)
 			pages++;
 		sd->total_pages = pages;
 		snprintf(text, PATH_MAX, "Page: %d of %d", sd->current_page, sd->total_pages);
-		edje_object_part_text_set(em->image_browser, "ephoto.text.object", text);
+		edje_object_part_text_set(sd->obj, "ephoto.text.object", text);
 
 		return;
 	}
 	
 	img = edje_object_add(em->e);
 	edje_object_file_set(img, PACKAGE_DATA_DIR "/themes/default/ephoto.edj", "/ephoto/thumb/shadow");
-	evas_object_move(img, sd->tw, sd->th);
 	evas_object_show(img);
+	evas_object_move(img, sd->tw, sd->th);
 	edje_object_signal_emit(img, "ephoto.thumb.visible", "ephoto");
 	evas_object_data_set(img, "image", eina_list_nth_list(sd->images, eina_list_count(sd->images)-1));
 
@@ -276,11 +248,10 @@ void ephoto_table_viewport_set(Evas_Object *obj, int w, int h)
 	if ((sd->visiblew == w) && (sd->visibleh == h))
 		return;
 	sd->visiblew = w;
-	sd->visibleh = h;
-	evas_object_resize(sd->obj, w, h);
-	evas_object_resize(em->image_browser, w, h);
-	sd->items_per_page = (sd->visiblew / sd->item_w) * (sd->visibleh / sd->item_h);
-	if (!eina_list_count(sd->items))
+	sd->visibleh = h;	
+	sd->items_per_page = (sd->visiblew / (sd->item_w+sd->paddingw)) * (sd->visibleh / (sd->item_h+sd->paddingh));
+	evas_object_resize(sd->obj, sd->visiblew, sd->visibleh);
+	if (!eina_list_count(sd->images))
 		return;
 
         pages = eina_list_count(sd->images)/sd->items_per_page;
@@ -292,7 +263,7 @@ void ephoto_table_viewport_set(Evas_Object *obj, int w, int h)
 	else
 		sd->total_pages = pages;
         snprintf(text, PATH_MAX, "Page: %d of %d", sd->current_page, sd->total_pages);
-        edje_object_part_text_set(em->image_browser, "ephoto.text.object", text);
+        edje_object_part_text_set(sd->obj, "ephoto.text.object", text);
 	
 	_table_smart_reconfigure(sd);
 }
@@ -367,7 +338,7 @@ static void _table_smart_change_page(Smart_Data *sd, int direction)
 		return;
 	
 	snprintf(text, PATH_MAX, "Page: %d of %d", sd->current_page, sd->total_pages);
-        edje_object_part_text_set(em->image_browser, "ephoto.text.object", text);
+        edje_object_part_text_set(sd->obj, "ephoto.text.object", text);
 
 	for (j = 0; j <= sd->items_per_page; j++)
         {
@@ -595,7 +566,6 @@ static void _table_smart_reconfigure(Smart_Data *sd)
 			iteratorb = eina_list_next(iteratorb);
 		}
 	}
-
 	return;
 }
 
@@ -620,7 +590,6 @@ static void _table_smart_init(void)
 			NULL,
 			NULL
 		};
-		em->thumb_cli = ethumb_client_connect(connect_callback, NULL, NULL);
 		_smart = evas_smart_class_new(&sc);
 	}
 }
@@ -635,8 +604,8 @@ static void _table_smart_add(Evas_Object *obj)
 	if (!sd)
 		return;
 
-	evas_object_geometry_get(em->image_browser, 0, 0, &w, &h);
-
+	edje_object_part_geometry_get(em->bg, "ephoto.swallow.content", 0, 0, &w, &h);
+	
 	sd->visiblew = w;
 	sd->visibleh = h;
 	sd->tw = 60;
@@ -652,16 +621,21 @@ static void _table_smart_add(Evas_Object *obj)
 	sd->visible_items = 0;
 	sd->total_pages = 1;
 
-	sd->obj = evas_object_rectangle_add(em->e);
-	evas_object_color_set(sd->obj, 255, 255, 255, 0);
+	sd->obj = edje_object_add(em->e);
+	edje_object_file_set(sd->obj, PACKAGE_DATA_DIR "/themes/default/ephoto.edj", "/ephoto/image/browser");
 	evas_object_smart_data_set(obj, sd);
+
+	edje_object_signal_callback_add(sd->obj, "mouse,up,1", "move_left", move_left, NULL);
+
+        edje_object_signal_callback_add(sd->obj, "mouse,up,1", "move_right", move_right, NULL);
 
 	img = edje_object_add(em->e);
         edje_object_file_set(img, PACKAGE_DATA_DIR "/themes/default/ephoto.edj", "/ephoto/thumb/shadow");
         edje_object_size_min_get(img, &sd->item_w, &sd->item_h);
 	evas_object_del(img);
 
-	sd->items_per_page = (sd->visiblew / sd->item_w) * (sd->visibleh / sd->item_h);
+	sd->items_per_page = (sd->visiblew / sd->item_w+sd->paddingw) * (sd->visibleh / sd->item_h+sd->paddingh);
+	em->thumb_cli = ethumb_client_connect(connect_callback, NULL, NULL);
 }
 
 static void _table_smart_del(Evas_Object *obj)
@@ -709,19 +683,19 @@ static void _table_smart_resize(Evas_Object *obj, Evas_Coord w, Evas_Coord h)
 	if (!sd)
 		return;
 
-	evas_object_geometry_get(em->image_browser, 0, 0, &ibw, &ibh);
+	evas_object_geometry_get(sd->obj, 0, 0, &ibw, &ibh);
 
 	if ((w == sd->w) && (h == sd->h))
 		return;
 	sd->w = w;
 	sd->h = h;
 	evas_object_resize(sd->obj, w, h);
-	if (!eina_list_count(sd->items))
+	if (!eina_list_count(sd->images))
 		return;
 	if ((ibw == sd->visiblew) && (ibh == sd->visibleh))
 		return;
 	else
-		ephoto_table_viewport_set(obj, ibw, ibh);
+		ephoto_table_viewport_set(obj, w, h);
 }
 
 static void _table_smart_show(Evas_Object *obj)
@@ -731,18 +705,28 @@ static void _table_smart_show(Evas_Object *obj)
 	sd = evas_object_smart_data_get(obj);
 	if (!sd)
 		return;
-
 	evas_object_show(sd->obj);
+	_table_smart_reconfigure(sd);
 }
 
 static void _table_smart_hide(Evas_Object *obj)
 {
+	Eina_List *iterator;
+	Evas_Object *o;
 	Smart_Data *sd;
 
 	sd = evas_object_smart_data_get(obj);
 	if (!sd)
 		return;
-
+	iterator = sd->items;
+	while (eina_list_data_get(iterator))
+	{
+		
+		o = eina_list_data_get(iterator);
+		edje_object_signal_emit(o, "ephoto.thumb.hidden", "ephoto");
+		evas_object_hide(o);
+		iterator = eina_list_next(iterator);
+	}
 	evas_object_hide(sd->obj);
 }
 

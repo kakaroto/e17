@@ -62,7 +62,6 @@ void ephoto_table_pack(Evas_Object *obj, char *image);
 void ephoto_table_viewport_set(Evas_Object *obj, int w, int h);
 void ephoto_table_next_page(Evas_Object *obj);
 void ephoto_table_prev_page(Evas_Object *obj);
-void reshow_table_items(Evas_Object *obj);
 
 typedef struct _Ephoto Ephoto;
 struct _Ephoto
@@ -72,7 +71,6 @@ struct _Ephoto
 	Ethumb_Client *thumb_cli;
 	Evas_Object *bg;
 	Evas_Object *image_browser;
-	Evas_Object *image_browser_tbl;
 	Evas_Object *flow;
 	Evas_Object *sel;
 	Eina_List *images;

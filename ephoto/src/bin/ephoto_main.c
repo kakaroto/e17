@@ -44,7 +44,8 @@ window_shown(void *data, Evas *e, Evas_Object *obj, void *event_info)
 /*The window has been closed, free and quit*/
 static void window_close(Ecore_Evas *ee)
 {
-	evas_object_del(em->image_browser_tbl);
+	evas_object_del(em->image_browser);
+	evas_object_del(em->flow);
 	if (em->images)
 		eina_list_free(em->images);
 	free(em);
