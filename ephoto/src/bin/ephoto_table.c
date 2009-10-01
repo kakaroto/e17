@@ -11,6 +11,8 @@ struct _Smart_Data
 	int visibleh;
 	int paddingw;
 	int paddingh;
+	int startx;
+	int starty;
 	int tw;
 	int th;
 	int x;
@@ -42,6 +44,7 @@ static void _table_smart_color_set(Evas_Object *obj, int r, int g, int b, int a)
 static void _table_smart_clip_set(Evas_Object *obj, Evas_Object *clip);
 static void _table_smart_clip_unset(Evas_Object *obj);
 
+static void browser_shown(void *data, Evas *e, Evas_Object *obj, void *event_info);
 static void move_left(void *data, Evas_Object *obj, const char *emission, const char *source);
 static void move_right(void *data, Evas_Object *obj, const char *emission, const char *source);
 static void connect_callback(void *data, Ethumb_Client *client, Eina_Bool success);
@@ -166,7 +169,6 @@ void ephoto_table_padding_set(Evas_Object *obj, int paddingw, int paddingh)
 		return;
 	sd->paddingw = paddingw;
 	sd->paddingh = paddingh;
-	sd->items_per_page = (sd->visiblew / sd->item_w) * (sd->visibleh / sd->item_h);
 }
 
 void ephoto_table_pack(Evas_Object *obj, char *image)
@@ -231,10 +233,10 @@ void ephoto_table_pack(Evas_Object *obj, char *image)
 
 	sd->items = eina_list_append(sd->items, img);
 
-	if (sd->tw+(sd->item_w + sd->paddingw) >= sd->visiblew)
+	if (sd->tw+sd->item_w >= sd->visiblew)
         {
                 sd->th += (sd->item_h + sd->paddingh);
-                sd->tw = 60;
+                sd->tw = sd->startx;
         }
 }	
 
@@ -250,7 +252,6 @@ void ephoto_table_viewport_set(Evas_Object *obj, int w, int h)
 	sd->visiblew = w;
 	sd->visibleh = h;	
 	sd->items_per_page = (sd->visiblew / sd->item_w) * (sd->visibleh / sd->item_h);
-	evas_object_resize(sd->obj, sd->visiblew, sd->visibleh);
 	if (!eina_list_count(sd->items))
 		return;
 
@@ -379,8 +380,8 @@ static void _table_smart_change_page(Smart_Data *sd, int direction)
 		}
        	}
 
-	sd->tw = 60;
-        sd->th = 75;
+	sd->tw = sd->startx;
+        sd->th = sd->starty;
 	sd->visible_items = 0;
 	
 	for(j =0; j <= sd->items_per_page && eina_list_data_get(iterator) != NULL; j++)
@@ -395,10 +396,10 @@ static void _table_smart_change_page(Smart_Data *sd, int direction)
 
 		sd->tw += (sd->item_w+sd->paddingw);
 
-                if (sd->tw+(sd->item_w+sd->paddingw) >= sd->visiblew)
+                if (sd->tw+sd->item_w >= sd->visiblew)
                 {
                         sd->th += (sd->item_h+sd->paddingh);
-       	        	sd->tw = 60;
+       	        	sd->tw = sd->startx;
                 }
 	
 		iterator = eina_list_next(iterator);
@@ -448,10 +449,10 @@ static void _table_smart_change_page(Smart_Data *sd, int direction)
         		
         		sd->items = eina_list_append(sd->items, img);
 
-			if (sd->tw+(sd->item_w + sd->paddingw) >= sd->visiblew)
+			if (sd->tw+sd->item_w >= sd->visiblew)
         		{
                 		sd->th += (sd->item_h + sd->paddingh);
-                		sd->tw = 60;
+                		sd->tw = sd->startx;
         		}
 			iteratorb = eina_list_next(iteratorb);
 		}
@@ -480,8 +481,8 @@ static void _table_smart_reconfigure(Smart_Data *sd)
                 iteratorb = eina_list_nth_list(sd->images, sd->current_head);
        	}
 
-	sd->tw = 60;
-	sd->th = 75;
+	sd->tw = sd->startx;
+	sd->th = sd->starty;
 
 	sd->visible_items = 0;
 
@@ -510,10 +511,10 @@ static void _table_smart_reconfigure(Smart_Data *sd)
 
 			sd->tw += (sd->item_w+sd->paddingw);
 
-                	if (sd->tw+(sd->item_w+sd->paddingw) >= sd->visiblew)
+                	if (sd->tw+sd->item_w >= sd->visiblew)
                 	{
                         	sd->th += (sd->item_h+sd->paddingh);
-                		sd->tw = 60;
+                		sd->tw = sd->startx;
                 	}
 		}
 		iterator = eina_list_next(iterator);
@@ -563,10 +564,10 @@ static void _table_smart_reconfigure(Smart_Data *sd)
         		
         		sd->items = eina_list_append(sd->items, img);
 
-			if (sd->tw+(sd->item_w + sd->paddingw) >= sd->visiblew)
+			if (sd->tw+sd->item_w >= sd->visiblew)
         		{
                 		sd->th += (sd->item_h + sd->paddingh);
-                		sd->tw = 60;
+                		sd->tw = sd->startx;
         		}
 			iteratorb = eina_list_next(iteratorb);
 		}
@@ -602,7 +603,6 @@ static void _table_smart_init(void)
 static void _table_smart_add(Evas_Object *obj)
 {
 	Smart_Data *sd;
-	Evas_Object *img;
 	int w, h;
 
 	sd = calloc(1, sizeof(Smart_Data));
@@ -629,18 +629,35 @@ static void _table_smart_add(Evas_Object *obj)
 	sd->obj = edje_object_add(em->e);
 	edje_object_file_set(sd->obj, PACKAGE_DATA_DIR "/themes/default/ephoto.edj", "/ephoto/image/browser");
 	evas_object_smart_data_set(obj, sd);
+	evas_object_event_callback_add(sd->obj, EVAS_CALLBACK_SHOW, browser_shown, sd);
+}
+
+static void browser_shown(void *data, Evas *e, Evas_Object *obj, void *event_info)
+{
+	Evas_Object *img;
+	Smart_Data *sd;
+	int ibx, iby, ibw, ibh;
+
+	sd = data;
 
 	edje_object_signal_callback_add(sd->obj, "mouse,up,1", "ephoto.move.left", move_left, NULL);
 
         edje_object_signal_callback_add(sd->obj, "mouse,up,1", "ephoto.move.right", move_right, NULL);
 
-	img = edje_object_add(em->e);
+	edje_object_part_geometry_get(sd->obj, "ephoto.thumb.area", &ibx, &iby, &ibw, &ibh);
+
+	sd->visiblew = ibw;
+	sd->visibleh = ibh;
+	sd->startx = ibx;
+	sd->starty = iby;
+
+        img = edje_object_add(em->e);
         edje_object_file_set(img, PACKAGE_DATA_DIR "/themes/default/ephoto.edj", "/ephoto/thumb/shadow");
         edje_object_size_min_get(img, &sd->item_w, &sd->item_h);
-	evas_object_del(img);
+        evas_object_del(img);
 
-	sd->items_per_page = (sd->visiblew / sd->item_w) * (sd->visibleh / sd->item_h);
-	em->thumb_cli = ethumb_client_connect(connect_callback, NULL, NULL);
+        sd->items_per_page = (sd->visiblew / sd->item_w) * (sd->visibleh / sd->item_h);
+        em->thumb_cli = ethumb_client_connect(connect_callback, NULL, NULL);
 }
 
 static void _table_smart_del(Evas_Object *obj)
@@ -682,13 +699,13 @@ static void _table_smart_move(Evas_Object *obj, Evas_Coord x, Evas_Coord y)
 static void _table_smart_resize(Evas_Object *obj, Evas_Coord w, Evas_Coord h)
 {
 	Smart_Data *sd;
-	int ibw, ibh;
+	int ibw, ibh, ibx, iby;
 	
 	sd = evas_object_smart_data_get(obj);
 	if (!sd)
 		return;
 
-	evas_object_geometry_get(sd->obj, 0, 0, &ibw, &ibh);
+	edje_object_part_geometry_get(sd->obj, "ephoto.thumb.area", &ibx, &iby, &ibw, &ibh);
 
 	if ((w == sd->w) && (h == sd->h))
 		return;
@@ -697,10 +714,13 @@ static void _table_smart_resize(Evas_Object *obj, Evas_Coord w, Evas_Coord h)
 	evas_object_resize(sd->obj, w, h);
 	if (!eina_list_count(sd->images))
 		return;
-	if ((ibw == sd->visiblew) && (ibh == sd->visibleh))
+	if ((ibw == sd->visiblew) && (ibh == sd->visibleh) &&
+		(ibx == sd->startx) && (iby == sd->starty))
 		return;
 	else
-		ephoto_table_viewport_set(obj, w, h);
+		sd->startx = ibx;
+		sd->starty = iby;
+		ephoto_table_viewport_set(obj, ibw, ibh);
 }
 
 static void _table_smart_show(Evas_Object *obj)

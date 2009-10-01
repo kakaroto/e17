@@ -85,6 +85,22 @@ collections
 		{
 			part
 			{
+				name: "ephoto.thumb.area";
+				type: RECT;
+                                mouse_events: 1;
+                                description
+                                {
+                                        state: "default" 0.0;
+                                        visible: 1;
+                                        rel1.relative: 0.0 0.0;
+                                        rel1.offset: 30 75;
+                                        rel2.relative: 1.0 1.0;
+                                        rel2.offset: -5 -1;
+                                        color: 255 255 255 0;
+                                }
+                        }
+			part
+			{
 				name: "ephoto.text.object";
 				type: TEXTBLOCK;
 				mouse_events: 1;

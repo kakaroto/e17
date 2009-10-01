@@ -14,7 +14,7 @@ void create_main_window(void)
 	em = calloc(1, sizeof(Ephoto));
 	em->sel = NULL;
 
-	em->ee = ecore_evas_software_x11_new(0, 0, 0, 0, 950, 530);
+	em->ee = ecore_evas_software_x11_new(0, 0, 0, 0, 920, 530);
 	ecore_evas_title_set(em->ee, "Ephoto");
 	ecore_evas_name_class_set(em->ee, "Ephoto", "Ephoto");
 	ecore_evas_callback_destroy_set(em->ee, window_close);
@@ -26,7 +26,7 @@ void create_main_window(void)
 	em->bg = edje_object_add(em->e);
 	edje_object_file_set(em->bg, PACKAGE_DATA_DIR "/themes/default/ephoto.edj", 
 						"/ephoto/window/background");
-	evas_object_resize(em->bg, 950, 530);
+	evas_object_resize(em->bg, 920, 530);
 	evas_object_move(em->bg, 0, 0);
 	evas_object_event_callback_add(em->bg, EVAS_CALLBACK_SHOW, window_shown, NULL);
 	evas_object_show(em->bg);
