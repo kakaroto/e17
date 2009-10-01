@@ -17,7 +17,7 @@
 #
 
 cdef class Hover(Object):
-    def __init__(self, c_evas.Object parent, obj = True):
+    def __init__(self, c_evas.Object parent, obj = None):
         if obj is None:
             Object.__init__(self, parent.evas)
             self._set_obj(elm_hover_add(parent.obj))
