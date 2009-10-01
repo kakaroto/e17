@@ -17,10 +17,11 @@ void add_image_browser(void)
 void show_image_browser(void)
 {
 	int w, h;
-	evas_object_show(em->image_browser);
+
 	edje_object_part_swallow(em->bg, "ephoto.swallow.content", em->image_browser);
 	edje_object_part_geometry_get(em->bg, "ephoto.swallow.content", 0, 0, &w, &h);
 	ephoto_table_viewport_set(em->image_browser, w, h);
+	evas_object_show(em->image_browser);
 }
 
 void hide_image_browser(void)

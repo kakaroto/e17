@@ -166,7 +166,7 @@ void ephoto_table_padding_set(Evas_Object *obj, int paddingw, int paddingh)
 		return;
 	sd->paddingw = paddingw;
 	sd->paddingh = paddingh;
-	sd->items_per_page = (sd->visiblew / (sd->item_w+sd->paddingw)) * (sd->visibleh / (sd->item_h+sd->paddingh));
+	sd->items_per_page = (sd->visiblew / sd->item_w) * (sd->visibleh / sd->item_h);
 }
 
 void ephoto_table_pack(Evas_Object *obj, char *image)
@@ -249,9 +249,9 @@ void ephoto_table_viewport_set(Evas_Object *obj, int w, int h)
 		return;
 	sd->visiblew = w;
 	sd->visibleh = h;	
-	sd->items_per_page = (sd->visiblew / (sd->item_w+sd->paddingw)) * (sd->visibleh / (sd->item_h+sd->paddingh));
+	sd->items_per_page = (sd->visiblew / sd->item_w) * (sd->visibleh / sd->item_h);
 	evas_object_resize(sd->obj, sd->visiblew, sd->visibleh);
-	if (!eina_list_count(sd->images))
+	if (!eina_list_count(sd->items))
 		return;
 
         pages = eina_list_count(sd->images)/sd->items_per_page;
@@ -634,7 +634,7 @@ static void _table_smart_add(Evas_Object *obj)
         edje_object_size_min_get(img, &sd->item_w, &sd->item_h);
 	evas_object_del(img);
 
-	sd->items_per_page = (sd->visiblew / sd->item_w+sd->paddingw) * (sd->visibleh / sd->item_h+sd->paddingh);
+	sd->items_per_page = (sd->visiblew / sd->item_w) * (sd->visibleh / sd->item_h);
 	em->thumb_cli = ethumb_client_connect(connect_callback, NULL, NULL);
 }
 
