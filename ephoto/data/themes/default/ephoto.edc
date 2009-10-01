@@ -93,9 +93,9 @@ collections
                                         state: "default" 0.0;
                                         visible: 1;
                                         rel1.relative: 0.0 0.0;
-                                        rel1.offset: 30 75;
+                                        rel1.offset: 27 75;
                                         rel2.relative: 1.0 1.0;
-                                        rel2.offset: -5 -1;
+                                        rel2.offset: -27 -1;
                                         color: 255 255 255 0;
                                 }
                         }
