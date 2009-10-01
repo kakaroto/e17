@@ -251,7 +251,7 @@ void ephoto_table_viewport_set(Evas_Object *obj, int w, int h)
 		return;
 	sd->visiblew = w;
 	sd->visibleh = h;	
-	sd->items_per_page = (sd->visiblew / (sd->item_w+sd->paddingw)) * (sd->visibleh / (sd->item_h+sd->paddingh));
+	sd->items_per_page = (sd->visiblew / (sd->item_w+sd->paddingw+3)) * (sd->visibleh / (sd->item_h+sd->paddingh));
 	if (!eina_list_count(sd->items))
 		return;
 
@@ -656,7 +656,7 @@ static void browser_shown(void *data, Evas *e, Evas_Object *obj, void *event_inf
         edje_object_size_min_get(img, &sd->item_w, &sd->item_h);
         evas_object_del(img);
 
-        sd->items_per_page = (sd->visiblew / (sd->item_w+sd->paddingw)) * (sd->visibleh / (sd->item_h+sd->paddingh));
+        sd->items_per_page = (sd->visiblew / (sd->item_w+sd->paddingw+3)) * (sd->visibleh / (sd->item_h+sd->paddingh));
         em->thumb_cli = ethumb_client_connect(connect_callback, NULL, NULL);
 }
 
