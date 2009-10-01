@@ -625,9 +625,9 @@ static void _table_smart_add(Evas_Object *obj)
 	edje_object_file_set(sd->obj, PACKAGE_DATA_DIR "/themes/default/ephoto.edj", "/ephoto/image/browser");
 	evas_object_smart_data_set(obj, sd);
 
-	edje_object_signal_callback_add(sd->obj, "mouse,up,1", "move_left", move_left, NULL);
+	edje_object_signal_callback_add(sd->obj, "mouse,up,1", "ephoto.move.left", move_left, NULL);
 
-        edje_object_signal_callback_add(sd->obj, "mouse,up,1", "move_right", move_right, NULL);
+        edje_object_signal_callback_add(sd->obj, "mouse,up,1", "ephoto.move.right", move_right, NULL);
 
 	img = edje_object_add(em->e);
         edje_object_file_set(img, PACKAGE_DATA_DIR "/themes/default/ephoto.edj", "/ephoto/thumb/shadow");

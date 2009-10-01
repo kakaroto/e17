@@ -158,11 +158,11 @@ static void _flow_smart_add(Evas_Object *obj)
         edje_object_file_set(sd->obj, PACKAGE_DATA_DIR "/themes/default/ephoto.edj", "/ephoto/flow/view");
 	evas_object_smart_data_set(obj, sd);
 
-	edje_object_signal_callback_add(sd->obj, "mouse,up,1", "move_left", move_left, sd);
+	edje_object_signal_callback_add(sd->obj, "mouse,up,1", "ephoto.move.left", move_left, sd);
 
-        edje_object_signal_callback_add(sd->obj, "mouse,up,1", "move_right", move_right, sd);
+        edje_object_signal_callback_add(sd->obj, "mouse,up,1", "ephoto.move.right", move_right, sd);
 
-	edje_object_signal_callback_add(sd->obj, "mouse,up,1", "back", go_back, sd);
+	edje_object_signal_callback_add(sd->obj, "mouse,up,1", "ephoto.move.back", go_back, sd);
 
 	sd->center_image = ephoto_image_add();
 	edje_object_part_swallow(sd->obj, "ephoto.swallow.content", sd->center_image);	
