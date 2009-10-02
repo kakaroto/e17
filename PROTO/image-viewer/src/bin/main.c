@@ -230,7 +230,9 @@ static void
 iv_file_free(IV_File *file)
 {
    eina_stringshare_del(file->file_path);
+#ifdef HAVE_ETHUMB
    eina_stringshare_del(file->thumb_path);
+#endif
    free(file);
 }
 
@@ -1751,8 +1753,10 @@ iv_free(IV *iv)
    EINA_LIST_FREE(iv->file_monitors, monitor)
       ecore_file_monitor_del(monitor);
 
+#ifdef HAVE_ETHUMB
    if (iv->preview_files)
      eina_list_free(iv->preview_files);
+#endif
 
    eina_stringshare_del(iv->theme_file);
 
