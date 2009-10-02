@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2009-09-28 22:44+0800\n"
+"POT-Creation-Date: 2009-10-02 17:52+0200\n"
 "PO-Revision-Date: 2009-07-28 14:01+0000\n"
 "Last-Translator: Yentl <y.v.t@scarlet.be>\n"
 "Language-Team: Dutch <nl@li.org>\n"
@@ -16,12 +16,12 @@ msgstr ""
 "X-Launchpad-Export-Date: 2009-09-28 14:05+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 
-#: ../src/about.c:35
+#: src/about.c:35
 #, c-format
 msgid "About Enlightenment e16 version %s"
 msgstr "Over enlightenment e16 versie %s"
 
-#: ../src/about.c:46
+#: src/about.c:46
 #, c-format
 msgid ""
 "Welcome to Enlightenment e16\n"
@@ -44,14 +44,13 @@ msgstr ""
 "Mandrake - mandrake@mandrake.net\n"
 "Kim Woelders - kim@woelders.dk\n"
 
-#: ../src/aclass.c:211 ../src/backgrounds.c:236 ../src/borders.c:641
-#: ../src/buttons.c:181 ../src/cursors.c:131 ../src/iclass.c:338
-#: ../src/tclass.c:113 ../src/tooltips.c:135
+#: src/aclass.c:211 src/backgrounds.c:236 src/borders.c:641 src/buttons.c:181
+#: src/cursors.c:131 src/iclass.c:338 src/tclass.c:113 src/tooltips.c:135
 #, c-format
 msgid "%u references remain\n"
 msgstr "%u verwijzingen blijven over\n"
 
-#: ../src/actions.c:109
+#: src/actions.c:109
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -64,7 +63,7 @@ msgstr ""
 "Dit programma kon niet uitgevoerd worden.\n"
 "Dit omdat het bestand niet bestaat.\n"
 
-#: ../src/actions.c:115
+#: src/actions.c:115
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -83,7 +82,7 @@ msgstr ""
 "U de documentatie voor uw sheel bekijkt hoe U het pad voor\n"
 "uivoerbare programma's moet aanpassen.\n"
 
-#: ../src/actions.c:134
+#: src/actions.c:134
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -100,7 +99,7 @@ msgstr ""
 "en U bent gerechtigd om het uit te voeren. Ik suggereer dat\n"
 "U hier naar kijkt.\n"
 
-#: ../src/actions.c:144
+#: src/actions.c:144
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -115,7 +114,7 @@ msgstr ""
 "De reden hiervoor is dat het bestand bestaat, maar U kan het\n"
 "niet uitvoeren omdat U geen uitvoer rechten voor het bestand heeft.\n"
 
-#: ../src/actions.c:157
+#: src/actions.c:157
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -128,7 +127,7 @@ msgstr ""
 "Dit programma kon niet uitgevoerd worden.\n"
 "De reden hiervoor is dat het bestand in werkelijkheid een directory is.\n"
 
-#: ../src/actions.c:164
+#: src/actions.c:164
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -141,7 +140,7 @@ msgstr ""
 "Dit programma kon niet uitgevoerd worden.\n"
 "Dit is omdat het bestand geen gewoon bestand is.\n"
 
-#: ../src/actions.c:189
+#: src/actions.c:189
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -150,36 +149,36 @@ msgstr ""
 "Er was een fout bij het uitvoeren van het programma:\n"
 "%s\n"
 
-#: ../src/alert.c:210
+#: src/alert.c:210
 msgid "Enlightenment Error"
 msgstr "Enlightenment fout"
 
-#: ../src/alert.c:569
+#: src/alert.c:569
 msgid "Enlightenment Message Dialog"
 msgstr "Enlightenment Bericht Dialoog"
 
-#: ../src/alert.c:569
+#: src/alert.c:569
 msgid "Ignore this"
 msgstr "Negeer dit"
 
-#: ../src/alert.c:570
+#: src/alert.c:570
 msgid "Restart Enlightenment"
 msgstr "Herstart Enlightenment"
 
-#: ../src/alert.c:570 ../src/setup.c:168
+#: src/alert.c:570 src/setup.c:168
 msgid "Quit Enlightenment"
 msgstr "Stop Enlightenment"
 
-#: ../src/alert.c:583
+#: src/alert.c:583
 msgid "Attention !!!"
 msgstr "Attentie !!!!"
 
-#: ../src/alert.c:583 ../src/dialog.c:844 ../src/dialog.c:2032
-#: ../src/events.c:87 ../src/setup.c:157 ../src/sound.c:310
+#: src/alert.c:583 src/dialog.c:844 src/dialog.c:2032 src/events.c:87
+#: src/setup.c:157 src/sound.c:310
 msgid "OK"
 msgstr "OK"
 
-#: ../src/backgrounds.c:1517
+#: src/backgrounds.c:1517
 #, c-format
 msgid ""
 "Background definition information:\n"
@@ -190,11 +189,11 @@ msgstr ""
 "Naam    : %s\n"
 "Bestand : %s\n"
 
-#: ../src/backgrounds.c:1518
+#: src/backgrounds.c:1518
 msgid "-NONE-"
 msgstr "-GEEN-"
 
-#: ../src/backgrounds.c:1691 ../src/backgrounds.c:1693
+#: src/backgrounds.c:1691 src/backgrounds.c:1693
 msgid ""
 "No\n"
 "Background"
@@ -202,40 +201,40 @@ msgstr ""
 "Nee\n"
 "Achtergrond"
 
-#: ../src/backgrounds.c:1787 ../src/backgrounds.c:2217
+#: src/backgrounds.c:1787 src/backgrounds.c:2217
 #, c-format
 msgid "Unused backgrounds freed after %2i:%02i:%02i"
 msgstr "Ongebruikte achtergronden verwijderd na %2i:%02i:%02i"
 
-#: ../src/backgrounds.c:2003
+#: src/backgrounds.c:2003
 msgid "Use background image"
 msgstr "Gebruik achtergrond plaatje"
 
-#: ../src/backgrounds.c:2007
+#: src/backgrounds.c:2007
 msgid "Keep aspect on scale"
 msgstr "Bewaar verhoudingen bij schalen"
 
-#: ../src/backgrounds.c:2011
+#: src/backgrounds.c:2011
 msgid "Tile image across background"
 msgstr "Plaats plaatjes naast elkaar op achtergrond"
 
-#: ../src/backgrounds.c:2020
+#: src/backgrounds.c:2020
 msgid "Move to Front\n"
 msgstr "Verplaats naar voren\n"
 
-#: ../src/backgrounds.c:2025
+#: src/backgrounds.c:2025
 msgid "Duplicate\n"
 msgstr "Dupliceer\n"
 
-#: ../src/backgrounds.c:2029
+#: src/backgrounds.c:2029
 msgid "Unlist\n"
 msgstr "Haal uit de lijst\n"
 
-#: ../src/backgrounds.c:2034
+#: src/backgrounds.c:2034
 msgid "Delete File\n"
 msgstr "Verwijder bestand\n"
 
-#: ../src/backgrounds.c:2045
+#: src/backgrounds.c:2045
 msgid ""
 "Background\n"
 "Image\n"
@@ -249,59 +248,59 @@ msgstr ""
 "en\n"
 "Plaatsing\n"
 
-#: ../src/backgrounds.c:2102
+#: src/backgrounds.c:2102
 msgid "BG Colour\n"
 msgstr "Achtergrond kleur\n"
 
-#: ../src/backgrounds.c:2107
+#: src/backgrounds.c:2107
 msgid "Red:\n"
 msgstr "Rood:\n"
 
-#: ../src/backgrounds.c:2118
+#: src/backgrounds.c:2118
 msgid "Green:\n"
 msgstr "Groen:\n"
 
-#: ../src/backgrounds.c:2129
+#: src/backgrounds.c:2129
 msgid "Blue:\n"
 msgstr "Blauw:\n"
 
-#: ../src/backgrounds.c:2162
+#: src/backgrounds.c:2162
 msgid "Pre-scan BG's"
 msgstr "Prescan Achtergronden"
 
-#: ../src/backgrounds.c:2170
+#: src/backgrounds.c:2170
 msgid "Sort by File"
 msgstr "Sorteer op bestand"
 
-#: ../src/backgrounds.c:2175
+#: src/backgrounds.c:2175
 msgid "Sort by Attr."
 msgstr "Sorteer op attribuut"
 
-#: ../src/backgrounds.c:2181
+#: src/backgrounds.c:2181
 msgid "Sort by Image"
 msgstr "Sorteer op plaatje"
 
-#: ../src/backgrounds.c:2201
+#: src/backgrounds.c:2201
 msgid "Use dithering in Hi-Colour"
 msgstr "Gebruik dithering in Hi-Color"
 
-#: ../src/backgrounds.c:2205
+#: src/backgrounds.c:2205
 msgid "Background overrides theme"
 msgstr "Achtergrond overruled thema"
 
-#: ../src/backgrounds.c:2210
+#: src/backgrounds.c:2210
 msgid "Enable background transparency compatibility mode"
 msgstr "Achtergrondtransparantie compabiliteitsmodus inschakelen"
 
-#: ../src/backgrounds.c:2234 ../src/mod-trans.c:204
+#: src/backgrounds.c:2234 src/mod-trans.c:204
 msgid "Background"
 msgstr "Achtergrond"
 
-#: ../src/backgrounds.c:2235
+#: src/backgrounds.c:2235
 msgid "Desktop Background Settings"
 msgstr "Desktop Achtergrond Instellingen"
 
-#: ../src/backgrounds.c:2238
+#: src/backgrounds.c:2238
 msgid ""
 "Enlightenment Desktop\n"
 "Background Settings Dialog\n"
@@ -309,11 +308,11 @@ msgstr ""
 "Enlightenment Bureaublad\n"
 "Achtergrond Instellingen Dialoog\n"
 
-#: ../src/comms.c:240
+#: src/comms.c:240
 msgid "E IPC Error"
 msgstr "Enlightenment Inter Process Communication fout"
 
-#: ../src/comms.c:241
+#: src/comms.c:241
 #, c-format
 msgid ""
 "Received Unknown Client Message.\n"
@@ -330,17 +329,17 @@ msgstr ""
 "\n"
 "%s\n"
 
-#: ../src/config.c:197 ../src/config.c:297
+#: src/config.c:198 src/config.c:298
 #, c-format
 msgid "CONFIG: ignoring extra data in \"%s\"\n"
 msgstr "CONFIGURATIE: negeer extra gegevens in \"%s\"\n"
 
-#: ../src/config.c:205 ../src/config.c:304
+#: src/config.c:206 src/config.c:305
 #, c-format
 msgid "CONFIG: missing required data in \"%s\"\n"
 msgstr "CONFIGURATIE: benodigde gegevens ontbreken in \"%s\"\n"
 
-#: ../src/config.c:215
+#: src/config.c:216
 #, c-format
 msgid ""
 "Warning: unable to determine what to do with\n"
@@ -353,7 +352,7 @@ msgstr ""
 "%s\n"
 "Zal dit negeren en verdergaan...\n"
 
-#: ../src/config.c:223
+#: src/config.c:224
 #, c-format
 msgid ""
 "Warning:  Configuration error in %s block.\n"
@@ -362,19 +361,19 @@ msgstr ""
 "Waarschuwing: Configuratiefout in %s blok.\n"
 "Verdere verloop is waarschijnlijk niet goed.\n"
 
-#: ../src/config.c:313
+#: src/config.c:314
 msgid "Theme versioning ERROR"
 msgstr "Thema versie fout"
 
-#: ../src/config.c:314
+#: src/config.c:315
 msgid "Restart with Defaults"
 msgstr "Herstarten met standaard instellingen"
 
-#: ../src/config.c:315
+#: src/config.c:316
 msgid "Abort and Exit"
 msgstr "Afbreken en afsluiten"
 
-#: ../src/config.c:316
+#: src/config.c:317
 #, c-format
 msgid ""
 "ERROR:\n"
@@ -412,121 +411,121 @@ msgstr ""
 "van enkele nieuwe voordelen/functies van Enlightenment in \n"
 "de nieuwere versies.\n"
 
-#: ../src/config.c:578
+#: src/config.c:585
 msgid "Enlightenment Starting..."
 msgstr "Enlightenment start op"
 
-#: ../src/container.c:1186
+#: src/container.c:1186
 msgid "Settings..."
 msgstr "Instellingen..."
 
-#: ../src/container.c:1190 ../src/dialog.c:856 ../src/pager.c:1013
-#: ../config/strings.c:30 ../config/strings.c:124
+#: src/container.c:1190 src/dialog.c:856 src/pager.c:1013 config/strings.c:30
+#: config/strings.c:124
 msgid "Close"
 msgstr "Sluit"
 
-#: ../src/container.c:1195 ../config/strings.c:85
+#: src/container.c:1195 config/strings.c:85
 msgid "Create New Iconbox"
 msgstr "Maak een nieuwe Icoonbox"
 
-#: ../src/container.c:1499 ../src/container.c:1572
+#: src/container.c:1499 src/container.c:1572
 #, c-format
 msgid "Icon size: %2d"
 msgstr "Icoon grootte: %2d"
 
-#: ../src/container.c:1536
+#: src/container.c:1536
 msgid "Transparent background"
 msgstr "Transparante achtergrond"
 
-#: ../src/container.c:1540
+#: src/container.c:1540
 msgid "Hide inner border"
 msgstr "Binnenste rand verbergen"
 
-#: ../src/container.c:1544
+#: src/container.c:1544
 msgid "Draw base image behind Icons"
 msgstr "Teken basisplaatje achter iconen"
 
-#: ../src/container.c:1548
+#: src/container.c:1548
 msgid "Hide scrollbar when not needed"
 msgstr "Toon geen scrollbar als niet nodig"
 
-#: ../src/container.c:1552
+#: src/container.c:1552
 msgid "Automatically resize to fit Icons"
 msgstr "Grootte automatisch aanpassen om iconen te bevatten"
 
-#: ../src/container.c:1559
+#: src/container.c:1559
 msgid "Alignment of anchoring when automatically resizing:"
 msgstr "Plaatsing van ankers als automatisch grootte aanpassen"
 
-#: ../src/container.c:1590
+#: src/container.c:1590
 msgid "Orientation:"
 msgstr "Orientatie:"
 
-#: ../src/container.c:1595
+#: src/container.c:1595
 msgid "Scrollbar side:"
 msgstr "Scrollbar kant:"
 
-#: ../src/container.c:1600
+#: src/container.c:1600
 msgid "Scrollbar arrows:"
 msgstr "Scrollbar pijltjes"
 
-#: ../src/container.c:1603
+#: src/container.c:1603
 msgid "Horizontal"
 msgstr "Horizontaal"
 
-#: ../src/container.c:1608
+#: src/container.c:1608
 msgid "Left / Top"
 msgstr "Links/Boven"
 
-#: ../src/container.c:1613
+#: src/container.c:1613
 msgid "Start"
 msgstr "Start"
 
-#: ../src/container.c:1618
+#: src/container.c:1618
 msgid "Vertical"
 msgstr "Vertikaal"
 
-#: ../src/container.c:1624
+#: src/container.c:1624
 msgid "Right / Bottom"
 msgstr "Rechts/Onder"
 
-#: ../src/container.c:1630
+#: src/container.c:1630
 msgid "Both ends"
 msgstr "Beide zijden"
 
-#: ../src/container.c:1638
+#: src/container.c:1638
 msgid "End"
 msgstr "Einde"
 
-#: ../src/container.c:1646 ../src/focus.c:841
+#: src/container.c:1646 src/focus.c:841
 msgid "None"
 msgstr "Geen"
 
-#: ../src/container.c:1656
+#: src/container.c:1656
 msgid "Show icon names"
 msgstr "Toon icoon namen"
 
-#: ../src/container.c:1660
+#: src/container.c:1660
 msgid "Animate when iconifying to this Iconbox"
 msgstr "Animeer wanneer naar deze icconbox geminimaliseerd wordt"
 
-#: ../src/container.c:1670
+#: src/container.c:1670
 msgid "Icon image display policy (if one operation fails, try the next):"
 msgstr "Icoon plaatje instellingen (als de ene niet gaat, probeer volgende):"
 
-#: ../src/container.c:1675
+#: src/container.c:1675
 msgid "Snapshot Windows, Use application icon, Use Enlightenment Icon"
 msgstr "Snapshot venster, Applicatie icoon, Enlightenment icoon"
 
-#: ../src/container.c:1682
+#: src/container.c:1682
 msgid "Use application icon, Use Enlightenment Icon, Snapshot Window"
 msgstr "Applicatie icoon, Enlightenment icoon, Snapshot venster"
 
-#: ../src/container.c:1687
+#: src/container.c:1687
 msgid "Use Enlightenment Icon, Snapshot Window"
 msgstr "Enlightenment icoon, Snapshot venster"
 
-#: ../src/container.c:1700
+#: src/container.c:1700
 msgid ""
 "Enlightenment Iconbox\n"
 "Settings Dialog\n"
@@ -534,12 +533,12 @@ msgstr ""
 "Enlightenment icoonvenster\n"
 "Instellingendialoog\n"
 
-#: ../src/coords.c:74
+#: src/coords.c:74
 #, c-format
 msgid "Focused/unfocused opacity: %d/%d %%"
 msgstr "Gefocust/ongefocuste doorzichtigheid: %d/%d %%"
 
-#: ../src/desktops.c:124
+#: src/desktops.c:124
 msgid ""
 "Hold down the mouse button and drag\n"
 "the mouse to be able to drag the desktop\n"
@@ -557,7 +556,7 @@ msgstr ""
 "Klik op de middelste muisknop voor een lijst\n"
 "van de applicaties die nu draaien.\n"
 
-#: ../src/desktops.c:135
+#: src/desktops.c:135
 msgid ""
 "This is the Root desktop.\n"
 "You cannot drag the root desktop around.\n"
@@ -573,7 +572,7 @@ msgstr ""
 "Klik met de muisknop om een lijst van alle\n"
 "programma's te krijgen die nu actief zijn.\n"
 
-#: ../src/desktops.c:153
+#: src/desktops.c:153
 msgid ""
 "Click here to raise this desktop\n"
 "to the top.\n"
@@ -581,7 +580,7 @@ msgstr ""
 "Klik hier om deze desktop naar\n"
 "boven te brengen\n"
 
-#: ../src/desktops.c:165
+#: src/desktops.c:165
 msgid ""
 "Click here to lower this desktop\n"
 "to the bottom.\n"
@@ -589,57 +588,55 @@ msgstr ""
 "Klik hier om deze desktop naar\n"
 "beneden te brengen\n"
 
-#: ../src/desktops.c:2323
+#: src/desktops.c:2323
 msgid "Number of virtual desktops:\n"
 msgstr "Aantal virtuele desktops:\n"
 
-#: ../src/desktops.c:2348
+#: src/desktops.c:2348
 msgid "Slide desktops around when changing"
 msgstr "Schuif desktops bij veranderen"
 
-#: ../src/desktops.c:2354
+#: src/desktops.c:2354
 msgid "Desktop Slide speed:\n"
 msgstr "Bureaublad Glijsnelheid:\n"
 
-#: ../src/desktops.c:2368
+#: src/desktops.c:2368
 msgid "Wrap desktops around"
 msgstr "Bureaubladen rondwikkelen"
 
-#: ../src/desktops.c:2376
+#: src/desktops.c:2376
 msgid "Display desktop dragbar"
 msgstr "Toon de desktop sleurstrip"
 
-#: ../src/desktops.c:2382
+#: src/desktops.c:2382
 msgid "Drag bar position:"
 msgstr "Sleurstrip positie:"
 
-#: ../src/desktops.c:2386
+#: src/desktops.c:2386
 msgid "Top"
 msgstr "Boven"
 
-#: ../src/desktops.c:2392
+#: src/desktops.c:2392
 msgid "Bottom"
 msgstr "Onder"
 
-#: ../src/desktops.c:2398 ../src/pager.c:1924 ../src/pager.c:1949
-#: ../src/pager.c:1974
+#: src/desktops.c:2398 src/pager.c:1924 src/pager.c:1949 src/pager.c:1974
 msgid "Left"
 msgstr "Links"
 
-#: ../src/desktops.c:2404 ../src/pager.c:1936 ../src/pager.c:1961
-#: ../src/pager.c:1986
+#: src/desktops.c:2404 src/pager.c:1936 src/pager.c:1961 src/pager.c:1986
 msgid "Right"
 msgstr "Rechts"
 
-#: ../src/desktops.c:2412 ../src/menus-misc.c:582
+#: src/desktops.c:2412 src/menus-misc.c:582
 msgid "Desks"
 msgstr "Bureau's"
 
-#: ../src/desktops.c:2413
+#: src/desktops.c:2413
 msgid "Multiple Desktop Settings"
 msgstr "Meerdere Desktop Instellingen"
 
-#: ../src/desktops.c:2416
+#: src/desktops.c:2416
 msgid ""
 "Enlightenment Multiple Desktop\n"
 "Settings Dialog\n"
@@ -647,43 +644,43 @@ msgstr ""
 "Enlightenment Meerdere Bureaubladen\n"
 "Instellingendialoog\n"
 
-#: ../src/desktops.c:2507
+#: src/desktops.c:2507
 msgid "Virtual Desktop size:\n"
 msgstr "Virtuele Desktop grootte:\n"
 
-#: ../src/desktops.c:2543
+#: src/desktops.c:2543
 msgid "Wrap virtual desktops around"
 msgstr "Wikkel virtuele bureaubladen rond"
 
-#: ../src/desktops.c:2550
+#: src/desktops.c:2550
 msgid "Edge Flip Mode:"
 msgstr "Rand Flip Mode:"
 
-#: ../src/desktops.c:2553
+#: src/desktops.c:2553
 msgid "Off"
 msgstr "Uitgeschakeld"
 
-#: ../src/desktops.c:2558
+#: src/desktops.c:2558
 msgid "On"
 msgstr "Ingeschakeld"
 
-#: ../src/desktops.c:2563
+#: src/desktops.c:2563
 msgid "Only when moving window"
 msgstr "Enkel bij het verplaatsen van een venster"
 
-#: ../src/desktops.c:2569
+#: src/desktops.c:2569
 msgid "Resistance at edge of screen:\n"
 msgstr "Weerstand aan de rand van het scherm:\n"
 
-#: ../src/desktops.c:2581
+#: src/desktops.c:2581
 msgid "Areas"
 msgstr "Gebieden"
 
-#: ../src/desktops.c:2582
+#: src/desktops.c:2582
 msgid "Virtual Desktop Settings"
 msgstr "Virtuele Dektop Instellingen"
 
-#: ../src/desktops.c:2585
+#: src/desktops.c:2585
 msgid ""
 "Enlightenment Virtual Desktop\n"
 "Settings Dialog\n"
@@ -691,11 +688,11 @@ msgstr ""
 "Enlightenment Virtuele Bureaubladen\n"
 "Instellingendialoog\n"
 
-#: ../src/dialog.c:849
+#: src/dialog.c:849
 msgid "Apply"
 msgstr "Pas toe"
 
-#: ../src/ecompmgr.c:2602
+#: src/ecompmgr.c:2602
 msgid ""
 "Cannot enable Composite Manager.\n"
 "Use xdpyinfo to check that\n"
@@ -707,11 +704,11 @@ msgstr ""
 "Composite, Damage, Fixes, en Render\n"
 "extensies geladen zijn."
 
-#: ../src/events.c:87
+#: src/events.c:87
 msgid "X server setup error"
 msgstr "X server instellingsfout"
 
-#: ../src/events.c:88
+#: src/events.c:88
 msgid ""
 "FATAL ERROR:\n"
 "\n"
@@ -731,103 +728,103 @@ msgstr ""
 "\n"
 "Applicatie wordt afgesloten.\n"
 
-#: ../src/focus.c:713
+#: src/focus.c:713
 msgid "Focus follows pointer"
 msgstr "Invoer volgt de muis"
 
-#: ../src/focus.c:719
+#: src/focus.c:719
 msgid "Focus follows pointer sloppily"
 msgstr "Invoer volgt de muis slordig"
 
-#: ../src/focus.c:725
+#: src/focus.c:725
 msgid "Focus follows mouse clicks"
 msgstr "Invoer volgt muis klikken"
 
-#: ../src/focus.c:735
+#: src/focus.c:735
 msgid "Clicking in a window always raises it"
 msgstr "Klikken in een venster brengt het altijd naar boven"
 
-#: ../src/focus.c:743
+#: src/focus.c:743
 msgid "All new windows first get the focus"
 msgstr "Alle niewe vensters krijgen de invoer"
 
-#: ../src/focus.c:748
+#: src/focus.c:748
 msgid "Only new dialog windows get the focus"
 msgstr "Alleen nieuwe dialoog vensters krijgen de invoer"
 
-#: ../src/focus.c:755
+#: src/focus.c:755
 msgid "Only new dialogs whose owner is focused get the focus"
 msgstr ""
 "Alleen nieuwe dialoog vensters waarvan de eigenaar de invoer heeft krijgen "
 "de invoer"
 
-#: ../src/focus.c:760
+#: src/focus.c:760
 msgid "Raise windows while switching focus"
 msgstr "Venster naar voorgrond brengen bij het wisselen van focus"
 
-#: ../src/focus.c:766
+#: src/focus.c:766
 msgid "Send mouse pointer to window while switching focus"
 msgstr "Cursor verplaatsen naar het venster bij het wisselen van focus"
 
-#: ../src/focus.c:772
+#: src/focus.c:772
 msgid "Always send mouse pointer to window on focus switch"
 msgstr "Altijd cursor verplaatsen naar het venster bij wisselen van focus"
 
-#: ../src/focus.c:780
+#: src/focus.c:780
 msgid "Display and use focus list"
 msgstr "Toon en gebruik een venster lijst"
 
-#: ../src/focus.c:785
+#: src/focus.c:785
 msgid "Include sticky windows in focus list"
 msgstr "Sticky vensters toevoegen aan focuslijst"
 
-#: ../src/focus.c:790
+#: src/focus.c:790
 msgid "Include shaded windows in focus list"
 msgstr "Schaduwvensters toevoegen aan focuslijst"
 
-#: ../src/focus.c:795
+#: src/focus.c:795
 msgid "Include iconified windows in focus list"
 msgstr "Geiconiseerde vensters toevoegen aan focuslijst"
 
-#: ../src/focus.c:800
+#: src/focus.c:800
 msgid "Include windows on other desks in focus list"
 msgstr "Vensters op andere bureaubladen toevoegen aan focuslijst"
 
-#: ../src/focus.c:805
+#: src/focus.c:805
 msgid "Focus windows while switching"
 msgstr "Focus vensters bij wisselen"
 
-#: ../src/focus.c:810
+#: src/focus.c:810
 msgid "Raise windows after focus switch"
 msgstr "Breng vensters naar voren na een invoer wisseling"
 
-#: ../src/focus.c:815
+#: src/focus.c:815
 msgid "Send mouse pointer to window after focus switch"
 msgstr "Stuur de muis naar het vester na een invoer wisseling"
 
-#: ../src/focus.c:825
+#: src/focus.c:825
 msgid "Focuslist image display policy (if one operation fails, try the next):"
 msgstr ""
 "Focuslijst afbeelding weergave beleid (als één operatie faalt, probeer de "
 "volgende):"
 
-#: ../src/focus.c:829
+#: src/focus.c:829
 msgid "First E Icon, then App Icon"
 msgstr "Eerst E Icoon, dan App Icoon"
 
-#: ../src/focus.c:835
+#: src/focus.c:835
 msgid "First App Icon, then E Icon"
 msgstr "Eerst App Icoon, dan E Icoon"
 
-#: ../src/focus.c:849
+#: src/focus.c:849
 msgid "Focus"
 msgstr "Focus"
 
-#: ../src/focus.c:850
+#: src/focus.c:850
 msgid "Focus Settings"
 msgstr "Invoer instellingen"
 
-#: ../src/focus.c:853
+#: src/focus.c:853
 msgid ""
 "Enlightenment Focus\n"
 "Settings Dialog\n"
@@ -835,31 +832,31 @@ msgstr ""
 "Enlightenment Focus\n"
 "Instellingendialoog\n"
 
-#: ../src/fx.c:935
+#: src/fx.c:935
 msgid "Effects"
 msgstr "Effecten"
 
-#: ../src/fx.c:938
+#: src/fx.c:938
 msgid "Enable Effect: Raindrops"
 msgstr "Effecten inschakelen: Regendruppels"
 
-#: ../src/fx.c:942
+#: src/fx.c:942
 msgid "Ripples"
 msgstr "Rimpels"
 
-#: ../src/fx.c:946
+#: src/fx.c:946
 msgid "Waves"
 msgstr "Golven"
 
-#: ../src/fx.c:952
+#: src/fx.c:952
 msgid "FX"
 msgstr "FX"
 
-#: ../src/fx.c:953
+#: src/fx.c:953
 msgid "Special FX Settings"
 msgstr "Speciale Effect Instellingen"
 
-#: ../src/fx.c:956
+#: src/fx.c:956
 msgid ""
 "Enlightenment Special Effects\n"
 "Settings Dialog\n"
@@ -867,11 +864,11 @@ msgstr ""
 "Enlightenment Speciale Effecten\n"
 "Instellingendialoog\n"
 
-#: ../src/groups.c:701
+#: src/groups.c:701
 msgid "Window Group Selection"
 msgstr "Venster Groep Selectie"
 
-#: ../src/groups.c:704
+#: src/groups.c:704
 msgid ""
 "Enlightenment Window Group\n"
 "Selection Dialog\n"
@@ -879,12 +876,11 @@ msgstr ""
 "Enlightenment Venstergroep\n"
 "Selectiedialoog\n"
 
-#: ../src/groups.c:727 ../src/groups.c:736 ../src/groups.c:744
-#: ../src/groups.c:925
+#: src/groups.c:727 src/groups.c:736 src/groups.c:744 src/groups.c:925
 msgid "Window Group Error"
 msgstr "Venster groep fout"
 
-#: ../src/groups.c:729
+#: src/groups.c:729
 msgid ""
 "\n"
 "  This window currently does not belong to any groups.  \n"
@@ -898,7 +894,7 @@ msgstr ""
 " verwijderen via vensters die daadwerkelijk bij minstens een groep behoren\n"
 "\n"
 
-#: ../src/groups.c:737
+#: src/groups.c:737
 msgid ""
 "\n"
 "  Currently, no groups exist or this window  \n"
@@ -912,7 +908,7 @@ msgstr ""
 " Je zult eerst andere groepen moeten starten  \n"
 "\n"
 
-#: ../src/groups.c:746
+#: src/groups.c:746
 msgid ""
 "\n"
 "  Currently, no groups exist. You have to start a group first.\n"
@@ -923,11 +919,11 @@ msgstr ""
 "starten.\n"
 "\n"
 
-#: ../src/groups.c:836
+#: src/groups.c:836
 msgid "   Pick the group to configure:   "
 msgstr "   Kies de groep om in te stellen:   "
 
-#: ../src/groups.c:867
+#: src/groups.c:867
 msgid ""
 "  The following actions are  \n"
 "  applied to all group members:  "
@@ -935,39 +931,39 @@ msgstr ""
 "  De volgende acties worden\n"
 " toegepast op alle groepsleden  "
 
-#: ../src/groups.c:872 ../src/groups.c:969
+#: src/groups.c:872 src/groups.c:969
 msgid "Changing Border Style"
 msgstr "Verander van rand stijl"
 
-#: ../src/groups.c:877 ../src/groups.c:974
+#: src/groups.c:877 src/groups.c:974
 msgid "Iconifying"
 msgstr "Minimaliseren"
 
-#: ../src/groups.c:882 ../src/groups.c:979
+#: src/groups.c:882 src/groups.c:979
 msgid "Killing"
 msgstr "Afsluiten"
 
-#: ../src/groups.c:887 ../src/groups.c:984
+#: src/groups.c:887 src/groups.c:984
 msgid "Moving"
 msgstr "Verplaatsen"
 
-#: ../src/groups.c:892 ../src/groups.c:989
+#: src/groups.c:892 src/groups.c:989
 msgid "Raising/Lowering"
 msgstr "Omhoog/Omlaag brengen"
 
-#: ../src/groups.c:897 ../src/groups.c:994
+#: src/groups.c:897 src/groups.c:994
 msgid "Sticking"
 msgstr "Sticken"
 
-#: ../src/groups.c:902 ../src/groups.c:999
+#: src/groups.c:902 src/groups.c:999
 msgid "Shading"
 msgstr "Shaden"
 
-#: ../src/groups.c:909
+#: src/groups.c:909
 msgid "Window Group Settings"
 msgstr "Venster Groep Instellingen"
 
-#: ../src/groups.c:912
+#: src/groups.c:912
 msgid ""
 "Enlightenment Window Group\n"
 "Settings Dialog\n"
@@ -975,7 +971,7 @@ msgstr ""
 "Enlightenment Venstergroep\n"
 "Instellingendialoog\n"
 
-#: ../src/groups.c:927
+#: src/groups.c:927
 msgid ""
 "\n"
 "  This window currently does not belong to any groups.  \n"
@@ -985,28 +981,27 @@ msgstr ""
 "  Dit venster behoort momenteel niet bij een groep.  \n"
 "\n"
 
-#: ../src/groups.c:962
+#: src/groups.c:962
 msgid " Per-group settings: "
 msgstr " Per-groep instellingen: "
 
-#: ../src/groups.c:1008
+#: src/groups.c:1008
 msgid " Global settings: "
 msgstr " Algemene instellingen: "
 
-#: ../src/groups.c:1012
+#: src/groups.c:1012
 msgid "Swap Window Locations"
 msgstr "Vensterlocaties verwisselen"
 
-#. winops_groups.menu
-#: ../src/groups.c:1018 ../src/menus-misc.c:642 ../config/strings.c:140
+#: src/groups.c:1018 src/menus-misc.c:642 config/strings.c:140
 msgid "Groups"
 msgstr "Groepen"
 
-#: ../src/groups.c:1019
+#: src/groups.c:1019
 msgid "Default Group Control Settings"
 msgstr "Standaard Groep Controle Instellingen"
 
-#: ../src/groups.c:1022
+#: src/groups.c:1022
 msgid ""
 "Enlightenment Default\n"
 "Group Control Settings Dialog\n"
@@ -1014,19 +1009,19 @@ msgstr ""
 "Enlightenment Standaard\n"
 "Groepcontrole instellingendialoog\n"
 
-#: ../src/groups.c:1050
+#: src/groups.c:1050
 msgid "Pick the group the window will belong to:"
 msgstr "Kies de groep waartoe het venster zal behoren:"
 
-#: ../src/groups.c:1056
+#: src/groups.c:1056
 msgid "Select the group to remove the window from:"
 msgstr "Selecteer de groep waarvan het venster verwijderd moet worden:"
 
-#: ../src/groups.c:1061
+#: src/groups.c:1061
 msgid "Select the group to break:"
 msgstr "Selecteer de te breken groep:"
 
-#: ../src/handlers.c:61
+#: src/handlers.c:61
 #, c-format
 msgid ""
 "Enlightenment performed an Illegal Instruction.\n"
@@ -1048,7 +1043,7 @@ msgstr ""
 "en mogelijk elke ondersteuningsbibliotheek die meegeleverd\n"
 "zat in het binaire bestand van Enlightenment.\n"
 
-#: ../src/handlers.c:71
+#: src/handlers.c:71
 msgid ""
 "Enlightenment caused a Floating Point Exception.\n"
 "\n"
@@ -1072,7 +1067,7 @@ msgstr ""
 "waar het deze instructie uitvoerde en dit doorsturen in de vorm van een\n"
 "bruikbaar bugrapport met backtrace informatie en variabele dumps etc.\n"
 
-#: ../src/handlers.c:83
+#: src/handlers.c:83
 msgid ""
 "Enlightenment caused Segment Violation (Segfault)\n"
 "\n"
@@ -1096,7 +1091,7 @@ msgstr ""
 "waar het deze instructie uitvoerde en dit doorsturen in de vorm van een\n"
 "bruikbaar bugrapport met backtrace informatie en variabele dumps etc.\n"
 
-#: ../src/handlers.c:95
+#: src/handlers.c:95
 msgid ""
 "Enlightenment caused Bus Error.\n"
 "\n"
@@ -1110,45 +1105,45 @@ msgstr ""
 "Het is hoogst onwaarschijnlijk om een Bus Fout te veroorzaken\n"
 "op volledig werkende hardware.\n"
 
-#: ../src/hints.c:600
+#: src/hints.c:600
 msgid "Selection Error!"
 msgstr "Selectiefout!"
 
-#: ../src/hints.c:600
+#: src/hints.c:600
 #, c-format
 msgid "Could not acquire selection: %s"
 msgstr "Kon Selectie niet verkrijgen: %s"
 
-#: ../src/iconify.c:469
+#: src/iconify.c:469
 msgid "Iconbox Options"
 msgstr "Icoonbox Opties"
 
-#: ../src/iconify.c:470
+#: src/iconify.c:470
 msgid "Iconbox Settings"
 msgstr "Icoonbox instellingen"
 
-#: ../src/ipc.c:195 ../src/ipc.c:1472 ../src/ipc.c:1479 ../src/theme.c:372
+#: src/ipc.c:195 src/ipc.c:1472 src/ipc.c:1479 src/theme.c:372
 msgid "Message"
 msgstr "Bericht"
 
-#: ../src/ipc.c:1472 ../src/ipc.c:1479
+#: src/ipc.c:1472 src/ipc.c:1479
 #, c-format
 msgid "e16 was built without %s support"
 msgstr "e16 is gebouwd zonder %s ondersteuning"
 
-#: ../src/ipc.c:1473
+#: src/ipc.c:1473
 msgid "composite"
 msgstr "composiet"
 
-#: ../src/ipc.c:1480
+#: src/ipc.c:1480
 msgid "sound"
 msgstr "geluid"
 
-#: ../src/ipc.c:1823
+#: src/ipc.c:1823
 msgid "Enlightenment IPC Commands Help\n"
 msgstr "Enlightenment IPC Commando's hulp\n"
 
-#: ../src/ipc.c:1827
+#: src/ipc.c:1827
 msgid ""
 "Use \"help all\" for descriptions of each command\n"
 "Use \"help <command>\" for an individual description\n"
@@ -1158,24 +1153,24 @@ msgstr ""
 "Gebruik \"help <commando>\" voor een individuele beschrijving\n"
 "\n"
 
-#: ../src/ipc.c:1829 ../src/ipc.c:1849 ../src/ipc.c:1861
+#: src/ipc.c:1829 src/ipc.c:1849 src/ipc.c:1861
 msgid "Commands currently available:\n"
 msgstr "Commando's momenteel beschikbaar:\n"
 
-#: ../src/ipc.c:1847
+#: src/ipc.c:1847
 msgid "Use \"help full\" for full descriptions of each command\n"
 msgstr ""
 "Gebruik \"help full\" voor een volledige beschrijving van elk commando\n"
 
-#: ../src/ipc.c:1848
+#: src/ipc.c:1848
 msgid "Use \"help <command>\" for an individual description\n"
 msgstr "Gebruik \"help <commando>\" voor een individuele beschrijving\n"
 
-#: ../src/ipc.c:1850 ../src/ipc.c:1862
+#: src/ipc.c:1850 src/ipc.c:1862
 msgid "         <command>     : <description>\n"
 msgstr "         <commando>     : <beschrijving>\n"
 
-#: ../src/main.c:584
+#: src/main.c:584
 #, c-format
 msgid ""
 "%s must be a directory in which you have\n"
@@ -1184,7 +1179,7 @@ msgstr ""
 "%s met een map zijn waarin je\n"
 "lees, schrijf en uitvoerrechten hebt.\n"
 
-#: ../src/main.c:678
+#: src/main.c:678
 #, c-format
 msgid ""
 "!!!!!!!! ERROR ERROR ERROR ERROR !!!!!!!!\n"
@@ -1213,7 +1208,7 @@ msgstr ""
 "pakket, iemand heeft het programma manueel verwijderd\n"
 "of misschien een fout bij het installeren van Enlightenment.\n"
 
-#: ../src/main.c:692
+#: src/main.c:692
 #, c-format
 msgid ""
 "!!!!!!!! ERROR ERROR ERROR ERROR !!!!!!!!\n"
@@ -1234,65 +1229,65 @@ msgstr ""
 "Zet aub deze fout recht en verzeker je ervan dat\n"
 "Enlightenment correct geïnstalleerd is.\n"
 
-#: ../src/magwin.c:460
+#: src/magwin.c:460
 msgid "Magnifier"
 msgstr "Vergrootglas"
 
-#: ../src/menus-misc.c:454 ../config/strings.c:93 ../config/strings.c:115
+#: src/menus-misc.c:454 config/strings.c:93 config/strings.c:115
 msgid "Themes"
 msgstr "Thema's"
 
-#: ../src/menus-misc.c:480
+#: src/menus-misc.c:480
 msgid "Border"
 msgstr "Rand"
 
-#: ../src/menus-misc.c:542
+#: src/menus-misc.c:542
 msgid "Window List"
 msgstr "Vensterlijst"
 
-#: ../src/menus-misc.c:564
+#: src/menus-misc.c:564
 msgid "Go to this Desktop"
 msgstr "Ga naar dit Bureaublad"
 
-#: ../src/menus-misc.c:568 ../src/menus-misc.c:664
+#: src/menus-misc.c:568 src/menus-misc.c:664
 #, c-format
 msgid "Desktop %i"
 msgstr "Desktop %i"
 
-#: ../src/menus-misc.c:611
+#: src/menus-misc.c:611
 msgid "Show/Hide this group"
 msgstr "Toon/Verberg deze groep"
 
-#: ../src/menus-misc.c:616
+#: src/menus-misc.c:616
 msgid "Iconify this group"
 msgstr "Minimaliseer deze groep"
 
-#: ../src/menus-misc.c:627
+#: src/menus-misc.c:627
 #, c-format
 msgid "Group %i"
 msgstr "Groep %i"
 
-#: ../src/menus.c:2100
+#: src/menus.c:2100
 msgid "Animated display of menus"
 msgstr "Geanimeerd tonen van menus"
 
-#: ../src/menus.c:2105
+#: src/menus.c:2105
 msgid "Always pop up menus on screen"
 msgstr "Toon menus altijd op het scherm"
 
-#: ../src/menus.c:2110
+#: src/menus.c:2110
 msgid "Warp pointer after moving menus"
 msgstr "Pointer warpen na menu's te verplaatsen"
 
-#: ../src/menus.c:2116
+#: src/menus.c:2116
 msgid "Menus"
 msgstr "Menu's"
 
-#: ../src/menus.c:2117
+#: src/menus.c:2117
 msgid "Menu Settings"
 msgstr "Menu Instellingen"
 
-#: ../src/menus.c:2120
+#: src/menus.c:2120
 msgid ""
 "Enlightenment Menu\n"
 "Settings Dialog\n"
@@ -1300,57 +1295,56 @@ msgstr ""
 "Enlightenment Menu\n"
 "Instellingendialoog\n"
 
-#: ../src/mod-trans.c:114 ../src/mod-trans.c:264
+#: src/mod-trans.c:114 src/mod-trans.c:264
 #, c-format
 msgid "Theme transparency: %2d"
 msgstr "Thema Doorzichtigheid: %2d"
 
-#: ../src/mod-trans.c:143
+#: src/mod-trans.c:143
 msgid "Changes Might Require Restart:"
 msgstr "Wijzigingen Vereisen Mogelijk Herstarten:"
 
-#: ../src/mod-trans.c:152
+#: src/mod-trans.c:152
 msgid "Borders:"
 msgstr "Randen"
 
-#: ../src/mod-trans.c:156
+#: src/mod-trans.c:156
 msgid "Menus:"
 msgstr "Menu's:"
 
-#: ../src/mod-trans.c:160
+#: src/mod-trans.c:160
 msgid "Hilights:"
 msgstr "Accentueringen:"
 
-#: ../src/mod-trans.c:164
+#: src/mod-trans.c:164
 msgid "E Widgets:"
 msgstr "E Widgets:"
 
-#: ../src/mod-trans.c:168
+#: src/mod-trans.c:168
 msgid "E Dialogs:"
 msgstr "E Dialogen:"
 
-#: ../src/mod-trans.c:172
+#: src/mod-trans.c:172
 msgid "Tooltips:"
 msgstr "Tooltips:"
 
-#: ../src/mod-trans.c:176 ../src/settings.c:82 ../src/settings.c:87
-#: ../src/settings.c:354
+#: src/mod-trans.c:176 src/settings.c:82 src/settings.c:87 src/settings.c:354
 msgid "Opaque"
 msgstr "Gevuld"
 
-#: ../src/mod-trans.c:235
+#: src/mod-trans.c:235
 msgid "Glass"
 msgstr "Glas"
 
-#: ../src/mod-trans.c:280
+#: src/mod-trans.c:280
 msgid "Transparency"
 msgstr "Transparantie"
 
-#: ../src/mod-trans.c:281
+#: src/mod-trans.c:281
 msgid "Selective Transparency Settings"
 msgstr "Selectieve Transparantie Instellingen"
 
-#: ../src/mod-trans.c:284
+#: src/mod-trans.c:284
 msgid ""
 "Enlightenment Selective Transparency\n"
 "Settings Dialog\n"
@@ -1358,124 +1352,123 @@ msgstr ""
 "Enlightenment Selectieve Transparantie\n"
 "Instellingendialoog\n"
 
-#. winops.menu
-#: ../src/pager.c:1006 ../config/strings.c:49 ../config/strings.c:123
+#: src/pager.c:1006 config/strings.c:49 config/strings.c:123
 msgid "Window Options"
 msgstr "Venster Opties"
 
-#: ../src/pager.c:1009 ../config/strings.c:51 ../config/strings.c:126
+#: src/pager.c:1009 config/strings.c:51 config/strings.c:126
 msgid "Iconify"
 msgstr "Minimaliseer"
 
-#: ../src/pager.c:1017 ../config/strings.c:125
+#: src/pager.c:1017 config/strings.c:125
 msgid "Annihilate"
 msgstr "Annihileer"
 
-#: ../src/pager.c:1021
+#: src/pager.c:1021
 msgid "Stick / Unstick"
 msgstr "Stick / Unstick"
 
-#: ../src/pager.c:1030
+#: src/pager.c:1030
 msgid "Desktop Options"
 msgstr "Desktop opties"
 
-#: ../src/pager.c:1032
+#: src/pager.c:1032
 msgid "Pager Settings..."
 msgstr "Pager instellingen..."
 
-#: ../src/pager.c:1037
+#: src/pager.c:1037
 msgid "Snapshotting Off"
 msgstr "Snapshots uit"
 
-#: ../src/pager.c:1041
+#: src/pager.c:1041
 msgid "High Quality Off"
 msgstr "Hoge kwaliteit uit"
 
-#: ../src/pager.c:1043
+#: src/pager.c:1043
 msgid "High Quality On"
 msgstr "Hoge kwaliteit aan"
 
-#: ../src/pager.c:1048
+#: src/pager.c:1048
 msgid "Snapshotting On"
 msgstr "Shapshots aan"
 
-#: ../src/pager.c:1052
+#: src/pager.c:1052
 msgid "Zoom Off"
 msgstr "Zoom Af"
 
-#: ../src/pager.c:1054
+#: src/pager.c:1054
 msgid "Zoom On"
 msgstr "Zoom Aan"
 
-#: ../src/pager.c:1813 ../src/pager.c:1904
+#: src/pager.c:1813 src/pager.c:1904
 msgid "Pager scanning speed:"
 msgstr "Pager scan snelheid:"
 
-#: ../src/pager.c:1814 ../src/pager.c:1905
+#: src/pager.c:1814 src/pager.c:1905
 msgid "lines per second"
 msgstr "lijnen per seconde"
 
-#: ../src/pager.c:1843
+#: src/pager.c:1843
 msgid "Enable pager display"
 msgstr "Toon pager"
 
-#: ../src/pager.c:1853
+#: src/pager.c:1853
 msgid "Pager Mode:"
 msgstr "Pager Mode:"
 
-#: ../src/pager.c:1857
+#: src/pager.c:1857
 msgid "Simple"
 msgstr "Simpel"
 
-#: ../src/pager.c:1863
+#: src/pager.c:1863
 msgid "Make miniature snapshots of the screen"
 msgstr "Maak miniatuur snapshots van het scherm"
 
-#: ../src/pager.c:1870
+#: src/pager.c:1870
 msgid "Live Update"
 msgstr "Live Update"
 
-#: ../src/pager.c:1881
+#: src/pager.c:1881
 msgid "Smooth high quality snapshots in snapshot mode"
 msgstr "Verbeter hoge kwaliteits snapshots in snapshot modus"
 
-#: ../src/pager.c:1886
+#: src/pager.c:1886
 msgid "Zoom in on pager windows when mouse is over them"
 msgstr "Zoom in op pager vensters als de muis boven ze is"
 
-#: ../src/pager.c:1892
+#: src/pager.c:1892
 msgid "Pop up window title when mouse is over the window"
 msgstr "Toon venster titel als de muis boven het venster is"
 
-#: ../src/pager.c:1897
+#: src/pager.c:1897
 msgid "Continuously scan screen to update pager"
 msgstr "Scan het scherm continu om de pager bij te werken"
 
-#: ../src/pager.c:1920
+#: src/pager.c:1920
 msgid "Mouse button to select and drag windows:"
 msgstr "Muisknop op vensters te selecteren en slepen"
 
-#: ../src/pager.c:1930 ../src/pager.c:1955 ../src/pager.c:1980
+#: src/pager.c:1930 src/pager.c:1955 src/pager.c:1980
 msgid "Middle"
 msgstr "Midden"
 
-#: ../src/pager.c:1945
+#: src/pager.c:1945
 msgid "Mouse button to select desktops:"
 msgstr "Muisknop om desktops te selecteren"
 
-#: ../src/pager.c:1970
+#: src/pager.c:1970
 msgid "Mouse button to display pager menu:"
 msgstr "Muisknop om pager menu te tonen"
 
-#: ../src/pager.c:1994
+#: src/pager.c:1994
 msgid "Pagers"
 msgstr "Pagers"
 
-#: ../src/pager.c:1995
+#: src/pager.c:1995
 msgid "Pager Settings"
 msgstr "Pager instellingen"
 
-#: ../src/pager.c:1998
+#: src/pager.c:1998
 msgid ""
 "Enlightenment Desktop & Area\n"
 "Pager Settings Dialog\n"
@@ -1483,8 +1476,7 @@ msgstr ""
 "Enlightenment Bureaublad & Gebied\n"
 "Pager Instellingendialoog\n"
 
-#. Less of the hope.... E survives
-#: ../src/session.c:344
+#: src/session.c:344
 msgid ""
 "ERROR!\n"
 "\n"
@@ -1510,11 +1502,11 @@ msgstr ""
 "\n"
 "... Hoop ik.\n"
 
-#: ../src/session.c:644
+#: src/session.c:644
 msgid "Are you sure?"
 msgstr "Weet U het zeker?"
 
-#: ../src/session.c:646
+#: src/session.c:646
 msgid ""
 "\n"
 "\n"
@@ -1528,43 +1520,43 @@ msgstr ""
 "\n"
 "\n"
 
-#: ../src/session.c:656
+#: src/session.c:656
 msgid "  Yes, Shut Down  "
 msgstr "  Ja, Sluit Af  "
 
-#: ../src/session.c:658
+#: src/session.c:658
 msgid "  Yes, Reboot  "
 msgstr "  Ja, Herstarten  "
 
-#: ../src/session.c:661
+#: src/session.c:661
 msgid "  Yes, Log Out  "
 msgstr "  Ja, log uit  "
 
-#: ../src/session.c:663
+#: src/session.c:663
 msgid "  No  "
 msgstr "  Nee  "
 
-#: ../src/session.c:798
+#: src/session.c:798
 msgid "Enable Session Script"
 msgstr "Sessiescript Inschakelen"
 
-#: ../src/session.c:803
+#: src/session.c:803
 msgid "Enable Logout Dialog"
 msgstr "Afmeldialoog Inschakelen"
 
-#: ../src/session.c:808
+#: src/session.c:808
 msgid "Enable Reboot/Halt on Logout"
 msgstr "Herstarten Inschakelen/Stoppen bij Afmelden"
 
-#: ../src/session.c:814
+#: src/session.c:814
 msgid "Session"
 msgstr "Sessie"
 
-#: ../src/session.c:815
+#: src/session.c:815
 msgid "Session Settings"
 msgstr "Sessie Instellingen"
 
-#: ../src/session.c:818
+#: src/session.c:818
 msgid ""
 "Enlightenment Session\n"
 "Settings Dialog\n"
@@ -1572,91 +1564,91 @@ msgstr ""
 "Enlightenment Sessie\n"
 "Instellingendialoog\n"
 
-#: ../src/settings.c:74
+#: src/settings.c:74
 msgid "Move Methods:"
 msgstr "Verplaats methoden:"
 
-#: ../src/settings.c:79
+#: src/settings.c:79
 msgid "Resize Methods:"
 msgstr "Vergroot/Verklein methoden:"
 
-#: ../src/settings.c:92 ../src/settings.c:97 ../src/settings.c:359
+#: src/settings.c:92 src/settings.c:97 src/settings.c:359
 msgid "Technical"
 msgstr "Technisch"
 
-#: ../src/settings.c:102 ../src/settings.c:107 ../src/settings.c:364
+#: src/settings.c:102 src/settings.c:107 src/settings.c:364
 msgid "Box"
 msgstr "Box"
 
-#: ../src/settings.c:112 ../src/settings.c:117 ../src/settings.c:369
+#: src/settings.c:112 src/settings.c:117 src/settings.c:369
 msgid "Shaded"
 msgstr "Shaded"
 
-#: ../src/settings.c:122 ../src/settings.c:127 ../src/settings.c:374
+#: src/settings.c:122 src/settings.c:127 src/settings.c:374
 msgid "Semi-Solid"
 msgstr "Halfvol"
 
-#: ../src/settings.c:133
+#: src/settings.c:133
 msgid "Translucent"
 msgstr "Doorzichtig"
 
-#: ../src/settings.c:142
+#: src/settings.c:142
 msgid "Avoid server grab"
 msgstr "Server greep vermijden"
 
-#: ../src/settings.c:152
+#: src/settings.c:152
 msgid "Move/Resize Geometry Info Postion:"
 msgstr "Verplaats/Wijzig grootte van Geometrie Informatie positie"
 
-#: ../src/settings.c:156
+#: src/settings.c:156
 msgid "Window Center (O/T/B Methods)"
 msgstr "Venster Centreren (O/T/B Methoden)"
 
-#: ../src/settings.c:162
+#: src/settings.c:162
 msgid "Always Screen corner"
 msgstr "Altijd Scherm Hoek"
 
-#: ../src/settings.c:168
+#: src/settings.c:168
 msgid "Don't show"
 msgstr "Niet weergeven"
 
-#: ../src/settings.c:180
+#: src/settings.c:180
 msgid "Default Resize Policy:"
 msgstr "Standaard herschalingsbeleid:"
 
-#: ../src/settings.c:184
+#: src/settings.c:184
 msgid "Conservative"
 msgstr "Conservatief"
 
-#: ../src/settings.c:190
+#: src/settings.c:190
 msgid "Available"
 msgstr "Beschikbaar"
 
-#: ../src/settings.c:196
+#: src/settings.c:196
 msgid "Absolute"
 msgstr "Absoluut"
 
-#: ../src/settings.c:206
+#: src/settings.c:206
 msgid "Update window while moving"
 msgstr "Venster updaten tijdens het verplaatsen"
 
-#: ../src/settings.c:211
+#: src/settings.c:211
 msgid "Synchronize move/resize with application"
 msgstr "Synchroniseer verplaatsen/herschaling met programma"
 
-#: ../src/settings.c:216
+#: src/settings.c:216
 msgid "Do not cover dragbar"
 msgstr "Sleepbalk niet bedekken"
 
-#: ../src/settings.c:222
+#: src/settings.c:222
 msgid "Move/Resize"
 msgstr "Verplaatsen/herschalen"
 
-#: ../src/settings.c:223
+#: src/settings.c:223
 msgid "Move & Resize Settings"
 msgstr "Verplaats en Vergroot/Verklein instellingen"
 
-#: ../src/settings.c:226
+#: src/settings.c:226
 msgid ""
 "Enlightenment Move & Resize\n"
 "Method Settings Dialog\n"
@@ -1664,75 +1656,75 @@ msgstr ""
 "Enlightenment Verplaats & Herschaal\n"
 "Methode Instellingendialoog\n"
 
-#: ../src/settings.c:313
+#: src/settings.c:313
 msgid "Dialog windows appear together with their owner"
 msgstr "Dialoog vensters verschijnen samen met hun eigenaar"
 
-#: ../src/settings.c:318
+#: src/settings.c:318
 msgid "Switch to desktop where dialog appears"
 msgstr "Schakel naar desktop waar de dialoog vershijnt"
 
-#: ../src/settings.c:326
+#: src/settings.c:326
 msgid "Place windows manually"
 msgstr "Plaats vensters met de hand"
 
-#: ../src/settings.c:331
+#: src/settings.c:331
 msgid "Place windows under mouse"
 msgstr "Venster plaatsen onder muis"
 
-#: ../src/settings.c:336
+#: src/settings.c:336
 msgid "Center windows when desk is full"
 msgstr "Venster centraliseren als bureaublad vol is"
 
-#: ../src/settings.c:341
+#: src/settings.c:341
 msgid "Slide windows in when they appear"
 msgstr "Verschuif vensters als ze verschijnen"
 
-#: ../src/settings.c:346
+#: src/settings.c:346
 msgid "Slide windows around when cleaning up"
 msgstr "Verschuif vensters bij het opschonen"
 
-#: ../src/settings.c:351
+#: src/settings.c:351
 msgid "Slide Method:"
 msgstr "Schuif Methode:"
 
-#: ../src/settings.c:384
+#: src/settings.c:384
 msgid "Appear Slide speed:"
 msgstr "Schuifsnelheid bij verschijnen:"
 
-#: ../src/settings.c:395
+#: src/settings.c:395
 msgid "Cleanup Slide speed:"
 msgstr "Schuifsnelheid bij opruimen:"
 
-#: ../src/settings.c:408
+#: src/settings.c:408
 msgid "Animate shading and unshading of windows"
 msgstr "Animeer het shaden en de-shaden van vensters"
 
-#: ../src/settings.c:414
+#: src/settings.c:414
 msgid "Window Shading speed:"
 msgstr "Snelheid van shaden:"
 
-#: ../src/settings.c:427
+#: src/settings.c:427
 msgid "Ignore struts"
 msgstr "Struts negeren"
 
-#: ../src/settings.c:432
+#: src/settings.c:432
 msgid "Raise fullscreen windows"
 msgstr "Alle volledig scherm vensters naar voorgrond plaatsen"
 
-#: ../src/settings.c:440
+#: src/settings.c:440
 msgid "Place windows on another head when full"
 msgstr "Plaats vensters op een ander head wanneer vol"
 
-#: ../src/settings.c:448
+#: src/settings.c:448
 msgid "Placement"
 msgstr "Plaatsing"
 
-#: ../src/settings.c:449
+#: src/settings.c:449
 msgid "Window Placement Settings"
 msgstr "Venster Plaatsing Instellingen"
 
-#: ../src/settings.c:452
+#: src/settings.c:452
 msgid ""
 "Enlightenment Window Placement\n"
 "Settings Dialog\n"
@@ -1740,23 +1732,23 @@ msgstr ""
 "Enlightenment Vensterplaatsing\n"
 "Instellingendialoog\n"
 
-#: ../src/settings.c:483
+#: src/settings.c:483
 msgid "Raise Windows Automatically"
 msgstr "Breng vensters automatisch naar voren"
 
-#: ../src/settings.c:489
+#: src/settings.c:489
 msgid "Autoraise delay:"
 msgstr "Wacht voor omhoogbrengen:"
 
-#: ../src/settings.c:500
+#: src/settings.c:500
 msgid "Autoraise"
 msgstr "Automatisch omhoog halen"
 
-#: ../src/settings.c:501
+#: src/settings.c:501
 msgid "Autoraise Settings"
 msgstr "Automatisch Omhoogbrengen Instelling"
 
-#: ../src/settings.c:504
+#: src/settings.c:504
 msgid ""
 "Enlightenment Automatic Raising\n"
 "of Windows Settings Dialog\n"
@@ -1764,32 +1756,31 @@ msgstr ""
 "Enlightenment Automatisch Omhoog halen\n"
 "van Venster Instellingendialoog\n"
 
-#: ../src/settings.c:541
+#: src/settings.c:541
 msgid "Enable Dialog Headers"
 msgstr "Dialoog headers inschakelen"
 
-#: ../src/settings.c:547
+#: src/settings.c:547
 msgid "Enable Button Images"
 msgstr "Knopafbeeldingen inschakelen"
 
-#: ../src/settings.c:556
+#: src/settings.c:556
 msgid "Enable sliding startup windows"
 msgstr "Schuivende opstartvensters inschakelen"
 
-#: ../src/settings.c:564
+#: src/settings.c:564
 msgid "Use saveunders to reduce window exposures"
 msgstr "Gebruik saveunders om vensters minder te tonen"
 
-#. winops_misc.menu
-#: ../src/settings.c:570 ../config/strings.c:138 ../config/strings.c:154
+#: src/settings.c:570 config/strings.c:138 config/strings.c:154
 msgid "Miscellaneous"
 msgstr "Allerlei"
 
-#: ../src/settings.c:571
+#: src/settings.c:571
 msgid "Miscellaneous Settings"
 msgstr "Overige Instellingen"
 
-#: ../src/settings.c:574
+#: src/settings.c:574
 msgid ""
 "Enlightenment Miscellaneous\n"
 "Settings Dialog\n"
@@ -1797,55 +1788,55 @@ msgstr ""
 "Enlightenment Overige\n"
 "Instelingendialoog\n"
 
-#: ../src/settings.c:615
+#: src/settings.c:615
 msgid "Enable Composite"
 msgstr "Composiet inschakelen"
 
-#: ../src/settings.c:623
+#: src/settings.c:623
 msgid "Enable Fading"
 msgstr "Fading Inschakelen"
 
-#: ../src/settings.c:629
+#: src/settings.c:629
 msgid "Fading Speed:"
 msgstr "Fading Snelheid:"
 
-#: ../src/settings.c:642
+#: src/settings.c:642
 msgid "Shadows Off"
 msgstr "Schaduw Uit"
 
-#: ../src/settings.c:648
+#: src/settings.c:648
 msgid "Shadows Sharp"
 msgstr "Schaduw Scherpte"
 
-#: ../src/settings.c:654
+#: src/settings.c:654
 msgid "Shadows Sharp2"
 msgstr "Schaduw Scherpte2"
 
-#: ../src/settings.c:660
+#: src/settings.c:660
 msgid "Shadows Blurred"
 msgstr "Schaduw Wazig"
 
-#: ../src/settings.c:671
+#: src/settings.c:671
 msgid "Default focused window opacity:"
 msgstr "Standaard focusvenster opaciteit:"
 
-#: ../src/settings.c:682
+#: src/settings.c:682
 msgid "Default unfocused window opacity:"
 msgstr "Standaard niet-focusvenster opaciteit:"
 
-#: ../src/settings.c:693
+#: src/settings.c:693
 msgid "Default pop-up window opacity:"
 msgstr "Standaard pop-up venster opaciteit:"
 
-#: ../src/settings.c:704
+#: src/settings.c:704
 msgid "Composite"
 msgstr "Composiet"
 
-#: ../src/settings.c:705
+#: src/settings.c:705
 msgid "Composite Settings"
 msgstr "Composietinstellingen"
 
-#: ../src/settings.c:708
+#: src/settings.c:708
 msgid ""
 "Enlightenment Composite\n"
 "Settings Dialog\n"
@@ -1853,11 +1844,11 @@ msgstr ""
 "Enlightenment Composiet\n"
 "Instellingendialoog\n"
 
-#: ../src/settings.c:794
+#: src/settings.c:794
 msgid "Enlightenment Settings"
 msgstr "Enlightenment Instellingen"
 
-#: ../src/setup.c:58
+#: src/setup.c:58
 msgid ""
 "Enlightenment cannot connect to the display nominated by\n"
 "your shell's DISPLAY environment variable. You may set this\n"
@@ -1880,11 +1871,11 @@ msgstr ""
 "of contacteer jouw administrator, of Xserver leverancier of lees de X,\n"
 "xdm en startx handleidingen voor verder te gaan.\n"
 
-#: ../src/setup.c:156
+#: src/setup.c:156
 msgid "Another Window Manager is already running"
 msgstr "Een andere Window Manager is al actief"
 
-#: ../src/setup.c:158
+#: src/setup.c:158
 msgid ""
 "Another Window Manager is already running.\n"
 "\n"
@@ -1896,15 +1887,15 @@ msgstr ""
 "Je moet eerst jouw huidige Window Manager sluiten, alvorens\n"
 "verder te gaan en Enlightenment succesvol te starten.\n"
 
-#: ../src/setup.c:167
+#: src/setup.c:167
 msgid "X server version error"
 msgstr "X server versie fout"
 
-#: ../src/setup.c:167
+#: src/setup.c:167
 msgid "Ignore this error"
 msgstr "Deze fout negeren"
 
-#: ../src/setup.c:169
+#: src/setup.c:169
 #, c-format
 msgid ""
 "WARNING:\n"
@@ -1921,89 +1912,87 @@ msgstr ""
 "server een, waarvan de auteur van Enlightenment geen toegang\n"
 "toe heeft, of nog nooit van gehoord heeft.\n"
 
-#: ../src/snaps.c:727
+#: src/snaps.c:727
 msgid "Title:"
 msgstr "Titel:"
 
-#: ../src/snaps.c:739
+#: src/snaps.c:739
 msgid "Name:"
 msgstr "Naam:"
 
-#: ../src/snaps.c:752
+#: src/snaps.c:752
 msgid "Class:"
 msgstr "Klasse:"
 
-#: ../src/snaps.c:765
+#: src/snaps.c:765
 msgid "Role:"
 msgstr "Rol:"
 
-#: ../src/snaps.c:778
+#: src/snaps.c:778
 msgid "Command:"
 msgstr "Commando:"
 
-#: ../src/snaps.c:818
+#: src/snaps.c:818
 msgid "Track Changes"
 msgstr "Wijzigingen volgen"
 
-#: ../src/snaps.c:823
+#: src/snaps.c:823
 msgid "Location"
 msgstr "Locatie"
 
-#: ../src/snaps.c:828
+#: src/snaps.c:828
 msgid "Border style"
 msgstr "Rand stijl"
 
-#. winops_size.menu
-#: ../src/snaps.c:833 ../config/strings.c:176
+#: src/snaps.c:833 config/strings.c:176
 msgid "Size"
 msgstr "Grootte"
 
-#: ../src/snaps.c:838 ../config/strings.c:92 ../config/strings.c:114
+#: src/snaps.c:838 config/strings.c:92 config/strings.c:114
 msgid "Desktop"
 msgstr "Desktop"
 
-#: ../src/snaps.c:843
+#: src/snaps.c:843
 msgid "Shaded state"
 msgstr "Shaded staat"
 
-#: ../src/snaps.c:848
+#: src/snaps.c:848
 msgid "Sticky state"
 msgstr "Sticky staat"
 
-#: ../src/snaps.c:853
+#: src/snaps.c:853
 msgid "Stacking layer"
 msgstr "Laag van het venster"
 
-#: ../src/snaps.c:858
+#: src/snaps.c:858
 msgid "Window List Skip"
 msgstr "Vensterlijst Overslaan"
 
-#. winops_opacity.menu
-#: ../src/snaps.c:864 ../config/strings.c:137 ../config/strings.c:164
+#: src/snaps.c:864 config/strings.c:137 config/strings.c:164
 msgid "Opacity"
 msgstr "Ondoorzichtigheid"
 
-#: ../src/snaps.c:869
+#: src/snaps.c:869
 msgid "Shadowing"
 msgstr "Schaduw"
 
-#: ../src/snaps.c:875
+#: src/snaps.c:875
 msgid "Flags"
 msgstr "Flags"
 
-#: ../src/snaps.c:894
+#: src/snaps.c:894
 msgid "Restart application on login"
 msgstr "Herstart applicatie bij inloggen"
 
-#: ../src/snaps.c:913
+#: src/snaps.c:913
 msgid "Remember this window's group(s)"
 msgstr "Herinner de groepen van dit venster"
 
-#: ../src/snaps.c:921
+#: src/snaps.c:921
 msgid "Remembered Application Attributes"
 msgstr "Onthouden Applicatie Attributen"
 
-#: ../src/snaps.c:924
+#: src/snaps.c:924
 msgid ""
 "Select the attributes of this\n"
 "window you wish to Remember\n"
@@ -2013,31 +2002,31 @@ msgstr ""
 "venster die je wilt onthouden\n"
 "vanaf nu\n"
 
-#: ../src/snaps.c:1014
+#: src/snaps.c:1014
 msgid "Delete"
 msgstr "Verwijderen"
 
-#: ../src/snaps.c:1042
+#: src/snaps.c:1042
 msgid "Remembered Settings..."
 msgstr "Onthoude Instellingen..."
 
-#: ../src/snaps.c:1049
+#: src/snaps.c:1049
 msgid "Unused"
 msgstr "Ongebruikt"
 
-#: ../src/snaps.c:1062
+#: src/snaps.c:1062
 msgid "There are no active windows with remembered attributes."
 msgstr "Er zijn geen Actieve vensters met onthoude attributen."
 
-#: ../src/snaps.c:1068
+#: src/snaps.c:1068
 msgid "Remember"
 msgstr "Onthouden"
 
-#: ../src/snaps.c:1069
+#: src/snaps.c:1069
 msgid "Remembered Windows Settings"
 msgstr "Onthouden Venster Instellingen"
 
-#: ../src/snaps.c:1072
+#: src/snaps.c:1072
 msgid ""
 "Enlightenment Remembered\n"
 "Windows Settings Dialog\n"
@@ -2045,15 +2034,15 @@ msgstr ""
 "Enlightenment Onthouden \n"
 "Vensters Instellingendialoog\n"
 
-#: ../src/snaps.c:1166
+#: src/snaps.c:1166
 msgid "Error saving snaps file\n"
 msgstr "Fout bij het opslaan van snap bestanden\n"
 
-#: ../src/sound.c:213
+#: src/sound.c:213
 msgid "Error finding sound file"
 msgstr "Fout bij het zoeken van geluidsbestanden"
 
-#: ../src/sound.c:214
+#: src/sound.c:214
 #, c-format
 msgid ""
 "Warning!  Enlightenment was unable to load the\n"
@@ -2068,11 +2057,11 @@ msgstr ""
 "Enlightenment zal verderwerken, maar je\n"
 "kan best jouw configuratie controleren.\n"
 
-#: ../src/sound.c:310
+#: src/sound.c:310
 msgid "Error initialising sound"
 msgstr "Fout bij geluidsinitialisatie"
 
-#: ../src/sound.c:311
+#: src/sound.c:311
 #, c-format
 msgid ""
 "Audio was enabled for Enlightenment but there was an error\n"
@@ -2083,19 +2072,19 @@ msgstr ""
 "bij het communiceren met de audioserver (%s).\n"
 "Audio zal nu uitgeschakeld zijn.\n"
 
-#: ../src/sound.c:460
+#: src/sound.c:460
 msgid "Enable sounds"
 msgstr "Zet geluiden aan"
 
-#: ../src/sound.c:466
+#: src/sound.c:466
 msgid "Sound"
 msgstr "Geluid"
 
-#: ../src/sound.c:467
+#: src/sound.c:467
 msgid "Audio Settings"
 msgstr "Audio Instellingen"
 
-#: ../src/sound.c:470
+#: src/sound.c:470
 msgid ""
 "Enlightenment Audio\n"
 "Settings Dialog\n"
@@ -2103,31 +2092,31 @@ msgstr ""
 "Enlightenment Audio\n"
 "Instellingendialoog\n"
 
-#: ../src/systray.c:331 ../src/systray.c:431 ../src/systray.c:439
+#: src/systray.c:331 src/systray.c:431 src/systray.c:439
 msgid "Systray Error!"
 msgstr "Systray Fout!"
 
-#: ../src/systray.c:331
+#: src/systray.c:331
 msgid "Systray went elsewhere?!?"
 msgstr "Systray verplaatst?!?"
 
-#: ../src/systray.c:431
+#: src/systray.c:431
 msgid "Only one systray is allowed"
 msgstr "Enkel één systray is toegestaan"
 
-#: ../src/systray.c:439
+#: src/systray.c:439
 msgid "Could not activate systray"
 msgstr "Kon systray niet activeren"
 
-#: ../src/systray.c:449
+#: src/systray.c:449
 msgid "Systray Options"
 msgstr "Systray Opties"
 
-#: ../src/systray.c:450
+#: src/systray.c:450
 msgid "Systray Settings"
 msgstr "Systray Instellingen"
 
-#: ../src/theme.c:341
+#: src/theme.c:341
 #, c-format
 msgid ""
 "No themes were found in the default directories:\n"
@@ -2138,32 +2127,32 @@ msgstr ""
 " %s\n"
 "Verdergaan vanaf hier is waarschijnlijk nutteloos.\n"
 
-#: ../src/theme.c:372
+#: src/theme.c:372
 msgid "Changes will take effect after restart"
 msgstr "Wijzigingen zullen in effect treden na heropstarten"
 
-#: ../src/theme.c:392
+#: src/theme.c:392
 msgid "Use theme font configuration"
 msgstr "Gebruik thema lettertype configuratie"
 
-#: ../src/theme.c:397
+#: src/theme.c:397
 #, c-format
 msgid "Use alternate font configuration (%s)"
 msgstr "Gebruik alternatieve lettertype configuratie (%s)"
 
-#: ../src/theme.c:398
+#: src/theme.c:398
 msgid "Not set"
 msgstr "Niet ingesteld"
 
-#: ../src/theme.c:405
+#: src/theme.c:405
 msgid "Theme"
 msgstr "Thema"
 
-#: ../src/theme.c:406
+#: src/theme.c:406
 msgid "Theme Settings"
 msgstr "Thema Instellingen"
 
-#: ../src/theme.c:409
+#: src/theme.c:409
 msgid ""
 "Enlightenment Theme\n"
 "Settings Dialog\n"
@@ -2171,27 +2160,27 @@ msgstr ""
 "Enlightenment Thema\n"
 "Instellingendialoog\n"
 
-#: ../src/tooltips.c:867
+#: src/tooltips.c:867
 msgid "Display Tooltips"
 msgstr "Toon Tooltips"
 
-#: ../src/tooltips.c:872
+#: src/tooltips.c:872
 msgid "Display Root Window Tips"
 msgstr "Toon Tooltips op de achtergrond van desktop"
 
-#: ../src/tooltips.c:877
+#: src/tooltips.c:877
 msgid "Tooltip Delay:\n"
 msgstr "Wachttijd voor het tonen:\n"
 
-#: ../src/tooltips.c:888
+#: src/tooltips.c:888
 msgid "Tooltips"
 msgstr "Tooltips"
 
-#: ../src/tooltips.c:889
+#: src/tooltips.c:889
 msgid "Tooltip Settings"
 msgstr "Tooltip instellingen"
 
-#: ../src/tooltips.c:892
+#: src/tooltips.c:892
 msgid ""
 "Enlightenment Tooltip\n"
 "Settings Dialog\n"
@@ -2199,8 +2188,7 @@ msgstr ""
 "Enlightenment Tooltip\n"
 "Instellingendialoog\n"
 
-#. actionclasses.cfg
-#: ../config/strings.c:5
+#: config/strings.c:5
 msgid ""
 "Click and drag to move desktop\n"
 "(on any desktop but desktop 0)"
@@ -2208,179 +2196,178 @@ msgstr ""
 "Klik en sleep om bureaublad te verplaatsen\n"
 "(op elk bureaublad behalve bureaublad 0)"
 
-#: ../config/strings.c:6 ../config/strings.c:8
+#: config/strings.c:6 config/strings.c:8
 msgid "Switch Desktops"
 msgstr "Bureaubladen Wisselen"
 
-#: ../config/strings.c:7
+#: config/strings.c:7
 msgid "Go to the next desktop."
 msgstr "Ga naar volgende bureaublad."
 
-#: ../config/strings.c:9
+#: config/strings.c:9
 msgid "Go to the previous desktop."
 msgstr "Ga naar vorige bureaublad."
 
-#: ../config/strings.c:10
+#: config/strings.c:10
 msgid "Move"
 msgstr "Verplaatsen"
 
-#: ../config/strings.c:11 ../config/strings.c:23 ../config/strings.c:26
-#: ../config/strings.c:29
+#: config/strings.c:11 config/strings.c:23 config/strings.c:26
+#: config/strings.c:29
 msgid "Move this window."
 msgstr "Verplaats dit venster."
 
-#: ../config/strings.c:12 ../config/strings.c:14 ../config/strings.c:48
+#: config/strings.c:12 config/strings.c:14 config/strings.c:48
 msgid "Shade/Unshade this window."
 msgstr "Schaduw/Ontschaduw dit venster."
 
-#: ../config/strings.c:13 ../config/strings.c:50 ../config/strings.c:53
+#: config/strings.c:13 config/strings.c:50 config/strings.c:53
 msgid "Show the Window Options menu."
 msgstr "Geef het vensteropties menu weer."
 
-#: ../config/strings.c:15
+#: config/strings.c:15
 msgid "Show/Hide group borders."
 msgstr "Geef weer/Verberg groep randen."
 
-#: ../config/strings.c:16
+#: config/strings.c:16
 msgid "Start a group."
 msgstr "Start een groep."
 
-#: ../config/strings.c:17
+#: config/strings.c:17
 msgid "Add to current group."
 msgstr "Voeg toe aan huidige groep."
 
-#: ../config/strings.c:18
+#: config/strings.c:18
 msgid "Break this window's group."
 msgstr "Breek dit venster's groep."
 
-#: ../config/strings.c:19
+#: config/strings.c:19
 msgid "Shade."
 msgstr "Schaduw."
 
-#: ../config/strings.c:20
+#: config/strings.c:20
 msgid "Unshade."
 msgstr "Ontschaduw."
 
-#: ../config/strings.c:21
+#: config/strings.c:21
 msgid "Resize"
 msgstr "Verander formaat"
 
-#: ../config/strings.c:22
+#: config/strings.c:22
 msgid "Resize this window."
 msgstr "Verander formaat van dit venster."
 
-#: ../config/strings.c:24
+#: config/strings.c:24
 msgid "Resize Horizontally"
 msgstr "Verander formaat horizontaal"
 
-#: ../config/strings.c:25
+#: config/strings.c:25
 msgid "Resize this window horizontally."
 msgstr "Verander het formaat van dit venster horizontaal."
 
-#: ../config/strings.c:27
+#: config/strings.c:27
 msgid "Resize Vertically"
 msgstr "Verander formaat verticaal"
 
-#: ../config/strings.c:28
+#: config/strings.c:28
 msgid "Resize this window vertically."
 msgstr "Verander het formaat van dit venster verticaal."
 
-#: ../config/strings.c:31
+#: config/strings.c:31
 msgid "Close this window."
 msgstr "Sluit dit scherm."
 
-#: ../config/strings.c:32
+#: config/strings.c:32
 msgid "Forcibly destroy this window."
 msgstr "Vernietigt dit venster"
 
-#: ../config/strings.c:33
+#: config/strings.c:33
 msgid "Maximize Height"
 msgstr "Maximale Hoogte"
 
-#: ../config/strings.c:34 ../config/strings.c:40
+#: config/strings.c:34 config/strings.c:40
 msgid "Toggle between maximum screen height and normal height."
 msgstr "Wissel tussen maximum schermhoogte en normale hoogte."
 
-#: ../config/strings.c:35
+#: config/strings.c:35
 msgid "Maximize Width"
 msgstr "Maximum Breedte"
 
-#: ../config/strings.c:36 ../config/strings.c:39
+#: config/strings.c:36 config/strings.c:39
 msgid "Toggle between maximum screen width and normal width."
 msgstr "Wissel tussen maximum schermbreedte en normale breedte."
 
-#: ../config/strings.c:37
+#: config/strings.c:37
 msgid "Maximize"
 msgstr "Maximaliseren"
 
-#: ../config/strings.c:38
+#: config/strings.c:38
 msgid "Toggle between maximum screen size and normal size."
 msgstr "Wissel tussen maximale schermgrootte en normale grootte."
 
-#: ../config/strings.c:41 ../config/strings.c:43
+#: config/strings.c:41 config/strings.c:43
 msgid "Send To Another Desktop"
 msgstr "Zend naar een ander bureaublad"
 
-#: ../config/strings.c:42
+#: config/strings.c:42
 msgid "Send this Window to the next desktop."
 msgstr "Stuur dit venster naar het volgende bureaublad."
 
-#: ../config/strings.c:44
+#: config/strings.c:44
 msgid "Send this Window to the previous desktop."
 msgstr "Stuur dit venster naar het vorige bureaublad."
 
-#: ../config/strings.c:45
+#: config/strings.c:45
 msgid "Snapshot"
 msgstr "Snapshot"
 
-#: ../config/strings.c:46
+#: config/strings.c:46
 msgid "This button does nothing interesting."
 msgstr "Deze knop doet niets interessants."
 
-#: ../config/strings.c:47 ../config/strings.c:130
+#: config/strings.c:47 config/strings.c:130
 msgid "Shade/Unshade"
 msgstr "Schaduw/Ontschaduwen"
 
-#: ../config/strings.c:52
+#: config/strings.c:52
 msgid "Iconify (Minimize) this window."
 msgstr "Iconifiëer (Minimaliseer) dit venster."
 
-#: ../config/strings.c:54
+#: config/strings.c:54
 msgid "More Buttons"
 msgstr "Meer Knoppen"
 
-#: ../config/strings.c:55
+#: config/strings.c:55
 msgid "Show more buttons."
 msgstr "Geef meer knoppen weer."
 
-#: ../config/strings.c:56 ../config/strings.c:128
+#: config/strings.c:56 config/strings.c:128
 msgid "Raise"
 msgstr "Naar voorgrond"
 
-#: ../config/strings.c:57
+#: config/strings.c:57
 msgid "Raise this window to the top."
 msgstr "Breng dit venster naar de voorgrond."
 
-#: ../config/strings.c:58 ../config/strings.c:129
+#: config/strings.c:58 config/strings.c:129
 msgid "Lower"
 msgstr "Naar achtergrond"
 
-#: ../config/strings.c:59
+#: config/strings.c:59
 msgid "Lower this window."
 msgstr "Verlaag dit venster."
 
-#: ../config/strings.c:60 ../config/strings.c:131
+#: config/strings.c:60 config/strings.c:131
 msgid "Stick/Unstick"
 msgstr "Plak/Ontplak"
 
-#: ../config/strings.c:61
+#: config/strings.c:61
 msgid "Toggle the Omnipresent (visible on all Desktops) state of this window."
 msgstr ""
 "Wissel naar Omnipresent (zichtbaar op Alle Bureaubladen) status van dit "
 "venster."
 
-#. bindings.cfg
-#: ../config/strings.c:63
+#: config/strings.c:63
 msgid ""
 "Clicking your mouse on the desktop will perform\n"
 "the following actions"
@@ -2388,344 +2375,335 @@ msgstr ""
 "Klikken met de muis op het bureaublad zal\n"
 "de volgende acties uitvoeren"
 
-#: ../config/strings.c:64
+#: config/strings.c:64
 msgid "Display User Menus"
 msgstr "Gebruikers Menu Weergeven"
 
-#: ../config/strings.c:65 ../config/strings.c:67
+#: config/strings.c:65 config/strings.c:67
 msgid "Display Enlightenment Menu"
 msgstr "Enlightenment Menu Weergeven"
 
-#: ../config/strings.c:66 ../config/strings.c:71
+#: config/strings.c:66 config/strings.c:71
 msgid "Display Settings Menu"
 msgstr "Instellingen Menu Weergeven"
 
-#: ../config/strings.c:68
+#: config/strings.c:68
 msgid "Display Task List Menu"
 msgstr "Takenlijst Menu Weergeven"
 
-#: ../config/strings.c:69
+#: config/strings.c:69
 msgid "Display Desktop Menu"
 msgstr "Bureaublad Menu Weergeven"
 
-#: ../config/strings.c:70
+#: config/strings.c:70
 msgid "Display Group Menu"
 msgstr "Groep Menu Weergeven"
 
-#: ../config/strings.c:72
+#: config/strings.c:72
 msgid "Go Back a Desktop"
 msgstr "Terug naar Bureaublad"
 
-#: ../config/strings.c:73
+#: config/strings.c:73
 msgid "Go Forward a Desktop"
 msgstr "Ga een Bureaublad Verder"
 
-#. fonts.pango.cfg
-#. fonts.xft.cfg
-#. matches.cfg
-#. menus.cfg
-#: ../config/strings.c:78 ../config/strings.c:81
+#: config/strings.c:78 config/strings.c:81
 msgid "Backgrounds"
 msgstr "Achtergronden"
 
-#. desktop.menu
-#: ../config/strings.c:80
+#: config/strings.c:80
 msgid "Desktop Operations"
 msgstr "Bureaublad Operaties"
 
-#: ../config/strings.c:82
+#: config/strings.c:82
 msgid "Cleanup Desktop"
 msgstr "Bureaublad Opkuisen"
 
-#: ../config/strings.c:83
+#: config/strings.c:83
 msgid "Goto Next Desktop"
 msgstr "Ga naar Volgende Bureaublad"
 
-#: ../config/strings.c:84
+#: config/strings.c:84
 msgid "Goto Previous Desktop"
 msgstr "Ga naar Vorige Bureaublad"
 
-#: ../config/strings.c:86
+#: config/strings.c:86
 msgid "Create Systray"
 msgstr "Systray aanmaken"
 
-#: ../config/strings.c:87
+#: config/strings.c:87
 msgid "Show Magnifier"
 msgstr "Vergrootglas Weergeven"
 
-#. enlightenment.menu
-#: ../config/strings.c:89
+#: config/strings.c:89
 msgid "Enlightenment"
 msgstr "Enlightenment"
 
-#: ../config/strings.c:90 ../config/strings.c:190
+#: config/strings.c:90 config/strings.c:190
 msgid "User Menus"
 msgstr "Gebruiker Menu's"
 
-#. settings.menu
-#: ../config/strings.c:91 ../config/strings.c:112 ../config/strings.c:113
+#: config/strings.c:91 config/strings.c:112 config/strings.c:113
 msgid "Settings"
 msgstr "Instellingen"
 
-#. maintenance.menu
-#: ../config/strings.c:94 ../config/strings.c:101 ../config/strings.c:116
+#: config/strings.c:94 config/strings.c:101 config/strings.c:116
 msgid "Maintenance"
 msgstr "Onderhoud"
 
-#: ../config/strings.c:95 ../config/strings.c:117
+#: config/strings.c:95 config/strings.c:117
 msgid "Help"
 msgstr "Help"
 
-#: ../config/strings.c:96 ../config/strings.c:118
+#: config/strings.c:96 config/strings.c:118
 msgid "About Enlightenment"
 msgstr "Over Enlightenment"
 
-#: ../config/strings.c:97 ../config/strings.c:119
+#: config/strings.c:97 config/strings.c:119
 msgid "About this theme"
 msgstr "Over dit thema"
 
-#: ../config/strings.c:98 ../config/strings.c:120 ../config/strings.c:194
+#: config/strings.c:98 config/strings.c:120 config/strings.c:194
 msgid "Restart"
 msgstr "Herstarten"
 
-#: ../config/strings.c:99 ../config/strings.c:121 ../config/strings.c:195
+#: config/strings.c:99 config/strings.c:121 config/strings.c:195
 msgid "Log Out"
 msgstr "Afmelden"
 
-#: ../config/strings.c:102
+#: config/strings.c:102
 msgid "Purge config file cache"
 msgstr "Configuratie bestand cache verwijderen"
 
-#: ../config/strings.c:103
+#: config/strings.c:103
 msgid "Purge pager background cache"
 msgstr "Pager achtergrond cache verwijderen"
 
-#: ../config/strings.c:104
+#: config/strings.c:104
 msgid "Purge background selector cache"
 msgstr "Achtergrond selector cache verwijderen"
 
-#: ../config/strings.c:105
+#: config/strings.c:105
 msgid "Purge all caches"
 msgstr "Alle caches verwijderen"
 
-#: ../config/strings.c:106
+#: config/strings.c:106
 msgid "Query config file cache usage"
 msgstr "Query configuratie bestand cache gebruik"
 
-#: ../config/strings.c:107
+#: config/strings.c:107
 msgid "Query pager background cache usage"
 msgstr "Query pager achtergrond cache gebruik"
 
-#: ../config/strings.c:108
+#: config/strings.c:108
 msgid "Query background selector cache usage"
 msgstr "Query achtergrond selector cache gebruik"
 
-#: ../config/strings.c:109
+#: config/strings.c:109
 msgid "Query all cache usage"
 msgstr "Query alle cache gebruik"
 
-#: ../config/strings.c:110
+#: config/strings.c:110
 msgid "Regenerate Menus"
 msgstr "Menu's regenereren"
 
-#: ../config/strings.c:127
+#: config/strings.c:127
 msgid "Leave Alone"
 msgstr "Laat alleen"
 
-#: ../config/strings.c:132
+#: config/strings.c:132
 msgid "Remember..."
 msgstr "Onthouden..."
 
-#: ../config/strings.c:133
+#: config/strings.c:133
 msgid "Window Size"
 msgstr "Venster Grootte"
 
-#: ../config/strings.c:134
+#: config/strings.c:134
 msgid "Set Stacking"
 msgstr "Stacking Instellen"
 
-#: ../config/strings.c:135
+#: config/strings.c:135
 msgid "Set Border Style"
 msgstr "Stel Randstijl in"
 
-#: ../config/strings.c:136
+#: config/strings.c:136
 msgid "Window Groups"
 msgstr "Venstergroepen"
 
-#: ../config/strings.c:141
+#: config/strings.c:141
 msgid "Configure this window's group(s)"
 msgstr "Configureer dit venster's groep(en)"
 
-#: ../config/strings.c:142
+#: config/strings.c:142
 msgid "Start a new group"
 msgstr "Start een nieuwe groep"
 
-#: ../config/strings.c:143
+#: config/strings.c:143
 msgid "Add this window to the current group"
 msgstr "Voeg dit venster toe aan de huidige groep"
 
-#: ../config/strings.c:144
+#: config/strings.c:144
 msgid "Select group to add this window to"
 msgstr "Selecteer de groep om dit venster aan toe te voegen"
 
-#: ../config/strings.c:145
+#: config/strings.c:145
 msgid "Remove this window from a group"
 msgstr "Verwijder dit venster van een groep"
 
-#: ../config/strings.c:146
+#: config/strings.c:146
 msgid "Destroy a group this window belongs to"
 msgstr "Vernietig de groep waar dit venster toe behoord"
 
-#. winops_layer.menu
-#: ../config/strings.c:148
+#: config/strings.c:148
 msgid "Stacking"
 msgstr "Stacking"
 
-#: ../config/strings.c:149
+#: config/strings.c:149
 msgid "Below"
 msgstr "Onder"
 
-#: ../config/strings.c:150
+#: config/strings.c:150
 msgid "Normal"
 msgstr "Normaal"
 
-#: ../config/strings.c:151
+#: config/strings.c:151
 msgid "Above"
 msgstr "Boven"
 
-#: ../config/strings.c:152
+#: config/strings.c:152
 msgid "On Top"
 msgstr "Bovenop"
 
-#: ../config/strings.c:155
+#: config/strings.c:155
 msgid "Toggle Skip Window Lists"
 msgstr "Wissel tussen vensterlijst overslaan"
 
-#: ../config/strings.c:156
+#: config/strings.c:156
 msgid "Toggle Fixed Position"
 msgstr "Wissel tussen vaste positie"
 
-#: ../config/strings.c:157
+#: config/strings.c:157
 msgid "Toggle Fixed Size"
 msgstr "Wissel tussen vaste grootte"
 
-#: ../config/strings.c:158
+#: config/strings.c:158
 msgid "Toggle Never Focus"
 msgstr "Wissel tussen nooit focussen"
 
-#: ../config/strings.c:159
+#: config/strings.c:159
 msgid "Toggle Click to Focus"
 msgstr "Wissel tussen klikken om te focussen"
 
-#: ../config/strings.c:160
+#: config/strings.c:160
 msgid "Toggle Never Use Area"
 msgstr "Wissel tussen Gebied nooit gebruiken"
 
-#: ../config/strings.c:161
+#: config/strings.c:161
 msgid "Toggle Button Grabs"
 msgstr "Wissel tussen Knop Grepen"
 
-#: ../config/strings.c:162
+#: config/strings.c:162
 msgid "Toggle Autoshade"
 msgstr "Wissel tussen Autoschaduw"
 
-#: ../config/strings.c:165
+#: config/strings.c:165
 msgid "Default"
 msgstr "Standaard"
 
-#: ../config/strings.c:166
+#: config/strings.c:166
 msgid "20%"
 msgstr "20%"
 
-#: ../config/strings.c:167
+#: config/strings.c:167
 msgid "40%"
 msgstr "40%"
 
-#: ../config/strings.c:168
+#: config/strings.c:168
 msgid "60%"
 msgstr "60%"
 
-#: ../config/strings.c:169
+#: config/strings.c:169
 msgid "80%"
 msgstr "80%"
 
-#: ../config/strings.c:170
+#: config/strings.c:170
 msgid "100%"
 msgstr "100%"
 
-#: ../config/strings.c:171
+#: config/strings.c:171
 msgid "Focused opacity 100%"
 msgstr "Focus opaciteit 100%"
 
-#: ../config/strings.c:172
+#: config/strings.c:172
 msgid "Focused opacity follows unfocused"
 msgstr "Focus opaciteit volgt ongefocust"
 
-#: ../config/strings.c:173
+#: config/strings.c:173
 msgid "Toggle Fading"
 msgstr "Wissel tussen Fading"
 
-#: ../config/strings.c:174
+#: config/strings.c:174
 msgid "Toggle Shadows"
 msgstr "Wissel tussen Schaduws"
 
-#: ../config/strings.c:177
+#: config/strings.c:177
 msgid "Max Size Toggle"
 msgstr "Wissel tussen maximale grootte"
 
-#: ../config/strings.c:178
+#: config/strings.c:178
 msgid "Available Max Size Toggle"
 msgstr "Wissel tussen Beschikbare maximale grootte"
 
-#: ../config/strings.c:179
+#: config/strings.c:179
 msgid "Absolute Max Size Toggle"
 msgstr "Wissel tussen Absolute maximale grootte"
 
-#: ../config/strings.c:180
+#: config/strings.c:180
 msgid "Span Xinerama Screens"
 msgstr "Overlap Xinerama Schermen"
 
-#: ../config/strings.c:181
+#: config/strings.c:181
 msgid "Max Height Toggle"
 msgstr "Maximale Hoogte instellen"
 
-#: ../config/strings.c:182
+#: config/strings.c:182
 msgid "Available Max Height Toggle"
 msgstr "Beschikbare Maximale hoogte instellen"
 
-#: ../config/strings.c:183
+#: config/strings.c:183
 msgid "Absolute Max Height Toggle"
 msgstr "Absolute Maximale hoogte instellen"
 
-#: ../config/strings.c:184
+#: config/strings.c:184
 msgid "Max Width Toggle"
 msgstr "Maximale breedte instellen"
 
-#: ../config/strings.c:185
+#: config/strings.c:185
 msgid "Available Max Width Toggle"
 msgstr "Beschikbare Maximale Breedte instellen"
 
-#: ../config/strings.c:186
+#: config/strings.c:186
 msgid "Absolute Max Width Toggle"
 msgstr "Absolute Maximale Breedte instellen"
 
-#: ../config/strings.c:187
+#: config/strings.c:187
 msgid "Fullscreen/Normal"
 msgstr "Volledig Scherm/Normaal"
 
-#: ../config/strings.c:188
+#: config/strings.c:188
 msgid "Zoom/Unzoom"
 msgstr "Inzoomen/Uitzoomen"
 
-#: ../config/strings.c:191
+#: config/strings.c:191
 msgid "User Application List"
 msgstr "Gebruiker Applicatielijst"
 
-#: ../config/strings.c:192
+#: config/strings.c:192
 msgid "Other"
 msgstr "Andere"
 
-#: ../config/strings.c:193
+#: config/strings.c:193
 msgid "Epplets"
 msgstr "Epplets"
 
