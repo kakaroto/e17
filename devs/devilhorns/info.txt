@@ -3,9 +3,9 @@ IRC Nick: devilhorns
 Cloak: developer/devilhorns
 Name: Christopher Michael
 Location: New Jersey, USA
-E-Mail: devilhorns@devilhorns.us
-WWW: http://devilhorns.us
-Managing: General E patch monkey
+E-Mail: devilhorns@comcast.net
+WWW: http://home.comcast.net/~devilhorns
+Managing: General E patch monkey, emprint, emodules
 Group: Core, Applications, Libraries
-Platform: Gentoo
+Platform: Gentoo/Sabayon
 
