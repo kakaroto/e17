@@ -49,6 +49,14 @@ AC_PROG_CC
 AC_PROG_CC_STDC
 PKG_PROG_PKG_CONFIG
 
+# Check whether pkg-config supports Requires.private
+if $PKG_CONFIG --atleast-pkgconfig-version 0.22; then
+   pkgconfig_requires_private="Requires.private"
+else
+   pkgconfig_requires_private="Requires"
+fi
+AC_SUBST(pkgconfig_requires_private)
+
 ## Check for libraries
 AC_CHECK_LIB([m], [sqrt])
 
@@ -56,11 +64,17 @@ case "$host_os" in
   mingw*|cegcc)
     PKG_CHECK_MODULES([EVIL], [evil])
     AC_DEFINE(HAVE_EVIL, 1, [Set to 1 if evil package is installed])
+    requirements="evil"
     ;;
 esac
 
 have_evas="no"
-PKG_CHECK_MODULES([EVAS], [evas >= 0.9.9], [have_evas="yes"])
+PKG_CHECK_MODULES([EVAS],
+   [evas >= 0.9.9],
+   [
+    have_evas="yes"
+    requirements="evas ${requirements}"
+   ])
 AM_CONDITIONAL(EWL_ENABLE_EVAS, test "x$have_evas" = "xyes")
 
 PKG_CHECK_MODULES([ECORE], [ecore ecore-txt ecore-file])
@@ -68,18 +82,35 @@ PKG_CHECK_MODULES([ECORE_EVAS], [ecore-evas])
 PKG_CHECK_MODULES([ECORE_INPUT], [ecore-input])
 PKG_CHECK_MODULES([EDJE], [edje >= 0.5.0])
 
-requirements="evas ecore edje"
+# ecore-evas is for the embedded test and ecore-input for the engines
+# no need to put them in requirements
+requirements="edje ecore-txt ecore-file ecore ${requirements}"
 
 # Check for libraries needed by engines
-PKG_CHECK_MODULES([ECORE_X], [ecore-x >= 0.9.9], [have_ecore_x="yes"], [have_ecore_x="no"])
+PKG_CHECK_MODULES([ECORE_X],
+   [ecore-x >= 0.9.9],
+   [have_ecore_x="yes" requirements="ecore-x ${requirements}"],
+   [have_ecore_x="no"])
 
-PKG_CHECK_MODULES([ECORE_XCB], [xcb >= 1.0 ecore-x >= 0.9.9], [have_ecore_xcb="yes"], [have_ecore_xcb="no"])
+PKG_CHECK_MODULES([ECORE_XCB],
+   [xcb >= 1.0 ecore-x >= 0.9.9],
+   [have_ecore_xcb="yes" requirements="ecore-x xcb ${requirements}"],
+   [have_ecore_xcb="no"])
 
-PKG_CHECK_MODULES([ECORE_WIN32], [ecore-win32 >= 0.9.9], [have_ecore_win32="yes"], [have_ecore_win32="no"])
+PKG_CHECK_MODULES([ECORE_WIN32],
+   [ecore-win32 >= 0.9.9],
+   [have_ecore_win32="yes" requirements="ecore-win32 ${requirements}"],
+   [have_ecore_win32="no"])
 
-PKG_CHECK_MODULES([ECORE_SDL], [ecore-sdl >= 0.9.9], [have_ecore_sdl="yes"], [have_ecore_sdl="no"])
+PKG_CHECK_MODULES([ECORE_SDL],
+   [ecore-sdl >= 0.9.9],
+   [have_ecore_sdl="yes" requirements="ecore-sdl ${requirements}"],
+   [have_ecore_sdl="no"])
 
-PKG_CHECK_MODULES([ECORE_FB], [ecore-fb >= 0.9.9], [have_ecore_framebuffer="yes"], [have_ecore_framebuffer="no"])
+PKG_CHECK_MODULES([ECORE_FB],
+   [ecore-fb >= 0.9.9],
+   [have_ecore_framebuffer="yes" requirements="ecore-fb ${requirements}"],
+   [have_ecore_framebuffer="no"])
 
 # Check for optional libraries
 
@@ -244,18 +275,18 @@ AC_SUBST(ewl_evas_engine_default)
 
 if test "x${have_emotion}" = "xyes" ; then
   ewl_media_include="#include <ewl_media.h>"
-  requirements="$requirements emotion"
+  requirements="emotion ${requirements}"
   AC_DEFINE(BUILD_EMOTION_SUPPORT, 1, [Enable Emotion Support for Ewl_Media])
 fi
 AC_SUBST(ewl_media_include)
 
 if test "x${have_efreet}" = "xyes" ; then
-  requirements="$requirements efreet"
+  requirements="efreet ${requirements}"
   AC_DEFINE(BUILD_EFREET_SUPPORT, 1, [Enable Efreet Support])
 fi
 
 if test "x${have_epsilon}" = "xyes" ; then
-  requirements="$requirements epsilon"
+  requirements="epsilon ${requirements}"
   AC_DEFINE(BUILD_EPSILON_SUPPORT, 1, [Enable Epsilon Support for Ewl_Image])
 fi
 

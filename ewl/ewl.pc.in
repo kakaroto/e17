@@ -9,7 +9,7 @@ testssrcdir=@prefix@/share/ewl/examples
 
 Name: ewl
 Description: Ewl enlightened widget library
-Requires: @requirements@
+@pkgconfig_requires_private@: @requirements@
 Version: @VERSION@
 Libs: -L${libdir} -lewl
 Cflags: -I${includedir}/ewl
