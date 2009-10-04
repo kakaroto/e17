@@ -74,6 +74,7 @@ struct _Ephoto
 	Evas_Object *flow;
 	Evas_Object *sel;
 	Eina_List *images;
+	int maximized;
 };
 extern Ephoto *em;
 

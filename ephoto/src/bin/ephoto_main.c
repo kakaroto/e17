@@ -3,6 +3,7 @@
 /*General Callbacks */
 static void window_close(Ecore_Evas *ee);
 static void window_resize(Ecore_Evas *ee);
+static void window_move(Ecore_Evas *ee);
 static void window_shown(void *data, Evas *e, Evas_Object *obj, void *event_info);
 
 /*Ephoto Main Global*/
@@ -13,12 +14,14 @@ void create_main_window(void)
 {
 	em = calloc(1, sizeof(Ephoto));
 	em->sel = NULL;
+	em->maximized = 0;
 
 	em->ee = ecore_evas_software_x11_new(0, 0, 0, 0, 955, 540);
 	ecore_evas_title_set(em->ee, "Ephoto");
 	ecore_evas_name_class_set(em->ee, "Ephoto", "Ephoto");
 	ecore_evas_callback_destroy_set(em->ee, window_close);
 	ecore_evas_callback_resize_set(em->ee, window_resize);
+	ecore_evas_callback_move_set(em->ee, window_move);
 	ecore_evas_show(em->ee);
 
 	em->e = ecore_evas_get(em->ee);
@@ -60,5 +63,22 @@ static void window_resize(Ecore_Evas *ee)
 	ecore_evas_geometry_get(ee, NULL, NULL, &w, &h);
 	evas_object_resize(em->bg, w, h);
 	evas_object_move(em->bg, 0, 0);
+}
+
+static void window_move(Ecore_Evas *ee)
+{
+	int w, h;
+
+	if (ecore_evas_maximized_get(em->ee) != em->maximized)
+	{
+		evas_object_geometry_get(em->bg, 0, 0, &w, &h);
+		if (evas_object_visible_get(em->image_browser))
+			evas_object_resize(em->image_browser, w, h);
+		if (evas_object_visible_get(em->flow))
+			evas_object_resize(em->flow, w, h);
+		em->maximized = ecore_evas_maximized_get(em->ee);
+	}
+
+	return;
 }
 
