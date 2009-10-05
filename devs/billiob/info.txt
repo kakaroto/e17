@@ -1,0 +1,11 @@
+Login:        billiob
+IRC Nick:     billiob
+Name:         Boris Faure
+Location:     Asnières sur Seine, France
+Jabber:       billiob@gmail.com
+MSN:          billiob@gmail.com
+E-Mail:       -billiob@gmail.com
+Contributing: Python-elementary
+Platform:     Debian (Linux)
+GeoData:      48.9073 2.2776
+
