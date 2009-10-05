@@ -61,7 +61,7 @@
  * @li WPA1 or WPA2 enterprise TLS. This configuration has not been tested because I don't have the hardware. If you have some problems, can test it ... Please contact me.
  *
  *
- * A module for Enlightenment DR17 exists but it is not distribute with this package but it is avaible in the official enlightenment svn : trunk/E-MODULES-EXTRA/exalt-client. The module is called exalt-client and use Exalt_DBus to communicate with the daemon.
+ * A module for Enlightenment DR17 exists but it is not distribute with this package but it is available in the official enlightenment svn : trunk/E-MODULES-EXTRA/exalt-client. The module is called exalt-client and use Exalt_DBus to communicate with the daemon.
  *
  *
  * @section exalt_install Install & configure
@@ -85,7 +85,7 @@
  * @endcode
  *
  *
- * If you want the support of wpa_supplicant or dhcp, you need wpa_supplicant and dhclient. During the autogen.sh Exalt tries to find these commands in your path. Maybe these commands are only in the path of the user root. You can specify the path with:
+ * If you want the support of wpa_supplicant or dhcp, you need wpa_supplicant and dhclient. During the autogen.sh Exalt try to find these commands in your path. Maybe these commands are only in the path of the user root. You can specify the path with:
  * @code
  * ./autogen.sh --with-wpa_supplicant=/sbin/wpa_supplicant --with-dhcp=/sbin/dhclient
  * @endcode
@@ -99,7 +99,7 @@
  * /etc/dbus-1/system.d/exalt.conf
  * @endcode
  *
- * You can use this default configuration or create your own custom file. The file is avaible here : data/daemon/dbus/exalt.conf
+ * You can use this default configuration or create your own custom file. The file is available here : data/daemon/dbus/exalt.conf
  *
  * @code
  * <!DOCTYPE busconfig PUBLIC

@@ -65,7 +65,7 @@ fi
 
 wpa_supplicant=""
 AC_ARG_WITH([wpa_supplicant],
-            AC_HELP_STRING([--with-wpa-supplicant=WPA_SUPPLICANT_PATH], [explicitly specify a wpa_supplicant path]),
+            AC_HELP_STRING([--with-wpa_supplicant=WPA_SUPPLICANT_PATH], [explicitly specify a wpa_supplicant path]),
             [wpa_supplicant=$withval])
 
 #removed since wpa_supplicant is required and not optional
