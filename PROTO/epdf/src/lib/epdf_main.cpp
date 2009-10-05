@@ -46,3 +46,24 @@ epdf_poppler_version_get (void)
 {
   return POPPLER_VERSION;
 }
+
+Eina_Bool epdf_fonts_antialias_get (void)
+{
+  return globalParams->getAntialias();
+}
+
+void epdf_fonts_antialias_set (Eina_Bool on)
+{
+  /* Nice API */
+  globalParams->setAntialias((char*)(on ? "yes" : "no"));
+}
+
+Eina_Bool epdf_lines_antialias_get (void)
+{
+    return globalParams->getVectorAntialias();
+}
+
+void epdf_lines_antialias_set (Eina_Bool on)
+{
+    globalParams->setVectorAntialias((char*)(on ? "yes" : "no"));
+}

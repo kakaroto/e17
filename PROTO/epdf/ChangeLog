@@ -1,3 +1,23 @@
+2009-10-05  Vincent Torri  <doursse at users dot sf dot net>
+
+	reviewed by: Vincent Torri
+	patch by: Mikhail Gusarov
+
+	* src/lib/epdf_main.cpp:
+	* src/lib/epdf_main.h:
+
+2009-09-12  Gustavo Barbieri
+
+	* src/lib/epdf_main.cpp:
+	use eina_init() instead of eina_list_init(), which
+	is deprecated now.
+
+2009-06-14  Gustavo Barbieri
+
+	* src/lib/esmart_pdf.h:
+	* src/lib/esmart_pdf.c:
+	update to Eina_Bool
+
 2009-05-14  Vincent Torri  <doursse at users dot sf dot net>
 
 	reviewed by: Vincent Torri
