@@ -58,6 +58,16 @@ AC_ARG_ENABLE(enotify,
 				  [enable_enotify=$enableval],
 				  [enable_enotify="yes"])
 
+# pkg-config
+PKG_PROG_PKG_CONFIG
+
+# Check whether pkg-config supports Requires.private
+if $PKG_CONFIG --atleast-pkgconfig-version 0.22; then
+   pkgconfig_requires_private="Requires.private"
+else
+   pkgconfig_requires_private="Requires"
+fi
+AC_SUBST(pkgconfig_requires_private)
 
 PKG_CHECK_MODULES([EINA], [eina-0])
 
@@ -86,9 +96,9 @@ AC_ARG_ENABLE(build-test-gui,
  ]
 )
 
-AM_CONDITIONAL([BUILD_EHAL],    [test "x${enable_ehal}"    = "xyes"])
-AM_CONDITIONAL([BUILD_ENM],     [test "x${enable_enm}"     = "xyes"])
-AM_CONDITIONAL([BUILD_ENOTIFY], [test "x${enable_enotify}" = "xyes"])
+AM_CONDITIONAL([BUILD_EHAL],     [test "x${enable_ehal}"     = "xyes"])
+AM_CONDITIONAL([BUILD_ENM],      [test "x${enable_enm}"      = "xyes"])
+AM_CONDITIONAL([BUILD_ENOTIFY],  [test "x${enable_enotify}"  = "xyes"])
 AM_CONDITIONAL([BUILD_ECONNMAN], [test "x${enable_econnman}" = "xyes"])
 
 AC_OUTPUT([
