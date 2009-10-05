@@ -1662,7 +1662,7 @@ BG_RedrawView(void)
 
    pmap = EGetWindowBackgroundPixmap(win);
 
-   ic_button = ImageclassFind("DIALOG_BUTTON", 1);
+   ic_button = ImageclassFind("DIALOG_WIDGET_BUTTON", 1);
 
    ImageclassApplySimple(ic_button, win, pmap, STATE_NORMAL, 0, 0, w, h);
 
