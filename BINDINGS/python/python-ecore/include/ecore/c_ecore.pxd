@@ -41,6 +41,8 @@ cdef extern from "Ecore.h":
     void ecore_main_loop_begin()
     void ecore_main_loop_quit()
 
+    int ecore_main_loop_glib_integrate()
+
     double ecore_time_get()
     double ecore_loop_time_get()
 

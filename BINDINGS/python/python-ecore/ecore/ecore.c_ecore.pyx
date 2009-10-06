@@ -47,6 +47,18 @@ def main_loop_iterate():
     ecore_main_loop_iterate()
     python.Py_END_ALLOW_THREADS
 
+def main_loop_glib_integrate():
+    """Ask Ecore to integrate with GLib, running its default GMainContext.
+
+    After this call, Ecore will act like GLib's main loop and also
+    dispatch GLib's timers, fd-handlers and idlers. It makes possible
+    to run Ecore-based applications with libraries that depends on
+    GLib main loop, like GConf, GTK, GUPnP and others.
+
+    @raises SystemError: if failed to integrate or no glib support.
+    """
+    if not ecore_main_loop_glib_integrate():
+        raise SystemError("failed to integrate GLib main loop into ecore.")
 
 def time_get():
     """Get current time, in seconds.
