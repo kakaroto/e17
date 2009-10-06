@@ -17,6 +17,8 @@ AM_PROG_CC_STDC
 AC_HEADER_STDC
 AC_C_CONST
 
+m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES([yes])])
+
 # Find edje_cc
 PKG_CHECK_MODULES(EDJE, [edje >= 0.5.0])
 AC_ARG_WITH(edje-cc,
