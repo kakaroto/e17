@@ -95,6 +95,21 @@ fi
 
 AM_CONDITIONAL(BUILD_ETHUMB, test $have_ethumb = yes)
 
+AC_ARG_ENABLE([libexif],
+   [AC_HELP_STRING([--enable-libexif], [enable libexif support @<:@default=yes@:>@])],
+   [
+    if test "x${enableval}" = "xyes" ; then
+       _iv_enable_libexif="yes"
+    else
+       _iv_enable_libexif="no"
+    fi
+   ],
+   [_iv_enable_libexif="yes"]
+)
+
+AC_MSG_CHECKING([whether ethumb is built])
+AC_MSG_RESULT([${_iv_enable_libexif}])
+
 have_libexif="no"
 
 if test "x${_iv_enable_libexif}" = "xyes" ; then
