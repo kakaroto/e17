@@ -1038,7 +1038,6 @@ read_image(IV *iv, IV_Image_Dest dest)
 	     else if (dest == IMAGE_CURRENT)
 	       iv->account->current = f;
 
-	     eina_stringshare_del(cur->file_path);
 	     iv->files = eina_inlist_remove(iv->files, EINA_INLIST_GET(cur));
 	     iv_file_free(cur);
 	     iv->account->count--;
