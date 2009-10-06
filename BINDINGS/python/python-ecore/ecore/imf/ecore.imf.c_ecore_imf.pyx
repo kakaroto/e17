@@ -15,7 +15,7 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with this Python-Ecore.  If not, see <http://www.gnu.org/licenses/>.
 
-cimport ecore.c_ecore_data
+cimport ecore.c_ecore
 
 def init():
     return ecore_imf_init()
@@ -24,38 +24,30 @@ def shutdown():
     return ecore_imf_shutdown()
 
 def available_ids():
-    cdef Ecore_List *lst
+    cdef ecore.c_ecore.Eina_List *lst, *itr
     cdef char *data
     ret = []
 
-    lst = ecore_imf_context_available_ids_get()
-    if lst != NULL:
-        ecore.c_ecore_data.ecore_list_first_goto(lst)
-        data = <char *> ecore.c_ecore_data.ecore_list_next(lst)
-
-        while data != NULL:
-            ret.append(data)
-            data = <char*> ecore.c_ecore_data.ecore_list_next(lst)
-
-        ecore.c_ecore_data.ecore_list_destroy(lst)
+    lst = itr = ecore_imf_context_available_ids_get()
+    while itr != NULL:
+        data = <char *>itr.data
+        ret.append(data)
+        itr = itr.next
+    ecore.c_ecore.eina_list_free(lst)
 
     return ret
 
 def available_ids_by_canvas_type(char *canvas_type):
-    cdef Ecore_List *lst
+    cdef ecore.c_ecore.Eina_List *lst, *itr
     cdef char *data
     ret = []
 
-    lst = ecore_imf_context_available_ids_by_canvas_type_get(canvas_type)
-    if lst != NULL:
-        ecore.c_ecore_data.ecore_list_first_goto(lst)
-        data = <char *> ecore.c_ecore_data.ecore_list_next(lst)
-
-        while data != NULL:
-            ret.append(data)
-            data = <char*> ecore.c_ecore_data.ecore_list_next(lst)
-
-        ecore.c_ecore_data.ecore_list_destroy(lst)
+    lst = itr = ecore_imf_context_available_ids_by_canvas_type_get(canvas_type)
+    while itr != NULL:
+        data = <char *>itr.data
+        ret.append(data)
+        itr = itr.next
+    ecore.c_ecore.eina_list_free(lst)
 
     return ret
 

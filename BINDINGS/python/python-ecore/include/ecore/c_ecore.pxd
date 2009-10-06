@@ -34,6 +34,14 @@ cdef extern from "Ecore.h":
     ctypedef struct Ecore_Fd_Handler
     ctypedef void Ecore_Event_Handler
 
+    ctypedef struct Eina_List:
+        void      *data
+        Eina_List *next
+        Eina_List *prev
+        void      *accounting
+
+    Eina_List *eina_list_free(Eina_List *list)
+
     int ecore_init()
     int ecore_shutdown()
 

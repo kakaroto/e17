@@ -97,8 +97,7 @@ ecorexscreensavermodule = Extension('ecore.x.screensaver',
 
 ecoreimfmodule = Extension('ecore.imf.c_ecore_imf',
                            sources=['ecore/imf/ecore.imf.c_ecore_imf.pyx'],
-                           depends=['include/ecore/c_ecore_data.pxd',
-                                    'include/ecore/imf/c_ecore_imf.pxd',
+                           depends=['include/ecore/imf/c_ecore_imf.pxd',
                                    ],
                            **pkgconfig('"ecore-imf >= 0.9.9.050" ''"eina-0 >= 0.0.1"'))
 

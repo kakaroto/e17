@@ -66,7 +66,7 @@ cdef extern from "Ecore_IMF.h":
     # Structures
     #
     ctypedef struct Ecore_IMF_Context
-    ctypedef struct Ecore_List
+    ctypedef struct Eina_List
 
 
     ctypedef struct Ecore_IMF_Event_Preedit_Start:
@@ -220,8 +220,8 @@ cdef extern from "Ecore_IMF.h":
     int  ecore_imf_init()
     int  ecore_imf_shutdown()
 
-    Ecore_List *ecore_imf_context_available_ids_get()
-    Ecore_List *ecore_imf_context_available_ids_by_canvas_type_get(char *canvas_type)
+    Eina_List *ecore_imf_context_available_ids_get()
+    Eina_List *ecore_imf_context_available_ids_by_canvas_type_get(char *canvas_type)
     char *ecore_imf_context_default_id_get()
     char *ecore_imf_context_default_id_by_canvas_type_get(char *canvas_type)
     Ecore_IMF_Context_Info *ecore_imf_context_info_by_id_get(char *id)
