@@ -95,10 +95,14 @@ AM_CONDITIONAL(BUILD_ETHUMB, test $have_ethumb = yes)
 
 have_libexif="no"
 
-PKG_CHECK_MODULES(EXIF, libexif, [
-    have_libexif="yes"
-    AC_DEFINE(HAVE_LIBEXIF, 1, [have libexif support])
-])
+if test "x${_iv_enable_libexif}" = "xyes" ; then
+    PKG_CHECK_MODULES(EXIF, libexif, [
+        have_libexif="yes"
+        AC_DEFINE(HAVE_LIBEXIF, 1, [have libexif support])
+    ],[
+       have_libexif="no"
+    ])
+fi
 
 AM_CONDITIONAL(BUILD_LIBEXIF, test $have_libexif = yes)
 
