@@ -20,7 +20,6 @@ cb_pending(DBusPendingCall *pending, void *user_data)
   {
     INFO("E-dbus: NOT COMPLETED");
     free(data);
-    dbus_message_unref(msg);
     dbus_pending_call_unref(pending);
     return;
   }
