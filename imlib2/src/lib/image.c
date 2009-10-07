@@ -726,6 +726,7 @@ __imlib_RescanLoaders(void)
 {
    static time_t       last_scan_time = 0;
    static time_t       last_modified_system_time = 0;
+   static int          scanned = 0;
    time_t              current_time;
    char                do_reload = 0;
 
@@ -747,7 +748,7 @@ __imlib_RescanLoaders(void)
         current_time =
            __imlib_FileModDate(__XOS2RedirRoot(SYS_LOADERS_PATH "/loaders/"));
 #endif
-        if (current_time > last_modified_system_time)
+        if ((current_time > last_modified_system_time) || (!scanned))
           {
              /* yup - set the "do_reload" flag */
              do_reload = 1;
@@ -759,6 +760,7 @@ __imlib_RescanLoaders(void)
       return;
    __imlib_RemoveAllLoaders();
    __imlib_LoadAllLoaders();
+   scanned = 1;
 }
 
 /* remove all loaders int eh list we have cached so we can re-load them */
