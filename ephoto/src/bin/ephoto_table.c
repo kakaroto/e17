@@ -409,41 +409,39 @@ static void _table_smart_change_page(Smart_Data *sd, int direction)
 	{
 		i = eina_list_data_get(iterator);
 
-	        if (sd->cur_row <= sd->rows)
-		{
-			i = eina_list_data_get(iterator);
-			evas_object_show(i);
-			evas_object_move(i, sd->tw, sd->th);
-			edje_object_signal_emit(i, "ephoto.thumb.visible", "ephoto");
+		evas_object_show(i);
+		edje_object_signal_emit(i, "ephoto.thumb.visible", "ephoto");
+		evas_object_move(i, sd->tw, sd->th);
+		edje_object_signal_emit(i, "ephoto.thumb.visible", "ephoto");
 
-			if (sd->cur_col == sd->columns)
-				sd->tw += sd->itemw;
-			else
-        			sd->tw += (sd->itemw + sd->padw);
+		if (sd->cur_col == sd->columns)
+			sd->tw += sd->itemw;
+		else
+        		sd->tw += (sd->itemw + sd->padw);
 
-			if (sd->cur_col == sd->columns)
-        		{
-				if (sd->cur_row == sd->rows)
-					sd->th += sd->itemh;
-				else
-                			sd->th += (sd->itemh + sd->padh);
-				sd->tw = 60;
-				sd->cur_row++;
-				sd->cur_col = 1;
-        		}
+		if (sd->cur_col == sd->columns)
+        	{
+			if (sd->cur_row == sd->rows)
+				sd->th += sd->itemh;
 			else
-				sd->cur_col++;
-		};
+                		sd->th += (sd->itemh + sd->padh);
+			sd->tw = 60;
+			sd->cur_row++;
+			sd->cur_col = 1;
+        	}
+		else
+			sd->cur_col++;
+
 		iterator = eina_list_next(iterator);
 		iteratorb = eina_list_next(iteratorb);
 	}
 	if (sd->cur_row <= sd->rows)
 	{
-		for (j = 0; (j <= sd->items_per_page) && eina_list_data_get(iterator) != NULL; j++)
+		for (j = 0; (j <= sd->items_per_page) && eina_list_data_get(iteratorb) != NULL; j++)
 		{
 			if (sd->cur_row > sd->rows)
 				return;
-			
+
 			image = eina_list_data_get(iteratorb);
 
 			img = edje_object_add(em->e);
@@ -475,15 +473,11 @@ static void _table_smart_change_page(Smart_Data *sd, int direction)
 	
 			evas_imaging_image_free(im);
 
-			if (sd->cur_col == sd->columns)
-				sd->tw += sd->itemw;
-			else
-        			sd->tw += (sd->itemw + sd->padw);
-
 			sd->items = eina_list_append(sd->items, img);
 
 			if (sd->cur_col == sd->columns)
         		{
+				sd->tw += sd->itemw;
 				if (sd->cur_row == sd->rows)
 					sd->th += sd->itemh;
 				else
@@ -493,7 +487,10 @@ static void _table_smart_change_page(Smart_Data *sd, int direction)
 				sd->cur_col = 1;
         		}
 			else
+			{
+				sd->tw += (sd->itemw + sd->padw);
 				sd->cur_col++;
+			}
 			iteratorb = eina_list_next(iteratorb);
 		}
 	}
@@ -612,15 +609,11 @@ static void _table_smart_reconfigure(Smart_Data *sd)
 	
 			evas_imaging_image_free(im);
 
-			if (sd->cur_col == sd->columns)
-				sd->tw += sd->itemw;
-			else
-        			sd->tw += (sd->itemw + sd->padw);
-
 			sd->items = eina_list_append(sd->items, img);
 
 			if (sd->cur_col == sd->columns)
         		{
+				sd->tw += sd->itemw;
 				if (sd->cur_row == sd->rows)
 					sd->th += sd->itemh;
 				else
@@ -630,7 +623,10 @@ static void _table_smart_reconfigure(Smart_Data *sd)
 				sd->cur_col = 1;
         		}
 			else
+			{
+				sd->tw += (sd->itemw + sd->padw);
 				sd->cur_col++;
+			}
 			iteratorb = eina_list_next(iteratorb);
 		}
 	}
