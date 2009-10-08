@@ -1204,8 +1204,9 @@ on_idler(void *data)
 	     iv->gui.next_img = NULL;
 
 #ifdef HAVE_ETHUMB
-	     elm_genlist_item_selected_set(iv->account->current->gl_item,
-					   EINA_TRUE);
+	     if (iv->account->current->gl_item)
+	       elm_genlist_item_selected_set(iv->account->current->gl_item,
+					     EINA_TRUE);
 #endif
 	  }
      }
@@ -1240,8 +1241,9 @@ on_idler(void *data)
 	     iv->gui.prev_img = NULL;
 
 #ifdef HAVE_ETHUMB
-	     elm_genlist_item_selected_set(iv->account->current->gl_item,
-					   EINA_TRUE);
+	     if (iv->account->current->gl_item)
+	       elm_genlist_item_selected_set(iv->account->current->gl_item,
+					     EINA_TRUE);
 #endif
 	  }
      }
