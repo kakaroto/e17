@@ -12,10 +12,12 @@ do_bootstrap ()
 
   echo "Bootstrapping '$module'..."
 
-  ./bootstrap &> $BASEDIR/logs/$module.bootstrap.log
+  LOGFILE=$BASEDIR/logs/$module.bootstrap.log
+  ./bootstrap &> $LOGFILE
  
   if [ $? != 0 ]; then
     echo "Failed while bootstrapping!"
+    echo "See $LOGFILE for more information..."
     $val_skip_error || exit
   else
     echo "Successfull bootstrapped!"
@@ -32,15 +34,18 @@ do_configure ()
 
   echo "Configuring '$module'..."
 
+  LOGFILE=$BASEDIR/logs/$module.configure.log
+
   ## choose debug
   if [ $val_debug = true ]; then
-    CXXFLAGS="-O0 -ggdb" CFLAGS="-O0 -ggdb" ./configure &> $BASEDIR/logs/$module.configure.log
+    CXXFLAGS="-O0 -ggdb" CFLAGS="-O0 -ggdb" ./configure &> $LOGFILE
   else
-    ./configure &> $BASEDIR/logs/$module.configure.log
+    ./configure &> $LOGFILE
   fi
 
   if [ $? != 0 ]; then
     echo "Failed while configuring!"
+    echo "See $LOGFILE for more information..."
     $val_skip_error || exit
   else
     echo "Successfull configuring!"
@@ -56,11 +61,14 @@ do_make ()
 
   cd $BASEDIR/$module
 
+  LOGFILE=$BASEDIR/logs/$module.make.log
+
   echo "Compiling '$module'... ($params)"
 
-  make $params &> $BASEDIR/logs/$module.make.log
+  make $params &> $LOGFILE
   if [ $? != 0 ]; then
     echo "Failed while compiling ($params)!"
+    echo "See $LOGFILE for more information..."
     $val_skip_error || exit
   else
     echo "Successfull compiled ($params)!"

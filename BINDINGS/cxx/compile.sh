@@ -44,6 +44,7 @@ for i
 done
 
 ## create log directory
+rm -rf logs
 mkdir -p logs
 
 for module in $PKG
