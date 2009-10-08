@@ -187,6 +187,8 @@ void ephoto_table_viewport_set(Evas_Object *obj, int w, int h)
 	sd->rows = sd->pageh/(sd->padh+sd->itemh);
 	sd->columns = sd->pagew/(sd->padw+sd->itemw);
 	sd->items_per_page = sd->rows*sd->columns;
+	if (sd->items_per_page == 0)
+		return;
         pages = eina_list_count(sd->images)/sd->items_per_page;
         remain = eina_list_count(sd->images)%sd->items_per_page;
         if (remain > 0)
@@ -212,6 +214,9 @@ void ephoto_table_pack(Evas_Object *obj, char *image)
 	sd = evas_object_smart_data_get(obj);
 	if (!sd)
 		return;	
+
+	if (sd->items_per_page == 0)
+		return;
 
 	sd->images = eina_list_append(sd->images, strdup(image));
 
@@ -306,6 +311,9 @@ static void _table_smart_change_page(Smart_Data *sd, int direction)
 	const char *thumb;
 	int w, h, j, vis, head, back, pages, remain;
 	Eina_List *iterator, *iteratorb;
+
+	if (sd->items_per_page == 0)
+		return;
 
 	pages = eina_list_count(sd->images)/sd->items_per_page;
         remain = eina_list_count(sd->images)%sd->items_per_page;
@@ -500,6 +508,9 @@ static void _table_smart_reconfigure(Smart_Data *sd)
 	const char *thumb;
 	int w, h, j;
 	Eina_List *iterator, *iteratorb;
+
+	if (sd->items_per_page == 0)
+		return;
 
 	if (!sd->images)
 		return;
