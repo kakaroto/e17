@@ -6,7 +6,6 @@ PKG="eflxx
      edjexx
      ecorexx
      esmartxx
-     etkxx
      ewlxx
      emotionxx
      elementaryxx
