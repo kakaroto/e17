@@ -97,6 +97,7 @@ struct _IV
 #ifdef HAVE_ETHUMB
 	Eina_Bool hide_previews : 1;
 	Eina_Bool previews_visible : 1;
+	Eina_Bool ethumb_connection : 1;
 #endif
    } flags;
 
@@ -738,12 +739,14 @@ on_thumb_connect(void *data, Ethumb_Client *e, Eina_Bool success)
 
    if (!success)
      {
+	iv->flags.ethumb_connection = EINA_FALSE;
 	iv->connection_retry--;
 	iv->ethumb_client = NULL;
 	ERR("Error connecting to ethumbd, thumbnails will not be available!");
 	return;
      }
 
+   iv->flags.ethumb_connection = EINA_TRUE;
    if (!iv->gui.preview_genlist)
      preview_window_create(iv);
 
@@ -756,6 +759,7 @@ on_thumb_die(void *data, Ethumb_Client *client)
 {
    IV *iv;
 
+   iv->flags.ethumb_connection = EINA_FALSE;
    iv->ethumb_client = ethumb_client_connect(on_thumb_connect, iv, NULL);
    ERR("Connection to ethumbd lost!");
 }
@@ -1154,7 +1158,7 @@ on_idler(void *data)
 #ifdef HAVE_ETHUMB
 	     if (iv->preview_files && iv->connection_retry)
 	       {
-		  if (iv->ethumb_client)
+		  if (iv->ethumb_client && iv->flags.ethumb_connection)
 		    thumb_queue_process(iv);
 		  else
 		    iv->ethumb_client = ethumb_client_connect(on_thumb_connect, iv, NULL);
