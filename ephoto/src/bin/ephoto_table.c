@@ -449,7 +449,7 @@ static void _table_smart_change_page(Smart_Data *sd, int direction)
 			evas_object_show(img);
 			evas_object_move(img, sd->tw, sd->th);
 			edje_object_signal_emit(img, "ephoto.thumb.visible", "ephoto");
-			evas_object_data_set(img, "image", eina_list_nth_list(sd->images, eina_list_count(sd->images)-1));
+			evas_object_data_set(img, "image", iteratorb);
 
 			evas_object_resize(img, sd->itemw, sd->itemh);
         		evas_object_size_hint_min_set(img, sd->itemw, sd->itemh);
@@ -585,7 +585,7 @@ static void _table_smart_reconfigure(Smart_Data *sd)
 			evas_object_show(img);
 			evas_object_move(img, sd->tw, sd->th);
 			edje_object_signal_emit(img, "ephoto.thumb.visible", "ephoto");
-			evas_object_data_set(img, "image", eina_list_nth_list(sd->images, eina_list_count(sd->images)-1));
+			evas_object_data_set(img, "image", iteratorb);
 
 			evas_object_resize(img, sd->itemw, sd->itemh);
         		evas_object_size_hint_min_set(img, sd->itemw, sd->itemh);
