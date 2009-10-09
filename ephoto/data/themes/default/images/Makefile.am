@@ -18,4 +18,5 @@ move_left.png \
 move_right.png \
 selected.png \	
 thumb_shadow.png \
-left_arrow.png
+left_arrow.png \
+window_fullscreen.png

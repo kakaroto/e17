@@ -4,6 +4,7 @@
 static void window_close(Ecore_Evas *ee);
 static void window_resize(Ecore_Evas *ee);
 static void window_shown(void *data, Evas *e, Evas_Object *obj, void *event_info);
+static void go_fullscreen(void *data, Evas_Object *obj, const char *emission, const char *source);
 
 /*Ephoto Main Global*/
 Ephoto *em;
@@ -32,6 +33,8 @@ void create_main_window(void)
 	evas_object_move(em->bg, 0, 0);
 	evas_object_event_callback_add(em->bg, EVAS_CALLBACK_SHOW, window_shown, NULL);
 	evas_object_show(em->bg);
+
+	edje_object_signal_callback_add(em->bg, "mouse,up,1", "ephoto.window.fullscreen", go_fullscreen, NULL);
 }
 
 static void
@@ -68,5 +71,17 @@ static void window_resize(Ecore_Evas *ee)
 		ephoto_table_viewport_set(em->image_browser, w, h);
         if (evas_object_visible_get(em->flow))
         	evas_object_resize(em->flow, w, h);
+}
+
+static void go_fullscreen(void *data, Evas_Object *obj, const char *emission, const char *source)
+{
+	int full;
+
+	full = ecore_evas_fullscreen_get(em->ee);
+
+	if (full == 0)
+		ecore_evas_fullscreen_set(em->ee, 1);
+	if (full == 1)
+		ecore_evas_fullscreen_set(em->ee, 0);
 }
 

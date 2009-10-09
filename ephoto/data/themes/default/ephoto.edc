@@ -12,6 +12,7 @@ collections
 		image: "move_right.png" COMP;
 		image: "thumb_shadow.png" COMP;
 		image: "left_arrow.png" COMP;	
+		image: "window_fullscreen.png" COMP;
 	}
 	group 
 	{
@@ -65,6 +66,25 @@ collections
 					rel2.to: "thumb_area";
 					rel2.relative: 1.0 1.0;
 					rel2.offset: -1 -1;
+				}
+			}
+			part
+			{
+				name: "ephoto.window.fullscreen";
+				type: IMAGE;
+				mouse_events: 1;
+				description
+				{
+					state: "default" 0.0;
+					min: 24 24;
+					max: 24 24;
+					rel1.to: "background";
+					rel1.relative: 1.0 1.0;
+					rel1.offset: -25 -20;
+					rel2.to: "background";
+					rel2.relative: 1.0 1.0;
+					rel2.offset: -25 -20;
+					image.normal: "window_fullscreen.png";
 				}
 			}
 		}
