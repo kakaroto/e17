@@ -7,6 +7,7 @@ AC_INIT(efm_nav, 0.0.1, devilhorns@devilhorns.us)
 AC_PREREQ(2.59)
 AC_CONFIG_HEADERS(config.h)
 AM_INIT_AUTOMAKE(1.8)
+m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES([yes])])
 
 AC_CANONICAL_BUILD
 AC_CANONICAL_HOST
