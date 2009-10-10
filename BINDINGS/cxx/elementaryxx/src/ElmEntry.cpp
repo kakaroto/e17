@@ -39,12 +39,14 @@ void ElmEntry::setText (const std::string &entry)
 
 const std::string ElmEntry::getText () const
 {
-  return elm_entry_entry_get (o);
+  const char *tmp = elm_entry_entry_get (o);
+  return tmp ? tmp : string ();
 }
 
 const std::string ElmEntry::getSelection () const
 {
-  return elm_entry_selection_get (o);
+  const char *tmp = elm_entry_selection_get (o);
+  return tmp ? tmp : string ();
 }
 
 void ElmEntry::insertText (const std::string &entry)
@@ -74,12 +76,14 @@ void ElmEntry::selectAll ()
 
 const std::string ElmEntry::markupToUtf8 (const std::string &str)
 {
-  return elm_entry_markup_to_utf8 (str.c_str ());
+  const char *tmp = elm_entry_markup_to_utf8 (str.c_str ());
+  return tmp ? tmp : string ();
 }
 
 const std::string ElmEntry::utf8ToMarkup (const std::string &str)
 {
-  return elm_entry_utf8_to_markup (str.c_str ());
+  const char *tmp = elm_entry_utf8_to_markup (str.c_str ());
+  return tmp ? tmp : string ();
 }
 
 } // end namespace efl
