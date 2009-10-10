@@ -21,7 +21,7 @@
 int _e_dbus_log_dom = -1;
 static int connection_slot = -1;
 
-static int init = 0;
+static int _edbus_init_count = 0;
 static int close_connection = 0;
 EAPI int E_DBUS_EVENT_SIGNAL = 0;
 
@@ -595,29 +595,31 @@ e_dbus_connection_dbus_connection_get(E_DBus_Connection *conn)
 EAPI int
 e_dbus_init(void)
 {
-  if (++init != 1) return init;
+  if (++_edbus_init_count != 1)
+    return _edbus_init_count;
   
   /**
    * eina initialization 
    */
   
-  if(!eina_init())
+  if (!eina_init())
     {
       fprintf(stderr,"E-dbus: Enable to initialize the eina module");
-      return -1;
+      return --_edbus_init_count;
     }
 
-  _e_dbus_log_dom = eina_log_domain_register("e_dbus",E_DBUS_COLOR_DEFAULT);
-  if(_e_dbus_log_dom < 0)
+  _e_dbus_log_dom = eina_log_domain_register("e_dbus", E_DBUS_COLOR_DEFAULT);
+  if (_e_dbus_log_dom < 0)
     {
       EINA_LOG_ERR("Enable to create a 'e_dbus' log domain");
       eina_shutdown();
-      return -1;
+      return --_edbus_init_count;
     }
 
   E_DBUS_EVENT_SIGNAL = ecore_event_type_new();
   e_dbus_object_init();
-  return init;
+
+  return _edbus_init_count;
 }
 
 /**
@@ -626,10 +628,13 @@ e_dbus_init(void)
 EAPI int
 e_dbus_shutdown(void)
 {
-  if (--init) return init;
+  if (--_edbus_init_count)
+    return _edbus_init_count;
+
   e_dbus_object_shutdown();
   eina_log_domain_unregister(_e_dbus_log_dom);
   _e_dbus_log_dom = -1;
   eina_shutdown();
-  return init;
+
+  return _edbus_init_count;
 }

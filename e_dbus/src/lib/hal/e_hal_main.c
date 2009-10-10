@@ -7,42 +7,40 @@ int _e_dbus_hal_init_count = 0;
 EAPI int
 e_hal_init(void)
 {
-   if (_e_dbus_hal_init_count)
-     return ++_e_dbus_hal_init_count;
+   if (++_e_dbus_hal_init_count != 1)
+     return _e_dbus_hal_init_count;
 
    if (!eina_init())
-     return 0;
+     return --_e_dbus_hal_init_count;
 
    _e_dbus_hal_log_dom = eina_log_domain_register
      ("e_hal", E_DBUS_COLOR_DEFAULT);
    if (_e_dbus_hal_log_dom < 0)
      {
 	EINA_LOG_ERR("Could not register 'e_hal' log domain.");
-	goto error_log_domain;
-	return 0;
+	goto shutdown_eina;
      }
 
    if (!e_dbus_init()) {
       ERR("Could not initialize E_DBus.");
-      goto error_e_dbus;
+      goto unregister_log_domain;
    }
 
-   _e_dbus_hal_init_count = 1;
-   return 1;
+   return _e_dbus_hal_init_count;
 
- error_e_dbus:
+ unregister_log_domain:
    eina_log_domain_unregister(_e_dbus_hal_log_dom);
    _e_dbus_hal_log_dom = -1;
- error_log_domain:
+ shutdown_eina:
    eina_shutdown();
-   return 0;
+
+   return _e_dbus_hal_init_count;
 }
 
 EAPI int
 e_hal_shutdown(void)
 {
-   _e_dbus_hal_init_count--;
-   if (_e_dbus_hal_init_count)
+   if (--_e_dbus_hal_init_count != 0)
      return _e_dbus_hal_init_count;
 
    e_dbus_shutdown();
@@ -51,5 +49,5 @@ e_hal_shutdown(void)
    _e_dbus_hal_log_dom = -1;
    eina_shutdown();
 
-   return 0;
+   return _e_dbus_hal_init_count;
 }
