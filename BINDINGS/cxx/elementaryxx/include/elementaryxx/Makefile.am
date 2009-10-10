@@ -23,7 +23,8 @@ libelementaryxx_HEADERS = \
 	ElmTable.h \
 	ElmWidget.h \
 	ElmLayout.h \
-	ElmHover.h
+	ElmHover.h \
+	ElmNotepad.h
 
 libelementaryxxdir = \
 	$(pkgincludedir)

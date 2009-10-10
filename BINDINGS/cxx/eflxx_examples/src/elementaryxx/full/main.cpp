@@ -838,103 +838,103 @@ my_bt_14(void *data, Evas_Object *obj, void *event_info)
   win->show ();
 }
 
-#if 0
-
 static void
-my_notepad_bt_1(void *data, Evas_Object *obj, void *event_info)
+my_notepad_bt_1(Evas_Object *obj, void *event_info, ElmNotepad *np)
 {
-  Evas_Object *np = data;
+  // TODO
 }
 
 static void
-my_notepad_bt_2(void *data, Evas_Object *obj, void *event_info)
+my_notepad_bt_2(Evas_Object *obj, void *event_info, ElmNotepad *np)
 {
-  Evas_Object *np = data;
+  // TODO
 }
 
 static void
-my_notepad_bt_3(void *data, Evas_Object *obj, void *event_info)
+my_notepad_bt_3(Evas_Object *obj, void *event_info, ElmNotepad *np)
 {
-  Evas_Object *np = data;
+  // TODO
 }
 
 static void
 my_bt_15(void *data, Evas_Object *obj, void *event_info)
 {
-  Evas_Object *win, *bg, *bx, *bx2, *bt, *ic, *np;
-  char buf[PATH_MAX];
+  ElmButton *bt = NULL;
+  ElmIcon *ic = NULL;
+  
+  ElmWindow *win = ElmWindow::factory ("notepad", ELM_WIN_BASIC);
+  win->setTitle ("Notepad");
+  win->setAutoDel (true);
+  
+  ElmBackground *bg = ElmBackground::factory (*win);
+  win->addObjectResize (*bg);
+  bg->setWeightHintSize (EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+  bg->show ();
+  
+  ElmBox *bx = ElmBox::factory (*win);
+  bx->setWeightHintSize (EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+  win->addObjectResize (*bx);
+  bx->show ();
 
-  win = elm_win_add(NULL, "notepad", ELM_WIN_BASIC);
-  elm_win_title_set(win, "Notepad");
-  elm_win_autodel_set(win, 1);
+  ElmNotepad *np = ElmNotepad::factory (*win);
+  np->setFile ("note.txt", ELM_TEXT_FORMAT_PLAIN_UTF8);
+  np->setWeightHintSize (EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+  np->setAlignHintSize (EVAS_HINT_FILL, EVAS_HINT_FILL);
+  bx->packEnd (*np);
+  np->show ();
 
-  bg = elm_bg_add(win);
-  elm_win_resize_object_add(win, bg);
-  evas_object_size_hint_weight_set(bg, 1.0, 1.0);
-  evas_object_show(bg);
+  ElmBox *bx2 = ElmBox::factory (*win);
+  bx2->setHorizontal (true);
+  bx2->setHomogenous (true);
+  bx2->setWeightHintSize (EVAS_HINT_EXPAND, 0.0);
+  bx2->setAlignHintSize (EVAS_HINT_FILL, EVAS_HINT_FILL);
 
-  bx = elm_box_add(win);
-  evas_object_size_hint_weight_set(bx, 1.0, 1.0);
-  elm_win_resize_object_add(win, bx);
-  evas_object_show(bx);
+  bt = ElmButton::factory (*win);
+  ic = ElmIcon::factory (*win);
+  ic->setStandard ("arrow_left");
+  ic->setScale (true, false);
+  bt->setIcon (*ic);
+  ic->show ();
+  bt->getEventSignal ("clicked")->connect (sigc::bind (sigc::ptr_fun (&my_notepad_bt_1), np));
+  bt->setAlignHintSize (EVAS_HINT_FILL, EVAS_HINT_FILL);
+  bt->setWeightHintSize (EVAS_HINT_EXPAND, 0.0);
+  bx2->packEnd (*bt);
+  bt->show ();
 
-  np = elm_notepad_add(win);
-  elm_notepad_file_set(np, "note.txt", ELM_TEXT_FORMAT_PLAIN_UTF8);
-  evas_object_size_hint_weight_set(np, 1.0, 1.0);
-  evas_object_size_hint_align_set(np, -1.0, -1.0);
-  elm_box_pack_end(bx, np);
-  evas_object_show(np);
+  bt = ElmButton::factory (*win);
+  ic = ElmIcon::factory (*win);
+  ic->setStandard ("close");
+  ic->setScale (true, false);
+  bt->setIcon (*ic);
+  ic->show ();
+  bt->getEventSignal ("clicked")->connect (sigc::bind (sigc::ptr_fun (&my_notepad_bt_2), np));
+  bt->setAlignHintSize (EVAS_HINT_FILL, EVAS_HINT_FILL);
+  bt->setWeightHintSize (EVAS_HINT_EXPAND, 0.0);
+  bx2->packEnd (*bt);
+  bt->show ();
 
-  bx2 = elm_box_add(win);
-  elm_box_horizontal_set(bx2, 1);
-  elm_box_homogenous_set(bx2, 1);
-  evas_object_size_hint_weight_set(bx2, 1.0, 0.0);
-  evas_object_size_hint_align_set(bx2, -1.0, -1.0);
+  bt = ElmButton::factory (*win);
+  ic = ElmIcon::factory (*win);
+  ic->setStandard ("arrow_right");
+  ic->setScale (true, false);
+  bt->setIcon (*ic);
+  ic->show ();
+  bt->getEventSignal ("clicked")->connect (sigc::bind (sigc::ptr_fun (&my_notepad_bt_3), np));
+  bt->setAlignHintSize (EVAS_HINT_FILL, EVAS_HINT_FILL);
+  bt->setWeightHintSize (EVAS_HINT_EXPAND, 0.0);
+  bx2->packEnd (*bt);
+  bt->show ();
 
-  bt = elm_button_add(win);
-  ic = elm_icon_add(win);
-  elm_icon_standard_set(ic, "arrow_left");
-  elm_icon_scale_set(ic, 1, 0);
-  elm_button_icon_set(bt, ic);
-  evas_object_show(ic);
-  evas_object_smart_callback_add(bt, "clicked", my_notepad_bt_1, np);
-  evas_object_size_hint_align_set(bt, -1.0, -1.0);
-  evas_object_size_hint_weight_set(bt, 1.0, 0.0);
-  elm_box_pack_end(bx2, bt);
-  evas_object_show(bt);
+  bx->packEnd (*bx2);
+  bx2->show ();
 
-  bt = elm_button_add(win);
-  ic = elm_icon_add(win);
-  elm_icon_standard_set(ic, "close");
-  elm_icon_scale_set(ic, 1, 0);
-  elm_button_icon_set(bt, ic);
-  evas_object_show(ic);
-  evas_object_smart_callback_add(bt, "clicked", my_notepad_bt_2, np);
-  evas_object_size_hint_align_set(bt, -1.0, -1.0);
-  evas_object_size_hint_weight_set(bt, 1.0, 0.0);
-  elm_box_pack_end(bx2, bt);
-  evas_object_show(bt);
+  win->resize (size320x320);
 
-  bt = elm_button_add(win);
-  ic = elm_icon_add(win);
-  elm_icon_standard_set(ic, "arrow_right");
-  elm_icon_scale_set(ic, 1, 0);
-  elm_button_icon_set(bt, ic);
-  evas_object_show(ic);
-  evas_object_smart_callback_add(bt, "clicked", my_notepad_bt_3, np);
-  evas_object_size_hint_align_set(bt, -1.0, -1.0);
-  evas_object_size_hint_weight_set(bt, 1.0, 0.0);
-  elm_box_pack_end(bx2, bt);
-  evas_object_show(bt);
-
-  elm_box_pack_end(bx, bx2);
-  evas_object_show(bx2);
-
-  evas_object_resize(win, 320, 300);
-
-  elm_object_focus(win);
-  evas_object_show(win);
+  win->setFocus (true);
+  win->show ();
 }
+
+#if 0
 
 static void
 my_anchorview_bt(void *data, Evas_Object *obj, void *event_info)
@@ -3468,6 +3468,7 @@ int main (int argc, char **argv)
    * the evas object returned - the window will respond. elm_win makes sure
    * of that so you can blindly treat it like any other evas object
    * pretty much, just as long as you know it has special significance */
+  
   /* the first parameter is a "parent" window - eg for a dialog you want to
    * have a main window it is related to, here it is NULL meaning there
    * is no parent. "main" is the name of the window - used by the window
@@ -3547,8 +3548,8 @@ int main (int argc, char **argv)
   li->append("Hover 2", my_bt_12, NULL);
   li->append("Entry", my_bt_13, NULL);
   li->append("Entry Scrolled", my_bt_14, NULL);
-  /*li.append("Notepad", NULL, NULL, my_bt_15, NULL);
-  li.append("Anchorview", NULL, NULL, my_bt_16, NULL);
+  li->append("Notepad", my_bt_15, NULL);
+  /*li.append("Anchorview", NULL, NULL, my_bt_16, NULL);
   li.append("Anchorblock", NULL, NULL, my_bt_17, NULL);
   li.append("Toolbar", NULL, NULL, my_bt_18, NULL);
   li.append("Hoversel", NULL, NULL, my_bt_19, NULL);
