@@ -1651,7 +1651,7 @@ BG_RedrawView(void)
    int                 x, w, h, num;
    Win                 win;
    Pixmap              pmap;
-   ImageClass         *ic_button;
+   ImageClass         *ic;
 
    num = ecore_list_count(bg_list);
    if (num <= 0)
@@ -1662,9 +1662,11 @@ BG_RedrawView(void)
 
    pmap = EGetWindowBackgroundPixmap(win);
 
-   ic_button = ImageclassFind("DIALOG_WIDGET_BUTTON", 1);
+   ic = ImageclassFind("DIALOG_BUTTON", 0);
+   if (!ic)
+      ic = ImageclassFind("DIALOG_WIDGET_BUTTON", 1);
 
-   ImageclassApplySimple(ic_button, win, pmap, STATE_NORMAL, 0, 0, w, h);
+   ImageclassApplySimple(ic, win, pmap, STATE_NORMAL, 0, 0, w, h);
 
    x = -(num * (64 + 8) - w) * tmp_bg_sel_sliderval / (4 * num);
 
@@ -1674,7 +1676,7 @@ BG_RedrawView(void)
 	{
 	   EImage             *im;
 
-	   ImageclassApplySimple(ic_button, win, pmap,
+	   ImageclassApplySimple(ic, win, pmap,
 				 (bg == tmp_bg) ? STATE_CLICKED : STATE_NORMAL,
 				 x, 0, 64 + 8, 48 + 8);
 
