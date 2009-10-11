@@ -1,6 +1,9 @@
 #include "test.h"
 
-// TODO: update from C example
+static void icon_clicked (Evas_Object *obj, void *event_info)
+{
+  cout << "clicked!" << endl;
+}
 
 void test_icon (void *data, Evas_Object *obj, void *event_info)
 {
@@ -14,6 +17,8 @@ void test_icon (void *data, Evas_Object *obj, void *event_info)
   ic->setScale (false, false);
   win->addObjectResize (*ic);
   ic->show ();
+
+  ic->getEventSignal ("clicked")->connect (sigc::ptr_fun (&icon_clicked));
 
   win->show ();
 }
