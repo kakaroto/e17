@@ -79,7 +79,7 @@ int main (int argc, char **argv)
    * a lot more resources, so only use it if you need it. */
   ElmBackground *bg = ElmBackground::factory (*win);
   /* set weight to 1.0 x 1.0 == expand in both x and y direction */
-  bg->setWeightHintSize (1.0, 1.0);
+  bg->setWeightHintSize (EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
   /* tell the window that this object is to be resized along with the window.
    * also as a result this object will be one of several objects that
    * controls the minimum/maximum size of the window */
@@ -90,7 +90,7 @@ int main (int argc, char **argv)
   /* add a box layout widget to the window */
   ElmBox *bx0 = ElmBox::factory (*win);
   /* allow base box (bx0) to expand in x and y */
-  bx0->setWeightHintSize (1.0, 1.0);
+  bx0->setWeightHintSize (EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
   /* tell the window that the box affects window size and also will be
    * resized when the window is */
   win->addObjectResize (*bx0);
@@ -110,8 +110,8 @@ int main (int argc, char **argv)
 
   ElmList *li = ElmList::factory (*win);
   li->setAlwaysSelectMode (true);
-  li->setWeightHintSize (1.0, 1.0);
-  li->setAlignHintSize (-1.0, -1.0);
+  li->setWeightHintSize (EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+  li->setAlignHintSize (EVAS_HINT_FILL, EVAS_HINT_FILL);
   bx0->packEnd (*li);
   li->show ();
   
