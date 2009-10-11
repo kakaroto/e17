@@ -17,7 +17,7 @@ void show_flow_view(Eina_List *node, Eina_List *list)
 }
 
 void hide_flow_view(void)
-{
+
 	evas_object_hide(em->flow);
 	edje_object_part_unswallow(em->bg, em->flow);
 }

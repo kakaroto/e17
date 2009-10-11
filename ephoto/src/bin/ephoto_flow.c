@@ -43,7 +43,6 @@ static void move_left(void *data, Evas_Object *obj, const char *emission, const 
 	else
 		sd->current_node = eina_list_last(sd->list);
 	_flow_smart_reconfigure(sd);
-        printf("Left\n");
 }
 
 static void move_right(void *data, Evas_Object *obj, const char *emission, const char *source)
@@ -57,7 +56,6 @@ static void move_right(void *data, Evas_Object *obj, const char *emission, const
         else
                 sd->current_node = sd->list;
         _flow_smart_reconfigure(sd);
-        printf("Right\n");
 }
 
 static void go_back(void *data, Evas_Object *obj, const char *emission, const char *source)
