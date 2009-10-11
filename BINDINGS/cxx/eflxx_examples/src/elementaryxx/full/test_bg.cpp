@@ -8,7 +8,7 @@ void test_bg_plain (void *data, Evas_Object *obj, void *event_info)
 
   ElmBackground *bg = ElmBackground::factory (*win);
   /* allow bg to expand in x & y */
-  bg->setWeightHintSize (1.0, 1.0);
+  bg->setWeightHintSize (EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
   win->addObjectResize (*bg);
   bg->show ();
 
@@ -35,7 +35,7 @@ void test_bg_image (void *data, Evas_Object *obj, void *event_info)
 
   ElmBackground *bg = ElmBackground::factory (*win);
   bg->setFile (searchPixmapFile ("elementaryxx/plant_01.jpg"));
-  bg->setWeightHintSize (1.0, 1.0);
+  bg->setWeightHintSize (EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
   win->addObjectResize (*bg);
   bg->show ();
 

@@ -16,11 +16,11 @@ void test_hover (void *data, Evas_Object *obj, void *event_info)
   
   ElmBackground *bg = ElmBackground::factory (*win);
   win->addObjectResize (*bg);
-  bg->setWeightHintSize (1.0, 1.0);
+  bg->setWeightHintSize (EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
   bg->show ();
 
   bx = ElmBox::factory (*win);
-  bx->setWeightHintSize (1.0, 1.0);
+  bx->setWeightHintSize (EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
   win->addObjectResize (*bx);
   bx->show ();
 
@@ -43,7 +43,7 @@ void test_hover (void *data, Evas_Object *obj, void *event_info)
 
   ElmIcon *ic = ElmIcon::factory (*win);
   ic->setFile (searchPixmapFile ("elementaryxx/logo_small.png"));
-  ic->setScale (0, 0);
+  ic->setScale (false, false);
   bx->packEnd (*ic);
   ic->show ();
 
@@ -98,11 +98,11 @@ void test_hover2 (void *data, Evas_Object *obj, void *event_info)
   
   ElmBackground *bg = ElmBackground::factory (*win);
   win->addObjectResize (*bg);
-  bg->setWeightHintSize (1.0, 1.0);
+  bg->setWeightHintSize (EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
   bg->show ();
   
   bx = ElmBox::factory (*win);
-  bx->setWeightHintSize (1.0, 1.0);
+  bx->setWeightHintSize (EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
   win->addObjectResize (*bx);
   bx->show ();
 
@@ -126,7 +126,7 @@ void test_hover2 (void *data, Evas_Object *obj, void *event_info)
 
   ElmIcon *ic = ElmIcon::factory (*win);
   ic->setFile (searchPixmapFile ("elementaryxx/logo_small.png"));
-  ic->setScale (0, 0);
+  ic->setScale (false, false);
   bx->packEnd (*ic);
   ic->show ();
   

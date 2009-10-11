@@ -8,12 +8,12 @@ void test_button (void *data, Evas_Object *obj, void *event_info)
   
   ElmBackground *bg = ElmBackground::factory (*win);
   win->addObjectResize (*bg);
-  bg->setWeightHintSize (1.0, 1.0);
+  bg->setWeightHintSize (EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
   bg->show ();
   
   ElmBox *bx = ElmBox::factory (*win);
   win->addObjectResize (*bx);
-  bx->setWeightHintSize (1.0, 1.0);
+  bx->setWeightHintSize (EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
   bx->show ();
 
   ElmIcon *ic = ElmIcon::factory (*win);

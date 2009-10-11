@@ -8,20 +8,20 @@ void test_toggle (void *data, Evas_Object *obj, void *event_info)
   
   ElmBackground *bg = ElmBackground::factory (*win);
   win->addObjectResize (*bg);
-  bg->setWeightHintSize (1.0, 1.0);
+  bg->setWeightHintSize (EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
   bg->show ();
   
   ElmBox *bx = ElmBox::factory (*win);
   win->addObjectResize (*bx);
-  bx->setWeightHintSize (1.0, 1.0);
+  bx->setWeightHintSize (EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
   bx->show ();
   
   ElmIcon *ic = ElmIcon::factory (*win);
   ic->setFile (searchPixmapFile ("elementaryxx/logo_small.png"));
   ic->setAspectHintSize (EVAS_ASPECT_CONTROL_VERTICAL, Size (1, 1));
   ElmToggle *tg = ElmToggle::factory (*win);
-  tg->setWeightHintSize (1.0, 1.0);
-  tg->setAlignHintSize (-1.0, 0.5);
+  tg->setWeightHintSize (EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+  tg->setAlignHintSize (EVAS_HINT_FILL, 0.5);
   tg->setLabel ("Icon sized to toggle");
   tg->setIcon (*ic);
   tg->setState (true);

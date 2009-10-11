@@ -8,12 +8,12 @@ void test_layout (void *data, Evas_Object *obj, void *event_info)
   
   ElmBackground *bg = ElmBackground::factory (*win);
   win->addObjectResize (*bg);
-  bg->setWeightHintSize (1.0, 1.0);
+  bg->setWeightHintSize (EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
   bg->show ();
 
   ElmLayout *ly = ElmLayout::factory (*win);
   ly->setFile (searchEdjeFile ("elementaryxx-test.edj"), "layout");
-  ly->setWeightHintSize (1.0, 1.0);
+  ly->setWeightHintSize (EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
   win->addObjectResize (*ly);
   ly->show ();
 

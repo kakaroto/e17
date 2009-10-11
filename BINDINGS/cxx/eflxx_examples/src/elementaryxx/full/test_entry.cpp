@@ -32,11 +32,11 @@ void test_entry (void *data, Evas_Object *obj, void *event_info)
   
   ElmBackground *bg = ElmBackground::factory (*win);
   win->addObjectResize (*bg);
-  bg->setWeightHintSize (1.0, 1.0);
+  bg->setWeightHintSize (EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
   bg->show ();
   
   ElmBox *bx = ElmBox::factory (*win);
-  bx->setWeightHintSize (1.0, 1.0);
+  bx->setWeightHintSize (EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
   win->addObjectResize (*bx);
   bx->show ();
 
@@ -50,45 +50,45 @@ void test_entry (void *data, Evas_Object *obj, void *event_info)
                "called <a href=anc-02>Anchors</a> so you will need<br>"
                "to refer to them this way.");
 
-  en->setWeightHintSize (1.0, 1.0);
-  en->setAlignHintSize (-1.0, -1.0);
+  en->setWeightHintSize (EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+  en->setAlignHintSize (EVAS_HINT_FILL, EVAS_HINT_FILL);
   bx->packEnd (*en);
   en->show ();
 
   ElmBox *bx2 = ElmBox::factory (*win);
   bx2->setHorizontal (true);
-  bx2->setWeightHintSize (1.0, 1.0);
-  bx2->setAlignHintSize (-1.0, -1.0);
+  bx2->setWeightHintSize (EVAS_HINT_EXPAND, 0.0);
+  bx2->setAlignHintSize (EVAS_HINT_FILL, EVAS_HINT_FILL);
 
   bt = ElmButton::factory (*win);
   bt->setLabel ("Clear");
   bt->getEventSignal ("clicked")->connect (sigc::bind (sigc::ptr_fun (&my_entry_bt_1), en));
-  bt->setAlignHintSize (-1.0, -1.0);
-  bt->setWeightHintSize (1.0, 1.0);
+  bt->setAlignHintSize (EVAS_HINT_FILL, EVAS_HINT_FILL);
+  bt->setWeightHintSize (EVAS_HINT_EXPAND, 0.0);
   bx2->packEnd (*bt);
   bt->show ();
 
   bt = ElmButton::factory (*win);
   bt->setLabel ("Print");
   bt->getEventSignal ("clicked")->connect (sigc::bind (sigc::ptr_fun (&my_entry_bt_2), en));
-  bt->setAlignHintSize (-1.0, -1.0);
-  bt->setWeightHintSize (1.0, 1.0);
+  bt->setAlignHintSize (EVAS_HINT_FILL, EVAS_HINT_FILL);
+  bt->setWeightHintSize (EVAS_HINT_EXPAND, 0.0);
   bx2->packEnd (*bt);
   bt->show ();
 
   bt = ElmButton::factory (*win);
   bt->setLabel ("Selection");
   bt->getEventSignal ("clicked")->connect (sigc::bind (sigc::ptr_fun (&my_entry_bt_3), en));
-  bt->setAlignHintSize (-1.0, -1.0);
-  bt->setWeightHintSize (1.0, 1.0);
+  bt->setAlignHintSize (EVAS_HINT_FILL, EVAS_HINT_FILL);
+  bt->setWeightHintSize (EVAS_HINT_EXPAND, 0.0);
   bx2->packEnd (*bt);
   bt->show ();
 
   bt = ElmButton::factory (*win);
   bt->setLabel ("Insert");
   bt->getEventSignal ("clicked")->connect (sigc::bind (sigc::ptr_fun (&my_entry_bt_4), en));
-  bt->setAlignHintSize (-1.0, -1.0);
-  bt->setWeightHintSize (1.0, 1.0);
+  bt->setAlignHintSize (EVAS_HINT_FILL, EVAS_HINT_FILL);
+  bt->setWeightHintSize (EVAS_HINT_EXPAND, 0.0);
   bx2->packEnd (*bt);
   bt->show ();
 
@@ -111,26 +111,26 @@ void test_entry_scolled (void *data, Evas_Object *obj, void *event_info)
   
   ElmBackground *bg = ElmBackground::factory (*win);
   win->addObjectResize (*bg);
-  bg->setWeightHintSize (1.0, 1.0);
+  bg->setWeightHintSize (EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
   bg->show ();
   
   ElmBox *bx = ElmBox::factory (*win);
-  bx->setWeightHintSize (1.0, 1.0);
+  bx->setWeightHintSize (EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
   win->addObjectResize (*bx);
   bx->show ();
 
   sc = ElmScroller::factory (*win);
   sc->limitMinContent (false, true);
   sc->setPolicy (ELM_SCROLLER_POLICY_OFF, ELM_SCROLLER_POLICY_OFF);
-  sc->setWeightHintSize (1.0, 1.0);
-  sc->setAlignHintSize (-1.0, -1.0);
+  sc->setWeightHintSize (EVAS_HINT_EXPAND, 0.0);
+  sc->setAlignHintSize (EVAS_HINT_FILL, EVAS_HINT_FILL);
   bx->packEnd (*sc);
 
   en = ElmEntry::factory (*win);
   en->setSingleLine (true);
   en->setText ("This is a single line");
-  en->setWeightHintSize (1.0, 0.0);
-  en->setAlignHintSize (-1.0, 0.0);
+  en->setWeightHintSize (EVAS_HINT_EXPAND, 0.0);
+  en->setAlignHintSize (EVAS_HINT_FILL, 0.5);
   en->selectAll ();
   sc->setContent (*en);
   en->show ();
@@ -140,15 +140,15 @@ void test_entry_scolled (void *data, Evas_Object *obj, void *event_info)
   sc = ElmScroller::factory (*win);
   sc->limitMinContent (false, true);
   sc->setPolicy (ELM_SCROLLER_POLICY_OFF, ELM_SCROLLER_POLICY_OFF);
-  sc->setWeightHintSize (1.0, 1.0);
-  sc->setAlignHintSize (-1.0, -1.0);
+  sc->setWeightHintSize (EVAS_HINT_EXPAND, 0.0);
+  sc->setAlignHintSize (EVAS_HINT_FILL, EVAS_HINT_FILL);
   bx->packEnd (*sc);
 
   en = ElmEntry::factory (*win);
   en->setPassword (true);
   en->setText ("Password here");
-  en->setWeightHintSize (1.0, 0.0);
-  en->setAlignHintSize (-1.0, 0.0);
+  en->setWeightHintSize (EVAS_HINT_EXPAND, 0.0);
+  en->setAlignHintSize (EVAS_HINT_FILL, 0.0);
   en->selectAll ();
   sc->setContent (*en);
   en->show ();
@@ -156,8 +156,8 @@ void test_entry_scolled (void *data, Evas_Object *obj, void *event_info)
   sc->show ();
 
   sc = ElmScroller::factory (*win);
-  sc->setWeightHintSize (1.0, 1.0);
-  sc->setAlignHintSize (-1.0, -1.0);
+  sc->setWeightHintSize (EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+  sc->setAlignHintSize (EVAS_HINT_FILL, EVAS_HINT_FILL);
   sc->setPolicy (ELM_SCROLLER_POLICY_ON, ELM_SCROLLER_POLICY_ON);
   bx->packEnd (*sc);
 
@@ -170,8 +170,8 @@ void test_entry_scolled (void *data, Evas_Object *obj, void *event_info)
                "called <a href=anc-02>Anchors</a> so you will need<br>"
                "to refer to them this way. At the end here is a really long line to test line wrapping to see if it works. But just in case this line is not long enough I will add more here to really test it out, as Elementary really needs some good testing to see if entry widgets work as advertised.");
 
-  en->setWeightHintSize (1.0, 1.0);
-  en->setAlignHintSize (-1.0, -1.0);
+  en->setWeightHintSize (EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+  en->setAlignHintSize (EVAS_HINT_FILL, EVAS_HINT_FILL);
   sc->setContent (*en);
   en->show ();
 
@@ -179,39 +179,39 @@ void test_entry_scolled (void *data, Evas_Object *obj, void *event_info)
 
   ElmBox *bx2 = ElmBox::factory (*win);
   bx2->setHorizontal (true);
-  bx2->setWeightHintSize (1.0, 0.0);
-  bx2->setAlignHintSize (-1.0, -1.0);
+  bx2->setWeightHintSize (EVAS_HINT_EXPAND, 0.0);
+  bx2->setAlignHintSize (EVAS_HINT_FILL, EVAS_HINT_FILL);
 
 
   bt = ElmButton::factory (*win);
   bt->setLabel ("Clear");
   bt->getEventSignal ("clicked")->connect (sigc::bind (sigc::ptr_fun (&my_entry_bt_1), en));
-  bt->setAlignHintSize (-1.0, -1.0);
-  bt->setWeightHintSize (1.0, 1.0);
+  bt->setAlignHintSize (EVAS_HINT_FILL, EVAS_HINT_FILL);
+  bt->setWeightHintSize (EVAS_HINT_EXPAND, 0.0);
   bx2->packEnd (*bt);
   bt->show ();
 
   bt = ElmButton::factory (*win);
   bt->setLabel ("Print");
   bt->getEventSignal ("clicked")->connect (sigc::bind (sigc::ptr_fun (&my_entry_bt_2), en));
-  bt->setAlignHintSize (-1.0, -1.0);
-  bt->setWeightHintSize (1.0, 1.0);
+  bt->setAlignHintSize (EVAS_HINT_FILL, EVAS_HINT_FILL);
+  bt->setWeightHintSize (EVAS_HINT_EXPAND, 0.0);
   bx2->packEnd (*bt);
   bt->show ();
 
   bt = ElmButton::factory (*win);
   bt->setLabel ("Selection");
   bt->getEventSignal ("clicked")->connect (sigc::bind (sigc::ptr_fun (&my_entry_bt_3), en));
-  bt->setAlignHintSize (-1.0, -1.0);
-  bt->setWeightHintSize (1.0, 0.0);
+  bt->setAlignHintSize (EVAS_HINT_FILL, EVAS_HINT_FILL);
+  bt->setWeightHintSize (EVAS_HINT_EXPAND, 0.0);
   bx2->packEnd (*bt);
   bt->show ();
 
   bt = ElmButton::factory (*win);
   bt->setLabel ("Insert");
   bt->getEventSignal ("clicked")->connect (sigc::bind (sigc::ptr_fun (&my_entry_bt_4), en));
-  bt->setAlignHintSize (-1.0, -1.0);
-  bt->setWeightHintSize (1.0, 0.0);
+  bt->setAlignHintSize (EVAS_HINT_FILL, EVAS_HINT_FILL);
+  bt->setWeightHintSize (EVAS_HINT_EXPAND, 0.0);
   bx2->packEnd (*bt);
   bt->show ();
 
