@@ -124,11 +124,6 @@ static Ekeko_Property *_property_get(Ekeko_Type *type, const char *prop_name)
 	return property;
 }
 
-/* TODO should we register types per document?
- * Note that type_new_name_from wont work until the that type has been
- * added i.e first calling ekeko_type_new()
- */
-static Eina_Hash *_types = NULL;
 /*============================================================================*
  *                                 Global                                     *
  *============================================================================*/
@@ -150,11 +145,6 @@ void * type_instance_private_get_internal(Ekeko_Type *final, Ekeko_Type *t, void
 	printf("[Ekeko_Type] private get %s (PUB=%d) %s (PRIV_OFF=%d) %p\n", final->name, type_public_size_get(final), t->name, type_private_size_get(t->parent), instance);
 #endif
 	return (char *)instance + type_public_size_get(final) + type_private_size_get(t->parent);
-}
-
-Ekeko_Property * type_property_get(Ekeko_Type *t, const char *name)
-{
-	return _property_get(t, name);
 }
 
 void type_instance_property_value_get(Ekeko_Type *type, void *instance, char *prop_name, Ekeko_Value *v)
@@ -266,9 +256,6 @@ Ekeko_Type * ekeko_type_new(char *name, size_t size, size_t priv_size, Ekeko_Typ
 	type->dtor = dtor;
 	type->append = append;
 	type->properties = eina_hash_string_superfast_new(NULL);
-	/* add the type */
-	if (!_types) _types = eina_hash_string_superfast_new(NULL);
-	eina_hash_add(_types, name, type);
 
 	return type;
 }
@@ -292,13 +279,6 @@ void * ekeko_type_instance_new(Ekeko_Type *type)
 	return instance;
 }
 
-void * ekeko_type_instance_new_name_from(const char *name)
-{
-	Ekeko_Type *t;
-
-	t = eina_hash_find(_types, name);
-	return ekeko_type_instance_new(t);
-}
 /**
  *
  * @param instance
@@ -397,3 +377,9 @@ EAPI Eina_Bool ekeko_type_instance_is_of_type(void *instance, Ekeko_Type *type)
 
 	return EINA_FALSE;
 }
+
+EAPI Ekeko_Property * ekeko_type_property_get(Ekeko_Type *t, const char *name)
+{
+	return _property_get(t, name);
+}
+

@@ -31,15 +31,16 @@ typedef void (*Ekeko_Type_Constructor)(Ekeko_Object *);
 typedef void (*Ekeko_Type_Destructor)(Ekeko_Object *);
 typedef Eina_Bool (*Ekeko_Type_Appendable)(Ekeko_Object *parent, Ekeko_Object *child);
 
-Ekeko_Type *ekeko_type_new(char *name, size_t size, size_t priv_size, Ekeko_Type *parent,
+EAPI Ekeko_Type *ekeko_type_new(char *name, size_t size, size_t priv_size, Ekeko_Type *parent,
 		Ekeko_Type_Constructor ctor, Ekeko_Type_Destructor dtor, Ekeko_Type_Appendable append);
-void * ekeko_type_instance_new_name_from(const char *name);
-void *ekeko_type_instance_new(Ekeko_Type *type);
-void ekeko_type_instance_delete(void *instance);
-Ekeko_Property_Id ekeko_type_property_new(Ekeko_Type *type, char *prop_name,
+EAPI void *ekeko_type_instance_new(Ekeko_Type *type);
+EAPI void ekeko_type_instance_delete(void *instance);
+
+EAPI Ekeko_Property * ekeko_type_property_get(Ekeko_Type *type, const char *name);
+EAPI Ekeko_Property_Id ekeko_type_property_new(Ekeko_Type *type, char *prop_name,
 		Type_Property_Type prop_type, Ekeko_Value_Type value_type,
 		ssize_t curr_offset, ssize_t prev_offset, ssize_t changed_offset);
-void * ekeko_type_instance_private_get(Ekeko_Type *type, void *instance);
+EAPI void * ekeko_type_instance_private_get(Ekeko_Type *type, void *instance);
 EAPI Eina_Bool ekeko_type_instance_is_of(void *instance, const char *type);
 
 /* Some macros to make easier the addition of single and double properties */

@@ -304,7 +304,7 @@ EAPI void ekeko_object_property_value_set(Ekeko_Object *o, char *prop_name, Ekek
 	printf("[Ekeko_Object] value_set: %s %p %p %p %d\n", prop_name, o, prv, prv->type, prv->changed);
 #endif
 	/* FIXME this code isnt good enough */
-	prop = type_property_get(prv->type, prop_name);
+	prop = ekeko_type_property_get(prv->type, prop_name);
 	if (!prop)
 		return;
 
@@ -408,7 +408,7 @@ EAPI void ekeko_object_property_value_get(Ekeko_Object *o, char *prop_name, Ekek
 #ifdef EKEKO_DEBUG
 	printf("[Ekeko_Object] value_get: %s\n", prop_name);
 #endif
-	prop = type_property_get(prv->type, prop_name);
+	prop = ekeko_type_property_get(prv->type, prop_name);
 	if (!prop)
 		return;
 	type_instance_property_pointers_get(prv->type, prop, o, &curr, &prev, &changed);
@@ -863,7 +863,7 @@ EAPI Ekeko_Property * ekeko_object_property_get(Ekeko_Object *o, const char *pro
 	Ekeko_Property *prop;
 
 	prv = PRIVATE(o);
-	prop = type_property_get(prv->type, prop_name);
+	prop = ekeko_type_property_get(prv->type, prop_name);
 	return prop;
 }
 
