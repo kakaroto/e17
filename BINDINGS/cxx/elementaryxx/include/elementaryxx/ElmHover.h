@@ -5,14 +5,14 @@
 #include <string>
 
 /* ELFxx */
-#include "ElmWidget.h"
+#include "ElmObject.h"
 
 namespace efl {
 
 /*! smart callbacks called:
  * "clicked" - the user clicked the empty space in the hover to dismiss
  */
-class ElmHover : public ElmWidget
+class ElmHover : public ElmObject
 {
 public:
   static ElmHover *factory (EvasObject &parent);
@@ -37,7 +37,7 @@ private:
   ElmHover (); // forbid standard constructor
   ElmHover (const ElmHover&); // forbid copy constructor
   ElmHover (EvasObject &parent); // private construction -> use factory ()
-  ~ElmHover (); // forbid direct delete -> use ElmWidget::destroy()
+  ~ElmHover (); // forbid direct delete -> use ElmObject::destroy()
 };
 
 } // end namespace efl

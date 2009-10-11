@@ -8,7 +8,7 @@
 #include <Elementary.h>
 
 /* ELFxx */
-#include "ElmWidget.h"
+#include "ElmObject.h"
 
 namespace efl {
 
@@ -18,7 +18,7 @@ namespace efl {
  * "selected" - when the user selected an item
  * "unselected" - when the user unselected an item
  */
-class ElmList : public ElmWidget
+class ElmList : public ElmObject
 {
 public:  
   static ElmList *factory (EvasObject &parent);
@@ -47,7 +47,7 @@ private:
   ElmList (); // forbid standard constructor
   ElmList (const ElmList&); // forbid copy constructor
   ElmList (EvasObject &parent); // private construction -> use factory ()
-  ~ElmList (); // forbid direct delete -> use ElmWidget::destroy()
+  ~ElmList (); // forbid direct delete -> use ElmObject::destroy()
 };
 
 #if 0

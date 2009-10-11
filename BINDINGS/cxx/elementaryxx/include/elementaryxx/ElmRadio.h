@@ -8,7 +8,7 @@
 #include <Elementary.h>
 
 /* ELFxx */
-#include "ElmWidget.h"
+#include "ElmObject.h"
 
 namespace efl {
 
@@ -16,7 +16,7 @@ namespace efl {
  * smart callbacks called:
  * "changed" - the user toggled the state
  */
-class ElmRadio : public ElmWidget
+class ElmRadio : public ElmObject
 {
 public:  
   static ElmRadio *factory (EvasObject &parent);
@@ -37,7 +37,7 @@ private:
   ElmRadio (); // forbid standard constructor
   ElmRadio (const ElmRadio&); // forbid copy constructor
   ElmRadio (EvasObject &parent); // private construction -> use factory ()
-  ~ElmRadio (); // forbid direct delete -> use ElmWidget::destroy()
+  ~ElmRadio (); // forbid direct delete -> use ElmObject::destroy()
 };
 
 #if 0

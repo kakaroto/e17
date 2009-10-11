@@ -8,7 +8,7 @@
 #include <Elementary.h>
 
 /* ELFxx */
-#include "ElmWidget.h"
+#include "ElmObject.h"
 
 namespace efl {
 
@@ -16,7 +16,7 @@ namespace efl {
  * smart callbacks called:
  * "changed" - the user toggled the state
  */
-class ElmCheck : public ElmWidget
+class ElmCheck : public ElmObject
 {
 public:
   static ElmCheck *factory (EvasObject &parent);
@@ -33,7 +33,7 @@ private:
   ElmCheck (); // forbid standard constructor
   ElmCheck (const ElmCheck&); // forbid copy constructor
   ElmCheck (EvasObject &parent); // private construction -> use factory ()
-  ~ElmCheck (); // forbid direct delete -> use ElmWidget::destroy()
+  ~ElmCheck (); // forbid direct delete -> use ElmObject::destroy()
 };
 
 #if 0

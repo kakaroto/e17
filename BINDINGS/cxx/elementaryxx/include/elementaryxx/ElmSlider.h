@@ -8,7 +8,7 @@
 #include <Elementary.h>
 
 /* ELFxx */
-#include "ElmWidget.h"
+#include "ElmObject.h"
 
 namespace efl {
   
@@ -19,7 +19,7 @@ namespace efl {
  *                   change (use this if you only want to respond to a change 
  *                   once the slider is held still for a short while).
  */
-class ElmSlider : public ElmWidget
+class ElmSlider : public ElmObject
 {
 public:
   static ElmSlider *factory (EvasObject &parent);
@@ -48,7 +48,7 @@ private:
   ElmSlider (); // forbid standard constructor
   ElmSlider (const ElmSlider&); // forbid copy constructor
   ElmSlider (EvasObject &parent); // private construction -> use factory ()
-  ~ElmSlider (); // forbid direct delete -> use ElmWidget::destroy()
+  ~ElmSlider (); // forbid direct delete -> use ElmObject::destroy()
 };
 
 } // end namespace efl

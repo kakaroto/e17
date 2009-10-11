@@ -30,5 +30,15 @@ void ElmApplication::exit ()
 {
   elm_exit ();
 }
+
+double ElmApplication::getScale ()
+{
+  return elm_scale_get ();
+}
+
+void ElmApplication::setScale (double scale)
+{
+  elm_scale_set (scale);
+}
   
 } // end namespace efl

@@ -8,7 +8,7 @@
 #include <Elementary.h>
 
 /* ELFxx */
-#include "ElmWidget.h"
+#include "ElmObject.h"
 
 namespace efl {
 
@@ -16,7 +16,7 @@ namespace efl {
  * smart callbacks called:
  * "clicked" - the user clicked the image
  */
-class ElmImage : public ElmWidget
+class ElmImage : public ElmObject
 {
 public:
   static ElmImage *factory (EvasObject &parent);
@@ -39,7 +39,7 @@ private:
   ElmImage (); // forbid standard constructor
   ElmImage (const ElmImage&); // forbid copy constructor
   ElmImage (EvasObject &parent); // private construction -> use factory ()
-  ~ElmImage (); // forbid direct delete -> use ElmWidget::destroy()
+  ~ElmImage (); // forbid direct delete -> use ElmObject::destroy()
 };
 
 } // end namespace efl

@@ -8,11 +8,11 @@
 #include <Elementary.h>
 
 /* ELFxx */
-#include "ElmWidget.h"
+#include "ElmObject.h"
 
 namespace efl {
 
-class ElmBox : public ElmWidget
+class ElmBox : public ElmObject
 {
 public:
   static ElmBox *factory (EvasObject &parent);
@@ -33,7 +33,7 @@ private:
   ElmBox (); // forbid standard constructor
   ElmBox (const ElmBox&); // forbid copy constructor
   ElmBox (EvasObject &parent); // private construction -> use factory ()
-  ~ElmBox (); // forbid direct delete -> use ElmWidget::destroy()
+  ~ElmBox (); // forbid direct delete -> use ElmObject::destroy()
 };
 
 } // end namespace efl

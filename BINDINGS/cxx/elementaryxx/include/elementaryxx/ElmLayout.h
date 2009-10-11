@@ -5,11 +5,11 @@
 #include <string>
 
 /* ELFxx */
-#include "ElmWidget.h"
+#include "ElmObject.h"
 
 namespace efl {
 
-class ElmLayout : public ElmWidget
+class ElmLayout : public ElmObject
 {
 public:
   static ElmLayout *factory (EvasObject &parent);
@@ -28,7 +28,7 @@ private:
   ElmLayout (); // forbid standard constructor
   ElmLayout (const ElmLayout&); // forbid copy constructor
   ElmLayout (EvasObject &parent); // private construction -> use factory ()
-  ~ElmLayout (); // forbid direct delete -> use ElmWidget::destroy()
+  ~ElmLayout (); // forbid direct delete -> use ElmObject::destroy()
 };
 
 } // end namespace efl

@@ -8,7 +8,7 @@
  */
 
 #include "ElmApplication.h"
-#include "ElmWidget.h"
+#include "ElmObject.h"
 #include "ElmWindow.h"
 #include "ElmButton.h"
 #include "ElmClock.h"

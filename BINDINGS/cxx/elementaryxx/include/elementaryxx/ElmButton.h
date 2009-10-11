@@ -8,7 +8,7 @@
 #include <Elementary.h>
 
 /* ELFxx */
-#include "ElmWidget.h"
+#include "ElmObject.h"
 
 namespace efl {
 
@@ -16,7 +16,7 @@ namespace efl {
  * smart callbacks called:
  * "clicked" - the user clicked the button
  */
-class ElmButton : public ElmWidget
+class ElmButton : public ElmObject
 {
 public:  
   static ElmButton *factory (EvasObject &parent);
@@ -37,7 +37,7 @@ private:
   ElmButton (); // forbid standard constructor
   ElmButton (const ElmButton&); // forbid copy constructor
   ElmButton (EvasObject &parent); // private construction -> use factory ()
-  ~ElmButton (); // forbid direct delete -> use ElmWidget::destroy()
+  ~ElmButton (); // forbid direct delete -> use ElmObject::destroy()
 };
 
 } // end namespace efl

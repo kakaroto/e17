@@ -21,7 +21,7 @@ libelementaryxx_HEADERS = \
 	ElmList.h \
 	ElmListItem.h \
 	ElmTable.h \
-	ElmWidget.h \
+	ElmObject.h \
 	ElmLayout.h \
 	ElmHover.h \
 	ElmNotepad.h

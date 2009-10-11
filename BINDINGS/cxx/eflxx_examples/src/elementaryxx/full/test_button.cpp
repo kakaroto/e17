@@ -1,7 +1,10 @@
-#include "test.h"
+  #include "test.h"
 
 void test_button (void *data, Evas_Object *obj, void *event_info)
 {
+  ElmIcon *ic = NULL;
+  ElmButton *bt = NULL;
+  
   ElmWindow *win = ElmWindow::factory ("buttons", ELM_WIN_BASIC);
   win->setTitle ("Buttons");
   win->setAutoDel (true);
@@ -16,40 +19,51 @@ void test_button (void *data, Evas_Object *obj, void *event_info)
   bx->setWeightHintSize (EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
   bx->show ();
 
-  ElmIcon *ic = ElmIcon::factory (*win);
+  ic = ElmIcon::factory (*win);
   ic->setFile (searchPixmapFile ("elementaryxx/logo_small.png"));
   ic->setAspectHintSize (EVAS_ASPECT_CONTROL_VERTICAL, Size (1, 1));
-  ElmButton *bt = ElmButton::factory (*win);
+  bt = ElmButton::factory (*win);
   bt->setLabel ("Icon sized to button");
   bt->setIcon (*ic);
   bx->packEnd (*bt);
   bt->show ();
   ic->show ();
+  
+  ic = ElmIcon::factory (*win);
+  ic->setFile (searchPixmapFile ("elementaryxx/logo_small.png"));
+  ic->setAspectHintSize (EVAS_ASPECT_CONTROL_VERTICAL, Size (1, 1));
+  bt = ElmButton::factory (*win);
+  bt->setLabel ("Disabled Button");
+  bt->setIcon (*ic);
+  bt->setDisabled (true);
+  bx->packEnd (*bt);
+  bt->show ();
+  ic->show ();
 
-  ElmIcon *ic2 = ElmIcon::factory (*win);
-  ic2->setFile (searchPixmapFile ("elementaryxx/logo_small.png"));
-  ic2->setScale (false, false);
-  ElmButton *bt2 = ElmButton::factory (*win);
-  bt2->setLabel ("Icon no scale");
-  bt2->setIcon (*ic2);
-  bx->packEnd (*bt2);
-  bt2->show ();
-  ic2->show ();
+  ic = ElmIcon::factory (*win);
+  ic->setFile (searchPixmapFile ("elementaryxx/logo_small.png"));
+  ic->setScale (false, false);
+  bt = ElmButton::factory (*win);
+  bt->setLabel ("Icon no scale");
+  bt->setIcon (*ic);
+  bx->packEnd (*bt);
+  bt->show ();
+  ic->show ();
 
-  ElmButton *bt3 = ElmButton::factory (*win);
-  bt3->setLabel ("Label Only");
-  bx->packEnd (*bt3);
-  bt3->show ();
+  bt = ElmButton::factory (*win);
+  bt->setLabel ("Label Only");
+  bx->packEnd (*bt);
+  bt->show ();
 
-  ElmIcon *ic3 = ElmIcon::factory (*win);
-  ic3->setFile (searchPixmapFile ("elementaryxx/logo_small.png"));
-  ic3->setScale (false, false);
-  ElmButton *bt4 = ElmButton::factory (*win);
-  bt4->setLabel ("Icon no scale");
-  bt4->setIcon (*ic3);
-  bx->packEnd (*bt4);
-  bt4->show ();
-  ic3->show ();
+  ic = ElmIcon::factory (*win);
+  ic->setFile (searchPixmapFile ("elementaryxx/logo_small.png"));
+  ic->setScale (false, false);
+  bt = ElmButton::factory (*win);
+  bt->setLabel ("Icon no scale");
+  bt->setIcon (*ic);
+  bx->packEnd (*bt);
+  bt->show ();
+  ic->show ();
   
   win->show ();
 }

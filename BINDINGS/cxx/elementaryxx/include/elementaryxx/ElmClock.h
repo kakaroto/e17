@@ -8,7 +8,7 @@
 #include <Elementary.h>
 
 /* ELFxx */
-#include "ElmWidget.h"
+#include "ElmObject.h"
 
 namespace efl {
 
@@ -16,7 +16,7 @@ namespace efl {
  * smart callbacks called:
  * "changed" - the user changed the time
  */
-class ElmClock : public ElmWidget
+class ElmClock : public ElmObject
 {
 public:
   static ElmClock *factory (EvasObject &parent);
@@ -35,7 +35,7 @@ private:
   ElmClock (); // forbid standard constructor
   ElmClock (const ElmClock&); // forbid copy constructor
   ElmClock (EvasObject &parent); // private construction -> use factory ()
-  ~ElmClock (); // forbid direct delete -> use ElmWidget::destroy()
+  ~ElmClock (); // forbid direct delete -> use ElmObject::destroy()
 };
 
 } // end namespace efl

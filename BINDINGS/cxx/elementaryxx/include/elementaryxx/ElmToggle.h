@@ -8,7 +8,7 @@
 #include <Elementary.h>
 
 /* ELFxx */
-#include "ElmWidget.h"
+#include "ElmObject.h"
 
 namespace efl {
 
@@ -16,7 +16,7 @@ namespace efl {
  * smart callbacks called:
  * "changed" - the user toggled the state
  */
-class ElmToggle : public ElmWidget
+class ElmToggle : public ElmObject
 {
 public:  
   static ElmToggle *factory (EvasObject &parent);
@@ -38,7 +38,7 @@ private:
   ElmToggle (); // forbid standard constructor
   ElmToggle (const ElmToggle&); // forbid copy constructor
   ElmToggle (EvasObject &parent); // private construction -> use factory ()  
-  ~ElmToggle (); // forbid direct delete -> use ElmWidget::destroy()
+  ~ElmToggle (); // forbid direct delete -> use ElmObject::destroy()
 };
 
 } // end namespace efl

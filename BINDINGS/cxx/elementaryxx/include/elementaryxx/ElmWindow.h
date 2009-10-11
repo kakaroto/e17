@@ -8,7 +8,7 @@
 #include <Elementary.h>
 
 /* ELFxx */
-#include "ElmWidget.h"
+#include "ElmObject.h"
 
 namespace efl {
   
@@ -18,7 +18,7 @@ namespace efl {
  * "focus-in" - window got focus
  * "focus-out" - window lost focus
  */
-class ElmWindow : public ElmWidget
+class ElmWindow : public ElmObject
 {
 public:  
   static ElmWindow* factory (const std::string &name, Elm_Win_Type type);
@@ -75,7 +75,7 @@ private:
   // private construction -> use factory ()
   ElmWindow (const std::string &name, Elm_Win_Type type);
   ElmWindow (EvasObject &parent, const std::string &name, Elm_Win_Type type);
-  ~ElmWindow (); // forbid direct delete -> use ElmWidget::destroy()
+  ~ElmWindow (); // forbid direct delete -> use ElmObject::destroy()
 };
 
 } // end namespace efl

@@ -8,7 +8,7 @@
 #include <Elementary.h>
 
 /* ELFxx */
-#include "ElmWidget.h"
+#include "ElmObject.h"
 
 namespace efl {
 
@@ -25,7 +25,7 @@ namespace efl {
  * "anchor,clicked" - achor called was clicked | event_info = Elm_Entry_Anchor_Info
  * "activated" - when the enter key is pressed (useful for single line)
  */   
-class ElmEntry : public ElmWidget
+class ElmEntry : public ElmObject
 {
 public:
   static ElmEntry *factory (EvasObject &parent);
@@ -58,7 +58,7 @@ private:
   ElmEntry (); // forbid standard constructor
   ElmEntry (const ElmEntry&); // forbid copy constructor
   ElmEntry (EvasObject &parent); // private construction -> use factory ()
-  ~ElmEntry (); // forbid direct delete -> use ElmWidget::destroy()
+  ~ElmEntry (); // forbid direct delete -> use ElmObject::destroy()
 };
 
 } // end namespace efl

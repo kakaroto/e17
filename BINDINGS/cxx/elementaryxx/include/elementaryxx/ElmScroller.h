@@ -8,7 +8,7 @@
 #include <Elementary.h>
 
 /* ELFxx */
-#include "ElmWidget.h"
+#include "ElmObject.h"
 
 namespace efl {
 
@@ -20,7 +20,7 @@ namespace efl {
  * "edge_bottom"
  * "scroll"
  */
-class ElmScroller : public ElmWidget
+class ElmScroller : public ElmObject
 {
 public:
   static ElmScroller *factory (EvasObject &parent);
@@ -43,7 +43,7 @@ private:
   ElmScroller (); // forbid standard constructor
   ElmScroller (const ElmScroller&); // forbid copy constructor
   ElmScroller (EvasObject &parent); // private construction -> use factory ()
-  ~ElmScroller (); // forbid direct delete -> use ElmWidget::destroy()
+  ~ElmScroller (); // forbid direct delete -> use ElmObject::destroy()
 };
 
 } // end namespace efl
