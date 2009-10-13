@@ -27,6 +27,8 @@ AC_ARG_ENABLE(simple-x11,
 )
 
 # Software X11
+have_software_xlib="no"
+have_software_xcb="no"
 EXPEDITE_CHECK_ENGINE([software-x11], [Software X11], "yes")
 
 if test "x${have_software_x11}" = "xyes" ; then
@@ -245,7 +247,7 @@ echo
 echo "  $PACKAGE $VERSION"
 echo
 echo "  Engines:"
-echo "    Software X11.................: ${have_software_xlib} (Xlib: ${have_software_xlib}) (XCB: ${have_software_xcb})"
+echo "    Software X11.................: ${have_software_x11} (Xlib: ${have_software_xlib}) (XCB: ${have_software_xcb})"
 echo "    X Render X11.................: ${have_xrender_x11}"
 echo "    Open GL X11..................: ${have_opengl_x11}"
 echo "    X Render XCB.................: ${have_xrender_xcb}"
