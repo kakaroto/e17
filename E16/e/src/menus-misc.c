@@ -111,11 +111,12 @@ MenuLoadFromDirectory(Menu * m)
    if (stat(dir, &st) < 0)
       return 1;
 
+   Esnprintf(cs, sizeof(cs), "%s/cached/img/%s",
+	     EDirUserCache(), _dircache_filename(ss, sizeof(ss), &st));
+
    if (Mode.backgrounds.force_scan)
       goto skip_dir_cache;
 
-   Esnprintf(cs, sizeof(cs), "%s/cached/img/%s",
-	     EDirUserCache(), _dircache_filename(ss, sizeof(ss), &st));
    if (exists(cs))
      {
 	/* cached dir listing - use it */
