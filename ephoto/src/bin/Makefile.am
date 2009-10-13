@@ -13,7 +13,9 @@ ephoto_SOURCES = \
 		 ephoto_image_browser.c \
 		 ephoto_flow.c \
 		 ephoto_flow_browser.c \
-		 ephoto_table.c
+		 ephoto_table.c \
+		 ephoto_slideshow.c \
+		 ephoto_slide.c
 
 ephoto_CFLAGS = @EVAS_CFLAGS@ @EDJE_CFLAGS@ @EINA_CFLAGS@ @EFREET_MIME_CFLAGS@ @ETHUMB_CFLAGS@ -Wall -g
 ephoto_LDADD = @EVAS_CFLAGS@ @EDJE_CFLAGS@ @EINA_LIBS@ @EFREET_MIME_LIBS@ @ETHUMB_LIBS@

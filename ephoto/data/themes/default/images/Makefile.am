@@ -19,4 +19,5 @@ move_right.png \
 selected.png \	
 thumb_shadow.png \
 left_arrow.png \
-window_fullscreen.png
+window_fullscreen.png \
+x-office-presentation.png

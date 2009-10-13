@@ -63,6 +63,18 @@ void ephoto_table_viewport_set(Evas_Object *obj, int w, int h);
 void ephoto_table_next_page(Evas_Object *obj);
 void ephoto_table_prev_page(Evas_Object *obj);
 
+/*Ephoto Slideshow*/
+void add_slideshow(void);
+void show_slideshow(Eina_List *node, Eina_List *list);
+void hide_slideshow(void);
+
+/*Ephoto Slide*/
+Evas_Object *ephoto_slide_add(Evas *e);
+void ephoto_slide_current_node_set(Evas_Object *obj, Eina_List *node);
+void ephoto_slide_item_list_set(Evas_Object *obj, Eina_List *list);
+void ephoto_slide_start(Evas_Object *obj);
+void ephoto_slide_stop(Evas_Object *obj);
+
 typedef struct _Ephoto Ephoto;
 struct _Ephoto
 {
@@ -73,6 +85,7 @@ struct _Ephoto
 	Evas_Object *image_browser;
 	Evas_Object *flow;
 	Evas_Object *sel;
+	Evas_Object *slideshow;
 	Eina_List *images;
 	int width, height;
 };

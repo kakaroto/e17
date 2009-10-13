@@ -13,6 +13,7 @@ collections
 		image: "thumb_shadow.png" COMP;
 		image: "left_arrow.png" COMP;	
 		image: "window_fullscreen.png" COMP;
+		image: "x-office-presentation.png" COMP;
 	}
 	group 
 	{
@@ -416,7 +417,26 @@ collections
                                         color: 255 255 255 255;
 					image.normal: "left_arrow.png";
                                 }
-			}			
+			}
+			part
+                        {
+                                name: "ephoto.start.slideshow";
+                                type: IMAGE;
+                                mouse_events: 1;
+                                description
+                                {
+                                        state: "default" 0.0;
+                                        visible: 1;
+                                        min: 32 32;
+                                        max: 32 32;
+                                        rel1.relative: 1.0 0.0;
+                                        rel1.offset: -65 45;
+                                        rel2.relative: 1.0 0.0;
+                                        rel2.offset: -1 -1;
+                                        color: 255 255 255 255;
+                                        image.normal: "x-office-presentation.png";
+                                }
+                        }			
 			part
 			{
 				name: "ephoto.move.left";
@@ -451,6 +471,143 @@ collections
                                         image.normal: "move_right.png";
                                 }
                         }
+		}
+	}
+	group
+	{
+		name: "/ephoto/slide/view";
+		parts
+		{
+			part
+			{
+				name: "image_area";
+				type: RECT;
+				mouse_events: 1;
+                                description
+                                {
+                                        state: "default" 0.0;
+					visible: 1;
+                                        rel1.relative: 0.0 0.0;
+                             		rel1.offset: 27 0;
+                                        rel2.relative: 1.0 1.0;
+                                        rel2.offset: -27 -1;
+                                        color: 255 255 255 255;
+                                }
+			}
+			part
+			{
+				name: "ephoto.swallow.content";
+				type: SWALLOW;
+				mouse_events: 1;
+				clip_to: "image_area";
+				description
+                                {
+                                        state: "default" 0.0;
+                                        visible: 1;
+					rel1.to: "image_area";
+                                        rel1.relative: 0.5 0.5;
+                                        rel1.offset: 0 0;
+					rel2.to: "image_area";
+                                        rel2.relative: 0.5 0.5;
+                                        rel2.offset: 0 0;
+                                        color: 255 255 255 255;
+                                }
+			}
+			part
+			{
+				name: "ephoto.move.back";
+				type: IMAGE;
+				mouse_events: 1;
+				description
+                                {
+                                        state: "default" 0.0;
+                                        visible: 1;
+					min: 32 32;
+					max: 32 32;
+                                        rel1.relative: 0.0 0.0;
+                                        rel1.offset: 50 50;
+                                        rel2.relative: 0.0 0.0;
+                                        rel2.offset: -1 -1;
+                                        color: 255 255 255 255;
+					image.normal: "left_arrow.png";
+                                }
+			}
+		}
+	}
+	group
+	{
+		name: "/ephoto/slide/images";
+		parts
+		{
+			part
+                        {
+                                name: "ephoto.image.one";
+                                type: IMAGE;
+                                mouse_events: 1;
+                                description
+                                {
+                                        state: "default" 0.0;
+                                        color: 255 255 255 255;
+                                }
+				description
+				{
+					state: "fade" 0.0;
+					inherit: "default" 0.0;
+					color: 255 255 255 0;
+				}
+			}
+			part
+			{
+				name: "ephoto.image.two";
+                                type: IMAGE;
+                                mouse_events: 1;
+                                description
+                                {
+                                        state: "default" 0.0;
+                                        color: 255 255 255 0;
+                                }
+                                description
+                                {
+                                        state: "fade" 0.0;
+                                        inherit: "default" 0.0;
+                                        color: 255 255 255 255;
+                                }
+                        }
+		}
+		programs
+		{
+			program
+			{
+				name: "fade";
+				signal: "ephoto.change.image";
+				source: "ephoto";
+				action: STATE_SET "default" 0.0;
+				target: "ephoto.image.one";
+				target: "ephoto.image.two";
+				after: "fade2";
+			}
+			program
+			{
+				name: "fade2";
+				action: STATE_SET "fade" 0.0;
+				target: "ephoto.image.one";
+				target: "ephoto.image.two";
+				transition: SINUSOIDAL 1.0;
+				after: "done";
+			}
+			program
+			{
+				name: "done";
+				action: STATE_SET "default" 0.0;
+				target: "ephoto.image.one";
+				target: "ephoto.image.two";
+				after: "signal_done";
+			}
+			program
+			{
+				name: "signal_done";
+				action: SIGNAL_EMIT "ephoto.transition.done" "ephoto";
+			}
 		}
 	}
 }

@@ -31,6 +31,7 @@ static void _flow_smart_clip_unset(Evas_Object *obj);
 static void move_left(void *data, Evas_Object *obj, const char *emission, const char *source);
 static void move_right(void *data, Evas_Object *obj, const char *emission, const char *source);
 static void go_back(void *data, Evas_Object *obj, const char *emission, const char *source);
+static void start_slideshow(void *data, Evas_Object *obj, const char *emission, const char *source);
 
 static void move_left(void *data, Evas_Object *obj, const char *emission, const char *source)
 {
@@ -62,6 +63,16 @@ static void go_back(void *data, Evas_Object *obj, const char *emission, const ch
 {
 	hide_flow_view();
 	show_image_browser();
+}
+
+static void start_slideshow(void *data, Evas_Object *obj, const char *emission, const char *source)
+{
+	Smart_Data *sd;
+
+	sd = data;
+
+        hide_flow_view();
+        show_slideshow(sd->current_node, sd->list);
 }
 
 Evas_Object *ephoto_flow_add(Evas *e)
@@ -161,6 +172,8 @@ static void _flow_smart_add(Evas_Object *obj)
         edje_object_signal_callback_add(sd->obj, "mouse,up,1", "ephoto.move.right", move_right, sd);
 
 	edje_object_signal_callback_add(sd->obj, "mouse,up,1", "ephoto.move.back", go_back, sd);
+
+	edje_object_signal_callback_add(sd->obj, "mouse,up,1", "ephoto.start.slideshow", start_slideshow, sd);
 
 	sd->center_image = ephoto_image_add();
 	edje_object_part_swallow(sd->obj, "ephoto.swallow.content", sd->center_image);	

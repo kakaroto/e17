@@ -42,6 +42,7 @@ window_shown(void *data, Evas *e, Evas_Object *obj, void *event_info)
 {
 	add_image_browser();
 	add_flow_view();
+	add_slideshow();
 	show_image_browser();
 	evas_object_event_callback_del(em->bg, EVAS_CALLBACK_SHOW, window_shown);
 }
@@ -51,6 +52,7 @@ static void window_close(Ecore_Evas *ee)
 {
 	evas_object_del(em->image_browser);
 	evas_object_del(em->flow);
+	evas_object_del(em->slideshow);
 	if (em->images)
 		eina_list_free(em->images);
 	free(em);
