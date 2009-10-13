@@ -116,6 +116,24 @@ cdef class Part:
         def __del__(self):
             edje_edit_part_clip_to_set(self.edje.obj, self.name, NULL)
 
+    property source:
+        def __get__(self):
+            cdef char *source
+            source = edje_edit_part_source_get(self.edje.obj, self.name)
+            if source == NULL: return None
+            r = source
+            edje_edit_string_free(source)
+            return r
+
+        def __set__(self, source):
+            if source == "" or source is None:
+                edje_edit_part_source_set(self.edje.obj, self.name, NULL)
+            else:
+                edje_edit_part_source_set(self.edje.obj, self.name, source)
+
+        def __del__(self):
+            edje_edit_part_source_set(self.edje.obj, self.name, NULL)
+
     property mouse_events:
         def __get__(self):
             return bool(edje_edit_part_mouse_events_get(self.edje.obj,
@@ -144,3 +162,70 @@ cdef class Part:
 
         def __set__(self, effect):
             edje_edit_part_effect_set(self.edje.obj, self.name, effect)
+
+    property ignore_flags:
+        def __get__(self):
+            return edje_edit_part_ignore_flags_get(self.edje.obj, self.name)
+
+        def __set__(self, flags):
+            edje_edit_part_ignore_flags_set(self.edje.obj, self.name, flags)
+
+    property drag:
+        def __get__(self):
+            cdef int x, y
+            x = edje_edit_part_drag_x_get(self.edje.obj, self.name)
+            y = edje_edit_part_drag_y_get(self.edje.obj, self.name)
+            return (x, y)
+
+        def __set__(self, val):
+            x, y = val
+            edje_edit_part_drag_x_set(self.edje.obj, self.name, x)
+            edje_edit_part_drag_y_set(self.edje.obj, self.name, y)
+
+    property drag_step:
+        def __get__(self):
+            cdef int x, y
+            x = edje_edit_part_drag_step_x_get(self.edje.obj, self.name)
+            y = edje_edit_part_drag_step_y_get(self.edje.obj, self.name)
+            return (x, y)
+
+        def __set__(self, val):
+            x, y = val
+            edje_edit_part_drag_step_x_set(self.edje.obj, self.name, x)
+            edje_edit_part_drag_step_y_set(self.edje.obj, self.name, y)
+
+    property drag_count:
+        def __get__(self):
+            cdef int x, y
+            x = edje_edit_part_drag_count_x_get(self.edje.obj, self.name)
+            y = edje_edit_part_drag_count_y_get(self.edje.obj, self.name)
+            return (x, y)
+
+        def __set__(self, val):
+            x, y = val
+            edje_edit_part_drag_count_x_set(self.edje.obj, self.name, x)
+            edje_edit_part_drag_count_y_set(self.edje.obj, self.name, y)
+
+    property drag_confine:
+        def __get__(self):
+            cdef char *confine
+            confine = edje_edit_part_drag_confine_get(self.edje.obj, self.name)
+            if confine == NULL: return None
+            r = confine
+            edje_edit_string_free(confine)
+            return r
+
+        def __set__(self, confine):
+            edje_edit_part_drag_confine_set(self.edje.obj, self.name, confine)
+
+    property drag_event:
+        def __get__(self):
+            cdef char *event
+            event = edje_edit_part_drag_event_get(self.edje.obj, self.name)
+            if event == NULL: return None
+            r = event
+            edje_edit_string_free(event)
+            return r
+
+        def __set__(self, event):
+            edje_edit_part_drag_event_set(self.edje.obj, self.name, event)

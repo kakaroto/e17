@@ -275,7 +275,7 @@ cdef extern from "Edje_Edit.h":
     evas.c_evas.Eina_Bool edje_edit_state_gradient_rel2_offset_y_set(evas.c_evas.Evas_Object *obj, char *part, char *state, int val)
 
     # PROGRAMS API
-    edje_edit_programs_list_get(evas.c_evas.Evas_Object *obj)
+    evas.c_evas.Eina_List* edje_edit_programs_list_get(evas.c_evas.Evas_Object *obj)
     evas.c_evas.Eina_Bool edje_edit_program_add(evas.c_evas.Evas_Object *obj, char *name)
     evas.c_evas.Eina_Bool edje_edit_program_del(evas.c_evas.Evas_Object *obj, char *prog)
     evas.c_evas.Eina_Bool edje_edit_program_exist(evas.c_evas.Evas_Object *obj, char *prog)
@@ -291,6 +291,7 @@ cdef extern from "Edje_Edit.h":
     evas.c_evas.Eina_Bool edje_edit_program_in_range_set(evas.c_evas.Evas_Object *obj, char *prog, double seconds)
     edje.c_edje.Edje_Action_Type edje_edit_program_action_get(evas.c_evas.Evas_Object *obj, char *prog)
     evas.c_evas.Eina_Bool edje_edit_program_action_set(evas.c_evas.Evas_Object *obj, char *prog, edje.c_edje.Edje_Action_Type action)
+    evas.c_evas.Eina_List* edje_edit_program_targets_get(evas.c_evas.Evas_Object *, char *prog)
     evas.c_evas.Eina_Bool edje_edit_program_target_add(evas.c_evas.Evas_Object *obj, char *prog, char *target)
     evas.c_evas.Eina_Bool edje_edit_program_targets_clear(evas.c_evas.Evas_Object *obj, char *prog)
     evas.c_evas.Eina_List* edje_edit_program_afters_get(evas.c_evas.Evas_Object *obj, char *prog)

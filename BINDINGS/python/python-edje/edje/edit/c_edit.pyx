@@ -30,10 +30,12 @@ __extra_epydoc_fields__ = (
 include "c_edit_object.pxi"
 include "c_edit_object_group.pxi"
 include "c_edit_object_data.pxi"
-include "c_edit_object_color_class.pxi" #todo(2)
+include "c_edit_object_color_class.pxi"
 include "c_edit_object_text_style.pxi"
-include "c_edit_object_part.pxi" #todo(N)
-include "c_edit_object_state.pxi" #todo(fill,color_class,properties?)
+include "c_edit_object_spectra.pxi"
+include "c_edit_object_programs.pxi"
+include "c_edit_object_part.pxi"
+include "c_edit_object_state.pxi"
 
 
 

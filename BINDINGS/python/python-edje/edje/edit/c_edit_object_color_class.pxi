@@ -29,17 +29,44 @@
 
 cdef class Color_Class:
     cdef EdjeEdit edje
-    cdef object name
+    cdef object _name
 
     def __init__(self, EdjeEdit edje, char *name):
         self.edje = edje
-        self.name = name
+        self._name = name
+
+    property name:
+        def __get__(self):
+            return self._name
+
+        def __set__(self, newname):
+            self.rename(newname)
 
     def rename(self, char *newname):
         cdef unsigned char r
         r = edje_edit_color_class_name_set(self.edje.obj, self.name, newname)
         if r == 0:
             return False
-        self.name = newname
+        self._name = newname
         return True
+
+    def colors_get(self):
+        cdef int r, g, b, a
+        cdef int r2, g2, b2, a2
+        cdef int r3, g3, b3, a3
+        edje_edit_color_class_colors_get(self.edje.obj, self.name,
+                                         &r, &g, &b, &a,
+                                         &r2, &g2, &b2, &a2,
+                                         &r3, &g3, &b3, &a3)
+        return ((r, g, b, a),
+                (r2, g2, b2, a2),
+                (r3, g3, b3, a3))
+
+    def colors_set(self, int r, int g, int b, int a,
+                   int r2, int g2, int b2, int a2,
+                   int r3, int g3, int b3, int a3):
+        edje_edit_color_class_colors_set(self.edje.obj, self.name,
+                                         r, g, b, a,
+                                         r2, g2, b2, a2,
+                                         r3, g3, b3, a3)
 

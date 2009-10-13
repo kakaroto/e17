@@ -307,7 +307,61 @@ cdef class State:
     def aspect_pref_set(self, char a):
         edje_edit_state_aspect_pref_set(self.edje.obj, self.part, self.name, a)
 
-    # TODO: fill_*
+    def fill_origin_relative_get(self):
+        cdef double x, y
+        x = edje_edit_state_fill_origin_relative_x_get(self.edje.obj, self.part,
+                                                       self.name)
+        y = edje_edit_state_fill_origin_relative_y_get(self.edje.obj, self.part,
+                                                       self.name)
+        return (x, y)
+
+    def fill_origin_relative_set(self, double x, double y):
+        edje_edit_state_fill_origin_relative_x_set(self.edje.obj, self.part,
+                                                   self.name, x)
+        edje_edit_state_fill_origin_relative_y_set(self.edje.obj, self.part,
+                                                   self.name, y)
+
+    def fill_origin_offset_get(self):
+        cdef int x, y
+        x = edje_edit_state_fill_origin_offset_x_get(self.edje.obj, self.part,
+                                                     self.name)
+        y = edje_edit_state_fill_origin_offset_y_get(self.edje.obj, self.part,
+                                                     self.name)
+        return (x, y)
+
+    def fill_origin_offset_set(self, x, y):
+        edje_edit_state_fill_origin_offset_x_set(self.edje.obj, self.part,
+                                                 self.name, x)
+        edje_edit_state_fill_origin_offset_y_set(self.edje.obj, self.part,
+                                                 self.name, y)
+
+    def fill_size_relative_get(self):
+        cdef double x, y
+        x = edje_edit_state_fill_size_relative_x_get(self.edje.obj, self.part,
+                                                     self.name)
+        y = edje_edit_state_fill_size_relative_y_get(self.edje.obj, self.part,
+                                                     self.name)
+        return (x, y)
+
+    def fill_size_relative_set(self, double x, double y):
+        edje_edit_state_fill_size_relative_x_set(self.edje.obj, self.part,
+                                                 self.name, x)
+        edje_edit_state_fill_size_relative_y_set(self.edje.obj, self.part,
+                                                 self.name, y)
+
+    def fill_size_offset_get(self):
+        cdef int x, y
+        x = edje_edit_state_fill_size_offset_x_get(self.edje.obj, self.part,
+                                                   self.name)
+        y = edje_edit_state_fill_size_offset_y_get(self.edje.obj, self.part,
+                                                   self.name)
+        return (x, y)
+
+    def fill_size_offset_set(self, x, y):
+        edje_edit_state_fill_size_offset_x_set(self.edje.obj, self.part,
+                                               self.name, x)
+        edje_edit_state_fill_size_offset_y_set(self.edje.obj, self.part,
+                                               self.name, y)
 
     property visible:
         def __get__(self):
@@ -320,7 +374,23 @@ cdef class State:
             else:
                 edje_edit_state_visible_set(self.edje.obj, self.part, self.name,                                            0)
 
-    # TODO: color_class
+    def color_class_get(self):
+        cdef char *cc
+        cc = edje_edit_state_color_class_get(self.edje.obj, self.part,
+                                             self.name)
+        if cc == NULL:
+            return None
+        rcc = cc
+        edje_edit_string_free(cc)
+        return rcc
+
+    def color_class_set(self, cc):
+        if cc != "":
+            edje_edit_state_color_class_set(self.edje.obj, self.part,
+                                            self.name, cc)
+        else:
+            edje_edit_state_color_class_set(self.edje.obj, self.part,
+                                            self.name, NULL)
 
     def text_get(self):
         cdef char *t
@@ -463,3 +533,98 @@ cdef class State:
             return False
         return True
 
+    def gradient_type_get(self):
+        cdef char *t
+        t = edje_edit_state_gradient_type_get(self.edje.obj, self.part,
+                                              self.name)
+        if t == NULL:
+            return None
+        ret = t
+        edje_edit_string_free(t)
+        return ret
+
+    def gradient_type_set(self, type):
+        return bool(edje_edit_state_gradient_type_set(self.edje.obj, self.part,
+                                                      self.name, type))
+
+    def gradient_spectra_get(self):
+        cdef char *s
+        s = edje_edit_state_gradient_spectra_get(self.edje.obj, self.part,
+                                                 self.name)
+        if s == NULL:
+            return None
+        ret = s
+        edje_edit_string_free(s)
+        return ret
+
+    def gradient_spectra_set(self, s):
+        edje_edit_state_gradient_spectra_set(self.edje.obj, self.part,
+                                             self.name, s)
+
+    def gradient_angle_get(self):
+        return edje_edit_state_gradient_angle_get(self.edje.obj, self.part,
+                                                  self.name)
+
+    def gradient_angle_set(self, int angle):
+        edje_edit_state_gradient_angle_set(self.edje.obj, self.part, self.name,
+                                           angle)
+
+    def gradient_use_fill_get(self):
+        return bool(edje_edit_state_gradient_use_fill_get(self.edje.obj,
+                                                          self.part, self.name))
+
+    def gradient_rel1_relative_get(self):
+        cdef double x, y
+        x = edje_edit_state_gradient_rel1_relative_x_get(self.edje.obj,
+                                                         self.part, self.name)
+        y = edje_edit_state_gradient_rel1_relative_y_get(self.edje.obj,
+                                                         self.part, self.name)
+        return (x, y)
+
+    def gradient_rel1_relative_set(self, double x, double y):
+        edje_edit_state_gradient_rel1_relative_x_set(self.edje.obj, self.part,
+                                                     self.name, x)
+        edje_edit_state_gradient_rel1_relative_y_set(self.edje.obj, self.part,
+                                                     self.name, y)
+
+    def gradient_rel1_offset_get(self):
+        cdef int x, y
+        x = edje_edit_state_gradient_rel1_offset_x_get(self.edje.obj,
+                                                       self.part, self.name)
+        y = edje_edit_state_gradient_rel1_offset_y_get(self.edje.obj,
+                                                       self.part, self.name)
+        return (x, y)
+
+    def gradient_rel1_offset_set(self, int x, int y):
+        edje_edit_state_gradient_rel1_offset_x_set(self.edje.obj, self.part,
+                                                   self.name, x)
+        edje_edit_state_gradient_rel1_offset_y_set(self.edje.obj, self.part,
+                                                   self.name, y)
+
+    def gradient_rel2_relative_get(self):
+        cdef double x, y
+        x = edje_edit_state_gradient_rel2_relative_x_get(self.edje.obj,
+                                                         self.part, self.name)
+        y = edje_edit_state_gradient_rel2_relative_y_get(self.edje.obj,
+                                                         self.part, self.name)
+        return (x, y)
+
+    def gradient_rel2_relative_set(self, double x, double y):
+        edje_edit_state_gradient_rel2_relative_x_set(self.edje.obj, self.part,
+                                                     self.name, x)
+        edje_edit_state_gradient_rel2_relative_y_set(self.edje.obj, self.part,
+                                                     self.name, y)
+
+    def gradient_rel2_offset_get(self):
+        cdef int x, y
+        x = edje_edit_state_gradient_rel2_offset_x_get(self.edje.obj,
+                                                       self.part, self.name)
+        y = edje_edit_state_gradient_rel2_offset_y_get(self.edje.obj,
+                                                       self.part, self.name)
+        return (x, y)
+
+    def gradient_rel2_offset_set(self, int x, int y):
+        edje_edit_state_gradient_rel2_offset_x_set(self.edje.obj, self.part,
+                                                   self.name, x)
+        edje_edit_state_gradient_rel2_offset_y_set(self.edje.obj, self.part,
+                                                   self.name, y)
