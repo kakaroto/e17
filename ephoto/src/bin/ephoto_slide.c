@@ -10,6 +10,8 @@ struct _Smart_Data
 	int y;
 	int w;
 	int h;
+	int iw;
+	int ih;
 	Evas_Object *center_image_one;
 	Evas_Object *center_image_two;
 	Eina_List *current_node;
@@ -50,7 +52,11 @@ static int change_image(void *data)
                 sd->current_node = sd->list;
 
 	center = sd->current_node->data;
-	evas_object_image_file_set(sd->center_image_two, center, NULL);
+
+	edje_object_part_unswallow(sd->images, sd->center_image_two);
+	ephoto_image_fill_inside_set(sd->center_image_two, 1);
+        ephoto_image_file_set(sd->center_image_two, center, sd->iw, sd->ih);
+	edje_object_part_swallow(sd->images, "ephoto.swallow.content.two", sd->center_image_two);	
 
 	edje_object_signal_emit(sd->images, "ephoto.change.image", "ephoto");
 
@@ -71,13 +77,16 @@ static void go_back(void *data, Evas_Object *obj, const char *emission, const ch
 static void done(void *data, Evas_Object *obj, const char *emission, const char *source)
 {
 	char *center;
-        Smart_Data *sd;
+	Smart_Data *sd;
 
         sd = data;
 
 	center = sd->current_node->data;
 
-	evas_object_image_file_set(sd->center_image_one, center, NULL);
+	edje_object_part_unswallow(sd->images, sd->center_image_one);
+	ephoto_image_fill_inside_set(sd->center_image_one, 1);
+        ephoto_image_file_set(sd->center_image_one, center, sd->iw, sd->ih);
+	edje_object_part_swallow(sd->images, "ephoto.swallow.content.one", sd->center_image_one);
 }
 
 Evas_Object *ephoto_slide_add(Evas *e)
@@ -96,7 +105,10 @@ void ephoto_slide_current_node_set(Evas_Object *obj, Eina_List *node)
 	sd->current_node = node;
         center = sd->current_node->data;
 
-	evas_object_image_file_set(sd->center_image_one, center, NULL);
+	edje_object_part_unswallow(sd->images, sd->center_image_one);
+	ephoto_image_fill_inside_set(sd->center_image_one, 1);
+	ephoto_image_file_set(sd->center_image_one, center, sd->iw, sd->ih);
+	edje_object_part_swallow(sd->images, "ephoto.swallow.content.one", sd->center_image_one);
 
 	return;
 }
@@ -138,6 +150,11 @@ static void _slide_smart_reconfigure(Smart_Data *sd)
 	nw = w/1.2;
         nh = h/1.2;
 
+	sd->iw = nw;
+	sd->ih = nh;
+
+	edje_object_part_unswallow(sd->images, sd->center_image_one);
+	edje_object_part_unswallow(sd->images, sd->center_image_two);
 	edje_object_part_unswallow(sd->obj, sd->images);
 	evas_object_image_load_size_set(sd->center_image_one, nw, nh);
 	evas_object_image_load_size_set(sd->center_image_two, nw, nh);
@@ -147,6 +164,8 @@ static void _slide_smart_reconfigure(Smart_Data *sd)
 	evas_object_size_hint_min_set(sd->images, nw, nh);
         evas_object_size_hint_max_set(sd->images, nw, nh);
 	edje_object_part_swallow(sd->obj, "ephoto.swallow.content", sd->images);
+	edje_object_part_swallow(sd->images, "ephoto.swallow.content.one", sd->center_image_one);
+	edje_object_part_swallow(sd->images, "ephoto.swallow.content.two", sd->center_image_two);
 
 	return;
 }
@@ -197,12 +216,10 @@ static void _slide_smart_add(Evas_Object *obj)
 	edje_object_file_set(sd->images, PACKAGE_DATA_DIR "/themes/default/ephoto.edj", "/ephoto/slide/images");
 	edje_object_part_swallow(sd->obj, "ephoto.swallow.content", sd->images);
 
-	sd->center_image_one = (Evas_Object *)edje_object_part_object_get(sd->images, "ephoto.image.one");
-	evas_object_image_filled_set(sd->center_image_one, EINA_FALSE);
-        evas_object_image_smooth_scale_set(sd->center_image_one, EINA_TRUE);
-	sd->center_image_two = (Evas_Object *)edje_object_part_object_get(sd->images, "ephoto.image.two");
-	evas_object_image_filled_set(sd->center_image_two, EINA_TRUE);
-        evas_object_image_smooth_scale_set(sd->center_image_two, EINA_FALSE);
+	sd->center_image_one = ephoto_image_add();
+	edje_object_part_swallow(sd->images, "ephoto.swallow.content.one", sd->center_image_one);
+	sd->center_image_two = ephoto_image_add();
+	edje_object_part_swallow(sd->images, "ephoto.swallow.content.two", sd->center_image_two);
 
 	edje_object_signal_callback_add(sd->obj, "mouse,up,1", "ephoto.move.back", go_back, sd);
 	edje_object_signal_callback_add(sd->images, "ephoto.transition.done", "ephoto", done, sd);	
@@ -217,6 +234,8 @@ static void _slide_smart_del(Evas_Object *obj)
 		return;
 	evas_object_del(sd->images);
 	evas_object_del(sd->obj);
+	evas_object_del(sd->center_image_one);
+	evas_object_del(sd->center_image_two);
 	free(sd);
 }
 
@@ -261,6 +280,8 @@ static void _slide_smart_show(Evas_Object *obj)
 
 	evas_object_show(sd->obj);
 	evas_object_show(sd->images);
+	evas_object_show(sd->center_image_one);
+	evas_object_show(sd->center_image_two);
 }
 
 static void _slide_smart_hide(Evas_Object *obj)
@@ -273,6 +294,8 @@ static void _slide_smart_hide(Evas_Object *obj)
 
 	evas_object_hide(sd->obj);
 	evas_object_hide(sd->images);
+	evas_object_hide(sd->center_image_one);
+        evas_object_hide(sd->center_image_two);
 }
 
 static void _slide_smart_color_set(Evas_Object *obj, int r, int g, int b, int a)

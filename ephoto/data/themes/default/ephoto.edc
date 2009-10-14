@@ -542,7 +542,6 @@ collections
 			part
                         {
                                 name: "ephoto.image.one";
-                                type: IMAGE;
                                 mouse_events: 1;
                                 description
                                 {
@@ -558,13 +557,26 @@ collections
 			}
 			part
 			{
+				name: "ephoto.swallow.content.one";
+				type: SWALLOW;
+				clip_to: "ephoto.image.one";
+				description
+				{
+					state: "default" 0.0;
+					rel1.to: "ephoto.image.one";
+					rel2.to: "ephoto.image.one";
+					color: 255 255 255 255;
+				}
+			}
+			part
+			{
 				name: "ephoto.image.two";
-                                type: IMAGE;
                                 mouse_events: 1;
                                 description
                                 {
                                         state: "default" 0.0;
-                                        color: 255 255 255 0;
+                                	visible: 1;
+				        color: 255 255 255 0;
                                 }
                                 description
                                 {
@@ -573,6 +585,19 @@ collections
                                         color: 255 255 255 255;
                                 }
                         }
+			part
+			{
+				name: "ephoto.swallow.content.two";
+				type: SWALLOW;
+				clip_to: "ephoto.image.two";
+				description
+				{
+					state: "default" 0.0;
+					rel1.to: "ephoto.image.two";
+					rel2.to: "ephoto.image.two";
+					color: 255 255 255 255;
+				}
+			}
 		}
 		programs
 		{
