@@ -17,11 +17,14 @@ struct pm_root
 
     Ecore_File_Monitor *monitor;
     Photo_Manager_Configuration conf;
+
+    //list of PM_Collection *
+    Eina_List *collections;
 };
 
 /*
- * Create a new root node. The callbacks arguments can be NULL if the folder
- * is not monitor.
+ * Create a new root node. The callbacks arguments named monitor_* can be NULL if the folder
+ * is not monitored. The callbacks named col_* can be null if you do not want to be notified when a change occurs in the collections.
  *
  * @param album_new_cb  Callback called by the monitoring when a new album appears
  * @param album_delete_cb  Callback called by the monitoring when a album is deleted
@@ -33,19 +36,28 @@ struct pm_root
  * @param Returns the new root struct
  */
 PM_Root *pm_root_new(
-        Photo_Manager_Album_New_Cb album_new_cb, Photo_Manager_Album_Delete_Cb album_delete_cb,
-        Photo_Manager_Delete_Cb pm_delete_cb,
-        Photo_Manager_Photo_New_Cb photo_new_cb, Photo_Manager_Photo_Delete_Cb photo_delete_cb,
-        Photo_Manager_Photo_Update_Cb photo_update_cb,
+        Photo_Manager_Album_New_Cb monitor_album_new_cb, Photo_Manager_Album_Delete_Cb monitor_album_delete_cb,
+        Photo_Manager_Delete_Cb monitor_pm_delete_cb,
+        Photo_Manager_Photo_New_Cb monitor_photo_new_cb, Photo_Manager_Photo_Delete_Cb monitor_photo_delete_cb,
+        Photo_Manager_Photo_Update_Cb monitor_photo_update_cb,
+	Photo_Manager_Collection_New_Cb col_new_cb, Photo_Manager_Collection_Delete_Cb col_delete_cb,
+	Photo_Manager_Collection_Album_New_Cb col_album_new_cb,
+	Photo_Manager_Collection_Album_Delete_Cb col_album_delete_cb,
         void *user_data)
 {
     PM_Root *root = calloc(1,sizeof(PM_Root));
-    root->conf.album_new_cb = album_new_cb;
-    root->conf.album_delete_cb = album_delete_cb;
-    root->conf.pm_delete_cb = pm_delete_cb;
-    root->conf.photo_new_cb = photo_new_cb;
-    root->conf.photo_delete_cb = photo_delete_cb;
-    root->conf.photo_update_cb = photo_update_cb;
+    root->conf.monitor.album_new_cb = monitor_album_new_cb;
+    root->conf.monitor.album_delete_cb = monitor_album_delete_cb;
+    root->conf.monitor.pm_delete_cb = monitor_pm_delete_cb;
+    root->conf.monitor.photo_new_cb = monitor_photo_new_cb;
+    root->conf.monitor.photo_delete_cb = monitor_photo_delete_cb;
+    root->conf.monitor.photo_update_cb = monitor_photo_update_cb;
+
+    root->conf.collection.new_cb = col_new_cb;
+    root->conf.collection.delete_cb = col_delete_cb;
+    root->conf.collection.album_new_cb = col_album_new_cb;
+    root->conf.collection.album_delete_cb = col_album_delete_cb;
+
     root->conf.data = user_data;
 
     return root;
@@ -58,6 +70,7 @@ PM_Root *pm_root_new(
 void pm_root_free(PM_Root **root)
 {
     PM_Album *album;
+    PM_Collection *col;
 
     ASSERT_RETURN_VOID(root!=NULL);
     ASSERT_RETURN_VOID((*root)!=NULL);
@@ -67,6 +80,8 @@ void pm_root_free(PM_Root **root)
         pm_album_free(&album);
     pm_root_monitor_stop(*root);
 
+   EINA_LIST_FREE( (*root)->collections, col)
+      pm_collection_free(&col);
 
     FREE(*root);
 }
@@ -106,6 +121,7 @@ SET(sync, Photo_Manager_Sync *)
 GET(path, const char*)
 GET(albums, Eina_List *)
 GET(sync, Photo_Manager_Sync *)
+GET(collections, const Eina_List *)
 
 #undef FCT_NAME
 #undef STRUCT_TYPE
@@ -153,7 +169,7 @@ PM_Album *pm_root_album_search_file_name(PM_Root *root, const char *file_name)
 }
 
 /*
- * Add an album 
+ * Add an album
  *
  * @param root the root struct
  * @param album the albuw to add
@@ -200,10 +216,153 @@ void pm_root_print(PM_Root *root)
         pm_album_print(album);
 }
 
+/**
+ * Add the album in the collection named @p album_col. If the collection does not exists, it is created.
+ *
+ * @param root The root struct
+ * @param album_col The album collection struct.
+ * @param album The album
+ */
+void _pm_root_collection_album_add(PM_Root *root, PM_Album_Collection *album_col, PM_Album *album)
+{
+   Eina_List *l;
+   PM_Collection *col;
+
+   ASSERT_RETURN_VOID(root != NULL);
+   ASSERT_RETURN_VOID(album_col != NULL);
+   ASSERT_RETURN_VOID(album != NULL);
+
+   EINA_LIST_FOREACH(root->collections, l, col)
+     {
+	if(album_col->name == pm_collection_name_get(col))
+	  {
+	     pm_collection_album_add(col, album);
+	     album_col->collection = col;
+	     if(root->conf.collection.album_new_cb)
+		  root->conf.collection.album_new_cb(root->conf.data, root, col, album);
+	     return ;
+	  }
+     }
+
+   col = pm_collection_new();
+   pm_collection_name_set(col, album_col->name);
+   pm_collection_album_add(col, album);
+   root->collections = eina_list_append(root->collections, col);
+   album_col->collection = col;
+
+   if(root->conf.collection.new_cb)
+      root->conf.collection.new_cb(root->conf.data, root, col);
+   if(root->conf.collection.album_new_cb)
+      root->conf.collection.album_new_cb(root->conf.data, root, col, album);
+}
+
+/**
+ * Remove the album from the collection named @p album_col. 
+ *
+ * @param root The root struct
+ * @param album_col The album collection struct.
+ * @param album The album
+ */
+void _pm_root_collection_album_remove(PM_Root *root, PM_Album_Collection *album_col, PM_Album *album)
+{
+   Eina_List *l;
+   PM_Collection *col;
+
+   ASSERT_RETURN_VOID(root != NULL);
+   ASSERT_RETURN_VOID(album_col != NULL);
+   ASSERT_RETURN_VOID(album != NULL);
+
+   EINA_LIST_FOREACH(root->collections, l, col)
+     {
+	if(album_col->name == pm_collection_name_get(col))
+	  {
+	     pm_collection_album_remove(col, album);
+	     album_col->collection = NULL;
+	     if(root->conf.collection.album_delete_cb)
+		  root->conf.collection.album_delete_cb(root->conf.data, root, col, album);
+	     return ;
+	  }
+     }
+}
+
+/**
+ * Save the path in the file ~/EET_FOLDER_ROOT_DB/EET_FILE_ROOT_DB
+ *
+ * @param root The root struct
+ */
+int pm_root_eet_path_save(PM_Root *root)
+{
+   int res;
+   Eet_Data_Descriptor *edd;
+   Eet_File *f;
+   char path[PATH_MAX];
+   char key[PATH_MAX];
+   PM_String string;
+
+   ASSERT_RETURN(root!=NULL);
+   ASSERT_RETURN(pm_root_path_get(root)!=NULL);
+
+
+   snprintf(path,PATH_MAX,"%s/"EET_FOLDER_ROOT_DB, getenv("HOME"));
+   if(!ecore_file_exists(path))
+     ecore_file_mkdir(path);
+
+   snprintf(path,PATH_MAX,"%s/"EET_FOLDER_ROOT_DB"/"EET_FILE_ROOT_DB, getenv("HOME"));
+   f = pm_file_manager_open(path);
+   ASSERT_RETURN(f!=NULL);
+
+   edd = _pm_string_edd_new();
+
+   snprintf(key,PATH_MAX,"/root %s", pm_root_path_get(root));
+   string.string = pm_root_path_get(root);
+
+   res = eet_data_write(f, edd, key, &string, 0);
+
+   pm_file_manager_close(path);
+   eet_data_descriptor_free(edd);
+
+   return res;
+}
+
+/**
+ * Return the list of albums saved in ~/EET_FOLDER_ROOT_DB/EET_FILE_ROOT_DB
+ *
+ * @return Returns a list of String* containing the root path
+ */
+Eina_List *pm_root_eet_path_load()
+{
+   Eet_Data_Descriptor *edd;
+   Eet_File *f;
+   Eina_List *l = NULL;
+   PM_String *data;
+   char path[PATH_MAX];
+   char **list;
+   int len, i;
+
+   snprintf(path,PATH_MAX,"%s/"EET_FOLDER_ROOT_DB"/"EET_FILE_ROOT_DB, getenv("HOME"));
+   f = pm_file_manager_open(path);
+   ASSERT_RETURN(f!=NULL);
+
+   edd = _pm_string_edd_new();
+
+   list = eet_list(f, "/root *", &len);
+
+   for(i=0; list && i<len; i++)
+     {
+	data = eet_data_read(f, edd, list[i]);
+	l = eina_list_append(l, data);
+     }
+   FREE(list);
+
+   pm_file_manager_close(path);
+   eet_data_descriptor_free(edd);
+
+   return l;
+}
 
 /*
  * Load the list of albums from the Eet file.
- * Tnis list contains only the pant and file name of each album.
+ * This list contains only the path and the file name of each album.
  * You should use it to load the albums with pm_root_eet_album_load()
  *
  * @param root the root struct
@@ -268,33 +427,31 @@ int pm_root_eet_albums_save(PM_Root *root)
  * Load an album from the eet file
  *
  * @param root the root struct
- * @param key the file name of the album to load
+ * @param name the file name of the album to load
  * @return Returns the album or NULL if the album is not in the Eet file
  */
-PM_Album *pm_root_eet_album_load(PM_Root *root, const char* key)
+PM_Album *pm_root_eet_album_load(PM_Root *root, const char* name)
 {
-    Eet_Data_Descriptor *edd;
+    Eet_Data_Descriptor *edd, *edd_collection;
     Eet_File *f;
     PM_Album *data;
-    char path[PATH_MAX], buf[PATH_MAX];
+    char path[PATH_MAX];
 
     ASSERT_RETURN(root!=NULL);
-    ASSERT_RETURN(key!=NULL);
+    ASSERT_RETURN(name!=NULL);
 
-    snprintf(path,PATH_MAX,"%s/"EET_FILE,pm_root_path_get(root));
+    snprintf(path,PATH_MAX,"%s/%s/"EET_FILE,pm_root_path_get(root),name);
+
     f = pm_file_manager_open(path);
     ASSERT_RETURN(f!=NULL);
 
-    edd = _pm_album_global_header_edd_new();
+    edd_collection = _pm_album_collection_edd_new();
+    edd = _pm_album_header_edd_new(edd_collection);
 
-    if(key[0]!='/')
-        snprintf(buf,PATH_MAX,"/album %s",key);
-    else
-        snprintf(buf,PATH_MAX,"%s",key);
-
-    data = eet_data_read(f, edd, buf);
+    data = eet_data_read(f, edd, "header");
 
     pm_file_manager_close(path);
+    eet_data_descriptor_free(edd_collection);
     eet_data_descriptor_free(edd);
 
     return data;
@@ -340,15 +497,15 @@ static void _pm_root_monitor_cb(void *data, Ecore_File_Monitor *em, Ecore_File_E
     {
         case ECORE_FILE_EVENT_CREATED_DIRECTORY:
             LOG_INFO("New album: %s", path);
-            root->conf.album_new_cb(root->conf.data, root, path);
+            root->conf.monitor.album_new_cb(root->conf.data, root, path);
             break;
         case ECORE_FILE_EVENT_DELETED_DIRECTORY:
             LOG_INFO("Deleted album; %s", path);
-            root->conf.album_delete_cb(root->conf.data, root, path);
+            root->conf.monitor.album_delete_cb(root->conf.data, root, path);
             break;
         case ECORE_FILE_EVENT_DELETED_SELF:
             LOG_INFO("Deleted pm root: %s", path);
-            root->conf.pm_delete_cb(root->conf.data, root);
+            root->conf.monitor.pm_delete_cb(root->conf.data, root);
             break;
         default: ;
             break;

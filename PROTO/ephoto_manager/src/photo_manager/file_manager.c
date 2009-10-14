@@ -35,11 +35,13 @@ int pm_file_manager_shutdown()
    File_Table_Data *data;
    if(count>1) return --count;
 
-   pthread_mutex_unlock(&mutex);
+   pm_file_manager_flush();
 
+   pthread_mutex_lock(&mutex);
    EINA_LIST_FREE(file_list, data)
-      _data_free(data);
-
+     {
+	 _data_free(data);
+     }
    pthread_mutex_unlock(&mutex);
 
    return --count;
@@ -57,25 +59,28 @@ File_Table_Data *_pm_file_manager_find(const char *file)
 
 void _pm_file_manager_clean()
 {
+   pthread_mutex_lock(&mutex);
    if(eina_list_count(file_list)>MAX_SIZE_LIST)
      {
+
 	Eina_List *l, *l_next;
 	File_Table_Data *data;
 	EINA_LIST_FOREACH_SAFE(file_list, l, l_next, data)
 	  {
 	     if(pthread_mutex_trylock(&(data->mutex)) != EBUSY)
 	       {
-		  pthread_mutex_unlock(&(data->mutex));
 		  file_list = eina_list_remove(file_list, data);
+
 		  _data_free(data);
 	       }
 	     else
 	       break;
 
 	     if(eina_list_count(file_list)<=MAX_SIZE_LIST)
-	       break;
+		  break;
 	  }
      }
+   pthread_mutex_unlock(&mutex);
 }
 
 Eet_File *pm_file_manager_open(const char *file)
@@ -86,9 +91,10 @@ Eet_File *pm_file_manager_open(const char *file)
    File_Table_Data *f_data = _pm_file_manager_find(file);
 
    if(f_data)
-     {
+     {	
 	file_list = eina_list_remove(file_list, f_data);
 	file_list = eina_list_append(file_list, f_data);
+	pthread_mutex_unlock(&mutex);
 
 	pthread_mutex_lock(&(f_data->mutex));
 	if(!f_data->f)
@@ -104,10 +110,14 @@ Eet_File *pm_file_manager_open(const char *file)
      {
 	f_data = calloc(1, sizeof(File_Table_Data));
 	pthread_mutex_init(&(f_data->mutex), NULL);
-	pthread_mutex_lock(&(f_data->mutex));
 
 	file_list = eina_list_append(file_list, f_data);
+
+	pthread_mutex_unlock(&mutex);
 	_pm_file_manager_clean();
+
+	pthread_mutex_lock(&(f_data->mutex));
+
 	f_data->path = eina_stringshare_add(file);
 
 	f_data->f = eet_open(file, EET_FILE_MODE_READ_WRITE);
@@ -115,7 +125,6 @@ Eet_File *pm_file_manager_open(const char *file)
 	  f_data->f = eet_open(file, EET_FILE_MODE_WRITE);
      }
    eina_stringshare_del(file);
-   pthread_mutex_unlock(&mutex);
 
    ASSERT(f_data->f != NULL);
    return f_data->f;
@@ -127,6 +136,7 @@ void pm_file_manager_close(const char *file)
    pthread_mutex_lock(&mutex);
    file = eina_stringshare_add(file);
    File_Table_Data *f_data = _pm_file_manager_find(file);
+   pthread_mutex_unlock(&mutex);
 
    if(f_data)
      {
@@ -136,7 +146,6 @@ void pm_file_manager_close(const char *file)
      LOG_ERR("The file is unknown ! %s", file);
 
    EINA_STRINGSHARE_DEL(file);
-   pthread_mutex_unlock(&mutex);
 }
 
 void pm_file_manager_flush()
@@ -147,11 +156,13 @@ void pm_file_manager_flush()
 
    EINA_LIST_FOREACH(file_list, l, data)
      {
-	 pthread_mutex_lock(&(data->mutex));
-	 if(data->f)
-	   eet_close(data->f);
-	 data->f = NULL;
-	 pthread_mutex_unlock(&(data->mutex));
+	if(pthread_mutex_trylock(&(data->mutex)) != EBUSY)
+	  {
+	     if(data->f)
+	       eet_close(data->f);
+	     data->f = NULL;
+	     pthread_mutex_unlock(&(data->mutex));
+	  }
      }
 
    pthread_mutex_unlock(&mutex);
@@ -159,7 +170,6 @@ void pm_file_manager_flush()
 
 static void _data_free(File_Table_Data *data)
 {
-   pthread_mutex_lock(&(data->mutex));
    if(data->f)
      eet_close(data->f);
    EINA_STRINGSHARE_DEL(data->path);

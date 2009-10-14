@@ -93,7 +93,7 @@ int main(int argc, char **argv)
 
     PM_Root *root = pm_root_new(_monitor_album_new_cb, _monitor_album_delete_cb, _monitor_pm_delete_cb,
             _monitor_photo_new_cb, _monitor_photo_delete_cb, _monitor_photo_update_cb,
-            NULL);
+            NULL, NULL, NULL, NULL, NULL);
     pm_root_path_set(root, root_path);
 
 

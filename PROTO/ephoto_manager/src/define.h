@@ -3,7 +3,7 @@
 #define  DEFINE_INC
 
 #define PATH_MAX 2048
-
+#define TEMP "/tmp/"
 #define FREE(p) do { if(p){ free(p); p=NULL;} }while(0)
 #define PCLOSE(p) do {if(p){pclose(p); p=NULL;} }while(0)
 #define DELETE_TIMER(a) do {if(a) {ecore_timer_del(a); a=NULL; } }while(0)

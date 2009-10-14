@@ -49,6 +49,8 @@ struct pm_load
         char *msg;
         PM_Album *album;
     }msg;
+
+    struct timeval t0;
 };
 
 /**
@@ -99,6 +101,12 @@ void pm_load_free(Photo_Manager_Load **load)
     Photo_Manager_Load *_load = *load;
     ASSERT_RETURN_VOID(_load!=NULL);
 
+    if(_load->is_running)
+      {
+	 LOG_ERR("You tried to free a load structure while the thread was running, this is really bad and can't be done\n");
+	 return;
+      }
+
     if(_load->pipe.thread_main)
         ecore_pipe_del(_load->pipe.thread_main);
 
@@ -115,6 +123,7 @@ void pm_load_run(Photo_Manager_Load *load)
     ASSERT_RETURN_VOID(load->is_running != 1);
 
     load->is_running = 1;
+    gettimeofday(&(load->t0), NULL);
     ecore_thread_run(_pm_load, _pm_load_end_cb, load);
     LOG_INFO("Loading start on pm : %s", pm_root_path_get(load->root));
 }
@@ -148,40 +157,54 @@ static void _pm_load(void *data)
     Eina_List *l;
     PM_Album *album_list;
     EINA_LIST_FOREACH(pm_root_albums_get(root_list), l, album_list)
-    {
-        PM_Album *album = pm_root_eet_album_load(root, pm_album_file_name_get(album_list));
-        pm_root_album_add(root, album);
-
-        _album_load(load, album);
+      {
+	 PM_Album *album = pm_root_eet_album_load(root, pm_album_file_name_get(album_list));
+	 if(album)
+	   {
+	      pm_root_album_add(root, album);
+	      _album_load(load, album);
+	   }
     }
     pm_root_free(&root_list);
 }
 
 static void _pm_load_message_cb(void *data, void *buffer, unsigned int nbyte)
 {
-    Photo_Manager_Load *load = (Photo_Manager_Load*) data;
+   Photo_Manager_Load *load = (Photo_Manager_Load*) data;
 
-    switch(load->msg.type)
-    {
-        case PM_LOAD_ERROR:
-            LOG_CRIT(load->msg.msg);
-            load->conf.error_cb(load->conf.data, load, load->msg.error, load->msg.msg);
-            break;
-        case PM_LOAD_ALBUM_DONE:
-            LOG_INFO("Loading album done: %s", pm_album_name_get(load->msg.album));
-            load->conf.album_done_cb(load->conf.data, load, load->root, load->msg.album);
-    }
-    pthread_mutex_unlock(&(load->mutex));
+   const char *msg = NULL;
+   if(load->msg.msg)
+     msg = eina_stringshare_add(load->msg.msg);
+   PM_Album *album = load->msg.album;
+
+   pthread_mutex_unlock(&(load->mutex));
+
+   switch(load->msg.type)
+     {
+      case PM_LOAD_ERROR:
+	 LOG_CRIT(load->msg.msg);
+	 load->conf.error_cb(load->conf.data, load, load->msg.error, msg);
+	 break;
+      case PM_LOAD_ALBUM_DONE:
+	 LOG_INFO("Loading album done: %s", pm_album_name_get(load->msg.album));
+	 load->conf.album_done_cb(load->conf.data, load, load->root, album);
+     }
+   EINA_STRINGSHARE_DEL(msg);
 }
 
 static void _pm_load_end_cb(void *data)
 {
-    Photo_Manager_Load *load = (Photo_Manager_Load*) data;
-    load->is_running = 0;
+   static struct timeval t;
+   Photo_Manager_Load *load = (Photo_Manager_Load*) data;
+   load->is_running = 0;
 
     Eina_List *l_pm = pm_root_albums_get(load->root);
-    LOG_ERR("Loading the albums \"%s\" done. %d albums and %d photos.",
-            pm_root_path_get(load->root), eina_list_count(l_pm), load->photos_count);
+
+    gettimeofday(&t, NULL);
+    long time = (t.tv_sec*1000000+t.tv_usec) - (load->t0.tv_sec*1000000+load->t0.tv_usec);
+
+    LOG_ERR("(%f sec) Loading the albums \"%s\" done. %d albums and %d photos.",
+            time/1000000., pm_root_path_get(load->root), eina_list_count(l_pm), load->photos_count);
     load->conf.done_cb(load->conf.data, load, eina_list_count(l_pm), load->photos_count);
 }
 

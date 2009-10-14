@@ -14,6 +14,7 @@ struct pm_photo
     const char *thumb_fdo_normal;
 
     void *user_data;
+    Photo_Manager_Photo_Free_Cb free_cb;
 };
 
 PM_Photo *pm_photo_new()
@@ -51,6 +52,10 @@ void pm_photo_free(PM_Photo **photo)
 {
     ASSERT_RETURN_VOID(photo!=NULL);
     ASSERT_RETURN_VOID((*photo)!=NULL);
+
+    if( (*photo)->free_cb )
+      (*photo)->free_cb((*photo), (*photo)->user_data);
+
     EINA_STRINGSHARE_DEL((*photo)->name);
     EINA_STRINGSHARE_DEL((*photo)->file_name);
     EINA_STRINGSHARE_DEL((*photo)->path);
@@ -89,7 +94,6 @@ void pm_photo_album_set(PM_Photo *photo, PM_Album *album)
 STRING_SET(name)
 STRING_SET(file_name)
 SET(time, long long)
-SET(user_data, void*)
 
 GET(album, PM_Album*)
 GET(name, const char*)
@@ -103,6 +107,12 @@ GET(thumb_fdo_large, const char*)
 #undef FCT_NAME
 #undef STRUCT_TYPE
 
+void pm_photo_user_data_set(PM_Photo *photo, void *user_data, Photo_Manager_Photo_Free_Cb cb)
+{
+    ASSERT_RETURN_VOID(photo!=NULL);
+    photo->user_data = user_data;
+    photo->free_cb = cb;
+}
 
 void pm_photo_path_set(PM_Photo *photo, const char *path)
 {

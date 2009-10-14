@@ -11,12 +11,14 @@ photo_manager.c \
 Photo_Manager.h \
 photo_manager_private.h \
 root.c \
+collection.c \
 album.c \
 photo.c \
 sync.c \
 load.c \
 thumb.c \
-file_manager.c
+file_manager.c \
+transformations.c
 
 installed_headersdir = $(prefix)/include/ephoto_manager
 installed_headers_DATA = $(EPHOTOMANAGERHEADERS)

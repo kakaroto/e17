@@ -4,25 +4,28 @@
 
 struct pm_album
 {
-    //Global header (required) => unique key
-    const char *file_name;
-    const char *path;
+   const char *file_name;
+   const char *path;
 
-    const char *name;
-    long long time;
+   const char *name;
+   long long time;
 
-    //header
-    //nothing
+   //header
+   //nothing
 
-    //list of PM_Photo*
-    Eina_List *photos;
+   //list of PM_Photo*
+   Eina_List *photos;
 
-    //extra data, not saved in an Eet file
-    int header_load_is;
-    int photos_load_is;
-    PM_Root *root;
-    Ecore_File_Monitor *monitor;
-    void *user_data;
+   //list of PM_Album_Collection
+   Eina_List *collections;
+
+   //extra data, not saved in an Eet file
+   int header_load_is;
+   int photos_load_is;
+   PM_Root *root;
+   Ecore_File_Monitor *monitor;
+   void *user_data;
+   Photo_Manager_Album_Free_Cb free_cb;
 };
 
 
@@ -73,28 +76,50 @@ PM_Album *pm_album_copy_new(const PM_Album *album)
  */
 void pm_album_copy(const PM_Album *album_src, PM_Album *album_dest)
 {
-    ASSERT_RETURN_VOID(album_src!=NULL);
-    ASSERT_RETURN_VOID(album_dest!=NULL);
+   const Eina_List *l;
+   const char *s;
 
-    pm_album_name_set(album_dest, pm_album_name_get(album_src));
-    pm_album_file_name_set(album_dest, pm_album_file_name_get(album_src));
-    pm_album_path_set(album_dest, pm_album_path_get(album_src));
-    pm_album_time_set(album_dest, pm_album_time_get(album_src));
+   ASSERT_RETURN_VOID(album_src!=NULL);
+   ASSERT_RETURN_VOID(album_dest!=NULL);
+
+   pm_album_name_set(album_dest, pm_album_name_get(album_src));
+   pm_album_file_name_set(album_dest, pm_album_file_name_get(album_src));
+   pm_album_path_set(album_dest, pm_album_path_get(album_src));
+   pm_album_time_set(album_dest, pm_album_time_get(album_src));
+
+   EINA_LIST_FOREACH(pm_album_collections_get(album_src), l, s)
+	 album_dest->collections = eina_list_append(album_dest->collections, eina_stringshare_add(s));
 }
 
 
 void pm_album_free(PM_Album **album)
 {
     PM_Photo *photo;
+    PM_Album_Collection *album_col;
 
     ASSERT_RETURN_VOID(album!=NULL);
     ASSERT_RETURN_VOID((*album)!=NULL);
-    EINA_STRINGSHARE_DEL( (*album)->name);
-    EINA_STRINGSHARE_DEL( (*album)->file_name);
-    EINA_STRINGSHARE_DEL( (*album)->path);
 
     EINA_LIST_FREE( (*album)->photos, photo)
         pm_photo_free(&photo);
+
+    EINA_LIST_FREE( (*album)->collections, album_col)
+      {
+	 (*album)->collections = eina_list_remove((*album)->collections, album_col);
+
+	 if((*album)->root)
+	   _pm_root_collection_album_remove((*album)->root, album_col, *album);
+
+	 eina_stringshare_del(album_col->name);
+	 free(album_col);
+      }
+
+    if( (*album)->free_cb )
+      (*album)->free_cb((*album), (*album)->user_data);
+
+    EINA_STRINGSHARE_DEL( (*album)->name);
+    EINA_STRINGSHARE_DEL( (*album)->file_name);
+    EINA_STRINGSHARE_DEL( (*album)->path);
 
     pm_album_monitor_stop(*album);
 
@@ -153,7 +178,6 @@ STRING_SET(name)
 STRING_SET(file_name)
 SET(time, long long)
 SET(photos, Eina_List*)
-SET(user_data, void *)
 
 GET(root, PM_Root*)
 GET(name, const char*)
@@ -161,9 +185,17 @@ GET(file_name, const char*)
 GET(path, const char*)
 GET(time, long long)
 GET(user_data, void *)
+GET(collections, const Eina_List *)
 
 #undef FCT_NAME
 #undef STRUCT_TYPE
+
+void pm_album_user_data_set(PM_Album *album, void *user_data, Photo_Manager_Album_Free_Cb cb)
+{
+    ASSERT_RETURN_VOID(album!=NULL);
+    album->user_data = user_data;
+    album->free_cb = cb;
+}
 
 void pm_album_path_set(PM_Album *album, const char *path)
 {
@@ -197,6 +229,79 @@ int pm_album_photos_count_get(PM_Album *album)
     ALBUM_PHOTOS_LOAD(album);
 
     return eina_list_count(album->photos);
+}
+
+/**
+ * If the album is in a root ( see pm_album_root_set() ), this method will add the album
+ * in the collection defined in the root. If the collection does not exists, it is created.
+ *
+ * @param album The album struct
+ */
+void pm_album_collection_process(PM_Album *album)
+{
+   Eina_List *l;
+   PM_Album_Collection *album_col;
+   ASSERT_RETURN_VOID(album != NULL);
+   ASSERT_RETURN_VOID(album->root != NULL);
+
+   EINA_LIST_FOREACH(album->collections, l, album_col)
+     {
+	album_col->album = album;
+	if(!album_col -> collection)
+	  _pm_root_collection_album_add(album->root, album_col, album);
+     }
+}
+
+/**
+ * Add the album in a collection.
+ *
+ * If the album is in a root ( see pm_album_root_set() ), this method will add the album
+ * in the collection defined in the root. If the collection does not exists, it is created.
+ *
+ * @param album The album struct
+ * @param col_name The name of the collection
+ */
+void pm_album_collection_add(PM_Album *album, const char *col_name)
+{
+   PM_Album_Collection *album_col;
+   ASSERT_RETURN_VOID(album != NULL);
+   ASSERT_RETURN_VOID(col_name != NULL);
+
+   album_col = calloc(1, sizeof(PM_Album_Collection));
+   album_col->name = eina_stringshare_add(col_name);
+   album_col->album = album;
+
+   album->collections = eina_list_append(album->collections, album_col);
+
+   if(album->root)
+      _pm_root_collection_album_add(album->root, album_col, album);
+
+   pm_album_eet_header_save(album);
+}
+
+/**
+ * Remove the album from the collection.
+ *
+ * If the album is in a root ( see pm_album_root_set() ), this method will remove the album
+ * from the collection defined in the root.
+ *
+ * @param album The album struct
+ * @param album_col The album collection struct 
+ */
+void pm_album_collection_remove(PM_Album *album, PM_Album_Collection *album_col)
+{
+   ASSERT_RETURN_VOID(album != NULL);
+   ASSERT_RETURN_VOID(album_col != NULL);
+
+   album->collections = eina_list_remove(album->collections, album_col);
+
+   if(album->root)
+      _pm_root_collection_album_remove(album->root, album_col, album);
+
+   eina_stringshare_del(album_col->name);
+   free(album_col);
+
+   pm_album_eet_header_save(album);
 }
 
 /**
@@ -251,35 +356,9 @@ int pm_album_eet_photos_save(PM_Album *album)
     return _album_eet_photos_save(album);
 }
 
-
-int pm_album_eet_global_header_save(PM_Album *album)
-{
-    Eet_Data_Descriptor *edd;
-    Eet_File *f;
-    char buf[PATH_MAX], path[PATH_MAX];
-    int res;
-
-    ASSERT_RETURN(album!=NULL);
-
-    pm_album_eet_header_save(album);
-
-    snprintf(path,PATH_MAX,"%s/"EET_FILE,pm_album_path_get(album));
-    f = pm_file_manager_open(path);
-    ASSERT_RETURN(f!=NULL);
-
-    edd = _pm_album_global_header_edd_new();
-    snprintf(buf,PATH_MAX,"/album %s",pm_album_file_name_get(album));
-    res=eet_data_write(f, edd, buf, album, 0);
-
-    eet_data_descriptor_free(edd);
-    pm_file_manager_close(path);
-
-    return res;
-}
-
 int pm_album_eet_header_save(PM_Album *album)
 {
-    Eet_Data_Descriptor *edd;
+    Eet_Data_Descriptor *edd, *edd_collection;
     Eet_File *f;
     char path[PATH_MAX];
     int res;
@@ -288,12 +367,16 @@ int pm_album_eet_header_save(PM_Album *album)
 
     snprintf(path,PATH_MAX,"%s/%s/"EET_FILE,pm_album_path_get(album),
             pm_album_file_name_get(album));
+
     f = pm_file_manager_open(path);
     ASSERT_RETURN(f!=NULL);
 
-    edd = _pm_album_header_edd_new();
+    edd_collection =  _pm_album_collection_edd_new();
+    edd = _pm_album_header_edd_new(edd_collection);
+
     res=eet_data_write(f, edd, "header", album, 0);
 
+    eet_data_descriptor_free(edd_collection);
     eet_data_descriptor_free(edd);
     pm_file_manager_close(path);
 
@@ -317,15 +400,15 @@ static void _album_monitor_cb(void *data, Ecore_File_Monitor *em, Ecore_File_Eve
     {
         case ECORE_FILE_EVENT_CREATED_FILE:
             LOG_INFO("New photo: %s", path);
-            conf.photo_new_cb(conf.data, pm, album, path);
+            conf.monitor.photo_new_cb(conf.data, pm, album, path);
             break;
         case ECORE_FILE_EVENT_DELETED_FILE:
             LOG_INFO("Deleted photo: %s", path);
-            conf.photo_delete_cb(conf.data, pm, album, path);
+            conf.monitor.photo_delete_cb(conf.data, pm, album, path);
             break;
         case ECORE_FILE_EVENT_MODIFIED:
             LOG_INFO("Updated photo: %s", path);
-            conf.photo_update_cb(conf.data, pm, album, path);
+            conf.monitor.photo_update_cb(conf.data, pm, album, path);
             break;
         default: ;
     }
@@ -461,10 +544,12 @@ static Eet_Data_Descriptor * _pm_album_photos_file_name_edd_new(Eet_Data_Descrip
 }
 
 
-Eet_Data_Descriptor * _pm_album_global_header_edd_new()
+Eet_Data_Descriptor * _pm_album_header_edd_new(Eet_Data_Descriptor *edd_collection)
 {
     Eet_Data_Descriptor *edd;
     Eet_Data_Descriptor_Class eddc;
+
+    ASSERT_RETURN(edd_collection != NULL);
 
     EET_EINA_FILE_DATA_DESCRIPTOR_CLASS_SET(&eddc, PM_Album);
     eddc.func.str_direct_alloc = NULL;
@@ -476,25 +561,23 @@ Eet_Data_Descriptor * _pm_album_global_header_edd_new()
     EET_DATA_DESCRIPTOR_ADD_BASIC(edd, PM_Album, "path", path, EET_T_STRING);
     EET_DATA_DESCRIPTOR_ADD_BASIC(edd, PM_Album, "file_name", file_name, EET_T_STRING);
     EET_DATA_DESCRIPTOR_ADD_BASIC(edd, PM_Album, "time", time, EET_T_LONG_LONG);
+    EET_DATA_DESCRIPTOR_ADD_LIST(edd, PM_Album, "collections", collections, edd_collection);
 
     return edd;
 }
 
-Eet_Data_Descriptor * _pm_album_header_edd_new()
+Eet_Data_Descriptor * _pm_album_collection_edd_new()
 {
     Eet_Data_Descriptor *edd;
     Eet_Data_Descriptor_Class eddc;
 
-    EET_EINA_FILE_DATA_DESCRIPTOR_CLASS_SET(&eddc, PM_Album);
+    EET_EINA_FILE_DATA_DESCRIPTOR_CLASS_SET(&eddc, PM_Album_Collection);
     eddc.func.str_direct_alloc = NULL;
     eddc.func.str_direct_free = NULL;
 
     edd = eet_data_descriptor_file_new(&eddc);
 
-    EET_DATA_DESCRIPTOR_ADD_BASIC(edd, PM_Album, "name", name, EET_T_STRING);
-    EET_DATA_DESCRIPTOR_ADD_BASIC(edd, PM_Album, "path", path, EET_T_STRING);
-    EET_DATA_DESCRIPTOR_ADD_BASIC(edd, PM_Album, "file_name", file_name, EET_T_STRING);
-    EET_DATA_DESCRIPTOR_ADD_BASIC(edd, PM_Album, "time", time, EET_T_LONG_LONG);
+    EET_DATA_DESCRIPTOR_ADD_BASIC(edd, PM_Album_Collection, "name", name, EET_T_STRING);
 
     return edd;
 }

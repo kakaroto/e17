@@ -54,6 +54,8 @@ struct pm_sync
     PM_Sync_Configuration sync;
 
     Eina_List *jobs;
+    PM_Sync_Job *current_job;
+
     int is_running;
 
     // mutex use to pause the thread and wake up
@@ -111,6 +113,7 @@ static int _pm_sync_all_photo_file(Photo_Manager_Sync *sync, PM_Album *album, co
 
 static void _pm_sync_next_job_process(Photo_Manager_Sync *sync);
 static void _pm_sync_job_free(PM_Sync_Job **job);
+static PM_Sync_Job *_pm_sync_job_equivalent_search(Photo_Manager_Sync *sync, PM_Sync_Job *job);
 
 /**
  * @brief Create a new Synchronisation struct
@@ -181,7 +184,12 @@ void pm_sync_free(Photo_Manager_Sync **sync)
     ASSERT_RETURN_VOID(sync != NULL);
     Photo_Manager_Sync *_sync = *sync;
     ASSERT_RETURN_VOID(_sync!=NULL);
-    ASSERT_RETURN_VOID(!_sync->is_running);
+
+    if(_sync->is_running)
+      {
+	 LOG_ERR("You tried to free a sync structure while the thread was running, this is really bad and can't be done\n");
+	 return;
+      }
 
     eina_stringshare_del(_sync->path);
 
@@ -191,19 +199,34 @@ void pm_sync_free(Photo_Manager_Sync **sync)
     FREE(_sync);
 }
 
+int pm_sync_jobs_count_get(Photo_Manager_Sync *sync)
+{
+    ASSERT_RETURN(sync != NULL);
+   
+    return eina_list_count(sync->jobs);
+}
+
 /**
  * @brief Add a new job : Synchronise all the albums and photos
  * @param sync the sync struct
  */
 void pm_sync_job_all_add(Photo_Manager_Sync *sync)
 {
-    PM_Sync_Job *job;
+    PM_Sync_Job *job, *_job;
 
     ASSERT_RETURN_VOID(sync != NULL);
 
     job = calloc(1, sizeof(PM_Sync_Job));
     job->type = PM_SYNC_JOB_ALL;
-    sync->jobs = eina_list_append(sync->jobs, job);
+
+    _job = _pm_sync_job_equivalent_search(sync, job);
+    if(!_job)
+      sync->jobs = eina_list_append(sync->jobs, job);
+    else 
+      {
+	 _pm_sync_job_free(&job);
+	 return ;
+      }
 
     if(!sync->is_running)
         _pm_sync_next_job_process(sync);
@@ -216,7 +239,7 @@ void pm_sync_job_all_add(Photo_Manager_Sync *sync)
  */
 void pm_sync_job_album_folder_add(Photo_Manager_Sync *sync, const char *folder)
 {
-    PM_Sync_Job *job;
+    PM_Sync_Job *job, *_job;
 
     ASSERT_RETURN_VOID(sync != NULL);
     ASSERT_RETURN_VOID(folder != NULL);
@@ -224,7 +247,15 @@ void pm_sync_job_album_folder_add(Photo_Manager_Sync *sync, const char *folder)
     job = calloc(1, sizeof(PM_Sync_Job));
     job->type = PM_SYNC_JOB_ALBUM;
     job->folder = eina_stringshare_add(folder);
-    sync->jobs = eina_list_append(sync->jobs, job);
+
+    _job = _pm_sync_job_equivalent_search(sync, job);
+    if(!_job)
+      sync->jobs = eina_list_append(sync->jobs, job);
+    else 
+      {
+	 _pm_sync_job_free(&job);
+	 return ;
+      }
 
     if(!sync->is_running)
         _pm_sync_next_job_process(sync);
@@ -238,19 +269,46 @@ void pm_sync_job_album_folder_add(Photo_Manager_Sync *sync, const char *folder)
  */
 void pm_sync_job_photo_file_add(Photo_Manager_Sync *sync, const char *folder, const char *file)
 {
-    PM_Sync_Job *job;
+   PM_Sync_Job *job, *_job;
 
-    ASSERT_RETURN_VOID(sync != NULL);
-    ASSERT_RETURN_VOID(file != NULL);
+   ASSERT_RETURN_VOID(sync != NULL);
+   ASSERT_RETURN_VOID(file != NULL);
 
-    job = calloc(1, sizeof(PM_Sync_Job));
-    job->type = PM_SYNC_JOB_PHOTO;
-    job->folder = eina_stringshare_add(folder);
-    job->file = eina_stringshare_add(file);
-    sync->jobs = eina_list_append(sync->jobs, job);
+   job = calloc(1, sizeof(PM_Sync_Job));
+   job->type = PM_SYNC_JOB_PHOTO;
+   job->folder = eina_stringshare_add(folder);
+   job->file = eina_stringshare_add(file);
 
-    if(!sync->is_running)
-        _pm_sync_next_job_process(sync);
+   _job = _pm_sync_job_equivalent_search(sync, job);
+   if(!_job)
+     sync->jobs = eina_list_append(sync->jobs, job);
+   else 
+     {
+	_pm_sync_job_free(&job);
+	return ;
+     }
+
+   if(!sync->is_running)
+     _pm_sync_next_job_process(sync);
+}
+
+static PM_Sync_Job *_pm_sync_job_equivalent_search(Photo_Manager_Sync *sync, PM_Sync_Job *job)
+{
+   Eina_List *l;
+   PM_Sync_Job *_job = NULL;
+
+   ASSERT_RETURN(sync != NULL);
+   ASSERT_RETURN(job != NULL);
+
+   EINA_LIST_FOREACH(sync->jobs, l, _job)
+     {
+	 if(_job->type == job->type
+	       && _job->folder == job->folder
+	       && _job->file == job->file )
+	   break;
+     }
+
+   return _job;
 }
 
 static void _pm_sync_job_free(PM_Sync_Job **job)
@@ -287,6 +345,8 @@ static void _pm_sync_next_job_process(Photo_Manager_Sync *sync)
     sync->is_running = 1;
 
     job = eina_list_data_get(sync->jobs);
+    sync->jobs = eina_list_remove(sync->jobs, job);
+    sync->current_job = job;
     switch(job->type)
     {
         case PM_SYNC_JOB_ALL:
@@ -631,7 +691,7 @@ static void _pm_sync_album_folder_start(Photo_Manager_Sync *sync, const char *fo
     int save = 0;
     time_t time;
 
-    PM_Root *root = pm_root_new(NULL,NULL,NULL,NULL,NULL,NULL,NULL);
+    PM_Root *root = pm_root_new(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL);
     pm_root_path_set(root, sync->path);
 
     snprintf(buf_album, PATH_MAX, "%s/%s", pm_root_path_get(root), folder);
@@ -664,7 +724,7 @@ static void _pm_sync_album_folder_start(Photo_Manager_Sync *sync, const char *fo
 
         //update the list of album
         PM_Root *root_list = pm_root_eet_albums_load(root);
-        if(!root_list) root_list = pm_root_new(NULL,NULL,NULL,NULL,NULL,NULL,NULL);
+        if(!root_list) root_list = pm_root_new(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL);
         pm_root_path_set(root_list, sync->path);
         PM_Album *album_list = pm_album_new();
         pm_album_path_set(album_list, pm_album_path_get(album));
@@ -718,7 +778,7 @@ static void _pm_sync_album_folder_start(Photo_Manager_Sync *sync, const char *fo
 
     if(save)
     {
-        ret = pm_album_eet_global_header_save(album);
+        ret = pm_album_eet_header_save(album);
         if(!ret)
         {
             snprintf(buf, 1024, "Failed to save the album \"%s\" in the file %s/"EET_FILE, pm_album_name_get(album), sync->path);
@@ -896,28 +956,27 @@ static int _pm_sync_all_album_folder(Photo_Manager_Sync *sync, PM_Root *root_lis
     int ret;
     int save_album_list = 0;
 
-    PM_Root *root = pm_root_new(NULL,NULL,NULL,NULL,NULL,NULL,NULL);
+    PM_Root *root = pm_root_new(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL);
     pm_root_path_set(root, sync->path);
 
     //
-    PM_Album *album= pm_album_new();
-    pm_album_path_set(album, sync->path);
-    pm_album_file_name_set(album, file);
-    pm_album_name_set(album, file);
-
     time_t time;
-    snprintf(buf, PATH_MAX, "%s/%s", pm_album_path_get(album), pm_album_file_name_get(album));
+    snprintf(buf, PATH_MAX, "%s/%s", sync->path, file);
     FILE_LASTCHANGE_TIME_GET(buf, time);
-
-    pm_album_time_set(album, time);
     //
 
     //compare to the eet file
-    PM_Album *_album = pm_root_eet_album_load(root, pm_album_file_name_get(album));
+    PM_Album *album = pm_root_eet_album_load(root, file);
     int save = 0;
-    if(!_album)
+    if(!album)
     {
         save_album_list = 1;
+
+	album= pm_album_new();
+	pm_album_path_set(album, sync->path);
+	pm_album_file_name_set(album, file);
+	pm_album_name_set(album, file);
+
         //send notif new album
         sync->msg.type = PM_SYNC_ALBUM_NEW;
         sync->msg.root = root;
@@ -933,7 +992,7 @@ static int _pm_sync_all_album_folder(Photo_Manager_Sync *sync, PM_Root *root_lis
     }
 
     //compare the dates
-    if(!save && pm_album_time_get(album) > pm_album_time_get(_album))
+    if(!save && pm_album_time_get(album) > time)
     {
         //send notif update album
         sync->msg.type = PM_SYNC_ALBUM_UPDATE;
@@ -946,9 +1005,9 @@ static int _pm_sync_all_album_folder(Photo_Manager_Sync *sync, PM_Root *root_lis
     }
 
     if(save)
-    {
-        ret = pm_album_eet_global_header_save(album);
-        if(!ret)
+      {
+	 ret = pm_album_eet_header_save(album);
+	 if(!ret)
         {
             snprintf(buf, 1024, "Failed to save the album \"%s\" in the file %s/"EET_FILE, pm_album_name_get(album), sync->path);
             sync->msg.type = PM_SYNC_ERROR;
@@ -958,8 +1017,6 @@ static int _pm_sync_all_album_folder(Photo_Manager_Sync *sync, PM_Root *root_lis
             pthread_mutex_lock(&(sync->mutex));
         }
     }
-
-    if(_album) pm_album_free(&_album);
 
     _pm_sync_all_album_sync(sync, album);
     pm_root_free(&root);
@@ -982,13 +1039,13 @@ static void _pm_sync_all_start(void *data)
     char *file;
     int save_album_list = 0;
 
-    root = pm_root_new(NULL,NULL,NULL,NULL,NULL,NULL, NULL);
+    root = pm_root_new(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL, NULL);
     pm_root_path_set(root, sync->path);
 
     l_files = ecore_file_ls(pm_root_path_get(root));
 
     PM_Root *root_list = pm_root_eet_albums_load(root);
-    if(!root_list) root_list = pm_root_new(NULL, NULL, NULL, NULL, NULL, NULL, NULL);
+    if(!root_list) root_list = pm_root_new(NULL,NULL,NULL,NULL,NULL, NULL, NULL, NULL, NULL, NULL, NULL);
     pm_root_path_set(root_list, sync->path);
 
     //search new/updated album
@@ -1098,9 +1155,7 @@ static void _pm_sync_end_cb(void *data)
     Photo_Manager_Sync *sync = (Photo_Manager_Sync*) data;
 
     sync->is_running = 0;
-    PM_Sync_Job *job = eina_list_data_get(sync->jobs);
-    sync->jobs = eina_list_remove(sync->jobs, job);
-    _pm_sync_job_free(&job);
+    _pm_sync_job_free(&(sync->current_job));
     _pm_sync_next_job_process(sync);
 }
 

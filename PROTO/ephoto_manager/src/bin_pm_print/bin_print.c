@@ -60,7 +60,7 @@ int main(int argc, char **argv)
         return 0;
     //
 
-    PM_Root *root = pm_root_new(NULL,NULL,NULL,NULL,NULL,NULL,NULL);
+    PM_Root *root = pm_root_new(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL);
     pm_root_path_set(root, root_path);
 
     Photo_Manager_Load *load = pm_load_new(root,
