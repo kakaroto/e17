@@ -114,6 +114,8 @@ int main(int argc, char **argv)
 
 	ecore_main_loop_begin();
 
+	free(getopts);
+
 	ethumb_client_shutdown();
 	ethumb_shutdown();
 	efreet_mime_shutdown();
