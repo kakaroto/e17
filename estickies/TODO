@@ -1,0 +1,24 @@
+Main stuff:
+
+- **** FIX BUGS!!!! ****
+- support transparent stickies
+- rest of formatting
+- GETTEXT!
+
+Medium priority:
+
+- do documentation, implement its own public API.
+- write plugin system
+- fix estickies so it does not run only under X11
+
+Nice to have:
+
+- Sqlite for stickies
+- plugins for drawer and everything e17 modules
+- add some more stuff here to this TODO
+
+Ideas from other people:
+
+-
+-
+-

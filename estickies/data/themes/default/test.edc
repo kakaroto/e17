@@ -1,0 +1,316 @@
+images {
+   image: "sticky.png" COMP;
+   image: "button_up.png" COMP;
+   image: "button_over.png" COMP;
+   image: "button_down.png" COMP;
+   image: "button_toggled.png" COMP;
+   image: "preview.png" COMP;   
+}
+
+collections {
+   group {
+      name: "estickies/base";
+      data {
+	 item: "inset" "11 11 11 11";
+      }
+      parts {
+	 part {
+	    name: "background";
+	    mouse_events: 1;
+	    description {
+	       state: "default" 0.0;
+	       rel1 {
+		  relative: 0 0;
+		  offset: 0 0;
+	       }
+	       rel2 {
+		  relative: 1.0 1.0;
+		  offset: -1 -1;
+	       }
+	       image {
+		  normal: "sticky.png";
+		  border: 11 11 11 11;
+	       }
+	    }
+	 }
+	 part { name: "bt_sticky";
+	    type: SWALLOW;
+	    description { state: "default" 0.0;
+	       rel1 {
+		  relative: 0.05 0.05;
+	       }
+	       rel2 {
+		  relative: 0.15 0.15;
+	       }
+	    }
+	 }
+	 part { name: "bt_locked";
+	    type: SWALLOW;
+	    description { state: "default" 0.0;
+	       rel1 {
+		  relative: 0.2 0.05;
+	       }
+	       rel2 {
+		  relative: 0.3 0.15;
+	       }
+	    }
+	 }
+	 part { name: "bt_close";
+	    type: SWALLOW;
+	    description { state: "default" 0.0;
+	       rel1 {
+		  relative: 0.35 0.05;
+	       }
+	       rel2 {
+		  relative: 0.45 0.15;
+	       }
+	    }
+	 }
+	 part { name: "entry_area";
+	    type: SWALLOW;
+	    description { state: "default" 0.0;
+	       rel1 {
+		  relative: 0.05 0.15;
+	       }
+	       rel2 {
+		  relative: 0.95 0.95;
+	       }
+	    }
+	 }
+      }
+   }
+   
+   group {
+      name: "etk/button";
+      min: 0 16;
+      data {
+	 item: "inset" "1 1 1 1";
+      }
+      parts {      
+	 part {
+	    name: "button";
+	    description {
+	       state: "default" 0.0;
+	       rel1 {
+		  relative: 0 0;
+		  offset: 0 0;
+	       }
+	       rel2 {
+		  relative: 1.0 1.0;
+		  offset: -1 -1;
+	       }
+	       image {
+		  normal: "button_up.png";
+		  border: 1 1 1 1;
+	       }
+	       fill {
+		  smooth: 0;
+	       }
+	    }
+	    description {
+	       state: "down" 0.0;
+	       inherit: "default" 0.0;
+	       image {
+		  normal: "button_down.png";
+	       }
+	    }
+	    description {
+	       state: "over" 0.0;
+	       inherit: "default" 0.0;
+	       image {
+		  normal: "button_over.png";
+	       }
+	    }
+	 }
+      }
+      programs {      
+	 program {
+	    name: "button_pressed";
+	    signal: "etk,state,pressed";
+	    source: "etk";
+	    action: STATE_SET "down" 0.0;
+	    target: "button";
+	 }
+	 program {
+	    name: "button_released";
+	    signal: "etk,state,released";
+	    source: "etk";
+	    action: STATE_SET "default" 0.0;
+	    target: "button";
+	 }
+	 program {
+	    name: "button_enter";
+	    signal: "etk,state,enter";
+	    source: "etk";
+	    action: STATE_SET "over" 0.0;
+	    target: "button";
+	 }
+	 program {
+	    name: "button_leave";
+	    signal: "etk,state,leave";
+	    source: "etk";
+	    action: STATE_SET "default" 0.0;
+	    target: "button";
+	 }
+      }
+   }
+   
+   group {
+      name: "etk/toggle_button";
+      min: 0 16;
+      data {
+	 item: "inset" "1 1 1 1";
+      }
+      parts {
+	 part {
+	    name: "toggle_button";
+	    description {
+	       state: "default" 0.0;
+	       rel1 {
+		  relative: 0 0;
+		  offset: 0 0;
+	       }
+	       rel2 {
+		  relative: 1.0 1.0;
+		  offset: -1 -1;
+	       }
+	       image {
+		  normal: "button_up.png";
+		  border: 1 1 1 1;
+	       }
+	       fill {
+		  smooth: 0;
+	       }
+	    }
+	    description {
+	       state: "down" 0.0;
+	       inherit: "default" 0.0;
+	       image {
+		  normal: "button_down.png";
+	       }
+	    }
+	    description {
+	       state: "on" 0.0;
+	       inherit: "default" 0.0;
+	       image {
+		  normal: "button_toggled.png";
+	       }
+	    }
+	    description {
+	       state: "over" 0.0;
+	       inherit: "default" 0.0;
+	       image {
+		  normal: "button_over.png";
+	       }
+	    }
+	 }
+      }
+      programs {
+	 program {
+	    name: "toggle_button_activate";
+	    signal: "etk,state,on";
+	    source: "etk";
+	    script {
+	       activate();
+	    }
+	 }
+	 program {
+	    name: "toggle_button_deactivate";
+	    signal: "etk,state,off";
+	    source: "etk";
+	    script {
+	       deactivate();
+	    }
+	 }
+	 program {
+	    name: "toggle_button_pressed";
+	    signal: "etk,state,pressed";
+	    source: "etk";
+	    action: STATE_SET "down" 0.0;
+	    target: "toggle_button";
+	 }
+	 program {
+	    name: "toggle_button_released";
+	    signal: "etk,state,released";
+	    source: "etk";
+	    script {
+	       up();
+	    }
+	 }
+	 program {
+	    name: "toggle_button_enter";
+	    signal: "etk,state,enter";
+	    source: "etk";
+	    script {
+	       enter();
+	    }
+	 }
+	 program {
+	    name: "toggle_button_leave";
+	    signal: "etk,state,leave";
+	    source: "etk";
+	    script {
+	       leave();
+	    }
+	 }
+	 
+      }
+      script
+	{
+	   public activated = 0;
+	   
+	   public enter()
+	     {	   		
+		if(activated == 0)
+		  set_state(PART:"toggle_button", "over", 0.0);
+	     }	   
+	   public leave()
+	     {
+		if (activated == 0)
+		  set_state(PART:"toggle_button", "default", 0.0);
+	     }	   
+	   public activate()
+	     {
+		activated = 1;
+		set_state(PART:"toggle_button", "on", 0.0);
+	     }
+	   public deactivate()
+	     {
+		activated = 0;
+		set_state(PART:"toggle_button", "default", 0.0);
+	     }
+	   public up()
+	     {
+		if (activated == 1)
+		  activate();
+		else
+		  deactivate();
+	     }
+	}
+   }
+   
+   group {
+      name: "preview";
+      parts {
+	 part {
+	    name: "image";
+	    mouse_events: 1;
+	    description {
+	       state: "default" 0.0;
+	       max: 208 206;
+	       rel1 {
+		  relative: 0 0;
+		  offset: 0 0;
+	       }
+	       rel2 {
+		  relative: 1.0 1.0;
+		  offset: -1 -1;
+	       }
+	       image {
+		  normal: "preview.png";
+	       }
+	    }
+	 }
+      }
+   }   
+}

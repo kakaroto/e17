@@ -1,0 +1,363 @@
+images {
+   image: "sticky.png" COMP;
+   image: "button_up.png" COMP;
+   image: "button_over.png" COMP;
+   image: "button_down.png" COMP;
+   image: "button_toggled.png" COMP;
+   image: "preview.png" COMP;
+   image: "button_close.png" COMP;
+   image: "button_lock.png" COMP;
+   image: "button_stick.png" COMP;
+}
+
+collections {
+   group {
+      name: "estickies/base";
+      data {
+	 item: "inset" "11 11 11 11";
+      }
+      parts {
+	 part {
+	    name: "background";
+	    mouse_events: 1;
+	    description {
+	       state: "default" 0.0;
+	       rel1 {
+		  relative: 0 0;
+		  offset: 0 0;
+	       }
+	       rel2 {
+		  relative: 1.0 1.0;
+		  offset: -1 -1;
+	       }
+	       image {
+		  normal: "sticky.png";
+		  border: 11 11 11 11;
+	       }
+	    }
+	 }
+	 part { name: "bt_sticky";
+	    type: SWALLOW;
+	    description { state: "default" 0.0;
+	       rel1 {
+		  relative: 0.1 0.05;
+	       }
+	       rel2 {
+		  relative: 0.2 0.15;
+	       }
+	    }
+	 }
+	 part { name: "bt_locked";
+	    type: SWALLOW;
+	    description { state: "default" 0.0;
+	       rel1 {
+		  relative: 0.2 0.05;
+	       }
+	       rel2 {
+		  relative: 0.3 0.15;
+	       }
+	    }
+	 }
+	 part { name: "bt_close";
+	    type: SWALLOW;
+	    description { state: "default" 0.0;
+	       rel1 {
+		  relative: 0.3 0.05;
+	       }
+	       rel2 {
+		  relative: 0.4 0.15;
+	       }
+	    }
+	 }
+	 part { name: "bt_actions";
+	    type: SWALLOW;
+	    description { state: "default" 0.0;
+	       rel1 {
+		  relative: 0.4 0.05;
+	       }
+	       rel2 {
+		  relative: 0.5 0.15;
+	       }
+	    }
+	 }
+	 part { name: "main_area";
+	    type: SWALLOW;
+	    description { state: "default" 0.0;
+	       rel1 {
+		  relative: 0.05 0.15;
+	       }
+	       rel2 {
+		  relative: 0.95 0.95;
+	       }
+	    }
+	 }
+      }
+   }
+
+   group { name: "elm/check/base/stick_toggle";
+      parts {
+         part { name: "bg";
+	    mouse_events: 0;
+	    scale: 1;
+	    description { state: "default" 0.0;
+	       rel1.offset: 1 1;
+	       rel2.relative: 0.0 1.0;
+	       rel2.offset: 1 -2;
+	       align: 0.0 0.5;
+	       min: 16 16;
+	       max: 16 16;
+	       aspect: 1.0 1.0;
+	       aspect_preference: VERTICAL;
+               image.normal: "button_up.png";
+               fill.smooth : 0;
+	    }
+	    description { state: "toggled" 0.0;
+	       inherit: "default" 0.0;
+               image.normal: "button_toggled.png";
+            }
+	 }
+         part { name: "over";
+	    mouse_events: 0;
+	    scale: 1;
+	    description { state: "default" 0.0;
+               rel1 {
+                  to: "bg";
+               }
+               rel2 {
+                  to: "bg";
+               }
+               color: 255 255 255 255;
+               image.normal: "button_stick.png";
+	    }
+	 }
+         part { name: "events";
+	    type: RECT;
+            ignore_flags: ON_HOLD;
+	    description { state: "default" 0.0;
+	       color: 0 0 0 0;
+	    }
+	 }
+      }
+      programs {
+	 program { name: "click";
+	    signal: "mouse,up,1";
+	    source: "events";
+            action: SIGNAL_EMIT "elm,action,check,toggle" "";
+	 }
+	 program { name: "check_on";
+	    signal: "elm,state,check,on";
+	    source: "elm";
+	    action:  STATE_SET "toggled" 0.0;
+	    target: "bg";
+	 }
+	 program { name: "check_off";
+	    signal: "elm,state,check,off";
+	    source: "elm";
+	    action:  STATE_SET "default" 0.0;
+	    target: "bg";
+	 }
+      }
+   }
+
+   group { name: "elm/check/base/lock_toggle";
+      parts {
+         part { name: "bg";
+	    mouse_events: 0;
+	    scale: 1;
+	    description { state: "default" 0.0;
+	       rel1.offset: 1 1;
+	       rel2.relative: 0.0 1.0;
+	       rel2.offset: 1 -2;
+	       align: 0.0 0.5;
+	       min: 16 16;
+	       max: 16 16;
+	       aspect: 1.0 1.0;
+	       aspect_preference: VERTICAL;
+               image.normal: "button_up.png";
+               fill.smooth : 0;
+	    }
+	    description { state: "toggled" 0.0;
+	       inherit: "default" 0.0;
+               image.normal: "button_toggled.png";
+            }
+	 }
+         part { name: "over";
+	    mouse_events: 0;
+	    scale: 1;
+	    description { state: "default" 0.0;
+               rel1 {
+                  to: "bg";
+               }
+               rel2 {
+                  to: "bg";
+               }
+               color: 255 255 255 255;
+               image.normal: "button_lock.png";
+	    }
+	 }
+         part { name: "events";
+	    type: RECT;
+            ignore_flags: ON_HOLD;
+	    description { state: "default" 0.0;
+	       color: 0 0 0 0;
+	    }
+	 }
+      }
+      programs {
+	 program { name: "click";
+	    signal: "mouse,up,1";
+	    source: "events";
+            action: SIGNAL_EMIT "elm,action,check,toggle" "";
+	 }
+	 program { name: "on";
+	    signal: "elm,state,check,on";
+	    source: "elm";
+	    action:  STATE_SET "toggled" 0.0;
+	    target: "bg";
+	 }
+	 program { name: "off";
+	    signal: "elm,state,check,off";
+	    source: "elm";
+	    action:  STATE_SET "default" 0.0;
+	    target: "bg";
+	 }
+      }
+   }
+
+   group { name: "elm/button/base/close_button";
+      parts {
+	 part { name: "bg";
+	    mouse_events: 1;
+	    scale: 1;
+	    description { state: "default" 0.0;
+	       rel1.offset: 1 1;
+	       rel2.relative: 0.0 1.0;
+	       rel2.offset: 1 -2;
+	       align: 0.0 0.5;
+	       min: 16 16;
+	       max: 16 16;
+	       aspect: 1.0 1.0;
+	       aspect_preference: VERTICAL;
+               image.normal: "button_up.png";
+               fill.smooth : 0;
+	    }
+	    description { state: "toggled" 0.0;
+	       inherit: "default" 0.0;
+               image.normal: "button_toggled.png";
+            }
+	 }
+         part { name: "over";
+	    mouse_events: 0;
+	    scale: 1;
+	    description { state: "default" 0.0;
+               rel1 {
+                  to: "bg";
+               }
+               rel2 {
+                  to: "bg";
+               }
+               color: 255 255 255 255;
+               image.normal: "button_close.png";
+	    }
+	 }
+      }
+      programs {
+	 program {
+	    name:   "click";
+	    signal: "mouse,down,1";
+	    source: "bg";
+	    action: STATE_SET "toggled" 0.0;
+	    target: "bg";
+	 }
+	 program {
+	    name:   "unclick";
+	    signal: "mouse,up,1";
+	    source: "bg";
+	    action: STATE_SET "default" 0.0;
+	    target: "bg";
+	 }
+	 program {
+	    name:   "unclick2";
+	    signal: "mouse,up,1";
+	    source: "bg";
+	    action: SIGNAL_EMIT "elm,action,click" "";
+	 }
+      }
+   }
+
+   group { name: "elm/check/base/actions_toggle";
+      parts {
+	 part { name: "bg";
+	    mouse_events: 0;
+	    scale: 1;
+	    description { state: "default" 0.0;
+	       rel1.offset: 1 1;
+	       rel2.relative: 0.0 1.0;
+	       rel2.offset: 1 -2;
+	       align: 0.0 0.5;
+	       min: 16 16;
+	       max: 16 16;
+	       aspect: 1.0 1.0;
+	       aspect_preference: VERTICAL;
+               image.normal: "button_up.png";
+               fill.smooth : 0;
+	    }
+	    description { state: "toggled" 0.0;
+	       inherit: "default" 0.0;
+               image.normal: "button_toggled.png";
+            }
+	 }
+         part { name: "events";
+	    type: RECT;
+            ignore_flags: ON_HOLD;
+	    description { state: "default" 0.0;
+	       color: 0 0 0 0;
+	    }
+	 }
+      }
+      programs {
+	 program { name: "click";
+	    signal: "mouse,up,1";
+	    source: "events";
+            action: SIGNAL_EMIT "elm,action,check,toggle" "";
+	 }
+	 program { name: "on";
+	    signal: "elm,state,check,on";
+	    source: "elm";
+	    action:  STATE_SET "toggled" 0.0;
+	    target: "bg";
+	 }
+	 program { name: "off";
+	    signal: "elm,state,check,off";
+	    source: "elm";
+	    action:  STATE_SET "default" 0.0;
+	    target: "bg";
+	 }
+      }
+   }
+
+   group {
+      name: "preview";
+      parts {
+	 part {
+	    name: "image";
+	    mouse_events: 1;
+	    description {
+	       state: "default" 0.0;
+	       max: 208 206;
+	       rel1 {
+		  relative: 0 0;
+		  offset: 0 0;
+	       }
+	       rel2 {
+		  relative: 1.0 1.0;
+		  offset: -1 -1;
+	       }
+	       image {
+		  normal: "preview.png";
+	       }
+	    }
+	 }
+      }
+   }   
+}

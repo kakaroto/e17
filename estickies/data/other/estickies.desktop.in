@@ -1,0 +1,20 @@
+[Desktop Entry]
+Encoding=UTF-8
+Name=Estickies
+Comment=An Enlightened Stickies handler
+Comment[cs]=Lepicí poznámky pro E17
+Comment[el]=Χειριστής αυτοκόλλητων για το E17
+Comment[eo]=Administrilo de glunotoj por E17
+Comment[it]=Gestore di post-it per E17
+Exec=estickies
+Terminal=false
+Type=Application
+StartupNotify=true
+StartupWMClass=estickies
+MimeType=text/plain;
+Icon=estickies
+GenericName=E17 Sticky Notes
+GenericName[cs]=E17 Lepicí poznámky
+GenericName[eo]=Glunotoj por E17
+GenericName[it]=Post-it per E17
+Categories=ENLIGHTENMENT;Utility;
