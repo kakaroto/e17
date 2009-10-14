@@ -454,6 +454,9 @@ PM_Album *pm_root_eet_album_load(PM_Root *root, const char* name)
     eet_data_descriptor_free(edd_collection);
     eet_data_descriptor_free(edd);
 
+    if(data && strcmp(name, pm_album_file_name_get(data))!=0)
+	 pm_album_free(&data);
+
     return data;
 }
 

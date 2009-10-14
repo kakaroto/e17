@@ -688,15 +688,26 @@ static void _pm_sync_album_folder_start(Photo_Manager_Sync *sync, const char *fo
     int ret;
     int folder_exist;
     PM_Album *album = NULL;
+    Eina_List *l;
     int save = 0;
     time_t time;
 
     PM_Root *root = pm_root_new(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL);
     pm_root_path_set(root, sync->path);
 
+    PM_Root *root_list = pm_root_eet_albums_load(root);
+    pm_root_path_set(root_list, sync->path);
+    PM_Album *album_list;
+    EINA_LIST_FOREACH(pm_root_albums_get(root_list), l, album_list)
+      {
+	 if(pm_album_file_name_get(album_list) == folder)
+	   break;
+      }
+
     snprintf(buf_album, PATH_MAX, "%s/%s", pm_root_path_get(root), folder);
     //load the album from the eet file
-    album = pm_root_eet_album_load(root, folder);
+    if(album_list)
+      album = pm_root_eet_album_load(root, folder);
     //test if the folder exists
     folder_exist = ecore_file_exists(buf_album);
     //
@@ -745,33 +756,20 @@ static void _pm_sync_album_folder_start(Photo_Manager_Sync *sync, const char *fo
 
         save = 1;
     }
-    else if(album && !folder_exist)
+    else if(album_list && !folder_exist)
     {
         //the album is referenced in the eet file but the folder does not exists
 
         //send notif
         sync->msg.type = PM_SYNC_ALBUM_DISAPPEAR;
         sync->msg.root = root;
-        sync->msg.album = album;
+        sync->msg.album = album_list;
         ecore_pipe_write(sync->pipe.thread_main, "a", 1);
         pthread_mutex_lock(&(sync->mutex));
 
         //update the list of album
-        PM_Root *root_list = pm_root_eet_albums_load(root);
-        if(root_list)
-        {
-            PM_Album *album_list = pm_root_album_search_file_name(root_list, folder);
-            if(album_list)
-            {
-                pm_root_path_set(root_list, sync->path);
-                pm_root_album_remove(root_list, album_list);
-                pm_root_eet_albums_save(root_list);
-                pm_album_free(&album_list);
-            }
-            pm_root_free(&root_list);
-        }
-
-        pm_root_eet_album_remove(root, folder);
+	pm_root_album_remove(root_list, album_list);
+	pm_root_eet_albums_save(root_list);
     }
     else
         goto done ;
@@ -790,11 +788,17 @@ static void _pm_sync_album_folder_start(Photo_Manager_Sync *sync, const char *fo
         }
     }
 
-    _pm_sync_album_album_sync(sync, album);
+    if(album)
+      _pm_sync_album_album_sync(sync, album);
 
+done:
+
+    if(album_list)
+      pm_album_free(&album_list);
     if(album)
         pm_album_free(&album);
-done:
+    if(root_list)
+      pm_root_free(&root_list);
     pm_root_free(&root);
 }
 
@@ -968,6 +972,7 @@ static int _pm_sync_all_album_folder(Photo_Manager_Sync *sync, PM_Root *root_lis
     //compare to the eet file
     PM_Album *album = pm_root_eet_album_load(root, file);
     int save = 0;
+
     if(!album)
     {
         save_album_list = 1;
