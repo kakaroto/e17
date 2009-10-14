@@ -17,7 +17,15 @@ void create_main_window(void)
 	em->width = 955;
 	em->height = 540;
 
-	em->ee = ecore_evas_software_x11_new(0, 0, 0, 0, 955, 540);
+	if (getopts->software)
+		em->ee = ecore_evas_software_x11_new(0, 0, 0, 0, 955, 540);
+	else if (getopts->xrender)
+		em->ee = ecore_evas_xrender_x11_new(0, 0, 0, 0, 955, 540);
+	else if (getopts->opengl)
+		em->ee = ecore_evas_gl_x11_new(0, 0, 0, 0, 955, 540);
+	else
+		em->ee = ecore_evas_software_x11_new(0, 0, 0, 0, 955, 540);
+
 	ecore_evas_title_set(em->ee, "Ephoto");
 	ecore_evas_name_class_set(em->ee, "Ephoto", "Ephoto");
 	ecore_evas_callback_destroy_set(em->ee, window_close);

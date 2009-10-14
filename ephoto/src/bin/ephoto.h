@@ -9,6 +9,7 @@
 #include <Ecore_Data.h>
 #include <Ecore_Evas.h>
 #include <Ecore_File.h>
+#include <Ecore_Getopt.h>
 #include <Eet.h>
 #include <Efreet_Mime.h>
 #include <Eina.h>
@@ -90,5 +91,15 @@ struct _Ephoto
 	int width, height;
 };
 extern Ephoto *em;
+
+typedef struct _Getopts_Data Getopts_Data;
+struct _Getopts_Data
+{
+	Eina_Bool software;
+	Eina_Bool xrender;
+	Eina_Bool opengl;
+	Eina_Bool quit;
+};
+extern Getopts_Data *getopts;
 
 #endif
