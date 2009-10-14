@@ -207,7 +207,6 @@ _e_sticky_check_cb(void *data, Evas_Object *obj, void *event_info)
 void
 _e_sticky_move(E_Sticky *s, int x, int y)
 {
-   printf("%i %i %i %i\n", s->w, s->h, s->x, s->y);
    evas_object_move(s->win, x, y);
    s->x = x;
    s->y = y;
@@ -216,7 +215,6 @@ _e_sticky_move(E_Sticky *s, int x, int y)
 void
 _e_sticky_resize(E_Sticky *s, int w, int h)
 {
-   printf("%i %i %i %i\n", s->w, s->h, s->x, s->y);
    evas_object_resize(s->win, s->w, s->h);
    s->w = w;
    s->h = h;
@@ -226,7 +224,6 @@ void
 _e_sticky_move_resize(E_Sticky *s)
 {
    if (!s || !s->win) return;
-   printf("%i %i %i %i\n", s->w, s->h, s->x, s->y);
    evas_object_resize(s->win, s->w, s->h);
    evas_object_move(s->win, s->x, s->y);
 }
