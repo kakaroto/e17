@@ -359,5 +359,95 @@ collections {
 	    }
 	 }
       }
-   }   
+   }
+
+   group { name: "elm/scroller/base/sticky";
+      script {
+	 public sbvis_v, sbvis_h, sbalways_v, sbalways_h, sbvis_timer;
+	 public timer0(val) {
+	    new v;
+	    v = get_int(sbvis_v);
+	    if (v) {
+               v = get_int(sbalways_v);
+               if (!v) {
+                  emit("do-hide-vbar", "");
+                  set_int(sbvis_v, 0);
+               }
+	    }
+	    v = get_int(sbvis_h);
+	    if (v) {
+               v = get_int(sbalways_h);
+               if (!v) {
+                  emit("do-hide-hbar", "");
+                  set_int(sbvis_h, 0);
+               }
+	    }
+	    set_int(sbvis_timer, 0);
+	    return 0;
+	 }
+      }
+      parts {
+         part { name: "bg";
+	    type: RECT;
+	    description { state: "default" 0.0;
+	       rel1.offset: 1 1;
+	       rel2.offset: -2 -2;
+	       color: 128 128 128 10;
+	    }
+	 }
+	 part { name: "clipper";
+	    type: RECT;
+	    mouse_events: 0;
+	    description { state: "default" 0.0;
+	       rel1.to: "bg";
+	       rel2.to: "bg";
+	    }
+	 }
+	 part { name: "elm.swallow.content";
+	    clip_to: "clipper";
+	    type: SWALLOW;
+	    description { state: "default" 0.0;
+	       rel1.offset: 1 1;
+	       rel2.offset: -2 -2;
+	    }
+	 }
+      }
+      programs {
+	 program { name: "load";
+	    signal: "load";
+	    source: "";
+	    script {
+	       set_int(sbvis_h, 0);
+	       set_int(sbvis_v, 0);
+	       set_int(sbalways_v, 0);
+	       set_int(sbalways_h, 0);
+	       set_int(sbvis_timer, 0);
+	    }
+	 }
+
+	 program { name: "scroll";
+	    signal: "elm,action,scroll";
+	    source: "elm";
+	    script {
+	       new v;
+	       v = get_int(sbvis_v);
+               v |= get_int(sbalways_v);
+	       if (!v) {
+                  emit("do-show-vbar", "");
+                  set_int(sbvis_v, 1);
+	       }
+	       v = get_int(sbvis_h);
+               v |= get_int(sbalways_h);
+	       if (!v) {
+                  emit("do-show-hbar", "");
+                  set_int(sbvis_h, 1);
+	       }
+	       v = get_int(sbvis_timer);
+	       if (v > 0) cancel_timer(v);
+	       v = timer(2.0, "timer0", 0);
+	       set_int(sbvis_timer, v);
+	    }
+	 }
+      }
+   }  
 }

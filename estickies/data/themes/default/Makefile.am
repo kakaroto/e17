@@ -20,4 +20,3 @@ default.edj: Makefile $(THEME_DEP)
 			
 clean-local:
 	rm -rf *.edj
-	rm -rf autom4te.cache

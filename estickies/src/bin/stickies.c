@@ -27,36 +27,42 @@ static void _e_about_show_cb(void *data, Evas_Object *obj, void *event_info);
 static void _e_sticky_lock_toggle_cb(void *data, Evas_Object *obj, void *event_info);
 static void _e_sticky_export_fd_cb(void *data, Evas_Object *obj, void *event_info);
 static void _e_sticky_delete_dialog_cb(void *data, Evas_Object *obj, void *event_info);
+static void _e_sticky_delete_list_dialog_cb(void *data, Evas_Object *obj, void *event_info);
 static void _e_sticky_check_cb(void *data, Evas_Object *obj, void *event_info);
 
 static void
 _e_sticky_new_show_append_cb(void *data, Evas_Object *obj, void *event_info)
 {
    _e_sticky_new_show_append();
+   elm_list_item_selected_set(elm_list_selected_item_get(obj), 0);
 }
 
 static void
 _e_config_save_cb(void *data, Evas_Object *obj, void *event_info)
 {
    _e_config_save(data);
+   elm_list_item_selected_set(elm_list_selected_item_get(obj), 0);
 }
 
 static void
 _e_sticky_export_to_cb(void *data, Evas_Object *obj, void *event_info)
 {
    _e_sticky_export_to(data);
+   elm_list_item_selected_set(elm_list_selected_item_get(obj), 0);
 }
 
 static void
 _e_theme_chooser_show_cb(void *data, Evas_Object *obj, void *event_info)
 {
    _e_theme_chooser_show(data);
+   elm_list_item_selected_set(elm_list_selected_item_get(obj), 0);
 }
 
 static void
 _e_about_show_cb(void *data, Evas_Object *obj, void *event_info)
 {
    _e_about_show();
+   elm_list_item_selected_set(elm_list_selected_item_get(obj), 0);
 }
 
 static void
@@ -69,6 +75,13 @@ static void
 _e_sticky_delete_dialog_cb(void *data, Evas_Object *obj, void *event_info)
 {
    _e_sticky_delete_confirm(data);
+}
+
+static void
+_e_sticky_delete_list_dialog_cb(void *data, Evas_Object *obj, void *event_info)
+{
+   _e_sticky_delete_confirm(data);
+   elm_list_item_selected_set(elm_list_selected_item_get(obj), 0);
 }
 
 /* END HELPER CALLBACKS */
@@ -427,6 +440,7 @@ _e_sticky_window_add(E_Sticky *s)
    //////////
    s->list = elm_list_add(s->win);
    elm_list_multi_select_set(s->list, 0);
+   //elm_object_style_set(s->list, "sticky");
 
    evas_object_size_hint_weight_set(s->list, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(s->list, EVAS_HINT_FILL, EVAS_HINT_FILL);
@@ -434,7 +448,7 @@ _e_sticky_window_add(E_Sticky *s)
    elm_list_item_append(s->list, "New", NULL, NULL, _e_sticky_new_show_append_cb, NULL);
    elm_list_item_append(s->list, "Save", NULL, NULL, _e_config_save_cb, ss);
    elm_list_item_append(s->list, "Export To File", NULL, NULL, _e_sticky_export_to_cb, s);
-   elm_list_item_append(s->list, "Delete", NULL, NULL, _e_sticky_delete_dialog_cb, s);
+   elm_list_item_append(s->list, "Delete", NULL, NULL, _e_sticky_delete_list_dialog_cb, s);
    elm_list_item_append(s->list, "Options", NULL, NULL, _e_theme_chooser_show_cb, s);
    elm_list_item_append(s->list, "About", NULL, NULL, _e_about_show_cb, NULL);
    elm_list_item_append(s->list, "Quit", NULL, NULL, _e_stickies_exit_cb, NULL);
@@ -445,6 +459,7 @@ _e_sticky_window_add(E_Sticky *s)
    s->scroller = elm_scroller_add(s->win);
    elm_scroller_policy_set(s->scroller, ELM_SCROLLER_POLICY_OFF, ELM_SCROLLER_POLICY_OFF);
    elm_scroller_bounce_set(s->scroller, 0, 0);
+   elm_object_style_set(s->scroller, "sticky");
 
    evas_object_size_hint_weight_set(s->scroller, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(s->scroller, EVAS_HINT_FILL, EVAS_HINT_FILL);
@@ -460,7 +475,6 @@ _e_sticky_window_add(E_Sticky *s)
 
    evas_object_size_hint_weight_set(s->textentry, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(s->textentry, EVAS_HINT_FILL, EVAS_HINT_FILL);
-   evas_object_pass_events_set(s->textentry, 1);
 
    elm_scroller_content_set(s->scroller, s->textentry);
 
