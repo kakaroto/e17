@@ -18,7 +18,7 @@ def bg_plain_clicked(obj, event, data):
     
     bg = elementary.Background(win)
     win.resize_object_add(bg)
-    bg.size_hint_weight_set(1.0, 1.0)
+    bg.size_hint_weight_set(evas.EVAS_HINT_EXPAND, evas.EVAS_HINT_EXPAND)
     bg.show()
 
     win.resize(320, 320)
@@ -32,7 +32,7 @@ def bg_image_clicked(obj, event, data):
     bg = elementary.Background(win)
     win.resize_object_add(bg)
     bg.file_set("images/plant_01.jpg")
-    bg.size_hint_weight_set(1.0, 1.0)
+    bg.size_hint_weight_set(evas.EVAS_HINT_EXPAND, evas.EVAS_HINT_EXPAND)
     bg.show()
 
     win.size_hint_min_set(160, 160)
@@ -62,12 +62,12 @@ def box_vert_clicked(obj, event, *args, **kargs):
 
     bg = elementary.Background(win)
     win.resize_object_add(bg)
-    bg.size_hint_weight_set(1.0, 1.0)
+    bg.size_hint_weight_set(evas.EVAS_HINT_EXPAND, evas.EVAS_HINT_EXPAND)
     bg.show()
 
     bx = elementary.Box(win)
     win.resize_object_add(bx)
-    bx.size_hint_weight_set(1.0, 1.0)
+    bx.size_hint_weight_set(evas.EVAS_HINT_EXPAND, evas.EVAS_HINT_EXPAND)
     bx.show()
 
     ic = elementary.Icon(win)
@@ -87,7 +87,7 @@ def box_vert_clicked(obj, event, *args, **kargs):
     ic = elementary.Icon(win)
     ic.file_set("images/logo_small.png")
     ic.scale_set(0, 0)
-    ic.size_hint_align_set(1.0, 0.5)
+    ic.size_hint_align_set(evas.EVAS_HINT_EXPAND, 0.5)
     bx.pack_end(ic)
     ic.show()
     
@@ -101,13 +101,13 @@ def box_horiz_clicked(obj, event, *args, **kargs):
     
     bg = elementary.Background(win)
     win.resize_object_add(bg)
-    bg.size_hint_weight_set(1.0, 1.0)
+    bg.size_hint_weight_set(evas.EVAS_HINT_EXPAND, evas.EVAS_HINT_EXPAND)
     bg.show()
 
     bx = elementary.Box(win)
     bx.horizontal_set(True)
     win.resize_object_add(bx)
-    bx.size_hint_weight_set(1.0, 1.0)
+    bx.size_hint_weight_set(evas.EVAS_HINT_EXPAND, evas.EVAS_HINT_EXPAND)
     bx.show()
 
     ic = elementary.Icon(win)
@@ -127,7 +127,7 @@ def box_horiz_clicked(obj, event, *args, **kargs):
     ic = elementary.Icon(win)
     ic.file_set("images/logo_small.png")
     ic.scale_set(0, 0)
-    ic.size_hint_align_set(0.0, 1.0)
+    ic.size_hint_align_set(0.0, evas.EVAS_HINT_EXPAND)
     bx.pack_end(ic)
     ic.show()
 
@@ -140,12 +140,12 @@ def buttons_clicked(obj, event, *args, **kargs):
 
     bg = elementary.Background(win)
     win.resize_object_add(bg)
-    bg.size_hint_weight_set(1.0, 1.0)
+    bg.size_hint_weight_set(evas.EVAS_HINT_EXPAND, evas.EVAS_HINT_EXPAND)
     bg.show()
 
     bx = elementary.Box(win)
     win.resize_object_add(bx)
-    bx.size_hint_weight_set(1.0, 1.0)
+    bx.size_hint_weight_set(evas.EVAS_HINT_EXPAND, evas.EVAS_HINT_EXPAND)
     bx.show()
     
     ic = elementary.Icon(win)
@@ -195,12 +195,12 @@ def toggles_clicked(obj, event, *args, **kargs):
     
     bg = elementary.Background(win)
     win.resize_object_add(bg)
-    bg.size_hint_weight_set(1.0, 1.0)
+    bg.size_hint_weight_set(evas.EVAS_HINT_EXPAND, evas.EVAS_HINT_EXPAND)
     bg.show()
 
     bx = elementary.Box(win)
     win.resize_object_add(bx)
-    bx.size_hint_weight_set(1.0, 1.0)
+    bx.size_hint_weight_set(evas.EVAS_HINT_EXPAND, evas.EVAS_HINT_EXPAND)
     bx.show()
     
     ic = elementary.Icon(win)
@@ -249,53 +249,53 @@ def table_clicked(obj, event, *args, **kargs):
 
     bg = elementary.Background(win)
     win.resize_object_add(bg)
-    bg.size_hint_weight_set(1.0, 1.0)
+    bg.size_hint_weight_set(evas.EVAS_HINT_EXPAND, evas.EVAS_HINT_EXPAND)
     bg.show()
 
     tb = elementary.Table(win)
     win.resize_object_add(tb)
-    tb.size_hint_weight_set(1.0, 1.0)
+    tb.size_hint_weight_set(evas.EVAS_HINT_EXPAND, evas.EVAS_HINT_EXPAND)
     tb.show()
 
     bt = elementary.Button(win)
     bt.label_set("Button 1")
-    bt.size_hint_weight_set(1.0, 1.0)
-    bt.size_hint_align_set(-1.0, -1.0)
+    bt.size_hint_weight_set(evas.EVAS_HINT_EXPAND, evas.EVAS_HINT_EXPAND)
+    bt.size_hint_align_set(evas.EVAS_HINT_FILL, evas.EVAS_HINT_FILL)
     tb.pack(bt, 0, 0, 1, 1)
     bt.show()
 
     bt = elementary.Button(win)
     bt.label_set("Button 2")
-    bt.size_hint_weight_set(1.0, 1.0)
-    bt.size_hint_align_set(-1.0, -1.0)
+    bt.size_hint_weight_set(evas.EVAS_HINT_EXPAND, evas.EVAS_HINT_EXPAND)
+    bt.size_hint_align_set(evas.EVAS_HINT_FILL, evas.EVAS_HINT_FILL)
     tb.pack(bt, 1, 0, 1, 1)
     bt.show()
 
     bt = elementary.Button(win)
     bt.label_set("Button 3")
-    bt.size_hint_weight_set(1.0, 1.0)
-    bt.size_hint_align_set(-1.0, -1.0)
+    bt.size_hint_weight_set(evas.EVAS_HINT_EXPAND, evas.EVAS_HINT_EXPAND)
+    bt.size_hint_align_set(evas.EVAS_HINT_FILL, evas.EVAS_HINT_FILL)
     tb.pack(bt, 2, 0, 1, 1)
     bt.show()
 
     bt = elementary.Button(win)
     bt.label_set("Button 4")
-    bt.size_hint_weight_set(1.0, 1.0)
-    bt.size_hint_align_set(-1.0, -1.0)
+    bt.size_hint_weight_set(evas.EVAS_HINT_EXPAND, evas.EVAS_HINT_EXPAND)
+    bt.size_hint_align_set(evas.EVAS_HINT_FILL, evas.EVAS_HINT_FILL)
     tb.pack(bt, 0, 1, 2, 1)
     bt.show()
     
     bt = elementary.Button(win)
     bt.label_set("Button 5")
-    bt.size_hint_weight_set(1.0, 1.0)
-    bt.size_hint_align_set(-1.0, -1.0)
+    bt.size_hint_weight_set(evas.EVAS_HINT_EXPAND, evas.EVAS_HINT_EXPAND)
+    bt.size_hint_align_set(evas.EVAS_HINT_FILL, evas.EVAS_HINT_FILL)
     tb.pack(bt, 2, 1, 1, 3)
     bt.show()
     
     bt = elementary.Button(win)
     bt.label_set("Button 6")
-    bt.size_hint_weight_set(1.0, 1.0)
-    bt.size_hint_align_set(-1.0, -1.0)
+    bt.size_hint_weight_set(evas.EVAS_HINT_EXPAND, evas.EVAS_HINT_EXPAND)
+    bt.size_hint_align_set(evas.EVAS_HINT_FILL, evas.EVAS_HINT_FILL)
     tb.pack(bt, 0, 2, 2, 2)
     bt.show()
     
@@ -308,12 +308,12 @@ def clock_clicked(obj, event, *args, **kargs):
     
     bg = elementary.Background(win)
     win.resize_object_add(bg)
-    bg.size_hint_weight_set(1.0, 1.0)
+    bg.size_hint_weight_set(evas.EVAS_HINT_EXPAND, evas.EVAS_HINT_EXPAND)
     bg.show()
 
     bx = elementary.Box(win)
     win.resize_object_add(bx)
-    bx.size_hint_weight_set(1.0, 1.0)
+    bx.size_hint_weight_set(evas.EVAS_HINT_EXPAND, evas.EVAS_HINT_EXPAND)
     bx.show()
     
     ck = elementary.Clock(win)
@@ -356,12 +356,12 @@ def layout_clicked(obj, event, *args, **kargs):
     
     bg = elementary.Background(win)
     win.resize_object_add(bg)
-    bg.size_hint_weight_set(1.0, 1.0)
+    bg.size_hint_weight_set(evas.EVAS_HINT_EXPAND, evas.EVAS_HINT_EXPAND)
     bg.show()
 
     ly = elementary.Layout(win)
     ly.file_set("test.edj", "layout")
-    ly.size_hint_weight_set(1.0, 1.0)
+    ly.size_hint_weight_set(evas.EVAS_HINT_EXPAND, evas.EVAS_HINT_EXPAND)
     win.resize_object_add(ly)
     ly.show()
     
@@ -392,12 +392,12 @@ def hover_clicked(obj, event, *args, **kargs):
     
     bg = elementary.Background(win)
     win.resize_object_add(bg)
-    bg.size_hint_weight_set(1.0, 1.0)
+    bg.size_hint_weight_set(evas.EVAS_HINT_EXPAND, evas.EVAS_HINT_EXPAND)
     bg.show()
 
     bx = elementary.Box(win)
     win.resize_object_add(bx)
-    bx.size_hint_weight_set(1.0, 1.0)
+    bx.size_hint_weight_set(evas.EVAS_HINT_EXPAND, evas.EVAS_HINT_EXPAND)
     bx.show()
     
     hv = elementary.Hover(win)
@@ -473,12 +473,12 @@ def hover2_clicked(obj, event, *args, **kargs):
     
     bg = elementary.Background(win)
     win.resize_object_add(bg)
-    bg.size_hint_weight_set(1.0, 1.0)
+    bg.size_hint_weight_set(evas.EVAS_HINT_EXPAND, evas.EVAS_HINT_EXPAND)
     bg.show()
 
     bx = elementary.Box(win)
     win.resize_object_add(bx)
-    bx.size_hint_weight_set(1.0, 1.0)
+    bx.size_hint_weight_set(evas.EVAS_HINT_EXPAND, evas.EVAS_HINT_EXPAND)
     bx.show()
     
     hv = elementary.Hover(win)
@@ -568,12 +568,12 @@ def entry_clicked(obj, event, *args, **kargs):
 
     bg = elementary.Background(win)
     win.resize_object_add(bg)
-    bg.size_hint_weight_set(1.0, 1.0)
+    bg.size_hint_weight_set(evas.EVAS_HINT_EXPAND, evas.EVAS_HINT_EXPAND)
     bg.show()
 
     bx = elementary.Box(win)
     win.resize_object_add(bx)
-    bx.size_hint_weight_set(1.0, 1.0)
+    bx.size_hint_weight_set(evas.EVAS_HINT_EXPAND, evas.EVAS_HINT_EXPAND)
     bx.show()
 
     en = elementary.Entry(win)
@@ -585,45 +585,45 @@ def entry_clicked(obj, event, *args, **kargs):
                  "in here to edit it. By the way, links are<br>"
                  "called <a href=anc-02>Anchors</a> so you will need<br>"
                  "to refer to them this way.")
-    en.size_hint_weight_set(1.0, 1.0)
-    en.size_hint_align_set(-1.0, -1.0)
+    en.size_hint_weight_set(evas.EVAS_HINT_EXPAND, evas.EVAS_HINT_EXPAND)
+    en.size_hint_align_set(evas.EVAS_HINT_FILL, evas.EVAS_HINT_FILL)
     bx.pack_end(en)
     en.show()
 
     bx2 = elementary.Box(win)
     bx2.horizontal_set(True)
-    bx2.size_hint_weight_set(1.0, 0.0)
-    bx2.size_hint_align_set(-1.0, -1.0)
+    bx2.size_hint_weight_set(evas.EVAS_HINT_EXPAND, 0.0)
+    bx2.size_hint_align_set(evas.EVAS_HINT_FILL, evas.EVAS_HINT_FILL)
 
     bt = elementary.Button(win)
     bt.label_set("Clear")
     bt.clicked = (my_entry_bt_1, en)
-    bt.size_hint_align_set(-1.0, -1.0)
-    bt.size_hint_weight_set(1.0, 0.0)
+    bt.size_hint_align_set(evas.EVAS_HINT_FILL, evas.EVAS_HINT_FILL)
+    bt.size_hint_weight_set(evas.EVAS_HINT_EXPAND, 0.0)
     bx2.pack_end(bt)
     bt.show()
 
     bt = elementary.Button(win)
     bt.label_set("Print")
     bt.clicked = (my_entry_bt_2, en)
-    bt.size_hint_align_set(-1.0, -1.0)
-    bt.size_hint_weight_set(1.0, 0.0)
+    bt.size_hint_align_set(evas.EVAS_HINT_FILL, evas.EVAS_HINT_FILL)
+    bt.size_hint_weight_set(evas.EVAS_HINT_EXPAND, 0.0)
     bx2.pack_end(bt)
     bt.show()
 
     bt = elementary.Button(win)
     bt.label_set("Selection")
     bt.clicked = (my_entry_bt_3, en)
-    bt.size_hint_align_set(-1.0, -1.0)
-    bt.size_hint_weight_set(1.0, 0.0)
+    bt.size_hint_align_set(evas.EVAS_HINT_FILL, evas.EVAS_HINT_FILL)
+    bt.size_hint_weight_set(evas.EVAS_HINT_EXPAND, 0.0)
     bx2.pack_end(bt)
     bt.show()
 
     bt = elementary.Button(win)
     bt.label_set("Insert")
     bt.clicked = (my_entry_bt_4, en)
-    bt.size_hint_align_set(-1.0, -1.0)
-    bt.size_hint_weight_set(1.0, 0.0)
+    bt.size_hint_align_set(evas.EVAS_HINT_FILL, evas.EVAS_HINT_FILL)
+    bt.size_hint_weight_set(evas.EVAS_HINT_EXPAND, 0.0)
     bx2.pack_end(bt)
     bt.show()
 
@@ -640,11 +640,11 @@ def entry_scrolled_clicked(obj, event, *args, **kargs):
 
     bg = elementary.Background(win)
     win.resize_object_add(bg)
-    bg.size_hint_weight_set(1.0, 1.0)
+    bg.size_hint_weight_set(evas.EVAS_HINT_EXPAND, evas.EVAS_HINT_EXPAND)
     bg.show()
 
     bx = elementary.Box(win)
-    bx.size_hint_weight_set(1.0, 1.0)
+    bx.size_hint_weight_set(evas.EVAS_HINT_EXPAND, evas.EVAS_HINT_EXPAND)
     win.resize_object_add(bx)
     bx.show()
 
@@ -653,15 +653,15 @@ def entry_scrolled_clicked(obj, event, *args, **kargs):
     sc.policy_set(elementary.ELM_SCROLLER_POLICY_OFF,
                   elementary.ELM_SCROLLER_POLICY_OFF)
     sc.bounce_set(False, False)
-    sc.size_hint_weight_set(1.0, 0.0)
-    sc.size_hint_align_set(-1.0, -1.0)
+    sc.size_hint_weight_set(evas.EVAS_HINT_EXPAND, 0.0)
+    sc.size_hint_align_set(evas.EVAS_HINT_FILL, evas.EVAS_HINT_FILL)
     bx.pack_end(sc)
 
     en = elementary.Entry(win)
     en.single_line_set(True)
     en.entry_set("Disable entry")
-    en.size_hint_weight_set(1.0, 0.0)
-    en.size_hint_align_set(-1.0, 0.5)
+    en.size_hint_weight_set(evas.EVAS_HINT_EXPAND, 0.0)
+    en.size_hint_align_set(evas.EVAS_HINT_FILL, 0.5)
     en.disabled_set(True)
     sc.content_set(en)
     en.show()
@@ -673,15 +673,15 @@ def entry_scrolled_clicked(obj, event, *args, **kargs):
     sc.policy_set(elementary.ELM_SCROLLER_POLICY_OFF,
                   elementary.ELM_SCROLLER_POLICY_OFF)
     sc.bounce_set(False, False)
-    sc.size_hint_weight_set(1.0, 0.0)
-    sc.size_hint_align_set(-1.0, -1.0)
+    sc.size_hint_weight_set(evas.EVAS_HINT_EXPAND, 0.0)
+    sc.size_hint_align_set(evas.EVAS_HINT_FILL, evas.EVAS_HINT_FILL)
     bx.pack_end(sc)
 
     en = elementary.Entry(win)
     en.password_set(True)
     en.entry_set("Access denied, give up!")
-    en.size_hint_weight_set(1.0, 0.0)
-    en.size_hint_align_set(-1.0, 0.5)
+    en.size_hint_weight_set(evas.EVAS_HINT_EXPAND, 0.0)
+    en.size_hint_align_set(evas.EVAS_HINT_FILL, 0.5)
     en.disabled_set(True)
     sc.content_set(en)
     en.show()
@@ -689,8 +689,8 @@ def entry_scrolled_clicked(obj, event, *args, **kargs):
     sc.show()
 
     sc = elementary.Scroller(win)
-    sc.size_hint_weight_set(1.0, 1.0)
-    sc.size_hint_align_set(-1.0, -1.0)
+    sc.size_hint_weight_set(evas.EVAS_HINT_EXPAND, evas.EVAS_HINT_EXPAND)
+    sc.size_hint_align_set(evas.EVAS_HINT_FILL, evas.EVAS_HINT_FILL)
     sc.policy_set(elementary.ELM_SCROLLER_POLICY_ON,
                   elementary.ELM_SCROLLER_POLICY_ON)
     sc.bounce_set(False, True)
@@ -705,8 +705,8 @@ def entry_scrolled_clicked(obj, event, *args, **kargs):
                "We can use markup <b>like this</> for styling and<br>"
                "formatting <em>like this</>, as well as<br>"
                "<a href=X><link>links in the text</></a>, but it won't be editable or clickable.")
-    en.size_hint_weight_set(1.0, 1.0)
-    en.size_hint_align_set(-1.0, -1.0)
+    en.size_hint_weight_set(evas.EVAS_HINT_EXPAND, evas.EVAS_HINT_EXPAND)
+    en.size_hint_align_set(evas.EVAS_HINT_FILL, evas.EVAS_HINT_FILL)
     en.disabled_set(True)
     sc.content_set(en)
     en.show()
@@ -723,15 +723,15 @@ def entry_scrolled_clicked(obj, event, *args, **kargs):
     sc.policy_set(elementary.ELM_SCROLLER_POLICY_OFF,
                   elementary.ELM_SCROLLER_POLICY_OFF)
     sc.bounce_set(False, False)
-    sc.size_hint_weight_set(1.0, 0.0)
-    sc.size_hint_align_set(-1.0, -1.0)
+    sc.size_hint_weight_set(evas.EVAS_HINT_EXPAND, 0.0)
+    sc.size_hint_align_set(evas.EVAS_HINT_FILL, evas.EVAS_HINT_FILL)
     bx.pack_end(sc)
 
     en = elementary.Entry(win)
     en.single_line_set(True)
     en.entry_set("This is a single line")
-    en.size_hint_weight_set(1.0, 0.0)
-    en.size_hint_align_set(-1.0, 0.5)
+    en.size_hint_weight_set(evas.EVAS_HINT_EXPAND, 0.0)
+    en.size_hint_align_set(evas.EVAS_HINT_FILL, 0.5)
     en.select_all()
     sc.content_set(en)
     en.show()
@@ -743,23 +743,23 @@ def entry_scrolled_clicked(obj, event, *args, **kargs):
     sc.policy_set(elementary.ELM_SCROLLER_POLICY_OFF,
                   elementary.ELM_SCROLLER_POLICY_OFF)
     sc.bounce_set(False, False)
-    sc.size_hint_weight_set(1.0, 0.0)
-    sc.size_hint_align_set(-1.0, -1.0)
+    sc.size_hint_weight_set(evas.EVAS_HINT_EXPAND, 0.0)
+    sc.size_hint_align_set(evas.EVAS_HINT_FILL, evas.EVAS_HINT_FILL)
     bx.pack_end(sc)
 
     en = elementary.Entry(win)
     en.password_set(True)
     en.entry_set("Password here")
-    en.size_hint_weight_set(1.0, 0.0)
-    en.size_hint_align_set(-1.0, 0.0)
+    en.size_hint_weight_set(evas.EVAS_HINT_EXPAND, 0.0)
+    en.size_hint_align_set(evas.EVAS_HINT_FILL, 0.0)
     sc.content_set(en)
     en.show()
 
     sc.show()
 
     sc = elementary.Scroller(win)
-    sc.size_hint_weight_set(1.0, 1.0)
-    sc.size_hint_align_set(-1.0, -1.0)
+    sc.size_hint_weight_set(evas.EVAS_HINT_EXPAND, evas.EVAS_HINT_EXPAND)
+    sc.size_hint_align_set(evas.EVAS_HINT_FILL, evas.EVAS_HINT_FILL)
     sc.policy_set(elementary.ELM_SCROLLER_POLICY_ON,
                   elementary.ELM_SCROLLER_POLICY_ON)
     sc.bounce_set(False, True)
@@ -774,8 +774,8 @@ def entry_scrolled_clicked(obj, event, *args, **kargs):
                 "called <a href=anc-02>Anchors</a> so you will need<br>"
                 "to refer to them this way. At the end here is a really long line to test line wrapping to see if it works. But just in case this line is not long enough I will add more here to really test it out, as Elementary really needs some good testing to see if entry widgets work as advertised.")
     en._callback_add("anchor,clicked", (anchor_test, en))
-    en.size_hint_weight_set(1.0, 1.0)
-    en.size_hint_align_set(-1.0, -1.0)
+    en.size_hint_weight_set(evas.EVAS_HINT_EXPAND, evas.EVAS_HINT_EXPAND)
+    en.size_hint_align_set(evas.EVAS_HINT_FILL, evas.EVAS_HINT_FILL)
     sc.content_set(en)
     en.show()
 
@@ -783,38 +783,38 @@ def entry_scrolled_clicked(obj, event, *args, **kargs):
 
     bx2 = elementary.Box(win)
     bx2.horizontal_set(True)
-    bx2.size_hint_weight_set(1.0, 0.0)
-    bx2.size_hint_align_set(-1.0, -1.0)
+    bx2.size_hint_weight_set(evas.EVAS_HINT_EXPAND, 0.0)
+    bx2.size_hint_align_set(evas.EVAS_HINT_FILL, evas.EVAS_HINT_FILL)
 
     bt = elementary.Button(win)
     bt.label_set("Clear")
     bt.clicked = (my_entry_bt_1, en)
-    bt.size_hint_align_set(-1.0, -1.0)
-    bt.size_hint_weight_set(1.0, 0.0)
+    bt.size_hint_align_set(evas.EVAS_HINT_FILL, evas.EVAS_HINT_FILL)
+    bt.size_hint_weight_set(evas.EVAS_HINT_EXPAND, 0.0)
     bx2.pack_end(bt)
     bt.show()
 
     bt = elementary.Button(win)
     bt.label_set("Print")
     bt.clicked = (my_entry_bt_2, en)
-    bt.size_hint_align_set(-1.0, -1.0)
-    bt.size_hint_weight_set(1.0, 0.0)
+    bt.size_hint_align_set(evas.EVAS_HINT_FILL, evas.EVAS_HINT_FILL)
+    bt.size_hint_weight_set(evas.EVAS_HINT_EXPAND, 0.0)
     bx2.pack_end(bt)
     bt.show()
 
     bt = elementary.Button(win)
     bt.label_set("Selection")
     bt.clicked = (my_entry_bt_3, en)
-    bt.size_hint_align_set(-1.0, -1.0)
-    bt.size_hint_weight_set(1.0, 0.0)
+    bt.size_hint_align_set(evas.EVAS_HINT_FILL, evas.EVAS_HINT_FILL)
+    bt.size_hint_weight_set(evas.EVAS_HINT_EXPAND, 0.0)
     bx2.pack_end(bt)
     bt.show()
 
     bt = elementary.Button(win)
     bt.label_set("Insert")
     bt.clicked = (my_entry_bt_4, en)
-    bt.size_hint_align_set(-1.0, -1.0)
-    bt.size_hint_weight_set(1.0, 0.0)
+    bt.size_hint_align_set(evas.EVAS_HINT_FILL, evas.EVAS_HINT_FILL)
+    bt.size_hint_weight_set(evas.EVAS_HINT_EXPAND, 0.0)
     bx2.pack_end(bt)
     bt.show()
 
@@ -834,12 +834,12 @@ def notepad_clicked(obj, event, *args, **kargs):
     
     bg = elementary.Background(win)
     win.resize_object_add(bg)
-    bg.size_hint_weight_set(1.0, 1.0)
+    bg.size_hint_weight_set(evas.EVAS_HINT_EXPAND, evas.EVAS_HINT_EXPAND)
     bg.show()
 
     bx = elementary.Box(win)
     win.resize_object_add(bx)
-    bx.size_hint_weight_set(1.0, 1.0)
+    bx.size_hint_weight_set(evas.EVAS_HINT_EXPAND, evas.EVAS_HINT_EXPAND)
     bx.show()
 
 def my_anchorview_bt(obj, event, data):
@@ -896,7 +896,7 @@ def anchorview_clicked(obj, event, *args, **kargs):
 
     bg = elementary.Background(win)
     win.resize_object_add(bg)
-    bg.size_hint_weight_set(1.0, 1.0)
+    bg.size_hint_weight_set(evas.EVAS_HINT_EXPAND, evas.EVAS_HINT_EXPAND)
     bg.show()
 
     av = elementary.AnchorView(win)
@@ -909,7 +909,7 @@ def anchorview_clicked(obj, event, *args, **kargs):
                 "in here to edit it. By the way, links are<br>"
                 "called <a href=anc-02>Anchors</a> so you will need<br>"
                 "to refer to them this way.")
-    av.size_hint_weight_set(1.0, 1.0)
+    av.size_hint_weight_set(evas.EVAS_HINT_EXPAND, evas.EVAS_HINT_EXPAND)
     av.clicked = (my_anchorview_anchor, av)
     win.resize_object_add(av)
     av.show()
@@ -987,11 +987,11 @@ def anchorblock_clicked(obj, event, *args, **kargs):
 
     bg = elementary.Background(win)
     win.resize_object_add(bg)
-    bg.size_hint_weight_set(1.0, 1.0)
+    bg.size_hint_weight_set(evas.EVAS_HINT_EXPAND, evas.EVAS_HINT_EXPAND)
     bg.show()
 
     sc = elementary.Scroller(win)
-    sc.size_hint_weight_set(1.0, 1.0)
+    sc.size_hint_weight_set(evas.EVAS_HINT_EXPAND, evas.EVAS_HINT_EXPAND)
     win.resize_object_add(sc)
 
     sc._callback_add("edge_left", my_anchorblock_edge_left)
@@ -1001,8 +1001,8 @@ def anchorblock_clicked(obj, event, *args, **kargs):
     sc._callback_add("scroll", my_anchorblock_scroll)
 
     bx = elementary.Box(win)
-    bx.size_hint_weight_set(1.0, 1.0)
-    bx.size_hint_align_set(-1.0, -1.0)
+    bx.size_hint_weight_set(evas.EVAS_HINT_EXPAND, evas.EVAS_HINT_EXPAND)
+    bx.size_hint_align_set(evas.EVAS_HINT_FILL, evas.EVAS_HINT_FILL)
     sc.content_set(bx)
     bx.show()
 
@@ -1016,8 +1016,8 @@ def anchorblock_clicked(obj, event, *args, **kargs):
     bb.info_set("10:32 4/11/2008")
     bb.icon_set(ic)
     ic.show()
-    bb.size_hint_weight_set(1.0, 0.0)
-    bb.size_hint_align_set(-1.0, -1.0)
+    bb.size_hint_weight_set(evas.EVAS_HINT_EXPAND, 0.0)
+    bb.size_hint_align_set(evas.EVAS_HINT_FILL, evas.EVAS_HINT_FILL)
     ab = elementary.AnchorBlock(win)
     ab.hover_style_set("popout")
     ab.hover_parent_set(win)
@@ -1039,8 +1039,8 @@ def anchorblock_clicked(obj, event, *args, **kargs):
     bb.info_set("7:16 27/10/2008")
     bb.icon_set(ic)
     ic.show()
-    bb.size_hint_weight_set(1.0, 0.0)
-    bb.size_hint_align_set(-1.0, -1.0)
+    bb.size_hint_weight_set(evas.EVAS_HINT_EXPAND, 0.0)
+    bb.size_hint_align_set(evas.EVAS_HINT_FILL, evas.EVAS_HINT_FILL)
     ab = elementary.AnchorBlock(win)
     ab.hover_style_set("popout")
     ab.hover_parent_set(win)
@@ -1073,8 +1073,8 @@ def anchorblock_clicked(obj, event, *args, **kargs):
     bb.info_set("20:47 18/6/2008")
     bb.icon_set(ic)
     ic.show()
-    bb.size_hint_weight_set(1.0, 0.0)
-    bb.size_hint_align_set(-1.0, -1.0)
+    bb.size_hint_weight_set(evas.EVAS_HINT_EXPAND, 0.0)
+    bb.size_hint_align_set(evas.EVAS_HINT_FILL, evas.EVAS_HINT_FILL)
     ab = elementary.AnchorBlock(win)
     ab.hover_style_set("popout")
     ab.hover_parent_set(win)
@@ -1114,12 +1114,12 @@ def toolbar_clicked(obj, event, *args, **kargs):
     
     bg = elementary.Background(win)
     win.resize_object_add(bg)
-    bg.size_hint_weight_set(1.0, 1.0)
+    bg.size_hint_weight_set(evas.EVAS_HINT_EXPAND, evas.EVAS_HINT_EXPAND)
     bg.show()
 
     bx = elementary.Box(win)
     win.resize_object_add(bx)
-    bx.size_hint_weight_set(1.0, 1.0)
+    bx.size_hint_weight_set(evas.EVAS_HINT_EXPAND, evas.EVAS_HINT_EXPAND)
     bx.show()
    
     
@@ -1132,7 +1132,7 @@ def toolbar_clicked(obj, event, *args, **kargs):
 
     tb = elementary.Toolbar(win)
     tb.size_hint_weight_set(0.0, 0.0)
-    tb.size_hint_align_set(-1.0, 0.0)
+    tb.size_hint_align_set(evas.EVAS_HINT_FILL, 0.0)
   
     ic = elementary.Icon(win)
     ic.file_set("images/logo_small.png")
@@ -1181,7 +1181,7 @@ def pager_clicked(obj, event, data):
 
     bg = elementary.Background(win)
     win.resize_object_add(bg)
-    bg.size_hint_weight_set(1.0, 1.0)
+    bg.size_hint_weight_set(evas.EVAS_HINT_EXPAND, evas.EVAS_HINT_EXPAND)
     bg.show()
 
     pg = elementary.Pager(win)
@@ -1192,7 +1192,7 @@ def pager_clicked(obj, event, data):
     info["pager"] = pg
 
     bx = elementary.Box(win)
-    bx.size_hint_weight_set(1.0, 1.0)
+    bx.size_hint_weight_set(evas.EVAS_HINT_EXPAND, evas.EVAS_HINT_EXPAND)
     bx.show()
 
     lb = elementary.Label(win)
@@ -1229,7 +1229,7 @@ def pager_clicked(obj, event, data):
     info["pg1"] = bx;
     
     bx = elementary.Box(win)
-    bx.size_hint_weight_set(1.0, 1.0)
+    bx.size_hint_weight_set(evas.EVAS_HINT_EXPAND, evas.EVAS_HINT_EXPAND)
     bx.show()
     
     lb = elementary.Label(win)
@@ -1258,7 +1258,7 @@ def pager_clicked(obj, event, data):
     info["pg2"] = bx
     
     bx = elementary.Box(win)
-    bx.size_hint_weight_set(1.0, 1.0)
+    bx.size_hint_weight_set(evas.EVAS_HINT_EXPAND, evas.EVAS_HINT_EXPAND)
     bx.show()
     
     lb = elementary.Label(win)
@@ -1296,11 +1296,11 @@ def check_clicked(obj, event, data):
 
     bg = elementary.Background(win)
     win.resize_object_add(bg)
-    bg.size_hint_weight_set(1.0, 1.0)
+    bg.size_hint_weight_set(evas.EVAS_HINT_EXPAND, evas.EVAS_HINT_EXPAND)
     bg.show()
 
     bx = elementary.Box(win)
-    bx.size_hint_weight_set(1.0, 1.0)
+    bx.size_hint_weight_set(evas.EVAS_HINT_EXPAND, evas.EVAS_HINT_EXPAND)
     win.resize_object_add(bx)
     bx.show()
 
@@ -1308,8 +1308,8 @@ def check_clicked(obj, event, data):
     ic.file_set('images/logo_small.png')
     ic.size_hint_aspect_set(evas.EVAS_ASPECT_CONTROL_VERTICAL, 1, 1)
     ck = elementary.Check(win)
-    ck.size_hint_weight_set(1.0, 1.0)
-    ck.size_hint_align_set(-1.0, 0.5)
+    ck.size_hint_weight_set(evas.EVAS_HINT_EXPAND, evas.EVAS_HINT_EXPAND)
+    ck.size_hint_align_set(evas.EVAS_HINT_FILL, 0.5)
     ck.label_set("Icon sized to check")
     ck.icon_set(ic)
     ck.state_set(True)
@@ -1336,8 +1336,8 @@ def check_clicked(obj, event, data):
     ic.file_set('images/logo_small.png')
     ic.size_hint_aspect_set(evas.EVAS_ASPECT_CONTROL_VERTICAL, 1, 1)
     ck = elementary.Check(win)
-    ck.size_hint_weight_set(1.0, 1.0)
-    ck.size_hint_align_set(-1.0, 0.5)
+    ck.size_hint_weight_set(evas.EVAS_HINT_EXPAND, evas.EVAS_HINT_EXPAND)
+    ck.size_hint_align_set(evas.EVAS_HINT_FILL, 0.5)
     ck.label_set("Disabled check")
     ck.icon_set(ic)
     ck.state_set(True)
@@ -1365,11 +1365,11 @@ def radio_clicked(obj, event, data):
 
     bg = elementary.Background(win)
     win.resize_object_add(bg)
-    bg.size_hint_weight_set(1.0, 1.0)
+    bg.size_hint_weight_set(evas.EVAS_HINT_EXPAND, evas.EVAS_HINT_EXPAND)
     bg.show()
 
     bx = elementary.Box(win)
-    bx.size_hint_weight_set(1.0, 1.0)
+    bx.size_hint_weight_set(evas.EVAS_HINT_EXPAND, evas.EVAS_HINT_EXPAND)
     win.resize_object_add(bx)
     bx.show()
 
@@ -1378,8 +1378,8 @@ def radio_clicked(obj, event, data):
     ic.size_hint_aspect_set(evas.EVAS_ASPECT_CONTROL_VERTICAL, 1, 1)
     rd = elementary.Radio(win)
     rd.state_value_set(0)
-    rd.size_hint_weight_set(1.0, 1.0)
-    rd.size_hint_align_set(-1.0, 0.5)
+    rd.size_hint_weight_set(evas.EVAS_HINT_EXPAND, evas.EVAS_HINT_EXPAND)
+    rd.size_hint_align_set(evas.EVAS_HINT_FILL, 0.5)
     rd.label_set("Icon sized to radio")
     rd.icon_set(ic)
     bx.pack_end(rd)
@@ -1448,7 +1448,7 @@ def inner_window_clicked(obj, event, data):
     
     bg = elementary.Background(win)
     win.resize_object_add(bg)
-    bg.size_hint_weight_set(1.0, 1.0)
+    bg.size_hint_weight_set(evas.EVAS_HINT_EXPAND, evas.EVAS_HINT_EXPAND)
     bg.show()
 
     iw = elementary.InnerWindow(win)
@@ -1464,11 +1464,11 @@ def spinner_clicked(obj, event, data):
 
     bg = elementary.Background(win)
     win.resize_object_add(bg)
-    bg.size_hint_weight_set(1.0, 1.0)
+    bg.size_hint_weight_set(evas.EVAS_HINT_EXPAND, evas.EVAS_HINT_EXPAND)
     bg.show()
 
     bx = elementary.Box(win)
-    bx.size_hint_weight_set(1.0, 1.0)
+    bx.size_hint_weight_set(evas.EVAS_HINT_EXPAND, evas.EVAS_HINT_EXPAND)
     win.resize_object_add(bx)
     bx.show()
 
@@ -1477,8 +1477,8 @@ def spinner_clicked(obj, event, data):
     sp.step_set(1.3)
     sp.wrap_set(1)
     sp.min_max_set(-50.0, 250.0)
-    sp.size_hint_align_set(-1.0, 0.5)
-    sp.size_hint_weight_set(1.0, 1.0)
+    sp.size_hint_align_set(evas.EVAS_HINT_FILL, 0.5)
+    sp.size_hint_weight_set(evas.EVAS_HINT_EXPAND, evas.EVAS_HINT_EXPAND)
     bx.pack_end(sp)
     sp.show()
 
@@ -1486,8 +1486,8 @@ def spinner_clicked(obj, event, data):
     sp2.label_format_set("Disabled %.0f")
     sp2.disabled_set(1)
     sp2.min_max_set(-50.0, 250.0)
-    sp2.size_hint_align_set(-1.0, 0.5)
-    sp2.size_hint_weight_set(1.0, 1.0)
+    sp2.size_hint_align_set(evas.EVAS_HINT_FILL, 0.5)
+    sp2.size_hint_weight_set(evas.EVAS_HINT_EXPAND, evas.EVAS_HINT_EXPAND)
     bx.pack_end(sp2)
     sp2.show()
 
@@ -1500,20 +1500,20 @@ def fileselector_clicked(obj, event, data):
 
     bg = elementary.Background(win)
     win.resize_object_add(bg)
-    bg.size_hint_weight_set(1.0, 1.0)
+    bg.size_hint_weight_set(evas.EVAS_HINT_EXPAND, evas.EVAS_HINT_EXPAND)
     bg.show()
 
     vbox = elementary.Box(win)
     win.resize_object_add(vbox)
-    vbox.size_hint_weight_set(1.0, 1.0)
+    vbox.size_hint_weight_set(evas.EVAS_HINT_EXPAND, evas.EVAS_HINT_EXPAND)
     vbox.show()
 
     fs = elementary.Fileselector(win)
     fs.is_save_set(True)
     fs.expandable_set(False)
     fs.path_set(os.getenv("HOME"))
-    fs.size_hint_weight_set(1.0, 1.0)
-    fs.size_hint_align_set(-1.0, -1.0)
+    fs.size_hint_weight_set(evas.EVAS_HINT_EXPAND, evas.EVAS_HINT_EXPAND)
+    fs.size_hint_align_set(evas.EVAS_HINT_FILL, evas.EVAS_HINT_FILL)
     vbox.pack_end(fs)
     fs.show()
 
@@ -1606,23 +1606,23 @@ def progressbar_clicked(obj, event, data):
 
     bg = elementary.Background(win)
     win.resize_object_add(bg)
-    bg.size_hint_weight_set(1.0, 1.0)
+    bg.size_hint_weight_set(evas.EVAS_HINT_EXPAND, evas.EVAS_HINT_EXPAND)
     bg.show()
 
     bx = elementary.Box(win)
     win.resize_object_add(bx)
-    bx.size_hint_weight_set(1.0, 1.0)
+    bx.size_hint_weight_set(evas.EVAS_HINT_EXPAND, evas.EVAS_HINT_EXPAND)
     bx.show()
 
     pb1 = elementary.Progressbar(win)
-    pb1.size_hint_weight_set(1.0, 1.0)
-    pb1.size_hint_align_set(-1.0, 0.5)
+    pb1.size_hint_weight_set(evas.EVAS_HINT_EXPAND, evas.EVAS_HINT_EXPAND)
+    pb1.size_hint_align_set(evas.EVAS_HINT_FILL, 0.5)
     bx.pack_end(pb1)
     pb1.show()
 
     pb2 = elementary.Progressbar(win)
-    pb2.size_hint_weight_set(1.0, 1.0)
-    pb2.size_hint_align_set(-1.0, 0.5)
+    pb2.size_hint_weight_set(evas.EVAS_HINT_EXPAND, evas.EVAS_HINT_EXPAND)
+    pb2.size_hint_align_set(evas.EVAS_HINT_FILL, 0.5)
     pb2.label_set("Infinite bounce")
     pb2.pulse_set(True)
     bx.pack_end(pb2)
@@ -1638,23 +1638,23 @@ def progressbar_clicked(obj, event, data):
     pb3.inverted_set(True)
     pb3.unit_format_set("%1.1f units")
     pb3.span_size_set(200)
-    pb3.size_hint_align_set(-1.0, 0.5)
-    pb3.size_hint_weight_set(1.0, 1.0)
+    pb3.size_hint_align_set(evas.EVAS_HINT_FILL, 0.5)
+    pb3.size_hint_weight_set(evas.EVAS_HINT_EXPAND, evas.EVAS_HINT_EXPAND)
     bx.pack_end(pb3)
     ic1.show()
     pb3.show()
 
     hbx = elementary.Box(win)
     hbx.horizontal_set(True)
-    hbx.size_hint_weight_set(1.0, 1.0)
-    hbx.size_hint_align_set(-1.0, -1.0)
+    hbx.size_hint_weight_set(evas.EVAS_HINT_EXPAND, evas.EVAS_HINT_EXPAND)
+    hbx.size_hint_align_set(evas.EVAS_HINT_FILL, evas.EVAS_HINT_FILL)
     bx.pack_end(hbx)
     hbx.show()
 
     pb4 = elementary.Progressbar(win)
     pb4.horizontal_set(False)
-    pb4.size_hint_align_set(-1.0, -1.0)
-    pb4.size_hint_weight_set(1.0, 1.0)
+    pb4.size_hint_align_set(evas.EVAS_HINT_FILL, evas.EVAS_HINT_FILL)
+    pb4.size_hint_weight_set(evas.EVAS_HINT_EXPAND, evas.EVAS_HINT_EXPAND)
     hbx.pack_end(pb4)
     pb4.span_size_set(60)
     pb4.label_set("percent")
@@ -1662,8 +1662,8 @@ def progressbar_clicked(obj, event, data):
 
     pb5 = elementary.Progressbar(win)
     pb5.horizontal_set(False)
-    pb5.size_hint_align_set(-1.0, 0.5)
-    pb5.size_hint_weight_set(1.0, 1.0)
+    pb5.size_hint_align_set(evas.EVAS_HINT_FILL, 0.5)
+    pb5.size_hint_weight_set(evas.EVAS_HINT_EXPAND, evas.EVAS_HINT_EXPAND)
     pb5.span_size_set(80)
     pb5.pulse_set(True)
     pb5.unit_format_set(None)
@@ -1682,8 +1682,8 @@ def progressbar_clicked(obj, event, data):
     pb6.inverted_set(True)
     pb6.unit_format_set("%1.2f%%")
     pb6.span_size_set(200)
-    pb6.size_hint_align_set(-1.0, 0.5)
-    pb6.size_hint_weight_set(1.0, 1.0)
+    pb6.size_hint_align_set(evas.EVAS_HINT_FILL, 0.5)
+    pb6.size_hint_weight_set(evas.EVAS_HINT_EXPAND, evas.EVAS_HINT_EXPAND)
     hbx.pack_end(pb6)
     ic2.show()
     pb6.show()
@@ -1691,14 +1691,14 @@ def progressbar_clicked(obj, event, data):
     pb7 = elementary.Progressbar(win)
     pb7.style_set("wheel")
     pb7.label_set("Style: wheel")
-    pb7.size_hint_align_set(-1.0, 0.5)
-    pb7.size_hint_weight_set(1.0, 1.0)
+    pb7.size_hint_align_set(evas.EVAS_HINT_FILL, 0.5)
+    pb7.size_hint_weight_set(evas.EVAS_HINT_EXPAND, evas.EVAS_HINT_EXPAND)
     bx.pack_end(pb7)
     pb7.show()
 
     bt_bx = elementary.Box(win)
     bt_bx.horizontal_set(True)
-    bt_bx.size_hint_weight_set(1.0, 1.0)
+    bt_bx.size_hint_weight_set(evas.EVAS_HINT_EXPAND, evas.EVAS_HINT_EXPAND)
     bx.pack_end(bt_bx)
     bt_bx.show()
 
@@ -1727,11 +1727,11 @@ if __name__ == "__main__":
     
     bg = elementary.Background(win)
     win.resize_object_add(bg)
-    bg.size_hint_weight_set(1.0, 1.0)
+    bg.size_hint_weight_set(evas.EVAS_HINT_EXPAND, evas.EVAS_HINT_EXPAND)
     bg.show()
     
     box0 = elementary.Box(win)
-    box0.size_hint_weight_set(1.0, 1.0)
+    box0.size_hint_weight_set(evas.EVAS_HINT_EXPAND, evas.EVAS_HINT_EXPAND)
     win.resize_object_add(box0)
     box0.show()
 
@@ -1776,8 +1776,8 @@ if __name__ == "__main__":
     
     
     li = elementary.List(win)
-    li.size_hint_weight_set(1.0, 1.0)
-    li.size_hint_align_set(-1.0, -1.0)
+    li.size_hint_weight_set(evas.EVAS_HINT_EXPAND, evas.EVAS_HINT_EXPAND)
+    li.size_hint_align_set(evas.EVAS_HINT_FILL, evas.EVAS_HINT_FILL)
     box0.pack_end(li)
     li.show()
     
@@ -1792,13 +1792,13 @@ if __name__ == "__main__":
 
     """
     sc = elementary.Scroller(win)
-    sc.size_hint_weight_set(1.0, 1.0)
-    sc.size_hint_align_set(-1.0, -1.0)
+    sc.size_hint_weight_set(evas.EVAS_HINT_EXPAND, evas.EVAS_HINT_EXPAND)
+    sc.size_hint_align_set(evas.EVAS_HINT_FILL, evas.EVAS_HINT_FILL)
     box0.pack_end(sc)
     sc.show()
 
     box1 = elementary.Box(win)
-    box1.size_hint_weight_set(1.0, 1.0)
+    box1.size_hint_weight_set(evas.EVAS_HINT_EXPAND, evas.EVAS_HINT_EXPAND)
     sc.content_set(box1)
     box1.show()
 
@@ -1827,7 +1827,7 @@ if __name__ == "__main__":
         bt = elementary.Button(win)
         bt.clicked = btn[1]
         bt.label_set(btn[0])
-        bt.size_hint_align_set(-1.0, 0.0)
+        bt.size_hint_align_set(evas.EVAS_HINT_FILL, 0.0)
         box1.pack_end(bt)
         bt.show()
     """
