@@ -643,10 +643,11 @@ ui_func_set(void (*kfunc) (char *key), void (*lfunc) (double t, int f))
 void
 ui_fps(double fps)
 {
-   return;
+   /*
    char buf[256];
 
    snprintf(buf, sizeof(buf), "ESCAPE - exit, FPS: %4.3f", fps);
    evas_object_text_text_set(o_byline, buf);
+    */
    p_fps = fps;
 }
