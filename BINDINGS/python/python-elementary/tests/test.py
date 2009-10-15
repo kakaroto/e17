@@ -108,35 +108,35 @@ def box_horiz_clicked(obj, event, *args, **kargs):
     win.resize_object_add(bx)
     bx.size_hint_weight_set(1.0, 1.0)
     bx.show()
-    
+
     ic = elementary.Icon(win)
     ic.file_set("images/logo_small.png")
     ic.scale_set(0, 0)
     ic.size_hint_align_set(0.5, 0.5)
     bx.pack_end(ic)
     ic.show()
-    
+
     ic = elementary.Icon(win)
     ic.file_set("images/logo_small.png")
     ic.scale_set(0, 0)
-    ic.size_hint_align_set(0.0, 0.5)
+    ic.size_hint_align_set(0.5, 0.0)
     bx.pack_end(ic)
     ic.show()
-    
+
     ic = elementary.Icon(win)
     ic.file_set("images/logo_small.png")
     ic.scale_set(0, 0)
-    ic.size_hint_align_set(1.0, 0.5)
+    ic.size_hint_align_set(0.0, 1.0)
     bx.pack_end(ic)
     ic.show()
-    
+
     win.show()
 
 def buttons_clicked(obj, event, *args, **kargs):
     win = elementary.Window("buttons", elementary.ELM_WIN_BASIC)
     win.title_set("Buttons")
     win.autodel_set(True)
-    
+
     bg = elementary.Background(win)
     win.resize_object_add(bg)
     bg.size_hint_weight_set(1.0, 1.0)
