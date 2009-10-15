@@ -21,7 +21,7 @@ from c_elementary import Object, Window, Background, Icon, \
     Clock, Layout, Hover, Entry, AnchorView, AnchorBlock, Bubble, \
     Photo, Hoversel, Toolbar, ToolbarItem, List, ListItem, Slider, \
     Radio, Check, Pager, InnerWindow, Image, Spinner, Fileselector, \
-    Separator, init, shutdown, run, exit, scale_get, scale_set, \
+    Separator, Progressbar, init, shutdown, run, exit, scale_get, scale_set, \
     finger_size_get, finger_size_set, coords_finger_size_adjust, \
     theme_overlay_add, theme_extension_add
 

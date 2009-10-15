@@ -15,58 +15,42 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with python-elementary.  If not, see <http://www.gnu.org/licenses/>.
 #
-    
-cdef class Progressbar(Object):    
+
+cdef class Progressbar(Object):
     def __init__(self, c_evas.Object parent):
         Object.__init__(self, parent.evas)
         self._set_obj(elm_progressbar_add(parent.obj))
-    
+
     def label_set(self, label):
         elm_progressbar_label_set(self.obj, label)
-        
+
     def icon_set(self, c_evas.Object icon):
         elm_progressbar_icon_set(self.obj, icon.obj)
-        
+
     def span_size_set(self, size):
-        elm_progressbar_span_size_get(self, size)
-    
+        elm_progressbar_span_size_set(self.obj, size)
+
     def horizontal_set(self, horizontal):
-        if horizontal:
-            elm_progressbar_horizontal_set(self.obj, 1)
-        else:
-            elm_progressbar_horizontal_set(self.obj, 0)
-            
+        elm_progressbar_horizontal_set(self.obj, horizontal)
+
     def inverted_set(self, inverted):
-        if inverted:
-            elm_progressbar_inverted_set(self.obj, 1)
-        else:
-            elm_progressbar_inverted_set(self.obj, 0)
-            
+        elm_progressbar_inverted_set(self.obj, inverted)
+
     def pulse_set(self, pulse):
-        if pulse:
-            elm_progressbar_pulse_set(self.obj, 1)
-        else:
-            elm_progressbar_pulse_set(self.obj, 0)
-            
-    def pulse(self, pulse):
-        if inverted:
-            elm_progressbar_pulse_set(self.obj, 1)
-        else:
-            elm_progressbar_pulse_set(self.obj, 0)
-            
+        elm_progressbar_pulse_set(self.obj, pulse)
+
+    def pulse(self, state):
+        elm_progressbar_pulse(self.obj, state)
+
     def unit_format_set(self, format):
-        elm_progressbar_unit_format_set(self.obj, format)
-        
+        if format is None:
+            elm_progressbar_unit_format_set(self.obj, NULL)
+        else:
+            elm_progressbar_unit_format_set(self.obj, format)
+
     def value_set(self, value):
         elm_progressbar_value_set(self.obj, value)
-    
+
     def value_get(self):
-        cdef double value
-        value = elm_progressbar_value_get(self.obj)
-        return value
-        
-        
-    
-    
-        
+        return elm_progressbar_value_get(self.obj)
 
