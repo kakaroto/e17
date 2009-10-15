@@ -77,6 +77,8 @@ _ui_all(void)
    evas_object_hide(o_menu_icon_sel);
    evas_object_hide(o_menu_icon_sel2);
    evas_object_hide(o_menu_text_sel);
+   evas_object_hide(o_title);
+   evas_object_hide(o_byline);
    for (l = menu; l; l = l->next)
      {
 	Menu_Item *mi;
@@ -160,6 +162,8 @@ _ui_select(void)
    evas_object_hide(o_menu_icon_sel);
    evas_object_hide(o_menu_icon_sel2);
    evas_object_hide(o_menu_text_sel);
+   evas_object_hide(o_title);
+   evas_object_hide(o_byline);
    for (i = 0, l = menu; l; l = l->next, i++)
      {
 	Menu_Item *mi;
@@ -616,6 +620,8 @@ ui_loop(void)
 void
 ui_menu(void)
 {
+   evas_object_show(o_title);
+   evas_object_show(o_byline);
    evas_object_text_text_set
      (o_byline, "LEFT/RIGHT - select, ENTER - select, ESCAPE - exit.");
    menu_active = 1;
@@ -637,6 +643,7 @@ ui_func_set(void (*kfunc) (char *key), void (*lfunc) (double t, int f))
 void
 ui_fps(double fps)
 {
+   return;
    char buf[256];
 
    snprintf(buf, sizeof(buf), "ESCAPE - exit, FPS: %4.3f", fps);
