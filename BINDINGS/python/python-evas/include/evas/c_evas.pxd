@@ -23,6 +23,17 @@ cdef extern from "Evas.h":
     ####################################################################
     # Enumerations
     #
+
+    ctypedef enum Evas_Layer:
+        EVAS_LAYER_MIN = -32768
+        EVAS_LAYER_MAX =  32767
+
+
+    ctypedef enum Evas_Text:
+        EVAS_TEXT_INVALID = -1
+        EVAS_TEXT_SPECIAL = -2
+
+
     ctypedef enum Evas_Callback_Type:
         EVAS_CALLBACK_MOUSE_IN
         EVAS_CALLBACK_MOUSE_OUT
@@ -44,6 +55,32 @@ cdef extern from "Evas.h":
         EVAS_CALLBACK_HOLD
         EVAS_CALLBACK_CHANGED_SIZE_HINTS
         EVAS_CALLBACK_IMAGE_PRELOADED
+
+
+    ctypedef enum Evas_Pixel_Format:
+        EVAS_PIXEL_FORMAT_NONE        = 0
+        EVAS_PIXEL_FORMAT_ARGB32      = 1
+        EVAS_PIXEL_FORMAT_YUV420P_601 = 2
+
+
+    ctypedef enum Evas_Color_Space:
+        EVAS_COLOR_SPACE_ARGB = 0
+        EVAS_COLOR_SPACE_AHSV = 1
+
+
+    ctypedef enum Evas_Texture:
+        EVAS_TEXTURE_REFLECT          = 0
+        EVAS_TEXTURE_REPEAT           = 1
+        EVAS_TEXTURE_RESTRICT         = 2
+        EVAS_TEXTURE_RESTRICT_REFLECT = 3
+        EVAS_TEXTURE_RESTRICT_REPEAT  = 4
+        EVAS_TEXTURE_PAD              = 5
+
+
+    cdef enum Evas_Alloc_Error:
+        EVAS_ALLOC_ERROR_NONE      = 0
+        EVAS_ALLOC_ERROR_FATAL     = 1
+        EVAS_ALLOC_ERROR_RECOVERED = 2
 
 
     cdef enum Evas_Load_Error:

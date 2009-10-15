@@ -26,6 +26,8 @@ from c_evas import Canvas, SmartObject, ClippedSmartObject, Rectangle, Line, \
      color_argb_premul, color_argb_unpremul, color_parse, \
      color_rgb_to_hsv, color_hsv_to_rgb, image_mask_fill
 
+EVAS_HINT_EXPAND = 1.0
+EVAS_HINT_FILL = -1.0
 
 EVAS_CALLBACK_MOUSE_IN = 0
 EVAS_CALLBACK_MOUSE_OUT = 1
