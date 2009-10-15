@@ -27,6 +27,8 @@ from c_ecore import shutdown, time_get, loop_time_get, timer_add, \
      Animator, Timer, Idler, IdleExiter, IdleEnterer, FdHandler, \
      Event, EventHandler
 
+ECORE_CALLBACK_CANCEL = 0
+ECORE_CALLBACK_RENEW = 1
 
 ECORE_FD_NONE = 0
 ECORE_FD_READ = 1

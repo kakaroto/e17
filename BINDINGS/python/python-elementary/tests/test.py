@@ -1569,10 +1569,10 @@ def my_progressbar_value_set(data):
     pb3.value_set(progress)
     pb6.value_set(progress)
     if progress < 1.0:
-        return 1
+        return ecore.ECORE_CALLBACK_RENEW
     global my_progressbar_run
     my_progressbar_run = False
-    return 0
+    return ecore.ECORE_CALLBACK_CANCEL
 
 def my_progressbar_test_start(obj, event, data):
     (pb1, pb2, pb3, pb4, pb5, pb6, pb7) = data
