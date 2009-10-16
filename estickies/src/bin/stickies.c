@@ -769,6 +769,8 @@ elm_main(int argc, char **argv)
    if (!_e_config_init()) return 1;
    _e_config_load(ss);
 
+   elm_finger_size_set(1);
+
    if (ss->stickies)
      {
 	Eina_List *l;
