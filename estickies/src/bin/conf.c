@@ -166,6 +166,7 @@ _e_config_defaults_apply(E_Stickies *ss)
 {
    ss->version = _e_config_version_parse(VERSION);
    ss->stickies = NULL;
+   ss->composite = EINA_FALSE;
    ss->theme = strdup(DEFAULT_THEME);
 }     
 
