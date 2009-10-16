@@ -10,7 +10,7 @@ extern E_Stickies *ss;
 
 static int _e_theme_apply = STICKY_ONLY;
 static int _e_theme_default = NOT_DEFAULT;
-static Evas_Object *win, *preview, *thumbs;
+static Evas_Object *win, *preview, *thumbs, *composite_check;
 char buf[PATH_MAX];
 
 static void _e_theme_stickies_all_cb(void *data, Evas_Object *obj, void *event_info);
@@ -40,7 +40,7 @@ _e_theme_chooser_show(E_Sticky *s)
    Elm_List_Item *row;
 
    win = elm_win_add(NULL, "estickies-themechooser", ELM_WIN_BASIC);
-   elm_win_title_set(win, "Estickies - Theme Chooser");
+   elm_win_title_set(win, "Estickies - Configuration");
    evas_object_smart_callback_add(win, "delete-request", _e_theme_cancel_cb, NULL);
    evas_object_show(win);
 
@@ -144,6 +144,13 @@ _e_theme_chooser_show(E_Sticky *s)
    elm_box_pack_end(option_vbox, button);
    evas_object_show(button);
 
+   composite_check = elm_check_add(win);
+   elm_check_label_set(composite_check, "Use composite extension");
+   elm_check_state_set(composite_check, ss->composite);
+   evas_object_smart_callback_add(composite_check, "changed", NULL, NULL);
+   elm_box_pack_end(option_vbox, composite_check);
+   evas_object_show(composite_check);
+
    /* box to store Ok / Apply / Cancel */
    button_hbox = elm_box_add(win);
    elm_box_horizontal_set(button_hbox, 1);
@@ -235,6 +242,8 @@ _e_theme_cancel_cb(void *data, Evas_Object *obj, void *event_info)
 static void
 _e_theme_apply_now(E_Sticky *s)
 {
+   Eina_List *l;
+   E_Sticky *composite;
    Elm_List_Item *item;
    char *icol_string;
 
@@ -256,5 +265,12 @@ _e_theme_apply_now(E_Sticky *s)
      {
 	E_FREE(ss->theme);
 	ss->theme = strdup(ecore_file_file_get(icol_string));
+     }
+
+   ss->composite = elm_check_state_get(composite_check);
+
+   EINA_LIST_FOREACH(ss->stickies, l, composite)
+     {
+	_e_sticky_properties_set(composite);
      }
 }

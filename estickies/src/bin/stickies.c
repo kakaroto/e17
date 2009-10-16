@@ -258,6 +258,16 @@ _e_sticky_properties_set(E_Sticky *s)
    elm_win_sticky_set(s->win, s->stick);
    elm_check_state_set(s->lock_toggle, s->locked);
    _e_sticky_lock_toggle(s);
+   if (ss->composite)
+     {
+	elm_win_alpha_set(s->win, 1);
+	elm_win_shaped_set(s->win, 0);
+     }
+   else
+     {
+	elm_win_shaped_set(s->win, 1);
+	elm_win_alpha_set(s->win, 0);
+     }
 }
 
 /* END WINDOW, KEYBOARD AND MOUSE RELATED FUNCTIONS AND CALLBACKS */

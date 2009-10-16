@@ -1,9 +1,10 @@
 Main stuff:
 
 - **** FIX BUGS!!!! ****
-- support transparent stickies
+- fix problem when you close options and show it again
 - rest of formatting
 - GETTEXT!
+- update eet API in estickies
 
 Medium priority:
 

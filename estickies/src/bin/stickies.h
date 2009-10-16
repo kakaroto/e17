@@ -54,6 +54,7 @@ struct _E_Config_Stickies
 {
    char *theme;
    Eina_List *stickies;
+   Eina_Bool *composite;
 };
 
 struct _E_Config_General
@@ -106,11 +107,12 @@ struct _E_Stickies
    char *theme;
    Eina_List *stickies;
    E_Config_Version *version;
+   Eina_Bool composite;
 };
 
-E_Sticky *_e_sticky_new();
+E_Sticky *_e_sticky_new(void);
 void _e_sticky_window_add(E_Sticky *s);
-E_Sticky *_e_sticky_new_show_append();
+E_Sticky *_e_sticky_new_show_append(void);
 void _e_sticky_destroy(E_Sticky *s);
 void _e_sticky_delete(E_Sticky *s);
 void _e_sticky_move(E_Sticky *s, int x, int y);

@@ -112,10 +112,11 @@ _e_config_init()
    CFG_STICKY_NEWI("ca", a, EET_T_INT);
    CFG_STICKY_NEWI("st", stick, EET_T_INT);
    CFG_STICKY_NEWI("lk", locked, EET_T_INT);   
-   CFG_STICKY_NEWI("tm", theme, EET_T_STRING);   
+   CFG_STICKY_NEWI("tm", theme, EET_T_STRING);    
    CFG_STICKY_NEWI("tx", text, EET_T_STRING);   
 
    _e_config_stickies_edd = NEWD("E_Config_Stickies", E_Config_Stickies);
+   CFG_STICKIES_NEWI("cp", composite, EET_T_INT);
    CFG_STICKIES_NEWI("tm", theme, EET_T_STRING);
    CFG_STICKIES_NEWL("st", stickies, _e_config_sticky_edd);
    
@@ -237,7 +238,8 @@ _e_config_load(E_Stickies *ss)
    if(stickies)
      {
 	//printf ("found %d stickies in conf!\n", eina_list_count(stickies->stickies));
-	ss->stickies = stickies->stickies;	
+	ss->stickies = stickies->stickies;
+	ss->composite = stickies->composite;
      }
    //else
      //printf("no stickies found in conf!\n");
@@ -280,6 +282,7 @@ _e_config_save(E_Stickies *ss)
 
    stickies = E_NEW(1, E_Config_Stickies);
    stickies->stickies = ss->stickies;
+   stickies->composite = ss->composite;
    //printf("saving %d stickies to conf\n", eina_list_count(ss->stickies));
    ret = eet_data_write(ef, _e_config_stickies_edd, "config/stickies", stickies, 1);
    if(!ret)
