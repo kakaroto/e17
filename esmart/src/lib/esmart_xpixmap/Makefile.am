@@ -16,4 +16,4 @@ esmart_xpixmap.c \
 Esmart_XPixmap.h
 
 libesmart_xpixmap_la_LDFLAGS = -version-info @version_info@
-libesmart_xpixmap_la_LIBADD = @XPIXMAP_LIBS@ -L/usr/X11R6/lib
+libesmart_xpixmap_la_LIBADD = @XPIXMAP_LIBS@ -L/usr/X11R6/lib -lX11
