@@ -1384,12 +1384,12 @@ EwinsShowDesktop(int on)
 
    lst = EwinListGetForDesk(&num, DesksGetCurrent());
 
-   for (i = 0; i < num; i++)
+   if (on)
      {
-	ewin = lst[i];
-
-	if (on)
+	for (i = 0; i < num; i++)
 	  {
+	     ewin = lst[i];
+
 	     if (EwinIsTransient(ewin) ||
 		 ewin->state.iconified || ewin->state.donthide)
 		continue;
@@ -1397,8 +1397,13 @@ EwinsShowDesktop(int on)
 	     ewin->state.showingdesk = 1;
 	     EwinIconify(ewin);
 	  }
-	else
+     }
+   else
+     {
+	for (i = num - 1; i >= 0; i--)
 	  {
+	     ewin = lst[i];
+
 	     if (!ewin->state.showingdesk)
 		continue;
 
