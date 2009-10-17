@@ -22,6 +22,8 @@
 
 #define DEBUG 0
 
+#define VER(maj, min, mic) (10000 * (maj) + 100 * (min) + (mic))
+
 extern GtkTooltips *tooltips;
 extern GtkAccelGroup *accel_group;
 
@@ -868,6 +870,36 @@ receive_ipc_msg(gchar * msg)
 }
 
 static void
+check_e16_version(void)
+{
+   char               *msg;
+   const char         *s;
+   int                 ver, major, minor, micro;
+
+   ver = major = minor = micro = 0;
+
+   CommsSend("ver");
+   msg = wait_for_ipc_msg();
+   if (!msg)
+      return 0;
+
+   s = msg;
+   while (*s && *s != '.')
+      s++;
+   s--;
+   sscanf(s, "%d.%d.%d", &major, &minor, &micro);
+   ver = VER(major, minor, micro);
+
+   free(msg);
+
+   if (ver < VER(1, 0, 1))
+     {
+	printf("Sorry, e16 version >= 1.0.1 is required.\n");
+	exit(1);
+     }
+}
+
+static void
 load_actions(void)
 {
    char                kbdb[1024], buf[1024], text[1024], command[1024];
@@ -1005,6 +1037,8 @@ main(int argc, char *argv[])
 	     "that uses Enlightenment's IPC mechanism to configure\n"
 	     "it remotely.");
 #endif
+
+   check_e16_version();
 
    load_actions();
 
