@@ -54,7 +54,7 @@ int main(int argc, char** argv)
   sudo = NULL;
 
   // initialize gettext
-#if HAVE_LOCALE_H
+#ifdef HAVE_LOCALE_H
    setlocale(LC_ALL, "");
 #endif
   bindtextdomain(PACKAGE, PACKAGE_LOCALE_DIR);
