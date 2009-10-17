@@ -2632,7 +2632,7 @@ DesksIpcDesk(const char *params)
 {
    const char         *p;
    char                cmd[128], prm[128];
-   int                 len;
+   int                 len, value;
    unsigned int        desk;
 
    cmd[0] = prm[0] = '\0';
@@ -2706,7 +2706,13 @@ DesksIpcDesk(const char *params)
      }
    else if (!strcmp(cmd, "clear"))
      {
-	EwinsShowDesktop(!Mode.showing_desktop);
+	if (!strcmp(prm, "on"))
+	   value = 1;
+	else if (!strcmp(prm, "off"))
+	   value = 0;
+	else
+	   value = !Mode.showing_desktop;
+	EwinsShowDesktop(value);
      }
    else if (!strncmp(cmd, "arrange", 3))
      {
@@ -2782,7 +2788,7 @@ static const IpcItem DesksIpcArray[] = {
     "  desk lower <d>       Lower desktop\n"
     "  desk raise <d>       Raise desktop\n"
     "  desk arrange         Arrange windows on desktop\"\n"
-    "  desk clear           \"Show Desktop\"\n"}
+    "  desk clear [on/off]  \"Show Desktop\"\n"}
    ,
    {
     DesksIpcArea,
