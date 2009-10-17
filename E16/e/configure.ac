@@ -143,8 +143,8 @@ if test "x$enable_sm" = "xyes"; then
 fi
 
 AC_ARG_ENABLE(pango,
-  [  --enable-pango          compile with pango-xft support @<:@default=no@:>@],,
-  enable_pango=no)
+  [  --enable-pango          compile with pango-xft support @<:@default=yes@:>@],,
+  enable_pango=yes)
 if test "x$enable_pango" = "xyes"; then
   PKG_CHECK_MODULES(PANGO, pangoxft, AC_DEFINE(USE_PANGO, 1, [pango-xft support]), enable_pango=no)
 fi
