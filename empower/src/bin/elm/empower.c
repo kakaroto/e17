@@ -55,9 +55,7 @@ int elm_main(int argc, char** argv)
   sudo = NULL;
 
   // initialize gettext
-#ifdef HAVE_LOCALE_H
-   setlocale(LC_ALL, "");
-#endif
+  setlocale(LC_ALL, "");
   bindtextdomain(PACKAGE, PACKAGE_LOCALE_DIR);
   textdomain(PACKAGE);
   
