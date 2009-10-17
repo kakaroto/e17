@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.17.1\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2009-10-02 17:52+0200\n"
+"POT-Creation-Date: 2009-10-17 09:41+0200\n"
 "PO-Revision-Date: 2004-08-29 01:02:30+0900\n"
 "Last-Translator: Michael Kim <lavnrose@e.sarang.net>\n"
 "Language-Team: Korean <translation-team-ko@lists.sourceforge.net>\n"
@@ -50,7 +50,7 @@ msgstr ""
 "Mandrake - mandrake@mandrake.net\n"
 "Kim Woelders - kim@woelders.dk\n"
 
-#: src/aclass.c:211 src/backgrounds.c:236 src/borders.c:641 src/buttons.c:181
+#: src/aclass.c:211 src/backgrounds.c:236 src/borders.c:677 src/buttons.c:181
 #: src/cursors.c:131 src/iclass.c:338 src/tclass.c:113 src/tooltips.c:135
 #, c-format
 msgid "%u references remain\n"
@@ -177,7 +177,7 @@ msgstr "인라이튼먼트 종료"
 msgid "Attention !!!"
 msgstr "주목 !!!"
 
-#: src/alert.c:583 src/dialog.c:844 src/dialog.c:2032 src/events.c:87
+#: src/alert.c:583 src/dialog.c:729 src/dialog.c:1917 src/events.c:87
 #: src/setup.c:157 src/sound.c:310
 msgid "OK"
 msgstr "확인"
@@ -197,7 +197,7 @@ msgstr ""
 msgid "-NONE-"
 msgstr "-없음-"
 
-#: src/backgrounds.c:1691 src/backgrounds.c:1693
+#: src/backgrounds.c:1693 src/backgrounds.c:1695
 msgid ""
 "No\n"
 "Background"
@@ -205,40 +205,40 @@ msgstr ""
 "배경\n"
 "없음"
 
-#: src/backgrounds.c:1787 src/backgrounds.c:2217
+#: src/backgrounds.c:1789 src/backgrounds.c:2219
 #, c-format
 msgid "Unused backgrounds freed after %2i:%02i:%02i"
 msgstr "사용되지 않는 배경은 %2i:%2i:%2i후에 해제"
 
-#: src/backgrounds.c:2003
+#: src/backgrounds.c:2005
 msgid "Use background image"
 msgstr "배경 이미지 사용"
 
-#: src/backgrounds.c:2007
+#: src/backgrounds.c:2009
 msgid "Keep aspect on scale"
 msgstr "크기조정시 모양 유지"
 
-#: src/backgrounds.c:2011
+#: src/backgrounds.c:2013
 msgid "Tile image across background"
 msgstr "배경에 사용할 타일 이미지"
 
-#: src/backgrounds.c:2020
+#: src/backgrounds.c:2022
 msgid "Move to Front\n"
 msgstr "앞으로 이동\n"
 
-#: src/backgrounds.c:2025
+#: src/backgrounds.c:2027
 msgid "Duplicate\n"
 msgstr "복제\n"
 
-#: src/backgrounds.c:2029
+#: src/backgrounds.c:2031
 msgid "Unlist\n"
 msgstr "목록에서 삭제\n"
 
-#: src/backgrounds.c:2034
+#: src/backgrounds.c:2036
 msgid "Delete File\n"
 msgstr "파일 삭제\n"
 
-#: src/backgrounds.c:2045
+#: src/backgrounds.c:2047
 msgid ""
 "Background\n"
 "Image\n"
@@ -252,59 +252,59 @@ msgstr ""
 "그리고\n"
 "위치조정\n"
 
-#: src/backgrounds.c:2102
+#: src/backgrounds.c:2104
 msgid "BG Colour\n"
 msgstr "배경 색\n"
 
-#: src/backgrounds.c:2107
+#: src/backgrounds.c:2109
 msgid "Red:\n"
 msgstr "적색:\n"
 
-#: src/backgrounds.c:2118
+#: src/backgrounds.c:2120
 msgid "Green:\n"
 msgstr "녹색:\n"
 
-#: src/backgrounds.c:2129
+#: src/backgrounds.c:2131
 msgid "Blue:\n"
 msgstr "청색:\n"
 
-#: src/backgrounds.c:2162
+#: src/backgrounds.c:2164
 msgid "Pre-scan BG's"
 msgstr "배경 미리 스캔"
 
-#: src/backgrounds.c:2170
+#: src/backgrounds.c:2172
 msgid "Sort by File"
 msgstr "파일로 정렬"
 
-#: src/backgrounds.c:2175
+#: src/backgrounds.c:2177
 msgid "Sort by Attr."
 msgstr "속성으로 정렬"
 
-#: src/backgrounds.c:2181
+#: src/backgrounds.c:2183
 msgid "Sort by Image"
 msgstr "이미지로 정렬"
 
-#: src/backgrounds.c:2201
+#: src/backgrounds.c:2203
 msgid "Use dithering in Hi-Colour"
 msgstr "고색상에서 디더링 사용"
 
-#: src/backgrounds.c:2205
+#: src/backgrounds.c:2207
 msgid "Background overrides theme"
 msgstr "테마의 배경 사용않함"
 
-#: src/backgrounds.c:2210
+#: src/backgrounds.c:2212
 msgid "Enable background transparency compatibility mode"
 msgstr ""
 
-#: src/backgrounds.c:2234 src/mod-trans.c:204
+#: src/backgrounds.c:2236 src/mod-trans.c:204
 msgid "Background"
 msgstr "배경화면"
 
-#: src/backgrounds.c:2235
+#: src/backgrounds.c:2237
 msgid "Desktop Background Settings"
 msgstr "데스크탑 배경 설정"
 
-#: src/backgrounds.c:2238
+#: src/backgrounds.c:2240
 msgid ""
 "Enlightenment Desktop\n"
 "Background Settings Dialog\n"
@@ -422,7 +422,7 @@ msgstr "인라이튼먼트 시작중..."
 msgid "Settings..."
 msgstr "포커스 설정"
 
-#: src/container.c:1190 src/dialog.c:856 src/pager.c:1013 config/strings.c:30
+#: src/container.c:1190 src/dialog.c:741 src/pager.c:1013 config/strings.c:30
 #: config/strings.c:124
 msgid "Close"
 msgstr "닫기"
@@ -633,7 +633,7 @@ msgstr "왼쪽"
 msgid "Right"
 msgstr "오른쪽"
 
-#: src/desktops.c:2412 src/menus-misc.c:582
+#: src/desktops.c:2412 src/menus-misc.c:583
 #, fuzzy
 msgid "Desks"
 msgstr "데스크탑"
@@ -694,7 +694,7 @@ msgstr ""
 "인라이튼먼트 가상 데스크탑\n"
 "설정 대화상자\n"
 
-#: src/dialog.c:849
+#: src/dialog.c:734
 msgid "Apply"
 msgstr "적용"
 
@@ -996,7 +996,7 @@ msgstr " 공통 설정: "
 msgid "Swap Window Locations"
 msgstr "창 위치 바꿈"
 
-#: src/groups.c:1018 src/menus-misc.c:642 config/strings.c:140
+#: src/groups.c:1018 src/menus-misc.c:643 config/strings.c:140
 #, fuzzy
 msgid "Groups"
 msgstr "그룹 %i"
@@ -1243,40 +1243,40 @@ msgstr ""
 msgid "Magnifier"
 msgstr ""
 
-#: src/menus-misc.c:454 config/strings.c:93 config/strings.c:115
+#: src/menus-misc.c:455 config/strings.c:93 config/strings.c:115
 #, fuzzy
 msgid "Themes"
 msgstr "잘못된 테마"
 
-#: src/menus-misc.c:480
+#: src/menus-misc.c:481
 #, fuzzy
 msgid "Border"
 msgstr "테두리"
 
-#: src/menus-misc.c:542
+#: src/menus-misc.c:543
 #, fuzzy
 msgid "Window List"
 msgstr "창 목록 건너뜀"
 
-#: src/menus-misc.c:564
+#: src/menus-misc.c:565
 #, fuzzy
 msgid "Go to this Desktop"
 msgstr "이 데스크탑으로 가기"
 
-#: src/menus-misc.c:568 src/menus-misc.c:664
+#: src/menus-misc.c:569 src/menus-misc.c:665
 #, c-format
 msgid "Desktop %i"
 msgstr "데스크탑 %i"
 
-#: src/menus-misc.c:611
+#: src/menus-misc.c:612
 msgid "Show/Hide this group"
 msgstr "이 그룹 보여주기/숨기기"
 
-#: src/menus-misc.c:616
+#: src/menus-misc.c:617
 msgid "Iconify this group"
 msgstr "이 그룹 아이콘화"
 
-#: src/menus-misc.c:627
+#: src/menus-misc.c:628
 #, c-format
 msgid "Group %i"
 msgstr "그룹 %i"

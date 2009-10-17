@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2009-10-02 17:52+0200\n"
+"POT-Creation-Date: 2009-10-17 09:41+0200\n"
 "PO-Revision-Date: 2009-09-15 15:36+0000\n"
 "Last-Translator: milboy <Unknown>\n"
 "Language-Team: Slovak <sk@li.org>\n"
@@ -43,7 +43,7 @@ msgstr ""
 "Mandrake - mandrake@mandrake.net\n"
 "Kim Woelders - kim@woelders.dk\n"
 
-#: src/aclass.c:211 src/backgrounds.c:236 src/borders.c:641 src/buttons.c:181
+#: src/aclass.c:211 src/backgrounds.c:236 src/borders.c:677 src/buttons.c:181
 #: src/cursors.c:131 src/iclass.c:338 src/tclass.c:113 src/tooltips.c:135
 #, c-format
 msgid "%u references remain\n"
@@ -166,7 +166,7 @@ msgstr "Vypnúť Enlightenment"
 msgid "Attention !!!"
 msgstr "Upozornenie !!!"
 
-#: src/alert.c:583 src/dialog.c:844 src/dialog.c:2032 src/events.c:87
+#: src/alert.c:583 src/dialog.c:729 src/dialog.c:1917 src/events.c:87
 #: src/setup.c:157 src/sound.c:310
 msgid "OK"
 msgstr "OK"
@@ -186,7 +186,7 @@ msgstr ""
 msgid "-NONE-"
 msgstr "-NIČ-"
 
-#: src/backgrounds.c:1691 src/backgrounds.c:1693
+#: src/backgrounds.c:1693 src/backgrounds.c:1695
 msgid ""
 "No\n"
 "Background"
@@ -194,40 +194,40 @@ msgstr ""
 "Žiadne\n"
 "pozadie"
 
-#: src/backgrounds.c:1787 src/backgrounds.c:2217
+#: src/backgrounds.c:1789 src/backgrounds.c:2219
 #, c-format
 msgid "Unused backgrounds freed after %2i:%02i:%02i"
 msgstr "Nepoužité pozadia uvoľnené po %2i:%02i:%02i"
 
-#: src/backgrounds.c:2003
+#: src/backgrounds.c:2005
 msgid "Use background image"
 msgstr "Použiť obrázok ako pozadie"
 
-#: src/backgrounds.c:2007
+#: src/backgrounds.c:2009
 msgid "Keep aspect on scale"
 msgstr "Udržať pomer výšky a šírky obrázku pri zväčšení"
 
-#: src/backgrounds.c:2011
+#: src/backgrounds.c:2013
 msgid "Tile image across background"
 msgstr "Opakovať obrázok v pozadí"
 
-#: src/backgrounds.c:2020
+#: src/backgrounds.c:2022
 msgid "Move to Front\n"
 msgstr "Presunúť dopredu\n"
 
-#: src/backgrounds.c:2025
+#: src/backgrounds.c:2027
 msgid "Duplicate\n"
 msgstr "Duplikovať\n"
 
-#: src/backgrounds.c:2029
+#: src/backgrounds.c:2031
 msgid "Unlist\n"
 msgstr ""
 
-#: src/backgrounds.c:2034
+#: src/backgrounds.c:2036
 msgid "Delete File\n"
 msgstr "Odstrániť súbor\n"
 
-#: src/backgrounds.c:2045
+#: src/backgrounds.c:2047
 msgid ""
 "Background\n"
 "Image\n"
@@ -241,59 +241,59 @@ msgstr ""
 "a\n"
 "Zarovnanie\n"
 
-#: src/backgrounds.c:2102
+#: src/backgrounds.c:2104
 msgid "BG Colour\n"
 msgstr "BG Farba\n"
 
-#: src/backgrounds.c:2107
+#: src/backgrounds.c:2109
 msgid "Red:\n"
 msgstr "Červená:\n"
 
-#: src/backgrounds.c:2118
+#: src/backgrounds.c:2120
 msgid "Green:\n"
 msgstr "Zelená:\n"
 
-#: src/backgrounds.c:2129
+#: src/backgrounds.c:2131
 msgid "Blue:\n"
 msgstr "Modrá:\n"
 
-#: src/backgrounds.c:2162
+#: src/backgrounds.c:2164
 msgid "Pre-scan BG's"
 msgstr ""
 
-#: src/backgrounds.c:2170
+#: src/backgrounds.c:2172
 msgid "Sort by File"
 msgstr "Triediť podľa súboru"
 
-#: src/backgrounds.c:2175
+#: src/backgrounds.c:2177
 msgid "Sort by Attr."
 msgstr "Zoradiť podľa Attr."
 
-#: src/backgrounds.c:2181
+#: src/backgrounds.c:2183
 msgid "Sort by Image"
 msgstr "Triediť podľa obrázku"
 
-#: src/backgrounds.c:2201
+#: src/backgrounds.c:2203
 msgid "Use dithering in Hi-Colour"
 msgstr ""
 
-#: src/backgrounds.c:2205
+#: src/backgrounds.c:2207
 msgid "Background overrides theme"
 msgstr "Pozadie prekrýva tému"
 
-#: src/backgrounds.c:2210
+#: src/backgrounds.c:2212
 msgid "Enable background transparency compatibility mode"
 msgstr "Zapnúť kompatibilný mód priesvitnosti pozadia"
 
-#: src/backgrounds.c:2234 src/mod-trans.c:204
+#: src/backgrounds.c:2236 src/mod-trans.c:204
 msgid "Background"
 msgstr "Pozadie"
 
-#: src/backgrounds.c:2235
+#: src/backgrounds.c:2237
 msgid "Desktop Background Settings"
 msgstr "Nastavenia pozadia pracovnej plochy"
 
-#: src/backgrounds.c:2238
+#: src/backgrounds.c:2240
 msgid ""
 "Enlightenment Desktop\n"
 "Background Settings Dialog\n"
@@ -391,7 +391,7 @@ msgstr "Enlightenment sa spúšťa..."
 msgid "Settings..."
 msgstr "Nastavenia..."
 
-#: src/container.c:1190 src/dialog.c:856 src/pager.c:1013 config/strings.c:30
+#: src/container.c:1190 src/dialog.c:741 src/pager.c:1013 config/strings.c:30
 #: config/strings.c:124
 msgid "Close"
 msgstr "Zavrieť"
@@ -581,7 +581,7 @@ msgstr "Vľavo"
 msgid "Right"
 msgstr "Vpravo"
 
-#: src/desktops.c:2412 src/menus-misc.c:582
+#: src/desktops.c:2412 src/menus-misc.c:583
 msgid "Desks"
 msgstr ""
 
@@ -637,7 +637,7 @@ msgid ""
 "Settings Dialog\n"
 msgstr ""
 
-#: src/dialog.c:849
+#: src/dialog.c:734
 msgid "Apply"
 msgstr "Použiť"
 
@@ -899,7 +899,7 @@ msgstr ""
 msgid "Swap Window Locations"
 msgstr ""
 
-#: src/groups.c:1018 src/menus-misc.c:642 config/strings.c:140
+#: src/groups.c:1018 src/menus-misc.c:643 config/strings.c:140
 msgid "Groups"
 msgstr ""
 
@@ -1077,36 +1077,36 @@ msgstr ""
 msgid "Magnifier"
 msgstr ""
 
-#: src/menus-misc.c:454 config/strings.c:93 config/strings.c:115
+#: src/menus-misc.c:455 config/strings.c:93 config/strings.c:115
 msgid "Themes"
 msgstr ""
 
-#: src/menus-misc.c:480
+#: src/menus-misc.c:481
 msgid "Border"
 msgstr ""
 
-#: src/menus-misc.c:542
+#: src/menus-misc.c:543
 msgid "Window List"
 msgstr ""
 
-#: src/menus-misc.c:564
+#: src/menus-misc.c:565
 msgid "Go to this Desktop"
 msgstr ""
 
-#: src/menus-misc.c:568 src/menus-misc.c:664
+#: src/menus-misc.c:569 src/menus-misc.c:665
 #, c-format
 msgid "Desktop %i"
 msgstr ""
 
-#: src/menus-misc.c:611
+#: src/menus-misc.c:612
 msgid "Show/Hide this group"
 msgstr ""
 
-#: src/menus-misc.c:616
+#: src/menus-misc.c:617
 msgid "Iconify this group"
 msgstr ""
 
-#: src/menus-misc.c:627
+#: src/menus-misc.c:628
 #, c-format
 msgid "Group %i"
 msgstr ""

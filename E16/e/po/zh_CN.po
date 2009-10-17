@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: e16\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2009-10-02 17:52+0200\n"
+"POT-Creation-Date: 2009-10-17 09:41+0200\n"
 "PO-Revision-Date: 2009-07-06 09:05+0000\n"
 "Last-Translator: Careone <zzbusagain@yahoo.com.cn>\n"
 "Language-Team: Chinese/Simplified <i18n-translation@lists.linux.net.cn>\n"
@@ -44,7 +44,7 @@ msgstr ""
 "Mandrake - mandrake@mandrake.net\n"
 "Kim Woelders - kim@woelders.dk\n"
 
-#: src/aclass.c:211 src/backgrounds.c:236 src/borders.c:641 src/buttons.c:181
+#: src/aclass.c:211 src/backgrounds.c:236 src/borders.c:677 src/buttons.c:181
 #: src/cursors.c:131 src/iclass.c:338 src/tclass.c:113 src/tooltips.c:135
 #, c-format
 msgid "%u references remain\n"
@@ -172,7 +172,7 @@ msgstr "退出 Enlightenment"
 msgid "Attention !!!"
 msgstr "注意！！！"
 
-#: src/alert.c:583 src/dialog.c:844 src/dialog.c:2032 src/events.c:87
+#: src/alert.c:583 src/dialog.c:729 src/dialog.c:1917 src/events.c:87
 #: src/setup.c:157 src/sound.c:310
 msgid "OK"
 msgstr "确定"
@@ -192,7 +192,7 @@ msgstr ""
 msgid "-NONE-"
 msgstr "-无-"
 
-#: src/backgrounds.c:1691 src/backgrounds.c:1693
+#: src/backgrounds.c:1693 src/backgrounds.c:1695
 msgid ""
 "No\n"
 "Background"
@@ -200,40 +200,40 @@ msgstr ""
 "没有\n"
 "背景"
 
-#: src/backgrounds.c:1787 src/backgrounds.c:2217
+#: src/backgrounds.c:1789 src/backgrounds.c:2219
 #, c-format
 msgid "Unused backgrounds freed after %2i:%02i:%02i"
 msgstr "未使用的背景在 %2i:%02i:%02i 后被释放"
 
-#: src/backgrounds.c:2003
+#: src/backgrounds.c:2005
 msgid "Use background image"
 msgstr "使用背景图像"
 
-#: src/backgrounds.c:2007
+#: src/backgrounds.c:2009
 msgid "Keep aspect on scale"
 msgstr "保持宽高比"
 
-#: src/backgrounds.c:2011
+#: src/backgrounds.c:2013
 msgid "Tile image across background"
 msgstr "图像覆盖背景"
 
-#: src/backgrounds.c:2020
+#: src/backgrounds.c:2022
 msgid "Move to Front\n"
 msgstr "移至前端\n"
 
-#: src/backgrounds.c:2025
+#: src/backgrounds.c:2027
 msgid "Duplicate\n"
 msgstr "重复\n"
 
-#: src/backgrounds.c:2029
+#: src/backgrounds.c:2031
 msgid "Unlist\n"
 msgstr "不列出\n"
 
-#: src/backgrounds.c:2034
+#: src/backgrounds.c:2036
 msgid "Delete File\n"
 msgstr "删除文件\n"
 
-#: src/backgrounds.c:2045
+#: src/backgrounds.c:2047
 msgid ""
 "Background\n"
 "Image\n"
@@ -247,59 +247,59 @@ msgstr ""
 "以及\n"
 "对齐\n"
 
-#: src/backgrounds.c:2102
+#: src/backgrounds.c:2104
 msgid "BG Colour\n"
 msgstr "背景色\n"
 
-#: src/backgrounds.c:2107
+#: src/backgrounds.c:2109
 msgid "Red:\n"
 msgstr "红：\n"
 
-#: src/backgrounds.c:2118
+#: src/backgrounds.c:2120
 msgid "Green:\n"
 msgstr "绿：\n"
 
-#: src/backgrounds.c:2129
+#: src/backgrounds.c:2131
 msgid "Blue:\n"
 msgstr "蓝：\n"
 
-#: src/backgrounds.c:2162
+#: src/backgrounds.c:2164
 msgid "Pre-scan BG's"
 msgstr "预览背景"
 
-#: src/backgrounds.c:2170
+#: src/backgrounds.c:2172
 msgid "Sort by File"
 msgstr "按文件排序"
 
-#: src/backgrounds.c:2175
+#: src/backgrounds.c:2177
 msgid "Sort by Attr."
 msgstr "按属性排序"
 
-#: src/backgrounds.c:2181
+#: src/backgrounds.c:2183
 msgid "Sort by Image"
 msgstr "按图像排序"
 
-#: src/backgrounds.c:2201
+#: src/backgrounds.c:2203
 msgid "Use dithering in Hi-Colour"
 msgstr "在真彩色中使用抖动"
 
-#: src/backgrounds.c:2205
+#: src/backgrounds.c:2207
 msgid "Background overrides theme"
 msgstr "背景覆盖主题"
 
-#: src/backgrounds.c:2210
+#: src/backgrounds.c:2212
 msgid "Enable background transparency compatibility mode"
 msgstr "启用背景透明兼容模式"
 
-#: src/backgrounds.c:2234 src/mod-trans.c:204
+#: src/backgrounds.c:2236 src/mod-trans.c:204
 msgid "Background"
 msgstr "背景"
 
-#: src/backgrounds.c:2235
+#: src/backgrounds.c:2237
 msgid "Desktop Background Settings"
 msgstr "桌面背景设置"
 
-#: src/backgrounds.c:2238
+#: src/backgrounds.c:2240
 msgid ""
 "Enlightenment Desktop\n"
 "Background Settings Dialog\n"
@@ -397,7 +397,7 @@ msgstr "Enlightenment 启动中..."
 msgid "Settings..."
 msgstr "设置..."
 
-#: src/container.c:1190 src/dialog.c:856 src/pager.c:1013 config/strings.c:30
+#: src/container.c:1190 src/dialog.c:741 src/pager.c:1013 config/strings.c:30
 #: config/strings.c:124
 msgid "Close"
 msgstr "关闭"
@@ -593,7 +593,7 @@ msgstr "左侧"
 msgid "Right"
 msgstr "右侧"
 
-#: src/desktops.c:2412 src/menus-misc.c:582
+#: src/desktops.c:2412 src/menus-misc.c:583
 msgid "Desks"
 msgstr "桌面"
 
@@ -653,7 +653,7 @@ msgstr ""
 "Enlightenment 虚拟桌面\n"
 "设置对话框\n"
 
-#: src/dialog.c:849
+#: src/dialog.c:734
 msgid "Apply"
 msgstr "应用"
 
@@ -923,7 +923,7 @@ msgstr " 全局设置： "
 msgid "Swap Window Locations"
 msgstr "交换窗口位置"
 
-#: src/groups.c:1018 src/menus-misc.c:642 config/strings.c:140
+#: src/groups.c:1018 src/menus-misc.c:643 config/strings.c:140
 msgid "Groups"
 msgstr "分组"
 
@@ -1103,36 +1103,36 @@ msgstr ""
 msgid "Magnifier"
 msgstr "放大镜"
 
-#: src/menus-misc.c:454 config/strings.c:93 config/strings.c:115
+#: src/menus-misc.c:455 config/strings.c:93 config/strings.c:115
 msgid "Themes"
 msgstr "主题"
 
-#: src/menus-misc.c:480
+#: src/menus-misc.c:481
 msgid "Border"
 msgstr "边框"
 
-#: src/menus-misc.c:542
+#: src/menus-misc.c:543
 msgid "Window List"
 msgstr "窗口列表"
 
-#: src/menus-misc.c:564
+#: src/menus-misc.c:565
 msgid "Go to this Desktop"
 msgstr "转到此桌面"
 
-#: src/menus-misc.c:568 src/menus-misc.c:664
+#: src/menus-misc.c:569 src/menus-misc.c:665
 #, c-format
 msgid "Desktop %i"
 msgstr "桌面 %i"
 
-#: src/menus-misc.c:611
+#: src/menus-misc.c:612
 msgid "Show/Hide this group"
 msgstr "显示/隐藏该组"
 
-#: src/menus-misc.c:616
+#: src/menus-misc.c:617
 msgid "Iconify this group"
 msgstr ""
 
-#: src/menus-misc.c:627
+#: src/menus-misc.c:628
 #, c-format
 msgid "Group %i"
 msgstr "组 %i"

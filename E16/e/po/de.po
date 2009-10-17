@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 16\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2009-10-02 17:52+0200\n"
+"POT-Creation-Date: 2009-10-17 09:41+0200\n"
 "PO-Revision-Date: 2009-05-31 15:13+0100\n"
 "Last-Translator: Peter Wehrfritz <peter.wehrfritz@web.de>\n"
 "Language-Team: Enlightenment l10n <enlightenment-intl@lists.sourceforge."
@@ -50,7 +50,7 @@ msgstr ""
 "Mandrake - mandrake@mandrake.net\n"
 "Kim Woelders - kim@woelders.dk\n"
 
-#: src/aclass.c:211 src/backgrounds.c:236 src/borders.c:641 src/buttons.c:181
+#: src/aclass.c:211 src/backgrounds.c:236 src/borders.c:677 src/buttons.c:181
 #: src/cursors.c:131 src/iclass.c:338 src/tclass.c:113 src/tooltips.c:135
 #, c-format
 msgid "%u references remain\n"
@@ -203,7 +203,7 @@ msgstr "Achtung!"
 # src/settings.c:1460 src/settings.c:1522 src/settings.c:1610
 # src/settings.c:2012 src/settings.c:3405 src/settings.c:3750
 # src/settings.c:4048 src/settings.c:4186 src/snaps.c:547 src/sound.c:262
-#: src/alert.c:583 src/dialog.c:844 src/dialog.c:2032 src/events.c:87
+#: src/alert.c:583 src/dialog.c:729 src/dialog.c:1917 src/events.c:87
 #: src/setup.c:157 src/sound.c:310
 msgid "OK"
 msgstr "OK"
@@ -228,7 +228,7 @@ msgid "-NONE-"
 msgstr "-/-"
 
 # src/settings.c:2526 src/settings.c:2528
-#: src/backgrounds.c:1691 src/backgrounds.c:1693
+#: src/backgrounds.c:1693 src/backgrounds.c:1695
 msgid ""
 "No\n"
 "Background"
@@ -237,48 +237,48 @@ msgstr ""
 "Hintergrund"
 
 # src/settings.c:2713 src/settings.c:3281
-#: src/backgrounds.c:1787 src/backgrounds.c:2217
+#: src/backgrounds.c:1789 src/backgrounds.c:2219
 #, c-format
 msgid "Unused backgrounds freed after %2i:%02i:%02i"
 msgstr "Unbenutzte Hintergründe freigeben nach %2i:%02i:%02i"
 
 # src/settings.c:3123
-#: src/backgrounds.c:2003
+#: src/backgrounds.c:2005
 msgid "Use background image"
 msgstr "Hintergrundbild verwenden"
 
 # src/settings.c:3145
-#: src/backgrounds.c:2007
+#: src/backgrounds.c:2009
 msgid "Keep aspect on scale"
 msgstr "Proportionen beim Skalieren beibehalten"
 
 # src/settings.c:3167
-#: src/backgrounds.c:2011
+#: src/backgrounds.c:2013
 msgid "Tile image across background"
 msgstr "Hintergrund damit kacheln"
 
 # src/settings.c:3081
-#: src/backgrounds.c:2020
+#: src/backgrounds.c:2022
 msgid "Move to Front\n"
 msgstr "An Anfang stellen\n"
 
 # src/settings.c:3088
-#: src/backgrounds.c:2025
+#: src/backgrounds.c:2027
 msgid "Duplicate\n"
 msgstr "Duplizieren\n"
 
 # src/settings.c:3094
-#: src/backgrounds.c:2029
+#: src/backgrounds.c:2031
 msgid "Unlist\n"
 msgstr "Aus Liste entfernen\n"
 
 # src/settings.c:3100
-#: src/backgrounds.c:2034
+#: src/backgrounds.c:2036
 msgid "Delete File\n"
 msgstr "Datei löschen\n"
 
 # src/settings.c:3183
-#: src/backgrounds.c:2045
+#: src/backgrounds.c:2047
 msgid ""
 "Background\n"
 "Image\n"
@@ -292,71 +292,71 @@ msgstr ""
 "-ausrichtung\n"
 
 # src/settings.c:3070
-#: src/backgrounds.c:2102
+#: src/backgrounds.c:2104
 msgid "BG Colour\n"
 msgstr "Hintergrundfarbe\n"
 
 # src/settings.c:3109
-#: src/backgrounds.c:2107
+#: src/backgrounds.c:2109
 msgid "Red:\n"
 msgstr "Rot:\n"
 
 # src/settings.c:3131
-#: src/backgrounds.c:2118
+#: src/backgrounds.c:2120
 msgid "Green:\n"
 msgstr "Grün:\n"
 
 # src/settings.c:3153
-#: src/backgrounds.c:2129
+#: src/backgrounds.c:2131
 msgid "Blue:\n"
 msgstr "Blau:\n"
 
 # src/settings.c:3328
-#: src/backgrounds.c:2162
+#: src/backgrounds.c:2164
 msgid "Pre-scan BG's"
 msgstr "Hintergründe überfliegen"
 
 # src/settings.c:3338
-#: src/backgrounds.c:2170
+#: src/backgrounds.c:2172
 msgid "Sort by File"
 msgstr "Nach Datei sortieren"
 
 # src/settings.c:3344
-#: src/backgrounds.c:2175
+#: src/backgrounds.c:2177
 msgid "Sort by Attr."
 msgstr "Nach Attr. sortieren"
 
 # src/settings.c:3350
-#: src/backgrounds.c:2181
+#: src/backgrounds.c:2183
 msgid "Sort by Image"
 msgstr "Nach Bild sortieren"
 
 # src/settings.c:3264
-#: src/backgrounds.c:2201
+#: src/backgrounds.c:2203
 msgid "Use dithering in Hi-Colour"
 msgstr "In High Color rastern"
 
 # src/settings.c:3271
-#: src/backgrounds.c:2205
+#: src/backgrounds.c:2207
 msgid "Background overrides theme"
 msgstr "Hintergrund hat Vorrang vor Thema"
 
-#: src/backgrounds.c:2210
+#: src/backgrounds.c:2212
 msgid "Enable background transparency compatibility mode"
 msgstr "Verwende Kompatibilitätsmodus für Pseudodurchsichtigkeit"
 
 # src/settings.c:2526 src/settings.c:2528
-#: src/backgrounds.c:2234 src/mod-trans.c:204
+#: src/backgrounds.c:2236 src/mod-trans.c:204
 msgid "Background"
 msgstr "Hintergrund"
 
 # src/settings.c:3044
-#: src/backgrounds.c:2235
+#: src/backgrounds.c:2237
 msgid "Desktop Background Settings"
 msgstr "Hintergrundeinstellungen"
 
 # src/settings.c:3044
-#: src/backgrounds.c:2238
+#: src/backgrounds.c:2240
 msgid ""
 "Enlightenment Desktop\n"
 "Background Settings Dialog\n"
@@ -501,7 +501,7 @@ msgstr "Einstellungen ..."
 # src/settings.c:1524 src/settings.c:1612 src/settings.c:2014
 # src/settings.c:3407 src/settings.c:3752 src/settings.c:4050
 # src/settings.c:4188
-#: src/container.c:1190 src/dialog.c:856 src/pager.c:1013 config/strings.c:30
+#: src/container.c:1190 src/dialog.c:741 src/pager.c:1013 config/strings.c:30
 #: config/strings.c:124
 msgid "Close"
 msgstr "Schließen"
@@ -752,7 +752,7 @@ msgid "Right"
 msgstr "Rechts"
 
 # src/snaps.c:453
-#: src/desktops.c:2412 src/menus-misc.c:582
+#: src/desktops.c:2412 src/menus-misc.c:583
 msgid "Desks"
 msgstr "Desktops"
 
@@ -824,7 +824,7 @@ msgstr ""
 # src/settings.c:1461 src/settings.c:1523 src/settings.c:1611
 # src/settings.c:2013 src/settings.c:3406 src/settings.c:3751
 # src/settings.c:4049 src/settings.c:4187 src/snaps.c:548
-#: src/dialog.c:849
+#: src/dialog.c:734
 msgid "Apply"
 msgstr "Übernehmen"
 
@@ -1174,7 +1174,7 @@ msgid "Swap Window Locations"
 msgstr "Fensterpositionen vertauschen"
 
 # src/menus.c:2044
-#: src/groups.c:1018 src/menus-misc.c:642 config/strings.c:140
+#: src/groups.c:1018 src/menus-misc.c:643 config/strings.c:140
 msgid "Groups"
 msgstr "Gruppen"
 
@@ -1438,43 +1438,43 @@ msgid "Magnifier"
 msgstr "Lupe"
 
 # src/theme.c:354
-#: src/menus-misc.c:454 config/strings.c:93 config/strings.c:115
+#: src/menus-misc.c:455 config/strings.c:93 config/strings.c:115
 msgid "Themes"
 msgstr "Themen"
 
 # src/snaps.c:437
-#: src/menus-misc.c:480
+#: src/menus-misc.c:481
 msgid "Border"
 msgstr "Rahmen"
 
 # src/snaps.c:485
-#: src/menus-misc.c:542
+#: src/menus-misc.c:543
 msgid "Window List"
 msgstr "Fensterliste"
 
 # src/menus.c:1947
-#: src/menus-misc.c:564
+#: src/menus-misc.c:565
 msgid "Go to this Desktop"
 msgstr "Zu diesem Desktop gehen"
 
 # src/menus.c:1964
-#: src/menus-misc.c:568 src/menus-misc.c:664
+#: src/menus-misc.c:569 src/menus-misc.c:665
 #, c-format
 msgid "Desktop %i"
 msgstr "Desktop %i"
 
 # src/menus.c:2027
-#: src/menus-misc.c:611
+#: src/menus-misc.c:612
 msgid "Show/Hide this group"
 msgstr "Diese Gruppe zeigen/verbergen"
 
 # src/menus.c:2031
-#: src/menus-misc.c:616
+#: src/menus-misc.c:617
 msgid "Iconify this group"
 msgstr "Diese Gruppe minimieren"
 
 # src/menus.c:2044
-#: src/menus-misc.c:627
+#: src/menus-misc.c:628
 #, c-format
 msgid "Group %i"
 msgstr "Gruppe %i"

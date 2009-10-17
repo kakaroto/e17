@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2009-10-02 17:52+0200\n"
+"POT-Creation-Date: 2009-10-17 09:41+0200\n"
 "PO-Revision-Date: 2000-01-04 23:15+0100\n"
 "Last-Translator: Adam Kisiel <kisiel@if.pw.edu.pl>\n"
 "Language-Team: Polshi <pl@li.org>\n"
@@ -33,7 +33,7 @@ msgid ""
 "Kim Woelders - kim@woelders.dk\n"
 msgstr ""
 
-#: src/aclass.c:211 src/backgrounds.c:236 src/borders.c:641 src/buttons.c:181
+#: src/aclass.c:211 src/backgrounds.c:236 src/borders.c:677 src/buttons.c:181
 #: src/cursors.c:131 src/iclass.c:338 src/tclass.c:113 src/tooltips.c:135
 #, c-format
 msgid "%u references remain\n"
@@ -159,7 +159,7 @@ msgstr "Wyjd¼ z Enlightenment"
 msgid "Attention !!!"
 msgstr "Uwaga !"
 
-#: src/alert.c:583 src/dialog.c:844 src/dialog.c:2032 src/events.c:87
+#: src/alert.c:583 src/dialog.c:729 src/dialog.c:1917 src/events.c:87
 #: src/setup.c:157 src/sound.c:310
 msgid "OK"
 msgstr "OK"
@@ -179,7 +179,7 @@ msgstr ""
 msgid "-NONE-"
 msgstr "-¯ADEN-"
 
-#: src/backgrounds.c:1691 src/backgrounds.c:1693
+#: src/backgrounds.c:1693 src/backgrounds.c:1695
 msgid ""
 "No\n"
 "Background"
@@ -187,40 +187,40 @@ msgstr ""
 "Ilo¶æ\n"
 "t³o"
 
-#: src/backgrounds.c:1787 src/backgrounds.c:2217
+#: src/backgrounds.c:1789 src/backgrounds.c:2219
 #, c-format
 msgid "Unused backgrounds freed after %2i:%02i:%02i"
 msgstr "Usuwanie nie uzywanych plików t³a po %2i:%02i:%02i"
 
-#: src/backgrounds.c:2003
+#: src/backgrounds.c:2005
 msgid "Use background image"
 msgstr "U¿yj obrazka jako t³a"
 
-#: src/backgrounds.c:2007
+#: src/backgrounds.c:2009
 msgid "Keep aspect on scale"
 msgstr "Zachowaj proporcje przy skalowaniu"
 
-#: src/backgrounds.c:2011
+#: src/backgrounds.c:2013
 msgid "Tile image across background"
 msgstr "Utwórz mozaikê z obrazka"
 
-#: src/backgrounds.c:2020
+#: src/backgrounds.c:2022
 msgid "Move to Front\n"
 msgstr "Przesuñ na przód\n"
 
-#: src/backgrounds.c:2025
+#: src/backgrounds.c:2027
 msgid "Duplicate\n"
 msgstr "Powiel\n"
 
-#: src/backgrounds.c:2029
+#: src/backgrounds.c:2031
 msgid "Unlist\n"
 msgstr "Usuñ z listy\n"
 
-#: src/backgrounds.c:2034
+#: src/backgrounds.c:2036
 msgid "Delete File\n"
 msgstr "Skasuj plik\n"
 
-#: src/backgrounds.c:2045
+#: src/backgrounds.c:2047
 msgid ""
 "Background\n"
 "Image\n"
@@ -234,62 +234,62 @@ msgstr ""
 "Obrazka\n"
 "t³a\n"
 
-#: src/backgrounds.c:2102
+#: src/backgrounds.c:2104
 msgid "BG Colour\n"
 msgstr "Kolor t³a\n"
 
-#: src/backgrounds.c:2107
+#: src/backgrounds.c:2109
 msgid "Red:\n"
 msgstr "Czerwony  :\n"
 
-#: src/backgrounds.c:2118
+#: src/backgrounds.c:2120
 msgid "Green:\n"
 msgstr "Zielony   :\n"
 
-#: src/backgrounds.c:2129
+#: src/backgrounds.c:2131
 msgid "Blue:\n"
 msgstr "Niebieski :\n"
 
-#: src/backgrounds.c:2162
+#: src/backgrounds.c:2164
 msgid "Pre-scan BG's"
 msgstr "Pre-skanowanie obrazków t³a"
 
-#: src/backgrounds.c:2170
+#: src/backgrounds.c:2172
 msgid "Sort by File"
 msgstr "Sortuj wed³ug pliku"
 
-#: src/backgrounds.c:2175
+#: src/backgrounds.c:2177
 msgid "Sort by Attr."
 msgstr "Sortuj wed³ug atrybutów"
 
-#: src/backgrounds.c:2181
+#: src/backgrounds.c:2183
 msgid "Sort by Image"
 msgstr "Sortuj wed³ug obrazka"
 
-#: src/backgrounds.c:2201
+#: src/backgrounds.c:2203
 msgid "Use dithering in Hi-Colour"
 msgstr "U¿ywaj ditheringu w trybie Hi-Color"
 
-#: src/backgrounds.c:2205
+#: src/backgrounds.c:2207
 msgid "Background overrides theme"
 msgstr "Ustawienia t³a nadrzêdne nad ustawieniami wystroju"
 
-#: src/backgrounds.c:2210
+#: src/backgrounds.c:2212
 msgid "Enable background transparency compatibility mode"
 msgstr ""
 
-#: src/backgrounds.c:2234 src/mod-trans.c:204
+#: src/backgrounds.c:2236 src/mod-trans.c:204
 #, fuzzy
 msgid "Background"
 msgstr ""
 "Ilo¶æ\n"
 "t³o"
 
-#: src/backgrounds.c:2235
+#: src/backgrounds.c:2237
 msgid "Desktop Background Settings"
 msgstr "Ustawienia T³a Pulpitu"
 
-#: src/backgrounds.c:2238
+#: src/backgrounds.c:2240
 msgid ""
 "Enlightenment Desktop\n"
 "Background Settings Dialog\n"
@@ -408,7 +408,7 @@ msgstr "Uruchamianie Enlightenment..."
 msgid "Settings..."
 msgstr "Ustawienia Aktywacji"
 
-#: src/container.c:1190 src/dialog.c:856 src/pager.c:1013 config/strings.c:30
+#: src/container.c:1190 src/dialog.c:741 src/pager.c:1013 config/strings.c:30
 #: config/strings.c:124
 msgid "Close"
 msgstr "Zamknij"
@@ -620,7 +620,7 @@ msgstr "Lewo"
 msgid "Right"
 msgstr "Prawo"
 
-#: src/desktops.c:2412 src/menus-misc.c:582
+#: src/desktops.c:2412 src/menus-misc.c:583
 #, fuzzy
 msgid "Desks"
 msgstr "Pulpit"
@@ -681,7 +681,7 @@ msgstr ""
 "Okno ustawieñ Wirtualnego Biurka\n"
 "Enlightenment\n"
 
-#: src/dialog.c:849
+#: src/dialog.c:734
 msgid "Apply"
 msgstr "Zastosuj"
 
@@ -984,7 +984,7 @@ msgstr " Ustawienia globalne: "
 msgid "Swap Window Locations"
 msgstr "Zamiana po³o¿eñ okien"
 
-#: src/groups.c:1018 src/menus-misc.c:642 config/strings.c:140
+#: src/groups.c:1018 src/menus-misc.c:643 config/strings.c:140
 #, fuzzy
 msgid "Groups"
 msgstr "Grupa %i"
@@ -1234,40 +1234,40 @@ msgstr ""
 msgid "Magnifier"
 msgstr ""
 
-#: src/menus-misc.c:454 config/strings.c:93 config/strings.c:115
+#: src/menus-misc.c:455 config/strings.c:93 config/strings.c:115
 #, fuzzy
 msgid "Themes"
 msgstr "Z³y wystrój"
 
-#: src/menus-misc.c:480
+#: src/menus-misc.c:481
 #, fuzzy
 msgid "Border"
 msgstr "Styl Obramowania"
 
-#: src/menus-misc.c:542
+#: src/menus-misc.c:543
 #, fuzzy
 msgid "Window List"
 msgstr "Pomijanie w Li¶cie Okien"
 
-#: src/menus-misc.c:564
+#: src/menus-misc.c:565
 #, fuzzy
 msgid "Go to this Desktop"
 msgstr "Przejd¼ do tego Pulpitu"
 
-#: src/menus-misc.c:568 src/menus-misc.c:664
+#: src/menus-misc.c:569 src/menus-misc.c:665
 #, c-format
 msgid "Desktop %i"
 msgstr "Pulpit %i"
 
-#: src/menus-misc.c:611
+#: src/menus-misc.c:612
 msgid "Show/Hide this group"
 msgstr "Poka¿/Ukryj t± grupê"
 
-#: src/menus-misc.c:616
+#: src/menus-misc.c:617
 msgid "Iconify this group"
 msgstr "Zwiñ t± grupê do ikony"
 
-#: src/menus-misc.c:627
+#: src/menus-misc.c:628
 #, c-format
 msgid "Group %i"
 msgstr "Grupa %i"
