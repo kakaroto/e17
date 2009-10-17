@@ -1145,7 +1145,6 @@ ITApply(Win win, ImageClass * ic, ImageState * is,
 		       GC                  gc;
 
 		       gc = EXCreateGC(WinGetXwin(win), 0, NULL);
-		       Eprintf("%s: bevel=%d\n", __func__, is->bevelstyle);
 		       ImagestateDrawBevel(is, pmap, gc, 0, 0, w, h);
 		       EXFreeGC(gc);
 		    }
