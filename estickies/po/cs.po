@@ -5,8 +5,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: estickies\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2009-10-17 15:07+0200\n"
-"PO-Revision-Date: 2009-10-17 15:31+0100\n"
+"POT-Creation-Date: 2009-10-17 19:46+0200\n"
+"PO-Revision-Date: 2009-10-17 19:50+0100\n"
 "Last-Translator: quaker66 <quaker66@gmail.com>\n"
 "Language-Team: Czech <quaker66@gmail.com>\n"
 "MIME-Version: 1.0\n"
@@ -38,9 +38,98 @@ msgid "<b>control-n:</b> create a new note<br><b>control-q:</b> quit application
 msgstr "<b>control-n:</b> vytvořit novou poznámku<br><b>control-q:</b> ukončit program<br><b>control-c:</b> zkopírovat vybraný text<br><b>control-x:</b> vystřihnout vybraný text<br><b>control-v:</b> vložit text ze schránky<br>"
 
 #: ../src/bin/about.c:119
-#: ../src/bin/theme_chooser.c:174
+#: ../src/bin/config_gui.c:173
 msgid "Close"
 msgstr "Zavřít"
+
+#: ../src/bin/conf.c:86
+#: ../src/bin/conf.c:97
+msgid "Cant create config path!"
+msgstr "Nemůžu vytvořit cestu pro nastavení!"
+
+#: ../src/bin/conf.c:192
+msgid "Cant open configuration file! Using program defaults."
+msgstr "Nemůžu otevřít konfigurační soubor! Používám výchozí."
+
+#: ../src/bin/conf.c:200
+msgid "Incompatible configuration file! Creating new one."
+msgstr "Nekompatibilní konfigurační soubor! Vytvářím nový."
+
+#: ../src/bin/conf.c:212
+msgid "Your version / configuration of E-Stickies is not valid!"
+msgstr "Vaše verze / konfigurace E-Stickies je neplatná!"
+
+#: ../src/bin/conf.c:250
+msgid "Problem saving config!"
+msgstr "Nemůžu uložit nastavení!"
+
+#: ../src/bin/conf.c:263
+msgid "Problem saving config/stickies!"
+msgstr "Nemůžu uložit config/stickies!"
+
+#: ../src/bin/conf.c:267
+msgid "Problem saving config/theme!"
+msgstr "Nemůžu uložit config/theme!"
+
+#: ../src/bin/plugin.c:26
+msgid ""
+"You called _e_plugin_init().\n"
+"Plugin system is experimental - not done for now!\n"
+"Your estickies are compiled without experimental code.\n"
+"If you want to try it, run configure with --enable-experimental."
+msgstr ""
+"Zavolal(a) jste _e_plugin_init().\n"
+"Systém pluginů je experimentální - nehotový!\n"
+"Vaše estickies jsou zkompilovány bez experimentálního kódu.\n"
+"Pokud jej chcete zkusit, pusťte configure with --enable-experimental."
+
+#: ../src/bin/plugin.c:47
+msgid ""
+"You called _e_plugin_shutdown().\n"
+"Plugin system is experimental - not done for now!\n"
+"Your estickies are compiled without experimental code.\n"
+"If you want to try it, run configure with --enable-experimental."
+msgstr ""
+"Zavolal(a) jste _e_plugin_shutdown().\n"
+"Systém pluginů je experimentální - nehotový!\n"
+"Vaše estickies jsou zkompilovány bez experimentálního kódu.\n"
+"Pokud jej chcete zkusit, pusťte configure with --enable-experimental."
+
+#: ../src/bin/plugin.c:70
+msgid ""
+"You called _e_plugin_load().\n"
+"Plugin system is experimental - not done for now!\n"
+"Your estickies are compiled without experimental code.\n"
+"If you want to try it, run configure with --enable-experimental."
+msgstr ""
+"Zavolal(a) jste _e_plugin_load().\n"
+"Systém pluginů je experimentální - nehotový!\n"
+"Vaše estickies jsou zkompilovány bez experimentálního kódu.\n"
+"Pokud jej chcete zkusit, pusťte configure with --enable-experimental."
+
+#: ../src/bin/plugin.c:91
+msgid ""
+"You called _e_plugin_unload().\n"
+"Plugin system is experimental - not done for now!\n"
+"Your estickies are compiled without experimental code.\n"
+"If you want to try it, run configure with --enable-experimental."
+msgstr ""
+"Zavolal(a) jste _e_plugin_unload().\n"
+"Systém pluginů je experimentální - nehotový!\n"
+"Vaše estickies jsou zkompilovány bez experimentálního kódu.\n"
+"Pokud jej chcete zkusit, pusťte configure with --enable-experimental."
+
+#: ../src/bin/plugin.c:111
+msgid ""
+"You called _e_plugin_unload_from_ptr().\n"
+"Plugin system is experimental - not done for now!\n"
+"Your estickies are compiled without experimental code.\n"
+"If you want to try it, run configure with --enable-experimental."
+msgstr ""
+"Zavolal(a) jste _e_plugin_unload_from_ptr().\n"
+"Systém pluginů je experimentální - nehotový!\n"
+"Vaše estickies jsou zkompilovány bez experimentálního kódu.\n"
+"Pokud jej chcete zkusit, pusťte configure with --enable-experimental."
 
 #: ../src/bin/stickies.c:459
 msgid "New"
@@ -59,7 +148,7 @@ msgid "Delete"
 msgstr "Smazat"
 
 #: ../src/bin/stickies.c:463
-#: ../src/bin/theme_chooser.c:112
+#: ../src/bin/config_gui.c:111
 msgid "Options"
 msgstr "Volby"
 
@@ -95,6 +184,10 @@ msgstr "Ne"
 msgid "Yes"
 msgstr "Ano"
 
+#: ../src/bin/stickies.c:664
+msgid "return!"
+msgstr "návrat!"
+
 #. save only current sticky
 #: ../src/bin/stickies.c:675
 #: ../src/bin/stickies.c:684
@@ -106,31 +199,35 @@ msgstr ""
 "Poznámka %d\n"
 "=========================\n"
 
-#: ../src/bin/theme_chooser.c:43
+#: ../src/bin/stickies.c:770
+msgid "Cant find home directory!"
+msgstr "Nemůžu najít domovský adresář!"
+
+#: ../src/bin/config_gui.c:42
 msgid "Estickies - Configuration"
 msgstr "Estickies - Nastavení"
 
-#: ../src/bin/theme_chooser.c:125
+#: ../src/bin/config_gui.c:124
 msgid "Apply to this sticky only"
 msgstr "Použít jen pro tuto poznámku"
 
-#: ../src/bin/theme_chooser.c:133
+#: ../src/bin/config_gui.c:132
 msgid "Apply to all stickies"
 msgstr "Použít pro všechny poznámky"
 
-#: ../src/bin/theme_chooser.c:141
+#: ../src/bin/config_gui.c:140
 msgid "Make this my default theme"
 msgstr "Použít jako výchozí téma"
 
-#: ../src/bin/theme_chooser.c:148
+#: ../src/bin/config_gui.c:147
 msgid "Use composite extension"
 msgstr "Použít Composite rozšíření"
 
-#: ../src/bin/theme_chooser.c:162
+#: ../src/bin/config_gui.c:161
 msgid "OK"
 msgstr "OK"
 
-#: ../src/bin/theme_chooser.c:168
+#: ../src/bin/config_gui.c:167
 msgid "Apply"
 msgstr "Použít"
 

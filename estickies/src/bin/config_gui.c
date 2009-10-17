@@ -25,17 +25,16 @@ static void _e_theme_apply_now(E_Sticky *s);
 Eina_Bool
 _e_sticky_exists(E_Sticky *s)
 {
-   if(eina_list_data_find(ss->stickies, s))
-     return EINA_TRUE;
+   if (eina_list_data_find(ss->stickies, s)) return EINA_TRUE;
    return EINA_FALSE;
 }
-    
+
 void
 _e_theme_chooser_show(E_Sticky *s)
 {
    Eina_List *themes;
    char *theme;
-   
+
    Evas_Object *background, *ok_button, *apply_button, *cancel_button, *button_hbox, *option_vbox, *frame, *button, *rdg, *vbox, *hbox, *ic;
    Elm_List_Item *row;
 
@@ -63,7 +62,7 @@ _e_theme_chooser_show(E_Sticky *s)
    evas_object_size_hint_align_set(hbox, -1.0, -1.0);
    elm_box_pack_end(vbox, hbox);
    evas_object_show(hbox);
-   
+
    /* the preview, an image */
    preview = elm_image_add(win);
    snprintf(buf, sizeof(buf), "%s/images/preview_bg.png", PACKAGE_DATA_DIR);
@@ -73,7 +72,7 @@ _e_theme_chooser_show(E_Sticky *s)
    evas_object_size_hint_weight_set(preview, 1.0, 1.0);
    evas_object_size_hint_align_set(preview, -1.0, -1.0);
    evas_object_show(preview);
-      
+
    /* tree to hold the thumbs */
    thumbs = elm_list_add(win);
    evas_object_size_hint_weight_set(thumbs, 1.0, 1.0);
@@ -96,7 +95,7 @@ _e_theme_chooser_show(E_Sticky *s)
 	elm_icon_file_set(ic, buf, "preview");
 
 	row = elm_list_item_append(thumbs, theme_no_ext, ic, NULL, _e_theme_chooser_item_selected_cb, s);
-	if(i == 0)
+	if (i == 0)
 	  elm_list_item_selected_set(row, 1);
 	++i;
 	E_FREE(theme_no_ext);
@@ -119,7 +118,7 @@ _e_theme_chooser_show(E_Sticky *s)
    elm_box_horizontal_set(option_vbox, 0);
    elm_frame_content_set(frame, option_vbox);
    evas_object_show(option_vbox);
-   
+
    /* check buttons for various options */
    button = elm_radio_add(win);
    elm_radio_label_set(button, _("Apply to this sticky only"));
@@ -156,7 +155,7 @@ _e_theme_chooser_show(E_Sticky *s)
    elm_box_horizontal_set(button_hbox, 1);
    elm_box_pack_end(vbox, button_hbox);
    evas_object_show(button_hbox);
-   
+
    /* the buttons themselves */
    ok_button = elm_button_add(win);
    elm_button_label_set(ok_button, _("OK"));
@@ -218,7 +217,7 @@ static void
 _e_theme_ok_cb(void *data, Evas_Object *obj, void *event_info)
 { 
    E_Sticky *s;
-   
+
    s = data;
    _e_theme_apply_now(s);
    evas_object_del(win);
@@ -228,8 +227,8 @@ static void
 _e_theme_apply_cb(void *data, Evas_Object *obj, void *event_info)
 { 
    E_Sticky *s;
-   
-   s = data;   
+
+   s = data;
    _e_theme_apply_now(s);
 }
 
@@ -247,21 +246,19 @@ _e_theme_apply_now(E_Sticky *s)
    Elm_List_Item *item;
    char *icol_string;
 
-   if(!_e_sticky_exists(s))
-     return;
+   if (!_e_sticky_exists(s)) return;
 
    item = elm_list_selected_item_get(thumbs);
-   if(!item)
-     return;
+   if (!item) return;
 
    icol_string = elm_list_item_label_get(item);
 
-   if(_e_theme_apply == STICKY_ONLY)
+   if (_e_theme_apply == STICKY_ONLY)
      _e_sticky_theme_apply(s, ecore_file_file_get(icol_string));
-   else if(_e_theme_apply == STICKIES_ALL)
+   else if (_e_theme_apply == STICKIES_ALL)
      _e_sticky_theme_apply_all(ecore_file_file_get(icol_string));
 
-   if(_e_theme_default)
+   if (_e_theme_default)
      {
 	E_FREE(ss->theme);
 	ss->theme = strdup(ecore_file_file_get(icol_string));

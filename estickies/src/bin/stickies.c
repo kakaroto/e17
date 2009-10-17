@@ -128,7 +128,7 @@ _e_sticky_mouse_down_cb(void *data, Evas *e, Evas_Object *obj, void *event_info)
    Evas_Event_Mouse_Down *ev = event_info;
 
    _e_sticky_mouse_x = ev->canvas.x;
-   _e_sticky_mouse_y = ev->canvas.y;   
+   _e_sticky_mouse_y = ev->canvas.y;
 
    if (ev->button == 1) _e_sticky_is_moving = EINA_TRUE;
 }
@@ -309,7 +309,7 @@ _e_sticky_destroy(E_Sticky *s)
 void
 _e_sticky_delete(E_Sticky *s)
 {
-   if(eina_list_count(ss->stickies) == 1)
+   if (eina_list_count(ss->stickies) == 1)
      {
 	ss->stickies = eina_list_remove(ss->stickies, s);
 	evas_object_del(s->win);
@@ -321,7 +321,7 @@ _e_sticky_delete(E_Sticky *s)
    ss->stickies = eina_list_remove(ss->stickies, s);
    evas_object_del(s->win);
 
-   if(!ss->stickies || eina_list_count(ss->stickies) == 0)
+   if (!ss->stickies || eina_list_count(ss->stickies) == 0)
      elm_exit();
 }
 
@@ -505,10 +505,10 @@ _e_sticky_export_to(E_Sticky *s)
 
    if (!fd)
      {
-        fd = calloc(1, sizeof(E_Filedialog));
-        if (!fd) return;
+	fd = calloc(1, sizeof(E_Filedialog));
+	if (!fd) return;
 	fd->s = NULL;
-        fd->dia = NULL;
+	fd->dia = NULL;
      }
 
    fd->s = s;
@@ -516,12 +516,12 @@ _e_sticky_export_to(E_Sticky *s)
    // Don't open more then one window
    if (fd->dia)
      {
-        evas_object_show(fd->dia);
+	evas_object_show(fd->dia);
 	evas_object_show(background);
-        evas_object_show(vbox);
-        evas_object_show(fd->filechooser);
-        evas_object_show(fd->export_mode);
-        return;
+	evas_object_show(vbox);
+	evas_object_show(fd->filechooser);
+	evas_object_show(fd->export_mode);
+	return;
      }
    //////////
    fd->dia = elm_win_add(NULL, "estickies-export", ELM_WIN_BASIC);
@@ -661,7 +661,7 @@ _e_sticky_export_cb(void *data)
    
    if (!basename || !s) 
      { 
-	WARN("return!");
+	WARN(_("return!"));
 	return;
      }
 
@@ -680,7 +680,7 @@ _e_sticky_export_cb(void *data)
      {
 	/* save all stickies */
 	EINA_LIST_FOREACH(ss->stickies, l, s)
-	  {	     
+	  {
 	     fprintf(fh, _("Sticky %d\n=========================\n"), c);
 	     text = strdup(elm_entry_markup_to_utf8(elm_entry_entry_get(s->textentry)));
 	     fprintf (fh, "%s\n\n", text);
@@ -701,7 +701,7 @@ _e_sticky_export_fd_cb(void *data, Evas_Object *obj, void *event_info)
 void
 _e_sticky_show(E_Sticky *s)
 {
-   if(s && s->win)
+   if (s && s->win)
      {
 	evas_object_show(s->win);
 	evas_object_show(s->background);
@@ -767,7 +767,7 @@ elm_main(int argc, char **argv)
    home = getenv("HOME");
    if (!home)
      {
-	ERROR("Cant find home directory!");
+	ERROR(_("Cant find home directory!"));
 	return 1;
      }
 

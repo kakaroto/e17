@@ -83,7 +83,7 @@ _e_config_init(void)
      {
 	if (ecore_file_exists(buf) || !ecore_file_mkdir(buf))
 	  {
-	     ERROR("Cant create config path!");
+	     ERROR(_("Cant create config path!"));
 	     return 0;
 	  }
      }
@@ -94,7 +94,7 @@ _e_config_init(void)
      {
 	if (ecore_file_exists(buf) || !ecore_file_mkdir(buf))
 	  {
-	     ERROR("Cant create config path!");
+	     ERROR(_("Cant create config path!"));
 	     return 0;
 	  }
      }
@@ -142,22 +142,22 @@ _e_config_version_parse(char *version)
  */
 int
 _e_config_version_compare(E_Config_Version *v1, E_Config_Version *v2)
-{         
+{
    if (v1->major > v2->major)
      return 1;
    else if (v1->major < v2->major)
      return -1;
-   
+
    if (v1->minor > v2->minor)
      return 1;
    else if (v1->minor < v2->minor)
      return -1;
-   
+
    if (v1->patch > v2->patch)
      return 1;
    else if (v1->patch < v2->patch)
      return -1;
-   
+
    return 0;
 }
 
@@ -189,7 +189,7 @@ _e_config_load(E_Stickies *ss)
    ef = eet_open(buf, EET_FILE_MODE_READ);
    if (!ef)
      {
-	ERROR("Cant open configuration file! Using program defaults.");
+	ERROR(_("Cant open configuration file! Using program defaults."));
 	return 0;
      }
 
@@ -197,7 +197,7 @@ _e_config_load(E_Stickies *ss)
    ss->version = eet_data_read(ef, _e_config_version_edd, "config/version");
    if (!ss->version)
      {
-	ERROR("Incompatible configuration file! Creating new one.");
+	ERROR(_("Incompatible configuration file! Creating new one."));
 	eet_close(ef);
 	_e_config_defaults_apply(ss);
 	return 0;
@@ -207,9 +207,9 @@ _e_config_load(E_Stickies *ss)
 	E_Config_Version *v;
 	
 	v = _e_config_version_parse(VERSION);
-	if(_e_config_version_compare(v, ss->version) != 0)
+	if (_e_config_version_compare(v, ss->version) != 0)
 	  {
-	     ERROR("Your version / configuration of E-Stickies is not valid!");
+	     ERROR(_("Your version / configuration of E-Stickies is not valid!"));
 	     eet_close(ef);	     
 	     _e_config_defaults_apply(ss);	     
 	     return 0;
@@ -247,7 +247,7 @@ _e_config_save(E_Stickies *ss)
    if (!ef) return 0;
 
    ret = eet_data_write(ef, _e_config_version_edd, "config/version", ss->version, 1);
-   if (!ret) DEBUG("Problem saving config!");
+   if (!ret) DEBUG(_("Problem saving config!"));
 
    EINA_LIST_FOREACH(ss->stickies, l, s)
      {
@@ -260,12 +260,12 @@ _e_config_save(E_Stickies *ss)
    stickies->composite = ss->composite;
 
    ret = eet_data_write(ef, _e_config_stickies_edd, "config/stickies", stickies, 1);
-   if (!ret) DEBUG("Problem saving config/stickies!");
+   if (!ret) DEBUG(_("Problem saving config/stickies!"));
 
    E_FREE(stickies);
 
-   if (!eet_write(ef, "config/theme", ss->theme, strlen(ss->theme) + 1, 1)) DEBUG("Problem saving config/theme!");
-      
+   if (!eet_write(ef, "config/theme", ss->theme, strlen(ss->theme) + 1, 1)) DEBUG(_("Problem saving config/theme!"));
+
    eet_close(ef);
 
    return ret;

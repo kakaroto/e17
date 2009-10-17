@@ -14,10 +14,10 @@
 #include "../../config.h"
 #define _(x) gettext(x)
 
-#define ERROR(string) fprintf(stderr, "[estickies error]: _("#string")\n")
-#define WARN(string) printf("[estickies warning]: _("#string")\n")
-#define INFO(string) printf("[estickies info]: _("#string")\n")
-#define DEBUG(string) printf("[estickies debug]: _("#string")\n")
+#define ERROR(string) fprintf(stderr, "[estickies error]: "#string"\n")
+#define WARN(string) printf("[estickies warning]: "#string"\n")
+#define INFO(string) printf("[estickies info]: "#string"\n")
+#define DEBUG(string) printf("[estickies debug]: "#string"\n")
 
 #define E_CONTAINS(x, y, w, h, xx, yy, ww, hh) (((xx) >= (x)) && (((x) + (w)) >= ((xx) + (ww))) && ((yy) >= (y)) && (((y) + (h)) >= ((yy) + (hh))))
 #define E_INTERSECTS(x, y, w, h, xx, yy, ww, hh) (((x) < ((xx) + (ww))) && ((y) < ((yy) + (hh))) && (((x) + (w)) > (xx)) && (((y) + (h)) > (yy)))
@@ -41,7 +41,7 @@ typedef struct _E_Sticky E_Sticky;
 typedef struct _E_Stickies E_Stickies;
 
 #include "conf.h"
-#include "theme_chooser.h"
+#include "config_gui.h"
 #include "about.h"
 
 struct _E_Config_Sticky

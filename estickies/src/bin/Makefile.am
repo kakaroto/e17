@@ -12,14 +12,14 @@ bin_PROGRAMS = estickies
 estickies_INCLUDES = \
 stickies.h \
 conf.h \
-theme_chooser.h \
+config_gui.h \
 about.h \
 plugin.h
 
 estickies_SOURCES = \
 stickies.c \
 conf.c \
-theme_chooser.c \
+config_gui.c \
 about.c \
 plugin.c \
 $(estickies_INCLUDES)
