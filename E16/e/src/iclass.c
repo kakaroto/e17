@@ -1132,7 +1132,8 @@ ITApply(Win win, ImageClass * ic, ImageState * is,
 	  {
 	     Pixmap              pmap = pmm.pmap;
 
-	     if ((ts && text) || (is->bevelstyle != BEVEL_NONE))
+	     if ((ts && text) || (is->bevelstyle != BEVEL_NONE) ||
+		 (flags & ITA_BGPMAP))
 	       {
 		  if (pmm.type != 0)
 		    {
@@ -1152,7 +1153,8 @@ ITApply(Win win, ImageClass * ic, ImageState * is,
 		  if (ts && text)
 		     TextstateTextDraw(ts, win, pmap, text, 0, 0, w, h,
 				       &(ic->padding), 0,
-				       TextclassGetJustification(tc), flags);
+				       TextclassGetJustification(tc),
+				       flags & ITA_JUSTV);
 	       }
 
 	     /* Set window pixmap */
@@ -1193,7 +1195,8 @@ ITApply(Win win, ImageClass * ic, ImageState * is,
 	     if (ts && text)
 		TextstateTextDraw(ts, win, pmap, text, 0, 0, w, h,
 				  &(ic->padding), 0,
-				  TextclassGetJustification(tc), flags);
+				  TextclassGetJustification(tc),
+				  flags & ITA_JUSTV);
 	  }
      }
    EClearWindow(win);

@@ -31,6 +31,7 @@
 #include "grabs.h"
 #include "hints.h"
 #include "iclass.h"
+#include "icons.h"
 #include "snaps.h"
 #include "tclass.h"
 #include "timers.h"
@@ -78,6 +79,7 @@ BorderWinpartITclassApply(EWin * ewin, int i, int force)
    ImageState         *is;
    TextState          *ts;
    const char         *txt;
+   int                 flags;
 
    if (ewb->win == None)
       return;
@@ -93,6 +95,7 @@ BorderWinpartITclassApply(EWin * ewin, int i, int force)
 
    ts = NULL;
    txt = NULL;
+   flags = 0;
    switch (ewin->border->part[i].flags)
      {
      case FLAG_TITLE:
@@ -100,8 +103,10 @@ BorderWinpartITclassApply(EWin * ewin, int i, int force)
 	if (txt && ewin->border->part[i].tclass)
 	   ts = TextclassGetTextState(ewin->border->part[i].tclass, ewb->state,
 				      ewin->state.active, EoIsSticky(ewin));
+	flags = ITA_BGPMAP;
 	break;
      case FLAG_MINIICON:
+	flags = ITA_BGPMAP;
 	break;
      default:
 	break;
@@ -114,7 +119,38 @@ BorderWinpartITclassApply(EWin * ewin, int i, int force)
 
    ITApply(ewb->win, ewin->border->part[i].iclass, is,
 	   ewb->state, ewin->state.active, EoIsSticky(ewin),
-	   ST_BORDER, ewin->border->part[i].tclass, ts, txt, 1);
+	   ST_BORDER, ewin->border->part[i].tclass, ts, txt, flags);
+
+   if (ewin->border->part[i].flags == FLAG_MINIICON)
+     {
+	EImage             *im;
+
+	im = EwinIconImageGet(ewin, 16, Conf.warplist.icon_mode);
+	if (im)
+	  {
+	     Pixmap              pmap;
+	     EImageBorder       *pad;
+	     int                 x, y, w, h;
+
+	     x = y = 0;
+	     w = WinGetW(ewb->win);
+	     h = WinGetH(ewb->win);
+	     pad = ImageclassGetPadding(ewin->border->part[i].iclass);
+	     if (pad)
+	       {
+		  x += pad->left;
+		  y += pad->top;
+		  w -= pad->right;
+		  h -= pad->bottom;
+	       }
+	     pmap = EGetWindowBackgroundPixmap(ewb->win);
+	     EImageRenderOnDrawable(im, ewb->win, pmap,
+				    EIMAGE_BLEND | EIMAGE_ANTI_ALIAS,
+				    x, y, w, h);
+	     EImageFree(im);
+	     EClearWindow(ewb->win);
+	  }
+     }
 }
 
 static int

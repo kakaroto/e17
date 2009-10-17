@@ -69,6 +69,10 @@
 #define IC_FLAG_MAKE_MASK       0x02	/* Make mask */
 #define IC_FLAG_FULL_SIZE       0x04	/* Make full size pixmaps */
 
+/* ITApply flags */
+#define ITA_JUSTV               0x01	/* Justify text vertically */
+#define ITA_BGPMAP              0x02	/* Create window background pixmap */
+
 /* iclass.c */
 int                 ImageclassConfigLoad(FILE * fs);
 
