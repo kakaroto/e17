@@ -293,6 +293,7 @@ _e_sticky_new_show_append(void)
    E_Sticky *s = _e_sticky_new();
 
    ss->stickies = eina_list_append(ss->stickies, s);
+   _e_sticky_properties_set(s);
    _e_sticky_show(s);
 
    return s;
