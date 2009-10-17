@@ -23,8 +23,8 @@ _e_about_show()
      }
    
    win = elm_win_add(NULL, "estickies-about", ELM_WIN_BASIC);
-   elm_win_title_set(win, "About E Stickies");
-   evas_object_smart_callback_add(win, "delete-request", _about_destroy_cb, NULL);
+   elm_win_title_set(win, "E Stickies "VERSION);
+   evas_object_smart_callback_add(win, "delete,request", _about_destroy_cb, NULL);
    evas_object_show(win);
 
    background = elm_bg_add(win);
@@ -48,7 +48,7 @@ _e_about_show()
       
    /* Description */
    frame = elm_frame_add(win);
-   elm_frame_label_set(frame, "What is E Stickies?");
+   elm_frame_label_set(frame, _("What is E Stickies?"));
    evas_object_size_hint_weight_set(frame, 1.0, 1.0);
    evas_object_size_hint_align_set(frame, -1.0, -1.0);
    elm_box_pack_end(vbox, frame);
@@ -65,19 +65,13 @@ _e_about_show()
    evas_object_size_hint_weight_set(desctext, 1.0, 1.0);
    evas_object_size_hint_align_set(desctext, -1.0, -1.0);
    elm_entry_entry_set(desctext,
-			  "E Stickies is a sticky notes application that "
-			  "uses Elementary. It uses Elementary's runtime theming support "
-			  "to change the look and feel of the windows and "
-			  "buttons.<br>"
-			  "<p align=\"center\"><style effect=glow color1=#fa14 color2=#fe87>"
-			  "<b>"VERSION"</b>"
-			  "</style></p>");
+			  _("E Stickies is a sticky notes application that uses Elementary. It uses Elementary's runtime theming support to change the look and feel of the windows and buttons.<br>"));
    elm_scroller_content_set(scroller, desctext);
    evas_object_show(desctext);
    
    /* Authors */
    frame = elm_frame_add(win);
-   elm_frame_label_set(frame, "Authors");
+   elm_frame_label_set(frame, _("Authors"));
    evas_object_size_hint_weight_set(frame, 1.0, 1.0);
    evas_object_size_hint_align_set(frame, -1.0, -1.0);
    elm_box_pack_end(vbox, frame);
@@ -94,19 +88,13 @@ _e_about_show()
    evas_object_size_hint_weight_set(abouttext, 1.0, 1.0);
    evas_object_size_hint_align_set(abouttext, -1.0, -1.0);
    elm_entry_entry_set(abouttext,
-			  "<b>Code:</b><br>"
-			  "Daniel '<b>quaker</b>' Kolesa<br>"
-			  "<b>Old Etk version:</b><br>"
-			  "Hisham '<b>CodeWarrior</b>' Mardam Bey"
-			  "<br><br>"
-			  "<b>Themes:</b><br>"
-			  "Brian 'morlenxus' Miculcy");
+			  _("<b>Code:</b><br>Daniel '<b>quaker</b>' Kolesa<br><b>Old Etk version:</b><br>Hisham '<b>CodeWarrior</b>' Mardam Bey<br><br><b>Themes:</b><br>Brian 'morlenxus' Miculcy"));
    elm_scroller_content_set(scroller, abouttext);
    evas_object_show(abouttext);
    
    /* Help */
    frame = elm_frame_add(win);
-   elm_frame_label_set(frame, "Common shortcuts");
+   elm_frame_label_set(frame, _("Common shortcuts"));
    evas_object_size_hint_weight_set(frame, 1.0, 1.0);
    evas_object_size_hint_align_set(frame, -1.0, -1.0);
    elm_box_pack_end(vbox, frame);
@@ -123,16 +111,12 @@ _e_about_show()
    evas_object_size_hint_weight_set(helptext, 1.0, 1.0);
    evas_object_size_hint_align_set(helptext, -1.0, -1.0);
    elm_entry_entry_set(helptext,
-			  "<b>control-n:</b> create a new note<br>"
-			  "<b>control-q:</b> quit application<br>"
-			  "<b>control-c:</b> copy selected text<br>"
-			  "<b>control-x:</b> cut selected text<br>"
-			  "<b>control-v:</b> paste text from clipboard<br>");
+			  _("<b>control-n:</b> create a new note<br><b>control-q:</b> quit application<br><b>control-c:</b> copy selected text<br><b>control-x:</b> cut selected text<br><b>control-v:</b> paste text from clipboard<br>"));
    elm_scroller_content_set(scroller, helptext);
    evas_object_show(helptext);
 
    close_button = elm_button_add(win);
-   elm_button_label_set(close_button, "Close");
+   elm_button_label_set(close_button, _("Close"));
    evas_object_smart_callback_add(close_button, "clicked", _about_destroy_cb, win);
    elm_box_pack_end(vbox, close_button);
    evas_object_show(close_button);

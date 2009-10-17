@@ -3,13 +3,12 @@ Main stuff:
 - **** FIX BUGS!!!! ****
 - fix problem when you close options and show it again
 - rest of formatting // partly done
-- GETTEXT!
 
 Medium priority:
 
 - do documentation, implement its own public API.
 - write plugin system
-- fix estickies so it does not run only under X11
+- fix estickies so it does not run only under X11 - make it run on Windows.
 
 Nice to have:
 

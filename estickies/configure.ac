@@ -3,55 +3,38 @@ dnl Process this file with autoconf to produce a configure script.
 # get rid of that stupid cache mechanism
 rm -f config.cache
 
-AC_INIT(configure.ac)
+AC_INIT([estickies], [0.1.0], [quaker66@gmail.com])
 
-AC_CANONICAL_BUILD
-AC_CANONICAL_HOST
-AC_CANONICAL_TARGET
+AC_PREREQ([2.52])
+AC_CONFIG_SRCDIR([configure.ac])
+AC_CONFIG_MACRO_DIR([m4])
+AC_ISC_POSIX
 
-AM_INIT_AUTOMAKE(estickies, 0.1.0)
-
-AC_PREREQ(2.52)
-
+AM_INIT_AUTOMAKE(1.6 dist-bzip2)
 AM_CONFIG_HEADER(config.h)
 
-AC_ISC_POSIX
 AC_PROG_CC
 AM_PROG_CC_STDC
+AM_PROG_CC_C_O
 AC_HEADER_STDC
 AC_C_CONST
 AM_ENABLE_SHARED
 AM_PROG_LIBTOOL
-LIBS=""
 
-if test "x${exec_prefix}" = "xNONE"; then
-  if test "x${prefix}" = "xNONE"; then
-    bindir="${ac_default_prefix}/bin";
-  else
-    bindir="${prefix}/bin";
-  fi
+AM_WITH_DMALLOC
+AC_PROG_LN_S
+define([AC_LIBTOOL_LANG_CXX_CONFIG], [:])
+define([AC_LIBTOOL_LANG_GCJ_CONFIG], [:])
+define([AC_LIBTOOL_LANG_F77_CONFIG], [:])
+AC_PROG_LIBTOOL
+
+dnl Set PACKAGE_LOCALE_DIR in config.h.
+if test "x${prefix}" = "xNONE"; then
+  AC_DEFINE_UNQUOTED(PACKAGE_LOCALE_DIR, "${ac_default_prefix}/share/locale", [Locale-specific data directory])
 else
-  if test "x${prefix}" = "xNONE"; then
-    bindir="${ac_default_prefix}/bin";
-  else
-    bindir="${prefix}/bin";
-  fi
+  AC_DEFINE_UNQUOTED(PACKAGE_LOCALE_DIR, "${prefix}/share/locale", [Locale-specific data directory])
 fi
 
-if test "x${exec_prefix}" = "xNONE"; then
-  if test "x${prefix}" = "xNONE"; then
-    libdir="${ac_default_prefix}/lib";
-  else
-    libdir="${prefix}/lib";
-  fi
-else
-  if test "x${prefix}" = "xNONE"; then
-    libdir="${ac_default_prefix}/lib";
-  else
-    libdir="${prefix}/lib";
-  fi
-fi
-      
 dnl Set PACKAGE_DATA_DIR in config.h.
 if test "x${prefix}" = "xNONE"; then
   AC_DEFINE_UNQUOTED(PACKAGE_DATA_DIR, "${ac_default_prefix}/share/${PACKAGE}", [Shared Data Directory])
@@ -60,30 +43,22 @@ else
 fi
 
 dnl Set PACKAGE_BIN_DIR in config.h.
-if test "x${bindir}" = 'xNONE'; then
+if test "x${datadir}" = 'x${prefix}/bin'; then
   if test "x${prefix}" = "xNONE"; then
-    AC_DEFINE_UNQUOTED(PACKAGE_BIN_DIR, "${ac_default_prefix}/bin", [Installation Directory for User Executables])
+    AC_DEFINE_UNQUOTED(PACKAGE_BIN_DIR, "${ac_default_prefix}/bin", [Installation directory for user executables])
   else
-    AC_DEFINE_UNQUOTED(PACKAGE_BIN_DIR, "${prefix}/bin", [Installation Directory for User Executables])
+    AC_DEFINE_UNQUOTED(PACKAGE_BIN_DIR, "${prefix}/bin", [Installation directory for user executables])
   fi
 else
-  AC_DEFINE_UNQUOTED(PACKAGE_BIN_DIR, "${bindir}", [Installation Directory for User Executables])
-fi
-
-dnl Set PACKAGE_LIB_DIR in config.h.
-if test "x${libdir}" = 'xNONE'; then
-  if test "x${prefix}" = "xNONE"; then
-    AC_DEFINE_UNQUOTED(PACKAGE_LIB_DIR, "${ac_default_prefix}/lib", [Installation Directory for Libraries])
-  else
-    AC_DEFINE_UNQUOTED(PACKAGE_LIB_DIR, "${prefix}/lib", [Installation Directory for Libraries])
-  fi
-else
-  AC_DEFINE_UNQUOTED(PACKAGE_LIB_DIR, "${libdir}", [Installation Directory for Libraries])
+  AC_DEFINE_UNQUOTED(PACKAGE_BIN_DIR, "${bindir}", [Installation directory for user executables])
 fi
 
 dnl Set PACKAGE_SOURCE_DIR in config.h.
 packagesrcdir=`cd $srcdir && pwd`
-AC_DEFINE_UNQUOTED(PACKAGE_SOURCE_DIR, "${packagesrcdir}", [Source Code Directory])
+AC_DEFINE_UNQUOTED(PACKAGE_SOURCE_DIR, "${packagesrcdir}", [Source code directory])
+
+AM_GNU_GETTEXT([external])
+AM_GNU_GETTEXT_VERSION([0.12.1])
 
 PKG_CHECK_MODULES(ESTICKIES, [
   elementary >= 0.3.0.0
@@ -134,6 +109,7 @@ data/images/Makefile
 data/themes/Makefile
 data/themes/default/Makefile
 data/themes/default/images/Makefile
+po/Makefile.in
 ])
 
 echo

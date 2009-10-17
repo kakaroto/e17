@@ -1,0 +1,6 @@
+src/bin/about.c
+src/bin/conf.c
+src/bin/plugin.c
+src/bin/stickies.c
+src/bin/theme_chooser.c
+

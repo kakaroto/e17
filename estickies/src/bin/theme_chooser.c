@@ -40,8 +40,8 @@ _e_theme_chooser_show(E_Sticky *s)
    Elm_List_Item *row;
 
    win = elm_win_add(NULL, "estickies-themechooser", ELM_WIN_BASIC);
-   elm_win_title_set(win, "Estickies - Configuration");
-   evas_object_smart_callback_add(win, "delete-request", _e_theme_cancel_cb, NULL);
+   elm_win_title_set(win, _("Estickies - Configuration"));
+   evas_object_smart_callback_add(win, "delete,request", _e_theme_cancel_cb, NULL);
    evas_object_show(win);
 
    background = elm_bg_add(win);
@@ -109,7 +109,7 @@ _e_theme_chooser_show(E_Sticky *s)
 
    /* box to store the check buttons */
    frame = elm_frame_add(win);
-   elm_frame_label_set(frame, "Options");
+   elm_frame_label_set(frame, _("Options"));
    evas_object_size_hint_weight_set(frame, 1.0, 0.0);
    evas_object_size_hint_align_set(frame, -1.0, 0.0);
    elm_box_pack_end(vbox, frame);
@@ -122,7 +122,7 @@ _e_theme_chooser_show(E_Sticky *s)
    
    /* check buttons for various options */
    button = elm_radio_add(win);
-   elm_radio_label_set(button, "Apply to this sticky only");
+   elm_radio_label_set(button, _("Apply to this sticky only"));
    elm_radio_state_value_set(button, 1);
    evas_object_smart_callback_add(button, "changed", _e_theme_sticky_only_cb, NULL);
    elm_box_pack_end(option_vbox, button);
@@ -130,7 +130,7 @@ _e_theme_chooser_show(E_Sticky *s)
    evas_object_show(button);
 
    button = elm_radio_add(win);
-   elm_radio_label_set(button, "Apply to all stickies");
+   elm_radio_label_set(button, _("Apply to all stickies"));
    elm_radio_state_value_set(button, 0);
    elm_radio_group_add(button, rdg);
    evas_object_smart_callback_add(button, "changed", _e_theme_stickies_all_cb, NULL);
@@ -138,14 +138,14 @@ _e_theme_chooser_show(E_Sticky *s)
    evas_object_show(button);
 
    button = elm_check_add(win);
-   elm_check_label_set(button, "Make this my default theme");
+   elm_check_label_set(button, _("Make this my default theme"));
    elm_check_state_set(button, 0);
    evas_object_smart_callback_add(button, "changed", _e_theme_make_default_cb, NULL);
    elm_box_pack_end(option_vbox, button);
    evas_object_show(button);
 
    composite_check = elm_check_add(win);
-   elm_check_label_set(composite_check, "Use composite extension");
+   elm_check_label_set(composite_check, _("Use composite extension"));
    elm_check_state_set(composite_check, ss->composite);
    evas_object_smart_callback_add(composite_check, "changed", NULL, NULL);
    elm_box_pack_end(option_vbox, composite_check);
@@ -159,19 +159,19 @@ _e_theme_chooser_show(E_Sticky *s)
    
    /* the buttons themselves */
    ok_button = elm_button_add(win);
-   elm_button_label_set(ok_button, "OK");
+   elm_button_label_set(ok_button, _("OK"));
    evas_object_smart_callback_add(ok_button, "clicked", _e_theme_ok_cb, s);
    elm_box_pack_end(button_hbox, ok_button);
    evas_object_show(ok_button);
 
    apply_button = elm_button_add(win);
-   elm_button_label_set(apply_button, "Apply");
+   elm_button_label_set(apply_button, _("Apply"));
    evas_object_smart_callback_add(apply_button, "clicked", _e_theme_apply_cb, s);
    elm_box_pack_end(button_hbox, apply_button);
    evas_object_show(apply_button);
 
    cancel_button = elm_button_add(win);
-   elm_button_label_set(cancel_button, "Close");
+   elm_button_label_set(cancel_button, _("Close"));
    evas_object_smart_callback_add(cancel_button, "clicked", _e_theme_cancel_cb, s);
    elm_box_pack_end(button_hbox, cancel_button);
    evas_object_show(cancel_button);

@@ -378,7 +378,7 @@ _e_sticky_window_add(E_Sticky *s)
    elm_win_title_set(s->win, "estickies");
    elm_win_borderless_set(s->win, 1);
 
-   evas_object_smart_callback_add(s->win, "delete-request", _e_sticky_delete_event_cb, s);
+   evas_object_smart_callback_add(s->win, "delete,request", _e_sticky_delete_event_cb, s);
    ecore_event_handler_add(ECORE_X_EVENT_WINDOW_PROPERTY, _e_sticky_sticky_cb, s);
 
    evas_object_show(s->win);
@@ -456,13 +456,13 @@ _e_sticky_window_add(E_Sticky *s)
    evas_object_size_hint_weight_set(s->list, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(s->list, EVAS_HINT_FILL, EVAS_HINT_FILL);
 
-   elm_list_item_append(s->list, "New", NULL, NULL, _e_sticky_new_show_append_cb, NULL);
-   elm_list_item_append(s->list, "Save", NULL, NULL, _e_config_save_cb, ss);
-   elm_list_item_append(s->list, "Export To File", NULL, NULL, _e_sticky_export_to_cb, s);
-   elm_list_item_append(s->list, "Delete", NULL, NULL, _e_sticky_delete_list_dialog_cb, s);
-   elm_list_item_append(s->list, "Options", NULL, NULL, _e_theme_chooser_show_cb, s);
-   elm_list_item_append(s->list, "About", NULL, NULL, _e_about_show_cb, NULL);
-   elm_list_item_append(s->list, "Quit", NULL, NULL, _e_stickies_exit_cb, NULL);
+   elm_list_item_append(s->list, _("New"), NULL, NULL, _e_sticky_new_show_append_cb, NULL);
+   elm_list_item_append(s->list, _("Save"), NULL, NULL, _e_config_save_cb, ss);
+   elm_list_item_append(s->list, _("Export To File"), NULL, NULL, _e_sticky_export_to_cb, s);
+   elm_list_item_append(s->list, _("Delete"), NULL, NULL, _e_sticky_delete_list_dialog_cb, s);
+   elm_list_item_append(s->list, _("Options"), NULL, NULL, _e_theme_chooser_show_cb, s);
+   elm_list_item_append(s->list, _("About"), NULL, NULL, _e_about_show_cb, NULL);
+   elm_list_item_append(s->list, _("Quit"), NULL, NULL, _e_stickies_exit_cb, NULL);
 
    elm_list_go(s->list);
    evas_object_show(s->list);
@@ -525,7 +525,7 @@ _e_sticky_export_to(E_Sticky *s)
      }
    //////////
    fd->dia = elm_win_add(NULL, "estickies-export", ELM_WIN_BASIC);
-   elm_win_title_set(fd->dia, "Estickies export to ..");
+   elm_win_title_set(fd->dia, _("Estickies - Export to .."));
    elm_win_autodel_set(fd->dia, 1);
 
    evas_object_show(fd->dia);
@@ -562,7 +562,7 @@ _e_sticky_export_to(E_Sticky *s)
    evas_object_show(fd->filechooser);
    //////////
    fd->export_mode = elm_check_add(fd->dia);
-   elm_check_label_set(fd->export_mode, "All stickies");
+   elm_check_label_set(fd->export_mode, _("All stickies"));
    elm_check_state_set(fd->export_mode, 0);
 
    elm_box_pack_end(vbox, fd->export_mode);
@@ -578,7 +578,7 @@ _e_sticky_delete_confirm(E_Sticky *s)
    Evas_Object *background, *frame, *vbox, *label, *hbox, *button_yes, *button_no;
 
    dialog = elm_win_add(NULL, "estickies-delete-confirm", ELM_WIN_DIALOG_BASIC);
-   elm_win_title_set(dialog, "Confirm Deletion");
+   elm_win_title_set(dialog, _("Confirm Deletion"));
    elm_win_autodel_set(dialog, 1);
 
    evas_object_show(dialog);
@@ -603,7 +603,7 @@ _e_sticky_delete_confirm(E_Sticky *s)
    evas_object_show(vbox);
    //////////
    label = elm_label_add(dialog);
-   elm_label_label_set(label, "Are you sure you want to delete this sticky?");
+   elm_label_label_set(label, _("Are you sure you want to delete this sticky?"));
 
    elm_box_pack_end(vbox, label);
 
@@ -618,7 +618,7 @@ _e_sticky_delete_confirm(E_Sticky *s)
    evas_object_show(hbox);
    //////////
    button_no = elm_button_add(dialog);
-   elm_button_label_set(button_no, "No");
+   elm_button_label_set(button_no, _("No"));
 
    evas_object_smart_callback_add(button_no, "clicked", _e_sticky_delete_confirm_cb, NULL);
 
@@ -627,7 +627,7 @@ _e_sticky_delete_confirm(E_Sticky *s)
    evas_object_show(button_no);
    //////////
    button_yes = elm_button_add(dialog);
-   elm_button_label_set(button_yes, "Yes");
+   elm_button_label_set(button_yes, _("Yes"));
 
    evas_object_smart_callback_add(button_yes, "clicked", _e_sticky_delete_confirm_cb, s);
 
@@ -672,7 +672,7 @@ _e_sticky_export_cb(void *data)
    if (!elm_check_state_get(fd->export_mode))
      {
 	/* save only current sticky */
-	fprintf(fh, "Sticky %d\n=========================\n", c);
+	fprintf(fh, _("Sticky %d\n=========================\n"), c);
 	text = strdup(elm_entry_markup_to_utf8(elm_entry_entry_get(s->textentry)));
 	fprintf (fh, "%s\n\n", text);	
      }
@@ -681,7 +681,7 @@ _e_sticky_export_cb(void *data)
 	/* save all stickies */
 	EINA_LIST_FOREACH(ss->stickies, l, s)
 	  {	     
-	     fprintf(fh, "Sticky %d\n=========================\n", c);
+	     fprintf(fh, _("Sticky %d\n=========================\n"), c);
 	     text = strdup(elm_entry_markup_to_utf8(elm_entry_entry_get(s->textentry)));
 	     fprintf (fh, "%s\n\n", text);
 	     ++c;
@@ -758,6 +758,11 @@ elm_main(int argc, char **argv)
 
    ss = E_NEW(1, E_Stickies);
    ss->stickies = NULL;
+
+  // initialize gettext
+  setlocale(LC_ALL, "");
+  bindtextdomain(PACKAGE, PACKAGE_LOCALE_DIR);
+  textdomain(PACKAGE);
 
    home = getenv("HOME");
    if (!home)
