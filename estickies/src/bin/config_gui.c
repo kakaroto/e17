@@ -85,7 +85,6 @@ _e_theme_chooser_show(E_Sticky *s)
    EINA_LIST_FREE(themes, theme)
      {
 	char *theme_no_ext;
-	int i = 0;
 	
 	theme_no_ext = ecore_file_strip_ext(theme);
 
@@ -95,9 +94,8 @@ _e_theme_chooser_show(E_Sticky *s)
 	elm_icon_file_set(ic, buf, "preview");
 
 	row = elm_list_item_append(thumbs, theme_no_ext, ic, NULL, _e_theme_chooser_item_selected_cb, s);
-	if (i == 0)
-	  elm_list_item_selected_set(row, 1);
-	++i;
+	if (!strcmp(theme, s->theme)) elm_list_item_selected_set(row, 1);
+
 	E_FREE(theme_no_ext);
 	E_FREE(theme);
      }
@@ -122,7 +120,7 @@ _e_theme_chooser_show(E_Sticky *s)
    /* check buttons for various options */
    button = elm_radio_add(win);
    elm_radio_label_set(button, _("Apply to this sticky only"));
-   elm_radio_state_value_set(button, 1);
+   elm_radio_state_value_set(button, 0);
    evas_object_smart_callback_add(button, "changed", _e_theme_sticky_only_cb, NULL);
    elm_box_pack_end(option_vbox, button);
    rdg = button;
@@ -130,7 +128,7 @@ _e_theme_chooser_show(E_Sticky *s)
 
    button = elm_radio_add(win);
    elm_radio_label_set(button, _("Apply to all stickies"));
-   elm_radio_state_value_set(button, 0);
+   elm_radio_state_value_set(button, 1);
    elm_radio_group_add(button, rdg);
    evas_object_smart_callback_add(button, "changed", _e_theme_stickies_all_cb, NULL);
    elm_box_pack_end(option_vbox, button);
@@ -253,10 +251,12 @@ _e_theme_apply_now(E_Sticky *s)
 
    icol_string = elm_list_item_label_get(item);
 
+   snprintf(buf, sizeof(buf), "%s.edj", icol_string);
+
    if (_e_theme_apply == STICKY_ONLY)
-     _e_sticky_theme_apply(s, ecore_file_file_get(icol_string));
+     _e_sticky_theme_apply(s, ecore_file_file_get(buf));
    else if (_e_theme_apply == STICKIES_ALL)
-     _e_sticky_theme_apply_all(ecore_file_file_get(icol_string));
+     _e_sticky_theme_apply_all(ecore_file_file_get(buf));
 
    if (_e_theme_default)
      {
