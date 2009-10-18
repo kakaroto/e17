@@ -254,6 +254,17 @@ void object_attribute_set(Ekeko_Object *o, Ekeko_Value_Type type, char *attr, ch
 				object_attribute_set(o, vtype, attr, name);
 			}
 #endif
+			if (ekeko_type_instance_is_of(o, "setter"))
+			{
+				Ekeko_Object *p;
+				Ekeko_Value_Type vtype;
+				char *pname;
+
+				p = ekeko_object_parent_get(o);
+				pname = eon_setter_name_get(o);
+				vtype = eon_style_property_type_get(p, pname);
+				object_attribute_set(o, vtype, attr, name);
+			}
 		}
 		return;
 
@@ -355,6 +366,13 @@ void attributes_set(void *value, void *data)
 			return;
 		}
 	}
+	if (ekeko_type_instance_is_of(o, "setter"))
+	{
+		if (ekeko_property_id_get(prop) == EON_SETTER_PROPERTY)
+		{
+			return;
+		}
+	}
 
 	type = ekeko_property_value_type_get(prop);
 	object_attribute_set(o, type, n->key, n->value);
@@ -381,8 +399,19 @@ Ekeko_Object * tag_create(char *tag, EXML *exml, Ekeko_Object *parent)
 	}
 	else if (!strcmp(tag, "setter"))
 	{
+		char *value;
+
 		o = eon_setter_new(doc);
+		value = ecore_hash_get(n->attributes, "name");
+		/* get first the name attribute */
+		/* skip it on the parser */
+		if (!value)
+		{
+			ekeko_type_instance_delete(o);
+			return NULL;
+		}
 		ekeko_object_child_append(parent, o);
+		object_attribute_set(o, EKEKO_PROPERTY_STRING, "name", value);
 	}
 	else if (!strcmp(tag, "script"))
 	{

@@ -35,7 +35,7 @@ struct _Eon_Style_Private
 	Eina_List *references;
 };
 
-static void _apply_all(Eon_Style *s, Ekeko_Object *rel)
+static void _set_all(Eon_Style *s, Ekeko_Object *rel)
 {
 	Eon_Style_Private *prv = PRIVATE(s);
 	Ekeko_Object *o;
@@ -47,6 +47,22 @@ static void _apply_all(Eon_Style *s, Ekeko_Object *rel)
 		Eon_Style_Applier *ap = (Eon_Style_Applier *)o;
 
 		ap->set(ap, rel);
+		o = ekeko_object_next(o);
+	}
+}
+
+static void _unset_all(Eon_Style *s, Ekeko_Object *rel)
+{
+	Eon_Style_Private *prv = PRIVATE(s);
+	Ekeko_Object *o;
+
+	/* for each child apply the style */
+	o = ekeko_object_child_first_get(s);
+	while (o)
+	{
+		Eon_Style_Applier *ap = (Eon_Style_Applier *)o;
+
+		ap->unset(ap, rel);
 		o = ekeko_object_next(o);
 	}
 }
@@ -76,6 +92,8 @@ static void _referenced_cb(Ekeko_Object *o, Ekeko_Event *e, void *data)
 	Ekeko_Event_Mutation *em = (Ekeko_Event_Mutation *)e;
 	Eon_Style_Private *prv = PRIVATE(o);
 
+	if (!prv->type)
+		return;
 
 	/* check that the object that gets the style is of the needed type */
 	if (!ekeko_type_instance_is_of(em->related, prv->type))
@@ -85,7 +103,27 @@ static void _referenced_cb(Ekeko_Object *o, Ekeko_Event *e, void *data)
 	}
 	/* TODO set the style */
 	prv->references = eina_list_append(prv->references, em->related);
-	_apply_all(s, em->related);
+	_set_all(s, em->related);
+}
+
+static void _unreferenced_cb(Ekeko_Object *o, Ekeko_Event *e, void *data)
+{
+	Eon_Style *s = (Eon_Style *)o;
+	Ekeko_Event_Mutation *em = (Ekeko_Event_Mutation *)e;
+	Eon_Style_Private *prv = PRIVATE(o);
+
+	if (!prv->type)
+		return;
+
+	/* check that the object that gets the style is of the needed type */
+	if (!ekeko_type_instance_is_of(em->related, prv->type))
+	{
+		/* TODO stop propagation */
+		return;
+	}
+	/* TODO set the style */
+	prv->references = eina_list_remove(prv->references, em->related);
+	_unset_all(s, em->related);
 }
 
 static void _ctor(Ekeko_Object *o)
@@ -107,7 +145,7 @@ static void _dtor(Ekeko_Object *o)
 
 static Eina_Bool _appendable(void *parent, void *child)
 {
-	if (!ekeko_type_instance_is_of(child, EON_TYPE_SETTER))
+	if (!ekeko_type_instance_is_of(child, EON_TYPE_STYLE_APPLIER))
 		return EINA_FALSE;
 	return EINA_TRUE;
 }
@@ -133,6 +171,31 @@ void eon_style_shutdown(void)
 {
 	eon_type_unregister(_type);
 }
+
+/* Get the property a style applier will set */
+Ekeko_Value_Type eon_style_property_type_get(Eon_Style *s, char *property)
+{
+	Eon_Style_Private *prv = PRIVATE(s);
+	Ekeko_Type *t;
+	Ekeko_Property *prop;
+
+	if (!prv->type)
+		return EKEKO_PROPERTY_UNDEFINED;
+	/* FIXME we might want to define styles for not instantiable objects
+	 * like shapes, filters, etc
+	 */ 
+	t = eon_type_get(prv->type);
+	if (!t)
+		return EKEKO_PROPERTY_UNDEFINED;
+
+	/* get the property from the type not the object */
+	prop = ekeko_type_property_get(t, property);
+
+	if (!prop)
+		return EKEKO_PROPERTY_UNDEFINED;
+
+	return ekeko_property_value_type_get(prop);
+}
 /*============================================================================*
  *                                   API                                      *
  *============================================================================*/
@@ -146,3 +209,14 @@ EAPI Eon_Style * eon_style_new(Eon_Document *d)
 
 	return s;
 }
+
+EAPI char * eon_style_type_get(Eon_Style *s)
+{
+
+}
+
+EAPI void eon_style_type_set(Eon_Style *s, char *type)
+{
+
+}
+

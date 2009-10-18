@@ -40,10 +40,8 @@ static void _set(Ekeko_Object *o, Ekeko_Object *rel)
 	Eon_Setter *s = (Eon_Setter *)o;
 	Eon_Setter_Private *prv = PRIVATE(o);
 
-	/* TODO create a value and set it
-	ekeko_object_property_set(rel, prv->name, prv->value);
-	*/
-	printf("SETTING %s\n", prv->name);
+	printf("SETTING %s %d\n", prv->name, prv->value.type);
+	ekeko_object_property_value_set(rel, prv->name, &prv->value);
 }
 
 static void _ctor(Ekeko_Object *o)
@@ -98,5 +96,14 @@ Eon_Setter * eon_setter_new(Eon_Document *d)
 	s = eon_document_object_new(d, EON_TYPE_SETTER);
 
 	return s;
+}
+
+
+char * eon_setter_name_get(Eon_Setter *s)
+{
+	Eon_Setter_Private *prv;
+
+	prv = PRIVATE(s);
+	return prv->name;
 }
 
