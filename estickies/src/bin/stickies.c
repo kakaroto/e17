@@ -368,6 +368,11 @@ void
 _e_sticky_window_add(E_Sticky *s)
 {
    char theme[PATH_MAX];
+   Ecore_X_Window_State state[2];
+   int num = 0;
+ 
+   state[num++] = ECORE_X_WINDOW_STATE_SKIP_TASKBAR;
+   state[num++] = ECORE_X_WINDOW_STATE_SKIP_PAGER;
 
    if (!s->theme) s->theme = strdup(ss->theme);
 
@@ -377,6 +382,7 @@ _e_sticky_window_add(E_Sticky *s)
    s->win = elm_win_add(NULL, "estickies", ELM_WIN_BASIC);
    elm_win_title_set(s->win, "estickies");
    elm_win_borderless_set(s->win, 1);
+   ecore_x_netwm_window_state_set(elm_win_xwindow_get(s->win), state, num);
 
    evas_object_smart_callback_add(s->win, "delete,request", _e_sticky_delete_event_cb, s);
    ecore_event_handler_add(ECORE_X_EVENT_WINDOW_PROPERTY, _e_sticky_sticky_cb, s);
