@@ -85,7 +85,7 @@ _e_theme_chooser_show(E_Sticky *s)
    EINA_LIST_FREE(themes, theme)
      {
 	char *theme_no_ext;
-	static int i = 0;
+	int i = 0;
 	
 	theme_no_ext = ecore_file_strip_ext(theme);
 
