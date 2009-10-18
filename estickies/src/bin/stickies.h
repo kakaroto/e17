@@ -101,6 +101,8 @@ struct _E_Sticky
    Evas_Object *close_button;
    Evas_Object *actions_toggle;
    Evas_Object *layoutbox;
+   Ecore_X_Window xwin;
+   Ecore_Event_Handler *evhandler;
 };
 
 struct _E_Stickies

@@ -315,13 +315,18 @@ _e_sticky_delete(E_Sticky *s)
    if (eina_list_count(ss->stickies) == 1)
      {
 	ss->stickies = eina_list_remove(ss->stickies, s);
+	ecore_event_handler_del(s->evhandler);
+	ecore_x_window_free(s->xwin);
 	evas_object_del(s->win);
 	s = _e_sticky_new();
 	ss->stickies = eina_list_append(ss->stickies, s);
+	_e_sticky_properties_set(s);
 	_e_sticky_show(s);
 	return;
      }
    ss->stickies = eina_list_remove(ss->stickies, s);
+   ecore_event_handler_del(s->evhandler);
+   ecore_x_window_free(s->xwin);
    evas_object_del(s->win);
 
    if (!ss->stickies || eina_list_count(ss->stickies) == 0)
@@ -385,10 +390,11 @@ _e_sticky_window_add(E_Sticky *s)
    s->win = elm_win_add(NULL, "estickies", ELM_WIN_BASIC);
    elm_win_title_set(s->win, "estickies");
    elm_win_borderless_set(s->win, 1);
-   ecore_x_netwm_window_state_set(elm_win_xwindow_get(s->win), state, num);
+   s->xwin = elm_win_xwindow_get(s->win);
+   ecore_x_netwm_window_state_set(s->xwin, state, num);
 
    evas_object_smart_callback_add(s->win, "delete,request", _e_sticky_delete_event_cb, s);
-   ecore_event_handler_add(ECORE_X_EVENT_WINDOW_PROPERTY, _e_sticky_sticky_cb, s);
+   s->evhandler = ecore_event_handler_add(ECORE_X_EVENT_WINDOW_PROPERTY, _e_sticky_sticky_cb, s);
 
    evas_object_show(s->win);
    //////////
