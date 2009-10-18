@@ -1,14 +1,13 @@
 Main stuff:
 
-- **** FIX BUGS!!!! **** (but i don't know about any at the moment)
-- the lock button should lock also sticky position so it is not movable.
-- add a way how to make sticky always on top and always on bottom.
-- fix estickies so it does not run only under X11 - make it run on Windows.
+- **** FIX BUGS!!!! **** (like the problem when you close options and show it again)
+- add support for more than one theme(needs elementary implementation)
 
 Medium priority:
 
 - do documentation, implement its own public API.
 - write plugin system
+- fix estickies so it does not run only under X11 - make it run on Windows.
 
 Nice to have:
 
