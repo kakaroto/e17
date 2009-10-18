@@ -88,7 +88,7 @@ _e_sticky_delete_list_dialog_cb(void *data, Evas_Object *obj, void *event_info)
 
 /* START WINDOW, KEYBOARD AND MOUSE RELATED FUNCTIONS AND CALLBACKS */
 
-static void _e_sticky_sticky_cb(void *data, int type, void *event);
+static int _e_sticky_sticky_cb(void *data, int type, void *event);
 static void _e_sticky_key_down_cb(void *data, Evas *e, Evas_Object *obj, void *event_info);
 static void _e_sticky_mouse_down_cb(void *data, Evas *e, Evas_Object *obj, void *event_info);
 static void _e_sticky_mouse_up_cb(void *data, Evas *e, Evas_Object *obj, void *event_info);
@@ -195,16 +195,19 @@ _e_sticky_delete_event_cb(void *data, Evas_Object *obj, void *event_info)
    ss->stickies = eina_list_remove(ss->stickies, s);
 }
 
-static void 
+static int
 _e_sticky_sticky_cb(void *data, int type, void *event)
 {
    E_Sticky *s = data;
    Ecore_X_Event_Window_Property *pp = event;
+
    if (pp->atom == ECORE_X_ATOM_NET_WM_STATE)
      {
 	s->stick = elm_win_sticky_get(s->win);
 	elm_check_state_set(s->stick_toggle, s->stick);
      }
+
+   return 1;
 }
 
 static void 
