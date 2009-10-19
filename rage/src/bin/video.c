@@ -260,6 +260,18 @@ video_key(Evas_Event_Key_Down *ev)
    else if (!strcmp(ev->keyname, "period"))
      {
 	/* FIXME: ch up ? */
+        int cnum, c, i;
+        
+        cnum = emotion_object_spu_channel_count(o_video);
+        printf("cum: %i\n", cnum);
+        c = emotion_object_spu_channel_get(o_video);
+        for (c = 0; c < cnum; c++)
+          {
+             printf("%i: %s\n", emotion_object_spu_channel_name_get(o_video, c));
+          }
+        c++;
+        if (c >= cnum) c = 0;
+        emotion_object_spu_channel_set(o_video, c);
      }
    else if (!strcmp(ev->keyname, "comma"))
      {
