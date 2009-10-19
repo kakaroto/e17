@@ -470,10 +470,7 @@ entrance_session_start_user_session(Entrance_Session * e)
       if ((pamenv = pam_getenvlist(e->auth->pam.handle)) != NULL)
       {
 	for (envitem = pamenv; *envitem; envitem++)
-	{
 	  putenv(*envitem);
-	  free(*envitem);
-	}
 
 	free(pamenv);
      }
