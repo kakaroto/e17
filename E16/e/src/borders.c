@@ -103,7 +103,7 @@ BorderWinpartITclassApply(EWin * ewin, int i, int force)
 	if (txt && ewin->border->part[i].tclass)
 	   ts = TextclassGetTextState(ewin->border->part[i].tclass, ewb->state,
 				      ewin->state.active, EoIsSticky(ewin));
-	flags = ITA_BGPMAP;
+	flags = ITA_BGPMAP | ITA_JUSTV;
 	break;
      case FLAG_MINIICON:
 	flags = ITA_BGPMAP;
