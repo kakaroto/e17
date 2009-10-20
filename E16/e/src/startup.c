@@ -38,7 +38,7 @@ StartupWindowsCreate(void)
    Win                 w1, w2, win1, win2, b1, b2;
    Background         *bg;
    ImageClass         *ic;
-   int                 x, y, bx, by, bw, bh;
+   int                 x, y, bx, by, bw, bh, dbw;
    EObj               *eo;
 
    /* Acting only as boolean? */
@@ -52,13 +52,16 @@ StartupWindowsCreate(void)
    if (!ic || !bg)
       return;
 
+   dbw = Conf.desks.dragbar_width;
+   if (dbw <= 0)
+      dbw = 16;
    if (bg_sideways)
      {
 	x = WinGetW(VROOT) / 2;
 	y = 0;
-	bx = WinGetW(VROOT) - Conf.desks.dragbar_width;
+	bx = WinGetW(VROOT) - dbw;
 	by = 0;
-	bw = Conf.desks.dragbar_width;
+	bw = dbw;
 	bh = WinGetH(VROOT);
      }
    else
@@ -66,9 +69,9 @@ StartupWindowsCreate(void)
 	x = 0;
 	y = WinGetH(VROOT) / 2;
 	bx = 0;
-	by = WinGetH(VROOT) - Conf.desks.dragbar_width;
+	by = WinGetH(VROOT) - dbw;
 	bw = WinGetW(VROOT);
-	bh = Conf.desks.dragbar_width;
+	bh = dbw;
      }
 
    eo = EobjWindowCreate(EOBJ_TYPE_MISC,
