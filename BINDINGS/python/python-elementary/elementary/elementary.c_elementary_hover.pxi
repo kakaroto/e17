@@ -24,9 +24,9 @@ cdef class Hover(Object):
         else:
             self._set_obj(<c_evas.Evas_Object*>obj)
 
-    property clicked:
+    property selected:
         def __set__(self, value):
-            self._callback_add("clicked",value)
+            self._callback_add("selected",value)
 
     def target_set(self, c_evas.Object target):
         elm_hover_target_set(self.obj, target.obj)
