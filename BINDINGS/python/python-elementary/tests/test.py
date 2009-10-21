@@ -5,17 +5,12 @@ import edje
 import ecore
 import evas
 
-def destroy(obj, event, data):
-    print "DEBUG: window destroy callback called!"
-    print "DEBUG: data:"
-    print data
-    elementary.exit()
-    
+#----- BG Plain -{{{-
 def bg_plain_clicked(obj, event, data):
     win = elementary.Window("bg plain", elementary.ELM_WIN_BASIC)
     win.title_set("Bg Plain")
     win.autodel_set(True)
-    
+
     bg = elementary.Background(win)
     win.resize_object_add(bg)
     bg.size_hint_weight_set(evas.EVAS_HINT_EXPAND, evas.EVAS_HINT_EXPAND)
@@ -23,7 +18,9 @@ def bg_plain_clicked(obj, event, data):
 
     win.resize(320, 320)
     win.show()
+# }}}
 
+#----- BG Image -{{{-
 def bg_image_clicked(obj, event, data):
     win = elementary.Window("bg-image", elementary.ELM_WIN_BASIC)
     win.title_set("Bg Image")
@@ -39,22 +36,25 @@ def bg_image_clicked(obj, event, data):
     win.size_hint_max_set(320, 320)
     win.resize(320, 320)
     win.show()
+# }}}
 
+#----- Icon Transparent -{{{-
 def icon_transparent_clicked(obj, event, data):
     win = elementary.Window("icon-transparent", elementary.ELM_WIN_BASIC)
     win.title_set("Icon Transparent")
     win.autodel_set(True)
     win.alpha_set(True)
-    
+
     icon = elementary.Icon(win)
     icon.file_set("images/logo.png")
     icon.scale_set(0, 0)
     win.resize_object_add(icon)
     icon.show()
-    
-    win.show()
-    
 
+    win.show()
+# }}}
+
+#----- Box Vert -{{{-
 def box_vert_clicked(obj, event, *args, **kargs):
     win = elementary.Window("box-vert", elementary.ELM_WIN_BASIC)
     win.title_set("Box Vert")
@@ -76,29 +76,30 @@ def box_vert_clicked(obj, event, *args, **kargs):
     ic.size_hint_align_set(0.5, 0.5)
     bx.pack_end(ic)
     ic.show()
-    
+
     ic = elementary.Icon(win)
     ic.file_set("images/logo_small.png")
     ic.scale_set(0, 0)
     ic.size_hint_align_set(0.0, 0.5)
     bx.pack_end(ic)
     ic.show()
-    
+
     ic = elementary.Icon(win)
     ic.file_set("images/logo_small.png")
     ic.scale_set(0, 0)
     ic.size_hint_align_set(evas.EVAS_HINT_EXPAND, 0.5)
     bx.pack_end(ic)
     ic.show()
-    
+
     win.show()
+# }}}
 
-
+#----- Box Horiz -{{{-
 def box_horiz_clicked(obj, event, *args, **kargs):
     win = elementary.Window("box-horiz", elementary.ELM_WIN_BASIC)
     win.title_set("Box Horiz")
     win.autodel_set(True)
-    
+
     bg = elementary.Background(win)
     win.resize_object_add(bg)
     bg.size_hint_weight_set(evas.EVAS_HINT_EXPAND, evas.EVAS_HINT_EXPAND)
@@ -132,7 +133,9 @@ def box_horiz_clicked(obj, event, *args, **kargs):
     ic.show()
 
     win.show()
+# }}}
 
+#----- Buttons -{{{-
 def buttons_clicked(obj, event, *args, **kargs):
     win = elementary.Window("buttons", elementary.ELM_WIN_BASIC)
     win.title_set("Buttons")
@@ -147,7 +150,7 @@ def buttons_clicked(obj, event, *args, **kargs):
     win.resize_object_add(bx)
     bx.size_hint_weight_set(evas.EVAS_HINT_EXPAND, evas.EVAS_HINT_EXPAND)
     bx.show()
-    
+
     ic = elementary.Icon(win)
     ic.file_set("images/logo_small.png")
     ic.size_hint_aspect_set(evas.EVAS_ASPECT_CONTROL_VERTICAL, 1, 1)
@@ -157,7 +160,7 @@ def buttons_clicked(obj, event, *args, **kargs):
     bx.pack_end(bt)
     bt.show()
     ic.show()
-    
+
     ic = elementary.Icon(win)
     ic.file_set("images/logo_small.png")
     ic.scale_set(0, 0)
@@ -167,12 +170,12 @@ def buttons_clicked(obj, event, *args, **kargs):
     bx.pack_end(bt)
     bt.show()
     ic.show()
-    
+
     bt = elementary.Button(win)
     bt.label_set("Button only")
     bx.pack_end(bt)
     bt.show()
-    
+
     ic = elementary.Icon(win)
     ic.file_set("images/logo_small.png")
     ic.scale_set(0, 0)
@@ -181,10 +184,11 @@ def buttons_clicked(obj, event, *args, **kargs):
     bx.pack_end(bt)
     bt.show()
     ic.show()
-    
+
     win.show()
-    
-  
+# }}}
+
+#----- Toggles -{{{-
 def tg_changed(obj, event, *args, **kargs):
   print obj.state_get()
 
@@ -192,7 +196,7 @@ def toggles_clicked(obj, event, *args, **kargs):
     win = elementary.Window("toggles", elementary.ELM_WIN_BASIC)
     win.title_set("Toggles")
     win.autodel_set(True)
-    
+
     bg = elementary.Background(win)
     win.resize_object_add(bg)
     bg.size_hint_weight_set(evas.EVAS_HINT_EXPAND, evas.EVAS_HINT_EXPAND)
@@ -202,7 +206,7 @@ def toggles_clicked(obj, event, *args, **kargs):
     win.resize_object_add(bx)
     bx.size_hint_weight_set(evas.EVAS_HINT_EXPAND, evas.EVAS_HINT_EXPAND)
     bx.show()
-    
+
     ic = elementary.Icon(win)
     ic.file_set("images/logo_small.png")
     ic.size_hint_aspect_set(evas.EVAS_ASPECT_CONTROL_VERTICAL, 1, 1)
@@ -214,7 +218,7 @@ def toggles_clicked(obj, event, *args, **kargs):
     bx.pack_end(tg)
     tg.show()
     ic.show()
-    
+
     ic = elementary.Icon(win)
     ic.file_set("images/logo_small.png")
     ic.scale_set(0, 0)
@@ -224,13 +228,13 @@ def toggles_clicked(obj, event, *args, **kargs):
     bx.pack_end(tg)
     tg.show()
     ic.show()
-    
+
     tg = elementary.Toggle(win)
     tg.label_set("Label Only")
     tg.states_labels_set("Big", "Small")
     bx.pack_end(tg)
     tg.show()
-    
+
     ic = elementary.Icon(win)
     ic.file_set("images/logo_small.png")
     ic.scale_set(0, 0)
@@ -239,9 +243,11 @@ def toggles_clicked(obj, event, *args, **kargs):
     bx.pack_end(tg)
     tg.show()
     ic.show()
-    
-    win.show()
 
+    win.show()
+# }}}
+
+#----- Table -{{{-
 def table_clicked(obj, event, *args, **kargs):
     win = elementary.Window("table", elementary.ELM_WIN_BASIC)
     win.title_set("Table")
@@ -284,28 +290,30 @@ def table_clicked(obj, event, *args, **kargs):
     bt.size_hint_align_set(evas.EVAS_HINT_FILL, evas.EVAS_HINT_FILL)
     tb.pack(bt, 0, 1, 2, 1)
     bt.show()
-    
+
     bt = elementary.Button(win)
     bt.label_set("Button 5")
     bt.size_hint_weight_set(evas.EVAS_HINT_EXPAND, evas.EVAS_HINT_EXPAND)
     bt.size_hint_align_set(evas.EVAS_HINT_FILL, evas.EVAS_HINT_FILL)
     tb.pack(bt, 2, 1, 1, 3)
     bt.show()
-    
+
     bt = elementary.Button(win)
     bt.label_set("Button 6")
     bt.size_hint_weight_set(evas.EVAS_HINT_EXPAND, evas.EVAS_HINT_EXPAND)
     bt.size_hint_align_set(evas.EVAS_HINT_FILL, evas.EVAS_HINT_FILL)
     tb.pack(bt, 0, 2, 2, 2)
     bt.show()
-    
-    win.show()
 
+    win.show()
+# }}}
+
+#----- Clock -{{{-
 def clock_clicked(obj, event, *args, **kargs):
     win = elementary.Window("clock", elementary.ELM_WIN_BASIC)
     win.title_set("Clock")
     win.autodel_set(True)
-    
+
     bg = elementary.Background(win)
     win.resize_object_add(bg)
     bg.size_hint_weight_set(evas.EVAS_HINT_EXPAND, evas.EVAS_HINT_EXPAND)
@@ -315,29 +323,29 @@ def clock_clicked(obj, event, *args, **kargs):
     win.resize_object_add(bx)
     bx.size_hint_weight_set(evas.EVAS_HINT_EXPAND, evas.EVAS_HINT_EXPAND)
     bx.show()
-    
+
     ck = elementary.Clock(win)
     bx.pack_end(ck)
     ck.show()
-    
+
     ck = elementary.Clock(win)
     ck.show_am_pm_set(True)
     bx.pack_end(ck)
     ck.show()
 
     print ck.time_get()
-    
+
     ck = elementary.Clock(win)
     ck.show_seconds_set(True)
     bx.pack_end(ck)
     ck.show()
-    
+
     ck = elementary.Clock(win)
     ck.show_seconds_set(True)
     ck.show_am_pm_set(True)
     bx.pack_end(ck)
     ck.show()
-    
+
     ck = elementary.Clock(win)
     ck.edit_set(True)
     ck.show_seconds_set(True)
@@ -345,15 +353,16 @@ def clock_clicked(obj, event, *args, **kargs):
     ck.time_set(10, 11, 12)
     bx.pack_end(ck)
     ck.show()
-    
-    win.show()
-    
 
+    win.show()
+# }}}
+
+#----- Layout -{{{-
 def layout_clicked(obj, event, *args, **kargs):
     win = elementary.Window("layout", elementary.ELM_WIN_BASIC)
     win.title_set("Layout")
     win.autodel_set(True)
-    
+
     bg = elementary.Background(win)
     win.resize_object_add(bg)
     bg.size_hint_weight_set(evas.EVAS_HINT_EXPAND, evas.EVAS_HINT_EXPAND)
@@ -364,24 +373,26 @@ def layout_clicked(obj, event, *args, **kargs):
     ly.size_hint_weight_set(evas.EVAS_HINT_EXPAND, evas.EVAS_HINT_EXPAND)
     win.resize_object_add(ly)
     ly.show()
-    
+
     bt = elementary.Button(win)
     bt.label_set("Button 1")
     ly.content_set("element1", bt)
     bt.show()
-    
+
     bt = elementary.Button(win)
     bt.label_set("Button 2")
     ly.content_set("element2", bt)
     bt.show()
-    
+
     bt = elementary.Button(win)
     bt.label_set("Button 3")
     ly.content_set("element3", bt)
     bt.show()
-    
+
     win.show()
-    
+# }}}
+
+#----- Hover -{{{-
 def hover_bt1_clicked(obj, event, data):
     data.show()
 
@@ -389,7 +400,7 @@ def hover_clicked(obj, event, *args, **kargs):
     win = elementary.Window("hover", elementary.ELM_WIN_BASIC)
     win.title_set("Hover")
     win.autodel_set(True)
-    
+
     bg = elementary.Background(win)
     win.resize_object_add(bg)
     bg.size_hint_weight_set(evas.EVAS_HINT_EXPAND, evas.EVAS_HINT_EXPAND)
@@ -399,9 +410,9 @@ def hover_clicked(obj, event, *args, **kargs):
     win.resize_object_add(bx)
     bx.size_hint_weight_set(evas.EVAS_HINT_EXPAND, evas.EVAS_HINT_EXPAND)
     bx.show()
-    
+
     hv = elementary.Hover(win)
-    
+
     bt = elementary.Button(win)
     bt.label_set("Button")
     bt.clicked = (hover_bt1_clicked, hv)
@@ -409,60 +420,62 @@ def hover_clicked(obj, event, *args, **kargs):
     bt.show()
     hv.parent_set(win)
     hv.target_set(bt)
-    
+
     bt = elementary.Button(win)
     bt.label_set("Popup")
     hv.content_set("middle", bt)
     bt.show()
-    
+
     bx = elementary.Box(win)
-    
+
     ic = elementary.Icon(win)
     ic.file_set("images/logo_small.png")
     ic.scale_set(0, 0)
     bx.pack_end(ic)
     ic.show()
-    
+
     bt = elementary.Button(win)
     bt.label_set("Top 1")
     bx.pack_end(bt)
     bt.show()
-    
+
     bt = elementary.Button(win)
     bt.label_set("Top 2")
     bx.pack_end(bt)
     bt.show()
-    
+
     bt = elementary.Button(win)
     bt.label_set("Top 3")
     bx.pack_end(bt)
     bt.show()
-    
+
     bx.show()
-    
+
     hv.content_set("top", bx)
-    
+
     bt = elementary.Button(win)
     bt.label_set("Bottom")
     hv.content_set("bottom", bt)
     bt.show()
-    
+
     bt = elementary.Button(win)
     bt.label_set("Left")
     hv.content_set("left", bt)
     bt.show()
-    
+
     bt = elementary.Button(win)
     bt.label_set("Right")
     hv.content_set("right", bt)
     bt.show()
-    
+
     bg.size_hint_min_set(160, 160)
     bg.size_hint_max_set(640, 640)
-    
+
     win.resize(320, 320)
     win.show()
+# }}}
 
+#----- Hover2 -{{{-
 def hover2_bt_clicked(obj, event, *args, **kargs):
     pass
 
@@ -470,7 +483,7 @@ def hover2_clicked(obj, event, *args, **kargs):
     win = elementary.Window("hover2", elementary.ELM_WIN_BASIC)
     win.title_set("Hover 2")
     win.autodel_set(True)
-    
+
     bg = elementary.Background(win)
     win.resize_object_add(bg)
     bg.size_hint_weight_set(evas.EVAS_HINT_EXPAND, evas.EVAS_HINT_EXPAND)
@@ -480,10 +493,10 @@ def hover2_clicked(obj, event, *args, **kargs):
     win.resize_object_add(bx)
     bx.size_hint_weight_set(evas.EVAS_HINT_EXPAND, evas.EVAS_HINT_EXPAND)
     bx.show()
-    
+
     hv = elementary.Hover(win)
     hv.style_set("popout")
-    
+
     bt = elementary.Button(win)
     bt.label_set("Button")
     bt.clicked = (hover_bt1_clicked, hv)
@@ -491,66 +504,67 @@ def hover2_clicked(obj, event, *args, **kargs):
     bt.show()
     hv.parent_set(win)
     hv.target_set(bt)
-    
+
     bt = elementary.Button(win)
     bt.label_set("Popup")
     hv.content_set("middle", bt)
     bt.show()
-    
+
     bx = elementary.Box(win)
-    
+
     ic = elementary.Icon(win)
     ic.file_set("images/logo_small.png")
     ic.scale_set(0, 0)
     bx.pack_end(ic)
     ic.show()
-    
+
     bt = elementary.Button(win)
     bt.label_set("Top 1")
     bx.pack_end(bt)
     bt.show()
-    
+
     bt = elementary.Button(win)
     bt.label_set("Top 2")
     bx.pack_end(bt)
     bt.show()
-    
+
     bt = elementary.Button(win)
     bt.label_set("Top 3")
     bx.pack_end(bt)
     bt.show()
-    
+
     bx.show()
     hv.content_set("top", bx)
-    
+
     bt = elementary.Button(win)
     bt.label_set("Bot")
     hv.content_set("bottom", bt)
     bt.show()
-    
+
     bt = elementary.Button(win)
     bt.label_set("Left")
     hv.content_set("left", bt)
     bt.show()
-    
+
     bt = elementary.Button(win)
     bt.label_set("Right")
     hv.content_set("right", bt)
     bt.show()
-    
+
     bg.size_hint_min_set(160, 160)
     bg.size_hint_max_set(640, 640)
     win.resize(320, 320)
     win.show()
-    
+# }}}
 
+#----- Entry -{{{-
 def my_entry_bt_1(obj, event, data):
     data.entry_set("")
 
 def my_entry_bt_2(obj, event, data):
     str = data.entry_get()
     print "ENTRY: %s" % str
-    
+
 def my_entry_bt_3(obj, event, data):
     str = data.selection_get()
     print "SELECTION: %s" % str
@@ -632,7 +646,9 @@ def entry_clicked(obj, event, *args, **kargs):
 
     en.focus()
     win.show()
+# }}}
 
+#----- Entry Scrolled -{{{-
 def entry_scrolled_clicked(obj, event, *args, **kargs):
     win = elementary.Window("entry", elementary.ELM_WIN_BASIC)
     win.title_set("Entry Scrolled")
@@ -825,13 +841,14 @@ def entry_scrolled_clicked(obj, event, *args, **kargs):
 
     win.focus()
     win.show()
+# }}}
 
-
+#----- Notepad -{{{-
 def notepad_clicked(obj, event, *args, **kargs):
     win = elementary.Window("notepad", elementary.ELM_WIN_BASIC)
     win.title_set("Notepad")
     win.autodel_set(True)
-    
+
     bg = elementary.Background(win)
     win.resize_object_add(bg)
     bg.size_hint_weight_set(evas.EVAS_HINT_EXPAND, evas.EVAS_HINT_EXPAND)
@@ -842,6 +859,16 @@ def notepad_clicked(obj, event, *args, **kargs):
     bx.size_hint_weight_set(evas.EVAS_HINT_EXPAND, evas.EVAS_HINT_EXPAND)
     bx.show()
 
+    l = elementary.Label(win)
+    l.label_set("TODO")
+    bx.pack_end(l)
+    l.show()
+
+    win.resize(320, 300)
+    win.show()
+# }}}
+
+#----- AnchorView -{{{-
 def my_anchorview_bt(obj, event, data):
     data.hover_end()
 
@@ -918,7 +945,9 @@ def anchorview_clicked(obj, event, *args, **kargs):
 
     win.focus()
     win.show()
+# }}}
 
+#----- AnchorBlock -{{{-
 def my_anchorblock_bt(obj, event, data):
     data.hover_end()
 
@@ -1091,7 +1120,9 @@ def anchorblock_clicked(obj, event, *args, **kargs):
 
     win.focus()
     win.show()
+# }}}
 
+#----- Toolbar -{{{-
 def tb_1(obj, event, *args, **kargs):
     print "toolbar-item: test 1"
 
@@ -1111,7 +1142,7 @@ def toolbar_clicked(obj, event, *args, **kargs):
     win = elementary.Window("entry-scrolled", elementary.ELM_WIN_BASIC)
     win.title_set("Entry Scrolled")
     win.autodel_set(True)
-    
+
     bg = elementary.Background(win)
     win.resize_object_add(bg)
     bg.size_hint_weight_set(evas.EVAS_HINT_EXPAND, evas.EVAS_HINT_EXPAND)
@@ -1121,8 +1152,7 @@ def toolbar_clicked(obj, event, *args, **kargs):
     win.resize_object_add(bx)
     bx.size_hint_weight_set(evas.EVAS_HINT_EXPAND, evas.EVAS_HINT_EXPAND)
     bx.show()
-   
-    
+
     ic = elementary.Icon(win)
     ic.file_set("images/logo_small.png")
     ic.scale_set(0, 0)
@@ -1133,12 +1163,12 @@ def toolbar_clicked(obj, event, *args, **kargs):
     tb = elementary.Toolbar(win)
     tb.size_hint_weight_set(0.0, 0.0)
     tb.size_hint_align_set(evas.EVAS_HINT_FILL, 0.0)
-  
+
     ic = elementary.Icon(win)
     ic.file_set("images/logo_small.png")
     item = tb.item_add(ic, "Hello", tb_1)
     ic.show()
-    
+
     ic = elementary.Icon(win)
     ic.file_set("images/logo_small.png")
     item = tb.item_add(ic, "World,", tb_2)
@@ -1151,7 +1181,7 @@ def toolbar_clicked(obj, event, *args, **kargs):
     ic = elementary.Icon(win)
     ic.file_set("images/logo_small.png")
     tb.item_add(ic, "comes", tb_4)
-    
+
     ic = elementary.Icon(win)
     ic.file_set("images/logo_small.png")
     tb.item_add(ic, "python-elementary!", tb_5)
@@ -1161,7 +1191,9 @@ def toolbar_clicked(obj, event, *args, **kargs):
 
     win.resize(320, 320)
     win.show()
+# }}}
 
+#----- Pager -{{{-
 def my_pager_1(obj, event, data):
     data["pager"].content_promote(data["pg2"])
 
@@ -1227,26 +1259,26 @@ def pager_clicked(obj, event, data):
     pg.content_push(bx)
 
     info["pg1"] = bx;
-    
+
     bx = elementary.Box(win)
     bx.size_hint_weight_set(evas.EVAS_HINT_EXPAND, evas.EVAS_HINT_EXPAND)
     bx.show()
-    
+
     lb = elementary.Label(win)
     lb.label_set("This is page 2 in a pager stack.<br>"
                        "<br>"
                        "This is just like the previous page in<br>"
                        "the pager stack.")
-    
+
     bx.pack_end(lb)
     lb.show()
-    
+
     bt = elementary.Button(win)
     bt.label_set("Flip to 3")
     bt.clicked = (my_pager_2, info)
     bx.pack_end(bt)
     bt.show()
-    
+
     bt = elementary.Button(win)
     bt.label_set("Popme")
     bt.clicked = (my_pager_pop, info)
@@ -1254,41 +1286,43 @@ def pager_clicked(obj, event, data):
     bt.show()
 
     pg.content_push(bx)
-    
+
     info["pg2"] = bx
-    
+
     bx = elementary.Box(win)
     bx.size_hint_weight_set(evas.EVAS_HINT_EXPAND, evas.EVAS_HINT_EXPAND)
     bx.show()
-    
+
     lb = elementary.Label(win)
     lb.label_set("This is page 3 in a pager stack.<br>"
                        "<br>"
                        "This is just like the previous page in<br>"
                        "the pager stack.")
-    
+
     bx.pack_end(lb)
     lb.show()
-    
+
     bt = elementary.Button(win)
     bt.label_set("Flip to 1")
     bt.clicked = (my_pager_3, info)
     bx.pack_end(bt)
     bt.show()
-    
+
     bt = elementary.Button(win)
     bt.label_set("Popme")
     bt.clicked = (my_pager_pop, info)
     bx.pack_end(bt)
     bt.show()
-    
+
     pg.content_push(bx)
-     
+
     info["pg3"] = bx
 
     win.resize(320, 320)
     win.show()
+# }}}
 
+#----- Check -{{{-
 def check_clicked(obj, event, data):
     win = elementary.Window("check", elementary.ELM_WIN_BASIC)
     win.title_set("Check test")
@@ -1357,9 +1391,11 @@ def check_clicked(obj, event, data):
     ic.show()
 
     win.show()
+# }}}
 
+#----- Radio -{{{-
 def radio_clicked(obj, event, data):
-    win = elementary.Window("check", elementary.ELM_WIN_BASIC)
+    win = elementary.Window("radio", elementary.ELM_WIN_BASIC)
     win.title_set("Radio test")
     win.autodel_set(True)
 
@@ -1440,12 +1476,14 @@ def radio_clicked(obj, event, data):
     rdg.value_set(2)
 
     win.show()
+# }}}
 
+#----- Inner Window -{{{-
 def inner_window_clicked(obj, event, data):
     win = elementary.Window("inner-window", elementary.ELM_WIN_BASIC)
     win.title_set("InnerWindow test")
     win.autodel_set(True)
-    
+
     bg = elementary.Background(win)
     win.resize_object_add(bg)
     bg.size_hint_weight_set(evas.EVAS_HINT_EXPAND, evas.EVAS_HINT_EXPAND)
@@ -1456,7 +1494,9 @@ def inner_window_clicked(obj, event, data):
 
     win.resize(320, 320)
     win.show()
-    
+# }}}
+
+#----- Spinner -{{{-
 def spinner_clicked(obj, event, data):
     win = elementary.Window("spinner", elementary.ELM_WIN_BASIC)
     win.title_set("Spinner test")
@@ -1492,7 +1532,9 @@ def spinner_clicked(obj, event, data):
     sp2.show()
 
     win.show()
+# }}}
 
+#----- FileSelector -{{{-
 def fileselector_clicked(obj, event, data):
     win = elementary.Window("fileselector", elementary.ELM_WIN_BASIC)
     win.title_set("File selector test")
@@ -1552,7 +1594,9 @@ def fileselector_clicked(obj, event, data):
 
     win.resize(240, 350)
     win.show()
+# }}}
 
+# ----- Progressbar {{{
 my_progressbar_run = False
 my_progressbar_timer = None
 
@@ -1718,18 +1762,26 @@ def progressbar_clicked(obj, event, data):
 
     win.destroy = (my_progressbar_destroy, pbt)
     win.show()
+# }}}
+
+#----- Main -{{{-
+def destroy(obj, event, data):
+    print "DEBUG: window destroy callback called!"
+    print "DEBUG: data:"
+    print data
+    elementary.exit()
 
 if __name__ == "__main__":
     elementary.init()
     win = elementary.Window("test", elementary.ELM_WIN_BASIC)
     win.title_set("python-elementary test application")
     win.destroy = (destroy, ("test", "test1"))
-    
+
     bg = elementary.Background(win)
     win.resize_object_add(bg)
     bg.size_hint_weight_set(evas.EVAS_HINT_EXPAND, evas.EVAS_HINT_EXPAND)
     bg.show()
-    
+
     box0 = elementary.Box(win)
     box0.size_hint_weight_set(evas.EVAS_HINT_EXPAND, evas.EVAS_HINT_EXPAND)
     win.resize_object_add(box0)
@@ -1746,8 +1798,8 @@ if __name__ == "__main__":
                  "test window.")
     fr.content_set(lb)
     lb.show()
-    
-    items = [("Bg Plain", bg_plain_clicked), 
+
+    items = [("Bg Plain", bg_plain_clicked),
                ("Bg Image", bg_image_clicked),
                ("Icon Transparent", icon_transparent_clicked),
                ("Box Vert", box_vert_clicked),
@@ -1756,7 +1808,7 @@ if __name__ == "__main__":
                ("Toggles", toggles_clicked),
                ("Table", table_clicked),
                ("Clock", clock_clicked),
-               ("Layout", layout_clicked), 
+               ("Layout", layout_clicked),
                ("Hover", hover_clicked),
                ("Hover 2", hover2_clicked),
                ("Entry", entry_clicked),
@@ -1772,22 +1824,22 @@ if __name__ == "__main__":
                ("Progressbar", progressbar_clicked),
                ("File selector", fileselector_clicked),
                ("Spinner", spinner_clicked)]
-    
-    
-    
+
+
+
     li = elementary.List(win)
     li.size_hint_weight_set(evas.EVAS_HINT_EXPAND, evas.EVAS_HINT_EXPAND)
     li.size_hint_align_set(evas.EVAS_HINT_FILL, evas.EVAS_HINT_FILL)
     box0.pack_end(li)
     li.show()
-    
+
     for item in items:
         """
         it = elementary.ListItem()
         it.append(li, item[0], None, None, item[1])
         """
         li.item_append(item[0], None, None, item[1])
-        
+
     li.go()
 
     """
@@ -1802,7 +1854,7 @@ if __name__ == "__main__":
     sc.content_set(box1)
     box1.show()
 
-    buttons = [("Bg Plain", bg_plain_clicked), 
+    buttons = [("Bg Plain", bg_plain_clicked),
                ("Bg Image", bg_image_clicked),
                ("Icon Transparent", icon_transparent_clicked),
                ("Box Vert", box_vert_clicked),
@@ -1811,7 +1863,7 @@ if __name__ == "__main__":
                ("Toggles", toggles_clicked),
                ("Table", table_clicked),
                ("Clock", clock_clicked),
-               ("Layout", layout_clicked), 
+               ("Layout", layout_clicked),
                ("Hover", hover_clicked),
                ("Hover 2", hover2_clicked),
                ("Entry", entry_clicked),
@@ -1821,8 +1873,8 @@ if __name__ == "__main__":
                ("Anchorblock", anchorblock_clicked),
                ("Toolbar", toolbar_clicked),
                ("Pager", pager_clicked)]
-    
-    
+
+
     for btn in buttons:
         bt = elementary.Button(win)
         bt.clicked = btn[1]
@@ -1831,9 +1883,10 @@ if __name__ == "__main__":
         box1.pack_end(bt)
         bt.show()
     """
-    
+
     win.resize(320,520)
     win.show()
     elementary.run()
     elementary.shutdown()
-
+# }}}
+# vim:foldmethod=marker
