@@ -133,6 +133,7 @@ cdef extern from "Edje_Edit.h":
     void edje_edit_state_add(evas.c_evas.Evas_Object *obj, char *part, char *name)
     void edje_edit_state_del(evas.c_evas.Evas_Object *obj, char *part, char *state)
     evas.c_evas.Eina_Bool edje_edit_state_exist(evas.c_evas.Evas_Object *obj, char *part, char *state)
+    evas.c_evas.Eina_Bool edje_edit_state_copy(evas.c_evas.Evas_Object *obj, char *part, char *sfrom, char *sto)
     double edje_edit_state_rel1_relative_x_get(evas.c_evas.Evas_Object *obj, char *part, char *state)
     double edje_edit_state_rel1_relative_y_get(evas.c_evas.Evas_Object *obj, char *part, char *state)
     double edje_edit_state_rel2_relative_x_get(evas.c_evas.Evas_Object *obj, char *part, char *state)

@@ -87,6 +87,10 @@ cdef class Part:
             return False
         return True
 
+    def state_copy(self, char *sfrom, char *sto):
+        return bool(edje_edit_state_copy(self.edje.obj, self.name,
+                    sfrom, sto))
+
     def state_selected_get(self):
         cdef char *sel
         sel = edje_edit_part_selected_state_get(self.edje.obj, self.name)

@@ -31,6 +31,10 @@ cdef class State:
         def __get__(self):
             return self._name
 
+    def copy_from(self, from_state):
+        return bool(edje_edit_state_copy(self.edje.obj, self.part,
+                                         from_state, self.name))
+
     def rel1_relative_get(self):
         cdef double x, y
         x = edje_edit_state_rel1_relative_x_get(self.edje.obj, self.part,
