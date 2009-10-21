@@ -103,7 +103,7 @@ engine_quartz_args(int argc, char **argv)
    if (!evas_engine_info_set(evas, (Evas_Engine_Info *) einfo))
      {
 	printf("Evas can not setup the informations of the Quartz Engine\n");
-        goto destroy_window;
+        exit(-1);
      }
 
    return 1;
