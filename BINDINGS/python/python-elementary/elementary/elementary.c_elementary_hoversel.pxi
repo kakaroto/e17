@@ -26,14 +26,19 @@ cdef class HoverselItem:
     cdef object cbt
 
     def __init__(self, c_evas.Object hoversel, label, icon_file, icon_type, callback, data = None):
+        cdef char *i_f = NULL
+        if icon_file:
+           i_f = icon_file
+
         if callback:
             self.cbt = (hoversel, callback, data, self)
-            self.item = elm_hoversel_item_add(hoversel.obj, label, icon_file,
+            self.item = elm_hoversel_item_add(hoversel.obj, label, i_f,
                                               icon_type,_hoversel_callback,
                                               <void*>self.cbt)
         else:
-            self.item = elm_hoversel_item_add(hoversel.obj, label, icon_file,
+            self.item = elm_hoversel_item_add(hoversel.obj, label, i_f,
                                               icon_type, NULL, NULL)
+
 
     def delete(self):
         """Delete the hoversel item"""
@@ -116,7 +121,7 @@ cdef class Hoversel(Object):
     def clear(self):
         elm_hoversel_clear(self.obj)
 
-    def item_add(self, label, icon_file, icon_type, callback, data = None):
+    def item_add(self, label, icon_file = None, icon_type = ELM_ICON_NONE, callback = None, data = None):
         return HoverselItem(self, label, icon_file, icon_type, callback, data)
 
 
