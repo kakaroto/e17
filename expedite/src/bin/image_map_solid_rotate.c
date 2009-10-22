@@ -45,9 +45,9 @@ static void _cleanup(void)
 static void _loop(double t, int f)
 {
    int i;
-   Evas_Map_Point *p;
+   Evas_Map *m;
    Evas_Coord x, y, w, h;
-   p = evas_map_new(4);
+   m = evas_map_new(4);
    for (i = 0; i < (OBNUM / 2); i++)
      {
         w = 120;
@@ -57,24 +57,24 @@ static void _loop(double t, int f)
 	y = (win_h / 2) - (h / 2);
         y += cos((double)(f + (i * 28)) / (43.8 * SLOW)) * (h / 2);
         
-        evas_map_point_coord_set   (p, 0, x, y, 0);
-        evas_map_point_image_uv_set(p, 0, 0, 0);
+        evas_map_point_coord_set   (m, 0, x, y, 0);
+        evas_map_point_image_uv_set(m, 0, 0, 0);
         
-        evas_map_point_coord_set   (p, 1, x + w, y, 0);
-        evas_map_point_image_uv_set(p, 1, w, 0);
+        evas_map_point_coord_set   (m, 1, x + w, y, 0);
+        evas_map_point_image_uv_set(m, 1, w, 0);
         
-        evas_map_point_coord_set   (p, 2, x + w, y + h, 0);
-        evas_map_point_image_uv_set(p, 2, w, h);
+        evas_map_point_coord_set   (m, 2, x + w, y + h, 0);
+        evas_map_point_image_uv_set(m, 2, w, h);
         
-        evas_map_point_coord_set   (p, 3, x, y + h, 0);
-        evas_map_point_image_uv_set(p, 3, 0, h);
+        evas_map_point_coord_set   (m, 3, x, y + h, 0);
+        evas_map_point_image_uv_set(m, 3, 0, h);
         
-        evas_map_util_rotate(p, f, x + (w / 2), y + (h / 2));
+        evas_map_util_rotate(m, f, x + (w / 2), y + (h / 2));
         
         evas_object_map_enable_set(o_images[i], 1);
-        evas_object_map_set(o_images[i], p);
+        evas_object_map_set(o_images[i], m);
      }
-   evas_map_free(p);
+   evas_map_free(m);
    FPS_STD(NAME);
 }
 
