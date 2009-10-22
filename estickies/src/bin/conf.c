@@ -1,7 +1,5 @@
 #include "stickies.h"
 
-#define DEFAULT_THEME "default.edj"
-
 static Eet_Data_Descriptor *_e_config_sticky_edd = NULL;
 static Eet_Data_Descriptor *_e_config_stickies_edd = NULL;
 static Eet_Data_Descriptor *_e_config_version_edd = NULL;
@@ -24,10 +22,6 @@ _estickies_config_sticky_edd(void)
    EET_DATA_DESCRIPTOR_ADD_BASIC(edd, E_Sticky, "gy", y, EET_T_INT);
    EET_DATA_DESCRIPTOR_ADD_BASIC(edd, E_Sticky, "gw", w, EET_T_INT);
    EET_DATA_DESCRIPTOR_ADD_BASIC(edd, E_Sticky, "gh", h, EET_T_INT);
-   EET_DATA_DESCRIPTOR_ADD_BASIC(edd, E_Sticky, "cr", r, EET_T_INT);
-   EET_DATA_DESCRIPTOR_ADD_BASIC(edd, E_Sticky, "cg", g, EET_T_INT);
-   EET_DATA_DESCRIPTOR_ADD_BASIC(edd, E_Sticky, "cb", b, EET_T_INT);
-   EET_DATA_DESCRIPTOR_ADD_BASIC(edd, E_Sticky, "ca", a, EET_T_INT);
    EET_DATA_DESCRIPTOR_ADD_BASIC(edd, E_Sticky, "st", stick, EET_T_INT);
    EET_DATA_DESCRIPTOR_ADD_BASIC(edd, E_Sticky, "lk", locked, EET_T_INT);   
    EET_DATA_DESCRIPTOR_ADD_BASIC(edd, E_Sticky, "tm", theme, EET_T_STRING);    
@@ -74,7 +68,9 @@ _estickies_config_version_edd(void)
    return edd;
 }
 
-int
+/* FUNCTIONS WHICH HAVE PROTOTYPES DEFINED IN STICKIES.H.
+ */
+ESAPI int
 _e_config_init(void)
 {
    // make sure ~/.e exists and is a dir
@@ -106,7 +102,7 @@ _e_config_init(void)
    return 1;
 }
 
-int
+ESAPI int
 _e_config_shutdown(void)
 {
    _e_config_stickies_edd = NULL;
@@ -121,7 +117,7 @@ _e_config_shutdown(void)
    return 1;
 }
 
-E_Config_Version *
+ESAPI E_Config_Version *
 _e_config_version_parse(char *version)
 {
    E_Config_Version *v;
@@ -140,7 +136,7 @@ _e_config_version_parse(char *version)
  *                     return 0 if v1 == v2
  *                     return -1 if v1 < v2
  */
-int
+ESAPI int
 _e_config_version_compare(E_Config_Version *v1, E_Config_Version *v2)
 {
    if (v1->major > v2->major)
@@ -161,7 +157,7 @@ _e_config_version_compare(E_Config_Version *v1, E_Config_Version *v2)
    return 0;
 }
 
-void
+ESAPI void
 _e_config_defaults_apply(E_Stickies *ss)
 {
    ss->version = _e_config_version_parse(VERSION);
@@ -170,7 +166,7 @@ _e_config_defaults_apply(E_Stickies *ss)
    ss->theme = strdup(DEFAULT_THEME);
 }     
 
-int
+ESAPI int
 _e_config_load(E_Stickies *ss)
 {
    Eet_File *ef;
@@ -233,7 +229,7 @@ _e_config_load(E_Stickies *ss)
    return 1;
 }
 
-int
+ESAPI int
 _e_config_save(E_Stickies *ss)
 {
    int ret;

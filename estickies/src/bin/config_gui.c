@@ -6,13 +6,8 @@
 #define NOT_DEFAULT 0
 #define MAKE_DEFAULT 1
 
-extern E_Stickies *ss;
-
-static int _e_theme_apply = STICKY_ONLY;
-static int _e_theme_default = NOT_DEFAULT;
-static Evas_Object *win, *preview, *thumbs, *composite_check;
-char buf[PATH_MAX];
-
+/* INTERNAL FUNCTIONS, USUALLY CALLBACKS PROTOTYPES.
+ */
 static void _e_theme_stickies_all_cb(void *data, Evas_Object *obj, void *event_info);
 static void _e_theme_sticky_only_cb(void *data, Evas_Object *obj, void *event_info);
 static void _e_theme_make_default_cb(void *data, Evas_Object *obj, void *event_info);
@@ -22,48 +17,54 @@ static void _e_theme_cancel_cb(void *data, Evas_Object *obj, void *event_info);
 static void _e_theme_chooser_item_selected_cb(void *data, Evas_Object *obj, void *event_info);
 static void _e_theme_apply_now(E_Sticky *s);
 
-Eina_Bool
+/* INTERNAL DEFINES
+ */
+static int _e_theme_apply = STICKY_ONLY;
+static int _e_theme_default = NOT_DEFAULT;
+static Evas_Object *win, *preview, *thumbs, *composite_check;
+char buf[PATH_MAX];
+
+/* FUNCTIONS WHICH HAVE PROTOTYPES DEFINED IN STICKIES.H.
+ */
+ESAPI Eina_Bool
 _e_sticky_exists(E_Sticky *s)
 {
    if (eina_list_data_find(ss->stickies, s)) return EINA_TRUE;
    return EINA_FALSE;
 }
 
-void
+ESAPI void
 _e_theme_chooser_show(E_Sticky *s)
 {
+   // defines
    Eina_List *themes;
-   char *theme;
-
-   Evas_Object *background, *ok_button, *apply_button, *cancel_button, *button_hbox, *option_vbox, *frame, *button, *rdg, *vbox, *hbox, *ic;
    Elm_List_Item *row;
-
+   Evas_Object *background, *ok_button, *apply_button, *cancel_button, *button_hbox, *option_vbox, *frame, *button, *rdg, *vbox, *hbox, *ic;
+   char *theme;
+   //////////
    win = elm_win_add(NULL, "estickies-themechooser", ELM_WIN_BASIC);
    elm_win_title_set(win, _("Estickies - Configuration"));
    evas_object_smart_callback_add(win, "delete,request", _e_theme_cancel_cb, NULL);
    evas_object_show(win);
-
+   //////////
    background = elm_bg_add(win);
    evas_object_size_hint_weight_set(background, 1.0, 1.0);
    elm_win_resize_object_add(win, background);
    evas_object_show(background);
-
-   /* main vbox */
+   ////////// MAIN VBOX
    vbox = elm_box_add(win);
    evas_object_size_hint_weight_set(vbox, 1.0, 1.0);
    elm_box_horizontal_set(vbox, 0);
    elm_win_resize_object_add(win, vbox);
    evas_object_show(vbox);
-
-   /* hbox to hold tree and preview */
+   ////////// HBOX TO HOLD TREE AND PREVIEW
    hbox = elm_box_add(win);
    elm_box_horizontal_set(hbox, 1);
    evas_object_size_hint_weight_set(hbox, 1.0, 1.0);
    evas_object_size_hint_align_set(hbox, -1.0, -1.0);
    elm_box_pack_end(vbox, hbox);
    evas_object_show(hbox);
-
-   /* the preview, an image */
+   ////////// PREVIEW, AN IMAGE
    preview = elm_image_add(win);
    snprintf(buf, sizeof(buf), "%s/images/preview_bg.png", PACKAGE_DATA_DIR);
    elm_image_file_set(preview, buf, NULL);
@@ -72,14 +73,12 @@ _e_theme_chooser_show(E_Sticky *s)
    evas_object_size_hint_weight_set(preview, 1.0, 1.0);
    evas_object_size_hint_align_set(preview, -1.0, -1.0);
    evas_object_show(preview);
-
-   /* tree to hold the thumbs */
+   ////////// TREE TO HOLD THE THUMBS
    thumbs = elm_list_add(win);
    evas_object_size_hint_weight_set(thumbs, 1.0, 1.0);
    evas_object_size_hint_align_set(thumbs, -1.0, -1.0);
    elm_list_multi_select_set(thumbs, 0);
-
-   /* scan for themes and add them to the list */
+   ////////// SCAN FOR THEMES
    snprintf(buf, sizeof(buf), "%s/themes", PACKAGE_DATA_DIR);
    themes = ecore_file_ls(buf);
    EINA_LIST_FREE(themes, theme)
@@ -103,21 +102,19 @@ _e_theme_chooser_show(E_Sticky *s)
    elm_list_go(thumbs);
    elm_box_pack_start(hbox, thumbs);
    evas_object_show(thumbs);
-
-   /* box to store the check buttons */
+   ////////// BOX TO STORE CHECKS
    frame = elm_frame_add(win);
    elm_frame_label_set(frame, _("Options"));
    evas_object_size_hint_weight_set(frame, 1.0, 0.0);
    evas_object_size_hint_align_set(frame, -1.0, 0.0);
    elm_box_pack_end(vbox, frame);
    evas_object_show(frame);
-
+   //////////
    option_vbox = elm_box_add(win);
    elm_box_horizontal_set(option_vbox, 0);
    elm_frame_content_set(frame, option_vbox);
    evas_object_show(option_vbox);
-
-   /* check buttons for various options */
+   ////////// CHECKS FOR VARIOUS OPTIONS
    button = elm_radio_add(win);
    elm_radio_label_set(button, _("Apply to this sticky only"));
    elm_radio_state_value_set(button, 0);
@@ -125,7 +122,7 @@ _e_theme_chooser_show(E_Sticky *s)
    elm_box_pack_end(option_vbox, button);
    rdg = button;
    evas_object_show(button);
-
+   //////////
    button = elm_radio_add(win);
    elm_radio_label_set(button, _("Apply to all stickies"));
    elm_radio_state_value_set(button, 1);
@@ -133,49 +130,49 @@ _e_theme_chooser_show(E_Sticky *s)
    evas_object_smart_callback_add(button, "changed", _e_theme_stickies_all_cb, NULL);
    elm_box_pack_end(option_vbox, button);
    evas_object_show(button);
-
+   //////////
    button = elm_check_add(win);
    elm_check_label_set(button, _("Make this my default theme"));
    elm_check_state_set(button, 0);
    evas_object_smart_callback_add(button, "changed", _e_theme_make_default_cb, NULL);
    elm_box_pack_end(option_vbox, button);
    evas_object_show(button);
-
+   //////////
    composite_check = elm_check_add(win);
    elm_check_label_set(composite_check, _("Use composite extension"));
    elm_check_state_set(composite_check, ss->composite);
    evas_object_smart_callback_add(composite_check, "changed", NULL, NULL);
    elm_box_pack_end(option_vbox, composite_check);
    evas_object_show(composite_check);
-
-   /* box to store Ok / Apply / Cancel */
+   ////////// BOX TO STORE OK/APPLY/CANCEL
    button_hbox = elm_box_add(win);
    elm_box_horizontal_set(button_hbox, 1);
    elm_box_pack_end(vbox, button_hbox);
    evas_object_show(button_hbox);
-
-   /* the buttons themselves */
+   ////////// THE BUTTONS THEMSELVES
    ok_button = elm_button_add(win);
    elm_button_label_set(ok_button, _("OK"));
    evas_object_smart_callback_add(ok_button, "clicked", _e_theme_ok_cb, s);
    elm_box_pack_end(button_hbox, ok_button);
    evas_object_show(ok_button);
-
+   //////////
    apply_button = elm_button_add(win);
    elm_button_label_set(apply_button, _("Apply"));
    evas_object_smart_callback_add(apply_button, "clicked", _e_theme_apply_cb, s);
    elm_box_pack_end(button_hbox, apply_button);
    evas_object_show(apply_button);
-
+   //////////
    cancel_button = elm_button_add(win);
    elm_button_label_set(cancel_button, _("Close"));
    evas_object_smart_callback_add(cancel_button, "clicked", _e_theme_cancel_cb, s);
    elm_box_pack_end(button_hbox, cancel_button);
    evas_object_show(cancel_button);
-
+   //////////
    evas_object_resize(win, 450, 410);
 }
 
+/* CALLBACKS THEMSELVES
+ */
 static void 
 _e_theme_chooser_item_selected_cb(void *data, Evas_Object *obj, void *event_info)
 {

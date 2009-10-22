@@ -7,7 +7,7 @@ static Ecore_Hash *_e_plugin_loaded;
 static int _e_plugin_unload_from_ptr(Ecore_Plugin *plugin);
 int _e_plugin_unload(const char *plugin_name);
 /* initialize the plugin subsystem */
-int _e_plugin_init()
+ESAPI int _e_plugin_init()
 {
 #ifdef HAVE_EXPERIMENTAL
    char path[PATH_MAX];
@@ -29,7 +29,7 @@ int _e_plugin_init()
 }
 
 /* shutdown the plugin subsystem */
-int _e_plugin_shutdown()
+ESAPI int _e_plugin_shutdown()
 {
 #ifdef HAVE_EXPERIMENTAL
    Ecore_List *keys;
@@ -50,7 +50,7 @@ int _e_plugin_shutdown()
 }
 
 /* load a plugin and run its on_load() function if available */
-int _e_plugin_load(const char *plugin_name)
+ESAPI int _e_plugin_load(const char *plugin_name)
 {
 #ifdef HAVE_EXPERIMENTAL
    Ecore_Plugin *plugin = NULL;
@@ -73,7 +73,7 @@ int _e_plugin_load(const char *plugin_name)
 }
 
 /* unload a plugin and call its on_unload() function */
-int _e_plugin_unload(const char *plugin_name)
+ESAPI int _e_plugin_unload(const char *plugin_name)
 {
 #ifdef HAVE_EXPERIMENTAL
    Ecore_Plugin *plugin = NULL;
@@ -96,7 +96,7 @@ int _e_plugin_unload(const char *plugin_name)
 /* subsystem internal functions */
 
 /* unload a plugin from the Ecore_Plugin pointer */
-static int _e_plugin_unload_from_ptr(Ecore_Plugin *plugin)
+ESAPI static int _e_plugin_unload_from_ptr(Ecore_Plugin *plugin)
 {
 #ifdef HAVE_EXPERIMENTAL
    int *(*on_unload)(void);

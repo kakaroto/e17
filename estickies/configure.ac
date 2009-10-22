@@ -3,7 +3,7 @@ dnl Process this file with autoconf to produce a configure script.
 # get rid of that stupid cache mechanism
 rm -f config.cache
 
-AC_INIT([estickies], [0.1.0], [quaker66@gmail.com])
+AC_INIT([estickies], [0.2.0], [quaker66@gmail.com])
 
 AC_PREREQ([2.52])
 AC_CONFIG_SRCDIR([configure.ac])
@@ -109,6 +109,8 @@ data/images/Makefile
 data/themes/Makefile
 data/themes/default/Makefile
 data/themes/default/images/Makefile
+data/themes/mc/Makefile
+data/themes/mc/images/Makefile
 po/Makefile.in
 ])
 

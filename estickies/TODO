@@ -1,17 +1,19 @@
 Main stuff:
 
-- **** FIX BUGS!!!! **** (like the problem when you close options and show it again)
-- add support for more than one theme(needs elementary implementation)
+- **** FIX BUGS!!!! ****
+- make the entry text color modifeable.. maybe remove elm_entry and do my own edje implementation?
+- add buttons "keep it on top" "keep it below windows"
+- lock check should lock also sticky position.
+- do documentation, implement its own public API.
+- fix estickies so it does not run only under X11 - make it run on Windows.
 
 Medium priority:
 
-- do documentation, implement its own public API.
 - write plugin system
-- fix estickies so it does not run only under X11 - make it run on Windows.
+- Sqlite for stickies
 
 Nice to have:
 
-- Sqlite for stickies
 - plugins for drawer and everything e17 modules
 - add some more stuff here to this TODO
 
