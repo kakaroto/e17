@@ -22,7 +22,7 @@ _e_sticky_win_add(E_Sticky *s)
    elm_win_borderless_set(s->win, 1);
    //////////
    s->xwin = elm_win_xwindow_get(s->win);
-   //ecore_x_netwm_window_state_set(s->xwin, s->state, num);
+   ecore_x_netwm_window_state_set(s->xwin, s->state, num);
 }
 
 ESAPI void
