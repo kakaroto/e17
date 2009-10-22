@@ -21,6 +21,8 @@
 #include "image_blend_solid_middle_border.c"
 #include "image_blend_solid_border.c"
 #include "image_blend_border_recolor.c"
+#include "image_map_rotate.c"
+#include "image_map_solid_rotate.c"
 #include "image_quality_scale.c"
 #include "image_data_argb.c"
 #include "image_data_argb_alpha.c"

@@ -45,6 +45,8 @@ image_blend_border.c \
 image_blend_solid_middle_border.c \
 image_blend_solid_border.c \
 image_blend_border_recolor.c \
+image_map_rotate.c \
+image_map_solid_rotate.c \
 image_quality_scale.c \
 image_data_argb.c \
 image_data_argb_alpha.c \
