@@ -440,12 +440,15 @@ _e_sticky_mouse_move_cb(void *data, Evas *e, Evas_Object *obj, void *event_info)
 {
    E_Sticky *s = data;
 
-   if (_e_sticky_is_moving)
+   if (!s->locked)
      {
-	     int x = 0;
-	     int y = 0;
-	     ecore_x_pointer_last_xy_get(&x, &y);
-	     _e_sticky_move(s,  x-_e_sticky_mouse_x,  y-_e_sticky_mouse_y);
+	if (_e_sticky_is_moving)
+	{
+	  int x = 0;
+	  int y = 0;
+	  ecore_x_pointer_last_xy_get(&x, &y);
+	  _e_sticky_move(s,  x-_e_sticky_mouse_x,  y-_e_sticky_mouse_y);
+	}
      }
 }
 
