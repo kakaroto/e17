@@ -8,6 +8,9 @@ images {
    image: "button_close.png" COMP;
    image: "button_lock.png" COMP;
    image: "button_stick.png" COMP;
+   image: "button_above.png" COMP;
+   image: "button_below.png" COMP;
+   image: "button_normal.png" COMP;
 }
 
 collections {
@@ -184,10 +187,10 @@ collections {
 	    }
 	 }
 	/*
-	 * ACTIONS TOGGLE PART
+	 * BELOW BUTTON
 	 */
-	 part { name: "actions_toggle_bg";
-	    mouse_events: 0;
+	 part { name: "below_button_bg";
+	    mouse_events: 1;
 	    scale: 1;
 	    description { state: "default" 0.0;
 	       rel1 {
@@ -196,6 +199,132 @@ collections {
 	       }
 	       rel2 {
 		  relative: 0.5 0.15;
+		  to: "background";
+	       }
+	       align: 0.0 0.5;
+	       min: 16 16;
+	       max: 16 16;
+	       aspect: 1.0 1.0;
+	       aspect_preference: VERTICAL;
+               image.normal: "button_up.png";
+               fill.smooth : 0;
+	    }
+	    description { state: "toggled" 0.0;
+	       inherit: "default" 0.0;
+               image.normal: "button_toggled.png";
+            }
+	 }
+         part { name: "below_button_over";
+	    mouse_events: 0;
+	    scale: 1;
+	    description { state: "default" 0.0;
+               rel1 {
+                  to: "below_button_bg";
+               }
+               rel2 {
+                  to: "below_button_bg";
+               }
+               color: 255 255 255 255;
+               image.normal: "button_below.png";
+	    }
+	 }
+	/*
+	 * NORMAL BUTTON
+	 */
+	 part { name: "normal_button_bg";
+	    mouse_events: 1;
+	    scale: 1;
+	    description { state: "default" 0.0;
+	       rel1 {
+		  relative: 0.5 0.05;
+		  to: "background";
+	       }
+	       rel2 {
+		  relative: 0.6 0.15;
+		  to: "background";
+	       }
+	       align: 0.0 0.5;
+	       min: 16 16;
+	       max: 16 16;
+	       aspect: 1.0 1.0;
+	       aspect_preference: VERTICAL;
+               image.normal: "button_up.png";
+               fill.smooth : 0;
+	    }
+	    description { state: "toggled" 0.0;
+	       inherit: "default" 0.0;
+               image.normal: "button_toggled.png";
+            }
+	 }
+         part { name: "normal_button_over";
+	    mouse_events: 0;
+	    scale: 1;
+	    description { state: "default" 0.0;
+               rel1 {
+                  to: "normal_button_bg";
+               }
+               rel2 {
+                  to: "normal_button_bg";
+               }
+               color: 255 255 255 255;
+               image.normal: "button_normal.png";
+	    }
+	 }
+	/*
+	 * ABOVE BUTTON
+	 */
+	 part { name: "above_button_bg";
+	    mouse_events: 1;
+	    scale: 1;
+	    description { state: "default" 0.0;
+	       rel1 {
+		  relative: 0.6 0.05;
+		  to: "background";
+	       }
+	       rel2 {
+		  relative: 0.7 0.15;
+		  to: "background";
+	       }
+	       align: 0.0 0.5;
+	       min: 16 16;
+	       max: 16 16;
+	       aspect: 1.0 1.0;
+	       aspect_preference: VERTICAL;
+               image.normal: "button_up.png";
+               fill.smooth : 0;
+	    }
+	    description { state: "toggled" 0.0;
+	       inherit: "default" 0.0;
+               image.normal: "button_toggled.png";
+            }
+	 }
+         part { name: "above_button_over";
+	    mouse_events: 0;
+	    scale: 1;
+	    description { state: "default" 0.0;
+               rel1 {
+                  to: "above_button_bg";
+               }
+               rel2 {
+                  to: "above_button_bg";
+               }
+               color: 255 255 255 255;
+               image.normal: "button_above.png";
+	    }
+	 }
+	/*
+	 * ACTIONS TOGGLE PART
+	 */
+	 part { name: "actions_toggle_bg";
+	    mouse_events: 0;
+	    scale: 1;
+	    description { state: "default" 0.0;
+	       rel1 {
+		  relative: 0.7 0.05;
+		  to: "background";
+	       }
+	       rel2 {
+		  relative: 0.8 0.15;
 		  to: "background";
 	       }
 	       align: 0.0 0.5;
@@ -318,6 +447,75 @@ collections {
 	    source: "estickies";
 	    action:  STATE_SET "default" 0.0;
 	    target: "actions_toggle_bg";
+	 }
+	/*
+	 * BELOW BUTTON PART
+	 */
+	 program {
+	    name:   "below_button_click";
+	    signal: "mouse,down,1";
+	    source: "below_button_bg";
+	    action: STATE_SET "toggled" 0.0;
+	    target: "below_button_bg";
+	 }
+	 program {
+	    name:   "below_button_unclick";
+	    signal: "mouse,up,1";
+	    source: "below_button_bg";
+	    action: STATE_SET "default" 0.0;
+	    target: "below_button_bg";
+	 }
+	 program {
+	    name:   "below_button_unclick2";
+	    signal: "mouse,up,1";
+	    source: "below_button_bg";
+	    action: SIGNAL_EMIT "estickies,below_button,click" "";
+	 }
+	/*
+	 * ABOVE BUTTON PART
+	 */
+	 program {
+	    name:   "above_button_click";
+	    signal: "mouse,down,1";
+	    source: "above_button_bg";
+	    action: STATE_SET "toggled" 0.0;
+	    target: "above_button_bg";
+	 }
+	 program {
+	    name:   "above_button_unclick";
+	    signal: "mouse,up,1";
+	    source: "above_button_bg";
+	    action: STATE_SET "default" 0.0;
+	    target: "above_button_bg";
+	 }
+	 program {
+	    name:   "above_button_unclick2";
+	    signal: "mouse,up,1";
+	    source: "above_button_bg";
+	    action: SIGNAL_EMIT "estickies,above_button,click" "";
+	 }
+	/*
+	 * NORMAL BUTTON PART
+	 */
+	 program {
+	    name:   "normal_button_click";
+	    signal: "mouse,down,1";
+	    source: "normal_button_bg";
+	    action: STATE_SET "toggled" 0.0;
+	    target: "normal_button_bg";
+	 }
+	 program {
+	    name:   "normal_button_unclick";
+	    signal: "mouse,up,1";
+	    source: "normal_button_bg";
+	    action: STATE_SET "default" 0.0;
+	    target: "normal_button_bg";
+	 }
+	 program {
+	    name:   "normal_button_unclick2";
+	    signal: "mouse,up,1";
+	    source: "normal_button_bg";
+	    action: SIGNAL_EMIT "estickies,normal_button,click" "";
 	 }
       }
    }

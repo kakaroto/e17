@@ -10,6 +10,8 @@ _e_sticky_new(void)
    s->theme = NULL;
    s->stick = EINA_FALSE;
    s->locked = EINA_FALSE;
+   s->above = EINA_FALSE;
+   s->below = EINA_FALSE;
    _e_sticky_window_add(s);
 
    return s;

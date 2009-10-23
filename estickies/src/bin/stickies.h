@@ -115,6 +115,9 @@ struct _E_Sticky
    Eina_Bool stick;
    Eina_Bool locked;
    Eina_Bool list_shown;
+   // booleans used to set if window is below or above
+   Eina_Bool above;
+   Eina_Bool below;
    // booleans used for edje object
    Eina_Bool stick_toggle_state;
    Eina_Bool lock_toggle_state;
@@ -131,7 +134,7 @@ struct _E_Sticky
    // various window stuff
    Ecore_X_Window xwin;
    Ecore_Event_Handler *evhandler;
-   Ecore_X_Window_State state[2];
+   Ecore_X_Window_State state[3];
 };
 
 // global stickies settings

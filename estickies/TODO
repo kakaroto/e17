@@ -2,7 +2,6 @@ Main stuff:
 
 - **** FIX BUGS!!!! ****
 - make the entry text color modifeable.. maybe remove elm_entry and do my own edje implementation?
-- add buttons "keep it on top" "keep it below windows"
 - do documentation, implement its own public API.
 - fix estickies so it does not run only under X11 - make it run on Windows.
 

@@ -266,5 +266,10 @@ _e_theme_apply_now(E_Sticky *s)
    EINA_LIST_FOREACH(ss->stickies, l, composite)
      {
 	_e_sticky_properties_set(composite);
+	if (composite->list_shown)
+	  {
+	    composite->actions_toggle_state = EINA_TRUE;
+	    edje_object_signal_emit(composite->sticky, "estickies,actions_toggle,on", "estickies");
+	  }
      }
 }

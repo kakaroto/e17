@@ -42,6 +42,10 @@ _e_sticky_properties_set(E_Sticky *s)
      edje_object_signal_emit(s->sticky, "estickies,lock_toggle,on", "estickies");
    else
      edje_object_signal_emit(s->sticky, "estickies,lock_toggle,off", "estickies");
+
+   s->actions_toggle_state = EINA_FALSE;
+   edje_object_signal_emit(s->sticky, "estickies,actions_toggle,off", "estickies");
+
    _e_sticky_lock_toggle(s);
    if (ss->composite)
      {
@@ -53,5 +57,22 @@ _e_sticky_properties_set(E_Sticky *s)
 	elm_win_shaped_set(s->win, 1);
 	elm_win_alpha_set(s->win, 0);
      }
+
+   if (s->above && !s->below)
+     {
+	ecore_x_netwm_state_request_send(s->xwin, ecore_x_window_root_get(s->xwin), s->state[3], ECORE_X_WINDOW_STATE_ABOVE, 1);
+	s->state[3] = ECORE_X_WINDOW_STATE_ABOVE;
+     }
+   else if (!s->above && s->below)
+     {
+	ecore_x_netwm_state_request_send(s->xwin, ecore_x_window_root_get(s->xwin), s->state[3], ECORE_X_WINDOW_STATE_BELOW, 1);
+	s->state[3] = ECORE_X_WINDOW_STATE_BELOW;
+     }
+   else
+     {
+	ecore_x_netwm_state_request_send(s->xwin, ecore_x_window_root_get(s->xwin), s->state[3], ECORE_X_WINDOW_STATE_UNKNOWN, 0);
+	s->state[3] = ECORE_X_WINDOW_STATE_UNKNOWN;
+     }
+
 }
 

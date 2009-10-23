@@ -22,6 +22,10 @@ _estickies_config_sticky_edd(void)
    EET_DATA_DESCRIPTOR_ADD_BASIC(edd, E_Sticky, "gy", y, EET_T_INT);
    EET_DATA_DESCRIPTOR_ADD_BASIC(edd, E_Sticky, "gw", w, EET_T_INT);
    EET_DATA_DESCRIPTOR_ADD_BASIC(edd, E_Sticky, "gh", h, EET_T_INT);
+
+   EET_DATA_DESCRIPTOR_ADD_BASIC(edd, E_Sticky, "ab", above, EET_T_INT);
+   EET_DATA_DESCRIPTOR_ADD_BASIC(edd, E_Sticky, "bl", below, EET_T_INT);
+
    EET_DATA_DESCRIPTOR_ADD_BASIC(edd, E_Sticky, "st", stick, EET_T_INT);
    EET_DATA_DESCRIPTOR_ADD_BASIC(edd, E_Sticky, "lk", locked, EET_T_INT);   
    EET_DATA_DESCRIPTOR_ADD_BASIC(edd, E_Sticky, "tm", theme, EET_T_STRING);    

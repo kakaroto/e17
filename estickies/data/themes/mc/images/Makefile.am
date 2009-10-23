@@ -7,5 +7,8 @@ button_lock.png \
 button_over.png \
 button_toggled.png \
 button_stick.png \
+button_above.png \
+button_below.png \
+button_normal.png \
 preview.png \
 watermark.png
