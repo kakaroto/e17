@@ -30,7 +30,7 @@ ESAPI void
 _e_sticky_lock_toggle(E_Sticky *s)
 {
    s->locked = s->lock_toggle_state;
-   elm_entry_editable_set(s->textentry, !s->locked);
+   elm_object_disabled_set(s->textentry, s->locked);
 }
 
 ESAPI void

@@ -558,14 +558,15 @@ EAPI int
 elm_main(int argc, char **argv)
 {
    E_Sticky *s;
+   char theme[PATH_MAX];
 
    ss = E_NEW(1, E_Stickies);
    ss->stickies = NULL;
 
-  // initialize gettext
-  setlocale(LC_ALL, "");
-  bindtextdomain(PACKAGE, PACKAGE_LOCALE_DIR);
-  textdomain(PACKAGE);
+   // initialize gettext
+   setlocale(LC_ALL, "");
+   bindtextdomain(PACKAGE, PACKAGE_LOCALE_DIR);
+   textdomain(PACKAGE);
 
    home = getenv("HOME");
    if (!home)
@@ -577,6 +578,9 @@ elm_main(int argc, char **argv)
    if (!eet_init()) return 1;
    if (!_e_config_init()) return 1;
    _e_config_load(ss);
+
+   snprintf(theme, sizeof(theme), "%s/themes/%s", PACKAGE_DATA_DIR, DEFAULT_THEME);
+   elm_theme_extension_add(theme);
 
    elm_finger_size_set(1);
 

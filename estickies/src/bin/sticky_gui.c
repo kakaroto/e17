@@ -30,9 +30,6 @@ _e_sticky_edje_add(E_Sticky *s)
 {
    char theme[PATH_MAX];
 
-   snprintf(theme, sizeof(theme), "%s/themes/%s", PACKAGE_DATA_DIR, DEFAULT_THEME);
-   elm_theme_extension_add(theme);
-
    if (!s->theme) s->theme = strdup(ss->theme);
    snprintf(theme, sizeof(theme), "%s/themes/%s", PACKAGE_DATA_DIR, s->theme);
 

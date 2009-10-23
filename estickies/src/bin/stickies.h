@@ -75,14 +75,6 @@ typedef struct _E_Stickies E_Stickies;
 
 // STRUCTURES THEMSELVES
 
-// the sticky config for EET
-struct _E_Config_Sticky
-{
-   int x, y, w, h;
-   int r, g, b, a;
-   char *text;
-};
-
 // global stickies settings for EET
 struct _E_Config_Stickies
 {
