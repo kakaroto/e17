@@ -11,4 +11,6 @@ noinst_LTLIBRARIES = libenesim_renderer_shape.la
 libenesim_renderer_shape_la_SOURCES = \
 rectangle.c \
 circle.c \
-ellipse.c
+ellipse.c \
+figure.c \
+path.c

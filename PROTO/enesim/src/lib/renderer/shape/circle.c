@@ -67,9 +67,14 @@ static void _outlined_fill_paint(Enesim_Renderer *r, int x, int y,
 			&& fpaint)
 		fpaint->span(fpaint, x, y, len, dst);
 
+#if 0
+        renderer_affine_setup(r, x, y, &xx, &yy);
+	xx -= xx0;
+	yy -= yy0;
+#else
 	xx = (axx * x) + (axy * y) + axz - xx0;
 	yy = (ayx * x) + (ayy * y) + ayz - yy0;
-
+#endif
 	while (d < e)
 	{
 		unsigned int q0 = 0;

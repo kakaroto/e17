@@ -224,7 +224,12 @@ static Eina_Bool _state_setup(Enesim_Renderer *r)
 	if (s->w < 1 || s->h < 1)
 		return EINA_FALSE;
 
+	if (!s->s)
+		return EINA_FALSE;
+
 	_state_cleanup(r);
+	if (!s->s)
+		return EINA_FALSE;
 	enesim_surface_size_get(s->s, &sw, &sh);
 
 	if (sw != s->w && sh != s->h)

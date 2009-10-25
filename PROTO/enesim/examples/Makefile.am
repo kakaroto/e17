@@ -35,6 +35,8 @@ enesim_bench_rectangle.c \
 enesim_bench_perlin.c \
 enesim_bench_gradient_linear.c \
 enesim_bench_compound.c \
+enesim_bench_figure.c \
+enesim_bench_path.c \
 image.c
 
 endif

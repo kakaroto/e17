@@ -130,6 +130,27 @@ EAPI void enesim_renderer_compound_layer_add(Enesim_Renderer *r,
 		Enesim_Renderer *rend, Enesim_Rop rop);
 EAPI void enesim_renderer_compound_clear(Enesim_Renderer *r);
 
+EAPI Enesim_Renderer * enesim_renderer_figure_new(void);
+EAPI void enesim_renderer_figure_polygon_add(Enesim_Renderer *p);
+EAPI void enesim_renderer_figure_polygon_vertex_add(Enesim_Renderer *p, float x, float y);
+EAPI void enesim_renderer_figure_extents_get(Enesim_Renderer *p, int *lx, int *ty, int *rx, int *by);
+EAPI void enesim_renderer_figure_clear(Enesim_Renderer *p);
+
+EAPI Enesim_Renderer * enesim_renderer_path_new(void);
+EAPI void enesim_renderer_path_move_to(Enesim_Renderer *p, float x, float y);
+EAPI void enesim_renderer_path_line_to(Enesim_Renderer *p, float x, float y);
+EAPI void enesim_renderer_path_squadratic_to(Enesim_Renderer *p, float x, float y);
+EAPI void enesim_renderer_path_quadratic_to(Enesim_Renderer *p, float ctrl_x,
+		float ctrl_y, float x, float y);
+EAPI void enesim_renderer_path_cubic_to(Enesim_Renderer *p, float ctrl_x0,
+		float ctrl_y0, float ctrl_x, float ctrl_y, float x,
+		float y);
+EAPI void enesim_renderer_path_scubic_to(Enesim_Renderer *p, float ctrl_x, float ctrl_y,
+		float x, float y);
+EAPI void enesim_renderer_path_extents_get(Enesim_Renderer *p, int *lx, int *ty, int *rx,
+		int *by);
+EAPI void enesim_renderer_path_clear(Enesim_Renderer *p);
+
 /**
  * @}
  */
