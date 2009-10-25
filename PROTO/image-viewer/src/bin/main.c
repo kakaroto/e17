@@ -1160,7 +1160,7 @@ on_idler(void *data)
 	       {
 		  if (iv->ethumb_client && iv->flags.ethumb_connection)
 		    thumb_queue_process(iv);
-		  else
+		  else if (!iv->ethumb_client)
 		    iv->ethumb_client = ethumb_client_connect(on_thumb_connect, iv, NULL);
 	       }
 #endif
@@ -1614,6 +1614,9 @@ create_main_win(IV *iv)
    Evas_Object *o, *ic;
    char buf[4096];
    
+   /*
+    * XXX: configurable themes
+    * */
    snprintf(buf, sizeof(buf), "%s/themes/default.edj", PACKAGE_DATA_DIR);
    elm_theme_extension_add(buf);
    iv->theme_file = eina_stringshare_add(buf);
@@ -1631,9 +1634,6 @@ create_main_win(IV *iv)
    iv->gui.bg = o;
    set_image_bg_style(iv);
    
-   /*
-    * XXX: configurable themes
-    * */
    o = elm_layout_add(iv->gui.win);
    elm_layout_file_set(o, buf, "iv/main");
    evas_object_size_hint_weight_set(o, 1.0, 1.0);
