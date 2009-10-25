@@ -48,9 +48,7 @@
 /* attributes */
 #define __FLAG_TITLE            1
 #define __FLAG_MINI_ICON        2
-#define __FLAG_FIXED_HORIZONTAL 4
-#define __FLAG_FIXED_VERTICAL   8
-#define __FLAG_FIXED            12
+#define __FLAG_TITLE_AND_ICON   3
 
 /* fill rules for imageclasses */
 #define __STRETCH              0
