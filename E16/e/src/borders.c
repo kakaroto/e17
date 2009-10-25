@@ -76,6 +76,7 @@ static void
 BorderWinpartITclassApply(EWin * ewin, int i, int force)
 {
    EWinBit            *ewb = &ewin->bits[i];
+   WinPart            *ebp = &ewin->border->part[i];
    ImageState         *is;
    TextState          *ts;
    const char         *txt;
@@ -90,26 +91,25 @@ BorderWinpartITclassApply(EWin * ewin, int i, int force)
 	   EwinGetTitle(ewin));
 #endif
 
-   is = ImageclassGetImageState(ewin->border->part[i].iclass, ewb->state,
+   is = ImageclassGetImageState(ebp->iclass, ewb->state,
 				ewin->state.active, EoIsSticky(ewin));
 
    ts = NULL;
    txt = NULL;
    flags = 0;
-   switch (ewin->border->part[i].flags)
+   if (ebp->flags & FLAG_TITLE)
      {
-     case FLAG_TITLE:
 	txt = EwinGetTitle(ewin);
-	if (txt && ewin->border->part[i].tclass)
-	   ts = TextclassGetTextState(ewin->border->part[i].tclass, ewb->state,
-				      ewin->state.active, EoIsSticky(ewin));
-	flags = ITA_BGPMAP | ITA_JUSTV;
-	break;
-     case FLAG_MINIICON:
-	flags = ITA_BGPMAP;
-	break;
-     default:
-	break;
+	if (txt && ebp->tclass)
+	  {
+	     ts = TextclassGetTextState(ebp->tclass, ewb->state,
+					ewin->state.active, EoIsSticky(ewin));
+	     flags = ITA_BGPMAP | ITA_JUSTV;
+	  }
+     }
+   if (ebp->flags & FLAG_MINIICON)
+     {
+	flags |= ITA_BGPMAP;
      }
 
    if (!force && ewb->is == is && ewb->ts == ts)
@@ -117,11 +117,11 @@ BorderWinpartITclassApply(EWin * ewin, int i, int force)
    ewb->is = is;
    ewb->ts = ts;
 
-   ITApply(ewb->win, ewin->border->part[i].iclass, is,
-	   ewb->state, ewin->state.active, EoIsSticky(ewin),
-	   ST_BORDER, ewin->border->part[i].tclass, ts, txt, flags);
+   ITApply(ewb->win, ebp->iclass, is, ewb->state,
+	   ewin->state.active, EoIsSticky(ewin), ST_BORDER,
+	   ebp->tclass, ts, txt, flags);
 
-   if (ewin->border->part[i].flags == FLAG_MINIICON)
+   if (ebp->flags & FLAG_MINIICON)
      {
 	EImage             *im;
 
@@ -135,20 +135,41 @@ BorderWinpartITclassApply(EWin * ewin, int i, int force)
 	     x = y = 0;
 	     w = WinGetW(ewb->win);
 	     h = WinGetH(ewb->win);
-	     pad = ImageclassGetPadding(ewin->border->part[i].iclass);
+	     pad = ImageclassGetPadding(ebp->iclass);
+	     if (ts)
+	       {
+		  /* Occupy square on one side */
+		  switch (ts->style.orientation)
+		    {
+		    default:
+		    case FONT_TO_RIGHT:
+		    case FONT_TO_LEFT:
+		       w = h;
+		       break;
+		    case FONT_TO_UP:
+		       y = h - w;
+		    case FONT_TO_DOWN:
+		       h = w;
+		       break;
+		    }
+	       }
 	     if (pad)
 	       {
+		  /* Probably not quite right for vertical borders */
 		  x += pad->left;
 		  y += pad->top;
-		  w -= pad->right;
-		  h -= pad->bottom;
+		  w -= pad->left + pad->right;
+		  h -= pad->top + pad->bottom;
 	       }
+	     if (w < 8 || h < 8)
+		goto skip_icon;
 	     pmap = EGetWindowBackgroundPixmap(ewb->win);
 	     EImageRenderOnDrawable(im, ewb->win, pmap,
 				    EIMAGE_BLEND | EIMAGE_ANTI_ALIAS,
 				    x, y, w, h);
-	     EImageFree(im);
 	     EClearWindow(ewb->win);
+	   skip_icon:
+	     EImageFree(im);
 	  }
      }
 }
