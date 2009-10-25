@@ -585,48 +585,47 @@ static void shape_rasterizer_setup(Eon_Shape *s, Rasterizer_Drawer_Data *d, Enes
 /*============================================================================*
  *                                  Polygon                                   *
  *============================================================================*/
-typedef struct Polygon
+static void polygon_setup(Paint *p)
 {
-	Eon_Polygon *p;
-	Enesim_Rasterizer *r;
-} Polygon;
-
-static void * polygon_create(Eon_Polygon *ep)
-{
-	Polygon *p = calloc(1, sizeof(Polygon));
-	p->p = ep;
-	/* FIXME alias by now */
-	p->r = enesim_rasterizer_cpsc_new();
-
-	return p;
+	shape_renderer_setup(p);
 }
 
 static void polygon_point_add(void *pd, int x, int y)
 {
-	Polygon *p = pd;
+	Paint *p = pd;
 
-	/* create a rasterizer */
-	/* TODO check the quality to create a kiia or a cpsc rasterizer */
-	/* add a vertex to it */
-	enesim_rasterizer_vertex_add(p->r, x, y);
+	enesim_renderer_figure_polygon_vertex_add(p->r, x, y);
+}
+
+static void polygon_style(Paint *p, Paint *rel)
+{
+	polygon_setup(p);
+	paint_style_setup(p, rel, 0, 0);
 }
 
 static void polygon_render(void *pd, void *cd, Eina_Rectangle *clip)
 {
-	Polygon *p = pd;
-	Rasterizer_Drawer_Data sdd;
+	Paint *p = pd;
 
-	shape_rasterizer_setup((Eon_Shape *)p->p, &sdd, cd);
-	enesim_rasterizer_generate(p->r, clip, sdd.cb, &sdd);
+	polygon_setup(p);
+	paint_renderer_setup(p, 0, 0);
+	enesim_renderer_state_setup(p->r);
+	paint_renderer_draw(p->p, cd, p->r, clip);
 }
 
-static void polygon_delete(void *ep)
+static void * polygon_create(Eon_Polygon *ep)
 {
-	Polygon *p = ep;
+	Paint *p;
 
-	enesim_rasterizer_delete(p->r);
-	free(p);
+	p = malloc(sizeof(Paint));
+	p->p = (Eon_Paint *)ep;
+	p->r = enesim_renderer_figure_new();
+	enesim_renderer_figure_polygon_add(p->r);
+	p->style_setup = polygon_style;
+
+	return p;
 }
+
 /*============================================================================*
  *                                   Rect                                     *
  *============================================================================*/
@@ -944,10 +943,10 @@ EAPI void eon_engine_enesim_setup(Eon_Engine *e)
 	e->circle_create = circle_create;
 	e->circle_render = circle_render;
 	e->circle_delete = paint_delete;
-#if 0
 	e->polygon_create = polygon_create;
 	e->polygon_point_add = polygon_point_add;
 	e->polygon_render = polygon_render;
+#if 0
 	e->text_create = text_create;
 	e->text_render = text_render;
 #endif
