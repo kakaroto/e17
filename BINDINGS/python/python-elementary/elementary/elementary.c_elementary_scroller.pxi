@@ -50,4 +50,11 @@ cdef class Scroller(Object):
     def bounce_set(self, h, v):
         elm_scroller_bounce_set(self.obj, h, v)
 
+    def page_relative_set(self, h_pagerel, v_pagerel):
+        elm_scroller_page_relative_set(self.obj, h_pagerel, v_pagerel)
 
+    def page_size_set(self, h_pagesize, v_pagesize):
+        elm_scroller_page_size_set(self.obj, h_pagesize, v_pagesize)
+
+    def region_bring_in(self, x, y, w, h):
+        elm_scroller_region_bring_in(self.obj, x, y, w, h)

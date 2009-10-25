@@ -261,18 +261,21 @@ cdef extern from "Elementary.h":
     evas.c_evas.Evas_Object *elm_button_icon_get(evas.c_evas.Evas_Object *obj)
     void elm_button_style_set(evas.c_evas.Evas_Object *obj, char *style)
     char* elm_button_label_get(evas.c_evas.Evas_Object *obj)
-    
+
     # Scroller object
     evas.c_evas.Evas_Object *elm_scroller_add(evas.c_evas.Evas_Object *parent)
     void elm_scroller_content_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Evas_Object *child)
     void elm_scroller_content_min_limit(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool w, evas.c_evas.Eina_Bool h)
-    void         elm_scroller_region_show(evas.c_evas.Evas_Object *obj, evas.c_evas.Evas_Coord x, evas.c_evas.Evas_Coord y, evas.c_evas.Evas_Coord w, evas. c_evas.Evas_Coord h)
+    void elm_scroller_region_show(evas.c_evas.Evas_Object *obj, evas.c_evas.Evas_Coord x, evas.c_evas.Evas_Coord y, evas.c_evas.Evas_Coord w, evas. c_evas.Evas_Coord h)
     void elm_scroller_policy_set(evas.c_evas.Evas_Object *obj, Elm_Scroller_Policy policy_h, Elm_Scroller_Policy policy_v)
     void elm_scroller_region_get(evas.c_evas.Evas_Object *obj, evas.c_evas.Evas_Coord *x, evas.c_evas.Evas_Coord *y, evas.c_evas.Evas_Coord *w, evas.c_evas.Evas_Coord *h)
     void elm_scroller_child_size_get(evas.c_evas.Evas_Object *obj, evas.c_evas.Evas_Coord *w, evas.c_evas.Evas_Coord *h)
     void elm_scroller_bounce_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool h_bounce, evas.c_evas.Eina_Bool v_bounce)
-    
-    # Label object  
+    void elm_scroller_page_relative_set(evas.c_evas.Evas_Object *obj, double h_pagerel, double v_pagerel)
+    void elm_scroller_page_size_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Evas_Coord h_pagesize, evas.c_evas.Evas_Coord v_pagesize)
+    void elm_scroller_region_bring_in(evas.c_evas.Evas_Object *obj, evas.c_evas.Evas_Coord x, evas.c_evas.Evas_Coord y, evas.c_evas.Evas_Coord w, evas.c_evas.Evas_Coord h)
+
+    # Label object
     evas.c_evas.Evas_Object *elm_label_add(evas.c_evas.Evas_Object *parent)
     void elm_label_label_set(evas.c_evas.Evas_Object *obj, char *label)
     
