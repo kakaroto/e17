@@ -242,7 +242,7 @@ EwinBorderUpdateInfo(EWin * ewin)
 
    for (i = 0; i < ewin->border->num_winparts; i++)
      {
-	if (ewin->border->part[i].flags == FLAG_TITLE)
+	if (ewin->border->part[i].flags & FLAG_TITLE)
 	   BorderWinpartITclassApply(ewin, i, 1);
      }
 }
@@ -315,7 +315,7 @@ BorderWinpartCalc(EWin * ewin, int i, int ww, int hh)
     * just a little bit more than the size of the title text.
     */
 
-   if (max == 0 && ewin->border->part[i].flags == FLAG_TITLE)
+   if (max == 0 && ewin->border->part[i].flags & FLAG_TITLE)
      {
 	int                 dummywidth, wmax, wmin;
 	ImageClass         *iclass;
@@ -380,7 +380,7 @@ BorderWinpartCalc(EWin * ewin, int i, int ww, int hh)
 	 * size to just a little bit more than the size of the title text.
 	 */
 
-	if (max == 0 && ewin->border->part[i].flags == FLAG_TITLE)
+	if (max == 0 && ewin->border->part[i].flags & FLAG_TITLE)
 	  {
 	     int                 dummyheight;
 	     ImageClass         *iclass;
