@@ -27,6 +27,13 @@
 
 typedef struct _Eupnp_Subscriber Eupnp_Subscriber;
 
+/**
+ * @enum Eupnp_Event_Type
+ *
+ * Built-in event types.
+ *
+ * @see eupnp_event_bus_event_type_new()
+ */
 typedef enum {
    EUPNP_EVENT_NONE,
    EUPNP_EVENT_DEVICE_FOUND,
@@ -37,8 +44,22 @@ typedef enum {
    EUPNP_EVENT_COUNT,
 } Eupnp_Event_Type;
 
+/**
+ * @typedef Eupnp_Callback
+ *
+ * A generic callback used in many parts of the Eupnp library.
+ *
+ * @see EUPNP_CALLBACK()
+ */
 typedef Eina_Bool (*Eupnp_Callback) (void *user_data, Eupnp_Event_Type event_type, void *event_data);
 
+/**
+ * @def EUPNP_CALLBACK(func)
+ *
+ * Converts a function to an Eupnp_Callback callback type.
+ *
+ * @param func Function to convert to an Eupnp_Callback
+ */
 #define EUPNP_CALLBACK(func) ((Eupnp_Callback) func)
 
 struct _Eupnp_Subscriber {

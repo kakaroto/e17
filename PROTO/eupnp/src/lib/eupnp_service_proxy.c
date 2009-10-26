@@ -1,4 +1,4 @@
-/* Eupnp - UPnP library
+/** Eupnp - UPnP library
  *
  * Copyright (C) 2009 Andre Dieb Martins <andre.dieb@gmail.com>
  *
@@ -39,11 +39,11 @@
 #include "eupnp_soap.h"
 #include "eupnp_private.h"
 
-/*
+/**
  * Private API
  */
 
-/*
+/**
  * Appends an argument to a soap call message.
  *
  * FIXME The error above introduces a leak for pointer message.
@@ -57,7 +57,7 @@
 		 arg_name) < 0) ? EINA_FALSE : EINA_TRUE)
 
 
-/*
+/**
  * Allocates and copies 'len' characters from 'from' to 'to'.
  *
  * Used internally for action response XML parsing.
@@ -76,7 +76,7 @@
 	((char *)to)[len] = '\0';                               \
      }
 
-/*
+/**
  * Action response XML parsing and action request structures
  */
 
@@ -118,7 +118,7 @@ struct _Eupnp_Action_Request {
 
 static int _action_log_dom = -1;
 
-/*
+/**
  * Creates a new action parser state.
  */
 static void
@@ -131,7 +131,7 @@ eupnp_action_resp_parser_state_new(Eupnp_Action_Resp_Parser_State *s)
    s->evented_vars = NULL;
 }
 
-/*
+/**
  * SAX callback for writing OUT arguments received on action response.
  */
 static void
@@ -170,7 +170,7 @@ _characters(void *state, const xmlChar *ch, int len)
      }
 }
 
-/*
+/**
  * Prints action response XML parsing error to stdout.
  *
  * FIXME Make it print using the parser assigned logger.
@@ -184,7 +184,7 @@ error(void *state, const char *msg, ...)
    va_end(args);
 }
 
-/*
+/**
  * SAX callback for the start element event.
  */
 static void
@@ -232,7 +232,7 @@ start_element_ns(void *state, const xmlChar *name, const xmlChar *prefix, const 
      }
 }
 
-/*
+/**
  * SAX callback for the end element event.
  */
 static void
@@ -273,7 +273,7 @@ end_element_ns(void *state, const xmlChar *name, const xmlChar *prefix, const xm
      }
 }
 
-/*
+/**
  * Creates a new action response XML parser.
  */
 static Eupnp_Action_Resp_Parser *
@@ -325,7 +325,7 @@ eupnp_action_resp_parser_new(const char *first_chunk, int first_chunk_len, Eupnp
    return p;
 }
 
-/*
+/**
  * Frees an action response XML parser.
  */
 static void
@@ -336,7 +336,7 @@ eupnp_action_resp_parser_free(Eupnp_Action_Resp_Parser *p)
    free(p);
 }
 
-/*
+/**
  * Finishes parsing an action response.
  */
 static Eina_Bool
@@ -361,7 +361,7 @@ eupnp_action_resp_parse_check_finished(Eupnp_Action_Request *req)
       eupnp_action_resp_parse_finish(req);
 }
 
-/*
+/**
  * High level action response parsing function. This function is supposed to be
  * called progressively if you don't have all data ready at once. You can also
  * send all data in just one call.
@@ -422,7 +422,7 @@ eupnp_action_resp_parse_xml_buffer(const char *buffer, int buffer_len, Eupnp_Act
      return ret;
 }
 
-/*
+/**
  * Event notification subscription structure
  */
 struct _Eupnp_Event_Subscriber {
@@ -436,7 +436,7 @@ struct _Eupnp_Event_Subscriber {
    int sid_len;
 };
 
-/*
+/**
  * Frees an event subscription structure when the subscription process is over.
  */
 static void
@@ -454,7 +454,7 @@ static int _eupnp_service_proxy_init_count = 0;
 static int _log_dom = -1;
 extern int EUPNP_ERROR_SERVICE_PARSER_INSUFFICIENT_FEED;
 
-/*
+/**
  * Callbacks for SCPD XML download
  */
 
@@ -500,7 +500,7 @@ _download_completed(Eupnp_Request request, void *data, const Eupnp_HTTP_Request 
    eupnp_service_proxy_unref(proxy);
 }
 
-/*
+/**
  * Callbacks for actions request responses
  */
 
@@ -545,7 +545,7 @@ _request_completed(Eupnp_Request request, void *data, const Eupnp_HTTP_Request *
    eupnp_action_request_free(action_req);
 }
 
-/*
+/**
  * Subscription
  */
 
@@ -580,7 +580,7 @@ _subscribe_completed(Eupnp_Request request, void *data, const Eupnp_HTTP_Request
    eupnp_core_http_request_free(request);
 }
 
-/*
+/**
  * Unsubscription
  */
 
@@ -602,7 +602,7 @@ _unsubscribe_completed(Eupnp_Request request, void *data, const Eupnp_HTTP_Reque
 }
 
 
-/*
+/**
  * Event notification
  */
 
@@ -619,7 +619,7 @@ _event_notification(void *data, Eupnp_Event_Type event_type, void *event_data)
    return EINA_TRUE;
 }
 
-/*
+/**
  * Frees a proxy.
  *
  * This function is hidden for avoiding major problems. One should use only
@@ -663,7 +663,7 @@ eupnp_service_proxy_free(Eupnp_Service_Proxy *proxy)
    free(proxy);
 }
 
-/*
+/**
  * Requests the service's SCPD XML for mounting the proxy.
  */
 static void
@@ -748,7 +748,7 @@ eupnp_service_proxy_dump(Eupnp_Service_Proxy *proxy)
  * Public API
  */
 
-/*
+/**
 * Initializes the service proxy module.
 *
 * @return On error, returns 0. Otherwise, returns the number of times it's been
@@ -814,7 +814,7 @@ eupnp_service_proxy_init(void)
    return 0;
 }
 
-/*
+/**
  * Shuts down the service proxy module.
  *
  * @return 0 if completely shutted down the module.
@@ -836,7 +836,7 @@ eupnp_service_proxy_shutdown(void)
    return --_eupnp_service_proxy_init_count;
 }
 
-/*
+/**
  * @brief Creates a service proxy.
  *
  * Creates a service proxy capable of controlling the service. When ready, the
@@ -875,7 +875,7 @@ eupnp_service_proxy_new(Eupnp_Service_Info *service, Eupnp_Service_Proxy_Ready_C
    eupnp_service_proxy_fetch(proxy, service->location, service->scpd_URL);
 }
 
-/*
+/**
  * @brief Retrieves a new reference of a service proxy.
  *
  * @return A new reference to @p proxy
@@ -893,7 +893,7 @@ eupnp_service_proxy_ref(Eupnp_Service_Proxy *proxy)
    return proxy;
 }
 
-/*
+/**
  * @brief Unreference a proxy.
  *
  * Unreferences a proxy. In case no more references are present, the proxy is

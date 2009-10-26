@@ -33,6 +33,89 @@
 #include "eupnp_private.h"
 
 
+/**
+ * @addtogroup Eupnp_Event_Bus Event Bus
+ *
+ * The event bus module abstracts communication between components by
+ * implementing the Publish/subscribe pattern. On this paradigm, the publisher
+ * publishes a message on the bus, which routes the messages to interested
+ * subscribers (if any).
+ *
+ * @section eupnp_event_bus_initialize Initializing the Bus
+ *
+ * Before using the bus, it must be initialized by calling
+ * eupnp_event_bus_init(). When the bus is not needed anymore, it must be shut
+ * down with eupnp_event_bus_shutdown() so that resources allocated are freed.
+ *
+ * @section eupnp_event_bus_subscribe Subscribing the Bus
+ *
+ * A subscriber subscribes on the bus for a specific event type (see @ref
+ * Eupnp_Event_Type) by calling eupnp_event_bus_subscribe(). Messages
+ * published on the type are forwarded to the @ref Eupnp_Callback passed.
+ *
+ * Here we illustrate how to subscribe a callback to a built-in @ref Eupnp_Event_Type :
+ *
+ * @code
+ * #include <Eupnp.h>
+ *
+ * static Eina_Bool
+ * subscriber(void *user_data, Eupnp_Event_Type event_type, void *event_data)
+ * {
+ *     // Event posted on the bus
+ * }
+ *
+ * int
+ * main(int argc, char *argv[])
+ * {
+ *     eupnp_event_bus_init();
+ *
+ *     eupnp_event_bus_subscribe(EUPNP_EVENT_SERVICE_FOUND, EUPNP_CALLBACK(subscriber), NULL);
+ *
+ *     // Application main procedure
+ *     main_loop();
+ *
+ *     // Shutdown procedure
+ *     eupnp_event_bus_shutdown();
+ *     return 0;
+ * }
+ * @endcode
+ *
+ * @section eupnp_event_bus_unsubscribe Unsubscribing
+ *
+ * When subscribing, eupnp_event_bus_subscribe() returns a @ref
+ * Eupnp_Event_Subscriber object, which can be used for unsubscribing (see
+ * eupnp_event_bus_unsubscribe()).
+ *
+ * During shutdown procedure, the bus automatically unsubscribes callbacks and
+ * frees all resources allocated, so, it's not obligatory for the user to
+ * unsubscribe every callback.
+ *
+ * @section eupnp_event_bus_publish Publishing to the Bus
+ *
+ * For publishing to the bus, one must use the eupnp_event_bus_publish()
+ * function.
+ *
+ * @code
+ * eupnp_event_bus_publish(EUPNP_EVENT_SERVICE_FOUND, service_object);
+ * @endcode
+ *
+ * @subsection eupnp_event_bus_publish_custom Custom Event Types
+ *
+ * Custom event types can be created with the eupnp_event_bus_event_type_new()
+ * function. Calls to this function always return a new event type.
+ *
+ * @code
+ * // Create a custom event type
+ * Eupnp_Event_Type ev = eupnp_event_bus_event_type_new();
+ *
+ * // Publishing an event with the custom type
+ * eupnp_event_bus_publish(ev, some_object);
+ * @endcode
+ *
+ * 
+ *
+ */
+
 /*
  * Private API
  */
@@ -92,11 +175,11 @@ eupnp_event_bus_clear_subscribers(void)
  * Public API
  */
 
-/*
+/**
  * Initializes the event bus module.
  *
  * @return On error, returns 0. Otherwise, returns the number of times it's been
- * called.
+ *         called.
  */
 EAPI int
 eupnp_event_bus_init(void)
@@ -128,7 +211,7 @@ eupnp_event_bus_init(void)
    return ++_eupnp_event_bus_main_count;
 }
 
-/*
+/**
  * Shuts down the event bus module.
  *
  * @return 0 if completely shutted down the module.
@@ -148,11 +231,13 @@ eupnp_event_bus_shutdown(void)
    return --_eupnp_event_bus_main_count;
 }
 
-/*
+/**
  * Publishes an event on the bus.
  *
  * @param event_type Event type to be published
  * @param event_data Event data
+ *
+ * @see eupnp_event_bus_subscribe(), eupnp_event_bus_unsubscribe(), eupnp_event_bus_event_type_new()
  */
 EAPI void
 eupnp_event_bus_publish(Eupnp_Event_Type event_type, void *event_data)
@@ -187,7 +272,7 @@ eupnp_event_bus_publish(Eupnp_Event_Type event_type, void *event_data)
 }
 
 
-/*
+/**
  * Subscribes a callback on the bus.
  *
  * Subscribes a callback on the bus for a specific event type. Whenever events
@@ -202,6 +287,8 @@ eupnp_event_bus_publish(Eupnp_Event_Type event_type, void *event_data)
  *
  * @return A handler that can be used for unsubscribing - an Eupnp_Subscriber
  *         instance.
+ *
+ * @see eupnp_event_bus_unsubscribe(), eupnp_event_bus_event_type_new()
  */
 EAPI Eupnp_Subscriber *
 eupnp_event_bus_subscribe(Eupnp_Event_Type event_type, Eupnp_Callback cb, void *user_data)
@@ -223,13 +310,15 @@ eupnp_event_bus_subscribe(Eupnp_Event_Type event_type, Eupnp_Callback cb, void *
    return s;
 }
 
-/*
+/**
  * Unsubscribes a callback from the bus.
  *
  * Removes a callback subscription from the bus, given the Eupnp_Subscriber
  * handler received during subscription.
  *
  * @param s subscription handler - an Eupnp_Subscriber instance.
+ *
+ * @see eupnp_event_bus_subscribe()
  */
 EAPI void
 eupnp_event_bus_unsubscribe(Eupnp_Subscriber *s)
@@ -251,6 +340,13 @@ eupnp_event_bus_unsubscribe(Eupnp_Subscriber *s)
    WARN_D(_log_dom, "Could not find subscriber %p on subscribers list", s);
 }
 
+/**
+ * Creates a new event type.
+ *
+ * Creates a new event type that can be posted on the bus.
+ *
+ * @return Event type created
+ */
 EAPI Eupnp_Event_Type
 eupnp_event_bus_event_type_new(void)
 {

@@ -1,4 +1,4 @@
-/* Eupnp - UPnP library
+/** Eupnp - UPnP library
  *
  * Copyright (C) 2009 Andre Dieb Martins <andre.dieb@gmail.com>
  *
@@ -31,7 +31,7 @@
 #include "eupnp_control_point.h"
 
 
-/*
+/**
  * Private API
  */
 
@@ -39,7 +39,7 @@ static int _eupnp_control_point_main_count = 0;
 static int _log_dom = -1; // Logging domain
 static Eupnp_Subscriber *_device_found = NULL;
 
-/*
+/**
  * Subscribed function for DEVICE_FOUND events.
  *
  * Starts the process of fetching
@@ -57,7 +57,7 @@ _on_device_found(void *user_data, Eupnp_Event_Type type, void *event_data)
  * Public API
  */
 
-/*
+/**
  * Initializes the control point module.
  *
  * @return On error, returns 0. Otherwise, returns the number of times it's been
@@ -125,7 +125,7 @@ eupnp_control_point_init(void)
    return 0;
 }
 
-/*
+/**
  * Shuts down the control point
  *
  * @return 0 if completely shutted down the module.
@@ -148,7 +148,7 @@ eupnp_control_point_shutdown(void)
    return --_eupnp_control_point_main_count;
 }
 
-/*
+/**
  * Constructor for the Eupnp_Control_Point class.
  *
  * @return A new Eupnp_Control_Point instance. On error, returns NULL.
@@ -167,9 +167,9 @@ eupnp_control_point_new(void)
 	return NULL;
      }
 
-   c->ssdp_server = eupnp_ssdp_server_new();
+   c->ssdp_client = eupnp_ssdp_client_new();
 
-   if (!c->ssdp_server)
+   if (!c->ssdp_client)
      {
 	ERROR_D(_log_dom, "Could not create a ssdp instance for the control point.");
 	free(c);
@@ -179,7 +179,7 @@ eupnp_control_point_new(void)
    return c;
 }
 
-/*
+/**
  * Destructor for the Eupnp_Control_Point class.
  *
  * @param c Eupnp_Control_Point instance to be destroyed.
@@ -189,7 +189,7 @@ eupnp_control_point_free(Eupnp_Control_Point *c)
 {
    CHECK_NULL_RET(c);
    DEBUG_D(_log_dom, "Freeing control point %p", c);
-   if (c->ssdp_server) eupnp_ssdp_server_free(c->ssdp_server);
+   if (c->ssdp_client) eupnp_ssdp_client_free(c->ssdp_client);
    free(c);
 }
 
@@ -198,7 +198,7 @@ eupnp_control_point_start(Eupnp_Control_Point *c)
 {
    CHECK_NULL_RET_VAL(c, EINA_FALSE);
    DEBUG_D(_log_dom, "Starting control point %p", c);
-   eupnp_ssdp_server_start(c->ssdp_server);
+   eupnp_ssdp_client_start(c->ssdp_client);
    return EINA_TRUE;
 }
 
@@ -207,11 +207,11 @@ eupnp_control_point_stop(Eupnp_Control_Point *c)
 {
    CHECK_NULL_RET_VAL(c, EINA_FALSE);
    DEBUG_D(_log_dom, "Stopping control point %p", c);
-   eupnp_ssdp_server_stop(c->ssdp_server);
+   eupnp_ssdp_client_stop(c->ssdp_client);
    return EINA_TRUE;
 }
 
-/*
+/**
  * Retrieves the socket associated with the ssdp module.
  *
  * This socket is used for the UPnP Discovery step and for broadcasting MSearch
@@ -225,15 +225,15 @@ EAPI int
 eupnp_control_point_ssdp_socket_get(Eupnp_Control_Point *c)
 {
    CHECK_NULL_RET_VAL(c, -1);
-   CHECK_NULL_RET_VAL(c->ssdp_server, -1);
-   DEBUG_D(_log_dom, "Retrieving control point %p socket %d", c, c->ssdp_server->udp_transport->socket);
-   return c->ssdp_server->udp_transport->socket;
+   CHECK_NULL_RET_VAL(c->ssdp_client, -1);
+   DEBUG_D(_log_dom, "Retrieving control point %p socket %d", c, c->ssdp_client->udp_transport->socket);
+   return c->ssdp_client->udp_transport->socket;
 }
 
-/*
+/**
  * Sends a discovery message to the network (a.k.a. MSearch)
  *
- * @param ssdp Eupnp_SSDP_Server instance.
+ * @param c Control point
  * @param mx maximum wait time in seconds for devices to wait before answering
  *        the search message.
  * @param search_target target for the search. Common values are "ssdp:all",
@@ -246,5 +246,5 @@ EAPI Eina_Bool
 eupnp_control_point_discovery_request_send(Eupnp_Control_Point *c, int mx, const char *search_target)
 {
    DEBUG_D(_log_dom, "Discovery request sent for target %s with mx %d", search_target, mx);
-   return eupnp_ssdp_discovery_request_send(c->ssdp_server, mx, search_target);
+   return eupnp_ssdp_discovery_request_send(c->ssdp_client, mx, search_target);
 }

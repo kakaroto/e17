@@ -1,4 +1,4 @@
-/* Eupnp - UPnP library
+/** Eupnp - UPnP library
  *
  * Copyright (C) 2009 Andre Dieb Martins <andre.dieb@gmail.com>
  *
@@ -34,7 +34,7 @@
 #include "eupnp_event_bus.h"
 #include "eupnp_private.h"
 
-/*
+/**
  * Private API
  */
 
@@ -145,7 +145,7 @@ eupnp_device_info_embedded_device_list_clear(Eupnp_Device_Info *d)
  * Public API
  */
 
-/*
+/**
  * Initializes the device info module.
  *
  * @return On error, returns 0. Otherwise, returns the number of times the
@@ -211,7 +211,7 @@ eupnp_device_info_init(void)
    return 0;
 }
 
-/*
+/**
  * Shuts down the device info module.
  *
  * @return 0 if completely shutted down the module.
@@ -233,7 +233,7 @@ eupnp_device_info_shutdown(void)
    return --_eupnp_device_info_main_count;
 }
 
-/*
+/**
  * Constructor for the Eupnp_Device_Info class.
  *
  * @param udn Device's udn
@@ -288,7 +288,7 @@ eupnp_device_info_new(const char *udn, const char *location, void *resource, voi
    return d;
 }
 
-/*
+/**
  * Destructor for the Eupnp_Device_Info class.
  *
  * @param d Eupnp_Device_Info instance
@@ -315,7 +315,7 @@ eupnp_device_info_free(Eupnp_Device_Info *d)
    if (d->services) eupnp_device_info_service_list_clear(d);
    if (d->embedded_devices) eupnp_device_info_embedded_device_list_clear(d);
 
-   /* Free the shared resource */
+   /** Free the shared resource */
    if ((d->_resource) && (d->_resource_free))
       d->_resource_free(d->_resource);
    else
@@ -329,7 +329,7 @@ eupnp_device_info_free(Eupnp_Device_Info *d)
    free(d);
 }
 
-/*
+/**
  * Makes a reference to a Eupnp_Device_Info instance.
  *
  * @param device_info Instance to get the reference from
@@ -348,7 +348,7 @@ eupnp_device_info_ref(Eupnp_Device_Info *device_info)
    return device_info;
 }
 
-/*
+/**
  * Removes a reference to a Eupnp_Device_Info instance.
  *
  * @param device_info Instance to dereference

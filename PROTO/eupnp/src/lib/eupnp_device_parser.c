@@ -1,4 +1,4 @@
-/* Eupnp - UPnP library
+/** Eupnp - UPnP library
  *
  * Copyright (C) 2009 Andre Dieb Martins <andre.dieb@gmail.com>
  *
@@ -35,7 +35,7 @@
 #include "eupnp_service_info.h"
 #include "eupnp_private.h"
 
-/*
+/**
  * Private API
  */
 
@@ -115,7 +115,7 @@ struct _Eupnp_Device_Parser {
    xmlParserCtxtPtr ctx;
 };
 
-/*
+/**
  * Finishes parsing embedded devices by adding missing fields with inherited
  * information (e.g. import missing URLBase from parent device).
  *
@@ -721,7 +721,6 @@ eupnp_device_parse_check_finished(Eupnp_Device_Info *d)
 
 /*
  * Public API
- *
  */
 
 int EUPNP_ERROR_DEVICE_PARSER_INSUFFICIENT_FEED = 0;
@@ -811,7 +810,7 @@ eupnp_device_parser_shutdown(void)
 }
 
 
-/*
+/**
  * @return EINA_TRUE if parsed succesfully, EINA_FALSE otherwise.
  */
 Eina_Bool

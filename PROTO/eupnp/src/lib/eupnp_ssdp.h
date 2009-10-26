@@ -42,17 +42,22 @@
 #define EUPNP_SSDP_NOTIFY_BYEBYE "ssdp:byebye"
 
 
-/*
- * Shared strings, retrieve it with stringshare{ref|add}
+/**
+ * Shared strings, retrieve them with stringshare{ref|add}
  */
 EAPI char *_eupnp_ssdp_notify;
 EAPI char *_eupnp_ssdp_msearch;
 EAPI char *_eupnp_ssdp_http_version;
 
 
-typedef struct _Eupnp_SSDP_Server Eupnp_SSDP_Server;
+/**
+ * @typedef Eupnp_SSDP_Client
+ *
+ * SSDP client class.
+ */
+typedef struct _Eupnp_SSDP_Client Eupnp_SSDP_Client;
 
-struct _Eupnp_SSDP_Server {
+struct _Eupnp_SSDP_Client {
    Eupnp_UDP_Transport *udp_transport;
 
    /* Private */
@@ -63,11 +68,11 @@ struct _Eupnp_SSDP_Server {
 EAPI int                 eupnp_ssdp_init(void);
 EAPI int                 eupnp_ssdp_shutdown(void);
 
-EAPI Eupnp_SSDP_Server  *eupnp_ssdp_server_new(void);
-EAPI void                eupnp_ssdp_server_free(Eupnp_SSDP_Server *ssdp) EINA_ARG_NONNULL(1);
-EAPI Eina_Bool           eupnp_ssdp_server_start(Eupnp_SSDP_Server *ssdp) EINA_ARG_NONNULL(1);
-EAPI Eina_Bool           eupnp_ssdp_server_stop(Eupnp_SSDP_Server *ssdp) EINA_ARG_NONNULL(1);
-EAPI Eina_Bool           eupnp_ssdp_discovery_request_send(Eupnp_SSDP_Server *ssdp, int mx, const char *search_target) EINA_ARG_NONNULL(1,2,3);
+EAPI Eupnp_SSDP_Client  *eupnp_ssdp_client_new(void);
+EAPI void                eupnp_ssdp_client_free(Eupnp_SSDP_Client *c) EINA_ARG_NONNULL(1);
+EAPI Eina_Bool           eupnp_ssdp_client_start(Eupnp_SSDP_Client *c) EINA_ARG_NONNULL(1);
+EAPI Eina_Bool           eupnp_ssdp_client_stop(Eupnp_SSDP_Client *c) EINA_ARG_NONNULL(1);
+EAPI Eina_Bool           eupnp_ssdp_discovery_request_send(Eupnp_SSDP_Client *c, int mx, const char *search_target) EINA_ARG_NONNULL(1,2,3);
 
 
 #endif /* _EUPNP_SSDP_H */

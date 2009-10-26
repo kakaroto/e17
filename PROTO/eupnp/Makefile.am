@@ -11,13 +11,15 @@ MAINTAINERCLEANFILES = \
 	ltmain.sh \
 	missing
 
-SUBDIRS = src tools
+SUBDIRS = src doc tools
 
 EXTRA_DIST = \
 	README \
 	AUTHORS \
 	COPYING \
 	Doxyfile
+
+.PHONY: doc
 
 if USE_MODULE_EUPNP_ECORE
    pecore = eupnp-ecore.pc
@@ -26,6 +28,11 @@ endif
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = eupnp-0.pc $(pecore)
 
+
+# Documentation
+doc:
+	@echo "entering doc/"
+	make -C doc doc
 
 # Tests
 

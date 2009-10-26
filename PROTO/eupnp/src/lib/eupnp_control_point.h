@@ -42,7 +42,7 @@
 typedef struct _Eupnp_Control_Point Eupnp_Control_Point;
 
 struct _Eupnp_Control_Point {
-   Eupnp_SSDP_Server *ssdp_server;
+   Eupnp_SSDP_Client *ssdp_client;
 };
 
 EAPI int                  eupnp_control_point_init(void);

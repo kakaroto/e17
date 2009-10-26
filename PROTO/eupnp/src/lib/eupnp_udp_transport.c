@@ -1,4 +1,4 @@
-/* Eupnp - UPnP library
+/** Eupnp - UPnP library
  *
  * Copyright (C) 2009 Andre Dieb Martins <andre.dieb@gmail.com>
  *
@@ -37,11 +37,16 @@
 #include "eupnp_udp_transport.h"
 
 
-/*
+/**
+ * @addtogroup Eupnp_UDP_Transport UDP Transport
+ *
+ */
+
+/**
  * Private API
  */
 
-/*
+/**
  * Constructor for the Eupnp_UDP_Datagram class.
  *
  * @param host Host from the datagram came from
@@ -82,7 +87,7 @@ eupnp_udp_datagram_new(const char *host, int port, char *data, size_t data_len)
    return datagram;
 }
 
-/*
+/**
  * Destructor for the Eupnp_UDP_Datagram class.
  *
  * @param datagram Eupnp_UDP_Datagram instance to be destroyed
@@ -95,7 +100,7 @@ eupnp_udp_datagram_free(Eupnp_UDP_Datagram *datagram)
    free(datagram);
 }
 
-/*
+/**
  * Prepares a Eupnp_UDP_Transport instance for work
  *
  * Sets the socket non-blocking, binds it and sets multicast options.
@@ -141,7 +146,7 @@ eupnp_udp_transport_prepare(Eupnp_UDP_Transport *s)
  * Public API
  */
 
-/*
+/**
  * Constructor for the Eupnp_UDP_Transport class.
  *
  * @param addr Address to bind on
@@ -183,7 +188,7 @@ eupnp_udp_transport_new(const char *addr, int port, const char *iface_addr)
    return s;
 }
 
-/*
+/**
  * Closes the Eupnp_UDP_Transport socket.
  */
 EAPI int
@@ -193,7 +198,7 @@ eupnp_udp_transport_close(Eupnp_UDP_Transport *s)
    return close(s->socket);
 }
 
-/*
+/**
  * Destructor for the Eupnp_UDP_Transport class.
  *
  * @param s Eupnp_UDP_Transport instance to be destroyed.
@@ -204,7 +209,7 @@ eupnp_udp_transport_free(Eupnp_UDP_Transport *s)
    free(s);
 }
 
-/*
+/**
  * Receives a datagram from the socket.
  *
  * @param s Eupnp_UDP_Transport instance
@@ -236,7 +241,7 @@ eupnp_udp_transport_recv(Eupnp_UDP_Transport *s)
    return d;
 }
 
-/*
+/**
  * Receives a datagram from the socket and identifies the sender
  *
  * @param s Eupnp_UDP_Transport instance
@@ -272,7 +277,7 @@ eupnp_udp_transport_recvfrom(Eupnp_UDP_Transport *s)
    return d;
 }
 
-/*
+/**
  * Sends a UDP datagram to the specified destination.
  *
  * @param s Eupnp_UDP_Transport instance
@@ -303,7 +308,7 @@ eupnp_udp_transport_sendto(Eupnp_UDP_Transport *s, const void *buffer, const cha
    return cnt;
 }
 
-/*
+/**
  * Destructor for the Eupnp_UDP_Datagram class.
  *
  * @param datagram Eupnp_UDP_Datagram to be destroyed.

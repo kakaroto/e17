@@ -30,14 +30,74 @@
 
 static int _eupnp_main_count = 0;
 
+/**
+ * @page eupnp_app_writing Writing an Application
+ *
+ * In the following sections we will discuss the basic concepts of Eupnp, how to
+ * use it for writing an UPnP application and good practices.
+ *
+ * @section eupnp_sec_initializing Initializing Eupnp
+ *
+ * Before using Eupnp libraries and modules, eupnp_init() must be called from
+ * the main application. This call will perform the required initialization of
+ * the library.
+ *
+ * Once the library is no longer used, it must be shutted down by calling
+ * eupnp_shutdown(). This is usually done at the end of the main application, as
+ * illustrated below:
+ *
+ * @code
+ * #include <Eupnp.h>
+ *
+ * int
+ * main(int argc, char *argv[])
+ * {
+ *     eupnp_init();
+ *
+ *     // Application
+ *
+ *     eupnp_shutdown();
+ *
+ *     return 0;
+ * }
+ * @endcode
+ *
+ *
+ * eupnp_init() will return 0 whenever it fails to initialize the library
+ * (possibly lack of free memory, network down, etc). Otherwise, it'll return
+ * the number of times it's been called. The above code checks if the library
+ * was successfully initialized:
+ *
+ * @code
+ * #include <Eupnp.h>
+ *
+ * int
+ * main(int argc, char *argv[])
+ * {
+ *     if (!eupnp_init())
+ *       {
+ *           // Failed to initialize
+ *           return -1;
+ *       }
+ *
+ *     // Application
+ *
+ *     eupnp_shutdown();
+ *
+ *     return 0;
+ * }
+ * @endcode
+ *
+ */
 
-/*
+
+/**
  * Initializes Eupnp library.
  *
  * This function initializes all Eupnp modules.
  *
  * @return On error, returns 0. Otherwise, returns the number of times it's been
- * called.
+ *         called.
  */
 EAPI int
 eupnp_init(void)
@@ -98,7 +158,7 @@ eupnp_init(void)
    return 0;
 }
 
-/*
+/**
  * Shuts down the Eupnp library.
  *
  * @return 0 if completely shutted down.

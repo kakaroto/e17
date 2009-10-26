@@ -40,6 +40,83 @@
 #include "eupnp_private.h"
 
 
+/**
+ * @addtogroup Eupnp_SSDP_Client_Module SSDP Client
+ *
+ * This module implements the client-side of the SSDP specification. It is
+ * capable of searching for services through the local network.
+ *
+ * @section eupnp_ssdp_initialize Initializing the SSDP module
+ *
+ * For using the SSDP module, it must be initialized by calling
+ * eupnp_ssdp_init(). This call will allocate the required resources and setup
+ * it for use.
+ *
+ * When finished using the SSDP module, eupnp_ssdp_shutdown() must be called so
+ * that resources allocated are freed properly.
+ *
+ *
+ * @section eupnp_ssdp_instance Creating a SSDP Client
+ *
+ * For creating and destroying an Eupnp_SSDP_Client, use the
+ * eupnp_ssdp_client_new() and eupnp_ssdp_client_free() functions,
+ * respectivelly.
+ *
+ * The SSDP client starts listening for announcements once
+ * eupnp_ssdp_client_start() is called. For stopping listening, call
+ * eupnp_ssdp_client_stop().
+ *
+ * @section eupnp_ssdp_events Monitoring service announcements
+ *
+ * The utility of the SSDP client is to receive service annoucements. This is
+ * done through the Event_Bus module.
+ *
+ * For receiving announcements, one needs to subscribe on the bus for
+ * EUPNP_EVENT_SERVICE_FOUND and EUPNP_EVENT_SERVICE_GONE events
+ * (see eupnp_event_bus_subscribe() and eupnp_event_bus.h). Whenever a service announces it's presence
+ * or it's absence, these events are triggered and forwarded to your subscribed
+ * callback.
+ *
+ * @code
+ * #include <Eupnp.h>
+ *
+ * static Eina_Bool
+ * on_service_found(void *user_data, Eupnp_Event_Type event_type, void *event_data)
+ * {
+ *     // Service found
+ * }
+ *
+ * static Eina_Bool
+ * on_service_gone(void *user_data, Eupnp_Event_Type event_type, void *event_data)
+ * {
+ *     // Service is gone
+ * }
+ *
+ * int
+ * main(int argc, char *argv[])
+ * {
+ *     eupnp_event_bus_init();
+ *     Eupnp_SSDP_Client *client = eupnp_ssdp_client_new();
+ *
+ *     eupnp_event_bus_subscribe(EUPNP_EVENT_SERVICE_FOUND, EUPNP_CALLBACK(on_service_found), NULL);
+ *     eupnp_event_bus_subscribe(EUPNP_EVENT_SERVICE_GONE, EUPNP_CALLBACK(on_service_gone), NULL);
+ *
+ *     eupnp_ssdp_client_start(client);
+ *
+ *     // Application main procedure
+ *
+ *     main_loop();
+ *
+ *     // Shutdown procedure
+ *     eupnp_ssdp_client_stop(client);
+ *     eupnp_event_bus_shutdown();
+ *     return 0;
+ * }
+ *
+ * @endcode
+ *
+ */
+
 /*
  * Private API
  */
@@ -48,7 +125,7 @@ static int _eupnp_ssdp_main_count = 0;
 static int _log_dom = -1;
 
 
-/*
+/**
  * Parses the USN and finds out if it is a device or service announcement.
  * USN can be in the following forms:
  *    (1) uuid:device-UUID::upnp:rootdevice
@@ -142,7 +219,7 @@ parse_usn(const char *usn, const char **udn, int *udn_len, const char **service_
      }
 }
 
-/*
+/**
  * Processes a HTTP response message.
  *
  * Publishes EUPNP_EVENT_DEVICE_FOUND, EUPNP_EVENT_SERVICE_FOUND,
@@ -234,7 +311,7 @@ process_response(Eupnp_HTTP_Response *r)
       eupnp_http_response_free(r);
 }
 
-/*
+/**
  * Processes a NOTIFY request message.
  */
 static void
@@ -353,14 +430,14 @@ process_notify_request(Eupnp_HTTP_Request *m)
       eupnp_http_request_free(m);
 }
 
-/*
+/**
  * Called when a datagram is ready to be read from the socket. Parses it and
  * takes the appropriate actions, considering the method of the request.
  *
  * TODO auto-register me on the event loop.
  */
 static void
-_eupnp_ssdp_on_datagram_available(Eupnp_SSDP_Server *ssdp)
+_eupnp_ssdp_on_datagram_available(Eupnp_SSDP_Client *ssdp)
 {
    Eupnp_UDP_Datagram *d;
 
@@ -410,7 +487,7 @@ _eupnp_ssdp_on_datagram_available(Eupnp_SSDP_Server *ssdp)
      }
 }
 
-EAPI Eina_Bool
+static Eina_Bool
 _eupnp_ssdp_forward_sock_event(void *data, Eupnp_Fd_Handler fd_handler)
 {
    _eupnp_ssdp_on_datagram_available(data);
@@ -418,15 +495,15 @@ _eupnp_ssdp_forward_sock_event(void *data, Eupnp_Fd_Handler fd_handler)
 }
 
 /*
-* Public API
-*/
+ * Public API
+ */
 
-/*
-* Initializes the ssdp module.
-*
-* @return On error, returns 0. Otherwise, returns the number of times it's been
-* called.
-*/
+/**
+ * Initializes the ssdp module.
+ *
+ * @return On error, returns 0. Otherwise, returns the number of times it's been
+ * called.
+ */
 EAPI int
 eupnp_ssdp_init(void)
 {
@@ -491,7 +568,7 @@ if (_eupnp_ssdp_main_count) return ++_eupnp_ssdp_main_count;
    return 0;
 }
 
-/*
+/**
  * Shuts down the ssdp module.
  *
  * @return 0 if completely shutted down the module.
@@ -513,22 +590,22 @@ eupnp_ssdp_shutdown(void)
    return --_eupnp_ssdp_main_count;
 }
 
-/*
- * Constructor for the Eupnp_SSDP_Server class.
+/**
+ * Constructor for the Eupnp_SSDP_Client class.
  *
- * @return On success, a new Eupnp_SSDP_Server instance. Otherwise, NULL.
+ * @return On success, a new Eupnp_SSDP_Client instance. Otherwise, NULL.
  */
-EAPI Eupnp_SSDP_Server *
-eupnp_ssdp_server_new(void)
+EAPI Eupnp_SSDP_Client *
+eupnp_ssdp_client_new(void)
 {
-   Eupnp_SSDP_Server *ssdp;
+   Eupnp_SSDP_Client *ssdp;
 
-   ssdp = malloc(sizeof(Eupnp_SSDP_Server));
+   ssdp = malloc(sizeof(Eupnp_SSDP_Client));
 
    if (!ssdp)
      {
 	eina_error_set(EINA_ERROR_OUT_OF_MEMORY);
-	ERROR_D(_log_dom, "Could not create SSDP server instance.");
+	ERROR_D(_log_dom, "Could not create SSDP client instance.");
 	return NULL;
      }
 
@@ -538,7 +615,7 @@ eupnp_ssdp_server_new(void)
 
    if (!ssdp->udp_transport)
      {
-	ERROR_D(_log_dom, "Could not create SSDP server instance.");
+	ERROR_D(_log_dom, "Could not create SSDP client instance.");
 	free(ssdp);
 	return NULL;
      }
@@ -548,34 +625,47 @@ eupnp_ssdp_server_new(void)
    return ssdp;
 }
 
+/**
+ * Starts a SSDP client.
+ *
+ * Makes the SSDP client start listening for services announcements.
+ *
+ * @param c SSDP client to start
+ * @return EINA_TRUE on success, EINA_FALSE otherwise.
+ */
 EAPI Eina_Bool
-eupnp_ssdp_server_start(Eupnp_SSDP_Server *s)
+eupnp_ssdp_client_start(Eupnp_SSDP_Client *c)
 {
-   CHECK_NULL_RET_VAL(s, EINA_FALSE);
+   CHECK_NULL_RET_VAL(c, EINA_FALSE);
 
-   if (s->socket_handler)
+   if (c->socket_handler)
      {
-	WARN_D(_log_dom, "Tried to start SSDP Server twice.");
+	WARN_D(_log_dom, "Tried to start SSDP client twice.");
 	return EINA_FALSE;
      }
 
-   s->socket_handler = eupnp_core_fd_handler_add(s->udp_transport->socket, EUPNP_FD_EVENT_READ, _eupnp_ssdp_forward_sock_event, s);
+   c->socket_handler = eupnp_core_fd_handler_add(c->udp_transport->socket, EUPNP_FD_EVENT_READ, _eupnp_ssdp_forward_sock_event, c);
 
    return EINA_TRUE;
 }
 
+/**
+ * Stops a SSDP client.
+ *
+ * Stops a SSDP client from listening for services announcements.
+ */
 EAPI Eina_Bool
-eupnp_ssdp_server_stop(Eupnp_SSDP_Server *s)
+eupnp_ssdp_client_stop(Eupnp_SSDP_Client *c)
 {
-   CHECK_NULL_RET_VAL(s, EINA_FALSE);
+   CHECK_NULL_RET_VAL(c, EINA_FALSE);
 
-   if (!s->socket_handler)
+   if (!c->socket_handler)
      {
-	WARN_D(_log_dom, "Tried to stop SSDP Server when already stopped.");
+	WARN_D(_log_dom, "Tried to stop SSDP client when already stopped.");
 	return EINA_FALSE;
      }
 
-   if (eupnp_core_fd_handler_del(s->socket_handler))
+   if (eupnp_core_fd_handler_del(c->socket_handler))
      {
 	DEBUG_D(_log_dom, "Removed SSDP socket handler successfully.");
 	return EINA_TRUE;
@@ -585,23 +675,23 @@ eupnp_ssdp_server_stop(Eupnp_SSDP_Server *s)
    return EINA_FALSE;
 }
 
-/*
- * Destructor for the Eupnp_SSDP_Server class.
+/**
+ * Destructor for the Eupnp_SSDP_Client class.
  *
- * @param ssdp Eupnp_SSDP_Server instance to be destroyed
+ * @param c Eupnp_SSDP_Client instance to be destroyed
  */
 EAPI void
-eupnp_ssdp_server_free(Eupnp_SSDP_Server *ssdp)
+eupnp_ssdp_client_free(Eupnp_SSDP_Client *c)
 {
-   CHECK_NULL_RET(ssdp);
-   eupnp_udp_transport_free(ssdp->udp_transport);
-   free(ssdp);
+   CHECK_NULL_RET(c);
+   eupnp_udp_transport_free(c->udp_transport);
+   free(c);
 }
 
-/*
+/**
  * Sends a search message for devices to the network (a.k.a. M-Search)
  *
- * @param ssdp Eupnp_SSDP_Server instance.
+ * @param c Eupnp_SSDP_Client instance.
  * @param mx maximum wait time in seconds for devices to wait before answering
  *        the search message.
  * @param search_target target for the search. Common values are "ssdp:all",
@@ -610,7 +700,7 @@ eupnp_ssdp_server_free(Eupnp_SSDP_Server *ssdp)
  * @return On success EINA_TRUE, EINA_FALSE on error.
  */
 EAPI Eina_Bool
-eupnp_ssdp_discovery_request_send(Eupnp_SSDP_Server *ssdp, int mx, const char *search_target)
+eupnp_ssdp_discovery_request_send(Eupnp_SSDP_Client *c, int mx, const char *search_target)
 {
    char *msearch;
 
@@ -622,7 +712,7 @@ eupnp_ssdp_discovery_request_send(Eupnp_SSDP_Server *ssdp, int mx, const char *s
      }
 
     /* Use UDP socket from SSDP */
-   if (eupnp_udp_transport_sendto(ssdp->udp_transport, msearch, EUPNP_SSDP_ADDR,
+   if (eupnp_udp_transport_sendto(c->udp_transport, msearch, EUPNP_SSDP_ADDR,
                                EUPNP_SSDP_PORT) < 0)
      {
 	ERROR_D(_log_dom, "Could not send search message.");

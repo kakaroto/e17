@@ -48,12 +48,15 @@ EFL_CHECK_COVERAGE([${enable_tests}], [enable_coverage="yes"], [enable_coverage=
 # Optional modules
 AC_OPTIONAL_MODULE([eupnp_ecore], true, [CHECK_MODULE_ECORE])
 
+EFL_CHECK_DOXYGEN([build_doc="yes"], [build_doc="no"])
+
 PKG_CHECK_MODULES(ELM, elementary)
 
 AC_OUTPUT([
 eupnp-0.pc
 eupnp-ecore.pc
 Makefile
+doc/Makefile
 src/Makefile
 src/bin/Makefile
 src/lib/Makefile
@@ -89,3 +92,4 @@ Summary:
 SUMMARY_EOF
 
 echo -e " * modules........: $MODS $UNUSED_MODS"
+echo -e " * documentation..: ${build_doc}"
