@@ -104,6 +104,7 @@ Wired* wired_new(Evas_Object *win)
     elm_table_pack(table, scroll, 1, 4, 2, 1);
 
     wired->entry_netmask = elm_entry_add(win);
+    elm_entry_single_line_set(wired->entry_netmask, 1);
     evas_object_size_hint_weight_set(wired->entry_netmask, 1.0, 1.0);
     evas_object_size_hint_align_set(wired->entry_netmask, -1.0, -1.0);
     elm_entry_line_wrap_set(wired->entry_netmask, 0);
@@ -127,6 +128,7 @@ Wired* wired_new(Evas_Object *win)
     elm_table_pack(table, scroll, 1, 5, 2, 1);
 
     wired->entry_gateway = elm_entry_add(win);
+    elm_entry_single_line_set(wired->entry_gateway, 1);
     evas_object_size_hint_weight_set(wired->entry_gateway, 1.0, 1.0);
     evas_object_size_hint_align_set(wired->entry_gateway, -1.0, -1.0);
     elm_entry_line_wrap_set(wired->entry_gateway, 0);
@@ -150,6 +152,7 @@ Wired* wired_new(Evas_Object *win)
     elm_table_pack(table, scroll, 1, 6, 2, 1);
 
     wired->entry_cmd = elm_entry_add(win);
+    elm_entry_single_line_set(wired->entry_cmd, 1);
     evas_object_size_hint_weight_set(wired->entry_cmd, 1.0, 1.0);
     evas_object_size_hint_align_set(wired->entry_cmd, -1.0, -1.0);
     elm_entry_line_wrap_set(wired->entry_cmd, 0);
