@@ -55,6 +55,7 @@ static void paint_delete(void *ep)
 
 static void paint_renderer_draw(Eon_Paint *s, Enesim_Surface *dst,  Enesim_Renderer *r, Eina_Rectangle *clip)
 {
+#if 0
 	Enesim_Compositor_Span span;
 	Enesim_Rop rop;
 	Eon_Color color;
@@ -69,6 +70,7 @@ static void paint_renderer_draw(Eon_Paint *s, Enesim_Surface *dst,  Enesim_Rende
 	stride = enesim_surface_stride_get(dst);
 	ddata = ddata + (clip->y * stride) + clip->x;
 
+	rop = eon_paint_rop_get(s);
 	color = eon_paint_color_get(s);
 	span = enesim_compositor_span_get(rop, &dfmt, ENESIM_FORMAT_ARGB8888, color, ENESIM_FORMAT_NONE);
 
@@ -86,6 +88,14 @@ static void paint_renderer_draw(Eon_Paint *s, Enesim_Surface *dst,  Enesim_Rende
 		free(fdata);
 	}
 	/* TODO set the format again */
+#else
+	Enesim_Rop rop;
+	Eon_Color color;
+
+	color = eon_paint_color_get(s);
+	rop = eon_paint_rop_get(s);
+	enesim_renderer_surface_draw(r, dst, rop, color, clip);
+#endif
 }
 /*============================================================================*
  *                                   Fade                                     *
