@@ -28,9 +28,11 @@ EAPI void enesim_renderer_transform_set(Enesim_Renderer *r, Enesim_Matrix *m);
 EAPI void enesim_renderer_delete(Enesim_Renderer *r);
 EAPI Eina_Bool enesim_renderer_state_setup(Enesim_Renderer *r);
 EAPI void enesim_renderer_state_cleanup(Enesim_Renderer *r);
-EAPI void enesim_renderer_span_fill(Enesim_Renderer *r, int x, int y,
-	unsigned int len, uint32_t *dst);
 EAPI void enesim_renderer_origin_set(Enesim_Renderer *r, int x, int y);
+EAPI void enesim_renderer_span_fill(Enesim_Renderer *r, int x, int y,
+		unsigned int len, uint32_t *dst);
+EAPI void enesim_renderer_surface_draw(Enesim_Renderer *r, Enesim_Surface *s,
+		Enesim_Rop rop, Enesim_Color color, Eina_Rectangle *clip);
 
 typedef enum _Enesim_Shape_Draw_Mode
 {

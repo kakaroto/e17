@@ -81,15 +81,7 @@ static void run(Enesim_Renderer *r, Enesim_Surface *dst, const char *mtype,
 	start = get_time();
 	for (t = 0; t < opt_times; t++)
 	{
-		int y = 0;
-
-		d = enesim_surface_data_get(dst);
-		while (y < opt_height)
-		{
-			enesim_renderer_span_fill(r, 0, y, opt_width, d);
-			d += opt_width;
-			y++;
-		}
+		enesim_renderer_surface_draw(r, dst, opt_rop, ENESIM_COLOR_FULL, NULL);
 	}
 	end = get_time();
 	enesim_renderer_state_cleanup(r);

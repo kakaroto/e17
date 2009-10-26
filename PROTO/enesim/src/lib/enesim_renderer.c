@@ -98,25 +98,6 @@ EAPI void enesim_renderer_span_fill(Enesim_Renderer *r, int x, int y,
 	ENESIM_MAGIC_CHECK_RENDERER(r);
 	if (r->span)
 		r->span(r, x, y, len, dst);
-
-// This won't work well since some renderers may use others
-// and they may use calls to the others' internal span funcs.
-// It also hides the use of the setup func, making it confusing
-// when to use the cleanup one.
-// The best use of the 'changed' property is by the renderers
-// themselves in their setup function.. If they feel nothing's
-// changed, they the setup function may do little or nothing.
-
-#if 0
-	if (r->changed && r->state_setup)
-	{
-		if (!r->state_setup(r))
-			return;
-	}
-
-	r->span(r, x, y, len, dst);
-	r->changed = EINA_FALSE;
-#endif
 }
 
 EAPI void enesim_renderer_origin_set(Enesim_Renderer *r, int x, int y)
@@ -124,4 +105,66 @@ EAPI void enesim_renderer_origin_set(Enesim_Renderer *r, int x, int y)
 	ENESIM_MAGIC_CHECK_RENDERER(r);
 	r->ox = x;
 	r->oy = y;
+}
+
+/**
+ * To be documented
+ * FIXME: To be fixed
+ * What about the mask?
+ */
+EAPI void enesim_renderer_surface_draw(Enesim_Renderer *r, Enesim_Surface *s,
+		Enesim_Rop rop, Enesim_Color color, Eina_Rectangle *clip)
+{
+	Enesim_Compositor_Span span;
+	int x = 0, y = 0, h, w;
+	uint32_t *ddata;
+	int stride;
+	Enesim_Format dfmt;
+
+	ENESIM_MAGIC_CHECK_RENDERER(r);
+	//ENESIM_MAGIC_CHECK_SURFACE(s);
+
+	if (!clip)
+		enesim_surface_size_get(s, &w, &h);
+	else
+	{
+		x = clip->x;
+		y = clip->y;
+		w = clip->w;
+		h = clip->h;
+	}
+
+	dfmt = enesim_surface_format_get(s);
+	ddata = enesim_surface_data_get(s);
+	stride = enesim_surface_stride_get(s);
+	ddata = ddata + (y * stride) + x;
+
+	/* fill the new span */
+	if ((rop == ENESIM_FILL) && (color = ENESIM_COLOR_FULL))
+	{
+		while (h--)
+		{
+			enesim_renderer_span_fill(r, x, y, w, ddata);
+			y++;
+			ddata += stride;
+		}
+	}
+	else
+	{
+		uint32_t *fdata;
+
+		span = enesim_compositor_span_get(rop, &dfmt, ENESIM_FORMAT_ARGB8888,
+				color, ENESIM_FORMAT_NONE);
+
+		fdata = alloca(clip->w * sizeof(uint32_t));
+		while (h--)
+		{
+			enesim_renderer_span_fill(r, x, y, w, fdata);
+			/* compose the filled and the destination spans */
+			span(ddata, w, fdata, color, NULL);
+			y++;
+			ddata += stride;
+		}
+	}
+	/* TODO set the format again */
 }
