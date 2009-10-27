@@ -1,7 +1,9 @@
 [Desktop Entry]
 Encoding=UTF-8
 Name=Contacts
+Name[cs]=Kontakty
 Comment=Contacts
+Comment[cs]=Kontakty
 Exec=contacts
 Icon=contacts
 Terminal=false

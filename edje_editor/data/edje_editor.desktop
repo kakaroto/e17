@@ -2,6 +2,7 @@
 Name=Edje Editor
 Name[eo]=Edje-redaktilo
 Comment=A tool to create edje files
+Comment[cs]=Nástroj pro tvorbu edje souborù
 Comment[eo]=Ilo por krei edje-dosieroj
 Comment[it]=Strumento per la creazione di file edje
 Exec=edje_editor %F

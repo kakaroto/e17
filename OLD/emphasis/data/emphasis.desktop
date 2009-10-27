@@ -7,6 +7,7 @@ Name[ru]=Emphasis
 Name[el]=Emphasis
 Name[eo]=Emphasis
 Comment=An ETK frontend for the mpd daemon
+Comment[cs]=ETK frontend k MPD démonu
 Comment[fr]=Une interface ETK pour le démon mpd
 Comment[nl]=Een ETK front-end voor de Music Player Daemon
 Comment[pl]=Nakładka ETK na demona mpd

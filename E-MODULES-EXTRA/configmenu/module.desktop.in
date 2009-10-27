@@ -3,13 +3,13 @@ Type=Link
 Name=Config Menu
 Name[eo]=Menuo de agordoj
 Name[fr]=Menu de configuration
-Name[cs]=KonfiguraÄnÃ­ menu
+Name[cs]=Konfiguraèní menu
 Name[it]=Configurazione menÃ¹
 Icon=e-module-config
 Comment=<title>Config menu</title><br>Enables configuration menu augmentation.
 Comment[eo]=<title>Menuo de agordoj</title><br>Ebligas la etendon de la menuo de agordoj.
 Comment[fr]=<title>Menu de configuration</title><br>Active l'extension du menu de configuration.
-Comment[cs]=<title>KonfiguraÄnÃ­ menu</title><br>RozÅ¡iÅ™uje submenu Konfigurace v hlavnÃ­m menu o poloÅ¾ky a kategorie z ovlÃ¡dacÃ­ho centra.
+Comment[cs]=<title>Konfiguraèní­ menu</title><br>Rozšiøuje submenu Konfigurace v hlavním menu o poloky a kategorie z ovládacího centra.
 Comment[it]=<title>Configurazione menÃ¹</title><br>Attiva l'estensione del menÃ¹ impostazioni.
 
 #Several different types available here. NEED TO DOC THESE.

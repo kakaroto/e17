@@ -1,6 +1,7 @@
 [Desktop Entry]
 Type=Link
 Name=EFM Pathbar
+Name[cs]=EFM navigační lišta
 Name[ru]=Модуль простой навигации EFM
 Name[fr]=Barre EFM
 Name[it]=Barra percorso EFM
@@ -8,6 +9,7 @@ Exec=enlightenment
 StartupNotify=false
 Icon=e-module-efm_pathbar
 Comment=<title>EFM Pathbar Module</title><br>A module that provide a pathbar gadget to navigate filemanager module.
+Comment[cs]=<title>EFM Pathbar modul</title><br>Modul poskytující navigační lištu pro navigaci ve správci souborů.
 Comment[ru]=<title>Модуль простой навигации EFM</title><br>Модуль предоставляет простую навигацию для файлменеджера.
 Comment[fr]=<title>Module Barre EFM</title><br>Fournit une barre de navigation pour le gestionnaire de fichiers intégré.
 Comment[it]=<title>Modulo barra percorso EFM</title><br>Un modulo che fornisce una barra di bottoni per la navigazione col modulo filemanager.

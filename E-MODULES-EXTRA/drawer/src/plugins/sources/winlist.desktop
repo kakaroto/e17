@@ -3,6 +3,7 @@ Type=Link
 Name=winlist
 Name[eo]=fenestrolisto
 Comment=A window list source plugin
+Comment[cs]=Zdrojový plugin - seznam oken
 Comment[eo]=Listo de fenestroj
 Comment[it]=Un plugin per una lista finestre
 

@@ -3,6 +3,7 @@ Type=Link
 Name=launcher
 Name[eo]=LanÄ‰ilo
 Comment=An application launcher source plugin
+Comment[cs]=Zdrojovı plugin pro spouštìní aplikací
 Comment[it]=Un plugin per lanciare applicazioni
 Comment[eo]=LanÄ‰ilo de aplikaÄµoj
 

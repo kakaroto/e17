@@ -3,6 +3,7 @@ Encoding=UTF-8
 Name=Image Viewer
 Name[eo]=Bildo-rigardilo
 Comment=Image Viewer
+Comment[cs]=Prohlížeè obrázkù
 Comment[it]=Visualizzatore immagini
 Comment[eo]=Rigardi bildojn
 Exec=image-viewer %U

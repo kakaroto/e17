@@ -3,6 +3,7 @@ Type=Link
 Name=list
 Name[eo]=Listo
 Comment=A list representation of elements
+Comment[cs]=Seznamové zobrazení
 Comment[eo]=Lista prezentado de elementoj
 Comment[it]=Rappresentazione ad elenco degli elementi
 

@@ -3,6 +3,7 @@ Name=Eyesight
 Name[eo]=Okulovido
 Description=Document viewer
 Comment=Document viewer
+Comment[cs]=Prohlížeè dokumentù
 Comment[eo]=Dokumento-rigardilo
 Comment[it]=Visualizzatore documenti
 Exec=eyesight %F

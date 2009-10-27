@@ -1,7 +1,9 @@
 [Desktop Entry]
 Encoding=UTF-8
 Name=Alarm
+Name[cs]=Budík
 Comment=Alarm Clock
+Comment[cs]=Budík
 Exec=elementary_alarm
 Icon=elementary_alarm
 Terminal=false

@@ -5,6 +5,7 @@ Name=Exalt
 Name[eo]=Exalt
 Icon=e-module-exalt
 Comment=<title>Exalt Module</title><br>A user-friendly tool to setup and manage network interfaces.
+Comment[cs]=<title>Exalt modul</title><br>Uživatelsky přívětivé rozhraní k nastavení a správě sítových zařízení.
 Comment[it]=<title>Modulo Exalt</title><br>Una utilità per configurare e gestire le interfacce di rete.
 Comment[el]=<hilight>Άρθρωμα exalt</hilight>
 Comment[eo]=<hilight>Modulo Exalt</hilight>

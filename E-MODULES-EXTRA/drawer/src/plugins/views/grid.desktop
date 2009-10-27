@@ -3,6 +3,7 @@ Type=Link
 Name=grid
 Name[eo]=Krado
 Comment=A grid representation of elements
+Comment[cs]=Tabulkové zobrazení
 Comment[eo]=Krada prezentado de elementoj
 Comment[it]=Rappresentazione in griglia degli elementi
 
