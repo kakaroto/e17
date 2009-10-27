@@ -10,9 +10,9 @@
  * @section eyelight_toc_sec Table of contents
  *
  * <ul>
- *  <li> @ref Eyelight_Smart_Object
- *  <li> @ref Eyelight
- *  <li> @ref Eyelight_Edit
+ *  <li> @ref eyelight_smart_object_sec
+ *  <li> @ref eyelight_sec
+ *  <li> @ref eyelight_edit_sec
  * </ul>
  *
  *
