@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Drawer\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2009-08-25 17:14+0800\n"
+"POT-Creation-Date: 2009-10-27 19:21+0100\n"
 "PO-Revision-Date: 2009-06-11 15:24+0100\n"
 "Last-Translator: quaker66 <quaker66@gmail.com>\n"
 "Language-Team: none>\n"
@@ -81,42 +81,42 @@ msgstr ""
 msgid "The plugin is not configurable"
 msgstr "Plugin není nastavitelný"
 
-#: ../src/e_mod_main.c:944 ../src/e_mod_main.c:952 ../src/e_mod_main.c:966
-#: ../src/e_mod_main.c:978 ../src/e_mod_main.c:1046 ../src/e_mod_main.c:1097
-#: ../src/e_mod_main.c:1142
+#: ../src/e_mod_main.c:950 ../src/e_mod_main.c:958 ../src/e_mod_main.c:972
+#: ../src/e_mod_main.c:984 ../src/e_mod_main.c:1052 ../src/e_mod_main.c:1103
+#: ../src/e_mod_main.c:1148
 msgid "Drawer Plugins"
 msgstr "Pluginy pro Drawer"
 
-#: ../src/e_mod_main.c:945
+#: ../src/e_mod_main.c:951
 #, c-format
 msgid "The plugin '%s' was not found."
 msgstr "Plugin '%s' nebyl nalezen."
 
-#: ../src/e_mod_main.c:953
+#: ../src/e_mod_main.c:959
 #, c-format
 msgid "The plugin '%s' could not be opened."
 msgstr "Plugin '%s' nemůže být otevřen."
 
-#: ../src/e_mod_main.c:967 ../src/e_mod_main.c:1047 ../src/e_mod_main.c:1098
-#: ../src/e_mod_main.c:1143
+#: ../src/e_mod_main.c:973 ../src/e_mod_main.c:1053 ../src/e_mod_main.c:1104
+#: ../src/e_mod_main.c:1149
 #, c-format
 msgid "The plugin '%s' does not contain all required functions."
 msgstr "Plugin '%s' neobsahuje všechny důležité funkce."
 
-#: ../src/e_mod_main.c:979
+#: ../src/e_mod_main.c:985
 #, c-format
 msgid "The plugin '%s' does not have the required API version."
 msgstr "Plugin '%s' nemá vyžadovanou verzi API."
 
-#: ../src/e_mod_main.c:1314
+#: ../src/e_mod_main.c:1319
 msgid "Drawer"
 msgstr "Drawer"
 
-#: ../src/e_mod_main.c:1400
+#: ../src/e_mod_main.c:1405
 msgid "Drawer Configuration Updated"
 msgstr "Drawer konfigurace aktualizována"
 
-#: ../src/e_mod_main.c:1765
+#: ../src/e_mod_main.c:1770
 msgid "Settings"
 msgstr "Nastavení"
 
@@ -253,23 +253,23 @@ msgstr "Opravdu chcete smazat tento zdroj lišty?"
 msgid "List settings"
 msgstr "Nastavení seznamu"
 
-#: ../src/plugins/views/list.c:818
+#: ../src/plugins/views/list.c:824
 msgid "Drawer Plugin : List"
 msgstr "Drawer Plugin : Seznam"
 
-#: ../src/plugins/views/list.c:855
+#: ../src/plugins/views/list.c:861
 msgid "Item size options"
 msgstr "Volby velikosti položky"
 
-#: ../src/plugins/views/list.c:856
+#: ../src/plugins/views/list.c:862
 msgid "Large"
 msgstr "Velký"
 
-#: ../src/plugins/views/list.c:858
+#: ../src/plugins/views/list.c:864
 msgid "Medium"
 msgstr "Střední"
 
-#: ../src/plugins/views/list.c:860
+#: ../src/plugins/views/list.c:866
 msgid "Small"
 msgstr "Malý"
 

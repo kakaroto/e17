@@ -4,8 +4,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2009-08-25 17:14+0800\n"
-"PO-Revision-Date: 2009-06-06 09:38+0100\n"
+"POT-Creation-Date: 2009-10-27 19:18+0100\n"
+"PO-Revision-Date: 2009-10-27 19:20+0100\n"
 "Last-Translator: quaker66 <quaker66@gmail.com>\n"
 "Language-Team: easylinux <quaker66@gmail.com>\n"
 "MIME-Version: 1.0\n"
@@ -13,66 +13,67 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 #. create new config dialog
-#: ../src/e_mod_config.c:40
-#, fuzzy
+#: ../src/e_mod_config.c:41
 msgid "Exalt Configuration"
-msgstr "Konfigurace"
+msgstr "Nastavení Exaltu"
 
-#: ../src/e_mod_config.c:82
+#: ../src/e_mod_config.c:84
 msgid "General"
 msgstr "Hlavní"
 
-#: ../src/e_mod_config.c:87
-msgid "Basic mode"
-msgstr ""
-
 #: ../src/e_mod_config.c:89
+msgid "Basic mode"
+msgstr "Základní mód"
+
+#: ../src/e_mod_config.c:91
 msgid "Advanced mode"
-msgstr ""
+msgstr "Pokročilý mód"
 
-#: ../src/e_mod_config.c:94
-#, fuzzy
+#: ../src/e_mod_config.c:97
+msgid "Wireless network"
+msgstr "Bezdrátová síť"
+
+#: ../src/e_mod_config.c:99
+msgid "Save the configuration of each wireless network"
+msgstr "Uložit nastavení každé bezdrátové sítě"
+
+#: ../src/e_mod_config.c:104
 msgid "Notifications"
-msgstr "Ověření: "
+msgstr "Notifikace"
 
-#: ../src/e_mod_config.c:96
-#, fuzzy
+#: ../src/e_mod_config.c:106
 msgid "Enable the notifications"
-msgstr "Ověření: "
+msgstr "Povolit notifikace"
 
-#: ../src/e_mod_main.c:285
+#: ../src/e_mod_main.c:286
 msgid "Exalt Warning"
 msgstr "Varování Exaltu"
 
-#: ../src/e_mod_main.c:288
+#: ../src/e_mod_main.c:289
 msgid "Warning"
 msgstr "Varování"
 
-#: ../src/e_mod_main.c:289
+#: ../src/e_mod_main.c:290
 msgid "NetworkManager has been detected on your computer."
 msgstr "Na vašem počítači byl detekován NetworkManager."
 
-#: ../src/e_mod_main.c:291
-msgid ""
-"Exalt can't work properly if networkManager is running, please stop "
-"NetworkManager or Exalt."
-msgstr ""
-"Exalt nemůže pracovat správně, pokud běží NetworkManager. Prosím ukončete "
-"NetworkManager nebo Exalt."
+#: ../src/e_mod_main.c:292
+msgid "Exalt can't work properly if networkManager is running, please stop NetworkManager or Exalt."
+msgstr "Exalt nemůže pracovat správně, pokud běží NetworkManager. Prosím ukončete NetworkManager nebo Exalt."
 
-#: ../src/e_mod_main.c:294
+#: ../src/e_mod_main.c:295
 msgid "Ok"
 msgstr "OK"
 
-#: ../src/e_mod_main.c:371
+#: ../src/e_mod_main.c:374
 msgid "exalt"
 msgstr "Exalt"
 
-#: ../src/e_mod_main.c:455
+#: ../src/e_mod_main.c:459
 msgid "exalt Configuration Updated"
 msgstr "Nastavení modulu aktualizováno"
 
-#: ../src/e_mod_main.c:522
+#: ../src/e_mod_main.c:527
 msgid "Configuration"
 msgstr "Konfigurace"
 
@@ -80,133 +81,179 @@ msgstr "Konfigurace"
 msgid "DNS configuration"
 msgstr "DNS nastavení"
 
-#: ../src/popup.c:49
+#: ../src/popup.c:47
+msgid "Network configuration"
+msgstr "Nastavení sítě"
+
+#: ../src/popup.c:53
 msgid "Modem dialer"
 msgstr "Dialer modemu"
 
-#: ../src/popup.c:53
+#: ../src/popup.c:57
 msgid "Mobile Phone (3G)"
 msgstr "Mobilní telefon (3G)"
 
-#: ../src/popup.c:214
+#: ../src/popup.c:229
 msgid "No IP Address"
 msgstr "Bez IP adresy"
 
-#: ../src/popup.c:218 ../src/wired_dialog.c:42
+#: ../src/popup.c:233
+#: ../src/wired_dialog.c:42
 msgid "Wired interface"
 msgstr "Drátová síť"
 
-#: ../src/popup.c:221
+#: ../src/popup.c:236
 msgid "Wireless interface"
 msgstr "Bezdrátová síť"
 
 #: ../src/wired_dialog.c:36
-msgid "Wired Connection Settings"
+msgid "Wired Configuration Settings"
 msgstr "Nastavení drátového spojení"
 
-#: ../src/wired_dialog.c:51 ../src/network_dialog.c:73
+#: ../src/wired_dialog.c:51
+#: ../src/network_dialog.c:54
 #: ../src/wireless_dialog.c:36
 msgid "Activate"
 msgstr "Aktivovat"
 
-#: ../src/wired_dialog.c:54 ../src/network_dialog.c:76
+#: ../src/wired_dialog.c:54
+#: ../src/network_dialog.c:57
 #: ../src/wireless_dialog.c:39
 msgid "Deactivate"
 msgstr "Deaktivovat"
 
-#: ../src/wired_dialog.c:58 ../src/network_dialog.c:80
+#: ../src/wired_dialog.c:58
+#: ../src/network_dialog.c:61
 msgid "DHCP (Dynamic host configuration protocol)"
 msgstr "DHCP (Dynamic host configuration protocol)"
 
-#: ../src/wired_dialog.c:63 ../src/network_dialog.c:85
+#: ../src/wired_dialog.c:63
+#: ../src/network_dialog.c:66
 msgid "Static"
 msgstr "Statická"
 
-#: ../src/wired_dialog.c:68 ../src/network_dialog.c:90
+#: ../src/wired_dialog.c:68
+#: ../src/network_dialog.c:71
 msgid "IP address: "
 msgstr "IP adresa: "
 
-#: ../src/wired_dialog.c:73 ../src/network_dialog.c:95
+#: ../src/wired_dialog.c:73
+#: ../src/network_dialog.c:76
 msgid "Netmask address: "
 msgstr "Maska: "
 
-#: ../src/wired_dialog.c:78 ../src/network_dialog.c:100
+#: ../src/wired_dialog.c:78
+#: ../src/network_dialog.c:81
 msgid "Gateway address: "
 msgstr "Brána: "
 
-#: ../src/wired_dialog.c:83 ../src/network_dialog.c:105
+#: ../src/wired_dialog.c:83
+#: ../src/network_dialog.c:86
 msgid "Command: "
 msgstr "Příkaz: "
 
-#: ../src/wired_dialog.c:96 ../src/network_dialog.c:113
+#.
+#.
+#: ../src/wired_dialog.c:96
+#: ../src/network_dialog.c:98
+#: ../src/network_dialog.c:677
+#: ../src/network_dialog.c:723
+#: ../src/network_dialog.c:771
 #: ../src/wireless_dialog.c:52
 msgid "OK"
 msgstr "OK"
 
-#: ../src/wired_dialog.c:97 ../src/network_dialog.c:114
+#: ../src/wired_dialog.c:97
+#: ../src/network_dialog.c:99
 msgid "Apply"
 msgstr "Použít"
 
-#: ../src/wired_dialog.c:98 ../src/network_dialog.c:115
+#: ../src/wired_dialog.c:98
+#: ../src/network_dialog.c:100
+#: ../src/network_dialog.c:678
+#: ../src/network_dialog.c:724
+#: ../src/network_dialog.c:772
 msgid "Cancel"
 msgstr "Zrušit"
 
-#: ../src/network_dialog.c:35
-msgid "Wireless Connection Settings"
+#: ../src/network_dialog.c:17
+msgid "Wireless Configuration Settings"
 msgstr "Nastavení bezdrátového spojení"
 
-#: ../src/network_dialog.c:43
+#: ../src/network_dialog.c:25
 msgid "Network information"
 msgstr "Informace o bezdrátovém spojení"
 
-#: ../src/network_dialog.c:45
+#: ../src/network_dialog.c:27
 msgid "Essid: "
 msgstr "Essid: "
 
-#: ../src/network_dialog.c:50
+#: ../src/network_dialog.c:32
 msgid "Address: "
 msgstr "Adresa: "
 
-#: ../src/network_dialog.c:55
+#: ../src/network_dialog.c:37
 msgid "Quality: "
 msgstr "Kvalita: "
 
 #. IFACE frame
-#: ../src/network_dialog.c:64
+#: ../src/network_dialog.c:45
 msgid "Wireless interface configuration"
 msgstr "Nastavení bezdrátového připojení"
 
-#: ../src/network_dialog.c:213
+#: ../src/network_dialog.c:91
+msgid "Add to favorites: "
+msgstr "Přidat do oblíbených: "
+
+#: ../src/network_dialog.c:203
 msgid "WEP information"
 msgstr "WEP informace"
 
-#: ../src/network_dialog.c:215
+#: ../src/network_dialog.c:205
 msgid "Description: "
 msgstr "Popis: "
 
-#: ../src/network_dialog.c:217
+#: ../src/network_dialog.c:207
 msgid "WEP"
 msgstr "WEP"
 
-#: ../src/network_dialog.c:233
+#: ../src/network_dialog.c:225
 msgid "Hexadecimal Key"
 msgstr "Hexadecimální klíč"
 
-#: ../src/network_dialog.c:236
+#: ../src/network_dialog.c:229
 msgid "ASCII Key"
 msgstr "ASCII klíč"
 
-#: ../src/network_dialog.c:242 ../src/network_dialog.c:326
+#: ../src/network_dialog.c:235
+#: ../src/network_dialog.c:313
 msgid "Password: "
 msgstr "Password: "
 
-#: ../src/network_dialog.c:265
+#: ../src/network_dialog.c:258
 msgid "WPA information"
 msgstr "WPA informace"
 
-#: ../src/network_dialog.c:317
-msgid "Login: "
-msgstr "Přihlášení: "
+#: ../src/network_dialog.c:324
+msgid "CA certificate: "
+msgstr "CA certifikát: "
+
+#: ../src/network_dialog.c:336
+msgid "Client certificate: "
+msgstr "Klientský certifikát: "
+
+#: ../src/network_dialog.c:349
+msgid "Private key: "
+msgstr "Soukromý klíč: "
+
+#: ../src/network_dialog.c:666
+msgid "Select the company certificate"
+msgstr "Vyberte firemní certifikát"
+
+#: ../src/network_dialog.c:712
+#: ../src/network_dialog.c:760
+msgid "Select the client certificate"
+msgstr "Vyberte klientský certifikát"
 
 #: ../src/dns_dialog.c:20
 msgid "DNS (Domain Name Server) Settings"
@@ -244,43 +291,34 @@ msgstr "bezdrátové rozhraní"
 
 #: ../src/wireless_dialog.c:42
 msgid "Create a new network"
-msgstr ""
+msgstr "Vytvořit novou síť"
 
+#~ msgid "Login: "
+#~ msgstr "Přihlášení: "
 #~ msgid "exalt Module"
 #~ msgstr "Exalt modul"
-
 #~ msgid "Use Switch 1"
 #~ msgstr "Použít přepínač 1"
-
 #~ msgid "Settings"
 #~ msgstr "Volby"
-
 #~ msgid "WPA2 information"
 #~ msgstr "WPA2 informace"
-
 #~ msgid "Authentication: "
 #~ msgstr "Oveření: "
-
 #~ msgid "Type: "
 #~ msgstr "Typ: "
-
 #~ msgid "Group Cypher: "
 #~ msgstr "Skupinový kód: "
-
 #~ msgid "Pairwise Cyphers: "
 #~ msgstr "Pairwise kódy: "
-
 #~ msgid "Authentifications Suites: "
 #~ msgstr "Ověřovací sada: "
-
 #~ msgid "Yes"
 #~ msgstr "Ano"
-
 #~ msgid "No"
 #~ msgstr "Ne"
-
 #~ msgid "Pre-authentification: "
 #~ msgstr "Před-ověření: "
-
 #~ msgid "Network Device"
 #~ msgstr "Síťové zařízení"
+

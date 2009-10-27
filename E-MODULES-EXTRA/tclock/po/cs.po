@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: Tclock\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
 "POT-Creation-Date: 2009-08-25 17:14+0800\n"
-"PO-Revision-Date: 2009-01-01 14:22+0100\n"
+"PO-Revision-Date: 2009-10-27 19:22+0100\n"
 "Last-Translator: quaker66 <quaker66@gmail.com>\n"
 "Language-Team: easylinux <easylinux@sachiel.eu>\n"
 "MIME-Version: 1.0\n"
@@ -16,7 +16,7 @@ msgstr ""
 
 #: ../src/e_mod_config.c:39
 msgid "Tclock Settings"
-msgstr ""
+msgstr "Volby TClock modulu"
 
 #: ../src/e_mod_config.c:88
 msgid "Top"
@@ -26,7 +26,8 @@ msgstr "Nahoře"
 msgid "Show Top Line"
 msgstr "Zobrazit horní řádek"
 
-#: ../src/e_mod_config.c:98 ../src/e_mod_config.c:113
+#: ../src/e_mod_config.c:98
+#: ../src/e_mod_config.c:113
 #: ../src/e_mod_config.c:129
 msgid "Consult strftime(3) for format syntax"
 msgstr "Pročtěte strftime(3) pro pochopení syntaxe"
@@ -53,10 +54,10 @@ msgstr "TClock"
 
 #: ../src/e_mod_main.c:184
 msgid "Settings"
-msgstr ""
+msgstr "Nastavení"
 
 #~ msgid "Tclock Configuration"
 #~ msgstr "Konfigurace textových hodin"
-
 #~ msgid "Configuration"
 #~ msgstr "Konfigurace"
+

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PLACES\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2009-08-25 17:14+0800\n"
+"POT-Creation-Date: 2009-10-27 19:18+0100\n"
 "PO-Revision-Date: 2009-06-11 15:32+0100\n"
 "Last-Translator: quaker66 <quaker66@gmail.com>\n"
 "Language-Team: easylinux <quaker66@gmail.com>\n"
@@ -46,24 +46,24 @@ msgstr "Použít vlastní správce souborů"
 msgid "Show in menu"
 msgstr "Zobrazit v menu"
 
-#: ../src/e_mod_config.c:149 ../src/e_mod_places.c:395
+#: ../src/e_mod_config.c:149 ../src/e_mod_places.c:399
 msgid "Home"
 msgstr "Domovská složka"
 
-#: ../src/e_mod_config.c:152 ../src/e_mod_places.c:404
+#: ../src/e_mod_config.c:152 ../src/e_mod_places.c:408
 msgid "Desktop"
 msgstr "Plocha"
 
-#: ../src/e_mod_config.c:155 ../src/e_mod_places.c:414
+#: ../src/e_mod_config.c:155 ../src/e_mod_places.c:418
 msgid "Trash"
 msgstr "Koš"
 
 #: ../src/e_mod_config.c:158 ../src/e_mod_places.c:229
-#: ../src/e_mod_places.c:423
+#: ../src/e_mod_places.c:427
 msgid "Filesystem"
 msgstr "Systém souborů"
 
-#: ../src/e_mod_config.c:161 ../src/e_mod_places.c:432
+#: ../src/e_mod_config.c:161 ../src/e_mod_places.c:436
 msgid "Temp"
 msgstr "Dočasné"
 
@@ -76,7 +76,7 @@ msgstr "Oblíbené"
 msgid "Files"
 msgstr "Soubory"
 
-#: ../src/e_mod_main.c:77 ../src/e_mod_places.c:495
+#: ../src/e_mod_main.c:77 ../src/e_mod_places.c:499
 msgid "Places"
 msgstr "Místa"
 
@@ -88,20 +88,20 @@ msgstr "Konfigurace"
 msgid "No Name"
 msgstr "Beze jména"
 
-#: ../src/e_mod_places.c:685
+#: ../src/e_mod_places.c:689
 msgid "free of"
 msgstr "volných z"
 
-#: ../src/e_mod_places.c:691
+#: ../src/e_mod_places.c:695
 #, c-format
 msgid "%s Not Mounted"
 msgstr "%s Není připojeno"
 
-#: ../src/e_mod_places.c:708
+#: ../src/e_mod_places.c:712
 msgid "unmount"
 msgstr "odpojit"
 
-#: ../src/e_mod_places.c:714
+#: ../src/e_mod_places.c:718
 msgid "eject"
 msgstr "vysunout"
 

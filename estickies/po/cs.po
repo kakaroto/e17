@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: estickies\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2009-10-22 19:40+0200\n"
+"POT-Creation-Date: 2009-10-27 19:16+0100\n"
 "PO-Revision-Date: 2009-10-22 19:40+0100\n"
 "Last-Translator: quaker66 <quaker66@gmail.com>\n"
 "Language-Team: Czech <quaker66@gmail.com>\n"
@@ -58,31 +58,31 @@ msgstr "Nápověda E Stickies"
 msgid "Close"
 msgstr "Zavřít"
 
-#: ../src/bin/conf.c:82 ../src/bin/conf.c:93
+#: ../src/bin/conf.c:86 ../src/bin/conf.c:97
 msgid "Cant create config path!"
 msgstr "Nemůžu vytvořit cestu pro nastavení!"
 
-#: ../src/bin/conf.c:188
+#: ../src/bin/conf.c:192
 msgid "Cant open configuration file! Using program defaults."
 msgstr "Nemůžu otevřít konfigurační soubor! Používám výchozí."
 
-#: ../src/bin/conf.c:196
+#: ../src/bin/conf.c:200
 msgid "Incompatible configuration file! Creating new one."
 msgstr "Nekompatibilní konfigurační soubor! Vytvářím nový."
 
-#: ../src/bin/conf.c:208
+#: ../src/bin/conf.c:212
 msgid "Your version / configuration of E-Stickies is not valid!"
 msgstr "Vaše verze / konfigurace E-Stickies je neplatná!"
 
-#: ../src/bin/conf.c:246
+#: ../src/bin/conf.c:250
 msgid "Problem saving config!"
 msgstr "Nemůžu uložit nastavení!"
 
-#: ../src/bin/conf.c:259
+#: ../src/bin/conf.c:263
 msgid "Problem saving config/stickies!"
 msgstr "Nemůžu uložit config/stickies!"
 
-#: ../src/bin/conf.c:263
+#: ../src/bin/conf.c:267
 msgid "Problem saving config/theme!"
 msgstr "Nemůžu uložit config/theme!"
 
@@ -212,7 +212,7 @@ msgstr ""
 "Poznámka %d\n"
 "=========================\n"
 
-#: ../src/bin/stickies.c:573
+#: ../src/bin/stickies.c:577
 msgid "Cant find home directory!"
 msgstr "Nemůžu najít domovský adresář!"
 

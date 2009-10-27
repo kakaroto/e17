@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: EMPOWER\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2009-08-25 17:14+0800\n"
+"POT-Creation-Date: 2009-10-27 19:16+0100\n"
 "PO-Revision-Date: 2009-07-11 10:36+0100\n"
 "Last-Translator: quaker66 <quaker66@gmail.com>\n"
 "Language-Team: cs <quaker66@gmail.com>\n"
@@ -18,17 +18,17 @@ msgstr ""
 msgid "Failed to create regular expression\n"
 msgstr "Nepodařilo se vytvořit regulární výraz\n"
 
-#: ../src/bin/elm/empower.c:66 ../src/bin/ewl/empower.c:65
+#: ../src/bin/elm/empower.c:64 ../src/bin/ewl/empower.c:63
 #, c-format
 msgid "Unable to init ecore\n"
 msgstr "Nepodařilo se načíst ecore\n"
 
-#: ../src/bin/elm/empower.c:74 ../src/bin/ewl/empower.c:79
+#: ../src/bin/elm/empower.c:72 ../src/bin/ewl/empower.c:77
 #, c-format
 msgid "-=Usage=-\n"
 msgstr "-=Použití=-\n"
 
-#: ../src/bin/elm/empower.c:75
+#: ../src/bin/elm/empower.c:73
 #, c-format
 msgid ""
 "    Sudo:  empower [SUDO OPTIONS] [PROGRAM] [PROGRAM OPTIONS] [ELEMENTARY "
@@ -37,7 +37,7 @@ msgstr ""
 "    Sudo:  empower [VOLBY SUDO] [PROGRAM] [VOLBY PROGRAMU] [VOLBY "
 "ELEMENTARY]\n"
 
-#: ../src/bin/elm/empower.c:76
+#: ../src/bin/elm/empower.c:74
 #, c-format
 msgid ""
 "    AskPass:  empower-askpass [ELEMENTARY OPTIONS] or empower -p [ELEMENTARY "
@@ -63,19 +63,19 @@ msgstr "Heslo"
 msgid "Unable to grab keyboard, exiting...\n"
 msgstr "Nepodařilo se získat klávesnici, vypínám...\n"
 
-#: ../src/bin/ewl/empower.c:71
+#: ../src/bin/ewl/empower.c:69
 #, c-format
 msgid "Unable to init ewl\n"
 msgstr "Nepodařilo se načíst ewl\n"
 
-#: ../src/bin/ewl/empower.c:80
+#: ../src/bin/ewl/empower.c:78
 #, c-format
 msgid ""
 "    Sudo:  empower [SUDO OPTIONS] [PROGRAM] [PROGRAM OPTIONS] [EWL OPTIONS]\n"
 msgstr ""
 "    Sudo:  empower [VOLBY SUDO] [PROGRAM] [VOLBY PROGRAMU] [VOLBY EWL]\n"
 
-#: ../src/bin/ewl/empower.c:81
+#: ../src/bin/ewl/empower.c:79
 #, c-format
 msgid ""
 "    AskPass:  empower-askpass [EWL OPTIONS] or empower -p [EWL OPTIONS]\n"
