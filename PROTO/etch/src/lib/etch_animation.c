@@ -113,8 +113,17 @@ static void _iterator_free(Etch_Animation_Iterator *it)
 
 static void _update_start_end(Etch_Animation *a)
 {
-	a->start = ((Etch_Animation_Keyframe *)a->keys)->time;
-	a->end = ((Etch_Animation_Keyframe *)((Eina_Inlist *)(a->keys))->last)->time;
+	Etch_Animation_Keyframe *start, *end;
+
+	start = ((Etch_Animation_Keyframe *)a->keys);
+	if (!start)
+		return;
+	end = ((Etch_Animation_Keyframe *)((Eina_Inlist *)(a->keys))->last);
+	if (!end)
+		return;
+
+	a->start = start->time;
+	a->end = end->time;
 }
 
 /*============================================================================*
@@ -154,6 +163,7 @@ void etch_animation_animate(Etch_Animation *a, Etch_Time *curr)
 			Etch_Interpolator_Func ifnc;
 			Etch_Data old;
 			double m;
+			void *data = NULL;
 
 			/* get the interval between 0 and 1 based on current frame and two keyframes */
 			if (etch_time_equal(&start->time, curr) == EINA_TRUE)
@@ -174,7 +184,22 @@ void etch_animation_animate(Etch_Animation *a, Etch_Time *curr)
 			ifnc = _interpolators[a->dtype]->funcs[start->type];
 			if (!ifnc)
 				return;
-			ifnc(&(start->value), &(end->value), m, &a->curr, &start->data);
+
+			/* pass the specific data */
+			switch (start->type)
+			{
+				case ETCH_ANIMATION_QUADRATIC:
+				data = &start->q;
+				break;
+
+				case ETCH_ANIMATION_CUBIC:
+				data = &start->c;
+				break;
+
+				default:
+				break;
+			}
+			ifnc(&(start->value), &(end->value), m, &a->curr, &data);
 			/* once the value has been set, call the callback */
 			a->cb(&a->curr, &old, a->data);
 			return;
@@ -211,16 +236,16 @@ Etch_Animation * etch_animation_new(Etch *e, Etch_Data_Type dtype,
  *============================================================================*/
 /**
  * Gets the current data value
- * To be documented
- * FIXME: To be fixed
+ * @param a The Etch_Animation
+ * @param v The data pointer to store the current value
  */
 EAPI void etch_animation_data_get(Etch_Animation *a, Etch_Data *v)
 {
 	if (v) *v = a->curr;
 }
 /**
- * To be documented
- * FIXME: To be fixed
+ * Deletes an animation
+ * @param a The Etch_Animation
  */
 EAPI void etch_animation_delete(Etch_Animation *a)
 {
@@ -230,13 +255,17 @@ EAPI void etch_animation_delete(Etch_Animation *a)
 }
 /**
  * Set the number of times the animation should repeat
+ * @param a The Etch_Animation
+ * @param times Number of times, -1 for infinite
  */
 EAPI void etch_animation_repeat_set(Etch_Animation *a, unsigned int times)
 {
 	a->repeat = times;
 }
 /**
- * Add a new mark to the animation
+ * Add a new keyframe to the animation
+ * @param a The Etch_Animation
+ * @return The new Etch_Animation_Keyframe
  */
 EAPI Etch_Animation_Keyframe * etch_animation_keyframe_add(Etch_Animation *a)
 {
@@ -253,7 +282,9 @@ EAPI Etch_Animation_Keyframe * etch_animation_keyframe_add(Etch_Animation *a)
 	return k;
 }
 /**
- * Delete the mark from the animation
+ * Delete the keyframe from the animation
+ * @param a The Etch_Animation
+ * @param k The Etch_Animation_Keyframe
  */
 EAPI void etch_animation_keyframe_del(Etch_Animation *a, Etch_Animation_Keyframe *k)
 {
@@ -266,7 +297,79 @@ EAPI void etch_animation_keyframe_del(Etch_Animation *a, Etch_Animation_Keyframe
 	free(k);
 }
 /**
- * Set the type of animation keyframe
+ * Get the number of keyframes an animation has
+ * @param a The Etch_Animation
+ */
+EAPI int etch_animation_keyframe_count(Etch_Animation *a)
+{
+	return a->count;
+}
+/**
+ * Get the Etch instance this animation belongs to
+ * @param a The Etch_Animation
+ * @return The Etch instance
+ */
+EAPI Etch * etch_animation_etch_get(Etch_Animation *a)
+{
+	return a->etch;
+}
+/**
+ * Disable an animation
+ * @param a The Etch_Animation
+ */
+EAPI void etch_animation_disable(Etch_Animation *a)
+{
+	a->enabled = EINA_FALSE;
+}
+/**
+ * Enable an animation
+ * @param a The Etch_Animation
+ */
+EAPI void etch_animation_enable(Etch_Animation *a)
+{
+	a->enabled = EINA_TRUE;
+}
+/**
+ * Query whenever an animation is atually enabled
+ * @param a The Etch_Animation
+ * @return EINA_TRUE or EINA_FALSE
+ */
+EAPI Eina_Bool etch_animation_enabled(Etch_Animation *a)
+{
+	return a->enabled;
+}
+/**
+ * Add an offset to an animation. That will increment every animation's keyframe time
+ * @param a The Etch_Animation
+ * @param secs The number of seconds to increment
+ * @param usecs The number of microsends to increment
+ */
+EAPI void etch_animation_offset_add(Etch_Animation *a, unsigned long secs, unsigned long usecs)
+{
+	Etch_Time inc;
+	Eina_Inlist *l;
+
+	assert(a);
+
+	etch_time_secs_from(&inc, secs, usecs);
+	l = (Eina_Inlist *)(a->keys);
+
+	if (!l)
+		return;
+	/* increment every keyframe by secs.usecs */
+	while (l)
+	{
+		unsigned long secs, usecs;
+		Etch_Animation_Keyframe *k = (Etch_Animation_Keyframe *)l;
+
+		etch_time_increment(&k->time, &inc);
+		l = l->next;
+	}
+	_update_start_end(a);
+}/**
+ * Set the type of an animation keyframe
+ * @param k The Etch_Animation_Keyframe
+ * @param t The type of the interpolation
  */
 EAPI void etch_animation_keyframe_type_set(Etch_Animation_Keyframe *k, Etch_Animation_Type t)
 {
@@ -274,7 +377,8 @@ EAPI void etch_animation_keyframe_type_set(Etch_Animation_Keyframe *k, Etch_Anim
 	k->type = t;
 }
 /**
- * Get the type of animation keyframe
+ * Get the type of an animation keyframe
+ * @param k The Etch_Animation_Keyframe
  */
 EAPI Etch_Animation_Type etch_animation_keyframe_type_get(Etch_Animation_Keyframe *k)
 {
@@ -282,14 +386,20 @@ EAPI Etch_Animation_Type etch_animation_keyframe_type_get(Etch_Animation_Keyfram
 	return k->type;
 }
 /**
- * Get the time for a mark
+ * Get the time from a keyframe
+ * @param k The Etch_Animation_Keyframe
+ * @param secs The seconds
+ * @param usecs The microseconds
  */
 EAPI void etch_animation_keyframe_time_get(Etch_Animation_Keyframe *k, unsigned long *secs, unsigned long *usecs)
 {
 	etch_time_secs_to(k, secs, usecs);
 }
 /**
- * Set the time for a mark
+ * Set the time on a keyframe
+ * @param k The Etch_Animation_Keyframe
+ * @param secs The seconds
+ * @param usecs The microseconds
  */
 EAPI void etch_animation_keyframe_time_set(Etch_Animation_Keyframe *k, unsigned long secs, unsigned long usecs)
 {
@@ -337,113 +447,52 @@ update:
 	_update_start_end(a);
 }
 /**
- * Get the value for a mark
+ * Get the value for a keyfame
+ * @param k The Etch_Animation_Keyframe
+ * @param v The Etch_Data to store the value to
  */
-EAPI void etch_animation_keyframe_value_get(Etch_Animation_Keyframe *k, ...)
+EAPI void etch_animation_keyframe_value_get(Etch_Animation_Keyframe *k, Etch_Data *v)
 {
 	assert(k);
-	/* TODO */
+	assert(v);
+
+	*v = k->value;
 }
 /**
- *
+ * Set the value on a keyframe
+ * @param k The Etch_Animation_Keyframe
+ * @param v The Etch_Data to set the value from
  */
-EAPI void etch_animation_offset_add(Etch_Animation *a, unsigned long secs, unsigned long usecs)
+EAPI void etch_animation_keyframe_value_set(Etch_Animation_Keyframe *k, Etch_Data *v)
 {
-	Etch_Time inc;
-	Eina_Inlist *l;
-
-	assert(a);
-
-	etch_time_secs_from(&inc, secs, usecs);
-	l = (Eina_Inlist *)(a->keys);
-	/* increment every keyframe by secs.usecs */
-	while (l)
-	{
-		unsigned long secs, usecs;
-		Etch_Animation_Keyframe *k = (Etch_Animation_Keyframe *)l;
-
-		etch_time_increment(&k->time, &inc);
-		l = l->next;
-	}
-	_update_start_end(a);
-}
-/**
- * Set the value for a mark
- * FIXME remove this, just pass an Etch_Value
- * to change the control points use another function
- */
-EAPI void etch_animation_keyframe_value_set(Etch_Animation_Keyframe *k, ...)
-{
-	va_list va;
 
 	assert(k);
-	va_start(va, k);
-	/* now get the type specific data, for example the bezier forms need
-	 * control points, etc */
-	switch (k->type)
-	{
-		case ETCH_ANIMATION_DISCRETE:
-		case ETCH_ANIMATION_LINEAR:
-		{
-			switch (k->animation->dtype)
-			{
-				case ETCH_UINT32:
-				k->value.data.u32 = va_arg(va, uint32_t);
-				break;
+	assert(v);
 
-				case ETCH_INT32:
-				k->value.data.i32 = va_arg(va, int32_t);
-				break;
-
-				case ETCH_ARGB:
-				k->value.data.argb = va_arg(va, unsigned int);
-				break;
-
-				case ETCH_FLOAT:
-				k->value.data.f = va_arg(va, double);
-				break;
-
-				case ETCH_STRING:
-				k->value.data.string = strdup(va_arg(va, char *));
-				break;
-
-				default:
-				break;
-			}
-			break;
-		}
-		case ETCH_ANIMATION_QUADRATIC:
-		{
-			switch (k->animation->dtype)
-			{
-				case ETCH_UINT32:
-					k->value.data.u32 = va_arg(va, unsigned int);
-					k->data.q.cp.data.u32 = va_arg(va, unsigned int);
-					break;
-				default:
-					break;
-			}
-			break;
-		}
-		case ETCH_ANIMATION_CUBIC:
-		{
-			switch (k->animation->dtype)
-			{
-				case ETCH_UINT32:
-					k->value.data.u32 = va_arg(va, unsigned int);
-					k->data.c.cp1.data.u32 = va_arg(va, unsigned int);
-					k->data.c.cp2.data.u32 = va_arg(va, unsigned int);
-					break;
-				default:
-					break;
-			}
-			break;
-		}
-		default:
-			break;
-	}
-	va_end(va);
+	k->value = *v;
 }
+/**
+ * Sets the control point on a keyframe with a quadratic interpolation type
+ * @param k The Etch_Animation_Keyframe
+ * @param cp1 The value that defines the control point
+ */
+EAPI void etch_animation_keyframe_quadratic_value_set(Etch_Animation_Keyframe *k, Etch_Data *cp1)
+{
+	k->q.cp = *cp1;
+}
+/**
+ * Sets the control point on a keyframe with a cubic interpolation type
+ * @param k The Etch_Animation_Keyframe
+ * @param cp1 The value that defines the first control point
+ * @param cp2 The value that defines the second control point
+ */
+EAPI void etch_animation_keyframe_cubic_value_set(Etch_Animation_Keyframe *k, Etch_Data *cp1,
+		Etch_Data *cp2)
+{
+	k->c.cp1 = *cp1;
+	k->c.cp2 = *cp2;
+}
+
 /**
  *
  */
@@ -464,27 +513,4 @@ EAPI Eina_Iterator * etch_animation_iterator_get(Etch_Animation *a)
 	return &it->iterator;
 }
 
-EAPI int etch_animation_keyframe_count(Etch_Animation *a)
-{
-	return a->count;
-}
 
-EAPI Etch * etch_animation_etch_get(Etch_Animation *a)
-{
-	return a->etch;
-}
-
-EAPI void etch_animation_disable(Etch_Animation *a)
-{
-	a->enabled = EINA_FALSE;
-}
-
-EAPI void etch_animation_enable(Etch_Animation *a)
-{
-	a->enabled = EINA_TRUE;
-}
-
-EAPI Eina_Bool etch_animation_enabled(Etch_Animation *a)
-{
-	return a->enabled;
-}

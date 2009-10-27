@@ -23,24 +23,20 @@
 /**
  * @mainpage Etch
  * @section intro Introduction
- * Etch is a library that ...
+ * Etch is an abstract time based animation library. It animates values
+ * of different types through different methods.
  *
  * @file
  * @brief Etch API
  * @defgroup Etch_Group API
  * @{
- *
- * @todo add the ability to make an object's property relative to other
- * TODO remove the object's concept, just animations, the data should not be stored
- * TODO on the object but on the animation itself
- * TODO etch_animation_add(Etch *e, Etch_Data_Type dt, callback)
- * TODO etch_animation_clone(Etch_Animation *a, Etch_Animation *clone)
- * TODO etch_timer_get(Etch *e, unsigned long *secs, unsigned long *usecs);
- * TODO remove every double and convert it into secs/usecs
  */
 
 /**
  * @defgroup Etch_Core_Group Core
+ * The main object to interact with the Etch library is an Etch object.
+ * An Etch object handles the global time and serves as a container
+ * of animations.
  * @{
  */
 typedef struct _Etch Etch; /**< Etch Opaque Handler */
@@ -64,8 +60,8 @@ typedef enum _Etch_Data_Type
 	ETCH_FLOAT, /**< Single precision float */
 	ETCH_DOUBLE, /**< Double precision float */
 	ETCH_ARGB, /**< Color (Alpha, Red, Green, Blue) of 32 bits */
-	ETCH_STRING,
-	ETCH_DATATYPES,
+	ETCH_STRING, /**< String type */
+	ETCH_DATATYPES, /**< Number of data types */
 } Etch_Data_Type;
 
 /**
@@ -87,6 +83,15 @@ typedef struct _Etch_Data
 /**
  * @}
  * @defgroup Etch_Animations_Group Animations
+ * Each animation on Etch is done through an Etch_Animation object.
+ * An Etch_Animation can only animate one value type, that is,
+ * only an integer type, a float type, etc. Whenever an animation
+ * is started, stopped or the value of the animation changes a
+ * callback will be called.
+ * An Etch_Animation is a container of keyframes which are named
+ * Etch_Keyframes, every keyframe defines the way to interpolate
+ * two values, the previous keyframe final value and the current
+ * keyframe value. 
  * @{
  */
 typedef struct _Etch_Animation Etch_Animation; /**< Animation Opaque Handler */
@@ -104,6 +109,7 @@ typedef enum _Etch_Animation_Type
 
 /** Callback function used when a property value changes */
 typedef void (*Etch_Animation_Callback)(const Etch_Data *curr, const Etch_Data *prev, void *data);
+/** Callback function used when an animation is started or stopped */
 typedef void (*Etch_Animation_State_Callback)(Etch_Animation *a, void *data);
 
 EAPI Etch_Animation * etch_animation_add(Etch *e, Etch_Data_Type dtype,
@@ -126,8 +132,11 @@ EAPI void etch_animation_keyframe_type_set(Etch_Animation_Keyframe *m, Etch_Anim
 EAPI Etch_Animation_Type etch_animation_keyframe_type_get(Etch_Animation_Keyframe *m);
 EAPI void etch_animation_keyframe_time_set(Etch_Animation_Keyframe *m, unsigned long secs, unsigned long usecs);
 EAPI void etch_animation_keyframe_time_get(Etch_Animation_Keyframe *k, unsigned long *secs, unsigned long *usecs);
-EAPI void etch_animation_keyframe_value_set(Etch_Animation_Keyframe *m, ...);
-EAPI void etch_animation_keyframe_value_get(Etch_Animation_Keyframe *m, ...);
+EAPI void etch_animation_keyframe_value_set(Etch_Animation_Keyframe *k, Etch_Data *v);
+EAPI void etch_animation_keyframe_value_get(Etch_Animation_Keyframe *k, Etch_Data *v);
+EAPI void etch_animation_keyframe_cubic_value_set(Etch_Animation_Keyframe *k, Etch_Data *cp1,
+		Etch_Data *cp2);
+EAPI void etch_animation_keyframe_quadratic_value_set(Etch_Animation_Keyframe *k, Etch_Data *cp1);
 /**
  * @}
  * @}

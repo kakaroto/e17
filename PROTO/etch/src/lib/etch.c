@@ -119,7 +119,8 @@ static void _process(Etch *e)
  *                                   API                                      *
  *============================================================================*/
 /**
- * Create a new Etch instance
+ * Create a new Etch instance.
+ * @return The Etch instance
  */
 EAPI Etch * etch_new(void)
 {
@@ -132,6 +133,7 @@ EAPI Etch * etch_new(void)
 
 /**
  * Delete the Etch instance
+ * @param e The Etch instance
  */
 EAPI void etch_delete(Etch *e)
 {
@@ -140,8 +142,9 @@ EAPI void etch_delete(Etch *e)
 	free(e);
 }
 /**
- * To be documented
- * FIXME: To be fixed
+ * Sets the frames per second
+ * @param e The Etch instance
+ * @param fps Frames per second
  */
 EAPI void etch_timer_fps_set(Etch *e, unsigned int fps)
 {
@@ -154,8 +157,9 @@ EAPI void etch_timer_fps_set(Etch *e, unsigned int fps)
 	etch_time_double_from(&e->tpf, spf);
 }
 /**
- * To be documented
- * FIXME: To be fixed
+ * Sets the frames per second
+ * @param e The Etch instance
+ * @return Number of frames per second
  */
 EAPI unsigned int etch_timer_fps_get(Etch *e)
 {
@@ -163,8 +167,8 @@ EAPI unsigned int etch_timer_fps_get(Etch *e)
 	return e->fps;
 }
 /**
- * To be documented
- * FIXME: To be fixed
+ * Advance the global time by one second per frame
+ * @param e The Etch instance
  */
 EAPI void etch_timer_tick(Etch *e)
 {
@@ -175,8 +179,8 @@ EAPI void etch_timer_tick(Etch *e)
 	_process(e);
 }
 /**
- * To be documented
- * FIXME: To be fixed
+ * Query whenever all animations are done
+ * @param e The Etch instance
  */
 EAPI int etch_timer_has_end(Etch *e)
 {
@@ -187,16 +191,19 @@ EAPI int etch_timer_has_end(Etch *e)
 	return 0;
 }
 /**
- * To be documented
- * FIXME: To be fixed
+ * Get the current global time of an Etch
+ * @param e The Etch instance
+ * @param secs The pointer where the seconds are going to be stored
+ * @param usecs The pointer where the microseconds are going to be stored
  */
 EAPI void etch_timer_get(Etch *e, unsigned long *secs, unsigned long *usecs)
 {
 	etch_time_secs_to(&e->curr, secs, usecs);
 }
 /**
- * To be documented
- * FIXME: To be fixed
+ * Moe the Etch global time to the specific frame
+ * @param e The Etch instance
+ * @param frame Frame to go
  */
 EAPI void etch_timer_goto(Etch *e, unsigned long frame)
 {
@@ -210,7 +217,12 @@ EAPI void etch_timer_goto(Etch *e, unsigned long frame)
 }
 /**
  * Create a new animation
+ * @param e The Etch instance to add the animation to
  * @param dtype Data type the animation will animate
+ * @param cb Function called whenever the value changes
+ * @param start Function called whenever the animation starts
+ * @param stop Function called whenever the animation stops
+ * @param data User provided data that passed to the callbacks
  */
 EAPI Etch_Animation * etch_animation_add(Etch *e, Etch_Data_Type dtype,
 		Etch_Animation_Callback cb,

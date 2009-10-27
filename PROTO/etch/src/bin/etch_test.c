@@ -11,17 +11,17 @@ int _timer_event = 0;
 
 void _uint32_cb(const Etch_Data *curr, const Etch_Data *prev, void *data)
 {
-	printf("curr %d old %d\n", curr->data.u32, prev->data.u32);
+	printf("[UINT32] curr %d old %d\n", curr->data.u32, prev->data.u32);
 }
 
 void _color_cb(const Etch_Data *curr, const Etch_Data *prev, void *data)
 {
-	printf("curr %08x old %08x\n", curr->data.argb, prev->data.argb);
+	printf("[ARGB] curr %08x old %08x\n", curr->data.argb, prev->data.argb);
 }
 
 void _string_cb(const Etch_Data *curr, const Etch_Data *prev, void *data)
 {
-	printf("curr %s old %s\n", curr->data.string, prev->data.string);
+	printf("[STRING] curr %s old %s\n", curr->data.string, prev->data.string);
 }
 
 
@@ -52,80 +52,100 @@ void animation_uint32_setup(Etch *e)
 {
 	Etch_Animation *ea;
 	Etch_Animation_Keyframe *ek;
+	Etch_Data data;
 	
 	ea = etch_animation_add(e, ETCH_UINT32, _uint32_cb, NULL, NULL, NULL);
 	/* first keyframe */
 	ek = etch_animation_keyframe_add(ea);
 	etch_animation_keyframe_type_set(ek, ETCH_ANIMATION_COSIN);
-	etch_animation_keyframe_value_set(ek, 10);
+	data.data.u32 = 10;
+	etch_animation_keyframe_value_set(ek, &data);
 	etch_animation_keyframe_time_set(ek, 3, 3015);
 	/* second keyframe */
 	ek = etch_animation_keyframe_add(ea);
 	etch_animation_keyframe_type_set(ek, ETCH_ANIMATION_LINEAR);
-	etch_animation_keyframe_value_set(ek, 40);
+	data.data.u32 = 40;
+	etch_animation_keyframe_value_set(ek, &data);
 	etch_animation_keyframe_time_set(ek, 25, 1237);
 	/* third keyframe */
 	ek = etch_animation_keyframe_add(ea);
 	etch_animation_keyframe_type_set(ek, ETCH_ANIMATION_LINEAR);
-	etch_animation_keyframe_value_set(ek, 30);
+	data.data.u32 = 30;
+	etch_animation_keyframe_value_set(ek, &data);
 	etch_animation_keyframe_time_set(ek, 15, 2530);
 	/* fourth keyframe */
 	ek = etch_animation_keyframe_add(ea);
 	etch_animation_keyframe_type_set(ek, ETCH_ANIMATION_DISCRETE);
-	etch_animation_keyframe_value_set(ek, 25);
+	data.data.u32 = 25;
+	etch_animation_keyframe_value_set(ek, &data);
 	etch_animation_keyframe_time_set(ek, 1, 0);
 	/* fifth keyframe */
 	ek = etch_animation_keyframe_add(ea);
 	etch_animation_keyframe_type_set(ek, ETCH_ANIMATION_DISCRETE);
-	etch_animation_keyframe_value_set(ek, 15);
+	data.data.u32 = 15;
+	etch_animation_keyframe_value_set(ek, &data);
 	etch_animation_keyframe_time_set(ek, 2, 0);
 	
 	ek = etch_animation_keyframe_add(ea);
 	etch_animation_keyframe_type_set(ek, ETCH_ANIMATION_DISCRETE);
-	etch_animation_keyframe_value_set(ek, 25);
+	data.data.u32 = 25;
+	etch_animation_keyframe_value_set(ek, &data);
 	etch_animation_keyframe_time_set(ek, 3, 0);
 	etch_animation_repeat_set(ea, 2);
+
+	etch_animation_enable(ea);
 }
 
 void animation_argb_setup(Etch *e)
 {
 	Etch_Animation *ea;
 	Etch_Animation_Keyframe *ek;
-		
+	Etch_Data data;
+
 	ea = etch_animation_add(e, ETCH_ARGB, _color_cb, NULL, NULL, NULL);
 	/* first keyframe */
 	ek = etch_animation_keyframe_add(ea);
 	etch_animation_keyframe_type_set(ek, ETCH_ANIMATION_LINEAR);
-	etch_animation_keyframe_value_set(ek, 0xff000000);
+	data.data.argb = 0xff000000;
+	etch_animation_keyframe_value_set(ek, &data);
 	etch_animation_keyframe_time_set(ek, 1, 0);
 	/* second keyframe */
 	ek = etch_animation_keyframe_add(ea);
 	etch_animation_keyframe_type_set(ek, ETCH_ANIMATION_LINEAR);
-	etch_animation_keyframe_value_set(ek, 0x00ff00ff);
+	data.data.argb = 0x00ff00ff;
+	etch_animation_keyframe_value_set(ek, &data);
 	etch_animation_keyframe_time_set(ek, 5, 0);
+
+	etch_animation_enable(ea);
 }
 
 void animation_string_setup(Etch *e)
 {
 	Etch_Animation *ea;
 	Etch_Animation_Keyframe *ek;
-			
+	Etch_Data data;
+
 	ea = etch_animation_add(e, ETCH_STRING, _string_cb, NULL, NULL, NULL);
 	/* first keyframe */
 	ek = etch_animation_keyframe_add(ea);
 	etch_animation_keyframe_type_set(ek, ETCH_ANIMATION_DISCRETE);
-	etch_animation_keyframe_value_set(ek, "hello");
+	data.data.string = "hello";
+	etch_animation_keyframe_value_set(ek, &data);
 	etch_animation_keyframe_time_set(ek, 1, 0);
 	/* second keyframe */
 	ek = etch_animation_keyframe_add(ea);
 	etch_animation_keyframe_type_set(ek, ETCH_ANIMATION_DISCRETE);
-	etch_animation_keyframe_value_set(ek, "bye");
+	data.data.string = "bye";
+	etch_animation_keyframe_value_set(ek, &data);
 	etch_animation_keyframe_time_set(ek, 5, 0);
 	/* third keyframe */
 	ek = etch_animation_keyframe_add(ea);
 	etch_animation_keyframe_type_set(ek, ETCH_ANIMATION_DISCRETE);
-	etch_animation_keyframe_value_set(ek, "nothing");
+	data.data.string = "nothing";
+	etch_animation_keyframe_value_set(ek, &data);
 	etch_animation_keyframe_time_set(ek, 8, 0);
+
+	etch_animation_enable(ea);
 }
 
 int main(void)
