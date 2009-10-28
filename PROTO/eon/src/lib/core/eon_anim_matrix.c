@@ -51,6 +51,8 @@ static void _animation_matrix_callback(Eon_Animation *a, const char *prop,
 
 static void _value_set(Ekeko_Value *v, Etch_Animation_Keyframe *k)
 {
+	Etch_Data ed;
+
 	if (v->type == EKEKO_PROPERTY_FLOAT)
 	{
 #if 0
@@ -58,7 +60,8 @@ static void _value_set(Ekeko_Value *v, Etch_Animation_Keyframe *k)
 		printf("[Eon_Animation] Setting matrix to:\n");
 		printf("[%g %g %g]\n[%g %g %g]\n[%g %g %g]\n", m->xx, m->xy, m->xz, m->yx, m->yy, m->yz, m->zx, m->zy, m->zz);
 #endif
-		etch_animation_keyframe_value_set(k, v->value.float_value);
+		ed.data.f = v->value.float_value;
+		etch_animation_keyframe_value_set(k, &ed);
 	}
 }
 

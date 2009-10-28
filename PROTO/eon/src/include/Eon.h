@@ -47,6 +47,8 @@ typedef struct _Eon_Hswitch Eon_Hswitch;
 typedef struct _Eon_Fade Eon_Fade;
 typedef struct _Eon_Checker Eon_Checker;
 typedef struct _Eon_Stripes Eon_Stripes;
+typedef struct _Eon_Grid Eon_Grid;
+typedef struct _Eon_Buffer Eon_Buffer;
 /* shapes */
 typedef struct _Eon_Shape Eon_Shape;
 typedef struct _Eon_Shape_Square Eon_Shape_Square;
@@ -96,6 +98,8 @@ EAPI int eon_shutdown(void);
 #include "eon_fade.h"
 #include "eon_checker.h"
 #include "eon_stripes.h"
+#include "eon_grid.h"
+#include "eon_buffer.h"
 
 #include "eon_shape.h"
 #include "eon_shape_square.h"

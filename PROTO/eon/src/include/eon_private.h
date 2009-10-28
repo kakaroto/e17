@@ -63,6 +63,8 @@
 #define EON_TYPE_FADE "fade"
 #define EON_TYPE_CHECKER "checker"
 #define EON_TYPE_STRIPES "stripes"
+#define EON_TYPE_GRID "grid"
+#define EON_TYPE_BUFFER "buffer"
 
 #define EON_TYPE_FILTER "filter"
 #define EON_TYPE_FILTER_EFFECT "Eon_Filter_Effect"

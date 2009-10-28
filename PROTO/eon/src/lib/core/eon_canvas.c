@@ -420,18 +420,9 @@ static void _child_append_cb(const Ekeko_Object *o, Ekeko_Event *e, void *data)
 	 * in case the parent is a canvas retrieve the engine from the relative
 	 * document
 	 */
-	/* parent is a canvas */
-	if (ekeko_type_instance_is_of(em->related, EON_TYPE_CANVAS))
-	{
-		/* FIXME what happens if the canvas is appended to another canvas
-		 * and the parent doesnt have a document?
-		 */
-		prv->doc = eon_canvas_document_get((Eon_Canvas *)em->related);
-	}
 	/* parent is a document */
-	else
+	if (!ekeko_type_instance_is_of(em->related, EON_TYPE_CANVAS))
 	{
-		prv->doc = (Eon_Document *)em->related;
 		prv->root = EINA_TRUE;
 	}
 }
@@ -474,14 +465,6 @@ static void _dtor(void *canvas)
 /*============================================================================*
  *                                 Global                                     *
  *============================================================================*/
-Eon_Document * eon_canvas_document_get(Eon_Canvas *c)
-{
-	Eon_Canvas_Private *prv;
-
-	prv = PRIVATE(c);
-	return prv->doc;
-}
-
 void * eon_canvas_engine_data_get(Eon_Canvas *c)
 {
 	Eon_Canvas_Private *prv;
@@ -529,10 +512,24 @@ Ekeko_Property_Id EON_CANVAS_MATRIX;
 EAPI Eon_Canvas * eon_canvas_new(Eon_Document *d)
 {
 	Eon_Canvas *c;
+	Eon_Canvas_Private *prv;
+
 
 	c = eon_document_object_new(d, EON_TYPE_CANVAS);
+	if (!c) return NULL;
+
+	prv = PRIVATE(c);
+	prv->doc = d;
 
 	return c;
+}
+
+EAPI Eon_Document * eon_canvas_document_get(Eon_Canvas *c)
+{
+	Eon_Canvas_Private *prv;
+
+	prv = PRIVATE(c);
+	return prv->doc;
 }
 
 EAPI void eon_canvas_x_rel_set(Eon_Canvas *c, int x)

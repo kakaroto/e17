@@ -224,6 +224,36 @@ EAPI void eon_engine_compound_delete(Eon_Engine *e, void *engine_data)
 	e->compound_delete(engine_data);
 }
 
+EAPI void * eon_engine_grid_create(Eon_Engine *e, Eon_Paint *p)
+{
+	return e->grid_create((Eon_Stripes *)p);
+}
+
+EAPI void eon_engine_grid_render(Eon_Engine *e, void *d, void *c, Eina_Rectangle *clip)
+{
+	return e->grid_render(d, c, clip);
+}
+
+EAPI void eon_engine_grid_delete(Eon_Engine *e, void *engine_data)
+{
+	e->grid_delete(engine_data);
+}
+
+EAPI void * eon_engine_buffer_create(Eon_Engine *e, Eon_Paint *p)
+{
+	return e->buffer_create((Eon_Stripes *)p);
+}
+
+EAPI void eon_engine_buffer_render(Eon_Engine *e, void *d, void *c, Eina_Rectangle *clip)
+{
+	return e->buffer_render(d, c, clip);
+}
+
+EAPI void eon_engine_buffer_delete(Eon_Engine *e, void *engine_data)
+{
+	e->buffer_delete(engine_data);
+}
+
 /* Debug */
 EAPI void eon_engine_debug_rect(Eon_Engine *e, void *c, uint32_t color, int x,  int y, int w, int h)
 {

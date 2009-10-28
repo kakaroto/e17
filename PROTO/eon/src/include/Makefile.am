@@ -8,9 +8,12 @@ eon_animation.h \
 eon_anim_basic.h \
 eon_anim_key.h \
 eon_anim_matrix.h \
+eon_buffer.h \
 eon_canvas.h \
 eon_coord.h \
 eon_color.h \
+eon_compound.h \
+eon_compound_layer.h \
 eon_circle.h \
 eon_checker.h \
 eon_displace.h \
@@ -19,6 +22,7 @@ eon_engine.h \
 eon_external.h \
 eon_fade.h \
 eon_filter.h \
+eon_grid.h \
 eon_hswitch.h \
 eon_image.h \
 eon_paint.h \

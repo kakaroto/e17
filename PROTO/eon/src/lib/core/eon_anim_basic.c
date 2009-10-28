@@ -72,15 +72,19 @@ static void _animation_color_callback(Eon_Animation *a, const char *prop,
 
 static void _value_set(Ekeko_Value *v, Etch_Animation_Keyframe *k)
 {
+	Etch_Data ed;
+
 	switch (v->type)
 	{
 		/* basic types */
 		case EKEKO_PROPERTY_INT:
-		etch_animation_keyframe_value_set(k, v->value.int_value);
+		ed.data.i32 = v->value.int_value;
+		etch_animation_keyframe_value_set(k, &ed);
 		break;
 
 		case EKEKO_PROPERTY_FLOAT:
-		etch_animation_keyframe_value_set(k, v->value.float_value);
+		ed.data.f = v->value.float_value;
+		etch_animation_keyframe_value_set(k, &ed);
 		break;
 
 		default:
@@ -88,7 +92,8 @@ static void _value_set(Ekeko_Value *v, Etch_Animation_Keyframe *k)
 		{
 			Eon_Coord *c = v->value.pointer_value;
 
-			etch_animation_keyframe_value_set(k, c->value);
+			ed.data.i32 = c->value;
+			etch_animation_keyframe_value_set(k, &ed);
 #if EON_ANIMATION_DEBUG
 			printf("[Eon_Animation] Setting coord to %d\n", c->value);
 #endif
@@ -97,7 +102,8 @@ static void _value_set(Ekeko_Value *v, Etch_Animation_Keyframe *k)
 		{
 			Eon_Color c = v->value.int_value;
 
-			etch_animation_keyframe_value_set(k, c);
+			ed.data.argb = c;
+			etch_animation_keyframe_value_set(k, &ed);
 #if EON_ANIMATION_DEBUG
 			printf("[Eon_Animation] Setting color to %08x\n", c);
 #endif

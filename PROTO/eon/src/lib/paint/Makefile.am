@@ -18,4 +18,6 @@ eon_transition.c \
 eon_hswitch.c \
 eon_fade.c \
 eon_checker.c \
-eon_stripes.c
+eon_stripes.c \
+eon_buffer.c \
+eon_grid.c

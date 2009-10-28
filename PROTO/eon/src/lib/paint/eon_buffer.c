@@ -20,26 +20,30 @@
 /*============================================================================*
  *                                  Local                                     *
  *============================================================================*/
-#define PRIVATE(d) ((Eon_Buffer_Private *)((Eon_Buffer *)(d))->private)
+#define PRIVATE(d) ((Eon_Buffer_Private *)((Eon_Buffer *)(d))->prv)
+
+static Ekeko_Type *_type = NULL;
 struct _Eon_Buffer_Private
 {
 	Enesim_Converter_Format format;
-	void *data;
-	unsigned int w, h;
-	unsigned int stride;
-	Enesim_Surface *src;
+	Enesim_Converter_Data *data;
 };
+
+static void _render(Eon_Paint *p, Eon_Engine *eng, void *engine_data, void *canvas_data, Eina_Rectangle *clip)
+{
+	eon_engine_buffer_render(eng, engine_data, canvas_data, clip);
+}
 
 static void _ctor(void *instance)
 {
-	Eon_Buffer *p;
+	Eon_Buffer *b;
 	Eon_Buffer_Private *prv;
 
-	p = (Eon_Buffer *) instance;
-	p->private = prv = ekeko_type_instance_private_get(eon_buffer_type_get(), instance);
-	/* TODO on render we should get the pixels from the client in case the pixels
-	 * have changed, if it is only a redraw just blit and convert from it
-	 */
+	b = (Eon_Buffer *) instance;
+	b->prv = prv = ekeko_type_instance_private_get(_type, instance);
+	b->parent.parent.create = eon_engine_buffer_create;
+	b->parent.parent.render = _render;
+	b->parent.parent.delete = eon_engine_buffer_delete;
 }
 
 static void _dtor(void *image)
@@ -49,29 +53,43 @@ static void _dtor(void *image)
 /*============================================================================*
  *                                 Global                                     *
  *============================================================================*/
+void eon_buffer_init(void)
+{
+	_type = ekeko_type_new(EON_TYPE_BUFFER, sizeof(Eon_Buffer),
+			sizeof(Eon_Buffer_Private), eon_paint_square_type_get(),
+			_ctor, _dtor, eon_paint_appendable);
+}
+
+void eon_buffer_shutdown(void)
+{
+	eon_type_unregister(_type);
+}
 /*============================================================================*
  *                                   API                                      *
  *============================================================================*/
-EAPI Ekeko_Type *eon_buffer_type_get(void)
+Ekeko_Property_Id EON_BUFFER_FORMAT;
+
+EAPI Eon_Buffer * eon_buffer_new(Eon_Document *d)
 {
-	static Ekeko_Type *type = NULL;
+	Eon_Buffer *b;
 
-	if (!type)
-	{
-		type = ekeko_type_new(EON_TYPE_BUFFER, sizeof(Eon_Buffer),
-				sizeof(Eon_Buffer_Private), eon_paint_type_get(),
-				_ctor, _dtor, eon_paint_appendable);
-	}
+	b = eon_document_object_new(d, EON_TYPE_BUFFER);
 
-	return type;
+	return b;
 }
 
-EAPI Eon_Buffer * eon_buffer_new(void)
+EAPI void eon_buffer_format_set(Eon_Document *d, Enesim_Converter_Format f)
 {
-	Eon_Buffer *p;
-
-	p = ekeko_type_instance_new(eon_buffer_type_get());
-
-	return p;
+	/* a change too */
 }
 
+EAPI void eon_buffer_data_set(Eon_Buffer *b, Enesim_Converter_Data *cdata)
+{
+	/* a change too */
+}
+
+EAPI void eon_buffer_update(Eon_Buffer *b)
+{
+	/* TODO notify parent canvas that we have changed */
+	/* TODO notify reference objects about the change */
+}
