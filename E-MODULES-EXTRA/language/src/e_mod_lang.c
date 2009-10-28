@@ -11,11 +11,6 @@
 
 /******************************************************/
 
-#ifdef __FreeBSD__
-   #define DFLT_XKB_RULES_FILE   "/usr/X11R6/lib/X11/xkb/rules/xfree86"
-#else
-   #define DFLT_XKB_RULES_FILE   "/etc/X11/xkb/rules/xfree86"
-#endif // __FreeBSD__
 #define DFLT_XKB_LAYOUT	      "us"
 #define DFLT_XKB_MODEL	      "pc101"
 
@@ -198,6 +193,7 @@ lang_load_xfree_language_kbd_layouts(Config *cfg)
    EXML	 *exml;
    int	 found;
    int	 result;
+   char buf[PATH_MAX];
 
    if (!cfg) return;
 
@@ -206,17 +202,9 @@ lang_load_xfree_language_kbd_layouts(Config *cfg)
    if (!exml) return;
    if (!exml_init(exml)) EXML_RETURN_ON_ERROR(exml);
 
-   result = exml_file_read(exml, "/etc/X11/xkb/rules/xfree86.xml");
-   if (!result || result == -1)
-     { 
-#ifdef __FreeBSD__
-	result = exml_file_read(exml, "/usr/X11R6/lib/X11/xkb/rules/xfree86.xml");
-#else
-	result = exml_file_read(exml, "/usr/lib/X11/xkb/rules/xfree86.xml");
-#endif // __FreeBSD__
-	if (!result || result == -1) 
-	  EXML_RETURN_ON_ERROR(exml);
-     }
+   snprintf(buf, sizeof(buf), "%s.xml", default_xkb_rules_file);
+   result = exml_file_read(exml, buf);
+   if (!result || result == -1) EXML_RETURN_ON_ERROR(exml);
 
    exml_down(exml);
 
@@ -289,6 +277,7 @@ lang_load_xfree_kbd_models(Config *cfg)
    EXML	 *exml;
    int	 found;
    int	 result;
+   char buf[PATH_MAX];
 
    exml = exml_new();
 
@@ -296,17 +285,9 @@ lang_load_xfree_kbd_models(Config *cfg)
    if (!exml_init(exml))
      EXML_RETURN_ON_ERROR(exml);
 
-   result = exml_file_read(exml, "/etc/X11/xkb/rules/xfree86.xml");
-   if (!result || result == -1)
-     { 
-#ifdef __FreeBSD__
-	result = exml_file_read(exml, "/usr/X11R6/lib/X11/xkb/rules/xfree86.xml");
-#else
-	result = exml_file_read(exml, "/usr/lib/X11/xkb/rules/xfree86.xml");
-#endif // __FreeBSD__
-	if (!result || result == -1) 
-	  EXML_RETURN_ON_ERROR(exml);
-     }
+   snprintf(buf, sizeof(buf), "%s.xml", default_xkb_rules_file);
+   result = exml_file_read(exml, buf);
+   if (!result || result == -1) EXML_RETURN_ON_ERROR(exml);
 
    if (strcasecmp(exml_tag_get(exml), "xkbConfigRegistry"))
      EXML_RETURN_ON_ERROR(exml);
@@ -702,7 +683,7 @@ lang_language_xorg_values_get(Language *l)
    if (vd.options) XFree(vd.options);
 #endif 
 
-   rules = XkbRF_Load(DFLT_XKB_RULES_FILE, "C", True, True);
+   rules = XkbRF_Load(default_xkb_rules_file, "C", True, True);
    if (!rules) return 0;
 
    XkbRF_GetComponents(rules, &(l->rdefs), &rnames);
@@ -753,7 +734,7 @@ _lang_apply_language_conponent_names(Language *l)
    if (!xkb) return 0;
 
    if (!XkbRF_SetNamesProp((Display *)ecore_x_display_get(),
-			   DFLT_XKB_RULES_FILE, &(l->rdefs))) 
+			   default_xkb_rules_file, &(l->rdefs))) 
      return 0;
 
    return 1;

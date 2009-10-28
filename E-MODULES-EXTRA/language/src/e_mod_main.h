@@ -65,4 +65,6 @@ void language_clear_border_language_setup_list();
 
 extern Config *language_config;
 
+extern const char *default_xkb_rules_file;
+
 #endif

@@ -32,6 +32,8 @@ static char		*_gc_label   (E_Gadcon_Client_Class *client_class);
 static Evas_Object	*_gc_icon    (E_Gadcon_Client_Class *client_class, Evas *evas);
 static const char       *_gc_id_new  (E_Gadcon_Client_Class *client_class);
 
+const char *default_xkb_rules_file;
+
 static const E_Gadcon_Client_Class  _gadcon_class =
 {
    GADCON_CLIENT_CLASS_VERSION,
@@ -145,6 +147,22 @@ e_modapi_init(E_Module *m)
    int	      load_default_config = 0;
    Eina_List *l;
    char       buf[4096];
+   int i;
+   // last three items are for freebsd systems.
+   const char *xkb_paths[] = {
+	"/etc/X11/xkb/rules/xfree86",
+	"/usr/share/X11/xkb/rules/xfree86",
+	"/usr/lib/X11/xkb/rules/xfree86",
+	"/etc/X11/xkb/rules/xorg",
+	"/usr/share/X11/xkb/rules/xorg",
+	"/usr/lib/X11/xkb/rules/xorg",
+	"/etc/X11/xkb/rules/base",
+	"/usr/share/X11/xkb/rules/base",
+	"/usr/lib/X11/xkb/rules/base",
+	"/usr/X11R6/lib/X11/xkb/rules/xfree86",
+	"/usr/X11R6/lib/X11/xkb/rules/xorg",
+	"/usr/X11R6/lib/X11/xkb/rules/base"
+   };
 
    snprintf(buf, sizeof(buf), "%s/locale", e_module_dir_get(m));
    bindtextdomain(PACKAGE, buf);
@@ -193,6 +211,17 @@ e_modapi_init(E_Module *m)
 	language_config = E_NEW(Config, 1);
 	load_default_config = 1;
      }
+
+   // select which files to use.
+   for (i = 0; i < (sizeof(xkb_paths) / sizeof(const char *)); i++)
+     {
+	if (ecore_file_exists(xkb_paths[i]))
+	  {
+	    default_xkb_rules_file = xkb_paths[i];
+	    break;
+	  }
+     }
+   if (!default_xkb_rules_file) return 0;
 
    lang_load_xfree_kbd_models(language_config);
    lang_load_xfree_language_kbd_layouts(language_config);
