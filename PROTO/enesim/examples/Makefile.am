@@ -37,6 +37,7 @@ enesim_bench_gradient_linear.c \
 enesim_bench_compound.c \
 enesim_bench_figure.c \
 enesim_bench_path.c \
+enesim_bench_grid.c \
 image.c
 
 endif

@@ -153,6 +153,12 @@ EAPI void enesim_renderer_path_extents_get(Enesim_Renderer *p, int *lx, int *ty,
 		int *by);
 EAPI void enesim_renderer_path_clear(Enesim_Renderer *p);
 
+EAPI Enesim_Renderer * enesim_renderer_grid_new(void);
+EAPI void enesim_renderer_grid_inside_size_set(Enesim_Renderer *r, unsigned int w, unsigned int h);
+EAPI void enesim_renderer_grid_inside_color_set(Enesim_Renderer *r, Enesim_Color color);
+EAPI void enesim_renderer_grid_outside_size_set(Enesim_Renderer *r, unsigned int w, unsigned int h);
+EAPI void enesim_renderer_grid_outside_color_set(Enesim_Renderer *r, Enesim_Color color);
+
 /**
  * @}
  */

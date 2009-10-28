@@ -196,6 +196,11 @@ int bench_get(const char *name)
 		opt_bench = "path";
 		return 1;
 	}
+	else if (!strcmp(name, "grid"))
+	{
+		opt_bench = "grid";
+		return 1;
+	}
 	else if (!strcmp(name, "all"))
 	{
 		opt_bench = "all";
@@ -250,6 +255,7 @@ void bench_help(void)
 	printf("compound\n");
 	printf("figure\n");
 	printf("path\n");
+	printf("grid\n");
 	printf("all\n");
 }
 
@@ -464,6 +470,10 @@ ok:
 	{
 		path_bench();
 	}
+	else if (!strcmp(opt_bench, "grid"))
+	{
+		grid_bench();
+	}
 	else if (!strcmp(opt_bench, "all"))
 	{
 		compositor_bench();
@@ -483,6 +493,7 @@ ok:
 		compound_bench();
 		figure_bench();
 		path_bench();
+		grid_bench();
 	}
 	enesim_shutdown();
 	/* this bench should be on test
