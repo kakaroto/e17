@@ -15,30 +15,26 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with python-elementary.  If not, see <http://www.gnu.org/licenses/>.
 #
-    
-cdef class Radio(Object):    
+
+cdef class Radio(Object):
     def __init__(self, c_evas.Object parent):
         Object.__init__(self, parent.evas)
         self._set_obj(elm_radio_add(parent.obj))
-        
+
     def label_set(self, label):
         elm_radio_label_set(self.obj, label)
-        
+
     def icon_set(self, c_evas.Object icon):
         elm_radio_icon_set(self.obj, icon.obj)
-        
+
     def group_add(self, c_evas.Object group):
         elm_radio_group_add(self.obj, group.obj)
-        
+
     def state_value_set(self, value):
         elm_radio_state_value_set(self.obj, value)
-        
+
     def value_set(self, value):
         elm_radio_value_set(self.obj, value)
 
     def value_get(self):
         return elm_radio_value_get(self.obj)
-    
-    
-        
-
