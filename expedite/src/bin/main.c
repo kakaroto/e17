@@ -1149,6 +1149,8 @@ _profile_parse(int argc, char **argv)
 	     else if (!strcmp(argv[i], "n800"))   {win_w = 720 ; win_h = 420 ;}
              else if (!strcmp(argv[i], "pal"))    {win_w = 720 ; win_h = 576 ;}
              else if (!strcmp(argv[i], "720p"))   {win_w = 1280; win_h = 720 ;}
+             else if (!strcmp(argv[i], "wsvga"))  {win_w = 1024; win_h = 600 ;}
+             else if (!strcmp(argv[i], "wsvga-p")){win_w = 600 ; win_h = 1024;}
 	     else
 	       {
 		  printf("Invalid profile: %s\n", argv[i]);
@@ -1322,7 +1324,7 @@ _engine_args(int argc, char **argv)
 		"\n"
 		"Where PROFILE can be one of:\n"
 		"  qvga qvga-p vga vga-p wvga wvga-p svga svga-p xga xga-p wxga wxga-p\n"
-		"  n800 pal 720p\n"
+		"  n800 pal 720p wsvga wsvga-p\n"
 		);
 	exit(-1);
      }
