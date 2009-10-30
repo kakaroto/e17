@@ -70,3 +70,7 @@ cdef class Check(Object):
         def __set__(self, value):
             self.state_set(value)
 
+    property changed:
+        def __set__(self, value):
+            self._callback_add("changed", value)
+
