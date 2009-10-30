@@ -254,6 +254,11 @@ EAPI void eon_engine_buffer_delete(Eon_Engine *e, void *engine_data)
 	e->buffer_delete(engine_data);
 }
 
+EAPI void eon_engine_buffer_update(Eon_Engine *e, void *engine_data)
+{
+	e->buffer_update(engine_data);
+}
+
 /* Debug */
 EAPI void eon_engine_debug_rect(Eon_Engine *e, void *c, uint32_t color, int x,  int y, int w, int h)
 {

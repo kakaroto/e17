@@ -21,10 +21,16 @@
  *                                 Events                                     *
  *============================================================================*/
 #define EON_BUFFER_FORMAT_CHANGED "formatChanged"
+#define EON_BUFFER_DATA_CHANGED "dataChanged"
+#define EON_BUFFER_WIDTH_CHANGED "dwidthChanged"
+#define EON_BUFFER_HEIGHT_CHANGED "dheightChanged"
 /*============================================================================*
  *                               Properties                                   *
  *============================================================================*/
 extern Ekeko_Property_Id EON_BUFFER_FORMAT;
+extern Ekeko_Property_Id EON_BUFFER_DATA;
+extern Ekeko_Property_Id EON_BUFFER_WIDTH;
+extern Ekeko_Property_Id EON_BUFFER_HEIGHT;
 /*============================================================================*
  *                                 Class                                      *
  *============================================================================*/
@@ -38,5 +44,18 @@ struct _Eon_Buffer
  *                                Functions                                   *
  *============================================================================*/
 EAPI Eon_Buffer * eon_buffer_new(Eon_Document *d);
+EAPI void eon_buffer_format_set(Eon_Buffer *b, Enesim_Converter_Format f);
+EAPI Enesim_Converter_Format eon_buffer_format_get(Eon_Buffer *b);
+
+EAPI void eon_buffer_data_set(Eon_Buffer *b, Enesim_Converter_Data *cdata);
+EAPI Enesim_Converter_Data * eon_buffer_data_get(Eon_Buffer *b);
+
+EAPI void eon_buffer_data_update(Eon_Buffer *b);
+
+EAPI unsigned int eon_buffer_data_width_get(Eon_Buffer *b);
+EAPI void eon_buffer_data_width_set(Eon_Buffer *b, unsigned int w);
+
+EAPI unsigned int eon_buffer_data_height_get(Eon_Buffer *b);
+EAPI void eon_buffer_data_height_set(Eon_Buffer *b, unsigned int h);
 
 #endif /* EON_BUFFER_H_ */

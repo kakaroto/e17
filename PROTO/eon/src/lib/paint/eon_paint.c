@@ -62,16 +62,21 @@ static void _child_append_cb(const Ekeko_Object *o, Ekeko_Event *e, void *data)
 	prv->engine_data = p->create(eng, p);
 }
 
+static void _paint_change(const Ekeko_Object *o, Ekeko_Event *e, void *data)
+{
+	eon_paint_change((Eon_Paint *)o);
+}
+
 static void _rop_change(const Ekeko_Object *o, Ekeko_Event *e, void *data)
 {
 	/* before adding the damage check that the rop has changed */
-	eon_paint_change((Eon_Paint *)o);
+	//eon_paint_change((Eon_Paint *)o);
 }
 
 static void _color_change(const Ekeko_Object *o, Ekeko_Event *e, void *data)
 {
 	/* before adding the damage check that the color has changed */
-	eon_paint_change((Eon_Paint *)o);
+	//eon_paint_change((Eon_Paint *)o);
 }
 
 static void _matrix_change(const Ekeko_Object *o, Ekeko_Event *e, void *data)
@@ -82,7 +87,7 @@ static void _matrix_change(const Ekeko_Object *o, Ekeko_Event *e, void *data)
 
 	m = em->curr->value.pointer_value;
 	enesim_matrix_inverse(m, &prv->inverse);
-	eon_paint_change((Eon_Paint *)o);
+	//eon_paint_change((Eon_Paint *)o);
 }
 
 static Eina_Bool _is_inside(Ekeko_Renderable *r, int x, int y)
@@ -137,13 +142,13 @@ static void _render(Ekeko_Renderable *r, Eina_Rectangle *rect)
 	p->render(p, eng, prv->engine_data, surface, rect);
 }
 
-static void _ctor(void *instance)
+static void _ctor(Ekeko_Object *o)
 {
 	Eon_Paint *p;
 	Eon_Paint_Private *prv;
 
-	p = (Eon_Paint*) instance;
-	p->private = prv = ekeko_type_instance_private_get(eon_paint_type_get(), instance);
+	p = (Eon_Paint *)o;
+	p->private = prv = ekeko_type_instance_private_get(eon_paint_type_get(), o);
 	p->parent.is_inside = _is_inside;
 	p->parent.render = _render;
 	/* default values */
@@ -151,10 +156,11 @@ static void _ctor(void *instance)
 	prv->color = 0xffffffff;
 	enesim_matrix_identity(&prv->matrix);
 	enesim_matrix_inverse(&prv->matrix, &prv->inverse);
-	ekeko_event_listener_add((Ekeko_Object *)p, EON_PAINT_COLOR_CHANGED, _color_change, EINA_FALSE, NULL);
-	ekeko_event_listener_add((Ekeko_Object *)p, EON_PAINT_ROP_CHANGED, _rop_change, EINA_FALSE, NULL);
-	ekeko_event_listener_add((Ekeko_Object *)p, EON_PAINT_MATRIX_CHANGED, _matrix_change, EINA_FALSE, NULL);
-	ekeko_event_listener_add((Ekeko_Object *)p, EKEKO_EVENT_OBJECT_APPEND, _child_append_cb, EINA_FALSE, NULL);
+	ekeko_event_listener_add(o, EKEKO_EVENT_PROP_MODIFY, _paint_change, EINA_FALSE, NULL);
+	ekeko_event_listener_add(o, EON_PAINT_COLOR_CHANGED, _color_change, EINA_FALSE, NULL);
+	ekeko_event_listener_add(o, EON_PAINT_ROP_CHANGED, _rop_change, EINA_FALSE, NULL);
+	ekeko_event_listener_add(o, EON_PAINT_MATRIX_CHANGED, _matrix_change, EINA_FALSE, NULL);
+	ekeko_event_listener_add(o, EKEKO_EVENT_OBJECT_APPEND, _child_append_cb, EINA_FALSE, NULL);
 }
 
 static void _dtor(void *paint)

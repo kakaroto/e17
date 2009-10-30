@@ -27,6 +27,8 @@ struct _Eon_Buffer_Private
 {
 	Enesim_Converter_Format format;
 	Enesim_Converter_Data *data;
+	unsigned int w;
+	unsigned int h;
 };
 
 static void _render(Eon_Paint *p, Eon_Engine *eng, void *engine_data, void *canvas_data, Eina_Rectangle *clip)
@@ -58,6 +60,20 @@ void eon_buffer_init(void)
 	_type = ekeko_type_new(EON_TYPE_BUFFER, sizeof(Eon_Buffer),
 			sizeof(Eon_Buffer_Private), eon_paint_square_type_get(),
 			_ctor, _dtor, eon_paint_appendable);
+	EON_BUFFER_FORMAT = EKEKO_TYPE_PROP_SINGLE_ADD(_type, "format",
+			EKEKO_PROPERTY_INT,
+			OFFSET(Eon_Buffer_Private, format));
+	EON_BUFFER_DATA = EKEKO_TYPE_PROP_SINGLE_ADD(_type, "data",
+			EKEKO_PROPERTY_POINTER,
+			OFFSET(Eon_Buffer_Private, data));
+	EON_BUFFER_WIDTH = EKEKO_TYPE_PROP_SINGLE_ADD(_type, "dwidth",
+			EKEKO_PROPERTY_INT,
+			OFFSET(Eon_Buffer_Private, w));
+	EON_BUFFER_HEIGHT = EKEKO_TYPE_PROP_SINGLE_ADD(_type, "dheight",
+			EKEKO_PROPERTY_INT,
+			OFFSET(Eon_Buffer_Private, h));
+
+	eon_type_register(_type, EON_TYPE_BUFFER);
 }
 
 void eon_buffer_shutdown(void)
@@ -68,6 +84,9 @@ void eon_buffer_shutdown(void)
  *                                   API                                      *
  *============================================================================*/
 Ekeko_Property_Id EON_BUFFER_FORMAT;
+Ekeko_Property_Id EON_BUFFER_DATA;
+Ekeko_Property_Id EON_BUFFER_WIDTH;
+Ekeko_Property_Id EON_BUFFER_HEIGHT;
 
 EAPI Eon_Buffer * eon_buffer_new(Eon_Document *d)
 {
@@ -78,18 +97,86 @@ EAPI Eon_Buffer * eon_buffer_new(Eon_Document *d)
 	return b;
 }
 
-EAPI void eon_buffer_format_set(Eon_Document *d, Enesim_Converter_Format f)
+EAPI void eon_buffer_format_set(Eon_Buffer *b, Enesim_Converter_Format f)
 {
-	/* a change too */
+	Ekeko_Value v;
+
+	ekeko_value_int_from(&v, f);
+	ekeko_object_property_value_set((Ekeko_Object *)b, "format", &v);
+}
+
+EAPI Enesim_Converter_Format eon_buffer_format_get(Eon_Buffer *b)
+{
+	Eon_Buffer_Private *prv;
+
+	prv = PRIVATE(b);
+	return prv->format;
+}
+
+EAPI Enesim_Converter_Data * eon_buffer_data_get(Eon_Buffer *b)
+{
+	Eon_Buffer_Private *prv;
+
+	prv = PRIVATE(b);
+	return prv->data;
 }
 
 EAPI void eon_buffer_data_set(Eon_Buffer *b, Enesim_Converter_Data *cdata)
 {
-	/* a change too */
+	Ekeko_Value v;
+
+	//ekeko_value_pointer_from(&v, cdata);
+	v.type = EKEKO_PROPERTY_POINTER;
+	v.value.pointer_value = cdata;
+	ekeko_object_property_value_set((Ekeko_Object *)b, "data", &v);
 }
 
-EAPI void eon_buffer_update(Eon_Buffer *b)
+EAPI void eon_buffer_data_width_set(Eon_Buffer *b, unsigned int w)
 {
-	/* TODO notify parent canvas that we have changed */
-	/* TODO notify reference objects about the change */
+	Ekeko_Value v;
+
+	ekeko_value_int_from(&v, w);
+	ekeko_object_property_value_set((Ekeko_Object *)b, "dwidth", &v);
 }
+
+EAPI unsigned int eon_buffer_data_width_get(Eon_Buffer *b)
+{
+	Eon_Buffer_Private *prv;
+
+	prv = PRIVATE(b);
+	return prv->w;
+}
+
+EAPI void eon_buffer_data_height_set(Eon_Buffer *b, unsigned int h)
+{
+	Ekeko_Value v;
+
+	ekeko_value_int_from(&v, h);
+	ekeko_object_property_value_set((Ekeko_Object *)b, "dheight", &v);
+}
+
+EAPI unsigned int eon_buffer_data_height_get(Eon_Buffer *b)
+{
+	Eon_Buffer_Private *prv;
+
+	prv = PRIVATE(b);
+	return prv->h;
+}
+
+EAPI void eon_buffer_data_update(Eon_Buffer *b)
+{
+	Eon_Buffer_Private *prv;
+	Eon_Canvas *c;
+	Eon_Document *d;
+	Eon_Engine *e;
+
+	prv = PRIVATE(b);
+	if (!prv->data)
+		return;
+
+	c = eon_paint_canvas_get((Eon_Canvas *)b);
+	d = eon_canvas_document_get(c);
+	e = eon_document_engine_get(d);
+	eon_engine_buffer_update(e, eon_paint_engine_data_get((Eon_Paint *)b));
+}
+

@@ -76,6 +76,7 @@ EAPI int eon_init(void)
 		eon_image_init();
 		eon_style_init();
 		eon_setter_init();
+		eon_buffer_init();
 done:
 	return ++_count;
 }
@@ -94,6 +95,7 @@ EAPI int eon_shutdown(void)
 		eon_image_shutdown();
 		eon_style_shutdown();
 		eon_setter_shutdown();
+		eon_buffer_shutdown();
 		/* TODO delete the types hash */
 		eon_rect_init();
 		ecore_idle_enterer_del(_idler);

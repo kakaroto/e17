@@ -422,7 +422,6 @@ static void image_render(void *ei, void *cd, Eina_Rectangle *clip)
 		return;
 	enesim_renderer_state_setup(p->r);
 	paint_renderer_draw(p->p, cd, p->r, clip);
-	printf("rendering the image\n");
 }
 
 static void * image_create(Eon_Paint *i)
@@ -434,8 +433,104 @@ static void * image_create(Eon_Paint *i)
 	p->r = enesim_renderer_surface_new();
 	p->style_setup = image_style;
 
-	printf("CREATING THE IMAGE\n");
 	return p;
+}
+/*============================================================================*
+ *                                  Buffer                                    *
+ *============================================================================*/
+typedef struct _Buffer
+{
+	Paint p;
+	Enesim_Surface *s;
+	Enesim_Renderer *imp;
+} Buffer;
+
+static void buffer_style(Paint *p, Paint *rel)
+{
+	int dx, dy, dw, dh;
+
+	eon_paint_square_style_coords_get((Eon_Paint_Square *)p->p,
+			rel->p, &dx, &dy, &dw, &dh);
+	paint_style_setup(p, rel, dx, dy);
+	enesim_renderer_surface_w_set(p->r, dw);
+	enesim_renderer_surface_h_set(p->r, dh);
+}
+
+static void buffer_render(void *ei, void *cd, Eina_Rectangle *clip)
+{
+	Paint *p = ei;
+	Eina_Rectangle geom;
+	Eon_Coord cx, cy, cw, ch;
+
+	eon_paint_square_coords_get((Eon_Paint_Square *)p->p, &cx, &cy, &cw, &ch);
+	paint_renderer_setup(p, cx.final, cy.final);
+	enesim_renderer_surface_w_set(p->r, cw.final);
+	enesim_renderer_surface_h_set(p->r, ch.final);
+
+	enesim_renderer_state_setup(p->r);
+	paint_renderer_draw(p->p, cd, p->r, clip);
+}
+
+static void * buffer_create(Eon_Paint *eb)
+{
+	Buffer *b;
+	Paint *p;
+
+	b = calloc(1, sizeof(Buffer));
+	b->imp = enesim_renderer_importer_new();
+
+	p = (Paint *)b;
+	p->p = eb;
+	p->r = enesim_renderer_surface_new();
+	p->style_setup = buffer_style;
+
+	return p;
+}
+
+void buffer_update(void *pd)
+{
+	Paint *p = pd;
+	Eon_Buffer *eb = (Eon_Buffer *)p->p;
+	Buffer *b = (Buffer *)p;
+	int iw, ih;
+	Enesim_Converter_Format fmt;
+	Enesim_Converter_Data *cdata;
+	int w, h;
+
+	if (!b->s)
+	{
+		iw = 0;
+		ih = 0;
+	}
+	else
+		enesim_surface_size_get(b->s, &iw, &ih);
+
+	w = eon_buffer_data_width_get(eb);
+	h = eon_buffer_data_height_get(eb);
+
+	if (w == 0 || h == 0)
+		return;
+
+	if (w != iw || h != ih)
+	{
+		if (b->s)
+			enesim_surface_delete(b->s);
+		b->s = enesim_surface_new(ENESIM_FORMAT_ARGB8888, w, h);
+	}
+
+	enesim_renderer_surface_src_set(p->r, b->s);
+
+	fmt = eon_buffer_format_get(eb);
+	cdata = eon_buffer_data_get(eb);
+	enesim_renderer_importer_format_set(b->imp, fmt);
+	enesim_renderer_importer_data_set(b->imp, cdata);
+	enesim_renderer_state_setup(b->imp);
+	enesim_renderer_surface_draw(b->imp, b->s, ENESIM_FILL, 0xffffffff, NULL);
+}
+
+void buffer_delete(void *bd)
+{
+
 }
 /*============================================================================*
  *                              Shape Common                                  *
@@ -981,6 +1076,10 @@ EAPI void eon_engine_enesim_setup(Eon_Engine *e)
 	e->compound_create = compound_create;
 	e->compound_delete = paint_delete;
 	e->compound_render = compound_render;
+	e->buffer_create = buffer_create;
+	e->buffer_delete = buffer_delete;
+	e->buffer_render = buffer_render;
+	e->buffer_update = buffer_update;
 	e->debug_rect = debug_rect;
 }
 
