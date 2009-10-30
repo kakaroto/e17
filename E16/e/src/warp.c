@@ -480,8 +480,9 @@ WarpFocusHandleEvent(Win win __UNUSED__, XEvent * ev, void *prm __UNUSED__)
 static void
 WarplistCfgValidate(void)
 {
-   if (Conf.warplist.icon_mode < 0 || Conf.warplist.icon_mode > 3)
-      Conf.warplist.icon_mode = 3;
+   static const char   fix_mode[8] = { 0, 3, 3, 3, 4, 3, 3, 3 };
+
+   Conf.warplist.icon_mode = fix_mode[Conf.warplist.icon_mode & 0x7];
 }
 
 static void
