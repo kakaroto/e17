@@ -187,7 +187,6 @@ Makefile
 enesim.pc
 src/Makefile
 src/include/Makefile
-src/tool/Makefile
 src/lib/Makefile
 src/lib/compositor/Makefile
 src/lib/converter/Makefile
@@ -197,8 +196,6 @@ src/lib/renderer/gradient/Makefile
 src/lib/renderer/shape/Makefile
 src/lib/renderer/filter/Makefile
 src/lib/util/Makefile
-src/lib/vector/Makefile
-src/lib/vector/component/Makefile
 examples/Makefile
 data/Makefile
 ],[
