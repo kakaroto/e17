@@ -114,11 +114,6 @@ freetype_cflags=`$FREETYPE_CONFIG --cflags`
 freetype_libs=`$FREETYPE_CONFIG --libs`
 
 AC_PATH_X
-if test "x$have_x" != "xdisabled"; then
-  AC_CHECK_HEADER(X11/X.h,
-    [ have_x="yes" ],
-    [ have_x="no" ])
-fi
 
 if test "x$have_x" = "xno"; then
    # If --without-x was passed, this will be "disabled" instead of "no" --
