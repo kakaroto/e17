@@ -1,6 +1,8 @@
 AUTOMAKE_OPTIONS     = 1.4 foreign
 MAINTAINERCLEANFILES = Makefile.in
 INCLUDES	     = @my_includes@ -I. -I$(top_srcdir)  -I$(top_builddir)  -DPACKAGE_LIB_DIR=\"$(libdir)\"
+# Older automakes (<1.10) do not use INCLUDES when compiling .S files
+AM_CCASFLAGS = -I$(top_builddir)
 
 lib_LTLIBRARIES      = libImlib2.la
 include_HEADERS      = Imlib2.h
