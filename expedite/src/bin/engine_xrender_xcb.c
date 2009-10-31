@@ -111,7 +111,7 @@ engine_xrender_xcb_args(int argc, char **argv)
    if (!einfo)
      {
 	printf("Evas does not support the XRender XCB Engine\n");
-	return 0;
+	goto close_connection;
      }
 
    einfo->info.backend = EVAS_ENGINE_INFO_XRENDER_BACKEND_XCB;
@@ -136,6 +136,8 @@ engine_xrender_xcb_args(int argc, char **argv)
    value_list[5]  =screen->default_colormap;
 
    win = xcb_generate_id(conn);
+   if (!win)
+     goto close_connection;
    xcb_create_window(conn,
                      screen->root_depth,
                      win, screen->root, 0, 0, win_w, win_h, 0,
@@ -148,7 +150,7 @@ engine_xrender_xcb_args(int argc, char **argv)
    if (!evas_engine_info_set(evas, (Evas_Engine_Info *) einfo))
      {
 	printf("Evas can not setup the informations of the XRender XCB Engine\n");
-        return 0;
+	goto destroy_window;
      }
 
    xcb_map_window(conn, win);
@@ -221,6 +223,13 @@ engine_xrender_xcb_args(int argc, char **argv)
    while (!first_expose)
      engine_xrender_xcb_loop();
    return 1;
+
+ destroy_window:
+   xcb_destroy_window(conn, win);
+ close_connection:
+   xcb_disconnect(conn);
+
+   return 0;
 }
 
 void
@@ -305,7 +314,7 @@ engine_xrender_xcb_loop(void)
            xcb_key_press_event_t *e;
            xcb_key_symbols_t *kss;
            xcb_keysym_t       ks;
-           char              *str;
+           char              *str = "";
 
            e = (xcb_key_press_event_t *)ev;
 
@@ -344,7 +353,7 @@ engine_xrender_xcb_loop(void)
              str = "Escape";
            if (ks == XK_Return)
              str = "Return";
-           if (ks == 71)
+           if (ks == 113)
              str = "q";
 
            evas_event_feed_key_down(evas, str, str, NULL, NULL, 0, NULL);
@@ -357,7 +366,7 @@ engine_xrender_xcb_loop(void)
            xcb_key_release_event_t *e;
            xcb_key_symbols_t *kss;
            xcb_keysym_t       ks;
-           char              *str;
+           char              *str = "";
 
            e = (xcb_key_release_event_t *)ev;
 
@@ -382,7 +391,7 @@ engine_xrender_xcb_loop(void)
              str = "Escape";
            if (ks == XK_Return)
              str = "Return";
-           if (ks == 71)
+           if (ks == 113)
              str = "q";
 
            evas_event_feed_key_up(evas, str, str, NULL, NULL, 0, NULL);
@@ -397,4 +406,11 @@ engine_xrender_xcb_loop(void)
    free(ev);
 
    goto again;
+}
+
+void
+engine_xrender_xcb_shutdown(void)
+{
+   xcb_destroy_window(conn, win);
+   xcb_disconnect(conn);
 }

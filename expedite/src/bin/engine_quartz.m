@@ -257,3 +257,9 @@ engine_quartz_loop(void)
    [event release];
    [NSAutoreleasePool release];
 }
+
+void
+engine_quartz_shutdown(void)
+{
+  /* If someone knows what to do here... */
+}

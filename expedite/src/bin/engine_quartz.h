@@ -3,5 +3,6 @@
 
 int  engine_quartz_args(int argc, char **argv);
 void engine_quartz_loop(void);
+void engine_quartz_shutdown(void);
 
 #endif

@@ -4,6 +4,7 @@
 
 int  engine_software_16_wince_args(int argc, char **argv);
 void engine_software_16_wince_loop(void);
+void engine_software_16_wince_shutdown(void);
 
 
 #endif /* __ENGINE_SOFTWARE_16_WINCE_H__ */

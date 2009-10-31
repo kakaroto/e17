@@ -5,6 +5,7 @@
 
 
 static HWND window;
+static HINSTANCE instance;
 
 
 static LRESULT CALLBACK
@@ -175,7 +176,6 @@ engine_software_gdi_args(int argc, char **argv)
 {
    WNDCLASS                       wc;
    RECT                           rect;
-   HINSTANCE                      instance;
    HDC                            dc;
    Evas_Engine_Info_Software_Gdi *einfo;
    DWORD                          style;
@@ -293,4 +293,12 @@ engine_software_gdi_loop(void)
    DispatchMessage (&msg);
 
    goto again;
+}
+
+void
+engine_software_gdi_shutdown(void)
+{
+   DestroyWindow(window);
+   UnregisterClass("Evas_Software_Gdi_Test", instance);
+   FreeLibrary(instance);
 }

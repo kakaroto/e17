@@ -178,3 +178,8 @@ engine_software_sdl_loop(void)
           }
      }
 }
+
+void
+engine_software_sdl_shutdown(void)
+{
+}

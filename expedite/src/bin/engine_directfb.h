@@ -3,5 +3,6 @@
 
 int  engine_directfb_args(int argc, char **argv);
 void engine_directfb_loop(void);
+void engine_directfb_shutdown(void);
 
 #endif

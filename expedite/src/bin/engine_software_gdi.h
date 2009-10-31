@@ -9,6 +9,7 @@ extern "C" {
 
 int  engine_software_gdi_args(int argc, char **argv);
 void engine_software_gdi_loop(void);
+void engine_software_gdi_shutdown(void);
 
 
 #ifdef __cplusplus

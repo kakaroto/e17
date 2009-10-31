@@ -5,6 +5,7 @@
 
 
 static HWND window;
+static HINSTANCE instance;
 
 
 static int
@@ -267,7 +268,6 @@ engine_software_16_ddraw_args(int argc, char **argv)
 {
    WNDCLASS                            wc;
    RECT                                rect;
-   HINSTANCE                           instance;
    LPDIRECTDRAW                        object;
    LPDIRECTDRAWSURFACE                 surface_primary;
    LPDIRECTDRAWSURFACE                 surface_back;
@@ -337,7 +337,7 @@ engine_software_16_ddraw_args(int argc, char **argv)
                          &surface_back,
                          &surface_source,
                          &depth))
-        goto destroy_window;
+     goto destroy_window;
 
    evas_output_method_set(evas, evas_render_method_lookup("software_16_ddraw"));
    einfo = (Evas_Engine_Info_Software_16_DDraw *)evas_engine_info_get(evas);
@@ -392,4 +392,12 @@ engine_software_16_ddraw_loop(void)
    DispatchMessage (&msg);
 
    goto again;
+}
+
+void
+engine_software_16_ddraw_shutdown(void)
+{
+   DestroyWindow(window);
+   UnregisterClass("Evas_Software_16_DDraw_Test", instance);
+   FreeLibrary(instance);
 }

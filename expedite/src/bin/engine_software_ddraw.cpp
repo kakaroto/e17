@@ -5,6 +5,7 @@
 
 
 static HWND window;
+static HINSTANCE instance;
 
 
 static LRESULT CALLBACK
@@ -175,7 +176,6 @@ engine_software_ddraw_args(int argc, char **argv)
 {
    WNDCLASS                         wc;
    RECT                             rect;
-   HINSTANCE                        instance;
    HDC                              dc;
    Evas_Engine_Info_Software_DDraw *einfo;
    DWORD                            style;
@@ -291,4 +291,12 @@ engine_software_ddraw_loop(void)
    DispatchMessage (&msg);
 
    goto again;
+}
+
+void
+engine_software_ddraw_shutdown(void)
+{
+   DestroyWindow(window);
+   UnregisterClass("Evas_Software_DDraw_Test", instance);
+   FreeLibrary(instance);
 }

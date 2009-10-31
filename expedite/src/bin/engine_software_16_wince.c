@@ -215,10 +215,7 @@ engine_software_16_wince_args(int argc, char **argv)
    wc.lpszClassName = L"Evas_Software_16_WinCE_Test";
 
    if(!RegisterClass(&wc))
-     {
-        FreeLibrary(instance);
-        return 0;
-     }
+     goto free_library;
 
    SetRect(&rect, 0, 0,
            GetSystemMetrics(SM_CXSCREEN),
@@ -233,11 +230,7 @@ engine_software_16_wince_args(int argc, char **argv)
                            rect.bottom - rect.top,
                            NULL, NULL, instance, NULL);
    if (!window)
-     {
-        UnregisterClass(L"Evas_Software_16_WinCE_Test", instance);
-        FreeLibrary(instance);
-        return 0;
-     }
+     goto unregister_class;
 
    /* hide top level windows (Task bar, SIP and SIP button */
    task_bar = FindWindow(L"HHTaskBar", NULL);
@@ -251,12 +244,7 @@ engine_software_16_wince_args(int argc, char **argv)
    EnableWindow(sip_icon, FALSE);
 
    if (!_wince_hardware_keys_register(window))
-     {
-        DestroyWindow(window);
-        UnregisterClass(L"Evas_Software_16_WinCE_Test", instance);
-        FreeLibrary(instance);
-        return 0;
-     }
+     goto destroy_window;
 
    evas_output_method_set(evas, evas_render_method_lookup("software_16_wince"));
 
@@ -264,10 +252,7 @@ engine_software_16_wince_args(int argc, char **argv)
    if (!einfo)
      {
         printf("Evas does not support the 16bit Software WinCE Engine\n");
-        DestroyWindow(window);
-        UnregisterClass(L"Evas_Software_16_WinCE_Test", instance);
-        FreeLibrary(instance);
-        return 0;
+        goto destroy_window;
      }
 
    einfo->info.window = window;
@@ -278,10 +263,7 @@ engine_software_16_wince_args(int argc, char **argv)
    if (!evas_engine_info_set(evas, (Evas_Engine_Info *) einfo))
      {
 	printf("Evas can not setup the informations of the 16 bits Software WinCE Engine\n");
-        DestroyWindow(window);
-        UnregisterClass(L"Evas_Software_16_WinCE_Test", instance);
-        FreeLibrary(instance);
-	return 0;
+        goto destroy_window;
      }
 
    _suspend = einfo->func.suspend;
@@ -292,6 +274,15 @@ engine_software_16_wince_args(int argc, char **argv)
    UpdateWindow(window);
 
    return 1;
+
+ destroy_window:
+   DestroyWindow(window);
+ unregister_class:
+   UnregisterClass(L"Evas_Software_16_WinCE_Test", instance);
+ free_library:
+   FreeLibrary(instance);
+
+   return 0;
 }
 
 void
@@ -309,4 +300,12 @@ engine_software_16_wince_loop(void)
    DispatchMessage (&msg);
 
    goto again;
+}
+
+void
+engine_software_16_wince_shutdown(void)
+{
+   DestroyWindow(window);
+   UnregisterClass(L"Evas_Software_16_WinCE_Test", instance);
+   FreeLibrary(instance);
 }

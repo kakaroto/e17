@@ -275,3 +275,14 @@ engine_directfb_loop(void)
 	  }
      }
 }
+
+void
+engine_directfb_shutdown(void)
+{
+   DFBCHECK(_input_event->Release(_input_event));
+   DFBCHECK(_window_event->Release(_window_event));
+   DFBCHECK(_dfb_surface->Release(_dfb_surface));
+   DFBCHECK(_dfb_window->Release(_dfb_window));
+   DFBCHECK(_layer->Release(_layer));
+   DFBCHECK(_dfb->Release(_dfb));
+}

@@ -3,5 +3,6 @@
 
 int  engine_xrender_xcb_args(int argc, char **argv);
 void engine_xrender_xcb_loop(void);
+void engine_xrender_xcb_shutdown(void);
 
 #endif

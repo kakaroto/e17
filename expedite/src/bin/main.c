@@ -7,6 +7,7 @@ int loops = LOOPS;
 static char *datadir = NULL;
 static int go = 1;
 static void (*loop_func) (void) = NULL;
+static void (*shutdown_func) (void) = NULL;
 
 /* this guarantees that "random" numbers will always be the same set regardless
  * of what os/system/etc we are on - as often i need just some "random" set of
@@ -1118,6 +1119,12 @@ engine_loop(void)
    loop_func();
 }
 
+void
+engine_shutdown(void)
+{
+   shutdown_func();
+}
+
 static int
 _engine_go(void)
 {
@@ -1191,67 +1198,115 @@ _engine_args(int argc, char **argv)
    profile_ok = _profile_parse(argc, argv);
 #if HAVE_EVAS_SOFTWARE_XLIB
    if (engine_software_xlib_args(argc, argv))
-     loop_func = engine_software_xlib_loop;
+     {
+	loop_func = engine_software_xlib_loop;
+	shutdown_func = engine_software_xlib_shutdown;
+     }
 #endif
 #if HAVE_EVAS_XRENDER_X11
    if (engine_xrender_x11_args(argc, argv))
-     loop_func = engine_xrender_x11_loop;
+     {
+	loop_func = engine_xrender_x11_loop;
+	shutdown_func = engine_xrender_x11_shutdown;
+     }
 #endif
 #if HAVE_EVAS_OPENGL_X11
    if (engine_gl_x11_args(argc, argv))
-     loop_func = engine_gl_x11_loop;
+     {
+	loop_func = engine_gl_x11_loop;
+	shutdown_func = engine_gl_x11_shutdown;
+     }
 #endif
 #if HAVE_EVAS_SOFTWARE_XCB
    if (engine_software_xcb_args(argc, argv))
-     loop_func = engine_software_xcb_loop;
+     {
+	loop_func = engine_software_xcb_loop;
+	shutdown_func = engine_software_xcb_shutdown;
+     }
 #endif
 #if HAVE_EVAS_XRENDER_XCB
    if (engine_xrender_xcb_args(argc, argv))
-     loop_func = engine_xrender_xcb_loop;
+     {
+	loop_func = engine_xrender_xcb_loop;
+	shutdown_func = engine_xrender_xcb_shutdown;
+     }
 #endif
 #if HAVE_EVAS_SOFTWARE_GDI
    if (engine_software_gdi_args(argc, argv))
-     loop_func = engine_software_gdi_loop;
+     {
+	loop_func = engine_software_gdi_loop;
+	shutdown_func = engine_software_gdi_shutdown;
+     }
 #endif
 #if HAVE_EVAS_SOFTWARE_DDRAW
    if (engine_software_ddraw_args(argc, argv))
-     loop_func = engine_software_ddraw_loop;
+     {
+	loop_func = engine_software_ddraw_loop;
+	shutdown_func = engine_software_ddraw_shutdown;
+     }
 #endif
 #if HAVE_EVAS_DIRECT3D
    if (engine_direct3d_args(argc, argv))
-     loop_func = engine_direct3d_loop;
+     {
+	loop_func = engine_direct3d_loop;
+	shutdown_func = engine_direct3d_shutdown;
+     }
 #endif
 #if HAVE_EVAS_OPENGL_GLEW
    if (engine_gl_glew_args(argc, argv))
-     loop_func = engine_gl_glew_loop;
+     {
+	loop_func = engine_gl_glew_loop;
+	shutdown_func = engine_gl_glew_shutdown;
+     }
 #endif
 #if HAVE_EVAS_SOFTWARE_SDL
    if (engine_software_sdl_args(argc, argv))
-     loop_func = engine_software_sdl_loop;
+     {
+	loop_func = engine_software_sdl_loop;
+	shutdown_func = engine_software_sdl_shutdown;
+     }
 #endif
 #if HAVE_EVAS_FB
    if (engine_fb_args(argc, argv))
-     loop_func = engine_fb_loop;
+     {
+	loop_func = engine_fb_loop;
+	shutdown_func = engine_fb_shutdown;
+     }
 #endif
 #if HAVE_EVAS_DIRECTFB
    if (engine_directfb_args(argc, argv))
-     loop_func = engine_directfb_loop;
+     {
+	loop_func = engine_directfb_loop;
+	shutdown_func = engine_directfb_shutdown;
+     }
 #endif
 #if HAVE_EVAS_QUARTZ
    if (engine_quartz_args(argc, argv))
-     loop_func = engine_quartz_loop;
+     {
+	loop_func = engine_quartz_loop;
+	shutdown_func = engine_quartz_shutdown;
+     }
 #endif
 #if HAVE_EVAS_SOFTWARE_16_X11
    if (engine_software_16_x11_args(argc, argv))
-     loop_func = engine_software_16_x11_loop;
+     {
+	loop_func = engine_software_16_x11_loop;
+	shutdown_func = engine_software_16_x11_shutdown;
+     }
 #endif
 #if HAVE_EVAS_SOFTWARE_16_DDRAW
    if (engine_software_16_ddraw_args(argc, argv))
-     loop_func = engine_software_16_ddraw_loop;
+     {
+	loop_func = engine_software_16_ddraw_loop;
+	shutdown_func = engine_software_16_ddraw_shutdown;
+     }
 #endif
 #if HAVE_EVAS_SOFTWARE_16_WINCE
    if (engine_software_16_wince_args(argc, argv))
-     loop_func = engine_software_16_wince_loop;
+     {
+	loop_func = engine_software_16_wince_loop;
+	shutdown_func = engine_software_16_wince_shutdown;
+     }
 #endif
    if ((!loop_func) || (!profile_ok))
      {
@@ -1377,5 +1432,6 @@ main(int argc, char **argv)
    evas_free(evas);
 
    evas_shutdown();
+   engine_shutdown();
    return 0;
 }

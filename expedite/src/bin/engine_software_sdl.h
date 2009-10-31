@@ -3,5 +3,6 @@
 
 int  engine_software_sdl_args(int argc, char **argv);
 void engine_software_sdl_loop(void);
+void engine_software_sdl_shutdown(void);
 
 #endif

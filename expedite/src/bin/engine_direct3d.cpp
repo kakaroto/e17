@@ -5,6 +5,7 @@
 
 
 static HWND window;
+static HINSTANCE instance;
 
 
 static LRESULT CALLBACK
@@ -175,7 +176,6 @@ engine_direct3d_args(int argc, char **argv)
 {
    WNDCLASS                   wc;
    RECT                       rect;
-   HINSTANCE                  instance;
    HDC                        dc;
    MSG                        msg;
    Evas_Engine_Info_Direct3D *einfo;
@@ -288,4 +288,12 @@ engine_direct3d_loop(void)
    DispatchMessage (&msg);
 
    goto again;
+}
+
+void
+engine_direct3d_shutdown(void)
+{
+   DestroyWindow(window);
+   UnregisterClass("Evas_Direct3D_Test", instance);
+   FreeLibrary(instance);
 }

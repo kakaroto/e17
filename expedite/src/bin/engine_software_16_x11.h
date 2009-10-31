@@ -3,5 +3,6 @@
 
 int  engine_software_16_x11_args(int argc, char **argv);
 void engine_software_16_x11_loop(void);
+void engine_software_16_x11_shutdown(void);
 
 #endif

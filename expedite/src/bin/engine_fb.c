@@ -46,3 +46,9 @@ engine_fb_loop(void)
 {
    return;
 }
+
+void
+engine_fb_shutdown(void)
+{
+   return;
+}

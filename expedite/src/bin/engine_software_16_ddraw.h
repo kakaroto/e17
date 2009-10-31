@@ -9,6 +9,7 @@ extern "C" {
 
 int  engine_software_16_ddraw_args(int argc, char **argv);
 void engine_software_16_ddraw_loop(void);
+void engine_software_16_ddraw_shutdown(void);
 
 
 #ifdef __cplusplus

@@ -9,6 +9,7 @@ extern "C" {
 
 int  engine_direct3d_args(int argc, char **argv);
 void engine_direct3d_loop(void);
+void engine_direct3d_shutdown(void);
 
 
 #ifdef __cplusplus

@@ -36,7 +36,7 @@ engine_xrender_x11_args(int argc, char **argv)
    if (!einfo)
      {
 	printf("Evas does not support the XRender X11 Engine\n");
-	return 0;
+	goto close_display;
      }
 
    einfo->info.backend = EVAS_ENGINE_INFO_XRENDER_BACKEND_XLIB;
@@ -59,12 +59,14 @@ engine_xrender_x11_args(int argc, char **argv)
 		       CWBackPixmap | CWBorderPixel |
 		       CWBitGravity | CWEventMask,
 		       &attr);
+   if (!win)
+     goto close_display;
    einfo->info.drawable = win;
 
    if (!evas_engine_info_set(evas, (Evas_Engine_Info *) einfo))
      {
 	printf("Evas can not setup the informations of the XRender X11 Engine\n");
-        return 0;
+	goto destroy_window;
      }
 
    XStoreName(disp, win, "Expedite - Evas Test Suite");
@@ -80,6 +82,13 @@ engine_xrender_x11_args(int argc, char **argv)
    while (!first_expose)
      engine_xrender_x11_loop();
    return 1;
+
+ destroy_window:
+   XDestroyWindow(disp, win);
+ close_display:
+   XCloseDisplay(disp);
+
+   return 0;
 }
 
 void
@@ -203,4 +212,11 @@ engine_xrender_x11_loop(void)
 	break;
      }
    goto again;
+}
+
+void
+engine_xrender_x11_shutdown(void)
+{
+   XDestroyWindow(disp, win);
+   XCloseDisplay(disp);
 }
