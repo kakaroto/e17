@@ -1,5 +1,5 @@
 #define print_response_error() \
-    if(!exalt_dbus_response_error_is(response)) \
+    if(exalt_dbus_response_error_is(response)) \
     { \
         printf("Response error: (%d), %s\n", \
             exalt_dbus_response_error_id_get(response), \
@@ -10,6 +10,8 @@
 #include "command.h"
 
 Exalt_DBus_Conn* conn;
+char **_argv;
+int _argc;
 
 #define NOTIF_PRINT(a) printf("\n## (%s) "a"\n\n",eth)
 
@@ -370,14 +372,53 @@ void wireless(int argc, char** argv)
     }
 }
 
+void _connect_cb(void *data, Exalt_DBus_Conn *conn, Eina_Bool success)
+{
+    if(!success) return ;
+
+    if(_argc>1 && (strcmp(_argv[1],"dns_add")==0
+            || strcmp(_argv[1],"dns_del")==0
+            || strcmp(_argv[1],"dns_replace")==0
+            || strcmp(_argv[1],"dns_get")==0
+            ))
+        dns(_argc,_argv);
+    else if(_argc>1 && ( strcmp(_argv[1],"list_get")==0
+                ))
+        ethernet_list(_argc,_argv);
+    else if(_argc>1 && (strcmp(_argv[1],"ip_get")==0
+                || strcmp(_argv[1],"netmask_get")==0
+                || strcmp(_argv[1],"gateway_get")==0
+                || strcmp(_argv[1],"wireless_is")==0
+                || strcmp(_argv[1],"up_is")==0
+                || strcmp(_argv[1],"link_is")==0
+                || strcmp(_argv[1],"dhcp_is")==0
+                || strcmp(_argv[1],"cmd_get")==0
+                || strcmp(_argv[1],"cmd_set")==0
+                || strcmp(_argv[1],"down")==0
+                || strcmp(_argv[1],"up")==0
+            ))
+        ethernet(_argc ,_argv);
+    else if(_argc>1 && (strcmp(_argv[1],"essid_get")==0
+                || strcmp(_argv[1],"wpasupplicant_driver_get")==0
+                || strcmp(_argv[1],"wpasupplicant_driver_set")==0
+                || strcmp(_argv[1],"scan")==0
+                ))
+        wireless(_argc,_argv);
+    else
+        help();
+}
+
 int main(int argc, char** argv)
 {
+    _argv = argv;
+    _argc = argc;
+    
     if(!exalt_dbus_init())
     {
         printf("Init failed\n");
         return 0;
     }
-    conn = exalt_dbus_connect(NULL, NULL, NULL);
+    conn = exalt_dbus_connect(_connect_cb, NULL, NULL);
 
     if(!exalt_dbus_exalt_service_exists(conn))
     {
@@ -398,37 +439,6 @@ int main(int argc, char** argv)
         printf("Can't connect the scan notification callback\n");
         return 0;
     }
-
-    if(argc>1 && (strcmp(argv[1],"dns_add")==0
-            || strcmp(argv[1],"dns_del")==0
-            || strcmp(argv[1],"dns_replace")==0
-            || strcmp(argv[1],"dns_get")==0
-            ))
-        dns(argc,argv);
-    else if(argc>1 && ( strcmp(argv[1],"list_get")==0
-                ))
-        ethernet_list(argc,argv);
-    else if(argc>1 && (strcmp(argv[1],"ip_get")==0
-                || strcmp(argv[1],"netmask_get")==0
-                || strcmp(argv[1],"gateway_get")==0
-                || strcmp(argv[1],"wireless_is")==0
-                || strcmp(argv[1],"up_is")==0
-                || strcmp(argv[1],"link_is")==0
-                || strcmp(argv[1],"dhcp_is")==0
-                || strcmp(argv[1],"cmd_get")==0
-                || strcmp(argv[1],"cmd_set")==0
-                || strcmp(argv[1],"down")==0
-                || strcmp(argv[1],"up")==0
-            ))
-        ethernet(argc ,argv);
-    else if(argc>1 && (strcmp(argv[1],"essid_get")==0
-                || strcmp(argv[1],"wpasupplicant_driver_get")==0
-                || strcmp(argv[1],"wpasupplicant_driver_set")==0
-                || strcmp(argv[1],"scan")==0
-                ))
-        wireless(argc,argv);
-    else
-        help();
 
     ecore_main_loop_begin();
 
