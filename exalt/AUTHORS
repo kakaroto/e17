@@ -1,1 +1,5 @@
 Atton Jonathan (watchwolf@watchwolf.fr)
+
+The dbus connection code (handle disconnect, start the daeom ...) comes from Ethumb. The author is :
+Rafael Antognolli <antognolli@profusion.mobi>
+

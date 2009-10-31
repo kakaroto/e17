@@ -120,6 +120,9 @@ else
     AC_DEFINE_UNQUOTED(HAVE_DHCP, "${have_dhcp}", [have dhcp support])
 fi
 
+#can't retrieve the system service dir :/
+#dbusservicedir=`$PKG_CONFIG --variable=session_bus_system-services_dir dbus-1`
+#AC_SUBST(dbusservicedir)
 
 requirements="elementary ecore eet ecore-file ehal edbus evas dbus-1"
 
@@ -177,8 +180,13 @@ data/Makefile
 data/icons/Makefile
 exalt.pc
 exalt_dbus.pc
+org.e.Exalt.service
 ]
 )
+
+txt_strip() {
+        echo "[$]@" | sed -e 's/^[[ \t]]*\([[^ \t]]*\)[[ \t]]*$/\1/g'
+}
 
 ###############################################################
 #### Informations
@@ -196,11 +204,12 @@ echo "Configuration Options Summary:"
 echo
 echo "  dhcp support (only dhclient is supported)...: $have_dhcp ($dhcp)"
 echo "  wpa_supplicant support......................: $have_wpa_supplicant ($wpa_supplicant)"
+#echo "  DBus services dir...........................: $(txt_strip $dbusservicedir))"
 #echo "  vpnc support...................: not yet implemented"
 echo
-echo "  Documentation........: ${build_doc}"
+echo "  Documentation...............................: ${build_doc}"
 echo
-echo "  Installation Path..............: $prefix"
+echo "  Installation Path...........................: $prefix"
 echo
 echo "Now type 'make' ('gmake' on some systems) to compile $PACKAGE,"
 echo "and then afterwards as root (or the user who will install this), type"

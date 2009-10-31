@@ -17,7 +17,7 @@ elm_main(int argc __UNUSED__, char **argv __UNUSED__)
 
     exalt_dbus_init();
 
-    conn = exalt_dbus_connect();
+    conn = exalt_dbus_connect(NULL, NULL, NULL);
     if(!conn)
         return -88;
     setlocale(LC_ALL, "");

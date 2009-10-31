@@ -1,0 +1,4 @@
+[D-BUS Service]
+Name=org.e.Exalt
+Exec=@prefix@/sbin/exalt-daemon
+User=root

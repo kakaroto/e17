@@ -377,7 +377,7 @@ int main(int argc, char** argv)
         printf("Init failed\n");
         return 0;
     }
-    conn = exalt_dbus_connect();
+    conn = exalt_dbus_connect(NULL, NULL, NULL);
 
     if(!exalt_dbus_exalt_service_exists(conn))
     {

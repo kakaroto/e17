@@ -26,7 +26,6 @@ DBusMessage * dbus_cb_eth_wireless_list_get(E_DBus_Object *obj __UNUSED__, DBusM
                 EXALT_DBUS_INTERFACE_LIST_ERROR);
             return reply);
 
-
     dbus_args_valid_append(reply);
     dbus_message_iter_init_append(reply, &iter);
     EXALT_ASSERT_CUSTOM_RET(

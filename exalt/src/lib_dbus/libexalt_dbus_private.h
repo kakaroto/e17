@@ -35,6 +35,29 @@ struct _Exalt_DBus_Conn
     exalt_dbus_response_data* response_notify;
     //define the next message id
     int msg_id;
+
+
+    E_DBus_Signal_Handler *name_owner_changed_handler;
+    E_DBus_Signal_Handler *generated_signal;
+    DBusPendingCall *pending_get_name_owner;
+    DBusPendingCall *pending_start_service_by_name;
+    const char *unique_name;
+    Eina_Bool connected : 1;
+    Eina_Bool server_started : 1;
+
+    struct 
+    {
+        Exalt_DBus_Connect_Cb cb;
+        void *data;
+        Eina_Free_Cb free_data;
+    } connect;
+
+    struct 
+    {
+        Exalt_DBus_Die_Cb cb;
+        void *data;
+        Eina_Free_Cb free_data;
+    } die;
 };
 
 struct _exalt_dbus_notify_data

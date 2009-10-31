@@ -53,6 +53,13 @@ You can use this default configuration or create your own custom file. The file 
         </policy>
   </busconfig>
 
+If the daemon should be automatically starts by a client if it is not running, copy the file org.e.Exalt.service in /usr/share/dbus-1/system-services/. A example of content :
+
+ [D-BUS Service]
+ Name=org.e.Exalt
+ Exec=/usr/local/sbin/exalt-daemon
+ User=root
+ @endcode
 
 
 
@@ -62,5 +69,6 @@ If you want add the daemon in your init, you can use the script in daemon/data/i
 
  cp data/daemon/data/init.d/gentoo /etc/init.d/exaltd
  rc-update add exaltd default
+
 
 

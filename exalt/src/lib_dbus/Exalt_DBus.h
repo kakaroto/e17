@@ -36,6 +36,10 @@ typedef void (exalt_notify_cb) (char* eth, Exalt_Enum_Action action, void* user_
  */
 typedef void (exalt_scan_notify_cb) (char* eth, Eina_List* networks, void* user_data);
 
+typedef void (*Exalt_DBus_Connect_Cb)(void *data, Exalt_DBus_Conn *conn, Eina_Bool success);
+
+typedef void (*Exalt_DBus_Die_Cb)(void *data, Exalt_DBus_Conn *conn);
+
 
 #include "define.h"
 #include "exalt_dbus_ethernet.h"
@@ -49,7 +53,8 @@ typedef void (exalt_response_notify_cb) (Exalt_DBus_Response* response, void* us
 
 
 EAPI int exalt_dbus_init();
-EAPI Exalt_DBus_Conn*  exalt_dbus_connect();
+EAPI Exalt_DBus_Conn*  exalt_dbus_connect(Exalt_DBus_Connect_Cb connect_cb, void *data, Eina_Free_Cb free_data_cb);
+EAPI void exalt_dbus_on_server_die_callback_set(Exalt_DBus_Conn *conn, Exalt_DBus_Die_Cb server_die_cb, const void *data, Eina_Free_Cb free_data);
 
 EAPI int exalt_dbus_exalt_service_exists(Exalt_DBus_Conn *conn);
 EAPI int exalt_dbus_service_exists(Exalt_DBus_Conn *conn, const char* service_name);

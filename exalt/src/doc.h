@@ -126,6 +126,15 @@
  *  </busconfig>
  *  @endcode
  *
+ * If the daemon should be automatically starts by a client if it is not running, copy the file org.e.Exalt.service in /usr/share/dbus-1/system-services/. A example of content :
+ *
+ * @code
+ * [D-BUS Service]
+ * Name=org.e.Exalt
+ * Exec=/usr/local/sbin/exalt-daemon
+ * User=root
+ * @endcode
+ *
  * <b>Gentoo</b>
  *
  * If you want add the daemon in your init, you can use the script in daemon/data/init.d/gentoo:

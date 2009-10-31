@@ -22,15 +22,17 @@
 #define EXALTD_PATH "/org/e/Exalt"
 
 
+#define FDO_SERVICE "org.freedesktop.DBus"
+#define FDO_INTERFACE "org.freedesktop.DBus"
+#define FDO_PATH "/org/freedesktop/DBus"
+
 /** Print a DBusError message if the flag error is set */
-#define EXALT_DBUS_ERROR_PRINT(error) if(error && dbus_error_is_set(error)) { EXALT_LOG_ERR("%s",error->name);return; }
+#define EXALT_DBUS_ERROR_PRINT(error) if(error && dbus_error_is_set(error)) { EXALT_LOG_ERR("%s : %s",error->name, error->message);return; }
 
 /** Path of the DBus object which allows to manage the DNS */
 #define EXALTD_PATH_DNS "/org/exalt/dns"
 /** Path of the DBus interface which allows to manage the DNS */
 #define EXALTD_INTERFACE_DNS "org.exalt.dns"
-
-
 /** Path of the DBus object which allows to manage the list of interfaces */
 #define EXALTD_PATH_IFACE "/org/exalt/interface"
 /** Path of the DBus interface which allows to manage the list of interfaces */
