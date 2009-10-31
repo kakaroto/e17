@@ -38,3 +38,7 @@ cdef class Radio(Object):
 
     def value_get(self):
         return elm_radio_value_get(self.obj)
+
+    property changed:
+        def __set__(self, value):
+            self._callback_add("changed", value)
