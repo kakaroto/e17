@@ -1,27 +1,9 @@
-/*
- * =====================================================================================
- *
- *       Filename:  compiler.c
- *
- *    Description: from an eyelight_tree, create and edc file
- *
- *        Version:  1.0
- *        Created:  11/07/08 12:46:30 UTC
- *       Revision:  none
- *       Compiler:  gcc
- *
- *         Author:  (Watchwolf), Atton Jonathan <watchwolf@watchwolf.fr>
- *        Company:
- *
- * =====================================================================================
- */
+// vim:ts=8:sw=3:sts=8:noexpandtab:cino=>5n-3f0^-2{2
 
 #include "eyelight_compiler_parser.h"
 #include "eyelight_object.h"
 
 void eyelight_compile_block_image(Eyelight_Viewer *pres, Eyelight_Slide *slide, Eyelight_Node *node_image, const char *area);
-void eyelight_compile_block_area(Eyelight_Viewer *pres, Eyelight_Slide *slide, Eyelight_Node *node_area, int id_summary);
-int eyelight_compile_block_items(Eyelight_Viewer *pres, Eyelight_Slide *slide, Eyelight_Node *node_items, int id_summary, int id_item, const char *area, int depth);
 void eyelight_compile_block_item(Eyelight_Viewer *pres, Eyelight_Slide *slide, Eyelight_Node *node_item, const char *area, int depth, char *numbering, int numbering_id);
 
 void eyelight_compile_block_edj(Eyelight_Viewer *pres, Eyelight_Slide *slide, Eyelight_Node *node_edj, const char *area);
@@ -29,7 +11,7 @@ void eyelight_compile_block_video(Eyelight_Viewer *pres, Eyelight_Slide *slide, 
 void eyelight_compile_block_presentation(Eyelight_Viewer *pres, Eyelight_Slide *slide, Eyelight_Node *node_pres, const char *area);
 
 void eyelight_compile_block_slide(Eyelight_Viewer *pres, Eyelight_Node* node_slide, Eyelight_Slide *slide,
-        int slide_number, int nb_slides, int id_summary,
+        int slide_number, int nb_slides,
         char *default_title, char *default_subtitle,
         char *default_header_image,
         char *default_foot_text, char *default_foot_image
@@ -76,34 +58,6 @@ Eyelight_Compiler* eyelight_compiler_new(char* input_file, int display_areas)
     compiler->last_open_block = -1;
     compiler->root = eyelight_node_new(EYELIGHT_NODE_TYPE_BLOCK,EYELIGHT_NAME_ROOT,NULL);
 
-    //special summary slide
-    compiler->node_summary = eyelight_node_new(EYELIGHT_NODE_TYPE_BLOCK,EYELIGHT_NAME_SLIDE,NULL);
-    Eyelight_Node *node = eyelight_node_new(EYELIGHT_NODE_TYPE_PROP,EYELIGHT_NAME_LAYOUT,
-            compiler->node_summary);
-    node = eyelight_node_new(EYELIGHT_NODE_TYPE_VALUE,EYELIGHT_NAME_NONE,node);
-    node->value = strdup("summary");
-
-    node = eyelight_node_new(EYELIGHT_NODE_TYPE_PROP,EYELIGHT_NAME_TITLE,
-            compiler->node_summary);
-    node = eyelight_node_new(EYELIGHT_NODE_TYPE_VALUE,EYELIGHT_NAME_NONE,node);
-    node->value = strdup(" Summary ");
-
-    node = eyelight_node_new(EYELIGHT_NODE_TYPE_PROP,EYELIGHT_NAME_SUBTITLE,
-            compiler->node_summary);
-    node = eyelight_node_new(EYELIGHT_NODE_TYPE_VALUE,EYELIGHT_NAME_NONE,node);
-    node->value = strdup("");
-
-    Eyelight_Node *node_area = eyelight_node_new(EYELIGHT_NODE_TYPE_BLOCK,EYELIGHT_NAME_AREA,
-            compiler->node_summary);
-    node = eyelight_node_new(EYELIGHT_NODE_TYPE_PROP,EYELIGHT_NAME_NAME,
-            node_area);
-    node = eyelight_node_new(EYELIGHT_NODE_TYPE_VALUE,EYELIGHT_NAME_NONE,node);
-    node->value = strdup("summary");
-
-    compiler->node_summary_items = eyelight_node_new(EYELIGHT_NODE_TYPE_BLOCK,EYELIGHT_NAME_ITEMS,
-            node_area);
-    //
-
     if(input_file)
         compiler->input_file = strdup(input_file);
     compiler-> display_areas = display_areas;
@@ -120,9 +74,6 @@ void eyelight_compiler_free(Eyelight_Compiler **p_compiler)
     char* str;
 
     if(!p_compiler || !(*p_compiler)) return ;
-
-    eyelight_node_free(&(compiler->root),compiler->node_summary);
-    eyelight_node_free(&(compiler->node_summary),NULL);
 
     EYELIGHT_FREE(compiler->input_file);
 
@@ -488,7 +439,7 @@ void eyelight_compile_block_edj(Eyelight_Viewer *pres, Eyelight_Slide *slide, Ey
 /*
  * @brief compile a block items (text, numbering, item, items)
  */
-int eyelight_compile_block_items(Eyelight_Viewer *pres, Eyelight_Slide *slide, Eyelight_Node *node_items, int id_summary, int id_item, const char *area, int depth)
+int eyelight_compile_block_items(Eyelight_Viewer *pres, Eyelight_Slide *slide, Eyelight_Node *node_items, int id_item, const char *area, int depth)
 {
     Eyelight_Node* node,*node_numbering;
     char *numbering = NULL;
@@ -512,7 +463,7 @@ int eyelight_compile_block_items(Eyelight_Viewer *pres, Eyelight_Slide *slide, E
                 {
                     case EYELIGHT_NAME_ITEMS:
                         id_item = eyelight_compile_block_items(pres, slide, node,
-                                id_summary, id_item, area, depth+1);
+                                id_item, area, depth+1);
                         break;
                     case EYELIGHT_NAME_ITEM:
                         eyelight_compile_block_item(pres, slide, node,
@@ -554,12 +505,6 @@ int eyelight_compile_block_items(Eyelight_Viewer *pres, Eyelight_Slide *slide, E
                         numbering_id++;
                         id_item++;
                         break;
-                    case EYELIGHT_NAME_TEXT_SUMMARY:
-                        eyelight_object_item_summary_text_add(
-                                pres,slide,id_summary, id_item, area,depth,
-                                eyelight_retrieve_value_of_prop(node,0));
-                        id_item++;
-                        break;
                 }
                 break;
         }
@@ -570,7 +515,7 @@ int eyelight_compile_block_items(Eyelight_Viewer *pres, Eyelight_Slide *slide, E
 /*
  * @brief compile a block area (name, layout, items ...)
  */
-void eyelight_compile_block_area(Eyelight_Viewer *pres, Eyelight_Slide *slide, Eyelight_Node *node_area, int id_summary)
+void eyelight_compile_block_area(Eyelight_Viewer *pres, Eyelight_Slide *slide, Eyelight_Node *node_area)
 {
     Eyelight_Node* node;
     char* area;
@@ -615,7 +560,7 @@ void eyelight_compile_block_area(Eyelight_Viewer *pres, Eyelight_Slide *slide, E
                 switch(node->name)
                 {
                     case EYELIGHT_NAME_ITEMS:
-                        eyelight_compile_block_items(pres, slide, node, id_summary, 1, area, 1);
+                        eyelight_compile_block_items(pres, slide, node, 1, area, 1);
                         break;
                     case EYELIGHT_NAME_IMAGE:
                         eyelight_compile_block_image(pres, slide, node, area);
@@ -658,7 +603,7 @@ void eyelight_compile_block_area(Eyelight_Viewer *pres, Eyelight_Slide *slide, E
 /*
  * @brief compile a block slide (area, title, subtitle ...)
  */
-void eyelight_compile_block_slide(Eyelight_Viewer *pres, Eyelight_Node* node_slide, Eyelight_Slide *slide, int slide_number, int nb_slides,int id_summary,
+void eyelight_compile_block_slide(Eyelight_Viewer *pres, Eyelight_Node* node_slide, Eyelight_Slide *slide, int slide_number, int nb_slides,
         char *default_title, char *default_subtitle,
         char *default_header_image,
         char *default_foot_text, char *default_foot_image
@@ -717,7 +662,7 @@ void eyelight_compile_block_slide(Eyelight_Viewer *pres, Eyelight_Node* node_sli
                 switch(node->name)
                 {
                     case EYELIGHT_NAME_AREA:
-                        eyelight_compile_block_area(pres,slide, node, id_summary);
+                        eyelight_compile_block_area(pres,slide, node);
                         break;
                 }
                 break;
@@ -738,8 +683,6 @@ void eyelight_compile(Eyelight_Viewer *pres, Eyelight_Slide *slide, int id_slide
     int nb_slides;
     Eyelight_Node *node_slide;
     Eina_List *l;
-    int id_summary = 0;
-    int old_summary = id_summary;
 
     char *default_foot_text = NULL;
     char *default_foot_image = NULL;
@@ -776,16 +719,6 @@ void eyelight_compile(Eyelight_Viewer *pres, Eyelight_Slide *slide, int id_slide
                     case EYELIGHT_NAME_SUBTITLE:
                             default_subtitle = eyelight_retrieve_value_of_prop(node,0);
                             break;
-                    case EYELIGHT_NAME_CHAPTER:
-                    case EYELIGHT_NAME_SECTION:
-                        id_summary = ++old_summary;
-                        break;
-                    case EYELIGHT_NAME_SUMMARY:
-                        if( strcmp( "complete",
-                                    eyelight_retrieve_value_of_prop(node,0)) == 0)
-                            // -1 we display all items as a previous item
-                            id_summary= -1;
-                        break;
                 }
                 break;
             case EYELIGHT_NODE_TYPE_BLOCK:
@@ -800,7 +733,7 @@ void eyelight_compile(Eyelight_Viewer *pres, Eyelight_Slide *slide, int id_slide
         }
         l = eina_list_next(l);
     }
-    eyelight_compile_block_slide(pres, node_slide, slide, id_slide, nb_slides, id_summary,
+    eyelight_compile_block_slide(pres, node_slide, slide, id_slide, nb_slides,
             default_title, default_subtitle,
             default_header_image,
             default_foot_text, default_foot_image

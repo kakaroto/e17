@@ -34,11 +34,6 @@ slide
     }
 }
 
-// complete: all items will be displayed as current
-summary: "complete";
-
-chapter: " Presentation of Eyelight";
-
 slide
 {
     layout: blank;
@@ -122,8 +117,6 @@ slide
     }
 }
 
-section: " Two files";
-
 slide
 {
     title: " Creating a presentation";
@@ -193,10 +186,6 @@ slide
         }
     }
 }
-
-chapter: " Some examples";
-
-section: " Include an Edje group, a video and a presentation";
 
 foot_image: "wolf.png";
 title: " How to include an edje file";
@@ -330,9 +319,6 @@ slide
     }
 }
 
-section: " List of default layouts";
-
-
 slide
 {
     layout: title;
@@ -449,9 +435,6 @@ slide
         }
     }
 }
-
-
-chapter: " Conclusion";
 
 slide
 {

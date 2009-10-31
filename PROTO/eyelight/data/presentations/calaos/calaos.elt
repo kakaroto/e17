@@ -21,9 +21,6 @@ slide
     }
 }
 
-chapter: " Présentations.";
-section: " L'entreprise et le produit Calaos.";
-
 slide {
         layout: "blank";
         title: " L'entreprise Calaos";
@@ -107,9 +104,6 @@ slide {
         }
 }
 
-
-section: " Les technologies utilisées.";
-
 slide {
         layout: "1_area";
         title: " Panoramas des technologies";
@@ -168,9 +162,6 @@ slide {
         }
 }
 
-
-section: " Les objectifs et les réalisations du stage.";
-
 slide {
         layout: "1_area";
         title: " Les objectifs et réalisations du stage.";
@@ -197,8 +188,6 @@ slide {
         }
 }
 
-chapter: " Le namespace CalaosHome.";
-
 slide {
         layout: "1_area";
         title: " Le namespace CalaosHome";
@@ -215,8 +204,6 @@ slide {
                 }
         }
 }
-
-section: " CalaosHome est un cache local et un MVC.";
 
 slide {
         layout: "blank";
@@ -280,8 +267,6 @@ slide {
         }
 }
 
-section: " Quelques chiffres.";
-
 slide {
         layout: "1_area";
         title: " Quelques chiffres";
@@ -296,8 +281,6 @@ slide {
                 }
         }
 }
-
-chapter: " L'éditeur de scénario.";
 
 slide {
         layout: "1_area";
@@ -318,8 +301,6 @@ slide {
         }
 }
 
-section: " Les outils existants avant le stage.";
-
 slide {
         layout: "1_area";
         title: " Avant le stage";
@@ -338,8 +319,6 @@ slide {
                 }
         }
 }
-
-section: " Réalisation d'un assistant pour les utilisateurs.";
 
 slide {
         layout: "blank";
@@ -391,9 +370,6 @@ slide {
         }
 }
 
-chapter: " Le gestionnaire de photos.";
-section: " La problématique";
-
 slide {
         layout: "blank";
         title: " La problématique";
@@ -413,8 +389,6 @@ slide {
                 image: "use_case_flickr.png";
         }
 }
-
-section: " Flickr comme source mais d'autres possibles";
 
 slide {
         layout: "1_area";
@@ -459,8 +433,6 @@ slide {
         }
 }
 
-chapter: " Autres travaux réalisés";
-
 slide {
         layout: "1_area";
         title: " Autres travaux réalisés";
@@ -474,8 +446,6 @@ slide {
                 }
         }
 }
-
-chapter: " Conclusion";
 
 slide {
         layout: "1_area";

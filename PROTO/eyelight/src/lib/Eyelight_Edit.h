@@ -44,10 +44,6 @@ enum eyelight_node_name
     EYELIGHT_NAME_AUTOPLAY,
     EYELIGHT_NAME_REPLAY,
     EYELIGHT_NAME_SHADOW,
-    EYELIGHT_NAME_SUMMARY,
-    EYELIGHT_NAME_CHAPTER,
-    EYELIGHT_NAME_SECTION,
-    EYELIGHT_NAME_TEXT_SUMMARY,
     EYELIGHT_NAME_PRESENTATION,
     EYELIGHT_NAME_THEME
 };
@@ -64,6 +60,7 @@ enum eyelight_node_name
  * @param obj the eyelight smart object
  * @return Returns the Eyelgiht_Viewer* object
  */
+
 EAPI Eyelight_Viewer *eyelight_object_pres_get(Evas_Object *obj);
 
 EAPI void eyelight_edit_edit_mode_set(Eyelight_Viewer *pres, Edje_Signal_Cb cb, void *data);

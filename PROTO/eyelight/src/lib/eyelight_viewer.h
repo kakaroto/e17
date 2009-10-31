@@ -1,19 +1,5 @@
 /*
- * =====================================================================================
- *
- *       Filename:  eyelight_viewer.h
- *
- *    Description:
- *
- *        Version:  1.0
- *        Created:  11/07/08 15:21:27 UTC
- *       Revision:  none
- *       Compiler:  gcc
- *
- *         Author:  (Watchwolf), Atton Jonathan <watchwolf@watchwolf.fr>
- *        Company:
- *
- * =====================================================================================
+ * @brief parse an elt file and create a Eyelight tree (eyelight_compiler, eyelight_node)
  */
 
 #ifndef  EYELIGHT_VIEWER_INC

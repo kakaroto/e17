@@ -167,10 +167,6 @@ void eyelight_edit_slide_delete(Eyelight_Viewer *pres, int id_slide)
         }
     }
     pres->compiler->root->l = eina_list_remove_list(pres->compiler->root->l, l);
-    //all summary are created from the same node, so we must not delete him
-    if(node != pres->compiler->node_summary)
-        eyelight_node_free(&node, NULL);
-
 
     pres->size--;
     if(pres->current == id_slide)

@@ -86,10 +86,7 @@ static const Eyelight_Name_Key eyelight_name_keys[] = {
     { "alpha", EYELIGHT_NAME_ALPHA},
     { "autoplay", EYELIGHT_NAME_AUTOPLAY},
     { "replay", EYELIGHT_NAME_REPLAY},
-    { "summary", EYELIGHT_NAME_SUMMARY},
     { "shadow", EYELIGHT_NAME_SHADOW},
-    { "chapter", EYELIGHT_NAME_CHAPTER},
-    { "section", EYELIGHT_NAME_SECTION},
     { "presentation", EYELIGHT_NAME_PRESENTATION},
     { "theme", EYELIGHT_NAME_THEME}
 };
@@ -112,9 +109,6 @@ static const Eyelight_Valid_Prop_Block eyelight_valid_prop_block[] =
     { EYELIGHT_NAME_ROOT, EYELIGHT_NAME_TRANSITION_NEXT },
     { EYELIGHT_NAME_ROOT, EYELIGHT_NAME_TRANSITION_PREVIOUS },
     { EYELIGHT_NAME_ROOT, EYELIGHT_NAME_TRANSITION_PREVIOUS },
-    { EYELIGHT_NAME_ROOT, EYELIGHT_NAME_SUMMARY },
-    { EYELIGHT_NAME_ROOT, EYELIGHT_NAME_CHAPTER },
-    { EYELIGHT_NAME_ROOT, EYELIGHT_NAME_SECTION },
     { EYELIGHT_NAME_SLIDE, EYELIGHT_NAME_TITLE },
     { EYELIGHT_NAME_SLIDE, EYELIGHT_NAME_LAYOUT },
     { EYELIGHT_NAME_SLIDE, EYELIGHT_NAME_SUBTITLE },
@@ -262,11 +256,6 @@ struct eyelight_compiler
 
     //the node root
     Eyelight_Node *root;
-
-    //node which describes a slide summary
-    Eyelight_Node *node_summary;
-    //the items block in the slide summary
-    Eyelight_Node *node_summary_items;
 };
 
 struct eyelight_area

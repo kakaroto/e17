@@ -666,40 +666,6 @@ Evas_Object *eyelight_object_item_simple_text_add(Eyelight_Viewer *pres, Eyeligh
 }
 
 
-Evas_Object *eyelight_object_item_summary_text_add(Eyelight_Viewer *pres, Eyelight_Slide *slide, int id_summary, int id_item, const char *area, int depth, const char *text)
-{
-    char buf[EYELIGHT_BUFLEN];
-
-    Evas_Object *o_area = eyelight_object_area_obj_get(pres, slide, area, buf);
-
-    Evas_Object *o_text = edje_object_add(pres->evas);
-    if(edje_object_file_set(o_text, pres->theme, "eyelight/item_summary_text") ==  0)
-        WARN("load group eyelight/item_summary_text error! %d \n",
-                edje_object_load_error_get(o_text));
-    edje_object_part_text_set(o_text,"object.text",text);
-    evas_object_size_hint_align_set(o_text, -1, 0.5);
-    evas_object_size_hint_weight_set(o_text, -1, -1);
-    edje_object_scale_set(o_text, pres->current_scale);
-    evas_object_show(o_text);
-    edje_object_part_box_append(o_area,buf,o_text);
-
-    int i;
-    for(i=0;i<depth;i++)
-        edje_object_signal_emit(o_text,"increase,depth","eyelight");
-
-    if(id_summary == -1 || id_item<id_summary)
-        edje_object_signal_emit(o_text, "before","eyelight");
-    else if(id_item==id_summary)
-        edje_object_signal_emit(o_text, "current","eyelight");
-    else
-        edje_object_signal_emit(o_text, "after","eyelight");
-
-    slide->items_all = eina_list_append(
-            slide->items_all,
-            o_text);
-    return o_text;
-}
-
 Evas_Object *eyelight_object_item_numbering_text_add(Eyelight_Viewer *pres, Eyelight_Slide *slide, Eyelight_Node *node, const char *area, char *numbering_id, int depth, const char *text)
 {
     char buf[EYELIGHT_BUFLEN],buf2[EYELIGHT_BUFLEN];
