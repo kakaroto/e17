@@ -74,26 +74,7 @@ CB_ConfigureTrans(Dialog * d __UNUSED__, int val, void *data __UNUSED__)
 	Conf.trans.dialog = tmp_st_dialog;
 	Conf.trans.menu = tmp_st_menu;
 	Conf.trans.tooltip = tmp_st_tooltip;
-
-	if (tmp_st_hilight == ICLASS_ATTR_GLASS)
-	  {
-	     Conf.trans.hilight = tmp_st_hilight;
-	     Conf.trans.menu_item = ICLASS_ATTR_GLASS;
-
-	  }
-	else if (tmp_st_hilight == ICLASS_ATTR_BG)
-	  {
-	     Conf.trans.hilight = tmp_st_hilight;
-	     Conf.trans.menu_item = ICLASS_ATTR_BG;
-
-	  }
-	else if (tmp_st_hilight == ICLASS_ATTR_OPAQUE)
-	  {
-	     Conf.trans.hilight = tmp_st_hilight;
-	     Conf.trans.menu_item = ICLASS_ATTR_OPAQUE;
-
-	  }
-
+	Conf.trans.hilight = Conf.trans.menu_item = tmp_st_hilight;
 	Conf.trans.pager = ICLASS_ATTR_BG;
 	Conf.trans.iconbox = ICLASS_ATTR_BG;
 	Conf.trans.warplist = ICLASS_ATTR_BG;
