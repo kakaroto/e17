@@ -32,21 +32,6 @@ AM_PROG_LIBTOOL
 # doxygen program for documentation building
 EFL_CHECK_DOXYGEN([build_doc="yes"], [build_doc="no"])
 
-# Find edje_cc
-PKG_CHECK_MODULES(EDJE, [edje >= 0.5.0])
-AC_ARG_WITH(edje-cc,
-  AC_HELP_STRING([--with-edje-cc=PATH], [specify a specific path to edje_cc]),
-  [
-    v=$withval;
-    EDJE_CC=$v
-  ],[
-    EDJE_CC=$(pkg-config --variable=prefix edje)/bin/edje_cc
-  ]
-)
-AC_SUBST(EDJE_CC)
-AC_MSG_CHECKING([Which edje_cc to use])
-AC_MSG_RESULT(${EDJE_CC})
-
 vpnc=""
 AC_ARG_WITH([vpnc],
             AC_HELP_STRING([--with-vpnc=VPNC_PATH], [explicitly specify a vpnc path]),
@@ -132,9 +117,7 @@ PKG_CHECK_MODULES(EXALT, [
   ecore-file >= 0.9.9,
   ehal >= 0.1.0.002,
   edbus >= 0.1.0.002,
-  dbus-1 >= 0.1,
-  evas >= 0.9
-  elementary >= 0.1
+  dbus-1 >= 0.1
 ])
 
 
@@ -175,7 +158,6 @@ src/bin/Makefile
 src/lib/Makefile
 src/lib_dbus/Makefile
 src/bin_command/Makefile
-src/bin_client/Makefile
 data/Makefile
 data/icons/Makefile
 exalt.pc
