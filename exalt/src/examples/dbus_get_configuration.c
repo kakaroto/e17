@@ -119,6 +119,23 @@ void response_cb(Exalt_DBus_Response* response, void* data)
     }
 }
 
+/*
+ * This method is called when we are connected to the daemon or
+ * if the connection failed. You can't ask something to the daemon
+ * before you are connected.
+ */
+void _connect_cb(void *data, Exalt_DBus_Conn *conn, Eina_Bool success)
+{
+    // connection failed for some reasons
+    if(!success) return ;
+
+    // Ask the list of interface to the daemon
+    // The list of wired interface
+    exalt_dbus_eth_list_get(conn);
+    // The list of wireless interface
+    exalt_dbus_wireless_list_get(conn);
+}
+
 int main()
 {
     //init exalt_dbus
@@ -126,7 +143,7 @@ int main()
 
     //open a connection with dbus
     Exalt_DBus_Conn *conn;
-    conn = exalt_dbus_connect();
+    conn = exalt_dbus_connect(_connect_cb, NULL, NULL);
 
     if(!conn)
     {
@@ -147,13 +164,6 @@ int main()
     // This method is called to return the result of a scan of wireless network
     // We don't need this method in this example
     //exalt_dbus_scan_notify_set(conn,network_list_notify_scan,iface_list);
-
-
-    // Ask the list of interface to the daemon
-    // The list of wired interface
-    exalt_dbus_eth_list_get(conn);
-    // The list of wireless interface
-    exalt_dbus_wireless_list_get(conn);
 
     ecore_main_loop_begin();
     return 1;

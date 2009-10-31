@@ -64,6 +64,19 @@ void notify_cb(char* iface, Exalt_Enum_Action action, void* data)
     }
 }
 
+/*
+ * This method is called when we are connected to the daemon or
+ * if the connection failed. You can't ask something to the daemon
+ * before you are connected.
+ */
+void _connect_cb(void *data, Exalt_DBus_Conn *conn, Eina_Bool success)
+{
+    // connection failed for some reasons
+    if(!success) return ;
+
+    //no questions
+}
+
 int main()
 {
     //init exalt_dbus
@@ -71,7 +84,7 @@ int main()
 
     //open a connection with dbus
     Exalt_DBus_Conn *conn;
-    conn = exalt_dbus_connect();
+    conn = exalt_dbus_connect(_connect_cb, NULL, NULL);
 
     if(!conn)
     {
