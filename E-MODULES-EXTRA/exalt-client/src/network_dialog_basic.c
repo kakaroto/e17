@@ -21,6 +21,7 @@ void if_network_dialog_basic_create(Instance* inst)
     char buf[4096];
 
     inst->network_basic.dialog = e_dialog_new(inst->gcc->gadcon->zone->container, "e", "exalt_network_dialog_basic");
+
     e_dialog_title_set(inst->network_basic.dialog, D_("Wireless Configuration Settings"));
     inst->network_basic.dialog->data = inst;
 
@@ -65,7 +66,7 @@ Evas_Object* if_network_dialog_basic_wep_new(Instance* inst,Exalt_Wireless_Netwo
 {
     Evas_Object* lbl, *o;
 
-    Evas *evas = e_win_evas_get(inst->network.dialog->win);
+    Evas *evas = e_win_evas_get(inst->network_basic.dialog->win);
 
     Evas_Object* flist = e_widget_frametable_add(evas, D_("WEP information"), 0);
 
