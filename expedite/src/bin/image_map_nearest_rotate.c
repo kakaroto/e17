@@ -49,6 +49,7 @@ static void _loop(double t, int f)
    Evas_Map *m;
    Evas_Coord x, y, w, h;
    m = evas_map_new(4);
+   evas_map_smooth_set(m, 0);
    for (i = 0; i < (OBNUM / 2); i++)
      {
         w = 120;
