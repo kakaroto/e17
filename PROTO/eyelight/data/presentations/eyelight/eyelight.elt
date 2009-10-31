@@ -36,6 +36,20 @@ slide
 
 slide
 {
+    layout: summary;
+    title: " Summary";
+    subtitle: "";
+    transition_next: "fade";
+    area
+    {
+        name: "center";
+        text: " item 1.";
+        text: " item 2.";
+    }
+}
+
+slide
+{
     layout: blank;
     title: " General presentation";
     subtitle: "";
