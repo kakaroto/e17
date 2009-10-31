@@ -116,7 +116,7 @@ e16_SOURCES = \
 	$(SRCS_DBUS)		\
 	$(SRCS_SNPRINTF)
 
-e16_CPPFLAGS = -I$(top_builddir) -I$(top_srcdir) \
+e16_CPPFLAGS = -I$(top_builddir) \
 	$(ECORE_CFLAGS) \
 	$(MODULE_CFLAGS) \
 	$(IMLIB2_CFLAGS) \
