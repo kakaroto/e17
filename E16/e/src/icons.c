@@ -202,6 +202,10 @@ IB_GetFallbackIcon(EWin * ewin, int size)
    ImageClass         *ic;
    EImage             *im;
 
+   im = ThemeImageLoad("pix/default.png");
+   if (im)
+      return im;
+
    ww = EoGetW(ewin);
    hh = EoGetH(ewin);
    if (ww <= 0)
@@ -227,9 +231,9 @@ static const char   ewin_icon_modes[N_MODES][N_TYPES] = {
     EWIN_ICON_TYPE_FB},
    {EWIN_ICON_TYPE_IMG, EWIN_ICON_TYPE_SNAP, EWIN_ICON_TYPE_APP,
     EWIN_ICON_TYPE_FB},
-   {EWIN_ICON_TYPE_IMG, EWIN_ICON_TYPE_APP, EWIN_ICON_TYPE_NONE,
+   {EWIN_ICON_TYPE_IMG, EWIN_ICON_TYPE_APP, EWIN_ICON_TYPE_FB,
     EWIN_ICON_TYPE_NONE},
-   {EWIN_ICON_TYPE_APP, EWIN_ICON_TYPE_IMG, EWIN_ICON_TYPE_NONE,
+   {EWIN_ICON_TYPE_APP, EWIN_ICON_TYPE_IMG, EWIN_ICON_TYPE_FB,
     EWIN_ICON_TYPE_NONE},
 };
 
