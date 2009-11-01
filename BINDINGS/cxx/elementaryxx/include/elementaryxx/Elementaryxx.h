@@ -30,6 +30,7 @@
 #include "ElmLayout.h"
 #include "ElmHover.h"
 #include "ElmNotepad.h"
+#include "ElmCheck.h"
 
 #endif // ELEMENTARYXX_H
 

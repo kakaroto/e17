@@ -15,14 +15,14 @@ namespace efl {
 class ElmObject : public EvasSmart
 {
 public:
-  void setScale (double scale);
-  double getScale ();
-  void setStyle (const std::string &style);
-  const std::string getStyle ();
-  void setDisabled (bool disabled);
-  bool getDisabled ();
+  virtual void setScale (double scale);
+  virtual double getScale ();
+  virtual void setStyle (const std::string &style);
+  virtual const std::string getStyle ();
+  virtual void setDisabled (bool disabled);
+  virtual bool getDisabled ();
   
-  void focus ();
+  virtual void focus ();
 
   /*void         elm_object_scroll_hold_push(Evas_Object *obj);
   void         elm_object_scroll_hold_pop(Evas_Object *obj);
