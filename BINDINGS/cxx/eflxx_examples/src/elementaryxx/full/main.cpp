@@ -27,6 +27,7 @@ void test_notepad (void *data, Evas_Object *obj, void *event_info);
 // ...
 void test_slider (void *data, Evas_Object *obj, void *event_info);
 void test_check (void *data, Evas_Object *obj, void *event_info);
+void test_radio (void *data, Evas_Object *obj, void *event_info);
 //
 
 ElmApplication *elmApp;
@@ -151,8 +152,8 @@ int main (int argc, char **argv)
   li.append("Genlist 3", NULL, NULL, my_bt_31, NULL);
   li.append("Genlist 4", NULL, NULL, my_bt_32, NULL);*/
   li->append("Checks", test_check, NULL);
-  /*li.append("Radios", NULL, NULL, my_bt_34, NULL);
-  li.append("Pager", NULL, NULL, my_bt_35, NULL);
+  li->append("Radios", test_radio, NULL);
+  /*li.append("Pager", NULL, NULL, my_bt_35, NULL);
   li.append("Genlist Tree", NULL, NULL, my_bt_36, NULL);
   li.append("Genlist 5", NULL, NULL, my_bt_37, NULL);
   li.append("Window States", NULL, NULL, my_bt_38, NULL);*/

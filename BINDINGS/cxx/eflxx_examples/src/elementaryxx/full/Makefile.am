@@ -17,7 +17,8 @@ elementaryxx_example_full_SOURCES = \
 	test_table.cpp                   \
 	test_toggle.cpp                   \
 	test_slider.cpp                   \
-	test_check.cpp
+	test_check.cpp                   \
+	test_radio.cpp
 
 elementaryxx_example_full_LDADD = \
 	$(ELEMENTARYXX_LIBS) \
