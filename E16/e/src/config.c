@@ -231,6 +231,7 @@ ConfigFilePreparse(const char *src, const char *dst, const char *themepath)
    char                execline[FILEPATH_LEN_MAX];
    const char         *epp_path = ENLIGHTENMENT_BIN "/epp";
    char               *def_home, *def_user, *def_shell;
+   const char         *variant;
 
    if (EDebug(EDBUG_TYPE_CONFIG))
       Eprintf("ConfigFilePreparse %s -> %s\n", src, dst);
@@ -243,20 +244,22 @@ ConfigFilePreparse(const char *src, const char *dst, const char *themepath)
     * with old behavior */
    if (!themepath)
       themepath = Mode.theme.path;
+   variant = (Mode.theme.variant) ? Mode.theme.variant : "";
 
    Esnprintf(execline, sizeof(execline), "%s " "-P " "-nostdinc " "-undef "
 	     "-include %s/config/definitions " "-I%s " "-I%s/config "
 	     "-D ENLIGHTENMENT_VERSION=%s " "-D ENLIGHTENMENT_ROOT=%s "
 	     "-D ENLIGHTENMENT_BIN=%s "
-	     "-D ENLIGHTENMENT_THEME=%s " "-D ECONFDIR=%s "
-	     "-D ECACHEDIR=%s " "-D SCREEN_RESOLUTION_%ix%i=1 "
+	     "-D ENLIGHTENMENT_THEME=%s " "-D VARIANT=%s "
+	     "-D ECONFDIR=%s " "-D ECACHEDIR=%s "
+	     "-D SCREEN_RESOLUTION_%ix%i=1 "
 	     "-D SCREEN_WIDTH_%i=1 " "-D SCREEN_HEIGHT_%i=1 "
 	     "-D SCREEN_DEPTH_%i=1 " "-D USER_NAME=%s " "-D HOME_DIR=%s "
 	     "-D USER_SHELL=%s "
 	     "%s %s",
 	     epp_path, EDirRoot(), themepath, EDirRoot(),
-	     e_wm_version, EDirRoot(), EDirBin(),
-	     themepath, EDirUser(), EDirUserCache(),
+	     e_wm_version, EDirRoot(), EDirBin(), themepath, variant,
+	     EDirUser(), EDirUserCache(),
 	     WinGetW(VROOT), WinGetH(VROOT), WinGetW(VROOT), WinGetH(VROOT),
 	     WinGetDepth(VROOT), def_user, def_home, def_shell, src, dst);
    Esystem(execline);
@@ -499,7 +502,10 @@ ConfigFileFind(const char *name, const char *themepath, int pp)
       if (file[i] == '/')
 	 file[i] = '.';
 
+   if (Mode.theme.variant)
+      file = Estrdupcat2(file, "_", Mode.theme.variant);
    Esnprintf(s, sizeof(s), "%s/cached/cfg/%s.preparsed", EDirUserCache(), file);
+
    ppfile = Estrdup(s);
    if (exists(s) && moddate(s) > moddate(fullname))
       goto done;

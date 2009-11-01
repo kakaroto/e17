@@ -388,6 +388,7 @@ typedef struct {
    struct {
       char               *paths;
       char               *path;
+      char               *variant;
    } theme;
    struct {
       char               *exec_name;	/* argv[0] */

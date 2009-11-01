@@ -327,13 +327,19 @@ ThemeFind(const char *theme)
 void
 ThemePathFind(void)
 {
-   char               *name, *path;
+   char               *name, *path, *s;
 
    /*
     * Conf.theme.name is read from the configuration.
     * Mode.theme.path may be assigned on the command line.
     */
    name = (Mode.theme.path) ? Mode.theme.path : Conf.theme.name;
+   if ((s = strchr(name, '.')))
+     {
+	*s = 0;
+	Efree(Mode.theme.variant);
+	Mode.theme.variant = Estrdup(s + 1);
+     }
    path = ThemeFind(name);
 
    if (!path && (!name || strcmp(name, "-")))
