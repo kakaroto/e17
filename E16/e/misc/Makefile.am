@@ -18,9 +18,14 @@ xsessiondir = $(datadir)/xsessions
 #xclientsdir = $(sysconfdir)/X11/xinit/Xclients.d
 #xclients_SCRIPTS = $(XCLIENTS)
 
-EXTRA_DIST = $(DESKTOPS_IN) $(XCLIENTS) $(SCRIPTS) $(ICONS)
+EXTRA_DIST = $(DESKTOPS_IN) $(XCLIENTS) $(SCRIPTS) $(ICONS) starte16.in
 
-CLEANFILES = $(DESKTOPS)
+CLEANFILES = $(DESKTOPS) starte16
+
+starte16: $(srcdir)/starte16.in Makefile
+
+starte16:
+	sed -e "s=%bindir%=${bindir}=" $(srcdir)/$@.in > $@
 
 e16.desktop-app: $(srcdir)/e16.desktop-app.in Makefile
 e16.desktop: $(srcdir)/e16.desktop.in Makefile

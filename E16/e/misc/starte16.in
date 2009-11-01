@@ -16,9 +16,9 @@ case "$s" in
 	exec startkde
 	;;
 *window)
-	exec e16 -w ${SIZE:-800x600}
+	exec %bindir%/e16 -w ${SIZE:-800x600}
 	;;
 *)
-	exec e16
+	exec %bindir%/e16
 	;;
 esac
