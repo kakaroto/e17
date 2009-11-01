@@ -438,7 +438,7 @@ Ekeko_Object * tag_create(char *tag, EXML *exml, Ekeko_Object *parent)
 	}
 	else if (!strcmp(tag, "layer"))
 	{
-		o = (Ekeko_Object *)eon_compound_layer_new();
+		o = (Ekeko_Object *)eon_compound_layer_new(doc);
 		ekeko_object_child_append(parent, o);
 	}
 	else if (!strcmp(tag, "compound"))

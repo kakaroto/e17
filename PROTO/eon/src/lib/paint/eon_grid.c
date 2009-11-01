@@ -133,4 +133,3 @@ EAPI void eon_grid_color2_set(Eon_Grid *sq, Eon_Color color)
 	eon_value_color_from(&v, color);
 	ekeko_object_property_value_set((Ekeko_Object *)sq, "color2", &v);
 }
-

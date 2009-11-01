@@ -40,10 +40,12 @@ struct _Eon_Compound_Layer
 /*============================================================================*
  *                                Functions                                   *
  *============================================================================*/
-EAPI Ekeko_Type * eon_compound_layer_type_get(void);
-EAPI Eon_Compound_Layer * eon_compound_layer_new(void);
+EAPI Eon_Compound_Layer * eon_compound_layer_new(Eon_Document *doc);
 
-Enesim_Rop eon_compound_layer_rop_get(Eon_Compound_Layer *l);
-Eon_Paint * eon_compound_layer_paint_get(Eon_Compound_Layer *l);
+EAPI void eon_compound_layer_rop_set(Eon_Compound_Layer *l, Enesim_Rop rop);
+EAPI Enesim_Rop eon_compound_layer_rop_get(Eon_Compound_Layer *l);
+
+EAPI Eon_Paint * eon_compound_layer_paint_get(Eon_Compound_Layer *l);
+void eon_compound_layer_paint_set(Eon_Compound_Layer *l, Eon_Paint *p);
 
 #endif /* EON_COMPOUND_LAYER_H_ */

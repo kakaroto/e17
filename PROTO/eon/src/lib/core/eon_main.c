@@ -29,6 +29,40 @@ static int _emage_idler_cb(void *data)
 	emage_dispatch();
 	return 1;
 }
+
+/* register the common objects */
+static void _objects_init(void)
+{
+	eon_canvas_init();
+	eon_rect_init();
+	eon_circle_init();
+	eon_checker_init();
+	eon_stripes_init();
+	eon_fade_init();
+	eon_compound_init();
+	eon_compound_layer_init();
+	eon_image_init();
+	eon_style_init();
+	eon_setter_init();
+	eon_buffer_init();
+}
+
+/* unregister the common objects */
+static void _objects_shutdown(void)
+{
+	eon_canvas_shutdown();
+	eon_rect_shutdown();
+	eon_circle_shutdown();
+	eon_checker_shutdown();
+	eon_stripes_shutdown();
+	eon_fade_shutdown();
+	eon_compound_shutdown();
+	eon_compound_layer_shutdown();
+	eon_image_shutdown();
+	eon_style_shutdown();
+	eon_setter_shutdown();
+	eon_buffer_shutdown();
+}
 /*============================================================================*
  *                                 Global                                     *
  *============================================================================*/
@@ -65,18 +99,7 @@ EAPI int eon_init(void)
 		_idler = ecore_idle_enterer_add(_emage_idler_cb, NULL);
 		/* the type registry */
 		_types = eina_hash_string_superfast_new(NULL);
-		/* register the common objects */
-		eon_canvas_init();
-		eon_rect_init();
-		eon_circle_init();
-		eon_checker_init();
-		eon_stripes_init();
-		eon_fade_init();
-		eon_compound_init();
-		eon_image_init();
-		eon_style_init();
-		eon_setter_init();
-		eon_buffer_init();
+		_objects_init();
 done:
 	return ++_count;
 }
@@ -84,20 +107,8 @@ done:
 EAPI int eon_shutdown(void)
 {
 	if (_count != 1) goto done;
-		/* unregister the common objects */
-		eon_canvas_shutdown();
-		eon_rect_shutdown();
-		eon_circle_shutdown();
-		eon_checker_shutdown();
-		eon_stripes_shutdown();
-		eon_fade_shutdown();
-		eon_compound_shutdown();
-		eon_image_shutdown();
-		eon_style_shutdown();
-		eon_setter_shutdown();
-		eon_buffer_shutdown();
 		/* TODO delete the types hash */
-		eon_rect_init();
+		_objects_shutdown();
 		ecore_idle_enterer_del(_idler);
 		eon_script_shutdown();
 		eon_parser_shutdown();
