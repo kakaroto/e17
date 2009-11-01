@@ -15,7 +15,8 @@ elementaryxx_example_full_SOURCES = \
 	test_layout.cpp                   \
 	test_notepad.cpp                   \
 	test_table.cpp                   \
-	test_toggle.cpp
+	test_toggle.cpp                   \
+	test_slider.cpp
 
 elementaryxx_example_full_LDADD = \
 	$(ELEMENTARYXX_LIBS) \

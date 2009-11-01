@@ -24,6 +24,7 @@ void test_hover2 (void *data, Evas_Object *obj, void *event_info);
 void test_entry (void *data, Evas_Object *obj, void *event_info);
 void test_entry_scolled (void *data, Evas_Object *obj, void *event_info);
 void test_notepad (void *data, Evas_Object *obj, void *event_info);
+void test_slider (void *data, Evas_Object *obj, void *event_info);
 //
 
 ElmApplication *elmApp;
@@ -141,9 +142,9 @@ int main (int argc, char **argv)
   li.append("Inwin", NULL, NULL, my_bt_24, NULL);
   li.append("Inwin 2", NULL, NULL, my_bt_25, NULL);
   li.append("Scaling", NULL, NULL, my_bt_26, NULL);
-  li.append("Scaling 2", NULL, NULL, my_bt_27, NULL);
-  li.append("Slider", NULL, NULL, my_bt_28, NULL);
-  li.append("Genlist", NULL, NULL, my_bt_29, NULL);
+  li.append("Scaling 2", NULL, NULL, my_bt_27, NULL);*/
+  li->append("Slider", test_slider, NULL);
+  /*li.append("Genlist", NULL, NULL, my_bt_29, NULL);
   li.append("Genlist 2", NULL, NULL, my_bt_30, NULL);
   li.append("Genlist 3", NULL, NULL, my_bt_31, NULL);
   li.append("Genlist 4", NULL, NULL, my_bt_32, NULL);
