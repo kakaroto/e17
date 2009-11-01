@@ -1504,7 +1504,8 @@ ECompMgrWinSetPicts(EObj * eo)
 	D2printf("ECompMgrWinSetPicts %#lx: Pict=%#lx (drawable=%#lx)\n",
 		 EobjGetXwin(eo), cw->picture, draw);
 
-	if (draw == cw->pixmap)
+	/* Hmm.. What good does this actually do? */
+	if (draw == cw->pixmap && EobjIsShaped(eo))
 	  {
 	     XserverRegion       clip;
 
