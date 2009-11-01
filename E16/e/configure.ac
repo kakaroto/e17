@@ -387,6 +387,7 @@ epp/Makefile
 lib/Makefile
 config/Makefile
 config/pix/Makefile
+icons/Makefile
 themes/Makefile
 fonts/Makefile
 scripts/Makefile
