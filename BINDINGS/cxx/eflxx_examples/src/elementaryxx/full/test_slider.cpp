@@ -37,8 +37,6 @@ void test_slider (void *data, Evas_Object *obj, void *event_info)
   sl = ElmSlider::factory (*win);
   sl->setLabel ("Label 2");
   sl->setSpanSize (80);
-  //sl->setAlignHintSize (EVAS_HINT_FILL, 0.5);
-  //sl->setWeightHintSize (EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
   sl->setIndicatorFormat ("%3.0f");
   sl->setMinMax (50, 150);
   sl->setValue (80);
