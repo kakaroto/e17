@@ -61,6 +61,8 @@ image_map_3d_1.c \
 image_map_3d_2.c \
 image_map_3d_3.c \
 image_map_3d_4.c \
+image_map_3d_5.c \
+image_map_3d_6.c \
 image_map_3d_flow.c \
 image_quality_scale.c \
 image_data_argb.c \
