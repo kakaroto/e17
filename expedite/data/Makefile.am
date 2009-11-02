@@ -40,6 +40,12 @@ pulse.png \
 typewriter.png \
 warning.png \
 im1.png \
-im2.png
+im2.png \
+cube1.png \
+cube2.png \
+cube3.png \
+cube4.png \
+cube5.png \
+cube6.png
 
 EXTRA_DIST = $(files_DATA)
