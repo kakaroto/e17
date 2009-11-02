@@ -192,7 +192,7 @@ news_config_dialog_feed_refresh_langs(News_Feed *feed)
    pos_to_select = -1;
    for (l=list; l; l=eina_list_next(l))
      {
-        lang = l->data;
+        lang = eina_list_data_get(l);
         e_widget_ilist_append(ilist, NULL, lang->name, NULL, lang, NULL);
 
         if (cfdata->language && !strcmp(cfdata->language, lang->key))
@@ -500,8 +500,10 @@ _cb_lang_change(void *data, Evas_Object *obj)
 
    cfdata = data;
    pos = e_widget_ilist_selected_get(cfdata->gui.ilist_langs);
+   if (pos < 0) return;
    lang = e_widget_ilist_nth_data_get(cfdata->gui.ilist_langs, pos);
-   
+   if (!lang) return;
+
    if (cfdata->language) free(cfdata->language);
    cfdata->language = strdup(lang->key);
 }
@@ -510,11 +512,13 @@ static void
 _cb_category_list(void *data)
 {
    E_Config_Dialog_Data *cfdata;
+   int pos;
 
    cfdata = data;
+   pos = e_widget_ilist_selected_get(cfdata->gui.ilist_categories);
+   if (pos < 0) return;
 
-   cfdata->category = eina_list_nth(news->config->feed.categories,
-                                    e_widget_ilist_selected_get(cfdata->gui.ilist_categories));
+   cfdata->category = eina_list_nth(news->config->feed.categories, pos);
 }
 
 static void
