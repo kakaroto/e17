@@ -49,6 +49,14 @@ image_map_rotate.c \
 image_map_solid_rotate.c \
 image_map_nearest_rotate.c \
 image_map_nearest_solid_rotate.c \
+image_map_color_rotate.c \
+image_map_color_solid_rotate.c \
+image_map_color_nearest_rotate.c \
+image_map_color_nearest_solid_rotate.c \
+image_map_color_alpha_rotate.c \
+image_map_color_alpha_solid_rotate.c \
+image_map_color_alpha_nearest_rotate.c \
+image_map_color_alpha_nearest_solid_rotate.c \
 image_quality_scale.c \
 image_data_argb.c \
 image_data_argb_alpha.c \
