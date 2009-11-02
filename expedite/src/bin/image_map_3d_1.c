@@ -60,7 +60,7 @@ _cube_new(Evas_Coord w, Evas_Coord h, Evas_Coord d)
         evas_object_image_file_set(o, build_path(buf), NULL);
         evas_object_image_fill_set(o, 0, 0, 256, 256);
         evas_object_resize(o, 256, 256);
-//        evas_object_image_smooth_scale_set(o, 0);
+        evas_object_image_smooth_scale_set(o, 0);
         evas_object_show(o);
      }
    POINT(0, 0, -w, -h, -d,   0,   0);
@@ -106,7 +106,7 @@ _cube_pos(Cube *c,
    Evas_Coord mz[6];
    
    m = evas_map_new(4);
-//   evas_map_smooth_set(m, 0);
+   evas_map_smooth_set(m, 0);
 
    for (i = 0; i < 6; i++)
      {
@@ -123,8 +123,11 @@ _cube_pos(Cube *c,
                                       c->side[i].pt[j].v);
              evas_map_point_color_set(m, j, 255, 255, 255, 255);
           }
-        evas_map_util_rotate_3d(m, dx, dy, dz, x, y, z,
-                                (win_w / 2), (win_h / 2), 0, 512);
+        evas_map_util_3d_rotate(m, dx, dy, dz, x, y, z);
+        evas_map_util_3d_lighting(m, -1000, -1000, -1000,
+                                  255, 255, 255,
+                                  20, 20, 20);
+        evas_map_util_3d_perspective(m, (win_w / 2), (win_h / 2), 0, 512);
         if (evas_map_util_clockwise_get(m))
           {
              evas_object_map_enable_set(c->side[i].o, 1);
@@ -179,7 +182,7 @@ static void _setup(void)
    cubes[2] = _cube_new(256, 256, 128);
    cubes[3] = _cube_new(128, 256, 128);
    cubes[4] = _cube_new(256, 256, 256);
-   
+
    done = 0;
 }
 
