@@ -37,6 +37,7 @@
 #include "image_map_3d_2.c"
 #include "image_map_3d_3.c"
 #include "image_map_3d_4.c"
+#include "image_map_3d_flow.c"
 #include "image_quality_scale.c"
 #include "image_data_argb.c"
 #include "image_data_argb_alpha.c"
