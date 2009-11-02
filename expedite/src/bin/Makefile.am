@@ -58,6 +58,9 @@ image_map_color_alpha_solid_rotate.c \
 image_map_color_alpha_nearest_rotate.c \
 image_map_color_alpha_nearest_solid_rotate.c \
 image_map_3d_1.c \
+image_map_3d_2.c \
+image_map_3d_3.c \
+image_map_3d_4.c \
 image_quality_scale.c \
 image_data_argb.c \
 image_data_argb_alpha.c \
