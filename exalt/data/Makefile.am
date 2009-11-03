@@ -1,2 +1,2 @@
 filesdir = $(pkgdatadir)
-SUBDIRS = icons
+SUBDIRS =

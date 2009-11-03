@@ -159,7 +159,6 @@ src/lib/Makefile
 src/lib_dbus/Makefile
 src/bin_command/Makefile
 data/Makefile
-data/icons/Makefile
 exalt.pc
 exalt_dbus.pc
 org.e.Exalt.service
