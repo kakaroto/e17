@@ -38,9 +38,11 @@ static Ecore_Timer *check_timer;
 Config *tclock_config = NULL;
 
 /* Define the class and gadcon functions this module provides */
-static const E_Gadcon_Client_Class _gc_class = {
-   GADCON_CLIENT_CLASS_VERSION,
-     "tclock", {_gc_init, _gc_shutdown, _gc_orient, _gc_label, _gc_icon, _gc_id_new, NULL, NULL},
+static const E_Gadcon_Client_Class _gc_class = 
+{
+   GADCON_CLIENT_CLASS_VERSION, "tclock", 
+     { _gc_init, _gc_shutdown, _gc_orient, _gc_label, _gc_icon, _gc_id_new, 
+          NULL, NULL },
    E_GADCON_CLIENT_STYLE_PLAIN
 };
 
@@ -59,7 +61,7 @@ _gc_init(E_Gadcon *gc, const char *name, const char *id, const char *style)
    Evas_Object *o;
    E_Gadcon_Client *gcc;
    Instance *inst;
-   char buf[4096];
+   char buf[PATH_MAX];
 
    inst = E_NEW(Instance, 1);
 
@@ -67,10 +69,9 @@ _gc_init(E_Gadcon *gc, const char *name, const char *id, const char *style)
    if (!inst->ci->id) inst->ci->id = eina_stringshare_add(id);
 
    o = edje_object_add(gc->evas);
-   snprintf(buf, sizeof (buf), "%s/tclock.edj",
-            e_module_dir_get(tclock_config->module));
-   if (!e_theme_edje_object_set
-       (o, "base/theme/modules/tclock", "modules/tclock/main"))
+   snprintf(buf, PATH_MAX, "%s/tclock.edj", tclock_config->mod_dir);
+   if (!e_theme_edje_object_set(o, "base/theme/modules/tclock", 
+                                "modules/tclock/main"))
      edje_object_file_set(o, buf, "modules/tclock/main");
    evas_object_show(o);
 
@@ -144,11 +145,10 @@ static Evas_Object *
 _gc_icon(E_Gadcon_Client_Class *client_class, Evas *evas)
 {
    Evas_Object *o;
-   char buf[4096];
+   char buf[PATH_MAX];
 
    o = edje_object_add (evas);
-   snprintf(buf, sizeof (buf), "%s/e-module-tclock.edj",
-            e_module_dir_get(tclock_config->module));
+   snprintf(buf, PATH_MAX, "%s/e-module-tclock.edj", tclock_config->mod_dir);
    edje_object_file_set(o, buf, "icon");
    return o;
 }
@@ -174,7 +174,7 @@ _tclock_cb_mouse_down(void *data, Evas *e, Evas_Object *obj, void *event_info)
      {
         E_Menu *mn;
         E_Menu_Item *mi;
-        int x, y;
+        int x = 0, y = 0;
 
         mn = e_menu_new();
         e_menu_post_deactivate_callback_set(mn, _tclock_menu_cb_post, inst);
@@ -191,9 +191,8 @@ _tclock_cb_mouse_down(void *data, Evas *e, Evas_Object *obj, void *event_info)
         e_gadcon_client_util_menu_items_append(inst->gcc, mn, 0);
         e_gadcon_canvas_zone_geometry_get(inst->gcc->gadcon, &x, &y, NULL, NULL);
         e_menu_activate_mouse (mn,
-                               e_util_zone_current_get(e_manager_current_get
-                                                        ()), x + ev->output.x,
-                               y + ev->output.y, 1, 1,
+                               e_util_zone_current_get(e_manager_current_get()), 
+                               x + ev->output.x, y + ev->output.y, 1, 1,
                                E_MENU_POP_DIRECTION_AUTO, ev->timestamp);
      }
 }
@@ -203,7 +202,7 @@ _tclock_cb_mouse_in(void *data, Evas *e, Evas_Object *obj, void *event_info)
 {
    Instance *inst = NULL;
    E_Zone *zone = NULL;
-   char buf[4096];
+   char buf[PATH_MAX];
    int x, y, w, h;
    int gx, gy, gw, gh;
    time_t current_time;
@@ -212,16 +211,15 @@ _tclock_cb_mouse_in(void *data, Evas *e, Evas_Object *obj, void *event_info)
    if (!(inst = data)) return;
    if (!inst->ci->show_tip) return;
    if (inst->tip) return;
-   snprintf(buf, sizeof(buf), "%s/tclock.edj", 
-	    e_module_dir_get(tclock_config->module));
+   snprintf(buf, PATH_MAX, "%s/tclock.edj", tclock_config->mod_dir);
 
    zone = e_util_zone_current_get(e_manager_current_get());
    inst->tip = e_popup_new(zone, 0, 0, 0, 0);
    e_popup_layer_set(inst->tip, 255);
 
    inst->o_tip = edje_object_add(inst->tip->evas);
-   if (!e_theme_edje_object_set
-       (inst->o_tip, "base/theme/modules/tclock", "modules/tclock/tip"))
+   if (!e_theme_edje_object_set(inst->o_tip, "base/theme/modules/tclock", 
+                                "modules/tclock/tip"))
      edje_object_file_set(inst->o_tip, buf, "modules/tclock/tip");
    evas_object_show(inst->o_tip);
 
@@ -365,7 +363,7 @@ _tclock_cb_check(void *data)
 	  edje_object_signal_emit(inst->tclock, "date_visible", "");
 	edje_object_message_signal_process(inst->tclock);
 
-	memset (buf, 0, sizeof(buf));
+	memset(buf, 0, sizeof(buf));
 
 	if (inst->ci->time_format)
 	  {
@@ -394,11 +392,11 @@ _tclock_config_item_get(const char *id)
 {
    Eina_List *l;
    Config_Item *ci;
-   char buf[128];
 
    if (!id)
      {
 	int  num = 0;
+        char buf[128];
 
 	/* Create id */
 	if (tclock_config->items)
@@ -435,19 +433,17 @@ _tclock_config_item_get(const char *id)
    return ci;
 }
 
-EAPI E_Module_Api e_modapi = {
-  E_MODULE_API_VERSION, "TClock"
-};
+EAPI E_Module_Api e_modapi = { E_MODULE_API_VERSION, "TClock" };
 
 EAPI void *
 e_modapi_init(E_Module *m)
 {
-   char buf[4096];
+   char buf[PATH_MAX];
 
 #if HAVE_LOCALE_H
    setlocale(LC_ALL, "");
 #endif
-   snprintf(buf, sizeof(buf), "%s/locale", e_module_dir_get(m));
+   snprintf(buf, PATH_MAX, "%s/locale", m->dir);
    bindtextdomain(PACKAGE, buf);
    bind_textdomain_codeset(PACKAGE, "UTF-8");
 
@@ -489,7 +485,7 @@ e_modapi_init(E_Module *m)
 
         tclock_config->items = eina_list_append(tclock_config->items, ci);
      }
-   tclock_config->module = m;
+   tclock_config->mod_dir = eina_stringshare_add(m->dir);
 
    e_gadcon_provider_register(&_gc_class);
    return m;
@@ -498,7 +494,6 @@ e_modapi_init(E_Module *m)
 EAPI int
 e_modapi_shutdown(E_Module *m)
 {
-   tclock_config->module = NULL;
    e_gadcon_provider_unregister(&_gc_class);
 
    if (tclock_config->config_dialog)
@@ -528,6 +523,7 @@ e_modapi_shutdown(E_Module *m)
         E_FREE (ci);
      }
 
+   if (tclock_config->mod_dir) eina_stringshare_del(tclock_config->mod_dir);
    E_FREE(tclock_config);
    E_CONFIG_DD_FREE(conf_item_edd);
    E_CONFIG_DD_FREE(conf_edd);
