@@ -17,7 +17,7 @@ struct _Config
    double delay;
    unsigned char prompt, use_app, use_bell;
    unsigned char use_thumb;
-   const char *location, *filename, *app;
+   const char *location, *filename, *app, *mod_dir;
    E_Config_Dialog *cfd;
 };
 

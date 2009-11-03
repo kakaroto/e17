@@ -54,7 +54,6 @@ struct _Instance
 static Eina_List *instances = NULL;
 static E_Config_DD *conf_edd = NULL;
 static E_Action *act = NULL;
-E_Module *ss_mod = NULL;
 Config *ss_cfg = NULL;
 static int aspect_width = 1;
 static int aspect_height = 1;
@@ -152,6 +151,8 @@ e_modapi_init(E_Module *m)
 
    if (!ss_cfg) _cfg_new();
 
+   ss_cfg->mod_dir = eina_stringshare_add(m->dir);
+
    /* register actions for keybindings */
    act = e_action_add("screenshot");
    if (act) 
@@ -161,7 +162,6 @@ e_modapi_init(E_Module *m)
 				 "screenshot", NULL, NULL, 0);	
      }
 
-   ss_mod = m;
    e_gadcon_provider_register(&_gc_class);
    return m;
 }
@@ -182,7 +182,6 @@ e_modapi_shutdown(E_Module *m)
    e_configure_registry_category_del("screenshot");
 
    e_gadcon_provider_unregister(&_gc_class);
-   ss_mod = NULL;
    _cfg_free();
    E_CONFIG_DD_FREE(conf_edd);
    return 1;
@@ -200,9 +199,9 @@ static E_Gadcon_Client *
 _gc_init(E_Gadcon *gc, const char *name, const char *id, const char *style) 
 {
    Instance *inst = NULL;
-   char buf[4096];
+   char buf[PATH_MAX];
 
-   snprintf(buf, sizeof(buf), "%s/e-module-screenshot.edj", ss_mod->dir);
+   snprintf(buf, PATH_MAX, "%s/e-module-screenshot.edj", ss_cfg->mod_dir);
 
    inst = E_NEW(Instance, 1);
 
@@ -271,9 +270,9 @@ static Evas_Object *
 _gc_icon(E_Gadcon_Client_Class *client_class, Evas *evas) 
 {
    Evas_Object *o = NULL;
-   char buf[4096];
+   char buf[PATH_MAX];
 
-   snprintf(buf, sizeof(buf), "%s/e-module-screenshot.edj", ss_mod->dir);
+   snprintf(buf, PATH_MAX, "%s/e-module-screenshot.edj", ss_cfg->mod_dir);
    o = edje_object_add(evas);
    edje_object_file_set(o, buf, "icon");
    return o;
@@ -282,10 +281,9 @@ _gc_icon(E_Gadcon_Client_Class *client_class, Evas *evas)
 static const char *
 _gc_id_new(E_Gadcon_Client_Class *client_class) 
 {
-   char buf[4096];
+   char buf[PATH_MAX];
 
-   snprintf(buf, sizeof(buf), "%s.%d", _gc_class.name, 
-            eina_list_count(instances));
+   snprintf(buf, PATH_MAX, "%s.%d", _gc_class.name, eina_list_count(instances));
    return strdup(buf);
 }
 
@@ -293,6 +291,7 @@ _gc_id_new(E_Gadcon_Client_Class *client_class)
 static void 
 _cfg_free(void) 
 {
+   if (ss_cfg->mod_dir) eina_stringshare_del(ss_cfg->mod_dir);
    if (ss_cfg->location) eina_stringshare_del(ss_cfg->location);
    if (ss_cfg->filename) eina_stringshare_del(ss_cfg->filename);
    if (ss_cfg->app) eina_stringshare_del(ss_cfg->app);

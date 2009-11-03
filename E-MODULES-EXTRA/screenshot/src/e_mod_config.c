@@ -28,7 +28,7 @@ e_int_config_screenshot_module(E_Container *con, const char *params)
 {
    E_Config_Dialog *cfd = NULL;
    E_Config_Dialog_View *v = NULL;
-   char buf[4096];
+   char buf[PATH_MAX];
 
    if (e_config_dialog_find("Screenshot", 
                             "extensions/screenshot")) 
@@ -44,7 +44,7 @@ e_int_config_screenshot_module(E_Container *con, const char *params)
    v->advanced.create_widgets = _adv_create;
    v->advanced.apply_cfdata = _adv_apply;
 
-   snprintf(buf, sizeof(buf), "%s/e-module-screenshot.edj", ss_mod->dir);
+   snprintf(buf, PATH_MAX, "%s/e-module-screenshot.edj", ss_cfg->mod_dir);
    cfd = e_config_dialog_new(con, D_("Screenshot Settings"), "Screenshot", 
 			     "extensions/screenshot", buf, 0, 
                              v, NULL);
