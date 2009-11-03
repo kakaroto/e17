@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Exalt-client module\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2009-09-27 08:48+0400\n"
+"POT-Creation-Date: 2009-10-31 16:31-0400\n"
 "PO-Revision-Date: 2009-09-27 09:44+0400\n"
 "Last-Translator: batden <batden@orange.fr>\n"
 "Language-Team: French <Enlightenment i18n French>\n"
@@ -47,35 +47,39 @@ msgstr "Notifications"
 msgid "Enable the notifications"
 msgstr "Activer les notifications"
 
-#: src/e_mod_main.c:286
+#: src/e_mod_main.c:231
 msgid "Exalt Warning"
 msgstr "Avertissement de Exalt"
 
-#: src/e_mod_main.c:289
+#: src/e_mod_main.c:234
 msgid "Warning"
 msgstr "Avertissement"
 
-#: src/e_mod_main.c:290
+#: src/e_mod_main.c:235
 msgid "NetworkManager has been detected on your computer."
 msgstr "NetworkManager a été détecté sur votre système."
 
-#: src/e_mod_main.c:292
-msgid "Exalt can't work properly if networkManager is running, please stop NetworkManager or Exalt."
-msgstr "Exalt ne peut fonctionner correctement si NetworkManager est en cours d'exécution, veuillez arrêter NetworkManager ou Exalt."
+#: src/e_mod_main.c:237
+msgid ""
+"Exalt can't work properly if networkManager is running, please stop "
+"NetworkManager or Exalt."
+msgstr ""
+"Exalt ne peut fonctionner correctement si NetworkManager est en cours "
+"d'exécution, veuillez arrêter NetworkManager ou Exalt."
 
-#: src/e_mod_main.c:295
+#: src/e_mod_main.c:240
 msgid "Ok"
 msgstr "O.K."
 
-#: src/e_mod_main.c:374
+#: src/e_mod_main.c:360
 msgid "exalt"
 msgstr "Exalt"
 
-#: src/e_mod_main.c:459
+#: src/e_mod_main.c:445
 msgid "exalt Configuration Updated"
 msgstr "Configuration de Exalt actualisée"
 
-#: src/e_mod_main.c:527
+#: src/e_mod_main.c:513
 msgid "Configuration"
 msgstr "Configuration"
 
@@ -99,8 +103,7 @@ msgstr "Téléphone mobile (3G)"
 msgid "No IP Address"
 msgstr "Aucune adresse IP"
 
-#: src/popup.c:233
-#: src/wired_dialog.c:42
+#: src/popup.c:233 src/wired_dialog.c:42
 msgid "Wired interface"
 msgstr "Interface câblée"
 
@@ -112,67 +115,49 @@ msgstr "Interface sans fil"
 msgid "Wired Configuration Settings"
 msgstr "Paramétrage de la connexion câblée"
 
-#: src/wired_dialog.c:51
-#: src/network_dialog.c:54
-#: src/wireless_dialog.c:36
+#: src/wired_dialog.c:51 src/network_dialog.c:54 src/wireless_dialog.c:36
 msgid "Activate"
 msgstr "Activer"
 
-#: src/wired_dialog.c:54
-#: src/network_dialog.c:57
-#: src/wireless_dialog.c:39
+#: src/wired_dialog.c:54 src/network_dialog.c:57 src/wireless_dialog.c:39
 msgid "Deactivate"
 msgstr "Désactiver"
 
-#: src/wired_dialog.c:58
-#: src/network_dialog.c:61
+#: src/wired_dialog.c:58 src/network_dialog.c:61
 msgid "DHCP (Dynamic host configuration protocol)"
 msgstr "DHCP (Dynamic Host Configuration Protocol)"
 
-#: src/wired_dialog.c:63
-#: src/network_dialog.c:66
+#: src/wired_dialog.c:63 src/network_dialog.c:66
 msgid "Static"
 msgstr "Statique"
 
-#: src/wired_dialog.c:68
-#: src/network_dialog.c:71
+#: src/wired_dialog.c:68 src/network_dialog.c:71
 msgid "IP address: "
 msgstr "Adresse IP:"
 
-#: src/wired_dialog.c:73
-#: src/network_dialog.c:76
+#: src/wired_dialog.c:73 src/network_dialog.c:76
 msgid "Netmask address: "
 msgstr "Masque réseau: "
 
-#: src/wired_dialog.c:78
-#: src/network_dialog.c:81
+#: src/wired_dialog.c:78 src/network_dialog.c:81
 msgid "Gateway address: "
 msgstr "Adresse passerelle: "
 
-#: src/wired_dialog.c:83
-#: src/network_dialog.c:86
+#: src/wired_dialog.c:83 src/network_dialog.c:86
 msgid "Command: "
 msgstr "Commande: "
 
-#: src/wired_dialog.c:96
-#: src/network_dialog.c:98
-#: src/network_dialog.c:677
-#: src/network_dialog.c:723
-#: src/network_dialog.c:771
-#: src/wireless_dialog.c:52
+#: src/wired_dialog.c:96 src/network_dialog.c:98 src/network_dialog.c:677
+#: src/network_dialog.c:723 src/network_dialog.c:771 src/wireless_dialog.c:52
 msgid "OK"
 msgstr "O.K."
 
-#: src/wired_dialog.c:97
-#: src/network_dialog.c:99
+#: src/wired_dialog.c:97 src/network_dialog.c:99
 msgid "Apply"
 msgstr "Appliquer"
 
-#: src/wired_dialog.c:98
-#: src/network_dialog.c:100
-#: src/network_dialog.c:678
-#: src/network_dialog.c:724
-#: src/network_dialog.c:772
+#: src/wired_dialog.c:98 src/network_dialog.c:100 src/network_dialog.c:678
+#: src/network_dialog.c:724 src/network_dialog.c:772
 msgid "Cancel"
 msgstr "Annuler"
 
@@ -224,8 +209,7 @@ msgstr "Clé hexadécimale"
 msgid "ASCII Key"
 msgstr "Clé ASCII"
 
-#: src/network_dialog.c:235
-#: src/network_dialog.c:313
+#: src/network_dialog.c:235 src/network_dialog.c:313
 msgid "Password: "
 msgstr "Mot de passe:"
 
@@ -249,8 +233,7 @@ msgstr "Clé privée:"
 msgid "Select the company certificate"
 msgstr "Sélectionner le certificat de la société"
 
-#: src/network_dialog.c:712
-#: src/network_dialog.c:760
+#: src/network_dialog.c:712 src/network_dialog.c:760
 msgid "Select the client certificate"
 msgstr "Sélectionner le certificat du client"
 
@@ -292,10 +275,12 @@ msgstr "Créer un nouveau réseau"
 
 #~ msgid "Login: "
 #~ msgstr "Login: "
+
 #~ msgid "exalt Module"
 #~ msgstr "Module Exalt"
+
 #~ msgid "Use Switch 1"
 #~ msgstr "Utiliser Switch 1"
+
 #~ msgid "Settings"
 #~ msgstr "Paramètres"
-

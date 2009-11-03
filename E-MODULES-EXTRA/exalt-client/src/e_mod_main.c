@@ -210,23 +210,63 @@ e_modapi_save(E_Module *m)
 
 /* Local Functions */
 
-int timer_test_service_cb(void *data)
-{
-    Instance *inst = data;
-    if(exalt_dbus_exalt_service_exists(inst->conn))
-    {
-        exalt_dbus_notify_set(inst->conn,notify_cb,inst);
-        exalt_dbus_scan_notify_set(inst->conn,notify_scan_cb,inst);
-        inst->timer_test_service = NULL;
-        return 0;
-    }
-    else
-        return 1;
-}
-
-void warning_dialog_ok(void *data, E_Dialog *dialog)
+static void warning_dialog_ok(void *data, E_Dialog *dialog)
 {
      e_object_del(E_OBJECT(dialog));
+}
+
+
+static void _connect_cb(void *data, Exalt_DBus_Conn *conn, Eina_Bool success)
+{
+    Instance *inst = data;
+
+    if(!success) return ;
+
+    exalt_dbus_notify_set(inst->conn,notify_cb,inst);
+    exalt_dbus_scan_notify_set(inst->conn,notify_scan_cb,inst);
+
+    //print a warning if networkmanager is detected
+    if(exalt_dbus_service_exists(inst->conn,"org.freedesktop.NetworkManager"))
+    {
+        E_Dialog *dialog = e_dialog_new(inst->gcc->gadcon->zone->container, "e", "exalt_warning_dialog");
+        e_dialog_title_set(dialog, D_("Exalt Warning"));
+        e_win_centered_set(dialog->win, 1);
+        Evas *evas = e_win_evas_get(dialog->win);
+        Evas_Object *flist = e_widget_frametable_add(evas, D_("Warning"), 0);
+        Evas_Object *text = e_widget_label_add(evas,D_("NetworkManager has been detected on your computer."));
+        e_widget_frametable_object_append(flist, text, 1, 0, 1, 1, 1, 0, 1, 0);
+        text = e_widget_label_add(evas,D_("Exalt can't work properly if networkManager is running, please stop NetworkManager or Exalt."));
+        e_widget_frametable_object_append(flist, text, 1, 1, 1, 1, 1, 0, 1, 0);
+
+        e_dialog_button_add(dialog, D_("Ok"), NULL, warning_dialog_ok, NULL);
+        e_dialog_button_focus_num(dialog, 0);
+
+        int mw,mh;
+        e_widget_size_min_get(flist, &mw, &mh);
+        e_dialog_content_set(dialog, flist, mw, mh);
+
+        e_dialog_show(dialog);
+    }
+
+    exalt_dbus_response_notify_set(inst->conn,response_cb,inst);
+
+    exalt_dbus_eth_all_disconnected_is(inst->conn);
+
+    if_wired_dialog_init(inst);
+    if_wired_dialog_basic_init(inst);
+    if_network_dialog_init(inst);
+    if_network_dialog_basic_init(inst);
+    if_wireless_dialog_init(inst);
+    dns_dialog_init(inst);
+    popup_init(inst);
+}
+
+static void _die_cb(void *data, Exalt_DBus_Conn *conn)
+{
+    Instance *inst = data;
+    exalt_dbus_free(&(inst->conn));
+    inst->conn = exalt_dbus_connect(_connect_cb, inst, NULL);
+    exalt_dbus_on_server_die_callback_set(inst->conn, _die_cb, inst, NULL);
 }
 
 /* Called when Gadget_Container says go */
@@ -265,54 +305,8 @@ _gc_init(E_Gadcon *gc, const char *name, const char *id, const char *style)
     inst-> l = NULL;
     exalt_dbus_init();
     e_notification_init();
-    inst->conn = exalt_dbus_connect();
-
-    if(!exalt_dbus_exalt_service_exists(inst->conn))
-    {
-        //exalt service doesn't exists
-        //launch a timer to re-test
-        inst->timer_test_service = ecore_timer_add(5,timer_test_service_cb,inst);
-    }
-    else
-    {
-        exalt_dbus_notify_set(inst->conn,notify_cb,inst);
-        exalt_dbus_scan_notify_set(inst->conn,notify_scan_cb,inst);
-    }
-
-    //print a warning if networkmanager is detected
-    if(exalt_dbus_service_exists(inst->conn,"org.freedesktop.NetworkManager"))
-    {
-        E_Dialog *dialog = e_dialog_new(inst->gcc->gadcon->zone->container, "e", "exalt_warning_dialog");
-        e_dialog_title_set(dialog, D_("Exalt Warning"));
-        e_win_centered_set(dialog->win, 1);
-        Evas *evas = e_win_evas_get(dialog->win);
-        Evas_Object *flist = e_widget_frametable_add(evas, D_("Warning"), 0);
-        Evas_Object *text = e_widget_label_add(evas,D_("NetworkManager has been detected on your computer."));
-        e_widget_frametable_object_append(flist, text, 1, 0, 1, 1, 1, 0, 1, 0);
-        text = e_widget_label_add(evas,D_("Exalt can't work properly if networkManager is running, please stop NetworkManager or Exalt."));
-        e_widget_frametable_object_append(flist, text, 1, 1, 1, 1, 1, 0, 1, 0);
-
-        e_dialog_button_add(dialog, D_("Ok"), NULL, warning_dialog_ok, NULL);
-        e_dialog_button_focus_num(dialog, 0);
-
-        int mw,mh;
-        e_widget_size_min_get(flist, &mw, &mh);
-        e_dialog_content_set(dialog, flist, mw, mh);
-
-        e_dialog_show(dialog);
-    }
-
-    exalt_dbus_response_notify_set(inst->conn,response_cb,inst);
-
-    exalt_dbus_eth_all_disconnected_is(inst->conn);
-
-    if_wired_dialog_init(inst);
-    if_wired_dialog_basic_init(inst);
-    if_network_dialog_init(inst);
-    if_network_dialog_basic_init(inst);
-    if_wireless_dialog_init(inst);
-    dns_dialog_init(inst);
-    popup_init(inst);
+    inst->conn = exalt_dbus_connect(_connect_cb, inst, NULL);
+    exalt_dbus_on_server_die_callback_set(inst->conn, _die_cb, inst, NULL);
 
     /* return the Gadget_Container Client */
     return inst->gcc;
