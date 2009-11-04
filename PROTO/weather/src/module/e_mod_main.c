@@ -4,6 +4,9 @@
 #include "e_mod_main.h"
 #include "e_mod_gadcon.h"
 
+/* local function variables */
+static int _cb_cfg_timer(void *data);
+
 /* local variables */
 static E_Config_DD *conf_edd = NULL;
 static E_Config_DD *item_edd = NULL;
@@ -30,13 +33,46 @@ e_modapi_init(E_Module *m)
    E_CONFIG_LIST(conf_edd, Config, items, item_edd);
 
    weather_cfg = e_config_domain_load("module.weather", conf_edd);
-   if (!weather_cfg) 
+   if (weather_cfg) 
      {
-        Config_Item *ci;
-
-        weather_cfg = E_NEW(Config, 1);
-        ci = _weather_config_item_get("0");
+        if ((weather_cfg->version >> 16) < MOD_CONFIG_FILE_EPOCH) 
+          {
+             /* config too old */
+             _weather_config_free();
+	     ecore_timer_add(1.0, _cb_cfg_timer,
+			     D_("Weather Module Configuration data needed "
+                                "upgrading. Your old configuration<br> has been"
+                                " wiped and a new set of defaults initialized. "
+                                "This<br>will happen regularly during "
+                                "development, so don't report a<br>bug. "
+                                "This simply means Weather module needs "
+                                "new configuration<br>data by default for "
+                                "usable functionality that your old<br>"
+                                "configuration simply lacks. This new set of "
+                                "defaults will fix<br>that by adding it in. "
+                                "You can re-configure things now to your<br>"
+                                "liking. Sorry for the inconvenience.<br>"));
+          }
+        else if (weather_cfg->version > MOD_CONFIG_FILE_VERSION) 
+          {
+             /* config too new */
+             _weather_config_free();
+	     ecore_timer_add(1.0, _cb_cfg_timer, 
+			     D_("Your Weather Module configuration is NEWER "
+                                "than the Weather Module version. This is "
+                                "very<br>strange. This should not happen unless"
+                                " you downgraded<br>the Weather Module or "
+                                "copied the configuration from a place where"
+                                "<br>a newer version of the Weather Module "
+                                "was running. This is bad and<br>as a "
+                                "precaution your configuration has been now "
+                                "restored to<br>defaults. Sorry for the "
+                                "inconvenience.<br>"));
+          }
      }
+
+   if (!weather_cfg) _weather_config_new();
+
    weather_cfg->mod_dir = eina_stringshare_add(m->dir);
 
    _gc_register();
@@ -46,7 +82,9 @@ e_modapi_init(E_Module *m)
 EAPI int 
 e_modapi_shutdown(E_Module *m) 
 {
+   /* unregister from gadcon */
    _gc_unregister();
+
    while (weather_cfg->items) 
      {
         Config_Item *ci;
@@ -57,10 +95,14 @@ e_modapi_shutdown(E_Module *m)
         E_FREE(ci);
      }
 
+   /* module is exiting, we don't need the module directory anymore */
    if (weather_cfg->mod_dir) eina_stringshare_del(weather_cfg->mod_dir);
    weather_cfg->mod_dir = NULL;
 
-   E_FREE(weather_cfg);
+   /* free the config structure */
+   _weather_config_free();
+
+   /* free the edd's */
    E_CONFIG_DD_FREE(item_edd);
    E_CONFIG_DD_FREE(conf_edd);
    return 1;
@@ -71,4 +113,12 @@ e_modapi_save(E_Module *m)
 {
    e_config_domain_save("module.weather", conf_edd, weather_cfg);
    return 1;
+}
+
+/* local functions */
+static int 
+_cb_cfg_timer(void *data) 
+{
+   e_util_dialog_show(D_("Weather Configuration Updated"), data);
+   return 0;
 }

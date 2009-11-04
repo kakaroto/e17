@@ -48,3 +48,31 @@ _weather_config_updated(Config_Item *ci)
 {
 
 }
+
+EAPI void 
+_weather_config_new(void) 
+{
+   char buf[PATH_MAX];
+
+   weather_cfg = E_NEW(Config, 1);
+   weather_cfg->version = (MOD_CONFIG_FILE_EPOCH << 16);
+
+#define IFMODCFG(v) \
+   if ((weather_cfg->version & 0xffff) < v) {
+#define IFMODCFGEND }
+
+   IFMODCFG(0x008d);
+   IFMODCFGEND;
+
+   weather_cfg->version = MOD_CONFIG_FILE_VERSION;
+
+   /* set any config limits here with E_CONFIG_LIMIT */
+
+   e_config_save_queue();
+}
+
+EAPI void 
+_weather_config_free(void) 
+{
+   E_FREE(weather_cfg);
+}
