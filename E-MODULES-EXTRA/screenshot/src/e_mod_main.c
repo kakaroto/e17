@@ -201,7 +201,7 @@ _gc_init(E_Gadcon *gc, const char *name, const char *id, const char *style)
    Instance *inst = NULL;
    char buf[PATH_MAX];
 
-   snprintf(buf, PATH_MAX, "%s/e-module-screenshot.edj", ss_cfg->mod_dir);
+   snprintf(buf, sizeof(buf), "%s/e-module-screenshot.edj", ss_cfg->mod_dir);
 
    inst = E_NEW(Instance, 1);
 
@@ -272,7 +272,7 @@ _gc_icon(E_Gadcon_Client_Class *client_class, Evas *evas)
    Evas_Object *o = NULL;
    char buf[PATH_MAX];
 
-   snprintf(buf, PATH_MAX, "%s/e-module-screenshot.edj", ss_cfg->mod_dir);
+   snprintf(buf, sizeof(buf), "%s/e-module-screenshot.edj", ss_cfg->mod_dir);
    o = edje_object_add(evas);
    edje_object_file_set(o, buf, "icon");
    return o;
@@ -283,7 +283,7 @@ _gc_id_new(E_Gadcon_Client_Class *client_class)
 {
    char buf[PATH_MAX];
 
-   snprintf(buf, PATH_MAX, "%s.%d", _gc_class.name, eina_list_count(instances));
+   snprintf(buf, sizeof(buf), "%s.%d", _gc_class.name, eina_list_count(instances));
    return strdup(buf);
 }
 
