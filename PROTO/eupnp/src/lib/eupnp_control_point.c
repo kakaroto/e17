@@ -1,4 +1,4 @@
-/** Eupnp - UPnP library
+/* Eupnp - UPnP library
  *
  * Copyright (C) 2009 Andre Dieb Martins <andre.dieb@gmail.com>
  *
@@ -29,6 +29,11 @@
 
 #include "Eupnp.h"
 #include "eupnp_control_point.h"
+
+/**
+ * @addtogroup Eupnp_Control_Point_Module Control Point
+ *
+ */
 
 
 /**
@@ -193,6 +198,11 @@ eupnp_control_point_free(Eupnp_Control_Point *c)
    free(c);
 }
 
+/**
+ * Starts the control point.
+ *
+ * @param c Eupnp_Control_Point instance.
+ */
 EAPI Eina_Bool
 eupnp_control_point_start(Eupnp_Control_Point *c)
 {
@@ -202,6 +212,11 @@ eupnp_control_point_start(Eupnp_Control_Point *c)
    return EINA_TRUE;
 }
 
+/**
+ * Stops the control point.
+ *
+ * @param c Eupnp_Control_Point instance.
+ */
 EAPI Eina_Bool
 eupnp_control_point_stop(Eupnp_Control_Point *c)
 {
@@ -231,14 +246,14 @@ eupnp_control_point_ssdp_socket_get(Eupnp_Control_Point *c)
 }
 
 /**
- * Sends a discovery message to the network (a.k.a. MSearch)
+ * Sends a discovery message to the network. (a.k.a. MSearch)
  *
- * @param c Control point
+ * @param c Control point.
  * @param mx maximum wait time in seconds for devices to wait before answering
- *        the search message.
+ *           the search message.
  * @param search_target target for the search. Common values are "ssdp:all",
- *        "upnp:rootdevice", and so on (refer to the UPnP device architecture
- *        document for more).
+ *                      "upnp:rootdevice", and so on (refer to the UPnP device
+ *                      architecture document for more).
  *
  * @return On success EINA_TRUE, EINA_FALSE on error.
  */
