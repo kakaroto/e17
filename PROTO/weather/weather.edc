@@ -34,6 +34,7 @@ images
 }
 
 #define MOON_H 0.3
+#define THUNDER_H 0.15
 
 #define CLOUD_3(TYPE, CLOUD_H) \
 part \
@@ -62,11 +63,71 @@ part  \
         state: "default" 0.0; \
         aspect: 2.155 1; \
         aspect_preference: VERTICAL; \
-        rel1.relative: 0.18 0.29; \
-        rel2.relative: 0.18 0.29+CLOUD_H; \
+        rel1.relative: 0.18 0.0-CLOUD_H; \
+        rel2.relative: 0.18 0.0; \
         image.normal: "cloud"TYPE"_3.png"; \
     } \
-} 
+    description \
+    { \
+        state: "up" 0.0; \
+        inherit: "default" 0.0; \
+    } \
+    description \
+    { \
+        state: "down" 0.0; \
+        inherit: "default" 0.0; \
+        rel1.relative: 0.18 0.29; \
+        rel2.relative: 0.18 0.29+CLOUD_H; \
+    } \
+    description \
+    { \
+        state: "down_2" 0.0; \
+        inherit: "default" 0.0; \
+        rel1.relative: 0.18 0.31; \
+        rel2.relative: 0.18 0.31+CLOUD_H; \
+    } \
+    description \
+    { \
+        state: "down_3" 0.0; \
+        inherit: "default" 0.0; \
+        rel1.relative: 0.18 0.28; \
+        rel2.relative: 0.18 0.28+CLOUD_H; \
+    } \
+} \
+program \
+{ \
+    name: "cloud_3_"TYPE"_up"; \
+    signal: "up"; \
+    action: STATE_SET "up" 0.0; \
+    target: "cloud"TYPE"_3"; \
+    transition: ACCELERATE 0.75; \
+} \
+program \
+{ \
+    name: "cloud_3_"TYPE"_down"; \
+    signal: "down"; \
+    action: STATE_SET "down_2" 0.0; \
+    target: "cloud"TYPE"_3"; \
+    transition: DECELERATE 0.8; \
+    after: "cloud_3_"TYPE"_down_2"; \
+} \
+program \
+{ \
+    name: "cloud_3_"TYPE"_down_2"; \
+    action: STATE_SET "down_3" 0.0; \
+    target: "cloud"TYPE"_3"; \
+    transition: DECELERATE 0.4; \
+    after: "cloud_3_"TYPE"_down_3"; \
+} \
+program \
+{ \
+    name: "cloud_3_"TYPE"_down_3"; \
+    action: STATE_SET "down" 0.0; \
+    target: "cloud"TYPE"_3"; \
+    transition: DECELERATE 0.15; \
+}
+
+
 
 #define CLOUD_3_2(TYPE, CLOUD_H) \
 part  \
@@ -95,11 +156,69 @@ part  \
         state: "default" 0.0; \
         aspect: 2.155 1; \
         aspect_preference: VERTICAL; \
-        rel1.relative: 0.9 0.36; \
-        rel2.relative: 0.9 0.36+CLOUD_H; \
+        rel1.relative: 0.9 0.0-CLOUD_H; \
+        rel2.relative: 0.9 0.0; \
         image.normal: "cloud"TYPE"_3.png"; \
     } \
-} 
+    description \
+    { \
+        state: "up" 0.0; \
+        inherit: "default" 0.0; \
+    } \
+    description \
+    { \
+        state: "down" 0.0; \
+        inherit: "default" 0.0; \
+        rel1.relative: 0.9 0.36; \
+        rel2.relative: 0.9 0.36+CLOUD_H; \
+    } \
+    description \
+    { \
+        state: "down_2" 0.0; \
+        inherit: "default" 0.0; \
+        rel1.relative: 0.9 0.38; \
+        rel2.relative: 0.9 0.38+CLOUD_H; \
+    } \
+    description \
+    { \
+        state: "down_3" 0.0; \
+        inherit: "default" 0.0; \
+        rel1.relative: 0.9 0.35; \
+        rel2.relative: 0.9 0.35+CLOUD_H; \
+    } \
+} \
+program \
+{ \
+    name: "cloud_3_2_"TYPE"_up"; \
+    signal: "up"; \
+    action: STATE_SET "up" 0.0; \
+    target: "cloud"TYPE"_3_2"; \
+    transition: ACCELERATE 0.65; \
+} \
+program \
+{ \
+    name: "cloud_3_2_"TYPE"_down"; \
+    signal: "down"; \
+    action: STATE_SET "down_2" 0.0; \
+    target: "cloud"TYPE"_3_2"; \
+    transition: DECELERATE 0.7; \
+    after: "cloud_3_2_"TYPE"_down_2"; \
+} \
+program \
+{ \
+    name: "cloud_3_2_"TYPE"_down_2"; \
+    action: STATE_SET "down_3" 0.0; \
+    target: "cloud"TYPE"_3_2"; \
+    transition: DECELERATE 0.35; \
+    after: "cloud_3_2_"TYPE"_down_3"; \
+} \
+program \
+{ \
+    name: "cloud_3_2_"TYPE"_down_3"; \
+    action: STATE_SET "down" 0.0; \
+    target: "cloud"TYPE"_3_2"; \
+    transition: DECELERATE 0.2; \
+}
 
 #define CLOUD_2(TYPE, CLOUD_H) \
 part  \
@@ -128,11 +247,69 @@ part  \
         state: "default" 0.0; \
         aspect: 2.155 1; \
         aspect_preference: VERTICAL; \
-        rel1.relative: 0.35 0.33; \
-        rel2.relative: 0.35 0.33+CLOUD_H; \
+        rel1.relative: 0.35 0.0-CLOUD_H; \
+        rel2.relative: 0.35 0.0; \
         image.normal: "cloud"TYPE"_2.png"; \
     } \
-} 
+    description \
+    { \
+        state: "up" 0.0; \
+        inherit: "default" 0.0; \
+    } \
+    description \
+    { \
+        state: "down" 0.0; \
+        inherit: "default" 0.0; \
+        rel1.relative: 0.35 0.33; \
+        rel2.relative: 0.35 0.33+CLOUD_H; \
+    } \
+    description \
+    { \
+        state: "down_2" 0.0; \
+        inherit: "default" 0.0; \
+        rel1.relative: 0.35 0.35; \
+        rel2.relative: 0.35 0.35+CLOUD_H; \
+    } \
+    description \
+    { \
+        state: "down_3" 0.0; \
+        inherit: "default" 0.0; \
+        rel1.relative: 0.35 0.32; \
+        rel2.relative: 0.35 0.32+CLOUD_H; \
+    } \
+} \
+program \
+{ \
+    name: "cloud_2_"TYPE"_up"; \
+    signal: "up"; \
+    action: STATE_SET "up" 0.0; \
+    target: "cloud"TYPE"_2"; \
+    transition: ACCELERATE 0.8; \
+} \
+program \
+{ \
+    name: "cloud_2_"TYPE"_down"; \
+    signal: "down"; \
+    action: STATE_SET "down_2" 0.0; \
+    target: "cloud"TYPE"_2"; \
+    transition: DECELERATE 0.65; \
+    after: "cloud_2_"TYPE"_down_2"; \
+} \
+program \
+{ \
+    name: "cloud_2_"TYPE"_down_2"; \
+    action: STATE_SET "down_3" 0.0; \
+    target: "cloud"TYPE"_2"; \
+    transition: DECELERATE 0.1; \
+    after: "cloud_2_"TYPE"_down_3"; \
+} \
+program \
+{ \
+    name: "cloud_2_"TYPE"_down_3"; \
+    action: STATE_SET "down" 0.0; \
+    target: "cloud"TYPE"_2"; \
+    transition: DECELERATE 0.2; \
+}
 
 #define CLOUD_1(TYPE, CLOUD_H) \
 part  \
@@ -161,11 +338,69 @@ part  \
         state: "default" 0.0; \
         aspect: 2.155 1; \
         aspect_preference: VERTICAL; \
-        rel1.relative: 0.7 0.35; \
-        rel2.relative: 0.7 0.35+CLOUD_H; \
+        rel1.relative: 0.7 0.0-CLOUD_H; \
+        rel2.relative: 0.7 0.0; \
         image.normal: "cloud"TYPE"_1.png"; \
     } \
-} 
+    description \
+    { \
+        state: "up" 0.0; \
+        inherit: "default" 0.0; \
+    } \
+    description \
+    { \
+        state: "down" 0.0; \
+        inherit: "default" 0.0; \
+        rel1.relative: 0.7 0.35; \
+        rel2.relative: 0.7 0.35+CLOUD_H; \
+    } \
+    description \
+    { \
+        state: "down_2" 0.0; \
+        inherit: "default" 0.0; \
+        rel1.relative: 0.7 0.37; \
+        rel2.relative: 0.7 0.37+CLOUD_H; \
+    } \
+    description \
+    { \
+        state: "down_3" 0.0; \
+        inherit: "default" 0.0; \
+        rel1.relative: 0.7 0.34; \
+        rel2.relative: 0.7 0.34+CLOUD_H; \
+    } \
+} \
+program \
+{ \
+    name: "cloud_1_"TYPE"_up"; \
+    signal: "up"; \
+    action: STATE_SET "up" 0.0; \
+    target: "cloud"TYPE"_1"; \
+    transition: ACCELERATE 0.7; \
+} \
+program \
+{ \
+    name: "cloud_1_"TYPE"_down"; \
+    signal: "down"; \
+    action: STATE_SET "down_2" 0.0; \
+    target: "cloud"TYPE"_1"; \
+    transition: DECELERATE 0.7; \
+    after: "cloud_1_"TYPE"_down_2"; \
+} \
+program \
+{ \
+    name: "cloud_1_"TYPE"_down_2"; \
+    action: STATE_SET "down_3" 0.0; \
+    target: "cloud"TYPE"_1"; \
+    transition: DECELERATE 0.3; \
+    after: "cloud_1_"TYPE"_down_3"; \
+} \
+program \
+{ \
+    name: "cloud_1_"TYPE"_down_3"; \
+    action: STATE_SET "down" 0.0; \
+    target: "cloud"TYPE"_1"; \
+    transition: DECELERATE 0.2; \
+}
 
 #define CLOUD_1_2(TYPE, CLOUD_H) \
 part  \
@@ -194,11 +429,70 @@ part  \
         state: "default" 0.0; \
         aspect: 2.155 1; \
         aspect_preference: VERTICAL; \
-        rel1.relative: 0.1 0.38; \
-        rel2.relative: 0.1 0.38+CLOUD_H; \
+        rel1.relative: 0.1 0.0-CLOUD_H; \
+        rel2.relative: 0.1 0.0; \
         image.normal: "cloud"TYPE"_1.png"; \
     } \
-} 
+    description \
+    { \
+        state: "up" 0.0; \
+        inherit: "default" 0.0; \
+    } \
+    description \
+    { \
+        state: "down" 0.0; \
+        inherit: "default" 0.0; \
+        rel1.relative: 0.1 0.38; \
+        rel2.relative: 0.1 0.38+CLOUD_H; \
+    } \
+    description \
+    { \
+        state: "down_2" 0.0; \
+        inherit: "default" 0.0; \
+        rel1.relative: 0.1 0.40; \
+        rel2.relative: 0.1 0.40+CLOUD_H; \
+    } \
+    description \
+    { \
+        state: "down_3" 0.0; \
+        inherit: "default" 0.0; \
+        rel1.relative: 0.1 0.37; \
+        rel2.relative: 0.1 0.37+CLOUD_H; \
+    } \
+} \
+program \
+{ \
+    name: "cloud_1_2_"TYPE"_up"; \
+    signal: "up"; \
+    action: STATE_SET "up" 0.0; \
+    target: "cloud"TYPE"_1_2"; \
+    transition: ACCELERATE 0.8; \
+} \
+program \
+{ \
+    name: "cloud_1_2_"TYPE"_down"; \
+    signal: "down"; \
+    action: STATE_SET "down_2" 0.0; \
+    target: "cloud"TYPE"_1_2"; \
+    transition: DECELERATE 0.6; \
+    after: "cloud_1_2_"TYPE"_down_2"; \
+} \
+program \
+{ \
+    name: "cloud_1_2_"TYPE"_down_2"; \
+    action: STATE_SET "down_3" 0.0; \
+    target: "cloud"TYPE"_1_2"; \
+    transition: DECELERATE 0.4; \
+    after: "cloud_1_2_"TYPE"_down_3"; \
+} \
+program \
+{ \
+    name: "cloud_1_2_"TYPE"_down_3"; \
+    action: STATE_SET "down" 0.0; \
+    target: "cloud"TYPE"_1_2"; \
+    transition: DECELERATE 0.1; \
+}
+
 
 #define CLOUDS(TYPE) \
     CLOUD_3(TYPE, 0.13); \
@@ -238,13 +532,37 @@ part  \
             color: 255 255 255 255;  \
             aspect: 0.469 1; \
             aspect_preference: VERTICAL; \
-            rel1.to: "cloud_tstorm_2";  \
-            rel1.relative: 0.4 0.85;  \
-            rel1.offset: 0 0;  \
+            rel1.to_x: "cloud_tstorm_2";  \
+            rel1.relative: 0.4 0.0-THUNDER_H;  \
             rel2.to_x: "cloud_tstorm_2";  \
-            rel2.offset: 0 0;  \
-            rel2.relative: 0.4 0.6;  \
+            rel2.relative: 0.4 0.0;  \
             image.normal: "thunder.png";  \
+        } \
+        description \
+        { \
+            state: "up" 0.0; \
+            inherit: "default" 0.0; \
+        } \
+        description \
+        { \
+            state: "down" 0.0; \
+            inherit: "default" 0.0; \
+            rel1.relative: 0.4 0.33+0.17-0.03;  \
+            rel2.relative: 0.4 0.33+0.17-0.03+THUNDER_H;  \
+        } \
+        description \
+        { \
+            state: "down_2" 0.0; \
+            inherit: "default" 0.0; \
+            rel1.relative: 0.4 0.35+0.17-0.03;  \
+            rel2.relative: 0.4 0.35+0.17-0.03+THUNDER_H;  \
+        } \
+        description \
+        { \
+            state: "down_3" 0.0; \
+            inherit: "default" 0.0; \
+            rel1.relative: 0.4 0.30+0.17-0.03;  \
+            rel2.relative: 0.4 0.30+0.17-0.03+THUNDER_H;  \
         } \
     } \
     CLOUD_1(TYPE, 0.2); \
@@ -275,13 +593,37 @@ part  \
             color: 255 255 255 255;  \
             aspect: 0.469 1; \
             aspect_preference: VERTICAL; \
-            rel1.to: "cloud_tstorm_1";  \
-            rel1.relative: 0.5 0.85;  \
-            rel1.offset: 0 0;  \
+            rel1.to_x: "cloud_tstorm_1";  \
+            rel1.relative: 0.5 0.0-THUNDER_H;  \
             rel2.to_x: "cloud_tstorm_1";  \
-            rel2.offset: 0 0;  \
-            rel2.relative: 0.5 0.65;  \
+            rel2.relative: 0.5 0.0;  \
             image.normal: "thunder.png";  \
+        } \
+        description \
+        { \
+            state: "up" 0.0; \
+            inherit: "default" 0.0; \
+        } \
+        description \
+        { \
+            state: "down" 0.0; \
+            inherit: "default" 0.0; \
+            rel1.relative: 0.5 0.35+0.2-0.03;  \
+            rel2.relative: 0.5 0.35+0.2-0.03+THUNDER_H;  \
+        } \
+        description \
+        { \
+            state: "down_2" 0.0; \
+            inherit: "default" 0.0; \
+            rel1.relative: 0.5 0.4+0.2-0.03;  \
+            rel2.relative: 0.5 0.4+0.2-0.03+THUNDER_H;  \
+        } \
+        description \
+        { \
+            state: "down_3" 0.0; \
+            inherit: "default" 0.0; \
+            rel1.relative: 0.5 0.32+0.2-0.03;  \
+            rel2.relative: 0.5 0.32+0.2-0.03+THUNDER_H;  \
         } \
     }  \
     CLOUD_1_2(TYPE, 0.2); \
@@ -312,15 +654,135 @@ part  \
             color: 255 255 255 255;  \
             aspect: 0.469 1; \
             aspect_preference: VERTICAL; \
-            rel1.to: "cloud_tstorm_1_2";  \
-            rel1.relative: 0.5 0.85;  \
-            rel1.offset: 0 0;  \
+            rel1.to_x: "cloud_tstorm_1_2";  \
+            rel1.relative: 0.5 0.0-THUNDER_H;  \
             rel2.to_x: "cloud_tstorm_1_2";  \
-            rel2.offset: 0 0;  \
-            rel2.relative: 0.5 0.7;  \
+            rel2.relative: 0.5 0.0;  \
             image.normal: "thunder.png";  \
         } \
-    } 
+        description \
+        { \
+            state: "up" 0.0; \
+            inherit: "default" 0.0; \
+        } \
+        description \
+        { \
+            state: "down" 0.0; \
+            inherit: "default" 0.0; \
+            rel1.relative: 0.5 0.38+0.2-0.03;  \
+            rel2.relative: 0.5 0.38+0.2-0.03+THUNDER_H;  \
+        } \
+        description \
+        { \
+            state: "down_2" 0.0; \
+            inherit: "default" 0.0; \
+            rel1.relative: 0.5 0.42+0.2-0.03;  \
+            rel2.relative: 0.5 0.42+0.2-0.03+THUNDER_H;  \
+        } \
+        description \
+        { \
+            state: "down_3" 0.0; \
+            inherit: "default" 0.0; \
+            rel1.relative: 0.5 0.35+0.2-0.03;  \
+            rel2.relative: 0.5 0.35+0.2-0.03+THUNDER_H;  \
+        } \
+    } \
+    program \
+    { \
+        name: "thunder_"TYPE"_up"; \
+        signal: "up"; \
+        action: STATE_SET "up" 0.0; \
+        target: "cloud_tstorm_1_thunder"; \
+        transition: ACCELERATE 0.55; \
+    } \
+    program \
+    { \
+        name: "thunder_"TYPE"_down"; \
+        signal: "down"; \
+        action: STATE_SET "down_2" 0.0; \
+        target: "cloud_tstorm_1_thunder"; \
+        transition: DECELERATE 0.55; \
+        after: "thunder_"TYPE"_down_2"; \
+    } \
+    program \
+    { \
+        name: "thunder_"TYPE"_down_2"; \
+        action: STATE_SET "down_3" 0.0; \
+        target: "cloud_tstorm_1_thunder"; \
+        transition: DECELERATE 0.2; \
+        after: "thunder_"TYPE"_down_3"; \
+    } \
+    program \
+    { \
+        name: "thunder_"TYPE"_down_3"; \
+        action: STATE_SET "down" 0.0; \
+        target: "cloud_tstorm_1_thunder"; \
+        transition: DECELERATE 0.1; \
+    } \ 
+    program \
+    { \
+        name: "thunder_1_2_"TYPE"_up"; \
+        signal: "up"; \
+        action: STATE_SET "up" 0.0; \
+        target: "cloud_tstorm_1_thunder_2"; \
+        transition: ACCELERATE 0.75; \
+    } \
+    program \
+    { \
+        name: "thunder_1_2_"TYPE"_down"; \
+        signal: "down"; \
+        action: STATE_SET "down_2" 0.0; \
+        target: "cloud_tstorm_1_thunder_2"; \
+        transition: DECELERATE 0.6; \
+        after: "thunder_1_2_"TYPE"_down_2"; \
+    } \
+    program \
+    { \
+        name: "thunder_1_2_"TYPE"_down_2"; \
+        action: STATE_SET "down_3" 0.0; \
+        target: "cloud_tstorm_1_thunder_2"; \
+        transition: DECELERATE 0.25; \
+        after: "thunder_1_2_"TYPE"_down_3"; \
+    } \
+    program \
+    { \
+        name: "thunder_1_2_"TYPE"_down_3"; \
+        action: STATE_SET "down" 0.0; \
+        target: "cloud_tstorm_1_thunder_2"; \
+        transition: DECELERATE 0.15; \
+    } \
+    program \
+    { \
+        name: "thunder_2_"TYPE"_up"; \
+        signal: "up"; \
+        action: STATE_SET "up" 0.0; \
+        target: "cloud_tstorm_2_thunder"; \
+        transition: ACCELERATE 0.6; \
+    } \
+    program \
+    { \
+        name: "thunder_2_"TYPE"_down"; \
+        signal: "down"; \
+        action: STATE_SET "down_2" 0.0; \
+        target: "cloud_tstorm_2_thunder"; \
+        transition: DECELERATE 0.8; \
+        after: "thunder_2_"TYPE"_down_2"; \
+    } \
+    program \
+    { \
+        name: "thunder_2_"TYPE"_down_2"; \
+        action: STATE_SET "down_3" 0.0; \
+        target: "cloud_tstorm_2_thunder"; \
+        transition: DECELERATE 0.3; \
+        after: "thunder_2_"TYPE"_down_3"; \
+    } \
+    program \
+    { \
+        name: "thunder_2_"TYPE"_down_3"; \
+        action: STATE_SET "down" 0.0; \
+        target: "cloud_tstorm_2_thunder"; \
+        transition: DECELERATE 0.2; \
+    }
 
 collections 
 {
@@ -382,17 +844,75 @@ collections
               {
                   name: "moon";
                   mouse_events: 0;
+                  description  
+                  { 
+                      state: "default" 0.0; 
+                      aspect: 1 1; 
+                      aspect_preference: VERTICAL; 
+                      rel1.relative: 0.5 0.0-MOON_H; 
+                      rel2.relative: 0.5 0.0; 
+                      image.normal: "moon.png"; 
+                  } 
                   description 
-                    {
-                       state: "default" 0.0;
-                       aspect: 1 1;
-                       aspect_preference: VERTICAL;
-                       rel1.relative: 0.5 0.2;
-                       rel2.relative: 0.5 0.2+MOON_H;
-                       image.normal: "moon.png";
-                    }
+                  { 
+                      state: "up" 0.0; 
+                      inherit: "default" 0.0; 
+                  } 
+                  description 
+                  { 
+                      state: "down" 0.0; 
+                      inherit: "default" 0.0; 
+                      rel1.relative: 0.5 0.2; 
+                      rel2.relative: 0.5 0.2+MOON_H; 
+                  } 
+                  description 
+                  { 
+                      state: "down_2" 0.0; 
+                      inherit: "default" 0.0; 
+                      rel1.relative: 0.5 0.23; 
+                      rel2.relative: 0.5 0.23+MOON_H; 
+                  } 
+                  description 
+                  { 
+                      state: "down_3" 0.0; 
+                      inherit: "default" 0.0; 
+                      rel1.relative: 0.5 0.18; 
+                      rel2.relative: 0.5 0.18+MOON_H; 
+                  } 
+              }
+              program 
+               { 
+                   name: "moon_up"; 
+                   signal: "up"; 
+                   action: STATE_SET "up" 0.0; 
+                   target: "moon"; 
+                   transition: ACCELERATE 0.6; 
+               } 
+               program 
+               { 
+                   name: "moon_down"; 
+                   signal: "down"; 
+                   action: STATE_SET "down_2" 0.0; 
+                   target: "moon"; 
+                   transition: DECELERATE 0.8; 
+                   after: "moon_down_2"; 
+               } 
+               program 
+               { 
+                   name: "moon_down_2"; 
+                   action: STATE_SET "down_3" 0.0; 
+                   target: "moon"; 
+                   transition: DECELERATE 0.3; 
+                   after: "moon_down_3"; 
+               } 
+               program 
+               { 
+                   name: "moon_down_3"; 
+                   action: STATE_SET "down" 0.0; 
+                   target: "moon"; 
+                   transition: DECELERATE 0.2; 
                }
-            //CLOUDS("_storm");
+               //CLOUDS("_storm");
             //CLOUDS("_rain");
             //CLOUDS("");
             CLOUDS_THUNDERS("_tstorm");
