@@ -1,4 +1,4 @@
-/** Eupnp - UPnP library
+/* Eupnp - UPnP library
  *
  * Copyright (C) 2009 Andre Dieb Martins <andre.dieb@gmail.com>
  *
