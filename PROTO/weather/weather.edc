@@ -1,7 +1,326 @@
 images 
 {
    image: "icon-weather.png" COMP;
+   image: "city_name_background.png" COMP;
+   image: "title_bar.png" COMP;
+   image: "bg_day_heavyrain.png" COMP;
+   image: "cloud_storm_1.png" COMP;
+   image: "cloud_storm_1_line.png" COMP;
+   image: "cloud_storm_2.png" COMP;
+   image: "cloud_storm_2_line.png" COMP;
+   image: "cloud_storm_3.png" COMP;
+   image: "cloud_storm_3_line.png" COMP;
+   image: "cloud_tstorm_1.png" COMP;
+   image: "cloud_tstorm_1_line.png" COMP;
+   image: "cloud_tstorm_2.png" COMP;
+   image: "cloud_tstorm_2_line.png" COMP;
+   image: "cloud_tstorm_3.png" COMP;
+   image: "cloud_tstorm_3_line.png" COMP;
+   image: "thunder.png" COMP;
+   image: "cloud_rain_1.png" COMP;
+   image: "cloud_rain_1_line.png" COMP;
+   image: "cloud_rain_2.png" COMP;
+   image: "cloud_rain_2_line.png" COMP;
+   image: "cloud_rain_3.png" COMP;
+   image: "cloud_rain_3_line.png" COMP;
+   image: "cloud_1.png" COMP;
+   image: "cloud_1_line.png" COMP;
+   image: "cloud_2.png" COMP;
+   image: "cloud_2_line.png" COMP;
+   image: "cloud_3.png" COMP;
+   image: "cloud_3_line.png" COMP;
+   image: "moon.png" COMP;
+   image: "moon_line.png" COMP;
 }
+
+#define MOON_H 0.3
+
+#define CLOUD_3(TYPE, CLOUD_H) \
+part \
+{ \
+    name: "cloud"TYPE"_3_line"; \
+    mouse_events: 0; \
+    description  \
+    { \
+        state: "default" 0.0; \
+        color: 255 255 255 75; \
+        rel1.to_x: "cloud"TYPE"_3"; \
+        rel1.relative: 0.443 0.0; \
+        rel1.offset: 0 0; \
+        rel2.to: "cloud"TYPE"_3"; \
+        rel2.offset: 0 0; \
+        rel2.relative: 0.443 0.057; \
+        image.normal: "cloud"TYPE"_3_line.png"; \
+    } \
+} \
+part  \
+{ \
+    name: "cloud"TYPE"_3"; \
+    mouse_events: 0; \
+    description  \
+    { \
+        state: "default" 0.0; \
+        aspect: 2.155 1; \
+        aspect_preference: VERTICAL; \
+        rel1.relative: 0.18 0.29; \
+        rel2.relative: 0.18 0.29+CLOUD_H; \
+        image.normal: "cloud"TYPE"_3.png"; \
+    } \
+} 
+
+#define CLOUD_3_2(TYPE, CLOUD_H) \
+part  \
+{ \
+    name: "cloud"TYPE"_3_line_2"; \
+    mouse_events: 0; \
+    description  \
+    { \
+        state: "default" 0.0; \
+        color: 255 255 255 75; \
+        rel1.to_x: "cloud"TYPE"_3_2"; \
+        rel1.relative: 0.443 0.0; \
+        rel1.offset: 0 0; \
+        rel2.to: "cloud"TYPE"_3_2"; \
+        rel2.offset: 0 0; \
+        rel2.relative: 0.443 0.057; \
+        image.normal: "cloud"TYPE"_3_line.png"; \
+    } \
+} \
+part  \
+{ \
+    name: "cloud"TYPE"_3_2"; \
+    mouse_events: 0; \
+    description  \
+    { \
+        state: "default" 0.0; \
+        aspect: 2.155 1; \
+        aspect_preference: VERTICAL; \
+        rel1.relative: 0.9 0.36; \
+        rel2.relative: 0.9 0.36+CLOUD_H; \
+        image.normal: "cloud"TYPE"_3.png"; \
+    } \
+} 
+
+#define CLOUD_2(TYPE, CLOUD_H) \
+part  \
+{ \
+    name: "cloud"TYPE"_2_line"; \
+    mouse_events: 0; \
+    description  \
+    { \
+        state: "default" 0.0; \
+        color: 255 255 255 75; \
+        rel1.to_x: "cloud"TYPE"_2"; \
+        rel1.relative: 0.443 0.0; \
+        rel1.offset: 0 0; \
+        rel2.to: "cloud"TYPE"_2"; \
+        rel2.offset: 0 0; \
+        rel2.relative: 0.443 0.057; \
+        image.normal: "cloud"TYPE"_2_line.png"; \
+    } \
+} \
+part  \
+{ \
+    name: "cloud"TYPE"_2"; \
+    mouse_events: 0; \
+    description  \
+    { \
+        state: "default" 0.0; \
+        aspect: 2.155 1; \
+        aspect_preference: VERTICAL; \
+        rel1.relative: 0.35 0.33; \
+        rel2.relative: 0.35 0.33+CLOUD_H; \
+        image.normal: "cloud"TYPE"_2.png"; \
+    } \
+} 
+
+#define CLOUD_1(TYPE, CLOUD_H) \
+part  \
+{ \
+    name: "cloud"TYPE"_1_line"; \
+    mouse_events: 0; \
+    description  \
+    { \
+        state: "default" 0.0; \
+        color: 255 255 255 75; \
+        rel1.to_x: "cloud"TYPE"_1"; \
+        rel1.relative: 0.443 0.0; \
+        rel1.offset: 0 0; \
+        rel2.to: "cloud"TYPE"_1"; \
+        rel2.offset: 0 0; \
+        rel2.relative: 0.443 0.057; \
+        image.normal: "cloud"TYPE"_1_line.png"; \
+    } \
+} \
+part  \
+{ \
+    name: "cloud"TYPE"_1"; \
+    mouse_events: 0; \
+    description  \
+    { \
+        state: "default" 0.0; \
+        aspect: 2.155 1; \
+        aspect_preference: VERTICAL; \
+        rel1.relative: 0.7 0.35; \
+        rel2.relative: 0.7 0.35+CLOUD_H; \
+        image.normal: "cloud"TYPE"_1.png"; \
+    } \
+} 
+
+#define CLOUD_1_2(TYPE, CLOUD_H) \
+part  \
+{ \
+    name: "cloud"TYPE"_1_line_2"; \
+    mouse_events: 0; \
+    description  \
+    { \
+        state: "default" 0.0; \
+        color: 255 255 255 75; \
+        rel1.to_x: "cloud"TYPE"_1_2"; \
+        rel1.relative: 0.443 0.0; \
+        rel1.offset: 0 0; \
+        rel2.to: "cloud"TYPE"_1_2"; \
+        rel2.offset: 0 0; \
+        rel2.relative: 0.443 0.057; \
+        image.normal: "cloud"TYPE"_1_line.png"; \
+    } \
+} \
+part  \
+{ \
+    name: "cloud"TYPE"_1_2"; \
+    mouse_events: 0; \
+    description  \
+    { \
+        state: "default" 0.0; \
+        aspect: 2.155 1; \
+        aspect_preference: VERTICAL; \
+        rel1.relative: 0.1 0.38; \
+        rel2.relative: 0.1 0.38+CLOUD_H; \
+        image.normal: "cloud"TYPE"_1.png"; \
+    } \
+} 
+
+#define CLOUDS(TYPE) \
+    CLOUD_3(TYPE, 0.13); \
+    CLOUD_3_2(TYPE, 0.13) \
+    CLOUD_2(TYPE, 0.17); \
+    CLOUD_1(TYPE, 0.2); \
+    CLOUD_1_2(TYPE, 0.2);
+
+#define CLOUDS_THUNDERS(TYPE) \
+    CLOUD_3(TYPE, 0.13); \
+    CLOUD_3_2(TYPE, 0.13) \
+    CLOUD_2(TYPE, 0.17); \
+    part   \
+    {  \
+        name: "cloud_tstorm_2_thunder_line";  \
+        mouse_events: 0;  \
+        description   \
+        {  \
+            state: "default" 0.0;  \
+            color: 255 255 255 75;  \
+            rel1.to_x: "cloud_tstorm_2_thunder";  \
+            rel1.relative: 0.443 0.0;  \
+            rel1.offset: 0 0;  \
+            rel2.to: "cloud_tstorm_2_thunder";  \
+            rel2.offset: 0 0;  \
+            rel2.relative: 0.443 0.057;  \
+            image.normal: "cloud_storm_2_line.png";  \
+        }  \
+    }  \
+    part   \
+    {  \
+        name: "cloud_tstorm_2_thunder";  \
+        mouse_events: 0;  \
+        description   \
+        {  \
+            state: "default" 0.0;  \
+            color: 255 255 255 255;  \
+            aspect: 0.469 1; \
+            aspect_preference: VERTICAL; \
+            rel1.to: "cloud_tstorm_2";  \
+            rel1.relative: 0.4 0.85;  \
+            rel1.offset: 0 0;  \
+            rel2.to_x: "cloud_tstorm_2";  \
+            rel2.offset: 0 0;  \
+            rel2.relative: 0.4 0.6;  \
+            image.normal: "thunder.png";  \
+        } \
+    } \
+    CLOUD_1(TYPE, 0.2); \
+    part   \
+    {  \
+        name: "cloud_tstorm_1_thunder_line_1";  \
+        mouse_events: 0;  \
+        description   \
+        {  \
+            state: "default" 0.0;  \
+            color: 255 255 255 75;  \
+            rel1.to_x: "cloud_tstorm_1_thunder";  \
+            rel1.relative: 0.443 0.0;  \
+            rel1.offset: 0 0;  \
+            rel2.to: "cloud_tstorm_1_thunder";  \
+            rel2.offset: 0 0;  \
+            rel2.relative: 0.443 0.057;  \
+            image.normal: "cloud_storm_1_line.png";  \
+        }  \
+    }  \
+    part   \
+    {  \
+        name: "cloud_tstorm_1_thunder";  \
+        mouse_events: 0;  \
+        description   \
+        {  \
+            state: "default" 0.0;  \
+            color: 255 255 255 255;  \
+            aspect: 0.469 1; \
+            aspect_preference: VERTICAL; \
+            rel1.to: "cloud_tstorm_1";  \
+            rel1.relative: 0.5 0.85;  \
+            rel1.offset: 0 0;  \
+            rel2.to_x: "cloud_tstorm_1";  \
+            rel2.offset: 0 0;  \
+            rel2.relative: 0.5 0.65;  \
+            image.normal: "thunder.png";  \
+        } \
+    }  \
+    CLOUD_1_2(TYPE, 0.2); \
+    part   \
+    {  \
+        name: "cloud_tstorm_1_thunder_line_2";  \
+        mouse_events: 0;  \
+        description   \
+        {  \
+            state: "default" 0.0;  \
+            color: 255 255 255 75;  \
+            rel1.to_x: "cloud_tstorm_1_thunder_2";  \
+            rel1.relative: 0.443 0.0;  \
+            rel1.offset: 0 0;  \
+            rel2.to: "cloud_tstorm_1_thunder_2";  \
+            rel2.offset: 0 0;  \
+            rel2.relative: 0.443 0.057;  \
+            image.normal: "cloud_storm_1_line.png";  \
+        }  \
+    }  \
+    part   \
+    {  \
+        name: "cloud_tstorm_1_thunder_2";  \
+        mouse_events: 0;  \
+        description   \
+        {  \
+            state: "default" 0.0;  \
+            color: 255 255 255 255;  \
+            aspect: 0.469 1; \
+            aspect_preference: VERTICAL; \
+            rel1.to: "cloud_tstorm_1_2";  \
+            rel1.relative: 0.5 0.85;  \
+            rel1.offset: 0 0;  \
+            rel2.to_x: "cloud_tstorm_1_2";  \
+            rel2.offset: 0 0;  \
+            rel2.relative: 0.5 0.7;  \
+            image.normal: "thunder.png";  \
+        } \
+    } 
 
 collections 
 {
@@ -21,6 +340,103 @@ collections
                        aspect: 1.0 1.0;
                        aspect_preference: BOTH;
                        image.normal: "icon-weather.png";
+                    }
+               }
+          }
+     }
+    group 
+     {
+        name: "main";
+        min: 165 300;
+        parts 
+          {
+            part 
+              {
+                  name: "bg_day_heavyrain";
+                  mouse_events: 1;
+                  description 
+                    {
+                       state: "default" 0.0;
+                       rel1.relative: -0.1 0.0;
+                       image.normal: "bg_day_heavyrain.png";
+                    }
+               }
+            part 
+              {
+                  name: "moon_line";
+                  mouse_events: 0;
+                  description 
+                    {
+                       state: "default" 0.0;
+                       color: 255 255 255 75;
+                       rel1.to_x: "moon";
+                       rel1.relative: 0.5 0.0;
+                       rel1.offset: 0 0;
+                       rel2.to: "moon";
+                       rel2.offset: 0 0;
+                       rel2.relative: 0.5 0.5;
+                       image.normal: "moon_line.png";
+                    }
+               }
+            part 
+              {
+                  name: "moon";
+                  mouse_events: 0;
+                  description 
+                    {
+                       state: "default" 0.0;
+                       aspect: 1 1;
+                       aspect_preference: VERTICAL;
+                       rel1.relative: 0.5 0.2;
+                       rel2.relative: 0.5 0.2+MOON_H;
+                       image.normal: "moon.png";
+                    }
+               }
+            //CLOUDS("_storm");
+            //CLOUDS("_rain");
+            //CLOUDS("");
+            CLOUDS_THUNDERS("_tstorm");
+            part  
+              {
+                  name: "title_bar";
+                  mouse_events: 0;
+                  description 
+                    {
+                       state: "default" 0.0;
+                       rel2.relative: 1.0 0.075; 
+                       image.normal: "title_bar.png";
+                    }
+               }
+             part 
+              {
+                  name: "text.temp";
+                  type:          TEXT;
+                  effect:        SOFT_SHADOW;
+                  mouse_events: 0;
+                  description 
+                    {
+                       state: "default" 0.0;
+                       rel1.relative: 0.5 0.63; 
+                       rel2.relative: 0.5 0.9; 
+                       text 
+                       {
+                           text: "-46°c";
+                           font: "Sans,Edje-Vera";
+                           size: 32;
+                           min: 1 1;
+                           align: 0.5 0.0;
+                       }
+                    }
+              }
+             part 
+               {
+                  name: "city_name_background";
+                  mouse_events: 0;
+                  description 
+                    {
+                       state: "default" 0.0;
+                       rel1.relative: 0.0 0.85;
+                       image.normal: "city_name_background.png";
                     }
                }
           }
