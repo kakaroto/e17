@@ -3,12 +3,16 @@
 /*============================================================================*
  *                                  Local                                     *
  *============================================================================*/
+#define ERR(...) EINA_LOG_DOM_ERR(_log_dom, __VA_ARGS__)
+#define WRN(...) EINA_LOG_DOM_WARN(_log_dom, __VA_ARGS__)
+#define DBG(...) EINA_LOG_DOM_DBG(_log_dom, __VA_ARGS__)
+
 static int _init_count = 0;
 static Eina_Array *_modules = NULL;
 static Eina_List *_providers = NULL;
 static int _fifo[2]; /* the communication between the main thread and the async ones */
 static Enesim_Renderer *_importer;
-
+static int _log_dom = -1;
 
 Eina_Error EMAGE_ERROR_EXIST;
 Eina_Error EMAGE_ERROR_PROVIDER;
@@ -33,7 +37,7 @@ typedef struct _Emage_Job
 /* TODO this can be merged into enesim itself */
 static void _provider_data_create(Enesim_Converter_Data *cdata, Enesim_Converter_Format cfmt, int w, int h)
 {
-	switch(cfmt)
+	switch (cfmt)
 	{
 		case ENESIM_CONVERTER_ARGB8888:
 		case ENESIM_CONVERTER_ARGB8888_PRE:
@@ -47,7 +51,7 @@ static void _provider_data_create(Enesim_Converter_Data *cdata, Enesim_Converter
 		break;
 
 		default:
-		printf("No such format\n");
+		ERR("No such format %d\n", cfmt);
 		break;
 	}
 }
@@ -71,7 +75,7 @@ static void _provider_data_convert(Enesim_Converter_Data *cdata,
 	enesim_renderer_importer_data_set(_importer, cdata);
 	if (!enesim_renderer_state_setup(_importer))
 	{
-		printf("No enesim converter available\n");
+		WRN("No enesim converter available %d", cfmt);
 		return;
 	}
 	while (sh--)
@@ -179,18 +183,15 @@ static void * _thread_load(void *data)
  *                                   API                                      *
  *============================================================================*/
 /**
- * @brief To be documented.
- *
- * @param
- * @return
- *
- * FIXME
+ * Initialize emage. This function must be called before any other emage
+ * function
  */
 EAPI int emage_init(void)
 {
 	if (!_init_count)
 	{
 		eina_init();
+		_log_dom = eina_log_domain_register("emage", NULL);
 		enesim_init();
 		/* the fifo */
 		if (pipe(_fifo) < 0)
@@ -221,7 +222,7 @@ EAPI int emage_init(void)
 	return ++_init_count;
 }
 /**
- *
+ * Shutdown emage library. Once you have finished using emage, shut it down.
  */
 EAPI void emage_shutdown(void)
 {
@@ -241,11 +242,17 @@ EAPI void emage_shutdown(void)
 		close(_fifo[1]);
 		enesim_renderer_delete(_importer);
 		enesim_shutdown();
+		eina_log_domain_unregister(_log_dom);
 		eina_shutdown();
 	}
 }
 /**
+ * Loads information about an image
  *
+ * @param file The image file to load
+ * @param w The image width
+ * @param h The image height
+ * @param sfmt The image original format
  */
 EAPI Eina_Bool emage_info_load(const char *file, int *w, int *h, Enesim_Converter_Format *sfmt)
 {
@@ -261,7 +268,15 @@ EAPI Eina_Bool emage_info_load(const char *file, int *w, int *h, Enesim_Converte
 	return EINA_TRUE;
 }
 /**
+ * Load an image synchronously
  *
+ * @param file The image file to load
+ * @param s The surface to write the image pixels to. It must not be NULL.
+ * @param f The desired format the image should be converted to
+ * @param mpool The mempool that will create the surface in case the surface
+ * reference is NULL
+ * @param options Any option the emage provider might require
+ * @return EINA_TRUE in case the image was loaded correctly. EINA_FALSE if not
  */
 EAPI Eina_Bool emage_load(const char *file, Enesim_Surface **s,
 		Enesim_Format f, Eina_Mempool *mpool, const char *options)
@@ -283,7 +298,15 @@ EAPI Eina_Bool emage_load(const char *file, Enesim_Surface **s,
 	return EINA_TRUE;
 }
 /**
- *
+ * Load an image asynchronously
+
+ * @param file The image file to load
+ * @param s The surface to write the image pixels to. It must not be NULL.
+ * @param f The desired format the image should be converted to
+ * @param mpool The mempool that will create the surface in case the surface
+ * reference is NULL
+ * @param data User provided data
+ * @param options Any option the emage provider might require
  */
 EAPI void emage_load_async(const char *file, Enesim_Surface **s,
 		Enesim_Format f, Eina_Mempool *mpool,
@@ -306,7 +329,8 @@ EAPI void emage_load_async(const char *file, Enesim_Surface **s,
 /**
  * @brief Call every asynchronous callback set
  *
- *
+ * In case emage has setup some asynchronous load, you must call this
+ * function to get the status of such process
  */
 EAPI void emage_dispatch(void)
 {
@@ -346,17 +370,17 @@ EAPI Eina_Bool emage_provider_register(Emage_Provider *p)
 	/* check for mandatory functions */
 	if (!p->loadable)
 	{
-		EINA_ERROR_PERR("Provider %s doesn't provide the loadable() function\n", p->name);
+		WRN("Provider %s doesn't provide the loadable() function\n", p->name);
 		goto err;
 	}
 	if (!p->info_get)
 	{
-		EINA_ERROR_PERR("Provider %s doesn't provide the info_get() function\n", p->name);
+		WRN("Provider %s doesn't provide the info_get() function\n", p->name);
 		goto err;
 	}
 	if (!p->load)
 	{
-		EINA_ERROR_PERR("Provider %s doesn't provide the load() function\n", p->name);
+		WRN("Provider %s doesn't provide the load() function\n", p->name);
 		goto err;
 	}
 	_providers = eina_list_append(_providers, p);
