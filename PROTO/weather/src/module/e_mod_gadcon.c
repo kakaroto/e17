@@ -32,18 +32,17 @@ _gc_init(E_Gadcon *gc, const char *name, const char *id, const char *style)
    inst = E_NEW(Instance, 1);
    inst->ci = _weather_config_item_get(id);
 
-
-    snprintf(buff, PATH_MAX, "%s/weather.edj", weather_cfg->mod_dir);
-    if(gc->location->site == E_GADCON_SITE_DESKTOP)
-    {
+   snprintf(buff, sizeof(buff), "%s/weather.edj", weather_cfg->mod_dir);
+   if(gc->location->site == E_GADCON_SITE_DESKTOP)
+     {
         inst->obj = edje_object_add(gc->evas);
         edje_object_file_set(inst->obj, buff, "main");
-    }
-    else
-    {
+     }
+   else
+     {
         inst->obj = edje_object_add(gc->evas);
         edje_object_file_set(inst->obj, buff, "icon");
-    }
+     }
    evas_object_event_callback_add(inst->obj, EVAS_CALLBACK_MOUSE_DOWN, 
                                   _gc_cb_mouse_down, inst);
    evas_object_show(inst->obj);
@@ -98,7 +97,7 @@ _gc_icon(E_Gadcon_Client_Class *client_class, Evas *evas)
    Evas_Object *o;
    char buff[PATH_MAX];
 
-   snprintf(buff, PATH_MAX, "%s/weather.edj", weather_cfg->mod_dir);
+   snprintf(buff, sizeof(buff), "%s/weather.edj", weather_cfg->mod_dir);
    o = edje_object_add(evas);
    edje_object_file_set(o, buff, "icon");
    return o;
