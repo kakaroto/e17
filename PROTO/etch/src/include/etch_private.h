@@ -31,6 +31,12 @@
 
 #include "Eina.h"
 
+#define ERR(...) EINA_LOG_DOM_ERR(etch_log, __VA_ARGS__)
+#define WRN(...) EINA_LOG_DOM_WARN(etch_log, __VA_ARGS__)
+#define DBG(...) EINA_LOG_DOM_DBG(etch_log, __VA_ARGS__)
+
+extern int etch_log;
+
 /*
  * Abstract implementation of the internal timer implementation
  */

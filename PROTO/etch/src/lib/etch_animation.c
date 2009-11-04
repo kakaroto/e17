@@ -181,6 +181,11 @@ void etch_animation_animate(Etch_Animation *a, Etch_Time *curr)
 			/* store old value */
 			old = a->curr;
 			/* interpolate the new value */
+			if (!_interpolators[a->dtype])
+			{
+				WRN("No interpolator available for type %d\n", a->dtype);
+				return;
+			}
 			ifnc = _interpolators[a->dtype]->funcs[start->type];
 			if (!ifnc)
 				return;

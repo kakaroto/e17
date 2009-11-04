@@ -35,17 +35,17 @@ void timer_setup(void)
 {
 	struct sigaction sact;
 	struct itimerval value;
-			
+
 	/* create the timer callback */
 	sact.sa_flags = 0;
 	sact.sa_handler = timer_signal_cb;
-	
+
 	value.it_interval.tv_sec = 0;
 	value.it_interval.tv_usec = 33333; /* every 33333 (1/30fps) usecs */
 	value.it_value.tv_sec = 0;
 	value.it_value.tv_usec = 500000; /* wait 500 usecs, before triggering the first event */
 	sigaction(SIGALRM, &sact, NULL);
-	setitimer(ITIMER_REAL, &value, NULL);	
+	setitimer(ITIMER_REAL, &value, NULL);
 }
 
 void animation_uint32_setup(Etch *e)
@@ -53,7 +53,7 @@ void animation_uint32_setup(Etch *e)
 	Etch_Animation *ea;
 	Etch_Animation_Keyframe *ek;
 	Etch_Data data;
-	
+
 	ea = etch_animation_add(e, ETCH_UINT32, _uint32_cb, NULL, NULL, NULL);
 	/* first keyframe */
 	ek = etch_animation_keyframe_add(ea);
@@ -85,7 +85,7 @@ void animation_uint32_setup(Etch *e)
 	data.data.u32 = 15;
 	etch_animation_keyframe_value_set(ek, &data);
 	etch_animation_keyframe_time_set(ek, 2, 0);
-	
+
 	ek = etch_animation_keyframe_add(ea);
 	etch_animation_keyframe_type_set(ek, ETCH_ANIMATION_DISCRETE);
 	data.data.u32 = 25;
@@ -151,7 +151,7 @@ void animation_string_setup(Etch *e)
 int main(void)
 {
 	Etch *e;
-	
+
 	e = etch_new();
 	etch_timer_fps_set(e, 30);
 	animation_uint32_setup(e);

@@ -30,6 +30,8 @@
  *============================================================================*/
 #define DEFAULT_FPS 30
 
+static _init_count = 0;
+
 static void _fps_to_time(unsigned long frame, unsigned long *time)
 {
 	/* giving a frame transform it to secs|usec representation */
@@ -114,10 +116,33 @@ static void _process(Etch *e)
 /*============================================================================*
  *                                 Global                                     *
  *============================================================================*/
-
+int etch_log = -1;
 /*============================================================================*
  *                                   API                                      *
  *============================================================================*/
+/**
+ * Initialize Etch. You must call this function before any other call to any
+ * etch function.
+ */
+EAPI void etch_init(void)
+{
+	if (_init_count) goto done;
+	eina_init();
+	etch_log = eina_log_domain_register("etch", NULL);
+done:
+	_init_count++;
+}
+/**
+ * Shutdown Etch.
+ */
+EAPI void etch_shutdown(void)
+{
+	if (_init_count != 1) goto done;
+	eina_log_domain_unregister(etch_log);
+	eina_shutdown();
+done:
+	_init_count--;
+}
 /**
  * Create a new Etch instance.
  * @return The Etch instance

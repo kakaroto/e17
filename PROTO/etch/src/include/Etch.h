@@ -39,6 +39,9 @@
  * of animations.
  * @{
  */
+EAPI void etch_init(void);
+EAPI void etch_shutdown(void);
+
 typedef struct _Etch Etch; /**< Etch Opaque Handler */
 EAPI Etch * etch_new(void);
 EAPI void etch_delete(Etch *e);
@@ -91,7 +94,7 @@ typedef struct _Etch_Data
  * An Etch_Animation is a container of keyframes which are named
  * Etch_Keyframes, every keyframe defines the way to interpolate
  * two values, the previous keyframe final value and the current
- * keyframe value. 
+ * keyframe value.
  * @{
  */
 typedef struct _Etch_Animation Etch_Animation; /**< Animation Opaque Handler */
@@ -113,7 +116,7 @@ typedef void (*Etch_Animation_Callback)(const Etch_Data *curr, const Etch_Data *
 typedef void (*Etch_Animation_State_Callback)(Etch_Animation *a, void *data);
 
 EAPI Etch_Animation * etch_animation_add(Etch *e, Etch_Data_Type dtype,
-		Etch_Animation_Callback cb, 
+		Etch_Animation_Callback cb,
 		Etch_Animation_State_Callback start,
 		Etch_Animation_State_Callback stop,
 		void *data);
