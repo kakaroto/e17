@@ -1,0 +1,11 @@
+<raster> just abstract the source fetching
+* dileX has quit (Read error: 60 (Operation timed out))
+* bluebugs (n=cedric@enlightenment/developer/cedric) has joined #edevelop
+<raster> so its an easy-to remove, add file that handles fetchign from a source and the protoicol needed
+* dileX_ is now known as dileX
+<devilhorns> yea
+<raster> so if the 2 sources there now dont work - we can add more for people
+<devilhorns> like a plugin system or something
+<raster> even have it be smart and qwhen u select a location for weather
+<raster> it queries ALL weather back ends to ask if they cover thatplace
+<quaker66> how about when two backends support one place? :P
