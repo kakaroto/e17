@@ -27,12 +27,22 @@ _gc_init(E_Gadcon *gc, const char *name, const char *id, const char *style)
 {
    Instance *inst;
    E_Gadcon_Client *gcc;
+   char buff[PATH_MAX];
 
    inst = E_NEW(Instance, 1);
    inst->ci = _weather_config_item_get(id);
 
-   inst->obj = evas_object_rectangle_add(gc->evas);
-   evas_object_color_set(inst->obj, 255, 0, 0, 255);
+    if(gc->location->site == E_GADCON_SITE_DESKTOP)
+    {
+        inst->obj = evas_object_rectangle_add(gc->evas);
+        evas_object_color_set(inst->obj, 255, 0, 0, 255);
+    }
+    else
+    {
+        snprintf(buff, PATH_MAX, "%s/weather.edj", weather_cfg->mod_dir);
+        inst->obj = edje_object_add(gc->evas);
+        edje_object_file_set(inst->obj, buff, "icon");
+    }
    evas_object_event_callback_add(inst->obj, EVAS_CALLBACK_MOUSE_DOWN, 
                                   _gc_cb_mouse_down, inst);
    evas_object_show(inst->obj);

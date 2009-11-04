@@ -22,7 +22,7 @@ e_modapi_init(E_Module *m)
    char buff[PATH_MAX];
 
    snprintf(buff, PATH_MAX, "%s/locale", m->dir);
-   bindtextdomain(PACKAGE, buf);
+   bindtextdomain(PACKAGE, buff);
    bind_textdomain_codeset(PACKAGE, "UTF-8");
 #endif
 
