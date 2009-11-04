@@ -33,7 +33,8 @@ _config_tclock_module(Config_Item *ci)
    v->basic.apply_cfdata = _basic_apply;
    v->basic.create_widgets = _basic_create;
 
-   snprintf(buf, PATH_MAX, "%s/e-module-tclock.edj", tclock_config->mod_dir);
+   snprintf(buf, sizeof(buf), "%s/e-module-tclock.edj", 
+            tclock_config->mod_dir);
    con = e_container_current_get(e_manager_current_get());
    cfd = e_config_dialog_new(con, D_("Tclock Settings"), "TClock", 
                               "_e_modules_tclock_config_dialog", buf, 0, v, ci);

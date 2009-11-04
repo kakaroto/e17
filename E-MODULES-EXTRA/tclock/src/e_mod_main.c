@@ -69,7 +69,7 @@ _gc_init(E_Gadcon *gc, const char *name, const char *id, const char *style)
    if (!inst->ci->id) inst->ci->id = eina_stringshare_add(id);
 
    o = edje_object_add(gc->evas);
-   snprintf(buf, PATH_MAX, "%s/tclock.edj", tclock_config->mod_dir);
+   snprintf(buf, sizeof(buf), "%s/tclock.edj", tclock_config->mod_dir);
    if (!e_theme_edje_object_set(o, "base/theme/modules/tclock", 
                                 "modules/tclock/main"))
      edje_object_file_set(o, buf, "modules/tclock/main");
@@ -148,7 +148,7 @@ _gc_icon(E_Gadcon_Client_Class *client_class, Evas *evas)
    char buf[PATH_MAX];
 
    o = edje_object_add (evas);
-   snprintf(buf, PATH_MAX, "%s/e-module-tclock.edj", tclock_config->mod_dir);
+   snprintf(buf, sizeof(buf), "%s/e-module-tclock.edj", tclock_config->mod_dir);
    edje_object_file_set(o, buf, "icon");
    return o;
 }
@@ -211,7 +211,7 @@ _tclock_cb_mouse_in(void *data, Evas *e, Evas_Object *obj, void *event_info)
    if (!(inst = data)) return;
    if (!inst->ci->show_tip) return;
    if (inst->tip) return;
-   snprintf(buf, PATH_MAX, "%s/tclock.edj", tclock_config->mod_dir);
+   snprintf(buf, sizeof(buf), "%s/tclock.edj", tclock_config->mod_dir);
 
    zone = e_util_zone_current_get(e_manager_current_get());
    inst->tip = e_popup_new(zone, 0, 0, 0, 0);
@@ -443,7 +443,7 @@ e_modapi_init(E_Module *m)
 #if HAVE_LOCALE_H
    setlocale(LC_ALL, "");
 #endif
-   snprintf(buf, PATH_MAX, "%s/locale", m->dir);
+   snprintf(buf, sizeof(buf), "%s/locale", m->dir);
    bindtextdomain(PACKAGE, buf);
    bind_textdomain_codeset(PACKAGE, "UTF-8");
 
