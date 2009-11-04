@@ -26,6 +26,9 @@ AC_PROG_LIBTOOL
 AM_GNU_GETTEXT([external])
 AM_GNU_GETTEXT_VERSION(0.14)
 
+AC_CHECK_LIB(dl, dlopen, dlopen_libs=-ldl)
+AC_SUBST(dlopen_libs)
+
 PKG_CHECK_MODULES(E, [enlightenment])
 release=$(pkg-config --variable=release enlightenment)
 MODULE_ARCH="$host_os-$host_cpu-$release"
@@ -56,6 +59,8 @@ AC_ARG_ENABLE(homedir-install,
 AC_OUTPUT([
 Makefile
 src/Makefile
+src/module/Makefile
+src/plugins/Makefile
 images/Makefile
 module.desktop
 ], [
