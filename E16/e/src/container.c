@@ -1443,60 +1443,63 @@ ContainerEventIconWin(Win win __UNUSED__, XEvent * ev, void *prm)
 /*
  * Configuration dialog
  */
-static char        *tmp_ib_name = NULL;
-static char         tmp_ib_nobg;
-static char         tmp_ib_shownames;
-static int          tmp_ib_vert;
-static int          tmp_ib_side;
-static int          tmp_ib_arrows;
-static int          tmp_ib_iconsize;
-static int          tmp_ib_mode;
-static char         tmp_ib_auto_resize;
-static char         tmp_ib_draw_icon_base;
-static char         tmp_ib_scrollbar_hide;
-static char         tmp_ib_cover_hide;
-static int          tmp_ib_autoresize_anchor;
-static char         tmp_ib_anim_mode;
+
+typedef struct {
+   Container          *ct;
+   char                nobg;
+   char                shownames;
+   int                 vert;
+   int                 side;
+   int                 arrows;
+   int                 iconsize;
+   int                 mode;
+   char                auto_resize;
+   char                draw_icon_base;
+   char                scrollbar_hide;
+   char                cover_hide;
+   int                 autoresize_anchor;
+   char                anim_mode;
+} ContainerDlgData;
 
 static void
-CB_ConfigureContainer(Dialog * d __UNUSED__, int val, void *data __UNUSED__)
+CB_ConfigureContainer(Dialog * d, int val, void *data __UNUSED__)
 {
-   if (val < 2)
-     {
-	Container          *ct;
+   ContainerDlgData   *dd = DLG_DATA_GET(d, ContainerDlgData);
+   Container          *ct;
 
-	if (!tmp_ib_name)
-	   return;
-	ct = ContainerFind(tmp_ib_name);
-	if (!ct)
-	   return;
+   if (val >= 2)
+      return;
 
-	ct->nobg = tmp_ib_nobg;
-	ct->shownames = tmp_ib_shownames;
-	ct->orientation = tmp_ib_vert;
-	ct->scrollbar_side = tmp_ib_side;
-	ct->arrow_side = tmp_ib_arrows;
-	ct->iconsize = tmp_ib_iconsize;
-	ct->icon_mode = tmp_ib_mode;
-	ct->auto_resize = tmp_ib_auto_resize;
-	ct->draw_icon_base = tmp_ib_draw_icon_base;
-	ct->scrollbar_hide = tmp_ib_scrollbar_hide;
-	ct->cover_hide = tmp_ib_cover_hide;
-	ct->auto_resize_anchor = tmp_ib_autoresize_anchor;
-	ct->anim_mode = tmp_ib_anim_mode;
+   ct = (Container *) ecore_list_goto(container_list, dd->ct);
+   if (!ct)
+      return;
 
-	ContainerRedraw(ct);
-	ContainersConfigSave();
-     }
+   ct->nobg = dd->nobg;
+   ct->shownames = dd->shownames;
+   ct->orientation = dd->vert;
+   ct->scrollbar_side = dd->side;
+   ct->arrow_side = dd->arrows;
+   ct->iconsize = dd->iconsize;
+   ct->icon_mode = dd->mode;
+   ct->auto_resize = dd->auto_resize;
+   ct->draw_icon_base = dd->draw_icon_base;
+   ct->scrollbar_hide = dd->scrollbar_hide;
+   ct->cover_hide = dd->cover_hide;
+   ct->auto_resize_anchor = dd->autoresize_anchor;
+   ct->anim_mode = dd->anim_mode;
+
+   ContainerRedraw(ct);
+   ContainersConfigSave();
 }
 
 static void
 CB_IconSizeSlider(Dialog * d, int val __UNUSED__, void *data)
 {
+   ContainerDlgData   *dd = DLG_DATA_GET(d, ContainerDlgData);
    DItem              *di = (DItem *) data;
    char                s[256];
 
-   Esnprintf(s, sizeof(s), _("Icon size: %2d"), tmp_ib_iconsize);
+   Esnprintf(s, sizeof(s), _("Icon size: %2d"), dd->iconsize);
    DialogItemSetText(di, s);
    DialogDrawItems(d, di, 0, 0, 99999, 99999);
 }
@@ -1504,29 +1507,33 @@ CB_IconSizeSlider(Dialog * d, int val __UNUSED__, void *data)
 static void
 _DlgFillContainer(Dialog * d, DItem * table, void *data)
 {
+   ContainerDlgData   *dd;
    Container          *ct = (Container *) data;
    DItem              *di, *table2;
    DItem              *radio1, *radio2, *radio3, *radio4, *label;
    char                s[256];
 
+   dd = DLG_DATA_SET(d, ContainerDlgData);
+   if (!dd)
+      return;
+
    if (!ct)
       return;
 
-   tmp_ib_nobg = ct->nobg;
-   tmp_ib_shownames = ct->shownames;
-   tmp_ib_vert = ct->orientation;
-   tmp_ib_side = ct->scrollbar_side;
-   tmp_ib_arrows = ct->arrow_side;
-   tmp_ib_iconsize = ct->iconsize;
-   tmp_ib_mode = ct->icon_mode;
-   tmp_ib_auto_resize = ct->auto_resize;
-   tmp_ib_draw_icon_base = ct->draw_icon_base;
-   tmp_ib_scrollbar_hide = ct->scrollbar_hide;
-   tmp_ib_cover_hide = ct->cover_hide;
-   tmp_ib_autoresize_anchor = ct->auto_resize_anchor;
-   tmp_ib_anim_mode = ct->anim_mode;
-   Efree(tmp_ib_name);
-   tmp_ib_name = Estrdup(ct->name);
+   dd->ct = ct;
+   dd->nobg = ct->nobg;
+   dd->shownames = ct->shownames;
+   dd->vert = ct->orientation;
+   dd->side = ct->scrollbar_side;
+   dd->arrows = ct->arrow_side;
+   dd->iconsize = ct->iconsize;
+   dd->mode = ct->icon_mode;
+   dd->auto_resize = ct->auto_resize;
+   dd->draw_icon_base = ct->draw_icon_base;
+   dd->scrollbar_hide = ct->scrollbar_hide;
+   dd->cover_hide = ct->cover_hide;
+   dd->autoresize_anchor = ct->auto_resize_anchor;
+   dd->anim_mode = ct->anim_mode;
 
    DialogSetTitle(d, ct->dlg_title);
 
@@ -1534,23 +1541,23 @@ _DlgFillContainer(Dialog * d, DItem * table, void *data)
 
    di = DialogAddItem(table, DITEM_CHECKBUTTON);
    DialogItemSetText(di, _("Transparent background"));
-   DialogItemCheckButtonSetPtr(di, &tmp_ib_nobg);
+   DialogItemCheckButtonSetPtr(di, &dd->nobg);
 
    di = DialogAddItem(table, DITEM_CHECKBUTTON);
    DialogItemSetText(di, _("Hide inner border"));
-   DialogItemCheckButtonSetPtr(di, &tmp_ib_cover_hide);
+   DialogItemCheckButtonSetPtr(di, &dd->cover_hide);
 
    di = DialogAddItem(table, DITEM_CHECKBUTTON);
    DialogItemSetText(di, _("Draw base image behind Icons"));
-   DialogItemCheckButtonSetPtr(di, &tmp_ib_draw_icon_base);
+   DialogItemCheckButtonSetPtr(di, &dd->draw_icon_base);
 
    di = DialogAddItem(table, DITEM_CHECKBUTTON);
    DialogItemSetText(di, _("Hide scrollbar when not needed"));
-   DialogItemCheckButtonSetPtr(di, &tmp_ib_scrollbar_hide);
+   DialogItemCheckButtonSetPtr(di, &dd->scrollbar_hide);
 
    di = DialogAddItem(table, DITEM_CHECKBUTTON);
    DialogItemSetText(di, _("Automatically resize to fit Icons"));
-   DialogItemCheckButtonSetPtr(di, &tmp_ib_auto_resize);
+   DialogItemCheckButtonSetPtr(di, &dd->auto_resize);
 
    di = DialogAddItem(table, DITEM_TEXT);
    DialogItemSetFill(di, 0, 0);
@@ -1562,21 +1569,21 @@ _DlgFillContainer(Dialog * d, DItem * table, void *data)
    DialogItemSliderSetBounds(di, 0, 1024);
    DialogItemSliderSetUnits(di, 1);
    DialogItemSliderSetJump(di, 8);
-   DialogItemSliderSetValPtr(di, &tmp_ib_autoresize_anchor);
+   DialogItemSliderSetValPtr(di, &dd->autoresize_anchor);
 
    di = DialogAddItem(table, DITEM_SEPARATOR);
 
    label = di = DialogAddItem(table, DITEM_TEXT);
    DialogItemSetFill(di, 0, 0);
    DialogItemSetAlign(di, 0, 512);
-   Esnprintf(s, sizeof(s), _("Icon size: %2d"), tmp_ib_iconsize);
+   Esnprintf(s, sizeof(s), _("Icon size: %2d"), dd->iconsize);
    DialogItemSetText(di, s);
 
    di = DialogAddItem(table, DITEM_SLIDER);
    DialogItemSliderSetBounds(di, 4, 128);
    DialogItemSliderSetUnits(di, 1);
    DialogItemSliderSetJump(di, 8);
-   DialogItemSliderSetValPtr(di, &tmp_ib_iconsize);
+   DialogItemSliderSetValPtr(di, &dd->iconsize);
    DialogItemSetCallback(di, CB_IconSizeSlider, 0, label);
 
    di = DialogAddItem(table, DITEM_SEPARATOR);
@@ -1618,13 +1625,13 @@ _DlgFillContainer(Dialog * d, DItem * table, void *data)
    DialogItemSetText(di, _("Vertical"));
    DialogItemRadioButtonSetFirst(di, radio1);
    DialogItemRadioButtonGroupSetVal(di, 1);
-   DialogItemRadioButtonGroupSetValPtr(radio1, &tmp_ib_vert);
+   DialogItemRadioButtonGroupSetValPtr(radio1, &dd->vert);
 
    di = DialogAddItem(table2, DITEM_RADIOBUTTON);
    DialogItemSetText(di, _("Right / Bottom"));
    DialogItemRadioButtonSetFirst(di, radio2);
    DialogItemRadioButtonGroupSetVal(di, 1);
-   DialogItemRadioButtonGroupSetValPtr(radio2, &tmp_ib_side);
+   DialogItemRadioButtonGroupSetValPtr(radio2, &dd->side);
 
    di = DialogAddItem(table2, DITEM_RADIOBUTTON);
    DialogItemSetText(di, _("Both ends"));
@@ -1646,7 +1653,7 @@ _DlgFillContainer(Dialog * d, DItem * table, void *data)
    DialogItemSetText(di, _("None"));
    DialogItemRadioButtonSetFirst(di, radio3);
    DialogItemRadioButtonGroupSetVal(di, 3);
-   DialogItemRadioButtonGroupSetValPtr(radio3, &tmp_ib_arrows);
+   DialogItemRadioButtonGroupSetValPtr(radio3, &dd->arrows);
 
    di = DialogAddItem(table, DITEM_SEPARATOR);
 
@@ -1654,11 +1661,11 @@ _DlgFillContainer(Dialog * d, DItem * table, void *data)
      {
 	di = DialogAddItem(table, DITEM_CHECKBUTTON);
 	DialogItemSetText(di, _("Show icon names"));
-	DialogItemCheckButtonSetPtr(di, &tmp_ib_shownames);
+	DialogItemCheckButtonSetPtr(di, &dd->shownames);
 
 	di = DialogAddItem(table, DITEM_CHECKBUTTON);
 	DialogItemSetText(di, _("Animate when iconifying to this Iconbox"));
-	DialogItemCheckButtonSetPtr(di, &tmp_ib_anim_mode);
+	DialogItemCheckButtonSetPtr(di, &dd->anim_mode);
 
 	di = DialogAddItem(table, DITEM_SEPARATOR);
 
@@ -1687,7 +1694,7 @@ _DlgFillContainer(Dialog * d, DItem * table, void *data)
 	DialogItemSetText(di, _("Use Enlightenment Icon, Snapshot Window"));
 	DialogItemRadioButtonSetFirst(di, radio4);
 	DialogItemRadioButtonGroupSetVal(di, 2);
-	DialogItemRadioButtonGroupSetValPtr(radio4, &tmp_ib_mode);
+	DialogItemRadioButtonGroupSetValPtr(radio4, &dd->mode);
      }
 }
 
