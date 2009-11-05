@@ -1685,7 +1685,7 @@ msgid ""
 msgstr ""
 
 #: src/settings.c:483
-msgid "Raise Windows Automatically"
+msgid "Raise windows automatically"
 msgstr "Levantar Janelas Automaticamente"
 
 #: src/settings.c:489

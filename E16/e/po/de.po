@@ -2022,7 +2022,7 @@ msgstr ""
 
 # src/settings.c:1330
 #: src/settings.c:483
-msgid "Raise Windows Automatically"
+msgid "Raise windows automatically"
 msgstr "Fenster automatisch anheben"
 
 # src/settings.c:1338

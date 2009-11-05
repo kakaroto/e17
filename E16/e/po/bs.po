@@ -1774,7 +1774,7 @@ msgstr ""
 "dijalog osobina\n"
 
 #: src/settings.c:483
-msgid "Raise Windows Automatically"
+msgid "Raise windows automatically"
 msgstr "Povećaj prozore automatski"
 
 #: src/settings.c:489

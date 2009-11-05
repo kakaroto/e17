@@ -641,6 +641,9 @@ static char         tmp_raise_focus;
 static char         tmp_warp_focus;
 static char         tmp_warp_always;
 
+static char         tmp_autoraise;
+static int          tmp_autoraisetime;
+
 static char         tmp_display_warp;
 static char         tmp_warp_after_focus;
 static char         tmp_raise_after_focus;
@@ -664,6 +667,9 @@ CB_ConfigureFocus(Dialog * d __UNUSED__, int val, void *data __UNUSED__)
 	Conf.focus.raise_on_next = tmp_raise_focus;
 	Conf.focus.warp_on_next = tmp_warp_focus;
 	Conf.focus.warp_always = tmp_warp_always;
+
+	Conf.autoraise.enable = tmp_autoraise;
+	Conf.autoraise.delay = 10 * tmp_autoraisetime;
 
 	Conf.warplist.enable = tmp_display_warp;
 	Conf.warplist.warp_on_select = tmp_warp_after_focus;
@@ -693,6 +699,9 @@ _DlgFillFocus(Dialog * d __UNUSED__, DItem * table, void *data __UNUSED__)
    tmp_raise_focus = Conf.focus.raise_on_next;
    tmp_warp_focus = Conf.focus.warp_on_next;
    tmp_warp_always = Conf.focus.warp_always;
+
+   tmp_autoraise = Conf.autoraise.enable;
+   tmp_autoraisetime = Conf.autoraise.delay / 10;
 
    tmp_raise_after_focus = Conf.warplist.raise_on_select;
    tmp_warp_after_focus = Conf.warplist.warp_on_select;
@@ -771,6 +780,25 @@ _DlgFillFocus(Dialog * d __UNUSED__, DItem * table, void *data __UNUSED__)
    DialogItemSetText(di,
 		     _("Always send mouse pointer to window on focus switch"));
    DialogItemCheckButtonSetPtr(di, &tmp_warp_always);
+
+   di = DialogAddItem(table, DITEM_SEPARATOR);
+   DialogItemSetColSpan(di, 2);
+
+   di = DialogAddItem(table, DITEM_CHECKBUTTON);
+   DialogItemSetColSpan(di, 2);
+   DialogItemSetText(di, _("Raise windows automatically"));
+   DialogItemCheckButtonSetPtr(di, &tmp_autoraise);
+
+   di = DialogAddItem(table, DITEM_TEXT);
+   DialogItemSetFill(di, 0, 0);
+   DialogItemSetAlign(di, 0, 512);
+   DialogItemSetText(di, _("Autoraise delay:"));
+
+   di = DialogAddItem(table, DITEM_SLIDER);
+   DialogItemSliderSetBounds(di, 0, 300);
+   DialogItemSliderSetUnits(di, 10);
+   DialogItemSliderSetJump(di, 25);
+   DialogItemSliderSetValPtr(di, &tmp_autoraisetime);
 
    di = DialogAddItem(table, DITEM_SEPARATOR);
    DialogItemSetColSpan(di, 2);

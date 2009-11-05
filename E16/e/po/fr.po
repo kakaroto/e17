@@ -1726,7 +1726,7 @@ msgstr ""
 "Placement des fenêtres\n"
 
 #: src/settings.c:483
-msgid "Raise Windows Automatically"
+msgid "Raise windows automatically"
 msgstr "Élever les fenêtres automatiquement"
 
 #: src/settings.c:489

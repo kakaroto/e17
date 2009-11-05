@@ -1766,7 +1766,7 @@ msgstr ""
 "fönsterplaceringsinställningar\n"
 
 #: src/settings.c:483
-msgid "Raise Windows Automatically"
+msgid "Raise windows automatically"
 msgstr "Lägg fönster överst automatiskt"
 
 #: src/settings.c:489

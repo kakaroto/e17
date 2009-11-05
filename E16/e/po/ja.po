@@ -1770,7 +1770,7 @@ msgstr ""
 "設定ダイアログ\n"
 
 #: src/settings.c:483
-msgid "Raise Windows Automatically"
+msgid "Raise windows automatically"
 msgstr "ウィンドウを自動的に上に出す(オートレイズ)"
 
 #: src/settings.c:489

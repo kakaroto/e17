@@ -30,7 +30,6 @@ void                IPC_Cfg(const char *params);
 
 #ifdef _DIALOG_H_
 extern const DialogDef DlgAreas;
-extern const DialogDef DlgAutoraise;
 extern const DialogDef DlgBackground;
 extern const DialogDef DlgComposite;
 extern const DialogDef DlgDesks;

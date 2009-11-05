@@ -454,58 +454,6 @@ const DialogDef     DlgPlacement = {
    DLG_OAC, CB_ConfigurePlacement,
 };
 
-static char         tmp_autoraise;
-static int          tmp_autoraisetime;
-
-static void
-CB_ConfigureAutoraise(Dialog * d __UNUSED__, int val, void *data __UNUSED__)
-{
-   if (val < 2)
-     {
-	Conf.autoraise.enable = tmp_autoraise;
-	Conf.autoraise.delay = 10 * tmp_autoraisetime;
-     }
-   autosave();
-}
-
-static void
-_DlgFillAutoraise(Dialog * d __UNUSED__, DItem * table, void *data __UNUSED__)
-{
-   DItem              *di;
-
-   tmp_autoraise = Conf.autoraise.enable;
-   tmp_autoraisetime = Conf.autoraise.delay / 10;
-
-   DialogItemTableSetOptions(table, 2, 0, 0, 0);
-
-   di = DialogAddItem(table, DITEM_CHECKBUTTON);
-   DialogItemSetColSpan(di, 2);
-   DialogItemSetText(di, _("Raise Windows Automatically"));
-   DialogItemCheckButtonSetPtr(di, &tmp_autoraise);
-
-   di = DialogAddItem(table, DITEM_TEXT);
-   DialogItemSetFill(di, 0, 0);
-   DialogItemSetAlign(di, 0, 512);
-   DialogItemSetText(di, _("Autoraise delay:"));
-
-   di = DialogAddItem(table, DITEM_SLIDER);
-   DialogItemSliderSetBounds(di, 0, 300);
-   DialogItemSliderSetUnits(di, 10);
-   DialogItemSliderSetJump(di, 25);
-   DialogItemSliderSetValPtr(di, &tmp_autoraisetime);
-}
-
-const DialogDef     DlgAutoraise = {
-   "CONFIGURE_AUTORAISE",
-   N_("Autoraise"),
-   N_("Autoraise Settings"),
-   SOUND_SETTINGS_AUTORAISE,
-   "pix/raise.png",
-   N_("Enlightenment Automatic Raising\n" "of Windows Settings Dialog\n"),
-   _DlgFillAutoraise,
-   DLG_OAC, CB_ConfigureAutoraise,
-};
-
 static char         tmp_dialog_headers;
 static char         tmp_button_image;
 static char         tmp_animate_startup;
@@ -723,7 +671,6 @@ static const DialogDef *dialogs[] = {
    &DlgAreas,
    &DlgPagers,
    &DlgMenus,
-   &DlgAutoraise,
    &DlgTooltips,
 #if HAVE_SOUND
    &DlgSound,

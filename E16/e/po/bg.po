@@ -1758,7 +1758,7 @@ msgstr ""
 "Диалог за настройки\n"
 
 #: src/settings.c:483
-msgid "Raise Windows Automatically"
+msgid "Raise windows automatically"
 msgstr "Автоматично вдигайте прозорците"
 
 #: src/settings.c:489

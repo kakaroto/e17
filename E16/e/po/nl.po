@@ -1733,7 +1733,7 @@ msgstr ""
 "Instellingendialoog\n"
 
 #: src/settings.c:483
-msgid "Raise Windows Automatically"
+msgid "Raise windows automatically"
 msgstr "Breng vensters automatisch naar voren"
 
 #: src/settings.c:489

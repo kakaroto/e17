@@ -1768,7 +1768,7 @@ msgstr ""
 "설정 대화상자\n"
 
 #: src/settings.c:483
-msgid "Raise Windows Automatically"
+msgid "Raise windows automatically"
 msgstr "창을 자동으로 올리기"
 
 #: src/settings.c:489

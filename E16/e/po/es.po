@@ -1733,7 +1733,7 @@ msgstr ""
 "Dialog de Configuración\n"
 
 #: src/settings.c:483
-msgid "Raise Windows Automatically"
+msgid "Raise windows automatically"
 msgstr "Elevar Ventanas Automáticamente"
 
 #: src/settings.c:489
