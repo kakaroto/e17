@@ -24,6 +24,7 @@ static int _count = 0;
 /*============================================================================*
  *                                 Global                                     *
  *============================================================================*/
+int ekeko_dom = -1;
 /*============================================================================*
  *                                   API                                      *
  *============================================================================*/
@@ -31,6 +32,7 @@ EAPI int ekeko_init(void)
 {
 	if (_count) goto done;
 	eina_init();
+	ekeko_dom = eina_log_domain_register("ekeko", NULL);
 	ekeko_value_init();
 done:
 	return ++_count;
@@ -40,6 +42,7 @@ EAPI int ekeko_shutdown(void)
 {
 	if (_count != 1) goto done;
 	ekeko_value_shutdown();
+	eina_log_domain_unregister(ekeko_dom);
 	eina_shutdown();
 done:
 	return --_count;

@@ -208,6 +208,8 @@ static void _parent_set_cb(Ekeko_Object *o, Ekeko_Event *e, void *data)
 	}
 	/* TODO propagate the change of zindex locally in case the object is not a canvas */
 	/* TODO propagate the change of zindex to the next sibling */
+	/* tell the canvas of this new area */
+	//ekeko_canvas_damage_add(prv->canvas, &prv->geometry.curr);
 }
 
 static void _ctor(Ekeko_Object *o)

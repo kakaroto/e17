@@ -70,8 +70,8 @@ void ekeko_value_create(Ekeko_Value *value, Ekeko_Value_Type type)
 		case EKEKO_PROPERTY_LONG:
 		case EKEKO_PROPERTY_RECTANGLE:
 		case EKEKO_PROPERTY_STRING:
-		case EKEKO_PROPERTY_OBJECT:
 		case EKEKO_PROPERTY_POINTER:
+		case EKEKO_PROPERTY_OBJECT:
 		break;
 
 		case EKEKO_PROPERTY_VALUE:
@@ -199,7 +199,7 @@ void ekeko_value_pointer_to(Ekeko_Value *value, Ekeko_Value_Type vtype, void *pt
 		case EKEKO_PROPERTY_OBJECT:
 		*((Ekeko_Object **)ptr) = value->value.object;
 		break;
-
+		
 		case EKEKO_PROPERTY_POINTER:
 		*((void **)ptr) = value->value.pointer_value;
 		break;
@@ -243,7 +243,7 @@ void ekeko_value_init(void)
 
 void ekeko_value_shutdown(void)
 {
-	/* TODO */
+	eina_hash_free(_values);
 }
 /*============================================================================*
  *                                   API                                      *
@@ -317,7 +317,7 @@ void ekeko_value_pointer_from(Ekeko_Value *v, Ekeko_Value_Type vtype, void *ptr)
 	{
 		case EKEKO_PROPERTY_UNDEFINED:
 		v->type = EKEKO_PROPERTY_UNDEFINED;
-		printf("[Ekeko_Value] pointer from undefined value?\n");
+		WRN("Pointer from undefined value?\n");
 		break;
 
 		case EKEKO_PROPERTY_STRING:
@@ -349,7 +349,7 @@ void ekeko_value_pointer_from(Ekeko_Value *v, Ekeko_Value_Type vtype, void *ptr)
 		v->type = EKEKO_PROPERTY_OBJECT;
 		v->value.object = *(Ekeko_Object **)ptr;
 		break;
-
+		
 		case EKEKO_PROPERTY_POINTER:
 		v->type = EKEKO_PROPERTY_POINTER;
 		v->value.pointer_value = *(void **)ptr;

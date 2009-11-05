@@ -22,9 +22,8 @@
 /**
  * @mainpage Ekeko
  * @section intro Introduction
- * The idea behind this library is to code abstract objects, so any other canvas
- * libraries like evas itself can be built on top of this, the engine + objects (both)
- * must be coded on the upper library, this is just usefulness without it.
+ * Ekeko is an object alike library. You might find it similar to Glib's gobject
+ * but it is very simplified and with another goals on mind
  *
  * @todo
  * + Add support for group of objects

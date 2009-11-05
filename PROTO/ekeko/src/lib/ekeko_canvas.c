@@ -206,7 +206,7 @@ static void _geometry_change(Ekeko_Object *o, Ekeko_Event *e, void *data)
 	tiler = prv->tiler;
 	if (tiler)
 	{
-		eina_tiler_del(tiler);
+		eina_tiler_free(tiler);
 	}
 #ifdef EKEKO_DEBUG
 	printf("[canvas %s] Changing geometry\n", ekeko_object_type_name_get(o));

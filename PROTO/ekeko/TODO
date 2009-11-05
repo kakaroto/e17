@@ -1,1 +1,3 @@
-
++ More docs
++ Remove the create/free functions from the value implementation
++ Remove every printf and move it to eina_log

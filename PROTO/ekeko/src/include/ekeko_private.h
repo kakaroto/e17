@@ -22,10 +22,12 @@
 #include <stdlib.h>
 #include <string.h>
 
-//#define EKEKO_DEBUG
+#define DBG(...) EINA_LOG_DOM_DBG(ekeko_dom, __VA_ARGS__)
+#define INF(...) EINA_LOG_DOM_INFO(ekeko_dom, __VA_ARGS__)
+#define WRN(...) EINA_LOG_DOM_WARN(ekeko_dom, __VA_ARGS__)
+#define ERR(...) EINA_LOG_DOM_ERR(ekeko_dom, __VA_ARGS__)
 
-#define RETURN_IF(expr) if ((expr)) return
-#define RETURN_NULL_IF(expr) if ((expr)) return NULL
+extern int ekeko_dom;
 
 #define OFFSET(type, mem) ((size_t) ((char *)&((type *) 0)->mem - (char *)((type *) 0)))
 

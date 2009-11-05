@@ -172,6 +172,9 @@ EAPI void ekeko_input_feed_mouse_up(Ekeko_Input *i)
 
 	/* send the event to the grabbed object */
 	r = i->pointer.grabbed;
+	if (!r)
+		return;
+
 	event_mouse_up_init(&em, (Ekeko_Object *)r, (Ekeko_Object *)r, i);
 	ekeko_event_dispatch((Ekeko_Event *)&em);
 	/* in case the down coordinates are the same as the current coordinates

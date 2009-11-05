@@ -1,7 +1,7 @@
 # get rid of that stupid cache mechanism
 rm -f config.cache
 
-AC_INIT(ekeko, 0.0.1, enlightenment-devel@lists.sourceforge.net)
+AC_INIT(ekeko, 0.0.2, enlightenment-devel@lists.sourceforge.net)
 AC_PREREQ(2.52)
 AC_CONFIG_SRCDIR(configure.ac)
 AC_CANONICAL_BUILD
@@ -38,9 +38,6 @@ esac
 AC_SUBST(create_shared_lib)
 
 PKG_CHECK_MODULES(EINA, [eina-0])
-PKG_CHECK_MODULES(SDL, [sdl >= 1.2.10], [have_sdl="yes"], [have_sdl="no"])
-
-AM_CONDITIONAL(HAVE_SDL, test "x$have_sdl" = "xyes")
 
 ## Make the debug preprocessor configurable
 EKEKO_CFLAGS="$EINA_CFLAGS"
@@ -48,13 +45,13 @@ EKEKO_LIBS="$EINA_LIBS"
 AC_SUBST(EKEKO_CFLAGS)
 AC_SUBST(EKEKO_LIBS)
 
-
 AC_OUTPUT([
 Makefile
 ekeko.pc
 src/Makefile
 src/lib/Makefile
 src/include/Makefile
+examples/Makefile
 ],[
 ])
 
@@ -72,7 +69,7 @@ echo
 echo
 echo "Configuration Options Summary:"
 echo
-echo "  Build example...........: $have_sdl"
+echo "  Build example...........: yes"
 echo
 echo "Installation Path.........: $prefix"
 echo

@@ -147,20 +147,6 @@ void * type_instance_private_get_internal(Ekeko_Type *final, Ekeko_Type *t, void
 	return (char *)instance + type_public_size_get(final) + type_private_size_get(t->parent);
 }
 
-void type_instance_property_value_get(Ekeko_Type *type, void *instance, char *prop_name, Ekeko_Value *v)
-{
-	Ekeko_Property *property;
-	void *curr;
-
-	if (!type || !instance || !prop_name)
-		return;
-	property = _property_get(type, prop_name);
-	if (!property)
-		return;
-	curr = _instance_property_curr_ptr_get(type, property, instance);
-	ekeko_value_pointer_from(v, ekeko_property_value_type_get(property), curr);
-}
-
 const char * type_name_get(Ekeko_Type *t)
 {
 	return t->name;

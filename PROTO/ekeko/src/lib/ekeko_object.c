@@ -22,15 +22,12 @@
 #include "Ekeko.h"
 #include "ekeko_private.h"
 /*
- * TODO avoid allocating a value when a property is set
- * TODO create dynamic callbacks for each property
  * TODO create ids for each property
  */
 /*============================================================================*
  *                                  Local                                     *
  *============================================================================*/
 #define PRIVATE(obj) ((Ekeko_Object_Private*)(obj->private))
-
 #define TYPE_NAME "Object"
 
 struct _Ekeko_Object_Private
@@ -211,7 +208,10 @@ void object_event_listener_remove(Ekeko_Object *obj, const char *type,
  *                                   API                                      *
  *============================================================================*/
 Ekeko_Property_Id EKEKO_OBJECT_ID;
-
+/**
+ * Gets the object type.
+ * @return The type definition for an object
+ */
 Ekeko_Type *ekeko_object_type_get(void)
 {
 	static Ekeko_Type *object_type = NULL;
@@ -227,18 +227,9 @@ Ekeko_Type *ekeko_object_type_get(void)
 	return object_type;
 }
 /**
- *
- * @return
+ * Deletes an Ekeko_Object
+ * @param o The Ekeko_Object to delete
  */
-EAPI Ekeko_Object * ekeko_object_new(void)
-{
-	Ekeko_Object *object;
-
-	object = ekeko_type_instance_new(ekeko_object_type_get());
-
-	return object;
-}
-
 EAPI void ekeko_object_delete(Ekeko_Object *o)
 {
 	Ekeko_Object_Private *prv;
@@ -257,36 +248,37 @@ EAPI void ekeko_object_delete(Ekeko_Object *o)
 }
 
 /**
- *
- * @param object
- * @param name
+ * Sets the id property on an object
+ * @param o The Ekeko_Object instance
+ * @param name The id
  */
-EAPI void ekeko_object_id_set(Ekeko_Object *object, const char *name)
+EAPI void ekeko_object_id_set(Ekeko_Object *o, const char *name)
 {
 	Ekeko_Value value;
 
 	ekeko_value_str_from(&value, (char *)name);
-	ekeko_object_property_value_set(object, "id", &value);
+	ekeko_object_property_value_set(o, "id", &value);
 }
 /**
- *
- * @param object
- * @return
+ * Gets the id of an object
+ * @param o The object to get the id from
+ * @return The id
  */
-EAPI const char *ekeko_object_id_get(Ekeko_Object *object)
+EAPI const char *ekeko_object_id_get(Ekeko_Object *o)
 {
 	Ekeko_Object_Private *prv;
 
-	prv = PRIVATE(object);
+	prv = PRIVATE(o);
 	return prv->id;
 }
 /**
- *
- * @param object
- * @param prop_name
- * @param value
+ * Sets a value for a property of an object 
+ * @param o The object to set the property to
+ * @param prop_name The property name
+ * @param value The value to set
+ * @return EINA_TRUE if the property was correctly set or EINA_FALSE otherwise
  */
-EAPI void ekeko_object_property_value_set(Ekeko_Object *o, char *prop_name, Ekeko_Value *value)
+EAPI Eina_Bool ekeko_object_property_value_set(Ekeko_Object *o, char *prop_name, Ekeko_Value *value)
 {
 	Ekeko_Object_Private *prv;
 	Ekeko_Property *prop;
@@ -297,22 +289,25 @@ EAPI void ekeko_object_property_value_set(Ekeko_Object *o, char *prop_name, Ekek
 	void *curr, *prev;
 	char *changed;
 
-	RETURN_IF(o == NULL || prop_name == NULL);
+	if (!o || !prop_name)
+		return EINA_FALSE;
 
 	prv = PRIVATE(o);
-#ifdef EKEKO_DEBUG
-	printf("[Ekeko_Object] value_set: %s %p %p %p %d\n", prop_name, o, prv, prv->type, prv->changed);
-#endif
+	DBG("Setting: %s %p %p %p %d\n", prop_name, o, prv, prv->type, prv->changed);
 	/* FIXME this code isnt good enough */
 	prop = ekeko_type_property_get(prv->type, prop_name);
 	if (!prop)
-		return;
+	{
+		WRN("Property %s does not exist\n", prop_name);
+		return EINA_FALSE;
+	}
 
 	vtype = ekeko_property_value_type_get(prop);
 	if (vtype != EKEKO_PROPERTY_VALUE && vtype != value->type)
 	{
-		printf("[Ekeko_Object] ERROR values dont match %s.%s %d %d!!\n", ekeko_object_type_name_get(o), prop_name, vtype, value->type);
-		exit(1);
+		ERR("Value types dont match %s.%s %d %d\n", ekeko_object_type_name_get(o),
+				prop_name, vtype, value->type);
+		return EINA_FALSE;
 	}
 	/* Initialize the type in case the property value type is PROPERTY_VALUE */
 	prev_value.type = value->type;
@@ -345,12 +340,7 @@ EAPI void ekeko_object_property_value_set(Ekeko_Object *o, char *prop_name, Ekek
 	}
 	else
 	{
-		/* here we do need to malloc the prev and copy it because curr
-		 * will overwrite it
-		 */
-		ekeko_value_create(&prev_value, vtype);
 		ekeko_value_pointer_from(&prev_value, vtype, curr);
-		ekeko_value_pointer_to(value, vtype, curr);
 	}
 #ifdef EKEKO_DEBUG
 	printf("[Ekeko_Object] changed = %d\n", prv->changed);
@@ -388,15 +378,18 @@ EAPI void ekeko_object_property_value_set(Ekeko_Object *o, char *prop_name, Ekek
 		ekeko_object_event_dispatch(value->value.object, (Ekeko_Event *)&evt);
 	}
 	if (property_ptype_get(prop) != EKEKO_PROPERTY_VALUE_DUAL_STATE)
-		ekeko_value_free(&prev_value, vtype);
+		ekeko_value_pointer_to(value, vtype, curr);
+
+	return EINA_TRUE;
 }
 /**
- *
- * @param object
- * @param prop_name
- * @param value
+ * Gets a value from a property of an object 
+ * @param o The object to set the property to
+ * @param prop_name The property name
+ * @param value The value to set
+ * @return EINA_TRUE if the property was correctly fetched or EINA_FALSE otherwise
  */
-EAPI void ekeko_object_property_value_get(Ekeko_Object *o, char *prop_name, Ekeko_Value *value)
+EAPI Eina_Bool ekeko_object_property_value_get(Ekeko_Object *o, char *prop_name, Ekeko_Value *value)
 {
 	Ekeko_Object_Private *prv;
 	Ekeko_Property *prop;
@@ -410,60 +403,62 @@ EAPI void ekeko_object_property_value_get(Ekeko_Object *o, char *prop_name, Ekek
 #endif
 	prop = ekeko_type_property_get(prv->type, prop_name);
 	if (!prop)
-		return;
+	{
+		WRN("Property %s does not exist\n", prop_name);
+		return EINA_FALSE;
+	}
 	type_instance_property_pointers_get(prv->type, prop, o, &curr, &prev, &changed);
 	vtype = ekeko_property_value_type_get(prop);
-	/* This is a leak, we just want to get the value and set the pointer
-	 * dont copy it right?
-	 * also we dont want the user to call ekeko_value_free every time
-	 */
-	ekeko_value_create(value, vtype);
 	ekeko_value_pointer_from(value, vtype, curr);
-	//ekeko_value_free(value, vtype);
 
-	// FIXME remove the function below
-	//type_instance_property_value_get(prv->type, object, prop_name, value);
+	return EINA_TRUE;
 }
 /**
- *
- * @param object
- * @param name
- * @param data
+ * Sets a private data pointer on an object
+ * @param o The object to set the data to
+ * @param name The name to associate this data to
+ * @param data The private data to set
  */
-EAPI void ekeko_object_user_data_set(Ekeko_Object *object, const char *name, void *data)
+EAPI void ekeko_object_user_data_set(Ekeko_Object *o, const char *name, void *data)
 {
 	Ekeko_Object_Private *prv;
 
-	prv = PRIVATE(object);
+	prv = PRIVATE(o);
 	eina_hash_add(prv->user, name, data);
 }
 /**
- *
- * @param object
- * @param name
+ * Gets a private data pointer from an object previously
+ * set with ekeko_object_user_data_set()
+ * @param o The object to set the data to
+ * @param name The name the data was associated with
+ * @return The private user data
  */
-EAPI void * ekeko_object_user_data_get(Ekeko_Object *object, const char *name)
+EAPI void * ekeko_object_user_data_get(Ekeko_Object *o, const char *name)
 {
 	Ekeko_Object_Private *prv;
 
-	prv = PRIVATE(object);
+	prv = PRIVATE(o);
 	return eina_hash_find(prv->user, name);
 }
-
-EAPI void ekeko_object_event_dispatch(Ekeko_Object *obj, Ekeko_Event *e)
+/**
+ * Dispatch an event
+ * @param o The object that will trigger the event
+ * @param e The event to dispatch
+ */
+EAPI void ekeko_object_event_dispatch(Ekeko_Object *o, Ekeko_Event *e)
 {
 	Ekeko_Object_Private *prv;
 
 	/* TODO set the phase on the event */
-	prv = PRIVATE(obj);
+	prv = PRIVATE(o);
 #ifdef EKEKO_DEBUG
 	printf("[Ekeko_Object] Dispatching event %s\n", e->type);
 #endif
-	_event_dispatch(obj, e, EINA_FALSE);
+	_event_dispatch(o, e, EINA_FALSE);
 	if (e->bubbles == EINA_TRUE)
 	{
 #ifdef EKEKO_DEBUG
-		printf("[Ekeko_Object] Event %s going to bubble %p %p\n", e->type, obj, prv->parent);
+		printf("[Ekeko_Object] Event %s going to bubble %p %p\n", e->type, o, prv->parent);
 #endif
 		while (prv->parent)
 		{
@@ -483,9 +478,11 @@ EAPI const char * ekeko_object_type_name_get(const Ekeko_Object *obj)
 }
 
 /**
- *
- * @param p
- * @param o
+ * Appends an object as a child of another
+ * @param p The parent object
+ * @param o The child object
+ * @return EINA_TRUE if the child was succesful appended, EINA_FALSE
+ * otherwise
  */
 EAPI Eina_Bool ekeko_object_child_append(Ekeko_Object *p, Ekeko_Object *o)
 {
@@ -559,7 +556,9 @@ EAPI void ekeko_object_child_remove(Ekeko_Object *p, Ekeko_Object *o)
 }
 
 /**
- *
+ * Get the number of childs an object has
+ * @param o The object to get the number of childs from
+ * @return The number of childs
  */
 EAPI int ekeko_object_child_count(Ekeko_Object *o)
 {
@@ -567,7 +566,12 @@ EAPI int ekeko_object_child_count(Ekeko_Object *o)
 
 	return eina_inlist_count(prv->children);
 }
-
+/**
+ * Gets the child at a given index
+ * @param o The object to get the child from
+ * @param index The index of the child to get
+ * @return The child
+ */
 EAPI Ekeko_Object * ekeko_object_child_get_at(Ekeko_Object *o, unsigned int index)
 {
 	Eina_Accessor *a;
