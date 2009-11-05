@@ -581,10 +581,10 @@ static void
 CB_ApplySnap(Dialog * d, int val, void *data __UNUSED__)
 {
    EWin               *ewin;
-   SnapDlgData        *sd = (SnapDlgData *) DialogGetData(d);
+   SnapDlgData        *sd = DLG_DATA_GET(d, SnapDlgData);
    unsigned int        match_flags, use_flags;
 
-   if (val >= 2 || !sd)
+   if (val >= 2)
       goto done;
 
    ewin = EwinFindByClient(sd->client);
@@ -644,12 +644,6 @@ CB_ApplySnap(Dialog * d, int val, void *data __UNUSED__)
    _EwinSnapSet(ewin, match_flags, use_flags);
 
  done:
-   if (sd && val == 2)
-     {
-	Efree(sd);
-	DialogSetData(d, NULL);
-     }
-
    SnapshotsSave();
 }
 
@@ -662,8 +656,10 @@ _DlgFillSnap(Dialog * d, DItem * table, void *data)
    char                s[1024];
    const EWin         *ewin = (EWin *) data;
 
-   sd = ECALLOC(SnapDlgData, 1);
-   DialogSetData(d, sd);
+   sd = DLG_DATA_SET(d, SnapDlgData);
+   if (!sd)
+      return;
+
    sd->client = EwinGetClientXwin(ewin);
 
    sn = ewin->snap;

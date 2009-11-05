@@ -763,12 +763,9 @@ typedef struct {
 static void
 CB_ConfigureGroup(Dialog * d, int val, void *data __UNUSED__)
 {
-   EwinGroupDlgData   *dd = (EwinGroupDlgData *) DialogGetData(d);
+   EwinGroupDlgData   *dd = DLG_DATA_GET(d, EwinGroupDlgData);
    EWin               *ewin;
    int                 i;
-
-   if (!dd)
-      return;
 
    /* Check ewin */
    ewin = EwinFindByPtr(dd->ewin);
@@ -785,8 +782,6 @@ CB_ConfigureGroup(Dialog * d, int val, void *data __UNUSED__)
      {
 	ShowHideWinGroups(ewin, dd->current, SET_OFF);
 	Efree(dd->cfgs);
-	Efree(dd);
-	DialogSetData(d, NULL);
      }
    autosave();
 }
@@ -794,7 +789,7 @@ CB_ConfigureGroup(Dialog * d, int val, void *data __UNUSED__)
 static void
 GroupSelectCallback(Dialog * d, int val, void *data __UNUSED__)
 {
-   EwinGroupDlgData   *dd = (EwinGroupDlgData *) DialogGetData(d);
+   EwinGroupDlgData   *dd = DLG_DATA_GET(d, EwinGroupDlgData);
 
    CopyGroupConfig(&(dd->cfg), &(dd->cfgs[dd->current]));
    CopyGroupConfig(&(dd->cfgs[val]), &(dd->cfg));
@@ -813,7 +808,7 @@ _DlgFillGroups(Dialog * d, DItem * table, void *data)
    char              **group_member_strings;
    EwinGroupDlgData   *dd;
 
-   dd = ECALLOC(EwinGroupDlgData, 1);
+   dd = DLG_DATA_SET(d, EwinGroupDlgData);
    if (!dd)
       return;
 
@@ -824,7 +819,6 @@ _DlgFillGroups(Dialog * d, DItem * table, void *data)
    for (i = 0; i < ewin->num_groups; i++)
       CopyGroupConfig(&(ewin->groups[i]->cfg), dd->cfgs + i);
    CopyGroupConfig(dd->cfgs, &(dd->cfg));
-   DialogSetData(d, dd);
 
    ShowHideWinGroups(ewin, 0, SET_ON);
 

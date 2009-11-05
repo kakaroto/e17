@@ -83,8 +83,12 @@ void                DialogSetTitle(Dialog * d, const char *title);
 void                DialogSetExitFunction(Dialog * d, DialogCallbackFunc * func,
 					  int val);
 void                DialogCallExitFunction(Dialog * d);
-void                DialogSetData(Dialog * d, void *data);
-void               *DialogGetData(Dialog * d);
+
+void               *DialogDataSet(Dialog * d, unsigned int size);
+void               *DialogDataGet(Dialog * d);
+
+#define DLG_DATA_SET(dlg, type) (type*)DialogDataSet(dlg, sizeof(type))
+#define DLG_DATA_GET(dlg, type) (type*)DialogDataGet(dlg)
 
 void                DialogShow(Dialog * d);
 void                DialogShowCentered(Dialog * d);

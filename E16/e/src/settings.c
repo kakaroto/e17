@@ -534,26 +534,29 @@ const DialogDef     DlgMisc = {
 static void
 CB_ConfigureComposite(Dialog * d, int val, void *data __UNUSED__)
 {
-   cfg_composite      *cfg;
+   cfg_composite      *dd;
 
    if (val >= 2)
       return;
 
    /* Configure and read back */
-   cfg = (cfg_composite *) DialogGetData(d);
-   ECompMgrConfigSet(cfg);
-   ECompMgrConfigGet(cfg);
+   dd = DLG_DATA_GET(d, cfg_composite);
+   ECompMgrConfigSet(dd);
+   ECompMgrConfigGet(dd);
 }
 
 static void
-_DlgFillComposite(Dialog * d __UNUSED__, DItem * table, void *data __UNUSED__)
+_DlgFillComposite(Dialog * d, DItem * table, void *data __UNUSED__)
 {
-   static cfg_composite Cfg_composite;
    DItem              *di, *radio;
+   cfg_composite      *dd;
+
+   dd = DLG_DATA_SET(d, cfg_composite);
+   if (!dd)
+      return;
 
    /* Get current settings */
-   ECompMgrConfigGet(&Cfg_composite);
-   DialogSetData(d, &Cfg_composite);
+   ECompMgrConfigGet(dd);
 
    /* Layout */
    DialogItemTableSetOptions(table, 2, 0, 0, 0);
@@ -561,7 +564,7 @@ _DlgFillComposite(Dialog * d __UNUSED__, DItem * table, void *data __UNUSED__)
    di = DialogAddItem(table, DITEM_CHECKBUTTON);
    DialogItemSetColSpan(di, 2);
    DialogItemSetText(di, _("Enable Composite"));
-   DialogItemCheckButtonSetPtr(di, &Cfg_composite.enable);
+   DialogItemCheckButtonSetPtr(di, &dd->enable);
 
    di = DialogAddItem(table, DITEM_SEPARATOR);
    DialogItemSetColSpan(di, 2);
@@ -569,7 +572,7 @@ _DlgFillComposite(Dialog * d __UNUSED__, DItem * table, void *data __UNUSED__)
    di = DialogAddItem(table, DITEM_CHECKBUTTON);
    DialogItemSetColSpan(di, 2);
    DialogItemSetText(di, _("Enable Fading"));
-   DialogItemCheckButtonSetPtr(di, &Cfg_composite.fading);
+   DialogItemCheckButtonSetPtr(di, &dd->fading);
 
    di = DialogAddItem(table, DITEM_TEXT);
    DialogItemSetFill(di, 0, 0);
@@ -580,7 +583,7 @@ _DlgFillComposite(Dialog * d __UNUSED__, DItem * table, void *data __UNUSED__)
    DialogItemSliderSetBounds(di, 0, 100);
    DialogItemSliderSetUnits(di, 5);
    DialogItemSliderSetJump(di, 5);
-   DialogItemSliderSetValPtr(di, &Cfg_composite.fade_speed);
+   DialogItemSliderSetValPtr(di, &dd->fade_speed);
 
    di = DialogAddItem(table, DITEM_SEPARATOR);
    DialogItemSetColSpan(di, 2);
@@ -608,7 +611,7 @@ _DlgFillComposite(Dialog * d __UNUSED__, DItem * table, void *data __UNUSED__)
    DialogItemSetText(di, _("Shadows Blurred"));
    DialogItemRadioButtonSetFirst(di, radio);
    DialogItemRadioButtonGroupSetVal(di, 2);
-   DialogItemRadioButtonGroupSetValPtr(radio, &Cfg_composite.shadow);
+   DialogItemRadioButtonGroupSetValPtr(radio, &dd->shadow);
 
    di = DialogAddItem(table, DITEM_SEPARATOR);
    DialogItemSetColSpan(di, 2);
@@ -622,7 +625,7 @@ _DlgFillComposite(Dialog * d __UNUSED__, DItem * table, void *data __UNUSED__)
    DialogItemSliderSetBounds(di, 0, 100);
    DialogItemSliderSetUnits(di, 5);
    DialogItemSliderSetJump(di, 5);
-   DialogItemSliderSetValPtr(di, &Cfg_composite.opacity_focused);
+   DialogItemSliderSetValPtr(di, &dd->opacity_focused);
 
    di = DialogAddItem(table, DITEM_TEXT);
    DialogItemSetFill(di, 0, 0);
@@ -633,7 +636,7 @@ _DlgFillComposite(Dialog * d __UNUSED__, DItem * table, void *data __UNUSED__)
    DialogItemSliderSetBounds(di, 0, 100);
    DialogItemSliderSetUnits(di, 5);
    DialogItemSliderSetJump(di, 5);
-   DialogItemSliderSetValPtr(di, &Cfg_composite.opacity_unfocused);
+   DialogItemSliderSetValPtr(di, &dd->opacity_unfocused);
 
    di = DialogAddItem(table, DITEM_TEXT);
    DialogItemSetFill(di, 0, 0);
@@ -644,7 +647,7 @@ _DlgFillComposite(Dialog * d __UNUSED__, DItem * table, void *data __UNUSED__)
    DialogItemSliderSetBounds(di, 0, 100);
    DialogItemSliderSetUnits(di, 5);
    DialogItemSliderSetJump(di, 5);
-   DialogItemSliderSetValPtr(di, &Cfg_composite.opacity_override);
+   DialogItemSliderSetValPtr(di, &dd->opacity_override);
 }
 
 const DialogDef     DlgComposite = {

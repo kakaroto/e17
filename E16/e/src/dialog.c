@@ -253,6 +253,7 @@ DialogDestroy(Dialog * d)
 
    Efree(d->name);
    Efree(d->title);
+   Efree(d->data);
    DialogKeybindingsDestroy(d);
    if (d->item)
       DialogItemDestroy(d->item, 0);
@@ -298,14 +299,15 @@ DialogCallExitFunction(Dialog * d)
       d->exit_func(d, d->exit_val, NULL);
 }
 
-void
-DialogSetData(Dialog * d, void *data)
+void               *
+DialogDataSet(Dialog * d, unsigned int size)
 {
-   d->data = data;
+   d->data = Ecalloc(size, 1);
+   return d->data;
 }
 
 void               *
-DialogGetData(Dialog * d)
+DialogDataGet(Dialog * d)
 {
    return d->data;
 }
