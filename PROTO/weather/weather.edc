@@ -3,7 +3,11 @@ images
    image: "icon-weather.png" COMP;
    image: "city_name_background.png" COMP;
    image: "title_bar.png" COMP;
+   image: "bg_day_clear.png" COMP;
    image: "bg_day_heavyrain.png" COMP;
+   image: "bg_day_rain.png" COMP;
+   image: "bg_night_clear.png" COMP;
+   image: "bg_night_rain.png" COMP;
    image: "cloud_storm_1.png" COMP;
    image: "cloud_storm_1_line.png" COMP;
    image: "cloud_storm_2.png" COMP;
@@ -23,41 +27,44 @@ images
    image: "cloud_rain_2_line.png" COMP;
    image: "cloud_rain_3.png" COMP;
    image: "cloud_rain_3_line.png" COMP;
-   image: "cloud_1.png" COMP;
-   image: "cloud_1_line.png" COMP;
-   image: "cloud_2.png" COMP;
-   image: "cloud_2_line.png" COMP;
-   image: "cloud_3.png" COMP;
-   image: "cloud_3_line.png" COMP;
+   image: "cloud_cloud_1.png" COMP;
+   image: "cloud_cloud_1_line.png" COMP;
+   image: "cloud_cloud_2.png" COMP;
+   image: "cloud_cloud_2_line.png" COMP;
+   image: "cloud_cloud_3.png" COMP;
+   image: "cloud_cloud_3_line.png" COMP;
    image: "moon.png" COMP;
    image: "moon_line.png" COMP;
+   image: "sun.png" COMP;
+   image: "sun_line.png" COMP;
 }
 
-#define MOON_H 0.3
 #define THUNDER_H 0.15
 
 #define CLOUD_3(TYPE, CLOUD_H) \
 part \
 { \
-    name: "cloud"TYPE"_3_line"; \
+    name: "cloud_"TYPE"_3_line"; \
     mouse_events: 0; \
+    clip_to: "whole"; \
     description  \
     { \
         state: "default" 0.0; \
         color: 255 255 255 75; \
-        rel1.to_x: "cloud"TYPE"_3"; \
+        rel1.to_x: "cloud_"TYPE"_3"; \
         rel1.relative: 0.443 0.0; \
         rel1.offset: 0 0; \
-        rel2.to: "cloud"TYPE"_3"; \
+        rel2.to: "cloud_"TYPE"_3"; \
         rel2.offset: 0 0; \
         rel2.relative: 0.443 0.057; \
-        image.normal: "cloud"TYPE"_3_line.png"; \
+        image.normal: "cloud_"TYPE"_3_line.png"; \
     } \
 } \
 part  \
 { \
-    name: "cloud"TYPE"_3"; \
+    name: "cloud_"TYPE"_3"; \
     mouse_events: 0; \
+    clip_to: "whole"; \
     description  \
     { \
         state: "default" 0.0; \
@@ -65,7 +72,7 @@ part  \
         aspect_preference: VERTICAL; \
         rel1.relative: 0.18 0.0-CLOUD_H; \
         rel2.relative: 0.18 0.0; \
-        image.normal: "cloud"TYPE"_3.png"; \
+        image.normal: "cloud_"TYPE"_3.png"; \
     } \
     description \
     { \
@@ -97,17 +104,17 @@ part  \
 program \
 { \
     name: "cloud_3_"TYPE"_up"; \
-    signal: "up"; \
+    signal: TYPE",up"; \
     action: STATE_SET "up" 0.0; \
-    target: "cloud"TYPE"_3"; \
+    target: "cloud_"TYPE"_3"; \
     transition: ACCELERATE 0.75; \
 } \
 program \
 { \
     name: "cloud_3_"TYPE"_down"; \
-    signal: "down"; \
+    signal: TYPE",down"; \
     action: STATE_SET "down_2" 0.0; \
-    target: "cloud"TYPE"_3"; \
+    target: "cloud_"TYPE"_3"; \
     transition: DECELERATE 0.8; \
     after: "cloud_3_"TYPE"_down_2"; \
 } \
@@ -115,7 +122,7 @@ program \
 { \
     name: "cloud_3_"TYPE"_down_2"; \
     action: STATE_SET "down_3" 0.0; \
-    target: "cloud"TYPE"_3"; \
+    target: "cloud_"TYPE"_3"; \
     transition: DECELERATE 0.4; \
     after: "cloud_3_"TYPE"_down_3"; \
 } \
@@ -123,7 +130,7 @@ program \
 { \
     name: "cloud_3_"TYPE"_down_3"; \
     action: STATE_SET "down" 0.0; \
-    target: "cloud"TYPE"_3"; \
+    target: "cloud_"TYPE"_3"; \
     transition: DECELERATE 0.15; \
 }
 
@@ -132,25 +139,27 @@ program \
 #define CLOUD_3_2(TYPE, CLOUD_H) \
 part  \
 { \
-    name: "cloud"TYPE"_3_line_2"; \
+    name: "cloud_"TYPE"_3_line_2"; \
     mouse_events: 0; \
+    clip_to: "whole"; \
     description  \
     { \
         state: "default" 0.0; \
         color: 255 255 255 75; \
-        rel1.to_x: "cloud"TYPE"_3_2"; \
+        rel1.to_x: "cloud_"TYPE"_3_2"; \
         rel1.relative: 0.443 0.0; \
         rel1.offset: 0 0; \
-        rel2.to: "cloud"TYPE"_3_2"; \
+        rel2.to: "cloud_"TYPE"_3_2"; \
         rel2.offset: 0 0; \
         rel2.relative: 0.443 0.057; \
-        image.normal: "cloud"TYPE"_3_line.png"; \
+        image.normal: "cloud_"TYPE"_3_line.png"; \
     } \
 } \
 part  \
 { \
-    name: "cloud"TYPE"_3_2"; \
+    name: "cloud_"TYPE"_3_2"; \
     mouse_events: 0; \
+    clip_to: "whole"; \
     description  \
     { \
         state: "default" 0.0; \
@@ -158,7 +167,7 @@ part  \
         aspect_preference: VERTICAL; \
         rel1.relative: 0.9 0.0-CLOUD_H; \
         rel2.relative: 0.9 0.0; \
-        image.normal: "cloud"TYPE"_3.png"; \
+        image.normal: "cloud_"TYPE"_3.png"; \
     } \
     description \
     { \
@@ -190,17 +199,17 @@ part  \
 program \
 { \
     name: "cloud_3_2_"TYPE"_up"; \
-    signal: "up"; \
+    signal: TYPE",up"; \
     action: STATE_SET "up" 0.0; \
-    target: "cloud"TYPE"_3_2"; \
+    target: "cloud_"TYPE"_3_2"; \
     transition: ACCELERATE 0.65; \
 } \
 program \
 { \
     name: "cloud_3_2_"TYPE"_down"; \
-    signal: "down"; \
+    signal: TYPE",down"; \
     action: STATE_SET "down_2" 0.0; \
-    target: "cloud"TYPE"_3_2"; \
+    target: "cloud_"TYPE"_3_2"; \
     transition: DECELERATE 0.7; \
     after: "cloud_3_2_"TYPE"_down_2"; \
 } \
@@ -208,7 +217,7 @@ program \
 { \
     name: "cloud_3_2_"TYPE"_down_2"; \
     action: STATE_SET "down_3" 0.0; \
-    target: "cloud"TYPE"_3_2"; \
+    target: "cloud_"TYPE"_3_2"; \
     transition: DECELERATE 0.35; \
     after: "cloud_3_2_"TYPE"_down_3"; \
 } \
@@ -216,32 +225,34 @@ program \
 { \
     name: "cloud_3_2_"TYPE"_down_3"; \
     action: STATE_SET "down" 0.0; \
-    target: "cloud"TYPE"_3_2"; \
+    target: "cloud_"TYPE"_3_2"; \
     transition: DECELERATE 0.2; \
 }
 
 #define CLOUD_2(TYPE, CLOUD_H) \
 part  \
 { \
-    name: "cloud"TYPE"_2_line"; \
+    name: "cloud_"TYPE"_2_line"; \
     mouse_events: 0; \
+    clip_to: "whole"; \
     description  \
     { \
         state: "default" 0.0; \
         color: 255 255 255 75; \
-        rel1.to_x: "cloud"TYPE"_2"; \
+        rel1.to_x: "cloud_"TYPE"_2"; \
         rel1.relative: 0.443 0.0; \
         rel1.offset: 0 0; \
-        rel2.to: "cloud"TYPE"_2"; \
+        rel2.to: "cloud_"TYPE"_2"; \
         rel2.offset: 0 0; \
         rel2.relative: 0.443 0.057; \
-        image.normal: "cloud"TYPE"_2_line.png"; \
+        image.normal: "cloud_"TYPE"_2_line.png"; \
     } \
 } \
 part  \
 { \
-    name: "cloud"TYPE"_2"; \
+    name: "cloud_"TYPE"_2"; \
     mouse_events: 0; \
+    clip_to: "whole"; \
     description  \
     { \
         state: "default" 0.0; \
@@ -249,7 +260,7 @@ part  \
         aspect_preference: VERTICAL; \
         rel1.relative: 0.35 0.0-CLOUD_H; \
         rel2.relative: 0.35 0.0; \
-        image.normal: "cloud"TYPE"_2.png"; \
+        image.normal: "cloud_"TYPE"_2.png"; \
     } \
     description \
     { \
@@ -281,17 +292,17 @@ part  \
 program \
 { \
     name: "cloud_2_"TYPE"_up"; \
-    signal: "up"; \
+    signal: TYPE",up"; \
     action: STATE_SET "up" 0.0; \
-    target: "cloud"TYPE"_2"; \
+    target: "cloud_"TYPE"_2"; \
     transition: ACCELERATE 0.8; \
 } \
 program \
 { \
     name: "cloud_2_"TYPE"_down"; \
-    signal: "down"; \
+    signal: TYPE",down"; \
     action: STATE_SET "down_2" 0.0; \
-    target: "cloud"TYPE"_2"; \
+    target: "cloud_"TYPE"_2"; \
     transition: DECELERATE 0.65; \
     after: "cloud_2_"TYPE"_down_2"; \
 } \
@@ -299,7 +310,7 @@ program \
 { \
     name: "cloud_2_"TYPE"_down_2"; \
     action: STATE_SET "down_3" 0.0; \
-    target: "cloud"TYPE"_2"; \
+    target: "cloud_"TYPE"_2"; \
     transition: DECELERATE 0.1; \
     after: "cloud_2_"TYPE"_down_3"; \
 } \
@@ -307,32 +318,34 @@ program \
 { \
     name: "cloud_2_"TYPE"_down_3"; \
     action: STATE_SET "down" 0.0; \
-    target: "cloud"TYPE"_2"; \
+    target: "cloud_"TYPE"_2"; \
     transition: DECELERATE 0.2; \
 }
 
 #define CLOUD_1(TYPE, CLOUD_H) \
 part  \
 { \
-    name: "cloud"TYPE"_1_line"; \
+    name: "cloud_"TYPE"_1_line"; \
     mouse_events: 0; \
+    clip_to: "whole"; \
     description  \
     { \
         state: "default" 0.0; \
         color: 255 255 255 75; \
-        rel1.to_x: "cloud"TYPE"_1"; \
+        rel1.to_x: "cloud_"TYPE"_1"; \
         rel1.relative: 0.443 0.0; \
         rel1.offset: 0 0; \
-        rel2.to: "cloud"TYPE"_1"; \
+        rel2.to: "cloud_"TYPE"_1"; \
         rel2.offset: 0 0; \
         rel2.relative: 0.443 0.057; \
-        image.normal: "cloud"TYPE"_1_line.png"; \
+        image.normal: "cloud_"TYPE"_1_line.png"; \
     } \
 } \
 part  \
 { \
-    name: "cloud"TYPE"_1"; \
+    name: "cloud_"TYPE"_1"; \
     mouse_events: 0; \
+    clip_to: "whole"; \
     description  \
     { \
         state: "default" 0.0; \
@@ -340,7 +353,7 @@ part  \
         aspect_preference: VERTICAL; \
         rel1.relative: 0.7 0.0-CLOUD_H; \
         rel2.relative: 0.7 0.0; \
-        image.normal: "cloud"TYPE"_1.png"; \
+        image.normal: "cloud_"TYPE"_1.png"; \
     } \
     description \
     { \
@@ -372,17 +385,17 @@ part  \
 program \
 { \
     name: "cloud_1_"TYPE"_up"; \
-    signal: "up"; \
+    signal: TYPE",up"; \
     action: STATE_SET "up" 0.0; \
-    target: "cloud"TYPE"_1"; \
+    target: "cloud_"TYPE"_1"; \
     transition: ACCELERATE 0.7; \
 } \
 program \
 { \
     name: "cloud_1_"TYPE"_down"; \
-    signal: "down"; \
+    signal: TYPE",down"; \
     action: STATE_SET "down_2" 0.0; \
-    target: "cloud"TYPE"_1"; \
+    target: "cloud_"TYPE"_1"; \
     transition: DECELERATE 0.7; \
     after: "cloud_1_"TYPE"_down_2"; \
 } \
@@ -390,7 +403,7 @@ program \
 { \
     name: "cloud_1_"TYPE"_down_2"; \
     action: STATE_SET "down_3" 0.0; \
-    target: "cloud"TYPE"_1"; \
+    target: "cloud_"TYPE"_1"; \
     transition: DECELERATE 0.3; \
     after: "cloud_1_"TYPE"_down_3"; \
 } \
@@ -398,32 +411,34 @@ program \
 { \
     name: "cloud_1_"TYPE"_down_3"; \
     action: STATE_SET "down" 0.0; \
-    target: "cloud"TYPE"_1"; \
+    target: "cloud_"TYPE"_1"; \
     transition: DECELERATE 0.2; \
 }
 
 #define CLOUD_1_2(TYPE, CLOUD_H) \
 part  \
 { \
-    name: "cloud"TYPE"_1_line_2"; \
+    name: "cloud_"TYPE"_1_line_2"; \
     mouse_events: 0; \
+    clip_to: "whole"; \
     description  \
     { \
         state: "default" 0.0; \
         color: 255 255 255 75; \
-        rel1.to_x: "cloud"TYPE"_1_2"; \
+        rel1.to_x: "cloud_"TYPE"_1_2"; \
         rel1.relative: 0.443 0.0; \
         rel1.offset: 0 0; \
-        rel2.to: "cloud"TYPE"_1_2"; \
+        rel2.to: "cloud_"TYPE"_1_2"; \
         rel2.offset: 0 0; \
         rel2.relative: 0.443 0.057; \
-        image.normal: "cloud"TYPE"_1_line.png"; \
+        image.normal: "cloud_"TYPE"_1_line.png"; \
     } \
 } \
 part  \
 { \
-    name: "cloud"TYPE"_1_2"; \
+    name: "cloud_"TYPE"_1_2"; \
     mouse_events: 0; \
+        clip_to: "whole"; \
     description  \
     { \
         state: "default" 0.0; \
@@ -431,7 +446,7 @@ part  \
         aspect_preference: VERTICAL; \
         rel1.relative: 0.1 0.0-CLOUD_H; \
         rel2.relative: 0.1 0.0; \
-        image.normal: "cloud"TYPE"_1.png"; \
+        image.normal: "cloud_"TYPE"_1.png"; \
     } \
     description \
     { \
@@ -463,17 +478,17 @@ part  \
 program \
 { \
     name: "cloud_1_2_"TYPE"_up"; \
-    signal: "up"; \
+    signal: TYPE",up"; \
     action: STATE_SET "up" 0.0; \
-    target: "cloud"TYPE"_1_2"; \
+    target: "cloud_"TYPE"_1_2"; \
     transition: ACCELERATE 0.8; \
 } \
 program \
 { \
     name: "cloud_1_2_"TYPE"_down"; \
-    signal: "down"; \
+    signal: TYPE",down"; \
     action: STATE_SET "down_2" 0.0; \
-    target: "cloud"TYPE"_1_2"; \
+    target: "cloud_"TYPE"_1_2"; \
     transition: DECELERATE 0.6; \
     after: "cloud_1_2_"TYPE"_down_2"; \
 } \
@@ -481,7 +496,7 @@ program \
 { \
     name: "cloud_1_2_"TYPE"_down_2"; \
     action: STATE_SET "down_3" 0.0; \
-    target: "cloud"TYPE"_1_2"; \
+    target: "cloud_"TYPE"_1_2"; \
     transition: DECELERATE 0.4; \
     after: "cloud_1_2_"TYPE"_down_3"; \
 } \
@@ -489,7 +504,7 @@ program \
 { \
     name: "cloud_1_2_"TYPE"_down_3"; \
     action: STATE_SET "down" 0.0; \
-    target: "cloud"TYPE"_1_2"; \
+    target: "cloud_"TYPE"_1_2"; \
     transition: DECELERATE 0.1; \
 }
 
@@ -509,6 +524,7 @@ program \
     {  \
         name: "cloud_tstorm_2_thunder_line";  \
         mouse_events: 0;  \
+        clip_to: "whole"; \
         description   \
         {  \
             state: "default" 0.0;  \
@@ -526,6 +542,7 @@ program \
     {  \
         name: "cloud_tstorm_2_thunder";  \
         mouse_events: 0;  \
+        clip_to: "whole"; \
         description   \
         {  \
             state: "default" 0.0;  \
@@ -570,6 +587,7 @@ program \
     {  \
         name: "cloud_tstorm_1_thunder_line_1";  \
         mouse_events: 0;  \
+        clip_to: "whole"; \
         description   \
         {  \
             state: "default" 0.0;  \
@@ -587,6 +605,7 @@ program \
     {  \
         name: "cloud_tstorm_1_thunder";  \
         mouse_events: 0;  \
+        clip_to: "whole"; \
         description   \
         {  \
             state: "default" 0.0;  \
@@ -631,6 +650,7 @@ program \
     {  \
         name: "cloud_tstorm_1_thunder_line_2";  \
         mouse_events: 0;  \
+        clip_to: "whole"; \
         description   \
         {  \
             state: "default" 0.0;  \
@@ -648,6 +668,7 @@ program \
     {  \
         name: "cloud_tstorm_1_thunder_2";  \
         mouse_events: 0;  \
+        clip_to: "whole"; \
         description   \
         {  \
             state: "default" 0.0;  \
@@ -690,7 +711,7 @@ program \
     program \
     { \
         name: "thunder_"TYPE"_up"; \
-        signal: "up"; \
+        signal: TYPE",up"; \
         action: STATE_SET "up" 0.0; \
         target: "cloud_tstorm_1_thunder"; \
         transition: ACCELERATE 0.55; \
@@ -698,7 +719,7 @@ program \
     program \
     { \
         name: "thunder_"TYPE"_down"; \
-        signal: "down"; \
+        signal: TYPE",down"; \
         action: STATE_SET "down_2" 0.0; \
         target: "cloud_tstorm_1_thunder"; \
         transition: DECELERATE 0.55; \
@@ -722,7 +743,7 @@ program \
     program \
     { \
         name: "thunder_1_2_"TYPE"_up"; \
-        signal: "up"; \
+        signal: TYPE",up"; \
         action: STATE_SET "up" 0.0; \
         target: "cloud_tstorm_1_thunder_2"; \
         transition: ACCELERATE 0.75; \
@@ -730,7 +751,7 @@ program \
     program \
     { \
         name: "thunder_1_2_"TYPE"_down"; \
-        signal: "down"; \
+        signal: TYPE",down"; \
         action: STATE_SET "down_2" 0.0; \
         target: "cloud_tstorm_1_thunder_2"; \
         transition: DECELERATE 0.6; \
@@ -754,7 +775,7 @@ program \
     program \
     { \
         name: "thunder_2_"TYPE"_up"; \
-        signal: "up"; \
+        signal: TYPE",up"; \
         action: STATE_SET "up" 0.0; \
         target: "cloud_tstorm_2_thunder"; \
         transition: ACCELERATE 0.6; \
@@ -762,7 +783,7 @@ program \
     program \
     { \
         name: "thunder_2_"TYPE"_down"; \
-        signal: "down"; \
+        signal: TYPE",down"; \
         action: STATE_SET "down_2" 0.0; \
         target: "cloud_tstorm_2_thunder"; \
         transition: DECELERATE 0.8; \
@@ -784,181 +805,426 @@ program \
         transition: DECELERATE 0.2; \
     }
 
+#define SPHERE(TYPE, SPHERE_H, REL_H) \
+    part  \
+    { \
+        name: TYPE"_line"; \
+        mouse_events: 0; \
+        clip_to: "whole"; \
+        description  \
+        { \
+            state: "default" 0.0; \
+            color: 255 255 255 75; \
+            rel1.to_x: TYPE""; \
+            rel1.relative: 0.5 0.0; \
+            rel1.offset: 0 0; \
+            rel2.to: TYPE""; \
+            rel2.offset: 0 0; \
+            rel2.relative: 0.5 0.5; \
+            image.normal: TYPE"_line.png"; \
+        } \
+    } \
+    part  \
+    { \
+        name: TYPE""; \
+        mouse_events: 0; \
+        clip_to: "whole"; \
+        description   \
+        {  \
+            state: "default" 0.0;  \
+            aspect: 1 1;  \
+            aspect_preference: VERTICAL;  \
+            rel1.relative: 0.5 0.0-SPHERE_H;  \
+            rel2.relative: 0.5 0.0;  \
+            image.normal: TYPE".png";  \
+        }  \
+        description  \
+        {  \
+            state: "up" 0.0;  \
+            inherit: "default" 0.0;  \
+        }  \
+        description  \
+        {  \
+            state: "down" 0.0;  \
+            inherit: "default" 0.0;  \
+            rel1.relative: 0.5 REL_H;  \
+            rel2.relative: 0.5 (REL_H+SPHERE_H);  \
+        }  \
+        description  \
+        {  \
+            state: "down_2" 0.0;  \
+            inherit: "default" 0.0;  \
+            rel1.relative: 0.5 (REL_H+0.03);  \
+            rel2.relative: 0.5 (REL_H+0.03+SPHERE_H);  \
+        }  \
+        description  \
+        {  \
+            state: "down_3" 0.0;  \
+            inherit: "default" 0.0;  \
+            rel1.relative: 0.5 (REL_H-0.02);  \
+            rel2.relative: 0.5 (REL_H-0.02+SPHERE_H);  \
+        }  \
+    } \
+    program  \
+    {  \
+        name: TYPE"_up";  \
+        signal: TYPE",up";  \
+        action: STATE_SET "up" 0.0;  \
+        target: TYPE"";  \
+        transition: ACCELERATE 0.6;  \
+    }  \
+    program  \
+    {  \
+        name: TYPE"_down";  \
+        signal: TYPE",down";  \
+        action: STATE_SET "down_2" 0.0;  \
+        target: TYPE"";  \
+        transition: DECELERATE 0.8;  \
+        after: TYPE"_down_2";  \
+    }  \
+    program  \
+    {  \
+        name: TYPE"_down_2";  \
+        action: STATE_SET "down_3" 0.0;  \
+        target: TYPE"";  \
+        transition: DECELERATE 0.3;  \
+        after: TYPE"_down_3";  \
+    }  \
+    program  \
+    {  \
+        name: TYPE"_down_3";  \
+        action: STATE_SET "down" 0.0;  \
+        target: TYPE"";  \
+        transition: DECELERATE 0.2;  \
+    }
+ 
+#define BG(TYPE) \
+    part  \
+    { \
+        name: "bg_"TYPE; \
+        mouse_events: 1; \
+        clip_to: "whole"; \
+        description  \
+        { \
+            state: "default" 0.0; \
+            rel1.relative: 1.0 0.0; \
+            rel2.relative: 2.1 1.0; \
+            image.normal: "bg_"TYPE".png"; \
+        } \
+        description \
+        { \
+            state: "right" 0.0; \
+            inherit: "default" 0.0; \
+        } \
+        description \
+        { \
+            state: "left" 0.0; \
+            inherit: "default" 0.0; \
+            rel1.relative: -1.1 0.0; \
+            rel2.relative: 0.0 1.0; \
+        } \
+        description \
+        { \
+            state: "show" 0.0; \
+            inherit: "default" 0.0; \
+            rel1.relative: -0.1 0.0; \
+            rel2.relative: 1.0 1.0; \
+        } \
+    } \
+    program   \
+    {   \
+        name: TYPE"_right_show";   \
+        signal: TYPE",right,show"; \
+        action: STATE_SET "right" 0.0;   \
+        target: "bg_"TYPE;   \
+        after: TYPE"_right_show_2"; \
+    } \
+    program   \
+    {   \
+        name: TYPE"_right_show_2";   \
+        action: STATE_SET "show" 0.0;   \
+        target: "bg_"TYPE;   \
+        transition: LINEAR 0.5;   \
+    } \
+    program   \
+    {   \
+        name: TYPE"_left_show";   \
+        signal: TYPE",left,show";   \
+        action: STATE_SET "left" 0.0;   \
+        target: "bg_"TYPE;   \
+        after: TYPE"_left_show_2"; \
+    } \
+    program   \
+    {   \
+        name: TYPE"_left_show_2";   \
+        action: STATE_SET "show" 0.0;   \
+        target: "bg_"TYPE;   \
+        transition: LINEAR 0.5;   \
+    } \
+    program   \
+    {   \
+        name: TYPE"_right_hide";   \
+        signal: TYPE",right,hide"; \
+        action: STATE_SET "left" 0.0;   \
+        target: "bg_"TYPE;   \
+        transition: LINEAR 0.5;   \
+    } \
+    program   \
+    {   \
+        name: TYPE"_left_hide";   \
+        signal: TYPE",left,hide"; \
+        action: STATE_SET "right" 0.0;   \
+        target: "bg_"TYPE;   \
+        transition: LINEAR 0.5; \ 
+    }
+
+/**
+ * @param DIRECTION right or left.
+ * @param BG day_clear, day_heavyrain, day_rain, night_clear, night_rain
+ * @param SPHERE moon or sun
+ * @param CLOUD 'empty', _storm, _rain or _tstorm
+ *
+ * A new signal is created : DIRECTION,BG,SPHERE,CLOUD
+ */
+#define PGME(DIRECTION, BG, SPHERE, CLOUD) \
+    program \
+    { \
+        name: DIRECTION"_"BG"_"SPHERE"_"CLOUD; \
+        signal: DIRECTION","BG","SPHERE","CLOUD; \
+        script \
+        { \
+            new signal[128]; \
+            set_str(next_show_signal, CLOUD",down"); \
+            set_str(next_hide_signal, CLOUD",up"); \
+            set_str(next_show_sphere, SPHERE",down"); \
+            set_str(next_hide_sphere, SPHERE",up"); \
+            set_str(next_bg, BG); \
+            set_str(direction, DIRECTION); \
+            \
+            get_str(current_hide_signal, signal, 128); \
+            if( strcmp(signal, "") ) \
+            { \
+                emit(signal, ""); \
+                get_str(current_hide_sphere, signal, 128); \
+                emit(signal, ""); \
+            } \
+            else \
+            run_program(PROGRAM:"show_bg"); \
+        } \
+    } 
+
+#define PGME_WAIT_END(CLOUD, DELAY) \
+    program \
+    { \
+        name: CLOUD"_wait_end"; \
+        signal: CLOUD",up"; \
+        in: DELAY 0.0; \
+        after: "show_bg"; \
+    }
+
+
+
 collections 
 {
-   group 
-     {
+    group 
+    {
         name: "icon";
         max: 128 128;
         parts 
-          {
-             part 
-               {
-                  name: "image";
-                  mouse_events: 1;
-                  description 
-                    {
-                       state: "default" 0.0;
-                       aspect: 1.0 1.0;
-                       aspect_preference: BOTH;
-                       image.normal: "icon-weather.png";
-                    }
-               }
-          }
-     }
+        {
+            part 
+            {
+                name: "image";
+                mouse_events: 1;
+                description 
+                {
+                    state: "default" 0.0;
+                    aspect: 1.0 1.0;
+                    aspect_preference: BOTH;
+                    image.normal: "icon-weather.png";
+                }
+            }
+        }
+    }
     group 
-     {
+    {
         name: "main";
         min: 165 300;
+        script
+        {
+            public current_hide_signal;
+            public next_show_signal;
+            public next_hide_signal;
+
+            public current_hide_sphere;
+            public next_show_sphere;
+            public next_hide_sphere;
+
+            public current_bg;
+            public next_bg;
+            public direction;
+        }
         parts 
-          {
-            part 
-              {
-                  name: "bg_day_heavyrain";
-                  mouse_events: 1;
-                  description 
-                    {
-                       state: "default" 0.0;
-                       rel1.relative: -0.1 0.0;
-                       image.normal: "bg_day_heavyrain.png";
-                    }
-               }
-            part 
-              {
-                  name: "moon_line";
-                  mouse_events: 0;
-                  description 
-                    {
-                       state: "default" 0.0;
-                       color: 255 255 255 75;
-                       rel1.to_x: "moon";
-                       rel1.relative: 0.5 0.0;
-                       rel1.offset: 0 0;
-                       rel2.to: "moon";
-                       rel2.offset: 0 0;
-                       rel2.relative: 0.5 0.5;
-                       image.normal: "moon_line.png";
-                    }
-               }
-            part 
-              {
-                  name: "moon";
-                  mouse_events: 0;
-                  description  
-                  { 
-                      state: "default" 0.0; 
-                      aspect: 1 1; 
-                      aspect_preference: VERTICAL; 
-                      rel1.relative: 0.5 0.0-MOON_H; 
-                      rel2.relative: 0.5 0.0; 
-                      image.normal: "moon.png"; 
-                  } 
-                  description 
-                  { 
-                      state: "up" 0.0; 
-                      inherit: "default" 0.0; 
-                  } 
-                  description 
-                  { 
-                      state: "down" 0.0; 
-                      inherit: "default" 0.0; 
-                      rel1.relative: 0.5 0.2; 
-                      rel2.relative: 0.5 0.2+MOON_H; 
-                  } 
-                  description 
-                  { 
-                      state: "down_2" 0.0; 
-                      inherit: "default" 0.0; 
-                      rel1.relative: 0.5 0.23; 
-                      rel2.relative: 0.5 0.23+MOON_H; 
-                  } 
-                  description 
-                  { 
-                      state: "down_3" 0.0; 
-                      inherit: "default" 0.0; 
-                      rel1.relative: 0.5 0.18; 
-                      rel2.relative: 0.5 0.18+MOON_H; 
-                  } 
-              }
-              program 
-               { 
-                   name: "moon_up"; 
-                   signal: "up"; 
-                   action: STATE_SET "up" 0.0; 
-                   target: "moon"; 
-                   transition: ACCELERATE 0.6; 
-               } 
-               program 
-               { 
-                   name: "moon_down"; 
-                   signal: "down"; 
-                   action: STATE_SET "down_2" 0.0; 
-                   target: "moon"; 
-                   transition: DECELERATE 0.8; 
-                   after: "moon_down_2"; 
-               } 
-               program 
-               { 
-                   name: "moon_down_2"; 
-                   action: STATE_SET "down_3" 0.0; 
-                   target: "moon"; 
-                   transition: DECELERATE 0.3; 
-                   after: "moon_down_3"; 
-               } 
-               program 
-               { 
-                   name: "moon_down_3"; 
-                   action: STATE_SET "down" 0.0; 
-                   target: "moon"; 
-                   transition: DECELERATE 0.2; 
-               }
-               //CLOUDS("_storm");
-            //CLOUDS("_rain");
-            //CLOUDS("");
-            CLOUDS_THUNDERS("_tstorm");
+        {
             part  
-              {
-                  name: "title_bar";
-                  mouse_events: 0;
-                  description 
+            {
+                name: "whole";
+                mouse_events: 0;
+                description 
+                {
+                    state: "default" 0.0;
+                }
+            }
+            part  
+            {
+                name: "bg";
+                type: RECT;
+                mouse_events: 0;
+                clip_to: "whole";
+                description 
+                {
+                    state: "default" 0.0;
+                    color: 0 0 0 255;
+                }
+            }
+            BG("day_clear");
+            BG("day_heavyrain");
+            BG("day_rain");
+            BG("night_clear");
+            BG("night_rain");
+            SPHERE("moon", 0.3, 0.2);
+            SPHERE("sun", 0.5, 0.1);
+            CLOUDS("storm");
+            CLOUDS("rain");
+            CLOUDS("cloud");
+            CLOUDS_THUNDERS("tstorm");
+            part  
+            {
+                name: "title_bar";
+                mouse_events: 0;
+                clip_to: "whole";
+                description 
+                {
+                    state: "default" 0.0;
+                    rel2.relative: 1.0 0.075; 
+                    image.normal: "title_bar.png";
+                }
+            }
+            part 
+            {
+                name: "text.temp";
+                type:          TEXT;
+                effect:        SOFT_SHADOW;
+                mouse_events: 0;
+                clip_to: "whole";
+                description 
+                {
+                    state: "default" 0.0;
+                    rel1.relative: 0.5 0.63; 
+                    rel2.relative: 0.5 0.9; 
+                    text 
                     {
-                       state: "default" 0.0;
-                       rel2.relative: 1.0 0.075; 
-                       image.normal: "title_bar.png";
+                        text: "-46°c";
+                        font: "Sans,Edje-Vera";
+                        size: 32;
+                        min: 1 1;
+                        align: 0.5 0.0;
                     }
-               }
-             part 
-              {
-                  name: "text.temp";
-                  type:          TEXT;
-                  effect:        SOFT_SHADOW;
-                  mouse_events: 0;
-                  description 
+                }
+            }
+            part 
+            {
+                name: "city_name_background";
+                mouse_events: 0;
+                clip_to: "whole";
+                description 
+                {
+                    state: "default" 0.0;
+                    rel1.relative: 0.0 0.85;
+                    image.normal: "city_name_background.png";
+                }
+            }
+        }
+        programs
+        {
+            //right,day_heavyrain,moon,cloud
+            PGME("right", "day_heavyrain", "moon", "cloud");
+            PGME("right", "day_heavyrain", "sun", "cloud");
+            PGME_WAIT_END("cloud", 0.7);
+
+            PGME("left", "day_clear", "sun", "rain");
+            PGME("right", "day_rain", "sun", "rain");
+            PGME_WAIT_END("rain", 0.7);
+
+            //left,night_clear,moon,storm
+            PGME("left", "night_clear", "moon", "storm");
+            PGME("right", "day_rain", "sun", "storm");
+            PGME_WAIT_END("storm", 0.7);
+
+            PGME("left", "night_rain", "moon", "tstorm");
+            //right,day_rain,sun,tstorm
+            PGME("right", "day_rain", "sun", "tstorm");
+            PGME_WAIT_END("tstorm", 0.7);
+
+            program
+            {
+                name: "show_bg";
+                script
+                {
+                    new signal[128];
+                    new str1[128];
+                    new str2[128];
+                    new str3[128];
+
+                    get_str(direction, str1, 128);
+                    get_str(current_bg, str2, 128);
+                    get_str(next_bg, str3, 128);
+
+                    if(strcmp(str2, str3))
                     {
-                       state: "default" 0.0;
-                       rel1.relative: 0.5 0.63; 
-                       rel2.relative: 0.5 0.9; 
-                       text 
-                       {
-                           text: "-46°c";
-                           font: "Sans,Edje-Vera";
-                           size: 32;
-                           min: 1 1;
-                           align: 0.5 0.0;
-                       }
+                        snprintf(signal, 128, "%s,%s,hide", str2, str1);
+                        
+                        if( strcmp(signal, "") )
+                        emit(signal, "");
+
+                        snprintf(signal, 128, "%s,%s,show", str3, str1);
+                        if( strcmp(signal, "") )
+                        emit(signal, "");
+
+                        set_str(current_bg, str3);
                     }
-              }
-             part 
-               {
-                  name: "city_name_background";
-                  mouse_events: 0;
-                  description 
-                    {
-                       state: "default" 0.0;
-                       rel1.relative: 0.0 0.85;
-                       image.normal: "city_name_background.png";
-                    }
-               }
-          }
-     }
+                }
+                after: "show_bg_end";
+            }
+            program
+            {
+                name: "show_bg_end";
+                in: 0.5 0.0;
+                after: "show_next";
+            }
+            program
+            {
+                name: "show_next";
+                script
+                {
+                    new signal[128];
+                    set_str(current_hide_signal, "");
+                    set_str(current_hide_sphere, "");
+
+                    get_str(next_show_signal, signal, 128);
+                    emit(signal, "");
+
+                    get_str(next_show_sphere, signal, 128);
+                    emit(signal, "");
+
+                    get_str(next_hide_signal, signal, 128);
+                    set_str(current_hide_signal, signal);
+
+                    get_str(next_hide_sphere, signal, 128);
+                    set_str(current_hide_sphere, signal);
+                }
+            }
+        }
+    }
 }
+
