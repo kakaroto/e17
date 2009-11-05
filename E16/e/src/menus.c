@@ -2068,47 +2068,83 @@ MenusSighan(int sig, void *prm __UNUSED__)
  * Configuration dialog
  */
 
-static char         tmp_warpmenus;
-static char         tmp_animated_menus;
-static char         tmp_menusonscreen;
+typedef struct {
+   char                warp;
+   char                animate;
+   char                onscreen;
+   int                 icon_size;
+} MenudDlgData;
 
 static void
-CB_ConfigureMenus(Dialog * d __UNUSED__, int val, void *data __UNUSED__)
+CB_ConfigureMenus(Dialog * d, int val, void *data __UNUSED__)
 {
-   if (val < 2)
-     {
-	Conf.menus.warp = tmp_warpmenus;
-	Conf.menus.animate = tmp_animated_menus;
-	Conf.menus.onscreen = tmp_menusonscreen;
-     }
+   MenudDlgData       *dd = DLG_DATA_GET(d, MenudDlgData);
+
+   if (val >= 2)
+      return;
+
+   Conf.menus.warp = dd->warp;
+   Conf.menus.animate = dd->animate;
+   Conf.menus.onscreen = dd->onscreen;
+   Conf.menus.icon_size = dd->icon_size;
+
    autosave();
 }
 
 static void
-_DlgFillMenus(Dialog * d __UNUSED__, DItem * table, void *data __UNUSED__)
+_DlgCbIconSize(Dialog * d, int val __UNUSED__, void *data)
 {
-   DItem              *di;
+   MenudDlgData       *dd = DLG_DATA_GET(d, MenudDlgData);
+   DItem              *di = (DItem *) data;
+   char                s[256];
 
-   tmp_warpmenus = Conf.menus.warp;
-   tmp_animated_menus = Conf.menus.animate;
-   tmp_menusonscreen = Conf.menus.onscreen;
+   Esnprintf(s, sizeof(s), _("Icon size: %2i"), dd->icon_size);
+   DialogItemSetText(di, s);
+   DialogDrawItems(d, di, 0, 0, 99999, 99999);
+}
 
-   DialogItemTableSetOptions(table, 3, 0, 0, 0);
+static void
+_DlgFillMenus(Dialog * d, DItem * table, void *data __UNUSED__)
+{
+   DItem              *di, *label;
+   MenudDlgData       *dd;
+
+   dd = DLG_DATA_SET(d, MenudDlgData);
+   if (!dd)
+      return;
+
+   dd->warp = Conf.menus.warp;
+   dd->animate = Conf.menus.animate;
+   dd->onscreen = Conf.menus.onscreen;
+   dd->icon_size = Conf.menus.icon_size;
+
+   DialogItemTableSetOptions(table, 2, 0, 0, 0);
 
    di = DialogAddItem(table, DITEM_CHECKBUTTON);
-   DialogItemSetColSpan(di, 3);
+   DialogItemSetColSpan(di, 2);
    DialogItemSetText(di, _("Animated display of menus"));
-   DialogItemCheckButtonSetPtr(di, &tmp_animated_menus);
+   DialogItemCheckButtonSetPtr(di, &dd->animate);
 
    di = DialogAddItem(table, DITEM_CHECKBUTTON);
-   DialogItemSetColSpan(di, 3);
+   DialogItemSetColSpan(di, 2);
    DialogItemSetText(di, _("Always pop up menus on screen"));
-   DialogItemCheckButtonSetPtr(di, &tmp_menusonscreen);
+   DialogItemCheckButtonSetPtr(di, &dd->onscreen);
 
    di = DialogAddItem(table, DITEM_CHECKBUTTON);
-   DialogItemSetColSpan(di, 3);
+   DialogItemSetColSpan(di, 2);
    DialogItemSetText(di, _("Warp pointer after moving menus"));
-   DialogItemCheckButtonSetPtr(di, &tmp_warpmenus);
+   DialogItemCheckButtonSetPtr(di, &dd->warp);
+
+   di = label = DialogAddItem(table, DITEM_TEXT);
+   DialogItemSetAlign(di, 0, 512);
+
+   di = DialogAddItem(table, DITEM_SLIDER);
+   DialogItemSliderSetBounds(di, 12, 48);
+   DialogItemSliderSetUnits(di, 2);
+   DialogItemSliderSetJump(di, 4);
+   DialogItemSliderSetValPtr(di, &dd->icon_size);
+   DialogItemSetCallback(di, _DlgCbIconSize, 0, label);
+   DialogItemCallCallback(d, di);
 }
 
 const DialogDef     DlgMenus = {
