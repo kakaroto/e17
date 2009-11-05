@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2009-10-17 09:41+0200\n"
+"POT-Creation-Date: 2009-11-05 18:19+0100\n"
 "PO-Revision-Date: 2009-08-27 11:43+0000\n"
 "Last-Translator: MaXeR <Unknown>\n"
 "Language-Team: Arabic <ar@li.org>\n"
@@ -41,7 +41,7 @@ msgstr ""
 "Mandrake - mandrake@mandrake.net\n"
 "Kim Woelders - kim@woelders.dk\n"
 
-#: src/aclass.c:211 src/backgrounds.c:236 src/borders.c:677 src/buttons.c:181
+#: src/aclass.c:211 src/backgrounds.c:236 src/borders.c:698 src/buttons.c:181
 #: src/cursors.c:131 src/iclass.c:338 src/tclass.c:113 src/tooltips.c:135
 #, c-format
 msgid "%u references remain\n"
@@ -152,7 +152,7 @@ msgstr "أخرج من إنجلتمنت"
 msgid "Attention !!!"
 msgstr "إهتمام !!!"
 
-#: src/alert.c:583 src/dialog.c:729 src/dialog.c:1917 src/events.c:87
+#: src/alert.c:583 src/dialog.c:731 src/dialog.c:1919 src/events.c:87
 #: src/setup.c:157 src/sound.c:310
 msgid "OK"
 msgstr "حسنا"
@@ -271,7 +271,7 @@ msgstr ""
 msgid "Enable background transparency compatibility mode"
 msgstr ""
 
-#: src/backgrounds.c:2236 src/mod-trans.c:204
+#: src/backgrounds.c:2236 src/mod-trans.c:185
 msgid "Background"
 msgstr "الخلفيّة"
 
@@ -300,12 +300,12 @@ msgid ""
 "%s\n"
 msgstr ""
 
-#: src/config.c:198 src/config.c:298
+#: src/config.c:198 src/config.c:301
 #, c-format
 msgid "CONFIG: ignoring extra data in \"%s\"\n"
 msgstr ""
 
-#: src/config.c:206 src/config.c:305
+#: src/config.c:206 src/config.c:308
 #, c-format
 msgid "CONFIG: missing required data in \"%s\"\n"
 msgstr ""
@@ -326,19 +326,19 @@ msgid ""
 "Outcome is likely not good.\n"
 msgstr ""
 
-#: src/config.c:314
+#: src/config.c:317
 msgid "Theme versioning ERROR"
 msgstr ""
 
-#: src/config.c:315
+#: src/config.c:318
 msgid "Restart with Defaults"
 msgstr "أعد التشغيل بالإفتراضيات"
 
-#: src/config.c:316
+#: src/config.c:319
 msgid "Abort and Exit"
 msgstr "الغ وأخرج"
 
-#: src/config.c:317
+#: src/config.c:320
 #, c-format
 msgid ""
 "ERROR:\n"
@@ -359,7 +359,7 @@ msgid ""
 "features in Enlightenment in new versions.\n"
 msgstr ""
 
-#: src/config.c:585
+#: src/config.c:591
 msgid "Enlightenment Starting..."
 msgstr "جاريبدء إنجلتمنت..."
 
@@ -367,7 +367,7 @@ msgstr "جاريبدء إنجلتمنت..."
 msgid "Settings..."
 msgstr "الإعدادات..."
 
-#: src/container.c:1190 src/dialog.c:741 src/pager.c:1013 config/strings.c:30
+#: src/container.c:1190 src/dialog.c:743 src/pager.c:1013 config/strings.c:30
 #: config/strings.c:124
 msgid "Close"
 msgstr "إغلاق"
@@ -376,104 +376,104 @@ msgstr "إغلاق"
 msgid "Create New Iconbox"
 msgstr ""
 
-#: src/container.c:1499 src/container.c:1572
+#: src/container.c:1502 src/container.c:1579
 #, c-format
 msgid "Icon size: %2d"
 msgstr "حجم الأيقونة: %2d"
 
-#: src/container.c:1536
+#: src/container.c:1543
 msgid "Transparent background"
 msgstr "خلفية شفافة"
 
-#: src/container.c:1540
+#: src/container.c:1547
 msgid "Hide inner border"
 msgstr "إخفاء الحدود الداخلية"
 
-#: src/container.c:1544
+#: src/container.c:1551
 msgid "Draw base image behind Icons"
 msgstr ""
 
-#: src/container.c:1548
+#: src/container.c:1555
 msgid "Hide scrollbar when not needed"
 msgstr ""
 
-#: src/container.c:1552
+#: src/container.c:1559
 msgid "Automatically resize to fit Icons"
 msgstr "اعد التحجيم تلقائياً ليتناسب مع الأيقونات"
 
-#: src/container.c:1559
+#: src/container.c:1566
 msgid "Alignment of anchoring when automatically resizing:"
 msgstr ""
 
-#: src/container.c:1590
+#: src/container.c:1597
 msgid "Orientation:"
 msgstr "الوضع:"
 
-#: src/container.c:1595
+#: src/container.c:1602
 msgid "Scrollbar side:"
 msgstr ""
 
-#: src/container.c:1600
+#: src/container.c:1607
 msgid "Scrollbar arrows:"
 msgstr ""
 
-#: src/container.c:1603
+#: src/container.c:1610
 msgid "Horizontal"
 msgstr "أفقي"
 
-#: src/container.c:1608
+#: src/container.c:1615
 msgid "Left / Top"
 msgstr "اليسار / الأعلى"
 
-#: src/container.c:1613
+#: src/container.c:1620
 msgid "Start"
 msgstr "ابدأ"
 
-#: src/container.c:1618
+#: src/container.c:1625
 msgid "Vertical"
 msgstr "عمودي"
 
-#: src/container.c:1624
+#: src/container.c:1631
 msgid "Right / Bottom"
 msgstr "اليمين / الأسفل"
 
-#: src/container.c:1630
+#: src/container.c:1637
 msgid "Both ends"
 msgstr ""
 
-#: src/container.c:1638
+#: src/container.c:1645
 msgid "End"
 msgstr "النهاية"
 
-#: src/container.c:1646 src/focus.c:841
+#: src/container.c:1653 src/focus.c:886
 msgid "None"
 msgstr "بدون"
 
-#: src/container.c:1656
+#: src/container.c:1663
 msgid "Show icon names"
 msgstr "عرض اسمءا الأيقونات"
 
-#: src/container.c:1660
+#: src/container.c:1667
 msgid "Animate when iconifying to this Iconbox"
 msgstr ""
 
-#: src/container.c:1670
+#: src/container.c:1677
 msgid "Icon image display policy (if one operation fails, try the next):"
 msgstr ""
 
-#: src/container.c:1675
+#: src/container.c:1682
 msgid "Snapshot Windows, Use application icon, Use Enlightenment Icon"
 msgstr ""
 
-#: src/container.c:1682
+#: src/container.c:1689
 msgid "Use application icon, Use Enlightenment Icon, Snapshot Window"
 msgstr ""
 
-#: src/container.c:1687
+#: src/container.c:1694
 msgid "Use Enlightenment Icon, Snapshot Window"
 msgstr ""
 
-#: src/container.c:1700
+#: src/container.c:1707
 msgid ""
 "Enlightenment Iconbox\n"
 "Settings Dialog\n"
@@ -613,11 +613,11 @@ msgid ""
 "Settings Dialog\n"
 msgstr ""
 
-#: src/dialog.c:734
+#: src/dialog.c:736
 msgid "Apply"
 msgstr "تطبيق"
 
-#: src/ecompmgr.c:2602
+#: src/ecompmgr.c:2603
 msgid ""
 "Cannot enable Composite Manager.\n"
 "Use xdpyinfo to check that\n"
@@ -641,99 +641,107 @@ msgid ""
 "Exiting.\n"
 msgstr ""
 
-#: src/focus.c:713
+#: src/focus.c:739
 msgid "Focus follows pointer"
 msgstr ""
 
-#: src/focus.c:719
+#: src/focus.c:745
 msgid "Focus follows pointer sloppily"
 msgstr ""
 
-#: src/focus.c:725
+#: src/focus.c:751
 msgid "Focus follows mouse clicks"
 msgstr ""
 
-#: src/focus.c:735
+#: src/focus.c:761
 msgid "Clicking in a window always raises it"
 msgstr ""
 
-#: src/focus.c:743
+#: src/focus.c:769
 msgid "All new windows first get the focus"
 msgstr ""
 
-#: src/focus.c:748
+#: src/focus.c:774
 msgid "Only new dialog windows get the focus"
 msgstr ""
 
-#: src/focus.c:755
+#: src/focus.c:781
 msgid "Only new dialogs whose owner is focused get the focus"
 msgstr ""
 
-#: src/focus.c:760
+#: src/focus.c:786
 msgid "Raise windows while switching focus"
 msgstr ""
 
-#: src/focus.c:766
+#: src/focus.c:792
 msgid "Send mouse pointer to window while switching focus"
 msgstr ""
 
-#: src/focus.c:772
+#: src/focus.c:798
 msgid "Always send mouse pointer to window on focus switch"
 msgstr ""
 
-#: src/focus.c:780
-msgid "Display and use focus list"
+#: src/focus.c:806
+msgid "Raise windows automatically"
 msgstr ""
 
-#: src/focus.c:785
-msgid "Include sticky windows in focus list"
-msgstr ""
-
-#: src/focus.c:790
-msgid "Include shaded windows in focus list"
-msgstr ""
-
-#: src/focus.c:795
-msgid "Include iconified windows in focus list"
-msgstr ""
-
-#: src/focus.c:800
-msgid "Include windows on other desks in focus list"
-msgstr ""
-
-#: src/focus.c:805
-msgid "Focus windows while switching"
-msgstr ""
-
-#: src/focus.c:810
-msgid "Raise windows after focus switch"
-msgstr ""
-
-#: src/focus.c:815
-msgid "Send mouse pointer to window after focus switch"
+#: src/focus.c:812
+msgid "Autoraise delay:"
 msgstr ""
 
 #: src/focus.c:825
-msgid "Focuslist image display policy (if one operation fails, try the next):"
+msgid "Display and use focus list"
 msgstr ""
 
-#: src/focus.c:829
-msgid "First E Icon, then App Icon"
+#: src/focus.c:830
+msgid "Include sticky windows in focus list"
 msgstr ""
 
 #: src/focus.c:835
+msgid "Include shaded windows in focus list"
+msgstr ""
+
+#: src/focus.c:840
+msgid "Include iconified windows in focus list"
+msgstr ""
+
+#: src/focus.c:845
+msgid "Include windows on other desks in focus list"
+msgstr ""
+
+#: src/focus.c:850
+msgid "Focus windows while switching"
+msgstr ""
+
+#: src/focus.c:855
+msgid "Raise windows after focus switch"
+msgstr ""
+
+#: src/focus.c:860
+msgid "Send mouse pointer to window after focus switch"
+msgstr ""
+
+#: src/focus.c:870
+msgid "Focuslist image display policy (if one operation fails, try the next):"
+msgstr ""
+
+#: src/focus.c:874
+msgid "First E Icon, then App Icon"
+msgstr ""
+
+#: src/focus.c:880
 msgid "First App Icon, then E Icon"
 msgstr ""
 
-#: src/focus.c:849
+#: src/focus.c:894
 msgid "Focus"
 msgstr "البؤرة"
 
-#: src/focus.c:850
+#: src/focus.c:895
 msgid "Focus Settings"
 msgstr "خيارات البؤرة"
 
-#: src/focus.c:853
+#: src/focus.c:898
 msgid ""
 "Enlightenment Focus\n"
 "Settings Dialog\n"
@@ -779,7 +787,7 @@ msgid ""
 "Selection Dialog\n"
 msgstr ""
 
-#: src/groups.c:727 src/groups.c:736 src/groups.c:744 src/groups.c:925
+#: src/groups.c:727 src/groups.c:736 src/groups.c:744 src/groups.c:919
 msgid "Window Group Error"
 msgstr ""
 
@@ -808,96 +816,96 @@ msgid ""
 "\n"
 msgstr ""
 
-#: src/groups.c:836
+#: src/groups.c:830
 msgid "   Pick the group to configure:   "
 msgstr ""
 
-#: src/groups.c:867
+#: src/groups.c:861
 msgid ""
 "  The following actions are  \n"
 "  applied to all group members:  "
 msgstr ""
 
-#: src/groups.c:872 src/groups.c:969
+#: src/groups.c:866 src/groups.c:963
 msgid "Changing Border Style"
 msgstr ""
 
-#: src/groups.c:877 src/groups.c:974
+#: src/groups.c:871 src/groups.c:968
 msgid "Iconifying"
 msgstr ""
 
-#: src/groups.c:882 src/groups.c:979
+#: src/groups.c:876 src/groups.c:973
 msgid "Killing"
 msgstr ""
 
-#: src/groups.c:887 src/groups.c:984
+#: src/groups.c:881 src/groups.c:978
 msgid "Moving"
 msgstr "تتحرك"
 
-#: src/groups.c:892 src/groups.c:989
+#: src/groups.c:886 src/groups.c:983
 msgid "Raising/Lowering"
 msgstr ""
 
-#: src/groups.c:897 src/groups.c:994
+#: src/groups.c:891 src/groups.c:988
 msgid "Sticking"
 msgstr ""
 
-#: src/groups.c:902 src/groups.c:999
+#: src/groups.c:896 src/groups.c:993
 msgid "Shading"
 msgstr "تظليل"
 
-#: src/groups.c:909
+#: src/groups.c:903
 msgid "Window Group Settings"
 msgstr ""
 
-#: src/groups.c:912
+#: src/groups.c:906
 msgid ""
 "Enlightenment Window Group\n"
 "Settings Dialog\n"
 msgstr ""
 
-#: src/groups.c:927
+#: src/groups.c:921
 msgid ""
 "\n"
 "  This window currently does not belong to any groups.  \n"
 "\n"
 msgstr ""
 
-#: src/groups.c:962
+#: src/groups.c:956
 msgid " Per-group settings: "
 msgstr ""
 
-#: src/groups.c:1008
+#: src/groups.c:1002
 msgid " Global settings: "
 msgstr ""
 
-#: src/groups.c:1012
+#: src/groups.c:1006
 msgid "Swap Window Locations"
 msgstr ""
 
-#: src/groups.c:1018 src/menus-misc.c:643 config/strings.c:140
+#: src/groups.c:1012 src/menus-misc.c:643 config/strings.c:140
 msgid "Groups"
 msgstr "المجموعات"
 
-#: src/groups.c:1019
+#: src/groups.c:1013
 msgid "Default Group Control Settings"
 msgstr ""
 
-#: src/groups.c:1022
+#: src/groups.c:1016
 msgid ""
 "Enlightenment Default\n"
 "Group Control Settings Dialog\n"
 msgstr ""
 
-#: src/groups.c:1050
+#: src/groups.c:1044
 msgid "Pick the group the window will belong to:"
 msgstr ""
 
-#: src/groups.c:1056
+#: src/groups.c:1050
 msgid "Select the group to remove the window from:"
 msgstr ""
 
-#: src/groups.c:1061
+#: src/groups.c:1055
 msgid "Select the group to break:"
 msgstr ""
 
@@ -968,7 +976,7 @@ msgstr ""
 msgid "Iconbox Settings"
 msgstr ""
 
-#: src/ipc.c:195 src/ipc.c:1472 src/ipc.c:1479 src/theme.c:372
+#: src/ipc.c:195 src/ipc.c:1472 src/ipc.c:1479 src/theme.c:378
 msgid "Message"
 msgstr "رسالة"
 
@@ -1087,82 +1095,87 @@ msgstr ""
 msgid "Group %i"
 msgstr "المجموعة %i"
 
-#: src/menus.c:2100
+#: src/menus.c:2101
+#, fuzzy, c-format
+msgid "Icon size: %2i"
+msgstr "حجم الأيقونة: %2d"
+
+#: src/menus.c:2125
 msgid "Animated display of menus"
 msgstr ""
 
-#: src/menus.c:2105
+#: src/menus.c:2130
 msgid "Always pop up menus on screen"
 msgstr ""
 
-#: src/menus.c:2110
+#: src/menus.c:2135
 msgid "Warp pointer after moving menus"
 msgstr ""
 
-#: src/menus.c:2116
+#: src/menus.c:2152
 msgid "Menus"
 msgstr "القوائم"
 
-#: src/menus.c:2117
+#: src/menus.c:2153
 msgid "Menu Settings"
 msgstr "إعدادات القائمة"
 
-#: src/menus.c:2120
+#: src/menus.c:2156
 msgid ""
 "Enlightenment Menu\n"
 "Settings Dialog\n"
 msgstr ""
 
-#: src/mod-trans.c:114 src/mod-trans.c:264
+#: src/mod-trans.c:95 src/mod-trans.c:245
 #, c-format
 msgid "Theme transparency: %2d"
 msgstr ""
 
-#: src/mod-trans.c:143
+#: src/mod-trans.c:124
 msgid "Changes Might Require Restart:"
 msgstr ""
 
-#: src/mod-trans.c:152
+#: src/mod-trans.c:133
 msgid "Borders:"
 msgstr "الحدود:"
 
-#: src/mod-trans.c:156
+#: src/mod-trans.c:137
 msgid "Menus:"
 msgstr "القوائم:"
 
-#: src/mod-trans.c:160
+#: src/mod-trans.c:141
 msgid "Hilights:"
 msgstr ""
 
-#: src/mod-trans.c:164
+#: src/mod-trans.c:145
 msgid "E Widgets:"
 msgstr ""
 
-#: src/mod-trans.c:168
+#: src/mod-trans.c:149
 msgid "E Dialogs:"
 msgstr ""
 
-#: src/mod-trans.c:172
+#: src/mod-trans.c:153
 msgid "Tooltips:"
 msgstr ""
 
-#: src/mod-trans.c:176 src/settings.c:82 src/settings.c:87 src/settings.c:354
+#: src/mod-trans.c:157 src/settings.c:82 src/settings.c:87 src/settings.c:354
 msgid "Opaque"
 msgstr "معتم"
 
-#: src/mod-trans.c:235
+#: src/mod-trans.c:216
 msgid "Glass"
 msgstr "زجاج"
 
-#: src/mod-trans.c:280
+#: src/mod-trans.c:261
 msgid "Transparency"
 msgstr "الشفافية"
 
-#: src/mod-trans.c:281
+#: src/mod-trans.c:262
 msgid "Selective Transparency Settings"
 msgstr ""
 
-#: src/mod-trans.c:284
+#: src/mod-trans.c:265
 msgid ""
 "Enlightenment Selective Transparency\n"
 "Settings Dialog\n"
@@ -1529,113 +1542,91 @@ msgid ""
 "Settings Dialog\n"
 msgstr ""
 
-#: src/settings.c:483
-msgid "Raise windows automatically"
-msgstr ""
-
 #: src/settings.c:489
-msgid "Autoraise delay:"
-msgstr ""
-
-#: src/settings.c:500
-msgid "Autoraise"
-msgstr ""
-
-#: src/settings.c:501
-msgid "Autoraise Settings"
-msgstr ""
-
-#: src/settings.c:504
-msgid ""
-"Enlightenment Automatic Raising\n"
-"of Windows Settings Dialog\n"
-msgstr ""
-
-#: src/settings.c:541
 msgid "Enable Dialog Headers"
 msgstr ""
 
-#: src/settings.c:547
+#: src/settings.c:495
 msgid "Enable Button Images"
 msgstr ""
 
-#: src/settings.c:556
+#: src/settings.c:504
 msgid "Enable sliding startup windows"
 msgstr ""
 
-#: src/settings.c:564
+#: src/settings.c:512
 msgid "Use saveunders to reduce window exposures"
 msgstr ""
 
-#: src/settings.c:570 config/strings.c:138 config/strings.c:154
+#: src/settings.c:518 config/strings.c:138 config/strings.c:154
 msgid "Miscellaneous"
 msgstr "متنوع"
 
-#: src/settings.c:571
+#: src/settings.c:519
 msgid "Miscellaneous Settings"
 msgstr "إعدادات متنوعة"
 
-#: src/settings.c:574
+#: src/settings.c:522
 msgid ""
 "Enlightenment Miscellaneous\n"
 "Settings Dialog\n"
 msgstr ""
 
-#: src/settings.c:615
+#: src/settings.c:566
 msgid "Enable Composite"
 msgstr ""
 
-#: src/settings.c:623
+#: src/settings.c:574
 msgid "Enable Fading"
 msgstr "فعّل الخفوت"
 
-#: src/settings.c:629
+#: src/settings.c:580
 msgid "Fading Speed:"
 msgstr "سرعة الخفوت:"
 
-#: src/settings.c:642
+#: src/settings.c:593
 msgid "Shadows Off"
 msgstr ""
 
-#: src/settings.c:648
+#: src/settings.c:599
 msgid "Shadows Sharp"
 msgstr ""
 
-#: src/settings.c:654
+#: src/settings.c:605
 msgid "Shadows Sharp2"
 msgstr ""
 
-#: src/settings.c:660
+#: src/settings.c:611
 msgid "Shadows Blurred"
 msgstr ""
 
-#: src/settings.c:671
+#: src/settings.c:622
 msgid "Default focused window opacity:"
 msgstr ""
 
-#: src/settings.c:682
+#: src/settings.c:633
 msgid "Default unfocused window opacity:"
 msgstr ""
 
-#: src/settings.c:693
+#: src/settings.c:644
 msgid "Default pop-up window opacity:"
 msgstr ""
 
-#: src/settings.c:704
+#: src/settings.c:655
 msgid "Composite"
 msgstr "مُركّب"
 
-#: src/settings.c:705
+#: src/settings.c:656
 msgid "Composite Settings"
 msgstr ""
 
-#: src/settings.c:708
+#: src/settings.c:659
 msgid ""
 "Enlightenment Composite\n"
 "Settings Dialog\n"
 msgstr ""
 
-#: src/settings.c:794
+#: src/settings.c:744
 msgid "Enlightenment Settings"
 msgstr ""
 
@@ -1684,124 +1675,124 @@ msgid ""
 "access to, nor have heard of.\n"
 msgstr ""
 
-#: src/snaps.c:727
+#: src/snaps.c:723
 msgid "Title:"
 msgstr "العنوان:"
 
-#: src/snaps.c:739
+#: src/snaps.c:735
 msgid "Name:"
 msgstr "الإسم:"
 
-#: src/snaps.c:752
+#: src/snaps.c:748
 msgid "Class:"
 msgstr "الصف:"
 
-#: src/snaps.c:765
+#: src/snaps.c:761
 msgid "Role:"
 msgstr "الدور:"
 
-#: src/snaps.c:778
+#: src/snaps.c:774
 msgid "Command:"
 msgstr "الأمر :"
 
-#: src/snaps.c:818
+#: src/snaps.c:814
 msgid "Track Changes"
 msgstr ""
 
-#: src/snaps.c:823
+#: src/snaps.c:819
 msgid "Location"
 msgstr "المكان"
 
-#: src/snaps.c:828
+#: src/snaps.c:824
 msgid "Border style"
 msgstr "نمط الحدود"
 
-#: src/snaps.c:833 config/strings.c:176
+#: src/snaps.c:829 config/strings.c:176
 msgid "Size"
 msgstr "الحجم"
 
-#: src/snaps.c:838 config/strings.c:92 config/strings.c:114
+#: src/snaps.c:834 config/strings.c:92 config/strings.c:114
 msgid "Desktop"
 msgstr "سطح المكتب"
 
-#: src/snaps.c:843
+#: src/snaps.c:839
 msgid "Shaded state"
 msgstr ""
 
-#: src/snaps.c:848
+#: src/snaps.c:844
 msgid "Sticky state"
 msgstr ""
 
-#: src/snaps.c:853
+#: src/snaps.c:849
 msgid "Stacking layer"
 msgstr ""
 
-#: src/snaps.c:858
+#: src/snaps.c:854
 msgid "Window List Skip"
 msgstr ""
 
-#: src/snaps.c:864 config/strings.c:137 config/strings.c:164
+#: src/snaps.c:860 config/strings.c:137 config/strings.c:164
 msgid "Opacity"
 msgstr "العتمة"
 
-#: src/snaps.c:869
+#: src/snaps.c:865
 msgid "Shadowing"
 msgstr "تظليل"
 
-#: src/snaps.c:875
+#: src/snaps.c:871
 msgid "Flags"
 msgstr "الرايات"
 
-#: src/snaps.c:894
+#: src/snaps.c:890
 msgid "Restart application on login"
 msgstr ""
 
-#: src/snaps.c:913
+#: src/snaps.c:909
 msgid "Remember this window's group(s)"
 msgstr ""
 
-#: src/snaps.c:921
+#: src/snaps.c:917
 msgid "Remembered Application Attributes"
 msgstr ""
 
-#: src/snaps.c:924
+#: src/snaps.c:920
 msgid ""
 "Select the attributes of this\n"
 "window you wish to Remember\n"
 "from now on\n"
 msgstr ""
 
-#: src/snaps.c:1014
+#: src/snaps.c:1010
 msgid "Delete"
 msgstr "احذف"
 
-#: src/snaps.c:1042
+#: src/snaps.c:1038
 msgid "Remembered Settings..."
 msgstr ""
 
-#: src/snaps.c:1049
+#: src/snaps.c:1045
 msgid "Unused"
 msgstr "غير مستخدم"
 
-#: src/snaps.c:1062
+#: src/snaps.c:1058
 msgid "There are no active windows with remembered attributes."
 msgstr ""
 
-#: src/snaps.c:1068
+#: src/snaps.c:1064
 msgid "Remember"
 msgstr "تذكّر"
 
-#: src/snaps.c:1069
+#: src/snaps.c:1065
 msgid "Remembered Windows Settings"
 msgstr ""
 
-#: src/snaps.c:1072
+#: src/snaps.c:1068
 msgid ""
 "Enlightenment Remembered\n"
 "Windows Settings Dialog\n"
 msgstr ""
 
-#: src/snaps.c:1166
+#: src/snaps.c:1162
 msgid "Error saving snaps file\n"
 msgstr ""
 
@@ -1873,7 +1864,7 @@ msgstr ""
 msgid "Systray Settings"
 msgstr ""
 
-#: src/theme.c:341
+#: src/theme.c:347
 #, c-format
 msgid ""
 "No themes were found in the default directories:\n"
@@ -1881,32 +1872,32 @@ msgid ""
 "Proceeding from here is mostly pointless.\n"
 msgstr ""
 
-#: src/theme.c:372
+#: src/theme.c:378
 msgid "Changes will take effect after restart"
 msgstr ""
 
-#: src/theme.c:392
+#: src/theme.c:398
 msgid "Use theme font configuration"
 msgstr ""
 
-#: src/theme.c:397
+#: src/theme.c:403
 #, c-format
 msgid "Use alternate font configuration (%s)"
 msgstr ""
 
-#: src/theme.c:398
+#: src/theme.c:404
 msgid "Not set"
 msgstr ""
 
-#: src/theme.c:405
+#: src/theme.c:411
 msgid "Theme"
 msgstr "السمة"
 
-#: src/theme.c:406
+#: src/theme.c:412
 msgid "Theme Settings"
 msgstr "إعدادات السمات"
 
-#: src/theme.c:409
+#: src/theme.c:415
 msgid ""
 "Enlightenment Theme\n"
 "Settings Dialog\n"

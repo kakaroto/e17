@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.7\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2009-10-17 09:41+0200\n"
+"POT-Creation-Date: 2009-11-05 18:19+0100\n"
 "PO-Revision-Date: 2004-09-14 20:43-0300\n"
 "Last-Translator: Viktor Kojouharov\n"
 "Language-Team: Bulgarian\n"
@@ -48,7 +48,7 @@ msgstr ""
 "Mandrake - mandrake@mandrake.net\n"
 "Kim Woelders - kim@woelders.dk\n"
 
-#: src/aclass.c:211 src/backgrounds.c:236 src/borders.c:677 src/buttons.c:181
+#: src/aclass.c:211 src/backgrounds.c:236 src/borders.c:698 src/buttons.c:181
 #: src/cursors.c:131 src/iclass.c:338 src/tclass.c:113 src/tooltips.c:135
 #, c-format
 msgid "%u references remain\n"
@@ -174,7 +174,7 @@ msgstr "Излезте от Enlightenment"
 msgid "Attention !!!"
 msgstr "Внимание !!!"
 
-#: src/alert.c:583 src/dialog.c:729 src/dialog.c:1917 src/events.c:87
+#: src/alert.c:583 src/dialog.c:731 src/dialog.c:1919 src/events.c:87
 #: src/setup.c:157 src/sound.c:310
 msgid "OK"
 msgstr "Да"
@@ -293,7 +293,7 @@ msgstr "Фонът не се сменя от темата"
 msgid "Enable background transparency compatibility mode"
 msgstr ""
 
-#: src/backgrounds.c:2236 src/mod-trans.c:204
+#: src/backgrounds.c:2236 src/mod-trans.c:185
 msgid "Background"
 msgstr "Фон"
 
@@ -330,12 +330,12 @@ msgstr ""
 "\n"
 "%s\n"
 
-#: src/config.c:198 src/config.c:298
+#: src/config.c:198 src/config.c:301
 #, c-format
 msgid "CONFIG: ignoring extra data in \"%s\"\n"
 msgstr "CONFIG: игнорираме екстра данни в \"%s\"\n"
 
-#: src/config.c:206 src/config.c:305
+#: src/config.c:206 src/config.c:308
 #, c-format
 msgid "CONFIG: missing required data in \"%s\"\n"
 msgstr "CONFIG: в \"%s\" липсват нужните данни\n"
@@ -362,19 +362,19 @@ msgstr ""
 "Предупреждение:  Конфигурационна грешка в %s блок.\n"
 "Резултатът е съмнителен...\n"
 
-#: src/config.c:314
+#: src/config.c:317
 msgid "Theme versioning ERROR"
 msgstr "ГРЕШКА във версията на темата"
 
-#: src/config.c:315
+#: src/config.c:318
 msgid "Restart with Defaults"
 msgstr "Рестартирайте \"по подразбиране\""
 
-#: src/config.c:316
+#: src/config.c:319
 msgid "Abort and Exit"
 msgstr "Прекъснете и излезте"
 
-#: src/config.c:317
+#: src/config.c:320
 #, c-format
 msgid ""
 "ERROR:\n"
@@ -410,7 +410,7 @@ msgstr ""
 "сигурно не сте подновявали Enlightenment наскоро, а тази тема\n"
 "се възползва от нови свойства в новата-версия.\n"
 
-#: src/config.c:585
+#: src/config.c:591
 msgid "Enlightenment Starting..."
 msgstr "Enlightenment стартира..."
 
@@ -419,7 +419,7 @@ msgstr "Enlightenment стартира..."
 msgid "Settings..."
 msgstr "Настройки за фокуса"
 
-#: src/container.c:1190 src/dialog.c:741 src/pager.c:1013 config/strings.c:30
+#: src/container.c:1190 src/dialog.c:743 src/pager.c:1013 config/strings.c:30
 #: config/strings.c:124
 msgid "Close"
 msgstr "Затвори"
@@ -428,106 +428,106 @@ msgstr "Затвори"
 msgid "Create New Iconbox"
 msgstr "Създай нов Iconbox"
 
-#: src/container.c:1499 src/container.c:1572
+#: src/container.c:1502 src/container.c:1579
 #, c-format
 msgid "Icon size: %2d"
 msgstr "Размер на иконата: %2d"
 
-#: src/container.c:1536
+#: src/container.c:1543
 msgid "Transparent background"
 msgstr "Прозрачен фон"
 
-#: src/container.c:1540
+#: src/container.c:1547
 msgid "Hide inner border"
 msgstr "Скрии вътрешната рамка"
 
-#: src/container.c:1544
+#: src/container.c:1551
 msgid "Draw base image behind Icons"
 msgstr "Рисувай базовата картина зад иконите"
 
-#: src/container.c:1548
+#: src/container.c:1555
 msgid "Hide scrollbar when not needed"
 msgstr "Скрйй плъзгачите когато не са нужни"
 
-#: src/container.c:1552
+#: src/container.c:1559
 msgid "Automatically resize to fit Icons"
 msgstr "Автоматично променете размера за да се съберат иконите"
 
-#: src/container.c:1559
+#: src/container.c:1566
 msgid "Alignment of anchoring when automatically resizing:"
 msgstr "Изравняване на опората при автоматично променяне на размера:"
 
-#: src/container.c:1590
+#: src/container.c:1597
 msgid "Orientation:"
 msgstr "Ориентация:"
 
-#: src/container.c:1595
+#: src/container.c:1602
 msgid "Scrollbar side:"
 msgstr "Страна на плъзгача:"
 
-#: src/container.c:1600
+#: src/container.c:1607
 msgid "Scrollbar arrows:"
 msgstr "Стрелки:"
 
-#: src/container.c:1603
+#: src/container.c:1610
 msgid "Horizontal"
 msgstr "Хоризонтална"
 
-#: src/container.c:1608
+#: src/container.c:1615
 msgid "Left / Top"
 msgstr "Лява / отгоре"
 
-#: src/container.c:1613
+#: src/container.c:1620
 msgid "Start"
 msgstr "В началото"
 
-#: src/container.c:1618
+#: src/container.c:1625
 msgid "Vertical"
 msgstr "Вертикална"
 
-#: src/container.c:1624
+#: src/container.c:1631
 msgid "Right / Bottom"
 msgstr "Дясна / долу"
 
-#: src/container.c:1630
+#: src/container.c:1637
 msgid "Both ends"
 msgstr "В 2-та края"
 
-#: src/container.c:1638
+#: src/container.c:1645
 msgid "End"
 msgstr "В края"
 
-#: src/container.c:1646 src/focus.c:841
+#: src/container.c:1653 src/focus.c:886
 msgid "None"
 msgstr "Никъде"
 
-#: src/container.c:1656
+#: src/container.c:1663
 msgid "Show icon names"
 msgstr "Показвай имена на икони"
 
-#: src/container.c:1660
+#: src/container.c:1667
 msgid "Animate when iconifying to this Iconbox"
 msgstr "Анимирай когато скривате към този Iconbox"
 
-#: src/container.c:1670
+#: src/container.c:1677
 msgid "Icon image display policy (if one operation fails, try the next):"
 msgstr ""
 "Поведение на имената на икони\n"
 "(ако едната операция не успее, опитай следващата):"
 
-#: src/container.c:1675
+#: src/container.c:1682
 msgid "Snapshot Windows, Use application icon, Use Enlightenment Icon"
 msgstr "Снимай прозорци, Използвай икони от програми, използвай Е икони"
 
-#: src/container.c:1682
+#: src/container.c:1689
 msgid "Use application icon, Use Enlightenment Icon, Snapshot Window"
 msgstr "Използвай икони от програми, Използвай Е икони, Снимай прозорц"
 
-#: src/container.c:1687
+#: src/container.c:1694
 msgid "Use Enlightenment Icon, Snapshot Window"
 msgstr "Използвай Е икони, Снимай прозорци"
 
-#: src/container.c:1700
+#: src/container.c:1707
 msgid ""
 "Enlightenment Iconbox\n"
 "Settings Dialog\n"
@@ -690,11 +690,11 @@ msgid ""
 "Settings Dialog\n"
 msgstr "Е: Виртуални полетаДиалог за настройки\n"
 
-#: src/dialog.c:734
+#: src/dialog.c:736
 msgid "Apply"
 msgstr "Приложи"
 
-#: src/ecompmgr.c:2602
+#: src/ecompmgr.c:2603
 msgid ""
 "Cannot enable Composite Manager.\n"
 "Use xdpyinfo to check that\n"
@@ -727,106 +727,114 @@ msgstr ""
 "\n"
 "Излиза се.\n"
 
-#: src/focus.c:713
+#: src/focus.c:739
 msgid "Focus follows pointer"
 msgstr "Фокусът следи показалеца"
 
-#: src/focus.c:719
+#: src/focus.c:745
 msgid "Focus follows pointer sloppily"
 msgstr "Фокусът следи показалеца небрежно"
 
-#: src/focus.c:725
+#: src/focus.c:751
 msgid "Focus follows mouse clicks"
 msgstr "Фокусът следи щраквания на мишката"
 
-#: src/focus.c:735
+#: src/focus.c:761
 msgid "Clicking in a window always raises it"
 msgstr "Щракване върху прозорец винаги го вдига"
 
-#: src/focus.c:743
+#: src/focus.c:769
 msgid "All new windows first get the focus"
 msgstr "Всички нови прозорци първи взимат фокуса"
 
-#: src/focus.c:748
+#: src/focus.c:774
 msgid "Only new dialog windows get the focus"
 msgstr "Само нови диалогови прозорци взимат фокуса"
 
-#: src/focus.c:755
+#: src/focus.c:781
 msgid "Only new dialogs whose owner is focused get the focus"
 msgstr "Само нови диалози чиито притежатели са фокусирани получават фокуса"
 
-#: src/focus.c:760
+#: src/focus.c:786
 #, fuzzy
 msgid "Raise windows while switching focus"
 msgstr "Фокусирай прозореца докато сменяте"
 
-#: src/focus.c:766
+#: src/focus.c:792
 #, fuzzy
 msgid "Send mouse pointer to window while switching focus"
 msgstr "Показалецът на мишката се праща при прозореца като се смени фокуса"
 
-#: src/focus.c:772
+#: src/focus.c:798
 #, fuzzy
 msgid "Always send mouse pointer to window on focus switch"
 msgstr "Показалецът на мишката се праща при прозореца като се смени фокуса"
 
-#: src/focus.c:780
+#: src/focus.c:806
+msgid "Raise windows automatically"
+msgstr "Автоматично вдигайте прозорците"
+
+#: src/focus.c:812
+msgid "Autoraise delay:"
+msgstr "Забавяне при автоматично вдигане:"
+
+#: src/focus.c:825
 msgid "Display and use focus list"
 msgstr "Показвай и използвай списъкът за фокус"
 
-#: src/focus.c:785
+#: src/focus.c:830
 msgid "Include sticky windows in focus list"
 msgstr "Включвай залепени прозорци в списъкът за фокус"
 
-#: src/focus.c:790
+#: src/focus.c:835
 msgid "Include shaded windows in focus list"
 msgstr "Включвай навити прозорци в списъкът за фокус"
 
-#: src/focus.c:795
+#: src/focus.c:840
 msgid "Include iconified windows in focus list"
 msgstr "Включвай скрити прозорци в списъкът за фокус"
 
-#: src/focus.c:800
+#: src/focus.c:845
 #, fuzzy
 msgid "Include windows on other desks in focus list"
 msgstr "Включвай навити прозорци в списъкът за фокус"
 
-#: src/focus.c:805
+#: src/focus.c:850
 msgid "Focus windows while switching"
 msgstr "Фокусирай прозореца докато сменяте"
 
-#: src/focus.c:810
+#: src/focus.c:855
 msgid "Raise windows after focus switch"
 msgstr "Вдигай прозореца след смяната на фокус"
 
-#: src/focus.c:815
+#: src/focus.c:860
 msgid "Send mouse pointer to window after focus switch"
 msgstr "Показалецът на мишката се праща при прозореца след смяна на фокуса"
 
-#: src/focus.c:825
+#: src/focus.c:870
 msgid "Focuslist image display policy (if one operation fails, try the next):"
 msgstr ""
 "Поведение на картините във Фокусната листа\n"
 "(ако едната операция се провали, да се пробва със следващата):"
 
-#: src/focus.c:829
+#: src/focus.c:874
 msgid "First E Icon, then App Icon"
 msgstr "Първо Е икони, после икони на програмата"
 
-#: src/focus.c:835
+#: src/focus.c:880
 msgid "First App Icon, then E Icon"
 msgstr "Първо икони на програмата, после Е икони"
 
-#: src/focus.c:849
+#: src/focus.c:894
 #, fuzzy
 msgid "Focus"
 msgstr "Никога не фокусирай"
 
-#: src/focus.c:850
+#: src/focus.c:895
 msgid "Focus Settings"
 msgstr "Настройки за фокуса"
 
-#: src/focus.c:853
+#: src/focus.c:898
 msgid ""
 "Enlightenment Focus\n"
 "Settings Dialog\n"
@@ -878,7 +886,7 @@ msgstr ""
 "Enlightenment Window Group\n"
 "Диалог за избиране\n"
 
-#: src/groups.c:727 src/groups.c:736 src/groups.c:744 src/groups.c:925
+#: src/groups.c:727 src/groups.c:736 src/groups.c:744 src/groups.c:919
 msgid "Window Group Error"
 msgstr "Грешка на Window Group"
 
@@ -921,11 +929,11 @@ msgstr ""
 "  Първо трябва да създадете група.  \n"
 "\n"
 
-#: src/groups.c:836
+#: src/groups.c:830
 msgid "   Pick the group to configure:   "
 msgstr "  Изберете групата за настройки:  "
 
-#: src/groups.c:867
+#: src/groups.c:861
 msgid ""
 "  The following actions are  \n"
 "  applied to all group members:  "
@@ -933,39 +941,39 @@ msgstr ""
 "  Следните настройки са  \n"
 "  за всички групи:  "
 
-#: src/groups.c:872 src/groups.c:969
+#: src/groups.c:866 src/groups.c:963
 msgid "Changing Border Style"
 msgstr "Смяна на рамков стил"
 
-#: src/groups.c:877 src/groups.c:974
+#: src/groups.c:871 src/groups.c:968
 msgid "Iconifying"
 msgstr "Скриване"
 
-#: src/groups.c:882 src/groups.c:979
+#: src/groups.c:876 src/groups.c:973
 msgid "Killing"
 msgstr "Убиване"
 
-#: src/groups.c:887 src/groups.c:984
+#: src/groups.c:881 src/groups.c:978
 msgid "Moving"
 msgstr "Мърдане"
 
-#: src/groups.c:892 src/groups.c:989
+#: src/groups.c:886 src/groups.c:983
 msgid "Raising/Lowering"
 msgstr "Вдигане/Смъкване"
 
-#: src/groups.c:897 src/groups.c:994
+#: src/groups.c:891 src/groups.c:988
 msgid "Sticking"
 msgstr "Залепяване"
 
-#: src/groups.c:902 src/groups.c:999
+#: src/groups.c:896 src/groups.c:993
 msgid "Shading"
 msgstr "Навиване"
 
-#: src/groups.c:909
+#: src/groups.c:903
 msgid "Window Group Settings"
 msgstr "Настройки на групи"
 
-#: src/groups.c:912
+#: src/groups.c:906
 msgid ""
 "Enlightenment Window Group\n"
 "Settings Dialog\n"
@@ -973,7 +981,7 @@ msgstr ""
 "Е: Групи от прозорци\n"
 "Диалог за настройки\n"
 
-#: src/groups.c:927
+#: src/groups.c:921
 msgid ""
 "\n"
 "  This window currently does not belong to any groups.  \n"
@@ -983,28 +991,28 @@ msgstr ""
 "  В момента този прозорец не принадлежи на никоя група.  \n"
 "\n"
 
-#: src/groups.c:962
+#: src/groups.c:956
 msgid " Per-group settings: "
 msgstr "Настройки за отделна група"
 
-#: src/groups.c:1008
+#: src/groups.c:1002
 msgid " Global settings: "
 msgstr "Глобални настройки"
 
-#: src/groups.c:1012
+#: src/groups.c:1006
 msgid "Swap Window Locations"
 msgstr "Размени мястото на прозорците"
 
-#: src/groups.c:1018 src/menus-misc.c:643 config/strings.c:140
+#: src/groups.c:1012 src/menus-misc.c:643 config/strings.c:140
 #, fuzzy
 msgid "Groups"
 msgstr "Група %i"
 
-#: src/groups.c:1019
+#: src/groups.c:1013
 msgid "Default Group Control Settings"
 msgstr "Настройки \"по подразбиране\" за групов контрол"
 
-#: src/groups.c:1022
+#: src/groups.c:1016
 msgid ""
 "Enlightenment Default\n"
 "Group Control Settings Dialog\n"
@@ -1012,17 +1020,17 @@ msgstr ""
 "Е: Групов контрол по подразбиране\n"
 "Диалог за настройки\n"
 
-#: src/groups.c:1050
+#: src/groups.c:1044
 #, fuzzy
 msgid "Pick the group the window will belong to:"
 msgstr "  Изберете групата в която този прозорец да принадлежи:  \n"
 
-#: src/groups.c:1056
+#: src/groups.c:1050
 #, fuzzy
 msgid "Select the group to remove the window from:"
 msgstr "   Изберете групата, от която да махнете прозореца.  "
 
-#: src/groups.c:1061
+#: src/groups.c:1055
 #, fuzzy
 msgid "Select the group to break:"
 msgstr "  Изберете групата, която да разтрогнете  "
@@ -1131,7 +1139,7 @@ msgstr "Опции за Iconbox"
 msgid "Iconbox Settings"
 msgstr "Настройки за Iconbox"
 
-#: src/ipc.c:195 src/ipc.c:1472 src/ipc.c:1479 src/theme.c:372
+#: src/ipc.c:195 src/ipc.c:1472 src/ipc.c:1479 src/theme.c:378
 msgid "Message"
 msgstr "Съобщение"
 
@@ -1277,29 +1285,34 @@ msgstr "Игнорирай тази група"
 msgid "Group %i"
 msgstr "Група %i"
 
-#: src/menus.c:2100
+#: src/menus.c:2101
+#, fuzzy, c-format
+msgid "Icon size: %2i"
+msgstr "Размер на иконата: %2d"
+
+#: src/menus.c:2125
 msgid "Animated display of menus"
 msgstr "Анимирай менютата"
 
-#: src/menus.c:2105
+#: src/menus.c:2130
 msgid "Always pop up menus on screen"
 msgstr "Винаги показвай менютата върху екрана"
 
-#: src/menus.c:2110
+#: src/menus.c:2135
 msgid "Warp pointer after moving menus"
 msgstr "Застъпвай показалеца след движение на менютата"
 
-#: src/menus.c:2116
+#: src/menus.c:2152
 #, fuzzy
 msgid "Menus"
 msgstr "Менюта:"
 
-#: src/menus.c:2117
+#: src/menus.c:2153
 #, fuzzy
 msgid "Menu Settings"
 msgstr "Други настройки"
 
-#: src/menus.c:2120
+#: src/menus.c:2156
 #, fuzzy
 msgid ""
 "Enlightenment Menu\n"
@@ -1308,57 +1321,57 @@ msgstr ""
 "Е: Фокус\n"
 "Диалог за настройкию\n"
 
-#: src/mod-trans.c:114 src/mod-trans.c:264
+#: src/mod-trans.c:95 src/mod-trans.c:245
 #, c-format
 msgid "Theme transparency: %2d"
 msgstr "Прозрачност на темата: %2d"
 
-#: src/mod-trans.c:143
+#: src/mod-trans.c:124
 msgid "Changes Might Require Restart:"
 msgstr "Промените може да изискват рестартиране:"
 
-#: src/mod-trans.c:152
+#: src/mod-trans.c:133
 msgid "Borders:"
 msgstr "Рамки:"
 
-#: src/mod-trans.c:156
+#: src/mod-trans.c:137
 msgid "Menus:"
 msgstr "Менюта:"
 
-#: src/mod-trans.c:160
+#: src/mod-trans.c:141
 msgid "Hilights:"
 msgstr "Откроявания:"
 
-#: src/mod-trans.c:164
+#: src/mod-trans.c:145
 msgid "E Widgets:"
 msgstr "Е Приспособления:"
 
-#: src/mod-trans.c:168
+#: src/mod-trans.c:149
 msgid "E Dialogs:"
 msgstr "E Диалози:"
 
-#: src/mod-trans.c:172
+#: src/mod-trans.c:153
 msgid "Tooltips:"
 msgstr "Съвети:"
 
-#: src/mod-trans.c:176 src/settings.c:82 src/settings.c:87 src/settings.c:354
+#: src/mod-trans.c:157 src/settings.c:82 src/settings.c:87 src/settings.c:354
 msgid "Opaque"
 msgstr "Плътен"
 
-#: src/mod-trans.c:235
+#: src/mod-trans.c:216
 msgid "Glass"
 msgstr "Стъкло"
 
-#: src/mod-trans.c:280
+#: src/mod-trans.c:261
 #, fuzzy
 msgid "Transparency"
 msgstr "Прозрачност на темата: %2d"
 
-#: src/mod-trans.c:281
+#: src/mod-trans.c:262
 msgid "Selective Transparency Settings"
 msgstr "Настройки за избирателна прозрачност"
 
-#: src/mod-trans.c:284
+#: src/mod-trans.c:265
 msgid ""
 "Enlightenment Selective Transparency\n"
 "Settings Dialog\n"
@@ -1757,57 +1770,32 @@ msgstr ""
 "Е: Разположение на прозорци\n"
 "Диалог за настройки\n"
 
-#: src/settings.c:483
-msgid "Raise windows automatically"
-msgstr "Автоматично вдигайте прозорците"
-
 #: src/settings.c:489
-msgid "Autoraise delay:"
-msgstr "Забавяне при автоматично вдигане:"
-
-#: src/settings.c:500
-#, fuzzy
-msgid "Autoraise"
-msgstr "Забавяне при автоматично вдигане:"
-
-#: src/settings.c:501
-msgid "Autoraise Settings"
-msgstr "Настройки за автоматично вдигане"
-
-#: src/settings.c:504
-msgid ""
-"Enlightenment Automatic Raising\n"
-"of Windows Settings Dialog\n"
-msgstr ""
-"Е: Автоматично вдигане\n"
-"на прозорци. Диалог за настройки\n"
-
-#: src/settings.c:541
 msgid "Enable Dialog Headers"
 msgstr "Разрешавай header-и за диалози"
 
-#: src/settings.c:547
+#: src/settings.c:495
 msgid "Enable Button Images"
 msgstr "Разрешавай картини на бутоните"
 
-#: src/settings.c:556
+#: src/settings.c:504
 msgid "Enable sliding startup windows"
 msgstr ""
 
-#: src/settings.c:564
+#: src/settings.c:512
 msgid "Use saveunders to reduce window exposures"
 msgstr "Използвай saveunder-и за намаляване на грешки"
 
-#: src/settings.c:570 config/strings.c:138 config/strings.c:154
+#: src/settings.c:518 config/strings.c:138 config/strings.c:154
 #, fuzzy
 msgid "Miscellaneous"
 msgstr "Други настройки"
 
-#: src/settings.c:571
+#: src/settings.c:519
 msgid "Miscellaneous Settings"
 msgstr "Други настройки"
 
-#: src/settings.c:574
+#: src/settings.c:522
 msgid ""
 "Enlightenment Miscellaneous\n"
 "Settings Dialog\n"
@@ -1815,59 +1803,59 @@ msgstr ""
 "Е: Други\n"
 "Диалог за настройки\n"
 
-#: src/settings.c:615
+#: src/settings.c:566
 msgid "Enable Composite"
 msgstr "Включи Композитора"
 
-#: src/settings.c:623
+#: src/settings.c:574
 #, fuzzy
 msgid "Enable Fading"
 msgstr "Разрешавай обръщането през ръбовете"
 
-#: src/settings.c:629
+#: src/settings.c:580
 #, fuzzy
 msgid "Fading Speed:"
 msgstr "Бързина на изчезване\n"
 
-#: src/settings.c:642
+#: src/settings.c:593
 msgid "Shadows Off"
 msgstr "Без сенки"
 
-#: src/settings.c:648
+#: src/settings.c:599
 msgid "Shadows Sharp"
 msgstr "Остри сенки"
 
-#: src/settings.c:654
+#: src/settings.c:605
 #, fuzzy
 msgid "Shadows Sharp2"
 msgstr "Остри сенки"
 
-#: src/settings.c:660
+#: src/settings.c:611
 msgid "Shadows Blurred"
 msgstr "Меки сенки"
 
-#: src/settings.c:671
+#: src/settings.c:622
 msgid "Default focused window opacity:"
 msgstr ""
 
-#: src/settings.c:682
+#: src/settings.c:633
 msgid "Default unfocused window opacity:"
 msgstr ""
 
-#: src/settings.c:693
+#: src/settings.c:644
 msgid "Default pop-up window opacity:"
 msgstr ""
 
-#: src/settings.c:704
+#: src/settings.c:655
 #, fuzzy
 msgid "Composite"
 msgstr "Включи Композитора"
 
-#: src/settings.c:705
+#: src/settings.c:656
 msgid "Composite Settings"
 msgstr "Настройки за композитора"
 
-#: src/settings.c:708
+#: src/settings.c:659
 msgid ""
 "Enlightenment Composite\n"
 "Settings Dialog\n"
@@ -1875,7 +1863,7 @@ msgstr ""
 "Е: Композитор\n"
 "Диалог за настройки\n"
 
-#: src/settings.c:794
+#: src/settings.c:744
 #, fuzzy
 msgid "Enlightenment Settings"
 msgstr "Enlightenment стартира..."
@@ -1941,89 +1929,89 @@ msgstr ""
 "или няма да го прави правилно. Ако сървърът е по-нов от Х11, то\n"
 "авторът нито има достъп до него, нито е чувал за него.\n"
 
-#: src/snaps.c:727
+#: src/snaps.c:723
 msgid "Title:"
 msgstr "Заглавие:"
 
-#: src/snaps.c:739
+#: src/snaps.c:735
 msgid "Name:"
 msgstr "Име:"
 
-#: src/snaps.c:752
+#: src/snaps.c:748
 msgid "Class:"
 msgstr "Клас:"
 
-#: src/snaps.c:765
+#: src/snaps.c:761
 #, fuzzy
 msgid "Role:"
 msgstr "Червено:\n"
 
-#: src/snaps.c:778
+#: src/snaps.c:774
 msgid "Command:"
 msgstr "Команда:"
 
-#: src/snaps.c:818
+#: src/snaps.c:814
 msgid "Track Changes"
 msgstr "Следи промени"
 
-#: src/snaps.c:823
+#: src/snaps.c:819
 msgid "Location"
 msgstr "Място"
 
-#: src/snaps.c:828
+#: src/snaps.c:824
 msgid "Border style"
 msgstr "Стил на рамката"
 
-#: src/snaps.c:833 config/strings.c:176
+#: src/snaps.c:829 config/strings.c:176
 msgid "Size"
 msgstr "Размер"
 
-#: src/snaps.c:838 config/strings.c:92 config/strings.c:114
+#: src/snaps.c:834 config/strings.c:92 config/strings.c:114
 msgid "Desktop"
 msgstr "Поле"
 
-#: src/snaps.c:843
+#: src/snaps.c:839
 msgid "Shaded state"
 msgstr "Навито положение"
 
-#: src/snaps.c:848
+#: src/snaps.c:844
 msgid "Sticky state"
 msgstr "Залепено положение"
 
-#: src/snaps.c:853
+#: src/snaps.c:849
 msgid "Stacking layer"
 msgstr "Слой на натрупване"
 
-#: src/snaps.c:858
+#: src/snaps.c:854
 msgid "Window List Skip"
 msgstr "Лист за пропускане на прозорци"
 
-#: src/snaps.c:864 config/strings.c:137 config/strings.c:164
+#: src/snaps.c:860 config/strings.c:137 config/strings.c:164
 msgid "Opacity"
 msgstr "Плътност"
 
-#: src/snaps.c:869
+#: src/snaps.c:865
 msgid "Shadowing"
 msgstr "Сенки"
 
-#: src/snaps.c:875
+#: src/snaps.c:871
 #, fuzzy
 msgid "Flags"
 msgstr "Стъкло"
 
-#: src/snaps.c:894
+#: src/snaps.c:890
 msgid "Restart application on login"
 msgstr "Рестартирай програмата при влизане"
 
-#: src/snaps.c:913
+#: src/snaps.c:909
 msgid "Remember this window's group(s)"
 msgstr "Запомни групата на този прозорец"
 
-#: src/snaps.c:921
+#: src/snaps.c:917
 msgid "Remembered Application Attributes"
 msgstr "Запомнени атрибути на програми"
 
-#: src/snaps.c:924
+#: src/snaps.c:920
 msgid ""
 "Select the attributes of this\n"
 "window you wish to Remember\n"
@@ -2033,32 +2021,32 @@ msgstr ""
 "прозорец за който искате да се\n"
 "помни от сега нататък\n"
 
-#: src/snaps.c:1014
+#: src/snaps.c:1010
 msgid "Delete"
 msgstr "Изтрий"
 
-#: src/snaps.c:1042
+#: src/snaps.c:1038
 msgid "Remembered Settings..."
 msgstr "Запомнени настройки..."
 
-#: src/snaps.c:1049
+#: src/snaps.c:1045
 msgid "Unused"
 msgstr "Неизползван(и)"
 
-#: src/snaps.c:1062
+#: src/snaps.c:1058
 msgid "There are no active windows with remembered attributes."
 msgstr "Няма активни прозорци със запомнени настройки."
 
-#: src/snaps.c:1068
+#: src/snaps.c:1064
 #, fuzzy
 msgid "Remember"
 msgstr "Настройки на запомняне ..."
 
-#: src/snaps.c:1069
+#: src/snaps.c:1065
 msgid "Remembered Windows Settings"
 msgstr "Запомни настройките за прозорците"
 
-#: src/snaps.c:1072
+#: src/snaps.c:1068
 msgid ""
 "Enlightenment Remembered\n"
 "Windows Settings Dialog\n"
@@ -2066,7 +2054,7 @@ msgstr ""
 "Е: Запомнени прозорци\n"
 "Диалог за настройки\n"
 
-#: src/snaps.c:1166
+#: src/snaps.c:1162
 msgid "Error saving snaps file\n"
 msgstr "Грешка при записване на snap файла\n"
 
@@ -2149,7 +2137,7 @@ msgstr "Опции за системната табла"
 msgid "Systray Settings"
 msgstr "Настройки за системната табла"
 
-#: src/theme.c:341
+#: src/theme.c:347
 #, fuzzy, c-format
 msgid ""
 "No themes were found in the default directories:\n"
@@ -2161,34 +2149,34 @@ msgstr ""
 "%s/themes/\n"
 "Безсмислено е да се продължава.\n"
 
-#: src/theme.c:372
+#: src/theme.c:378
 msgid "Changes will take effect after restart"
 msgstr ""
 
-#: src/theme.c:392
+#: src/theme.c:398
 msgid "Use theme font configuration"
 msgstr ""
 
-#: src/theme.c:397
+#: src/theme.c:403
 #, c-format
 msgid "Use alternate font configuration (%s)"
 msgstr ""
 
-#: src/theme.c:398
+#: src/theme.c:404
 msgid "Not set"
 msgstr ""
 
-#: src/theme.c:405
+#: src/theme.c:411
 #, fuzzy
 msgid "Theme"
 msgstr "Некоректна тема"
 
-#: src/theme.c:406
+#: src/theme.c:412
 #, fuzzy
 msgid "Theme Settings"
 msgstr "Други настройки"
 
-#: src/theme.c:409
+#: src/theme.c:415
 #, fuzzy
 msgid ""
 "Enlightenment Theme\n"
@@ -2792,6 +2780,20 @@ msgstr ""
 #, fuzzy
 msgid "Epplets"
 msgstr "Вълнение"
+
+#, fuzzy
+#~ msgid "Autoraise"
+#~ msgstr "Забавяне при автоматично вдигане:"
+
+#~ msgid "Autoraise Settings"
+#~ msgstr "Настройки за автоматично вдигане"
+
+#~ msgid ""
+#~ "Enlightenment Automatic Raising\n"
+#~ "of Windows Settings Dialog\n"
+#~ msgstr ""
+#~ "Е: Автоматично вдигане\n"
+#~ "на прозорци. Диалог за настройки\n"
 
 #, fuzzy
 #~ msgid "Enlightenment Settings ..."
