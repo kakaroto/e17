@@ -632,88 +632,105 @@ FocusHandleClick(EWin * ewin, Win win)
 /*      
  * Configuration dialog
  */
-static int          tmp_focus;
-static char         tmp_clickalways;
-static char         tmp_new_focus;
-static char         tmp_popup_focus;
-static char         tmp_owner_popup_focus;
-static char         tmp_raise_focus;
-static char         tmp_warp_focus;
-static char         tmp_warp_always;
 
-static char         tmp_autoraise;
-static int          tmp_autoraisetime;
+typedef struct {
+   struct {
+      int                 mode;
+      char                clickalways;
+      char                new_focus;
+      char                popup_focus;
+      char                owner_popup_focus;
+      char                raise_focus;
+      char                warp_focus;
+      char                warp_always;
+   } focus;
 
-static char         tmp_display_warp;
-static char         tmp_warp_after_focus;
-static char         tmp_raise_after_focus;
-static char         tmp_showsticky;
-static char         tmp_showshaded;
-static char         tmp_showiconified;
-static char         tmp_showalldesks;
-static char         tmp_warpfocused;
-static int          tmp_warp_icon_mode;
+   struct {
+      char                enable;
+      int                 time;
+   } autoraise;
+
+   struct {
+      char                enable;
+      char                warp_after_focus;
+      char                raise_after_focus;
+      char                showsticky;
+      char                showshaded;
+      char                showiconified;
+      char                showalldesks;
+      char                warpfocused;
+      int                 icon_mode;
+   } focuslist;
+} FocusDlgData;
 
 static void
-CB_ConfigureFocus(Dialog * d __UNUSED__, int val, void *data __UNUSED__)
+CB_ConfigureFocus(Dialog * d, int val, void *data __UNUSED__)
 {
-   if (val < 2)
-     {
-	Conf.focus.mode = tmp_focus;
-	Conf.focus.all_new_windows_get_focus = tmp_new_focus;
-	Conf.focus.new_transients_get_focus = tmp_popup_focus;
-	Conf.focus.new_transients_get_focus_if_group_focused =
-	   tmp_owner_popup_focus;
-	Conf.focus.raise_on_next = tmp_raise_focus;
-	Conf.focus.warp_on_next = tmp_warp_focus;
-	Conf.focus.warp_always = tmp_warp_always;
+   FocusDlgData       *dd = DLG_DATA_GET(d, FocusDlgData);
 
-	Conf.autoraise.enable = tmp_autoraise;
-	Conf.autoraise.delay = 10 * tmp_autoraisetime;
+   if (val >= 2)
+      return;
 
-	Conf.warplist.enable = tmp_display_warp;
-	Conf.warplist.warp_on_select = tmp_warp_after_focus;
-	Conf.warplist.raise_on_select = tmp_raise_after_focus;
-	Conf.warplist.showsticky = tmp_showsticky;
-	Conf.warplist.showshaded = tmp_showshaded;
-	Conf.warplist.showiconified = tmp_showiconified;
-	Conf.warplist.showalldesks = tmp_showalldesks;
-	Conf.warplist.warpfocused = tmp_warpfocused;
-	Conf.warplist.icon_mode = tmp_warp_icon_mode;
+   Conf.focus.mode = dd->focus.mode;
+   Conf.focus.clickraises = dd->focus.clickalways;
+   Conf.focus.all_new_windows_get_focus = dd->focus.new_focus;
+   Conf.focus.new_transients_get_focus = dd->focus.popup_focus;
+   Conf.focus.new_transients_get_focus_if_group_focused =
+      dd->focus.owner_popup_focus;
+   Conf.focus.raise_on_next = dd->focus.raise_focus;
+   Conf.focus.warp_on_next = dd->focus.warp_focus;
+   Conf.focus.warp_always = dd->focus.warp_always;
 
-	Conf.focus.clickraises = tmp_clickalways;
-	ClickGrabsUpdate();
-     }
+   Conf.autoraise.enable = dd->autoraise.enable;
+   Conf.autoraise.delay = 10 * dd->autoraise.time;
+
+   Conf.warplist.enable = dd->focuslist.enable;
+   Conf.warplist.warp_on_select = dd->focuslist.warp_after_focus;
+   Conf.warplist.raise_on_select = dd->focuslist.raise_after_focus;
+   Conf.warplist.showsticky = dd->focuslist.showsticky;
+   Conf.warplist.showshaded = dd->focuslist.showshaded;
+   Conf.warplist.showiconified = dd->focuslist.showiconified;
+   Conf.warplist.showalldesks = dd->focuslist.showalldesks;
+   Conf.warplist.warpfocused = dd->focuslist.warpfocused;
+   Conf.warplist.icon_mode = dd->focuslist.icon_mode;
+
+   ClickGrabsUpdate();
+
    autosave();
 }
 
 static void
-_DlgFillFocus(Dialog * d __UNUSED__, DItem * table, void *data __UNUSED__)
+_DlgFillFocus(Dialog * d, DItem * table, void *data __UNUSED__)
 {
    DItem              *di, *radio, *radio2;
+   FocusDlgData       *dd;
 
-   tmp_focus = Conf.focus.mode;
-   tmp_new_focus = Conf.focus.all_new_windows_get_focus;
-   tmp_popup_focus = Conf.focus.new_transients_get_focus;
-   tmp_owner_popup_focus = Conf.focus.new_transients_get_focus_if_group_focused;
-   tmp_raise_focus = Conf.focus.raise_on_next;
-   tmp_warp_focus = Conf.focus.warp_on_next;
-   tmp_warp_always = Conf.focus.warp_always;
+   dd = DLG_DATA_SET(d, FocusDlgData);
+   if (!dd)
+      return;
 
-   tmp_autoraise = Conf.autoraise.enable;
-   tmp_autoraisetime = Conf.autoraise.delay / 10;
+   dd->focus.mode = Conf.focus.mode;
+   dd->focus.clickalways = Conf.focus.clickraises;
+   dd->focus.new_focus = Conf.focus.all_new_windows_get_focus;
+   dd->focus.popup_focus = Conf.focus.new_transients_get_focus;
+   dd->focus.owner_popup_focus =
+      Conf.focus.new_transients_get_focus_if_group_focused;
+   dd->focus.raise_focus = Conf.focus.raise_on_next;
+   dd->focus.warp_focus = Conf.focus.warp_on_next;
+   dd->focus.warp_always = Conf.focus.warp_always;
 
-   tmp_raise_after_focus = Conf.warplist.raise_on_select;
-   tmp_warp_after_focus = Conf.warplist.warp_on_select;
-   tmp_display_warp = Conf.warplist.enable;
-   tmp_showsticky = Conf.warplist.showsticky;
-   tmp_showshaded = Conf.warplist.showshaded;
-   tmp_showiconified = Conf.warplist.showiconified;
-   tmp_showalldesks = Conf.warplist.showalldesks;
-   tmp_warpfocused = Conf.warplist.warpfocused;
-   tmp_warp_icon_mode = Conf.warplist.icon_mode;
+   dd->autoraise.enable = Conf.autoraise.enable;
+   dd->autoraise.time = Conf.autoraise.delay / 10;
 
-   tmp_clickalways = Conf.focus.clickraises;
+   dd->focuslist.enable = Conf.warplist.enable;
+   dd->focuslist.raise_after_focus = Conf.warplist.raise_on_select;
+   dd->focuslist.warp_after_focus = Conf.warplist.warp_on_select;
+   dd->focuslist.showsticky = Conf.warplist.showsticky;
+   dd->focuslist.showshaded = Conf.warplist.showshaded;
+   dd->focuslist.showiconified = Conf.warplist.showiconified;
+   dd->focuslist.showalldesks = Conf.warplist.showalldesks;
+   dd->focuslist.warpfocused = Conf.warplist.warpfocused;
+   dd->focuslist.icon_mode = Conf.warplist.icon_mode;
 
    DialogItemTableSetOptions(table, 2, 0, 0, 0);
 
@@ -734,7 +751,7 @@ _DlgFillFocus(Dialog * d __UNUSED__, DItem * table, void *data __UNUSED__)
    DialogItemSetText(di, _("Focus follows mouse clicks"));
    DialogItemRadioButtonSetFirst(di, radio);
    DialogItemRadioButtonGroupSetVal(di, 2);
-   DialogItemRadioButtonGroupSetValPtr(radio, &tmp_focus);
+   DialogItemRadioButtonGroupSetValPtr(radio, &dd->focus.mode);
 
    di = DialogAddItem(table, DITEM_SEPARATOR);
    DialogItemSetColSpan(di, 2);
@@ -742,7 +759,7 @@ _DlgFillFocus(Dialog * d __UNUSED__, DItem * table, void *data __UNUSED__)
    di = DialogAddItem(table, DITEM_CHECKBUTTON);
    DialogItemSetColSpan(di, 2);
    DialogItemSetText(di, _("Clicking in a window always raises it"));
-   DialogItemCheckButtonSetPtr(di, &tmp_clickalways);
+   DialogItemCheckButtonSetPtr(di, &dd->focus.clickalways);
 
    di = DialogAddItem(table, DITEM_SEPARATOR);
    DialogItemSetColSpan(di, 2);
@@ -750,36 +767,36 @@ _DlgFillFocus(Dialog * d __UNUSED__, DItem * table, void *data __UNUSED__)
    di = DialogAddItem(table, DITEM_CHECKBUTTON);
    DialogItemSetColSpan(di, 2);
    DialogItemSetText(di, _("All new windows first get the focus"));
-   DialogItemCheckButtonSetPtr(di, &tmp_new_focus);
+   DialogItemCheckButtonSetPtr(di, &dd->focus.new_focus);
 
    di = DialogAddItem(table, DITEM_CHECKBUTTON);
    DialogItemSetColSpan(di, 2);
    DialogItemSetText(di, _("Only new dialog windows get the focus"));
-   DialogItemCheckButtonSetPtr(di, &tmp_popup_focus);
+   DialogItemCheckButtonSetPtr(di, &dd->focus.popup_focus);
 
    di = DialogAddItem(table, DITEM_CHECKBUTTON);
    DialogItemSetColSpan(di, 2);
    DialogItemSetText(di,
 		     _
 		     ("Only new dialogs whose owner is focused get the focus"));
-   DialogItemCheckButtonSetPtr(di, &tmp_owner_popup_focus);
+   DialogItemCheckButtonSetPtr(di, &dd->focus.owner_popup_focus);
 
    di = DialogAddItem(table, DITEM_CHECKBUTTON);
    DialogItemSetColSpan(di, 2);
    DialogItemSetText(di, _("Raise windows while switching focus"));
-   DialogItemCheckButtonSetPtr(di, &tmp_raise_focus);
+   DialogItemCheckButtonSetPtr(di, &dd->focus.raise_focus);
 
    di = DialogAddItem(table, DITEM_CHECKBUTTON);
    DialogItemSetColSpan(di, 2);
    DialogItemSetText(di,
 		     _("Send mouse pointer to window while switching focus"));
-   DialogItemCheckButtonSetPtr(di, &tmp_warp_focus);
+   DialogItemCheckButtonSetPtr(di, &dd->focus.warp_focus);
 
    di = DialogAddItem(table, DITEM_CHECKBUTTON);
    DialogItemSetColSpan(di, 2);
    DialogItemSetText(di,
 		     _("Always send mouse pointer to window on focus switch"));
-   DialogItemCheckButtonSetPtr(di, &tmp_warp_always);
+   DialogItemCheckButtonSetPtr(di, &dd->focus.warp_always);
 
    di = DialogAddItem(table, DITEM_SEPARATOR);
    DialogItemSetColSpan(di, 2);
@@ -787,7 +804,7 @@ _DlgFillFocus(Dialog * d __UNUSED__, DItem * table, void *data __UNUSED__)
    di = DialogAddItem(table, DITEM_CHECKBUTTON);
    DialogItemSetColSpan(di, 2);
    DialogItemSetText(di, _("Raise windows automatically"));
-   DialogItemCheckButtonSetPtr(di, &tmp_autoraise);
+   DialogItemCheckButtonSetPtr(di, &dd->autoraise.enable);
 
    di = DialogAddItem(table, DITEM_TEXT);
    DialogItemSetFill(di, 0, 0);
@@ -798,7 +815,7 @@ _DlgFillFocus(Dialog * d __UNUSED__, DItem * table, void *data __UNUSED__)
    DialogItemSliderSetBounds(di, 0, 300);
    DialogItemSliderSetUnits(di, 10);
    DialogItemSliderSetJump(di, 25);
-   DialogItemSliderSetValPtr(di, &tmp_autoraisetime);
+   DialogItemSliderSetValPtr(di, &dd->autoraise.time);
 
    di = DialogAddItem(table, DITEM_SEPARATOR);
    DialogItemSetColSpan(di, 2);
@@ -806,42 +823,42 @@ _DlgFillFocus(Dialog * d __UNUSED__, DItem * table, void *data __UNUSED__)
    di = DialogAddItem(table, DITEM_CHECKBUTTON);
    DialogItemSetColSpan(di, 2);
    DialogItemSetText(di, _("Display and use focus list"));
-   DialogItemCheckButtonSetPtr(di, &tmp_display_warp);
+   DialogItemCheckButtonSetPtr(di, &dd->focuslist.enable);
 
    di = DialogAddItem(table, DITEM_CHECKBUTTON);
    DialogItemSetColSpan(di, 2);
    DialogItemSetText(di, _("Include sticky windows in focus list"));
-   DialogItemCheckButtonSetPtr(di, &tmp_showsticky);
+   DialogItemCheckButtonSetPtr(di, &dd->focuslist.showsticky);
 
    di = DialogAddItem(table, DITEM_CHECKBUTTON);
    DialogItemSetColSpan(di, 2);
    DialogItemSetText(di, _("Include shaded windows in focus list"));
-   DialogItemCheckButtonSetPtr(di, &tmp_showshaded);
+   DialogItemCheckButtonSetPtr(di, &dd->focuslist.showshaded);
 
    di = DialogAddItem(table, DITEM_CHECKBUTTON);
    DialogItemSetColSpan(di, 2);
    DialogItemSetText(di, _("Include iconified windows in focus list"));
-   DialogItemCheckButtonSetPtr(di, &tmp_showiconified);
+   DialogItemCheckButtonSetPtr(di, &dd->focuslist.showiconified);
 
    di = DialogAddItem(table, DITEM_CHECKBUTTON);
    DialogItemSetColSpan(di, 2);
    DialogItemSetText(di, _("Include windows on other desks in focus list"));
-   DialogItemCheckButtonSetPtr(di, &tmp_showalldesks);
+   DialogItemCheckButtonSetPtr(di, &dd->focuslist.showalldesks);
 
    di = DialogAddItem(table, DITEM_CHECKBUTTON);
    DialogItemSetColSpan(di, 2);
    DialogItemSetText(di, _("Focus windows while switching"));
-   DialogItemCheckButtonSetPtr(di, &tmp_warpfocused);
+   DialogItemCheckButtonSetPtr(di, &dd->focuslist.warpfocused);
 
    di = DialogAddItem(table, DITEM_CHECKBUTTON);
    DialogItemSetColSpan(di, 2);
    DialogItemSetText(di, _("Raise windows after focus switch"));
-   DialogItemCheckButtonSetPtr(di, &tmp_raise_after_focus);
+   DialogItemCheckButtonSetPtr(di, &dd->focuslist.raise_after_focus);
 
    di = DialogAddItem(table, DITEM_CHECKBUTTON);
    DialogItemSetColSpan(di, 2);
    DialogItemSetText(di, _("Send mouse pointer to window after focus switch"));
-   DialogItemCheckButtonSetPtr(di, &tmp_warp_after_focus);
+   DialogItemCheckButtonSetPtr(di, &dd->focuslist.warp_after_focus);
 
    di = DialogAddItem(table, DITEM_SEPARATOR);
    DialogItemSetColSpan(di, 2);
@@ -869,7 +886,7 @@ _DlgFillFocus(Dialog * d __UNUSED__, DItem * table, void *data __UNUSED__)
    DialogItemSetText(di, _("None"));
    DialogItemRadioButtonSetFirst(di, radio2);
    DialogItemRadioButtonGroupSetVal(di, 0);
-   DialogItemRadioButtonGroupSetValPtr(radio2, &tmp_warp_icon_mode);
+   DialogItemRadioButtonGroupSetValPtr(radio2, &dd->focuslist.icon_mode);
 }
 
 const DialogDef     DlgFocus = {
