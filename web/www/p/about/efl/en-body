@@ -22,12 +22,12 @@
      These libraries are so powerful, flexable, and easy to use that they present a strong platform on which to
      develop nearly any graphical application you could think of.</p>
 
-     <p>The EFL begins with Imlib2, a general image manipulation and rendering
-     library, and Evas, our canvas library.  Because Evas is built on several diffrent selectable engines (Linux
-     FrameBuffer, DirectFB, X11, OpenGL, QTopia, etc) the platform is extremely portable, which 
-     translates thru to all of the libraries built on top of it.
-     Ecore is a modular convience library that in its base provides timers,
-     callback functionality, and loop management for
+     <p>The EFL begins with Evas, our canvas library. Because Evas is built
+     on several diffrent selectable engines (Linux FrameBuffer, DirectFB,
+     X11, OpenGL/OpenGL-ES, QTopia, etc) the platform is
+     extremely portable, which  translates thru to all of the libraries
+     built on top of it. Ecore is a modular convience library that in its
+     base provides timers, callback functionality, and loop management for
      event handling. Ecore's various modules can simplify the setup of an
      X11 drawable for general use (Ecore_X11), an X11 drawable for
      use with Evas (Ecore_Evas), manage IPC (Ecore_IPC), manage BSD Sockets
@@ -35,6 +35,9 @@
      Because Ecore can simplify so many tasks that are used in conjuction
      with Evas it has lived up to its name as the core componant of nearly
      any EFL application.</p>
+     
+     <p>Eina centralises data structures and memory handling functions beyond
+     what system "mallocs" provide.</p>
 
      <p>Edje provides a revolutionary method of absstacting every aspect of
      your interface from the application itself. By passing signals
@@ -44,8 +47,8 @@
      ability to the interface componant itself to harness even more power
      and flexability.</p>
 
-     <p>Ewl brings all the libs into focus, providing a complete end-to-end
-     widget library for fast and easy development of complex graphical applications.</p>
+     <p>Elementary ties things together in a touchscreen finger-friendly
+     widget set. And there is much more.</a>
 
      <p>Below is a diagram of how the various componants of the EFL fit together.  Because
      of complexity of the libraries and the fact that so many libraries can be used
@@ -53,14 +56,23 @@
      your standard block diagram.</p>
 
      <center>
-       <?php img("efl.png", "EFL Diagram");?>
-      </a>
+       <a href=p/about/efl/d/diagram-efl-simple.svg>
+       <?php img("diagram-efl-simple.png", "EFL Diagram");?></a>
      </center>
 
      <p>If you're interested in working with, or on, the EFL take a look at the
-     <a href="http://wiki.enlightenment.org">wiki</a> for more
+     <a href="http://trac.enlightenment.org/e/wiki">wiki</a> for more
      information.</p>
+     
+     <p>For a more comprehensive diagram look here:</p>
 
+     <center>
+       <a href=p/about/efl/d/diagram-efl-detail.svg>
+       <?php img("diagram-efl-detail.png", "EFL Diagram");?></a><br>
+       <a href=p/about/efl/d/diagram-efl-detail-big.png>
+       Big PNG version</a>
+     </center>
+     
     </span>
    </div>
   </td>
