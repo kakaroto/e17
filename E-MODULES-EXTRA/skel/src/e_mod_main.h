@@ -2,6 +2,7 @@
 #define E_MOD_MAIN_H
 
 /* Macros used for config file versioning */
+// FIXME: what we need to change when we update our conf ? what is hte other value for ? how they works ?
 #define MOD_CONFIG_FILE_EPOCH 0x0001
 #define MOD_CONFIG_FILE_GENERATION 0x008d
 #define MOD_CONFIG_FILE_VERSION \
@@ -14,6 +15,8 @@
  * like  printf D_("Hello World\n");  so can be replaced by gettext */
 #define D_(str) dgettext(PACKAGE, str)
 
+/* We create a structure config for our module, and also a config structure
+ * for every item element (you can have multiple gadgets for the same module) */
 typedef struct _Config Config;
 typedef struct _Config_Item Config_Item;
 
@@ -28,40 +31,49 @@ typedef struct _Config_Item Config_Item;
  * Version used to know when user config too old */
 struct _Config 
 {
+// FIXME: explain what is that
    E_Module *module;
+// FIXME: explain what is that
    E_Config_Dialog *cfd;
 
    /* The list; their location on screen ? */
+// FIXME: explain what contains this list
    Eina_List *conf_items;
 
    /* config file version */
    int version;
 
-   /* actual config properties; Define your own. (per-module) */
+   /* actual config properties; Define your own. (globally per-module) */
    unsigned char switch1;
 };
 
 /* This struct used to hold config for individual items from above list */
 struct _Config_Item 
 {
-   /* unique id */
+   /* unique id for every running gadget */
    const char *id;
 
-   /* actual config properties; Define your own per-item (pos, clr) */
+   /* actual config properties independently for every running gadget. */
    int switch2;
 };
 
 /* Setup the E Module Version, Needed to check if module can run. */
+// FIXME: what exactly this does ? better detailed explanation
 EAPI extern E_Module_Api e_modapi;
 
 /* E API Module Interface Declarations
- * 
- * Need to initialize, shutdown, save the module */
+ *
+ * e_modapi_init:     it is called when e17 initialize the module, note that
+ *                    a module can be loaded but not initialized (running)
+ * e_modapi_shutdown: it is called when e17 is closing, so calling the modules
+ *                    to finish
+ * e_modapi_save:     this is called when e17 or by another reason is requeested
+ *                    to save the configuration file                      */
 EAPI void *e_modapi_init(E_Module *m);
 EAPI int e_modapi_shutdown(E_Module *m);
 EAPI int e_modapi_save(E_Module *m);
 
-/* Function for calling the modules config dialog */
+/* Function for calling the module's Configuration Dialog */
 EAPI E_Config_Dialog *e_int_config_skel_module(E_Container *con);
 
 extern Config *skel_conf;

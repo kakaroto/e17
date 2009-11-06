@@ -21,6 +21,8 @@ static void _skel_cb_menu_configure(void *data, E_Menu *mn, E_Menu_Item *mi);
 typedef struct _Instance Instance;
 struct _Instance 
 {
+   /* An instance of our item (module) with its elements */
+
    /* pointer to this gadget's container */
    E_Gadcon_Client *gcc;
 
@@ -49,11 +51,14 @@ static const E_Gadcon_Client_Class _gc_class =
    E_GADCON_CLIENT_STYLE_PLAIN
 };
 
+// FIXME: explanation/description, what is this for ? what does ?
 EAPI E_Module_Api e_modapi = {E_MODULE_API_VERSION, "Skel"};
 
 /*
  * Module Functions
  */
+
+/* Function called when the module is initialized */
 EAPI void *
 e_modapi_init(E_Module *m) 
 {
@@ -67,16 +72,17 @@ e_modapi_init(E_Module *m)
    /* Location of theme to load for this module */
    snprintf(buf, sizeof(buf), "%s/e-module-skel.edj", m->dir);
 
+
    /* Display this Modules config info in the main Config Panel */
 
-   /* starts with a category */
+   /* starts with a category, create it if not already exists */
    e_configure_registry_category_add("advanced", 80, "Advanced", 
                                      NULL, "preferences-advanced");
    /* add right-side item */
    e_configure_registry_item_add("advanced/skel", 110, "Skel", 
                                  NULL, buf, e_int_config_skel_module);
 
-   /* Define EET Data Storage */
+   /* Define EET Data Storage for the config file */
    conf_item_edd = E_CONFIG_DD_NEW("Config_Item", Config_Item);
    #undef T
    #undef D
@@ -215,7 +221,7 @@ e_modapi_save(E_Module *m)
 
 /* Local Functions */
 
-/* Called when Gadget_Container says go */
+/* Called when Gadget Controller (gadcon) says to appear in scene */
 static E_Gadcon_Client *
 _gc_init(E_Gadcon *gc, const char *name, const char *id, const char *style) 
 {
@@ -279,7 +285,7 @@ _gc_shutdown(E_Gadcon_Client *gcc)
    E_FREE(inst);
 }
 
-/* For for when container says we are changing position */
+/* For when container says we are changing position */
 static void 
 _gc_orient(E_Gadcon_Client *gcc, E_Gadcon_Orient orient) 
 {
@@ -287,7 +293,7 @@ _gc_orient(E_Gadcon_Client *gcc, E_Gadcon_Orient orient)
    e_gadcon_client_min_size_set(gcc, 16, 16);
 }
 
-/* Gadget/Module label */
+/* Gadget/Module label, name for our module */
 static char *
 _gc_label(E_Gadcon_Client_Class *client_class) 
 {
@@ -332,6 +338,7 @@ _skel_conf_new(void)
    skel_conf = E_NEW(Config, 1);
    skel_conf->version = (MOD_CONFIG_FILE_EPOCH << 16);
 
+//FIXME: looks a bit complicated, what exactly this does ? in case of what ?
 #define IFMODCFG(v) if ((skel_conf->version & 0xffff) < v) {
 #define IFMODCFGEND }
 
@@ -350,6 +357,8 @@ _skel_conf_new(void)
    e_config_save_queue();
 }
 
+/* This is called when we need to cleanup the actual configuration,
+ * for example when our configuration is too old */
 static void 
 _skel_conf_free(void) 
 {
@@ -370,7 +379,7 @@ _skel_conf_free(void)
    E_FREE(skel_conf);
 }
 
-/* timer for the config oops dialog */
+/* timer for the config oops dialog (old configuration needs update) */
 static int 
 _skel_conf_timer(void *data) 
 {

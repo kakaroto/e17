@@ -1,6 +1,7 @@
 #include <e.h>
 #include "e_mod_main.h"
 
+// FIXME: the typedef for this is defined in a E header file, what's teh meant of this ?
 struct _E_Config_Dialog_Data 
 {
    int switch1;
@@ -14,6 +15,8 @@ static Evas_Object *_basic_create(E_Config_Dialog *cfd, Evas *evas, E_Config_Dia
 static int _basic_apply(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata);
 
 /* External Functions */
+
+/* Function for calling our personal dialog menu */
 EAPI E_Config_Dialog *
 e_int_config_skel_module(E_Container *con) 
 {
@@ -35,7 +38,7 @@ e_int_config_skel_module(E_Container *con)
    /* Icon in the theme */
    snprintf(buf, sizeof(buf), "%s/e-module-skel.edj", skel_conf->module->dir);
 
-   /* create new config dialog */
+   /* create our config dialog */
    cfd = e_config_dialog_new(con, D_("Skeleton Module"), "Skel", 
                              "advanced/skel", buf, 0, v, NULL);
 
