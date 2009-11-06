@@ -1,7 +1,14 @@
-#include <E_Nm.h>
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
 
+#include <stdio.h>
 #include <unistd.h>
 #include <string.h>
+
+#include <Ecore.h>
+
+#include <E_Nm.h>
 
 E_NM *nm = NULL;
 E_NMS *nms = NULL;
@@ -57,7 +64,7 @@ dump_variant(E_NM_Variant *var)
 }
 
 static Eina_Bool
-dump_values(const Eina_Hash *hash, const void *key, void *value, void *data)
+dump_values(const Eina_Hash *hash __UNUSED__, const void *key, void *value, void *data __UNUSED__)
 {
     printf(" - name: %s - ", (char *)key);
     dump_variant(value);
@@ -67,7 +74,7 @@ dump_values(const Eina_Hash *hash, const void *key, void *value, void *data)
 }
  
 static Eina_Bool
-dump_settings(const Eina_Hash *hash, const void *key, void *value, void *fdata)
+dump_settings(const Eina_Hash *hash __UNUSED__, const void *key, void *value, void *fdata __UNUSED__)
 {
     printf("name: %s\n", (char *)key);
     printf("values:\n");
@@ -78,7 +85,7 @@ dump_settings(const Eina_Hash *hash, const void *key, void *value, void *fdata)
 }
 
 static int
-cb_nms_connection_secrets(void *data, Eina_Hash *secrets)
+cb_nms_connection_secrets(void *data __UNUSED__, Eina_Hash *secrets)
 {
     printf("Secrets:\n");
     if (secrets)
@@ -101,7 +108,7 @@ cb_nms_connection_settings(void *data, Eina_Hash *settings)
 }
 
 static int
-cb_nms_connections(void *data, Eina_List *list)
+cb_nms_connections(void *data __UNUSED__, Eina_List *list)
 {
     E_NMS_Connection *conn;
     Eina_List        *l;
@@ -117,7 +124,7 @@ cb_nms_connections(void *data, Eina_List *list)
 }
 
 static int
-cb_access_point(void *data, E_NM_Access_Point *ap)
+cb_access_point(void *data __UNUSED__, E_NM_Access_Point *ap)
 {
     e_nm_access_point_dump(ap);
     e_nm_access_point_free(ap);
@@ -137,7 +144,7 @@ cb_activate_connection(void *data, E_NM_Device *device)
 }
 
 static int
-cb_active_connection(void *data, E_NM_Active_Connection *conn)
+cb_active_connection(void *data __UNUSED__, E_NM_Active_Connection *conn)
 {
     const char *device;
     Eina_List  *l;
@@ -153,7 +160,7 @@ cb_active_connection(void *data, E_NM_Active_Connection *conn)
 }
 
 static int
-cb_ip4_config(void *data, E_NM_IP4_Config *config)
+cb_ip4_config(void *data __UNUSED__, E_NM_IP4_Config *config)
 {
     e_nm_ip4_config_dump(config);
     e_nm_ip4_config_free(config);
@@ -161,10 +168,9 @@ cb_ip4_config(void *data, E_NM_IP4_Config *config)
 }
 
 static int
-cb_access_points(void *data, Eina_List *list)
+cb_access_points(void *data __UNUSED__, Eina_List *list)
 {
     E_NM_Access_Point *ap;
-    Eina_List         *l;
 
     EINA_LIST_FREE(list, ap)
     {
@@ -175,7 +181,7 @@ cb_access_points(void *data, Eina_List *list)
 }
 
 static int
-cb_get_devices(void *data, Eina_List *list)
+cb_get_devices(void *data __UNUSED__, Eina_List *list)
 {
     E_NM_Device *device;
     Eina_List   *l;
@@ -197,7 +203,7 @@ cb_get_devices(void *data, Eina_List *list)
 }
 
 static int
-cb_nms(void *data, E_NMS *reply)
+cb_nms(void *data __UNUSED__, E_NMS *reply)
 {
     Eina_Hash *settings, *values;
     E_NM_Variant variant;
@@ -274,7 +280,7 @@ cb_nms(void *data, E_NMS *reply)
 }
 
 static int
-cb_nm(void *data, E_NM *reply)
+cb_nm(void *data __UNUSED__, E_NM *reply)
 {
     if (!reply)
     {
@@ -301,7 +307,7 @@ cb_nm(void *data, E_NM *reply)
    
 
 int 
-main(int argc, char **argv)
+main()
 {
     ecore_init();
     eina_init();

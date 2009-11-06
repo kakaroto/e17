@@ -3,10 +3,16 @@
  * the org.freedesktop.NetworkManager.Device DBus interface.
  */
 
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+
+#include <stdio.h>
+#include <string.h>
+
 #include "E_Nm.h"
 #include "e_nm_private.h"
 #include "e_dbus_private.h"
-#include <string.h>
 
 static void property_device_type(Property_Data *data, DBusMessageIter *iter);
 

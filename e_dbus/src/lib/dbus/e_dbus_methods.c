@@ -1,4 +1,7 @@
-#include "E_DBus.h"
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+
 #include "e_dbus_private.h"
 
 static inline DBusMessage *

@@ -2,6 +2,7 @@
 
 #include "E_Nm.h"
 #include "e_dbus_private.h"
+
 EAPI E_NM_Variant *
 e_nm_variant_new(int type, const void *value)
 {

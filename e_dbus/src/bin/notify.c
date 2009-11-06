@@ -1,8 +1,15 @@
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+
+#include <stdio.h>
+
+#include <Ecore.h>
 #include <E_DBus.h>
 #include <E_Notify.h>
 
 void
-cb_sent(void *data, void *ret, DBusError *err)
+cb_sent(void *data __UNUSED__, void *ret, DBusError *err)
 {
   E_Notification_Return_Notify *notify;
   notify = ret;
@@ -19,7 +26,7 @@ cb_sent(void *data, void *ret, DBusError *err)
 }
 
 int
-cb_timer(void *data)
+cb_timer(void *data __UNUSED__)
 {
   E_Notification *n;
   char buf[1024];
@@ -40,7 +47,7 @@ cb_timer(void *data)
 }
 
 void
-cb_action_invoked(void *data, int type, void *event)
+cb_action_invoked(void *data __UNUSED__, int type __UNUSED__, void *event)
 {
   E_Notification_Event_Action_Invoked *ev;
 
@@ -50,7 +57,7 @@ cb_action_invoked(void *data, int type, void *event)
 }
 
 void
-cb_note_closed(void *data, int type, void *event)
+cb_note_closed(void *data __UNUSED__, int type __UNUSED__, void *event)
 {
   E_Notification_Event_Notification_Closed *ev;
   static const char *reasons[] = {
@@ -66,7 +73,7 @@ cb_note_closed(void *data, int type, void *event)
 }
 
 int
-main(int argc, char **argv)
+main()
 {
   int ret = 0;
   ecore_init();

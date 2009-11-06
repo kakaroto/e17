@@ -1,11 +1,13 @@
 #ifndef E_CONNMAN_H
 #define E_CONNMAN_H
 
-#include <E_DBus.h>
-#include <Ecore_Data.h>
 #include <stdint.h>
 #include <stdbool.h>
 #include <stdio.h>
+
+#include <Eina.h>
+#include <Ecore.h>
+#include <E_DBus.h>
 
 #ifdef EAPI
 #undef EAPI

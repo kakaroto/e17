@@ -1,8 +1,14 @@
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+
+#include <stdio.h>
+#include <string.h>
+
 #include "E_Nm.h"
 #include "e_nm_private.h"
 #include "E_DBus.h"
 #include "e_dbus_private.h"
-#include <string.h>
 
 #define CHECK_SIGNATURE(msg, err, sig)                       \
   if (dbus_error_is_set((err)))                              \
@@ -140,7 +146,7 @@ property_basic(DBusMessageIter *iter, const char *sig, void *value)
 }
 
 static E_NM_Variant *
-property_variant(DBusMessageIter *iter, const char *sig, void *value)
+property_variant(DBusMessageIter *iter, const char *sig __UNUSED__, void *value __UNUSED__)
 {
   DBusMessageIter v_iter;
   Property_Cb     func;

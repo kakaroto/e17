@@ -1,3 +1,9 @@
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+
+#include <unistd.h>
+
 #include "E_Nm.h"
 #include "e_nm_private.h"
 #include "e_dbus_private.h"

@@ -55,6 +55,8 @@ const char *e_connman_prop_wifi_passphrase = NULL;
 const char *e_connman_prop_wifi_security = NULL;
 const char *e_connman_prop_wifi_ssid = NULL;
 
+int _e_dbus_connman_log_dom = -1;
+
 const char *
 e_connman_system_bus_name_get(void)
 {
@@ -225,7 +227,7 @@ e_connman_system_init(E_DBus_Connection *edbus_conn)
 
    if(_e_dbus_connman_log_dom < 0) 
      {
-       E_DBUS_LOG_ERR("E-Dbus connman error : impossible to create a log domain for edbus_connman module");
+       ERR("E-Dbus connman error : impossible to create a log domain for edbus_connman module");
        return -1;
      }
 
@@ -344,7 +346,7 @@ e_connman_system_shutdown(void)
 {
    if (init_count == 0)
      {
-	E_DBUS_LOG_ERR("E-Dbus connman Error: connman system already shut down.");
+	ERR("E-Dbus connman Error: connman system already shut down.");
 	return 0;
      }
    init_count--;

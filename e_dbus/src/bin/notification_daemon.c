@@ -1,3 +1,10 @@
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+
+#include <stdio.h>
+
+#include <Ecore.h>
 #include <E_Notification_Daemon.h>
 
 typedef struct Daemon_Data Daemon_Data;
@@ -145,7 +152,7 @@ cb_close_notification(E_Notification_Daemon *daemon, unsigned int notification_i
 
 
 int
-main(int argc, char **argv)
+main()
 {
   E_Notification_Daemon *d;
   E_Notification *n;

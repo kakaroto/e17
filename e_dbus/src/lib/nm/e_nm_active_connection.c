@@ -1,7 +1,13 @@
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+
+#include <stdio.h>
+#include <string.h>
+
 #include "E_Nm.h"
 #include "e_nm_private.h"
 #include "e_dbus_private.h"
-#include <string.h>
 
 static const Property active_connection_properties[] = {
   { .name = "ServiceName", .sig = "s", .offset = offsetof(E_NM_Active_Connection, service_name) },

@@ -3,12 +3,11 @@
 
 #define DBUS_API_SUBJECT_TO_CHANGE
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <strings.h>
+/* #include <stdio.h> */
+/* #include <stdlib.h> */
+/* #include <strings.h> */
 
 #include <dbus/dbus.h>
-#include <Ecore.h>
 #include <Eina.h>
 
 #ifdef EAPI

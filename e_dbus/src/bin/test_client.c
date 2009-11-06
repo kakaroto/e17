@@ -1,3 +1,10 @@
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+
+#include <stdio.h>
+
+#include <Ecore.h>
 #include <E_DBus.h>
 
 #define NUM_LOOPS 10000
@@ -5,7 +12,7 @@
 static dbus_uint32_t msg_num = 0;
 
 void
-cb_reply(void *data, DBusMessage *reply, DBusError *error)
+cb_reply(void *data __UNUSED__, DBusMessage *reply, DBusError *error)
 {
   dbus_uint32_t val;
   if (dbus_error_is_set(error))
@@ -44,7 +51,7 @@ send_message(void *data)
 }
 
 int
-main(int argc, char **argv)
+main()
 {
   E_DBus_Connection *conn;
   int ret = 0;

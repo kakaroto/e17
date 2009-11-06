@@ -1,3 +1,7 @@
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+
 #include "E_Notify.h"
 #include "E_Notification_Daemon.h"
 #include "e_notify_private.h"
@@ -7,7 +11,7 @@ static int e_notification_daemon_bus_init(E_Notification_Daemon *daemon);
 static int e_notification_daemon_object_init(E_Notification_Daemon *daemon);
 
 DBusMessage *
-method_get_capabilities(E_DBus_Object *obj, DBusMessage *message)
+method_get_capabilities(E_DBus_Object *obj __UNUSED__, DBusMessage *message)
 {
   const char *capabilities[] = {
     "body",

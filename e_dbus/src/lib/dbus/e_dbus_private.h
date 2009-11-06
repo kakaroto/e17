@@ -1,9 +1,12 @@
 #ifndef E_DBUS_PRIVATE_H
 #define E_DBUS_PRIVATE_H
 
-#include "dbus/dbus.h"
-#include "Ecore_Data.h"
-#include "eina_log.h"
+#include <Eina.h>
+#include <Ecore.h>
+
+#include <dbus/dbus.h>
+
+#include "E_DBus.h"
 
 #ifndef E_DBUS_COLOR_DEFAULT
 #define E_DBUS_COLOR_DEFAULT EINA_COLOR_CYAN

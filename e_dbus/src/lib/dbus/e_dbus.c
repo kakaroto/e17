@@ -1,14 +1,12 @@
-#include "E_DBus.h"
-#include "e_dbus_private.h"
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
 
-#include <stdbool.h>
-#include <unistd.h>
 #include <stdio.h>
-#include <stdlib.h>
 #include <string.h>
+#include <stdbool.h>
 
-#include <Ecore.h>
-#include <Ecore_Data.h>
+#include "e_dbus_private.h"
 
 #define NUM_BUS_TYPES 3
 
@@ -204,7 +202,7 @@ cb_main_wakeup(void *data)
 }
 
 static void
-cb_dispatch_status(DBusConnection *conn, DBusDispatchStatus new_status, void *data)
+cb_dispatch_status(DBusConnection *conn __UNUSED__, DBusDispatchStatus new_status, void *data)
 {
   E_DBus_Connection *cd;
 
@@ -279,7 +277,7 @@ cb_timeout_add(DBusTimeout *timeout, void *data)
 }
 
 static void
-cb_timeout_del(DBusTimeout *timeout, void *data)
+cb_timeout_del(DBusTimeout *timeout, void *data __UNUSED__)
 {
   E_DBus_Timeout_Data *td;
   DBG("timeout del!");
@@ -297,7 +295,7 @@ cb_timeout_del(DBusTimeout *timeout, void *data)
 }
 
 static void
-cb_timeout_toggle(DBusTimeout *timeout, void *data)
+cb_timeout_toggle(DBusTimeout *timeout, void *data __UNUSED__)
 {
   E_DBus_Timeout_Data *td;
   DBG("timeout toggle!");
@@ -331,7 +329,7 @@ cb_watch_add(DBusWatch *watch, void *data)
 }
 
 static void
-cb_watch_del(DBusWatch *watch, void *data)
+cb_watch_del(DBusWatch *watch, void *data __UNUSED__)
 {
   E_DBus_Handler_Data *hd;
 
@@ -347,7 +345,7 @@ cb_watch_del(DBusWatch *watch, void *data)
 }
 
 static void
-cb_watch_toggle(DBusWatch *watch, void *data)
+cb_watch_toggle(DBusWatch *watch, void *data __UNUSED__)
 {
   E_DBus_Handler_Data *hd;
 
@@ -362,13 +360,13 @@ cb_watch_toggle(DBusWatch *watch, void *data)
 }
 
 static void
-e_dbus_message_free(void *data, void *message)
+e_dbus_message_free(void *data __UNUSED__, void *message)
 {
   dbus_message_unref(message);
 }
 
 static DBusHandlerResult
-e_dbus_filter(DBusConnection *conn, DBusMessage *message, void *user_data)
+e_dbus_filter(DBusConnection *conn __UNUSED__, DBusMessage *message, void *user_data)
 {
   E_DBus_Connection *cd = user_data;
   DBG("-----------------");

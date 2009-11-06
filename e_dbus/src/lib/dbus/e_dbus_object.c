@@ -1,9 +1,12 @@
-#include "E_DBus.h"
-#include "e_dbus_private.h"
-#include <Eina.h>
-#include <stdio.h>
-#include <stdlib.h>
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+
 #include <string.h>
+
+#include <Ecore_Data.h>
+
+#include "e_dbus_private.h"
 
 static E_DBus_Interface *introspectable_interface = NULL;
 static E_DBus_Interface *properties_interface = NULL;
@@ -554,7 +557,7 @@ e_dbus_object_handler(DBusConnection *conn, DBusMessage *message, void *user_dat
 }
 
 static void
-e_dbus_object_unregister(DBusConnection *conn, void *user_data)
+e_dbus_object_unregister(DBusConnection *conn __UNUSED__, void *user_data __UNUSED__)
 {
   /* free up the object struct? */
 }

@@ -1,12 +1,15 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <errno.h>
-#include <limits.h>
-#include <getopt.h>
-#include <E_Notify.h>
-
+#ifdef HAVE_CONFIG_H
 #include "config.h"
+#endif
+
+#include <stdio.h>
+#include <string.h>
+#include <limits.h>
+#include <errno.h>
+#include <getopt.h>
+
+#include <Ecore.h>
+#include <E_Notify.h>
 
 void
 version(void)
@@ -57,7 +60,7 @@ read_int_arg(long long *result, const char *name, intmax_t min, intmax_t max)
 }
 
 void 
-send_cb(void *user_data, void *method_return, DBusError *error)
+send_cb(void *user_data __UNUSED__, void *method_return, DBusError *error __UNUSED__)
 {
    E_Notification_Return_Notify *r = method_return;
 

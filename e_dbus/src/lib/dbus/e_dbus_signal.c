@@ -1,11 +1,10 @@
-#include <stdlib.h>
-#include <stdio.h>
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+
 #include <string.h>
-#include <Ecore.h>
-#include <Ecore_Data.h>
-#include "E_DBus.h"
+
 #include "e_dbus_private.h"
-#include "dbus/dbus.h"
 
 struct E_DBus_Signal_Handler
 {

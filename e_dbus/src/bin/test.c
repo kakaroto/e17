@@ -1,8 +1,14 @@
-#include <Ecore.h>
-#include "E_DBus.h"
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+
 #include <stdio.h>
 #include <string.h>
 #include <dbus/dbus.h>
+
+#include <Ecore.h>
+
+#include "E_DBus.h"
 
 void
 copy_message(DBusMessageIter *from, DBusMessageIter *to)
@@ -47,7 +53,7 @@ copy_message(DBusMessageIter *from, DBusMessageIter *to)
 }
 
 DBusMessage *
-cb_repeat(E_DBus_Object *obj, DBusMessage *msg)
+cb_repeat(E_DBus_Object *obj __UNUSED__, DBusMessage *msg)
 {
   DBusMessage *reply;
   DBusMessageIter from, to;
@@ -62,7 +68,7 @@ cb_repeat(E_DBus_Object *obj, DBusMessage *msg)
 }
 
 void
-cb_request_name(void *data, DBusMessage *msg, DBusError *err)
+cb_request_name(void *data __UNUSED__, DBusMessage *msg __UNUSED__, DBusError *err __UNUSED__)
 {
   // XXX check that this actually succeeded and handle errors...
   printf("request name\n");
@@ -82,7 +88,7 @@ _setup(E_DBus_Connection *conn)
 }
 
 int
-main (int argc, char ** argv)
+main ()
 {
   E_DBus_Connection *conn;
   ecore_init();

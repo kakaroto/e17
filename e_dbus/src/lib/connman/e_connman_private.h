@@ -1,8 +1,9 @@
+#include <stdio.h>
+
 #include <Eina.h>
 #include <eina_safety_checks.h>
 
 #include "E_Connman.h"
-#include <stdio.h>
 
 static const char manager_path[] = "/";
 
@@ -42,6 +43,10 @@ extern const char *e_connman_prop_wifi_security;
 extern const char *e_connman_prop_wifi_ssid;
 extern int _e_dbus_connman_log_dom;
 
+#ifndef EINA_LOG_DEFAULT_COLOR
+#define EINA_LOG_DEFAULT_COLOR EINA_COLOR_CYAN
+#endif
+
 #undef DBG
 #undef INF
 #undef WRN
@@ -58,21 +63,21 @@ __dbus_callback_check_and_init(const char *file, int line, const char *function,
    if (!msg)
      {
 	if (err)
-	  ERROR(file, function, line,
-		"an error was reported by server: "
-		"name=\"%s\", message=\"%s\"",
-		err->name, err->message);
+	  ERR(file, function, line,
+              "an error was reported by server: "
+              "name=\"%s\", message=\"%s\"",
+              err->name, err->message);
 	else
-	  ERROR(file, function, line,
-		"callback without message arguments!");
+	  ERR(file, function, line,
+              "callback without message arguments!");
 
 	return 0;
      }
 
    if (!dbus_message_iter_init(msg, itr))
      {
-       ERROR(file, function, line,
-	     "could not init iterator.");
+       ERR(file, function, line,
+           "could not init iterator.");
 	return 0;
      }
 
@@ -89,9 +94,9 @@ __dbus_iter_type_check(const char *file, int line, const char *function, int typ
    if (type == expected)
      return 1;
 
-   ERROR(file, function, line,
-	 "expected type %s (%c) but got %c instead!",
-	 expected_name, expected, type);
+   ERR(file, function, line,
+       "expected type %s (%c) but got %c instead!",
+       expected_name, expected, type);
 
    return 0;
 }

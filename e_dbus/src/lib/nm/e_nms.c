@@ -1,7 +1,13 @@
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+
+#include <stdio.h>
+#include <string.h>
+
 #include "E_Nm.h"
 #include "e_nm_private.h"
 #include "e_dbus_private.h"
-#include <string.h>
 
 static const Property nms_properties[] = {
   { .name = "UnmanagedDevices", .sig = "ao", .offset = offsetof(E_NMS, unmanaged_devices) },
@@ -137,7 +143,7 @@ add_variant(DBusMessageIter *iter, E_NM_Variant *variant)
 }
 
 static Eina_Bool
-add_value(const Eina_Hash *hash, const void *key, void *data, void *fdata)
+add_value(const Eina_Hash *hash __UNUSED__, const void *key, void *data, void *fdata)
 {
   DBusMessageIter *iter, d_iter;
 
@@ -152,7 +158,7 @@ add_value(const Eina_Hash *hash, const void *key, void *data, void *fdata)
 }
 
 static Eina_Bool
-add_array(const Eina_Hash *hash, const void *key, void *data, void *fdata)
+add_array(const Eina_Hash *hash __UNUSED__, const void *key, void *data, void *fdata)
 {
   DBusMessageIter *iter, d_iter, a_iter;
 
@@ -267,7 +273,7 @@ e_nms_system_save_hostname(E_NMS *nms, const char *hostname)
 }
 
 static void
-cb(void *data, DBusMessage *msg, DBusError *err)
+cb(void *data __UNUSED__, DBusMessage *msg __UNUSED__, DBusError *err)
 {
   if (dbus_error_is_set(err))
   {

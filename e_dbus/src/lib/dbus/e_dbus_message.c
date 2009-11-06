@@ -1,5 +1,7 @@
-#include <stdlib.h>
-#include "E_DBus.h"
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+
 #include "e_dbus_private.h"
 
 typedef struct E_DBus_Pending_Call_Data E_DBus_Pending_Call_Data;

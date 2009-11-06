@@ -1,12 +1,16 @@
-#include "E_Hal.h"
-#include <config.h>
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+
+#include <string.h>
+
+#include <Ecore.h>
+#include <E_Hal.h>
 
 #if EWL_GUI
 #include <Ewl.h>
 #include <Efreet.h>
 #endif
-
-#include <string.h>
 
 /* test app */
 
@@ -376,7 +380,7 @@ volume_append(const char *udi)
 }
 
 static void
-cb_test_get_all_devices(void *user_data, void *reply_data, DBusError *error)
+cb_test_get_all_devices(void *user_data __UNUSED__, void *reply_data, DBusError *error)
 {
   E_Hal_Manager_Get_All_Devices_Return *ret = reply_data;
   Eina_List *l;
@@ -398,7 +402,7 @@ cb_test_get_all_devices(void *user_data, void *reply_data, DBusError *error)
 }
 
 static void
-cb_test_find_device_by_capability_storage(void *user_data, void *reply_data, DBusError *error)
+cb_test_find_device_by_capability_storage(void *user_data __UNUSED__, void *reply_data, DBusError *error)
 {
   E_Hal_Manager_Find_Device_By_Capability_Return *ret = reply_data;
   Eina_List *l;
@@ -418,7 +422,7 @@ cb_test_find_device_by_capability_storage(void *user_data, void *reply_data, DBu
 }
 
 static void
-cb_test_find_device_by_capability_volume(void *user_data, void *reply_data, DBusError *error)
+cb_test_find_device_by_capability_volume(void *user_data __UNUSED__, void *reply_data, DBusError *error)
 {
   E_Hal_Manager_Find_Device_By_Capability_Return *ret = reply_data;
   Eina_List *l;
@@ -478,7 +482,7 @@ error:
 }
 
 static void
-cb_signal_device_added(void *data, DBusMessage *msg)
+cb_signal_device_added(void *data __UNUSED__, DBusMessage *msg)
 {
   DBusError err;
   char *udi;
@@ -493,7 +497,7 @@ cb_signal_device_added(void *data, DBusMessage *msg)
 }
 
 void
-cb_signal_device_removed(void *data, DBusMessage *msg)
+cb_signal_device_removed(void *data __UNUSED__, DBusMessage *msg)
 {
   DBusError err;
   char *udi;
@@ -507,7 +511,7 @@ cb_signal_device_removed(void *data, DBusMessage *msg)
 }
 
 void
-cb_signal_new_capability(void *data, DBusMessage *msg)
+cb_signal_new_capability(void *data __UNUSED__, DBusMessage *msg)
 {
   DBusError err;
   char *udi, *capability;
@@ -782,7 +786,7 @@ mountbox_mainwin_new(void)
 }
 #endif
 int 
-main(int argc, char **argv)
+main()
 {
 #if EWL_GUI
   Ewl_Widget *win;
