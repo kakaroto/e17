@@ -51,7 +51,7 @@ static const E_Gadcon_Client_Class _gc_class =
    E_GADCON_CLIENT_STYLE_PLAIN
 };
 
-// FIXME: explanation/description, what is this for ? what does ?
+/* We set the version and the name, check e_mod_main.h for more details */
 EAPI E_Module_Api e_modapi = {E_MODULE_API_VERSION, "Skel"};
 
 /*
@@ -338,7 +338,6 @@ _skel_conf_new(void)
    skel_conf = E_NEW(Config, 1);
    skel_conf->version = (MOD_CONFIG_FILE_EPOCH << 16);
 
-//FIXME: looks a bit complicated, what exactly this does ? in case of what ?
 #define IFMODCFG(v) if ((skel_conf->version & 0xffff) < v) {
 #define IFMODCFGEND }
 
