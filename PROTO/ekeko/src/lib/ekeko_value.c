@@ -34,9 +34,7 @@ static Eina_Hash *_values = NULL;
 typedef struct _Ekeko_Value_Impl
 {
 	const char *name;
-	Ekeko_Value_Create create;
 	Ekeko_Value_Compare cmp;
-	Ekeko_Value_Free free;
 	Ekeko_Value_Pointer_From pointer_from;
 	Ekeko_Value_Pointer_From pointer_to;
 } Ekeko_Value_Impl;
@@ -51,49 +49,6 @@ static inline Ekeko_Value_Impl * _implementation_get(int id)
 /*============================================================================*
  *                                 Global                                     *
  *============================================================================*/
-void ekeko_value_create(Ekeko_Value *value, Ekeko_Value_Type type)
-{
-	switch (type)
-	{
-		case EKEKO_PROPERTY_UNDEFINED:
-		printf("[Ekeko_Value] creating an undefined value?\n");
-		//exit(1);
-		break;
-
-		/* there's no need to allocate anything for this property types */
-		case EKEKO_PROPERTY_INT:
-		case EKEKO_PROPERTY_BOOL:
-		case EKEKO_PROPERTY_CHAR:
-		case EKEKO_PROPERTY_FLOAT:
-		case EKEKO_PROPERTY_DOUBLE:
-		case EKEKO_PROPERTY_SHORT:
-		case EKEKO_PROPERTY_LONG:
-		case EKEKO_PROPERTY_RECTANGLE:
-		case EKEKO_PROPERTY_STRING:
-		case EKEKO_PROPERTY_POINTER:
-		case EKEKO_PROPERTY_OBJECT:
-		break;
-
-		case EKEKO_PROPERTY_VALUE:
-#ifndef EKEKO_DEBUG
-		printf("[Ekeko_Value] value create %d %d\n", type, value->type);
-#endif
-		ekeko_value_create(value, value->type);
-		break;
-
-		default:
-#ifdef EKEKO_DEBUG
-		printf("[Ekeko_Value] value create %d\n", type);
-#endif
-		{
-			Ekeko_Value_Impl *impl;
-
-			impl = _implementation_get(type);
-			value->value.pointer_value = impl->create();
-		}
-		break;
-	}
-}
 void ekeko_value_pointer_double_to(Ekeko_Value *value, Ekeko_Value_Type type, void *ptr,
 		void *prev, char *changed)
 {
@@ -208,16 +163,8 @@ void ekeko_value_pointer_to(Ekeko_Value *value, Ekeko_Value_Type vtype, void *pt
 		{
 			Ekeko_Value *v = ptr;
 
-
-			/* FIXME malloc the pointer */
 			printf("[Ekeko_Value] value pointer to %p\n", v->value.pointer_value);
 			v->type = value->type;
-			/* TODO if the pointer already has a property allocated
-			 * also free it
-			 */
-			if (v->value.pointer_value)
-				ekeko_value_free(v, v->type);
-			ekeko_value_create(v, v->type);
 			ekeko_value_pointer_to(value, value->type, v->value.pointer_value ? v->value.pointer_value : &v->value);
 		}
 		break;
@@ -233,81 +180,6 @@ void ekeko_value_pointer_to(Ekeko_Value *value, Ekeko_Value_Type vtype, void *pt
 			impl->pointer_to(value, ptr);
 		}
 		break;
-	}
-}
-
-void ekeko_value_init(void)
-{
-	_values = eina_hash_int32_new(NULL);
-}
-
-void ekeko_value_shutdown(void)
-{
-	eina_hash_free(_values);
-}
-/*============================================================================*
- *                                   API                                      *
- *============================================================================*/
-int ekeko_value_register(const char *name, Ekeko_Value_Create create,
-		Ekeko_Value_Free free, Ekeko_Value_Compare cmp,
-		Ekeko_Value_Pointer_From pointer_from,
-		Ekeko_Value_Pointer_To pointer_to)
-{
-	static int _curr = EKEKO_PROPERTY_LAST; // the last internal property
-	Ekeko_Value_Impl *impl;
-
-	impl = malloc(sizeof(Ekeko_Value_Impl));
-	impl->name = strdup(name);
-	impl->cmp = cmp;
-	impl->create = create;
-	impl->free = free;
-	impl->pointer_to = pointer_to;
-	impl->pointer_from = pointer_from;
-
-	++_curr;
-	eina_hash_add(_values, &_curr, impl);
-	return _curr;
-}
-
-void ekeko_value_free(Ekeko_Value *v, Ekeko_Value_Type vtype)
-{
-	switch (vtype)
-	{
-		case EKEKO_PROPERTY_UNDEFINED:
-		printf("[Ekeko_Value] freeing an undefined value?\n");
-		break;
-
-		case EKEKO_PROPERTY_INT:
-		case EKEKO_PROPERTY_BOOL:
-		case EKEKO_PROPERTY_CHAR:
-		case EKEKO_PROPERTY_FLOAT:
-		case EKEKO_PROPERTY_DOUBLE:
-		case EKEKO_PROPERTY_SHORT:
-		case EKEKO_PROPERTY_LONG:
-		case EKEKO_PROPERTY_RECTANGLE:
-		case EKEKO_PROPERTY_POINTER:
-		break;
-
-		case EKEKO_PROPERTY_STRING:
-		free(v->value.string_value);
-		break;
-
-		case EKEKO_PROPERTY_VALUE:
-		ekeko_value_free(v, v->type);
-		break;
-
-		case EKEKO_PROPERTY_OBJECT:
-		/* FIXME just unref the object */
-		break;
-
-		default:
-		{
-			Ekeko_Value_Impl *impl;
-
-			impl = _implementation_get(vtype);
-			impl->free(v->value.pointer_value);
-			v->value.pointer_value = NULL;
-		}
 	}
 }
 
@@ -378,4 +250,33 @@ void ekeko_value_pointer_from(Ekeko_Value *v, Ekeko_Value_Type vtype, void *ptr)
 		}
 		break;
 	}
+}
+void ekeko_value_init(void)
+{
+	_values = eina_hash_int32_new(NULL);
+}
+
+void ekeko_value_shutdown(void)
+{
+	eina_hash_free(_values);
+}
+/*============================================================================*
+ *                                   API                                      *
+ *============================================================================*/
+EAPI int ekeko_value_register(const char *name, Ekeko_Value_Compare cmp,
+		Ekeko_Value_Pointer_From pointer_from,
+		Ekeko_Value_Pointer_To pointer_to)
+{
+	static int _curr = EKEKO_PROPERTY_LAST; // the last internal property
+	Ekeko_Value_Impl *impl;
+
+	impl = malloc(sizeof(Ekeko_Value_Impl));
+	impl->name = strdup(name);
+	impl->cmp = cmp;
+	impl->pointer_to = pointer_to;
+	impl->pointer_from = pointer_from;
+
+	++_curr;
+	eina_hash_add(_values, &_curr, impl);
+	return _curr;
 }

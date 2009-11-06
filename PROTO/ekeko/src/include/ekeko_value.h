@@ -59,22 +59,15 @@ typedef struct _Ekeko_Value
 	} value;
 } Ekeko_Value;
 
-typedef void * (*Ekeko_Value_Create)(void);
-typedef void (*Ekeko_Value_Free)(void *v);
 typedef Eina_Bool (*Ekeko_Value_Compare)(void *a, void *b);
-typedef void (*Ekeko_Value_Pointer_From)(Ekeko_Value *v, void *val);
-typedef void (*Ekeko_Value_Pointer_To)(Ekeko_Value *v, void *ptr);
+typedef void (*Ekeko_Value_Pointer_From)(Ekeko_Value *v, void *p);
+typedef void (*Ekeko_Value_Pointer_To)(Ekeko_Value *v, void *p);
 
-#define EKEKO_VALUE_CREATE(f) ((Ekeko_Value_Create)(f))
-#define EKEKO_VALUE_FREE(f) ((Ekeko_Value_Free)(f))
 #define EKEKO_VALUE_CMP(f) ((Ekeko_Value_Compare)(f))
 #define EKEKO_VALUE_POINTER_FROM(f) ((Ekeko_Value_Pointer_From)(f))
 #define EKEKO_VALUE_POINTER_TO(f) ((Ekeko_Value_Pointer_To)(f))
 
-void ekeko_value_pointer_from(Ekeko_Value *v, Ekeko_Value_Type vtype, void *val);
-void ekeko_value_free(Ekeko_Value *v, Ekeko_Value_Type vtype);
-int ekeko_value_register(const char *name, Ekeko_Value_Create create,
-		Ekeko_Value_Free free, Ekeko_Value_Compare cmp,
+EAPI int ekeko_value_register(const char *name, Ekeko_Value_Compare cmp,
 		Ekeko_Value_Pointer_From pointer_from,
 		Ekeko_Value_Pointer_To pointer_to);
 

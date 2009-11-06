@@ -30,11 +30,6 @@ typedef struct _Custom_Object_Private
 } Custom_Object_Private;
 
 
-void * _custom_create(void)
-{
-	printf("Creating a custom value\n");
-}
-
 void _custom_pointer_from(Ekeko_Value *v, void *p)
 {
 	Custom_Value *cv = p;
@@ -58,11 +53,6 @@ Eina_Bool _custom_cmp(void *a, void *b)
 	Custom_Value *cva = a, *cvb = b;
 	printf("Comparing\n");
 	
-}
-
-void _custom_free(void *p)
-{
-	printf("Freeing\n");
 }
 
 void custom_value_to(Ekeko_Value *v, Custom_Value *cv, int a, int b, char c)
@@ -93,8 +83,6 @@ int main(void)
 	ekeko_init();
 	/* Let's register our new type */
 	custom = ekeko_value_register("Custom",
-			EKEKO_VALUE_CREATE(_custom_create),
-			EKEKO_VALUE_FREE(_custom_free),
 			EKEKO_VALUE_CMP(_custom_cmp),
 			EKEKO_VALUE_POINTER_FROM(_custom_pointer_from),
 			EKEKO_VALUE_POINTER_TO(_custom_pointer_to));
