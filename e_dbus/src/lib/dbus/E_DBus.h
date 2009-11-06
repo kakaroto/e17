@@ -13,8 +13,9 @@
 #include <Eina.h>
 
 #ifdef EAPI
-#undef EAPI
+# undef EAPI
 #endif
+
 #ifdef _WIN32
 # ifdef EFL_EDBUS_BUILD
 #  ifdef DLL_EXPORT
