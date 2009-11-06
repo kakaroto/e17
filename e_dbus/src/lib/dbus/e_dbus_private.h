@@ -1,10 +1,7 @@
 #ifndef E_DBUS_PRIVATE_H
 #define E_DBUS_PRIVATE_H
 
-#include <Eina.h>
 #include <Ecore.h>
-
-#include <dbus/dbus.h>
 
 #include "E_DBus.h"
 
