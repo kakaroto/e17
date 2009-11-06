@@ -119,27 +119,6 @@ fi
 AM_CONDITIONAL(BUILD_SCRIPT_NEKO, test "x$have_neko" = "xyes")
 AC_SUBST(NEKO_LIBS)
 ################################################################################
-##                                Parsers                                     ##
-################################################################################
-## Expat
-EXPAT_LIBS=
-AC_CHECK_LIB(expat, XML_ParserCreate_MM,
-             [ AC_CHECK_HEADERS(expat.h, have_expat="yes", have_expat="no") ],
-             have_expat="yes")
-if test "x$have_expat" = "xyes"; then
-	EXPAT_LIBS=-lexpat
-	AC_DEFINE(BUILD_PARSER_EXPAT, [1], [Build support for Expat parser])
-fi
-AM_CONDITIONAL(BUILD_PARSER_EXPAT, test "x$have_expat" = "xyes")
-AC_SUBST(EXPAT_LIBS)
-
-## EXML
-PKG_CHECK_MODULES(EXML, [exml >= 0.1.1], [have_exml="yes"], [have_exml="no"])
-if test "x$have_exml" = "xyes"; then
-	AC_DEFINE(BUILD_PARSER_EXML, [1], [Build support for EXML parser])
-fi
-AM_CONDITIONAL(BUILD_PARSER_EXML, test "x$have_exml" = "xyes")
-################################################################################
 ##                                 Cache                                      ##
 ################################################################################
 PKG_CHECK_MODULES(ESHM, [eshm], [have_eshm=yes], [have_eshm=no])
@@ -200,8 +179,6 @@ src/lib/paint/Makefile
 src/lib/shape/Makefile
 src/lib/widget/Makefile
 src/lib/parser/Makefile
-src/lib/parser/exml/Makefile
-src/lib/parser/expat/Makefile
 src/lib/parser/common/Makefile
 src/lib/script/Makefile
 src/lib/script/neko/Makefile
@@ -230,10 +207,6 @@ echo
 echo "Engines:"
 echo "  SDL Engine..................................: $build_engine_sdl"
 echo "  Remote Engine...............................: $build_engine_ipc"
-echo
-echo "Parsers:"
-echo "  Expat Parser................................: $have_expat"
-echo "  EXML Parser.................................: $have_exml"
 echo
 echo "Scripts:"
 echo "  NekoVM......................................: $have_neko"

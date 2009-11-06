@@ -76,8 +76,8 @@ struct _Eon_Engine
 	/* buffer callbacks */
 	void * (*buffer_create)(Eon_Paint *p);
 	void (*buffer_render)(void *d, void *c, Eina_Rectangle *clip);
-	void (*buffer_delete)(void *i);
-	void (*buffer_update)(void *i);
+	void (*buffer_delete)(void *b);
+	void (*buffer_update)(void *b);
 	/* debug */
 	void (*debug_rect)(void *c, uint32_t color, int x, int y, int w, int h);
 };

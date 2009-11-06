@@ -20,11 +20,17 @@
 /*============================================================================*
  *                                  Local                                     *
  *============================================================================*/
-#define PRIVATE(d) ((Eon_Square_Private *)((Eon_Square *)(d))->private)
-#define EON_TYPE_SQUARE "Eon_Square"
-struct _Eon_Square_Private
+struct _Eon_Square
 {
 	Eon_Coord x, y, w, h;
+};
+
+struct _Eon_Square_Setup
+{
+	const char *xevent;
+	const char *yevent;
+	const char *wevent;
+	const char *hevent;
 };
 
 /* Just informs that the x.final property has to be recalculated */
@@ -159,171 +165,17 @@ static void _h_change(const Ekeko_Object *o, Ekeko_Event *e, void *data)
 			EON_CANVAS_H_CHANGED, _h_inform);
 }
 
-static void _ctor(void *instance)
-{
-	Eon_Square *s;
-	Eon_Square_Private *prv;
-
-	s = (Eon_Square*) instance;
-	s->private = prv = ekeko_type_instance_private_get(eon_square_type_get(), instance);
-	ekeko_event_listener_add((Ekeko_Object *)s, EON_SQUARE_X_CHANGED, _x_change, EINA_FALSE, NULL);
-	ekeko_event_listener_add((Ekeko_Object *)s, EON_SQUARE_Y_CHANGED, _y_change, EINA_FALSE, NULL);
-	ekeko_event_listener_add((Ekeko_Object *)s, EON_SQUARE_W_CHANGED, _w_change, EINA_FALSE, NULL);
-	ekeko_event_listener_add((Ekeko_Object *)s, EON_SQUARE_H_CHANGED, _h_change, EINA_FALSE, NULL);
-}
-
-static void _dtor(void *rect)
-{
-
-}
-
 /*============================================================================*
  *                                 Global                                     *
  *============================================================================*/
-void eon_square_style_coords_get(Eon_Square *s, Eon_Paint *p, int *x, int *y,
-		int *w, int *h)
+void eon_square_setup(Ekeko_Object *o, const char *xchange, const char *ychange
+		const char *wchange, const char *hchange)
 {
-	Eon_Coord px, py, pw, ph;
-	Eina_Rectangle geom;
-	Eon_Paint *sp = (Eon_Paint *)s;
-
-	/* FIXME when a paint has relative coordinates and the parent is not
-	 * renderable but another style what to do?
-	 */
-	/* setup the renderer correctly */
-	if (eon_paint_coordspace_get(sp) == EON_COORDSPACE_OBJECT)
-	{
-		eon_paint_geometry_get(p, &geom);
-	}
-	else
-	{
-		Ekeko_Renderable *r;
-
-		/* FIXME we should get the topmost canvas units not the parent
-		 * canvas
-		 */
-		r = (Ekeko_Renderable *)eon_paint_canvas_topmost_get(p);
-		ekeko_renderable_geometry_get(r, &geom);
-	}
-	eon_square_coords_get(p, &px, &py, &pw, &ph);
-
-	if (x) eon_coord_calculate(&px, geom.x, geom.w, x);
-	if (y) eon_coord_calculate(&py, geom.y, geom.h, y);
-	if (w) eon_coord_length_calculate(&pw, geom.w, w);
-	if (h) eon_coord_length_calculate(&ph, geom.h, h);
+	ekeko_event_listener_add(o, xchange, _x_change, EINA_FALSE, NULL);
+	ekeko_event_listener_add(o, ychange, _y_change, EINA_FALSE, NULL);
+	ekeko_event_listener_add(o, wchange, _w_change, EINA_FALSE, NULL);
+	ekeko_event_listener_add(o, hchange, _h_change, EINA_FALSE, NULL);
 }
 /*============================================================================*
  *                                   API                                      *
  *============================================================================*/
-Ekeko_Property_Id EON_SQUARE_X;
-Ekeko_Property_Id EON_SQUARE_Y;
-Ekeko_Property_Id EON_SQUARE_W;
-Ekeko_Property_Id EON_SQUARE_H;
-
-EAPI Ekeko_Type *eon_square_type_get(void)
-{
-	static Ekeko_Type *type = NULL;
-
-	if (!type)
-	{
-		type = ekeko_type_new(EON_TYPE_SQUARE, sizeof(Eon_Square),
-				sizeof(Eon_Square_Private), eon_paint_type_get(),
-				_ctor, _dtor, NULL);
-		EON_SQUARE_X = EKEKO_TYPE_PROP_SINGLE_ADD(type, "x", EON_PROPERTY_COORD, OFFSET(Eon_Square_Private, x));
-		EON_SQUARE_Y = EKEKO_TYPE_PROP_SINGLE_ADD(type, "y", EON_PROPERTY_COORD, OFFSET(Eon_Square_Private, y));
-		EON_SQUARE_W = EKEKO_TYPE_PROP_SINGLE_ADD(type, "w", EON_PROPERTY_COORD, OFFSET(Eon_Square_Private, w));
-		EON_SQUARE_H = EKEKO_TYPE_PROP_SINGLE_ADD(type, "h", EON_PROPERTY_COORD, OFFSET(Eon_Square_Private, h));
-	}
-
-	return type;
-}
-
-EAPI void eon_square_x_rel_set(Eon_Square *s, int x)
-{
-	Eon_Coord coord;
-	Ekeko_Value v;
-
-	eon_coord_set(&coord, x, EON_COORD_RELATIVE);
-	eon_value_coord_from(&v, &coord);
-	ekeko_object_property_value_set((Ekeko_Object *)s, "x", &v);
-}
-
-EAPI void eon_square_x_set(Eon_Square *s, int x)
-{
-	Eon_Coord coord;
-	Ekeko_Value v;
-
-	eon_coord_set(&coord, x, EON_COORD_ABSOLUTE);
-	eon_value_coord_from(&v, &coord);
-	ekeko_object_property_value_set((Ekeko_Object *)s, "x", &v);
-}
-
-EAPI void eon_square_y_set(Eon_Square *s, int y)
-{
-	Eon_Coord coord;
-	Ekeko_Value v;
-
-	eon_coord_set(&coord, y, EON_COORD_ABSOLUTE);
-	eon_value_coord_from(&v, &coord);
-	ekeko_object_property_value_set((Ekeko_Object *)s, "y", &v);
-}
-
-EAPI void eon_square_y_rel_set(Eon_Square *s, int y)
-{
-	Eon_Coord coord;
-	Ekeko_Value v;
-
-	eon_coord_set(&coord, y, EON_COORD_RELATIVE);
-	eon_value_coord_from(&v, &coord);
-	ekeko_object_property_value_set((Ekeko_Object *)s, "y", &v);
-}
-
-EAPI void eon_square_w_set(Eon_Square *s, int w)
-{
-	Eon_Coord coord;
-	Ekeko_Value v;
-
-	eon_coord_set(&coord, w, EON_COORD_ABSOLUTE);
-	eon_value_coord_from(&v, &coord);
-	ekeko_object_property_value_set((Ekeko_Object *)s, "w", &v);
-}
-
-EAPI void eon_square_w_rel_set(Eon_Square *s, int w)
-{
-	Eon_Coord coord;
-	Ekeko_Value v;
-
-	eon_coord_set(&coord, w, EON_COORD_RELATIVE);
-	eon_value_coord_from(&v, &coord);
-	ekeko_object_property_value_set((Ekeko_Object *)s, "w", &v);
-}
-
-EAPI void eon_square_h_set(Eon_Square *s, int h)
-{
-	Eon_Coord coord;
-	Ekeko_Value v;
-
-	eon_coord_set(&coord, h, EON_COORD_ABSOLUTE);
-	eon_value_coord_from(&v, &coord);
-	ekeko_object_property_value_set((Ekeko_Object *)s, "h", &v);
-}
-
-EAPI void eon_square_h_rel_set(Eon_Square *s, int h)
-{
-	Eon_Coord coord;
-	Ekeko_Value v;
-
-	eon_coord_set(&coord, h, EON_COORD_RELATIVE);
-	eon_value_coord_from(&v, &coord);
-	ekeko_object_property_value_set((Ekeko_Object *)s, "h", &v);
-}
-
-EAPI void eon_square_coords_get(Eon_Square *s, Eon_Coord *x, Eon_Coord *y, Eon_Coord *w, Eon_Coord *h)
-{
-	Eon_Square_Private *prv = PRIVATE(s);
-
-	if (x) *x = prv->x;
-	if (y) *y = prv->y;
-	if (w) *w = prv->w;
-	if (h) *h = prv->h;
-}

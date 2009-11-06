@@ -21,5 +21,5 @@ eon_player_LDADD = $(top_builddir)/src/lib/libeon.la \
 -lm
 
 if BUILD_ENGINE_SDL
-eon_player_LDADD += @ECORE_SDL_LIBS@ @SDL_LIBS@ @EXML_LIBS@
+eon_player_LDADD += @ECORE_SDL_LIBS@ @SDL_LIBS@
 endif

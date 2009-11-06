@@ -44,6 +44,7 @@ struct _Eon_Buffer
  *                                Functions                                   *
  *============================================================================*/
 EAPI Eon_Buffer * eon_buffer_new(Eon_Document *d);
+
 EAPI void eon_buffer_format_set(Eon_Buffer *b, Enesim_Converter_Format f);
 EAPI Enesim_Converter_Format eon_buffer_format_get(Eon_Buffer *b);
 

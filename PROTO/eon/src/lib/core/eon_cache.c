@@ -102,7 +102,7 @@ Eon_Cache * eon_cache_image_get(void)
 		//c->pool = eina_mempool_new("pass_through", NULL, NULL);
 #else
 		c->elements = eina_hash_string_superfast_new(NULL);
-		c->pool = eina_mempool_new("pass_through", NULL, NULL);
+		c->pool = eina_mempool_add("pass_through", NULL, NULL);
 #endif
 	}
 	return c;

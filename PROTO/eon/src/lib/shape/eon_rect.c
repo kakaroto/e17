@@ -153,7 +153,11 @@ void eon_rect_shutdown(void)
  *============================================================================*/
 Ekeko_Property_Id EON_RECT_CORNERS;
 Ekeko_Property_Id EON_RECT_CORNER_RADIUS;
-
+/**
+ * Creates a new rectangle
+ * @param d The Document this rectangle will belong to
+ * @return The new rectangle
+ */
 EAPI Eon_Rect * eon_rect_new(Eon_Document *d)
 {
 	Eon_Rect *r;

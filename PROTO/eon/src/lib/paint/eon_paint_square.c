@@ -176,24 +176,62 @@ static void _h_change(const Ekeko_Object *o, Ekeko_Event *e, void *data)
 	_geometry_update(s);
 }
 
-static void _ctor(void *instance)
+/* whenever the parent changes, we should set the new real geometry
+ * in case some coord is relative
+ */
+static void _parent_set(const Ekeko_Object *o, Ekeko_Event *e, void *data)
+{
+	Ekeko_Event_Mutation *em = (Ekeko_Event_Mutation *)e;
+	Ekeko_Object *p = (Ekeko_Object *)em->related;
+	Eon_Coord x, y, w, h, zero;
+	Eon_Paint_Square_Private *prv = PRIVATE(o);
+	Eon_Paint_Square *s = (Eon_Paint_Square *)o;
+
+	/* FIXME, fix this, the parent can be a canvas or any other
+	 * square type (paint or square)
+	 */
+	if (!ekeko_type_instance_is_of(p, "canvas"))
+		return;
+
+	eon_canvas_h_get(p, &h);
+	eon_canvas_w_get(p, &w);
+	eon_canvas_x_get(p, &x);
+	eon_canvas_y_get(p, &y);
+
+	zero.type = EON_COORD_ABSOLUTE;
+	zero.value = 0;
+	zero.final = 0;
+
+	eon_coord_length_change(o, &prv->h, &prv->h, &zero, h.final, p,
+			EON_CANVAS_H_CHANGED, _h_inform);
+	eon_coord_length_change(o, &prv->w, &prv->w, &zero, w.final, p,
+			EON_CANVAS_W_CHANGED, _w_inform);
+	eon_coord_change(o, &prv->y, &prv->y, &zero, y.final, h.final, p,
+			EON_CANVAS_Y_CHANGED, EON_CANVAS_H_CHANGED, _y_inform);
+	eon_coord_change(o, &prv->x, &prv->x, &zero, x.final, w.final, p,
+			EON_CANVAS_W_CHANGED, EON_CANVAS_W_CHANGED, _x_inform);
+	_geometry_update(s);
+}
+
+
+static void _ctor(Ekeko_Object *o)
 {
 	Eon_Paint_Square *s;
 	Eon_Paint_Square_Private *prv;
 
-	s = (Eon_Paint_Square *)instance;
-	s->private = prv = ekeko_type_instance_private_get(eon_paint_square_type_get(), instance);
-	ekeko_event_listener_add((Ekeko_Object *)s, EON_PAINT_SQUARE_X_CHANGED, _x_change, EINA_FALSE, NULL);
-	ekeko_event_listener_add((Ekeko_Object *)s, EON_PAINT_SQUARE_Y_CHANGED, _y_change, EINA_FALSE, NULL);
-	ekeko_event_listener_add((Ekeko_Object *)s, EON_PAINT_SQUARE_W_CHANGED, _w_change, EINA_FALSE, NULL);
-	ekeko_event_listener_add((Ekeko_Object *)s, EON_PAINT_SQUARE_H_CHANGED, _h_change, EINA_FALSE, NULL);
+	s = (Eon_Paint_Square *)o;
+	s->private = prv = ekeko_type_instance_private_get(eon_paint_square_type_get(), o);
+	ekeko_event_listener_add(o, EKEKO_EVENT_OBJECT_APPEND, _parent_set, EINA_FALSE, NULL);
+	ekeko_event_listener_add(o, EON_PAINT_SQUARE_X_CHANGED, _x_change, EINA_FALSE, NULL);
+	ekeko_event_listener_add(o, EON_PAINT_SQUARE_Y_CHANGED, _y_change, EINA_FALSE, NULL);
+	ekeko_event_listener_add(o, EON_PAINT_SQUARE_W_CHANGED, _w_change, EINA_FALSE, NULL);
+	ekeko_event_listener_add(o, EON_PAINT_SQUARE_H_CHANGED, _h_change, EINA_FALSE, NULL);
 }
 
 static void _dtor(void *rect)
 {
 
 }
-
 /*============================================================================*
  *                                 Global                                     *
  *============================================================================*/

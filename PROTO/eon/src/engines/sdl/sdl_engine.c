@@ -257,11 +257,13 @@ static void * canvas_create(Eon_Canvas *c, void *dd, Eina_Bool root, int w, int 
 		}
 		enesim_surface_private_set(es, sdoc->s);
 	}
+	printf("Returning %p\n", es);
 	return es;
 }
 
 static void canvas_delete(void *c)
 {
+	printf("Deleting %p\n", c);
 	/* TODO handle correctly the deletion of a canvas, delete
 	 * every handler, etc */
 	enesim_surface_delete(c);
@@ -284,7 +286,7 @@ static Eina_Bool canvas_flush(void *src, Eina_Rectangle *srect)
 	int soffset;
 	int coffset;
 
-#if 0
+#if 1
 	printf("Flushing the canvas %d %d %d %d\n", srect->x, srect->y, srect->w, srect->h);
 	{
 		int w, h;
@@ -308,7 +310,6 @@ static Eina_Bool canvas_flush(void *src, Eina_Rectangle *srect)
 	cdata.argb8888.plane0_stride = s->pitch / 4;
 	/* convert */
 	conv = enesim_converter_span_get(ENESIM_CONVERTER_ARGB8888, ENESIM_ANGLE_0, ENESIM_FORMAT_ARGB8888);
-
 	_lock(s);
 	while (h--)
 	{

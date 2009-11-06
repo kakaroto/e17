@@ -8,7 +8,7 @@
 		<compound id="co01" x="0%" y="0%" w="100%" h="100%">
 			<layer paint="#bkg" rop="fill"/>
 			<layer paint="#s01" rop="blend"/>
-			<!--<layer paint="#c01" rop="blend"/>-->
+			<layer paint="#c01" rop="blend"/>
 		</compound>
 	</style>
 	<canvas w="100%" h="100%">

@@ -32,6 +32,11 @@ struct _Eon_Object_Private
 /*============================================================================*
  *                                   API                                      *
  *============================================================================*/
+/**
+ * Gets the Eon_Document this object belongs to
+ * @param o The Eon_Object to get the document from
+ * @return The Eon_Document
+ */
 EAPI Eon_Document * eon_object_document_get(Eon_Object *o)
 {
 	Eon_Object_Private *prv;
