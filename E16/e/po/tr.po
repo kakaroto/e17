@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2009-11-05 18:19+0100\n"
+"POT-Creation-Date: 2009-11-07 09:30+0100\n"
 "PO-Revision-Date: 2000-07-30 22:39+0200\n"
 "Last-Translator: Fatih Demir <kabalak@gmx.net>\n"
 "Language-Team: Turkish <tr@li.org>\n"
@@ -419,7 +419,7 @@ msgstr "Kapat"
 msgid "Create New Iconbox"
 msgstr "Yeni simge kutusunu yarat"
 
-#: src/container.c:1502 src/container.c:1579
+#: src/container.c:1502 src/container.c:1579 src/menus.c:2101
 #, fuzzy, c-format
 msgid "Icon size: %2d"
 msgstr "Ikona boyutu"
@@ -1284,11 +1284,6 @@ msgstr "Bu kitleyi simgeleþtir"
 #, c-format
 msgid "Group %i"
 msgstr "Kitle %i"
-
-#: src/menus.c:2101
-#, fuzzy, c-format
-msgid "Icon size: %2i"
-msgstr "Ikona boyutu"
 
 #: src/menus.c:2125
 msgid "Animated display of menus"
@@ -2798,6 +2793,10 @@ msgstr ""
 #: config/strings.c:193
 msgid "Epplets"
 msgstr ""
+
+#, fuzzy
+#~ msgid "Icon size: %2i"
+#~ msgstr "Ikona boyutu"
 
 #, fuzzy
 #~ msgid "Autoraise"

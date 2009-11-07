@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: e16\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2009-11-05 18:19+0100\n"
+"POT-Creation-Date: 2009-11-07 09:30+0100\n"
 "PO-Revision-Date: 2009-07-06 09:05+0000\n"
 "Last-Translator: Careone <zzbusagain@yahoo.com.cn>\n"
 "Language-Team: Chinese/Simplified <i18n-translation@lists.linux.net.cn>\n"
@@ -406,7 +406,7 @@ msgstr "关闭"
 msgid "Create New Iconbox"
 msgstr "创建新图标架"
 
-#: src/container.c:1502 src/container.c:1579
+#: src/container.c:1502 src/container.c:1579 src/menus.c:2101
 #, c-format
 msgid "Icon size: %2d"
 msgstr "图标大小：%2d"
@@ -1144,11 +1144,6 @@ msgstr ""
 #, c-format
 msgid "Group %i"
 msgstr "组 %i"
-
-#: src/menus.c:2101
-#, fuzzy, c-format
-msgid "Icon size: %2i"
-msgstr "图标大小：%2d"
 
 #: src/menus.c:2125
 msgid "Animated display of menus"
@@ -2513,6 +2508,10 @@ msgstr "其它"
 #: config/strings.c:193
 msgid "Epplets"
 msgstr "Epplets 小程序"
+
+#, fuzzy
+#~ msgid "Icon size: %2i"
+#~ msgstr "图标大小：%2d"
 
 #~ msgid "Autoraise"
 #~ msgstr "自动升起"

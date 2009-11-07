@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2009-11-05 18:19+0100\n"
+"POT-Creation-Date: 2009-11-07 09:30+0100\n"
 "PO-Revision-Date: 2000-01-04 23:15+0100\n"
 "Last-Translator: Peter Kjellerstedt <pkj@axis.com>\n"
 "Language-Team: American English <en@li.org>\n"
@@ -344,7 +344,7 @@ msgstr ""
 msgid "Create New Iconbox"
 msgstr ""
 
-#: src/container.c:1502 src/container.c:1579
+#: src/container.c:1502 src/container.c:1579 src/menus.c:2101
 #, c-format
 msgid "Icon size: %2d"
 msgstr ""
@@ -1061,11 +1061,6 @@ msgstr ""
 #: src/menus-misc.c:628
 #, c-format
 msgid "Group %i"
-msgstr ""
-
-#: src/menus.c:2101
-#, c-format
-msgid "Icon size: %2i"
 msgstr ""
 
 #: src/menus.c:2125

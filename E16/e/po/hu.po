@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2009-11-05 18:19+0100\n"
+"POT-Creation-Date: 2009-11-07 09:30+0100\n"
 "PO-Revision-Date: 2000-01-04 23:15+0100\n"
 "Last-Translator: György Horák <dyuri@horak.hu>\n"
 "Language-Team: Hungarian <hu@li.org>\n"
@@ -425,7 +425,7 @@ msgstr "Bezár"
 msgid "Create New Iconbox"
 msgstr "Új ikondoboz létrehozása"
 
-#: src/container.c:1502 src/container.c:1579
+#: src/container.c:1502 src/container.c:1579 src/menus.c:2101
 #, fuzzy, c-format
 msgid "Icon size: %2d"
 msgstr "Ikonok mérete"
@@ -1235,11 +1235,6 @@ msgstr "Csoport kicsinyítése"
 #, c-format
 msgid "Group %i"
 msgstr "%i. csoport"
-
-#: src/menus.c:2101
-#, fuzzy, c-format
-msgid "Icon size: %2i"
-msgstr "Ikonok mérete"
 
 #: src/menus.c:2125
 msgid "Animated display of menus"
@@ -2728,6 +2723,10 @@ msgstr ""
 #, fuzzy
 msgid "Epplets"
 msgstr "Körhullámok"
+
+#, fuzzy
+#~ msgid "Icon size: %2i"
+#~ msgstr "Ikonok mérete"
 
 #, fuzzy
 #~ msgid "Autoraise"

@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2009-11-05 18:19+0100\n"
+"POT-Creation-Date: 2009-11-07 09:30+0100\n"
 "PO-Revision-Date: 2009-07-28 14:01+0000\n"
 "Last-Translator: Yentl <y.v.t@scarlet.be>\n"
 "Language-Team: Dutch <nl@li.org>\n"
@@ -428,7 +428,7 @@ msgstr "Sluit"
 msgid "Create New Iconbox"
 msgstr "Maak een nieuwe Icoonbox"
 
-#: src/container.c:1502 src/container.c:1579
+#: src/container.c:1502 src/container.c:1579 src/menus.c:2101
 #, c-format
 msgid "Icon size: %2d"
 msgstr "Icoon grootte: %2d"
@@ -1274,11 +1274,6 @@ msgstr "Minimaliseer deze groep"
 #, c-format
 msgid "Group %i"
 msgstr "Groep %i"
-
-#: src/menus.c:2101
-#, fuzzy, c-format
-msgid "Icon size: %2i"
-msgstr "Icoon grootte: %2d"
 
 #: src/menus.c:2125
 msgid "Animated display of menus"
@@ -2695,6 +2690,10 @@ msgstr "Andere"
 #: config/strings.c:193
 msgid "Epplets"
 msgstr "Epplets"
+
+#, fuzzy
+#~ msgid "Icon size: %2i"
+#~ msgstr "Icoon grootte: %2d"
 
 #~ msgid "Autoraise"
 #~ msgstr "Automatisch omhoog halen"

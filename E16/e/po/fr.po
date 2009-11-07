@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: e16-0.16-0.99.99.901\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2009-11-05 18:19+0100\n"
+"POT-Creation-Date: 2009-11-07 09:30+0100\n"
 "PO-Revision-Date: 2009-05-15 16:33+0200\n"
 "Last-Translator: Tristan D. <trinine@free.fr>\n"
 "Language-Team: French <http://www.linuxmao.org>\n"
@@ -428,7 +428,7 @@ msgstr "Fermer"
 msgid "Create New Iconbox"
 msgstr "Créer une nouvelle Boîte à icônes"
 
-#: src/container.c:1502 src/container.c:1579
+#: src/container.c:1502 src/container.c:1579 src/menus.c:2101
 #, c-format
 msgid "Icon size: %2d"
 msgstr "Taille des icônes: %2d"
@@ -1263,11 +1263,6 @@ msgstr "Icônifier ce groupe"
 #, c-format
 msgid "Group %i"
 msgstr "Groupe %i"
-
-#: src/menus.c:2101
-#, fuzzy, c-format
-msgid "Icon size: %2i"
-msgstr "Taille des icônes: %2d"
 
 #: src/menus.c:2125
 msgid "Animated display of menus"
@@ -2688,6 +2683,10 @@ msgstr "Autres"
 #: config/strings.c:193
 msgid "Epplets"
 msgstr "Epplets"
+
+#, fuzzy
+#~ msgid "Icon size: %2i"
+#~ msgstr "Taille des icônes: %2d"
 
 #~ msgid "Autoraise"
 #~ msgstr "Auto-élévation"

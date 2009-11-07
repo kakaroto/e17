@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2009-11-05 18:19+0100\n"
+"POT-Creation-Date: 2009-11-07 09:30+0100\n"
 "PO-Revision-Date: 2009-08-25 23:51+0000\n"
 "Last-Translator: Andres Bracho <andres_bracho@yahoo.com.mx>\n"
 "Language-Team: \n"
@@ -431,7 +431,7 @@ msgstr "Cerrar"
 msgid "Create New Iconbox"
 msgstr "Crear un nuevo Portaíconos"
 
-#: src/container.c:1502 src/container.c:1579
+#: src/container.c:1502 src/container.c:1579 src/menus.c:2101
 #, c-format
 msgid "Icon size: %2d"
 msgstr "Tamaño del Icono: %2d"
@@ -1274,11 +1274,6 @@ msgstr "Iconizar este grupo"
 #, c-format
 msgid "Group %i"
 msgstr "Grupo %i"
-
-#: src/menus.c:2101
-#, fuzzy, c-format
-msgid "Icon size: %2i"
-msgstr "Tamaño del Icono: %2d"
 
 #: src/menus.c:2125
 msgid "Animated display of menus"
@@ -2697,6 +2692,10 @@ msgstr "Otro"
 #: config/strings.c:193
 msgid "Epplets"
 msgstr ""
+
+#, fuzzy
+#~ msgid "Icon size: %2i"
+#~ msgstr "Tamaño del Icono: %2d"
 
 #~ msgid "Autoraise"
 #~ msgstr "Autoelevar"

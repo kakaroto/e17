@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2009-11-05 18:19+0100\n"
+"POT-Creation-Date: 2009-11-07 09:30+0100\n"
 "PO-Revision-Date: 2008-10-09 10:43+0200\n"
 "Last-Translator: Kjartan Maraas <kmaraas@gnome.org>\n"
 "Language-Team: Norwegian <no@li.org>\n"
@@ -412,7 +412,7 @@ msgstr "Avbryt"
 msgid "Create New Iconbox"
 msgstr "Lag en ny ikonboks"
 
-#: src/container.c:1502 src/container.c:1579
+#: src/container.c:1502 src/container.c:1579 src/menus.c:2101
 #, c-format
 msgid "Icon size: %2d"
 msgstr "Ikonstørrelse: %2d"
@@ -1257,11 +1257,6 @@ msgstr "Ikonifiser denne gruppa"
 #, c-format
 msgid "Group %i"
 msgstr "Gruppe %i"
-
-#: src/menus.c:2101
-#, fuzzy, c-format
-msgid "Icon size: %2i"
-msgstr "Ikonstørrelse: %2d"
 
 #: src/menus.c:2125
 msgid "Animated display of menus"
@@ -2729,6 +2724,10 @@ msgstr "Annet"
 #: config/strings.c:193
 msgid "Epplets"
 msgstr ""
+
+#, fuzzy
+#~ msgid "Icon size: %2i"
+#~ msgstr "Ikonstørrelse: %2d"
 
 #, fuzzy
 #~ msgid "Autoraise"

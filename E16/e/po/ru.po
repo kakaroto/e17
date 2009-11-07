@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2009-11-05 18:19+0100\n"
+"POT-Creation-Date: 2009-11-07 09:30+0100\n"
 "PO-Revision-Date: 2000-01-14 20:43-0300\n"
 "Last-Translator: sda <sda00@himki.net>\n"
 "Language-Team: Russian <ru@li.org>\n"
@@ -428,7 +428,7 @@ msgstr "Закрыть"
 msgid "Create New Iconbox"
 msgstr "Сделать новый Iconbox"
 
-#: src/container.c:1502 src/container.c:1579
+#: src/container.c:1502 src/container.c:1579 src/menus.c:2101
 #, c-format
 msgid "Icon size: %2d"
 msgstr "Размер пиктограммы: %2d"
@@ -1277,11 +1277,6 @@ msgstr "Свернуть эту группу"
 #, c-format
 msgid "Group %i"
 msgstr "Группа %i"
-
-#: src/menus.c:2101
-#, fuzzy, c-format
-msgid "Icon size: %2i"
-msgstr "Размер пиктограммы: %2d"
 
 #: src/menus.c:2125
 msgid "Animated display of menus"
@@ -2698,6 +2693,10 @@ msgstr "Прочее"
 #: config/strings.c:193
 msgid "Epplets"
 msgstr "Модули (эпплеты)"
+
+#, fuzzy
+#~ msgid "Icon size: %2i"
+#~ msgstr "Размер пиктограммы: %2d"
 
 #~ msgid "Autoraise"
 #~ msgstr "Задержка подъема:"

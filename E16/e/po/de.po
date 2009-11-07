@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 16\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2009-11-05 18:19+0100\n"
+"POT-Creation-Date: 2009-11-07 09:30+0100\n"
 "PO-Revision-Date: 2009-05-31 15:13+0100\n"
 "Last-Translator: Peter Wehrfritz <peter.wehrfritz@web.de>\n"
 "Language-Team: Enlightenment l10n <enlightenment-intl@lists.sourceforge."
@@ -512,7 +512,7 @@ msgid "Create New Iconbox"
 msgstr "Neue Iconbox erzeugen"
 
 # src/settings.c:3643
-#: src/container.c:1502 src/container.c:1579
+#: src/container.c:1502 src/container.c:1579 src/menus.c:2101
 #, c-format
 msgid "Icon size: %2d"
 msgstr "Icongröße: %2d"
@@ -1488,12 +1488,6 @@ msgstr "Diese Gruppe minimieren"
 #, c-format
 msgid "Group %i"
 msgstr "Gruppe %i"
-
-# src/settings.c:3643
-#: src/menus.c:2101
-#, fuzzy, c-format
-msgid "Icon size: %2i"
-msgstr "Icongröße: %2d"
 
 # src/settings.c:1795
 #: src/menus.c:2125
@@ -3096,6 +3090,11 @@ msgstr "Andere"
 #: config/strings.c:193
 msgid "Epplets"
 msgstr "Epplets"
+
+# src/settings.c:3643
+#, fuzzy
+#~ msgid "Icon size: %2i"
+#~ msgstr "Icongröße: %2d"
 
 # src/settings.c:1338
 #~ msgid "Autoraise"

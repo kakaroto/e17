@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2009-11-05 18:19+0100\n"
+"POT-Creation-Date: 2009-11-07 09:30+0100\n"
 "PO-Revision-Date: 2000-04-10 17:30+0200\n"
 "Last-Translator: Bernt Holmberg <bernt@grub01.physto.se>\n"
 "Language-Team: Swedish <sv@li.org>\n"
@@ -416,7 +416,7 @@ msgstr "Stäng"
 msgid "Create New Iconbox"
 msgstr "Skapa ny ikonlåda"
 
-#: src/container.c:1502 src/container.c:1579
+#: src/container.c:1502 src/container.c:1579 src/menus.c:2101
 #, fuzzy, c-format
 msgid "Icon size: %2d"
 msgstr "Ikon storlek"
@@ -1278,11 +1278,6 @@ msgstr "Ikonifiera denna grupp"
 #, c-format
 msgid "Group %i"
 msgstr "Grupp %i"
-
-#: src/menus.c:2101
-#, fuzzy, c-format
-msgid "Icon size: %2i"
-msgstr "Ikon storlek"
 
 #: src/menus.c:2125
 msgid "Animated display of menus"
@@ -2793,6 +2788,10 @@ msgstr ""
 #: config/strings.c:193
 msgid "Epplets"
 msgstr ""
+
+#, fuzzy
+#~ msgid "Icon size: %2i"
+#~ msgstr "Ikon storlek"
 
 #, fuzzy
 #~ msgid "Autoraise"
