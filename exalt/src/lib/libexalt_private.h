@@ -78,7 +78,7 @@ typedef struct exalt_ioctl_key
 
 /** Command to launch a dhcp */
 #ifdef DHCP_COMMAND_PATH
-    #define COMMAND_DHCLIENT DHCP_COMMAND_PATH " %s -1 -q -pf %s"
+    #define COMMAND_DHCLIENT DHCP_COMMAND_PATH " %s -1 -e IF_METRIC=%i -q -pf %s"
     #define DHCLIENT_PID_FILE "/var/run/dhclient_%s.pid"
     #define DHCLIENT_EXALT_PID_FILE "/var/run/dhclient_exalt_%s.pid"
 #endif

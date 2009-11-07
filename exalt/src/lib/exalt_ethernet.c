@@ -1211,8 +1211,10 @@ int _exalt_eth_apply_dhcp(Exalt_Ethernet* eth)
 
     ecore_exe_free(exe);
 
-    usleep(500);
-    _exalt_eth_dhcp_daemon_kill(eth);
+   // XXX raster: wtf? kill dhclient? it is meant to hang around to keep the lease! dchpd can send requests to renew/change lease!
+//    usleep(500);
+//    usleep(4000);
+//    _exalt_eth_dhcp_daemon_kill(eth);
 
     return 1;
 #else
@@ -1296,11 +1298,13 @@ void _exalt_cb_net_properties(void *data, void *reply_data, DBusError *error)
     E_Hal_Properties *ret = reply_data;
     int err = 0;
     Exalt_Ethernet* eth;
-    char* str, *str2;
+    char *str, *str2;
 
     EXALT_ASSERT_RETURN_VOID(!dbus_error_is_set(error));
     str = e_hal_property_string_get(ret,"net.interface", &err);
     str2 = e_hal_property_string_get(ret,"net.originating_device", &err);
+    if (!strncmp(str, "pan", 3)) return; // ignore bt devices
+    if (!strcmp(str, "lo")) return; // ignore loopback
     eth = exalt_eth_new(str,str2);
     if(!eth) return ;
     EXALT_FREE(str);
