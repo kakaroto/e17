@@ -1,7 +1,9 @@
 #include <e.h>
 #include "e_mod_main.h"
 
-// FIXME: the typedef for this is defined in a E header file, what's teh meant of this ?
+/* The typedef for this structure is declared inside the E code in order to
+ * allow everybody to use this type, you dont need to declare the typedef, 
+ * just use the E_Config_Dialog_Data for your data structures declarations */
 struct _E_Config_Dialog_Data 
 {
    int switch1;
