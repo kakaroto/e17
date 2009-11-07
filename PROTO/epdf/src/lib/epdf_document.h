@@ -158,11 +158,13 @@ unsigned char epdf_document_is_notable (const Epdf_Document *document);
  * @brief Return the version of the pdf used in the document
  *
  * @param document The document
- * @return The version
+ * @param major The major version of the pdf document
+ * @param minor The minor version of the pdf document
  *
- * Return the version of the pdf used in the document @p document
+ * Return the major and minor version of the pdf used in the document
+ * @p document respectively in @p major and @p minor.
  */
-double epdf_document_pdf_version_get (const Epdf_Document *document);
+void epdf_document_pdf_version_get (const Epdf_Document *document, int *major, int *minor);
 
 /**
  * @brief Return a list of the fonts used in the document

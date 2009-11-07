@@ -226,13 +226,16 @@ epdf_document_is_notable (const Epdf_Document *document)
 }
 
 
-double
-epdf_document_pdf_version_get (const Epdf_Document *document)
+void
+epdf_document_pdf_version_get (const Epdf_Document *document, int *major, int *minor)
 {
-  if (!document)
-    return 0.0;
+  if (!document) {
+    if (major) *major = 0;
+    if (minor) *minor = 0;
+  }
 
-  return document->pdfdoc->getPDFVersion();
+  if (major) *major = document->pdfdoc->getPDFMajorVersion();
+  if (minor) *minor = document->pdfdoc->getPDFMinorVersion();
 }
 
 Eina_List *

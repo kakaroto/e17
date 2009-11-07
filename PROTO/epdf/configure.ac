@@ -39,7 +39,7 @@ EFL_CHECK_DOXYGEN([build_doc="yes"], [build_doc="no"])
 
 ### Checks for libraries
 
-PKG_CHECK_MODULES(EPDF, [evas >= 0.9.9 ecore >= 0.9.9 poppler >= 0.10])
+PKG_CHECK_MODULES(EPDF, [evas >= 0.9.9 ecore >= 0.9.9 poppler >= 0.12])
 
 POPPLER_VERSION=`pkg-config --modversion poppler`
 AC_DEFINE_UNQUOTED([POPPLER_VERSION], ["${POPPLER_VERSION}"], [Poppler version.])
