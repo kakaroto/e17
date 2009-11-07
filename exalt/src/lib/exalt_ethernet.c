@@ -1188,12 +1188,16 @@ int _exalt_eth_apply_dhcp(Exalt_Ethernet* eth)
     char buf[1024];
     char buf2[1024];
     pid_t pid;
-
+    int metric;
+   
     EXALT_ASSERT_RETURN(eth!=NULL);
 
-
-    snprintf(buf,1024,DHCLIENT_PID_FILE,exalt_eth_name_get(eth));
-    snprintf(command,1024,COMMAND_DHCLIENT,exalt_eth_name_get(eth),buf);
+    metric = 100; // XXX: need to have interfaces have metrics for preferential
+    // routing. eg - metric == 100 vs mertic == 40 - the 50 will be preferred
+    // as a priority routing path. so may want wired if's to have lower metrics
+    // for example
+    snprintf(buf, 1024, DHCLIENT_PID_FILE, exalt_eth_name_get(eth));
+    snprintf(command, 1024, COMMAND_DHCLIENT, exalt_eth_name_get(eth), metric, buf);
     exe = ecore_exe_run(command, NULL);
     pid = ecore_exe_pid_get(exe);
 
@@ -1211,7 +1215,7 @@ int _exalt_eth_apply_dhcp(Exalt_Ethernet* eth)
 
     ecore_exe_free(exe);
 
-   // XXX raster: wtf? kill dhclient? it is meant to hang around to keep the lease! dchpd can send requests to renew/change lease!
+   // XXX raster: kill dhclient? it is meant to hang around to keep the lease! dchpd can send requests to renew/change lease!
 //    usleep(500);
 //    usleep(4000);
 //    _exalt_eth_dhcp_daemon_kill(eth);
@@ -1301,14 +1305,22 @@ void _exalt_cb_net_properties(void *data, void *reply_data, DBusError *error)
     char *str, *str2;
 
     EXALT_ASSERT_RETURN_VOID(!dbus_error_is_set(error));
-    str = e_hal_property_string_get(ret,"net.interface", &err);
-    str2 = e_hal_property_string_get(ret,"net.originating_device", &err);
-    if (!strncmp(str, "pan", 3)) return; // ignore bt devices
-    if (!strcmp(str, "lo")) return; // ignore loopback
-    eth = exalt_eth_new(str,str2);
-    if(!eth) return ;
+    str = e_hal_property_string_get(ret, "info.category", &err);
+    if (!str) return;
+    if (!( // a list of allowed device categories
+          (!strcmp(str, "net.80203")) ||
+          (!strcmp(str, "net.80211"))
+          ))
+      {
+         EXALT_FREE(str);
+         return;
+      }
+    str = e_hal_property_string_get(ret, "net.interface", &err);
+    str2 = e_hal_property_string_get(ret, "net.originating_device", &err);
+    eth = exalt_eth_new(str, str2);
     EXALT_FREE(str);
     EXALT_FREE(str2);
+    if (!eth) return;
 
     str = e_hal_property_string_get(ret,"info.udi", &err);
     _exalt_eth_udi_set(eth,str);
@@ -1317,15 +1329,15 @@ void _exalt_cb_net_properties(void *data, void *reply_data, DBusError *error)
     _exalt_eth_ifindex_set(eth,e_hal_property_int_get(ret,"net.linux.ifindex", &err));
 
     str = exalt_eth_ip_get(eth);
-    _exalt_eth_save_ip_set(eth,str);
+    _exalt_eth_save_ip_set(eth, str);
     EXALT_FREE(str);
 
     str = exalt_eth_netmask_get(eth);
-    _exalt_eth_save_netmask_set(eth,str);
+    _exalt_eth_save_netmask_set(eth, str);
     EXALT_FREE(str);
 
     str = exalt_eth_gateway_get(eth);
-    _exalt_eth_save_gateway_set(eth,str);
+    _exalt_eth_save_gateway_set(eth, str);
     EXALT_FREE(str);
 
     _exalt_eth_save_link_set(eth, exalt_eth_link_is(eth));
@@ -1335,8 +1347,9 @@ void _exalt_cb_net_properties(void *data, void *reply_data, DBusError *error)
     exalt_eth_interfaces.ethernets =
         eina_list_append(exalt_eth_interfaces.ethernets, eth);
 
-    if(exalt_eth_interfaces.eth_cb)
-        exalt_eth_interfaces.eth_cb(eth,action,exalt_eth_interfaces.eth_cb_user_data);
+    if (exalt_eth_interfaces.eth_cb)
+        exalt_eth_interfaces.eth_cb(eth, action, 
+                                    exalt_eth_interfaces.eth_cb_user_data);
 
     //EXALT_FREE(data);
 }
