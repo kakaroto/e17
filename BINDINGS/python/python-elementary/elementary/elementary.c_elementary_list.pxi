@@ -143,10 +143,7 @@ cdef class ListItem:
                                                    icon_obj, end_obj, NULL, NULL)
 
     def selected_set(self, selected):
-        if selected:
-            elm_list_item_selected_set(self.item, 1)
-        else:
-            elm_list_item_selected_set(self.item, 0)
+        elm_list_item_selected_set(self.item, selected)
 
     def show(self):
         elm_list_item_show(self.item)
