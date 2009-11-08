@@ -30,9 +30,9 @@ cdef void _list_callback(void *data, c_evas.Evas_Object *obj, void *event_info) 
             print "ERROR: no callback available for the item"
     except Exception, e:
         traceback.print_exc()
-            
+
 cdef class ListItem:
-    """ 
+    """
     An item for the list widget
     """
     cdef Elm_List_Item *item
@@ -64,7 +64,7 @@ cdef class ListItem:
             icon_obj = icon.obj
         if not end == None:
             end_obj = end.obj
-        
+
         self.item = elm_list_item_append(list.obj, label, icon_obj, end_obj, _list_callback, NULL)
         self._create_mapping(callback, data)
 
@@ -81,7 +81,7 @@ cdef class ListItem:
             icon_obj = icon.obj
         if not end == None:
             end_obj = end.obj
-        
+
         self.item = elm_list_item_prepend(list.obj, label, icon_obj, end_obj, _list_callback, NULL)
         self._create_mapping(callback, data)
 
@@ -109,7 +109,7 @@ cdef class ListItem:
     def insert_after(self, c_evas.Object list, ListItem after, label, c_evas.Object icon, c_evas.Object end, callback, data = None):
         if not self.item == NULL:
             raise Exception("Item was already created!")
-        
+
         if after == None:
             raise ValueError("need a valid after object to add an item after another item")
 
@@ -126,31 +126,29 @@ cdef class ListItem:
         self.item = elm_list_item_insert_after(list.obj, after.item, label, icon_obj, end_obj,
             _list_callback, NULL)
         self._create_mapping(callback, data)
-   
+
     def selected_set(self, selected):
         if selected:
             elm_list_item_selected_set(self.item, 1)
         else:
             elm_list_item_selected_set(self.item, 0)
-    
+
     def show(self):
         elm_list_item_show(self.item)
-        
+
     def delete(self):
         elm_list_item_del(self.item)
-        
+
     def data_get(self):
         cdef void* data
         data = elm_list_item_data_get(self.item)
         return None
 
-    # TODO
-    # def 
-        
-    # TODO
     def icon_get(self):
-        return None
-    
+        cdef c_evas.Evas_Object *icon
+        icon = elm_list_item_icon_get(self.item)
+        return evas.c_evas._Object_from_instance(<long> icon)
+
     # TODO
     def end_get(self):
         return None
@@ -164,7 +162,7 @@ cdef class ListItem:
 
     def label_set(self, label):
         elm_list_item_label_set(self.item, label)
-    
+
     def prev(self):
         self.item = elm_list_item_prev(self.item)
 
@@ -175,22 +173,22 @@ cdef class List(Object):
     def __init__(self, c_evas.Object parent):
         Object.__init__(self, parent.evas)
         self._set_obj(elm_list_add(parent.obj))
-    
+
     def item_append(self, label, c_evas.Object icon, c_evas.Object end, callback, data = None):
         item = ListItem()
         item.append(self, label, icon, end, callback, data)
         return item
-    
+
     def item_prepend(self, label, c_evas.Object icon, c_evas.Object end, callback, data = None):
         item = ListItem()
         item.prepend(self, label, icon, end, data)
         return item
-    
+
     def item_insert_before(self, ListItem before, label, c_evas.Object icon, c_evas.Object end, callback, data = None):
         item = ListItem()
         item.insert_before(self, before, label, icon, end, callback, data)
         return item
-    
+
     def item_insert_after(self, ListItem after, label, c_evas.Object icon, c_evas.Object end, callback, data = None):
         item = ListItem()
         item.insert_after(self, after, label, icon, end, callback, data)
@@ -198,14 +196,14 @@ cdef class List(Object):
 
     def clear(self):
         elm_list_clear(self.obj)
-    
+
     def go(self):
         elm_list_go(self.obj)
 
     property clicked:
         def __set__(self, value):
             self._callback_add("clicked", value)
-    
+
     property selected:
         def __set__(self, value):
             self._callback_add("selected", value)
