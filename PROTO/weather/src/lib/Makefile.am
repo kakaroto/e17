@@ -16,7 +16,6 @@ INCLUDES = \
 -DPACKAGE_DATA_DIR=\"$(datadir)/$(PACKAGE)\" \
 @E_CFLAGS@
 
-
 include_HEADERS = EWeather.h \
     EWeather_Plugins.h \
     EWeather_Smart.h

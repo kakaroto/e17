@@ -28,6 +28,7 @@ AC_PROG_LIBTOOL
 AC_SUBST(packagedatadir)
 
 PKG_PROG_PKG_CONFIG
+PKG_CHECK_MODULES(E, [enlightenment])
 
 pluginsdir="${libdir}/eweather/plugins"
 AC_SUBST(pluginsdir)
