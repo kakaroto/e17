@@ -18,8 +18,8 @@
 
 cdef class Window(Object):
     """
-    Elementary Wind ow class
-    
+    Elementary Window class
+
     This class represents a basic window.
     """
 
@@ -57,7 +57,7 @@ cdef class Window(Object):
     property focus_out:
         def __set__(self, value):
             self._callback_add("focus-out", value)
-        
+
     def resize_object_add(self,c_evas.Object obj):
         """
         Sets an object which sould be resized, when the window changes his size
@@ -73,7 +73,7 @@ cdef class Window(Object):
         @parm: B{obj} Widget object
         """
         elm_win_resize_object_del(self.obj, obj.obj)
-    
+
     def title_set(self,title):
         """
         Sets the title of the window
@@ -85,7 +85,7 @@ cdef class Window(Object):
     def activate(self):
         """Activates the window"""
         elm_win_activate(self.obj)
-    
+
     def autodel_set(self,autodel):
         """
         Set the auto deletion property of the window
@@ -128,7 +128,7 @@ cdef class Window(Object):
             elm_win_alpha_set(self.obj, 1)
         else:
             elm_win_alpha_set(self.obj, 0)
-        
+
     def override_set(self, override):
         """
         Set the override property
@@ -150,7 +150,7 @@ cdef class Window(Object):
             elm_win_fullscreen_set(self.obj, 1)
         else:
             elm_win_fullscreen_set(self.obj, 0)
-    
+
     def maximized_set(self, maximized):
         """
         Maximize the window
@@ -231,7 +231,6 @@ cdef class Window(Object):
     def xwindow_get(self):
         cdef Ecore_X_Window xwin
         xwin = elm_win_xwindow_get(self.obj)
-        
 
         return Null
     """

@@ -26,6 +26,10 @@ cdef extern from "Python.h":
     void PyMem_Free(void *p)
     void memcpy(void *source, void *dest, size_t nbytes)
 
+    # object.h
+    void Py_INCREF(object)
+    void Py_DECREF(object)
+
 cdef enum Elm_Win_Type:
     ELM_WIN_BASIC
     ELM_WIN_DIALOG_BASIC

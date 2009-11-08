@@ -19,36 +19,51 @@
 
 cdef void _list_callback(void *cbt, c_evas.Evas_Object *o, void *event_info) with gil:
     try:
-        (obj, callback, data, it) = <object>cbt
-        if not callable(callback):
-            raise TypeError("callback is not callable")
+        (obj, callback, data, self) = <object>cbt
         callback(obj, "clicked" , data)
     except Exception, e:
         traceback.print_exc()
+
+cdef void _list_item_del_cb(void *data, c_evas.Evas_Object *o, void *event_info) with gil:
+    (obj, callback, d, it) = <object>data
+
+    it.__del_cb()
+
+cdef enum Elm_List_Item_Insert_Kind:
+    ELM_LIST_ITEM_INSERT_APPEND
+    ELM_LIST_ITEM_INSERT_PREPEND
+    ELM_LIST_ITEM_INSERT_BEFORE
+    ELM_LIST_ITEM_INSERT_AFTER
 
 cdef class ListItem:
     """
     An item for the list widget
     """
     cdef Elm_List_Item *item
-    cdef c_evas.Evas_Object *list
     cdef object cbt
 
     def __new__(self):
         self.item = NULL
 
-    def __init__(self):
-        pass
+    def __del_cb(self):
+        self.item = NULL
 
-    def append(self, c_evas.Object list, label, c_evas.Object icon = None,
-               c_evas.Object end = None, callback = None, data = None):
-        if not self.item == NULL:
-            raise Exception("Item was already created!")
+        self.cbt = None
 
+        Py_DECREF(self)
+
+    def __init__(self, kind, c_evas.Object list, label, c_evas.Object icon = None,
+                 c_evas.Object end = None, callback = None, data = None,
+                 ListItem before_after = None):
         cdef c_evas.Evas_Object* icon_obj
         cdef c_evas.Evas_Object* end_obj
+        cdef void* cbdata
+        cdef void (*cb) (void *, c_evas.Evas_Object *, void *)
+
         icon_obj = NULL
         end_obj = NULL
+        cbdata = NULL
+        cb = NULL
 
         if icon is not None:
             icon_obj = icon.obj
@@ -56,100 +71,43 @@ cdef class ListItem:
             end_obj = end.obj
 
         if callback is not None:
-            self.cbt = (list, callback, data, self)
+            if not callable(callback):
+                raise TypeError("callback is not callable")
+            cb = _list_callback
+        self.cbt = (list, callback, data, self)
+        cbdata = <void*>self.cbt
+
+        if kind == ELM_LIST_ITEM_INSERT_APPEND:
             self.item = elm_list_item_append(list.obj, label, icon_obj, end_obj,
-                                             _list_callback, <void*>self.cbt)
-        else:
-            self.item = elm_list_item_append(list.obj, label, icon_obj, end_obj,
-                                             NULL, NULL)
-
-    def prepend(self, c_evas.Object list, label, c_evas.Object icon = None,
-                c_evas.Object end = None, callback = None, data = None):
-        if not self.item == NULL:
-            raise Exception("Item was already created!")
-
-        cdef c_evas.Evas_Object* icon_obj
-        cdef c_evas.Evas_Object* end_obj
-        icon_obj = NULL
-        end_obj = NULL
-
-        if icon is not None:
-            icon_obj = icon.obj
-        if end is not None:
-            end_obj = end.obj
-
-        if callback is not None:
-            self.cbt = (list, callback, data, self)
+                                             cb, cbdata)
+        elif kind == ELM_LIST_ITEM_INSERT_PREPEND:
             self.item = elm_list_item_prepend(list.obj, label, icon_obj, end_obj,
-                                              _list_callback, <void*>self.cbt)
+                                              cb, cbdata)
         else:
-            self.item = elm_list_item_prepend(list.obj, label, icon_obj, end_obj,
-                                              NULL, NULL)
+            if before_after == None:
+                raise ValueError("need a valid after object to add an item before/after another item")
+            if kind == ELM_LIST_ITEM_INSERT_BEFORE:
+                self.item = elm_list_item_insert_before(list.obj, before_after.item, label,
+                                                        icon_obj, end_obj,
+                                                        cb, cbdata)
+            else:
+                self.item = elm_list_item_insert_after(list.obj, before_after.item, label,
+                                                        icon_obj, end_obj,
+                                                        cb, cbdata)
 
-    def insert_before(self, c_evas.Object list, ListItem before, label,
-                      c_evas.Object icon = None, c_evas.Object end = None,
-                      callback = None, data = None):
-        if not self.item == NULL:
-            raise Exception("Item was already created!")
+        Py_INCREF(self)
+        elm_list_item_del_cb_set(self.item, _list_item_del_cb)
 
-        if before == None:
-            raise ValueError("need a valid before object to add an item before another item")
-
-        cdef c_evas.Evas_Object* icon_obj
-        cdef c_evas.Evas_Object* end_obj
-        icon_obj = NULL
-        end_obj = NULL
-
-        if icon is not None:
-            icon_obj = icon.obj
-        if end is not None:
-            end_obj = end.obj
-
-        if callback is not None:
-            self.cbt = (list, callback, data, self)
-            self.item = elm_list_item_insert_before(list.obj, before.item, label,
-                                                    icon_obj, end_obj,
-                                                    _list_callback, <void*>self.cbt)
-        else:
-            self.item = elm_list_item_insert_before(list.obj, before.item, label,
-                                                    icon_obj, end_obj, NULL, NULL)
-
-    def insert_after(self, c_evas.Object list, ListItem after, label,
-                     c_evas.Object icon = None, c_evas.Object end = None,
-                     callback = None, data = None):
-        if not self.item == NULL:
-            raise Exception("Item was already created!")
-
-        if after == None:
-            raise ValueError("need a valid after object to add an item after another item")
-
-        cdef c_evas.Evas_Object* icon_obj
-        cdef c_evas.Evas_Object* end_obj
-        icon_obj = NULL
-        end_obj = NULL
-
-        if icon is not None:
-            icon_obj = icon.obj
-        if end is not None:
-            end_obj = end.obj
-
-        if callback is not None:
-            self.cbt = (list, callback, data, self)
-            self.item = elm_list_item_insert_after(list.obj, after.item, label,
-                                                   icon_obj, end_obj,
-                                                   _list_callback, <void*>self.cbt)
-        else:
-            self.item = elm_list_item_insert_after(list.obj, after.item, label,
-                                                   icon_obj, end_obj, NULL, NULL)
+    def delete(self):
+        if self.item == NULL:
+            raise ValueError("Object already deleted")
+        elm_list_item_del(self.item)
 
     def selected_set(self, selected):
         elm_list_item_selected_set(self.item, selected)
 
     def show(self):
         elm_list_item_show(self.item)
-
-    def delete(self):
-        elm_list_item_del(self.item)
 
     def data_get(self):
         cdef void* data
@@ -164,14 +122,6 @@ cdef class ListItem:
         icon = elm_list_item_icon_get(self.item)
         return evas.c_evas._Object_from_instance(<long> icon)
 
-    # TODO
-    def end_get(self):
-        return None
-
-    # TODO
-    def base_get(self):
-        return None
-
     def label_get(self):
         return elm_list_item_label_get(self.item)
 
@@ -179,10 +129,67 @@ cdef class ListItem:
         elm_list_item_label_set(self.item, label)
 
     def prev(self):
+        import warnings
+        warnings.warn("use prev_get() instead.", DeprecationWarning)
         self.item = elm_list_item_prev(self.item)
 
+    def prev_get(self):
+        cdef Elm_List_Item *item
+        cdef void *data
+
+        item = elm_list_item_prev(self.item)
+
+        if item == NULL:
+            return None
+        data = elm_list_item_data_get(item)
+        if data == NULL:
+            return None
+        (obj, callback, d, it) = <object>data
+        return it
+
     def next(self):
+        import warnings
+        warnings.warn("use next_get() instead.", DeprecationWarning)
         self.item = elm_list_item_next(self.item)
+
+    def next_get(self):
+        cdef Elm_List_Item *item
+        cdef void *data
+
+        item = elm_list_item_next(self.item)
+
+        if item == NULL:
+            return None
+        data = elm_list_item_data_get(item)
+        if data == NULL:
+            return None
+        (obj, callback, d, it) = <object>data
+        return it
+
+    def end_get(self):
+        cdef c_evas.Evas_Object *obj
+        cdef void *data
+
+        obj = elm_list_item_end_get(self.item)
+        if obj == NULL:
+            return None
+        data = c_evas.evas_object_data_get(obj, "python-evas")
+        if data == NULL:
+            return None
+        return <Object>data
+
+    def base_get(self):
+        cdef c_evas.Evas_Object *obj
+        cdef void *data
+
+        obj = elm_list_item_base_get(self.item)
+        if obj == NULL:
+            return None
+        data = c_evas.evas_object_data_get(obj, "python-evas")
+        if data == NULL:
+            return None
+        return <Object>data
+
 
 cdef class List(Object):
     def __init__(self, c_evas.Object parent):
@@ -191,27 +198,23 @@ cdef class List(Object):
 
     def item_append(self, label, c_evas.Object icon = None,
                     c_evas.Object end = None, callback = None, data = None):
-        item = ListItem()
-        item.append(self, label, icon, end, callback, data)
-        return item
+        return ListItem(ELM_LIST_ITEM_INSERT_APPEND, self, label, icon, end,
+                        callback, data)
 
     def item_prepend(self, label, c_evas.Object icon = None,
                      c_evas.Object end = None, callback = None, data = None):
-        item = ListItem()
-        item.prepend(self, label, icon, end, data)
-        return item
+        return ListItem(ELM_LIST_ITEM_INSERT_PREPEND, self, label, icon, end,
+                        callback, data)
 
     def item_insert_before(self, ListItem before, label, c_evas.Object icon = None,
                            c_evas.Object end = None, callback = None, data = None):
-        item = ListItem()
-        item.insert_before(self, before, label, icon, end, callback, data)
-        return item
+        return ListItem(ELM_LIST_ITEM_INSERT_BEFORE, self, label, icon, end,
+                        callback, data, before)
 
     def item_insert_after(self, ListItem after, label, c_evas.Object icon = None,
                           c_evas.Object end = None, callback = None, data = None):
-        item = ListItem()
-        item.insert_after(self, after, label, icon, end, callback, data)
-        return item
+        return ListItem(ELM_LIST_ITEM_INSERT_AFTER, self, label, icon, end,
+                        callback, data, after)
 
     def clear(self):
         elm_list_clear(self.obj)
@@ -230,17 +233,17 @@ cdef class List(Object):
 
     def selected_item_get(self):
         cdef Elm_List_Item *obj
-        cdef void *eo
+        cdef void *data
         obj = elm_list_selected_item_get(self.obj)
 
         if obj == NULL:
             return None
-        eo = evas.c_evas.evas_object_data_get(
-            <evas.c_evas.Evas_Object*>obj, "python-evas")
-        if eo == NULL:
+        data = elm_list_item_data_get(obj)
+        if data == NULL:
             return None
         else:
-            return <Object>eo
+            (o, callback, d, it) = <object>data
+            return it
 
     property clicked:
         def __set__(self, value):
