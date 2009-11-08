@@ -16,18 +16,13 @@
 # along with python-elementary.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-cdef object _list_callback_mapping
-_list_callback_mapping = dict()
 
-cdef void _list_callback(void *data, c_evas.Evas_Object *obj, void *event_info) with gil:
+cdef void _list_callback(void *cbt, c_evas.Evas_Object *o, void *event_info) with gil:
     try:
-        mapping = _list_callback_mapping.get(<long>event_info)
-        if mapping is not None:
-            callback = mapping["callback"] 
-            if callback is not None and callable(callback):
-                callback(mapping["class"], "clicked", mapping["data"])
-        else:
-            print "ERROR: no callback available for the item"
+        (obj, callback, data, it) = <object>cbt
+        if not callable(callback):
+            raise TypeError("callback is not callable")
+        callback(obj, "clicked" , data)
     except Exception, e:
         traceback.print_exc()
 
@@ -37,19 +32,13 @@ cdef class ListItem:
     """
     cdef Elm_List_Item *item
     cdef c_evas.Evas_Object *list
+    cdef object cbt
 
     def __new__(self):
         self.item = NULL
 
     def __init__(self):
         pass
-
-    def _create_mapping(self, callback, data):
-        mapping = dict()
-        mapping["class"] = self
-        mapping["callback"] = callback
-        mapping["data"] = data
-        _list_callback_mapping[<long>self.item] = mapping
 
     def append(self, c_evas.Object list, label, c_evas.Object icon, c_evas.Object end, callback, data = None):
         if not self.item == NULL:
@@ -60,13 +49,14 @@ cdef class ListItem:
         icon_obj = NULL
         end_obj = NULL
 
-        if not icon == None:
+        if icon is not None:
             icon_obj = icon.obj
-        if not end == None:
+        if end is not None:
             end_obj = end.obj
 
-        self.item = elm_list_item_append(list.obj, label, icon_obj, end_obj, _list_callback, NULL)
-        self._create_mapping(callback, data)
+        self.cbt = (list, callback, data, self)
+        self.item = elm_list_item_append(list.obj, label, icon_obj, end_obj,
+                                         _list_callback, <void*>self.cbt)
 
     def prepend(self, c_evas.Object list, label, c_evas.Object icon, c_evas.Object end, callback, data = None):
         if not self.item == NULL:
@@ -77,13 +67,14 @@ cdef class ListItem:
         icon_obj = NULL
         end_obj = NULL
 
-        if not icon == None:
+        if icon is not None:
             icon_obj = icon.obj
-        if not end == None:
+        if end is not None:
             end_obj = end.obj
 
-        self.item = elm_list_item_prepend(list.obj, label, icon_obj, end_obj, _list_callback, NULL)
-        self._create_mapping(callback, data)
+        self.cbt = (list, callback, data, self)
+        self.item = elm_list_item_prepend(list.obj, label, icon_obj, end_obj,
+                                          _list_callback, <void*>self.cbt)
 
     def insert_before(self, c_evas.Object list, ListItem before, label, c_evas.Object icon,
             c_evas.Object end, callback, data = None):
@@ -98,13 +89,15 @@ cdef class ListItem:
         icon_obj = NULL
         end_obj = NULL
 
-        if not icon == None:
+        if icon is not None:
             icon_obj = icon.obj
-        if not end ==  None:
+        if end is not None:
             end_obj = end.obj
 
-        self.item = elm_list_item_insert_before(list.obj, before.item, label, icon_obj, end_obj, _list_callback, NULL)
-        self._create_mapping(callback, data)
+        self.cbt = (list, callback, data, self)
+        self.item = elm_list_item_insert_before(list.obj, before.item, label,
+                                                icon_obj, end_obj,
+                                                _list_callback, <void*>self.cbt)
 
     def insert_after(self, c_evas.Object list, ListItem after, label, c_evas.Object icon, c_evas.Object end, callback, data = None):
         if not self.item == NULL:
@@ -118,14 +111,15 @@ cdef class ListItem:
         icon_obj = NULL
         end_obj = NULL
 
-        if not icon == None:
+        if icon is not None:
             icon_obj = icon.obj
-        if not end ==  None:
+        if end is not None:
             end_obj = end.obj
 
-        self.item = elm_list_item_insert_after(list.obj, after.item, label, icon_obj, end_obj,
-            _list_callback, NULL)
-        self._create_mapping(callback, data)
+        self.cbt = (list, callback, data, self)
+        self.item = elm_list_item_insert_after(list.obj, after.item, label,
+                                               icon_obj, end_obj,
+                                               _list_callback, <void*>self.cbt)
 
     def selected_set(self, selected):
         if selected:
@@ -139,6 +133,7 @@ cdef class ListItem:
     def delete(self):
         elm_list_item_del(self.item)
 
+    # FIXME
     def data_get(self):
         cdef void* data
         data = elm_list_item_data_get(self.item)
