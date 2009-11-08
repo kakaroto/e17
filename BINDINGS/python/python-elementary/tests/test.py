@@ -1290,6 +1290,138 @@ def hoversel_clicked(obj, event, *args, **kargs):
     win.show()
 # }}}
 
+#----- List -{{{-
+def my_list_show_it(obj, event, data):
+    data.show()
+
+def list_clicked(obj, event, *args, **kargs):
+    win = elementary.Window("list", elementary.ELM_WIN_BASIC)
+    win.title_set("List")
+    win.autodel_set(True)
+
+    bg = elementary.Background(win)
+    win.resize_object_add(bg)
+    bg.size_hint_weight_set(evas.EVAS_HINT_EXPAND, evas.EVAS_HINT_EXPAND)
+    bg.show()
+
+    li = elementary.List(win)
+    win.resize_object_add(li)
+    li.size_hint_weight_set(evas.EVAS_HINT_EXPAND, evas.EVAS_HINT_EXPAND)
+
+    ic = elementary.Icon(win)
+    ic.file_set('images/logo_small.png')
+    ic.scale_set(1, 1)
+    it1 = li.item_append("Hello", ic, None, None, None)
+    ic = elementary.Icon(win)
+    ic.file_set('images/logo_small.png')
+    ic.scale_set(0, 0)
+    li.item_append("Hello", ic, None, None, None)
+    ic = elementary.Icon(win)
+    ic.standard_set("edit")
+    ic.scale_set(0, 0)
+    li.item_append(".", ic, None, None, None)
+
+    ic = elementary.Icon(win)
+    ic.standard_set("delete")
+    ic.scale_set(0, 0)
+    ic2 = elementary.Icon(win)
+    ic2.standard_set("clock")
+    ic2.scale_set(0, 0)
+    it2 = li.item_append("How", ic, ic2, None, None)
+
+    bx = elementary.Box(win)
+    bx.horizontal_set(True)
+
+    ic = elementary.Icon(win)
+    ic.file_set('images/logo_small.png')
+    ic.scale_set(0, 0)
+    ic.size_hint_align_set(0.5, 0.5)
+    bx.pack_end(ic)
+    ic.show()
+
+    ic = elementary.Icon(win)
+    ic.file_set('images/logo_small.png')
+    ic.scale_set(0, 0)
+    ic.size_hint_align_set(0.5, 0.0)
+    bx.pack_end(ic)
+    ic.show()
+
+    ic = elementary.Icon(win)
+    ic.file_set('images/logo_small.png')
+    ic.scale_set(0, 0)
+    ic.size_hint_align_set(0.0, evas.EVAS_HINT_EXPAND)
+    bx.pack_end(ic)
+    ic.show()
+    li.item_append("are", bx, None, None, None)
+
+    li.item_append("you", None, None, None, None)
+    it3 = li.item_append("doing", None, None, None, None)
+    li.item_append("out", None, None, None, None)
+    li.item_append("there", None, None, None, None)
+    li.item_append("today", None, None, None, None)
+    li.item_append("?", None, None, None, None)
+    it4 = li.item_append("Here", None, None, None, None)
+    li.item_append("are", None, None, None, None)
+    li.item_append("some", None, None, None, None)
+    li.item_append("more", None, None, None, None)
+    li.item_append("items", None, None, None, None)
+    li.item_append("Is this label long enough?", None, None, None, None)
+    it5 = li.item_append("Maybe this one is even longer so we can test long long items.", None, None, None, None)
+
+    li.go()
+
+    li.show()
+
+    tb2 = elementary.Table(win)
+    tb2.size_hint_weight_set(evas.EVAS_HINT_EXPAND, evas.EVAS_HINT_EXPAND)
+    win.resize_object_add(tb2)
+
+    bt = elementary.Button(win)
+    bt.label_set("Hello")
+    bt.clicked = (my_list_show_it, it1)
+    bt.size_hint_weight_set(evas.EVAS_HINT_EXPAND, evas.EVAS_HINT_EXPAND)
+    bt.size_hint_align_set(0.9, 0.5)
+    tb2.pack(bt, 0, 0, 1, 1);
+    bt.show()
+
+    bt = elementary.Button(win)
+    bt.label_set("How")
+    bt.clicked = (my_list_show_it, it2)
+    bt.size_hint_weight_set(evas.EVAS_HINT_EXPAND, evas.EVAS_HINT_EXPAND)
+    bt.size_hint_align_set(0.9, 0.5)
+    tb2.pack(bt, 0, 1, 1, 1);
+    bt.show()
+
+    bt = elementary.Button(win)
+    bt.label_set("doing")
+    bt.clicked = (my_list_show_it, it3)
+    bt.size_hint_weight_set(evas.EVAS_HINT_EXPAND, evas.EVAS_HINT_EXPAND)
+    bt.size_hint_align_set(0.9, 0.5)
+    tb2.pack(bt, 0, 2, 1, 1);
+    bt.show()
+
+    bt = elementary.Button(win)
+    bt.label_set("Here")
+    bt.clicked = (my_list_show_it, it4)
+    bt.size_hint_weight_set(evas.EVAS_HINT_EXPAND, evas.EVAS_HINT_EXPAND)
+    bt.size_hint_align_set(0.9, 0.5)
+    tb2.pack(bt, 0, 3, 1, 1);
+    bt.show()
+
+    bt = elementary.Button(win)
+    bt.label_set("Maybe this...")
+    bt.clicked = (my_list_show_it, it5)
+    bt.size_hint_weight_set(evas.EVAS_HINT_EXPAND, evas.EVAS_HINT_EXPAND)
+    bt.size_hint_align_set(0.9, 0.5)
+    tb2.pack(bt, 0, 4, 1, 1);
+    bt.show()
+
+    tb2.show()
+
+    win.resize(320, 320)
+    win.show()
+# }}}
+
 #----- Pager -{{{-
 def my_pager_1(obj, event, data):
     data["pager"].content_promote(data["pg2"])
@@ -2104,6 +2236,7 @@ if __name__ == "__main__":
                ("Anchorblock", anchorblock_clicked),
                ("Toolbar", toolbar_clicked),
                ("Hoversel", hoversel_clicked),
+               ("List", list_clicked),
                ("InnerWindow", inner_window_clicked),
                ("Checks", check_clicked),
                ("Radios", radio_clicked),
