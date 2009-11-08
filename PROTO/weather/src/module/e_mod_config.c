@@ -39,6 +39,10 @@ _weather_config_item_get(const char *id)
      }
    ci = E_NEW(Config_Item, 1);
    ci->id = eina_stringshare_add(id);
+   ci->degrees = 0;
+   ci->location = NULL;
+   ci->plugin = NULL;
+   ci->poll_time = 60.0;
    weather_cfg->items = eina_list_append(weather_cfg->items, ci);
    return ci;
 }
@@ -62,6 +66,7 @@ _weather_config_new(void)
 #define IFMODCFGEND }
 
    IFMODCFG(0x008d);
+   _weather_config_item_get(NULL);
    IFMODCFGEND;
 
    weather_cfg->version = MOD_CONFIG_FILE_VERSION;

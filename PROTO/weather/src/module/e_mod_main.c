@@ -28,6 +28,10 @@ e_modapi_init(E_Module *m)
 
    item_edd = E_CONFIG_DD_NEW("Config_Item", Config_Item);
    E_CONFIG_VAL(item_edd, Config_Item, id, STR);
+   E_CONFIG_VAL(item_edd, Config_Item, degrees, INT);
+   E_CONFIG_VAL(item_edd, Config_Item, location, STR);
+   E_CONFIG_VAL(item_edd, Config_Item, plugin, STR);
+   E_CONFIG_VAL(item_edd, Config_Item, poll_time, DOUBLE);
 
    conf_edd = E_CONFIG_DD_NEW("Config", Config);
    E_CONFIG_LIST(conf_edd, Config, items, item_edd);
@@ -119,6 +123,6 @@ e_modapi_save(E_Module *m)
 static int 
 _cb_cfg_timer(void *data) 
 {
-   e_util_dialog_show(D_("Weather Configuration Updated"), data);
+   e_util_dialog_show_internal(D_("Weather Configuration Updated"), data);
    return 0;
 }

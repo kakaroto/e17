@@ -18,6 +18,10 @@ struct _Config
 struct _Config_Item 
 {
    const char *id;
+   int degrees;
+   const char *location;
+   const char *plugin;
+   double poll_time;
 };
 
 EAPI Config_Item *_weather_config_item_get(const char *id);
