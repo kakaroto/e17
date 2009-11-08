@@ -2256,55 +2256,9 @@ if __name__ == "__main__":
     li.show()
 
     for item in items:
-        """
-        it = elementary.ListItem()
-        it.append(li, item[0], None, None, item[1])
-        """
         li.item_append(item[0], None, None, item[1])
 
     li.go()
-
-    """
-    sc = elementary.Scroller(win)
-    sc.size_hint_weight_set(evas.EVAS_HINT_EXPAND, evas.EVAS_HINT_EXPAND)
-    sc.size_hint_align_set(evas.EVAS_HINT_FILL, evas.EVAS_HINT_FILL)
-    box0.pack_end(sc)
-    sc.show()
-
-    box1 = elementary.Box(win)
-    box1.size_hint_weight_set(evas.EVAS_HINT_EXPAND, evas.EVAS_HINT_EXPAND)
-    sc.content_set(box1)
-    box1.show()
-
-    buttons = [("Bg Plain", bg_plain_clicked),
-               ("Bg Image", bg_image_clicked),
-               ("Icon Transparent", icon_transparent_clicked),
-               ("Box Vert", box_vert_clicked),
-               ("Box Horiz", box_horiz_clicked),
-               ("Buttons", buttons_clicked),
-               ("Toggles", toggles_clicked),
-               ("Table", table_clicked),
-               ("Clock", clock_clicked),
-               ("Layout", layout_clicked),
-               ("Hover", hover_clicked),
-               ("Hover 2", hover2_clicked),
-               ("Entry", entry_clicked),
-               ("Entry Scrolled", entry_scrolled_clicked),
-               ("Notepad", notepad_clicked),
-               ("Anchorview", anchorview_clicked),
-               ("Anchorblock", anchorblock_clicked),
-               ("Toolbar", toolbar_clicked),
-               ("Pager", pager_clicked)]
-
-
-    for btn in buttons:
-        bt = elementary.Button(win)
-        bt.clicked = btn[1]
-        bt.label_set(btn[0])
-        bt.size_hint_align_set(evas.EVAS_HINT_FILL, 0.0)
-        box1.pack_end(bt)
-        bt.show()
-    """
 
     win.resize(320,520)
     win.show()
