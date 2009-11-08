@@ -1422,6 +1422,115 @@ def list_clicked(obj, event, *args, **kargs):
     win.show()
 # }}}
 
+#----- List2 -{{{-
+def my_list2_clear(obj, event, data):
+    data.clear()
+
+def my_list2_sel(obj, event, data):
+    it = obj.selected_item_get()
+    if it is not None:
+        it.selected_set(False)
+
+def list2_clicked(obj, event, *args, **kargs):
+    win = elementary.Window("list-2", elementary.ELM_WIN_BASIC)
+    win.title_set("List 2")
+    win.autodel_set(True)
+
+    bg = elementary.Background(win)
+    bg.file_set('images/plant_01.jpg')
+    win.resize_object_add(bg)
+    bg.size_hint_weight_set(evas.EVAS_HINT_EXPAND, evas.EVAS_HINT_EXPAND)
+    bg.show()
+
+    bx = elementary.Box(win)
+    bx.size_hint_weight_set(evas.EVAS_HINT_EXPAND, evas.EVAS_HINT_EXPAND)
+    win.resize_object_add(bx)
+    bx.show()
+
+    li = elementary.List(win)
+    li.size_hint_align_set(evas.EVAS_HINT_FILL, evas.EVAS_HINT_FILL)
+    li.size_hint_weight_set(evas.EVAS_HINT_EXPAND, evas.EVAS_HINT_EXPAND)
+    li.horizontal_mode_set(elementary.ELM_LIST_LIMIT)
+
+    ic = elementary.Icon(win)
+    ic.file_set('images/logo_small.png')
+    it = li.item_append("Hello", ic, callback=my_list2_sel)
+    it.selected_set(True)
+    ic = elementary.Icon(win)
+    ic.scale_set(0, 0)
+    ic.file_set('images/logo_small.png')
+    li.item_append("world", ic)
+    ic = elementary.Icon(win)
+    ic.standard_set("edit")
+    ic.scale_set(0, 0)
+    li.item_append(".", ic)
+
+    ic = elementary.Icon(win)
+    ic.standard_set("delete")
+    ic.scale_set(0, 0)
+    ic2 = elementary.Icon(win)
+    ic2.standard_set("clock")
+    ic2.scale_set(0, 0)
+    it2 = li.item_append("How", ic, ic2)
+
+    bx2 = elementary.Box(win)
+    bx2.horizontal_set(True)
+
+    ic = elementary.Icon(win)
+    ic.file_set('images/logo_small.png')
+    ic.scale_set(0, 0)
+    ic.size_hint_align_set(0.5, 0.5)
+    bx2.pack_end(ic)
+    ic.show()
+
+    ic = elementary.Icon(win)
+    ic.file_set('images/logo_small.png')
+    ic.scale_set(0, 0)
+    ic.size_hint_align_set(0.5, 0.0)
+    bx2.pack_end(ic)
+    ic.show()
+
+    li.item_append("are", bx2)
+
+    li.item_append("you")
+    li.item_append("doing")
+    li.item_append("out")
+    li.item_append("there")
+    li.item_append("today")
+    li.item_append("?")
+    li.item_append("Here")
+    li.item_append("are")
+    li.item_append("some")
+    li.item_append("more")
+    li.item_append("items")
+    li.item_append("Longer label.")
+
+    li.go()
+
+    bx.pack_end(li)
+    li.show()
+
+    bx2 = elementary.Box(win)
+    bx2.horizontal_set(True)
+    bx2.homogenous_set(True)
+    bx2.size_hint_weight_set(evas.EVAS_HINT_EXPAND, 0.0)
+    bx2.size_hint_align_set(evas.EVAS_HINT_FILL, evas.EVAS_HINT_FILL)
+
+    bt = elementary.Button(win)
+    bt.label_set("Clear")
+    bt.clicked = (my_list2_clear, li)
+    bt.size_hint_align_set(evas.EVAS_HINT_FILL, evas.EVAS_HINT_FILL)
+    bt.size_hint_weight_set(evas.EVAS_HINT_EXPAND, 0.0)
+    bx2.pack_end(bt)
+    bt.show()
+
+    bx.pack_end(bx2)
+    bx2.show()
+
+    win.resize(320, 320)
+    win.show()
+# }}}
+
 #----- Pager -{{{-
 def my_pager_1(obj, event, data):
     data["pager"].content_promote(data["pg2"])
@@ -2237,6 +2346,7 @@ if __name__ == "__main__":
                ("Toolbar", toolbar_clicked),
                ("Hoversel", hoversel_clicked),
                ("List", list_clicked),
+               ("List 2", list2_clicked),
                ("InnerWindow", inner_window_clicked),
                ("Checks", check_clicked),
                ("Radios", radio_clicked),
