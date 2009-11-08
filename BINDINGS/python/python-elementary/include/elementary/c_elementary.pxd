@@ -419,6 +419,7 @@ cdef extern from "Elementary.h":
     evas.c_evas.Evas_Object *elm_list_item_end_get(Elm_List_Item *item) 
     evas.c_evas.Evas_Object *elm_list_item_base_get(Elm_List_Item *item)
     char* elm_list_item_label_get(Elm_List_Item *item)
+    void elm_list_item_label_set(Elm_List_Item *item, char* text)
     Elm_List_Item *elm_list_item_prev(Elm_List_Item *it)
     Elm_List_Item *elm_list_item_next(Elm_List_Item *it)
 

@@ -161,6 +161,9 @@ cdef class ListItem:
 
     def label_get(self):
         return elm_list_item_label_get(self.item)
+
+    def label_set(self, label):
+        elm_list_item_label_set(self.item, label)
     
     def prev(self):
         self.item = elm_list_item_prev(self.item)
