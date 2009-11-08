@@ -133,11 +133,13 @@ cdef class ListItem:
     def delete(self):
         elm_list_item_del(self.item)
 
-    # FIXME
     def data_get(self):
         cdef void* data
         data = elm_list_item_data_get(self.item)
-        return None
+        if data == NULL:
+            return None
+        else:
+            return <object>data
 
     def icon_get(self):
         cdef c_evas.Evas_Object *icon
