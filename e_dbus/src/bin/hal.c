@@ -486,13 +486,12 @@ cb_signal_device_added(void *data __UNUSED__, DBusMessage *msg)
 {
   DBusError err;
   char *udi;
-  int ret;
 
   dbus_error_init(&err);
   dbus_message_get_args(msg, &err, DBUS_TYPE_STRING, &udi, DBUS_TYPE_INVALID);
   udi = strdup(udi);
   EINA_LOG_INFO("Ehal: Device added: %s", udi);
-  ret = e_hal_device_query_capability(conn, udi, "storage", cb_is_storage, strdup(udi));
+  e_hal_device_query_capability(conn, udi, "storage", cb_is_storage, strdup(udi));
   e_hal_device_query_capability(conn, udi, "volume", cb_is_volume, strdup(udi));
 }
 
