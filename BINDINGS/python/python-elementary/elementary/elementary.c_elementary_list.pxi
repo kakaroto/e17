@@ -219,6 +219,29 @@ cdef class List(Object):
     def go(self):
         elm_list_go(self.obj)
 
+    def multi_select_set(self, multi):
+        elm_list_multi_select_set(self.obj, multi)
+
+    def horizontal_mode_set(self, Elementary_List_Mode mode):
+        elm_list_horizontal_mode_set(self.obj, mode)
+
+    def always_select_mode_set(self, always_select):
+        elm_list_always_select_mode_set(self.obj, always_select)
+
+    def selected_item_get(self):
+        cdef Elm_List_Item *obj
+        cdef void *eo
+        obj = elm_list_selected_item_get(self.obj)
+
+        if obj == NULL:
+            return None
+        eo = evas.c_evas.evas_object_data_get(
+            <evas.c_evas.Evas_Object*>obj, "python-evas")
+        if eo == NULL:
+            return None
+        else:
+            return <Object>eo
+
     property clicked:
         def __set__(self, value):
             self._callback_add("clicked", value)
