@@ -1531,6 +1531,89 @@ def list2_clicked(obj, event, *args, **kargs):
     win.show()
 # }}}
 
+#----- List3 -{{{-
+def list3_clicked(obj, event, *args, **kargs):
+    win = elementary.Window("list-3", elementary.ELM_WIN_BASIC)
+    win.title_set("List 3")
+    win.autodel_set(True)
+
+    bg = elementary.Background(win)
+    win.resize_object_add(bg)
+    bg.size_hint_weight_set(evas.EVAS_HINT_EXPAND, evas.EVAS_HINT_EXPAND)
+    bg.show()
+
+    li = elementary.List(win)
+    win.resize_object_add(li)
+    li.size_hint_weight_set(evas.EVAS_HINT_EXPAND, evas.EVAS_HINT_EXPAND)
+    li.horizontal_mode_set(elementary.ELM_LIST_COMPRESS)
+
+    ic = elementary.Icon(win)
+    ic.file_set('images/logo_small.png')
+    li.item_append("Hello", ic)
+    ic = elementary.Icon(win)
+    ic.file_set('images/logo_small.png')
+    ic.scale_set(0, 0)
+    li.item_append("world", ic)
+    ic = elementary.Icon(win)
+    ic.standard_set("edit")
+    ic.scale_set(0, 0)
+    li.item_append(".", ic)
+
+    ic = elementary.Icon(win)
+    ic.standard_set("delete")
+    ic.scale_set(0, 0)
+    ic2 = elementary.Icon(win)
+    ic2.standard_set("clock")
+    ic2.scale_set(0, 0)
+    it2 = li.item_append("How", ic, ic2)
+
+    bx = elementary.Box(win)
+    bx.horizontal_set(True)
+
+    ic = elementary.Icon(win)
+    ic.file_set('images/logo_small.png')
+    ic.scale_set(0, 0)
+    ic.size_hint_align_set(0.5, 0.5)
+    bx.pack_end(ic)
+    ic.show()
+
+    ic = elementary.Icon(win)
+    ic.file_set('images/logo_small.png')
+    ic.scale_set(0, 0)
+    ic.size_hint_align_set(0.5, 0.0)
+    bx.pack_end(ic)
+    ic.show()
+
+    ic = elementary.Icon(win)
+    ic.file_set('images/logo_small.png')
+    ic.scale_set(0, 0)
+    ic.size_hint_align_set(0.0, evas.EVAS_HINT_EXPAND)
+    bx.pack_end(ic)
+    ic.show()
+
+    li.item_append("are", bx)
+    li.item_append("you")
+    li.item_append("doing")
+    li.item_append("out")
+    li.item_append("there")
+    li.item_append("today")
+    li.item_append("?")
+    li.item_append("Here")
+    li.item_append("are")
+    li.item_append("some")
+    li.item_append("more")
+    li.item_append("items")
+    li.item_append("Is this label long enough?")
+    it5 = li.item_append("Maybe this one is even longer so we can test long long items.")
+
+    li.go()
+
+    li.show()
+
+    win.resize(320, 300)
+    win.show()
+# }}}
+
 #----- Pager -{{{-
 def my_pager_1(obj, event, data):
     data["pager"].content_promote(data["pg2"])
@@ -2347,6 +2430,7 @@ if __name__ == "__main__":
                ("Hoversel", hoversel_clicked),
                ("List", list_clicked),
                ("List 2", list2_clicked),
+               ("List 3", list3_clicked),
                ("InnerWindow", inner_window_clicked),
                ("Checks", check_clicked),
                ("Radios", radio_clicked),
