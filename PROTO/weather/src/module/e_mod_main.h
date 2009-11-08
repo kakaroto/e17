@@ -3,6 +3,8 @@
 #ifndef E_MOD_MAIN_H
 # define E_MOD_MAIN_H
 
+#include "EWeather_Smart.h"
+
 typedef struct _Instance Instance;
 
 struct _Instance 

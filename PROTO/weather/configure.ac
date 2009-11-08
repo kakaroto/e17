@@ -3,9 +3,10 @@ dnl Process this file with autoconf to produce a configure script.
 # get rid of that stupid cache mechanism
 rm -f config.cache
 
-AC_INIT(weather, 0.2.0, enlightenment-devel@lists.sourceforge.net)
+AC_INIT(eweather, 0.2.0, enlightenment-devel@lists.sourceforge.net)
 AC_PREREQ(2.52)
 AC_CONFIG_SRCDIR(configure.ac)
+AC_CONFIG_MACRO_DIR([m4])
 AC_CANONICAL_BUILD
 AC_CANONICAL_HOST
 AC_ISC_POSIX
@@ -18,10 +19,22 @@ AC_PROG_CC
 AM_PROG_CC_STDC
 AC_HEADER_STDC
 AC_C_CONST
+AM_PROG_CC_C_O
 
 define([AC_LIBTOOL_LANG_CXX_CONFIG], [:])dnl
 define([AC_LIBTOOL_LANG_F77_CONFIG], [:])dnl
 AC_PROG_LIBTOOL
+
+AC_SUBST(packagedatadir)
+
+PKG_PROG_PKG_CONFIG
+
+
+
+pluginsdir="${libdir}/eweather/plugins"
+AC_SUBST(pluginsdir)
+AS_AC_EXPAND(PLUGINSDIR, $pluginsdir)
+AC_DEFINE_UNQUOTED(PLUGINSDIR, ["$PLUGINSDIR"], [Where plugins are installed.])
 
 AM_GNU_GETTEXT([external])
 AM_GNU_GETTEXT_VERSION(0.14)
@@ -58,10 +71,15 @@ AC_ARG_ENABLE(homedir-install,
 
 AC_OUTPUT([
 Makefile
+eweather.pc
+data/Makefile
+data/images/Makefile
 src/Makefile
+src/lib/Makefile
 src/module/Makefile
 src/plugins/Makefile
-images/Makefile
+src/plugins/test/Makefile
+src/plugins/yahoo/Makefile
 module.desktop
 ], [
 ])
