@@ -20,30 +20,52 @@ cdef void _hoversel_callback(void *cbt, c_evas.Evas_Object *obj, void *event_inf
     (hoversel, callback, data, it) = <object>cbt
     callback(data, hoversel, it)
 
+cdef void _hoversel_item_del_cb(void *data, c_evas.Evas_Object *o, void *event_info) with gil:
+    (obj, callback, d, it) = <object>data
+
+    it.__del_cb()
+
+
 cdef class HoverselItem:
     """A item for the hoversel widget"""
     cdef Elm_Hoversel_Item *item
     cdef object cbt
 
+    def __del_cb(self):
+        self.item = NULL
+
+        self.cbt = None
+
+        Py_DECREF(self)
+
     def __init__(self, c_evas.Object hoversel, label, icon_file, icon_type, callback, data = None):
         cdef char *i_f = NULL
+        cdef void* cbdata = NULL
+        cdef void (*cb) (void *, c_evas.Evas_Object *, void *)
+
+        cb = NULL
+
         if icon_file:
            i_f = icon_file
 
         if callback:
-            self.cbt = (hoversel, callback, data, self)
-            self.item = elm_hoversel_item_add(hoversel.obj, label, i_f,
-                                              icon_type,_hoversel_callback,
-                                              <void*>self.cbt)
-        else:
-            self.item = elm_hoversel_item_add(hoversel.obj, label, i_f,
-                                              icon_type, NULL, NULL)
+            if not callable(callback):
+                raise TypeError("callback is not callable")
+            cb = _hoversel_callback
 
+        self.cbt = (hoversel, callback, data, self)
+        cbdata = <void*>self.cbt
+        self.item = elm_hoversel_item_add(hoversel.obj, label, i_f, icon_type,
+                                          cb, cbdata)
+
+        Py_INCREF(self)
+        elm_hoversel_item_del_cb_set(self.item, _hoversel_item_del_cb)
 
     def delete(self):
         """Delete the hoversel item"""
+        if self.item == NULL:
+            raise ValueError("Object already deleted")
         elm_hoversel_item_del(self.item)
-        self.cbt = None
 
     def icon_set(self, icon_file, icon_group, icon_type):
         elm_hoversel_item_icon_set(self.item, icon_file, icon_group, icon_type)
