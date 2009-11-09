@@ -59,6 +59,7 @@ typedef struct _Ekeko_Value
 	} value;
 } Ekeko_Value;
 
+typedef void (*Ekeko_Value_String_To)(void *p);
 typedef Eina_Bool (*Ekeko_Value_Compare)(void *a, void *b);
 typedef void (*Ekeko_Value_Pointer_From)(Ekeko_Value *v, void *p);
 typedef void (*Ekeko_Value_Pointer_To)(Ekeko_Value *v, void *p);
@@ -108,6 +109,12 @@ static inline void ekeko_value_bool_from(Ekeko_Value *v, Eina_Bool b)
 {
 	v->type = EKEKO_PROPERTY_BOOL;
 	v->value.bool_value = b;
+}
+
+static inline void ekeko_value_pointer_from(Ekeko_Value *v, void *p)
+{
+	v->type = EKEKO_PROPERTY_POINTER;
+	v->value.pointer_value = p;
 }
 
 

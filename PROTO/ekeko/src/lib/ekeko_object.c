@@ -68,7 +68,7 @@ static void _ctor(Ekeko_Object *obj)
 	prv->rel = obj;
 	/* Set up the mutation event */
 #ifdef EKEKO_DEBUG
-	printf("[Ekeko_Object] ctor %p %p %p\n", obj, obj->private, prv->type);
+	printf("[Ekeko_Object] ctor %s %p %p %p\n", ekeko_object_type_name_get(obj), obj, obj->private, prv->type);
 #endif
 }
 
@@ -323,7 +323,7 @@ EAPI Eina_Bool ekeko_object_property_value_set(Ekeko_Object *o, char *prop_name,
 		/* here we dont need to malloc the value as it is already stored
 		 * on the prev, just copy the data
 		 */
-		ekeko_value_pointer_from(&prev_value, vtype, prev);
+		ekeko_value_pointer_get(&prev_value, vtype, prev);
 		ekeko_value_pointer_double_to(value, vtype, curr, prev, changed);
 		changed_now = *changed;
 		if (changed_bef && !changed_now)
@@ -340,7 +340,7 @@ EAPI Eina_Bool ekeko_object_property_value_set(Ekeko_Object *o, char *prop_name,
 	}
 	else
 	{
-		ekeko_value_pointer_from(&prev_value, vtype, curr);
+		ekeko_value_pointer_get(&prev_value, vtype, curr);
 	}
 #ifdef EKEKO_DEBUG
 	printf("[Ekeko_Object] changed = %d\n", prv->changed);
@@ -378,7 +378,7 @@ EAPI Eina_Bool ekeko_object_property_value_set(Ekeko_Object *o, char *prop_name,
 		ekeko_object_event_dispatch(value->value.object, (Ekeko_Event *)&evt);
 	}
 	if (property_ptype_get(prop) != EKEKO_PROPERTY_VALUE_DUAL_STATE)
-		ekeko_value_pointer_to(value, vtype, curr);
+		ekeko_value_pointer_set(value, vtype, curr);
 
 	return EINA_TRUE;
 }
@@ -409,7 +409,7 @@ EAPI Eina_Bool ekeko_object_property_value_get(Ekeko_Object *o, char *prop_name,
 	}
 	type_instance_property_pointers_get(prv->type, prop, o, &curr, &prev, &changed);
 	vtype = ekeko_property_value_type_get(prop);
-	ekeko_value_pointer_from(value, vtype, curr);
+	ekeko_value_pointer_get(value, vtype, curr);
 
 	return EINA_TRUE;
 }
@@ -817,8 +817,8 @@ EAPI void ekeko_object_process(Ekeko_Object *o)
 		*changed = EINA_FALSE;
 		prv->changed--;
 		/* send the generic mutation event */
-		ekeko_value_pointer_from(&prev_value, ekeko_property_value_type_get(prop), prev);
-		ekeko_value_pointer_from(&curr_value, ekeko_property_value_type_get(prop), curr);
+		ekeko_value_pointer_get(&prev_value, ekeko_property_value_type_get(prop), prev);
+		ekeko_value_pointer_get(&curr_value, ekeko_property_value_type_get(prop), curr);
 		event_mutation_init(&evt, EKEKO_EVENT_PROP_MODIFY, o, o, prop, &prev_value,
 				&curr_value, EVENT_MUTATION_STATE_POST);
 		ekeko_object_event_dispatch(o, (Ekeko_Event *)&evt);
@@ -833,7 +833,7 @@ EAPI void ekeko_object_process(Ekeko_Object *o)
 			ekeko_object_event_dispatch((Ekeko_Object *)o, (Ekeko_Event *)&evt);
 		}
 		/* update prev */
-		ekeko_value_pointer_to(&curr_value, ekeko_property_value_type_get(prop), prev);
+		ekeko_value_pointer_set(&curr_value, ekeko_property_value_type_get(prop), prev);
 		if (!prv->changed)
 			break;
 	}
@@ -880,10 +880,6 @@ EAPI void ekeko_object_dump_printf(Ekeko_Object *o, int level)
 	printf("> %s (%p) ", ekeko_object_type_name_get(o), o);
 	/** TODO foreach attribute, dump it */
 	/* some useful properties */
-	if (ekeko_type_instance_is_of(o, "Renderable"))
-	{
-		printf("z-index: %d", ekeko_renderable_zindex_get((Ekeko_Renderable *)o));
-	}
 	printf("\n");
 }
 

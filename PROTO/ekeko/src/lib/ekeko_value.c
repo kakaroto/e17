@@ -123,7 +123,7 @@ void ekeko_value_pointer_double_to(Ekeko_Value *value, Ekeko_Value_Type type, vo
 /*
  * ptr points to the memory area where the values are stored
  */
-void ekeko_value_pointer_to(Ekeko_Value *value, Ekeko_Value_Type vtype, void *ptr)
+void ekeko_value_pointer_set(Ekeko_Value *value, Ekeko_Value_Type vtype, void *ptr)
 {
 	switch (vtype)
 	{
@@ -154,7 +154,7 @@ void ekeko_value_pointer_to(Ekeko_Value *value, Ekeko_Value_Type vtype, void *pt
 		case EKEKO_PROPERTY_OBJECT:
 		*((Ekeko_Object **)ptr) = value->value.object;
 		break;
-		
+
 		case EKEKO_PROPERTY_POINTER:
 		*((void **)ptr) = value->value.pointer_value;
 		break;
@@ -165,7 +165,7 @@ void ekeko_value_pointer_to(Ekeko_Value *value, Ekeko_Value_Type vtype, void *pt
 
 			printf("[Ekeko_Value] value pointer to %p\n", v->value.pointer_value);
 			v->type = value->type;
-			ekeko_value_pointer_to(value, value->type, v->value.pointer_value ? v->value.pointer_value : &v->value);
+			ekeko_value_pointer_set(value, value->type, v->value.pointer_value ? v->value.pointer_value : &v->value);
 		}
 		break;
 
@@ -183,7 +183,7 @@ void ekeko_value_pointer_to(Ekeko_Value *value, Ekeko_Value_Type vtype, void *pt
 	}
 }
 
-void ekeko_value_pointer_from(Ekeko_Value *v, Ekeko_Value_Type vtype, void *ptr)
+void ekeko_value_pointer_get(Ekeko_Value *v, Ekeko_Value_Type vtype, void *ptr)
 {
 	switch (vtype)
 	{
@@ -221,7 +221,7 @@ void ekeko_value_pointer_from(Ekeko_Value *v, Ekeko_Value_Type vtype, void *ptr)
 		v->type = EKEKO_PROPERTY_OBJECT;
 		v->value.object = *(Ekeko_Object **)ptr;
 		break;
-		
+
 		case EKEKO_PROPERTY_POINTER:
 		v->type = EKEKO_PROPERTY_POINTER;
 		v->value.pointer_value = *(void **)ptr;
@@ -233,7 +233,7 @@ void ekeko_value_pointer_from(Ekeko_Value *v, Ekeko_Value_Type vtype, void *ptr)
 #ifndef EKEKO_DEBUG
 			printf("[Ekeko_Value] value pointer from %p %p\n", ptr, ((Ekeko_Value *)ptr)->value.pointer_value);
 #endif
-			ekeko_value_pointer_from(v, val->type, &val->value);
+			ekeko_value_pointer_get(v, val->type, &val->value);
 		}
 		break;
 

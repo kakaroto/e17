@@ -55,9 +55,6 @@ typedef struct _Ekeko_Input Ekeko_Input;
 #include "ekeko_type.h"
 #include "ekeko_event.h"
 #include "ekeko_object.h"
-#include "ekeko_input.h"
-#include "ekeko_renderable.h"
-#include "ekeko_canvas.h"
 
 /**
  * @}
