@@ -28,8 +28,6 @@ desktop.  This is probably obsolete, the functionality is now in E.
 
 diskio - visualize disk i/o.
 
-echo - A module to replace the broken 'mixer' module for E17.
-
 emu - Experimental generic scriptable module for E17.
 
 exalt-client - A frontend module for exalt network manager.
@@ -43,8 +41,6 @@ language - A module to control active keyboard/keyboard layout/layout variant.
 mail - A module to periodically check for new email.
 
 mem - A module to monitor memory and swap usage.  (Will be replaced by something better.)
-
-mixer - A module to control volume for some mixers.  (Will be replaced by something better.)
 
 moon - A module to display moon phase information.
 
