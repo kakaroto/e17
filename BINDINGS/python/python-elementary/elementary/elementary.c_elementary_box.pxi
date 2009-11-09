@@ -34,9 +34,16 @@ cdef class Box(Object):
         elm_box_pack_end(self.obj, obj.obj)
     
     def pack_before(self, c_evas.Object obj, c_evas.Object before):
-        elm_box_pack_before(self.obj,obj.obj,before.obj)
+        elm_box_pack_before(self.obj, obj.obj, before.obj)
 
     def pack_after(self, c_evas.Object obj, c_evas.Object after):
-        elm_box_pack_after(self.obj,obj.obj,after.obj)
+        elm_box_pack_after(self.obj, obj.obj, after.obj)
 
+    def clear(self):
+        elm_box_clear(self.obj)
 
+    def unpack(self, c_evas.Object obj):
+        elm_box_unpack(self.obj, obj.obj)
+
+    def unpack_all(self):
+        elm_box_unpack_all(self.obj)

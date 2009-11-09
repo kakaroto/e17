@@ -257,6 +257,9 @@ cdef extern from "Elementary.h":
     void elm_box_pack_end(evas.c_evas.Evas_Object *obj, evas.c_evas.Evas_Object *subobj)
     void elm_box_pack_before(evas.c_evas.Evas_Object *obj, evas.c_evas.Evas_Object *subobj, evas.c_evas.Evas_Object *before)
     void elm_box_pack_after(evas.c_evas.Evas_Object *obj, evas.c_evas.Evas_Object *subobj, evas.c_evas.Evas_Object *after)
+    void elm_box_clear(evas.c_evas.Evas_Object *obj)
+    void elm_box_unpack(evas.c_evas.Evas_Object *obj, evas.c_evas.Evas_Object *subobj)
+    void elm_box_unpack_all(evas.c_evas.Evas_Object *obj)
     
     # Button object
     evas.c_evas.Evas_Object *elm_button_add(evas.c_evas.Evas_Object *parent)
