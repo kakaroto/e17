@@ -110,9 +110,12 @@ void utils_edit_object_delete(void *data, Evas_Object *obj, void *event_info);
 
 
 Evas_Object *toolbar_create();
+void toolbar_nopres_disabled_set(Eina_Bool disabled);
 
 void slides_list_slide_append_relative(List_Item *item, List_Item *item_prev);
 void slides_list_slide_delete(List_Item *item);
+void slides_list_nopres_disabled_set(Eina_Bool disabled);
+
 
 Evas_Object *slideshow_create();
 
@@ -126,6 +129,7 @@ void rightpanel_empty_show();
 void rightpanel_image_show();
 void rightpanel_image_data_set(const char* file, int border, int shadow);
 void rightpanel_area_layout_set(const char *layout);
+void rightpanel_noslide_disabled_set(Eina_Bool disabled);
 
 #endif   /* ----- #ifndef MAIN_INC  ----- */
 

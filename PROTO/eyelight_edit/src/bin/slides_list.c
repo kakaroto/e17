@@ -35,6 +35,8 @@ static Elm_Genlist_Item_Class itc_slides;
 static Evas_Object *slides_list;
 static Evas_Object *_sl = NULL;
 
+static Evas_Object *bt_slide_new;
+
 #define SLIDER_ZOOM_MAX 0.2
 
 Evas_Object *slides_list_new()
@@ -48,6 +50,7 @@ Evas_Object *slides_list_new()
 
     //button add a new slide
     btn = elm_button_add(win);
+    bt_slide_new = btn;
     elm_button_label_set(btn, D_("Add a new slide"));
     evas_object_size_hint_weight_set(btn, -1.0, -1.0);
     evas_object_size_hint_align_set(btn, -1.0, -1.0);
@@ -86,6 +89,11 @@ Evas_Object *slides_list_new()
     //
 
     return vbox;
+}
+
+void slides_list_nopres_disabled_set(Eina_Bool disabled)
+{
+    elm_object_disabled_set(bt_slide_new, disabled);
 }
 
 void slides_list_update()
@@ -204,6 +212,7 @@ static void _slides_list_sel(void *data, Evas_Object *obj, void *event_info)
             i++;
     }
     eyelight_object_slide_goto(pres, i);
+    rightpanel_noslide_disabled_set(EINA_FALSE);
 }
 
 static void _slider_zoom_cb(void *data, Evas_Object *obj, void *event_info)

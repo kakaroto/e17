@@ -4,6 +4,8 @@
 static Evas_Object *_pager;
 static Evas_Object *_area, *_empty, *_image;
 
+static Evas_Object *_bt_area_new, *_bt_areas_init;
+
 static Evas_Object *_area_layout;
 static Evas_Object *_image_file_entry, *_image_check_border, *_image_check_shadow;
 
@@ -17,6 +19,7 @@ Evas_Object *rightpanel_create()
     evas_object_show(vbox);
 
     bt = elm_button_add(win);
+    _bt_area_new = bt;
     elm_button_label_set(bt, D_("Add a new area"));
     evas_object_size_hint_weight_set(bt, -1.0, -1.0);
     evas_object_size_hint_align_set(bt, -1.0, 0.0);
@@ -25,6 +28,7 @@ Evas_Object *rightpanel_create()
     elm_box_pack_end(vbox, bt);
 
     bt = elm_button_add(win);
+    _bt_areas_init = bt;
     elm_button_label_set(bt, D_("Initialise the default areas"));
     evas_object_size_hint_weight_set(bt, -1.0, -1.0);
     evas_object_size_hint_align_set(bt, -1.0, 0.0);
@@ -220,6 +224,12 @@ Evas_Object *rightpanel_create()
     elm_pager_content_promote(_pager, _empty);
 
     return vbox;
+}
+
+void rightpanel_noslide_disabled_set(Eina_Bool disabled)
+{
+    elm_object_disabled_set(_bt_area_new, disabled);
+    elm_object_disabled_set(_bt_areas_init, disabled);
 }
 
 void rightpanel_area_show()

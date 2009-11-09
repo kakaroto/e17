@@ -21,7 +21,6 @@
 #include "main.h"
 
 
-
 Eina_List* l_slides = NULL;
 
 static void win_del(void *data, Evas_Object *obj, void *event_info)
@@ -55,12 +54,15 @@ static void win_main(void)
     elm_table_pack(tb, slides_list, 0, 1, 1, 1);
 
     Evas_Object *toolbar = toolbar_create();
+    toolbar_nopres_disabled_set(EINA_TRUE);
+    slides_list_nopres_disabled_set(EINA_TRUE);
     elm_table_pack(tb, toolbar, 0, 0, 3, 1);
 
     Evas_Object *tabpanel = tabpanel_create();
     elm_table_pack(tb, tabpanel, 1, 1, 1, 1);
 
     Evas_Object *rightpanel = rightpanel_create();
+    rightpanel_noslide_disabled_set(EINA_TRUE);
     elm_table_pack(tb, rightpanel, 2, 1, 1, 1);
 
     evas_object_resize(win, 900, 700);
@@ -76,6 +78,7 @@ int elm_main(int argc, char **argv)
 
     eina_log_level_set(5);
     eyelight_init();
+    eina_init();
 
     win_main();
 
@@ -87,6 +90,8 @@ int elm_main(int argc, char **argv)
         if(item->grid_icon_data) free(item->grid_icon_data);
         free(item);
     }
+
+    eina_shutdown();
     eyelight_shutdown();
     elm_shutdown();
     return 0;

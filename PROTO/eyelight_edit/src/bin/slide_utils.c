@@ -223,7 +223,6 @@ void utils_edit_cb(void *data, Evas_Object *o, const char *emission, const char 
         case EYELIGHT_NAME_THEME_AREA:
             if(strcmp(emission, "select") == 0)
             {
-                rightpanel_area_show();
                 rightpanel_area_layout_set(eyelight_edit_area_layout_get(_current_obj));
             }
             if(strcmp(emission, "move,start") == 0
