@@ -28,15 +28,25 @@ AC_PROG_LIBTOOL
 AC_SUBST(packagedatadir)
 
 PKG_PROG_PKG_CONFIG
-PKG_CHECK_MODULES(E, [enlightenment])
+
+
 
 pluginsdir="${libdir}/eweather/plugins"
 AC_SUBST(pluginsdir)
 AS_AC_EXPAND(PLUGINSDIR, $pluginsdir)
 AC_DEFINE_UNQUOTED(PLUGINSDIR, ["$PLUGINSDIR"], [Where plugins are installed.])
 
+AM_GNU_GETTEXT([external])
+AM_GNU_GETTEXT_VERSION(0.14)
+
 AC_CHECK_LIB(dl, dlopen, dlopen_libs=-ldl)
 AC_SUBST(dlopen_libs)
+
+PKG_CHECK_MODULES(E, [enlightenment])
+release=$(pkg-config --variable=release enlightenment)
+MODULE_ARCH="$host_os-$host_cpu-$release"
+AC_SUBST(MODULE_ARCH)
+AC_DEFINE_UNQUOTED(MODULE_ARCH, "$MODULE_ARCH", "Module architecture")
 
 # Find edje_cc
 PKG_CHECK_MODULES(EDJE, [edje >= 0.5.0])
@@ -53,6 +63,11 @@ AC_SUBST(EDJE_CC)
 AC_MSG_CHECKING([Which edje_cc to use])
 AC_MSG_RESULT(${EDJE_CC})
 
+datadir=$(pkg-config --variable=modules enlightenment)/${PACKAGE}
+AC_ARG_ENABLE(homedir-install,
+  AS_HELP_STRING([--enable-homedir-install], [Install module in homedir]),
+  [ datadir="${HOME}/.e/e/modules/${PACKAGE}" ]
+)
 
 AC_OUTPUT([
 Makefile
@@ -61,8 +76,10 @@ data/Makefile
 data/images/Makefile
 src/Makefile
 src/lib/Makefile
+src/module/Makefile
 src/plugins/Makefile
 src/plugins/test/Makefile
 src/plugins/yahoo/Makefile
+module.desktop
 ], [
 ])

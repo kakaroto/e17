@@ -8,4 +8,4 @@ Description: :)
 Version: @VERSION@
 Libs: -L${libdir} -leweather
 Cflags: -I${includedir}
-
+Requires: @requirements@

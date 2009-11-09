@@ -1,0 +1,29 @@
+images
+{
+   image: "icon-weather.png" COMP;
+}
+
+collections
+{
+    group
+    {
+        name: "icon";
+        max: 128 128;
+        parts
+        {
+            part
+            {
+                name: "image";
+                mouse_events: 1;
+                description
+                {
+                    state: "default" 0.0;
+                    aspect: 1.0 1.0;
+                    aspect_preference: BOTH;
+                    image.normal: "icon-weather.png";
+                }
+            }
+        }
+    }
+}
+
