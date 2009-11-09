@@ -158,6 +158,8 @@ document_info_print (Epdf_Document *document, Epdf_Page *page)
   const char     *page_mode;
   const char     *page_layout;
   const char     *orientation;
+  int             version_major;
+  int             version_minor;
   int             width;
   int             height;
 
@@ -195,10 +197,11 @@ document_info_print (Epdf_Document *document, Epdf_Page *page)
     mod_date = strdup ("(none)");
   page_mode = epdf_document_page_mode_string_get (document);
   page_layout = epdf_document_page_layout_string_get (document);
+  epdf_document_pdf_version_get (document, &version_major, &version_minor);
 
   printf ("  File name..........: %s\n", epdf_document_filename_get (document));
   printf ("  Title..............: %s\n", title);
-  printf ("  Format.............: PDF-%.1f\n", epdf_document_pdf_version_get (document));
+  printf ("  Format.............: PDF-%d.%d\n", version_major, version_minor);
   printf ("  Author.............: %s\n", author);
   printf ("  Subject............: %s\n", subject);
   printf ("  Keywords...........: %s\n", keywords);
