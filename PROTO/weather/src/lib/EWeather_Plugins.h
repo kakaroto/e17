@@ -21,6 +21,7 @@ struct EWeather_Data
    char city[256];
    char region[256];
    char country[256];
+   char date[256];
 };
 
 

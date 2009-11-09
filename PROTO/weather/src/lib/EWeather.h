@@ -42,6 +42,7 @@ EAPI	const char *	eweather_signal_type_get(EWeather_Type type);
 
 EAPI	EWeather_Data *	eweather_data_current_get(EWeather *eweather);
 EAPI	EWeather_Data *	eweather_data_get(EWeather *eweather, int num);
+EAPI	unsigned int	eweather_data_count(EWeather *eweather);
 
 EAPI	EWeather_Type	eweather_data_type_get(EWeather_Data *eweather_data);
 EAPI	int		eweather_data_temp_get(EWeather_Data *eweather_data);
@@ -50,6 +51,7 @@ EAPI	int		eweather_data_temp_max_get(EWeather_Data *eweather_data);
 EAPI	const char *	eweather_data_city_get(EWeather_Data *eweather_data);
 EAPI	const char *	eweather_data_region_get(EWeather_Data *eweather_data);
 EAPI	const char *	eweather_data_country_get(EWeather_Data *eweather_data);
+EAPI	const char *	eweather_data_date_get(EWeather_Data *eweather_data);
 EAPI	void		eweather_callbacks_set(EWeather *eweather, Update_Cb update_cb, void *data);
 
 #endif

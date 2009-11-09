@@ -1527,6 +1527,167 @@ collections
     group
     {
         name: "main";
+        parts
+        {
+            part
+            {
+                name: "object.swallow.1";
+                type: SWALLOW;
+                description
+                {
+                    state: "default" 0.0;
+                    rel1.relative: 0.33 0.05;
+                    rel2.relative: 0.66 0.48;
+                }
+                description
+                {
+                    state: "expose" 0.0;
+                    inherit: "default" 0.0;
+                }
+                description
+                {
+                    state: "1" 0.0;
+                    inherit: "default" 0.0;
+                    rel1.relative: 0.0 0.0;
+                    rel2.relative: 1.0 1.0;
+                }
+                description
+                {
+                    state: "2" 0.0;
+                    inherit: "default" 0.0;
+                    rel1.relative: -1.0 0.0;
+                    rel2.relative: 0.0 1.0;
+                }
+                description
+                {
+                    state: "3" 0.0;
+                    inherit: "default" 0.0;
+                    rel1.relative: -2.0 0.0;
+                    rel2.relative: -1.0 1.0;
+                }
+            }
+            part
+            {
+                name: "object.swallow.2";
+                type: SWALLOW;
+                description
+                {
+                    state: "default" 0.0;
+                    rel1.relative: 0.11 0.52;
+                    rel2.relative: 0.44 0.95;
+                }
+                description
+                {
+                    state: "expose" 0.0;
+                    inherit: "default" 0.0;
+                }
+                description
+                {
+                    state: "1" 0.0;
+                    inherit: "default" 0.0;
+                    rel1.relative: 1.0 0.0;
+                    rel2.relative: 2.0 1.0;
+                }
+                description
+                {
+                    state: "2" 0.0;
+                    inherit: "default" 0.0;
+                    rel1.relative: 0.0 0.0;
+                    rel2.relative: 1.0 1.0;
+                }
+                description
+                {
+                    state: "3" 0.0;
+                    inherit: "default" 0.0;
+                    rel1.relative: -1.0 0.0;
+                    rel2.relative: 0.0 1.0;
+                }
+            }
+            part
+            {
+                name: "object.swallow.3";
+                type: SWALLOW;
+                description
+                {
+                    state: "default" 0.0;
+                    rel1.relative: 0.55 0.52;
+                    rel2.relative: 0.88 0.95;
+                }
+                description
+                {
+                    state: "expose" 0.0;
+                    inherit: "default" 0.0;
+                }
+                description
+                {
+                    state: "1" 0.0;
+                    inherit: "default" 0.0;
+                    rel1.relative: 2.0 0.0;
+                    rel2.relative: 3.0 1.0;
+                }
+                description
+                {
+                    state: "2" 0.0;
+                    inherit: "default" 0.0;
+                    rel1.relative: 1.0 0.0;
+                    rel2.relative: 2.0 1.0;
+                }
+                description
+                {
+                    state: "3" 0.0;
+                    inherit: "default" 0.0;
+                    rel1.relative: 0.0 0.0;
+                    rel2.relative: 1.0 1.0;
+                }
+            }
+        }
+        programs
+        {
+            program
+            {
+                name: "expose";
+                signal: "expose";
+                action: STATE_SET "expose" 0.0;
+                target: "object.swallow.1";
+                target: "object.swallow.2";
+                target: "object.swallow.3";
+                transition: ACCELERATE 0.7;
+            }
+            program
+            {
+                name: "show_1";
+                signal: "show,1";
+                action: STATE_SET "1" 0.0;
+                target: "object.swallow.1";
+                target: "object.swallow.2";
+                target: "object.swallow.3";
+                transition: ACCELERATE 0.7;
+            }
+            program
+            {
+                name: "show_2";
+                signal: "show,2";
+                action: STATE_SET "2" 0.0;
+                target: "object.swallow.1";
+                target: "object.swallow.2";
+                target: "object.swallow.3";
+                transition: ACCELERATE 0.7;
+            }
+            program
+            {
+                name: "show_3";
+                signal: "show,3";
+                action: STATE_SET "3" 0.0;
+                target: "object.swallow.1";
+                target: "object.swallow.2";
+                target: "object.swallow.3";
+                transition: ACCELERATE 0.7;
+            }
+        }
+    }
+    group
+    {
+        name: "weather";
         min: 165 300;
         script
         {
@@ -1606,6 +1767,28 @@ collections
                     state: "default" 0.0;
                     rel2.relative: 1.0 0.075;
                     image.normal: "title_bar.png";
+                }
+            }
+            part
+            {
+                name: "text.date";
+                type:          TEXT;
+                effect:        SOFT_SHADOW;
+                mouse_events: 0;
+                clip_to: "whole";
+                description
+                {
+                    state: "default" 0.0;
+                    rel1.relative: 0.5 0.0;
+                    rel2.relative: 0.5 0.075;
+                    text
+                    {
+                        text: "-46°c";
+                        font: "Sans,Edje-Vera";
+                        size: 10;
+                        min: 1 1;
+                        align: 0.5 0.5;
+                    }
                 }
             }
             part

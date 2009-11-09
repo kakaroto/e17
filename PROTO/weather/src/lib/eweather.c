@@ -74,6 +74,11 @@ const char *eweather_data_country_get(EWeather_Data *eweather_data)
    return eweather_data->country;
 }
 
+const char *eweather_data_date_get(EWeather_Data *eweather_data)
+{
+   return eweather_data->date;
+}
+
 EWeather_Data *eweather_data_current_get(EWeather *eweather)
 {
    if(!eweather->data)
@@ -84,8 +89,16 @@ EWeather_Data *eweather_data_current_get(EWeather *eweather)
 EWeather_Data *eweather_data_get(EWeather *eweather, int num)
 {
    while(eina_list_count(eweather->data) <= num)
-	eweather->data = eina_list_append(eweather->data, calloc(1, sizeof(EWeather_Data)));
-   return eina_list_data_get(eina_list_nth(eweather->data, num));
+     {
+	EWeather_Data *e_data =  calloc(1, sizeof(EWeather_Data));
+	eweather->data = eina_list_append(eweather->data, e_data);
+     }
+   return eina_list_nth(eweather->data, num);
+}
+
+unsigned int eweather_data_count(EWeather *eweather)
+{
+   return eina_list_count(eweather->data);
 }
 
 void eweather_callbacks_set(EWeather *eweather, Update_Cb update_cb, void *data)

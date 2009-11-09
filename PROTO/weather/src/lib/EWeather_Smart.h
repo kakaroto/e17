@@ -8,6 +8,15 @@
 #include "Edje.h"
 #include <stdio.h>
 
+typedef  enum EWeather_Object_Mode EWeather_Object_Mode;
+
+enum EWeather_Object_Mode
+{
+   EWEATHER_OBJECT_MODE_NORMAL,
+   EWEATHER_OBJECT_MODE_EXPOSE
+};
+
+
 EAPI	Evas_Object *	eweather_object_add(Evas *evas);
 EAPI	const char *	eweather_object_signal_type_get(EWeather_Type type);
 #endif

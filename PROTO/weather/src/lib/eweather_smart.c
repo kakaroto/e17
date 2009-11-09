@@ -9,6 +9,8 @@ struct _Smart_Data
    EWeather *eweather; 
 
    Evas_Object *obj; //the edje object
+   Eina_List *objs; //1 edje object per day
+   EWeather_Object_Mode mode;
 };
 
 #define E_SMART_OBJ_GET_RETURN(smart, o, type, ret) \
@@ -98,32 +100,109 @@ Evas_Object *eweather_object_add(Evas *evas)
    return evas_object_smart_add(evas, smart);
 }
 
+static void
+_mouse_down_cb(void *data, Evas *evas, Evas_Object *o_day, void *event)
+{
+   Evas_Object *obj = data;
+   Evas_Event_Mouse_Down *ev = (Evas_Event_Mouse_Down*) event;
+   Evas_Object *o;
+   int i;
+   char buf[1024];
+   Eina_List *l;
+   Smart_Data *sd = evas_object_smart_data_get(obj);
+   if (!sd) return;
+	
+   if(ev->button != 1) return ;
+
+   i = 1; 
+   EINA_LIST_FOREACH(sd->objs, l, o)
+     {
+	if(o == o_day)
+	  break;
+	else
+	  i++;
+     }
+
+   if(o && sd->mode == EWEATHER_OBJECT_MODE_EXPOSE)
+     {
+	snprintf(buf, sizeof(buf), "show,%d", i);
+	edje_object_signal_emit(sd->obj, buf, "");
+
+	sd->mode = EWEATHER_OBJECT_MODE_NORMAL;
+     }
+   else if(o)
+     {
+	if( ev->flags & EVAS_BUTTON_DOUBLE_CLICK)
+	  {
+	     edje_object_signal_emit(sd->obj, "expose", "");
+	     sd->mode = EWEATHER_OBJECT_MODE_EXPOSE;
+	  }
+	else
+	  {
+	     Evas_Coord x = ev->output.x;
+	     Evas_Coord x2,w2;
+	     evas_object_geometry_get(sd->obj, &x2, NULL, &w2, NULL);
+
+	     if(x < x2+w2/2 && i>1)
+	       {	
+		  snprintf(buf, sizeof(buf), "show,%d", i-1);
+		  edje_object_signal_emit(sd->obj, buf, "");
+	       }
+	     else if(x > x2+w2/2 && i<3)
+	       {	
+		  snprintf(buf, sizeof(buf), "show,%d", i+1);
+		  edje_object_signal_emit(sd->obj, buf, "");
+	       }
+	  }
+     }
+}
+
 static void _eweather_update_cb(void *data, EWeather *eweather)
 {
    Evas_Object *obj = data;
    Smart_Data *sd;
    const char *signal;
-   char buf[1024];
-	
+   char buf[1024]; 
+   Evas_Object *o_day;
+   int i = 0;
+
    sd = evas_object_smart_data_get(obj);
    if (!sd) return;
-   EWeather_Data *e_data = eweather_data_current_get(sd->eweather);
 
-   signal = eweather_object_signal_type_get(eweather_data_type_get(e_data));
+   for(i=0; i<eweather_data_count(sd->eweather); i++)
+     {
+	EWeather_Data *e_data = eweather_data_get(sd->eweather, i);
+	
+	o_day = eina_list_nth(sd->objs, i);
+	if(!o_day)
+	  {
+	     o_day = edje_object_add(evas_object_evas_get(obj));
+	     edje_object_file_set(o_day, PACKAGE_DATA_DIR"/theme.edj", "weather");
+	     evas_object_smart_member_add(o_day, obj);	
+	     evas_object_show(o_day);
+	     snprintf(buf, sizeof(buf), "object.swallow.%d", i+1);
+	     edje_object_part_swallow(sd->obj, buf, o_day);
+	     sd->objs = eina_list_append(sd->objs, o_day);
 
-   edje_object_signal_emit(sd->obj, signal, "");
-   printf("%s\n", signal);
+	     evas_object_event_callback_add(o_day, EVAS_CALLBACK_MOUSE_DOWN,
+		   _mouse_down_cb, obj);
+	  }
+	signal = eweather_object_signal_type_get(eweather_data_type_get(e_data));
 
-   snprintf(buf, sizeof(buf), "%d°F", eweather_data_temp_get(e_data));
-   edje_object_part_text_set(sd->obj, "text.temp", buf);
+	edje_object_signal_emit(o_day, signal, "");
 
-   snprintf(buf, sizeof(buf), "%d°F", eweather_data_temp_min_get(e_data));
-   edje_object_part_text_set(sd->obj, "text.temp_min", buf);
+	snprintf(buf, sizeof(buf), "%d°F", eweather_data_temp_get(e_data));
+	edje_object_part_text_set(o_day, "text.temp", buf);
 
-   snprintf(buf, sizeof(buf), "%d°F", eweather_data_temp_max_get(e_data));
-   edje_object_part_text_set(sd->obj, "text.temp_max", buf);
+	snprintf(buf, sizeof(buf), "%d°F", eweather_data_temp_min_get(e_data));
+	edje_object_part_text_set(o_day, "text.temp_min", buf);
 
-   edje_object_part_text_set(sd->obj, "text.city", eweather_data_city_get(e_data));
+	snprintf(buf, sizeof(buf), "%d°F", eweather_data_temp_max_get(e_data));
+	edje_object_part_text_set(o_day, "text.temp_max", buf);
+
+	edje_object_part_text_set(o_day, "text.city", eweather_data_city_get(e_data));
+	edje_object_part_text_set(o_day, "text.date", eweather_data_date_get(e_data));
+     }
 }
 
 /*******************************************/
@@ -155,7 +234,7 @@ _smart_init(void)
 	smart = evas_smart_class_new(&sc);
      }
 }
-   
+
    static void
 _smart_add(Evas_Object * obj)
 {
@@ -164,6 +243,8 @@ _smart_add(Evas_Object * obj)
    sd = calloc(1, sizeof(Smart_Data));
    if (!sd) return;
    evas_object_smart_data_set(obj, sd);
+
+   sd->mode = EWEATHER_OBJECT_MODE_EXPOSE;
 
    sd->obj = edje_object_add(evas_object_evas_get(obj));
    edje_object_file_set(sd->obj, PACKAGE_DATA_DIR"/theme.edj", "main");
@@ -195,10 +276,15 @@ _smart_add(Evas_Object * obj)
 _smart_del(Evas_Object * obj)
 {
    Smart_Data *sd;
+   Evas_Object *o;
 
    sd = evas_object_smart_data_get(obj);
    if (!sd) return;
    eweather_free(sd->eweather);
+   
+   EINA_LIST_FREE(sd->objs, o)
+      evas_object_del(o);
+
    free(sd);
 }
 
