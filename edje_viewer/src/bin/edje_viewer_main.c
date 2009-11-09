@@ -4,6 +4,8 @@
 
 #include "edje_viewer_main.h"
 
+int __log_domain = -1;
+
 static void viewer_free(Viewer *v);
 static void config_init(Viewer *v);
 static int config_load(Viewer *v);
@@ -16,9 +18,24 @@ elm_main(int argc, char **argv)
 {
    Viewer *v;
 
+   __log_domain = eina_log_domain_register("Edje_Viewer", EINA_COLOR_BLUE);
+   if (!__log_domain)
+     {
+	EINA_LOG_ERR("Could not register log domain: Edje_Viewer");
+	elm_exit();
+	return 1;
+     }
+
    v = calloc(1, sizeof(Viewer));
 
    config_init(v);
+   if (!v->config_edd)
+     {
+        ERR("Edje Viewer Config failed to init\n");
+        viewer_free(v);
+        elm_exit();
+        return 1;
+     }
    if (argc >= 2)
      {
         if ((argc > 2) || (v->config->edje_file && strcmp(v->config->edje_file, argv[1])))
@@ -30,6 +47,7 @@ elm_main(int argc, char **argv)
      {
 	ERR("Edje file not specified\n");
 	viewer_free(v);
+        elm_exit();
 	return 1;
      }
 
@@ -130,27 +148,14 @@ config_init(Viewer *v)
 {
    Eet_Data_Descriptor_Class eddc, eddc2;
    
-   eddc2.version = eddc.version = EET_DATA_DESCRIPTOR_CLASS_VERSION;
-   eddc2.func.mem_alloc = eddc.func.mem_alloc = NULL;
-   eddc2.func.mem_free = eddc.func.mem_free = NULL;
-   eddc2.func.str_alloc = eddc.func.str_alloc = (char *(*)(const char *)) eina_stringshare_add;
-   eddc2.func.str_free = eddc.func.str_free = (void (*)(const char *)) eina_stringshare_del;
-   eddc2.func.list_next = eddc.func.list_next = (void *(*)(void *)) eina_list_next;
-   eddc2.func.list_append = eddc.func.list_append = (void *(*)(void *l, void *d)) eina_list_append;
-   eddc2.func.list_data = eddc.func.list_data = (void *(*)(void *)) eina_list_data_get;
-   eddc2.func.list_free = eddc.func.list_free = (void *(*)(void *)) eina_list_free;
-   eddc2.func.hash_foreach = eddc.func.hash_foreach = NULL;
-   eddc2.func.hash_add = eddc.func.hash_add = NULL;
-   eddc2.func.hash_free = eddc.func.hash_free = NULL;
-   eddc.name = "Config";
-   eddc.size = sizeof(Config);
-   eddc2.name = "Groups";
-   eddc2.size = sizeof(Config_Group);
-
 #define C_VAL(edd, type, member, dtype) EET_DATA_DESCRIPTOR_ADD_BASIC(edd, type, #member, member, dtype)
 #define C_LIST(edd, type, member, dtype) EET_DATA_DESCRIPTOR_ADD_LIST(edd, type, #member, member, dtype)
 
-   v->groups_edd = eet_data_descriptor2_new(&eddc2);
+   if (!eet_eina_stream_data_descriptor_class_set(&eddc, "Config", sizeof(Config)))
+     return;
+   if (!eet_eina_stream_data_descriptor_class_set(&eddc2, "Groups", sizeof(Config_Group)))
+     return;
+   v->groups_edd = eet_data_descriptor_stream_new(&eddc2);
 #undef T
 #undef D
 #define T Config_Group
@@ -158,7 +163,7 @@ config_init(Viewer *v)
    C_VAL(D, T, name, EET_T_STRING);
    C_VAL(D, T, visible, EET_T_CHAR);
 
-   v->config_edd = eet_data_descriptor2_new(&eddc);
+   v->config_edd = eet_data_descriptor_stream_new(&eddc);
 #undef T
 #undef D
 #define T Config 

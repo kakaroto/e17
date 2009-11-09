@@ -28,8 +28,9 @@
 #define __UNUSED__
 #endif
 
-#define DBG(...) EINA_ERROR_PDBG(__VA_ARGS__)
-#define ERR(...) EINA_ERROR_PERR(__VA_ARGS__)
+extern int __log_domain;
+#define DBG(...) EINA_LOG_DOM_DBG(__log_domain, __VA_ARGS__)
+#define ERR(...) EINA_LOG_DOM_ERR(__log_domain, __VA_ARGS__)
 
 typedef struct _Viewer Viewer;
 typedef struct _Config Config;
