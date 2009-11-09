@@ -143,12 +143,12 @@ _mouse_down_cb(void *data, Evas *evas, Evas_Object *o_day, void *event)
 	     Evas_Coord x2,w2;
 	     evas_object_geometry_get(sd->obj, &x2, NULL, &w2, NULL);
 
-	     if(x < x2+w2/2 && i>1)
+	     if(x < x2+w2/4 && i>1)
 	       {	
 		  snprintf(buf, sizeof(buf), "show,%d", i-1);
 		  edje_object_signal_emit(sd->obj, buf, "");
 	       }
-	     else if(x > x2+w2/2 && i<3)
+	     else if(x > x2+w2*3/4 && i<3)
 	       {	
 		  snprintf(buf, sizeof(buf), "show,%d", i+1);
 		  edje_object_signal_emit(sd->obj, buf, "");
