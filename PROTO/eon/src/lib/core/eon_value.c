@@ -171,3 +171,8 @@ Ekeko_Value_Type EON_PROPERTY_CLOCK;
 Ekeko_Value_Type EON_PROPERTY_TRIGGER;
 Ekeko_Value_Type EON_PROPERTY_MATRIX;
 Ekeko_Value_Type EON_PROPERTY_COLOR;
+
+/* TODO we should add a new way to add a value type, that is, a wrapper of
+ * the ekeko value register system. On eon we'll need a way to serialize the
+ * data too
+ */

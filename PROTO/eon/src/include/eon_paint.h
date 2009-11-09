@@ -55,7 +55,7 @@ typedef enum _Eon_Paint_Matrixspace
 typedef struct _Eon_Paint_Private Eon_Paint_Private;
 struct _Eon_Paint
 {
-	Ekeko_Renderable parent;
+	Eon_Renderable parent;
 	Eon_Paint_Private *private;
 	/* called whenever the engine wants to instantiate a new paint object */
 	void *(*create)(Eon_Engine *e, Eon_Paint *s);

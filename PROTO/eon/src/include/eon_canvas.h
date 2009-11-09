@@ -39,8 +39,8 @@ extern Ekeko_Property_Id EON_CANVAS_MATRIX;
 typedef struct _Eon_Canvas_Private Eon_Canvas_Private;
 struct _Eon_Canvas
 {
-	Ekeko_Canvas parent;
-	Eon_Canvas_Private *private;
+	Eon_Layout base;
+	Eon_Canvas_Private *prv;
 };
 /*============================================================================*
  *                                Functions                                   *

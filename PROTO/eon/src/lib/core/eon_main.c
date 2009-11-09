@@ -101,7 +101,6 @@ EAPI int eon_init(void)
 	/* the type registry */
 	_types = eina_hash_string_superfast_new(NULL);
 	_objects_init();
-	eon_buffer_init();
 done:
 	return ++_count;
 }
@@ -110,7 +109,6 @@ EAPI int eon_shutdown(void)
 {
 	if (_count != 1) goto done;
 
-	eon_buffer_shutdown();
 	/* TODO delete the types hash */
 	_objects_shutdown();
 	ecore_idle_enterer_del(_idler);

@@ -10,6 +10,8 @@ Core
 + Replace every foo_new(Canvas *) with a foo_new(Document *d) so the document
   element works as a factory to trigger "new object" event
 + Instantiable tpyes should not export the struct, just an opaque handler, as it is not allowed to do a subtype from them
++ Move ekeko objects to eon object (renderable, canvas, input)
++ Add a grid layout
 
 Bin
 ===

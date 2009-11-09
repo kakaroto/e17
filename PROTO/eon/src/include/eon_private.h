@@ -34,6 +34,7 @@
 
 /* Type names */
 #define EON_TYPE_DOCUMENT "eon"
+#define EON_TYPE_OBJECT "object"
 #define EON_TYPE_CANVAS "canvas"
 #define EON_TYPE_ANIMATION "animation_base"
 #define EON_TYPE_ANIMATION_KEY "key"

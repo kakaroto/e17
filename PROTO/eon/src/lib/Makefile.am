@@ -1,4 +1,4 @@
-SUBDIRS = core paint shape parser script filter
+SUBDIRS = core layout paint shape parser script filter
 
 MAINTAINERCLEANFILES = Makefile.in
 
@@ -10,7 +10,7 @@ INCLUDES	= \
 
 lib_LTLIBRARIES = libeon.la
 
-EXTRA_DIST = 
+EXTRA_DIST =
 
 libeon_la_SOURCES =
 
@@ -19,6 +19,7 @@ core/libeon_core.la \
 paint/libeon_paint.la \
 filter/libeon_filter.la \
 shape/libeon_shape.la \
+layout/libeon_layout.la \
 parser/libeon_parser.la \
 script/libeon_script.la \
 $(top_builddir)/src/engines/enesim/libeon_engine_enesim.la
@@ -46,5 +47,5 @@ endif
 if BUILD_ENGINE_IPC
 libeon_la_DEPENDENCIES += $(top_builddir)/src/engines/remote/libeon_engine_remote.la
 endif
- 
+
 libeon_la_LDFLAGS = -version-info 1:0:0

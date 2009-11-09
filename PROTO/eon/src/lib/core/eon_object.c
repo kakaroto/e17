@@ -21,17 +21,78 @@
  *                                  Local                                     *
  *============================================================================*/
 #define PRIVATE(d) ((Eon_Object_Private *)((Eon_Object *)(d))->prv)
+
 struct _Eon_Object_Private
 {
 	Eon_Document *doc;
-	void *data;
+	void *engine_data;
 };
+
+static void _object_ctor(Ekeko_Object *eo)
+{
+	Eon_Object *o = (Eon_Object *)eo;
+
+	o->prv = ekeko_type_instance_private_get(eon_object_type_get(), o);
+}
+
+static void _object_dtor(Ekeko_Object *eo)
+{
+	/* TODO whenever the object is destroyed shall we delete the
+	 * engine data here?
+	 */
+}
+
+static Eina_Bool _object_appendable(Ekeko_Object *parent, Ekeko_Object *child)
+{
+
+}
 /*============================================================================*
  *                                 Global                                     *
  *============================================================================*/
+void * eon_object_engine_data_get(Eon_Object *o)
+{
+	Eon_Object_Private *prv;
+
+	prv = PRIVATE(o);
+	return prv->engine_data;
+}
+
+void eon_object_engine_data_set(Eon_Object *o, void *data)
+{
+	Eon_Object_Private *prv;
+
+	prv = PRIVATE(o);
+	prv->engine_data = data;
+}
+
+void eon_object_document_set(Eon_Object *o, Eon_Document *d)
+{
+	Eon_Object_Private *prv;
+
+	prv = PRIVATE(o);
+	prv->doc = d;
+}
 /*============================================================================*
  *                                   API                                      *
  *============================================================================*/
+/**
+ * Gets the type definition of an object
+ * @return The type definition
+ */
+EAPI Ekeko_Type * eon_object_type_get(void)
+{
+	static Ekeko_Type *type = NULL;
+
+	if (!type)
+	{
+		type = ekeko_type_new(EON_TYPE_OBJECT, sizeof(Eon_Object),
+				sizeof(Eon_Object_Private),
+				ekeko_object_type_get(), _object_ctor,
+				_object_dtor, _object_appendable);
+	}
+	return type;
+}
+
 /**
  * Gets the Eon_Document this object belongs to
  * @param o The Eon_Object to get the document from

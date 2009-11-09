@@ -9,6 +9,7 @@ AM_CPPFLAGS = \
 noinst_LTLIBRARIES = libeon_paint.la
 
 libeon_paint_la_SOURCES = \
+eon_canvas.c \
 eon_compound.c \
 eon_compound_layer.c \
 eon_paint.c \

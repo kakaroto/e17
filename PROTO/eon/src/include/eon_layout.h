@@ -15,36 +15,40 @@
  * License along with this library.
  * If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef EON_DOCUMENT_H_
-#define EON_DOCUMENT_H_
+#ifndef EON_LAYOUT_H_
+#define EON_LAYOUT_H_
 /*============================================================================*
  *                                 Events                                     *
  *============================================================================*/
-#define EON_DOCUMENT_SIZE_CHANGED "sizeChanged"
-#define EON_DOCUMENT_OBJECT_NEW "ObjectNew"
-
-typedef struct _Eon_Document_Object_New
-{
-	Ekeko_Event ev;
-	char *name;
-} Eon_Document_Object_New;
+#define EON_LAYOUT_REDRAW_CHANGED "redrawChanged"
 /*============================================================================*
  *                               Properties                                   *
  *============================================================================*/
-extern Ekeko_Property_Id EON_DOCUMENT_SIZE;
+extern Ekeko_Property_Id EON_LAYOUT_REDRAW;
 /*============================================================================*
  *                                 Class                                      *
  *============================================================================*/
+typedef struct _Eon_Layout_Private Eon_Layout_Private;
+struct _Eon_Layout
+{
+	Eon_Renderable base;
+	/* inform the layout that an area must be flushed
+	 * returns EINA_TRUE if the whole layout has been flushed
+	 * or EINA_FALSE if only the needed rectangle
+	 */
+	Eina_Bool (*flush)(Eon_Layout *, Eina_Rectangle *);
+	Eon_Layout_Private *prv;
+};
 /*============================================================================*
  *                                Functions                                   *
  *============================================================================*/
-EAPI Eon_Document * eon_document_new(const char *name, int w, int h, const char *options);
-EAPI Eon_Canvas * eon_document_canvas_get(Eon_Document *d);
-EAPI Ekeko_Object * eon_document_object_get_by_id(Eon_Document *d, const char *id);
-EAPI void eon_document_size_get(Eon_Document *d, int *w, int *h);
-EAPI void eon_document_resize(Eon_Document *d, int w, int h);
-EAPI void eon_document_pause(Eon_Document *d);
-EAPI void eon_document_play(Eon_Document *d);
-EAPI Ekeko_Object * eon_document_object_new(Eon_Document *d, const char *name);
+Ekeko_Type *eon_layout_type_get(void);
+EAPI void eon_layout_size_set(Eon_Layout *c, int w, int h);
+EAPI void eon_layout_damage_add(Eon_Layout *c, Eina_Rectangle *r);
+EAPI void eon_layout_obscure_add(Eon_Layout *c, Eina_Rectangle *r);
+EAPI Eon_Input * eon_layout_input_new(Eon_Layout *c);
+EAPI Eon_Renderable * eon_layout_renderable_get_at_coord(Eon_Layout *c, unsigned int x, unsigned int y);
+EAPI void eon_layout_focus_set(Eon_Layout *c, Eon_Renderable *r);
+EAPI Eon_Renderable * eon_layout_focus_get(Eon_Layout *c);
 
-#endif /* EON_DOCUMENT_H_ */
+#endif /* EON_LAYOUT_H_ */

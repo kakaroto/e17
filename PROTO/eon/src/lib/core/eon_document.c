@@ -23,13 +23,13 @@
 /*============================================================================*
  *                                  Local                                     *
  *============================================================================*/
-#define PRIVATE(d) ((Eon_Document_Private *)((Eon_Document *)(d))->private)
-
 static Ecore_Idle_Enterer *_idler = NULL;
 static Eina_List *_documents = NULL;
 
-struct _Eon_Document_Private
+struct _Eon_Document
 {
+	Ekeko_Object parent;
+
 	struct {
 		char *name;
 		void *data;
@@ -52,10 +52,10 @@ struct _Eon_Document_Private
 /* Called whenever an object changes it's id */
 static void _id_change(const Ekeko_Object *o, Ekeko_Event *e, void *data)
 {
+	Eon_Document *d = (Eon_Document *)o;
 	Ekeko_Event_Mutation *em = (Ekeko_Event_Mutation *)e;
-	Eon_Document_Private *prv = PRIVATE(data);
 
-	eina_hash_add(prv->ids, em->curr->value.string_value, o);
+	eina_hash_add(d->ids, em->curr->value.string_value, o);
 }
 
 static int _idler_cb(void *data)
@@ -72,10 +72,9 @@ static int _idler_cb(void *data)
 }
 static int _animation_cb(void *data)
 {
-	Eon_Document *doc = data;
-	Eon_Document_Private *prv = PRIVATE(doc);
+	Eon_Document *d = data;
 
-	etch_timer_tick(prv->etch);
+	etch_timer_tick(d->etch);
 	return 1;
 }
 
@@ -84,20 +83,19 @@ static void _child_append_cb(const Ekeko_Object *o, Ekeko_Event *e, void *data)
 {
 	Ekeko_Event_Mutation *em = (Ekeko_Event_Mutation *)e;
 	Eon_Document *d = (Eon_Document *)o;
-	Eon_Document_Private *prv = PRIVATE(d);
 
 	ekeko_event_listener_add(e->target, EKEKO_OBJECT_ID_CHANGED, _id_change, EINA_FALSE, d);
 	/* check that the parent is the document */
 	if (em->related != o)
 		return;
 	/* assign the correct pointers */
-	if (!prv->canvas && ekeko_type_instance_is_of(e->target, EON_TYPE_CANVAS))
-		prv->canvas = (Eon_Canvas *)e->target;
-	if (!prv->style && ekeko_type_instance_is_of(e->target, EON_TYPE_STYLE))
-		prv->style = (Eon_Style *)e->target;
+	if (!d->canvas && ekeko_type_instance_is_of(e->target, EON_TYPE_CANVAS))
+		d->canvas = (Eon_Canvas *)e->target;
+	if (!d->style && ekeko_type_instance_is_of(e->target, EON_TYPE_STYLE))
+		d->style = (Eon_Style *)e->target;
 }
 
-static void _object_new(Eon_Document_Object_New *ev, char *name, Ekeko_Object *o)
+static void _event_object_new(Eon_Document_Object_New *ev, char *name, Ekeko_Object *o)
 {
 	Ekeko_Event *ee = (Ekeko_Event *)ev;
 
@@ -105,10 +103,9 @@ static void _object_new(Eon_Document_Object_New *ev, char *name, Ekeko_Object *o
 	ekeko_event_init(ee, EON_DOCUMENT_OBJECT_NEW, o, EINA_FALSE);
 }
 
-static void _ctor(void *instance)
+static void _ctor(Ekeko_Object *o)
 {
-	Eon_Document *dc;
-	Eon_Document_Private *prv;
+	Eon_Document *d;
 
 	/* FIXME do we need a single idler or better one idler per document? */
 	if (!_idler)
@@ -116,16 +113,15 @@ static void _ctor(void *instance)
 		/* this idler will process every child */
 		_idler = ecore_idle_enterer_add(_idler_cb, NULL);
 	}
-	dc = (Eon_Document*) instance;
-	dc->private = prv = ekeko_type_instance_private_get(eon_document_type_get(), instance);
+	d = (Eon_Document *)o;
 	/* setup the animation system */
-	prv->etch = etch_new();
-	etch_timer_fps_set(prv->etch, 30);
-	prv->anim_cb = ecore_timer_add(1.0f/30.0f, _animation_cb, dc);
+	d->etch = etch_new();
+	etch_timer_fps_set(d->etch, 30);
+	d->anim_cb = ecore_timer_add(1.0f/30.0f, _animation_cb, d);
 	/* the id system */
-	prv->ids = eina_hash_string_superfast_new(NULL);
+	d->ids = eina_hash_string_superfast_new(NULL);
 	/* the event listeners */
-	ekeko_event_listener_add((Ekeko_Object *)dc, EKEKO_EVENT_OBJECT_APPEND, _child_append_cb, EINA_TRUE, NULL);
+	ekeko_event_listener_add(o, EKEKO_EVENT_OBJECT_APPEND, _child_append_cb, EINA_TRUE, NULL);
 }
 
 static void _dtor(void *canvas)
@@ -133,37 +129,52 @@ static void _dtor(void *canvas)
 
 }
 
-static Eina_Bool _appendable(void *parent, void *child)
+static Eina_Bool _appendable(Ekeko_Object *parent, Ekeko_Object *child)
 {
-	Eon_Document_Private *prv = PRIVATE(parent);
+	Eon_Document *d = (Eon_Document *)parent;
 
 	/* we only allow style and canvas children */
 	if ((!ekeko_type_instance_is_of(child, EON_TYPE_CANVAS)) &&
 			(!ekeko_type_instance_is_of(child, EON_TYPE_STYLE)))
 		return EINA_FALSE;
 	/* we should use the childs list instead as we might have more than one canvas */
-	if (prv->canvas && ekeko_type_instance_is_of(child, EON_TYPE_CANVAS))
+	if (d->canvas && ekeko_type_instance_is_of(child, EON_TYPE_CANVAS))
 		return EINA_FALSE;
-	if (prv->style && ekeko_type_instance_is_of(child, EON_TYPE_STYLE))
+	if (d->style && ekeko_type_instance_is_of(child, EON_TYPE_STYLE))
 		return EINA_FALSE;
 
 	return EINA_TRUE;
 }
 
+static Ekeko_Type * _document_type_get(void)
+{
+	static Ekeko_Type *type = NULL;
+
+	if (!type)
+	{
+		type = ekeko_type_new(EON_TYPE_DOCUMENT, 0,
+				sizeof(Eon_Document), ekeko_object_type_get(),
+				_ctor, _dtor, _appendable);
+		EON_DOCUMENT_SIZE = EKEKO_TYPE_PROP_SINGLE_ADD(type, "size",
+				EKEKO_PROPERTY_RECTANGLE,
+				OFFSET(Eon_Document, size));
+	}
+
+	return type;
+}
+
 static Eon_Document * _document_new(const char *engine, int w, int h, const char *options)
 {
 	Eon_Document *d;
-	Eon_Document_Private *prv;
 	Ekeko_Value v;
 
-	d = ekeko_type_instance_new(eon_document_type_get());
+	d = ekeko_type_instance_new(_document_type_get());
 	if (!d)
 		return NULL;
 
-	prv = PRIVATE(d);
 	/* the gfx engine */
-	prv->engine.backend = eon_engine_get(engine);
-	prv->engine.data = eon_engine_document_create(prv->engine.backend, d, options);
+	d->engine.backend = eon_engine_get(engine);
+	d->engine.data = eon_engine_document_create(d->engine.backend, d, options);
 	eon_document_resize(d, w, h);
 #if 0
 	/* the script engine */
@@ -181,36 +192,24 @@ static Eon_Document * _document_new(const char *engine, int w, int h, const char
  *============================================================================*/
 Eon_Engine * eon_document_engine_get(Eon_Document *d)
 {
-	Eon_Document_Private *prv;
-
-	prv = PRIVATE(d);
-	return prv->engine.backend;
+	return d->engine.backend;
 }
 
 void * eon_document_engine_data_get(Eon_Document *d)
 {
-	Eon_Document_Private *prv;
-
-	prv = PRIVATE(d);
-	return prv->engine.data;
+	return d->engine.data;
 }
 
 Etch * eon_document_etch_get(Eon_Document *d)
 {
-	Eon_Document_Private *prv;
-
-	prv = PRIVATE(d);
-	return prv->etch;
+	return d->etch;
 }
 
 void eon_document_script_execute(Eon_Document *d, const char *fname, Ekeko_Object *o)
 {
-	Eon_Document_Private *prv;
-
-	prv = PRIVATE(d);
-	if (!prv->vm.sm || !prv->vm.sm->execute)
+	if (!d->vm.sm || !d->vm.sm->execute)
 		return;
-	prv->vm.sm->execute(prv->vm.data, fname, o);
+	d->vm.sm->execute(d->vm.data, fname, o);
 }
 
 void eon_document_script_unload(Eon_Document *d, const char *file)
@@ -220,12 +219,9 @@ void eon_document_script_unload(Eon_Document *d, const char *file)
 
 void eon_document_script_load(Eon_Document *d, const char *file)
 {
-	Eon_Document_Private *prv;
-
-	prv = PRIVATE(d);
-	if (!prv->vm.sm)
+	if (!d->vm.sm)
 		return;
-	prv->vm.sm->load(prv->vm.data, file);
+	d->vm.sm->load(d->vm.data, file);
 }
 
 /*============================================================================*
@@ -233,21 +229,9 @@ void eon_document_script_load(Eon_Document *d, const char *file)
  *============================================================================*/
 Ekeko_Property_Id EON_DOCUMENT_SIZE;
 
-Ekeko_Type *eon_document_type_get(void)
-{
-	static Ekeko_Type *type = NULL;
-
-	if (!type)
-	{
-		type = ekeko_type_new(EON_TYPE_DOCUMENT, sizeof(Eon_Document),
-				sizeof(Eon_Document_Private), ekeko_object_type_get(), _ctor,
-				_dtor, _appendable);
-		EON_DOCUMENT_SIZE = EKEKO_TYPE_PROP_SINGLE_ADD(type, "size", EKEKO_PROPERTY_RECTANGLE, OFFSET(Eon_Document_Private, size));
-	}
-
-	return type;
-}
-
+/**
+ * Creates a new document
+ */
 EAPI Eon_Document * eon_document_new(const char *engine, int w, int h, const char *options)
 {
 	Eon_Document *d;
@@ -274,29 +258,22 @@ EAPI Eon_Document * eon_document_void_new(const char *engine, int w, int h, cons
 	return d;
 }
 
+/* FIXME remove this */
 EAPI Eon_Canvas * eon_document_canvas_get(Eon_Document *d)
 {
-	Eon_Document_Private *prv;
-
-	prv = PRIVATE(d);
-	return prv->canvas;
+	return d->canvas;
 }
 
+/* FIXME remove this */
 EAPI Eon_Style * eon_document_style_get(Eon_Document *d)
 {
-	Eon_Document_Private *prv;
-
-	prv = PRIVATE(d);
-	return prv->style;
+	return d->style;
 }
 
 EAPI void eon_document_size_get(Eon_Document *d, int *w, int *h)
 {
-	Eon_Document_Private *prv;
-
-	prv = PRIVATE(d);
-	if (w) *w = prv->size.w;
-	if (h) *h = prv->size.h;
+	if (w) *w = d->size.w;
+	if (h) *h = d->size.h;
 }
 
 /* FIXME this is wrong! the document isnt resized from outside */
@@ -310,31 +287,33 @@ EAPI void eon_document_resize(Eon_Document *d, int w, int h)
 
 EAPI Ekeko_Object * eon_document_object_get_by_id(Eon_Document *d, const char *id)
 {
-	Eon_Document_Private *prv = PRIVATE(d);
-
-	return eina_hash_find(prv->ids, id);
+	return eina_hash_find(d->ids, id);
 }
 
 EAPI void eon_document_pause(Eon_Document *d)
 {
-	Eon_Document_Private *prv = PRIVATE(d);
-	if (!prv->anim_cb)
+	if (!d->anim_cb)
 		return;
 
-	ecore_timer_del(prv->anim_cb);
-	prv->anim_cb = NULL;
+	ecore_timer_del(d->anim_cb);
+	d->anim_cb = NULL;
 }
 
 EAPI void eon_document_play(Eon_Document *d)
 {
-	Eon_Document_Private *prv = PRIVATE(d);
-	if (prv->anim_cb)
+	if (d->anim_cb)
 		return;
 
-	prv->anim_cb = ecore_timer_add(1.0f/30.0f, _animation_cb, d);
+	d->anim_cb = ecore_timer_add(1.0f/30.0f, _animation_cb, d);
 }
 
-
+/**
+ * Creates a new object based on it's registered name
+ * @param d The document that creates the object
+ * @param name The name of the object's type
+ * @return The instance of the object or NULL of it wasn't able to create
+ * such object
+ */
 EAPI Ekeko_Object * eon_document_object_new(Eon_Document *d, const char *name)
 {
 	Ekeko_Object *o;
@@ -346,11 +325,15 @@ EAPI Ekeko_Object * eon_document_object_new(Eon_Document *d, const char *name)
 	o = ekeko_type_instance_new(t);
 	if (o)
 	{
+		/* check that the object is a subtype of an Eon_Object */
 		/* send the event of a new object */
 		Eon_Document_Object_New ev;
 
-		_object_new(&ev, name, o);
+		_event_object_new(&ev, name, o);
 		ekeko_object_event_dispatch(d, (Ekeko_Event *)&ev);
+		/* set the document on the newly created object */
+		/* TODO later */
+		//eon_object_document_set(o, d);
 	}
 	return o;
 }

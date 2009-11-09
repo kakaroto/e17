@@ -25,7 +25,9 @@
 #include "Etch.h"
 
 typedef struct _Eon_Document Eon_Document;
-typedef struct _Eon_Canvas Eon_Canvas;
+typedef struct _Eon_Object Eon_Object;
+typedef struct _Eon_Input Eon_Input;
+typedef struct _Eon_Renderable Eon_Renderable;
 typedef struct _Eon_Animation Eon_Animation;
 typedef struct _Eon_Animation_Key Eon_Animation_Key;
 typedef struct _Eon_Animation_Basic Eon_Animation_Basic;
@@ -36,6 +38,9 @@ typedef struct _Eon_Style Eon_Style;
 typedef struct _Eon_Style_Applier Eon_Style_Applier;
 typedef struct _Eon_Trigger_Object Eon_Trigger_Object; // FIXME called object by now until we remove the trigger value
 typedef struct _Eon_Setter Eon_Setter;
+/* layout objects */
+typedef struct _Eon_Layout Eon_Layout;
+typedef struct _Eon_Canvas Eon_Canvas;
 /* paint objects */
 typedef struct _Eon_Paint Eon_Paint;
 typedef struct _Eon_Paint_Square Eon_Paint_Square;
@@ -71,12 +76,13 @@ EAPI void eon_loop(void);
 EAPI int eon_shutdown(void);
 
 #include "eon_engine.h"
-
+#include "eon_input.h"
+#include "eon_object.h"
 #include "eon_coord.h"
 #include "eon_color.h"
 #include "eon_value.h"
 #include "eon_document.h"
-#include "eon_canvas.h"
+#include "eon_renderable.h"
 #include "eon_animation.h"
 #include "eon_anim_key.h"
 #include "eon_anim_basic.h"
@@ -87,6 +93,9 @@ EAPI int eon_shutdown(void);
 #include "eon_style_applier.h"
 #include "eon_setter.h"
 #include "eon_trigger.h"
+
+#include "eon_layout.h"
+#include "eon_canvas.h"
 
 #include "eon_paint.h"
 #include "eon_paint_square.h"

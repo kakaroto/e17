@@ -1,7 +1,7 @@
 # get rid of that stupid cache mechanism
 rm -f config.cache
 
-AC_INIT([eon], [0.0.1], [enlightenment-devel@lists.sourceforge.net])
+AC_INIT([eon], [0.0.2], [enlightenment-devel@lists.sourceforge.net])
 AC_PREREQ(2.52)
 AC_CONFIG_SRCDIR(configure.ac)
 AC_CANONICAL_BUILD
@@ -176,6 +176,7 @@ src/lib/Makefile
 src/lib/core/Makefile
 src/lib/filter/Makefile
 src/lib/paint/Makefile
+src/lib/layout/Makefile
 src/lib/shape/Makefile
 src/lib/widget/Makefile
 src/lib/parser/Makefile

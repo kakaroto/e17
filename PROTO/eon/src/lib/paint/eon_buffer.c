@@ -125,9 +125,7 @@ EAPI void eon_buffer_data_set(Eon_Buffer *b, Enesim_Converter_Data *cdata)
 {
 	Ekeko_Value v;
 
-	//ekeko_value_pointer_from(&v, cdata);
-	v.type = EKEKO_PROPERTY_POINTER;
-	v.value.pointer_value = cdata;
+	ekeko_value_pointer_from(&v, cdata);
 	ekeko_object_property_value_set((Ekeko_Object *)b, "data", &v);
 }
 
