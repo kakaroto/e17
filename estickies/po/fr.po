@@ -6,94 +6,75 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Estickies\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2009-10-18 07:37+0400\n"
-"PO-Revision-Date: 2009-10-18 12:31+0400\n"
+"POT-Creation-Date: 2009-11-10 08:17+0400\n"
+"PO-Revision-Date: 2009-11-10 11:17+0400\n"
 "Last-Translator: batden <batden@orange.fr>\n"
-"Language-Team: French <Enlightenment i18n French>\n"
+"Language-Team: Enlighenment French Team <pourunmondesansgourou@gmail.com>\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=n>1;\n"
 "X-Poedit-Language: French\n"
 "X-Poedit-Country: FRANCE\n"
 "X-Poedit-SourceCharset: utf-8\n"
 
-#: src/bin/about.c:51
-msgid "What is E Stickies?"
-msgstr "C'est quoi, E Stickies ?"
+#: src/bin/about.c:76
+msgid "E Stickies is a sticky notes application that uses Elementary. It uses Elementary's runtime theming support to change the look and feel of the windows and buttons.<br>"
+msgstr "E Stickies est une application de type post-it qui utilise les fonctionnalités de Elementary permettant de modifier à la volée l'aspect des fenêtres et des boutons.<br>"
 
-#: src/bin/about.c:68
-msgid ""
-"E Stickies is a sticky notes application that uses Elementary. It uses "
-"Elementary's runtime theming support to change the look and feel of the "
-"windows and buttons.<br>"
-msgstr ""
-"E Stickies est une application de type post-it qui utilise les "
-"fonctionnalités de Elementary permettant de modifier à la volée l'aspect des "
-"fenêtres et des boutons.<br>"
+#: src/bin/about.c:103
+msgid "<b>Code:</b><br>Daniel '<b>quaker</b>' Kolesa<br><b>Old Etk version:</b><br>Hisham '<b>CodeWarrior</b>' Mardam Bey<br><br><b>Themes:</b><br>Brian 'morlenxus' Miculcy"
+msgstr "<b>Code :</b><br>Daniel « <b>quaker</b> » Kolesa<br><b>Pour la version Etk d'origine :</b><br>Hisham « <b>CodeWarrior</b> » Mardam Bey<br><br><b>Thèmes :</b><br>Brian « morlenxus » Miculcy"
 
-#: src/bin/about.c:74
-msgid "Authors"
-msgstr "Auteurs"
+#: src/bin/about.c:130
+msgid "<b>control-n:</b> create a new note<br><b>control-q:</b> quit application<br><b>control-c:</b> copy selected text<br><b>control-x:</b> cut selected text<br><b>control-v:</b> paste text from clipboard<br>"
+msgstr "<b>control-n :</b> créer une nouvelle note<br><b>control-q :</b> quitter l'application<br><b>control-c :</b> copier le texte sélectionné<br><b>control-x :</b> couper le texte sélectionné<br><b>control-v :</b> coller le texte du presse-papiers<br>"
 
-#: src/bin/about.c:91
-msgid ""
-"<b>Code:</b><br>Daniel '<b>quaker</b>' Kolesa<br><b>Old Etk version:</"
-"b><br>Hisham '<b>CodeWarrior</b>' Mardam Bey<br><br><b>Themes:</b><br>Brian "
-"'morlenxus' Miculcy"
-msgstr ""
-"<b>Code:</b><br>Daniel '<b>quaker</b>' Kolesa<br><b>Pour la version Etk "
-"d'origine :</b><br>Hisham '<b>CodeWarrior</b>' Mardam Bey<br><br><b>Thèmes:</"
-"b><br>Brian 'morlenxus' Miculcy"
+#: src/bin/about.c:145
+msgid "About E Stickies"
+msgstr "E Stickies, à propos"
 
-#: src/bin/about.c:97
-msgid "Common shortcuts"
-msgstr "Raccourcis"
+#: src/bin/about.c:151
+msgid "Authors, credits"
+msgstr "Auteurs et crédits"
 
-#: src/bin/about.c:114
-msgid ""
-"<b>control-n:</b> create a new note<br><b>control-q:</b> quit "
-"application<br><b>control-c:</b> copy selected text<br><b>control-x:</b> cut "
-"selected text<br><b>control-v:</b> paste text from clipboard<br>"
-msgstr ""
-"<b>control-n:</b> créer une nouvelle note<br><b>control-q:</b> quitter "
-"l'application<br><b>control-c:</b> copier le texte sélectionné<br><b>control-"
-"x:</b> couper le texte sélectionné<br><b>control-v:</b> coller le texte du "
-"presse-papiers<br>"
+#: src/bin/about.c:157
+msgid "E Stickies help"
+msgstr "Aide de E Stickies"
 
-#: src/bin/about.c:119 src/bin/config_gui.c:173
+#: src/bin/about.c:163
+#: src/bin/config_gui.c:166
 msgid "Close"
 msgstr "Fermer"
 
-#: src/bin/conf.c:86 src/bin/conf.c:97
+#: src/bin/conf.c:86
+#: src/bin/conf.c:97
 msgid "Cant create config path!"
-msgstr "Création du chemin de configuration impossible !"
+msgstr "Création du chemin de configuration impossible !"
 
 #: src/bin/conf.c:192
 msgid "Cant open configuration file! Using program defaults."
-msgstr ""
-"Impossible d'accéder au fichier de configuration ! Utilisation des réglages "
-"par défaut."
+msgstr "Impossible d'accéder au fichier de configuration ! Utilisation des réglages par défaut."
 
 #: src/bin/conf.c:200
 msgid "Incompatible configuration file! Creating new one."
-msgstr "Fichier de configuration incompatible ! Création d'un nouveau."
+msgstr "Fichier de configuration incompatible  ! Création d'un nouveau."
 
 #: src/bin/conf.c:212
 msgid "Your version / configuration of E-Stickies is not valid!"
-msgstr "La version / configuration de E-Stickies est invalide !"
+msgstr "La version / configuration de E-Stickies est invalide !"
 
 #: src/bin/conf.c:250
 msgid "Problem saving config!"
-msgstr "L'enregistrement de la configuration a échoué !"
+msgstr "L'enregistrement de la configuration a échoué !"
 
 #: src/bin/conf.c:263
 msgid "Problem saving config/stickies!"
-msgstr "Impossible d'enregistrer la configuration des notes !"
+msgstr "Impossible d'enregistrer la configuration des notes !"
 
 #: src/bin/conf.c:267
 msgid "Problem saving config/theme!"
-msgstr "Impossible d'enregistrer la configuration du thème !"
+msgstr "Impossible d'enregistrer la configuration du thème !"
 
 #: src/bin/plugin.c:26
 msgid ""
@@ -102,11 +83,10 @@ msgid ""
 "Your estickies are compiled without experimental code.\n"
 "If you want to try it, run configure with --enable-experimental."
 msgstr ""
-"Vous avez fait appel à:  _e_plugin_init().\n"
-"Le système de greffons n'est pas terminé pour l'instant !\n"
+"Vous avez fait appel à :  _e_plugin_init().\n"
+"Le système de greffons n'est pas terminé pour l'instant !\n"
 "Vous avez compilé estickies sans le support du code expérimental.\n"
-"Si vous voulez tester, ajoutez --enable-experimental pendant la "
-"configuration."
+"Si vous voulez tester, ajoutez --enable-experimental pendant la configuration."
 
 #: src/bin/plugin.c:47
 msgid ""
@@ -115,11 +95,10 @@ msgid ""
 "Your estickies are compiled without experimental code.\n"
 "If you want to try it, run configure with --enable-experimental."
 msgstr ""
-"Vous avez fait appel à:  _e_plugin_shutdown().\n"
-"Le système de greffons n'est pas terminé pour l'instant !\n"
+"Vous avez fait appel à :  _e_plugin_shutdown().\n"
+"Le système de greffons n'est pas terminé pour l'instant !\n"
 "Vous avez compilé estickies sans le support du code expérimental.\n"
-"Si vous voulez tester, ajoutez --enable-experimental pendant la "
-"configuration."
+"Si vous voulez tester, ajoutez --enable-experimental pendant la configuration."
 
 #: src/bin/plugin.c:70
 msgid ""
@@ -128,11 +107,10 @@ msgid ""
 "Your estickies are compiled without experimental code.\n"
 "If you want to try it, run configure with --enable-experimental."
 msgstr ""
-"Vous avez fait appel à:  _e_plugin_load().\n"
-"Le système de greffons n'est pas terminé pour l'instant !\n"
+"Vous avez fait appel à :  _e_plugin_load().\n"
+"Le système de greffons n'est pas terminé pour l'instant !\n"
 "Vous avez compilé estickies sans le support du code expérimental.\n"
-"Si vous voulez tester, ajoutez --enable-experimental pendant la "
-"configuration."
+"Si vous voulez tester, ajoutez --enable-experimental pendant la configuration."
 
 #: src/bin/plugin.c:91
 msgid ""
@@ -141,11 +119,10 @@ msgid ""
 "Your estickies are compiled without experimental code.\n"
 "If you want to try it, run configure with --enable-experimental."
 msgstr ""
-"Vous avez fait appel à:  _e_plugin_unload().\n"
-"Le système de greffons n'est pas terminé pour l'instant !\n"
+"Vous avez fait appel à :  _e_plugin_unload().\n"
+"Le système de greffons n'est pas terminé pour l'instant !\n"
 "Vous avez compilé estickies sans le support du code expérimental.\n"
-"Si vous voulez tester, ajoutez --enable-experimental pendant la "
-"configuration."
+"Si vous voulez tester, ajoutez --enable-experimental pendant la configuration."
 
 #: src/bin/plugin.c:111
 msgid ""
@@ -154,69 +131,70 @@ msgid ""
 "Your estickies are compiled without experimental code.\n"
 "If you want to try it, run configure with --enable-experimental."
 msgstr ""
-"Vous avez fait appel à:  _e_plugin_unload_from_ptr().\n"
-"Le système de greffons n'est pas terminé pour l'instant !\n"
+"Vous avez fait appel à :  _e_plugin_unload_from_ptr().\n"
+"Le système de greffons n'est pas terminé pour l'instant !\n"
 "Vous avez compilé estickies sans le support du code expérimental.\n"
-"Si vous voulez tester, ajoutez --enable-experimental pendant la "
-"configuration."
+"Si vous voulez tester, ajoutez --enable-experimental pendant la configuration."
 
-#: src/bin/stickies.c:459
+#: src/bin/stickies.c:73
 msgid "New"
 msgstr "Nouveau"
 
-#: src/bin/stickies.c:460
+#: src/bin/stickies.c:74
 msgid "Save"
 msgstr "Enregistrer"
 
-#: src/bin/stickies.c:461
+#: src/bin/stickies.c:75
 msgid "Export To File"
 msgstr "Exporter vers un fichier"
 
-#: src/bin/stickies.c:462
+#: src/bin/stickies.c:76
 msgid "Delete"
 msgstr "Supprimer"
 
-#: src/bin/stickies.c:463 src/bin/config_gui.c:111
+#: src/bin/stickies.c:77
+#: src/bin/config_gui.c:107
 msgid "Options"
 msgstr "Options"
 
-#: src/bin/stickies.c:464
+#: src/bin/stickies.c:78
 msgid "About"
 msgstr "À propos"
 
-#: src/bin/stickies.c:465
+#: src/bin/stickies.c:79
 msgid "Quit"
 msgstr "Quitter"
 
-#: src/bin/stickies.c:528
+#: src/bin/stickies.c:125
 msgid "Estickies - Export to .."
-msgstr "Estickies - Exporter vers..."
+msgstr "Estickies – Exporter vers…"
 
-#: src/bin/stickies.c:565
+#: src/bin/stickies.c:162
 msgid "All stickies"
 msgstr "Toutes les notes"
 
-#: src/bin/stickies.c:581
+#: src/bin/stickies.c:178
 msgid "Confirm Deletion"
 msgstr "Confirmer la suppression"
 
-#: src/bin/stickies.c:606
+#: src/bin/stickies.c:203
 msgid "Are you sure you want to delete this sticky?"
-msgstr "Êtes-vous sûr de vouloir supprimer cette note ?"
+msgstr "Êtes-vous sûr de vouloir supprimer cette note ?"
 
-#: src/bin/stickies.c:621
+#: src/bin/stickies.c:218
 msgid "No"
 msgstr "Non"
 
-#: src/bin/stickies.c:630
+#: src/bin/stickies.c:227
 msgid "Yes"
 msgstr "Oui"
 
-#: src/bin/stickies.c:664
+#: src/bin/stickies.c:257
 msgid "return!"
-msgstr "retour !"
+msgstr "retour !"
 
-#: src/bin/stickies.c:675 src/bin/stickies.c:684
+#: src/bin/stickies.c:268
+#: src/bin/stickies.c:277
 #, c-format
 msgid ""
 "Sticky %d\n"
@@ -225,34 +203,38 @@ msgstr ""
 "Note %d\n"
 "=========================\n"
 
-#: src/bin/stickies.c:770
+#: src/bin/stickies.c:577
 msgid "Cant find home directory!"
-msgstr "Répertoire personnel introuvable !"
+msgstr "Répertoire personnel introuvable !"
 
-#: src/bin/config_gui.c:42
+#: src/bin/config_gui.c:46
 msgid "Estickies - Configuration"
-msgstr "Estickies - Configuration"
+msgstr "Estickies – Configuration"
 
-#: src/bin/config_gui.c:124
+#: src/bin/config_gui.c:119
 msgid "Apply to this sticky only"
 msgstr "Appliquer à cette seule note"
 
-#: src/bin/config_gui.c:132
+#: src/bin/config_gui.c:127
 msgid "Apply to all stickies"
 msgstr "Appliquer à toutes les notes"
 
-#: src/bin/config_gui.c:140
+#: src/bin/config_gui.c:135
 msgid "Make this my default theme"
 msgstr "Utiliser comme thème par défaut"
 
-#: src/bin/config_gui.c:147
+#: src/bin/config_gui.c:142
 msgid "Use composite extension"
 msgstr "Utiliser l'extension composite"
 
-#: src/bin/config_gui.c:161
+#: src/bin/config_gui.c:154
 msgid "OK"
 msgstr "O.K."
 
-#: src/bin/config_gui.c:167
+#: src/bin/config_gui.c:160
 msgid "Apply"
 msgstr "Appliquer"
+
+#~ msgid "Common shortcuts"
+#~ msgstr "Raccourcis"
+
