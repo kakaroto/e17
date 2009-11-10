@@ -110,7 +110,11 @@ cdef class Hoversel(Object):
         elm_hoversel_label_set(self.obj, label)
 
     def label_get(self):
-        return elm_hoversel_label_get(self.obj)
+        cdef char *l
+        l = elm_hoversel_label_get(self.obj)
+        if not l:
+            return None
+        return l
 
     property label:
         def __get__(self):
