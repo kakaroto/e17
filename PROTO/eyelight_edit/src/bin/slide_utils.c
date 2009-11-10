@@ -223,6 +223,7 @@ void utils_edit_cb(void *data, Evas_Object *o, const char *emission, const char 
         case EYELIGHT_NAME_THEME_AREA:
             if(strcmp(emission, "select") == 0)
             {
+                rightpanel_area_show();
                 rightpanel_area_layout_set(eyelight_edit_area_layout_get(_current_obj));
             }
             if(strcmp(emission, "move,start") == 0
@@ -401,25 +402,24 @@ void utils_edit_area_image_add(void *data, Evas_Object *obj, void *event_info)
             && eyelight_edit_name_get(_current_obj) != EYELIGHT_NAME_THEME_AREA)
         return ;
 
-    Evas_Object *inwin, *fs;
+    Evas_Object *inwin, *fs, *fr;
 
     setlocale(LC_ALL, "");
 
     inwin = elm_win_inwin_add(win);
     evas_object_show(inwin);
 
+    fr = elm_frame_add(inwin);
+    elm_win_inwin_content_set(inwin, fr);
+    elm_frame_label_set(fr, D_("Select an image"));
+
     fs = elm_fileselector_add(win);
     elm_fileselector_expandable_set(fs, EINA_FALSE);
-    /* start the fileselector in the home dir */
     elm_fileselector_path_set(fs, getenv("HOME"));
-    /* allow fs to expand in x & y */
     evas_object_size_hint_weight_set(fs, 1.0, 1.0);
-    elm_win_resize_object_add(win, fs);
+    elm_frame_content_set(fr, fs);
     evas_object_show(fs);
-    /* the 'done' cb is called when the user press ok/cancel */
     evas_object_smart_callback_add(fs, "done", _utils_edit_area_image_add_cb, inwin);
-
-    elm_win_inwin_content_set(inwin, fs);
 }
 
 static void _utils_edit_area_image_add_cb(void *data, Evas_Object *obj, void *event_info)

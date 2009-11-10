@@ -131,5 +131,21 @@ void rightpanel_image_data_set(const char* file, int border, int shadow);
 void rightpanel_area_layout_set(const char *layout);
 void rightpanel_noslide_disabled_set(Eina_Bool disabled);
 
+
+typedef struct Recent_File
+{
+    const char *file;
+}Recent_File;
+
+typedef struct L_Recent_File
+{
+    Eina_List *l;
+}L_Recent_File;
+
+
+L_Recent_File *recents_file_load();
+void recents_file_save(L_Recent_File *l);
+void recents_file_free(L_Recent_File *l_file);
+
 #endif   /* ----- #ifndef MAIN_INC  ----- */
 
