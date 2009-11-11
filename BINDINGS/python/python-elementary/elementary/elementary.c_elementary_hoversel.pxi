@@ -112,7 +112,7 @@ cdef class Hoversel(Object):
     def label_get(self):
         cdef char *l
         l = elm_hoversel_label_get(self.obj)
-        if not l:
+        if l == NULL:
             return None
         return l
 
