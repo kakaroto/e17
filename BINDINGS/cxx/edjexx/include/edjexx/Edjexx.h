@@ -10,7 +10,7 @@
 #include "EdjeBase.h"
 #include "EdjeExceptions.h"
 #include "EdjePart.h"
-#include "EvasEdje.h"
+#include "EdjeObject.h"
 
 #endif // EDJEXX_H
 

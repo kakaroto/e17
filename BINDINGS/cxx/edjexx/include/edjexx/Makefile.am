@@ -2,7 +2,7 @@
 libedjexx_HEADERS = \
 	EdjeBase.h \
 	EdjePart.h \
-	EvasEdje.h \
+	EdjeObject.h \
 	EdjeExceptions.h \
 	Edjexx.h
 

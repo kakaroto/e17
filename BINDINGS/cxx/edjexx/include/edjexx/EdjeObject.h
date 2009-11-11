@@ -22,14 +22,14 @@ namespace efl {
 typedef sigc::signal<void, const char*, const char*> EdjeSignalSignal;
 typedef sigc::slot2<void, const char*, const char*> EdjeSignalSlot;
   
-class EvasEdje : public EvasObject
+class EdjeObject : public EvasObject
 {
 public:
-  EvasEdje( EvasCanvas &canvas );
-  EvasEdje( EvasCanvas &canvas, const std::string &filename, const std::string &groupname );
-  EvasEdje( EvasCanvas &canvas, const Point &pos, const std::string &filename, const std::string &groupname );
+  EdjeObject( EvasCanvas &canvas );
+  EdjeObject( EvasCanvas &canvas, const std::string &filename, const std::string &groupname );
+  EdjeObject( EvasCanvas &canvas, const Point &pos, const std::string &filename, const std::string &groupname );
 
-  ~EvasEdje();
+  ~EdjeObject();
 
   /*
   EAPI void         edje_object_signal_callback_add (Evas_Object *obj, const char *emission, const char *source, void (*func) (void *data, Evas_Object *obj, const char *emission, const char *source), void *data);
@@ -74,7 +74,7 @@ public:
   CountedPtr <EdjePart> operator[]( const std::string &partname );
 
   /*!
-   * @param partname Access a EdjePart in the EvasEdje.
+   * @param partname Access a EdjePart in the EdjeObject.
    * @throw EdjePartNotExistingException
    */
   CountedPtr <EdjePart> getPart( const std::string &partname );
@@ -83,20 +83,20 @@ public:
   void connect( const std::string &emission, const std::string &source, const EdjeSignalSlot& slot );
   void emit( const std::string &emission, const std::string &source );
 
-  static EvasEdje *wrap( Evas_Object* o );
+  static EdjeObject *wrap( Evas_Object* o );
 
 private:
   // TODO: wrap Edje_Message_Type to avoid include of C header
   static void _edje_message_handler_callback( void* data, Evas_Object *obj, Edje_Message_Type type, int id, void *msg );
   static void _edje_signal_handler_callback( void *data, Evas_Object *obj, const char *emission, const char *source );
 
-  EvasEdje();
-  EvasEdje( const EvasEdje& );
+  EdjeObject();
+  EdjeObject( const EdjeObject& );
 
-  EvasEdje( Evas_Object* object );
+  EdjeObject( Evas_Object* object );
 
-  bool operator=( const EvasEdje& );
-  bool operator==( const EvasEdje& );
+  bool operator=( const EdjeObject& );
+  bool operator==( const EdjeObject& );
 };
 
 

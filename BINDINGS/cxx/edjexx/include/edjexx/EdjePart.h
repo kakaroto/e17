@@ -14,14 +14,14 @@ using std::string;
 
 namespace efl {
 
-class EvasEdje;
+class EdjeObject;
 
 class EdjePart
 {
-  friend class EvasEdje;
+  friend class EdjeObject;
 
 private:
-  EdjePart( EvasEdje* parent, const std::string &partname );
+  EdjePart( EdjeObject* parent, const std::string &partname );
 
 public:
   ~EdjePart();
@@ -39,7 +39,7 @@ public:
   //const EvasObject* getObject ( const char* name );
 
 private:
-  EvasEdje* _parent;
+  EdjeObject* _parent;
   const std::string &_partname;
 
   /* State?

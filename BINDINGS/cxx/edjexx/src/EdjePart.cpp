@@ -3,7 +3,7 @@
 #endif
 
 #include "../include/edjexx/EdjePart.h"
-#include "../include/edjexx/EvasEdje.h"
+#include "../include/edjexx/EdjeObject.h"
 
 /* EFL */
 #include <Edje.h>
@@ -13,7 +13,7 @@
 
 namespace efl {
 
-EdjePart::EdjePart( EvasEdje* parent, const std::string &partname )
+EdjePart::EdjePart( EdjeObject* parent, const std::string &partname )
     :_parent( parent), _partname( partname )
 {
   Dout( dc::notice, " EdjePart::EdjePart( '" << _partname << "' ) constructing..." );

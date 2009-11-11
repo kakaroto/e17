@@ -18,7 +18,7 @@ lib_LTLIBRARIES = \
 libedjexx_la_SOURCES = \
 	EdjeBase.cpp  \
 	EdjePart.cpp  \
-	EvasEdje.cpp  \
+	EdjeObject.cpp  \
 	EdjeExceptions.cpp
 
 libedjexx_la_LIBADD = \
