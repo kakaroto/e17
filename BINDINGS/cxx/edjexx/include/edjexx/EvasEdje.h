@@ -36,8 +36,6 @@ public:
 
   EAPI void        *edje_object_signal_callback_del (Evas_Object *obj, const char *emission, const char *source, void (*func) (void *data, Evas_Object *obj, const char *emission, const char *source));
 
-  EAPI void         edje_object_signal_emit         (Evas_Object *obj, const char *emission, const char *source);
-
   EAPI void         edje_object_text_change_cb_set  (Evas_Object *obj, void (*func) (void *data, Evas_Object *obj, const char *part), void *data);
 
   EAPI void         edje_object_message_send           (Evas_Object *obj, Edje_Message_Type type, int id, void *msg);

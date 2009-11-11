@@ -16,7 +16,6 @@ void test_box_horiz (void *data, Evas_Object *obj, void *event_info);
 void test_box_vert (void *data, Evas_Object *obj, void *event_info);
 void test_button (void *data, Evas_Object *obj, void *event_info);
 void test_toggle (void *data, Evas_Object *obj, void *event_info);
-void test_table (void *data, Evas_Object *obj, void *event_info);
 void test_clock (void *data, Evas_Object *obj, void *event_info);
 void test_layout (void *data, Evas_Object *obj, void *event_info);
 void test_hover (void *data, Evas_Object *obj, void *event_info);
@@ -29,6 +28,42 @@ void test_slider (void *data, Evas_Object *obj, void *event_info);
 void test_check (void *data, Evas_Object *obj, void *event_info);
 void test_radio (void *data, Evas_Object *obj, void *event_info);
 //
+/*
+void test_anchorview(void *data, Evas_Object *obj, void *event_info);
+void test_anchorblock(void *data, Evas_Object *obj, void *event_info);
+void test_toolbar(void *data, Evas_Object *obj, void *event_info);
+void test_hoversel(void *data, Evas_Object *obj, void *event_info);
+void test_list(void *data, Evas_Object *obj, void *event_info);
+void test_list2(void *data, Evas_Object *obj, void *event_info);
+void test_list3(void *data, Evas_Object *obj, void *event_info);
+void test_carousel(void *data, Evas_Object *obj, void *event_info);
+void test_inwin(void *data, Evas_Object *obj, void *event_info);
+void test_inwin2(void *data, Evas_Object *obj, void *event_info);
+void test_scaling(void *data, Evas_Object *obj, void *event_info);
+void test_scaling2(void *data, Evas_Object *obj, void *event_info);*/
+void test_slider(void *data, Evas_Object *obj, void *event_info);
+/*void test_genlist(void *data, Evas_Object *obj, void *event_info);
+void test_genlist2(void *data, Evas_Object *obj, void *event_info);
+void test_genlist3(void *data, Evas_Object *obj, void *event_info);
+void test_genlist4(void *data, Evas_Object *obj, void *event_info);
+void test_genlist5(void *data, Evas_Object *obj, void *event_info);
+void test_genlist6(void *data, Evas_Object *obj, void *event_info);*/
+void test_table(void *data, Evas_Object *obj, void *event_info);
+/*void test_pager(void *data, Evas_Object *obj, void *event_info);
+void test_win_state(void *data, Evas_Object *obj, void *event_info);
+void test_progressbar(void *data, Evas_Object *obj, void *event_info);
+void test_fileselector(void *data, Evas_Object *obj, void *event_info);
+void test_separator(void *data, Evas_Object *obj, void *event_info);*/
+void test_scroller(void *data, Evas_Object *obj, void *event_info);
+/*void test_spinner(void *data, Evas_Object *obj, void *event_info);
+void test_index(void *data, Evas_Object *obj, void *event_info);
+void test_photocam(void *data, Evas_Object *obj, void *event_info);
+void test_photo(void *data, Evas_Object *obj, void *event_info);
+void test_icon_desktops(void *data, Evas_Object *obj, void *event_info);
+void test_notify(void *data, Evas_Object *obj, void *event_info);
+void test_slideshow(void *data, Evas_Object *obj, void *event_info);
+void test_menu(void *data, Evas_Object *obj, void *event_info);
+ */
 
 ElmApplication *elmApp;
 
