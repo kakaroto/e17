@@ -11,6 +11,7 @@
 #include "EdjeExceptions.h"
 #include "EdjePart.h"
 #include "EdjeObject.h"
+#include "EdjeEdit.h"
 
 #endif // EDJEXX_H
 

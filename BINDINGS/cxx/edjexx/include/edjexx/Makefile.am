@@ -4,7 +4,8 @@ libedjexx_HEADERS = \
 	EdjePart.h \
 	EdjeObject.h \
 	EdjeExceptions.h \
-	Edjexx.h
+	Edjexx.h \
+	EdjeEdit.h
 
 libedjexxdir = \
 	$(pkgincludedir)

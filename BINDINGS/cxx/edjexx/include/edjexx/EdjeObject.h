@@ -1,5 +1,5 @@
-#ifndef EFLPP_EVASEDJE_H
-#define EFLPP_EVASEDJE_H
+#ifndef EDJE_OBJECT_H
+#define EDJE_OBJECT_H
 
 /* STL */
 #include <string>
@@ -8,14 +8,11 @@
 #include <eflxx/eflpp_common.h>
 #include <eflxx/CountedPtr.h>
 
-#include <evasxx/EvasObject.h>
 #include <evasxx/EvasCanvas.h>
 #include "EdjePart.h"
 
 /* EFL */
 #include <Edje.h>
-
-using std::string;
 
 namespace efl {
 
@@ -29,7 +26,7 @@ public:
   EdjeObject( EvasCanvas &canvas, const std::string &filename, const std::string &groupname );
   EdjeObject( EvasCanvas &canvas, const Point &pos, const std::string &filename, const std::string &groupname );
 
-  ~EdjeObject();
+  virtual ~EdjeObject();
 
   /*
   EAPI void         edje_object_signal_callback_add (Evas_Object *obj, const char *emission, const char *source, void (*func) (void *data, Evas_Object *obj, const char *emission, const char *source), void *data);
@@ -102,4 +99,4 @@ private:
 
 } // end namespace efl
 
-#endif // EFLPP_EVASEDJE_H
+#endif // EDJE_OBJECT_H

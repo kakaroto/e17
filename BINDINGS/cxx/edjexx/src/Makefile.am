@@ -19,7 +19,8 @@ libedjexx_la_SOURCES = \
 	EdjeBase.cpp  \
 	EdjePart.cpp  \
 	EdjeObject.cpp  \
-	EdjeExceptions.cpp
+	EdjeExceptions.cpp  \
+	EdjeEdit.cpp
 
 libedjexx_la_LIBADD = \
 	$(EFL_LIBS)
