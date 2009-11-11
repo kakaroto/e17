@@ -94,9 +94,6 @@ EAPI int eon_shutdown(void);
 #include "eon_setter.h"
 #include "eon_trigger.h"
 
-#include "eon_layout.h"
-#include "eon_canvas.h"
-
 #include "eon_paint.h"
 #include "eon_paint_square.h"
 #include "eon_compound.h"
@@ -109,6 +106,9 @@ EAPI int eon_shutdown(void);
 #include "eon_stripes.h"
 #include "eon_grid.h"
 #include "eon_buffer.h"
+
+#include "eon_layout.h"
+#include "eon_canvas.h"
 
 #include "eon_shape.h"
 #include "eon_shape_square.h"

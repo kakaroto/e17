@@ -20,8 +20,8 @@
 /*============================================================================*
  *                                  Local                                     *
  *============================================================================*/
-#define PRIVATE(rend) ((Eon_Renderable_Private*)((Eon_Renderable *)(rend))->private)
-#define TYPE_NAME "Renderable"
+#define PRIVATE(rend) ((Eon_Renderable_Private*)(EON_RENDERABLE(rend))->prv)
+#define TYPE_NAME "renderable"
 
 static int _rend_dom = -1;
 
@@ -134,8 +134,8 @@ static void _visibility_change(Ekeko_Object *o, Ekeko_Event *e, void *data)
 	/* if it is visible, send a mouse in, if it was visible send a mouse out */
 	/* visibility changed */
 	/* TODO check that the renderable is appended? */
-	ekeko_canvas_damage_add(prv->canvas, &prv->geometry.curr);
-	ekeko_canvas_damage_add(prv->canvas, &prv->geometry.prev);
+	eon_layout_damage_add(prv->canvas, &prv->geometry.curr);
+	eon_layout_damage_add(prv->canvas, &prv->geometry.prev);
 }
 
 static void _geometry_change(Ekeko_Object *o, Ekeko_Event *e, void *data)
@@ -153,8 +153,8 @@ static void _geometry_change(Ekeko_Object *o, Ekeko_Event *e, void *data)
 	/* TODO Check that the new geometry is inside the pointer */
 	/* geometry changed */
 	/* TODO check that the renderable is appended? */
-	ekeko_canvas_damage_add(prv->canvas, &em->curr->value.rect);
-	ekeko_canvas_damage_add(prv->canvas, &em->prev->value.rect);
+	eon_layout_damage_add(prv->canvas, &em->curr->value.rect);
+	eon_layout_damage_add(prv->canvas, &em->prev->value.rect);
 }
 
 static void _parent_set_cb(Ekeko_Object *o, Ekeko_Event *e, void *data)
@@ -209,7 +209,7 @@ static void _parent_set_cb(Ekeko_Object *o, Ekeko_Event *e, void *data)
 	/* TODO propagate the change of zindex locally in case the object is not a canvas */
 	/* TODO propagate the change of zindex to the next sibling */
 	/* tell the canvas of this new area */
-	//ekeko_canvas_damage_add(prv->canvas, &prv->geometry.curr);
+	//eon_layout_damage_add(prv->canvas, &prv->geometry.curr);
 }
 
 static void _ctor(Ekeko_Object *o)
@@ -217,11 +217,11 @@ static void _ctor(Ekeko_Object *o)
 	Eon_Renderable *rend;
 	Eon_Renderable_Private *prv;
 
-	rend = EKEKO_RENDERABLE(o);
-	rend->private = prv = ekeko_type_instance_private_get(eon_renderable_type_get(), o);
+	rend = EON_RENDERABLE(o);
+	rend->prv= prv = ekeko_type_instance_private_get(eon_renderable_type_get(), o);
 	/* register to an event where this child is appended to a canvas parent */
-	ekeko_event_listener_add(EKEKO_OBJECT(rend), EKEKO_RENDERABLE_VISIBILITY_CHANGED, _visibility_change, EINA_FALSE, NULL);
-	ekeko_event_listener_add(EKEKO_OBJECT(rend), EKEKO_RENDERABLE_GEOMETRY_CHANGED, _geometry_change, EINA_FALSE, NULL);
+	ekeko_event_listener_add(EKEKO_OBJECT(rend), EON_RENDERABLE_VISIBILITY_CHANGED, _visibility_change, EINA_FALSE, NULL);
+	ekeko_event_listener_add(EKEKO_OBJECT(rend), EON_RENDERABLE_GEOMETRY_CHANGED, _geometry_change, EINA_FALSE, NULL);
 	ekeko_event_listener_add(EKEKO_OBJECT(rend), EKEKO_EVENT_OBJECT_APPEND, _parent_set_cb, EINA_FALSE, NULL);
 #ifdef EKEKO_DEBUG
 	printf("[Eon_Renderable] ctor canvas = %p\n", prv->canvas);

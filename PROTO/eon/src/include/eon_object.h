@@ -20,6 +20,7 @@
 /*============================================================================*
  *                                 Class                                      *
  *============================================================================*/
+#define EON_OBJECT(o) EKEKO_CAST(o, eon_object_type_get(), Eon_Object)
 typedef struct _Eon_Object_Private Eon_Object_Private;
 struct _Eon_Object
 {

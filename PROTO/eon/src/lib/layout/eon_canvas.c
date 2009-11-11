@@ -21,7 +21,7 @@
  *                                  Local                                     *
  *============================================================================*/
 #define BOUNDING_DEBUG 0
-#define PRIVATE(d) ((Eon_Canvas_Private *)((Eon_Canvas *)(d))->private)
+#define PRIVATE(d) ((Eon_Canvas_Private *)((Eon_Canvas *)(d))->prv)
 
 static Ekeko_Type *_type;
 struct _Eon_Canvas_Private
@@ -444,10 +444,10 @@ static void _ctor(Ekeko_Object *o)
 	Eon_Canvas_Private *prv;
 
 	c = (Eon_Canvas *)o;
-	c->private = prv = ekeko_type_instance_private_get(_type, o);
-	c->parent.flush = _flush;
-	c->parent.parent.render = _subcanvas_render;
-	c->parent.parent.is_inside= _subcanvas_is_inside;
+	c->prv = prv = ekeko_type_instance_private_get(_type, o);
+	c->base.flush = _flush;
+	c->base.base.parent.render = _subcanvas_render;
+	c->base.base.parent.is_inside= _subcanvas_is_inside;
 	enesim_matrix_identity(&prv->matrix);
 	enesim_matrix_inverse(&prv->matrix, &prv->inverse);
 	ekeko_event_listener_add(o, EON_CANVAS_X_CHANGED, _x_change, EINA_FALSE, NULL);
@@ -455,7 +455,7 @@ static void _ctor(Ekeko_Object *o)
 	ekeko_event_listener_add(o, EON_CANVAS_W_CHANGED, _w_change, EINA_FALSE, NULL);
 	ekeko_event_listener_add(o, EON_CANVAS_H_CHANGED, _h_change, EINA_FALSE, NULL);
 	ekeko_event_listener_add(o, EON_CANVAS_MATRIX_CHANGED, _matrix_change, EINA_FALSE, NULL);
-	ekeko_event_listener_add(o, EKEKO_RENDERABLE_GEOMETRY_CHANGED, _geometry_change, EINA_FALSE, NULL);
+	ekeko_event_listener_add(o, EON_RENDERABLE_GEOMETRY_CHANGED, _geometry_change, EINA_FALSE, NULL);
 	ekeko_event_listener_add(o, EKEKO_EVENT_OBJECT_APPEND, _child_append_cb, EINA_FALSE, NULL);
 }
 
@@ -477,7 +477,7 @@ void * eon_canvas_engine_data_get(Eon_Canvas *c)
 void eon_canvas_init(void)
 {
 	_type = ekeko_type_new(EON_TYPE_CANVAS, sizeof(Eon_Canvas),
-			sizeof(Eon_Canvas_Private), ekeko_canvas_type_get(),
+			sizeof(Eon_Canvas_Private), eon_layout_type_get(),
 			_ctor, _dtor, _appendable);
 
 	EON_CANVAS_X = EKEKO_TYPE_PROP_SINGLE_ADD(_type, "x",

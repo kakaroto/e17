@@ -53,6 +53,72 @@ Eon_Input * input_new(Ekeko_Canvas *c)
 	i->c = c;
 	return i;
 }
+
+void event_ui_init(Ekeko_Event_Ui *eui, const char *type, Ekeko_Object *o,
+		Ekeko_Object *related, const Ekeko_Input *i)
+{
+	ekeko_event_init((Ekeko_Event *)eui, type, o, EINA_FALSE);
+	eui->related = related;
+	eui->i = i;
+}
+
+void event_mouse_move_init(Ekeko_Event_Mouse *em, Ekeko_Object *o,
+		Ekeko_Object *related, const Ekeko_Input *i,
+		unsigned int sx, unsigned int sy, unsigned int px,
+		unsigned int py)
+{
+	event_ui_init((Ekeko_Event_Ui*)em, EKEKO_EVENT_UI_MOUSE_MOVE, o, related, i);
+	em->screen.x = sx;
+	em->screen.y = sy;
+	em->screen.prev_x = px;
+	em->screen.prev_y = py;
+}
+
+void event_mouse_in_init(Ekeko_Event_Mouse *em, Ekeko_Object *o,
+		Ekeko_Object *related, const Ekeko_Input *i)
+{
+	event_ui_init((Ekeko_Event_Ui*)em, EKEKO_EVENT_UI_MOUSE_IN, o, related, i);
+}
+void event_mouse_out_init(Ekeko_Event_Mouse *em, Ekeko_Object *o,
+		Ekeko_Object *related, const Ekeko_Input *i)
+{
+	event_ui_init((Ekeko_Event_Ui*)em, EKEKO_EVENT_UI_MOUSE_OUT, o, related, i);
+}
+
+void event_mouse_down_init(Ekeko_Event_Mouse *em, Ekeko_Object *o,
+		Ekeko_Object *related, const Ekeko_Input *i)
+{
+	event_ui_init((Ekeko_Event_Ui*)em, EKEKO_EVENT_UI_MOUSE_DOWN, o, related, i);
+}
+
+void event_mouse_up_init(Ekeko_Event_Mouse *em, Ekeko_Object *o,
+		Ekeko_Object *related, const Ekeko_Input *i)
+{
+	event_ui_init((Ekeko_Event_Ui*)em, EKEKO_EVENT_UI_MOUSE_UP, o, related, i);
+}
+
+void event_mouse_click_init(Ekeko_Event_Mouse *em, Ekeko_Object *o,
+		Ekeko_Object *related, const Ekeko_Input *i)
+{
+	event_ui_init((Ekeko_Event_Ui*)em, EKEKO_EVENT_UI_MOUSE_CLICK, o, related, i);
+}
+
+void ekeko_key_up_init(Ekeko_Event_Key *ek, Ekeko_Object *o,
+		const Ekeko_Input *i, Ekeko_Key key, Ekeko_Key_Mod mod)
+{
+	ek->key = key;
+	ek->mod = mod;
+	event_ui_init((Ekeko_Event_Ui *)ek, EKEKO_EVENT_UI_KEY_UP, o, o, i);
+}
+
+void ekeko_key_down_init(Ekeko_Event_Key *ek, Ekeko_Object *o,
+		const Ekeko_Input *i, Ekeko_Key key, Ekeko_Key_Mod mod)
+{
+	ek->key = key;
+	ek->mod = mod;
+	event_ui_init((Ekeko_Event_Ui *)ek, EKEKO_EVENT_UI_KEY_DOWN, o, o, i);
+}
+
 /*============================================================================*
  *                                   API                                      *
  *============================================================================*/

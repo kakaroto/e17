@@ -28,10 +28,11 @@ extern Ekeko_Property_Id EON_LAYOUT_REDRAW;
 /*============================================================================*
  *                                 Class                                      *
  *============================================================================*/
+#define EON_LAYOUT(o) EKEKO_CAST(o, eon_layout_type_get(), Eon_Layout)
 typedef struct _Eon_Layout_Private Eon_Layout_Private;
 struct _Eon_Layout
 {
-	Eon_Renderable base;
+	Eon_Paint_Square base;
 	/* inform the layout that an area must be flushed
 	 * returns EINA_TRUE if the whole layout has been flushed
 	 * or EINA_FALSE if only the needed rectangle

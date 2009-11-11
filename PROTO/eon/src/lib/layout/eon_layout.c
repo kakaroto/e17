@@ -15,16 +15,16 @@
  * License along with this library.
  * If not, see <http://www.gnu.org/licenses/>.
  */
-#include "Ekeko.h"
-#include "ekeko_private.h"
+#include "Eon.h"
+#include "eon_private.h"
 /*============================================================================*
  *                                  Local                                     *
  *============================================================================*/
-#define PRIVATE(canvas) ((Ekeko_Canvas_Private *)((Ekeko_Canvas *)(canvas))->private)
+#define PRIVATE(o) ((Eon_Layout_Private *)((Eon_Layout *)(o))->prv)
 
-#define TYPE_NAME "Canvas"
+#define TYPE_NAME "layout"
 
-struct _Ekeko_Canvas_Private
+struct _Eon_Layout_Private
 {
 	struct {
 		Eina_Bool curr;
@@ -33,28 +33,28 @@ struct _Ekeko_Canvas_Private
 	} redraw;
 	Eina_Tiler *tiler;
 	Eina_List *renderables;
-	/* TODO obscures */
+	Eina_List *obscures;
 	Eina_Inlist *inputs;
 	/* FIXME should this be a generic object or a renderable only? */
-	Ekeko_Renderable *focused;
+	Eon_Renderable *focused;
 };
 
-void _subcanvas_in(Ekeko_Object *o, Ekeko_Event *e, void *data)
+void _sublayout_in(Ekeko_Object *o, Ekeko_Event *e, void *data)
 {
 	printf("SUBCANVAS in\n");
-	/* TODO feed the mouse in into this canvas */
+	/* TODO feed the mouse in into this layout */
 }
 
-void _subcanvas_out(Ekeko_Object *o, Ekeko_Event *e, void *data)
+void _sublayout_out(Ekeko_Object *o, Ekeko_Event *e, void *data)
 {
 	printf("SUBCANVAS out\n");
-	/* TODO feed the mouse out into this canvas */
+	/* TODO feed the mouse out into this layout */
 }
 
-void _subcanvas_move(Ekeko_Object *o, Ekeko_Event *e, void *data)
+void _sublayout_move(Ekeko_Object *o, Ekeko_Event *e, void *data)
 {
 	printf("SUBCANVAS move\n");
-	/* TODO feed the mouse move into this canvas */
+	/* TODO feed the mouse move into this layout */
 }
 
 
@@ -62,15 +62,15 @@ void _subcanvas_move(Ekeko_Object *o, Ekeko_Event *e, void *data)
  * TODO use this instead of the code below
  * this code is as it doesnt maintain the stack hierarchy
  */
-static inline void _renderable_append(Ekeko_Canvas *c, Ekeko_Renderable *r,
+static inline void _renderable_append(Eon_Layout *c, Eon_Renderable *r,
 		Eina_Rectangle *cgeom, Eina_Rectangle *rgeom, Eina_Bool rvisible)
 {
 	Eina_Bool intersect;
-	Ekeko_Canvas_Private *prv;
+	Eon_Layout_Private *prv;
 	prv = PRIVATE(c);
 
 #ifdef EKEKO_DEBUG
-	printf("[canvas] %p renderable append %p at %d %d %d %d - %d %d %d %d (%d)\n",
+	printf("[layout] %p renderable append %p at %d %d %d %d - %d %d %d %d (%d)\n",
 			c, r, cgeom->x, cgeom->y, cgeom->w, cgeom->h,
 			rgeom->x, rgeom->y, rgeom->w, rgeom->h,
 			rvisible);
@@ -83,7 +83,7 @@ static inline void _renderable_append(Ekeko_Canvas *c, Ekeko_Renderable *r,
 		if (renderable_appended_get(r))
 		{
 #ifdef EKEKO_DEBUG
-			printf("[canvas] %p removing renderable %p\n", c, r);
+			printf("[layout] %p removing renderable %p\n", c, r);
 #endif
 			prv->renderables = eina_list_remove(prv->renderables, r);
 			renderable_appended_set(r, EINA_FALSE);
@@ -95,7 +95,7 @@ static inline void _renderable_append(Ekeko_Canvas *c, Ekeko_Renderable *r,
 		if (renderable_appended_get(r))
 		{
 #ifdef EKEKO_DEBUG
-			printf("[canvas] %p removing renderable %p\n", c, r);
+			printf("[layout] %p removing renderable %p\n", c, r);
 #endif
 			prv->renderables = eina_list_remove(prv->renderables, r);
 			renderable_appended_set(r, EINA_FALSE);
@@ -106,10 +106,10 @@ static inline void _renderable_append(Ekeko_Canvas *c, Ekeko_Renderable *r,
 	{
 		if (!renderable_appended_get(r))
 		{
-			Ekeko_Renderable *lr = NULL;
+			Eon_Renderable *lr = NULL;
 			Eina_List *l;
 #ifdef EKEKO_DEBUG
-			printf("[canvas] %p adding renderable %p\n", c, r);
+			printf("[layout] %p adding renderable %p\n", c, r);
 #endif
 			EINA_LIST_FOREACH(prv->renderables, l, lr)
 			{
@@ -129,15 +129,15 @@ static inline void _renderable_append(Ekeko_Canvas *c, Ekeko_Renderable *r,
 static void _child_removed(Ekeko_Object *o, Ekeko_Event *e, void *data)
 {
 	Ekeko_Event_Mutation *em = (Ekeko_Event_Mutation *)e;
-	Ekeko_Canvas *c = (Ekeko_Canvas *)data;
-	Ekeko_Renderable *r = (Ekeko_Renderable *)o;
-	Ekeko_Canvas_Private *prv;
+	Eon_Layout *c = (Eon_Layout *)data;
+	Eon_Renderable *r = (Eon_Renderable *)o;
+	Eon_Layout_Private *prv;
 	Eina_Rectangle geom;
 	prv = PRIVATE(c);
 
 
 #ifndef EKEKO_DEBUG
-	printf("[canvas renderable %s] Removed\n", ekeko_object_type_name_get(o));
+	printf("[layout renderable %s] Removed\n", ekeko_object_type_name_get(o));
 #endif
 	if (prv->focused == r)
 	{
@@ -154,18 +154,18 @@ static void _child_removed(Ekeko_Object *o, Ekeko_Event *e, void *data)
 static void _child_geometry_change(Ekeko_Object *o, Ekeko_Event *e, void *data)
 {
 	Ekeko_Event_Mutation *em = (Ekeko_Event_Mutation *)e;
-	Ekeko_Canvas *c = (Ekeko_Canvas *)data;
-	Ekeko_Renderable *r = (Ekeko_Renderable *)o;
+	Eon_Layout *c = (Eon_Layout *)data;
+	Eon_Renderable *r = (Eon_Renderable *)o;
 	Eina_Rectangle cgeom;
 	Eina_Bool rvisible;
 
 #ifdef EKEKO_DEBUG
-	printf("[canvas renderable %s]\n", ekeko_object_type_name_get(o));
+	printf("[layout renderable %s]\n", ekeko_object_type_name_get(o));
 #endif
 	if (em->state != EVENT_MUTATION_STATE_POST)
 		return;
-	ekeko_renderable_geometry_get((Ekeko_Renderable *)c, &cgeom);
-	/* reset the canvas coordinates to 0,0 WxH */
+	ekeko_renderable_geometry_get((Eon_Renderable *)c, &cgeom);
+	/* reset the layout coordinates to 0,0 WxH */
 	cgeom.x = 0;
 	cgeom.y = 0;
 	ekeko_renderable_visibility_get(r, &rvisible);
@@ -176,17 +176,17 @@ static void _child_geometry_change(Ekeko_Object *o, Ekeko_Event *e, void *data)
 static void _child_visibility_change(Ekeko_Object *o, Ekeko_Event *e, void *data)
 {
 	Ekeko_Event_Mutation *em = (Ekeko_Event_Mutation *)e;
-	Ekeko_Canvas *c = (Ekeko_Canvas *)data;
-	Ekeko_Renderable *r = (Ekeko_Renderable *)o;
+	Eon_Layout *c = (Eon_Layout *)data;
+	Eon_Renderable *r = (Eon_Renderable *)o;
 	Eina_Rectangle rgeom, cgeom;
 
 #ifdef EKEKO_DEBUG
-	printf("[canvas renderable %s]\n", ekeko_object_type_name_get(o));
+	printf("[layout renderable %s]\n", ekeko_object_type_name_get(o));
 #endif
 	if (em->state != EVENT_MUTATION_STATE_POST)
 		return;
-	ekeko_renderable_geometry_get((Ekeko_Renderable *)c, &cgeom);
-	/* reset the canvas coordinates to 0,0 WxH */
+	ekeko_renderable_geometry_get((Eon_Renderable *)c, &cgeom);
+	/* reset the layout coordinates to 0,0 WxH */
 	cgeom.x = 0;
 	cgeom.y = 0;
 	ekeko_renderable_geometry_get(r, &rgeom);
@@ -196,20 +196,20 @@ static void _child_visibility_change(Ekeko_Object *o, Ekeko_Event *e, void *data
 static void _geometry_change(Ekeko_Object *o, Ekeko_Event *e, void *data)
 {
 	Ekeko_Event_Mutation *em = (Ekeko_Event_Mutation *)e;
-	Ekeko_Canvas_Private *prv;
+	Eon_Layout_Private *prv;
 	Eina_Tiler *tiler;
 
 	if (em->state != EVENT_MUTATION_STATE_POST)
 		return;
 
-	prv = PRIVATE(((Ekeko_Canvas *)o));
+	prv = PRIVATE(((Eon_Layout *)o));
 	tiler = prv->tiler;
 	if (tiler)
 	{
 		eina_tiler_free(tiler);
 	}
 #ifdef EKEKO_DEBUG
-	printf("[canvas %s] Changing geometry\n", ekeko_object_type_name_get(o));
+	printf("[layout %s] Changing geometry\n", ekeko_object_type_name_get(o));
 #endif
 	prv->tiler = eina_tiler_new(em->curr->value.rect.w, em->curr->value.rect.h);
 	/* TODO In case it already has a tiler, mark everything again */
@@ -218,21 +218,21 @@ static void _geometry_change(Ekeko_Object *o, Ekeko_Event *e, void *data)
 		eina_tiler_rect_add(prv->tiler, &em->curr->value.rect);
 	}
 #ifdef EKEKO_DEBUG
-	printf("[canvas %s] tiler is %p\n", ekeko_object_type_name_get(o), prv->tiler);
+	printf("[layout %s] tiler is %p\n", ekeko_object_type_name_get(o), prv->tiler);
 #endif
 }
 
 /* Called whenever the process has finished on this element */
 static void _process_cb(Ekeko_Object *o, Ekeko_Event *e, void *data)
 {
-	Ekeko_Canvas *c;
-	Ekeko_Canvas_Private *prv;
+	Eon_Layout *c;
+	Eon_Layout_Private *prv;
 	Eina_Iterator *it;
 	Eina_Rectangle rect;
 
-	c = (Ekeko_Canvas *)o;
+	c = (Eon_Layout *)o;
 #ifdef EKEKO_DEBUG
-	printf("[canvas %s] Processing canvas %p\n", ekeko_object_type_name_get(o), o);
+	printf("[layout %s] Processing layout %p\n", ekeko_object_type_name_get(o), o);
 #endif
 	prv = PRIVATE(c);
 	if (!prv->tiler)
@@ -243,10 +243,10 @@ static void _process_cb(Ekeko_Object *o, Ekeko_Event *e, void *data)
 	while (eina_iterator_next(it, (void **)&rect))
 	{
 		Eina_Iterator *rit;
-		Ekeko_Renderable *r;
+		Eon_Renderable *r;
 
 #ifdef EKEKO_DEBUG
-		printf("[canvas] %p Redraw rectangle %d %d %d %d\n", o, rect.x, rect.y, rect.w, rect.h);
+		printf("[layout] %p Redraw rectangle %d %d %d %d\n", o, rect.x, rect.y, rect.w, rect.h);
 #endif
 		/* iterate over the list of renderables */
 		/* TODO from top to bottom ?*/
@@ -257,7 +257,7 @@ static void _process_cb(Ekeko_Object *o, Ekeko_Event *e, void *data)
 
 			ekeko_renderable_geometry_get(r, &geom);
 #ifdef EKEKO_DEBUG
-			printf("[canvas] %p Rendering renderable %p (%d %d %d %d)\n", o, r, geom.x, geom.y, geom.w, geom.h);
+			printf("[layout] %p Rendering renderable %p (%d %d %d %d)\n", o, r, geom.x, geom.y, geom.w, geom.h);
 #endif
 			/* intersect the geometry and the damage area */
 			if (!eina_rectangle_intersection(&geom, &rect))
@@ -283,7 +283,7 @@ static void _process_cb(Ekeko_Object *o, Ekeko_Event *e, void *data)
 static void _redraw_change(Ekeko_Object *o, Ekeko_Event *e, void *data)
 {
 	Ekeko_Event_Mutation *em = (Ekeko_Event_Mutation *)e;
-	Ekeko_Canvas_Private *prv;
+	Eon_Layout_Private *prv;
 
 	if (em->state != EVENT_MUTATION_STATE_POST)
 		return;
@@ -294,16 +294,16 @@ static void _redraw_change(Ekeko_Object *o, Ekeko_Event *e, void *data)
 static void _child_append_cb(Ekeko_Object *o, Ekeko_Event *e, void *data)
 {
 	Ekeko_Event_Mutation *em = (Ekeko_Event_Mutation *)e;
-	Ekeko_Canvas_Private *prv;
+	Eon_Layout_Private *prv;
 
 	/* TODO check if object is the same as the event.rel or
-	 * check if the event.target is not a canvas and it is different
+	 * check if the event.target is not a layout and it is different
 	 * than this
 	 */
 	if (!ekeko_type_instance_is_of(e->target, "Renderable"))
 	{
 #ifdef EKEKO_DEBUG
-		printf("[canvas %s] child is not of type renderable\n", ekeko_object_type_name_get(o));
+		printf("[layout %s] child is not of type renderable\n", ekeko_object_type_name_get(o));
 #endif
 		return;
 	}
@@ -312,38 +312,38 @@ static void _child_append_cb(Ekeko_Object *o, Ekeko_Event *e, void *data)
 	 */
 	/*
 	 * TODO What happens if the child is of type renderable
-	 * *and* not a canvas and has renderable objects?
+	 * *and* not a layout and has renderable objects?
 	 */
 
-	/* in case the child's canvas is not this, skip */
-	if (ekeko_renderable_canvas_get((Ekeko_Renderable *)e->target) != (Ekeko_Canvas *)o)
+	/* in case the child's layout is not this, skip */
+	if (ekeko_renderable_layout_get((Eon_Renderable *)e->target) != (Eon_Layout *)o)
 	{
 #ifdef EKEKO_DEBUG
-		printf("[canvas] Skipping this %p renderable as it already has a canvas %p and is not this %p\n", e->target, ekeko_renderable_canvas_get((Ekeko_Renderable *)e->target), o);
+		printf("[layout] Skipping this %p renderable as it already has a layout %p and is not this %p\n", e->target, ekeko_renderable_layout_get((Eon_Renderable *)e->target), o);
 #endif
 		return;
 	}
 	/*
-	 * TODO if the appended child is a canvas, register every UI event to this
-	 * object, so when they arrive insert those events into the new canvas
+	 * TODO if the appended child is a layout, register every UI event to this
+	 * object, so when they arrive insert those events into the new layout
 	 */
 	if (ekeko_type_instance_is_of(e->target, "Canvas"))
 	{
 #ifdef EKEKO_DEBUG
-		printf("[canvas] Child is a canvas too, registering UI events\n");
+		printf("[layout] Child is a layout too, registering UI events\n");
 #endif
-		ekeko_event_listener_add((Ekeko_Object *)e->target, EKEKO_EVENT_UI_MOUSE_IN, _subcanvas_in, EINA_FALSE, NULL);
-		ekeko_event_listener_add((Ekeko_Object *)e->target, EKEKO_EVENT_UI_MOUSE_OUT, _subcanvas_out, EINA_FALSE, NULL);
-		ekeko_event_listener_add((Ekeko_Object *)e->target, EKEKO_EVENT_UI_MOUSE_MOVE, _subcanvas_move, EINA_FALSE, NULL);
+		ekeko_event_listener_add((Ekeko_Object *)e->target, EKEKO_EVENT_UI_MOUSE_IN, _sublayout_in, EINA_FALSE, NULL);
+		ekeko_event_listener_add((Ekeko_Object *)e->target, EKEKO_EVENT_UI_MOUSE_OUT, _sublayout_out, EINA_FALSE, NULL);
+		ekeko_event_listener_add((Ekeko_Object *)e->target, EKEKO_EVENT_UI_MOUSE_MOVE, _sublayout_move, EINA_FALSE, NULL);
 	}
 #ifdef EKEKO_DEBUG
-	printf("[canvas %s] child of type renderable %s\n", ekeko_object_type_name_get(o), ekeko_object_type_name_get(e->target));
-	printf("[canvas %s] related %s\n", ekeko_object_type_name_get(o), ekeko_object_type_name_get(em->related));
+	printf("[layout %s] child of type renderable %s\n", ekeko_object_type_name_get(o), ekeko_object_type_name_get(e->target));
+	printf("[layout %s] related %s\n", ekeko_object_type_name_get(o), ekeko_object_type_name_get(em->related));
 #endif
 
 	prv = PRIVATE(em->related);
 #ifdef EKEKO_DEBUG
-	printf("[canvas %s] %p tiler = %p, canvas = %p\n", ekeko_object_type_name_get(o), em->related, prv->tiler, ekeko_renderable_canvas_get((Ekeko_Renderable *)o));
+	printf("[layout %s] %p tiler = %p, layout = %p\n", ekeko_object_type_name_get(o), em->related, prv->tiler, ekeko_renderable_layout_get((Eon_Renderable *)o));
 #endif
 	ekeko_event_listener_add((Ekeko_Object *)e->target, EKEKO_RENDERABLE_VISIBILITY_CHANGED, _child_visibility_change, EINA_FALSE, o);
 	ekeko_event_listener_add((Ekeko_Object *)e->target, EKEKO_RENDERABLE_GEOMETRY_CHANGED, _child_geometry_change, EINA_FALSE, o);
@@ -353,29 +353,29 @@ static void _child_append_cb(Ekeko_Object *o, Ekeko_Event *e, void *data)
 
 static void _ctor(Ekeko_Object *o)
 {
-	Ekeko_Canvas *canvas;
-	Ekeko_Canvas_Private *prv;
+	Eon_Layout *layout;
+	Eon_Layout_Private *prv;
 
-	canvas = (Ekeko_Canvas *)o;
-	canvas->private = prv = ekeko_type_instance_private_get(ekeko_canvas_type_get(), o);
+	layout = (Eon_Layout *)o;
+	layout->prv = prv = ekeko_type_instance_private_get(eon_layout_type_get(), o);
 	prv->renderables = NULL;
 	prv->tiler = eina_tiler_new(0, 0);
 	/* register to an event where some child is appended to this parent */
-	ekeko_event_listener_add((Ekeko_Object *)canvas, EKEKO_EVENT_OBJECT_APPEND, _child_append_cb, EINA_TRUE, NULL);
+	ekeko_event_listener_add((Ekeko_Object *)layout, EKEKO_EVENT_OBJECT_APPEND, _child_append_cb, EINA_TRUE, NULL);
 	/* register the event where the size is changed */
-	ekeko_event_listener_add((Ekeko_Object *)canvas, EKEKO_RENDERABLE_GEOMETRY_CHANGED, _geometry_change, EINA_FALSE, NULL);
+	ekeko_event_listener_add((Ekeko_Object *)layout, EKEKO_RENDERABLE_GEOMETRY_CHANGED, _geometry_change, EINA_FALSE, NULL);
 	/* TODO add the event listener when the object has finished the process() function */
-	ekeko_event_listener_add((Ekeko_Object *)canvas, EKEKO_EVENT_OBJECT_PROCESS, _process_cb, EINA_FALSE, NULL);
-	ekeko_event_listener_add((Ekeko_Object *)canvas, EKEKO_CANVAS_REDRAW_CHANGED, _redraw_change, EINA_FALSE, NULL);
+	ekeko_event_listener_add((Ekeko_Object *)layout, EKEKO_EVENT_OBJECT_PROCESS, _process_cb, EINA_FALSE, NULL);
+	ekeko_event_listener_add((Ekeko_Object *)layout, EKEKO_CANVAS_REDRAW_CHANGED, _redraw_change, EINA_FALSE, NULL);
 #ifdef EKEKO_DEBUG
-	printf("[Ekeko_Canvas] ctor %p %p, tiler = %p, canvas = %p\n", canvas, canvas->private, prv->tiler, ekeko_renderable_canvas_get((Ekeko_Renderable *)canvas));
+	printf("[Eon_Layout] ctor %p %p, tiler = %p, layout = %p\n", layout, layout->private, prv->tiler, ekeko_renderable_layout_get((Eon_Renderable *)layout));
 #endif
 }
 
 static void _dtor(Ekeko_Object *o)
 {
 #ifdef EKEKO_DEBUG
-	printf("[Ekeko_Canvas] dtor %p\n", canvas);
+	printf("[Eon_Layout] dtor %p\n", layout);
 #endif
 }
 /*============================================================================*
@@ -387,34 +387,34 @@ static void _dtor(Ekeko_Object *o)
  *============================================================================*/
 Ekeko_Property_Id EKEKO_CANVAS_REDRAW;
 
-Ekeko_Type *ekeko_canvas_type_get(void)
+Ekeko_Type * eon_layout_type_get(void)
 {
 	static Ekeko_Type *type = NULL;
 
 	if (!type)
 	{
-		type = ekeko_type_new(TYPE_NAME, sizeof(Ekeko_Canvas),
-				sizeof(Ekeko_Canvas_Private), ekeko_renderable_type_get(),
+		type = ekeko_type_new(TYPE_NAME, sizeof(Eon_Layout),
+				sizeof(Eon_Layout_Private), ekeko_renderable_type_get(),
 				_ctor, _dtor, NULL);
 		/* the properties */
 		EKEKO_CANVAS_REDRAW = EKEKO_TYPE_PROP_DOUBLE_ADD(type, "redraw", EKEKO_PROPERTY_BOOL,
-				OFFSET(Ekeko_Canvas_Private, redraw.curr), OFFSET(Ekeko_Canvas_Private, redraw.prev),
-				OFFSET(Ekeko_Canvas_Private, redraw.changed));
+				OFFSET(Eon_Layout_Private, redraw.curr), OFFSET(Eon_Layout_Private, redraw.prev),
+				OFFSET(Eon_Layout_Private, redraw.changed));
 	}
 
 	return type;
 }
 
-EAPI Ekeko_Canvas * ekeko_canvas_new(void)
+EAPI Eon_Layout * eon_layout_new(void)
 {
-	Ekeko_Canvas *canvas;
+	Eon_Layout *layout;
 
-	canvas = ekeko_type_instance_new(ekeko_canvas_type_get());
+	layout = ekeko_type_instance_new(eon_layout_type_get());
 
-	return canvas;
+	return layout;
 }
 
-EAPI void ekeko_canvas_size_set(Ekeko_Canvas *c, int w, int h)
+EAPI void eon_layout_size_set(Eon_Layout *c, int w, int h)
 {
 	Eina_Rectangle rect;
 
@@ -422,27 +422,27 @@ EAPI void ekeko_canvas_size_set(Ekeko_Canvas *c, int w, int h)
 	rect.y = 0;
 	rect.w = w;
 	rect.h = h;
-	ekeko_renderable_geometry_set((Ekeko_Renderable *)c, &rect);
+	ekeko_renderable_geometry_set((Eon_Renderable *)c, &rect);
 }
 /**
- * @brief Marks a rectangle on the canvas as damaged, this area will be
- * processed again. When the canvas process that area it will no longer be
+ * @brief Marks a rectangle on the layout as damaged, this area will be
+ * processed again. When the layout process that area it will no longer be
  * a damaged area
  * @param r Rectangle that defines the area damaged
  */
-EAPI void ekeko_canvas_damage_add(Ekeko_Canvas *c, Eina_Rectangle *r)
+EAPI void eon_layout_damage_add(Eon_Layout *c, Eina_Rectangle *r)
 {
-	Ekeko_Canvas_Private *prv;
+	Eon_Layout_Private *prv;
 
 	prv = PRIVATE(c);
 	if (prv->tiler)
 	{
 		Ekeko_Value v;
 #ifdef EKEKO_DEBUG
-		printf("[Ekeko_Canvas] %s %p adding damage rectangle %d %d %d %d\n", ekeko_object_type_name_get(c), c, r->x, r->y, r->w, r->h);
+		printf("[Eon_Layout] %s %p adding damage rectangle %d %d %d %d\n", ekeko_object_type_name_get(c), c, r->x, r->y, r->w, r->h);
 #endif
 		/* if we only add a damage the process_cb wont be called, we need
-		 * to inform somehow that the canvas needs to be processed again
+		 * to inform somehow that the layout needs to be processed again
 		 */
 		eina_tiler_rect_add(prv->tiler, r);
 		/* as other objects might call this function during
@@ -453,20 +453,20 @@ EAPI void ekeko_canvas_damage_add(Ekeko_Canvas *c, Eina_Rectangle *r)
 	}
 }
 /**
- * @brief Marks a rectangle area on the canvas that will never be processed.
- * The area is kept on the canvas until it is cleared with
- * canvas_obscure_del()
+ * @brief Marks a rectangle area on the layout that will never be processed.
+ * The area is kept on the layout until it is cleared with
+ * layout_obscure_del()
  * @param r Rectangle that defines the obscure area
  */
-EAPI void ekeko_canvas_obscure_add(Ekeko_Canvas *c, Eina_Rectangle *r)
+EAPI void eon_layout_obscure_add(Eon_Layout *c, Eina_Rectangle *r)
 {
-	Ekeko_Canvas_Private *prv;
+	Eon_Layout_Private *prv;
 
 	prv = PRIVATE(c);
 	//_obscures_add(c, r);
 }
 
-EAPI Ekeko_Input * ekeko_canvas_input_new(Ekeko_Canvas *c)
+EAPI Ekeko_Input * eon_layout_input_new(Eon_Layout *c)
 {
 	Ekeko_Input *i;
 
@@ -474,10 +474,10 @@ EAPI Ekeko_Input * ekeko_canvas_input_new(Ekeko_Canvas *c)
 	return i;
 }
 
-EAPI Ekeko_Renderable * ekeko_canvas_renderable_get_at_coord(Ekeko_Canvas *c,
+EAPI Eon_Renderable * eon_layout_renderable_get_at_coord(Eon_Layout *c,
 		unsigned int x, unsigned int y)
 {
-	Ekeko_Canvas_Private *prv;
+	Eon_Layout_Private *prv;
 	Eina_List *l;
 	Eina_Rectangle igeom;
 
@@ -488,7 +488,7 @@ EAPI Ekeko_Renderable * ekeko_canvas_renderable_get_at_coord(Ekeko_Canvas *c,
 	/* iterate from top most and find the renderable that matches the coords */
 	for (l = eina_list_last(prv->renderables); l; l = eina_list_prev(l))
 	{
-		Ekeko_Renderable *r;
+		Eon_Renderable *r;
 		Eina_Rectangle rgeom;
 
 		r = eina_list_data_get(l);
@@ -499,7 +499,7 @@ EAPI Ekeko_Renderable * ekeko_canvas_renderable_get_at_coord(Ekeko_Canvas *c,
 		if (ekeko_renderable_intersect(r, x, y))
 		{
 #ifdef EKEKO_DEBUG
-			printf("[Ekeko_Canvas] renderable found %p\n", r);
+			printf("[Eon_Layout] renderable found %p\n", r);
 #endif
 			return r;
 		}
@@ -508,24 +508,24 @@ EAPI Ekeko_Renderable * ekeko_canvas_renderable_get_at_coord(Ekeko_Canvas *c,
 		{
 			if (ekeko_type_instance_is_of(r, "Canvas"))
 			{
-				Ekeko_Renderable *subr;
+				Eon_Renderable *subr;
 				Eina_Rectangle rscaled;
 
 				/* transform the coordinates */
 				eina_rectangle_rescale_in(&rgeom, &igeom, &rscaled);
-				subr = ekeko_canvas_renderable_get_at_coord((Ekeko_Canvas *)r,
+				subr = eon_layout_renderable_get_at_coord((Eon_Layout *)r,
 						rscaled.x, rscaled.y, recursive);
 				if (subr)
 				{
 #ifdef EKEKO_DEBUG
-					printf("[Ekeko_Canvas] Recursive, renderable found %p\n", subr);
+					printf("[Eon_Layout] Recursive, renderable found %p\n", subr);
 #endif
 					return subr;
 				}
 				else
 				{
 #ifdef EKEKO_DEBUG
-					printf("[Ekeko_Canvas] Recursive, no subcanvas renderable found, so return %p\n", r);
+					printf("[Eon_Layout] Recursive, no sublayout renderable found, so return %p\n", r);
 #endif
 					return r;
 				}
@@ -533,7 +533,7 @@ EAPI Ekeko_Renderable * ekeko_canvas_renderable_get_at_coord(Ekeko_Canvas *c,
 			else
 			{
 #ifdef EKEKO_DEBUG
-				printf("[Ekeko_Canvas] No recursive renderable found %p\n", r);
+				printf("[Eon_Layout] No recursive renderable found %p\n", r);
 #endif
 				return r;
 			}
@@ -541,31 +541,31 @@ EAPI Ekeko_Renderable * ekeko_canvas_renderable_get_at_coord(Ekeko_Canvas *c,
 		else
 		{
 #ifdef EKEKO_DEBUG
-			printf("[Ekeko_Canvas] renderable found %p\n", r);
+			printf("[Eon_Layout] renderable found %p\n", r);
 #endif
 			return r;
 		}
 #endif
 	}
 #ifdef EKEKO_DEBUG
-	printf("[Ekeko_Canvas] no renderable found\n");
+	printf("[Eon_Layout] no renderable found\n");
 #endif
 	return NULL;
 }
 
 /* TODO add a focus in event */
-EAPI void ekeko_canvas_focus_set(Ekeko_Canvas *c, Ekeko_Renderable *r)
+EAPI void eon_layout_focus_set(Eon_Layout *c, Eon_Renderable *r)
 {
-	Ekeko_Canvas_Private *prv;
+	Eon_Layout_Private *prv;
 
 	prv = PRIVATE(c);
 	prv->focused = r;
 }
 
 /* TODO add a focus out event */
-EAPI Ekeko_Renderable * ekeko_canvas_focus_get(Ekeko_Canvas *c)
+EAPI Eon_Renderable * eon_layout_focus_get(Eon_Layout *c)
 {
-	Ekeko_Canvas_Private *prv;
+	Eon_Layout_Private *prv;
 
 	prv = PRIVATE(c);
 	return prv->focused;

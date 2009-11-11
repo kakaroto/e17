@@ -52,11 +52,12 @@ typedef enum _Eon_Paint_Matrixspace
 	EON_MATRIXSPACE_COMPOSE, /* compose paint's matrix with object's matrix */
 } Eon_Paint_Matrixspace;
 
+#define EON_PAINT(o) EKEKO_CAST(o, eon_paint_type_get(), Eon_Paint)
 typedef struct _Eon_Paint_Private Eon_Paint_Private;
 struct _Eon_Paint
 {
-	Eon_Renderable parent;
-	Eon_Paint_Private *private;
+	Eon_Renderable base;
+	Eon_Paint_Private *prv;
 	/* called whenever the engine wants to instantiate a new paint object */
 	void *(*create)(Eon_Engine *e, Eon_Paint *s);
 	/* called whenever the paint is going to be rendered */
@@ -65,7 +66,7 @@ struct _Eon_Paint
 	/* called to check if the point is inside the paint */
 	Eina_Bool (*is_inside)(Eon_Paint *p, int x, int y);
 	/* called whenever the paint is going to be destroyed */
-	void (*delete)(Eon_Engine *e, void *engine_data);
+	void (*free)(Eon_Engine *e, void *engine_data);
 };
 /*============================================================================*
  *                                Functions                                   *

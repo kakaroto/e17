@@ -175,4 +175,29 @@ void eon_type_register(Ekeko_Type *t, char *name);
 void eon_type_unregister(Ekeko_Type *t);
 Ekeko_Type * eon_type_get(char *name);
 
+/* Input */
+void eon_event_ui_init(Eon_Event_Ui *eui, const char *type, Ekeko_Object *o,
+		Ekeko_Object *related, const Ekeko_Input *i);
+void eon_event_mouse_move_init(Eon_Event_Mouse *em, Ekeko_Object *o,
+		Ekeko_Object *related, const Ekeko_Input *i,
+		unsigned int sx, unsigned int sy,
+		unsigned int px, unsigned int py);
+void eon_event_mouse_in_init(Eon_Event_Mouse *em, Ekeko_Object *o,
+		Ekeko_Object *related, const Ekeko_Input *i);
+void eon_event_mouse_out_init(Eon_Event_Mouse *em, Ekeko_Object *o,
+		Ekeko_Object *related, const Ekeko_Input *i);
+void eon_event_mouse_down_init(Eon_Event_Mouse *em, Ekeko_Object *o,
+		Ekeko_Object *related, const Ekeko_Input *i);
+void eon_event_mouse_up_init(Eon_Event_Mouse *em, Ekeko_Object *o,
+		Ekeko_Object *related, const Ekeko_Input *i);
+void eon_event_mouse_click_init(Eon_Event_Mouse *em, Ekeko_Object *o,
+		Ekeko_Object *related, const Ekeko_Input *i);
+
+void eon_key_up_init(Eon_Event_Key *ek, Ekeko_Object *o,
+		const Eon_Input *i, Eon_Key key, Eon_Key_Mod mod);
+void eon_key_down_init(Eon_Event_Key *ek, Ekeko_Object *o,
+		const Eon_Input *i, Eon_Key key, Eon_Key_Mod mod);
+
+
+
 #endif
