@@ -7,6 +7,7 @@
 
 
 static HWND window;
+static HINSTANCE instance;
 
 static LRESULT CALLBACK
 MainWndProc(HWND   hwnd,
@@ -176,7 +177,6 @@ engine_gl_glew_args(int argc, char **argv)
 {
    WNDCLASS                  wc;
    RECT                      rect;
-   HINSTANCE                 instance;
    HDC                       dc;
    Evas_Engine_Info_GL_Glew *einfo;
    DWORD                     style;
@@ -233,6 +233,13 @@ engine_gl_glew_args(int argc, char **argv)
    if (!SetWindowLong(window, GWL_STYLE, style))
      goto unregister_class;
 
+   dc = GetDC(NULL);
+   if (!dc)
+     goto destroy_window;
+
+   depth = GetDeviceCaps(dc, BITSPIXEL);
+   ReleaseDC(NULL, dc);
+
    evas_output_method_set(evas, evas_render_method_lookup("gl_glew"));
    einfo = (Evas_Engine_Info_GL_Glew *)evas_engine_info_get(evas);
    if (!einfo)
@@ -280,4 +287,12 @@ engine_gl_glew_loop(void)
    DispatchMessage (&msg);
 
    goto again;
+}
+
+void
+engine_gl_glew_shutdown(void)
+{
+   DestroyWindow(window);
+   UnregisterClass("Evas_Software_Gdi_Test", instance);
+   FreeLibrary(instance);
 }
