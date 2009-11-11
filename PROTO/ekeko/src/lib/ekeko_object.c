@@ -895,7 +895,7 @@ EAPI Ekeko_Object * ekeko_object_cast(Ekeko_Object *o, Ekeko_Type *t)
 		return NULL;
 	if (!ekeko_type_instance_is_of_type(o, t))
 	{
-		EINA_ERROR_PERR("[Ekeko] Object %p is not of type %s\n", o, type_name_get(t));
+		WRN("Object %p is not of type %s but %s\n", o, type_name_get(t), ekeko_object_type_name_get(o));
 	}
 	return o;
 }
