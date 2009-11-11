@@ -56,25 +56,15 @@ static void _loop(double t, int f)
         x += sin((double)(f + (i * 13)) / (36.7 * SLOW)) * (w / 2);
 	y = (win_h / 2) - (h / 2);
         y += cos((double)(f + (i * 28)) / (43.8 * SLOW)) * (h / 2);
-        
-        evas_map_point_coord_set   (m, 0, x, y, 0);
-        evas_map_point_image_uv_set(m, 0, 0, 0);
-        evas_map_point_color_set   (m, 0, 255, 255, 255, 255);
-        
-        evas_map_point_coord_set   (m, 1, x + w, y, 0);
-        evas_map_point_image_uv_set(m, 1, w, 0);
-        evas_map_point_color_set   (m, 1, 255, 0, 0, 255);
-        
-        evas_map_point_coord_set   (m, 2, x + w, y + h, 0);
-        evas_map_point_image_uv_set(m, 2, w, h);
-        evas_map_point_color_set   (m, 2, 0, 0, 255, 255);
-        
-        evas_map_point_coord_set   (m, 3, x, y + h, 0);
-        evas_map_point_image_uv_set(m, 3, 0, h);
-        evas_map_point_color_set   (m, 3, 0, 0, 0, 0);
-        
+
+	evas_map_util_points_populate_from_geometry(m, x, y, w, h, 0);
+
+        evas_map_point_color_set(m, 0, 255, 255, 255, 255);
+        evas_map_point_color_set(m, 1, 255, 0, 0, 255);
+        evas_map_point_color_set(m, 2, 0, 0, 255, 255);
+        evas_map_point_color_set(m, 3, 0, 0, 0, 0);
+
         evas_map_util_rotate(m, f, x + (w / 2), y + (h / 2));
-        
         evas_object_map_enable_set(o_images[i], 1);
         evas_object_map_set(o_images[i], m);
      }
