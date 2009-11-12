@@ -116,8 +116,6 @@ void                DialogItemSetFill(DItem * di, char fill_h, char fill_v);
 void                DialogItemSetAlign(DItem * di, int align_h, int align_v);
 void                DialogItemSetText(DItem * di, const char *text);
 void                DialogItemCallCallback(Dialog * d, DItem * di);
-void                DialogDrawItems(Dialog * d, DItem * di, int x, int y, int w,
-				    int h);
 void                DialogItemRadioButtonSetEventFunc(DItem * di,
 						      DialogItemCallbackFunc *
 						      func);

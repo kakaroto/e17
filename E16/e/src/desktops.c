@@ -2212,7 +2212,7 @@ CB_ConfigureDesktops(Dialog * d __UNUSED__, int val, void *data __UNUSED__)
 }
 
 static void
-CB_DesktopDisplayRedraw(Dialog * d, int val, void *data)
+CB_DesktopDisplayRedraw(Dialog * d __UNUSED__, int val, void *data)
 {
    static char         called = 0;
    static int          prev_desktops = -1;
@@ -2291,7 +2291,6 @@ CB_DesktopDisplayRedraw(Dialog * d, int val, void *data)
 
    Esnprintf(s, sizeof(s), "%i", tmp_desktops);
    DialogItemSetText(tmp_desk_text, s);
-   DialogDrawItems(d, tmp_desk_text, 0, 0, 99999, 99999);
 }
 
 static void
@@ -2480,7 +2479,6 @@ CB_AreaDisplayRedraw(Dialog * d __UNUSED__, int val, void *data)
 
    Esnprintf(s, sizeof(s), "%i x %i", prev_ax, prev_ay);
    DialogItemSetText(tmp_area_text, s);
-   DialogDrawItems(d, tmp_area_text, 0, 0, 99999, 99999);
 }
 
 static void

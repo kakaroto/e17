@@ -1501,7 +1501,6 @@ CB_IconSizeSlider(Dialog * d, int val __UNUSED__, void *data)
 
    Esnprintf(s, sizeof(s), _("Icon size: %2d"), dd->iconsize);
    DialogItemSetText(di, s);
-   DialogDrawItems(d, di, 0, 0, 99999, 99999);
 }
 
 static void

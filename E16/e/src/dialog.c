@@ -186,6 +186,8 @@ static void         DItemHandleEvents(Win win, XEvent * ev, void *prm);
 static void         MoveTableBy(Dialog * d, DItem * di, int dx, int dy);
 static void         DialogItemsRealize(Dialog * d);
 static void         DialogItemDestroy(DItem * di, int clean);
+static void         DialogDrawItems(Dialog * d, DItem * di, int x, int y, int w,
+				    int h);
 
 static int          DialogItemCheckButtonGetState(DItem * di);
 
@@ -1360,7 +1362,7 @@ MoveTableBy(Dialog * d, DItem * di, int dx, int dy)
      }
 }
 
-void
+static void
 DialogDrawItems(Dialog * d, DItem * di, int x, int y, int w, int h)
 {
    d->update = 1;
@@ -1627,6 +1629,9 @@ DialogItemSetText(DItem * di, const char *text)
 {
    Efree(di->text);
    di->text = Estrdup(text);
+
+   if (di->realized)
+      DialogDrawItems(di->dlg, di, di->x, di->y, di->w, di->h);
 }
 
 void
@@ -1667,7 +1672,12 @@ DialogItemRadioButtonGroupSetVal(DItem * di, int val)
 void
 DialogItemCheckButtonSetState(DItem * di, char onoff)
 {
+   if (*(di->item.check_button.onoff_ptr) == onoff)
+      return;
    *(di->item.check_button.onoff_ptr) = onoff;
+
+   if (di->realized)
+      DialogDrawItems(di->dlg, di, di->x, di->y, di->w, di->h);
 }
 
 void
@@ -1717,6 +1727,9 @@ DialogItemSliderSetVal(DItem * di, int val)
    di->item.slider.val = val;
    if (di->item.slider.val_ptr)
       *di->item.slider.val_ptr = val;
+
+   if (di->realized)
+      DialogDrawItems(di->dlg, di, di->x, di->y, di->w, di->h);
 }
 
 void
@@ -1741,6 +1754,9 @@ DialogItemSliderSetBounds(DItem * di, int lower, int upper)
      }
    if (di->item.slider.upper <= di->item.slider.lower)
       di->item.slider.upper = di->item.slider.lower + 1;
+
+   if (di->realized)
+      DialogDrawItems(di->dlg, di, di->x, di->y, di->w, di->h);
 }
 
 void

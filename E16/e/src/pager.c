@@ -1776,7 +1776,6 @@ static int          tmp_pager_scan_speed;
 static int          tmp_pager_sel_button;
 static int          tmp_pager_win_button;
 static int          tmp_pager_menu_button;
-static DItem       *pager_scan_speed_label = NULL;
 
 static void
 CB_ConfigurePager(Dialog * d __UNUSED__, int val, void *data __UNUSED__)
@@ -1806,20 +1805,20 @@ CB_ConfigurePager(Dialog * d __UNUSED__, int val, void *data __UNUSED__)
 }
 
 static void
-CB_PagerScanSlide(Dialog * d, int val __UNUSED__, void *data __UNUSED__)
+CB_PagerScanSlide(Dialog * d __UNUSED__, int val __UNUSED__, void *data)
 {
+   DItem              *di = (DItem *) data;
    char                s[256];
 
    Esnprintf(s, sizeof(s), "%s %03i %s", _("Pager scanning speed:"),
 	     tmp_pager_scan_speed, _("lines per second"));
-   DialogItemSetText(pager_scan_speed_label, s);
-   DialogDrawItems(d, pager_scan_speed_label, 0, 0, 99999, 99999);
+   DialogItemSetText(di, s);
 }
 
 static void
 _DlgFillPagers(Dialog * d __UNUSED__, DItem * table, void *data __UNUSED__)
 {
-   DItem              *di, *radio;
+   DItem              *di, *radio, *label;
    char                s[256];
 
    tmp_show_pagers = Conf_pagers.enable;
@@ -1897,7 +1896,7 @@ _DlgFillPagers(Dialog * d __UNUSED__, DItem * table, void *data __UNUSED__)
    DialogItemSetText(di, _("Continuously scan screen to update pager"));
    DialogItemCheckButtonSetPtr(di, &tmp_pager_do_scan);
 
-   di = pager_scan_speed_label = DialogAddItem(table, DITEM_TEXT);
+   di = label = DialogAddItem(table, DITEM_TEXT);
    DialogItemSetColSpan(di, 2);
    DialogItemSetFill(di, 0, 0);
    DialogItemSetAlign(di, 0, 512);
@@ -1911,7 +1910,7 @@ _DlgFillPagers(Dialog * d __UNUSED__, DItem * table, void *data __UNUSED__)
    DialogItemSliderSetJump(di, 1);
    DialogItemSetColSpan(di, 2);
    DialogItemSliderSetValPtr(di, &tmp_pager_scan_speed);
-   DialogItemSetCallback(di, CB_PagerScanSlide, 0, NULL);
+   DialogItemSetCallback(di, CB_PagerScanSlide, 0, label);
 
    di = DialogAddItem(table, DITEM_TEXT);
    DialogItemSetColSpan(di, 2);

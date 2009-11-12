@@ -1388,7 +1388,6 @@ BackgroundsSighan(int sig, void *prm __UNUSED__)
 /*
  * Configuration dialog
  */
-static Dialog      *bg_sel_dialog;
 static DItem       *bg_sel;
 static DItem       *bg_sel_slider;
 static DItem       *bg_mini_disp;
@@ -1522,8 +1521,6 @@ BG_DialogSetFileName(DItem * di)
 static void
 BgDialogSetNewCurrent(Background * bg)
 {
-   int                 i;
-
    if (tmp_bg && tmp_bg != bg)
       BackgroundImagesKeep(tmp_bg, 0);
    tmp_bg = bg;
@@ -1534,7 +1531,6 @@ BgDialogSetNewCurrent(Background * bg)
 
    /* Update dialog items */
    BG_DialogSetFileName(bg_filename);
-   DialogDrawItems(bg_sel_dialog, bg_filename, 0, 0, 99999, 99999);
 
    DialogItemCheckButtonSetState(tmp_w[0], tmp_bg_image);
    DialogItemCheckButtonSetState(tmp_w[1], tmp_bg_keep_aspect);
@@ -1552,9 +1548,6 @@ BgDialogSetNewCurrent(Background * bg)
 
    /* Redraw scrolling BG list */
    BG_RedrawView();
-
-   for (i = 0; i < 10; i++)
-      DialogDrawItems(bg_sel_dialog, tmp_w[i], 0, 0, 99999, 99999);
 }
 
 /* Duplicate current (tmp_bg) to new */
@@ -1583,7 +1576,6 @@ CB_ConfigureNewBG(Dialog * d __UNUSED__, int val __UNUSED__,
    DialogItemSliderSetBounds(bg_sel_slider, lower, upper);
 
    DialogItemSliderSetVal(bg_sel_slider, 0);
-   DialogDrawItems(bg_sel_dialog, bg_sel_slider, 0, 0, 99999, 99999);
 
    DeskBackgroundSet(DesksGetCurrent(), tmp_bg);
 
@@ -1735,18 +1727,17 @@ CB_BGScan(Dialog * d, int val __UNUSED__, void *data __UNUSED__)
 
    num = ecore_list_count(bg_list);
    DialogItemSliderSetBounds(bg_sel_slider, 0, num * 4);
-   DialogDrawItems(d, bg_sel_slider, 0, 0, 99999, 99999);
    DialogItemCallCallback(d, bg_sel_slider);
 }
 
 static void
-CB_BGAreaEvent(DItem * di __UNUSED__, int val __UNUSED__, void *data)
+CB_BGAreaEvent(DItem * di, int val __UNUSED__, void *data)
 {
    int                 x, num, w, h;
    Background         *bg;
    XEvent             *ev = (XEvent *) data;
 
-   DialogItemAreaGetSize(bg_sel, &w, &h);
+   DialogItemAreaGetSize(di, &w, &h);
 
    switch (ev->type)
      {
@@ -1773,7 +1764,6 @@ CB_BGAreaEvent(DItem * di __UNUSED__, int val __UNUSED__, void *data)
 	   do_slide:
 	     DialogItemSliderSetVal(bg_sel_slider, tmp_bg_sel_sliderval);
 	     CB_BGAreaSlide(NULL, 0, NULL);
-	     DialogDrawItems(bg_sel_dialog, bg_sel_slider, 0, 0, 99999, 99999);
 	     break;
 	  }
      }
@@ -1791,7 +1781,6 @@ CB_DesktopTimeout(Dialog * d __UNUSED__, int val __UNUSED__, void *data)
 	     (tmp_bg_timeout / 60) - (60 * (tmp_bg_timeout / 3600)),
 	     (tmp_bg_timeout) - (60 * (tmp_bg_timeout / 60)));
    DialogItemSetText(di, s);
-   DialogDrawItems(bg_sel_dialog, di, 0, 0, 99999, 99999);
 }
 
 static void
@@ -1814,7 +1803,6 @@ BGSettingsGoTo(Background * bg)
    else if (i > 4 * num)
       i = 4 * num;
    DialogItemSliderSetVal(bg_sel_slider, i);
-   DialogDrawItems(bg_sel_dialog, bg_sel_slider, 0, 0, 99999, 99999);
    BgDialogSetNewCurrent(bg);
 }
 
@@ -1987,8 +1975,6 @@ _DlgFillBackground(Dialog * d, DItem * table, void *data)
    tmp_userbg = Conf.backgrounds.user;
    tmp_root_hint = Conf.hints.set_xroot_info_on_root_window;
    tmp_bg_timeout = Conf.backgrounds.timeout;
-
-   bg_sel_dialog = d;
 
    DialogItemTableSetOptions(table, 1, 0, 0, 0);
 
