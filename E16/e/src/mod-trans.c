@@ -55,66 +55,81 @@ TransparencyChange(int val)
 /*
  * Configuration dialog
  */
-static int          tmp_theme_transparency;
+typedef struct {
+   int                 theme_transparency;
 
-static int          tmp_st_border;
-static int          tmp_st_widget;
-static int          tmp_st_dialog;
-static int          tmp_st_menu;
-static int          tmp_st_tooltip;
-static int          tmp_st_hilight;
+   int                 st_border;
+   int                 st_widget;
+   int                 st_dialog;
+   int                 st_menu;
+   int                 st_tooltip;
+   int                 st_hilight;
+} TransDlgData;
 
 static void
-CB_ConfigureTrans(Dialog * d __UNUSED__, int val, void *data __UNUSED__)
+CB_ConfigureTrans(Dialog * d, int val, void *data __UNUSED__)
 {
-   if (val < 2)
-     {
-	Conf.trans.border = tmp_st_border;
-	Conf.trans.widget = tmp_st_widget;
-	Conf.trans.dialog = tmp_st_dialog;
-	Conf.trans.menu = tmp_st_menu;
-	Conf.trans.tooltip = tmp_st_tooltip;
-	Conf.trans.hilight = Conf.trans.menu_item = tmp_st_hilight;
-	Conf.trans.pager = ICLASS_ATTR_BG;
-	Conf.trans.iconbox = ICLASS_ATTR_BG;
-	Conf.trans.warplist = ICLASS_ATTR_BG;
+   TransDlgData       *dd = DLG_DATA_GET(d, TransDlgData);
+
+   if (val >= 2)
+      return;
+
+   Conf.trans.border = dd->st_border;
+   Conf.trans.widget = dd->st_widget;
+   Conf.trans.dialog = dd->st_dialog;
+   Conf.trans.menu = dd->st_menu;
+   Conf.trans.tooltip = dd->st_tooltip;
+   Conf.trans.hilight = Conf.trans.menu_item = dd->st_hilight;
+   Conf.trans.pager = ICLASS_ATTR_BG;
+   Conf.trans.iconbox = ICLASS_ATTR_BG;
+   Conf.trans.warplist = ICLASS_ATTR_BG;
 #if 0				/* Should not be necessary */
-	TransparencyChange(tmp_theme_transparency);
+   TransparencyChange(dd->theme_transparency);
 #endif
-     }
+
    autosave();
 }
 
 static void
-CB_ThemeTransparency(Dialog * d __UNUSED__, int val __UNUSED__, void *data)
+_DlgThemeTransparencyText(DItem * di, TransDlgData * dd)
 {
-   DItem              *di;
    char                s[256];
 
-   di = (DItem *) data;
    Esnprintf(s, sizeof(s), _("Theme transparency: %2d"),
-	     tmp_theme_transparency);
+	     dd->theme_transparency);
    DialogItemSetText(di, s);
-
-   TransparencyChange(tmp_theme_transparency);
 }
 
 static void
-_DlgFillThemeTrans(Dialog * d __UNUSED__, DItem * table, void *data __UNUSED__)
+CB_ThemeTransparency(Dialog * d, int val __UNUSED__, void *data)
+{
+   TransDlgData       *dd = DLG_DATA_GET(d, TransDlgData);
+   DItem              *di = (DItem *) data;
+
+   _DlgThemeTransparencyText(di, dd);
+   TransparencyChange(dd->theme_transparency);
+}
+
+static void
+_DlgFillThemeTrans(Dialog * d, DItem * table, void *data __UNUSED__)
 {
    DItem              *di, *label;
    DItem              *radio_border, *radio_widget, *radio_menu,
       *radio_dialog, *radio_tooltip, *radio_hilight;
-   char                s[256];
+   TransDlgData       *dd;
 
-   tmp_st_border = Conf.trans.border;
-   tmp_st_widget = Conf.trans.widget;
-   tmp_st_dialog = Conf.trans.dialog;
-   tmp_st_menu = Conf.trans.menu;
-   tmp_st_tooltip = Conf.trans.tooltip;
-   tmp_st_hilight = Conf.trans.hilight;
+   dd = DLG_DATA_SET(d, TransDlgData);
+   if (!dd)
+      return;
 
-   tmp_theme_transparency = Conf.trans.alpha;
+   dd->st_border = Conf.trans.border;
+   dd->st_widget = Conf.trans.widget;
+   dd->st_dialog = Conf.trans.dialog;
+   dd->st_menu = Conf.trans.menu;
+   dd->st_tooltip = Conf.trans.tooltip;
+   dd->st_hilight = Conf.trans.hilight;
+
+   dd->theme_transparency = Conf.trans.alpha;
 
    DialogItemTableSetOptions(table, 7, 0, 0, 0);
 
@@ -187,25 +202,27 @@ _DlgFillThemeTrans(Dialog * d __UNUSED__, DItem * table, void *data __UNUSED__)
    di = DialogAddItem(table, DITEM_RADIOBUTTON);
    DialogItemRadioButtonSetFirst(di, radio_border);
    DialogItemRadioButtonGroupSetVal(di, 1);
-   DialogItemRadioButtonGroupSetValPtr(radio_border, &tmp_st_border);
+   DialogItemRadioButtonGroupSetValPtr(radio_border, &dd->st_border);
 
    di = DialogAddItem(table, DITEM_RADIOBUTTON);
    DialogItemRadioButtonSetFirst(di, radio_menu);
    DialogItemRadioButtonGroupSetVal(di, 1);
+   DialogItemRadioButtonGroupSetValPtr(radio_menu, &dd->st_menu);
 
    di = DialogAddItem(table, DITEM_RADIOBUTTON);
    DialogItemRadioButtonSetFirst(di, radio_hilight);
    DialogItemRadioButtonGroupSetVal(di, 1);
+   DialogItemRadioButtonGroupSetValPtr(radio_hilight, &dd->st_hilight);
 
    di = DialogAddItem(table, DITEM_RADIOBUTTON);
    DialogItemRadioButtonSetFirst(di, radio_widget);
    DialogItemRadioButtonGroupSetVal(di, 1);
-   DialogItemRadioButtonGroupSetValPtr(radio_widget, &tmp_st_widget);
+   DialogItemRadioButtonGroupSetValPtr(radio_widget, &dd->st_widget);
 
    di = DialogAddItem(table, DITEM_RADIOBUTTON);
    DialogItemRadioButtonSetFirst(di, radio_dialog);
    DialogItemRadioButtonGroupSetVal(di, 1);
-   DialogItemRadioButtonGroupSetValPtr(radio_dialog, &tmp_st_dialog);
+   DialogItemRadioButtonGroupSetValPtr(radio_dialog, &dd->st_dialog);
 
    di = DialogAddItem(table, DITEM_RADIOBUTTON);
    DialogItemRadioButtonSetFirst(di, radio_tooltip);
@@ -216,25 +233,12 @@ _DlgFillThemeTrans(Dialog * d __UNUSED__, DItem * table, void *data __UNUSED__)
    DialogItemSetText(di, _("Glass"));
 
    di = DialogAddItem(table, DITEM_NONE);
-
-   di = DialogAddItem(table, DITEM_RADIOBUTTON);
-   DialogItemRadioButtonSetFirst(di, radio_menu);
-   DialogItemRadioButtonGroupSetVal(di, 2);
-   DialogItemRadioButtonGroupSetValPtr(radio_menu, &tmp_st_menu);
-
-   di = DialogAddItem(table, DITEM_RADIOBUTTON);
-   DialogItemRadioButtonSetFirst(di, radio_hilight);
-   DialogItemRadioButtonGroupSetVal(di, 2);
-   DialogItemRadioButtonGroupSetValPtr(radio_hilight, &tmp_st_hilight);
-
-   di = DialogAddItem(table, DITEM_NONE);
-
-   di = DialogAddItem(table, DITEM_NONE);
+   DialogItemSetColSpan(di, 5);
 
    di = DialogAddItem(table, DITEM_RADIOBUTTON);
    DialogItemRadioButtonSetFirst(di, radio_tooltip);
    DialogItemRadioButtonGroupSetVal(di, 2);
-   DialogItemRadioButtonGroupSetValPtr(radio_tooltip, &tmp_st_tooltip);
+   DialogItemRadioButtonGroupSetValPtr(radio_tooltip, &dd->st_tooltip);
 
    di = DialogAddItem(table, DITEM_SEPARATOR);
    DialogItemSetColSpan(di, 7);
@@ -242,17 +246,15 @@ _DlgFillThemeTrans(Dialog * d __UNUSED__, DItem * table, void *data __UNUSED__)
    di = label = DialogAddItem(table, DITEM_TEXT);
    DialogItemSetColSpan(di, 7);
    DialogItemSetAlign(di, 512, 512);
-   Esnprintf(s, sizeof(s), _("Theme transparency: %2d"),
-	     tmp_theme_transparency);
-   DialogItemSetText(di, s);
+   _DlgThemeTransparencyText(di, dd);
 
    di = DialogAddItem(table, DITEM_SLIDER);
    DialogItemSetColSpan(di, 7);
    DialogItemSliderSetMinLength(di, 10);
    DialogItemSliderSetBounds(di, 0, 255);
-   DialogItemSliderSetUnits(di, 1);
+   DialogItemSliderSetUnits(di, 4);
    DialogItemSliderSetJump(di, 16);
-   DialogItemSliderSetValPtr(di, &tmp_theme_transparency);
+   DialogItemSliderSetValPtr(di, &dd->theme_transparency);
    DialogItemSetCallback(di, CB_ThemeTransparency, 0, (void *)label);
 }
 
