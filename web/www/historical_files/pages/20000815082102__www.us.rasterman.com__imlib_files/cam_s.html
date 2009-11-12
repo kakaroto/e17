@@ -1,0 +1,60 @@
+<html>
+	<head>
+		<title>OpenDNS</title>
+	</head>
+
+	<body id="mainbody" onLoad="testforbanner();" style="margin: 0px;">
+		<script language="JavaScript">
+			function testforbanner() {
+				var width;
+				var height;
+				var x = 0;
+				var isbanner = false;
+				var bannersizes = new Array(16)
+				bannersizes[0] = '300x250';
+				bannersizes[1] = '250x250';
+				bannersizes[2] = '240x400';
+				bannersizes[3] = '336x280';
+				bannersizes[4] = '180x150';
+				bannersizes[5] = '468x60';
+				bannersizes[6] = '234x60';
+				bannersizes[7] = '88x31';
+				bannersizes[8] = '120x90';
+				bannersizes[9] = '120x60';
+				bannersizes[10] = '120x240';
+				bannersizes[11] = '125x125';
+				bannersizes[12] = '728x90';
+				bannersizes[13] = '160x600';
+				bannersizes[14] = '120x600';
+				bannersizes[16] = '300x600';
+				bannersizes[17] = '300x125';
+				bannersizes[18] = '530x300';
+				bannersizes[19] = '190x200';
+				bannersizes[20] = '470x250';
+				if(typeof(window.innerHeight) == 'number') {
+					height = window.innerHeight;
+					width = window.innerWidth;
+				} else if(typeof(document.body.offsetHeight) == 'number') {
+					height = document.body.offsetHeight;
+					width = document.body.offsetWidth;
+				};
+				for (x=0; x<bannersizes.length; x++) {
+					if(bannersizes[x] == width + 'x' + height) {
+						isbanner = true;
+					};
+				};
+				if(isbanner || width < 100 || height < 100) {
+					window.location = '/b' + 'anner.php?w=' + width + '&h=' + height + '&d=heidi.rasterman.com&u=heidi.rasterman.com%2Fwebcam%2Fcam_s.jpg%3F18748&r=&view=';
+				} else {
+					var mainbody = document.getElementById('mainbody');
+					mainbody.style.margin = '0px';
+					mainbody.scroll = 'no';
+					mainbody.innerHTML = '<iframe frameborder="0" src="/controller.php?url=heidi.rasterman.com%2Fwebcam%2Fcam_s.jpg%3F18748&ref=" width="100%" height="100%"></iframe>';
+				};
+			};
+		</script>
+		<noscript>
+			<iframe frameborder="0" src="/controller.php?url=heidi.rasterman.com%2Fwebcam%2Fcam_s.jpg%3F18748&ref=" width="100%" height="100%"></iframe>
+		</noscript>
+	</body>
+</html>

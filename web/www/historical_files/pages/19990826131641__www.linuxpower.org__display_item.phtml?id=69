@@ -1,0 +1,986 @@
+<html><head>
+<meta http-equiv="content-type" content="text/html; charset=windows-1252">
+
+<!-- base href="http://www.linuxpower.org.wstub.archive.org/" -->
+<link rel="STYLESHEET" href="19990826131641__www.linuxpower.org__display_item_files/main.css" type="text/css"><title>l i n u x p o w e r . o r g -- Enlightenment: Today and Tomorrow</title></head><body text="#000000" bgcolor="#000000">
+
+<!-- Banner Ads belong here -->
+<!--<center>
+<a href="http://www.icecast.org"><img src="/cooltunes.gif" BORDER="0" ALT="banner ads" height=60 width=468></a>
+</center>-->
+<br>
+<b>Warning</b>:  rand():  Invalid range:  1..1 in <b>/home/www/linuxpower/functions/ads.phps</b> on line <b>20</b><br>
+<center><a href="http://web.archive.org/web/19990826131641/http://www.linuxpower.org/adredir.phtml?id=1"><img class=" cnmspavojayzxvtacjim cnmspavojayzxvtacjim" src="19990826131641__www.linuxpower.org__display_item_files/cooltunes.html" alt="Icecast" height="60" width="468" border="0"></a></center><br>
+<!-- end banner ads -->
+
+<table style="margin-top: 0.25in;" bgcolor="#ffffff" border="0" cellpadding="5" cellspacing="0">
+<tbody><tr valign="top">
+<td colspan="2" bgcolor="#003399">
+<!-- evil nasty menubar kludge by adding a new table... -->
+<table><tbody><tr valign="center">
+<td><a href="http://web.archive.org/web/19990826131641/http://www.linuxpower.org/" class="top">Home</a>&nbsp;&nbsp;&nbsp;</td>
+<td><a href="http://web.archive.org/web/19990826131641/http://www.linuxpower.org/contest.phtml" class="top">Contest</a>&nbsp;&nbsp;&nbsp;</td>
+<td><a href="http://web.archive.org/web/19990826131641/http://www.linuxpower.org/archives/" class="top">Archives</a>&nbsp;&nbsp;&nbsp;</td>
+<td><a href="http://web.archive.org/web/19990826131641/http://www.linuxpower.org/qa/" class="top">Q&amp;A</a>&nbsp;&nbsp;&nbsp;</td>
+<td><a href="http://web.archive.org/web/19990826131641/http://www.linuxpower.org/contact.phtml" class="top">Contact</a>&nbsp;&nbsp;</td>
+<td><a href="http://web.archive.org/web/19990826131641/http://www.linuxpower.org/about.phtml" class="top">About</a>&nbsp;&nbsp;&nbsp;</td>
+</tr></tbody></table>
+<!-- end menubar -->
+</td>
+<td rowspan="2" width="75" bgcolor="#003399">
+<a href="http://web.archive.org/web/19990826131641/http://linuxpower.org/"><img src="19990826131641__www.linuxpower.org__display_item_files/linuxpower_logo.html" alt="linuxpower.org" height="450" width="125" border="0"></a>
+
+<br><br>
+
+<!-- Search box -->
+<div class="sideboxed">
+<b>Search</b>
+<form method="POST" action="http://web.archive.org/web/19990826131641/http://www.linuxpower.org.wstub.archive.org/search_results.phtml">
+<input name="query" size="10" type="TEXT"><br>
+</form>
+</div>
+
+<div class="sideboxed">
+Thanks to <a href="http://web.archive.org/web/19990826131641/http://www.greenwitch.com/"><font color="#efc50e">GreenWitch</font></a> for hosting linuxpower
+</div>
+
+<!-- Sites Hosted by linuxpower -->
+<div class="sideboxed">
+Hosted Sites<br>
+<a href="http://web.archive.org/web/19990826131641/http://icecast.linuxpower.org/"><font color="#efc50e">icecast</font></a><br>
+<a href="http://web.archive.org/web/19990826131641/http://xchat.linuxpower.org/"><font color="#efc50e">xchat</font></a><br>
+<a href="http://web.archive.org/web/19990826131641/http://gmail.linuxpower.org/"><font color="#efc50e">gmail</font></a><br>
+<a href="http://web.archive.org/web/19990826131641/http://gnome.linuxpower.org/"><font color="#efc50e">#gnome</font></a><br>
+<a href="http://web.archive.org/web/19990826131641/http://fonts.linuxpower.org/"><font color="#efc50e">Type Euphoria</font></a><br>
+</div>
+
+
+</td>
+</tr>
+<tr valign="top">
+<td>
+
+<font face="Verdana,Arial,Helvetica" color="#000000">
+<br>
+
+</font><center><font face="Verdana,Arial,Helvetica" color="#000000"><font size="3">Enlightenment: An Interview with Raster, Mandrake and Technoir about E today and tomorrow</font>
+<br>
+<br>
+
+
+<font size="2"><i><a href="http://web.archive.org/web/19990826131641/http://www.linuxpower.org/contact.phtml">by the Linuxpower Staff</a></i></font></font></center>
+
+<font face="Verdana,Arial,Helvetica" color="#000000"><br>
+<br>
+
+
+<b>Jeremy: Do you see the current feature set of e15 in CVS as being the
+ feature set for the release of E15?</b>
+<br>
+<br>
+Raster: close - a bit of cleaning up.. I've made a start on menus - a lot of
+additions aren't quite apparent - eesh (e shell) is an interface
+(command-line like ashell) to E's IPC mechanism. - so there's a lot
+more going in the backend of IPC - basically E is beginning to
+understand more IPC commands. A lot of this I am generating for use in
+the GUI E configuration I'm writing (in C) for GNOME. - it queries E
+itself for E's configuration - so you get live settings and when you
+change things it send IPc back to E telling it to change it's config.
+This means the configuration applet doesn't have to have any clue what
+the configuration files look like, where they are stored etc. and
+doesnt have to tell E even to restart - this is the mechanism that will
+be prevalent through E's configuration in future.
+<br>
+<br>
+Mandrake: there will be at least a few more things added in before 0.15 comes 
+out.  Containers and some config changes (we're going over that right now), at bare minimum.
+<br>
+<br>
+Technoir: Pretty much, although Raster added the beginning of the root
+menu code at the weekend (I thought root menus weren't going to be in
+DR0.15), so
+that'll need finishing. Also, containers for iconised windows and
+docked apps will probably be a rather important feature in the next
+release.
+<br>
+<br>
+<b>Jeremy: When do you estimate DR0.15 to actually be released?</b>
+<br>
+<br>
+Raster: No comment :)
+<br>
+<br>Mandrake: Released? Oh you mean we're supposed to release this
+stuff? D'oh! I knew there was something I kept forgetting about...
+Seriously, though, I
+don't like giving release dates for this stuff any more. Last time I
+gave out a release date I was 6 weeks off. This year, most likely, at
+some point.
+Beyond that I don't know.
+<br>
+<br>
+Technoir: Considering the release date for DR0.14 was 24th May and it was
+actually released on the 18th of July, I don't think proposing a release
+date would be sensible.
+<br>
+<br>
+<b>Jeremy: What do you currently see as the major problems of E?</b>
+<br>
+<br>Raster: Lack of features. The backend design is now solid and
+workable. Mainly our work is cut out for adding features in a clean,
+solid and
+extensible manner. There is, of course, work to be done in the areas of
+optimizing internal data tracking code (the list code) that to date has
+been stable and DAMN useful in being able to generate, database then
+find later chunks of data easily. This can be optimized by splitting
+the
+list into smaller segments based on data type, possibly hashing etc..
+we
+have our ideas for that already... just have to go do it... the other
+thing we need to do it split the configuration a little more and have e
+autosave more data and allow the config to "modify" theme provided
+defaults when it encounters a user-specified components of the same
+name, using the user-specified values over and above those specified by
+the theme.
+<br>
+<br>
+Mandrake: Problems?  Well - sometimes the very thing that you like the most
+about a piece of software is the thing that's also the biggest drawback.  It
+used to be speed was a main concern - but that problem is pretty much taken
+care of.  Nowadays it's just a matter of configuration complexity.
+Configuration being E's biggest strength, it also causes a lot of people to
+turn away: "Wow, this is really cool, but it's too hard to make it do exactly
+what I want."  I hear that a lot.  I expect a lot of that to be taken care of
+very soon with the advent of a slightly improved configuration model (don't
+worry if you're using the current configuration syntax and you want to keep
+that stuff working!  it will (I hope *grin*)  there's just some more cool stuff in the works.
+<br>
+<br>Technoir: The main questions on #E about E are probably concerning
+the required image libraries for E and the configuration code. It would
+be nice if there was only one image library (imlib) which could process
+every
+image format needed by E, then use other, less used image formats, use
+optional separate libs. This would probably avoid many of those
+'Multiple Headers' problems. Although if people who didn't know where
+headers were installed too used RPMs or .debs it would help. <br>
+<br>
+As for the config system, people always moan about ConfigEdit not being
+able to create new classes, then when told that they should edit their
+.cfg files by hand, they just give up.
+<br>
+<br>
+Another main problem with E is that people, for some reason, lack the
+ability to read the documents, help files or error messages. People
+always coming to #E, with say a compile time problem, where the error
+they get basically tells them what to do. Again people who can't read
+should use packages of E, and not the source code. No doubt there will
+be someone who has got the CVS version of E running, then decides to
+install the RPMs of DR0.15, when it's released, basically stopping
+anything which uses imlib compiling in the future. 
+<br>
+<br>
+<b>Jeremy: Are you more concerned with having every possible feature or
+with getting out a timely release for Enlightenment version 1.0?</b>
+<br>
+<br>
+Raster: Features. e 0.15 (under development) CVS is stable nearly all
+the time. Every now and again we twiddle with a new feature that may
+break stuff
+temporarily, but otherwise it's pretty good. This is the development
+method we wish to keep. So basically any "latest release" will be
+pretty much stable. 1.0 to me for Enlightenment means I am happy with
+its feature set and stability - and that I need not keep working on it
+immediately and can take a rest and let everyone use it and have fun
+without demanding for new features because the feature is already
+there. We do wish to get a 1.0 release out - but not just because of
+the label of "1.0" - it is meaningless if 1.0 is missing things and we
+need a 1.1, 1.2, 1.5, 2.0 etc. to finally get E to a point of
+"happiness". beyond 1.0 would be some major additions to E - possibly
+shift of windowing system if needed / required, and work on X itself to
+add extensions for possibly new fancy features that X simply didn't
+allow us to do before.
+<br>
+<br>
+Mandrake: Right now we have a serious focus on quality of release.  I don't
+think that everything under the sun will be implemented by 1.0, but I expect
+that's going to be off by at least a year or two. :)
+<br>
+<br>
+Technoir: Probably the most important consideration in a 1.0 release, which
+you've not mentioned, is stability. As far as I remember the DR0.14
+release had no serious bugs in it, in fact the only one which I even
+heard of was the $EROOT problem with certain systems.
+<br>
+<br>
+<b>Jeremy: Do you see any major speed bottlenecks currently in
+Enlightenment; either due to the current way things are implemented or due to external bottlenecks (such as X servers, etc)</b>
+<br>
+<br>
+Raster: Most of the speed bottleneck is X - basically X can only move windows
+and stuff on a graphic's card so fast. The truetype font renderer is
+hell on overhead just to be able to implement anti-aliasing - so if X
+did this it would be an instance speedup. The other bottleneck is imlib
+it can only load/render so fast. Most of E's problems in speed are
+simply Xserver-bound. A fast Xserver setup properly with all things
+turned on and imlib with all options turned on will be pretty damn fast.
+<br>
+<br>
+Mandrake: Well - there are always things that you can do to improve speed in
+anything - but you're not going to notice it unless the speed improvements are
+done in the image loading/rendering department at this point.  There may be
+bits that are improvable, but by and large the problems are going to be in X
+server performance at this point (and maybe the layers underneath imlib - i.e.
+libpng, libgif, etc).  I have a standing offer to buy dinner with whoever can
+make the Shape Extension use hardware acceleration.
+<br>
+<br>Technoir: The main bottleneck which I've experienced is the use of
+shaped pixmaps(one reason why the default theme was changed, as for
+some reason
+people judge the speed of something by what it does the first time they
+install it)
+<br>
+<br>
+<b>Jeremy: From my experience, I have noticed that E seems slow at times.
+Is this mainly due to the developmental nature of it currently, and in it's
+final incarnation, do you see it running better on lower-end systems?</b>
+<br>
+<br>
+Raster: Slow at times? In what sense "at times"? E has lots of knobs and
+twiddles - an example is when you flip desktops E will dynamically load
+and render a new background for the new visible desktop if there wasn't
+one there already. If you dont look at a desktop for more than X
+minutes E will destroy the background, clear the background, and thus save
+memory on the server-side - but this means next time you look at the
+desktop E has to re-load the image. It saves on RAM but eats more CPU -
+its a RAM/CPU tradeoff. This option is customisable - you can even turn
+it off so E never unloads and frees desktop backgrounds.
+<br>
+<br>
+E will tend to run better on low-end systems than most WM's - for one
+reason. E auto-adjusts all the stuff it does to run at the same speed
+irrespective of machine speed - so the faster the machine, the smoother
+things are - not the faster they are - shading speed, sliding, etc. all
+are based on pixels / second and thus it will perform well on lower
+systems by keeping up with the machine and user rather than lagging
+behind.
+<br>
+<br>Mandrake: Well - the biggest slow spots are image caching issues.
+Typically if you don't go to a desktop that has a different background
+loaded in it,
+enlightenment has unloaded that graphic from memory to conserve on
+memory
+usage. This helps keep the memory usage down. Going to that desktop
+again can give you a speed hit.
+<br>
+<br>Technoir: The current release of E is much faster than the earlier
+releases, and the version in CVS is even faster, mainly due to the new
+theme.
+<br>
+<br>
+I saw a rather massive speed increase, especially when it redraws a
+complete desktop (for example at startup) since I've used mtrr in the
+kernel. Basically X runs much faster and everything seems a lot smoother.
+<br>
+<br>
+The only time I find a big slowdown compared to earlier releases is
+when changing desktops, as Imlib caches the images. It can take a good
+2-3 secs for a new desktop to appear in Hand of God.
+<br>
+<br>
+<b>Emissary: Do you think E will be a default window manager
+in the near future (for redhat, debian, or any other distribution)?</b>
+<br>
+<br>
+Raster: I don't know about anyone else, but right now it seems E will be the
+default WM to ship with GNOME on Red Hat since it is getting all the
+GNOME support added on a daily basis and has a GNOME integrated
+configuration program that makes it easy for a user to change common
+settings for the WM in a very clean manner.
+<br>
+<br>Mandrake: At least not until after 0.15 or 0.16 is out. There's
+still too much that we don't do yet. Everything from 0.13 and prior was
+thrown out the door for 0.14, so we're basically coming up on the 2nd
+release of this shortly :) I'd say you'd DEFINITELY want to wait until
+after this release or the next one before you thought about doing that.
+<br>
+<br>Technoir: I think it will end up as the default WM for GNOME, and
+with probably be the default WM for any distributions which bundle
+GNOME in their
+system. I doubt this will happen for a while, at least not until GNOME
+is stable and E reaches towards 1.0. <br>
+<br>
+<b>Emissary:  Do you see E DR 0.14 as the last complete
+rewrite of E?</b>
+<br>
+<br>
+Raster: Until 1.0 - yes. After 1.0 I have no clue - depends if we stick
+to X or not. If we stick to X probably not - there is a lot of solid
+back-end
+there. I don't see much of a reason to spend time nuking it and
+restarting.
+<br>
+<br>
+Mandrake: There's always a nasty habit of saying "damn, I'll never do that
+again" but you usually end up doing it anyways.  0.14 was written from the
+ground up because the model from 0.13 and prior just wasn't good enough for
+where we wanted to go.  
+<br>
+<br>Technoir: Most likely, although most of the code could be changed
+without anyone knowing, assuming the configuration code is the same. I
+doubt that it
+will ever be rewritten from scratch, as the current code seems to works
+as well as most people would expect.
+<br>
+<br>
+<b>Emissary: Is the current line (E .14 and .E. 15) what the 1.0 release
+will look like?</b>
+<br>
+<br>
+Raster: Probably - very similar at any rate.
+<br>
+<br>Mandrake: Internally? probably we'll keep this same structure
+codewise.
+Externally? well - there's a new look every couple of months or so. I
+don't
+know about you, but I get bored of looking at the same thing every day.
+I live in front of my computer - it's gotta be pleasant to the eye :)
+<br>
+<br>Technoir: Probably not. The default theme has changed twice since
+the pre-releases of DR0.14, and I would imagine that it'll be changed
+for DR0.16 too. <br>
+<br>
+<b>Emissary: Technoir, you run e.themes.org,  what made you want to help
+run E's themes site versus another window manager?</b>
+<br>
+<br>
+Mandrake: He didn't want to.  I had to threaten his computer :)
+<br>
+<br>
+Technoir: As far as I'm concerned there are very few (if any) other WMs which
+allow the same level of customization as E. Say, for Window Maker, the
+themes as basically colour schemes and new application icons. You could
+easily spot any Window Maker desktop a mile off, as the windows and the
+general desktop, will retain the same structure. With E, you can make
+the desktop look and behave almost anyway you like. If you just showed
+someone a screenshot of both the default theme and of Hand of God, I
+think it would be difficult for them to accept that they were both
+using the same engine. 
+<br>
+<br>
+<b>Emissary: Technoir, what do you see as Enlightenment's best features?
+</b><br>
+<br>
+Technoir: I have to say, I love the new config system. It's much easier to do
+things that in the older versions, and allows for much greater variety
+of options.
+<br>
+<br>
+<b>Emissary: Technoir, what would you like to see in future incarnations
+of E (features, looks, etc.)?</b>
+<br>
+<br>
+Technoir: If menus and containers are up to scratch in DR0.15, the next
+needed feature will be the pagers. How exactly this will be done, I
+have no
+idea, as they are not just desktops any more. They are movable windows,
+so a simple fvwm style pager (4 desktops in a square) probably won't
+work as the desktops are not next to each other in the same way as they
+are in fvwm. <br>
+<br>
+<b>Emissary: What type of system do you test and run E on? Furthermore, what
+would you like to see as the minimum system requirements to run E well?
+</b><br>
+<br>
+Raster: Umm.. sorry to disappoint but I actually test e on PII-30''s
+with 128Mb and Millenium II 8mb cards (one PCI one AGP) - I dont often
+sit at any
+other machine since these 2 are my work and home boxes. I have
+personally run E on alphas, sparcs and ARM machines quite happily - but
+I dont actually test it because I simply dont have those machines
+myself. I'm not wealthy by any means. I only own 1 computer - its no a
+shabby one, but I don't have the money to go buying 5 different
+architectures. I'd love to test it on all but as a free software
+developer doing this in his spare time evenings and weekend I make do
+with what I have. I need a box in front of me since this is X
+development I need to SEE whats going on and that means I need to buy a
+machine and a display for it (running remotely onto another display
+docent help debug local display bugs / characteristics).
+<br>
+<br>
+
+Mandrake: I have run E on everything from a 486/33 with either 16 or 24 megs of
+ram (I don't remember) to a pII/333 with 128+ megs of ram.  I was shocked when
+I noticed how well E held up on the low end system, actually.  (whilst we were
+up in northern Virginia a week or two ago, we installed E on a 486 for some guy
+- simply amazing that it held up so well)
+<br>
+<br>Technoir: I run E on a Dual PII 300 with 320Mb RAM. I generally
+don't test it, but as I use it a number of problems invariably appear.
+The minimum
+system requirements are probably more specific to the theme rather than
+the window manager as a whole. You could, for example, make a very
+simple theme, which would probably run fine on a low end system
+(486/sx or something). <br>
+<br>
+<b>Barath: What is the extent of gnome support in E, as it was one of the
+first WM's that had some gnome support?
+</b><br>
+<br>
+Raster: Well currently ICEWM, E and WindowMaker have GNOME support in
+order of most extensive / working and useable support E is on the top -
+ICEWM is
+close (needs some changes to "catch up") and WindowMaker is um...
+fairly behind. There have been proposals for gnome WM hints on pages
+for months and they are free to implement them but haven't yet -
+gnome.c from E's source tree in GNOME cvs is a pretty good level of
+documentation and a startpoint for gnome compliance. It's fully
+commented.
+<br>
+<br>
+Mandrake: basically, E is the standard of gnome support, seeing as gnome hint
+stuff goes into E first for testing :)
+<br>
+<br>
+Technoir: Since Raster wrote the first GNOME hints code into E, it basically
+defines the extent of the GNOME support.
+
+<br>
+<br>
+<b>Barath: Mandrake, do you see the E config editor being able to
+graphically configure all elements of E?</b>
+<br>
+<br>Mandrake: That is the goal, here. You shouldn't HAVE to ever touch
+the config file if you don't want to, although there may be some
+advantages to it, if you're an advanced user.
+<br>
+<br>
+<b>Barath: How do you make the graphics for the default theme for E?  What
+is your inspiration for its design/look/feel?
+</b><br>
+<br>
+Raster: Ummmmm... inspiration.. Don't know.. I just.. um.. drew... :) I use
+gimp for all of E's graphics. I've always likes dark displays and thus
+the display is darkish. Apart form that it's all free-form. :)
+<br>
+<br>
+<b>Barath: What other features do you want to add to E before you release
+0.15?</b>
+<br>
+<br>Raster: More IPC, make menus work - cleanup tooltips, a few more
+toggle options for E's behavior, and a definite config file cleanup.
+Containers need
+to get finished too, and all current "features in progress" need
+finishing. Then comes QA for a while to weed out little buglets and
+strange stuff before the 0.15 release. Then its time to start on 0.16
+:)
+<br>
+<br>Mandrake: Containers - basically a much more powerful concept than
+the iconbox, but that's where the original concept came from. Imagine
+smaller desktop-like things that you can drag around like a window (not
+just like the floating desktops - these can be any size with or without
+handles) that can
+automatically or forcefully take windows/buttons/etc. and you can
+choose the
+buttons that can go in it, or the windows, etc...
+<br>
+<br>
+<b>Barath: What res mode do you run E in?</b>
+<br>
+<br>
+Raster: at home 1280x1024, at work 1600x1200 or 1920x1440 depending on what
+mood I'm in :)
+<br>
+<br>
+Mandrake: I don't like to run in anything less than 1280x1024, but we try to
+make sure everything looks okay in 640x480, too.
+<br>
+<br>Technoir: 1600 x 1200, although I have used it at 1024 x 768, but
+again, it does depend on the theme. There is no reason why you couldn't
+run it at
+640x480, although how anyone can use X, never mind a WM, at that
+resolution I don't know.
+<br>
+<br>
+<b>Barath: Raster, what are your goals for imlib 2?
+</b><br>
+<br>Raster: Layer-based graphics engine with image loading and
+rendering abilities, pixmaps and image sharing between clients (so
+server based),
+anti-aliased scaling, arbitrary mapping routines to allow arbitrary
+rotation and scaling of layers and images, alpha channel compositing,
+speedups here and there.. and more. Also possible threading of
+rendering
+routines for SMP machines (ie spawn 4 rendering threads for a 4CPU
+machine to max out its processing power). This is a big project -
+ambitious but doable - it will take a long time to see it come to
+completion though.
+<br>
+<br>
+<b>Barath: Technoir, as a theme creator, do you find the configuration of
+themes in E 0.14 and 0.15 to be easier or harder to use?  Do you find it to be much more powerful?
+</b><br>
+<br>
+Technoir: The new configuration system is a lot more powerful than in earlier
+releases. It it also much more consistent, in that in earlier releases
+each file for each part of theme, had it's own specific structure and
+style. The current .cfg setup is a lot cleaner and due to the way in
+which the actionclasses and such like are done, duplication of a
+specific method, be it a class to run an Eterm or to kill a window, is
+alot easier. If I had, say, 20 buttons which each load gimp, and each
+used the same actionclass then to make it load xv when you hold down
+alt could be done a lot quicker as only a single part of the code would
+have to be altered, rather than 20.
+
+<br>
+<br>
+
+<br>
+<br>
+<br><br>[ <a href="http://web.archive.org/web/19990826131641/http://www.linuxpower.org/post_comment.phtml?id=69">Reply to this item</a> ]&nbsp;&nbsp;&nbsp;&nbsp;[ <a href="http://web.archive.org/web/19990826131641/http://www.linuxpower.org/display_item_flat.phtml?id=69">Flat Mode</a> ]<br></font><hr><font face="Verdana,Arial,Helvetica" color="#000000"><font color="black">Anonymous</font>&nbsp;&nbsp;&nbsp;October 20, 02:49 PM<br>
+Subject: Nice job<br><br>Extremely good interview.. Everything I ever wanted to know.. except.. 
+<br>
+FOR THE LOVE OF GOD! WHEN CAN WE SEE V.15 RELEASED!!! <br>[ <a href="http://web.archive.org/web/19990826131641/http://www.linuxpower.org/reply_comment.phtml?comment=64">Reply to this</a> ]<br></font><hr>
+<font face="Verdana,Arial,Helvetica" color="#000000"><a href="mailto:p_duncan@efn.org"><font color="silver">Paul</font></a>&nbsp;&nbsp;&nbsp;October 20, 03:19 PM<br>
+Subject: Imblib Neccesities<br><br>Raster, don't forget about being able to apply realtime GIMP filters with Imlib.
+<br>
+
+<br>
+- paul<br>[ <a href="http://web.archive.org/web/19990826131641/http://www.linuxpower.org/reply_comment.phtml?comment=65">Reply to this</a> ]<br></font><hr>
+<font face="Verdana,Arial,Helvetica" color="#000000"><a href="mailto:firewave@videotron.ca"><font color="silver">Alexandre</font></a>&nbsp;&nbsp;&nbsp;October 20, 03:41 PM<br>
+Subject: What about theming the rotation of windows?<br><br>I
+havent played with a recent E but i saw that in AfterStep now when
+minimizing a window it s flipping backward..could we define the
+movement on that window in E so the windows could flip the way we want
+it? ;)
+<br>
+
+<br>
+(just a crazy idea from someone who has a bad english :)<br>[ <a href="http://web.archive.org/web/19990826131641/http://www.linuxpower.org/reply_comment.phtml?comment=66">Reply to this</a> ]<br></font><hr>
+<font face="Verdana,Arial,Helvetica" color="#000000"><a href="mailto:kdekorte@qadas.com"><font color="silver">Kevin</font></a>&nbsp;&nbsp;&nbsp;October 20, 03:45 PM<br>
+Subject: Instead of X<br><br>What would be used in place of X if you chose not to stick with it? Broadway? What other options are available?<br>[ <a href="http://web.archive.org/web/19990826131641/http://www.linuxpower.org/reply_comment.phtml?comment=67">Reply to this</a> ]<br></font><hr>
+<font face="Verdana,Arial,Helvetica" color="#000000"><a href="mailto:jrwren@oakland.edu"><font color="silver">evarlast</font></a>&nbsp;&nbsp;&nbsp;October 20, 03:59 PM<br>
+Subject: Welp, I'm sold.<br><br>I've
+used E. I've used WM. I recently made a choice of WM. Unfortunately I
+wasn't aware of the GNOME standard E seems to have a hold on. As a
+GNOME user, it sounds like I would benefit from using E. So I will.
+<br>
+
+<br>I have a question. Those are some high resolutions mentioned above.
+I'm wondering what kind of displays they are on, and if they are using
+completely custom fonts. Cuz the 75, and even 100dpi X fonts seem VERY
+small at those resolutions on my 19" monitor.
+<br>
+<br>[ <a href="http://web.archive.org/web/19990826131641/http://www.linuxpower.org/reply_comment.phtml?comment=69">Reply to this</a> ]<br></font><hr>
+<font face="Verdana,Arial,Helvetica" color="#000000"><a href="mailto:bilbo@sorcery.net"><font color="silver">Bilbo</font></a>&nbsp;&nbsp;&nbsp;October 20, 04:19 PM<br>
+Subject: going going gone<br><br>If my ISP ever gets in gear and lets my linux box dial up again im definatly going to try E
+<br>
+
+<br>
+i use Window Maker right now, and like it, but I think E has great potential!
+<br>
+
+<br>
+Keep up the good work!<br>[ <a href="http://web.archive.org/web/19990826131641/http://www.linuxpower.org/reply_comment.phtml?comment=70">Reply to this</a> ]<br></font><hr>
+<font face="Verdana,Arial,Helvetica" color="#000000"><a href="mailto:luyseyal@austin.cc.tx.us"><font color="silver">Luyseyal</font></a>&nbsp;&nbsp;&nbsp;October 20, 04:56 PM<br>
+Subject: Fonts for E<br><br>i haven't tested the new E15 TTF engine, but using XFSTT w/ E 14 has made using fonts very NICE.
+<br>
+
+<br>
+shamelessplug
+<br>
+
+<br>
+Jade Theme home:
+<br>
+http://www.austin.cc.tx.us/luyseyal/linux.html
+<br>
+
+<br>
+i'm currently working on a nice Jade Eterm theme to go w/ the Xresources netscape stuff.
+<br>
+
+<br>
+/shamelessplug
+<br>
+
+<br>
+-l<br>[ <a href="http://web.archive.org/web/19990826131641/http://www.linuxpower.org/reply_comment.phtml?comment=72">Reply to this</a> ]<br></font><hr>
+<font face="Verdana,Arial,Helvetica" color="#000000"><a href="mailto:roque@axur05.org"><font color="silver">roque</font></a>&nbsp;&nbsp;&nbsp;October 20, 04:58 PM<br>
+Subject: scroll<br><br>ACTION_SCROLL_WINDOWS moves all windows on the desktop.
+<br>
+I would like a ACTION_SCROLL_WINDOW to move only the focused window, I dont think its hard to do ;)<br>[ <a href="http://web.archive.org/web/19990826131641/http://www.linuxpower.org/reply_comment.phtml?comment=73">Reply to this</a> ]<br></font><hr>
+<font face="Verdana,Arial,Helvetica" color="#000000"><font color="black">ben</font>&nbsp;&nbsp;&nbsp;October 20, 07:06 PM<br>
+Subject: E window rotation<br><br>Having just switched to Linux from '95 I must say E is one of the best pieces of eye candy one can show a '95 user...
+<br>
+
+<br>the first WM I saw in action was AfterStep. Those flipping windows
+when minimizing are too cool. I only wish the flipping window was
+texture mapped with a windowshot... now that'd be cool. (if that were
+done with open GL or the like that'd be so cool :-)
+<br>
+thanks for everything Raster and all<br>[ <a href="http://web.archive.org/web/19990826131641/http://www.linuxpower.org/reply_comment.phtml?comment=74">Reply to this</a> ]<br></font><hr>
+<font face="Verdana,Arial,Helvetica" color="#000000"><font color="black">Anonymous Coward</font>&nbsp;&nbsp;&nbsp;October 20, 07:28 PM<br>
+Subject: E<br><br>Simply put, E 0wnz j00! :-)<br>[ <a href="http://web.archive.org/web/19990826131641/http://www.linuxpower.org/reply_comment.phtml?comment=76">Reply to this</a> ]<br></font><hr>
+<font face="Verdana,Arial,Helvetica" color="#000000"><a href="mailto:plang@ibsp.net"><font color="silver">Patrick Lang</font></a>&nbsp;&nbsp;&nbsp;October 20, 08:55 PM<br>
+Subject: progress of E<br><br>I
+currently run E14, and have used E as my window manager since the
+fvwm-xpm days, and I have been extremely impressed all along. Just when
+I thought it couldn't get better around DR11-13, 14 came out and blew
+everything away for speed.
+<br>
+
+<br>I like E mainly for the customizability, and it's a nice relief to
+sit down in front of a beautiful, stable system after using NT and
+Windows 95 at work.
+<br>
+
+<br>
+keep up the good work!
+<br>
+kaotik funk<br>[ <a href="http://web.archive.org/web/19990826131641/http://www.linuxpower.org/reply_comment.phtml?comment=78">Reply to this</a> ]<br></font><hr>
+<font face="Verdana,Arial,Helvetica" color="#000000"><font color="black">ntype</font>&nbsp;&nbsp;&nbsp;October 20, 09:55 PM<br>
+Subject: Good Job!<br><br>I found this interview to be very amusing and entertaining. I just want to know when E V15 will come out!<br>[ <a href="http://web.archive.org/web/19990826131641/http://www.linuxpower.org/reply_comment.phtml?comment=79">Reply to this</a> ]<br></font><hr>
+<font face="Verdana,Arial,Helvetica" color="#000000"><a href="mailto:mi_nielsen@yahoo.com"><font color="silver">Michael Nielsen</font></a>&nbsp;&nbsp;&nbsp;October 21, 02:08 AM<br>
+Subject: E backend IPC as CORBA IDL's<br><br>
+<br>
+You don't get into specifics about the E backend
+<br>
+IPC mecanism. What I would like to know is, if 
+<br>
+E will support CORBA interfaces to its backend.
+<br>
+
+<br>
+<br>[ <a href="http://web.archive.org/web/19990826131641/http://www.linuxpower.org/reply_comment.phtml?comment=80">Reply to this</a> ]<br></font><hr>
+<font face="Verdana,Arial,Helvetica" color="#000000"><a href="mailto:eiasmaya@soback.kornet21.net"><font color="silver">heo won</font></a>&nbsp;&nbsp;&nbsp;October 21, 08:13 AM<br>
+<br>[ <a href="http://web.archive.org/web/19990826131641/http://www.linuxpower.org/reply_comment.phtml?comment=81">Reply to this</a> ]<br></font><hr>
+<font face="Verdana,Arial,Helvetica" color="#000000"><a href="mailto:eiasmaya@soback.kornet21.net"><font color="silver">heo won</font></a>&nbsp;&nbsp;&nbsp;October 21, 08:22 AM<br>
+<br>[ <a href="http://web.archive.org/web/19990826131641/http://www.linuxpower.org/reply_comment.phtml?comment=82">Reply to this</a> ]<br></font><hr>
+<font face="Verdana,Arial,Helvetica" color="#000000"><a href="mailto:florian@hars.de"><font color="silver">Florian Hars</font></a>&nbsp;&nbsp;&nbsp;October 21, 09:34 AM<br>
+Subject: Flipping windows<br><br>What the world really needs is a X server with<br>
+OpenGL and a window manager that uses this<br>
+feature to arbitrarily position all windows in<br>
+virtual space. See the screenshot at the URL.<br>[ <a href="http://web.archive.org/web/19990826131641/http://www.linuxpower.org/reply_comment.phtml?comment=83">Reply to this</a> ]<br></font><hr>
+<font face="Verdana,Arial,Helvetica" color="#000000"><a href="mailto:gio@linux.digitalasset.co.th"><font color="silver">Gio</font></a>&nbsp;&nbsp;&nbsp;October 21, 10:07 AM<br>
+Subject: E is really enlightenment for me<br><br>After
+tried some WMs, and I found E, I got enlightened and can't get back to
+use another WM again. Many thanks to Raster, Mandrake, and Technoir you
+do the very best jobs for free.<br>[ <a href="http://web.archive.org/web/19990826131641/http://www.linuxpower.org/reply_comment.phtml?comment=85">Reply to this</a> ]<br></font><hr>
+<font face="Verdana,Arial,Helvetica" color="#000000"><a href="mailto:michael@kanji.com"><font color="silver">Michael Babcock</font></a>&nbsp;&nbsp;&nbsp;October 22, 02:46 PM<br>
+Subject: The problem with non-FVWM window managers<br><br>Is that, despite all their new features, they don't get the basic brilliance of FVWM right: virtual desktops.
+<br>
+
+<br>
+I've tried all the other window managers, and even though they often
+have cool new things I'd like to have on my fvwm desktop, the lack of
+the virtual desktops ALWAYS brings me back to fvwm.
+<br>
+
+<br>Virtual desktops are intuitive. I've seen several windows and mac
+users come to Linux, and comment on how much they like the virtual
+desktops.
+<br>
+
+<br>If it's not broke why fix it? Window Makers workspaces are not the
+same. E's sliding desktops are not the same. A linear sequence of
+desktops is just NOT THE SAME as having a 2D geometric representation.
+I know where my applications are geometrically on my 3x3 desktop setup.
+I can think "I've got my emacs in the top left corner" and instantly
+slide over there with the mouse, or even faster with the ctrl-arrow
+combination with one hand. Compare this to the linear arrangement of E
+or window maker ("was my emacs on desk 4 or 7?").
+<br>
+
+<br>E seems to emphasize configurability, but I was dissappointed when
+I read in this interview that ONCE AGAIN they would fail to allow us
+implement a "simple FVWM pager". Simple does not mean bad. Please prove
+me wrong and give us the flexibility to have a "simple fvwm-style
+pager"!
+<br>
+
+<br>
+I want to use E for its other great features, but sometimes "feel" is more important than "look".
+<br>
+<br>[ <a href="http://web.archive.org/web/19990826131641/http://www.linuxpower.org/reply_comment.phtml?comment=90">Reply to this</a> ]<br></font><hr>
+<font face="Verdana,Arial,Helvetica" color="#000000"><a href="mailto:agrajag@linux-shell.net"><font color="silver">`Jag</font></a>&nbsp;&nbsp;&nbsp;October 22, 04:46 PM<br>
+Subject: Re: The problem with non-FVWM window managers<br><br>I
+can think of two windowmanagers off the top of my head that do pagers
+like that and aren't FVWM. One of them is Afterstep. I know this was
+originally based off of fvwm, but it is not fvwm anymore. There is also
+vtwm which does a great job in my opinion.
+<br>
+
+<br>
+`Jag<br>[ <a href="http://web.archive.org/web/19990826131641/http://www.linuxpower.org/reply_comment.phtml?comment=93">Reply to this</a> ]<br></font><hr>
+<font face="Verdana,Arial,Helvetica" color="#000000"><font color="black">Anonymous</font>&nbsp;&nbsp;&nbsp;October 22, 07:07 PM<br>
+Subject: Fvwm pager isnt all that I think<br><br>I
+dont much like the fvwm pager.. I think its kinda annoying just sitting
+there obscuring a big chunk of the bottom right view... But I Dont like
+multiple desktops either soo...<br>[ <a href="http://web.archive.org/web/19990826131641/http://www.linuxpower.org/reply_comment.phtml?comment=94">Reply to this</a> ]<br></font><hr>
+<font face="Verdana,Arial,Helvetica" color="#000000"><a href="mailto:r-z-r@netscape.net"><font color="silver">r-z-r</font></a>&nbsp;&nbsp;&nbsp;October 22, 09:06 PM<br>
+Subject: GNOME &amp; E.<br><br>When we see a "gnome-everthing.rpm" is when I think windows will die.  :)<br>[ <a href="http://web.archive.org/web/19990826131641/http://www.linuxpower.org/reply_comment.phtml?comment=96">Reply to this</a> ]<br></font><hr>
+<font face="Verdana,Arial,Helvetica" color="#000000"><a href="mailto:mithalas@telisphere.com"><font color="silver">Mithalas</font></a>&nbsp;&nbsp;&nbsp;October 23, 11:35 PM<br>
+Subject: E<br><br>I've
+been running linux for about 4 years off and on. One of the biggest
+things that has kept me going to linux was E. I've used fvwm and
+afterstep (afterstep being better not trying to be 95), E blows them
+both. The desktop idea is great and better than a pager. If you really
+think about it the desktops are just like the virtual windows in the
+pager, just no anoying pager to take up space on my desktop. CONGRATS
+and MANY Thanks to the E-Team for all the hard work and effort.
+<br>
+
+<br>
+Mithalas<br>[ <a href="http://web.archive.org/web/19990826131641/http://www.linuxpower.org/reply_comment.phtml?comment=100">Reply to this</a> ]<br></font><hr>
+<font face="Verdana,Arial,Helvetica" color="#000000"><a href="mailto:meese@linuxpower.org"><font color="silver">Barath Raghavan</font></a>&nbsp;&nbsp;&nbsp;October 26, 04:25 PM<br>
+Subject: Re: one question<br><br>We interviewed technoir as he is a theme creator and can give a different perspective on E's configurability.<br>[ <a href="http://web.archive.org/web/19990826131641/http://www.linuxpower.org/reply_comment.phtml?comment=102">Reply to this</a> ]<br></font><hr>
+<font face="Verdana,Arial,Helvetica" color="#000000"><a href="mailto:moodswing@hotmail.com"><font color="silver">Dr. Pimento</font></a>&nbsp;&nbsp;&nbsp;October 25, 12:11 PM<br>
+Subject: one question<br><br>who
+in the hell is technoir? has he contributed anything of value to the
+whole E project? no. has he contributed a theming/download site? yes.
+big stinking whoop. seems to me this weenie is trying to ride in on the
+coattails of people who are actually doing the work. <br>
+<br>[ <a href="http://web.archive.org/web/19990826131641/http://www.linuxpower.org/reply_comment.phtml?comment=106">Reply to this</a> ]<br></font><ul><font face="Verdana,Arial,Helvetica" color="#000000"><li><a href="http://web.archive.org/web/19990826131641/http://www.linuxpower.org/show_comments.phtml?id=69&amp;parent=106">Re: one question</a> by Audeo on 1999-01-17 10:58:29</li></font></ul><hr>
+<font face="Verdana,Arial,Helvetica" color="#000000"><a href="mailto:fan-of-e@home-of.tj"><font color="silver">Barfman</font></a>&nbsp;&nbsp;&nbsp;October 27, 08:15 AM<br>
+Subject: Focus!<br><br>Before
+adding CORBA support or animated background pictures, please focus on
+the fundamental features such as those provided by fvwm1, so I can
+finally start to actually use the new E in daily work!
+<br>
+
+<br>
+Keep up the good work, folks, and thanks!
+<br>
+
+<br>
+<br>[ <a href="http://web.archive.org/web/19990826131641/http://www.linuxpower.org/reply_comment.phtml?comment=107">Reply to this</a> ]<br></font><hr>
+<font face="Verdana,Arial,Helvetica" color="#000000"><a href="mailto:riffraff@csh.rit.edu"><font color="silver">Kim Slawson</font></a>&nbsp;&nbsp;&nbsp;October 27, 07:14 PM<br>
+Subject: OpenGL window manager<br><br>Florian,
+<br>
+
+<br>
+I have thought the same thing for a long time
+<br>
+(the world needs a GLWM).  Are you working on one
+<br>
+or should I go ahead and develop it?
+<br>
+
+<br>
+Cheers,
+<br>
+Kim<br>[ <a href="http://web.archive.org/web/19990826131641/http://www.linuxpower.org/reply_comment.phtml?comment=108">Reply to this</a> ]<br></font><hr>
+<font face="Verdana,Arial,Helvetica" color="#000000"><font color="black">Gid</font>&nbsp;&nbsp;&nbsp;October 27, 08:11 PM<br>
+Subject: OpenGL window manager<br><br>Kim, by all means please develop one.  If Florian decides to create one also then great! But there doesnt have to be just one :)<br>[ <a href="http://web.archive.org/web/19990826131641/http://www.linuxpower.org/reply_comment.phtml?comment=109">Reply to this</a> ]<br></font><hr>
+<font face="Verdana,Arial,Helvetica" color="#000000"><font color="black">BrienT</font>&nbsp;&nbsp;&nbsp;October 28, 12:57 AM<br>
+Subject: Techn0ir<br><br>Theme
+maker? Uhmm no. He himself calls his theme "Hand of god" a copy and
+paste theme (both configuration and images). Taken from other peoples
+work. I will leave my personnal opinions on his theme and its quality
+or lack there of, out of this. But he isnt a "theme maker". More-so a
+"theme recycler".<br>[ <a href="http://web.archive.org/web/19990826131641/http://www.linuxpower.org/reply_comment.phtml?comment=110">Reply to this</a> ]<br></font><hr>
+<font face="Verdana,Arial,Helvetica" color="#000000"><a href="mailto:jack@monterey.com"><font color="silver">Cheesehead</font></a>&nbsp;&nbsp;&nbsp;November 03, 08:31 PM<br>
+Subject: OpenGL<br><br>I've
+seen in some NT5 Betas that menus no longer slide up and down when you
+activate them. If you have a GL card, they coalesce and disintegrate.
+It looks VERY cool. What are the chances of it being implemented in E?<br>[ <a href="http://web.archive.org/web/19990826131641/http://www.linuxpower.org/reply_comment.phtml?comment=118">Reply to this</a> ]<br></font><hr>
+<font face="Verdana,Arial,Helvetica" color="#000000"><a href="mailto:aholden@fit.edu"><font color="silver">Andrew</font></a>&nbsp;&nbsp;&nbsp;November 05, 08:38 PM<br>
+Subject: OpenGL<br><br>It's
+good to see that Microsoft is spending their development money well.
+While they waste time making NT5 look pretty, you just keep on making E
+work well.<br>[ <a href="http://web.archive.org/web/19990826131641/http://www.linuxpower.org/reply_comment.phtml?comment=124">Reply to this</a> ]<br></font><hr>
+<font face="Verdana,Arial,Helvetica" color="#000000"><a href="mailto:chau0033@tc.umn.edu"><font color="silver">Ken Chau</font></a>&nbsp;&nbsp;&nbsp;November 10, 10:28 AM<br>
+Subject: OpenGL<br><br>Okay,
+why do we even compare E with WinNT? It is inherently better cuz of the
+UNIX base - so quit thinking about the past (Microsoft) and keep
+thinking about the present/future (UNIX/Linux/E/GNOME!!)<br>[ <a href="http://web.archive.org/web/19990826131641/http://www.linuxpower.org/reply_comment.phtml?comment=155">Reply to this</a> ]<br></font><hr>
+<font face="Verdana,Arial,Helvetica" color="#000000"><a href="mailto:mindedc@scott.net"><font color="silver">mindedc</font></a>&nbsp;&nbsp;&nbsp;November 11, 04:02 PM<br>
+Subject: fvwm style pagers<br><br>You
+can't beat the fvwm pager, you can easily scoot windows arround and
+between the desktops. At a glance you knowwhere everything is and if
+something is on another desktop and you want it on the current one, you
+just drag it on over... I'm not real crazy about the sliding desktops.
+It's much less powerfull given the speed problems in rasterizing the
+background for the window if the background has come out of cache. I
+jst feels clunky to slide the windows arround too... you have a
+layering problem.. I know there are some advanced controls for that,
+but I would like to think that the development crew is looking for some
+intuitiveness about the environment. <br>
+The other trend seems to be the buttons used in CDE and KDE... This is
+really silly to me... it takes away the ability to look at the pager
+and see where what and move it without the window manager haveing to
+actually display the desktop.
+<br>
+
+<br>As far as the arguement about the pager "taking up a large portion
+of the screen", buy a larger monitor or run a higher resolution! This
+isn't windoez, we KNOW better than to try to use a low resolution
+display for a GUI.<br>[ <a href="http://web.archive.org/web/19990826131641/http://www.linuxpower.org/reply_comment.phtml?comment=184">Reply to this</a> ]<br></font><hr>
+<font face="Verdana,Arial,Helvetica" color="#000000"><a href="mailto:speedyj@mailexcite.com"><font color="silver">Speedyj</font></a>&nbsp;&nbsp;&nbsp;November 21, 12:48 PM<br>
+Subject: E<br><br>Have you guys started getting death threats from Microsoft yet?
+<br>
+
+<br>
+Once 1.0 is complete, they should seriously start to worry ;). I'm
+using a computer with E on in my halls of residence, and all of my
+friends (most of whom haven't even heard of linux) who see me using E
+or play with it, all comment on how pathetic it makes windoze look.<br>[ <a href="http://web.archive.org/web/19990826131641/http://www.linuxpower.org/reply_comment.phtml?comment=378">Reply to this</a> ]<br></font><hr>
+<font face="Verdana,Arial,Helvetica" color="#000000"><a href="mailto:grungee@yahoo.com"><font color="silver">grungee</font></a>&nbsp;&nbsp;&nbsp;November 29, 09:00 AM<br>
+Subject: work to be done<br><br>eye candy is great
+<br>
+only usability is lacking --
+<br>
+
+<br>
+what happened to virtual floating 
+<br>
+menu's ?
+<br>
+
+<br>
+it would be great if we could use this 
+<br>
+E desktop for real work!
+<br>
+
+<br>
+you need some kind of functionality built in<br>[ <a href="http://web.archive.org/web/19990826131641/http://www.linuxpower.org/reply_comment.phtml?comment=397">Reply to this</a> ]<br></font><hr>
+<font face="Verdana,Arial,Helvetica" color="#000000"><a href="mailto:jrista@hotmail.com"><font color="silver">Jon Rista</font></a>&nbsp;&nbsp;&nbsp;December 09, 10:39 PM<br>
+Subject: MMX and E<br><br>The
+bit about WinNT5 and the fading menues. I beta-test NT5, and fading
+menues and window-wipes, etc dont use OpenGL, then use MMX. I
+personally dont care much for any Microsoft O/S. But MS is smart in
+that they use MMX to enhance the speed of graphics processes.
+<br>
+
+<br>I love E, it is absolutly bar-non the prettiest window manager that
+I have ever seen. It also hase a very complete feature set. Stability
+is also a non-problem (compared to WinNT). My only problem with it is
+speed. When compared to BlackBox or Window Maker, E crawls. I know that
+you cant have your cake and eat it too, but with Unix and E, who knows!
+I would love to see Enlightenment support MMX. It could help speed up
+image processing greatly. It would also open possibilities such as REAL
+transparency for Eterm, fading menues, faster window sliding (when
+windows slide onto the desktop) and more.
+<br>
+
+<br>I know platform portability is an issue, but I'm not asking E to
+solely support Intel MMX processors. Just add support, and use MMX if
+it is available.
+<br>
+
+<br>
+GREAT WORK GUYS! I CANT WAIT TO HAVE MY CAKE AND EAT IT TOO!
+<br>
+
+<br>
+Happy Coding!<br>[ <a href="http://web.archive.org/web/19990826131641/http://www.linuxpower.org/reply_comment.phtml?comment=435">Reply to this</a> ]<br></font><hr>
+<font face="Verdana,Arial,Helvetica" color="#000000"><a href="mailto:myrridin@wlug.westbo.se"><font color="silver">Myrridin</font></a>&nbsp;&nbsp;&nbsp;January 17, 04:26 PM<br>
+Subject: When will E respect the Gnome panel ?<br><br>I love E and GNOME, and i use it in my daily work.
+<br>
+I just have one question:
+<br>
+
+<br>
+When will E (and other GNOME-complaint wms) begin to respect the GNOME-panel ?
+<br>
+
+<br>
+So that you could maximize the windows whitout having to mimimize the panel and resize the windows ?
+<br>
+
+<br>btw, When (if) shipping it with RH6.0, make sure there are LOTS of
+themes on the CD :) (and of course, a way of handling these in the
+Gnome-E-capplet(the same goes for GTK+ themes)
+<br>
+
+<br>
+Very very nice work people !
+<br>
+
+<br>
+/
+<br>
+Myrridin
+<br>
+
+<br>
+Hmm, Mandrake, will the Enlightened inc site be up soon ?<br>[ <a href="http://web.archive.org/web/19990826131641/http://www.linuxpower.org/reply_comment.phtml?comment=550">Reply to this</a> ]<br></font><hr>
+
+</td></tr></tbody></table>
+
+<p>
+</p><center> <font face="Verdana, Arial, Helvetica" size="-2" color="#ffffff"><em>
+© Copyright of all documents belonging to this site by linuxpower.org
+and linuxpower.com © 1998, 1999. For more legal information please look
+at our<a href="http://web.archive.org/web/19990826131641/http://www.linuxpower.org/disclaimer.phtml"> disclaimer</a> page.</em></font> </center>
+
+  <!-- End Footer -->
+
+<!-- SOME LINK HREF'S ON THIS PAGE HAVE BEEN REWRITTEN BY THE WAYBACK MACHINE
+OF THE INTERNET ARCHIVE IN ORDER TO PRESERVE THE TEMPORAL INTEGRITY OF THE SESSION. -->
+
+
+<script language="Javascript">
+<!--
+
+// FILE ARCHIVED ON 19990826131641 AND RETRIEVED FROM THE
+// INTERNET ARCHIVE ON 20091105151251.
+// JAVASCRIPT APPENDED BY WAYBACK MACHINE, COPYRIGHT INTERNET ARCHIVE.
+// ALL OTHER CONTENT MAY ALSO BE PROTECTED BY COPYRIGHT (17 U.S.C.
+// SECTION 108(a)(3)).
+
+   var sWayBackCGI = "http://web.archive.org/web/19990826131641/";
+
+   function xResolveUrl(url) {
+      var image = new Image();
+      image.src = url;
+      return image.src;
+   }
+   function xLateUrl(aCollection, sProp) {
+      var i = 0;
+      for(i = 0; i < aCollection.length; i++) {
+         var url = aCollection[i][sProp];         if (typeof(url) == "string") { 
+          if (url.indexOf("mailto:") == -1 &&
+             url.indexOf("javascript:") == -1
+             && url.length > 0) {
+            if(url.indexOf("http") != 0) {
+                url = xResolveUrl(url);
+            }
+            url = url.replace('.wstub.archive.org','');
+            aCollection[i][sProp] = sWayBackCGI + url;
+         }
+         }
+      }
+   }
+
+   xLateUrl(document.getElementsByTagName("IMG"),"src");
+   xLateUrl(document.getElementsByTagName("A"),"href");
+   xLateUrl(document.getElementsByTagName("AREA"),"href");
+   xLateUrl(document.getElementsByTagName("OBJECT"),"codebase");
+   xLateUrl(document.getElementsByTagName("OBJECT"),"data");
+   xLateUrl(document.getElementsByTagName("APPLET"),"codebase");
+   xLateUrl(document.getElementsByTagName("APPLET"),"archive");
+   xLateUrl(document.getElementsByTagName("EMBED"),"src");
+   xLateUrl(document.getElementsByTagName("BODY"),"background");
+   xLateUrl(document.getElementsByTagName("TD"),"background");
+   xLateUrl(document.getElementsByTagName("INPUT"),"src");
+   var forms = document.getElementsByTagName("FORM");
+   if (forms) {
+       var j = 0;
+       for (j = 0; j < forms.length; j++) {
+              f = forms[j];
+              if (typeof(f.action)  == "string") {
+                 if(typeof(f.method)  == "string") {
+                     if(typeof(f.method) != "post") {
+                        f.action = sWayBackCGI + f.action;
+                     }
+                  }
+              }
+        }
+    }
+
+
+//-->
+</script>
+
+</body></html>

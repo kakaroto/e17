@@ -3,6 +3,18 @@ Design Notes
 **Please read this before taking any design related decisions, thank you.**
 
 
+Tidy your HTML
+--------------
+Install tidyhtml from http://tidy.sourceforge.net/ or from your local package
+manager and use the following command to tidy-it-up.
+
+    tidy -m --doctype "strict" --logical-emphasis y --indent "auto" \
+         --indent-spaces "4" --wrap "79" --wrap-attributes y \
+         --char-encoding "utf8" YOURFILE.HTML
+
+This serves for two things, first it makes it consistent with the rest of the
+site and second it will validate your markup.
+
 Color Scheme
 -------------
 I tried to stay true to the monochromatic nature of the e17 default theme so

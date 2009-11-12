@@ -1,0 +1,609 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+
+
+<!-- base href="http://www.linuxandmain.com.wstub.archive.org/" -->
+
+<title>Linux and Main - Interview: The Rasterman</title>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<meta http-equiv="EXPIRES" content="0">
+<meta name="RESOURCE-TYPE" content="DOCUMENT">
+<meta name="DISTRIBUTION" content="GLOBAL">
+<meta name="AUTHOR" content="Linux and Main">
+<meta name="COPYRIGHT" content="Copyright (c) 2002 by Linux and Main">
+<meta name="KEYWORDS" content="News, news, New, new, Technology, technology, Headlines, headlines, Nuke, nuke, PHP-Nuke, phpnuke, php-nuke, Geek, geek, Geeks, geeks, Hacker, hacker, Hackers, hackers, Linux, linux, Windows, windows, Software, software, Download, download, Downloads, downloads, Free, FREE, free, Community, community, MP3, mp3, Forum, forum, Forums, forums, Bulletin, bulletin, Board, board, Boards, boards, PHP, php, Survey, survey, Kernel, kernel, Comment, comment, Comments, comments, Portal, portal, ODP, odp, Open, open, Open Source, OpenSource, Opensource, opensource, open source, Free Software, FreeSoftware, Freesoftware, free software, GNU, gnu, GPL, gpl, License, license, Unix, UNIX, *nix, unix, MySQL, mysql, SQL, sql, Database, DataBase, database, Mandrake, mandrake, Red Hat, RedHat, red hat, Slackware, slackware, SUSE, SuSE, suse, Debian, debian, Gnome, GNOME, gnome, Kde, KDE, kde, Enlightenment, enlightenment, Intercative, interactive, Programming, programming, Extreme, extreme, Game, game, Games, games, Web Site, web site, Weblog, WebLog, weblog, Guru, GURU, guru">
+<meta name="DESCRIPTION" content="Linux for the rest of us.">
+<meta name="ROBOTS" content="INDEX, FOLLOW">
+<meta name="REVISIT-AFTER" content="1 DAYS">
+<meta name="RATING" content="GENERAL">
+<meta name="GENERATOR" content="PHP-Nuke 5.5 - http://phpnuke.org">
+<link rel="StyleSheet" href="20021216233956__www.linuxandmain.com__modules_files/style.html" type="text/css">
+
+
+
+
+
+</head><body link="#0000ff" text="#000000" vlink="#ff0000" alink="#ffff75" bgcolor="#ffffff"><table width="100%" align="center" bgcolor="#ffffff" border="0" cellpadding="0" cellspacing="0">
+<tbody><tr>
+<td align="center" bgcolor="#0000ff">
+<a href="http://web.archive.org/web/20021216233956/http://www.linuxandmain.com/index.html"><img src="20021216233956__www.linuxandmain.com__modules_files/logo.jpg" alt="" ._welcometo.="" linux="" and="" main="" hspace="10" border="0"></a></td>
+</tr></tbody></table>
+<table width="100%" align="center" bgcolor="#fefefe" border="0" cellpadding="5" cellspacing="0">
+<tbody><tr valign="middle" bgcolor="#ffffcc">
+<td nowrap="nowrap" width="15%"><font class="content" color="#363636">
+<b>&nbsp;&nbsp;<a href="http://web.archive.org/web/20021216233956/http://www.linuxandmain.com/modules.php?name=Your_Account&amp;op=new_user">Create an account</a></b><a href="http://web.archive.org/web/20021216233956/http://www.linuxandmain.com/modules.php?name=Your_Account&amp;op=new_user"></a></font></td>
+<td height="20" width="50%" align="center"><font class="content"><b>
+<a href="http://web.archive.org/web/20021216233956/http://www.linuxandmain.com/index.html">Home</a>
+&nbsp;·&nbsp;
+<a href="http://web.archive.org/web/20021216233956/http://www.linuxandmain.com/modules.php?name=Your_Account">Your Account and Login</a>
+&nbsp;
+</b></font>
+</td>
+<td align="center" bgcolor="#ffffcc">
+<center><form action="http://web.archive.org/web/20021216233956/http://www.linuxandmain.com.wstub.archive.org/modules.php?name=Search" method="post"><font class="content" color="#0000ff"><b>Search </b>
+<input name="query" size="14" type="text"></font></form></center></td>
+<td>&nbsp;</td>
+</tr>
+</tbody></table>
+
+<!-- Lets try and begin a table here -->
+<table width="100%" align="center" bgcolor="#ffffff" border="0" cellpadding="0" cellspacing="0"><tbody><tr valign="top">
+<td bgcolor="#ffffff"><img src="20021216233956__www.linuxandmain.com__modules_files/pixel.gif" alt="" height="20" width="1" border="0"></td></tr></tbody></table>
+<table width="100%" align="center" bgcolor="#ffffff" border="0" cellpadding="0" cellspacing="0"><tbody><tr valign="top">
+<td bgcolor="#ffffff"><img src="20021216233956__www.linuxandmain.com__modules_files/pixel.gif" alt="" height="1" width="10" border="0"></td>
+<td valign="top" width="150" bgcolor="#ffffff">
+</td><td><img src="20021216233956__www.linuxandmain.com__modules_files/pixel.gif" alt="" height="1" width="15" border="0"></td><td valign="top" width="100%">
+<table width="100%" border="0"><tbody><tr><td valign="top" width="100%">
+<table width="100%" bgcolor="#ffffff" border="0" cellpadding="0" cellspacing="0"><tbody><tr><td>
+<table width="100%" bgcolor="#ffffcc" border="0" cellpadding="1" cellspacing="0"><tbody><tr><td>
+<table width="100%" bgcolor="#ffffcc" border="0" cellpadding="3" cellspacing="0"><tbody><tr><td align="left">
+<font class="option" color="#363636"><b>Interview: The Rasterman</b></font><br>
+<font class="content">Posted on Saturday, July 20 @ 02:03:00 EDT by <a href="http://web.archive.org/web/20021216233956/http://www.linuxandmain.com/">staff</a></font>
+</td></tr></tbody></table></td></tr></tbody></table><br>
+<a href="http://web.archive.org/web/20021216233956/http://www.linuxandmain.com/search.php?query=&amp;topic=4"><img src="20021216233956__www.linuxandmain.com__modules_files/features.html" alt="Features" hspace="10" vspace="10" align="right" border="0"></a>
+<font class="content"><b><i>There are a few genuine legends in the Linux community, and among
+them is an Aussie named Carsten Haitzler. Who? That's right -- the name
+probably means nothing to you. but his </i>nom de code<i> inspires awe
+in many. He is The Rasterman, and for many years he has been the symbol
+of innovative, uncompromising excellence in pushing the potential of the
+Linux desktop to and past its limits. He is the founder, though
+"inventor" would not be too strong a word, of the <a href="http://web.archive.org/web/20021216233956/http://www.enlightenment.org/pages/main.html">Enlightenment</a>
+project, an infinitely configurable window manager that is working its
+way toward becoming a desktop, even though he thinks the desktop battle is lost. In an email interview, he
+talks about what he's doing, his view of the future of desktop Linux,
+the nature of development projects -- commercial, community-based, and
+genius-based -- and much more.</i></b><br><br></font><p><font class="content"><b>Linux and Main:</b> What are you doing nowadays?</font></p>
+
+<p><font class="content"><b>The Rasterman:</b> I'm in Sydney now. I'm working for a small
+contracting firm here working on Linux embedded-related stuff.</font></p>
+
+<p><font class="content"><b>LaM:</b>&nbsp;We saw a report a year or so ago that described a
+talk and &nbsp;demonstration you gave. The report was written in awed tones
+-- as if the writer could not find the words to describe what he'd seen, but 
+that it was clearly the future. What new areas have you been exploring?</font></p>
+
+<p><font class="content"><b>R:</b> Embedded display systems using a canvas API. Basically... EVAS. :) it was
+written at first to help build efm and subsequently e 0.17 (still being worked
+on) and it's growing up to be even bigger than I had imagined in its
+scope. The new evas codebase is tiny (191kb compiled for arm), handles X
+and the Linux framebuffer (more display targets coming) is lean on RAM,
+fast, and easy to use... more will come from this - but there's barely
+space here to start describing.</font></p>
+
+<p><font class="content"><b>LaM:</b> At about the same time, there was a rumor that you and
+Daniel M. Duley, known to many as Mosfet, were discussing some kind of
+collaborative effort. Anything to it?</font></p>
+
+<p><font class="content"><b>R:</b> I'm a bit vague on my memory. Daniel is a good bloke and does lots of good stuff
+for KDE &amp; themes. Can't recall though - anything more specific to jog my
+brain?</font></p>
+
+<p><font class="content"><i>[Note: There was nothing beyond the rumor, so no additional
+details to provide.]</i></font></p>
+
+<p><font class="content"><b>LaM:</b> As you look at the graphical desktops for Linux other than 
+Enlightenment, do you think they're growing in the right directions?
+What are the best things you find in projects like KDE and GNOME? Where
+do they most fall short?</font></p>
+
+<p><font class="content"><b>R:</b> KDE, I think, are doing a good job. GNOME are behind but
+look a bit nicer (still) thanks a lot to good artwork :). I've stopped
+paying attention really to the "desktop war," though. I tend to not keep
+much track as I just use my own stuff all the time.</font></p>
+
+<p><font class="content"><b>LaM:</b> Where do you think the future lies for desktop Linux?</font></p>
+
+<p><font class="content"><b>R:</b> Not on the desktop. Not on the PC. Not on anything that
+resembles what you call the desktop. Windows has won. Face it. The
+market is <i>not</i> driven by a technically superior kernel, or an OS
+that avoids its crashes a few times a day. Users don't (mostly) care.
+They just reboot and get on with it. They want apps. If the apps they
+want and like aren't there, it's a lose-lose. Windows has the apps. Linux
+does not. Its life on the desktop is limited to nice areas (video
+production, though Mac is very strong and with a UNIX core now will
+probably end up ruling the roost). The only place you are likely to see
+Linux is the embedded space. Purpose-built devices to do a few things
+well. There is no encumbent app space to catch up with as a lot of the
+apps are custom written. It's still a mostly level playing field. This
+is where the strengths of Linux can help make it shine.</font></p>
+
+<p><font class="content"><b>LaM:</b> Where do you think the future <i>ought</i> to lie for
+desktop Linux?</font></p>
+
+<p><font class="content"><b>R:</b> There is none. The future for Linux for anything that isn't
+a headless server in a back room tirelessly serving out data and
+services all day long is on the device market, from PDA to phone to
+watch.</font></p>
+
+<p><font class="content"><b>LaM:</b> What's the least-tapped area of desktop development, if
+there is one &gt;&nbsp;-- a place where there's room for real growth and
+innovation?</font></p>
+
+<p><font class="content"><b>R:</b> Again - not much. The device space is where the interesting
+stuff is at. :)</font></p>
+
+<p><font class="content"><b>LaM:</b> Some projects in Linux -- KDE and GNOME are among them --
+have become truly huge, involving hundreds of people. You've worked on
+very big projects and on smaller ones, where you have more control,
+without the need for a consensus before a feature is added or a direction is 
+chosen. Is there anything lost when a project grows to a size where 
+scores of people are involved? Does the model of free software 
+development that works so well when there are just a few developers 
+scale well? Does it have advantages over the lone developer or small 
+group of developers?</font></p>
+
+<p><font class="content"><b>R:</b> When projects get too big people spend more time in
+politics (talking on mailing lists and waiting for others) than actually
+doing something useful. Generally, splitting something up, not autonomous
+units, and have them work on their own and just end up working in unison
+ends up more efficient, imho. This still means people have to agree how
+they interface, but again, imho, the "benevolent dictator" method when
+one or a very small number decide the important bits (the glue between
+the parts) and then let the rest roll. I also don't see "the more the
+better" as better. Too many cooks spoil the broth. Sometimes one or two really
+good people will easily beat 10 or 20 average ones only working on something in
+their spare time. I personally prefer the "crack troops" style. Get five
+or six <i>really</i> good people and they can do a lot. Hundreds of
+part-timers, imho, don't work as well.</font></p>
+
+<p><font class="content"><b>LaM:</b> You've worked on your own, and in a highly praised
+project or two, and you've also worked in a more formal setting with a
+Linux company. What are the advantages and disadvantages of each as you've 
+experienced them? Would you be likely to work for a Linux-based company
+again? Would you be likely to start a Linux-based company, as some of
+the GNOME people have done with Ximian?</font></p>
+
+<p><font class="content"><b>R:</b> Advantages: You can work on stuff full time and get
+hardware, bandwidth, support - but more than anything - time, to do things.
+Disadvantages: When your company and its projects differ from your personal
+goals and projects, things grate. The job isn't just a job. You code insanely -
+easily 40, 50, 60, 70+ hours a week. But it's not just a job - it's a life, so
+you care very much, and when your company doesn't agree with what you care
+about, things get bad.</font></p>
+<p><font class="content">Would I work for a Linux-based company? Certainly. I don't think of having a
+"job". I don't have "working hours". I am always thinking about the code
+I'm working on, or working on it, when I get out of bed, at night before
+I go to sleep, weekends, on planes. any time. And thinking about
+designs, solutions etc., anywhere from walking down the street to being
+at dinner or lunch. It's not a job - it's a lifestyle and working for a
+Linux company melds in well.</font></p>
+<p><font class="content">Would I start one? Certainly - <b><i>if</i></b> I could get the
+venture capital - but who would fund such a thing these days... even if
+I could pull some really smart motivated people together - I could, but
+who would pay them whilst we busily develop a product to actually sell?
+Bring the VC back as it used to be three years ago or so and I wouldn't
+even blink before giving it a go.</font></p>
+
+<p><font class="content"><b>LaM:</b> If memory serves, there was a time when you didn't think
+the GPL was the best of all possible licenses.</font></p>
+
+<p><font class="content"><b>R:</b> Still don't.</font></p>
+
+<p><font class="content"><b>LaM:</b> What kind of license do you think would be best for
+spurring growth of Linux on the desktop while also addressing the 
+needs and desires of developers themselves?</font></p>
+
+<p><font class="content"><b>R:</b> I choose BSD with the advertising clause. Why? It lets
+people steal the code. Yes. If someone is smart they can steal any code
+they want, GPL, BSD, even commercial code. Dis-assembling to figure out
+the smarts of a system isn't new. Any programmer half-smart can take any
+GPL code and morph it into something so unrecognizable it would be
+impossible to prove legally (beyond reasonable doubt) that they violated
+copyright. I'm a realist. I know anyone could steal my code if it was
+GPL - so why live in a fantasy? Accept the fact, let them steal it -
+just ask them to be nice and tell you they did so you at least get the
+satisfaction of knowing your code was of use to someone. That's my view on it.
+:)</font></p>
+
+<p><font class="content"><b>LaM:</b> Enlightenment was initially the window management system
+for GNOME, but now Sawfish is chiefly used. How did that come about? Was that a 
+disappointment to you, or in retrospection do you see it as a good thing?</font></p>
+
+<p><font class="content"><b>R:</b> Actually incorrect. Enlightenment started long before GNOME
+existed. It was a window manager that did more than just manage windows.
+It was completely themable, handled your desktop background, pagers,
+launcher bar, icons and menus and more. It merely was the first (and for
+a while the only) window manager to fully support gnome applications.
+That is all.</font></p>
+
+<p><font class="content">I offered to mould e to be the GNOME wm, but at the time Miguel was convinced
+you could do a desktop without a wm. I got quite bored of explaining this wasn't
+possible, so by the time he realized he needed wm support I was merrily making e
+do its own thing again regardless of GNOME and its goals. Eventually
+GNOME got its own wm(s). Good for them. But e never was intended for
+GNOME - was around before GNOME, and still does its own merry thing.</font></p>
+
+<p><font class="content">Personally, I'm very happy not to have to debate standards for eons and just get
+to go on and do interesting things and experiment with freedom. It was that
+freedom with experimenting that brought you window managers that could do themes
+and pixmaps in their borders, and shaped windows borders, pagers that showed
+miniatures of your desktop and more... now everyone does them, but e did most of
+them first and broke the ground. I plan on keeping on doing some
+breaking :)</font></p>
+
+<p><font class="content"><b>LaM:</b> Speaking of Enlightenment -- where is it headed? What
+paths is it following that other desktops aren't?</font></p>
+
+<p><font class="content"><b>R:</b> It's a really nice way for me to test evas and push it to
+do more :)</font></p>
+
+<p><font class="content"><b>LaM:</b> For years, Enlightenment has had the reputation of being 
+unquestionably the most attractive desktop imaginable -- some say for 
+any platform, Mac included -- but really difficult to configure. Is 
+that reputation deserved? Do you think it ever was? Who is the user 
+who would find enlightenment especially rewarding?</font></p>
+
+<p><font class="content"><b>R:</b> Difficult - yes. I agree. :) I always intended the really
+cluey people to make configurations for the less cluey, and for them to wrap up all the complex
+options into nice simple bundles, but that never happened, so now I'm moving to
+doing that myself.</font></p>
+
+<p><font class="content"><b>LaM:</b> As Linux has grown, so has the horsepower of the
+equipment needed to do much useful with the newer stuff. Do you think
+the idea that Linux is the desktop of choice for those who have older
+equipment is now pretty much dead? What does it take to run
+Enlightenment? How does this compare with the "big" desktop
+projects?</font></p>
+
+<p><font class="content"><b>R:</b> Personally, since hardware is so dirt cheap I see no
+difference between Windows and Linux. Enlightenment was never intended
+for old systems - fvmw or twm do the job quite fine. It's intended to
+make use of all that raw cpu and gfx power you have - since most of the
+day it sits and does nothing (just check your cpu stats one day).
+Computers spend more time waiting on users to catch up than anything
+else really. :) E is there to poke and prod and do something new. KDE
+and GNOME are there to appeal to the masses. :)</font></p>
+
+<p><font class="content"><b>LaM:</b> You've been working on ways of making direct desktop
+calls to OpenGL. Given its level of development and relative complexity in 
+configuration -- at least as it's shipped by Linux distributors -- how
+do you write around what might be seen as a rickety aspect of the X
+Window System? Are you presuming users who have gotten it set up 
+and working well, or do you hope that distributions will have gotten 
+it sorted out a little better by the time your desktop software is ready
+for broad use?</font></p>
+
+<p><font class="content"><b>R:</b> No no no. Thats not evas. Evas is a canvas - you don't draw
+like "draw a line" "draw a box" draw this string" "paint this image".
+It's object based. You <i>create</i> a line. You <i>create</i> an image.
+You move and resize the objects, show and hide them, etc.</font></p>
+
+<p><font class="content"> Evas handles all the logic there of how to redraw and what to redraw most
+optimally. It <i>also</i> abstracts to the display system underneath;
+<i>one</i> such display system is OpenGL - evas handles that as one of
+its output systems. It can also just use your cpu or basic Xserver
+calls,and more. OpenGL is simply a way of making the routines display
+faster if your hardware is supported by OpenGL. Personally I avoid
+OpenGL, as its still <i>waay</i> too flakey to trust, and instead
+rely on my own software cpu rendering routines.</font></p>
+
+<p><font class="content"><b>LaM:</b> Will e still play nicely with the new GNOME? Can it
+readily be set up &gt;&nbsp;as the window manager in a GNOME 2 system?</font></p>
+
+<p><font class="content"><b>R:</b> Simple answer: no :)</font></p>
+<font class="content"></font>
+</td></tr></tbody></table><br>
+</td><td>&nbsp;</td><td valign="top">
+<table width="150" bgcolor="#ffffff" border="0" cellpadding="0" cellspacing="0">
+<tbody><tr valign="top"><td bgcolor="#ffffcc">
+<center><br><font face="Verdana, Arial, Helvetica" size="-2"><a href="http://web.archive.org/web/20021216233956/http://www.linuxdailynews.net/"><img src="20021216233956__www.linuxandmain.com__modules_files/ldn.jpg"></a></font></center><font face="Verdana, Arial, Helvetica" size="-2"><br><br><font face="Verdana, Arial, Helvetica" size="-2"><img src="20021216233956__www.linuxandmain.com__modules_files/print.gif" alt="Printer Friendly Page" height="11" width="16" border="0">&nbsp;&nbsp;<a href="http://web.archive.org/web/20021216233956/http://www.linuxandmain.com/modules.php?name=News&amp;file=print&amp;sid=141">Printer Friendly Page</a><br><img src="20021216233956__www.linuxandmain.com__modules_files/friend.gif" alt="Send to a Friend" height="11" width="16" border="0">&nbsp;&nbsp;<a href="http://web.archive.org/web/20021216233956/http://www.linuxandmain.com/modules.php?name=News&amp;file=friend&amp;op=FriendSend&amp;sid=141">Send to a Friend</a></font>
+
+
+
+</font></td></tr></tbody></table>
+<br>
+</td></tr></tbody></table>
+
+
+<!-- COMMENTS NAVIGATION BAR START -->
+
+<table width="100%" bgcolor="#ffff9c" border="0" cellpadding="0" cellspacing="1"><tbody><tr><td>
+<table width="100%" bgcolor="#ffffcc" border="0" cellpadding="8" cellspacing="1"><tbody><tr><td>
+<table width="100%" border="0" cellpadding="0" cellspacing="0">
+<tbody><tr><td align="center" bgcolor="#ffff9c"><font class="content" color="#000000">"Login" | <a href="http://web.archive.org/web/20021216233956/http://www.linuxandmain.com/modules.php?name=Your_Account"><font color="#000000">Login/Create an Account</font></a> | <b>12</b> comments</font></td></tr>
+<tr><td width="100%" align="center" bgcolor="#ffffcc">
+<table border="0"><tbody><tr><td><font class="content">
+<form method="post" action="http://web.archive.org/web/20021216233956/http://www.linuxandmain.com.wstub.archive.org/modules.php?name=News&amp;file=article">
+<font color="#0000ff">Threshold</font> <select name="thold">
+<option value="-1">-1</option>
+<option value="0" selected="selected">0</option>
+<option value="1">1</option>
+<option value="2">2</option>
+<option value="3">3</option>
+<option value="4">4</option>
+<option value="5">5</option>
+</select> <select name="mode"><option value="nocomments">No Comments</option>
+<option value="nested">Nested</option>
+<option value="flat">Flat</option>
+<option value="thread" selected="selected">Thread</option>
+</select> <select name="order"><option value="0" selected="selected">Oldest First</option>
+<option value="1">Newest First</option>
+<option value="2">Highest Scores First</option>
+</select>
+<input name="sid" value="141" type="hidden">
+<input value="Refresh" type="submit"></form></font>
+<font class="content"></font></td></tr></tbody></table></td></tr><tr><td align="center" bgcolor="#ffff9c"><font class="tiny">The comments are owned by the poster. We aren't responsible for their content.</font></td></tr></tbody></table>
+
+<!-- COMMENTS NAVIGATION BAR END -->
+
+</td></tr></tbody></table></td></tr></tbody></table>
+<a name="254"></a><table width="99%" border="0"><tbody><tr bgcolor="#ffffcc"><td width="500"><b>Linux UI development needs to look forward</b> <font class="content">(Score: 1)<br>by Nooface on Saturday, July 20 @ 12:04:45 EDT<br>(<a href="http://web.archive.org/web/20021216233956/http://www.linuxandmain.com/modules.php?name=Your_Account&amp;op=userinfo&amp;uname=Nooface">User Info</a> | <a href="http://web.archive.org/web/20021216233956/http://www.linuxandmain.com/modules.php?name=Private_Messages&amp;file=reply&amp;send=1&amp;uname=Nooface">Send a Message</a>) <a href="http://web.archive.org/web/20021216233956/http://nooface.net/" target="window">http://nooface.net</a> </font></td></tr><tr><td>Until
+now, most Linux GUI efforts have followed the traditional WIMP model,
+and most efforts to develop Linux desktop applications have been
+focused on simply recreating equivalents of existing software products.
+As a result, mainstream desktop users have found few compelling reasons
+to switch to Linux because it does not currently offer an experience
+that is fundamentally any different from that of Windows or MacOS
+(notwithstanding its lower price and superior reliability).<br>
+<br>
+Thanks to environments such as MacOS and Windows, the "Windows, Icons,
+Menus, Pointing Device" (WIMP) user interface that we are all familiar
+with has been phenomenally successful at bringing computing power into
+the hands of a vast new set of users. WIMP is so entrenched that it is
+hard to imagine this approach won't be used forever. Indeed, for many
+users, there is no reason to use anything other than the traditional
+user interfaces they are using today. But the fact remains that the
+current method of managing information based on files, hierarchical
+folders, and the desktop has not changed since 1984, and is becoming
+obsolete in today's web- centric computing environment. WIMP, which was
+first introduced in the 1960's, and then commercialized during the
+1970's and 80's, was designed for a computing environment that is very
+different than the one that exists today. Xerox PARC research, from
+which much of the original Macintosh design was derived, was primarily
+aimed at office automation to support small workgroups and a few
+thousand documents. By contrast, the web is a shared information
+environment for millions of users and potentially billions of
+documents. Hardware capabilities have evolved dramatically since then
+as well, offering continuously soaring CPU and graphics performance,
+and storage capacity growth that is outpacing Moore's Law. It simply no
+longer makes sense to run 1984 software on 2002 hardware.<br><br>Linux
+offers a startling opportunity for driving new client platforms into
+the mainstream, but as long as developers just try to make a "better
+Windows than Windows" and stay focused on the old WIMP paradigm, there
+will be no major upswing in the adoption of Linux on the client.
+However, as truly next-generation user interfaces for Linux emerge,
+they will enable the development of new kinds of applications that will
+be difficult or impossible to match on the existing platforms. Such
+"killer" applications (defined as applications that are so valuable
+that they justify adoption of a new platform simply to gain access to
+them) will start the virtuous cycle of platform-application
+interdependency that makes new environments take off like a rocket.</td></tr></tbody></table><br><br>[ No Comments Allowed for Anonymous, please <a href="http://web.archive.org/web/20021216233956/http://www.linuxandmain.com/modules.php?name=Your_Account">register</a>  ]<br><br><ul><li><font class="content" color="#0000ff"><a href="http://web.archive.org/web/20021216233956/http://www.linuxandmain.com/modules.php?name=News&amp;file=comments&amp;op=showreply&amp;tid=255&amp;sid=141&amp;pid=254&amp;mode=&amp;order=&amp;thold=#255">Re: Linux UI development needs to look forward</a> by gratuitous on Saturday, July 20 @ 14:52:24 EDT</font><br><ul><li><font class="content" color="#0000ff"><a href="http://web.archive.org/web/20021216233956/http://www.linuxandmain.com/modules.php?name=News&amp;file=comments&amp;op=showreply&amp;tid=257&amp;sid=141&amp;pid=255&amp;mode=&amp;order=&amp;thold=#257">Re: Linux UI development needs to look forward</a> by Phelk on Saturday, July 20 @ 20:45:05 EDT</font><br></li></ul></li></ul><a name="256"></a><table width="99%" border="0"><tbody><tr bgcolor="#ffffcc"><td width="500"><b>Re: Interview: The Rasterman</b> <font class="content">(Score: 1)<br>by synergyis on Saturday, July 20 @ 20:31:01 EDT<br>(<a href="http://web.archive.org/web/20021216233956/http://www.linuxandmain.com/modules.php?name=Your_Account&amp;op=userinfo&amp;uname=synergyis">User Info</a> | <a href="http://web.archive.org/web/20021216233956/http://www.linuxandmain.com/modules.php?name=Private_Messages&amp;file=reply&amp;send=1&amp;uname=synergyis">Send a Message</a>) </font></td></tr><tr><td>Rasterman
+is correct, I'd love to see the world using KDE or GNOME: but it won't
+happen. XP is stable &amp; cool (it's the product of David Cuttler afte
+all). The future of Linux is as the standard in the datacentre. On IBM
+zSeries as an example and in embedded systems.</td></tr></tbody></table><br><br>[ No Comments Allowed for Anonymous, please <a href="http://web.archive.org/web/20021216233956/http://www.linuxandmain.com/modules.php?name=Your_Account">register</a>  ]<br><br><ul><li><font class="content" color="#0000ff"><a href="http://web.archive.org/web/20021216233956/http://www.linuxandmain.com/modules.php?name=News&amp;file=comments&amp;op=showreply&amp;tid=259&amp;sid=141&amp;pid=256&amp;mode=&amp;order=&amp;thold=#259">Re: Interview: The Rasterman</a> by kayosIII on Saturday, July 20 @ 21:06:10 EDT</font><br><ul><li><font class="content" color="#0000ff"><a href="http://web.archive.org/web/20021216233956/http://www.linuxandmain.com/modules.php?name=News&amp;file=comments&amp;op=showreply&amp;tid=266&amp;sid=141&amp;pid=259&amp;mode=&amp;order=&amp;thold=#266">Re: Interview: The Rasterman</a> by Thoreau on Sunday, July 21 @ 20:10:10 EDT</font><br></li></ul></li></ul><a name="258"></a><table width="99%" border="0"><tbody><tr bgcolor="#ffffcc"><td width="500"><b>Re: Interview: The Rasterman</b> <font class="content">(Score: 1)<br>by kayosIII on Saturday, July 20 @ 20:47:39 EDT<br>(<a href="http://web.archive.org/web/20021216233956/http://www.linuxandmain.com/modules.php?name=Your_Account&amp;op=userinfo&amp;uname=kayosIII">User Info</a> | <a href="http://web.archive.org/web/20021216233956/http://www.linuxandmain.com/modules.php?name=Private_Messages&amp;file=reply&amp;send=1&amp;uname=kayosIII">Send a Message</a>) <a href="http://web.archive.org/web/20021216233956/http://www.midcoast.com.au/%7Ergcoy" target="window">http://www.midcoast.com.au/~rgcoy</a> </font></td></tr><tr><td>I don't think Rastermans view on the desktop is entirely accurate.... (Though his point is valid and very very important).
+<br>
+
+<br>
+There are a number of different people using desktop computing for
+various reasons I think that they fall into main 3 a main
+catagories.....
+<br>
+
+<br>1) The home user (Rasters comments pertain mainly to these) and
+these make up the largest part of the market. These people want access
+to the mainstream apps, games etc. They want configureation to be
+simple - If it is too hard they simply wont do it. There will always be
+a small percentage of this market that will be more technically
+orientated who will be able to make use of a linux desktop
+<br>
+
+<br>2) The Bussiness user. Needs a few apps to do bussiness. Needs
+reliability ease of matainence and good value for money particularly
+with regards to ongoing costs. I think you will see linux making
+inroads into this market in the near future... I don't see it becoming
+dominant but I see it playing an important role in desktops for many
+businesses.
+<br>
+
+<br>3) Niche markets.... Audio and Video specialists.... 3d Art,
+Medical imaging.. Those people have specialised needs in a desktop. I
+think that linux has the power to really shine here. <br>
+It is my hope that we will see linux companies to deal with these niche
+markets.... Would you rather deal with a company that was making a
+desktop machine for the masses or with you and your business in mind.
+<br>
+
+<br>Anyway I when I first got to the linux desktop the desktop
+environments where just starting. Gnome was at 0.13, Enlightenment 14
+was around the corner and KDE was not quite yet 1.0... I kind of
+accepted that the apps would come start to really come out after the
+desktop was stable and mature.... I hope i am right.
+<br>
+
+<br>
+Can't wait to try E17.... Could never get the CVS version running (probs with imlib). Thanks R.
+<br>
+</td></tr></tbody></table><br><br>[ No Comments Allowed for Anonymous, please <a href="http://web.archive.org/web/20021216233956/http://www.linuxandmain.com/modules.php?name=Your_Account">register</a>  ]<br><br><a name="260"></a><table width="99%" border="0"><tbody><tr bgcolor="#ffffcc"><td width="500"><b>Re: Interview: The Rasterman</b> <font class="content">(Score: 1)<br>by mmarq on Sunday, July 21 @ 00:11:23 EDT<br>(<a href="http://web.archive.org/web/20021216233956/http://www.linuxandmain.com/modules.php?name=Your_Account&amp;op=userinfo&amp;uname=mmarq">User Info</a> | <a href="http://web.archive.org/web/20021216233956/http://www.linuxandmain.com/modules.php?name=Private_Messages&amp;file=reply&amp;send=1&amp;uname=mmarq">Send a Message</a>) </font></td></tr><tr><td>
+If the Linux desktop has no future what so ever, why in the ...hell
+would anybody code in open source.???!!!... It would be a wast of time
+even to code the simplest routine for a kernel called Linux be it in a
+supercomputer or a wristwatch!!!... What for???... coding for a IBM,
+HP, SUN or the like, including companys whit proprietary embeded
+systems, that could easely pay for the work???. GNU and Linux have born
+rebels for the common mortals for simple machines, that couldnt or
+wouldnt pay the M$ tax...IBM, HP, SUN and the rest came after, and no
+mater how good they appear, they dont give a shit about common mortals,
+if no profit involved,... they are only taking advantage of brilliant
+coders, whit egos bigger than them brains, and starving for
+recognition... and these in them blindness of pride, dont see that
+coding in open source, anything that would not be profitable for the
+common mortals (server, desktop, whatever...), and for free(gratis),
+will end up being an incredible stupid mistake!!!...
+<br>
+
+<br>
+NO POSSIBLE DESKTOP!!!!!!
+<br>
+
+<br>
+Whas a possible Linux desktop that started the nowadays Linux Server and Linux embeded, and if you dont agree, just imagine:
+<br>
+
+<br>
+A WORLD WHIT ALL SERVER AND "TRANSPARENT TO THE USER SYSTEMS" RUNNING LINUX. AND ALL DESKTOP MACHINES RUNNING WINDOWS.
+<br>
+
+<br>
+Now imagine that MS finds a better way to communicate intersystems than the TCP/IP method:
+<br>
+
+<br>DONT YOU AGREE THAT THE INSTANT AFTER MS WOULD MAKE THE WINDOWS
+DESKTOP "TOTALY- MEAN TOTALY" INCOMPATIBLE WHIT LINUX NO MATER
+WHAT??????????????????????????????????(I would) <br>
+
+<br>
+AND DONT YOU AGREE THAT THE WINDOWS DESKTOP WOULD EASILY WIN THAT WAR,
+AND DRIVE TO EXTINCTION THE LINUX
+SERVER?????????????????????????(anybody feel "FREE" to desagree).
+<br>
+
+<br> What Linux needs is a strong Desktop,...like air to bread. It
+needs solid free standards,...it needs a unified FRAMEWORK instead of
+the 3 diferents KDE, GNOME and GNUSTEP,... and it needs much less
+"Rastermens". <br>
+
+<br>
+
+<br>
+ </td></tr></tbody></table><br><br>[ No Comments Allowed for Anonymous, please <a href="http://web.archive.org/web/20021216233956/http://www.linuxandmain.com/modules.php?name=Your_Account">register</a>  ]<br><br><a name="261"></a><table width="99%" border="0"><tbody><tr bgcolor="#ffffcc"><td width="500"><b>What an IDIOT!</b> <font class="content">(Score: 1)<br>by cweed on Sunday, July 21 @ 00:11:42 EDT<br>(<a href="http://web.archive.org/web/20021216233956/http://www.linuxandmain.com/modules.php?name=Your_Account&amp;op=userinfo&amp;uname=cweed">User Info</a> | <a href="http://web.archive.org/web/20021216233956/http://www.linuxandmain.com/modules.php?name=Private_Messages&amp;file=reply&amp;send=1&amp;uname=cweed">Send a Message</a>) <a href="http://web.archive.org/web/20021216233956/http:///" target="window">http://</a> </font></td></tr><tr><td>O.K.,
+I've been hearing that the Linux desktop is dead for going on, for at
+least, 4 years now. Still KDE and GNOME are coming on strong. More and
+more hardware is supporting Linux. The various office suites are
+getting better and better. And the installation of the major
+distributions are getting to the point of brainless ease. Do we have to
+endure another so called "VISIONARY" of the Linux movement declare the
+Linux desktop to be dead? How many times is Rasterman going to flip
+flop, like Red Hat, before we realize that the desktop for Linux is
+evolution instead of revolution? Oh, so he works for a company that
+does Linux embedded systems, and the future is going to be in embedded
+devices? No personal bias here is there?</td></tr></tbody></table><br><br>[ No Comments Allowed for Anonymous, please <a href="http://web.archive.org/web/20021216233956/http://www.linuxandmain.com/modules.php?name=Your_Account">register</a>  ]<br><br><ul><li><font class="content" color="#0000ff"><a href="http://web.archive.org/web/20021216233956/http://www.linuxandmain.com/modules.php?name=News&amp;file=comments&amp;op=showreply&amp;tid=262&amp;sid=141&amp;pid=261&amp;mode=&amp;order=&amp;thold=#262">Re: What an IDIOT!</a> by finwaite on Sunday, July 21 @ 12:03:58 EDT</font><br><ul><li><font class="content" color="#0000ff"><a href="http://web.archive.org/web/20021216233956/http://www.linuxandmain.com/modules.php?name=News&amp;file=comments&amp;op=showreply&amp;tid=300&amp;sid=141&amp;pid=262&amp;mode=&amp;order=&amp;thold=#300">And I would, however...</a> by cweed on Tuesday, July 23 @ 23:19:01 EDT</font><br></li></ul></li></ul><a name="265"></a><table width="99%" border="0"><tbody><tr bgcolor="#ffffcc"><td width="500"><b>I need an Old Priest and a Young Priest!  "Be Gone Demon's!"</b> <font class="content">(Score: 1)<br>by Thoreau on Sunday, July 21 @ 19:50:32 EDT<br>(<a href="http://web.archive.org/web/20021216233956/http://www.linuxandmain.com/modules.php?name=Your_Account&amp;op=userinfo&amp;uname=Thoreau">User Info</a> | <a href="http://web.archive.org/web/20021216233956/http://www.linuxandmain.com/modules.php?name=Private_Messages&amp;file=reply&amp;send=1&amp;uname=Thoreau">Send a Message</a>) <a href="http://web.archive.org/web/20021216233956/http:///" target="window">http://</a> </font></td></tr><tr><td>I
+respect Mr. Haitzler's opinion about the non-future of Linux on the
+desktop. But, as most programmers do(or rather don't), he doesn't see
+the big picture. His focus is 10^-6.
+<br>
+
+<br> Linux will have to be on the desktop if it is to hold onto the
+server space. There is no question about it. Novell's hospital bound
+ulcer ridden CEO is proof of how only price/performance isn't what
+makes a server. <br>
+
+<br>
+Microsoft will kill us if we give them the desktop. I don't think
+anyone reading this column doubts that. Linux will not be able to
+maintain or expand it's server foothold when LongHorn only speaks to MS
+TCP/IP-CIFSv.X. There is no option here folks. .NET is creeping onto
+clients as we speak. <br>
+
+<br>
+The Desktop for linux does have to mature, and it seems, without
+Enlightenment. But it will mature and at a price point that MS cannot
+compete with. It's just a matter of time and pressure. Too bad
+Enlightenment will miss the ride. I wish Rasterman the best, but his
+opinion on this particular day is short-sighted. <br>
+
+<br>
+</td></tr></tbody></table><br><br>[ No Comments Allowed for Anonymous, please <a href="http://web.archive.org/web/20021216233956/http://www.linuxandmain.com/modules.php?name=Your_Account">register</a>  ]<br><br></td><td bgcolor="#ffffff"><img src="20021216233956__www.linuxandmain.com__modules_files/pixel.gif" alt="" height="1" width="10" border="0">
+</td></tr></tbody></table>
+<table width="100%" align="center" bgcolor="#ffffff" border="0" cellpadding="0" cellspacing="0"><tbody><tr valign="top">
+<td height="17" align="center">
+</td></tr></tbody></table>
+<br>
+<table width="100%" align="center" bgcolor="#ffffff" border="0" cellpadding="0" cellspacing="0"><tbody><tr valign="top">
+<td width="100%">&nbsp;</td>
+</tr><tr align="center">
+<td colspan="3" width="100%">
+<b><i>Custom <a href="http://web.archive.org/web/20021216233956/http://www.phpnuke.org/">PHP-Nuke</a> consulting by <a href="http://web.archive.org/web/20021216233956/http://www.uninetsolutions.com/">Universal Networks Web Site 
+Solutions</a>.<br><br>Linux is a registered trademark of Linus Torvalds.<br><br>Logos and trademarks are the property of their respective owners. Comments are property and responsibility of their authors.<br><br>Copyright © 2002, Linux and Main LLC. All rights reserved.</i></b>
+</td>
+</tr><tr>
+<td width="100%">&nbsp;</td>
+</tr></tbody></table>
+<!-- SOME LINK HREF'S ON THIS PAGE HAVE BEEN REWRITTEN BY THE WAYBACK MACHINE
+OF THE INTERNET ARCHIVE IN ORDER TO PRESERVE THE TEMPORAL INTEGRITY OF THE SESSION. -->
+
+
+<script language="Javascript">
+<!--
+
+// FILE ARCHIVED ON 20021216233956 AND RETRIEVED FROM THE
+// INTERNET ARCHIVE ON 20091105151527.
+// JAVASCRIPT APPENDED BY WAYBACK MACHINE, COPYRIGHT INTERNET ARCHIVE.
+// ALL OTHER CONTENT MAY ALSO BE PROTECTED BY COPYRIGHT (17 U.S.C.
+// SECTION 108(a)(3)).
+
+   var sWayBackCGI = "http://web.archive.org/web/20021216233956/";
+
+   function xResolveUrl(url) {
+      var image = new Image();
+      image.src = url;
+      return image.src;
+   }
+   function xLateUrl(aCollection, sProp) {
+      var i = 0;
+      for(i = 0; i < aCollection.length; i++) {
+         var url = aCollection[i][sProp];         if (typeof(url) == "string") { 
+          if (url.indexOf("mailto:") == -1 &&
+             url.indexOf("javascript:") == -1
+             && url.length > 0) {
+            if(url.indexOf("http") != 0) {
+                url = xResolveUrl(url);
+            }
+            url = url.replace('.wstub.archive.org','');
+            aCollection[i][sProp] = sWayBackCGI + url;
+         }
+         }
+      }
+   }
+
+   xLateUrl(document.getElementsByTagName("IMG"),"src");
+   xLateUrl(document.getElementsByTagName("A"),"href");
+   xLateUrl(document.getElementsByTagName("AREA"),"href");
+   xLateUrl(document.getElementsByTagName("OBJECT"),"codebase");
+   xLateUrl(document.getElementsByTagName("OBJECT"),"data");
+   xLateUrl(document.getElementsByTagName("APPLET"),"codebase");
+   xLateUrl(document.getElementsByTagName("APPLET"),"archive");
+   xLateUrl(document.getElementsByTagName("EMBED"),"src");
+   xLateUrl(document.getElementsByTagName("BODY"),"background");
+   xLateUrl(document.getElementsByTagName("TD"),"background");
+   xLateUrl(document.getElementsByTagName("INPUT"),"src");
+   var forms = document.getElementsByTagName("FORM");
+   if (forms) {
+       var j = 0;
+       for (j = 0; j < forms.length; j++) {
+              f = forms[j];
+              if (typeof(f.action)  == "string") {
+                 if(typeof(f.method)  == "string") {
+                     if(typeof(f.method) != "post") {
+                        f.action = sWayBackCGI + f.action;
+                     }
+                  }
+              }
+        }
+    }
+
+
+//-->
+</script>
+
+</body></html>
