@@ -2179,44 +2179,49 @@ DesksSighan(int sig, void *prm __UNUSED__)
 /*
  * Dialogs
  */
-static int          tmp_desktops;
-static DItem       *tmp_desk_text;
-static char         tmp_desktop_slide;
-static int          tmp_desktop_slide_speed;
-static char         tmp_desktop_wraparound;
-static char         tmp_dragbar;
-static int          tmp_dragdir;
+typedef struct {
+   int                 desktops;
+   int                 prev_desktops;
+   DItem              *desk_text;
+   char                desktop_slide;
+   int                 desktop_slide_speed;
+   char                desktop_wraparound;
+   char                dragbar;
+   int                 dragdir;
+   char                initialised;
+   Win                 wins[ENLIGHTENMENT_CONF_NUM_DESKTOPS];
+} DeskDlgData;
 
 static void
-CB_ConfigureDesktops(Dialog * d __UNUSED__, int val, void *data __UNUSED__)
+CB_ConfigureDesktops(Dialog * d, int val, void *data __UNUSED__)
 {
+   DeskDlgData        *dd = DLG_DATA_GET(d, DeskDlgData);
+
    if (val >= 2)
       return;
 
-   ChangeNumberOfDesktops(tmp_desktops);
-   Conf.desks.slidein = tmp_desktop_slide;
-   Conf.desks.slidespeed = tmp_desktop_slide_speed;
-   Conf.desks.desks_wraparound = tmp_desktop_wraparound;
+   ChangeNumberOfDesktops(dd->desktops);
+   Conf.desks.slidein = dd->desktop_slide;
+   Conf.desks.slidespeed = dd->desktop_slide_speed;
+   Conf.desks.desks_wraparound = dd->desktop_wraparound;
 
-   if ((Conf.desks.dragdir != tmp_dragdir) ||
-       ((tmp_dragbar) && (Conf.desks.dragbar_width < 1)) ||
-       ((!tmp_dragbar) && (Conf.desks.dragbar_width > 0)))
+   if ((Conf.desks.dragdir != dd->dragdir) ||
+       ((dd->dragbar) && (Conf.desks.dragbar_width < 1)) ||
+       ((!dd->dragbar) && (Conf.desks.dragbar_width > 0)))
      {
-	if (tmp_dragbar)
+	if (dd->dragbar)
 	   Conf.desks.dragbar_width = 16;
 	else
 	   Conf.desks.dragbar_width = 0;
-	Conf.desks.dragdir = tmp_dragdir;
+	Conf.desks.dragdir = dd->dragdir;
 	DesksControlsRefresh();
      }
 }
 
 static void
-CB_DesktopDisplayRedraw(Dialog * d __UNUSED__, int val, void *data)
+CB_DesktopDisplayRedraw(Dialog * d, int val, void *data)
 {
-   static char         called = 0;
-   static int          prev_desktops = -1;
-   static Win          wins[ENLIGHTENMENT_CONF_NUM_DESKTOPS];
+   DeskDlgData        *dd = DLG_DATA_GET(d, DeskDlgData);
    DItem              *di;
    int                 i;
    int                 w, h;
@@ -2224,73 +2229,69 @@ CB_DesktopDisplayRedraw(Dialog * d __UNUSED__, int val, void *data)
    char                s[64];
    ImageClass         *ic;
 
-   if (val == 1)
-      called = 0;
-
-   if ((val != 1) && (prev_desktops == tmp_desktops))
+   if ((val != 1) && (dd->prev_desktops == dd->desktops))
       return;
 
-   prev_desktops = tmp_desktops;
+   dd->prev_desktops = dd->desktops;
    di = (DItem *) data;
    win = DialogItemAreaGetWindow(di);
    DialogItemAreaGetSize(di, &w, &h);
 
-   if (!called)
+   if (!dd->initialised)
      {
 	ic = ImageclassFind("SETTINGS_DESKTOP_AREA", 1);
 	ImageclassApply(ic, win, 0, 0, STATE_NORMAL, ST_SOLID);
-	for (i = 0; i < ENLIGHTENMENT_CONF_NUM_DESKTOPS; i++)
-	   wins[i] = 0;
-	called = 1;
+	dd->initialised = 1;
      }
 
-   for (i = 0; i < tmp_desktops; i++)
+   for (i = 0; i < dd->desktops; i++)
      {
-	if (!wins[i])
+	if (!dd->wins[i])
 	  {
 	     Background         *bg;
 
-	     wins[i] = ECreateWindow(win, 0, 0, 64, 48, 0);
-	     ESetWindowBorderWidth(wins[i], 1);
+	     dd->wins[i] = ECreateWindow(win, 0, 0, 64, 48, 0);
+	     ESetWindowBorderWidth(dd->wins[i], 1);
 
 	     bg = DeskBackgroundGet(DeskGet(i));
 	     if (bg)
 	       {
 		  Pixmap              pmap;
 
-		  pmap = EGetWindowBackgroundPixmap(wins[i]);
-		  BackgroundApplyPmap(bg, wins[i], pmap, 64, 48);
+		  pmap = EGetWindowBackgroundPixmap(dd->wins[i]);
+		  BackgroundApplyPmap(bg, dd->wins[i], pmap, 64, 48);
 	       }
 	     else
 	       {
 		  ic = ImageclassFind("SETTINGS_DESKTOP_AREA", 1);
-		  ImageclassApply(ic, wins[i], 0, 0, STATE_NORMAL, ST_SOLID);
+		  ImageclassApply(ic, dd->wins[i], 0, 0, STATE_NORMAL,
+				  ST_SOLID);
 	       }
 	  }
      }
 
-   for (i = tmp_desktops - 1; i >= 0; i--)
+   for (i = dd->desktops - 1; i >= 0; i--)
      {
 	int                 num;
 
-	num = tmp_desktops - 1;
+	num = dd->desktops - 1;
 	if (num < 1)
 	   num = 1;
-	EMoveWindow(wins[i], (i * (w - 64 - 2)) / num,
+	EMoveWindow(dd->wins[i], (i * (w - 64 - 2)) / num,
 		    (i * (h - 48 - 2)) / num);
-	ERaiseWindow(wins[i]);
-	EMapWindow(wins[i]);
+	ERaiseWindow(dd->wins[i]);
+	EMapWindow(dd->wins[i]);
      }
 
-   for (i = tmp_desktops; i < ENLIGHTENMENT_CONF_NUM_DESKTOPS; i++)
+   for (i = dd->desktops; i < ENLIGHTENMENT_CONF_NUM_DESKTOPS; i++)
      {
-	if (!wins[i])
+	if (!dd->wins[i])
 	   continue;
-	EUnmapWindow(wins[i]);
+	EUnmapWindow(dd->wins[i]);
      }
 
-   Esnprintf(s, sizeof(s), "%i", tmp_desktops);
-   DialogItemSetText(tmp_desk_text, s);
+   Esnprintf(s, sizeof(s), "%i", dd->desktops);
+   DialogItemSetText(dd->desk_text, s);
 }
 
 static void
@@ -2301,19 +2302,25 @@ CB_DesktopDisplayAreaRedraw(DItem * di, int val __UNUSED__,
 }
 
 static void
-_DlgFillDesks(Dialog * d __UNUSED__, DItem * table, void *data __UNUSED__)
+_DlgFillDesks(Dialog * d, DItem * table, void *data __UNUSED__)
 {
    DItem              *di, *slider, *radio;
+   DeskDlgData        *dd;
 
-   tmp_desktops = Conf.desks.num;
-   tmp_desktop_slide = Conf.desks.slidein;
-   tmp_desktop_slide_speed = Conf.desks.slidespeed;
-   tmp_desktop_wraparound = Conf.desks.desks_wraparound;
+   dd = DLG_DATA_SET(d, DeskDlgData);
+   if (!dd)
+      return;
+
+   dd->desktops = Conf.desks.num;
+   dd->prev_desktops = -1;
+   dd->desktop_slide = Conf.desks.slidein;
+   dd->desktop_slide_speed = Conf.desks.slidespeed;
+   dd->desktop_wraparound = Conf.desks.desks_wraparound;
    if (Conf.desks.dragbar_width < 1)
-      tmp_dragbar = 0;
+      dd->dragbar = 0;
    else
-      tmp_dragbar = 1;
-   tmp_dragdir = Conf.desks.dragdir;
+      dd->dragbar = 1;
+   dd->dragdir = Conf.desks.dragdir;
 
    DialogItemTableSetOptions(table, 2, 0, 0, 0);
 
@@ -2321,7 +2328,7 @@ _DlgFillDesks(Dialog * d __UNUSED__, DItem * table, void *data __UNUSED__)
    DialogItemSetColSpan(di, 2);
    DialogItemSetText(di, _("Number of virtual desktops:\n"));
 
-   di = tmp_desk_text = DialogAddItem(table, DITEM_TEXT);
+   di = dd->desk_text = DialogAddItem(table, DITEM_TEXT);
    DialogItemSetColSpan(di, 2);
    DialogItemSetText(di, "X");
 
@@ -2330,7 +2337,7 @@ _DlgFillDesks(Dialog * d __UNUSED__, DItem * table, void *data __UNUSED__)
    DialogItemSliderSetUnits(di, 1);
    DialogItemSliderSetJump(di, 1);
    DialogItemSetColSpan(di, 2);
-   DialogItemSliderSetValPtr(di, &tmp_desktops);
+   DialogItemSliderSetValPtr(di, &dd->desktops);
 
    di = DialogAddItem(table, DITEM_AREA);
    DialogItemSetColSpan(di, 2);
@@ -2345,7 +2352,7 @@ _DlgFillDesks(Dialog * d __UNUSED__, DItem * table, void *data __UNUSED__)
    di = DialogAddItem(table, DITEM_CHECKBUTTON);
    DialogItemSetColSpan(di, 2);
    DialogItemSetText(di, _("Slide desktops around when changing"));
-   DialogItemCheckButtonSetPtr(di, &tmp_desktop_slide);
+   DialogItemCheckButtonSetPtr(di, &dd->desktop_slide);
 
    di = DialogAddItem(table, DITEM_TEXT);
    DialogItemSetColSpan(di, 2);
@@ -2357,7 +2364,7 @@ _DlgFillDesks(Dialog * d __UNUSED__, DItem * table, void *data __UNUSED__)
    DialogItemSliderSetBounds(di, 0, 20000);
    DialogItemSliderSetUnits(di, 500);
    DialogItemSliderSetJump(di, 1000);
-   DialogItemSliderSetValPtr(di, &tmp_desktop_slide_speed);
+   DialogItemSliderSetValPtr(di, &dd->desktop_slide_speed);
 
    di = DialogAddItem(table, DITEM_SEPARATOR);
    DialogItemSetColSpan(di, 2);
@@ -2365,7 +2372,7 @@ _DlgFillDesks(Dialog * d __UNUSED__, DItem * table, void *data __UNUSED__)
    di = DialogAddItem(table, DITEM_CHECKBUTTON);
    DialogItemSetColSpan(di, 2);
    DialogItemSetText(di, _("Wrap desktops around"));
-   DialogItemCheckButtonSetPtr(di, &tmp_desktop_wraparound);
+   DialogItemCheckButtonSetPtr(di, &dd->desktop_wraparound);
 
    di = DialogAddItem(table, DITEM_SEPARATOR);
    DialogItemSetColSpan(di, 2);
@@ -2373,7 +2380,7 @@ _DlgFillDesks(Dialog * d __UNUSED__, DItem * table, void *data __UNUSED__)
    di = DialogAddItem(table, DITEM_CHECKBUTTON);
    DialogItemSetColSpan(di, 2);
    DialogItemSetText(di, _("Display desktop dragbar"));
-   DialogItemCheckButtonSetPtr(di, &tmp_dragbar);
+   DialogItemCheckButtonSetPtr(di, &dd->dragbar);
 
    di = DialogAddItem(table, DITEM_TEXT);
    DialogItemSetColSpan(di, 2);
@@ -2403,7 +2410,7 @@ _DlgFillDesks(Dialog * d __UNUSED__, DItem * table, void *data __UNUSED__)
    DialogItemSetText(di, _("Right"));
    DialogItemRadioButtonSetFirst(di, radio);
    DialogItemRadioButtonGroupSetVal(di, 1);
-   DialogItemRadioButtonGroupSetValPtr(radio, &tmp_dragdir);
+   DialogItemRadioButtonGroupSetValPtr(radio, &dd->dragdir);
 }
 
 const DialogDef     DlgDesks = {
@@ -2417,42 +2424,47 @@ const DialogDef     DlgDesks = {
    DLG_OAC, CB_ConfigureDesktops,
 };
 
-static int          tmp_area_x;
-static int          tmp_area_y;
-static int          tmp_edge_flip;
-static int          tmp_edge_resist;
-static DItem       *tmp_area_text;
-static char         tmp_area_wraparound;
+typedef struct {
+   int                 area_x;
+   int                 area_y;
+   int                 edge_flip;
+   int                 edge_resist;
+   DItem              *area_text;
+   char                area_wraparound;
+   int                 prev_ax, prev_ay;
+   Win                 awin;
+} AreaDlgData;
 
 static void
-CB_ConfigureAreas(Dialog * d __UNUSED__, int val, void *data __UNUSED__)
+CB_ConfigureAreas(Dialog * d, int val, void *data __UNUSED__)
 {
+   AreaDlgData        *dd = DLG_DATA_GET(d, AreaDlgData);
+
    if (val >= 2)
       return;
 
-   SetNewAreaSize(tmp_area_x, tmp_area_y);
-   Conf.desks.areas_wraparound = tmp_area_wraparound;
-   Conf.desks.edge_flip_mode = tmp_edge_flip;
-   if (tmp_edge_resist < 1)
-      tmp_edge_resist = 1;
-   Conf.desks.edge_flip_resistance = tmp_edge_resist;
+   SetNewAreaSize(dd->area_x, dd->area_y);
+   Conf.desks.areas_wraparound = dd->area_wraparound;
+   Conf.desks.edge_flip_mode = dd->edge_flip;
+   if (dd->edge_resist < 1)
+      dd->edge_resist = 1;
+   Conf.desks.edge_flip_resistance = dd->edge_resist;
 }
 
 static void
-CB_AreaDisplayRedraw(Dialog * d __UNUSED__, int val, void *data)
+CB_AreaDisplayRedraw(Dialog * d, int val, void *data)
 {
-   static int          prev_ax = 0, prev_ay = 0;
-   static Win          awin;
+   AreaDlgData        *dd = DLG_DATA_GET(d, AreaDlgData);
    char                s[64];
    DItem              *di;
    Win                 win;
    int                 w, h, ww, hh;
 
-   if ((val != 1) && (prev_ax == tmp_area_x) && (prev_ay == tmp_area_y))
+   if ((val != 1) && (dd->prev_ax == dd->area_x) && (dd->prev_ay == dd->area_y))
       return;
 
-   prev_ax = tmp_area_x;
-   prev_ay = tmp_area_y;
+   dd->prev_ax = dd->area_x;
+   dd->prev_ay = dd->area_y;
 
    di = (DItem *) data;
    win = DialogItemAreaGetWindow(di);
@@ -2467,18 +2479,18 @@ CB_AreaDisplayRedraw(Dialog * d __UNUSED__, int val, void *data)
 	ImageclassApply(ic, win, 0, 0, STATE_NORMAL, ST_SOLID);
 
 	/* Note: awin is destroyed when the dialog is destroyed */
-	awin = ECreateWindow(win, 0, 0, 18, 14, 0);
+	dd->awin = ECreateWindow(win, 0, 0, 18, 14, 0);
 	ic = ImageclassFind("SETTINGS_AREADESK_AREA", 1);
-	pmap = EGetWindowBackgroundPixmap(awin);
-	ImageclassApplySimple(ic, awin, pmap, STATE_NORMAL, 0, 0, 18, 14);
+	pmap = EGetWindowBackgroundPixmap(dd->awin);
+	ImageclassApplySimple(ic, dd->awin, pmap, STATE_NORMAL, 0, 0, 18, 14);
      }
-   ww = 18 * prev_ax;
-   hh = 14 * prev_ay;
-   EMoveResizeWindow(awin, (w - ww) / 2, (h - hh) / 2, ww, hh);
-   EMapWindow(awin);
+   ww = 18 * dd->prev_ax;
+   hh = 14 * dd->prev_ay;
+   EMoveResizeWindow(dd->awin, (w - ww) / 2, (h - hh) / 2, ww, hh);
+   EMapWindow(dd->awin);
 
-   Esnprintf(s, sizeof(s), "%i x %i", prev_ax, prev_ay);
-   DialogItemSetText(tmp_area_text, s);
+   Esnprintf(s, sizeof(s), "%i x %i", dd->prev_ax, dd->prev_ay);
+   DialogItemSetText(dd->area_text, s);
 }
 
 static void
@@ -2488,23 +2500,28 @@ CB_AreaDisplayAreaRedraw(DItem * di, int val __UNUSED__, void *data __UNUSED__)
 }
 
 static void
-_DlgFillAreas(Dialog * d __UNUSED__, DItem * table, void *data __UNUSED__)
+_DlgFillAreas(Dialog * d, DItem * table, void *data __UNUSED__)
 {
    DItem              *di, *slider, *slider2, *table2, *radio;
+   AreaDlgData        *dd;
 
-   tmp_area_wraparound = Conf.desks.areas_wraparound;
+   dd = DLG_DATA_SET(d, AreaDlgData);
+   if (!dd)
+      return;
 
-   tmp_edge_flip = Conf.desks.edge_flip_mode;
-   tmp_edge_resist = Conf.desks.edge_flip_resistance;
+   dd->area_wraparound = Conf.desks.areas_wraparound;
 
-   DesksGetAreaSize(&tmp_area_x, &tmp_area_y);
+   dd->edge_flip = Conf.desks.edge_flip_mode;
+   dd->edge_resist = Conf.desks.edge_flip_resistance;
+
+   DesksGetAreaSize(&dd->area_x, &dd->area_y);
 
    DialogItemTableSetOptions(table, 1, 0, 0, 0);
 
    di = DialogAddItem(table, DITEM_TEXT);
    DialogItemSetText(di, _("Virtual Desktop size:\n"));
 
-   di = tmp_area_text = DialogAddItem(table, DITEM_TEXT);
+   di = dd->area_text = DialogAddItem(table, DITEM_TEXT);
    DialogItemSetText(di, "X");
 
    table2 = DialogAddItem(table, DITEM_TABLE);
@@ -2517,7 +2534,7 @@ _DlgFillAreas(Dialog * d __UNUSED__, DItem * table, void *data __UNUSED__)
    DialogItemSliderSetBounds(di, 1, 8);
    DialogItemSliderSetUnits(di, 1);
    DialogItemSliderSetJump(di, 1);
-   DialogItemSliderSetValPtr(di, &tmp_area_x);
+   DialogItemSliderSetValPtr(di, &dd->area_x);
 
    di = slider2 = DialogAddItem(table2, DITEM_SLIDER);
    DialogItemSliderSetMinLength(di, 10);
@@ -2526,7 +2543,7 @@ _DlgFillAreas(Dialog * d __UNUSED__, DItem * table, void *data __UNUSED__)
    DialogItemSliderSetBounds(di, 1, 8);
    DialogItemSliderSetUnits(di, 1);
    DialogItemSliderSetJump(di, 1);
-   DialogItemSliderSetValPtr(di, &tmp_area_y);
+   DialogItemSliderSetValPtr(di, &dd->area_y);
 
    di = DialogAddItem(table2, DITEM_AREA);
    DialogItemAreaSetSize(di, 160, 120);
@@ -2539,7 +2556,7 @@ _DlgFillAreas(Dialog * d __UNUSED__, DItem * table, void *data __UNUSED__)
 
    di = DialogAddItem(table, DITEM_CHECKBUTTON);
    DialogItemSetText(di, _("Wrap virtual desktops around"));
-   DialogItemCheckButtonSetPtr(di, &tmp_area_wraparound);
+   DialogItemCheckButtonSetPtr(di, &dd->area_wraparound);
 
    di = DialogAddItem(table, DITEM_SEPARATOR);
 
@@ -2561,7 +2578,7 @@ _DlgFillAreas(Dialog * d __UNUSED__, DItem * table, void *data __UNUSED__)
    DialogItemSetText(di, _("Only when moving window"));
    DialogItemRadioButtonSetFirst(di, radio);
    DialogItemRadioButtonGroupSetVal(di, EDGE_FLIP_MOVE);
-   DialogItemRadioButtonGroupSetValPtr(radio, &tmp_edge_flip);
+   DialogItemRadioButtonGroupSetValPtr(radio, &dd->edge_flip);
 
    di = DialogAddItem(table, DITEM_TEXT);
    DialogItemSetText(di, _("Resistance at edge of screen:\n"));
@@ -2571,7 +2588,7 @@ _DlgFillAreas(Dialog * d __UNUSED__, DItem * table, void *data __UNUSED__)
    DialogItemSliderSetBounds(di, 1, 100);
    DialogItemSliderSetUnits(di, 1);
    DialogItemSliderSetJump(di, 10);
-   DialogItemSliderSetValPtr(di, &tmp_edge_resist);
+   DialogItemSliderSetValPtr(di, &dd->edge_resist);
 }
 
 const DialogDef     DlgAreas = {
