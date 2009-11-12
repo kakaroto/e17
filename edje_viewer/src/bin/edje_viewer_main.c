@@ -18,6 +18,8 @@ elm_main(int argc, char **argv)
 {
    Viewer *v;
 
+   eina_init();
+
    __log_domain = eina_log_domain_register("Edje_Viewer", EINA_COLOR_BLUE);
    if (!__log_domain)
      {
@@ -63,10 +65,12 @@ elm_main(int argc, char **argv)
      }
 
    elm_run();
+   elm_shutdown();
 
    viewer_free(v);
 
-   elm_shutdown();
+   eina_shutdown();
+
    return 0;
 }
 
