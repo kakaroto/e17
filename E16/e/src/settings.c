@@ -26,29 +26,34 @@
 #include "dialog.h"
 #include "settings.h"
 
-static int          tmp_move;
-static int          tmp_resize;
-static int          tmp_geominfo;
-static int          tmp_maximize;
-static char         tmp_dragbar_nocover;
-static char         tmp_avoid_server_grab;
-static char         tmp_update_while_moving;
-static char         tmp_sync_request;
+typedef struct {
+   int                 move;
+   int                 resize;
+   int                 geominfo;
+   int                 maximize;
+   char                dragbar_nocover;
+   char                avoid_server_grab;
+   char                update_while_moving;
+   char                sync_request;
+} MovResDlgData;
 
 static void
 CB_ConfigureMoveResize(Dialog * d __UNUSED__, int val, void *data __UNUSED__)
 {
-   if (val < 2)
-     {
-	Conf.movres.mode_move = tmp_move;
-	Conf.movres.mode_resize = tmp_resize;
-	Conf.movres.mode_info = tmp_geominfo;
-	Conf.movres.mode_maximize_default = tmp_maximize;
-	Conf.movres.avoid_server_grab = tmp_avoid_server_grab;
-	Conf.movres.update_while_moving = tmp_update_while_moving;
-	Conf.movres.enable_sync_request = tmp_sync_request;
-	Conf.movres.dragbar_nocover = tmp_dragbar_nocover;
-     }
+   MovResDlgData      *dd = DLG_DATA_GET(d, MovResDlgData);
+
+   if (val >= 2)
+      return;
+
+   Conf.movres.mode_move = dd->move;
+   Conf.movres.mode_resize = dd->resize;
+   Conf.movres.mode_info = dd->geominfo;
+   Conf.movres.mode_maximize_default = dd->maximize;
+   Conf.movres.avoid_server_grab = dd->avoid_server_grab;
+   Conf.movres.update_while_moving = dd->update_while_moving;
+   Conf.movres.enable_sync_request = dd->sync_request;
+   Conf.movres.dragbar_nocover = dd->dragbar_nocover;
+
    autosave();
 }
 
@@ -56,15 +61,20 @@ static void
 _DlgFillMoveResize(Dialog * d __UNUSED__, DItem * table, void *data __UNUSED__)
 {
    DItem              *di, *radio1, *radio2, *radio3, *radio4;
+   MovResDlgData      *dd;
 
-   tmp_move = Conf.movres.mode_move;
-   tmp_resize = Conf.movres.mode_resize;
-   tmp_geominfo = Conf.movres.mode_info;
-   tmp_maximize = Conf.movres.mode_maximize_default;
-   tmp_avoid_server_grab = Conf.movres.avoid_server_grab;
-   tmp_update_while_moving = Conf.movres.update_while_moving;
-   tmp_sync_request = Conf.movres.enable_sync_request;
-   tmp_dragbar_nocover = Conf.movres.dragbar_nocover;
+   dd = DLG_DATA_SET(d, MovResDlgData);
+   if (!dd)
+      return;
+
+   dd->move = Conf.movres.mode_move;
+   dd->resize = Conf.movres.mode_resize;
+   dd->geominfo = Conf.movres.mode_info;
+   dd->maximize = Conf.movres.mode_maximize_default;
+   dd->avoid_server_grab = Conf.movres.avoid_server_grab;
+   dd->update_while_moving = Conf.movres.update_while_moving;
+   dd->sync_request = Conf.movres.enable_sync_request;
+   dd->dragbar_nocover = Conf.movres.dragbar_nocover;
 
    DialogItemTableSetOptions(table, 2, 0, 0, 0);
 
@@ -127,20 +137,20 @@ _DlgFillMoveResize(Dialog * d __UNUSED__, DItem * table, void *data __UNUSED__)
    DialogItemSetText(di, _("Semi-Solid"));
    DialogItemRadioButtonSetFirst(di, radio2);
    DialogItemRadioButtonGroupSetVal(di, 4);
-   DialogItemRadioButtonGroupSetValPtr(radio2, &tmp_resize);
+   DialogItemRadioButtonGroupSetValPtr(radio2, &dd->resize);
 
    di = DialogAddItem(table, DITEM_RADIOBUTTON);
    DialogItemSetText(di, _("Translucent"));
    DialogItemRadioButtonSetFirst(di, radio1);
    DialogItemRadioButtonGroupSetVal(di, 5);
-   DialogItemRadioButtonGroupSetValPtr(radio1, &tmp_move);
+   DialogItemRadioButtonGroupSetValPtr(radio1, &dd->move);
 
    di = DialogAddItem(table, DITEM_NONE);
 
    di = DialogAddItem(table, DITEM_CHECKBUTTON);
    DialogItemSetColSpan(di, 2);
    DialogItemSetText(di, _("Avoid server grab"));
-   DialogItemCheckButtonSetPtr(di, &tmp_avoid_server_grab);
+   DialogItemCheckButtonSetPtr(di, &dd->avoid_server_grab);
 
    di = DialogAddItem(table, DITEM_SEPARATOR);
    DialogItemSetColSpan(di, 2);
@@ -168,7 +178,7 @@ _DlgFillMoveResize(Dialog * d __UNUSED__, DItem * table, void *data __UNUSED__)
    DialogItemSetText(di, _("Don't show"));
    DialogItemRadioButtonSetFirst(di, radio3);
    DialogItemRadioButtonGroupSetVal(di, 0);
-   DialogItemRadioButtonGroupSetValPtr(radio3, &tmp_geominfo);
+   DialogItemRadioButtonGroupSetValPtr(radio3, &dd->geominfo);
 
    di = DialogAddItem(table, DITEM_SEPARATOR);
    DialogItemSetColSpan(di, 2);
@@ -196,7 +206,7 @@ _DlgFillMoveResize(Dialog * d __UNUSED__, DItem * table, void *data __UNUSED__)
    DialogItemSetText(di, _("Absolute"));
    DialogItemRadioButtonSetFirst(di, radio4);
    DialogItemRadioButtonGroupSetVal(di, 0);
-   DialogItemRadioButtonGroupSetValPtr(radio4, &tmp_maximize);
+   DialogItemRadioButtonGroupSetValPtr(radio4, &dd->maximize);
 
    di = DialogAddItem(table, DITEM_SEPARATOR);
    DialogItemSetColSpan(di, 2);
@@ -204,17 +214,17 @@ _DlgFillMoveResize(Dialog * d __UNUSED__, DItem * table, void *data __UNUSED__)
    di = DialogAddItem(table, DITEM_CHECKBUTTON);
    DialogItemSetColSpan(di, 2);
    DialogItemSetText(di, _("Update window while moving"));
-   DialogItemCheckButtonSetPtr(di, &tmp_update_while_moving);
+   DialogItemCheckButtonSetPtr(di, &dd->update_while_moving);
 
    di = DialogAddItem(table, DITEM_CHECKBUTTON);
    DialogItemSetColSpan(di, 2);
    DialogItemSetText(di, _("Synchronize move/resize with application"));
-   DialogItemCheckButtonSetPtr(di, &tmp_sync_request);
+   DialogItemCheckButtonSetPtr(di, &dd->sync_request);
 
    di = DialogAddItem(table, DITEM_CHECKBUTTON);
    DialogItemSetColSpan(di, 2);
    DialogItemSetText(di, _("Do not cover dragbar"));
-   DialogItemCheckButtonSetPtr(di, &tmp_dragbar_nocover);
+   DialogItemCheckButtonSetPtr(di, &dd->dragbar_nocover);
 }
 
 const DialogDef     DlgMoveResize = {
@@ -228,53 +238,57 @@ const DialogDef     DlgMoveResize = {
    DLG_OAC, CB_ConfigureMoveResize,
 };
 
-static char         tmp_with_leader;
-static char         tmp_switch_popup;
-static char         tmp_manual_placement;
-static char         tmp_manual_placement_mouse_pointer;
-static char         tmp_center_if_desk_full;
-static char         tmp_map_slide;
-static char         tmp_cleanup_slide;
-static int          tmp_slide_mode;
-static int          tmp_map_slide_speed;
-static int          tmp_cleanup_slide_speed;
-static char         tmp_animate_shading;
-static int          tmp_shade_speed;
-static char         tmp_place_ignore_struts;
-static char         tmp_raise_fullscreen;
-
+typedef struct {
+   char                with_leader;
+   char                switch_popup;
+   char                manual_placement;
+   char                manual_placement_mouse_pointer;
+   char                center_if_desk_full;
+   char                map_slide;
+   char                cleanup_slide;
+   int                 slide_mode;
+   int                 map_slide_speed;
+   int                 cleanup_slide_speed;
+   char                animate_shading;
+   int                 shade_speed;
+   char                place_ignore_struts;
+   char                raise_fullscreen;
 #ifdef USE_XINERAMA_no		/* Not implemented */
-static char         tmp_extra_head;
+   char                extra_head;
 #endif
+} PlaceDlgData;
 
 static void
 CB_ConfigurePlacement(Dialog * d __UNUSED__, int val, void *data __UNUSED__)
 {
-   if (val < 2)
-     {
-	Conf.focus.transientsfollowleader = tmp_with_leader;
-	Conf.focus.switchfortransientmap = tmp_switch_popup;
+   PlaceDlgData       *dd = DLG_DATA_GET(d, PlaceDlgData);
 
-	Conf.place.manual = tmp_manual_placement;
-	Conf.place.manual_mouse_pointer = tmp_manual_placement_mouse_pointer;
-	Conf.place.center_if_desk_full = tmp_center_if_desk_full;
+   if (val >= 2)
+      return;
 
-	Conf.place.slidein = tmp_map_slide;
-	Conf.place.cleanupslide = tmp_cleanup_slide;
-	Conf.place.slidemode = tmp_slide_mode;
-	Conf.place.slidespeedmap = tmp_map_slide_speed;
-	Conf.place.slidespeedcleanup = tmp_cleanup_slide_speed;
+   Conf.focus.transientsfollowleader = dd->with_leader;
+   Conf.focus.switchfortransientmap = dd->switch_popup;
 
-	Conf.shading.animate = tmp_animate_shading;
-	Conf.shading.speed = tmp_shade_speed;
+   Conf.place.manual = dd->manual_placement;
+   Conf.place.manual_mouse_pointer = dd->manual_placement_mouse_pointer;
+   Conf.place.center_if_desk_full = dd->center_if_desk_full;
 
-	Conf.place.ignore_struts = tmp_place_ignore_struts;
-	Conf.place.raise_fullscreen = tmp_raise_fullscreen;
+   Conf.place.slidein = dd->map_slide;
+   Conf.place.cleanupslide = dd->cleanup_slide;
+   Conf.place.slidemode = dd->slide_mode;
+   Conf.place.slidespeedmap = dd->map_slide_speed;
+   Conf.place.slidespeedcleanup = dd->cleanup_slide_speed;
+
+   Conf.shading.animate = dd->animate_shading;
+   Conf.shading.speed = dd->shade_speed;
+
+   Conf.place.ignore_struts = dd->place_ignore_struts;
+   Conf.place.raise_fullscreen = dd->raise_fullscreen;
 #ifdef USE_XINERAMA_no		/* Not implemented */
-	if (Mode.display.xinerama_active)
-	   Conf.place.extra_head = tmp_extra_head;
+   if (Mode.display.xinerama_active)
+      Conf.place.extra_head = dd->extra_head;
 #endif
-     }
+
    autosave();
 }
 
@@ -282,28 +296,33 @@ static void
 _DlgFillPlacement(Dialog * d __UNUSED__, DItem * table, void *data __UNUSED__)
 {
    DItem              *di, *radio;
+   PlaceDlgData       *dd;
 
-   tmp_with_leader = Conf.focus.transientsfollowleader;
-   tmp_switch_popup = Conf.focus.switchfortransientmap;
+   dd = DLG_DATA_SET(d, PlaceDlgData);
+   if (!dd)
+      return;
 
-   tmp_manual_placement = Conf.place.manual;
-   tmp_manual_placement_mouse_pointer = Conf.place.manual_mouse_pointer;
-   tmp_center_if_desk_full = Conf.place.center_if_desk_full;
+   dd->with_leader = Conf.focus.transientsfollowleader;
+   dd->switch_popup = Conf.focus.switchfortransientmap;
 
-   tmp_map_slide = Conf.place.slidein;
-   tmp_cleanup_slide = Conf.place.cleanupslide;
-   tmp_slide_mode = Conf.place.slidemode;
-   tmp_map_slide_speed = Conf.place.slidespeedmap;
-   tmp_cleanup_slide_speed = Conf.place.slidespeedcleanup;
+   dd->manual_placement = Conf.place.manual;
+   dd->manual_placement_mouse_pointer = Conf.place.manual_mouse_pointer;
+   dd->center_if_desk_full = Conf.place.center_if_desk_full;
 
-   tmp_animate_shading = Conf.shading.animate;
-   tmp_shade_speed = Conf.shading.speed;
+   dd->map_slide = Conf.place.slidein;
+   dd->cleanup_slide = Conf.place.cleanupslide;
+   dd->slide_mode = Conf.place.slidemode;
+   dd->map_slide_speed = Conf.place.slidespeedmap;
+   dd->cleanup_slide_speed = Conf.place.slidespeedcleanup;
 
-   tmp_place_ignore_struts = Conf.place.ignore_struts;
-   tmp_raise_fullscreen = Conf.place.raise_fullscreen;
+   dd->animate_shading = Conf.shading.animate;
+   dd->shade_speed = Conf.shading.speed;
+
+   dd->place_ignore_struts = Conf.place.ignore_struts;
+   dd->raise_fullscreen = Conf.place.raise_fullscreen;
 
 #ifdef USE_XINERAMA_no		/* Not implemented */
-   tmp_extra_head = Conf.place.extra_head;
+   dd->extra_head = Conf.place.extra_head;
 #endif
 
    DialogItemTableSetOptions(table, 2, 0, 1, 0);
@@ -311,12 +330,12 @@ _DlgFillPlacement(Dialog * d __UNUSED__, DItem * table, void *data __UNUSED__)
    di = DialogAddItem(table, DITEM_CHECKBUTTON);
    DialogItemSetColSpan(di, 2);
    DialogItemSetText(di, _("Dialog windows appear together with their owner"));
-   DialogItemCheckButtonSetPtr(di, &tmp_with_leader);
+   DialogItemCheckButtonSetPtr(di, &dd->with_leader);
 
    di = DialogAddItem(table, DITEM_CHECKBUTTON);
    DialogItemSetColSpan(di, 2);
    DialogItemSetText(di, _("Switch to desktop where dialog appears"));
-   DialogItemCheckButtonSetPtr(di, &tmp_switch_popup);
+   DialogItemCheckButtonSetPtr(di, &dd->switch_popup);
 
    di = DialogAddItem(table, DITEM_SEPARATOR);
    DialogItemSetColSpan(di, 2);
@@ -324,27 +343,27 @@ _DlgFillPlacement(Dialog * d __UNUSED__, DItem * table, void *data __UNUSED__)
    di = DialogAddItem(table, DITEM_CHECKBUTTON);
    DialogItemSetColSpan(di, 2);
    DialogItemSetText(di, _("Place windows manually"));
-   DialogItemCheckButtonSetPtr(di, &tmp_manual_placement);
+   DialogItemCheckButtonSetPtr(di, &dd->manual_placement);
 
    di = DialogAddItem(table, DITEM_CHECKBUTTON);
    DialogItemSetColSpan(di, 2);
    DialogItemSetText(di, _("Place windows under mouse"));
-   DialogItemCheckButtonSetPtr(di, &tmp_manual_placement_mouse_pointer);
+   DialogItemCheckButtonSetPtr(di, &dd->manual_placement_mouse_pointer);
 
    di = DialogAddItem(table, DITEM_CHECKBUTTON);
    DialogItemSetColSpan(di, 2);
    DialogItemSetText(di, _("Center windows when desk is full"));
-   DialogItemCheckButtonSetPtr(di, &tmp_center_if_desk_full);
+   DialogItemCheckButtonSetPtr(di, &dd->center_if_desk_full);
 
    di = DialogAddItem(table, DITEM_CHECKBUTTON);
    DialogItemSetColSpan(di, 2);
    DialogItemSetText(di, _("Slide windows in when they appear"));
-   DialogItemCheckButtonSetPtr(di, &tmp_map_slide);
+   DialogItemCheckButtonSetPtr(di, &dd->map_slide);
 
    di = DialogAddItem(table, DITEM_CHECKBUTTON);
    DialogItemSetColSpan(di, 2);
    DialogItemSetText(di, _("Slide windows around when cleaning up"));
-   DialogItemCheckButtonSetPtr(di, &tmp_cleanup_slide);
+   DialogItemCheckButtonSetPtr(di, &dd->cleanup_slide);
 
    di = DialogAddItem(table, DITEM_TEXT);
    DialogItemSetColSpan(di, 2);
@@ -374,7 +393,7 @@ _DlgFillPlacement(Dialog * d __UNUSED__, DItem * table, void *data __UNUSED__)
    DialogItemSetText(di, _("Semi-Solid"));
    DialogItemRadioButtonSetFirst(di, radio);
    DialogItemRadioButtonGroupSetVal(di, 4);
-   DialogItemRadioButtonGroupSetValPtr(radio, &tmp_slide_mode);
+   DialogItemRadioButtonGroupSetValPtr(radio, &dd->slide_mode);
 
    di = DialogAddItem(table, DITEM_NONE);
 
@@ -387,7 +406,7 @@ _DlgFillPlacement(Dialog * d __UNUSED__, DItem * table, void *data __UNUSED__)
    DialogItemSliderSetBounds(di, 0, 20000);
    DialogItemSliderSetUnits(di, 500);
    DialogItemSliderSetJump(di, 1000);
-   DialogItemSliderSetValPtr(di, &tmp_map_slide_speed);
+   DialogItemSliderSetValPtr(di, &dd->map_slide_speed);
 
    di = DialogAddItem(table, DITEM_TEXT);
    DialogItemSetFill(di, 0, 0);
@@ -398,7 +417,7 @@ _DlgFillPlacement(Dialog * d __UNUSED__, DItem * table, void *data __UNUSED__)
    DialogItemSliderSetBounds(di, 0, 20000);
    DialogItemSliderSetUnits(di, 500);
    DialogItemSliderSetJump(di, 1000);
-   DialogItemSliderSetValPtr(di, &tmp_cleanup_slide_speed);
+   DialogItemSliderSetValPtr(di, &dd->cleanup_slide_speed);
 
    di = DialogAddItem(table, DITEM_SEPARATOR);
    DialogItemSetColSpan(di, 2);
@@ -406,7 +425,7 @@ _DlgFillPlacement(Dialog * d __UNUSED__, DItem * table, void *data __UNUSED__)
    di = DialogAddItem(table, DITEM_CHECKBUTTON);
    DialogItemSetColSpan(di, 2);
    DialogItemSetText(di, _("Animate shading and unshading of windows"));
-   DialogItemCheckButtonSetPtr(di, &tmp_animate_shading);
+   DialogItemCheckButtonSetPtr(di, &dd->animate_shading);
 
    di = DialogAddItem(table, DITEM_TEXT);
    DialogItemSetFill(di, 0, 0);
@@ -417,7 +436,7 @@ _DlgFillPlacement(Dialog * d __UNUSED__, DItem * table, void *data __UNUSED__)
    DialogItemSliderSetBounds(di, 0, 20000);
    DialogItemSliderSetUnits(di, 500);
    DialogItemSliderSetJump(di, 1000);
-   DialogItemSliderSetValPtr(di, &tmp_shade_speed);
+   DialogItemSliderSetValPtr(di, &dd->shade_speed);
 
    di = DialogAddItem(table, DITEM_SEPARATOR);
    DialogItemSetColSpan(di, 2);
@@ -425,12 +444,12 @@ _DlgFillPlacement(Dialog * d __UNUSED__, DItem * table, void *data __UNUSED__)
    di = DialogAddItem(table, DITEM_CHECKBUTTON);
    DialogItemSetColSpan(di, 2);
    DialogItemSetText(di, _("Ignore struts"));
-   DialogItemCheckButtonSetPtr(di, &tmp_place_ignore_struts);
+   DialogItemCheckButtonSetPtr(di, &dd->place_ignore_struts);
 
    di = DialogAddItem(table, DITEM_CHECKBUTTON);
    DialogItemSetColSpan(di, 2);
    DialogItemSetText(di, _("Raise fullscreen windows"));
-   DialogItemCheckButtonSetPtr(di, &tmp_raise_fullscreen);
+   DialogItemCheckButtonSetPtr(di, &dd->raise_fullscreen);
 
 #ifdef USE_XINERAMA_no		/* Not implemented */
    if (Mode.display.xinerama_active)
@@ -438,7 +457,7 @@ _DlgFillPlacement(Dialog * d __UNUSED__, DItem * table, void *data __UNUSED__)
 	di = DialogAddItem(table, DITEM_CHECKBUTTON);
 	DialogItemSetColSpan(di, 2);
 	DialogItemSetText(di, _("Place windows on another head when full"));
-	DialogItemCheckButtonSetPtr(di, &tmp_extra_head);
+	DialogItemCheckButtonSetPtr(di, &dd->extra_head);
      }
 #endif
 }
@@ -454,21 +473,26 @@ const DialogDef     DlgPlacement = {
    DLG_OAC, CB_ConfigurePlacement,
 };
 
-static char         tmp_dialog_headers;
-static char         tmp_button_image;
-static char         tmp_animate_startup;
-static char         tmp_saveunders;
+typedef struct {
+   char                dialog_headers;
+   char                button_image;
+   char                animate_startup;
+   char                saveunders;
+} MiscDlgData;
 
 static void
 CB_ConfigureMiscellaneous(Dialog * d __UNUSED__, int val, void *data __UNUSED__)
 {
-   if (val < 2)
-     {
-	Conf.dialogs.headers = tmp_dialog_headers;
-	Conf.dialogs.button_image = tmp_button_image;
-	Conf.startup.animate = tmp_animate_startup;
-	Conf.save_under = tmp_saveunders;
-     }
+   MiscDlgData        *dd = DLG_DATA_GET(d, MiscDlgData);
+
+   if (val >= 2)
+      return;
+
+   Conf.dialogs.headers = dd->dialog_headers;
+   Conf.dialogs.button_image = dd->button_image;
+   Conf.startup.animate = dd->animate_startup;
+   Conf.save_under = dd->saveunders;
+
    autosave();
 }
 
@@ -476,24 +500,29 @@ static void
 _DlgFillMisc(Dialog * d __UNUSED__, DItem * table, void *data __UNUSED__)
 {
    DItem              *di;
+   MiscDlgData        *dd;
 
-   tmp_dialog_headers = Conf.dialogs.headers;
-   tmp_button_image = Conf.dialogs.button_image;
-   tmp_animate_startup = Conf.startup.animate;
-   tmp_saveunders = Conf.save_under;
+   dd = DLG_DATA_SET(d, MiscDlgData);
+   if (!dd)
+      return;
+
+   dd->dialog_headers = Conf.dialogs.headers;
+   dd->button_image = Conf.dialogs.button_image;
+   dd->animate_startup = Conf.startup.animate;
+   dd->saveunders = Conf.save_under;
 
    DialogItemTableSetOptions(table, 2, 0, 0, 0);
 
    di = DialogAddItem(table, DITEM_CHECKBUTTON);
    DialogItemSetColSpan(di, 2);
    DialogItemSetText(di, _("Enable Dialog Headers"));
-   DialogItemCheckButtonSetPtr(di, &tmp_dialog_headers);
+   DialogItemCheckButtonSetPtr(di, &dd->dialog_headers);
 
 #if 0				/* Not functional */
    di = DialogAddItem(table, DITEM_CHECKBUTTON);
    DialogItemSetColSpan(di, 2);
    DialogItemSetText(di, _("Enable Button Images"));
-   DialogItemCheckButtonSetPtr(di, &tmp_button_image);
+   DialogItemCheckButtonSetPtr(di, &dd->button_image);
 #endif
 
    di = DialogAddItem(table, DITEM_SEPARATOR);
@@ -502,7 +531,7 @@ _DlgFillMisc(Dialog * d __UNUSED__, DItem * table, void *data __UNUSED__)
    di = DialogAddItem(table, DITEM_CHECKBUTTON);
    DialogItemSetColSpan(di, 2);
    DialogItemSetText(di, _("Enable sliding startup windows"));
-   DialogItemCheckButtonSetPtr(di, &tmp_animate_startup);
+   DialogItemCheckButtonSetPtr(di, &dd->animate_startup);
 
    di = DialogAddItem(table, DITEM_SEPARATOR);
    DialogItemSetColSpan(di, 2);
@@ -510,7 +539,7 @@ _DlgFillMisc(Dialog * d __UNUSED__, DItem * table, void *data __UNUSED__)
    di = DialogAddItem(table, DITEM_CHECKBUTTON);
    DialogItemSetColSpan(di, 2);
    DialogItemSetText(di, _("Use saveunders to reduce window exposures"));
-   DialogItemCheckButtonSetPtr(di, &tmp_saveunders);
+   DialogItemCheckButtonSetPtr(di, &dd->saveunders);
 }
 
 const DialogDef     DlgMisc = {
