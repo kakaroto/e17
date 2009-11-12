@@ -278,7 +278,7 @@ MenuShow(Menu * m, char noshow)
    if (m->shown)
       return;
 
-   if (MenuLoad(m))
+   if (MenuLoad(m) || m->redraw)
       MenuRealize(m);
 
    if (m->num <= 0)
@@ -2087,6 +2087,8 @@ CB_ConfigureMenus(Dialog * d, int val, void *data __UNUSED__)
    Conf.menus.animate = dd->animate;
    Conf.menus.onscreen = dd->onscreen;
    Conf.menus.icon_size = dd->icon_size;
+
+   MenusTouch();
 
    autosave();
 }
