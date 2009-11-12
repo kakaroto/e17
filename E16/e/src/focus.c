@@ -873,13 +873,13 @@ _DlgFillFocus(Dialog * d, DItem * table, void *data __UNUSED__)
    DialogItemSetColSpan(di, 2);
    DialogItemSetText(di, _("First E Icon, then App Icon"));
    DialogItemRadioButtonSetFirst(di, radio2);
-   DialogItemRadioButtonGroupSetVal(di, 3);
+   DialogItemRadioButtonGroupSetVal(di, 2);
 
    di = DialogAddItem(table, DITEM_RADIOBUTTON);
    DialogItemSetColSpan(di, 2);
    DialogItemSetText(di, _("First App Icon, then E Icon"));
    DialogItemRadioButtonSetFirst(di, radio2);
-   DialogItemRadioButtonGroupSetVal(di, 4);
+   DialogItemRadioButtonGroupSetVal(di, 1);
 
    di = DialogAddItem(table, DITEM_RADIOBUTTON);
    DialogItemSetColSpan(di, 2);

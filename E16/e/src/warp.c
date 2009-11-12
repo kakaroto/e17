@@ -480,7 +480,7 @@ WarpFocusHandleEvent(Win win __UNUSED__, XEvent * ev, void *prm __UNUSED__)
 static void
 WarplistCfgValidate(void)
 {
-   static const char   fix_mode[8] = { 0, 3, 3, 3, 4, 3, 3, 3 };
+   static const char   fix_mode[8] = { 0, 1, 2, 2, 1, 2, 2, 2 };
 
    Conf.warplist.icon_mode = fix_mode[Conf.warplist.icon_mode & 0x7];
 }
@@ -505,7 +505,7 @@ static const CfgItem WarplistCfgItems[] = {
    CFG_ITEM_BOOL(Conf.warplist, warpfocused, 1),
    CFG_ITEM_BOOL(Conf.warplist, raise_on_select, 1),
    CFG_ITEM_BOOL(Conf.warplist, warp_on_select, 0),
-   CFG_ITEM_INT(Conf.warplist, icon_mode, 3),
+   CFG_ITEM_INT(Conf.warplist, icon_mode, 2),
 };
 #define N_CFG_ITEMS (sizeof(WarplistCfgItems)/sizeof(CfgItem))
 

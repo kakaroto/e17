@@ -1452,7 +1452,7 @@ typedef struct {
    int                 side;
    int                 arrows;
    int                 iconsize;
-   int                 mode;
+   int                 icon_mode;
    char                auto_resize;
    char                draw_icon_base;
    char                scrollbar_hide;
@@ -1480,7 +1480,7 @@ CB_ConfigureContainer(Dialog * d, int val, void *data __UNUSED__)
    ct->scrollbar_side = dd->side;
    ct->arrow_side = dd->arrows;
    ct->iconsize = dd->iconsize;
-   ct->icon_mode = dd->mode;
+   ct->icon_mode = dd->icon_mode;
    ct->auto_resize = dd->auto_resize;
    ct->draw_icon_base = dd->draw_icon_base;
    ct->scrollbar_hide = dd->scrollbar_hide;
@@ -1526,7 +1526,7 @@ _DlgFillContainer(Dialog * d, DItem * table, void *data)
    dd->side = ct->scrollbar_side;
    dd->arrows = ct->arrow_side;
    dd->iconsize = ct->iconsize;
-   dd->mode = ct->icon_mode;
+   dd->icon_mode = ct->icon_mode;
    dd->auto_resize = ct->auto_resize;
    dd->draw_icon_base = ct->draw_icon_base;
    dd->scrollbar_hide = ct->scrollbar_hide;
@@ -1693,7 +1693,7 @@ _DlgFillContainer(Dialog * d, DItem * table, void *data)
 	DialogItemSetText(di, _("Use Enlightenment Icon, Snapshot Window"));
 	DialogItemRadioButtonSetFirst(di, radio4);
 	DialogItemRadioButtonGroupSetVal(di, 2);
-	DialogItemRadioButtonGroupSetValPtr(radio4, &dd->mode);
+	DialogItemRadioButtonGroupSetValPtr(radio4, &dd->icon_mode);
      }
 }
 
@@ -1764,7 +1764,7 @@ ContainersConfigLoad(void)
 	  case CONFIG_ICON_SIZE:	/* __ICON_SIZE %i */
 	     ct->iconsize = i2;
 	     break;
-	  case CONFIG_ICON_MODE:	/* __ICON_MODE [ 0 | 1 | 2 | 3 | 4 ] */
+	  case CONFIG_ICON_MODE:	/* __ICON_MODE [ 0 | 1 | 2 ] */
 	     ct->icon_mode = i2;
 	     break;
 	  case CONFIG_SCROLLBAR_SIDE:	/* __SCROLLBAR_SIDE [ __BAR_LEFT/__BAR_TOP | __BAR_RIGHT/__BAR_BOTTOM ] */
