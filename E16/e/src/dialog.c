@@ -515,6 +515,9 @@ DialogFill(Dialog * d, DItem * parent, const DialogDef * dd, void *data)
    if (!content)
       return;
 
+   Efree(d->data);
+   d->data = NULL;
+
    dd->fill(d, content, data);
 
    if (dd->func)
