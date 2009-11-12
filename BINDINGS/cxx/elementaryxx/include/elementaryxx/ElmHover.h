@@ -11,6 +11,11 @@ namespace efl {
 
 /*! smart callbacks called:
  * "clicked" - the user clicked the empty space in the hover to dismiss
+ *
+ * available styles: 
+ * default
+ * popout
+ * hoversel_vertical
  */
 class ElmHover : public ElmObject
 {
@@ -22,14 +27,6 @@ public:
   void setParent (const EvasObject &parent);
 
   void setContent (const std::string &swallow, const EvasObject &content);
-
-  /*! 
-   * available styles: 
-   * default
-   * popout
-   * hoversel_vertical
-   */
-  void setStyle (const std::string &style);
 
   const string getBestContentLocation (Elm_Hover_Axis prefAxis) const;
 

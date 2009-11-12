@@ -32,9 +32,4 @@ void ElmFrame::setContent (const EvasObject &content)
   elm_frame_content_set (o, content.obj ());
 }
 
-void ElmFrame::setStyle (const std::string &style)
-{
-  elm_frame_style_set (o, style.c_str ());
-}
-
 } // end namespace efl

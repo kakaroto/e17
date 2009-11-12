@@ -37,11 +37,6 @@ void ElmHover::setContent (const std::string &swallow, const EvasObject &content
   elm_hover_content_set (o, swallow.c_str (), content.obj ());
 }
 
-void ElmHover::setStyle (const std::string &style)
-{
-  elm_hover_style_set (o, style.c_str ());
-}
-
 const string ElmHover::getBestContentLocation (Elm_Hover_Axis prefAxis) const
 {
   return elm_hover_best_content_location_get (o, prefAxis);

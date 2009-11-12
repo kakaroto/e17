@@ -32,9 +32,4 @@ void ElmButton::setIcon (const EvasObject &icon)
   elm_button_icon_set (o, icon.obj ());
 }
 
-void ElmButton::setStyle (const std::string &style)
-{
-  elm_button_style_set (o, style.c_str ());
-}
-
 } // end namespace efl

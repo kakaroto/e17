@@ -12,15 +12,6 @@
 
 namespace efl {
 
-class ElmFrame : public ElmObject
-{
-public:
-  static ElmFrame *factory (EvasObject &parent);
-
-  void setLabel (const std::string &label);
-
-  void setContent (const EvasObject &content);
-
  /*! 
   * available styles:
   * default
@@ -31,7 +22,14 @@ public:
   * outdent_top
   * outdent_bottom
   */
-  void setStyle (const std::string &style);
+class ElmFrame : public ElmObject
+{
+public:
+  static ElmFrame *factory (EvasObject &parent);
+
+  void setLabel (const std::string &label);
+
+  void setContent (const EvasObject &content);
   
 private:
   ElmFrame (); // forbid standard constructor

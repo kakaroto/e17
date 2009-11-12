@@ -4,6 +4,9 @@
 
 #include "../include/elementaryxx/ElmObject.h"
 
+/* STD */
+#include <cassert>
+
 using namespace std;
 
 namespace efl {
@@ -14,6 +17,9 @@ ElmObject::~ElmObject () {}
 
 void ElmObject::elmInit ()
 {
+  // check if there was a problem with object creation
+  assert (o);
+  
   init (); // call init() from EvasObject
   
   signalHandleFree.connect (sigc::mem_fun (this, &ElmObject::freeSignalHandler));

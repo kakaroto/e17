@@ -28,7 +28,6 @@ private:
   void setHoverParent (EvasObject &parent);
   void setHoverStyle (const std::string &style);
   void endHover ();   
-
 };
 
 } // end namespace efl

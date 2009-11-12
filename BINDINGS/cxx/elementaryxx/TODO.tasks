@@ -7,13 +7,6 @@
       <comment/>
     </item>
     <item>
-      <attribute id="1246518979" priority="1" done="0" start_date="733590" enddate="99999999" notify="0" endtime="-60" last_edited="1246573316"/>
-      <summary>evas_object_del()</summary>
-      <comment>I think evas_object_del() shouldn't be called in the destructur if the destruction was initiated by the C object (e.g. by deleting the parent)
-
-=&gt; create a elmDeinit() function in ElmWidget and us it</comment>
-    </item>
-    <item>
       <attribute id="1245447931" priority="1" done="1" start_date="733577" completed_date="733591" notify="0" last_edited="1246573323"/>
       <summary>Create a EwlWidget hierarchie</summary>
       <comment/>
@@ -21,7 +14,14 @@
     <item>
       <attribute id="1245793994" priority="1" done="1" start_date="733581" completed_date="733591" notify="0" last_edited="1246573325"/>
       <summary>const get functions</summary>
-      <comment></comment>
+      <comment/>
+    </item>
+    <item>
+      <attribute id="1246518979" priority="1" done="1" start_date="733590" completed_date="733723" notify="0" last_edited="1258060562"/>
+      <summary>evas_object_del()</summary>
+      <comment>I think evas_object_del() shouldn't be called in the destructur if the destruction was initiated by the C object (e.g. by deleting the parent)
+
+=&gt; create a elmDeinit() function in ElmWidget and us it</comment>
     </item>
   </category>
   <category title="Features" place="1">
@@ -29,6 +29,11 @@
       <attribute id="1245448262" priority="1" done="0" start_date="733577" enddate="99999999" notify="0" endtime="-60" last_edited="1245448262"/>
       <summary>Date/Time struct</summary>
       <comment/>
+    </item>
+    <item>
+      <attribute id="1258060585" priority="0" done="0" start_date="733723" enddate="99999999" notify="0" endtime="-60" last_edited="1258060585"/>
+      <summary>Add all docs from C API to C++ API</summary>
+      <comment></comment>
     </item>
   </category>
 </gtodo>

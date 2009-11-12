@@ -15,6 +15,11 @@ namespace efl {
 /*!
  * smart callbacks called:
  * "clicked" - the user clicked the button
+ *
+ * available styles: 
+ * default 
+ * hoversel_vertical 
+ * hoversel_vertical_entry
  */
 class ElmButton : public ElmObject
 {
@@ -25,12 +30,7 @@ public:
   
   void setIcon (const EvasObject &icon);
   
-  /*! 
-   * available styles: 
-   * default 
-   * hoversel_vertical 
-   * hoversel_vertical_entry
-   */
+
   void setStyle (const std::string &style);
   
 private:
