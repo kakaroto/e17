@@ -31,6 +31,8 @@
 #include "ElmHover.h"
 #include "ElmNotepad.h"
 #include "ElmCheck.h"
+#include "ElmAnchorview.h"
+#include "ElmAnchorblock.h"
 
 #endif // ELEMENTARYXX_H
 

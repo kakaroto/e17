@@ -40,5 +40,7 @@ libelementaryxx_la_SOURCES = \
 	ElmObject.cpp  \
 	ElmLayout.cpp  \
 	ElmHover.cpp  \
-	ElmNotepad.cpp
+	ElmNotepad.cpp  \
+	ElmAnchorblock.cpp  \
+	ElmAnchorview.cpp
 
