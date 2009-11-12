@@ -1766,81 +1766,92 @@ PagersReconfigure(void)
 /*
  * Configuration dialog
  */
-static char         tmp_show_pagers;
-static char         tmp_pager_hiq;
-static int          tmp_pager_mode;
-static char         tmp_pager_zoom;
-static char         tmp_pager_title;
-static char         tmp_pager_do_scan;
-static int          tmp_pager_scan_speed;
-static int          tmp_pager_sel_button;
-static int          tmp_pager_win_button;
-static int          tmp_pager_menu_button;
+typedef struct {
+   char                show_pagers;
+   char                pager_hiq;
+   int                 pager_mode;
+   char                pager_zoom;
+   char                pager_title;
+   char                pager_do_scan;
+   int                 pager_scan_speed;
+   int                 pager_sel_button;
+   int                 pager_win_button;
+   int                 pager_menu_button;
+} PagerDlgData;
 
 static void
-CB_ConfigurePager(Dialog * d __UNUSED__, int val, void *data __UNUSED__)
+CB_ConfigurePager(Dialog * d, int val, void *data __UNUSED__)
 {
-   if (val < 2)
+   PagerDlgData       *dd = DLG_DATA_GET(d, PagerDlgData);
+
+   if (val >= 2)
+      return;
+
+   PagersShow(dd->show_pagers);
+   if (Conf_pagers.hiq != dd->pager_hiq)
+      PagerSetHiQ(dd->pager_hiq);
+   Conf_pagers.zoom = dd->pager_zoom;
+   Conf_pagers.title = dd->pager_title;
+   Conf_pagers.sel_button = dd->pager_sel_button;
+   Conf_pagers.win_button = dd->pager_win_button;
+   Conf_pagers.menu_button = dd->pager_menu_button;
+   if ((Conf_pagers.scanspeed != dd->pager_scan_speed)
+       || ((!dd->pager_do_scan) && (Conf_pagers.scanspeed > 0))
+       || ((dd->pager_do_scan) && (Conf_pagers.scanspeed == 0)))
      {
-	PagersShow(tmp_show_pagers);
-	if (Conf_pagers.hiq != tmp_pager_hiq)
-	   PagerSetHiQ(tmp_pager_hiq);
-	Conf_pagers.zoom = tmp_pager_zoom;
-	Conf_pagers.title = tmp_pager_title;
-	Conf_pagers.sel_button = tmp_pager_sel_button;
-	Conf_pagers.win_button = tmp_pager_win_button;
-	Conf_pagers.menu_button = tmp_pager_menu_button;
-	if ((Conf_pagers.scanspeed != tmp_pager_scan_speed)
-	    || ((!tmp_pager_do_scan) && (Conf_pagers.scanspeed > 0))
-	    || ((tmp_pager_do_scan) && (Conf_pagers.scanspeed == 0)))
-	  {
-	     if (tmp_pager_do_scan)
-		Conf_pagers.scanspeed = tmp_pager_scan_speed;
-	     else
-		Conf_pagers.scanspeed = 0;
-	  }
-	PagersSetMode(tmp_pager_mode);
+	if (dd->pager_do_scan)
+	   Conf_pagers.scanspeed = dd->pager_scan_speed;
+	else
+	   Conf_pagers.scanspeed = 0;
      }
+   PagersSetMode(dd->pager_mode);
+
    autosave();
 }
 
 static void
 CB_PagerScanSlide(Dialog * d __UNUSED__, int val __UNUSED__, void *data)
 {
+   PagerDlgData       *dd = DLG_DATA_GET(d, PagerDlgData);
    DItem              *di = (DItem *) data;
    char                s[256];
 
    Esnprintf(s, sizeof(s), "%s %03i %s", _("Pager scanning speed:"),
-	     tmp_pager_scan_speed, _("lines per second"));
+	     dd->pager_scan_speed, _("lines per second"));
    DialogItemSetText(di, s);
 }
 
 static void
-_DlgFillPagers(Dialog * d __UNUSED__, DItem * table, void *data __UNUSED__)
+_DlgFillPagers(Dialog * d, DItem * table, void *data __UNUSED__)
 {
    DItem              *di, *radio, *label;
    char                s[256];
+   PagerDlgData       *dd;
 
-   tmp_show_pagers = Conf_pagers.enable;
-   tmp_pager_hiq = Conf_pagers.hiq;
-   tmp_pager_mode = Conf_pagers.mode;
-   tmp_pager_zoom = Conf_pagers.zoom;
-   tmp_pager_title = Conf_pagers.title;
-   tmp_pager_sel_button = Conf_pagers.sel_button;
-   tmp_pager_win_button = Conf_pagers.win_button;
-   tmp_pager_menu_button = Conf_pagers.menu_button;
+   dd = DLG_DATA_SET(d, PagerDlgData);
+   if (!dd)
+      return;
+
+   dd->show_pagers = Conf_pagers.enable;
+   dd->pager_hiq = Conf_pagers.hiq;
+   dd->pager_mode = Conf_pagers.mode;
+   dd->pager_zoom = Conf_pagers.zoom;
+   dd->pager_title = Conf_pagers.title;
+   dd->pager_sel_button = Conf_pagers.sel_button;
+   dd->pager_win_button = Conf_pagers.win_button;
+   dd->pager_menu_button = Conf_pagers.menu_button;
    if (Conf_pagers.scanspeed == 0)
-      tmp_pager_do_scan = 0;
+      dd->pager_do_scan = 0;
    else
-      tmp_pager_do_scan = 1;
-   tmp_pager_scan_speed = Conf_pagers.scanspeed;
+      dd->pager_do_scan = 1;
+   dd->pager_scan_speed = Conf_pagers.scanspeed;
 
    DialogItemTableSetOptions(table, 2, 0, 0, 0);
 
    di = DialogAddItem(table, DITEM_CHECKBUTTON);
    DialogItemSetColSpan(di, 2);
    DialogItemSetText(di, _("Enable pager display"));
-   DialogItemCheckButtonSetPtr(di, &tmp_show_pagers);
+   DialogItemCheckButtonSetPtr(di, &dd->show_pagers);
 
    di = DialogAddItem(table, DITEM_SEPARATOR);
    DialogItemSetColSpan(di, 2);
@@ -1870,7 +1881,7 @@ _DlgFillPagers(Dialog * d __UNUSED__, DItem * table, void *data __UNUSED__)
    DialogItemRadioButtonSetFirst(di, radio);
    DialogItemRadioButtonGroupSetVal(di, 2);
 #endif
-   DialogItemRadioButtonGroupSetValPtr(radio, &tmp_pager_mode);
+   DialogItemRadioButtonGroupSetValPtr(radio, &dd->pager_mode);
 
    di = DialogAddItem(table, DITEM_SEPARATOR);
    DialogItemSetColSpan(di, 2);
@@ -1878,30 +1889,30 @@ _DlgFillPagers(Dialog * d __UNUSED__, DItem * table, void *data __UNUSED__)
    di = DialogAddItem(table, DITEM_CHECKBUTTON);
    DialogItemSetColSpan(di, 2);
    DialogItemSetText(di, _("Smooth high quality snapshots in snapshot mode"));
-   DialogItemCheckButtonSetPtr(di, &tmp_pager_hiq);
+   DialogItemCheckButtonSetPtr(di, &dd->pager_hiq);
 
    di = DialogAddItem(table, DITEM_CHECKBUTTON);
    DialogItemSetColSpan(di, 2);
    DialogItemSetText(di, _("Zoom in on pager windows when mouse is over them"));
-   DialogItemCheckButtonSetPtr(di, &tmp_pager_zoom);
+   DialogItemCheckButtonSetPtr(di, &dd->pager_zoom);
 
    di = DialogAddItem(table, DITEM_CHECKBUTTON);
    DialogItemSetColSpan(di, 2);
    DialogItemSetText(di,
 		     _("Pop up window title when mouse is over the window"));
-   DialogItemCheckButtonSetPtr(di, &tmp_pager_title);
+   DialogItemCheckButtonSetPtr(di, &dd->pager_title);
 
    di = DialogAddItem(table, DITEM_CHECKBUTTON);
    DialogItemSetColSpan(di, 2);
    DialogItemSetText(di, _("Continuously scan screen to update pager"));
-   DialogItemCheckButtonSetPtr(di, &tmp_pager_do_scan);
+   DialogItemCheckButtonSetPtr(di, &dd->pager_do_scan);
 
    di = label = DialogAddItem(table, DITEM_TEXT);
    DialogItemSetColSpan(di, 2);
    DialogItemSetFill(di, 0, 0);
    DialogItemSetAlign(di, 0, 512);
    Esnprintf(s, sizeof(s), "%s %03i %s", _("Pager scanning speed:"),
-	     tmp_pager_scan_speed, _("lines per second"));
+	     dd->pager_scan_speed, _("lines per second"));
    DialogItemSetText(di, s);
 
    di = DialogAddItem(table, DITEM_SLIDER);
@@ -1909,7 +1920,7 @@ _DlgFillPagers(Dialog * d __UNUSED__, DItem * table, void *data __UNUSED__)
    DialogItemSliderSetUnits(di, 1);
    DialogItemSliderSetJump(di, 1);
    DialogItemSetColSpan(di, 2);
-   DialogItemSliderSetValPtr(di, &tmp_pager_scan_speed);
+   DialogItemSliderSetValPtr(di, &dd->pager_scan_speed);
    DialogItemSetCallback(di, CB_PagerScanSlide, 0, label);
 
    di = DialogAddItem(table, DITEM_TEXT);
@@ -1935,7 +1946,7 @@ _DlgFillPagers(Dialog * d __UNUSED__, DItem * table, void *data __UNUSED__)
    DialogItemSetText(di, _("Right"));
    DialogItemRadioButtonSetFirst(di, radio);
    DialogItemRadioButtonGroupSetVal(di, 3);
-   DialogItemRadioButtonGroupSetValPtr(radio, &tmp_pager_win_button);
+   DialogItemRadioButtonGroupSetValPtr(radio, &dd->pager_win_button);
 
    di = DialogAddItem(table, DITEM_TEXT);
    DialogItemSetColSpan(di, 2);
@@ -1960,7 +1971,7 @@ _DlgFillPagers(Dialog * d __UNUSED__, DItem * table, void *data __UNUSED__)
    DialogItemSetText(di, _("Right"));
    DialogItemRadioButtonSetFirst(di, radio);
    DialogItemRadioButtonGroupSetVal(di, 3);
-   DialogItemRadioButtonGroupSetValPtr(radio, &tmp_pager_sel_button);
+   DialogItemRadioButtonGroupSetValPtr(radio, &dd->pager_sel_button);
 
    di = DialogAddItem(table, DITEM_TEXT);
    DialogItemSetColSpan(di, 2);
@@ -1985,7 +1996,7 @@ _DlgFillPagers(Dialog * d __UNUSED__, DItem * table, void *data __UNUSED__)
    DialogItemSetText(di, _("Right"));
    DialogItemRadioButtonSetFirst(di, radio);
    DialogItemRadioButtonGroupSetVal(di, 3);
-   DialogItemRadioButtonGroupSetValPtr(radio, &tmp_pager_menu_button);
+   DialogItemRadioButtonGroupSetValPtr(radio, &dd->pager_menu_button);
 }
 
 const DialogDef     DlgPagers = {
