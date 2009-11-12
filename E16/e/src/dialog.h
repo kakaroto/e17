@@ -141,7 +141,6 @@ void                DialogItemSliderSetJump(DItem * di, int jump);
 void                DialogItemSliderSetMinLength(DItem * di, int min);
 void                DialogItemSliderSetValPtr(DItem * di, int *val_ptr);
 void                DialogItemSliderSetOrientation(DItem * di, char horizontal);
-int                 DialogItemSliderGetVal(DItem * di);
 void                DialogItemSliderGetBounds(DItem * di, int *lower,
 					      int *upper);
 

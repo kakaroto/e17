@@ -39,13 +39,11 @@ typedef struct {
    char                horizontal;
 
    char                numeric;
-   char                numeric_side;
 
    int                 upper;
    int                 lower;
    int                 unit;
    int                 jump;
-   int                 val;
    int                *val_ptr;
 
    int                 min_length;
@@ -566,11 +564,6 @@ DialogItemCreate(int type)
    di->row_span = 1;
    di->col_span = 1;
    di->item.table.num_columns = 1;
-   di->item.table.border = 0;
-   di->item.table.homogenous_h = 0;
-   di->item.table.homogenous_v = 0;
-   di->item.table.num_items = 0;
-   di->item.table.items = NULL;
 
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
@@ -615,7 +608,6 @@ DialogAddItem(DItem * dii, int type)
 	di->item.area.h = 32;
 	break;
      case DITEM_CHECKBUTTON:
-	di->item.check_button.check_win = 0;
 	di->item.check_button.onoff = 0;
 	di->item.check_button.onoff_ptr = &(di->item.check_button.onoff);
 	di->item.check_button.check_orig_w = 10;
@@ -623,11 +615,6 @@ DialogAddItem(DItem * dii, int type)
 	break;
      case DITEM_TABLE:
 	di->item.table.num_columns = 1;
-	di->item.table.border = 0;
-	di->item.table.homogenous_h = 0;
-	di->item.table.homogenous_v = 0;
-	di->item.table.num_items = 0;
-	di->item.table.items = NULL;
 	break;
      case DITEM_IMAGE:
 	di->item.image.image = NULL;
@@ -636,48 +623,20 @@ DialogAddItem(DItem * dii, int type)
 	di->item.separator.horizontal = 0;
 	break;
      case DITEM_RADIOBUTTON:
-	di->item.radio_button.radio_win = 0;
-	di->item.radio_button.onoff = 0;
-	di->item.radio_button.val = 0;
-	di->item.radio_button.val_ptr = 0;
-	di->item.radio_button.next = NULL;
-	di->item.radio_button.first = NULL;
 	di->item.radio_button.radio_orig_w = 10;
 	di->item.radio_button.radio_orig_h = 10;
-	di->item.radio_button.event_func = NULL;
 	break;
      case DITEM_SLIDER:
 	di->item.slider.horizontal = 1;
-	di->item.slider.numeric = 0;
-	di->item.slider.numeric_side = 0;
 	di->item.slider.upper = 100;
 	di->item.slider.lower = 0;
 	di->item.slider.unit = 10;
 	di->item.slider.jump = 20;
-	di->item.slider.val = 0;
-	di->item.slider.val_ptr = NULL;
 	di->item.slider.min_length = 64;
-	di->item.slider.ic_base = NULL;
-	di->item.slider.ic_knob = NULL;
-	di->item.slider.base_win = 0;
-	di->item.slider.knob_win = 0;
 	di->item.slider.base_orig_w = 10;
 	di->item.slider.base_orig_h = 10;
 	di->item.slider.knob_orig_w = 6;
 	di->item.slider.knob_orig_h = 6;
-	di->item.slider.base_x = 0;
-	di->item.slider.base_y = 0;
-	di->item.slider.base_w = 0;
-	di->item.slider.base_h = 0;
-	di->item.slider.knob_x = 0;
-	di->item.slider.knob_y = 0;
-	di->item.slider.knob_w = 0;
-	di->item.slider.knob_h = 0;
-	di->item.slider.numeric_x = 0;
-	di->item.slider.numeric_y = 0;
-	di->item.slider.numeric_w = 0;
-	di->item.slider.numeric_h = 0;
-	di->item.slider.in_drag = 0;
 	break;
      }
 
@@ -1390,7 +1349,7 @@ DialogDrawItems(Dialog * d, DItem * di, int x, int y, int w, int h)
 static void
 DialogDrawItem(Dialog * d, DItem * di)
 {
-   int                 state, x, w;
+   int                 state, x, w, val;
    EImageBorder       *pad;
 
    if (!di->update && di->type != DITEM_TABLE)
@@ -1438,11 +1397,13 @@ DialogDrawItem(Dialog * d, DItem * di)
 	break;
 
      case DITEM_SLIDER:
+	val = (di->item.slider.val_ptr) ?
+	   *(di->item.slider.val_ptr) : di->item.slider.lower;
 	if (di->item.slider.horizontal)
 	  {
 	     di->item.slider.knob_x = di->item.slider.base_x +
 		(((di->item.slider.base_w - di->item.slider.knob_w) *
-		  (di->item.slider.val - di->item.slider.lower)) /
+		  (val - di->item.slider.lower)) /
 		 (di->item.slider.upper - di->item.slider.lower));
 	     di->item.slider.knob_y = di->item.slider.base_y +
 		((di->item.slider.base_h - di->item.slider.knob_h) / 2);
@@ -1451,7 +1412,7 @@ DialogDrawItem(Dialog * d, DItem * di)
 	  {
 	     di->item.slider.knob_y = di->item.slider.base_y +
 		(((di->item.slider.base_h - di->item.slider.knob_h) *
-		  (di->item.slider.val - di->item.slider.lower)) /
+		  (val - di->item.slider.lower)) /
 		 (di->item.slider.upper - di->item.slider.lower));
 	     di->item.slider.knob_x = di->item.slider.base_x +
 		((di->item.slider.base_w - di->item.slider.knob_w) / 2);
@@ -1724,7 +1685,6 @@ DialogItemSliderSetVal(DItem * di, int val)
       val = di->item.slider.lower;
    else if (val > di->item.slider.upper)
       val = di->item.slider.upper;
-   di->item.slider.val = val;
    if (di->item.slider.val_ptr)
       *di->item.slider.val_ptr = val;
 
@@ -1781,12 +1741,6 @@ void
 DialogItemSliderSetOrientation(DItem * di, char horizontal)
 {
    di->item.slider.horizontal = horizontal;
-}
-
-int
-DialogItemSliderGetVal(DItem * di)
-{
-   return di->item.slider.val;
 }
 
 void
@@ -1997,6 +1951,8 @@ DialogHandleEvents(Win win __UNUSED__, XEvent * ev, void *prm)
 static void
 DItemEventMotion(Win win __UNUSED__, DItem * di, XEvent * ev)
 {
+   int                 val;
+
    switch (di->type)
      {
      case DITEM_AREA:
@@ -2011,7 +1967,7 @@ DItemEventMotion(Win win __UNUSED__, DItem * di, XEvent * ev)
 	  {
 	     if (di->item.slider.horizontal)
 	       {
-		  di->item.slider.val =
+		  val =
 		     _DlgPixToVal(di,
 				  ev->xbutton.x + di->item.slider.knob_x -
 				  di->item.slider.knob_w / 2,
@@ -2020,7 +1976,7 @@ DItemEventMotion(Win win __UNUSED__, DItem * di, XEvent * ev)
 	       }
 	     else
 	       {
-		  di->item.slider.val =
+		  val =
 		     _DlgPixToVal(di,
 				  ev->xbutton.y + di->item.slider.knob_y -
 				  di->item.slider.knob_h / 2,
@@ -2028,7 +1984,7 @@ DItemEventMotion(Win win __UNUSED__, DItem * di, XEvent * ev)
 				  di->item.slider.knob_h);
 	       }
 	     if (di->item.slider.val_ptr)
-		*di->item.slider.val_ptr = di->item.slider.val;
+		*di->item.slider.val_ptr = val;
 	     if (di->func)
 		(di->func) (di->dlg, di->val, di->data);
 	  }
@@ -2041,7 +1997,7 @@ DItemEventMotion(Win win __UNUSED__, DItem * di, XEvent * ev)
 static void
 DItemEventMouseDown(Win win, DItem * di, XEvent * ev)
 {
-   int                 x, y, wheel_jump;
+   int                 x, y, wheel_jump, val;
 
    switch (di->type)
      {
@@ -2060,6 +2016,9 @@ DItemEventMouseDown(Win win, DItem * di, XEvent * ev)
 	       }
 	  }
 
+	val = (di->item.slider.val_ptr) ?
+	   *(di->item.slider.val_ptr) : di->item.slider.lower;
+
 	/* Coords -> item.slider.base_win */
 	ETranslateCoordinates(win, di->item.slider.base_win,
 			      ev->xbutton.x, ev->xbutton.y, &x, &y, NULL);
@@ -2072,24 +2031,24 @@ DItemEventMouseDown(Win win, DItem * di, XEvent * ev)
 	       {
 		  if (ev->xbutton.x >
 		      (di->item.slider.knob_x + (di->item.slider.knob_w / 2)))
-		     di->item.slider.val += di->item.slider.jump;
+		     val += di->item.slider.jump;
 		  else
-		     di->item.slider.val -= di->item.slider.jump;
+		     val -= di->item.slider.jump;
 	       }
 	     else
 	       {
 		  if (ev->xbutton.y >
 		      (di->item.slider.knob_y + (di->item.slider.knob_h / 2)))
-		     di->item.slider.val += di->item.slider.jump;
+		     val += di->item.slider.jump;
 		  else
-		     di->item.slider.val -= di->item.slider.jump;
+		     val -= di->item.slider.jump;
 	       }
 	     break;
 
 	  case 2:
 	     if (di->item.slider.horizontal)
 	       {
-		  di->item.slider.val =
+		  val =
 		     _DlgPixToVal(di,
 				  ev->xbutton.x - di->item.slider.knob_w / 2,
 				  di->item.slider.base_w -
@@ -2097,7 +2056,7 @@ DItemEventMouseDown(Win win, DItem * di, XEvent * ev)
 	       }
 	     else
 	       {
-		  di->item.slider.val =
+		  val =
 		     _DlgPixToVal(di,
 				  ev->xbutton.y - di->item.slider.knob_h / 2,
 				  di->item.slider.base_h -
@@ -2112,21 +2071,17 @@ DItemEventMouseDown(Win win, DItem * di, XEvent * ev)
 		wheel_jump++;
 
 	     if (ev->xbutton.button == 5)
-	       {
-		  di->item.slider.val -= wheel_jump;
-	       }
+		val -= wheel_jump;
 	     else if (ev->xbutton.button == 4)
-	       {
-		  di->item.slider.val += wheel_jump;
-	       }
+		val += wheel_jump;
 	     break;
 	  }
-	if (di->item.slider.val < di->item.slider.lower)
-	   di->item.slider.val = di->item.slider.lower;
-	if (di->item.slider.val > di->item.slider.upper)
-	   di->item.slider.val = di->item.slider.upper;
+	if (val < di->item.slider.lower)
+	   val = di->item.slider.lower;
+	if (val > di->item.slider.upper)
+	   val = di->item.slider.upper;
 	if (di->item.slider.val_ptr)
-	   *di->item.slider.val_ptr = di->item.slider.val;
+	   *di->item.slider.val_ptr = val;
 #if 0				/* Remove? */
 	if (di->func)
 	   (di->func) (d, di->val, di->data);

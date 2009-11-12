@@ -1589,7 +1589,7 @@ CB_ConfigureDelBG(Dialog * d __UNUSED__, int val, void *data __UNUSED__)
 {
    Background         *bg;
    int                 i, num;
-   int                 slider, lower, upper;
+   int                 lower, upper;
 
    num = ecore_list_count(bg_list);
    if (num <= 1)
@@ -1613,10 +1613,9 @@ CB_ConfigureDelBG(Dialog * d __UNUSED__, int val, void *data __UNUSED__)
    tmp_bg = NULL;
 
    DialogItemSliderGetBounds(bg_sel_slider, &lower, &upper);
-   slider = DialogItemSliderGetVal(bg_sel_slider);
    upper -= 4;
    DialogItemSliderSetBounds(bg_sel_slider, lower, upper);
-   if (slider > upper)
+   if (tmp_bg_sel_sliderval > upper)
       DialogItemSliderSetVal(bg_sel_slider, upper);
 
    BgDialogSetNewCurrent(bg);
