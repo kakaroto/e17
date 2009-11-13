@@ -23,7 +23,6 @@ eon_font.c \
 eon_main.c \
 eon_object.c \
 eon_parser.c \
-eon_renderable.c \
 eon_setter.c \
 eon_script.c \
 eon_style.c \

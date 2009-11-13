@@ -43,7 +43,7 @@ static void _ctor(void *instance)
 	ch = (Eon_Grid *)instance;
 	ch->prv = prv = ekeko_type_instance_private_get(_type, instance);
 	ch->parent.parent.create = eon_engine_grid_create;
-	ch->parent.parent.delete = eon_engine_grid_delete;
+	ch->parent.parent.free = eon_engine_grid_delete;
 	ch->parent.parent.render = _render;
 }
 

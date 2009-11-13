@@ -27,7 +27,6 @@
 typedef struct _Eon_Document Eon_Document;
 typedef struct _Eon_Object Eon_Object;
 typedef struct _Eon_Input Eon_Input;
-typedef struct _Eon_Renderable Eon_Renderable;
 typedef struct _Eon_Animation Eon_Animation;
 typedef struct _Eon_Animation_Key Eon_Animation_Key;
 typedef struct _Eon_Animation_Basic Eon_Animation_Basic;
@@ -82,7 +81,6 @@ EAPI int eon_shutdown(void);
 #include "eon_color.h"
 #include "eon_value.h"
 #include "eon_document.h"
-#include "eon_renderable.h"
 #include "eon_animation.h"
 #include "eon_anim_key.h"
 #include "eon_anim_basic.h"

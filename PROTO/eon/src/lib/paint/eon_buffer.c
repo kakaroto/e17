@@ -45,7 +45,7 @@ static void _ctor(void *instance)
 	b->prv = prv = ekeko_type_instance_private_get(_type, instance);
 	b->parent.parent.create = eon_engine_buffer_create;
 	b->parent.parent.render = _render;
-	b->parent.parent.delete = eon_engine_buffer_delete;
+	b->parent.parent.free = eon_engine_buffer_delete;
 }
 
 static void _dtor(void *image)

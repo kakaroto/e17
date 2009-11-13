@@ -35,7 +35,6 @@
 /* Type names */
 #define EON_TYPE_DOCUMENT "eon"
 #define EON_TYPE_OBJECT "object"
-#define EON_TYPE_CANVAS "canvas"
 #define EON_TYPE_ANIMATION "animation_base"
 #define EON_TYPE_ANIMATION_KEY "key"
 #define EON_TYPE_ANIMATION_BASIC "anim"
@@ -66,6 +65,9 @@
 #define EON_TYPE_STRIPES "stripes"
 #define EON_TYPE_GRID "grid"
 #define EON_TYPE_BUFFER "buffer"
+
+#define EON_TYPE_CANVAS "canvas"
+#define EON_TYPE_LAYOUT "layout"
 
 #define EON_TYPE_FILTER "filter"
 #define EON_TYPE_FILTER_EFFECT "Eon_Filter_Effect"

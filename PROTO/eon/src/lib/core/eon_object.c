@@ -41,14 +41,14 @@ static void _object_dtor(Ekeko_Object *eo)
 	 * engine data here?
 	 */
 }
-
-static Eina_Bool _object_appendable(Ekeko_Object *parent, Ekeko_Object *child)
-{
-
-}
 /*============================================================================*
  *                                 Global                                     *
  *============================================================================*/
+/**
+ * Gets the engines data associated with an object
+ * @param o The object to get the data from
+ * @return The engine data
+ */
 void * eon_object_engine_data_get(Eon_Object *o)
 {
 	Eon_Object_Private *prv;
@@ -56,7 +56,11 @@ void * eon_object_engine_data_get(Eon_Object *o)
 	prv = PRIVATE(o);
 	return prv->engine_data;
 }
-
+/**
+ * Sets the engine data on an object
+ * @param o The object to set the data to
+ * @param data The engine data
+ */
 void eon_object_engine_data_set(Eon_Object *o, void *data)
 {
 	Eon_Object_Private *prv;
@@ -64,13 +68,30 @@ void eon_object_engine_data_set(Eon_Object *o, void *data)
 	prv = PRIVATE(o);
 	prv->engine_data = data;
 }
-
+/**
+ * Sets the document to an object. The document is already
+ * doing this by you whenever an object is created, you dont
+ * need to call this yourself.
+ * @param o The object to set the document to
+ * @param d The document
+ */
 void eon_object_document_set(Eon_Object *o, Eon_Document *d)
 {
 	Eon_Object_Private *prv;
 
 	prv = PRIVATE(o);
 	prv->doc = d;
+}
+
+/**
+ * Generic function that will only append an object if the both
+ * are of type Eon_Object
+ * @param parent The object you want the attch the child to
+ * @param child The child object
+ */
+Eina_Bool eon_object_appendable(Ekeko_Object *parent, Ekeko_Object *child)
+{
+
 }
 /*============================================================================*
  *                                   API                                      *
@@ -88,7 +109,7 @@ EAPI Ekeko_Type * eon_object_type_get(void)
 		type = ekeko_type_new(EON_TYPE_OBJECT, sizeof(Eon_Object),
 				sizeof(Eon_Object_Private),
 				ekeko_object_type_get(), _object_ctor,
-				_object_dtor, _object_appendable);
+				_object_dtor, NULL);
 	}
 	return type;
 }

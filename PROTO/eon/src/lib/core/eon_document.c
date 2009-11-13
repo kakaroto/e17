@@ -23,6 +23,12 @@
 /*============================================================================*
  *                                  Local                                     *
  *============================================================================*/
+#define DBG(...) EINA_LOG_DOM_DBG(_dom, __VA_ARGS__)
+#define INF(...) EINA_LOG_DOM_INFO(_dom, __VA_ARGS__)
+#define WRN(...) EINA_LOG_DOM_WARN(_dom, __VA_ARGS__)
+#define ERR(...) EINA_LOG_DOM_ERR(_dom, __VA_ARGS__)
+
+static int _dom = -1;
 static Ecore_Idle_Enterer *_idler = NULL;
 static Eina_List *_documents = NULL;
 
@@ -152,6 +158,7 @@ static Ekeko_Type * _document_type_get(void)
 
 	if (!type)
 	{
+		_dom = eina_log_domain_register("eon_document", NULL);
 		type = ekeko_type_new(EON_TYPE_DOCUMENT, 0,
 				sizeof(Eon_Document), ekeko_object_type_get(),
 				_ctor, _dtor, _appendable);
@@ -332,8 +339,7 @@ EAPI Ekeko_Object * eon_document_object_new(Eon_Document *d, const char *name)
 		_event_object_new(&ev, name, o);
 		ekeko_object_event_dispatch(d, (Ekeko_Event *)&ev);
 		/* set the document on the newly created object */
-		/* TODO later */
-		//eon_object_document_set(o, d);
+		eon_object_document_set(o, d);
 	}
 	return o;
 }

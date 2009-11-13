@@ -27,6 +27,8 @@
 #define EON_PAINT_COORDSPACE_CHANGED "coordspaceChanged"
 #define EON_PAINT_MATRIXSPACE_CHANGED "matrixspaceChanged"
 #define EON_PAINT_STYLE_CHANGED "styleChanged"
+#define EON_PAINT_VISIBILITY_CHANGED "visibilityChanged"
+#define EON_PAINT_GEOMETRY_CHANGED "geometryChanged"
 /*============================================================================*
  *                               Properties                                   *
  *============================================================================*/
@@ -36,6 +38,7 @@ extern Ekeko_Property_Id EON_PAINT_MATRIX;
 extern Ekeko_Property_Id EON_PAINT_COORDSPACE;
 extern Ekeko_Property_Id EON_PAINT_MATRIXSPACE;
 extern Ekeko_Property_Id EON_PAINT_STYLE;
+extern Ekeko_Property_Id EON_PAINT_VISIBILITY;
 /*============================================================================*
  *                                 Class                                      *
  *============================================================================*/
@@ -56,8 +59,7 @@ typedef enum _Eon_Paint_Matrixspace
 typedef struct _Eon_Paint_Private Eon_Paint_Private;
 struct _Eon_Paint
 {
-	Eon_Renderable base;
-	Eon_Paint_Private *prv;
+	Eon_Object base;
 	/* called whenever the engine wants to instantiate a new paint object */
 	void *(*create)(Eon_Engine *e, Eon_Paint *s);
 	/* called whenever the paint is going to be rendered */
@@ -67,11 +69,18 @@ struct _Eon_Paint
 	Eina_Bool (*is_inside)(Eon_Paint *p, int x, int y);
 	/* called whenever the paint is going to be destroyed */
 	void (*free)(Eon_Engine *e, void *engine_data);
+	Eon_Paint_Private *prv;
 };
 /*============================================================================*
  *                                Functions                                   *
  *============================================================================*/
 EAPI Ekeko_Type *eon_paint_type_get(void);
+
+EAPI void eon_paint_matrix_set(Eon_Paint *p, Enesim_Matrix *m);
+EAPI void eon_paint_matrix_get(Eon_Paint *p, Enesim_Matrix *m);
+
+EAPI void eon_paint_matrixspace_set(Eon_Paint *p, Eon_Paint_Matrixspace cs);
+EAPI Eon_Paint_Matrixspace eon_paint_matrixspace_get(Eon_Paint *p);
 
 EAPI Eon_Paint_Coordspace eon_paint_coordspace_get(Eon_Paint *p);
 EAPI void eon_paint_coordspace_set(Eon_Paint *p, Eon_Paint_Coordspace cs);
@@ -82,10 +91,15 @@ EAPI Eon_Color eon_paint_color_get(Eon_Paint *s);
 EAPI void eon_paint_rop_set(Eon_Paint *s, Enesim_Rop rop);
 EAPI Enesim_Rop eon_paint_rop_get(Eon_Paint *s);
 
-EAPI void eon_paint_matrix_set(Eon_Paint *s, Enesim_Matrix *m);
-EAPI void eon_paint_matrix_get(Eon_Paint *s, Enesim_Matrix *m);
-
 EAPI void eon_paint_style_set(Eon_Paint *p, Eon_Style *s);
 EAPI Eon_Style * eon_paint_style_get(Eon_Paint *p);
+
+EAPI Eina_Bool eon_paint_visibility_get(Eon_Paint *p);
+EAPI void eon_paint_show(Eon_Paint *p);
+EAPI void eon_paint_hide(Eon_Paint *p);
+EAPI void eon_paint_visibility_set(Eon_Paint *p, Eina_Bool visible);
+
+EAPI void eon_paint_boundings_get(Eon_Paint *p, Eina_Rectangle *bounds);
+EAPI void eon_paint_geometry_get(Eon_Paint *p, Eina_Rectangle *rect);
 
 #endif /* EON_PAINT_H_ */

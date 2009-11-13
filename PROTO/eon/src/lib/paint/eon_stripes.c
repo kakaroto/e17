@@ -43,7 +43,7 @@ static void _ctor(void *instance)
 	sq->private = prv = ekeko_type_instance_private_get(_type, instance);
 	sq->parent.parent.create = eon_engine_stripes_create;
 	sq->parent.parent.render = _render;
-	sq->parent.parent.delete = eon_engine_stripes_delete;
+	sq->parent.parent.free = eon_engine_stripes_delete;
 }
 
 static void _dtor(void *image)

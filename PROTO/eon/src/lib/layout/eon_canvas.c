@@ -24,29 +24,16 @@
 #define PRIVATE(d) ((Eon_Canvas_Private *)((Eon_Canvas *)(d))->prv)
 
 static Ekeko_Type *_type;
+
 struct _Eon_Canvas_Private
 {
-	Eon_Coord x, y, w, h;
-	/* how to handle the geometry of an object based on the matrix and the coords
-	 * looks that child objects with relative coordinates use the geometry
-	 */
-	Enesim_Matrix matrix; /* user matrix S -> D */
-	Enesim_Matrix inverse; /* inverse matrix D -> S*/ /* FIXME do we actually need this? */
-
-	/* track parent canvas, if parent canvas == NULL then this is the
-	 * main canvas and we should treat it differently
-	 */
 	Eina_Bool root;
-	/* TODO overflow property */
-	/* FIXME change this later */
-	Eon_Document *doc;
-	void *engine_data;
 };
-
+#if 0
 /* in case the subcanvas has another canvas as parent it will blt to the
  * parent canvas
  */
-static void _subcanvas_render(Ekeko_Renderable *r, Eina_Rectangle *rect)
+static void _subcanvas_render(Eon_Paint *r, Eina_Rectangle *rect)
 {
 	Eina_Rectangle sgeom, srect;
 	Eon_Canvas *c;
@@ -57,7 +44,7 @@ static void _subcanvas_render(Ekeko_Renderable *r, Eina_Rectangle *rect)
 	c = (Eon_Canvas *)ekeko_renderable_canvas_get(r);
 	cprv = PRIVATE(c);
 
-	eng = eon_document_engine_get(sprv->doc);
+	eng = eon_document_engine_get(eon_object_document_get((Eon_Object *)r));
 #if BOUNDING_DEBUG
 	{
 #if 0
@@ -87,11 +74,6 @@ static void _subcanvas_render(Ekeko_Renderable *r, Eina_Rectangle *rect)
 	eon_engine_canvas_blit(eng, sprv->engine_data, rect, cprv->engine_data, &srect);
 }
 
-static Eina_Bool _subcanvas_is_inside(Ekeko_Canvas *c, int x, int y)
-{
-	printf("CAAAAAAAAAAALED\n");
-	return EINA_TRUE;
-}
 static inline Eina_Bool _subcanvas_flush(Ekeko_Canvas *c, Eina_Rectangle *r)
 {
 	Eina_Rectangle rscaled;
@@ -164,242 +146,20 @@ static void _geometry_change(const Ekeko_Object *o, Ekeko_Event *e, void *data)
 		eon_engine_canvas_delete(eng, prv->engine_data);
 	prv->engine_data = eon_engine_canvas_create(eng, doc_data, (Eon_Canvas *)o, prv->root, w, h);
 }
-
-/* Once the matrix or the coordinates have changed, update the renderable
- * geometry */
-static inline void _geometry_calc(Eon_Canvas *c)
+#endif
+static Eina_Bool _flush(Eon_Layout *l, Eina_Rectangle *r)
 {
-	Eon_Canvas_Private *prv = PRIVATE(c);
-	Eina_Rectangle r;
 
-	eina_rectangle_coords_from(&r, prv->x.final, prv->y.final, prv->w.final,
-			prv->h.final);
-	/* in case of a subcanvas use the matrix */
-	if (!prv->root)
-	{
-		/* compute the final geometry multiplying by the context matrix */
-		Enesim_Quad qm, qi;
-		float x1, y1, x2, y2, x3, y3, x4, y4;
-
-		/* get the largest rectangle that fits on the matrix */
-		printf("[Eon_Canvas] Geometry is %d %d %d %d\n", r.x, r.y, r.w, r.h);
-		printf("[Eon_Canvas] Transforming with matrix = \n");
-		{
-			Enesim_Matrix *m = &prv->matrix;
-			printf("[Eon_Canvas] Subcanvas matrix =\n            %f %f %f\n            %f %f %f\n            %f %f %f\n", m->xx, m->xy, m->xz, m->yx, m->yy, m->yz, m->zx, m->zy, m->zz);
-		}
-		enesim_matrix_rect_transform(&prv->matrix, &r, &qm);
-		enesim_quad_coords_get(&qm, &x1, &y1, &x2, &y2, &x3, &y3, &x4, &y4);
-		enesim_quad_rectangle_to(&qm, &r);
-		printf("[Eon_Canvas] Destination quad =\n            %fx%f\n            %fx%f\n            %fx%f\n            %fx%f\n", x1, y1, x2, y2, x3, y3, x4, y4);
-		enesim_matrix_rect_transform(&prv->inverse, &r, &qi);
-		enesim_quad_coords_get(&qi, &x1, &y1, &x2, &y2, &x3, &y3, &x4, &y4);
-		printf("[Eon_Canvas] Source quad =\n            %fx%f\n            %fx%f\n            %fx%f\n            %fx%f\n", x1, y1, x2, y2, x3, y3, x4, y4);
-	}
-	printf("[Eon_Canvas] Setting geometry of size %d %d %d %d\n",
-			r.x, r.y, r.w, r.h);
-	ekeko_renderable_geometry_set((Ekeko_Renderable *)c, &r);
 }
 
-/* Just informs that the x.final property has to be recalculated */
-static void _x_inform(const Ekeko_Object *o, Ekeko_Event *e, void *data)
+static void _subcanvas_render(Eon_Paint *p, Eina_Rectangle *rect)
 {
-	Eon_Canvas_Private *prv = PRIVATE(data);
-	Ekeko_Value v;
 
-	printf("[Eon_Canvas] Informing X change\n");
-	eon_value_coord_from(&v, &prv->x);
-	ekeko_object_property_value_set((Ekeko_Object *)data, "x", &v);
 }
 
-/* Just informs that the y.final property has to be recalculated */
-static void _y_inform(const Ekeko_Object *o, Ekeko_Event *e, void *data)
+static Eina_Bool _subcanvas_is_inside(Ekeko_Canvas *c, int x, int y)
 {
-	Eon_Canvas_Private *prv = PRIVATE(data);
-	Ekeko_Value v;
-
-	printf("[Eon_Canvas] Informing Y change\n");
-	eon_value_coord_from(&v, &prv->y);
-	ekeko_object_property_value_set((Ekeko_Object *)data, "y", &v);
-}
-
-/* Just informs that the w.final property has to be recalculated */
-static void _w_inform(const Ekeko_Object *o, Ekeko_Event *e, void *data)
-{
-	Eon_Canvas_Private *prv = PRIVATE(data);
-	Ekeko_Value v;
-
-	printf("[Eon_Canvas] Informing W change\n");
-	eon_value_coord_from(&v, &prv->w);
-	ekeko_object_property_value_set((Ekeko_Object *)data, "w", &v);
-}
-
-/* Just informs that the h.final property has to be recalculated */
-static void _h_inform(const Ekeko_Object *o, Ekeko_Event *e, void *data)
-{
-	Eon_Canvas_Private *prv = PRIVATE(data);
-	Ekeko_Value v;
-
-	printf("[Eon_Canvas] Informing H change\n");
-	eon_value_coord_from(&v, &prv->h);
-	ekeko_object_property_value_set((Ekeko_Object *)data, "h", &v);
-}
-
-/* Called whenever the x property changes */
-static void _x_change(const Ekeko_Object *o, Ekeko_Event *e, void *data)
-{
-	Ekeko_Event_Mutation *em = (Ekeko_Event_Mutation *)e;
-	Eon_Canvas *c = (Eon_Canvas *)o;
-	Eon_Canvas_Private *prv = PRIVATE(o);
-	Ekeko_Object *parent;
-
-	if (em->state == EVENT_MUTATION_STATE_POST)
-		return;
-	printf("setting x value\n");
-	parent = ekeko_object_parent_get(o);
-	if (prv->root)
-	{
-		int w;
-
-		eon_document_size_get((Eon_Document *)parent, &w, NULL);
-		printf("w = %d\n", w);
-		eon_coord_change(o, &prv->x, em->curr->value.pointer_value,
-				em->prev->value.pointer_value, 0, w, parent,
-				NULL, EON_DOCUMENT_SIZE_CHANGED, _x_inform);
-		{
-			Eon_Coord *coord = em->curr->value.pointer_value;
-			printf("X Change = %d %d %d\n", coord->final, coord->value, coord->type);
-		}
-	}
-	else
-	{
-		Eon_Canvas *cp = (Eon_Canvas *)parent;
-		Eon_Canvas_Private *cprv = PRIVATE(cp);
-
-		eon_coord_change(o, &prv->x, em->curr->value.pointer_value,
-				em->prev->value.pointer_value, cprv->x.final, cprv->w.final, parent,
-				EON_CANVAS_X_CHANGED, EON_CANVAS_W_CHANGED,
-				_x_inform);
-	}
-	_geometry_calc(c);
-}
-
-/* Called whenever the y property changes */
-static void _y_change(const Ekeko_Object *o, Ekeko_Event *e, void *data)
-{
-	Ekeko_Event_Mutation *em = (Ekeko_Event_Mutation *)e;
-	Eon_Canvas *c = (Eon_Canvas *)o;
-	Eon_Canvas_Private *prv = PRIVATE(o);
-	Ekeko_Object *parent;
-
-	if (em->state == EVENT_MUTATION_STATE_POST)
-		return;
-
-	parent = ekeko_object_parent_get(o);
-	if (prv->root)
-	{
-		int h;
-
-		eon_document_size_get((Eon_Document *)parent, NULL, &h);
-		eon_coord_change(o, &prv->y, em->curr->value.pointer_value,
-				em->prev->value.pointer_value, 0, h, parent,
-				NULL, EON_DOCUMENT_SIZE_CHANGED, _y_inform);
-	}
-	else
-	{
-		Eon_Canvas *cp = (Eon_Canvas *)parent;
-		Eon_Canvas_Private *cprv = PRIVATE(cp);
-
-		eon_coord_change(o, &prv->y, em->curr->value.pointer_value,
-				em->prev->value.pointer_value, cprv->y.final, cprv->h.final, parent,
-				EON_CANVAS_Y_CHANGED, EON_CANVAS_H_CHANGED, _y_inform);
-	}
-	_geometry_calc(c);
-}
-
-/* Called whenever the w property changes */
-static void _w_change(const Ekeko_Object *o, Ekeko_Event *e, void *data)
-{
-	Ekeko_Event_Mutation *em = (Ekeko_Event_Mutation *)e;
-	Eon_Canvas *c = (Eon_Canvas *)o;
-	Eon_Canvas_Private *prv = PRIVATE(o);
-	Ekeko_Object *parent;
-
-	if (em->state == EVENT_MUTATION_STATE_POST)
-		return;
-
-	parent = ekeko_object_parent_get(o);
-	if (prv->root)
-	{
-		int w;
-
-		eon_document_size_get((Eon_Document *)parent, &w, NULL);
-		eon_coord_length_change(o, &prv->w, em->curr->value.pointer_value,
-				em->prev->value.pointer_value, w, parent,
-				EON_DOCUMENT_SIZE_CHANGED, _w_inform);
-	}
-	else
-	{
-		Eon_Canvas *cp = (Eon_Canvas *)parent;
-		Eon_Canvas_Private *cprv = PRIVATE(cp);
-
-		eon_coord_length_change(o, &prv->w, em->curr->value.pointer_value,
-				em->prev->value.pointer_value, cprv->w.final, parent,
-				EON_CANVAS_W_CHANGED, _w_inform);
-	}
-	{
-		printf("[Eon_Canvas] W Change = %d\n", prv->w.final);
-	}
-	_geometry_calc(c);
-}
-
-/* Called whenever the h property changes */
-static void _h_change(const Ekeko_Object *o, Ekeko_Event *e, void *data)
-{
-	Ekeko_Event_Mutation *em = (Ekeko_Event_Mutation *)e;
-	Eon_Canvas *c = (Eon_Canvas *)o;
-	Eon_Canvas_Private *prv = PRIVATE(o);
-	Ekeko_Object *parent;
-
-	if (em->state == EVENT_MUTATION_STATE_POST)
-		return;
-
-	parent = ekeko_object_parent_get(o);
-	if (prv->root)
-	{
-		int h;
-
-		eon_document_size_get((Eon_Document *)parent, NULL, &h);
-		eon_coord_length_change(o, &prv->h, em->curr->value.pointer_value,
-				em->prev->value.pointer_value, h, parent,
-				EON_DOCUMENT_SIZE_CHANGED, _h_inform);
-	}
-	else
-	{
-		Eon_Canvas *cp = (Eon_Canvas *)parent;
-		Eon_Canvas_Private *cprv = PRIVATE(cp);
-
-		eon_coord_length_change(o, &prv->h, em->curr->value.pointer_value,
-				em->prev->value.pointer_value, cprv->h.final, parent,
-				EON_CANVAS_H_CHANGED, _h_inform);
-	}
-	{
-		printf("[Eon_Canvas] H Change = %d\n", prv->h.final);
-	}
-	_geometry_calc(c);
-}
-
-static void _matrix_change(const Ekeko_Object *o, Ekeko_Event *e, void *data)
-{
-	Ekeko_Event_Mutation *em = (Ekeko_Event_Mutation *)e;
-	Eon_Canvas *c = (Eon_Canvas *)o;
-	Eon_Canvas_Private *prv = PRIVATE(o);
-	Enesim_Matrix *m;
-
-	m = em->curr->value.pointer_value;
-	enesim_matrix_inverse(m, &prv->inverse);
-	/* update the geometry */
-	_geometry_calc(c);
+	return EINA_TRUE;
 }
 
 static void _child_append_cb(const Ekeko_Object *o, Ekeko_Event *e, void *data)
@@ -448,14 +208,7 @@ static void _ctor(Ekeko_Object *o)
 	c->base.flush = _flush;
 	c->base.base.parent.render = _subcanvas_render;
 	c->base.base.parent.is_inside= _subcanvas_is_inside;
-	enesim_matrix_identity(&prv->matrix);
-	enesim_matrix_inverse(&prv->matrix, &prv->inverse);
-	ekeko_event_listener_add(o, EON_CANVAS_X_CHANGED, _x_change, EINA_FALSE, NULL);
-	ekeko_event_listener_add(o, EON_CANVAS_Y_CHANGED, _y_change, EINA_FALSE, NULL);
-	ekeko_event_listener_add(o, EON_CANVAS_W_CHANGED, _w_change, EINA_FALSE, NULL);
-	ekeko_event_listener_add(o, EON_CANVAS_H_CHANGED, _h_change, EINA_FALSE, NULL);
-	ekeko_event_listener_add(o, EON_CANVAS_MATRIX_CHANGED, _matrix_change, EINA_FALSE, NULL);
-	ekeko_event_listener_add(o, EON_RENDERABLE_GEOMETRY_CHANGED, _geometry_change, EINA_FALSE, NULL);
+	//ekeko_event_listener_add(o, EON_PAINT_GEOMETRY_CHANGED, _geometry_change, EINA_FALSE, NULL);
 	ekeko_event_listener_add(o, EKEKO_EVENT_OBJECT_APPEND, _child_append_cb, EINA_FALSE, NULL);
 }
 
@@ -466,31 +219,11 @@ static void _dtor(void *canvas)
 /*============================================================================*
  *                                 Global                                     *
  *============================================================================*/
-void * eon_canvas_engine_data_get(Eon_Canvas *c)
-{
-	Eon_Canvas_Private *prv;
-
-	prv = PRIVATE(c);
-	return prv->engine_data;
-}
-
 void eon_canvas_init(void)
 {
 	_type = ekeko_type_new(EON_TYPE_CANVAS, sizeof(Eon_Canvas),
 			sizeof(Eon_Canvas_Private), eon_layout_type_get(),
 			_ctor, _dtor, _appendable);
-
-	EON_CANVAS_X = EKEKO_TYPE_PROP_SINGLE_ADD(_type, "x",
-			EON_PROPERTY_COORD, OFFSET(Eon_Canvas_Private, x));
-	EON_CANVAS_Y = EKEKO_TYPE_PROP_SINGLE_ADD(_type, "y",
-			EON_PROPERTY_COORD, OFFSET(Eon_Canvas_Private, y));
-	EON_CANVAS_W = EKEKO_TYPE_PROP_SINGLE_ADD(_type, "w",
-			EON_PROPERTY_COORD, OFFSET(Eon_Canvas_Private, w));
-	EON_CANVAS_H = EKEKO_TYPE_PROP_SINGLE_ADD(_type, "h",
-			EON_PROPERTY_COORD, OFFSET(Eon_Canvas_Private, h));
-	EON_CANVAS_MATRIX = EKEKO_TYPE_PROP_SINGLE_ADD(_type, "matrix",
-			EON_PROPERTY_MATRIX,
-			OFFSET(Eon_Canvas_Private, matrix));
 
 	eon_type_register(_type, EON_TYPE_CANVAS);
 }
@@ -499,158 +232,19 @@ void eon_canvas_shutdown(void)
 {
 	eon_type_unregister(_type);
 }
-
-
 /*============================================================================*
  *                                   API                                      *
  *============================================================================*/
-Ekeko_Property_Id EON_CANVAS_X;
-Ekeko_Property_Id EON_CANVAS_Y;
-Ekeko_Property_Id EON_CANVAS_W;
-Ekeko_Property_Id EON_CANVAS_H;
-Ekeko_Property_Id EON_CANVAS_MATRIX;
-
+/**
+ * Creates a new canvas layout
+ * @param d The document this canvas will be created on
+ * @return The newly created canvas
+ */
 EAPI Eon_Canvas * eon_canvas_new(Eon_Document *d)
 {
 	Eon_Canvas *c;
-	Eon_Canvas_Private *prv;
-
 
 	c = eon_document_object_new(d, EON_TYPE_CANVAS);
-	if (!c) return NULL;
-
-	prv = PRIVATE(c);
-	prv->doc = d;
 
 	return c;
 }
-
-EAPI Eon_Document * eon_canvas_document_get(Eon_Canvas *c)
-{
-	Eon_Canvas_Private *prv;
-
-	prv = PRIVATE(c);
-	return prv->doc;
-}
-
-EAPI void eon_canvas_x_rel_set(Eon_Canvas *c, int x)
-{
-	Eon_Coord coord;
-	Ekeko_Value v;
-
-	eon_coord_set(&coord, x, EON_COORD_RELATIVE);
-	eon_value_coord_from(&v, &coord);
-	printf("x set %d %d\n", x, coord.value);
-	ekeko_object_property_value_set((Ekeko_Object *)c, "x", &v);
-}
-
-EAPI void eon_canvas_x_set(Eon_Canvas *c, int x)
-{
-	Eon_Coord coord;
-	Ekeko_Value v;
-
-	eon_coord_set(&coord, x, EON_COORD_ABSOLUTE);
-	eon_value_coord_from(&v, &coord);
-	ekeko_object_property_value_set((Ekeko_Object *)c, "x", &v);
-}
-
-EAPI void eon_canvas_y_set(Eon_Canvas *c, int y)
-{
-	Eon_Coord coord;
-	Ekeko_Value v;
-
-	eon_coord_set(&coord, y, EON_COORD_ABSOLUTE);
-	eon_value_coord_from(&v, &coord);
-	ekeko_object_property_value_set((Ekeko_Object *)c, "y", &v);
-}
-
-EAPI void eon_canvas_y_rel_set(Eon_Canvas *c, int y)
-{
-	Eon_Coord coord;
-	Ekeko_Value v;
-
-	eon_coord_set(&coord, y, EON_COORD_RELATIVE);
-	eon_value_coord_from(&v, &coord);
-	ekeko_object_property_value_set((Ekeko_Object *)c, "y", &v);
-}
-
-EAPI void eon_canvas_w_set(Eon_Canvas *c, int w)
-{
-	Eon_Coord coord;
-	Ekeko_Value v;
-
-	eon_coord_set(&coord, w, EON_COORD_ABSOLUTE);
-	eon_value_coord_from(&v, &coord);
-	ekeko_object_property_value_set((Ekeko_Object *)c, "w", &v);
-}
-
-EAPI void eon_canvas_w_rel_set(Eon_Canvas *c, int w)
-{
-	Eon_Coord coord;
-	Ekeko_Value v;
-
-	eon_coord_set(&coord, w, EON_COORD_RELATIVE);
-	eon_value_coord_from(&v, &coord);
-	ekeko_object_property_value_set((Ekeko_Object *)c, "w", &v);
-}
-
-EAPI void eon_canvas_h_set(Eon_Canvas *c, int h)
-{
-	Eon_Coord coord;
-	Ekeko_Value v;
-
-	eon_coord_set(&coord, h, EON_COORD_ABSOLUTE);
-	eon_value_coord_from(&v, &coord);
-	ekeko_object_property_value_set((Ekeko_Object *)c, "h", &v);
-}
-
-EAPI void eon_canvas_h_rel_set(Eon_Canvas *c, int h)
-{
-	Eon_Coord coord;
-	Ekeko_Value v;
-
-	eon_coord_set(&coord, h, EON_COORD_RELATIVE);
-	eon_value_coord_from(&v, &coord);
-	ekeko_object_property_value_set((Ekeko_Object *)c, "h", &v);
-}
-
-EAPI void eon_canvas_x_get(Eon_Canvas *c, Eon_Coord *x)
-{
-	Eon_Canvas_Private *prv;
-
-	prv = PRIVATE(c);
-	*x = prv->x;
-}
-
-EAPI void eon_canvas_y_get(Eon_Canvas *c, Eon_Coord *y)
-{
-	Eon_Canvas_Private *prv;
-
-	prv = PRIVATE(c);
-	*y = prv->y;
-}
-
-EAPI void eon_canvas_w_get(Eon_Canvas *c, Eon_Coord *w)
-{
-	Eon_Canvas_Private *prv;
-
-	prv = PRIVATE(c);
-	*w = prv->w;
-}
-
-EAPI void eon_canvas_h_get(Eon_Canvas *c, Eon_Coord *h)
-{
-	Eon_Canvas_Private *prv;
-
-	prv = PRIVATE(c);
-	*h = prv->h;
-}
-
-EAPI void eon_canvas_matrix_set(Eon_Canvas *c, Enesim_Matrix *m)
-{
-	Ekeko_Value v;
-
-	eon_value_matrix_from(&v, m);
-	ekeko_object_property_value_set((Ekeko_Object *)c, "matrix", &v);
-}
-

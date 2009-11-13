@@ -49,7 +49,7 @@ static void _ctor(void *instance)
 	f->private = prv = ekeko_type_instance_private_get(_type, instance);
 	f->parent.parent.parent.create = eon_engine_fade_create;
 	f->parent.parent.parent.render = _render;
-	f->parent.parent.parent.delete = eon_engine_fade_delete;
+	f->parent.parent.parent.free = eon_engine_fade_delete;
 }
 
 static void _dtor(void *fade)

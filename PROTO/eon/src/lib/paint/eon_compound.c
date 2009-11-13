@@ -40,7 +40,7 @@ static void _ctor(void *instance)
 	c->private = prv = ekeko_type_instance_private_get(_type, instance);
 	c->parent.parent.create = eon_engine_compound_create;
 	c->parent.parent.render = _render;
-	c->parent.parent.delete = eon_engine_compound_delete;
+	c->parent.parent.free = eon_engine_compound_delete;
 }
 
 static Eina_Bool _appendable(void *o, void *child)

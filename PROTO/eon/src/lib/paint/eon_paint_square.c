@@ -46,7 +46,6 @@ static void _x_inform(const Ekeko_Object *o, Ekeko_Event *e, void *data)
 	Eon_Paint_Square_Private *prv = PRIVATE(data);
 	Ekeko_Value v;
 
-	printf("[Eon_Paint_Square] Informing X change\n");
 	eon_value_coord_from(&v, &prv->x);
 	ekeko_object_property_value_set((Ekeko_Object *)data, "x", &v);
 }
@@ -57,7 +56,6 @@ static void _y_inform(const Ekeko_Object *o, Ekeko_Event *e, void *data)
 	Eon_Paint_Square_Private *prv = PRIVATE(data);
 	Ekeko_Value v;
 
-	printf("[Eon_Paint_Square] Informing Y change\n");
 	eon_value_coord_from(&v, &prv->y);
 	ekeko_object_property_value_set((Ekeko_Object *)data, "y", &v);
 }
@@ -68,7 +66,6 @@ static void _w_inform(const Ekeko_Object *o, Ekeko_Event *e, void *data)
 	Eon_Paint_Square_Private *prv = PRIVATE(data);
 	Ekeko_Value v;
 
-	printf("[Eon_Paint_Square] Informing W change\n");
 	eon_value_coord_from(&v, &prv->w);
 	ekeko_object_property_value_set((Ekeko_Object *)data, "w", &v);
 }
@@ -79,7 +76,6 @@ static void _h_inform(const Ekeko_Object *o, Ekeko_Event *e, void *data)
 	Eon_Paint_Square_Private *prv = PRIVATE(data);
 	Ekeko_Value v;
 
-	printf("[Eon_Paint_Square] Informing H change\n");
 	eon_value_coord_from(&v, &prv->h);
 	ekeko_object_property_value_set((Ekeko_Object *)data, "h", &v);
 }
@@ -96,7 +92,7 @@ static void _x_change(const Ekeko_Object *o, Ekeko_Event *e, void *data)
 	if (em->state == EVENT_MUTATION_STATE_POST)
 		return;
 
-	if (!(c = eon_paint_canvas_get((Eon_Paint *)o)))
+	if (!(c = eon_paint_layout_get((Eon_Paint *)o)))
 		return;
 
 	eon_canvas_x_get(c, &x);
@@ -120,7 +116,7 @@ static void _y_change(const Ekeko_Object *o, Ekeko_Event *e, void *data)
 	if (em->state == EVENT_MUTATION_STATE_POST)
 		return;
 
-	if (!(c = eon_paint_canvas_get((Eon_Paint *)o)))
+	if (!(c = eon_paint_layout_get((Eon_Paint *)o)))
 		return;
 
 	eon_canvas_y_get(c, &y);
@@ -144,7 +140,7 @@ static void _w_change(const Ekeko_Object *o, Ekeko_Event *e, void *data)
 	if (em->state == EVENT_MUTATION_STATE_POST)
 		return;
 
-	if (!(c = eon_paint_canvas_get((Eon_Paint *)o)))
+	if (!(c = eon_paint_layout_get((Eon_Paint *)o)))
 		return;
 
 	eon_canvas_w_get(c, &w);
@@ -166,7 +162,7 @@ static void _h_change(const Ekeko_Object *o, Ekeko_Event *e, void *data)
 	if (em->state == EVENT_MUTATION_STATE_POST)
 		return;
 
-	if (!(c = eon_paint_canvas_get((Eon_Paint *)o)))
+	if (!(c = eon_paint_layout_get((Eon_Paint *)o)))
 		return;
 
 	eon_canvas_h_get(c, &h);

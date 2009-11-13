@@ -60,7 +60,7 @@ void ui_setup(Eon_Document *d, Eon_Canvas *c)
 	eon_rect_h_rel_set(r, 5);
 	eon_rect_fill_color_set(r, 0xff000000);
 	eon_rect_show(r);
-	ekeko_event_listener_add((Ekeko_Object *)r, EKEKO_EVENT_UI_MOUSE_DOWN, _pause_click_cb, EINA_FALSE, c);
+	ekeko_event_listener_add((Ekeko_Object *)r, EON_EVENT_UI_MOUSE_DOWN, _pause_click_cb, EINA_FALSE, c);
 
 	r = eon_rect_new(d);
 	ekeko_object_child_append((Ekeko_Object *)c, (Ekeko_Object *)r);
@@ -70,7 +70,7 @@ void ui_setup(Eon_Document *d, Eon_Canvas *c)
 	eon_rect_h_rel_set(r, 5);
 	eon_rect_fill_color_set(r, 0xff000000);
 	eon_rect_show(r);
-	ekeko_event_listener_add((Ekeko_Object *)r, EKEKO_EVENT_UI_MOUSE_DOWN, _play_click_cb, EINA_FALSE, c);
+	ekeko_event_listener_add((Ekeko_Object *)r, EON_EVENT_UI_MOUSE_DOWN, _play_click_cb, EINA_FALSE, c);
 }
 
 int main(int argc, char **argv)

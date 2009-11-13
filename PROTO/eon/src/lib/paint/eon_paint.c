@@ -25,58 +25,36 @@
 /*============================================================================*
  *                                  Local                                     *
  *============================================================================*/
-#define PRIVATE(d) ((Eon_Paint_Private *)((Eon_Paint *)(d))->private)
+#define PRIVATE(d) ((Eon_Paint_Private *)((Eon_Paint *)(d))->prv)
+
+#define DBG(...) EINA_LOG_DOM_DBG(_dom, __VA_ARGS__)
+#define INF(...) EINA_LOG_DOM_INFO(_dom, __VA_ARGS__)
+#define WRN(...) EINA_LOG_DOM_WARN(_dom, __VA_ARGS__)
+#define ERR(...) EINA_LOG_DOM_ERR(_dom, __VA_ARGS__)
+
+static int _dom = -1;
+
 struct _Eon_Paint_Private
 {
-	Eon_Color color; /* FIXME the color should be double state? */
+	Eon_Layout *layout;
+	/* transformed geometry */
+	Eina_Rectangle boundings;
+	/* untransformed geometry */
+	Eina_Rectangle geometry;
+	/* the properties */
+	Eon_Color color;
 	Enesim_Rop rop;
 	Enesim_Matrix matrix;
 	Enesim_Matrix inverse;
 	Eon_Paint_Coordspace coordspace;
 	Eon_Paint_Matrixspace matrixspace;
 	Eon_Style *style;
-	/* this is for the children classes that go through our
-	 * matrix interface, here we store the untransformed geometry
-	 */
-	Eina_Rectangle srect;
-	void *engine_data;
+	Eina_Bool visibility;
 };
-
-/* This is pointless, we should create the engine backend data whenever the
- * paint is referenced or appended to a canvas?
- */
-static void _child_append_cb(const Ekeko_Object *o, Ekeko_Event *e, void *data)
-{
-	Ekeko_Event_Mutation *em = (Ekeko_Event_Mutation *)e;
-	Eon_Paint *p;
-	Eon_Paint_Private *prv;
-	Eon_Document *d;
-	Eon_Engine *eng;
-
-	p = (Eon_Paint *)o;
-	d = eon_paint_document_get(p);
-	if (!d)
-		return;
-	eng = eon_document_engine_get(d);
-	prv = PRIVATE(p);
-	prv->engine_data = p->create(eng, p);
-}
 
 static void _paint_change(const Ekeko_Object *o, Ekeko_Event *e, void *data)
 {
 	eon_paint_change((Eon_Paint *)o);
-}
-
-static void _rop_change(const Ekeko_Object *o, Ekeko_Event *e, void *data)
-{
-	/* before adding the damage check that the rop has changed */
-	//eon_paint_change((Eon_Paint *)o);
-}
-
-static void _color_change(const Ekeko_Object *o, Ekeko_Event *e, void *data)
-{
-	/* before adding the damage check that the color has changed */
-	//eon_paint_change((Eon_Paint *)o);
 }
 
 static void _matrix_change(const Ekeko_Object *o, Ekeko_Event *e, void *data)
@@ -87,59 +65,6 @@ static void _matrix_change(const Ekeko_Object *o, Ekeko_Event *e, void *data)
 
 	m = em->curr->value.pointer_value;
 	enesim_matrix_inverse(m, &prv->inverse);
-	//eon_paint_change((Eon_Paint *)o);
-}
-
-static Eina_Bool _is_inside(Ekeko_Renderable *r, int x, int y)
-{
-	Eon_Paint *p = (Eon_Paint *)r;
-	Eon_Paint_Private *prv = PRIVATE(p);
-	Enesim_Matrix_Type mtype;
-
-	if (!p->is_inside)
-		return EINA_TRUE;
-
-	/* handle the transformation */
-	mtype = enesim_matrix_type_get(&prv->inverse);
-	if (mtype != ENESIM_MATRIX_IDENTITY)
-	{
-		float fx, fy;
-
-		x -= prv->srect.x;
-		y -= prv->srect.y;
-		enesim_matrix_point_transform(&prv->inverse, x, y, &fx, &fy);
-		x = fx + prv->srect.x;
-		y = fy + prv->srect.y;
-
-	}
-	/* call the shape's is_inside */
-	return p->is_inside(p, x, y);
-}
-
-/* Renderable render wrapper
- * this will only be called in case it is appended to a canvas
- */
-static void _render(Ekeko_Renderable *r, Eina_Rectangle *rect)
-{
-	Eon_Paint *p;
-	Eon_Paint_Private *prv;
-	Eon_Document *d;
-	Eon_Canvas *c;
-	Eon_Engine *eng;
-	Eon_Surface *surface;
-
-	p = (Eon_Paint *)r;
-	prv = PRIVATE(p);
-	c = (Eon_Canvas *)ekeko_renderable_canvas_get(r);
-	d = eon_canvas_document_get(c);
-	eng = eon_document_engine_get(d);
-	surface = eon_canvas_engine_data_get(c);
-#if BOUNDING_DEBUG
-	printf("RENDERING %s\n", ekeko_object_type_name_get(r));
-	eon_engine_debug_rect(eng, surface, 0xffaaaaaa, rect->x, rect->y, rect->w, rect->h);
-#endif
-	/* Call the paint's render function */
-	p->render(p, eng, prv->engine_data, surface, rect);
 }
 
 static void _ctor(Ekeko_Object *o)
@@ -148,19 +73,14 @@ static void _ctor(Ekeko_Object *o)
 	Eon_Paint_Private *prv;
 
 	p = (Eon_Paint *)o;
-	p->private = prv = ekeko_type_instance_private_get(eon_paint_type_get(), o);
-	p->parent.is_inside = _is_inside;
-	p->parent.render = _render;
+	p->prv = prv = ekeko_type_instance_private_get(eon_paint_type_get(), o);
 	/* default values */
 	prv->rop = ENESIM_BLEND;
 	prv->color = 0xffffffff;
 	enesim_matrix_identity(&prv->matrix);
 	enesim_matrix_inverse(&prv->matrix, &prv->inverse);
 	ekeko_event_listener_add(o, EKEKO_EVENT_PROP_MODIFY, _paint_change, EINA_FALSE, NULL);
-	ekeko_event_listener_add(o, EON_PAINT_COLOR_CHANGED, _color_change, EINA_FALSE, NULL);
-	ekeko_event_listener_add(o, EON_PAINT_ROP_CHANGED, _rop_change, EINA_FALSE, NULL);
 	ekeko_event_listener_add(o, EON_PAINT_MATRIX_CHANGED, _matrix_change, EINA_FALSE, NULL);
-	ekeko_event_listener_add(o, EKEKO_EVENT_OBJECT_APPEND, _child_append_cb, EINA_FALSE, NULL);
 }
 
 static void _dtor(void *paint)
@@ -170,30 +90,6 @@ static void _dtor(void *paint)
 /*============================================================================*
  *                                 Global                                     *
  *============================================================================*/
-void * eon_paint_engine_data_get(Eon_Paint *p)
-{
-	Eon_Paint_Private *prv = PRIVATE(p);
-	return prv->engine_data;
-}
-
-/* FIXME remove this */
-Eina_Bool eon_paint_setup(Eon_Paint *p, Eon_Shape *s)
-{
-#if 0
-
-	Eon_Paint_Private *prv = PRIVATE(p);
-	Eon_Canvas *c;
-	Eon_Document *d;
-	Eon_Engine *eng;
-
-	c = eon_paint_canvas_get(p);
-	d = eon_canvas_document_get(c);
-	/* FIXME in case the canvas doesnt have a document */
-	eng = eon_document_engine_get(d);
-	return p->setup(eng, prv->engine_data, s);
-#endif
-}
-
 Eina_Bool eon_paint_appendable(Ekeko_Object *p, Ekeko_Object *child)
 {
 	if (!ekeko_type_instance_is_of(child, EON_TYPE_ANIMATION))
@@ -205,37 +101,41 @@ Eina_Bool eon_paint_appendable(Ekeko_Object *p, Ekeko_Object *child)
 /* Every paint object is a subclass of a renderable, just return the one there
  * which might be null in case this paint is attached to a style container
  */
-Eon_Canvas * eon_paint_canvas_get(Eon_Paint *p)
+Eon_Canvas * eon_paint_layout_get(Eon_Paint *p)
 {
-	return (Eon_Canvas *)ekeko_renderable_canvas_get((Ekeko_Renderable *)p);
+	Eon_Paint_Private *prv = PRIVATE(p);
+
+	return prv->layout;
 }
 
-Eon_Canvas * eon_paint_canvas_topmost_get(Eon_Paint *p)
+Eon_Canvas * eon_paint_layout_topmost_get(Eon_Paint *p)
 {
-	Eon_Canvas *c, *last;
+	Eon_Paint_Private *prv;
+	Eon_Layout *l, *last;
 
-	c = last = (Eon_Canvas *)ekeko_renderable_canvas_get((Ekeko_Renderable *)p);
-	while (c)
+ 	prv = PRIVATE(p);
+	l = last = prv->layout;
+	while (l)
 	{
-		last = c;
-		c = (Eon_Canvas *)ekeko_renderable_canvas_get((Ekeko_Renderable *)last);
+		Eon_Paint *pl = (Eon_Paint *)l;
+
+		last = l;
+		prv = PRIVATE(pl);
+		l = prv->layout;
 	}
 	return last;
 }
 
 void eon_paint_change(Eon_Paint *p)
 {
-	Eon_Canvas *c;
-	Ekeko_Object *parent;
-	Eina_Rectangle geom;
+	Eon_Paint_Private *prv;
+	Eon_Layout *l;
 
-	/* Only add a damage in case its parent is a canvas */
-	c = eon_paint_canvas_get(p);
-	if (!c)
+ 	prv = PRIVATE(p);
+	if (!prv->layout)
 		return;
 
-	ekeko_renderable_geometry_get((Ekeko_Renderable *)p, &geom);
-	ekeko_canvas_damage_add((Ekeko_Canvas *)c, &geom);
+	eon_layout_damage_add(prv->layout, &prv->boundings);
 }
 
 void eon_paint_style_inverse_matrix_get(Eon_Paint *p, Eon_Paint *rel,
@@ -286,8 +186,7 @@ void eon_paint_geometry_set(Eon_Paint *p, Eina_Rectangle *rect)
 	mtype = enesim_matrix_type_get(&prv->matrix);
 	if (mtype == ENESIM_MATRIX_IDENTITY)
 	{
-		prv->srect = *rect;
-		ekeko_renderable_geometry_set((Ekeko_Renderable *)p, rect);
+		prv->boundings = prv->geometry = *rect;
 	}
 	else
 	{
@@ -307,32 +206,34 @@ void eon_paint_geometry_set(Eon_Paint *p, Eina_Rectangle *rect)
 		r.w += prv->matrix.xx;
 		r.h += prv->matrix.yy;
 
-		prv->srect = *rect;
-		ekeko_renderable_geometry_set((Ekeko_Renderable *)p, &r);
+		prv->geometry = *rect;
+		prv->boundings = r;
 	}
 }
 
-void eon_paint_geometry_get(Eon_Paint *p, Eina_Rectangle *rect)
+Eina_Bool eon_paint_is_inside(Eon_Paint *p, int x, int y)
 {
-	Eon_Paint_Private *prv;
+	Eon_Paint_Private *prv = PRIVATE(p);
+	Enesim_Matrix_Type mtype;
 
-	prv = PRIVATE(p);
-	*rect = prv->srect;
-}
+	if (!p->is_inside)
+		return EINA_TRUE;
 
-/* TODO Once the document is converted to a factory remove this
- * and always append a document
- */
-Eon_Document * eon_paint_document_get(Eon_Paint *p)
-{
-	Ekeko_Object *o = (Ekeko_Object *)p;
-
-	do
+	/* handle the transformation */
+	mtype = enesim_matrix_type_get(&prv->inverse);
+	if (mtype != ENESIM_MATRIX_IDENTITY)
 	{
-		o = ekeko_object_parent_get(o);
-	} while (o && !ekeko_type_instance_is_of(o, EON_TYPE_DOCUMENT));
+		float fx, fy;
 
-	return (Eon_Document *)o;
+		x -= prv->geometry.x;
+		y -= prv->geometry.y;
+		enesim_matrix_point_transform(&prv->inverse, x, y, &fx, &fy);
+		x = fx + prv->geometry.x;
+		y = fy + prv->geometry.y;
+
+	}
+	/* call the shape's is_inside */
+	return p->is_inside(p, x, y);
 }
 /*============================================================================*
  *                                   API                                      *
@@ -343,6 +244,7 @@ Ekeko_Property_Id EON_PAINT_MATRIX;
 Ekeko_Property_Id EON_PAINT_COORDSPACE;
 Ekeko_Property_Id EON_PAINT_MATRIXSPACE;
 Ekeko_Property_Id EON_PAINT_STYLE;
+Ekeko_Property_Id EON_PAINT_VISIBILITY;
 
 EAPI Ekeko_Type *eon_paint_type_get(void)
 {
@@ -350,8 +252,10 @@ EAPI Ekeko_Type *eon_paint_type_get(void)
 
 	if (!type)
 	{
+		_dom = eina_log_domain_register("eon:paint", NULL);
+
 		type = ekeko_type_new(EON_TYPE_PAINT, sizeof(Eon_Paint),
-				sizeof(Eon_Paint_Private), ekeko_renderable_type_get(),
+				sizeof(Eon_Paint_Private), eon_object_type_get(),
 				_ctor, _dtor, NULL);
 		EON_PAINT_COLOR = EKEKO_TYPE_PROP_SINGLE_ADD(type, "color",
 				 EON_PROPERTY_COLOR,
@@ -371,11 +275,19 @@ EAPI Ekeko_Type *eon_paint_type_get(void)
 		EON_PAINT_STYLE = EKEKO_TYPE_PROP_SINGLE_ADD(type, "style",
 				EKEKO_PROPERTY_OBJECT,
 				OFFSET(Eon_Paint_Private, style));
+		EON_PAINT_VISIBILITY = EKEKO_TYPE_PROP_SINGLE_ADD(type,
+				"visibility", EKEKO_PROPERTY_BOOL,
+				OFFSET(Eon_Paint_Private, visibility));
 	}
 
 	return type;
 }
 
+/**
+ * Sets the transformation matrix on a paint
+ * @param p The paint to set the transformation on
+ * @param m The transformation matrix
+ */
 EAPI void eon_paint_matrix_set(Eon_Paint *p, Enesim_Matrix *m)
 {
 	Ekeko_Value v;
@@ -383,7 +295,11 @@ EAPI void eon_paint_matrix_set(Eon_Paint *p, Enesim_Matrix *m)
 	eon_value_matrix_from(&v, m);
 	ekeko_object_property_value_set((Ekeko_Object *)p, "matrix", &v);
 }
-
+/**
+ * Gets the transformation matrix on a paint
+ * @param p The paint object
+ * @param m The transformation matrix to write the values to
+ */
 EAPI void eon_paint_matrix_get(Eon_Paint *p, Enesim_Matrix *m)
 {
 	Eon_Paint_Private *prv = PRIVATE(p);
@@ -419,7 +335,11 @@ EAPI Eon_Paint_Matrixspace eon_paint_matrixspace_get(Eon_Paint *p)
 
 	return prv->matrixspace;
 }
-
+/**
+ * Sets the multiplication color of a paint
+ * @param p The paint to set the color on
+ * @param color The multiplcation color
+ */
 EAPI void eon_paint_color_set(Eon_Paint *p, Eon_Color color)
 {
 	Ekeko_Value v;
@@ -427,7 +347,11 @@ EAPI void eon_paint_color_set(Eon_Paint *p, Eon_Color color)
 	eon_value_color_from(&v, color);
 	ekeko_object_property_value_set((Ekeko_Object *)p, "color", &v);
 }
-
+/**
+ * Gets the multiplicaiton color of a paint
+ * @param p The paint to get the color from
+ * @return The multiplication color
+ */
 EAPI Eon_Color eon_paint_color_get(Eon_Paint *p)
 {
 	Eon_Paint_Private *prv;
@@ -435,7 +359,13 @@ EAPI Eon_Color eon_paint_color_get(Eon_Paint *p)
 	prv = PRIVATE(p);
 	return prv->color;
 }
-
+/**
+ * Sets the raster operation for the paint objet.
+ * The raster operation defines how the paint object should blend
+ * against the lower paint objects
+ * @param p The paint object to set the raster operation
+ * @param rop The raster operation
+ */
 EAPI void eon_paint_rop_set(Eon_Paint *p, Enesim_Rop rop)
 {
 	Ekeko_Value v;
@@ -443,7 +373,11 @@ EAPI void eon_paint_rop_set(Eon_Paint *p, Enesim_Rop rop)
 	ekeko_value_int_from(&v, rop);
 	ekeko_object_property_value_set((Ekeko_Object *)p, "rop", &v);
 }
-
+/**
+ * Get the raster operation of a paint object
+ * @param p The paint object to get the raster operation from
+ * @return The raster operation
+ */
 EAPI Enesim_Rop eon_paint_rop_get(Eon_Paint *p)
 {
 	Eon_Paint_Private *prv;
@@ -467,3 +401,87 @@ EAPI Eon_Style * eon_paint_style_get(Eon_Paint *p)
 	prv = PRIVATE(p);
 	return prv->style;
 }
+/**
+ * Gets the visibility of the paint object
+ * @param p The paint object
+ * @return EINA_TRUE when the object is visible or
+ * EINA_FALSE if the object is hidden
+ */
+EAPI Eina_Bool eon_paint_visibility_get(Eon_Paint *p)
+{
+	Eon_Paint_Private *prv;
+
+	prv = PRIVATE(p);
+	return prv->visibility;
+}
+/**
+ * Shows a paint object
+ * @param p The paint object
+ */
+EAPI void eon_paint_show(Eon_Paint *p)
+{
+	Eon_Paint_Private *prv;
+	Ekeko_Value value;
+
+	prv = PRIVATE(p);
+	if (prv->visibility)
+		return;
+	ekeko_value_bool_from(&value, EINA_TRUE);
+	ekeko_object_property_value_set((Ekeko_Object *)p, "visibility", &value);
+}
+/**
+ * Hides a paint object
+ * @param p The paint object
+ */
+EAPI void eon_paint_hide(Eon_Paint *p)
+{
+	Eon_Paint_Private *prv;
+	Ekeko_Value value;
+
+	prv = PRIVATE(p);
+	if (!prv->visibility)
+		return;
+	ekeko_value_bool_from(&value, EINA_FALSE);
+	ekeko_object_property_value_set((Ekeko_Object *)p, "visibility", &value);
+}
+/**
+ * Sets the visibility of a paint
+ * @param p The paint object
+ * @param visible EINA_TRUE shows the object, EINA_FALSE hides it
+ */
+EAPI void eon_paint_visibility_set(Eon_Paint *p, Eina_Bool visible)
+{
+	Eon_Paint_Private *prv;
+	Ekeko_Value value;
+
+	prv = PRIVATE(p);
+	if (prv->visibility == visible)
+		return;
+	ekeko_value_bool_from(&value, visible);
+	ekeko_object_property_value_set((Ekeko_Object *)p, "visibility", &value);
+}
+/**
+ * Gets the bounding box of the transformed paint
+ * @param p The paint object
+ * @param bound The bounding box
+ */
+EAPI void eon_paint_boundings_get(Eon_Paint *p, Eina_Rectangle *bounds)
+{
+	Eon_Paint_Private *prv;
+
+	prv = PRIVATE(p);
+	*bounds = prv->boundings;
+}
+/**
+ * Gets the bounding box of the untransformed paint
+ * @param p The paint object
+ * @param rect The geometry of the object
+ */
+EAPI void eon_paint_geometry_get(Eon_Paint *p, Eina_Rectangle *rect)
+{
+	Eon_Paint_Private *prv;
+
+	prv = PRIVATE(p);
+	*rect = prv->geometry;
+}
+
