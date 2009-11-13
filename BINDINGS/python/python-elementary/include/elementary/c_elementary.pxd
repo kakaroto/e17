@@ -182,6 +182,12 @@ cdef extern from "Elementary.h":
     void         elm_object_disabled_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool disabled)
     evas.c_evas.Eina_Bool elm_object_disabled_get(evas.c_evas.Evas_Object *obj)
 
+    void         elm_object_scroll_hold_push(evas.c_evas.Evas_Object *obj)
+    void         elm_object_scroll_hold_pop(evas.c_evas.Evas_Object *obj)
+    void         elm_object_scroll_freeze_push(evas.c_evas.Evas_Object *obj)
+    void         elm_object_scroll_freeze_pop(evas.c_evas.Evas_Object *obj)
+
+
     double       elm_scale_get()
     void         elm_scale_set(double scale)
     evas.c_evas.Evas_Coord elm_finger_size_get()

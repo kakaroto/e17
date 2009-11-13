@@ -65,6 +65,42 @@ cdef class Object(evas.c_evas.Object):
     def focus(self):
         elm_object_focus(self.obj)
 
+    def scroll_hold_pop(self):
+        """Pop the scroll hold by 1
+
+        This decrements the scroll hold count by one. If it is more
+        than 0 it will take effect on the parents of the indicated
+        object.
+        """
+        elm_object_scroll_hold_pop(self.obj)
+
+    def scroll_hold_push(self):
+        """Push the scroll hold by 1
+
+        This increments the scroll hold count by one. If it is more
+        than 0 it will take effect on the parents of the indicated
+        object.
+        """
+        elm_object_scroll_hold_push(self.obj)
+
+    def scroll_freeze_pop(self):
+        """Pop the scroll freeze by 1
+
+        This decrements the scroll freeze count by one. If it is more
+        than 0 it will take effect on the parents of the indicated
+        object.
+        """
+        elm_object_scroll_freeze_pop(self.obj)
+
+    def scroll_freeze_push(self):
+        """Push the scroll freeze by 1
+
+        This increments the scroll freeze count by one. If it is more
+        than 0 it will take effect on the parents of the indicated
+        object.
+        """
+        elm_object_scroll_freeze_push(self.obj)
+
     def _callback_add(self, event, args):
         """Add a callback for this object
 
