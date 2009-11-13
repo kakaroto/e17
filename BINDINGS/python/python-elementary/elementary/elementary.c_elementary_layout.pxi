@@ -25,7 +25,12 @@ cdef class Layout(Object):
         elm_layout_file_set(self.obj, filename, group)
         
     def content_set(self, swallow, c_evas.Object content):
-        elm_layout_content_set(self.obj, swallow, content.obj)
+        cdef c_evas.Evas_Object *o
+        if content is not None:
+            o = content.obj
+        else:
+            o = NULL
+        elm_layout_content_set(self.obj, swallow, o)
    
     def edje_get(self):
         cdef c_evas.Evas_Object *obj = elm_layout_edje_get(self.obj)
