@@ -27,7 +27,7 @@
 
 /* TODO
  *
- *    SMART OBJECT 
+ *    SMART OBJECT
  * Kill download in progress on exit
  *
  *    EXCHANGE
@@ -127,7 +127,7 @@ exchange_smart_object_remote_group_set(Evas_Object *obj, const char *group)
 
    sd = evas_object_smart_data_get(obj);
    if (!sd) return 0;
-   
+
    if (sd->group) eina_stringshare_del(sd->group);
    sd->group = eina_stringshare_add(group);
    return 1;
@@ -173,7 +173,7 @@ exchange_smart_object_offset_set(Evas_Object *obj, int x, int y)
 
    sd = evas_object_smart_data_get(obj);
    if (!sd) return 0;
-   
+
    if (x == sd->offset.x && y == sd->offset.y)
       return 0;
 
@@ -221,7 +221,7 @@ exchange_smart_object_apply_cb_set(Evas_Object *obj, void (*func)(const char *pa
    if (!obj || !func) return 0;
    sd = evas_object_smart_data_get(obj);
    if (!sd) return 0;
-   
+
    sd->apply.func = func;
    sd->apply.data = data ? data : NULL;
    return 1;
@@ -236,20 +236,20 @@ _list_complete_cb(Eina_List *results, void *data)
    Exchange_Object *td;
    Exchange_Smart_Data *sd = data;
    char buf[255];
-   
+
    EINA_LOG_DBG("POPULATING... %d\n", eina_list_count(results));
-   
+
    /* Populate the List */
    evas_object_text_text_set(sd->obj_lbl, "");
-   
+
    snprintf(buf, sizeof(buf),"%s (%d)", "Online", eina_list_count(results));
    _exchange_smart_separator_append(sd, buf);
-   
+
    results = eina_list_sort(results, 0, _exchange_smart_themes_sort_cb);
-   
+
    EINA_LIST_FOREACH(results, l, td)
       _exchange_smart_element_append(sd, td);
-   
+
    return 0;
 }
 
@@ -263,7 +263,7 @@ EAPI unsigned char
 exchange_smart_object_run(Evas_Object *obj)
 {
    Exchange_Smart_Data *sd;
-   
+
    sd = evas_object_smart_data_get(obj);
    if (!sd) return 0;
 
@@ -391,7 +391,7 @@ _exchange_smart_add(Evas_Object *obj)
    evas_object_text_font_set(sd->obj_lbl, "Sans", 26);
    evas_object_size_hint_align_set(sd->obj_lbl, 0.5, 0.5);
    evas_object_text_style_set(sd->obj_lbl, EVAS_TEXT_STYLE_SOFT_SHADOW);
-   
+
    evas_object_color_set(sd->obj_lbl, 255, 255, 255, 255);
    evas_object_text_shadow_color_set(sd->obj_lbl, 150, 150, 150, 255);
    evas_object_show(sd->obj_lbl);
@@ -584,7 +584,7 @@ _exchange_smart_thumb_get(Evas_Object *elem, int id, const char *url)
       return eina_stringshare_add(dst);
 
    //...else start downloading
-   ecore_file_download(url, dst, _download_thumb_complete_cb, _download_thumb_progress_cb, elem);
+   ecore_file_download(url, dst, _download_thumb_complete_cb, _download_thumb_progress_cb, elem, NULL);
    edje_object_signal_emit(elem, "set,busy", "exchange");
 
    return NULL;
@@ -673,7 +673,7 @@ _exchange_smart_element_update(Evas_Object *elem, Exchange_Object *td, Exchange_
    char buf[4096];
    const char *thumb;
    char *local_ver = NULL;
-   
+
    snprintf(buf, sizeof(buf), "<title>%s </title> <version>%s</version>",
             td->name, td->version ? td->version : "");
    edje_object_part_text_set(elem, "textblock", buf);
@@ -692,9 +692,9 @@ _exchange_smart_element_update(Evas_Object *elem, Exchange_Object *td, Exchange_
       edje_object_signal_emit(elem, "set,star,2", "exchange");
    else if (td->rating < 4.0)
       edje_object_signal_emit(elem, "set,star,3", "exchange");
-   else if (td->rating < 5.0) 
+   else if (td->rating < 5.0)
       edje_object_signal_emit(elem, "set,star,4", "exchange");
-   else 
+   else
       edje_object_signal_emit(elem, "set,star,5", "exchange");
 
    //This are all the signals that the element accept
@@ -846,7 +846,7 @@ _exchange_smart_button_click_cb(void *data, Evas_Object *obj, const char *em, co
 
       if (ecore_file_exists(dst)) ecore_file_unlink(dst);
       ecore_file_download(td->url, dst, _download_theme_complete_cb,
-                          _download_theme_progress_cb, obj);
+                          _download_theme_progress_cb, obj, NULL);
    }
    else if (!strcmp(src, "btn_use") && sd->apply.func)
    {

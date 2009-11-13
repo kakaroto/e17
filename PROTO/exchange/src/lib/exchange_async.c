@@ -177,7 +177,7 @@ void
 _chars_async_list_cb(Async_List_Parser *state, const xmlChar *chars, int len)
 {
    char buf[4096];
-   
+
    switch (state->state)
    {
       case PARSER_NAME:
@@ -232,17 +232,17 @@ _download_complete_cb(void *data, const char *file, int status)
    int ret;
    EINA_ERROR_PDBG("DOWNLOAD COMPLETE (status %d)\n", status);
    //TODO check status ??
-   
+
    xmlInitParser();
    ret = xmlSAXUserParseFile(&AsyncListParser, state, state->tmp);
    xmlCleanupParser();
-   
+
    EINA_ERROR_PDBG("END %d\n", eina_list_count(state->l));
    state->complete_cb(state->l, state->cb_data);
-   
-   
+
+
    ecore_file_unlink(state->tmp);
-   
+
    free(state->url);
    free(state->tmp);
    //free(state); FIXME
@@ -268,12 +268,12 @@ exchange_remote_list(const char *group_title,
    char f_templ[] = "/tmp/exchXXXXXX";
 
    EINA_ERROR_PDBG("GET THEMES LIST\n");
-   
+
    state = malloc(sizeof(Async_List_Parser));
    if (!state) return 0;
-   
+
    //TODO check internet connection here
-   
+
    snprintf(url, sizeof(url), "http://exchange.enlightenment.org/api/list?object=");
 
    if (group_title && !strcmp(group_title, "Applications"))
@@ -340,11 +340,11 @@ exchange_remote_list(const char *group_title,
    state->prev_state = PARSER_LIST_START;
    state->l = NULL;
    state->current = NULL;
-   
+
    EINA_ERROR_PDBG("URL: %s\n", state->url);
    EINA_ERROR_PDBG("TMP: %s\n", state->tmp);
 
-   ret = ecore_file_download(state->url, state->tmp, _download_complete_cb, NULL, state);
+   ret = ecore_file_download(state->url, state->tmp, _download_complete_cb, NULL, state, NULL);
    if (!ret) return 0;
    //TODO start a timer for timeout control
 
