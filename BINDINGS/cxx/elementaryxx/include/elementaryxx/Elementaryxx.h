@@ -33,6 +33,7 @@
 #include "ElmCheck.h"
 #include "ElmAnchorview.h"
 #include "ElmAnchorblock.h"
+#include "ElmSpinner.h"
 
 #endif // ELEMENTARYXX_H
 

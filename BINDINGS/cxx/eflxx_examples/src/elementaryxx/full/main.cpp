@@ -55,8 +55,8 @@ void test_progressbar(void *data, Evas_Object *obj, void *event_info);
 void test_fileselector(void *data, Evas_Object *obj, void *event_info);
 void test_separator(void *data, Evas_Object *obj, void *event_info);*/
 void test_scroller(void *data, Evas_Object *obj, void *event_info);
-/*void test_spinner(void *data, Evas_Object *obj, void *event_info);
-void test_index(void *data, Evas_Object *obj, void *event_info);
+void test_spinner(void *data, Evas_Object *obj, void *event_info);
+/*void test_index(void *data, Evas_Object *obj, void *event_info);
 void test_photocam(void *data, Evas_Object *obj, void *event_info);
 void test_photo(void *data, Evas_Object *obj, void *event_info);
 void test_icon_desktops(void *data, Evas_Object *obj, void *event_info);
@@ -154,21 +154,21 @@ int main (int argc, char **argv)
   bx0->packEnd (*li);
   li->show ();
   
-  li->append("Bg Plain", test_bg_plain, NULL);
-  li->append("Bg Image", test_bg_image, NULL);
-  li->append("Icon Transparent", test_icon, NULL);
-  li->append("Box Vert", test_box_vert, NULL);
-  li->append("Box Horiz", test_box_horiz, NULL);
-  li->append("Buttons", test_button, NULL);
-  li->append("Toggles", test_toggle, NULL);
-  li->append("Table", test_table, NULL);
-  li->append("Clock", test_clock, NULL);
-  li->append("Layout", test_layout, NULL);
-  li->append("Hover", test_hover, NULL);
-  li->append("Hover 2", test_hover2, NULL);
-  li->append("Entry", test_entry, NULL);
-  li->append("Entry Scrolled", test_entry_scolled, NULL);
-  li->append("Notepad", test_notepad, NULL);
+  li->append ("Bg Plain", test_bg_plain, NULL);
+  li->append ("Bg Image", test_bg_image, NULL);
+  li->append ("Icon Transparent", test_icon, NULL);
+  li->append ("Box Vert", test_box_vert, NULL);
+  li->append ("Box Horiz", test_box_horiz, NULL);
+  li->append ("Buttons", test_button, NULL);
+  li->append ("Toggles", test_toggle, NULL);
+  li->append ("Table", test_table, NULL);
+  li->append ("Clock", test_clock, NULL);
+  li->append ("Layout", test_layout, NULL);
+  li->append ("Hover", test_hover, NULL);
+  li->append ("Hover 2", test_hover2, NULL);
+  li->append ("Entry", test_entry, NULL);
+  li->append ("Entry Scrolled", test_entry_scolled, NULL);
+  li->append ("Notepad", test_notepad, NULL);
   /*li.append("Anchorview", NULL, NULL, my_bt_16, NULL);
   li.append("Anchorblock", NULL, NULL, my_bt_17, NULL);
   li.append("Toolbar", NULL, NULL, my_bt_18, NULL);
@@ -181,17 +181,35 @@ int main (int argc, char **argv)
   li.append("Inwin 2", NULL, NULL, my_bt_25, NULL);
   li.append("Scaling", NULL, NULL, my_bt_26, NULL);
   li.append("Scaling 2", NULL, NULL, my_bt_27, NULL);*/
-  li->append("Slider", test_slider, NULL);
+  li->append ("Slider", test_slider, NULL);
   /*li.append("Genlist", NULL, NULL, my_bt_29, NULL);
   li.append("Genlist 2", NULL, NULL, my_bt_30, NULL);
   li.append("Genlist 3", NULL, NULL, my_bt_31, NULL);
   li.append("Genlist 4", NULL, NULL, my_bt_32, NULL);*/
-  li->append("Checks", test_check, NULL);
-  li->append("Radios", test_radio, NULL);
+  li->append ("Checks", test_check, NULL);
+  li->append ("Radios", test_radio, NULL);
   /*li.append("Pager", NULL, NULL, my_bt_35, NULL);
   li.append("Genlist Tree", NULL, NULL, my_bt_36, NULL);
   li.append("Genlist 5", NULL, NULL, my_bt_37, NULL);
-  li.append("Window States", NULL, NULL, my_bt_38, NULL);*/
+  li.append("Window States", NULL, NULL, my_bt_38, NULL);
+   
+   elm_list_item_append(li, "Progressbar", NULL, NULL, test_progressbar, NULL);
+   elm_list_item_append(li, "File Selector", NULL, NULL, test_fileselector, NULL);
+   elm_list_item_append(li, "Separator", NULL, NULL, test_separator, NULL);
+   elm_list_item_append(li, "Scroller", NULL, NULL, test_scroller, NULL);
+   */
+   li->append ("Spinner", test_spinner, NULL);
+   /*
+   elm_list_item_append(li, "Index", NULL, NULL, test_index, NULL);
+   elm_list_item_append(li, "Photocam", NULL, NULL, test_photocam, NULL);
+   elm_list_item_append(li, "Photo", NULL, NULL, test_photo, NULL);
+   elm_list_item_append(li, "Icon Desktops", NULL, NULL, test_icon_desktops, NULL);
+   elm_list_item_append(li, "Notify", NULL, NULL, test_notify, NULL);
+   elm_list_item_append(li, "Slideshow", NULL, NULL, test_slideshow, NULL);
+   elm_list_item_append(li, "Menu", NULL, NULL, test_menu, NULL);
+   elm_list_item_append(li, "Panel", NULL, NULL, test_panel, NULL);
+   
+   */
 
   li->go ();
   

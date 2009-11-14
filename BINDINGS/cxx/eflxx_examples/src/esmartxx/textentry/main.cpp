@@ -27,7 +27,7 @@ int main( int argc, const char **argv )
   rect->setLayer( 0 );
   rect->show();
 
-  EvasEdje* edje = new EvasEdje( evas, searchEdjeFile ("esmart_text_entry_test.edj"), "text_entry" );
+  EdjeObject* edje = new EdjeObject ( evas, searchEdjeFile ("esmart_text_entry_test.edj"), "text_entry" );
 
   edje->resize( Size (WIDTH, HEIGHT) );
   edje->setLayer( 1 );

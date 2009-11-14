@@ -28,7 +28,7 @@ int main( int argc, const char **argv )
   // Add some objects to the canvas
 
   cout << "edje: " << searchEdjeFile ("simple.edj") << endl;
-  EvasEdje edje (evas, Point (0, 0), searchEdjeFile ("simple.edj"), "test");
+  EdjeObject edje (evas, Point (0, 0), searchEdjeFile ("simple.edj"), "test");
 
   edje.resize( s );
 

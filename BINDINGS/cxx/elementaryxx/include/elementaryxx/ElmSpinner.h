@@ -25,6 +25,7 @@ private:
   ElmSpinner (EvasObject &parent); // private construction -> use factory ()
   ~ElmSpinner (); // forbid direct delete -> use ElmWidget::destroy()
 
+public:
   void setLabelFormat (const std::string &format);
   const string getLabelFormat ();
   void setMinMax (double min, double max);

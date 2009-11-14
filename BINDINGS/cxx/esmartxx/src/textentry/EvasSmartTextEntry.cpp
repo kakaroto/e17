@@ -57,7 +57,7 @@ void EvasSmartTextEntry::setMaxChars (int max)
   esmart_text_entry_max_chars_set (o, max);
 }
 
-void EvasSmartTextEntry::setEdjePart (EvasEdje *edje, const char *part)
+void EvasSmartTextEntry::setEdjePart (EdjeObject *edje, const char *part)
 {
   esmart_text_entry_edje_part_set (o, edje->obj(), part);
 }

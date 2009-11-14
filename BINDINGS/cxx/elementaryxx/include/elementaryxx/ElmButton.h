@@ -30,9 +30,6 @@ public:
   
   void setIcon (const EvasObject &icon);
   
-
-  void setStyle (const std::string &style);
-  
 private:
   ElmButton (); // forbid standard constructor
   ElmButton (const ElmButton&); // forbid copy constructor

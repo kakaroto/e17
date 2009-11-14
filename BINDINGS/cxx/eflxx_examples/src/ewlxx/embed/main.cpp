@@ -46,7 +46,7 @@ int main( int argc, const char **argv )
 
   /* Add some objects to the canvas */
 
-  EvasEdje edje ( evas, searchEdjeFile ("angstrom-bootmanager.edj"), "background" );
+  EdjeObject edje ( evas, searchEdjeFile ("angstrom-bootmanager.edj"), "background" );
   edje.resize( size );
   Size s = edje.getMinimalSize();
   edje.setLayer( 1 );

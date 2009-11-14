@@ -2,7 +2,7 @@
 #define EFLPP_ESMART_TEXTENTRY_H
 
 #include <evasxx/EvasSmart.h>
-#include <edjexx/EvasEdje.h>
+#include <edjexx/EdjeObject.h>
 #include <edjexx/EdjeBase.h>
 
 /* EFL */
@@ -24,7 +24,7 @@ public:
 
   void setMaxChars (int max);
 
-  void setEdjePart (EvasEdje *edje, const char *part);
+  void setEdjePart (EdjeObject *edje, const char *part);
 
   Evas_Object *getEdjeObject ();
 
