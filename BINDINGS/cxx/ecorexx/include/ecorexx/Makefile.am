@@ -6,7 +6,8 @@ libecorexx_HEADERS = \
 	EcoreList.h \
 	EcoreXWindow.h \
 	EcoreAnimator.h \
-	EcoreTimer.h
+	EcoreTimer.h \
+	Ecorexx.h
 
 libecorexxdir = \
 	$(pkgincludedir)
