@@ -19,7 +19,8 @@ elementaryxx_example_full_SOURCES = \
 	test_slider.cpp                   \
 	test_check.cpp                   \
 	test_radio.cpp                   \
-	test_spinner.cpp
+	test_spinner.cpp                   \
+	test_panel.cpp
 
 elementaryxx_example_full_LDADD = \
 	$(ELEMENTARYXX_LIBS) \

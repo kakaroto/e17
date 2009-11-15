@@ -23,8 +23,6 @@ void test_hover2 (void *data, Evas_Object *obj, void *event_info);
 void test_entry (void *data, Evas_Object *obj, void *event_info);
 void test_entry_scolled (void *data, Evas_Object *obj, void *event_info);
 void test_notepad (void *data, Evas_Object *obj, void *event_info);
-// ...
-void test_slider (void *data, Evas_Object *obj, void *event_info);
 void test_check (void *data, Evas_Object *obj, void *event_info);
 void test_radio (void *data, Evas_Object *obj, void *event_info);
 //
@@ -64,6 +62,7 @@ void test_notify(void *data, Evas_Object *obj, void *event_info);
 void test_slideshow(void *data, Evas_Object *obj, void *event_info);
 void test_menu(void *data, Evas_Object *obj, void *event_info);
  */
+void test_panel (void *data, Evas_Object *obj, void *event_info);
 
 ElmApplication *elmApp;
 
@@ -193,23 +192,22 @@ int main (int argc, char **argv)
   li.append("Genlist 5", NULL, NULL, my_bt_37, NULL);
   li.append("Window States", NULL, NULL, my_bt_38, NULL);
    
-   elm_list_item_append(li, "Progressbar", NULL, NULL, test_progressbar, NULL);
-   elm_list_item_append(li, "File Selector", NULL, NULL, test_fileselector, NULL);
-   elm_list_item_append(li, "Separator", NULL, NULL, test_separator, NULL);
-   elm_list_item_append(li, "Scroller", NULL, NULL, test_scroller, NULL);
-   */
-   li->append ("Spinner", test_spinner, NULL);
-   /*
-   elm_list_item_append(li, "Index", NULL, NULL, test_index, NULL);
-   elm_list_item_append(li, "Photocam", NULL, NULL, test_photocam, NULL);
-   elm_list_item_append(li, "Photo", NULL, NULL, test_photo, NULL);
-   elm_list_item_append(li, "Icon Desktops", NULL, NULL, test_icon_desktops, NULL);
-   elm_list_item_append(li, "Notify", NULL, NULL, test_notify, NULL);
-   elm_list_item_append(li, "Slideshow", NULL, NULL, test_slideshow, NULL);
-   elm_list_item_append(li, "Menu", NULL, NULL, test_menu, NULL);
-   elm_list_item_append(li, "Panel", NULL, NULL, test_panel, NULL);
-   
-   */
+  elm_list_item_append(li, "Progressbar", NULL, NULL, test_progressbar, NULL);
+  elm_list_item_append(li, "File Selector", NULL, NULL, test_fileselector, NULL);
+  elm_list_item_append(li, "Separator", NULL, NULL, test_separator, NULL);
+  elm_list_item_append(li, "Scroller", NULL, NULL, test_scroller, NULL);
+  */
+  li->append ("Spinner", test_spinner, NULL);
+  /*
+  elm_list_item_append(li, "Index", NULL, NULL, test_index, NULL);
+  elm_list_item_append(li, "Photocam", NULL, NULL, test_photocam, NULL);
+  elm_list_item_append(li, "Photo", NULL, NULL, test_photo, NULL);
+  elm_list_item_append(li, "Icon Desktops", NULL, NULL, test_icon_desktops, NULL);
+  elm_list_item_append(li, "Notify", NULL, NULL, test_notify, NULL);
+  elm_list_item_append(li, "Slideshow", NULL, NULL, test_slideshow, NULL);
+  elm_list_item_append(li, "Menu", NULL, NULL, test_menu, NULL);
+  */
+  li->append ("Panel", test_panel, NULL);
 
   li->go ();
   
