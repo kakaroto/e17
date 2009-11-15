@@ -20,17 +20,20 @@ elementaryxx_example_full_SOURCES = \
 	test_check.cpp                   \
 	test_radio.cpp                   \
 	test_spinner.cpp                   \
-	test_panel.cpp
+	test_panel.cpp                   \
+	test_progressbar.cpp
 
 elementaryxx_example_full_LDADD = \
 	$(ELEMENTARYXX_LIBS) \
-	$(PACKAGE_SOURCE_DIR)/src/common/libeflxx_example_common.la
+	$(PACKAGE_SOURCE_DIR)/src/common/libeflxx_example_common.la \
+	$(ECOREXX_LIBS)
 
 elementaryxx_example_full_DEPENDENCIES = \
 	$(PACKAGE_SOURCE_DIR)/src/common/libeflxx_example_common.la
 
 AM_CPPFLAGS = \
-	$(ELEMENTARYXX_CFLAGS)
+	$(ELEMENTARYXX_CFLAGS)\
+	$(ECOREXX_CFLAGS)
 
 ## File created by the gnome-build tools
 

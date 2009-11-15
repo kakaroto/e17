@@ -49,8 +49,9 @@ void test_genlist6(void *data, Evas_Object *obj, void *event_info);*/
 void test_table(void *data, Evas_Object *obj, void *event_info);
 /*void test_pager(void *data, Evas_Object *obj, void *event_info);
 void test_win_state(void *data, Evas_Object *obj, void *event_info);
+*/
 void test_progressbar(void *data, Evas_Object *obj, void *event_info);
-void test_fileselector(void *data, Evas_Object *obj, void *event_info);
+/*void test_fileselector(void *data, Evas_Object *obj, void *event_info);
 void test_separator(void *data, Evas_Object *obj, void *event_info);*/
 void test_scroller(void *data, Evas_Object *obj, void *event_info);
 void test_spinner(void *data, Evas_Object *obj, void *event_info);
@@ -191,8 +192,9 @@ int main (int argc, char **argv)
   li.append("Genlist Tree", NULL, NULL, my_bt_36, NULL);
   li.append("Genlist 5", NULL, NULL, my_bt_37, NULL);
   li.append("Window States", NULL, NULL, my_bt_38, NULL);
-   
-  elm_list_item_append(li, "Progressbar", NULL, NULL, test_progressbar, NULL);
+  */
+  li->append ("Progressbar", test_progressbar, NULL);
+  /*
   elm_list_item_append(li, "File Selector", NULL, NULL, test_fileselector, NULL);
   elm_list_item_append(li, "Separator", NULL, NULL, test_separator, NULL);
   elm_list_item_append(li, "Scroller", NULL, NULL, test_scroller, NULL);
