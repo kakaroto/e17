@@ -74,7 +74,7 @@ static void my_progressbar_test_stop (Evas_Object *obj, void *event_info)
   }
 }
 
-static void my_progressbar_destroy (Evas_Object *obj, void *event_info, void *data)
+static void my_progressbar_destroy (Evas_Object *obj, void *event_info)
 {
   my_progressbar_test_stop (NULL, NULL);
   evas_object_del (obj);
@@ -82,7 +82,6 @@ static void my_progressbar_destroy (Evas_Object *obj, void *event_info, void *da
 
 void test_progressbar(void *data, Evas_Object *obj, void *event_info)
 {
-  Progressbar *test = NULL;
   ElmProgressbar *pb = NULL;
   ElmIcon *ic1 = NULL;
   ElmIcon *ic2 = NULL;
@@ -93,7 +92,7 @@ void test_progressbar(void *data, Evas_Object *obj, void *event_info)
   
   ElmWindow *win = ElmWindow::factory ("progressbar", ELM_WIN_BASIC);
   win->setTitle ("Progressbar");
-  win->getEventSignal ("delete,request")->connect (sigc::bind (sigc::ptr_fun (&my_progressbar_destroy), test));
+  win->getEventSignal ("delete,request")->connect (sigc::ptr_fun (&my_progressbar_destroy));
   
   ElmBackground *bg = ElmBackground::factory (*win);
   win->addObjectResize (*bg);
@@ -160,7 +159,7 @@ void test_progressbar(void *data, Evas_Object *obj, void *event_info)
   pb->setAlignHintSize (EVAS_HINT_FILL, 0.5);
   pb->setWeightHintSize (EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
   pb->setSpanSize (80);
-  //pb->setUnitFormat (NULL) // TODO: how to do this with std::string?
+  pb->hideUnitFormat ();
   pb->setLabel ("Infinite bounce");
   hbx->packEnd (*pb);
   pb->show ();
