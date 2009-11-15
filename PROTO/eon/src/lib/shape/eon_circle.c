@@ -37,7 +37,7 @@ static void _update_geometry(Eon_Circle *p)
 	Eina_Rectangle geom;
 
 	eina_rectangle_coords_from(&geom, prv->x.final - prv->radius, prv ->y.final - prv->radius, prv->radius * 2, prv->radius * 2);
-	eon_paint_geometry_set((Eon_Shape *)p, &geom);
+	eon_paint_geometry_set((Eon_Paint *)p, &geom);
 }
 
 /* Just informs that the x.final property has to be recalculated */
@@ -46,7 +46,6 @@ static void _x_inform(const Ekeko_Object *o, Ekeko_Event *e, void *data)
 	Eon_Circle_Private *prv = PRIVATE(data);
 	Ekeko_Value v;
 
-	printf("[Eon_Circle] Informing X change\n");
 	eon_value_coord_from(&v, &prv->x);
 	ekeko_object_property_value_set((Ekeko_Object *)data, "x", &v);
 }
@@ -57,7 +56,6 @@ static void _y_inform(const Ekeko_Object *o, Ekeko_Event *e, void *data)
 	Eon_Circle_Private *prv = PRIVATE(data);
 	Ekeko_Value v;
 
-	printf("[Eon_Circle] Informing Y change\n");
 	eon_value_coord_from(&v, &prv->y);
 	ekeko_object_property_value_set((Ekeko_Object *)data, "y", &v);
 }
@@ -68,19 +66,19 @@ static void _x_change(const Ekeko_Object *o, Ekeko_Event *e, void *data)
 	Ekeko_Event_Mutation *em = (Ekeko_Event_Mutation *)e;
 	Eon_Circle *s = (Eon_Circle *)o;
 	Eon_Circle_Private *prv = PRIVATE(o);
-	Ekeko_Object *parent;
+	Eon_Layout *l;
 	Eon_Coord x, w;
 
 	if (em->state == EVENT_MUTATION_STATE_POST)
 		return;
 
-	if (!(parent = ekeko_object_parent_get(o)))
+	if (!(l = eon_paint_layout_get(o)))
 		return;
 
-	eon_canvas_x_get((Eon_Canvas *)parent, &x);
-	eon_canvas_w_get((Eon_Canvas *)parent, &w);
+	eon_paint_square_x_get(l, &x);
+	eon_paint_square_w_get(l, &w);
 	eon_coord_change(o, &prv->x, em->curr->value.pointer_value,
-			em->prev->value.pointer_value, x.final, w.final, parent,
+			em->prev->value.pointer_value, x.final, w.final, l,
 			EON_CANVAS_X_CHANGED, EON_CANVAS_W_CHANGED,
 			_x_inform);
 	_update_geometry(s);
@@ -92,19 +90,19 @@ static void _y_change(const Ekeko_Object *o, Ekeko_Event *e, void *data)
 	Ekeko_Event_Mutation *em = (Ekeko_Event_Mutation *)e;
 	Eon_Circle *s = (Eon_Circle *)o;
 	Eon_Circle_Private *prv = PRIVATE(o);
-	Ekeko_Object *parent;
+	Eon_Layout *l;
 	Eon_Coord y, h;
 
 	if (em->state == EVENT_MUTATION_STATE_POST)
 		return;
 
-	if (!(parent = ekeko_object_parent_get(o)))
+	if (!(l = eon_paint_layout_get(o)))
 		return;
 
-	eon_canvas_y_get((Eon_Canvas *)parent, &y);
-	eon_canvas_h_get((Eon_Canvas *)parent, &h);
+	eon_paint_square_y_get(l, &y);
+	eon_paint_square_h_get(l, &h);
 	eon_coord_change(o, &prv->y, em->curr->value.pointer_value,
-			em->prev->value.pointer_value, y.final, h.final, parent,
+			em->prev->value.pointer_value, y.final, h.final, l,
 			EON_CANVAS_Y_CHANGED, EON_CANVAS_H_CHANGED,
 			_y_inform);
 	_update_geometry(s);
@@ -169,9 +167,6 @@ static void _render(Eon_Shape *s, Eon_Engine *eng, void *engine_data, void *canv
 
 	p = (Eon_Circle *)s;
 
-#ifdef EON_DEBUG
-	printf("[Eon_Circle] Rendering polygon %p into canvas %p\n", r, c);
-#endif
 	eon_engine_circle_render(eng, engine_data, canvas_data, clip);
 }
 
@@ -221,8 +216,8 @@ void eon_circle_style_coords_get(Eon_Circle *c, Eon_Paint *p,
 		/* FIXME we should get the topmost canvas units not the parent
 		 * canvas
 		 */
-		r = (Ekeko_Renderable *)eon_paint_canvas_topmost_get(p);
-		ekeko_renderable_geometry_get(r, &geom);
+		r = (Ekeko_Renderable *)eon_paint_layout_topmost_get(p);
+		eon_paint_geometry_get(r, &geom);
 	}
 	if (cx) eon_coord_calculate(&prv->x, geom.x, geom.w, cx);
 	if (cy) eon_coord_calculate(&prv->y, geom.y, geom.h, cy);

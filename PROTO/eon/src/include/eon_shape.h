@@ -67,7 +67,7 @@ EAPI float eon_shape_stroke_width_get(Eon_Shape *s);
 EAPI void eon_shape_draw_mode_set(Eon_Shape *s, Enesim_Shape_Draw_Mode draw_mode);
 EAPI Enesim_Shape_Draw_Mode eon_shape_draw_mode_get(Eon_Shape *s);
 
-#define eon_shape_show(s) ekeko_renderable_show(EKEKO_RENDERABLE((s)))
-#define eon_shape_hide(s) ekeko_renderable_hide(EKEKO_RENDERABLE((s)))
+#define eon_shape_show(s) eon_paint_show(EON_PAINT((s)))
+#define eon_shape_hide(s) eon_paint_hide(EON_PAINT((s)))
 
 #endif /* EON_SHAPE_H_ */

@@ -45,7 +45,7 @@ static void _update_geometry(Eon_Polygon *p)
 	Eina_Rectangle geom;
 
 	eina_rectangle_coords_from(&geom, prv->xmin, prv->ymin, prv->xmax - prv->xmin,  prv->ymax - prv->ymin);
-	ekeko_renderable_geometry_set((Ekeko_Renderable *)p, &geom);
+	eon_paint_geometry_set((Eon_Paint *)p, &geom);
 }
 
 
@@ -70,14 +70,11 @@ static void _appended_cb(const Ekeko_Object *o, Ekeko_Event *e, void *data)
 		Polygon_Coord coord;
 		void *ed;
 
-		d = eon_canvas_document_get((Eon_Canvas *) parent);
-		if (!d)
-			return;
-
+		d = eon_object_document_get(parent);
 		eng = eon_document_engine_get(d);
 		/* iterate over the list of points and add them to the engine */
 
-		ed = eon_paint_engine_data_get((Eon_Paint *)o);
+		ed = eon_object_engine_data_get((Eon_Object *)o);
 		it = eina_list_iterator_new(prv->points);
 		while (eina_iterator_next(it, (void **)&coord))
 		{
@@ -190,11 +187,9 @@ EAPI void eon_polygon_point_add(Eon_Polygon *p, int x, int y)
 		Eon_Document *d;
 		Eon_Engine *eng;
 
-		d = eon_canvas_document_get((Eon_Canvas *) parent);
-		if (!d)
-			return;
+		d = eon_object_document_get(parent);
 		eng = eon_document_engine_get(d);
-		eon_engine_polygon_point_add(eng, eon_paint_engine_data_get((Eon_Paint *)p), x, y);
+		eon_engine_polygon_point_add(eng, eon_object_engine_data_get((Eon_Object *)p), x, y);
 		_update_geometry(p);
 	}
 }

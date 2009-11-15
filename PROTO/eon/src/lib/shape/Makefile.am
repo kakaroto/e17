@@ -9,9 +9,9 @@ AM_CPPFLAGS = \
 noinst_LTLIBRARIES = libeon_shape.la
 
 libeon_shape_la_SOURCES = \
+eon_rect.c \
 eon_circle.c \
 eon_polygon.c \
-eon_rect.c \
-eon_shape.c \
 eon_shape_square.c \
+eon_shape.c \
 eon_text.c

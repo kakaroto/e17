@@ -45,7 +45,7 @@ static void _geometry_calc(const Ekeko_Object *o, Ekeko_Event *e, void *data)
 			x.final, y.final, w.final, h.final);
 #endif
 	/* TODO get the min between the user's x, y and the strw/h */
-	ekeko_renderable_geometry_set((Ekeko_Renderable *)r, &geom);
+	eon_paint_geometry_set((Eon_Paint *)r, &geom);
 }
 
 static void _str_change(const Ekeko_Object *o, Ekeko_Event *e, void *data)

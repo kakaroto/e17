@@ -46,23 +46,8 @@ struct _Eon_Canvas
  *                                Functions                                   *
  *============================================================================*/
 EAPI Eon_Canvas * eon_canvas_new(Eon_Document *c);
-EAPI Eon_Document * eon_canvas_document_get(Eon_Canvas *c);
-EAPI void eon_canvas_x_get(Eon_Canvas *c, Eon_Coord *x);
-EAPI void eon_canvas_x_rel_set(Eon_Canvas *c, int x);
-EAPI void eon_canvas_x_set(Eon_Canvas *c, int x);
-EAPI void eon_canvas_y_get(Eon_Canvas *c, Eon_Coord *x);
-EAPI void eon_canvas_y_set(Eon_Canvas *c, int y);
-EAPI void eon_canvas_y_rel_set(Eon_Canvas *c, int y);
-EAPI void eon_canvas_w_get(Eon_Canvas *c, Eon_Coord *w);
-EAPI void eon_canvas_w_set(Eon_Canvas *c, int w);
-EAPI void eon_canvas_w_rel_set(Eon_Canvas *c, int w);
-EAPI void eon_canvas_h_get(Eon_Canvas *c, Eon_Coord *w);
-EAPI void eon_canvas_h_set(Eon_Canvas *c, int h);
-EAPI void eon_canvas_h_rel_set(Eon_Canvas *c, int h);
-EAPI void eon_canvas_matrix_set(Eon_Canvas *c, Enesim_Matrix *m);
-EAPI Eon_Document * eon_canvas_document_get(Eon_Canvas *c);
 /* renderable wrappers */
-#define eon_canvas_show(c) ekeko_renderable_show(EKEKO_RENDERABLE((c)))
-#define eon_canvas_hide(c) ekeko_renderable_hide(EKEKO_RENDERABLE((c)))
+#define eon_canvas_show(c) eon_paint_show(EON_PAINT((c)))
+#define eon_canvas_hide(c) eon_paint_hide(EON_PAINT((c)))
 
 #endif /* EON_CANVAS_H_ */

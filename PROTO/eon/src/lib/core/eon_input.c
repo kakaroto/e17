@@ -22,7 +22,7 @@
  *============================================================================*/
 struct _Eon_Input
 {
-	Ekeko_Canvas *c;
+	Eon_Layout *c;
 	struct
 	{
 		unsigned int downx;
@@ -33,8 +33,8 @@ struct _Eon_Input
 		unsigned int px;
 		unsigned int py;
 		Eina_Bool inside;
-		Ekeko_Renderable *grabbed;
-		Ekeko_Renderable *r;
+		Eon_Paint *grabbed;
+		Eon_Paint *r;
 	} pointer;
 	/* TODO keep the last modifiers */
 	struct
@@ -45,7 +45,7 @@ struct _Eon_Input
 /*============================================================================*
  *                                 Global                                     *
  *============================================================================*/
-Eon_Input * input_new(Ekeko_Canvas *c)
+Eon_Input * eon_input_new(Eon_Layout *c)
 {
 	Eon_Input *i;
 
@@ -54,7 +54,7 @@ Eon_Input * input_new(Ekeko_Canvas *c)
 	return i;
 }
 
-void event_ui_init(Ekeko_Event_Ui *eui, const char *type, Ekeko_Object *o,
+void event_ui_init(Eon_Event_Ui *eui, const char *type, Ekeko_Object *o,
 		Ekeko_Object *related, const Ekeko_Input *i)
 {
 	ekeko_event_init((Ekeko_Event *)eui, type, o, EINA_FALSE);
@@ -62,61 +62,61 @@ void event_ui_init(Ekeko_Event_Ui *eui, const char *type, Ekeko_Object *o,
 	eui->i = i;
 }
 
-void event_mouse_move_init(Ekeko_Event_Mouse *em, Ekeko_Object *o,
+void event_mouse_move_init(Eon_Event_Mouse *em, Ekeko_Object *o,
 		Ekeko_Object *related, const Ekeko_Input *i,
 		unsigned int sx, unsigned int sy, unsigned int px,
 		unsigned int py)
 {
-	event_ui_init((Ekeko_Event_Ui*)em, EKEKO_EVENT_UI_MOUSE_MOVE, o, related, i);
+	event_ui_init((Eon_Event_Ui*)em, EON_EVENT_UI_MOUSE_MOVE, o, related, i);
 	em->screen.x = sx;
 	em->screen.y = sy;
 	em->screen.prev_x = px;
 	em->screen.prev_y = py;
 }
 
-void event_mouse_in_init(Ekeko_Event_Mouse *em, Ekeko_Object *o,
+void event_mouse_in_init(Eon_Event_Mouse *em, Ekeko_Object *o,
 		Ekeko_Object *related, const Ekeko_Input *i)
 {
-	event_ui_init((Ekeko_Event_Ui*)em, EKEKO_EVENT_UI_MOUSE_IN, o, related, i);
+	event_ui_init((Eon_Event_Ui*)em, EON_EVENT_UI_MOUSE_IN, o, related, i);
 }
-void event_mouse_out_init(Ekeko_Event_Mouse *em, Ekeko_Object *o,
+void event_mouse_out_init(Eon_Event_Mouse *em, Ekeko_Object *o,
 		Ekeko_Object *related, const Ekeko_Input *i)
 {
-	event_ui_init((Ekeko_Event_Ui*)em, EKEKO_EVENT_UI_MOUSE_OUT, o, related, i);
-}
-
-void event_mouse_down_init(Ekeko_Event_Mouse *em, Ekeko_Object *o,
-		Ekeko_Object *related, const Ekeko_Input *i)
-{
-	event_ui_init((Ekeko_Event_Ui*)em, EKEKO_EVENT_UI_MOUSE_DOWN, o, related, i);
+	event_ui_init((Eon_Event_Ui*)em, EON_EVENT_UI_MOUSE_OUT, o, related, i);
 }
 
-void event_mouse_up_init(Ekeko_Event_Mouse *em, Ekeko_Object *o,
+void event_mouse_down_init(Eon_Event_Mouse *em, Ekeko_Object *o,
 		Ekeko_Object *related, const Ekeko_Input *i)
 {
-	event_ui_init((Ekeko_Event_Ui*)em, EKEKO_EVENT_UI_MOUSE_UP, o, related, i);
+	event_ui_init((Eon_Event_Ui*)em, EON_EVENT_UI_MOUSE_DOWN, o, related, i);
 }
 
-void event_mouse_click_init(Ekeko_Event_Mouse *em, Ekeko_Object *o,
+void event_mouse_up_init(Eon_Event_Mouse *em, Ekeko_Object *o,
 		Ekeko_Object *related, const Ekeko_Input *i)
 {
-	event_ui_init((Ekeko_Event_Ui*)em, EKEKO_EVENT_UI_MOUSE_CLICK, o, related, i);
+	event_ui_init((Eon_Event_Ui*)em, EON_EVENT_UI_MOUSE_UP, o, related, i);
 }
 
-void ekeko_key_up_init(Ekeko_Event_Key *ek, Ekeko_Object *o,
-		const Ekeko_Input *i, Ekeko_Key key, Ekeko_Key_Mod mod)
+void event_mouse_click_init(Eon_Event_Mouse *em, Ekeko_Object *o,
+		Ekeko_Object *related, const Ekeko_Input *i)
+{
+	event_ui_init((Eon_Event_Ui*)em, EON_EVENT_UI_MOUSE_CLICK, o, related, i);
+}
+
+void ekeko_key_up_init(Eon_Event_Key *ek, Ekeko_Object *o,
+		const Ekeko_Input *i, Eon_Key key, Eon_Key_Mod mod)
 {
 	ek->key = key;
 	ek->mod = mod;
-	event_ui_init((Ekeko_Event_Ui *)ek, EKEKO_EVENT_UI_KEY_UP, o, o, i);
+	event_ui_init((Eon_Event_Ui *)ek, EON_EVENT_UI_KEY_UP, o, o, i);
 }
 
-void ekeko_key_down_init(Ekeko_Event_Key *ek, Ekeko_Object *o,
-		const Ekeko_Input *i, Ekeko_Key key, Ekeko_Key_Mod mod)
+void ekeko_key_down_init(Eon_Event_Key *ek, Ekeko_Object *o,
+		const Ekeko_Input *i, Eon_Key key, Eon_Key_Mod mod)
 {
 	ek->key = key;
 	ek->mod = mod;
-	event_ui_init((Ekeko_Event_Ui *)ek, EKEKO_EVENT_UI_KEY_DOWN, o, o, i);
+	event_ui_init((Eon_Event_Ui *)ek, EON_EVENT_UI_KEY_DOWN, o, o, i);
 }
 
 /*============================================================================*
@@ -129,7 +129,7 @@ EAPI void eon_input_feed_mouse_in(Eon_Input *i)
 	if (i->pointer.inside)
 		return;
 	i->pointer.inside = EINA_TRUE;
-	r = ekeko_canvas_renderable_get_at_coord(i->c, i->pointer.x, i->pointer.y);
+	r = eon_layout_renderable_get_at_coord(i->c, i->pointer.x, i->pointer.y);
 	if (!r)
 		return;
 	/* TODO send the event */
@@ -150,7 +150,7 @@ EAPI void eon_input_feed_mouse_move(Eon_Input *i, unsigned int x, unsigned int y
 
 	if (i->pointer.grabbed)
 	{
-		Ekeko_Event_Mouse em;
+		Eon_Event_Mouse em;
 
 		event_mouse_move_init(&em, (Ekeko_Object *)i->pointer.grabbed,
 				NULL, i, x, y, px, py);
@@ -161,13 +161,13 @@ EAPI void eon_input_feed_mouse_move(Eon_Input *i, unsigned int x, unsigned int y
 	 * if mouse in an object and canvas(obj) != canvas => in canvas(obj) ?
 	 * if mouse out an object and canvas(obj) != canvas => out canvas(obj) ?
 	 */
-	r = ekeko_canvas_renderable_get_at_coord(i->c, x, y);
+	r = eon_layout_renderable_get_at_coord(i->c, x, y);
 	if (r == i->pointer.r)
 	{
 		/* send move */
 		if (r)
 		{
-			Ekeko_Event_Mouse em;
+			Eon_Event_Mouse em;
 
 			event_mouse_move_init(&em, (Ekeko_Object *)r, NULL, i,
 					x, y, px, py);
@@ -179,7 +179,7 @@ EAPI void eon_input_feed_mouse_move(Eon_Input *i, unsigned int x, unsigned int y
 		/* send out event on i->r */
 		if (i->pointer.r)
 		{
-			Ekeko_Event_Mouse em;
+			Eon_Event_Mouse em;
 
 			event_mouse_out_init(&em, (Ekeko_Object *)i->pointer.r, (Ekeko_Object *)r, i);
 			ekeko_event_dispatch((Ekeko_Event *)&em);
@@ -187,7 +187,7 @@ EAPI void eon_input_feed_mouse_move(Eon_Input *i, unsigned int x, unsigned int y
 		/* send in event on r */
 		if (r)
 		{
-			Ekeko_Event_Mouse em;
+			Eon_Event_Mouse em;
 
 			event_mouse_in_init(&em, (Ekeko_Object *)r, (Ekeko_Object *)r, i);
 			ekeko_event_dispatch((Ekeko_Event *)&em);
@@ -205,7 +205,7 @@ EAPI void eon_input_feed_mouse_out(Eon_Input *i)
 	if (!i->pointer.inside)
 		return;
 	i->pointer.inside = EINA_FALSE;
-	r = ekeko_canvas_renderable_get_at_coord(i->c, i->pointer.x, i->pointer.y);
+	r = eon_layout_renderable_get_at_coord(i->c, i->pointer.x, i->pointer.y);
 	if (!r)
 		return;
 	/* TODO send the event */
@@ -214,11 +214,11 @@ EAPI void eon_input_feed_mouse_out(Eon_Input *i)
 EAPI void eon_input_feed_mouse_down(Eon_Input *i)
 {
 	Ekeko_Renderable *r;
-	Ekeko_Event_Mouse em;
+	Eon_Event_Mouse em;
 
 	if (!i->pointer.inside)
 		return;
-	r = ekeko_canvas_renderable_get_at_coord(i->c, i->pointer.x, i->pointer.y);
+	r = eon_layout_renderable_get_at_coord(i->c, i->pointer.x, i->pointer.y);
 	if (!r)
 		return;
 	/* store the coordinates where the mouse buton down was done to
@@ -234,7 +234,7 @@ EAPI void eon_input_feed_mouse_down(Eon_Input *i)
 EAPI void eon_input_feed_mouse_up(Eon_Input *i)
 {
 	Ekeko_Renderable *r;
-	Ekeko_Event_Mouse em;
+	Eon_Event_Mouse em;
 
 	/* send the event to the grabbed object */
 	r = i->pointer.grabbed;
@@ -256,24 +256,24 @@ EAPI void eon_input_feed_mouse_up(Eon_Input *i)
 	i->pointer.grabbed = NULL;
 }
 
-EAPI void eon_input_feed_key_up(Eon_Input *i, Ekeko_Key key, Ekeko_Key_Mod mod)
+EAPI void eon_input_feed_key_up(Eon_Input *i, Eon_Key key, Eon_Key_Mod mod)
 {
 	Ekeko_Renderable *r;
-	Ekeko_Event_Key ek;
+	Eon_Event_Key ek;
 
-	r = ekeko_canvas_focus_get(i->c);
+	r = eon_layout_focus_get(i->c);
 	if (!r) return;
 
 	ekeko_key_up_init(&ek, (Ekeko_Object *)r, i, key, mod);
 	ekeko_event_dispatch((Ekeko_Event *)&ek);
 }
 
-EAPI void eon_input_feed_key_down(Eon_Input *i, Ekeko_Key key, Ekeko_Key_Mod mod)
+EAPI void eon_input_feed_key_down(Eon_Input *i, Eon_Key key, Eon_Key_Mod mod)
 {
 	Ekeko_Renderable *r;
-	Ekeko_Event_Key ek;
+	Eon_Event_Key ek;
 
-	r = ekeko_canvas_focus_get(i->c);
+	r = eon_layout_focus_get(i->c);
 	if (!r) return;
 
 	ekeko_key_down_init(&ek, (Ekeko_Object *)r, i, key, mod);

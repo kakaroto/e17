@@ -59,7 +59,7 @@ EAPI void eon_circle_radius_rel_set(Eon_Circle *c, int r);
 #define eon_circle_rop_set(r, o) eon_shape_rop_set((Eon_Shape *)(r), o)
 #define eon_circle_rop_get(r) eon_shape_rop_get((Eon_Shape *)(r))
 /* renderable wrappers */
-#define eon_circle_show(r) ekeko_renderable_show(EKEKO_RENDERABLE((r)))
-#define eon_circle_hide(r) ekeko_renderable_hide(EKEKO_RENDERABLE((r)))
+#define eon_circle_show(r) eon_paint_show(EON_PAINT((r)))
+#define eon_circle_hide(r) eon_paint_hide(EON_PAINT((r)))
 
 #endif /* EON_CIRCLE_H_ */

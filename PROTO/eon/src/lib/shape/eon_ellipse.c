@@ -34,7 +34,7 @@ static void _update_geometry(Eon_Ellipse *p)
 	Eina_Rectangle geom;
 
 	eina_rectangle_coords_from(&geom, prv->x.final - prv->radius, prv ->y.final - prv->radius, prv->radius << 1, prv->radius << 1);
-	ekeko_renderable_geometry_set((Ekeko_Renderable *)p, &geom);
+	eon_paint_geometry_set((Eon_Paint *)p, &geom);
 }
 
 /* Just informs that the x.final property has to be recalculated */

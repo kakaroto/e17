@@ -104,8 +104,6 @@ void eon_document_script_unload(Eon_Document *d, const char *file);
 void eon_document_script_load(Eon_Document *d, const char *file);
 
 /* Canvas */
-Eon_Document * eon_canvas_document_get(Eon_Canvas *c);
-void * eon_canvas_engine_data_get(Eon_Canvas *c);
 
 /* Shape */
 Eina_Bool eon_shape_appendable(void *instance, void *child);
@@ -122,9 +120,6 @@ void eon_coord_length_change(const Ekeko_Object *o, Eon_Coord *dst, Eon_Coord *c
 
 /* Paint */
 void eon_paint_change(Eon_Paint *p);
-void * eon_paint_engine_data_get(Eon_Paint *p);
-Eon_Canvas * eon_paint_canvas_get(Eon_Paint *p);
-Eon_Canvas * eon_paint_canvas_topmost_get(Eon_Paint *p);
 Eina_Bool eon_paint_appendable(Ekeko_Object *p, Ekeko_Object *child);
 void eon_paint_geometry_set(Eon_Paint *p, Eina_Rectangle *rect);
 void eon_paint_geometry_get(Eon_Paint *p, Eina_Rectangle *rect);
@@ -133,8 +128,10 @@ void eon_paint_style_coords_get(Eon_Paint *p, Eon_Paint *rel, int *x, int *y,
 void eon_paint_style_inverse_matrix_get(Eon_Paint *p, Eon_Paint *rel,
 		Enesim_Matrix *m);
 void eon_paint_inverse_matrix_get(Eon_Paint *p, Enesim_Matrix *m);
-Eon_Document * eon_paint_document_get(Eon_Paint *p);
-
+int eon_paint_zindex_get(Eon_Paint *r);
+void eon_paint_zindex_set(Eon_Paint *r, int zindex);
+Eon_Layout * eon_paint_layout_get(Eon_Paint *p);
+Eon_Layout * eon_paint_layout_topmost_get(Eon_Paint *p);
 
 /* Transition */
 Eina_Bool eon_transition_appendable(Ekeko_Object *t, Ekeko_Object *child);

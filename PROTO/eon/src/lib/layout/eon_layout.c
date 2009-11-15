@@ -83,21 +83,21 @@ static inline void _renderable_append(Eon_Layout *c, Eon_Paint *r,
 	/* not visible */
 	if (!rvisible)
 	{
-		if (renderable_appended_get(r))
+		if (eon_paint_renderable_get(r))
 		{
 			DBG("%p removing renderable %p\n", c, r);
 			prv->renderables = eina_list_remove(prv->renderables, r);
-			renderable_appended_set(r, EINA_FALSE);
+			eon_paint_renderable_set(r, EINA_FALSE);
 		}
 	}
 	/* visible and not intersect */
 	else if (!intersect)
 	{
-		if (renderable_appended_get(r))
+		if (eon_paint_renderable_get(r))
 		{
 			DBG("%p removing renderable %p\n", c, r);
 			prv->renderables = eina_list_remove(prv->renderables, r);
-			renderable_appended_set(r, EINA_FALSE);
+			eon_paint_renderable_set(r, EINA_FALSE);
 		}
 	}
 	/* visible and intersect */
@@ -106,22 +106,22 @@ static inline void _renderable_append(Eon_Layout *c, Eon_Paint *r,
 		Eon_Paint *lr = NULL;
 		Eina_List *l;
 
-		if (renderable_appended_get(r))
+		if (eon_paint_renderable_get(r))
 			return;
-		
+
 		DBG("%p adding renderable %p\n", c, r);
 		EINA_LIST_FOREACH(prv->renderables, l, lr)
 		{
-			if (!(ekeko_renderable_zindex_get(r) >
-					ekeko_renderable_zindex_get(lr)))
+			if (!(eon_paint_zindex_get(r) >
+					eon_paint_zindex_get(lr)))
 			{
 				prv->renderables = eina_list_prepend_relative(prv->renderables, r, lr);
-				renderable_appended_set(r, EINA_TRUE);
+				eon_paint_renderable_set(r, EINA_TRUE);
 				return;
 			}
 		}
 		prv->renderables = eina_list_append_relative(prv->renderables, r, lr);
-		renderable_appended_set(r, EINA_TRUE);
+		eon_paint_renderable_set(r, EINA_TRUE);
 	}
 }
 
@@ -144,7 +144,7 @@ static void _child_removed(Ekeko_Object *o, Ekeko_Event *e, void *data)
 	prv->renderables = eina_list_remove(prv->renderables, r);
 	if (!prv->tiler) return;
 
-	ekeko_renderable_geometry_get(r, &geom);
+	eon_paint_boundings_get(r, &geom);
 	eina_tiler_rect_add(prv->tiler, &geom);
 }
 
@@ -158,7 +158,7 @@ static void _child_geometry_change(Ekeko_Object *o, Ekeko_Event *e, void *data)
 
 	if (em->state != EVENT_MUTATION_STATE_POST)
 		return;
-	ekeko_renderable_geometry_get((Eon_Paint *)c, &cgeom);
+	eon_paint_boundings_get((Eon_Paint *)c, &cgeom);
 	/* reset the layout coordinates to 0,0 WxH */
 	cgeom.x = 0;
 	cgeom.y = 0;
@@ -176,7 +176,7 @@ static void _child_visibility_change(Ekeko_Object *o, Ekeko_Event *e, void *data
 
 	if (em->state != EVENT_MUTATION_STATE_POST)
 		return;
-	ekeko_renderable_geometry_get((Eon_Paint *)c, &cgeom);
+	eon_paint_boundings_get((Eon_Paint *)c, &cgeom);
 	/* reset the layout coordinates to 0,0 WxH */
 	cgeom.x = 0;
 	cgeom.y = 0;
@@ -409,7 +409,7 @@ EAPI void eon_layout_size_set(Eon_Layout *c, int w, int h)
 	rect.y = 0;
 	rect.w = w;
 	rect.h = h;
-	ekeko_renderable_geometry_set((Eon_Paint *)c, &rect);
+	eon_paint_geometry_set((Eon_Paint *)c, &rect);
 }
 /**
  * @brief Marks a rectangle on the layout as damaged, this area will be
@@ -471,11 +471,11 @@ EAPI Eon_Paint * eon_layout_renderable_get_at_coord(Eon_Layout *c,
 		Eina_Rectangle rgeom;
 
 		r = eina_list_data_get(l);
-		ekeko_renderable_geometry_get(r, &rgeom);
+		eon_paint_boundings_get(r, &rgeom);
 		if (!eina_rectangles_intersect(&igeom, &rgeom))
 			continue;
 		/* specific intersection */
-		if (ekeko_renderable_intersect(r, x, y))
+		if (eon_paint_is_inside(r, x, y))
 		{
 #ifdef EKEKO_DEBUG
 			printf("[Eon_Layout] renderable found %p\n", r);

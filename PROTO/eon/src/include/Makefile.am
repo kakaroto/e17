@@ -25,6 +25,8 @@ eon_filter.h \
 eon_grid.h \
 eon_hswitch.h \
 eon_image.h \
+eon_input.h \
+eon_layout.h \
 eon_object.h \
 eon_paint.h \
 eon_paint_square.h \

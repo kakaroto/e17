@@ -67,14 +67,14 @@ static int _resize_cb(void *data, int type, void *event)
 static int _mouse_down_cb(void *data, int type, void *event)
 {
 	Ekeko_Input *input = (Ekeko_Input *)data;
-	ekeko_input_feed_mouse_down(input);
+	eon_input_feed_mouse_down(input);
 	return 1;
 }
 
 static int _mouse_up_cb(void *data, int type, void *event)
 {
 	Ekeko_Input *input = (Ekeko_Input *)data;
-	ekeko_input_feed_mouse_up(input);
+	eon_input_feed_mouse_up(input);
 	return 1;
 }
 
@@ -83,7 +83,7 @@ static int _mouse_move_cb(void *data, int type, void *event)
 	Ekeko_Input *input = (Ekeko_Input *)data;
 	Ecore_Event_Mouse_Move *e = event;
 
-	ekeko_input_feed_mouse_move(input, e->x, e->y);
+	eon_input_feed_mouse_move(input, e->x, e->y);
 	return 1;
 }
 
@@ -91,7 +91,7 @@ static int _key_down_cb(void *data, int type, void *event)
 {
 	Ekeko_Input *input = (Ekeko_Input *)data;
 
-	ekeko_input_feed_key_down(input, 0, 0);
+	eon_input_feed_key_down(input, 0, 0);
 	return 1;
 }
 
@@ -99,7 +99,7 @@ static int _key_up_cb(void *data, int type, void *event)
 {
 	Ekeko_Input *input = (Ekeko_Input *)data;
 
-	ekeko_input_feed_key_up(input, 0, 0);
+	eon_input_feed_key_up(input, 0, 0);
 	return 1;
 }
 
@@ -226,7 +226,7 @@ static void _root_canvas_create(Ekeko_Canvas *c)
 	/* Ecore_sdl interval isnt enough */
 	SDL_EnableKeyRepeat(10, 10);
 	/* add the input */
-	input = ekeko_canvas_input_new((Ekeko_Canvas *)c);
+	input = eon_layout_input_new((Ekeko_Canvas *)c);
 	/* add the callbacks */
 	ecore_event_handler_add(ECORE_SDL_EVENT_GOT_FOCUS, _in_cb, input);
 	ecore_event_handler_add(ECORE_SDL_EVENT_LOST_FOCUS, _out_cb, input);
@@ -236,7 +236,7 @@ static void _root_canvas_create(Ekeko_Canvas *c)
 	ecore_event_handler_add(ECORE_EVENT_KEY_DOWN, _key_down_cb, input);
 	ecore_event_handler_add(ECORE_EVENT_KEY_UP, _key_up_cb, input);
 	/* FIXME Ecore_SDL doesnt support the in/out events, make it always in */
-	ekeko_input_feed_mouse_in(input);
+	eon_input_feed_mouse_in(input);
 	/* the event feeder evas/ecore has a very weird way to feed sdl events! */
 	ecore_timer_add(0.008, _sdl_event, NULL);
 }

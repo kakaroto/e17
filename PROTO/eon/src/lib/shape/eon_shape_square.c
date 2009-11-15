@@ -78,19 +78,19 @@ static void _x_change(const Ekeko_Object *o, Ekeko_Event *e, void *data)
 	Ekeko_Event_Mutation *em = (Ekeko_Event_Mutation *)e;
 	Eon_Shape_Square *s = (Eon_Shape_Square *)o;
 	Eon_Shape_Square_Private *prv = PRIVATE(o);
-	Eon_Canvas *c;
+	Eon_Layout *l;
 	Eon_Coord x, w;
 
 	if (em->state == EVENT_MUTATION_STATE_POST)
 		return;
 
-	if (!(c = eon_paint_canvas_get((Eon_Paint *)o)))
+	if (!(l = eon_paint_layout_get((Eon_Paint *)o)))
 		return;
 
-	eon_canvas_x_get(c, &x);
-	eon_canvas_w_get(c, &w);
+	eon_paint_square_x_get(l, &x);
+	eon_paint_square_w_get(l, &w);
 	eon_coord_change(o, &prv->x, em->curr->value.pointer_value,
-			em->prev->value.pointer_value, x.final, w.final, c,
+			em->prev->value.pointer_value, x.final, w.final, l,
 			EON_CANVAS_X_CHANGED, EON_CANVAS_W_CHANGED,
 			_x_inform);
 }
@@ -101,19 +101,19 @@ static void _y_change(const Ekeko_Object *o, Ekeko_Event *e, void *data)
 	Ekeko_Event_Mutation *em = (Ekeko_Event_Mutation *)e;
 	Eon_Shape_Square *s = (Eon_Shape_Square *)o;
 	Eon_Shape_Square_Private *prv = PRIVATE(o);
-	Eon_Canvas *c;
+	Eon_Layout *l;
 	Eon_Coord y, h;
 
 	if (em->state == EVENT_MUTATION_STATE_POST)
 		return;
 
-	if (!(c = eon_paint_canvas_get((Eon_Paint *)o)))
+	if (!(l = eon_paint_layout_get((Eon_Paint *)o)))
 		return;
 
-	eon_canvas_y_get(c, &y);
-	eon_canvas_h_get(c, &h);
+	eon_paint_square_y_get(l, &y);
+	eon_paint_square_h_get(l, &h);
 	eon_coord_change(o, &prv->y, em->curr->value.pointer_value,
-			em->prev->value.pointer_value, y.final, h.final, c,
+			em->prev->value.pointer_value, y.final, h.final, l,
 			EON_CANVAS_Y_CHANGED, EON_CANVAS_H_CHANGED,
 			_y_inform);
 }
@@ -124,18 +124,18 @@ static void _w_change(const Ekeko_Object *o, Ekeko_Event *e, void *data)
 	Ekeko_Event_Mutation *em = (Ekeko_Event_Mutation *)e;
 	Eon_Shape_Square *s = (Eon_Shape_Square *)o;
 	Eon_Shape_Square_Private *prv = PRIVATE(o);
-	Eon_Canvas *c;
+	Eon_Layout *l;
 	Eon_Coord w;
 
 	if (em->state == EVENT_MUTATION_STATE_POST)
 		return;
 
-	if (!(c = eon_paint_canvas_get((Eon_Paint *)o)))
+	if (!(l = eon_paint_layout_get((Eon_Paint *)o)))
 		return;
 
-	eon_canvas_w_get(c, &w);
+	eon_paint_square_w_get(l, &w);
 	eon_coord_length_change(o, &prv->w, em->curr->value.pointer_value,
-			em->prev->value.pointer_value, w.final, c,
+			em->prev->value.pointer_value, w.final, l,
 			EON_CANVAS_W_CHANGED, _w_inform);
 }
 
@@ -145,18 +145,18 @@ static void _h_change(const Ekeko_Object *o, Ekeko_Event *e, void *data)
 	Ekeko_Event_Mutation *em = (Ekeko_Event_Mutation *)e;
 	Eon_Shape_Square *s = (Eon_Shape_Square *)o;
 	Eon_Shape_Square_Private *prv = PRIVATE(o);
-	Eon_Canvas *c;
+	Eon_Layout *l;
 	Eon_Coord h;
 
 	if (em->state == EVENT_MUTATION_STATE_POST)
 		return;
 
-	if (!(c = eon_paint_canvas_get((Eon_Paint *)o)))
+	if (!(l = eon_paint_layout_get((Eon_Paint *)o)))
 		return;
 
-	eon_canvas_h_get(c, &h);
+	eon_paint_square_h_get(l, &h);
 	eon_coord_length_change(o, &prv->h, em->curr->value.pointer_value,
-			em->prev->value.pointer_value, h.final, c,
+			em->prev->value.pointer_value, h.final, l,
 			EON_CANVAS_H_CHANGED, _h_inform);
 }
 
@@ -173,13 +173,13 @@ static void _parent_set(const Ekeko_Object *o, Ekeko_Event *e, void *data)
 	/* FIXME, fix this, the parent can be a canvas or any other
 	 * square type (paint or square)
 	 */
-	if (!ekeko_type_instance_is_of(p, "canvas"))
+	if (!ekeko_type_instance_is_of(p, "layout"))
 		return;
 
-	eon_canvas_x_get(p, &x);
-	eon_canvas_y_get(p, &y);
-	eon_canvas_w_get(p, &w);
-	eon_canvas_h_get(p, &h);
+	eon_paint_square_x_get(p, &x);
+	eon_paint_square_y_get(p, &y);
+	eon_paint_square_w_get(p, &w);
+	eon_paint_square_h_get(p, &h);
 
 	zero.type = EON_COORD_ABSOLUTE;
 	zero.value = 0;
@@ -235,13 +235,13 @@ void eon_shape_square_style_coords_get(Eon_Shape_Square *s, Eon_Paint *p, int *x
 	}
 	else
 	{
-		Ekeko_Renderable *r;
+		Eon_Paint *pp;
 
 		/* FIXME we should get the topmost canvas units not the parent
 		 * canvas
 		 */
-		r = (Ekeko_Renderable *)eon_paint_canvas_topmost_get(p);
-		ekeko_renderable_geometry_get(r, &geom);
+		pp = (Ekeko_Renderable *)eon_paint_layout_get(p);
+		eon_paint_geometry_get(pp, &geom);
 	}
 	eon_shape_square_coords_get(s, &px, &py, &pw, &ph);
 

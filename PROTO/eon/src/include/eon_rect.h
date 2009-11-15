@@ -62,7 +62,7 @@ EAPI float eon_rect_corner_radius_get(Eon_Rect *r);
 #define eon_rect_fill_color_set(r, c) eon_shape_fill_color_set((Eon_Shape *)r, c)
 #define eon_rect_fill_color_get(r) eon_shape_fill_color_get((Eon_Shape *)r)
 /* renderable wrappers */
-#define eon_rect_show(r) ekeko_renderable_show(EKEKO_RENDERABLE((r)))
-#define eon_rect_hide(r) ekeko_renderable_hide(EKEKO_RENDERABLE((r)))
+#define eon_rect_show(r) eon_paint_show(EON_PAINT((r)))
+#define eon_rect_hide(r) eon_paint_hide(EON_PAINT((r)))
 
 #endif /* EON_RECT_H_ */

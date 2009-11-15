@@ -34,7 +34,7 @@ static void _pause_click_cb(const Ekeko_Object *o, Ekeko_Event *e, void *data)
 	Eon_Document *doc;
 	Eon_Canvas *c = data;
 
-	doc = eon_canvas_document_get(c);
+	doc = eon_object_document_get(c);
 	eon_document_pause(doc);
 }
 
@@ -43,7 +43,7 @@ static void _play_click_cb(const Ekeko_Object *o, Ekeko_Event *e, void *data)
 	Eon_Document *doc;
 	Eon_Canvas *c = data;
 
-	doc = eon_canvas_document_get(c);
+	doc = eon_object_document_get(c);
 	eon_document_play(doc);
 }
 

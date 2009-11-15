@@ -37,6 +37,8 @@ static int _dom = -1;
 struct _Eon_Paint_Private
 {
 	Eon_Layout *layout;
+	Eina_Bool renderable;
+	int zindex;
 	/* transformed geometry */
 	Eina_Rectangle boundings;
 	/* untransformed geometry */
@@ -51,6 +53,70 @@ struct _Eon_Paint_Private
 	Eon_Style *style;
 	Eina_Bool visibility;
 };
+
+static Eon_Paint * _prev_renderable_get(Ekeko_Object *o)
+{
+	Ekeko_Object *last;
+
+	/* check if the object is a canvas, if so, dont go down */
+	if (ekeko_type_instance_is_of(o, EON_TYPE_LAYOUT))
+		return o;
+	last = ekeko_object_child_last_get(o);
+	if (!last)
+	{
+		if (ekeko_type_instance_is_of(o, EON_TYPE_PAINT))
+			return o;
+		else
+			return NULL;
+	}
+	else
+	{
+		do
+		{
+			Ekeko_Object *g;
+
+			g = _prev_renderable_get(last);
+			if (g)
+				return g;
+		} while (last = ekeko_object_prev(last));
+		/* any of the childs is a renderable, check the object itself */
+		if (ekeko_type_instance_is_of(o, EON_TYPE_PAINT))
+			return o;
+		else
+			return NULL;
+	}
+}
+
+static Eon_Paint * _prev_renderable_left(Ekeko_Object *r)
+{
+	while (r = ekeko_object_prev(r))
+	{
+		Ekeko_Object *g;
+
+		g = _prev_renderable_get(r);
+		if (g)
+			return (Eon_Paint *)g;
+	}
+	return NULL;
+}
+
+static Eon_Paint * _prev_renderable_up(Ekeko_Object *o)
+{
+	Ekeko_Object *parent;
+
+	while (parent = ekeko_object_parent_get(o))
+	{
+		if (ekeko_type_instance_is_of(parent, "Renderable"))
+			return (Eon_Paint *)parent;
+		else
+		{
+			Eon_Paint *l;
+
+			l = _prev_renderable_left(parent);
+			if (l) return l;
+		}
+	}
+}
 
 static void _paint_change(const Ekeko_Object *o, Ekeko_Event *e, void *data)
 {
@@ -67,6 +133,44 @@ static void _matrix_change(const Ekeko_Object *o, Ekeko_Event *e, void *data)
 	enesim_matrix_inverse(m, &prv->inverse);
 }
 
+static void _parent_set_cb(const Ekeko_Object *o, Ekeko_Event *e, void *data)
+{
+	Ekeko_Event_Mutation *em = (Ekeko_Event_Mutation *)e;
+	Eon_Paint_Private *prv;
+	Ekeko_Object *p = (Ekeko_Object *)em->related;
+	Eon_Paint *last;
+	Eon_Layout *l;
+
+	prv = PRIVATE(o);
+	/* set the layout this paint object belongs to */
+	if (ekeko_type_instance_is_of(p, EON_TYPE_LAYOUT))
+		prv->layout = p;
+	else if (ekeko_type_instance_is_of(p, EON_TYPE_PAINT))
+		prv->layout = eon_paint_layout_get(p);
+	else
+		return;
+
+	last = _prev_renderable_left(o);
+	/* no sibling with a renderable below or itself */
+	if (!last)
+		last = _prev_renderable_up(o);
+	/* no parent with a renderable below */
+	if (!last || last == p)
+	{
+		/* first element */
+		/* Set the zindex */
+	}
+	else
+	{
+		int z;
+
+		z = eon_paint_zindex_get(last);
+		eon_paint_zindex_set(o, z + 1);
+	}
+	/* TODO propagate the change of zindex locally in case the object is not a canvas */
+	/* TODO propagate the change of zindex to the next sibling */
+}
+
 static void _ctor(Ekeko_Object *o)
 {
 	Eon_Paint *p;
@@ -80,6 +184,7 @@ static void _ctor(Ekeko_Object *o)
 	enesim_matrix_identity(&prv->matrix);
 	enesim_matrix_inverse(&prv->matrix, &prv->inverse);
 	ekeko_event_listener_add(o, EKEKO_EVENT_PROP_MODIFY, _paint_change, EINA_FALSE, NULL);
+	ekeko_event_listener_add(o, EKEKO_EVENT_OBJECT_APPEND, _parent_set_cb, EINA_FALSE, NULL);
 	ekeko_event_listener_add(o, EON_PAINT_MATRIX_CHANGED, _matrix_change, EINA_FALSE, NULL);
 }
 
@@ -101,14 +206,14 @@ Eina_Bool eon_paint_appendable(Ekeko_Object *p, Ekeko_Object *child)
 /* Every paint object is a subclass of a renderable, just return the one there
  * which might be null in case this paint is attached to a style container
  */
-Eon_Canvas * eon_paint_layout_get(Eon_Paint *p)
+Eon_Layout * eon_paint_layout_get(Eon_Paint *p)
 {
 	Eon_Paint_Private *prv = PRIVATE(p);
 
 	return prv->layout;
 }
 
-Eon_Canvas * eon_paint_layout_topmost_get(Eon_Paint *p)
+Eon_Layout * eon_paint_layout_topmost_get(Eon_Paint *p)
 {
 	Eon_Paint_Private *prv;
 	Eon_Layout *l, *last;
@@ -234,6 +339,36 @@ Eina_Bool eon_paint_is_inside(Eon_Paint *p, int x, int y)
 	}
 	/* call the shape's is_inside */
 	return p->is_inside(p, x, y);
+}
+
+Eina_Bool eon_paint_renderable_get(Eon_Paint *p)
+{
+	Eon_Paint_Private *prv = PRIVATE(p);
+
+	return prv->renderable;
+}
+
+void eon_paint_renderable_set(Eon_Paint *p, Eina_Bool renderable)
+{
+	Eon_Paint_Private *prv = PRIVATE(p);
+
+	prv->renderable = renderable;
+}
+
+int eon_paint_zindex_get(Eon_Paint *r)
+{
+	Eon_Paint_Private *prv;
+
+	prv = PRIVATE(r);
+	return prv->zindex;
+}
+
+void eon_paint_zindex_set(Eon_Paint *r, int zindex)
+{
+	Eon_Paint_Private *prv;
+
+	prv = PRIVATE(r);
+	prv->zindex = zindex;
 }
 /*============================================================================*
  *                                   API                                      *

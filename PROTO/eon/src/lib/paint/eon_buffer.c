@@ -172,9 +172,8 @@ EAPI void eon_buffer_data_update(Eon_Buffer *b)
 	if (!prv->data)
 		return;
 
-	c = eon_paint_canvas_get((Eon_Canvas *)b);
-	d = eon_canvas_document_get(c);
+	d = eon_object_document_get(b);
 	e = eon_document_engine_get(d);
-	eon_engine_buffer_update(e, eon_paint_engine_data_get((Eon_Paint *)b));
+	eon_engine_buffer_update(e, eon_object_engine_data_get((Eon_Object *)b));
 }
 

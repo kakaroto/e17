@@ -120,7 +120,7 @@ static void compound_setup(Paint *p, Paint *rel)
 
 			rop = eon_compound_layer_rop_get(l);
 			ref = eon_compound_layer_paint_get(l);
-			pref = eon_paint_engine_data_get(ref);
+			pref = eon_object_engine_data_get(ref);
 			enesim_renderer_compound_layer_add(p->r, pref->r, rop);
 			pref->style_setup(pref, rel);
 		}
@@ -195,9 +195,9 @@ static Eina_Bool hswitch_setup(void *data, Eon_Shape *s)
 	eon_paint_style_coords_get(p->p, (Eon_Paint *)s, &dx, &dy, &dw, &dh);
 	paint_setup(p, s, dx, dy);
 
-	tmp = eon_paint_engine_data_get(p1);
+	tmp = eon_object_engine_data_get(p1);
 	enesim_renderer_hswitch_left_set(p->r, tmp->r);
-	tmp = eon_paint_engine_data_get(p2);
+	tmp = eon_object_engine_data_get(p2);
 	enesim_renderer_hswitch_right_set(p->r, tmp->r);
 	enesim_renderer_hswitch_w_set(p->r, dw);
 	enesim_renderer_hswitch_h_set(p->r, dh);
@@ -227,11 +227,11 @@ static Eina_Bool fade_setup(Paint *p)
 	if (!eon_transition_paint_get((Eon_Transition *)f, &p1, &p2, &step))
 		return EINA_FALSE;
 
-	tmp = eon_paint_engine_data_get(p1);
+	tmp = eon_object_engine_data_get(p1);
 	enesim_renderer_transition_source_set(p->r, tmp->r);
 	tmp->style_setup(tmp, p);
 
-	tmp = eon_paint_engine_data_get(p2);
+	tmp = eon_object_engine_data_get(p2);
 	enesim_renderer_transition_target_set(p->r, tmp->r);
 	tmp->style_setup(tmp, p);
 
@@ -552,7 +552,7 @@ static void shape_renderer_setup(Paint *ep)
 	{
 		Paint *pa;
 
-		pa = eon_paint_engine_data_get(p);
+		pa = eon_object_engine_data_get(p);
 		if (pa)
 		{
 			enesim_renderer_shape_fill_renderer_set(r, pa->r);
@@ -571,7 +571,7 @@ static void shape_renderer_setup(Paint *ep)
 	{
 		Paint *pa;
 
-		pa = eon_paint_engine_data_get(p);
+		pa = eon_object_engine_data_get(p);
 		if (pa)
 		{
 			enesim_renderer_shape_outline_renderer_set(r, pa->r);
@@ -680,7 +680,7 @@ static void shape_rasterizer_setup(Eon_Shape *s, Rasterizer_Drawer_Data *d, Enes
 	else
 	{
 		/* paint + color */
-		d->paint = eon_paint_engine_data_get(p);
+		d->paint = eon_object_engine_data_get(p);
 		enesim_renderer_state_setup(d->paint->r);
 		d->span = enesim_compositor_span_get(rop, &dfmt, ENESIM_FORMAT_ARGB8888, d->color, ENESIM_FORMAT_NONE);
 		d->cb = aliased_fill_cb;
@@ -978,7 +978,7 @@ static void text_render(void *et, void *cd, Eina_Rectangle *clip)
 		return;
 
 
-	ekeko_renderable_geometry_get((Ekeko_Renderable *)t->t, &geom);
+	eon_paint_geometry_get((Ekeko_Renderable *)t->t, &geom);
 	pen_x = geom.x;
 	pen_y = geom.y + 16; // we can use this to place the text on a vertical align
 

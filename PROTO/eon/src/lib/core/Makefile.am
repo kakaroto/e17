@@ -19,6 +19,7 @@ eon_clock.c \
 eon_coord.c \
 eon_external.c \
 eon_engine.c \
+eon_input.c \
 eon_font.c \
 eon_main.c \
 eon_object.c \
