@@ -27,6 +27,7 @@ private:
   ElmProgressbar (EvasObject &parent); // private construction -> use factory ()
   ~ElmProgressbar (); // forbid direct delete -> use ElmWidget::destroy()
   
+public:
   void setLabel (const std::string &label);
   void setIcon (EvasObject &icon);
   void setSpanSize (Evas_Coord size);

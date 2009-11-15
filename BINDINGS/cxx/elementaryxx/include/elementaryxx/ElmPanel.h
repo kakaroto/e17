@@ -20,6 +20,7 @@ private:
   ElmPanel (EvasObject &parent); // private construction -> use factory ()
   ~ElmPanel (); // forbid direct delete -> use ElmWidget::destroy()
   
+public:
   void setOrientation (Elm_Panel_Orient orient);
   void setContent (EvasObject &content);
 };
