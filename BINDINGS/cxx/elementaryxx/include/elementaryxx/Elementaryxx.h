@@ -34,6 +34,8 @@
 #include "ElmAnchorview.h"
 #include "ElmAnchorblock.h"
 #include "ElmSpinner.h"
+#include "ElmProgressbar.h"
+#include "ElmPanel.h"
 
 #endif // ELEMENTARYXX_H
 

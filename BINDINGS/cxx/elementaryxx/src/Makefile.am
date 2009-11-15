@@ -43,5 +43,7 @@ libelementaryxx_la_SOURCES = \
 	ElmNotepad.cpp  \
 	ElmAnchorblock.cpp  \
 	ElmAnchorview.cpp  \
-	ElmSpinner.cpp
+	ElmSpinner.cpp  \
+	ElmProgressbar.cpp  \
+	ElmPanel.cpp
 
