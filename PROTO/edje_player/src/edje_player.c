@@ -235,13 +235,14 @@ void list_engines ()
 {
   Eina_List *engines_list;
   Eina_List *l; // list element
- 
+
+  printf ("supported engines:\n"); 
   engines_list = ecore_evas_engines_get ();
   for (l = engines_list; l; l = eina_list_next(l))
   {
     const char *engine = (const char*) l->data;
     
-    printf ("%s : supported\n", engine);
+    printf ("\t%s\n", engine);
   }
 }
 
