@@ -62,6 +62,11 @@ void ElmProgressbar::setUnitFormat (const std::string &format)
   elm_progressbar_unit_format_set (o, format.c_str ());
 }
 
+void ElmProgressbar::hideUnitFormat ()
+{
+  elm_progressbar_unit_format_set (o, NULL);
+}
+
 void ElmProgressbar::setValue (double val)
 {
   elm_progressbar_value_set (o, val);

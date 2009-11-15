@@ -35,7 +35,26 @@ public:
   void setInverted (bool inverted);
   void setPulse (bool pulse);
   void pulse (bool state);
+  
+  /*!
+   * Set the format string of the unit area
+   *
+   * Sets the format string for the unit text. The unit text is provided a 
+   * floating point value, so the unit text can display up to 1 floating point 
+   * falue. Note that this is optional. Use a format string such as 
+   * "%1.2f meters" for example.
+   *
+   * @param format The format string for the units display
+   *
+   * @ingroup Progressbar
+   */
   void setUnitFormat (const std::string &format);
+  
+  /*
+   * Hide the unit area display
+   */
+  void hideUnitFormat ();
+  
   void setValue (double val);
   double getValue ();
 };
