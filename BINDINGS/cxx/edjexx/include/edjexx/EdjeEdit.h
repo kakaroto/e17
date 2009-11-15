@@ -123,90 +123,99 @@ edje_edit_string_free(
   /** @name Groups API
  *  Functions to deal with groups property (see @ref edcref).
  */ //@{
-
-  #if 0
   
-/**Create a new empty group in the given edje.
- * If a group with the same name exist none is created.
- */
-EAPI Eina_Bool         ///@return 1 on success, 0 on failure
-edje_edit_group_add(
-   Evas_Object *obj,       ///< The edje object
-   const char  *name       ///< The name for the new empty group
-);
+  /*!
+   * Create a new empty group in the given edje.
+   * If a group with the same name exist none is created.
+   *
+   * @param name The name for the new empty group
+   * @return true on success, false on failure
+   */
+  bool addGroup (const std::string &name);
+ 
+  /*!
+   * Delete the current group from the given edje.
+   * You can only delete the currently loaded group.
+   * All the parts and the programs inside the group will be deleted as well,
+   * but not image or font embedded in the edje.
+   *
+   * @return true on success, false on failure
+   */
+  bool delGroup ();
 
-/**Delete the current group from the given edje.
- * You can only delete the currently loaded group.
- * All the parts and the programs inside the group will be deleted as well,
- * but not image or font embedded in the edje.
- */
-EAPI Eina_Bool         ///@return 1 on success, 0 on failure
-edje_edit_group_del(
-   Evas_Object *obj        ///< The edje object
-);
+  /*!
+   * Check if a group with the given name exist in the edje.
+   *
+   * @return true on success, false on failure
+   */
+  bool hasGroup (const std::string &group);
 
-/**Check if a group with the given name exist in the edje.
- */
-EAPI Eina_Bool         ///< 1 if the group exist, 0 otherwise.
-edje_edit_group_exist(
-   Evas_Object *obj,       ///< The edje object
-   const char *group       ///< The name of the group
-);
+  /*!
+   * Set a new name for the current open group.
+   * You can only rename a group that is currently loaded
+   * Note that the relative getter function don't exist as it don't make sense ;)
+   *
+   * @return true on success, false on failure
+   */
+  bool setGroupName (const std::string &newName);
 
-/**Set a new name for the current open group.
- * You can only rename a group that is currently loaded
- * Note that the relative getter function don't exist as it don't make sense ;)
- */
-EAPI Eina_Bool         ///@return 1 on success, 0 on failure
-edje_edit_group_name_set(
-   Evas_Object *obj,       ///< The edje object
-   const char  *new_name   ///< The new name for the group
-);
-/**Get the group min width*/
-EAPI int                  ///@return The minw value or -1 on errors
-edje_edit_group_min_w_get(
-   Evas_Object *obj       ///< The edje object
-);
-/**Set the group min width*/
-EAPI void
-edje_edit_group_min_w_set(
-   Evas_Object *obj,       ///< The edje object
-   int w                   ///< The new group minimum width in pixel
-);
-/**Get the group min height*/
-EAPI int                  ///@return The minh value or -1 on errors
-edje_edit_group_min_h_get(
-   Evas_Object *obj       ///< The edje object
-);
-/**Set the group min height*/
-EAPI void
-edje_edit_group_min_h_set(
-   Evas_Object *obj,       ///< The edje object
-   int h                   ///< The new group minimum height in pixel
-);
-/**Get the group max width*/
-EAPI int                  ///@return The maxw value or -1 on errors
-edje_edit_group_max_w_get(
-   Evas_Object *obj       ///< The edje object
-);
-/**Set the group max width*/
-EAPI void
-edje_edit_group_max_w_set(
-   Evas_Object *obj,       ///< The edje object
-   int w                   ///< The new group maximum width in pixel
-);
-/**Get the group max height*/
-EAPI int                  ///@return The maxh value or -1 on errors
-edje_edit_group_max_h_get(
-   Evas_Object *obj       ///< The edje object
-);
-/**Set the group max height*/
-EAPI void
-edje_edit_group_max_h_set(
-   Evas_Object *obj,       ///< The edje object
-   int h                   ///< The new group maximum height in pixel
-);
+  /*!
+   * Get the group min width
+   *
+   * @return min width on success, -1 on errors
+   */
+  int getGroupMinWidth ();
 
+  /*!
+   * Set the group min width
+   *
+   * @param width The new group min width in pixel
+   */
+  void setGroupMinWidth (int width);
+
+  /*!
+   * Get the group min height
+   *
+   * @return min width on success, -1 on errors
+   */
+  int getGroupMinHeight ();
+
+  /*!
+   * Set the group min height
+   *
+   * @param height The new group min height in pixel
+   */
+  void setGroupMinHeight (int height);
+
+  /*!
+   * Get the group max width
+   *
+   * @return max width on success, -1 on errors
+   */
+  int getGroupMaxWidth ();
+
+  /*!
+   * Set the group max width
+   *
+   * @param width The new group max width in pixel
+   */
+  void setGroupMaxWidth (int width);
+
+  /*!
+   * Get the group max height
+   *
+   * @return max height on success, -1 on errors
+   */
+  int getGroupMaxHeight ();
+
+  /*!
+   * Set the group max height
+   *
+   * @param height The new group max height in pixel
+   */
+  void setGroupMaxHeight (int height);
+
+#if 0
 //@}
 /******************************************************************************/
 /**************************   DATA API   **************************************/
