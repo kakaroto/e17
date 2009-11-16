@@ -919,12 +919,11 @@ AddToFamily(EWin * ewin, Window xwin, int startup)
 	ewin->state.placed = 1;
 	x = Mode.events.cx + 1;
 	y = Mode.events.cy + 1;
-	EwinMoveToDesktopAt(ewin, dsk, x, y);
-	EwinMove(ewin, x, y);
-	EwinShow(ewin);
 	GrabPointerSet(VROOT, ECSR_GRAB, 0);
-	Mode.place.doing_manual = 1;
 	EoSetFloating(ewin, 1);	/* Causes reparenting to root */
+	EwinOpFloatAt(ewin, OPSRC_USER, x, y);
+	EwinShow(ewin);
+	Mode.place.doing_manual = 1;
 	ActionMoveStart(ewin, 0, 0, 0);
 	goto done;
      }

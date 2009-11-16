@@ -96,11 +96,6 @@ ActionMoveStart(EWin * ewin, int kbd, int constrained, int nogroup)
 
    SoundPlay(SOUND_MOVE_START);
 
-   if (kbd)
-      GrabKeyboardSet(EoGetWin(ewin));
-   else
-      GrabPointerSet(EoGetWin(ewin), ECSR_ACT_MOVE, 1);
-
    Mode.mode = MODE_MOVE_PENDING;
    Mode.constrained = constrained;
 
@@ -132,6 +127,11 @@ ActionMoveStart(EWin * ewin, int kbd, int constrained, int nogroup)
 	  }
      }
    Efree(gwins);
+
+   if (kbd)
+      GrabKeyboardSet(EoGetWin(ewin));
+   else
+      GrabPointerSet(EoGetWin(ewin), ECSR_ACT_MOVE, 1);
 
    Mode_mr.swapcoord_x = EoGetX(ewin);
    Mode_mr.swapcoord_y = EoGetY(ewin);
@@ -653,6 +653,7 @@ ActionMoveHandleMotion(void)
 		  ewin1->shape_y += EoGetY(dsk);
 		  ewin1->req_x += EoGetX(dsk);
 		  ewin1->req_y += EoGetY(dsk);
+		  GrabPointerSet(EoGetWin(ewin), ECSR_ACT_MOVE, 1);
 	       }
 	  }
 
