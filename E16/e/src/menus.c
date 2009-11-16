@@ -344,7 +344,6 @@ MenuShow(Menu * m, char noshow)
 
 	ewin->head = head_num;
 
-	EwinMoveToDesktop(ewin, EoGetDesk(ewin));
 	EwinResize(ewin, ewin->client.w, ewin->client.h);
 
 	if (Conf.menus.animate)

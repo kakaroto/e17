@@ -448,8 +448,6 @@ DialogShowArranged(Dialog * d, int center)
    ewin->client.event_mask |= KeyPressMask;
    ESelectInput(d->win, ewin->client.event_mask);
 
-   EwinMoveToDesktop(ewin, EoGetDesk(ewin));
-
    if (ewin->state.placed)
      {
 	EwinMoveResize(ewin, EoGetX(ewin), EoGetY(ewin), d->w, d->h);

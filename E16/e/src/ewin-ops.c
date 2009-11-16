@@ -182,38 +182,38 @@ doEwinMoveResize(EWin * ewin, Desk * dsk, int x, int y, int w, int h, int flags)
    reparent = move = resize = raise = 0;
    floating = EoIsFloating(ewin);
 
-   if (flags & (MRF_DESK | MRF_FLOAT | MRF_UNFLOAT))
+   if (flags & MRF_FLOAT)
      {
-	if (flags & MRF_FLOAT)
+	if (floating == 0)
 	  {
-	     if (EoIsFloating(ewin) == 0)
-	       {
-		  dsk = (pdesk == NULL) ? EoGetDesk(ewin) : pdesk;
-		  floating = 1;
-	       }
-	     else if (EoIsFloating(ewin) == 1)
-	       {
-		  dsk = DeskGet(0);
-		  floating = 2;
-	       }
-	     flags |= MRF_RAISE;
+	     dsk = (pdesk == NULL) ? EoGetDesk(ewin) : pdesk;
+	     floating = 1;
 	  }
-	else if (flags & MRF_UNFLOAT)
+	else if (floating == 1)
 	  {
-	     floating = 0;
-	     flags |= MRF_RAISE;
+	     dsk = DeskGet(0);
+	     floating = 2;
 	  }
-	else
-	  {
-	     if (EoIsSticky(ewin) && !EoIsFloating(ewin))
-		dsk = DesksGetCurrent();
-	  }
-	if (dsk != pdesk)
-	   reparent = 1;
+	flags |= MRF_RAISE;
      }
-   else
+   else if (flags & MRF_UNFLOAT)
+     {
+	floating = 0;
+	flags |= MRF_RAISE;
+     }
+   else if (EoIsSticky(ewin) && !floating)
+     {
+	dsk = DesksGetCurrent();
+     }
+   else if (!dsk)
      {
 	dsk = EoGetDesk(ewin);
+     }
+
+   if (dsk != pdesk)
+     {
+	reparent = 1;
+	flags |= MRF_DESK;
      }
 
    if (Mode.mode == MODE_NONE && Mode.move.check)
@@ -331,9 +331,15 @@ doEwinMoveResize(EWin * ewin, Desk * dsk, int x, int y, int w, int h, int flags)
       ModulesSignal(ESIGNAL_EWIN_CHANGE, ewin);
 
    if (reparent)
-      EoReparent(ewin, EoObj(dsk), x, y);
+     {
+	EoReparent(ewin, EoObj(dsk), x, y);
+	if (flags & MRF_RESIZE)
+	   EoResize(ewin, w, h);
+     }
    else
-      EoMoveResize(ewin, x, y, w, h);
+     {
+	EoMoveResize(ewin, x, y, w, h);
+     }
 
    configure = 0;
    if (Mode.mode == MODE_NONE || resize || Conf.movres.update_while_moving)

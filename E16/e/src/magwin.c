@@ -425,7 +425,6 @@ MagwinCreate(const char *title, int width, int height)
 
    mw->ewin->o.ghost = 1;
    EoSetLayer(mw->ewin, 10);
-   EwinMoveToDesktop(mw->ewin, EoGetDesk(mw->ewin));
    EwinMoveResize(mw->ewin, EoGetX(mw->ewin), EoGetY(mw->ewin), w, h);
 
    mw->ewin->client.event_mask |=

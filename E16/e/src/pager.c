@@ -692,7 +692,6 @@ static void
 PagerShow(Pager * p)
 {
    EWin               *ewin;
-   int                 w, h;
 
    if (!Conf_pagers.enable)
       return;
@@ -719,25 +718,23 @@ PagerShow(Pager * p)
       EnterWindowMask | LeaveWindowMask | PointerMotionMask;
    ESelectInput(p->win, ewin->client.event_mask);
 
-   w = ewin->client.w;
-   h = ewin->client.h;
-
-   EwinMoveToDesktop(ewin, EoGetDesk(ewin));
    if (ewin->state.placed)
      {
-	EwinMoveResize(ewin, EoGetX(ewin), EoGetY(ewin), w, h);
+	EwinMoveResize(ewin, EoGetX(ewin), EoGetY(ewin),
+		       ewin->client.w, ewin->client.h);
      }
    else
      {
 	/* no snapshots ? first time ? make a row on the bottom left up */
-	int                 ax, ay;
+	int                 ax, ay, x, y, w, h;
 
 	DesksGetAreaSize(&ax, &ay);
 	w = ((48 * WinGetW(VROOT)) / WinGetH(VROOT)) * ax;
 	h = 48 * ay;
 	EwinResize(ewin, w, h);	/* Does layout */
-	EwinMove(ewin, 0, WinGetH(VROOT) -
-		 (DesksGetNumber() - p->dsk->num) * EoGetH(ewin));
+	x = 0;
+	y = WinGetH(VROOT) - (DesksGetNumber() - p->dsk->num) * EoGetH(ewin);
+	EwinMove(ewin, x, y);
      }
 
    EwinShow(ewin);

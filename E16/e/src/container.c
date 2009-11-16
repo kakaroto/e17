@@ -289,14 +289,12 @@ ContainerShow(Container * ct)
 
    if (ewin->state.placed)
      {
-	EwinMoveToDesktop(ewin, EoGetDesk(ewin));
-	EwinMoveResize(ewin, EoGetX(ewin), EoGetY(ewin), ewin->client.w,
-		       ewin->client.h);
+	EwinMoveResize(ewin, EoGetX(ewin), EoGetY(ewin),
+		       ewin->client.w, ewin->client.h);
      }
    else
      {
 	/* The first one */
-	EwinMoveToDesktop(ewin, EoGetDesk(ewin));
 	EwinResize(ewin, 128, 32);
 	EwinMove(ewin, WinGetW(VROOT) - EoGetW(ewin),
 		 WinGetH(VROOT) - EoGetH(ewin));
