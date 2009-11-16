@@ -1349,10 +1349,6 @@ DeskRestackSimple(Desk * dsk)
    unsigned int        value_mask;
 
    eo = dsk->stack.latest;
-   eo->stacked = 1;
-
-   if (EDebug(EDBUG_TYPE_STACKING))
-      Eprintf("DeskRestackSimple %#lx %s\n", EobjGetXwin(eo), EobjGetName(eo));
 
    lst = EobjListStackGetForDesk(&num, dsk);
    if (num < 2)
@@ -1363,6 +1359,11 @@ DeskRestackSimple(Desk * dsk)
 	 break;
    if (i >= num)
       return;
+
+   eo->stacked = 1;
+
+   if (EDebug(EDBUG_TYPE_STACKING))
+      Eprintf("DeskRestackSimple %#lx %s\n", EobjGetXwin(eo), EobjGetName(eo));
 
    if (i < num - 1)
      {
