@@ -117,7 +117,7 @@ class Editje(elementary.Window):
 
         try:
             self.e.group = group
-        except edje.c_edje.EdjeLoadError as e:
+        except edje.c_edje.EdjeLoadError:
             print "Could not open edje file: %s(%s)" % (file, group)
             sys.exit(1)
 
