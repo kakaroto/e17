@@ -320,6 +320,7 @@ FillFlatFileMenu(Menu * m, const char *file)
 	     Menu               *mm;
 
 	     txt = icon = act = params = NULL;
+	     wd[0] = '\0';
 	     parse(s, "%S%T%S%S", &txt, &icon, &act, &params);
 
 	     if (icon && (icon = find_icon(icon)))
