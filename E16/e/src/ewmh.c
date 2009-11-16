@@ -665,6 +665,8 @@ EWMH_GetWindowStartupId(EWin * ewin)
       ecore_x_netwm_startup_id_get(ewin->icccm.group, &str);
    if (str && EDebug(1))
       Eprintf("Startup id: %s: %s\n", EwinGetTitle(ewin), str);
+
+   Efree(str);			/* Well... just free for now */
 }
 
 static void
