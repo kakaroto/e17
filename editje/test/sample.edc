@@ -19,10 +19,13 @@ collections {
                   offset: -1 -1;
                }
             }
-            description { state: "@animation@0.0" 0.0;
+            description { state: "@anim1@0.00" 0.0;
                inherit: "default" 0.0;
             }
-            description { state: "@animation@0.8" 0.0;
+            description { state: "@anim1@0.50" 0.0;
+               inherit: "default" 0.0;
+            }
+            description { state: "@anim1@0.80" 0.0;
                inherit: "default" 0.0;
                color: 0 0 0 128;
             }
@@ -38,6 +41,18 @@ collections {
                visible: 1;
                rel1 {
                   to: "bg";
+               }
+               rel2 {
+                  to: "bg";
+                  relative: 0.5 1.0;
+               }
+            }
+            description {
+               state: "default" 0.1;
+               color: 0 0 255 255;
+               visible: 1;
+               rel1 {
+                  to: "bg";
                   relative: 0.3 0.3;
                }
                rel2 {
@@ -45,16 +60,16 @@ collections {
                   relative: 0.4 0.4;
                }
             }
-            description { state: "@animation@0.0" 0.0;
-               inherit: "default" 0.0;
+            description { state: "@anim1@0.00" 0.0;
+               inherit: "default" 0.1;
             }
-            description { state: "@animation@0.5" 0.0;
-               inherit: "default" 0.0;
+            description { state: "@anim1@0.50" 0.0;
+               inherit: "default" 0.1;
                rel1.relative: 0.6 0.6;
                rel2.relative: 0.7 0.7;
             }
-            description { state: "@animation@0.8" 0.0;
-               inherit: "default" 0.0;
+            description { state: "@anim1@0.80" 0.0;
+               inherit: "default" 0.1;
                rel1.relative: 0.0 0.8;
                rel2.relative: 0.2 1.0;
             }
@@ -70,6 +85,18 @@ collections {
                visible: 1;
                rel1 {
                   to: "bg";
+                  relative: 0.5 0.0;
+               }
+               rel2 {
+                  to: "bg";
+               }
+            }
+            description {
+               state: "default" 0.1;
+               color: 255 0 0 255;
+               visible: 1;
+               rel1 {
+                  to: "bg";
                   relative: 0.4 0.3;
                }
                rel2 {
@@ -77,67 +104,73 @@ collections {
                   relative: 0.5 0.4;
                }
             }
-            description { state: "@animation@0.0" 0.0;
-               inherit: "default" 0.0;
+            description { state: "@anim1@0.00" 0.0;
+               inherit: "default" 0.1;
             }
-            description { state: "@animation@0.5" 0.0;
-               inherit: "default" 0.0;
+            description { state: "@anim1@0.50" 0.0;
+               inherit: "default" 0.1;
                rel1.relative: 0.7 0.6;
                rel2.relative: 0.8 0.7;
             }
-            description { state: "@animation@0.8" 0.0;
-               inherit: "default" 0.0;
+            description { state: "@anim1@0.80" 0.0;
+               inherit: "default" 0.1;
                rel1.relative: 0.8 0.2;
                rel2.relative: 1.0 0.4;
             }
          }
 
          programs {
-            program { name: "@animation@start";
-               action: STATE_SET "@animation@0.0" 0.0;
+            program { name: "@anim1@0.00";
+               action: STATE_SET "@anim1@0.00" 0.0;
+
+               signal: "animation,play";
+               source: "anim1";
+
                target: "bg";
                target: "rect1";
                target: "rect2";
-               after: "@animation@0.0";
+
+               after: "@anim1@0.50";
             }
-            program { name: "@animation@0.0";
-               action: STATE_SET "@animation@0.5" 0.0;
-               transition: LINEAR 0.5;
+            program { name: "@anim1@0.50";
+               action: STATE_SET "@anim1@0.50" 0.0;
+               transition: LINEAR 0.50;
+
+               target: "bg";
                target: "rect1";
                target: "rect2";
-               after: "@animation@0.5";
+
+               after: "@anim1@0.80";
             }
-            program { name: "@animation@0.5";
-               action: STATE_SET "@animation@0.8" 0.0;
-               transition: LINEAR 0.3;
+            program { name: "@anim1@0.80";
+               action: STATE_SET "@anim1@0.80" 0.0;
+               transition: LINEAR 0.30;
+
+               target: "bg";
                target: "rect1";
                target: "rect2";
-               after: "@animation@end";
+
+               after: "@anim1@end";
             }
-            program { name: "@animation@end";
-               action: SIGNAL_EMIT "animation,end" "animation";
+            program { name: "@anim1@end";
+               action: SIGNAL_EMIT "animation,end" "anim1";
             }
-            program { name: "@animation@play";
-               signal: "animation,play";
-               source: "animation";
-               action: SIGNAL_EMIT "animation,start" "animation";
-               after: "@animation@start";
-            }
-            program { name: "@animation@stop";
-               signal: "animation,stop";
-               source: "animation";
+            program { name: "@anim1@stop";
                action: ACTION_STOP;
-               target: "@animation@start";
-               target: "@animation@play";
-               target: "@animation@end";
-               target: "@animation@0.0";
-               target: "@animation@0.5";
+
+               signal: "animation,stop";
+               source: "anim1";
+
+               target: "@anim1@0.00";
+               target: "@anim1@0.50";
+               target: "@anim1@0.80";
+               target: "@anim1@end";
             }
-            program { name: "anim1";
+            program { name: "anim";
                signal: "mouse,clicked,1";
                source: "rect1";
-               after: "@animation@play";
-         }
+               after: "@anim1@0.00";
+            }
             program { name: "sig1";
                signal: "mouse,clicked,1";
                source: "rect2";

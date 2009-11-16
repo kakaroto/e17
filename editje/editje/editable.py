@@ -212,47 +212,49 @@ class Editable(Manager, object):
     def _animations_reload_cb(self, emissor, data):
         self._animations = map(lambda x: x[1:x.rindex("@")],
                                filter(lambda x: x.startswith("@") and
-                                                x.endswith("@start"),
+                                                x.endswith("@end"),
                                self.programs))
         self.event_emit("animations.changed", self.animations)
 
-    def animation_add(self, name, duration):
+    def animation_add(self, name):
         if not name in self._animations:
             self._modificated = True
-            self._animations.append(name)
-            self.program_add("@%s@play" % name)
-            prog = self.program_get("@%s@play" % name)
+
+            # END
+            endname = "@%s@end" % name
+            self.program_add(endname)
+            prog = self.program_get(endname)
+            prog.signal_emit("animation,end", name)
+
+            # START
+            startname = "@%s@0.00" % name
+            self.program_add(startname)
+            prog = self.program_get(startname)
+            prog.state_set(startname)
             prog.signal = "animation,play"
             prog.source = name
-            prog.signal_emit("animation,start", name)
-            prog.after_add("@%s@start" % name)
-            self.program_add("@%s@start" % name)
-            self.program_add("@%s@0.0" % name)
-            self.program_add("@%s@end" % name)
-            self.program_add("@%s@stop" % name)
-            prog = self.program_get("@%s@start" % name)
-            prog.after_add("@%s@0.0" % name)
-            prog.state_set("@%s@0.0" % name)
-            for p in self._edje.parts:
-                prog.target_add(p)
-            prog = self.program_get("@%s@0.0" % name)
             prog.after_add("@%s@end" % name)
-            prog.state_set("@%s@%.1f" % (name, duration))
-            prog.transition = edje.EDJE_TWEEN_MODE_LINEAR
-            prog.transition_time = duration
-            for p in self._edje.parts:
+
+            prevstatename =  "default 0.00"
+            statename = startname + " 0.00"
+            for p in self.parts:
                 prog.target_add(p)
-            prog = self.program_get("@%s@end" % name)
-            prog.signal_emit("animation,end", name)
-            prog = self.program_get("@%s@stop" % name)
+                part = self._edje.part_get(p)
+                part.state_add(startname)
+                state = part.state_get(statename)
+                state.copy_from(prevstatename)
+
+            # STOP
+            stopname = "@%s@stop" % name
+            self.program_add(stopname)
+            prog = self.program_get(stopname)
             prog.action = edje.EDJE_ACTION_TYPE_ACTION_STOP
             prog.signal = "animation,stop"
             prog.source = name
-            prog.target_add("@%s@start" % name)
-            prog.target_add("@%s@play" % name)
-            prog.target_add("@%s@end" % name)
-            prog.target_add("@%s@0.0" % name)
-            # need generate the time 0.0
+            prog.target_add(startname)
+            prog.target_add(endname)
+
+            self._animations.append(name)
             self.event_emit("animation.added", name)
 
     def animation_del(self, name):
@@ -260,10 +262,11 @@ class Editable(Manager, object):
             self._modificated = True
             anim = EditableAnimation(self)
             anim.name = name
-            for time in anim.timestamps:
+            for time in anim.timestops:
                 self.program_del("@%s@%.1f" % (name, time))
-                for p in self._edje.parts:
-                    p.state_del("@%s@%.1f" % (name, time))
+                for p in self.parts:
+                    part = self._edje.part_get(p)
+                    part.state_del("@%s@%.1f" % (name, time))
             self.program_del("@%s@start" % name)
             self.program_del("@%s@end" % name)
         self._animations.pop(self._animations.index(name))

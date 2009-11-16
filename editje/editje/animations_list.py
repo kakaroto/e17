@@ -53,7 +53,7 @@ class AnimationsList(CList):
         self.select(data)
 
     def _animation_removed(self, emissor, data):
-        self.remove(data)
+        self.view.remove(data)
 
     def _animation_changed(self, emissor, data):
         if data != self._selected:
@@ -88,7 +88,10 @@ class AnimationsList(CList):
         pop.show()
 
     def remove(self):
-        pass
+        if self._selected:
+            anim = self._selected
+            self.select("")
+            self.e.animation_del(anim)
 
 
 class AnimationsListView(CListView):

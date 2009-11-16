@@ -41,7 +41,7 @@ class NewAnimationPopUp(Floater):
         bx2 = elementary.Box(parent)
         bx2.horizontal_set(True)
         bx2.size_hint_weight_set(1.0, 0.0)
-        bx2.size_hint_align_set(-1.0, 0.0)
+        bx2.size_hint_align_set(-1.0, -1.0)
 
         lb = elementary.Label(parent)
         lb.size_hint_weight_set(0.0, 1.0)
@@ -60,17 +60,6 @@ class NewAnimationPopUp(Floater):
 
         box.pack_end(bx2)
         bx2.show()
-
-        self.duration = elementary.Spinner(parent)
-        self.duration.label_format_set("%.1fs")
-        self.duration.min_max_set(0, 10)
-        self.duration.step_set(0.1)
-        self.duration.wrap_set(False)
-        self.duration.size_hint_weight_set(1.0, 0.0)
-        self.duration.size_hint_align_set(-1.0, 0.0)
-        box.pack_end(self.duration)
-        self.duration.show()
-
         self.content_set(box)
         box.show()
 
@@ -81,7 +70,7 @@ class NewAnimationPopUp(Floater):
         name = self.name_entry.entry_get().replace("<br>", "")
         if name == "":
             return
-        self._parent.e.animation_add(name, self.duration.value_get())
+        self._parent.e.animation_add(name)
         self.close()
 
     def _cancel(self, popup, data):
@@ -150,9 +139,6 @@ class AnimationDetails(EditjeDetails):
 
         self._parent.main_edje.signal_callback_add("timestop", "*",
                                                    self._timeline_cb)
-
-    def editable_set(self, editable):
-        self.e = editable
         self.e.animation.event_callback_add("animation.changed", self._update)
         self.e.animation.event_callback_add("state.added", self._timestop_add)
         self.e.animation.event_callback_add("state.changed", self._update_states)
@@ -160,11 +146,13 @@ class AnimationDetails(EditjeDetails):
     def _update(self, emissor, data):
         self._header_table["name"].value = data
         self._header_table["length"].value = "%.1gs" % self.e.animation.length
+        self._last_timestamp = 0.0
         self._timeline_update()
+        self.e.animation.state = 0.0
 
     def _timeline_cb(self, obj, emission, source):
         t = float(source)
-        if not t in self.e.animation.timestamps:
+        if not t in self.e.animation.timestops:
             self.e.animation.state_add(t)
         self.e.animation.state = t
 
@@ -173,7 +161,7 @@ class AnimationDetails(EditjeDetails):
             sig = "ts,%.1g," % (i/10.0)
             self._parent.main_edje.signal_emit(sig + "disable", "editje")
             self._parent.main_edje.signal_emit(sig + "unselected", "editje")
-        for s in self.e.animation.timestamps:
+        for s in self.e.animation.timestops:
             sig = "ts,%.1g,enable" % s
             self._parent.main_edje.signal_emit(sig, "editje")
 
@@ -183,30 +171,29 @@ class AnimationDetails(EditjeDetails):
 
     def _update_states(self, emissor, data):
         step = self.e.animation.state
-        self["main"]["current"].value = str(step.timestamp)
+        self["main"]["current"].value = str(step)
         prev = self.e.animation.state_prev()
         if prev is None:
+            prev = 0.0
             self["main"]["previous"].value = "None"
         else:
-            self["main"]["previous"].value = str(prev.timestamp)
+            self["main"]["previous"].value = str(prev)
         next = self.e.animation.state_next()
         if next is None:
             self["main"]["next"].value = "None"
         else:
-            self["main"]["next"].value = str(next.timestamp)
+            self["main"]["next"].value = str(next)
 
         t = self._transitions[self.e.animation.program.transition]
-        self["main"]["transition"].value = (t, str(step.length))
+        self["main"]["transition"].value = (t, str(step - prev))
 
-        sig = "ts,%.1g,selected" % self.e.animation.state.timestamp
+        sig = "ts,%.1g,selected" % self.e.animation.state
         self._parent.main_edje.signal_emit(sig, "editje")
-        if hasattr(self, "_last_timestamp"):
-            sig = "ts,%.1g,unselected" % self._last_timestamp
+        sig = "ts,%.1g,unselected" % self._last_timestamp
         self._parent.main_edje.signal_emit(sig, "editje")
-        self._last_timestamp = self.e.animation.state.timestamp
+        self._last_timestamp = self.e.animation.state
 
     def prop_value_changed(self, prop, value, group):
         if prop == "transition":
             t = self["main"]["transition"]["type"]
-            p = self.e.program_get(self.e.animation.state.program_name)
-            p.transition = self._transitions.index(t)
+            self.e.animation.program.transition = self._transitions.index(t)

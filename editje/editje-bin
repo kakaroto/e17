@@ -311,6 +311,7 @@ class Editje(elementary.Window):
             else:
                 self.anim_state_details._hide_all()
         else:
+            self.e.animation.name = None
             self.main_edje.signal_emit("mode,anim,off", "editje")
 
         if data == "Parts":
@@ -445,7 +446,6 @@ class Editje(elementary.Window):
 
         self.anim_details = animations.AnimationDetails(self)
         self.anim_details.open()
-        self.anim_details.editable_set(self.e)   #HACK
         box.pack_end(self.anim_details)
         self.anim_details.show()
 
