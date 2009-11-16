@@ -1,0 +1,302 @@
+/*
+ * Copyright (C) 2009 Samsung Electronics.
+ *
+ * This file is part of Editje.
+ *
+ * Editje is free software: you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * Editje is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with Editje.  If not, see
+ * <http://www.gnu.org/licenses/>.
+ */
+images {
+   image: "ico_opened.png" COMP;
+   image: "ico_closed.png" COMP;
+}
+
+
+collections {
+   group { name: "editje/collapsable/list/default";
+      parts {
+         part { name: "clipper";
+            mouse_events: 0;
+             type: "RECT";
+            description { state: "hidden" 0.0;
+               visible: 0;
+               color: 255 255 255 0;
+               rel1.to: "header.bg";
+               rel2.to: "header.bg";
+            }
+            description { state: "visible" 0.0;
+               visible: 1;
+               color: 255 255 255 255;
+               rel1.to: "header.bg";
+            }
+         }
+         part { name: "content.bg";
+            mouse_events: 0;
+            clip_to: "clipper";
+             type: "RECT";
+             description { state: "default" 0.0;
+                color: 255 255 255 255;
+                rel1 {
+                    relative: 0.0 1.0;
+                    to: "options.bg";
+                }
+             }
+         }
+         part { name: "content";
+            type: SWALLOW;
+            mouse_events: 1;
+            clip_to: "clipper";
+            description { state: "default" 0.0;
+               color: 255 255 255 255;
+               rel1.to: "content.bg";
+               rel2.to: "content.bg";
+            }
+         }
+
+         part { name: "options.clipper";
+            mouse_events: 0;
+            type: RECT;
+            clip_to: "clipper";
+            description { state: "disabled" 0.0;
+               visible: 0;
+               color: 0 0 0 0;
+               rel1.to: "header.bg";
+               rel2.to: "header.bg";
+            }
+            description { state: "enabled" 0.0;
+               color: 255 255 255 255;
+               visible: 1;
+               rel1.to: "clipper";
+               rel2.to: "header.bg";
+               rel2.relative: 1.0 1.8;
+            }
+         }
+
+         part { name: "options.bg";
+            mouse_events: 0;
+            type: RECT;
+            clip_to: "options.clipper";
+            description { state: "hidden" 0.0;
+               visible: 0;
+               color: 163 163 163 255;
+               rel1.to: "header.bg";
+               rel2.to: "header.bg";
+            }
+            description { state: "visible" 0.0;
+               inherit: "default" 0.0;
+               visible: 1;
+               rel1.to: "options.clipper";
+               rel2.to: "options.clipper";
+            }
+         }
+         part { name: "options";
+            type: SWALLOW;
+            clip_to: "options.clipper";
+            description { state: "default" 0.0;
+               color: 255 255 255 255;
+               rel1.to: "header.bg";
+               rel1.relative: 0.0 1.0;
+               rel2.to: "options.bg";
+            }
+         }
+
+//         SHADOW_LINEAR_BOTTOM("header.bg", 5)
+
+         part { name: "header.bg";
+            type: GRADIENT;
+            mouse_events: 0;
+            description { state: "default" 0.0;
+               gradient.spectrum: "bg";
+               rel2 {
+                  relative: 1.0 0.0;
+                  offset: -1 20;
+               }
+            }
+         }
+         part { name: "header.title";
+            type: TEXT;
+            mouse_events: 0;
+            description {
+               state: "default" 0.0;
+               align: 0.5 0.5;
+               color_class: "default_label";
+               text {
+                  text: "title";
+                  font: "Sans:style=Bold";
+                  size: 10;
+                  align: 0.5 0.5;
+               }
+               rel1.to: "header.bg";
+               rel2.to: "header.bg";
+            }
+         }
+         part { name: "open.bt";
+            type: IMAGE;
+            description { state: "closed" 0.0;
+               visible: 1;
+               aspect: 1.0 1.0;
+               aspect_preference: VERTICAL;
+               align: 0.5 0.5;
+               rel1 {
+                  relative: 0.0 0.0;
+                  offset: 3 5;
+                  to: "header.bg";
+               }
+               rel2 {
+                  relative: 0.0 1.0;
+                  offset: 20 -6;
+                  to: "header.bg";
+               }
+               image.normal: "ico_closed.png";
+            }
+            description { state: "opened" 0.0;
+               inherit: "default" 0.0;
+               visible: 0;
+            }
+         }
+         part { name: "close.bt";
+            type: IMAGE;
+            description { state: "closed" 0.0;
+               visible: 0;
+               aspect: 1.0 1.0;
+               aspect_preference: VERTICAL;
+               align: 0.5 0.5;
+               rel1 {
+                  relative: 0.0 0.0;
+                  offset: 3 5;
+                  to: "header.bg";
+               }
+               rel2 {
+                  relative: 0.0 1.0;
+                  offset: 20 -6;
+                  to: "header.bg";
+               }
+               image.normal: "ico_opened.png";
+            }
+            description { state: "opened" 0.0;
+               inherit: "default" 0.0;
+               visible: 1;
+            }
+         }
+
+         programs {
+            program { name: "option.enable";
+               signal: "options.enable";
+               action: STATE_SET "enabled" 0.0;
+               target: "options.clipper";
+            }
+            program { name: "option.disable";
+               signal: "options.disable";
+               action: STATE_SET "disabled" 0.0;
+               target: "options.clipper";
+            }
+            program { name: "open.bt";
+               signal: "mouse,clicked,1";
+               source: "open.bt";
+               after: "open";
+            }
+            program { name: "open";
+               signal: "open";
+               action: STATE_SET "opened" 0.0;
+               target: "open.bt";
+               target: "close.bt";
+               after: "open.visible";
+            }
+            program { name: "open.visible";
+               action: STATE_SET "visible" 0.0;
+               transition: LINEAR 0.1;
+               target: "clipper";
+               target: "options.bg";
+               target: "content.bg";
+               after: "opened";
+            }
+            program { name: "opened";
+               action: SIGNAL_EMIT "opened" "editje/collapsable/list";
+            }
+            program { name: "close.bt";
+               signal: "mouse,clicked,1";
+               source: "close.bt";
+               after: "close";
+            }
+            program { name: "close";
+               signal: "close";
+               action: STATE_SET "closed" 0.0;
+               target: "open.bt";
+               target: "close.bt";
+               after: "close.visible";
+            }
+            program { name: "close.visible";
+               action: STATE_SET "hidden" 0.0;
+               transition: LINEAR 0.1;
+               target: "clipper";
+               target: "options.bg";
+               target: "content.bg";
+               after: "opened";
+            }
+            program { name: "closed";
+               action: SIGNAL_EMIT "closed" "editje/collapsable/list";
+            }
+         }
+      }
+   }
+
+#define LIST_BUTTON(name_, x1_, x2_) \
+         part { name: name_".bt"; \
+            type: RECT; \
+            mouse_events: 1; \
+            description { state: "default" 0.0; \
+               color: 0 0 0 0; \
+               rel1.relative: x1_ 0.1; \
+               rel2.relative: x2_ 0.9; \
+            } \
+         } \
+         programs { \
+            program { name: name_".action"; \
+               signal: "mouse,clicked,1"; \
+               source: name_".bt"; \
+               action: SIGNAL_EMIT name_ "editje/collapsable/list/options"; \
+            } \
+         } \
+         part { name: name_".icon"; \
+            type: GROUP; \
+            mouse_events: 0; \
+            source: "editje/icon/"name_; \
+            description { state: "default" 0.0; \
+               visible: 1; \
+               rel1.to: name_".bt"; \
+               rel2.to: name_".bt"; \
+            } \
+         }
+
+   group { name: "editje/collapsable/list/options/parts";
+      parts {
+         LIST_BUTTON("new", 0.05, 0.2)
+         LIST_BUTTON("up", 0.30, 0.45)
+         LIST_BUTTON("down", 0.55, 0.7)
+         LIST_BUTTON("remove", 0.80, 0.95)
+      }
+   }
+   group { name: "editje/collapsable/list/options/animations";
+      parts {
+         LIST_BUTTON("new", 0.25, 0.40)
+         LIST_BUTTON("remove", 0.60, 0.75)
+      }
+   }
+   group { name: "editje/collapsable/list/options/signals";
+      parts {
+         LIST_BUTTON("new", 0.25, 0.40)
+         LIST_BUTTON("remove", 0.60, 0.75)
+      }
+   }
+}

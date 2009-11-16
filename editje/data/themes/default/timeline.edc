@@ -1,0 +1,313 @@
+/*
+ * Copyright (C) 2009 Samsung Electronics.
+ *
+ * This file is part of Editje.
+ *
+ * Editje is free software: you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * Editje is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with Editje.  If not, see
+ * <http://www.gnu.org/licenses/>.
+ */
+#define TIMELINE_POINT_AND_LABEL(distance, label_)     \
+         part {                                        \
+            name: "timeline_clickarea_"label_;         \
+            type: RECT;                                \
+            mouse_events: 1;                           \
+            clip_to: "timeline_visiblearea";           \
+                                                       \
+            description {                              \
+               state: "default" 0.0;                   \
+               color: 0 0 0 0;                         \
+               min: 18 15;                             \
+               fixed: 1 1;                             \
+               align: 0.5 0.5;                         \
+               rel1 {                                  \
+                  to_x: "timeline_point_"label_;       \
+                  to_y: "timeline_bg";                 \
+                  relative: 0.0 0.0;                   \
+                  offset: 0 0;                         \
+               }                                       \
+               rel2 {                                  \
+                  to_x: "timeline_point_"label_;       \
+                  to_y: "timeline_bg";                 \
+                  relative: 1.0 1.0;                   \
+                  offset: -1 -1;                       \
+               }                                       \
+            }                                          \
+         }                                             \
+         part {                                        \
+            name: "timeline_point_"label_;             \
+            type: IMAGE;                               \
+            mouse_events: 0;                           \
+            clip_to: "timeline_visiblearea";           \
+                                                       \
+            description {                              \
+               state: "default" 0.0;                   \
+               image.normal: "timeline_darkdot.png";   \
+               min: 7 5;                               \
+               max: 7 5;                               \
+               fixed: 1 1;                             \
+               align: 0.0 1.0;                         \
+               rel1 {                                  \
+                  to: "timeline_line";                 \
+                  relative: 0.0 1.0;                   \
+                  offset: distance -1;                 \
+               }                                       \
+               rel2 {                                  \
+                  to: "timeline_line";                 \
+                  relative: 0.0 1.0;                   \
+                  offset: distance -1;                 \
+               }                                       \
+            }                                          \
+            description {                              \
+               state: "disabled" 0.0;                  \
+               inherit: "default" 0.0;                 \
+               image.normal: "timeline_lightdot.png";  \
+            }                                          \
+         }                                             \
+         part {                                        \
+            name: "timeline_point_"label_"label";      \
+            type: TEXT;                                \
+            mouse_events: 0;                           \
+            clip_to: "timeline_visiblearea";           \
+                                                       \
+            description {                              \
+               state: "default" 0.0;                   \
+               align: 0.5 1.0;                         \
+               color_class: "default_label";           \
+               min: 20 20;                             \
+               max: 20 20;                             \
+               fixed: 1 1;                             \
+               text {                                  \
+                  text: label_;                        \
+                  font: "Sans:style=Bold";             \
+                  size: 10;                            \
+                  align: 0.5 1.0;                      \
+               }                                       \
+               rel1 {                                  \
+                  to: "timeline_point_"label_;         \
+                  relative: 0.0 -0.5;                  \
+                  offset: 4 0;                         \
+               }                                       \
+               rel2 {                                  \
+                  to: "timeline_point_"label_;         \
+                  relative: 0.0 -0.5;                  \
+                  offset: 4 0;                         \
+               }                                       \
+            }                                          \
+            description {                              \
+               state: "disabled" 0.0;                  \
+               inherit: "default" 0.0;                 \
+               color_class: "disabled_label";          \
+            }                                          \
+         }                                             \
+         part {                                        \
+            name: "timeline_arrowbase_"label_;         \
+            type: IMAGE;                               \
+            mouse_events: 0;                           \
+            description {                              \
+               state: "default" 0.0;                   \
+               image.normal: "timeline_arrowbase.png"; \
+               min: 1 13;                              \
+               max: 1 13;                              \
+               fixed: 1 1;                             \
+               align: 0.5 0.0;                         \
+               visible: 0;                             \
+               rel1 {                                  \
+                  to: "timeline_point_"label_;         \
+                  relative: 0.5 1.0;                   \
+                  offset: 0 0;                         \
+               }                                       \
+               rel2 {                                  \
+                  to: "timeline_point_"label_;         \
+                  relative: 0.5 1.0;                   \
+                  offset: 0 0;                         \
+               }                                       \
+            }                                          \
+            description {                              \
+               state: "visible" 0.0;                   \
+               inherit: "default" 0.0;                 \
+               visible: 1;                             \
+            }                                          \
+         }                                             \
+         program {                                     \
+            name: "timeline_point_"label_;             \
+            signal: "mouse,clicked,1";                 \
+            source: "timeline_clickarea_"label_;       \
+            action: SIGNAL_EMIT "timestop" label_;     \
+         }                                             \
+         program {                                     \
+            name: "timestop_"label_"_enable";          \
+            signal: "ts,"label_",enable";              \
+            source: "editje";                          \
+            action: STATE_SET "default" 0.0;           \
+            target: "timeline_point_"label_"label";    \
+            target: "timeline_point_"label_;           \
+         }                                             \
+         program {                                     \
+            name: "timestop_"label_"_disable";         \
+            signal: "ts,"label_",disable";             \
+            source: "editje";                          \
+            action: STATE_SET "disabled" 0.0;          \
+            target: "timeline_point_"label_"label";    \
+            target: "timeline_point_"label_;           \
+         }                                             \
+         program {                                     \
+            name: "timestop_"label_"_unselected";      \
+            signal: "ts,"label_",unselected";          \
+            source: "editje";                          \
+            action: STATE_SET "default" 0.0;           \
+            target: "timeline_arrowbase_"label_;       \
+         }                                             \
+         program {                                     \
+            name: "timestop_"label_"_selected";        \
+            signal: "ts,"label_",selected";            \
+            source: "editje";                          \
+            action: STATE_SET "visible" 0.0;           \
+            target: "timeline_arrowbase_"label_;       \
+         }
+
+         part {
+            name: "timeline_bg";
+            type: IMAGE;
+            mouse_events: 0;
+
+            description {
+               state: "default" 0.0;
+               image.normal: "timeline_bg.png";
+               fill {
+                  smooth: 0;
+                  origin.relative: 0.5 0.5;
+                  size.relative: 0 0;
+                  size.offset: 10 10;
+               }
+               rel1 {
+                  to_x: "objects_border";
+                  to_y: "toolbar";
+                  relative: 1.0 1.0;
+                  offset: 0 -51;
+               }
+               rel2 {
+                  to_x: "details_border";
+                  to_y: "toolbar";
+                  relative: 0.0 1.0;
+                  offset: -1 -1;
+               }
+            }
+            description {
+               state: "visible" 0.0;
+               inherit: "default" 0.0;
+               rel1 {
+                  to_x: "objects_border";
+                  to_y: "toolbar";
+                  relative: 1.0 1.0;
+                  offset: 0 0;
+               }
+               rel2 {
+                  to_x: "details_border";
+                  to_y: "toolbar";
+                  relative: 0.0 1.0;
+                  offset: -1 50;
+               }
+            }
+         }
+
+         part {
+            name: "timeline_line";
+            type: IMAGE;
+            mouse_events: 0;
+
+            description {
+               state: "default" 0.0;
+               image.normal: "timeline_line.png";
+               min: 0 2;
+               max: 9999 2;
+               fill {
+                  smooth: 0;
+                  origin.relative: 0.5 0.0;
+                  size.relative: 0 0;
+                  size.offset: 1 1;
+               }
+               rel1 {
+                  to: "timeline_bg";
+                  relative: 0.0 0.5;
+                  offset: 10 -1;
+               }
+               rel2 {
+                  to: "timeline_bg";
+                  relative: 1.0 0.5;
+                  offset: -31 1;
+               }
+            }
+         }
+
+/* TODO: this should be the image for a button to scroll horizontally
+   the line elements */
+         part {
+            name: "timeline_endarrow";
+            type: IMAGE;
+            mouse_events: 0;
+
+            description {
+               state: "default" 0.0;
+               image.normal: "timeline_endarrow.png";
+               align: 0.0 0.5;
+               aspect: 0.9545 0.9545;
+               rel1 {
+                  to_x: "timeline_line";
+                  to_y: "timeline_bg";
+                  relative: 1.0 0.2;
+                  offset: 0 0;
+               }
+               rel2 {
+                  to_x: "timeline_line";
+                  to_y: "timeline_bg";
+                  relative: 1.0 0.8;
+                  offset: 0 0;
+               }
+            }
+         }
+
+         part {
+            name: "timeline_visiblearea";
+            type: RECT;
+            mouse_events: 0;
+
+            description {
+               state: "default" 0.0;
+               rel1 {
+                  to_x: "timeline_line";
+                  to_y: "timeline_bg";
+                  relative: 0.0 0.1;
+                  offset: 0 0;
+               }
+               rel2 {
+                  to_x: "timeline_line";
+                  to_y: "timeline_bg";
+                  relative: 1.0 0.9;
+                  offset: -1 0;
+               }
+            }
+         }
+
+TIMELINE_POINT_AND_LABEL(0, "0")
+TIMELINE_POINT_AND_LABEL(50, "0.1")
+TIMELINE_POINT_AND_LABEL(100, "0.2")
+TIMELINE_POINT_AND_LABEL(150, "0.3")
+TIMELINE_POINT_AND_LABEL(200, "0.4")
+TIMELINE_POINT_AND_LABEL(250, "0.5")
+TIMELINE_POINT_AND_LABEL(300, "0.6")
+TIMELINE_POINT_AND_LABEL(350, "0.7")
+TIMELINE_POINT_AND_LABEL(400, "0.8")
+TIMELINE_POINT_AND_LABEL(450, "0.9")
+TIMELINE_POINT_AND_LABEL(500, "1")
+

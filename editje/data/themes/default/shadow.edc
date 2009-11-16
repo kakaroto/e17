@@ -1,0 +1,301 @@
+/*
+ * Copyright (C) 2009 Samsung Electronics.
+ *
+ * This file is part of Editje.
+ *
+ * Editje is free software: you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * Editje is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with Editje.  If not, see
+ * <http://www.gnu.org/licenses/>.
+ */
+images {
+	image: "shadow_l.png" COMP;
+	image: "shadow_r.png" COMP;
+	image: "shadow_under.png" COMP;
+	image: "shadow_under_bigger.png" COMP;
+}
+
+#define SHADOW_LINEAR_BOTTOM(object, size_) \
+         part { \
+            name: object".shadow.b"; \
+            type: GRADIENT; \
+            mouse_events: 0; \
+            description { \
+               state: "default" 0.0; \
+               gradient.spectrum: "shadow"; \
+               rel1 { \
+                  to: object; \
+                  relative: 0.0 1.0; \
+                  offset: 0 0; \
+               } \
+               rel2 { \
+                  to: object; \
+                  relative: 1.0 1.0; \
+                  offset: -1 (size_-1); \
+               } \
+            } \
+         } \
+
+#define SHADOW_LINEAR_TOP(object, size_) \
+         part { \
+            name: object".shadow.t"; \
+            type: GRADIENT; \
+            mouse_events: 0; \
+            description { \
+               state: "default" 0.0; \
+               gradient.spectrum: "shadow"; \
+               fill { \
+                  angle: 180; \
+                  origin.relative: 0.0 1.0; \
+               } \
+               rel1 { \
+                  to: object; \
+                  relative: 0.0 0.0; \
+                  offset: 0 (-1-size_); \
+               } \
+               rel2 { \
+                  to: object; \
+                  relative: 1.0 0.0; \
+                  offset: -1 -1; \
+               } \
+            } \
+         } \
+
+#define SHADOW_LINEAR_LEFT(object, size_) \
+         part { \
+            name: object".shadow.l"; \
+            type: IMAGE; \
+            mouse_events: 0; \
+            description { \
+               state: "default" 0.0; \
+               image.normal: "shadow_l.png"; \
+               fill { \
+                  smooth: 1; \
+                  size.relative: 0 0; \
+                  size.offset: size_ 1; \
+               } \
+               rel1 { \
+                  to: object; \
+                  relative: 0.0 0.0; \
+                  offset: -size_ 0; \
+               } \
+               rel2 { \
+                  to: object; \
+                  relative: 0.0 1.0; \
+                  offset: -1 -1; \
+               } \
+            } \
+         } \
+
+#define SHADOW_LINEAR_LEFT_UNDER(left, under, size_) \
+         part { \
+            name: left"-"under".shadow.l"; \
+            type: IMAGE; \
+            mouse_events: 0; \
+            description { \
+               state: "default" 0.0; \
+               image.normal: "shadow_l.png"; \
+               fill { \
+                  smooth: 1; \
+                  size.relative: 0 0; \
+                  size.offset: size_ 1; \
+               } \
+               rel1 { \
+                  to_x: left; \
+                  to_y: under; \
+                  relative: 0.0 1.0; \
+                  offset: -size_ 0; \
+               } \
+               rel2 { \
+                  to: left; \
+                  relative: 0.0 1.0; \
+                  offset: -1 -1; \
+               } \
+            } \
+         } \
+
+#define SHADOW_LINEAR_RIGHT(object, size_) \
+         part { \
+            name: object".shadow.r"; \
+            type: IMAGE; \
+            mouse_events: 0; \
+            description { \
+               state: "default" 0.0; \
+               image.normal: "shadow_r.png"; \
+               fill { \
+                  smooth: 1; \
+                  size.relative: 0 0; \
+                  size.offset: size_ 1; \
+               } \
+               rel1 { \
+                  to: object; \
+                  relative: 1.0 0.0; \
+                  offset: 0 0; \
+               } \
+               rel2 { \
+                  to: object; \
+                  relative: 1.0 1.0; \
+                  offset: (size_-1) -1; \
+               } \
+            } \
+         } \
+
+#define SHADOW_LINEAR_RIGHT_UNDER(right, under, size_) \
+         part { \
+            name: right"-"under".shadow.r"; \
+            type: IMAGE; \
+            mouse_events: 0; \
+            description { \
+               state: "default" 0.0; \
+               image.normal: "shadow_r.png"; \
+               fill { \
+                  smooth: 1; \
+                  size.relative: 0 0; \
+                  size.offset: size_ 1; \
+               } \
+               rel1 { \
+                  to_x: right; \
+                  to_y: under; \
+                  relative: 1.0 1.0; \
+                  offset: 0 0; \
+               } \
+               rel2 { \
+                  to: right; \
+                  relative: 1.0 1.0; \
+                  offset: (size_-1) -1; \
+               } \
+            } \
+         } \
+
+#define SHADOW_RECT(object, size_) \
+         SHADOW_LINEAR_TOP(object, size_) \
+         SHADOW_LINEAR_BOTTOM(object, size_) \
+         SHADOW_LINEAR_LEFT(object, size_) \
+         SHADOW_LINEAR_RIGHT(object, size_) \
+         part { \
+            name: object".shadow.tl"; \
+            type: GRADIENT; \
+            mouse_events: 0; \
+            description { \
+               state: "default" 0.0; \
+               gradient { \
+                  type: "rectangular"; \
+                  spectrum: "shadow"; \
+                  rel1.relative: 1.0 1.0; \
+               } \
+               rel1 { \
+                  to_x: object".shadow.l"; \
+                  to_y: object".shadow.t"; \
+                  relative: 0.0 0.0; \
+                  offset: 0 0; \
+               } \
+               rel2 { \
+                  to_x: object".shadow.l"; \
+                  to_y: object".shadow.t"; \
+                  relative: 1.0 1.0; \
+                  offset: -1 -1; \
+               } \
+            } \
+         } \
+         part { \
+            name: object".shadow.tr"; \
+            type: GRADIENT; \
+            mouse_events: 0; \
+            description { \
+               state: "default" 0.0; \
+               gradient { \
+                  type: "rectangular"; \
+                  spectrum: "shadow"; \
+                  rel1.relative: 0.0 1.0; \
+                  rel2.relative: 1.0 0.0; \
+               } \
+               rel1 { \
+                  to_x: object".shadow.r"; \
+                  to_y: object".shadow.t"; \
+                  relative: 0.0 0.0; \
+                  offset: 0 0; \
+               } \
+               rel2 { \
+                  to_x: object".shadow.r"; \
+                  to_y: object".shadow.t"; \
+                  relative: 1.0 1.0; \
+                  offset: -1 -1; \
+               } \
+            } \
+         } \
+         part { \
+            name: object".shadow.bl"; \
+            type: GRADIENT; \
+            mouse_events: 0; \
+            description { \
+               state: "default" 0.0; \
+               gradient { \
+                  type: "rectangular"; \
+                  spectrum: "shadow"; \
+                  rel1.relative: 1.0 1.0; \
+                  rel2.relative: 0.0 0.0; \
+               } \
+               rel1 { \
+                  to_x: object".shadow.l"; \
+                  to_y: object".shadow.b"; \
+                  relative: 0.0 0.0; \
+                  offset: 0 0; \
+               } \
+               rel2 { \
+                  to_x: object".shadow.l"; \
+                  to_y: object".shadow.b"; \
+                  relative: 1.0 1.0; \
+                  offset: -1 -1; \
+               } \
+            } \
+         } \
+         part { \
+            name: object".shadow.br"; \
+            type: GRADIENT; \
+            mouse_events: 0; \
+            description { \
+               state: "default" 0.0; \
+               gradient { \
+                  type: "rectangular"; \
+                  spectrum: "shadow"; \
+                  rel1.relative: 0.0 1.0; \
+                  rel2.relative: 1.0 0.0; \
+               } \
+               rel1 { \
+                  to_x: object".shadow.r"; \
+                  to_y: object".shadow.b"; \
+                  relative: 0.0 0.0; \
+                  offset: 0 0; \
+               } \
+               rel2 { \
+                  to_x: object".shadow.r"; \
+                  to_y: object".shadow.b"; \
+                  relative: 1.0 1.0; \
+                  offset: -1 -1; \
+               } \
+            } \
+         } \
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,54 @@
+/*
+ * Copyright (C) 2009 Samsung Electronics.
+ *
+ * This file is part of Editje.
+ *
+ * Editje is free software: you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * Editje is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with Editje.  If not, see
+ * <http://www.gnu.org/licenses/>.
+ */
+color_classes {
+   color_class {
+      name: "default_label";
+      color: 50 50 50 255;
+   }
+   color_class {
+      name: "secondary_label";
+      color: 80 80 80 255;
+   }
+   color_class {
+      name: "disabled_label";
+      color: 204 204 204 255;
+   }
+   color_class {
+      name: "popup_bg";
+      color: 230 230 230 255;
+   }
+   color_class {
+      name: "colorpicker.sample";
+      color: 255 255 255 255;
+   }
+}
+
+spectra {
+	spectrum {
+		name: "bg";
+		color: 238 238 238 255 1;
+		color: 163 163 163 255 1;
+	}
+	spectrum {
+		name: "shadow";
+		color: 163 163 163 255 1;
+		color: 163 163 163 0 1;
+	}
+}

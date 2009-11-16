@@ -1,0 +1,46 @@
+/*
+ * Copyright (C) 2009 Samsung Electronics.
+ *
+ * This file is part of Editje.
+ *
+ * Editje is free software: you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * Editje is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with Editje.  If not, see
+ * <http://www.gnu.org/licenses/>.
+ */
+images {
+   image: "grid.png" COMP;
+   image: "bg_toolbar.png" COMP;
+   image: "ico_save.png" COMP;
+   image: "ico_new.png" COMP;
+   image: "ico_part.png" COMP;
+   image: "ico_signal.png" COMP;
+   image: "ico_animation.png" COMP;
+   image: "ico_options.png" COMP;
+   image: "ico_confirm.png" COMP;
+   image: "ico_cancel.png" COMP;
+   image: "ico_images.png" COMP;
+   image: "ico_fonts.png" COMP;
+   image: "ico_previous.png" COMP;
+   image: "ico_play.png" COMP;
+   image: "ico_next.png" COMP;
+   image: "ico_stop.png" COMP;
+   image: "new_bg.png" COMP;
+   image: "timeline_bg.png" COMP;
+   image: "timeline_line.png" COMP;
+   image: "timeline_endarrow.png" COMP;
+   image: "timeline_darkdot.png" COMP;
+   image: "timeline_lightdot.png" COMP;
+   image: "timeline_arrowbase.png" COMP;
+   image: "dialog_entry_bg.png" COMP;
+   image: "bg2.png" COMP;
+}

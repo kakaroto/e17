@@ -1,0 +1,638 @@
+/*
+ * Copyright (C) 2009 Samsung Electronics.
+ *
+ * This file is part of Editje.
+ *
+ * Editje is free software: you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * Editje is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with Editje.  If not, see
+ * <http://www.gnu.org/licenses/>.
+ */
+//////////////
+// ELM Extension
+//////////////
+collections {
+   group {
+      name: "elm/entry/base-single/editje_dialog";
+      parts {
+         part {
+            name: "bg";
+            type: IMAGE;
+            mouse_events: 1;
+            description {
+               state: "default" 0.0;
+               color: 255 255 255 255;
+               image {
+                  normal: "dialog_entry_bg.png";
+                  border: 20 20 0 0;
+               }
+            }
+         }
+         part {
+            name: "elm.text";
+            type: TEXTBLOCK;
+            mouse_events: 1;
+            scale: 1;
+            entry_mode: EDITABLE;
+            select_mode: EXPLICIT;
+            multiline: 0;
+            source: "elm/entry/selection/default"; // selection under
+            source4: "elm/entry/cursor/default"; // cursorover
+            source5: "elm/entry/anchor/default"; // anchor under
+            description {
+               state: "default" 0.0;
+               text {
+                  style: "dialog_entry_single_style";
+                  min: 1 1;
+	            }
+               rel1 {
+                  to: "bg";
+                  offset: 5 5;
+               }
+               rel2 {
+                  to: "bg";
+                  offset: -6 -6;
+               }
+	         }
+	         description {
+               state: "disabled" 0.0;
+               inherit: "default" 0.0;
+	            text {
+		            style: "dialog_entry_single_disabled_style";
+		            min: 0 1;
+	            }
+	         }
+	      }
+      }
+      programs {
+	      program {
+            name: "focus";
+            signal: "load";
+	         source: "";
+	         action: FOCUS_SET;
+	         target: "elm.text";
+	      }
+	      program {
+            name: "disable";
+	         signal: "elm,state,disabled";
+	         source: "elm";
+            action: STATE_SET "disabled" 0.0;
+            target: "elm.text";
+         }
+         program {
+            name: "enable";
+            signal: "elm,state,enabled";
+            source: "elm";
+            action: STATE_SET "default" 0.0;
+            target: "elm.text";
+         }
+      }
+   }
+
+
+////////////////////////////////////////////////////////////////////////////
+// Image Select Popup
+////////////////////////////////////////////////////////////////////////////
+   group {
+      name: "editje/image_select";
+      parts {
+         part {
+            name: "bg";
+            type: RECT;
+            mouse_events: 0;
+            description {
+               state: "default" 0.0;
+               color_class: "popup_bg";
+            }
+         }
+
+         part {
+            name: "header.bg";
+            type: GRADIENT;
+            mouse_events: 0;
+            description {
+               state: "default" 0.0;
+               gradient.spectrum: "bg";
+               rel2 {
+                  relative: 1.0 0.0;
+                  offset: -1 30;
+               }
+            }
+         }
+
+         part {
+            name: "header.title";
+            type: TEXT;
+            mouse_events: 0;
+            description {
+               state: "default" 0.0;
+               align: 0.5 0.5;
+               color_class: "default_label";
+               text {
+                  text: "TITLE";
+                  font: "Sans:style=Bold";
+                  size: 10;
+                  align: 0.5 0.5;
+               }
+               rel1.to: "header.bg";
+               rel2.to: "header.bg";
+            }
+         }
+
+         /*part {
+            name: "search.label";
+            type: TEXT;
+            mouse_events: 0;
+            description {
+               state: "default" 0.0;
+               align: 1.0 0.5;
+               color_class: "default_label";
+               text {
+                  text: "SEARCH";
+                  font: "Sans:style=Bold";
+                  size: 10;
+                  align: 1.0 0.5;
+               }
+               rel1 {
+                  to: "header.bg";
+                  relative: 0.0 1.0;
+               }
+               rel2 {
+                  to: "header.bg";
+                  relative: 0.0 1.0;
+                  offset: 50 30;
+               }
+            }
+         }
+
+         part {
+            name: "search.entry";
+            type: SWALLOW;
+            mouse_events: 1;
+            description {
+               state: "default" 0.0;
+               rel1 {
+                  to_x: "search.label";
+                  to_y: "header.bg";
+                  relative: 1.0 1.0;
+                  offset: 3 -1;
+               }
+               rel2 {
+                  to_x: "header.bg";
+                  to_y: "search.label";
+                  relative: 1.0 1.0;
+                  offset: -1 -1;
+               }
+            }
+         }*/
+
+         part {
+            name: "images.list";
+            type: SWALLOW;
+            mouse_events: 1;
+            description {
+               state: "default" 0.0;
+               rel1 {
+                  //to: "search.label";
+                  to: "header.bg";
+                  relative: 0.0 1.0;
+               }
+               rel2 {
+                  relative: 0.65 1.0;
+                  offset: 0 -1;
+               }
+            }
+         }
+
+         part {
+            name: "controls.bg";
+            type: RECT;
+            mouse_events: 0;
+            description {
+               state: "default" 0.0;
+               color: 0 0 0 0;
+               rel1 {
+                  to: "images.list";
+                  relative: 1.0 0.0;
+               }
+            }
+         }
+
+         part {
+            name: "actions";
+            type: SWALLOW;
+            description {
+               state: "default" 0.0;
+               rel1 {
+                  to: "controls.bg";
+                  relative: 0.1 0.1;
+               }
+               rel2 {
+                  to: "controls.bg";
+                  relative: 0.9 0.4;
+               }
+            }
+         }
+
+         part {
+            name: "image.preview.area";
+            type: RECT;
+            mouse_events: 0;
+            description {
+               state: "default" 0.0;
+               color: 255 255 255 0;
+               rel1 {
+                  to: "actions";
+                  relative: 0.0 1.0;
+                  offset: 0 10;
+               }
+               rel2 {
+                  to_x: "actions";
+                  to_y: "controls.bg";
+                  relative: 1.0 1.0;
+                  offset: -1 -12;
+               }
+            }
+         }
+
+         // TODO: add frame/shadow/border relative to image.preview
+         part {
+            name: "image.preview";
+            type: SWALLOW;
+            mouse_events: 0;
+            description {
+               state: "default" 0.0;
+               rel1.to: "image.preview.area";
+               rel2.to: "image.preview.area";
+            }
+         }
+      }
+   }
+
+////////////////////////////////////////////////////////////////////////////
+// Font Select Popup
+////////////////////////////////////////////////////////////////////////////
+   group {
+      name: "editje/font_select";
+      parts {
+         part {
+            name: "bg";
+            type: RECT;
+            mouse_events: 0;
+            description {
+               state: "default" 0.0;
+               color_class: "popup_bg";
+            }
+         }
+
+         part {
+            name: "header.bg";
+            type: GRADIENT;
+            mouse_events: 0;
+            description {
+               state: "default" 0.0;
+               gradient.spectrum: "bg";
+               rel2 {
+                  relative: 1.0 0.0;
+                  offset: -1 30;
+               }
+            }
+         }
+
+         part {
+            name: "header.title";
+            type: TEXT;
+            mouse_events: 0;
+            description {
+               state: "default" 0.0;
+               align: 0.5 0.5;
+               color_class: "default_label";
+               text {
+                  text: "TITLE";
+                  font: "Sans:style=Bold";
+                  size: 10;
+                  align: 0.5 0.5;
+               }
+               rel1.to: "header.bg";
+               rel2.to: "header.bg";
+            }
+         }
+
+         /*part {
+            name: "search.label";
+            type: TEXT;
+            mouse_events: 0;
+            description {
+               state: "default" 0.0;
+               align: 1.0 0.5;
+               color_class: "default_label";
+               text {
+                  text: "SEARCH";
+                  font: "Sans:style=Bold";
+                  size: 10;
+                  align: 1.0 0.5;
+               }
+               rel1 {
+                  to: "header.bg";
+                  relative: 0.0 1.0;
+               }
+               rel2 {
+                  to: "header.bg";
+                  relative: 0.0 1.0;
+                  offset: 50 30;
+               }
+            }
+         }
+
+         part {
+            name: "search.entry";
+            type: SWALLOW;
+            mouse_events: 1;
+            description {
+               state: "default" 0.0;
+               rel1 {
+                  to_x: "search.label";
+                  to_y: "header.bg";
+                  relative: 1.0 1.0;
+                  offset: 3 -1;
+               }
+               rel2 {
+                  to_x: "header.bg";
+                  to_y: "search.label";
+                  relative: 1.0 1.0;
+                  offset: -1 -1;
+               }
+            }
+         }*/
+
+         part {
+            name: "fonts.list";
+            type: SWALLOW;
+            mouse_events: 1;
+            description {
+               state: "default" 0.0;
+               rel1 {
+                  //to: "search.label";
+                  to: "header.bg";
+                  relative: 0.0 1.0;
+               }
+               rel2 {
+                  relative: 0.65 1.0;
+                  offset: 0 -1;
+               }
+            }
+         }
+
+         part {
+            name: "controls.bg";
+            type: RECT;
+            mouse_events: 0;
+            description {
+               state: "default" 0.0;
+               color: 0 0 0 0;
+               rel1 {
+                  to: "fonts.list";
+                  relative: 1.0 0.0;
+               }
+            }
+         }
+
+         part {
+            name: "actions";
+            type: SWALLOW;
+            description {
+               state: "default" 0.0;
+               rel1 {
+                  to: "controls.bg";
+                  relative: 0.1 0.1;
+               }
+               rel2 {
+                  to: "controls.bg";
+                  relative: 0.9 0.4;
+               }
+            }
+         }
+
+         part {
+            name: "font.preview";
+            type: SWALLOW;
+            mouse_events: 0;
+            description {
+               state: "default" 0.0;
+               aspect: 1.0 1.0;
+               aspect_preference: BOTH;
+               rel1 {
+                  to: "actions";
+                  relative: 0.0 1.0;
+                  offset: 0 2;
+               }
+               rel2 {
+                  to_x: "actions";
+                  to_y: "controls.bg";
+                  relative: 1.0 1.0;
+                  offset: -1 -1;
+               }
+            }
+         }
+      }
+   }
+
+////////////////////////////////////////////////////////////////////////////
+// Simple floating popup
+////////////////////////////////////////////////////////////////////////////
+   group {
+      name: "editje/floater";
+      parts {
+         part {
+            name: "shadow";
+            type: IMAGE;
+            mouse_events: 0;
+            description {
+               state: "default" 0.0;
+               rel1 {
+                  relative: 0.0 0.0;
+                  offset: -14 -6;
+               }
+               rel2 {
+                  relative: 1.0 1.0;
+                  offset: 5 13;
+               }
+               image {
+                  normal: "shadow_under_bigger.png";
+                  border: 14 6 6 14;
+                  middle: 0;
+               }
+            }
+         }
+
+         part {
+            name: "bg";
+            type: RECT;
+            description {
+               state: "default" 0.0;
+               color: 224 224 224 255;
+               rel1.relative: 0.0 0.0;
+               rel2.relative: 1.0 1.0;
+               rel2.offset: -1 -1;
+            }
+         }
+         part {
+            name: "title.bg";
+            type: GRADIENT;
+            description {
+               state: "default" 0.0;
+               gradient.spectrum: "bg";
+               rel1 {
+                  to: "bg";
+                  relative: 0.0 0.0;
+                  offset: 0 0;
+               }
+               rel2 {
+                  to: "bg";
+                  relative: 1.0 0.0;
+                  offset: 0 20;
+               }
+            }
+         }
+         part {
+            name: "title.text";
+            type: TEXT;
+            description {
+               state: "default" 0.0;
+               align: 0.5 0.5;
+               color_class: "default_label";
+               text {
+                  text: "TITLE";
+                  font: "Sans:style=Bold";
+                  size: 12;
+                  align: 0.5 0.5;
+               }
+               rel1.to: "title.bg";
+               rel2.to: "title.bg";
+            }
+         }
+         part {
+            name: "content";
+            type: SWALLOW;
+            description {
+               state: "default" 0.0;
+               rel1 {
+                  to: "title.bg";
+                  relative: 0.0 1.0;
+               }
+               rel2 {
+                  to: "actions";
+                  relative: 1.0 0.0;
+                  offset: -1 -2;
+               }
+            }
+         }
+         part {
+            name: "actions";
+            type: BOX;
+            description {
+               state: "default" 0.0;
+               box {
+                   layout: "horizontal";
+               }
+               rel1 {
+                  to: "bg";
+                  relative: 0.0 1.0;
+                  offset: 2 -30;
+               }
+               rel2 {
+                  to: "bg";
+                  relative: 1.0 1.0;
+                  offset: -3 -3;
+               }
+            }
+         }
+      }
+   }
+
+////////////////////////////////////////////////////////////////////////////
+// Simple floating popup
+////////////////////////////////////////////////////////////////////////////
+   group {
+      name: "editje/popup";
+      parts {
+         part {
+            name: "bg";
+            type: RECT;
+            description {
+               state: "default" 0.0;
+               color: 224 224 224 255;
+            }
+         }
+         part {
+            name: "title.bg";
+            type: GRADIENT;
+            description {
+               state: "default" 0.0;
+               gradient.spectrum: "bg";
+               rel1 {
+                  to: "bg";
+                  relative: 0.0 0.0;
+                  offset: 0 0;
+               }
+               rel2 {
+                  to: "bg";
+                  relative: 1.0 0.0;
+                  offset: 0 20;
+               }
+            }
+         }
+         part {
+            name: "title.text";
+            type: TEXT;
+            description {
+               state: "default" 0.0;
+               align: 0.5 0.5;
+               color_class: "default_label";
+               text {
+                  text: "TITLE";
+                  font: "Sans:style=Bold";
+                  size: 12;
+                  align: 0.5 0.5;
+               }
+               rel1.to: "title.bg";
+               rel2.to: "title.bg";
+            }
+         }
+         part {
+            name: "content.clipper";
+            type: RECT;
+            description {
+               state: "default" 0.0;
+               color: 255 255 255 255;
+               rel1 {
+                  to: "title.bg";
+                  relative: 0.0 1.0;
+               }
+               rel2.to: "bg";
+            }
+         }
+         part {
+            name: "content";
+            clip_to: "content.clipper";
+            type: SWALLOW;
+            description {
+               state: "default" 0.0;
+               rel1 {
+                  to: "title.bg";
+                  relative: 0.0 1.0;
+               }
+            }
+         }
+      }
+   }
+}

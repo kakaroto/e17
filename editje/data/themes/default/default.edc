@@ -1,0 +1,1070 @@
+/*
+ * Copyright (C) 2009 Samsung Electronics.
+ *
+ * This file is part of Editje.
+ *
+ * Editje is free software: you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * Editje is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with Editje.  If not, see
+ * <http://www.gnu.org/licenses/>.
+ */
+#include "images.edc"
+#include "colors.edc"
+#include "styles.edc"
+
+#include "shadow.edc"
+#include "border.edc"
+
+#include "toolbar.edc"
+#include "popups.edc"
+#include "desktop.edc"
+
+collections {
+   group {
+      name: "main";
+
+      parts {
+         part {
+            name: "bg";
+            type: RECT;
+            mouse_events: 0;
+            description {
+               state: "default" 0.0;
+               color: 255 0 0 255;
+            }
+         }
+
+         part {
+            name: "desktop.border";
+            type: RECT;
+            mouse_events: 0;
+            description {
+               state: "default" 0.0;
+               color: 0 0 0 0;
+               rel1 {
+                  to_x: "objects_border";
+                  to_y: "timeline_bg";
+                  relative: 1.0 1.0;
+               }
+               rel2 {
+                  to_x: "details_border";
+                  relative: 0.0 1.0;
+                  offset: -1 -1;
+               }
+            }
+         }
+
+         part {
+            name: "desktop.bg";
+            type: IMAGE;
+            mouse_events: 0;
+            description {
+               state: "default" 0.0;
+               image.normal: "grid.png";
+               fill {
+                  smooth: 0;
+                  origin.relative: 0.5 0.5;
+                  size.relative: 0 0;
+                  size.offset: 19 19;
+               }
+               rel1.to: "desktop.border";
+               rel2.to: "desktop.border";
+            }
+         }
+
+         part {
+            name: "desktop";
+            type: SWALLOW;
+            mouse_events: 1;
+            description {
+               state: "default" 0.0;
+               rel1.to: "desktop.border";
+               rel2.to: "desktop.border";
+            }
+         }
+
+         part {
+            name: "desktop.blocker";
+            mouse_events: 1;
+            type: RECT;
+            description {
+               state: "default" 0.0;
+               color: 0 0 0 200;
+               rel2.relative: 1.0 0.0;
+            }
+            description {
+               state: "enable" 0.0;
+               inherit: "default" 0.0;
+               rel2.relative: 1.0 1.0;
+            }
+         }
+
+         programs {
+            program {
+               name: "desktop,blocker,enable";
+               signal: "desktop,blocker,enable";
+               action: STATE_SET "enable" 0.0;
+               target: "desktop.blocker";
+            }
+            program {
+               name: "desktop,blocker,disable";
+               signal: "desktop,blocker,disable";
+               action: STATE_SET "default" 0.0;
+               target: "desktop.blocker";
+            }
+        }
+
+#include "timeline.edc"
+
+         SHADOW_LINEAR_BOTTOM("timeline_bg", 10)
+
+         part {
+            name: "toolbar";
+            type: IMAGE;
+            mouse_events: 0;
+            description {
+               state: "default" 0.0;
+               max: 999999 70;
+               min: 0 70;
+               align: 0.0 0.0;
+               rel1 {
+                  relative: 0.0 0.0;
+                  offset: 0 0;
+               }
+               rel2 {
+                  relative: 1.0 0.0;
+                  offset: -1 69;
+               }
+               image.normal: "bg_toolbar.png";
+            }
+         }
+
+         part {
+            name: "save.bt";
+            type: RECT;
+            mouse_events: 1;
+            description {
+               state: "default" 0.0;
+               color: 255 0 0 0;
+               align: 0.0 0.5;
+               aspect: 1.5 1.0;
+               rel1 {
+                  to: "toolbar";
+                  relative: 0.0 0.1;
+               }
+               rel2 {
+                  to: "toolbar";
+                  relative: 0.0 0.9;
+               }
+            }
+         }
+         TOOLBAR_BT_MAIN("save.bt", "ico_save.png")
+
+         part {
+            name: "options.bt";
+            type: RECT;
+            mouse_events: 1;
+            description {
+               state: "default" 0.0;
+               color: 255 0 0 0;
+               align: 1.0 0.5;
+               aspect: 1.5 1.0;
+               rel1 {
+                  to: "toolbar";
+                  relative: 1.0 0.1;
+               }
+               rel2 {
+                  to: "toolbar";
+                  relative: 1.0 0.9;
+               }
+            }
+         }
+         //TOOLBAR_BT_MAIN("options.bt", "ico_options.png")
+
+         part {
+            name: "details_bg";
+            type: RECT;
+            mouse_events: 0;
+            description {
+               state: "default" 0.0;
+               color: 0 0 0 0;
+               rel1 {
+                  to: "save.bt";
+                  relative: 1.0 0.0;
+                  offset: 3 0;
+               }
+               rel2 {
+                  to: "toolbar.contents.swallow";
+                  relative: 0.0 1.0;
+                  offset: -3 -1;
+               }
+            }
+         }
+
+         part {
+            name: "details_filename";
+            type: TEXT;
+            mouse_events: 0;
+            description {
+               state: "default" 0.0;
+               align: 0.0 0.5;
+               color: 50 50 50 255;
+               text {
+                  text: "FILENAME";
+                  font: "Sans:style=Bold";
+                  size: 10;
+                  align: 0.0 0.5;
+                  elipsis: 1.0;
+               }
+               rel1 {
+                  to: "details_bg";
+                  relative: 0.0 0.1;
+                  offset: 5 0;
+               }
+               rel2 {
+                  to: "details_bg";
+                  relative: 1.0 0.4;
+               }
+            }
+         }
+
+         part {
+            name: "details_group_label";
+            type: TEXT;
+            mouse_events: 0;
+            description {
+               state: "default" 0.0;
+               align: 1.0 0.5;
+               color_class: "default_label";
+               text {
+                  text: "LABEL";
+                  font: "Sans:style=Bold";
+                  size: 10;
+                  align: 1.0 0.5;
+               }
+               rel1 {
+                  to: "details_bg";
+                  relative: 0.0 0.5;
+                  offset: 5 0;
+               }
+               rel2 {
+                  to: "details_bg";
+                  relative: 0.0 0.9;
+                  offset: 45 -1;
+               }
+            }
+         }
+
+         part {
+            name: "details_group.swallow";
+            type: SWALLOW;
+            mouse_events: 1;
+            description {
+               state: "default" 0.0;
+               align: 0.0 0.5;
+               rel1 {
+                  to_x: "details_bg";
+                  to_y: "details_group_label";
+                  relative: 0.0 0.0;
+                  offset: 50 0;
+               }
+               rel2 {
+                  to_x: "details_bg";
+                  to_y: "details_group_label";
+                  relative: 1.0 1.0;
+                  offset: -1 -3;
+               }
+            }
+         }
+
+         part {
+             name: "toolbar.contents.swallow";
+             type: SWALLOW;
+             description {
+                 state: "default" 0.0;
+                 rel1 {
+                     to: "toolbar";
+                     relative: 0.3 0.1;
+                 }
+                 rel2 {
+                     to_x: "options.bt";
+                     to_y: "toolbar";
+                     relative: 0.0 0.9;
+                     offset: -25 -5;
+                 }
+             }
+         }
+
+         part {
+            name: "objects_border";
+            type: RECT;
+            mouse_events: 0;
+            description {
+               state: "default" 0.0;
+               color: 163 163 163 255;
+               align: 0.0 0.0;
+               max: 200 99999;
+               rel1 {
+                  to_y: "toolbar";
+                  relative: 0.0 1.0;
+                  offset: 0 0;
+               }
+               rel2 {
+                  relative: 0.2 1.0;
+                  offset: 0 -1;
+               }
+            }
+         }
+
+         SHADOW_LINEAR_RIGHT_UNDER("objects_border", "timeline_bg", 10)
+
+         part {
+            name: "objects_fill";
+            type: RECT;
+            mouse_events: 0;
+            description {
+               state: "default" 0.0;
+               color: 128 128 128 255;
+               rel1 {
+                  to: "objects_border";
+                  offset: 1 1;
+               }
+               rel2 {
+                  to: "objects_border";
+                  offset: -2 -2;
+               }
+            }
+         }
+
+         part {
+            name: "objects";
+            type: SWALLOW;
+            mouse_events: 1;
+            description {
+               state: "default" 0.0;
+               rel1.to: "objects_fill";
+               rel2.to: "objects_fill";
+            }
+         }
+
+         part {
+            name: "details_border";
+            type: RECT;
+            mouse_events: 0;
+            description {
+               state: "default" 0.0;
+               color: 163 163 163 255;
+               max: 300 99999;
+               min: 200 200;
+               align: 1.0 0.0;
+               rel1 {
+                  to_y: "toolbar";
+                  relative: 0.8 1.0;
+                  offset: 0 0;
+               }
+               rel2 {
+                  relative: 1.0 1.0;
+                  offset: -1 -1;
+               }
+            }
+         }
+
+         SHADOW_LINEAR_LEFT_UNDER("details_border", "timeline_bg", 10)
+
+         part {
+            name: "details_fill";
+            type: RECT;
+            mouse_events: 0;
+            description {
+               state: "default" 0.0;
+               color: 255 255 255 255;
+               rel1 {
+                  to: "details_border";
+                  offset: 1 1;
+               }
+               rel2 {
+                  to: "details_border";
+                  offset: -2 -2;
+               }
+            }
+         }
+
+         part {
+            name: "details";
+            type: SWALLOW;
+            description {
+               state: "default" 0.0;
+               rel1.to: "details_fill";
+               rel2.to: "details_fill";
+            }
+         }
+
+         part {
+            name: "blocker";
+            mouse_events: 1;
+            type: RECT;
+            description {
+               state: "default" 0.0;
+               color: 0 0 0 200;
+               rel2.relative: 1.0 0.0;
+            }
+            description {
+               state: "enable" 0.0;
+               inherit: "default" 0.0;
+               rel2.relative: 1.0 1.0;
+            }
+         }
+
+         programs {
+            program {
+               name: "blocker,enable";
+               signal: "blocker,enable";
+               action: STATE_SET "enable" 0.0;
+               target: "blocker";
+            }
+            program {
+               name: "blocker,disable";
+               signal: "blocker,disable";
+               action: STATE_SET "default" 0.0;
+               target: "blocker";
+            }
+            program {
+                name: "anim_on";
+                signal: "mode,anim,on";
+                source: "editje";
+                action: STATE_SET "visible" 0.0;
+                transition: DECELERATE 0.5;
+                target: "timeline_bg";
+            }
+            program {
+                name: "anim_off";
+                signal: "mode,anim,off";
+                source: "editje";
+                action: STATE_SET "default" 0.0;
+                transition: DECELERATE 0.5;
+                target: "timeline_bg";
+            }
+         }
+      }
+   }
+
+////////////////////////////////////////////////////////////////////////////
+// Collaspable list
+////////////////////////////////////////////////////////////////////////////
+
+#define HEADER_BASE(full_offset, event_offset, open_clip_rel) \
+   part { \
+      name: "cl.header.bg"; \
+      type: GRADIENT; \
+      description { \
+         state: "default" 0.0; \
+         gradient.spectrum: "bg"; \
+         rel2 { \
+            relative: 1.0 0.0; \
+            offset: -1 full_offset; \
+         } \
+      } \
+   } \
+   part { \
+      name: "cl.header.open"; \
+      type: RECT; \
+      description { \
+         state: "default" 0.0; \
+         color: 0 0 0 0; \
+         visible: 1; \
+         rel1.to: "cl.header.bg"; \
+         rel2 { \
+            relative: 1.0 0.0; \
+            offset: -1 event_offset; \
+            to: "cl.header.bg"; \
+         } \
+      } \
+      description { \
+         state: "open" 0.0; \
+         inherit: "default" 0.0; \
+         visible: 0; \
+      } \
+   } \
+   part { \
+      name: "cl.header.close"; \
+      type: RECT; \
+      description { \
+         state: "default" 0.0; \
+         color: 0 0 0 0; \
+         visible: 0; \
+         rel1.to: "cl.header.bg"; \
+         rel2 { \
+            relative: 1.0 0.0; \
+            offset: -1 event_offset; \
+            to: "cl.header.bg"; \
+         } \
+      } \
+      description { \
+         state: "open" 0.0; \
+         inherit: "default" 0.0; \
+         visible: 1; \
+      } \
+   } \
+   part { \
+      name: "cl.header.title"; \
+      type: TEXT; \
+      mouse_events: 0; \
+      description { \
+         state: "default" 0.0; \
+         align: 0.5 0.5; \
+         color_class: "default_label"; \
+         text { \
+            text: "title"; \
+            font: "Sans:style=Bold"; \
+            size: 10; \
+            align: 0.5 0.5; \
+         } \
+         rel1.to: "cl.header.close"; \
+         rel2.to: "cl.header.close"; \
+      } \
+   } \
+   part { \
+      name: "cl.options"; \
+      type: IMAGE; \
+      description { \
+         state: "default" 0.0; \
+         image.normal: "ico_options.png"; \
+         aspect: 1.0 1.0; \
+         visible: 0; \
+         rel1 { \
+            to: "cl.header.title"; \
+            relative: 1.0 0.0; \
+            offset: -20 1; \
+         } \
+         rel2.to: "cl.header.title"; \
+         rel2.offset: -5 -2; \
+      } \
+      description { \
+         state: "enabled" 0.0; \
+         inherit: "default" 0.0; \
+         visible: 1; \
+      } \
+   } \
+   part { \
+      name: "cl.clipper"; \
+      mouse_events: 0; \
+      type: RECT; \
+      description { \
+         state: "default" 0.0; \
+         visible: 0; \
+         rel1 { \
+            to: "cl.header.bg"; \
+            relative: 0.0 1.0; \
+         } \
+         rel2 { \
+            to: "cl.header.bg"; \
+            relative: 1.0 1.0; \
+            offset: -1 -1; \
+         } \
+      } \
+      description { \
+         state: "open" 0.0; \
+         inherit: "default" 0.0; \
+         color: 255 255 255 255; \
+         visible: 1; \
+         rel2 { \
+            to_x: "cl.header.bg"; \
+            to_y: open_clip_rel; \
+            relative: 1.0 1.0; \
+            offset: -1 -1; \
+         } \
+      } \
+   } \
+   part { \
+      name: "cl.header.dropshadow"; \
+      clip_to: "cl.clipper"; \
+      mouse_events: 0; \
+      type: GRADIENT; \
+      description { \
+         state: "default" 0.0; \
+         gradient.spectrum: "shadow"; \
+         rel1 { \
+            to: "cl.clipper"; \
+            relative: 0.0 0.0; \
+         } \
+         rel2 { \
+            to: "cl.clipper"; \
+            relative: 1.0 0.0; \
+            offset: -1 10; \
+         } \
+      } \
+   } \
+   program { \
+      name: "cl.header,open"; \
+      signal: "mouse,clicked,1"; \
+      source: "cl.header.open"; \
+      action: SIGNAL_EMIT "cl,opened" "editje/collapsable"; \
+      after: "cl,open"; \
+   } \
+   program { \
+      name: "cl.header,close"; \
+      signal: "mouse,clicked,1"; \
+      source: "cl.header.close"; \
+      after: "cl,close"; \
+   } \
+   program { \
+      name: "cl,open"; \
+      signal: "cl,open"; \
+      after: "cl.close,show"; \
+   } \
+   program { \
+      name: "cl,close"; \
+      signal: "cl,close"; \
+      after: "cl.close,hide"; \
+   } \
+   program { \
+      name: "cl.close,show"; \
+      action: STATE_SET "open" 0.0; \
+      transition: LINEAR 0.1; \
+      target: "cl.header.open"; \
+      target: "cl.header.close"; \
+      target: "cl.clipper"; \
+   } \
+   program { \
+      name: "cl.close,hide"; \
+      action: STATE_SET "default" 0.0; \
+      transition: LINEAR 0.1; \
+      target: "cl.header.open"; \
+      target: "cl.header.close"; \
+      target: "cl.clipper"; \
+      after: "cl.closed_emit"; \
+   } \
+   program { \
+      name: "cl.closed_emit"; \
+      action: SIGNAL_EMIT "cl,closed" "editje/collapsable"; \
+   } \
+   program { \
+      name: "cl.option.enable"; \
+      signal: "cl,option,enable"; \
+      source: "editje"; \
+      action: STATE_SET "enabled" 0.0; \
+      target: "cl.options"; \
+   } \
+   program { \
+      name: "cl.option.disable"; \
+      signal: "cl,option,disable"; \
+      source: "editje"; \
+      action: STATE_SET "default" 0.0; \
+      target: "cl.options"; \
+   } \
+   program { \
+      name: "cl.option.clicked"; \
+      signal: "mouse,clicked,1"; \
+      source: "cl.options"; \
+      action: SIGNAL_EMIT "cl,option,clicked" "editje/collapsable"; \
+   }
+
+   group {
+      name: "editje/collapsable/default";
+      parts {
+         HEADER_BASE(20, 20, "cl.content")
+           part {
+               name: "cl.content.bg";
+               type: "RECT";
+               clip_to: "cl.clipper";
+               description {
+                   state: "default" 0.0;
+                   color: 255 255 255 255;
+                   rel1.to: "cl.content";
+                   rel2.to: "cl.content";
+               }
+           }
+         part {
+            name: "cl.content";
+            type: SWALLOW;
+            clip_to: "cl.clipper";
+            description {
+               state: "default" 0.0;
+               color: 255 255 255 255;
+               rel1 {
+                   relative: 0.0 1.0;
+                   to: "cl.header.bg";
+               }
+            }
+         }
+      }
+   }
+
+   group {
+       name: "editje/collapsable/part_properties";
+       parts {
+           HEADER_BASE(50, 20, "cl.content")
+           part {
+               name: "part_name.swallow";
+               type: SWALLOW;
+               description {
+                   state: "default" 0.0;
+                   fixed: 1 1;
+                   rel1 {
+                       to: "cl.header.bg";
+                       relative: 0.0 0.0;
+                       offset: 0 20;
+                   }
+                   rel2 {
+                       to: "cl.header.bg";
+                       relative: 1.0 1.0;
+                       offset: -1 -1;
+                   }
+               }
+           }
+           part {
+               name: "cl.content.bg";
+               type: "RECT";
+               clip_to: "cl.clipper";
+               description {
+                   state: "default" 0.0;
+                   color: 255 255 255 255;
+                   rel1.to: "cl.content";
+                   rel2.to: "cl.content";
+               }
+           }
+           part {
+               name: "cl.content";
+               type: "SWALLOW";
+               clip_to: "cl.clipper";
+               description {
+                   state: "default" 0.0;
+                   color: 255 255 255 255;
+                   rel1 {
+                       relative: 0.0 1.0;
+                       to: "cl.header.bg";
+                   }
+               }
+           }
+       }
+   }
+
+   group {
+       name: "editje/collapsable/part_state";
+       parts {
+           HEADER_BASE(35, 15, "cl.content")
+           part {
+               name: "part_state.swallow";
+               type: SWALLOW;
+               description {
+                   state: "default" 0.0;
+                   rel1 {
+                       to: "cl.header.bg";
+                       relative: 0.0 0.0;
+                       offset: 0 20;
+                   }
+                   rel2 {
+                       to: "cl.header.bg";
+                       relative: 1.0 1.0;
+                       offset: -1 -1;
+                   }
+               }
+           }
+           part {
+               name: "cl.content.bg";
+               type: "RECT";
+               clip_to: "cl.clipper";
+               description {
+                   state: "default" 0.0;
+                   color: 255 255 255 255;
+                   rel1.to: "cl.content";
+                   rel2.to: "cl.content";
+               }
+           }
+           part {
+               name: "cl.content";
+               type: "SWALLOW";
+               clip_to: "cl.clipper";
+               description {
+                   state: "default" 0.0;
+                   color: 255 255 255 255;
+                   rel1 {
+                       relative: 0.0 1.0;
+                       to: "cl.header.bg";
+                   }
+               }
+           }
+       }
+   }
+
+////////////////////////////////////////////////////////////////////////////
+// Property lists misc
+////////////////////////////////////////////////////////////////////////////
+   group {
+       name: "prop_label";
+       parts {
+           part {
+               name: "label";
+               type: TEXT;
+               mouse_events: 0;
+               description {
+                   state: "default" 0.0;
+                   align: 1.0 0.5;
+                   color_class: "default_label";
+                   text {
+                       text: "label";
+                       font: "Sans";
+                       size: 10;
+                       align: 1.0 0.5;
+                       min: 1 1;
+                       max: 1 0;
+                   }
+                   rel1.offset: 3 1;
+                   rel2.offset: -4 -2;
+               }
+           }
+       }
+   }
+
+   group {
+      name: "subgroup";
+      parts {
+         part {
+            name: "shadow";
+            type: GRADIENT;
+            mouse_events: 0;
+            description {
+               state: "default" 0.0;
+               gradient.spectrum: "shadow";
+               rel1 {
+                  relative: 0.0 0.0;
+                  offset: 0 6;
+               }
+               rel2 {
+                  relative: 1.0 0.0;
+                  offset: -1 16;
+               }
+            }
+         }
+         part {
+            name: "title.label";
+            type: TEXT;
+            mouse_events: 0;
+            description {
+               state: "default" 0.0;
+               align: 0.5 0.5;
+               color: 50 50 50 255;
+               text {
+                  text: "title";
+                  font: "Sans";
+                  size: 10;
+                  align: 0.0 0.5;
+               }
+               rel1 {
+                   to: "shadow";
+                   relative: 0.0 0.0;
+                   offset: 5 0;
+               }
+               rel2 {
+                  to: "shadow";
+                  relative: 1.0 1.0;
+                  offset: -6 -1;
+               }
+            }
+         }
+         part {
+            name: "content";
+            type: SWALLOW;
+            description {
+               state: "default" 0.0;
+               min: 178 20;
+               align: 0.0 0.0;
+               rel1 {
+                  to_y: "shadow";
+                  relative: 0.0 1.0;
+                  offset: 0 3;
+               }
+               rel2 {
+                  relative: 1.0 1.0;
+                  offset: -1 -1;
+               }
+            }
+         }
+      }
+   }
+
+   group { name: "colorpicker";
+      parts {
+         part {
+            name: "sample.shadow";
+            type: IMAGE;
+            mouse_events: 0;
+            description {
+               state: "default" 0.0;
+               rel1 {
+                  relative: 0.0 0.0;
+                  offset: -6 -2;
+                  to: "sample.bg";
+               }
+               rel2 {
+                  relative: 1.0 1.0;
+                  offset: 1 5;
+                  to: "sample.bg";
+               }
+               image {
+                  normal: "shadow_under.png";
+                  border: 6 2 2 6;
+                  middle: 0;
+               }
+            }
+         }
+
+         part {
+            name: "sample.bg";
+            type: IMAGE;
+            mouse_events: 0;
+            description {
+               state: "default" 0.0;
+               rel1 {
+                  relative: 0.0 0.0;
+                  offset: 10 5;
+               }
+               rel2 {
+                  relative: 1.0 0.0;
+                  offset: -11 40;
+               }
+               image.normal: "bg2.png";
+               fill {
+                  size {
+                     relative: 0.0 0.0;
+                     offset: 128 128;
+                  }
+               }
+            }
+         }
+
+         part {
+            name: "sample";
+            type: RECT;
+            mouse_events: 0;
+            description {
+               state: "default" 0.0;
+               rel1.to: "sample.bg";
+               rel2.to: "sample.bg";
+               color: 255 255 255 255;
+               color_class: "colorpicker.sample";
+            }
+         }
+
+         part {
+            name: "sliders";
+            type: SWALLOW;
+            repeat_events: 1;
+            description {
+               state: "default" 0.0;
+               rel1 {
+                  to_y: "sample.bg";
+                  relative: 0.0 1.0;
+                  offset: 0 10;
+               }
+               rel2 {
+                  relative: 1.0 1.0;
+                  offset: -1 -11;
+               }
+            }
+         }
+      }
+   }
+
+   group { name: "colorpreviewer";
+      min: 30 16;
+      parts {
+         part {
+            name: "sample.shadow";
+            type: IMAGE;
+            mouse_events: 0;
+            description {
+               state: "default" 0.0;
+               rel1 {
+                  relative: 0.0 0.0;
+                  offset: -6 -2;
+                  to: "sample.bg";
+               }
+               rel2 {
+                  relative: 1.0 1.0;
+                  offset: 1 5;
+                  to: "sample.bg";
+               }
+               image {
+                  normal: "shadow_under.png";
+                  border: 6 2 2 6;
+                  middle: 0;
+               }
+            }
+         }
+
+         part {
+            name: "sample.margin";
+            type: RECT;
+            mouse_events: 0;
+            description {
+               state: "default" 0.0;
+               color: 32 32 32 255;
+               rel1 {
+                  relative: 0.0 0.0;
+                  offset: -1 -1;
+                  to: "sample.bg";
+               }
+               rel2 {
+                  relative: 1.0 1.0;
+                  offset: 0 0;
+                  to: "sample.bg";
+               }
+            }
+         }
+
+         part {
+            name: "sample.bg";
+            type: IMAGE;
+            mouse_events: 0;
+            description {
+               state: "default" 0.0;
+               rel1 {
+                  relative: 0.0 0.0;
+                  offset: 8 3;
+               }
+               rel2 {
+                  relative: 1.0 1.0;
+                  offset: -7 -4;
+               }
+               image.normal: "bg2.png";
+               fill {
+                  size {
+                     relative: 0.0 0.0;
+                     offset: 32 32;
+                  }
+               }
+            }
+         }
+
+         part {
+            name: "sample";
+            type: RECT;
+            mouse_events: 1;
+            description {
+               state: "default" 0.0;
+               rel1.to: "sample.bg";
+               rel2.to: "sample.bg";
+               color: 255 255 255 255;
+               color_class: "colorpicker.sample";
+            }
+         }
+      }
+   }
+
+   #include "elm_extensions.edc"
+}
+
+#include "list.edc"
+#include "icons.edc"
+#include "timeline_transition.edc"
+

@@ -1,0 +1,50 @@
+Editje is an Edje editor oriented towards UI design, and not just being a GUI
+over the edc syntax.
+It provides three major modes: standard edition, animations and signals
+management.
+
+To get it up and running you will need:
+ - The EFL (eina, eet, evas, edje, ecore, embryo, edje, elementary)
+ - It's dependencies (jpeg and png support in evas, lua for edje, among others)
+ - Python >= 2.5
+ - EFL Python bindings
+
+run ./configure with any desired options,
+make
+
+And you are ready to go, if you wish to install it, you can also
+
+make install
+
+and make sure your PYTHONPATH env variable contains the path where it was
+installed, in case it's not in the standard place.
+
+Run with 'editje-bin' or './editje-bin' if running from the source package
+
+
+Using it:
+~~~~~~~~
+Once you launch the editor, you'll find yourself in the standard edition mode.
+In here, you can add, remove and change parts and their states.
+To the left is the list of parts in the group, to the right properties for
+the group, selected part and selected state for the part. Clicking on the
+little wrench in the state properties will show up a list of states for the
+selected part. From this list is possible to switch to the selected state,
+copy it into the current one, or delete it. To add a new state just type the
+name in the 'state:' entry and press Enter.
+
+Back to the left, on top of the list of parts is a dropdown menu with which
+is possible to change editing mode, to Parts (the standard one), Animations
+and Signals.
+
+Once in Animation mode, you'll get two lists: animations and parts.
+Select an animation to edit (or add one with '+' button above), click on
+any black dot in the timeline to edit that point in time, select a part from
+the list and edit it normally. From the right side, in the parts properties
+you can, again, select from the list of states to use as template.
+Clicking on a greyed dot in the timeline will add a new point in time to the
+animation.
+
+In Signals mode, part editing is disabled. You can only add, remove and modify
+programs for this group. It's possible to listen to signals and perform actions
+based on that, such as emitting another signal or running an animation.

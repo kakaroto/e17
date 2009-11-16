@@ -1,0 +1,224 @@
+/*
+ * Copyright (C) 2009 Samsung Electronics.
+ *
+ * This file is part of Editje.
+ *
+ * Editje is free software: you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * Editje is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with Editje.  If not, see
+ * <http://www.gnu.org/licenses/>.
+ */
+#define TOOLBAR_BT_FULL(bt_name, image_ico, colorclass, font_name, font_size) \
+         part {                                                      \
+            name: bt_name".icon";                                    \
+            type: IMAGE;                                             \
+            mouse_events: 0;                                         \
+            description {                                            \
+               state: "default" 0.0;                                 \
+               image.normal: image_ico;                              \
+               align: 0.5 0.0;                                       \
+               aspect: 1.0 1.0;                                      \
+               min: 24 24;                                           \
+               rel1 {                                                \
+                  to: bt_name;                                       \
+                  relative: 0.15 0.0;                                \
+               }                                                     \
+               rel2 {                                                \
+                  to_x: bt_name;                                     \
+                  relative: 0.85 0.0;                                \
+               }                                                     \
+            }                                                        \
+         }                                                           \
+         part {                                                      \
+            name: bt_name".label";                                   \
+            type: TEXT;                                              \
+            mouse_events: 0;                                         \
+            description {                                            \
+               state: "default" 0.0;                                 \
+               color_class: colorclass;                              \
+               align: 0.5 0.0;                                       \
+               text {                                                \
+                  text: "TITLE";                                     \
+                  font: font_name;                                   \
+                  size: font_size;                                   \
+                  align: 0.5 0.5;                                    \
+               }                                                     \
+               rel1 {                                                \
+                  to_x: bt_name;                                     \
+                  to_y: bt_name".icon";                              \
+                  relative: 0.0 1.0;                                 \
+                  offset: 0 2;                                       \
+               }                                                     \
+               rel2.to: bt_name;                                     \
+            }                                                        \
+         }                                                           \
+
+
+#define TOOLBAR_BT(bt_name, image_ico, colorclass)                   \
+   TOOLBAR_BT_FULL(bt_name, image_ico, colorclass, "Sans:style=Bold", 10)
+
+#define TOOLBAR_BT_MAIN(bt_name, image_ico)                             \
+   TOOLBAR_BT_FULL(bt_name, image_ico, "default_label", "Sans:style=Bold", 10)
+
+#define TOOLBAR_BT_SUB(bt_name, image_ico)                              \
+   TOOLBAR_BT_FULL(bt_name, image_ico, "secondary_label", "Sans", 9)
+
+collections {
+   group {
+      name: "toolbar.edit";
+
+      parts {
+
+         part {
+            name: "image_list.bt";
+            type: RECT;
+            mouse_events: 1;
+            description {
+               state: "default" 0.0;
+               color: 255 0 0 0;
+               align: 0.0 0.5;
+               aspect: 1.5 1.0;
+               rel1 {
+                  relative: 0.0 0.0;
+                  offset: 1 0;
+               }
+               rel2 {
+                  relative: 0.0 1.0;
+                  offset: 5 -1;
+               }
+            }
+         }
+         TOOLBAR_BT_MAIN("image_list.bt", "ico_images.png")
+
+#if 0
+         part {
+            name: "font_list.bt";
+            type: RECT;
+            mouse_events: 1;
+            description {
+               state: "default" 0.0;
+               color: 255 0 0 0;
+               align: 0.0 0.5;
+               aspect: 1.5 1.0;
+               rel1 {
+                  to: "image_list.bt";
+                  relative: 1.0 0.0;
+                  offset: 1 0;
+               }
+               rel2 {
+                  to: "image_list.bt";
+                  relative: 1.0 1.0;
+                  offset: 5 0;
+               }
+            }
+         }
+         TOOLBAR_BT_MAIN("font_list.bt", "ico_fonts.png")
+#endif
+      }
+   }
+
+   group {
+      name: "toolbar.anim";
+
+      parts {
+         part {
+            name: "previous.bt";
+            type: RECT;
+            mouse_events: 1;
+            description {
+               state: "default" 0.0;
+               color: 255 0 0 0;
+               align: 0.0 0.5;
+               aspect: 1.5 1.0;
+               rel1 {
+                  relative: 0.0 0.0;
+                  offset: 1 0;
+               }
+               rel2 {
+                  relative: 0.0 1.0;
+                  offset: 5 -1;
+               }
+            }
+         }
+         TOOLBAR_BT_MAIN("previous.bt", "ico_previous.png")
+
+         part {
+            name: "play.bt";
+            type: RECT;
+            mouse_events: 1;
+            description {
+               state: "default" 0.0;
+               color: 255 0 0 0;
+               align: 0.0 0.5;
+               aspect: 1.5 1.0;
+               rel1 {
+                  to: "previous.bt";
+                  relative: 1.0 0.0;
+                  offset: 1 0;
+               }
+               rel2 {
+                  to: "previous.bt";
+                  relative: 1.0 1.0;
+                  offset: 5 0;
+               }
+            }
+         }
+         TOOLBAR_BT_MAIN("play.bt", "ico_play.png")
+
+         part {
+            name: "next.bt";
+            type: RECT;
+            mouse_events: 1;
+            description {
+               state: "default" 0.0;
+               color: 255 0 0 0;
+               align: 0.0 0.5;
+               aspect: 1.5 1.0;
+               rel1 {
+                  to: "play.bt";
+                  relative: 1.0 0.0;
+                  offset: 1 0;
+               }
+               rel2 {
+                  to: "play.bt";
+                  relative: 1.0 1.0;
+                  offset: 5 0;
+               }
+            }
+         }
+         TOOLBAR_BT_MAIN("next.bt", "ico_next.png")
+
+         part {
+            name: "stop.bt";
+            type: RECT;
+            mouse_events: 1;
+            description {
+               state: "default" 0.0;
+               color: 255 0 0 0;
+               align: 0.0 0.5;
+               aspect: 1.5 1.0;
+               rel1 {
+                  to: "next.bt";
+                  relative: 1.0 0.0;
+                  offset: 1 0;
+               }
+               rel2 {
+                  to: "next.bt";
+                  relative: 1.0 1.0;
+                  offset: 5 0;
+               }
+            }
+         }
+         TOOLBAR_BT_MAIN("stop.bt", "ico_stop.png")
+      }
+   }
+}
