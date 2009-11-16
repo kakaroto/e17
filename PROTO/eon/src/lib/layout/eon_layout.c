@@ -360,7 +360,7 @@ static void _dtor(Ekeko_Object *o)
 {
 	Eon_Layout_Private *prv;
 
-	prv = PRIVATE(o);	
+	prv = PRIVATE(o);
 	eina_tiler_free(prv->tiler);
 }
 
@@ -388,7 +388,7 @@ Ekeko_Type * eon_layout_type_get(void)
 		_dom = eina_log_domain_register("eon:layout", NULL);
 		type = ekeko_type_new(TYPE_NAME, sizeof(Eon_Layout),
 				sizeof(Eon_Layout_Private),
-				eon_paint_type_get(),
+				eon_paint_square_type_get(),
 				_ctor, _dtor, _appendable);
 		/* the properties */
 		EON_LAYOUT_REDRAW = EKEKO_TYPE_PROP_DOUBLE_ADD(type, "redraw",

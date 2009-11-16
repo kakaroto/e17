@@ -34,6 +34,7 @@ extern Ekeko_Property_Id EON_PAINT_SQUARE_H;
 /*============================================================================*
  *                                 Class                                      *
  *============================================================================*/
+#define EON_PAINT_SQUARE(o) EKEKO_CAST(o, eon_paint_square_type_get(), Eon_Paint_Square)
 typedef struct _Eon_Paint_Square_Private Eon_Paint_Square_Private;
 struct _Eon_Paint_Square
 {

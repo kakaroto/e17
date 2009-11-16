@@ -134,10 +134,10 @@ int main(int argc, char **argv)
 	}
 	/* create the context */
 	eon_init();
-	doc = eon_document_void_new(engine, w, h, options);
+	doc = eon_document_new(engine, w, h, options);
 	eon_parser_load(doc, &doc, file);
 	/* create the canvas */
-	canvas = eon_document_canvas_get(doc);
+	canvas = eon_document_layout_get(doc);
 	style = eon_document_style_get(doc);
 	/* create the ui */
 	ui_setup(doc, canvas);

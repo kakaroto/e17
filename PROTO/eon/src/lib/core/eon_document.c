@@ -18,7 +18,9 @@
 #include "Eon.h"
 #include "eon_private.h"
 /*
- * TODO rename this object to just Eon instead of Eon_Document
+ * TODO:
+ * + rename this object to just Eon instead of Eon_Document
+ * + this isnt needed to be an ekeko object
  */
 /*============================================================================*
  *                                  Local                                     *
@@ -43,7 +45,7 @@ struct _Eon_Document
 	} engine;
 	Eina_Rectangle size;
 	/* we should use the childs instead of this */
-	Eon_Canvas *canvas;
+	Eon_Layout *layout;
 	Eon_Style *style;
 	Eina_Hash *ids;
 	Etch *etch;
@@ -95,8 +97,8 @@ static void _child_append_cb(const Ekeko_Object *o, Ekeko_Event *e, void *data)
 	if (em->related != o)
 		return;
 	/* assign the correct pointers */
-	if (!d->canvas && ekeko_type_instance_is_of(e->target, EON_TYPE_CANVAS))
-		d->canvas = (Eon_Canvas *)e->target;
+	if (!d->layout && ekeko_type_instance_is_of(e->target, EON_TYPE_LAYOUT))
+		d->layout = (Eon_Canvas *)e->target;
 	if (!d->style && ekeko_type_instance_is_of(e->target, EON_TYPE_STYLE))
 		d->style = (Eon_Style *)e->target;
 }
@@ -144,7 +146,7 @@ static Eina_Bool _appendable(Ekeko_Object *parent, Ekeko_Object *child)
 			(!ekeko_type_instance_is_of(child, EON_TYPE_STYLE)))
 		return EINA_FALSE;
 	/* we should use the childs list instead as we might have more than one canvas */
-	if (d->canvas && ekeko_type_instance_is_of(child, EON_TYPE_CANVAS))
+	if (d->layout && ekeko_type_instance_is_of(child, EON_TYPE_CANVAS))
 		return EINA_FALSE;
 	if (d->style && ekeko_type_instance_is_of(child, EON_TYPE_STYLE))
 		return EINA_FALSE;
@@ -158,13 +160,13 @@ static Ekeko_Type * _document_type_get(void)
 
 	if (!type)
 	{
-		_dom = eina_log_domain_register("eon_document", NULL);
+		_dom = eina_log_domain_register("eon:document", NULL);
 		type = ekeko_type_new(EON_TYPE_DOCUMENT, 0,
 				sizeof(Eon_Document), ekeko_object_type_get(),
 				_ctor, _dtor, _appendable);
-		EON_DOCUMENT_SIZE = EKEKO_TYPE_PROP_SINGLE_ADD(type, "size",
+		/*EON_DOCUMENT_SIZE = EKEKO_TYPE_PROP_SINGLE_ADD(type, "size",
 				EKEKO_PROPERTY_RECTANGLE,
-				OFFSET(Eon_Document, size));
+				OFFSET(Eon_Document, size));*/
 	}
 
 	return type;
@@ -249,26 +251,13 @@ EAPI Eon_Document * eon_document_new(const char *engine, int w, int h, const cha
 	/* the main style */
 	s = eon_style_new(d);
 	ekeko_object_child_append((Ekeko_Object *)d, (Ekeko_Object *)s);
-	/* the main canvas */
-	c = eon_canvas_new(d);
-	ekeko_object_child_append((Ekeko_Object *)d, (Ekeko_Object *)c);
 
 	return d;
 }
 
-EAPI Eon_Document * eon_document_void_new(const char *engine, int w, int h, const char *options)
+EAPI Eon_Canvas * eon_document_layout_get(Eon_Document *d)
 {
-	Eon_Document *d;
-
-	d = _document_new(engine, w, h, options);
-
-	return d;
-}
-
-/* FIXME remove this */
-EAPI Eon_Canvas * eon_document_canvas_get(Eon_Document *d)
-{
-	return d->canvas;
+	return d->layout;
 }
 
 /* FIXME remove this */
