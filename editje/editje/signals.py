@@ -63,7 +63,7 @@ class SignalsList(CList):
         self.select(data)
 
     def _signal_removed(self, emissor, data):
-        self.remove(data)
+        self.view.remove(data)
 
     def _signal_changed(self, emissor, data):
         if data != self._selected:
@@ -80,7 +80,10 @@ class SignalsList(CList):
         NewSignalPopUp(self.parent).open()
 
     def remove(self):
-        pass
+        if self._selected:
+            signal = self._selected
+            self.select("")
+            self.e.signal_del(signal)
 
 
 class SignalsListView(CListView):

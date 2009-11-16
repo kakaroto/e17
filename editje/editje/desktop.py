@@ -112,30 +112,46 @@ class DesktopView(View, elementary.Scroller):
     part = property(fset=_part_set)
 
     def _get_relative_part(self, part):
-        if not part:
-            return self.manager.group
-        else:
-            return self._group.part_object_get(part)
+        part = self._group.part_object_get(part)
+        if part:
+            return part
+        return self._group
 
     def part_rel1x_set(self, data):
         self.rel1x_to, rel, ofs = data
         to = self._get_relative_part(self.rel1x_to)
-        self.manager.rel1x = (to, rel, ofs)
+        if self.rel1x_to and to == self._group:
+            self.rel1x_to = ""
+            self.part_rel1x_change(rel, ofs)
+        else:
+            self.manager.rel1x = (to, rel, ofs)
 
     def part_rel1y_set(self, data):
         self.rel1y_to, rel, ofs = data
         to = self._get_relative_part(self.rel1y_to)
-        self.manager.rel1y = (to, rel, ofs)
+        if self.rel1y_to and to == self._group:
+            self.rel1y_to = ""
+            self.part_rel1y_change(rel, ofs)
+        else:
+            self.manager.rel1y = (to, rel, ofs)
 
     def part_rel2x_set(self, data):
         self.rel2x_to, rel, ofs = data
         to = self._get_relative_part(self.rel2x_to)
-        self.manager.rel2x = (to, rel, ofs)
+        if self.rel2x_to and to == self._group:
+            self.rel2x_to = ""
+            self.part_rel2x_change(rel, ofs)
+        else:
+            self.manager.rel2x = (to, rel, ofs)
 
     def part_rel2y_set(self, data):
         self.rel2y_to, rel, ofs = data
         to = self._get_relative_part(self.rel2y_to)
-        self.manager.rel2y = (to, rel, ofs)
+        if self.rel2y_to and to == self._group:
+            self.rel2y_to = ""
+            self.part_rel2y_change(rel, ofs)
+        else:
+            self.manager.rel2y = (to, rel, ofs)
 
     def part_clicked(self, part):
         self.controller.e.part.name = name
@@ -384,7 +400,7 @@ class Handler(edje.Edje):
 
     def __mouse_down_cb(self, obj, event):
         self._parent.parent_view.scroll_hold_push()
-        self._parent.parent_view.scroll_freeze_push()
+        self._start_region = self._parent.parent_view.region_get()
         self._start = event.position.output.xy
         self._last = self._start
         self._move_animator = ecore.animator_add(self.__move_animator_do)
@@ -396,17 +412,22 @@ class Handler(edje.Edje):
             return True
         self._last = cur
         x, y = cur
+        sx, sy, sw, sh = self._parent.parent_view.region_get()
         dw = x - self._start[0]
+        dw += sx - self._start_region[0]
         dh = y - self._start[1]
+        dh += sy - self._start_region[1]
         self.move(dw, dh)
         return True
 
     def __mouse_up_cb(self, obj, event):
+        sx, sy, sw, sh = self._parent.parent_view.region_get()
         dw = event.position.output[0] - self._start[0]
+        dw += sx - self._start_region[0]
         dh = event.position.output[1] - self._start[1]
+        dh += sy - self._start_region[1]
         self.up(dw, dh)
 
-        self._parent.parent_view.scroll_freeze_pop()
         self._parent.parent_view.scroll_hold_pop()
 
         del self._start
@@ -428,11 +449,15 @@ class GroupListener(object):
             self.top_left = group.bottom_right
             group.on_move_add(self.group_move)
             group.on_resize_add(self.group_move)
+            group.on_del_add(self._group_del_cb)
             self.group_move(group)
             self.show()
         else:
             self._group = None
             self.hide()
+
+    def _group_del_cb(self, obj):
+        self._group = None
 
     group = property(fset=_group_set)
 
@@ -487,11 +512,15 @@ class PartListener(object):
             self._part = part
             part.on_move_add(self.part_move)
             part.on_resize_add(self.part_move)
+            part.on_del_add(self._part_del_cb)
             self.part_move(part)
             self.show()
         else:
             self._part = None
             self.hide()
+
+    def _part_del_cb(self, obj):
+        self._part = None
 
     part = property(fset=_part_set)
 

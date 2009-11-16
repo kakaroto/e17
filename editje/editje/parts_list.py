@@ -43,7 +43,7 @@ class PartsList(CList):
         self._view = PartsListView(self, self.parent.view)
 
     def _parts_update(self, emissor, data):
-        self.populate(data)
+        self.populate(data[::-1])
 
     def _part_added(self, emissor, data):
         self.add(data)
@@ -51,7 +51,7 @@ class PartsList(CList):
         self.select(data)
 
     def _part_removed(self, emissor, data):
-        self.remove(data)
+        self.view.remove(data)
 
     def _part_changed(self, emissor, data):
         if data != self._selected:
@@ -68,15 +68,18 @@ class PartsList(CList):
         NewPart(self.parent).open()
 
     def remove(self):
-        return
         if self._selected:
-            self.e.part_del(self._selected)
+            part = self._selected
+            self.select("")
+            self.e.part_del(part)
 
     def up(self):
-        return
+        self.e.part._part.restack_above()
+        self.e._parts_reload_cb(self, None)
 
     def down(self):
-        return
+        self.e.part._part.restack_below()
+        self.e._parts_reload_cb(self, None)
 
 
 class PartsListView(CListView):

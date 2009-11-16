@@ -42,7 +42,7 @@ class EditablePart(Manager, object):
 
     def _part_removed_cb(self, emissor, data):
         if self._name == data:
-            self.name = ""
+            self.name = None
 
     # Name
     def _name_set(self, value):

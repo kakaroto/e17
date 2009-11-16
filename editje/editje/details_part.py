@@ -105,6 +105,8 @@ class PartDetails(EditjeDetails):
             self.e.part._part.effect = self._effects.index(value)
 
     def _part_update(self, emissor, data):
+        if not self.e.part._part:
+            return
         self._header_table["name"].value = self.e.part.name
         type = self._part_type_to_text(self.e.part._part.type)
         self._header_table["type"].value = type
