@@ -1,0 +1,11 @@
+Login:		tiago
+IRC Nick:	tiagofalcao
+Name:		Tiago Rezende Campos Falcao
+Location:	Campinas, Brazil
+E-Mail:		tiago@profusion.mobi
+WWW:		http://www.tiagofalcao.com
+Managing:	
+Contributing:	editje
+Group:		Applications
+Platform:	Ubuntu (Linux)
+GeoData:	-22.82310 -47.08770
