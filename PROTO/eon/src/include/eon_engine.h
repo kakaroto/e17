@@ -21,7 +21,7 @@
 struct _Eon_Engine
 {
 	/* document callbacks */
-	void * (*document_create)(Eon_Document *d, const char *options);
+	void * (*document_create)(Eon_Document *d, int w, int h, const char *options);
 	void (*document_delete)(void *);
 	/* canvas callbacks */
 	void * (*canvas_create)(void *d, Eon_Canvas *c, Eina_Bool root, int w, int h);
@@ -85,7 +85,7 @@ struct _Eon_Engine
 
 EAPI Ekeko_Type *eon_engine_type_get(void);
 
-EAPI void * eon_engine_document_create(Eon_Engine *e, Eon_Document *d, const char *options);
+EAPI void * eon_engine_document_create(Eon_Engine *e, Eon_Document *d, int w, int h, const char *options);
 
 EAPI Eina_Bool eon_engine_canvas_blit(Eon_Engine *e, void *sc, Eina_Rectangle *r, void *c, Eina_Rectangle *sr);
 EAPI Eina_Bool eon_engine_canvas_flush(Eon_Engine *e, void *c, Eina_Rectangle *r);

@@ -61,9 +61,9 @@ Eon_Engine * eon_engine_get(const char *name)
  *                                   API                                      *
  *============================================================================*/
 EAPI void * eon_engine_document_create(Eon_Engine *e, Eon_Document *d,
-		const char *options)
+		int w, int h, const char *options)
 {
-	return e->document_create(d, options);
+	return e->document_create(d, w, h, options);
 }
 
 EAPI void * eon_engine_canvas_create(Eon_Engine *e, void *cd, Eon_Canvas *c, Eina_Bool root, uint32_t w, uint32_t h)

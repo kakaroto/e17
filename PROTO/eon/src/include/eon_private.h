@@ -46,13 +46,6 @@
 #define EON_TYPE_TRIGGER "trigger"
 #define EON_TYPE_SETTER "setter"
 
-#define EON_TYPE_SHAPE "shape"
-#define EON_TYPE_SHAPE_SQUARE "shape_square"
-#define EON_TYPE_TEXT "text"
-#define EON_TYPE_RECT "rect"
-#define EON_TYPE_POLYGON "polygon"
-#define EON_TYPE_CIRCLE "circle"
-
 #define EON_TYPE_PAINT "paint"
 #define EON_TYPE_PAINT_SQUARE "paint_square"
 #define EON_TYPE_COMPOUND "compound"
@@ -66,8 +59,15 @@
 #define EON_TYPE_GRID "grid"
 #define EON_TYPE_BUFFER "buffer"
 
-#define EON_TYPE_CANVAS "canvas"
+#define EON_TYPE_SHAPE "shape"
+#define EON_TYPE_SHAPE_SQUARE "shape_square"
+#define EON_TYPE_TEXT "text"
+#define EON_TYPE_RECT "rect"
+#define EON_TYPE_POLYGON "polygon"
+#define EON_TYPE_CIRCLE "circle"
+
 #define EON_TYPE_LAYOUT "layout"
+#define EON_TYPE_CANVAS "canvas"
 
 #define EON_TYPE_FILTER "filter"
 #define EON_TYPE_FILTER_EFFECT "Eon_Filter_Effect"
@@ -119,6 +119,12 @@ void eon_coord_length_change(const Ekeko_Object *o, Eon_Coord *dst, Eon_Coord *c
 		const char *levent, Event_Listener el);
 
 /* Paint */
+typedef struct _Eon_Paint_Coords_Event
+{
+	Ekeko_Event ev;
+	Eina_Rectangle coords;
+} Eon_Paint_Coords_Event;
+
 void eon_paint_change(Eon_Paint *p);
 Eina_Bool eon_paint_appendable(Ekeko_Object *p, Ekeko_Object *child);
 void eon_paint_geometry_set(Eon_Paint *p, Eina_Rectangle *rect);

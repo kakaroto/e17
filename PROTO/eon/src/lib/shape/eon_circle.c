@@ -79,7 +79,7 @@ static void _x_change(const Ekeko_Object *o, Ekeko_Event *e, void *data)
 	eon_paint_square_w_get(l, &w);
 	eon_coord_change(o, &prv->x, em->curr->value.pointer_value,
 			em->prev->value.pointer_value, x.final, w.final, l,
-			EON_CANVAS_X_CHANGED, EON_CANVAS_W_CHANGED,
+			EON_PAINT_SQUARE_X_CHANGED, EON_PAINT_SQUARE_W_CHANGED,
 			_x_inform);
 	_update_geometry(s);
 }
@@ -103,7 +103,7 @@ static void _y_change(const Ekeko_Object *o, Ekeko_Event *e, void *data)
 	eon_paint_square_h_get(l, &h);
 	eon_coord_change(o, &prv->y, em->curr->value.pointer_value,
 			em->prev->value.pointer_value, y.final, h.final, l,
-			EON_CANVAS_Y_CHANGED, EON_CANVAS_H_CHANGED,
+			EON_PAINT_SQUARE_Y_CHANGED, EON_PAINT_SQUARE_H_CHANGED,
 			_y_inform);
 	_update_geometry(s);
 }

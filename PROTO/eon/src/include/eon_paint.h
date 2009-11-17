@@ -60,6 +60,8 @@ typedef struct _Eon_Paint_Private Eon_Paint_Private;
 struct _Eon_Paint
 {
 	Eon_Object base;
+	Eon_Paint_Private *prv;
+
 	/* called whenever the engine wants to instantiate a new paint object */
 	void *(*create)(Eon_Engine *e, Eon_Paint *s);
 	/* called whenever the paint is going to be rendered */
@@ -69,7 +71,12 @@ struct _Eon_Paint
 	Eina_Bool (*is_inside)(Eon_Paint *p, int x, int y);
 	/* called whenever the paint is going to be destroyed */
 	void (*free)(Eon_Engine *e, void *engine_data);
-	Eon_Paint_Private *prv;
+	/* called when a parent paint needs to update the coordinates
+	 * of its child. The parea defines the area the parent wants
+	 * the child to draw
+	 * FIXME remove this
+	 */
+	void (*coordinates_update)(Eon_Paint *p, Eina_Rectangle *parea);
 };
 /*============================================================================*
  *                                Functions                                   *

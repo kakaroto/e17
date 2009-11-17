@@ -25,6 +25,7 @@
 /*============================================================================*
  *                                  Local                                     *
  *============================================================================*/
+#define PRIVATE(o) ((Eon_Document_Private *)((Eon_Document *)(o))->prv)
 #define DBG(...) EINA_LOG_DOM_DBG(_dom, __VA_ARGS__)
 #define INF(...) EINA_LOG_DOM_INFO(_dom, __VA_ARGS__)
 #define WRN(...) EINA_LOG_DOM_WARN(_dom, __VA_ARGS__)
@@ -34,10 +35,8 @@ static int _dom = -1;
 static Ecore_Idle_Enterer *_idler = NULL;
 static Eina_List *_documents = NULL;
 
-struct _Eon_Document
+struct _Eon_Document_Private
 {
-	Ekeko_Object parent;
-
 	struct {
 		char *name;
 		void *data;
@@ -57,13 +56,16 @@ struct _Eon_Document
 	} vm;
 };
 
+static Ekeko_Type * _document_type_get(void);
+
 /* Called whenever an object changes it's id */
 static void _id_change(const Ekeko_Object *o, Ekeko_Event *e, void *data)
 {
 	Eon_Document *d = (Eon_Document *)o;
+	Eon_Document_Private *prv = PRIVATE(o);
 	Ekeko_Event_Mutation *em = (Ekeko_Event_Mutation *)e;
 
-	eina_hash_add(d->ids, em->curr->value.string_value, o);
+	eina_hash_add(prv->ids, em->curr->value.string_value, o);
 }
 
 static int _idler_cb(void *data)
@@ -81,26 +83,46 @@ static int _idler_cb(void *data)
 static int _animation_cb(void *data)
 {
 	Eon_Document *d = data;
+	Eon_Document_Private *prv = PRIVATE(d);
 
-	etch_timer_tick(d->etch);
+	etch_timer_tick(prv->etch);
 	return 1;
 }
 
-/* Called whenever a child is appended to the document */
+/* Called whenever a child is appended to the document indirectly */
 static void _child_append_cb(const Ekeko_Object *o, Ekeko_Event *e, void *data)
 {
 	Ekeko_Event_Mutation *em = (Ekeko_Event_Mutation *)e;
 	Eon_Document *d = (Eon_Document *)o;
+	Eon_Document_Private *prv = PRIVATE(d);
 
 	ekeko_event_listener_add(e->target, EKEKO_OBJECT_ID_CHANGED, _id_change, EINA_FALSE, d);
 	/* check that the parent is the document */
 	if (em->related != o)
 		return;
 	/* assign the correct pointers */
-	if (!d->layout && ekeko_type_instance_is_of(e->target, EON_TYPE_LAYOUT))
-		d->layout = (Eon_Canvas *)e->target;
-	if (!d->style && ekeko_type_instance_is_of(e->target, EON_TYPE_STYLE))
-		d->style = (Eon_Style *)e->target;
+	if (!prv->layout && ekeko_type_instance_is_of(e->target, EON_TYPE_LAYOUT))
+		prv->layout = (Eon_Layout *)e->target;
+	if (!prv->style && ekeko_type_instance_is_of(e->target, EON_TYPE_STYLE))
+		prv->style = (Eon_Style *)e->target;
+}
+
+static void _child_appended(Ekeko_Object *o, Ekeko_Event *e, void *data)
+{
+	Ekeko_Event_Mutation *em = (Ekeko_Event_Mutation *)e;
+	Eon_Document *d = (Eon_Document *)o;
+	Eon_Document_Private *prv = PRIVATE(d);
+
+	if (!prv->layout && ekeko_type_instance_is_of(e->target, EON_TYPE_LAYOUT))
+	{
+		Eon_Paint *p = EON_PAINT(e->target);
+
+		eon_paint_coordinates_update(p, 0, 0, prv->size.w, prv->size.h);
+		/* in case the coordinates are relative also setup the callbacks */
+		prv->layout = (Eon_Layout *)e->target;
+	}
+	else if (!prv->style && ekeko_type_instance_is_of(e->target, EON_TYPE_STYLE))
+		prv->style = (Eon_Style *)e->target;
 }
 
 static void _event_object_new(Eon_Document_Object_New *ev, char *name, Ekeko_Object *o)
@@ -114,6 +136,7 @@ static void _event_object_new(Eon_Document_Object_New *ev, char *name, Ekeko_Obj
 static void _ctor(Ekeko_Object *o)
 {
 	Eon_Document *d;
+	Eon_Document_Private *prv = PRIVATE(d);
 
 	/* FIXME do we need a single idler or better one idler per document? */
 	if (!_idler)
@@ -122,12 +145,13 @@ static void _ctor(Ekeko_Object *o)
 		_idler = ecore_idle_enterer_add(_idler_cb, NULL);
 	}
 	d = (Eon_Document *)o;
+	d->prv = prv = ekeko_type_instance_private_get(_document_type_get(), o);
 	/* setup the animation system */
-	d->etch = etch_new();
-	etch_timer_fps_set(d->etch, 30);
-	d->anim_cb = ecore_timer_add(1.0f/30.0f, _animation_cb, d);
+	prv->etch = etch_new();
+	etch_timer_fps_set(prv->etch, 30);
+	prv->anim_cb = ecore_timer_add(1.0f/30.0f, _animation_cb, d);
 	/* the id system */
-	d->ids = eina_hash_string_superfast_new(NULL);
+	prv->ids = eina_hash_string_superfast_new(NULL);
 	/* the event listeners */
 	ekeko_event_listener_add(o, EKEKO_EVENT_OBJECT_APPEND, _child_append_cb, EINA_TRUE, NULL);
 }
@@ -140,15 +164,16 @@ static void _dtor(void *canvas)
 static Eina_Bool _appendable(Ekeko_Object *parent, Ekeko_Object *child)
 {
 	Eon_Document *d = (Eon_Document *)parent;
+	Eon_Document_Private *prv = PRIVATE(d);
 
 	/* we only allow style and canvas children */
 	if ((!ekeko_type_instance_is_of(child, EON_TYPE_CANVAS)) &&
 			(!ekeko_type_instance_is_of(child, EON_TYPE_STYLE)))
 		return EINA_FALSE;
 	/* we should use the childs list instead as we might have more than one canvas */
-	if (d->layout && ekeko_type_instance_is_of(child, EON_TYPE_CANVAS))
+	if (prv->layout && ekeko_type_instance_is_of(child, EON_TYPE_CANVAS))
 		return EINA_FALSE;
-	if (d->style && ekeko_type_instance_is_of(child, EON_TYPE_STYLE))
+	if (prv->style && ekeko_type_instance_is_of(child, EON_TYPE_STYLE))
 		return EINA_FALSE;
 
 	return EINA_TRUE;
@@ -161,12 +186,9 @@ static Ekeko_Type * _document_type_get(void)
 	if (!type)
 	{
 		_dom = eina_log_domain_register("eon:document", NULL);
-		type = ekeko_type_new(EON_TYPE_DOCUMENT, 0,
-				sizeof(Eon_Document), ekeko_object_type_get(),
+		type = ekeko_type_new(EON_TYPE_DOCUMENT, sizeof(Eon_Document),
+				sizeof(Eon_Document_Private), ekeko_object_type_get(),
 				_ctor, _dtor, _appendable);
-		/*EON_DOCUMENT_SIZE = EKEKO_TYPE_PROP_SINGLE_ADD(type, "size",
-				EKEKO_PROPERTY_RECTANGLE,
-				OFFSET(Eon_Document, size));*/
 	}
 
 	return type;
@@ -175,15 +197,17 @@ static Ekeko_Type * _document_type_get(void)
 static Eon_Document * _document_new(const char *engine, int w, int h, const char *options)
 {
 	Eon_Document *d;
+	Eon_Document_Private *prv;
 	Ekeko_Value v;
 
 	d = ekeko_type_instance_new(_document_type_get());
 	if (!d)
 		return NULL;
 
+	prv = PRIVATE(d);
 	/* the gfx engine */
-	d->engine.backend = eon_engine_get(engine);
-	d->engine.data = eon_engine_document_create(d->engine.backend, d, options);
+	prv->engine.backend = eon_engine_get(engine);
+	prv->engine.data = eon_engine_document_create(prv->engine.backend, d, w, h, options);
 	eon_document_resize(d, w, h);
 #if 0
 	/* the script engine */
@@ -201,24 +225,32 @@ static Eon_Document * _document_new(const char *engine, int w, int h, const char
  *============================================================================*/
 Eon_Engine * eon_document_engine_get(Eon_Document *d)
 {
-	return d->engine.backend;
+	Eon_Document_Private *prv = PRIVATE(d);
+
+	return prv->engine.backend;
 }
 
 void * eon_document_engine_data_get(Eon_Document *d)
 {
-	return d->engine.data;
+	Eon_Document_Private *prv = PRIVATE(d);
+
+	return prv->engine.data;
 }
 
 Etch * eon_document_etch_get(Eon_Document *d)
 {
-	return d->etch;
+	Eon_Document_Private *prv = PRIVATE(d);
+
+	return prv->etch;
 }
 
 void eon_document_script_execute(Eon_Document *d, const char *fname, Ekeko_Object *o)
 {
-	if (!d->vm.sm || !d->vm.sm->execute)
+	Eon_Document_Private *prv = PRIVATE(d);
+
+	if (!prv->vm.sm || !prv->vm.sm->execute)
 		return;
-	d->vm.sm->execute(d->vm.data, fname, o);
+	prv->vm.sm->execute(prv->vm.data, fname, o);
 }
 
 void eon_document_script_unload(Eon_Document *d, const char *file)
@@ -228,16 +260,27 @@ void eon_document_script_unload(Eon_Document *d, const char *file)
 
 void eon_document_script_load(Eon_Document *d, const char *file)
 {
-	if (!d->vm.sm)
+	Eon_Document_Private *prv = PRIVATE(d);
+
+	if (!prv->vm.sm)
 		return;
-	d->vm.sm->load(d->vm.data, file);
+	prv->vm.sm->load(prv->vm.data, file);
 }
 
+void eon_document_resize(Eon_Document *d, int w, int h)
+{
+	Eon_Document_Private *prv = PRIVATE(d);
+
+	prv->size.w = w;
+	prv->size.h = h;
+
+	if (prv->layout)
+		return;
+	eon_paint_coordinates_update((Eon_Paint *)prv->layout, 0, 0, w, h);
+}
 /*============================================================================*
  *                                   API                                      *
  *============================================================================*/
-Ekeko_Property_Id EON_DOCUMENT_SIZE;
-
 /**
  * Creates a new document
  */
@@ -255,52 +298,62 @@ EAPI Eon_Document * eon_document_new(const char *engine, int w, int h, const cha
 	return d;
 }
 
-EAPI Eon_Canvas * eon_document_layout_get(Eon_Document *d)
+EAPI Eon_Layout * eon_document_layout_get(Eon_Document *d)
 {
-	return d->layout;
+	Eon_Document_Private *prv = PRIVATE(d);
+
+	return prv->layout;
 }
 
 /* FIXME remove this */
 EAPI Eon_Style * eon_document_style_get(Eon_Document *d)
 {
-	return d->style;
+	Eon_Document_Private *prv = PRIVATE(d);
+
+	return prv->style;
 }
 
 EAPI void eon_document_size_get(Eon_Document *d, int *w, int *h)
 {
-	if (w) *w = d->size.w;
-	if (h) *h = d->size.h;
-}
+	Eon_Document_Private *prv = PRIVATE(d);
 
-/* FIXME this is wrong! the document isnt resized from outside */
-EAPI void eon_document_resize(Eon_Document *d, int w, int h)
-{
-	Ekeko_Value v;
-
-	ekeko_value_rectangle_coords_from(&v, 0, 0, w, h);
-	ekeko_object_property_value_set((Ekeko_Object *)d, "size", &v);
+	if (w) *w = prv->size.w;
+	if (h) *h = prv->size.h;
 }
 
 EAPI Ekeko_Object * eon_document_object_get_by_id(Eon_Document *d, const char *id)
 {
-	return eina_hash_find(d->ids, id);
-}
+	Eon_Document_Private *prv = PRIVATE(d);
 
+	return eina_hash_find(prv->ids, id);
+}
+/**
+ * All animations of a document will be paused
+ * @param d The document to pause
+ */
 EAPI void eon_document_pause(Eon_Document *d)
 {
-	if (!d->anim_cb)
+	Eon_Document_Private *prv = PRIVATE(d);
+
+	if (!prv->anim_cb)
+
 		return;
 
-	ecore_timer_del(d->anim_cb);
-	d->anim_cb = NULL;
+	ecore_timer_del(prv->anim_cb);
+	prv->anim_cb = NULL;
 }
-
+/**
+ * All animations of a document will play
+ * @param d The document to play
+ */
 EAPI void eon_document_play(Eon_Document *d)
 {
-	if (d->anim_cb)
+	Eon_Document_Private *prv = PRIVATE(d);
+
+	if (prv->anim_cb)
 		return;
 
-	d->anim_cb = ecore_timer_add(1.0f/30.0f, _animation_cb, d);
+	prv->anim_cb = ecore_timer_add(1.0f/30.0f, _animation_cb, d);
 }
 
 /**

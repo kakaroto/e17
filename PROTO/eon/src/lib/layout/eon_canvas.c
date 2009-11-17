@@ -162,6 +162,38 @@ static Eina_Bool _subcanvas_is_inside(Ekeko_Canvas *c, int x, int y)
 	return EINA_TRUE;
 }
 
+static void _child_appended(Ekeko_Object *o, Ekeko_Event *e, void *data)
+{
+	Ekeko_Event_Mutation *em = (Ekeko_Event_Mutation *)e;
+	Eon_Canvas *c = (Eon_Canvas *)o;
+	Eon_Canvas_Private *prv = PRIVATE(c);
+	Eon_Coord x, y, w, h, zero;
+
+	/* whenever a child is appended the relative coordinates should
+	 * be calculated from this geometry
+	 */
+	if (ekeko_type_instance_is_of(e->target, EON_TYPE_PAINT_SQUARE))
+	{
+		Eon_Paint_Square *ps = EON_PAINT_SQUARE(e->target);
+
+		eon_paint_square_x_get(ps, &x);
+		eon_paint_square_y_get(ps, &y);
+		eon_paint_square_w_get(ps, &w);
+		eon_paint_square_h_get(ps, &h);
+	}
+	else if (ekeko_type_instance_is_of(e->target, EON_TYPE_SHAPE_SQUARE))
+	{
+		Eon_Shape_Square *ss = EON_PAINT_SQUARE(e->target);
+
+		eon_shape_square_x_get(ss, &x);
+		eon_shape_square_y_get(ss, &y);
+		eon_shape_square_w_get(ss, &w);
+		eon_shape_square_h_get(ss, &h);
+	}
+	else return;
+
+}
+
 static void _child_append_cb(const Ekeko_Object *o, Ekeko_Event *e, void *data)
 {
 	Eon_Canvas *c;

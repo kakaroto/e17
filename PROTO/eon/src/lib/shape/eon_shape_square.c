@@ -22,7 +22,6 @@
  *                                  Local                                     *
  *============================================================================*/
 #define PRIVATE(d) ((Eon_Shape_Square_Private *)((Eon_Shape_Square *)(d))->private)
-#define EON_TYPE_SHAPE_SQUARE "Eon_Shape_Square"
 struct _Eon_Shape_Square_Private
 {
 	Eon_Coord x, y, w, h;
@@ -91,7 +90,7 @@ static void _x_change(const Ekeko_Object *o, Ekeko_Event *e, void *data)
 	eon_paint_square_w_get(l, &w);
 	eon_coord_change(o, &prv->x, em->curr->value.pointer_value,
 			em->prev->value.pointer_value, x.final, w.final, l,
-			EON_CANVAS_X_CHANGED, EON_CANVAS_W_CHANGED,
+			EON_PAINT_SQUARE_X_CHANGED, EON_PAINT_SQUARE_W_CHANGED,
 			_x_inform);
 }
 
@@ -114,7 +113,7 @@ static void _y_change(const Ekeko_Object *o, Ekeko_Event *e, void *data)
 	eon_paint_square_h_get(l, &h);
 	eon_coord_change(o, &prv->y, em->curr->value.pointer_value,
 			em->prev->value.pointer_value, y.final, h.final, l,
-			EON_CANVAS_Y_CHANGED, EON_CANVAS_H_CHANGED,
+			EON_PAINT_SQUARE_Y_CHANGED, EON_PAINT_SQUARE_H_CHANGED,
 			_y_inform);
 }
 
@@ -136,7 +135,7 @@ static void _w_change(const Ekeko_Object *o, Ekeko_Event *e, void *data)
 	eon_paint_square_w_get(l, &w);
 	eon_coord_length_change(o, &prv->w, em->curr->value.pointer_value,
 			em->prev->value.pointer_value, w.final, l,
-			EON_CANVAS_W_CHANGED, _w_inform);
+			EON_PAINT_SQUARE_W_CHANGED, _w_inform);
 }
 
 /* Called whenever the h property changes */
@@ -157,7 +156,7 @@ static void _h_change(const Ekeko_Object *o, Ekeko_Event *e, void *data)
 	eon_paint_square_h_get(l, &h);
 	eon_coord_length_change(o, &prv->h, em->curr->value.pointer_value,
 			em->prev->value.pointer_value, h.final, l,
-			EON_CANVAS_H_CHANGED, _h_inform);
+			EON_PAINT_SQUARE_H_CHANGED, _h_inform);
 }
 
 /* whenever the parent changes, we should set the new real geometry
@@ -187,13 +186,13 @@ static void _parent_set(const Ekeko_Object *o, Ekeko_Event *e, void *data)
 
 	printf("Setting the new parent\n");
 	eon_coord_length_change(o, &prv->h, &prv->h, &zero, h.final, p,
-			EON_CANVAS_H_CHANGED, _h_inform);
+			EON_PAINT_SQUARE_H_CHANGED, _h_inform);
 	eon_coord_length_change(o, &prv->w, &prv->w, &zero, w.final, p,
-			EON_CANVAS_W_CHANGED, _w_inform);
+			EON_PAINT_SQUARE_W_CHANGED, _w_inform);
 	eon_coord_change(o, &prv->y, &prv->y, &zero, y.final, h.final, p,
-			EON_CANVAS_Y_CHANGED, EON_CANVAS_H_CHANGED, _y_inform);
+			EON_PAINT_SQUARE_Y_CHANGED, EON_PAINT_SQUARE_H_CHANGED, _y_inform);
 	eon_coord_change(o, &prv->x, &prv->x, &zero, x.final, w.final, p,
-			EON_CANVAS_X_CHANGED, EON_CANVAS_W_CHANGED, _x_inform);
+			EON_PAINT_SQUARE_X_CHANGED, EON_PAINT_SQUARE_W_CHANGED, _x_inform);
 }
 
 static void _ctor(Ekeko_Object *o)

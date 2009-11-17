@@ -370,6 +370,11 @@ void eon_paint_zindex_set(Eon_Paint *r, int zindex)
 	prv = PRIVATE(r);
 	prv->zindex = zindex;
 }
+
+void eon_paint_coordinates_update(Eon_Paint *p, Eina_Rectangle *parea)
+{
+	if (p->coordinates_update) p->coordinates_update(p, parea);
+}
 /*============================================================================*
  *                                   API                                      *
  *============================================================================*/

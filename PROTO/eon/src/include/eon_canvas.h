@@ -20,19 +20,9 @@
 /*============================================================================*
  *                                 Events                                     *
  *============================================================================*/
-#define EON_CANVAS_X_CHANGED "xChanged"
-#define EON_CANVAS_Y_CHANGED "yChanged"
-#define EON_CANVAS_W_CHANGED "wChanged"
-#define EON_CANVAS_H_CHANGED "hChanged"
-#define EON_CANVAS_MATRIX_CHANGED "matrixChanged"
 /*============================================================================*
  *                               Properties                                   *
  *============================================================================*/
-extern Ekeko_Property_Id EON_CANVAS_X;
-extern Ekeko_Property_Id EON_CANVAS_Y;
-extern Ekeko_Property_Id EON_CANVAS_W;
-extern Ekeko_Property_Id EON_CANVAS_H;
-extern Ekeko_Property_Id EON_CANVAS_MATRIX;
 /*============================================================================*
  *                                 Class                                      *
  *============================================================================*/

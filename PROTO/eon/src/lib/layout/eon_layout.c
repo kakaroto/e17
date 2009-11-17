@@ -41,6 +41,7 @@ struct _Eon_Layout_Private
 	Eina_Tiler *tiler;
 	Eina_List *renderables;
 	Eina_List *obscures;
+	Eina_List *paints;
 	Eina_Inlist *inputs;
 	Eon_Paint *focused;
 };
@@ -293,7 +294,7 @@ static void _child_append_cb(Ekeko_Object *o, Ekeko_Event *e, void *data)
 	Ekeko_Event_Mutation *em = (Ekeko_Event_Mutation *)e;
 	Eon_Layout_Private *prv;
 
-	/* TODO 
+	/* TODO
 	 * + check if object is the same as the event.rel or
 	 * check if the event.target is not a layout and it is different
 	 * than this
@@ -302,15 +303,9 @@ static void _child_append_cb(Ekeko_Object *o, Ekeko_Event *e, void *data)
 	 * + What happens if the child is of type renderable
 	 * *and* not a layout and has renderable objects?
 	 */
-
-	/* in case the child's layout is not this, skip */
-	if (eon_paint_layout_get((Eon_Paint *)e->target) != (Eon_Layout *)o)
-	{
-		DBG("Skipping this %p renderable as it already has a layout %p and is not this %p\n",
-				e->target,
-				eon_paint_layout_get((Eon_Paint *)e->target), o);
+	if (!ekeko_type_instance_is_of(e->target, EON_TYPE_PAINT))
 		return;
-	}
+
 	/*
 	 * TODO if the appended child is a layout, register every UI event to this
 	 * object, so when they arrive insert those events into the new layout
@@ -331,6 +326,8 @@ static void _child_append_cb(Ekeko_Object *o, Ekeko_Event *e, void *data)
 			ekeko_object_type_name_get(em->related));
 
 	prv = PRIVATE(em->related);
+	prv->paints = eina_list_append(prv->paints, em->related);
+
 	ekeko_event_listener_add(e->target, EON_PAINT_VISIBILITY_CHANGED,
 			_child_visibility_change, EINA_FALSE, o);
 	ekeko_event_listener_add(e->target, EON_PAINT_GEOMETRY_CHANGED,
@@ -353,7 +350,7 @@ static void _ctor(Ekeko_Object *o)
 	ekeko_event_listener_add(o, EON_PAINT_GEOMETRY_CHANGED, _geometry_change, EINA_FALSE, NULL);
 	/* TODO add the event listener when the object has finished the process() function */
 	ekeko_event_listener_add(o, EKEKO_EVENT_OBJECT_PROCESS, _process_cb, EINA_FALSE, NULL);
-	ekeko_event_listener_add(o, EKEKO_EVENT_OBJECT_APPEND, _child_append_cb, EINA_TRUE, NULL);
+	ekeko_event_listener_add(o, EKEKO_EVENT_OBJECT_APPEND, _child_append_cb, EINA_FALSE, NULL);
 }
 
 static void _dtor(Ekeko_Object *o)
@@ -364,16 +361,39 @@ static void _dtor(Ekeko_Object *o)
 	eina_tiler_free(prv->tiler);
 }
 
-static Eina_Bool _appendable(Ekeko_Object *parent, Ekeko_Object *child)
+/*============================================================================*
+ *                                 Global                                     *
+ *============================================================================*/
+Eina_Bool eon_layout_appendable(Ekeko_Object *parent, Ekeko_Object *child)
 {
 	if (!ekeko_type_instance_is_of(child, EON_TYPE_PAINT))
 		return EINA_FALSE;
 	return EINA_TRUE;
 }
-/*============================================================================*
- *                                 Global                                     *
- *============================================================================*/
 
+Eina_Bool eon_layout_coordinates_update(Eon_Layout *l, Eina_Rectangle *parea)
+{
+	Eon_Layout_Private *prv = PRIVATE(l);
+	Eina_List *el;
+	Eon_Paint *p;
+	Eon_Coord x, y, w, h;
+	Eina_Rectangle larea;
+
+	/* check that we actually have a relative coordinate around */
+	if (!eon_paint_square_coordinates_update((Eon_Paint_Square *)l, parea))
+		return EINA_FALSE;
+
+	eon_paint_square_coords_get((Eon_Paint_Square *)l, &x, &y, &w, &h);
+	larea.x = x.final;
+	larea.y = y.final;
+	larea.w = w.final;
+	larea.h = h.final;
+	EINA_LIST_FOREACH(prv->paints, el, p)
+	{
+		eon_paint_coordinates_update(p, &larea);
+	}
+	return EINA_TRUE;
+}
 /*============================================================================*
  *                                   API                                      *
  *============================================================================*/
@@ -389,7 +409,7 @@ Ekeko_Type * eon_layout_type_get(void)
 		type = ekeko_type_new(TYPE_NAME, sizeof(Eon_Layout),
 				sizeof(Eon_Layout_Private),
 				eon_paint_square_type_get(),
-				_ctor, _dtor, _appendable);
+				_ctor, _dtor, NULL);
 		/* the properties */
 		EON_LAYOUT_REDRAW = EKEKO_TYPE_PROP_DOUBLE_ADD(type, "redraw",
 				EKEKO_PROPERTY_BOOL,
@@ -401,20 +421,11 @@ Ekeko_Type * eon_layout_type_get(void)
 	return type;
 }
 
-EAPI void eon_layout_size_set(Eon_Layout *c, int w, int h)
-{
-	Eina_Rectangle rect;
-
-	rect.x = 0;
-	rect.y = 0;
-	rect.w = w;
-	rect.h = h;
-	eon_paint_geometry_set((Eon_Paint *)c, &rect);
-}
 /**
- * @brief Marks a rectangle on the layout as damaged, this area will be
+ * Marks a rectangle on the layout as damaged, this area will be
  * processed again. When the layout process that area it will no longer be
  * a damaged area
+ * @param c The layout
  * @param r Rectangle that defines the area damaged
  */
 EAPI void eon_layout_damage_add(Eon_Layout *c, Eina_Rectangle *r)
@@ -440,9 +451,10 @@ EAPI void eon_layout_damage_add(Eon_Layout *c, Eina_Rectangle *r)
 	}
 }
 /**
- * @brief Marks a rectangle area on the layout that will never be processed.
+ * Marks a rectangle area on the layout that will never be processed.
  * The area is kept on the layout until it is cleared with
  * layout_obscure_del()
+ * @param c The layout
  * @param r Rectangle that defines the obscure area
  */
 EAPI void eon_layout_obscure_add(Eon_Layout *c, Eina_Rectangle *r)

@@ -26,7 +26,6 @@
 /*============================================================================*
  *                                  Local                                     *
  *============================================================================*/
-//#define SDL_PURE
 #define SINGLE_BUFFER
 
 typedef struct _Engine_SDL_Document
@@ -137,7 +136,7 @@ static void _document_size_cb(const Ekeko_Object *o, Ekeko_Event *e, void *data)
 	_sdl_surface_new(sdoc,  em->curr->value.rect.w, em->curr->value.rect.h);
 }
 
-static void * document_create(Eon_Document *d, const char *options)
+static void * document_create(Eon_Document *d, int w, int h, const char *options)
 {
 	Engine_SDL_Document *sdoc;
 	Uint32 flags = SDL_SRCALPHA;
@@ -151,6 +150,7 @@ static void * document_create(Eon_Document *d, const char *options)
 	}
 	ecore_sdl_init(NULL);
 	SDL_Init(SDL_INIT_VIDEO);
+	_sdl_surface_new(sdoc, w, h);
 	/* whenever the size property changes recreate the surface */
 	ekeko_event_listener_add((Ekeko_Object *)d,
 			EON_DOCUMENT_SIZE_CHANGED, _document_size_cb,
@@ -319,28 +319,6 @@ static Eina_Bool canvas_flush(void *src, Eina_Rectangle *srect)
 	}
 	_unlock(s);
 	return _flush(s, srect);
-}
-
-static void _enesim_lock(void *src)
-{
-	Enesim_Surface *es = src;
-	SDL_Surface *s;
-
-	/* FIXME here we can have a SDL_Surface or an Enesim_Surface */
-	s = enesim_surface_private_get(es);
-	if (s)
-		_lock(s);
-}
-
-static void _enesim_unlock(void *src)
-{
-	Enesim_Surface *es = src;
-	SDL_Surface *s;
-
-	/* FIXME here we can have a SDL_Surface or an Enesim_Surface */
-	s = enesim_surface_private_get(es);
-	if (s)
-		_unlock(s);
 }
 
 static Eon_Engine _sdl_engine = {
