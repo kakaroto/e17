@@ -135,7 +135,7 @@ class WidgetColor(Widget):
         x, y, w, h = self.rect.geometry
 
         cw, ch = self.rect.evas.size
-        ow, oh = 200, 300
+        ow, oh = self.pop.popup.size_hint_min_get()
         ox = x - (ow - w) / 2
         oy = y - (oh - h) / 2
 

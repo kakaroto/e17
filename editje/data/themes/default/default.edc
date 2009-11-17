@@ -926,11 +926,11 @@ collections {
                state: "default" 0.0;
                rel1 {
                   relative: 0.0 0.0;
-                  offset: 10 5;
+                  offset: 15 15;
                }
                rel2 {
                   relative: 1.0 0.0;
-                  offset: -11 40;
+                  offset: -16 40;
                }
                image.normal: "bg2.png";
                fill {
@@ -961,14 +961,15 @@ collections {
             repeat_events: 1;
             description {
                state: "default" 0.0;
+               min: 200 150;
                rel1 {
                   to_y: "sample.bg";
                   relative: 0.0 1.0;
-                  offset: 0 10;
+                  offset: 5 10;
                }
                rel2 {
                   relative: 1.0 1.0;
-                  offset: -1 -11;
+                  offset: -6 -11;
                }
             }
          }
