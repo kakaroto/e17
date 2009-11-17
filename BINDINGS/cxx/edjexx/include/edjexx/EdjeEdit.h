@@ -19,6 +19,7 @@ namespace efl {
   
 /**
  * @todo port to EFLxx!
+ * @todo return error states with Exceptions?
  * @file
  * @brief Functions to deal with edje internal object. Don't use in standard
  * situations. The use of any of the edje_edit_* functions can break your

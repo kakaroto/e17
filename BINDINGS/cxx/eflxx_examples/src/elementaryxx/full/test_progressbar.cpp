@@ -12,12 +12,12 @@ typedef struct Progressbar
   ElmProgressbar *pb6;
   ElmProgressbar *pb7;
   bool run;
-  Ecore_Timer *timer; // TODO: port to EcoreTimer
+  EcoreTimer *timer;
 } Progressbar;
 
 static Progressbar _test_progressbar;
 
-static int _my_progressbar_value_set (void *data)
+static void _my_progressbar_value_set (EcoreTimer *timer)
 {
   double progress;
 
@@ -32,20 +32,16 @@ static int _my_progressbar_value_set (void *data)
     progress = 0.0;
   }
   
-  
   _test_progressbar.pb1->setValue (progress);
   _test_progressbar.pb4->setValue (progress);
   _test_progressbar.pb3->setValue (progress);
   _test_progressbar.pb6->setValue (progress);
   
-  if (progress < 1.0)
+  if (progress > 1.0)
   {
-    return ECORE_CALLBACK_RENEW;
+    _test_progressbar.run = false;
+    timer->del ();
   }
-  
-  _test_progressbar.run = false;
-
-  return ECORE_CALLBACK_CANCEL;
 }
 
 static void my_progressbar_test_start (Evas_Object *obj, void *event_info)
@@ -56,7 +52,8 @@ static void my_progressbar_test_start (Evas_Object *obj, void *event_info)
   
   if (!_test_progressbar.run)
   {
-    _test_progressbar.timer = ecore_timer_add (0.1, _my_progressbar_value_set, NULL);
+    _test_progressbar.timer = new EcoreTimer (0.1);
+    _test_progressbar.timer->timeout.connect (sigc::ptr_fun (&_my_progressbar_value_set));
     _test_progressbar.run = true;
   }
 }
@@ -69,7 +66,7 @@ static void my_progressbar_test_stop (Evas_Object *obj, void *event_info)
    
   if (_test_progressbar.run)
   {
-     ecore_timer_del(_test_progressbar.timer);
+     _test_progressbar.timer->del ();
      _test_progressbar.run = false;
   }
 }
