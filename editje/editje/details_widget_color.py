@@ -25,6 +25,8 @@ import colorpicker
 
 
 class WidgetColor(Widget):
+    padding_x = 20
+    padding_y = 20
 
     def __init__(self, parent):
         Widget.__init__(self)
@@ -137,15 +139,15 @@ class WidgetColor(Widget):
         ox = x - (ow - w) / 2
         oy = y - (oh - h) / 2
 
-        if ox < 0:
-            ox = 0
-        elif ox + ow >= cw:
-            ox = cw - ow
+        if ox - self.padding_x < 0:
+            ox = self.padding_x
+        elif ox + ow + self.padding_x >= cw:
+            ox = cw - ow - self.padding_x
 
-        if oy < 0:
-            oy = 0
-        elif oy + oh >= ch:
-            oy = ch - oh
+        if oy < self.padding_y:
+            oy = self.padding_y
+        elif oy + oh + self.padding_y>= ch:
+            oy = ch - oh - self.padding_y
 
         self.pop.move(ox, oy)
         self.pop.resize(ow, oh)
