@@ -187,13 +187,14 @@ class NewSignalPopUp(Wizard):
     def _add(self, popup, data):
         name = self._name.entry_get().replace("<br>", "")
         if name == "":
+            self._notify("Please set part name")
             return
 
         success = self._parent.e.signal_add(name, self._type)
         if success:
             self.close()
         else:
-            print "[ERROR] New Signal:", name, self._type
+            self._notify("Choice another name")
 
     def _cancel(self, popup, data):
         self.close()

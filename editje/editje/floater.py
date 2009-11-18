@@ -20,7 +20,7 @@ import os
 
 import evas
 from elementary import Layout, Button, InnerWindow, Box, Pager, Background, \
-                       Separator, Icon
+                       Separator, Icon, Label, Notify, ELM_NOTIFY_ORIENT_TOP
 
 import sysconfig
 
@@ -99,15 +99,20 @@ class Wizard(InnerWindow):
 
         self.__pages = {}
 
+        self.__notification = None
+
     def page_add(self, name, title=None):
         box = Box(self)
-        box.size_hint_weight_set(1.0, 1.0)
-        box.size_hint_align_set(-1.0, -1.0)
+        box.size_hint_weight_set(evas.EVAS_HINT_EXPAND,
+                                 evas.EVAS_HINT_EXPAND)
         box.show()
 
         content = Box(self)
-        content.size_hint_weight_set(1.0, 1.0)
-        content.size_hint_align_set(-1.0, -1.0)
+        content.size_hint_weight_set(evas.EVAS_HINT_EXPAND,
+                                     evas.EVAS_HINT_EXPAND)
+        content.size_hint_align_set(evas.EVAS_HINT_FILL,
+                                    evas.EVAS_HINT_FILL)
+        content.resize(100, 300)
         box.pack_end(content)
         content.show()
 
@@ -159,6 +164,29 @@ class Wizard(InnerWindow):
         if page:
             self.__layout.edje_get().part_text_set("title.text", page[0])
             self.__pager.content_promote(page[1])
+
+    def _notify(self, message):
+        if self.__notification:
+            self.__notification.hide()
+            self.__notification.delete()
+            self.__notification = None
+        self.__notification = Notify(self)
+        self.__notification.timeout_set(2)
+        self.__notification.orient_set(ELM_NOTIFY_ORIENT_TOP)
+
+        bx = Box(self)
+        bx.size_hint_weight_set(evas.EVAS_HINT_EXPAND,
+                                evas.EVAS_HINT_EXPAND)
+        bx.horizontal_set(True)
+        self.__notification.content_set(bx)
+        bx.show()
+
+        lb = Label(self)
+        lb.label_set(message)
+        bx.pack_end(lb)
+        lb.show()
+
+        self.__notification.show()
 
     def open(self):
         self._parent.block(True)

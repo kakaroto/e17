@@ -78,9 +78,14 @@ class NewAnimationPopUp(Wizard):
     def _add(self, popup, data):
         name = self._name.entry_get().replace("<br>", "")
         if name == "":
+            self._notify("Please set part name")
             return
 
-        self._parent.e.animation_add(name)
+        success = self._parent.e.animation_add(name)
+        if success:
+            self.close()
+        else:
+            self._notify("Choice another name")
 
     def _cancel(self, popup, data):
         self.close()

@@ -217,45 +217,48 @@ class Editable(Manager, object):
         self.event_emit("animations.changed", self.animations)
 
     def animation_add(self, name):
-        if not name in self._animations:
-            self._modificated = True
+        if name in self._animations:
+            return False
 
-            # END
-            endname = "@%s@end" % name
-            self.program_add(endname)
-            prog = self.program_get(endname)
-            prog.signal_emit("animation,end", name)
+        self._modificated = True
 
-            # START
-            startname = "@%s@0.00" % name
-            self.program_add(startname)
-            prog = self.program_get(startname)
-            prog.state_set(startname)
-            prog.signal = "animation,play"
-            prog.source = name
-            prog.after_add("@%s@end" % name)
+        # END
+        endname = "@%s@end" % name
+        self.program_add(endname)
+        prog = self.program_get(endname)
+        prog.signal_emit("animation,end", name)
 
-            prevstatename =  "default 0.00"
-            statename = startname + " 0.00"
-            for p in self.parts:
-                prog.target_add(p)
-                part = self._edje.part_get(p)
-                part.state_add(startname)
-                state = part.state_get(statename)
-                state.copy_from(prevstatename)
+        # START
+        startname = "@%s@0.00" % name
+        self.program_add(startname)
+        prog = self.program_get(startname)
+        prog.state_set(startname)
+        prog.signal = "animation,play"
+        prog.source = name
+        prog.after_add("@%s@end" % name)
 
-            # STOP
-            stopname = "@%s@stop" % name
-            self.program_add(stopname)
-            prog = self.program_get(stopname)
-            prog.action = edje.EDJE_ACTION_TYPE_ACTION_STOP
-            prog.signal = "animation,stop"
-            prog.source = name
-            prog.target_add(startname)
-            prog.target_add(endname)
+        prevstatename =  "default 0.00"
+        statename = startname + " 0.00"
+        for p in self.parts:
+            prog.target_add(p)
+            part = self._edje.part_get(p)
+            part.state_add(startname)
+            state = part.state_get(statename)
+            state.copy_from(prevstatename)
 
-            self._animations.append(name)
-            self.event_emit("animation.added", name)
+        # STOP
+        stopname = "@%s@stop" % name
+        self.program_add(stopname)
+        prog = self.program_get(stopname)
+        prog.action = edje.EDJE_ACTION_TYPE_ACTION_STOP
+        prog.signal = "animation,stop"
+        prog.source = name
+        prog.target_add(startname)
+        prog.target_add(endname)
+
+        self._animations.append(name)
+        self.event_emit("animation.added", name)
+        return True
 
     def animation_del(self, name):
         if name in self._animations:
