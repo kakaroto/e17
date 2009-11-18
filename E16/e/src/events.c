@@ -415,7 +415,6 @@ HandleEvent(XEvent * ev)
      {
      case ButtonRelease:	/*  5 */
 	Mode.events.last_bpress = 0;
-	Mode.action_inhibit = 0;
 	break;
 
 #if 1				/* Do this here? */
@@ -430,6 +429,7 @@ HandleEvent(XEvent * ev)
 	   ActionclassesReload();
 	break;
      }
+   Mode.action_inhibit = 0;
 }
 
 static void
