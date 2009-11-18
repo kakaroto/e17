@@ -983,9 +983,6 @@ DialogRealizeItem(Dialog * d, DItem * di)
 	if (im)
 	  {
 	     EImageGetSize(im, &iw, &ih);
-	     di->win = ECreateWindow(d->win, 0, 0, iw, ih, 0);
-	     EMapWindow(di->win);
-	     EImageApplyToWin(im, di->win, 0, 0, 0);
 	     EImageFree(im);
 	  }
 	di->w = iw;
@@ -1352,6 +1349,7 @@ DialogDrawItem(Dialog * d, DItem * di)
 {
    int                 state, x, w, val;
    EImageBorder       *pad;
+   EImage             *im;
 
    if (!di->update && di->type != DITEM_TABLE)
       return;
@@ -1473,6 +1471,17 @@ DialogDrawItem(Dialog * d, DItem * di)
 	x = di->x;
 	w = di->w;
 	goto draw_text;
+
+     case DITEM_IMAGE:
+	im = ThemeImageLoad(di->item.image.image);
+	if (im)
+	  {
+	     EImageRenderOnDrawable(im, d->win, WinGetPmap(d->win),
+				    EIMAGE_BLEND | EIMAGE_ANTI_ALIAS,
+				    di->x, di->y, di->w, di->h);
+	     EImageFree(im);
+	  }
+	break;
 
      case DITEM_CHECKBUTTON:
 	state = STATE_NORMAL;
