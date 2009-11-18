@@ -108,9 +108,36 @@ class NewPart(Wizard):
 
         success = self._parent.e.part_add(name, self._type)
         if success:
+            self._part_init(name, self._type)
             self.close()
         else:
             self._notify("Choice another name")
+
+    def _part_init(self, name, type):
+        part = self._parent.e._edje.part_get(name)
+        statename = part.state_selected_get()
+        state = part.state_get(statename)
+        if type == edje.EDJE_PART_TYPE_RECTANGLE:
+            self._part_init_rectangle(part, state)
+        elif type == edje.EDJE_PART_TYPE_TEXT:
+            self._part_init_text(part, state)
+
+    def _part_init_rectangle(self, part, state):
+        part.mouse_events = False
+
+        state.color_set(0, 255, 0, 128)
+        state.rel1_relative_set(0.3, 0.3)
+        state.rel2_relative_set(0.7, 0.7)
+
+    def _part_init_text(self, part, state):
+        part.mouse_events = False
+
+        state.color_set(0, 0, 0, 255)
+        state.text_set("YOUR TEXT HERE")
+        state.font_set("Sans")
+        state.text_size_set(16)
+        state.rel1_relative_set(0.3, 0.3)
+        state.rel2_relative_set(0.7, 0.7)
 
     def _cancel(self, popup, data):
         self.close()
