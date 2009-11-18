@@ -20,14 +20,13 @@ epdf_page.h \
 epdf_page_transition.h \
 epdf_postscript.h \
 epdf_private.h \
-esmart_pdf.h \
-$(EPDF_EWL_HEADER)
+esmart_pdf.h
 
 if BUILD_EPDF_EWL
 EPDFHEADERS += ewl_pdf.h
 endif
 
-installed_headersdir = $(prefix)/include/epdf
+installed_headersdir = $(includedir)/epdf
 installed_headers_DATA = $(EPDFHEADERS)
 
 libepdf_la_SOURCES = \
@@ -38,8 +37,7 @@ epdf_index.cpp \
 epdf_page.cpp \
 epdf_page_transition.cpp \
 epdf_postscript.cpp \
-esmart_pdf.c \
-$(EPDF_EWL_WIDGET)
+esmart_pdf.c
 
 libepdf_la_CPPFLAGS = @EPDF_CFLAGS@
 libepdf_la_LIBADD = @EPDF_LIBS@
