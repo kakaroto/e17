@@ -183,9 +183,6 @@ a.navul:hover {
 div.main {
    text-align             : justify;
    vertical-align         : top;
-   font-family            : "Bitstream Vera", "Vera", "Trebuchet MS", Trebuchet, Tahoma, sans-serif;
-   color                  : #444444;
-   font-size              : 0.9em;
 }
 
 
@@ -397,6 +394,8 @@ td.tab1 {
    background-color       : #ffffff;
    padding                : 3px;
    text-align             : left;
+   font-family            : "Bitstream Vera", "Vera", "Trebuchet MS", Trebuchet, Tahoma, sans-serif;
+   font-size              : 0.9em;
 }
 
 td.tab2 {
@@ -404,6 +403,8 @@ td.tab2 {
    background-color       : #eeeeee;
    padding                : 3px;
    text-align             : left;
+   font-family            : "Bitstream Vera", "Vera", "Trebuchet MS", Trebuchet, Tahoma, sans-serif;
+   font-size              : 0.9em;
 }
 
 table.b {
