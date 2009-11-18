@@ -22,7 +22,7 @@ screen i mean in the range of 240x320, 320x480 and so on up to 480x800 for
 portrait, and similar for landscape (320x240, 480x320, 800x480).
 </p><p>
 Do it now so you have code that already works. you can develop on the desktop
-no problems ad it ports with a simple "make" to the devices in question.
+no problems and it ports with a simple "make" to the devices in question.
 </p><p>
 That's about all the information we have for now. Expect something in the
 future with more details, such as what products and roughly when.
