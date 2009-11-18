@@ -396,6 +396,75 @@ cdef class State:
             edje_edit_state_color_class_set(self.edje.obj, self.part,
                                             self.name, NULL)
 
+    def external_params_get(self):
+        cdef evas.c_evas.Eina_List *lst
+        ret = []
+        lst = edje_edit_state_external_params_list_get(self.edje.obj, self.part,
+                                                       self.name)
+        while lst:
+            ret.append(edje.c_edje._ExternalParam_from_ptr(<long>lst.data))
+            lst = lst.next
+        return ret
+
+    def external_param_get(self, param):
+        cdef edje.c_edje.Edje_External_Param_Type type
+        cdef void *value
+
+        if not edje_edit_state_external_param_get(self.edje.obj, self.part,
+                                                  self.name, param, &type,
+                                                  &value):
+            return None
+        if type == edje.EDJE_EXTERNAL_PARAM_TYPE_INT:
+            i = (<int *>value)[0]
+            return (type, i)
+        elif type == edje.EDJE_EXTERNAL_PARAM_TYPE_DOUBLE:
+            d = (<double *>value)[0]
+            return (type, d)
+        elif type == edje.EDJE_EXTERNAL_PARAM_TYPE_STRING:
+            s = <char *>value
+            return (type, s)
+        return None
+
+    def external_param_int_get(self, param):
+        cdef int value
+
+        if not edje_edit_state_external_param_int_get(self.edje.obj, self.part,
+                                                      self.name, param, &value):
+            return None
+        return value
+
+    def external_param_double_get(self, param):
+        cdef double value
+
+        if not edje_edit_state_external_param_double_get(self.edje.obj, self.part,
+                                                      self.name, param, &value):
+            return None
+        return value
+
+    def external_param_string_get(self, param):
+        cdef char *value
+
+        if not edje_edit_state_external_param_string_get(self.edje.obj, self.part,
+                                                      self.name, param, &value):
+            return None
+        r = value
+        return r
+
+    def external_param_int_set(self, param, value):
+        return bool(edje_edit_state_external_param_int_set(self.edje.obj,
+                                                           self.part, self.name,
+                                                           param, value))
+
+    def external_param_double_set(self, param, value):
+        return bool(edje_edit_state_external_param_double_set(self.edje.obj,
+                                                           self.part, self.name,
+                                                           param, value))
+
+    def external_param_string_set(self, param, value):
+        return bool(edje_edit_state_external_param_string_set(self.edje.obj,
+                                                           self.part, self.name,
+                                                           param, value))
+
     def text_get(self):
         cdef char *t
         t = edje_edit_state_text_get(self.edje.obj, self.part, self.name)

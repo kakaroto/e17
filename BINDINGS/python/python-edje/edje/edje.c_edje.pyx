@@ -253,4 +253,5 @@ cdef void _install_metaclass(python.PyTypeObject *ctype, object metaclass):
 
 
 include "edje.c_edje_message.pxi"
+include "edje.c_edje_external.pxi"
 include "edje.c_edje_object.pxi"

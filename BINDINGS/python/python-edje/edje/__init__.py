@@ -30,7 +30,8 @@ from c_edje import Edje, shutdown, frametime_set, frametime_get, \
      extern_object_aspect_set, message_signal_process, EdjeLoadError, \
      Message, MessageSignal, MessageString, MessageInt, MessageFloat, \
      MessageStringSet, MessageIntSet, MessageFloatSet, MessageStringInt, \
-     MessageStringFloat, MessageStringIntSet, MessageStringFloatSet
+     MessageStringFloat, MessageStringIntSet, MessageStringFloatSet, \
+     ExternalParam
 
 EDJE_MESSAGE_NONE = 0
 EDJE_MESSAGE_SIGNAL = 1
@@ -76,7 +77,8 @@ EDJE_PART_TYPE_GRADIENT  = 6
 EDJE_PART_TYPE_GROUP     = 7
 EDJE_PART_TYPE_BOX       = 8
 EDJE_PART_TYPE_TABLE     = 9
-EDJE_PART_TYPE_LAST      = 10
+EDJE_PART_TYPE_EXTERNAL  = 10
+EDJE_PART_TYPE_LAST      = 11
 
 EDJE_TEXT_EFFECT_NONE                = 0
 EDJE_TEXT_EFFECT_PLAIN               = 1
@@ -109,5 +111,10 @@ EDJE_TWEEN_MODE_SINUSOIDAL = 2
 EDJE_TWEEN_MODE_ACCELERATE = 3
 EDJE_TWEEN_MODE_DECELERATE = 4
 EDJE_TWEEN_MODE_LAST       = 5
+
+EDJE_EXTERNAL_PARAM_TYPE_INT    = 0
+EDJE_EXTERNAL_PARAM_TYPE_DOUBLE = 1
+EDJE_EXTERNAL_PARAM_TYPE_STRING = 2
+EDJE_EXTERNAL_PARAM_TYPE_MAX    = 3
 
 c_edje.init()

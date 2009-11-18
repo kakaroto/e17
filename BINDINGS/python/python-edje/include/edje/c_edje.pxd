@@ -112,6 +112,12 @@ cdef extern from "Edje.h":
        EDJE_TWEEN_MODE_DECELERATE = 4
        EDJE_TWEEN_MODE_LAST       = 5
 
+    ctypedef enum Edje_External_Param_Type:
+        EDJE_EXTERNAL_PARAM_TYPE_INT    = 0
+        EDJE_EXTERNAL_PARAM_TYPE_DOUBLE = 1
+        EDJE_EXTERNAL_PARAM_TYPE_STRING = 2
+        EDJE_EXTERNAL_PARAM_TYPE_MAX    = 3
+
 
     ####################################################################
     # Structures
@@ -154,6 +160,13 @@ cdef extern from "Edje.h":
         char *str
         int count
         double val[1]
+
+    ctypedef struct Edje_External_Param:
+        char *name
+        Edje_External_Param_Type type
+        int i
+        double d
+        char *s
 
 
     ####################################################################
@@ -321,6 +334,8 @@ cdef class MessageStringIntSet(Message):
 cdef class MessageStringFloatSet(Message):
     cdef Edje_Message_String_Float_Set *obj
 
+cdef class ExternalParam:
+    cdef Edje_External_Param *obj
 
 cdef public class Edje(evas.c_evas.Object) [object PyEdje, type PyEdje_Type]:
     cdef object _text_change_cb

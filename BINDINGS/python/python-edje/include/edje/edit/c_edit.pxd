@@ -202,6 +202,15 @@ cdef extern from "Edje_Edit.h":
     void edje_edit_state_visible_set(evas.c_evas.Evas_Object *obj, char *part, char *state, evas.c_evas.Eina_Bool visible)
     char* edje_edit_state_color_class_get(evas.c_evas.Evas_Object *obj, char *part, char *state)
     void edje_edit_state_color_class_set(evas.c_evas.Evas_Object *obj, char *part, char *state, char *color_class)
+    evas.c_evas.Eina_List * edje_edit_state_external_params_list_get(evas.c_evas.Evas_Object *obj, char *part, char *state)
+    evas.c_evas.Eina_Bool edje_edit_state_external_param_get(evas.c_evas.Evas_Object *obj, char *part, char *state, char *param, edje.c_edje.Edje_External_Param_Type *type, void **value)
+    evas.c_evas.Eina_Bool edje_edit_state_external_param_int_get(evas.c_evas.Evas_Object *obj, char *part, char *state, char *param, int *value)
+    evas.c_evas.Eina_Bool edje_edit_state_external_param_double_get(evas.c_evas.Evas_Object *obj, char *part, char *state, char *param, double *value)
+    evas.c_evas.Eina_Bool edje_edit_state_external_param_string_get(evas.c_evas.Evas_Object *obj, char *part, char *state, char *param, char **value)
+    evas.c_evas.Eina_Bool edje_edit_state_external_param_set(evas.c_evas.Evas_Object *obj, char *part, char *state, char *param, edje.c_edje.Edje_External_Param_Type type, ...)
+    evas.c_evas.Eina_Bool edje_edit_state_external_param_int_set(evas.c_evas.Evas_Object *obj, char *part, char *state, char *param, int value)
+    evas.c_evas.Eina_Bool edje_edit_state_external_param_double_set(evas.c_evas.Evas_Object *obj, char *part, char *state, char *param, double value)
+    evas.c_evas.Eina_Bool edje_edit_state_external_param_string_set(evas.c_evas.Evas_Object *obj, char *part, char *state, char *param, char *value)
 
     # TEXT API
     char * edje_edit_state_text_get(evas.c_evas.Evas_Object *obj, char *part, char *state)
