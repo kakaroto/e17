@@ -67,25 +67,7 @@ class AnimationsList(CList):
             self.e.animation.name = data
 
     def new(self):
-        obj = self._view
-        x, y, w, h = obj.geometry
-        ch, cw = obj.evas.size
-        ow, oh = 200, 120
-        ox = x - (ow - w) / 2
-        oy = y - (oh - h) / 2
-        if ox < 0:
-            ox = 0
-        elif ox + ow >= cw:
-            ox = cw - ow
-        if oy < 0:
-            oy = 0
-        elif oy + oh >= ch:
-            oy = ch - oh
-
-        pop = animations.NewAnimationPopUp(self.parent)
-        pop.move(ox, oy)
-        pop.resize(ow, oh)
-        pop.show()
+        animations.NewAnimationPopUp(self.parent).open()
 
     def remove(self):
         if self._selected:

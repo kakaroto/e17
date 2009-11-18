@@ -16,6 +16,7 @@
 # You should have received a copy of the GNU Lesser General Public
 # License along with Editje.  If not, see
 # <http://www.gnu.org/licenses/>.
+import evas
 import edje
 import elementary
 
@@ -25,53 +26,61 @@ from details_widget_boolean import WidgetBoolean
 from details_widget_color import WidgetColor
 from details_widget_button import WidgetButton
 from details_widget_combo import WidgetCombo
-from floater import Floater
+from floater import Wizard
 from prop import Property, PropertyTable
 
-class NewAnimationPopUp(Floater):
+class NewAnimationPopUp(Wizard):
 
     def __init__(self, parent):
-        Floater.__init__(self, parent)
-        self.title_set("New animation...")
+        Wizard.__init__(self, parent, "New Animation")
+        self.page_add("default")
+        self.style_set("minimal")
 
-        box = elementary.Box(parent)
-        box.size_hint_weight_set(1.0, 1.0)
-        box.size_hint_align_set(-1.0, -1.0)
+        self._name_init()
 
-        bx2 = elementary.Box(parent)
+        self.action_add("default", "Cancel", self._cancel, icon="cancel")
+        self.action_add("default", "Add", self._add, icon="confirm")
+        self.goto("default")
+
+    def _name_init(self):
+        bx2 = elementary.Box(self)
         bx2.horizontal_set(True)
         bx2.size_hint_weight_set(1.0, 0.0)
-        bx2.size_hint_align_set(-1.0, -1.0)
+        bx2.size_hint_align_set(-1.0, 0.0)
+        bx2.size_hint_min_set(160, 160)
+        self.content_append("default", bx2)
+        bx2.show()
 
-        lb = elementary.Label(parent)
-        lb.size_hint_weight_set(0.0, 1.0)
-        lb.size_hint_align_set(-1.0, -1.0)
+        lb = elementary.Label(self)
         lb.label_set("Name:")
         bx2.pack_end(lb)
         lb.show()
 
-        self.name_entry = elementary.Entry(parent)
-        self.name_entry.size_hint_weight_set(1.0, 1.0)
-        self.name_entry.size_hint_align_set(-1.0, -1.0)
-        self.name_entry.single_line_set(True)
-        self.name_entry.style_set("editje_dialog")
-        bx2.pack_end(self.name_entry)
-        self.name_entry.show()
+        scr = elementary.Scroller(self)
+        scr.size_hint_weight_set(evas.EVAS_HINT_EXPAND, 0.0)
+        scr.size_hint_align_set(evas.EVAS_HINT_FILL, evas.EVAS_HINT_FILL)
+        scr.content_min_limit(False, True)
+        scr.policy_set(elementary.ELM_SCROLLER_POLICY_OFF,
+                       elementary.ELM_SCROLLER_POLICY_OFF)
+        scr.bounce_set(False, False)
+        bx2.pack_end(scr)
 
-        box.pack_end(bx2)
-        bx2.show()
-        self.content_set(box)
-        box.show()
+        self._name = elementary.Entry(self)
+        self._name.single_line_set(True)
+        self._name.size_hint_weight_set(evas.EVAS_HINT_EXPAND, 0.0)
+        self._name.size_hint_align_set(evas.EVAS_HINT_FILL, 0.5)
+        self._name.entry_set("")
+        self._name.show()
 
-        self.action_add("Add", self._add_anim)
-        self.action_add("Cancel", self._cancel)
+        scr.content_set(self._name)
+        scr.show()
 
-    def _add_anim(self, popup, data):
-        name = self.name_entry.entry_get().replace("<br>", "")
+    def _add(self, popup, data):
+        name = self._name.entry_get().replace("<br>", "")
         if name == "":
             return
+
         self._parent.e.animation_add(name)
-        self.close()
 
     def _cancel(self, popup, data):
         self.close()
