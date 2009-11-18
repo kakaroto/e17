@@ -325,6 +325,15 @@ cdef extern from "Elementary.h":
     void elm_layout_file_set(evas.c_evas.Evas_Object *obj, char *file, char *group)
     void elm_layout_content_set(evas.c_evas.Evas_Object *obj, char *swallow, evas.c_evas.Evas_Object *content)
     evas.c_evas.Evas_Object *elm_layout_edje_get(evas.c_evas.Evas_Object *obj)
+
+    # Notify object 
+    evas.c_evas.Evas_Object *elm_notify_add(evas.c_evas.Evas_Object *parent)
+    void elm_notify_content_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Evas_Object *content)
+    void elm_notify_orient_set(evas.c_evas.Evas_Object *obj, int orient)
+    void elm_notify_timeout_set(evas.c_evas.Evas_Object *obj, int timeout)
+    void elm_notify_timer_init(evas.c_evas.Evas_Object *obj)
+    void elm_notify_repeat_events_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool repeat)
+    void elm_notify_parent_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Evas_Object *parent)
     
     # Hover object
     evas.c_evas.Evas_Object *elm_hover_add(evas.c_evas.Evas_Object *parent)

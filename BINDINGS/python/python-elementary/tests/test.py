@@ -1975,6 +1975,105 @@ def spinner_clicked(obj, event, data):
     win.show()
 # }}}
 
+#----- Notify -{{{-
+def notify_close(obj, event, data):
+    data.hide()
+
+def notify_show(obj, event, data):
+    win, orient = data
+    notify = elementary.Notify(win)
+    notify.repeat_events_set(False)
+    notify.timeout_set(5)
+    notify.orient_set(orient)
+
+    bx = elementary.Box(win)
+    bx.size_hint_weight_set(evas.EVAS_HINT_EXPAND, evas.EVAS_HINT_EXPAND)
+    bx.horizontal_set(True)
+    notify.content_set(bx)
+    bx.show()
+
+    lb = elementary.Label(win)
+    lb.label_set("Text notification")
+    bx.pack_end(lb)
+    lb.show()
+
+    bt = elementary.Button(win)
+    bt.label_set("Close")
+    bt.clicked = (notify_close, notify)
+    bx.pack_end(bt)
+    bt.show()
+    notify.show()
+
+def notify_clicked(obj, event, data):
+    win = elementary.Window("notify", elementary.ELM_WIN_BASIC)
+    win.title_set("Notify test")
+    win.autodel_set(True)
+    win.size_hint_min_set(160, 160)
+    win.size_hint_max_set(320, 320)
+    win.resize(320, 320)
+
+    bg = elementary.Background(win)
+    win.resize_object_add(bg)
+    bg.size_hint_weight_set(evas.EVAS_HINT_EXPAND, evas.EVAS_HINT_EXPAND)
+    bg.show()
+
+    tb = elementary.Table(win)
+    tb.size_hint_weight_set(evas.EVAS_HINT_EXPAND, evas.EVAS_HINT_EXPAND)
+    win.resize_object_add(tb)
+    tb.show()
+
+    bt = elementary.Button(win)
+    bt.label_set("Top")
+    bt.clicked = (notify_show, (win, elementary.ELM_NOTIFY_ORIENT_TOP))
+    tb.pack(bt, 1, 0, 1, 1)
+    bt.show()
+
+    bt = elementary.Button(win)
+    bt.label_set("Bottom")
+    bt.clicked = (notify_show, (win, elementary.ELM_NOTIFY_ORIENT_BOTTOM))
+    tb.pack(bt, 1, 2, 1, 1)
+    bt.show()
+
+    bt = elementary.Button(win)
+    bt.label_set("Left")
+    bt.clicked = (notify_show, (win, elementary.ELM_NOTIFY_ORIENT_LEFT))
+    tb.pack(bt, 0, 1, 1, 1)
+    bt.show()
+
+    bt = elementary.Button(win)
+    bt.label_set("Top Left")
+    bt.clicked = (notify_show, (win, elementary.ELM_NOTIFY_ORIENT_TOP_LEFT))
+    tb.pack(bt, 0, 0, 1, 1)
+    bt.show()
+
+    bt = elementary.Button(win)
+    bt.label_set("Bottom Left")
+    bt.clicked = (notify_show, (win, elementary.ELM_NOTIFY_ORIENT_BOTTOM_LEFT))
+    tb.pack(bt, 0, 2, 1, 1)
+    bt.show()
+
+    bt = elementary.Button(win)
+    bt.label_set("Right")
+    bt.clicked = (notify_show, (win, elementary.ELM_NOTIFY_ORIENT_RIGHT))
+    tb.pack(bt, 2, 1, 1, 1)
+    bt.show()
+
+    bt = elementary.Button(win)
+    bt.label_set("Top Right")
+    bt.clicked = (notify_show, (win, elementary.ELM_NOTIFY_ORIENT_TOP_RIGHT))
+    tb.pack(bt, 2, 0, 1, 1)
+    bt.show()
+
+    bt = elementary.Button(win)
+    bt.label_set("Bottom Right")
+    bt.clicked = (notify_show, (win, elementary.ELM_NOTIFY_ORIENT_BOTTOM_RIGHT))
+    tb.pack(bt, 2, 2, 1, 1)
+    bt.show()
+
+    win.show()
+
+# }}}
+
 #----- FileSelector -{{{-
 def fileselector_clicked(obj, event, data):
     win = elementary.Window("fileselector", elementary.ELM_WIN_BASIC)
@@ -2439,7 +2538,8 @@ if __name__ == "__main__":
                ("File selector", fileselector_clicked),
                ("Separator", separator_clicked),
                ("Scroller", scroller_clicked),
-               ("Spinner", spinner_clicked)]
+               ("Spinner", spinner_clicked),
+               ("Notify", notify_clicked)]
 
 
 

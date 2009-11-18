@@ -20,7 +20,7 @@ from c_elementary import Object, Window, Background, Icon, \
     Box, Button, Scroller, Label, Toggle, Frame, Table, \
     Clock, Layout, Hover, Entry, AnchorView, AnchorBlock, Bubble, \
     Photo, Hoversel, Toolbar, ToolbarItem, List, ListItem, Slider, \
-    Radio, Check, Pager, InnerWindow, Image, Spinner, Fileselector, \
+    Radio, Check, Pager, InnerWindow, Image, Spinner, Fileselector, Notify, \
     Separator, Progressbar, init, shutdown, run, exit, scale_get, scale_set, \
     finger_size_get, finger_size_set, coords_finger_size_adjust, \
     theme_overlay_add, theme_extension_add
@@ -53,10 +53,19 @@ ELM_ICON_STANDARD = 2
 ELM_SCROLLER_POLICY_AUTO = 0
 ELM_SCROLLER_POLICY_ON = 1
 ELM_SCROLLER_POLICY_OFF = 2
-   
+
 ELM_LIST_COMPRESS = 0
 ELM_LIST_SCROLL = 1
 ELM_LIST_LIMIT = 2
 
 ELM_GENLIST_ITEM_NONE = 0
 ELM_GENLIST_ITEM_SUBITEMS = 1
+
+ELM_NOTIFY_ORIENT_TOP = 0
+ELM_NOTIFY_ORIENT_BOTTOM = 1
+ELM_NOTIFY_ORIENT_LEFT = 2
+ELM_NOTIFY_ORIENT_RIGHT = 3
+ELM_NOTIFY_ORIENT_TOP_LEFT = 4
+ELM_NOTIFY_ORIENT_TOP_RIGHT = 5
+ELM_NOTIFY_ORIENT_BOTTOM_LEFT = 6
+ELM_NOTIFY_ORIENT_BOTTOM_RIGHT = 7
