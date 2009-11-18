@@ -40,6 +40,10 @@ html, body {
 
 #content {
   margin-top              : 40px;
+   text-align             : left;
+   font-family            : "Bitstream Vera", "Vera", "Trebuchet MS", Trebuchet, Tahoma, sans-serif;
+   color                  : #444444;
+   font-size              : 0.9em;
 }
 
 
