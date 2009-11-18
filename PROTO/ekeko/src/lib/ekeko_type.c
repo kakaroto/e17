@@ -368,4 +368,3 @@ EAPI Ekeko_Property * ekeko_type_property_get(Ekeko_Type *t, const char *name)
 {
 	return _property_get(t, name);
 }
-

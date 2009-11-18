@@ -21,11 +21,9 @@
 /*============================================================================*
  *                                 Events                                     *
  *============================================================================*/
-#define EKEKO_OBJECT_ID_CHANGED "idChanged"
 /*============================================================================*
  *                               Properties                                   *
  *============================================================================*/
-extern Ekeko_Property_Id EKEKO_OBJECT_ID;
 /*============================================================================*
  *                                 Class                                      *
  *============================================================================*/
@@ -43,9 +41,6 @@ EAPI Ekeko_Object * ekeko_object_cast(Ekeko_Object *o, Ekeko_Type *t);
 EAPI Ekeko_Type *ekeko_object_type_get(void);
 
 EAPI void ekeko_object_delete(Ekeko_Object *o);
-
-EAPI void ekeko_object_id_set(Ekeko_Object *o, const char *name);
-EAPI const char *ekeko_object_id_get(Ekeko_Object *o);
 
 EAPI Eina_Bool ekeko_object_property_value_set(Ekeko_Object *o, char *prop_name, Ekeko_Value *value);
 EAPI Eina_Bool ekeko_object_property_value_get(Ekeko_Object *o, char *prop_name, Ekeko_Value *value);

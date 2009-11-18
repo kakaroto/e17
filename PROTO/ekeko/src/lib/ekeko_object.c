@@ -33,7 +33,6 @@
 struct _Ekeko_Object_Private
 {
 	EINA_INLIST;
-	char *id;
 	Ekeko_Type *type;
 	Eina_Hash *listeners;
 	Eina_Hash *user;
@@ -207,7 +206,6 @@ void object_event_listener_remove(Ekeko_Object *obj, const char *type,
 /*============================================================================*
  *                                   API                                      *
  *============================================================================*/
-Ekeko_Property_Id EKEKO_OBJECT_ID;
 /**
  * Gets the object type.
  * @return The type definition for an object
@@ -220,7 +218,6 @@ Ekeko_Type *ekeko_object_type_get(void)
 	{
 		object_type = ekeko_type_new(TYPE_NAME, sizeof(Ekeko_Object),
 				sizeof(Ekeko_Object_Private), NULL, _ctor, _dtor, NULL);
-		EKEKO_OBJECT_ID = EKEKO_TYPE_PROP_SINGLE_ADD(object_type, "id", EKEKO_PROPERTY_STRING, OFFSET(Ekeko_Object_Private, id));
 		// TODO register the type's event, with type_event_new
 	}
 
@@ -245,31 +242,6 @@ EAPI void ekeko_object_delete(Ekeko_Object *o)
 	 * and then send this?
 	 */
 	ekeko_type_instance_delete(o);
-}
-
-/**
- * Sets the id property on an object
- * @param o The Ekeko_Object instance
- * @param name The id
- */
-EAPI void ekeko_object_id_set(Ekeko_Object *o, const char *name)
-{
-	Ekeko_Value value;
-
-	ekeko_value_str_from(&value, (char *)name);
-	ekeko_object_property_value_set(o, "id", &value);
-}
-/**
- * Gets the id of an object
- * @param o The object to get the id from
- * @return The id
- */
-EAPI const char *ekeko_object_id_get(Ekeko_Object *o)
-{
-	Ekeko_Object_Private *prv;
-
-	prv = PRIVATE(o);
-	return prv->id;
 }
 /**
  * Sets a value for a property of an object 
@@ -501,11 +473,11 @@ EAPI Eina_Bool ekeko_object_child_append(Ekeko_Object *p, Ekeko_Object *o)
 #ifdef EKEKO_DEBUG
 		printf("[Ekeko_Object] Setting the parent of %p (%p) to %p (%p) \n", o, oprv, p, pprv);
 #endif
-		pprv->children = eina_inlist_append(pprv->children, EINA_INLIST_GET(oprv));
-		/* TODO check that there's a parent already
-		 * if so, send an event informing that the child has been removed
-		 * from that parent
-		 */
+		if (oprv->parent == p)
+			return;
+		if (oprv->parent != NULL)
+			ekeko_object_child_remove(oprv->parent, o);
+
 		/* check if the object has some pending changes */
 		if (oprv->changed)
 		{
@@ -513,17 +485,25 @@ EAPI Eina_Bool ekeko_object_child_append(Ekeko_Object *p, Ekeko_Object *o)
 				_unchange_recursive(oprv->parent, oprv->changed);
 			_change_recursive(p, oprv->changed);
 		}
-		oprv->parent = p;
 #ifdef EKEKO_DEBUG
 		printf("[Ekeko_Object] pchanged = %d ochanged = %d\n", pprv->changed, oprv->changed);
 #endif
-		/* TODO send the EVENT_PARENT_SET event */
-		/* send the EVENT_OBJECT_APPEND event */
-		event_mutation_init(&evt, EKEKO_EVENT_OBJECT_APPEND,
+		/* send the parent set event */
+		event_mutation_init(&evt, EKEKO_EVENT_PARENT_SET,
 				(Ekeko_Object *)o, (Ekeko_Object *)p, NULL,
 				NULL, NULL, EVENT_MUTATION_STATE_CURR);
 		ekeko_object_event_dispatch((Ekeko_Object *)o,
 				(Ekeko_Event *)&evt);
+		/* send the chld remove event */
+		event_mutation_init(&evt, EKEKO_EVENT_OBJECT_APPEND,
+				(Ekeko_Object *)p, (Ekeko_Object *)o, NULL,
+				NULL, NULL, EVENT_MUTATION_STATE_CURR);
+		ekeko_object_event_dispatch((Ekeko_Object *)p,
+				(Ekeko_Event *)&evt);
+
+		pprv->children = eina_inlist_append(pprv->children, EINA_INLIST_GET(oprv));
+		oprv->parent = p;
+
 		return EINA_TRUE;
 	}
 	else
@@ -531,9 +511,9 @@ EAPI Eina_Bool ekeko_object_child_append(Ekeko_Object *p, Ekeko_Object *o)
 }
 
 /**
- *
- * @param p
- * @param o
+ * Remove a child of object from another
+ * @param p The parent object
+ * @param o The child object to remove
  */
 EAPI void ekeko_object_child_remove(Ekeko_Object *p, Ekeko_Object *o)
 {
@@ -549,8 +529,13 @@ EAPI void ekeko_object_child_remove(Ekeko_Object *p, Ekeko_Object *o)
 	if (oprv->parent != p)
 		return;
 
-	event_mutation_init(&evt, EKEKO_EVENT_OBJECT_REMOVE, (Ekeko_Object *)o, (Ekeko_Object *)p, NULL, NULL, NULL, EVENT_MUTATION_STATE_CURR);
+	/* the child remove event */
+	event_mutation_init(&evt, EKEKO_EVENT_OBJECT_REMOVE, (Ekeko_Object *)p, (Ekeko_Object *)o, NULL, NULL, NULL, EVENT_MUTATION_STATE_CURR);
+	ekeko_object_event_dispatch(p, (Ekeko_Event *)&evt);
+	/* the parent cleanup event */
+	event_mutation_init(&evt, EKEKO_EVENT_PARENT_UNSET, (Ekeko_Object *)o, (Ekeko_Object *)p, NULL, NULL, NULL, EVENT_MUTATION_STATE_CURR);
 	ekeko_object_event_dispatch(o, (Ekeko_Event *)&evt);
+
 	pprv->children = eina_inlist_remove(pprv->children, EINA_INLIST_GET(oprv));
 	oprv->parent = NULL;
 }
@@ -632,7 +617,11 @@ EAPI Ekeko_Object * ekeko_object_prev(Ekeko_Object *o)
 	if (!prv) return NULL;
 	else return prv->rel;
 }
-
+/**
+ * Gets the parent object from another
+ * @param o The object to get the parent from
+ * @return The parent object
+ */
 EAPI Ekeko_Object * ekeko_object_parent_get(const Ekeko_Object *o)
 {
 	Ekeko_Object_Private *prv;

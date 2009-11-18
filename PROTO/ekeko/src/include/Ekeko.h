@@ -45,9 +45,6 @@
 
 typedef struct _Ekeko_Type Ekeko_Type;
 typedef struct _Ekeko_Object Ekeko_Object;
-typedef struct _Ekeko_Canvas Ekeko_Canvas;
-typedef struct _Ekeko_Renderable Ekeko_Renderable;
-typedef struct _Ekeko_Input Ekeko_Input;
 
 #include "ekeko_main.h"
 #include "ekeko_value.h"
