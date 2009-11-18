@@ -183,6 +183,9 @@ a.navul:hover {
 div.main {
    text-align             : justify;
    vertical-align         : top;
+   font-family            : "Bitstream Vera", "Vera", "Trebuchet MS", Trebuchet, Tahoma, sans-serif;
+   color                  : #444444;
+   font-size              : 0.9em;
 }
 
 
@@ -474,9 +477,6 @@ a.b:hover {
    border-left            : 1px solid #bbb;
    padding-left           : 2ex;
    text-align             : left;
-   font-family            : "Bitstream Vera", "Vera", "Trebuchet MS", Trebuchet, Tahoma, sans-serif;
-   color                  : #444444;
-   font-size              : 0.9em;
 }
 
 .news-title {
