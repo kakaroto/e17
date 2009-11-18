@@ -468,6 +468,10 @@ a.b:hover {
    margin                 : 0 0 2.5em 40px;
    border-left            : 1px solid #bbb;
    padding-left           : 2ex;
+   text-align             : left;
+   font-family            : "Bitstream Vera", "Vera", "Trebuchet MS", Trebuchet, Tahoma, sans-serif;
+   color                  : #444444;
+   font-size              : 0.9em;
 }
 
 .news-title {
@@ -483,7 +487,7 @@ a.b:hover {
 }
 
 .news-content {
-   text-align: justify;
+   text-align             : justify;
 }
 
 .news-latest-title {
