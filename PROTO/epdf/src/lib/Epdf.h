@@ -11,17 +11,14 @@
  * to render PDF documents in different ways, using an Evas frontend.
  * Straight Evas can be used, but several widgets implementations can
  * integrate a PDF document in an Edje user interface using an Evas
- * smart object, or Ewl or Etk user interface using respective widgets.
+ * smart object or Ewl user interface using respective widgets.
  *
  * @section install_sec Installation
  *
  * The Epdf library requires Evas, Ecore and Poppler to be installed.
  *
- * If the Ewl or Etk toolkits are available, then respective widgets
+ * If the Ewl  toolkits is available, then an Ewl widget
  * will be built. Also, an Ewl test will be installed.
- *
- * If Epsilon is available, then an Epsilon plugin to create PDF
- * thumbnails will be installed.
  *
  * @subsection api_sec API Documentation
  *

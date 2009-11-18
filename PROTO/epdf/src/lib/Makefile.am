@@ -21,8 +21,7 @@ epdf_page_transition.h \
 epdf_postscript.h \
 epdf_private.h \
 esmart_pdf.h \
-$(EPDF_EWL_HEADER) \
-$(EPDF_ETK_HEADER)
+$(EPDF_EWL_HEADER)
 
 if BUILD_EPDF_EWL
 EPDFHEADERS += ewl_pdf.h
