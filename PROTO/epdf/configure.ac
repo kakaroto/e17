@@ -78,45 +78,6 @@ else
 fi
 AM_CONDITIONAL([BUILD_EPDF_EWL], [test "x${have_ewl}" = "xyes"])
 
-# Etk
-
-have_etk="no"
-AC_ARG_ENABLE([etk],
-   [AC_HELP_STRING(
-       [--enable-etk],
-       [enable etk widget. [[default=enabled]]]
-    )
-   ],
-   [have_etk=${enableval}]
-   [have_etk="yes"]
-)
-AC_MSG_CHECKING(whether using Etk)
-AC_MSG_RESULT(${have_etk})
-
-if test "x${have_etk}" = "xyes" ; then
-   PKG_CHECK_MODULES([ETK],
-      [etk >= 0.1],
-      [have_etk="yes"],
-      [have_etk="no"]
-   )
-else
-   have_etk="no"
-fi
-AM_CONDITIONAL([BUILD_EPDF_ETK], [test "x${have_etk}" = "xyes"])
-
-# Epsilon
-
-PKG_CHECK_MODULES([EPSILON],
-   [epsilon >= 0.3],
-   [
-    have_epsilon="yes"
-    EPSILON_PLUGINS_DIR="`$PKG_CONFIG --variable=pluginsdir epsilon`"
-    AC_SUBST(EPSILON_PLUGINS_DIR)
-   ],
-   [have_epsilon="no"]
-)
-AM_CONDITIONAL([BUILD_EPDF_EPSILON], [test "x${have_epsilon}" = "xyes"])
-
 
 ### Checks for header files
 
@@ -148,13 +109,11 @@ AC_OUTPUT([
 Makefile
 epdf.pc
 epdf-ewl.pc
-epdf-etk.pc
 doc/Makefile
 src/Makefile
 src/lib/Makefile
 src/bin/Makefile
 src/plugins/Makefile
-src/plugins/epsilon/Makefile
 src/plugins/ewl/Makefile
 ])
 
@@ -171,8 +130,6 @@ echo
 echo "  Documentation........: ${enable_doc}"
 echo
 echo "  Ewl widget...........: ${have_ewl}"
-echo "  Etk widget...........: ${have_etk}"
-echo "  Epsilon plugin.......: ${have_epsilon}"
 echo
 echo "  Compilation..........: make"
 echo

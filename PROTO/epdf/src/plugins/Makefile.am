@@ -1,4 +1,4 @@
 
-SUBDIRS = ewl epsilon
+SUBDIRS = ewl
 
 MAINTAINERCLEANFILES = Makefile.in

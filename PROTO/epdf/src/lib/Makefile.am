@@ -7,10 +7,6 @@ if BUILD_EPDF_EWL
 lib_LTLIBRARIES += libepdf_ewl.la
 endif
 
-if BUILD_EPDF_ETK
-lib_LTLIBRARIES += libepdf_etk.la
-endif
-
 
 EPDFHEADERS = \
 Epdf.h \
@@ -32,10 +28,6 @@ if BUILD_EPDF_EWL
 EPDFHEADERS += ewl_pdf.h
 endif
 
-if BUILD_EPDF_ETK
-EPDFHEADERS += etk_pdf.h
-endif
-
 installed_headersdir = $(prefix)/include/epdf
 installed_headers_DATA = $(EPDFHEADERS)
 
@@ -48,8 +40,7 @@ epdf_page.cpp \
 epdf_page_transition.cpp \
 epdf_postscript.cpp \
 esmart_pdf.c \
-$(EPDF_EWL_WIDGET) \
-$(EPDF_ETK_WIDGET)
+$(EPDF_EWL_WIDGET)
 
 libepdf_la_CPPFLAGS = @EPDF_CFLAGS@
 libepdf_la_LIBADD = @EPDF_LIBS@
@@ -61,15 +52,6 @@ libepdf_ewl_la_SOURCES = ewl_pdf.c
 libepdf_ewl_la_CPPFLAGS = @EWL_CFLAGS@ @EPDF_CFLAGS@
 libepdf_ewl_la_LIBADD = @EWL_LIBS@ @EPDF_LIBS@
 libepdf_ewl_la_LDFLAGS = -no-undefined -version-info @version_info@
-
-endif
-
-if BUILD_EPDF_ETK
-
-libepdf_etk_la_SOURCES = etk_pdf.c
-libepdf_etk_la_CPPFLAGS = @ETK_CFLAGS@ @EPDF_CFLAGS@
-libepdf_etk_la_LIBADD = @ETK_LIBS@ @EPDF_LIBS@
-libepdf_etk_la_LDFLAGS = -no-undefined -version-info @version_info@
 
 endif
 

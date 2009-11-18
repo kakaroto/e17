@@ -1,3 +1,22 @@
+2009-11-18  Vincent Torri  <doursse at users dot sf dot net>
+
+	* AUTHORS:
+	add some authers...
+
+	* configure.ac:
+	* src/bin/Makefile.am:
+	* src/lib/Makefile.am:
+	* src/plugins/Makefile.am:
+	* src/plugins/epsilon (deleted):
+	* src/plugins/epsilon/epsilon_thumbnailer.c (deleted):
+	* src/plugins/epsilon/Makefile.am (deleted):
+	* src/plugins/epsilon/.cvsignore (deleted):
+	* src/lib/etk_pdf.c (deleted):
+	* src/lib/etk_pdf.h (deleted):
+	* src/bin/epdf_etk_test.c (deleted):
+	* epdf-etk.pc.in (deleted):
+	remove etk and epsilon support
+
 2009-11-07  Vincent Torri  <doursse at users dot sf dot net>
 
 	* src/lib/epdf_document.cpp:
