@@ -52,7 +52,7 @@ void test_box_horiz (void *data, Evas_Object *obj, void *event_info)
   bg->show ();
   
   ElmBox *bx = ElmBox::factory (*win);
-  bx->setHorizontal (true);
+  bx->setOrientation (ElmBox::Horizontal);
   win->addObjectResize (*bx);
   bx->setWeightHintSize (EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
   bx->show ();

@@ -22,9 +22,17 @@ ElmBox *ElmBox::factory (EvasObject &parent)
   return new ElmBox (parent);
 }
 
-void ElmBox::setHorizontal (bool horizontal)
+void ElmBox::setOrientation (ElmBox::Orientation orient)
 {
-  elm_box_horizontal_set (o, horizontal);
+  switch (orient)
+  {
+    case Horizontal:
+      elm_box_horizontal_set (o, true);
+      break;
+    case Vertical:
+      elm_box_horizontal_set (o, false);
+      break;
+  }
 }
 
 void ElmBox::setHomogenous (bool homogenous)

@@ -37,9 +37,17 @@ void ElmProgressbar::setSpanSize (Evas_Coord size)
   elm_progressbar_span_size_set (o, size);
 }
 
-void ElmProgressbar::setHorizontal (bool horizontal)
+void ElmProgressbar::setOrientation (ElmProgressbar::Orientation orient)
 {
-  elm_progressbar_horizontal_set (o, horizontal);
+  switch (orient)
+  {
+    case Horizontal:
+      elm_progressbar_horizontal_set (o, true);
+      break;
+    case Vertical:
+      elm_progressbar_horizontal_set (o, false);
+      break;
+  }
 }
 
 void ElmProgressbar::setInverted (bool inverted)

@@ -45,5 +45,6 @@ libelementaryxx_la_SOURCES = \
 	ElmAnchorview.cpp  \
 	ElmSpinner.cpp  \
 	ElmProgressbar.cpp  \
-	ElmPanel.cpp
+	ElmPanel.cpp  \
+	ElmSeparator.cpp
 

@@ -135,14 +135,14 @@ void test_progressbar(void *data, Evas_Object *obj, void *event_info)
   _test_progressbar.pb3 = pb;
 
   ElmBox *hbx = ElmBox::factory (*win);
-  hbx->setHorizontal (true);
+  hbx->setOrientation (ElmBox::Horizontal);
   hbx->setWeightHintSize (EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
   hbx->setAlignHintSize (EVAS_HINT_FILL, EVAS_HINT_FILL);
   bx->packEnd (*hbx);
   hbx->show ();
   
   pb = ElmProgressbar::factory (*win);
-  pb->setHorizontal (false);
+  pb->setOrientation (ElmProgressbar::Vertical);
   pb->setAlignHintSize (EVAS_HINT_FILL, EVAS_HINT_FILL);
   pb->setWeightHintSize (EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
   hbx->packEnd (*pb);
@@ -152,7 +152,7 @@ void test_progressbar(void *data, Evas_Object *obj, void *event_info)
   _test_progressbar.pb4 = pb;
   
   pb = ElmProgressbar::factory (*win);
-  pb->setHorizontal (false);
+  pb->setOrientation (ElmProgressbar::Vertical);
   pb->setAlignHintSize (EVAS_HINT_FILL, 0.5);
   pb->setWeightHintSize (EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
   pb->setSpanSize (80);
@@ -167,7 +167,7 @@ void test_progressbar(void *data, Evas_Object *obj, void *event_info)
   ic2->setAspectHintSize (EVAS_ASPECT_CONTROL_HORIZONTAL, Size (1, 1));
   
   pb = ElmProgressbar::factory (*win);
-  pb->setHorizontal (false);
+  pb->setOrientation (ElmProgressbar::Vertical);
   pb->setLabel ("Label");
   pb->setIcon (*ic2);
   pb->setInverted (true);
@@ -189,7 +189,7 @@ void test_progressbar(void *data, Evas_Object *obj, void *event_info)
   _test_progressbar.pb7 = pb;
   
   ElmBox *bt_bx = ElmBox::factory (*win);
-  bt_bx->setHorizontal (true);
+  bt_bx->setOrientation (ElmBox::Horizontal);
   bt_bx->setWeightHintSize (EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
   bx->packEnd (*bt_bx);
   bt_bx->show ();

@@ -22,14 +22,16 @@ ElmClock *ElmClock::factory (EvasObject &parent)
   return new ElmClock (parent);
 }
 
-void ElmClock::setTime (int hrs, int min, int sec)
+void ElmClock::setTime (const ElmClock::Time &time)
 {
-  elm_clock_time_set (o, hrs, min, sec);
+  elm_clock_time_set (o, time.hrs, time.min, time.sec);
 }
 
-void ElmClock::getTime (int &hrs, int &min, int &sec)
+const ElmClock::Time ElmClock::getTime ()
 {
-  elm_clock_time_get (o, &hrs, &min, &sec);
+  Time time;
+  elm_clock_time_get (o, &time.hrs, &time.min, &time.sec);
+  return time;
 }
 
 void ElmClock::setEdit (bool edit)

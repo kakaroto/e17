@@ -56,7 +56,7 @@ void test_entry (void *data, Evas_Object *obj, void *event_info)
   en->show ();
 
   ElmBox *bx2 = ElmBox::factory (*win);
-  bx2->setHorizontal (true);
+  bx2->setOrientation (ElmBox::Horizontal);
   bx2->setWeightHintSize (EVAS_HINT_EXPAND, 0.0);
   bx2->setAlignHintSize (EVAS_HINT_FILL, EVAS_HINT_FILL);
 
@@ -178,7 +178,7 @@ void test_entry_scolled (void *data, Evas_Object *obj, void *event_info)
   sc->show ();
 
   ElmBox *bx2 = ElmBox::factory (*win);
-  bx2->setHorizontal (true);
+  bx2->setOrientation (ElmBox::Horizontal);
   bx2->setWeightHintSize (EVAS_HINT_EXPAND, 0.0);
   bx2->setAlignHintSize (EVAS_HINT_FILL, EVAS_HINT_FILL);
 

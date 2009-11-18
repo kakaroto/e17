@@ -16,8 +16,21 @@ class ElmBox : public ElmObject
 {
 public:
   static ElmBox *factory (EvasObject &parent);
+  
+private:
+  ElmBox (); // forbid standard constructor
+  ElmBox (const ElmBox&); // forbid copy constructor
+  ElmBox (EvasObject &parent); // private construction -> use factory ()
+  ~ElmBox (); // forbid direct delete -> use ElmObject::destroy()
+  
+public:
+  enum Orientation
+  {
+    Horizontal,
+    Vertical
+  };
 
-  void setHorizontal (bool horizontal);
+  void setOrientation (ElmBox::Orientation orient);
   
   void setHomogenous (bool homogenous);
   
@@ -28,12 +41,6 @@ public:
   void packBefore (const EvasObject &subobj, const EvasObject &before);
   
   void packAfter (const EvasObject &subobj, const EvasObject &after);
-  
-private:
-  ElmBox (); // forbid standard constructor
-  ElmBox (const ElmBox&); // forbid copy constructor
-  ElmBox (EvasObject &parent); // private construction -> use factory ()
-  ~ElmBox (); // forbid direct delete -> use ElmObject::destroy()
 };
 
 } // end namespace efl

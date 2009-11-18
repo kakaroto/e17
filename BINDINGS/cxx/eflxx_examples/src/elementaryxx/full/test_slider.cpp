@@ -75,7 +75,7 @@ void test_slider (void *data, Evas_Object *obj, void *event_info)
   sl->setIndicatorFormat ("%1.1f");
   sl->setValue (0.2);
   sl->setScale (1.0);
-  sl->setHorizontal (false);
+  sl->setOrientation (ElmSlider::Vertical);
   bx->packEnd (*sl);
   sl->show ();
 

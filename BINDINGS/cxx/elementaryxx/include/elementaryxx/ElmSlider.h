@@ -22,6 +22,12 @@ namespace efl {
 class ElmSlider : public ElmObject
 {
 public:
+  enum Orientation
+  {
+    Horizontal,
+    Vertical
+  };
+  
   static ElmSlider *factory (EvasObject &parent);
 
   void setLabel (const std::string &label);
@@ -34,7 +40,7 @@ public:
   
   void setIndicatorFormat (const std::string &indicator);
   
-  void setHorizontal (bool horizontal);
+  void setOrientation (ElmSlider::Orientation orient);
   
   void setMinMax (double min, double max);
   

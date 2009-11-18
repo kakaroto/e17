@@ -19,11 +19,25 @@ namespace efl {
 class ElmClock : public ElmObject
 {
 public:
+  class Time
+  {
+  public:
+    Time () :
+      hrs (0), min (0), sec (0) {}
+      
+    Time (int hrs, int min, int sec) :
+      hrs (this->hrs), min (this->min), sec (this->sec) {}
+        
+    int hrs;
+    int min;
+    int sec;
+  };
+  
   static ElmClock *factory (EvasObject &parent);
   
-  void setTime (int hrs, int min, int sec); // TODO
+  void setTime (const ElmClock::Time &time);
   
-  void getTime (int &hrs, int &min, int &sec); // TODO
+  const ElmClock::Time getTime ();
 
   void setEdit (bool edit);
   

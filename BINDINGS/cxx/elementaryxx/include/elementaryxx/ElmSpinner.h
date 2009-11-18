@@ -19,13 +19,6 @@ class ElmSpinner : public ElmObject
 public:
   static ElmSpinner *factory (EvasObject &parent);
 
-private:
-  ElmSpinner (); // forbid standard constructor
-  ElmSpinner (const ElmSpinner&); // forbid copy constructor
-  ElmSpinner (EvasObject &parent); // private construction -> use factory ()
-  ~ElmSpinner (); // forbid direct delete -> use ElmWidget::destroy()
-
-public:
   void setLabelFormat (const std::string &format);
   const string getLabelFormat ();
   void setMinMax (double min, double max);
@@ -33,6 +26,12 @@ public:
   void setValue (double val);
   double getValue ();
   void setWrap (bool wrap);
+  
+private:
+  ElmSpinner (); // forbid standard constructor
+  ElmSpinner (const ElmSpinner&); // forbid copy constructor
+  ElmSpinner (EvasObject &parent); // private construction -> use factory ()
+  ~ElmSpinner (); // forbid direct delete -> use ElmWidget::destroy()
 };
 
 } // end namespace efl

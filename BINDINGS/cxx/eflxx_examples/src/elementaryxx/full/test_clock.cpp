@@ -40,7 +40,7 @@ void test_clock (void *data, Evas_Object *obj, void *event_info)
   ck5->setEdit (true);
   ck5->setShowSeconds (true);
   ck5->setShowAmPm (true);
-  ck5->setTime (10, 11, 12);
+  ck5->setTime (ElmClock::Time (10, 11, 12));
   bx->packEnd (*ck5);
   ck5->show ();
 

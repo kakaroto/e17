@@ -42,7 +42,7 @@ void test_notepad (void *data, Evas_Object *obj, void *event_info)
   np->show ();
 
   ElmBox *bx2 = ElmBox::factory (*win);
-  bx2->setHorizontal (true);
+  bx2->setOrientation (ElmBox::Horizontal);
   bx2->setHomogenous (true);
   bx2->setWeightHintSize (EVAS_HINT_EXPAND, 0.0);
   bx2->setAlignHintSize (EVAS_HINT_FILL, EVAS_HINT_FILL);

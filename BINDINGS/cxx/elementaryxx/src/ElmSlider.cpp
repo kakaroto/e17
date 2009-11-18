@@ -47,9 +47,17 @@ void ElmSlider::setIndicatorFormat (const std::string &indicator)
   elm_slider_indicator_format_set (o, indicator.c_str ());
 }
 
-void ElmSlider::setHorizontal (bool horizontal)
+void ElmSlider::setOrientation (ElmSlider::Orientation orient)
 {
-  elm_slider_horizontal_set (o, horizontal);
+  switch (orient)
+  {
+    case Horizontal:
+      elm_slider_horizontal_set (o, true);
+      break;
+    case Vertical:
+      elm_slider_horizontal_set (o, false);
+      break;
+  }
 }
 
 void ElmSlider::setMinMax (double min, double max)

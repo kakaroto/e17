@@ -19,19 +19,18 @@ namespace efl {
 class ElmProgressbar : public ElmObject
 {
 public:
-  static ElmProgressbar *factory (EvasObject &parent);
-
-private:
-  ElmProgressbar (); // forbid standard constructor
-  ElmProgressbar (const ElmProgressbar&); // forbid copy constructor
-  ElmProgressbar (EvasObject &parent); // private construction -> use factory ()
-  ~ElmProgressbar (); // forbid direct delete -> use ElmWidget::destroy()
+  enum Orientation
+  {
+    Horizontal,
+    Vertical
+  };
   
-public:
+  static ElmProgressbar *factory (EvasObject &parent);
+  
   void setLabel (const std::string &label);
   void setIcon (EvasObject &icon);
   void setSpanSize (Evas_Coord size);
-  void setHorizontal (bool horizontal);
+  void setOrientation (ElmProgressbar::Orientation orient);
   void setInverted (bool inverted);
   void setPulse (bool pulse);
   void pulse (bool state);
@@ -57,6 +56,12 @@ public:
   
   void setValue (double val);
   double getValue ();
+  
+private:
+  ElmProgressbar (); // forbid standard constructor
+  ElmProgressbar (const ElmProgressbar&); // forbid copy constructor
+  ElmProgressbar (EvasObject &parent); // private construction -> use factory ()
+  ~ElmProgressbar (); // forbid direct delete -> use ElmWidget::destroy()
 };
 
 } // end namespace efl
