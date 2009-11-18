@@ -183,7 +183,7 @@ _chars_async_list_cb(Async_List_Parser *state, const xmlChar *chars, int len)
       case PARSER_NAME:
          buf[0] = '\0';
          strncat((char *)buf, (char *)chars, len);
-         EINA_ERROR_PDBG("name: %s\n", buf);
+         //EINA_ERROR_PDBG("name: %s\n", buf);
          state->current->name = eina_stringshare_add(buf);
          break;
       case PARSER_ID:
@@ -230,14 +230,14 @@ _download_complete_cb(void *data, const char *file, int status)
 {
    Async_List_Parser *state = data;
    int ret;
-   EINA_ERROR_PDBG("DOWNLOAD COMPLETE (status %d)\n", status);
+   //EINA_ERROR_PDBG("DOWNLOAD COMPLETE (status %d)\n", status);
    //TODO check status ??
 
    xmlInitParser();
    ret = xmlSAXUserParseFile(&AsyncListParser, state, state->tmp);
    xmlCleanupParser();
 
-   EINA_ERROR_PDBG("END %d\n", eina_list_count(state->l));
+   //EINA_ERROR_PDBG("END %d\n", eina_list_count(state->l));
    state->complete_cb(state->l, state->cb_data);
 
 
@@ -341,8 +341,8 @@ exchange_remote_list(const char *group_title,
    state->l = NULL;
    state->current = NULL;
 
-   EINA_ERROR_PDBG("URL: %s\n", state->url);
-   EINA_ERROR_PDBG("TMP: %s\n", state->tmp);
+   //EINA_ERROR_PDBG("URL: %s\n", state->url);
+   //EINA_ERROR_PDBG("TMP: %s\n", state->tmp);
 
    ret = ecore_file_download(state->url, state->tmp, _download_complete_cb, NULL, state, NULL);
    if (!ret) return 0;

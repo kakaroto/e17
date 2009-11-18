@@ -237,7 +237,7 @@ _list_complete_cb(Eina_List *results, void *data)
    Exchange_Smart_Data *sd = data;
    char buf[255];
 
-   EINA_LOG_DBG("POPULATING... %d\n", eina_list_count(results));
+   //EINA_LOG_DBG("POPULATING... %d\n", eina_list_count(results));
 
    /* Populate the List */
    evas_object_text_text_set(sd->obj_lbl, "");
@@ -288,7 +288,7 @@ exchange_smart_init(void)
    char buf[4096]; //TODO FIXME MAX_PATH
 
    eina_error_log_level_set(EINA_LOG_LEVEL_WARN);
-   EINA_LOG_DBG("\n");
+   //EINA_LOG_DBG("\n");
 
    /* check theme file */
    if (!_smart_theme)
@@ -296,7 +296,7 @@ exchange_smart_init(void)
       snprintf(buf, sizeof(buf), "%s/exchange_smart.edj", PACKAGE_DATA_DIR);
       if (!ecore_file_exists(buf))
       {
-         EINA_ERROR_PERR("Can't find smart theme file '%s'\n", buf);
+         //EINA_ERROR_PERR("Can't find smart theme file '%s'\n", buf);
          return 0;
       }
       _smart_theme = eina_stringshare_add(buf);
@@ -309,7 +309,7 @@ exchange_smart_init(void)
       if (!ecore_file_exists(buf) &&
           !ecore_file_mkpath(buf))
       {
-         EINA_ERROR_PERR("Can't create cache dir '%s'\n", buf);
+         //EINA_ERROR_PERR("Can't create cache dir '%s'\n", buf);
          return 0;
       }
       _smart_cache = eina_stringshare_add(buf);
@@ -403,7 +403,7 @@ _exchange_smart_add(Evas_Object *obj)
 static void
 _exchange_smart_del(Evas_Object *obj)
 {
-   EINA_LOG_DBG("%p\n", obj);
+   //EINA_LOG_DBG("%p\n", obj);
    Exchange_Smart_Data *sd;
 
    if (!obj) return;
@@ -595,7 +595,7 @@ _download_thumb_complete_cb(void *data, const char *file, int status)
 {
    Evas_Object *elem = data;
 
-   EINA_LOG_DBG("THUMB COMPLETE %d %s\n", status, file);
+   //EINA_LOG_DBG("THUMB COMPLETE %d %s\n", status, file);
    //TODO check if download finish well
    edje_object_signal_emit(elem, "set,idle", "exchange");
    _exchange_smart_thumb_swallow(elem, file);
@@ -732,7 +732,7 @@ _exchange_smart_element_update(Evas_Object *elem, Exchange_Object *td, Exchange_
             edje_object_signal_emit(elem, "use,enable","exchange");
          }
       }
-      EINA_LOG_DBG("CHECKING: %s %s(%s %s)\n", td->name, td->version, buf, local_ver);
+      //EINA_LOG_DBG("CHECKING: %s %s(%s %s)\n", td->name, td->version, buf, local_ver);
       if (local_ver) free(local_ver);
    }
    else
@@ -790,7 +790,7 @@ _download_theme_complete_cb(void *data, const char *file, int status)
 
    if (!obj || !sd) return;
 
-   EINA_LOG_DBG("[status %d] %s\n", status, file);
+   //EINA_LOG_DBG("[status %d] %s\n", status, file);
    edje_object_signal_emit(obj, "set,idle","exchange");
    edje_object_signal_emit(obj, "gauge,hide","exchange");
    edje_object_part_text_set(obj, "btn_download.text", "Completed");
@@ -833,8 +833,8 @@ _exchange_smart_button_click_cb(void *data, Evas_Object *obj, const char *em, co
    if (!strcmp(src, "btn_download") && td->url)
    {
       snprintf(dst, sizeof(dst),"%s/%s.edj", sd->local_dir, td->name);
-      EINA_LOG_DBG("DOWNLOAD URL %s\n", td->url);
-      EINA_LOG_DBG("DOWNLOAD DST %s\n", dst);
+      //EINA_LOG_DBG("DOWNLOAD URL %s\n", td->url);
+      //EINA_LOG_DBG("DOWNLOAD DST %s\n", dst);
 
       edje_object_signal_emit(obj, "set,updated","exchange");
       edje_object_signal_emit(obj, "set,busy","exchange");
