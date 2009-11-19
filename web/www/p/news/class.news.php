@@ -34,11 +34,11 @@ class news {
     # Make ids respect the order, with a little hack to make the rest
     # of the internet point to the right post.
     # 19/11/2009
-    $i = -8;
+    $i = count($this->list) - 8;
     foreach ($this->list as &$new)
     {
         $new['id'] = $i;
-        $i++;
+        $i--;
     }
   }
 
