@@ -1,6 +1,6 @@
 #!/bin/sh
 cd $(echo $0 | sed 's/\/bin\/ardy//')/share/ardy
-if ./ardy; then
+if ./ardy $1 $2 $3; then
 	exit 0
 else
 	exit 1
