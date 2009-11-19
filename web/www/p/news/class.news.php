@@ -35,7 +35,7 @@ class news {
     # of the internet point to the right post.
     # 19/11/2009
     $i = -8;
-    foreach ($this->list as $new)
+    foreach ($this->list as &$new)
     {
         $new['id'] = $i;
         $i++;
