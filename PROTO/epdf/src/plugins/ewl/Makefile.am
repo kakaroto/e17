@@ -23,6 +23,5 @@ libewl_pdf_la_LIBADD  = $(top_builddir)/src/lib/libepdf_ewl.la $(top_builddir)/s
 
 libewl_pdf_la_LDFLAGS = -no-undefined -module -avoid-version
 
-EXTRA_DIST = $(libewl_pdf_la_SOURCES)
 exampledir = @EWL_TEST_SOURCE_DIR@
 example_DATA = $(libewl_pdf_la_SOURCES)

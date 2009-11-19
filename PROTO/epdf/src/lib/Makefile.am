@@ -7,8 +7,9 @@ if BUILD_EPDF_EWL
 lib_LTLIBRARIES += libepdf_ewl.la
 endif
 
+installed_headersdir = $(includedir)/epdf
 
-EPDFHEADERS = \
+dist_installed_headers_DATA = \
 Epdf.h \
 epdf_document.h \
 epdf_enum.h \
@@ -23,11 +24,10 @@ epdf_private.h \
 esmart_pdf.h
 
 if BUILD_EPDF_EWL
-EPDFHEADERS += ewl_pdf.h
-endif
 
-installed_headersdir = $(includedir)/epdf
-installed_headers_DATA = $(EPDFHEADERS)
+dist_installed_headers_DATA += ewl_pdf.h
+
+endif
 
 libepdf_la_SOURCES = \
 epdf_main.cpp \
@@ -39,7 +39,11 @@ epdf_page_transition.cpp \
 epdf_postscript.cpp \
 esmart_pdf.c
 
-libepdf_la_CPPFLAGS = @EPDF_CFLAGS@
+libepdf_la_CPPFLAGS = \
+-I$(top_srcdir)/src/lib \
+-I$(top_builddir)/src/lib \
+@EPDF_CFLAGS@
+
 libepdf_la_LIBADD = @EPDF_LIBS@
 libepdf_la_LDFLAGS = -no-undefined -version-info @version_info@
 
@@ -51,5 +55,3 @@ libepdf_ewl_la_LIBADD = @EWL_LIBS@ @EPDF_LIBS@
 libepdf_ewl_la_LDFLAGS = -no-undefined -version-info @version_info@
 
 endif
-
-EXTRA_DIST = $(EPDFHEADERS)

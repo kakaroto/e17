@@ -1,7 +1,13 @@
+2009-11-19  Vincent Torri  <doursse at users dot sf dot net>
+
+	* src/lib/Makefile.am:
+	* src/plugins/ewl/Makefile.am:
+	fix distcheck rules, minor cleanups
+
 2009-11-18  Vincent Torri  <doursse at users dot sf dot net>
 
 	* AUTHORS:
-	add some authers...
+	add some authors...
 
 	* configure.ac:
 	* src/bin/Makefile.am:
