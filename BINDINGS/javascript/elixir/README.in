@@ -1,0 +1,17 @@
+Elixir @VERSION@
+
+Elixir is a library helping other to use Javascript SpiderMonkey with binding
+to EFL and other usefull stuff. It provide facility to help running javascript
+in any C program.
+
+-----------------------------------------------------------------------------
+Requires:
+
+  Mozilla SpiderMonkey 1.5 or higher (http://www.mozilla.org/js/spidermonkey/)
+
+Optional:
+
+  Evas
+  Eet
+
+-----------------------------------------------------------------------------
