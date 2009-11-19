@@ -23,15 +23,23 @@ class news {
             continue;
 
         $news = array();
-        $news['id']   = $i;
         $news['path'] = $this->dirnews."/".$file;
         $news['timestamp'] = $this->_get_timestamp($news['path']);
         $news['date'] = $this->_get_localtime($news['timestamp']);
         array_push($this->list, $news);
-        $i++;
     }
     closedir($dp);
     $this->_sort($this->list, 'timestamp');
+
+    # Make ids respect the order, with a little hack to make the rest
+    # of the internet point to the right post.
+    # 19/11/2009
+    $i = -8;
+    foreach ($this->list as $new)
+    {
+        $new['id'] = $i;
+        $i++;
+    }
   }
 
   function get($limit_news) {
@@ -52,7 +60,9 @@ class news {
   }
 
   function get_one($news_id) {
-    if ($news_id < 0)
+    # And place the hack here too
+    # 19/11/2009
+    if ($news_id < -8)
         return NULL;
 
     foreach ($this->list as $new)
