@@ -1,0 +1,174 @@
+/* Font is unused so far
+fonts {
+   font: "DejaVuSans.ttf" "font";
+}
+*/
+
+
+//////////////// ARDUINO GROUP ///////////////////
+// 
+// Here we setup the base of the programs apperance.
+// The group name MUST be 'Arduino' so that the 
+// python code knows where to look for various parts
+// and programs.
+//
+
+collections {
+   group {
+		name: "Arduino";
+      images {
+			image: "dia_grad.png" COMP;
+			image: "dia_topshad.png" COMP;
+			image: "dia_botshad.png" COMP;
+		}
+		parts {
+			part { name: "base";
+				mouse_events:  0;
+				description { state: "default" 0.0;
+					image.normal: "dia_grad.png";
+					fill {
+						smooth: 0;
+						size {
+							relative: 0.0 1.0;
+							offset: 64 0;
+						}
+					}
+				}
+			}
+			part { name: "shadow";
+				mouse_events:  0;
+				description { state: "default" 0.0;
+					rel2.relative: 1.0 0.0;
+					rel2.offset: -1 31;
+					image.normal: "dia_topshad.png";
+					fill {
+						smooth: 0;
+						size {
+							relative: 0.0 1.0;
+							offset: 64 0;
+						}
+					}
+				}
+			}
+			part { name: "shadow2";
+				mouse_events:  0;
+				description { state: "default" 0.0;
+					rel1.relative: 0.0 1.0;
+					rel1.offset: 0 -4;
+					image.normal: "dia_botshad.png";
+					fill {
+						smooth: 0;
+						size {
+							relative: 0.0 1.0;
+							offset: 64 0;
+						}
+					}
+				}
+			}
+			
+//////////////// ARDUINO PARTS ///////////////////
+//
+// These parts react to mouse events. They can be 
+// animated or turned into images. At the moment,
+// they are boring blocks of colour. Refer to the
+// Edje documentation on how to deal with images,
+// animation, and other fun things.
+//
+// Heres an example of a simple image:
+//
+//			part { name: "Button";
+//				mouse_events:  0;
+//				description { state: "default" 0.0;
+//					image.normal: "button.png";
+//					rel1.relative: 0.1 0.1;
+//					rel2.relative: 0.9 0.9;
+//				}
+//			}
+//
+			
+			part { name: "Button0";
+				type: RECT;
+				mouse_events:  1;
+				description { state: "default" 0.0;
+					rel1.relative: 0.0 0.0;
+					rel2.relative: 1.0 1.0;
+					color: 0 0 0 0;
+				}
+			}
+			part { name: "Button1";
+				type: RECT;
+				mouse_events:  1;
+				description { state: "default" 0.0;
+					rel1.relative: 0.1 0.1;
+					rel2.relative: 0.366 0.9;
+					color: 255 0 0 255;
+				}
+			}
+			part { name: "Button2";
+				type: RECT;
+				mouse_events:  1;
+				description { state: "default" 0.0;
+					rel1.relative: 0.366 0.1;
+					rel2.relative: 0.633 0.9;
+					color: 0 255 0 255;
+				}
+			}
+			part { name: "Button3";
+				type: RECT;
+				mouse_events:  1;
+				description { state: "default" 0.0;
+					rel1.relative: 0.633 0.1;
+					rel2.relative: 0.9 0.9;
+					color: 0 0 255 255;
+				}
+			}
+		}
+		
+/////////////// ARDUINO PROGRAMS //////////////////
+//
+// These are the programs that drive animation and
+// reaction in Edje files. These programs can have
+// LUA script or Embryo script in them to do more 
+// advanced actions. The python code is setup to 
+// send serial data from the 'emit' line.
+//
+
+		programs {
+			program {
+				name:   "Red";	
+				source: "Button1";
+				signal: "mouse,down,1";	
+				script {	
+					emit("clicked", "1"); 	// "1" is sent via serial to 
+													// the Arduino board. "Clicked"
+													// is just the register that
+													// the python code looks for.
+				}
+			}
+			program {
+				name:   "Green";	
+				source: "Button2";
+				signal: "mouse,down,1";	
+				script {	
+					emit("clicked", "2");
+				}
+			}
+			program {
+				name:   "Blue";	
+				source: "Button3";
+				signal: "mouse,down,1";	
+				script {	
+					emit("clicked", "3");
+				}
+			}
+			program {
+				name:   "Clear";	
+				source: "Button0";
+				signal: "mouse,down,1";	
+				script {	
+					emit("clicked", "0");
+				}
+			}
+		}
+	}
+}

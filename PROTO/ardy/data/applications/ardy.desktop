@@ -1,0 +1,10 @@
+
+[Desktop Entry]
+Encoding=UTF-8
+Name=Ardy
+Comment=Python-EFL-based Arduino serial controller
+Exec=ardy
+Terminal=false
+Type=Application
+Icon=ardy
+Categories=Application;Utility;

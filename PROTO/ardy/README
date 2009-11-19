@@ -1,0 +1,47 @@
+ARDUINO PLAYGROUND FOR EDJE 
+
+REQUIREMENTS
+============
+
+ * Arduino w/Dev Environment
+ * Python-Evas
+ * Python-Ecore
+ * Python-Edje
+ * Edje_cc
+ * Python-setuptools >= 0.6c6
+ 
+ARDUINO PROTOTYPE
+================
+A simple 3 colour LED with 4 pins. (COM-00105)
+
+				N
+				|
+				|
+		_____________
+		|		|		|
+		R		G		B
+		|		|		|
+pin	9		10		11
+
+
+BUILDING AND INSTALLING
+=======================
+
+This package uses setuptools, so run this:
+
+python setup.py clean
+	
+	Cleanup the tree.
+
+python setup.py build
+	
+	Make the edje file etc.
+
+python setup.py install
+	
+	Install it to the selected location(by default /usr)
+
+You can choose where to install by using command options, see output
+of "python setup.py <command> --help", example:
+
+        python setup.py install --help
