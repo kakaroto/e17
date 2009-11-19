@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Exalt\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2009-10-31 16:31-0400\n"
-"PO-Revision-Date: 2009-09-09 12:41+0200\n"
+"POT-Creation-Date: 2009-11-19 12:28+0100\n"
+"PO-Revision-Date: 2009-11-19 12:30+0100\n"
 "Last-Translator: Massimo Maiurana <maiurana@gmail.com>\n"
 "Language-Team: none\n"
 "MIME-Version: 1.0\n"
@@ -46,19 +46,19 @@ msgstr "Notifiche"
 msgid "Enable the notifications"
 msgstr "Abilita notifiche"
 
-#: src/e_mod_main.c:231
+#: src/e_mod_main.c:232
 msgid "Exalt Warning"
 msgstr "Avvertimento di Exalt"
 
-#: src/e_mod_main.c:234
+#: src/e_mod_main.c:235
 msgid "Warning"
 msgstr "Avvertimento"
 
-#: src/e_mod_main.c:235
+#: src/e_mod_main.c:236
 msgid "NetworkManager has been detected on your computer."
 msgstr "NetworkManager è stato rilevato sul vostro computer."
 
-#: src/e_mod_main.c:237
+#: src/e_mod_main.c:238
 msgid ""
 "Exalt can't work properly if networkManager is running, please stop "
 "NetworkManager or Exalt."
@@ -66,19 +66,19 @@ msgstr ""
 "Exalt non può funzionare correttamente se NetworkManager è in esecuzione,si "
 "prega di disattivare NetworkManager o Exalt."
 
-#: src/e_mod_main.c:240
+#: src/e_mod_main.c:241
 msgid "Ok"
 msgstr "Ok"
 
-#: src/e_mod_main.c:360
+#: src/e_mod_main.c:368
 msgid "exalt"
 msgstr "Exalt"
 
-#: src/e_mod_main.c:445
+#: src/e_mod_main.c:453
 msgid "exalt Configuration Updated"
 msgstr "Configurazione di Exalt aggiornata"
 
-#: src/e_mod_main.c:513
+#: src/e_mod_main.c:521
 msgid "Configuration"
 msgstr "Configurazione"
 
@@ -185,9 +185,8 @@ msgid "Wireless interface configuration"
 msgstr "Configurazione interfaccia wireless"
 
 #: src/network_dialog.c:91
-#, fuzzy
 msgid "Add to favorites: "
-msgstr "Aggiungi alle preferite"
+msgstr "Aggiungi alle preferite: "
 
 #: src/network_dialog.c:203
 msgid "WEP information"
