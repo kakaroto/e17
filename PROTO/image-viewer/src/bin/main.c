@@ -757,7 +757,7 @@ on_thumb_connect(void *data, Ethumb_Client *e, Eina_Bool success)
 static void
 on_thumb_die(void *data, Ethumb_Client *client)
 {
-   IV *iv;
+   IV *iv = data;
 
    iv->flags.ethumb_connection = EINA_FALSE;
    iv->ethumb_client = ethumb_client_connect(on_thumb_connect, iv, NULL);
