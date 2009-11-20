@@ -1,0 +1,221 @@
+# Croatian translation for enlightenment
+# Copyright (c) 2009 Rosetta Contributors and Canonical Ltd 2009
+# This file is distributed under the same license as the enlightenment package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2009.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: enlightenment\n"
+"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
+"POT-Creation-Date: 2009-11-05 16:07+0800\n"
+"PO-Revision-Date: 2009-11-09 18:27+0000\n"
+"Last-Translator: Miro Glavić <glavicmiro@gmail.com>\n"
+"Language-Team: Croatian <hr@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Launchpad-Export-Date: 2009-11-10 07:14+0000\n"
+"X-Generator: Launchpad (build Unknown)\n"
+
+#: ../src/bin/about.c:76
+msgid ""
+"E Stickies is a sticky notes application that uses Elementary. It uses "
+"Elementary's runtime theming support to change the look and feel of the "
+"windows and buttons.<br>"
+msgstr ""
+
+#: ../src/bin/about.c:103
+msgid ""
+"<b>Code:</b><br>Daniel '<b>quaker</b>' Kolesa<br><b>Old Etk "
+"version:</b><br>Hisham '<b>CodeWarrior</b>' Mardam "
+"Bey<br><br><b>Themes:</b><br>Brian 'morlenxus' Miculcy"
+msgstr ""
+
+#: ../src/bin/about.c:130
+msgid ""
+"<b>control-n:</b> create a new note<br><b>control-q:</b> quit "
+"application<br><b>control-c:</b> copy selected text<br><b>control-x:</b> cut "
+"selected text<br><b>control-v:</b> paste text from clipboard<br>"
+msgstr ""
+
+#: ../src/bin/about.c:145
+msgid "About E Stickies"
+msgstr "O E Stickies"
+
+#: ../src/bin/about.c:151
+msgid "Authors, credits"
+msgstr "Autori, krediti"
+
+#: ../src/bin/about.c:157
+msgid "E Stickies help"
+msgstr "E Stickies pomoć"
+
+#: ../src/bin/about.c:163 ../src/bin/config_gui.c:166
+msgid "Close"
+msgstr "Zatvori"
+
+#: ../src/bin/conf.c:86 ../src/bin/conf.c:97
+msgid "Cant create config path!"
+msgstr ""
+
+#: ../src/bin/conf.c:192
+msgid "Cant open configuration file! Using program defaults."
+msgstr ""
+
+#: ../src/bin/conf.c:200
+msgid "Incompatible configuration file! Creating new one."
+msgstr "Nekompatibilna konfiguraciona datoteka! Kreiranje nove."
+
+#: ../src/bin/conf.c:212
+msgid "Your version / configuration of E-Stickies is not valid!"
+msgstr "Vaša verzija / konfiguracija E Stickies je nevažeća!"
+
+#: ../src/bin/conf.c:250
+msgid "Problem saving config!"
+msgstr "Problem kod spremanja config!"
+
+#: ../src/bin/conf.c:263
+msgid "Problem saving config/stickies!"
+msgstr "Problem kod spremanja config/stickies!"
+
+#: ../src/bin/conf.c:267
+msgid "Problem saving config/theme!"
+msgstr "Problem kod spremanja config/teme!"
+
+#: ../src/bin/plugin.c:26
+msgid ""
+"You called _e_plugin_init().\n"
+"Plugin system is experimental - not done for now!\n"
+"Your estickies are compiled without experimental code.\n"
+"If you want to try it, run configure with --enable-experimental."
+msgstr ""
+
+#: ../src/bin/plugin.c:47
+msgid ""
+"You called _e_plugin_shutdown().\n"
+"Plugin system is experimental - not done for now!\n"
+"Your estickies are compiled without experimental code.\n"
+"If you want to try it, run configure with --enable-experimental."
+msgstr ""
+
+#: ../src/bin/plugin.c:70
+msgid ""
+"You called _e_plugin_load().\n"
+"Plugin system is experimental - not done for now!\n"
+"Your estickies are compiled without experimental code.\n"
+"If you want to try it, run configure with --enable-experimental."
+msgstr ""
+
+#: ../src/bin/plugin.c:91
+msgid ""
+"You called _e_plugin_unload().\n"
+"Plugin system is experimental - not done for now!\n"
+"Your estickies are compiled without experimental code.\n"
+"If you want to try it, run configure with --enable-experimental."
+msgstr ""
+
+#: ../src/bin/plugin.c:111
+msgid ""
+"You called _e_plugin_unload_from_ptr().\n"
+"Plugin system is experimental - not done for now!\n"
+"Your estickies are compiled without experimental code.\n"
+"If you want to try it, run configure with --enable-experimental."
+msgstr ""
+
+#: ../src/bin/stickies.c:73
+msgid "New"
+msgstr "Novi"
+
+#: ../src/bin/stickies.c:74
+msgid "Save"
+msgstr "Spremi"
+
+#: ../src/bin/stickies.c:75
+msgid "Export To File"
+msgstr "Izvezi U Datoteku"
+
+#: ../src/bin/stickies.c:76
+msgid "Delete"
+msgstr "Obriši"
+
+#: ../src/bin/stickies.c:77 ../src/bin/config_gui.c:107
+msgid "Options"
+msgstr "Opcije"
+
+#: ../src/bin/stickies.c:78
+msgid "About"
+msgstr "O"
+
+#: ../src/bin/stickies.c:79
+msgid "Quit"
+msgstr "Napusti"
+
+#: ../src/bin/stickies.c:125
+msgid "Estickies - Export to .."
+msgstr "Estickies - Izvoz u..."
+
+#: ../src/bin/stickies.c:162
+msgid "All stickies"
+msgstr "Svi stickies"
+
+#: ../src/bin/stickies.c:178
+msgid "Confirm Deletion"
+msgstr "Potvrdi Brisanje"
+
+#: ../src/bin/stickies.c:203
+msgid "Are you sure you want to delete this sticky?"
+msgstr "Jeste li sigurni da hoćete obrisati ovaj stickie?"
+
+#: ../src/bin/stickies.c:218
+msgid "No"
+msgstr "Ne"
+
+#: ../src/bin/stickies.c:227
+msgid "Yes"
+msgstr "Da"
+
+#: ../src/bin/stickies.c:257
+msgid "return!"
+msgstr "vrati!"
+
+#. save only current sticky
+#: ../src/bin/stickies.c:268 ../src/bin/stickies.c:277
+#, c-format
+msgid ""
+"Sticky %d\n"
+"=========================\n"
+msgstr ""
+"Sticky %d\n"
+"=========================\n"
+
+#: ../src/bin/stickies.c:577
+msgid "Cant find home directory!"
+msgstr ""
+
+#: ../src/bin/config_gui.c:46
+msgid "Estickies - Configuration"
+msgstr "Estickies - Konfiguracija"
+
+#: ../src/bin/config_gui.c:119
+msgid "Apply to this sticky only"
+msgstr "Primijeni samo na ovaj sticky"
+
+#: ../src/bin/config_gui.c:127
+msgid "Apply to all stickies"
+msgstr "Primijeni na sve stickies"
+
+#: ../src/bin/config_gui.c:135
+msgid "Make this my default theme"
+msgstr "Napravi ovo mojom zadanom temom"
+
+#: ../src/bin/config_gui.c:142
+msgid "Use composite extension"
+msgstr ""
+
+#: ../src/bin/config_gui.c:154
+msgid "OK"
+msgstr "U redu"
+
+#: ../src/bin/config_gui.c:160
+msgid "Apply"
+msgstr "Primijeni"
