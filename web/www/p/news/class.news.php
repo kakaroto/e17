@@ -19,7 +19,7 @@ class news {
 
     while (($file = readdir($dp)) !== false)
     {
-        if (!strcasecmp($file, ".") || !strcasecmp($file, ".."))
+        if ($file[0] == '.')
             continue;
 
         $news = array();
@@ -112,7 +112,7 @@ class news {
   }
 
   function _sort(&$news) {
-    uasort($news, array("news", "_sort_cb"));
+    usort($news, array("news", "_sort_cb"));
   }
 
   private function _get_timestamp($path) {
