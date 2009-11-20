@@ -34,8 +34,8 @@ class news {
     # Make ids respect the order, with a little hack to make the rest
     # of the internet point to the right post.
     # 19/11/2009
-    $total = count($this->list) - 8;
-    for ($j = $count - 1; $j >= 0; $j--)
+    $total = count($this->list);
+    for ($j = $total - 1; $j >= 0; $j--)
     {
        $this->list[$j]['id'] = $i - 8;
        $i++;
