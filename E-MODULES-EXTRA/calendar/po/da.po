@@ -1,15 +1,16 @@
-# Esperanto translation for E17 calendar module.
+# Danish translation for enlightenment
+# Copyright (c) 2009 Rosetta Contributors and Canonical Ltd 2009
 # This file is distributed under the same license as the enlightenment package.
-# Olivier M. <olivierweb@ifrance.com>, 2008.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2009.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Calendar\n"
-"Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
+"Project-Id-Version: enlightenment\n"
+"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2009-11-05 16:07+0800\n"
-"PO-Revision-Date: 2009-10-28 15:35+0000\n"
-"Last-Translator: Kristjan <Unknown>\n"
-"Language-Team: Esperanto <translation-team-eo@lists.sourceforge.net>\n"
+"PO-Revision-Date: 2009-11-02 00:38+0000\n"
+"Last-Translator: Kris <lakristho@gmail.com>\n"
+"Language-Team: Danish <da@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -18,20 +19,20 @@ msgstr ""
 
 #: ../src/e_mod_main.c:450
 msgid "Sunday"
-msgstr "Dimanĉo"
+msgstr "Søndag"
 
 #: ../src/e_mod_main.c:457
 msgid "Monday"
-msgstr "Lundo"
+msgstr "Mandag"
 
 #: ../src/e_mod_main.c:469
 msgid "First Day of Week"
-msgstr "Unua tago de la semajno"
+msgstr ""
 
 #: ../src/e_mod_main.c:570 ../src/e_mod_main.c:586
 msgid "Calendar"
-msgstr "Kalendaro"
+msgstr "Kalender"
 
 #: ../src/e_mod_main.c:570 ../src/e_mod_main.c:586
 msgid "Monthview Popup (Show/Hide)"
-msgstr "Sprucxfenestra monato (Vidigi/Kasxi)"
+msgstr ""

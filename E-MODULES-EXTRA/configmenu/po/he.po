@@ -1,4 +1,4 @@
-# Polish translation for enlightenment
+# Hebrew translation for enlightenment
 # Copyright (c) 2009 Rosetta Contributors and Canonical Ltd 2009
 # This file is distributed under the same license as the enlightenment package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, 2009.
@@ -6,11 +6,11 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment\n"
-"Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
+"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2009-11-05 16:07+0800\n"
-"PO-Revision-Date: 2009-10-29 11:59+0000\n"
-"Last-Translator: Stanislaw Gackowski <launchpad@soeb.eu>\n"
-"Language-Team: Polish <pl@li.org>\n"
+"PO-Revision-Date: 2009-09-11 09:11+0000\n"
+"Last-Translator: Yaron <sh.yaron@gmail.com>\n"
+"Language-Team: Hebrew <he@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -20,15 +20,15 @@ msgstr ""
 #. create new config dialog
 #: ../src/e_mod_config.c:39
 msgid "Config Menu Module"
-msgstr "Konfiguracja modułu menu"
+msgstr "מודול תפריט התצורה"
 
 #: ../src/e_mod_config.c:79
 msgid "General"
-msgstr "Ogólne"
+msgstr "כללי"
 
 #: ../src/e_mod_config.c:81
 msgid "Extend Settings Menu"
-msgstr "Rozszerzone menu ustawienń"
+msgstr "הרחבת תפריט ההגדרות"
 
 #: ../src/e_mod_main.c:198
 msgid ""
@@ -40,6 +40,12 @@ msgid ""
 "set of defaults will fix<br>that by adding it in. You can re-configure "
 "things now to your<br>liking. Sorry for the inconvenience.<br>"
 msgstr ""
+"נתוני ההגדרות של מודול תפריט התצורה זקוקים לעדכון. ההגדרות הישנות<br>שלך "
+"נמחקו ובמקומן נטענה ערכה חדשה של ברירות מחדל. פעולה<br>זו מתבצעת מפעם לפעם "
+"באופן סדיר במהלך הפיתוח, אז אין צורך לדווח<br>על תקלה. מצב זה נגרם פשוט "
+"כיוון שהמודול זקוק לנתוני הגדרה<br>חדשים כברירת מחדל או לתכונות חדשות שחסרות "
+"בהגדרות הישנות<br>שלך. ערכת ברירות מחדל חדשה זו תתקן זאת על ידי "
+"הוספתן<br>ניתן להגדיר את הדברים כראות עיניך. אנו מתנצלים על אי הנוחותץ<br>"
 
 #: ../src/e_mod_main.c:218
 msgid ""
@@ -50,15 +56,21 @@ msgid ""
 "configuration has been now restored to<br>defaults. Sorry for the "
 "inconvenience.<br>"
 msgstr ""
+"הגדרות מודול תפריט התצורה שלך חדשות יותר מגרסת המודול. מצב זה אינו "
+"סביר<br>\r\n"
+"ולא אמור היה לקרות אלא אם כן גרסת המודול נסוגה או שההגדרות הועתקו<br>\r\n"
+"ממקום אחר בו פועלת גרסה עדכנית יותר של המודול. מצב זה אינו תקין<br>\r\n"
+"וכאמצעי זהירות ההגדרות שלך שוחזרו לברירות המחדל. אנו מתנצלים על אי "
+"הנוחות.<br>"
 
 #: ../src/e_mod_main.c:397
 msgid "Config Menu"
-msgstr "Menu konfiguracji"
+msgstr "תפריט התצורה"
 
 #: ../src/e_mod_main.c:480
 msgid "Config Menu Configuration Updated"
-msgstr "Konfiguracja menu zaaktualniona"
+msgstr "הגדרות תפריט התצורה עודכנו"
 
 #: ../src/e_mod_main.c:615
 msgid "Configuration"
-msgstr "Konfiguracja"
+msgstr "תצורה"

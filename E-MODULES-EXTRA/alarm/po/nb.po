@@ -1,15 +1,16 @@
-# Turkish translation for enlightenment
+# Norwegian Bokmal translation for enlightenment
+# Copyright (c) 2009 Rosetta Contributors and Canonical Ltd 2009
 # This file is distributed under the same license as the enlightenment package.
-# Atilla Cay <iatillacay@hotmail.com>, 2009.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2009.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment\n"
-"Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
+"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2009-11-05 16:07+0800\n"
-"PO-Revision-Date: 2009-10-17 08:46+0000\n"
-"Last-Translator: Yiğitcan Aksarı <Unknown>\n"
-"Language-Team: Turkish <tr@li.org>\n"
+"PO-Revision-Date: 2009-11-01 15:04+0000\n"
+"Last-Translator: Bjørn Olav Samdal <bjornsam@ulrik.uio.no>\n"
+"Language-Team: Norwegian Bokmal <nb@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -18,7 +19,7 @@ msgstr ""
 
 #: ../src/e_mod_config.c:55
 msgid "Alarm Configuration"
-msgstr "Alarm Yapılandırması"
+msgstr "Alarmoppsett"
 
 #: ../src/e_mod_config.c:155 ../src/e_mod_main.c:188
 msgid "Alarm"
@@ -26,27 +27,27 @@ msgstr "Alarm"
 
 #: ../src/e_mod_config.c:157 ../src/e_mod_config_alarm.c:190
 msgid "Active"
-msgstr "Etkin"
+msgstr "Aktiv"
 
 #: ../src/e_mod_config.c:166
 msgid "Add"
-msgstr "Ekle"
+msgstr "Legg til"
 
 #: ../src/e_mod_config.c:168
 msgid "Delete"
-msgstr "Sil"
+msgstr "Slett"
 
 #: ../src/e_mod_config.c:170
 msgid "Configure"
-msgstr "Yapılandır"
+msgstr "Konfigurer"
 
 #: ../src/e_mod_config.c:172
 msgid "Duplicate"
-msgstr "Kopyala"
+msgstr "Kopier"
 
 #: ../src/e_mod_config.c:226
 msgid "Alarm Options"
-msgstr "Alarm Seçenekleri"
+msgstr ""
 
 #. 
 #. ob = e_widget_label_add(evas, D_("Time format"));
@@ -59,101 +60,101 @@ msgstr "Alarm Seçenekleri"
 #. 
 #: ../src/e_mod_config.c:238
 msgid "Show next alarm"
-msgstr "Sonraki alarmı göster"
+msgstr ""
 
 #: ../src/e_mod_config.c:244
 msgid "Alarms Defaults"
-msgstr "Alarm Varsayılanları"
+msgstr ""
 
 #: ../src/e_mod_config.c:246 ../src/e_mod_config_alarm.c:404
 msgid "Open popup"
-msgstr ""
+msgstr "Åpne fane"
 
 #: ../src/e_mod_config.c:249
 msgid "Run program"
-msgstr "Uygulamayı çalıştır"
+msgstr "Kjør program"
 
 #: ../src/e_mod_config.c:256
 msgid "Auto-Remove alarms"
-msgstr ""
+msgstr "Slett Automatisk alarm"
 
 #: ../src/e_mod_config_alarm.c:71
 msgid "Alarm Configuration : Setup an alarm"
-msgstr ""
+msgstr "Alarmoppsett : Lag nytt alarmoppsett"
 
 #: ../src/e_mod_config_alarm.c:188
 msgid "Informations"
-msgstr ""
+msgstr "Informasjoner"
 
 #: ../src/e_mod_config_alarm.c:192
 msgid "Name"
-msgstr "Ad"
+msgstr "Navn"
 
 #: ../src/e_mod_config_alarm.c:197
 msgid "Description"
-msgstr "Tanım"
+msgstr "Beskrivelse"
 
 #: ../src/e_mod_config_alarm.c:207
 msgid "Schedule"
-msgstr "Planla"
+msgstr "Planlagt"
 
 #: ../src/e_mod_config_alarm.c:209
 #, c-format
 msgid "%1.0f hour"
-msgstr ""
+msgstr "%1.0f time"
 
 #: ../src/e_mod_config_alarm.c:212
 #, c-format
 msgid "%1.0f minute"
-msgstr "%1.0f dakika"
+msgstr "%1.0f minutt"
 
 #: ../src/e_mod_config_alarm.c:218
 msgid "Days of the week"
-msgstr "Haftanın günleri"
+msgstr "Ukedager"
 
 #: ../src/e_mod_config_alarm.c:222
 msgid "Monday"
-msgstr "Pazartesi"
+msgstr "Mandag"
 
 #: ../src/e_mod_config_alarm.c:224
 msgid "Tuesday"
-msgstr "Salı"
+msgstr "Tirsdag"
 
 #: ../src/e_mod_config_alarm.c:226
 msgid "Wenesday"
-msgstr "Çarşamba"
+msgstr "Onsdag"
 
 #: ../src/e_mod_config_alarm.c:228
 msgid "Thursday"
-msgstr "Perşembe"
+msgstr "Torsdag"
 
 #: ../src/e_mod_config_alarm.c:230
 msgid "Friday"
-msgstr "Cuma"
+msgstr "Fredag"
 
 #: ../src/e_mod_config_alarm.c:232
 msgid "Saturday"
-msgstr "Cumartesi"
+msgstr "Lørdag"
 
 #: ../src/e_mod_config_alarm.c:234
 msgid "Sunday"
-msgstr "Pazar"
+msgstr "Søndag"
 
 #: ../src/e_mod_config_alarm.c:239
 msgid "One day"
-msgstr "Bir gün"
+msgstr "En dag"
 
 #: ../src/e_mod_config_alarm.c:243
 msgid "Date (YYYY/MM/DD)"
-msgstr "Tarih (YYYY/AA/GG)"
+msgstr "Dato (YYYY/MM/DD)"
 
 #: ../src/e_mod_config_alarm.c:248
 msgid "Today"
-msgstr "Bugün"
+msgstr ""
 
 #: ../src/e_mod_config_alarm.c:250
 msgid "Tomorrow"
-msgstr "Yarın"
+msgstr ""
 
 #: ../src/e_mod_config_alarm.c:288
 msgid ""
@@ -193,44 +194,44 @@ msgstr ""
 
 #: ../src/e_mod_config_alarm.c:354 ../src/e_mod_config_alarm.c:442
 msgid "Test this alarm"
-msgstr "Bu alarmı sına"
+msgstr ""
 
 #: ../src/e_mod_config_alarm.c:382
 msgid "Ring Options"
-msgstr "Zil Seçenekleri"
+msgstr ""
 
 #: ../src/e_mod_config_alarm.c:384
 msgid "Remove alarm"
-msgstr "Alarmı kaldır"
+msgstr ""
 
 #: ../src/e_mod_config_alarm.c:391 ../src/e_mod_config_alarm.c:411
 msgid "No [default]"
-msgstr "Hayır [varsayılan]"
+msgstr ""
 
 #: ../src/e_mod_config_alarm.c:393 ../src/e_mod_config_alarm.c:413
 msgid "Yes"
-msgstr "Evet"
+msgstr ""
 
 #: ../src/e_mod_config_alarm.c:398 ../src/e_mod_config_alarm.c:418
 #: ../src/e_mod_config_alarm.c:429
 msgid "No"
-msgstr "Hayır"
+msgstr ""
 
 #: ../src/e_mod_config_alarm.c:400 ../src/e_mod_config_alarm.c:420
 msgid "Yes [default]"
-msgstr "Evet [varsayılan]"
+msgstr ""
 
 #: ../src/e_mod_config_alarm.c:424
 msgid "Run a program"
-msgstr "Bir program çalıştır"
+msgstr ""
 
 #: ../src/e_mod_config_alarm.c:431
 msgid "Run default one"
-msgstr "Varsayılanı bir kez çalıştır"
+msgstr ""
 
 #: ../src/e_mod_config_alarm.c:433
 msgid "Run this program"
-msgstr "Bu programı çalıştır"
+msgstr ""
 
 #: ../src/e_mod_config_alarm.c:478
 msgid ""
@@ -241,11 +242,11 @@ msgstr ""
 
 #: ../src/e_mod_config_alarm.c:484
 msgid "<hilight>Alarm test SUCCEED !</hilight>"
-msgstr "<hilight>Alarm sınaması BAŞARILI !</hilight>"
+msgstr ""
 
 #: ../src/e_mod_config_alarm.c:489
 msgid "<hilight>Alarm test FAILED !</hilight>"
-msgstr "<hilight>Alarm sınaması BAŞARISIZ !</hilight>"
+msgstr ""
 
 #: ../src/e_mod_config_alarm.c:491
 msgid "Alarm Module Test Report"
@@ -274,20 +275,20 @@ msgstr ""
 #: ../src/e_mod_main.c:663
 #, c-format
 msgid "%1.0f hours"
-msgstr "%1.0f saat"
+msgstr ""
 
 #: ../src/e_mod_main.c:666
 #, c-format
 msgid "%1.0f minutes"
-msgstr "%1.0f dakika"
+msgstr ""
 
 #: ../src/e_mod_main.c:673
 msgid "Ok"
-msgstr "Tamam"
+msgstr ""
 
 #: ../src/e_mod_main.c:674
 msgid "Close"
-msgstr "Kapat"
+msgstr ""
 
 #: ../src/e_mod_main.c:846
 #, c-format
@@ -300,11 +301,11 @@ msgstr ""
 
 #: ../src/e_mod_main.c:867
 msgid "Add an alarm"
-msgstr "Alarm ekle"
+msgstr ""
 
 #: ../src/e_mod_main.c:874
 msgid "Configuration"
-msgstr "Yapılandırma"
+msgstr ""
 
 #: ../src/e_mod_main.c:1055
 #, c-format
