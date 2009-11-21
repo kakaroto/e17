@@ -265,11 +265,10 @@ _parse(Instance *inst)
    needle = strstr(needle, "<current_date_time data=\"");
    if (!needle) goto error;
    needle+=25;
-   sscanf(needle, "%[^\"]\"", &date);
+   sscanf(needle, "%[^+]+", &date);
 
 
-
-   needle = strstr(needle, "<temp_c data=\"");
+   needle = strstr(needle, "<temp_f data=\"");
    if (!needle) goto error;
    needle+=14;
    sscanf(needle, "%d\"", &(e_data->temp));
