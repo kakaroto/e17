@@ -301,19 +301,10 @@ doEwinMoveResize(EWin * ewin, Desk * dsk, int x, int y, int w, int h, int flags)
 	ewin->client.w = w;
 	ewin->client.h = h;
 
-	/* Don't touch frame size while shaded */
-	if (ewin->state.shaded)
-	  {
-	     w = EoGetW(ewin);
-	     h = EoGetH(ewin);
-	  }
-	else
-	  {
-	     w = ewin->client.w + ewin->border->border.left +
-		ewin->border->border.right;
-	     h = ewin->client.h + ewin->border->border.top +
-		ewin->border->border.bottom;
-	  }
+	w = ewin->client.w + ewin->border->border.left +
+	   ewin->border->border.right;
+	h = ewin->client.h + ewin->border->border.top +
+	   ewin->border->border.bottom;
      }
 
    dx = x - EoGetX(ewin);
