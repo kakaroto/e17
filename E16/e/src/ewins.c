@@ -917,8 +917,8 @@ AddToFamily(EWin * ewin, Window xwin, int startup)
 	Mode.events.cx = rx;
 	Mode.events.cy = ry;
 	ewin->state.placed = 1;
-	x = Mode.events.cx + 1;
-	y = Mode.events.cy + 1;
+	x = Mode.events.cx - 8;
+	y = Mode.events.cy - 8;
 	GrabPointerSet(VROOT, ECSR_GRAB, 0);
 	EoSetFloating(ewin, 1);	/* Causes reparenting to root */
 	EwinOpFloatAt(ewin, OPSRC_USER, x, y);
