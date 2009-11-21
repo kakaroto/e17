@@ -13,6 +13,7 @@ struct _Instance
    Config_Item *ci;
    Evas_Object *obj;
    E_Menu *menu;
+   EWeather *eweather;
 };
 
 EAPI extern E_Module_Api e_modapi;

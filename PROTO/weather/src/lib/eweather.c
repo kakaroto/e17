@@ -13,10 +13,10 @@ EWeather *eweather_new()
 void eweather_free(EWeather *eweather)
 {
    EWeather_Data *e_data;
-   if(eweather->plugin.module)
+   if(eweather->plugin.array)
      {
-	eweather_plugin_shutdown(eweather);
-	eina_stringshare_del(eweather->plugin.plugin_name);
+	eina_module_list_unload(eweather->plugin.array);
+	eina_module_list_flush(eweather->plugin.array);
      }
 
    EINA_LIST_FREE(eweather->data, e_data)
@@ -25,16 +25,63 @@ void eweather_free(EWeather *eweather)
 }
 
 
-void eweather_plugin_set(EWeather *eweather, const char *plugin)
+void eweather_plugin_set(EWeather *eweather, Eina_Module *module)
 {
     if(eweather->plugin.module)
     {
       eweather_plugin_shutdown(eweather);
-      eina_stringshare_del(eweather->plugin.plugin_name);
     }
 
-    eweather->plugin.plugin_name = eina_stringshare_add(plugin);
-    eweather_plugin_load(eweather);
+    eweather->plugin.module = module;
+    if(module)
+      eweather_plugin_load(eweather);
+}
+
+void eweather_plugin_byname_set(EWeather *eweather, const char *name)
+{
+   Eina_Array *array;
+   Eina_Module *m;
+   int i;
+   Eina_Array_Iterator it;
+   
+   array = eweather_plugins_list_get(eweather);
+   EINA_ARRAY_ITER_NEXT(array, i, m, it)
+     {
+	EWeather_Plugin *plugin = eina_module_symbol_get(m, "_plugin_class");
+	if(plugin && !strcmp(name, plugin->name))
+	  {
+	     eweather_plugin_set(eweather, m);
+	     break ;
+	  }
+     }
+}
+
+void eweather_poll_time_set(EWeather *eweather, int poll_time)
+{
+   eweather->poll_time = poll_time;
+
+   if(eweather->plugin.plugin && eweather->plugin.plugin->poll_time_updated)
+	eweather->plugin.plugin->poll_time_updated(eweather);
+}
+
+void eweather_code_set(EWeather *eweather, const char *code)
+{
+   if(eweather->code)
+     eina_stringshare_del(eweather->code);
+   eweather->code = eina_stringshare_add(code);
+
+   if(eweather->plugin.plugin && eweather->plugin.plugin->code_updated)
+	eweather->plugin.plugin->code_updated(eweather);
+}
+
+void eweather_temp_type_set(EWeather *eweather, EWeather_Temp type)
+{
+   eweather->temp_type = type;
+}
+
+EWeather_Temp eweather_temp_type_get(EWeather *eweather)
+{
+   return eweather->temp_type;
 }
 
 EWeather_Type eweather_data_type_get(EWeather_Data *eweather_data)
@@ -107,4 +154,8 @@ void eweather_callbacks_set(EWeather *eweather, Update_Cb update_cb, void *data)
    eweather->func.update_cb = update_cb;
 }
 
+int eweather_utils_celcius_get(int farenheit)
+{
+   return (farenheit - 32.) * 5./9.;
+}
 

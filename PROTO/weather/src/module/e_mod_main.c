@@ -28,7 +28,7 @@ e_modapi_init(E_Module *m)
 
    item_edd = E_CONFIG_DD_NEW("Config_Item", Config_Item);
    E_CONFIG_VAL(item_edd, Config_Item, id, STR);
-   E_CONFIG_VAL(item_edd, Config_Item, degrees, INT);
+   E_CONFIG_VAL(item_edd, Config_Item, celcius, INT);
    E_CONFIG_VAL(item_edd, Config_Item, location, STR);
    E_CONFIG_VAL(item_edd, Config_Item, plugin, STR);
    E_CONFIG_VAL(item_edd, Config_Item, poll_time, DOUBLE);
@@ -37,12 +37,13 @@ e_modapi_init(E_Module *m)
    E_CONFIG_LIST(conf_edd, Config, items, item_edd);
 
    weather_cfg = e_config_domain_load("module.weather", conf_edd);
+   
    if (weather_cfg) 
      {
         if ((weather_cfg->version >> 16) < MOD_CONFIG_FILE_EPOCH) 
           {
              /* config too old */
-             _weather_config_free();
+             //_weather_config_free();
 	     ecore_timer_add(1.0, _cb_cfg_timer,
 			     D_("Weather Module Configuration data needed "
                                 "upgrading. Your old configuration<br> has been"

@@ -9,6 +9,7 @@ typedef struct EWeather EWeather;
 typedef struct EWeather_Data EWeather_Data;
 
 typedef enum EWeather_Type EWeather_Type;
+typedef enum EWeather_Temp EWeather_Temp;
 
 typedef void (*Update_Cb) (void *data, EWeather *eweather);
 
@@ -33,12 +34,25 @@ enum EWeather_Type
    EWEATHER_TYPE_HEAVY_SNOW
 };
 
+enum EWeather_Temp
+{
+   EWEATHER_TEMP_FARENHEIT,
+   EWEATHER_TEMP_CELCIUS
+};
 
-EAPI	Eina_List *	eweather_plugins_list_get();
+
+EAPI	Eina_Array *	eweather_plugins_list_get();
+EAPI	Eina_Module *	eweather_plugin_search(EWeather *eweather, const char *name);
+EAPI	const char *	eweather_plugin_name_get(EWeather *eweather, int i);
+EAPI	int		eweather_plugin_id_search(EWeather *eweather, const char *name);
+EAPI	void		eweather_plugin_set(EWeather *eweather, Eina_Module *module);
+EAPI	void		eweather_plugin_byname_set(EWeather *eweather, const char *name);
+
 EAPI	EWeather *	eweather_new();
 EAPI	void		eweather_free(EWeather *eweather);
-EAPI	void		eweather_plugin_set(EWeather *eweather, const char *plugin);
-EAPI	const char *	eweather_signal_type_get(EWeather_Type type);
+EAPI	void		eweather_poll_time_set(EWeather *eweather, int poll_time);
+EAPI	EWeather_Temp	eweather_temp_type_get(EWeather *eweather);
+EAPI	void		eweather_temp_type_set(EWeather *eweather, EWeather_Temp type);
 
 EAPI	EWeather_Data *	eweather_data_current_get(EWeather *eweather);
 EAPI	EWeather_Data *	eweather_data_get(EWeather *eweather, int num);
@@ -53,5 +67,7 @@ EAPI	const char *	eweather_data_region_get(EWeather_Data *eweather_data);
 EAPI	const char *	eweather_data_country_get(EWeather_Data *eweather_data);
 EAPI	const char *	eweather_data_date_get(EWeather_Data *eweather_data);
 EAPI	void		eweather_callbacks_set(EWeather *eweather, Update_Cb update_cb, void *data);
+
+EAPI	int		eweather_utils_celcius_get(int farenheit);
 
 #endif

@@ -3,44 +3,35 @@
 #include "EWeather_Plugins.h"
 #include "../../config.h"
 
-Eina_List *eweather_plugins_list_get()
+Eina_Array *eweather_plugins_list_get(EWeather *eweather)
 {
-   Eina_List *l2, *l2_next;
-   Eina_List *l = ecore_file_ls(PLUGINSDIR);
-   char *s;
-
-   EINA_LIST_FOREACH_SAFE(l, l2, l2_next, s)
+   if(!eweather->plugin.array)
      {
-	char *strip_ext = ecore_file_strip_ext(s);
-	const char *ext = s + strlen(strip_ext);
-	free(strip_ext);
-	if(strcmp(".so", ext))
-	{
-	    l = eina_list_remove(l, s);
-	    free(s);
-	 }
+	eweather->plugin.array = eina_module_list_get(NULL, PLUGINSDIR, EINA_FALSE, NULL, NULL);
+	if(eweather->plugin.array)
+	  eina_module_list_load(eweather->plugin.array);
      }
-   return l;
+
+   return eweather->plugin.array;
 }
 
 void eweather_plugin_load(EWeather *eweather)
 {
-   char buf[1024];
-
-   snprintf(buf, sizeof(buf), PLUGINSDIR"/%s", eweather->plugin.plugin_name);
-   eweather->plugin.module = eina_module_new(buf);
-   eina_module_load(eweather->plugin.module);
    eweather->plugin.plugin = eina_module_symbol_get(eweather->plugin.module, "_plugin_class");
 
    if(eweather->plugin.plugin)
-     eweather->plugin.plugin->init(eweather, "FRXX3409");
+     eweather->plugin.plugin->init(eweather);
 }
 
 void eweather_plugin_shutdown(EWeather *eweather)
 {
+   EWeather_Data *e_data;
+
+   EINA_LIST_FREE(eweather->data, e_data)
+      free(e_data);	
+
    if(eweather->plugin.plugin)
      eweather->plugin.plugin->shutdown(eweather);
-   eina_module_free(eweather->plugin.module);
 }
 
 
@@ -48,5 +39,57 @@ void eweather_plugin_update(EWeather *eweather)
 {
    if(eweather->func.update_cb)
      eweather->func.update_cb(eweather->func.data, eweather);
+}
+
+Eina_Module *eweather_plugin_search(EWeather *eweather, const char *name)
+{
+   Eina_Array *array;
+   unsigned int i;
+   Eina_Array_Iterator it;
+   Eina_Module *m;
+
+   array = eweather_plugins_list_get(eweather);
+   EINA_ARRAY_ITER_NEXT(array, i, m, it)
+     {
+	EWeather_Plugin *plugin = eina_module_symbol_get(m, "_plugin_class");
+	if(plugin && !strcmp(name, plugin->name))
+	  return m;
+     }
+
+   return NULL;
+}
+
+int eweather_plugin_id_search(EWeather *eweather, const char *name)
+{
+   Eina_Array *array;
+   unsigned int i;
+   Eina_Array_Iterator it;
+   Eina_Module *m;
+
+   array = eweather_plugins_list_get(eweather);
+   EINA_ARRAY_ITER_NEXT(array, i, m, it)
+     {
+	EWeather_Plugin *plugin = eina_module_symbol_get(m, "_plugin_class");
+	if(plugin && !strcmp(name, plugin->name))
+	  return i;
+     }
+
+   return -1;
+}
+
+const char *eweather_plugin_name_get(EWeather *eweather, int i)
+{
+   Eina_Array *array;
+   Eina_Module *m;
+
+   array = eweather_plugins_list_get(eweather);
+
+   m = eina_array_data_get(array, i);
+   if(!m) return NULL;
+
+   EWeather_Plugin *plugin = eina_module_symbol_get(m, "_plugin_class");
+   if(!plugin) return NULL;
+
+   return plugin->name;
 }
 

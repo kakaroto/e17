@@ -8,15 +8,17 @@
 
 typedef struct Instance Instance;
 
-static void _init(EWeather *eweather, const char *code);
+static void _init(EWeather *eweather);
 static void _shutdown(EWeather *eweather);
+static void _poll_time_updated(EWeather *eweather);
+static void _code_updated(EWeather *eweather);
 static int _server_add(void *data, int type, void *event);
 static int _server_del(void *data, int type, void *event);
 static int _server_data(void *data, int type, void *event);
 static int _weather_cb_check(void *data);
 static EWeather_Type _weather_type_get(int id);
 static int _server_data(void *data, int type, void *event);
-static int _parse(void *data);
+static int _parse(Instance* inst);
 
 
 struct _Id_Type
@@ -91,22 +93,23 @@ struct Instance
    char *buffer, *location;
    int bufsize, cursize;
 
-   const char *code;
    const char *host;
 };
 
 EAPI EWeather_Plugin _plugin_class =
 {
+   "Yahoo", 
    _init,
-   _shutdown
+   _shutdown,
+   _poll_time_updated,
+   _code_updated
 };
 
-static void _init(EWeather *eweather, const char *code)
+static void _init(EWeather *eweather)
 {
    Instance *inst = calloc(1, sizeof(Instance));
    eweather->plugin.data = inst;
    inst->weather = eweather;
-   inst->code = eina_stringshare_add(code);
    inst->host = eina_stringshare_add("weather.yahooapis.com");
 
    inst->add_handler =
@@ -126,7 +129,6 @@ static void _init(EWeather *eweather, const char *code)
 static void _shutdown(EWeather *eweather)
 {
    Instance *inst = eweather->plugin.data;
-   if (inst->code) eina_stringshare_del(inst->code);
    if (inst->host) eina_stringshare_del(inst->host);
 
    if (inst->buffer) free(inst->buffer);
@@ -138,6 +140,28 @@ static void _shutdown(EWeather *eweather)
    if (inst->server) ecore_con_server_del(inst->server);
 
    free(inst);
+}
+
+static void _poll_time_updated(EWeather *eweather)
+{
+   Instance *inst = eweather->plugin.data;
+
+   if(inst->check_timer)
+     ecore_timer_del(inst->check_timer);
+
+   inst->check_timer =
+      ecore_timer_add(0, _weather_cb_check, inst);
+}
+
+static void _code_updated(EWeather *eweather)
+{
+   Instance *inst = eweather->plugin.data;
+
+   if(inst->check_timer)
+     ecore_timer_del(inst->check_timer);
+
+   inst->check_timer =
+      ecore_timer_add(0, _weather_cb_check, inst);
 }
 
    static int
@@ -168,16 +192,17 @@ _server_add(void *data, int type, void *event)
 {
    Instance *inst;
    Ecore_Con_Event_Server_Add *ev;
-   char buf[1024], icao[1024];
+   char buf[1024];
+
 
    if (!(inst = data)) return 1;
+   if(!inst->weather->code) return 0;
 
    ev = event;
    if ((!inst->server) || (inst->server != ev->server)) return 1;
 
-   snprintf(icao, sizeof(icao), "/icao/%s/rss.php", inst->code);
-   snprintf(buf, sizeof(buf), "GET http://%s/forecastrss?p=%s HTTP/1.1\r\nHost: %s\r\n\r\n",
-	 inst->host, inst->code, inst->host);
+   snprintf(buf, sizeof(buf), "GET http://%s/forecastrss?w=%s HTTP/1.1\r\nHost: %s\r\n\r\n",
+	 inst->host, inst->weather->code, inst->host);
    ecore_con_server_send(inst->server, buf, strlen (buf));
    return 0;
 }
@@ -229,67 +254,126 @@ _server_data(void *data, int type, void *event)
 }
 
    static int
-_parse(void *data)
+_parse(Instance *inst)
 {
-   Instance *inst;
    char *needle, *ext;
    char location[1024];
+   char day[1024];
+   char date[1024];
    EWeather_Data *e_data = eweather_data_current_get(inst->weather);
+   EWeather_Data *e_data_current;
    int code;
 
    location[0] = 0;
 
-   if (!(inst = data)) return 0;
    if (inst->buffer == NULL) return 0;
 
    //printf("%s\n", inst->buffer);
-
    needle = strstr(inst->buffer, "<yweather:location");
    if (!needle) goto error;
 
    needle = strstr(needle, "city=\"");
+   if (!needle) goto error;
    needle+=6;
    sscanf(needle, "%[^\"]\"", e_data->city);
 
    needle = strstr(needle, "region=\"");
+   if (!needle) goto error;
    needle+=8;
    sscanf(needle, "%[^\"]\"", e_data->region);
 
    needle = strstr(needle, "country=\"");
+   if (!needle) goto error;
    needle+=9;
    sscanf(needle, "%[^\"]\"", e_data->country);
 
+   needle = strstr(needle, "<pubDate>");
+   if (!needle) goto error;
+   needle += 9; 
+   sscanf(needle, "%[^<]<", &(e_data->date));
+
 
    needle = strstr(needle, "<yweather:condition");
+   if (!needle) goto error;
 
    needle = strstr(needle, "code=\"");
+   if (!needle) goto error;
    needle+=6;
    sscanf(needle, "%d\"", &code);
 
    e_data->type = _weather_type_get(code);
 
    needle = strstr(needle, "temp=\"");
+   if (!needle) goto error;
    needle+=6;
    sscanf(needle, "%d\"", &(e_data->temp));
 
 
    needle = strstr(needle, "<b>Forecast:</b><BR />");
+   if (!needle) goto error;
 
    needle = strstr(needle, "High: ");
+   if (!needle) goto error;
    needle+=6;
    sscanf(needle, "%d ", &(e_data->temp_max));
 
    needle = strstr(needle, "Low: ");
+   if (!needle) goto error;
    needle+=5;
    sscanf(needle, "%d ", &(e_data->temp_min));
 
-   printf("CITY %s\n", e_data->city);
+   e_data_current = e_data;
+
+   /*printf("CITY %s\n", e_data->city);
    printf("REGION %s\n", e_data->region);
    printf("COUNTRY %s\n", e_data->country);
    printf("TYPE %d\n", e_data->type);
    printf("TEMP %d\n", e_data->temp);
    printf("TEMP MIN %d\n", e_data->temp_min);
    printf("TEMP MAX %d\n", e_data->temp_max);
+   */
+
+   //tomorrow
+   e_data = eweather_data_get(inst->weather, 1);
+
+   needle = strstr(needle, "<yweather:forecast day=\"");
+   if (!needle) goto error;
+   needle+=24;
+
+   needle = strstr(needle, "<yweather:forecast day=\"");
+   if (!needle) goto error;
+   needle+=24;
+   sscanf(needle, "%[^\"]\"", &day);
+ 
+   needle = strstr(needle, "date=\"");
+   if (!needle) goto error;
+   needle+=6;
+   sscanf(needle, "%[^\"]\"", &date);
+
+   snprintf(e_data->date, 256, "%s %s", day, date);
+
+   needle = strstr(needle, "low=\"");
+   if (!needle) goto error;
+   needle+=5;
+   sscanf(needle, "%d\"", &(e_data->temp_min));
+
+   needle = strstr(needle, "high=\"");
+   if (!needle) goto error;
+   needle+=6;
+   sscanf(needle, "%d\"", &(e_data->temp_max));
+
+   e_data->temp = ( e_data->temp_min + e_data->temp_max ) / 2;
+
+   needle = strstr(needle, "code=\"");
+   if (!needle) goto error;
+   needle+=6;
+   sscanf(needle, "%d\"", &code);
+   e_data->type = _weather_type_get(code);
+
+   strcpy(e_data->country, e_data_current->country);
+   strcpy(e_data->region, e_data_current->region);
+   strcpy(e_data->city, e_data_current->city);
+
 
    eweather_plugin_update(inst->weather);
    return 1;

@@ -12,6 +12,7 @@ static Evas_Object *_gc_icon(E_Gadcon_Client_Class *client_class, Evas *evas);
 static const char *_gc_id_new(E_Gadcon_Client_Class *client_class);
 static void _gc_cb_mouse_down(void *data, Evas *evas, Evas_Object *obj, void *event);
 static void _gc_cb_menu_post(void *data, E_Menu  *menu);
+static void _menu_cb_configure(void *data, E_Menu * m, E_Menu_Item * mi);
 
 static const E_Gadcon_Client_Class _gc_class =
 {
@@ -30,12 +31,13 @@ _gc_init(E_Gadcon *gc, const char *name, const char *id, const char *style)
    char buff[PATH_MAX];
 
    inst = E_NEW(Instance, 1);
-   inst->ci = _weather_config_item_get(id);
+   inst->ci = _weather_config_item_get(inst, id);
 
    snprintf(buff, sizeof(buff), "%s/weather.edj", weather_cfg->mod_dir);
    if(gc->location->site == E_GADCON_SITE_DESKTOP)
      {
          inst->obj = eweather_object_add(gc->evas);
+         inst->eweather = eweather_object_eweather_get(inst->obj);
      }
    else
      {
@@ -52,6 +54,13 @@ _gc_init(E_Gadcon *gc, const char *name, const char *id, const char *style)
 
    weather_cfg->instances = eina_list_append(weather_cfg->instances, inst);
 
+   eweather_poll_time_set(inst->eweather, inst->ci->poll_time);
+   eweather_code_set(inst->eweather, inst->ci->location);
+   if(inst->ci->plugin)
+       eweather_plugin_byname_set(inst->eweather, inst->ci->plugin);
+   if(inst->ci->celcius)
+       eweather_temp_type_set(inst->eweather, EWEATHER_TEMP_CELCIUS);
+    
    return gcc;
 }
 
@@ -61,6 +70,7 @@ _gc_shutdown(E_Gadcon_Client *gcc)
    Instance *inst;
 
    inst = gcc->data;
+   inst->ci->inst = NULL;
    weather_cfg->instances = eina_list_remove(weather_cfg->instances, inst);
 
    if (inst->menu)
@@ -108,7 +118,7 @@ _gc_id_new(E_Gadcon_Client_Class *client_class)
 {
    Config_Item *ci;
 
-   ci = _weather_config_item_get(NULL);
+   ci = _weather_config_item_get(NULL, NULL);
    return ci->id;
 }
 
@@ -136,6 +146,7 @@ _gc_cb_mouse_down(void *data, Evas *evas, Evas_Object *obj, void *event)
         mi = e_menu_item_new(mn);
         e_menu_item_label_set(mi, D_("Settings"));
         e_util_menu_item_theme_icon_set(mi, "configure");
+        e_menu_item_callback_set(mi, _menu_cb_configure, inst);
 
         mi = e_menu_item_new(mn);
         e_menu_item_separator_set(mi, 1);
@@ -145,6 +156,15 @@ _gc_cb_mouse_down(void *data, Evas *evas, Evas_Object *obj, void *event)
         e_menu_activate_mouse(mn, zone, x + ev->output.x, y + ev->output.y,
                               1, 1, E_MENU_POP_DIRECTION_AUTO, ev->timestamp);
      }
+}
+
+static void
+_menu_cb_configure(void *data, E_Menu * m, E_Menu_Item * mi)
+{
+   Instance *inst;
+
+   inst = data;
+   weather_config_dialog(inst->ci);
 }
 
 static void

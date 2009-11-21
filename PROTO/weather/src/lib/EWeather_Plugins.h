@@ -9,8 +9,10 @@
 #include <stdio.h>
 
 typedef struct EWeather_Plugin EWeather_Plugin;
-typedef void (*Plugin_Init) (EWeather *eweather, const char *code);
+typedef void (*Plugin_Init) (EWeather *eweather);
 typedef void (*Plugin_Shutdown) (EWeather *eweather);
+typedef void (*Plugin_Poll_Time_Updated) (EWeather *eweather);
+typedef void (*Plugin_Code_Updated) (EWeather *eweather);
 
 struct EWeather_Data
 {
@@ -29,7 +31,7 @@ struct EWeather
 {
    struct
      {
-	const char *plugin_name;
+	Eina_Array *array;
 	EWeather_Plugin *plugin;
 	Eina_Module *module;
 	void *data;
@@ -45,15 +47,21 @@ struct EWeather
 	const char *host;
 	int port;
      } proxy;
+
    int poll_time;
+   EWeather_Temp temp_type;
+   const char *code;
 
    Eina_List *data;
 };
 
 struct EWeather_Plugin
 {
+   const char *name;
    Plugin_Init init;
    Plugin_Shutdown shutdown;
+   Plugin_Poll_Time_Updated poll_time_updated;
+   Plugin_Code_Updated code_updated;
 };
 
 void eweather_plugin_load(EWeather *eweather);
