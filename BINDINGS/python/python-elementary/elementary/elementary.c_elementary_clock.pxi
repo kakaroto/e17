@@ -20,10 +20,10 @@ cdef class Clock(Object):
     def __init__(self, c_evas.Object parent):
         Object.__init__(self, parent.evas)
         self._set_obj(elm_clock_add(parent.obj))
-        
+
     def time_set(self, hours, minutes, seconds):
         elm_clock_time_set(self.obj, hours, minutes, seconds)
-        
+
     def time_get(self):
         """
         Returns the current time of the clock
@@ -37,13 +37,13 @@ cdef class Clock(Object):
         elm_clock_time_get(self.obj, &hrs, &min, &sec)
 
         return (hrs, min, sec)
-        
+
     def edit_set(self, edit):
         elm_clock_edit_set(self.obj, edit)
-        
+
     def show_am_pm_set(self, am_pm):
         elm_clock_show_am_pm_set(self.obj, am_pm)
-        
+
     def show_seconds_set(self, seconds):
         elm_clock_show_seconds_set(self.obj, seconds)
 

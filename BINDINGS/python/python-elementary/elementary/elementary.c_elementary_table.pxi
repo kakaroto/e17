@@ -20,10 +20,10 @@ cdef class Table(Object):
     def __init__(self, c_evas.Object parent):
         Object.__init__(self, parent.evas)
         self._set_obj(elm_table_add(parent.obj))
-        
+
     def homogenous_set(self, homogenous):
         elm_table_homogenous_set(self.obj, homogenous)
-        
+
     def pack(self, c_evas.Object subobj, x, y, w, h):
         elm_table_pack(self.obj, subobj.obj, x, y, w, h)
- 
+

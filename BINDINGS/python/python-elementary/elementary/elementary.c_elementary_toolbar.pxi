@@ -79,12 +79,12 @@ cdef class Toolbar(Object):
             elm_toolbar_scrollable_set(self.obj, 1)
         else:
             elm_toolbar_scrollable_set(self.obj, 0)
-       
+
     def item_add(self, c_evas.Object icon, label, callback, data = None):
         """
         Adds a new item to the toolbar
 
-        @note: Never pass the the same icon object to more than one item. For 
+        @note: Never pass the the same icon object to more than one item. For
                a every item you must create a new icon!
 
         @parm: L{icon} icon for the item
@@ -103,4 +103,4 @@ cdef class Toolbar(Object):
             @parm: L{value} callback function
             """
             self._callback_add("clicked", value)
-       
+

@@ -32,12 +32,12 @@ cdef class Fileselector(Object):
         Object.__init__(self, parent.evas)
         self._set_obj(elm_fileselector_add(parent.obj))
         self.cbts = []
-        
+
     def selected_get(self):
         cdef char* path
         path = elm_fileselector_selected_get(self.obj)
         return path
-    
+
     def path_set(self, path):
         elm_fileselector_path_set(self.obj, path)
 
@@ -45,7 +45,7 @@ cdef class Fileselector(Object):
         cdef char *p
         p = elm_fileselector_path_get(self.obj)
         return p
-    
+
     def expandable_set(self, expand):
         if expand:
             elm_fileselector_expandable_set(self.obj, 1)

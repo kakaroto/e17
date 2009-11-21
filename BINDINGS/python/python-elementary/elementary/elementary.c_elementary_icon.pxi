@@ -41,7 +41,7 @@ cdef class Icon(Object):
             elm_icon_file_set(self.obj, filename, NULL)
         else:
             elm_icon_file_set(self.obj, filename, group)
-        
+
     property clicked:
         """
         If the event clicked occured, the specified callback function will be 

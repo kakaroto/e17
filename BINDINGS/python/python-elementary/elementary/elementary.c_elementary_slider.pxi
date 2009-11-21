@@ -20,28 +20,28 @@ cdef class Slider(Object):
     def __init__(self, c_evas.Object parent):
         Object.__init__(self, parent.evas)
         self._set_obj(elm_slider_add(parent.obj))
-    
+
     def label_set(self, label):
         elm_slider_label_set(self.obj, label)
-        
+
     def icon_set(self, c_evas.Object icon):
         elm_slider_icon_set(self.obj, icon.obj)
-    
+
     def span_size_set(self, size):
         elm_slider_span_size_set(self.obj, size)
-        
+
     def unit_format_set(self, format):
         elm_slider_unit_format_set(self.obj, format)
-    
+
     def indicator_format_set(self, format):
         elm_slider_indicator_format_set(self.obj, format)
-        
+
     def horizontal_set(self, horizontal):
         if horizontal:
             elm_slider_horizontal_set(self.obj, 1)
         else:
             elm_slider_horizontal_set(self.obj, 0)
-    
+
     def min_max_set(self, min, max):
         elm_slider_min_max_set(self.obj, min, max)
 

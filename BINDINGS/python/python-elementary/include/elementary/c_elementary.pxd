@@ -161,7 +161,7 @@ cdef extern from "Elementary.h":
     void elm_shutdown()
     void elm_run()
     void elm_exit()
-    
+
     # Quicklaunch
     void         elm_quicklaunch_init(int argc, char **argv)
     void         elm_quicklaunch_sub_init(int argc, char **argv)
@@ -173,7 +173,7 @@ cdef extern from "Elementary.h":
     void         elm_quicklaunch_cleanup()
     int          elm_quicklaunch_fallback(int argc, char **argv)
     char        *elm_quicklaunch_exe_path_get(char *exe)
-    
+
     # Object handling
     void         elm_object_scale_set(evas.c_evas.Evas_Object *obj, double scale)
     double       elm_object_scale_get(evas.c_evas.Evas_Object *obj)
@@ -194,12 +194,12 @@ cdef extern from "Elementary.h":
     void         elm_finger_size_set(evas.c_evas.Evas_Coord size)
 
     void         elm_object_focus(evas.c_evas.Evas_Object *obj)
-    
+
     void         elm_coords_finger_size_adjust(int times_w, evas.c_evas.Evas_Coord *w, int times_h, evas.c_evas.Evas_Coord *h)
-    
+
     void         elm_theme_overlay_add(char *item)
     void         elm_theme_extension_add(char *item)
-   
+
     # Window handling
     evas.c_evas.Evas_Object *elm_win_add(evas.c_evas.Evas_Object* parent,char* name,Elm_Win_Type type)
     void elm_win_resize_object_add(evas.c_evas.Evas_Object* obj,evas.c_evas.Evas_Object* subobj)
@@ -222,19 +222,19 @@ cdef extern from "Elementary.h":
 
     void elm_win_keyboard_mode_set(evas.c_evas.Evas_Object *obj, Elm_Win_Keyboard_Mode mode)
     void elm_win_keyboard_win_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool is_keyboard)
-    
+
     # X specific call - wont't work on non-x engines (return 0)
     Ecore_X_Window elm_win_xwindow_get(evas.c_evas.Evas_Object *obj)
-    
+
     evas.c_evas.Evas_Object *elm_win_inwin_add(evas.c_evas.Evas_Object *obj)
     void elm_win_inwin_activate(evas.c_evas.Evas_Object *obj)
     void elm_win_inwin_style_set(evas.c_evas.Evas_Object *obj, char *style)
     void         elm_win_inwin_content_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Evas_Object *content)
-    
+
     # Background object
     evas.c_evas.Evas_Object *elm_bg_add(evas.c_evas.Evas_Object *parent)
     void elm_bg_file_set(evas.c_evas.Evas_Object *obj, char *file, char *group)
-    
+
     # Icon object
     evas.c_evas.Evas_Object *elm_icon_add(evas.c_evas.Evas_Object *parent)
     void elm_icon_file_set(evas.c_evas.Evas_Object *obj, char *file, char *group)
@@ -254,7 +254,7 @@ cdef extern from "Elementary.h":
     void                     elm_image_fill_outside_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool fill_outside)
     void                     elm_image_prescale_set(evas.c_evas.Evas_Object *obj, int size)
     void                     elm_image_orient_set(evas.c_evas.Evas_Object *obj, Elm_Image_Orient orient)
-    
+
     # Box object
     evas.c_evas.Evas_Object *elm_box_add(evas.c_evas.Evas_Object *parent)
     void elm_box_horizontal_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool horizontal)
@@ -266,7 +266,7 @@ cdef extern from "Elementary.h":
     void elm_box_clear(evas.c_evas.Evas_Object *obj)
     void elm_box_unpack(evas.c_evas.Evas_Object *obj, evas.c_evas.Evas_Object *subobj)
     void elm_box_unpack_all(evas.c_evas.Evas_Object *obj)
-    
+
     # Button object
     evas.c_evas.Evas_Object *elm_button_add(evas.c_evas.Evas_Object *parent)
     void elm_button_label_set(evas.c_evas.Evas_Object *obj, char *label)
@@ -291,7 +291,7 @@ cdef extern from "Elementary.h":
     # Label object
     evas.c_evas.Evas_Object *elm_label_add(evas.c_evas.Evas_Object *parent)
     void elm_label_label_set(evas.c_evas.Evas_Object *obj, char *label)
-    
+
     # Toggle object
     evas.c_evas.Evas_Object *elm_toggle_add(evas.c_evas.Evas_Object *parent)
     void elm_toggle_label_set(evas.c_evas.Evas_Object *obj, char *label)
@@ -300,18 +300,18 @@ cdef extern from "Elementary.h":
     void elm_toggle_state_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool state)
     evas.c_evas.Eina_Bool    elm_toggle_state_get(evas.c_evas.Evas_Object *obj)
     void elm_toggle_state_pointer_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool *statep)
-    
+
     # Frame object
     evas.c_evas.Evas_Object* elm_frame_add(evas.c_evas.Evas_Object *parent)
     void elm_frame_label_set(evas.c_evas.Evas_Object *obj, char *label)
     void elm_frame_content_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Evas_Object *content)
     void elm_frame_style_set(evas.c_evas.Evas_Object *obj, char *style)
-   
+
     # Table object
     evas.c_evas.Evas_Object *elm_table_add(evas.c_evas.Evas_Object *parent)
     void elm_table_homogenous_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool homogenous)
     void elm_table_pack(evas.c_evas.Evas_Object *obj, evas.c_evas.Evas_Object *subobj, int x, int y, int w, int h)
-    
+
     # Clock object
     evas.c_evas.Evas_Object *elm_clock_add(evas.c_evas.Evas_Object *parent)
     void elm_clock_time_set(evas.c_evas.Evas_Object *obj, int hrs, int min, int sec)
@@ -319,14 +319,14 @@ cdef extern from "Elementary.h":
     void elm_clock_edit_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool edit)
     void elm_clock_show_am_pm_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool am_pm)
     void elm_clock_show_seconds_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool seconds)
-    
+
     # Layout object
     evas.c_evas.Evas_Object *elm_layout_add(evas.c_evas.Evas_Object *parent)
     void elm_layout_file_set(evas.c_evas.Evas_Object *obj, char *file, char *group)
     void elm_layout_content_set(evas.c_evas.Evas_Object *obj, char *swallow, evas.c_evas.Evas_Object *content)
     evas.c_evas.Evas_Object *elm_layout_edje_get(evas.c_evas.Evas_Object *obj)
 
-    # Notify object 
+    # Notify object
     evas.c_evas.Evas_Object *elm_notify_add(evas.c_evas.Evas_Object *parent)
     void elm_notify_content_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Evas_Object *content)
     void elm_notify_orient_set(evas.c_evas.Evas_Object *obj, int orient)
@@ -334,7 +334,7 @@ cdef extern from "Elementary.h":
     void elm_notify_timer_init(evas.c_evas.Evas_Object *obj)
     void elm_notify_repeat_events_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool repeat)
     void elm_notify_parent_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Evas_Object *parent)
-    
+
     # Hover object
     evas.c_evas.Evas_Object *elm_hover_add(evas.c_evas.Evas_Object *parent)
     void elm_hover_target_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Evas_Object *target)
@@ -343,7 +343,7 @@ cdef extern from "Elementary.h":
     void elm_hover_style_set(evas.c_evas.Evas_Object *obj, char *style)
     char  *elm_hover_best_content_location_get(evas.c_evas.Evas_Object *obj, Elm_Hover_Axis pref_axis)
 
-    # Entry Object 
+    # Entry Object
     evas.c_evas.Evas_Object *elm_entry_add(evas.c_evas.Evas_Object *parent)
     void elm_entry_single_line_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool single_line)
     void elm_entry_password_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool password)
@@ -369,7 +369,7 @@ cdef extern from "Elementary.h":
     void elm_anchorview_hover_parent_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Evas_Object *parent)
     void elm_anchorview_hover_style_set(evas.c_evas.Evas_Object *obj, char *style)
     void elm_anchorview_hover_end(evas.c_evas.Evas_Object *obj)
-    
+
     # Anchorblock object
     evas.c_evas.Evas_Object *elm_anchorblock_add(evas.c_evas.Evas_Object *parent)
     void         elm_anchorblock_text_set(evas.c_evas.Evas_Object *obj, char *text)
@@ -487,7 +487,7 @@ cdef extern from "Elementary.h":
     void              elm_genlist_item_del(Elm_Genlist_Item *item)
     void       *elm_genlist_item_data_get( Elm_Genlist_Item *item)
     void              elm_genlist_item_update(Elm_Genlist_Item *item)
-    
+
     # Check widget
     evas.c_evas.Evas_Object *elm_check_add(evas.c_evas.Evas_Object *parent)
     void         elm_check_label_set(evas.c_evas.Evas_Object *obj, char *label)
@@ -497,7 +497,7 @@ cdef extern from "Elementary.h":
     void         elm_check_state_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool state)
     evas.c_evas.Eina_Bool    elm_check_state_get(evas.c_evas.Evas_Object *obj)
     void         elm_check_state_pointer_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool *statep)
-    
+
     # Radio widget
     evas.c_evas.Evas_Object *elm_radio_add(evas.c_evas.Evas_Object *parent)
     void         elm_radio_label_set(evas.c_evas.Evas_Object *obj, char *label)
@@ -507,7 +507,7 @@ cdef extern from "Elementary.h":
     void         elm_radio_value_set(evas.c_evas.Evas_Object *obj, int value)
     int          elm_radio_value_get(evas.c_evas.Evas_Object *obj)
     void         elm_radio_value_pointer_set(evas.c_evas.Evas_Object *obj, int *valuep)
-    
+
     # Pager widget
     evas.c_evas.Evas_Object *elm_pager_add(evas.c_evas.Evas_Object *parent)
     void         elm_pager_content_push(evas.c_evas.Evas_Object *obj, evas.c_evas.Evas_Object *content)
@@ -515,7 +515,7 @@ cdef extern from "Elementary.h":
     void         elm_pager_content_promote(evas.c_evas.Evas_Object *obj, evas.c_evas.Evas_Object *content)
     evas.c_evas.Evas_Object *elm_pager_content_bottom_get(evas.c_evas.Evas_Object *obj)
     evas.c_evas.Evas_Object *elm_pager_content_top_get(evas.c_evas.Evas_Object *obj)
-   
+
     # Fileselector widget
     evas.c_evas.Evas_Object *elm_fileselector_add(evas.c_evas.Evas_Object *parent)
     void         elm_fileselector_is_save_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool is_save)

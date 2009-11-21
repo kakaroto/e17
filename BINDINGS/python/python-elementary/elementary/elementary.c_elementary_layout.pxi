@@ -20,10 +20,10 @@ cdef class Layout(Object):
     def __init__(self, c_evas.Object parent):
         Object.__init__(self, parent.evas)
         self._set_obj(elm_layout_add(parent.obj))
-        
+
     def file_set(self, filename, group):
         elm_layout_file_set(self.obj, filename, group)
-        
+
     def content_set(self, swallow, c_evas.Object content):
         cdef c_evas.Evas_Object *o
         if content is not None:
@@ -31,8 +31,8 @@ cdef class Layout(Object):
         else:
             o = NULL
         elm_layout_content_set(self.obj, swallow, o)
-   
+
     def edje_get(self):
         cdef c_evas.Evas_Object *obj = elm_layout_edje_get(self.obj)
         return evas.c_evas._Object_from_instance(<long> obj)
- 
+

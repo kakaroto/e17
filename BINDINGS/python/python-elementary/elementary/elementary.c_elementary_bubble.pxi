@@ -20,18 +20,18 @@ cdef class Bubble(Object):
     def __init__(self, c_evas.Object parent):
         Object.__init__(self, parent.evas)
         self._set_obj(elm_bubble_add(parent.obj))
-        
+
     def label_set(self, label):
         elm_bubble_label_set(self.obj, label)
-        
+
     def info_set(self, info):
         elm_bubble_info_set(self.obj, info)
-        
+
     def content_set(self, c_evas.Object content):
         elm_bubble_content_set(self.obj, content.obj)
-    
+
     def icon_set(self, c_evas.Object icon):
         elm_bubble_icon_set(self.obj, icon.obj)
-        
+
     def corner_set(self, corner):
         elm_bubble_corner_set(self.obj, corner)

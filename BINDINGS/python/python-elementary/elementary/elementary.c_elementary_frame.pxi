@@ -20,10 +20,10 @@ cdef class Frame(Object):
     def __init__(self, c_evas.Object parent):
         Object.__init__(self, parent.evas)
         self._set_obj(elm_frame_add(parent.obj))
-        
+
     def label_set(self, label):
         elm_frame_label_set(self.obj, label)
-        
+
     def content_set(self, c_evas.Object content):
         elm_frame_content_set(self.obj, content.obj)
 
@@ -32,4 +32,4 @@ cdef class Frame(Object):
 
     def best_content_location_get(self, axis):
         elm_hover_best_content_location_get(self.obj, axis)
- 
+

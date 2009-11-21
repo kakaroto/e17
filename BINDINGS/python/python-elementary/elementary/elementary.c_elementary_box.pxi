@@ -29,10 +29,10 @@ cdef class Box(Object):
 
     def pack_start(self, c_evas.Object obj):
         elm_box_pack_start(self.obj,obj.obj)
-    
+
     def pack_end(self, c_evas.Object obj):
         elm_box_pack_end(self.obj, obj.obj)
-    
+
     def pack_before(self, c_evas.Object obj, c_evas.Object before):
         elm_box_pack_before(self.obj, obj.obj, before.obj)
 

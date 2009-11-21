@@ -21,30 +21,29 @@ cdef class Toggle(Object):
     A toggle widget
     """
     cdef int state_ptr
-    
+
     def __init__(self, c_evas.Object parent):
         Object.__init__(self, parent.evas)
         self._set_obj(elm_toggle_add(parent.obj))
-        
+
         # set the state pointer for the toggle widget to always
         # know the current state
         self.state_ptr = 0
         elm_toggle_state_pointer_set(self.obj, &self.state_ptr)
-        
-        
+
     property changed:
         def __set__(self, value):
             self._callback_add("changed",value)
-    
+
     def label_set(self, label):
         elm_toggle_label_set(self.obj, label)
-        
+
     def icon_set(self, c_evas.Object icon):
         elm_toggle_icon_set(self.obj, icon.obj)
-        
+
     def states_labels_set(self,onlabel, offlabel):
         elm_toggle_states_labels_set(self.obj, onlabel, offlabel)
-        
+
     def state_set(self, state):
         if state == True:
             elm_toggle_state_set(self.obj, 1)

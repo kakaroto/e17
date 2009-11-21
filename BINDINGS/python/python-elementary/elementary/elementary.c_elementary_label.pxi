@@ -20,6 +20,6 @@ cdef class Label(Object):
     def __init__(self, c_evas.Object parent):
         Object.__init__(self, parent.evas)
         self._set_obj(elm_label_add(parent.obj))
-        
+
     def label_set(self, label):
         elm_label_label_set(self.obj,label)
