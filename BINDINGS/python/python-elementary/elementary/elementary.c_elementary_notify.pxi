@@ -39,10 +39,7 @@ cdef class Notify(Object):
         elm_notify_timer_init(self.obj)
 
     def repeat_events_set(self, repeat):
-        if repeat:
-            elm_notify_repeat_events_set(self.obj, 1)
-        else:
-            elm_notify_repeat_events_set(self.obj, 0)
+        elm_notify_repeat_events_set(self.obj, repeat)
 
     def parent_set(self, c_evas.Object parent):
         cdef c_evas.Evas_Object *o

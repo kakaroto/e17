@@ -92,10 +92,7 @@ cdef class Window(Object):
 
         @parm: B{audodel} Auto deletion property
         """
-        if autodel:
-            elm_win_autodel_set(self.obj, 1)
-        else:
-            elm_win_autodel_set(self.obj, 0)
+        elm_win_autodel_set(self.obj, autodel)
 
     def borderless_set(self, borderless):
         """
@@ -103,20 +100,14 @@ cdef class Window(Object):
 
         @parm: B{borderless} Borderless property
         """
-        if borderless:
-            elm_win_borderless_set(self.obj, 1)
-        else:
-            elm_win_borderless_set(self.obj, 0)
+        elm_win_borderless_set(self.obj, borderless)
 
     def shaped_set(self,shaped):
         """Set the shaped property of the window
 
         @parm: B{shaped} Shaped property
         """
-        if shaped:
-            elm_win_shaped_set(self.obj, 1)
-        else:
-            elm_win_shaped_set(self.obj, 0)
+        elm_win_shaped_set(self.obj, shaped)
 
     def alpha_set(self,alpha):
         """
@@ -124,10 +115,7 @@ cdef class Window(Object):
 
         @parm: b{alpha} Alpha value
         """
-        if alpha:
-            elm_win_alpha_set(self.obj, 1)
-        else:
-            elm_win_alpha_set(self.obj, 0)
+        elm_win_alpha_set(self.obj, alpha)
 
     def override_set(self, override):
         """
@@ -135,32 +123,23 @@ cdef class Window(Object):
 
         @parm: B{override} Override property
         """
-        if override:
-            elm_win_override_set(self.obj, 1)
-        else:
-            elm_win_override_set(self.obj, 0)
+        elm_win_override_set(self.obj, override)
 
     def fullscreen_set(self, fullscreen):
         """
         Set the window to fullscreen mode
 
-        @parm: B{mode} Fullscreen mode
+        @parm: B{fullscreen} Fullscreen mode
         """
-        if fullscreen:
-            elm_win_fullscreen_set(self.obj, 1)
-        else:
-            elm_win_fullscreen_set(self.obj, 0)
+        elm_win_fullscreen_set(self.obj, fullscreen)
 
     def maximized_set(self, maximized):
         """
         Maximize the window
 
-        @parm: B{maximize} Maximize the window
+        @parm: B{maximized} Maximize the window
         """
-        if maximized:
-            elm_win_maximized_set(self.obj, 1)
-        else:
-            elm_win_maximized_set(self.obj, 0)
+        elm_win_maximized_set(self.obj, maximized)
 
     def iconified_set(self, iconified):
         """
@@ -168,10 +147,7 @@ cdef class Window(Object):
 
         @parm: B{iconified}
         """
-        if iconified:
-            elm_win_iconified_set(self.obj, 1)
-        else:
-            elm_win_iconified_set(self.obj, 0)
+        elm_win_iconified_set(self.obj, iconified)
 
     def layer_set(self, layer):
         """
@@ -190,10 +166,7 @@ cdef class Window(Object):
         elm_win_rotation_set(self.obj, rotation)
 
     def sticky_set(self, sticky):
-        if sticky:
-            elm_win_sticky_set(self.obj, 1)
-        else:
-            elm_win_sticky_set(self.obj, 0)
+        elm_win_sticky_set(self.obj, sticky)
 
     def keyboard_mode_set(self, mode):
         """
@@ -209,10 +182,7 @@ cdef class Window(Object):
 
         @parm: B{is_keyboard} Keyboard is visible?
         """
-        if is_keyboard:
-            elm_win_keyboard_win_set(self.obj, 1)
-        else:
-            elm_win_keyboard_win_set(self.obj, 0)
+        elm_win_keyboard_win_set(self.obj, is_keyboard)
 
     def lower(self):
         """

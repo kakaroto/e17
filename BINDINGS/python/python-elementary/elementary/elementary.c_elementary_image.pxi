@@ -25,33 +25,16 @@ cdef class Image(Object):
         elm_image_file_set(self.obj, filename, group)
 
     def smooth_set(self, smooth):
-        if smooth:
-            elm_image_smooth_set(self.obj, 1)
-        else:
-            elm_image_smooth_set(self.obj, 0)
+        elm_image_smooth_set(self.obj, smooth)
 
     def no_scale_set(self, no_scale):
-        if no_scale:
-            elm_image_no_scale_set(self.obj, 1)
-        else:
-            elm_image_no_scale_set(self.obj, 0)
+        elm_image_no_scale_set(self.obj, no_scale)
 
     def scale_set(self, scale_up, scale_down):
-        cdef int su
-        cdef int sd
-        su = 0
-        sd = 0
-        if scale_up:
-            su = 1
-        if scale_down:
-            sd = 1
-        elm_image_scale_set(self.obj, su, sd)
+        elm_image_scale_set(self.obj, scale_up, scale_down)
 
     def fill_outside_set(self, fill_outside):
-        if fill_outside:
-            elm_image_fill_outside_set(self.obj, 1)
-        else:
-            elm_image_fill_outside_set(self.obj, 0)
+        elm_image_fill_outside_set(self.obj, fill_outside)
 
     def prescale_set(self, size):
         elm_image_prescale_set(self.obj, size)

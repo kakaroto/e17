@@ -47,10 +47,7 @@ cdef class Fileselector(Object):
         return p
 
     def expandable_set(self, expand):
-        if expand:
-            elm_fileselector_expandable_set(self.obj, 1)
-        else:
-            elm_fileselector_expandable_set(self.obj, 0)
+        elm_fileselector_expandable_set(self.obj, expand)
 
     def is_save_get(self):
         cdef unsigned char r

@@ -37,10 +37,7 @@ cdef class Slider(Object):
         elm_slider_indicator_format_set(self.obj, format)
 
     def horizontal_set(self, horizontal):
-        if horizontal:
-            elm_slider_horizontal_set(self.obj, 1)
-        else:
-            elm_slider_horizontal_set(self.obj, 0)
+        elm_slider_horizontal_set(self.obj, horizontal)
 
     def min_max_set(self, min, max):
         elm_slider_min_max_set(self.obj, min, max)
@@ -61,9 +58,6 @@ cdef class Slider(Object):
 
         def __set__(self, value):
             elm_slider_value_set(self.obj, value)
-        
+
     def inverted_set(self, inverted):
-        if inverted:
-            elm_slider_inverted_set(self.obj, 1)
-        else:
-            elm_slider_inverted_set(self.obj, 0)
+        elm_slider_inverted_set(self.obj, inverted)

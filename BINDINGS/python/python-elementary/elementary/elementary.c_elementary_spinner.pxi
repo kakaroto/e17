@@ -25,9 +25,11 @@ cdef class Spinner(Object):
         elm_spinner_label_format_set(self.obj, format)
 
     def label_format_get(self):
-        cdef char *fmt
-        fmt = elm_spinner_label_format_get(self.obj)
-        return fmt
+        cdef char* str
+        str = elm_spinner_label_format_get(self.obj)
+        if str == NULL:
+            return ""
+        return str
 
     def min_max_set(self, min, max):
         elm_spinner_min_max_set(self.obj, min, max)
@@ -44,10 +46,7 @@ cdef class Spinner(Object):
         return value
 
     def wrap_set(self, wrap):
-        if wrap:
-            elm_spinner_wrap_set(self.obj, 1)
-        else:
-            elm_spinner_wrap_set(self.obj, 0)
+        elm_spinner_wrap_set(self.obj, wrap)
 
     property changed:
         def __set__(self, value):
