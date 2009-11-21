@@ -24,6 +24,7 @@ struct _Config_Item
    const char *id;
    int celcius;
    const char *location;
+   const char *google;
    const char *plugin;
    double poll_time;
    Instance *inst;

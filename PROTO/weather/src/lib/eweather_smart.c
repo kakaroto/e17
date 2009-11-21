@@ -176,11 +176,13 @@ _mouse_up_cb(void *data, Evas *evas, Evas_Object *o_day, void *event)
 
    if(ev->button != 1) return ;
 
+   sd->thumbscroll.moved = EINA_TRUE;
    if(sd->thumbscroll.is)
      {
 	sd->thumbscroll.is = EINA_FALSE;
 	return ;
      }
+
 
    i = 0; 
    EINA_LIST_FOREACH(sd->objs, l, o)

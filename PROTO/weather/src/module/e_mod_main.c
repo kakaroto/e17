@@ -30,6 +30,7 @@ e_modapi_init(E_Module *m)
    E_CONFIG_VAL(item_edd, Config_Item, id, STR);
    E_CONFIG_VAL(item_edd, Config_Item, celcius, INT);
    E_CONFIG_VAL(item_edd, Config_Item, location, STR);
+   E_CONFIG_VAL(item_edd, Config_Item, google, STR);
    E_CONFIG_VAL(item_edd, Config_Item, plugin, STR);
    E_CONFIG_VAL(item_edd, Config_Item, poll_time, DOUBLE);
 

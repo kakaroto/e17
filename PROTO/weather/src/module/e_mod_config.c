@@ -47,6 +47,7 @@ _weather_config_item_get(Instance *inst, const char *id)
    ci->id = eina_stringshare_add(id);
    ci->celcius = 0;
    ci->location = eina_stringshare_add("623164");
+   ci->google = eina_stringshare_add("Paris France");
    ci->inst = inst;
    ci->plugin = eina_stringshare_add("yahoo");
    ci->poll_time = 30*60; //30 minutes
@@ -95,6 +96,7 @@ struct _E_Config_Dialog_Data
 {
     int celcius;
     char *location;
+    char *google;
     int radio_plugin;
     double poll_time;
 };
@@ -152,6 +154,7 @@ static void
 _free_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
 {
     if(cfdata->location) free(cfdata->location);
+    if(cfdata->google) free(cfdata->google);
     E_FREE(cfdata);
 }
 
@@ -162,6 +165,8 @@ _fill_data(Config_Item *ci, E_Config_Dialog_Data *cfdata)
     cfdata->celcius = ci->celcius;
     if(ci->location)
         cfdata->location = strdup(ci->location);
+    if(ci->google)
+        cfdata->google = strdup(ci->google);
     cfdata->radio_plugin = eweather_plugin_id_search(ci->inst->eweather, ci->plugin);
     if(cfdata->radio_plugin <0)
         cfdata->radio_plugin = 0;
@@ -235,6 +240,19 @@ _basic_create(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cfdata)
     e_widget_frametable_object_append(of, ob, 0, 2, 2, 1, 1, 0, 1, 0);
     e_widget_list_object_append(o, of, 1, 1, 0.5);
 
+    of = e_widget_frametable_add(evas, D_("Google Forecasts Code"), 0);
+    ob = e_widget_label_add(evas, D_("Google Forecasts City Code"));
+    e_widget_frametable_object_append(of, ob, 0, 0, 1, 1, 1, 0, 1, 0);
+    ob = e_widget_entry_add(evas, &cfdata->google, NULL, NULL, NULL);
+    e_widget_size_min_set(ob, 100, 1);
+    e_widget_frametable_object_append(of, ob, 1, 0, 1, 1, 1, 0, 1, 0);
+    ob = e_widget_label_add(evas, D_("Specify the name of your city"));
+    e_widget_frametable_object_append(of, ob, 0, 1, 1, 1, 1, 0, 1, 0);
+    snprintf(buf, sizeof(buf), D_(" with extra information like the state or the country"));
+    ob = e_widget_label_add(evas, buf);
+    e_widget_frametable_object_append(of, ob, 0, 2, 2, 1, 1, 0, 1, 0);
+    e_widget_list_object_append(o, of, 1, 1, 0.5);
+
 
     int mw,mh;
     e_widget_size_min_get(o, &mw, &mh);
@@ -249,15 +267,12 @@ _basic_apply(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
     Config_Item *ci;
 
     ci = cfd->data;
-    if (!cfdata->location)
-        return 0;
-
-    if (!strlen(cfdata->location))
-        return 0;
 
     ci->celcius = cfdata->celcius;
     if(ci->location) eina_stringshare_del(ci->location);
     ci->location = eina_stringshare_add(cfdata->location);
+    if(ci->google) eina_stringshare_del(ci->google);
+    ci->google = eina_stringshare_add(cfdata->google);
     ci->poll_time = cfdata->poll_time*60;
 
     
@@ -281,7 +296,10 @@ _config_updated(Config_Item *ci)
 
     eweather_plugin_byname_set(eweather, ci->plugin);
     eweather_poll_time_set(eweather, ci->poll_time);
-    eweather_code_set(eweather, ci->location);
+    if(!strcmp(ci->plugin, "Yahoo"))
+        eweather_code_set(eweather, ci->location);
+    else
+        eweather_code_set(eweather, ci->google);
     if(ci->celcius)
        eweather_temp_type_set(eweather, EWEATHER_TEMP_CELCIUS);
     else

@@ -1,0 +1,355 @@
+// vim:ts=8:sw=3:sts=8:noexpandtab:cino=>5n-3f0^-2{2
+
+#include "EWeather_Plugins.h"
+
+#include <Ecore_Con.h>
+#include <Ecore.h>
+#include <stdio.h>
+
+typedef struct Instance Instance;
+
+static void _init(EWeather *eweather);
+static void _shutdown(EWeather *eweather);
+static void _poll_time_updated(EWeather *eweather);
+static void _code_updated(EWeather *eweather);
+static int _server_add(void *data, int type, void *event);
+static int _server_del(void *data, int type, void *event);
+static int _server_data(void *data, int type, void *event);
+static int _weather_cb_check(void *data);
+static EWeather_Type _weather_type_get(const char* id);
+static int _server_data(void *data, int type, void *event);
+static int _parse(Instance* inst);
+
+
+struct _Id_Type
+{
+   const char * id;
+   EWeather_Type type;
+};
+ 
+static struct _Id_Type _tab[] =
+{
+     {"/ig/images/weather/chance_of_rain.gif", EWEATHER_TYPE_RAIN}, 
+     {"/ig/images/weather/sunny.gif", EWEATHER_TYPE_SUNNY}, 
+     {"/ig/images/weather/mostly_sunny.gif", EWEATHER_TYPE_PARTLY_CLOUDY_DAY}, 
+     {"/ig/images/weather/partly_cloudy.gif", EWEATHER_TYPE_PARTLY_CLOUDY_DAY}, 
+     {"/ig/images/weather/mostly_cloudy.gif", EWEATHER_TYPE_MOSTLY_CLOUDY_DAY}, 
+     {"/ig/images/weather/chance_of_storm.gif", EWEATHER_TYPE_ISOLATED_THUNDERSTORMS}, 
+     {"/ig/images/weather/rain.gif", EWEATHER_TYPE_RAIN}, 
+     {"/ig/images/weather/chance_of_rain.gif", EWEATHER_TYPE_RAIN}, 
+     {"/ig/images/weather/chance_of_snow.gif", EWEATHER_TYPE_SNOW},
+     {"/ig/images/weather/cloudy.gif", EWEATHER_TYPE_CLOUDY}, 
+     {"/ig/images/weather/mist.gif", EWEATHER_TYPE_FOGGY}, 
+     {"/ig/images/weather/storm.gif", EWEATHER_TYPE_SCATTERED_THUNDERSTORMS}, 
+     {"/ig/images/weather/chance_of_tstorm.gif", EWEATHER_TYPE_ISOLATED_THUNDERSTORMS}, 
+     {"/ig/images/weather/sleet.gif", EWEATHER_TYPE_RAIN_SNOW}, 
+     {"/ig/images/weather/snow.gif", EWEATHER_TYPE_SNOW}, 
+     {"/ig/images/weather/icy.gif", EWEATHER_TYPE_SNOW}, 
+     {"/ig/images/weather/dust.gif", EWEATHER_TYPE_FOGGY}, 
+     {"/ig/images/weather/fog.gif", EWEATHER_TYPE_FOGGY}, 
+     {"/ig/images/weather/smoke.gif", EWEATHER_TYPE_FOGGY}, 
+     {"/ig/images/weather/haze.gif", EWEATHER_TYPE_FOGGY}, 
+     {"/ig/images/weather/flurries.gif", EWEATHER_TYPE_SNOW}, 
+     {"", EWEATHER_TYPE_UNKNOWN}
+};
+
+struct Instance
+{
+   EWeather *weather;
+
+   Ecore_Con_Server *server;
+   Ecore_Event_Handler *add_handler;
+   Ecore_Event_Handler *del_handler;
+   Ecore_Event_Handler *data_handler;
+   Ecore_Timer *check_timer;
+
+   char *buffer, *location;
+   int bufsize, cursize;
+
+   const char *host;
+};
+
+EAPI EWeather_Plugin _plugin_class =
+{
+   "Google", 
+   _init,
+   _shutdown,
+   _poll_time_updated,
+   _code_updated
+};
+
+static void _init(EWeather *eweather)
+{
+   Instance *inst = calloc(1, sizeof(Instance));
+   eweather->plugin.data = inst;
+   inst->weather = eweather;
+   inst->host = eina_stringshare_add("www.google.com");
+
+   inst->add_handler =
+      ecore_event_handler_add(ECORE_CON_EVENT_SERVER_ADD,
+	    _server_add, inst);
+   inst->del_handler =
+      ecore_event_handler_add(ECORE_CON_EVENT_SERVER_DEL,
+	    _server_del, inst);
+   inst->data_handler =
+      ecore_event_handler_add(ECORE_CON_EVENT_SERVER_DATA,
+	    _server_data, inst);
+
+   inst->check_timer =
+      ecore_timer_add(0, _weather_cb_check, inst);
+}
+
+static void _shutdown(EWeather *eweather)
+{
+   Instance *inst = eweather->plugin.data;
+   if (inst->host) eina_stringshare_del(inst->host);
+
+   if (inst->buffer) free(inst->buffer);
+
+   if (inst->check_timer) ecore_timer_del(inst->check_timer);
+   if (inst->add_handler) ecore_event_handler_del(inst->add_handler);
+   if (inst->data_handler) ecore_event_handler_del(inst->data_handler);
+   if (inst->del_handler) ecore_event_handler_del(inst->del_handler);
+   if (inst->server) ecore_con_server_del(inst->server);
+
+   free(inst);
+}
+
+static void _poll_time_updated(EWeather *eweather)
+{
+   Instance *inst = eweather->plugin.data;
+
+   if(inst->check_timer)
+     ecore_timer_del(inst->check_timer);
+
+   inst->check_timer =
+      ecore_timer_add(0, _weather_cb_check, inst);
+}
+
+static void _code_updated(EWeather *eweather)
+{
+   Instance *inst = eweather->plugin.data;
+
+   if(inst->check_timer)
+     ecore_timer_del(inst->check_timer);
+
+   inst->check_timer =
+      ecore_timer_add(0, _weather_cb_check, inst);
+}
+
+   static int
+_weather_cb_check(void *data)
+{
+   Instance *inst;
+
+   if (!(inst = data)) return 0;
+   if (inst->server) ecore_con_server_del(inst->server);
+   inst->server = NULL;
+
+   if (inst->weather->proxy.port != 0)
+     inst->server =
+	ecore_con_server_connect(ECORE_CON_REMOTE_SYSTEM, inst->weather->proxy.host,
+	      inst->weather->proxy.port, inst);
+   else
+     inst->server =
+	ecore_con_server_connect(ECORE_CON_REMOTE_SYSTEM, inst->host, 80, inst);
+
+   if (!inst->server) return 0;
+
+   ecore_timer_interval_set(inst->check_timer, inst->weather->poll_time);
+   return 1;
+}
+
+   static int
+_server_add(void *data, int type, void *event)
+{
+   Instance *inst;
+   Ecore_Con_Event_Server_Add *ev;
+   char buf[1024];
+   char *s;
+   int i;
+
+   if (!(inst = data)) return 1;
+   if(!inst->weather->code) return 0;
+
+   ev = event;
+   if ((!inst->server) || (inst->server != ev->server)) return 1;
+
+   s = strdup(inst->weather->code);
+   for(i=0; i<strlen(s); i++)
+     if(s[i] == ' ')
+       s[i] = '+';
+
+   snprintf(buf, sizeof(buf), "GET http://%s/ig/api?weather=%s HTTP/1.1\r\nHost: %s\r\n\r\n",
+	 inst->host, s, inst->host);
+
+   ecore_con_server_send(inst->server, buf, strlen (buf));
+   return 0;
+}
+
+   static int
+_server_del(void *data, int type, void *event)
+{
+   Instance *inst;
+   Ecore_Con_Event_Server_Del *ev;
+   int ret;
+
+   inst = data;
+   ev = event;
+
+   if ((!inst->server) || (inst->server != ev->server)) return 1;
+
+   ecore_con_server_del(inst->server);
+   inst->server = NULL;
+
+   ret = _parse(inst);
+
+   inst->bufsize = 0;
+   inst->cursize = 0;
+
+   if(inst->buffer) free(inst->buffer);
+   inst->buffer = NULL;
+   return 0;
+}
+
+   static int
+_server_data(void *data, int type, void *event)
+{
+   Instance *inst;
+   Ecore_Con_Event_Server_Data *ev;
+
+   inst = data;
+   ev = event;
+
+   if ((!inst->server) || (inst->server != ev->server)) return 1;
+
+   while ((inst->cursize + ev->size) >= inst->bufsize)
+     {
+	inst->bufsize += 4096;
+	inst->buffer = realloc(inst->buffer, inst->bufsize);
+     }
+
+   memcpy(inst->buffer + inst->cursize, ev->data, ev->size);
+   inst->cursize += ev->size;
+   inst->buffer[inst->cursize] = 0;
+   return 0;
+}
+
+   static int
+_parse(Instance *inst)
+{
+   char *needle, *ext;
+   char location[1024];
+   char day[1024];
+   char date[1024];
+   EWeather_Data *e_data = eweather_data_current_get(inst->weather);
+   EWeather_Data *e_data_current;
+   char code[1024];
+   int i;
+
+   location[0] = 0;
+
+   if (inst->buffer == NULL) return 0;
+
+
+   //printf("%s\n", inst->buffer);
+   
+   needle = strstr(inst->buffer, "<city data=\"");
+   if (!needle) goto error;
+   needle+=12;
+   sscanf(needle, "%[^\"]\"", e_data->city);
+
+   needle = strstr(needle, "<current_date_time data=\"");
+   if (!needle) goto error;
+   needle+=25;
+   sscanf(needle, "%[^\"]\"", &date);
+
+
+
+   needle = strstr(needle, "<temp_c data=\"");
+   if (!needle) goto error;
+   needle+=14;
+   sscanf(needle, "%d\"", &(e_data->temp));
+
+   needle = strstr(needle, "<icon data=\"");
+   if (!needle) goto error;
+   needle += 12; 
+   sscanf(needle, "%[^\"]\"", &code);
+
+   e_data->type = _weather_type_get(code);
+  printf("%s\n", code) ;
+   needle = strstr(needle, "<day_of_week data=\"");
+   if (!needle) goto error;
+   needle += 19; 
+   sscanf(needle, "%[^\"]\"", &day);
+
+   snprintf(e_data->date, 256, "%s %s", day, date);
+
+
+   needle = strstr(needle, "<low data=\"");
+   if (!needle) goto error;
+   needle+=11;
+   sscanf(needle, "%d\"", &(e_data->temp_min));
+
+   needle = strstr(needle, "<high data=\"");
+   if (!needle) goto error;
+   needle+=12;
+   sscanf(needle, "%d\"", &(e_data->temp_max));
+
+   e_data_current = e_data;
+   
+   for(i=1; i<4; i++)
+     {
+	e_data = eweather_data_get(inst->weather, i);
+
+	needle = strstr(needle, "<day_of_week data=\"");
+	if (!needle) goto error;
+	needle+= 19;
+	sscanf(needle, "%[^\"]\"", &(e_data->date));
+
+	needle = strstr(needle, "<low data=\"");
+	if (!needle) goto error;
+	needle+=11;
+	sscanf(needle, "%d\"", &(e_data->temp_min));
+
+	needle = strstr(needle, "<high data=\"");
+	if (!needle) goto error;
+	needle+=12;
+	sscanf(needle, "%d\"", &(e_data->temp_max));
+
+	e_data->temp = ( e_data->temp_min + e_data->temp_max ) / 2;
+
+	needle = strstr(needle, "<icon data=\"");
+	if (!needle) goto error;
+	needle += 12; 
+	sscanf(needle, "%[^\"]\"", &code);
+
+	e_data->type = _weather_type_get(code);
+
+	strcpy(e_data->country, e_data_current->country);
+	strcpy(e_data->region, e_data_current->region);
+	strcpy(e_data->city, e_data_current->city);
+     }
+
+   eweather_plugin_update(inst->weather);
+   return 1;
+error:
+   printf ("ERROR: Couldn't parse info\n");
+   return 0;
+}
+
+
+
+
+static EWeather_Type _weather_type_get(const char *id)
+{
+   int i;
+   for (i = 0; i < sizeof (_tab) / sizeof (struct _Id_Type); ++i)
+     if ( !strcmp(_tab[i].id, id))
+       {
+	  return _tab[i].type;
+       }
+
+   return EWEATHER_TYPE_UNKNOWN;
+}
+

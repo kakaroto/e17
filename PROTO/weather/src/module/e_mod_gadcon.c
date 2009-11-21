@@ -55,7 +55,10 @@ _gc_init(E_Gadcon *gc, const char *name, const char *id, const char *style)
    weather_cfg->instances = eina_list_append(weather_cfg->instances, inst);
 
    eweather_poll_time_set(inst->eweather, inst->ci->poll_time);
-   eweather_code_set(inst->eweather, inst->ci->location);
+   if(!strcmp(inst->ci->plugin, "Yahoo"))
+       eweather_code_set(inst->eweather, inst->ci->location);
+   else
+       eweather_code_set(inst->eweather, inst->ci->google);
    if(inst->ci->plugin)
        eweather_plugin_byname_set(inst->eweather, inst->ci->plugin);
    if(inst->ci->celcius)
