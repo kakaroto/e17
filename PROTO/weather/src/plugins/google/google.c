@@ -232,6 +232,9 @@ _server_data(void *data, int type, void *event)
    memcpy(inst->buffer + inst->cursize, ev->data, ev->size);
    inst->cursize += ev->size;
    inst->buffer[inst->cursize] = 0;
+
+   _parse(inst);
+
    return 0;
 }
 
