@@ -37,8 +37,15 @@ struct wpa_ctrl * exalt_wpa_open_connection(Exalt_Wireless *w)
             f = fopen(EXALT_WPA_CONF_FILE,"w");
 
             if(!f)
+            {
                 ecore_file_mkpath(EXALT_WPA_CONF_FILE_DIR);
-            if(!f) return NULL;
+                f = fopen(EXALT_WPA_CONF_FILE,"w");
+            }
+            if(!f)
+            {
+                 EXALT_LOG_ERR("Could not open the file %s for writting.", EXALT_WPA_CONF_FILE);
+                return NULL;
+            }
             fprintf(f,"ctrl_interface=%s",EXALT_WPA_INTERFACE_DIR);
             fclose(f);
         }
