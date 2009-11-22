@@ -29,6 +29,8 @@ class EditablePart(Manager, object):
         self.e = editable
         self._name = None
 
+        self._part = None
+
         self._states_init()
 
         self.state = EditableState(self)

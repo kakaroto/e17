@@ -74,12 +74,14 @@ class PartsList(CList):
             self.e.part_del(part)
 
     def up(self):
-        self.e.part._part.restack_above()
-        self.e._parts_reload_cb(self, None)
+        if self.e.part._part:
+            self.e.part._part.restack_above()
+            self.e._parts_reload_cb(self, None)
 
     def down(self):
-        self.e.part._part.restack_below()
-        self.e._parts_reload_cb(self, None)
+        if self.e.part._part:
+            self.e.part._part.restack_below()
+            self.e._parts_reload_cb(self, None)
 
 
 class PartsListView(CListView):
