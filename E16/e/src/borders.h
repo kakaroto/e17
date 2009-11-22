@@ -90,7 +90,7 @@ void                EwinBorderDetach(EWin * ewin);
 void                EwinBorderSetTo(EWin * ewin, const Border * b);
 void                EwinBorderDraw(EWin * ewin, int do_shape, int do_paint);
 void                EwinBorderCalcSizes(EWin * ewin, int propagate);
-void                EwinBorderMinShadeSize(EWin * ewin, int *mw, int *mh);
+void                EwinBorderMinShadeSize(const EWin * ewin, int *mw, int *mh);
 void                EwinBorderUpdateInfo(EWin * ewin);
 void                EwinBorderChange(EWin * ewin, const Border * b, int normal);
 void                EwinBorderSetInitially(EWin * ewin, const char *name);

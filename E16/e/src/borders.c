@@ -245,7 +245,7 @@ EwinBorderUpdateInfo(EWin * ewin)
 }
 
 static void
-BorderWinpartCalc(EWin * ewin, int i, int ww, int hh)
+BorderWinpartCalc(const EWin * ewin, int i, int ww, int hh)
 {
    int                 x, y, w, h, ox, oy, max, min;
    int                 topleft, bottomright;
@@ -764,17 +764,14 @@ BorderWinpartAdd(Border * b, const char *iclass, const char *aclass,
 }
 
 void
-EwinBorderMinShadeSize(EWin * ewin, int *mw, int *mh)
+EwinBorderMinShadeSize(const EWin * ewin, int *mw, int *mh)
 {
    int                 i, pw, ph, w, h, min_w, min_h;
    int                 leftborderwidth, rightborderwidth;
    int                 topborderwidth, bottomborderwidth;
 
-   min_w = 32;
-   min_h = 32;
-
-   pw = EoGetW(ewin);
-   ph = EoGetH(ewin);
+   pw = ewin->client.w + ewin->border->border.left + ewin->border->border.right;
+   ph = ewin->client.h + ewin->border->border.top + ewin->border->border.bottom;
 
    for (i = 0; i < ewin->border->num_winparts; i++)
       ewin->bits[i].w = -2;
@@ -799,7 +796,7 @@ EwinBorderMinShadeSize(EWin * ewin, int *mw, int *mh)
 		leftborderwidth = w;
 
 	     w = ewin->bits[i].x + ewin->bits[i].w -
-		(EoGetW(ewin) - ewin->border->border.right);
+		(pw - ewin->border->border.right);
 	     if (rightborderwidth < w)
 		rightborderwidth = w;
 	  }
@@ -818,7 +815,7 @@ EwinBorderMinShadeSize(EWin * ewin, int *mw, int *mh)
 		topborderwidth = h;
 
 	     h = ewin->bits[i].y + ewin->bits[i].h -
-		(EoGetH(ewin) - ewin->border->border.bottom);
+		(ph - ewin->border->border.bottom);
 	     if (bottomborderwidth < h)
 		bottomborderwidth = h;
 	  }
