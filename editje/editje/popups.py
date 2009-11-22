@@ -104,7 +104,7 @@ class ImagePopUp(PopUp):
         btn = Button(self)
         btn.label_set(label)
         btn.data["clicked"] = (func_cb, data)
-        btn.clicked = self._action_btn_clicked
+        btn.callback_clicked_add(self._action_btn_clicked)
         btn.size_hint_min_set(100, 30)
         btn.size_hint_max_set(100, 30)
         btn.show()
@@ -191,8 +191,8 @@ class ImagePopUp(PopUp):
             self.fs = Fileselector(self)
             self.fs.size_hint_weight_set(1.0, 1.0)
             self.fs.size_hint_align_set(-1.0, -1.0)
-            self.fs.selected = self._fs_selected_cb
-            self.fs.done = self._fs_done_cb
+            self.fs.callback_selected_add(self._fs_selected_cb)
+            self.fs.callback_done_add(self._fs_done_cb)
             self.fs.path_set(os.getenv("HOME"))
         self.list.hide()
         self.fs.show()
@@ -256,7 +256,7 @@ class FontPopUp(PopUp):
         btn = Button(self)
         btn.label_set(label)
         btn.data["clicked"] = (func_cb, data)
-        btn.clicked = self._action_btn_clicked
+        btn.callback_clicked_add(self._action_btn_clicked)
         btn.size_hint_min_set(100, 30)
         btn.size_hint_max_set(100, 30)
         btn.show()
@@ -309,8 +309,8 @@ class FontPopUp(PopUp):
             self.fs = Fileselector(self)
             self.fs.size_hint_weight_set(1.0, 1.0)
             self.fs.size_hint_align_set(-1.0, -1.0)
-            self.fs.selected = self._fs_selected_cb
-            self.fs.done = self._fs_done_cb
+            self.fs.callback_selected_add(self._fs_selected_cb)
+            self.fs.callback_done_add(self._fs_done_cb)
             self.fs.path_set(os.getenv("HOME"))
         self.list.hide()
         self.fs.show()

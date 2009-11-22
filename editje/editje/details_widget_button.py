@@ -31,7 +31,7 @@ class WidgetButton(Widget):
         self.obj.size_hint_weight_set(1.0, 0.0)
         self.obj.size_hint_align_set(-1.0, 0.0)
         self.obj.style_set("editje.details")
-        self.obj.clicked = self._clicked
+        self.obj.callback_clicked_add(self._clicked)
         self.obj.show()
 
     def _internal_value_set(self, value):

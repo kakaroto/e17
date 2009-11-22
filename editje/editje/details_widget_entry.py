@@ -30,8 +30,8 @@ class WidgetEntry(Widget):
         self.entry.single_line_set(1)
         self.entry.style_set("editje.details")
         self.entry.size_hint_weight_set(1.0, 0.0)
-        self.entry.activated = self._entry_activate_cb
-        self.entry.changed = self._entry_changed_cb
+        self.entry.callback_activated_add(self._entry_activate_cb)
+        self.entry.callback_changed_add(self._entry_changed_cb)
         self.entry.show()
 
         self.obj = elementary.Scroller(parent)

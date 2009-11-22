@@ -50,7 +50,7 @@ class Colorpicker(elementary.Layout):
             o.size_hint_weight_set(1.0, 0.0)
             o.size_hint_align_set(-1.0, 0.0)
             bx.pack_end(o)
-            o.changed = self._color_changed
+            o.callback_changed_add(self._color_changed)
             o.show()
         bx.show()
         self.content_set("sliders", bx)

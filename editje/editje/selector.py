@@ -27,7 +27,7 @@ class Selector(elementary.Window):
     def __init__(self):
         elementary.Window.__init__(self, "editje.open", elementary.ELM_WIN_BASIC)
         self.title_set("Editje - Open")
-        self.destroy = self._destroy_cb
+        self.callback_destroy_add(self._destroy_cb)
         self.resize(400, 400)
 
         self.file = ""
@@ -51,7 +51,7 @@ class Selector(elementary.Window):
 
     def _fileselector_init(self):
         self.fs = elementary.Fileselector(self)
-        self.fs.done = self._fileselector_done
+        self.fs.callback_done_add(self._fileselector_done)
         self.fs.is_save_set(False)
         self.fs.expandable_set(False)
         self.fs.path_set(os.getenv("PWD"))
@@ -111,13 +111,13 @@ class Selector(elementary.Window):
 
         cancel = elementary.Button(self)
         cancel.label_set("Cancel")
-        cancel.clicked = self._groupselector_cancel
+        cancel.callback_clicked_add(self._groupselector_cancel)
         hbox.pack_end(cancel)
         cancel.show()
 
         done = elementary.Button(self)
         done.label_set("Done")
-        done.clicked = self._groupselector_done
+        done.callback_clicked_add(self._groupselector_done)
         hbox.pack_end(done)
         done.show()
 

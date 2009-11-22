@@ -59,7 +59,7 @@ class Editje(elementary.Window):
 
         elementary.Window.__init__(self, "editje", elementary.ELM_WIN_BASIC)
         self.title_set("Editje - Edje Editor")
-        self.destroy = self._destroy_cb
+        self.callback_destroy_add(self._destroy_cb)
         self.resize(800, 600)
 
         # Load Edje Theme File
@@ -160,7 +160,7 @@ class Editje(elementary.Window):
         self._group_name_entry.size_hint_align_set(-1.0, -1.0)
         self._group_name_entry.single_line_set(True)
         self._group_name_entry.style_set("editje")
-        self._group_name_entry.activated = self._group_name_changed
+        self._group_name_entry.callback_activated_add(self._group_name_changed)
         self.main_layout.content_set("details_group.swallow",
                                      self._group_name_entry)
 

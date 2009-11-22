@@ -44,7 +44,7 @@ class Floater:
     def action_add(self, label, func_cb, data = None):
         btn = Button(self._parent)
         btn.label_set(label)
-        btn.clicked = self._action_btn_clicked
+        btn.callback_clicked_add(self._action_btn_clicked)
         btn.size_hint_weight_set(1.0, 1.0)
         btn.size_hint_align_set(-1.0, -1.0)
         btn.data["clicked"] = (func_cb, data)
@@ -145,7 +145,7 @@ class Wizard(InnerWindow):
 
             btn = Button(self._parent)
             btn.label_set(label)
-            btn.clicked = self.__action_btn_clicked
+            btn.callback_clicked_add(self.__action_btn_clicked)
             btn.size_hint_weight_set(1.0, 1.0)
             btn.size_hint_align_set(-1.0, -1.0)
             btn.data["clicked"] = (func_cb, data)
