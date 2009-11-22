@@ -124,6 +124,7 @@ int exalt_wpa_ctrl_command(struct wpa_ctrl *ctrl_conn, char *cmd, char*buf, size
     int ret;
 
     EXALT_ASSERT_RETURN(ctrl_conn!=NULL);
+    EXALT_LOG_DBG("Send WPA command : %s", cmd);
     ret = wpa_ctrl_request(ctrl_conn, cmd, strlen(cmd), buf, &buf_len,
             /*wpa_cli_msg_cb*/ NULL);
 
