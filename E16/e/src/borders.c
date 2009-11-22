@@ -219,9 +219,6 @@ EwinBorderDraw(EWin * ewin, int do_shape, int do_paint)
 {
    int                 i;
 
-   if (!ewin)
-      return;
-
 #if 0				/* Debug */
    Eprintf("EwinBorderDraw %#lx %s d=%d s=%d p=%d\n",
 	   EwinGetClientXwin(ewin), EoGetName(ewin), EoGetDeskNum(ewin),
@@ -434,8 +431,6 @@ EwinBorderCalcSizes(EWin * ewin, int propagate)
    int                 i, ww, hh;
    char                reshape;
 
-   if (!ewin)
-      return;
    if (!ewin->border)
       return;
 
@@ -778,9 +773,6 @@ EwinBorderMinShadeSize(EWin * ewin, int *mw, int *mh)
    min_w = 32;
    min_h = 32;
 
-   if (!ewin)
-      goto done;
-
    pw = EoGetW(ewin);
    ph = EoGetH(ewin);
 
@@ -858,7 +850,6 @@ EwinBorderMinShadeSize(EWin * ewin, int *mw, int *mh)
 	   min_h = h;
      }
 
- done:
    *mw = min_w;
    *mh = min_h;
 }
