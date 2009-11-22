@@ -27,7 +27,7 @@ class NewPart(Wizard):
     def __init__(self, parent):
         Wizard.__init__(self, parent, "New Part")
         self.page_add("default")
-        self.style_set("minimal")
+#        self.style_set("minimal")
 
         self._name_init()
         self._types_init()
@@ -39,9 +39,9 @@ class NewPart(Wizard):
     def _name_init(self):
         bx2 = elementary.Box(self)
         bx2.horizontal_set(True)
-        bx2.size_hint_weight_set(1.0, 0.0)
-        bx2.size_hint_align_set(-1.0, 0.0)
-        bx2.size_hint_min_set(160, 160)
+        bx2.size_hint_weight_set(evas.EVAS_HINT_EXPAND, 0.0)
+        bx2.size_hint_align_set(evas.EVAS_HINT_FILL,
+                                evas.EVAS_HINT_FILL)
         self.content_append("default", bx2)
         bx2.show()
 
@@ -51,8 +51,10 @@ class NewPart(Wizard):
         lb.show()
 
         scr = elementary.Scroller(self)
-        scr.size_hint_weight_set(evas.EVAS_HINT_EXPAND, 0.0)
-        scr.size_hint_align_set(evas.EVAS_HINT_FILL, evas.EVAS_HINT_FILL)
+        scr.size_hint_weight_set(evas.EVAS_HINT_EXPAND,
+                                 evas.EVAS_HINT_EXPAND)
+        scr.size_hint_align_set(evas.EVAS_HINT_FILL,
+                                evas.EVAS_HINT_FILL)
         scr.content_min_limit(False, True)
         scr.policy_set(elementary.ELM_SCROLLER_POLICY_OFF,
                        elementary.ELM_SCROLLER_POLICY_OFF)
@@ -62,7 +64,7 @@ class NewPart(Wizard):
         self._name = elementary.Entry(self)
         self._name.single_line_set(True)
         self._name.size_hint_weight_set(evas.EVAS_HINT_EXPAND, 0.0)
-        self._name.size_hint_align_set(evas.EVAS_HINT_FILL, 0.5)
+        self._name.size_hint_align_set(evas.EVAS_HINT_FILL, 0.0)
         self._name.entry_set("")
         self._name.show()
 

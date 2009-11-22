@@ -112,7 +112,7 @@ class NewSignalPopUp(Wizard):
     def __init__(self, parent):
         Wizard.__init__(self, parent, "New Signal")
         self.page_add("default")
-        self.style_set("minimal")
+#        self.style_set("minimal")
 
         self._name_init()
         self._types_init()
