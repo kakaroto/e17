@@ -781,7 +781,7 @@ DBusMessage* conf_from_dbusmessage(Exalt_Configuration* c,DBusMessage *msg,DBusM
         else
             dbus_message_iter_get_basic(&args, &s);
         exalt_conf_gateway_set(c,s);
-        printf("gateway: %s\n",s);
+        //printf("gateway: %s\n",s);
         dbus_message_iter_next(&args);
     }
 

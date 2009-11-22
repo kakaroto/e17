@@ -427,7 +427,7 @@ int exalt_wireless_conf_apply(Exalt_Wireless *w)
     exalt_wpa_ctrl_command(ctrl_conn,buf_cmd,buf_res,buf_len);
 
     buf_len=sizeof(buf_res)-1;
-    snprintf(buf_cmd,1024,"REconfECT");
+    snprintf(buf_cmd,1024,"RECONNECT");
     exalt_wpa_ctrl_command(ctrl_conn,buf_cmd,buf_res,buf_len);
 
 
