@@ -59,7 +59,7 @@ struct _Eon_Document_Private
 static Ekeko_Type * _document_type_get(void);
 
 /* Called whenever an object changes it's id */
-static void _id_change(const Ekeko_Object *o, Ekeko_Event *e, void *data)
+static void _id_change(Ekeko_Object *o, Ekeko_Event *e, void *data)
 {
 	Eon_Document *d = (Eon_Document *)o;
 	Eon_Document_Private *prv = PRIVATE(o);
@@ -70,14 +70,11 @@ static void _id_change(const Ekeko_Object *o, Ekeko_Event *e, void *data)
 
 static int _idler_cb(void *data)
 {
-	Eina_Iterator *it;
-	Eon_Document *doc;
+	Eon_Document *d = data;
+	Eon_Document_Private *prv = PRIVATE(d);
 
-	it = eina_list_iterator_new(_documents);
-	while (eina_iterator_next(it, (void **)&doc))
-	{
-		ekeko_object_process((Ekeko_Object *)doc);
-	}
+	if (prv->layout) eon_layout_process(prv->layout);
+	
 	return 1;
 }
 static int _animation_cb(void *data)
@@ -89,40 +86,17 @@ static int _animation_cb(void *data)
 	return 1;
 }
 
-/* Called whenever a child is appended to the document indirectly */
-static void _child_append_cb(const Ekeko_Object *o, Ekeko_Event *e, void *data)
-{
-	Ekeko_Event_Mutation *em = (Ekeko_Event_Mutation *)e;
-	Eon_Document *d = (Eon_Document *)o;
-	Eon_Document_Private *prv = PRIVATE(d);
-
-	ekeko_event_listener_add(e->target, EKEKO_OBJECT_ID_CHANGED, _id_change, EINA_FALSE, d);
-	/* check that the parent is the document */
-	if (em->related != o)
-		return;
-	/* assign the correct pointers */
-	if (!prv->layout && ekeko_type_instance_is_of(e->target, EON_TYPE_LAYOUT))
-		prv->layout = (Eon_Layout *)e->target;
-	if (!prv->style && ekeko_type_instance_is_of(e->target, EON_TYPE_STYLE))
-		prv->style = (Eon_Style *)e->target;
-}
-
+/* Called whenever a child is appended to the document directly */
 static void _child_appended(Ekeko_Object *o, Ekeko_Event *e, void *data)
 {
 	Ekeko_Event_Mutation *em = (Ekeko_Event_Mutation *)e;
 	Eon_Document *d = (Eon_Document *)o;
 	Eon_Document_Private *prv = PRIVATE(d);
 
-	if (!prv->layout && ekeko_type_instance_is_of(e->target, EON_TYPE_LAYOUT))
-	{
-		Eon_Paint *p = EON_PAINT(e->target);
-
-		eon_paint_coordinates_update(p, 0, 0, prv->size.w, prv->size.h);
-		/* in case the coordinates are relative also setup the callbacks */
-		prv->layout = (Eon_Layout *)e->target;
-	}
-	else if (!prv->style && ekeko_type_instance_is_of(e->target, EON_TYPE_STYLE))
-		prv->style = (Eon_Style *)e->target;
+	if (!prv->layout && ekeko_type_instance_is_of(em->related, EON_TYPE_LAYOUT))
+		prv->layout = (Eon_Layout *)em->related;
+	else if (!prv->style && ekeko_type_instance_is_of(em->related, EON_TYPE_STYLE))
+		prv->style = (Eon_Style *)em->related;
 }
 
 static void _event_object_new(Eon_Document_Object_New *ev, char *name, Ekeko_Object *o)
@@ -138,13 +112,13 @@ static void _ctor(Ekeko_Object *o)
 	Eon_Document *d;
 	Eon_Document_Private *prv = PRIVATE(d);
 
+	d = (Eon_Document *)o;
 	/* FIXME do we need a single idler or better one idler per document? */
 	if (!_idler)
 	{
 		/* this idler will process every child */
-		_idler = ecore_idle_enterer_add(_idler_cb, NULL);
+		_idler = ecore_idle_enterer_add(_idler_cb, d);
 	}
-	d = (Eon_Document *)o;
 	d->prv = prv = ekeko_type_instance_private_get(_document_type_get(), o);
 	/* setup the animation system */
 	prv->etch = etch_new();
@@ -153,7 +127,7 @@ static void _ctor(Ekeko_Object *o)
 	/* the id system */
 	prv->ids = eina_hash_string_superfast_new(NULL);
 	/* the event listeners */
-	ekeko_event_listener_add(o, EKEKO_EVENT_OBJECT_APPEND, _child_append_cb, EINA_TRUE, NULL);
+	ekeko_event_listener_add(o, EKEKO_EVENT_OBJECT_APPEND, _child_appended, EINA_FALSE, NULL);
 }
 
 static void _dtor(void *canvas)
@@ -270,19 +244,20 @@ void eon_document_script_load(Eon_Document *d, const char *file)
 void eon_document_resize(Eon_Document *d, int w, int h)
 {
 	Eon_Document_Private *prv = PRIVATE(d);
+	Eon_Document_Size_Change ev;
 
-	prv->size.w = w;
-	prv->size.h = h;
+	prv->size.w = ev.geom.w = w;
+	prv->size.h = ev.geom.h = h;
 
-	if (prv->layout)
-		return;
-	eon_paint_coordinates_update((Eon_Paint *)prv->layout, 0, 0, w, h);
+	ekeko_event_init(&ev, EON_DOCUMENT_SIZE_CHANGED, (Ekeko_Object *)d, EINA_FALSE);
+	ekeko_object_event_dispatch((Ekeko_Object *)d, (Ekeko_Event *)&ev);
 }
 /*============================================================================*
  *                                   API                                      *
  *============================================================================*/
 /**
  * Creates a new document
+ * @return The newly created document
  */
 EAPI Eon_Document * eon_document_new(const char *engine, int w, int h, const char *options)
 {
@@ -312,7 +287,12 @@ EAPI Eon_Style * eon_document_style_get(Eon_Document *d)
 
 	return prv->style;
 }
-
+/**
+ * Gets the size of the document
+ * @param d The document to get the size from
+ * @param w The variable to store the width
+ * @param h The variable to store the height
+ */
 EAPI void eon_document_size_get(Eon_Document *d, int *w, int *h)
 {
 	Eon_Document_Private *prv = PRIVATE(d);

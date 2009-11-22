@@ -25,7 +25,9 @@
 struct _Eon_Object_Private
 {
 	Eon_Document *doc;
+	char *id;
 	void *engine_data;
+	int changed;
 };
 
 static void _object_ctor(Ekeko_Object *eo)
@@ -44,6 +46,25 @@ static void _object_dtor(Ekeko_Object *eo)
 /*============================================================================*
  *                                 Global                                     *
  *============================================================================*/
+void eon_object_change(Eon_Object *o)
+{
+
+}
+
+void eon_object_unchange(Eon_Object *o)
+{
+
+}
+
+void eon_object_process(Eon_Object *o)
+{
+	Eon_Object_Private *prv = PRIVATE(o);
+
+	if (!prv->changed)
+		return;
+	/* go over the childs */
+}
+
 /**
  * Gets the engines data associated with an object
  * @param o The object to get the data from
@@ -82,9 +103,8 @@ void eon_object_document_set(Eon_Object *o, Eon_Document *d)
 	prv = PRIVATE(o);
 	prv->doc = d;
 }
-
 /**
- * Generic function that will only append an object if the both
+ * Generic function that will only append an object if both
  * are of type Eon_Object
  * @param parent The object you want the attch the child to
  * @param child The child object
@@ -96,6 +116,8 @@ Eina_Bool eon_object_appendable(Ekeko_Object *parent, Ekeko_Object *child)
 /*============================================================================*
  *                                   API                                      *
  *============================================================================*/
+Ekeko_Property_Id EON_OBJECT_ID;
+
 /**
  * Gets the type definition of an object
  * @return The type definition
@@ -110,6 +132,9 @@ EAPI Ekeko_Type * eon_object_type_get(void)
 				sizeof(Eon_Object_Private),
 				ekeko_object_type_get(), _object_ctor,
 				_object_dtor, NULL);
+		EON_OBJECT_ID = EKEKO_TYPE_PROP_SINGLE_ADD(type, "id",
+				EKEKO_PROPERTY_STRING,
+				OFFSET(Eon_Object_Private, id));
 	}
 	return type;
 }
@@ -125,4 +150,29 @@ EAPI Eon_Document * eon_object_document_get(Eon_Object *o)
 
 	prv = PRIVATE(o);
 	return prv->doc;
+}
+
+/**
+ * Sets the id property on an object
+ * @param o The Ekeko_Object instance
+ * @param name The id
+ */
+EAPI void eon_object_id_set(Eon_Object *o, const char *name)
+{
+	Ekeko_Value value;
+
+	ekeko_value_str_from(&value, (char *)name);
+	ekeko_object_property_value_set((Ekeko_Object *)o, "id", &value);
+}
+/**
+ * Gets the id of an object
+ * @param o The object to get the id from
+ * @return The id of the object
+ */
+EAPI const char * eon_object_id_get(Eon_Object *o)
+{
+	Eon_Object_Private *prv;
+
+	prv = PRIVATE(o);
+	return prv->id;
 }

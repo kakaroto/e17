@@ -106,22 +106,23 @@ static Eina_Bool _is_inside(Eon_Paint *p, int x, int y)
 	return EINA_TRUE;
 }
 
-static void _ctor(void *instance)
+static void _ctor(Ekeko_Object *o)
 {
 	Eon_Rect *r;
 	Eon_Rect_Private *prv;
 
-	r = (Eon_Rect*) instance;
-	r->private = prv = ekeko_type_instance_private_get(_type, instance);
+	r = (Eon_Rect *)o;
+	r->private = prv = ekeko_type_instance_private_get(_type, o);
 	r->parent.parent.parent.render = _render;
 	r->parent.parent.parent.create = eon_engine_rect_create;
 	r->parent.parent.parent.is_inside = _is_inside;
+	r->parent.parent.parent.process = eon_paint_process;
 	/* events */
-	ekeko_event_listener_add((Ekeko_Object *)r, EON_SHAPE_SQUARE_X_CHANGED, _geometry_calc, EINA_FALSE, NULL);
-	ekeko_event_listener_add((Ekeko_Object *)r, EON_SHAPE_SQUARE_Y_CHANGED, _geometry_calc, EINA_FALSE, NULL);
-	ekeko_event_listener_add((Ekeko_Object *)r, EON_SHAPE_SQUARE_W_CHANGED, _geometry_calc, EINA_FALSE, NULL);
-	ekeko_event_listener_add((Ekeko_Object *)r, EON_SHAPE_SQUARE_H_CHANGED, _geometry_calc, EINA_FALSE, NULL);
-	ekeko_event_listener_add((Ekeko_Object *)r, EON_PAINT_MATRIX_CHANGED, _geometry_calc, EINA_FALSE, NULL);
+	ekeko_event_listener_add(o, EON_SHAPE_SQUARE_X_CHANGED, _geometry_calc, EINA_FALSE, NULL);
+	ekeko_event_listener_add(o, EON_SHAPE_SQUARE_Y_CHANGED, _geometry_calc, EINA_FALSE, NULL);
+	ekeko_event_listener_add(o, EON_SHAPE_SQUARE_W_CHANGED, _geometry_calc, EINA_FALSE, NULL);
+	ekeko_event_listener_add(o, EON_SHAPE_SQUARE_H_CHANGED, _geometry_calc, EINA_FALSE, NULL);
+	ekeko_event_listener_add(o, EON_PAINT_MATRIX_CHANGED, _geometry_calc, EINA_FALSE, NULL);
 }
 
 static void _dtor(void *rect)

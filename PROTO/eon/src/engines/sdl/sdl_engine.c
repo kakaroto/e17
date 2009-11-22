@@ -30,8 +30,8 @@
 
 typedef struct _Engine_SDL_Document
 {
-	/* main surface */
-	SDL_Surface *s;
+	Eon_Document *doc;
+	SDL_Surface *s; /* main surface */
 	 // FIXME remove this?
 	Eon_Canvas *root;
 	/* options */
@@ -40,78 +40,12 @@ typedef struct _Engine_SDL_Document
 	Ecore_Event_Handler *handler_rz;
 } Engine_SDL_Document;
 
-typedef struct _Engine_SDL_Canvas
+typedef struct _Engine_SDL_Layout
 {
 	Engine_SDL_Document *sdoc;
 	/* mouse, key, etc handlers */
 	Ecore_Event_Handler *handlers[7];
-	Enesim_Surface *s;
-} Engine_SDL_Canvas;
-
-static int _sdl_event(void *data)
-{
-	ecore_sdl_feed_events();
-	return 1;
-}
-
-static int _resize_cb(void *data, int type, void *event)
-{
-	Ecore_Sdl_Event_Video_Resize *e = event;
-	Eon_Document *doc = data;
-
-	eon_document_resize(doc, e->w, e->h);
-
-	return 1;
-}
-static int _mouse_down_cb(void *data, int type, void *event)
-{
-	Ekeko_Input *input = (Ekeko_Input *)data;
-	eon_input_feed_mouse_down(input);
-	return 1;
-}
-
-static int _mouse_up_cb(void *data, int type, void *event)
-{
-	Ekeko_Input *input = (Ekeko_Input *)data;
-	eon_input_feed_mouse_up(input);
-	return 1;
-}
-
-static int _mouse_move_cb(void *data, int type, void *event)
-{
-	Ekeko_Input *input = (Ekeko_Input *)data;
-	Ecore_Event_Mouse_Move *e = event;
-
-	eon_input_feed_mouse_move(input, e->x, e->y);
-	return 1;
-}
-
-static int _key_down_cb(void *data, int type, void *event)
-{
-	Ekeko_Input *input = (Ekeko_Input *)data;
-
-	eon_input_feed_key_down(input, 0, 0);
-	return 1;
-}
-
-static int _key_up_cb(void *data, int type, void *event)
-{
-	Ekeko_Input *input = (Ekeko_Input *)data;
-
-	eon_input_feed_key_up(input, 0, 0);
-	return 1;
-}
-
-static int _in_cb(void *data, int type, void *event)
-{
-	Ekeko_Input *input = (Ekeko_Input *)data;
-	return 1;
-}
-static int _out_cb(void *data, int type, void *event)
-{
-	Ekeko_Input *input = (Ekeko_Input *)data;
-	return 1;
-}
+} Engine_SDL_Layout;
 
 static void _sdl_surface_new(Engine_SDL_Document *sdoc, int w, int h)
 {
@@ -128,12 +62,70 @@ static void _sdl_surface_new(Engine_SDL_Document *sdoc, int w, int h)
 #endif
 }
 
-static void _document_size_cb(const Ekeko_Object *o, Ekeko_Event *e, void *data)
+static int _sdl_event(void *data)
 {
-	Engine_SDL_Document *sdoc = data;
-	Ekeko_Event_Mutation *em = (Ekeko_Event_Mutation *)e;
+	ecore_sdl_feed_events();
+	return 1;
+}
 
-	_sdl_surface_new(sdoc,  em->curr->value.rect.w, em->curr->value.rect.h);
+static int _resize_cb(void *data, int type, void *event)
+{
+	Ecore_Sdl_Event_Video_Resize *e = event;
+	Engine_SDL_Document *sdoc = data;
+
+	eon_document_resize(sdoc->doc, e->w, e->h);
+	_sdl_surface_new(sdoc, e->w, e->h);
+
+	return 1;
+}
+static int _mouse_down_cb(void *data, int type, void *event)
+{
+	Eon_Input *input = (Eon_Input *)data;
+	eon_input_feed_mouse_down(input);
+	return 1;
+}
+
+static int _mouse_up_cb(void *data, int type, void *event)
+{
+	Eon_Input *input = (Eon_Input *)data;
+	eon_input_feed_mouse_up(input);
+	return 1;
+}
+
+static int _mouse_move_cb(void *data, int type, void *event)
+{
+	Eon_Input *input = (Eon_Input *)data;
+	Ecore_Event_Mouse_Move *e = event;
+
+	eon_input_feed_mouse_move(input, e->x, e->y);
+	return 1;
+}
+
+static int _key_down_cb(void *data, int type, void *event)
+{
+	Eon_Input *input = (Eon_Input *)data;
+
+	eon_input_feed_key_down(input, 0, 0);
+	return 1;
+}
+
+static int _key_up_cb(void *data, int type, void *event)
+{
+	Eon_Input *input = (Eon_Input *)data;
+
+	eon_input_feed_key_up(input, 0, 0);
+	return 1;
+}
+
+static int _in_cb(void *data, int type, void *event)
+{
+	Eon_Input *input = (Eon_Input *)data;
+	return 1;
+}
+static int _out_cb(void *data, int type, void *event)
+{
+	Eon_Input *input = (Eon_Input *)data;
+	return 1;
 }
 
 static void * document_create(Eon_Document *d, int w, int h, const char *options)
@@ -148,15 +140,14 @@ static void * document_create(Eon_Document *d, int w, int h, const char *options
 		if (!strcmp(options, "resizable"))
 			sdoc->resizable = 1;
 	}
+	sdoc->doc = d;
 	ecore_sdl_init(NULL);
 	SDL_Init(SDL_INIT_VIDEO);
 	_sdl_surface_new(sdoc, w, h);
-	/* whenever the size property changes recreate the surface */
-	ekeko_event_listener_add((Ekeko_Object *)d,
-			EON_DOCUMENT_SIZE_CHANGED, _document_size_cb,
-			EINA_FALSE, sdoc);
+	/* the event feeder evas/ecore has a very weird way to feed sdl events! */
+	ecore_timer_add(0.008, _sdl_event, NULL);
 	/* called whenever the wm changes the window */
-	ecore_event_handler_add(ECORE_SDL_EVENT_RESIZE, _resize_cb, d);
+	ecore_event_handler_add(ECORE_SDL_EVENT_RESIZE, _resize_cb, sdoc);
 
 	return sdoc;
 }
@@ -219,14 +210,14 @@ static Eina_Bool _flush(void *src, Eina_Rectangle *srect)
 
 }
 
-static void _root_canvas_create(Ekeko_Canvas *c)
+static void _root_canvas_create(Eon_Layout *c)
 {
-	Ekeko_Input *input;
+	Eon_Input *input;
 
 	/* Ecore_sdl interval isnt enough */
 	SDL_EnableKeyRepeat(10, 10);
 	/* add the input */
-	input = eon_layout_input_new((Ekeko_Canvas *)c);
+	input = eon_layout_input_new((Eon_Layout *)c);
 	/* add the callbacks */
 	ecore_event_handler_add(ECORE_SDL_EVENT_GOT_FOCUS, _in_cb, input);
 	ecore_event_handler_add(ECORE_SDL_EVENT_LOST_FOCUS, _out_cb, input);
@@ -237,41 +228,31 @@ static void _root_canvas_create(Ekeko_Canvas *c)
 	ecore_event_handler_add(ECORE_EVENT_KEY_UP, _key_up_cb, input);
 	/* FIXME Ecore_SDL doesnt support the in/out events, make it always in */
 	eon_input_feed_mouse_in(input);
-	/* the event feeder evas/ecore has a very weird way to feed sdl events! */
-	ecore_timer_add(0.008, _sdl_event, NULL);
 }
 
-static void * canvas_create(Eon_Canvas *c, void *dd, Eina_Bool root, int w, int h)
+static void layout_delete(void *data)
 {
-	Engine_SDL_Document *sdoc = dd;
-	Enesim_Surface *es;
+	Eon_Enesim_Layout *l = data;
+	Engine_SDL_Layout *sdl_layout = l->data;
 
-	es = enesim_surface_new(ENESIM_FORMAT_ARGB8888, w, h);
-	if (root)
-	{
-		/* only register the events once */
-		if (!sdoc->root)
-		{
-			_root_canvas_create((Ekeko_Canvas *)c);
-			sdoc->root = c;
-		}
-		enesim_surface_private_set(es, sdoc->s);
-	}
-	printf("Returning %p\n", es);
-	return es;
+	eon_engine_enesim_layout_delete(l);
+	free(sdl_layout);
 }
 
-static void canvas_delete(void *c)
+static void * layout_create(Eon_Layout *l, void *dd, int w, int h)
 {
-	printf("Deleting %p\n", c);
-	/* TODO handle correctly the deletion of a canvas, delete
-	 * every handler, etc */
-	enesim_surface_delete(c);
+	Engine_SDL_Layout *sdl_layout;
+
+	sdl_layout = malloc(sizeof(Engine_SDL_Layout));
+	sdl_layout->sdoc = dd;
+
+	return eon_engine_enesim_layout_create(l, w, h, sdl_layout);
 }
 
-static Eina_Bool canvas_flush(void *src, Eina_Rectangle *srect)
+static Eina_Bool layout_flush(void *src, Eina_Rectangle *srect)
 {
-	Enesim_Surface *es = src;
+	Eon_Enesim_Layout *l = (Eon_Enesim_Layout *)src;
+	Enesim_Surface *es = l->s;
 	Enesim_Converter_1D conv;
 	Enesim_Converter_Data cdata;
 	uint32_t *sdata;
@@ -324,9 +305,9 @@ static Eina_Bool canvas_flush(void *src, Eina_Rectangle *srect)
 static Eon_Engine _sdl_engine = {
 	.document_create = document_create,
 	.document_delete = document_delete,
-	.canvas_create = canvas_create,
-	.canvas_flush = canvas_flush,
-	.canvas_delete = canvas_delete,
+	.layout_flush = layout_flush,
+	.layout_create = layout_create,
+	.layout_delete = layout_delete,
 };
 /*============================================================================*
  *                                 Global                                     *

@@ -215,11 +215,11 @@ static void _ctor(Ekeko_Object *o)
 
 	s = (Eon_Paint_Square *)o;
 	s->private = prv = ekeko_type_instance_private_get(eon_paint_square_type_get(), o);
-	ekeko_event_listener_add(o, EKEKO_EVENT_OBJECT_APPEND, _parent_set, EINA_FALSE, NULL);
-	ekeko_event_listener_add(o, EON_PAINT_SQUARE_X_CHANGED, _x_change, EINA_FALSE, NULL);
-	ekeko_event_listener_add(o, EON_PAINT_SQUARE_Y_CHANGED, _y_change, EINA_FALSE, NULL);
-	ekeko_event_listener_add(o, EON_PAINT_SQUARE_W_CHANGED, _w_change, EINA_FALSE, NULL);
-	ekeko_event_listener_add(o, EON_PAINT_SQUARE_H_CHANGED, _h_change, EINA_FALSE, NULL);
+	//ekeko_event_listener_add(o, EKEKO_EVENT_OBJECT_APPEND, _parent_set, EINA_FALSE, NULL);
+	//ekeko_event_listener_add(o, EON_PAINT_SQUARE_X_CHANGED, _x_change, EINA_FALSE, NULL);
+	//ekeko_event_listener_add(o, EON_PAINT_SQUARE_Y_CHANGED, _y_change, EINA_FALSE, NULL);
+	//ekeko_event_listener_add(o, EON_PAINT_SQUARE_W_CHANGED, _w_change, EINA_FALSE, NULL);
+	//ekeko_event_listener_add(o, EON_PAINT_SQUARE_H_CHANGED, _h_change, EINA_FALSE, NULL);
 }
 
 static void _dtor(void *rect)
@@ -259,32 +259,15 @@ void eon_paint_square_style_coords_get(Eon_Paint_Square *s, Eon_Paint *p, int *x
 	if (h) eon_coord_length_calculate(&ph, geom.h, h);
 }
 
-void eon_paint_square_coordinates_update(Eon_Paint_Square *p, Eina_Rectangle *area)
+void eon_paint_square_geometry_set(Eon_Paint_Square *p, Eina_Rectangle *geom)
 {
 	Eon_Paint_Square_Private *prv = PRIVATE(p);
-	Eina_Bool relative = EINA_FALSE;
 
-	if (prv->x.type == EON_COORD_RELATIVE)
-	{
-		prv->x.final = area->x + ((prv->x.value * area->w) / 100);
-		relative = EINA_TRUE;
-	}
-	if (prv->y.type == EON_COORD_RELATIVE)
-	{
-		prv->y.final = area->y + ((prv->y.value * area->h) / 100);
-		relative = EINA_TRUE;
-	}
-	if (prv->w.type == EON_COORD_RELATIVE)
-	{
-		prv->w.final = prv->w.value * area->w / 100;
-		relative = EINA_TRUE;
-	}
-	if (prv->h.type == EON_COORD_RELATIVE)
-	{
-		prv->h.final = prv->h.value * area->h / 100;
-		relative = EINA_TRUE;
-	}
-	return relative;
+	prv->x.final = geom->x;	
+	prv->y.final = geom->y;	
+	prv->w.final = geom->w;	
+	prv->h.final = geom->h;	
+	eon_paint_geometry_set((Eon_Paint *)p, geom);
 }
 /*============================================================================*
  *                                   API                                      *
@@ -304,13 +287,17 @@ EAPI Ekeko_Type * eon_paint_square_type_get(void)
 				sizeof(Eon_Paint_Square_Private), eon_paint_type_get(),
 				_ctor, _dtor, NULL);
 		EON_PAINT_SQUARE_X = EKEKO_TYPE_PROP_SINGLE_ADD(type, "x",
-				EON_PROPERTY_COORD, OFFSET(Eon_Paint_Square_Private, x));
+				EON_PROPERTY_COORD,
+				OFFSET(Eon_Paint_Square_Private, x));
 		EON_PAINT_SQUARE_Y = EKEKO_TYPE_PROP_SINGLE_ADD(type, "y",
-				EON_PROPERTY_COORD, OFFSET(Eon_Paint_Square_Private, y));
+				EON_PROPERTY_COORD,
+				OFFSET(Eon_Paint_Square_Private, y));
 		EON_PAINT_SQUARE_W = EKEKO_TYPE_PROP_SINGLE_ADD(type, "w",
-				EON_PROPERTY_COORD, OFFSET(Eon_Paint_Square_Private, w));
+				EON_PROPERTY_COORD,
+				OFFSET(Eon_Paint_Square_Private, w));
 		EON_PAINT_SQUARE_H = EKEKO_TYPE_PROP_SINGLE_ADD(type, "h",
-				EON_PROPERTY_COORD, OFFSET(Eon_Paint_Square_Private, h));
+				EON_PROPERTY_COORD,
+				OFFSET(Eon_Paint_Square_Private, h));
 	}
 
 	return type;
@@ -329,7 +316,7 @@ EAPI void eon_paint_square_x_rel_set(Eon_Paint_Square *s, int x)
 	Eon_Coord coord;
 	Ekeko_Value v;
 
-	eon_coord_set(&coord, x, EON_COORD_RELATIVE);
+	eon_coord_relative_set(&coord, x);
 	eon_value_coord_from(&v, &coord);
 	ekeko_object_property_value_set((Ekeko_Object *)s, "x", &v);
 }
@@ -339,7 +326,7 @@ EAPI void eon_paint_square_x_set(Eon_Paint_Square *s, int x)
 	Eon_Coord coord;
 	Ekeko_Value v;
 
-	eon_coord_set(&coord, x, EON_COORD_ABSOLUTE);
+	eon_coord_absolute_set(&coord, x);
 	eon_value_coord_from(&v, &coord);
 	ekeko_object_property_value_set((Ekeko_Object *)s, "x", &v);
 }
@@ -357,7 +344,7 @@ EAPI void eon_paint_square_y_set(Eon_Paint_Square *s, int y)
 	Eon_Coord coord;
 	Ekeko_Value v;
 
-	eon_coord_set(&coord, y, EON_COORD_ABSOLUTE);
+	eon_coord_absolute_set(&coord, y);
 	eon_value_coord_from(&v, &coord);
 	ekeko_object_property_value_set((Ekeko_Object *)s, "y", &v);
 }
@@ -367,7 +354,7 @@ EAPI void eon_paint_square_y_rel_set(Eon_Paint_Square *s, int y)
 	Eon_Coord coord;
 	Ekeko_Value v;
 
-	eon_coord_set(&coord, y, EON_COORD_RELATIVE);
+	eon_coord_relative_set(&coord, y);
 	eon_value_coord_from(&v, &coord);
 	ekeko_object_property_value_set((Ekeko_Object *)s, "y", &v);
 }
@@ -385,7 +372,7 @@ EAPI void eon_paint_square_w_set(Eon_Paint_Square *s, int w)
 	Eon_Coord coord;
 	Ekeko_Value v;
 
-	eon_coord_set(&coord, w, EON_COORD_ABSOLUTE);
+	eon_coord_absolute_set(&coord, w);
 	eon_value_coord_from(&v, &coord);
 	ekeko_object_property_value_set((Ekeko_Object *)s, "w", &v);
 }
@@ -395,7 +382,7 @@ EAPI void eon_paint_square_w_rel_set(Eon_Paint_Square *s, int w)
 	Eon_Coord coord;
 	Ekeko_Value v;
 
-	eon_coord_set(&coord, w, EON_COORD_RELATIVE);
+	eon_coord_relative_set(&coord, w);
 	eon_value_coord_from(&v, &coord);
 	ekeko_object_property_value_set((Ekeko_Object *)s, "w", &v);
 }
@@ -413,7 +400,7 @@ EAPI void eon_paint_square_h_set(Eon_Paint_Square *s, int h)
 	Eon_Coord coord;
 	Ekeko_Value v;
 
-	eon_coord_set(&coord, h, EON_COORD_ABSOLUTE);
+	eon_coord_absolute_set(&coord, h);
 	eon_value_coord_from(&v, &coord);
 	ekeko_object_property_value_set((Ekeko_Object *)s, "h", &v);
 }
@@ -423,15 +410,22 @@ EAPI void eon_paint_square_h_rel_set(Eon_Paint_Square *s, int h)
 	Eon_Coord coord;
 	Ekeko_Value v;
 
-	eon_coord_set(&coord, h, EON_COORD_RELATIVE);
+	eon_coord_relative_set(&coord, h);
 	eon_value_coord_from(&v, &coord);
 	ekeko_object_property_value_set((Ekeko_Object *)s, "h", &v);
 }
-
-EAPI void eon_paint_square_coords_get(Eon_Paint_Square *s, Eon_Coord *x,
+/**
+ * Gets the coordinates of a square paint object
+ * @param ps The square paint object
+ * @param x Pointer to store the horizontal coordinate
+ * @param y Pointer to store the vertical coordinate
+ * @param w Pointer to store the width coordinate
+ * @param h Pointer to store the height coordiante
+ */
+EAPI void eon_paint_square_coords_get(Eon_Paint_Square *ps, Eon_Coord *x,
 		Eon_Coord *y, Eon_Coord *w, Eon_Coord *h)
 {
-	Eon_Paint_Square_Private *prv = PRIVATE(s);
+	Eon_Paint_Square_Private *prv = PRIVATE(ps);
 
 	if (x) *x = prv->x;
 	if (y) *y = prv->y;

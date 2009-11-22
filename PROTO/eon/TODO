@@ -12,6 +12,8 @@ Core
 + Instantiable tpyes should not export the struct, just an opaque handler, as it is not allowed to do a subtype from them
 + Move ekeko objects to eon object (renderable, canvas, input)
 + Add a grid layout
++ Define the instantiable objects and the possible inheritance they might have, this will ease the external object creation
+  and simplify the things internally
 
 Bin
 ===

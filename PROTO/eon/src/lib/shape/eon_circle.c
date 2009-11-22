@@ -211,12 +211,12 @@ void eon_circle_style_coords_get(Eon_Circle *c, Eon_Paint *p,
 	}
 	else
 	{
-		Ekeko_Renderable *r;
+		Eon_Paint *r;
 
 		/* FIXME we should get the topmost canvas units not the parent
 		 * canvas
 		 */
-		r = (Ekeko_Renderable *)eon_paint_layout_topmost_get(p);
+		r = (Eon_Paint *)eon_paint_layout_topmost_get(p);
 		eon_paint_geometry_get(r, &geom);
 	}
 	if (cx) eon_coord_calculate(&prv->x, geom.x, geom.w, cx);
@@ -283,7 +283,7 @@ EAPI void eon_circle_x_rel_set(Eon_Circle *s, int x)
 	Eon_Coord coord;
 	Ekeko_Value v;
 
-	eon_coord_set(&coord, x, EON_COORD_RELATIVE);
+	eon_coord_relative_set(&coord, x);
 	eon_value_coord_from(&v, &coord);
 	ekeko_object_property_value_set((Ekeko_Object *)s, "x", &v);
 }
@@ -293,7 +293,7 @@ EAPI void eon_circle_x_set(Eon_Circle *s, int x)
 	Eon_Coord coord;
 	Ekeko_Value v;
 
-	eon_coord_set(&coord, x, EON_COORD_ABSOLUTE);
+	eon_coord_absolute_set(&coord, x);
 	eon_value_coord_from(&v, &coord);
 	ekeko_object_property_value_set((Ekeko_Object *)s, "x", &v);
 }
@@ -311,7 +311,7 @@ EAPI void eon_circle_y_set(Eon_Circle *s, int y)
 	Eon_Coord coord;
 	Ekeko_Value v;
 
-	eon_coord_set(&coord, y, EON_COORD_ABSOLUTE);
+	eon_coord_absolute_set(&coord, y);
 	eon_value_coord_from(&v, &coord);
 	ekeko_object_property_value_set((Ekeko_Object *)s, "y", &v);
 }
@@ -321,7 +321,7 @@ EAPI void eon_circle_y_rel_set(Eon_Circle *s, int y)
 	Eon_Coord coord;
 	Ekeko_Value v;
 
-	eon_coord_set(&coord, y, EON_COORD_RELATIVE);
+	eon_coord_relative_set(&coord, y);
 	eon_value_coord_from(&v, &coord);
 	ekeko_object_property_value_set((Ekeko_Object *)s, "y", &v);
 }

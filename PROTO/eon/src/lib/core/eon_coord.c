@@ -25,7 +25,7 @@ void eon_coord_length_calculate(Eon_Coord *sl, int plength, int *l)
 {
 	if (sl->type == EON_COORD_RELATIVE)
 	{
-		*l = sl->value * plength / 100;
+		eon_coord_length_relative_calculate(sl, plength, l);
 	}
 	else
 	{
@@ -38,7 +38,7 @@ void eon_coord_calculate(Eon_Coord *sc, int pc, int plength, int *c)
 {
 	if (sc->type == EON_COORD_RELATIVE)
 	{
-		*c = pc + ((sc->value * plength) / 100);
+		eon_coord_relative_calculate(sc, pc, plength, c);
 	}
 	else
 	{
@@ -50,7 +50,6 @@ void eon_coord_length_change(const Ekeko_Object *o, Eon_Coord *dst, Eon_Coord *c
 		Eon_Coord *prev, int length, Ekeko_Object *parent,
 		const char *levent, Event_Listener el)
 {
-	printf("PRV-CURR %d %d\n", prev->value, curr->value);
 	if (curr->type == EON_COORD_RELATIVE)
 	{
 		dst->final = (length * curr->value) / 100;;
@@ -75,11 +74,9 @@ void eon_coord_change(const Ekeko_Object *o, Eon_Coord *dst, Eon_Coord *curr,
 		Eon_Coord *prev, int coord, int length, Ekeko_Object *parent,
 		const char *cevent, const char *levent, Event_Listener el)
 {
-	printf("PRV-CURR %d %d\n", prev->value, curr->value);
 	if (curr->type == EON_COORD_RELATIVE)
 	{
 		dst->final = coord + ((length * curr->value) / 100);
-		printf("FINAL %d\n", dst->final);
 		if (prev->type == EON_COORD_ABSOLUTE)
 		{
 			/* add the length callback */

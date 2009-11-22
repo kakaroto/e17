@@ -40,9 +40,17 @@ struct _Eon_Paint_Private
 	Eina_Bool renderable;
 	int zindex;
 	/* transformed geometry */
-	Eina_Rectangle boundings;
 	/* untransformed geometry */
-	Eina_Rectangle geometry;
+	struct 
+	{
+		Eina_Rectangle curr;
+		Eina_Rectangle prev;
+		Eina_Bool changed;
+	} boundings, geometry;
+	/* number of properties (local and global)
+	 * that have changed
+	 */
+	int changed;
 	/* the properties */
 	Eon_Color color;
 	Enesim_Rop rop;
@@ -106,7 +114,7 @@ static Eon_Paint * _prev_renderable_up(Ekeko_Object *o)
 
 	while (parent = ekeko_object_parent_get(o))
 	{
-		if (ekeko_type_instance_is_of(parent, "Renderable"))
+		if (ekeko_type_instance_is_of(parent, EON_TYPE_PAINT))
 			return (Eon_Paint *)parent;
 		else
 		{
@@ -117,13 +125,13 @@ static Eon_Paint * _prev_renderable_up(Ekeko_Object *o)
 		}
 	}
 }
-
-static void _paint_change(const Ekeko_Object *o, Ekeko_Event *e, void *data)
+/* FIXME fix this, we dont want to always trigger the layout change */
+static void _paint_change(Ekeko_Object *o, Ekeko_Event *e, void *data)
 {
-	eon_paint_change((Eon_Paint *)o);
+	//eon_paint_change((Eon_Paint *)o);
 }
 
-static void _matrix_change(const Ekeko_Object *o, Ekeko_Event *e, void *data)
+static void _matrix_change(Ekeko_Object *o, Ekeko_Event *e, void *data)
 {
 	Ekeko_Event_Mutation *em = (Ekeko_Event_Mutation *)e;
 	Eon_Paint_Private *prv = PRIVATE(o);
@@ -133,7 +141,7 @@ static void _matrix_change(const Ekeko_Object *o, Ekeko_Event *e, void *data)
 	enesim_matrix_inverse(m, &prv->inverse);
 }
 
-static void _parent_set_cb(const Ekeko_Object *o, Ekeko_Event *e, void *data)
+static void _parent_set_cb(Ekeko_Object *o, Ekeko_Event *e, void *data)
 {
 	Ekeko_Event_Mutation *em = (Ekeko_Event_Mutation *)e;
 	Eon_Paint_Private *prv;
@@ -184,7 +192,7 @@ static void _ctor(Ekeko_Object *o)
 	enesim_matrix_identity(&prv->matrix);
 	enesim_matrix_inverse(&prv->matrix, &prv->inverse);
 	ekeko_event_listener_add(o, EKEKO_EVENT_PROP_MODIFY, _paint_change, EINA_FALSE, NULL);
-	ekeko_event_listener_add(o, EKEKO_EVENT_OBJECT_APPEND, _parent_set_cb, EINA_FALSE, NULL);
+	ekeko_event_listener_add(o, EKEKO_EVENT_PARENT_SET, _parent_set_cb, EINA_FALSE, NULL);
 	ekeko_event_listener_add(o, EON_PAINT_MATRIX_CHANGED, _matrix_change, EINA_FALSE, NULL);
 }
 
@@ -231,16 +239,31 @@ Eon_Layout * eon_paint_layout_topmost_get(Eon_Paint *p)
 	return last;
 }
 
+void eon_paint_unchange(Eon_Paint *p)
+{
+	Eon_Paint_Private *prv;
+
+ 	prv = PRIVATE(p);
+
+	prv->changed--;
+	if (!prv->layout)
+		return;
+	if (!prv->changed)
+		eon_layout_unchange(prv->layout);
+}
+
 void eon_paint_change(Eon_Paint *p)
 {
 	Eon_Paint_Private *prv;
 	Eon_Layout *l;
 
  	prv = PRIVATE(p);
+	prv->changed++;
 	if (!prv->layout)
 		return;
+	if (prv->changed == 1)
+		eon_layout_change(prv->layout);
 
-	eon_layout_damage_add(prv->layout, &prv->boundings);
 }
 
 void eon_paint_style_inverse_matrix_get(Eon_Paint *p, Eon_Paint *rel,
@@ -284,6 +307,7 @@ void eon_paint_inverse_matrix_get(Eon_Paint *p, Enesim_Matrix *m)
 void eon_paint_geometry_set(Eon_Paint *p, Eina_Rectangle *rect)
 {
 	Eon_Paint_Private *prv;
+	Eon_Paint_Geometry_Change gch;
 	Enesim_Matrix_Type mtype;
 
 	prv = PRIVATE(p);
@@ -291,7 +315,7 @@ void eon_paint_geometry_set(Eon_Paint *p, Eina_Rectangle *rect)
 	mtype = enesim_matrix_type_get(&prv->matrix);
 	if (mtype == ENESIM_MATRIX_IDENTITY)
 	{
-		prv->boundings = prv->geometry = *rect;
+		prv->boundings.curr = prv->geometry.curr = *rect;
 	}
 	else
 	{
@@ -304,16 +328,51 @@ void eon_paint_geometry_set(Eon_Paint *p, Eina_Rectangle *rect)
 		enesim_matrix_rect_transform(&prv->matrix, &r, &q);
 		enesim_quad_coords_get(&q, &x1, &y1, &x2, &y2, &x3, &y3, &x4, &y4);
 		enesim_quad_rectangle_to(&q, &r);
-		/* FIXME this increment isnt enough for scaling, the offset should be calculated
-		 * from the matrix itself */
+		/* when scaling the area should scale too */
 		r.x += rect->x - prv->matrix.xx;
 		r.y += rect->y - prv->matrix.yy;
 		r.w += prv->matrix.xx;
 		r.h += prv->matrix.yy;
 
-		prv->geometry = *rect;
-		prv->boundings = r;
+		prv->geometry.curr = *rect;
+		prv->boundings.curr = r;
 	}
+	/* check that the geometry have changed */
+	if (eina_rectangle_equals(&prv->geometry.curr, &prv->geometry.prev)
+			&& prv->geometry.changed)
+	{
+		prv->geometry.changed = EINA_FALSE;
+		eon_paint_unchange(p);
+	}
+	else if (!eina_rectangle_equals(&prv->geometry.curr, &prv->geometry.prev)
+			&& !prv->geometry.changed)
+	{
+		prv->geometry.changed = EINA_TRUE;
+		eon_paint_change(p);
+	}
+	/* send the geometry update event */
+	gch.geom = prv->geometry.curr;
+	ekeko_event_init((Ekeko_Event *)&gch, EON_PAINT_GEOMETRY_CHANGED,
+			(Ekeko_Object *)p, EINA_FALSE);
+	ekeko_object_event_dispatch((Ekeko_Object *)p, (Ekeko_Event *)&gch);
+	/* check that the boundings have changed */
+	if (eina_rectangle_equals(&prv->boundings.curr, &prv->geometry.prev)
+			&& prv->boundings.changed)
+	{
+		prv->boundings.changed = EINA_FALSE;
+		eon_paint_unchange(p);
+	}
+	else if (!eina_rectangle_equals(&prv->boundings.curr, &prv->geometry.prev)
+			&& !prv->boundings.changed)
+	{
+		prv->boundings.changed = EINA_TRUE;
+		eon_paint_change(p);
+	}
+	/* send the boundings update event */
+	gch.geom = prv->boundings.curr;
+	ekeko_event_init((Ekeko_Event *)&gch, EON_PAINT_BOUNDINGS_CHANGED,
+			(Ekeko_Object *)p, EINA_FALSE);
+	ekeko_object_event_dispatch((Ekeko_Object *)p, (Ekeko_Event *)&gch);
 }
 
 Eina_Bool eon_paint_is_inside(Eon_Paint *p, int x, int y)
@@ -330,11 +389,11 @@ Eina_Bool eon_paint_is_inside(Eon_Paint *p, int x, int y)
 	{
 		float fx, fy;
 
-		x -= prv->geometry.x;
-		y -= prv->geometry.y;
+		x -= prv->geometry.curr.x;
+		y -= prv->geometry.curr.y;
 		enesim_matrix_point_transform(&prv->inverse, x, y, &fx, &fy);
-		x = fx + prv->geometry.x;
-		y = fy + prv->geometry.y;
+		x = fx + prv->geometry.curr.x;
+		y = fy + prv->geometry.curr.y;
 
 	}
 	/* call the shape's is_inside */
@@ -371,9 +430,55 @@ void eon_paint_zindex_set(Eon_Paint *r, int zindex)
 	prv->zindex = zindex;
 }
 
-void eon_paint_coordinates_update(Eon_Paint *p, Eina_Rectangle *parea)
+Eina_Bool eon_paint_geometry_changed(Eon_Paint *p, Eina_Rectangle *curr,
+		Eina_Rectangle *prev)
 {
-	if (p->coordinates_update) p->coordinates_update(p, parea);
+	Eon_Paint_Private *prv = PRIVATE(p);
+
+	if (curr) *curr = prv->geometry.curr;
+	if (prev) *prev = prv->geometry.prev;
+	return prv->geometry.changed;
+}
+
+Eina_Bool eon_paint_boundings_changed(Eon_Paint *p, Eina_Rectangle *curr,
+		Eina_Rectangle *prev)
+{
+	Eon_Paint_Private *prv = PRIVATE(p);
+
+	if (curr) *curr = prv->boundings.curr;
+	if (prev) *prev = prv->boundings.prev;
+	return prv->boundings.changed;
+}
+
+void eon_paint_process(Eon_Paint *p)
+{
+	Eon_Paint_Private *prv = PRIVATE(p);
+
+	if (prv->boundings.changed)
+	{
+		prv->boundings.changed = EINA_FALSE;
+		prv->boundings.prev = prv->boundings.curr;
+		eon_paint_unchange(p);
+		if (prv->layout)
+		{
+			eon_layout_damage_add(prv->layout, &prv->boundings.prev);
+			eon_layout_damage_add(prv->layout, &prv->boundings.curr);
+		}
+	}
+	if (prv->geometry.changed)
+	{
+		prv->geometry.changed = EINA_FALSE;
+		prv->geometry.prev = prv->geometry.curr;
+		eon_paint_unchange(p);
+	}
+	return;
+}
+
+int eon_paint_changed(Eon_Paint *p)
+{
+	Eon_Paint_Private *prv = PRIVATE(p);
+
+	return prv->changed;
 }
 /*============================================================================*
  *                                   API                                      *
@@ -386,6 +491,10 @@ Ekeko_Property_Id EON_PAINT_MATRIXSPACE;
 Ekeko_Property_Id EON_PAINT_STYLE;
 Ekeko_Property_Id EON_PAINT_VISIBILITY;
 
+/**
+ * Gets the type of a paint object
+ * @return The type definition
+ */
 EAPI Ekeko_Type *eon_paint_type_get(void)
 {
 	static Ekeko_Type *type = NULL;
@@ -395,7 +504,8 @@ EAPI Ekeko_Type *eon_paint_type_get(void)
 		_dom = eina_log_domain_register("eon:paint", NULL);
 
 		type = ekeko_type_new(EON_TYPE_PAINT, sizeof(Eon_Paint),
-				sizeof(Eon_Paint_Private), eon_object_type_get(),
+				sizeof(Eon_Paint_Private),
+				eon_object_type_get(),
 				_ctor, _dtor, NULL);
 		EON_PAINT_COLOR = EKEKO_TYPE_PROP_SINGLE_ADD(type, "color",
 				 EON_PROPERTY_COLOR,
@@ -610,7 +720,7 @@ EAPI void eon_paint_boundings_get(Eon_Paint *p, Eina_Rectangle *bounds)
 	Eon_Paint_Private *prv;
 
 	prv = PRIVATE(p);
-	*bounds = prv->boundings;
+	*bounds = prv->boundings.curr;
 }
 /**
  * Gets the bounding box of the untransformed paint
@@ -622,6 +732,6 @@ EAPI void eon_paint_geometry_get(Eon_Paint *p, Eina_Rectangle *rect)
 	Eon_Paint_Private *prv;
 
 	prv = PRIVATE(p);
-	*rect = prv->geometry;
+	*rect = prv->geometry.curr;
 }
 

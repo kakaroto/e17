@@ -239,7 +239,7 @@ void eon_shape_square_style_coords_get(Eon_Shape_Square *s, Eon_Paint *p, int *x
 		/* FIXME we should get the topmost canvas units not the parent
 		 * canvas
 		 */
-		pp = (Ekeko_Renderable *)eon_paint_layout_get(p);
+		pp = (Eon_Paint *)eon_paint_layout_get(p);
 		eon_paint_geometry_get(pp, &geom);
 	}
 	eon_shape_square_coords_get(s, &px, &py, &pw, &ph);
@@ -280,7 +280,7 @@ EAPI void eon_shape_square_x_rel_set(Eon_Shape_Square *s, int x)
 	Eon_Coord coord;
 	Ekeko_Value v;
 
-	eon_coord_set(&coord, x, EON_COORD_RELATIVE);
+	eon_coord_relative_set(&coord, x);
 	eon_value_coord_from(&v, &coord);
 	ekeko_object_property_value_set((Ekeko_Object *)s, "x", &v);
 }
@@ -290,7 +290,7 @@ EAPI void eon_shape_square_x_set(Eon_Shape_Square *s, int x)
 	Eon_Coord coord;
 	Ekeko_Value v;
 
-	eon_coord_set(&coord, x, EON_COORD_ABSOLUTE);
+	eon_coord_absolute_set(&coord, x);
 	eon_value_coord_from(&v, &coord);
 	ekeko_object_property_value_set((Ekeko_Object *)s, "x", &v);
 }
@@ -300,7 +300,7 @@ EAPI void eon_shape_square_y_set(Eon_Shape_Square *s, int y)
 	Eon_Coord coord;
 	Ekeko_Value v;
 
-	eon_coord_set(&coord, y, EON_COORD_ABSOLUTE);
+	eon_coord_absolute_set(&coord, y);
 	eon_value_coord_from(&v, &coord);
 	ekeko_object_property_value_set((Ekeko_Object *)s, "y", &v);
 }
@@ -310,7 +310,7 @@ EAPI void eon_shape_square_y_rel_set(Eon_Shape_Square *s, int y)
 	Eon_Coord coord;
 	Ekeko_Value v;
 
-	eon_coord_set(&coord, y, EON_COORD_RELATIVE);
+	eon_coord_relative_set(&coord, y);
 	eon_value_coord_from(&v, &coord);
 	ekeko_object_property_value_set((Ekeko_Object *)s, "y", &v);
 }
@@ -320,7 +320,7 @@ EAPI void eon_shape_square_w_set(Eon_Shape_Square *s, int w)
 	Eon_Coord coord;
 	Ekeko_Value v;
 
-	eon_coord_set(&coord, w, EON_COORD_ABSOLUTE);
+	eon_coord_absolute_set(&coord, w);
 	eon_value_coord_from(&v, &coord);
 	ekeko_object_property_value_set((Ekeko_Object *)s, "w", &v);
 }
@@ -330,7 +330,7 @@ EAPI void eon_shape_square_w_rel_set(Eon_Shape_Square *s, int w)
 	Eon_Coord coord;
 	Ekeko_Value v;
 
-	eon_coord_set(&coord, w, EON_COORD_RELATIVE);
+	eon_coord_relative_set(&coord, w);
 	eon_value_coord_from(&v, &coord);
 	ekeko_object_property_value_set((Ekeko_Object *)s, "w", &v);
 }
@@ -340,7 +340,7 @@ EAPI void eon_shape_square_h_set(Eon_Shape_Square *s, int h)
 	Eon_Coord coord;
 	Ekeko_Value v;
 
-	eon_coord_set(&coord, h, EON_COORD_ABSOLUTE);
+	eon_coord_absolute_set(&coord, h);
 	eon_value_coord_from(&v, &coord);
 	ekeko_object_property_value_set((Ekeko_Object *)s, "h", &v);
 }
@@ -350,7 +350,7 @@ EAPI void eon_shape_square_h_rel_set(Eon_Shape_Square *s, int h)
 	Eon_Coord coord;
 	Ekeko_Value v;
 
-	eon_coord_set(&coord, h, EON_COORD_RELATIVE);
+	eon_coord_relative_set(&coord, h);
 	eon_value_coord_from(&v, &coord);
 	ekeko_object_property_value_set((Ekeko_Object *)s, "h", &v);
 }

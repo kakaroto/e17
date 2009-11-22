@@ -23,11 +23,12 @@ struct _Eon_Engine
 	/* document callbacks */
 	void * (*document_create)(Eon_Document *d, int w, int h, const char *options);
 	void (*document_delete)(void *);
-	/* canvas callbacks */
-	void * (*canvas_create)(void *d, Eon_Canvas *c, Eina_Bool root, int w, int h);
-	void (*canvas_delete)(void *);
-	Eina_Bool (*canvas_blit)(void *sc, Eina_Rectangle *r, void *c, Eina_Rectangle *sr);
-	Eina_Bool (*canvas_flush)(void *c, Eina_Rectangle *r);
+	/* layout callbacks */
+	/* FIXME rename this blit/create with a classic render/create like the other objects */
+	Eina_Bool (*layout_blit)(void *sc, Eina_Rectangle *r, void *c, Eina_Rectangle *sr);
+	void * (*layout_create)(Eon_Layout *l, void *dd, int w, int h);
+	Eina_Bool (*layout_flush)(void *c, Eina_Rectangle *r);
+	void (*layout_delete)(void *);
 	/* rect callbacks */
 	void * (*rect_create)(Eon_Rect *r);
 	void (*rect_render)(void *r, void *c, Eina_Rectangle *clip);
@@ -87,10 +88,10 @@ EAPI Ekeko_Type *eon_engine_type_get(void);
 
 EAPI void * eon_engine_document_create(Eon_Engine *e, Eon_Document *d, int w, int h, const char *options);
 
-EAPI Eina_Bool eon_engine_canvas_blit(Eon_Engine *e, void *sc, Eina_Rectangle *r, void *c, Eina_Rectangle *sr);
-EAPI Eina_Bool eon_engine_canvas_flush(Eon_Engine *e, void *c, Eina_Rectangle *r);
-EAPI void * eon_engine_canvas_create(Eon_Engine *e, void *dd, Eon_Canvas *c, Eina_Bool root, uint32_t w, uint32_t h);
-EAPI void eon_engine_canvas_delete(Eon_Engine *e, void *c);
+EAPI Eina_Bool eon_engine_layout_blit(Eon_Engine *e, void *sc, Eina_Rectangle *r, void *c, Eina_Rectangle *sr);
+EAPI Eina_Bool eon_engine_layout_flush(Eon_Engine *e, void *c, Eina_Rectangle *r);
+EAPI void * eon_engine_layout_create(Eon_Engine *e, Eon_Layout *l, void *dd, uint32_t w, uint32_t h);
+EAPI void eon_engine_layout_delete(Eon_Engine *e, void *c);
 
 EAPI void * eon_engine_rect_create(Eon_Engine *e, Eon_Rect *r);
 EAPI void eon_engine_rect_render(Eon_Engine *e, void *r, void *c, Eina_Rectangle *clip);

@@ -29,6 +29,13 @@
 #define EON_PAINT_STYLE_CHANGED "styleChanged"
 #define EON_PAINT_VISIBILITY_CHANGED "visibilityChanged"
 #define EON_PAINT_GEOMETRY_CHANGED "geometryChanged"
+#define EON_PAINT_BOUNDINGS_CHANGED "boundingsChanged"
+
+typedef struct _Eon_Paint_Geometry_Change
+{
+	Ekeko_Event ev;
+	Eina_Rectangle geom;
+} Eon_Paint_Geometry_Change;
 /*============================================================================*
  *                               Properties                                   *
  *============================================================================*/
@@ -71,12 +78,7 @@ struct _Eon_Paint
 	Eina_Bool (*is_inside)(Eon_Paint *p, int x, int y);
 	/* called whenever the paint is going to be destroyed */
 	void (*free)(Eon_Engine *e, void *engine_data);
-	/* called when a parent paint needs to update the coordinates
-	 * of its child. The parea defines the area the parent wants
-	 * the child to draw
-	 * FIXME remove this
-	 */
-	void (*coordinates_update)(Eon_Paint *p, Eina_Rectangle *parea);
+	void (*process)(Eon_Paint *p);
 };
 /*============================================================================*
  *                                Functions                                   *

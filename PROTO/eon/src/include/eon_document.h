@@ -21,6 +21,13 @@
  *                                 Events                                     *
  *============================================================================*/
 #define EON_DOCUMENT_SIZE_CHANGED "sizeChanged"
+
+typedef struct _Eon_Document_Size_Change
+{
+	Ekeko_Event ev;
+	Eina_Rectangle geom;
+} Eon_Document_Size_Change;
+
 #define EON_DOCUMENT_OBJECT_NEW "ObjectNew"
 
 typedef struct _Eon_Document_Object_New
@@ -31,7 +38,6 @@ typedef struct _Eon_Document_Object_New
 /*============================================================================*
  *                               Properties                                   *
  *============================================================================*/
-extern Ekeko_Property_Id EON_DOCUMENT_SIZE;
 /*============================================================================*
  *                                 Class                                      *
  *============================================================================*/

@@ -66,24 +66,24 @@ EAPI void * eon_engine_document_create(Eon_Engine *e, Eon_Document *d,
 	return e->document_create(d, w, h, options);
 }
 
-EAPI void * eon_engine_canvas_create(Eon_Engine *e, void *cd, Eon_Canvas *c, Eina_Bool root, uint32_t w, uint32_t h)
+EAPI void * eon_engine_layout_create(Eon_Engine *e, Eon_Layout *l, void *dd, uint32_t w, uint32_t h)
 {
-	return e->canvas_create(c, cd, root, w, h);
+	return e->layout_create(l, dd, w, h);
 }
 
-EAPI Eina_Bool eon_engine_canvas_blit(Eon_Engine *e, void *sc, Eina_Rectangle *sr, void *c, Eina_Rectangle *r)
+EAPI Eina_Bool eon_engine_layout_blit(Eon_Engine *e, void *sc, Eina_Rectangle *sr, void *c, Eina_Rectangle *r)
 {
-	return e->canvas_blit(sc, sr, c, r);
+	return e->layout_blit(sc, sr, c, r);
 }
 
-EAPI Eina_Bool eon_engine_canvas_flush(Eon_Engine *e, void *c, Eina_Rectangle *r)
+EAPI Eina_Bool eon_engine_layout_flush(Eon_Engine *e, void *c, Eina_Rectangle *r)
 {
-	return e->canvas_flush(c, r);
+	return e->layout_flush(c, r);
 }
 
-EAPI void eon_engine_canvas_delete(Eon_Engine *e, void *c)
+EAPI void eon_engine_layout_delete(Eon_Engine *e, void *c)
 {
-	return e->canvas_delete(c);
+	return e->layout_delete(c);
 }
 
 EAPI void * eon_engine_rect_create(Eon_Engine *e, Eon_Rect *r)

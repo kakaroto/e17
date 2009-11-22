@@ -24,6 +24,7 @@
 
 #include "config.h"
 //#define EON_DEBUG
+#define EKEKO_DEBUG
 
 #include "Emage.h"
 
@@ -138,6 +139,7 @@ int eon_paint_zindex_get(Eon_Paint *r);
 void eon_paint_zindex_set(Eon_Paint *r, int zindex);
 Eon_Layout * eon_paint_layout_get(Eon_Paint *p);
 Eon_Layout * eon_paint_layout_topmost_get(Eon_Paint *p);
+void eon_paint_process(Eon_Paint *p);
 
 /* Transition */
 Eina_Bool eon_transition_appendable(Ekeko_Object *t, Ekeko_Object *child);
@@ -182,27 +184,35 @@ Ekeko_Type * eon_type_get(char *name);
 
 /* Input */
 void eon_event_ui_init(Eon_Event_Ui *eui, const char *type, Ekeko_Object *o,
-		Ekeko_Object *related, const Ekeko_Input *i);
+		Ekeko_Object *related, const Eon_Input *i);
 void eon_event_mouse_move_init(Eon_Event_Mouse *em, Ekeko_Object *o,
-		Ekeko_Object *related, const Ekeko_Input *i,
+		Ekeko_Object *related, const Eon_Input *i,
 		unsigned int sx, unsigned int sy,
 		unsigned int px, unsigned int py);
 void eon_event_mouse_in_init(Eon_Event_Mouse *em, Ekeko_Object *o,
-		Ekeko_Object *related, const Ekeko_Input *i);
+		Ekeko_Object *related, const Eon_Input *i);
 void eon_event_mouse_out_init(Eon_Event_Mouse *em, Ekeko_Object *o,
-		Ekeko_Object *related, const Ekeko_Input *i);
+		Ekeko_Object *related, const Eon_Input *i);
 void eon_event_mouse_down_init(Eon_Event_Mouse *em, Ekeko_Object *o,
-		Ekeko_Object *related, const Ekeko_Input *i);
+		Ekeko_Object *related, const Eon_Input *i);
 void eon_event_mouse_up_init(Eon_Event_Mouse *em, Ekeko_Object *o,
-		Ekeko_Object *related, const Ekeko_Input *i);
+		Ekeko_Object *related, const Eon_Input *i);
 void eon_event_mouse_click_init(Eon_Event_Mouse *em, Ekeko_Object *o,
-		Ekeko_Object *related, const Ekeko_Input *i);
+		Ekeko_Object *related, const Eon_Input *i);
 
 void eon_key_up_init(Eon_Event_Key *ek, Ekeko_Object *o,
 		const Eon_Input *i, Eon_Key key, Eon_Key_Mod mod);
 void eon_key_down_init(Eon_Event_Key *ek, Ekeko_Object *o,
 		const Eon_Input *i, Eon_Key key, Eon_Key_Mod mod);
 
-
+/* FIXME move this to eina */
+static inline Eina_Bool eina_rectangle_equals(Eina_Rectangle *r1,
+			Eina_Rectangle *r2)
+{
+	if ((r1->x == r2->x) && (r1->y == r2->y) && (r1->w == r2->w) && (r1->h == r2->h))
+		return EINA_TRUE;
+	else
+		return EINA_FALSE;
+}
 
 #endif

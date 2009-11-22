@@ -36,6 +36,7 @@ libeon_la_DEPENDENCIES = $(top_builddir)/src/engines/enesim/libeon_engine_enesim
 core/libeon_core.la \
 paint/libeon_paint.la \
 filter/libeon_filter.la \
+layout/libeon_layout.la \
 shape/libeon_shape.la \
 parser/libeon_parser.la \
 script/libeon_script.la

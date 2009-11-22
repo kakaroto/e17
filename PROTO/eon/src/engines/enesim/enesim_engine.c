@@ -13,21 +13,8 @@ static FT_Library library;
 /*============================================================================*
  *                              Paint Common                                  *
  *============================================================================*/
-typedef struct Paint Paint;
-struct Paint
-{
-	Enesim_Renderer *r;
-	Eon_Paint *p;
-	void (*style_setup)(Paint *p, Paint *rel);
-};
-
-typedef struct Paint_Drawer_Data
-{
-	Enesim_Rop rop;
-	Eon_Color color;
-} Paint_Drawer_Data;
-
-static void paint_style_setup(Paint *p, Paint *rel, int ox, int oy)
+static void paint_style_setup(Eon_Enesim_Paint *p, Eon_Enesim_Paint *rel,
+		int ox, int oy)
 {
 	Enesim_Matrix m;
 
@@ -36,7 +23,7 @@ static void paint_style_setup(Paint *p, Paint *rel, int ox, int oy)
 	enesim_renderer_origin_set(p->r, ox, oy);
 }
 
-static void paint_renderer_setup(Paint *p, int ox, int oy)
+static void paint_renderer_setup(Eon_Enesim_Paint *p, int ox, int oy)
 {
 	Enesim_Matrix m;
 
@@ -47,60 +34,26 @@ static void paint_renderer_setup(Paint *p, int ox, int oy)
 
 static void paint_delete(void *ep)
 {
-	Paint *p = ep;
+	Eon_Enesim_Paint *p = ep;
 
 	enesim_renderer_delete(p->r);
 	free(ep);
 }
 
-static void paint_renderer_draw(Eon_Paint *s, Enesim_Surface *dst,  Enesim_Renderer *r, Eina_Rectangle *clip)
+static void paint_renderer_draw(Eon_Paint *s, Eon_Enesim_Layout *lp,
+			Enesim_Renderer *r, Eina_Rectangle *clip)
 {
-#if 0
-	Enesim_Compositor_Span span;
-	Enesim_Rop rop;
-	Eon_Color color;
-	int dh, dy;
-	uint32_t *ddata;
-	uint32_t *fdata;
-	int stride;
-	Enesim_Format dfmt;
-
-	dfmt = enesim_surface_format_get(dst);
-	ddata = enesim_surface_data_get(dst);
-	stride = enesim_surface_stride_get(dst);
-	ddata = ddata + (clip->y * stride) + clip->x;
-
-	rop = eon_paint_rop_get(s);
-	color = eon_paint_color_get(s);
-	span = enesim_compositor_span_get(rop, &dfmt, ENESIM_FORMAT_ARGB8888, color, ENESIM_FORMAT_NONE);
-
-	dh = clip->h;
-	dy = clip->y;
-	/* fill the new span */
-	while (dh--)
-	{
-		fdata = calloc(clip->w, sizeof(uint32_t));
-		enesim_renderer_span_fill(r, clip->x, dy, clip->w, fdata);
-		/* compose the filled and the destination spans */
-		span(ddata, clip->w, fdata, color, NULL);
-		dy++;
-		ddata += stride;
-		free(fdata);
-	}
-	/* TODO set the format again */
-#else
 	Enesim_Rop rop;
 	Eon_Color color;
 
 	color = eon_paint_color_get(s);
 	rop = eon_paint_rop_get(s);
-	enesim_renderer_surface_draw(r, dst, rop, color, clip);
-#endif
+	enesim_renderer_surface_draw(r, lp->s, rop, color, clip);
 }
 /*============================================================================*
  *                                   Fade                                     *
  *============================================================================*/
-static void compound_setup(Paint *p, Paint *rel)
+static void compound_setup(Eon_Enesim_Paint *p, Eon_Enesim_Paint *rel)
 {
 	Eon_Compound *c = (Eon_Compound *)p->p;
 	Ekeko_Object *o;
@@ -116,7 +69,7 @@ static void compound_setup(Paint *p, Paint *rel)
 			Eon_Compound_Layer *l = (Eon_Compound_Layer *)o;
 			Enesim_Rop rop;
 			Eon_Paint *ref;
-			Paint *pref;
+			Eon_Enesim_Paint *pref;
 
 			rop = eon_compound_layer_rop_get(l);
 			ref = eon_compound_layer_paint_get(l);
@@ -128,7 +81,7 @@ static void compound_setup(Paint *p, Paint *rel)
 	}
 }
 
-static void compound_style(Paint *p, Paint *rel)
+static void compound_style(Eon_Enesim_Paint *p, Eon_Enesim_Paint *rel)
 {
 	int dx, dy;
 
@@ -140,7 +93,7 @@ static void compound_style(Paint *p, Paint *rel)
 
 static void compound_render(void *d, void *cd, Eina_Rectangle *clip)
 {
-	Paint *p = (Paint *)d;
+	Eon_Enesim_Paint *p = (Eon_Enesim_Paint *)d;
 	Eina_Rectangle geom;
 	Eon_Coord cx, cy;
 
@@ -153,9 +106,9 @@ static void compound_render(void *d, void *cd, Eina_Rectangle *clip)
 
 static void * compound_create(Eon_Paint *c)
 {
-	Paint *p;
+	Eon_Enesim_Paint *p;
 
-	p = calloc(1, sizeof(Paint));
+	p = calloc(1, sizeof(Eon_Enesim_Paint));
 	p->p = c;
 	p->r = enesim_renderer_compound_new();
 	p->style_setup = compound_style;
@@ -167,9 +120,9 @@ static void * compound_create(Eon_Paint *c)
  *============================================================================*/
 static void * hswitch_create(Eon_Hswitch *hs)
 {
-	Paint *p;
+	Eon_Enesim_Paint *p;
 
-	p = calloc(1, sizeof(Paint));
+	p = calloc(1, sizeof(Eon_Enesim_Paint));
 	p->p = (Eon_Paint *)hs;
 	p->r = enesim_renderer_hswitch_new();
 
@@ -178,8 +131,8 @@ static void * hswitch_create(Eon_Hswitch *hs)
 
 static Eina_Bool hswitch_setup(void *data, Eon_Shape *s)
 {
-	Paint *p = data;
-	Paint *tmp;
+	Eon_Enesim_Paint *p = data;
+	Eon_Enesim_Paint *tmp;
 	Eon_Hswitch *hs = (Eon_Hswitch *)p->p;
 	Eon_Paint *p1, *p2;
 	float step;
@@ -208,7 +161,7 @@ static Eina_Bool hswitch_setup(void *data, Eon_Shape *s)
 
 static void hswitch_delete(void *data)
 {
-	Paint *p = data;
+	Eon_Enesim_Paint *p = data;
 
 	enesim_renderer_delete(p->r);
 	free(p);
@@ -216,9 +169,9 @@ static void hswitch_delete(void *data)
 /*============================================================================*
  *                                   Fade                                     *
  *============================================================================*/
-static Eina_Bool fade_setup(Paint *p)
+static Eina_Bool fade_setup(Eon_Enesim_Paint *p)
 {
-	Paint *tmp;
+	Eon_Enesim_Paint *tmp;
 	Eon_Fade *f = (Eon_Fade *)p->p;
 	Eon_Paint *p1, *p2;
 	float step;
@@ -240,7 +193,7 @@ static Eina_Bool fade_setup(Paint *p)
 	return EINA_TRUE;
 }
 
-static void fade_style(Paint *p, Paint *rel)
+static void fade_style(Eon_Enesim_Paint *p, Eon_Enesim_Paint *rel)
 {
 	int dx, dy;
 
@@ -252,7 +205,7 @@ static void fade_style(Paint *p, Paint *rel)
 
 static void fade_render(void *d, void *cd, Eina_Rectangle *clip)
 {
-	Paint *p = (Paint *)d;
+	Eon_Enesim_Paint *p = (Eon_Enesim_Paint *)d;
 	Eina_Rectangle geom;
 	Eon_Coord cx, cy;
 
@@ -265,9 +218,9 @@ static void fade_render(void *d, void *cd, Eina_Rectangle *clip)
 
 static void * fade_create(Eon_Paint *f)
 {
-	Paint *p;
+	Eon_Enesim_Paint *p;
 
-	p = calloc(1, sizeof(Paint));
+	p = calloc(1, sizeof(Eon_Enesim_Paint));
 	p->p = f;
 	p->r = enesim_renderer_transition_new();
 	p->style_setup = fade_style;
@@ -278,7 +231,7 @@ static void * fade_create(Eon_Paint *f)
 /*============================================================================*
  *                                   Checker                                  *
  *============================================================================*/
-static void checker_setup(Paint *p)
+static void checker_setup(Eon_Enesim_Paint *p)
 {
 	Eon_Checker *ch = (Eon_Checker *)p->p;
 
@@ -288,7 +241,7 @@ static void checker_setup(Paint *p)
 	enesim_renderer_checker_size_set(p->r, 20, 20);
 }
 
-static void checker_style(Paint *p, Paint *rel)
+static void checker_style(Eon_Enesim_Paint *p, Eon_Enesim_Paint *rel)
 {
 	int dx, dy;
 
@@ -300,7 +253,7 @@ static void checker_style(Paint *p, Paint *rel)
 
 static void checker_render(void *d, void *cd, Eina_Rectangle *clip)
 {
-	Paint *p = d;
+	Eon_Enesim_Paint *p = d;
 	Eina_Rectangle geom;
 	Eon_Coord cx, cy;
 
@@ -313,9 +266,9 @@ static void checker_render(void *d, void *cd, Eina_Rectangle *clip)
 
 static void * checker_create(Eon_Paint *ch)
 {
-	Paint *p;
+	Eon_Enesim_Paint *p;
 
-	p = calloc(1, sizeof(Paint));
+	p = calloc(1, sizeof(Eon_Enesim_Paint));
 	p->p = ch;
 	p->r = enesim_renderer_checker_new();
 	p->style_setup = checker_style;
@@ -325,7 +278,7 @@ static void * checker_create(Eon_Paint *ch)
 /*============================================================================*
  *                                   Stripes                                  *
  *============================================================================*/
-static void stripes_setup(Paint *p)
+static void stripes_setup(Eon_Enesim_Paint *p)
 {
 	Eon_Stripes *st = (Eon_Stripes *)p->p;
 	int dx, dy;
@@ -343,7 +296,7 @@ static void stripes_setup(Paint *p)
 	enesim_renderer_stripes_thickness_set(p->r, th1, th2);
 }
 
-static void stripes_style(Paint *p, Paint *rel)
+static void stripes_style(Eon_Enesim_Paint *p, Eon_Enesim_Paint *rel)
 {
 	int dx, dy;
 
@@ -355,7 +308,7 @@ static void stripes_style(Paint *p, Paint *rel)
 
 static void stripes_render(void *d, void *cd, Eina_Rectangle *clip)
 {
-	Paint *p = d;
+	Eon_Enesim_Paint *p = d;
 	Eina_Rectangle geom;
 	Eon_Coord cx, cy;
 
@@ -368,9 +321,9 @@ static void stripes_render(void *d, void *cd, Eina_Rectangle *clip)
 
 static void * stripes_create(Eon_Paint *ep)
 {
-	Paint *p;
+	Eon_Enesim_Paint *p;
 
-	p = calloc(1, sizeof(Paint));
+	p = calloc(1, sizeof(Eon_Enesim_Paint));
 	p->p = ep;
 	p->r = enesim_renderer_stripes_new();
 	p->style_setup = stripes_style;
@@ -380,7 +333,7 @@ static void * stripes_create(Eon_Paint *ep)
 /*============================================================================*
  *                                   Image                                    *
  *============================================================================*/
-static Eina_Bool image_setup(Paint *p)
+static Eina_Bool image_setup(Eon_Enesim_Paint *p)
 {
 	Eon_Image *i = (Eon_Image *)p->p;
 	int dw, dh;
@@ -395,7 +348,7 @@ static Eina_Bool image_setup(Paint *p)
 	return EINA_TRUE;
 }
 
-static void image_style(Paint *p, Paint *rel)
+static void image_style(Eon_Enesim_Paint *p, Eon_Enesim_Paint *rel)
 {
 	int dx, dy, dw, dh;
 
@@ -409,7 +362,7 @@ static void image_style(Paint *p, Paint *rel)
 
 static void image_render(void *ei, void *cd, Eina_Rectangle *clip)
 {
-	Paint *p = ei;
+	Eon_Enesim_Paint *p = ei;
 	Eina_Rectangle geom;
 	Eon_Coord cx, cy, cw, ch;
 
@@ -426,9 +379,9 @@ static void image_render(void *ei, void *cd, Eina_Rectangle *clip)
 
 static void * image_create(Eon_Paint *i)
 {
-	Paint *p;
+	Eon_Enesim_Paint *p;
 
-	p = calloc(1, sizeof(Paint));
+	p = calloc(1, sizeof(Eon_Enesim_Paint));
 	p->p = i;
 	p->r = enesim_renderer_surface_new();
 	p->style_setup = image_style;
@@ -438,14 +391,7 @@ static void * image_create(Eon_Paint *i)
 /*============================================================================*
  *                                  Buffer                                    *
  *============================================================================*/
-typedef struct _Buffer
-{
-	Paint p;
-	Enesim_Surface *s;
-	Enesim_Renderer *imp;
-} Buffer;
-
-static void buffer_style(Paint *p, Paint *rel)
+static void buffer_style(Eon_Enesim_Paint *p, Eon_Enesim_Paint *rel)
 {
 	int dx, dy, dw, dh;
 
@@ -458,7 +404,7 @@ static void buffer_style(Paint *p, Paint *rel)
 
 static void buffer_render(void *ei, void *cd, Eina_Rectangle *clip)
 {
-	Paint *p = ei;
+	Eon_Enesim_Paint *p = ei;
 	Eina_Rectangle geom;
 	Eon_Coord cx, cy, cw, ch;
 
@@ -473,13 +419,13 @@ static void buffer_render(void *ei, void *cd, Eina_Rectangle *clip)
 
 static void * buffer_create(Eon_Paint *eb)
 {
-	Buffer *b;
-	Paint *p;
+	Eon_Enesim_Buffer *b;
+	Eon_Enesim_Paint *p;
 
-	b = calloc(1, sizeof(Buffer));
+	b = calloc(1, sizeof(Eon_Enesim_Buffer));
 	b->imp = enesim_renderer_importer_new();
 
-	p = (Paint *)b;
+	p = (Eon_Enesim_Paint *)b;
 	p->p = eb;
 	p->r = enesim_renderer_surface_new();
 	p->style_setup = buffer_style;
@@ -489,13 +435,13 @@ static void * buffer_create(Eon_Paint *eb)
 
 void buffer_update(void *pd)
 {
-	Paint *p = pd;
+	Eon_Enesim_Paint *p = pd;
 	Eon_Buffer *eb = (Eon_Buffer *)p->p;
-	Buffer *b = (Buffer *)p;
-	int iw, ih;
+	Eon_Enesim_Buffer *b = (Eon_Enesim_Buffer *)p;
 	Enesim_Converter_Format fmt;
 	Enesim_Converter_Data *cdata;
 	int w, h;
+	int iw, ih;
 
 	if (!b->s)
 	{
@@ -535,7 +481,7 @@ void buffer_delete(void *bd)
 /*============================================================================*
  *                              Shape Common                                  *
  *============================================================================*/
-static void shape_renderer_setup(Paint *ep)
+static void shape_renderer_setup(Eon_Enesim_Paint *ep)
 {
 	Eon_Shape *s = (Eon_Shape *)ep->p;
 	Eon_Paint *p;
@@ -550,7 +496,7 @@ static void shape_renderer_setup(Paint *ep)
 	p = eon_shape_fill_paint_get(s);
 	if (p)
 	{
-		Paint *pa;
+		Eon_Enesim_Paint *pa;
 
 		pa = eon_object_engine_data_get(p);
 		if (pa)
@@ -569,7 +515,7 @@ static void shape_renderer_setup(Paint *ep)
 	p = eon_shape_stroke_paint_get(s);
 	if (p)
 	{
-		Paint *pa;
+		Eon_Enesim_Paint *pa;
 
 		pa = eon_object_engine_data_get(p);
 		if (pa)
@@ -618,7 +564,7 @@ typedef struct Rasterizer_Drawer_Data
 	/* the callback */
 	Enesim_Scanline_Callback cb;
 	/* paint engine data */
-	Paint *paint;
+	Eon_Enesim_Paint *paint;
 } Rasterizer_Drawer_Data;
 
 static void aliased_color_cb(Enesim_Scanline *sl, void *data)
@@ -690,19 +636,19 @@ static void shape_rasterizer_setup(Eon_Shape *s, Rasterizer_Drawer_Data *d, Enes
 /*============================================================================*
  *                                  Polygon                                   *
  *============================================================================*/
-static void polygon_setup(Paint *p)
+static void polygon_setup(Eon_Enesim_Paint *p)
 {
 	shape_renderer_setup(p);
 }
 
 static void polygon_point_add(void *pd, int x, int y)
 {
-	Paint *p = pd;
+	Eon_Enesim_Paint *p = pd;
 
 	enesim_renderer_figure_polygon_vertex_add(p->r, x, y);
 }
 
-static void polygon_style(Paint *p, Paint *rel)
+static void polygon_style(Eon_Enesim_Paint *p, Eon_Enesim_Paint *rel)
 {
 	polygon_setup(p);
 	paint_style_setup(p, rel, 0, 0);
@@ -710,7 +656,7 @@ static void polygon_style(Paint *p, Paint *rel)
 
 static void polygon_render(void *pd, void *cd, Eina_Rectangle *clip)
 {
-	Paint *p = pd;
+	Eon_Enesim_Paint *p = pd;
 
 	polygon_setup(p);
 	paint_renderer_setup(p, 0, 0);
@@ -720,9 +666,9 @@ static void polygon_render(void *pd, void *cd, Eina_Rectangle *clip)
 
 static void * polygon_create(Eon_Polygon *ep)
 {
-	Paint *p;
+	Eon_Enesim_Paint *p;
 
-	p = malloc(sizeof(Paint));
+	p = malloc(sizeof(Eon_Enesim_Paint));
 	p->p = (Eon_Paint *)ep;
 	p->r = enesim_renderer_figure_new();
 	enesim_renderer_figure_polygon_add(p->r);
@@ -734,7 +680,7 @@ static void * polygon_create(Eon_Polygon *ep)
 /*============================================================================*
  *                                   Rect                                     *
  *============================================================================*/
-static void rect_setup(Paint *p)
+static void rect_setup(Eon_Enesim_Paint *p)
 {
 	Eon_Rect *er = (Eon_Rect *)p->p;
 	float rad;
@@ -746,7 +692,7 @@ static void rect_setup(Paint *p)
 	enesim_renderer_rectangle_corners_set(p->r, 1, 1, 1, 1);
 }
 
-static void rect_style(Paint *p, Paint *rel)
+static void rect_style(Eon_Enesim_Paint *p, Eon_Enesim_Paint *rel)
 {
 	int dx, dy, dw, dh;
 
@@ -758,7 +704,7 @@ static void rect_style(Paint *p, Paint *rel)
 
 static void rect_render(void *er, void *cd, Eina_Rectangle *clip)
 {
-	Paint *p = er;
+	Eon_Enesim_Paint *p = er;
 	Eon_Coord cx, cy, cw, ch;
 
 	eon_shape_square_coords_get((Eon_Shape_Square *)p->p, &cx, &cy, &cw, &ch);
@@ -772,9 +718,9 @@ static void rect_render(void *er, void *cd, Eina_Rectangle *clip)
 
 static void * rect_create(Eon_Rect *er)
 {
-	Paint *p;
+	Eon_Enesim_Paint *p;
 
-	p = malloc(sizeof(Paint));
+	p = malloc(sizeof(Eon_Enesim_Paint));
 	p->p = (Eon_Paint *)er;
 	p->r = enesim_renderer_rectangle_new();
 	p->style_setup = rect_style;
@@ -784,14 +730,14 @@ static void * rect_create(Eon_Rect *er)
 /*============================================================================*
  *                                 Circle                                     *
  *============================================================================*/
-static void circle_setup(Paint *p)
+static void circle_setup(Eon_Enesim_Paint *p)
 {
 	Eon_Circle *c = (Eon_Circle *)p->p;
 
 	shape_renderer_setup(p);
 }
 
-static void circle_style(Paint *p, Paint *rel)
+static void circle_style(Eon_Enesim_Paint *p, Eon_Enesim_Paint *rel)
 {
 	int cx, cy;
 	float radius;
@@ -805,7 +751,7 @@ static void circle_style(Paint *p, Paint *rel)
 
 static void circle_render(void *ec, void *cd, Eina_Rectangle *clip)
 {
-	Paint *p = ec;
+	Eon_Enesim_Paint *p = ec;
 	Eon_Coord x;
 	Eon_Coord y;
 	float radius;
@@ -823,9 +769,9 @@ static void circle_render(void *ec, void *cd, Eina_Rectangle *clip)
 
 static void * circle_create(Eon_Circle *ec)
 {
-	Paint *p;
+	Eon_Enesim_Paint *p;
 
-	p = malloc(sizeof(Paint));
+	p = malloc(sizeof(Eon_Enesim_Paint));
 	p->p = (Eon_Paint *)ec;
 	p->r = enesim_renderer_circle_new();
 	p->style_setup = circle_style;
@@ -978,7 +924,7 @@ static void text_render(void *et, void *cd, Eina_Rectangle *clip)
 		return;
 
 
-	eon_paint_geometry_get((Ekeko_Renderable *)t->t, &geom);
+	eon_paint_geometry_get((Eon_Paint *)t->t, &geom);
 	pen_x = geom.x;
 	pen_y = geom.y + 16; // we can use this to place the text on a vertical align
 
@@ -1007,7 +953,33 @@ static void text_render(void *et, void *cd, Eina_Rectangle *clip)
 	}
 	/* TODO set the format again */
 }
+/*============================================================================*
+ *                                  Layout                                    *
+ *============================================================================*/
+Eon_Enesim_Layout * eon_engine_enesim_layout_create(Eon_Layout *el,
+		int w, int h, void *data)
+{
+	Eon_Enesim_Layout *l;
+	Eon_Enesim_Paint *p;
 
+	l = calloc(1, sizeof(Eon_Enesim_Layout));
+	l->s = enesim_surface_new(ENESIM_FORMAT_ARGB8888, w, h);
+	l->data = data;
+
+	p = (Eon_Enesim_Paint *)l;
+	p->p = el;
+	p->r = enesim_renderer_surface_new();
+
+	return l;
+}
+
+void eon_engine_enesim_layout_delete(Eon_Enesim_Layout *ld)
+{
+	Eon_Enesim_Layout *l = (Eon_Enesim_Layout *)ld;
+
+	enesim_surface_delete(l->s);
+	paint_delete(l);
+}
 /*============================================================================*
  *                                  Debug                                     *
  *============================================================================*/

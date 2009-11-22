@@ -157,7 +157,7 @@ static void _subcanvas_render(Eon_Paint *p, Eina_Rectangle *rect)
 
 }
 
-static Eina_Bool _subcanvas_is_inside(Ekeko_Canvas *c, int x, int y)
+static Eina_Bool _subcanvas_is_inside(Eon_Canvas *c, int x, int y)
 {
 	return EINA_TRUE;
 }
@@ -239,7 +239,7 @@ static void _ctor(Ekeko_Object *o)
 	c->prv = prv = ekeko_type_instance_private_get(_type, o);
 	c->base.flush = _flush;
 	c->base.base.parent.render = _subcanvas_render;
-	c->base.base.parent.is_inside= _subcanvas_is_inside;
+	c->base.base.parent.is_inside = _subcanvas_is_inside;
 	//ekeko_event_listener_add(o, EON_PAINT_GEOMETRY_CHANGED, _geometry_change, EINA_FALSE, NULL);
 	ekeko_event_listener_add(o, EKEKO_EVENT_OBJECT_APPEND, _child_append_cb, EINA_FALSE, NULL);
 }

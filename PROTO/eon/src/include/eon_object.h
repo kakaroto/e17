@@ -18,6 +18,14 @@
 #ifndef EON_OBJECT_H_
 #define EON_OBJECT_H_
 /*============================================================================*
+ *                                 Events                                     *
+ *============================================================================*/
+#define EKEKO_OBJECT_ID_CHANGED "idChanged"
+/*============================================================================*
+ *                               Properties                                   *
+ *============================================================================*/
+extern Ekeko_Property_Id EON_OBJECT_ID;
+/*============================================================================*
  *                                 Class                                      *
  *============================================================================*/
 #define EON_OBJECT(o) EKEKO_CAST(o, eon_object_type_get(), Eon_Object)
@@ -31,6 +39,10 @@ struct _Eon_Object
  *                                Functions                                   *
  *============================================================================*/
 EAPI Ekeko_Type * eon_object_type_get(void);
+
+EAPI void eon_object_id_set(Eon_Object *o, const char *id);
+EAPI const char *eon_object_id_get(Eon_Object *o);
+
 EAPI Eon_Document * eon_object_document_get(Eon_Object *o);
 
 #endif /* EON_OBJECT_H_ */
