@@ -101,10 +101,12 @@ _CoordsShow(EWin * ewin, int mode)
 	       case 1:
 	       case 2:
 		  EwinBorderGetSize(ewin, &bl, &br, &bt, &bb);
-		  cx = x + (ewin->shape_w + bl + br - cw) / 2 +
-		     EoGetX(EoGetDesk(ewin));
-		  cy = y + (ewin->shape_h + bt + bb - ch) / 2 +
-		     EoGetY(EoGetDesk(ewin));
+		  w = (ewin->state.shaded) ?
+		     EoGetW(ewin) : ewin->shape_w + bl + br;
+		  h = (ewin->state.shaded) ?
+		     EoGetH(ewin) : ewin->shape_h + bt + bb;
+		  cx = x + (w - cw) / 2 + EoGetX(EoGetDesk(ewin));
+		  cy = y + (h - ch) / 2 + EoGetY(EoGetDesk(ewin));
 		  break;
 	       }
 	  }
