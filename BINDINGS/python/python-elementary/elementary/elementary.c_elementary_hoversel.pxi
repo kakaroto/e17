@@ -91,17 +91,26 @@ cdef class Hoversel(Object):
         Object.__init__(self, parent.evas)
         self._set_obj(elm_hoversel_add(parent.obj))
 
-    property clicked:
-        def __set__(self, value):
-            self._callback_add("clicked",value)
+    def callback_clicked_add(self, func, *args, **kwargs):
+        self._callback_add("clicked", func, *args, **kwargs)
 
-    property selected:
-        def __set__(self, value):
-            self._callback_add("selected", value)
+    def callback_clicked_remove(self, func = None, *args, **kwargs):
+        self._callback_remove("clicked", func, *args, **kwargs)
 
-    property dismissed:
-        def __set__(self, value):
-            self._callback_add("dismissed", value)
+
+    def callback_selected_add(self, func, *args, **kwargs):
+        self._callback_add("selected", func, *args, **kwargs)
+
+    def callback_selected_remove(self, func = None, *args, **kwargs):
+        self._callback_remove("selected", func, *args, **kwargs)
+
+
+    def callback_dismissed_add(self, func, *args, **kwargs):
+        self._callback_add("dismissed", func, *args, **kwargs)
+
+    def callback_dismissed_remove(self, func = None, *args, **kwargs):
+        self._callback_remove("dismissed", func, *args, **kwargs)
+
 
     def hover_parent_set(self, c_evas.Object parent):
         elm_hoversel_hover_parent_set(self.obj, parent.obj)

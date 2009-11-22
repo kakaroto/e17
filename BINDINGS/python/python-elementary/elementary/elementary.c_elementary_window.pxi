@@ -41,22 +41,26 @@ cdef class Window(Object):
             warnings.warn("use evas or evas_get() instead.", DeprecationWarning)
             return self.evas
 
-    property destroy:
-        def __set__(self, value):
-            """
-            Set the callback-function for the destroy-event
+    def callback_destroy_add(self, func, *args, **kwargs):
+        self._callback_add("delete-request", func, *args, **kwargs)
 
-            @parm: B{value} Function which would be called, if the event occur
-            """
-            self._callback_add("delete-request",value)
+    def callback_destroy_remove(self, func = None, *args, **kwargs):
+        self._callback_remove("delete-request", func, *args, **kwargs)
 
-    property focus_in:
-        def __set__(self, value):
-            self._callback_add("focus-in", value)
 
-    property focus_out:
-        def __set__(self, value):
-            self._callback_add("focus-out", value)
+    def callback_focus_in_add(self, func, *args, **kwargs):
+        self._callback_add("focus-in", func, *args, **kwargs)
+
+    def callback_focus_in_remove(self, func = None, *args, **kwargs):
+        self._callback_remove("focus-in", func, *args, **kwargs)
+
+
+    def callback_focus_out_add(self, func, *args, **kwargs):
+        self._callback_add("focus-out", func, *args, **kwargs)
+
+    def callback_focus_out_remove(self, func = None, *args, **kwargs):
+        self._callback_remove("focus-out", func, *args, **kwargs)
+
 
     def resize_object_add(self,c_evas.Object obj):
         """

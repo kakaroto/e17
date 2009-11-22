@@ -42,13 +42,20 @@ cdef class Slider(Object):
     def min_max_set(self, min, max):
         elm_slider_min_max_set(self.obj, min, max)
 
-    property changed:
-        def __set__(self, value):
-            self._callback_add("changed", value)
 
-    property delay_changed:
-        def __set__(self, value):
-            self._callback_add("delay,changed", value)
+    def callback_changed_add(self, func, *args, **kwargs):
+        self._callback_add("changed", func, *args, **kwargs)
+
+    def callback_changed_remove(self, func = None, *args, **kwargs):
+        self._callback_remove("changed", func, *args, **kwargs)
+
+
+    def callback_delay_changed_add(self, func, *args, **kwargs):
+        self._callback_add("delay,changed", func, *args, **kwargs)
+
+    def callback_delay_changed_remove(self, func = None, *args, **kwargs):
+        self._callback_remove("delay,changed", func, *args, **kwargs)
+
 
     property value:
         def __get__(self):

@@ -17,15 +17,17 @@
 #
 
 
-cdef void _object_callback(void *cbt, c_evas.Evas_Object *o, void *event_info) with gil:
-    try:
-        (event, obj, callback, args, kargs) = <object>cbt
-        if event_info != NULL:
-           callback(obj, <long>event_info, *args, **kargs)
-        else:
-           callback(obj, *args, **kargs)
-    except Exception, e:
-        traceback.print_exc()
+cdef void _object_callback(void *cbtl, c_evas.Evas_Object *o, void *event_info) with gil:
+    l = <object>cbtl
+    for cbt in l:
+        try:
+            (obj, callback, args, kwargs) = <object>cbt
+            if event_info != NULL:
+               callback(obj, <long>event_info, *args, **kwargs)
+            else:
+               callback(obj, *args, **kwargs)
+        except Exception, e:
+            traceback.print_exc()
 
 cdef class Canvas(evas.c_evas.Canvas):
     def __init__(self):
@@ -100,7 +102,7 @@ cdef class Object(evas.c_evas.Object):
         """
         elm_object_scroll_freeze_push(self.obj)
 
-    def _callback_add(self, event, callback, *args, **kargs):
+    def _callback_add(self, event, callback, *args, **kwargs):
         """Add a callback for this object
 
         Add a function as new callback-function for a specified event. The
@@ -109,47 +111,45 @@ cdef class Object(evas.c_evas.Object):
         @parm: B{event} Name of the event
         @parm: B{callback} Function should be called, when the event occured
         @parm: B{args}     Argument tuple passed to the function when called
-        @parm: B{kargs}    Argument dictionnary passed to the function when called
+        @parm: B{kwargs}    Argument dictionnary passed to the function when called
         """
         cdef object cbt
-
-        if type(callback) == tuple:
-            args = callback[1]
-            if type(args) != tuple:
-                args = (args,)
-            if len(callback) == 3:
-                kargs = callback[2]
-            else:
-                kargs = {}
-            callback = callback[0]
 
         if not callable(callback):
             raise TypeError("callback is not callable")
 
-        cbt = (event, self, callback, args, kargs)
+        cbt = (self, callback, args, kwargs)
 
         if self._elmcallbacks is None:
-            self._elmcallbacks = []
-        self._elmcallbacks.append(cbt)
-        # register callback
-        c_evas.evas_object_smart_callback_add(self.obj, event, _object_callback,
-                                              <void *>cbt)
+            self._elmcallbacks = {}
+        if self._elmcallbacks.has_key(event):
+            self._elmcallbacks[event].append(cbt)
+        else:
+            self._elmcallbacks[event] = [cbt]
+            # register callback
+            c_evas.evas_object_smart_callback_add(self.obj, event, _object_callback,
+                                                  <void*>self._elmcallbacks[event])
 
-    def _callback_remove(self, event):
+    def _callback_remove(self, event, func = None, *args, **kwargs):
         """Removes all callback functions for the event
 
         Will remove all callback functions for the specified event.
 
         @parm: B{event} Name of the event whose events should be removed
+        @parm: B{func}  If set, will remove only this callback
         """
-        if self._elmcallbacks:
-            for i, cbt in enumerate(self._elmcallbacks):
-                if cbt is not None:
-                    (ev, obj, callback, a, ka) = <object>cbt
-                    if event == ev:
-                        c_evas.evas_object_smart_callback_del(self.obj, event,
-                                                              _object_callback)
-                        self._elmcallbacks[i] = None
+        if self._elmcallbacks and self._elmcallbacks.has_key(event):
+            if func is None:
+                c_evas.evas_object_smart_callback_del(self.obj, event,
+                                                      _object_callback)
+                self._elmcallbacks[event] = None
+            else:
+                for i, cbt in enumerate(self._elmcallbacks[event]):
+                    if cbt is not None and (self, func, args, kwargs) == <object>cbt:
+                        self._elmcallbacks[event][i] = None
+                if not self._elmcallbacks[event]:
+                    c_evas.evas_object_smart_callback_del(self.obj, event,
+                                                          _object_callback)
 
     def _get_obj_addr(self):
         """

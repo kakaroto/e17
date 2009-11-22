@@ -243,14 +243,22 @@ cdef class List(Object):
             (o, callback, it, a, ka) = <object>data
             return it
 
-    property clicked:
-        def __set__(self, value):
-            self._callback_add("clicked", value)
+    def callback_clicked_add(self, func, *args, **kwargs):
+        self._callback_add("clicked", func, *args, **kwargs)
 
-    property selected:
-        def __set__(self, value):
-            self._callback_add("selected", value)
+    def callback_clicked_remove(self, func = None, *args, **kwargs):
+        self._callback_remove("clicked", func, *args, **kwargs)
 
-    property unselected:
-        def __set__(self, value):
-            self._callback_add("unselected", value)
+
+    def callback_selected_add(self, func, *args, **kwargs):
+        self._callback_add("selected", func, *args, **kwargs)
+
+    def callback_selected_remove(self, func = None, *args, **kwargs):
+        self._callback_remove("selected", func, *args, **kwargs)
+
+
+    def callback_unselected_add(self, func, *args, **kwargs):
+        self._callback_add("unselected", func, *args, **kwargs)
+
+    def callback_unselected_remove(self, func = None, *args, **kwargs):
+        self._callback_remove("unselected", func, *args, **kwargs)

@@ -16,25 +16,25 @@
 # along with python-elementary.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-# TODO: Handle callback remove
-
-cdef void _fs_callback(void *cbt, c_evas.Evas_Object *obj, void *event_info) with gil:
-    try:
-        fs, func, args, kargs = <object>cbt
-        selected = None
-        if event_info != NULL:
-            selected = <char*>event_info
-        func(fs, selected, *args, **kargs)
-    except Exception, e:
-        traceback.print_exc()
+cdef void _fs_callback(void *cbtl, c_evas.Evas_Object *obj, void *event_info) with gil:
+    l = <object>cbtl
+    for cbt in l:
+        try:
+            fs, func, args, kwargs = cbt
+            selected = None
+            if event_info != NULL:
+                selected = <char*>event_info
+            func(fs, selected, *args, **kwargs)
+        except Exception, e:
+            traceback.print_exc()
 
 cdef class Fileselector(Object):
-    cdef object cbts
+    cdef object _cbs
 
     def __init__(self, c_evas.Object parent):
         Object.__init__(self, parent.evas)
         self._set_obj(elm_fileselector_add(parent.obj))
-        self.cbts = []
+        self._cbs = {}
 
     def selected_get(self):
         cdef char* path
@@ -62,30 +62,46 @@ cdef class Fileselector(Object):
     def is_save_set(self, is_save):
         elm_fileselector_is_save_set(self.obj, is_save)
 
-    property selected:
-        def __set__(self, value):
-            self._fs_callback_add("selected", value)
+    def _fs_callback_add(self, event, func, *args, **kwargs):
+        cdef object cbt
 
-    property done:
-        def __set__(self, value):
-            self._fs_callback_add("done", value)
-
-    def _fs_callback_add(self, event, value):
-        args = []
-        kwargs = {}
-        if type(value) == tuple:
-            args = value[1]
-            if type(args) != tuple:
-                args = (args,)
-            if len(value) == 3:
-                kwargs = value[2]
-            cb = value[0]
-        else:
-            cb = value
-        if not callable(cb):
+        if not callable(func):
             raise TypeError("callback is not callable")
-        cbt = (self, cb, args, kwargs)
-        self.cbts.append(cbt)
-        c_evas.evas_object_smart_callback_add(self.obj, event,
-                                              _fs_callback, <void*>cbt)
+
+        cbt = (self, func, args, kwargs)
+
+        if self._cbs.has_key(event):
+            self._cbs[event].append(cbt)
+        else:
+            self._cbs[event] = [cbt]
+            # register callback
+            c_evas.evas_object_smart_callback_add(self.obj, event,
+                                                  _fs_callback,
+                                                  <void *>self._cbs[event])
+
+    def _fs_callback_remove(self, event, func = None, *args, **kwargs):
+        if self._cbs and self._cbs.has_key(event):
+            if func is None:
+                c_evas.evas_object_smart_callback_del(self.obj, event,
+                                                      _fs_callback)
+                self._cbs[event] = None
+            else:
+                for i, cbt in enumerate(self._cbs[event]):
+                    if cbt is not None and (self, func, args, kwargs) == <object>cbt:
+                        self._cbs[event][i] = None
+                if not self._cbs[event]:
+                     c_evas.evas_object_smart_callback_del(self.obj, event,
+                                                           _fs_callback)
+
+    def callback_selected_add(self, func, *args, **kwargs):
+        self._fs_callback_add("selected", func, *args, **kwargs)
+
+    def callback_selected_remove(self, func = None, *args, **kwargs):
+        self._fs_callback_remove("selected", func, *args, **kwargs)
+
+    def callback_done_add(self, func, *args, **kwargs):
+        self._fs_callback_add("done", func, *args, **kwargs)
+
+    def callback_done_remove(self, func = None, *args, **kwargs):
+        self._fs_callback_remove("done", func, *args, **kwargs)
 

@@ -42,6 +42,8 @@ cdef class Image(Object):
     def orient_set(self, orientation):
         elm_image_orient_set(self.obj, orientation)
 
-    property clicked:
-        def __set__(self, value):
-            self._callback_add("clicked", value)
+    def callback_clicked_add(self, func, *args, **kwargs):
+        self._callback_add("clicked", func, *args, **kwargs)
+
+    def callback_clicked_remove(self, func = None, *args, **kwargs):
+        self._callback_remove("clicked", func, *args, **kwargs)

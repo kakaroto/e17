@@ -42,15 +42,11 @@ cdef class Icon(Object):
         else:
             elm_icon_file_set(self.obj, filename, group)
 
-    property clicked:
-        """
-        If the event clicked occured, the specified callback function will be 
-        called.
+    def callback_clicked_add(self, func, *args, **kwargs):
+        self._callback_add("clicked", func, *args, **kwargs)
 
-        @parm: B{value} Callback function
-        """
-        def __set__(self, value):
-            self._callback_add("clicked",value)
+    def callback_clicked_remove(self, func = None, *args, **kwargs):
+        self._callback_remove("clicked", func, *args, **kwargs)
 
     def standard_set(self,standard):
         elm_icon_standard_set(self.obj,standard)

@@ -28,29 +28,31 @@ class AnchorBlockInfo:
         self.hover_top = False
         self.hover_bottom = False
 
-cdef void _anchorblock_callback(void *cbt, c_evas.Evas_Object *o, void *event_info) with gil:
+cdef void _anchorblock_callback(void *cbtl, c_evas.Evas_Object *o, void *event_info) with gil:
     cdef Elm_Entry_Anchorblock_Info *ei
-    try:
-        (event, obj, callback, a, ka) = <object>cbt
-        if event_info is NULL:
-            ab = None
-        else:
-            ei = <Elm_Entry_Anchorblock_Info*>event_info
-            ab = AnchorBlockInfo()
-            ab.name = ei.name
-            ab.button = ei.button
-            ab.hover = Hover(None, <object>ei.hover);
-            ab.anchor = (ei.anchor.x, ei.anchor.y,
-                         ei.anchor.w, ei.anchor.h)
-            ab.hover_parent = (ei.hover_parent.x, ei.hover_parent.y,
-                               ei.hover_parent.w, ei.hover_parent.h)
-            ab.hover_left = ei.hover_left
-            ab.hover_right = ei.hover_right
-            ab.hover_top = ei.hover_top
-            ab.hover_bottom = ei.hover_bottom
-        callback(obj, ab, *a, **ka)
-    except Exception, e:
-        traceback.print_exc()
+    l = <object>cbtl
+    for cbt in l:
+        try:
+            obj, callback, a, ka = cbt
+            if event_info is NULL:
+                ab = None
+            else:
+                ei = <Elm_Entry_Anchorblock_Info*>event_info
+                ab = AnchorBlockInfo()
+                ab.name = ei.name
+                ab.button = ei.button
+                ab.hover = Hover(None, <object>ei.hover);
+                ab.anchor = (ei.anchor.x, ei.anchor.y,
+                             ei.anchor.w, ei.anchor.h)
+                ab.hover_parent = (ei.hover_parent.x, ei.hover_parent.y,
+                                   ei.hover_parent.w, ei.hover_parent.h)
+                ab.hover_left = ei.hover_left
+                ab.hover_right = ei.hover_right
+                ab.hover_top = ei.hover_top
+                ab.hover_bottom = ei.hover_bottom
+            callback(obj, ab, *a, **ka)
+        except Exception, e:
+            traceback.print_exc()
 
 cdef class AnchorBlock(Object):
     """
@@ -64,9 +66,9 @@ cdef class AnchorBlock(Object):
 
     anchor,clicked - anchor called was clicked. event_info is anchor info -
     AnchorBlockInfo
-    This signal can be bound with the "ckicked" property
+    This signal can be bound with "callback_clicked_add"
     """
-    cdef object cbt
+    cdef object _cbs
     def __init__(self, c_evas.Object parent):
         """Initialize the Anchorblock
 
@@ -74,44 +76,51 @@ cdef class AnchorBlock(Object):
         """
         Object.__init__(self, parent.evas)
         self._set_obj(elm_anchorblock_add(parent.obj))
+        self._cbs = {}
 
-    property clicked:
-        """ Clicked property. Bound to signal "anchor, clicked"
+    def callback_clicked_add(self, func, *args, **kwargs):
+        """ Bound to signal "anchor, clicked"
 
         The callback should have the following signature:
-            callback(obj, ab, *args, **kargs)
+            callback(obj, ab, *args, **kwargs)
         obj: the object raising the signal
         ab: AnchorBlockInfo
 
         The value set is either the callback function or a tuple like
-            (callback, *args, **kargs)
+            (callback, *args, **kwargs)
         """
-        def __set__(self, value):
-            if self.cbt:
-                c_evas.evas_object_smart_callback_del(self.obj, "anchor,clicked",
+        cdef object cbt
+
+        if not callable(func):
+            raise TypeError("callback is not callable")
+
+        event = "anchor,clicked"
+
+        cbt = (self, func, args, kwargs)
+
+        if self._cbs.has_key(event):
+            self._cbs[event].append(cbt)
+        else:
+            self._cbs[event] = [cbt]
+            # register callback
+            c_evas.evas_object_smart_callback_add(self.obj, event,
+                                                  _anchorblock_callback,
+                                                  <void *>self._cbs[event])
+
+    def callback_clicked_remove(self, func = None, *args, **kwargs):
+        event = "anchor,clicked"
+        if self._cbs and self._cbs.has_keys(event):
+            if func is None:
+                c_evas.evas_object_smart_callback_del(self.obj, event,
                                                       _anchorblock_callback)
-                self.cbt = None
-            if value:
-                a = []
-                ka = {}
-                if type(value) == tuple:
-                    cb = value[0]
-                    a = value[1]
-                    if len(value) == 3:
-                        ka = value[2]
-                    else:
-                        if type(a) != tuple:
-                            a = (a,)
-                else:
-                    cb = value
-
-                if not callable(cb):
-                    raise TypeError("callback is not callable")
-
-                self.cbt = ("anchor,clicked", self, cb, a, ka)
-                c_evas.evas_object_smart_callback_add(self.obj, "anchor,clicked",
-                                                      _anchorblock_callback,
-                                                      <void *>self.cbt)
+                self._cbs[event] = None
+            else:
+                for i, cbt in enumerate(self._cbs[event]):
+                    if cbt is not None and (self, func, args, kwargs) == <object>cbt:
+                        self._cbs[event][i] = None
+                if not self._cbs[event]:
+                    c_evas.evas_object_smart_callback_del(self.obj, event,
+                                                          _anchorblock_callback)
 
     def text_set(self, text):
         """

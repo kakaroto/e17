@@ -21,9 +21,11 @@ cdef class Button(Object):
         Object.__init__(self, parent.evas)
         self._set_obj(elm_button_add(parent.obj))
 
-    property clicked:
-        def __set__(self, value):
-            self._callback_add("clicked", value)
+    def callback_clicked_add(self, func, *args, **kwargs):
+        self._callback_add("clicked", func, *args, **kwargs)
+
+    def callback_clicked_remove(self, func = None, *args, **kwargs):
+        self._callback_remove("clicked", func, *args, **kwargs)
 
     def label_set(self, label):
         elm_button_label_set(self.obj, label)

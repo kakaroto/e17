@@ -31,9 +31,11 @@ cdef class Toggle(Object):
         self.state_ptr = 0
         elm_toggle_state_pointer_set(self.obj, &self.state_ptr)
 
-    property changed:
-        def __set__(self, value):
-            self._callback_add("changed",value)
+    def callback_changed_add(self, func, *args, **kwargs):
+        self._callback_add("changed", func, *args, **kwargs)
+
+    def callback_changed_remove(self, func = None, *args, **kwargs):
+        self._callback_remove("changed", func, *args, **kwargs)
 
     def label_set(self, label):
         elm_toggle_label_set(self.obj, label)

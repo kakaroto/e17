@@ -39,6 +39,8 @@ cdef class Radio(Object):
     def value_get(self):
         return elm_radio_value_get(self.obj)
 
-    property changed:
-        def __set__(self, value):
-            self._callback_add("changed", value)
+    def callback_changed_add(self, func, *args, **kwargs):
+        self._callback_add("changed", func, *args, **kwargs)
+
+    def callback_changed_remove(self, func = None, *args, **kwargs):
+        self._callback_remove("changed", func, *args, **kwargs)

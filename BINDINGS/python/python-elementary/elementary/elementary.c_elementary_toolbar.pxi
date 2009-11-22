@@ -106,12 +106,9 @@ cdef class Toolbar(Object):
         # C structures in python classes
         return ToolbarItem(self, icon, label, callback, *args, **kargs)
 
-    property clicked:
-        def __set__(self, value):
-            """
-            Set the callback function for the clicked-event
+    def callback_clicked_add(self, func, *args, **kwargs):
+        self._callback_add("clicked", func, *args, **kwargs)
 
-            @parm: L{value} callback function
-            """
-            self._callback_add("clicked", value)
+    def callback_clicked_remove(self, func = None, *args, **kwargs):
+        self._callback_remove("clicked", func, *args, **kwargs)
 

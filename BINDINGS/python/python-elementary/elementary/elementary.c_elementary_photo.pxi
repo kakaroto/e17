@@ -21,9 +21,11 @@ cdef class Photo(Object):
         Object.__init__(self, parent.evas)
         self._set_obj(elm_photo_add(parent.obj))
 
-    property clicked:
-        def __set__(self, value):
-            self._callback_add("clicked",value)
+    def callback_clicked_add(self, func, *args, **kwargs):
+        self._callback_add("clicked", func, *args, **kwargs)
+
+    def callback_clicked_remove(self, func = None, *args, **kwargs):
+        self._callback_remove("clicked", func, *args, **kwargs)
 
     def file_set(self, filename):
         elm_photo_file_set(self.obj, filename)
