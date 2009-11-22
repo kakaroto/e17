@@ -15,12 +15,15 @@ elixir_context_add(const char *key, const void *data)
 EAPI void*
 elixir_context_find(const char *key)
 {
+   if (!context) return NULL;
    return eina_hash_find(context, key);
 }
 
 EAPI void
 elixir_context_delete(const char *key)
 {
+   if (!context) return ;
+
    eina_hash_del(context, key, NULL);
 
    if (eina_hash_population(context) == 0)
