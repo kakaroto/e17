@@ -60,7 +60,7 @@ struct _IV
    IV_Files_Account *account;
 
    Eina_List  *dirs, *file_monitors;
-   IV_File    *single_file;
+   const char *single_file;
    const char *theme_file;
 
    Ecore_Idler *idler;
@@ -1103,6 +1103,12 @@ on_idler(void *data)
 		  IV_File *new = create_iv_file(iv, buf);
 		  iv->files = eina_inlist_append(iv->files, EINA_INLIST_GET(new));
 		  iv->account->count++;
+
+		  if (iv->single_file && iv->single_file == new->file_path)
+		    {
+		       iv->account->current = new;
+		       iv->single_file = NULL;
+		    }
 #ifdef HAVE_ETHUMB
 		  iv->preview_files = eina_list_append(iv->preview_files, new);
 #endif
@@ -1112,12 +1118,6 @@ on_idler(void *data)
 	iv->file_monitors = eina_list_append(
 	    iv->file_monitors,
 	    ecore_file_monitor_add(buf2, on_file_monitor_event, iv));
-
-	if (iv->single_file)
-	  {
-	     iv->account->current = iv->single_file;
-	     iv->single_file = NULL;
-	  }
 
 	if (!renew && iv->dirs)
 	  renew = EINA_TRUE;
@@ -1877,11 +1877,13 @@ elm_main(int argc, char **argv)
 	  }
 	else if (iv->account->count == 1)
 	  {
-	     const char *path = IV_FILE(iv->files)->file_path;
+	     IV_File *file = IV_FILE(iv->files);
+	     const char *path = file->file_path;
 	     char *dir = ecore_file_dir_get(path);
 
 	     iv->dirs = eina_list_append(iv->dirs, eina_stringshare_add(dir));
-	     iv->single_file = IV_FILE(iv->files);
+	     iv->single_file = eina_stringshare_ref(path);
+	     iv_file_free(file);
 	     iv->files = eina_inlist_remove(iv->files, iv->files);
 #ifdef HAVE_ETHUMB
 	     iv->preview_files = eina_list_remove(iv->preview_files, iv->preview_files);
