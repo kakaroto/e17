@@ -5,16 +5,17 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Shellementary\n"
 "POT-Creation-Date: 2009-07-06 13:28+CEST\n"
-"PO-Revision-Date: 2009-09-29 10:12+0400\n"
+"PO-Revision-Date: 2009-11-22 12:15+0400\n"
 "Last-Translator: batden <batden@orange.fr>\n"
-"Language-Team: French <Enlightenment i18n French>\n"
+"Language-Team: Enlightenment French Team <pourunmondesansgourou@gmail.com>\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: pygettext.py 1.5\n"
-"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=n>1;\n"
 "X-Poedit-Language: French\n"
 "X-Poedit-Country: FRANCE\n"
+"X-Poedit-SourceCharset: utf-8\n"
 
 #: shellementary.in:277
 msgid "Enter something here"
@@ -56,7 +57,7 @@ msgstr "Définir la valeur"
 
 #: shellementary.in:758
 msgid "A clock :)"
-msgstr "Une horloge :)"
+msgstr "Une horloge :)"
 
 #: shellementary.in:827
 msgid "About Shellementary"
@@ -64,11 +65,11 @@ msgstr "À propos de Shellementary"
 
 #: shellementary.in:857
 msgid "<b>Display dialogs from shell scripts</><br>Written as a zenity replacement, supports the same arguments<br><b>http://svn.enlightenment.org/svn/e/trunk/PROTO/shellementary</><br>Based on great Elementary toolkit by <b>raster</> and Python.<br><b>License:</> GNU General Public License v3"
-msgstr "<b>Affiche des boîtes de dialogue à partir de scripts shell</><br>Conçu comme alternative à zenity, supporte les mêmes arguments<br><b>http://svn.enlightenment.org/svn/e/trunk/PROTO/shellementary</><br>Basé sur l'excellente boîte à outils Elementary  par <b>raster</> et sur Python.<br><b>Licence:</> GNU General Public License v3"
+msgstr "<b>Affiche des boîtes de dialogue à partir de scripts shell</><br>Conçu comme alternative à zenity, supporte les mêmes arguments.<br><b>http://svn.enlightenment.org/svn/e/trunk/PROTO/shellementary</><br>Basé sur l'excellente boîte à outils Elementary  par <b>raster</>, et sur Python.<br><b>Licence :</> GNU General Public License v3."
 
 #: shellementary.in:869
 msgid "<b>Author:</> quaker (quaker66@gmail.com)<br><br><b>Credits:</><br><b>The Rasterman (raster)</> for Enlightenment DR17, great Elementary toolkit and help with developenment<br><b>Gustavo Sverzut Barbieri (k-s)</> for python-efl bindings and help with developenment<br><b>Simon Busch (morphis)</> for python-elementary bindings<br><b>Johannes Schauer (josch)</> for help with python<br><b>Jonathan Atton (watchwolf)</> for help with elementary<br>"
-msgstr "<b>Auteur:</> quaker (quaker66@gmail.com)<br><br><b>Crédits:</><br><b>The Rasterman (raster)</> pour Enlightenment DR17, l'excellente boîte à outils Elementary et son aide pour le développement<br><b>Gustavo Sverzut Barbieri (k-s)</> pour les bindings python-efl et son aide pour le développement<br><b>Simon Busch (morphis)</> pour les bindings python-elementary<br><b>Johannes Schauer (josch)</> pour son aide avec python<br><b>Jonathan Atton (watchwolf)</> pour son aide avec elementary<br>"
+msgstr "<b>Auteur :</> quaker (quaker66@gmail.com)<br><br><b>Remerciements :</><br><b>The Rasterman (raster)</> pour Enlightenment DR17, l'excellente boîte à outils Elementary et son aide pour le développement.<br><b>Gustavo Sverzut Barbieri (k-s)</> pour les bindings python-efl et son aide pour le développement.<br><b>Simon Busch (morphis)</> pour les bindings python-elementary.<br><b>Johannes Schauer (josch)</> pour son aide avec python.<br><b>Jonathan Atton (watchwolf)</> pour son aide avec elementary.<br>"
 
 #: shellementary.in:891
 msgid "Close"
@@ -205,7 +206,7 @@ msgstr "Afficher les options Matin / Soir."
 
 #: shellementary.in:964
 msgid "Set time in format \"HOURS, MINUTES, SECONDS\". Works in combination with --clock-editable."
-msgstr "Spécifier le temps au format \"HEURES, MINUTES, SECONDES\". Fonctionne en combinaison avec --clock-editable."
+msgstr "Spécifier le temps au format « HEURES, MINUTES, SECONDES ». Fonctionne en combinaison avec --clock-editable."
 
 #: shellementary.in:968
 msgid "Arguments which can be used only with scale dialog."
@@ -221,7 +222,7 @@ msgstr "Spécifier la valeur du curseur."
 
 #: shellementary.in:971
 msgid "Set slider minimal value."
-msgstr "Spécifier la valeure minimale du curseur."
+msgstr "Spécifier la valeur minimale du curseur."
 
 #: shellementary.in:972
 msgid "Set slider maximal value."
@@ -245,7 +246,7 @@ msgstr "Argument permettant d'inverser le curseur."
 
 #: shellementary.in:977
 msgid "Set slider unit format - for example \"value: %0.1f\", that will print value: 156.1 or %0.2f will print 156.12, %0.3f 156.125 etc."
-msgstr "Spécifier le format de l'unité - par exemple \"valeur: %0.1f\", affichera: 156.1 ou %0.2f affichera 156.12, %0.3f 156.125, etc."
+msgstr "Spécifier le format de l'unité – par exemple « valeur : %0.1f », affichera : 156.1 ou %0.2f affichera 156.12, %0.3f 156.125, etc."
 
 #: shellementary.in:978
 msgid "Set slider label."
@@ -261,11 +262,11 @@ msgstr "Argument permettant d'afficher le curseur verticalement."
 
 #: shellementary.in:1020
 msgid "Error!"
-msgstr "Erreur !"
+msgstr "Erreur !"
 
 #: shellementary.in:1030
 msgid "Warning!"
-msgstr "Avertissement !"
+msgstr "Avertissement !"
 
 #: shellementary.in:1040
 msgid "Information"
