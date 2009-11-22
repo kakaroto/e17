@@ -563,7 +563,7 @@ class PartStateDetails(EditjeDetails):
     def _state_rels_changed_cb(self, emissor, data):
         self._update_common()
 
-    def _state_entry_changed_cb(self, obj, event, data):
+    def _state_entry_changed_cb(self, obj, *args, **kwargs):
         state = obj.value.split(None, 1)
         if len(state) == 1:
             st = state[0] + " 0.00"

@@ -111,8 +111,8 @@ class ImagePopUp(PopUp):
 
         self.box.pack_end(btn)
 
-    def _action_btn_clicked(self, obj, event, data):
-        func, udata = obj.data["clicked"]
+    def _action_btn_clicked(self, bt, *args, **kwargs):
+        func, udata = bt.data["clicked"]
         func(udata)
 
     def _set_controls(self):
@@ -172,9 +172,9 @@ class ImagePopUp(PopUp):
             self.layout_edje.signal_emit("editje,preview,hide", "editje")
             print "Error setting preview image: ", e
 
-    def _select_image_cb(self, obj, event, data):
-        self.image = data
-        id = self._parent.editable.image_id_get(data)
+    def _select_image_cb(self, obj, l, it, i, *args, **kwargs):
+        self.image = i
+        id = self._parent.editable.image_id_get(i)
         filename = self._parent.editable.file_get()[0]
         key = "images/" + str(id)
 
@@ -201,7 +201,7 @@ class ImagePopUp(PopUp):
     def _close_cb(self, data):
         self.close()
 
-    def _fs_selected_cb(self, obj, selected, data):
+    def _fs_selected_cb(self, obj, selected, *args, **kwargs):
         self._set_new_image(selected)
 
     def _fs_done_cb(self, obj, selected, data):
@@ -263,8 +263,8 @@ class FontPopUp(PopUp):
 
         self.box.pack_end(btn)
 
-    def _action_btn_clicked(self, obj, event, data):
-        func, udata = obj.data["clicked"]
+    def _action_btn_clicked(self, bt, *args, **kwargs):
+        func, udata = bt.data["clicked"]
         func(udata)
 
     def _set_controls(self):
@@ -294,8 +294,8 @@ class FontPopUp(PopUp):
             self.list.item_append(i, None, None, self._select_font_cb, i)
         self.list.go()
 
-    def _select_font_cb(self, obj, event, data):
-        self.font = data
+    def _select_font_cb(self, obj, it, i, *args, **kwargs):
+        self.font = i
         self.preview_font.font_set(self.font, 12)
 
     def _select_cb(self, data):
@@ -319,13 +319,13 @@ class FontPopUp(PopUp):
     def _close_cb(self, data):
         self.close()
 
-    def _fs_selected_cb(self, obj, selected, data):
+    def _fs_selected_cb(self, fs, selected, data):
         try:
             self.preview_font.font_set(selected, 12)
         except Exception, e:
             pass
 
-    def _fs_done_cb(self, obj, selected, data):
+    def _fs_done_cb(self, fs, selected, *args, **kwargs):
         if selected is not None:
             self._parent.editable.font_add(selected)
             self.list.clear()

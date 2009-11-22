@@ -60,14 +60,14 @@ class Selector(elementary.Window):
         self.pager.content_push(self.fs)
         self.fs.show()
 
-    def _fileselector_done(self, obj, event, data):
-        if event:
-            self.file = obj.selected_get()
+    def _fileselector_done(self, fs, selected, *args, **kwargs):
+        if selected:
+            self.file = fs.selected_get()
             if self.file:
                 self._groupselector_update()
                 self.pager.content_promote(self.gs)
         else:
-            self._destroy_cb(obj, event, data)
+            self._destroy_cb(fs)
 
     def _groupselector_update(self):
         self.groups.clear()
@@ -124,16 +124,16 @@ class Selector(elementary.Window):
         self.pager.content_push(self.gs)
         self.gs.show()
 
-    def _groupselector_selected_cb(self, obj, event, data):
-        self.group = data
+    def _groupselector_selected_cb(self, li, it, group, *args, **kwargs):
+        self.group = group
         if self.group:
             self.preview.file_set(self.file, self.group)
 
-    def _groupselector_cancel(self, obj, event, data):
+    def _groupselector_cancel(self, bt, *args, **kwargs):
         self.group = ""
         self.pager.content_promote(self.fs)
 
-    def _groupselector_done(self, obj, event, data):
+    def _groupselector_done(self, bt, *args, **kwargs):
         self.hide()
         self._done(self.file, self.group)
         self.delete()
@@ -161,7 +161,7 @@ class Selector(elementary.Window):
 
     group = property(_group_get, _group_set)
 
-    def _destroy_cb(self, obj, event, data):
+    def _destroy_cb(self, obj, *args, **kwargs):
         self.hide()
         self.delete()
         elementary.exit()

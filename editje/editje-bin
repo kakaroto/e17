@@ -82,7 +82,7 @@ class Editje(elementary.Window):
         sys.stdout.write(cmd)
         sys.stdout.flush()
 
-    def _destroy_cb(self, obj, event, data):
+    def _destroy_cb(self, obj, *args, **kwargs):
         elementary.exit()
 
 
@@ -96,8 +96,7 @@ class Editje(elementary.Window):
 
 
     # Hack, remove when spaced is not needed
-    def _collapsable_size_hint_changed(self, obj, data):
-        spacer, objs = data
+    def _collapsable_size_hint_changed(self, obj, spacer, objs, *args, **kwargs):
         for o in objs:
             wx, wy = o.size_hint_weight
             if wy > 0.0:
@@ -161,7 +160,7 @@ class Editje(elementary.Window):
         self._group_name_entry.size_hint_align_set(-1.0, -1.0)
         self._group_name_entry.single_line_set(True)
         self._group_name_entry.style_set("editje")
-        self._group_name_entry.activated = (self._group_name_changed, None)
+        self._group_name_entry.activated = self._group_name_changed
         self.main_layout.content_set("details_group.swallow",
                                      self._group_name_entry)
 
@@ -174,7 +173,7 @@ class Editje(elementary.Window):
         self._toolbar_bt_init(self.main_edje, "options.bt", "Options",
                               self._options_cb)
 
-    def _group_name_changed(self, obj, event, data):
+    def _group_name_changed(self, obj, *args, **kwargs):
         new_name = obj.entry_get().replace("<br>", "")
         self.e.group_rename(new_name)
 
@@ -230,7 +229,7 @@ class Editje(elementary.Window):
         self._animations_init()
         self._signals_init()
 
-        self._mode_set_cb("Parts", self._modes_selector, "")
+        self._mode_set_cb(self._modes_selector, None, "Parts")
 
     def _toolbar_init(self):
         self._toolbar_pager = elementary.Pager(self)
@@ -286,18 +285,18 @@ class Editje(elementary.Window):
         self._mainbar_pager.content_push(mainbar)
         self._sidebar_pager.content_push(sidebar)
 
-    def _mode_set_cb(self, data, obj, event):
-        item, toolbar, mainbar, sidebar = self._modes[data]
+    def _mode_set_cb(self, obj, it, name, *args, **kwargs):
+        item, toolbar, mainbar, sidebar = self._modes[name]
         self._toolbar_pager.content_promote(toolbar)
         self._mainbar_pager.content_promote(mainbar)
         self._sidebar_pager.content_promote(sidebar)
 
-        if data == "Signals":
+        if name == "Signals":
             self.desktop_block(True)
         else:
             self.desktop_block(False)
 
-        if data == "Animations":
+        if name == "Animations":
             self.main_edje.signal_emit("mode,anim,on", "editje")
             if not hasattr(self, "_prevstates"):
                 self._prevstates = []
@@ -314,7 +313,7 @@ class Editje(elementary.Window):
             self.e.animation.name = None
             self.main_edje.signal_emit("mode,anim,off", "editje")
 
-        if data == "Parts":
+        if name == "Parts":
             if hasattr(self, "_prevstates"):
                 for p, s in self._prevstates:
                     part = self.e._edje.part_get(p)
@@ -323,7 +322,7 @@ class Editje(elementary.Window):
                         self.e.part.state.name = s
                 del self._prevstates
 
-        self._modes_selector.label_set("Mode: " + data)
+        self._modes_selector.label_set("Mode: " + name)
 
         file, group, type = item.icon_get()
         ico = elementary.Icon(self)
@@ -385,13 +384,13 @@ class Editje(elementary.Window):
         data = (spacer, (self.group_details, self.part_details, self.part_state_details))
         self.group_details.event_callback_add(
             evas.EVAS_CALLBACK_CHANGED_SIZE_HINTS,
-            self._collapsable_size_hint_changed, data)
+            self._collapsable_size_hint_changed, *data)
         self.part_details.event_callback_add(
             evas.EVAS_CALLBACK_CHANGED_SIZE_HINTS,
-            self._collapsable_size_hint_changed, data)
+            self._collapsable_size_hint_changed, *data)
         self.part_state_details.event_callback_add(
             evas.EVAS_CALLBACK_CHANGED_SIZE_HINTS,
-            self._collapsable_size_hint_changed, data)
+            self._collapsable_size_hint_changed, *data)
         box.pack_end(spacer)
         spacer.show()
 
@@ -460,10 +459,10 @@ class Editje(elementary.Window):
         data = (spacer, (self.anim_details, self.anim_state_details))
         self.anim_details.event_callback_add(
                 evas.EVAS_CALLBACK_CHANGED_SIZE_HINTS,
-                self._collapsable_size_hint_changed, data)
+                self._collapsable_size_hint_changed, *data)
         self.anim_state_details.event_callback_add(
                 evas.EVAS_CALLBACK_CHANGED_SIZE_HINTS,
-                self._collapsable_size_hint_changed, data)
+                self._collapsable_size_hint_changed, *data)
         box.pack_end(spacer)
         spacer.show()
 

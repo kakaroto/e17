@@ -99,8 +99,8 @@ class NewPart(Wizard):
         self.content_append("default", list)
         list.show()
 
-    def _type_select(self, obj, event, data):
-        self._type = data
+    def _type_select(self, li, it, type):
+        self._type = type
 
     def _add(self, popup, data):
         name = self._name.entry_get().replace("<br>", "")

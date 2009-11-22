@@ -66,7 +66,7 @@ class Colorpicker(elementary.Layout):
     def current_color_get(self):
         return self.current_color
 
-    def _color_changed(self, obj, event, data):
+    def _color_changed(self, obj, *args, **kwargs):
         self._update_color()
 
     def _update_color(self):

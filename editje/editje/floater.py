@@ -72,7 +72,7 @@ class Floater:
     def resize(self, *args):
         self.popup.resize(*args)
 
-    def _action_btn_clicked(self, obj, event, data):
+    def _action_btn_clicked(self, obj, *args, **kwargs):
         func, udata = obj.data["clicked"]
         func(self, udata)
 
@@ -197,6 +197,6 @@ class Wizard(InnerWindow):
         self._parent.block(False)
         self.delete()
 
-    def __action_btn_clicked(self, obj, event, data):
+    def __action_btn_clicked(self, obj, *args, **kwargs):
         func, udata = obj.data["clicked"]
         func(self, udata)

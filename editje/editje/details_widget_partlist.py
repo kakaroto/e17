@@ -61,7 +61,7 @@ class WidgetPartList(WidgetButton):
         self._pop.action_add("None", self._select_cb, "")
         self._pop.action_add("Cancel", self._cancel_clicked)
 
-    def _open(self, obj, *args):
+    def _open(self, obj, *args, **kwargs):
         self._pop = Floater(self.parent)
         list = elementary.List(self.parent)
 
@@ -108,6 +108,6 @@ class WidgetPartList(WidgetButton):
         self._callback_call("changed")
         self._cancel_clicked(list, item)
 
-    def _list_select_cb(self, list, event, data):
-        self._select_cb(list, data)
+    def _list_select_cb(self, list, it, actions, *args, **kwargs):
+        self._select_cb(list, actions)
 

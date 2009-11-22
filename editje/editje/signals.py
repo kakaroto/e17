@@ -181,8 +181,8 @@ class NewSignalPopUp(Wizard):
         self.content_append("default", list)
         list.show()
 
-    def _type_select(self, obj, event, data):
-        self._type = data
+    def _type_select(self, l, it, action, *args, **kwargs):
+        self._type = action
 
     def _add(self, popup, data):
         name = self._name.entry_get().replace("<br>", "")

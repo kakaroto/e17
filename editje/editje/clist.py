@@ -52,7 +52,7 @@ class CList(Collapsable):
         self._selected = None
         self.event_emit("item.unselected", self._selected)
 
-    def _item_select_cb(self, list, event, item):
+    def _item_select_cb(self, list, it, item, *args, **kwargs):
         if self._selected != item:
             self._selected = item
             self.event_emit("item.selected", item)

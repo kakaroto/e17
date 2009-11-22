@@ -41,7 +41,7 @@ class WidgetButton(Widget):
     def _internal_value_get(self):
         return self._value
 
-    def _clicked(self, obj, event, data):
+    def _clicked(self, obj, *args, **kwargs):
         self._callback_call("clicked")
 
     def _clicked_cb_set(self, cb):

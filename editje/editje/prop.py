@@ -148,7 +148,7 @@ class Property(object):
 
     value = property(_value_get, _value_set)
 
-    def _changed_cb(self, obj, ev, data):
+    def _changed_cb(self, obj, *args, **kwargs):
         if self._change_notifier_cb:
             self._change_notifier_cb(self, self._change_notifier_data)
 

@@ -94,7 +94,7 @@ class WidgetColor(Widget):
         self.scr.hide()
         self.rect.hide()
 
-    def _entry_changed_cb(self, obj, event, data):
+    def _entry_changed_cb(self, obj, *args, **kwargs):
         val = self.entry.entry_get().replace("<br>", "")
         if len(val) == 0:
             return
@@ -127,7 +127,7 @@ class WidgetColor(Widget):
             self._callback_call("changed")
             self.delayed_callback = 0
 
-    def _entry_activate_cb(self, obj, event, data):
+    def _entry_activate_cb(self, obj, *args, **kwargs):
         self._callback_call("changed")
 
     def _sample_clicked_cb(self, obj, event):
