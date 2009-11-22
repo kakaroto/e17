@@ -310,6 +310,14 @@ static JSFunctionSpec           mixer_functions[] = {
   JS_FS_END
 };
 
+static const struct {
+   const char *extention;
+   const char *type_name;
+} mix_types[] = {
+   { ".wav", "Sample WAV" },
+   { ".ogg", "Sample OGG" },
+};
+
 static Eina_Bool
 module_open(Elixir_Module *em, JSContext *cx, JSObject *parent)
 {
@@ -344,6 +352,9 @@ module_open(Elixir_Module *em, JSContext *cx, JSObject *parent)
 
    SDL_InitSubSystem(SDL_INIT_AUDIO);
 
+   for (i = 0; i < sizeof (mix_types) / sizeof(*mix_types); i++)
+     elixir_file_register(mix_types[i].extention, mix_types[i].type_name);
+
    return EINA_TRUE;
 
   on_error:
@@ -372,6 +383,9 @@ module_close(Elixir_Module *em, JSContext *cx)
    if (callback_context)
      elixir_void_free(callback_context);
    callback_context = NULL;
+
+   for (i = 0; i < sizeof (mix_types) / sizeof(*mix_types); i++)
+     elixir_file_unregister(mix_types[i].extention, mix_types[i].type_name);
 
    tmp = &em->data;
 
