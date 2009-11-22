@@ -19,11 +19,14 @@
 # TODO: Handle callback remove
 
 cdef void _fs_callback(void *cbt, c_evas.Evas_Object *obj, void *event_info) with gil:
-    fs, func, data = <object>cbt
-    selected = None
-    if event_info != NULL:
-        selected = <char*>event_info
-    func(fs, selected, data)
+    try:
+        fs, func, args, kargs = <object>cbt
+        selected = None
+        if event_info != NULL:
+            selected = <char*>event_info
+        func(fs, selected, *args, **kargs)
+    except Exception, e:
+        traceback.print_exc()
 
 cdef class Fileselector(Object):
     cdef object cbts
@@ -57,30 +60,32 @@ cdef class Fileselector(Object):
         return True
 
     def is_save_set(self, is_save):
-        if is_save:
-            elm_fileselector_is_save_set(self.obj, 1)
-        else:
-            elm_fileselector_is_save_set(self.obj, 0)
-    
+        elm_fileselector_is_save_set(self.obj, is_save)
+
     property selected:
         def __set__(self, value):
-            self._callback_add("selected", value)
+            self._fs_callback_add("selected", value)
 
     property done:
         def __set__(self, value):
-            self._callback_add("done", value)
+            self._fs_callback_add("done", value)
 
-    def _callback_add(self, event, value):
-        data = None
+    def _fs_callback_add(self, event, value):
+        args = []
+        kwargs = {}
         if type(value) == tuple:
-            if len(value) == 2:
-                cb = value[0]
-                data = value[1]
+            args = value[1]
+            if type(args) != tuple:
+                args = (args,)
+            if len(value) == 3:
+                kwargs = value[2]
+            cb = value[0]
         else:
             cb = value
         if not callable(cb):
             raise TypeError("callback is not callable")
-        cbt = (self, cb, data)
+        cbt = (self, cb, args, kwargs)
         self.cbts.append(cbt)
         c_evas.evas_object_smart_callback_add(self.obj, event,
                                               _fs_callback, <void*>cbt)
+

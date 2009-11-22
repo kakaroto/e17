@@ -31,9 +31,7 @@ class AnchorViewInfo:
 cdef void _anchorview_callback(void *cbt, c_evas.Evas_Object *o, void *event_info) with gil:
     cdef Elm_Entry_Anchorview_Info *ei
     try:
-        (event, obj, callback, data) = <object>cbt
-        if not callable(callback):
-            raise TypeError("callback is not callable")
+        (event, obj, callback, args, kargs) = <object>cbt
         if event_info is NULL:
             av = None
         else:
@@ -50,9 +48,7 @@ cdef void _anchorview_callback(void *cbt, c_evas.Evas_Object *o, void *event_inf
             av.hover_right = ei.hover_right
             av.hover_top = ei.hover_top
             av.hover_bottom = ei.hover_bottom
-        #Use old parameters order not to break existing programs
-        callback(obj, av, data)
-        # should be: callback(data, obj, <long>event_info)
+        callback(obj, av, *args, **kargs)
     except Exception, e:
         traceback.print_exc()
 
@@ -76,10 +72,13 @@ cdef class AnchorView(Object):
     property clicked:
         """ Clicked property. Bound to signal "anchor, clicked"
 
-        The callback should have the following signature: callback(obj, av, data)
+        The callback should have the following signature:
+            callback(obj, av, *args, **kargs)
         obj: the object raising the signal
         av: AnchorViewInfo
-        data: data when settign the callback
+
+        The value set is either the callback function or a tuple like
+            (callback, *args, **kargs)
         """
         def __set__(self, value):
             if self.cbt:
@@ -87,18 +86,24 @@ cdef class AnchorView(Object):
                                                      _anchorview_callback)
                self.cbt = None
             if value:
+                a = []
+                ka = {}
                 if type(value) == tuple:
-                    if len(value) == 2:
-                        callback = value[0]
-                        data = value[1]
+                    cb = value[0]
+                    a = value[1]
+                    if len(value) == 3:
+                        ka = value[2]
+                    else:
+                        if type(a) != tuple:
+                            a = (a,)
                 else:
-                    callback = value
-                    data = None
+                    cb = value
 
-                if not callable(callback):
+                if not callable(cb):
                     raise TypeError("callback is not callable")
 
-                self.cbt = ("anchor,clicked", self, callback, data)
+                self.cbt = ("anchor,clicked", self, cb, a, ka)
+
                 c_evas.evas_object_smart_callback_add(self.obj, "anchor,clicked",
                                                       _anchorview_callback,
                                                       <void *>self.cbt)

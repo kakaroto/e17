@@ -31,28 +31,24 @@ class AnchorBlockInfo:
 cdef void _anchorblock_callback(void *cbt, c_evas.Evas_Object *o, void *event_info) with gil:
     cdef Elm_Entry_Anchorblock_Info *ei
     try:
-        (event, obj, callback, data) = <object>cbt
-        if not callable(callback):
-            raise TypeError("callback is not callable")
+        (event, obj, callback, a, ka) = <object>cbt
         if event_info is NULL:
-            av = None
+            ab = None
         else:
             ei = <Elm_Entry_Anchorblock_Info*>event_info
-            av = AnchorBlockInfo()
-            av.name = ei.name
-            av.button = ei.button
-            av.hover = Hover(None, <object>ei.hover);
-            av.anchor = (ei.anchor.x, ei.anchor.y,
+            ab = AnchorBlockInfo()
+            ab.name = ei.name
+            ab.button = ei.button
+            ab.hover = Hover(None, <object>ei.hover);
+            ab.anchor = (ei.anchor.x, ei.anchor.y,
                          ei.anchor.w, ei.anchor.h)
-            av.hover_parent = (ei.hover_parent.x, ei.hover_parent.y,
+            ab.hover_parent = (ei.hover_parent.x, ei.hover_parent.y,
                                ei.hover_parent.w, ei.hover_parent.h)
-            av.hover_left = ei.hover_left
-            av.hover_right = ei.hover_right
-            av.hover_top = ei.hover_top
-            av.hover_bottom = ei.hover_bottom
-        #Use old parameters order not to break existing programs
-        callback(obj, av, data)
-        # should be: callback(data, obj, <long>event_info)
+            ab.hover_left = ei.hover_left
+            ab.hover_right = ei.hover_right
+            ab.hover_top = ei.hover_top
+            ab.hover_bottom = ei.hover_bottom
+        callback(obj, ab, *a, **ka)
     except Exception, e:
         traceback.print_exc()
 
@@ -82,29 +78,37 @@ cdef class AnchorBlock(Object):
     property clicked:
         """ Clicked property. Bound to signal "anchor, clicked"
 
-        The callback should have the following signature: callback(obj, av, data)
+        The callback should have the following signature:
+            callback(obj, ab, *args, **kargs)
         obj: the object raising the signal
-        av: AnchorBlockInfo
-        data: data when settign the callback
+        ab: AnchorBlockInfo
+
+        The value set is either the callback function or a tuple like
+            (callback, *args, **kargs)
         """
         def __set__(self, value):
             if self.cbt:
-               c_evas.evas_object_smart_callback_del(self.obj, "anchor,clicked",
-                                                     _anchorblock_callback)
-               self.cbt = None
+                c_evas.evas_object_smart_callback_del(self.obj, "anchor,clicked",
+                                                      _anchorblock_callback)
+                self.cbt = None
             if value:
+                a = []
+                ka = {}
                 if type(value) == tuple:
-                    if len(value) == 2:
-                        callback = value[0]
-                        data = value[1]
+                    cb = value[0]
+                    a = value[1]
+                    if len(value) == 3:
+                        ka = value[2]
+                    else:
+                        if type(a) != tuple:
+                            a = (a,)
                 else:
-                    callback = value
-                    data = None
+                    cb = value
 
-                if not callable(callback):
+                if not callable(cb):
                     raise TypeError("callback is not callable")
 
-                self.cbt = ("anchor,clicked", self, callback, data)
+                self.cbt = ("anchor,clicked", self, cb, a, ka)
                 c_evas.evas_object_smart_callback_add(self.obj, "anchor,clicked",
                                                       _anchorblock_callback,
                                                       <void *>self.cbt)

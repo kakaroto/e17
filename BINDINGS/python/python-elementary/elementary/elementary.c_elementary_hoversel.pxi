@@ -17,12 +17,14 @@
 #
 
 cdef void _hoversel_callback(void *cbt, c_evas.Evas_Object *obj, void *event_info) with gil:
-    (hoversel, callback, data, it) = <object>cbt
-    callback(data, hoversel, it)
+    try:
+        (hoversel, callback, it, a, ka) = <object>cbt
+        callback(hoversel, it, *a, **ka)
+    except Exception, e:
+        traceback.print_exc()
 
 cdef void _hoversel_item_del_cb(void *data, c_evas.Evas_Object *o, void *event_info) with gil:
-    (obj, callback, d, it) = <object>data
-
+    (obj, callback, it, a, ka) = <object>data
     it.__del_cb()
 
 
@@ -33,16 +35,14 @@ cdef class HoverselItem:
 
     def __del_cb(self):
         self.item = NULL
-
         self.cbt = None
-
         Py_DECREF(self)
 
-    def __init__(self, c_evas.Object hoversel, label, icon_file, icon_type, callback, data = None):
+    def __init__(self, c_evas.Object hoversel, label, icon_file, icon_type,
+                 callback, *args, **kargs):
         cdef char *i_f = NULL
         cdef void* cbdata = NULL
         cdef void (*cb) (void *, c_evas.Evas_Object *, void *)
-
         cb = NULL
 
         if icon_file:
@@ -53,7 +53,7 @@ cdef class HoverselItem:
                 raise TypeError("callback is not callable")
             cb = _hoversel_callback
 
-        self.cbt = (hoversel, callback, data, self)
+        self.cbt = (hoversel, callback, self, args, kargs)
         cbdata = <void*>self.cbt
         self.item = elm_hoversel_item_add(hoversel.obj, label, i_f, icon_type,
                                           cb, cbdata)
@@ -147,7 +147,7 @@ cdef class Hoversel(Object):
     def clear(self):
         elm_hoversel_clear(self.obj)
 
-    def item_add(self, label, icon_file = None, icon_type = ELM_ICON_NONE, callback = None, data = None):
-        return HoverselItem(self, label, icon_file, icon_type, callback, data)
+    def item_add(self, label, icon_file = None, icon_type = ELM_ICON_NONE, callback = None, *args, **kwargs):
+        return HoverselItem(self, label, icon_file, icon_type, callback, *args, **kwargs)
 
 

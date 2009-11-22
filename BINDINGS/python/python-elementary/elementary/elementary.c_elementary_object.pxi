@@ -19,12 +19,11 @@
 
 cdef void _object_callback(void *cbt, c_evas.Evas_Object *o, void *event_info) with gil:
     try:
-        (event, obj, callback, data) = <object>cbt
-        if not callable(callback):
-            raise TypeError("callback is not callable")
-        #Use old parameters order not to break existing programs
-        callback(obj, <long>event_info, data)
-        # should be: callback(data, obj, <long>event_info)
+        (event, obj, callback, args, kargs) = <object>cbt
+        if event_info != NULL:
+           callback(obj, <long>event_info, *args, **kargs)
+        else:
+           callback(obj, *args, **kargs)
     except Exception, e:
         traceback.print_exc()
 
@@ -101,32 +100,34 @@ cdef class Object(evas.c_evas.Object):
         """
         elm_object_scroll_freeze_push(self.obj)
 
-    def _callback_add(self, event, args):
+    def _callback_add(self, event, callback, *args, **kargs):
         """Add a callback for this object
 
         Add a function as new callback-function for a specified event. The
         function will be called, if the event occured.
 
         @parm: B{event} Name of the event
-        @parm: B{func} Function should be called, when the event occured
+        @parm: B{callback} Function should be called, when the event occured
+        @parm: B{args}     Argument tuple passed to the function when called
+        @parm: B{kargs}    Argument dictionnary passed to the function when called
         """
         cdef object cbt
 
-        # if func is an array with two elements the first element is the callback
-        # function and the second the data
-        # This allows to assign a callback function to a widget with one line ...
-        if type(args) == tuple:
-            if len(args) == 2:
-                callback = args[0]
-                data = args[1]
-        else:
-            callback = args
-            data = None
+        if type(callback) == tuple:
+            args = callback[1]
+            if type(args) != tuple:
+                args = (args,)
+            if len(callback) == 3:
+                kargs = callback[2]
+            else:
+                kargs = {}
+            callback = callback[0]
 
         if not callable(callback):
             raise TypeError("callback is not callable")
 
-        cbt = (event, self, callback, data)
+        cbt = (event, self, callback, args, kargs)
+
         if self._elmcallbacks is None:
             self._elmcallbacks = []
         self._elmcallbacks.append(cbt)
@@ -137,14 +138,14 @@ cdef class Object(evas.c_evas.Object):
     def _callback_remove(self, event):
         """Removes all callback functions for the event
 
-        Will remove all callback functions for the specified event. 
+        Will remove all callback functions for the specified event.
 
         @parm: B{event} Name of the event whose events should be removed
         """
         if self._elmcallbacks:
             for i, cbt in enumerate(self._elmcallbacks):
                 if cbt is not None:
-                    (ev, obj, callback, data) = <object>cbt
+                    (ev, obj, callback, a, ka) = <object>cbt
                     if event == ev:
                         c_evas.evas_object_smart_callback_del(self.obj, event,
                                                               _object_callback)

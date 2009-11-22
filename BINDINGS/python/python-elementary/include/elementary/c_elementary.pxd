@@ -418,6 +418,7 @@ cdef extern from "Elementary.h":
     void         elm_toolbar_item_del(Elm_Toolbar_Item *item)
     void         elm_toolbar_item_select(Elm_Toolbar_Item *item)
     void         elm_toolbar_scrollable_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool scrollable)
+    void         elm_toolbar_item_del_cb_set(Elm_Toolbar_Item *it, void (*func)(void *data, evas.c_evas.Evas_Object *obj, void *event_info))
 
     # List object
     evas.c_evas.Evas_Object *elm_list_add(evas.c_evas.Evas_Object *parent)

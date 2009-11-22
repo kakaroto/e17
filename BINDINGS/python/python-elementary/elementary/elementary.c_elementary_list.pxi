@@ -16,17 +16,15 @@
 # along with python-elementary.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-
 cdef void _list_callback(void *cbt, c_evas.Evas_Object *o, void *event_info) with gil:
     try:
-        (obj, callback, data, self) = <object>cbt
-        callback(obj, "clicked" , data)
+        (obj, callback, it, a, ka) = <object>cbt
+        callback(obj, it, *a, **ka)
     except Exception, e:
         traceback.print_exc()
 
 cdef void _list_item_del_cb(void *data, c_evas.Evas_Object *o, void *event_info) with gil:
-    (obj, callback, d, it) = <object>data
-
+    (obj, callback, it, a, ka) = <object>data
     it.__del_cb()
 
 cdef enum Elm_List_Item_Insert_Kind:
@@ -47,14 +45,12 @@ cdef class ListItem:
 
     def __del_cb(self):
         self.item = NULL
-
         self.cbt = None
-
         Py_DECREF(self)
 
     def __init__(self, kind, c_evas.Object list, label, c_evas.Object icon = None,
-                 c_evas.Object end = None, callback = None, data = None,
-                 ListItem before_after = None):
+                 c_evas.Object end = None, ListItem before_after = None,
+                 callback = None, *args, **kargs):
         cdef c_evas.Evas_Object* icon_obj
         cdef c_evas.Evas_Object* end_obj
         cdef void* cbdata
@@ -74,7 +70,7 @@ cdef class ListItem:
             if not callable(callback):
                 raise TypeError("callback is not callable")
             cb = _list_callback
-        self.cbt = (list, callback, data, self)
+        self.cbt = (list, callback, self, args, kargs)
         cbdata = <void*>self.cbt
 
         if kind == ELM_LIST_ITEM_INSERT_APPEND:
@@ -115,7 +111,9 @@ cdef class ListItem:
         if data == NULL:
             return None
         else:
-            return <object>data
+            (obj, callback, it, a, ka) = <object>data
+
+            return (a, ka)
 
     def icon_get(self):
         cdef c_evas.Evas_Object *icon
@@ -197,24 +195,24 @@ cdef class List(Object):
         self._set_obj(elm_list_add(parent.obj))
 
     def item_append(self, label, c_evas.Object icon = None,
-                    c_evas.Object end = None, callback = None, data = None):
+                    c_evas.Object end = None, callback = None, *args, **kargs):
         return ListItem(ELM_LIST_ITEM_INSERT_APPEND, self, label, icon, end,
-                        callback, data)
+                        None, callback, *args, **kargs)
 
     def item_prepend(self, label, c_evas.Object icon = None,
-                     c_evas.Object end = None, callback = None, data = None):
+                     c_evas.Object end = None, callback = None, *args, **kargs):
         return ListItem(ELM_LIST_ITEM_INSERT_PREPEND, self, label, icon, end,
-                        callback, data)
+                        None, callback, *args, **kargs)
 
     def item_insert_before(self, ListItem before, label, c_evas.Object icon = None,
-                           c_evas.Object end = None, callback = None, data = None):
+                           c_evas.Object end = None, callback = None, *args, **kargs):
         return ListItem(ELM_LIST_ITEM_INSERT_BEFORE, self, label, icon, end,
-                        callback, data, before)
+                        before, callback, *args, **kargs)
 
     def item_insert_after(self, ListItem after, label, c_evas.Object icon = None,
-                          c_evas.Object end = None, callback = None, data = None):
+                          c_evas.Object end = None, callback = None, *args, **kargs):
         return ListItem(ELM_LIST_ITEM_INSERT_AFTER, self, label, icon, end,
-                        callback, data, after)
+                        after, callback, *args, **kargs)
 
     def clear(self):
         elm_list_clear(self.obj)
@@ -242,7 +240,7 @@ cdef class List(Object):
         if data == NULL:
             return None
         else:
-            (o, callback, d, it) = <object>data
+            (o, callback, it, a, ka) = <object>data
             return it
 
     property clicked:

@@ -16,45 +16,56 @@
 # along with python-elementary.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-cdef object _toolbar_callback_mapping
-_toolbar_callback_mapping = dict()
-
-cdef void _toolbar_callback(void *data, c_evas.Evas_Object *obj, void *event_info) with gil:
+cdef void _toolbar_callback(void *cbt, c_evas.Evas_Object *obj, void *event_info) with gil:
     try:
-        mapping = _toolbar_callback_mapping.get(<long>event_info)
-        if mapping is not None:
-            callback = mapping["callback"] 
-            if callback is not None and callable(callback):
-                callback(mapping["class"], "clicked", mapping["data"])
-        else:
-            print "ERROR: no callback available for the item"
+        (toolbar, callback, it, a, ka) = <object>cbt
+        callback(toolbar, it, *a, **ka)
     except Exception, e:
         traceback.print_exc()
+
+cdef void _toolbar_item_del_cb(void *data, c_evas.Evas_Object *o, void *event_info) with gil:
+    (obj, callback, it, a, ka) = <object>data
+    it.__del_cb()
 
 cdef class ToolbarItem:
     """
     A item for the toolbar
     """
     cdef Elm_Toolbar_Item *item
+    cdef object cbt
 
-    def __new__(self):
+    def __del_cb(self):
         self.item = NULL
+        self.cbt = None
+        Py_DECREF(self)
 
-    def __init__(self, c_evas.Object toolbar, c_evas.Object icon, label, callback, data = None):
+
+    def __init__(self, c_evas.Object toolbar, c_evas.Object icon, label,
+                 callback, *args, **kargs):
+        cdef c_evas.Evas_Object *ic = NULL
+        cdef void* cbdata = NULL
+        cdef void (*cb) (void *, c_evas.Evas_Object *, void *)
+        cb = NULL
+
         if icon is not None:
-            self.item = elm_toolbar_item_add(toolbar.obj, icon.obj, label, _toolbar_callback, NULL)
-        else:
-            self.item = elm_toolbar_item_add(toolbar.obj, NULL, label, _toolbar_callback, NULL)
-        
-        # Add a new callback in our mapping dict
-        mapping = dict()
-        mapping["class"] = self
-        mapping["callback"] = callback
-        mapping["data"] = data
-        _toolbar_callback_mapping[<long>self.item] = mapping
+           ic = icon.obj
+
+        if callback:
+            if not callable(callback):
+                raise TypeError("callback is not callable")
+            cb = _hoversel_callback
+
+        self.cbt = (toolbar, callback, self, args, kargs)
+        cbdata = <void*>self.cbt
+        self.item = elm_toolbar_item_add(toolbar.obj, ic, label, cb, cbdata)
+
+        Py_INCREF(self)
+        elm_toolbar_item_del_cb_set(self.item, _toolbar_item_del_cb)
 
     def delete(self):
         """Delete the item"""
+        if self.item == NULL:
+            raise ValueError("Object already deleted")
         elm_toolbar_item_del(self.item)
 
     def select(self):
@@ -80,7 +91,7 @@ cdef class Toolbar(Object):
         else:
             elm_toolbar_scrollable_set(self.obj, 0)
 
-    def item_add(self, c_evas.Object icon, label, callback, data = None):
+    def item_add(self, c_evas.Object icon, label, callback, *args, **kargs):
         """
         Adds a new item to the toolbar
 
@@ -93,7 +104,7 @@ cdef class Toolbar(Object):
         """
         # Everything is done in the ToolbarItem class, because of wrapping the
         # C structures in python classes
-        return ToolbarItem(self, icon, label, callback, data)
+        return ToolbarItem(self, icon, label, callback, *args, **kargs)
 
     property clicked:
         def __set__(self, value):
