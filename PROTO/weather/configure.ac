@@ -42,7 +42,10 @@ AM_GNU_GETTEXT_VERSION(0.14)
 AC_CHECK_LIB(dl, dlopen, dlopen_libs=-ldl)
 AC_SUBST(dlopen_libs)
 
-PKG_CHECK_MODULES(E, [enlightenment])
+PKG_CHECK_MODULES(E, [ecore
+                      ecore-file
+                      edje
+                      ecore-con])
 release=$(pkg-config --variable=release enlightenment)
 MODULE_ARCH="$host_os-$host_cpu-$release"
 AC_SUBST(MODULE_ARCH)
@@ -63,11 +66,8 @@ AC_SUBST(EDJE_CC)
 AC_MSG_CHECKING([Which edje_cc to use])
 AC_MSG_RESULT(${EDJE_CC})
 
-datadir=$(pkg-config --variable=modules enlightenment)/${PACKAGE}
-AC_ARG_ENABLE(homedir-install,
-  AS_HELP_STRING([--enable-homedir-install], [Install module in homedir]),
-  [ datadir="${HOME}/.e/e/modules/${PACKAGE}" ]
-)
+requirements="ecore ecore-file edje ecore-con"
+AC_SUBST(requirements)
 
 AC_OUTPUT([
 Makefile
@@ -76,11 +76,9 @@ data/Makefile
 data/images/Makefile
 src/Makefile
 src/lib/Makefile
-src/module/Makefile
 src/plugins/Makefile
 src/plugins/test/Makefile
 src/plugins/yahoo/Makefile
 src/plugins/google/Makefile
-module.desktop
 ], [
 ])

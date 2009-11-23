@@ -261,6 +261,7 @@ _parse(Instance *inst)
    if (!needle) goto error;
    needle+=12;
    sscanf(needle, "%[^\"]\"", e_data->city);
+   printf("CITY %s\n", e_data->city);
 
    needle = strstr(needle, "<current_date_time data=\"");
    if (!needle) goto error;
