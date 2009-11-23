@@ -172,7 +172,7 @@ class ImagePopUp(PopUp):
             self.layout_edje.signal_emit("editje,preview,hide", "editje")
             print "Error setting preview image: ", e
 
-    def _select_image_cb(self, obj, l, it, i, *args, **kwargs):
+    def _select_image_cb(self, obj, it, i, *args, **kwargs):
         self.image = i
         id = self._parent.editable.image_id_get(i)
         filename = self._parent.editable.file_get()[0]
