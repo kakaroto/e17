@@ -7,10 +7,7 @@ static E_Config_DD *conf_edd = NULL;
 static E_Config_DD *item_edd = NULL;
 Config *net_cfg = NULL;
 
-EAPI E_Module_Api e_modapi = 
-{
-   E_MODULE_API_VERSION, "Net"
-};
+EAPI E_Module_Api e_modapi = { E_MODULE_API_VERSION, "Net" };
 
 EAPI void *
 e_modapi_init(E_Module *m) 
