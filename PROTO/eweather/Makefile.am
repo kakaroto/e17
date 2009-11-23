@@ -8,5 +8,3 @@ SUBDIRS = src data
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = eweather.pc
 
-uninstall:
-	rm -rf $(DESTDIR)$(datadir)
