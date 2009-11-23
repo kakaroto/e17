@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Weather module (e17)\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2009-08-25 17:14+0800\n"
+"POT-Creation-Date: 2009-11-06 19:13-0500\n"
 "PO-Revision-Date: 2008-01-23 01:50+0200\n"
 "Last-Translator: Jani väyrynen <janivayrynen@gmail.com>\n"
 "Language-Team: Finnish <janivayrynen@gmail.com>\n"
@@ -14,59 +14,59 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../src/e_mod_config.c:36
+#: src/e_mod_config.c:36
 msgid "Weather Configuration"
 msgstr "Sään asetukset"
 
-#: ../src/e_mod_config.c:78
+#: src/e_mod_config.c:78
 msgid "Display Settings"
 msgstr "Näyttöasetukset"
 
-#: ../src/e_mod_config.c:80
+#: src/e_mod_config.c:80
 msgid "Simple"
 msgstr "Yksinkertainen"
 
-#: ../src/e_mod_config.c:82
+#: src/e_mod_config.c:82
 msgid "Detailed"
 msgstr "Yksityiskohtainen"
 
-#: ../src/e_mod_config.c:84
+#: src/e_mod_config.c:84
 msgid "Poll Time"
 msgstr "Kyselyväli"
 
-#: ../src/e_mod_config.c:86
+#: src/e_mod_config.c:86
 #, c-format
 msgid "%2.0f minutes"
 msgstr "%2.0f minuuttia"
 
-#: ../src/e_mod_config.c:91
+#: src/e_mod_config.c:91
 msgid "Degree Settings"
 msgstr "Asteasetukset"
 
-#: ../src/e_mod_config.c:93
+#: src/e_mod_config.c:93
 msgid "Celsius"
 msgstr "Celsius"
 
-#: ../src/e_mod_config.c:95
+#: src/e_mod_config.c:95
 msgid "Farenheit"
 msgstr "Fahrenheit"
 
-#: ../src/e_mod_config.c:99 ../src/e_mod_config.c:100
+#: src/e_mod_config.c:99 src/e_mod_config.c:100
 msgid "ICAO Code"
 msgstr "ICAO-koodi"
 
-#: ../src/e_mod_config.c:105
+#: src/e_mod_config.c:105
 msgid "Get your ICAO code at:"
 msgstr "Hae ICAO-koodisi:"
 
-#: ../src/e_mod_config.c:107
+#: src/e_mod_config.c:107
 msgid "http://www.weather.gov/tg/siteloc.shtml"
 msgstr "http://www.weather.gov/tg/siteloc.shtml"
 
-#: ../src/e_mod_main.c:171
+#: src/e_mod_main.c:171
 msgid "Weather"
 msgstr "Sää"
 
-#: ../src/e_mod_main.c:215
+#: src/e_mod_main.c:215
 msgid "Configuration"
 msgstr "Asetukset"

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2009-08-28 16:32+0800\n"
+"POT-Creation-Date: 2009-11-06 19:13-0500\n"
 "PO-Revision-Date: 2009-07-19 12:03+0000\n"
 "Last-Translator: lielf <Unknown>\n"
 "Language-Team: Hebrew <he@li.org>\n"
@@ -17,59 +17,59 @@ msgstr ""
 "X-Launchpad-Export-Date: 2009-08-27 10:01+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 
-#: ../src/e_mod_config.c:36
+#: src/e_mod_config.c:36
 msgid "Weather Configuration"
 msgstr "הגדרות מזג האוויר"
 
-#: ../src/e_mod_config.c:78
+#: src/e_mod_config.c:78
 msgid "Display Settings"
 msgstr "הגדרות תצוגה"
 
-#: ../src/e_mod_config.c:80
+#: src/e_mod_config.c:80
 msgid "Simple"
 msgstr "פשוט"
 
-#: ../src/e_mod_config.c:82
+#: src/e_mod_config.c:82
 msgid "Detailed"
 msgstr "מפורט"
 
-#: ../src/e_mod_config.c:84
+#: src/e_mod_config.c:84
 msgid "Poll Time"
 msgstr "זמן האיחזור"
 
-#: ../src/e_mod_config.c:86
+#: src/e_mod_config.c:86
 #, c-format
 msgid "%2.0f minutes"
 msgstr "%2.0f דקות"
 
-#: ../src/e_mod_config.c:91
+#: src/e_mod_config.c:91
 msgid "Degree Settings"
 msgstr "הגדרות דרגה"
 
-#: ../src/e_mod_config.c:93
+#: src/e_mod_config.c:93
 msgid "Celsius"
 msgstr "צלזיוס"
 
-#: ../src/e_mod_config.c:95
+#: src/e_mod_config.c:95
 msgid "Farenheit"
 msgstr "פרנהייט"
 
-#: ../src/e_mod_config.c:99 ../src/e_mod_config.c:100
+#: src/e_mod_config.c:99 src/e_mod_config.c:100
 msgid "ICAO Code"
 msgstr "קוד ICAO"
 
-#: ../src/e_mod_config.c:105
+#: src/e_mod_config.c:105
 msgid "Get your ICAO code at:"
 msgstr "השג את קוד הICAO שלך ב:"
 
-#: ../src/e_mod_config.c:107
+#: src/e_mod_config.c:107
 msgid "http://www.weather.gov/tg/siteloc.shtml"
 msgstr "http://www.weather.gov/tg/siteloc.shtml"
 
-#: ../src/e_mod_main.c:171
+#: src/e_mod_main.c:171
 msgid "Weather"
 msgstr "מזג האוויר"
 
-#: ../src/e_mod_main.c:215
+#: src/e_mod_main.c:215
 msgid "Configuration"
 msgstr "הגדרות"
