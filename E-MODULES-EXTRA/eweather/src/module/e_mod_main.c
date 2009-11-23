@@ -12,7 +12,7 @@ static E_Config_DD *conf_edd = NULL;
 static E_Config_DD *item_edd = NULL;
 Config *weather_cfg = NULL;
 
-EAPI E_Module_Api e_modapi = { E_MODULE_API_VERSION, "Weather" };
+EAPI E_Module_Api e_modapi = { E_MODULE_API_VERSION, "EWeather" };
 
 /* public functions */
 EAPI void *

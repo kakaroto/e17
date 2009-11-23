@@ -29,8 +29,6 @@ AC_SUBST(packagedatadir)
 
 PKG_PROG_PKG_CONFIG
 
-
-
 pluginsdir="${libdir}/eweather/plugins"
 AC_SUBST(pluginsdir)
 AS_AC_EXPAND(PLUGINSDIR, $pluginsdir)

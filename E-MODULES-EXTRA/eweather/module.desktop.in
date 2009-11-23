@@ -1,12 +1,12 @@
 [Desktop Entry]
 Type=Link
-Name=Weather
+Name=EWeather
 Name[cs]=Počasí
 Name[eo]=Vetero
 Name[hu]=Időjárás
 Name[fr]=Météo
 Name[el]=Καιρός
-Icon=weather
+Icon=eweather
 Comment=<title>Weather Gadget</title><br>A weather gadget.
 Comment[cs]=<title>Gadget na počasí</title><br>Zobrazí aktuální počasí.
 Comment[eo]=<title>Modulo de vetero</title><br>Vidigi veteron.

@@ -41,9 +41,9 @@ _gc_init(E_Gadcon *gc, const char *name, const char *id, const char *style)
      }
    else
      {
-       inst->obj = edje_object_add(gc->evas);
-       edje_object_file_set(inst->obj, buff, "icon");
-       return NULL; // what to do, no eweather...
+        inst->ci->inst = NULL;
+        E_FREE(inst);
+        return NULL; // what to do, no eweather...
      }
    evas_object_event_callback_add(inst->obj, EVAS_CALLBACK_MOUSE_DOWN,
                                   _gc_cb_mouse_down, inst);
@@ -200,5 +200,3 @@ _gc_name(void)
 {
    return _gc_class.name;
 }
-
-
