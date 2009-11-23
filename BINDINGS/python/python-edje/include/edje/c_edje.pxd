@@ -21,6 +21,8 @@ import evas.c_evas
 cdef extern from "evas/python_evas_utils.h":
     int PY_REFCOUNT(object)
 
+cdef extern from "math.h":
+    int isnan(double n)
 
 cdef extern from "Edje.h":
     ####################################################################
@@ -118,6 +120,8 @@ cdef extern from "Edje.h":
         EDJE_EXTERNAL_PARAM_TYPE_STRING = 2
         EDJE_EXTERNAL_PARAM_TYPE_MAX    = 3
 
+    cdef int EDJE_EXTERNAL_INT_UNSET
+    cdef double EDJE_EXTERNAL_DOUBLE_UNSET
 
     ####################################################################
     # Structures
@@ -167,6 +171,25 @@ cdef extern from "Edje.h":
         int i
         double d
         char *s
+
+    ctypedef struct aux_external_param_info_int:
+        int min, max, step
+
+    ctypedef struct aux_external_param_info_double:
+        double min, max, step
+
+    ctypedef struct aux_external_param_info_string:
+        char *accept_fmt, *deny_fmt
+
+    ctypedef union aux_external_param_info:
+        aux_external_param_info_int i
+        aux_external_param_info_double d
+        aux_external_param_info_string s
+
+    ctypedef struct Edje_External_Param_Info:
+        char *name
+        Edje_External_Param_Type type
+        aux_external_param_info info
 
 
     ####################################################################
@@ -285,6 +308,10 @@ cdef extern from "Edje.h":
 
     void edje_message_signal_process()
 
+    Edje_External_Param_Info *edje_external_param_info_get(char *type_name)
+
+    evas.c_evas.Eina_Bool edje_module_load(char *name)
+    evas.c_evas.Eina_List *edje_available_modules_get()
 
 cdef class Message:
     cdef int _type
@@ -336,6 +363,19 @@ cdef class MessageStringFloatSet(Message):
 
 cdef class ExternalParam:
     cdef Edje_External_Param *obj
+
+cdef class ExternalParamInfo:
+    cdef Edje_External_Param_Info *obj
+
+cdef class ExternalParamInfoInt(ExternalParamInfo):
+    pass
+
+cdef class ExternalParamInfoDouble(ExternalParamInfo):
+    pass
+
+cdef class ExternalParamInfoString(ExternalParamInfo):
+    pass
+
 
 cdef public class Edje(evas.c_evas.Object) [object PyEdje, type PyEdje_Type]:
     cdef object _text_change_cb

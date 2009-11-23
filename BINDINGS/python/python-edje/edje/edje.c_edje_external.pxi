@@ -71,3 +71,93 @@ cdef ExternalParam ExternalParam_from_ptr(Edje_External_Param *param):
 # XXX: being able to use it.
 def _ExternalParam_from_ptr(long ptr):
     return ExternalParam_from_ptr(<Edje_External_Param *>ptr)
+
+
+cdef class ExternalParamInfo:
+    property name:
+        def __get__(self):
+            return self.obj.name
+
+    property type:
+        def __get__(self):
+            return self.obj.type
+
+cdef class ExternalParamInfoInt(ExternalParamInfo):
+    property min:
+        def __get__(self):
+            if self.obj.info.i.min == EDJE_EXTERNAL_INT_UNSET:
+                return None
+            return self.obj.info.i.min
+
+    property max:
+        def __get__(self):
+            if self.obj.info.i.max == EDJE_EXTERNAL_INT_UNSET:
+                return None
+            return self.obj.info.i.max
+
+    property step:
+        def __get__(self):
+            if self.obj.info.i.step == EDJE_EXTERNAL_INT_UNSET:
+                return None
+            return self.obj.info.i.step
+
+cdef class ExternalParamInfoDouble(ExternalParamInfo):
+    property min:
+        def __get__(self):
+            if isnan(self.obj.info.d.min):
+                return None
+            return self.obj.info.d.min
+
+    property max:
+        def __get__(self):
+            if isnan(self.obj.info.d.max):
+                return None
+            return self.obj.info.d.max
+
+    property step:
+        def __get__(self):
+            if isnan(self.obj.info.d.step):
+                return None
+            return self.obj.info.d.step
+
+cdef class ExternalParamInfoString(ExternalParamInfo):
+    property accept_format:
+        def __get__(self):
+            if self.obj.info.s.accept_fmt == NULL:
+                return None
+            return self.obj.info.s.accept_fmt
+
+    property deny_format:
+        def __get__(self):
+            if self.obj.info.s.deny_fmt == NULL:
+                return None
+            return self.obj.info.s.deny_fmt
+
+cdef ExternalParamInfo ExternalParamInfo_from_ptr(Edje_External_Param_Info *ptr):
+    cdef ExternalParamInfo p
+    if ptr.type == EDJE_EXTERNAL_PARAM_TYPE_INT:
+        p = ExternalParamInfoInt()
+    elif ptr.type == EDJE_EXTERNAL_PARAM_TYPE_DOUBLE:
+        p = ExternalParamInfoDouble()
+    elif ptr.type == EDJE_EXTERNAL_PARAM_TYPE_STRING:
+        p = ExternalParamInfoString()
+    else:
+        return None
+    p.obj = ptr
+    return p
+
+def external_param_info_get(char *type_name):
+    cdef Edje_External_Param_Info *params
+    cdef int i
+
+    params = edje_external_param_info_get(type_name)
+    if params == NULL:
+        return None
+
+    ret = []
+    i = 0
+    while params[i].name != NULL:
+        ret.append(ExternalParamInfo_from_ptr(&params[i]))
+        i += 1
+
+    return ret

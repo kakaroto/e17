@@ -246,6 +246,20 @@ def extern_object_aspect_set(evas.c_evas.Object obj, int aspect, int w, int h):
     """
     edje_extern_object_aspect_set(obj.obj, <Edje_Aspect_Control>aspect, w, h)
 
+def available_modules_get():
+    cdef evas.c_evas.Eina_List *lst
+    lst = edje_available_modules_get()
+    if lst == NULL:
+        return None
+    ret = []
+    while lst:
+        ret.append(<char*>lst.data)
+        lst = lst.next
+    return ret
+
+def module_load(char *name):
+    return bool(edje_module_load(name))
+
 
 cdef void _install_metaclass(python.PyTypeObject *ctype, object metaclass):
     python.Py_INCREF(metaclass)
