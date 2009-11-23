@@ -41,7 +41,7 @@ enum EWeather_Temp
 };
 
 
-EAPI	Eina_Array *	eweather_plugins_list_get();
+EAPI	Eina_Array *	eweather_plugins_list_get(EWeather *eweather);
 EAPI	Eina_Module *	eweather_plugin_search(EWeather *eweather, const char *name);
 EAPI	const char *	eweather_plugin_name_get(EWeather *eweather, int i);
 EAPI	int		eweather_plugin_id_search(EWeather *eweather, const char *name);
@@ -51,6 +51,9 @@ EAPI	void		eweather_plugin_byname_set(EWeather *eweather, const char *name);
 EAPI	EWeather *	eweather_new();
 EAPI	void		eweather_free(EWeather *eweather);
 EAPI	void		eweather_poll_time_set(EWeather *eweather, int poll_time);
+
+EAPI    void            eweather_code_set(EWeather *eweather, const char *code);
+
 EAPI	EWeather_Temp	eweather_temp_type_get(EWeather *eweather);
 EAPI	void		eweather_temp_type_set(EWeather *eweather, EWeather_Temp type);
 

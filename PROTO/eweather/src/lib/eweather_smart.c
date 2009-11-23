@@ -535,7 +535,7 @@ _smart_add(Evas_Object * obj)
    eweather_callbacks_set(sd->eweather, _eweather_update_cb, obj);
 
    eweather_object_mode_set(obj, EWEATHER_OBJECT_MODE_FULLSCREEN);
-   array = eweather_plugins_list_get();
+   array = eweather_plugins_list_get(sd->eweather);
 
    EINA_ARRAY_ITER_NEXT(array, i, m, it)
      {

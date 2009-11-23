@@ -203,7 +203,7 @@ _basic_create(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cfdata)
     of = e_widget_framelist_add(evas, D_("Select a data source"), 0);
     e_widget_framelist_content_align_set(of, 0.0, 0.0);
 
-    array = eweather_plugins_list_get();
+    array = eweather_plugins_list_get(ci->inst->eweather);
 
     rg = e_widget_radio_group_new(&(cfdata->radio_plugin));
     EINA_ARRAY_ITER_NEXT(array, i, m, it)
