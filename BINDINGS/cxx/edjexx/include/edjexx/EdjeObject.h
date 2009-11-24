@@ -16,8 +16,8 @@
 
 namespace efl {
 
-typedef sigc::signal<void, const char*, const char*> EdjeSignalSignal;
-typedef sigc::slot2<void, const char*, const char*> EdjeSignalSlot;
+typedef sigc::signal<void, const std::string, const std::string> EdjeSignalSignal;
+typedef sigc::slot2<void, const std::string, const std::string> EdjeSignalSlot;
   
 class EdjeObject : public EvasObject
 {
