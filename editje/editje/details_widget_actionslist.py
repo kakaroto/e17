@@ -26,7 +26,7 @@ class WidgetActionsList(WidgetPartList):
     def _items_load(self):
         list = []
         for item in self.parent.e.programs:
-            if item.startswith("@") and item.endswith("@start"):
+            if item.startswith("@") and item.endswith("@0.00"):
                 fixedname = item[1:item.rindex("@")]
                 list.append((fixedname, item))
         return list
