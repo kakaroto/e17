@@ -204,7 +204,7 @@ class ImagePopUp(PopUp):
     def _fs_selected_cb(self, obj, selected, *args, **kwargs):
         self._set_new_image(selected)
 
-    def _fs_done_cb(self, obj, selected, data):
+    def _fs_done_cb(self, obj, selected):
         if selected is not None:
             self._parent.editable.image_add(selected)
             self.list.clear()
