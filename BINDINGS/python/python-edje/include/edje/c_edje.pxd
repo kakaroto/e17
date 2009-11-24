@@ -191,6 +191,16 @@ cdef extern from "Edje.h":
         Edje_External_Param_Type type
         aux_external_param_info info
 
+    ctypedef struct Edje_External_Type:
+        evas.c_evas.Evas_Object *(*add)(void *data, evas.c_evas.Evas *evas, evas.c_evas.Evas_Object *parent, evas.c_evas.Eina_List *params)
+        void (*state_set)(void *data, evas.c_evas.Evas_Object *obj, void *from_params, void *to_params, float pos)
+        void (*signal_emit)(void *data, evas.c_evas.Evas_Object *obj, char *emission, char *source)
+        void *(*params_parse)(void *data, evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_List *params)
+        void (*params_free)(void *params)
+        evas.c_evas.Evas_Object *(*icon_get)(void *data, evas.c_evas.Evas *e)
+        char *(*label_get)(void *data)
+        Edje_External_Param_Info *paramters_info
+        void *data
 
     ####################################################################
     # Engine
@@ -308,6 +318,7 @@ cdef extern from "Edje.h":
 
     void edje_message_signal_process()
 
+    evas.c_evas.Eina_Iterator *edje_external_iterator_get()
     Edje_External_Param_Info *edje_external_param_info_get(char *type_name)
 
     evas.c_evas.Eina_Bool edje_module_load(char *name)
@@ -375,6 +386,10 @@ cdef class ExternalParamInfoDouble(ExternalParamInfo):
 
 cdef class ExternalParamInfoString(ExternalParamInfo):
     pass
+
+cdef class ExternalType:
+    cdef object _name
+    cdef Edje_External_Type *_obj
 
 
 cdef public class Edje(evas.c_evas.Object) [object PyEdje, type PyEdje_Type]:

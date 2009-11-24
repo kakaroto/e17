@@ -33,7 +33,8 @@ from c_edje import Edje, shutdown, frametime_set, frametime_get, \
      MessageIntSet, MessageFloatSet, MessageStringInt, MessageStringFloat, \
      MessageStringIntSet, MessageStringFloatSet, ExternalParam, \
      ExternalParamInfo, ExternalParamInfoInt, ExternalParamInfoInt, \
-     ExternalParamInfoDouble, ExternalParamInfoString
+     ExternalParamInfoDouble, ExternalParamInfoString, ExternalType, \
+     ExternalIterator
 
 EDJE_MESSAGE_NONE = 0
 EDJE_MESSAGE_SIGNAL = 1

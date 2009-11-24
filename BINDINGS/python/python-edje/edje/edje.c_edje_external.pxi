@@ -161,3 +161,57 @@ def external_param_info_get(char *type_name):
         i += 1
 
     return ret
+
+cdef class ExternalType:
+    property name:
+        def __get__(self):
+            return self._name
+
+    def label_get(self):
+        cdef char *l
+        if self._obj.label_get == NULL:
+            return None
+        l = self._obj.label_get(self._obj.data)
+        if l == NULL:
+            return None
+        ret = l
+        return ret
+
+    def icon(self, evas.c_evas.Canvas canvas not None):
+        cdef evas.c_evas.Evas_Object *icon
+        if self._obj.icon_get == NULL:
+            return None
+        icon = self._obj.icon_get(self._obj.data, canvas.obj)
+        if icon == NULL:
+            return None
+        return evas.c_evas._Object_from_instance(<long>icon)
+
+cdef class ExternalIterator:
+    cdef evas.c_evas.Eina_Iterator *obj
+
+    def __init__(self):
+        cdef evas.c_evas.Eina_Iterator *it
+        it = edje_external_iterator_get()
+        self._set_obj(it)
+
+    cdef _set_obj(self, evas.c_evas.Eina_Iterator *ptr):
+        self.obj = ptr
+
+    def __iter__(self):
+        return self
+
+    def __next__(self):
+        cdef evas.c_evas.Eina_Hash_Tuple *tuple
+        cdef ExternalType t
+        if evas.c_evas.eina_iterator_next(self.obj, <void **>&tuple):
+            t = ExternalType()
+            t._name = <char*>tuple.key
+            t._obj = <Edje_External_Type*>tuple.data
+            return t
+        else:
+            raise StopIteration
+
+    def __del__(self):
+        if self.obj:
+            evas.c_evas.eina_iterator_free(self.obj)
+
