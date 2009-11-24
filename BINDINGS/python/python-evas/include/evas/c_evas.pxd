@@ -328,6 +328,21 @@ cdef extern from "Evas.h":
     Eina_List *eina_list_free(Eina_List *list)
     Eina_List *eina_list_append(Eina_List *list, void *data)
 
+    ####################################################################
+    # Eina Iterator
+    #
+    ctypedef struct Eina_Iterator:
+        Eina_Bool (*next)(Eina_Iterator *it, void **data)
+        void *(*get_container)(Eina_Iterator *it)
+        void (*free)(Eina_Iterator *it)
+
+    Eina_Bool eina_iterator_next(Eina_Iterator *iterator, void **data)
+    void eina_iterator_free(Eina_Iterator *iterator)
+
+    ctypedef struct Eina_Hash_Tuple:
+        void *key
+        void *data
+        unsigned int key_length
 
     ####################################################################
     # Canvas
