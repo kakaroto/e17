@@ -2,12 +2,13 @@
 
 #include "EWeather_Smart.h"
 #include <math.h>
+#include <string.h>
 
 typedef struct _Smart_Data Smart_Data;
 
 struct _Smart_Data
 {
-   EWeather *eweather; 
+   EWeather *eweather;
 
    Evas_Object *obj; //the edje object
    Eina_List *objs; //1 edje object per day
@@ -71,7 +72,7 @@ struct EWeather_Type_Signal
    const char *signal;
 };
 
-static struct EWeather_Type_Signal _tab[] = 
+static struct EWeather_Type_Signal _tab[] =
 {
      {EWEATHER_TYPE_UNKNOWN, "unknown"},
      {EWEATHER_TYPE_WINDY, "right,day_clear,sun,isolated_cloud,windy"},
@@ -90,7 +91,7 @@ static struct EWeather_Type_Signal _tab[] =
      {EWEATHER_TYPE_THUNDERSTORMS, "right,day_heavyrain,sun,tstorm,rain"},
      {EWEATHER_TYPE_SCATTERED_THUNDERSTORMS, "right,day_heavyrain,sun,tstorm,rain"},
      {EWEATHER_TYPE_HEAVY_SNOW, "right,day_heavyrain,sun,storm,snow"}
-};   
+};
 
 
 const char *eweather_object_signal_type_get(EWeather_Type type)
@@ -169,7 +170,6 @@ _mouse_up_cb(void *data, Evas *evas, Evas_Object *o_day, void *event)
    Evas_Event_Mouse_Down *ev = (Evas_Event_Mouse_Down*) event;
    Evas_Object *o;
    int i;
-   char buf[1024];
    Eina_List *l;
    Smart_Data *sd = evas_object_smart_data_get(obj);
    if (!sd) return;
@@ -184,7 +184,7 @@ _mouse_up_cb(void *data, Evas *evas, Evas_Object *o_day, void *event)
      }
 
 
-   i = 0; 
+   i = 0;
    EINA_LIST_FOREACH(sd->objs, l, o)
      {
 	if(o == o_day)
@@ -242,7 +242,7 @@ _mouse_move_cb(void *data, Evas *evas, Evas_Object *o_day, void *event)
    x = ev->cur.canvas.x;
    y = ev->cur.canvas.y;
 
-   if(x - sd->thumbscroll.x > 30)
+   if(x - sd->thumbscroll.x > 60)
      {
 	if(sd->current_day > 0)
 	  {
@@ -251,7 +251,7 @@ _mouse_move_cb(void *data, Evas *evas, Evas_Object *o_day, void *event)
 	  }
 	sd->thumbscroll.moved = EINA_TRUE;
      }
-   else if(x - sd->thumbscroll.x < -30)
+   else if(x - sd->thumbscroll.x < -60)
      {
 	if(sd->current_day < eina_list_count(sd->objs)-1)
 	  {
@@ -267,7 +267,7 @@ static void _eweather_update_cb(void *data, EWeather *eweather)
    Evas_Object *obj = data;
    Smart_Data *sd;
    const char *signal;
-   char buf[1024]; 
+   char buf[1024];
    Evas_Object *o_day;
    int i = 0;
 
@@ -289,7 +289,7 @@ static void _eweather_update_cb(void *data, EWeather *eweather)
 	  {
 	     o_day = edje_object_add(evas_object_evas_get(obj));
 	     edje_object_file_set(o_day, PACKAGE_DATA_DIR"/theme.edj", "weather");
-	     evas_object_smart_member_add(o_day, obj);	
+	     evas_object_smart_member_add(o_day, obj);
 	     evas_object_show(o_day);
 	     sd->objs = eina_list_append(sd->objs, o_day);
 
@@ -352,7 +352,7 @@ static void update_main(Evas_Object *obj)
    sd = evas_object_smart_data_get(obj);
    if (!sd) return;
 
-   if(sd->current_day < 0) return ; 
+   if(sd->current_day < 0) return ;
 
    eweather = sd->eweather;
 
@@ -459,7 +459,7 @@ static void _sizing_eval(Evas_Object *obj)
 	  }
      }
 
-   //main object   
+   //main object
    evas_object_geometry_get(sd->main, NULL, NULL, &w_size, &h_size);
    ratiow = w_size / (double)wmin;
    ratioh = h_size / (double)hmin;
@@ -521,7 +521,11 @@ _smart_add(Evas_Object * obj)
 
    sd->main = edje_object_add(evas_object_evas_get(obj));
    edje_object_file_set(sd->main, PACKAGE_DATA_DIR"/theme.edj", "weather");
-   evas_object_smart_member_add(sd->main, obj);	
+   evas_object_smart_member_add(sd->main, obj);
+
+   sd->eweather = eweather_new();
+   eweather_callbacks_set(sd->eweather, _eweather_update_cb, obj);
+
    evas_object_event_callback_add(sd->main, EVAS_CALLBACK_MOUSE_UP,
 	 _mouse_up_cb, obj);
    evas_object_event_callback_add(sd->main, EVAS_CALLBACK_MOUSE_DOWN,
@@ -530,9 +534,6 @@ _smart_add(Evas_Object * obj)
 	 _mouse_move_cb, obj);
 
    edje_object_signal_callback_add(sd->obj, "fullscreen,done", "", _fullscreen_done_cb, obj);
-
-   sd->eweather = eweather_new();
-   eweather_callbacks_set(sd->eweather, _eweather_update_cb, obj);
 
    eweather_object_mode_set(obj, EWEATHER_OBJECT_MODE_FULLSCREEN);
    array = eweather_plugins_list_get(sd->eweather);

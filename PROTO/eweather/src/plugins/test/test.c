@@ -42,7 +42,7 @@ static void _init(EWeather *eweather)
    snprintf(e_data->city, sizeof(e_data->city),
 	 "Paris");
    snprintf(e_data->region, sizeof(e_data->region),
-	 "");
+	 "IDF");
    snprintf(e_data->country, sizeof(e_data->country),
 	 "FR");
 
@@ -50,7 +50,7 @@ static void _init(EWeather *eweather)
    snprintf(e_data->city, sizeof(e_data->city),
 	 "Paris");
    snprintf(e_data->region, sizeof(e_data->region),
-	 "");
+	 "IDF");
    snprintf(e_data->country, sizeof(e_data->country),
 	 "FR");
 
@@ -58,7 +58,7 @@ static void _init(EWeather *eweather)
    snprintf(e_data->city, sizeof(e_data->city),
 	 "Paris");
    snprintf(e_data->region, sizeof(e_data->region),
-	 "");
+	 "IDF");
    snprintf(e_data->country, sizeof(e_data->country),
 	 "FR");
 

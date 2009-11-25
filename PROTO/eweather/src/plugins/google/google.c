@@ -85,6 +85,8 @@ static void _init(EWeather *eweather)
    inst->weather = eweather;
    inst->host = eina_stringshare_add("www.google.com");
 
+   ecore_con_init();
+
    inst->add_handler =
       ecore_event_handler_add(ECORE_CON_EVENT_SERVER_ADD,
 	    _server_add, inst);
@@ -102,6 +104,7 @@ static void _init(EWeather *eweather)
 static void _shutdown(EWeather *eweather)
 {
    Instance *inst = eweather->plugin.data;
+
    if (inst->host) eina_stringshare_del(inst->host);
 
    if (inst->buffer) free(inst->buffer);
@@ -111,6 +114,8 @@ static void _shutdown(EWeather *eweather)
    if (inst->data_handler) ecore_event_handler_del(inst->data_handler);
    if (inst->del_handler) ecore_event_handler_del(inst->del_handler);
    if (inst->server) ecore_con_server_del(inst->server);
+
+   ecore_con_shutdown();
 
    free(inst);
 }
@@ -241,7 +246,7 @@ _server_data(void *data, int type, void *event)
    static int
 _parse(Instance *inst)
 {
-   char *needle, *ext;
+   char *needle;
    char location[1024];
    char day[1024];
    char date[1024];
@@ -261,12 +266,11 @@ _parse(Instance *inst)
    if (!needle) goto error;
    needle+=12;
    sscanf(needle, "%[^\"]\"", e_data->city);
-   printf("CITY %s\n", e_data->city);
 
    needle = strstr(needle, "<current_date_time data=\"");
    if (!needle) goto error;
    needle+=25;
-   sscanf(needle, "%[^+]+", &date);
+   sscanf(needle, "%[^+]+", date);
 
 
    needle = strstr(needle, "<temp_f data=\"");
@@ -277,14 +281,14 @@ _parse(Instance *inst)
    needle = strstr(needle, "<icon data=\"");
    if (!needle) goto error;
    needle += 12; 
-   sscanf(needle, "%[^\"]\"", &code);
+   sscanf(needle, "%[^\"]\"", code);
 
    e_data->type = _weather_type_get(code);
-  printf("%s\n", code) ;
+
    needle = strstr(needle, "<day_of_week data=\"");
    if (!needle) goto error;
    needle += 19; 
-   sscanf(needle, "%[^\"]\"", &day);
+   sscanf(needle, "%[^\"]\"", day);
 
    snprintf(e_data->date, 256, "%s %s", day, date);
 
@@ -308,7 +312,7 @@ _parse(Instance *inst)
 	needle = strstr(needle, "<day_of_week data=\"");
 	if (!needle) goto error;
 	needle+= 19;
-	sscanf(needle, "%[^\"]\"", &(e_data->date));
+	sscanf(needle, "%[^\"]\"", e_data->date);
 
 	needle = strstr(needle, "<low data=\"");
 	if (!needle) goto error;
@@ -325,7 +329,7 @@ _parse(Instance *inst)
 	needle = strstr(needle, "<icon data=\"");
 	if (!needle) goto error;
 	needle += 12; 
-	sscanf(needle, "%[^\"]\"", &code);
+	sscanf(needle, "%[^\"]\"", code);
 
 	e_data->type = _weather_type_get(code);
 
@@ -337,7 +341,7 @@ _parse(Instance *inst)
    eweather_plugin_update(inst->weather);
    return 1;
 error:
-   printf ("ERROR: Couldn't parse info\n");
+   //printf ("ERROR: Couldn't parse info\n");
    return 0;
 }
 

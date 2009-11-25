@@ -2,7 +2,6 @@
 
 #include "EWeather_Plugins.h"
 
-
 EWeather *eweather_new()
 {
    EWeather *e = calloc(1, sizeof(EWeather));

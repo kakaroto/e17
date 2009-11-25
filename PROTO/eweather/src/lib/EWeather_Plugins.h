@@ -66,5 +66,6 @@ struct EWeather_Plugin
 
 void eweather_plugin_load(EWeather *eweather);
 EAPI void eweather_plugin_update(EWeather *eweather);
+void eweather_plugin_shutdown(EWeather *eweather);
 
 #endif
