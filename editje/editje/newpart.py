@@ -94,6 +94,8 @@ class NewPart(Wizard):
 #                         edje.EDJE_PART_TYPE_BOX)
 #        list.item_append("Table", None, None, self._type_select,
 #                         edje.EDJE_PART_TYPE_TABLE)
+        list.item_append("External Widget", None, None, self._type_select,
+                         edje.EDJE_PART_TYPE_EXTERNAL)
         list.go()
 
         self.content_append("default", list)
@@ -111,7 +113,6 @@ class NewPart(Wizard):
         success = self._parent.e.part_add(name, self._type)
         if success:
             self._part_init(name, self._type)
-            self.close()
         else:
             self._notify("Choice another name")
 
@@ -121,8 +122,14 @@ class NewPart(Wizard):
         state = part.state_get(statename)
         if type == edje.EDJE_PART_TYPE_RECTANGLE:
             self._part_init_rectangle(part, state)
+            self.close()
         elif type == edje.EDJE_PART_TYPE_TEXT:
             self._part_init_text(part, state)
+            self.close()
+        elif type == edje.EDJE_PART_TYPE_EXTERNAL:
+            self._part_init_external(part, state)
+        else:
+            self.close()
 
     def _part_init_rectangle(self, part, state):
         part.mouse_events = False
@@ -141,6 +148,123 @@ class NewPart(Wizard):
         state.rel1_relative_set(0.3, 0.3)
         state.rel2_relative_set(0.7, 0.7)
 
+    def _part_init_external(self, part, state):
+        self.page_add("external", "Select Widget")
+
+        self.external = ExternalSelector(self)
+        self.content_append("external", self.external)
+        self.external.show()
+
+        self.action_add("external", "Ok", self._external_ok)
+
+        self.goto("external")
+
+    def _external_ok(self, popup, data):
+        print "SET EXTERNAL TO", self.external.type
+
     def _cancel(self, popup, data):
         self.close()
+
+class ExternalSelector(elementary.Box):
+    def __init__(self, parent):
+        elementary.Box.__init__(self, parent)
+        self.horizontal_set(True)
+        self.size_hint_weight_set(evas.EVAS_HINT_EXPAND,
+                                  evas.EVAS_HINT_EXPAND)
+        self.size_hint_align_set(evas.EVAS_HINT_FILL,
+                                 evas.EVAS_HINT_FILL)
+
+        self._types_load()
+        self._namespaces_init()
+        self._types_init()
+        self._namespaces_load()
+
+        self.type = ""
+
+    def _name_split(self, name):
+        names = name.rsplit("/", 1)
+        if len(names) == 2:
+            namespace = names[0]
+            name = names[1]
+        else:
+            namespace = ""
+        return (namespace, name)
+
+    def _type_get(self):
+        if self._namespace:
+            return self._namespace + "/" + self._type
+        return self._type
+
+    def _type_set(self, type):
+        self._namespace, self._type = self._name_split(type)
+
+    type = property(_type_get, _type_set)
+
+    def _types_load(self):
+        self._loaded_types = {}
+        for type in edje.ExternalIterator():
+            print type.name
+            namespace, name = self._name_split(type.name)
+
+            list = self._loaded_types.get(namespace)
+            if not list:
+                list = []
+                self._loaded_types[namespace] = list
+            elif name in list:
+                continue
+            list.append(name)
+
+    def _namespaces_init(self):
+        self._namespaces = elementary.List(self)
+        self._namespaces.size_hint_weight_set(evas.EVAS_HINT_EXPAND,
+                                              evas.EVAS_HINT_EXPAND)
+        self._namespaces.size_hint_align_set(evas.EVAS_HINT_FILL,
+                                             evas.EVAS_HINT_FILL)
+        self.pack_end(self._namespaces)
+        self._namespaces.show()
+
+    def _types_init(self):
+        self._types = elementary.List(self)
+        self._types.size_hint_weight_set(evas.EVAS_HINT_EXPAND,
+                                         evas.EVAS_HINT_EXPAND)
+        self._types.size_hint_align_set(evas.EVAS_HINT_FILL,
+                                        evas.EVAS_HINT_FILL)
+        self.pack_end(self._types)
+        self._types.show()
+
+    def _namespaces_load(self):
+        self._namespace = ""
+        self._namespaces.clear()
+        list = self._loaded_types.keys()
+        try:
+            list.remove("")
+        except ValueError:
+            pass
+        if list:
+            self._namespaces.item_append(list[0], None, None,
+                        self._namespace_select, list[0]).selected_set(True)
+        for item in list[1:]:
+            self._namespaces.item_append(item, None, None,
+                        self._type_select, item)
+        item = self._namespaces.item_append("Others", None, None,
+                        self._type_select, "")
+        if not self._namespace:
+            item.selected_set(True)
+        self._namespaces.go()
+
+    def _namespace_select(self, li, it, namespace):
+        self._namespace = namespace
+        self._types.clear()
+        list = self._loaded_types.get(namespace)
+        if list:
+            self._types.item_append(list[0], None, None, self._type_select,
+                             list[0]).selected_set(True)
+        for item in list[1:]:
+            self._types.item_append(item, None, None, self._type_select, item)
+        self._types.go()
+
+    def _type_select(self, li, it, type):
+        self._type = type
+
+
 

@@ -231,7 +231,8 @@ class PartStateDetails(EditjeDetails):
 
     def _part_type_to_text(self, type):
         parttypes = ['NONE', 'RECTANGLE', 'TEXT', 'IMAGE', 'SWALLOW',
-                     'TEXTBLOCK', 'GRADIENT', 'GROUP', 'BOX', 'TABLE']
+                     'TEXTBLOCK', 'GRADIENT', 'GROUP', 'BOX', 'TABLE',
+                     'EXTERNAL']
         return parttypes[type]
 
     def _common_props_create(self):
