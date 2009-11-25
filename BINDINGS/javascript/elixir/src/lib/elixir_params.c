@@ -234,11 +234,11 @@ elixir_params_check_class(const JSClass *object, const JSClass *match)
    if (!match)
      return -1;
 
-   if (strcmp(object->name, match->name) != 0)
+   if (object != match)
      {
         JSClass    *parent;
 
-        parent = elixir_class_request_parent(object->name);
+        parent = elixir_class_request_parent(object);
         if (parent)
           return elixir_params_check_class(parent, match);
         return 0;

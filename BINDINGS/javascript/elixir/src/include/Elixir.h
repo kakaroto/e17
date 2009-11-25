@@ -529,8 +529,8 @@ EAPI JSObject *elixir_return_script(JSContext* cx, jsval *vp, Elixir_Script *es)
 EAPI void                        elixir_class_init(void);
 EAPI void                        elixir_class_shutdown(void);
 EAPI JSClass                    *elixir_class_request(const char* class_name, const char *class_parent);
-EAPI const char                 *elixir_class_request_parent_name(const char *class_name);
-EAPI JSClass                    *elixir_class_request_parent(const char *class_name);
+EAPI const char                 *elixir_class_request_parent_name(const JSClass *cl);
+EAPI JSClass                    *elixir_class_request_parent(const JSClass *cl);
 
 /* USID function. */
 EAPI void                        elixir_id_init(void);

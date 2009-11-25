@@ -14,9 +14,12 @@ static Eina_Hash*   class = NULL;
 typedef struct elixir_class_s   elixir_class_t;
 struct elixir_class_s
 {
-   elixir_class_t        *parent;
-   JSClass                class;
-   char                   name[1];
+   /* Little trick to speedup parent discovery.
+      Don't move this somewhere else in the structure. */
+   JSClass class;
+
+   elixir_class_t *parent;
+   char name[1];
 };
 
 void
@@ -90,35 +93,28 @@ elixir_class_request(const char *class_name, const char *class_parent)
    return &news->class;
 }
 
-static elixir_class_t*
-elixir_class_request_lookup(const char *class_name)
-{
-   elixir_class_t       *lookup;
-
-   lookup = eina_hash_find(class, class_name);
-   if (!lookup)
-     return NULL;
-   return lookup->parent;
-}
-
 const char*
-elixir_class_request_parent_name(const char *class_name)
+elixir_class_request_parent_name(const JSClass *cl)
 {
-   elixir_class_t       *parent;
+   const elixir_class_t *current;
 
-   parent = elixir_class_request_lookup(class_name);
-   if (!parent)
+   current = (const elixir_class_t*) cl;
+   if (!current)
      return NULL;
-   return parent->name;
+   if (!current->parent)
+     return NULL;
+   return current->parent->name;
 }
 
 JSClass*
-elixir_class_request_parent(const char *class_name)
+elixir_class_request_parent(const JSClass *cl)
 {
-   elixir_class_t       *parent;
+   const elixir_class_t *current;
 
-   parent = elixir_class_request_lookup(class_name);
-   if (!parent)
+   current = (const elixir_class_t*) cl;
+   if (!current)
      return NULL;
-   return &parent->class;
+   if (!current->parent)
+     return NULL;
+   return &current->parent->class;
 }
