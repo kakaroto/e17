@@ -77,7 +77,8 @@ cdef extern from "Edje.h":
         EDJE_PART_TYPE_GROUP     = 7
         EDJE_PART_TYPE_BOX       = 8
         EDJE_PART_TYPE_TABLE     = 9
-        EDJE_PART_TYPE_LAST      = 10
+        EDJE_PART_TYPE_EXTERNAL  = 10
+        EDJE_PART_TYPE_LAST      = 11
 
     ctypedef enum Edje_Text_Effect:
        EDJE_TEXT_EFFECT_NONE                = 0
