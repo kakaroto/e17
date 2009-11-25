@@ -115,7 +115,7 @@ class NewPart(Wizard):
         else:
             self._part_add(name)
 
-    def _part_add(self, name, source = ""):
+    def _part_add(self, name, source=""):
         success = self._parent.e.part_add(name, self._type, source)
         if success:
             self._part_init(name, self._type)
