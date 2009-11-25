@@ -224,12 +224,21 @@ create_iv_file(IV *iv, const char *path)
    file->file_path = eina_stringshare_add(path);
    file->account = iv->account;
 
+   iv->account->count++;
+
    return file;
 }
 
 static void
-iv_file_free(IV_File *file)
+remove_iv_file(IV *iv, IV_File *file)
 {
+   iv->files = eina_inlist_remove(iv->files, EINA_INLIST_GET(file));
+#ifdef HAVE_ETHUMB
+   iv->preview_files = eina_list_remove(iv->preview_files, file);
+#endif
+
+   iv->account->count--;
+
    eina_stringshare_del(file->file_path);
 #ifdef HAVE_ETHUMB
    eina_stringshare_del(file->thumb_path);
@@ -815,7 +824,6 @@ on_file_monitor_event(void *data, Ecore_File_Monitor *em, Ecore_File_Event event
 		{
 		   IV_File *new = create_iv_file(iv, path);
 		   iv->files = eina_inlist_prepend_relative(iv->files, EINA_INLIST_GET(new), EINA_INLIST_GET(file));
-		   iv->account->count++;
 #ifdef HAVE_ETHUMB
 		   new->insert_before = file;
 		   iv->preview_files = eina_list_append(iv->preview_files, new);
@@ -832,7 +840,6 @@ on_file_monitor_event(void *data, Ecore_File_Monitor *em, Ecore_File_Event event
 	      new->change_time = ecore_time_get();
 	      new->flags.changed = 1;
 	      iv->files = eina_inlist_append(iv->files, EINA_INLIST_GET(new));
-	      iv->account->count++;
 #ifdef HAVE_ETHUMB
 	      iv->preview_files = eina_list_append(iv->preview_files, new);
 #endif
@@ -858,9 +865,7 @@ on_file_monitor_event(void *data, Ecore_File_Monitor *em, Ecore_File_Event event
 		   if (file->thumb_path)
 		     thumb_remove(file);
 #endif
-		   iv->files = eina_inlist_remove(iv->files, EINA_INLIST_GET(file));
-		   iv->account->count--;
-		   iv_file_free(file);
+		   remove_iv_file(iv, file);
 		   iv->flags.current = EINA_TRUE;
 		   break;
 		}
@@ -877,9 +882,7 @@ on_file_monitor_event(void *data, Ecore_File_Monitor *em, Ecore_File_Event event
 		   if (file->thumb_path)
 		     thumb_remove(file);
 #endif
-		   iv->files = eina_inlist_remove(iv->files, EINA_INLIST_GET(file));
-		   iv->account->count--;
-		   iv_file_free(file);
+		   remove_iv_file(iv, file);
 		   iv->flags.current = EINA_TRUE;
 		}
 	   }
@@ -1042,9 +1045,7 @@ read_image(IV *iv, IV_Image_Dest dest)
 	     else if (dest == IMAGE_CURRENT)
 	       iv->account->current = f;
 
-	     iv->files = eina_inlist_remove(iv->files, EINA_INLIST_GET(cur));
-	     iv_file_free(cur);
-	     iv->account->count--;
+	     remove_iv_file(iv, cur);
 	     evas_object_del(img);
 
 	     if (same_file) break;
@@ -1102,7 +1103,6 @@ on_idler(void *data)
 	       {
 		  IV_File *new = create_iv_file(iv, buf);
 		  iv->files = eina_inlist_append(iv->files, EINA_INLIST_GET(new));
-		  iv->account->count++;
 
 		  if (iv->single_file && iv->single_file == new->file_path)
 		    {
@@ -1744,15 +1744,10 @@ static void
 iv_free(IV *iv)
 {
    Ecore_File_Monitor *monitor;
-   IV_File *file;
    const char *path;
 
    while(iv->files)
-     {
-	file = IV_FILE(iv->files);
-	iv->files = eina_inlist_remove(iv->files, iv->files);
-	iv_file_free(file);
-     }
+     remove_iv_file(iv, IV_FILE(iv->files));
    EINA_LIST_FREE(iv->dirs, path)
       eina_stringshare_del(path);
    EINA_LIST_FREE(iv->file_monitors, monitor)
@@ -1859,7 +1854,6 @@ elm_main(int argc, char **argv)
 	  {
 	     IV_File *file = create_iv_file(iv, real);
 	     iv->files = eina_inlist_append(iv->files, EINA_INLIST_GET(file));
-	     iv->account->count++;
 #ifdef HAVE_ETHUMB
 	     iv->preview_files = eina_list_append(iv->preview_files, file);
 #endif
@@ -1883,11 +1877,7 @@ elm_main(int argc, char **argv)
 
 	     iv->dirs = eina_list_append(iv->dirs, eina_stringshare_add(dir));
 	     iv->single_file = eina_stringshare_ref(path);
-	     iv_file_free(file);
-	     iv->files = eina_inlist_remove(iv->files, iv->files);
-#ifdef HAVE_ETHUMB
-	     iv->preview_files = eina_list_remove(iv->preview_files, iv->preview_files);
-#endif
+	     remove_iv_file(iv, file);
 	     free(dir);
 	  }
 	else iv->account->current = IV_FILE(iv->files);
