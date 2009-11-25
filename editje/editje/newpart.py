@@ -110,11 +110,17 @@ class NewPart(Wizard):
             self._notify("Please set part name")
             return
 
-        success = self._parent.e.part_add(name, self._type)
+        if self._type == edje.EDJE_PART_TYPE_EXTERNAL:
+            self._part_external_select(name)
+        else:
+            self._part_add(name)
+
+    def _part_add(self, name, source = ""):
+        success = self._parent.e.part_add(name, self._type, source)
         if success:
             self._part_init(name, self._type)
         else:
-            self._notify("Choice another name")
+            self._notify("Choose another name")
 
     def _part_init(self, name, type):
         part = self._parent.e._edje.part_get(name)
@@ -122,14 +128,11 @@ class NewPart(Wizard):
         state = part.state_get(statename)
         if type == edje.EDJE_PART_TYPE_RECTANGLE:
             self._part_init_rectangle(part, state)
-            self.close()
         elif type == edje.EDJE_PART_TYPE_TEXT:
             self._part_init_text(part, state)
-            self.close()
         elif type == edje.EDJE_PART_TYPE_EXTERNAL:
             self._part_init_external(part, state)
-        else:
-            self.close()
+        self.close()
 
     def _part_init_rectangle(self, part, state):
         part.mouse_events = False
@@ -148,19 +151,23 @@ class NewPart(Wizard):
         state.rel1_relative_set(0.3, 0.3)
         state.rel2_relative_set(0.7, 0.7)
 
-    def _part_init_external(self, part, state):
+    def _part_init_external(self, name, state):
+        pass
+
+    def _part_external_select(self, name):
         self.page_add("external", "Select Widget")
 
         self.external = ExternalSelector(self)
         self.content_append("external", self.external)
         self.external.show()
 
-        self.action_add("external", "Ok", self._external_ok)
+        self.action_add("external", "Ok", self._external_ok, name)
 
         self.goto("external")
 
     def _external_ok(self, popup, data):
-        print "SET EXTERNAL TO", self.external.type
+        print "ADD EXTERNAL", self.external.type
+        self._part_add(data, self.external.type)
 
     def _cancel(self, popup, data):
         self.close()
@@ -240,26 +247,16 @@ class ExternalSelector(elementary.Box):
             list.remove("")
         except ValueError:
             pass
-        if list:
-            self._namespaces.item_append(list[0], None, None,
-                        self._namespace_select, list[0]).selected_set(True)
-        for item in list[1:]:
+        for item in list:
             self._namespaces.item_append(item, None, None,
-                        self._type_select, item)
-        item = self._namespaces.item_append("Others", None, None,
-                        self._type_select, "")
-        if not self._namespace:
-            item.selected_set(True)
+                                         self._namespace_select, item)
         self._namespaces.go()
 
     def _namespace_select(self, li, it, namespace):
         self._namespace = namespace
         self._types.clear()
         list = self._loaded_types.get(namespace)
-        if list:
-            self._types.item_append(list[0], None, None, self._type_select,
-                             list[0]).selected_set(True)
-        for item in list[1:]:
+        for item in list:
             self._types.item_append(item, None, None, self._type_select, item)
         self._types.go()
 

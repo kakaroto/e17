@@ -57,6 +57,9 @@ class Editje(elementary.Window):
         elementary.theme_extension_add(self.theme)
         elementary.finger_size_set(15)
 
+        for m in edje.available_modules_get():
+            edje.module_load(m)
+
         elementary.Window.__init__(self, "editje", elementary.ELM_WIN_BASIC)
         self.title_set("Editje - Edje Editor")
         self.callback_destroy_add(self._destroy_cb)
