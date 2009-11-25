@@ -61,8 +61,6 @@ _weather_config_item_get(Instance *inst, const char *id)
 EAPI void 
 _weather_config_new() 
 {
-   char buf[PATH_MAX];
-
    weather_cfg = E_NEW(Config, 1);
    weather_cfg->version = (MOD_CONFIG_FILE_EPOCH << 16);
 
@@ -175,7 +173,7 @@ _fill_data(Config_Item *ci, E_Config_Dialog_Data *cfdata)
     static Evas_Object *
 _basic_create(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cfdata)
 {
-    Evas_Object *o = NULL, *of = NULL, *or = NULL, *notif = NULL, *ob = NULL;
+    Evas_Object *o = NULL, *of = NULL, *or = NULL, *ob = NULL;
     char buf[4096];
     E_Radio_Group *rg;
     Eina_Array_Iterator it;

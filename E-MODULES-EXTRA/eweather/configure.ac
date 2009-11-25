@@ -29,11 +29,6 @@ AC_SUBST(packagedatadir)
 
 PKG_PROG_PKG_CONFIG
 
-pluginsdir="${libdir}/eweather/plugins"
-AC_SUBST(pluginsdir)
-AS_AC_EXPAND(PLUGINSDIR, $pluginsdir)
-AC_DEFINE_UNQUOTED(PLUGINSDIR, ["$PLUGINSDIR"], [Where plugins are installed.])
-
 AM_GNU_GETTEXT([external])
 AM_GNU_GETTEXT_VERSION(0.14)
 

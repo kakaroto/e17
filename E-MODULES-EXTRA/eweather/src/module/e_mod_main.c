@@ -15,7 +15,7 @@ Config *weather_cfg = NULL;
 EAPI E_Module_Api e_modapi = { E_MODULE_API_VERSION, "EWeather" };
 
 /* public functions */
-EAPI void *
+void *
 e_modapi_init(E_Module *m) 
 {
 #ifdef ENABLE_NLS
@@ -85,7 +85,7 @@ e_modapi_init(E_Module *m)
    return m;
 }
 
-EAPI int 
+int 
 e_modapi_shutdown(E_Module *m) 
 {
    /* unregister from gadcon */
@@ -114,7 +114,7 @@ e_modapi_shutdown(E_Module *m)
    return 1;
 }
 
-EAPI int 
+int 
 e_modapi_save(E_Module *m) 
 {
    e_config_domain_save("module.eweather", conf_edd, weather_cfg);
