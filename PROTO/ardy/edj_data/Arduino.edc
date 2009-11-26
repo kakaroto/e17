@@ -1,8 +1,4 @@
-/* Font is unused so far
-fonts {
-   font: "DejaVuSans.ttf" "font";
-}
-*/
+// fonts { font: "DejaVuSans.ttf" "font"; }
 
 
 //////////////// ARDUINO GROUP ///////////////////
@@ -122,6 +118,28 @@ collections {
 					color: 0 0 255 255;
 				}
 			}
+			part { name: "Signals";
+				type: TEXT;
+				effect: SOFT_SHADOW;
+				mouse_events:  0;
+				description { state: "default" 0.0;
+					rel1.relative: 0.1 0.1;
+					rel2.relative: 0.9 0.9;
+					color: 255 255 255 255;
+					color3: 0 0 0 255;
+					text {
+						text: "Waiting...";
+						font: "Sans";
+						size: 16;
+					}
+				}
+				description { state: "Pressed" 0.0;
+					inherit: "default" 0.0;
+					text {
+						text: "Pressed!";
+					}
+				}
+			}
 		}
 		
 /////////////// ARDUINO PROGRAMS //////////////////
@@ -144,6 +162,13 @@ collections {
 													// is just the register that
 													// the python code looks for.
 				}
+			}
+			program {
+				name:   "Signal";	
+				source: "arduino";
+				signal: "Pressed";	
+				action: STATE_SET "Pressed" 0.0;
+				target: "Signals";
 			}
 			program {
 				name:   "Green";	

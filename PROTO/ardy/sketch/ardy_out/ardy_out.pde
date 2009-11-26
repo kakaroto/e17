@@ -1,5 +1,5 @@
 int val;
-int l = 0;
+int l;
 
 void blank() {
   digitalWrite(9, LOW);
@@ -38,6 +38,7 @@ void loop() {
     }
   }
 }
+
 
 
 
