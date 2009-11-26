@@ -280,7 +280,7 @@ elixir_evas_smart_class_new(JSContext *cx, uintN argc, jsval *vp)
    esd->func[ESC_CLIP_SET] = fcts[ESC_CLIP_SET];
    esd->func[ESC_CLIP_UNSET] = fcts[ESC_CLIP_UNSET];
 
-   esc.data = elixir_void_new(cx, JS_THIS_OBJECT(cx, vp), val[15].v.any, esd);
+   esc.data = elixir_void_new(cx, JS_THIS_OBJECT(cx, vp), any, esd);
 
    es = evas_smart_class_new(&esc);
 

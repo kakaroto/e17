@@ -386,8 +386,12 @@ elixir_params_check(JSContext* cx,
    if (count == 0 && argc == 0)
      return 1;
 
-   if (count != argc)
-     return 0;
+   if (count != argc) {
+      elixir_lock_cx(cx);
+      JS_ReportError(cx, "Not enougth parameters. Got %i instead of %i", count, argc);
+      elixir_unlock_cx(cx);
+      return 0;
+   }
 
    return elixir_params_check_arg(cx, params, values, argc, argv);
 }
@@ -407,7 +411,9 @@ elixir_params_check_with_options(JSContext* cx,
 
    if (argc <= count && count < optional)
      {
-        JS_ReportError(cx, "Wrong arguments count : %i (%i < %i)", count, optional, argc);
+	elixir_lock_cx(cx);
+	JS_ReportError(cx, "Wrong arguments count : %i (%i < %i)", count, optional, argc);
+	elixir_unlock_cx(cx);
         return 0;
      }
 
