@@ -154,6 +154,26 @@ cdef class EdjeEdit(edje.c_edje.Edje): # [object PyEdjeEdit, type PyEdjeEdit_Typ
             return False
         return True
 
+    # External
+    property externals:
+        def __get__(self):
+            "@rtype: list of str"
+            cdef evas.c_evas.Eina_List *lst, *itr
+            ret = []
+            lst = edje_edit_externals_list_get(self.obj)
+            itr = lst
+            while itr:
+                ret.append(<char*>itr.data)
+                itr = itr.next
+            edje_edit_string_list_free(lst)
+            return ret
+
+    def external_add(self, char *name):
+        return bool(edje_edit_external_add(self.obj, name))
+
+    def external_del(self, char *name):
+        edje_edit_external_del(self.obj, name)
+
     # Part
 
     property parts:

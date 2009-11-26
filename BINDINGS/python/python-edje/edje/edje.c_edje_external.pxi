@@ -83,6 +83,11 @@ cdef class ExternalParamInfo:
             return self.obj.type
 
 cdef class ExternalParamInfoInt(ExternalParamInfo):
+    property default:
+        def __get__(self):
+            if self.obj.info.i.default == EDJE_EXTERNAL_INT_UNSET:
+                return None
+            return self.obj.info.i.default
     property min:
         def __get__(self):
             if self.obj.info.i.min == EDJE_EXTERNAL_INT_UNSET:
@@ -102,6 +107,11 @@ cdef class ExternalParamInfoInt(ExternalParamInfo):
             return self.obj.info.i.step
 
 cdef class ExternalParamInfoDouble(ExternalParamInfo):
+    property default:
+        def __get__(self):
+            if isnan(self.obj.info.d.default):
+                return None
+            return self.obj.info.d.default
     property min:
         def __get__(self):
             if isnan(self.obj.info.d.min):
@@ -121,6 +131,11 @@ cdef class ExternalParamInfoDouble(ExternalParamInfo):
             return self.obj.info.d.step
 
 cdef class ExternalParamInfoString(ExternalParamInfo):
+    property default:
+        def __get__(self):
+            if self.obj.info.s.default == NULL:
+                return None
+            return self.obj.info.s.default
     property accept_format:
         def __get__(self):
             if self.obj.info.s.accept_fmt == NULL:
@@ -166,6 +181,12 @@ cdef class ExternalType:
     property name:
         def __get__(self):
             return self._name
+
+    property module:
+        def __get__(self):
+            if self._obj.module == NULL:
+                return None
+            return self._obj.module
 
     def label_get(self):
         cdef char *l

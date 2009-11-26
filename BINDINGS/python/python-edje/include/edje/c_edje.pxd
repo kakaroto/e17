@@ -174,13 +174,13 @@ cdef extern from "Edje.h":
         char *s
 
     ctypedef struct aux_external_param_info_int:
-        int min, max, step
+        int default "def", min, max, step
 
     ctypedef struct aux_external_param_info_double:
-        double min, max, step
+        double default "def", min, max, step
 
     ctypedef struct aux_external_param_info_string:
-        char *accept_fmt, *deny_fmt
+        char *default "def", *accept_fmt, *deny_fmt
 
     ctypedef union aux_external_param_info:
         aux_external_param_info_int i
@@ -193,6 +193,7 @@ cdef extern from "Edje.h":
         aux_external_param_info info
 
     ctypedef struct Edje_External_Type:
+        char *module
         evas.c_evas.Evas_Object *(*add)(void *data, evas.c_evas.Evas *evas, evas.c_evas.Evas_Object *parent, evas.c_evas.Eina_List *params)
         void (*state_set)(void *data, evas.c_evas.Evas_Object *obj, void *from_params, void *to_params, float pos)
         void (*signal_emit)(void *data, evas.c_evas.Evas_Object *obj, char *emission, char *source)
