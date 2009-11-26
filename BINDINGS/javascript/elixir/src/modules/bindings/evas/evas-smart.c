@@ -55,13 +55,16 @@ enum _evas_smart_callback_e
   ESC_HIDE,
   ESC_COLOR_SET,
   ESC_CLIP_SET,
-  ESC_CLIP_UNSET
+  ESC_CLIP_UNSET,
+  ESC_CALCULATE,
+  ESC_MEMBER_ADD,
+  ESC_MEMBER_DEL
 };
 
 typedef struct _evas_smart_data_s       evas_smart_data_t;
 struct _evas_smart_data_s
 {
-  JSFunction*   func[14];
+  JSFunction*   func[17];
 };
 
 static void
@@ -84,6 +87,7 @@ func_evas_object_call(evas_smart_callback_t index, Evas_Object* obj)
    evas_smart_data_t *esd;
    JSObject *parent;
    JSContext *cx;
+   Eina_Bool suspended;
    jsval js_return;
    jsval argv[1];
 
@@ -91,14 +95,15 @@ func_evas_object_call(evas_smart_callback_t index, Evas_Object* obj)
    if (!esd || !cx || !parent)
      return ;
 
-   elixir_function_start(cx);
+   suspended = elixir_function_suspended(cx);
+   if (suspended) elixir_function_start(cx);
 
    if (!evas_object_to_jsval(cx, obj, &argv[0]))
      return ;
 
    elixir_function_run(cx, esd->func[index], parent, 1, argv, &js_return);
 
-   elixir_function_stop(cx);
+   if (suspended) elixir_function_stop(cx);
 }
 
 #define FUNC_CALL_EO(Name) \
@@ -114,6 +119,7 @@ FUNC_CALL_EO(LOWER);
 FUNC_CALL_EO(SHOW);
 FUNC_CALL_EO(HIDE);
 FUNC_CALL_EO(CLIP_UNSET);
+FUNC_CALL_EO(CALCULATE);
 
 static void
 func_2evas_object_call(evas_smart_callback_t index, Evas_Object* obj1, Evas_Object* obj2)
@@ -121,6 +127,7 @@ func_2evas_object_call(evas_smart_callback_t index, Evas_Object* obj1, Evas_Obje
    evas_smart_data_t *esd;
    JSContext *cx;
    JSObject *parent;
+   Eina_Bool suspended;
    jsval js_return;
    jsval argv[2];
 
@@ -128,7 +135,8 @@ func_2evas_object_call(evas_smart_callback_t index, Evas_Object* obj1, Evas_Obje
    if (!esd || !cx || !parent)
      return ;
 
-   elixir_function_start(cx);
+   suspended = elixir_function_suspended(cx);
+   if (suspended) elixir_function_start(cx);
 
    if (evas_object_to_jsval(cx, obj1, &argv[0]))
      goto on_error;
@@ -138,7 +146,7 @@ func_2evas_object_call(evas_smart_callback_t index, Evas_Object* obj1, Evas_Obje
    elixir_function_run(cx, esd->func[index], parent, 2, argv, &js_return);
 
  on_error:
-   elixir_function_stop(cx);
+   if (suspended) elixir_function_stop(cx);
 }
 
 #define FUNC_CALL_2EO(Name) \
@@ -147,9 +155,9 @@ func_2evas_object_call(evas_smart_callback_t index, Evas_Object* obj1, Evas_Obje
                 func_2evas_object_call(ESC_##Name, obj1, obj2); \
         }
 
-FUNC_CALL_2EO(STACK_ABOVE);
-FUNC_CALL_2EO(STACK_BELOW);
 FUNC_CALL_2EO(CLIP_SET);
+FUNC_CALL_2EO(MEMBER_ADD);
+FUNC_CALL_2EO(MEMBER_DEL);
 
 static void
 func_evas_object_2int_call(evas_smart_callback_t index, Evas_Object* obj, int i1, int i2)
@@ -157,6 +165,7 @@ func_evas_object_2int_call(evas_smart_callback_t index, Evas_Object* obj, int i1
    evas_smart_data_t *esd;
    JSObject *parent;
    JSContext *cx;
+   Eina_Bool suspended;
    jsval js_return;
    jsval argv[3];
 
@@ -164,7 +173,8 @@ func_evas_object_2int_call(evas_smart_callback_t index, Evas_Object* obj, int i1
    if (!esd || !cx || !parent)
      return ;
 
-   elixir_function_start(cx);
+   suspended = elixir_function_suspended(cx);
+   if (suspended) elixir_function_start(cx);
 
    if (evas_object_to_jsval(cx, obj, &argv[0]))
      goto on_error;
@@ -175,7 +185,7 @@ func_evas_object_2int_call(evas_smart_callback_t index, Evas_Object* obj, int i1
    elixir_function_run(cx, esd->func[index], parent, 3, argv, &js_return);
 
  on_error:
-   elixir_function_stop(cx);
+   if (suspended) elixir_function_stop(cx);
 }
 
 #define FUNC_CALL_EO_2I(Name) \
@@ -193,6 +203,7 @@ func_color_set(Evas_Object *obj, int r, int g, int b, int a)
    evas_smart_data_t *esd;
    JSObject *parent;
    JSContext *cx;
+   Eina_Bool suspended;
    jsval js_return;
    jsval argv[5];
 
@@ -200,7 +211,8 @@ func_color_set(Evas_Object *obj, int r, int g, int b, int a)
    if (!esd || !cx || !parent)
      return ;
 
-   elixir_function_start(cx);
+   suspended = elixir_function_suspended(cx);
+   if (suspended) elixir_function_start(cx);
 
    if (evas_object_to_jsval(cx, obj, &argv[0]))
      goto on_error;
@@ -213,7 +225,7 @@ func_color_set(Evas_Object *obj, int r, int g, int b, int a)
    elixir_function_run(cx, esd->func[ESC_COLOR_SET], parent, 5, argv, &js_return);
 
  on_error:
-   elixir_function_stop(cx);
+   if (suspended) elixir_function_stop(cx);
 }
 
 #define ELX_CALL_CHECK(Func)			\
@@ -225,9 +237,10 @@ elixir_evas_smart_class_new(JSContext *cx, uintN argc, jsval *vp)
    evas_smart_data_t *esd;
    Evas_Smart *es;
    JSClass *evas_smart_class;
+   Evas_Smart_Class *fesc;
    Evas_Smart_Class esc;
    jsval any;
-   JSFunction *fcts[14];
+   JSFunction *fcts[17];
    elixir_value_t val[1];
 
    if (!elixir_params_check(cx, jsobject_params, val, argc, JS_ARGV(cx, vp)))
@@ -244,12 +257,18 @@ elixir_evas_smart_class_new(JSContext *cx, uintN argc, jsval *vp)
    ELX_CALL_CHECK(elixir_object_get_fct(cx, val[0].v.obj, "color_set", fcts + ESC_COLOR_SET));
    ELX_CALL_CHECK(elixir_object_get_fct(cx, val[0].v.obj, "clip_set", fcts + ESC_CLIP_SET));
    ELX_CALL_CHECK(elixir_object_get_fct(cx, val[0].v.obj, "clip_unset", fcts + ESC_CLIP_UNSET));
+   ELX_CALL_CHECK(elixir_object_get_fct(cx, val[0].v.obj, "calculate", fcts + ESC_CALCULATE));
+   ELX_CALL_CHECK(elixir_object_get_fct(cx, val[0].v.obj, "member_add", fcts + ESC_MEMBER_ADD));
+   ELX_CALL_CHECK(elixir_object_get_fct(cx, val[0].v.obj, "member_del", fcts + ESC_MEMBER_DEL));
 
    if (JS_GetProperty(cx, val[0].v.obj, "data", &any) == JS_FALSE)
-     return JS_FALSE;
+     any = JSVAL_NULL;
 
-   if (esc.version != 1)
-     return JS_FALSE;
+   if (esc.version != 3)
+     {
+	JS_ReportError(cx, "Wrong version for Smart Object Class.");
+	return JS_FALSE;
+     }
 
    esc.add = func_ADD;
    esc.del = func_DEL;
@@ -260,10 +279,16 @@ elixir_evas_smart_class_new(JSContext *cx, uintN argc, jsval *vp)
    esc.color_set = func_color_set;
    esc.clip_set = func_CLIP_SET;
    esc.clip_unset = func_CLIP_UNSET;
+   esc.calculate = func_CALCULATE;
+   esc.member_add = func_MEMBER_ADD;
+   esc.member_del = func_MEMBER_DEL;
 
-   esd = malloc(sizeof(evas_smart_data_t));
+   esd = malloc(sizeof (evas_smart_data_t) + sizeof (Evas_Smart_Class));
    if (!esd)
      return JS_FALSE;
+
+   fesc = (Evas_Smart_Class*) (esd + 1);
+   *fesc = esc;
 
    esd->func[ESC_ADD] = fcts[ESC_ADD];
    esd->func[ESC_DEL] = fcts[ESC_DEL];
@@ -279,10 +304,13 @@ elixir_evas_smart_class_new(JSContext *cx, uintN argc, jsval *vp)
    esd->func[ESC_COLOR_SET] = fcts[ESC_COLOR_SET];
    esd->func[ESC_CLIP_SET] = fcts[ESC_CLIP_SET];
    esd->func[ESC_CLIP_UNSET] = fcts[ESC_CLIP_UNSET];
+   esd->func[ESC_CALCULATE] = fcts[ESC_CALCULATE];
+   esd->func[ESC_MEMBER_ADD] = fcts[ESC_MEMBER_ADD];
+   esd->func[ESC_MEMBER_DEL] = fcts[ESC_MEMBER_DEL];
 
-   esc.data = elixir_void_new(cx, JS_THIS_OBJECT(cx, vp), any, esd);
+   fesc->data = elixir_void_new(cx, JS_THIS_OBJECT(cx, vp), any, esd);
 
-   es = evas_smart_class_new(&esc);
+   es = evas_smart_class_new(fesc);
 
    evas_smart_class = elixir_class_request("Evas_Smart", NULL);
    elixir_return_ptr(cx, vp, es, evas_smart_class);
@@ -357,6 +385,7 @@ _func_smart_cb(void *data, Evas_Object *obj, void *event_info)
    JSObject *parent;
    JSFunction *cb;
    JSContext *cx;
+   Eina_Bool suspended;
    jsval js_return;
    jsval argv[3];
 
@@ -367,7 +396,8 @@ _func_smart_cb(void *data, Evas_Object *obj, void *event_info)
    if (!cb || !cx || !parent)
      return ;
 
-   elixir_function_start(cx);
+   suspended = elixir_function_suspended(cx);
+   if (suspended) elixir_function_start(cx);
 
    argv[0] = elixir_void_get_jsval(data);
 
@@ -379,7 +409,7 @@ _func_smart_cb(void *data, Evas_Object *obj, void *event_info)
    elixir_function_run(cx, cb, parent, 3, argv, &js_return);
 
  on_error:
-   elixir_function_stop(cx);
+   if (suspended) elixir_function_stop(cx);
 }
 
 static JSBool
