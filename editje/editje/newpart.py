@@ -166,8 +166,8 @@ class NewPart(Wizard):
         self.goto("external")
 
     def _external_ok(self, popup, data):
-        print "ADD EXTERNAL", self.external.type
         self._part_add(data, self.external.type)
+        self._parent.e._edje.external_add(self.external.module)
 
     def _cancel(self, popup, data):
         self.close()
@@ -182,53 +182,49 @@ class ExternalSelector(elementary.Box):
                                  evas.EVAS_HINT_FILL)
 
         self._types_load()
-        self._namespaces_init()
+        self._modules_init()
         self._types_init()
-        self._namespaces_load()
+        self._modules_load()
 
         self.type = ""
 
-    def _name_split(self, name):
-        names = name.rsplit("/", 1)
-        if len(names) == 2:
-            namespace = names[0]
-            name = names[1]
-        else:
-            namespace = ""
-        return (namespace, name)
-
     def _type_get(self):
-        if self._namespace:
-            return self._namespace + "/" + self._type
         return self._type
 
     def _type_set(self, type):
-        self._namespace, self._type = self._name_split(type)
+        self._type = type
 
     type = property(_type_get, _type_set)
+
+    def _module_get(self):
+        return self._module
+
+    module = property(_module_get)
 
     def _types_load(self):
         self._loaded_types = {}
         for type in edje.ExternalIterator():
             print type.name
-            namespace, name = self._name_split(type.name)
+            module = type.module
+            name = type.name
+            label = type.label_get()
 
-            list = self._loaded_types.get(namespace)
+            list = self._loaded_types.get(module)
             if not list:
                 list = []
-                self._loaded_types[namespace] = list
-            elif name in list:
+                self._loaded_types[module] = list
+            elif (name, label) in list:
                 continue
-            list.append(name)
+            list.append((name, label))
 
-    def _namespaces_init(self):
-        self._namespaces = elementary.List(self)
-        self._namespaces.size_hint_weight_set(evas.EVAS_HINT_EXPAND,
+    def _modules_init(self):
+        self._modules = elementary.List(self)
+        self._modules.size_hint_weight_set(evas.EVAS_HINT_EXPAND,
                                               evas.EVAS_HINT_EXPAND)
-        self._namespaces.size_hint_align_set(evas.EVAS_HINT_FILL,
+        self._modules.size_hint_align_set(evas.EVAS_HINT_FILL,
                                              evas.EVAS_HINT_FILL)
-        self.pack_end(self._namespaces)
-        self._namespaces.show()
+        self.pack_end(self._modules)
+        self._modules.show()
 
     def _types_init(self):
         self._types = elementary.List(self)
@@ -239,25 +235,25 @@ class ExternalSelector(elementary.Box):
         self.pack_end(self._types)
         self._types.show()
 
-    def _namespaces_load(self):
-        self._namespace = ""
-        self._namespaces.clear()
+    def _modules_load(self):
+        self._module = ""
+        self._modules.clear()
         list = self._loaded_types.keys()
         try:
             list.remove("")
         except ValueError:
             pass
         for item in list:
-            self._namespaces.item_append(item, None, None,
-                                         self._namespace_select, item)
-        self._namespaces.go()
+            self._modules.item_append(item, None, None,
+                                         self._module_select, item)
+        self._modules.go()
 
-    def _namespace_select(self, li, it, namespace):
-        self._namespace = namespace
+    def _module_select(self, li, it, module):
+        self._module = module
         self._types.clear()
-        list = self._loaded_types.get(namespace)
-        for item in list:
-            self._types.item_append(item, None, None, self._type_select, item)
+        list = self._loaded_types.get(module)
+        for (name, label) in list:
+            self._types.item_append(label, None, None, self._type_select, name)
         self._types.go()
 
     def _type_select(self, li, it, type):
