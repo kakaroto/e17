@@ -249,8 +249,6 @@ def extern_object_aspect_set(evas.c_evas.Object obj, int aspect, int w, int h):
 def available_modules_get():
     cdef evas.c_evas.Eina_List *lst
     lst = edje_available_modules_get()
-    if lst == NULL:
-        return None
     ret = []
     while lst:
         ret.append(<char*>lst.data)
