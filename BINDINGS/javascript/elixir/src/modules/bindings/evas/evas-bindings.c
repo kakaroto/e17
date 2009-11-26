@@ -335,7 +335,7 @@ evas_object_to_elixir_object(Evas_Object *obj)
      if (strcmp(_matching_evas_object[i].evas_name, evas_name) == 0)
        return _matching_evas_object[i].elixir_name;
 
-   return evas_name;
+   return "evas_object_smart";
 }
 
 static void
