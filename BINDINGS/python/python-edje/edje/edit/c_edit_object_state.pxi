@@ -450,6 +450,17 @@ cdef class State:
         r = value
         return r
 
+    def external_param_set(self, param, value):
+        if isinstance(value, (long, int)):
+            return self.external_param_int_set(param, value)
+        elif isinstance(value, float):
+            return self.external_param_double_set(param, value)
+        elif isinstance(value, basestring):
+            return self.external_param_string_set(param, value)
+        else:
+            raise TypeError("invalid external parameter type '%s'" %
+                            type(value).__name__)
+
     def external_param_int_set(self, param, value):
         return bool(edje_edit_state_external_param_int_set(self.edje.obj,
                                                            self.part, self.name,
