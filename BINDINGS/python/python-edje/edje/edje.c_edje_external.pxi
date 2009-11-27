@@ -165,11 +165,11 @@ def external_param_info_get(char *type_name):
     cdef Edje_External_Param_Info *params
     cdef int i
 
+    ret = []
     params = edje_external_param_info_get(type_name)
     if params == NULL:
-        return None
+        return ret
 
-    ret = []
     i = 0
     while params[i].name != NULL:
         ret.append(ExternalParamInfo_from_ptr(&params[i]))
