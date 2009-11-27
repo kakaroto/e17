@@ -189,6 +189,9 @@ class PropertyTable(elementary.Table):
         prop.show()
         prop._change_notifier_cb = self._prop_changed_cb
 
+    def clear(self):
+        self._props = dict()
+
     def __getitem__(self, key):
         if key in self._props:
             return self._props[key]

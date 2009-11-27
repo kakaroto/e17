@@ -81,11 +81,14 @@ class PartStateDetails(EditjeDetails):
         self._update_schedule = None
         self.on_del_add(self._del_handler)
 
+        self._external_type = None
+
         self._common_props_create()
         self._rel_props_create()
         self._image_props_create()
         self._text_props_create()
         self._gradient_props_create()
+        self._external_props_create()
 
         self.edje_get().signal_emit("cl,option,enable", "editje")
 
@@ -543,6 +546,9 @@ class PartStateDetails(EditjeDetails):
         prop.widget_add("y", wid)
         self["rel2"].property_add(prop)
 
+    def _external_props_create(self):
+        self.group_add("external")
+
     def _image_btn_clicked(self, *args):
         popups.ImagePopUp(self._parent,
                           select_cb=self._image_selected_cb).show()
@@ -584,6 +590,7 @@ class PartStateDetails(EditjeDetails):
         self.group_hide("gradient")
         self.group_hide("g_rel1")
         self.group_hide("g_rel2")
+        self.group_hide("external")
 
     def _update(self):
         if self._update_schedule is not None:
@@ -608,6 +615,9 @@ class PartStateDetails(EditjeDetails):
             self.group_show("gradient")
             self.group_show("g_rel1")
             self.group_show("g_rel2")
+        elif self.part.type == edje.EDJE_PART_TYPE_EXTERNAL:
+            self._update_external()
+            self.group_show("external")
         return False
 
     def _update_common(self):
@@ -681,6 +691,26 @@ class PartStateDetails(EditjeDetails):
         self["g_rel2"]["relative"].value = self.state.gradient_rel2_relative_get()
         self["g_rel2"]["offset"].value = self.state.gradient_rel2_offset_get()
 
+    def _create_props_by_type(self, type):
+        for p in edje.external_param_info_get(type):
+            prop = Property(self._parent, p.name)
+            wid = WidgetEntry(self)
+            if p.type == edje.EDJE_EXTERNAL_PARAM_TYPE_INT:
+                wid.type_int()
+            elif p.type == edje.EDJE_EXTERNAL_PARAM_TYPE_DOUBLE:
+                wid.type_float()
+            prop.widget_add("v", wid)
+            self["external"].property_add(prop)
+
+    def _update_external(self):
+        t = self.part.source
+        if t != self._external_type:
+            self._external_type = t
+            self["external"].clear()
+            self._create_props_by_type(t)
+        for p in self.state.external_params_get():
+            self["external"][p.name].value = p.value
+
     def prop_value_changed(self, prop, value, group):
         if not group:
             self._prop_common_value_changed(prop, value)
@@ -696,6 +726,8 @@ class PartStateDetails(EditjeDetails):
              group == "g_rel1" or \
              group == "g_rel2":
             self._prop_gradient_value_changed(prop, value, group)
+        elif group == "external":
+            self._prop_external_value_changed(prop, value)
 
         self.editable.calc_force()
 
@@ -807,3 +839,5 @@ class PartStateDetails(EditjeDetails):
             else:
                 self.state.gradient_rel2_offset_set(*value)
 
+    def _prop_external_value_changed(self, prop, value):
+        self.state.external_param_set(prop, value)

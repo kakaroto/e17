@@ -52,6 +52,8 @@ class WidgetEntry(Widget):
         return True
 
     def _internal_value_set(self, val):
+        if val is None:
+            val = ""
         self.entry.entry_set(val)
 
     def _internal_value_get(self):
@@ -89,4 +91,6 @@ class WidgetEntry(Widget):
             return None
 
     def _in_parser_number(self, val):
+        if val is None:
+            return ""
         return str(val)
