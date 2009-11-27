@@ -90,6 +90,11 @@ collections {
 					rel2.relative: 1.0 1.0;
 					color: 0 0 0 0;
 				}
+				description { state: "Pressed" 0.0;
+					rel1.relative: 0.0 0.0;
+					rel2.relative: 1.0 1.0;
+					color: 128 128 128 128;
+				}
 			}
 			part { name: "Button1";
 				type: RECT;
@@ -166,9 +171,23 @@ collections {
 			program {
 				name:   "Signal";	
 				source: "arduino";
-				signal: "Pressed";	
+				signal: "P";	
 				action: STATE_SET "Pressed" 0.0;
 				target: "Signals";
+				after: "GLOW";
+			}
+			program {
+				name:   "GLOW";	
+				action: STATE_SET "Pressed" 0.0;
+				transition: LINEAR 1.0;
+				target: "Button0";
+				after: "GLOWOFF";
+			}
+			program {
+				name:   "GLOWOFF";	
+				action: STATE_SET "default" 0.0;
+				transition: LINEAR 0.5;
+				target: "Button0";
 			}
 			program {
 				name:   "Green";	

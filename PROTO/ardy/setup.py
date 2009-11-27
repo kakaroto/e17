@@ -71,10 +71,10 @@ elif sys.argv[1] == "clean":
 
 ### SETUPTOOLS PART
 setup(name = 'ardy',
-      version = '0.1.0',
+      version = '1.0.0',
       author = 'Toma',
       author_email = 'tomhaste@gmail.com',
-      description = 'Simple python-efl program to send serial data to an Arduino',
+      description = 'Simple python-efl program to send/receive serial data to an Arduino',
       keywords = 'arduino efl enlightenment ecore edje python',
       scripts = ["bin/ardy"],
       cmdclass = {"install" : install,
