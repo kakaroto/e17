@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Exalt\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2009-10-31 16:31-0400\n"
+"POT-Creation-Date: 2009-11-27 01:05+1100\n"
 "PO-Revision-Date: 2009-03-07 14:24+0200\n"
 "Last-Translator: Giorgos Koutsikos <ragecryx@yahoo.gr>\n"
 "Language-Team: Greek <enlightenment-intl@lists.sourceforge.net>\n"
@@ -50,37 +50,37 @@ msgstr ""
 msgid "Enable the notifications"
 msgstr " "
 
-#: src/e_mod_main.c:231
+#: src/e_mod_main.c:232
 msgid "Exalt Warning"
 msgstr ""
 
-#: src/e_mod_main.c:234
+#: src/e_mod_main.c:235
 msgid "Warning"
 msgstr ""
 
-#: src/e_mod_main.c:235
+#: src/e_mod_main.c:236
 msgid "NetworkManager has been detected on your computer."
 msgstr ""
 
-#: src/e_mod_main.c:237
+#: src/e_mod_main.c:238
 msgid ""
 "Exalt can't work properly if networkManager is running, please stop "
 "NetworkManager or Exalt."
 msgstr ""
 
-#: src/e_mod_main.c:240
+#: src/e_mod_main.c:241
 msgid "Ok"
 msgstr ""
 
-#: src/e_mod_main.c:360
+#: src/e_mod_main.c:368
 msgid "exalt"
 msgstr ""
 
-#: src/e_mod_main.c:445
+#: src/e_mod_main.c:453
 msgid "exalt Configuration Updated"
 msgstr ""
 
-#: src/e_mod_main.c:513
+#: src/e_mod_main.c:521
 msgid "Configuration"
 msgstr ""
 

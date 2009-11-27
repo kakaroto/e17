@@ -1,495 +1,362 @@
-images
-{
-    image: "module_icon.png" COMP;
-    image: "module_icon_2.png" COMP;
-    image: "module_icon_glow.png" COMP;
-    image: "ethernet.png" COMP;
-    image: "wireless.png" COMP;
-    image: "wireless_not_activate_link.png" COMP;
-    image: "ethernet_not_activate_link.png" COMP;
-    image: "encryption.png" COMP;
-    image: "delete.png" COMP;
+images {
+   image: "2-icon.png" COMP;
+   image: "2-conn1.png" COMP;
+   image: "2-conn2.png" COMP;
+   image: "2-conn3.png" COMP;
+   image: "2-conn4.png" COMP;
+   image: "2-disconn.png" COMP;
+   image: "2-wifi.png" COMP;
+   image: "2-eth.png" COMP;
+   image: "2-power.png" COMP;
+
+   image: "encryption.png" COMP;
 }
 
-collections
-{
-    group
-    {
-        name: "icon";
-        max: 24 24;
-        parts
-        {
-            part
-            {
-                name: "image";
-                mouse_events: 0;
-                type: IMAGE;
-                description
-                {
-                    aspect: 1 1;
-                    state: "default" 0.0;
-                    image.normal: "module_icon.png";
-                }
+collections {
+   group {
+      name: "icon";
+      max: 128 128;
+      parts {
+         part { name: "image";
+            mouse_events: 0;
+            type: IMAGE;
+            description { state: "default" 0.0;
+               aspect: 1.0 1.0;
+               image.normal: "2-icon.png";
             }
-        }
-    }
-    group
-    {
-        name: "modules/exalt/main";
-        max: 128 128;
-        parts
-        {
-            part
-            {
-                name: "icon";
-                mouse_events: 0;
-                type: IMAGE;
-                description
-                {
-                    state: "default" 0.0;
-                    aspect: 1.0 1.0;
-                    aspect_preference: BOTH;
-                    rel1.offset: 2 2;
-                    rel2.offset: -3 -3;
-                    image.normal: "module_icon.png";
-                    color: 255 255 255 255;
-                }
-                description
-                {
-                    state: "hide" 0.0;
-                    inherit: "default" 0.0;
-                    visible: 0;
-                    color: 255 255 255 0;
-                }
+         }
+      }
+   }
+   group { name: "modules/exalt/main";
+      max: 128 128;
+      parts {
+         part { name: "icon";
+            type: IMAGE;
+            mouse_events: 0;
+            description { state: "default" 0.0;
+               aspect: 1.0 1.0;
+               aspect_preference: BOTH;
+               image.normal: "2-disconn.png";
             }
-            part
-            {
-                name: "icon_2";
-                mouse_events: 0;
-                type: IMAGE;
-                description
-                {
-                    state: "default" 0.0;
-                    aspect: 1.0 1.0;
-                    aspect_preference: BOTH;
-                    rel1.offset: 2 2;
-                    rel2.offset: -3 -3;
-                    image.normal: "module_icon_2.png";
-                    color: 255 255 255 0;
-                    visible: 0;
-                }
-                description
-                {
-                    state: "hide" 0.0;
-                    inherit: "default" 0.0;
-                    visible: 1;
-                    color: 255 255 255 255;
-                }
+            description { state: "connecting" 0.0;
+               inherit: "default" 0.0;
+               image.tween:  "2-conn1.png";
+               image.tween:  "2-conn2.png";
+               image.tween:  "2-conn3.png";
+               image.normal: "2-conn4.png";
             }
-            part
-            {
-                name: "glow";
-                mouse_events: 0;
-                type: IMAGE;
-                description
-                {
-                    state: "default" 0.0;
-                    aspect: 1.0 1.0;
-                    aspect_preference: BOTH;
-                    rel1.offset: 2 2;
-                    rel2.offset: -3 -3;
-                    visible: 0;
-                    color: 255 255 255 0;
-                    image.normal: "module_icon_glow.png";
-                }
-                description
-                {
-                    state: "glow" 0.0;
-                    inherit: "default" 0.0;
-                    visible: 1;
-                    color: 255 255 255 255;
-                }
+            description { state: "connected" 0.0;
+               inherit: "default" 0.0;
+               image.normal: "2-icon.png";
             }
-            part
-            {
-                name: "global_status";
-                mouse_events: 0;
-                type: IMAGE;
-                description
-                {
-                    state: "default" 0.0;
-                    aspect: 1.0 1.0;
-                    aspect_preference: BOTH;
-                    rel1.relative: 0.6 0.1;
-                    rel2.relative: 0.9 0.4;
-                    visible: 1;
-                    color: 255 255 255 0;
-                    image.normal: "delete.png";
-                }
-                description
-                {
-                    state: "visible" 0.0;
-                    inherit: "default" 0.0;
-                    color: 255 255 255 255;
-                }
+         }
+         part { name: "event";
+            type: RECT;
+            mouse_events: 1;
+            description { state: "default" 0.0;
+               color: 0 0 0 0;
             }
-            part
-            {
-                name: "event";
-                mouse_events: 1;
-                type: RECT;
-                description
-                {
-                    state: "default" 0.0;
-                    color: 255 255 255 0;
-                }
-            }
-        }
-        programs
-        {
-            program
-            {
-                name: "mouse_in";
-                signal: "mouse,in";
-                source: "event";
-                action: STATE_SET "glow" 0.0;
-                transition: ACCELERATE 0.3;
-                target: "glow";
-            }
-            program
-            {
-                name: "mouse_out";
-                signal: "mouse,out";
-                source: "event";
-                action: STATE_SET "default" 0.0;
-                transition: DECELERATE 0.5;
-                target: "glow";
-            }
+         }
+      }
+      programs {
+         program { name: "apply_start";
+            signal: "apply,start";
+            source: "exalt";
+            action: STATE_SET "connecting" 0.0;
+            target: "icon";
+            transition: LINEAR 0.5333;
+            after: "apply_start";
+         }
+         
+         program { name: "apply_stop";
+            signal: "apply,stop";
+            source: "exalt";
+            action: ACTION_STOP;
+            target: "apply_start";
+            after: "apply_stop_2";
+         }
+         program { name: "apply_stop_2";
+            action: STATE_SET "default" 0.0;
+            target: "icon";
+         }
+         
+         program { name: "global_disconnect";
+            signal: "global,disconnect";
+            source: "exalt";
+            action: STATE_SET "default" 0.0;
+            target: "icon";
+         }
+         
+         program { name: "global_connect";
+            signal: "global,connect";
+            source: "exalt";
+            action: STATE_SET "connected" 0.0;
+            target: "icon";
+         }
+      }
+   }
 
-            program
-            {
-                name: "apply_start";
-                signal: "apply,start";
-                source: "exalt";
-                action: STATE_SET "hide" 0.0;
-                target: "icon";
-                target: "icon_2";
-                transition: ACCELERATE 0.7;
-                after: "apply_start_2";
+   group { name: "modules/exalt/icons/encryption";
+      max: 128 128;
+      parts {
+         part { name: "icon";
+            mouse_events: 0;
+            type: IMAGE;
+            description { state: "default" 0.0;
+               fixed: 1 1;
+               aspect: 1.0 1.0;
+               aspect_preference: BOTH;
+               image.normal: "encryption.png";
             }
+            description { state: "invisible" 0.0;
+               inherit: "default" 0.0;
+               visible: 0;
+               color: 255 255 255 0;
+            }
+         }
+      }
+      programs {
+         program { name: "new_visible_essid";
+            signal: "visible,essid,new";
+            source: "exalt";
+            action: STATE_SET "invisible" 0.0;
+            target: "icon";
+            after: "visible";
+         }
+         program { name: "visible";
+            signal: "visible";
+            source: "exalt";
+            action: STATE_SET "default" 0.0;
+            transition: DECELERATE 0.5;
+            target: "icon";
+         }
+         program { name: "invisible";
+            signal: "invisible";
+            source: "exalt";
+            action: STATE_SET "invisible" 0.0;
+            transition: DECELERATE 0.5;
+            target: "icon";
+         }
+      }
+   }
 
-            program
-            {
-                name: "apply_start_2";
-                action: STATE_SET "default" 0.0;
-                target: "icon";
-                target: "icon_2";
-                transition: ACCELERATE 0.7;
-                after: "apply_start";
+   group { name: "modules/exalt/icons/wired";
+      max: 128 128;
+      parts {
+         part { name: "icon";
+            mouse_events: 0;
+            type: IMAGE;
+            description { state: "default" 0.0;
+               aspect: 1.0 1.0;
+               aspect_preference: BOTH;
+               image.normal: "2-eth.png";
+               fixed: 1 1;
             }
+            description { state: "notActivate" 0.0;
+               inherit: "default" 0.0;
+               color: 255 255 255 128;
+            }
+            description { state: "notLink" 0.0;
+               inherit: "default" 0.0;
+               color: 255 255 255 255;
+            }
+            description { state: "invisible" 0.0;
+               inherit: "default" 0.0;
+               visible: 0;
+               color: 255 255 255 0;
+            }
+         }
+         part { name: "power";
+            mouse_events: 0;
+            type: IMAGE;
+            description { state: "default" 0.0;
+               visible: 0;
+               color: 255 255 255 0;
+               aspect: 1.0 1.0;
+               aspect_preference: BOTH;
+               image.normal: "2-power.png";
+               rel1.relative: 0.5 0.5;
+               fixed: 1 1;
+            }
+            description { state: "notActivate" 0.0;
+               inherit: "default" 0.0;
+               visible: 1;
+               color: 255 255 255 255;
+            }
+            description { state: "notLink" 0.0;
+               inherit: "default" 0.0;
+               visible: 1;
+               color: 255 255 255 255;
+            }
+            description { state: "invisible" 0.0;
+               inherit: "default" 0.0;
+               visible: 1;
+               color: 255 255 255 0;
+            }
+         }
+      }
+      programs {
+         program { name: "default";
+            signal: "default";
+            source: "exalt";
+            action: STATE_SET "invisible" 0.0;
+            transition: DECELERATE 0.4;
+            target: "icon";
+            target: "power";
+            after: "default_1";
+         }
+         program { name: "default_1";
+            signal: "default";
+            source: "exalt";
+            action: STATE_SET "default" 0.0;
+            transition: DECELERATE 0.4;
+            target: "icon";
+            target: "power";
+         }
+         program { name: "notActivate";
+            signal: "notActivate";
+            source: "exalt";
+            action: STATE_SET "invisible" 0.0;
+            transition: DECELERATE 0.4;
+            target: "icon";
+            target: "power";
+            after: "notActivate_1";
+         }
+         program { name: "notActivate_1";
+            signal: "notActivate,1";
+            source: "exalt";
+            action: STATE_SET "notActivate" 0.0;
+            transition: DECELERATE 0.4;
+            target: "icon";
+            target: "power";
+         }
+         program { name: "notLink";
+            signal: "notLink";
+            source: "exalt";
+            action: STATE_SET "invisible" 0.0;
+            transition: DECELERATE 0.4;
+            target: "icon";
+            target: "power";
+            after: "notLink_1";
+         }
+         program { name: "notLink_1";
+            signal: "notLink,1";
+            source: "exalt";
+            action: STATE_SET "notLink" 0.0;
+            transition: DECELERATE 0.4;
+            target: "icon";
+            target: "power";
+         }
+      }
+   }
 
-            program
-            {
-                name: "apply_stop";
-                signal: "apply,stop";
-                source: "exalt";
-                action: ACTION_STOP;
-                target: "apply_start";
-                after: "apply_stop_2";
+   group { name: "modules/exalt/icons/wireless";
+      max: 128 128;
+      parts {
+         part { name: "icon";
+            mouse_events: 0;
+            type: IMAGE;
+            description { state: "default" 0.0;
+               aspect: 1.0 1.0;
+               aspect_preference: BOTH;
+               image.normal: "2-wifi.png";
+               fixed: 1 1;
             }
-            program
-            {
-                name: "apply_stop_2";
-                signal: "apply,stop_2";
-                source: "exalt";
-                action: STATE_SET "default" 0.0;
-                target: "icon";
-                target: "icon_2";
+            description { state: "notActivate" 0.0;
+               inherit: "default" 0.0;
+               color: 255 255 255 128;
             }
-            program
-            {
-                name: "global_disconnect";
-                signal: "global,disconnect";
-                source: "exalt";
-                action: STATE_SET "visible" 0.0;
-                target: "global_status";
-                transition: LINEAR 0.5;
+            description { state: "notLink" 0.0;
+               inherit: "default" 0.0;
+               color: 255 255 255 255;
             }
-            program
-            {
-                name: "global_connect";
-                signal: "global,connect";
-                source: "exalt";
-                action: STATE_SET "default" 0.0;
-                target: "global_status";
-                transition: LINEAR 0.5;
+            description { state: "invisible" 0.0;
+               inherit: "default" 0.0;
+               visible: 0;
+               color: 255 255 255 0;
             }
-        }
-    }
-
-    group
-    {
-        name: "modules/exalt/icons/encryption";
-        max: 128 128;
-        parts
-        {
-            part
-            {
-                name: "icon";
-                mouse_events: 0;
-                type: IMAGE;
-                description
-                {
-                    state: "default" 0.0;
-                    aspect: 1.0 1.0;
-                    aspect_preference: BOTH;
-                    image.normal: "encryption.png";
-                    visible: 1;
-                    color: 255 255 255 255;
-                    fixed: 1 1;
-                }
-                description
-                {
-                    state: "invisible" 0.0;
-                    inherit: "default" 0.0;
-                    visible: 0;
-                    color: 0 0 0 0;
-                }
+         }
+         part { name: "power";
+            mouse_events: 0;
+            type: IMAGE;
+            description { state: "default" 0.0;
+               visible: 0;
+               color: 255 255 255 0;
+               aspect: 1.0 1.0;
+               aspect_preference: BOTH;
+               image.normal: "2-power.png";
+               rel1.relative: 0.5 0.5;
+               fixed: 1 1;
             }
-        }
-        programs
-        {
-            program
-            {
-                name: "visibleWhenEssidNew";
-                signal: "visible,essid,new";
-                source: "exalt";
-                action: STATE_SET "invisible" 0.0;
-                target: "icon";
-                after: "visible";
+            description { state: "notActivate" 0.0;
+               inherit: "default" 0.0;
+               visible: 1;
+               color: 255 255 255 255;
             }
-            program
-            {
-                name: "visible";
-                signal: "visible";
-                source: "exalt";
-                action: STATE_SET "default" 0.0;
-                transition: DECELERATE 0.8;
-                target: "icon";
+            description { state: "notLink" 0.0;
+               inherit: "default" 0.0;
+               visible: 1;
+               color: 255 255 255 255;
             }
-            program
-            {
-                name: "invisible";
-                signal: "invisible";
-                source: "exalt";
-                action: STATE_SET "invisible" 0.0;
-                transition: DECELERATE 0.8;
-                target: "icon";
+            description { state: "invisible" 0.0;
+               inherit: "default" 0.0;
+               visible: 1;
+               color: 255 255 255 0;
             }
-        }
-    }
-
-
-    group
-    {
-        name: "modules/exalt/icons/wired";
-        max: 128 128;
-        parts
-        {
-            part
-            {
-                name: "icon";
-                mouse_events: 0;
-                type: IMAGE;
-                description
-                {
-                    state: "default" 0.0;
-                    aspect: 1.0 1.0;
-                    aspect_preference: BOTH;
-                    image.normal: "ethernet.png";
-                    color: 255 255 255 255;
-                    fixed: 1 1;
-                }
-                description
-                {
-                    state: "notActivate" 0.0;
-                    inherit: "default" 0.0;
-                    image.normal: "ethernet_not_activate_link.png";
-                }
-                description
-                {
-                    state: "notLink" 0.0;
-                    inherit: "default" 0.0;
-                    image.normal: "ethernet_not_activate_link.png";
-                }
-                description
-                {
-                    state: "invisible" 0.0;
-                    inherit: "default" 0.0;
-                    visible: 0;
-                    color: 0 0 0 0;
-                }
-            }
-        }
-        programs
-        {
-            program
-            {
-                name: "default";
-                signal: "default";
-                source: "exalt";
-                action: STATE_SET "invisible" 0.0;
-                transition: DECELERATE 0.4;
-                target: "icon";
-                after: "default_1";
-            }
-            program
-            {
-                name: "default_1";
-                signal: "default";
-                source: "exalt";
-                action: STATE_SET "default" 0.0;
-                transition: DECELERATE 0.4;
-                target: "icon";
-            }
-            program
-            {
-                name: "notActivate";
-                signal: "notActivate";
-                source: "exalt";
-                action: STATE_SET "invisible" 0.0;
-                transition: DECELERATE 0.4;
-                target: "icon";
-                after: "notActivate_1";
-            }
-            program
-            {
-                name: "notActivate_1";
-                signal: "notActivate,1";
-                source: "exalt";
-                action: STATE_SET "notActivate" 0.0;
-                transition: DECELERATE 0.4;
-                target: "icon";
-            }
-            program
-            {
-                name: "notLink";
-                signal: "notLink";
-                source: "exalt";
-                action: STATE_SET "invisible" 0.0;
-                transition: DECELERATE 0.4;
-                target: "icon";
-                after: "notLink_1";
-            }
-            program
-            {
-                name: "notLink_1";
-                signal: "notLink,1";
-                source: "exalt";
-                action: STATE_SET "notLink" 0.0;
-                transition: DECELERATE 0.4;
-                target: "icon";
-            }
-
-        }
-    }
-
-
-    group
-    {
-        name: "modules/exalt/icons/wireless";
-        max: 128 128;
-        parts
-        {
-            part
-            {
-                name: "icon";
-                mouse_events: 0;
-                type: IMAGE;
-                description
-                {
-                    state: "default" 0.0;
-                    aspect: 1.0 1.0;
-                    aspect_preference: BOTH;
-                    image.normal: "wireless.png";
-                    visible: 1;
-                    color: 255 255 255 255;
-                    fixed: 1 1;
-                }
-                description
-                {
-                    state: "notActivate" 0.0;
-                    inherit: "default" 0.0;
-                    image.normal: "wireless_not_activate_link.png";
-                }
-                description
-                {
-                    state: "invisible" 0.0;
-                    inherit: "default" 0.0;
-                    visible: 0;
-                    color: 0 0 0 0;
-                }
-            }
-        }
-        programs
-        {
-            program
-            {
-                name: "default";
-                signal: "default";
-                source: "exalt";
-                action: STATE_SET "invisible" 0.0;
-                transition: DECELERATE 0.4;
-                target: "icon";
-                after: "default_1";
-            }
-            program
-            {
-                name: "default_1";
-                signal: "default";
-                source: "exalt";
-                action: STATE_SET "default" 0.0;
-                transition: DECELERATE 0.4;
-                target: "icon";
-            }
-            program
-            {
-                name: "notActivate";
-                signal: "notActivate";
-                source: "exalt";
-                action: STATE_SET "invisible" 0.0;
-                transition: DECELERATE 0.4;
-                target: "icon";
-                after: "notActivate_1";
-            }
-            program
-            {
-                name: "notActivate_1";
-                signal: "notActivate,1";
-                source: "exalt";
-                action: STATE_SET "notActivate" 0.0;
-                transition: DECELERATE 0.4;
-                target: "icon";
-            }
-            program
-            {
-                name: "notConnected";
-                signal: "notConnected";
-                source: "exalt";
-                action: STATE_SET "invisible" 0.0;
-                transition: DECELERATE 0.4;
-                target: "icon";
-                after: "notConnected_1";
-            }
-            program
-            {
-                name: "notConnected_1";
-                signal: "notConnected,1";
-                source: "exalt";
-                action: STATE_SET "notActivate" 0.0;
-                transition: DECELERATE 0.4;
-                target: "icon";
-            }
-        }
-    }
+         }
+      }
+      programs {
+         program { name: "default";
+            signal: "default";
+            source: "exalt";
+            action: STATE_SET "invisible" 0.0;
+            transition: DECELERATE 0.4;
+            target: "icon";
+            target: "power";
+            after: "default_1";
+         }
+         program { name: "default_1";
+            signal: "default";
+            source: "exalt";
+            action: STATE_SET "default" 0.0;
+            transition: DECELERATE 0.4;
+            target: "icon";
+            target: "power";
+         }
+         program { name: "notActivate";
+            signal: "notActivate";
+            source: "exalt";
+            action: STATE_SET "invisible" 0.0;
+            transition: DECELERATE 0.4;
+            target: "icon";
+            target: "power";
+            after: "notActivate_1";
+         }
+         program { name: "notActivate_1";
+            signal: "notActivate,1";
+            source: "exalt";
+            action: STATE_SET "notActivate" 0.0;
+            transition: DECELERATE 0.4;
+            target: "icon";
+            target: "power";
+         }
+         program { name: "notConnected";
+            signal: "notConnected";
+            source: "exalt";
+            action: STATE_SET "invisible" 0.0;
+            transition: DECELERATE 0.4;
+            target: "icon";
+            target: "power";
+            after: "notConnected_1";
+         }
+         program { name: "notConnected_1";
+            signal: "notConnected,1";
+            source: "exalt";
+            action: STATE_SET "notActivate" 0.0;
+            transition: DECELERATE 0.4;
+            target: "icon";
+            target: "power";
+         }
+      }
+   }
 }
