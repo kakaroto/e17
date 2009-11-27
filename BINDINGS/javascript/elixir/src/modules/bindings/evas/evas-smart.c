@@ -364,7 +364,6 @@ elixir_evas_object_smart_add(JSContext *cx, uintN argc, jsval *vp)
    Evas_Object *eo;
    Evas_Smart *es;
    Evas *e;
-   JSClass *evas_object_class;
    elixir_value_t val[2];
 
    if (!elixir_params_check(cx, _evas_evas_smart_params, val, argc, JS_ARGV(cx, vp)))
@@ -374,9 +373,7 @@ elixir_evas_object_smart_add(JSContext *cx, uintN argc, jsval *vp)
    GET_PRIVATE(cx, val[1].v.obj, es);
 
    eo = evas_object_smart_add(e, es);
-   evas_object_class = elixir_class_request("evas_object_smart", "evas_object");
-   elixir_return_ptr(cx, vp, eo, evas_object_class);
-   return JS_TRUE;
+   return evas_object_to_jsval(cx, eo, &(JS_RVAL(cx, vp)));
 }
 
 static void
