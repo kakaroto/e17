@@ -97,11 +97,32 @@ elixir_void_get_parent(void* data)
    struct elixir_void_data_s*	dt = data;
 
    if (ELIXIR_VOID_CHECK(dt))
-     return JSVAL_NULL;
+     return NULL;
 
    if (dt->parent)
      return dt->parent;
-   return JSVAL_NULL;
+   return NULL;
+}
+
+JSObject *
+elixir_void_set_parent(const void *data, JSObject *parent)
+{
+   struct elixir_void_data_s *dt = (struct elixir_void_data_s *) data;
+   JSObject *old;
+
+   if (ELIXIR_VOID_CHECK(dt))
+     return NULL;
+
+   old = dt->parent;
+   elixir_object_register(dt->cx, &old, NULL);
+
+   elixir_object_unregister(dt->cx, &dt->parent);
+   dt->parent = parent;
+   elixir_object_register(dt->cx, &dt->parent, NULL);
+
+   elixir_object_unregister(dt->cx, &old);
+
+   return old;
 }
 
 jsval

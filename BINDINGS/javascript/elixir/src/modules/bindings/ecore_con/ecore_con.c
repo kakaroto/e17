@@ -247,6 +247,28 @@ _ecore_event_func_free(void *data, void *ev)
    elixir_void_free(ev);
 }
 
+static JSObject *
+_elixir_ecore_con_client_get(JSContext *cx, Ecore_Con_Client *clt)
+{
+   JSObject *result;
+   void *data;
+
+   data = ecore_con_client_data_get(clt);
+   if (!data)
+     {
+	elixir_debug_print("building Ecore_Con_Client %p", clt);
+
+	result = elixir_build_ptr(cx, clt, elixir_class_request("Ecore_Con_Client", NULL));
+	if (!result) return NULL;
+
+	data = elixir_void_new(cx, result, JSVAL_NULL, NULL);
+	if (!data) return NULL;
+	ecore_con_client_data_set(clt, data);
+     }
+
+   return elixir_void_get_parent(data);
+}
+
 static int
 _elixir_con_event_url_data_cb(void *data, int type, void *event)
 {
@@ -282,9 +304,10 @@ _elixir_con_event_url_data_cb(void *data, int type, void *event)
    if (!elixir_object_register(cx, &obj_eceud, NULL))
      goto on_finish;
 
-   if (!elixir_rval_new(cx, elixir_class_request("Ecore_Con_Url", NULL), eceud->url_con, &tmp))
-     goto on_error;
-   if (!JS_DefineProperty(cx, obj_eceud, "url_con", tmp, NULL, NULL, JSPROP_ENUMERATE | JSPROP_READONLY))
+   if (!JS_DefineProperty(cx, obj_eceud, "url_con",
+			  OBJECT_TO_JSVAL(elixir_void_get_parent(private_data)),
+			  NULL, NULL,
+			  JSPROP_ENUMERATE | JSPROP_READONLY))
      goto on_error;
 
    if (!elixir_add_int_prop(cx, obj_eceud, "size", eceud->size))
@@ -344,7 +367,6 @@ _elixir_con_event_url_complete_cb(void *data, int type, void *event)
    JSObject *obj_eceuc;
    void *new;
    void *private_data;
-   jsval tmp;
    int ret = 0;
 
    (void) data;
@@ -362,9 +384,10 @@ _elixir_con_event_url_complete_cb(void *data, int type, void *event)
    if (!elixir_object_register(cx, &obj_eceuc, NULL))
      goto on_finish;
 
-   if (!elixir_rval_new(cx, elixir_class_request("Ecore_Con_Url", NULL), eceuc->url_con, &tmp))
-     goto on_error;
-   if (!JS_DefineProperty(cx, obj_eceuc, "url_con", tmp, NULL, NULL, JSPROP_ENUMERATE | JSPROP_READONLY))
+   if (!JS_DefineProperty(cx, obj_eceuc, "url_con",
+			  OBJECT_TO_JSVAL(elixir_void_get_parent(private_data)),
+			  NULL, NULL,
+			  JSPROP_ENUMERATE | JSPROP_READONLY))
      goto on_error;
 
    if (!elixir_add_int_prop(cx, obj_eceuc, "status", eceuc->status))
@@ -394,7 +417,6 @@ _elixir_con_event_url_progress_cb(void *data, int type, void *event)
    JSObject *obj_upload;
    void *new;
    void *private_data;
-   jsval tmp;
    int ret = 0;
 
    (void) data;
@@ -412,9 +434,10 @@ _elixir_con_event_url_progress_cb(void *data, int type, void *event)
    if (!elixir_object_register(cx, &obj_eceup, NULL))
      goto on_finish;
 
-   if (!elixir_rval_new(cx, elixir_class_request("Ecore_Con_Url", NULL), eceup->url_con, &tmp))
-     goto on_error;
-   if (!JS_DefineProperty(cx, obj_eceup, "url_con", tmp, NULL, NULL, JSPROP_ENUMERATE | JSPROP_READONLY))
+   if (!JS_DefineProperty(cx, obj_eceup, "url_con",
+			  OBJECT_TO_JSVAL(elixir_void_get_parent(private_data)),
+			  NULL, NULL,
+			  JSPROP_ENUMERATE | JSPROP_READONLY))
      goto on_error;
 
    obj_download = JS_DefineObject(cx, obj_eceup, "down", NULL, NULL, JSPROP_ENUMERATE | JSPROP_READONLY);
@@ -454,7 +477,6 @@ _elixir_con_event_client_add_cb(void *data, int type, void *event)
    Ecore_Con_Server*            server;
    JSContext*                   cx;
    JSObject*                    obj_ececa;
-   JSObject*                    obj_ecc;
    void*                        new;
    void*                        private_data;
    int                          ret = 0;
@@ -475,8 +497,10 @@ _elixir_con_event_client_add_cb(void *data, int type, void *event)
    if (!elixir_object_register(cx, &obj_ececa, NULL))
      goto on_finish;
 
-   obj_ecc = JS_DefineObject(cx, obj_ececa, "client", elixir_class_request("Ecore_Con_Client", NULL), NULL, JSPROP_ENUMERATE | JSPROP_READONLY);
-   if (!elixir_object_register(cx, &obj_ecc, ececa->client))
+   if (!JS_DefineProperty(cx, obj_ececa, "client",
+			  OBJECT_TO_JSVAL(_elixir_ecore_con_client_get(cx, ececa->client)),
+			  NULL, NULL,
+			  JSPROP_ENUMERATE | JSPROP_READONLY))
      goto on_error;
 
    new = elixir_void_new(cx, NULL, OBJECT_TO_JSVAL(obj_ececa), NULL);
@@ -485,7 +509,6 @@ _elixir_con_event_client_add_cb(void *data, int type, void *event)
    ret = -1;
 
  on_error:
-   elixir_object_unregister(cx, &obj_ecc);
    elixir_object_unregister(cx, &obj_ececa);
 
  on_finish:
@@ -497,14 +520,13 @@ _elixir_con_event_client_add_cb(void *data, int type, void *event)
 static int
 _elixir_con_event_client_del_cb(void *data, int type, void *event)
 {
-   Ecore_Con_Event_Client_Del   *ececd;
-   Ecore_Con_Server             *server;
-   JSContext                    *cx;
-   JSObject                     *obj_ececd;
-   JSObject                     *obj_ecc;
-   void                         *new;
-   void                         *private_data;
-   int                           ret = 0;
+   Ecore_Con_Event_Client_Del *ececd;
+   Ecore_Con_Server *server;
+   JSContext *cx;
+   JSObject *obj_ececd;
+   void *new;
+   void *private_data;
+   int ret = 0;
 
    (void) data;
    (void) type;
@@ -522,8 +544,10 @@ _elixir_con_event_client_del_cb(void *data, int type, void *event)
    if (!elixir_object_register(cx, &obj_ececd, NULL))
      goto on_finish;
 
-   obj_ecc = JS_DefineObject(cx, obj_ececd, "client", elixir_class_request("Ecore_Con_Client", NULL), NULL, JSPROP_ENUMERATE | JSPROP_READONLY);
-   if (!elixir_object_register(cx, &obj_ecc, ececd->client))
+   if (!JS_DefineProperty(cx, obj_ececd, "client",
+			  OBJECT_TO_JSVAL(_elixir_ecore_con_client_get(cx, ececd->client)),
+			  NULL, NULL,
+			  JSPROP_ENUMERATE | JSPROP_READONLY))
      goto on_error;
 
    new = elixir_void_new(cx, NULL, OBJECT_TO_JSVAL(obj_ececd), NULL);
@@ -532,7 +556,6 @@ _elixir_con_event_client_del_cb(void *data, int type, void *event)
    ret = -1;
 
  on_error:
-   elixir_object_unregister(cx, &obj_ecc);
    elixir_object_unregister(cx, &obj_ececd);
  on_finish:
    elixir_function_stop(cx);
@@ -546,7 +569,6 @@ _elixir_con_event_server_add_cb(void *data, int type, void *event)
    Ecore_Con_Event_Server_Add   *ecesa;
    JSContext                    *cx;
    JSObject                     *obj_ecesa;
-   JSObject                     *obj_ecs;
    void                         *new;
    void                         *private_data;
    int                           ret = 0;
@@ -565,8 +587,10 @@ _elixir_con_event_server_add_cb(void *data, int type, void *event)
    if (!elixir_object_register(cx, &obj_ecesa, NULL))
      goto on_finish;
 
-   obj_ecs = JS_DefineObject(cx, obj_ecesa, "server", elixir_class_request("Ecore_Con_Server", NULL), NULL, JSPROP_ENUMERATE | JSPROP_READONLY);
-   if (!elixir_object_register(cx, &obj_ecs, ecesa->server))
+   if (!JS_DefineProperty(cx, obj_ecesa, "server",
+			  OBJECT_TO_JSVAL(elixir_void_get_parent(private_data)),
+			  NULL, NULL,
+			  JSPROP_ENUMERATE | JSPROP_READONLY))
      goto on_error;
 
    new = elixir_void_new(cx, NULL, OBJECT_TO_JSVAL(obj_ecesa), NULL);
@@ -575,7 +599,6 @@ _elixir_con_event_server_add_cb(void *data, int type, void *event)
    ret = -1;
 
  on_error:
-   elixir_object_unregister(cx, &obj_ecs);
    elixir_object_unregister(cx, &obj_ecesa);
  on_finish:
    elixir_function_stop(cx);
@@ -589,7 +612,6 @@ _elixir_con_event_server_del_cb(void *data, int type, void *event)
    Ecore_Con_Event_Server_Del   *ecesd;
    JSContext                    *cx;
    JSObject                     *obj_ecesd;
-   JSObject                     *obj_ecs;
    void                         *new;
    void                         *private_data;
    int                           ret = 0;
@@ -611,8 +633,10 @@ _elixir_con_event_server_del_cb(void *data, int type, void *event)
 	return -1;
      }
 
-   obj_ecs = JS_DefineObject(cx, obj_ecesd, "server", elixir_class_request("Ecore_Con_Server", NULL), NULL, JSPROP_ENUMERATE | JSPROP_READONLY);
-   if (!elixir_object_register(cx, &obj_ecs, ecesd->server))
+   if (!JS_DefineProperty(cx, obj_ecesd, "server",
+			  OBJECT_TO_JSVAL(elixir_void_get_parent(private_data)),
+			  NULL, NULL,
+			  JSPROP_ENUMERATE | JSPROP_READONLY))
      goto on_error;
 
    new = elixir_void_new(cx, NULL, OBJECT_TO_JSVAL(obj_ecesd), NULL);
@@ -621,7 +645,6 @@ _elixir_con_event_server_del_cb(void *data, int type, void *event)
    ret = -1;
 
  on_error:
-   elixir_object_unregister(cx, &obj_ecs);
    elixir_object_unregister(cx, &obj_ecesd);
    elixir_function_stop(cx);
    return ret;
@@ -635,7 +658,6 @@ _elixir_con_event_client_data_cb(void *data, int type, void *event)
    Elixir_Con_Data *ecd;
    JSContext *cx;
    JSObject *obj_ececd;
-   JSObject *obj_ecc;
    JSString *src_data;
    void *new;
    void *private_data;
@@ -668,8 +690,10 @@ _elixir_con_event_client_data_cb(void *data, int type, void *event)
 	return -1;
      }
 
-   obj_ecc = JS_DefineObject(cx, obj_ececd, "client", elixir_class_request("Ecore_Con_Client", NULL), NULL, JSPROP_ENUMERATE | JSPROP_READONLY);
-   if (!elixir_object_register(cx, &obj_ecc, ececd->client))
+   if (!JS_DefineProperty(cx, obj_ececd, "client",
+			  OBJECT_TO_JSVAL(_elixir_ecore_con_client_get(cx, ececd->client)),
+			  NULL, NULL,
+			  JSPROP_ENUMERATE | JSPROP_READONLY))
      goto on_error;
 
    if (!elixir_add_int_prop(cx, obj_ececd, "size", ececd->size))
@@ -713,7 +737,6 @@ _elixir_con_event_client_data_cb(void *data, int type, void *event)
 	elixir_void_set_private(private_data, NULL);
      }
 
-   elixir_object_unregister(cx, &obj_ecc);
    elixir_object_unregister(cx, &obj_ececd);
 
    elixir_function_stop(cx);
@@ -727,7 +750,6 @@ _elixir_con_event_server_data_cb(void *data, int type, void *event)
    Ecore_Con_Event_Server_Data  *ececd;
    JSContext                    *cx;
    JSObject                     *obj_ececd;
-   JSObject                     *obj_ecc;
    JSString                     *src_data;
    void                         *new;
    void                         *private_data;
@@ -750,8 +772,10 @@ _elixir_con_event_server_data_cb(void *data, int type, void *event)
 	return -1;
      }
 
-   obj_ecc = JS_DefineObject(cx, obj_ececd, "server", elixir_class_request("Ecore_Con_Server", NULL), NULL, JSPROP_ENUMERATE | JSPROP_READONLY);
-   if (!elixir_object_register(cx, &obj_ecc, ececd->server))
+   if (!JS_DefineProperty(cx, obj_ececd, "server",
+			  OBJECT_TO_JSVAL(elixir_void_get_parent(private_data)),
+			  NULL, NULL,
+			  JSPROP_ENUMERATE | JSPROP_READONLY))
      goto on_error;
 
    if (!elixir_add_int_prop(cx, obj_ececd, "size", ececd->size))
@@ -774,7 +798,6 @@ _elixir_con_event_server_data_cb(void *data, int type, void *event)
    ret = -1;
 
  on_error:
-   elixir_object_unregister(cx, &obj_ecc);
    elixir_object_unregister(cx, &obj_ececd);
 
    elixir_function_stop(cx);
@@ -931,6 +954,7 @@ elixir_ecs_isia(Ecore_Con_Server* (*func)(Ecore_Con_Type type, const char *name,
    Ecore_Con_Server *ecs;
    const char *con_name;
    const void *data;
+   JSObject *result;
    Ecore_Con_Type type;
    int port;
    elixir_value_t val[4];
@@ -945,7 +969,8 @@ elixir_ecs_isia(Ecore_Con_Server* (*func)(Ecore_Con_Type type, const char *name,
 
    ecs = func(type, con_name, port, data);
 
-   elixir_return_ptr(cx, vp, ecs, elixir_class_request("Ecore_Con_Server", NULL));
+   result = elixir_return_ptr(cx, vp, ecs, elixir_class_request("Ecore_Con_Server", NULL));
+   elixir_void_set_parent(data, result);
    return JS_TRUE;
 }
 
@@ -1045,7 +1070,6 @@ elixir_ecore_con_server_clients_get(JSContext *cx, uintN argc, jsval *vp)
    Ecore_Con_Server *svr;
    Eina_List *lst;
    JSObject *array;
-   JSObject *elt;
    jsval jelt;
    int i = 0;
    elixir_value_t val[1];
@@ -1062,8 +1086,7 @@ elixir_ecore_con_server_clients_get(JSContext *cx, uintN argc, jsval *vp)
 
    EINA_LIST_FOREACH(lst, lst, clt)
      {
-	elt = elixir_build_ptr(cx, clt, elixir_class_request("Ecore_Con_Client", NULL));
-	jelt = OBJECT_TO_JSVAL(elt);
+	jelt = OBJECT_TO_JSVAL(_elixir_ecore_con_client_get(cx, clt));
 	JS_DefineElement(cx, array, i, jelt, NULL, NULL, JSPROP_INDEX | JSPROP_ENUMERATE | JSPROP_READONLY);
 	i++;
      }
@@ -1177,6 +1200,7 @@ elixir_ecore_con_client_server_get(JSContext *cx, uintN argc, jsval *vp)
    Ecore_Con_Client *clt;
    Ecore_Con_Server *srv;
    elixir_value_t val[1];
+   void *data;
 
    if (!elixir_params_check(cx, _ecore_con_client_params, val, argc, JS_ARGV(cx, vp)))
      return JS_FALSE;
@@ -1185,7 +1209,14 @@ elixir_ecore_con_client_server_get(JSContext *cx, uintN argc, jsval *vp)
 
    srv = ecore_con_client_server_get(clt);
 
-   elixir_return_ptr(cx, vp, srv, elixir_class_request("Ecore_Con_Server", NULL));
+   if (!srv)
+     {
+	JS_SET_RVAL(cx, vp, JSVAL_NULL);
+	return JS_TRUE;
+     }
+
+   data = ecore_con_server_data_get(srv);
+   JS_SET_RVAL(cx, vp, OBJECT_TO_JSVAL(elixir_void_get_parent(data)));
    return JS_TRUE;
 }
 
@@ -1201,7 +1232,10 @@ elixir_ecore_con_client_del(JSContext *cx, uintN argc, jsval *vp)
 
    GET_PRIVATE(cx, val[0].v.obj, clt);
 
-   data = ecore_con_client_del(clt);
+   data = ecore_con_client_data_get(clt);
+   ecore_con_client_data_set(clt, NULL);
+
+   ecore_con_client_del(clt);
    JS_SET_RVAL(cx, vp, elixir_void_free(data));
 
    return JS_TRUE;
@@ -1211,6 +1245,7 @@ static JSBool
 elixir_ecore_con_client_data_set(JSContext *cx, uintN argc, jsval *vp)
 {
    Ecore_Con_Client *clt;
+   void *old;
    void *data;
    elixir_value_t val[2];
 
@@ -1218,7 +1253,10 @@ elixir_ecore_con_client_data_set(JSContext *cx, uintN argc, jsval *vp)
      return JS_FALSE;
 
    GET_PRIVATE(cx, val[0].v.obj, clt);
-   data = elixir_void_new(cx, JS_THIS_OBJECT(cx, vp), val[1].v.any, NULL);
+   old = ecore_con_client_data_get(clt);
+
+   data = elixir_void_new(cx, elixir_void_get_parent(old), val[1].v.any, NULL);
+   elixir_void_free(old);
 
    ecore_con_client_data_set(clt, data);
 
@@ -1282,6 +1320,7 @@ elixir_ecore_con_url_new(JSContext *cx, uintN argc, jsval *vp)
 {
    Ecore_Con_Url *curl;
    const char *url;
+   JSObject *result;
    elixir_value_t val[1];
 
    if (!elixir_params_check(cx, string_params, val, argc, JS_ARGV(cx, vp)))
@@ -1290,10 +1329,10 @@ elixir_ecore_con_url_new(JSContext *cx, uintN argc, jsval *vp)
    url = elixir_get_string_bytes(val[0].v.str);
 
    curl = ecore_con_url_new(url);
-   if (curl)
-     ecore_con_url_data_set(curl, elixir_void_new(cx, JS_THIS_OBJECT(cx, vp), JSVAL_NULL, NULL));
 
-   elixir_return_ptr(cx, vp, curl, elixir_class_request("Ecore_Con_Url", NULL));
+   result = elixir_return_ptr(cx, vp, curl, elixir_class_request("Ecore_Con_Url", NULL));
+   if (curl)
+     ecore_con_url_data_set(curl, elixir_void_new(cx, result, JSVAL_NULL, NULL));
    return JS_TRUE;
 }
 
@@ -1316,8 +1355,6 @@ elixir_ecore_con_url_destroy(JSContext *cx, uintN argc, jsval *vp)
 	free(ecd);
      }
 
-   // FIXME: As we more than one instance of url_con in memory
-   // this will not protect against all problem.
    JS_SetPrivate(cx, val[0].v.obj, NULL);
 
    elixir_void_free(ecore_con_url_data_get(curl));

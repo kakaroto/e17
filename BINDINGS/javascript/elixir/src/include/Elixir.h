@@ -226,6 +226,7 @@ EAPI void               *elixir_void_new(JSContext *cx, JSObject *parent, jsval 
 EAPI jsval               elixir_void_free(void *data);
 EAPI void                elixir_void_move(JSContext *replace, void *data);
 EAPI JSObject           *elixir_void_get_parent(void *data);
+EAPI JSObject		*elixir_void_set_parent(const void *data, JSObject *parent);
 EAPI jsval               elixir_void_get_jsval(void *data);
 EAPI void               *elixir_void_get_private(void *data);
 EAPI void		 elixir_void_set_private(void *data, void *private);
