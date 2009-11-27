@@ -40,6 +40,11 @@ static const elixir_parameter_t*        _edje_object_string_2double_params[5] = 
    &double_parameter,
    NULL
 };
+static const elixir_parameter_t*	_edje_object_double_params[3] = {
+   &_edje_object_parameter,
+   &double_parameter,
+   NULL
+};
 static const elixir_parameter_t*        _evas_params[2] = {
    &_evas_parameter,
    NULL
@@ -1185,6 +1190,41 @@ elixir_edje_object_part_unswallow(JSContext *cx, uintN argc, jsval *vp)
 }
 
 static JSBool
+elixir_edje_object_scale_set(JSContext *cx, uintN argc, jsval *vp)
+{
+   Evas_Object *eo;
+   double scale;
+   elixir_value_t val[2];
+
+   if (!elixir_params_check(cx, _edje_object_double_params, val, argc, JS_ARGV(cx, vp)))
+     return JS_FALSE;
+
+   GET_PRIVATE(cx, val[0].v.obj, eo);
+   scale = val[1].v.dbl;
+
+   edje_object_scale_set(eo, scale);
+
+   return JS_TRUE;
+}
+
+static JSBool
+elixir_edje_object_scale_get(JSContext *cx, uintN argc, jsval *vp)
+{
+   Evas_Object *eo;
+   double scale;
+   elixir_value_t val[2];
+
+   if (!elixir_params_check(cx, _edje_object_params, val, argc, JS_ARGV(cx, vp)))
+     return JS_FALSE;
+
+   GET_PRIVATE(cx, val[0].v.obj, eo);
+
+   scale = edje_object_scale_get(eo);
+
+   return JS_NewNumberValue(cx, scale, &(JS_RVAL(cx, vp)));
+}
+
+static JSBool
 elixir_edje_object_part_geometry_get(JSContext *cx, uintN argc, jsval *vp)
 {
    Evas_Object *eo;
@@ -2308,6 +2348,8 @@ static JSFunctionSpec   edje_functions[] = {
   ELIXIR_FN(edje_object_part_table_pack, 7, JSPROP_ENUMERATE, 0 ),
   ELIXIR_FN(edje_object_part_table_col_row_size_get, 2, JSPROP_ENUMERATE, 0 ),
   ELIXIR_FN(edje_object_part_table_clear, 3, JSPROP_ENUMERATE, 0 ),
+  ELIXIR_FN(edje_object_scale_set, 2, JSPROP_ENUMERATE, 0),
+  ELIXIR_FN(edje_object_scale_get, 1, JSPROP_ENUMERATE, 0),
   JS_FS_END
 };
 
