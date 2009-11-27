@@ -138,9 +138,9 @@ func_2evas_object_call(evas_smart_callback_t index, Evas_Object* obj1, Evas_Obje
    suspended = elixir_function_suspended(cx);
    if (suspended) elixir_function_start(cx);
 
-   if (evas_object_to_jsval(cx, obj1, &argv[0]))
+   if (!evas_object_to_jsval(cx, obj1, &argv[0]))
      goto on_error;
-   if (evas_object_to_jsval(cx, obj2, &argv[1]))
+   if (!evas_object_to_jsval(cx, obj2, &argv[1]))
      goto on_error;
 
    elixir_function_run(cx, esd->func[index], parent, 2, argv, &js_return);
@@ -176,7 +176,7 @@ func_evas_object_2int_call(evas_smart_callback_t index, Evas_Object* obj, int i1
    suspended = elixir_function_suspended(cx);
    if (suspended) elixir_function_start(cx);
 
-   if (evas_object_to_jsval(cx, obj, &argv[0]))
+   if (!evas_object_to_jsval(cx, obj, &argv[0]))
      goto on_error;
 
    argv[1] = INT_TO_JSVAL(i1);
@@ -214,7 +214,7 @@ func_color_set(Evas_Object *obj, int r, int g, int b, int a)
    suspended = elixir_function_suspended(cx);
    if (suspended) elixir_function_start(cx);
 
-   if (evas_object_to_jsval(cx, obj, &argv[0]))
+   if (!evas_object_to_jsval(cx, obj, &argv[0]))
      goto on_error;
 
    argv[1] = INT_TO_JSVAL(r);
