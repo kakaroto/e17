@@ -7,6 +7,8 @@
 #include <sys/stat.h>
 #include <sys/mman.h>
 
+#include <Ecore.h>
+
 #include "SDL.h"
 #include "SDL_mixer.h"
 
@@ -50,7 +52,8 @@ static const elixir_parameter_t*        _int_mix_chunk_2int_params[5] = {
    NULL
 };
 
-static void*    callback_context = NULL;
+static void *callback_context = NULL;
+static Ecore_Pipe *callback_pipe = NULL;
 
 static JSBool
 elixir_void_int_params(void (*func)(int channel),
@@ -231,13 +234,21 @@ elixir_Mix_FadeInChannel(JSContext *cx, uintN argc, jsval *vp)
 }
 
 static void
-_channel_finished_cb(int channel)
+_channel_callback(__UNUSED__ void *data, void *buffer, unsigned int nbyte)
 {
    JSFunction *fct;
    JSContext *cx;
    JSObject *parent;
    jsval argv[1];
    jsval js_return;
+   void *tmp;
+   int channel;
+
+   if (callback_context == NULL) return ;
+
+   if (nbyte != sizeof (void*)) return ;
+   tmp = *(void**) buffer;
+   channel = (int) tmp;
 
    fct = elixir_void_get_private(callback_context);
    if (fct)
@@ -254,6 +265,17 @@ _channel_finished_cb(int channel)
 
 	elixir_function_stop(cx);
      }
+
+   return ;
+}
+
+static void
+_channel_finished_cb(int channel)
+{
+   void *tmp;
+
+   tmp = (void*) channel;
+   ecore_pipe_write(callback_pipe, &tmp, sizeof (void*));
 }
 
 static JSBool
@@ -321,12 +343,18 @@ static const struct {
 static Eina_Bool
 module_open(Elixir_Module *em, JSContext *cx, JSObject *parent)
 {
-   void **tmp;
+   void **tmp = NULL;
    unsigned int i = 0;
    jsval property;
 
    if (em->data)
      return EINA_FALSE;
+
+   ecore_init();
+
+   callback_pipe = ecore_pipe_add(_channel_callback, NULL);
+   if (!callback_pipe)
+     goto on_error;
 
    em->data = parent;
    tmp = &em->data;
@@ -361,6 +389,13 @@ module_open(Elixir_Module *em, JSContext *cx, JSObject *parent)
    if (tmp)
      elixir_object_unregister(cx, (JSObject**) tmp);
    em->data = NULL;
+
+   if (callback_pipe)
+     ecore_pipe_del(callback_pipe);
+   callback_pipe = NULL;
+
+   ecore_shutdown();
+
    return EINA_FALSE;
 }
 
@@ -394,6 +429,11 @@ module_close(Elixir_Module *em, JSContext *cx)
    em->data = NULL;
 
    SDL_QuitSubSystem(SDL_INIT_AUDIO);
+
+   ecore_pipe_del(callback_pipe);
+   callback_pipe = NULL;
+
+   ecore_shutdown();
 
    return EINA_TRUE;
 }
