@@ -289,57 +289,70 @@ static void
 _grid_reconfigure(Instance *inst)
 {
    Evas_Coord zw;
-   Evas_Coord catw = 0, cath = 0, ew = 0, eh = 0, cw = 0, ch = 0,
+   Evas_Coord cath = 0, catw = 0, ew = 0, eh = 0, cw = 0, ch = 0,
               ww = 0, hh = 0, w = 0, h = 0;
    E_Zone *zone = e_util_zone_current_get(e_manager_current_get());
    Eina_List *l;
    Item *e;
-   int max_item_count = 0, item_count = 0, cat_count = 0, row_item_count = 0;
+   int max_item_count = 0, item_count = 0, cat_count = 0, iter_count;
 
    zw = zone->w;
 
+   evas_object_smart_calculate(inst->o_box);
    EINA_LIST_FOREACH(inst->items, l, e)
      {
 	if (e->isa_category)
 	  {
 	     if (!cath)
-	       edje_object_size_max_get(e->o_holder, NULL, &cath);
+	       edje_object_size_min_calc(e->o_holder, &catw, &cath);
 
 	     cat_count++;
 
-	     if (max_item_count < item_count)
-	       max_item_count = item_count;
 	     item_count = 0;
 	  }
 	else
 	  {
 	     if (!ew && !eh)
-	       evas_object_size_hint_min_get(e->o_holder, &ew, &eh);
+	       evas_object_geometry_get(e->o_holder, NULL, NULL, &ew, &eh);
+             evas_object_resize(e->o_holder, ew, eh);
 
-	     item_count++;
+	     if (max_item_count < ++item_count)
+	       max_item_count = item_count;
 	  }
      }
-   row_item_count = max_item_count = (max_item_count ? max_item_count : item_count);
-   if (!row_item_count) return;
+   if (!max_item_count) return;
 
+   /*
    do
      {
 	cw = ew * row_item_count;
-	ch = eh * ceil(max_item_count / row_item_count--) + cath;
+	ch = eh * ceil((float) max_item_count / row_item_count--) + cath;
 	if (cat_count)
 	  ch *= cat_count;
      } while (row_item_count && (cw > (zw - ew / 2) || ((double) cw / (double) ch) > 1.6));
    catw = cw;
+   */
 
-   EINA_LIST_FOREACH(inst->items, l, e)
+   iter_count = max_item_count;
+   while ((!hh || ((double) ww / (double) hh) < 1.5) && cw < (zw - ew / 2) && (ww < catw || (iter_count && ww <= max_item_count * ew + ew / 2)))
      {
-	if (e->isa_category)
-	  evas_object_resize(e->o_holder, catw, cath);
-     }
+        if (max_item_count == 1 && ww < catw)
+          cw = catw;
+        else
+          cw += ew;
+        ch += eh;
+        EINA_LIST_FOREACH(inst->items, l, e)
+          {
+             if (e->isa_category)
+               evas_object_resize(e->o_holder, cw, cath);
+          }
+        /* Rough approximation, since we don't know the box's
+         * padding settings, and we don't care */
+        evas_object_resize(inst->o_box, cw + ew / 2, ch + eh / 2);
+        evas_object_size_hint_min_get(edje_object_part_object_get(inst->o_box, "e.box.content"), &ww, &hh);
+        iter_count--;
+     };
 
-   /* Rough approximation, since we don't know the box's
-    * padding settings, and we don't care */
-   evas_object_resize(inst->o_box, cw + ew / 2, ch + eh / 2);
    /* XXX: switch to size_min_calc when it starts working
     *
     * edje_object_size_min_calc(inst->o_box, &ww, &hh);

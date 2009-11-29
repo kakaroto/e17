@@ -3495,8 +3495,6 @@ target: "e.text.label";
    }
    group {
       name: "modules/drawer/grid/item";
-      min: 73 73;
-      max: 73 85;
       parts {
 
 #define MOUSE_IN_TARGETS \
@@ -3515,8 +3513,6 @@ target: "glow";
 	       visible: 0;
 	       color: 255 255 255 0;
 	       align: 0.5 0;
-	       min: 73 73;
-	       max: 73 73;
 	       image {
 		  normal: "bt_sm_base1.png";
 		  border: 6 6 6 6;
@@ -3566,6 +3562,7 @@ target: "glow";
 		  font: "Sans:style=Bold";
 		  size: 8;
 		  elipsis: 0;
+		  align: 0.5 1;
 		  text_class: "module_normal";
 	       }
 	    }
@@ -3736,7 +3733,7 @@ target: "glow";
    }
    group {
       name: "modules/drawer/grid/category";
-      min: 9999 32;
+      min: 0 32;
       max: 9999 32;
       parts {
 	 part {

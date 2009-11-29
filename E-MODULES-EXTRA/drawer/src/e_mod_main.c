@@ -42,6 +42,7 @@ struct _Instance
         Eina_Bool pop_update : 1;
         Eina_Bool pop_empty : 1;
         Eina_Bool content_recalc : 1;
+        Eina_Bool use_composite : 1;
      } flags;
 };
 
@@ -77,6 +78,7 @@ static Config_Item *_drawer_conf_item_get(const char *id);
 static Instance *_drawer_instance_get(Config_Item *ci);
 
 static void _drawer_shelf_update(Instance *inst, Drawer_Source_Item *si);
+static void _drawer_popup_theme_set(Instance *inst);
 static void _drawer_popup_create(Instance *inst);
 static void _drawer_popup_show(Instance *inst);
 static void _drawer_popup_hide(Instance *inst);
@@ -655,7 +657,7 @@ _drawer_shelf_update(Instance *inst, Drawer_Source_Item *si)
 }
 
 static void
-_drawer_popup_create(Instance *inst)
+_drawer_popup_theme_set(Instance *inst)
 {
    char theme[1024];
 
@@ -663,7 +665,7 @@ _drawer_popup_create(Instance *inst)
      snprintf(theme, sizeof(theme), "modules/drawer/container");
    else
      snprintf(theme, sizeof(theme), "modules/drawer/container_noncomposite");
-   inst->popup = e_gadcon_popup_new(inst->gcc);
+   inst->flags.use_composite = e_config->use_composite;
    if (!(e_theme_edje_object_set(inst->popup->o_bg,
 	       "base/theme/modules/drawer", theme)))
      {
@@ -675,6 +677,13 @@ _drawer_popup_create(Instance *inst)
 	else
 	  e_theme_edje_object_set(inst->popup->o_bg, "base/theme/gadman", "e/gadman/popup");
      }
+}
+
+static void
+_drawer_popup_create(Instance *inst)
+{
+   inst->popup = e_gadcon_popup_new(inst->gcc);
+   _drawer_popup_theme_set(inst);
    e_popup_edje_bg_object_set(inst->popup->win, inst->popup->o_bg);
    edje_object_signal_callback_add(inst->popup->o_bg, "e,action,popup,hidden", "drawer", 
 				   _drawer_popup_hidden_cb, inst);
@@ -1717,6 +1726,8 @@ _drawer_mouse_down_cb(void *data, Evas *evas, Evas_Object *obj, void *event)
      {
 	if (inst->flags.pop_hiding) return;
 	if (!inst->popup) _drawer_popup_create(inst);
+        if (e_config->use_composite == inst->flags.use_composite)
+          _drawer_popup_theme_set(inst);
 	if (inst->popup->win->visible)
 	  _drawer_popup_hide(inst);
 	else

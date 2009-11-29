@@ -14,6 +14,9 @@
  * like  printf D_("Hello World\n");  so can be replaced by gettext */
 #define D_(str) dgettext(PACKAGE, str)
 
+#define DBG(...) EINA_LOG_DBG(__VA_ARGS__)
+#define ERR(...) EINA_LOG_ERR(__VA_ARGS__)
+
 typedef enum
 {
      DRAWER_SOURCES,
