@@ -30,6 +30,5 @@ Progressbar        *ProgressbarCreate(const char *name, int width, int height);
 void                ProgressbarDestroy(Progressbar * p);
 void                ProgressbarSet(Progressbar * p, int progress);
 void                ProgressbarShow(Progressbar * p);
-void                ProgressbarHide(Progressbar * p);
 
 #endif /* _PROGRESS_H_ */

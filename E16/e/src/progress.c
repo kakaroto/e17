@@ -89,8 +89,6 @@ ProgressbarDestroy(Progressbar * p)
 {
    int                 i, j, dy;
 
-   ProgressbarHide(p);
-
    dy = 2 * p->h;
    EobjWindowDestroy(p->win);
    EobjWindowDestroy(p->n_win);
@@ -187,12 +185,4 @@ ProgressbarShow(Progressbar * p)
 	    TextclassGetJustification(p->tnc));
 
    EobjsRepaint();
-}
-
-void
-ProgressbarHide(Progressbar * p)
-{
-   EobjUnmap(p->win);
-   EobjUnmap(p->n_win);
-   EobjUnmap(p->p_win);
 }

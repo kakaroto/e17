@@ -164,12 +164,6 @@ InZoom(void)
    return 0;
 }
 
-char
-CanZoom(void)
-{
-   return zoom_can;
-}
-
 void
 ZoomInit(void)
 {
@@ -202,7 +196,7 @@ Zoom(EWin * ewin)
 {
    const XF86VidModeModeInfo *mode;
 
-   if (!CanZoom())
+   if (!zoom_can)
       return;
 
    if (!ewin)
@@ -285,12 +279,6 @@ ReZoom(EWin * ewin)
 
 char
 InZoom(void)
-{
-   return 0;
-}
-
-char
-CanZoom(void)
 {
    return 0;
 }

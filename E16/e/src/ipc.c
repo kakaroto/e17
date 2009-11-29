@@ -1779,10 +1779,11 @@ doEFuncDeferred(void *data)
 
    ewin = (EWin *) prm[0];
    if (ewin && !EwinFindByPtr(ewin))
-      return 0;
+      goto done;
 
    EFunc(ewin, (const char *)prm[1]);
 
+ done:
    Efree(prm[1]);
    Efree(data);
 

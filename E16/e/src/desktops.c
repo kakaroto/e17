@@ -1756,7 +1756,8 @@ DeskDragStart(int desk)
 {
    Desk               *dsk;
 
-   if (!(dsk = DeskGet(desk)))
+   dsk = DeskGet(desk);
+   if (!dsk)
       return;
 
    desks.drag_x0 = Mode.events.cx - EoGetX(dsk);

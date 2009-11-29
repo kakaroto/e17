@@ -323,7 +323,9 @@ FillFlatFileMenu(Menu * m, const char *file)
 	     wd[0] = '\0';
 	     parse(s, "%S%T%S%S", &txt, &icon, &act, &params);
 
-	     if (icon && (icon = find_icon(icon)))
+	     if (icon)
+		icon = find_icon(icon);
+	     if (icon)
 	       {
 		  Esnprintf(wd, sizeof(wd), "__FM.%s", icon);
 		  icc = ImageclassFind(wd, 0);

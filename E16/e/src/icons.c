@@ -237,7 +237,7 @@ EwinIconImageGet(EWin * ewin, int size, int mode)
    int                 i, type;
 
    if (mode < 0 || mode >= N_MODES)
-      mode = 4;
+      mode = 1;
 
    for (i = 0; i < N_TYPES; i++)
      {

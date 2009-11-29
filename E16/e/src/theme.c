@@ -334,7 +334,8 @@ ThemePathFind(void)
     * Mode.theme.path may be assigned on the command line.
     */
    name = (Mode.theme.path) ? Mode.theme.path : Conf.theme.name;
-   if (name && (s = strchr(name, '.')))
+   s = (name) ? strchr(name, '.') : NULL;
+   if (s)
      {
 	*s = 0;
 	Efree(Mode.theme.variant);
