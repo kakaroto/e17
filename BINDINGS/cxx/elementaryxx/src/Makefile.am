@@ -17,34 +17,34 @@ lib_LTLIBRARIES = \
 	libelementaryxx.la
 
 libelementaryxx_la_SOURCES = \
-	ElmApplication.cpp  \
-	ElmWindow.cpp  \
-	ElmButton.cpp  \
-	ElmClock.cpp  \
-	ElmScroller.cpp  \
-	ElmToggle.cpp  \
-	ElmEntry.cpp  \
-	ElmCheck.cpp  \
-	ElmIcon.cpp  \
-	ElmImage.cpp  \
-	ElmRadio.cpp  \
-	ElmSlider.cpp  \
-	ElmBubble.cpp  \
-	ElmLabel.cpp  \
-	ElmBackground.cpp  \
-	ElmBox.cpp  \
-	ElmFrame.cpp  \
-	ElmList.cpp  \
-	ElmListItem.cpp  \
-	ElmTable.cpp  \
-	ElmObject.cpp  \
-	ElmLayout.cpp  \
-	ElmHover.cpp  \
-	ElmNotepad.cpp  \
-	ElmAnchorblock.cpp  \
-	ElmAnchorview.cpp  \
-	ElmSpinner.cpp  \
-	ElmProgressbar.cpp  \
-	ElmPanel.cpp  \
-	ElmSeparator.cpp
+	Application.cpp  \
+	Window.cpp  \
+	Button.cpp  \
+	Clock.cpp  \
+	Scroller.cpp  \
+	Toggle.cpp  \
+	Entry.cpp  \
+	Check.cpp  \
+	Icon.cpp  \
+	Image.cpp  \
+	Radio.cpp  \
+	Slider.cpp  \
+	Bubble.cpp  \
+	Label.cpp  \
+	Background.cpp  \
+	Box.cpp  \
+	Frame.cpp  \
+	List.cpp  \
+	ListItem.cpp  \
+	Table.cpp  \
+	Object.cpp  \
+	Layout.cpp  \
+	Hover.cpp  \
+	Notepad.cpp  \
+	Anchorblock.cpp  \
+	Anchorview.cpp  \
+	Spinner.cpp  \
+	Progressbar.cpp  \
+	Panel.cpp  \
+	Separator.cpp
 

@@ -1,36 +1,36 @@
 
 libelementaryxx_HEADERS = \
-	ElmApplication.h \
-	ElmWindow.h \
+	Application.h \
+	Window.h \
 	Elementaryxx.h \
-	ElmButton.h \
-	ElmClock.h \
-	ElmScroller.h \
-	ElmToggle.h \
-	ElmEntry.h \
-	ElmCheck.h \
-	ElmIcon.h \
-	ElmImage.h \
-	ElmRadio.h \
-	ElmSlider.h \
-	ElmBubble.h \
-	ElmLabel.h \
-	ElmBackground.h \
-	ElmBox.h \
-	ElmFrame.h \
-	ElmList.h \
-	ElmListItem.h \
-	ElmTable.h \
-	ElmObject.h \
-	ElmLayout.h \
-	ElmHover.h \
-	ElmNotepad.h \
-	ElmAnchorblock.h \
-	ElmAnchorview.h \
-	ElmSpinner.h \
-	ElmProgressbar.h \
-	ElmPanel.h \
-	ElmSeparator.h
+	Button.h \
+	Clock.h \
+	Scroller.h \
+	Toggle.h \
+	Entry.h \
+	Check.h \
+	Icon.h \
+	Image.h \
+	Radio.h \
+	Slider.h \
+	Bubble.h \
+	Label.h \
+	Background.h \
+	Box.h \
+	Frame.h \
+	List.h \
+	ListItem.h \
+	Table.h \
+	Object.h \
+	Layout.h \
+	Hover.h \
+	Notepad.h \
+	Anchorblock.h \
+	Anchorview.h \
+	Spinner.h \
+	Progressbar.h \
+	Panel.h \
+	Separator.h
 
 libelementaryxxdir = \
 	$(pkgincludedir)
