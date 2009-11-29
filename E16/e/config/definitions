@@ -289,7 +289,6 @@
 #define __A_FULLSCREEN	wop * fs
 #define __A_RAISE_LOWER	wop * raiselower
 #define __A_SET_BORDER	wop * bo
-#define __A_MOVE_CONSTRAINED	79
 
 #define __A_ICONIFY_NG	wop % ic
 #define __A_KILL_NG	wop % close
@@ -312,8 +311,6 @@
 #define __A_SEND_TO_PREV_DESK	wop * desk prev
 #define __A_MOVE_WIN_TO_AREA	wop * area
 #define __A_MOVE_WIN_BY_AREA	wop * arel
-#define __A_MOVE_WIN_TO_LINEAR_AREA	74
-#define __A_MOVE_WIN_BY_LINEAR_AREA	75
 
 #define __A_DESKTOP_NEXT	desk next
 #define __A_DESKTOP_PREV	desk prev
@@ -328,44 +325,11 @@
 
 #define __A_DRAG_BUTTON		button mo ptr
 
-#define __A_FOCUSMODE_SET	23
-#define __A_MOVEMODE_SET	24
-#define __A_RESIZEMODE_SET	25
-#define __A_SLIDEMODE_SET	26
-#define __A_CLEANUPSLIDE_SET	27
-#define __A_MAPSLIDE_SET	28
-#define __A_SOUND_SET		29
-#define __A_BUTTONMOVE_RESIST_SET	30
-#define __A_DESKTOPBG_TIMEOUT_SET	31
-#define __A_MAPSLIDE_SPEED_SET	32
-#define __A_CLEANUPSLIDE_SPEED_SET	33
-#define __A_DRAGDIR_SET		34
-#define __A_DRAGBAR_ORDER_SET	35
-#define __A_DRAGBAR_WIDTH_SET	36
-#define __A_DRAGBAR_LENGTH_SET	37
-#define __A_DESKSLIDE_SET	38
-#define __A_DESKSLIDE_SPEED_SET	39
-#define __A_HIQUALITYBG_SET	40
-
-#define __A_PLAYSOUNDCLASS	41
-#define __A_DESKRAY		43
-#define __A_AUTOSAVE_SET	44
 #define __A_HIDESHOW_BUTTON	button_show
 #define __A_SLIDEOUT		slideout
-#define __A_SCROLL_WINDOWS	48
-#define __A_TOOLTIP_SET	57
 #define __A_FOCUS_NEXT		focus next
 #define __A_FOCUS_PREV		focus prev
-#define __A_FOCUS_SET	60
 #define __A_BACKGROUND_SET	bg use
-
-#define __A_WARP_POINTER	66
-#define __A_AREA_LINEAR_SET	70
-#define __A_AREA_LINEAR_MOVE_BY	71
-#define __A_FX	73
-#define __A_SET_PAGER_HIQ	76
-#define __A_SET_PAGER_SNAP	77
-#define __A_TYPE_TEXT		80
 
 #define __A_START_GROUP		gop * start
 #define __A_ADD_TO_GROUP	gop * add
