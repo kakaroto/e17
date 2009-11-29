@@ -17,19 +17,19 @@ lib_LTLIBRARIES = \
 	libevasxx.la
 
 libevasxx_la_SOURCES = \
-	EvasCanvas.cpp \
-	EvasImage.cpp \
-	EvasObject.cpp \
-	EvasText.cpp \
-	EvasTextblockStyle.cpp \
-	EvasLine.cpp \
-	EvasRectangle.cpp \
-	EvasPolygon.cpp \
-	EvasTextblock.cpp \
-	EvasGradient.cpp \
-	EvasTransform.cpp \
-	EvasSmart.cpp \
-	EvasExceptions.cpp
+	Canvas.cpp \
+	Image.cpp \
+	Object.cpp \
+	Text.cpp \
+	TextblockStyle.cpp \
+	Line.cpp \
+	Rectangle.cpp \
+	Polygon.cpp \
+	Textblock.cpp \
+	Gradient.cpp \
+	Transform.cpp \
+	Smart.cpp \
+	Exceptions.cpp
 
 libevasxx_la_LIBADD = \
 	$(EFL_LIBS)    \

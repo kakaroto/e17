@@ -7,11 +7,11 @@
  * #include "Edjexx.h".
  */
 
-#include "EdjeBase.h"
-#include "EdjeExceptions.h"
-#include "EdjePart.h"
-#include "EdjeObject.h"
-#include "EdjeEdit.h"
+#include "Base.h"
+#include "Exceptions.h"
+#include "Part.h"
+#include "Object.h"
+#include "Edit.h"
 
 #endif // EDJEXX_H
 

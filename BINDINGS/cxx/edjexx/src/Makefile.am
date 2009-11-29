@@ -16,11 +16,11 @@ lib_LTLIBRARIES = \
 	libedjexx.la
 
 libedjexx_la_SOURCES = \
-	EdjeBase.cpp  \
-	EdjePart.cpp  \
-	EdjeObject.cpp  \
-	EdjeExceptions.cpp  \
-	EdjeEdit.cpp
+	Base.cpp  \
+	Part.cpp  \
+	Object.cpp  \
+	Exceptions.cpp  \
+	Edit.cpp
 
 libedjexx_la_LIBADD = \
 	$(EFL_LIBS)

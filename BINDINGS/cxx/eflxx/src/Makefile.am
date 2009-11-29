@@ -15,5 +15,5 @@ lib_LTLIBRARIES = \
 	libeflxx.la
 
 libeflxx_la_SOURCES = \
-	eflpp_debug.cpp
+	Debug.cpp
 

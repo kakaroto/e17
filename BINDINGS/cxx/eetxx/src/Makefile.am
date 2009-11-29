@@ -16,9 +16,9 @@ lib_LTLIBRARIES = \
 	libeetxx.la
 
 libeetxx_la_SOURCES = \
-	EetDocument.cpp\
-	EetList.cpp \
-	EetChunk.cpp \
+	Document.cpp\
+	List.cpp \
+	Chunk.cpp \
 	ChunkIterator.cpp
 
 libeetxx_la_LIBADD = \

@@ -16,12 +16,12 @@ lib_LTLIBRARIES = \
 	libecorexx.la
 
 libecorexx_la_SOURCES = \
-	EcoreApplication.cpp\
-	EcoreConfig.cpp \
-	EcoreEvasWindow.cpp \
-	EcoreXWindow.cpp \
-	EcoreAnimator.cpp \
-	EcoreTimer.cpp
+	Application.cpp\
+	Config.cpp \
+	EvasWindow.cpp \
+	XWindow.cpp \
+	Animator.cpp \
+	Timer.cpp
 
 libecorexx_la_LIBADD = \
 	$(EFL_LIBS)

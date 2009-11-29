@@ -4,21 +4,21 @@ EXTRA_DIST = \
 
 evasxx_HEADERS = \
 	eflpp_evas.h\
-	EvasCanvas.h \
-	EvasEvent.h \
-	EvasImage.h \
-	EvasObject.h \
-	EvasText.h \
-	EvasTextblockStyle.h \
-	EvasUtils.h \
-	EvasLine.h \
-	EvasRectangle.h \
-	EvasPolygon.h \
-	EvasTextblock.h \
-	EvasGradient.h \
-	EvasTransform.h \
-	EvasSmart.h \
-	EvasExceptions.h \
+	Canvas.h \
+	Event.h \
+	Image.h \
+	Object.h \
+	Text.h \
+	TextblockStyle.h \
+	Utils.h \
+	Line.h \
+	Rectangle.h \
+	Polygon.h \
+	Textblock.h \
+	Gradient.h \
+	Transform.h \
+	Smart.h \
+	Exceptions.h \
 	Evasxx.h
 
 evasxxdir = \

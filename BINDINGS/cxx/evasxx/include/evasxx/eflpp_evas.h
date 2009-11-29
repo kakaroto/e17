@@ -1,7 +1,7 @@
 #ifndef EVAS_BASE_H
 #define EVAS_BASE_H
 
-namespace efl {
+namespace Evasxx {
 
 // TODO: what do do with this???
 /*static const char* const EVAS_LOAD_ERROR[] =

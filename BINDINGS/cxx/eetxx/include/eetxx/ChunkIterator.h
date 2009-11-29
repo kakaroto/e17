@@ -1,21 +1,21 @@
-#ifndef CHUNK_ITERATOR_H
-#define CHUNK_ITERATOR_H
+#ifndef EET_CHUNK_ITERATOR_H
+#define EET_CHUNK_ITERATOR_H
 
 /* EFLxx includes */
-#include "EetChunk.h"
+#include "Chunk.h"
 
-namespace efl {
+namespace eet {
 
 /* forward declarations */
-class EetDocument;
+class Document;
 
 class ChunkIterator :
       public std::iterator<std::forward_iterator_tag, char *, void>
 {
 public:
-  ChunkIterator (char **chunk, EetDocument &doc);
+  ChunkIterator (char **chunk, Document &doc);
 
-  EetChunk operator * () const throw ();
+  Chunk operator * () const throw ();
 
   bool operator == (const ChunkIterator &i);
 
@@ -28,9 +28,9 @@ public:
 private:
   ChunkIterator ();
   char     **the_chunk;
-  EetDocument  &_doc;
+  Document  &_doc;
 };
 
-} // end namespace efl
+} // end namespace eet
 
-#endif // CHUNK_ITERATOR_H
+#endif // EET_CHUNK_ITERATOR_H

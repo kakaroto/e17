@@ -9,8 +9,8 @@
 
 #include "ChunkIterator.h"
 #include "DataInformation.h"
-#include "EetChunk.h"
-#include "EetDocument.h"
-#include "EetList.h"
+#include "Chunk.h"
+#include "Document.h"
+#include "List.h"
 
 #endif // EETXX_H

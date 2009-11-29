@@ -5,10 +5,10 @@
  * © Copyright Nicolai M. Josuttis 1999
  */
 
-#ifndef COUNTEDPTR_H
-#define COUNTEDPTR_H
+#ifndef COUNTED_PTR_H
+#define COUNTED_PTR_H
 
-namespace efl {
+namespace Eflxx {
 
 /* class for counted reference semantics
  * - deletes the object to which it refers when the last CountedPtr
@@ -77,4 +77,4 @@ class CountedPtr {
 
 } // end namespace elf
 
-#endif /*COUNTEDPTR_H*/
+#endif /*COUNTED_PTR_H*/

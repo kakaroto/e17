@@ -1,9 +1,9 @@
 
 libeetxx_HEADERS = \
-	EetDocument.h\
+	Document.h\
 	DataInformation.h \
-	EetChunk.h \
-	EetList.h \
+	Chunk.h \
+	List.h \
 	ChunkIterator.h \
 	Eetxx.h
 

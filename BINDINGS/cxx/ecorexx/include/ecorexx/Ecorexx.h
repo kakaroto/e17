@@ -7,13 +7,13 @@
  * #include "Ecorexx.h".
  */
 
-#include "EcoreAnimator.h"
-#include "EcoreApplication.h"
-#include "EcoreConfig.h"
-#include "EcoreEvasWindow.h"
-#include "EcoreList.h"
-#include "EcoreTimer.h"
-#include "EcoreXWindow.h"
+#include "Animator.h"
+#include "Application.h"
+#include "Config.h"
+#include "EvasWindow.h"
+#include "List.h"
+#include "Timer.h"
+#include "XWindow.h"
 
 #endif // ECOREXX_H
 

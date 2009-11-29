@@ -3,18 +3,18 @@
 #endif
 
 #include "../include/eetxx/ChunkIterator.h"
-#include "../include/eetxx/EetDocument.h"
+#include "../include/eetxx/Document.h"
 
-namespace efl {
+namespace eet {
 
-ChunkIterator::ChunkIterator (char **chunk, EetDocument &doc)
+ChunkIterator::ChunkIterator (char **chunk, Document &doc)
     : the_chunk (chunk),
     _doc(doc)
 {}
 
-EetChunk ChunkIterator::operator * () const throw ()
+Chunk ChunkIterator::operator * () const throw ()
 {
-  return EetChunk (_doc.get (), *the_chunk);
+  return Chunk (_doc.get (), *the_chunk);
 }
 
 bool ChunkIterator::operator == (const ChunkIterator &i)
@@ -40,4 +40,4 @@ ChunkIterator ChunkIterator::operator ++ (int) throw ()
   return tem;
 }
 
-} // end namespace efl
+} // end namespace eet

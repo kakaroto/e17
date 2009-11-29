@@ -1,12 +1,12 @@
 
 libecorexx_HEADERS = \
-	EcoreApplication.h\
-	EcoreConfig.h \
-	EcoreEvasWindow.h \
-	EcoreList.h \
-	EcoreXWindow.h \
-	EcoreAnimator.h \
-	EcoreTimer.h \
+	Application.h\
+	Config.h \
+	EvasWindow.h \
+	List.h \
+	XWindow.h \
+	Animator.h \
+	Timer.h \
 	Ecorexx.h
 
 libecorexxdir = \

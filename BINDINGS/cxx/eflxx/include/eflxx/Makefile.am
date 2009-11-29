@@ -1,10 +1,10 @@
 
 libeflxx_HEADERS = \
-	eflpp_common.h\
+	Common.h\
 	CountedPtr.h \
-	eflpp_debug_internal.h \
-	eflpp_sys.h \
-	eflpp_debug.h \
+	DebugInternal.h \
+	System.h \
+	Debug.h \
 	Eflxx.h
 
 libeflxxdir = \
