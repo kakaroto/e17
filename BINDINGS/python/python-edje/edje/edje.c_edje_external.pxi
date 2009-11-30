@@ -82,6 +82,9 @@ cdef class ExternalParamInfo:
         def __get__(self):
             return self.obj.type
 
+    def validate(self, value):
+        return True
+
 cdef class ExternalParamInfoInt(ExternalParamInfo):
     property default:
         def __get__(self):
@@ -106,6 +109,15 @@ cdef class ExternalParamInfoInt(ExternalParamInfo):
                 return None
             return self.obj.info.i.step
 
+    def validate(self, value):
+        min = self.min
+        max = self.max
+        if min is not None and value < min:
+            return False
+        if max is not None and value > max:
+            return False
+        return True
+
 cdef class ExternalParamInfoDouble(ExternalParamInfo):
     property default:
         def __get__(self):
@@ -129,6 +141,15 @@ cdef class ExternalParamInfoDouble(ExternalParamInfo):
             if isnan(self.obj.info.d.step):
                 return None
             return self.obj.info.d.step
+
+    def validate(self, value):
+        min = self.min
+        max = self.max
+        if min is not None and value < min:
+            return False
+        if max is not None and value > max:
+            return False
+        return True
 
 cdef class ExternalParamInfoString(ExternalParamInfo):
     property default:
