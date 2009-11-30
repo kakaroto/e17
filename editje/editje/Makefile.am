@@ -27,12 +27,14 @@ editable_part.py \
 editable_program.py \
 editable.py \
 editable_state.py \
+editje.sh \
 event_manager.py \
+fileselector.py \
 floater.py \
+groupselector.py \
 newpart.py \
 parts_list.py \
 popups.py \
 prop.py \
-selector.py \
 signals.py \
 sysconfig.py
