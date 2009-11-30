@@ -38,6 +38,10 @@ from animations import AnimationDetails
 from signals import SignalsList, SignalDetails
 from groupselector import GroupChange
 
+def debug_cb(obj, emission, source):
+    print "%s: %s %s" % (obj, emission, source)
+
+
 class Editje(elementary.Window):
 
     def __init__(self, theme="default"):
@@ -178,16 +182,25 @@ class Editje(elementary.Window):
         self._toolbar_bt_init(self.main_edje, "options.bt", "Options",
                               self._options_cb)
 
+        self.main_edje.signal_callback_add("mouse,clicked,1", "details_group_change",
+                                 self._toolbar_group_change)
+
     def _group_name_changed(self, obj, *args, **kwargs):
         new_name = obj.entry_get().replace("<br>", "")
         self.e.group_rename(new_name)
 
     def _toolbar_filename_cb(self, emissor, data):
-        print data
         self.main_edje.part_text_set("details_filename", data)
 
     def _toolbar_group_cb(self, emissor, data):
         self._group_name_entry.entry_set(data)
+
+    def _toolbar_group_change(self, obj, emission, source):
+        gc = GroupChange(self)
+        self.resize_object_add(gc)
+        gc.file = self.e.filename
+        gc.group = self.e.group
+        gc.open()
 
     def _toolbar_bt_init(self, edje, part, name, callback):
         edje.part_text_set(part + ".label", name)

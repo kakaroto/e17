@@ -43,6 +43,11 @@ class GroupChange(elementary.InnerWindow):
 
     file = property(fset=_file_set)
 
+    def _group_set(self, group):
+        self._gs.group = group
+
+    group = property(fset=_group_set)
+
     def open(self):
         self._parent.block(True)
         self.show()
@@ -147,8 +152,9 @@ class GroupSelector(elementary.Table):
     file = property(_file_get, _file_set)
 
     def _group_set(self, value):
-        if value in self._groups_list:
-            self._groups_items[value].selected_set(True)
+        item = self._groups_items.get(value)
+        if item:
+            item.selected_set(True)
 
     def _group_get(self):
         return self._group

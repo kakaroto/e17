@@ -275,6 +275,7 @@ class EditManager(View, evas.ClippedSmartObject):
 
     def _group_set(self, group):
         if self._group:
+            self._group.hide()
             self.member_del(self._group)
         self._group = group
         self.group_resize(300, 300)

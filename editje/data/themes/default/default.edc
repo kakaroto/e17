@@ -280,11 +280,46 @@ collections {
                rel2 {
                   to_x: "details_bg";
                   to_y: "details_group_label";
-                  relative: 1.0 1.0;
+                  relative: 0.9 1.0;
                   offset: -1 -3;
                }
             }
          }
+
+         part {
+            name: "details_group_change";
+            type: RECT;
+            mouse_events: 1;
+            description {
+               state: "default" 0.0;
+	            color: 0 0 0 0;
+               align: 0.5 0.5;
+               rel1 {
+                  to_x: "details_bg";
+                  to_y: "details_group_label";
+                  relative: 0.9 0.0;
+                  offset: 0 -3;
+               }
+               rel2 {
+                  to_x: "details_bg";
+                  to_y: "details_group_label";
+                  relative: 1.0 1.0;
+                  offset: -1 0;
+               }
+            }
+         }
+
+         part {
+            name: "details_group_change.ico";
+            type: GROUP;
+            mouse_events: 0;
+            source: "editje/icon/swap";
+            description {
+               state: "default" 0.0;
+               rel1.to: "details_group_change";
+               rel2.to: "details_group_change";
+            }
+	 }
 
          part {
              name: "toolbar.contents.swallow";
