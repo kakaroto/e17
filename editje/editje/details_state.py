@@ -692,7 +692,8 @@ class PartStateDetails(EditjeDetails):
         self["g_rel2"]["offset"].value = self.state.gradient_rel2_offset_get()
 
     def _create_props_by_type(self, type):
-        for p in edje.external_param_info_get(type):
+        self._params_info = edje.external_param_info_get(type)
+        for p in self._params_info:
             prop = Property(self._parent, p.name)
             wid = WidgetEntry(self)
             if p.type == edje.EDJE_EXTERNAL_PARAM_TYPE_INT:
@@ -840,4 +841,10 @@ class PartStateDetails(EditjeDetails):
                 self.state.gradient_rel2_offset_set(*value)
 
     def _prop_external_value_changed(self, prop, value):
+        for p in self._params_info:
+            if p.name == prop:
+                if not p.validate(value):
+                    nil, value = self.state.external_param_get(prop)
+                    self["external"][prop].value = value
+                    return
         self.state.external_param_set(prop, value)
