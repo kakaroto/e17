@@ -3,7 +3,7 @@ lib_LTLIBRARIES = \
 	libesmartxx_container.la
 
 libesmartxx_container_la_SOURCES = \
-	EvasSmartContainer.cpp
+	Container.cpp
 
 libesmartxx_container_la_LIBADD = \
 	$(EFL_LIBS)                \
@@ -14,7 +14,7 @@ EXTRA_DIST = \
 	$(libesmartxx_container_HEADERS)
 
 libesmartxx_container_HEADERS = \
-	EvasSmartContainer.h
+	Container.h
 
 libesmartxx_containerdir = \
 	$(pkgincludedir)

@@ -3,14 +3,14 @@ lib_LTLIBRARIES = \
 	libesmartxx_textentry.la
 
 libesmartxx_textentry_la_SOURCES = \
-	EvasSmartTextEntry.cpp
+	TextEntry.cpp
 
 libesmartxx_textentry_la_LIBADD = \
 	$(EFL_LIBS)                \
 	$(ESMART_TEXTENTRY_LIBS)
 
 libesmartxx_textentry_HEADERS = \
-	EvasSmartTextEntry.h
+	TextEntry.h
 
 libesmartxx_textentrydir = \
 	$(pkgincludedir)

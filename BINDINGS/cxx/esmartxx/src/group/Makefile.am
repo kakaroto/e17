@@ -3,13 +3,13 @@ lib_LTLIBRARIES = \
 	libesmartxx_group.la
 
 libesmartxx_group_la_SOURCES = \
-	EvasSmartGroup.cpp
+	Group.cpp
 
 libesmartxx_group_la_LIBADD = \
 	$(EFL_LIBS)
 
 libesmartxx_group_HEADERS = \
-	EvasSmartGroup.h
+	Group.h
 
 libesmartxx_groupdir = \
 	$(pkgincludedir)

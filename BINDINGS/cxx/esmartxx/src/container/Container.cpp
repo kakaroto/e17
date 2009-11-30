@@ -2,22 +2,22 @@
 #include <config.h>
 #endif
 
-#include "EvasSmartContainer.h"
+#include "Container.h"
 
 #include <iostream>
 #include <assert.h>
 
 using namespace std;
 
-namespace efl {
+namespace Esmartxx {
 
-EvasSmartContainer::EvasSmartContainer( EvasCanvas &canvas)
+Container::Container( Evasxx::Canvas &canvas)
 {
   o = esmart_container_new( canvas.obj() );
   init();
 }
 
-EvasSmartContainer::EvasSmartContainer( EvasCanvas &canvas, Direction dir)
+Container::Container( Evasxx::Canvas &canvas, Direction dir)
 {
   o = esmart_container_new( canvas.obj() );
   init();
@@ -25,7 +25,7 @@ EvasSmartContainer::EvasSmartContainer( EvasCanvas &canvas, Direction dir)
   setDirection( dir );
 }
 
-EvasSmartContainer::EvasSmartContainer( EvasCanvas &canvas, const Point &pos, Direction dir)
+Container::Container( Evasxx::Canvas &canvas, const Eflxx::Point &pos, Direction dir)
 {
   o = esmart_container_new( canvas.obj() );
 
@@ -35,7 +35,7 @@ EvasSmartContainer::EvasSmartContainer( EvasCanvas &canvas, const Point &pos, Di
   move( pos );
 }
 
-EvasSmartContainer::EvasSmartContainer( EvasCanvas &canvas, const Rect &rect, Direction dir)
+Container::Container( Evasxx::Canvas &canvas, const Eflxx::Rect &rect, Direction dir)
 {
   o = esmart_container_new( canvas.obj() );
   init();
@@ -44,26 +44,26 @@ EvasSmartContainer::EvasSmartContainer( EvasCanvas &canvas, const Rect &rect, Di
   setGeometry (rect);
 }
 
-EvasSmartContainer::~EvasSmartContainer()
+Container::~Container()
 {
   evas_object_del( o );
 }
 
-void EvasSmartContainer::setDirection( Direction dir )
+void Container::setDirection( Direction dir )
 {
   esmart_container_direction_set( o, static_cast<Container_Direction>( dir ) );
 }
 
-EvasSmartContainer::Direction EvasSmartContainer::direction() const
+Container::Direction Container::direction() const
 {
-  return static_cast<EvasSmartContainer::Direction>( esmart_container_direction_get( o ) );
+  return static_cast<Container::Direction>( esmart_container_direction_get( o ) );
 }
 
-void EvasSmartContainer::setPadding( double l, double r, double t, double b )
+void Container::setPadding( double l, double r, double t, double b )
 {
   esmart_container_padding_set( o, l, r, t, b );
 }
-/* Padding EvasSmartContainer::padding() const;
+/* Padding Container::padding() const;
 {
     double l;
     double r;
@@ -73,52 +73,52 @@ void EvasSmartContainer::setPadding( double l, double r, double t, double b )
     return Padding( l, r, t, b );
 }*/
 
-void EvasSmartContainer::setFillPolicy( FillPolicy fill )
+void Container::setFillPolicy( FillPolicy fill )
 {
   esmart_container_fill_policy_set( o, static_cast<Container_Fill_Policy>( fill ) );
 }
 
-EvasSmartContainer::FillPolicy EvasSmartContainer::getFillPolicy() const
+Container::FillPolicy Container::getFillPolicy() const
 {
-  return static_cast<EvasSmartContainer::FillPolicy>( esmart_container_fill_policy_get( o ) );
+  return static_cast<Container::FillPolicy>( esmart_container_fill_policy_get( o ) );
 }
 
-void EvasSmartContainer::setAlignment( Alignment align )
+void Container::setAlignment( Alignment align )
 {
   esmart_container_alignment_set( o, static_cast<Container_Alignment>( align ) );
 }
 
-EvasSmartContainer::Alignment EvasSmartContainer::getAlignment() const
+Container::Alignment Container::getAlignment() const
 {
-  return static_cast<EvasSmartContainer::Alignment>( esmart_container_alignment_get( o ) );
+  return static_cast<Container::Alignment>( esmart_container_alignment_get( o ) );
 }
 
-void EvasSmartContainer::setSpacing( int spacing )
+void Container::setSpacing( int spacing )
 {
   esmart_container_spacing_set( o, spacing );
 }
 
-int EvasSmartContainer::getSpacing() const
+int Container::getSpacing() const
 {
   return esmart_container_spacing_get( o );
 }
 
-void EvasSmartContainer::setMovingButton( int move )
+void Container::setMovingButton( int move )
 {
   esmart_container_move_button_set( o, move );
 }
 
-int EvasSmartContainer::getMovingButton() const
+int Container::getMovingButton() const
 {
   return esmart_container_move_button_get( o );
 }
 
-void EvasSmartContainer::setLayoutPlugin (const std::string &name)
+void Container::setLayoutPlugin (const std::string &name)
 {
   esmart_container_layout_plugin_set (o, name.c_str());
 }
 
-void EvasSmartContainer::append( EvasObject* object, EvasObject* after )
+void Container::append( Evasxx::Object* object, Evasxx::Object* after )
 {
   if ( !after )
     esmart_container_element_append( o, object->obj() );
@@ -126,7 +126,7 @@ void EvasSmartContainer::append( EvasObject* object, EvasObject* after )
     esmart_container_element_append_relative( o, object->obj(), after->obj() );
 }
 
-void EvasSmartContainer::prepend( EvasObject* object, EvasObject* before )
+void Container::prepend( Evasxx::Object* object, Evasxx::Object* before )
 {
   if ( !before )
     esmart_container_element_prepend( o, object->obj() );
@@ -134,23 +134,23 @@ void EvasSmartContainer::prepend( EvasObject* object, EvasObject* before )
     esmart_container_element_prepend_relative( o, object->obj(), before->obj() );
 }
 
-void EvasSmartContainer::remove( EvasObject* object )
+void Container::remove( Evasxx::Object* object )
 {
   esmart_container_element_remove( o, object->obj() );
 }
 
-void EvasSmartContainer::destroy( EvasObject* object )
+void Container::destroy( Evasxx::Object* object )
 {
   esmart_container_element_destroy( o, object->obj() );
 }
 
-void EvasSmartContainer::clear()
+void Container::clear()
 {
   esmart_container_empty( o );
 }
 
 /*
-void EvasSmartContainer::sort( ... )
+void Container::sort( ... )
 {
     esmart_container_sort( o, ... );
 
@@ -160,44 +160,44 @@ EvasList* children() const
 }
 */
 
-void EvasSmartContainer::startScrolling( double velocity )
+void Container::startScrolling( double velocity )
 {
   esmart_container_scroll_start( o, velocity );
 }
 
-void EvasSmartContainer::stopScrolling()
+void Container::stopScrolling()
 {
   esmart_container_scroll_stop( o );
 }
 
-void EvasSmartContainer::scroll( int val )
+void Container::scroll( int val )
 {
   esmart_container_scroll( o, val );
 }
 
-void EvasSmartContainer::setScrollOffset( int val )
+void Container::setScrollOffset( int val )
 {
   esmart_container_scroll_offset_set( o, val );
 }
 
-int EvasSmartContainer::getScrollOffset() const
+int Container::getScrollOffset() const
 {
   return esmart_container_scroll_offset_get( o );
 }
 
-void EvasSmartContainer::setScrollPercent( double percent )
+void Container::setScrollPercent( double percent )
 {
   esmart_container_scroll_percent_set( o, percent );
 }
 
-double EvasSmartContainer::getScrollPercent() const
+double Container::getScrollPercent() const
 {
   return esmart_container_scroll_percent_get( o );
 }
 
-void EvasSmartContainer::scrollTo( EvasObject* object )
+void Container::scrollTo( Evasxx::Object* object )
 {
   esmart_container_scroll_to( o, object->obj() );
 }
 
-} // end namespace efl
+} // end namespace Esmartxx

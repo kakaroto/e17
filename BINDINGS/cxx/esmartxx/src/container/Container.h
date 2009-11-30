@@ -1,18 +1,18 @@
-#ifndef EFLPP_ESMART_CONTAINER_H
-#define EFLPP_ESMART_CONTAINER_H
+#ifndef ESMARTXX_CONTAINER_H
+#define ESMARTXX_CONTAINER_H
 
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
 
-#include <evasxx/EvasSmart.h>
+#include <evasxx/Smart.h>
 
 /* EFL */
 #include <Esmart/Esmart_Container.h>
 
-namespace efl {
+namespace Esmartxx {
 
-class EvasSmartContainer : public EvasSmart
+class Container : public Evasxx::Smart
 {
 public:
 
@@ -42,11 +42,11 @@ public:
   };
 
 public:
-  EvasSmartContainer( EvasCanvas &canvas);
-  EvasSmartContainer( EvasCanvas &canvas, Direction dir);
-  EvasSmartContainer( EvasCanvas &canvas, const Point &pos, Direction dir);
-  EvasSmartContainer( EvasCanvas &canvas, const Rect &rect, Direction dir);
-  virtual ~EvasSmartContainer();
+  Container( Evasxx::Canvas &canvas);
+  Container( Evasxx::Canvas &canvas, Direction dir);
+  Container( Evasxx::Canvas &canvas, const Eflxx::Point &pos, Direction dir);
+  Container( Evasxx::Canvas &canvas, const Eflxx::Rect &rect, Direction dir);
+  virtual ~Container();
 
 public:
 
@@ -67,10 +67,10 @@ public:
   void setLayoutPlugin( const std::string &name );
 
   /* Adding/Removing Elements */
-  void append( EvasObject* object, EvasObject* after = 0 );
-  void prepend( EvasObject* object, EvasObject* before = 0 );
-  void remove( EvasObject* object );
-  void destroy( EvasObject* object );
+  void append( Evasxx::Object* object, Evasxx::Object* after = 0 );
+  void prepend( Evasxx::Object* object, Evasxx::Object* before = 0 );
+  void remove( Evasxx::Object* object );
+  void destroy( Evasxx::Object* object );
   void clear();
   //void sort();
   //EvasList* elements() const;
@@ -83,7 +83,7 @@ public:
   int getScrollOffset() const;
   void setScrollPercent( double percent );
   double getScrollPercent() const;
-  void scrollTo( EvasObject* object );
+  void scrollTo( Evasxx::Object* object );
 
   // double esmart_container_elements_length_get(Evas_Object *container);
   // double esmart_container_elements_orig_length_get(Evas_Object *container);
@@ -91,6 +91,6 @@ public:
 
 };
 
-} // end namespace efl
+} // end namespace Esmartxx
 
-#endif // EFLPP_ESMART_CONTAINER_H
+#endif // ESMARTXX_CONTAINER_H

@@ -1,22 +1,22 @@
-#ifndef EFLPP_ESMART_TEXTENTRY_H
-#define EFLPP_ESMART_TEXTENTRY_H
+#ifndef ESMARTXX_TEXTENTRY_H
+#define ESMARTXX_TEXTENTRY_H
 
-#include <evasxx/EvasSmart.h>
-#include <edjexx/EdjeObject.h>
-#include <edjexx/EdjeBase.h>
+#include <evasxx/Smart.h>
+#include <edjexx/Object.h>
+#include <edjexx/Base.h>
 
 /* EFL */
 #include <Esmart/Esmart_Text_Entry.h>
 
-namespace efl {
+namespace Esmartxx {
 
-class EvasSmartTextEntry : public EvasSmart
+class TextEntry : public Evasxx::Smart
 {
 public:
-  EvasSmartTextEntry( EvasCanvas &canvas );
-  EvasSmartTextEntry( EvasCanvas &canvas, const Point &pos );
-  EvasSmartTextEntry( EvasCanvas &canvas, const Rect &rect );
-  virtual ~EvasSmartTextEntry();
+  TextEntry( Evasxx::Canvas &canvas );
+  TextEntry( Evasxx::Canvas &canvas, const Eflxx::Point &pos );
+  TextEntry( Evasxx::Canvas &canvas, const Eflxx::Rect &rect );
+  virtual ~TextEntry();
 
   void setText (const std::string &str);
 
@@ -24,7 +24,7 @@ public:
 
   void setMaxChars (int max);
 
-  void setEdjePart (EdjeObject *edje, const char *part);
+  void setEdjePart (Edjexx::Object *edje, const char *part);
 
   Evas_Object *getEdjeObject ();
 
@@ -40,6 +40,6 @@ public:
 
 };
 
-} // end namespace efl
+} // end namespace Esmartxx
 
-#endif // EFLPP_ESMART_TEXTENTRY_H
+#endif // ESMARTXX_TEXTENTRY_H

@@ -2,26 +2,26 @@
 #include <config.h>
 #endif
 
-#include "EvasSmartTextEntry.h"
+#include "TextEntry.h"
 
 #include <iostream>
 #include <assert.h>
 
 using namespace std;
 
-namespace efl {
+namespace Esmartxx {
 
 //===========================================================================//
-// EvasSmartTextEntry
+// TextEntry
 //===========================================================================//
 
-EvasSmartTextEntry::EvasSmartTextEntry( EvasCanvas &canvas )
+TextEntry::TextEntry( Evasxx::Canvas &canvas )
 {
   o = esmart_text_entry_new( canvas.obj() );
   init();
 }
 
-EvasSmartTextEntry::EvasSmartTextEntry( EvasCanvas &canvas, const Point &pos )
+TextEntry::TextEntry( Evasxx::Canvas &canvas, const Eflxx::Point &pos )
 {
   o = esmart_text_entry_new( canvas.obj() );
   init();
@@ -29,7 +29,7 @@ EvasSmartTextEntry::EvasSmartTextEntry( EvasCanvas &canvas, const Point &pos )
   move( pos );
 }
 
-EvasSmartTextEntry::EvasSmartTextEntry( EvasCanvas &canvas, const Rect &rect )
+TextEntry::TextEntry( Evasxx::Canvas &canvas, const Eflxx::Rect &rect )
 {
   o = esmart_text_entry_new( canvas.obj() );
   init();
@@ -37,45 +37,45 @@ EvasSmartTextEntry::EvasSmartTextEntry( EvasCanvas &canvas, const Rect &rect )
   setGeometry (rect);
 }
 
-EvasSmartTextEntry::~EvasSmartTextEntry()
+TextEntry::~TextEntry()
 {
   evas_object_del( o );
 }
 
-void EvasSmartTextEntry::setText (const std::string &str)
+void TextEntry::setText (const std::string &str)
 {
   esmart_text_entry_text_set (o, str.c_str ());
 }
 
-void EvasSmartTextEntry::isPassword (bool val)
+void TextEntry::isPassword (bool val)
 {
   esmart_text_entry_is_password_set (o, val);
 }
 
-void EvasSmartTextEntry::setMaxChars (int max)
+void TextEntry::setMaxChars (int max)
 {
   esmart_text_entry_max_chars_set (o, max);
 }
 
-void EvasSmartTextEntry::setEdjePart (EdjeObject *edje, const char *part)
+void TextEntry::setEdjePart (Edjexx::Object *edje, const char *part)
 {
   esmart_text_entry_edje_part_set (o, edje->obj(), part);
 }
 
-Evas_Object *EvasSmartTextEntry::getEdjeObject ()
+Evas_Object *TextEntry::getEdjeObject ()
 {
   return esmart_text_entry_edje_object_get(o);
 }
 
-const string EvasSmartTextEntry::getEdjePart ()
+const string TextEntry::getEdjePart ()
 {
   return esmart_text_entry_edje_part_get(o);
 }
 
-const string EvasSmartTextEntry::getText ()
+const string TextEntry::getText ()
 {
 
   return esmart_text_entry_text_get(o);
 }
 
-} // end namespace efl
+} // end namespace Esmartxx
