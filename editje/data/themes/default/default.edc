@@ -757,6 +757,7 @@ collections {
                type: SWALLOW;
                description {
                    state: "default" 0.0;
+                   fixed: 1 1;
                    rel1 {
                        to: "cl.header.bg";
                        relative: 0.0 0.0;
