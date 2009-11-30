@@ -16,7 +16,7 @@ lib_LTLIBRARIES = \
 	libemotionxx.la
 
 libemotionxx_la_SOURCES = \
-	EvasEmotion.cpp
+	Object.cpp
 
 libemotionxx_la_LIBADD = \
 	$(EFL_LIBS)

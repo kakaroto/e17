@@ -1,6 +1,6 @@
 
 libemotionxx_HEADERS = \
-	EvasEmotion.h
+	Object.h
 
 libemotionxxdir = \
 	$(pkgincludedir)
