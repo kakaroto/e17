@@ -278,6 +278,7 @@ class EditManager(View, evas.ClippedSmartObject):
             self.member_del(self._group)
         self._group = group
         self.group_resize(300, 300)
+        self._padding_init(self)
         self._group_member_add()
         group.show()
         for obj in self._group_listeners:
@@ -346,6 +347,9 @@ class EditManager(View, evas.ClippedSmartObject):
     # Padding
 
     def _padding_init(self, obj):
+        if not self._group:
+            return
+
         w, h = self._group.size
         w *= 3
         h *= 3
