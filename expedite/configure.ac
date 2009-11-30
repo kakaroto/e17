@@ -208,7 +208,7 @@ EXPEDITE_CXXFLAGS=""
 AC_LANG_PUSH([C++])
 CXXFLAGS_save="${CXXFLAGS}"
 CXXFLAGS="${CXXFLAGS} -fno-rtti -fno-exceptions"
-AC_COMPILE_IFELSE(
+AC_LINK_IFELSE(
    [AC_LANG_PROGRAM([[]])],
    [have_cxx_flags="yes"],
    [have_cxx_flags="no"])
