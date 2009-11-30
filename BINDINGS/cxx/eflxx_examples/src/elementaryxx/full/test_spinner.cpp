@@ -2,23 +2,23 @@
 
 void test_spinner(void *data, Evas_Object *obj, void *event_info)
 {
-  ElmSpinner *sp = NULL;
+  Spinner *sp = NULL;
   
-  ElmWindow *win = ElmWindow::factory ("spinner", ELM_WIN_BASIC);
+  Window *win = Window::factory ("spinner", ELM_WIN_BASIC);
   win->setTitle ("Spinner");
   win->setAutoDel (true);
 
-  ElmBackground *bg = ElmBackground::factory (*win);
+  Background *bg = Background::factory (*win);
   win->addObjectResize (*bg);
   bg->setWeightHintSize (EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
   bg->show ();
 
-  ElmBox *bx = ElmBox::factory (*win);
+  Box *bx = Box::factory (*win);
   bx->setWeightHintSize (EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
   win->addObjectResize (*bx);
   bx->show ();
 
-  sp = ElmSpinner::factory (*win);
+  sp = Spinner::factory (*win);
   sp->setLabelFormat ("%1.1f units");
   sp->setStep (1.3);
   sp->setWrap (true);
@@ -28,7 +28,7 @@ void test_spinner(void *data, Evas_Object *obj, void *event_info)
   bx->packEnd (*sp);
   sp->show ();
   
-  sp = ElmSpinner::factory (*win);
+  sp = Spinner::factory (*win);
   sp->setLabelFormat ("%1.1f units");
   sp->setStep (1.3);
   sp->setWrap (true);
@@ -39,7 +39,7 @@ void test_spinner(void *data, Evas_Object *obj, void *event_info)
   bx->packEnd (*sp);
   sp->show ();
   
-  sp = ElmSpinner::factory (*win);
+  sp = Spinner::factory (*win);
   sp->setLabelFormat ("Disabled %.0f");
   sp->setDisabled (true);
   sp->setMinMax (-50.0, 250.0);

@@ -10,7 +10,7 @@
 //! EFLxx includes
 #include "DataInformation.h"
 
-namespace eet {
+namespace Eetxx {
 
 /* forward declarations */
 class Document;
@@ -70,6 +70,6 @@ private:
   ptr_type     _data;
 };
 
-} // end namespace eet
+} // end namespace Eetxx
 
 #endif // EET_CHUNK_H

@@ -1,7 +1,5 @@
-#include <eflxx/eflpp_sys.h>
-#include <eflxx/eflpp_debug.h>
-#include <ecorexx/EcoreApplication.h>
-#include <ecorexx/EcoreTimer.h>
+#include <eflxx/Eflxx.h>
+#include <ecorexx/Ecorexx.h>
 #include <evasxx/Evasxx.h>
 
 #include <sigc++/sigc++.h>
@@ -10,7 +8,7 @@
 #include <memory>
 
 using namespace std;
-using namespace efl;
+using namespace Eflxx;
 
 const unsigned int WIDTH = 600;
 const unsigned int HEIGHT = 600;
@@ -21,11 +19,11 @@ const double rotation = 0.0005;
 static int width = 0;
 static int height = 0;
 
-class Star : public EvasLine
+class Star : public Evasxx::Line
 {
   static double angle;
 public:
-  Star( EvasCanvas &evas ) : EvasLine( evas )
+  Star( Evasxx::Canvas &evas ) : Evasxx::Line( evas )
   {
     setLayer( 10 );
     reset();
@@ -80,7 +78,7 @@ typedef list<Star*> Starfield;
 typedef list<Star*>::iterator StarfieldIterator;
 Starfield starfield;
 
-void advance( EcoreTimer* e )
+void advance( Ecorexx::Timer* e )
 {
   for (StarfieldIterator it = starfield.begin(); it != starfield.end(); ++it )
   {
@@ -91,15 +89,15 @@ void advance( EcoreTimer* e )
 
 int main( int argc, const char **argv )
 {
-  auto_ptr <EcoreApplication> app (new EcoreApplication( argc, argv, "Ecore 3D Stars Test" ));
-  auto_ptr <EcoreEvasWindowSoftwareX11> mw (new EcoreEvasWindowSoftwareX11( Size (WIDTH, HEIGHT) ));
-  EvasCanvas &evas = mw->getCanvas();
+  auto_ptr <Ecorexx::Application> app (new Ecorexx::Application( argc, argv, "Ecore 3D Stars Test" ));
+  auto_ptr <Ecorexx::EvasWindowSoftwareX11> mw (new Ecorexx::EvasWindowSoftwareX11( Size (WIDTH, HEIGHT) ));
+  Evasxx::Canvas &evas = mw->getCanvas();
   
   Rect bg = evas.getGeometry();
   width = bg.width();
   height = bg.height();
 
-  auto_ptr <EvasRectangle> r (new EvasRectangle( evas, evas.getGeometry() ));
+  auto_ptr <Evasxx::Rectangle> r (new Evasxx::Rectangle( evas, evas.getGeometry() ));
   r->setColor( Color (0, 0, 0, 255) );
   r->setLayer( 0 );
   r->show();
@@ -113,7 +111,7 @@ int main( int argc, const char **argv )
 
   // FIXME: Memory leak, but ok for this example
   // better use CountedPtr or delete it at the end
-  (new EcoreTimer( 0.05 ) )->timeout.connect( sigc::ptr_fun( ::advance ) );
+  (new Ecorexx::Timer( 0.05 ) )->timeout.connect( sigc::ptr_fun( ::advance ) );
 
   mw->show();
 

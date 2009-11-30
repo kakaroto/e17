@@ -1,12 +1,14 @@
 #include "test.h"
 
+
+
 void test_bg_plain (void *data, Evas_Object *obj, void *event_info)
 {
-  ElmWindow *win = ElmWindow::factory ("bg-plain", ELM_WIN_BASIC);
+  Window *win = Window::factory ("bg-plain", ELM_WIN_BASIC);
   win->setTitle ("Bg Plain");
   win->setAutoDel(true);
 
-  ElmBackground *bg = ElmBackground::factory (*win);
+  Background *bg = Background::factory (*win);
   /* allow bg to expand in x & y */
   bg->setWeightHintSize (EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
   win->addObjectResize (*bg);
@@ -29,11 +31,11 @@ void test_bg_plain (void *data, Evas_Object *obj, void *event_info)
 
 void test_bg_image (void *data, Evas_Object *obj, void *event_info)
 {
-  ElmWindow *win = ElmWindow::factory ("bg-image", ELM_WIN_BASIC);
+  Window *win = Window::factory ("bg-image", ELM_WIN_BASIC);
   win->setTitle ("Bg Image");
   win->setAutoDel (true);
 
-  ElmBackground *bg = ElmBackground::factory (*win);
+  Background *bg = Background::factory (*win);
   bg->setFile (searchPixmapFile ("elementaryxx/plant_01.jpg"));
   bg->setWeightHintSize (EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
   win->addObjectResize (*bg);

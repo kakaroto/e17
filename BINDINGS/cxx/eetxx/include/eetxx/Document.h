@@ -14,7 +14,7 @@
  * @author Jonathan Muller <jonathan.muller@drylm.org>
  */
 
-namespace eet {
+namespace Eetxx {
 
 class Document
 {
@@ -37,6 +37,6 @@ private:
   Eet_File  *_ef;
 };
 
-} // end namespace eet
+} // end namespace Eetxx
 
 #endif //EET_DOCUMENT_H

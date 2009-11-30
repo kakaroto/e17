@@ -7,14 +7,15 @@
 #include "../../common/searchFile.h"
 
 using namespace std;
-using namespace efl;
+using namespace Eflxx;
+using namespace Elmxx;
 
 static void
 my_win_del(Evas_Object *obj, void *event_info)
 {
   // TODO
   /* called when my_win_main is requested to be deleted */
-  ElmApplication::exit(); /* exit the program's main loop that runs in elm_run() */
+  Application::exit(); /* exit the program's main loop that runs in elm_run() */
 }
 
 static void testFunc (Evas_Object *obj, void *event_info)
@@ -24,29 +25,29 @@ static void testFunc (Evas_Object *obj, void *event_info)
 
 int main (int argc, char **argv)
 {
-  ElmApplication elmApp (argc, argv);
+  Application elmApp (argc, argv);
 
-  ElmWindow *elmWin = ElmWindow::factory ("window1", ELM_WIN_BASIC);
+  Window *elmWin = Window::factory ("window1", ELM_WIN_BASIC);
   elmWin->getEventSignal ("delete-request")->connect (sigc::ptr_fun (&my_win_del));
   
-  ElmBackground *bg = ElmBackground::factory (*elmWin);
+  Background *bg = Background::factory (*elmWin);
 
   Evas *e = evas_object_evas_get(bg->obj ());
 
-  EvasCanvas ec (e);
+  Evasxx::Canvas ec (e);
 
-  EvasImage ei (ec);
+  Evasxx::Image ei (ec);
   ei.setFile (searchPixmapFile ("elementaryxx/plant_01.jpg"));
   ei.setGeometry (Rect (100,100, 100, 100));
   ei.show ();
 
-  ElmButton *elmButton = ElmButton::factory (*elmWin);
-  ElmClock *elmClock = ElmClock::factory (*elmWin);
+  Button *elmButton = Button::factory (*elmWin);
+  Clock *elmClock = Clock::factory (*elmWin);
   elmWin->addMember (ei);
-  ElmToggle *elmToggle = ElmToggle::factory (*elmWin);
-  ElmScroller *elmScroller = ElmScroller::factory (*elmWin);
-  ElmEntry *elmEntry = ElmEntry::factory (*elmWin);
-  ElmSlider *elmSlider = ElmSlider::factory (*elmWin);
+  Toggle *elmToggle = Toggle::factory (*elmWin);
+  Scroller *elmScroller = Scroller::factory (*elmWin);
+  Entry *elmEntry = Entry::factory (*elmWin);
+  Slider *elmSlider = Slider::factory (*elmWin);
 
   bg->setWeightHintSize (1.0, 1.0);
   elmWin->addObjectResize (*bg);

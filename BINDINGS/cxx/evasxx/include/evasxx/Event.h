@@ -1,5 +1,5 @@
-#ifndef EVAS_EVENT_H
-#define EVAS_EVENT_H
+#ifndef EVASXX_EVENT_H
+#define EVASXX_EVENT_H
 
 #include <Evas.h>
 
@@ -20,17 +20,17 @@ public:
   T* data;
 };
 
-typedef ObjectEvent<Evas_Event_Mouse_In> EvasMouseInEvent;
-typedef ObjectEvent<Evas_Event_Mouse_Out> EvasMouseOutEvent;
-typedef ObjectEvent<Evas_Event_Mouse_Up> EvasMouseUpEvent;
-typedef ObjectEvent<Evas_Event_Mouse_Down> EvasMouseDownEvent;
-typedef ObjectEvent<Evas_Event_Mouse_Move> EvasMouseMoveEvent;
-typedef ObjectEvent<Evas_Event_Mouse_Wheel> EvasMouseWheelEvent;
-typedef ObjectEvent<Evas_Event_Key_Up> EvasKeyUpEvent;
-typedef ObjectEvent<Evas_Event_Key_Down> EvasKeyDownEvent;
-typedef ObjectEvent<Evas_Event_Hold> EvasEventHold;
+typedef ObjectEvent<Evas_Event_Mouse_In> MouseInEvent;
+typedef ObjectEvent<Evas_Event_Mouse_Out> MouseOutEvent;
+typedef ObjectEvent<Evas_Event_Mouse_Up> MouseUpEvent;
+typedef ObjectEvent<Evas_Event_Mouse_Down> MouseDownEvent;
+typedef ObjectEvent<Evas_Event_Mouse_Move> MouseMoveEvent;
+typedef ObjectEvent<Evas_Event_Mouse_Wheel> MouseWheelEvent;
+typedef ObjectEvent<Evas_Event_Key_Up> KeyUpEvent;
+typedef ObjectEvent<Evas_Event_Key_Down> KeyDownEvent;
+typedef ObjectEvent<Evas_Event_Hold> EventHold;
 
 } // end namespace Evasxx
 
-#endif // EVAS_EVENT_H
+#endif // EVASXX_EVENT_H
 

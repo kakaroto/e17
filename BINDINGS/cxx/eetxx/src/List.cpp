@@ -5,7 +5,7 @@
 #include "../include/eetxx/List.h"
 #include "../include/eetxx/Document.h"
 
-namespace eet {
+namespace Eetxx {
 
 List::List (Document& doc, const std::string &filter)
     : _doc (doc),
@@ -40,4 +40,4 @@ Chunk List::operator [] (const std::string &key_name)
   return Chunk (_doc.get (), key_name);
 }
 
-} // end namespace eet
+} // end namespace Eetxx

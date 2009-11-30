@@ -1,11 +1,10 @@
 #ifndef CALIBRATE_H
 #define CALIBRATE_H
 
-#include <ecorexx/EcoreApplication.h>
-#include <ecorexx/EcoreAnimator.h>
+#include <ecorexx/Ecorexx.h>
 #include <evasxx/Evasxx.h>
 
-using namespace efl;
+using namespace Eflxx;
 
 enum
 {
@@ -25,10 +24,10 @@ public:
   Point canvasPoints[5]; // rotated, scaled
 };
 
-class CalibrationRectangle : public EvasRectangle, public Trackable
+class CalibrationRectangle : public Evasxx::Rectangle, public Trackable
 {
 public:
-  CalibrationRectangle( EvasCanvas &evas, const Rect &rect );
+  CalibrationRectangle( Evasxx::Canvas &evas, const Rect &rect );
   virtual ~CalibrationRectangle();
 
   Signal done;
@@ -38,34 +37,34 @@ public:
   void timerEvent();
 
 protected:
-  virtual bool handleMouseUp( const EvasMouseUpEvent& );
+  virtual bool handleMouseUp( const Evasxx::MouseUpEvent& );
   virtual bool handleShow();
   void moveCrossHair();
 
 private:
   CalibrationData cd;
   unsigned int position;
-  EvasGradient* background;
-  EvasImage* crosshair;
-  EvasImage* crosshairShadow;
-  EvasLine* crosshairhorz;
-  EvasLine* crosshairvert;
-  EvasText* text;
+  Evasxx::Gradient* background;
+  Evasxx::Image* crosshair;
+  Evasxx::Image* crosshairShadow;
+  Evasxx::Line* crosshairhorz;
+  Evasxx::Line* crosshairvert;
+  Evasxx::Text* text;
 
   int angle;
 };
 
-class CalibrationAnimator : public EcoreAnimator
+class CalibrationAnimator : public Ecorexx::Animator
 {
 public:
   enum CAtype { position, size, angle, alpha };
-  CalibrationAnimator( CAtype, EvasObject* o, int x, int y );
+  CalibrationAnimator( CAtype, Evasxx::Object* o, int x, int y );
   ~CalibrationAnimator();
   virtual bool tick();
 
 private:
   CAtype _t;
-  EvasObject* _o;
+  Evasxx::Object* _o;
   int _x;
   int _y;
 };

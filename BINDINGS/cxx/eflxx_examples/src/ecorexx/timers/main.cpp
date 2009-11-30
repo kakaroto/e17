@@ -1,4 +1,4 @@
-#include <ecorexx/EcoreApplication.h>
+#include <ecorexx/Ecorexx.h>
 #include <evasxx/Evasxx.h>
 #include "../../common/searchFile.h"
 
@@ -6,7 +6,7 @@
 #include <iostream>
 
 using namespace std;
-using namespace efl;
+using namespace Eflxx;
 
 const int WIDTH = 320;
 const int HEIGHT = 320;
@@ -16,39 +16,39 @@ const unsigned int BALLSIZE = 50;
 const unsigned int BALLWIDTH = WIDTH-BALLSIZE;
 const unsigned int BALLHEIGHT = HEIGHT-BALLSIZE;
 
-class TimerApp : public EcoreApplication
+class TimerApp : public Ecorexx::Application
 {
 public:
 
   TimerApp( int argc, const char** argv )
-    : EcoreApplication( argc, argv, "Ecore Timer Test" ),
+    : Ecorexx::Application( argc, argv, "Ecore Timer Test" ),
       xoffset( 0 ), yoffset( PI/3 ),
       xstep( 2*PI/360 ), ystep( 2*PI/360 ),
       size( BALLSIZE ), direction( -1 ),
       alpha( 0 ), alphadirection( 1 ),
       xaddfactor( 1 ), yaddfactor( 1 )
   {
-    EcoreEvasWindowSoftwareX11* mw = new EcoreEvasWindowSoftwareX11( Size (WIDTH, HEIGHT) );
-    EvasCanvas &evas = mw->getCanvas();
+    Ecorexx::EvasWindowSoftwareX11* mw = new Ecorexx::EvasWindowSoftwareX11( Size (WIDTH, HEIGHT) );
+    Evasxx::Canvas &evas = mw->getCanvas();
 
-    image = new EvasImage( evas, searchPixmapFile ("panel.png") );
+    image = new Evasxx::Image( evas, searchPixmapFile ("panel.png") );
     image->resize( evas.getSize() );
     //image->setFill( 0, 0, image->trueSize() ); //FIXME
     image->show();
 
-    shadow = new EvasImage( evas, searchPixmapFile ("panel_shadow.png") );
+    shadow = new Evasxx::Image( evas, searchPixmapFile ("panel_shadow.png") );
     shadow->resize( evas.getSize() );
     //shadow->setFill( 0, 0, evas.size() ); //FIXME
     shadow->show();
     shadow->setFocus( true );
 
-    logo = new EvasImage( evas, Point (40, 20), searchPixmapFile ("e_logo.png") );
+    logo = new Evasxx::Image( evas, Point (40, 20), searchPixmapFile ("e_logo.png") );
     logo->setColor( Color (255, 255, 255, 0) );
     logo->show();
 
     for ( unsigned int i = 0; i < NUMBALLS; ++i )
     {
-      balls[i] = new EvasImage( evas, Point (20*i, 20*i), searchPixmapFile ("boing-shadow.png") );
+      balls[i] = new Evasxx::Image( evas, Point (20*i, 20*i), searchPixmapFile ("boing-shadow.png") );
       balls[i]->resize( Size (BALLSIZE, BALLSIZE), true );
       balls[i]->setColor( Color (255, 255, 255, 240) );
       balls[i]->show();
@@ -59,8 +59,8 @@ public:
     mw->show();
   }
 
-  EvasImage* image, *shadow, *logo;
-  EvasImage* balls[NUMBALLS];
+  Evasxx::Image* image, *shadow, *logo;
+  Evasxx::Image* balls[NUMBALLS];
 
   double xoffset;
   double yoffset;

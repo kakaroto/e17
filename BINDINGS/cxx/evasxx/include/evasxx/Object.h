@@ -54,15 +54,15 @@ public:
   };
 
   /* event signals */
-  sigc::signal <void, const EvasMouseInEvent&> signalHandleMouseIn; /**< Mouse In Event */
-  sigc::signal <void, const EvasMouseOutEvent&> signalHandleMouseOut; /**< Mouse Out Event */
-  sigc::signal <void, const EvasMouseDownEvent&> signalHandleMouseDown; /**< Mouse Button Down Event */
-  sigc::signal <void, const EvasMouseUpEvent&> signalHandleMouseUp; /**< Mouse Button Up Event */
-  sigc::signal <void, const EvasMouseMoveEvent&> signalHandleMouseMove; /**< Mouse Move Event */
-  sigc::signal <void, const EvasMouseWheelEvent&> signalHandleMouseWheel; /**< Mouse Wheel Event */
+  sigc::signal <void, const MouseInEvent&> signalHandleMouseIn; /**< Mouse In Event */
+  sigc::signal <void, const MouseOutEvent&> signalHandleMouseOut; /**< Mouse Out Event */
+  sigc::signal <void, const MouseDownEvent&> signalHandleMouseDown; /**< Mouse Button Down Event */
+  sigc::signal <void, const MouseUpEvent&> signalHandleMouseUp; /**< Mouse Button Up Event */
+  sigc::signal <void, const MouseMoveEvent&> signalHandleMouseMove; /**< Mouse Move Event */
+  sigc::signal <void, const MouseWheelEvent&> signalHandleMouseWheel; /**< Mouse Wheel Event */
   sigc::signal <void> signalHandleFree; /**< Object Being Freed (Called after Del) */
-  sigc::signal <void, const EvasKeyDownEvent&> signalHandleKeyDown; /**< Key Press Event */
-  sigc::signal <void, const EvasKeyUpEvent&> signalHandleKeyUp; /**< Key Release Event */
+  sigc::signal <void, const KeyDownEvent&> signalHandleKeyDown; /**< Key Press Event */
+  sigc::signal <void, const KeyUpEvent&> signalHandleKeyUp; /**< Key Release Event */
   sigc::signal <void> signalHandleFocusIn; /**< Focus In Event */
   sigc::signal <void> signalHandleFocusOut; /**< Focus Out Event */
   sigc::signal <void> signalHandleShow; /**< Show Event */

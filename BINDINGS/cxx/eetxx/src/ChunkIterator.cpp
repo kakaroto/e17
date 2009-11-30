@@ -5,7 +5,7 @@
 #include "../include/eetxx/ChunkIterator.h"
 #include "../include/eetxx/Document.h"
 
-namespace eet {
+namespace Eetxx {
 
 ChunkIterator::ChunkIterator (char **chunk, Document &doc)
     : the_chunk (chunk),
@@ -40,4 +40,4 @@ ChunkIterator ChunkIterator::operator ++ (int) throw ()
   return tem;
 }
 
-} // end namespace eet
+} // end namespace Eetxx

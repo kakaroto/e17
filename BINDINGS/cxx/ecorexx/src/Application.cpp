@@ -61,7 +61,7 @@ Application::~Application()
   ecore_shutdown();
 }
 
-Application* Application::application()
+Application* Application::getInstance()
 {
   if ( !Application::_instance )
   {

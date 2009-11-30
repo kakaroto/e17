@@ -1,7 +1,7 @@
 #ifndef EET_DATA_INFORMATION_H
 #define EET_DATA_INFORMATION_H
 
-namespace eet {
+namespace Eetxx {
 
 template <typename _Ty>
 class DataInformation
@@ -35,6 +35,6 @@ make_data (_Ty *data, bool compress = false, unsigned int size = sizeof (_Ty))
   return DataInformation<_Ty *> (data, compress, size);
 }
 
-} // namespace eet
+} // namespace Eetxx
 
 #endif // EET_DATA_INFORMATION_H

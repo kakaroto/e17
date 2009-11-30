@@ -1,9 +1,9 @@
-#include <eflxx/eflpp_sys.h>
-#include <eflxx/eflpp_debug.h>
+#include <eflxx/System.h>
+#include <eflxx/Debug.h>
 #include <evasxx/Evasxx.h>
-#include <ecorexx/EcoreApplication.h>
+#include <ecorexx/Ecorexx.h>
 
-using namespace efl;
+using namespace Eflxx;
 
 #include <iostream>
 #include <cstring>
@@ -14,11 +14,11 @@ using namespace std;
 
 #define DOTSIZE 2
 
-class PaintArea : public EvasRectangle
+class PaintArea : public Evasxx::Rectangle
 {
 public:
-  PaintArea( EvasCanvas &evas ) :
-      EvasRectangle( evas ),
+  PaintArea( Evasxx::Canvas &evas ) :
+      Evasxx::Rectangle( evas ),
       mouseDown( false ),
       mEvas (evas)
   {
@@ -33,21 +33,21 @@ public:
   }
   virtual ~PaintArea() { };
 
-  virtual void handleMouseUp( const EvasMouseUpEvent& e )
+  virtual void handleMouseUp( const Evasxx::MouseUpEvent& e )
   {
     cout << "PA::mouseUp" << endl;
     mouseDown = false;
   }
-  virtual void handleMouseDown( const EvasMouseDownEvent& e )
+  virtual void handleMouseDown( const Evasxx::MouseDownEvent& e )
   {
     cout << "PA::mouseDown" << endl;
     mouseDown = true;
-    EvasObject* l = new EvasRectangle( mEvas, Rect (e.data->canvas.x, e.data->canvas.y, 2, 2) );
+    Evasxx::Object* l = new Evasxx::Rectangle( mEvas, Rect (e.data->canvas.x, e.data->canvas.y, 2, 2) );
     int b=200+(int) (55.0*rand()/(RAND_MAX+1.0));
     l->setColor( Color (b, b, b, 255) );
     l->show();
   }
-  virtual void handleMouseMove( const EvasMouseMoveEvent& e )
+  virtual void handleMouseMove( const Evasxx::MouseMoveEvent& e )
   {
     cout << "PA::mouseMove" << endl;
     if ( mouseDown )
@@ -55,61 +55,61 @@ public:
       int width = 2 + abs( e.data->cur.canvas.x - e.data->prev.canvas.x );
       int height = 2 + abs( e.data->cur.canvas.y - e.data->prev.canvas.y );
       cout << "width = " << width << ", height = " << height << endl;
-      EvasObject* l = new EvasRectangle( mEvas, Rect (e.data->cur.canvas.x - width/2, e.data->cur.canvas.y - height/2, width, height) );
+      Evasxx::Object* l = new Evasxx::Rectangle( mEvas, Rect (e.data->cur.canvas.x - width/2, e.data->cur.canvas.y - height/2, width, height) );
       int b=200+(int) (55.0*rand()/(RAND_MAX+1.0));
       l->setColor( Color (b, b, b, 255) );
       l->show();
     }
   }
-  virtual void handleKeyUp( const EvasKeyUpEvent& e )
+  virtual void handleKeyUp( const Evasxx::KeyUpEvent& e )
   {
     cout << "PA:::keyUp - released '" << e.data->keyname << "'" << endl;
     if ( strcmp( e.data->keyname, "Escape" ) == 0 )
     {
-      eApp->quit();
+      Ecorexx::Application::quit();
     }
     if ( strcmp( e.data->keyname, "0x5b" ) == 0 )
     {
-      int rot = eApp->getMainWindow()->rotation();
+      int rot = Ecorexx::Application::getInstance()->getMainWindow()->rotation();
       rot = rot ? 0: 270;
-      eApp->getMainWindow()->setRotation( rot );
+      Ecorexx::Application::getInstance()->getMainWindow()->setRotation( rot );
       //eApp->mainWindow()->resize(
     }
     if ( strcmp( e.data->keyname, "j" ) == 0 )
     {
-      Rect vp = eApp->getMainWindow()->getCanvas().getViewport();
-      eApp->getMainWindow()->getCanvas().setViewport( Rect (vp.x()+10, vp.y()+10, vp.width()-10, vp.height()-10) );
+      Rect vp = Ecorexx::Application::getInstance()->getMainWindow()->getCanvas().getViewport();
+      Ecorexx::Application::getInstance()->getMainWindow()->getCanvas().setViewport( Rect (vp.x()+10, vp.y()+10, vp.width()-10, vp.height()-10) );
     }
     if ( strcmp( e.data->keyname, "k" ) == 0 )
     {
-      Rect vp = eApp->getMainWindow()->getCanvas().getViewport();
-      eApp->getMainWindow()->getCanvas().setViewport( Rect (vp.x()-10, vp.y()-10, vp.width()+10, vp.height()+10) );
+      Rect vp = Ecorexx::Application::getInstance()->getMainWindow()->getCanvas().getViewport();
+      Ecorexx::Application::getInstance()->getMainWindow()->getCanvas().setViewport( Rect (vp.x()-10, vp.y()-10, vp.width()+10, vp.height()+10) );
     }
 
   }
 private:
   bool mouseDown;
-  EvasCanvas &mEvas;
+  Evasxx::Canvas &mEvas;
 };
 
 int main( int argc, const char **argv )
 {
   /* Create the application object */
-  EcoreApplication* app = new EcoreApplication( argc, argv, "Ecore Paint Example" );
+  Ecorexx::Application* app = new Ecorexx::Application( argc, argv, "Ecore Paint Example" );
 
   /* Create the main window, a window with an embedded canvas */
-  EcoreEvasWindowSoftwareX11* mw = new EcoreEvasWindowSoftwareX11( Size (WIDTH, HEIGHT) );
+  Ecorexx::EvasWindowSoftwareX11* mw = new Ecorexx::EvasWindowSoftwareX11( Size (WIDTH, HEIGHT) );
   mw->setAlpha (true);
 
   mw->show ();
 
   /* Create some objects on the canvas */
-  EvasCanvas &evas = mw->getCanvas();
+  Evasxx::Canvas &evas = mw->getCanvas();
 
   Size s = evas.getSize();
   cout << "PA: Size = " << s << endl;
 
-  EvasRectangle* bg = new EvasRectangle( evas, s );
+  Evasxx::Rectangle* bg = new Evasxx::Rectangle( evas, s );
   bg->setColor( Color (50, 50, 50, 128) );
   bg->setLayer( 0 );
   bg->show();

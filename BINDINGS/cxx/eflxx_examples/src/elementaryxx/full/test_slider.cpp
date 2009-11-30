@@ -2,29 +2,29 @@
 
 void test_slider (void *data, Evas_Object *obj, void *event_info)
 {
-  ElmIcon *ic = NULL;
-  ElmSlider *sl = NULL;
+  Icon *ic = NULL;
+  Slider *sl = NULL;
 
-  ElmWindow *win = ElmWindow::factory ("slider", ELM_WIN_BASIC);
+  Window *win = Window::factory ("slider", ELM_WIN_BASIC);
   win->setTitle ("Slider");
   win->setAutoDel (true);
 
-  ElmBackground *bg = ElmBackground::factory (*win);
+  Background *bg = Background::factory (*win);
   win->addObjectResize (*bg);
   bg->setWeightHintSize (EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
   bg->show ();
 
-  ElmBox *bx = ElmBox::factory (*win);
+  Box *bx = Box::factory (*win);
   win->addObjectResize (*bx);
   bx->setWeightHintSize (EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
   bx->show ();
 
-  ic = ElmIcon::factory (*win);
+  ic = Icon::factory (*win);
   ic->setFile (searchPixmapFile ("elementaryxx/logo_small.png"));
   ic->setAspectHintSize (EVAS_ASPECT_CONTROL_VERTICAL, Size (1, 1));
   ic->show ();
   
-  sl = ElmSlider::factory (*win);
+  sl = Slider::factory (*win);
   sl->setLabel ("Label");
   sl->setIcon (*ic);
   sl->setUnitFormat ("%1.1f units");
@@ -34,7 +34,7 @@ void test_slider (void *data, Evas_Object *obj, void *event_info)
   bx->packEnd (*sl);
   sl->show ();
 
-  sl = ElmSlider::factory (*win);
+  sl = Slider::factory (*win);
   sl->setLabel ("Label 2");
   sl->setSpanSize (80);
   sl->setIndicatorFormat ("%3.0f");
@@ -46,7 +46,7 @@ void test_slider (void *data, Evas_Object *obj, void *event_info)
   bx->packEnd (*sl);
   sl->show ();
 
-  sl = ElmSlider::factory (*win);
+  sl = Slider::factory (*win);
   sl->setLabel ("Label 3");
   sl->setUnitFormat ("units");
   sl->setSpanSize (40);
@@ -60,12 +60,12 @@ void test_slider (void *data, Evas_Object *obj, void *event_info)
   bx->packEnd (*sl);
   sl->show ();
 
-  ic = ElmIcon::factory (*win);
+  ic = Icon::factory (*win);
   ic->setFile (searchPixmapFile ("elementaryxx/logo_small.png"));
   ic->setAspectHintSize (EVAS_ASPECT_CONTROL_HORIZONTAL, Size (1, 1));
   ic->show ();
 
-  sl = ElmSlider::factory (*win);
+  sl = Slider::factory (*win);
   sl->setLabel ("Label 4");
   sl->setIcon (*ic);
   sl->setUnitFormat ("units");
@@ -75,7 +75,7 @@ void test_slider (void *data, Evas_Object *obj, void *event_info)
   sl->setIndicatorFormat ("%1.1f");
   sl->setValue (0.2);
   sl->setScale (1.0);
-  sl->setOrientation (ElmSlider::Vertical);
+  sl->setOrientation (Slider::Vertical);
   bx->packEnd (*sl);
   sl->show ();
 

@@ -24,7 +24,7 @@ namespace Ecorexx {
 #define ECORE_EVAS_CALLBACK( name, func )  \
 static void name( Ecore_Evas* ee )         \
 {                                          \
-  eApp->getMainWindow()->func();              \
+  Application::getInstance()->getMainWindow()->func();              \
 }
 
 ECORE_EVAS_CALLBACK( callback_resize_dispatcher, resizeEvent )
@@ -141,7 +141,7 @@ void EvasWindow::hideEvent()
 void EvasWindow::deleteRequestEvent()
 {
   Dout( dc::notice, "EvasWindow::deleteRequestEvent()" );
-  if ( canClose() ) eApp->quit();
+  if ( canClose() ) Application::quit();
 }
 
 void EvasWindow::destroyEvent()
@@ -436,7 +436,7 @@ EvasWindowSoftwareX11::EvasWindowSoftwareX11( const Eflxx::Size &size, const cha
     :EvasWindow()
 {
   Dout( dc::notice, "EvasWindow::EvasWindowSoftwareX11" );
-  Application::application()->setMainWindow( this );
+  Application::getInstance()->setMainWindow( this );
 
   /*if ( ::getenv( "EFL_DISPLAY" ) ) display = ::getenv( "EFL_DISPLAY" );
   if ( ::getenv( "EFL_WIDTH" ) ) size.width (atoi( ::getenv( "EFL_WIDTH" ) ));
@@ -446,7 +446,7 @@ EvasWindowSoftwareX11::EvasWindowSoftwareX11( const Eflxx::Size &size, const cha
   //FIXME: Should we care about positioning? 0, 0 for now
   _ee = ecore_evas_software_x11_new( const_cast<char*>( display ), 0, 0, 0, size.width (), size.height () );
 
-  ecore_evas_title_set( _ee, eApp->getName().c_str() );
+  ecore_evas_title_set( _ee, Application::getInstance()->getName().c_str() );
   ecore_evas_borderless_set( _ee, 0 );
 
   _canvas = new Evasxx::Canvas( ecore_evas_get( _ee ) );
@@ -475,7 +475,7 @@ EvasWindowGLX11::EvasWindowGLX11( const Eflxx::Size &size, const char* display )
     :EvasWindow()
 {
   Dout( dc::notice, "EvasWindow::EvasWindowGL" );
-  Application::application()->setMainWindow( this );
+  Application::getInstance()->setMainWindow( this );
 
   /*if ( ::getenv( "EFL_DISPLAY" ) ) display = ::getenv( "EFL_DISPLAY" );
   if ( ::getenv( "EFL_WIDTH" ) ) size.width (atoi( ::getenv( "EFL_WIDTH" ) ));
@@ -485,7 +485,7 @@ EvasWindowGLX11::EvasWindowGLX11( const Eflxx::Size &size, const char* display )
   //FIXME: Should we care about positioning? 0, 0 for now
   _ee = ecore_evas_gl_x11_new( const_cast<char*>( display ), 0, 0, 0, size.width (), size.height () );
 
-  ecore_evas_title_set( _ee, eApp->getName().c_str() );
+  ecore_evas_title_set( _ee, Application::getInstance()->getName().c_str() );
   ecore_evas_borderless_set( _ee, 0 );
 
   _canvas = new Evasxx::Canvas( ecore_evas_get( _ee ) );
@@ -515,7 +515,7 @@ EvasWindowXRenderX11::EvasWindowXRenderX11( const Eflxx::Size &size, const char*
     :EvasWindow()
 {
   Dout( dc::notice, "EvasWindow::EvasWindowGL" );
-  Application::application()->setMainWindow( this );
+  Application::getInstance()->setMainWindow( this );
 
   /*if ( ::getenv( "EFL_DISPLAY" ) ) display = ::getenv( "EFL_DISPLAY" );
   if ( ::getenv( "EFL_WIDTH" ) ) size.width (atoi( ::getenv( "EFL_WIDTH" ) ));
@@ -525,7 +525,7 @@ EvasWindowXRenderX11::EvasWindowXRenderX11( const Eflxx::Size &size, const char*
   //FIXME: Should we care about positioning? 0, 0 for now
   _ee = ecore_evas_xrender_x11_new( const_cast<char*>( display ), 0, 0, 0, size.width (), size.height () );
 
-  ecore_evas_title_set( _ee, eApp->getName().c_str() );
+  ecore_evas_title_set( _ee, Application::getInstance()->getName().c_str() );
   ecore_evas_borderless_set( _ee, 0 );
 
   _canvas = new Evasxx::Canvas( ecore_evas_get( _ee ) );
@@ -555,7 +555,7 @@ EvasWindowFB::EvasWindowFB( const Eflxx::Size &size, const char* display, int ro
     :EvasWindow()
 {
   Dout( dc::notice, "EvasWindow::EvasWindowFB" );
-  Application::application()->setMainWindow( this );
+  Application::getInstance()->setMainWindow( this );
 
   /*if ( ::getenv( "EFL_DISPLAY" ) ) display = ::getenv( "EFL_DISPLAY" );
   if ( ::getenv( "EFL_WIDTH" ) ) size.width (atoi( ::getenv( "EFL_WIDTH" ) ));
@@ -606,7 +606,7 @@ EvasWindowFB::EvasWindowFB( const Eflxx::Size &size, const char* display, int ro
 #endif
   }
 
-  ecore_evas_title_set( _ee, eApp->getName().c_str() );
+  ecore_evas_title_set( _ee, Application::getInstance()->getName().c_str() );
   ecore_evas_borderless_set( _ee, 0 );
 
   _canvas = new Evasxx::Canvas( ecore_evas_get( _ee ) );

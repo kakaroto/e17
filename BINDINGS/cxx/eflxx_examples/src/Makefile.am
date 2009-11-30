@@ -17,7 +17,6 @@ SUBDIRS = \
 	esmartxx \
 	ecorexx \
 	eetxx \
-	ewlxx \
 	emotionxx \
 	debug \
 	signals \

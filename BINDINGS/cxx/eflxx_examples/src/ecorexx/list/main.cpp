@@ -1,15 +1,13 @@
-#include <ecorexx/EcoreApplication.h>
-#include <ecorexx/EcoreConfig.h>
-#include <ecorexx/EcoreList.h>
+#include <ecorexx/Ecorexx.h>
 
 #include <iostream>
 using namespace std;
-using namespace efl;
+using namespace Eflxx;
 
 int main( int argc, const char **argv )
 {
   // int* test
-  EcoreList <int> numberList;
+  Ecorexx::List <int> numberList;
 
   int n[6] = {10,11,12,13,14,15};
 
@@ -29,7 +27,7 @@ int main( int argc, const char **argv )
   }
 
   // char* test
-  EcoreList <char> strList;
+  Ecorexx::List <char> strList;
 
   char first[] = "First";
   char second[] = "Second";

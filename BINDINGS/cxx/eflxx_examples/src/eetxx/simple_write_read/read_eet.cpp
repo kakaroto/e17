@@ -4,7 +4,6 @@
 #include <algorithm>
 
 using namespace std;
-using namespace efl;
 
 struct A
 {
@@ -19,7 +18,7 @@ ostream& operator<< (ostream& os, const A& a)
   return os;
 }
 
-ostream& operator<< (ostream& os, const EetChunk& chunk)
+ostream& operator<< (ostream& os, const Eetxx::Chunk& chunk)
 {
   void *data = chunk.get ();
   os  << chunk.get_key () << " ";
@@ -38,7 +37,7 @@ ostream& operator<< (ostream& os, const EetChunk& chunk)
 
 struct display_eet_file_content
 {
-  void operator () (const EetChunk &chunk)
+  void operator () (const Eetxx::Chunk &chunk)
   {
     cout << chunk << endl;
   }
@@ -46,10 +45,10 @@ struct display_eet_file_content
 
 int main(int argc, char **argv)
 {
-  EetDocument::init ();
+  Eetxx::Document::init ();
 
-  EetDocument doc("writing_test.eet", EET_FILE_MODE_READ);
-  EetList my_list (doc);
+  Eetxx::Document doc("writing_test.eet", EET_FILE_MODE_READ);
+  Eetxx::List my_list (doc);
 
 
   //A *a = reinterpret_cast<A *> (my_list["A"]. get ());

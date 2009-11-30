@@ -381,49 +381,49 @@ void Object::dispatcher( void *data, Evas *evas, Evas_Object *evas_object, void 
   {
   case EVAS_CALLBACK_MOUSE_IN:
   {
-    const EvasMouseInEvent e( static_cast<Evas_Event_Mouse_In*>( event_info ) );
+    const MouseInEvent e( static_cast<Evas_Event_Mouse_In*>( event_info ) );
     object->signalHandleMouseIn.emit( e );
     break;
   }
   case EVAS_CALLBACK_MOUSE_OUT:
   {
-    const EvasMouseOutEvent e( static_cast<Evas_Event_Mouse_Out*>( event_info ) );
+    const MouseOutEvent e( static_cast<Evas_Event_Mouse_Out*>( event_info ) );
     object->signalHandleMouseOut.emit( e );
     break;
   }
   case EVAS_CALLBACK_MOUSE_DOWN:
   {
-    const EvasMouseDownEvent e( static_cast<Evas_Event_Mouse_Down*>( event_info ) );
+    const MouseDownEvent e( static_cast<Evas_Event_Mouse_Down*>( event_info ) );
     object->signalHandleMouseDown.emit( e );
     break;
   }
   case EVAS_CALLBACK_MOUSE_UP:
   {
-    const EvasMouseUpEvent e( static_cast<Evas_Event_Mouse_Up*>( event_info ) );
+    const MouseUpEvent e( static_cast<Evas_Event_Mouse_Up*>( event_info ) );
     object->signalHandleMouseUp.emit( e );
     break;
   }
   case EVAS_CALLBACK_MOUSE_MOVE:
   {
-    const EvasMouseMoveEvent e( static_cast<Evas_Event_Mouse_Move*>( event_info ) );
+    const MouseMoveEvent e( static_cast<Evas_Event_Mouse_Move*>( event_info ) );
     object->signalHandleMouseMove.emit( e );
     break;
   }
   case EVAS_CALLBACK_MOUSE_WHEEL:
   {
-    const EvasMouseWheelEvent e( static_cast<Evas_Event_Mouse_Wheel*>( event_info ) );
+    const MouseWheelEvent e( static_cast<Evas_Event_Mouse_Wheel*>( event_info ) );
     object->signalHandleMouseWheel.emit( e );
     break;
   }
   case EVAS_CALLBACK_KEY_DOWN:
   {
-    const EvasKeyDownEvent e( static_cast<Evas_Event_Key_Down*>( event_info ) );
+    const KeyDownEvent e( static_cast<Evas_Event_Key_Down*>( event_info ) );
     object->signalHandleKeyDown.emit( e );
     break;
   }
   case EVAS_CALLBACK_KEY_UP:
   {
-    const EvasKeyUpEvent e( static_cast<Evas_Event_Key_Up*>( event_info ) );
+    const KeyUpEvent e( static_cast<Evas_Event_Key_Up*>( event_info ) );
     object->signalHandleKeyUp.emit( e );
     break;
   }

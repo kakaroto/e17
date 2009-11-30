@@ -1,32 +1,34 @@
 #include "test.h"
 
-static void my_hover_bt (Evas_Object *obj, void *event_info, ElmHover *hv)
+
+
+static void my_hover_bt (Evas_Object *obj, void *event_info, Hover *hv)
 {
   hv->show ();
 }
 
 void test_hover (void *data, Evas_Object *obj, void *event_info)
 {
-  ElmButton *bt = NULL;
-  ElmBox *bx = NULL;
+  Button *bt = NULL;
+  Box *bx = NULL;
   
-  ElmWindow *win = ElmWindow::factory ("hover", ELM_WIN_BASIC);
+  Window *win = Window::factory ("hover", ELM_WIN_BASIC);
   win->setTitle ("Hover");
   win->setAutoDel (true);
   
-  ElmBackground *bg = ElmBackground::factory (*win);
+  Background *bg = Background::factory (*win);
   win->addObjectResize (*bg);
   bg->setWeightHintSize (EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
   bg->show ();
 
-  bx = ElmBox::factory (*win);
+  bx = Box::factory (*win);
   bx->setWeightHintSize (EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
   win->addObjectResize (*bx);
   bx->show ();
 
-  ElmHover *hv = ElmHover::factory (*win);
+  Hover *hv = Hover::factory (*win);
 
-  bt = ElmButton::factory (*win);
+  bt = Button::factory (*win);
   bt->setLabel ("Button");
   bt->getEventSignal ("clicked")->connect (sigc::bind (sigc::ptr_fun (&my_hover_bt), hv));
   bx->packEnd (*bt);
@@ -34,30 +36,30 @@ void test_hover (void *data, Evas_Object *obj, void *event_info)
   hv->setParent (*win);
   hv->setTarget (*bt);
 
-  bt = ElmButton::factory (*win);
+  bt = Button::factory (*win);
   bt->setLabel ("Popup");
   hv->setContent ("middle", *bt);
   bt->show ();
 
-  bx = ElmBox::factory (*win);
+  bx = Box::factory (*win);
 
-  ElmIcon *ic = ElmIcon::factory (*win);
+  Icon *ic = Icon::factory (*win);
   ic->setFile (searchPixmapFile ("elementaryxx/logo_small.png"));
   ic->setScale (false, false);
   bx->packEnd (*ic);
   ic->show ();
 
-  bt = ElmButton::factory (*win);
+  bt = Button::factory (*win);
   bt->setLabel ("Top 1");
   bx->packEnd (*bt);
   bt->show ();
 
-  bt = ElmButton::factory (*win);
+  bt = Button::factory (*win);
   bt->setLabel ("Top 2");
   bx->packEnd (*bt);
   bt->show ();
 
-  bt = ElmButton::factory (*win);
+  bt = Button::factory (*win);
   bt->setLabel ("Top 3");
   bx->packEnd (*bt);
   bt->show ();
@@ -66,17 +68,17 @@ void test_hover (void *data, Evas_Object *obj, void *event_info)
 
   hv->setContent ("top", *bx);
 
-  bt = ElmButton::factory (*win);
+  bt = Button::factory (*win);
   bt->setLabel ("Bottom");
   hv->setContent ("bottom", *bt);
   bt->show ();
 
-  bt = ElmButton::factory (*win);
+  bt = Button::factory (*win);
   bt->setLabel ("Left");
   hv->setContent ("left", *bt);
   bt->show ();
 
-  bt = ElmButton::factory (*win);
+  bt = Button::factory (*win);
   bt->setLabel ("Right");
   hv->setContent ("right", *bt);
   bt->show ();
@@ -89,27 +91,27 @@ void test_hover (void *data, Evas_Object *obj, void *event_info)
 
 void test_hover2 (void *data, Evas_Object *obj, void *event_info)
 {
-  ElmBox *bx = NULL;
-  ElmButton *bt = NULL;
+  Box *bx = NULL;
+  Button *bt = NULL;
   
-  ElmWindow *win = ElmWindow::factory ("hover2", ELM_WIN_BASIC);
+  Window *win = Window::factory ("hover2", ELM_WIN_BASIC);
   win->setTitle ("Hover 2");
   win->setAutoDel (true);
   
-  ElmBackground *bg = ElmBackground::factory (*win);
+  Background *bg = Background::factory (*win);
   win->addObjectResize (*bg);
   bg->setWeightHintSize (EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
   bg->show ();
   
-  bx = ElmBox::factory (*win);
+  bx = Box::factory (*win);
   bx->setWeightHintSize (EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
   win->addObjectResize (*bx);
   bx->show ();
 
-  ElmHover *hv = ElmHover::factory (*win);
+  Hover *hv = Hover::factory (*win);
   hv->setStyle ("popout");
 
-  bt = ElmButton::factory (*win);
+  bt = Button::factory (*win);
   bt->setLabel ("Button");
   bt->getEventSignal ("clicked")->connect (sigc::bind (sigc::ptr_fun (&my_hover_bt), hv));
   bx->packEnd (*bt);
@@ -117,30 +119,30 @@ void test_hover2 (void *data, Evas_Object *obj, void *event_info)
   hv->setParent (*win);
   hv->setTarget (*bt);
 
-  bt = ElmButton::factory (*win);
+  bt = Button::factory (*win);
   bt->setLabel ("Popup");
   hv->setContent ("middle", *bt);
   bt->show ();
 
-  bx = ElmBox::factory (*win);
+  bx = Box::factory (*win);
 
-  ElmIcon *ic = ElmIcon::factory (*win);
+  Icon *ic = Icon::factory (*win);
   ic->setFile (searchPixmapFile ("elementaryxx/logo_small.png"));
   ic->setScale (false, false);
   bx->packEnd (*ic);
   ic->show ();
   
-  bt = ElmButton::factory (*win);
+  bt = Button::factory (*win);
   bt->setLabel ("Top 1");
   bx->packEnd (*bt);
   bt->show ();
 
-  bt = ElmButton::factory (*win);
+  bt = Button::factory (*win);
   bt->setLabel ("Top 2");
   bx->packEnd (*bt);
   bt->show ();
 
-  bt = ElmButton::factory (*win);
+  bt = Button::factory (*win);
   bt->setLabel ("Top 3");
   bx->packEnd (*bt);
   bt->show ();
@@ -149,17 +151,17 @@ void test_hover2 (void *data, Evas_Object *obj, void *event_info)
 
   hv->setContent ("top", *bx);
 
-  bt = ElmButton::factory (*win);
+  bt = Button::factory (*win);
   bt->setLabel ("Bot");
   hv->setContent ("bottom", *bt);
   bt->show ();
 
-  bt = ElmButton::factory (*win);
+  bt = Button::factory (*win);
   bt->setLabel ("Left");
   hv->setContent ("left", *bt);
   bt->show ();
 
-  bt = ElmButton::factory (*win);
+  bt = Button::factory (*win);
   bt->setLabel ("Right");
   hv->setContent ("right", *bt);
   bt->show ();

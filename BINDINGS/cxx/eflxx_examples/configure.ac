@@ -97,7 +97,6 @@ AC_DEFINE_UNQUOTED(SYSTEM_PIXMAPS_DIR, "${packageprefix}/${systempixmapsdir}",""
 AC_DEFINE_UNQUOTED(PACKAGE_SOURCE_DIR, "${packagesrcdir}","")
 
 
-#PKG_CHECK_MODULES(ETKXX, etkxx)
 PKG_CHECK_MODULES(ESMARTXX_CONTAINER, esmartxx_container)
 PKG_CHECK_MODULES(ESMARTXX_GROUP, esmartxx_group)
 PKG_CHECK_MODULES(ESMARTXX_TEXTENTRY, esmartxx_textentry)
@@ -105,7 +104,6 @@ PKG_CHECK_MODULES(EDJEXX, edjexx)
 PKG_CHECK_MODULES(EFL, eflxx)
 PKG_CHECK_MODULES(ECOREXX, ecorexx)
 PKG_CHECK_MODULES(EETXX, eetxx)
-PKG_CHECK_MODULES(EWLXX, ewlxx)
 PKG_CHECK_MODULES(EMOTIONXX, emotionxx)
 PKG_CHECK_MODULES(ELEMENTARYXX, elementaryxx)
 AC_OUTPUT([
@@ -135,9 +133,6 @@ src/esmartxx/group/Makefile
 src/esmartxx/textentry/Makefile
 src/eetxx/Makefile
 src/eetxx/simple_write_read/Makefile
-src/ewlxx/Makefile
-src/ewlxx/embed/Makefile
-src/ewlxx/simple/Makefile
 src/emotionxx/Makefile
 src/emotionxx/simple/Makefile
 src/elementaryxx/Makefile

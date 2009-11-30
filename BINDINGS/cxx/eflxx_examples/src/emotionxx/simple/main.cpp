@@ -1,10 +1,10 @@
-#include <ecorexx/EcoreApplication.h>
+#include <ecorexx/Ecorexx.h>
 #include <evasxx/Evasxx.h>
 #include <edjexx/Edjexx.h>
-#include <emotionxx/EvasEmotion.h>
+#include <emotionxx/Emotionxx.h>
 #include "../../common/searchFile.h"
 
-using namespace efl;
+using namespace Eflxx;
 
 #define WIDTH 320
 #define HEIGHT 240
@@ -17,19 +17,19 @@ using namespace std;
 int main( int argc, const char **argv )
 {
     /* Create the application object */
-    EcoreApplication* app = new EcoreApplication( argc, argv, "Simple Emotion Test" );
+    Ecorexx::Application* app = new Ecorexx::Application( argc, argv, "Simple Emotion Test" );
     if ( argc < 2 )
     {
         cerr << "Usage: " << argv[0] << "<video file>" << endl;
         return 1;
     }
     /* Create the main window, a window with an embedded canvas */
-    EcoreEvasWindowSoftwareX11* mw = new EcoreEvasWindowSoftwareX11( Size (WIDTH, HEIGHT) );
-    EvasCanvas &evas = mw->getCanvas();
+    Ecorexx::EvasWindowSoftwareX11* mw = new Ecorexx::EvasWindowSoftwareX11( Size (WIDTH, HEIGHT) );
+    Evasxx::Canvas &evas = mw->getCanvas();
     evas.appendFontPath( searchDataDir () + "/fonts" );
 
-    /* Create EvasEmotion object using xine engine */
-    EvasEmotion* emotion = new EvasEmotion( evas, Rect (0, 0, 320, 240), argv[1], "xine" );
+    /* Create Emotionxx::Object object using xine engine */
+    Emotionxx::Object* emotion = new Emotionxx::Object( evas, Rect (0, 0, 320, 240), argv[1], "xine" );
     emotion->setSmoothScale( 1 );
 	
     emotion->setPlay( true );

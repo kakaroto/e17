@@ -4,7 +4,7 @@
 /* EFLxx includes */
 #include "Chunk.h"
 
-namespace eet {
+namespace Eetxx {
 
 /* forward declarations */
 class Document;
@@ -31,6 +31,6 @@ private:
   Document  &_doc;
 };
 
-} // end namespace eet
+} // end namespace Eetxx
 
 #endif // EET_CHUNK_ITERATOR_H

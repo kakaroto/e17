@@ -1,6 +1,6 @@
-#include <ecorexx/EcoreApplication.h>
+#include <ecorexx/Ecorexx.h>
 #include <evasxx/Evasxx.h>
-#include <group/EvasSmartGroup.h>
+#include <group/Group.h>
 #include "../../common/searchFile.h"
 
 #include <memory>
@@ -8,38 +8,38 @@
 #define WIDTH 240
 #define HEIGHT 320
 
-using namespace efl;
+using namespace Eflxx;
 using namespace std;
 
 int main( int argc, const char **argv )
 {
   /* Create the application object */
-  EcoreApplication app ( argc, argv, "Esmart Group Test");
+  Ecorexx::Application app ( argc, argv, "Esmart Group Test");
 
   Size size (WIDTH, HEIGHT);
 
   /* Create the main window, a window with an embedded canvas */
-  EcoreEvasWindowSoftwareX11 mw ( size );
+  Ecorexx::EvasWindowSoftwareX11 mw ( size );
 
-  EvasCanvas &evas = mw.getCanvas();
+  Evasxx::Canvas &evas = mw.getCanvas();
 
   evas.appendFontPath( searchDataDir () + "/fonts" );
 
   /* Add some objects to the canvas */
-  EvasRectangle rect ( evas, size );
+  Evasxx::Rectangle rect ( evas, size );
   rect.setColor( Color (200, 200, 200, 255) );
   rect.setLayer( 0 );
   rect.show();
 
-  EvasRectangle buttonbackground ( evas );
+  Evasxx::Rectangle buttonbackground ( evas );
   buttonbackground.setColor( Color (255, 0, 0, 255) );
   buttonbackground.setLayer( 10 );
   buttonbackground.setGeometry( Rect (10, 10, 20, 20) );
-  EvasText buttontext ( evas, "Vera", 14, "Click on this button" );
+  Evasxx::Text buttontext ( evas, "Vera", 14, "Click on this button" );
   buttontext.setColor( Color (0, 0, 0, 255) );
   buttontext.setLayer( 11 );
 
-  EvasSmartGroup vbox (evas, Rect (50, 50, 200, 200) );
+  Esmartxx::Group vbox (evas, Rect (50, 50, 200, 200) );
   //vbox->resize( 100, 100 );
   //vbox->setLayer( 20 );
   vbox.append( &buttonbackground );

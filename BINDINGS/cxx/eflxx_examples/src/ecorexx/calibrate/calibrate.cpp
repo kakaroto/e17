@@ -2,8 +2,8 @@
 #include <config.h>
 #endif
 
-#include <eflxx/eflpp_sys.h>
-#include <ecorexx/EcoreApplication.h>
+#include <eflxx/System.h>
+#include <ecorexx/Ecorexx.h>
 #include <evasxx/Evasxx.h>
 
 #include "../../common/searchFile.h"
@@ -58,8 +58,8 @@ static void calibration_event_filter_end( void* data, void *loop_data )
 {
 }
 
-CalibrationRectangle::CalibrationRectangle( EvasCanvas &evas, const Rect &rect )
-    :EvasRectangle( evas, rect), Trackable( "CalibrationRectangle" )
+CalibrationRectangle::CalibrationRectangle( Evasxx::Canvas &evas, const Rect &rect )
+    :Evasxx::Rectangle( evas, rect), Trackable( "CalibrationRectangle" )
 {
   setLayer( 255 );
   setColor( Color (255, 255, 255, 0) ); // white, fully transparent
@@ -72,7 +72,7 @@ CalibrationRectangle::CalibrationRectangle( EvasCanvas &evas, const Rect &rect )
   cd.canvasPoints[TopRight].set( s.width()-offset, offset );
   cd.canvasPoints[Center].set( s.width()/2, s.height()/2 );
 
-  switch ( eApp->getMainWindow()->rotation() )
+  switch ( Ecorexx::Application::getInstance()->getMainWindow()->rotation() )
   {
   case 0:
     cout << "ROT 0" << endl;
@@ -109,13 +109,13 @@ CalibrationRectangle::CalibrationRectangle( EvasCanvas &evas, const Rect &rect )
   }
 
   // setup floor
-  EvasRectangle* floor = new EvasRectangle( evas, Rect (0, 0, s.width(), s.height()) );
+  Evasxx::Rectangle* floor = new Evasxx::Rectangle( evas, Rect (0, 0, s.width(), s.height()) );
   floor->setLayer( 0 );
   floor->setColor( Color (0, 0, 0, 255) );
   floor->show();
 
   // setup background
-  background = new EvasGradient( evas, Rect (0, 0, s.width(), s.height()) );
+  background = new Evasxx::Gradient( evas, Rect (0, 0, s.width(), s.height()) );
   background->setLayer( 5 );
   background->setAngle( angle = 13 );
   background->addColorStop( Color (255, 255, 255, 255),  10 );
@@ -125,26 +125,26 @@ CalibrationRectangle::CalibrationRectangle( EvasCanvas &evas, const Rect &rect )
   //background->show();
   //new CalibrationAnimator( CalibrationAnimator::alpha, background, 255, 0 );
 
-  EvasImage* t1 = new EvasImage( evas, searchPixmapFile ("panel.png") );
+  Evasxx::Image* t1 = new Evasxx::Image( evas, searchPixmapFile ("panel.png") );
   t1->setGeometry( Rect (0, 0, s.width(), s.height()) );
   t1->setColor( Color (255, 255, 255, 255) );
   t1->setLayer( 10 );
   t1->show();
 
-  EvasImage* t2 = new EvasImage( evas, searchPixmapFile ("shadow.png") );
+  Evasxx::Image* t2 = new Evasxx::Image( evas, searchPixmapFile ("shadow.png") );
   t2->setGeometry( Rect (0, 0, s.width(), s.height()) );
   t2->setLayer( 15 );
   t2->show();
 
   // setup text
-  text = new EvasText( evas, searchFontFile ("Vera.ttf"), 12, Point (5, s.height()/2.5), "foo" );
+  text = new Evasxx::Text( evas, searchFontFile ("Vera.ttf"), 12, Point (5, s.height()/2.5), "foo" );
   text->setColor( Color (0, 0, 0, 255) );
   text->setLayer( 22 );
   text->setText( "Click on crosshair to calibrate screen" );
   text->show();
 
 #if 0
-  EvasImage* image = new EvasImage( evas, searchPixmapFile ("angstrom.png")  );
+  Evasxx::Image* image = new Evasxx::Image( evas, searchPixmapFile ("angstrom.png")  );
   image->rresize( 0.6 );
   Rect geom = image->getGeometry();
   cout << "Image size = " << image->getSize() << ", imageSize = " << image->getImageSize() << ", geometry = " << image->getGeometry() << endl;
@@ -153,17 +153,17 @@ CalibrationRectangle::CalibrationRectangle( EvasCanvas &evas, const Rect &rect )
   image->setLayer( 15 );
   image->show();
 #endif
-  EcoreAnimator::setFrameTime( 0.004 );
+  Ecorexx::Animator::setFrameTime( 0.004 );
 
   // setup crosshair
-  crosshair = new EvasImage( evas, searchPixmapFile ("crosshair.png") );
+  crosshair = new Evasxx::Image( evas, searchPixmapFile ("crosshair.png") );
   crosshair->setLayer( 23 );
-  crosshairShadow = new EvasImage( evas, searchPixmapFile ("crosshair.png") );
+  crosshairShadow = new Evasxx::Image( evas, searchPixmapFile ("crosshair.png") );
   crosshairShadow->setLayer( 22 );
   crosshairShadow->setColor( Color (150, 150, 150, 50) );
 
-  crosshairhorz = new EvasLine( evas );
-  crosshairvert = new EvasLine( evas );
+  crosshairhorz = new Evasxx::Line( evas );
+  crosshairvert = new Evasxx::Line( evas );
   crosshairhorz->setLayer( 23 );
   crosshairvert->setLayer( 23 );
   crosshairhorz->setColor( Color (0, 0, 0, 255) );
@@ -194,7 +194,7 @@ bool CalibrationRectangle::handleShow()
   return true;
 }
 
-bool CalibrationRectangle::handleMouseUp( const EvasMouseUpEvent& e )
+bool CalibrationRectangle::handleMouseUp( const Evasxx::MouseUpEvent& e )
 {
   nextPoint( e.data->canvas.x, e.data->canvas.y );
 
@@ -225,7 +225,7 @@ void CalibrationRectangle::nextPoint( int x, int y )
     ecore_event_filter_del( filter );
     calibrate();
     done.emit();
-    eApp->quit();
+    Ecorexx::Application::quit();
   }
 }
 
@@ -355,8 +355,8 @@ bool CalibrationRectangle::calibrate()
   return true;
 }
 
-CalibrationAnimator::CalibrationAnimator( CAtype t, EvasObject* o, int x, int y )
-    :EcoreAnimator(), _t( t ), _o( o ), _x( x ), _y( y )
+CalibrationAnimator::CalibrationAnimator( CAtype t, Evasxx::Object* o, int x, int y )
+    :Ecorexx::Animator(), _t( t ), _o( o ), _x( x ), _y( y )
 {
 }
 
@@ -396,11 +396,11 @@ bool CalibrationAnimator::tick()
     _o->move( Point (newx, newy) );
     return true;
   case angle:
-    newx = static_cast<EvasGradient*>( _o )->getAngle();
+    newx = static_cast<Evasxx::Gradient*>( _o )->getAngle();
     if ( newx == _x ) return false;
     if ( newx > _x ) newx--;
     if ( newx < _x ) newx++;
-    static_cast<EvasGradient*>( _o )->setAngle( newx );
+    static_cast<Evasxx::Gradient*>( _o )->setAngle( newx );
     return true;
   case alpha:
     c = _o->getColor();

@@ -4,7 +4,7 @@
 
 #include "../include/eetxx/Chunk.h"
 
-namespace eet {
+namespace Eetxx {
 
 Chunk::Chunk (Eet_File *ef, const std::string &key_name)
     : _ef (ef),
@@ -29,4 +29,4 @@ std::string Chunk::get_key () const
   return _key_name;
 }
 
-} // end namespace eet
+} // end namespace Eetxx

@@ -1,46 +1,46 @@
 #include "test.h"
 
-static void my_entry_bt_1 (Evas_Object *obj, void *event_info, ElmEntry *en)
+static void my_entry_bt_1 (Evas_Object *obj, void *event_info, Entry *en)
 {
   en->setText ("");
 }
 
-static void my_entry_bt_2 (Evas_Object *obj, void *event_info, ElmEntry *en)
+static void my_entry_bt_2 (Evas_Object *obj, void *event_info, Entry *en)
 {
   const string s = en->getText ();
   cout << "ENTRY: " << s << endl;
 }
 
-static void my_entry_bt_3 (Evas_Object *obj, void *event_info, ElmEntry *en)
+static void my_entry_bt_3 (Evas_Object *obj, void *event_info, Entry *en)
 {
   const string s = en->getSelection ();
   cout << "SELECTION: " << s << endl;
 }
 
-static void my_entry_bt_4 (Evas_Object *obj, void *event_info, ElmEntry *en)
+static void my_entry_bt_4 (Evas_Object *obj, void *event_info, Entry *en)
 {
   en->insertText ("Insert some <b>BOLD</> text");
 }
 
 void test_entry (void *data, Evas_Object *obj, void *event_info)
 {
-  ElmButton *bt = NULL;
+  Button *bt = NULL;
   
-  ElmWindow *win = ElmWindow::factory ("entry", ELM_WIN_BASIC);
+  Window *win = Window::factory ("entry", ELM_WIN_BASIC);
   win->setTitle ("Entry");
   win->setAutoDel (true);
   
-  ElmBackground *bg = ElmBackground::factory (*win);
+  Background *bg = Background::factory (*win);
   win->addObjectResize (*bg);
   bg->setWeightHintSize (EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
   bg->show ();
   
-  ElmBox *bx = ElmBox::factory (*win);
+  Box *bx = Box::factory (*win);
   bx->setWeightHintSize (EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
   win->addObjectResize (*bx);
   bx->show ();
 
-  ElmEntry *en  = ElmEntry::factory (*win);
+  Entry *en  = Entry::factory (*win);
   en->setLineWrap (false);
   en->setText ("This is an entry widget in this window that<br>"
                "uses markup <b>like this</> for styling and<br>"
@@ -55,12 +55,12 @@ void test_entry (void *data, Evas_Object *obj, void *event_info)
   bx->packEnd (*en);
   en->show ();
 
-  ElmBox *bx2 = ElmBox::factory (*win);
-  bx2->setOrientation (ElmBox::Horizontal);
+  Box *bx2 = Box::factory (*win);
+  bx2->setOrientation (Box::Horizontal);
   bx2->setWeightHintSize (EVAS_HINT_EXPAND, 0.0);
   bx2->setAlignHintSize (EVAS_HINT_FILL, EVAS_HINT_FILL);
 
-  bt = ElmButton::factory (*win);
+  bt = Button::factory (*win);
   bt->setLabel ("Clear");
   bt->getEventSignal ("clicked")->connect (sigc::bind (sigc::ptr_fun (&my_entry_bt_1), en));
   bt->setAlignHintSize (EVAS_HINT_FILL, EVAS_HINT_FILL);
@@ -68,7 +68,7 @@ void test_entry (void *data, Evas_Object *obj, void *event_info)
   bx2->packEnd (*bt);
   bt->show ();
 
-  bt = ElmButton::factory (*win);
+  bt = Button::factory (*win);
   bt->setLabel ("Print");
   bt->getEventSignal ("clicked")->connect (sigc::bind (sigc::ptr_fun (&my_entry_bt_2), en));
   bt->setAlignHintSize (EVAS_HINT_FILL, EVAS_HINT_FILL);
@@ -76,7 +76,7 @@ void test_entry (void *data, Evas_Object *obj, void *event_info)
   bx2->packEnd (*bt);
   bt->show ();
 
-  bt = ElmButton::factory (*win);
+  bt = Button::factory (*win);
   bt->setLabel ("Selection");
   bt->getEventSignal ("clicked")->connect (sigc::bind (sigc::ptr_fun (&my_entry_bt_3), en));
   bt->setAlignHintSize (EVAS_HINT_FILL, EVAS_HINT_FILL);
@@ -84,7 +84,7 @@ void test_entry (void *data, Evas_Object *obj, void *event_info)
   bx2->packEnd (*bt);
   bt->show ();
 
-  bt = ElmButton::factory (*win);
+  bt = Button::factory (*win);
   bt->setLabel ("Insert");
   bt->getEventSignal ("clicked")->connect (sigc::bind (sigc::ptr_fun (&my_entry_bt_4), en));
   bt->setAlignHintSize (EVAS_HINT_FILL, EVAS_HINT_FILL);
@@ -101,32 +101,32 @@ void test_entry (void *data, Evas_Object *obj, void *event_info)
 
 void test_entry_scolled (void *data, Evas_Object *obj, void *event_info)
 {
-  ElmButton *bt = NULL;
-  ElmEntry *en = NULL;
-  ElmScroller *sc = NULL;
+  Button *bt = NULL;
+  Entry *en = NULL;
+  Scroller *sc = NULL;
   
-  ElmWindow *win = ElmWindow::factory ("entry-scrolled", ELM_WIN_BASIC);
+  Window *win = Window::factory ("entry-scrolled", ELM_WIN_BASIC);
   win->setTitle ("Entry Scrolled");
   win->setAutoDel (true);
   
-  ElmBackground *bg = ElmBackground::factory (*win);
+  Background *bg = Background::factory (*win);
   win->addObjectResize (*bg);
   bg->setWeightHintSize (EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
   bg->show ();
   
-  ElmBox *bx = ElmBox::factory (*win);
+  Box *bx = Box::factory (*win);
   bx->setWeightHintSize (EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
   win->addObjectResize (*bx);
   bx->show ();
 
-  sc = ElmScroller::factory (*win);
+  sc = Scroller::factory (*win);
   sc->limitMinContent (false, true);
   sc->setPolicy (ELM_SCROLLER_POLICY_OFF, ELM_SCROLLER_POLICY_OFF);
   sc->setWeightHintSize (EVAS_HINT_EXPAND, 0.0);
   sc->setAlignHintSize (EVAS_HINT_FILL, EVAS_HINT_FILL);
   bx->packEnd (*sc);
 
-  en = ElmEntry::factory (*win);
+  en = Entry::factory (*win);
   en->setSingleLine (true);
   en->setText ("This is a single line");
   en->setWeightHintSize (EVAS_HINT_EXPAND, 0.0);
@@ -137,14 +137,14 @@ void test_entry_scolled (void *data, Evas_Object *obj, void *event_info)
 
   sc->show ();
 
-  sc = ElmScroller::factory (*win);
+  sc = Scroller::factory (*win);
   sc->limitMinContent (false, true);
   sc->setPolicy (ELM_SCROLLER_POLICY_OFF, ELM_SCROLLER_POLICY_OFF);
   sc->setWeightHintSize (EVAS_HINT_EXPAND, 0.0);
   sc->setAlignHintSize (EVAS_HINT_FILL, EVAS_HINT_FILL);
   bx->packEnd (*sc);
 
-  en = ElmEntry::factory (*win);
+  en = Entry::factory (*win);
   en->setPassword (true);
   en->setText ("Password here");
   en->setWeightHintSize (EVAS_HINT_EXPAND, 0.0);
@@ -155,13 +155,13 @@ void test_entry_scolled (void *data, Evas_Object *obj, void *event_info)
 
   sc->show ();
 
-  sc = ElmScroller::factory (*win);
+  sc = Scroller::factory (*win);
   sc->setWeightHintSize (EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
   sc->setAlignHintSize (EVAS_HINT_FILL, EVAS_HINT_FILL);
   sc->setPolicy (ELM_SCROLLER_POLICY_ON, ELM_SCROLLER_POLICY_ON);
   bx->packEnd (*sc);
 
-  en = ElmEntry::factory (*win);
+  en = Entry::factory (*win);
   en->setText ("This is an entry widget in this window that<br>"
                "uses markup <b>like this</> for styling and<br>"
                "formatting <em>like this</>, as well as<br>"
@@ -177,13 +177,13 @@ void test_entry_scolled (void *data, Evas_Object *obj, void *event_info)
 
   sc->show ();
 
-  ElmBox *bx2 = ElmBox::factory (*win);
-  bx2->setOrientation (ElmBox::Horizontal);
+  Box *bx2 = Box::factory (*win);
+  bx2->setOrientation (Box::Horizontal);
   bx2->setWeightHintSize (EVAS_HINT_EXPAND, 0.0);
   bx2->setAlignHintSize (EVAS_HINT_FILL, EVAS_HINT_FILL);
 
 
-  bt = ElmButton::factory (*win);
+  bt = Button::factory (*win);
   bt->setLabel ("Clear");
   bt->getEventSignal ("clicked")->connect (sigc::bind (sigc::ptr_fun (&my_entry_bt_1), en));
   bt->setAlignHintSize (EVAS_HINT_FILL, EVAS_HINT_FILL);
@@ -191,7 +191,7 @@ void test_entry_scolled (void *data, Evas_Object *obj, void *event_info)
   bx2->packEnd (*bt);
   bt->show ();
 
-  bt = ElmButton::factory (*win);
+  bt = Button::factory (*win);
   bt->setLabel ("Print");
   bt->getEventSignal ("clicked")->connect (sigc::bind (sigc::ptr_fun (&my_entry_bt_2), en));
   bt->setAlignHintSize (EVAS_HINT_FILL, EVAS_HINT_FILL);
@@ -199,7 +199,7 @@ void test_entry_scolled (void *data, Evas_Object *obj, void *event_info)
   bx2->packEnd (*bt);
   bt->show ();
 
-  bt = ElmButton::factory (*win);
+  bt = Button::factory (*win);
   bt->setLabel ("Selection");
   bt->getEventSignal ("clicked")->connect (sigc::bind (sigc::ptr_fun (&my_entry_bt_3), en));
   bt->setAlignHintSize (EVAS_HINT_FILL, EVAS_HINT_FILL);
@@ -207,7 +207,7 @@ void test_entry_scolled (void *data, Evas_Object *obj, void *event_info)
   bx2->packEnd (*bt);
   bt->show ();
 
-  bt = ElmButton::factory (*win);
+  bt = Button::factory (*win);
   bt->setLabel ("Insert");
   bt->getEventSignal ("clicked")->connect (sigc::bind (sigc::ptr_fun (&my_entry_bt_4), en));
   bt->setAlignHintSize (EVAS_HINT_FILL, EVAS_HINT_FILL);

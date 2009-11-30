@@ -4,6 +4,8 @@
 
 #include "test.h"
 
+
+
 #ifndef ELM_LIB_QUICKLAUNCH
 static void my_win_del(Evas_Object *obj, void *event_info);
 static void my_win_main(void);
@@ -65,7 +67,7 @@ void test_menu(void *data, Evas_Object *obj, void *event_info);
  */
 void test_panel (void *data, Evas_Object *obj, void *event_info);
 
-ElmApplication *elmApp;
+Application *elmApp;
 
 
 static void
@@ -80,7 +82,7 @@ my_win_del(Evas_Object *obj, void *event_info)
 
 int main (int argc, char **argv)
 {
-  elmApp = new ElmApplication (argc, argv);
+  elmApp = new Application (argc, argv);
 
   /* 1 create an elm window - it returns an evas object. this is a little
    * special as the object lives in the canvas that is inside the window
@@ -95,7 +97,7 @@ int main (int argc, char **argv)
    * manager for identifying the window uniquely amongst all the windows
    * within this application (and all instances of the application). the
    * type is a basic window (the final parameter) */
-  ElmWindow *win = ElmWindow::factory ("main", ELM_WIN_BASIC);
+  Window *win = Window::factory ("main", ELM_WIN_BASIC);
   
   /* set the title of the window - this is in the titlebar */
   win->setTitle ("Elementary Tests");
@@ -116,7 +118,7 @@ int main (int argc, char **argv)
    * comnpositor running this should fall back to using shaped windows
    * (which have a mask). both these features will be slow and rely on
    * a lot more resources, so only use it if you need it. */
-  ElmBackground *bg = ElmBackground::factory (*win);
+  Background *bg = Background::factory (*win);
   /* set weight to 1.0 x 1.0 == expand in both x and y direction */
   bg->setWeightHintSize (EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
   /* tell the window that this object is to be resized along with the window.
@@ -127,7 +129,7 @@ int main (int argc, char **argv)
   bg->show ();
 
   /* add a box layout widget to the window */
-  ElmBox *bx0 = ElmBox::factory (*win);
+  Box *bx0 = Box::factory (*win);
   /* allow base box (bx0) to expand in x and y */
   bx0->setWeightHintSize (EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
   /* tell the window that the box affects window size and also will be
@@ -135,19 +137,19 @@ int main (int argc, char **argv)
   win->addObjectResize (*bx0);
   bx0->show ();
 
-  ElmFrame *fr = ElmFrame::factory (*win);
+  Frame *fr = Frame::factory (*win);
   fr->setLabel ("Information");
   bx0->packEnd (*fr);
   fr->show ();
 
-  ElmLabel *lb = ElmLabel::factory (*win);
+  Label *lb = Label::factory (*win);
   lb->setLabel("Please select a test from the list below<br>"
               "by clicking the test button to show the<br>"
               "test window.");
   fr->setContent (*lb);
   lb->show ();
 
-  ElmList *li = ElmList::factory (*win);
+  List *li = List::factory (*win);
   li->setAlwaysSelectMode (true);
   li->setWeightHintSize (EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
   li->setAlignHintSize (EVAS_HINT_FILL, EVAS_HINT_FILL);

@@ -4,7 +4,7 @@
 
 #include "../include/eetxx/Document.h"
 
-namespace eet {
+namespace Eetxx {
 
 void Document::init ()
 {
@@ -26,4 +26,4 @@ Eet_File *Document::get ()
   return _ef;
 }
 
-} // end namespace eet
+} // end namespace Eetxx

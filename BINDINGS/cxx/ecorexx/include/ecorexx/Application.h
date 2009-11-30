@@ -19,7 +19,7 @@
 #include <string>
 #include <list>
 
-#define eApp Application::application()
+//#define eApp Application::application()
 
 /**
  * C++ Wrapper for the Enlightenment Core Library (Ecore)
@@ -55,7 +55,7 @@ public:
   Application( int argc, const char** argv, const std::string& name );
   virtual ~Application();
 
-  static Application* application();
+  static Application* getInstance();
   
   std::string getName() const;
 

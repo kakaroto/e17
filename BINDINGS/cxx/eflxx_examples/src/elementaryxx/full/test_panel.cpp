@@ -2,16 +2,16 @@
 
 void test_panel (void *data, Evas_Object *obj, void *event_info) 
 {
-  ElmWindow *win = ElmWindow::factory ("panel", ELM_WIN_BASIC);
+  Window *win = Window::factory ("panel", ELM_WIN_BASIC);
   win->setTitle ("Panel");
   win->setAutoDel (true);
   
-  ElmBackground *bg = ElmBackground::factory (*win);
+  Background *bg = Background::factory (*win);
   win->addObjectResize (*bg);
   bg->setWeightHintSize (EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
   bg->show ();
   
-  ElmPanel *panel = ElmPanel::factory (*win);
+  Panel *panel = Panel::factory (*win);
   panel->setOrientation (ELM_PANEL_ORIENT_LEFT);
   panel->setWeightHintSize (EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
   panel->setAlignHintSize (EVAS_HINT_FILL, EVAS_HINT_FILL);

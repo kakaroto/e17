@@ -5,7 +5,7 @@
 #include "Chunk.h"
 #include "ChunkIterator.h"
 
-namespace eet {
+namespace Eetxx {
 
 /* forward declarations */
 class Document;
@@ -31,6 +31,6 @@ private:
   int        _nb_elems;
 };
 
-} // namespace eet
+} // namespace Eetxx
 
 #endif // EET_LIST_H

@@ -1,10 +1,10 @@
-#include <eflxx/eflpp_sys.h>
-#include <eflxx/eflpp_common.h>
-#include <eflxx/eflpp_debug.h>
+#include <eflxx/System.h>
+#include <eflxx/Common.h>
+#include <eflxx/Debug.h>
 
 #include <iostream>
 
-using namespace efl;
+using namespace Eflxx;
 using namespace std;
 
 class DebugGuard

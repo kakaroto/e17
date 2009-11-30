@@ -5,7 +5,8 @@
 #include "../../common/searchFile.h"
 
 using namespace std;
-using namespace efl;
+using namespace Eflxx;
+using namespace Elmxx;
 
 static Size size160x160 (160, 160);
 static Size size320x320 (320, 320);
