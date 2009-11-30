@@ -27,7 +27,7 @@ editable_part.py \
 editable_program.py \
 editable.py \
 editable_state.py \
-editje.sh \
+editje.py \
 event_manager.py \
 fileselector.py \
 floater.py \
