@@ -181,20 +181,18 @@ class ExternalSelector(elementary.Box):
         self.size_hint_align_set(evas.EVAS_HINT_FILL,
                                  evas.EVAS_HINT_FILL)
 
+        self._module = ""
+        self._type = ""
+
         self._types_load()
         self._modules_init()
         self._types_init()
         self._modules_load()
 
-        self.type = ""
-
     def _type_get(self):
         return self._type
 
-    def _type_set(self, type):
-        self._type = type
-
-    type = property(_type_get, _type_set)
+    type = property(_type_get)
 
     def _module_get(self):
         return self._module
@@ -204,7 +202,6 @@ class ExternalSelector(elementary.Box):
     def _types_load(self):
         self._loaded_types = {}
         for type in edje.ExternalIterator():
-            print type.name
             module = type.module
             name = type.name
             label = type.label_get()
@@ -239,11 +236,13 @@ class ExternalSelector(elementary.Box):
         self._module = ""
         self._modules.clear()
         list = self._loaded_types.keys()
-        try:
-            list.remove("")
-        except ValueError:
-            pass
-        for item in list:
+
+        list.sort(key=str.lower)
+
+        if list:
+            self._modules.item_append(list[0], None, None, self._module_select,
+                                      list[0]).selected_set(True)
+        for item in list[1:]:
             self._modules.item_append(item, None, None,
                                          self._module_select, item)
         self._modules.go()
@@ -252,12 +251,17 @@ class ExternalSelector(elementary.Box):
         self._module = module
         self._types.clear()
         list = self._loaded_types.get(module)
-        for (name, label) in list:
+
+        list.sort(key=lambda x:(str.lower(x[0])))
+
+        if list:
+            name, label = list[0]
+            self._types.item_append(label, None, None, self._type_select,
+                                    name).selected_set(True)
+        for (name, label) in list[1:]:
             self._types.item_append(label, None, None, self._type_select, name)
+
         self._types.go()
 
     def _type_select(self, li, it, type):
         self._type = type
-
-
-
