@@ -33,35 +33,47 @@ static int _emage_idler_cb(void *data)
 /* register the common objects */
 static void _objects_init(void)
 {
+	/* layouts */
 	eon_canvas_init();
-	eon_rect_init();
+	eon_stack_init();
+	/* shapes */
 	eon_circle_init();
+	eon_rect_init();
+	/* paints */
+	eon_buffer_init();
 	eon_checker_init();
-	eon_stripes_init();
-	eon_fade_init();
 	eon_compound_init();
 	eon_compound_layer_init();
+	eon_fade_init();
+	eon_grid_init();
 	eon_image_init();
+	eon_stripes_init();
+	/* core */
 	eon_style_init();
 	eon_setter_init();
-	eon_buffer_init();
 }
 
 /* unregister the common objects */
 static void _objects_shutdown(void)
 {
+	/* layout */
 	eon_canvas_shutdown();
-	eon_rect_shutdown();
+	eon_stack_shutdown();
+	/* shapes */
 	eon_circle_shutdown();
+	eon_rect_shutdown();
+	/* paints */
+	eon_buffer_shutdown();
 	eon_checker_shutdown();
-	eon_stripes_shutdown();
-	eon_fade_shutdown();
 	eon_compound_shutdown();
 	eon_compound_layer_shutdown();
+	eon_fade_shutdown();
+	eon_grid_shutdown();
 	eon_image_shutdown();
-	eon_style_shutdown();
+	eon_stripes_shutdown();
+	/* core */
 	eon_setter_shutdown();
-	eon_buffer_shutdown();
+	eon_style_shutdown();
 }
 /*============================================================================*
  *                                 Global                                     *

@@ -34,19 +34,19 @@ static void _render(Eon_Paint *p, Eon_Engine *eng, void *engine_data, void *canv
 	eon_engine_stripes_render(eng, engine_data, canvas_data, clip);
 }
 
-static void _ctor(void *instance)
+static void _ctor(Ekeko_Object *o)
 {
 	Eon_Stripes *sq;
 	Eon_Stripes_Private *prv;
 
-	sq = (Eon_Stripes *)instance;
-	sq->private = prv = ekeko_type_instance_private_get(_type, instance);
+	sq = (Eon_Stripes *)o;
+	sq->private = prv = ekeko_type_instance_private_get(_type, o);
 	sq->parent.parent.create = eon_engine_stripes_create;
 	sq->parent.parent.render = _render;
 	sq->parent.parent.free = eon_engine_stripes_delete;
 }
 
-static void _dtor(void *image)
+static void _dtor(Ekeko_Object *o)
 {
 
 }

@@ -27,8 +27,9 @@ static Ekeko_Type *_type;
 
 struct _Eon_Canvas_Private
 {
-	Eina_Bool root;
+
 };
+
 #if 0
 /* in case the subcanvas has another canvas as parent it will blt to the
  * parent canvas
@@ -161,7 +162,7 @@ static Eina_Bool _subcanvas_is_inside(Eon_Canvas *c, int x, int y)
 {
 	return EINA_TRUE;
 }
-
+#if 0
 static void _child_appended(Ekeko_Object *o, Ekeko_Event *e, void *data)
 {
 	Ekeko_Event_Mutation *em = (Ekeko_Event_Mutation *)e;
@@ -219,7 +220,7 @@ static void _child_append_cb(const Ekeko_Object *o, Ekeko_Event *e, void *data)
 		prv->root = EINA_TRUE;
 	}
 }
-
+#endif
 static Eina_Bool _appendable(void *instance, void *child)
 {
 	if ((!ekeko_type_instance_is_of(child, EON_TYPE_CANVAS)) &&
@@ -241,7 +242,7 @@ static void _ctor(Ekeko_Object *o)
 	c->base.base.parent.render = _subcanvas_render;
 	c->base.base.parent.is_inside = _subcanvas_is_inside;
 	//ekeko_event_listener_add(o, EON_PAINT_GEOMETRY_CHANGED, _geometry_change, EINA_FALSE, NULL);
-	ekeko_event_listener_add(o, EKEKO_EVENT_OBJECT_APPEND, _child_append_cb, EINA_FALSE, NULL);
+	//ekeko_event_listener_add(o, EKEKO_EVENT_OBJECT_APPEND, _child_append_cb, EINA_FALSE, NULL);
 }
 
 static void _dtor(void *canvas)

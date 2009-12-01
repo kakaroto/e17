@@ -40,6 +40,7 @@ typedef struct _Eon_Setter Eon_Setter;
 /* layout objects */
 typedef struct _Eon_Layout Eon_Layout;
 typedef struct _Eon_Canvas Eon_Canvas;
+typedef struct _Eon_Stack Eon_Stack;
 /* paint objects */
 typedef struct _Eon_Paint Eon_Paint;
 typedef struct _Eon_Paint_Square Eon_Paint_Square;
@@ -107,6 +108,7 @@ EAPI int eon_shutdown(void);
 
 #include "eon_layout.h"
 #include "eon_canvas.h"
+#include "eon_stack.h"
 
 #include "eon_shape.h"
 #include "eon_shape_square.h"

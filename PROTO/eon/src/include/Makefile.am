@@ -35,6 +35,7 @@ eon_rect.h \
 eon_script.h \
 eon_setter.h \
 eon_shape_square.h \
+eon_stack.h \
 eon_style.h \
 eon_style_applier.h \
 eon_transition.h \

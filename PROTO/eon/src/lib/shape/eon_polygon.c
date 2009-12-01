@@ -42,10 +42,13 @@ typedef struct _Polygon_Coord
 static void _update_geometry(Eon_Polygon *p)
 {
 	Eon_Polygon_Private *prv = PRIVATE(p);
-	Eina_Rectangle geom;
+	int x, y, w, h;
 
-	eina_rectangle_coords_from(&geom, prv->xmin, prv->ymin, prv->xmax - prv->xmin,  prv->ymax - prv->ymin);
-	eon_paint_geometry_set((Eon_Paint *)p, &geom);
+	x = prv->xmin;
+	y = prv->ymin;
+	w = prv->xmax - prv->xmin;
+	h = prv->ymax - prv->ymin;
+	eon_paint_geometry_set((Eon_Paint *)p, x, y, w, h);
 }
 
 

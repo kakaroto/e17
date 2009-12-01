@@ -59,7 +59,11 @@ struct _Eon_Paint_Private
 	Eon_Paint_Coordspace coordspace;
 	Eon_Paint_Matrixspace matrixspace;
 	Eon_Style *style;
-	Eina_Bool visibility;
+	struct {
+		Eina_Bool curr;
+		Eina_Bool prev;
+		Eina_Bool changed;
+	} visibility;
 };
 
 static Eon_Paint * _prev_renderable_get(Ekeko_Object *o)
@@ -304,18 +308,21 @@ void eon_paint_inverse_matrix_get(Eon_Paint *p, Enesim_Matrix *m)
  * - translate the result to x, y
  *
  */
-void eon_paint_geometry_set(Eon_Paint *p, Eina_Rectangle *rect)
+void eon_paint_geometry_set(Eon_Paint *p, int x, int y, int w, int h)
 {
 	Eon_Paint_Private *prv;
 	Eon_Paint_Geometry_Change gch;
 	Enesim_Matrix_Type mtype;
+	Eina_Rectangle rect;
 
 	prv = PRIVATE(p);
 
+	DBG("Setting paint geometry %s:%p %d %d %d %d", ekeko_object_type_name_get(p), p, x, y, w, h);
+	eina_rectangle_coords_from(&rect, x, y, w, h);
 	mtype = enesim_matrix_type_get(&prv->matrix);
 	if (mtype == ENESIM_MATRIX_IDENTITY)
 	{
-		prv->boundings.curr = prv->geometry.curr = *rect;
+		prv->boundings.curr = prv->geometry.curr = rect;
 	}
 	else
 	{
@@ -323,18 +330,18 @@ void eon_paint_geometry_set(Eon_Paint *p, Eina_Rectangle *rect)
 		Enesim_Quad q;
 		float x1, y1, x2, y2, x3, y3, x4, y4;
 
-		eina_rectangle_coords_from(&r, 0, 0, rect->w, rect->h);
+		eina_rectangle_coords_from(&r, 0, 0, rect.w, rect.h);
 		/* get the largest rectangle that fits on the matrix */
 		enesim_matrix_rect_transform(&prv->matrix, &r, &q);
 		enesim_quad_coords_get(&q, &x1, &y1, &x2, &y2, &x3, &y3, &x4, &y4);
 		enesim_quad_rectangle_to(&q, &r);
 		/* when scaling the area should scale too */
-		r.x += rect->x - prv->matrix.xx;
-		r.y += rect->y - prv->matrix.yy;
+		r.x += rect.x - prv->matrix.xx;
+		r.y += rect.y - prv->matrix.yy;
 		r.w += prv->matrix.xx;
 		r.h += prv->matrix.yy;
 
-		prv->geometry.curr = *rect;
+		prv->geometry.curr = rect;
 		prv->boundings.curr = r;
 	}
 	/* check that the geometry have changed */
@@ -450,6 +457,16 @@ Eina_Bool eon_paint_boundings_changed(Eon_Paint *p, Eina_Rectangle *curr,
 	return prv->boundings.changed;
 }
 
+Eina_Bool eon_paint_visibility_changed(Eon_Paint *p, Eina_Bool *curr,
+		Eina_Bool *prev)
+{
+	Eon_Paint_Private *prv = PRIVATE(p);
+
+	if (curr) *curr = prv->visibility.curr;
+	if (prev) *prev = prv->visibility.prev;
+	return prv->visibility.changed;
+}
+
 void eon_paint_process(Eon_Paint *p)
 {
 	Eon_Paint_Private *prv = PRIVATE(p);
@@ -469,6 +486,12 @@ void eon_paint_process(Eon_Paint *p)
 	{
 		prv->geometry.changed = EINA_FALSE;
 		prv->geometry.prev = prv->geometry.curr;
+		eon_paint_unchange(p);
+	}
+	if (prv->visibility.changed)
+	{
+		prv->visibility.changed = EINA_FALSE;
+		prv->visibility.prev = prv->visibility.curr;
 		eon_paint_unchange(p);
 	}
 	return;
@@ -501,7 +524,7 @@ EAPI Ekeko_Type *eon_paint_type_get(void)
 
 	if (!type)
 	{
-		_dom = eina_log_domain_register("eon:paint", NULL);
+		_dom = eina_log_domain_register("eon_paint", NULL);
 
 		type = ekeko_type_new(EON_TYPE_PAINT, sizeof(Eon_Paint),
 				sizeof(Eon_Paint_Private),
@@ -527,7 +550,7 @@ EAPI Ekeko_Type *eon_paint_type_get(void)
 				OFFSET(Eon_Paint_Private, style));
 		EON_PAINT_VISIBILITY = EKEKO_TYPE_PROP_SINGLE_ADD(type,
 				"visibility", EKEKO_PROPERTY_BOOL,
-				OFFSET(Eon_Paint_Private, visibility));
+				OFFSET(Eon_Paint_Private, visibility.curr));
 	}
 
 	return type;
@@ -662,7 +685,7 @@ EAPI Eina_Bool eon_paint_visibility_get(Eon_Paint *p)
 	Eon_Paint_Private *prv;
 
 	prv = PRIVATE(p);
-	return prv->visibility;
+	return prv->visibility.curr;
 }
 /**
  * Shows a paint object
@@ -674,7 +697,7 @@ EAPI void eon_paint_show(Eon_Paint *p)
 	Ekeko_Value value;
 
 	prv = PRIVATE(p);
-	if (prv->visibility)
+	if (prv->visibility.curr)
 		return;
 	ekeko_value_bool_from(&value, EINA_TRUE);
 	ekeko_object_property_value_set((Ekeko_Object *)p, "visibility", &value);
@@ -689,7 +712,7 @@ EAPI void eon_paint_hide(Eon_Paint *p)
 	Ekeko_Value value;
 
 	prv = PRIVATE(p);
-	if (!prv->visibility)
+	if (!prv->visibility.curr)
 		return;
 	ekeko_value_bool_from(&value, EINA_FALSE);
 	ekeko_object_property_value_set((Ekeko_Object *)p, "visibility", &value);
@@ -705,7 +728,7 @@ EAPI void eon_paint_visibility_set(Eon_Paint *p, Eina_Bool visible)
 	Ekeko_Value value;
 
 	prv = PRIVATE(p);
-	if (prv->visibility == visible)
+	if (prv->visibility.curr == visible)
 		return;
 	ekeko_value_bool_from(&value, visible);
 	ekeko_object_property_value_set((Ekeko_Object *)p, "visibility", &value);

@@ -46,6 +46,69 @@ void eon_coord_calculate(Eon_Coord *sc, int pc, int plength, int *c)
 	}
 }
 
+/* Future code, as we no longer trigger geometry changes per coordinate but per
+ * global geometry a single function is enough
+ */
+void eon_coord_length_change2(Ekeko_Object *o, Eon_Coord *curr,
+		Eon_Coord *prev, int *relative, int length,
+		Ekeko_Object *parent, const char *event, Event_Listener el)
+{
+	if (curr->type == EON_COORD_RELATIVE)
+	{
+		eon_coord_length_relative_calculate(curr, length, &curr->final);
+		if (prev->type == EON_COORD_ABSOLUTE)
+		{
+			(*relative)++;
+			if (*relative == 1)
+			{
+				ekeko_event_listener_add(parent, event,
+						el, EINA_FALSE, o);
+			}
+		}
+	}
+	else
+	{
+		curr->final = curr->value;
+		if (prev->type == EON_COORD_RELATIVE)
+		{
+			(*relative)--;
+			if (!*relative)
+				ekeko_event_listener_remove(parent, event,
+						el, EINA_FALSE, o);
+		}
+	}
+}
+
+void eon_coord_change2(Ekeko_Object *o, Eon_Coord *curr,
+		Eon_Coord *prev, int *relative, int c, int length,
+		Ekeko_Object *parent, const char *event, Event_Listener el)
+{
+	if (curr->type == EON_COORD_RELATIVE)
+	{
+		eon_coord_relative_calculate(curr, c, length, &curr->final);
+		if (prev->type == EON_COORD_ABSOLUTE)
+		{
+			(*relative)++;
+			if (*relative == 1)
+			{
+				ekeko_event_listener_add(parent, event,
+						el, EINA_FALSE, o);
+			}
+		}
+	}
+	else
+	{
+		curr->final = curr->value;
+		if (prev->type == EON_COORD_RELATIVE)
+		{
+			(*relative)--;
+			if (!*relative)
+				ekeko_event_listener_remove(parent, event,
+						el, EINA_FALSE, o);
+		}
+	}
+}
+
 void eon_coord_length_change(const Ekeko_Object *o, Eon_Coord *dst, Eon_Coord *curr,
 		Eon_Coord *prev, int length, Ekeko_Object *parent,
 		const char *levent, Event_Listener el)

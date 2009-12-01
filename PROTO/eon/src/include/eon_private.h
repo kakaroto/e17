@@ -69,6 +69,7 @@
 
 #define EON_TYPE_LAYOUT "layout"
 #define EON_TYPE_CANVAS "canvas"
+#define EON_TYPE_STACK "stack"
 
 #define EON_TYPE_FILTER "filter"
 #define EON_TYPE_FILTER_EFFECT "Eon_Filter_Effect"
@@ -128,7 +129,7 @@ typedef struct _Eon_Paint_Coords_Event
 
 void eon_paint_change(Eon_Paint *p);
 Eina_Bool eon_paint_appendable(Ekeko_Object *p, Ekeko_Object *child);
-void eon_paint_geometry_set(Eon_Paint *p, Eina_Rectangle *rect);
+void eon_paint_geometry_set(Eon_Paint *p, int x, int y, int w, int h);
 void eon_paint_geometry_get(Eon_Paint *p, Eina_Rectangle *rect);
 void eon_paint_style_coords_get(Eon_Paint *p, Eon_Paint *rel, int *x, int *y,
 		int *w, int *h);

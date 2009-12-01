@@ -73,7 +73,7 @@ struct _Eon_Paint
 	void *(*create)(Eon_Engine *e, Eon_Paint *s);
 	/* called whenever the paint is going to be rendered */
 	void (*render)(Eon_Paint *p, Eon_Engine *e, void *engine_data,
-			void *canvas_data, Eina_Rectangle *clip);
+			void *layout_data, Eina_Rectangle *clip);
 	/* called to check if the point is inside the paint */
 	Eina_Bool (*is_inside)(Eon_Paint *p, int x, int y);
 	/* called whenever the paint is going to be destroyed */

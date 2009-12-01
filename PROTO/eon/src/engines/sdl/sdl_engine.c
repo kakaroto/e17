@@ -252,6 +252,7 @@ static void * layout_create(Eon_Layout *l, void *dd, int w, int h)
 static Eina_Bool layout_flush(void *src, Eina_Rectangle *srect)
 {
 	Eon_Enesim_Layout *l = (Eon_Enesim_Layout *)src;
+	Engine_SDL_Layout *sdl_layout = l->data;
 	Enesim_Surface *es = l->s;
 	Enesim_Converter_1D conv;
 	Enesim_Converter_Data cdata;
@@ -268,15 +269,10 @@ static Eina_Bool layout_flush(void *src, Eina_Rectangle *srect)
 	int coffset;
 
 #if 1
-	printf("Flushing the canvas %d %d %d %d\n", srect->x, srect->y, srect->w, srect->h);
-	{
-		int w, h;
-		enesim_surface_size_get(es, &w, &h);
-		printf("%d %d\n", w, h);
-	}
+	printf("Flushing the canvas %p %d %d %d %d\n", es, srect->x, srect->y, srect->w, srect->h);
 #endif
 	/* setup the pointers */
-	s = enesim_surface_private_get(es);
+	s = sdl_layout->sdoc->s;
 	stride = enesim_surface_stride_get(es);
 
 	sdata = enesim_surface_data_get(es);

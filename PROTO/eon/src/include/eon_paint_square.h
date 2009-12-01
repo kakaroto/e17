@@ -39,20 +39,29 @@ typedef struct _Eon_Paint_Square_Private Eon_Paint_Square_Private;
 struct _Eon_Paint_Square
 {
 	Eon_Paint parent;
-	Eon_Paint_Square_Private *private;
+	Eon_Paint_Square_Private *prv;
 };
 /*============================================================================*
  *                                Functions                                   *
  *============================================================================*/
 EAPI Ekeko_Type *eon_paint_square_type_get(void);
+
+EAPI void eon_paint_square_x_get(Eon_Paint_Square *s, Eon_Coord *x);
 EAPI void eon_paint_square_x_rel_set(Eon_Paint_Square *r, int x);
 EAPI void eon_paint_square_x_set(Eon_Paint_Square *r, int x);
+
+EAPI void eon_paint_square_y_get(Eon_Paint_Square *s, Eon_Coord *y);
 EAPI void eon_paint_square_y_set(Eon_Paint_Square *r, int y);
 EAPI void eon_paint_square_y_rel_set(Eon_Paint_Square *r, int y);
+
+EAPI void eon_paint_square_w_get(Eon_Paint_Square *s, Eon_Coord *w);
 EAPI void eon_paint_square_w_set(Eon_Paint_Square *r, int w);
 EAPI void eon_paint_square_w_rel_set(Eon_Paint_Square *r, int w);
+
+EAPI void eon_paint_square_h_get(Eon_Paint_Square *s, Eon_Coord *h);
 EAPI void eon_paint_square_h_set(Eon_Paint_Square *r, int h);
 EAPI void eon_paint_square_h_rel_set(Eon_Paint_Square *r, int h);
+
 EAPI void eon_paint_square_coords_get(Eon_Paint_Square *s, Eon_Coord *x,
 		 Eon_Coord *y, Eon_Coord *w, Eon_Coord *h);
 

@@ -233,12 +233,14 @@ static void * fade_create(Eon_Paint *f)
  *============================================================================*/
 static void checker_setup(Eon_Enesim_Paint *p)
 {
+	Eon_Coord sw, sh;
 	Eon_Checker *ch = (Eon_Checker *)p->p;
 
 	enesim_renderer_checker_color1_set(p->r, eon_checker_color1_get(ch));
 	enesim_renderer_checker_color2_set(p->r, eon_checker_color2_get(ch));
-	/* FIXME */
-	enesim_renderer_checker_size_set(p->r, 20, 20);
+	eon_checker_sw_get(ch, &sw);
+	eon_checker_sh_get(ch, &sh);
+	enesim_renderer_checker_size_set(p->r, sw.final, sh.final);
 }
 
 static void checker_style(Eon_Enesim_Paint *p, Eon_Enesim_Paint *rel)
@@ -272,6 +274,62 @@ static void * checker_create(Eon_Paint *ch)
 	p->p = ch;
 	p->r = enesim_renderer_checker_new();
 	p->style_setup = checker_style;
+
+	return p;
+}
+/*============================================================================*
+ *                                     Grid                                   *
+ *============================================================================*/
+static void grid_setup(Eon_Enesim_Paint *p)
+{
+	Eon_Coord vspace, hspace, vthick, hthick;
+	Eon_Color c1, c2;
+	Eon_Grid *g = (Eon_Grid *)p->p;
+
+	eon_grid_vthick_get(g, &vthick);
+	eon_grid_hthick_get(g, &hthick);
+	eon_grid_vspace_get(g, &vspace);
+	eon_grid_hspace_get(g, &hspace);
+	c1 = eon_grid_color1_get(g);
+	c2 = eon_grid_color2_get(g);
+
+	enesim_renderer_grid_inside_size_set(p->r, hspace.final, vspace.final);
+	enesim_renderer_grid_inside_color_set(p->r, c1);
+	enesim_renderer_grid_outside_size_set(p->r, hthick.final, vthick.final);
+	enesim_renderer_grid_outside_color_set(p->r, c2);
+}
+
+static void grid_style(Eon_Enesim_Paint *p, Eon_Enesim_Paint *rel)
+{
+	int dx, dy;
+
+	eon_paint_square_style_coords_get((Eon_Paint_Square *)p->p,
+			rel->p, &dx, &dy, NULL, NULL);
+	paint_style_setup(p, rel, dx, dy);
+	grid_setup(p);
+}
+
+static void grid_render(void *d, void *cd, Eina_Rectangle *clip)
+{
+	Eon_Enesim_Paint *p = d;
+	Eina_Rectangle geom;
+	Eon_Coord cx, cy;
+
+	eon_paint_square_coords_get((Eon_Paint_Square *)p->p, &cx, &cy, NULL, NULL);
+	paint_renderer_setup(p, cx.final, cy.final);
+	grid_setup(p);
+	enesim_renderer_state_setup(p->r);
+	paint_renderer_draw(p->p, cd, p->r, clip);
+}
+
+static void * grid_create(Eon_Paint *ch)
+{
+	Eon_Enesim_Paint *p;
+
+	p = calloc(1, sizeof(Eon_Enesim_Paint));
+	p->p = ch;
+	p->r = enesim_renderer_grid_new();
+	p->style_setup = grid_style;
 
 	return p;
 }
@@ -1042,6 +1100,9 @@ EAPI void eon_engine_enesim_setup(Eon_Engine *e)
 	e->checker_create = checker_create;
 	e->checker_delete = paint_delete;
 	e->checker_render = checker_render;
+	e->grid_create = grid_create;
+	e->grid_delete = paint_delete;
+	e->grid_render = grid_render;
 	e->stripes_create = stripes_create;
 	e->stripes_delete = paint_delete;
 	e->stripes_render = stripes_render;

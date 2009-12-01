@@ -31,10 +31,13 @@ struct _Eon_Ellipse_Private
 static void _update_geometry(Eon_Ellipse *p)
 {
 	Eon_Ellipse_Private *prv = PRIVATE(p);
-	Eina_Rectangle geom;
+	int x, y, w, h;
 
-	eina_rectangle_coords_from(&geom, prv->x.final - prv->radius, prv ->y.final - prv->radius, prv->radius << 1, prv->radius << 1);
-	eon_paint_geometry_set((Eon_Paint *)p, &geom);
+	x = prv->x.final - prv->radius;
+	y = prv ->y.final - prv->radius;
+	w = prv->radius << 1;
+	h = prv->radius << 1;
+	eon_paint_geometry_set((Eon_Paint *)p, x, y, w, h);
 }
 
 /* Just informs that the x.final property has to be recalculated */

@@ -130,7 +130,7 @@ static void _ctor(Ekeko_Object *o)
 	ekeko_event_listener_add(o, EKEKO_EVENT_OBJECT_APPEND, _child_appended, EINA_FALSE, NULL);
 }
 
-static void _dtor(void *canvas)
+static void _dtor(Ekeko_Object *o)
 {
 
 }
@@ -141,11 +141,11 @@ static Eina_Bool _appendable(Ekeko_Object *parent, Ekeko_Object *child)
 	Eon_Document_Private *prv = PRIVATE(d);
 
 	/* we only allow style and canvas children */
-	if ((!ekeko_type_instance_is_of(child, EON_TYPE_CANVAS)) &&
+	if ((!ekeko_type_instance_is_of(child, EON_TYPE_LAYOUT)) &&
 			(!ekeko_type_instance_is_of(child, EON_TYPE_STYLE)))
 		return EINA_FALSE;
 	/* we should use the childs list instead as we might have more than one canvas */
-	if (prv->layout && ekeko_type_instance_is_of(child, EON_TYPE_CANVAS))
+	if (prv->layout && ekeko_type_instance_is_of(child, EON_TYPE_LAYOUT))
 		return EINA_FALSE;
 	if (prv->style && ekeko_type_instance_is_of(child, EON_TYPE_STYLE))
 		return EINA_FALSE;

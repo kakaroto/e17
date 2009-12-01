@@ -20,11 +20,9 @@
 /*============================================================================*
  *                                 Events                                     *
  *============================================================================*/
-#define EON_LAYOUT_REDRAW_CHANGED "redrawChanged"
 /*============================================================================*
  *                               Properties                                   *
  *============================================================================*/
-extern Ekeko_Property_Id EON_LAYOUT_REDRAW;
 /*============================================================================*
  *                                 Class                                      *
  *============================================================================*/
@@ -44,11 +42,12 @@ struct _Eon_Layout
  *                                Functions                                   *
  *============================================================================*/
 Ekeko_Type * eon_layout_type_get(void);
-EAPI void eon_layout_size_set(Eon_Layout *c, int w, int h);
 EAPI void eon_layout_damage_add(Eon_Layout *c, Eina_Rectangle *r);
 EAPI void eon_layout_obscure_add(Eon_Layout *c, Eina_Rectangle *r);
+
 EAPI Eon_Input * eon_layout_input_new(Eon_Layout *c);
 EAPI Eon_Paint * eon_layout_renderable_get_at_coord(Eon_Layout *c, unsigned int x, unsigned int y);
+
 EAPI void eon_layout_focus_set(Eon_Layout *c, Eon_Paint *r);
 EAPI Eon_Paint * eon_layout_focus_get(Eon_Layout *c);
 
