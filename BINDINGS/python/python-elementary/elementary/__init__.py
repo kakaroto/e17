@@ -23,7 +23,7 @@ from c_elementary import Object, Window, Background, Icon, \
     Radio, Check, Pager, InnerWindow, Image, Spinner, Fileselector, Notify, \
     Separator, Progressbar, init, shutdown, run, exit, scale_get, scale_set, \
     finger_size_get, finger_size_set, coords_finger_size_adjust, \
-    theme_overlay_add, theme_extension_add
+    theme_overlay_add, theme_extension_add, policy_set, policy_get
 
 ELM_WIN_BASIC = 0
 ELM_WIN_DIALOG_BASIC = 1
@@ -37,6 +37,12 @@ ELM_WIN_KEYBOARD_PHONE_NUMBER = 5
 ELM_WIN_KEYBOARD_HEX = 6
 ELM_WIN_KEYBOARD_TERMINAL = 7
 ELM_WIN_KEYBOARD_PASSWORD = 8
+
+ELM_POLICY_QUIT = 0
+ELM_POLICY_LAST = 1
+
+ELM_POLICY_QUIT_NONE = 0
+ELM_POLICY_QUIT_LAST_WINDOW_CLOSED = 1
 
 ELM_HOVER_AXIS_NONE = 0
 ELM_HOVER_AXIS_HORIZONTAL = 1

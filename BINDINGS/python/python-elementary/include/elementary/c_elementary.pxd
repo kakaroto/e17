@@ -51,6 +51,14 @@ cdef enum Elm_Win_Keyboard_Mode:
     ELM_WIN_KEYBOARD_TERMINAL
     ELM_WIN_KEYBOARD_PASSWORD
 
+cdef enum Elm_Policy:
+    ELM_POLICY_QUIT
+    ELM_POLICY_LAST
+
+cdef enum Elm_Policy_Quit:
+    ELM_POLICY_QUIT_NONE
+    ELM_POLICY_QUIT_LAST_WINDOW_CLOSED
+
 cdef enum Elm_Hover_Axis:
     ELM_HOVER_AXIS_NONE
     ELM_HOVER_AXIS_HORIZONTAL
@@ -173,6 +181,10 @@ cdef extern from "Elementary.h":
     void         elm_quicklaunch_cleanup()
     int          elm_quicklaunch_fallback(int argc, char **argv)
     char        *elm_quicklaunch_exe_path_get(char *exe)
+
+    # Policy
+    evas.c_evas.Eina_Bool     elm_policy_set(unsigned int policy, int value)
+    int          elm_policy_get(unsigned int policy)
 
     # Object handling
     void         elm_object_scale_set(evas.c_evas.Evas_Object *obj, double scale)

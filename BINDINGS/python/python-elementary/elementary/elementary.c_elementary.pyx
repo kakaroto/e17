@@ -45,6 +45,34 @@ def run():
 def exit():
     elm_exit()
 
+def policy_set(policy, value):
+    """Set new policy value.
+
+   This will emit the ecore event ELM_EVENT_POLICY_CHANGED in the main
+   loop giving the event information Elm_Event_Policy_Changed with
+   policy identifier, new and old values.
+
+   @param policy policy identifier as in Elm_Policy.
+   @param value policy value, depends on identifiers, usually there is
+          an enumeration with the same prefix as the policy name, for
+          example: ELM_POLICY_QUIT and Elm_Policy_Quit
+          (ELM_POLICY_QUIT_NONE, ELM_POLICY_QUIT_LAST_WINDOW_CLOSED).
+
+   @return @c EINA_TRUE on success or @c EINA_FALSE on error (right
+           now just invalid policy identifier, but in future policy
+           value might be enforced).
+    """
+    return elm_policy_set(policy, value)
+
+def policy_get(policy):
+    """Gets the policy value set for given identifier.
+
+    @param policy policy identifier as in Elm_Policy.
+
+    @return policy value. Will be 0 if policy identifier is invalid.
+    """
+    return elm_policy_get(policy)
+
 def scale_get():
     return elm_scale_get()
 
