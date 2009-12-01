@@ -583,7 +583,7 @@ elixir_clone(JSContext *cx, JSObject *root)
         return NULL;
      }
    elixir_register_cx(result->cx);
-   JS_SetVersion(result->cx, JS_GetVersion(root));
+   JS_SetVersion(result->cx, JS_GetVersion(cx));
    JS_SetErrorReporter(result->cx, error_report);
    elixir_lock_cx(result->cx);
 
