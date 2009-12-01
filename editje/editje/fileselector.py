@@ -118,6 +118,7 @@ class FileSelector(elementary.Table):
                                             evas.EVAS_HINT_EXPAND)
         self._nav_path.size_hint_align_set(evas.EVAS_HINT_FILL, 0.5)
         self._nav_path.editable_set(False)
+        self._nav_path.entry_set("PATH")
         self._nav_path.callback_anchor_clicked_add(self._path_go)
         self._nav_path.callback_changed_add(self._path_change)
         sc.content_set(self._nav_path)
@@ -234,6 +235,7 @@ class FileSelector(elementary.Table):
         if os.path.isdir(path):
             self._path = path
             self.file = ""
+            print self._path
             self._nav_path.entry_set(self._path)
 
     def _path_get(self):
