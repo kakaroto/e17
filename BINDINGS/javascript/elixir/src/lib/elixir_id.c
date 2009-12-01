@@ -292,6 +292,15 @@ elixir_id_filename(void)
    return elixir_loader_filename(id[id_active_size - 1]);
 }
 
+const char*
+elixir_id_section(void)
+{
+   if (id_active_size == 0)
+     return NULL;
+
+   return elixir_loader_section(id[id_active_size - 1]);
+}
+
 void
 elixir_id_close(void)
 {

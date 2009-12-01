@@ -15,6 +15,34 @@ static const elixir_parameter_t*        _triple_string_params[4] = {
 static Eina_Array* loaded = NULL;
 
 static JSBool
+elixir_current(JSContext *cx, uintN argc, jsval *vp)
+{
+   JSObject *result;
+
+   if (!elixir_params_check(cx, void_params, NULL, argc, JS_ARGV(cx, vp)))
+     return JS_FALSE;
+
+   result = JS_NewObject(cx, elixir_class_request("Elixir_File", NULL), NULL, NULL);
+   if (!elixir_object_register(cx, &result, NULL))
+     return JS_FALSE;
+
+   if (!elixir_add_str_prop(cx, result, "filename", elixir_id_filename()))
+     return JS_FALSE;
+   if (elixir_id_section() != NULL)
+     {
+	if (!elixir_add_str_prop(cx, result, "section", elixir_id_section()))
+	  return JS_FALSE;
+     }
+   else
+     if (!JS_DefineProperty(cx, result, "section", JSVAL_NULL, NULL, NULL,
+			    JSPROP_ENUMERATE | JSPROP_READONLY))
+       return JS_FALSE;
+
+   JS_SET_RVAL(cx, vp, OBJECT_TO_JSVAL(result));
+   return JS_TRUE;
+}
+
+static JSBool
 elixir_print(JSContext *cx, uintN argc, jsval *vp)
 {
    JSString *js_str;
@@ -318,6 +346,7 @@ module_open(Elixir_Module *em, JSContext *cx, JSObject *root)
        ELIXIR_FN(version, 0, JSPROP_ENUMERATE, 0 ),
        ELIXIR_FN(chdir, 1, JSPROP_ENUMERATE, 0 ),
        ELIXIR_FN(gc, 0, JSPROP_ENUMERATE, 0 ),
+       ELIXIR_FN(current, 0, JSPROP_ENUMERATE, 0 ),
        JS_FS_END
      };
    Elixir_Sub_Module *esmd;

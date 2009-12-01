@@ -14,6 +14,7 @@ struct _Elixir_Loader_File
 
    char *content;
    char *filename;
+   char *section;
 };
 
 /*
@@ -25,12 +26,16 @@ _elixir_edje_request(int param, const char **params)
 {
    Elixir_Loader_File *result;
    char *filename = NULL;
-   char *content;
+   char *section = NULL;
+   char *content = NULL;
 
    if (param != 2) return NULL;
 
    filename = elixir_exe_canonicalize(params[0]);
    if (!filename) return NULL;
+
+   section = strdup(params[1]);
+   if (!section) goto on_error;
 
    content = edje_file_data_get(params[0], params[1]);
    if (!content) goto on_error;
@@ -41,6 +46,7 @@ _elixir_edje_request(int param, const char **params)
    result->length = strlen(content);
    result->content = content;
    result->filename = filename;
+   result->section = section;
 
    elixir_security_set(ELIXIR_GRANTED);
 
@@ -48,6 +54,7 @@ _elixir_edje_request(int param, const char **params)
 
  on_error:
    if (content) free(content);
+   if (section) free(section);
    free(filename);
    return NULL;
 }
@@ -56,6 +63,7 @@ static Eina_Bool
 _elixir_edje_release(const Elixir_Loader_File *file)
 {
    free(file->filename);
+   free(file->section);
    free(file->content);
    free((void*) file);
 
@@ -75,6 +83,12 @@ _elixir_edje_filename(const Elixir_Loader_File *file)
    return file->filename;
 }
 
+static const char *
+_elixir_edje_section(const Elixir_Loader_File *file)
+{
+   return file->section;
+}
+
 static Eina_Bool
 _elixir_edje_id(const Elixir_Loader_File *file, char sign[ELIXIR_SIGNATURE_SIZE])
 {
@@ -91,7 +105,8 @@ static const Elixir_Loader edje_loader = {
     _elixir_edje_get,
     NULL,
     _elixir_edje_filename,
-    _elixir_edje_id
+    _elixir_edje_id,
+    _elixir_edje_section
   }
 };
 

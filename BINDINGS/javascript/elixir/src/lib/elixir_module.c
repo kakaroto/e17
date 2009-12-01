@@ -462,6 +462,16 @@ elixir_loader_filename(const Elixir_Loaded_File *load)
    return load->loader->func.filename(load->file);
 }
 
+EAPI const char *
+elixir_loader_section(const Elixir_Loaded_File *load)
+{
+   if (load->loader->func.section) {
+     return load->loader->func.section(load->file);
+   } else {
+     return NULL;
+   }
+}
+
 EAPI void
 elixir_loader_unload(const Elixir_Loaded_File *load)
 {

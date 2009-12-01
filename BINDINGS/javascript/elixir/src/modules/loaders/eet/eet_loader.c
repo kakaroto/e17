@@ -21,6 +21,7 @@ struct _Elixir_Eet_Filename
 struct _Elixir_Loader_File
 {
    Elixir_Eet_Filename *file;
+   char *section;
 
    char *content;
    char *compiled;
@@ -98,8 +99,9 @@ _elixir_eet_request(int param, const char **params)
    Elixir_Loader_File *result = NULL;
    Elixir_Eet_Filename *top = NULL;
    Elixir_Eet_Filename *lookup = NULL;
-   Eet_File *eet;
+   Eet_File *eet = NULL;
    char *filename;
+   char *section = NULL;
    char *compiled_key;
    char *content = NULL;
    char *compiled = NULL;
@@ -144,6 +146,9 @@ _elixir_eet_request(int param, const char **params)
 
    filename = elixir_exe_canonicalize(filename);
    if (!filename) return NULL;
+
+   section = strdup(key);
+   if (!section) goto on_error;
 
    eet = eet_open(filename, EET_FILE_MODE_READ);
    if (!eet) goto on_error;
@@ -253,6 +258,7 @@ _elixir_eet_request(int param, const char **params)
      }
 
    result->file = top;
+   result->section = section;
 
    return result;
 
@@ -261,6 +267,7 @@ _elixir_eet_request(int param, const char **params)
    if (content && free_content) free(content);
    if (compiled && free_compiled) free(compiled);
    if (eet) eet_close(eet);
+   if (section) free(section);
    free(filename);
 
    return NULL;
@@ -301,6 +308,7 @@ _elixir_eet_release(const Elixir_Loader_File *file)
 
    if (file->free_content) free(file->content);
    if (file->free_compiled) free(file->compiled);
+   free(file->section);
    free((void*) file);
 
    return EINA_TRUE;
@@ -324,6 +332,12 @@ static const char *
 _elixir_eet_filename(const Elixir_Loader_File *file)
 {
    return file->file->filename;
+}
+
+static const char *
+_elixir_eet_section(const Elixir_Loader_File *file)
+{
+   return file->section;
 }
 
 static Eina_Bool
@@ -362,7 +376,8 @@ static const Elixir_Loader eet_loader = {
     _elixir_eet_get,
     _elixir_eet_xget,
     _elixir_eet_filename,
-    _elixir_eet_id
+    _elixir_eet_id,
+    _elixir_eet_section
   }
 };
 

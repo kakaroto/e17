@@ -113,7 +113,8 @@ static const Elixir_Loader text_loader = {
     _elixir_text_get,
     NULL,
     _elixir_text_filename,
-    _elixir_text_id
+    _elixir_text_id,
+    NULL
   }
 };
 

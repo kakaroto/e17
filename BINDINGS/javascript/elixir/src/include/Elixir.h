@@ -108,6 +108,7 @@ struct _Elixir_Loader
       const void               *(*xget)(const Elixir_Loader_File *file, unsigned int *length);
       const char               *(*filename)(const Elixir_Loader_File *file);
       Eina_Bool                 (*id)(const Elixir_Loader_File *file, char sign[ELIXIR_SIGNATURE_SIZE]);
+      const char               *(*section)(const Elixir_Loader_File *file);
    } func;
 };
 
@@ -144,6 +145,7 @@ EAPI Eina_Bool elixir_loader_unregister(const Elixir_Loader *el);
 EAPI Elixir_Loaded_File *elixir_loader_load(int param, const char **params);
 EAPI void elixir_loader_unload(const Elixir_Loaded_File *load);
 EAPI const char *elixir_loader_filename(const Elixir_Loaded_File *load);
+EAPI const char *elixir_loader_section(const Elixir_Loaded_File *load);
 EAPI Eina_Bool elixir_loader_id(const Elixir_Loaded_File *load, char signature[ELIXIR_SIGNATURE_SIZE]);
 EAPI const void *elixir_loader_content(const Elixir_Loaded_File *load, unsigned int *size);
 EAPI const void *elixir_loader_compiled(const Elixir_Loaded_File *load, unsigned int *size);
@@ -543,6 +545,7 @@ EAPI const char                 *elixir_id_gid(void);
 EAPI const char                 *elixir_id_cid(void);
 EAPI const unsigned char        *elixir_id_content(unsigned int* size);
 EAPI const char                 *elixir_id_filename(void);
+EAPI const char                 *elixir_id_section(void);
 EAPI void                        elixir_id_shutdown(void);
 
 EAPI void                        elixir_context_add(const char *key, const void *data);
