@@ -1,0 +1,7 @@
+Login:        kacper
+Name:         Kacper Perschke
+Location:     Warszawa, Poland
+E-Mail:       kacper.perschke@gmail.com
+Managing:     -
+Contributing: Debian packaging
+Platform:     Debian(Linux)
