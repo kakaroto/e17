@@ -1,5 +1,5 @@
-#ifndef ELM_TOGGLE_H
-#define ELM_TOGGLE_H
+#ifndef ELMXX_TOGGLE_H
+#define ELMXX_TOGGLE_H
 
 /* STL */
 #include <string>
@@ -8,22 +8,22 @@
 #include <Elementary.h>
 
 /* ELFxx */
-#include "ElmObject.h"
+#include "Object.h"
 
-namespace efl {
+namespace Elmxx {
 
 /*! 
  * smart callbacks called:
  * "changed" - the user toggled the state
  */
-class ElmToggle : public ElmObject
+class Toggle : public Object
 {
 public:  
-  static ElmToggle *factory (EvasObject &parent);
+  static Toggle *factory (Evasxx::Object &parent);
 
   void setLabel (const std::string &label);
   
-  void setIcon (EvasObject &icon);
+  void setIcon (Evasxx::Object &icon);
   
   void setLabelsStates (const std::string &onLabel, const std::string &offLabel); // TODO: Think about a better name?
   
@@ -35,12 +35,12 @@ public:
   //void setPointerState (bool statep);
   
 private:
-  ElmToggle (); // forbid standard constructor
-  ElmToggle (const ElmToggle&); // forbid copy constructor
-  ElmToggle (EvasObject &parent); // private construction -> use factory ()  
-  ~ElmToggle (); // forbid direct delete -> use ElmObject::destroy()
+  Toggle (); // forbid standard constructor
+  Toggle (const Toggle&); // forbid copy constructor
+  Toggle (Evasxx::Object &parent); // private construction -> use factory ()  
+  ~Toggle (); // forbid direct delete -> use Object::destroy()
 };
 
-} // end namespace efl
+} // end namespace Elmxx
 
-#endif // ELM_TOGGLE_H
+#endif // ELMXX_TOGGLE_H
