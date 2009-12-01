@@ -2,7 +2,7 @@
 #define EVAS_UTILS_H
 
 /* EFL++ */
-#include <eflxx/eflpp_sys.h>
+#include <eflxx/Eflxx.h>
 
 /* EFL */
 #include <Evas.h>
