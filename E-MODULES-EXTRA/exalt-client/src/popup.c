@@ -170,72 +170,75 @@ void popup_iface_remove(Instance *inst, const char*  iface)
     e_widget_ilist_thaw(inst->popup_ilist_obj);
 }
 
-    void
+void
 popup_iface_add(Instance* inst, const char* iface, Iface_Type iface_type)
 {
-    Evas_Object *icon;
-    Popup_Elt* elt;
-    char buf[1024];
-
-    if(!inst->popup_ilist_obj)
-        return;
-
-    icon = edje_object_add(evas_object_evas_get(inst->popup_ilist_obj));
-    snprintf(buf,1024,"%s/e-module-exalt.edj",exalt_conf->module->dir);
-    switch(iface_type)
-    {
-        case IFACE_WIRED:
-            edje_object_file_set(icon, buf,"modules/exalt/icons/wired");
-            break;
-        case IFACE_WIRELESS:
-            edje_object_file_set(icon, buf,"modules/exalt/icons/wireless");
-            break;
-    }
-    evas_object_show(icon);
-
-    elt = calloc(1,sizeof(Popup_Elt));
-    elt->inst = inst;
-    elt->iface = strdup(iface);
-    elt->type = POPUP_IFACE;
-    elt->iface_type = iface_type;
-    elt->icon = icon;
-    elt->nb_use++;
-
-    inst->l = eina_list_append(inst->l,elt);
-    popup_iface_label_create(elt,buf,1024,NULL);
-    e_widget_ilist_append(inst->popup_ilist_obj, icon, buf,
-            popup_cb_ifnet_sel , elt, NULL);
-
-    e_widget_ilist_go(inst->popup_ilist_obj);
-    e_widget_ilist_thaw(inst->popup_ilist_obj);
-
-    popup_icon_update(inst,iface);
-
-    exalt_dbus_eth_ip_get(inst->conn,iface);
-    exalt_dbus_eth_up_is(inst->conn,iface);
-    exalt_dbus_eth_link_is(inst->conn,iface);
-    exalt_dbus_eth_connected_is(inst->conn, iface);
-
-    if(iface_type == IFACE_WIRELESS)
-    {
+   Evas_Object *icon;
+   Popup_Elt* elt;
+   char buf[1024];
+   
+   if (!inst->popup_ilist_obj)
+     return;
+   
+   icon = edje_object_add(evas_object_evas_get(inst->popup_ilist_obj));
+   snprintf(buf, 1024, "%s/e-module-exalt.edj", exalt_conf->module->dir);
+   switch (iface_type)
+     {
+     case IFACE_WIRED:
+        edje_object_file_set(icon, buf, "modules/exalt/icons/wired");
+        break;
+     case IFACE_WIRELESS:
+        edje_object_file_set(icon, buf, "modules/exalt/icons/wireless");
+        break;
+     }
+   evas_object_show(icon);
+   
+   elt = calloc(1,sizeof(Popup_Elt));
+   elt->inst = inst;
+   elt->iface = strdup(iface);
+   elt->type = POPUP_IFACE;
+   elt->iface_type = iface_type;
+   elt->icon = icon;
+   elt->nb_use++;
+   
+   inst->l = eina_list_append(inst->l,elt);
+   popup_iface_label_create(elt,buf, 1024, iface);
+   e_widget_ilist_append(inst->popup_ilist_obj, icon, buf,
+                         popup_cb_ifnet_sel , elt, NULL);
+   
+   e_widget_ilist_go(inst->popup_ilist_obj);
+   e_widget_ilist_thaw(inst->popup_ilist_obj);
+   
+   popup_icon_update(inst, iface);
+   
+   exalt_dbus_eth_ip_get(inst->conn, iface);
+   exalt_dbus_eth_up_is(inst->conn, iface);
+   exalt_dbus_eth_link_is(inst->conn, iface);
+   exalt_dbus_eth_connected_is(inst->conn, iface);
+   
+   if (iface_type == IFACE_WIRELESS)
+     {
         exalt_dbus_wireless_essid_get(inst->conn, elt->iface);
-        exalt_dbus_wireless_scan(inst->conn,elt->iface);
-    }
+        exalt_dbus_wireless_scan(inst->conn, elt->iface);
+     }
 }
 
-void popup_iface_label_create(Popup_Elt *elt, char *buf, int buf_size, const char* ip)
+void
+popup_iface_label_create(Popup_Elt *elt, char *buf, int buf_size, const char *ip)
 {
-    if(!ip)
+   if (!ip)
+     {
         ip = D_("No IP Address");
-    switch(elt->iface_type)
-    {
-        case IFACE_WIRED:
-            snprintf(buf,buf_size,"%s (%s)",D_("Wired interface"),ip);
-            break;
-        case IFACE_WIRELESS:
-            snprintf(buf,buf_size,"%s (%s)",D_("Wireless interface"),ip);
-            break;
-    }
+     }
+   switch (elt->iface_type)
+     {
+     case IFACE_WIRED:
+        snprintf(buf, buf_size, "%s (%s)", D_("Wired interface"), ip);
+        break;
+     case IFACE_WIRELESS:
+        snprintf(buf, buf_size, "%s (%s)", D_("Wireless interface"), ip);
+        break;
+     }
 }
 
 void popup_cb_ifnet_sel(void *data)
