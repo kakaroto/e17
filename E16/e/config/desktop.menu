@@ -1,5 +1,5 @@
 "Desktop Operations" "ROOT"
-"Backgrounds"		NULL menu BACKGROUNDS_MENU
+"Backgrounds"		NULL menu backgrounds
 "Cleanup Desktop"	NULL "desk arrange"
 "Goto Next Desktop"	NULL "desk next"
 "Goto Previous Desktop"	NULL "desk prev"

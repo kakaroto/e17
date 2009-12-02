@@ -251,7 +251,7 @@ void
 ScanBackgroundMenu(void)
 {
    menu_scan_recursive = 1;
-   MenuLoad(MenuFind("BACKGROUNDS_MENU", NULL));
+   MenuLoad(MenuFind("backgrounds", NULL));
    Mode.backgrounds.force_scan = 0;
    menu_scan_recursive = 0;
 }
@@ -418,6 +418,24 @@ MenuCreateFromFlatFile(const char *name, Menu * parent, MenuStyle * ms,
 
  done:
    calls--;
+
+   return m;
+}
+
+static Menu        *
+MenuCreateFromBackgrounds(const char *name, MenuStyle * ms)
+{
+   Menu               *m;
+   char                s[FILEPATH_LEN_MAX];
+
+   Esnprintf(s, sizeof(s), "%s/backgrounds", EDirUser());
+
+   m = MenuCreateFromDirectory(name, NULL, ms, s);
+   if (!m)
+      return NULL;
+
+   MenuSetTitle(m, _("Backgrounds"));
+   MenuSetInternal(m);
 
    return m;
 }
@@ -701,6 +719,10 @@ MenusCreateInternal(const char *type, const char *name, const char *style,
      {
 	SoundPlay(SOUND_SCANNING);
 	m = MenuCreateFromDirectory(name, NULL, ms, prm);
+     }
+   else if (!strcmp(type, "backgrounds"))
+     {
+	m = MenuCreateFromBackgrounds(name, ms);
      }
    else if (!strcmp(type, "borders"))
      {

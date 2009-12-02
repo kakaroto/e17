@@ -3,7 +3,7 @@ SUBDIRS = pix
 configdir = $(pkgdatadir)/config
 config_DATA = \
 	definitions \
-	actionclasses.cfg bindings.cfg matches.cfg menus.cfg \
+	actionclasses.cfg bindings.cfg matches.cfg \
 	e16keyedit.db \
 	fonts.xft.cfg fonts.pango.cfg
 

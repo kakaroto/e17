@@ -2045,10 +2045,6 @@ MenusSighan(int sig, void *prm __UNUSED__)
 
    switch (sig)
      {
-     case ESIGNAL_CONFIGURE:
-	ConfigFileLoad("menus.cfg", NULL, MenuConfigLoad, 1);
-	break;
-
      case ESIGNAL_START:
 	TIMER_ADD(menu_unload_timer, 1. * MENU_UNLOAD_CHECK_INTERVAL,
 		  MenusTimeout, NULL);
@@ -2199,7 +2195,6 @@ MenusIpc(const char *params)
    else if (!strncmp(cmd, "reload", 2))
      {
 	MenusDestroyLoaded();
-	ConfigFileLoad("menus.cfg", NULL, MenuConfigLoad, 1);
      }
    else if (!strncmp(cmd, "show", 2))
      {
@@ -2221,7 +2216,7 @@ static const IpcItem MenusIpcArray[] = {
     "menus", "mnu",
     "Menu functions",
     "  menus list               Show existing menus\n"
-    "  menus reload             Reload menus.cfg without restarting\n"
+    "  menus reload             Force menu refresh\n"
     "  menus show <name>        Show named menu\n"}
    ,
 };

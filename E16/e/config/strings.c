@@ -74,8 +74,6 @@ _("Go Forward a Desktop"),
 /* fonts.pango.cfg */
 /* fonts.xft.cfg */
 /* matches.cfg */
-/* menus.cfg */
-_("Backgrounds"),
 /* desktop.menu */
 _("Desktop Operations"),
 _("Backgrounds"),
