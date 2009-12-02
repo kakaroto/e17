@@ -104,7 +104,6 @@ struct _menu {
    char                internal;	/* Don't destroy when reloading */
    char                dynamic;	/* May be emptied on close */
    char                shown;
-   char                stuck;
    char                redraw;
    char                filled;	/* Has been filled */
    Menu               *parent;
@@ -175,7 +174,6 @@ MenuHide(Menu * m)
      }
    m->ewin = NULL;
 
-   m->stuck = 0;
    m->shown = 0;
    m->parent = NULL;
    m->last_access = time(0);
@@ -359,7 +357,6 @@ MenuShow(Menu * m, char noshow)
 	  }
      }
 
-   m->stuck = 0;
    m->shown = 1;
    m->last_access = time(0);
    Mode_menus.just_shown = 1;
@@ -610,8 +607,6 @@ MenuEmpty(Menu * m, int destroying)
    for (i = 0; i < m->num; i++)
      {
 	mi = m->items[i];
-	if (!mi)
-	   continue;
 
 	if (mi->child)
 	  {
@@ -646,8 +641,6 @@ MenuFreePixmaps(Menu * m)
    for (i = 0; i < m->num; i++)
      {
 	mi = m->items[i];
-	if (!mi)
-	   continue;
 
 	for (j = 0; j < 3; j++)
 	   FreePmapMask(mi->pmm + j);
@@ -1937,7 +1930,9 @@ MenuConfigLoad(FILE * fs)
 	     ic = NULL;
 	     if (strcmp("NULL", s2))
 		ic = ImageclassFind(s2, 0);
-	     _EFDUP(txt, p3);
+	     _EFREE(txt);
+	     if (p3 && *p3)
+		txt = Estrdup(p3);
 	     continue;
 	  }
 
