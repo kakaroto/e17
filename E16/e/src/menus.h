@@ -39,8 +39,6 @@ MenuStyle          *MenuStyleFind(const char *name);
 int                 MenuConfigLoad(FILE * fs);
 Menu               *MenuCreate(const char *name, const char *title,
 			       Menu * parent, MenuStyle * ms);
-void                MenuDestroy(Menu * m);
-void                MenuHide(Menu * m);
 void                MenuEmpty(Menu * m, int destroying);
 int                 MenuLoad(Menu * m);
 Menu               *MenuFind(const char *name, const char *param);
@@ -48,6 +46,7 @@ MenuItem           *MenuItemCreate(const char *text, ImageClass * ic,
 				   const char *action_params, Menu * child);
 void                MenuSetInternal(Menu * m);
 void                MenuSetDynamic(Menu * m);
+void                MenuSetTransient(Menu * m);
 void                MenuSetName(Menu * m, const char *name);
 void                MenuSetAlias(Menu * m, const char *alias);
 void                MenuSetStyle(Menu * m, MenuStyle * ms);

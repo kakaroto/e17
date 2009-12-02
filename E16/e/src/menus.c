@@ -102,7 +102,8 @@ struct _menu {
    MenuItem          **items;
    int                 icon_size;
    char                internal;	/* Don't destroy when reloading */
-   char                dynamic;	/* May be emptied on close */
+   char                dynamic;	/* Empty when closed */
+   char                transient;	/* Destroy when closed */
    char                shown;
    char                redraw;
    char                filled;	/* Has been filled */
@@ -153,7 +154,7 @@ MenuFindItemByChild(Menu * m, Menu * mc)
    return NULL;
 }
 
-void
+static void
 MenuHide(Menu * m)
 {
    EWin               *ewin;
@@ -466,6 +467,12 @@ MenuSetDynamic(Menu * m)
 }
 
 void
+MenuSetTransient(Menu * m)
+{
+   m->transient = 1;
+}
+
+void
 MenuSetName(Menu * m, const char *name)
 {
    _EFDUP(m->name, name);
@@ -565,7 +572,7 @@ MenuCreate(const char *name, const char *title, Menu * parent, MenuStyle * ms)
    return m;
 }
 
-void
+static void
 MenuDestroy(Menu * m)
 {
    if (!m)
@@ -1163,9 +1170,15 @@ MenusActive(void)
 static void
 MenusHide(void)
 {
+   Menu               *m;
+
    TIMER_DEL(menu_timer_submenu);
 
-   MenuHide(Mode_menus.first);
+   m = Mode_menus.first;
+   if (m && m->transient)
+      MenuDestroy(m);
+   else
+      MenuHide(m);
    Mode_menus.first = NULL;
    MenuHideMasker();
    TooltipsEnable(1);

@@ -985,7 +985,7 @@ EwinInPagerAt(Pager * p, int px, int py)
 static void
 PagerMenuShow(Pager * p, int x, int y)
 {
-   static Menu        *p_menu = NULL, *pw_menu = NULL;
+   Menu               *m;
    MenuItem           *mi;
    EWin               *ewin;
    char                s[1024];
@@ -996,62 +996,64 @@ PagerMenuShow(Pager * p, int x, int y)
    ewin = EwinInPagerAt(p, x, y);
    if (ewin)
      {
-	if (pw_menu)
-	   MenuDestroy(pw_menu);
+	m = MenuCreate("__pg_win", _("Window Options"), NULL, NULL);
+	if (!m)
+	   return;
 
-	pw_menu =
-	   MenuCreate("__DESK_WIN_MENU", _("Window Options"), NULL, NULL);
+	MenuSetTransient(m);	/* Destroy when hidden */
 
 	Esnprintf(s, sizeof(s), "wop %#lx ic", EwinGetClientXwin(ewin));
 	mi = MenuItemCreate(_("Iconify"), NULL, s, NULL);
-	MenuAddItem(pw_menu, mi);
+	MenuAddItem(m, mi);
 
 	Esnprintf(s, sizeof(s), "wop %#lx close", EwinGetClientXwin(ewin));
 	mi = MenuItemCreate(_("Close"), NULL, s, NULL);
-	MenuAddItem(pw_menu, mi);
+	MenuAddItem(m, mi);
 
 	Esnprintf(s, sizeof(s), "wop %#lx kill", EwinGetClientXwin(ewin));
 	mi = MenuItemCreate(_("Annihilate"), NULL, s, NULL);
-	MenuAddItem(pw_menu, mi);
+	MenuAddItem(m, mi);
 
 	Esnprintf(s, sizeof(s), "wop %#lx st", EwinGetClientXwin(ewin));
 	mi = MenuItemCreate(_("Stick / Unstick"), NULL, s, NULL);
-	MenuAddItem(pw_menu, mi);
+	MenuAddItem(m, mi);
 
-	EFunc(NULL, "menus show __DESK_WIN_MENU");
+	EFunc(NULL, "menus show __pg_win");
 	return;
      }
 
-   if (p_menu)
-      MenuDestroy(p_menu);
-   p_menu = MenuCreate("__DESK_MENU", _("Desktop Options"), NULL, NULL);
+   m = MenuCreate("__pg", _("Desktop Options"), NULL, NULL);
+   if (!m)
+      return;
+
+   MenuSetTransient(m);		/* Destroy when hidden */
 
    mi = MenuItemCreate(_("Pager Settings..."), NULL, "cfg pagers", NULL);
-   MenuAddItem(p_menu, mi);
+   MenuAddItem(m, mi);
 
    if (PagersGetMode() != PAGER_MODE_SIMPLE)
      {
 	mi = MenuItemCreate(_("Snapshotting Off"), NULL, "pg mode simp", NULL);
-	MenuAddItem(p_menu, mi);
+	MenuAddItem(m, mi);
 
 	if (Conf_pagers.hiq)
 	   mi = MenuItemCreate(_("High Quality Off"), NULL, "pg hiq off", NULL);
 	else
 	   mi = MenuItemCreate(_("High Quality On"), NULL, "pg hiq on", NULL);
-	MenuAddItem(p_menu, mi);
+	MenuAddItem(m, mi);
      }
    else
      {
 	mi = MenuItemCreate(_("Snapshotting On"), NULL, "pg mode live", NULL);
-	MenuAddItem(p_menu, mi);
+	MenuAddItem(m, mi);
      }
    if (Conf_pagers.zoom)
       mi = MenuItemCreate(_("Zoom Off"), NULL, "pg zoom off", NULL);
    else
       mi = MenuItemCreate(_("Zoom On"), NULL, "pg zoom on", NULL);
-   MenuAddItem(p_menu, mi);
+   MenuAddItem(m, mi);
 
-   EFunc(NULL, "menus show __DESK_MENU");
+   EFunc(NULL, "menus show __pg");
 }
 
 static void

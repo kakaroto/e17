@@ -1169,32 +1169,33 @@ ContainerScroll(Container * ct, int dir)
 }
 
 static void
-ContainerShowMenu(Container * ct, int x __UNUSED__, int y __UNUSED__)
+ContainerShowMenu(Container * ct)
 {
-   static Menu        *p_menu = NULL;
+   Menu               *m;
    MenuItem           *mi;
    char                s[1024];
 
-   if (p_menu)
-      MenuDestroy(p_menu);
+   m = MenuCreate("__ct", ct->menu_title, NULL, NULL);
+   if (!m)
+      return;
 
-   p_menu = MenuCreate("__CT_MENU", ct->menu_title, NULL, NULL);
+   MenuSetTransient(m);		/* Destroy when hidden */
 
    Esnprintf(s, sizeof(s), "ibox cfg %s", ct->name);
    mi = MenuItemCreate(_("Settings..."), NULL, s, NULL);
-   MenuAddItem(p_menu, mi);
+   MenuAddItem(m, mi);
 
    Esnprintf(s, sizeof(s), "wop %#lx cl", WinGetXwin(ct->win));
    mi = MenuItemCreate(_("Close"), NULL, s, NULL);
-   MenuAddItem(p_menu, mi);
+   MenuAddItem(m, mi);
 
    if (ct->type == IB_TYPE_ICONBOX)
      {
 	mi = MenuItemCreate(_("Create New Iconbox"), NULL, "ibox new", NULL);
-	MenuAddItem(p_menu, mi);
+	MenuAddItem(m, mi);
      }
 
-   EFunc(NULL, "menus show __CT_MENU");
+   EFunc(NULL, "menus show __ct");
 }
 
 static void
@@ -1234,7 +1235,7 @@ ContainerEventScrollWin(Win win __UNUSED__, XEvent * ev, void *prm)
 	if (ev->xbutton.button == 1)
 	   ct->scrollbox_clicked = 1;
 	else if (ev->xbutton.button == 3)
-	   ContainerShowMenu(ct, ev->xbutton.x, ev->xbutton.y);
+	   ContainerShowMenu(ct);
 	break;
 
      case ButtonRelease:
@@ -1280,7 +1281,7 @@ ContainerEventScrollbarWin(Win win __UNUSED__, XEvent * ev, void *prm)
 	     ct->scrollbar_state |= WS_CLICK;
 	  }
 	else if (ev->xbutton.button == 3)
-	   ContainerShowMenu(ct, ev->xbutton.x, ev->xbutton.y);
+	   ContainerShowMenu(ct);
 	goto draw_scoll;
 
      case ButtonRelease:
@@ -1340,7 +1341,7 @@ ContainerEventCoverWin(Win win __UNUSED__, XEvent * ev, void *prm)
    switch (ev->type)
      {
      case ButtonPress:
-	ContainerShowMenu(ct, ev->xbutton.x, ev->xbutton.y);
+	ContainerShowMenu(ct);
 	break;
      case ButtonRelease:
 	break;
@@ -1358,7 +1359,7 @@ ContainerEventArrow1Win(Win win __UNUSED__, XEvent * ev, void *prm)
 	if (ev->xbutton.button == 1)
 	   ct->arrow1_state |= WS_CLICK;
 	else if (ev->xbutton.button == 3)
-	   ContainerShowMenu(ct, ev->xbutton.x, ev->xbutton.y);
+	   ContainerShowMenu(ct);
 	goto draw_scoll;
 
      case ButtonRelease:
@@ -1394,7 +1395,7 @@ ContainerEventArrow2Win(Win win __UNUSED__, XEvent * ev, void *prm)
 	if (ev->xbutton.button == 1)
 	   ct->arrow2_state |= WS_CLICK;
 	else if (ev->xbutton.button == 3)
-	   ContainerShowMenu(ct, ev->xbutton.x, ev->xbutton.y);
+	   ContainerShowMenu(ct);
 	goto draw_scoll;
 
      case ButtonRelease:
@@ -1429,7 +1430,7 @@ ContainerEventIconWin(Win win __UNUSED__, XEvent * ev, void *prm)
      case ButtonPress:
 	if (ev->xbutton.button != 3)
 	   break;
-	ContainerShowMenu(ct, ev->xbutton.x, ev->xbutton.y);
+	ContainerShowMenu(ct);
 	return;
      }
 
