@@ -156,6 +156,10 @@ class Property(object):
         self._value_obj.add(name, wid)
         wid.changed = (self._changed_cb, self)
 
+    def destroy(self):
+        self._label_obj.delete()
+        self._value_obj.delete()
+
     def __getitem__(self, key):
         if key in self._value_obj:
             return self._value_obj[key]
@@ -190,6 +194,8 @@ class PropertyTable(elementary.Table):
         prop._change_notifier_cb = self._prop_changed_cb
 
     def clear(self):
+        for o in self._props.itervalues():
+            o.destroy()
         self._props = dict()
 
     def __getitem__(self, key):
