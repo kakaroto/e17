@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: e16\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2009-11-07 09:30+0100\n"
+"POT-Creation-Date: 2009-11-30 23:48+0100\n"
 "PO-Revision-Date: 2009-07-06 09:05+0000\n"
 "Last-Translator: Careone <zzbusagain@yahoo.com.cn>\n"
 "Language-Team: Chinese/Simplified <i18n-translation@lists.linux.net.cn>\n"
@@ -44,7 +44,7 @@ msgstr ""
 "Mandrake - mandrake@mandrake.net\n"
 "Kim Woelders - kim@woelders.dk\n"
 
-#: src/aclass.c:211 src/backgrounds.c:236 src/borders.c:698 src/buttons.c:181
+#: src/aclass.c:211 src/backgrounds.c:236 src/borders.c:693 src/buttons.c:183
 #: src/cursors.c:131 src/iclass.c:338 src/tclass.c:113 src/tooltips.c:135
 #, c-format
 msgid "%u references remain\n"
@@ -172,12 +172,12 @@ msgstr "退出 Enlightenment"
 msgid "Attention !!!"
 msgstr "注意！！！"
 
-#: src/alert.c:583 src/dialog.c:731 src/dialog.c:1919 src/events.c:87
+#: src/alert.c:583 src/dialog.c:693 src/dialog.c:1899 src/events.c:87
 #: src/setup.c:157 src/sound.c:310
 msgid "OK"
 msgstr "确定"
 
-#: src/backgrounds.c:1517
+#: src/backgrounds.c:1516
 #, c-format
 msgid ""
 "Background definition information:\n"
@@ -188,11 +188,11 @@ msgstr ""
 "名称：%s\n"
 "文件：%s\n"
 
-#: src/backgrounds.c:1518
+#: src/backgrounds.c:1517
 msgid "-NONE-"
 msgstr "-无-"
 
-#: src/backgrounds.c:1693 src/backgrounds.c:1695
+#: src/backgrounds.c:1684 src/backgrounds.c:1686
 msgid ""
 "No\n"
 "Background"
@@ -200,40 +200,40 @@ msgstr ""
 "没有\n"
 "背景"
 
-#: src/backgrounds.c:1789 src/backgrounds.c:2219
+#: src/backgrounds.c:1778 src/backgrounds.c:2204
 #, c-format
 msgid "Unused backgrounds freed after %2i:%02i:%02i"
 msgstr "未使用的背景在 %2i:%02i:%02i 后被释放"
 
-#: src/backgrounds.c:2005
+#: src/backgrounds.c:1990
 msgid "Use background image"
 msgstr "使用背景图像"
 
-#: src/backgrounds.c:2009
+#: src/backgrounds.c:1994
 msgid "Keep aspect on scale"
 msgstr "保持宽高比"
 
-#: src/backgrounds.c:2013
+#: src/backgrounds.c:1998
 msgid "Tile image across background"
 msgstr "图像覆盖背景"
 
-#: src/backgrounds.c:2022
+#: src/backgrounds.c:2007
 msgid "Move to Front\n"
 msgstr "移至前端\n"
 
-#: src/backgrounds.c:2027
+#: src/backgrounds.c:2012
 msgid "Duplicate\n"
 msgstr "重复\n"
 
-#: src/backgrounds.c:2031
+#: src/backgrounds.c:2016
 msgid "Unlist\n"
 msgstr "不列出\n"
 
-#: src/backgrounds.c:2036
+#: src/backgrounds.c:2021
 msgid "Delete File\n"
 msgstr "删除文件\n"
 
-#: src/backgrounds.c:2047
+#: src/backgrounds.c:2032
 msgid ""
 "Background\n"
 "Image\n"
@@ -247,59 +247,59 @@ msgstr ""
 "以及\n"
 "对齐\n"
 
-#: src/backgrounds.c:2104
+#: src/backgrounds.c:2089
 msgid "BG Colour\n"
 msgstr "背景色\n"
 
-#: src/backgrounds.c:2109
+#: src/backgrounds.c:2094
 msgid "Red:\n"
 msgstr "红：\n"
 
-#: src/backgrounds.c:2120
+#: src/backgrounds.c:2105
 msgid "Green:\n"
 msgstr "绿：\n"
 
-#: src/backgrounds.c:2131
+#: src/backgrounds.c:2116
 msgid "Blue:\n"
 msgstr "蓝：\n"
 
-#: src/backgrounds.c:2164
+#: src/backgrounds.c:2149
 msgid "Pre-scan BG's"
 msgstr "预览背景"
 
-#: src/backgrounds.c:2172
+#: src/backgrounds.c:2157
 msgid "Sort by File"
 msgstr "按文件排序"
 
-#: src/backgrounds.c:2177
+#: src/backgrounds.c:2162
 msgid "Sort by Attr."
 msgstr "按属性排序"
 
-#: src/backgrounds.c:2183
+#: src/backgrounds.c:2168
 msgid "Sort by Image"
 msgstr "按图像排序"
 
-#: src/backgrounds.c:2203
+#: src/backgrounds.c:2188
 msgid "Use dithering in Hi-Colour"
 msgstr "在真彩色中使用抖动"
 
-#: src/backgrounds.c:2207
+#: src/backgrounds.c:2192
 msgid "Background overrides theme"
 msgstr "背景覆盖主题"
 
-#: src/backgrounds.c:2212
+#: src/backgrounds.c:2197
 msgid "Enable background transparency compatibility mode"
 msgstr "启用背景透明兼容模式"
 
-#: src/backgrounds.c:2236 src/mod-trans.c:185
+#: src/backgrounds.c:2221 src/mod-trans.c:200
 msgid "Background"
 msgstr "背景"
 
-#: src/backgrounds.c:2237
+#: src/backgrounds.c:2222
 msgid "Desktop Background Settings"
 msgstr "桌面背景设置"
 
-#: src/backgrounds.c:2240
+#: src/backgrounds.c:2225
 msgid ""
 "Enlightenment Desktop\n"
 "Background Settings Dialog\n"
@@ -393,117 +393,117 @@ msgstr ""
 msgid "Enlightenment Starting..."
 msgstr "Enlightenment 启动中..."
 
-#: src/container.c:1186
+#: src/container.c:1185
 msgid "Settings..."
 msgstr "设置..."
 
-#: src/container.c:1190 src/dialog.c:743 src/pager.c:1013 config/strings.c:30
-#: config/strings.c:124
+#: src/container.c:1189 src/dialog.c:705 src/pager.c:1010 config/strings.c:30
+#: config/strings.c:122
 msgid "Close"
 msgstr "关闭"
 
-#: src/container.c:1195 config/strings.c:85
+#: src/container.c:1194 config/strings.c:83
 msgid "Create New Iconbox"
 msgstr "创建新图标架"
 
-#: src/container.c:1502 src/container.c:1579 src/menus.c:2101
+#: src/container.c:1501 src/container.c:1577 src/menus.c:2106
 #, c-format
 msgid "Icon size: %2d"
 msgstr "图标大小：%2d"
 
-#: src/container.c:1543
+#: src/container.c:1541
 msgid "Transparent background"
 msgstr "透明背景"
 
-#: src/container.c:1547
+#: src/container.c:1545
 msgid "Hide inner border"
 msgstr "隐藏内部边框"
 
-#: src/container.c:1551
+#: src/container.c:1549
 msgid "Draw base image behind Icons"
 msgstr "在图标后面绘制基线"
 
-#: src/container.c:1555
+#: src/container.c:1553
 msgid "Hide scrollbar when not needed"
 msgstr "不需要时隐藏滚动栏"
 
-#: src/container.c:1559
+#: src/container.c:1557
 msgid "Automatically resize to fit Icons"
 msgstr "自动调整大小以适应图标"
 
-#: src/container.c:1566
+#: src/container.c:1564
 msgid "Alignment of anchoring when automatically resizing:"
 msgstr "自动恢复窗口尺寸时的对齐方式"
 
-#: src/container.c:1597
+#: src/container.c:1595
 msgid "Orientation:"
 msgstr "方向："
 
-#: src/container.c:1602
+#: src/container.c:1600
 msgid "Scrollbar side:"
 msgstr "滚动条："
 
-#: src/container.c:1607
+#: src/container.c:1605
 msgid "Scrollbar arrows:"
 msgstr "滚动条箭头："
 
-#: src/container.c:1610
+#: src/container.c:1608
 msgid "Horizontal"
 msgstr "水平"
 
-#: src/container.c:1615
+#: src/container.c:1613
 msgid "Left / Top"
 msgstr "左侧/顶部"
 
-#: src/container.c:1620
+#: src/container.c:1618
 msgid "Start"
 msgstr "开始"
 
-#: src/container.c:1625
+#: src/container.c:1623
 msgid "Vertical"
 msgstr "垂直"
 
-#: src/container.c:1631
+#: src/container.c:1629
 msgid "Right / Bottom"
 msgstr "右侧/底部"
 
-#: src/container.c:1637
+#: src/container.c:1635
 msgid "Both ends"
 msgstr "两端"
 
-#: src/container.c:1645
+#: src/container.c:1643
 msgid "End"
 msgstr "结束"
 
-#: src/container.c:1653 src/focus.c:886
+#: src/container.c:1651 src/focus.c:886
 msgid "None"
 msgstr "无"
 
-#: src/container.c:1663
+#: src/container.c:1661
 msgid "Show icon names"
 msgstr "显示图标名称"
 
-#: src/container.c:1667
+#: src/container.c:1665
 msgid "Animate when iconifying to this Iconbox"
 msgstr ""
 
-#: src/container.c:1677
+#: src/container.c:1675
 msgid "Icon image display policy (if one operation fails, try the next):"
 msgstr "图标图像显示策略(如果有操作失败，则尝试下一个)："
 
-#: src/container.c:1682
+#: src/container.c:1680
 msgid "Snapshot Windows, Use application icon, Use Enlightenment Icon"
 msgstr "抓图窗口，使用应用程序图标，使用 Enlightenment 图标"
 
-#: src/container.c:1689
+#: src/container.c:1687
 msgid "Use application icon, Use Enlightenment Icon, Snapshot Window"
 msgstr "使用应用程序图标，使用 Enlightenment 图标，抓图窗口"
 
-#: src/container.c:1694
+#: src/container.c:1692
 msgid "Use Enlightenment Icon, Snapshot Window"
 msgstr "使用 Enlightenment 图标，抓图窗口"
 
-#: src/container.c:1707
+#: src/container.c:1705
 msgid ""
 "Enlightenment Iconbox\n"
 "Settings Dialog\n"
@@ -511,7 +511,7 @@ msgstr ""
 "Enlightenment 图标架\n"
 "设置对话框\n"
 
-#: src/coords.c:74
+#: src/coords.c:75
 #, c-format
 msgid "Focused/unfocused opacity: %d/%d %%"
 msgstr ""
@@ -553,55 +553,55 @@ msgstr ""
 "点击这里来下降桌面\n"
 "到底部。\n"
 
-#: src/desktops.c:2323
+#: src/desktops.c:2331
 msgid "Number of virtual desktops:\n"
 msgstr "虚拟桌面的数量：\n"
 
-#: src/desktops.c:2348
+#: src/desktops.c:2356
 msgid "Slide desktops around when changing"
 msgstr "更改桌面时拉幕式切换"
 
-#: src/desktops.c:2354
+#: src/desktops.c:2362
 msgid "Desktop Slide speed:\n"
 msgstr "桌面切换速度：\n"
 
-#: src/desktops.c:2368
+#: src/desktops.c:2376
 msgid "Wrap desktops around"
 msgstr "包围桌面"
 
-#: src/desktops.c:2376
+#: src/desktops.c:2384
 msgid "Display desktop dragbar"
 msgstr "显示桌面拖拽栏"
 
-#: src/desktops.c:2382
+#: src/desktops.c:2390
 msgid "Drag bar position:"
 msgstr "拖动栏位置："
 
-#: src/desktops.c:2386
+#: src/desktops.c:2394
 msgid "Top"
 msgstr "顶部"
 
-#: src/desktops.c:2392
+#: src/desktops.c:2400
 msgid "Bottom"
 msgstr "底部"
 
-#: src/desktops.c:2398 src/pager.c:1924 src/pager.c:1949 src/pager.c:1974
+#: src/desktops.c:2406 src/pager.c:1933 src/pager.c:1958 src/pager.c:1983
 msgid "Left"
 msgstr "左侧"
 
-#: src/desktops.c:2404 src/pager.c:1936 src/pager.c:1961 src/pager.c:1986
+#: src/desktops.c:2412 src/pager.c:1945 src/pager.c:1970 src/pager.c:1995
 msgid "Right"
 msgstr "右侧"
 
-#: src/desktops.c:2412 src/menus-misc.c:583
+#: src/desktops.c:2420 src/menus-misc.c:604
 msgid "Desks"
 msgstr "桌面"
 
-#: src/desktops.c:2413
+#: src/desktops.c:2421
 msgid "Multiple Desktop Settings"
 msgstr "多桌面设置"
 
-#: src/desktops.c:2416
+#: src/desktops.c:2424
 msgid ""
 "Enlightenment Multiple Desktop\n"
 "Settings Dialog\n"
@@ -609,43 +609,43 @@ msgstr ""
 "Enlightenment 多桌面\n"
 "设置对话框\n"
 
-#: src/desktops.c:2507
+#: src/desktops.c:2524
 msgid "Virtual Desktop size:\n"
 msgstr "虚拟桌面大小：\n"
 
-#: src/desktops.c:2543
+#: src/desktops.c:2560
 msgid "Wrap virtual desktops around"
 msgstr "包围虚拟桌面"
 
-#: src/desktops.c:2550
+#: src/desktops.c:2567
 msgid "Edge Flip Mode:"
 msgstr "边缘翻转模式："
 
-#: src/desktops.c:2553
+#: src/desktops.c:2570
 msgid "Off"
 msgstr "关闭"
 
-#: src/desktops.c:2558
+#: src/desktops.c:2575
 msgid "On"
 msgstr "开启"
 
-#: src/desktops.c:2563
+#: src/desktops.c:2580
 msgid "Only when moving window"
 msgstr "仅移动窗口时开启"
 
-#: src/desktops.c:2569
+#: src/desktops.c:2586
 msgid "Resistance at edge of screen:\n"
 msgstr "抵抗屏幕边界\n"
 
-#: src/desktops.c:2581
+#: src/desktops.c:2598
 msgid "Areas"
 msgstr "区域"
 
-#: src/desktops.c:2582
+#: src/desktops.c:2599
 msgid "Virtual Desktop Settings"
 msgstr "虚拟桌面设置"
 
-#: src/desktops.c:2585
+#: src/desktops.c:2602
 msgid ""
 "Enlightenment Virtual Desktop\n"
 "Settings Dialog\n"
@@ -653,7 +653,7 @@ msgstr ""
 "Enlightenment 虚拟桌面\n"
 "设置对话框\n"
 
-#: src/dialog.c:736
+#: src/dialog.c:698
 msgid "Apply"
 msgstr "应用"
 
@@ -931,7 +931,7 @@ msgstr " 全局设置： "
 msgid "Swap Window Locations"
 msgstr "交换窗口位置"
 
-#: src/groups.c:1012 src/menus-misc.c:643 config/strings.c:140
+#: src/groups.c:1012 src/menus-misc.c:664 config/strings.c:138
 msgid "Groups"
 msgstr "分组"
 
@@ -1026,7 +1026,7 @@ msgstr "图标架选项"
 msgid "Iconbox Settings"
 msgstr "图标架设置"
 
-#: src/ipc.c:195 src/ipc.c:1472 src/ipc.c:1479 src/theme.c:378
+#: src/ipc.c:195 src/ipc.c:1472 src/ipc.c:1479 src/theme.c:379
 msgid "Message"
 msgstr "消息"
 
@@ -1043,30 +1043,30 @@ msgstr "混成"
 msgid "sound"
 msgstr "声音"
 
-#: src/ipc.c:1823
+#: src/ipc.c:1824
 msgid "Enlightenment IPC Commands Help\n"
 msgstr "Enlightenment IPC 命令帮助\n"
 
-#: src/ipc.c:1827
+#: src/ipc.c:1828
 msgid ""
 "Use \"help all\" for descriptions of each command\n"
 "Use \"help <command>\" for an individual description\n"
 "\n"
 msgstr ""
 
-#: src/ipc.c:1829 src/ipc.c:1849 src/ipc.c:1861
+#: src/ipc.c:1830 src/ipc.c:1850 src/ipc.c:1862
 msgid "Commands currently available:\n"
 msgstr "当前可用命令：\n"
 
-#: src/ipc.c:1847
+#: src/ipc.c:1848
 msgid "Use \"help full\" for full descriptions of each command\n"
 msgstr ""
 
-#: src/ipc.c:1848
+#: src/ipc.c:1849
 msgid "Use \"help <command>\" for an individual description\n"
 msgstr ""
 
-#: src/ipc.c:1850 src/ipc.c:1862
+#: src/ipc.c:1851 src/ipc.c:1863
 msgid "         <command>     : <description>\n"
 msgstr "         <command>     ：<description>\n"
 
@@ -1107,65 +1107,69 @@ msgid ""
 "correctly.\n"
 msgstr ""
 
-#: src/magwin.c:460
+#: src/magwin.c:459
 msgid "Magnifier"
 msgstr "放大镜"
 
-#: src/menus-misc.c:455 config/strings.c:93 config/strings.c:115
+#: src/menus-misc.c:437 config/strings.c:79
+msgid "Backgrounds"
+msgstr "背景"
+
+#: src/menus-misc.c:476 config/strings.c:91 config/strings.c:113
 msgid "Themes"
 msgstr "主题"
 
-#: src/menus-misc.c:481
+#: src/menus-misc.c:502
 msgid "Border"
 msgstr "边框"
 
-#: src/menus-misc.c:543
+#: src/menus-misc.c:564
 msgid "Window List"
 msgstr "窗口列表"
 
-#: src/menus-misc.c:565
+#: src/menus-misc.c:586
 msgid "Go to this Desktop"
 msgstr "转到此桌面"
 
-#: src/menus-misc.c:569 src/menus-misc.c:665
+#: src/menus-misc.c:590 src/menus-misc.c:686
 #, c-format
 msgid "Desktop %i"
 msgstr "桌面 %i"
 
-#: src/menus-misc.c:612
+#: src/menus-misc.c:633
 msgid "Show/Hide this group"
 msgstr "显示/隐藏该组"
 
-#: src/menus-misc.c:617
+#: src/menus-misc.c:638
 msgid "Iconify this group"
 msgstr ""
 
-#: src/menus-misc.c:628
+#: src/menus-misc.c:649
 #, c-format
 msgid "Group %i"
 msgstr "组 %i"
 
-#: src/menus.c:2125
+#: src/menus.c:2129
 msgid "Animated display of menus"
 msgstr "动画显示菜单"
 
-#: src/menus.c:2130
+#: src/menus.c:2134
 msgid "Always pop up menus on screen"
 msgstr "总是在屏幕上弹出菜单"
 
-#: src/menus.c:2135
+#: src/menus.c:2139
 msgid "Warp pointer after moving menus"
 msgstr ""
 
-#: src/menus.c:2152
+#: src/menus.c:2156
 msgid "Menus"
 msgstr "菜单"
 
-#: src/menus.c:2153
+#: src/menus.c:2157
 msgid "Menu Settings"
 msgstr "菜单设置"
 
-#: src/menus.c:2156
+#: src/menus.c:2160
 msgid ""
 "Enlightenment Menu\n"
 "Settings Dialog\n"
@@ -1173,56 +1177,56 @@ msgstr ""
 "Enlightenment 菜单\n"
 "设置对话框\n"
 
-#: src/mod-trans.c:95 src/mod-trans.c:245
+#: src/mod-trans.c:98
 #, c-format
 msgid "Theme transparency: %2d"
 msgstr "主题透明度：%2d"
 
-#: src/mod-trans.c:124
+#: src/mod-trans.c:139
 msgid "Changes Might Require Restart:"
 msgstr "更改可能需要重启："
 
-#: src/mod-trans.c:133
+#: src/mod-trans.c:148
 msgid "Borders:"
 msgstr "边框："
 
-#: src/mod-trans.c:137
+#: src/mod-trans.c:152
 msgid "Menus:"
 msgstr "菜单："
 
-#: src/mod-trans.c:141
+#: src/mod-trans.c:156
 msgid "Hilights:"
 msgstr "高亮："
 
-#: src/mod-trans.c:145
+#: src/mod-trans.c:160
 msgid "E Widgets:"
 msgstr "E 部件："
 
-#: src/mod-trans.c:149
+#: src/mod-trans.c:164
 msgid "E Dialogs:"
 msgstr "E 对话框："
 
-#: src/mod-trans.c:153
+#: src/mod-trans.c:168
 msgid "Tooltips:"
 msgstr "工具条提示："
 
-#: src/mod-trans.c:157 src/settings.c:82 src/settings.c:87 src/settings.c:354
+#: src/mod-trans.c:172 src/settings.c:92 src/settings.c:97 src/settings.c:373
 msgid "Opaque"
 msgstr "不透明度"
 
-#: src/mod-trans.c:216
+#: src/mod-trans.c:233
 msgid "Glass"
 msgstr ""
 
-#: src/mod-trans.c:261
+#: src/mod-trans.c:263
 msgid "Transparency"
 msgstr "半透明"
 
-#: src/mod-trans.c:262
+#: src/mod-trans.c:264
 msgid "Selective Transparency Settings"
 msgstr "选择性透明设置"
 
-#: src/mod-trans.c:265
+#: src/mod-trans.c:267
 msgid ""
 "Enlightenment Selective Transparency\n"
 "Settings Dialog\n"
@@ -1230,123 +1234,123 @@ msgstr ""
 "Enlightenment 选择性透明\n"
 "设置对话框\n"
 
-#: src/pager.c:1006 config/strings.c:49 config/strings.c:123
+#: src/pager.c:999 config/strings.c:49 config/strings.c:121
 msgid "Window Options"
 msgstr "窗口选项"
 
-#: src/pager.c:1009 config/strings.c:51 config/strings.c:126
+#: src/pager.c:1006 config/strings.c:51 config/strings.c:124
 msgid "Iconify"
 msgstr ""
 
-#: src/pager.c:1017 config/strings.c:125
+#: src/pager.c:1014 config/strings.c:123
 msgid "Annihilate"
 msgstr ""
 
-#: src/pager.c:1021
+#: src/pager.c:1018
 msgid "Stick / Unstick"
 msgstr ""
 
-#: src/pager.c:1030
+#: src/pager.c:1025
 msgid "Desktop Options"
 msgstr "桌面选项"
 
-#: src/pager.c:1032
+#: src/pager.c:1031
 msgid "Pager Settings..."
 msgstr "分页器设置..."
 
-#: src/pager.c:1037
+#: src/pager.c:1036
 msgid "Snapshotting Off"
 msgstr "关闭实时快照"
 
-#: src/pager.c:1041
+#: src/pager.c:1040
 msgid "High Quality Off"
 msgstr "关闭高质量"
 
-#: src/pager.c:1043
+#: src/pager.c:1042
 msgid "High Quality On"
 msgstr "开启高质量"
 
-#: src/pager.c:1048
+#: src/pager.c:1047
 msgid "Snapshotting On"
 msgstr "开启实时快照"
 
-#: src/pager.c:1052
+#: src/pager.c:1051
 msgid "Zoom Off"
 msgstr "关闭缩放"
 
-#: src/pager.c:1054
+#: src/pager.c:1053
 msgid "Zoom On"
 msgstr "开启缩放"
 
-#: src/pager.c:1813 src/pager.c:1904
+#: src/pager.c:1818 src/pager.c:1913
 msgid "Pager scanning speed:"
 msgstr "分页器扫描速度："
 
-#: src/pager.c:1814 src/pager.c:1905
+#: src/pager.c:1819 src/pager.c:1914
 msgid "lines per second"
 msgstr "每秒行数"
 
-#: src/pager.c:1843
+#: src/pager.c:1852
 msgid "Enable pager display"
 msgstr "启用分页器显示"
 
-#: src/pager.c:1853
+#: src/pager.c:1862
 msgid "Pager Mode:"
 msgstr "分页器模式："
 
-#: src/pager.c:1857
+#: src/pager.c:1866
 msgid "Simple"
 msgstr "简单"
 
-#: src/pager.c:1863
+#: src/pager.c:1872
 msgid "Make miniature snapshots of the screen"
 msgstr "显示屏幕微缩快照"
 
-#: src/pager.c:1870
+#: src/pager.c:1879
 msgid "Live Update"
 msgstr "实时更新"
 
-#: src/pager.c:1881
+#: src/pager.c:1890
 msgid "Smooth high quality snapshots in snapshot mode"
 msgstr ""
 
-#: src/pager.c:1886
+#: src/pager.c:1895
 msgid "Zoom in on pager windows when mouse is over them"
 msgstr ""
 
-#: src/pager.c:1892
+#: src/pager.c:1901
 msgid "Pop up window title when mouse is over the window"
 msgstr ""
 
-#: src/pager.c:1897
+#: src/pager.c:1906
 msgid "Continuously scan screen to update pager"
 msgstr ""
 
-#: src/pager.c:1920
+#: src/pager.c:1929
 msgid "Mouse button to select and drag windows:"
 msgstr "选择和拖动窗口的鼠标按钮："
 
-#: src/pager.c:1930 src/pager.c:1955 src/pager.c:1980
+#: src/pager.c:1939 src/pager.c:1964 src/pager.c:1989
 msgid "Middle"
 msgstr "中键"
 
-#: src/pager.c:1945
+#: src/pager.c:1954
 msgid "Mouse button to select desktops:"
 msgstr "选择桌面的鼠标按钮："
 
-#: src/pager.c:1970
+#: src/pager.c:1979
 msgid "Mouse button to display pager menu:"
 msgstr "显示分页器菜单的鼠标按钮："
 
-#: src/pager.c:1994
+#: src/pager.c:2003
 msgid "Pagers"
 msgstr "分页器"
 
-#: src/pager.c:1995
+#: src/pager.c:2004
 msgid "Pager Settings"
 msgstr "分页器设置"
 
-#: src/pager.c:1998
+#: src/pager.c:2007
 msgid ""
 "Enlightenment Desktop & Area\n"
 "Pager Settings Dialog\n"
@@ -1431,91 +1435,91 @@ msgstr ""
 "Enlightenment 会话\n"
 "设置对话框\n"
 
-#: src/settings.c:74
+#: src/settings.c:84
 msgid "Move Methods:"
 msgstr "移动方式："
 
-#: src/settings.c:79
+#: src/settings.c:89
 msgid "Resize Methods:"
 msgstr "调整大小方式："
 
-#: src/settings.c:92 src/settings.c:97 src/settings.c:359
+#: src/settings.c:102 src/settings.c:107 src/settings.c:378
 msgid "Technical"
 msgstr ""
 
-#: src/settings.c:102 src/settings.c:107 src/settings.c:364
+#: src/settings.c:112 src/settings.c:117 src/settings.c:383
 msgid "Box"
 msgstr ""
 
-#: src/settings.c:112 src/settings.c:117 src/settings.c:369
+#: src/settings.c:122 src/settings.c:127 src/settings.c:388
 msgid "Shaded"
 msgstr ""
 
-#: src/settings.c:122 src/settings.c:127 src/settings.c:374
+#: src/settings.c:132 src/settings.c:137 src/settings.c:393
 msgid "Semi-Solid"
 msgstr ""
 
-#: src/settings.c:133
+#: src/settings.c:143
 msgid "Translucent"
 msgstr ""
 
-#: src/settings.c:142
+#: src/settings.c:152
 msgid "Avoid server grab"
 msgstr ""
 
-#: src/settings.c:152
+#: src/settings.c:162
 msgid "Move/Resize Geometry Info Postion:"
 msgstr ""
 
-#: src/settings.c:156
+#: src/settings.c:166
 msgid "Window Center (O/T/B Methods)"
 msgstr ""
 
-#: src/settings.c:162
+#: src/settings.c:172
 msgid "Always Screen corner"
 msgstr ""
 
-#: src/settings.c:168
+#: src/settings.c:178
 msgid "Don't show"
 msgstr "不显示"
 
-#: src/settings.c:180
+#: src/settings.c:190
 msgid "Default Resize Policy:"
 msgstr "默认调整大小策略："
 
-#: src/settings.c:184
+#: src/settings.c:194
 msgid "Conservative"
 msgstr ""
 
-#: src/settings.c:190
+#: src/settings.c:200
 msgid "Available"
 msgstr ""
 
-#: src/settings.c:196
+#: src/settings.c:206
 msgid "Absolute"
 msgstr ""
 
-#: src/settings.c:206
+#: src/settings.c:216
 msgid "Update window while moving"
 msgstr "移动时更新窗口"
 
-#: src/settings.c:211
+#: src/settings.c:221
 msgid "Synchronize move/resize with application"
 msgstr "与应用程序同步移动/调整大小"
 
-#: src/settings.c:216
+#: src/settings.c:226
 msgid "Do not cover dragbar"
 msgstr ""
 
-#: src/settings.c:222
+#: src/settings.c:232
 msgid "Move/Resize"
 msgstr "移动/调整大小"
 
-#: src/settings.c:223
+#: src/settings.c:233
 msgid "Move & Resize Settings"
 msgstr "移动和调整大小设置"
 
-#: src/settings.c:226
+#: src/settings.c:236
 msgid ""
 "Enlightenment Move & Resize\n"
 "Method Settings Dialog\n"
@@ -1523,75 +1527,75 @@ msgstr ""
 "Enlightenment 移动和调整大小\n"
 "方式设置对话框\n"
 
-#: src/settings.c:313
+#: src/settings.c:332
 msgid "Dialog windows appear together with their owner"
 msgstr ""
 
-#: src/settings.c:318
+#: src/settings.c:337
 msgid "Switch to desktop where dialog appears"
 msgstr "对话框出现时切换至桌面"
 
-#: src/settings.c:326
+#: src/settings.c:345
 msgid "Place windows manually"
 msgstr "手动放置窗口"
 
-#: src/settings.c:331
+#: src/settings.c:350
 msgid "Place windows under mouse"
 msgstr "将窗口放置于鼠标下"
 
-#: src/settings.c:336
+#: src/settings.c:355
 msgid "Center windows when desk is full"
 msgstr "桌面满的时候居中窗口"
 
-#: src/settings.c:341
+#: src/settings.c:360
 msgid "Slide windows in when they appear"
 msgstr ""
 
-#: src/settings.c:346
+#: src/settings.c:365
 msgid "Slide windows around when cleaning up"
 msgstr ""
 
-#: src/settings.c:351
+#: src/settings.c:370
 msgid "Slide Method:"
 msgstr ""
 
-#: src/settings.c:384
+#: src/settings.c:403
 msgid "Appear Slide speed:"
 msgstr ""
 
-#: src/settings.c:395
+#: src/settings.c:414
 msgid "Cleanup Slide speed:"
 msgstr ""
 
-#: src/settings.c:408
+#: src/settings.c:427
 msgid "Animate shading and unshading of windows"
 msgstr ""
 
-#: src/settings.c:414
+#: src/settings.c:433
 msgid "Window Shading speed:"
 msgstr ""
 
-#: src/settings.c:427
+#: src/settings.c:446
 msgid "Ignore struts"
 msgstr ""
 
-#: src/settings.c:432
+#: src/settings.c:451
 msgid "Raise fullscreen windows"
 msgstr ""
 
-#: src/settings.c:440
+#: src/settings.c:459
 msgid "Place windows on another head when full"
 msgstr ""
 
-#: src/settings.c:448
+#: src/settings.c:467
 msgid "Placement"
 msgstr "放置"
 
-#: src/settings.c:449
+#: src/settings.c:468
 msgid "Window Placement Settings"
 msgstr "窗口放置设置"
 
-#: src/settings.c:452
+#: src/settings.c:471
 msgid ""
 "Enlightenment Window Placement\n"
 "Settings Dialog\n"
@@ -1599,31 +1603,31 @@ msgstr ""
 "Enlightenment 窗口放置\n"
 "设置对话框\n"
 
-#: src/settings.c:489
+#: src/settings.c:518
 msgid "Enable Dialog Headers"
 msgstr ""
 
-#: src/settings.c:495
+#: src/settings.c:524
 msgid "Enable Button Images"
 msgstr "启用按钮图像"
 
-#: src/settings.c:504
+#: src/settings.c:533
 msgid "Enable sliding startup windows"
 msgstr ""
 
-#: src/settings.c:512
+#: src/settings.c:541
 msgid "Use saveunders to reduce window exposures"
 msgstr ""
 
-#: src/settings.c:518 config/strings.c:138 config/strings.c:154
+#: src/settings.c:547 config/strings.c:136 config/strings.c:152
 msgid "Miscellaneous"
 msgstr "杂项"
 
-#: src/settings.c:519
+#: src/settings.c:548
 msgid "Miscellaneous Settings"
 msgstr "杂项设置"
 
-#: src/settings.c:522
+#: src/settings.c:551
 msgid ""
 "Enlightenment Miscellaneous\n"
 "Settings Dialog\n"
@@ -1631,55 +1635,55 @@ msgstr ""
 "Enlightenment 杂项\n"
 "设置对话框\n"
 
-#: src/settings.c:566
+#: src/settings.c:595
 msgid "Enable Composite"
 msgstr "启用混成"
 
-#: src/settings.c:574
+#: src/settings.c:603
 msgid "Enable Fading"
 msgstr "启用淡入淡出"
 
-#: src/settings.c:580
+#: src/settings.c:609
 msgid "Fading Speed:"
 msgstr "淡入淡出速度："
 
-#: src/settings.c:593
+#: src/settings.c:622
 msgid "Shadows Off"
 msgstr "阴影关闭"
 
-#: src/settings.c:599
+#: src/settings.c:628
 msgid "Shadows Sharp"
 msgstr ""
 
-#: src/settings.c:605
+#: src/settings.c:634
 msgid "Shadows Sharp2"
 msgstr ""
 
-#: src/settings.c:611
+#: src/settings.c:640
 msgid "Shadows Blurred"
 msgstr ""
 
-#: src/settings.c:622
+#: src/settings.c:651
 msgid "Default focused window opacity:"
 msgstr "默认的聚焦窗口透明度："
 
-#: src/settings.c:633
+#: src/settings.c:662
 msgid "Default unfocused window opacity:"
 msgstr "默认未聚焦窗口透明度："
 
-#: src/settings.c:644
+#: src/settings.c:673
 msgid "Default pop-up window opacity:"
 msgstr "默认弹出窗口透明度："
 
-#: src/settings.c:655
+#: src/settings.c:684
 msgid "Composite"
 msgstr "混成"
 
-#: src/settings.c:656
+#: src/settings.c:685
 msgid "Composite Settings"
 msgstr "混成设置"
 
-#: src/settings.c:659
+#: src/settings.c:688
 msgid ""
 "Enlightenment Composite\n"
 "Settings Dialog\n"
@@ -1687,7 +1691,7 @@ msgstr ""
 "Enlightenment 混成\n"
 "设置对话框\n"
 
-#: src/settings.c:744
+#: src/settings.c:773
 msgid "Enlightenment Settings"
 msgstr "Enlightenment 设置"
 
@@ -1768,11 +1772,11 @@ msgstr "位置"
 msgid "Border style"
 msgstr "边框风格"
 
-#: src/snaps.c:829 config/strings.c:176
+#: src/snaps.c:829 config/strings.c:174
 msgid "Size"
 msgstr "大小"
 
-#: src/snaps.c:834 config/strings.c:92 config/strings.c:114
+#: src/snaps.c:834 config/strings.c:90 config/strings.c:112
 msgid "Desktop"
 msgstr "桌面"
 
@@ -1792,7 +1796,7 @@ msgstr "叠放层次"
 msgid "Window List Skip"
 msgstr ""
 
-#: src/snaps.c:860 config/strings.c:137 config/strings.c:164
+#: src/snaps.c:860 config/strings.c:135 config/strings.c:162
 msgid "Opacity"
 msgstr "透明度"
 
@@ -1929,7 +1933,7 @@ msgstr "系统托盘选项"
 msgid "Systray Settings"
 msgstr "系统托盘设置"
 
-#: src/theme.c:347
+#: src/theme.c:348
 #, c-format
 msgid ""
 "No themes were found in the default directories:\n"
@@ -1937,32 +1941,32 @@ msgid ""
 "Proceeding from here is mostly pointless.\n"
 msgstr ""
 
-#: src/theme.c:378
+#: src/theme.c:379
 msgid "Changes will take effect after restart"
 msgstr ""
 
-#: src/theme.c:398
+#: src/theme.c:399
 msgid "Use theme font configuration"
 msgstr ""
 
-#: src/theme.c:403
+#: src/theme.c:404
 #, c-format
 msgid "Use alternate font configuration (%s)"
 msgstr ""
 
-#: src/theme.c:404
+#: src/theme.c:405
 msgid "Not set"
 msgstr ""
 
-#: src/theme.c:411
+#: src/theme.c:412
 msgid "Theme"
 msgstr ""
 
-#: src/theme.c:412
+#: src/theme.c:413
 msgid "Theme Settings"
 msgstr ""
 
-#: src/theme.c:415
+#: src/theme.c:416
 msgid ""
 "Enlightenment Theme\n"
 "Settings Dialog\n"
@@ -2131,7 +2135,7 @@ msgstr "快照"
 msgid "This button does nothing interesting."
 msgstr ""
 
-#: config/strings.c:47 config/strings.c:130
+#: config/strings.c:47 config/strings.c:128
 msgid "Shade/Unshade"
 msgstr "卷起/不卷起"
 
@@ -2147,7 +2151,7 @@ msgstr "更多按钮"
 msgid "Show more buttons."
 msgstr "显示更多按钮。"
 
-#: config/strings.c:56 config/strings.c:128
+#: config/strings.c:56 config/strings.c:126
 msgid "Raise"
 msgstr "升起"
 
@@ -2155,7 +2159,7 @@ msgstr "升起"
 msgid "Raise this window to the top."
 msgstr ""
 
-#: config/strings.c:58 config/strings.c:129
+#: config/strings.c:58 config/strings.c:127
 msgid "Lower"
 msgstr "降低"
 
@@ -2163,7 +2167,7 @@ msgstr "降低"
 msgid "Lower this window."
 msgstr ""
 
-#: config/strings.c:60 config/strings.c:131
+#: config/strings.c:60 config/strings.c:129
 msgid "Stick/Unstick"
 msgstr ""
 
@@ -2209,303 +2213,299 @@ msgstr "后退桌面"
 msgid "Go Forward a Desktop"
 msgstr "前进桌面"
 
-#: config/strings.c:78 config/strings.c:81
-msgid "Backgrounds"
-msgstr "背景"
-
-#: config/strings.c:80
+#: config/strings.c:78
 msgid "Desktop Operations"
 msgstr "桌面操作"
 
-#: config/strings.c:82
+#: config/strings.c:80
 msgid "Cleanup Desktop"
 msgstr "清理桌面"
 
-#: config/strings.c:83
+#: config/strings.c:81
 msgid "Goto Next Desktop"
 msgstr "转到下一个桌面"
 
-#: config/strings.c:84
+#: config/strings.c:82
 msgid "Goto Previous Desktop"
 msgstr "转到上一个桌面"
 
-#: config/strings.c:86
+#: config/strings.c:84
 msgid "Create Systray"
 msgstr "创建系统托盘"
 
-#: config/strings.c:87
+#: config/strings.c:85
 msgid "Show Magnifier"
 msgstr "显示放大镜"
 
-#: config/strings.c:89
+#: config/strings.c:87
 msgid "Enlightenment"
 msgstr "Enlightenment"
 
-#: config/strings.c:90 config/strings.c:190
+#: config/strings.c:88 config/strings.c:188
 msgid "User Menus"
 msgstr "用户菜单"
 
-#: config/strings.c:91 config/strings.c:112 config/strings.c:113
+#: config/strings.c:89 config/strings.c:110 config/strings.c:111
 msgid "Settings"
 msgstr "设置"
 
-#: config/strings.c:94 config/strings.c:101 config/strings.c:116
+#: config/strings.c:92 config/strings.c:99 config/strings.c:114
 msgid "Maintenance"
 msgstr "维护"
 
-#: config/strings.c:95 config/strings.c:117
+#: config/strings.c:93 config/strings.c:115
 msgid "Help"
 msgstr "帮助"
 
-#: config/strings.c:96 config/strings.c:118
+#: config/strings.c:94 config/strings.c:116
 msgid "About Enlightenment"
 msgstr "关于 Enlightenment"
 
-#: config/strings.c:97 config/strings.c:119
+#: config/strings.c:95 config/strings.c:117
 msgid "About this theme"
 msgstr "关于本主题"
 
-#: config/strings.c:98 config/strings.c:120 config/strings.c:194
+#: config/strings.c:96 config/strings.c:118 config/strings.c:192
 msgid "Restart"
 msgstr "重启"
 
-#: config/strings.c:99 config/strings.c:121 config/strings.c:195
+#: config/strings.c:97 config/strings.c:119 config/strings.c:193
 msgid "Log Out"
 msgstr "注销"
 
-#: config/strings.c:102
+#: config/strings.c:100
 msgid "Purge config file cache"
 msgstr "清除配置文件缓存"
 
-#: config/strings.c:103
+#: config/strings.c:101
 msgid "Purge pager background cache"
 msgstr "清除分页器背景缓存"
 
-#: config/strings.c:104
+#: config/strings.c:102
 msgid "Purge background selector cache"
 msgstr "清除背景选择器缓存"
 
-#: config/strings.c:105
+#: config/strings.c:103
 msgid "Purge all caches"
 msgstr "清除所有缓存"
 
-#: config/strings.c:106
+#: config/strings.c:104
 msgid "Query config file cache usage"
 msgstr "查询配置文件缓存用法"
 
-#: config/strings.c:107
+#: config/strings.c:105
 msgid "Query pager background cache usage"
 msgstr "查询分页器背景缓存用法"
 
-#: config/strings.c:108
+#: config/strings.c:106
 msgid "Query background selector cache usage"
 msgstr "查询背景选择器缓存用法"
 
-#: config/strings.c:109
+#: config/strings.c:107
 msgid "Query all cache usage"
 msgstr "查询所有缓存用法"
 
-#: config/strings.c:110
+#: config/strings.c:108
 msgid "Regenerate Menus"
 msgstr "重新生成菜单"
 
-#: config/strings.c:127
+#: config/strings.c:125
 msgid "Leave Alone"
 msgstr ""
 
-#: config/strings.c:132
+#: config/strings.c:130
 msgid "Remember..."
 msgstr "记忆 ..."
 
-#: config/strings.c:133
+#: config/strings.c:131
 msgid "Window Size"
 msgstr "窗口大小"
 
-#: config/strings.c:134
+#: config/strings.c:132
 msgid "Set Stacking"
 msgstr "设定叠放"
 
-#: config/strings.c:135
+#: config/strings.c:133
 msgid "Set Border Style"
 msgstr "设定边框风格"
 
-#: config/strings.c:136
+#: config/strings.c:134
 msgid "Window Groups"
 msgstr "窗口分组"
 
-#: config/strings.c:141
+#: config/strings.c:139
 msgid "Configure this window's group(s)"
 msgstr "配置此窗口分组"
 
-#: config/strings.c:142
+#: config/strings.c:140
 msgid "Start a new group"
 msgstr "开始新分组"
 
-#: config/strings.c:143
+#: config/strings.c:141
 msgid "Add this window to the current group"
 msgstr "将此窗口添加到当前分组"
 
-#: config/strings.c:144
+#: config/strings.c:142
 msgid "Select group to add this window to"
 msgstr "选择要将此窗口添加到的分组"
 
-#: config/strings.c:145
+#: config/strings.c:143
 msgid "Remove this window from a group"
 msgstr "将此窗口从分组中移除"
 
-#: config/strings.c:146
+#: config/strings.c:144
 msgid "Destroy a group this window belongs to"
 msgstr "取消此窗口所属的分组"
 
-#: config/strings.c:148
+#: config/strings.c:146
 msgid "Stacking"
 msgstr "叠放"
 
-#: config/strings.c:149
+#: config/strings.c:147
 msgid "Below"
 msgstr "下方"
 
-#: config/strings.c:150
+#: config/strings.c:148
 msgid "Normal"
 msgstr "普通"
 
-#: config/strings.c:151
+#: config/strings.c:149
 msgid "Above"
 msgstr "上方"
 
-#: config/strings.c:152
+#: config/strings.c:150
 msgid "On Top"
 msgstr "置顶"
 
-#: config/strings.c:155
+#: config/strings.c:153
 msgid "Toggle Skip Window Lists"
 msgstr "切换跳过窗口列表"
 
-#: config/strings.c:156
+#: config/strings.c:154
 msgid "Toggle Fixed Position"
 msgstr "切换固定位置"
 
-#: config/strings.c:157
+#: config/strings.c:155
 msgid "Toggle Fixed Size"
 msgstr "切换固定大小"
 
-#: config/strings.c:158
+#: config/strings.c:156
 msgid "Toggle Never Focus"
 msgstr "切换从不聚焦"
 
-#: config/strings.c:159
+#: config/strings.c:157
 msgid "Toggle Click to Focus"
 msgstr "切换点击聚焦"
 
-#: config/strings.c:160
+#: config/strings.c:158
 msgid "Toggle Never Use Area"
 msgstr "切换从不使用区域"
 
-#: config/strings.c:161
+#: config/strings.c:159
 msgid "Toggle Button Grabs"
 msgstr ""
 
-#: config/strings.c:162
+#: config/strings.c:160
 msgid "Toggle Autoshade"
 msgstr "自动隐藏"
 
-#: config/strings.c:165
+#: config/strings.c:163
 msgid "Default"
 msgstr "默认"
 
-#: config/strings.c:166
+#: config/strings.c:164
 msgid "20%"
 msgstr "20%"
 
-#: config/strings.c:167
+#: config/strings.c:165
 msgid "40%"
 msgstr "40%"
 
-#: config/strings.c:168
+#: config/strings.c:166
 msgid "60%"
 msgstr "60%"
 
-#: config/strings.c:169
+#: config/strings.c:167
 msgid "80%"
 msgstr "80%"
 
-#: config/strings.c:170
+#: config/strings.c:168
 msgid "100%"
 msgstr "100%"
 
-#: config/strings.c:171
+#: config/strings.c:169
 msgid "Focused opacity 100%"
 msgstr "聚焦透明度 100%"
 
-#: config/strings.c:172
+#: config/strings.c:170
 msgid "Focused opacity follows unfocused"
 msgstr ""
 
-#: config/strings.c:173
+#: config/strings.c:171
 msgid "Toggle Fading"
 msgstr "切换淡入淡出"
 
-#: config/strings.c:174
+#: config/strings.c:172
 msgid "Toggle Shadows"
 msgstr "切换阴影"
 
-#: config/strings.c:177
+#: config/strings.c:175
 msgid "Max Size Toggle"
 msgstr "最大大小切换"
 
-#: config/strings.c:178
+#: config/strings.c:176
 msgid "Available Max Size Toggle"
 msgstr "可用最大大小切换"
 
-#: config/strings.c:179
+#: config/strings.c:177
 msgid "Absolute Max Size Toggle"
 msgstr "绝对最大大小切换"
 
-#: config/strings.c:180
+#: config/strings.c:178
 msgid "Span Xinerama Screens"
 msgstr ""
 
-#: config/strings.c:181
+#: config/strings.c:179
 msgid "Max Height Toggle"
 msgstr "最大高度切换"
 
-#: config/strings.c:182
+#: config/strings.c:180
 msgid "Available Max Height Toggle"
 msgstr "可用最大高度切换"
 
-#: config/strings.c:183
+#: config/strings.c:181
 msgid "Absolute Max Height Toggle"
 msgstr "绝对最大高度切换"
 
-#: config/strings.c:184
+#: config/strings.c:182
 msgid "Max Width Toggle"
 msgstr "最大宽度切换"
 
-#: config/strings.c:185
+#: config/strings.c:183
 msgid "Available Max Width Toggle"
 msgstr "可用最大宽度切换"
 
-#: config/strings.c:186
+#: config/strings.c:184
 msgid "Absolute Max Width Toggle"
 msgstr "绝对最大宽度切换"
 
-#: config/strings.c:187
+#: config/strings.c:185
 msgid "Fullscreen/Normal"
 msgstr "全屏/普通"
 
-#: config/strings.c:188
+#: config/strings.c:186
 msgid "Zoom/Unzoom"
 msgstr "缩放/不缩放"
 
-#: config/strings.c:191
+#: config/strings.c:189
 msgid "User Application List"
 msgstr "用户应用程序列表"
 
-#: config/strings.c:192
+#: config/strings.c:190
 msgid "Other"
 msgstr "其它"
 
-#: config/strings.c:193
+#: config/strings.c:191
 msgid "Epplets"
 msgstr "Epplets 小程序"
 
