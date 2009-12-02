@@ -113,7 +113,7 @@ ecore_x_window_prop_card32_set(Ecore_X_Window win, Ecore_X_Atom atom,
    unsigned long      *pl;
    unsigned int        i;
 
-   pl = malloc(num * sizeof(long));
+   pl = (unsigned long *)malloc(num * sizeof(long));
    if (!pl)
       return;
    for (i = 0; i < num; i++)
@@ -392,7 +392,7 @@ ecore_x_window_prop_xid_set(Ecore_X_Window win, Ecore_X_Atom atom,
    unsigned long      *pl;
    unsigned int        i;
 
-   pl = malloc(num * sizeof(long));
+   pl = (unsigned long *)malloc(num * sizeof(long));
    if (!pl)
       return;
    for (i = 0; i < num; i++)
