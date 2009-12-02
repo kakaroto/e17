@@ -133,7 +133,9 @@ ButtonCreate(const char *name, int id, const char *iclass,
    ecore_list_append(button_list, b);
 
    b->id = id;
-   b->label = Estrdup(label);
+
+   if (label && *label)
+      b->label = Estrdup(label);
 
    b->iclass = ImageclassAlloc(iclass, 1);
    b->aclass = ActionclassAlloc(aclass);
@@ -694,13 +696,17 @@ ButtonsConfigLoad(FILE * fs)
 	       }
 	     else if (pbt)
 	       {
-		  _EFDUP(pbt->label, label);
+		  if (label[0])
+		     _EFDUP(pbt->label, label);
 		  EoSetLayer(pbt, ontop);
 		  EoSetSticky(pbt, sticky);
 		  ButtonMoveToDesktop(pbt, DeskGet(desk));
-		  pbt->iclass = ImageclassFind(iclass, 1);
-		  pbt->aclass = ActionclassFind(aclass);
-		  pbt->tclass = TextclassFind(tclass, 1);
+		  if (iclass[0])
+		     pbt->iclass = ImageclassFind(iclass, 1);
+		  if (aclass[0])
+		     pbt->aclass = ActionclassFind(aclass);
+		  if (tclass[0])
+		     pbt->tclass = TextclassFind(tclass, 1);
 		  pbt->flags = flags;
 		  pbt->internal = internal;
 		  pbt->default_show = show;
@@ -848,12 +854,14 @@ ButtonsConfigSave(void)
 
       fprintf(fs, "4 999\n");
       fprintf(fs, "100 %s\n", EoGetName(b));
+#if 0				/* Remove? */
       if (b->iclass)
 	 fprintf(fs, "12 %s\n", ImageclassGetName(b->iclass));
       if (b->aclass)
 	 fprintf(fs, "11 %s\n", ActionclassGetName(b->aclass));
       if (EoGetLayer(b) >= 0)
 	 fprintf(fs, "453 %i\n", EoGetLayer(b));
+#endif
       fprintf(fs, "456 %i\n", b->geom.width_min);
       fprintf(fs, "457 %i\n", b->geom.width_max);
       fprintf(fs, "468 %i\n", b->geom.height_min);
