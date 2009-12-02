@@ -162,10 +162,14 @@ class NewPart(Wizard):
         self.external.show()
 
         self.action_add("external", "Ok", self._external_ok, name)
+        self.action_add("external", "Cancel", self._cancel, name)
 
         self.goto("external")
 
     def _external_ok(self, popup, data):
+        if not self.external.type:
+            self.close()
+            return
         self._part_add(data, self.external.type)
         self._parent.e._edje.external_add(self.external.module)
 
