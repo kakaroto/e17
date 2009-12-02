@@ -11,7 +11,7 @@ Eina, Evas, Ecore, Embryo, Edje, E_Dbus, Efreet, Elementary and Enlightenment
 have had a snapshot release (snapshot 063), and can be downloaded from
 <a href=http://download.enlightenment.org/snapshots/2009-12-02/>here</a>. If
 you are taking source from <a href=http://svn.enlightenment.org>SVN</a>, then
-use SVN revision 44115.
+use SVN revision 44116.
 </p>
 <!-- cut -->
 
