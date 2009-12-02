@@ -1,7 +1,8 @@
 # get rid of that stupid cache mechanism
 rm -f config.cache
 
-AC_INIT([e_dbus], [0.5.0.062], [enlightenment-devel@lists.sourceforge.net])
+AC_INIT([e_dbus], [0.5.0.063], [enlightenment-devel@lists.sourceforge.net])
+release="ver-svn-04"
 AC_PREREQ([2.52])
 AC_CONFIG_SRCDIR([configure.ac])
 AC_CONFIG_MACRO_DIR([m4])
@@ -27,7 +28,6 @@ VMIN=`echo $PACKAGE_VERSION | awk -F. '{printf("%s", $2);}'`
 VMIC=`echo $PACKAGE_VERSION | awk -F. '{printf("%s", $3);}'`
 SNAP=`echo $PACKAGE_VERSION | awk -F. '{printf("%s", $4);}'`
 version_info=`expr $VMAJ + $VMIN`":$VMIC:$VMIN"
-release="ver-pre-svn-04"
 econnman_release_info="-release $release"
 edbus_release_info="-release $release"
 ehal_release_info="-release $release"
