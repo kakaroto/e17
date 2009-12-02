@@ -219,14 +219,33 @@ cdef class ExternalType:
         ret = l
         return ret
 
-    def icon(self, evas.c_evas.Canvas canvas not None):
-        cdef evas.c_evas.Evas_Object *icon
-        if self._obj.icon_get == NULL:
+    def description_get(self):
+        cdef char *l
+        if self._obj.description_get == NULL:
             return None
-        icon = self._obj.icon_get(self._obj.data, canvas.obj)
+        l = self._obj.description_get(self._obj.data)
+        if l == NULL:
+            return None
+        ret = l
+        return ret
+
+    def icon_add(self, evas.c_evas.Canvas canvas not None):
+        cdef evas.c_evas.Evas_Object *icon
+        if self._obj.icon_add == NULL:
+            return None
+        icon = self._obj.icon_add(self._obj.data, canvas.obj)
         if icon == NULL:
             return None
         return evas.c_evas._Object_from_instance(<long>icon)
+
+    def preview_add(self, evas.c_evas.Canvas canvas not None):
+        cdef evas.c_evas.Evas_Object *preview
+        if self._obj.preview_add == NULL:
+            return None
+        preview = self._obj.preview_add(self._obj.data, canvas.obj)
+        if preview == NULL:
+            return None
+        return evas.c_evas._Object_from_instance(<long>preview)
 
 cdef class ExternalIterator:
     cdef evas.c_evas.Eina_Iterator *obj

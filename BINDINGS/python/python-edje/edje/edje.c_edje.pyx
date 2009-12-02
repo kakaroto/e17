@@ -24,8 +24,12 @@ __extra_epydoc_fields__ = (
     )
 
 def init():
-    return edje_init()
+    cdef int r = edje_init()
 
+    if edje_external_type_abi_version_get() != EDJE_EXTERNAL_TYPE_ABI_VERSION:
+        raise TypeError("python-edje Edje_External_Type abi_version differs "
+                        "from libedje.so. Recompile python-edje!")
+    return r
 
 def shutdown():
     return edje_shutdown()

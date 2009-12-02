@@ -123,6 +123,7 @@ cdef extern from "Edje.h":
 
     cdef int EDJE_EXTERNAL_INT_UNSET
     cdef double EDJE_EXTERNAL_DOUBLE_UNSET
+    cdef unsigned int EDJE_EXTERNAL_TYPE_ABI_VERSION
 
     ####################################################################
     # Structures
@@ -193,14 +194,17 @@ cdef extern from "Edje.h":
         aux_external_param_info info
 
     ctypedef struct Edje_External_Type:
+        unsigned int abi_version
         char *module
         evas.c_evas.Evas_Object *(*add)(void *data, evas.c_evas.Evas *evas, evas.c_evas.Evas_Object *parent, evas.c_evas.Eina_List *params)
         void (*state_set)(void *data, evas.c_evas.Evas_Object *obj, void *from_params, void *to_params, float pos)
         void (*signal_emit)(void *data, evas.c_evas.Evas_Object *obj, char *emission, char *source)
         void *(*params_parse)(void *data, evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_List *params)
         void (*params_free)(void *params)
-        evas.c_evas.Evas_Object *(*icon_get)(void *data, evas.c_evas.Evas *e)
+        evas.c_evas.Evas_Object *(*icon_add)(void *data, evas.c_evas.Evas *e)
+        evas.c_evas.Evas_Object *(*preview_add)(void *data, evas.c_evas.Evas *e)
         char *(*label_get)(void *data)
+        char *(*description_get)(void *data)
         Edje_External_Param_Info *paramters_info
         void *data
 
@@ -319,6 +323,8 @@ cdef extern from "Edje.h":
     void edje_object_message_signal_process(evas.c_evas.Evas_Object *obj)
 
     void edje_message_signal_process()
+
+    unsigned int edje_external_type_abi_version_get()
 
     evas.c_evas.Eina_Iterator *edje_external_iterator_get()
     Edje_External_Param_Info *edje_external_param_info_get(char *type_name)
