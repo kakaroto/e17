@@ -26,7 +26,8 @@ PREFIX=""
 for arg in $@; do
     case $arg in
         --force)
-            touch $PYX_FILES
+            # nothing yet.
+            #touch $PYX_FILES
             ;;
         --system)
             PREFIX="/usr"
