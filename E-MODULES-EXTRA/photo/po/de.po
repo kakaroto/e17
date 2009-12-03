@@ -6,13 +6,15 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2009-08-25 17:14+0800\n"
-"PO-Revision-Date: 2008-12-29 10:56+0000\n"
-"Last-Translator: meica <Unknown>\n"
+"POT-Creation-Date: 2009-11-05 16:07+0800\n"
+"PO-Revision-Date: 2009-11-07 18:19+0000\n"
+"Last-Translator: MixCool <lars.thoms@mixcool.de>\n"
 "Language-Team: German <de@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"X-Launchpad-Export-Date: 2009-11-12 04:51+0000\n"
+"X-Generator: Launchpad (build Unknown)\n"
 
 #: ../src/e_mod_main.c:53 ../src/e_mod_main.c:60 ../src/e_mod_main.c:67
 #: ../src/e_mod_main.c:74 ../src/e_mod_main.c:81 ../src/e_mod_main.c:88
@@ -21,15 +23,15 @@ msgstr "Foto-Modul"
 
 #: ../src/e_mod_main.c:53
 msgid "E Canvas init failed !"
-msgstr ""
+msgstr "\"E Canvas\" verursachte einen Fehler!"
 
 #: ../src/e_mod_main.c:60
 msgid "Theme init failed !"
-msgstr ""
+msgstr "\"Theme\" verursachte einen Fehler!"
 
 #: ../src/e_mod_main.c:67
 msgid "Config init failed"
-msgstr ""
+msgstr "\"Config\" verursachte einen Fehler!"
 
 #: ../src/e_mod_main.c:74
 msgid "Picture subsystem init failed"
@@ -54,6 +56,10 @@ msgid ""
 "configuration of photo module<br>has been upgraded<br>Your settings were "
 "removed<br>Sorry for the inconvenience<br><br>(%d -> %d)"
 msgstr ""
+"<hilight>Foto-Modul : Konfiguration aktualisiert</hilight><br><br>Die "
+"Konfiguration des Foto-Moduls<br>wurde aktualisiert<br>Ihre persönlichen "
+"Einstellungen wurden entfernt<br>Bitte entschuldigen Sie die "
+"Unannehmlichkeiten<br><br>(%d -> %d)"
 
 #: ../src/photo_config.c:71 ../src/photo_config.c:85
 msgid "Photo Module version "
@@ -66,6 +72,11 @@ msgid ""
 "configuration of Photo module<br>has been downgraded<br>Your settings were "
 "removed<br>Sorry for the inconvenience<br><br>(%d ->%d)"
 msgstr ""
+"<hilight>Foto-Modul: Konfiguration in früheren Zustand "
+"zurückversetzt</hilight><br><br>Ihre Konfiguration des Foto-Moduls<br>wurde "
+"in einen früheren Zustand zurückversetzt<br>Ihre persönlichen Einstellungen "
+"wurden entfernt<br>Bitte entschuldigen Sie die Unannehmlichkeiten<br><br>(%d "
+"->%d)"
 
 #: ../src/photo_config_dialog.c:64
 msgid "Photo Configuration"
@@ -105,7 +116,7 @@ msgstr "Label immer anzeigen"
 
 #: ../src/photo_config_dialog.c:256
 msgid "Nice transitions"
-msgstr ""
+msgstr "Gut aussehende Übergänge"
 
 #: ../src/photo_config_dialog.c:262
 msgid "Default Mouse actions"
@@ -295,8 +306,8 @@ msgstr "Foto-Modul Fehler"
 #: ../src/photo_item.c:413
 #, c-format
 msgid ""
-"<hilight>e17setroot needed</hilight><br><br>%s is not an edje file !"
-"<br>Photo module needs e17setroot util from e_utils package to set you're "
+"<hilight>e17setroot needed</hilight><br><br>%s is not an edje file "
+"!<br>Photo module needs e17setroot util from e_utils package to set you're "
 "picture as backgroundPlease install it and try again"
 msgstr ""
 
@@ -307,6 +318,9 @@ msgid ""
 "module picture list, but it seems you removed it from the disk.<br>It cant "
 "be set opened in a viewer, sorry."
 msgstr ""
+"<hilight>Die Datei %s existiert nicht!</hilight><br><br>Die Datei ist in der "
+"Bilderliste eingetragen, aber Sie haben sie anscheinend von der Festplatte "
+"entfernt.<br>Sie kann nicht als in einem Betrachter geöffnet gesetzt werden."
 
 #: ../src/photo_item.c:472
 #, c-format
@@ -314,6 +328,8 @@ msgid ""
 "<hilight>Viewer %s not found !</hilight><br><br>You can change the viewer "
 "for images in Photo module configuration panel (Advanced view)"
 msgstr ""
+"<hilight>Betrachter %s nicht gefunden!</hilight><br><br>Sie können den "
+"Betrachter im Moduleinstellungsfeld (in der erweiterten Ansicht) ändern."
 
 #: ../src/photo_menu.c:30
 msgid "Pause slideshow"
@@ -321,7 +337,7 @@ msgstr "Diashow anhalten"
 
 #: ../src/photo_menu.c:35
 msgid "Resume slideshow"
-msgstr ""
+msgstr "Diaschau fortsetzen"
 
 #: ../src/photo_menu.c:54
 msgid "Picture informations"
@@ -337,11 +353,11 @@ msgstr "Foto-Modul konfigurieren"
 
 #: ../src/photo_menu.c:75
 msgid "Configure this Photo gadget"
-msgstr ""
+msgstr "Dieses Fotogadget konfigurieren"
 
 #: ../src/photo_menu.c:82
 msgid "Configure Gadget and Shelf"
-msgstr ""
+msgstr "Gadget und Ablage konfigurieren"
 
 #: ../src/photo_picture_histo.c:121
 msgid "Historic"
@@ -356,6 +372,11 @@ msgid ""
 "still can<br>be viewed, but you wont be able to set them as wallpaper "
 "anymore<br><br>"
 msgstr ""
+"<hilight>Der Ordner %s existiert nicht.</hilight><br><br>Sie können den "
+"Bilderordner im Haupteinstellungsfeld ändern<br>Erlaubt sind jpeg und png "
+"Dateien.<br><br>Nach dem Import können Sie diese Dateien entfernen "
+"und<br>trotzdem noch ansehen, aber Sie können diese dann nicht mehr als "
+"Hintergrundbild setzen.<br><br>"
 
 #: ../src/photo_picture_local.c:593
 msgid "Photo Module Information"
@@ -370,3 +391,10 @@ msgid ""
 "thumbed.<br><br>While creating popups, you will not be able to see any "
 "picture in Photo.<br>I hope i'll be able to change that :)"
 msgstr ""
+"<hilight>Vorschaubilder erzeugen</hilight><br><br>Für einige Bilder werden "
+"Vorschaubilder erzeugt<hilight>(im Hintergrund)</hilight>.<br>Dies kann eine "
+"Weile dauern, aber danach werden die Bilder schneller geladen.<br><br>Jedes "
+"Mal, wenn Sie Bilder in das Fotomodul importieren werden für diese "
+"Vorschaubilder<br>erzeugt.<br><br>Währen die Vorschaubilder erzeugt werden, "
+"kann das Fotomodul keine Bilder anzeigen.<br>Das Problem kann ich "
+"hoffentlich bald beseitigen :)"

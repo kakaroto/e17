@@ -9,14 +9,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: fi\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2009-08-25 17:14+0800\n"
-"PO-Revision-Date: 2009-07-17 12:49+0000\n"
-"Last-Translator: Szenográdi Norbert Péter <sevoir@sevoir.hu>\n"
+"POT-Creation-Date: 2009-11-05 16:07+0800\n"
+"PO-Revision-Date: 2009-10-24 12:25+0000\n"
+"Last-Translator: lisovszki <lisovszki@gmail.com>\n"
 "Language-Team: hungarian <hu@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2009-08-27 10:01+0000\n"
+"X-Launchpad-Export-Date: 2009-11-12 04:53+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 
 #: ../src/e_mod_box.c:675 ../src/e_mod_box.c:823
@@ -49,8 +49,8 @@ msgid ""
 "Presentation mode is over.<br>Now screen saver, lock and power saving "
 "settings will be restored."
 msgstr ""
-"Bemutató mód vége.<br>A képeryővédő, asztal lezárása és a kilépés "
-"helyreállítva."
+"Bemutató mód vége.<br>A képernyővédő, asztal lezárási, energiatakarékossági "
+"beállítások helyreállítva."
 
 #: ../src/e_mod_main.c:229
 msgid "Enter Offline Mode"
@@ -61,16 +61,20 @@ msgid ""
 "Enlightenment is in <b>offline</b> mode.<br>During offline mode, modules "
 "that use network will stop polling remote services."
 msgstr ""
+"Az Enlightenment <b>kapcsolat nélküli<b> módban fut.<br>Ez alatt azok a "
+"modulok, amelyek a netet használják, le lesznek állítva."
 
 #: ../src/e_mod_main.c:236
 msgid "Exited Offline Mode"
-msgstr "Hálózat nélküli módból kilépve."
+msgstr "Kilépve a kapcsolat nélküli módból."
 
 #: ../src/e_mod_main.c:237
 msgid ""
 "Now in <b>online</b> mode.<br>Now modules that use network will resume "
 "regular tasks."
 msgstr ""
+"Most <b>online<b> módban van.<br>A hálózatot használó modulok ismét "
+"szabályosan működnek."
 
 #. register config panel entry
 #: ../src/e_mod_main.c:294
@@ -140,7 +144,7 @@ msgstr "Sűrgősség"
 
 #: ../src/e_mod_config.c:89
 msgid "Levels of urgency to popup : "
-msgstr "Sürgösségi felugró szintek "
+msgstr "Sürgösséggi felugró szintek: "
 
 #: ../src/e_mod_config.c:91 ../src/e_mod_config_item.c:94
 msgid "low"

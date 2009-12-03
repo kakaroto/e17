@@ -6,17 +6,19 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2009-08-25 17:14+0800\n"
-"PO-Revision-Date: 2008-11-29 21:46+0000\n"
+"POT-Creation-Date: 2009-11-05 16:07+0800\n"
+"PO-Revision-Date: 2009-09-11 08:37+0000\n"
 "Last-Translator: Yaron <sh.yaron@gmail.com>\n"
 "Language-Team: Hebrew <he@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"X-Launchpad-Export-Date: 2009-11-12 04:52+0000\n"
+"X-Generator: Launchpad (build Unknown)\n"
 
 #: ../src/e_mod_config.c:39
 msgid "Tclock Settings"
-msgstr ""
+msgstr "הגדרות Tclock"
 
 #: ../src/e_mod_config.c:88
 msgid "Top"
@@ -47,16 +49,16 @@ msgstr "חלונית תיאור"
 msgid "Show Tooltip"
 msgstr "הצג את חלונית התיאור"
 
-#: ../src/e_mod_main.c:140
+#: ../src/e_mod_main.c:141
 msgid "TClock"
 msgstr "שעון־T"
 
 #: ../src/e_mod_main.c:184
 msgid "Settings"
-msgstr ""
-
-#~ msgid "Tclock Configuration"
-#~ msgstr "תצורת שעון־T"
+msgstr "הגדרות"
 
 #~ msgid "Configuration"
 #~ msgstr "תצורה"
+
+#~ msgid "Tclock Configuration"
+#~ msgstr "תצורת שעון־T"

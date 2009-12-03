@@ -6,17 +6,19 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2009-07-17 15:33+0800\n"
-"PO-Revision-Date: 2009-01-30 22:59+0000\n"
-"Last-Translator: Siyan Panayotov <fungi_vn@yahoo.com>\n"
+"POT-Creation-Date: 2009-11-05 16:07+0800\n"
+"PO-Revision-Date: 2009-09-11 08:40+0000\n"
+"Last-Translator: vlood <vlood.vassilev@gmail.com>\n"
 "Language-Team: Bulgarian <bg@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"X-Launchpad-Export-Date: 2009-11-12 04:51+0000\n"
+"X-Generator: Launchpad (build Unknown)\n"
 
 #: ../src/e_mod_config.c:101
 msgid "Moon Configuration"
-msgstr ""
+msgstr "Настройки на Moon"
 
 #: ../src/e_mod_config.c:157
 msgid "Display Settings"
@@ -28,7 +30,7 @@ msgstr "Анимирани облаци"
 
 #: ../src/e_mod_config.c:162
 msgid "Moon Phase Value"
-msgstr ""
+msgstr "Стойност за фаза на луната"
 
 #: ../src/e_mod_config.c:164
 msgid "Show always"
@@ -36,7 +38,7 @@ msgstr "Показвай винаги"
 
 #: ../src/e_mod_config.c:166
 msgid "Show on mouse over"
-msgstr ""
+msgstr "Показвай при преминаване на мишката"
 
 #: ../src/e_mod_config.c:168
 msgid "Never show"
@@ -48,7 +50,7 @@ msgstr "Описание"
 
 #: ../src/e_mod_config.c:175
 msgid "Numerical"
-msgstr ""
+msgstr "Числов"
 
 #: ../src/e_mod_main.c:207
 msgid "Moon"
@@ -64,7 +66,7 @@ msgstr "Новолуние"
 
 #: ../src/e_mod_main.c:493
 msgid "Waxing Crescent"
-msgstr ""
+msgstr "Лъскав полумесец"
 
 #: ../src/e_mod_main.c:495
 msgid "First Quarter"
@@ -72,7 +74,7 @@ msgstr "Първа четвърт"
 
 #: ../src/e_mod_main.c:497
 msgid "Waxing Gibbous"
-msgstr ""
+msgstr "Лъскава пълна луна"
 
 #: ../src/e_mod_main.c:499
 msgid "Full Moon"
@@ -80,7 +82,7 @@ msgstr "Пълнолуние"
 
 #: ../src/e_mod_main.c:501
 msgid "Waning Gibbous"
-msgstr ""
+msgstr "Замъглена пълна луна"
 
 #: ../src/e_mod_main.c:503
 msgid "Last Quarter"
@@ -88,4 +90,4 @@ msgstr "Последна четвърт"
 
 #: ../src/e_mod_main.c:505
 msgid "Waning Crescent"
-msgstr ""
+msgstr "Замъглен полумесец"

@@ -1,0 +1,132 @@
+# Turkish translation for enlightenment
+# Copyright (c) 2009 Rosetta Contributors and Canonical Ltd 2009
+# This file is distributed under the same license as the enlightenment package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2009.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: enlightenment\n"
+"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
+"POT-Creation-Date: 2009-11-05 16:07+0800\n"
+"PO-Revision-Date: 2009-11-15 10:34+0000\n"
+"Last-Translator: Mustafa Yılmaz <apshalasha@gmail.com>\n"
+"Language-Team: Turkish <tr@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Launchpad-Export-Date: 2009-11-16 04:45+0000\n"
+"X-Generator: Launchpad (build Unknown)\n"
+
+#. Create The Dialog
+#: ../src/border_props.c:52
+msgid "Window properties"
+msgstr "Pencere Özellikleri"
+
+#: ../src/border_props.c:221 ../src/border_props.c:276
+msgid "Window identification"
+msgstr "Pencere tanımlama"
+
+#: ../src/border_props.c:222 ../src/border_props.c:289
+msgid "Title (%T)"
+msgstr "Başlık (%T)"
+
+#: ../src/border_props.c:228 ../src/border_props.c:307
+msgid "Properties"
+msgstr "Özellikler"
+
+#: ../src/border_props.c:229 ../src/border_props.c:308
+#, c-format
+msgid "Position (%p)"
+msgstr "Konum (%p)"
+
+#: ../src/border_props.c:233 ../src/border_props.c:312
+#, c-format
+msgid "Size (%s)"
+msgstr "Boyut (%s)"
+
+#: ../src/border_props.c:237 ../src/border_props.c:320
+msgid "Border style (%b)"
+msgstr "Kenarlık biçimi (%b)"
+
+#: ../src/border_props.c:241
+#, c-format
+msgid "Stickiness (%p)"
+msgstr "Kalınlık (%p)"
+
+#: ../src/border_props.c:245 ../src/border_props.c:328
+#, c-format
+msgid "Virtual desktop (%d)"
+msgstr "Sanal masaüstü (%d)"
+
+#: ../src/border_props.c:249 ../src/border_props.c:332
+msgid "Shaded state (%r)"
+msgstr "Gölge durumu (%r)"
+
+#: ../src/border_props.c:253 ../src/border_props.c:344
+#, c-format
+msgid "Fullscreen (%f)"
+msgstr "Tam ekran (%f)"
+
+#: ../src/border_props.c:257 ../src/border_props.c:348
+#, c-format
+msgid "Iconified (%i)"
+msgstr "Simge durumunda (%i)"
+
+#: ../src/border_props.c:277
+msgid "Window ID (%I)"
+msgstr "Pencere kimliği (%I)"
+
+#: ../src/border_props.c:281
+msgid "Window name (%N)"
+msgstr "Pencere ismi (%N)"
+
+#: ../src/border_props.c:285
+#, c-format
+msgid "Window class (%C)"
+msgstr "Pencer sınıfı (%C)"
+
+#: ../src/border_props.c:293
+msgid "Window role (%R)"
+msgstr "Pencere Rolü (%R)"
+
+#: ../src/border_props.c:297
+#, c-format
+msgid "Window type (%S)"
+msgstr "Pencere Biçimi (%S)"
+
+#: ../src/border_props.c:301
+msgid "Transient (%H)"
+msgstr "Geçici (%H)"
+
+#: ../src/border_props.c:316
+msgid "Layer (%l)"
+msgstr "Katman (%l)"
+
+#: ../src/border_props.c:324
+msgid "Stickiness (%y)"
+msgstr "Kalınlık (%y)"
+
+#: ../src/border_props.c:336
+msgid "Screen zone (%z)"
+msgstr "Ekran bölgesi (%z)"
+
+#: ../src/border_props.c:340
+msgid "Window list skip (%w)"
+msgstr "Pencre listesi geçişi (%w)"
+
+#. Create The Dialog
+#: ../src/e_mod_config.c:40
+msgid "Emu Configuration"
+msgstr "Emu Yapılandırması"
+
+#: ../src/e_mod_main.c:212
+msgid "Enlightenment Emu Module - error"
+msgstr "Enlightenment Emu Modülü - hata"
+
+#: ../src/e_mod_main.c:212
+msgid "There is no emu."
+msgstr "emu yok."
+
+#: ../src/e_mod_main.c:286
+msgid "Emu"
+msgstr "Emu"

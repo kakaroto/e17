@@ -6,13 +6,15 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2009-08-25 17:14+0800\n"
-"PO-Revision-Date: 2009-07-04 16:11+0000\n"
-"Last-Translator: Tschaka <Unknown>\n"
+"POT-Creation-Date: 2009-11-05 16:07+0800\n"
+"PO-Revision-Date: 2009-11-07 18:13+0000\n"
+"Last-Translator: MixCool <lars.thoms@mixcool.de>\n"
 "Language-Team: German <de@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"X-Launchpad-Export-Date: 2009-11-12 04:51+0000\n"
+"X-Generator: Launchpad (build Unknown)\n"
 
 #: ../src/e_mod_config.c:42
 msgid "Forecasts Configuration"
@@ -20,7 +22,7 @@ msgstr "Vorhersageeinstellungen"
 
 #: ../src/e_mod_config.c:90
 msgid "Display Settings"
-msgstr ""
+msgstr "Anzeige-Einstellungen"
 
 #: ../src/e_mod_config.c:91
 msgid "Poll Time"
@@ -37,7 +39,7 @@ msgstr "Beschreibung anzeigen"
 
 #: ../src/e_mod_config.c:99
 msgid "Popup on mouse over"
-msgstr ""
+msgstr "Beim Überfahren mit dem Mauszeiger ein Popup öffnen"
 
 #: ../src/e_mod_config.c:103
 msgid "Unit Settings"
@@ -78,7 +80,7 @@ msgstr "Einstellungen"
 
 #: ../src/e_mod_main.c:1030
 msgid "Wind Chill"
-msgstr ""
+msgstr "Differenz zwischen gefühlter und gemessener Temperatur (Windchill)"
 
 #: ../src/e_mod_main.c:1036
 msgid "Wind Speed"
@@ -98,15 +100,15 @@ msgstr "Luftdruck"
 
 #: ../src/e_mod_main.c:1061
 msgid "Rising"
-msgstr ""
+msgstr "Steigend"
 
 #: ../src/e_mod_main.c:1063
 msgid "Falling"
-msgstr ""
+msgstr "Fallend"
 
 #: ../src/e_mod_main.c:1065
 msgid "Steady"
-msgstr ""
+msgstr "beständig"
 
 #: ../src/e_mod_main.c:1069
 msgid "Sunrise / Sunset"
@@ -114,8 +116,8 @@ msgstr "Sonnenaufgang / Sonnenuntergang"
 
 #: ../src/e_mod_main.c:1093
 msgid "High"
-msgstr ""
+msgstr "Hoch"
 
 #: ../src/e_mod_main.c:1104
 msgid "Low"
-msgstr ""
+msgstr "Niedrig"

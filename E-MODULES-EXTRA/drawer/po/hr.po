@@ -6,21 +6,21 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment\n"
-"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
-"POT-Creation-Date: 2009-11-05 16:07+0800\n"
-"PO-Revision-Date: 2009-11-10 01:31+0000\n"
+"Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
+"POT-Creation-Date: 2009-12-01 15:38+0800\n"
+"PO-Revision-Date: 2009-12-02 09:37+0000\n"
 "Last-Translator: Miro Glavić <glavicmiro@gmail.com>\n"
 "Language-Team: Croatian <hr@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2009-11-10 07:14+0000\n"
+"X-Launchpad-Export-Date: 2009-12-03 04:44+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 
 #. create new config dialog
 #: ../src/e_mod_config.c:54
 msgid "Drawer Module"
-msgstr ""
+msgstr "Modul Ladice"
 
 #: ../src/e_mod_config.c:107
 msgid "Plugins selection"
@@ -50,7 +50,7 @@ msgstr "Postavke izvora"
 msgid "View settings"
 msgstr "Pregled postavki"
 
-#: ../src/e_mod_main.c:212
+#: ../src/e_mod_main.c:214
 msgid ""
 "Drawer Module Configuration data needed upgrading. Your old "
 "configuration<br> has been wiped and a new set of defaults initialized. "
@@ -61,7 +61,7 @@ msgid ""
 "things now to your<br>liking. Sorry for the inconvenience.<br>"
 msgstr ""
 
-#: ../src/e_mod_main.c:232
+#: ../src/e_mod_main.c:234
 msgid ""
 "Your Drawer Module configuration is NEWER than the module version. This is "
 "very<br>strange. This should not happen unless you downgraded<br>the module "
@@ -70,46 +70,46 @@ msgid ""
 "has been now restored to<br>defaults. Sorry for the inconvenience.<br>"
 msgstr ""
 
-#: ../src/e_mod_main.c:478
+#: ../src/e_mod_main.c:480
 msgid "The plugin is not configurable"
 msgstr "Priključak nije moguće konfigurirati"
 
-#: ../src/e_mod_main.c:950 ../src/e_mod_main.c:958 ../src/e_mod_main.c:972
-#: ../src/e_mod_main.c:984 ../src/e_mod_main.c:1052 ../src/e_mod_main.c:1103
-#: ../src/e_mod_main.c:1148
+#: ../src/e_mod_main.c:959 ../src/e_mod_main.c:967 ../src/e_mod_main.c:981
+#: ../src/e_mod_main.c:993 ../src/e_mod_main.c:1061 ../src/e_mod_main.c:1112
+#: ../src/e_mod_main.c:1157
 msgid "Drawer Plugins"
 msgstr "Priključci Ladice"
 
-#: ../src/e_mod_main.c:951
+#: ../src/e_mod_main.c:960
 #, c-format
 msgid "The plugin '%s' was not found."
 msgstr "Priključak \"%s\" nije pronađen."
 
-#: ../src/e_mod_main.c:959
+#: ../src/e_mod_main.c:968
 #, c-format
 msgid "The plugin '%s' could not be opened."
 msgstr "Priključak \"%s\" nije moguće otvoriti."
 
-#: ../src/e_mod_main.c:973 ../src/e_mod_main.c:1053 ../src/e_mod_main.c:1104
-#: ../src/e_mod_main.c:1149
+#: ../src/e_mod_main.c:982 ../src/e_mod_main.c:1062 ../src/e_mod_main.c:1113
+#: ../src/e_mod_main.c:1158
 #, c-format
 msgid "The plugin '%s' does not contain all required functions."
 msgstr "Priključak \"%s\" ne sadrži sve zahtijevane funkcije."
 
-#: ../src/e_mod_main.c:985
+#: ../src/e_mod_main.c:994
 #, c-format
 msgid "The plugin '%s' does not have the required API version."
 msgstr "Priključak \"%s\" nema zahtijevanu API inačicu."
 
-#: ../src/e_mod_main.c:1319
+#: ../src/e_mod_main.c:1328
 msgid "Drawer"
 msgstr "Ladica"
 
-#: ../src/e_mod_main.c:1405
+#: ../src/e_mod_main.c:1414
 msgid "Drawer Configuration Updated"
 msgstr "Konfiguracija Ladice Dopunjena"
 
-#: ../src/e_mod_main.c:1770
+#: ../src/e_mod_main.c:1781
 msgid "Settings"
 msgstr "Postavke"
 
@@ -119,7 +119,7 @@ msgstr "Otvori Sadržajni Direktorij"
 
 #: ../src/plugins/sources/directory_watcher.c:299
 msgid "Directory Watcher settings"
-msgstr ""
+msgstr "Postavke Nadglednika Direktorija"
 
 #: ../src/plugins/sources/directory_watcher.c:358
 msgid "Home"
@@ -132,7 +132,7 @@ msgstr "Direktorij (%s)"
 
 #: ../src/plugins/sources/directory_watcher.c:527
 msgid "Drawer Plugin : Directory Watcher"
-msgstr ""
+msgstr "Priključak Ladice : Nadglednik Direktorija"
 
 #: ../src/plugins/sources/directory_watcher.c:570
 msgid "Watch path"
@@ -140,7 +140,7 @@ msgstr ""
 
 #: ../src/plugins/sources/directory_watcher.c:576
 msgid "Custom file manager"
-msgstr ""
+msgstr "Upravitelj podešenih datoteka"
 
 #: ../src/plugins/sources/directory_watcher.c:582
 msgid "Sort Options"
@@ -160,7 +160,7 @@ msgstr "Svrstaj po vremenu pristupa"
 
 #: ../src/plugins/sources/directory_watcher.c:591
 msgid "Sort by modification time"
-msgstr ""
+msgstr "Svrstaj po vremenu modifikacije"
 
 #: ../src/plugins/sources/directory_watcher.c:593
 msgid "Sort by change time"
@@ -172,7 +172,7 @@ msgstr "Svrstaj po veličini"
 
 #: ../src/plugins/sources/launcher.c:208
 msgid "Launcher settings"
-msgstr ""
+msgstr "Postavke pokretača"
 
 #: ../src/plugins/sources/launcher.c:327
 msgid "Change Item Properties"
@@ -189,7 +189,7 @@ msgstr "%s izvor"
 
 #: ../src/plugins/sources/launcher.c:538
 msgid "Drawer Plugin : Launcher"
-msgstr ""
+msgstr "Priključak Ladice : Pokretač"
 
 #: ../src/plugins/sources/launcher.c:609
 msgid "Selected Bar Source"
@@ -217,15 +217,15 @@ msgstr "Nesvrstano"
 
 #: ../src/plugins/sources/launcher.c:634
 msgid "Sort applications by local rating"
-msgstr ""
+msgstr "Svrstaj aplikacije po lokalnom rangu"
 
 #: ../src/plugins/sources/launcher.c:636
 msgid "Sort applications by overall popularity"
-msgstr ""
+msgstr "Svrstaj aplikacije po općoj popularnosti"
 
 #: ../src/plugins/sources/launcher.c:673
 msgid "Create new Launcher source"
-msgstr ""
+msgstr "Kreiraj izvor novog pokretača"
 
 #: ../src/plugins/sources/launcher.c:674
 msgid "Enter a name for this new source:"
@@ -250,11 +250,11 @@ msgstr "Postavke liste"
 
 #: ../src/plugins/views/list.c:824
 msgid "Drawer Plugin : List"
-msgstr ""
+msgstr "Priključak Ladice : Lista"
 
 #: ../src/plugins/views/list.c:861
 msgid "Item size options"
-msgstr ""
+msgstr "Opcije veličine stavke"
 
 #: ../src/plugins/views/list.c:862
 msgid "Large"

@@ -5,88 +5,81 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment\n"
-"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
-"POT-Creation-Date: 2009-01-09 18:00+0000\n"
-"PO-Revision-Date: 2009-01-18 04:52+0000\n"
-"Last-Translator: DiegoJ <diegojromerolopez@gmail.com>\n"
+"Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
+"POT-Creation-Date: 2009-11-05 16:07+0800\n"
+"PO-Revision-Date: 2009-08-19 03:44+0000\n"
+"Last-Translator: Federico Vera <Unknown>\n"
 "Language-Team: Spanish <es@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"X-Launchpad-Export-Date: 2009-11-12 04:53+0000\n"
+"X-Generator: Launchpad (build Unknown)\n"
 
-#: src/module/e_mod_config.c:104
+#: ../src/e_mod_config.c:104
 msgid "Language Module Settings"
 msgstr "Configuración del módulo de idiomas"
 
-#: src/module/e_mod_config.c:174
-#: src/module/e_mod_config.c:249
+#: ../src/e_mod_config.c:174 ../src/e_mod_config.c:249
 msgid "Available Languages"
-msgstr "Idiomas disponibles"
+msgstr "Idiomas Disponibles"
 
-#: src/module/e_mod_config.c:182
-#: src/module/e_mod_config.c:257
+#: ../src/e_mod_config.c:182 ../src/e_mod_config.c:257
 msgid "Selected Languages"
 msgstr "Idiomas Seleccionados"
 
-#: src/module/e_mod_config.c:198
-#: src/module/e_mod_config.c:273
+#: ../src/e_mod_config.c:198 ../src/e_mod_config.c:273
 msgid "Up"
 msgstr "Arriba"
 
-#: src/module/e_mod_config.c:203
-#: src/module/e_mod_config.c:278
+#: ../src/e_mod_config.c:203 ../src/e_mod_config.c:278
 msgid "Down"
 msgstr "Abajo"
 
-#: src/module/e_mod_config.c:211
-#: src/module/e_mod_config.c:304
+#: ../src/e_mod_config.c:211 ../src/e_mod_config.c:304
 msgid "Language Switch Policy"
 msgstr "Política de cambio de Idioma"
 
-#: src/module/e_mod_config.c:214
-#: src/module/e_mod_config.c:307
+#: ../src/e_mod_config.c:214 ../src/e_mod_config.c:307
 msgid "Global"
 msgstr "Global"
 
-#: src/module/e_mod_config.c:217
-#: src/module/e_mod_config.c:310
+#: ../src/e_mod_config.c:217 ../src/e_mod_config.c:310
 msgid "Window"
 msgstr "Ventana"
 
-#: src/module/e_mod_config.c:220
-#: src/module/e_mod_config.c:313
+#: ../src/e_mod_config.c:220 ../src/e_mod_config.c:313
 msgid "Application"
-msgstr "Programa"
+msgstr "Aplicación"
 
-#: src/module/e_mod_config.c:287
+#: ../src/e_mod_config.c:287
 msgid "Keyboard Model"
 msgstr "Modelo de teclado"
 
-#: src/module/e_mod_config.c:295
+#: ../src/e_mod_config.c:295
 msgid "Layout Variant"
-msgstr "Variante de tipo"
+msgstr "Variante de diseño"
 
-#: src/module/e_mod_keybindings.c:6
-#: src/module/e_mod_main.c:113
+#: ../src/e_mod_keybindings.c:6 ../src/e_mod_main.c:116
 msgid "Language"
 msgstr "Idioma"
 
-#: src/module/e_mod_keybindings.c:7
+#: ../src/e_mod_keybindings.c:7
 msgid "Switch To Next Language"
 msgstr "Cambiar al idioma siguiente"
 
-#: src/module/e_mod_keybindings.c:8
+#: ../src/e_mod_keybindings.c:8
 msgid "Switch To Previous Language"
 msgstr "Cambiar al idioma anterior"
 
-#: src/module/e_mod_main.c:399
+#: ../src/e_mod_main.c:429
 msgid "Configuration"
 msgstr "Configuración"
 
-#: src/module/e_mod_main.c:404
+#: ../src/e_mod_main.c:434
 msgid "Configure Key Bindings"
 msgstr "Configurar asociaciones de teclas"
 
-#: src/module/e_mod_main.c:421
+#: ../src/e_mod_main.c:451
 msgid "Module Configuration"
 msgstr "Configuración de módulos"
