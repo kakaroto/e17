@@ -1396,7 +1396,7 @@ cdef public class Object [object PyEvasObject, type PyEvasObject_Type]:
 
     def on_del_del(self, func):
         "Same as event_callback_del(EVAS_CALLBACK_DEL, ...)"
-        self.event_callback_del(EVAS_CALLBACK_FREE, func)
+        self.event_callback_del(EVAS_CALLBACK_DEL, func)
 
     def on_hold_add(self, func, *a, **k):
         "Same as event_callback_add(EVAS_CALLBACK_HOLD, ...)"
