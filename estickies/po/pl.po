@@ -1,4 +1,4 @@
-# Croatian translation for enlightenment
+# Polish translation for enlightenment
 # Copyright (c) 2009 Rosetta Contributors and Canonical Ltd 2009
 # This file is distributed under the same license as the enlightenment package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, 2009.
@@ -6,11 +6,11 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment\n"
-"Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
+"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2009-12-01 15:38+0800\n"
-"PO-Revision-Date: 2009-12-02 10:17+0000\n"
-"Last-Translator: Miro Glavić <glavicmiro@gmail.com>\n"
-"Language-Team: Croatian <hr@li.org>\n"
+"PO-Revision-Date: 2009-12-02 18:42+0000\n"
+"Last-Translator: Stanley Chmiela <Unknown>\n"
+"Language-Team: Polish <pl@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -23,9 +23,9 @@ msgid ""
 "Elementary's runtime theming support to change the look and feel of the "
 "windows and buttons.<br>"
 msgstr ""
-"E Stickies je aplikacija ljepljivih bilježaka koja koristi Elementary. "
-"Koristi Elementary aktivnu tematsku podršku da promijeni izgled i osjećaj "
-"prozora i dugmadi.<br>"
+"E Stickies to aplikacja używająca Elementary do wyświetlania notek. Używa "
+"wsparcia dla wyglądu bibliotek Elementary, aby móc zmieniać wygląd "
+"przycisków i okien."
 
 #: ../src/bin/about.c:103
 msgid ""
@@ -33,9 +33,9 @@ msgid ""
 "version:</b><br>Hisham '<b>CodeWarrior</b>' Mardam "
 "Bey<br><br><b>Themes:</b><br>Brian 'morlenxus' Miculcy"
 msgstr ""
-"<b>Kod:</b><br>Daniel '<b>quaker</b>' Kolesa<br><b>Stara Etk "
-"vezija:</b><br>Hisham '<b>CodeWarrior</b>' Mardam "
-"Bey<br><br><b>Teme:</b><br>Brian 'morlenxus' Miculcy"
+"<b>Kod:</b><br>Daniel '<b>quaker</b>' Kolesa<br><b>Stara wersja "
+"Etk:</b><br>Hisham '<b>CodeWarrior</b>' Mardam "
+"Bey<br><br><b>Wygląd:</b><br>Brian 'morlenxus' Miculcy"
 
 #: ../src/bin/about.c:130
 msgid ""
@@ -43,10 +43,9 @@ msgid ""
 "application<br><b>control-c:</b> copy selected text<br><b>control-x:</b> cut "
 "selected text<br><b>control-v:</b> paste text from clipboard<br>"
 msgstr ""
-"<b>control-n:</b> kreiraj novu zabilješku<br><b>control-q:</b> napusti "
-"aplikaciju<br><b>control-c:</b> kopiraj odabrani tekst<br><b>control-x:</b> "
-"izreži odabrani tekst<br><b>control-v:</b> zalijepi tekst sa "
-"međuspremnika<br>"
+"<b>Control-n:</b> utwórz nową notkę<br><b>Control-q:</b> zamknij "
+"aplikację<br><b>Control-c:</b> skopiuj zaznaczony tekst<br><b>Control-x:</b> "
+"wytnij zaznaczony tekst<br><b>Control-v:</b> wklej tekst ze schowka<br>"
 
 #: ../src/bin/about.c:145
 msgid "About E Stickies"
@@ -54,44 +53,44 @@ msgstr "O E Stickies"
 
 #: ../src/bin/about.c:151
 msgid "Authors, credits"
-msgstr "Autori, krediti"
+msgstr "Autorzy, zasługi"
 
 #: ../src/bin/about.c:157
 msgid "E Stickies help"
-msgstr "E Stickies pomoć"
+msgstr "Pomoc E Stickies"
 
 #: ../src/bin/about.c:163 ../src/bin/config_gui.c:166
 msgid "Close"
-msgstr "Zatvori"
+msgstr "Zamknij"
 
 #: ../src/bin/conf.c:86 ../src/bin/conf.c:97
 msgid "Cant create config path!"
-msgstr "Nemoguće kreirati config put!"
+msgstr "Nie udało się utworzyć ścieżki z konfiguracją!"
 
 #: ../src/bin/conf.c:192
 msgid "Cant open configuration file! Using program defaults."
 msgstr ""
-"Nemoguće otvoriti konfiguracionu datoteku! Upotreba programskih standarda."
+"Nie udało się otworzyć pliku z konfiguracją. Używane są ustawienia domyślne."
 
 #: ../src/bin/conf.c:200
 msgid "Incompatible configuration file! Creating new one."
-msgstr "Nekompatibilna konfiguraciona datoteka! Kreiranje nove."
+msgstr "Plik z konfiguracją jest niekompatybilny. Stworzono nowy."
 
 #: ../src/bin/conf.c:212
 msgid "Your version / configuration of E-Stickies is not valid!"
-msgstr "Vaša verzija / konfiguracija E Stickies je nevažeća!"
+msgstr "Twoja wersja / konfiguracja E-Stickies jest nieprawidłowa!"
 
 #: ../src/bin/conf.c:250
 msgid "Problem saving config!"
-msgstr "Problem kod spremanja config!"
+msgstr "Wystąpił problem podczas zapisywania konfiguracji!"
 
 #: ../src/bin/conf.c:263
 msgid "Problem saving config/stickies!"
-msgstr "Problem kod spremanja config/stickies!"
+msgstr "Wystąpił problem podczas zapisywania konfiguracji / notek!"
 
 #: ../src/bin/conf.c:267
 msgid "Problem saving config/theme!"
-msgstr "Problem kod spremanja config/teme!"
+msgstr "Wystąpił problem podczas zapisywania konfiguracji / wyglądu!"
 
 #: ../src/bin/plugin.c:26
 msgid ""
@@ -100,10 +99,11 @@ msgid ""
 "Your estickies are compiled without experimental code.\n"
 "If you want to try it, run configure with --enable-experimental."
 msgstr ""
-"Pozvali ste _e_plugin_init().\n"
-"Sustav priključaka je u eksperimentalnoj fazi - još nije završen!\n"
-"Vaši estickies su prikupljani bez eksperimentalnog koda.\n"
-"Ako želite da probate, pokrenite konfiguraciju sa --omogući-eksperimentalno."
+"Wywołałeś funkcję _e_plugin_init().\n"
+"System wtyczek jest eksperymentalny - niedokończony!\n"
+"Twoje E-Stickies zostały skompilowane bez kodu eksperymentalnego.\n"
+"Jeśli chcesz spróbować wtyczek, uruchom program z opcją --enable-"
+"experimental."
 
 #: ../src/bin/plugin.c:47
 msgid ""
@@ -112,10 +112,11 @@ msgid ""
 "Your estickies are compiled without experimental code.\n"
 "If you want to try it, run configure with --enable-experimental."
 msgstr ""
-"Pozvali ste _e_plugin_shutdown().\n"
-"Sustav priključaka je u eksperimentalnoj fazi - još nije završen!\n"
-"Vaši estickies su prikupljani bez eksperimentalnog koda.\n"
-"Ako želite da probate, pokrenite konfiguraciju sa --omogući-eksperimentalno."
+"Wywołałeś funkcję _e_plugin_shutdown().\n"
+"System wtyczek jest eksperymentalny - niedokończony!\n"
+"Twoje E-Stickies zostały skompilowane bez kodu eksperymentalnego.\n"
+"Jeśli chcesz spróbować wtyczek, uruchom program z opcją --enable-"
+"experimental."
 
 #: ../src/bin/plugin.c:70
 msgid ""
@@ -124,10 +125,11 @@ msgid ""
 "Your estickies are compiled without experimental code.\n"
 "If you want to try it, run configure with --enable-experimental."
 msgstr ""
-"Pozvali ste _e_plugin_load().\n"
-"Sustav priključaka je u eksperimentalnoj fazi - još nije završen!\n"
-"Vaši estickies su prikupljani bez eksperimentalnog koda.\n"
-"Ako želite da probate, pokrenite konfiguraciju sa --omogući-eksperimentalno."
+"Wywołałeś funkcję _e_plugin_load().\n"
+"System wtyczek jest eksperymentalny - niedokończony!\n"
+"Twoje E-Stickies zostały skompilowane bez kodu eksperymentalnego.\n"
+"Jeśli chcesz spróbować wtyczek, uruchom program z opcją --enable-"
+"experimental."
 
 #: ../src/bin/plugin.c:91
 msgid ""
@@ -136,10 +138,11 @@ msgid ""
 "Your estickies are compiled without experimental code.\n"
 "If you want to try it, run configure with --enable-experimental."
 msgstr ""
-"Pozvali ste _e_plugin_unload().\n"
-"Sustav priključaka je u eksperimentalnoj fazi - još nije završen!\n"
-"Vaši estickies su prikupljani bez eksperimentalnog koda.\n"
-"Ako želite da probate, pokrenite konfiguraciju sa --omogući-eksperimentalno."
+"Wywołałeś funkcję _e_plugin_unload().\n"
+"System wtyczek jest eksperymentalny - niedokończony!\n"
+"Twoje E-Stickies zostały skompilowane bez kodu eksperymentalnego.\n"
+"Jeśli chcesz spróbować wtyczek, uruchom program z opcją --enable-"
+"experimental."
 
 #: ../src/bin/plugin.c:111
 msgid ""
@@ -148,66 +151,67 @@ msgid ""
 "Your estickies are compiled without experimental code.\n"
 "If you want to try it, run configure with --enable-experimental."
 msgstr ""
-"Pozvali ste _e_plugin_unload_from_ptr().\n"
-"Sustav priključaka je u eksperimentalnoj fazi - još nije završen!\n"
-"Vaši estickies su prikupljani bez eksperimentalnog koda.\n"
-"Ako želite da probate, pokrenite konfiguraciju sa --omogući-eksperimentalno."
+"Wywołałeś funkcję _e_plugin_unload_from_ptr().\n"
+"System wtyczek jest eksperymentalny - niedokończony!\n"
+"Twoje E-Stickies zostały skompilowane bez kodu eksperymentalnego.\n"
+"Jeśli chcesz spróbować wtyczek, uruchom program z opcją --enable-"
+"experimental."
 
 #: ../src/bin/stickies.c:73
 msgid "New"
-msgstr "Novi"
+msgstr "Nowa"
 
 #: ../src/bin/stickies.c:74
 msgid "Save"
-msgstr "Spremi"
+msgstr "Zapisz"
 
 #: ../src/bin/stickies.c:75
 msgid "Export To File"
-msgstr "Izvezi U Datoteku"
+msgstr "Eksport do pliku"
 
 #: ../src/bin/stickies.c:76
 msgid "Delete"
-msgstr "Obriši"
+msgstr "Usuń"
 
 #: ../src/bin/stickies.c:77 ../src/bin/config_gui.c:107
 msgid "Options"
-msgstr "Opcije"
+msgstr "Ustawienia"
 
 #: ../src/bin/stickies.c:78
 msgid "About"
-msgstr "O"
+msgstr "Informacje o"
 
 #: ../src/bin/stickies.c:79
 msgid "Quit"
-msgstr "Napusti"
+msgstr "Zakończ"
 
 #: ../src/bin/stickies.c:125
 msgid "Estickies - Export to .."
-msgstr "Estickies - Izvoz u..."
+msgstr "Estickies - Export do ..."
 
 #: ../src/bin/stickies.c:162
 msgid "All stickies"
-msgstr "Svi stickies"
+msgstr "Wszystkie notatki"
 
 #: ../src/bin/stickies.c:178
 msgid "Confirm Deletion"
-msgstr "Potvrdi Brisanje"
+msgstr "Potwierdź usunięcie"
 
 #: ../src/bin/stickies.c:203
 msgid "Are you sure you want to delete this sticky?"
-msgstr "Jeste li sigurni da hoćete obrisati ovaj stickie?"
+msgstr "Czy jesteś pewny, że chcesz usunąć tą notatkę?"
 
 #: ../src/bin/stickies.c:218
 msgid "No"
-msgstr "Ne"
+msgstr "Nie"
 
 #: ../src/bin/stickies.c:227
 msgid "Yes"
-msgstr "Da"
+msgstr "Tak"
 
 #: ../src/bin/stickies.c:257
 msgid "return!"
-msgstr "vrati!"
+msgstr "powrót!"
 
 #. save only current sticky
 #: ../src/bin/stickies.c:268 ../src/bin/stickies.c:277
@@ -216,37 +220,37 @@ msgid ""
 "Sticky %d\n"
 "=========================\n"
 msgstr ""
-"Sticky %d\n"
+"Notatka %d\n"
 "=========================\n"
 
 #: ../src/bin/stickies.c:577
 msgid "Cant find home directory!"
-msgstr "Nemoguće pronaći glavni direktorij!"
+msgstr "Nie udało się znaleźć folderu domowego!"
 
 #: ../src/bin/config_gui.c:46
 msgid "Estickies - Configuration"
-msgstr "Estickies - Konfiguracija"
+msgstr "Estickies - Ustawienia"
 
 #: ../src/bin/config_gui.c:119
 msgid "Apply to this sticky only"
-msgstr "Primijeni samo na ovaj sticky"
+msgstr "Zastosuj tylko do tej notatki"
 
 #: ../src/bin/config_gui.c:127
 msgid "Apply to all stickies"
-msgstr "Primijeni na sve stickies"
+msgstr "Zastosuj do wszystkich notatek"
 
 #: ../src/bin/config_gui.c:135
 msgid "Make this my default theme"
-msgstr "Napravi ovo mojom zadanom temom"
+msgstr "Ustaw jako domyślny wygląd"
 
 #: ../src/bin/config_gui.c:142
 msgid "Use composite extension"
-msgstr "Upotrijebi kompozitnu ekstenziju"
+msgstr "Użyj wtyczki kompozycji"
 
 #: ../src/bin/config_gui.c:154
 msgid "OK"
-msgstr "U redu"
+msgstr "OK"
 
 #: ../src/bin/config_gui.c:160
 msgid "Apply"
-msgstr "Primijeni"
+msgstr "Zastosuj"
