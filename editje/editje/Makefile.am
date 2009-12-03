@@ -10,6 +10,9 @@ collapselist.py \
 colorpicker.py \
 controller.py \
 desktop.py \
+desktop_handler.py\
+desktop_part_handlers.py\
+desktop_part_listener.py\
 details_group.py \
 details_part.py \
 details.py \
