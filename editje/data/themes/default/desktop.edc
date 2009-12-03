@@ -17,16 +17,6 @@
  * License along with Editje.  If not, see
  * <http://www.gnu.org/licenses/>.
  */
-#define NULL_RECT(name_) \
-         part { name: name_; \
-            mouse_events: 0; \
-            type: RECT; \
-            description { state: "default" 0.0; \
-               visible: 0; \
-               rel1.relative: 0.0 0.0; \
-               rel2.relative: 0.0 0.0; \
-            } \
-         }
 
 ////////////////////////////////////////////////////////////////////////////
 // Desktop
@@ -44,24 +34,23 @@ color_classes {
       color: 0 230 0 128;
    }
 
-
-   color_class {
-      name: "part.rel1.handler";
-      color: 0 0 230 255;
-   }
    color_class {
       name: "part.rel1.highlight";
       color: 0 0 230 50;
    }
 
-
-   color_class {
-      name: "part.rel2.handler";
-      color: 230 0 0 255;
-   }
    color_class {
       name: "part.rel2.highlight";
       color: 230 0 0 50;
+   }
+
+   color_class {
+      name: "part.handler";
+      color: 0 0 0 255;
+   }
+   color_class {
+      name: "part.handler.border";
+      color: 255 255 255 255;
    }
 }
 
@@ -203,27 +192,12 @@ collections {
       parts {
          part { name: "part";
             type: RECT;
-            mouse_events: 0;
+            mouse_events: 1;
             description { state: "default" 0.0;
                color: 0 0 0 0;
             }
          }
          BORDER("part", 3, "part.rel1.highlight")
-      }
-   }
-
-   group { name: "editje/desktop/rel1/handler";
-      min: 5 5;
-      max: 5 5;
-      parts {
-         part { name: "handler";
-            type: RECT;
-            mouse_events: 1;
-            description { state: "default" 0.0;
-               visible: 1;
-               color_class: "part.rel1.handler";
-            }
-         }
       }
    }
 
@@ -240,7 +214,7 @@ collections {
       }
    }
 
-   group { name: "editje/desktop/rel2/handler";
+   group { name: "editje/desktop/part/handler";
       min: 5 5;
       max: 5 5;
       parts {
@@ -249,9 +223,10 @@ collections {
             mouse_events: 1;
             description { state: "default" 0.0;
                visible: 1;
-               color_class: "part.rel2.handler";
+               color_class: "part.handler";
             }
          }
+         BORDER("handler", 1, "part.handler.border")
       }
    }
 }

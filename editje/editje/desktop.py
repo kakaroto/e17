@@ -23,6 +23,9 @@ import edje
 import elementary
 
 from controller import Controller, View
+from desktop_handler import Handler
+from desktop_part_listener import PartListener
+import desktop_part_handlers as part_handlers
 
 
 class Desktop(Controller):
@@ -207,15 +210,35 @@ class EditManager(View, evas.ClippedSmartObject):
                                      group = "editje/desktop/rel2/highlight")
         self.member_push(self.highlight2y)
 
-        # Handlers
-        self.handler1 = PartHandler1(self, self.highlight)
-        self.handler1.part = self.highlight
-        self.member_push(self.handler1)
-        self.handler2 = PartHandler2(self, self.highlight)
-        self.handler2.part = self.highlight
-        self.member_push(self.handler2)
+        self._handlers_init()
 
         self.parent_view.on_resize_add(self._padding_init)
+
+    def _handlers_init(self):
+        #Top Right
+        self.handler_tr = part_handlers.PartHandler_TR(self)
+        self.listener_member_push(self.handler_tr)
+        #Bottom Left
+        self.handler_bl = part_handlers.PartHandler_BL(self)
+        self.listener_member_push(self.handler_bl)
+        # Top
+        self.handler_t = part_handlers.PartHandler_T(self)
+        self.listener_member_push(self.handler_t)
+        # Left
+        self.handler_l = part_handlers.PartHandler_L(self)
+        self.listener_member_push(self.handler_l)
+        # Bottom
+        self.handler_b = part_handlers.PartHandler_B(self)
+        self.listener_member_push(self.handler_b)
+        # Right
+        self.handler_r = part_handlers.PartHandler_R(self)
+        self.listener_member_push(self.handler_r)
+        #Top Left
+        self.handler_tl = part_handlers.PartHandler_TL(self)
+        self.listener_member_push(self.handler_tl)
+        #Bottom Right
+        self.handler_br = part_handlers.PartHandler_BR(self)
+        self.listener_member_push(self.handler_br)
 
     def member_push(self, obj):
         self._objs.append(obj)
@@ -389,57 +412,6 @@ class EditManager(View, evas.ClippedSmartObject):
         dh += self._rel2y[2]
         self.parent_view.part_rel2y_change(self._rel2y[1], dh)
 
-class Handler(edje.Edje):
-    def __init__(self, parent, group):
-        self._parent = parent
-        edje.Edje.__init__(self, parent.evas, file=parent.theme, group=group)
-        self.on_mouse_down_add(self.__mouse_down_cb)
-        self.on_mouse_up_add(self.__mouse_up_cb)
-        self._move_animator = None
-
-    @evas.decorators.del_callback
-    def _on_del(self):
-        if self._move_animator is not None:
-            self._move_animator.delete()
-            self._move_animator = None
-
-    def __mouse_down_cb(self, obj, event):
-        self._parent.parent_view.scroll_hold_push()
-        self._start_region = self._parent.parent_view.region_get()
-        self._start = event.position.output.xy
-        self._last = self._start
-        self._move_animator = ecore.animator_add(self.__move_animator_do)
-        self.down(*event.position.output)
-
-    def __move_animator_do(self):
-        cur = self.evas.pointer_output_xy_get()
-        if cur == self._last:
-            return True
-        self._last = cur
-        x, y = cur
-        sx, sy, sw, sh = self._parent.parent_view.region_get()
-        dw = x - self._start[0]
-        dw += sx - self._start_region[0]
-        dh = y - self._start[1]
-        dh += sy - self._start_region[1]
-        self.move(dw, dh)
-        return True
-
-    def __mouse_up_cb(self, obj, event):
-        sx, sy, sw, sh = self._parent.parent_view.region_get()
-        dw = event.position.output[0] - self._start[0]
-        dw += sx - self._start_region[0]
-        dh = event.position.output[1] - self._start[1]
-        dh += sy - self._start_region[1]
-        self.up(dw, dh)
-
-        self._parent.parent_view.scroll_hold_pop()
-
-        del self._start
-        del self._last
-        self._move_animator.delete()
-        self._move_animator = None
-
 class GroupListener(object):
     def __init__(self):
         self._group = None
@@ -504,32 +476,6 @@ class GroupResizeHandler(Handler, GroupListener):
             self._parent.padding_update()
             del self._size
 
-class PartListener(object):
-    def __init__(self):
-        self._part = None
-
-    def _part_set(self, part):
-        if self._part:
-            self._part.on_move_del(self.part_move)
-            self._part.on_resize_del(self.part_move)
-
-        if part:
-            self._part = part
-            part.on_move_add(self.part_move)
-            part.on_resize_add(self.part_move)
-            part.on_del_add(self._part_del_cb)
-            self.part_move(part)
-            self.show()
-        else:
-            self._part = None
-            self.hide()
-
-    def _part_del_cb(self, obj):
-        self._part = None
-
-    part = property(fset=_part_set)
-
-
 class PartHighlight(PartListener, edje.Edje):
     def __init__(self, parent, group="editje/desktop/highlight"):
         self._parent = parent
@@ -570,52 +516,6 @@ class PartHandler(PartListener, Handler):
     def up(self, w, h):
         if self._part:
             pass
-
-class PartHandler1(Handler, PartListener):
-    def __init__(self, parent, preview):
-        Handler.__init__(self, parent, "editje/desktop/rel1/handler")
-        PartListener.__init__(self)
-        self._preview = preview
-
-    def part_move(self, obj):
-        self.show()
-        self.bottom_right = obj.top_left
-
-    def down(self, x, y):
-        if self._part:
-            self._geometry = self._part.geometry
-
-    def move(self, dw, dh):
-        if self._part:
-            x, y, w, h = self._geometry
-            self._preview.geometry = (x + dw, y + dh, w - dw, h - dh)
-
-    def up(self, dw, dh):
-        if self._part:
-            self._parent.part_move1(dw, dh)
-
-class PartHandler2(Handler, PartListener):
-    def __init__(self, parent, preview):
-        Handler.__init__(self, parent, "editje/desktop/rel2/handler")
-        PartListener.__init__(self)
-        self._preview = preview
-
-    def part_move(self, obj):
-        self.show()
-        self.top_left = obj.bottom_right
-
-    def down(self, x, y):
-        if self._part:
-            self._geometry = self._part.geometry
-
-    def move(self, dw, dh):
-        if self._part:
-            x, y, w, h = self._geometry
-            self._preview.geometry = (x, y, w + dw, h + dh)
-
-    def up(self, dw, dh):
-        if self._part:
-            self._parent.part_move2(dw, dh)
 
 
 class RelativePartListener(PartListener):
