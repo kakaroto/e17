@@ -225,7 +225,7 @@ class FileSelector(elementary.Table):
         self.file = file
 
     def _path_change(self, en):
-        self._update(en)
+        self.path = self._nav_path.entry_get()
 
     # PATH
     def _path_set(self, path):
@@ -235,8 +235,8 @@ class FileSelector(elementary.Table):
         if os.path.isdir(path):
             self._path = path
             self.file = ""
-            print self._path
             self._nav_path.entry_set(self._path)
+            self._update(self)
 
     def _path_get(self):
         return self._path

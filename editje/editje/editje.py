@@ -58,7 +58,7 @@ class Editje(elementary.Window):
 
         elementary.Window.__init__(self, "editje", elementary.ELM_WIN_BASIC)
         self.title_set("Editje - Edje Editor")
-        self.callback_destroy_add(self._destroy_cb)
+        self.autodel_set(True)
         self.resize(800, 600)
 
         # Load Edje Theme File
@@ -80,9 +80,6 @@ class Editje(elementary.Window):
         cmd += "\n"
         sys.stdout.write(cmd)
         sys.stdout.flush()
-
-    def _destroy_cb(self, obj, *args, **kwargs):
-        elementary.exit()
 
     def _load_theme(self, group="main"):
         self.main_layout = elementary.Layout(self)
@@ -177,6 +174,7 @@ class Editje(elementary.Window):
         self.e.event_callback_add("group.changed",
                                   self._toolbar_group_cb)
 
+        self._toolbar_bt_init(self.main_edje, "open.bt", "Open", self._open_cb)
         self._toolbar_bt_init(self.main_edje, "save.bt", "Save", self._save_cb)
 
         self._toolbar_bt_init(self.main_edje, "options.bt", "Options",
@@ -205,6 +203,10 @@ class Editje(elementary.Window):
     def _toolbar_bt_init(self, edje, part, name, callback):
         edje.part_text_set(part + ".label", name)
         edje.signal_callback_add("mouse,clicked,1", part, callback)
+
+    def _open_cb(self, obj, emission, source):
+        from openfile import OpenFile
+        OpenFile().show()
 
     def _save_cb(self, obj, emission, source):
         self.save()
