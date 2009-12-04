@@ -209,6 +209,11 @@ static const elixir_parameter_t*	_edje_object_string_bool_params[4] = {
   &boolean_parameter,
   NULL
 };
+static const elixir_parameter_t*	_edje_object_bool_params[3] = {
+  &_edje_object_parameter,
+  &boolean_parameter,
+  NULL
+};
 
 static const struct {
   const char    *evas_name;
@@ -2269,7 +2274,26 @@ elixir_edje_object_message_handler_set(JSContext *cx, uintN argc, jsval *vp)
    return JS_TRUE;
 }
 
+static JSBool
+elixir_edje_object_preload(JSContext *cx, uintN argc, jsval *vp)
+{
+   Evas_Object *eo;
+   elixir_value_t val[2];
+   Eina_Bool result;
+
+   if (!elixir_params_check(cx, _edje_object_bool_params, val, argc, JS_ARGV(cx, vp)))
+     return JS_FALSE;
+
+   GET_PRIVATE(cx, val[0].v.obj, eo);
+
+   result = edje_object_preload(eo, val[1].v.bol);
+
+   JS_SET_RVAL(cx, vp, BOOLEAN_TO_JSVAL(result));
+   return JS_TRUE;
+}
+
 static JSFunctionSpec   edje_functions[] = {
+  ELIXIR_FN(edje_object_preload, 2, JSPROP_READONLY, 0 ),
   ELIXIR_FN(edje_object_message_handler_set, 3, JSPROP_READONLY, 0 ),
   ELIXIR_FN(edje_object_message_send, 4, JSPROP_ENUMERATE, 0 ),
   ELIXIR_FN(edje_object_signal_callback_add, 5, JSPROP_ENUMERATE, 0 ),
