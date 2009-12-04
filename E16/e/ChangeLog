@@ -5086,3 +5086,71 @@ Remove some obsolete code.
 Fix crash when snapshot or match places window on invalid desk
  (noted by Ted Baltz).
 
+-------------------------------------------------------------------------------
+
+Fri Dec  4 19:29:43 CET 2009
+
+--- 1.0.1.001 ---
+EColor->COLOR32
+Defer cursor realisation.
+Remove useless cursor, imageclass and textclass create, delete, and modify ipc functions.
+ModuleListGet/Free -> MODULE_LIST_GET/FREE.
+eesh - Eliminate Alert function.
+Avoid unnecessary iconbox scrollbar repaint on MotionNotify.
+Tweak setting of iconbox size constraints.
+Split iconbox scrollbar update into layout and paint.
+Fix iconbox sizing when showing/hiding scrollbar.
+Sync from launchpad, updated:Arabic(ar), Dutch(nl), Slovak(sv), Spanish(es)
+Load cursors same way as other theme files.
+edox: Don't show top bar when showing theme info.
+Change ja.po encoding to utf-8 (Yasufumi Haga).
+Use DIALOG_WIDGET_BUTTON as fallback DIALOG_BUTTON in background selector.
+Fix bug causing bogus image cache directory files to be written.
+Enable pango by default.
+Enable showing mini icon in border part (suggested by Don Harrop).
+Fix stacking order when showing desktop state is set off (noted by Grégory Soutadé).
+Add on/off to desk clear command.
+Show dragbars on startup windows also when dragbar is disabled.
+Remove font-*-italic (was only used by Ganymede, now removed).
+Remove unused __FLAG_FIXED..., add __FLAG_TITLE_AND_ICON.
+Fix chosing focus list icon mode (noted by Don Harrop).
+Fix pseudotransparency update of iconbox when switching desk (noted by Don Harrop).
+Don't set source clip region when drawable is pixmap and window is unshaped.
+Add absolute path to e16 in starte16.
+Enable using theme variants.
+Fall back to showing a default icon in borders/focus list.
+Move icons from config/pix to icons.
+Merge autoraise settings into focus settings dialog.
+Simplify handling of dialog configuration data.
+Refactor focus dialog data handling.
+Refactor container dialog data handling.
+Refactor menu dialog data handling. Add menu icon size slider.
+Avoid almost idential translated strings.
+Refactor theme transparency dialog data handling. Remove some options that shouldn't be used.
+DialogDrawItems should not have to be called explicitly.
+Dialog cleanups.
+Redraw menus properly after icon size change.
+Fix various icon display mode issues.
+Refactor desk/area dialog data handling.
+Refactor pager dialog data handling.
+Refactor more dialog data handling.
+Fix memory leak.
+New icons by Don Harrop. Remove old ones.
+Eliminate need for initial EwinMoveToDesktop (fix initial pager background).
+Fix manual placement.
+Fix potential segv when window is destroyed while being raised/lowered.
+Avoid reading uninitialised memory.
+Fix memory leak.
+Fix potential problems when ending move/resize operations.
+Enable transparent image in dialog headers.
+Move reference point for manual placement to inside window.
+Re-enable resizing of shaded windows.
+Look for .desktop files in ~/.local too (patch by José Romildo Malaquias).
+Remove some unneeded sanity checks.
+Fix resize while shaded.
+Fix coords placement for shaded windows when moving in opaque mode.
+Remove obsolete numbered actions.
+Container and pager menus should be destroyed on close.
+Fix unintended overrides of buttons.cfg in ...buttons.
+Add MenuCreateFromBackgrounds, eliminate menus.cfg.
+Fix compile as C++.
