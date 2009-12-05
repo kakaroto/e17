@@ -79,7 +79,7 @@ e_modapi_init(E_Module *m)
    e_configure_registry_category_add("advanced", 80, "Advanced", 
                                      NULL, "preferences-advanced");
    /* add right-side item */
-   e_configure_registry_item_add("advanced/skel", 110, "Skel", 
+   e_configure_registry_item_add("advanced/skel", 110, D_("Skel"), 
                                  NULL, buf, e_int_config_skel_module);
 
    /* Define EET Data Storage for the config file */
