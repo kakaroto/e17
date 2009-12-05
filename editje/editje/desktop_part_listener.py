@@ -17,6 +17,8 @@
 # License along with Editje.  If not, see
 # <http://www.gnu.org/licenses/>.
 
+from edje import Edje
+
 class PartListener(object):
     def __init__(self):
         self._part = None
@@ -41,3 +43,17 @@ class PartListener(object):
     def _part_del_cb(self, obj):
         self._part = None
         self.hide()
+
+class PartHighlight(PartListener, Edje):
+    def __init__(self, parent, group="editje/desktop/highlight"):
+        self._parent = parent
+        Edje.__init__(self, parent.evas, file=parent.theme, group=group)
+        PartListener.__init__(self)
+
+    def part_move(self, obj):
+        if self._part:
+            self.geometry = obj.geometry
+            self.show()
+        else:
+            self.hide()
+

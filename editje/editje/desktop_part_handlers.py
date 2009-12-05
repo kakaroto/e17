@@ -29,6 +29,35 @@ class PartHandler(Handler, PartListener):
         if self._part:
             self._geometry = self._part.geometry
 
+class PartHighlight(PartHandler):
+    def __init__(self, parent):
+        Handler.__init__(self, parent, "editje/desktop/highlight")
+        PartListener.__init__(self)
+
+    def _part_set(self, part):
+        PartListener._part_set(self, part)
+        if self._part:
+            self.signal_emit("animate", "")
+
+    part = property(fset=_part_set)
+
+    def part_move(self, obj):
+        if self._part:
+            self.geometry = obj.geometry
+            self.show()
+        else:
+            self.hide()
+
+    def move(self, dw, dh):
+        if self._part:
+            x, y, w, h = self._geometry
+            self._part.pos = (x + dw, y + dh)
+
+    def up(self, dw, dh):
+        if self._part:
+            self._parent.part_move1(dw, dh)
+            self._parent.part_move2(dw, dh)
+
 
 class PartHandler_T(PartHandler):
     def part_move(self, obj):
