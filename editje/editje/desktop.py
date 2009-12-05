@@ -26,6 +26,7 @@ from controller import Controller, View
 from desktop_handler import Handler
 from desktop_part_listener import PartListener, PartHighlight
 import desktop_part_handlers as part_handlers
+from desktop_parts_manager import PartsManager
 
 
 class Desktop(Controller):
@@ -157,7 +158,7 @@ class DesktopView(View, elementary.Scroller):
             self.manager.rel2y = (to, rel, ofs)
 
     def part_clicked(self, part):
-        self.controller.e.part.name = name
+        self.controller.e.part.name = part
 
     def part_rel1x_change(self, rel, ofs):
         self.controller.e.part.state.rel1x = (self.rel1x_to, rel, ofs)
@@ -207,6 +208,10 @@ class EditManager(View, evas.ClippedSmartObject):
         self.highlight2y = PartHighlight(self,
                                      group = "editje/desktop/rel2/highlight")
         self.member_push(self.highlight2y)
+
+        self.parts_manager = PartsManager(self.evas)
+        self.parts_manager.select = self.parent_view.part_clicked
+        self.member_push(self.parts_manager)
 
         self._handlers_init()
 
@@ -308,6 +313,7 @@ class EditManager(View, evas.ClippedSmartObject):
         group.show()
         for obj in self._group_listeners:
             obj.group = group
+        self.parts_manager.edje = group
 
     def _group_get(self):
         return self._group
