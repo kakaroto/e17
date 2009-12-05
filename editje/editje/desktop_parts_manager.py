@@ -28,7 +28,7 @@ class PartViewport(evas.Rectangle):
         self._part = part
         self._part.on_resize_add(self._resize)
         self._part.on_move_add(self._move)
-        self._part.on_resize_add(self._restack)
+        self._part.on_restack_add(self._restack)
         self._part.on_del_add(self._del)
         self._part.on_show_add(self._show)
         self._part.on_hide_add(self._hide)
@@ -46,9 +46,9 @@ class PartViewport(evas.Rectangle):
         self.pos = part.pos
 
     def _restack(self, part):
-        return
+        above = self._manager.viewports.get(self._part.above)
         if above:
-            self.stack_above(above)
+            self.stack_below(above)
         below = self._manager.viewports.get(self._part.below)
         if below:
             self.stack_above(below)
