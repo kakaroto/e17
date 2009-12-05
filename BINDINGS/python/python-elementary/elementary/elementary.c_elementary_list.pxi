@@ -233,7 +233,6 @@ cdef class List(Object):
         cdef Elm_List_Item *obj
         cdef void *data
         obj = elm_list_selected_item_get(self.obj)
-
         if obj == NULL:
             return None
         data = elm_list_item_data_get(obj)
@@ -242,6 +241,20 @@ cdef class List(Object):
         else:
             (o, callback, it, a, ka) = <object>data
             return it
+
+    def selected_items_get(self):
+        cdef evas.c_evas.Eina_List *lst, *itr
+        cdef void *data
+        ret = []
+        lst = elm_list_selected_items_get(self.obj)
+        itr = lst
+        while itr:
+            data = elm_list_item_data_get(<Elm_List_Item *>itr.data)
+            if data != NULL:
+                (o, callback, it, a, ka) = <object>data
+                ret.append(it)
+            itr = itr.next
+        return ret
 
     def callback_clicked_add(self, func, *args, **kwargs):
         self._callback_add("clicked", func, *args, **kwargs)
