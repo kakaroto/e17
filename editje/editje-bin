@@ -18,6 +18,7 @@
 # License along with Editje.  If not, see
 # <http://www.gnu.org/licenses/>.
 
+import os
 import sys
 
 import elementary
@@ -33,7 +34,7 @@ if __name__ == "__main__":
 
     if len(sys.argv) > 1:
         editje = Editje()
-        editje.file = sys.argv[1]
+        editje.file = os.path.realpath(sys.argv[1])
         if len(sys.argv) > 2:
             editje.group = sys.argv[2]
         else:

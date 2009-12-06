@@ -52,6 +52,10 @@ class OpenFile(elementary.Window):
     def _filter(self, file):
         return file.endswith(".edc") or file.endswith(".edj")
 
+    def _path_set(self, value):
+        self._fs.path = value
+
+    path = property(fset=_path_set)
 
     def _open(self, bt):
         if not self._fs.file:
