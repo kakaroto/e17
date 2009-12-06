@@ -9,7 +9,7 @@ ELMKBDHEADERS = \
               elm_kbd.h
 
 elm_kbd_SOURCES = \
-            $(EXPANDHEADERS) \
+            $(ELMKBDHEADERS) \
             main.c
 
 elm_kbd_LDFLAGS = -export-dynamic
