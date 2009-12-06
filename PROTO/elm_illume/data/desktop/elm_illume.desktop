@@ -7,5 +7,5 @@ Exec=elm_illume
 Icon=elm_illume
 Terminal=false
 Type=Application
-Categories=Application;System;Utility;Core;
+Categories=Application;Utility;
 StartupWMClass=elm_illume
