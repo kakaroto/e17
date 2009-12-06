@@ -23,7 +23,8 @@ from event_manager import Manager
 from editable_part import EditablePart
 from editable_program import EditableProgram
 from editable_animation import EditableAnimation
-
+from os import system, popen, getcwd, remove, path
+from shutil import move
 
 class Editable(Manager, object):
 
@@ -35,6 +36,8 @@ class Editable(Manager, object):
         self._filename = ""
         self._group = ""
         self._edje = None
+        self._edc = False
+        self._edc_path = ""
 
         self._min_max_init()
         self._modification_init()
@@ -54,15 +57,30 @@ class Editable(Manager, object):
     edje = property(_edje_get)
 
     # Filename
+    def realname_get(self):
+        if self._edc:
+            return self._edc_path
+        else:
+            return self._filename
+
     def _filename_get(self):
         return self._filename
 
     def _filename_set(self, value):
-        if value != self._filename:
+        if value == self._filename:
+            return
+        if not value.endswith(".edc"):
             self._filename = value
             self._edje = None
             self._edje_group = None
-            self.event_emit("filename.changed", value)
+            self._edc = False
+        else:
+            self._edc_path = value
+            tmp_file = "/tmp/" + path.basename(value)[:-3] + "edj";
+            system('edje_cc ' + value + ' ' + tmp_file);
+            self._filename = tmp_file
+            self._edc = True
+        self.event_emit("filename.changed", value)
 
     filename = property(_filename_get, _filename_set)
 
@@ -139,6 +157,11 @@ class Editable(Manager, object):
     def save(self):
 #        if self._modificated:
         if self._edje.save():
+            if self._edc == True:
+                edje_decc_options = " -no-build-sh -current-dir"
+                popen('edje_decc ' + self._filename + edje_decc_options)
+                move(getcwd() + "/generated_source.edc", self._edc_path)
+                remove("/tmp/" + path.basename(self._filename))
             self.event_emit("saved")
         else:
             self.event_emit("saved.error")

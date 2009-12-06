@@ -50,7 +50,8 @@ class OpenFile(elementary.Window):
         self._fs.show()
 
     def _filter(self, file):
-        return file.endswith(".edj")
+        return file.endswith(".edc") or file.endswith(".edj")
+
 
     def _open(self, bt):
         if not self._fs.file:
@@ -58,7 +59,7 @@ class OpenFile(elementary.Window):
             return
 
         list = edje.file_collection_list(self._fs.file)
-        if not list:
+        if not list and not self._fs.file.endswith(".edc"):
             self._notify("Invalid file")
             return
 
