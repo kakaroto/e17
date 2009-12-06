@@ -9,11 +9,11 @@ collapsable.py \
 collapselist.py \
 colorpicker.py \
 controller.py \
+desktop_handler.py \
+desktop_part_handlers.py \
+desktop_part_listener.py \
+desktop_parts_manager.py \
 desktop.py \
-desktop_handler.py\
-desktop_part_handlers.py\
-desktop_part_listener.py\
-desktop_parts_manager.py\
 details_group.py \
 details_part.py \
 details.py \
