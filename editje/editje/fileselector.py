@@ -44,6 +44,7 @@ class FileSelector(elementary.Table):
         self._path = ""
         self._file = ""
         self.path = os.getenv("PWD")
+        self.multi = False
 
     def _navigator_init(self):
         bx = elementary.Box(self._parent)
@@ -90,6 +91,7 @@ class FileSelector(elementary.Table):
                                             evas.EVAS_HINT_FILL)
         self._directories.size_hint_weight_set(evas.EVAS_HINT_EXPAND,
                                                evas.EVAS_HINT_EXPAND)
+        self._directories.callback_selected_add(self._folder_change)
         bx.pack_end(self._directories)
         self._directories.show()
 
@@ -131,6 +133,15 @@ class FileSelector(elementary.Table):
                                          evas.EVAS_HINT_EXPAND)
         bx.pack_end(self._files)
         self._files.show()
+
+    def _multi_set(self, value):
+        self._files.multi_select_set(value)
+        self._multi = value
+
+    def _multi_get(self):
+        return self._multi
+
+    multi = property(_multi_get, _multi_set)
 
     def _actions_init(self):
         sp = elementary.Separator(self._parent)
@@ -201,16 +212,13 @@ class FileSelector(elementary.Table):
                     ic = elementary.Icon(self._parent)
                     ic.standard_set("folder")
                     ic.scale_set(0, 0)
-                    self._directories.item_append(file, ic, None,
-                                                  self._folder_change,
-                                                  full)
+                    self._directories.item_append(file, ic, None, None, full)
                 elif os.path.isfile(full):
                     if not filter or self._filter_call(full):
                         ic = elementary.Icon(self._parent)
                         ic.standard_set("file")
                         ic.scale_set(0, 0)
-                        item = self._files.item_append(file, ic, None,
-                                                       self._file_select,
+                        item = self._files.item_append(file, ic, None, None,
                                                        full)
                         if full == self.file:
                             item.selected_set(True)
@@ -218,11 +226,8 @@ class FileSelector(elementary.Table):
         self._files.go()
         self._directories.go()
 
-    def _folder_change(self, li, it, path):
-        self.path = path
-
-    def _file_select(self, li, it, file):
-        self.file = file
+    def _folder_change(self, li, id):
+        self.path = li.selected_item_get().data_get()[0][0]
 
     def _path_change(self, en):
         self.path = self._nav_path.entry_get()
@@ -254,9 +259,20 @@ class FileSelector(elementary.Table):
             self._file = ""
 
     def _file_get(self):
-        return self._file
+        item =self._files.selected_item_get()
+        if item:
+            return item.data_get()[0][0]
+        return ""
 
     file = property(_file_get, _file_set)
+
+    def _files_get(self):
+        ret = []
+        for i in self._files.selected_items_get():
+            ret.append(i.data_get()[0][0])
+        return ret
+
+    files = property(_files_get)
 
     def _filter_set(self, filter):
         if filter and self._filter_call != filter:
@@ -294,6 +310,8 @@ class FileSelector(elementary.Table):
 
 if __name__ == "__main__":
     elementary.init()
+    elementary.policy_set(elementary.ELM_POLICY_QUIT,
+                          elementary.ELM_POLICY_QUIT_LAST_WINDOW_CLOSED)
     win = elementary.Window("fileselector", elementary.ELM_WIN_BASIC)
     win.title_set("FileSelector")
     win.autodel_set(True)
