@@ -33,7 +33,7 @@ elm_main(int argc, char **argv)
    btn = elm_button_add(win);
    elm_button_label_set(btn, "Click to close");
    elm_object_style_set(btn, "anchor");
-   evas_object_smart_callback_add(btn, "clicked", _cb_btn_clicked, win);
+   evas_object_smart_callback_add(btn, "clicked", _cb_btn_clicked, NULL);
    elm_box_pack_end(box, btn);
    evas_object_show(btn);
 
@@ -54,10 +54,7 @@ _cb_win_del(void *data, Evas_Object *obj, void *event)
 static void 
 _cb_btn_clicked(void *data, Evas_Object *obj, void *event) 
 {
-   Evas_Object *win;
-
-   if (!(win = data)) return;
-   evas_object_del(win);
+   elm_exit();
 }
 
 #endif
