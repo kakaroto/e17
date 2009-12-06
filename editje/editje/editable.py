@@ -23,7 +23,7 @@ from event_manager import Manager
 from editable_part import EditablePart
 from editable_program import EditableProgram
 from editable_animation import EditableAnimation
-from os import system, popen, getcwd, remove, path
+from os import system, popen, getcwd, remove, path, chdir
 from shutil import move
 
 class Editable(Manager, object):
@@ -77,7 +77,10 @@ class Editable(Manager, object):
         else:
             self._edc_path = value
             tmp_file = "/tmp/" + path.basename(value)[:-3] + "edj";
+            old_dir = getcwd()
+            chdir(path.dirname(value))
             system('edje_cc ' + value + ' ' + tmp_file);
+            chdir(old_dir)
             self._filename = tmp_file
             self._edc = True
         self.event_emit("filename.changed", value)
