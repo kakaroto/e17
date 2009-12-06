@@ -1,0 +1,11 @@
+
+[Desktop Entry]
+Encoding=UTF-8
+Name=Elm_Illume
+Comment=Elementary Illume
+Exec=elm_illume
+Icon=elm_illume
+Terminal=false
+Type=Application
+Categories=Application;System;Utility;Core;
+StartupWMClass=elm_illume
