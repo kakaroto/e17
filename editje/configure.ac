@@ -20,5 +20,7 @@ data/themes/Makefile
 data/themes/default/Makefile
 data/themes/default/images/Makefile
 data/themes/default/elm_images/Makefile
+data/templates/Makefile
+data/templates/default/Makefile
 test/Makefile
 ])

@@ -447,6 +447,123 @@ collections {
    }
 
 ////////////////////////////////////////////////////////////////////////////
+// New File Popup
+////////////////////////////////////////////////////////////////////////////
+   group {
+      name: "editje/new_file";
+      parts {
+         part {
+            name: "bg";
+            type: RECT;
+            mouse_events: 0;
+            description {
+               state: "default" 0.0;
+               color_class: "popup_bg";
+            }
+         }
+
+         part {
+            name: "header.bg";
+            type: GRADIENT;
+            mouse_events: 0;
+            description {
+               state: "default" 0.0;
+               gradient.spectrum: "bg";
+               rel2 {
+                  relative: 1.0 0.0;
+                  offset: -1 30;
+               }
+            }
+         }
+
+         part {
+            name: "header.title";
+            type: TEXT;
+            mouse_events: 0;
+            description {
+               state: "default" 0.0;
+               align: 0.5 0.5;
+               color_class: "default_label";
+               text {
+                  text: "TITLE";
+                  font: "Sans:style=Bold";
+                  size: 10;
+                  align: 0.5 0.5;
+               }
+               rel1.to: "header.bg";
+               rel2.to: "header.bg";
+            }
+         }
+
+         part {
+            name: "filename.label";
+            type: TEXT;
+            mouse_events: 0;
+            description {
+               state: "default" 0.0;
+               align: 0.0 0.5;
+               /* color: 0 255 0 200; */
+               color_class: "default_label";
+               text {
+                  text: "FILENAME";
+                  font: "Sans:style=Bold";
+                  size: 10;
+                  align: 1.0 0.5;
+               }
+               rel1 {
+                  to: "header.bg";
+                  relative: 0.0 1.0;
+                  offset: 10 10;
+               }
+               rel2 {
+                  to: "header.bg";
+                  relative: 0.0 1.0;
+                  offset: 70 30;
+               }
+            }
+         }
+
+         part {
+            name: "content";
+            type: SWALLOW;
+            description {
+               state: "default" 0.0;
+               /* color: 255 255 0 255; */
+               rel1 {
+                  to: "filename.label";
+                  relative: 1.0 0.0;
+                  offset: 10 0;
+               }
+               rel2 {
+                  to_y: "filename.label";
+                  /* to_x: "header.bg"; */
+                  relative: 1.0 1.0;
+                  offset: -11 -1;
+               }
+            }
+         }
+
+         part {
+            name: "actions";
+            type: SWALLOW;
+            description {
+               state: "default" 0.0;
+               color: 0 255 0 0;
+               rel1 {
+                  to: "filename.label";
+                  relative: 0.0 1.0;
+                  offset: 0 10;
+               }
+               rel2 {
+                  relative: 1.0 1.0;
+                  offset: -1 -1;
+               }
+            }
+         }
+      }
+   }
+
+////////////////////////////////////////////////////////////////////////////
 // Simple floating popup
 ////////////////////////////////////////////////////////////////////////////
    group {
@@ -538,12 +655,9 @@ collections {
          }
          part {
             name: "actions";
-            type: BOX;
+            type: SWALLOW;
             description {
                state: "default" 0.0;
-               box {
-                   layout: "horizontal";
-               }
                rel1 {
                   to: "bg";
                   relative: 0.0 1.0;

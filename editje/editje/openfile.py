@@ -17,15 +17,22 @@
 # License along with Editje.  If not, see
 # <http://www.gnu.org/licenses/>.
 
+import os
+import shutil
 import evas
 import edje
 import elementary
 
 from editje import Editje
 from fileselector import FileSelector
+from popups import NewFilePopUp
+import sysconfig
 
 class OpenFile(elementary.Window):
-    def __init__(self, new=False):
+    def __init__(self, theme="default"):
+
+        self.theme = sysconfig.theme_file_get(theme)
+
         elementary.Window.__init__(self, "openfile",
                                    elementary.ELM_WIN_BASIC)
         self.title_set("Open Edje")
@@ -42,12 +49,24 @@ class OpenFile(elementary.Window):
 
         self._fs = FileSelector(self)
         self._fs.filter = self._filter
-        if new:
-            self._fs.action_add("New", self._new)
+        self._fs.action_add("New", self._new)
         self._fs.action_add("Cancel", self._cancel)
         self._fs.action_add("Ok", self._open)
         self.resize_object_add(self._fs)
         self._fs.show()
+
+        self._load_shade()
+
+    def block(self, bool):
+        if bool:
+            self.shade.show()
+        else:
+            self.shade.hide()
+
+    def _load_shade(self):
+        self.shade = evas.Rectangle(self.evas, color=(0, 0, 0, 200))
+        self.shade.size_hint_weight_set(1.0, 1.0)
+        self.resize_object_add(self.shade)
 
     def _filter(self, file):
         return file.endswith(".edc") or file.endswith(".edj")
@@ -76,8 +95,41 @@ class OpenFile(elementary.Window):
         editje.show()
         self._cancel(bt)
 
+    def _state_popup_place(self, popup):
+        x, y, w, h = self.geometry
+        popup.move(x + 150, y + 140)
+        popup.resize(300, 200)
+
+    def _open_template(self, data):
+        dest_name = self._newfile_pop.entry
+        if dest_name == "":
+            self._notify("Please enter a name for the new file")
+            return
+
+        if not dest_name.endswith(".edj"):
+            dest_name += ".edj"
+        # TODO: multiple template types to choose from in the future
+        t = sysconfig.template_file_get("default")
+        dest = os.path.join(self._fs.path, dest_name)
+        shutil.copyfile(t, dest)
+
+        editje = Editje()
+        editje.file = dest
+        editje.group = "default"
+
+        self._pop_cancel(None)
+        editje.show()
+        self._cancel(None)
+
     def _new(self, bt):
-        return
+        self._newfile_pop = NewFilePopUp(self)
+        self._newfile_pop.action_add("Ok", self._open_template)
+        self._newfile_pop.action_add("Cancel", self._pop_cancel)
+        self._newfile_pop.open()
+
+    def _pop_cancel(self, data):
+        self._newfile_pop.close()
+        self._newfile_pop = None
 
     def _cancel(self, bt):
         self.hide()

@@ -9,9 +9,24 @@ themedirs.append(os.path.join(os.path.dirname(__file__),
 themedirs.append(os.path.expanduser("~/.editje/themes"))
 themedirs.append(SYSTEM_THEMES_DIR)
 
+SYSTEM_TEMPLATES_DIR = '@prefix@/share/editje/data/templates'
+
+templatedirs = []
+templatedirs.append(os.path.join(os.path.dirname(__file__),
+                              "../data/templates/default"))
+templatedirs.append(os.path.expanduser("~/.editje/templates"))
+templatedirs.append(SYSTEM_TEMPLATES_DIR)
+
 def theme_file_get(name):
     for t in themedirs:
         themepath = os.path.join(t, name + ".edj")
         if os.path.exists(themepath):
             return themepath
     return os.path.join(SYSTEM_THEMES_DIR, "default.edj")
+
+def template_file_get(name):
+    for t in templatedirs:
+        templatepath = os.path.join(t, name + ".edj")
+        if os.path.exists(templatepath):
+            return templatepath
+    return os.path.join(SYSTEM_TEMPLATES_DIR, "default.edj")
