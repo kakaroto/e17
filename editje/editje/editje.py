@@ -176,12 +176,10 @@ class Editje(elementary.Window):
 
         self._toolbar_bt_init(self.main_edje, "open.bt", "Open", self._open_cb)
         self._toolbar_bt_init(self.main_edje, "save.bt", "Save", self._save_cb)
+        self._toolbar_bt_init(self.main_edje, "swap.bt", "Swap", self._swap_cb)
 
         self._toolbar_bt_init(self.main_edje, "options.bt", "Options",
                               self._options_cb)
-
-        self.main_edje.signal_callback_add("mouse,clicked,1", "details_group_change",
-                                 self._toolbar_group_change)
 
     def _group_name_changed(self, obj, *args, **kwargs):
         new_name = obj.entry_get().replace("<br>", "")
@@ -193,7 +191,7 @@ class Editje(elementary.Window):
     def _toolbar_group_cb(self, emissor, data):
         self._group_name_entry.entry_set(data)
 
-    def _toolbar_group_change(self, obj, emission, source):
+    def _swap_cb(self, obj, emission, source):
         gc = GroupChange(self)
         self.resize_object_add(gc)
         gc.file = self.e.filename

@@ -28,7 +28,7 @@ class EditableAnimation(Manager, object):
         Manager.__init__(self)
 
         self.e = editable
-        self._name = None
+        self._name = ""
         self.timestops = None
 
         self._states_init()
@@ -58,7 +58,7 @@ class EditableAnimation(Manager, object):
                     self._name = value
                     self.event_emit("animation.changed", self._name)
             else:
-                self._name = None
+                self._name = ""
                 self.event_emit("animation.unselected")
 
     def _name_get(self):
@@ -104,6 +104,8 @@ class EditableAnimation(Manager, object):
         self.event_emit("states.changed", self.timestops)
 
     def state_add(self, time):
+        if not self._name:
+            return
         if time < 0.0:
             return
 
@@ -191,6 +193,8 @@ class EditableAnimation(Manager, object):
         self.event_emit("state.removed", time)
 
     def _state_set(self, time):
+        if not self._name:
+            return
         self._current_idx = self.timestops.index(time)
         self._current = time
         self.program.name = "@%s@%.2f" % (self._name, time)
@@ -209,7 +213,7 @@ class EditableAnimation(Manager, object):
     state = property(_state_get, _state_set)
 
     def state_next(self):
-        if self._name:
+        if not self._name:
             return None
         if self._current_idx == len(self.timestops) - 1:
             return None
@@ -217,11 +221,11 @@ class EditableAnimation(Manager, object):
 
     def state_next_goto(self):
         state = self.state_next()
-        if state:
+        if state is not None:
             self.state = state
 
     def state_prev(self):
-        if self._name:
+        if not self._name:
             return None
         if self._current_idx == 0:
             return None
@@ -229,7 +233,7 @@ class EditableAnimation(Manager, object):
 
     def state_prev_goto(self):
         state = self.state_prev()
-        if state:
+        if state is not None:
             self.state = state
 
     def _state_reload_cb(self, emissor, data):
