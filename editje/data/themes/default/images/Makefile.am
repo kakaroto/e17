@@ -16,6 +16,7 @@ ico_fonts.png \
 ico_images.png \
 ico_new.png \
 ico_next.png \
+ico_open.png \
 ico_opened.png \
 ico_options.png \
 ico_part.png \
@@ -25,6 +26,7 @@ ico_remove.png \
 ico_save.png \
 ico_signal.png \
 ico_stop.png \
+ico_swap.png \
 ico_up.png \
 knob_scrollbar.png \
 new_bg.png \

@@ -35,6 +35,9 @@ class NewPart(Wizard):
         self.action_add("default", "Cancel", self._cancel, icon="cancel")
         self.action_add("default", "Add", self._add, icon="confirm")
         self.goto("default")
+        edje.message_signal_process()
+        self._name_changed = False
+        self._name.callback_changed_add(self._name_changed_cb)
 
     def _name_init(self):
         bx2 = elementary.Box(self)
@@ -65,11 +68,16 @@ class NewPart(Wizard):
         self._name.single_line_set(True)
         self._name.size_hint_weight_set(evas.EVAS_HINT_EXPAND, 0.0)
         self._name.size_hint_align_set(evas.EVAS_HINT_FILL, 0.0)
-        self._name.entry_set("")
+        #self._name.entry_set("")
         self._name.show()
+
+        self._name_changed = False
 
         scr.content_set(self._name)
         scr.show()
+
+    def _name_changed_cb(self, obj):
+        self._name_changed = True
 
     def _types_init(self):
         list = elementary.List(self)
@@ -77,7 +85,7 @@ class NewPart(Wizard):
         list.size_hint_align_set(-1.0, -1.0)
 
         list.item_append("Rectangle", None, None, self._type_select,
-                         edje.EDJE_PART_TYPE_RECTANGLE).selected_set(True)
+                         edje.EDJE_PART_TYPE_RECTANGLE).selected_set(False)
         list.item_append("Text", None, None, self._type_select,
                          edje.EDJE_PART_TYPE_TEXT)
         list.item_append("Image", None, None, self._type_select,
@@ -103,6 +111,10 @@ class NewPart(Wizard):
 
     def _type_select(self, li, it, type):
         self._type = type
+        if not self._name_changed:
+            self._name.entry_set(it.label_get())
+            edje.message_signal_process()
+            self._name_changed = False
 
     def _add(self, popup, data):
         name = self._name.entry_get().replace("<br>", "")

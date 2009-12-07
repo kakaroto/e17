@@ -121,13 +121,22 @@ class EditableAnimation(Manager, object):
         prevname = "@%s@%.2f" % (self._name, prev)
         name = "@%s@%.2f" % (self._name, time)
 
+        # States
+        prevstatename = prevname + " 0.00"
+        statename = name + " 0.00"
+
         # Create
         self.e.program_add(name)
         prog = self.e.program_get(name)
+        prog.state_set(name)
         prog.transition = edje.EDJE_TWEEN_MODE_LINEAR
         prog.transition_time = time - prev
-        for part in self.e.parts:
-            prog.target_add(part)
+        for p in self.e.parts:
+            prog.target_add(p)
+            part = self.e._edje.part_get(p)
+            part.state_add(name)
+            state = part.state_get(statename)
+            state.copy_from(prevstatename)
 
         # Link Prev
         prevprog = self.e.program_get(prevname)
@@ -135,15 +144,6 @@ class EditableAnimation(Manager, object):
         prog.after_add(nextname)
         prevprog.afters_clear()
         prevprog.after_add(name)
-
-        # States
-        prevstatename = prevname + " 0.00"
-        statename = name + " 0.00"
-        for p in self.e.parts:
-            part = self.e._edje.part_get(p)
-            part.state_add(name)
-            state = part.state_get(statename)
-            state.copy_from(prevstatename)
 
         # Link Next
         next = nextname[-4:]
@@ -154,12 +154,11 @@ class EditableAnimation(Manager, object):
 
         # Stop
         stopname = "@%s@stop" % self._name
-        self.program_add(stopname)
-        prog = self.program_get(stopname)
+        self.e.program_add(stopname)
+        prog = self.e.program_get(stopname)
         prog.action = edje.EDJE_ACTION_TYPE_ACTION_STOP
         prog.signal = "animation,stop"
-        prog.source = name
-        prog.target_add(startname)
+        prog.target_add(name)
 
         self.timestops.insert(idx, time)
         self.event_emit("state.added", time)
