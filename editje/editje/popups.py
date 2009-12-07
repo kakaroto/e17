@@ -22,8 +22,7 @@ import edje
 import evas
 import ecore
 from elementary import InnerWindow, Layout, List, Entry, Scroller, \
-                       Fileselector, Button, Box, ELM_SCROLLER_POLICY_OFF, \
-                       ELM_SCROLLER_POLICY_OFF
+                       Fileselector, Button, Box, ELM_SCROLLER_POLICY_OFF
 
 import sysconfig
 from controller import Controller, View

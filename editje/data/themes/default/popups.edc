@@ -502,7 +502,6 @@ collections {
             description {
                state: "default" 0.0;
                align: 0.0 0.5;
-               /* color: 0 255 0 200; */
                color_class: "default_label";
                text {
                   text: "FILENAME";
@@ -528,7 +527,6 @@ collections {
             type: SWALLOW;
             description {
                state: "default" 0.0;
-               /* color: 255 255 0 255; */
                rel1 {
                   to: "filename.label";
                   relative: 1.0 0.0;
@@ -536,7 +534,6 @@ collections {
                }
                rel2 {
                   to_y: "filename.label";
-                  /* to_x: "header.bg"; */
                   relative: 1.0 1.0;
                   offset: -11 -1;
                }
@@ -655,9 +652,12 @@ collections {
          }
          part {
             name: "actions";
-            type: SWALLOW;
+            type: BOX;
             description {
                state: "default" 0.0;
+               box {
+                  layout: "horizontal";
+               }
                rel1 {
                   to: "bg";
                   relative: 0.0 1.0;
