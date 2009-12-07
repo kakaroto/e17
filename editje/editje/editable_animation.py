@@ -246,6 +246,8 @@ class EditableAnimation(Manager, object):
 
     # Info
     def _length_get(self):
-        return self.timestops[-1]
+        if self.timestops:
+            return self.timestops[-1]
+        return 0.0
 
     length = property(_length_get)
