@@ -395,6 +395,23 @@ class EditManager(View, evas.ClippedSmartObject):
         self.parent_view.region_show((w - scr_w) / 2, (h - scr_h) / 2,
                                      scr_w, scr_h)
 
+    def padding_update_grow(self):
+        w, h = self._group.size
+        w *= 3
+        h *= 3
+        scr_x, scr_y, scr_w, scr_h = self.parent_view.region_get()
+        if w < scr_w:
+            w = scr_w
+        if h < scr_h:
+            h = scr_h
+
+        w0, h0 = self.size_hint_min_get()
+        if w0 > w:
+            w = w0
+        if h0 > h:
+            h = h0
+        self.size_hint_min_set(w, h)
+
     def padding_update(self):
         w, h = self._group.size
         w *= 3
@@ -476,7 +493,7 @@ class GroupResizeHandler(Handler, GroupListener):
     def move(self, w, h):
         if self._group:
             self._parent.group_resize(self._size[0] + w, self._size[1] + h)
-            self._parent.padding_update()
+            self._parent.padding_update_grow()
 
     def up(self, w, h):
         if self._group:
