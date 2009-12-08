@@ -143,6 +143,13 @@ class NewPart(Wizard):
         part = self._parent.e._edje.part_get(name)
         statename = part.state_selected_get()
         state = part.state_get(statename)
+
+        w, h = self._parent.e._edje.size
+        state.rel1_relative_set(0.0, 0.0)
+        state.rel1_offset_set(w / 4, h / 4)
+        state.rel2_relative_set(0.0, 0.0)
+        state.rel2_offset_set(w * 3 / 4, h * 3 / 4)
+
         if type == edje.EDJE_PART_TYPE_RECTANGLE:
             self._part_init_rectangle(part, state)
         elif type == edje.EDJE_PART_TYPE_TEXT:
@@ -155,8 +162,6 @@ class NewPart(Wizard):
         part.mouse_events = False
 
         state.color_set(0, 255, 0, 128)
-        state.rel1_relative_set(0.3, 0.3)
-        state.rel2_relative_set(0.7, 0.7)
 
     def _part_init_text(self, part, state):
         part.mouse_events = False
@@ -165,8 +170,6 @@ class NewPart(Wizard):
         state.text_set("YOUR TEXT HERE")
         state.font_set("Sans")
         state.text_size_set(16)
-        state.rel1_relative_set(0.3, 0.3)
-        state.rel2_relative_set(0.7, 0.7)
 
     def _part_init_external(self, name, state):
         pass
