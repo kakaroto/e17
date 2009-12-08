@@ -17,7 +17,7 @@ void eyelight_edit_area_image_add(Eyelight_Viewer *pres, Eyelight_Edit *edit, co
     Eyelight_Node *node_value = eyelight_node_new(EYELIGHT_NODE_TYPE_VALUE, EYELIGHT_NAME_NAME, node_image);
     node_value->value = strdup(image);
 
-    eyelight_object_item_image_add(pres,edit->slide, node, area_name, image, 0, 0);
+    eyelight_object_item_image_add(pres,edit->slide, node, area_name, image, 0, 0, 0, 0, 1);
 }
 
 void eyelight_edit_image_properties_get(Eyelight_Edit *edit, char **file, int *border, int *shadow)

@@ -366,7 +366,7 @@ Evas_Object *eyelight_object_item_text_add(Eyelight_Viewer *pres, Eyelight_Slide
 }
 
 
-Evas_Object *eyelight_object_item_image_add(Eyelight_Viewer *pres, Eyelight_Slide *slide, Eyelight_Node *node, const char *area, const char *image, int border, int shadow)
+Evas_Object *eyelight_object_item_image_add(Eyelight_Viewer *pres, Eyelight_Slide *slide, Eyelight_Node *node, const char *area, const char *image, int border, int shadow, double aspect_x, double aspect_y, int keep_aspect)
 {
     char buf[EYELIGHT_BUFLEN];
 
@@ -379,7 +379,6 @@ Evas_Object *eyelight_object_item_image_add(Eyelight_Viewer *pres, Eyelight_Slid
     const Evas_Object *part_image = edje_object_part_object_get(o_image, "object.image");
     char *image_path = eyelight_compile_image_path_new(pres,image);
     evas_object_image_file_set((Evas_Object*)part_image, image_path, NULL);
-    EYELIGHT_FREE(image_path);
     evas_object_size_hint_align_set(o_image, -1, -1);
     evas_object_size_hint_weight_set(o_image, -1, -1);
     edje_object_scale_set(o_image, pres->current_scale);
@@ -391,6 +390,25 @@ Evas_Object *eyelight_object_item_image_add(Eyelight_Viewer *pres, Eyelight_Slid
         edje_object_signal_emit(o_image, "border,show","eyelight");
     if(shadow)
         edje_object_signal_emit(o_image, "shadow,show","eyelight");
+
+    
+    if(keep_aspect)
+    {
+        Evas_Coord w, h;
+        Evas_Object *o = evas_object_image_add(evas_object_evas_get(o_area));
+        evas_object_image_file_set(o, image_path, NULL);
+        evas_object_image_size_get(o, &w, &h);
+        evas_object_del(o);
+        aspect_x = w/(float)h;
+        aspect_y = 1;
+    }
+
+    Edje_Message_Float_Set *msg = alloca(sizeof(Edje_Message_Float_Set) + (1 * sizeof(float)));
+    msg->count = 2;
+    msg->val[0] = aspect_x;
+    msg->val[1] = aspect_y;
+    edje_object_message_send(o_image,EDJE_MESSAGE_FLOAT_SET , 0, msg);
+
     if(pres->edit_mode)
     {
         node->obj = o_image;
@@ -410,6 +428,7 @@ Evas_Object *eyelight_object_item_image_add(Eyelight_Viewer *pres, Eyelight_Slid
             slide->items_all,
             o_image);
 
+    EYELIGHT_FREE(image_path);
     return o_image;
 }
 

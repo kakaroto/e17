@@ -22,7 +22,10 @@ slide
     area
     {
         name: "top";
-        image: "logo.png";
+        image
+        {
+            image: "logo.png";
+        }
     }
     area
     {
@@ -71,21 +74,18 @@ slide
         {
             image: "images/screen_slide_title.png";
             border: 1;
-            relative: 0.3 1.0;
             shadow: 1;
         }
         image
         {
             image: "images/screen_expose.png";
             border: 1;
-            relative: 0.3 1.0;
             shadow: 1;
         }
         image
         {
             image: "images/screen_slideshow.png";
             border: 1;
-            relative: 0.3 1.0;
             shadow: 1;
         }
     }
@@ -127,6 +127,8 @@ slide
         {
             image: "diagram.png";
             border: 0;
+            //aspect: 3 1; //equivalent : keep_aspect: 1;
+            keep_aspect: 1;
         }
     }
 }

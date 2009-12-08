@@ -301,33 +301,45 @@ void eyelight_compile_block_item(Eyelight_Viewer *pres, Eyelight_Slide *slide, E
  */
 void eyelight_compile_block_image(Eyelight_Viewer *pres, Eyelight_Slide *slide, Eyelight_Node *node_image, const char *area)
 {
-    Eyelight_Node *node_image_file,*node_size, *node_scale, *node_border, *node_relative, *node_shadow;
+    Eyelight_Node *node_image_file, *node_border, *node_shadow, *node_aspect, *node_keep_aspect;
     int border =  0;
     int shadow = 0;
+    double ax = 0;
+    double ay = 0;
+    double keep_aspect = 1;
 
     node_image_file = eyelight_retrieve_node_prop(node_image,
             EYELIGHT_NAME_IMAGE);
-    node_size = eyelight_retrieve_node_prop(node_image,
-            EYELIGHT_NAME_SIZE);
-    node_scale = eyelight_retrieve_node_prop(node_image,
-            EYELIGHT_NAME_SCALE);
     node_border = eyelight_retrieve_node_prop(node_image,
             EYELIGHT_NAME_BORDER);
-    node_relative = eyelight_retrieve_node_prop(node_image,
-            EYELIGHT_NAME_RELATIVE);
     node_shadow = eyelight_retrieve_node_prop(node_image,
             EYELIGHT_NAME_SHADOW);
+    node_aspect = eyelight_retrieve_node_prop(node_image,
+            EYELIGHT_NAME_ASPECT);
+    node_keep_aspect = eyelight_retrieve_node_prop(node_image,
+            EYELIGHT_NAME_KEEP_ASPECT);
+
 
     if(node_border)
         border = atoi(eyelight_retrieve_value_of_prop(node_border,0));
 
     if(node_shadow)
         shadow = atoi(eyelight_retrieve_value_of_prop(node_shadow,0));
+    
+    if(node_keep_aspect)
+        keep_aspect = atoi(eyelight_retrieve_value_of_prop(node_keep_aspect,0));
+
+    if(node_aspect)
+      {
+	ax = atof(eyelight_retrieve_value_of_prop(node_aspect,0));
+	ay = atof(eyelight_retrieve_value_of_prop(node_aspect,1));
+	keep_aspect = 0;
+      }
 
 
     eyelight_object_item_image_add(pres,slide,node_image, area,
             eyelight_retrieve_value_of_prop(node_image_file,0),
-            border,shadow);
+            border,shadow, ax, ay, keep_aspect);
 }
 
 /*
@@ -586,7 +598,7 @@ void eyelight_compile_block_area(Eyelight_Viewer *pres, Eyelight_Slide *slide, E
                         break;
                     case EYELIGHT_NAME_IMAGE:
                         eyelight_object_item_image_add(pres,slide, node, area,
-                                eyelight_retrieve_value_of_prop(node,0), 0,0);
+                                eyelight_retrieve_value_of_prop(node,0), 0,0,0,0,1);
                         break;
                     case EYELIGHT_NAME_VIDEO:
                         eyelight_object_item_video_add(pres,slide, node, area,

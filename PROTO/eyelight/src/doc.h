@@ -262,6 +262,8 @@
  *          image: "images/image_2.png";
  *          shadow: 1;
  *          border: 1;
+ *          aspect: 3 1;
+ *          keep_aspect: 1;
  *      }
  * }
  * @endcode
@@ -271,6 +273,8 @@
  * <tr><td> image: "file.jpg"; </td><td> The image file. </td></tr>
  * <tr><td> shadow: 1|0 </td><td> 1 to display a shadow. The default value is 0. </td></tr>
  * <tr><td> border: 1|0 </td><td> 1 to display a border. The default value is 0. </td></tr>
+ * <tr><td> aspect: float:x float:y) </td><td> Same as Edje, When the with of the image is increase of x pixels, the height is increase of y pixels. Defaults values are 0 0. If this attribute is specified, the attribute keep_aspect is deactivated. </td></tr>
+ * <tr><td> keep_aspect: 1|0 </td><td> If 1, calculate the correct aspects values to keep the original aspect of the image. The default value is 1. </td></tr>
  * </table>
  *
  *
