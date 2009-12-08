@@ -37,6 +37,8 @@ class Desktop(Controller):
         self.e.event_callback_add("group.changed", self._group_load)
         self.e.event_callback_add("group.min.changed", self._group_min_load)
         self.e.event_callback_add("group.max.changed", self._group_max_load)
+        self.e.event_callback_add("part.added",
+                                  self._part_added)
         self.e.part.event_callback_add("part.changed",
                                        self._part_load)
         self.e.part.event_callback_add("part.unselected",
@@ -67,6 +69,9 @@ class Desktop(Controller):
             self._view.part = self.e.part
         else:
             self._view.part = None
+
+    def _part_added(self, emissor, data):
+        self._view.manager.parts_manager.part_load(data)
 
     def _rel1x_load(self, emissor, data):
         self._view.part_rel1x_set(data)

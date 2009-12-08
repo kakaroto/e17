@@ -53,6 +53,9 @@ class PartViewport(evas.Rectangle):
         if below:
             self.stack_above(below)
 
+    def stack_update(self):
+        self._resize(self)
+
     def delete(self):
         self._part.on_resize_add(self._resize)
         self._part.on_move_add(self._move)
@@ -135,6 +138,16 @@ class PartsManager(evas.ClippedSmartObject):
             part_obj = self._edje.part_object_get(part)
             self.parts[part] = part_obj
             viewport = PartViewport(self._canvas, self, part_obj)
+            self.viewports[part_obj] = viewport
+            self.parts_name[viewport] = part
+            self.member_add(viewport)
+
+    def part_load(self, part):
+        if not self.parts.get(part):
+            part_obj = self._edje.part_object_get(part)
+            self.parts[part] = part_obj
+            viewport = PartViewport(self._canvas, self, part_obj)
+            viewport.stack_update()
             self.viewports[part_obj] = viewport
             self.parts_name[viewport] = part
             self.member_add(viewport)
