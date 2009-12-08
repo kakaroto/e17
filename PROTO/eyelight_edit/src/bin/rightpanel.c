@@ -7,7 +7,7 @@ static Evas_Object *_area, *_empty, *_image;
 static Evas_Object *_bt_area_new, *_bt_areas_init;
 
 static Evas_Object *_area_layout;
-static Evas_Object *_image_file_entry, *_image_check_border, *_image_check_shadow;
+static Evas_Object *_image_file_entry, *_image_check_border, *_image_check_shadow, *_image_check_keep_aspect;
 
 Evas_Object *rightpanel_create()
 {
@@ -202,6 +202,16 @@ Evas_Object *rightpanel_create()
     evas_object_smart_callback_add(ck, "changed", utils_edit_image_shadow_change, NULL);
     elm_table_pack(tb, ck, 1, 4, 1, 1);
 
+    lbl = elm_label_add(win);
+    elm_label_label_set(lbl, D_("Keep aspect : "));
+    evas_object_show(lbl);
+    elm_table_pack(tb, lbl, 0, 5, 1, 1);
+    ck = elm_check_add(win);
+    _image_check_keep_aspect = ck;
+    evas_object_show(ck);
+    evas_object_smart_callback_add(ck, "changed", utils_edit_image_keep_aspect_change, NULL);
+    elm_table_pack(tb, ck, 1, 5, 1, 1);
+
 
 
     bx2 = elm_box_add(win);
@@ -252,7 +262,7 @@ void rightpanel_area_layout_set(const char *layout)
     elm_hoversel_label_set(_area_layout, layout);
 }
 
-void rightpanel_image_data_set(const char* file, int border, int shadow)
+void rightpanel_image_data_set(const char* file, int border, int shadow, int keep_aspect)
 {
     if(file)
         elm_entry_entry_set(_image_file_entry, file);
@@ -260,5 +270,7 @@ void rightpanel_image_data_set(const char* file, int border, int shadow)
         elm_check_state_set(_image_check_border, border);
     if(shadow > -1)
         elm_check_state_set(_image_check_shadow, shadow);
+    if(keep_aspect > -1)
+        elm_check_state_set(_image_check_keep_aspect, keep_aspect);
 }
 

@@ -89,8 +89,8 @@ EAPI const char* eyelight_edit_area_layout_get(Eyelight_Edit *edit);
 EAPI void eyelight_edit_area_layout_set(Eyelight_Edit *edit, const char *layout);
 
 EAPI void eyelight_edit_area_image_add(Eyelight_Viewer *pres, Eyelight_Edit *edit, const char* image);
-EAPI void eyelight_edit_image_properties_get(Eyelight_Edit *edit, char **file, int *border, int *shadow);
-EAPI void eyelight_edit_image_properties_set(Eyelight_Viewer *pres, Eyelight_Edit *edit, char *file, int border, int shadow);
+EAPI void eyelight_edit_image_properties_get(Eyelight_Edit *edit, char **file, int *border, int *shadow, int *keep_aspect);
+EAPI void eyelight_edit_image_properties_set(Eyelight_Viewer *pres, Eyelight_Edit *edit, char *file, int border, int shadow, int keep_aspect);
 
 #endif   /* ----- #ifndef EYELIGHT_EDIT_INC  ----- */
 

@@ -1,21 +1,3 @@
-/*
- * =====================================================================================
- *
- *       Filename:  main.h
- *
- *    Description:
- *
- *        Version:  1.0
- *        Created:  06/29/2009 02:12:03 PM EDT
- *       Revision:  none
- *       Compiler:  gcc
- *
- *         Author:  (Watchwolf), Atton Jonathan <watchwolf@watchwolf.fr>
- *        Company:
- *
- * =====================================================================================
- */
-
 #ifndef  MAIN_INC
 #define  MAIN_INC
 
@@ -102,6 +84,7 @@ void utils_edit_area_defaults_init(void *data, Evas_Object *obj, void *event_inf
 void utils_edit_image_file_change(void *data, Evas_Object *obj, void *event_info);
 void utils_edit_image_border_change(void *data, Evas_Object *obj, void *event_info);
 void utils_edit_image_shadow_change(void *data, Evas_Object *obj, void *event_info);
+void utils_edit_image_keep_aspect_change(void *data, Evas_Object *obj, void *event_info);
 char *utils_file_move_in_pres(const char *file);
 void utils_edit_object_down(void *data, Evas_Object *obj, void *event_info);
 void utils_edit_object_up(void *data, Evas_Object *obj, void *event_info);
@@ -127,7 +110,7 @@ Evas_Object *rightpanel_create();
 void rightpanel_area_show();
 void rightpanel_empty_show();
 void rightpanel_image_show();
-void rightpanel_image_data_set(const char* file, int border, int shadow);
+void rightpanel_image_data_set(const char* file, int border, int shadow, int keep_aspect);
 void rightpanel_area_layout_set(const char *layout);
 void rightpanel_noslide_disabled_set(Eina_Bool disabled);
 

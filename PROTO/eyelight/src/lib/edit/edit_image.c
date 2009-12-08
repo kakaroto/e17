@@ -20,7 +20,7 @@ void eyelight_edit_area_image_add(Eyelight_Viewer *pres, Eyelight_Edit *edit, co
     eyelight_object_item_image_add(pres,edit->slide, node, area_name, image, 0, 0, 0, 0, 1);
 }
 
-void eyelight_edit_image_properties_get(Eyelight_Edit *edit, char **file, int *border, int *shadow)
+void eyelight_edit_image_properties_get(Eyelight_Edit *edit, char **file, int *border, int *shadow, int *keep_aspect)
 {
     Eyelight_Node *node;
     EYELIGHT_ASSERT_RETURN_VOID(edit != NULL);
@@ -55,7 +55,6 @@ void eyelight_edit_image_properties_get(Eyelight_Edit *edit, char **file, int *b
             *border = 0;
     }
 
-
     if(shadow)
     {
         node = eyelight_retrieve_node_prop(edit->node, EYELIGHT_NAME_SHADOW);
@@ -67,9 +66,22 @@ void eyelight_edit_image_properties_get(Eyelight_Edit *edit, char **file, int *b
         else
             *shadow = 0;
     }
+
+    if(keep_aspect)
+    {
+        node = eyelight_retrieve_node_prop(edit->node, EYELIGHT_NAME_KEEP_ASPECT);
+        if(node)
+        {
+            char *s = eyelight_retrieve_value_of_prop(node, 0);
+            *keep_aspect = atof(s);
+        }
+        else
+            *keep_aspect = 1;
+    }
+
 }
 
-void eyelight_edit_image_properties_set(Eyelight_Viewer *pres, Eyelight_Edit *edit, char *file, int border, int shadow)
+void eyelight_edit_image_properties_set(Eyelight_Viewer *pres, Eyelight_Edit *edit, char *file, int border, int shadow, int keep_aspect)
 {
     Eyelight_Node *node;
     char buf[EYELIGHT_BUFLEN];
@@ -158,6 +170,49 @@ void eyelight_edit_image_properties_set(Eyelight_Viewer *pres, Eyelight_Edit *ed
         else
             edje_object_signal_emit(edit->obj, "shadow,hide","eyelight");
     }
+
+    if(keep_aspect > -1)
+    {
+        double aspect_x = 0;
+        double aspect_y = 0;
+        snprintf(buf, EYELIGHT_BUFLEN, "%d", keep_aspect);
+        node = eyelight_retrieve_node_prop(edit->node, EYELIGHT_NAME_KEEP_ASPECT);
+        if(node)
+        {
+            node = eina_list_nth(node->l, 0);
+            EYELIGHT_FREE(node->value);
+            node->value = strdup(buf);
+        }
+        else
+        {
+            node = eyelight_node_new(EYELIGHT_NODE_TYPE_PROP, EYELIGHT_NAME_KEEP_ASPECT, edit->node);
+            node = eyelight_node_new(EYELIGHT_NODE_TYPE_VALUE, EYELIGHT_NAME_NONE, node);
+            node->value = strdup(buf);
+        }
+
+        if(keep_aspect)
+        {
+            Eyelight_Node *node_name = eyelight_retrieve_node_prop(edit->node, EYELIGHT_NAME_IMAGE);
+            const char *file = eyelight_retrieve_value_of_prop(node_name, 0);
+
+            Evas_Coord w, h;
+            Evas_Object *o = evas_object_image_add(evas_object_evas_get(edit->obj));
+            char *image_path = eyelight_compile_image_path_new(pres,file);
+            evas_object_image_file_set(o, image_path, NULL);
+            evas_object_image_size_get(o, &w, &h);
+            evas_object_del(o);
+            aspect_x = w/(float)h;
+            aspect_y = 1;
+            EYELIGHT_FREE(image_path);
+        }
+
+        Edje_Message_Float_Set *msg = alloca(sizeof(Edje_Message_Float_Set) + (1 * sizeof(float)));
+        msg->count = 2;
+        msg->val[0] = aspect_x;
+        msg->val[1] = aspect_y;
+        edje_object_message_send(edit->obj,EDJE_MESSAGE_FLOAT_SET , 0, msg);
+    }
+
 }
 
 

@@ -291,10 +291,10 @@ void utils_edit_cb(void *data, Evas_Object *o, const char *emission, const char 
             if(strcmp(emission, "select") == 0)
             {
                 char *file;
-                int shadow, border;
+                int shadow, border, keep_aspect;
                 rightpanel_image_show();
-                eyelight_edit_image_properties_get(edit, &file, &border, &shadow);
-                rightpanel_image_data_set(file, border, shadow);
+                eyelight_edit_image_properties_get(edit, &file, &border, &shadow, &keep_aspect);
+                rightpanel_image_data_set(file, border, shadow, keep_aspect);
             }
             break;
         default: printf("DEFAULT %p %d\n", _current_obj, eyelight_edit_name_get(_current_obj));
@@ -516,7 +516,7 @@ static void _utils_edit_image_file_change_cb(void *data, Evas_Object *obj, void 
     {
         char *file = utils_file_move_in_pres(selected);
 
-        eyelight_edit_image_properties_set(eyelight_object_pres_get(pres),_current_obj, file, -1, -1);
+        eyelight_edit_image_properties_set(eyelight_object_pres_get(pres),_current_obj, file, -1, -1, -1);
         free(file);
     }
 
@@ -529,7 +529,7 @@ void utils_edit_image_border_change(void *data, Evas_Object *obj, void *event_in
         return ;
 
     int v = elm_check_state_get(obj);
-    eyelight_edit_image_properties_set(eyelight_object_pres_get(pres), _current_obj, NULL, v, -1);
+    eyelight_edit_image_properties_set(eyelight_object_pres_get(pres), _current_obj, NULL, v, -1, -1);
 }
 
 void utils_edit_image_shadow_change(void *data, Evas_Object *obj, void *event_info)
@@ -538,7 +538,16 @@ void utils_edit_image_shadow_change(void *data, Evas_Object *obj, void *event_in
         return ;
 
     int v = elm_check_state_get(obj);
-    eyelight_edit_image_properties_set(eyelight_object_pres_get(pres), _current_obj, NULL, -1, v);
+    eyelight_edit_image_properties_set(eyelight_object_pres_get(pres), _current_obj, NULL, -1, v, -1);
+}
+
+void utils_edit_image_keep_aspect_change(void *data, Evas_Object *obj, void *event_info)
+{
+    if(eyelight_edit_name_get(_current_obj) != EYELIGHT_NAME_IMAGE)
+        return ;
+
+    int v = elm_check_state_get(obj);
+    eyelight_edit_image_properties_set(eyelight_object_pres_get(pres), _current_obj, NULL, -1, -1, v);
 }
 
 char *utils_file_move_in_pres(const char *file)
