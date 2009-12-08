@@ -87,6 +87,7 @@ class AnimationsListView(CListView):
         self._options_edje.signal_callback_add("remove",
                                 "editje/collapsable/list/options",
                                 self._remove_cb)
+        self._options_edje.signal_emit("remove,disable", "")
         self.content_set("options", self._options_edje)
         self._options = False
 
@@ -95,3 +96,11 @@ class AnimationsListView(CListView):
 
     def _remove_cb(self, obj, emission, source):
         self.controller.remove()
+
+    def select(self, name):
+        CListView.select(self, name)
+        self._options_edje.signal_emit("remove,enable", "")
+
+    def unselect(self, name):
+        CListView.select(self, name)
+        self._options_edje.signal_emit("remove,disable", "")

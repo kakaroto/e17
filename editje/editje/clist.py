@@ -54,7 +54,7 @@ class CList(Collapsable):
 
     def _item_select_cb(self, list, it, item, *args, **kwargs):
         if self._selected != item:
-            self._selected = item
+            self._view.select(item)
             self.event_emit("item.selected", item)
 
 

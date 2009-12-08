@@ -260,12 +260,44 @@ collections {
                rel1.relative: x1_ 0.1; \
                rel2.relative: x2_ 0.9; \
             } \
+            description { state: "over" 0.0; \
+               inherit: "default" 0.0; \
+               color: 0 0 0 50; \
+            } \
+            description { state: "disabled" 0.0; \
+               inherit: "default" 0.0; \
+					visible: 0; \
+            } \
          } \
          programs { \
             program { name: name_".action"; \
                signal: "mouse,clicked,1"; \
                source: name_".bt"; \
                action: SIGNAL_EMIT name_ "editje/collapsable/list/options"; \
+            } \
+            program { name: name_".in"; \
+               signal: "mouse,in"; \
+               source: name_".bt"; \
+               action: STATE_SET "over" 0.0; \
+               target: name_".bt"; \
+            } \
+            program { name: name_".out"; \
+               signal: "mouse,out"; \
+               source: name_".bt"; \
+               action: STATE_SET "default" 0.0; \
+               target: name_".bt"; \
+            } \
+            program { name: name_".disable"; \
+               signal: name_",disable"; \
+               action: STATE_SET "disabled" 0.0; \
+               target: name_".bt"; \
+               target: name_".icon"; \
+            } \
+            program { name: name_".enable"; \
+               signal: name_",enable"; \
+               action: STATE_SET "default" 0.0; \
+               target: name_".bt"; \
+               target: name_".icon"; \
             } \
          } \
          part { name: name_".icon"; \
@@ -276,6 +308,10 @@ collections {
                visible: 1; \
                rel1.to: name_".bt"; \
                rel2.to: name_".bt"; \
+            } \
+            description { state: "disabled" 0.0; \
+               inherit: "default" 0.0; \
+					visible: 0; \
             } \
          }
 
