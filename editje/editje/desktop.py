@@ -201,18 +201,18 @@ class EditManager(View, evas.ClippedSmartObject):
         self.listener_member_push(self.group_handler)
 
         # Highlight
-        self.highlight1x = PartHighlight(self,
-                                     group = "editje/desktop/rel1/highlight")
-        self.member_push(self.highlight1x)
-        self.highlight1y = PartHighlight(self,
-                                     group = "editje/desktop/rel1/highlight")
-        self.member_push(self.highlight1y)
-        self.highlight2x = PartHighlight(self,
-                                     group = "editje/desktop/rel2/highlight")
-        self.member_push(self.highlight2x)
-        self.highlight2y = PartHighlight(self,
-                                     group = "editje/desktop/rel2/highlight")
-        self.member_push(self.highlight2y)
+#        self.highlight1x = PartHighlight(self,
+#                                     group = "editje/desktop/rel1/highlight")
+#        self.member_push(self.highlight1x)
+#        self.highlight1y = PartHighlight(self,
+#                                     group = "editje/desktop/rel1/highlight")
+#        self.member_push(self.highlight1y)
+#        self.highlight2x = PartHighlight(self,
+#                                     group = "editje/desktop/rel2/highlight")
+#        self.member_push(self.highlight2x)
+#        self.highlight2y = PartHighlight(self,
+#                                     group = "editje/desktop/rel2/highlight")
+#        self.member_push(self.highlight2y)
 
         self.parts_manager = PartsManager(self.evas)
         self.parts_manager.select = self.parent_view.part_clicked
@@ -224,8 +224,11 @@ class EditManager(View, evas.ClippedSmartObject):
 
     def _handlers_init(self):
         #Hilight
-        self.highlight = part_handlers.PartHighlight(self)
+        self.highlight = PartHighlight(self)
         self.listener_member_push(self.highlight)
+        #Move
+        self.handler_move = part_handlers.PartHandler_Move(self)
+        self.listener_member_push(self.handler_move)
         #Top Right
         self.handler_tr = part_handlers.PartHandler_TR(self)
         self.listener_member_push(self.handler_tr)
@@ -343,7 +346,7 @@ class EditManager(View, evas.ClippedSmartObject):
     # Rel1 X
     def _rel1x_set(self, value):
         self._rel1x = value
-        self.highlight1x.part = value[0]
+#        self.highlight1x.part = value[0]
 
     def _rel1x_get(self):
         return self._rel1x
@@ -353,7 +356,7 @@ class EditManager(View, evas.ClippedSmartObject):
     # Rel1 Y
     def _rel1y_set(self, value):
         self._rel1y = value
-        self.highlight1y.part = value[0]
+#        self.highlight1y.part = value[0]
 
     def _rel1y_get(self):
         return self._rel1y
@@ -363,7 +366,7 @@ class EditManager(View, evas.ClippedSmartObject):
     # Rel2 X
     def _rel2x_set(self, value):
         self._rel2x = value
-        self.highlight2x.part = value[0]
+#        self.highlight2x.part = value[0]
 
     def _rel2x_get(self):
         return self._rel2x
@@ -373,7 +376,7 @@ class EditManager(View, evas.ClippedSmartObject):
     # Rel2 Y
     def _rel2y_set(self, value):
         self._rel2y = value
-        self.highlight2y.part = value[0]
+#        self.highlight2y.part = value[0]
 
     def _rel2y_get(self):
         return self._rel2y
@@ -505,6 +508,22 @@ class GroupResizeHandler(Handler, GroupListener):
             self._parent.padding_update()
             del self._size
 
+class PartHighlight(PartListener, edje.Edje):
+    def __init__(self, parent):
+        edje.Edje.__init__(self, parent.evas, file=parent.theme,
+                           group="editje/desktop/highlight")
+        PartListener.__init__(self)
+
+    def _part_set(self, part):
+        PartListener._part_set(self, part)
+        if self._part:
+            self.signal_emit("animate", "")
+
+    part = property(fset=_part_set)
+
+    def part_move(self, obj):
+        self.geometry = obj.geometry
+        self.show()
 
 class RelativePartListener(PartListener):
     def __init__(self):

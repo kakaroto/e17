@@ -22,31 +22,22 @@ from desktop_part_listener import PartListener
 
 class PartHandler(Handler, PartListener):
     def __init__(self, parent):
-        Handler.__init__(self, parent, "editje/desktop/part/handler")
+        Handler.__init__(self, parent, "editje/desktop/part/resize_handler")
         PartListener.__init__(self)
 
     def down(self, x, y):
         if self._part:
             self._geometry = self._part.geometry
 
-class PartHighlight(PartHandler):
+class PartHandler_Move(PartHandler):
     def __init__(self, parent):
-        Handler.__init__(self, parent, "editje/desktop/highlight")
+        Handler.__init__(self, parent, "editje/desktop/part/move_handler")
+        self.size = (10,10)
         PartListener.__init__(self)
 
-    def _part_set(self, part):
-        PartListener._part_set(self, part)
-        if self._part:
-            self.signal_emit("animate", "")
-
-    part = property(fset=_part_set)
-
     def part_move(self, obj):
-        if self._part:
-            self.geometry = obj.geometry
-            self.show()
-        else:
-            self.hide()
+        self.center = obj.center
+        self.show()
 
     def move(self, dw, dh):
         if self._part:
@@ -57,7 +48,6 @@ class PartHighlight(PartHandler):
         if self._part:
             self._parent.part_move1(dw, dh)
             self._parent.part_move2(dw, dh)
-
 
 class PartHandler_T(PartHandler):
     def part_move(self, obj):

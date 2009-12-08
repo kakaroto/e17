@@ -4,6 +4,7 @@ EXTRA_DIST = \
 bg2.png \
 bg_scrollbar.png \
 bg_toolbar.png \
+circle.png \
 desktop_resize_handler.png \
 dialog_entry_bg.png \
 grid.png \

@@ -37,6 +37,7 @@ class PartListener(object):
             self.part_move(part)
         else:
             self._part = None
+            self.hide()
 
     part = property(fset=_part_set)
 

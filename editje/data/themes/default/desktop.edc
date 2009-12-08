@@ -23,6 +23,7 @@
 ////////////////////////////////////////////////////////////////////////////
 images {
    image : "desktop_resize_handler.png" COMP;
+   image : "circle.png" COMP;
 }
 color_classes {
    color_class {
@@ -86,13 +87,6 @@ collections {
 
    group { name: "editje/desktop/highlight";
       parts {
-         part { name: "part";
-            type: RECT;
-            mouse_events: 1;
-            description { state: "default" 0.0;
-               color: 0 0 0 0;
-            }
-         }
          part { name: "border.l";
             type: RECT;
             mouse_events: 0;
@@ -221,7 +215,36 @@ collections {
       }
    }
 
-   group { name: "editje/desktop/part/handler";
+   group { name: "editje/desktop/part/move_handler";
+      min: 2 2;
+      max: 30 30;
+      parts {
+         part { name: "handler";
+            type: IMAGE;
+            mouse_events: 1;
+            description { state: "default" 0.0;
+               visible: 1;
+               aspect: 1.0 1.0;
+               color: 255 255 255 255;
+               image.normal: "circle.png";
+            }
+         }
+         part { name: "middle";
+            type: IMAGE;
+            mouse_events: 0;
+            description { state: "default" 0.0;
+               visible: 1;
+               aspect: 1.0 1.0;
+               color: 0 0 0 255;
+               image.normal: "circle.png";
+               rel1.offset: 2 2;
+               rel2.offset: -3 -3;
+            }
+         }
+      }
+   }
+
+   group { name: "editje/desktop/part/resize_handler";
       min: 5 5;
       max: 5 5;
       parts {
