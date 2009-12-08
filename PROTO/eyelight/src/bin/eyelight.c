@@ -322,6 +322,15 @@ void mouse_event_cb(void *data, Evas *e, Evas_Object *obj, void *event_info)
     evas_object_focus_set(obj, 1);
 }
 
+void mouse_event_up_cb(void *data, Evas *e, Evas_Object *obj, void *event_info)
+{
+    Evas_Event_Mouse_Up *ev = event_info;
+
+    if(ev->button == 1)
+        eyelight_object_slide_next(eyelight_smart);
+    else if(ev->button == 3)
+        eyelight_object_slide_previous(eyelight_smart);
+}
 
 static const Ecore_Getopt options = {
     "eyelight",
@@ -468,6 +477,7 @@ int main(int argc, char*argv[])
     evas_object_event_callback_add(container,EVAS_CALLBACK_KEY_DOWN, slide_cb, NULL);
     evas_object_event_callback_add(container,EVAS_CALLBACK_MOUSE_MOVE, mouse_event_cb, NULL);
     evas_object_event_callback_add(container,EVAS_CALLBACK_MOUSE_IN, mouse_event_cb, NULL);
+    evas_object_event_callback_add(container,EVAS_CALLBACK_MOUSE_UP, mouse_event_up_cb, NULL);
     evas_object_repeat_events_set(container,1);
     evas_object_show(container);
     evas_object_resize(container, 1024,768);

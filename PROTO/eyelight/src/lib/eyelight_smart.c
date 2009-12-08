@@ -515,7 +515,7 @@ static const Eyelight_Key keys[] = {
 };
 
 
-void key_event_cb(void *data, Evas *e, Evas_Object *obj, void *event_info)
+static void key_event_cb(void *data, Evas *e, Evas_Object *obj, void *event_info)
 {
     Evas_Event_Key_Down* event = (Evas_Event_Key_Down*) event_info;
     Eyelight_Event_Action action = EYELIGHT_NONE;
@@ -657,13 +657,22 @@ void key_event_cb(void *data, Evas *e, Evas_Object *obj, void *event_info)
 
 
 
-void mouse_event_cb(void *data, Evas *e, Evas_Object *obj, void *event_info)
+static void mouse_event_cb(void *data, Evas *e, Evas_Object *obj, void *event_info)
 {
     Evas_Object *eyelight_smart = (Evas_Object*) data;
     eyelight_object_focus_set(eyelight_smart, 1);
 }
 
+static void mouse_event_up_cb(void *data, Evas *e, Evas_Object *obj, void *event_info)
+{
+    Evas_Event_Mouse_Up *ev = event_info;
+    Evas_Object *eyelight_smart = data;
 
+    if(ev->button == 1)
+        eyelight_object_slide_next(eyelight_smart);
+    else if(ev->button == 3)
+        eyelight_object_slide_previous(eyelight_smart);
+}
 
 
 /*******************************************/
@@ -721,6 +730,7 @@ _smart_add(Evas_Object * obj)
     evas_object_event_callback_add(sd->catch_event,EVAS_CALLBACK_KEY_DOWN, key_event_cb, obj);
     evas_object_event_callback_add(sd->catch_event,EVAS_CALLBACK_MOUSE_MOVE, mouse_event_cb, obj);
     evas_object_event_callback_add(sd->catch_event,EVAS_CALLBACK_MOUSE_IN, mouse_event_cb, obj);
+    evas_object_event_callback_add(sd->catch_event,EVAS_CALLBACK_MOUSE_UP, mouse_event_up_cb, obj);
     evas_object_color_set(sd->catch_event,0,0,0,0);
     evas_object_repeat_events_set(sd->catch_event,1);
     evas_object_hide(sd->catch_event);
