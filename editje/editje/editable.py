@@ -182,10 +182,11 @@ class Editable(Manager, object):
         self.parts = self._edje.parts
         self.event_emit("parts.changed", self.parts)
 
-    def part_add(self, name, type, source=""):
+    def part_add(self, name, type, source="", signal=True):
         if self._edje.part_add(name, type, source):
             self._modificated = True
-            self.event_emit("part.added", name)
+            if signal:
+                self.event_emit("part.added", name)
             return True
 
     def part_del(self, name):

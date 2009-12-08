@@ -133,9 +133,10 @@ class NewPart(Wizard):
             self._part_add(name)
 
     def _part_add(self, name, source=""):
-        success = self._parent.e.part_add(name, self._type, source)
+        success = self._parent.e.part_add(name, self._type, source, signal=False)
         if success:
             self._part_init(name, self._type)
+            self._parent.e.event_emit("part.added", name)
         else:
             self._notify("Choose another name")
 
