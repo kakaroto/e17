@@ -112,7 +112,7 @@ class NewPart(Wizard):
     def _type_select(self, li, it, type):
         self._type = type
         if not self._name_changed:
-            self._name.entry_set(it.label_get())
+            self._name.entry_set(it.label_get().replace(" ", ""))
             edje.message_signal_process()
             self._name_changed = False
 
