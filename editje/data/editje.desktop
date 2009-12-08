@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=Editje
+Comment=Editje Edje Editor
+Icon=editje
+Exec=editje %F
+Terminal=false
+Categories=Development;
