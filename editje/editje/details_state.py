@@ -695,11 +695,15 @@ class PartStateDetails(EditjeDetails):
         self._params_info = edje.external_param_info_get(type)
         for p in self._params_info:
             prop = Property(self._parent, p.name)
-            wid = WidgetEntry(self)
-            if p.type == edje.EDJE_EXTERNAL_PARAM_TYPE_INT:
-                wid.type_int()
-            elif p.type == edje.EDJE_EXTERNAL_PARAM_TYPE_DOUBLE:
-                wid.type_float()
+            if p.type == edje.EDJE_EXTERNAL_PARAM_TYPE_BOOL:
+                wid = WidgetBoolean(self)
+                wid.states_set(p.true_string, p.false_string)
+            else:
+                wid = WidgetEntry(self)
+                if p.type == edje.EDJE_EXTERNAL_PARAM_TYPE_INT:
+                    wid.type_int()
+                elif p.type == edje.EDJE_EXTERNAL_PARAM_TYPE_DOUBLE:
+                    wid.type_float()
             prop.widget_add("v", wid)
             self["external"].property_add(prop)
 
