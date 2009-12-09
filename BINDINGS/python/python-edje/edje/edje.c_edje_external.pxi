@@ -129,24 +129,24 @@ cdef class ExternalParamInfoInt(ExternalParamInfo):
 cdef class ExternalParamInfoDouble(ExternalParamInfo):
     property default:
         def __get__(self):
-            if isnan(self.obj.info.d.default):
+            if self.obj.info.d.default == EDJE_EXTERNAL_DOUBLE_UNSET:
                 return None
             return self.obj.info.d.default
     property min:
         def __get__(self):
-            if isnan(self.obj.info.d.min):
+            if self.obj.info.d.min == EDJE_EXTERNAL_DOUBLE_UNSET:
                 return None
             return self.obj.info.d.min
 
     property max:
         def __get__(self):
-            if isnan(self.obj.info.d.max):
+            if self.obj.info.d.max == EDJE_EXTERNAL_DOUBLE_UNSET:
                 return None
             return self.obj.info.d.max
 
     property step:
         def __get__(self):
-            if isnan(self.obj.info.d.step):
+            if self.obj.info.d.step == EDJE_EXTERNAL_DOUBLE_UNSET:
                 return None
             return self.obj.info.d.step
 

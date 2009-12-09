@@ -21,9 +21,6 @@ import evas.c_evas
 cdef extern from "evas/python_evas_utils.h":
     int PY_REFCOUNT(object)
 
-cdef extern from "math.h":
-    int isnan(double n)
-
 cdef extern from "Edje.h":
     ####################################################################
     # Enumerations
