@@ -49,6 +49,12 @@ cdef class ExternalParam:
             if self.obj.s != NULL:
                 return self.obj.s
 
+    property b:
+        def __get__(self):
+            if self.obj == NULL:
+                raise ValueError("Object uninitialized")
+            return self.obj.i
+
     property value:
         def __get__(self):
             if self.obj == NULL:
@@ -60,6 +66,8 @@ cdef class ExternalParam:
             elif self.obj.type == EDJE_EXTERNAL_PARAM_TYPE_STRING:
                 if self.obj.s != NULL:
                     return self.obj.s
+            elif self.obj.type == EDJE_EXTERNAL_PARAM_TYPE_BOOL:
+                return self.obj.i
 
 cdef ExternalParam ExternalParam_from_ptr(Edje_External_Param *param):
     cdef ExternalParam p
@@ -169,6 +177,25 @@ cdef class ExternalParamInfoString(ExternalParamInfo):
                 return None
             return self.obj.info.s.deny_fmt
 
+cdef class ExternalParamInfoBool(ExternalParamInfo):
+    property default:
+        def __get__(self):
+            if self.obj.info.b.default == NULL:
+                return None
+            return self.obj.info.b.default
+
+    property false_string:
+        def __get__(self):
+            if self.obj.info.b.false_str == NULL:
+                return None
+            return self.obj.info.b.false_str
+
+    property true_string:
+        def __get__(self):
+            if self.obj.info.b.true_str == NULL:
+                return None
+            return self.obj.info.b.true_str
+
 cdef ExternalParamInfo ExternalParamInfo_from_ptr(Edje_External_Param_Info *ptr):
     cdef ExternalParamInfo p
     if ptr.type == EDJE_EXTERNAL_PARAM_TYPE_INT:
@@ -177,6 +204,8 @@ cdef ExternalParamInfo ExternalParamInfo_from_ptr(Edje_External_Param_Info *ptr)
         p = ExternalParamInfoDouble()
     elif ptr.type == EDJE_EXTERNAL_PARAM_TYPE_STRING:
         p = ExternalParamInfoString()
+    elif ptr.type == EDJE_EXTERNAL_PARAM_TYPE_BOOL:
+        p = ExternalParamInfoBool()
     else:
         return None
     p.obj = ptr

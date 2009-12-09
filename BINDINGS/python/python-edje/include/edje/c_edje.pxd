@@ -119,7 +119,8 @@ cdef extern from "Edje.h":
         EDJE_EXTERNAL_PARAM_TYPE_INT    = 0
         EDJE_EXTERNAL_PARAM_TYPE_DOUBLE = 1
         EDJE_EXTERNAL_PARAM_TYPE_STRING = 2
-        EDJE_EXTERNAL_PARAM_TYPE_MAX    = 3
+        EDJE_EXTERNAL_PARAM_TYPE_BOOL   = 3
+        EDJE_EXTERNAL_PARAM_TYPE_MAX    = 4
 
     cdef int EDJE_EXTERNAL_INT_UNSET
     cdef double EDJE_EXTERNAL_DOUBLE_UNSET
@@ -183,10 +184,14 @@ cdef extern from "Edje.h":
     ctypedef struct aux_external_param_info_string:
         char *default "def", *accept_fmt, *deny_fmt
 
+    ctypedef struct aux_external_param_info_bool:
+        char *default "def", *false_str, *true_str
+
     ctypedef union aux_external_param_info:
         aux_external_param_info_int i
         aux_external_param_info_double d
         aux_external_param_info_string s
+        aux_external_param_info_bool b
 
     ctypedef struct Edje_External_Param_Info:
         char *name
@@ -393,6 +398,9 @@ cdef class ExternalParamInfoDouble(ExternalParamInfo):
     pass
 
 cdef class ExternalParamInfoString(ExternalParamInfo):
+    pass
+
+cdef class ExternalParamInfoBool(ExternalParamInfo):
     pass
 
 cdef class ExternalType:
