@@ -220,6 +220,31 @@ collections {
          TOOLBAR_BT_MAIN("swap.bt", "ico_swap.png")
 
          part {
+            name: "run.bt";
+            type: RECT;
+            mouse_events: 1;
+            description {
+               state: "default" 0.0;
+               color: 255 0 0 0;
+               align: 0.0 0.5;
+               aspect: 1.5 1.0;
+               rel1 {
+                  to_x: "swap.bt";
+                  to_y: "toolbar";
+                  relative: 1.0 0.1;
+		  offset: 0 0;
+               }
+               rel2 {
+                  to_x: "swap.bt";
+                  to_y: "toolbar";
+                  relative: 1.0 0.9;
+                  offset: 0 -1;
+               }
+            }
+         }
+         TOOLBAR_BT_MAIN("run.bt", "ico_run.png")
+
+         part {
             name: "bts-end";
             type: RECT;
             mouse_events: 0;
@@ -227,12 +252,12 @@ collections {
                state: "default" 0.0;
                color: 255 255 255 0;
                rel1 {
-                  to: "swap.bt";
+                  to: "run.bt";
                   relative: 0.0 0.0;
                   offset: 0 0;
                }
                rel2 {
-                  to: "swap.bt";
+                  to: "run.bt";
                   relative: 1.0 1.0;
                   offset: 2 -1;
                }

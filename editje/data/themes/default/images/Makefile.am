@@ -24,6 +24,7 @@ ico_part.png \
 ico_play.png \
 ico_previous.png \
 ico_remove.png \
+ico_run.png \
 ico_save.png \
 ico_signal.png \
 ico_stop.png \

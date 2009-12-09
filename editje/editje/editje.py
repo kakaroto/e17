@@ -178,6 +178,8 @@ class Editje(elementary.Window):
         self._toolbar_bt_init(self.main_edje, "save.bt", "Save", self._save_cb)
         self._toolbar_bt_init(self.main_edje, "swap.bt", "Swap", self._swap_cb)
 
+        self._toolbar_bt_init(self.main_edje, "run.bt", "Run", self._run_cb)
+
         self._toolbar_bt_init(self.main_edje, "options.bt", "Options",
                               self._options_cb)
 
@@ -210,6 +212,21 @@ class Editje(elementary.Window):
 
     def _save_cb(self, obj, emission, source):
         self.save()
+
+    def _run_cb(self, obj, emission, source):
+        def _test_window_closed(obj):
+            obj.delete()
+            self.block(False)
+        w = elementary.Window("edje-test", elementary.ELM_WIN_BASIC)
+        w.callback_destroy_add(_test_window_closed)
+        w.resize(300, 300)
+        l = elementary.Layout(w)
+        l.file_set(self.file, self.group)
+        l.size_hint_weight_set(1.0, 1.0)
+        l.show()
+        w.resize_object_add(l)
+        w.show()
+        self.block(True)
 
     def _options_cb(self, obj, emission, source):
         print "Options ...."

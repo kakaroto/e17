@@ -35,6 +35,7 @@ images {
    image: "ico_play.png" COMP;
    image: "ico_next.png" COMP;
    image: "ico_stop.png" COMP;
+   image: "ico_run.png" COMP;
    image: "new_bg.png" COMP;
    image: "timeline_bg.png" COMP;
    image: "timeline_line.png" COMP;
