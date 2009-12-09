@@ -45,6 +45,7 @@ class CList(Collapsable):
 
     def select(self, item):
         if self._selected != item:
+            self._selected = item
             self._view.select(item)
 
     def unselect(self):

@@ -126,7 +126,7 @@ class PartsListView(CListView):
         self._options_edje.signal_emit("remove,enable", "")
 
     def unselect(self, name):
-        CListView.select(self, name)
+        CListView.unselect(self, name)
         self._options_edje.signal_emit("up,disable", "")
         self._options_edje.signal_emit("down,disable", "")
         self._options_edje.signal_emit("remove,disable", "")
