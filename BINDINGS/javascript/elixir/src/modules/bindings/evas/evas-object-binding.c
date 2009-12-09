@@ -216,9 +216,9 @@ elixir_evas_object_data_set(JSContext *cx, uintN argc, jsval *vp)
      return JS_FALSE;
 
    GET_PRIVATE(cx, val[0].v.obj, know);
-   key = elixir_get_string_bytes(val[1].v.str);
+   key = elixir_get_string_bytes(val[1].v.str, NULL);
 
-   if (key && strcmp(key, "elixir_jsval") == 0)
+   if (key && strncmp(key, "elixir_jsval", 12) == 0)
      return JS_FALSE;
 
    elixir_void_free(evas_object_data_get(know, key));

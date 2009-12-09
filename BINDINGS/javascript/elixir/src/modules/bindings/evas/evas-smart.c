@@ -1,3 +1,4 @@
+#include <string.h>
 #include <stdlib.h>
 #include <Evas.h>
 
@@ -309,6 +310,9 @@ elixir_evas_smart_class_new(JSContext *cx, uintN argc, jsval *vp)
    esd->func[ESC_MEMBER_DEL] = fcts[ESC_MEMBER_DEL];
 
    fesc->data = elixir_void_new(cx, JS_THIS_OBJECT(cx, vp), any, esd);
+   fesc->name = malloc(strlen(esc.name) + 8);
+   if (!fesc->name) fesc->name = esc.name;
+   else sprintf((char*) fesc->name, "elixir/%s", esc.name);
 
    es = evas_smart_class_new(fesc);
 
@@ -421,7 +425,7 @@ elixir_evas_object_smart_callback_add(JSContext *cx, uintN argc, jsval *vp)
      return JS_FALSE;
 
    GET_PRIVATE(cx, val[0].v.obj, eo);
-   event = elixir_get_string_bytes(val[1].v.str);
+   event = elixir_get_string_bytes(val[1].v.str, NULL);
    data = elixir_void_new(cx, JS_THIS_OBJECT(cx, vp), val[3].v.any, val[2].v.fct);
 
    evas_object_smart_callback_add(eo, event, _func_smart_cb, data);
@@ -441,7 +445,7 @@ elixir_evas_object_smart_callback_del(JSContext *cx, uintN argc, jsval *vp)
      return JS_FALSE;
 
    GET_PRIVATE(cx, val[0].v.obj, eo);
-   event = elixir_get_string_bytes(val[1].v.str);
+   event = elixir_get_string_bytes(val[1].v.str, NULL);
    data = evas_object_smart_callback_del(eo, event, _func_smart_cb);
 
    JS_SET_RVAL(cx, vp, elixir_void_free(data));
@@ -460,7 +464,7 @@ elixir_evas_object_smart_callback_call(JSContext *cx, uintN argc, jsval *vp)
      return JS_FALSE;
 
    GET_PRIVATE(cx, val[0].v.obj, eo);
-   event = elixir_get_string_bytes(val[1].v.str);
+   event = elixir_get_string_bytes(val[1].v.str, NULL);
    event_info = elixir_void_new(cx, JS_THIS_OBJECT(cx, vp), val[2].v.any, NULL);
 
    evas_object_smart_callback_call(eo, event, event_info);

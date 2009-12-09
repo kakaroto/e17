@@ -109,7 +109,7 @@ elixir_object_get_str(JSContext *cx, JSObject *obj, const char *name, const char
      return EINA_FALSE;
 
    str = JS_ValueToString(cx, propertie);
-   *value = elixir_get_string_bytes(str);
+   *value = elixir_get_string_bytes(str, NULL);
 
    return EINA_TRUE;
 }
@@ -204,7 +204,7 @@ elixir_get_string(JSContext *cx, jsval arg)
 
         lstr = JS_ValueToString(cx, arg);
         if (lstr)
-          ret = strdup(elixir_get_string_bytes(lstr));
+          ret = strdup(elixir_get_string_bytes(lstr, NULL));
 
         break;
      }

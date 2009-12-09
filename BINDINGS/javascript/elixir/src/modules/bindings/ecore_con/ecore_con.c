@@ -12,6 +12,8 @@
 
 #include "Elixir.h"
 
+#define MAGIC_EET_DATA_PACKET 0xEE70ACE1
+
 static elixir_parameter_t               _ecore_con_server_parameter = {
   "Ecore_Con_Server", JOBJECT, NULL
 };
@@ -186,14 +188,8 @@ _elixir_con_data_handler(void *private_data, int *data, int size)
      }
    else
      {
-	char *dt;
-	int i;
-
 	/* Detect if it's a string or a possible Eet_Data packet start. */
-	for (i = 0, dt = (char*) data; i < size && *dt != '\0'; ++i, ++dt)
-	  ;
-
-	if (i == 0 && size < 4)
+	if (size >= 4 && ntohl(data[0]) == MAGIC_EET_DATA_PACKET)
 	  {
 	     uint32_t count;
 
@@ -203,9 +199,9 @@ _elixir_con_data_handler(void *private_data, int *data, int size)
 	       2^16 bytes for an Eet_Data. More will certainly mean death of the
 	       connection.
 	      */
-	     count = ntohl(*data);
+	     count = ntohl(data[1]);
 
-	     if (count < size - sizeof (int))
+	     if (count < size - sizeof (int) * 2)
 	       return 0;
 
 	     ecd = malloc(sizeof (Elixir_Con_Data));
@@ -221,18 +217,13 @@ _elixir_con_data_handler(void *private_data, int *data, int size)
 	     ecd->size = count;
 	     ecd->current = size - sizeof (int);
 
-	     memcpy(ecd->data, data + 1, ecd->current);
+	     memcpy(ecd->data, data + 2, ecd->current);
 
 	     elixir_void_set_private(private_data, ecd);
 
 	     if (ecd->current < ecd->size)
 	       /* All data where not received. */
 	       return -1;
-	  }
-	else if (i != size)
-	  {
-	     /* Invalid string, and not a valid Eet_Data. */
-	     return 0;
 	  }
      }
 
@@ -347,6 +338,7 @@ _elixir_con_event_url_data_cb(void *data, int type, void *event)
  on_error:
    if (ecd)
      {
+	/* FIXME: What will happen when we have multiple handler on one connection ? */
 	free(ecd);
 	elixir_void_set_private(private_data, NULL);
      }
@@ -733,6 +725,7 @@ _elixir_con_event_client_data_cb(void *data, int type, void *event)
  on_error:
    if (ecd)
      {
+	/* FIXME: What will happen when we have multiple handler on one connection ? */
 	free(ecd);
 	elixir_void_set_private(private_data, NULL);
      }
@@ -747,13 +740,15 @@ _elixir_con_event_client_data_cb(void *data, int type, void *event)
 static int
 _elixir_con_event_server_data_cb(void *data, int type, void *event)
 {
-   Ecore_Con_Event_Server_Data  *ececd;
-   JSContext                    *cx;
-   JSObject                     *obj_ececd;
-   JSString                     *src_data;
-   void                         *new;
-   void                         *private_data;
-   int                           ret = 0;
+   Ecore_Con_Event_Server_Data *ececd;
+   Elixir_Con_Data *ecd;
+   JSContext *cx;
+   JSObject *obj_ececd;
+   JSString *src_data;
+   void *new;
+   void *private_data;
+   jsval tmp;
+   int ret = 0;
 
    (void) data;
    (void) type;
@@ -763,14 +758,18 @@ _elixir_con_event_server_data_cb(void *data, int type, void *event)
    cx = elixir_void_get_cx(private_data);
    if (!cx) return 0;
 
+   ret = _elixir_con_data_handler(private_data, (int*) ececd->data, ececd->size);
+   if (ret != 1)
+     return ret;
+   ret = 0;
+
+   ecd = elixir_void_get_private(private_data);
+
    elixir_function_start(cx);
 
    obj_ececd = JS_NewObject(cx, elixir_class_request("Ecore_Con_Event_Server_Data", NULL), NULL, NULL);
    if (!elixir_object_register(cx, &obj_ececd, NULL))
-     {
-	elixir_function_stop(cx);
-	return -1;
-     }
+     goto on_finish;
 
    if (!JS_DefineProperty(cx, obj_ececd, "server",
 			  OBJECT_TO_JSVAL(elixir_void_get_parent(private_data)),
@@ -781,12 +780,27 @@ _elixir_con_event_server_data_cb(void *data, int type, void *event)
    if (!elixir_add_int_prop(cx, obj_ececd, "size", ececd->size))
      goto on_error;
 
-   src_data = elixir_ndup(cx, ececd->data, ececd->size);
-   if (!src_data)
-     goto on_error;
+   if (ecd)
+     {
+	JSObject *eet_data;
+
+	eet_data = elixir_eet_data_new(cx, ecd->data, ecd->size);
+	if (!eet_data)
+	  goto on_error;
+
+	tmp = OBJECT_TO_JSVAL(eet_data);
+     }
+   else
+     {
+	src_data = elixir_ndup(cx, ececd->data, ececd->size);
+	if (!src_data)
+	  goto on_error;
+
+	tmp = STRING_TO_JSVAL(src_data);
+     }
 
    if (!JS_DefineProperty(cx, obj_ececd, "data",
-			  STRING_TO_JSVAL(src_data),
+			  tmp,
 			  NULL, NULL,
 			  JSPROP_ENUMERATE |
 			  JSPROP_READONLY))
@@ -798,8 +812,16 @@ _elixir_con_event_server_data_cb(void *data, int type, void *event)
    ret = -1;
 
  on_error:
+   if (ecd)
+     {
+	/* FIXME: What will happen when we have multiple handler on one connection ? */
+	free(ecd);
+	elixir_void_set_private(private_data, NULL);
+     }
+
    elixir_object_unregister(cx, &obj_ececd);
 
+ on_finish:
    elixir_function_stop(cx);
 
    return ret;
@@ -963,7 +985,7 @@ elixir_ecs_isia(Ecore_Con_Server* (*func)(Ecore_Con_Type type, const char *name,
      return JS_FALSE;
 
    type = val[0].v.num;
-   con_name = elixir_get_string_bytes(val[1].v.str);
+   con_name = elixir_get_string_bytes(val[1].v.str, NULL);
    port = val[2].v.num;
    data = elixir_void_new(cx, NULL, val[3].v.any, NULL);
 
@@ -1099,14 +1121,13 @@ elixir_ecore_con_server_send(JSContext *cx, uintN argc, jsval *vp)
 {
    const char *data = NULL;
    Ecore_Con_Server *svr;
-   int length;
+   size_t length;
    int send;
    elixir_value_t val[2];
 
    if (elixir_params_check(cx, _ecore_con_server_string_params, val, argc, JS_ARGV(cx, vp)))
      {
-	data = elixir_get_string_bytes(val[1].v.str);
-	length = data ? strlen(data) + 1 : 0;
+	data = elixir_get_string_bytes(val[1].v.str, &length);
      }
    else if (elixir_params_check(cx, _ecore_con_server_eet_data_params, val, argc, JS_ARGV(cx, vp)))
      {
@@ -1114,14 +1135,15 @@ elixir_ecore_con_server_send(JSContext *cx, uintN argc, jsval *vp)
 	int *tmp;
 
 	GET_PRIVATE(cx, val[1].v.obj, eed);
-	length = sizeof (int) + eed->count;
+	length = sizeof (int) + sizeof (int) + eed->count;
 
 	data = malloc(length);
 	if (!data) return JS_FALSE;
 
 	tmp = (int*) data;
-	*tmp = htonl(eed->count);
-	memcpy(tmp + 1, eed->data, eed->count);
+	tmp[0] = htonl(MAGIC_EET_DATA_PACKET);
+	tmp[1] = htonl(eed->count);
+	memcpy(tmp + 2, eed->data, eed->count);
      }
    else
      return JS_FALSE;
@@ -1159,14 +1181,13 @@ elixir_ecore_con_client_send(JSContext *cx, uintN argc, jsval *vp)
 {
    Ecore_Con_Client *clt;
    const char *data;
-   int length;
+   size_t length;
    int size;
    elixir_value_t val[2];
 
    if (elixir_params_check(cx, _ecore_con_client_string_params, val, argc, JS_ARGV(cx, vp)))
      {
-	data = elixir_get_string_bytes(val[1].v.str);
-	length = data ? strlen(data) + 1 : 0;
+	data = elixir_get_string_bytes(val[1].v.str, &length);
      }
    else if (elixir_params_check(cx, _ecore_con_client_eet_data_params, val, argc, JS_ARGV(cx, vp)))
      {
@@ -1326,7 +1347,7 @@ elixir_ecore_con_url_new(JSContext *cx, uintN argc, jsval *vp)
    if (!elixir_params_check(cx, string_params, val, argc, JS_ARGV(cx, vp)))
      return JS_FALSE;
 
-   url = elixir_get_string_bytes(val[0].v.str);
+   url = elixir_get_string_bytes(val[0].v.str, NULL);
 
    curl = ecore_con_url_new(url);
 
@@ -1429,7 +1450,7 @@ elixir_ecore_con_url_url_set(JSContext *cx, uintN argc, jsval *vp)
      return JS_FALSE;
 
    GET_PRIVATE(cx, val[0].v.obj, curl);
-   url = elixir_get_string_bytes(val[1].v.str);
+   url = elixir_get_string_bytes(val[1].v.str, NULL);
 
    ecore_con_url_url_set(curl, url);
 
@@ -1442,6 +1463,7 @@ elixir_ecore_con_url_send(JSContext *cx, uintN argc, jsval *vp)
    Ecore_Con_Url *curl;
    const char *data;
    const char *content_type;
+   size_t length;
    int size;
    elixir_value_t val[3];
 
@@ -1449,10 +1471,10 @@ elixir_ecore_con_url_send(JSContext *cx, uintN argc, jsval *vp)
      return JS_FALSE;
 
    GET_PRIVATE(cx, val[0].v.obj, curl);
-   data = elixir_get_string_bytes(val[1].v.str);
-   content_type = elixir_get_string_bytes(val[2].v.str);
+   data = elixir_get_string_bytes(val[1].v.str, &length);
+   content_type = elixir_get_string_bytes(val[2].v.str, NULL);
 
-   size = ecore_con_url_send(curl, data, data ? strlen(data) : 0, content_type);
+   size = ecore_con_url_send(curl, data, length, content_type);
 
    JS_SET_RVAL(cx, vp, INT_TO_JSVAL(size));
    return JS_TRUE;
@@ -1515,10 +1537,10 @@ elixir_ecore_con_url_ftp_upload(JSContext *cx, uintN argc, jsval *vp)
      return JS_FALSE;
 
    GET_PRIVATE(cx, val[0].v.obj, curl);
-   filename = elixir_get_string_bytes(val[1].v.str);
-   user = elixir_get_string_bytes(val[2].v.str);
-   pass = elixir_get_string_bytes(val[3].v.str);
-   upload_dir = elixir_get_string_bytes(val[4].v.str);
+   filename = elixir_file_canonicalize(elixir_get_string_bytes(val[1].v.str, NULL));
+   user = elixir_get_string_bytes(val[2].v.str, NULL);
+   pass = elixir_get_string_bytes(val[3].v.str, NULL);
+   upload_dir = elixir_get_string_bytes(val[4].v.str, NULL);
 
    JS_SET_RVAL(cx, vp, ecore_con_url_ftp_upload(curl, filename, user, pass, upload_dir));
 

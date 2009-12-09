@@ -387,7 +387,7 @@ elixir_void_params_char(void (*func)(const char *params),
    if (!elixir_params_check(cx, string_params, val, argc, JS_ARGV(cx, vp)))
      return JS_FALSE;
 
-   params = elixir_get_string_bytes(val[0].v.str);
+   params = elixir_get_string_bytes(val[0].v.str, NULL);
    func(params);
 
    return JS_TRUE;
@@ -427,8 +427,8 @@ elixir_edje_file_group_exists(JSContext *cx, uintN argc, jsval *vp)
    if (!elixir_params_check(cx, _2strings_params, val, argc, JS_ARGV(cx, vp)))
      return JS_FALSE;
 
-   file = elixir_file_canonicalize(elixir_get_string_bytes(val[0].v.str));
-   glob = elixir_get_string_bytes(val[1].v.str);
+   file = elixir_file_canonicalize(elixir_get_string_bytes(val[0].v.str, NULL));
+   glob = elixir_get_string_bytes(val[1].v.str, NULL);
 
    JS_SET_RVAL(cx, vp, INT_TO_JSVAL(edje_file_group_exists(file, glob)));
 
@@ -447,8 +447,8 @@ elixir_edje_file_data_get(JSContext *cx, uintN argc, jsval *vp)
    if (!elixir_params_check(cx, _2strings_params, val, argc, JS_ARGV(cx, vp)))
      return JS_FALSE;
 
-   file = elixir_file_canonicalize(elixir_get_string_bytes(val[0].v.str));
-   key = elixir_get_string_bytes(val[1].v.str);
+   file = elixir_file_canonicalize(elixir_get_string_bytes(val[0].v.str, NULL));
+   key = elixir_get_string_bytes(val[1].v.str, NULL);
 
    result = edje_file_data_get(file, key);
    elixir_return_str(cx, vp, result);
@@ -471,7 +471,7 @@ elixir_edje_file_collection_list(JSContext *cx, uintN argc, jsval *vp)
    if (!elixir_params_check(cx, string_params, val, argc, JS_ARGV(cx, vp)))
      return JS_FALSE;
 
-   file = elixir_file_canonicalize(elixir_get_string_bytes(val[0].v.str));
+   file = elixir_file_canonicalize(elixir_get_string_bytes(val[0].v.str, NULL));
 
    array = elixir_return_array(cx, vp);
    if (!array)
@@ -566,8 +566,8 @@ elixir_edje_text_class_set(JSContext *cx, uintN argc, jsval *vp)
    if (!elixir_params_check(cx, _2strings_int_params, val, argc, JS_ARGV(cx, vp)))
      return JS_FALSE;
 
-   text_class = elixir_get_string_bytes(val[0].v.str);
-   font = elixir_get_string_bytes(val[1].v.str);
+   text_class = elixir_get_string_bytes(val[0].v.str, NULL);
+   font = elixir_get_string_bytes(val[1].v.str, NULL);
    size = val[2].v.num;
 
    edje_text_class_set(text_class, font, size);
@@ -680,7 +680,7 @@ elixir_edje_object_part_table_col_row_size_get(JSContext *cx, uintN argc, jsval 
      return JS_FALSE;
 
    GET_PRIVATE(cx, val[0].v.obj, eo);
-   part = elixir_get_string_bytes(val[1].v.str);
+   part = elixir_get_string_bytes(val[1].v.str, NULL);
 
    result = edje_object_part_table_col_row_size_get(eo, part, &cols, &rows);
 
@@ -722,7 +722,7 @@ elixir_void_params_edje_object_string(void (*func)(const Evas_Object*, const cha
      return JS_FALSE;
 
    GET_PRIVATE(cx, val[0].v.obj, eo);
-   str = elixir_get_string_bytes(val[1].v.str);
+   str = elixir_get_string_bytes(val[1].v.str, NULL);
 
    func(eo, str);
 
@@ -746,7 +746,7 @@ elixir_string_params_edje_object_string_ret(JSContext *cx, uintN argc, jsval *vp
      return JS_FALSE;
 
    GET_PRIVATE(cx, val[0].v.obj, *eo);
-   *param = elixir_get_string_bytes(val[1].v.str);
+   *param = elixir_get_string_bytes(val[1].v.str, NULL);
 
    return JS_TRUE;
 }
@@ -910,8 +910,8 @@ elixir_edje_object_file_set(JSContext *cx, uintN argc, jsval *vp)
      return JS_FALSE;
 
    GET_PRIVATE(cx, val[0].v.obj, eo);
-   file = elixir_file_canonicalize(elixir_get_string_bytes(val[1].v.str));
-   part = elixir_get_string_bytes(val[2].v.str);
+   file = elixir_file_canonicalize(elixir_get_string_bytes(val[1].v.str, NULL));
+   part = elixir_get_string_bytes(val[2].v.str, NULL);
 
    ret = edje_object_file_set(eo, file, part);
 
@@ -933,8 +933,8 @@ elixir_void_params_edje_object_2strings(void (*func)(Evas_Object *obj, const cha
      return JS_FALSE;
 
    GET_PRIVATE(cx, val[0].v.obj, eo);
-   part = elixir_get_string_bytes(val[1].v.str);
-   text = elixir_get_string_bytes(val[2].v.str);
+   part = elixir_get_string_bytes(val[1].v.str, NULL);
+   text = elixir_get_string_bytes(val[2].v.str, NULL);
 
    func(eo, part, text);
 
@@ -962,8 +962,8 @@ elixir_edje_object_part_text_anchor_geometry_get(JSContext *cx, uintN argc, jsva
      return JS_TRUE;
 
    GET_PRIVATE(cx, val[0].v.obj, eo);
-   part = elixir_get_string_bytes(val[1].v.str);
-   anchor = elixir_get_string_bytes(val[2].v.str);
+   part = elixir_get_string_bytes(val[1].v.str, NULL);
+   anchor = elixir_get_string_bytes(val[2].v.str, NULL);
 
    geoms = edje_object_part_text_anchor_geometry_get(eo, part, anchor);
 
@@ -997,7 +997,7 @@ elixir_void_params_edje_object_string_2double(void (*func)(Evas_Object *obj, con
      return JS_FALSE;
 
    GET_PRIVATE(cx, val[0].v.obj, eo);
-   part = elixir_get_string_bytes(val[1].v.str);
+   part = elixir_get_string_bytes(val[1].v.str, NULL);
    d1 = val[2].v.dbl;
    d2 = val[3].v.dbl;
 
@@ -1026,8 +1026,8 @@ elixir_edje_object_text_class_set(JSContext *cx, uintN argc, jsval *vp)
      return JS_FALSE;
 
    GET_PRIVATE(cx, val[0].v.obj, eo);
-   text_class = elixir_get_string_bytes(val[1].v.str);
-   font = elixir_get_string_bytes(val[2].v.str);
+   text_class = elixir_get_string_bytes(val[1].v.str, NULL);
+   font = elixir_get_string_bytes(val[2].v.str, NULL);
    size = val[3].v.num;
 
    edje_object_text_class_set(eo, text_class, font, size);
@@ -1048,7 +1048,7 @@ elixir_bool_params_edje_object_string_evas_object(Eina_Bool (*func)(Evas_Object*
      return JS_FALSE;
 
    GET_PRIVATE(cx, val[0].v.obj, eo);
-   part = elixir_get_string_bytes(val[1].v.str);
+   part = elixir_get_string_bytes(val[1].v.str, NULL);
    GET_PRIVATE(cx, val[2].v.obj, child);
 
    JS_SET_RVAL(cx, vp, BOOLEAN_TO_JSVAL(func(eo, part, child)));
@@ -1076,7 +1076,7 @@ elixir_edje_object_part_table_pack(JSContext *cx, uintN argc, jsval *vp)
      return JS_FALSE;
 
    GET_PRIVATE(cx, val[0].v.obj, eo);
-   part = elixir_get_string_bytes(val[1].v.str);
+   part = elixir_get_string_bytes(val[1].v.str, NULL);
    GET_PRIVATE(cx, val[2].v.obj, child);
    col = val[3].v.num;
    row = val[4].v.num;
@@ -1102,7 +1102,7 @@ elixir_edje_object_part_box_remove(JSContext *cx, uintN argc, jsval *vp)
      return JS_FALSE;
 
    GET_PRIVATE(cx, val[0].v.obj, eo);
-   part = elixir_get_string_bytes(val[1].v.str);
+   part = elixir_get_string_bytes(val[1].v.str, NULL);
    GET_PRIVATE(cx, val[2].v.obj, child);
 
    ret = edje_object_part_box_remove(eo, part, child);
@@ -1122,7 +1122,7 @@ elixir_edje_object_part_table_clear(JSContext *cx, uintN argc, jsval *vp)
      return JS_FALSE;
 
    GET_PRIVATE(cx, val[0].v.obj, eo);
-   part = elixir_get_string_bytes(val[1].v.str);
+   part = elixir_get_string_bytes(val[1].v.str, NULL);
    bool = val[2].v.bol;
 
    JS_SET_RVAL(cx, vp, BOOLEAN_TO_JSVAL(edje_object_part_table_clear(eo, part, bool)));
@@ -1141,7 +1141,7 @@ elixir_edje_object_part_swallow(JSContext *cx, uintN argc, jsval *vp)
      return JS_FALSE;
 
    GET_PRIVATE(cx, val[0].v.obj, eo);
-   part = elixir_get_string_bytes(val[1].v.str);
+   part = elixir_get_string_bytes(val[1].v.str, NULL);
    GET_PRIVATE(cx, val[2].v.obj, swallow);
 
    edje_object_part_swallow(eo, part, swallow);
@@ -1162,7 +1162,7 @@ elixir_edje_object_part_box_insert_at(JSContext *cx, uintN argc, jsval *vp)
      return JS_FALSE;
 
    GET_PRIVATE(cx, val[0].v.obj, eo);
-   part = elixir_get_string_bytes(val[1].v.str);
+   part = elixir_get_string_bytes(val[1].v.str, NULL);
    GET_PRIVATE(cx, val[2].v.obj, child);
    pos = val[3].v.num;
 
@@ -1184,7 +1184,7 @@ elixir_edje_object_part_box_insert_before(JSContext *cx, uintN argc, jsval *vp)
      return JS_FALSE;
 
    GET_PRIVATE(cx, val[0].v.obj, eo);
-   part = elixir_get_string_bytes(val[1].v.str);
+   part = elixir_get_string_bytes(val[1].v.str, NULL);
    GET_PRIVATE(cx, val[2].v.obj, child);
    GET_PRIVATE(cx, val[3].v.obj, reference);
 
@@ -1262,7 +1262,7 @@ elixir_edje_object_part_geometry_get(JSContext *cx, uintN argc, jsval *vp)
      return JS_FALSE;
 
    GET_PRIVATE(cx, val[0].v.obj, eo);
-   part = elixir_get_string_bytes(val[1].v.str);
+   part = elixir_get_string_bytes(val[1].v.str, NULL);
 
    edje_object_part_geometry_get(eo, part, &x, &y, &w, &h);
 
@@ -1316,7 +1316,7 @@ elixir_p1p2_params_edje_object_string_2double(const char *p1, const char *p2,
      return JS_TRUE;
 
    GET_PRIVATE(cx, val[0].v.obj, eo);
-   part = elixir_get_string_bytes(val[1].v.str);
+   part = elixir_get_string_bytes(val[1].v.str, NULL);
 
    func(eo, part, &d1, &d2);
 
@@ -1363,7 +1363,7 @@ elixir_edje_object_part_state_get(JSContext *cx, uintN argc, jsval *vp)
      return JS_FALSE;
 
    GET_PRIVATE(cx, val[0].v.obj, eo);
-   part = elixir_get_string_bytes(val[1].v.str);
+   part = elixir_get_string_bytes(val[1].v.str, NULL);
 
    ret = edje_object_part_state_get(eo, part, &val_ret);
 
@@ -1394,7 +1394,7 @@ elixir_edje_object_part_text_anchor_list_get(JSContext *cx, uintN argc, jsval *v
      return JS_FALSE;
 
    GET_PRIVATE(cx, val[0].v.obj, eo);
-   part = elixir_get_string_bytes(val[1].v.str);
+   part = elixir_get_string_bytes(val[1].v.str, NULL);
 
    texts = edje_object_part_text_anchor_list_get(eo, part);
 
@@ -1465,7 +1465,7 @@ elixir_edje_object_part_box_remove_all(JSContext *cx, uintN argc, jsval *vp)
      return JS_FALSE;
 
    GET_PRIVATE(cx, val[0].v.obj, eo);
-   part = elixir_get_string_bytes(val[1].v.str);
+   part = elixir_get_string_bytes(val[1].v.str, NULL);
    clear = val[2].v.num;
 
    JS_SET_RVAL(cx, vp, BOOLEAN_TO_JSVAL(edje_object_part_box_remove_all(eo, part, clear)));
@@ -1485,7 +1485,7 @@ elixir_edje_object_part_box_remove_at(JSContext *cx, uintN argc, jsval *vp)
      return JS_FALSE;
 
    GET_PRIVATE(cx, val[0].v.obj, eo);
-   part = elixir_get_string_bytes(val[1].v.str);
+   part = elixir_get_string_bytes(val[1].v.str, NULL);
    pos = val[2].v.num;
 
    ret = edje_object_part_box_remove_at(eo, part, pos);
@@ -1506,7 +1506,7 @@ elixir_edje_object_part_text_cursor_geometry_get(JSContext *cx, uintN argc, jsva
      return JS_FALSE;
 
    GET_PRIVATE(cx, val[0].v.obj, eo);
-   part = elixir_get_string_bytes(val[1].v.str);
+   part = elixir_get_string_bytes(val[1].v.str, NULL);
 
    edje_object_part_text_cursor_geometry_get(eo, part, &x, &y, &w, &h);
 
@@ -1532,7 +1532,7 @@ elixir_edje_object_color_class_set(JSContext *cx, uintN argc, jsval *vp)
      return JS_FALSE;
 
    GET_PRIVATE(cx, val[0].v.obj, eo);
-   color_class = elixir_get_string_bytes(val[1].v.str);
+   color_class = elixir_get_string_bytes(val[1].v.str, NULL);
 
    r = val[2].v.num;
    g = val[3].v.num;
@@ -1566,7 +1566,7 @@ elixir_edje_color_class_set(JSContext *cx, uintN argc, jsval *vp)
    if (!elixir_params_check(cx, _string_12params, val, argc, JS_ARGV(cx, vp)))
      return JS_FALSE;
 
-   color_class = elixir_get_string_bytes(val[0].v.str);
+   color_class = elixir_get_string_bytes(val[0].v.str, NULL);
 
    r = val[1].v.num;
    g = val[2].v.num;
@@ -1706,8 +1706,8 @@ elixir_edje_object_signal_callback_add(JSContext *cx, uintN argc, jsval *vp)
      return JS_FALSE;
 
    GET_PRIVATE(cx, val[0].v.obj, eo);
-   emission = elixir_get_string_bytes(val[1].v.str);
-   source = elixir_get_string_bytes(val[2].v.str);
+   emission = elixir_get_string_bytes(val[1].v.str, NULL);
+   source = elixir_get_string_bytes(val[2].v.str, NULL);
    data = elixir_void_new(cx, JS_THIS_OBJECT(cx, vp), val[4].v.any, val[3].v.fct);
 
    edje_object_signal_callback_add(eo, emission, source, _elixir_edje_object_signal_cb, data);
@@ -1728,8 +1728,8 @@ elixir_edje_object_signal_callback_del(JSContext *cx, uintN argc, jsval *vp)
      return JS_FALSE;
 
    GET_PRIVATE(cx, val[0].v.obj, eo);
-   emission = elixir_get_string_bytes(val[1].v.str);
-   source = elixir_get_string_bytes(val[2].v.str);
+   emission = elixir_get_string_bytes(val[1].v.str, NULL);
+   source = elixir_get_string_bytes(val[2].v.str, NULL);
 
    data = edje_object_signal_callback_del(eo, emission, source, _elixir_edje_object_signal_cb);
 

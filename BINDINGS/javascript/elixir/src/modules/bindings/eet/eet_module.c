@@ -27,8 +27,8 @@ elixir_eet_data_encode(JSContext *cx, uintN argc, jsval *vp)
    if (!elixir_params_check_with_options(cx, _object_str_object_str, val, argc, JS_ARGV(cx, vp), 4))
      return JS_FALSE;
 
-   name = elixir_get_string_bytes(val[1].v.str);
-   key = elixir_get_string_bytes(val[3].v.str);
+   name = elixir_get_string_bytes(val[1].v.str, NULL);
+   key = elixir_get_string_bytes(val[3].v.str, NULL);
 
    dt = elixir_to_eet_data(cx, JS_ARGV(cx, vp)[0], name, JS_ARGV(cx, vp)[2], key);
    elixir_return_ptr(cx, vp, dt, elixir_class_request("eet_data", NULL));

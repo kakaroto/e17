@@ -434,7 +434,7 @@ EAPI JSFunction         *elixir_get_fct(JSContext *cx, jsval arg);
 
 EAPI JSString           *elixir_dup(JSContext *cx, const char *str);
 EAPI JSString           *elixir_ndup(JSContext *cx, const char *str, int length);
-EAPI const char         *elixir_get_string_bytes(JSString *str);
+EAPI const char         *elixir_get_string_bytes(JSString *str, size_t *length);
 EAPI Eina_Bool           elixir_add_str_prop(JSContext *cx, JSObject *obj,
                                              const char *name, const char *value);
 EAPI Eina_Bool           elixir_add_int_prop(JSContext *cx, JSObject *obj,

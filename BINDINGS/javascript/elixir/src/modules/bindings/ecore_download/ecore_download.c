@@ -309,9 +309,9 @@ elixir_ecore_download_directory_new(JSContext *cx, uintN argc, jsval *vp)
    if (!elixir_params_check(cx, _3string_params, val, argc, JS_ARGV(cx, vp)))
      return JS_FALSE;
 
-   files = elixir_file_canonicalize(elixir_get_string_bytes(val[0].v.str));
-   temp = elixir_file_canonicalize(elixir_get_string_bytes(val[1].v.str));
-   backup = strdupa(elixir_get_string_bytes(val[2].v.str));
+   files = elixir_file_canonicalize(elixir_get_string_bytes(val[0].v.str, NULL));
+   temp = elixir_file_canonicalize(elixir_get_string_bytes(val[1].v.str, NULL));
+   backup = strdupa(elixir_get_string_bytes(val[2].v.str, NULL));
    prefix = basename(backup);
    if (strlen(prefix) == 0) prefix = "elixir-XXXXXX";
 
@@ -388,9 +388,9 @@ elixir_ecore_download_file_add(JSContext *cx, uintN argc, jsval *vp)
      return JS_FALSE;
 
    GET_PRIVATE(cx, val[0].v.obj, dir);
-   backup = strdupa(elixir_get_string_bytes(val[1].v.str));
+   backup = strdupa(elixir_get_string_bytes(val[1].v.str, NULL));
    file = basename(backup);
-   url = elixir_get_string_bytes(val[2].v.str);
+   url = elixir_get_string_bytes(val[2].v.str, NULL);
 
    edf = ecore_download_file_add(dir, file, url);
    if (edf != NULL)

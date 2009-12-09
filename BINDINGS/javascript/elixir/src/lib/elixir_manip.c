@@ -19,9 +19,14 @@ elixir_ndup(JSContext* cx, const char* str, int length)
 }
 
 const char*
-elixir_get_string_bytes(JSString *str)
+elixir_get_string_bytes(JSString *str, size_t *length)
 {
-   if (!str) return NULL;
+   if (!str) {
+      if (length) *length = 0;
+      return NULL;
+   }
+
+   if (length) *length = JS_GetStringLength(str);
    return JS_GetStringBytes(str);
 }
 

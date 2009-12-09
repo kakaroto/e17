@@ -1,3 +1,4 @@
+#include <string.h>
 #include <stdlib.h>
 #include <Evas.h>
 
@@ -69,10 +70,15 @@ elixir_evas_object_image_file_set(JSContext *cx, uintN argc, jsval *vp)
 
    if (elixir_params_check(cx, _evas_object_image_double_string_params, val, argc, JS_ARGV(cx, vp)))
      {
+	size_t length;
+
 	know = JS_GetPrivate(cx, val[0].v.obj);
 
-	file = elixir_file_canonicalize(elixir_get_string_bytes(val[1].v.str));
-	key = elixir_get_string_bytes(val[2].v.str);
+	file = elixir_file_canonicalize(elixir_get_string_bytes(val[1].v.str, NULL));
+	key = elixir_get_string_bytes(val[2].v.str, &length);
+
+	if (strlen(key) != length)
+	  return JS_FALSE;
      }
 
    if (!know) return JS_FALSE;

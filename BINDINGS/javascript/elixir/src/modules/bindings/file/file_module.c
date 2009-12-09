@@ -47,7 +47,7 @@ elixir_fopen(JSContext *cx, uintN argc, jsval *vp)
    if (!elixir_params_check(cx, string_params, val, argc, JS_ARGV(cx, vp)))
      return JS_FALSE;
 
-   file = elixir_get_string_bytes(val[0].v.str);
+   file = elixir_get_string_bytes(val[0].v.str, NULL);
 
    safe_file = elixir_file_canonicalize(file);
    fl = malloc(sizeof (mmaped_file_t) + strlen(safe_file));
@@ -206,7 +206,7 @@ elixir_fstat(JSContext *cx, uintN argc, jsval *vp)
    path = NULL;
 
    if (elixir_params_check(cx, string_params, val, argc, JS_ARGV(cx, vp)))
-     path = elixir_get_string_bytes(val[0].v.str);
+     path = elixir_get_string_bytes(val[0].v.str, NULL);
    else
      if (elixir_params_check(cx, _file_params, val, argc, JS_ARGV(cx, vp)))
        {
@@ -238,7 +238,7 @@ elixir_unlink(JSContext *cx, uintN argc, jsval *vp)
    if (!elixir_params_check(cx, string_params, val, argc, JS_ARGV(cx, vp)))
      return JS_FALSE;
 
-   path = elixir_get_string_bytes(val[0].v.str);
+   path = elixir_get_string_bytes(val[0].v.str, NULL);
 
    ret = unlink(path);
 

@@ -1,3 +1,4 @@
+#include <string.h>
 #include <stdlib.h>
 #include <stdint.h>
 #include <Evas.h>
@@ -106,7 +107,7 @@ elixir_evas_textblock_cursor_string_params(void (*func)(Evas_Textblock_Cursor* c
      return JS_FALSE;
 
    GET_PRIVATE(cx, val[0].v.obj, know);
-   str = elixir_get_string_bytes(val[1].v.str);
+   str = elixir_get_string_bytes(val[1].v.str, NULL);
 
    func(know, str);
 
@@ -153,13 +154,17 @@ elixir_evas_textblock_style_set(JSContext *cx, uintN argc, jsval *vp)
 {
    Evas_Textblock_Style *ts;
    const char *text;
+   size_t length;
    elixir_value_t val[2];
 
    if (!elixir_params_check(cx, _evas_textblock_style_string_params, val, argc, JS_ARGV(cx, vp)))
      return JS_FALSE;
 
    GET_PRIVATE(cx, val[0].v.obj, ts);
-   text = elixir_get_string_bytes(val[1].v.str);
+   text = elixir_get_string_bytes(val[1].v.str, &length);
+
+   if (strlen(text) != length)
+     return JS_FALSE;
 
    evas_textblock_style_set(ts, text);
 

@@ -308,13 +308,18 @@ elixir_sqlite3_open(JSContext *cx, uintN argc, jsval *vp)
 {
    sqlite3 *db = NULL;
    char *filename;
+   const char *tmp;
+   size_t length;
    int value;
    elixir_value_t val[2];
 
    if (!elixir_params_check(cx, string_params, val, argc, JS_ARGV(cx,vp)))
      return JS_FALSE;
 
-   filename = elixir_file_canonicalize(elixir_get_string_bytes(val[0].v.str));
+   tmp = elixir_get_string_bytes(val[0].v.str, &length);
+   if (length != strlen(tmp))
+     return JS_FALSE;
+   filename = elixir_file_canonicalize(tmp);
 
    value = sqlite3_open(filename, &db);
    free(filename);
@@ -330,7 +335,9 @@ static JSBool
 elixir_sqlite3_open_v2(JSContext *cx, uintN argc, jsval *vp)
 {
    sqlite3 *db = NULL;
+   const char *tmp;
    char *filename;
+   size_t length;
    int value;
    int flags;
    const char *vfs;
@@ -339,9 +346,12 @@ elixir_sqlite3_open_v2(JSContext *cx, uintN argc, jsval *vp)
    if (!elixir_params_check(cx, _string_int_string, val, argc, JS_ARGV(cx, vp)))
      return JS_FALSE;
 
-   filename = elixir_file_canonicalize(elixir_get_string_bytes(val[0].v.str));
+   tmp = elixir_get_string_bytes(val[0].v.str, &length);
+   if (length != strlen(tmp))
+     return JS_FALSE;
+   filename = elixir_file_canonicalize(tmp);
    flags = val[1].v.num;
-   vfs = elixir_get_string_bytes(val[2].v.str);
+   vfs = elixir_get_string_bytes(val[2].v.str, NULL);
 
    value = sqlite3_open_v2(filename, &db, flags, vfs);
    free(filename);
@@ -364,7 +374,7 @@ elixir_sqlite3_bind_parameter_index(JSContext *cx, uintN argc, jsval *vp)
      return JS_FALSE;
 
    GET_PRIVATE(cx, val[0].v.obj, stmt);
-   name = elixir_get_string_bytes(val[1].v.str);
+   name = elixir_get_string_bytes(val[1].v.str, NULL);
 
    JS_SET_RVAL(cx, vp, INT_TO_JSVAL(sqlite3_bind_parameter_index(stmt, name)));
    return JS_TRUE;
@@ -567,7 +577,7 @@ elixir_sqlite3_complete(JSContext *cx, uintN argc, jsval *vp)
    if (!elixir_params_check(cx, string_params, val, argc, JS_ARGV(cx, vp)))
      return JS_FALSE;
 
-   sql = elixir_get_string_bytes(val[0].v.str);
+   sql = elixir_get_string_bytes(val[0].v.str, NULL);
 
    JS_SET_RVAL(cx, vp, INT_TO_JSVAL(sqlite3_complete(sql)));
    return JS_TRUE;
@@ -606,7 +616,7 @@ elixir_sqlite3_get_table(JSContext* cx, uintN argc, jsval *vp)
      return JS_FALSE;
 
    GET_PRIVATE(cx, val[0].v.obj, db);
-   sql = elixir_get_string_bytes(val[1].v.str);
+   sql = elixir_get_string_bytes(val[1].v.str, NULL);
 
    error = sqlite3_get_table(db, sql, &resultp, &nrow, &ncolumn, &errmsg);
 
@@ -665,7 +675,7 @@ elixir_sqlite3_bind_text(JSContext *cx, uintN argc, jsval *vp)
 
    GET_PRIVATE(cx, val[0].v.obj, stmt);
    index = val[1].v.num;
-   string = elixir_get_string_bytes(val[2].v.str);
+   string = elixir_get_string_bytes(val[2].v.str, NULL);
 
    JS_SET_RVAL(cx, vp, INT_TO_JSVAL(sqlite3_bind_text(stmt, index, string, -1, SQLITE_TRANSIENT)));
    return JS_TRUE;
@@ -682,7 +692,7 @@ elixir_sqlite3_result_text(JSContext *cx,uintN argc, jsval *vp)
      return JS_FALSE;
 
    GET_PRIVATE(cx, val[0].v.obj, ctx);
-   string = elixir_get_string_bytes(val[2].v.str);
+   string = elixir_get_string_bytes(val[2].v.str, NULL);
 
    sqlite3_result_text(ctx, string, -1, SQLITE_TRANSIENT);
 
@@ -901,7 +911,7 @@ elixir_sqlite3_exec(JSContext *cx, uintN argc, jsval *vp)
      return JS_FALSE;
 
    GET_PRIVATE(cx, val[0].v.obj, db);
-   sql = elixir_get_string_bytes(val[1].v.str);
+   sql = elixir_get_string_bytes(val[1].v.str, NULL);
 
    cdata = elixir_void_new(cx, JS_THIS_OBJECT(cx, vp), val[3].v.any, val[2].v.fct);
    elixir_function_stop(cx);
@@ -1134,7 +1144,7 @@ elixir_sqlite3_create_function(JSContext *cx, uintN argc, jsval *vp)
      return JS_FALSE;
 
    GET_PRIVATE(cx, val[0].v.obj, db);
-   function_name = elixir_get_string_bytes(val[1].v.str);
+   function_name = elixir_get_string_bytes(val[1].v.str, NULL);
    param_count = val[2].v.num;
 
    /* FIXME: Some memory leak here. */
@@ -1422,7 +1432,7 @@ elixir_sqlite3_prepare_v2(JSContext *cx, uintN argc, jsval *vp)
      return JS_FALSE;
 
    GET_PRIVATE(cx, val[0].v.obj, db);
-   sql = elixir_get_string_bytes(val[1].v.str);
+   sql = elixir_get_string_bytes(val[1].v.str, NULL);
 
    error = sqlite3_prepare_v2(db, sql, -1, &statement, &sql_tail);
 
@@ -1467,9 +1477,9 @@ elixir_sqlite3_table_column_metadata(JSContext *cx, uintN argc, jsval *vp)
      return JS_FALSE;
 
    GET_PRIVATE(cx, val[0].v.obj, db);
-   db_name = elixir_get_string_bytes(val[1].v.str);
-   table_name = elixir_get_string_bytes(val[2].v.str);
-   column_name = elixir_get_string_bytes(val[3].v.str);
+   db_name = elixir_get_string_bytes(val[1].v.str, NULL);
+   table_name = elixir_get_string_bytes(val[2].v.str, NULL);
+   column_name = elixir_get_string_bytes(val[3].v.str, NULL);
 
    error = sqlite3_table_column_metadata(db, db_name, table_name, column_name,
                                          &data_type, &coll_seq, &not_null, &primary_key, &auto_inc);
@@ -1539,7 +1549,7 @@ elixir_sqlite3_result_error(JSContext *cx, uintN argc, jsval *vp)
      return JS_FALSE;
 
    GET_PRIVATE(cx, val[0].v.obj, context);
-   value = elixir_get_string_bytes(val[1].v.str);
+   value = elixir_get_string_bytes(val[1].v.str, NULL);
 
    sqlite3_result_error(context, value, -1);
 

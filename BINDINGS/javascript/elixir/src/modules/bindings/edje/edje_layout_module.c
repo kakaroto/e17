@@ -197,7 +197,7 @@ elixir_edje_box_layout_register(JSContext *cx, uintN argc, jsval *vp)
    if (!elixir_params_check(cx, _string_4functions_any_params, val, argc, JS_ARGV(cx, vp)))
      return JS_FALSE;
 
-   name = elixir_get_string_bytes(val[0].v.str);
+   name = elixir_get_string_bytes(val[0].v.str, NULL);
    cb = malloc(sizeof (JSFunction *) * 4);
    if (!cb) return JS_FALSE;
 

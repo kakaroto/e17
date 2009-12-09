@@ -1,3 +1,4 @@
+#include <string.h>
 #include <stdlib.h>
 #include <stdint.h>
 #include <Evas.h>
@@ -36,9 +37,14 @@ elixir_evas_object_text_font_set(JSContext *cx, uintN argc, jsval *vp)
 
    if (elixir_params_check(cx, _evas_object_text_string_int_params, val, argc, JS_ARGV(cx, vp)))
      {
+	size_t length;
+
 	know = JS_GetPrivate(cx, val[0].v.obj);
-	font = elixir_get_string_bytes(val[1].v.str);
+	font = elixir_get_string_bytes(val[1].v.str, &length);
 	size = val[2].v.num;
+
+	if (length != strlen(font))
+	  return JS_FALSE;
      }
 
    if (elixir_params_check(cx, _evas_object_text_font_params, val, argc, JS_ARGV(cx, vp)))

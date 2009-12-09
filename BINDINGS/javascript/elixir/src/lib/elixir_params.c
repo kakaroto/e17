@@ -92,7 +92,7 @@ elixir_params_get_boolean(JSContext* cx, jsval arg, int* bool, int index)
 	break;
      case JSTRING:
         jstr = JS_ValueToString(cx, arg);
-        cstr = elixir_get_string_bytes(jstr);
+        cstr = elixir_get_string_bytes(jstr, NULL);
         if (strcmp(cstr, "true") == 0)
           localbool = 1;
         else

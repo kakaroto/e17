@@ -27,7 +27,7 @@ elixir_evas_string_params(void (*func)(Evas *evas, const char *str),
      return JS_FALSE;
 
    GET_PRIVATE(cx, val[0].v.obj, evas);
-   file = elixir_file_canonicalize(elixir_get_string_bytes(val[1].v.str));
+   file = elixir_file_canonicalize(elixir_get_string_bytes(val[1].v.str, NULL));
 
    func(evas, file);
 
@@ -50,7 +50,7 @@ elixir_object_evas_string_params(Evas_Object* (*func)(const Evas *evas, const ch
 
    GET_PRIVATE(cx, val[0].v.obj, evas);
 
-   str = elixir_get_string_bytes(val[1].v.str);
+   str = elixir_get_string_bytes(val[1].v.str, NULL);
    know = func(evas, str);
 
    return evas_object_to_jsval(cx, know, &(JS_RVAL(cx, vp)));

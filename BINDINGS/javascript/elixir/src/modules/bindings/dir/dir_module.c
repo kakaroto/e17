@@ -304,7 +304,7 @@ elixir_open(JSContext *cx, uintN argc, jsval *vp)
 
    path = elixir_file_virtual_chroot_get();
    if (elixir_params_check(cx, string_params, val, argc, JS_ARGV(cx, vp)))
-     path = elixir_get_string_bytes(val[0].v.str);
+     path = elixir_get_string_bytes(val[0].v.str, NULL);
 
    snprintf(tmp, PATH_MAX, "%s/", path);
 
@@ -435,7 +435,7 @@ elixir_filter(JSContext *cx, uintN argc, jsval *vp)
    if (!elixir_params_check(cx, string_params, val, argc, JS_ARGV(cx, vp)))
      return JS_FALSE;
 
-   filter = elixir_get_string_bytes(val[0].v.str);
+   filter = elixir_get_string_bytes(val[0].v.str, NULL);
    elixir_filter_register(filter);
 
    return JS_TRUE;
@@ -547,8 +547,8 @@ elixir_virtual(JSContext *cx, uintN argc, jsval *vp)
    if (!elixir_params_check(cx, _2string_params, val, argc, JS_ARGV(cx, vp)))
      return JS_FALSE;
 
-   real = elixir_get_string_bytes(val[0].v.str);
-   virtual = elixir_get_string_bytes(val[1].v.str);
+   real = elixir_get_string_bytes(val[0].v.str, NULL);
+   virtual = elixir_get_string_bytes(val[1].v.str, NULL);
 
    if (real == NULL || virtual == NULL)
      return JS_FALSE;

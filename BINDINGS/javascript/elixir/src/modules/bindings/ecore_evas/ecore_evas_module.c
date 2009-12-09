@@ -409,7 +409,7 @@ elixir_ecore_evas_new(JSContext *cx, uintN argc, jsval *vp)
    if (!elixir_params_check(cx, _string_4int_string_params, val, argc, JS_ARGV(cx, vp)))
      return JS_FALSE;
 
-   engine_name = elixir_get_string_bytes(val[0].v.str);
+   engine_name = elixir_get_string_bytes(val[0].v.str, NULL);
    x = val[1].v.num;
    y = val[2].v.num;
    w = val[3].v.num;
@@ -593,7 +593,7 @@ elixir_ecore_evas_data_get(JSContext *cx, uintN argc, jsval *vp)
      return JS_FALSE;
 
    GET_PRIVATE(cx, val[0].v.obj, ee);
-   key = elixir_get_string_bytes(val[1].v.str);
+   key = elixir_get_string_bytes(val[1].v.str, NULL);
 
    if (key && strncmp(key, "_elixir_", 8) == 0)
      {
@@ -618,7 +618,7 @@ elixir_ecore_evas_title_set(JSContext *cx, uintN argc, jsval *vp)
      return JS_FALSE;
 
    GET_PRIVATE(cx, val[0].v.obj, ee);
-   t = elixir_get_string_bytes(val[1].v.str);
+   t = elixir_get_string_bytes(val[1].v.str, NULL);
 
    ecore_evas_title_set(ee, t);
 
@@ -637,7 +637,7 @@ elixir_ecore_evas_data_set(JSContext *cx, uintN argc, jsval *vp)
      return JS_FALSE;
 
    GET_PRIVATE(cx, val[0].v.obj, ee);
-   key = elixir_get_string_bytes(val[1].v.str);
+   key = elixir_get_string_bytes(val[1].v.str, NULL);
 
    if (key && strncmp(key, "_elixir_", 8) == 0)
      return JS_FALSE;
@@ -664,7 +664,7 @@ elixir_ecore_evas_cursor_set(JSContext *cx, uintN argc, jsval *vp)
      return JS_FALSE;
 
    GET_PRIVATE(cx, val[0].v.obj, ee);
-   file = elixir_file_canonicalize(elixir_get_string_bytes(val[1].v.str));
+   file = elixir_file_canonicalize(elixir_get_string_bytes(val[1].v.str, NULL));
    layer = val[2].v.num;
    hot_x = val[3].v.num;
    hot_y = val[4].v.num;
@@ -712,8 +712,8 @@ elixir_ecore_evas_name_class_set(JSContext *cx, uintN argc, jsval *vp)
      return JS_FALSE;
 
    GET_PRIVATE(cx, val[0].v.obj, ee);
-   n = elixir_get_string_bytes(val[1].v.str);
-   c = elixir_get_string_bytes(val[2].v.str);
+   n = elixir_get_string_bytes(val[1].v.str, NULL);
+   c = elixir_get_string_bytes(val[2].v.str, NULL);
 
    ecore_evas_name_class_set(ee, n, c);
 

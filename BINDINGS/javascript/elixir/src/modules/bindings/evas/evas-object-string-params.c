@@ -33,7 +33,7 @@ elixir_evas_object_string_params(void (*func)(Evas_Object* obj, const char* str)
      return JS_FALSE;
 
    GET_PRIVATE(cx, val[0].v.obj, know);
-   str = elixir_get_string_bytes(val[1].v.str);
+   str = elixir_get_string_bytes(val[1].v.str, NULL);
 
    func(know, str);
 
@@ -51,9 +51,9 @@ elixir_evas_object_data_get(JSContext *cx, uintN argc, jsval *vp)
      return JS_FALSE;
 
    GET_PRIVATE(cx, val[0].v.obj, know);
-   str = elixir_get_string_bytes(val[1].v.str);
+   str = elixir_get_string_bytes(val[1].v.str, NULL);
 
-   if (str && strcmp(str, "elixir_jsval") == 0)
+   if (str && strncmp(str, "elixir_jsval", 12) == 0)
      {
 	JS_SET_RVAL(cx, vp, JSVAL_NULL);
 	return JS_TRUE;
@@ -74,9 +74,9 @@ elixir_evas_object_data_del(JSContext *cx, uintN argc, jsval *vp)
      return JS_FALSE;
 
    GET_PRIVATE(cx, val[0].v.obj, know);
-   str = elixir_get_string_bytes(val[1].v.str);
+   str = elixir_get_string_bytes(val[1].v.str, NULL);
 
-   if (str && strcmp(str, "elixir_jsval") == 0)
+   if (str && strncmp(str, "elixir_jsval", 12) == 0)
      {
 	JS_SET_RVAL(cx, vp, JSVAL_NULL);
 	return JS_TRUE;

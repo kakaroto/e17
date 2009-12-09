@@ -54,7 +54,7 @@ elixir_print(JSContext *cx, uintN argc, jsval *vp)
 	return JS_FALSE;
 
       JS_ARGV(cx, vp)[i] = STRING_TO_JSVAL(js_str);
-      fputs(elixir_get_string_bytes(js_str), out);
+      fputs(elixir_get_string_bytes(js_str, NULL), out);
    }
 
    return JS_TRUE;
@@ -133,7 +133,7 @@ elixir_load(JSContext *cx, uintN argc, jsval *vp)
    if (!elixir_params_check(cx, string_params, val, argc, JS_ARGV(cx, vp)))
      return JS_FALSE;
 
-   module = elixir_get_string_bytes(val[0].v.str);
+   module = elixir_get_string_bytes(val[0].v.str, NULL);
 
    /* FIXME: Add the module to a list of loaded module. */
    em = elixir_modules_find(module);
@@ -165,7 +165,7 @@ elixir_unload(JSContext *cx,  uintN argc, jsval *vp)
    if (!elixir_params_check(cx, string_params, val, argc, JS_ARGV(cx, vp)))
      return JS_FALSE;
 
-   module = elixir_get_string_bytes(val[0].v.str);
+   module = elixir_get_string_bytes(val[0].v.str, NULL);
 
    /* FIXME: Hack preventing self unloading. */
    if (strcmp(module, "elixir") == 0)
@@ -218,7 +218,7 @@ elixir_include(JSContext *cx, uintN argc, jsval *vp)
 
    for (count = 0, i = 0; i < 3; ++i)
      {
-	if (val[i].v.str) params[i] = elixir_get_string_bytes(val[i].v.str);
+	if (val[i].v.str) params[i] = elixir_get_string_bytes(val[i].v.str, NULL);
 	else params[i] = NULL;
 	if (params[i] != NULL) count = i + 1;
      }
@@ -269,7 +269,7 @@ elixir_parse(JSContext *cx, uintN argc, jsval *vp)
 
    for (count = 0, i = 0; i < 3; ++i)
      {
-	params[i] = elixir_get_string_bytes(val[i].v.str);
+	params[i] = elixir_get_string_bytes(val[i].v.str, NULL);
 	if (params[i] != NULL) count = i + 1;
      }
 
@@ -323,7 +323,7 @@ elixir_chdir(JSContext *cx, uintN argc, jsval *vp)
    if (!elixir_params_check(cx, string_params, val, argc, JS_ARGV(cx, vp)))
      return JS_FALSE;
 
-   path = elixir_file_canonicalize(elixir_get_string_bytes(val[0].v.str));
+   path = elixir_file_canonicalize(elixir_get_string_bytes(val[0].v.str, NULL));
 
    JS_SET_RVAL(cx, vp, BOOLEAN_TO_JSVAL((chdir(path) == -1)));
    return JS_TRUE;

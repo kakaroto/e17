@@ -150,7 +150,7 @@ elixir_Mix_LoadWAV(JSContext *cx, uintN argc, jsval *vp)
    if (!elixir_params_check(cx, string_params, val, argc, JS_ARGV(cx, vp)))
      return JS_FALSE;
 
-   filename = elixir_file_canonicalize(elixir_get_string_bytes(val[0].v.str));
+   filename = elixir_file_canonicalize(elixir_get_string_bytes(val[0].v.str, NULL));
 
    ret = Mix_LoadWAV(filename);
 
