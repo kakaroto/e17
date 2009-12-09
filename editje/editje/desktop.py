@@ -192,6 +192,11 @@ class EditManager(View, evas.ClippedSmartObject):
         self._group_listeners = []
         self._part_listeners = []
 
+        self.outside_area = self.evas.Rectangle(color=(0, 0, 0, 0))
+        self.member_push(self.outside_area)
+        self.outside_area.on_mouse_down_add(self._outside_area_clicked)
+        self.outside_area.show()
+
         # Border
         self.border = GroupBorder(self)
         self.listener_member_push(self.border)
@@ -266,9 +271,11 @@ class EditManager(View, evas.ClippedSmartObject):
         self.member_push(obj)
 
     def resize(self, w, h):
-        return
+        self.outside_area.resize(w, h)
 
     def move(self, x, y):
+        self.outside_area.move(x, y)
+
         if self._group is None:
             return
         ox, oy = self.pos
@@ -278,6 +285,9 @@ class EditManager(View, evas.ClippedSmartObject):
 
     def delete(self):
         evas.ClippedSmartObject.delete(self)
+
+    def _outside_area_clicked(self, o, ev):
+        self.controller.e.part.name = ""
 
     #  GROUP CHANGED
     def group_min_set(self, w, h):
@@ -318,6 +328,7 @@ class EditManager(View, evas.ClippedSmartObject):
         self.group_resize(300, 300)
         self._padding_init(self)
         self._group_member_add()
+        self.outside_area.lower()
         group.show()
         for obj in self._group_listeners:
             obj.group = group

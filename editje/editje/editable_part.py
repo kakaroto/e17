@@ -50,6 +50,7 @@ class EditablePart(Manager, object):
     def _name_set(self, value):
         if not self.e._edje or not value:
             self._part = None
+            self._name = ""
             self.event_emit("part.unselected")
         elif self._name != value:
             self._part = self.e._edje.part_get(value)
