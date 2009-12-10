@@ -81,7 +81,8 @@ ecore_x_icccm_state_set_withdrawn(Ecore_X_Window win)
  * Send client message (format 32)
  */
 int
-ecore_x_client_message32_send(Window win, Atom type, long mask, long d0,
+ecore_x_client_message32_send(Ecore_X_Window win, Ecore_X_Atom type,
+			      long mask, long d0,
 			      long d1, long d2, long d3, long d4)
 {
    XEvent              xev;

@@ -27,12 +27,12 @@
 
 #else
 
-#define Ecore_X_ID       XID
-#define Ecore_X_Drawable Drawable
-#define Ecore_X_Window   Window
-#define Ecore_X_Pixmap   Pixmap
-#define Ecore_X_Atom     Atom
-#define Ecore_X_Time     Time
+#define Ecore_X_ID       unsigned int
+#define Ecore_X_Drawable Ecore_X_ID
+#define Ecore_X_Window   Ecore_X_ID
+#define Ecore_X_Pixmap   Ecore_X_ID
+#define Ecore_X_Atom     Ecore_X_ID
+#define Ecore_X_Time     Ecore_X_ID
 #define Ecore_X_GC       GC
 
 int                 ecore_x_client_message32_send(Ecore_X_Window win,
