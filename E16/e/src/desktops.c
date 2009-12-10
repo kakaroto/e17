@@ -1182,7 +1182,7 @@ DeskGoto(Desk * dsk)
 
    ModulesSignal(ESIGNAL_DESK_SWITCH_START, NULL);
 
-   ActionsSuspend();
+   MoveResizeSuspend();
    DeskSwitchStart();
 
    if (dsk->num > 0)
@@ -1236,7 +1236,7 @@ DeskGoto(Desk * dsk)
      }
 
    DeskSwitchDone();
-   ActionsResume();
+   MoveResizeResume();
 
    ModulesSignal(ESIGNAL_DESK_SWITCH_DONE, NULL);
 
@@ -1652,7 +1652,7 @@ DeskCurrentGotoArea(int ax, int ay)
    else if (dy > 0)
       SoundPlay(SOUND_MOVE_AREA_DOWN);
 
-   ActionsSuspend();
+   MoveResizeSuspend();
 
    /* remove lots of event masks from windows.. we dont want to bother */
    /* handling events as a result of our playing wiht windows */
@@ -1719,7 +1719,7 @@ DeskCurrentGotoArea(int ax, int ay)
    /* set hints up for it */
    HintsSetDesktopViewport();
 
-   ActionsResume();
+   MoveResizeResume();
 
    /* re-focus on a new ewin on that new desktop area */
    DeskSwitchDone();

@@ -454,15 +454,15 @@ void                EwinSyncRequestWait(EWin * ewin);
 #endif
 
 /* moveresize.c */
-int                 ActionMoveStart(EWin * ewin, int kbd, int constrained,
-				    int nogroup);
-int                 ActionResizeStart(EWin * ewin, int kbd, int hv);
+void                MoveResizeMoveStart(EWin * ewin, int kbd, int constrained,
+					int nogroup);
+void                MoveResizeResizeStart(EWin * ewin, int kbd, int hv);
 
-int                 ActionsSuspend(void);
-int                 ActionsResume(void);
-void                ActionsHandleKey(unsigned int key);
-void                ActionsHandleMotion(void);
-int                 ActionsEnd(EWin * ewin);
+void                MoveResizeSuspend(void);
+void                MoveResizeResume(void);
+void                MoveResizeHandleKey(unsigned int key);
+void                MoveResizeHandleMotion(void);
+void                MoveResizeEnd(EWin * ewin);
 
 /* size.c */
 void                MaxSizeHV(EWin * ewin, const char *resize_type,

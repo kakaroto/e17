@@ -1027,29 +1027,29 @@ EWMH_ProcessClientClientMessage(EWin * ewin, XClientMessageEvent * ev)
 	  case _NET_WM_MOVERESIZE_SIZE_TOPRIGHT:
 	  case _NET_WM_MOVERESIZE_SIZE_BOTTOMRIGHT:
 	  case _NET_WM_MOVERESIZE_SIZE_BOTTOMLEFT:
-	     ActionResizeStart(ewin, 0, MODE_RESIZE);
+	     MoveResizeResizeStart(ewin, 0, MODE_RESIZE);
 	     break;
 	  case _NET_WM_MOVERESIZE_SIZE_RIGHT:
 	  case _NET_WM_MOVERESIZE_SIZE_LEFT:
-	     ActionResizeStart(ewin, 0, MODE_RESIZE_H);
+	     MoveResizeResizeStart(ewin, 0, MODE_RESIZE_H);
 	     break;
 	  case _NET_WM_MOVERESIZE_SIZE_TOP:
 	  case _NET_WM_MOVERESIZE_SIZE_BOTTOM:
-	     ActionResizeStart(ewin, 0, MODE_RESIZE_V);
+	     MoveResizeResizeStart(ewin, 0, MODE_RESIZE_V);
 	     break;
 
 	  case _NET_WM_MOVERESIZE_MOVE:
-	     ActionMoveStart(ewin, 0, 0, 0);
+	     MoveResizeMoveStart(ewin, 0, 0, 0);
 	     break;
 
 	  case _NET_WM_MOVERESIZE_SIZE_KEYBOARD:
-	     ActionResizeStart(ewin, 1, MODE_RESIZE);
+	     MoveResizeResizeStart(ewin, 1, MODE_RESIZE);
 	     break;
 	  case _NET_WM_MOVERESIZE_MOVE_KEYBOARD:
-	     ActionMoveStart(ewin, 1, 0, 0);
+	     MoveResizeMoveStart(ewin, 1, 0, 0);
 	     break;
 	  case _NET_WM_MOVERESIZE_CANCEL:
-	     ActionsEnd(ewin);
+	     MoveResizeEnd(ewin);
 	     break;
 	  }
 	return 1;

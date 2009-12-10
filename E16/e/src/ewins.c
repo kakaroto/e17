@@ -924,7 +924,7 @@ AddToFamily(EWin * ewin, Window xwin, int startup)
 	EwinOpFloatAt(ewin, OPSRC_USER, x, y);
 	EwinShow(ewin);
 	Mode.place.doing_manual = 1;
-	ActionMoveStart(ewin, 0, 0, 0);
+	MoveResizeMoveStart(ewin, 0, 0, 0);
 	goto done;
      }
    else if (doslide)
@@ -1019,7 +1019,7 @@ EwinUnmap1(EWin * ewin)
    if (GetZoomEWin() == ewin)
       Zoom(NULL);
 
-   ActionsEnd(ewin);
+   MoveResizeEnd(ewin);
 }
 
 static void
@@ -2259,13 +2259,13 @@ EwinHandleEventsToplevel(Win win __UNUSED__, XEvent * ev, void *prm)
    switch (ev->type)
      {
      case KeyPress:
-	ActionsHandleKey(XLookupKeysym(&ev->xkey, 0));
+	MoveResizeHandleKey(XLookupKeysym(&ev->xkey, 0));
 	break;
      case ButtonPress:
 	ActionsCheck("BUTTONBINDINGS", ewin, ev);
 	break;
      case ButtonRelease:
-	ActionsEnd(NULL);
+	MoveResizeEnd(NULL);
 	ActionsCheck("BUTTONBINDINGS", ewin, ev);
 	BorderCheckState(ewin, ev);
 	break;
@@ -2276,7 +2276,7 @@ EwinHandleEventsToplevel(Win win __UNUSED__, XEvent * ev, void *prm)
 	FocusHandleLeave(ewin, ev);
 	break;
      case MotionNotify:
-	ActionsHandleMotion();
+	MoveResizeHandleMotion();
 	break;
      default:
 #if DEBUG_EWIN_EVENTS

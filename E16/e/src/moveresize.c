@@ -79,14 +79,14 @@ EwinShapeSet(EWin * ewin)
      }
 }
 
-int
-ActionMoveStart(EWin * ewin, int kbd, int constrained, int nogroup)
+void
+MoveResizeMoveStart(EWin * ewin, int kbd, int constrained, int nogroup)
 {
    EWin              **gwins;
    int                 i, num, cx, cy;
 
    if (!ewin || ewin->state.inhibit_move)
-      return 0;
+      return;
 
    Mode_mr.ewin = ewin;
    Mode_mr.using_kbd = kbd;
@@ -135,19 +135,17 @@ ActionMoveStart(EWin * ewin, int kbd, int constrained, int nogroup)
 
    Mode_mr.swapcoord_x = EoGetX(ewin);
    Mode_mr.swapcoord_y = EoGetY(ewin);
-
-   return 0;
 }
 
-static int
-ActionMoveEnd(EWin * ewin)
+static void
+_MoveResizeMoveEnd(EWin * ewin)
 {
    EWin              **gwins;
    int                 num, i;
    Desk               *d1, *d2;
 
    if (ewin && ewin != Mode_mr.ewin)
-      return 0;
+      return;
 
    GrabKeyboardRelease();
    GrabPointerRelease();
@@ -206,22 +204,20 @@ ActionMoveEnd(EWin * ewin)
 	EUngrabServer();
 	ModulesSignal(ESIGNAL_ANIMATION_RESUME, NULL);
      }
-
-   return 0;
 }
 
-static int
-ActionMoveSuspend(void)
+static void
+_MoveResizeMoveSuspend(void)
 {
    EWin               *ewin, **lst;
    int                 i, num;
 
    ewin = Mode_mr.ewin;
    if (!ewin)
-      return 0;
+      return;
 
    if (Mode.mode == MODE_MOVE_PENDING)
-      return 0;
+      return;
 
    /* If non opaque undraw our boxes */
    if (Mode_mr.grab_server)
@@ -238,12 +234,10 @@ ActionMoveSuspend(void)
 
 	EUngrabServer();
      }
-
-   return 0;
 }
 
-static int
-ActionMoveResume(void)
+static void
+_MoveResizeMoveResume(void)
 {
    EWin               *ewin, **lst;
    int                 i, num;
@@ -251,7 +245,7 @@ ActionMoveResume(void)
 
    ewin = Mode_mr.ewin;
    if (!ewin)
-      return 0;
+      return;
 
    GrabPointerSet(EoGetWin(ewin), ECSR_ACT_MOVE, 1);
 
@@ -286,22 +280,20 @@ ActionMoveResume(void)
 		      ewin->client.w, ewin->client.h, fl, i);
      }
    Efree(lst);
-
-   return 0;
 }
 
 #define RD(h, v) (((h) << 8) + (v))
 #define RD_H(hv) (((hv) >> 8) & 0xff)
 #define RD_V(hv) (((hv)     ) & 0xff)
 
-int
-ActionResizeStart(EWin * ewin, int kbd, int hv)
+void
+MoveResizeResizeStart(EWin * ewin, int kbd, int hv)
 {
    int                 x, y, w, h, ww, hh, cx, cy;
    unsigned int        csr;
 
    if (!ewin || ewin->state.inhibit_resize)
-      return 0;
+      return;
 
    Mode_mr.ewin = ewin;
 
@@ -435,15 +427,13 @@ ActionResizeStart(EWin * ewin, int kbd, int hv)
    ewin->state.show_coords = 1;
    DrawEwinShape(ewin, Conf.movres.mode_resize, EoGetX(ewin), EoGetY(ewin),
 		 ewin->client.w, ewin->client.h, 0, 0);
-
-   return 0;
 }
 
-static int
-ActionResizeEnd(EWin * ewin)
+static void
+_MoveResizeResizeEnd(EWin * ewin)
 {
    if (ewin && ewin != Mode_mr.ewin)
-      return 0;
+      return;
 
    Mode.mode = MODE_NONE;
 
@@ -482,12 +472,10 @@ ActionResizeEnd(EWin * ewin)
 	EUngrabServer();
 	ModulesSignal(ESIGNAL_ANIMATION_RESUME, NULL);
      }
-
-   return 0;
 }
 
 static void
-ActionMoveHandleMotion(void)
+_MoveResizeMoveHandleMotion(void)
 {
    int                 dx, dy, dd;
    EWin               *ewin, **gwins, *ewin1;
@@ -720,7 +708,7 @@ ActionMoveHandleMotion(void)
 }
 
 static void
-ActionResizeHandleMotion(void)
+_MoveResizeResizeHandleMotion(void)
 {
    int                 x, y, w, h;
    EWin               *ewin;
@@ -768,7 +756,7 @@ ActionResizeHandleMotion(void)
 }
 
 void
-ActionsHandleKey(unsigned int key)
+MoveResizeHandleKey(unsigned int key)
 {
    EWin               *ewin;
    int                 resize, delta, end = 0;
@@ -788,6 +776,7 @@ ActionsHandleKey(unsigned int key)
      {
      default:
 	return;
+
      case XK_Escape:
 	Mode_mr.cur_x = Mode_mr.start_x;
 	Mode_mr.cur_y = Mode_mr.start_y;
@@ -833,17 +822,17 @@ ActionsHandleKey(unsigned int key)
      {
      case MODE_MOVE_PENDING:
      case MODE_MOVE:
-	ActionMoveHandleMotion();
+	_MoveResizeMoveHandleMotion();
 	if (end)
-	   ActionMoveEnd(NULL);
+	   _MoveResizeMoveEnd(NULL);
 	break;
 
      case MODE_RESIZE:
      case MODE_RESIZE_H:
      case MODE_RESIZE_V:
-	ActionResizeHandleMotion();
+	_MoveResizeResizeHandleMotion();
 	if (end)
-	   ActionResizeEnd(NULL);
+	   _MoveResizeResizeEnd(NULL);
 	break;
 
      default:
@@ -852,19 +841,19 @@ ActionsHandleKey(unsigned int key)
 }
 
 void
-ActionsHandleMotion(void)
+MoveResizeHandleMotion(void)
 {
    switch (Mode.mode)
      {
      case MODE_MOVE_PENDING:
      case MODE_MOVE:
-	ActionMoveHandleMotion();
+	_MoveResizeMoveHandleMotion();
 	break;
 
      case MODE_RESIZE:
      case MODE_RESIZE_H:
      case MODE_RESIZE_V:
-	ActionResizeHandleMotion();
+	_MoveResizeResizeHandleMotion();
 	break;
 
      default:
@@ -872,65 +861,56 @@ ActionsHandleMotion(void)
      }
 }
 
-int
-ActionsSuspend(void)
+void
+MoveResizeSuspend(void)
 {
    switch (Mode.mode)
      {
      case MODE_MOVE_PENDING:
      case MODE_MOVE:
-	ActionMoveSuspend();
+	_MoveResizeMoveSuspend();
 	break;
      case MODE_RESIZE:
      case MODE_RESIZE_H:
      case MODE_RESIZE_V:
-	ActionResizeEnd(NULL);
+	_MoveResizeResizeEnd(NULL);
 	break;
      }
-
-   return 0;
 }
 
-int
-ActionsResume(void)
+void
+MoveResizeResume(void)
 {
    switch (Mode.mode)
      {
      case MODE_MOVE_PENDING:
      case MODE_MOVE:
-	ActionMoveResume();
+	_MoveResizeMoveResume();
 	break;
      }
-
-   return 0;
 }
 
-int
-ActionsEnd(EWin * ewin)
+void
+MoveResizeEnd(EWin * ewin)
 {
-   int                 did_end = 1;
-
    switch (Mode.mode)
      {
      case MODE_RESIZE:
      case MODE_RESIZE_H:
      case MODE_RESIZE_V:
-	ActionResizeEnd(ewin);
+	_MoveResizeResizeEnd(ewin);
 	Mode.action_inhibit = 1;
 	break;
 
      case MODE_MOVE_PENDING:
      case MODE_MOVE:
-	ActionMoveEnd(ewin);
+	_MoveResizeMoveEnd(ewin);
 	Mode.action_inhibit = 1;
 	break;
 
      default:
-	did_end = 0;
 	break;
      }
-
-   return did_end;
 }
 
 void

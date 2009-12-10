@@ -901,7 +901,7 @@ BorderWinpartEventMouseUp(EWinBit * wbit, XEvent * ev)
    if (ev)
      {
 	GrabPointerRelease();
-	ActionsEnd(ewin);
+	MoveResizeEnd(ewin);
      }
 
    if ((wbit->state == STATE_CLICKED) && (!wbit->left))
