@@ -106,6 +106,20 @@ cdef class Entry(Object):
         self._callback_remove("activated", func, *args, **kwargs)
 
 
+    def callback_clicked_add(self, func, *args, **kwargs):
+        self._callback_add("clicked", func, *args, **kwargs)
+
+    def callback_clicked_remove(self, func = None, *args, **kwargs):
+        self._callback_remove("clicked", func, *args, **kwargs)
+
+
+    def callback_double_clicked_add(self, func, *args, **kwargs):
+        self._callback_add("clicked,double", func, *args, **kwargs)
+
+    def callback_double_clicked_remove(self, func = None, *args, **kwargs):
+        self._callback_remove("clicked,double", func, *args, **kwargs)
+
+
     def single_line_set(self, single_line):
         elm_entry_single_line_set(self.obj, single_line)
 
