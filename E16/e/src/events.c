@@ -273,14 +273,12 @@ EventsGetXY(int *px, int *py)
 }
 
 static void
-ModeGetXY(Window rwin, int rx, int ry)
+ModeGetXY(int rx, int ry)
 {
-   Window              child;
-
    if (Mode.wm.window)
      {
-	XTranslateCoordinates(disp, rwin, WinGetXwin(VROOT), rx, ry,
-			      &Mode.events.cx, &Mode.events.cy, &child);
+	ETranslateCoordinates(RROOT, VROOT, rx, ry,
+			      &Mode.events.cx, &Mode.events.cy, NULL);
      }
    else
      {
@@ -308,7 +306,7 @@ HandleEvent(XEvent * ev)
 	Mode.events.last_keystate = ev->xkey.state;
      case KeyRelease:
 	Mode.events.time = ev->xkey.time;
-	ModeGetXY(ev->xbutton.root, ev->xkey.x_root, ev->xkey.y_root);
+	ModeGetXY(ev->xkey.x_root, ev->xkey.y_root);
 #if 0				/* FIXME - Why? */
 	if (ev->xkey.root != WinGetXwin(VROOT))
 	  {
@@ -326,7 +324,7 @@ HandleEvent(XEvent * ev)
      case ButtonPress:
      case ButtonRelease:
 	Mode.events.time = ev->xbutton.time;
-	ModeGetXY(ev->xbutton.root, ev->xbutton.x_root, ev->xbutton.y_root);
+	ModeGetXY(ev->xbutton.x_root, ev->xbutton.y_root);
 	Mode.events.on_screen = ev->xbutton.same_screen;
 	TooltipsHide();
 	goto do_stuff;
@@ -335,7 +333,7 @@ HandleEvent(XEvent * ev)
 	Mode.events.time = ev->xmotion.time;
 	Mode.events.px = Mode.events.mx;
 	Mode.events.py = Mode.events.my;
-	ModeGetXY(ev->xmotion.root, ev->xmotion.x_root, ev->xmotion.y_root);
+	ModeGetXY(ev->xmotion.x_root, ev->xmotion.y_root);
 	Mode.events.mx = Mode.events.cx;
 	Mode.events.my = Mode.events.cy;
 	Mode.events.on_screen = ev->xmotion.same_screen;
@@ -352,8 +350,7 @@ HandleEvent(XEvent * ev)
 	     if (!Mode.grabs.pointer_grab_active)
 		Mode.grabs.pointer_grab_active = 2;
 	  }
-	ModeGetXY(ev->xcrossing.root, ev->xcrossing.x_root,
-		  ev->xcrossing.y_root);
+	ModeGetXY(ev->xcrossing.x_root, ev->xcrossing.y_root);
 	TooltipsHide();
 	goto do_stuff;
 
@@ -366,8 +363,7 @@ HandleEvent(XEvent * ev)
 	     Mode.grabs.pointer_grab_window = None;
 	     Mode.grabs.pointer_grab_active = 0;
 	  }
-	ModeGetXY(ev->xcrossing.root, ev->xcrossing.x_root,
-		  ev->xcrossing.y_root);
+	ModeGetXY(ev->xcrossing.x_root, ev->xcrossing.y_root);
 	TooltipsHide();
 	goto do_stuff;
 
