@@ -23,7 +23,6 @@ from collapsable import Collapsable, CollapsableView
 
 
 class CList(Collapsable):
-
     def _view_load(self):
         self._selected = None
         self._view = CListView(self, self.parent.view)
@@ -47,6 +46,7 @@ class CList(Collapsable):
         if self._selected != item:
             self._selected = item
             self._view.select(item)
+            self.event_emit("item.selected", self._selected)
 
     def unselect(self):
         self._view.unselect(self._selected)
@@ -55,12 +55,10 @@ class CList(Collapsable):
 
     def _item_select_cb(self, list, it, item, *args, **kwargs):
         if self._selected != item:
-            self._view.select(item)
-            self.event_emit("item.selected", item)
+            self.select(item)
 
 
 class CListView(CollapsableView):
-
     def _content_load(self):
         self.list = elementary.List(self.parent_view)
         self.list.style_set("editje.collapsable")
