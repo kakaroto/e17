@@ -38,6 +38,7 @@ class WidgetColor(Widget):
         self.entry.size_hint_weight_set(1.0, 0.0)
         self.entry.callback_activated_add(self._entry_activate_cb)
         self.entry.callback_changed_add(self._entry_changed_cb)
+        self.entry.callback_double_clicked_add(self._dblclick_cb)
         self.entry.show()
 
         self.scr = elementary.Scroller(parent)
@@ -129,6 +130,9 @@ class WidgetColor(Widget):
 
     def _entry_activate_cb(self, obj, *args, **kwargs):
         self._callback_call("changed")
+
+    def _dblclick_cb(self, obj):
+        self.entry.select_all()
 
     def _sample_clicked_cb(self, obj, event):
         self.picker.current_color_set(*self.color)
