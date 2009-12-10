@@ -31,6 +31,7 @@ class NewPart(Wizard):
 
         self._name_init()
         self._types_init()
+        self._externals_init()
 
         self.action_add("default", "Cancel", self._cancel, icon="cancel")
         self.action_add("default", "Add", self._add, icon="confirm")
@@ -111,15 +112,28 @@ class NewPart(Wizard):
 
     def _type_select(self, li, it, type):
         self._type = type
-        if not self._name_changed:
-            name = it.label_get().replace(" ", "")
-            count = 0
-            for p in self._parent.e.parts:
-                if p.startswith(name):
-                    count += 1
-            self._name.entry_set(name + "%.2d" % count)
-            edje.message_signal_process()
-            self._name_changed = False
+        if type == edje.EDJE_PART_TYPE_EXTERNAL:
+            self._external_selector_toggle(True)
+        else:
+            self._external_selector_toggle(False)
+            self._default_name_set(it.label_get())
+
+    def _default_name_set(self, name):
+        if self._name_changed:
+            return
+        count = 0
+        for p in self._parent.e.parts:
+            if p.startswith(name):
+                count += 1
+        self._name.entry_set(name + "%.2d" % count)
+        edje.message_signal_process()
+        self._name_changed = False
+
+    def _externals_init(self):
+        self.external = ExternalSelector(self, self._default_name_set)
+        self.external.size_hint_weight_set(0, 0)
+        self.content_append("default", self.external)
+        self.external.show()
 
     def _add(self, popup, data):
         name = self._name.entry_get().replace("<br>", "")
@@ -127,16 +141,13 @@ class NewPart(Wizard):
             self._notify("Please set part name")
             return
 
-        if self._type == edje.EDJE_PART_TYPE_EXTERNAL:
-            self._part_external_select(name)
-        else:
-            self._part_add(name)
-
-    def _part_add(self, name, source=""):
-        success = self._parent.e.part_add(name, self._type, source, signal=False)
+        success = self._parent.e.part_add(name, self._type,
+                                          self.external.type, signal=False)
         if success:
             self._part_init(name, self._type)
             self._parent.e.event_emit("part.added", name)
+            if self._type == edje.EDJE_PART_TYPE_EXTERNAL:
+                self._parent.e._edje.external_add(self.external.module)
         else:
             self._notify("Choose another name")
 
@@ -175,30 +186,18 @@ class NewPart(Wizard):
     def _part_init_external(self, name, state):
         pass
 
-    def _part_external_select(self, name):
-        self.page_add("external", "Select Widget")
-
-        self.external = ExternalSelector(self)
-        self.content_append("external", self.external)
-        self.external.show()
-
-        self.action_add("external", "Ok", self._external_ok, name)
-        self.action_add("external", "Cancel", self._cancel, name)
-
-        self.goto("external")
-
-    def _external_ok(self, popup, data):
-        if not self.external.type:
-            self.close()
-            return
-        self._part_add(data, self.external.type)
-        self._parent.e._edje.external_add(self.external.module)
+    def _external_selector_toggle(self, show):
+        if show:
+            self.external.size_hint_weight_set(evas.EVAS_HINT_EXPAND,
+                                               evas.EVAS_HINT_EXPAND)
+        else:
+            self.external.size_hint_weight_set(0, 0)
 
     def _cancel(self, popup, data):
         self.close()
 
 class ExternalSelector(elementary.Box):
-    def __init__(self, parent):
+    def __init__(self, parent, type_cb):
         elementary.Box.__init__(self, parent)
         self.horizontal_set(True)
         self.size_hint_weight_set(evas.EVAS_HINT_EXPAND,
@@ -208,6 +207,8 @@ class ExternalSelector(elementary.Box):
 
         self._module = ""
         self._type = ""
+
+        self._type_selected_cb = type_cb
 
         self._types_load()
         self._modules_init()
@@ -282,7 +283,7 @@ class ExternalSelector(elementary.Box):
         if list:
             name, label = list[0]
             self._types.item_append(label, None, None, self._type_select,
-                                    name).selected_set(True)
+                                    name).selected_set(False)
         for (name, label) in list[1:]:
             self._types.item_append(label, None, None, self._type_select, name)
 
@@ -290,3 +291,6 @@ class ExternalSelector(elementary.Box):
 
     def _type_select(self, li, it, type):
         self._type = type
+        if self._type_selected_cb:
+            name = it.label_get().replace(" ", "")
+            self._type_selected_cb(name)
