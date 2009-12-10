@@ -512,6 +512,7 @@ EAPI void                         elixir_debug_print_switch(Elixir_Debug_Mode mo
 EAPI JSObject *elixir_build_ptr(JSContext *cx, void *ret, JSClass *cls);
 EAPI JSObject *elixir_return_ptr(JSContext *cx, jsval *vp, void *ret, JSClass *cls);
 EAPI JSString *elixir_return_str(JSContext *cx, jsval *vp, const char *str);
+EAPI JSString *elixir_return_strn(JSContext *cx, jsval *vp, const char *str, int length);
 EAPI JSObject *elixir_return_array(JSContext *cx, jsval *vp);
 EAPI JSObject *elixir_return_script(JSContext* cx, jsval *vp, Elixir_Script *es);
 

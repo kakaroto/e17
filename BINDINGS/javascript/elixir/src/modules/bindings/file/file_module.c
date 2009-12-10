@@ -24,6 +24,12 @@ static const elixir_parameter_t*        _file_params[2] = {
    NULL
 };
 
+static const elixir_parameter_t*        _file_int_params[3] = {
+   &_file_parameter,
+   &int_parameter,
+   NULL
+};
+
 typedef struct mmaped_file_s    mmaped_file_t;
 struct mmaped_file_s
 {
@@ -177,6 +183,40 @@ elixir_fgets(JSContext *cx, uintN argc, jsval *vp)
 
    return JS_TRUE;
 }
+
+static JSBool
+elixir_fread(JSContext *cx, uintN argc, jsval *vp)
+{
+   mmaped_file_t *fl;
+   const char *tmp = NULL;
+   char *buf = NULL;
+   int size;
+   elixir_value_t val[2];
+
+   if (!elixir_params_check(cx, _file_int_params, val, argc, JS_ARGV(cx, vp)))
+     return JS_FALSE;
+
+   GET_PRIVATE(cx, val[0].v.obj, fl);
+   size = val[1].v.num;
+
+   if (!fl)
+     return JS_FALSE;
+
+   if (fl->offset >= fl->length) {
+      JS_SET_RVAL(cx, vp, JSVAL_NULL);
+   } else {
+      tmp = fl->data + fl->offset;
+      if (size > fl->length - fl->offset)
+        size = fl->length - fl->offset;
+
+      elixir_return_strn(cx, vp, tmp, size);
+
+      fl->offset += size;
+   }
+
+   return JS_TRUE;
+}
+
 static JSBool
 elixir_feof(JSContext *cx, uintN argc, jsval *vp)
 {
@@ -252,6 +292,7 @@ static JSFunctionSpec        file_functions[] = {
   ELIXIR_FN(freadall, 1, JSPROP_ENUMERATE, 0 ),
   ELIXIR_FN(fclose, 1, JSPROP_ENUMERATE, 0 ),
   ELIXIR_FN(fgets, 1, JSPROP_ENUMERATE, 0 ),
+  ELIXIR_FN(fread, 1, JSPROP_ENUMERATE, 0 ),
   ELIXIR_FN(feof, 1, JSPROP_ENUMERATE, 0 ),
   ELIXIR_FN(fstat, 1, JSPROP_ENUMERATE, 0 ),
   ELIXIR_FN(unlink, 1, JSPROP_ENUMERATE, 0 ),

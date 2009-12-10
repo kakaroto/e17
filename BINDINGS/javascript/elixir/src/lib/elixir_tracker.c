@@ -50,6 +50,18 @@ elixir_return_str(JSContext *cx, jsval *vp, const char *str)
    return js;
 }
 
+JSString*
+elixir_return_strn(JSContext *cx, jsval *vp, const char *str, int length)
+{
+   JSString *js = NULL;
+
+   if (str)
+     js = elixir_ndup(cx, str, length);
+
+   JS_SET_RVAL(cx, vp, js ? STRING_TO_JSVAL(js) : JSVAL_NULL);
+   return js;
+}
+
 JSObject*
 elixir_return_array(JSContext *cx, jsval *vp)
 {
