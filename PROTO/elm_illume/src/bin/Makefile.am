@@ -1,16 +1,17 @@
 MAINTAINERCLEANFILES = Makefile.in
 INCLUDES = -I$(top_srcdir) \
          -I$(top_srcdir)/src/bin \
-         @ELM_ILLUME_CFLAGS@
+         -I$(includedir) \
+         @ELM_SOFTKEY_CFLAGS@
 
-bin_PROGRAMS = elm_illume
+bin_PROGRAMS = elm_softkey
 
-ELMILLUMEHEADERS = \
-              elm_illume.h
+ELMSOFTKEYHEADERS = \
+              elm_softkey.h
 
-elm_illume_SOURCES = \
-            $(ELMILLUMEHEADERS) \
+elm_softkey_SOURCES = \
+            $(ELMSOFTKEYHEADERS) \
             main.c
 
-elm_illume_LDFLAGS = -export-dynamic
-elm_illume_LDADD = @ELM_ILLUME_LIBS@
+elm_softkey_LDFLAGS = -export-dynamic
+elm_softkey_LDADD = @ELM_SOFTKEY_LIBS@
