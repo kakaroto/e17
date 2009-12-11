@@ -4,20 +4,35 @@
    <div class="main">
     <h3>What is Enlightenment?</h3>
     <p>
-     Enlightenment is a window manager. Enlightenment is a desktop shell.
-     Enlightenment is the building blocks to create beautiful applications.
-     Enlightenment, or simply <em><strong>e</strong></em>, is a group of people trying to make a
-     new generation of software.
+     Enlightenment is not just a window manager for Linux/X11, but also a
+     whole suite of libraries to help you create beautiful user interfaces
+     with much less work than doing it the old fashioned way and fighting
+     with traditional toolkits. Not to mention a traditional window manager.
+     It covers uses from small mobile devices like phones all the way to
+     powerful multi-core desktops.
     </p>
-
+    
+    <?php img("phone.png", "Mobile Devices");?>
+    <?php img("laptop.png", "Desktops, Laptops and Netbooks");?>
+    
     <p>
-     If you want to learn more about the history behind the Enlightenment
-     Project check out the <?php a("about", "about");?> pages. For the casual
-     user there are various <?php a("support", "support");?> resources
-     available. For anyone looking to help out with the project the <?php a("contribute",
-     "contributing");?> pages should give you a good idea where to start
-     looking.
+     It provides both a traditional toolkit set in Elementary as well as
+     the object canvas (Evas) and powerful abstracted objects (Edje) that
+     you can combine, mix and match, even layer on top of each other with
+     alpha channels and events in-tact. It has 3D transformations of all
+     objects and more.
     </p>
+    
+    <p>
+     A simple overview of the EFL (Enlightenment Foundation Libraries) stack
+     is here. <?php a("about", "There is more to this");?>, but this gives
+     a quick overview of where it fits in.
+    </p>
+    
+    <?php ast("about");?>
+    <?php img("diagram-efl-simple-small.png", "Simple E stack");?>
+    </a>
+    
    </div>
   </td>
 
