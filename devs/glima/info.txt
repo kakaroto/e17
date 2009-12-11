@@ -1,0 +1,8 @@
+Login:        glima
+IRC Nick:     glima
+Name:         Gustavo Lima Chaves
+Location:     Campinas, Brazil
+E-Mail:       glima@profusion.mobi
+Contributing: Evas, Editje
+Group:        Libraries
+Platform:     Ubuntu (Linux)
