@@ -139,18 +139,20 @@ echo "------------------------------------------------------------------------"
 echo "$PACKAGE $VERSION"
 echo "------------------------------------------------------------------------"
 echo
-echo "Modules:"
-echo
-echo "  EHal.................: $enable_ehal"
-echo "  ENM..................: $enable_enm"
-echo "  EConnman.............: $enable_econnman"
-echo "  ENotify..............: $enable_enotify"
-echo
 echo "Configuration Options Summary:"
 echo
-echo "  Compilation..........: make"
+echo "  Modules:"
 echo
-echo "  Installation.........: make install"
+echo "    EHal...............: $enable_ehal"
+echo "    ENM................: $enable_enm"
+echo "    EConnman...........: $enable_econnman"
+echo "    ENotify............: $enable_enotify"
 echo
-echo "    prefix.............: $prefix"
+echo "Compilation............: make (or gmake)"
+echo "  CPPFLAGS.............: $CPPFLAGS"
+echo "  CFLAGS...............: $CFLAGS"
+echo "  LDFLAGS..............: $LDFLAGS"
+echo
+echo "Installation...........: make install (as root if needed, with 'su' or 'sudo')"
+echo "  prefix...............: $prefix"
 echo
