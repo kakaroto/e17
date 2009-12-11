@@ -288,19 +288,21 @@ class Editable(Manager, object):
         return True
 
     def animation_del(self, name):
-        if name in self._animations:
-            self._modificated = True
-            anim = EditableAnimation(self)
-            anim.name = name
-            for time in anim.timestops:
-                self.program_del("@%s@%.1f" % (name, time))
-                for p in self.parts:
-                    part = self._edje.part_get(p)
-                    part.state_del("@%s@%.1f" % (name, time))
-            self.program_del("@%s@start" % name)
-            self.program_del("@%s@end" % name)
-        self._animations.pop(self._animations.index(name))
+        stopname = "@%s@stop" % name
+        stopprog = self.program_get(stopname)
+        if not stopprog:
+            return
+        for p in stopprog.targets:
+            prog = self.program_get(p)
+            for pp in prog.targets:
+                part = self._edje.part_get(pp)
+                if part:
+                    part.state_del(prog.state_get() + " 0.00")
+            self.program_del(p)
+        self.program_del(stopname)
         self.event_emit("animation.removed", name)
+        self._animations.pop(self._animations.index(name))
+        self._modificated = True
 
     # Signals
     def _signal_get(self):
