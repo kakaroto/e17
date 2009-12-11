@@ -4,7 +4,7 @@ require_once 'class.news.php';
 setlocale(LC_ALL, 'en_EN');
 
 $news = new news;
-$list = $news->get(2);
+$list = $news->get(3);
 foreach($list as $new)
 {
    if (($new = $news->read_content($new)) !== NULL)
