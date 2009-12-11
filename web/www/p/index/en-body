@@ -6,7 +6,7 @@
     <p>
      Enlightenment is not just a window manager for
      <?php a("about", "Linux/X11 and others");?>, but also a
-     <?oho a("about", "whole suite of libraries");?> to help you create
+     <?php a("about", "whole suite of libraries");?> to help you create
      beautiful user interfaces with much less work than doing it the old
      fashioned way and fighting with traditional toolkits, not to mention a
      traditional window manager. It covers uses from
