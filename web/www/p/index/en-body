@@ -4,23 +4,31 @@
    <div class="main">
     <h3>What is Enlightenment?</h3>
     <p>
-     Enlightenment is not just a window manager for Linux/X11, but also a
-     whole suite of libraries to help you create beautiful user interfaces
-     with much less work than doing it the old fashioned way and fighting
-     with traditional toolkits. Not to mention a traditional window manager.
-     It covers uses from small mobile devices like phones all the way to
-     powerful multi-core desktops.
+     Enlightenment is not just a window manager for
+     <?php a("about", "Linux/X11 and others");?>, but also a
+     <?oho a("about", "whole suite of libraries");?> to help you create
+     beautiful user interfaces with much less work than doing it the old
+     fashioned way and fighting with traditional toolkits, not to mention a
+     traditional window manager. It covers uses from
+     <?php a("about", "small mobile devices like phones");?> all the way to
+     powerful multi-core desktops (which are the primary development
+     environment).
     </p>
     
-    <?php img("phone.png", "Mobile Devices");?>
-    <?php img("laptop.png", "Desktops, Laptops and Netbooks");?>
+    <center>
+     <?php ast("about");?>
+     <?php img("phone.png", "Mobile Devices");?>
+     <?php img("laptop.png", "Desktops, Laptops and Netbooks");?>
+     </a>
+    </center>
     
+    <h3>Enlightenment Foundation Libraries (EFL)</h3>
     <p>
-     It provides both a traditional toolkit set in Elementary as well as
-     the object canvas (Evas) and powerful abstracted objects (Edje) that
+     These provide both a semi-traditional toolkit set in Elementary as well
+     as the object canvas (Evas) and powerful abstracted objects (Edje) that
      you can combine, mix and match, even layer on top of each other with
-     alpha channels and events in-tact. It has 3D transformations of all
-     objects and more.
+     alpha channels and events in-tact. It has 3D transformations for all
+     objects <?php a("about", "and more");?>.
     </p>
     
     <p>
@@ -29,10 +37,12 @@
      a quick overview of where it fits in.
     </p>
     
-    <?php ast("about");?>
-    <?php img("diagram-efl-simple-small.png", "Simple E stack");?>
-    </a>
-    
+    <center>
+     <?php ast("about");?>
+     <?php img("diagram-efl-simple-small.png", "Simple E stack");?>
+     </a>
+   </center>
+   
    </div>
   </td>
 
