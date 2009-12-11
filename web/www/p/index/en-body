@@ -16,10 +16,8 @@
     </p>
     
     <center>
-     <?php ast("about");?>
-     <?php img("phone.png", "Mobile Devices");?>
-     <?php img("laptop.png", "Desktops, Laptops and Netbooks");?>
-     </a>
+     <?php ast("about");?><?php img("phone.png", "Mobile Devices");?></a>
+     <?php ast("about");?><?php img("laptop.png", "Desktops, Laptops and Netbooks");?></a>
     </center>
     
     <h3>Enlightenment Foundation Libraries (EFL)</h3>
@@ -38,9 +36,7 @@
     </p>
     
     <center>
-     <?php ast("about");?>
-     <?php img("diagram-efl-simple-small.png", "Simple E stack");?>
-     </a>
+     <?php ast("about");?><?php img("diagram-efl-simple-small.png", "Simple E stack");?></a>
    </center>
    
    </div>
