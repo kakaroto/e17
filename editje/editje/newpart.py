@@ -40,6 +40,8 @@ class NewPart(Wizard):
         self._name_changed = False
         self._name.callback_changed_add(self._name_changed_cb)
 
+        self._name.focus()
+
     def _name_init(self):
         bx2 = elementary.Box(self)
         bx2.horizontal_set(True)

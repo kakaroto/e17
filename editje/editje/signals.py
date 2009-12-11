@@ -130,6 +130,8 @@ class NewSignalPopUp(Wizard):
         self.action_add("default", "Add", self._add, icon="confirm")
         self.goto("default")
 
+        self._name.focus()
+
     def _name_init(self):
         bx2 = elementary.Box(self)
         bx2.horizontal_set(True)
