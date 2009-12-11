@@ -1,0 +1,11 @@
+
+[Desktop Entry]
+Encoding=UTF-8
+Name=Elm_Softkey
+Comment=Elementary Softkey
+Exec=elm_softkey
+Icon=elm_softkey
+Terminal=false
+Type=Application
+Categories=Application;Utility;
+StartupWMClass=elm_softkey
