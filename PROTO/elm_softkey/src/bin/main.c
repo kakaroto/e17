@@ -1,4 +1,5 @@
 #include "elm_softkey.h"
+#include <Ecore_X.h>
 
 #ifndef ELM_LIB_QUICKLAUNCH
 
@@ -14,7 +15,7 @@ elm_main(int argc, char **argv)
    Evas_Object *bg, *box, *btn, *icon;
    char buff[PATH_MAX];
 
-   win = elm_win_add(NULL, "elm_softkey", ELM_WIN_BASIC);
+   win = elm_win_add(NULL, "elm_softkey", ELM_WIN_DOCK);
    elm_win_title_set(win, "Illume Softkey Window");
    evas_object_smart_callback_add(win, "delete-request", _cb_win_del, NULL);
 
