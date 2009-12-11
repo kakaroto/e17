@@ -185,7 +185,7 @@ class NewPart(Wizard):
         state.font_set("Sans")
         state.text_size_set(16)
 
-    def _part_init_external(self, name, state):
+    def _part_init_external(self, part, state):
         pass
 
     def _external_selector_toggle(self, show):

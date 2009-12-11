@@ -21,7 +21,6 @@ import edje
 
 
 class PartViewport(evas.Rectangle):
-
     def __init__(self, canvas, manager, part):
         evas.Rectangle.__init__(self, canvas, color=(0,0,0,0))
         self._manager = manager
@@ -57,12 +56,12 @@ class PartViewport(evas.Rectangle):
         self._resize(self)
 
     def delete(self):
-        self._part.on_resize_add(self._resize)
-        self._part.on_move_add(self._move)
-        self._part.on_resize_add(self._restack)
-        self._part.on_del_add(self._del)
-        self._part.on_show_add(self._show)
-        self._part.on_hide_add(self._hide)
+        self._part.on_resize_del(self._resize)
+        self._part.on_move_del(self._move)
+        self._part.on_restack_del(self._restack)
+        self._part.on_del_del(self._del)
+        self._part.on_show_del(self._show)
+        self._part.on_hide_del(self._hide)
         evas.Rectangle.delete(self)
 
     def _del(self, part):
@@ -80,7 +79,6 @@ class PartViewport(evas.Rectangle):
 
 
 class PartsManager(evas.ClippedSmartObject):
-
     def __init__(self, canvas):
         self._canvas = canvas
         evas.ClippedSmartObject.__init__(self, canvas)
