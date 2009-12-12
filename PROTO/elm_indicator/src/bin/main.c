@@ -6,8 +6,14 @@
 static void _cb_win_del(void *data, Evas_Object *obj, void *event);
 static void _cb_btn_home_clicked(void *data, Evas_Object *obj, void *event);
 static void _cb_btn_dual_clicked(void *data, Evas_Object *obj, void *event);
+static void _cb_home_win_del(void *data, Evas_Object *obj, void *event);
+static char *_desk_gl_label_get(const void *data, Evas_Object *obj, const char *part);
+static Evas_Object *_desk_gl_icon_get(const void *data, Evas_Object *obj, const char *part);
+static void _desk_gl_del(const void *data, Evas_Object *obj);
 
 static Evas_Object *win = NULL;
+static Evas_Object *hwin = NULL;
+static Elm_Genlist_Item_Class it_desk;
 
 EAPI int 
 elm_main(int argc, char **argv) 
@@ -77,7 +83,54 @@ _cb_win_del(void *data, Evas_Object *obj, void *event)
 static void 
 _cb_btn_home_clicked(void *data, Evas_Object *obj, void *event) 
 {
+   Evas_Object *bg, *gl;
+   Eina_List *desktops, *l;
 
+   if (hwin) 
+     {
+        elm_win_activate(hwin);
+        elm_win_raise(hwin);
+        return;
+     }
+
+   hwin = elm_win_add(NULL, "elm_indicator_home", ELM_WIN_BASIC);
+   elm_win_title_set(hwin, "Illume Indicator Home Window");
+   evas_object_smart_callback_add(hwin, "delete-request", _cb_home_win_del, NULL);
+
+   bg = elm_bg_add(hwin);
+   evas_object_size_hint_weight_set(bg, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+   elm_win_resize_object_add(hwin, bg);
+   evas_object_show(bg);
+
+   it_desk.item_style = "default";
+   it_desk.func.label_get = _desk_gl_label_get;
+   it_desk.func.icon_get = _desk_gl_icon_get;
+   it_desk.func.state_get = NULL;
+   it_desk.func.del = _desk_gl_del;
+
+   gl = elm_genlist_add(hwin);
+   evas_object_size_hint_weight_set(gl, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+   elm_win_resize_object_add(hwin, gl);
+   evas_object_show(gl);
+
+# ifdef ELM_EFREET
+   elm_need_efreet();
+   desktops = efreet_util_desktop_name_glob_list("*");
+   if (desktops) 
+     {
+        Efreet_Desktop *d;
+
+        EINA_LIST_FOREACH(desktops, l, d) 
+          {
+             elm_genlist_item_append(gl, &it_desk, d, NULL, ELM_GENLIST_ITEM_NONE, 
+                                     NULL, NULL);
+          }
+        eina_list_free(desktops);
+     }
+# endif
+
+   evas_object_resize(hwin, 200, 200);
+   evas_object_show(hwin);
 }
 
 static void 
@@ -100,6 +153,68 @@ _cb_btn_dual_clicked(void *data, Evas_Object *obj, void *event)
         ecore_x_e_illume_mode_set(xwin, ECORE_X_ILLUME_MODE_SINGLE);
         ecore_x_e_illume_mode_send(xwin, ECORE_X_ILLUME_MODE_SINGLE);
      }
+}
+
+static void 
+_cb_home_win_del(void *data, Evas_Object *obj, void *event) 
+{
+   if (hwin) evas_object_del(hwin);
+   hwin = NULL;
+}
+
+static char *
+_desk_gl_label_get(const void *data, Evas_Object *obj, const char *part) 
+{
+# ifdef ELM_EFREET
+   Efreet_Desktop *d = (Efreet_Desktop *)data;
+   return strdup(d->name);
+#else
+   return NULL;
+#endif
+}
+
+static Evas_Object *
+_desk_gl_icon_get(const void *data, Evas_Object *obj, const char *part) 
+{
+#ifdef ELM_EFREET
+   Efreet_Desktop *d = (Efreet_Desktop *)data;
+   char *path;
+   Evas_Object *ic;
+
+   ic = elm_icon_add(obj);
+   evas_object_size_hint_aspect_set(ic, EVAS_ASPECT_CONTROL_VERTICAL, 1, 1);
+   if (!(!strcmp(part, "elm.swallow.icon"))) return ic;
+   if (!d->icon) return ic;
+   path = efreet_icon_path_find("default", d->icon, 48);
+   if (!path) 
+     {
+        path = efreet_icon_path_find("hicolor", d->icon, 48);
+        if (!path) 
+          {
+             path = efreet_icon_path_find("gnome", d->icon, 48);
+             if (!path)
+               path = efreet_icon_path_find("Human", d->icon, 48);
+          }
+     }
+   if (path) 
+     {
+        elm_icon_file_set(ic, path, NULL);
+        free(path);
+        return ic;
+     }
+   return ic;
+#else
+   return NULL;
+#endif
+}
+
+static void 
+_desk_gl_del(const void *data, Evas_Object *obj) 
+{
+#ifdef ELM_EFREET
+   Efreet_Desktop *d = (Efreet_Desktop *)data;
+   efreet_desktop_free(d);
+#endif
 }
 
 #endif
