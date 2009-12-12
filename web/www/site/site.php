@@ -43,19 +43,19 @@
   function a($pg, $txt) {
       global $page;
       global $lang;
-      echo("<a href='p.php?p=$pg&l=$lang'>$txt</a>");
+      echo("<a href='p.php?p=$pg&amp;l=$lang'>$txt</a>");
   }
 
   function ast($pg) {
       global $page;
       global $lang;
-      echo("<a href='p.php?p=$pg&l=$lang'>");
+      echo("<a href='p.php?p=$pg&amp;l=$lang'>");
   }
 
   function acl($pg, $cl) {
       global $page;
       global $lang;
-      echo("<a href='p.php?p=$pg&l=$lang' class='$cl'>");
+      echo("<a href='p.php?p=$pg&amp;l=$lang' class='$cl'>");
   }
 
   function blink($ic, $txt, $pg) {
