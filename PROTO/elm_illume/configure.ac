@@ -39,15 +39,15 @@ fi
 AC_SUBST(PACKAGE_BIN_DIR)
 
 if test "x${prefix}" = "xNONE"; then
-  dnl PACKAGE_DATA_DIR="${ac_default_prefix}/share/${PACKAGE}"
+  PACKAGE_DATA_DIR="${ac_default_prefix}/share/${PACKAGE}"
   LOCALE_DIR="${ac_default_prefix}/share/locale"
-  dnl AC_DEFINE_UNQUOTED([PACKAGE_DATA_DIR], "${ac_default_prefix}/share/${PACKAGE}", [Define the PACKAGE_DATA_DIR])
+  AC_DEFINE_UNQUOTED([PACKAGE_DATA_DIR], "${ac_default_prefix}/share/${PACKAGE}", [Define the PACKAGE_DATA_DIR])
 else
-  dnl PACKAGE_DATA_DIR="${prefix}/share/${PACKAGE}"
+  PACKAGE_DATA_DIR="${prefix}/share/${PACKAGE}"
   LOCALE_DIR="${prefix}/share/locale"
-  dnl AC_DEFINE_UNQUOTED([PACKAGE_DATA_DIR], "${prefix}/share/${PACKAGE}", [Define the PACKAGE_DATA_DIR])
+  AC_DEFINE_UNQUOTED([PACKAGE_DATA_DIR], "${prefix}/share/${PACKAGE}", [Define the PACKAGE_DATA_DIR])
 fi
-dnl AC_SUBST(PACKAGE_DATA_DIR)
+AC_SUBST(PACKAGE_DATA_DIR)
 AC_SUBST(LOCALE_DIR)
 
 ## Check for Debugging Output ##
@@ -62,6 +62,21 @@ if test "[${e_cv_debug}]" = yes; then
 fi
 AC_MSG_RESULT([$e_cv_debug])
 
+# Find edje_cc
+PKG_CHECK_MODULES(EDJE, [edje >= 0.5.0])
+AC_ARG_WITH(edje-cc,
+  AC_HELP_STRING([--with-edje-cc=PATH], [specify a specific path to edje_cc]),
+  [
+    v=$withval;
+    EDJE_CC=$v
+  ],[
+    EDJE_CC=$(pkg-config --variable=prefix edje)/bin/edje_cc
+  ]
+)
+AC_SUBST(EDJE_CC)
+AC_MSG_CHECKING([Which edje_cc to use])
+AC_MSG_RESULT(${EDJE_CC})
+
 PKG_CHECK_MODULES(ELM_ILLUME, [
   ecore
   elementary
@@ -73,4 +88,5 @@ src/Makefile
 src/bin/Makefile
 data/Makefile
 data/desktop/Makefile
+data/themes/Makefile
 ])

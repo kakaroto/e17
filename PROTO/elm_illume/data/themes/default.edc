@@ -1,0 +1,154 @@
+collections 
+{
+   group 
+     {
+        images.image: "home.png" COMP;
+        name: "home";
+        parts 
+          {
+             part 
+               {
+                  name: "base";
+                  mouse_events: 0;
+                  description 
+                    {
+                       state: "default" 0.0;
+                       aspect: 1.0 1.0;
+                       aspect_preference: BOTH;
+                       image.normal: "home.png";
+                    }
+               }
+          }
+     }
+   group 
+     {
+        images 
+          {
+             image: "base_bg.png" COMP;
+          }
+        name: "layout";
+        parts 
+          {
+             part 
+               {
+                  name: "base";
+                  type: IMAGE;
+                  mouse_events: 0;
+                  description 
+                    {
+                       state: "default" 0.0;
+                       color_class: "shelf_base";
+                       image.normal: "base_bg.png";
+                       image.border: 2 2 2 2;
+                       fill.smooth: 0;
+                    }
+               }
+             part 
+               {
+                  name: "indicator";
+                  type: SWALLOW;
+                  description 
+                    {
+                       state: "default" 0.0;
+                       rel1.offset: 2 2;
+                       rel2.relative: 1.0 0.0;
+                       rel2.offset: -3 40;
+                    }
+               }
+             part 
+               {
+                  name: "content";
+                  type: SWALLOW;
+                  description 
+                    {
+                       state: "default" 0.0;
+                       rel1.relative: 0.0 1.0;
+                       rel1.to_y: "indicator";
+                       rel2.relative: 1.0 0.0;
+                       rel2.to_y: "softkey";
+                    }
+               }
+             part 
+               {
+                  name: "softkey";
+                  type: SWALLOW;
+                  description 
+                    {
+                       state: "default" 0.0;
+                       rel1.relative: 0.0 1.0;
+                       rel1.offset: 0 -40;
+                    }
+               }
+          }
+     }
+   group 
+     {
+        images.image: "shelf_alt_bg.png" COMP;
+        name: "indicator";
+        parts 
+          {
+             part 
+               {
+                  name: "base";
+                  type: IMAGE;
+                  mouse_events: 0;
+                  description 
+                    {
+                       state: "default" 0.0;
+                       color_class: "shelf_base";
+                       image.normal: "shelf_alt_bg.png";
+                       fill.smooth: 0;
+                    }
+               }
+             part 
+               {
+                  name: "button";
+                  type: SWALLOW;
+                  description 
+                    {
+                       state: "default" 0.0;
+                       rel1.to: "base";
+                       rel1.offset: 2 2;
+                       rel2.relative: 0.0 1.0;
+                       rel2.to: "base";
+                       rel2.offset: 34 -3;
+                    }
+               }
+          }
+     }
+   group 
+     {
+        images.image: "shelf_alt_bg.png" COMP;
+        name: "softkey";
+        parts 
+          {
+             part 
+               {
+                  name: "base";
+                  type: IMAGE;
+                  mouse_events: 0;
+                  description 
+                    {
+                       state: "default" 0.0;
+                       color_class: "shelf_base";
+                       image.normal: "shelf_alt_bg.png";
+                       fill.smooth: 0;
+                    }
+               }
+             part 
+               {
+                  name: "button";
+                  type: SWALLOW;
+                  description 
+                    {
+                       state: "default" 0.0;
+                       rel1.relative: 1.0 0.0;
+                       rel1.to: "base";
+                       rel1.offset: -34 2;
+                       rel2.to: "base";
+                       rel2.offset: -3 -3;
+                    }
+               }
+          }
+     }
+}
