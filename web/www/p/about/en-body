@@ -104,6 +104,10 @@
     purpose, so it may be skipped if not needed.
    </p>
    
+   <center>
+    <?php img("core.png", "Core");?>
+   </center>
+   
    <p>
     Core EFL components are:
    </p>
