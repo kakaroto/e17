@@ -193,7 +193,7 @@ table.main {
    width                  : 100%;
    border                 : 0px;
    margin                 : 0px;
-   padding                : 4px;
+   padding                : 0px;
 }
 
 td.main {
@@ -201,6 +201,7 @@ td.main {
    margin                 : 4px;
    text-align             : left;
    vertical-align         : top;
+   padding                : 8px;
 }
 
 div.bod {
