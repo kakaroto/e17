@@ -6,6 +6,7 @@
 static void _cb_win_del(void *data, Evas_Object *obj, void *event);
 static void _cb_btn_home_clicked(void *data, Evas_Object *obj, void *event);
 static void _cb_btn_dual_clicked(void *data, Evas_Object *obj, void *event);
+//static void _cb_btn_kbd_clicked(void *data, Evas_Object *obj, void *event);
 static void _cb_home_win_del(void *data, Evas_Object *obj, void *event);
 static char *_desk_gl_label_get(const void *data, Evas_Object *obj, const char *part);
 static Evas_Object *_desk_gl_icon_get(const void *data, Evas_Object *obj, const char *part);
@@ -19,6 +20,7 @@ EAPI int
 elm_main(int argc, char **argv) 
 {
    Evas_Object *bg, *box, *btn, *icon;
+   Evas_Object *clock;
    Ecore_X_Window xwin;
    char buff[PATH_MAX];
 
@@ -65,6 +67,30 @@ elm_main(int argc, char **argv)
    elm_box_pack_end(box, btn);
    evas_object_show(btn);
    evas_object_show(icon);
+
+   /*
+   icon = elm_icon_add(win);
+   snprintf(buff, sizeof(buff), "%s/images/kbd-off.png", PACKAGE_DATA_DIR);
+   elm_icon_file_set(icon, buff, NULL);
+   evas_object_size_hint_aspect_set(icon, EVAS_ASPECT_CONTROL_VERTICAL, 1, 1);
+
+   btn = elm_button_add(win);
+   elm_button_icon_set(btn, icon);
+   evas_object_smart_callback_add(btn, "clicked", _cb_btn_kbd_clicked, win);
+   evas_object_size_hint_align_set(btn, EVAS_HINT_FILL, 0.5);
+   elm_box_pack_end(box, btn);
+   evas_object_show(btn);
+   evas_object_show(icon);
+    */
+
+   clock = elm_clock_add(win);
+   printf("Scale: %2.2f\n", elm_object_scale_get(clock));
+   elm_clock_show_seconds_set(clock, 0);
+   elm_clock_show_am_pm_set(clock, 1);
+   elm_object_scale_set(clock, 0.25);
+   elm_box_pack_end(box, clock);
+   evas_object_show(clock);
+   printf("Scale: %2.2f\n", elm_object_scale_get(clock));
 
    evas_object_resize(win, 200, 32);
    evas_object_show(win);
@@ -143,6 +169,8 @@ _cb_btn_dual_clicked(void *data, Evas_Object *obj, void *event)
    win = data;
    xwin = elm_win_xwindow_get(win);
    mode = ecore_x_e_illume_mode_get(xwin);
+   /* we do a mode set on the xwindow so that illume module can read the current 
+    * setting and adjust accordingly */
    if (mode == ECORE_X_ILLUME_MODE_SINGLE) 
      {
         ecore_x_e_illume_mode_set(xwin, ECORE_X_ILLUME_MODE_DUAL);
@@ -154,6 +182,40 @@ _cb_btn_dual_clicked(void *data, Evas_Object *obj, void *event)
         ecore_x_e_illume_mode_send(xwin, ECORE_X_ILLUME_MODE_SINGLE);
      }
 }
+
+/*
+static void 
+_cb_btn_kbd_clicked(void *data, Evas_Object *obj, void *event) 
+{
+   Evas_Object *win;
+   Ecore_X_Window xwin;
+   Ecore_X_Virtual_Keyboard_State state;
+   Evas_Object *icon;
+   char buff[PATH_MAX];
+
+   win = data;
+   xwin = elm_win_xwindow_get(win);
+   state = ecore_x_e_virtual_keyboard_state_get(xwin);
+   if ((state == ECORE_X_VIRTUAL_KEYBOARD_STATE_OFF) || 
+       (state == ECORE_X_VIRTUAL_KEYBOARD_STATE_UNKNOWN)) 
+     {
+        ecore_x_e_virtual_keyboard_state_set(xwin, 
+                                             ECORE_X_VIRTUAL_KEYBOARD_STATE_ON);
+        snprintf(buff, sizeof(buff), "%s/images/kbd-off.png", PACKAGE_DATA_DIR);
+     }
+   else 
+     {
+        ecore_x_e_virtual_keyboard_state_set(xwin, 
+                                             ECORE_X_VIRTUAL_KEYBOARD_STATE_OFF);
+        snprintf(buff, sizeof(buff), "%s/images/kbd-on.png", PACKAGE_DATA_DIR);
+     }
+
+   icon = elm_icon_add(win);
+   elm_icon_file_set(icon, buff, NULL);
+   evas_object_size_hint_aspect_set(icon, EVAS_ASPECT_CONTROL_VERTICAL, 1, 1);
+   elm_button_icon_set(obj, icon);
+}
+*/
 
 static void 
 _cb_home_win_del(void *data, Evas_Object *obj, void *event) 
