@@ -16,7 +16,7 @@ foreach($list as $new)
      if ($pos != FALSE) 
      {
 	     $before = substr($n, 0, $pos);
-	     $before .= "<div align='right' class='news-latest-date'><a href='$link'>more &raquo;</div>";
+	     $before .= "<div align='right' class='news-latest-date'><a href='$link'>more &raquo;</a></div>";
      }
      else $before = $n;
 
