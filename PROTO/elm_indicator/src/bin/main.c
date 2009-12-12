@@ -403,10 +403,7 @@ _desktop_run(Efreet_Desktop *desktop)
      {
         if (exec->desktop == desktop) 
           {
-             if (exec->exe) 
-               {
-                  
-               }
+             if (exec->exe) return;
           }
      }
 
