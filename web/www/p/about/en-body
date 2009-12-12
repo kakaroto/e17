@@ -2,87 +2,265 @@
  <tr>
   <td class='main'>
    <div class="main">
-    <h1>About Enlightenment</h1>
-    <p>We are dedicated to providing advanced graphical libraries, tools, and environments. 
-    Currently, the project is made up of three different components:
-    Enlightenment DR16, Enlightenment DR17, and the Enlightenment Foundation
-    Libraries.  While we are best known for the Enlightenment Window Manager itself there is a 
-    long history of providing advanced libraries and tools to support the window manager and 
-    other applications, such as Imlib, Imlib2, and FNLib which extend far beyond the window 
-    manager itself in scope.  Today, in development toward the DR17 Desktop Shell we have 
-    created an entirely new set of libraries and tools that provide more power and 
-    flexibility than any other group of graphical libraries available, The Enlightenment Foundation Libraries.
-    </p>
-    
-    <center>
-     <p>
-      <a href="http://enlightenment.org/i/rephorm-desktop.png">
-       <img src="http://enlightenment.org/i/tn2_rephorm-desktop.png" class="shot" height="50" width="300" />
-      </a>
-     </p>
-    </center>
-    
-    <h2>Enlightenment DR16</h2>
-    <p>DR16 of the Enlightenment window manager, also known as e16, was released in 2000.
-    While rumors of its death still circulate, version 1.0.1 was released on September 10th, 2009.  DR16 has been the choice of power 
-    users and artists due to its low overhead, highly graphical, widely theme-able, extremely 
-    configurable, yet unobtrusive interface. Nearly all functions of the window manager can be 
-    handled without mouse input, including application launching via 
-    <a href="http://sourceforge.net/project/showfiles.php?group_id=2">e16keyedit</a>. It also remains 
-    highly portable, with ports avalible for Linux, FreeBSD, IRIX, Solaris X86 and Sparc, HP-UX, 
-    AIX, OS/2, and more.</p>
-
-    <center>
-     <p>
-      <a href="http://enlightenment.org/i/benr-desktop.png">
-       <img src="http://enlightenment.org/i/tn2_benr-desktop.png" class="shot" height="50" width="300" />
-      </a>
-     </p>
-    </center>
-
-    <h2>Enlightenment DR17</h2>
-    <p>DR17 of the Enlightenment window manager represents an evolution into the next generation of 
-    desktop environments: the desktop shell. DR17 will provide integration between files and your 
-    environment in a seamless manner while encompassing a graphically rich and flexible architecture. 
-    It will not compete with GNOME or KDE, but be a completely new way of visualizing your desktop, 
-    based around the EFL which was built from the ground up for this task.</p>
-
-    <p> Still in heavy development, several applications that will be part of the DR17 release and 
-    examples of what is possible are already available in SVN, such as Entice, Entrance, and Evidence.</p>
-
-    <center>
-     <p>
-      <a href="http://enlightenment.org/i/az-desktop.png">
-       <img src="http://enlightenment.org/i/tn2_az-desktop.png" class="shot" height="50" width="300" />
-      </a>
-     </p>
-    </center>
-
-    <h2>Enlightenment Foundation Libraries</h2>
-    <p>In developing DR17 it was made clear that we needed an entirely new set of libraries and tools. 
-    Raster had a bold vision of what was possible and where he wanted the next release to go, starting 
-    with Imlib2 and EVAS, and eventually growing into new libraries largely based on, or around, EVAS. 
-    It became clear that the usefulness of these libraries and tools went far beyond the DR17 release 
-    itself, just as Imlib did in DR16. Thus the collective library back-end of DR17 was given the 
-    independent title: the Enlightenment Foundation Libraries, or EFL for short. </p>          
+   <h3>Enlightenment</h3>
    
-    <p>The EFL contains solutions for almost any graphical interface task, far beyond just rendering 
-    images. EVAS provides a highly optimized canvas library. Ecore provides a simple and modular 
-    abstraction interface and advanced event management including timers. EDB provides a compact 
-    database format for intuitive and easy configuration management, including the storing of binaries. 
-    EET provides an integrated and flexible container that ends the traditions of providing 
-    themes in tarballs. Edje provides a revolutionary library and tool set for <i>completely</i> 
-    abstracting application interfaces from their code, including a complex and flexible method of 
-    designing interfaces. EWL provides a complete widget library built on all the other 
-    components of the EFL.</p>
-    
-    <center>
-     <p>
-      <a href="http://enlightenment.org/i/trill-desktop.png">
-       <img src="http://enlightenment.org/i/tn2_trill-desktop.png" class="shot" height="50" width="300" />
-      </a>
-     </p>
-    </center>
+   <center>
+    <a href=http://trac.enlightenment.org/e/wiki/Enlightenment><?php img("enlightenment.png", "Enlightenment");?></a>
+   </center>
+   
+   <p>
+    <a href=http://trac.enlightenment.org/e/wiki/Enlightenment>Enlightenment</a>
+    is the flagship and original name bearer for this project. Once it was
+    just a humble window manager for X11 that wanted to do things differently.
+    To do them better, but it has expanded. This can be confusing
+    so when we refer to Enlightennment, we may mean the project as a whole or
+    just the window manager proper. The libraries behind Enlightenment are
+    referred to as EFL collectively, each with a specific name and purpose.
+   </p>
+   
+   <p>
+    The window manager is a lean, fast, modular and very extensible window
+    manager for X11 and Linux. It is classed as a "desktop shell" providing
+    the things you need to operate your desktop (or laptop), but is not a
+    whole application suite. This covered launching applications, managing
+    their windows and doing other system tasks like suspending, reboots,
+    managing files etc.
+   </p>
+   
+   <hr>
+   
+   <h3>Platform Support</h3>
+   
+   <center>
+    <a href=http://trac/enlightenment.org/e/wiki/Platforms><?php img("linux.png", "Linux");?></a>
+    <a href=http://trac/enlightenment.org/e/wiki/Platforms><?php img("bsd.png", "BSD");?></a>
+    <a href=http://trac/enlightenment.org/e/wiki/Platforms><?php img("windows.png", "Windows");?></a>
+    <a href=http://trac/enlightenment.org/e/wiki/Platforms><?php img("apple.png", "Apple");?></a>
+   </center>
+   
+   <p>
+    Enlightenment and EFL support several platforms, though Linux is the
+    primary platform of choice for our developers, some make efforts to make
+    things work on FreeBSD and other BSD's, Solaris, MacOS X, Windows (XP,
+    Vista, 7 etc.), Windows CE and more. Compatibility will vary, but most of
+    core EFL support all Linuxes, BSD's, Solaris and other UNIX-like OS's.
+    Mac support should work mostly thanks to the X11 support in OS X, and
+    Windows support exists for most of the core libraries (XP, Vista, 7, CE).
+   </p>
+   
+   <p>
+    Please <?php a("contact", "contact");?> us for more information if you
+    have problems with support in your platform. Just remember we have limited
+    resources and most of them focus on the core open-source targets.
+   </p>
+   
+   <hr>
+   
+   <h3>Proven effectiveness</h3>
+   
+   <p>
+    Enlightenment libraries already power millions of systems, from mobile
+    phones to set top boxes, desktops, laptops, game systems and more. It is
+    only now being recognised for its forward-thinking approaches, as
+    products and designers want to do more than the boring functional user
+    experiences of the past. This is where EFL excels.
+   </p>
+   
+   <p>
+    <a href=http://www.free.fr>Free.fr</a> is shipping millions of set top
+    boxes in France, powered by EFL. The 
+    <a href=http://wiki.openmoko.org/wiki/Neo_FreeRunner>Openmoko Freerunner</a>
+    sold thousands of devices with EFL on them. 
+    <a href=http://www.yellowdoglinux.com/>Yellow Dog Linux</a> for the Sony 
+    PS3 ships with Enlightenment as the default. EFL has been used on printers,
+    netbooks and more.
+   </p>
+   
+   </div>
+  </td>
+
+
+
+  <td class='main'>
+   <div class="main">
+   
+   <h3>Building Blocks</h3>
+   
+   <p>
+    Enlightenment, the window manager is built on top of building blocks
+    known as EFL (the Enlightenment Foundation Libraries). There are more
+    than can be sensibly put into the simple block diagram above, but this
+    covers the essentials.
+   </p>
+   
+   <center>
+    <?php img("diagram-efl-simple-small.png", "Simple E stack");?>
+   </center>
+   
+   <p>
+    Pretty much any application written using Core EFL libraries will use one
+    or more of these depending on its needs. It may only need the lower level
+    ones or use all of them to the top of the stack. Each library fulfils a
+    purpose, so it may be skipped if not needed.
+   </p>
+   
+   <p>
+    Core EFL components are:
+   </p>
+   
+   <p>
+    <ul>
+     <li><a href=http://trac.enlightenment.org/e/wiki/Evas>Evas</a></li>
+     <li><a href=http://trac.enlightenment.org/e/wiki/Eina>Eina</a></li>
+     <li><a href=http://trac.enlightenment.org/e/wiki/Edje>Edje</a></li>
+     <li><a href=http://trac.enlightenment.org/e/wiki/Eet>Eet</a></li>
+     <li><a href=http://trac.enlightenment.org/e/wiki/Ecore>Ecore</a></li>
+     <li><a href=http://trac.enlightenment.org/e/wiki/Efreet>Efreet</a></li>
+     <li><a href=http://trac.enlightenment.org/e/wiki/Edbus>Edbus</a></li>
+     <li><a href=http://trac.enlightenment.org/e/wiki/Elementary>Elementary</a> (window manager will use this in 0.18)</li>
+    </ul>
+   </p>
+   
+   <p>
+    Binding support exists for several languages such as:
+   </p>
+   
+   <p>
+    <ul>
+     <li><a href=http://trac.enlightenment.org/e/wiki/Python>Python</a></li>
+     <li><a href=http://trac.enlightenment.org/e/wiki/Javascript>Javascript</a></li>
+     <li><a href=http://trac.enlightenment.org/e/wiki/Perl>Perl</a></li>
+     <li><a href=http://trac.enlightenment.org/e/wiki/C++>C++</a></li>
+     <li><a href=http://trac.enlightenment.org/e/wiki/Ruby>Ruby</a></li>
+    </ul>
+   </p>
+   
+   <p>
+    There are other libraries and applications that build on core EFL and
+    other systems too, to provide more functionality, examples and utility:
+   </p>
+   
+   <p>
+    <ul>
+     <li><a href=http://trac.enlightenment.org/e/wiki/Emotion>Emotion</a></li>
+     <li><a href=http://trac.enlightenment.org/e/wiki/Ethumb>Ethumb</a></li>
+     <li><a href=http://trac.enlightenment.org/e/wiki/Exquisite>Exquisite</a></li>
+     <li><a href=http://trac.enlightenment.org/e/wiki/Expedite>Expedite</a></li>
+     <li><a href=http://trac.enlightenment.org/e/wiki/Epdf>Epdf</a></li>
+     <li><a href=http://trac.enlightenment.org/e/wiki/Eve>Eve</a></li>
+     <li><a href=http://trac.enlightenment.org/e/wiki/Exchange>Exchange</a></li>
+     <li><a href=http://trac.enlightenment.org/e/wiki/Eweather>Eweather</a></li>
+     <li><a href=http://trac.enlightenment.org/e/wiki/Shellementary>Shellementary</a></li>
+     <li><a href=http://trac.enlightenment.org/e/wiki/Rage>Rage</a></li>
+     <li><a href=http://trac.enlightenment.org/e/wiki/Evil>Evil</a></li>
+     <li><a href=http://trac.enlightenment.org/e/wiki/Exalt>Exalt</a></li>
+     <li><a href=http://trac.enlightenment.org/e/wiki/Esmart>Esmart</a></li>
+    </ul>
+   </p>
+   
+   </div>
+  </td>
+
+
+
+  <td class='main'>
+   <div class="main">
+   
+   <h3>Devices</h3>
+   
+   <p>
+    Enlightenment and EFL use desktop Linux systems as a primary method of
+    development because it is fast and simple to do so, but all of it is
+    written with the express goal in mind of also working on devices from
+    Mobile Phones, to Televisions, Netbooks and more.
+   </p>
+
+   <p>
+    We have run and tested on x86-32, x86-64, Atom, Power-PC, ARM (ARM9, ARM11,
+    Cortex-A8 and more), MIPS, Sparc, and many other architectures. The
+    suggested minimum RAM required for a full Linux system + EFL application
+    is 16MB, but you may be able to get by on 8MB. For full functionality
+    64MB or more is suggested. As little as a 200Mhz ARM core will provide
+    sufficient processing power (depending on needs).
+   </p>
+   
+   <xx>
+   
+   <p>
+    Screens from even less than QVGA (320x240 or 240x320) screens all the
+    way up to and beyond full-HD (1920x1080) are covered by EFL. It has the
+    ability to scale user interfaces to almost any sane resolution, as well
+    as adapt to differing input device resolutions, from mouse and stylus
+    to fat fingers. It can draw displays from e-paper through 8-bit
+    paletted displays, 16bit beautifully dithered ones all the way to full
+    24/32bit OLED beauties.
+   </p>
+   
+   <hr>
+
+   <h3>Graphics</h3>
+   
+   <p>
+    Enlightenment is built by designers and programmers who want others to
+    be able to do more with less. Some of Enlightenment's libraries do not
+    do anything with graphics at all, but it is the ones that do that are
+    the shining stars of the Enlightenment world.
+   </p>
+   
+   <p>
+    <b>Evas</b> is the canvas layer. It is not a drawing library. It is not
+    like OpenGL, Cairo, XRender, GDI, DirectFB etc. It is a scene graph
+    library that retains state of all objects in it. They are created then
+    manipulated until they are no longer needed, at which point they are
+    deleted. This allows the programmer to work in terms that a designer
+    thinks of. It is a direct mapping, as opposed to having to convert the
+    concepts into drawing commands in the right order, calculate minimum
+    drawing calls needed to get the job done etc.
+   </p>
+   
+   <p>
+    Evas also handles abstracting the rendering mechanism. With zero changes
+    the same application can move from software to OpenGL rendering, as they
+    all use an abstracted scene graph to describe the world (canvas) to Evas.
+    Evas supports multiple targets, but the most useful are the high-speed
+    software rendering engines and OpenGL (as well as OpenGL-ES 2.0).
+   </p>
+   
+   <p>
+    Evas not only does quality rendering and compositing, but also can
+    scale, rotate and fully 3D transform objects, allowing for sought-after
+    3D effects in your interfaces. It supplies these abilities in both
+    software and OpenGL rendering, so you are never caught with unexpected
+    loss of features. The software rendering is even fast enough to provide
+    the 3D without any acceleration on devices for simple uses.
+   </p>
+   
+   <p>
+    <b>Edje</b> is a meta-object design library that is somewhere between
+    Flash, PSD, SVG and HTML+CSS. It separates design out from code and into
+    a dynamically loaded data file. This file is compressed and loaded very
+    quickly, along with being cached and shared betweeen instances.
+   </p>
+   
+   <p>
+    This allows design to be provided at runtime by different design (EDJ)
+    files, leaving the programmer to worry about overall application
+    implementation and coarse grained UI as opposed to needing to worry about
+    all the little details that the artists may vary even until the day
+    before shipping the product.
+   </p>
+   
+   </div>
+  </td>
+ </tr>
+ <tr>
+  <td class='main' colspan=3>
+   <div class="main">
+    <p class='tiny'>
+     <em>Linux is a registered trademark of Linus Torvalds</em><br>
+     <em>Windows is a registered trademark of Microsoft Corporation in the United States and other countries</em><br>
+     <em>Mac and Mac OS are trademarks of Apple Inc., registered in the U.S. and other countries</em></br>
+    </p>
    </div>
   </td>
  </tr>
