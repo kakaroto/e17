@@ -30,7 +30,7 @@
       global $page;
       global $lang;
       list($width, $height, $type, $attr) = getimagesize("p/$page/d/$src");
-      echo("<img src=\"p/$page/d/$src\" style='width:".$width."px; height:".$height."px; border:0;' alt='$alt'/>");
+      echo("<img src=\"p/$page/d/$src\" style='width:".$width."px; height:".$height."px; border:0;' alt='$alt'>");
   }
 
   function thm($src, $alt) {
