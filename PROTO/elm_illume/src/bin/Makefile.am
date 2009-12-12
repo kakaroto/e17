@@ -6,11 +6,13 @@ INCLUDES = -I$(top_srcdir) \
 bin_PROGRAMS = elm_illume
 
 ELMILLUMEHEADERS = \
-              elm_illume.h
+              elm_illume.h \
+              elm_ill_container.h
 
 elm_illume_SOURCES = \
             $(ELMILLUMEHEADERS) \
-            main.c
+            main.c \
+            elm_ill_container.c
 
 elm_illume_LDFLAGS = -export-dynamic
 elm_illume_LDADD = @ELM_ILLUME_LIBS@
