@@ -1,5 +1,6 @@
-#include "elm_illume.h"
 #include <Ecore_X.h>
+#include "elm_illume.h"
+#include "elm_ill_container.h"
 
 #ifndef ELM_LIB_QUICKLAUNCH
 

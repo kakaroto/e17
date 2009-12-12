@@ -13,11 +13,15 @@ EAPI int
 elm_main(int argc, char **argv) 
 {
    Evas_Object *bg, *box, *btn, *icon;
+   Ecore_X_Window xwin;
    char buff[PATH_MAX];
 
    win = elm_win_add(NULL, "elm_indicator", ELM_WIN_DOCK);
    elm_win_title_set(win, "Illume Indicator Window");
    evas_object_smart_callback_add(win, "delete-request", _cb_win_del, NULL);
+
+   xwin = elm_win_xwindow_get(win);
+   ecore_x_icccm_hints_set(xwin, 0, 0, 0, 0, 0, 0, 0);
 
    bg = elm_bg_add(win);
    evas_object_size_hint_weight_set(bg, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
@@ -86,7 +90,6 @@ _cb_btn_dual_clicked(void *data, Evas_Object *obj, void *event)
    win = data;
    xwin = elm_win_xwindow_get(win);
    mode = ecore_x_e_illume_mode_get(xwin);
-   printf("Ind Mode: %d\n", mode);
    if (mode == ECORE_X_ILLUME_MODE_SINGLE) 
      {
         ecore_x_e_illume_mode_set(xwin, ECORE_X_ILLUME_MODE_DUAL);

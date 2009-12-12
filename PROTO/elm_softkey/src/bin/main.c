@@ -13,11 +13,15 @@ EAPI int
 elm_main(int argc, char **argv) 
 {
    Evas_Object *bg, *box, *btn, *icon;
+   Ecore_X_Window xwin;
    char buff[PATH_MAX];
 
    win = elm_win_add(NULL, "elm_softkey", ELM_WIN_DOCK);
    elm_win_title_set(win, "Illume Softkey Window");
    evas_object_smart_callback_add(win, "delete-request", _cb_win_del, NULL);
+
+   xwin = elm_win_xwindow_get(win);
+   ecore_x_icccm_hints_set(xwin, 0, 0, 0, 0, 0, 0, 0);
 
    bg = elm_bg_add(win);
    evas_object_size_hint_weight_set(bg, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
@@ -50,7 +54,7 @@ elm_main(int argc, char **argv)
 
    btn = elm_button_add(win);
    elm_button_icon_set(btn, icon);
-   evas_object_smart_callback_add(btn, "clicked", _cb_btn_close_clicked, NULL);
+   evas_object_smart_callback_add(btn, "clicked", _cb_btn_close_clicked, win);
    evas_object_size_hint_align_set(btn, 1.0, 0.5);
    elm_box_pack_end(box, btn);
    evas_object_show(btn);
@@ -73,44 +77,23 @@ _cb_win_del(void *data, Evas_Object *obj, void *event)
 static void 
 _cb_btn_close_clicked(void *data, Evas_Object *obj, void *event) 
 {
-   /*
-   E_Border *bd;
+   Evas_Object *win;
+   Ecore_X_Window xwin;
 
-   if (!(bd = e_border_focused_get())) return;
-   e_border_act_close_begin(bd);
-    */
+   win = data;
+   xwin = elm_win_xwindow_get(win);
+   ecore_x_e_illume_close_send(xwin);
 }
 
 static void 
 _cb_btn_back_clicked(void *data, Evas_Object *obj, void *event) 
 {
-   /*
-   E_Border *bd, *fbd;
-   Eina_List *focused, *l;
+   Evas_Object *win;
+   Ecore_X_Window xwin;
 
-   if (!(bd = e_border_focused_get())) return;
-   focused = e_border_focus_stack_get();
-   EINA_LIST_REVERSE_FOREACH(focused, l, fbd) 
-     {
-        E_Border *fb;
-
-        if (e_object_is_del(E_OBJECT(fbd))) continue;
-        if ((!fbd->client.icccm.accepts_focus) && 
-            (!fbd->client.icccm.take_focus)) continue;
-        if (fbd->client.netwm.state.skip_taskbar) continue;
-        if (fbd == bd) 
-          {
-             if (!(fb = focused->next->data)) continue;
-             if (e_object_is_del(E_OBJECT(fb))) continue;
-             if ((!fb->client.icccm.accepts_focus) && 
-                 (!fb->client.icccm.take_focus)) continue;
-             if (fb->client.netwm.state.skip_taskbar) continue;
-             e_border_raise(fb);
-             e_border_focus_set(fb, 1, 1);
-             break;
-          }
-     }
-    */
+   win = data;
+   xwin = elm_win_xwindow_get(win);
+   ecore_x_e_illume_back_send(xwin);
 }
 
 #endif
