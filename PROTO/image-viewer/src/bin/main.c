@@ -674,12 +674,15 @@ on_thumb_sel(void *data, Evas_Object *obj, void *event_info)
    IV *iv = file->iv;
 
    elm_genlist_item_show(file->gl_item);
-   iv->account->current = file;
-   iv->flags.current = EINA_TRUE;
-   if (iv->config->auto_hide_previews)
-     iv->flags.hide_previews = EINA_TRUE;
-   if (!iv->idler)
-     iv->idler = ecore_idler_add(on_idler, iv);
+   if (file != iv->account->current)
+     {
+	iv->account->current = file;
+	iv->flags.current = EINA_TRUE;
+	if (iv->config->auto_hide_previews)
+	  iv->flags.hide_previews = EINA_TRUE;
+	if (!iv->idler)
+	  iv->idler = ecore_idler_add(on_idler, iv);
+     }
 }
 
 static void
