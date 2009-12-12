@@ -168,6 +168,10 @@
    
    <h3>Devices</h3>
    
+   <center>
+    <?php img("laptop.png", "Laptop");?>
+   </center>
+   
    <p>
     Enlightenment and EFL use desktop Linux systems as a primary method of
     development because it is fast and simple to do so, but all of it is
@@ -175,6 +179,10 @@
     Mobile Phones, to Televisions, Netbooks and more.
    </p>
 
+   <center>
+    <?php img("phone.png", "Phone");?>
+   </center>
+   
    <p>
     We have run and tested on x86-32, x86-64, Atom, Power-PC, ARM (ARM9, ARM11,
     Cortex-A8 and more), MIPS, Sparc, and many other architectures. The
@@ -184,7 +192,9 @@
     sufficient processing power (depending on needs).
    </p>
    
-   <xx>
+   <center>
+    <?php img("processors.png", "Various Processors");?>
+   </center>
    
    <p>
     Screens from even less than QVGA (320x240 or 240x320) screens all the
