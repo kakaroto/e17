@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2009-11-30 23:48+0100\n"
+"POT-Creation-Date: 2009-12-13 12:58+0100\n"
 "PO-Revision-Date: 2009-07-28 14:01+0000\n"
 "Last-Translator: Yentl <y.v.t@scarlet.be>\n"
 "Language-Team: Dutch <nl@li.org>\n"
@@ -428,7 +428,7 @@ msgstr "Sluit"
 msgid "Create New Iconbox"
 msgstr "Maak een nieuwe Icoonbox"
 
-#: src/container.c:1501 src/container.c:1577 src/menus.c:2106
+#: src/container.c:1501 src/container.c:1577 src/menus.c:2107
 #, c-format
 msgid "Icon size: %2d"
 msgstr "Icoon grootte: %2d"
@@ -620,11 +620,11 @@ msgstr "Boven"
 msgid "Bottom"
 msgstr "Onder"
 
-#: src/desktops.c:2406 src/pager.c:1933 src/pager.c:1958 src/pager.c:1983
+#: src/desktops.c:2406 src/pager.c:1920 src/pager.c:1945 src/pager.c:1970
 msgid "Left"
 msgstr "Links"
 
-#: src/desktops.c:2412 src/pager.c:1945 src/pager.c:1970 src/pager.c:1995
+#: src/desktops.c:2412 src/pager.c:1932 src/pager.c:1957 src/pager.c:1982
 msgid "Right"
 msgstr "Rechts"
 
@@ -1279,27 +1279,27 @@ msgstr "Minimaliseer deze groep"
 msgid "Group %i"
 msgstr "Groep %i"
 
-#: src/menus.c:2129
+#: src/menus.c:2130
 msgid "Animated display of menus"
 msgstr "Geanimeerd tonen van menus"
 
-#: src/menus.c:2134
+#: src/menus.c:2135
 msgid "Always pop up menus on screen"
 msgstr "Toon menus altijd op het scherm"
 
-#: src/menus.c:2139
+#: src/menus.c:2140
 msgid "Warp pointer after moving menus"
 msgstr "Pointer warpen na menu's te verplaatsen"
 
-#: src/menus.c:2156
+#: src/menus.c:2157
 msgid "Menus"
 msgstr "Menu's"
 
-#: src/menus.c:2157
+#: src/menus.c:2158
 msgid "Menu Settings"
 msgstr "Menu Instellingen"
 
-#: src/menus.c:2160
+#: src/menus.c:2161
 msgid ""
 "Enlightenment Menu\n"
 "Settings Dialog\n"
@@ -1412,75 +1412,75 @@ msgstr "Zoom Af"
 msgid "Zoom On"
 msgstr "Zoom Aan"
 
-#: src/pager.c:1818 src/pager.c:1913
+#: src/pager.c:1805 src/pager.c:1900
 msgid "Pager scanning speed:"
 msgstr "Pager scan snelheid:"
 
-#: src/pager.c:1819 src/pager.c:1914
+#: src/pager.c:1806 src/pager.c:1901
 msgid "lines per second"
 msgstr "lijnen per seconde"
 
-#: src/pager.c:1852
+#: src/pager.c:1839
 msgid "Enable pager display"
 msgstr "Toon pager"
 
-#: src/pager.c:1862
+#: src/pager.c:1849
 msgid "Pager Mode:"
 msgstr "Pager Mode:"
 
-#: src/pager.c:1866
+#: src/pager.c:1853
 msgid "Simple"
 msgstr "Simpel"
 
-#: src/pager.c:1872
+#: src/pager.c:1859
 msgid "Make miniature snapshots of the screen"
 msgstr "Maak miniatuur snapshots van het scherm"
 
-#: src/pager.c:1879
+#: src/pager.c:1866
 msgid "Live Update"
 msgstr "Live Update"
 
-#: src/pager.c:1890
+#: src/pager.c:1877
 msgid "Smooth high quality snapshots in snapshot mode"
 msgstr "Verbeter hoge kwaliteits snapshots in snapshot modus"
 
-#: src/pager.c:1895
+#: src/pager.c:1882
 msgid "Zoom in on pager windows when mouse is over them"
 msgstr "Zoom in op pager vensters als de muis boven ze is"
 
-#: src/pager.c:1901
+#: src/pager.c:1888
 msgid "Pop up window title when mouse is over the window"
 msgstr "Toon venster titel als de muis boven het venster is"
 
-#: src/pager.c:1906
+#: src/pager.c:1893
 msgid "Continuously scan screen to update pager"
 msgstr "Scan het scherm continu om de pager bij te werken"
 
-#: src/pager.c:1929
+#: src/pager.c:1916
 msgid "Mouse button to select and drag windows:"
 msgstr "Muisknop op vensters te selecteren en slepen"
 
-#: src/pager.c:1939 src/pager.c:1964 src/pager.c:1989
+#: src/pager.c:1926 src/pager.c:1951 src/pager.c:1976
 msgid "Middle"
 msgstr "Midden"
 
-#: src/pager.c:1954
+#: src/pager.c:1941
 msgid "Mouse button to select desktops:"
 msgstr "Muisknop om desktops te selecteren"
 
-#: src/pager.c:1979
+#: src/pager.c:1966
 msgid "Mouse button to display pager menu:"
 msgstr "Muisknop om pager menu te tonen"
 
-#: src/pager.c:2003
+#: src/pager.c:1990
 msgid "Pagers"
 msgstr "Pagers"
 
-#: src/pager.c:2004
+#: src/pager.c:1991
 msgid "Pager Settings"
 msgstr "Pager instellingen"
 
-#: src/pager.c:2007
+#: src/pager.c:1994
 msgid ""
 "Enlightenment Desktop & Area\n"
 "Pager Settings Dialog\n"
