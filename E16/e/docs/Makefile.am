@@ -1,34 +1,28 @@
 e16docdir = ${datadir}/doc/${PACKAGE}
 
-EXTRA_DIST = README README.xml e16-docs.xml e16-docs-src.xml xml2dox.xsl \
-             e16.1 README.html e16-docs.html
+EXTRA_DIST = e16.xml e16.man.in e16.html
 
-CLEANFILES = MAIN
-MAINTAINERCLEANFILES = e16-docs.xml e16.1 README.html e16-docs.html
+CLEANFILES = e16.1
+MAINTAINERCLEANFILES = e16.html
 
-e16-docs.xml: e16-docs-src.xml
-	grep -v -e "^<font" -e "^<img" -e "more on next page" $< > $@
+MANSUBST = \
+	-e "s=%VERSION%=${VERSION}=" \
+	-e "s=%DOCDIR%=$(e16docdir)="
 
-e16.1: e16-docs.xml
-	$(XMLTO) man $<
+e16.1: e16.man.in
+	sed $(MANSUBST) $< > $@
 
-README.html: README.xml
-	$(XMLTO) html-nochunks $<
-
-e16-docs.html: e16-docs.xml
+e16.html: e16.xml
 	$(XMLTO) html-nochunks $<
 
 if INSTALL_MANS
 
-dist_man_MANS = e16.1
+man_MANS = e16.1
 
 endif
 
 if INSTALL_DOCS
 
-dist_e16doc_DATA = README.html e16-docs.html
+dist_e16doc_DATA = e16.html
 
 endif
-
-MAIN: e16-docs-src.xml xml2dox.xsl
-	xsltproc $(srcdir)/xml2dox.xsl $< > $@

@@ -346,8 +346,8 @@ fi
 
 AM_MISSING_PROG(XMLTO, xmlto)
 AC_ARG_ENABLE(mans,
-  [  --enable-mans           install man page @<:@default=no@:>@],,
-  enable_mans=no)
+  [  --enable-mans           install man page @<:@default=yes@:>@],,
+  enable_mans=yes)
 AM_CONDITIONAL([INSTALL_MANS], [test "x$enable_mans" = "xyes"])
 AC_ARG_ENABLE(docs,
   [  --enable-docs           install html docs @<:@default=yes@:>@],,
