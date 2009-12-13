@@ -636,6 +636,7 @@ MenuEmpty(Menu * m, int destroying)
 
    FreePmapMask(&m->pmm);
 
+   m->last_change = 0;
    m->filled = 0;
 }
 
@@ -655,6 +656,7 @@ MenuFreePixmaps(Menu * m)
 
    FreePmapMask(&m->pmm);
 
+   m->last_change = 0;
    m->filled = 0;
 }
 
@@ -2022,7 +2024,6 @@ MenusTimeout(void *data __UNUSED__)
 	  ts - m->last_access < MENU_UNLOAD_CHECK_INTERVAL)
 	 continue;
 
-      m->last_change = 0;
       if (!m->loader)
 	 MenuFreePixmaps(m);
       else if (m->ref_count)
