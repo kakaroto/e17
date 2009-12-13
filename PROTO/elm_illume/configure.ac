@@ -88,5 +88,4 @@ src/Makefile
 src/bin/Makefile
 data/Makefile
 data/desktop/Makefile
-data/themes/Makefile
 ])
