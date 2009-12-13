@@ -93,3 +93,59 @@ const char *eweather_plugin_name_get(EWeather *eweather, int i)
    return plugin->name;
 }
 
+const char *eweather_plugin_logo_get(EWeather *eweather, int i)
+{
+   Eina_Array *array;
+   Eina_Module *m;
+
+   array = eweather_plugins_list_get(eweather);
+
+   m = eina_array_data_get(array, i);
+   if(!m) return NULL;
+
+   EWeather_Plugin *plugin = eina_module_symbol_get(m, "_plugin_class");
+   if(!plugin) return NULL;
+
+   return plugin->logo;
+}
+
+const char *eweather_plugin_url_get(EWeather *eweather, int i)
+{
+   Eina_Array *array;
+   Eina_Module *m;
+
+   array = eweather_plugins_list_get(eweather);
+
+   m = eina_array_data_get(array, i);
+   if(!m) return NULL;
+
+   EWeather_Plugin *plugin = eina_module_symbol_get(m, "_plugin_class");
+   if(!plugin) return NULL;
+
+   return plugin->url;
+}
+
+const char *eweather_plugin_current_name_get(EWeather *eweather)
+{
+   if(!eweather->plugin.plugin)
+     return NULL;
+
+   return eweather->plugin.plugin->name;
+}
+
+const char *eweather_plugin_current_logo_get(EWeather *eweather)
+{
+   if(!eweather->plugin.plugin)
+     return NULL;
+
+   return eweather->plugin.plugin->logo;
+}
+
+const char *eweather_plugin_current_url_get(EWeather *eweather)
+{
+   if(!eweather->plugin.plugin)
+     return NULL;
+
+   return eweather->plugin.plugin->url;
+}
+

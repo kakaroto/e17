@@ -173,13 +173,13 @@ _fill_data(Config_Item *ci, E_Config_Dialog_Data *cfdata)
     static Evas_Object *
 _basic_create(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cfdata)
 {
-    Evas_Object *o = NULL, *of = NULL, *or = NULL, *ob = NULL;
+    Evas_Object *o = NULL, *of = NULL, *or = NULL, *ob = NULL, *oc = NULL;
     char buf[4096];
     E_Radio_Group *rg;
     Eina_Array_Iterator it;
     Eina_Array *array;
     Eina_Module *m;
-    int i;
+    int i, id;
     Config_Item *ci;
 
     ci = cfd->data;
@@ -223,32 +223,48 @@ _basic_create(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cfdata)
 
     e_widget_list_object_append(o, of, 1, 1, 0.5);
 
-     
-    of = e_widget_frametable_add(evas, D_("Yahoo Forecasts Code"), 0);
-    ob = e_widget_label_add(evas, D_("Yahoo Forecasts Code/US Zip Code"));
-    e_widget_frametable_object_append(of, ob, 0, 0, 1, 1, 1, 0, 1, 0);
-    ob = e_widget_entry_add(evas, &cfdata->location, NULL, NULL, NULL);
-    e_widget_size_min_set(ob, 100, 1);
-    e_widget_frametable_object_append(of, ob, 1, 0, 1, 1, 1, 0, 1, 0);
-    ob = e_widget_label_add(evas, D_("To find the code for your area, go to:"));
-    e_widget_frametable_object_append(of, ob, 0, 1, 1, 1, 1, 0, 1, 0);
-    snprintf(buf, sizeof(buf), D_("%s, find your area, and look at the URL"), "http://weather.yahoo.com/");
-    ob = e_widget_label_add(evas, buf);
-    e_widget_frametable_object_append(of, ob, 0, 2, 2, 1, 1, 0, 1, 0);
-    e_widget_list_object_append(o, of, 1, 1, 0.5);
+    
+    id = eweather_plugin_id_search(ci->inst->eweather, "Yahoo");
+    if(id >= 0)
+    {
+        of = e_widget_frametable_add(evas, D_("Yahoo Forecasts Code"), 0);
 
-    of = e_widget_frametable_add(evas, D_("Google Forecasts Code"), 0);
-    ob = e_widget_label_add(evas, D_("Google Forecasts City Code"));
-    e_widget_frametable_object_append(of, ob, 0, 0, 1, 1, 1, 0, 1, 0);
-    ob = e_widget_entry_add(evas, &cfdata->google, NULL, NULL, NULL);
-    e_widget_size_min_set(ob, 100, 1);
-    e_widget_frametable_object_append(of, ob, 1, 0, 1, 1, 1, 0, 1, 0);
-    ob = e_widget_label_add(evas, D_("Specify the name of your city"));
-    e_widget_frametable_object_append(of, ob, 0, 1, 1, 1, 1, 0, 1, 0);
-    snprintf(buf, sizeof(buf), D_(" with extra information like the state or the country"));
-    ob = e_widget_label_add(evas, buf);
-    e_widget_frametable_object_append(of, ob, 0, 2, 2, 1, 1, 0, 1, 0);
-    e_widget_list_object_append(o, of, 1, 1, 0.5);
+        oc = e_widget_image_add_from_file(evas, eweather_plugin_logo_get(ci->inst->eweather, id), 50, 25);
+        e_widget_frametable_object_append(of, oc, 0, 0, 1, 1, 1, 0, 1, 0);
+
+        ob = e_widget_label_add(evas, D_("Yahoo Forecasts Code/US Zip Code"));
+        e_widget_frametable_object_append(of, ob, 0, 1, 1, 1, 1, 0, 1, 0);
+        ob = e_widget_entry_add(evas, &cfdata->location, NULL, NULL, NULL);
+        e_widget_size_min_set(ob, 100, 1);
+        e_widget_frametable_object_append(of, ob, 1, 1, 1, 1, 1, 0, 1, 0);
+        ob = e_widget_label_add(evas, D_("To find the code for your area, go to:"));
+        e_widget_frametable_object_append(of, ob, 0, 2, 1, 1, 1, 0, 1, 0);
+        snprintf(buf, sizeof(buf), D_("%s, find your area, and look at the URL"), "http://weather.yahoo.com/");
+        ob = e_widget_label_add(evas, buf);
+        e_widget_frametable_object_append(of, ob, 0, 3, 2, 1, 1, 0, 1, 0);
+        e_widget_list_object_append(o, of, 1, 1, 0.5);
+    }
+
+    id = eweather_plugin_id_search(ci->inst->eweather, "Google");
+    if(id >= 0)
+    {
+        of = e_widget_frametable_add(evas, D_("Google Forecasts Code"), 0);
+
+        oc = e_widget_image_add_from_file(evas, eweather_plugin_logo_get(ci->inst->eweather, id), 50, 25);
+        e_widget_frametable_object_append(of, oc, 0, 0, 1, 1, 1, 0, 1, 0);
+
+        ob = e_widget_label_add(evas, D_("Google Forecasts City Code"));
+        e_widget_frametable_object_append(of, ob, 0, 1, 1, 1, 1, 0, 1, 0);
+        ob = e_widget_entry_add(evas, &cfdata->google, NULL, NULL, NULL);
+        e_widget_size_min_set(ob, 100, 1);
+        e_widget_frametable_object_append(of, ob, 1, 1, 1, 1, 1, 0, 1, 0);
+        ob = e_widget_label_add(evas, D_("Specify the name of your city"));
+        e_widget_frametable_object_append(of, ob, 0, 2, 1, 1, 1, 0, 1, 0);
+        snprintf(buf, sizeof(buf), D_(" with extra information like the state or the country"));
+        ob = e_widget_label_add(evas, buf);
+        e_widget_frametable_object_append(of, ob, 0, 3, 2, 1, 1, 0, 1, 0);
+        e_widget_list_object_append(o, of, 1, 1, 0.5);
+    }
 
 
     int mw,mh;

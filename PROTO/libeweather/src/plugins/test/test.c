@@ -17,6 +17,8 @@ static void _populate(EWeather_Data *e_data, int id);
 EAPI EWeather_Plugin _plugin_class =
 {
    "Test",
+   NULL,
+   NULL,
    _init,
    _shutdown,
    _poll_time_updated,

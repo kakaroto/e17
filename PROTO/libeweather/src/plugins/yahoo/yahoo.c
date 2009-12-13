@@ -99,6 +99,8 @@ struct Instance
 EAPI EWeather_Plugin _plugin_class =
 {
    "Yahoo", 
+   "http://weather.yahoo.com/",
+   PACKAGE_DATA_DIR"/yahoo_logo.jpg",
    _init,
    _shutdown,
    _poll_time_updated,

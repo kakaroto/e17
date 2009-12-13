@@ -72,6 +72,8 @@ struct Instance
 EAPI EWeather_Plugin _plugin_class =
 {
    "Google", 
+   "http://www.google.fr/",
+   PACKAGE_DATA_DIR"/google_logo.jpg",
    _init,
    _shutdown,
    _poll_time_updated,

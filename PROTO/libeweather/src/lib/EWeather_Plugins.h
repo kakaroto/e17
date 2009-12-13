@@ -14,6 +14,7 @@ typedef void (*Plugin_Shutdown) (EWeather *eweather);
 typedef void (*Plugin_Poll_Time_Updated) (EWeather *eweather);
 typedef void (*Plugin_Code_Updated) (EWeather *eweather);
 
+
 struct EWeather_Data
 {
    EWeather_Type type;
@@ -58,6 +59,8 @@ struct EWeather
 struct EWeather_Plugin
 {
    const char *name;
+   const char *url;
+   const char *logo;
    Plugin_Init init;
    Plugin_Shutdown shutdown;
    Plugin_Poll_Time_Updated poll_time_updated;
