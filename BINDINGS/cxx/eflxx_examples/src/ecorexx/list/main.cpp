@@ -1,3 +1,4 @@
+#if 0
 #include <ecorexx/Ecorexx.h>
 
 #include <iostream>
@@ -47,3 +48,4 @@ int main( int argc, const char **argv )
 
   return 0;
 }
+#endif

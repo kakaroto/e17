@@ -16,7 +16,8 @@ AM_CFLAGS =\
 lib_LTLIBRARIES = \
 	libeinaxx.la
 
-libeinaxx_la_SOURCES = 
+libeinaxx_la_SOURCES = \
+	Application.cpp
 
 libeinaxx_la_LIBADD = \
 	$(EFL_LIBS) \

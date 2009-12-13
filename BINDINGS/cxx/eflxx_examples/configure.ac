@@ -106,6 +106,7 @@ PKG_CHECK_MODULES(ECOREXX, ecorexx)
 PKG_CHECK_MODULES(EETXX, eetxx)
 PKG_CHECK_MODULES(EMOTIONXX, emotionxx)
 PKG_CHECK_MODULES(ELEMENTARYXX, elementaryxx)
+PKG_CHECK_MODULES(EINAXX, einaxx)
 AC_OUTPUT([
 Makefile
 data/Makefile
@@ -138,6 +139,8 @@ src/emotionxx/simple/Makefile
 src/elementaryxx/Makefile
 src/elementaryxx/simple/Makefile
 src/elementaryxx/full/Makefile
+src/einaxx/Makefile
+src/einaxx/list/Makefile
 src/debug/Makefile
 src/debug/simple/Makefile
 src/signals/Makefile

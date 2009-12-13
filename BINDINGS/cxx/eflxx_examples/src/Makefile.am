@@ -20,6 +20,7 @@ SUBDIRS = \
 	emotionxx \
 	debug \
 	signals \
-	elementaryxx
+	elementaryxx \
+	einaxx
 
 

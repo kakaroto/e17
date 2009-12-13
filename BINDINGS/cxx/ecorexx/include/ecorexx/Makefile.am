@@ -3,7 +3,6 @@ libecorexx_HEADERS = \
 	Application.h\
 	Config.h \
 	EvasWindow.h \
-	List.h \
 	XWindow.h \
 	Animator.h \
 	Timer.h \
