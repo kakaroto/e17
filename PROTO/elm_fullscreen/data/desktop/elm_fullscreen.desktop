@@ -1,0 +1,11 @@
+
+[Desktop Entry]
+Encoding=UTF-8
+Name=Elm_Fullscreen
+Comment=Elementary Fullscreen
+Exec=elm_fullscreen
+Icon=elm_fullscreen
+Terminal=false
+Type=Application
+Categories=Application;Utility;
+StartupWMClass=elm_fullscreen
