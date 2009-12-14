@@ -1,6 +1,7 @@
 #!/bin/bash
 
 PKG="eflxx
+     einaxx
      evasxx
      eetxx
      edjexx
