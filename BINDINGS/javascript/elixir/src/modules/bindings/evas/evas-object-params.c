@@ -163,6 +163,9 @@ elixir_string_const_evas_object_params(const char* (*func)(const Evas_Object *ob
 
    str = func(know);
 
+   if (strncmp(str, "elixir/", 7) == 0)
+     str = strdupa(str + 7);
+
    elixir_return_str(cx, vp, str);
    return JS_TRUE;
 }
