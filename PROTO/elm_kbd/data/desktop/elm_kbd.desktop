@@ -6,5 +6,5 @@ Exec=elm_kbd
 Icon=elm_kbd
 Terminal=false
 Type=Application
-Categories=Application;Utility;
+Categories=Application;Development;
 StartupWMClass=elm_kbd

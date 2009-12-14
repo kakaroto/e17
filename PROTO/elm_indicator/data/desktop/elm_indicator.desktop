@@ -7,5 +7,5 @@ Exec=elm_indicator
 Icon=elm_indicator
 Terminal=false
 Type=Application
-Categories=Application;Utility;
+Categories=Application;Development;
 StartupWMClass=elm_indicator

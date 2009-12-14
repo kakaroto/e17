@@ -7,5 +7,5 @@ Exec=elm_softkey
 Icon=elm_softkey
 Terminal=false
 Type=Application
-Categories=Application;Utility;
+Categories=Application;Development;
 StartupWMClass=elm_softkey

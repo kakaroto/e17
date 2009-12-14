@@ -7,5 +7,5 @@ Exec=elm_fullscreen
 Icon=elm_fullscreen
 Terminal=false
 Type=Application
-Categories=Application;Utility;
+Categories=Application;Development;
 StartupWMClass=elm_fullscreen
