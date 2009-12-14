@@ -17,7 +17,6 @@ elm_main(int argc, char **argv)
    win = elm_win_add(NULL, "elm_kbd", ELM_WIN_BASIC);
    elm_win_title_set(win, "Elm Keyboard");
    evas_object_smart_callback_add(win, "delete-request", _cb_win_del, NULL);
-   elm_win_keyboard_mode_set(win, ELM_WIN_KEYBOARD_ALPHA);
    elm_win_keyboard_win_set(win, EINA_TRUE);
 
    bg = elm_bg_add(win);
