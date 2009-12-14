@@ -163,7 +163,7 @@ elixir_evas_textblock_style_set(JSContext *cx, uintN argc, jsval *vp)
    GET_PRIVATE(cx, val[0].v.obj, ts);
    text = elixir_get_string_bytes(val[1].v.str, &length);
 
-   if (strlen(text) != length)
+   if (text && strlen(text) != length)
      return JS_FALSE;
 
    evas_textblock_style_set(ts, text);

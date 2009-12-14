@@ -77,7 +77,7 @@ elixir_evas_object_image_file_set(JSContext *cx, uintN argc, jsval *vp)
 	file = elixir_file_canonicalize(elixir_get_string_bytes(val[1].v.str, NULL));
 	key = elixir_get_string_bytes(val[2].v.str, &length);
 
-	if (strlen(key) != length)
+	if (key && strlen(key) != length)
 	  return JS_FALSE;
      }
 

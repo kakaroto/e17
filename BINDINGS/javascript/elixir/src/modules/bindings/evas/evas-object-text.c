@@ -43,7 +43,7 @@ elixir_evas_object_text_font_set(JSContext *cx, uintN argc, jsval *vp)
 	font = elixir_get_string_bytes(val[1].v.str, &length);
 	size = val[2].v.num;
 
-	if (length != strlen(font))
+	if (font && length != strlen(font))
 	  return JS_FALSE;
      }
 

@@ -313,7 +313,7 @@ elixir_ecore_download_directory_new(JSContext *cx, uintN argc, jsval *vp)
    temp = elixir_file_canonicalize(elixir_get_string_bytes(val[1].v.str, NULL));
    backup = strdupa(elixir_get_string_bytes(val[2].v.str, NULL));
    prefix = basename(backup);
-   if (strlen(prefix) == 0) prefix = "elixir-XXXXXX";
+   if (!prefix || strlen(prefix) == 0) prefix = "elixir-XXXXXX";
 
    edd = ecore_download_directory_new(files, temp, prefix);
 

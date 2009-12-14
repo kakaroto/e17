@@ -317,7 +317,7 @@ elixir_sqlite3_open(JSContext *cx, uintN argc, jsval *vp)
      return JS_FALSE;
 
    tmp = elixir_get_string_bytes(val[0].v.str, &length);
-   if (length != strlen(tmp))
+   if (tmp && length != strlen(tmp))
      return JS_FALSE;
    filename = elixir_file_canonicalize(tmp);
 
@@ -347,7 +347,7 @@ elixir_sqlite3_open_v2(JSContext *cx, uintN argc, jsval *vp)
      return JS_FALSE;
 
    tmp = elixir_get_string_bytes(val[0].v.str, &length);
-   if (length != strlen(tmp))
+   if (tmp && length != strlen(tmp))
      return JS_FALSE;
    filename = elixir_file_canonicalize(tmp);
    flags = val[1].v.num;

@@ -56,7 +56,7 @@ elixir_fopen(JSContext *cx, uintN argc, jsval *vp)
    file = elixir_get_string_bytes(val[0].v.str, NULL);
 
    safe_file = elixir_file_canonicalize(file);
-   fl = malloc(sizeof (mmaped_file_t) + strlen(safe_file));
+   fl = malloc(sizeof (mmaped_file_t) + strlen(safe_file) + 1);
    if (!fl || !safe_file)
      goto error;
 
