@@ -311,6 +311,7 @@ class EditManager(View, evas.ClippedSmartObject):
         elif min_h and h < min_h:
             h = min_h
         self._group.resize(w, h)
+        self.padding_update()
 
     # Group
     def _group_member_add(self):
@@ -401,8 +402,8 @@ class EditManager(View, evas.ClippedSmartObject):
             return
 
         w, h = self._group.size
-        w *= 3
-        h *= 3
+        w += 600
+        h += 600
         scr_x, scr_y, scr_w, scr_h = self.parent_view.region_get()
         if w < scr_w:
             w = scr_w
@@ -416,8 +417,8 @@ class EditManager(View, evas.ClippedSmartObject):
 
     def padding_update_grow(self):
         w, h = self._group.size
-        w *= 3
-        h *= 3
+        w += 600
+        h += 600
         scr_x, scr_y, scr_w, scr_h = self.parent_view.region_get()
         if w < scr_w:
             w = scr_w
@@ -433,8 +434,8 @@ class EditManager(View, evas.ClippedSmartObject):
 
     def padding_update(self):
         w, h = self._group.size
-        w *= 3
-        h *= 3
+        w += 600
+        h += 600
         scr_x, scr_y, scr_w, scr_h = self.parent_view.region_get()
         if w < scr_w:
             w = scr_w
