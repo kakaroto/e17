@@ -151,7 +151,8 @@ _load_keys(Evas_Object *obj, Evas_Coord *w, Evas_Coord *h)
              elm_button_label_set(btn, label);
              evas_object_size_hint_weight_set(btn, EVAS_HINT_EXPAND, 
                                               EVAS_HINT_EXPAND);
-             evas_object_size_hint_align_set(btn, EVAS_HINT_FILL, EVAS_HINT_FILL);
+             evas_object_size_hint_align_set(btn, EVAS_HINT_FILL, 
+                                             EVAS_HINT_FILL);
              elm_table_pack(tbl, btn, c, r, 1, 1);
              evas_object_show(btn);
              c++;
