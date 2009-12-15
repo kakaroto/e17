@@ -22,8 +22,10 @@ struct _Ind_Home_Exec
 static void _cb_win_del(void *data, Evas_Object *obj, void *event);
 static void _cb_btn_home_clicked(void *data, Evas_Object *obj, void *event);
 static void _cb_btn_dual_clicked(void *data, Evas_Object *obj, void *event);
-//static void _cb_btn_kbd_clicked(void *data, Evas_Object *obj, void *event);
+static void _cb_btn_kbd_clicked(void *data, Evas_Object *obj, void *event);
 static void _cb_home_win_del(void *data, Evas_Object *obj, void *event);
+static int _cb_window_focus_in(void *data, int type, void *event);
+static int _cb_window_focus_out(void *data, int type, void *event);
 static char *_desk_gl_label_get(const void *data, Evas_Object *obj, const char *part);
 static Evas_Object *_desk_gl_icon_get(const void *data, Evas_Object *obj, const char *part);
 static void _desk_gl_del(const void *data, Evas_Object *obj);
@@ -38,6 +40,8 @@ static int _desktop_run_exit(void *data, int type, void *event);
 static void _apps_populate(void);
 static void _apps_unpopulate(void);
 static void _desktops_populate(void);
+
+static void _toggle_kbd_icon(Ecore_X_Window xwin, Evas_Object *obj);
 
 static Evas_Object *win = NULL;
 static Eina_List *hwins = NULL;
@@ -120,7 +124,6 @@ elm_main(int argc, char **argv)
    evas_object_show(btn);
    evas_object_show(icon);
 
-   /*
    icon = elm_icon_add(win);
    snprintf(buff, sizeof(buff), "%s/images/kbd-off.png", PACKAGE_DATA_DIR);
    elm_icon_file_set(icon, buff, NULL);
@@ -128,12 +131,11 @@ elm_main(int argc, char **argv)
 
    btn = elm_button_add(win);
    elm_button_icon_set(btn, icon);
-   evas_object_smart_callback_add(btn, "clicked", _cb_btn_kbd_clicked, win);
+   evas_object_smart_callback_add(btn, "clicked", _cb_btn_kbd_clicked, NULL);
    evas_object_size_hint_align_set(btn, EVAS_HINT_FILL, 0.5);
    elm_box_pack_end(box, btn);
    evas_object_show(btn);
    evas_object_show(icon);
-    */
 
    clock = elm_clock_add(win);
    elm_clock_show_seconds_set(clock, 0);
@@ -145,6 +147,15 @@ elm_main(int argc, char **argv)
    evas_object_resize(win, 200, 32);
    evas_object_show(win);
 
+   handlers = 
+     eina_list_append(handlers, 
+                      ecore_event_handler_add(ECORE_X_EVENT_MOUSE_IN, 
+                                              _cb_window_focus_in, btn));
+//   handlers = 
+//     eina_list_append(handlers, 
+//                      ecore_event_handler_add(ECORE_X_EVENT_WINDOW_FOCUS_OUT, 
+//                                              _cb_window_focus_out, btn));
+
    elm_run();
    elm_shutdown();
    return 0;
@@ -155,6 +166,7 @@ _cb_win_del(void *data, Evas_Object *obj, void *event)
 {
    Ind_Home_Win *hwin;
    Ind_Home_Exec *exec;
+   Ecore_Event_Handler *handle;
 
    EINA_LIST_FREE(exes, exec) 
      {
@@ -170,12 +182,8 @@ _cb_win_del(void *data, Evas_Object *obj, void *event)
 
    _apps_unpopulate();
 
-# ifdef ELM_EFREET
-   Ecore_Event_Handler *handle;
-
    EINA_LIST_FREE(handlers, handle)
      ecore_event_handler_del(handle);
-# endif
 
    elm_exit();
 }
@@ -253,39 +261,30 @@ _cb_btn_dual_clicked(void *data, Evas_Object *obj, void *event)
      }
 }
 
-/*
 static void 
 _cb_btn_kbd_clicked(void *data, Evas_Object *obj, void *event) 
 {
-   Evas_Object *win;
    Ecore_X_Window xwin;
    Ecore_X_Virtual_Keyboard_State state;
-   Evas_Object *icon;
-   char buff[PATH_MAX];
 
-   win = data;
-   xwin = elm_win_xwindow_get(win);
+   xwin = ecore_x_window_focus_get();
+   if (!xwin) return;
+
    state = ecore_x_e_virtual_keyboard_state_get(xwin);
    if ((state == ECORE_X_VIRTUAL_KEYBOARD_STATE_OFF) || 
        (state == ECORE_X_VIRTUAL_KEYBOARD_STATE_UNKNOWN)) 
      {
         ecore_x_e_virtual_keyboard_state_set(xwin, 
                                              ECORE_X_VIRTUAL_KEYBOARD_STATE_ON);
-        snprintf(buff, sizeof(buff), "%s/images/kbd-off.png", PACKAGE_DATA_DIR);
      }
    else 
      {
         ecore_x_e_virtual_keyboard_state_set(xwin, 
                                              ECORE_X_VIRTUAL_KEYBOARD_STATE_OFF);
-        snprintf(buff, sizeof(buff), "%s/images/kbd-on.png", PACKAGE_DATA_DIR);
      }
 
-   icon = elm_icon_add(win);
-   elm_icon_file_set(icon, buff, NULL);
-   evas_object_size_hint_aspect_set(icon, EVAS_ASPECT_CONTROL_VERTICAL, 1, 1);
-   elm_button_icon_set(obj, icon);
+   _toggle_kbd_icon(xwin, obj);
 }
-*/
 
 static void 
 _cb_home_win_del(void *data, Evas_Object *obj, void *event) 
@@ -305,6 +304,30 @@ _cb_home_win_del(void *data, Evas_Object *obj, void *event)
              break;
           }
      }
+}
+
+static int 
+_cb_window_focus_in(void *data, int type, void *event) 
+{
+   Evas_Object *btn;
+   Ecore_X_Event_Mouse_In *ev;
+
+   ev = event;
+   btn = data;
+   _toggle_kbd_icon(ev->event_win, btn);
+   return 1;
+}
+
+static int 
+_cb_window_focus_out(void *data, int type, void *event) 
+{
+   Evas_Object *btn;
+   Ecore_X_Event_Window_Focus_Out *ev;
+
+   ev = event;
+   btn = data;
+   _toggle_kbd_icon(ev->win, btn);
+   return 1;
 }
 
 static char *
@@ -494,6 +517,46 @@ _desktops_populate(void)
           }
      }
 # endif
+}
+
+static void 
+_toggle_kbd_icon(Ecore_X_Window xwin, Evas_Object *obj) 
+{
+   Evas_Object *icon;
+   Ecore_X_Virtual_Keyboard_State state;
+   char buff[PATH_MAX];
+
+   if (!xwin) 
+     {
+        printf("No XWin\n");
+        snprintf(buff, sizeof(buff), "%s/images/kbd-off.png", PACKAGE_DATA_DIR);
+     }
+   else 
+     {
+        printf("Have xwin\n");
+        state = ecore_x_e_virtual_keyboard_state_get(xwin);
+        if ((state == ECORE_X_VIRTUAL_KEYBOARD_STATE_OFF) || 
+            (state == ECORE_X_VIRTUAL_KEYBOARD_STATE_UNKNOWN)) 
+          {
+//             ecore_x_e_virtual_keyboard_state_set(xwin, 
+//                                                  ECORE_X_VIRTUAL_KEYBOARD_STATE_ON);
+             snprintf(buff, sizeof(buff), "%s/images/kbd-off.png", 
+                      PACKAGE_DATA_DIR);
+          }
+        else 
+          {
+//             ecore_x_e_virtual_keyboard_state_set(xwin, 
+//                                                  ECORE_X_VIRTUAL_KEYBOARD_STATE_OFF);
+             snprintf(buff, sizeof(buff), "%s/images/kbd-on.png", 
+                      PACKAGE_DATA_DIR);
+          }
+     }
+
+   icon = elm_button_icon_get(obj);
+   if (!icon) return;
+   elm_icon_file_set(icon, buff, NULL);
+   evas_object_size_hint_aspect_set(icon, EVAS_ASPECT_CONTROL_VERTICAL, 1, 1);
+   elm_button_icon_set(obj, icon);
 }
 
 #endif
