@@ -16,7 +16,9 @@ elm_main(int argc, char **argv)
 
    win = elm_win_add(NULL, "elm_illume", ELM_WIN_BASIC);
    elm_win_title_set(win, "Illume Conformant Window");
+//   elm_win_fullscreen_set(win, EINA_TRUE);
    evas_object_smart_callback_add(win, "delete-request", _cb_win_del, NULL);
+   elm_win_keyboard_mode_set(win, ELM_WIN_KEYBOARD_ALPHA);
    xwin = elm_win_xwindow_get(win);
    ecore_x_e_illume_conformant_set(xwin, 1);
 
