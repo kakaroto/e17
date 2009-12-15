@@ -1,5 +1,6 @@
 #include <Ecore.h>
 #include <Ecore_X.h>
+#include <Ecore_X_Atoms.h>
 #include "elm_indicator.h"
 
 #ifndef ELM_LIB_QUICKLAUNCH
@@ -24,8 +25,7 @@ static void _cb_btn_home_clicked(void *data, Evas_Object *obj, void *event);
 static void _cb_btn_dual_clicked(void *data, Evas_Object *obj, void *event);
 static void _cb_btn_kbd_clicked(void *data, Evas_Object *obj, void *event);
 static void _cb_home_win_del(void *data, Evas_Object *obj, void *event);
-static int _cb_window_focus_in(void *data, int type, void *event);
-static int _cb_window_focus_out(void *data, int type, void *event);
+static int _cb_window_property_change(void *data, int type, void *event);
 static char *_desk_gl_label_get(const void *data, Evas_Object *obj, const char *part);
 static Evas_Object *_desk_gl_icon_get(const void *data, Evas_Object *obj, const char *part);
 static void _desk_gl_del(const void *data, Evas_Object *obj);
@@ -149,12 +149,8 @@ elm_main(int argc, char **argv)
 
    handlers = 
      eina_list_append(handlers, 
-                      ecore_event_handler_add(ECORE_X_EVENT_MOUSE_IN, 
-                                              _cb_window_focus_in, btn));
-//   handlers = 
-//     eina_list_append(handlers, 
-//                      ecore_event_handler_add(ECORE_X_EVENT_WINDOW_FOCUS_OUT, 
-//                                              _cb_window_focus_out, btn));
+                      ecore_event_handler_add(ECORE_X_EVENT_WINDOW_PROPERTY, 
+                                              _cb_window_property_change, btn));
 
    elm_run();
    elm_shutdown();
@@ -307,26 +303,21 @@ _cb_home_win_del(void *data, Evas_Object *obj, void *event)
 }
 
 static int 
-_cb_window_focus_in(void *data, int type, void *event) 
+_cb_window_property_change(void *data, int type, void *event) 
 {
    Evas_Object *btn;
-   Ecore_X_Event_Mouse_In *ev;
+   Ecore_X_Event_Window_Property *ev;
+   Ecore_X_Window xwin = 0;
 
    ev = event;
+   if ((ev->win != ecore_x_window_root_first_get())) return 1;
    btn = data;
-   _toggle_kbd_icon(ev->event_win, btn);
-   return 1;
-}
-
-static int 
-_cb_window_focus_out(void *data, int type, void *event) 
-{
-   Evas_Object *btn;
-   Ecore_X_Event_Window_Focus_Out *ev;
-
-   ev = event;
-   btn = data;
-   _toggle_kbd_icon(ev->win, btn);
+   if (ev->atom == ECORE_X_ATOM_NET_ACTIVE_WINDOW) 
+     {
+        ecore_x_window_prop_window_get(ev->win, ev->atom, &xwin, 1);
+        if (!xwin) return 1;
+        _toggle_kbd_icon(xwin, btn);
+     }
    return 1;
 }
 
@@ -527,13 +518,9 @@ _toggle_kbd_icon(Ecore_X_Window xwin, Evas_Object *obj)
    char buff[PATH_MAX];
 
    if (!xwin) 
-     {
-        printf("No XWin\n");
-        snprintf(buff, sizeof(buff), "%s/images/kbd-off.png", PACKAGE_DATA_DIR);
-     }
+     snprintf(buff, sizeof(buff), "%s/images/kbd-off.png", PACKAGE_DATA_DIR);
    else 
      {
-        printf("Have xwin\n");
         state = ecore_x_e_virtual_keyboard_state_get(xwin);
         if ((state == ECORE_X_VIRTUAL_KEYBOARD_STATE_OFF) || 
             (state == ECORE_X_VIRTUAL_KEYBOARD_STATE_UNKNOWN)) 
