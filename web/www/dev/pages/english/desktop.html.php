@@ -122,7 +122,7 @@
 
         <div class="gallery">
         <?php $i = 0; foreach ( $modules as $id => $name ): ?>
-            <div <?php echo "class='module' id='module-i'" ?> >
+            <div <?php echo "class='module' id='module-$i'" ?> >
                  <p>
                     <?php echo "<a href='http://exchange.enlightenment.org/module/show/$id'>" ?>
                     <?php echo $name ?></a>
