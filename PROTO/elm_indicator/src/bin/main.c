@@ -21,6 +21,7 @@ struct _Ind_Home_Exec
 
 /* local function prototypes */
 static void _cb_win_del(void *data, Evas_Object *obj, void *event);
+static int _cb_mouse_down(void *data, int type, void *event);
 static void _cb_btn_home_clicked(void *data, Evas_Object *obj, void *event);
 static void _cb_btn_dual_clicked(void *data, Evas_Object *obj, void *event);
 static void _cb_btn_kbd_clicked(void *data, Evas_Object *obj, void *event);
@@ -83,7 +84,6 @@ elm_main(int argc, char **argv)
    win = elm_win_add(NULL, "elm_indicator", ELM_WIN_DOCK);
    elm_win_title_set(win, "Illume Indicator Window");
    evas_object_smart_callback_add(win, "delete-request", _cb_win_del, NULL);
-
    xwin = elm_win_xwindow_get(win);
    ecore_x_icccm_hints_set(xwin, 0, 0, 0, 0, 0, 0, 0);
 
@@ -152,6 +152,11 @@ elm_main(int argc, char **argv)
                       ecore_event_handler_add(ECORE_X_EVENT_WINDOW_PROPERTY, 
                                               _cb_window_property_change, btn));
 
+   handlers = 
+     eina_list_append(handlers, 
+                      ecore_event_handler_add(ECORE_EVENT_MOUSE_BUTTON_DOWN, 
+                                              _cb_mouse_down, win));
+
    elm_run();
    elm_shutdown();
    return 0;
@@ -182,6 +187,25 @@ _cb_win_del(void *data, Evas_Object *obj, void *event)
      ecore_event_handler_del(handle);
 
    elm_exit();
+}
+
+static int 
+_cb_mouse_down(void *data, int type, void *event) 
+{
+   Evas_Object *win;
+   Ecore_Event_Mouse_Button *ev;
+   Ecore_X_Window xwin;
+
+   if (!(win = data)) return 1;
+   ev = event;
+   xwin = elm_win_xwindow_get(win);
+   if (ev->window != xwin) return 1;
+   if (ev->buttons == 1) 
+     {
+        ecore_x_e_illume_drag_set(xwin, 1);
+        ecore_x_e_illume_drag_start_send(xwin);
+     }
+   return 1;
 }
 
 static void 
