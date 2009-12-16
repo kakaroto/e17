@@ -105,10 +105,6 @@ function configure ()
 {
     $root = dirname(__FILE__);
 
-    /* Delete this too when we are really on production */
-    $localhost = preg_match('/^localhost(\:\d+)?/', $_SERVER['HTTP_HOST']);
-    $env =  $localhost ? ENV_DEVELOPMENT : ENV_PRODUCTION;
-
     /* Enlightenment.org options */
     option('pages_dir',          $root . '/pages');
     option('news_dir',           $root . '/news');
@@ -122,7 +118,7 @@ function configure ()
 
     /*  Limonade options */
     option('root_dir',           $root);
-    option('env',                $env);
+    option('env',                ENV_DEVELOPMENT);
     option('views_dir',          option('pages_dir'));
     option('error_views_dir',    option('pages_dir'));
 }
@@ -133,16 +129,9 @@ function before ()
     layout('layout.php');
     error_layout('error_layout.php');
 
+    # Forces cache_reset() to delete everythin on each page load
     if (option('env') == ENV_DEVELOPMENT)
-    {
-        /* We should delete these four once we really deploy the site */
-        option('developers_dir',    '/home/andres/desarollo/e.org/fuentes/trunk/devs');
-        option('themes_url',        '/home/andres/Downloads/exchange-list.xml');
-        option('modules_url',       '/home/andres/Downloads/modules.xml');
-        option('planet_url',        '/home/andres/Downloads/atom.xml');
-        # Forces cache_reset()
         if( is_dir(option('cache_dir')) ) touch(option('cache_dir'));
-    }
 
     # Only if the dates of the options 'cache_dir' and 'cache_reference' differ.
     cache_reset();

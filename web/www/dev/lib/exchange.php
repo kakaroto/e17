@@ -39,7 +39,7 @@ function modules ( $limit )
 
     if ( empty ($modules) ){
         $url = option('modules_url');
-//         if ( option('env', ENV_PRODUCTION) ) $url = $url . "&limit=$limit";
+        $url = $url . "&limit=$limit";
         $xml = simplexml_load_file($url);
 
         $modules = array ();
