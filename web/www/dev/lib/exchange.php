@@ -20,6 +20,7 @@ function themes ( $limit )
 
     if ( empty ($themes) ){
         $url = option('themes_url');
+        libxml_use_internal_errors(true);
         $xml = simplexml_load_file($url);
         debug($xml);
         debug(libxml_get_errors());
