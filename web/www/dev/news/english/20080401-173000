@@ -1,0 +1,20 @@
+Eet 0.9.99900 Alpha released
+Carsten Haitzler (Rasterman)
+raster@rasterman.com
+<p>
+An Alpha release candidate for Eet 1.0.0 (Alpha version 0.9.99900) is now
+available for testing and evaluation. Please see the
+<?php a("about/efl/eet", "Eet");?> about page for download links and
+information.
+</p>
+
+<!-- cut -->
+
+<p>
+This Alpha release is a candidate for a 1.0.0 full release of Eet. We ask
+that all people test it, the builds, configure checks and anything else. We
+believe this to be of release quality and if testing does not find any
+issues, a 1.0.0 release will follow. Packagers from distributions may check
+that builds work and report anything back to us that is needed to make it
+easier or more correct to package.
+</p>

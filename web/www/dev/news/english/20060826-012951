@@ -1,0 +1,28 @@
+E17 Status Update
+Blake Barnett
+test@test
+<p>Contrary to the amount of updates this page has seen recently, 
+the Enlightenment developers have been very hard at work.  E17 is coming along nicely
+and shaping up to be the clean, speedy and solid desktop shell that we've all been hoping for.
+The best way to track activity on the project is definitely via CVS commits.
+There are various options for tracking commits, namely the commit mailing list , 
+the CIA page, also the edevelop.org feeds include CIA.   Another good way to get a birds-eye view
+of the project is the TODO file, for e17 especially, this file is updated very frequently and contains
+lots of interesting tidbits, here's an overview of the significant TODO items:</p>
+
+<ul>
+ <li>The integrated file-selector in e17 has seen recent work, in order to provide desktop file icons, it will probably be getting .desktop support.</li>
+ <li>Drag-and-Drop improvements needed for iBar, desktop and the file selector.  This will likely include an easy way to drag from a pool of available applications.</li>
+ <li>Language packs: There needs to be a tool to load/setup language packs (and an optional font and a config file that specifies the locale and font).</li>
+ <li>CPU Load and "taskbar" modules need to be added to the core e17 modules.  A candidate for these have already been added to the e_modules CVS repository, they likely just need to be cleaned up, get theme updates, and be blessed by rasterman.</li>
+ <li>Color classes for themes need to be easily configurable via Configuration dialogs.  This allows a theme designed to support color classes have dynamically colored components!</li>
+ <li>Finish off standards compliancy for ICCCM and NETWM.</li>
+ <li>Finish creating configuration dialogs for configuration options.</li>
+ <li>Various improvements for Border and Border Icon functionality.</li>
+</ul>
+
+<p>In addition to these there are several bugs and "Nice to have" features that are also being worked on.
+Take a closer look at the TODO file if you're interested and as always we encourage anyone to contribute!
+Send any patches to the development mailing list in unified diff format (diff -u) as attachments and join
+us on IRC via irc.freenode.net in #e and #edevelop.  We are excited about E17's progress and hope to reach
+"beta" state sometime soon.  With any luck we'll be Duke Nuke'em out the door!</p>

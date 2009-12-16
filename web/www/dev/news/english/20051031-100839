@@ -1,0 +1,14 @@
+New Anonymous CVS Mirror
+Carsten Haitzler (Rasterman)
+test@test
+Thanks to our freinds at http://www.thinktux.net off in the Alps in Switzerland, we have a new Anonymous CVS Mirror.
+This will NOT ALLOW WRITES and it is not ALWAYS up to date with development CVS as it syncs every 30 minutes from development
+CVS, BUT it is at most 30 minutes behind, and apparently has a lot of bandwidth.
+
+<p>http://www.enlightenment.sourceforge.net/Enlightenment/Get_Enlightenment/index.html</p>
+
+<p>And you can check out a tree for e17 with this command:</p>
+
+<pre>cvs -z3 -d :pserver:anonymous@thinktux.net/root co e17</pre>
+
+<p>So everyone having problems getting into sf.net anonymous CVS, this is another option. Thanks to om1n[A]e and null!</p>

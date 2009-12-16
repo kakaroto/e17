@@ -6,8 +6,7 @@ Basic site map
 #. about (brochure)
     #. main page
     #. desktop shell
-    #. application development
-    #. embedded development
+    #. application development (includes embedded)
     #. artist resources
 #. development (trac)
     #. main page
@@ -24,14 +23,11 @@ This header will appear in every page of the site including the automatically
 generated documentation (which is a pain to customize) thus we must come make
 sure -to the greatest extent possible- that we will not be changing it later.
 
+#. home (logo or project name)
 #. about
 #. news
-#. development
-#. community
-
-*Note: there is no direct link to the home page in the header as it has no
-unique data featured in it. Perhaps the logo could be used but is not really
-important.*
+#. development (to the development page from there to trac, etc.)
+#. Desktop (to the desktop page, from there to exchange, wiki, etc.)
 
 
 Website sections
@@ -62,9 +58,9 @@ exchange art and application repository.
 
 about
 =====
-The "about" section consists of 5 brochure-like pages if we count the main page
+The "about" section consists of 4 brochure-like pages if we count the main page
 along the pages for enlightenment artists, the desktop shell, desktop
-development and embedded development.
+development.
 
 These pages are intended to be static portals to the rest of the project,
 basically an adverstiment that provides an overview for each wing of the
@@ -112,9 +108,9 @@ wiki as well.
 
 enlightenment development
 -------------------------
-This is the main developer oriented brochure page. Its focus is desktop software
-development altough embedded development should be featured in a important spot
-along with a link to the embedded development page.
+This is the main developer oriented brochure page. Embedded development should
+be given an important position since its where the EFL have the most chances
+of sucess.
 
 The main objetive is to establish the benefits of the EFL as a group in a way
 that highlights the design philosphies behind them. An updated diagram of the
@@ -132,22 +128,6 @@ development related trac pages:
 - EFL overview
 - manuals & apis
 - contributing
-
-
-enlightenment embedded development
-----------------------------------
-This secondary developer brochure-like page complements the regular development
-page constructing over it to explain why and how these initially desktop
-technologies are benefitial for embedded development. Resource consumption
-should be emphasized.
-
-A list of supported architectures and operating systems -the latter with links
-to installation instructions- is required.
-
-Due to its dinamic nature a supported device list -with instructions to install
-the EFL in them- should be relegated to a wiki page for easy updating. While the
-brochure page should mantain a small list of the most popular devices along with
-a link to complete device list in the wiki page.
 
 
 enlightenment artists

@@ -1,0 +1,29 @@
+Enlightenment working with top-tier electronics maker
+Carsten Haitzler
+raster@rasterman.com
+<p>
+We are working with a top-5 electronics producer (one of the largest in the
+world, who produces millions of mobile phones, televisions, sound systems
+and more per year) to bring Enlightenment and especially it's deep technology
+to their products. In fact not just working with this manufacturer, but they
+are actively sponsoring development on Enlightenment and EFL to ensure it does
+what is needed for their products (beyond what it already does).
+</p>
+<!-- cut -->
+
+<p>
+What does this mean for you as users and developers? It means that you are
+likely to see top-quality electronic devices running the same things you use
+on your desktop. This means as a developer the same libraries and API's will
+be there, ready to use, out of the box. You can even start your development
+now in anticipation. Use Elementary, Evas, Edje, Ecore, Eet, Eina, and so on
+and design for a small screen with a "finger" and minimal keyboard (by small
+screen i mean in the range of 240x320, 320x480 and so on up to 480x800 for
+portrait, and similar for landscape (320x240, 480x320, 800x480).
+</p><p>
+Do it now so you have code that already works. you can develop on the desktop
+no problems and it ports with a simple "make" to the devices in question.
+</p><p>
+That's about all the information we have for now. Expect something in the
+future with more details, such as what products and roughly when.
+</p>

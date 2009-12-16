@@ -8,9 +8,16 @@ Tidy your HTML
 Install tidyhtml from http://tidy.sourceforge.net/ or from your local package
 manager and use the following command to tidy-it-up.
 
-    tidy -m --doctype "strict" --logical-emphasis y --indent "auto" \
-         --indent-spaces "4" --wrap "79" --wrap-attributes y \
-         --char-encoding "utf8" YOURFILE.HTML
+    tidy -m --doctype "strict" --drop-font-tags y \
+         --drop-proprietary-attributes y --enclose-text y --escape-cdata y \
+         --logical-emphasis y --indent "yes" --indent-spaces "4" --wrap "79" \
+         --wrap-script-literals y --char-encoding "utf8" \
+         --input-encoding "utf8" --output-encoding "utf8" YOURFILE.HTML
+
+If you are editing the content of some page make sure you add the following
+option so it doesn't insert the body and header tags.
+
+    --show-body-only y
 
 This serves for two things, first it makes it consistent with the rest of the
 site and second it will validate your markup.

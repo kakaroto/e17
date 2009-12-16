@@ -1,0 +1,22 @@
+'Trac' project tracker added
+Carsten Haitzler (Rasterman)
+raster@rasterman.com
+<p>
+A new project tracker for milestones, TODO lists and even bugs (for those that
+may hate bugzilla) is now up.
+<a href="http://trac.enlightenment.org/e">trac.enlightenment.org/e</a> is now
+available for putting up TODO lists and public milestones so peopl can see what
+we are doing and how its progressing.
+</p>
+
+<!-- cut -->
+
+<p>
+This is in <b>ADDITION</b> to
+<a href="http://bugs.enlightenment.org">bugs.enlightenment.org</a>, but isn't
+intended to compete. Some people like bugzilla, and it is indeed very
+powerful, but it doesn't work well for documenting project goals, timelines
+and "TODO" lists. So <a href="http://trac.enlightenment.org/e">trac</a> is now
+up too to do this. We hope to have more visibility of what we are doing, what
+is to be done, and how you then can help.
+</p>

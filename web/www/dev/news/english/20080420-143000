@@ -1,0 +1,16 @@
+Eet 1.0.0 released
+Carsten Haitzler (Rasterman)
+raster@rasterman.com
+<p>
+Eet 1.0.0 is now available. Please see the
+<?php a("about/efl/eet", "Eet");?> about page for download links and
+information.
+</p>
+
+<!-- cut -->
+
+<p>
+This is a full 1.0.0 release of Eet. To the best of our knowledge it is bug
+free and stable. Any issues can be reported to
+enlightenmnt-devel@lists.sourceforge.net
+</p>
