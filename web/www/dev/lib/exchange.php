@@ -24,7 +24,7 @@ function themes ( $limit )
         $xml = simplexml_load_file($url);
         debug($xml);
         debug(libxml_get_errors());
-        debug(file_get_contents($url))
+        debug(file_get_contents($url));
 
         $themes = array ();
         foreach ($xml->themes->theme as $theme)
