@@ -189,7 +189,6 @@ elixir_fread(JSContext *cx, uintN argc, jsval *vp)
 {
    mmaped_file_t *fl;
    const char *tmp = NULL;
-   char *buf = NULL;
    int size;
    elixir_value_t val[2];
 

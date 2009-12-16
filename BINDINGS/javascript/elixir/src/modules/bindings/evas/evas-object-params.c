@@ -1,3 +1,4 @@
+#include <string.h>
 #include <Evas.h>
 
 #include "evas-bindings.h"
