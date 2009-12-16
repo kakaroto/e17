@@ -58,6 +58,8 @@
                         echo "<p class='notice'>{$notice['errstr']}</p>\n";
                     elseif ( $notice['errno'] == 512 )
                         echo "<p class='warning'>{$notice['errstr']}</p>\n";
+                    elseif (option('env') == ENV_DEVELOPMENT)
+                        echo "<p class='error'>{$notice['errstr']}</p>\n";
             ?>
         </div>
         <?php endif ?>
