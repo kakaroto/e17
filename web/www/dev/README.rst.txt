@@ -54,12 +54,20 @@ TODO
 #.  Cleanup current design (mostly display:none), move around elements, resize
     some things, add some extra margins. For all pages. Vertical rhythm.
 
-#.  Cleanup code from index.php, remove unnecessary handlers. CONTROLLERS!?
+#.  Cleanup code from index.php, remove unnecessary handlers. Use a controller
+    folder?
+
+#.  Profile the code execution calls, perhaps even a benchmark? How much is
+    really lifiting content from planet and exchange?
+
+#.  Implement sort by rating (before the &limit=n kicks in) in the
+    exchange.enlightenment.org feed generator. I tried but the amount of rubbish
+    overwelmed me.
 
 #.  Add some spanish content
 
-    #. messages.php
-    #. home.php
+    #. pages/español/messages.php
+    #. pages/español/home.php
     #. news/español/ante-ultima
 
 #.  Test the localization.
@@ -85,8 +93,6 @@ TODO
 #.  *¿Add a list of applications (similar to the list of themes) in exchange to
     the home page? ¿Or add it to the desktop shell page (after all named
     community)?*
-
-
 
 #.  Merge the donation page and code.
 

@@ -48,6 +48,46 @@
 
 </div>
 
+<div id="resources">
+    <div class="themes">
+        <h4>Themes</h4>
+        <p>Small intro to installing themes</p>
+
+        <div class="gallery">
+        <?php
+            foreach ( $themes as $i => $id )
+                echo "<a href='http://exchange.enlightenment.org/theme/show/$id'>
+                      <img id='theme-shot-$i' class='theme-shot' src=
+                      'http://exchange.enlightenment.org/files/theme/$id/smallthumb.png'
+                       alt='Theme Screenshot - $i'></a>";
+        ?>
+        </div>
+
+        <p class="button themes"><a href="http://exchange.enlightenment.org/themeGroup/show/1674">All Themes</a></p>
+    </div>
+
+    <div class="modules">
+        <h4>Modules</h4>
+        <p>Small intro to installing modules</p>
+
+        <div class="gallery">
+        <?php $i = 0; foreach ( $modules as $id => $name ): ?>
+            <div <?php echo "class='module' id='module-$i'" ?> >
+                 <p>
+                    <?php echo "<a href='http://exchange.enlightenment.org/module/show/$id'>" ?>
+                    <?php echo $name ?></a>
+                 </p>
+                <?php echo "<img class='module-shot' alt='Module $i' src='http://exchange.enlightenment.org/files/module/$id/smallthumb.png'>" ?>
+            </div>
+        <?php $i++ ?>
+        <?php endforeach ?>
+        </div>
+
+        <p class="button modules"><a href="http://exchange.enlightenment.org/module/index/application_id/4">
+        All Modules</a></p>
+    </div>
+</div>
+
 <div id="community">
     <h3>Community</h3>
 
@@ -96,45 +136,6 @@
             <?php endforeach ?>
             </tbody>
         </table>
-    </div>
-
-
-    <div class="themes">
-        <h4>Themes</h4>
-        <p>Small intro to installing themes</p>
-
-        <div class="gallery">
-        <?php
-            foreach ( $themes as $i => $id )
-                echo "<a href='http://exchange.enlightenment.org/theme/show/$id'>
-                      <img id='theme-shot-$i' class='theme-shot' src=
-                      'http://exchange.enlightenment.org/files/theme/$id/smallthumb.png'
-                       alt='Theme Screenshot - $i'></a>";
-        ?>
-        </div>
-
-        <p class="button themes"><a href="http://exchange.enlightenment.org/themeGroup/show/1674">All Themes</a></p>
-    </div>
-
-    <div class="modules">
-        <h4>Modules</h4>
-        <p>Small intro to installing modules</p>
-
-        <div class="gallery">
-        <?php $i = 0; foreach ( $modules as $id => $name ): ?>
-            <div <?php echo "class='module' id='module-$i'" ?> >
-                 <p>
-                    <?php echo "<a href='http://exchange.enlightenment.org/module/show/$id'>" ?>
-                    <?php echo $name ?></a>
-                 </p>
-                <?php echo "<img class='module-shot' alt='Module $i' src='http://exchange.enlightenment.org/files/module/$id/smallthumb.png'>" ?>
-            </div>
-        <?php $i++ ?>
-        <?php endforeach ?>
-        </div>
-
-        <p class="button modules"><a href="http://exchange.enlightenment.org/module/index/application_id/4">
-        All Modules</a></p>
     </div>
 </div>
 

@@ -269,8 +269,11 @@ body.desktop #community .irc         { float:left; overflow: hidden; width: 310p
 
 body.desktop #community .mailing-lists { float:left; overflow: hidden; width: 950px; margin-right: 0;  }
 
-body.desktop #community .themes  { float:left; overflow: hidden; width: 470px; margin-right:10px;  }
-body.desktop #community .modules { float:left; overflow: hidden; width: 470px; margin-right: 0;  }
+body.desktop #resources       { width:950px; margin:0 auto; display: block }
+body.desktop #resources:after { content:"\0020"; display:block; height:0; clear:both;visibility:hidden; overflow:hidden; }
+
+body.desktop #resources .themes  { float:left; overflow: hidden; width: 470px; margin-right:10px;  }
+body.desktop #resources .modules { float:left; overflow: hidden; width: 470px; margin-right: 0;  }
 
 body.desktop #contribute       { width:950px; margin:0 auto; display: block }
 body.desktop #contribute:after { content:"\0020"; display:block; height:0; clear:both;visibility:hidden; overflow:hidden; }

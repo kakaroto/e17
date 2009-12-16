@@ -123,15 +123,15 @@ function configure ()
     option('error_views_dir',    option('pages_dir'));
 }
 
-
 function before ()
 {
     layout('layout.php');
     error_layout('error_layout.php');
 
-    # Forces cache_reset() to delete everythin on each page load
-    if (option('env') == ENV_DEVELOPMENT)
-        if( is_dir(option('cache_dir')) ) touch(option('cache_dir'));
+    # Forces cache_reset() to delete everything every page load when localhost
+    $localhost = preg_match('/^localhost(\:\d+)?/', $_SERVER['HTTP_HOST']);
+    if ($localhost and is_dir(option('cache_dir')) )
+        touch(option('cache_dir'));
 
     # Only if the dates of the options 'cache_dir' and 'cache_reference' differ.
     cache_reset();

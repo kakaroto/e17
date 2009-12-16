@@ -36,7 +36,8 @@ function themes ( $limit )
 }
 
 /**
-    The resulting array of modules is similar to the array of themes
+    The resulting array of modules is similar to the array of themes instead
+    it uses the module ID as key and te module name as value.
 */
 function modules ( $limit )
 {

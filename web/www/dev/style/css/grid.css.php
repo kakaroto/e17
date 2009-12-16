@@ -84,8 +84,11 @@ body.desktop #community .irc         { <?php column(4, 'last') ?> }
 
 body.desktop #community .mailing-lists { <?php column(12) ?> }
 
-body.desktop #community .themes  { <?php column(6) ?> }
-body.desktop #community .modules { <?php column(6, 'last') ?> }
+body.desktop #resources       { <?php column_container() ?> }
+body.desktop #resources:after { <?php clearfix() ?> }
+
+body.desktop #resources .themes  { <?php column(6) ?> }
+body.desktop #resources .modules { <?php column(6, 'last') ?> }
 
 body.desktop #contribute       { <?php column_container() ?> }
 body.desktop #contribute:after { <?php clearfix() ?> }
