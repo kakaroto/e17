@@ -113,7 +113,7 @@ function configure ()
     option('pages_dir',          $root . '/pages');
     option('news_dir',           $root . '/news');
     option('cache_dir',          $root . '/.cache');
-    option('cache_reference',    $root . '/.');
+    option('cache_reference',    $root . '/.svn');
     option('planet_url',         'http://planet.enlightenment.org/atom.xml');
     option('themes_url',         'http://exchange.enlightenment.org/api/list?object=theme&theme_group_id=1674');
     option('modules_url',        'http://exchange.enlightenment.org/api/list?object=module');
