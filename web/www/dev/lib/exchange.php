@@ -20,8 +20,15 @@ function themes ( $limit )
 
     if ( empty ($themes) ){
         $url = option('themes_url');
+        /* For some reason requesting the theme list from the server adds a
+           couple of characters before and after the xml, when this is resolved
+           we should go back to the way it was before */
+        $str = file_get_contents($url);
+        $from = stripos($str, '<');
+        $srt = substr($str, $from, -1);
+
         libxml_use_internal_errors(true);
-        $xml = simplexml_load_file($url);
+        $xml = simplexml_load_string($str);
         debug($xml);
         debug(libxml_get_errors());
         debug(file_get_contents($url));
