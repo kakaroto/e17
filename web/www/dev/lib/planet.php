@@ -28,7 +28,12 @@ function planet ( $limit )
         $result[$i]['link'] = (string) $entry->id;
         $result[$i]['author'] = (string) $entry->author->name;
         $result[$i]['date'] = substr(str_replace('T', ' ', (string) $entry->updated), 0, -6);
-        $result[$i]['summary'] = strip_tags(substr((string) $entry->content, 0, 200)) . "...";
+
+        $summary = trim((string) $entry->content);
+        $summary = strip_tags($summary);
+        $summary = substr($summary, 0, 250) . '...';
+
+        $result[$i]['summary'] = $summary;
     }
 
     return $result;

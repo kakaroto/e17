@@ -135,7 +135,11 @@ function _article_parse ( $raw, $id )
 
     $summary = explode('<!-- cut -->', $parts[3]);
     if ( count($summary) == 1)
-        $summary = strip_tags(substr($parts[3], 0, 350) . "...");
+    {
+        $summary = trim($parts[3]);
+        $summary = strip_tags($summary);
+        $summary = substr($summary, 0, 350) . "...";
+    }
     else
         $summary = strip_tags($summary[0]);
 

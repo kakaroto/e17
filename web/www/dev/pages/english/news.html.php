@@ -3,11 +3,11 @@
 
     <?php foreach ( $oficial as $id => $article): ?>
     <div class="summary">
-        <h4>
+        <h3>
             <a href="<?php echo url_for("/article/$id") ?>">
                 <?php echo $article['title'] ?>
             </a>
-        </h4>
+        </h3>
 
         <p class="data">by
             <a href="mailto:<?php echo $article['mail'] ?>">
@@ -34,14 +34,14 @@
             </a>
         </h4>
 
-        <p class="data"> by
+        <p class="data"> <small> by
             <span class="author"><?php echo $article['author'] ?></span> -
             <span class="date"><?php echo $article['date'] ?></span>
-        </p>
+        </small> </p>
 
-        <p class="summary">
+        <p class="summary"> <small>
             <?php echo $article['summary']; ?>
-        </p>
+        </small> </p>
     </div>
     <?php endforeach; ?>
 

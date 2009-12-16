@@ -61,8 +61,9 @@ TODO
     planet and exchange? How much time does configure and before consume?
 
 #.  Implement sort by rating (before the &limit=n kicks in) in the
-    exchange.enlightenment.org feed generator. I tried but the amount of rubbish
-    overwelmed me.
+    exchange.enlightenment.org feed generator. I tried but the amount of code
+    overwelmed me. I will have to spend time learning sympony to do this and I
+    don't have it right now.
 
 #.  Add some spanish content
 
