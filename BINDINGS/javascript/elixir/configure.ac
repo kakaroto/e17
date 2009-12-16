@@ -140,10 +140,12 @@ for name in smjs js mozjs; do
 				      [cf_result=yes])])
 
 	if test "$cf_result" = no; then
-	    CPPFLAGS="-shared -fPIC -DPIC $CPPFLAGS_X"
+	    CPPFLAGS="$CPPFLAGS_X"
 	    LIBS="$LIBS_X"
 	    unset ac_cv_header_jsapi_h
 	else
+	    CPPFLAGS="-DXP_UNIX -I$smjs_dir/include/$name $CPPFLAGS_X"
+	    LIBS="$smjs_libs -lm $LIBS_X"
 	    smjs_name="$name"
 	fi
     fi
