@@ -15,7 +15,9 @@
             <span class="date"><?php echo $article['date'] ?></span>
         </p>
 
-        <?php echo $article['summary']; ?>
+        <p>
+            <?php echo $article['summary']; ?>
+        </p>
     </div>
     <?php endforeach; ?>
 
@@ -43,5 +45,5 @@
     </div>
     <?php endforeach; ?>
 
-    <p class="button more"><a href="http://planet.enlightenment.org/">more</a></p>
+    <p class="button more"><a href="http://planet.enlightenment.org/">Go to planet E</a></p>
 </div>

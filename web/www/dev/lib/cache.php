@@ -48,32 +48,44 @@ function cache_reset ()
 function cache ($filename, $value = null)
 {
     static $cache = array ();
-    $dir = option('cache_dir');
 
-    if ( !file_exists($dir) )
-        cache_init();
+    $cache_dir = option('cache_dir');
+    if ( !file_exists($cache_dir) ) cache_init();
 
-    $time = date("U", filemtime($dir));
+    $time = date("U", filemtime($cache_dir));
+    $path = file_path($cache_dir, $filename);
 
-    if ( is_null($value) ) {
-        if ( empty($cache[$filename]) ) {
-            if ( file_exists(file_path($dir, $filename)) ) {
-                if ( !$code = file_get_contents(file_path($dir, $filename)) )
-                    halt("Cannot read the cache folder '$dir'.");
-                $value = unserialize($code);
-            } else
+    if ( is_null($value) )
+    {
+        if ( empty($cache[$filename]) )
+        {
+            if ( file_exists($path) )
+            {
+                if ( !$code = file_get_contents($path) )
+                    halt("Cannot read cache file '$path'.");
+                else
+                    return unserialize($code);
+            }
+            else
                 return false;
         }
+        else
+            return $cache[$filename];
+    }
+    else
+    {
+        $code = serialize($value);
+        if ( !file_put_contents($path, $code) )
+            halt("Cannot write cache file '$path'.");
+        else
+        {
+            # Mantain the original time to avoid resetting the cache directory
+            touch($cache_dir, $time);
 
-    } else
-        if ( !file_put_contents(file_path($dir, $filename), serialize($value)) )
-            halt("Cannot write to the cache folder '$dir'.");
-
-    # Mantain the original time to avoid resetting the cache directory
-    touch($dir, $time);
-
-    $cache[$filename] = $value;
-    return $cache[$filename];
+            $cache[$filename] = $value;
+            return $cache[$filename];
+        }
+    }
 }
 
 ?>

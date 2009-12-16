@@ -57,8 +57,8 @@ TODO
 #.  Cleanup code from index.php, remove unnecessary handlers. Use a controller
     folder?
 
-#.  Profile the code execution calls, perhaps even a benchmark? How much is
-    really lifiting content from planet and exchange?
+#.  Profile the code execution. How much is time is really lifiting content from
+    planet and exchange? How much time does configure and before consume?
 
 #.  Implement sort by rating (before the &limit=n kicks in) in the
     exchange.enlightenment.org feed generator. I tried but the amount of rubbish

@@ -130,7 +130,7 @@ function before ()
 
     # Forces cache_reset() to delete everything every page load when localhost
     $localhost = preg_match('/^localhost(\:\d+)?/', $_SERVER['HTTP_HOST']);
-    if ($localhost and is_dir(option('cache_dir')) )
+    if ( ($localhost) and is_dir(option('cache_dir')) )
         touch(option('cache_dir'));
 
     # Only if the dates of the options 'cache_dir' and 'cache_reference' differ.
@@ -276,8 +276,8 @@ function news ()
 
     set('page', 'news');
     set('name', message('news'));
-    set('oficial', articles( array('limit' => 10) ));
-    set('planet', planet(10));
+    set('oficial', articles( params('language'), array('limit' => 15) ));
+    set('planet', planet(15));
 
     return html($file);
 }
