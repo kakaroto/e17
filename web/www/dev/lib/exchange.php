@@ -20,7 +20,10 @@ function themes ( $limit )
 
     if ( empty ($themes) ){
         $url = option('themes_url');
+        $url = $url . "&limit=10";
+        libxml_use_internal_errors(true);
         $xml = simplexml_load_file($url);
+        debug(libxml_get_errors());
 
         $themes = array ();
         foreach ($xml->themes->theme as $theme)
