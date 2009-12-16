@@ -24,8 +24,7 @@ function themes ( $limit )
            couple of characters before and after the xml, when this is resolved
            we should go back to the way it was before */
         $str = file_get_contents($url);
-        $from = stripos($str, '<');
-        $srt = substr($str, $from, -1);
+        $srt = str_replace('89fb', '', $str);
 
         libxml_use_internal_errors(true);
         $xml = simplexml_load_string($str);
