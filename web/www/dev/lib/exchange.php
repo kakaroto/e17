@@ -21,6 +21,7 @@ function themes ( $limit )
     if ( empty ($themes) ){
         $url = option('themes_url');
         $xml = simplexml_load_file($url);
+        debug($xml);
         $themes = array ();
         foreach ($xml->themes->theme as $theme)
             $themes[(integer) $theme->id] = (float) $theme->rating;

@@ -26,7 +26,7 @@ function url_page ( $page )
 */
 function url_style_image ( $filename )
 {
-    echo '/style/' . 'images/' . $filename;
+    echo '/dev/style/images/' . $filename;
 }
 
 /**
@@ -34,7 +34,7 @@ function url_style_image ( $filename )
 */
 function url_css($filename)
 {
-    echo '/style/' . 'css/' . $filename;
+    echo '/dev/style/css/' . $filename;
 }
 
 /**
@@ -47,9 +47,9 @@ function url_css($filename)
 function url_image($filename, $page = null)
 {
     if ( is_null($page ) )
-        echo '/images/' . set('page') . "/" . $filename;
+        echo '/dev//images/' . set('page') . "/" . $filename;
     else
-        echo '/images/' . $page . "/" . $filename;
+        echo '/dev//images/' . $page . "/" . $filename;
 }
 
 /**
