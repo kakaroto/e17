@@ -83,8 +83,6 @@ EXPEDITE_CHECK_ENGINE([directfb], [DirectFB], "yes")
 EXPEDITE_CHECK_ENGINE([quartz], [Quartz], "yes", [quartz_libs="-framework Cocoa -framework ApplicationServices"])
 AC_SUBST(quartz_libs)
 
-AM_CONDITIONAL(BUILD_QUARTZ, test "x$have_quartz" = "xyes")
-
 # Software 16bit X11
 EXPEDITE_CHECK_ENGINE([software-16-x11], [Software 16 bits X11], "yes")
 
