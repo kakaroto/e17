@@ -12,6 +12,9 @@
 
     @todo Implement a cache system (obsolete if exchange is updated)-
     @todo More functions with different focuses?
+    @todo Implement sorting by rating in exchange.enlightenment.org because
+          the server seems to limit the stream to simplexml_load_file for
+          security (I hope) reasons.
 
 */
 function themes ( $limit )
@@ -20,10 +23,8 @@ function themes ( $limit )
 
     if ( empty ($themes) ){
         $url = option('themes_url');
-        $url = $url . "&limit=10";
-        libxml_use_internal_errors(true);
+        $url = $url . "&limit=20";
         $xml = simplexml_load_file($url);
-        debug(libxml_get_errors());
 
         $themes = array ();
         foreach ($xml->themes->theme as $theme)
