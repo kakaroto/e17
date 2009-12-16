@@ -23,7 +23,7 @@ function themes ( $limit )
 
     if ( empty ($themes) ){
         $url = option('themes_url');
-        $url = $url . "&limit=20";
+        $url = $url . "&limit=10";
         $xml = simplexml_load_file($url);
 
         $themes = array ();
