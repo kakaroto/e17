@@ -21,7 +21,9 @@ struct _Ind_Home_Exec
 
 /* local function prototypes */
 static void _cb_win_del(void *data, Evas_Object *obj, void *event);
-static int _cb_mouse_down(void *data, int type, void *event);
+static void _cb_mouse_down(void *data, Evas *evas, Evas_Object *obj, void *event);
+static void _cb_mouse_move(void *data, Evas *evas, Evas_Object *obj, void *event);
+static void _cb_mouse_up(void *data, Evas *evas, Evas_Object *obj, void *event);
 static void _cb_btn_home_clicked(void *data, Evas_Object *obj, void *event);
 static void _cb_btn_dual_clicked(void *data, Evas_Object *obj, void *event);
 static void _cb_btn_kbd_clicked(void *data, Evas_Object *obj, void *event);
@@ -56,7 +58,7 @@ EAPI int
 elm_main(int argc, char **argv) 
 {
    Evas_Object *bg, *box, *btn, *icon;
-   Evas_Object *clock;
+   Evas_Object *clock, *rect;
    Ecore_X_Window xwin;
    char buff[PATH_MAX];
 
@@ -118,7 +120,7 @@ elm_main(int argc, char **argv)
 
    btn = elm_button_add(win);
    elm_button_icon_set(btn, icon);
-   evas_object_smart_callback_add(btn, "clicked", _cb_btn_dual_clicked, win);
+   evas_object_smart_callback_add(btn, "clicked", _cb_btn_dual_clicked, NULL);
    evas_object_size_hint_align_set(btn, EVAS_HINT_FILL, 0.5);
    elm_box_pack_end(box, btn);
    evas_object_show(btn);
@@ -144,18 +146,25 @@ elm_main(int argc, char **argv)
    elm_box_pack_end(box, clock);
    evas_object_show(clock);
 
-   evas_object_resize(win, 200, 32);
+   rect = evas_object_rectangle_add(evas_object_evas_get(win));
+   evas_object_color_set(rect, 0, 0, 0, 0);
+   elm_win_resize_object_add(win, rect);
+   evas_object_event_callback_add(rect, EVAS_CALLBACK_MOUSE_DOWN, 
+                                  _cb_mouse_down, win);
+   evas_object_event_callback_add(rect, EVAS_CALLBACK_MOUSE_MOVE, 
+                                  _cb_mouse_move, win);
+   evas_object_event_callback_add(rect, EVAS_CALLBACK_MOUSE_UP, 
+                                  _cb_mouse_up, win);
+   evas_object_repeat_events_set(rect, 1);
+   evas_object_raise(rect);
+   evas_object_show(rect);
+
    evas_object_show(win);
 
    handlers = 
      eina_list_append(handlers, 
                       ecore_event_handler_add(ECORE_X_EVENT_WINDOW_PROPERTY, 
                                               _cb_window_property_change, btn));
-
-   handlers = 
-     eina_list_append(handlers, 
-                      ecore_event_handler_add(ECORE_EVENT_MOUSE_BUTTON_DOWN, 
-                                              _cb_mouse_down, win));
 
    elm_run();
    elm_shutdown();
@@ -189,23 +198,54 @@ _cb_win_del(void *data, Evas_Object *obj, void *event)
    elm_exit();
 }
 
-static int 
-_cb_mouse_down(void *data, int type, void *event) 
+static void 
+_cb_mouse_down(void *data, Evas *evas, Evas_Object *obj, void *event) 
 {
-   Evas_Object *win;
-   Ecore_Event_Mouse_Button *ev;
+   Evas_Event_Mouse_Down *ev;
    Ecore_X_Window xwin;
+   Evas_Object *win;
 
-   if (!(win = data)) return 1;
+   if (!(win = data)) return;
    ev = event;
    xwin = elm_win_xwindow_get(win);
-   if (ev->window != xwin) return 1;
-   if (ev->buttons == 1) 
+   if (ev->button == 1) 
      {
-        ecore_x_e_illume_drag_set(xwin, 1);
+        if (ecore_x_e_illume_drag_locked_get(xwin)) return;
         ecore_x_e_illume_drag_start_send(xwin);
      }
-   return 1;
+}
+
+static void 
+_cb_mouse_move(void *data, Evas *evas, Evas_Object *obj, void *event) 
+{
+   Ecore_X_Window xwin;
+   Evas_Event_Mouse_Move *ev;
+   Evas_Object *win;
+   int x, y;
+
+   if (!(win = data)) return;
+   ev = event;
+   xwin = elm_win_xwindow_get(win);
+   if (ecore_x_e_illume_drag_locked_get(xwin)) return;
+   if (!ecore_x_e_illume_drag_get(xwin)) return;
+   evas_object_geometry_get(win, &x, &y, NULL, NULL);
+   evas_object_move(win, x, (y + ev->cur.output.y));
+}
+
+static void 
+_cb_mouse_up(void *data, Evas *evas, Evas_Object *obj, void *event) 
+{
+   Ecore_X_Window xwin;
+   Evas_Event_Mouse_Up *ev;
+   Evas_Object *win;
+
+   ev = event;
+   if (ev->button != 1) return;
+   if (!(win = data)) return;
+   xwin = elm_win_xwindow_get(win);
+   if (ecore_x_e_illume_drag_locked_get(xwin)) return;
+   if (!ecore_x_e_illume_drag_get(xwin)) return;
+   ecore_x_e_illume_drag_end_send(xwin);
 }
 
 static void 
@@ -260,15 +300,14 @@ _cb_btn_home_clicked(void *data, Evas_Object *obj, void *event)
 static void 
 _cb_btn_dual_clicked(void *data, Evas_Object *obj, void *event) 
 {
-   Evas_Object *win;
    Ecore_X_Window xwin;
    Ecore_X_Illume_Mode mode;
 
-   win = data;
-   xwin = elm_win_xwindow_get(win);
+   xwin = ecore_x_window_root_first_get();
    mode = ecore_x_e_illume_mode_get(xwin);
-   /* we do a mode set on the xwindow so that illume module can read the current 
-    * setting and adjust accordingly */
+
+   /* we do a mode set on the root xwindow so that illume module can read 
+    * the current setting and adjust accordingly */
    if (mode == ECORE_X_ILLUME_MODE_SINGLE) 
      {
         ecore_x_e_illume_mode_set(xwin, ECORE_X_ILLUME_MODE_DUAL);
