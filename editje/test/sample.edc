@@ -1,0 +1,222 @@
+externals {
+   external: "elm";
+}
+
+collections {
+   group {
+      name: "main";
+
+      parts {
+         part {
+            name: "bg";
+            type: RECT;
+            description {
+               state: "default" 0.0;
+               color: 255 255 255 255;
+               rel1.relative: 0.0 0.0;
+               rel2.relative: 1.0 1.0;
+            }
+         }
+         part {
+            name: "title";
+            type: RECT;
+            description {
+               state: "default" 0.0;
+               color: 0 0 128 255;
+               rel1 {
+                  relative: 0.0 0.0;
+                  offset: 1 1;
+                  to: "bg";
+               }
+               rel2 {
+                  relative: 1.0 0.0;
+                  offset: -2 20;
+                  to: "bg";
+               }
+            }
+         }
+         part {
+            name: "title.label";
+            type: TEXT;
+            description {
+               state: "default" 0.0;
+               color: 200 200 200 255;
+               rel1.to: "title";
+               rel2.to: "title";
+               text {
+                  text: "Some title";
+                  font: "Sans:style=Bold";
+                  size: 12;
+               }
+            }
+         }
+         part {
+            name: "content";
+            type: RECT;
+            description {
+               state: "default" 0.0;
+               color: 200 200 200 255;
+               rel1 {
+                  relative: 0.0 1.0;
+                  offset: 1 1;
+                  to_x: "bg";
+                  to_y: "title";
+               }
+               rel2 {
+                  relative: 1.0 1.0;
+                  offset: -2 -2;
+                  to: "bg";
+               }
+            }
+         }
+         part {
+            name: "ip.label";
+            type: TEXT;
+            description {
+               state: "default" 0.0;
+               color: 0 0 0 255;
+               rel1 {
+                  relative: 0.0 0.0;
+                  offset: 1 1;
+                  to: "content";
+               }
+               rel2 {
+                  relative: 0.1 0.1;
+                  to: "content";
+               }
+               text {
+                  text: "IP:";
+                  font: "Sans";
+                  size: 16;
+               }
+            }
+         }
+         part {
+            name: "entry_bg";
+            type: RECT;
+            description {
+               state: "default" 0.0;
+               color: 255 255 255 255;
+               rel1.to: "ip.entry";
+               rel1.offset: 1 1;
+               rel2.to: "ip.entry";
+               rel2.offset: -2 -2;
+            }
+         }
+         part {
+            name: "ip.entry";
+            type: EXTERNAL;
+            source: "elm/scrolled_entry";
+            description {
+               state: "default" 0.0;
+               rel1 {
+                  relative: 1.0 0.0;
+                  offset: 1 0;
+                  to: "ip.label";
+               }
+               rel2 {
+                  relative: 1.0 0.1;
+                  offset: -2 0;
+                  to: "content";
+               }
+               params {
+                  string: "text" "127.0.0.1";
+                  int: "single line" "1";
+                  int: "password" "0";
+               }
+            }
+         }
+         part {
+            name: "buttons";
+            type: RECT;
+            source: "elm/button";
+            description {
+               state: "default" 0.0;
+               color: 0 0 0 0;
+               rel1 {
+                  relative: 0.0 1.0;
+                  offset: 1 0;
+                  to: "ip.label";
+               }
+               rel2 {
+                  relative: 1.0 0.0;
+                  offset: -1 -1;
+                  to: "result_bg";
+               }
+            }
+         }
+         part {
+            name: "button.ping";
+            type: EXTERNAL;
+            source: "elm/button";
+            description {
+               state: "default" 0.0;
+               rel1 {
+                  to: "buttons";
+               }
+               rel2 {
+                  to: "buttons";
+               }
+               params {
+                  string: "label" "PING!";
+                  string: "icon" "chat";
+               }
+            }
+         }
+         part {
+            name: "result_bg";
+            type: RECT;
+            description {
+               state: "default" 0.0;
+               color: 255 255 255 255;
+               rel1 {
+                  relative: 0.0 0.3;
+                  offset: 0 1;
+                  to: "content";
+               }
+               rel2 {
+                  relative: 1.0 1.0;
+                  offset: -2 -2;
+                  to: "content";
+               }
+            }
+         }
+         part {
+            name: "result_border";
+            type: RECT;
+            description {
+               state: "default" 0.0;
+               color: 255 255 255 255;
+               rel1 {
+                  relative: 0.0 0.0;
+                  offset: 1 1;
+                  to: "result_bg";
+               }
+               rel2 {
+                  relative: 1.0 1.0;
+                  offset: -2 -2;
+                  to: "result_bg";
+               }
+            }
+         }
+         part {
+            name: "result_contents";
+            type: RECT;
+            description {
+               state: "default" 0.0;
+               color: 200 200 200 255;
+               rel1 {
+                  relative: 0.0 0.0;
+                  offset: 1 1;
+                  to: "result_border";
+               }
+               rel2 {
+                  relative: 1.0 1.0;
+                  offset: -2 -2;
+                  to: "result_border";
+               }
+            }
+         }
+      }
+   }
+}
