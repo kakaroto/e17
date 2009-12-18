@@ -222,6 +222,7 @@ class Editje(elementary.Window):
         w.resize(300, 300)
         w.title_set("Edje Test")
         b = elementary.Background(w)
+        b.size_hint_weight_set(1.0, 1.0)
         w.resize_object_add(b)
         b.show()
         l = elementary.Layout(w)
