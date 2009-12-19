@@ -28,7 +28,10 @@ AM_PROG_LIBTOOL
 PKG_CHECK_MODULES(EFL, eflxx evasxx edjexx)
 PKG_CHECK_MODULES(ESMART_TEXTENTRY, esmart_text_entry)
 PKG_CHECK_MODULES(ESMART_CONTAINER, esmart_container)
+PKG_CHECK_MODULES(ESMART_CAIRO, esmart_cairo)
 AC_OUTPUT([
+esmartxx_cairo.pc
+esmartxx_cairo-uninstalled.pc
 esmartxx_container.pc
 esmartxx_container-uninstalled.pc
 esmartxx_group.pc
@@ -37,7 +40,8 @@ esmartxx_textentry.pc
 esmartxx_textentry-uninstalled.pc
 Makefile
 src/Makefile
-src/container/Makefile
-src/group/Makefile
-src/textentry/Makefile
+src/esmartxx_container/Makefile
+src/esmartxx_cairo/Makefile
+src/esmartxx_group/Makefile
+src/esmartxx_textentry/Makefile
 ])

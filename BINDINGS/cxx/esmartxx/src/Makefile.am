@@ -12,7 +12,8 @@ AM_CFLAGS =\
 	 -g
 
 SUBDIRS = \
-	container\
-	group\
-	textentry
+	esmartxx_container\
+	esmartxx_group\
+	esmartxx_textentry \
+	esmartxx_cairo
 
