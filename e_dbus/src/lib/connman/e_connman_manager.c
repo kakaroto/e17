@@ -328,3 +328,41 @@ e_connman_manager_connections_get(unsigned int *count, E_Connman_Element ***p_el
    return e_connman_element_objects_array_get_stringshared
      (element, e_connman_prop_connections, count, p_elements);
 }
+
+/**
+ * Get array of services elements.
+ *
+ * List of service object paths. The list is sorted
+ * internally to have the service with the default
+ * route always first and then the favorite services
+ * followed by scan results.
+ *
+ * This list represents the available services for the
+ * current selected profile. If the profile gets changed
+ * then this list will be updated.
+ *
+ * The same list is available via the profile object
+ * itself. It is just provided here for convenience of
+ * applications only dealing with the current active
+ * profile.
+ *
+ * @param count return the number of elements in array.
+ * @param p_elements array with all elements, these are not referenced
+ *        and in no particular order, just set if return is 1.
+ *
+ * @return 1 on success, 0 otherwise.
+ */
+bool
+e_connman_manager_services_get(unsigned int *count, E_Connman_Element ***p_elements)
+{
+   E_Connman_Element *element;
+
+   EINA_SAFETY_ON_NULL_RETURN_VAL(count, 0);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(p_elements, 0);
+
+   element = e_connman_manager_get();
+   if (!element)
+     return 0;
+   return e_connman_element_objects_array_get_stringshared
+     (element, e_connman_prop_services, count, p_elements);
+}

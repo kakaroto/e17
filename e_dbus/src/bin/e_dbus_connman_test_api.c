@@ -2,10 +2,10 @@
 #include <stdio.h>
 #include <string.h>
 
-#define DBG(...) EINA_ERROR_PDBG(__VA_ARGS__)
-#define INF(...) EINA_ERROR_PINFO(__VA_ARGS__)
-#define WRN(...) EINA_ERROR_PWARN(__VA_ARGS__)
-#define ERR(...) EINA_ERROR_PERR(__VA_ARGS__)
+#define DBG(...) EINA_LOG_DBG(__VA_ARGS__)
+#define INF(...) EINA_LOG_INFO(__VA_ARGS__)
+#define WRN(...) EINA_LOG_WARN(__VA_ARGS__)
+#define ERR(...) EINA_LOG_ERR(__VA_ARGS__)
 
 static int success = 0;
 static int failure = 0;
@@ -341,6 +341,7 @@ static const struct test_desc test_desc_manager[] = {
   TEST_DESC_ELEMENTS_GET_GLOBAL(e_connman_manager_profiles_get, 0),
   TEST_DESC_ELEMENTS_GET_GLOBAL(e_connman_manager_devices_get, 0),
   TEST_DESC_ELEMENTS_GET_GLOBAL(e_connman_manager_connections_get, 1),
+  TEST_DESC_ELEMENTS_GET_GLOBAL(e_connman_manager_services_get, 1),
   TEST_DESC_SENTINEL
 };
 
@@ -363,6 +364,9 @@ static const struct test_desc test_desc_device[] = {
 
 static const struct test_desc test_desc_profile[] = {
   TEST_DESC_STRING_GET(e_connman_profile_name_get, 0),
+  TEST_DESC_BOOL_GET(e_connman_profile_offline_mode_get, 0),
+  //TEST_DESC_BOOL_SET(e_connman_profile_offline_mode_set, 0),
+  TEST_DESC_ELEMENTS_GET(e_connman_profile_services_get, 1),
   TEST_DESC_SENTINEL
 };
 
@@ -393,6 +397,34 @@ static const struct test_desc test_desc_network[] = {
   // TEST_DESC_STRING_SET(e_connman_network_wifi_security_set, 1),
   TEST_DESC_STRING_GET(e_connman_network_wifi_passphrase_get, 1),
   //TEST_DESC_STRING_SET(e_connman_network_wifi_passphrase_set, 1),
+  TEST_DESC_SENTINEL
+};
+
+static const struct test_desc test_desc_service[] = {
+  /* TODO: need to check exactly what properties may fail */
+  TEST_DESC_STRING_GET(e_connman_service_state_get, 1),
+  TEST_DESC_STRING_GET(e_connman_service_error_get, 1),
+  TEST_DESC_STRING_GET(e_connman_service_name_get, 1),
+  TEST_DESC_STRING_GET(e_connman_service_type_get, 1),
+  TEST_DESC_STRING_GET(e_connman_service_mode_get, 1),
+  TEST_DESC_STRING_GET(e_connman_service_security_get, 1),
+  TEST_DESC_STRING_GET(e_connman_service_passphrase_get, 1),
+  //TEST_DESC_STRING_SET(e_connman_service_passphrase_set, 1),
+  TEST_DESC_BOOL_GET(e_connman_service_passphrase_required_get, 1),
+  TEST_DESC_UCHAR_GET(e_connman_service_strength_get, 1),
+  TEST_DESC_BOOL_GET(e_connman_service_favorite_get, 1),
+  TEST_DESC_BOOL_GET(e_connman_service_auto_connect_get, 1),
+  //TEST_DESC_BOOL_SET(e_connman_service_auto_connect_set, 1),
+  TEST_DESC_BOOL_GET(e_connman_service_setup_required_get, 1),
+  TEST_DESC_STRING_GET(e_connman_service_apn_get, 1),
+  //TEST_DESC_STRING_SET(e_connman_service_apn_set, 1),
+  TEST_DESC_STRING_GET(e_connman_service_mcc_get, 1),
+  TEST_DESC_STRING_GET(e_connman_service_mnc_get, 1),
+  TEST_DESC_BOOL_GET(e_connman_service_roaming_get, 1),
+  TEST_DESC_STRING_GET(e_connman_service_ipv4_method_get, 1),
+  //TEST_DESC_STRING_SET(e_connman_service_ipv4_method_set, 1),
+  TEST_DESC_STRING_GET(e_connman_service_ipv4_address_get, 1),
+  //TEST_DESC_STRING_SET(e_connman_service_ipv4_address_set, 1),
   TEST_DESC_SENTINEL
 };
 
@@ -442,6 +474,8 @@ _test_element_timer(void *data)
      _test_element(element, test_desc_network);
    else if (e_connman_element_is_manager(element))
      _test_element(element, test_desc_manager);
+   else if (e_connman_element_is_service(element))
+     _test_element(element, test_desc_service);
    else
      ERR("!!! don't know how to test %s [%s]\n",
 	 element->path, element->interface);

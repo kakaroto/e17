@@ -300,6 +300,10 @@ _e_connman_element_get_interface(const char *key)
 	 if (strcmp(tail, "onnections") == 0)
 	   interface = e_connman_iface_connection;
 	 break;
+      case 'S':
+	 if (strcmp(tail, "ervices") == 0)
+	   interface = e_connman_iface_service;
+	 break;
       default:
 	 break;
      }
@@ -699,6 +703,11 @@ e_connman_element_free(E_Connman_Element *element)
    e_connman_element_pending_cancel_and_free(&element->_pending.agent_register);
    e_connman_element_pending_cancel_and_free(&element->_pending.agent_unregister);
    e_connman_element_pending_cancel_and_free(&element->_pending.device_propose_scan);
+   e_connman_element_pending_cancel_and_free(&element->_pending.service_connect);
+   e_connman_element_pending_cancel_and_free(&element->_pending.service_disconnect);
+   e_connman_element_pending_cancel_and_free(&element->_pending.service_remove);
+   e_connman_element_pending_cancel_and_free(&element->_pending.service_move_before);
+   e_connman_element_pending_cancel_and_free(&element->_pending.service_move_after);
 
    e_connman_element_extra_properties_free(element);
    eina_stringshare_del(element->interface);
@@ -1675,4 +1684,11 @@ e_connman_element_is_network(const E_Connman_Element *element)
 {
    EINA_SAFETY_ON_NULL_RETURN_VAL(element, 0);
    return _e_connman_element_is(element, e_connman_iface_network);
+}
+
+bool
+e_connman_element_is_service(const E_Connman_Element *element)
+{
+   EINA_SAFETY_ON_NULL_RETURN_VAL(element, 0);
+   return _e_connman_element_is(element, e_connman_iface_service);
 }

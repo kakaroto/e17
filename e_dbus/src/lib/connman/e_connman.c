@@ -44,6 +44,7 @@ const char *e_connman_prop_policy = NULL;
 const char *e_connman_prop_powered = NULL;
 const char *e_connman_prop_priority = NULL;
 const char *e_connman_prop_profiles = NULL;
+const char *e_connman_prop_services = NULL;
 const char *e_connman_prop_remember = NULL;
 const char *e_connman_prop_scan_interval = NULL;
 const char *e_connman_prop_scanning = NULL;
@@ -54,6 +55,19 @@ const char *e_connman_prop_wifi_mode = NULL;
 const char *e_connman_prop_wifi_passphrase = NULL;
 const char *e_connman_prop_wifi_security = NULL;
 const char *e_connman_prop_wifi_ssid = NULL;
+const char *e_connman_prop_error = NULL;
+const char *e_connman_prop_mode = NULL;
+const char *e_connman_prop_security = NULL;
+const char *e_connman_prop_passphrase = NULL;
+const char *e_connman_prop_passphrase_required = NULL;
+const char *e_connman_prop_favorite = NULL;
+const char *e_connman_prop_auto_connect = NULL;
+const char *e_connman_prop_setup_required = NULL;
+const char *e_connman_prop_apn = NULL;
+const char *e_connman_prop_mcc = NULL;
+const char *e_connman_prop_mnc = NULL;
+const char *e_connman_prop_roaming = NULL;
+
 
 int _e_dbus_connman_log_dom = -1;
 
@@ -289,6 +303,8 @@ e_connman_system_init(E_DBus_Connection *edbus_conn)
      e_connman_prop_priority = eina_stringshare_add("Priority");
    if (e_connman_prop_profiles == NULL)
      e_connman_prop_profiles = eina_stringshare_add("Profiles");
+   if (e_connman_prop_services == NULL)
+     e_connman_prop_services = eina_stringshare_add("Services");
    if (e_connman_prop_remember == NULL)
      e_connman_prop_remember = eina_stringshare_add("Remember");
    if (e_connman_prop_scan_interval == NULL)
@@ -309,6 +325,30 @@ e_connman_system_init(E_DBus_Connection *edbus_conn)
      e_connman_prop_wifi_security = eina_stringshare_add("WiFi.Security");
    if (e_connman_prop_wifi_ssid == NULL)
      e_connman_prop_wifi_ssid = eina_stringshare_add("WiFi.SSID");
+   if (e_connman_prop_error == NULL)
+     e_connman_prop_error = eina_stringshare_add("Error");
+   if (e_connman_prop_mode == NULL)
+     e_connman_prop_mode = eina_stringshare_add("Mode");
+   if (e_connman_prop_security == NULL)
+     e_connman_prop_security = eina_stringshare_add("Security");
+   if (e_connman_prop_passphrase == NULL)
+     e_connman_prop_passphrase = eina_stringshare_add("Passphrase");
+   if (e_connman_prop_passphrase_required == NULL)
+     e_connman_prop_passphrase_required = eina_stringshare_add("PassphraseRequired");
+   if (e_connman_prop_favorite == NULL)
+     e_connman_prop_favorite = eina_stringshare_add("Favorite");
+   if (e_connman_prop_auto_connect == NULL)
+     e_connman_prop_auto_connect = eina_stringshare_add("AutoConnect");
+   if (e_connman_prop_setup_required == NULL)
+     e_connman_prop_setup_required = eina_stringshare_add("SetupRequired");
+   if (e_connman_prop_apn == NULL)
+     e_connman_prop_apn = eina_stringshare_add("APN");
+   if (e_connman_prop_mcc == NULL)
+     e_connman_prop_mcc = eina_stringshare_add("MCC");
+   if (e_connman_prop_mnc == NULL)
+     e_connman_prop_mnc = eina_stringshare_add("MCN");
+   if (e_connman_prop_roaming == NULL)
+     e_connman_prop_roaming = eina_stringshare_add("Roaming");
 
    e_connman_conn = edbus_conn;
    cb_name_owner_changed = e_dbus_signal_handler_add
@@ -377,6 +417,7 @@ e_connman_system_shutdown(void)
    _stringshare_del(&e_connman_prop_powered);
    _stringshare_del(&e_connman_prop_priority);
    _stringshare_del(&e_connman_prop_profiles);
+   _stringshare_del(&e_connman_prop_services);
    _stringshare_del(&e_connman_prop_remember);
    _stringshare_del(&e_connman_prop_scan_interval);
    _stringshare_del(&e_connman_prop_scanning);
@@ -387,6 +428,18 @@ e_connman_system_shutdown(void)
    _stringshare_del(&e_connman_prop_wifi_passphrase);
    _stringshare_del(&e_connman_prop_wifi_security);
    _stringshare_del(&e_connman_prop_wifi_ssid);
+   _stringshare_del(&e_connman_prop_error);
+   _stringshare_del(&e_connman_prop_mode);
+   _stringshare_del(&e_connman_prop_security);
+   _stringshare_del(&e_connman_prop_passphrase);
+   _stringshare_del(&e_connman_prop_passphrase_required);
+   _stringshare_del(&e_connman_prop_favorite);
+   _stringshare_del(&e_connman_prop_auto_connect);
+   _stringshare_del(&e_connman_prop_setup_required);
+   _stringshare_del(&e_connman_prop_apn);
+   _stringshare_del(&e_connman_prop_mcc);
+   _stringshare_del(&e_connman_prop_mnc);
+   _stringshare_del(&e_connman_prop_roaming);
 
    if (pending_get_name_owner)
      {

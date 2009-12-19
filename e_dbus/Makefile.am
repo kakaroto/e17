@@ -17,4 +17,7 @@ endif
 if BUILD_ENOTIFY
 ENOTIFY_PC = enotify.pc
 endif
-pkgconfig_DATA = edbus.pc $(EHAL_PC) $(ENM_PC) $(ENOTIFY_PC)
+if BUILD_ECONNMAN
+ECONNMAN_PC = econnman.pc
+endif
+pkgconfig_DATA = edbus.pc $(EHAL_PC) $(ENM_PC) $(ENOTIFY_PC) $(ECONNMAN_PC)

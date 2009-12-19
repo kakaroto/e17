@@ -54,7 +54,7 @@ AC_ARG_ENABLE([enm],
 AC_ARG_ENABLE([econnman],
    [AC_HELP_STRING([--enable-econnman], [Enable econnman build])],
    [enable_econnman=$enableval],
-   [enable_econnman="no"])
+   [enable_econnman="yes"])
 
 AC_ARG_ENABLE([enotify],
    [AC_HELP_STRING([--disable-enotify], [Disable enotify build])],

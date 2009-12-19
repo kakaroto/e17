@@ -61,6 +61,11 @@ extern "C" {
 	Eina_Inlist *agent_register;
 	Eina_Inlist *agent_unregister;
 	Eina_Inlist *device_propose_scan;
+	Eina_Inlist *service_connect;
+	Eina_Inlist *service_disconnect;
+	Eina_Inlist *service_remove;
+	Eina_Inlist *service_move_before;
+	Eina_Inlist *service_move_after;
      } _pending;
      struct {
 	Ecore_Idler *changed;
@@ -125,12 +130,12 @@ extern "C" {
   EAPI bool e_connman_manager_profiles_get(unsigned int *count, E_Connman_Element ***p_elements);
   EAPI bool e_connman_manager_devices_get(unsigned int *count, E_Connman_Element ***p_elements);
   EAPI bool e_connman_manager_connections_get(unsigned int *count, E_Connman_Element ***p_elements);
+  EAPI bool e_connman_manager_services_get(unsigned int *count, E_Connman_Element ***p_elements);
 
   // TODO: profile_add (not implemented in connman right now)
   // TODO: profile_remove (not implemented in connman right now)
   // TODO: profile_active_get (not implemented in connman right now)
   // TODO: profile_active_set (not implemented in connman right now)
-  // TODO: services_get (not implemented in connman right now)
 
 
   /* Device Methods */
@@ -172,7 +177,10 @@ extern "C" {
   EAPI E_Connman_Element *e_connman_profile_get(const char *path) EINA_ARG_NONNULL(1) EINA_PURE EINA_WARN_UNUSED_RESULT;
   EAPI bool e_connman_profile_name_get(const E_Connman_Element *profile, const char **name) EINA_ARG_NONNULL(1, 2) EINA_PURE EINA_WARN_UNUSED_RESULT;
 
-  // TODO: services_get (not implemented in connman right now)
+  EAPI bool e_connman_profile_offline_mode_get(const E_Connman_Element *profile, bool *offline) EINA_ARG_NONNULL(1, 2) EINA_PURE EINA_WARN_UNUSED_RESULT;
+  EAPI bool e_connman_profile_offline_mode_set(E_Connman_Element *profile, bool offline, E_DBus_Method_Return_Cb cb, const void *data) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
+
+  EAPI bool e_connman_profile_services_get(const E_Connman_Element *profile, unsigned int *count, E_Connman_Element ***p_elements) EINA_ARG_NONNULL(1, 2, 3) EINA_PURE EINA_WARN_UNUSED_RESULT;
 
   /* Connection Methods */
 
@@ -227,6 +235,61 @@ extern "C" {
   EAPI bool e_connman_network_wifi_passphrase_set(E_Connman_Element *network, const char *wifi_passphrase, E_DBus_Method_Return_Cb cb, const void *data) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
 
   // TODO: address_get
+
+  /* Services Methods */
+
+  EAPI E_Connman_Element *e_connman_service_get(const char *path) EINA_ARG_NONNULL(1) EINA_PURE EINA_WARN_UNUSED_RESULT;
+
+  EAPI bool e_connman_service_connect(E_Connman_Element *service, E_DBus_Method_Return_Cb cb, const void *data) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
+  EAPI bool e_connman_service_disconnect(E_Connman_Element *service, E_DBus_Method_Return_Cb cb, const void *data) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
+
+  EAPI bool e_connman_service_remove(E_Connman_Element *service, E_DBus_Method_Return_Cb cb, const void *data) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
+
+  // TODO: clear_property
+
+  EAPI bool e_connman_service_move_before(E_Connman_Element *service, const char *object_path, E_DBus_Method_Return_Cb cb, const void *data) EINA_ARG_NONNULL(1, 2) EINA_WARN_UNUSED_RESULT;
+  EAPI bool e_connman_service_move_after(E_Connman_Element *service, const char *object_path, E_DBus_Method_Return_Cb cb, const void *data) EINA_ARG_NONNULL(1, 2) EINA_WARN_UNUSED_RESULT;
+
+  EAPI bool e_connman_service_state_get(const E_Connman_Element *service, const char **state) EINA_ARG_NONNULL(1, 2) EINA_PURE EINA_WARN_UNUSED_RESULT;
+
+  EAPI bool e_connman_service_error_get(const E_Connman_Element *service, const char **error) EINA_ARG_NONNULL(1, 2) EINA_PURE EINA_WARN_UNUSED_RESULT;
+
+  EAPI bool e_connman_service_name_get(const E_Connman_Element *service, const char **name) EINA_ARG_NONNULL(1, 2) EINA_PURE EINA_WARN_UNUSED_RESULT;
+
+  EAPI bool e_connman_service_type_get(const E_Connman_Element *service, const char **type) EINA_ARG_NONNULL(1, 2) EINA_PURE EINA_WARN_UNUSED_RESULT;
+
+  EAPI bool e_connman_service_mode_get(const E_Connman_Element *service, const char **mode) EINA_ARG_NONNULL(1, 2) EINA_PURE EINA_WARN_UNUSED_RESULT;
+
+  EAPI bool e_connman_service_security_get(const E_Connman_Element *service, const char **security) EINA_ARG_NONNULL(1, 2) EINA_PURE EINA_WARN_UNUSED_RESULT;
+
+  EAPI bool e_connman_service_passphrase_get(const E_Connman_Element *service, const char **passphrase) EINA_ARG_NONNULL(1, 2) EINA_PURE EINA_WARN_UNUSED_RESULT;
+  EAPI bool e_connman_service_passphrase_set(E_Connman_Element *service, const char *passphrase, E_DBus_Method_Return_Cb cb, const void *data) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
+
+  EAPI bool e_connman_service_passphrase_required_get(const E_Connman_Element *service, bool *passphrase_required) EINA_ARG_NONNULL(1, 2) EINA_PURE EINA_WARN_UNUSED_RESULT;
+
+  EAPI bool e_connman_service_strength_get(const E_Connman_Element *service, unsigned char *strength) EINA_ARG_NONNULL(1, 2) EINA_PURE EINA_WARN_UNUSED_RESULT;
+
+  EAPI bool e_connman_service_favorite_get(const E_Connman_Element *service, bool *favorite) EINA_ARG_NONNULL(1, 2) EINA_PURE EINA_WARN_UNUSED_RESULT;
+
+  EAPI bool e_connman_service_auto_connect_get(const E_Connman_Element *service, bool *auto_connect) EINA_ARG_NONNULL(1, 2) EINA_PURE EINA_WARN_UNUSED_RESULT;
+  EAPI bool e_connman_service_auto_connect_set(E_Connman_Element *service, bool auto_connect, E_DBus_Method_Return_Cb cb, const void *data) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
+
+  EAPI bool e_connman_service_setup_required_get(const E_Connman_Element *service, bool *setup_required) EINA_ARG_NONNULL(1, 2) EINA_PURE EINA_WARN_UNUSED_RESULT;
+
+  EAPI bool e_connman_service_apn_get(const E_Connman_Element *service, const char **apn) EINA_ARG_NONNULL(1, 2) EINA_PURE EINA_WARN_UNUSED_RESULT;
+  EAPI bool e_connman_service_apn_set(E_Connman_Element *service, const char *apn, E_DBus_Method_Return_Cb cb, const void *data) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
+
+  EAPI bool e_connman_service_mcc_get(const E_Connman_Element *service, const char **mcc) EINA_ARG_NONNULL(1, 2) EINA_PURE EINA_WARN_UNUSED_RESULT;
+
+  EAPI bool e_connman_service_mnc_get(const E_Connman_Element *service, const char **mnc) EINA_ARG_NONNULL(1, 2) EINA_PURE EINA_WARN_UNUSED_RESULT;
+
+  EAPI bool e_connman_service_roaming_get(const E_Connman_Element *service, bool *roaming) EINA_ARG_NONNULL(1, 2) EINA_PURE EINA_WARN_UNUSED_RESULT;
+
+  EAPI bool e_connman_service_ipv4_method_get(const E_Connman_Element *service, const char **method) EINA_ARG_NONNULL(1, 2) EINA_PURE EINA_WARN_UNUSED_RESULT;
+  EAPI bool e_connman_service_ipv4_method_set(E_Connman_Element *service, const char *method, E_DBus_Method_Return_Cb cb, const void *data) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
+
+  EAPI bool e_connman_service_ipv4_address_get(const E_Connman_Element *service, const char **address) EINA_ARG_NONNULL(1, 2) EINA_PURE EINA_WARN_UNUSED_RESULT;
+  EAPI bool e_connman_service_ipv4_address_set(E_Connman_Element *service, const char *address, E_DBus_Method_Return_Cb cb, const void *data) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
 
 #ifdef __cplusplus
 }

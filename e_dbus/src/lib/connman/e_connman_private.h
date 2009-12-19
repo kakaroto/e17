@@ -31,6 +31,7 @@ extern const char *e_connman_prop_policy;
 extern const char *e_connman_prop_powered;
 extern const char *e_connman_prop_priority;
 extern const char *e_connman_prop_profiles;
+extern const char *e_connman_prop_services;
 extern const char *e_connman_prop_remember;
 extern const char *e_connman_prop_scan_interval;
 extern const char *e_connman_prop_scanning;
@@ -41,6 +42,19 @@ extern const char *e_connman_prop_wifi_mode;
 extern const char *e_connman_prop_wifi_passphrase;
 extern const char *e_connman_prop_wifi_security;
 extern const char *e_connman_prop_wifi_ssid;
+extern const char *e_connman_prop_error;
+extern const char *e_connman_prop_mode;
+extern const char *e_connman_prop_security;
+extern const char *e_connman_prop_passphrase;
+extern const char *e_connman_prop_passphrase_required;
+extern const char *e_connman_prop_favorite;
+extern const char *e_connman_prop_auto_connect;
+extern const char *e_connman_prop_setup_required;
+extern const char *e_connman_prop_apn;
+extern const char *e_connman_prop_mcc;
+extern const char *e_connman_prop_mnc;
+extern const char *e_connman_prop_roaming;
+
 extern int _e_dbus_connman_log_dom;
 
 #ifndef EINA_LOG_DEFAULT_COLOR
