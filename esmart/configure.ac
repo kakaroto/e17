@@ -186,6 +186,7 @@ AC_SUBST(requirements)
 
 AC_OUTPUT([
 Makefile
+esmart_cairo.pc
 esmart_container.pc
 esmart_draggies.pc
 esmart_file_dialog.pc

@@ -11,6 +11,7 @@ bin_SCRIPTS =
 
 EXTRA_DIST = README AUTHORS COPYING esmart.spec esmart.spec.in \
 	     autogen.sh \
+	     esmart_cairo.pc.in \
 	     esmart_container.pc.in \
 	     esmart_draggies.pc.in \
 	     esmart_file_dialog.pc.in \
@@ -24,6 +25,10 @@ EXTRA_DIST = README AUTHORS COPYING esmart.spec esmart.spec.in \
 pkgconfigdir = $(libdir)/pkgconfig
 
 pkgconfig_DATA = 
+
+if BUILD_ESMART_CAIRO
+  pkgconfig_DATA += esmart_cairo.pc
+endif
 
 if BUILD_ESMART_CONTAINER
   pkgconfig_DATA += esmart_container.pc
