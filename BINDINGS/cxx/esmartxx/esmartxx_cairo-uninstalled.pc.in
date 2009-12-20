@@ -6,7 +6,7 @@ includedir=src
 Name: @PACKAGE@
 Description: Esmart_Cairo (EFL) C++ Wrapper, Not installed
 Version: @VERSION@
-Requires: sigc++-2.0 evasxx
+Requires: sigc++-2.0 evasxx esmart_cairo
 Conflicts: 
 Libs: ${pcfiledir}/${libdir}/libesmartxx_cairo.la
 Cflags: -I${pcfiledir}/${includedir} 

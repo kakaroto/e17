@@ -6,7 +6,7 @@ includedir=@prefix@/include
 Name: @PACKAGE@
 Description: Esmart_Cairo (EFL) C++ Wrapper
 Version: @VERSION@
-Requires: sigc++-2.0 evasxx
+Requires: sigc++-2.0 evasxx esmart_cairo
 Conflicts: 
 Libs: -L${libdir} -lesmartxx_cairo
 Cflags: -I${includedir}
