@@ -51,4 +51,9 @@ void Cairo::setAutoFill (bool enable)
   esmart_image_cairo_fill_auto_set (o, enable);
 }
 
+void Cairo::setDirty ()
+{
+  evas_object_image_pixels_dirty_set (o, 1);
+}
+
 } // end namespace Esmartxx

@@ -6,6 +6,7 @@
 #endif
 
 #include <evasxx/Smart.h>
+#include <evasxx/Image.h>
 
 /* EFL */
 #include <Esmart/Esmart_Cairo.h>
@@ -31,6 +32,8 @@ public:
   
   void setAutoFill (bool enable);
   
+  // TODO: Redesign needed?
+  void setDirty ();
 };
 
 } // end namespace Esmartxx
