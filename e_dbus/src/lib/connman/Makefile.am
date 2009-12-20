@@ -18,8 +18,7 @@ e_connman_device.c \
 e_connman_element.c \
 e_connman_manager.c \
 e_connman_network.c \
-e_connman_profile.c \
-e_connman_service.c
+e_connman_profile.c
 
 libeconnman_la_LIBADD = \
 @EDBUS_LIBS@ @EVAS_LIBS@ \
