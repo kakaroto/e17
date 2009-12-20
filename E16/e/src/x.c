@@ -2113,6 +2113,7 @@ ERegionSubtractOffset(XserverRegion dst, int dx, int dy, XserverRegion src,
    XFixesSubtractRegion(dpy, dst, dst, rgn);
 }
 
+#if 0				/* Unused */
 void
 ERegionUnionOffset(XserverRegion dst, int dx, int dy, XserverRegion src,
 		   XserverRegion tmp)
@@ -2128,6 +2129,7 @@ ERegionUnionOffset(XserverRegion dst, int dx, int dy, XserverRegion src,
      }
    XFixesUnionRegion(dpy, dst, dst, rgn);
 }
+#endif
 
 #if 0				/* Unused (for debug) */
 int

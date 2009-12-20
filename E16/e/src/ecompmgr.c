@@ -1725,7 +1725,7 @@ ECompMgrDetermineOrder(EObj * const *lst, int num, EObj ** first,
 		      cw->clip, EobjGetX(eo), EobjGetY(eo), EobjGetW(eo),
 		      EobjGetH(eo), EobjGetName(eo));
 #if USE_CLIP_RELATIVE_TO_DESK
-	     ERegionUnionOffset(clip, 0, 0, cw->shape, rgn_tmp);
+	     ERegionUnion(clip, cw->shape);
 #else
 	     ERegionUnionOffset(clip, EoGetX(dsk), EoGetY(dsk), cw->shape,
 				rgn_tmp);
@@ -1766,7 +1766,7 @@ ECompMgrRepaintObjSetClip(XserverRegion rgn, XserverRegion damage,
 #if USE_CLIP_RELATIVE_TO_DESK
    ERegionSubtractOffset(rgn, x, y, clip, rgn_tmp);
 #else
-   ERegionSubtractOffset(rgn, 0, 0, clip, rgn_tmp);
+   ERegionSubtract(rgn, clip);
    x = y = 0;
 #endif
    return rgn;
@@ -1924,7 +1924,7 @@ ECompMgrPaintGhosts(Picture pict, XserverRegion damage)
 	  }
 
 	/* Subtract window region from damage region */
-	ERegionSubtractOffset(damage, 0, 0, eo->cmhook->shape, rgn_tmp);
+	ERegionSubtract(damage, eo->cmhook->shape);
      }
 }
 
