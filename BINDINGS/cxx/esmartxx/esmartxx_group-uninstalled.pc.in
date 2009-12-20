@@ -1,6 +1,6 @@
 prefix=
 exec_prefix=
-libdir=src/group
+libdir=src/esmartxx_group
 includedir=src
 
 Name: @PACKAGE@

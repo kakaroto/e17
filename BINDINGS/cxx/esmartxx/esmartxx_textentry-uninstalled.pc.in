@@ -1,6 +1,6 @@
 prefix=
 exec_prefix=
-libdir=src/textentry
+libdir=src/esmartxx_textentry
 includedir=src
 
 Name: @PACKAGE@

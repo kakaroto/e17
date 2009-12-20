@@ -1,6 +1,6 @@
 prefix=
 exec_prefix=
-libdir=src/container
+libdir=src/esmartxx_container
 includedir=src
 
 Name: @PACKAGE@
