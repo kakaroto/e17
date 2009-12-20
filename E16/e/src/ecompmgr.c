@@ -241,230 +241,6 @@ static int          ECompMgrDetermineOrder(EObj * const *lst, int num,
 #define REGION_DESTROY(rgn) \
    if (rgn != None) { ERegionDestroy(rgn); rgn = None; }
 
-/*
- * Regions
- */
-#define DEBUG_REGIONS 0
-
-#if DEBUG_REGIONS
-static int          n_rgn_c = 0;
-static int          n_rgn_d = 0;
-#endif
-
-static              XserverRegion
-ERegionCreate(void)
-{
-   XserverRegion       rgn;
-
-   rgn = XFixesCreateRegion(disp, NULL, 0);
-
-#if DEBUG_REGIONS
-   n_rgn_c++;
-   Eprintf("%s: %#lx %d %d %d\n", __func__, rgn,
-	   n_rgn_c - n_rgn_d, n_rgn_c, n_rgn_d);
-#endif
-   return rgn;
-}
-
-static              XserverRegion
-ERegionCreateRect(int x, int y, int w, int h)
-{
-   XserverRegion       rgn;
-   XRectangle          rct;
-
-   rct.x = x;
-   rct.y = y;
-   rct.width = w;
-   rct.height = h;
-   rgn = XFixesCreateRegion(disp, &rct, 1);
-
-#if DEBUG_REGIONS
-   n_rgn_c++;
-   Eprintf("%s: %#lx %d %d %d\n", __func__, rgn,
-	   n_rgn_c - n_rgn_d, n_rgn_c, n_rgn_d);
-#endif
-   return rgn;
-}
-
-#if USE_DESK_EXPOSE
-static              XserverRegion
-ERegionCreateFromRects(XRectangle * rectangles, int nrectangles)
-{
-   XserverRegion       rgn;
-
-   rgn = XFixesCreateRegion(disp, rectangles, nrectangles);
-
-#if DEBUG_REGIONS
-   n_rgn_c++;
-   Eprintf("%s: %#lx %d %d %d\n", __func__, rgn,
-	   n_rgn_c - n_rgn_d, n_rgn_c, n_rgn_d);
-#endif
-   return rgn;
-}
-#endif
-
-static              XserverRegion
-ERegionCreateFromWindow(Win win)
-{
-   XserverRegion       rgn;
-
-   rgn =
-      XFixesCreateRegionFromWindow(disp, WinGetXwin(win), WindowRegionBounding);
-
-#if DEBUG_REGIONS
-   n_rgn_c++;
-   Eprintf("%s: %#lx %d %d %d\n", __func__, rgn,
-	   n_rgn_c - n_rgn_d, n_rgn_c, n_rgn_d);
-#endif
-   return rgn;
-}
-
-static              XserverRegion
-ERegionCopy(XserverRegion rgn, XserverRegion src)
-{
-   XFixesCopyRegion(disp, rgn, src);
-   return rgn;
-}
-
-static              XserverRegion
-ERegionClone(XserverRegion src)
-{
-   XserverRegion       rgn;
-
-   rgn = ERegionCreate();
-   ERegionCopy(rgn, src);
-
-   return rgn;
-}
-
-static void
-ERegionDestroy(XserverRegion rgn)
-{
-#if DEBUG_REGIONS
-   n_rgn_d++;
-   Eprintf("%s: %#lx %d %d %d\n", __func__, rgn,
-	   n_rgn_c - n_rgn_d, n_rgn_c, n_rgn_d);
-#endif
-   XFixesDestroyRegion(disp, rgn);
-}
-
-static void
-ERegionEmpty(XserverRegion rgn)
-{
-   XFixesSetRegion(disp, rgn, NULL, 0);
-}
-
-static void
-ERegionSetRect(XserverRegion rgn, int x, int y, int w, int h)
-{
-   XRectangle          rct;
-
-   rct.x = x;
-   rct.y = y;
-   rct.width = w;
-   rct.height = h;
-   XFixesSetRegion(disp, rgn, &rct, 1);
-}
-
-static void
-ERegionTranslate(XserverRegion rgn, int dx, int dy)
-{
-   if (dx == 0 && dy == 0)
-      return;
-   XFixesTranslateRegion(disp, rgn, dx, dy);
-}
-
-static void
-ERegionIntersect(XserverRegion dst, XserverRegion src)
-{
-   XFixesIntersectRegion(disp, dst, dst, src);
-}
-
-static void
-ERegionUnion(XserverRegion dst, XserverRegion src)
-{
-   XFixesUnionRegion(disp, dst, dst, src);
-}
-
-static void
-ERegionSubtract(XserverRegion dst, XserverRegion src)
-{
-   XFixesSubtractRegion(disp, dst, dst, src);
-}
-
-static void
-ERegionSubtractOffset(XserverRegion dst, int dx, int dy, XserverRegion src)
-{
-   Display            *dpy = disp;
-   XserverRegion       rgn;
-
-   rgn = src;
-   if (dx != 0 || dy != 0)
-     {
-	rgn = ERegionCopy(rgn_tmp, src);
-	XFixesTranslateRegion(dpy, rgn, dx, dy);
-     }
-   XFixesSubtractRegion(dpy, dst, dst, rgn);
-}
-
-static void
-ERegionUnionOffset(XserverRegion dst, int dx, int dy, XserverRegion src)
-{
-   Display            *dpy = disp;
-   XserverRegion       rgn;
-
-   rgn = src;
-   if (dx != 0 || dy != 0)
-     {
-	rgn = ERegionCopy(rgn_tmp, src);
-	XFixesTranslateRegion(dpy, rgn, dx, dy);
-     }
-   XFixesUnionRegion(dpy, dst, dst, rgn);
-}
-
-#if 0				/* Unused (for debug) */
-static int
-ERegionIsEmpty(XserverRegion rgn)
-{
-   int                 nr;
-   XRectangle         *pr;
-
-   pr = XFixesFetchRegion(disp, rgn, &nr);
-   if (pr)
-      XFree(pr);
-   return nr == 0;
-}
-#endif
-
-static void
-ERegionShow(const char *txt, XserverRegion rgn)
-{
-   int                 i, nr;
-   XRectangle         *pr;
-
-   if (rgn == None)
-     {
-	Eprintf(" - region: %s %#lx is None\n", txt, rgn);
-	return;
-     }
-
-   pr = XFixesFetchRegion(disp, rgn, &nr);
-   if (!pr || nr <= 0)
-     {
-	Eprintf(" - region: %s %#lx is empty\n", txt, rgn);
-	goto done;
-     }
-
-   Eprintf(" - region: %s %#lx:\n", txt, rgn);
-   for (i = 0; i < nr; i++)
-      Eprintf("%4d: %4d+%4d %4dx%4d\n", i, pr[i].x, pr[i].y, pr[i].width,
-	      pr[i].height);
-
- done:
-   if (pr)
-      XFree(pr);
-}
-
 void
 ECompMgrWinClipToGC(EObj * eo, GC gc)
 {
@@ -477,74 +253,6 @@ ECompMgrWinClipToGC(EObj * eo, GC gc)
    ERegionSubtract(rgn, eo->cmhook->clip);
    XFixesSetGCClipRegion(disp, gc, 0, 0, rgn);
 }
-
-/*
- * Pictures
- */
-
-#define _R(x) (((x) >> 16) & 0xff)
-#define _G(x) (((x) >>  8) & 0xff)
-#define _B(x) (((x)      ) & 0xff)
-
-static              Picture
-EPictureCreateSolid(Bool argb, unsigned int a, unsigned int rgb)
-{
-   Display            *dpy = disp;
-   Pixmap              pmap;
-   Picture             pict;
-   XRenderPictFormat  *pictfmt;
-   XRenderPictureAttributes pa;
-   XRenderColor        c;
-
-   pmap = XCreatePixmap(dpy, Mode_compmgr.root, 1, 1, argb ? 32 : 8);
-   pictfmt = XRenderFindStandardFormat(dpy,
-				       argb ? PictStandardARGB32 :
-				       PictStandardA8);
-   pa.repeat = True;
-   pict = XRenderCreatePicture(dpy, pmap, pictfmt, CPRepeat, &pa);
-
-   c.alpha = (unsigned short)(a * 0x101);
-   c.red = (unsigned short)(_R(rgb) * 0x101);
-   c.green = (unsigned short)(_G(rgb) * 0x101);
-   c.blue = (unsigned short)(_B(rgb) * 0x101);
-   XRenderFillRectangle(dpy, PictOpSrc, pict, &c, 0, 0, 1, 1);
-
-   XFreePixmap(dpy, pmap);
-
-   return pict;
-}
-
-static              Picture
-EPictureCreateBuffer(Win win, int w, int h, Pixmap * ppmap)
-{
-   Picture             pict;
-   Pixmap              pmap;
-   XRenderPictFormat  *pictfmt;
-
-   pmap = XCreatePixmap(disp, WinGetXwin(win), w, h, WinGetDepth(win));
-   pictfmt = XRenderFindVisualFormat(disp, WinGetVisual(win));
-   pict = XRenderCreatePicture(disp, pmap, pictfmt, 0, 0);
-   if (ppmap)
-      *ppmap = pmap;
-   else
-      XFreePixmap(disp, pmap);
-
-   return pict;
-}
-
-#if 0
-static              Picture
-EPictureCreate(Window win, int depth, Visual * vis)
-{
-   Picture             pict;
-   XRenderPictFormat  *pictfmt;
-
-   pictfmt = XRenderFindVisualFormat(disp, vis);
-   pict = XRenderCreatePicture(disp, win, pictfmt, 0, 0);
-
-   return pict;
-}
-#endif
 
 /* Hack to fix redirected window resize bug(?) */
 void
@@ -2017,9 +1725,10 @@ ECompMgrDetermineOrder(EObj * const *lst, int num, EObj ** first,
 		      cw->clip, EobjGetX(eo), EobjGetY(eo), EobjGetW(eo),
 		      EobjGetH(eo), EobjGetName(eo));
 #if USE_CLIP_RELATIVE_TO_DESK
-	     ERegionUnionOffset(clip, 0, 0, cw->shape);
+	     ERegionUnionOffset(clip, 0, 0, cw->shape, rgn_tmp);
 #else
-	     ERegionUnionOffset(clip, EoGetX(dsk), EoGetY(dsk), cw->shape);
+	     ERegionUnionOffset(clip, EoGetX(dsk), EoGetY(dsk), cw->shape,
+				rgn_tmp);
 #endif
 	     break;
 
@@ -2055,9 +1764,9 @@ ECompMgrRepaintObjSetClip(XserverRegion rgn, XserverRegion damage,
 {
    ERegionCopy(rgn, damage);
 #if USE_CLIP_RELATIVE_TO_DESK
-   ERegionSubtractOffset(rgn, x, y, clip);
+   ERegionSubtractOffset(rgn, x, y, clip, rgn_tmp);
 #else
-   ERegionSubtractOffset(rgn, 0, 0, clip);
+   ERegionSubtractOffset(rgn, 0, 0, clip, rgn_tmp);
    x = y = 0;
 #endif
    return rgn;
@@ -2125,7 +1834,8 @@ ECompMgrRepaintObj(Picture pbuf, XserverRegion region, EObj * eo, int mode)
 	     XFixesSetPictureClipRegion(dpy, pbuf, 0, 0, clip);
 	     if (cw->opacity != OPAQUE && !cw->pict_alpha)
 		cw->pict_alpha =
-		   EPictureCreateSolid(True, OP32To8(cw->opacity),
+		   EPictureCreateSolid(Mode_compmgr.root, True,
+				       OP32To8(cw->opacity),
 				       Conf_compmgr.shadows.color);
 	     XRenderComposite(dpy, PictOpOver, cw->picture, cw->pict_alpha,
 			      pbuf, 0, 0, 0, 0, x + cw->rcx, y + cw->rcy,
@@ -2139,7 +1849,7 @@ ECompMgrRepaintObj(Picture pbuf, XserverRegion region, EObj * eo, int mode)
 
 	if (clip == None)
 	   clip = ECompMgrRepaintObjSetClip(rgn_clip, region, cw->clip, x, y);
-	ERegionSubtractOffset(clip, x, y, cw->shape);
+	ERegionSubtractOffset(clip, x, y, cw->shape, rgn_tmp);
 	XFixesSetPictureClipRegion(dpy, pbuf, 0, 0, clip);
 
 	switch (Mode_compmgr.shadow_mode)
@@ -2148,7 +1858,7 @@ ECompMgrRepaintObj(Picture pbuf, XserverRegion region, EObj * eo, int mode)
 	  case ECM_SHADOWS_ECHO:
 	     if (cw->opacity != OPAQUE && !cw->shadow_alpha)
 		cw->shadow_alpha =
-		   EPictureCreateSolid(True,
+		   EPictureCreateSolid(Mode_compmgr.root, True,
 				       OP32To8(cw->opacity *
 					       Mode_compmgr.opac_sharp),
 				       Conf_compmgr.shadows.color);
@@ -2173,7 +1883,8 @@ ECompMgrRepaintObj(Picture pbuf, XserverRegion region, EObj * eo, int mode)
 
 	     if (cw->opacity != OPAQUE && !cw->pict_alpha)
 		cw->pict_alpha =
-		   EPictureCreateSolid(True, OP32To8(cw->opacity),
+		   EPictureCreateSolid(Mode_compmgr.root, True,
+				       OP32To8(cw->opacity),
 				       Conf_compmgr.shadows.color);
 	     alpha = (cw->pict_alpha) ? cw->pict_alpha : transBlackPicture;
 	     XRenderComposite(dpy, PictOpOver, alpha, cw->shadow_pict, pbuf,
@@ -2213,7 +1924,7 @@ ECompMgrPaintGhosts(Picture pict, XserverRegion damage)
 	  }
 
 	/* Subtract window region from damage region */
-	ERegionSubtractOffset(damage, 0, 0, eo->cmhook->shape);
+	ERegionSubtractOffset(damage, 0, 0, eo->cmhook->shape, rgn_tmp);
      }
 }
 
@@ -2386,10 +2097,11 @@ ECompMgrShadowsInit(int mode, int cleanup)
      {
 	if (mode == ECM_SHADOWS_BLURRED)
 	   transBlackPicture =
-	      EPictureCreateSolid(True, 255, Conf_compmgr.shadows.color);
+	      EPictureCreateSolid(Mode_compmgr.root, True, 255,
+				  Conf_compmgr.shadows.color);
 	else
 	   transBlackPicture =
-	      EPictureCreateSolid(True,
+	      EPictureCreateSolid(Mode_compmgr.root, True,
 				  OP32To8(Mode_compmgr.opac_sharp * OPAQUE),
 				  Conf_compmgr.shadows.color);
      }

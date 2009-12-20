@@ -281,4 +281,44 @@ typedef struct {
 
 void                FreePmapMask(PmapMask * pmm);
 
+#if USE_COMPOSITE
+#include <X11/extensions/Xfixes.h>
+
+XserverRegion       ERegionCreate(void);
+XserverRegion       ERegionCreateRect(int x, int y, int w, int h);
+
+#if USE_DESK_EXPOSE
+XserverRegion       ERegionCreateFromRects(XRectangle * rectangles,
+					   int nrectangles);
+#endif
+XserverRegion       ERegionCreateFromWindow(Win win);
+XserverRegion       ERegionCopy(XserverRegion rgn, XserverRegion src);
+XserverRegion       ERegionClone(XserverRegion src);
+void                ERegionDestroy(XserverRegion rgn);
+void                ERegionEmpty(XserverRegion rgn);
+void                ERegionSetRect(XserverRegion rgn, int x, int y, int w,
+				   int h);
+void                ERegionTranslate(XserverRegion rgn, int dx, int dy);
+void                ERegionIntersect(XserverRegion dst, XserverRegion src);
+void                ERegionUnion(XserverRegion dst, XserverRegion src);
+void                ERegionSubtract(XserverRegion dst, XserverRegion src);
+void                ERegionSubtractOffset(XserverRegion dst, int dx, int dy,
+					  XserverRegion src, XserverRegion tmp);
+void                ERegionUnionOffset(XserverRegion dst, int dx, int dy,
+				       XserverRegion src, XserverRegion tmp);
+#if 0				/* Unused (for debug) */
+int                 ERegionIsEmpty(XserverRegion rgn);
+#endif
+void                ERegionShow(const char *txt, XserverRegion rgn);
+
+#include <X11/extensions/Xrender.h>
+#if 0
+Picture             EPictureCreate(Window win, int depth, Visual * vis);
+#endif
+Picture             EPictureCreateSolid(Window xwin, int argb,
+					unsigned int a, unsigned int rgb);
+Picture             EPictureCreateBuffer(Win win, int w, int h, Pixmap * ppmap);
+
+#endif /* USE_COMPOSITE */
+
 #endif /* _XWIN_H_ */
