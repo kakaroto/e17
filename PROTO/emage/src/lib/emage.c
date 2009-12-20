@@ -20,18 +20,35 @@ Eina_Error EMAGE_ERROR_FORMAT;
 Eina_Error EMAGE_ERROR_SIZE;
 Eina_Error EMAGE_ERROR_ALLOCATOR;
 Eina_Error EMAGE_ERROR_LOADING;
+Eina_Error EMAGE_ERROR_SAVING;
 
 static pthread_t tid;
+
+typedef enum _Emage_Job_Type
+{
+	EMAGE_LOAD,
+	EMAGE_SAVE,
+	EMAGE_JOB_TYPES,
+} Emage_Job_Type;
 
 typedef struct _Emage_Job
 {
 	const char *file;
-	Enesim_Surface **s;
-	Enesim_Format f;
-	Eina_Mempool *pool;
-	Emage_Load_Callback cb;
+	Emage_Callback cb;
 	void *data;
 	Eina_Error err;
+	Emage_Job_Type type;
+
+	union {
+		struct {
+			Enesim_Surface **s;
+			Enesim_Format f;
+			Eina_Mempool *pool;
+		} load;
+		struct {
+			Enesim_Surface *s;
+		} save;
+	} op;
 } Emage_Job;
 
 /* TODO this can be merged into enesim itself */
@@ -135,7 +152,7 @@ static Eina_Bool _provider_data_load(Emage_Provider *p, const char *file,
 	return EINA_TRUE;
 }
 
-static Emage_Provider * _provider_get(const char *file)
+static Emage_Provider * _load_provider_get(const char *file)
 {
 	Eina_List *tmp;
 	Emage_Provider *p;
@@ -157,6 +174,41 @@ static Emage_Provider * _provider_get(const char *file)
 	return NULL;
 }
 
+static Eina_Bool _provider_data_save(Emage_Provider *p, const char *file,
+		Enesim_Surface *s, Eina_Error *err)
+{
+	/* save the file */
+	if (p->save(file, s) == EINA_FALSE)
+	{
+		*err = EMAGE_ERROR_SAVING;
+		return EINA_FALSE;
+	}
+
+	return EINA_TRUE;
+}
+
+static Emage_Provider * _save_provider_get(const char *file)
+{
+	Eina_List *tmp;
+	Emage_Provider *p;
+	struct stat stmp;
+
+	if (!file)
+		return NULL;
+	/* iterate over the list of providers and check for a compatible saver */
+	for (tmp = _providers; tmp; tmp = eina_list_next(tmp))
+	{
+		p = eina_list_data_get(tmp);
+		/* TODO priority savers */
+		/* check if the provider can save the image */
+		if (!p->saveable)
+			continue;
+		if (p->saveable(file) == EINA_TRUE)
+			return p;
+	}
+	return NULL;
+}
+
 static void _thread_finish(Emage_Job *j)
 {
 	int ret;
@@ -168,16 +220,37 @@ static void * _thread_load(void *data)
 	Emage_Provider *prov;
 	Emage_Job *j = data;
 
-	prov = _provider_get(j->file);
+	prov = _load_provider_get(j->file);
 	if (!prov)
 	{
 		j->err = EMAGE_ERROR_PROVIDER;
 		_thread_finish(j);
 		return NULL;
 	}
-	_provider_data_load(prov, j->file, j->s, j->f, j->pool, &j->err);
+	_provider_data_load(prov, j->file, j->op.load.s, j->op.load.f,
+			j->op.load.pool, &j->err);
 	_thread_finish(j);
+
 	return NULL;
+}
+
+static void * _thread_save(void *data)
+{
+	Emage_Provider *prov;
+	Emage_Job *j = data;
+
+	prov = _save_provider_get(j->file);
+	if (!prov)
+	{
+		j->err = EMAGE_ERROR_PROVIDER;
+		_thread_finish(j);
+		return NULL;
+	}
+	_provider_data_save(prov, j->file, j->op.save.s, &j->err);
+	_thread_finish(j);
+
+	return NULL;
+
 }
 /*============================================================================*
  *                                   API                                      *
@@ -209,6 +282,7 @@ EAPI int emage_init(void)
 		EMAGE_ERROR_SIZE = eina_error_msg_register("Size mismatch");
 		EMAGE_ERROR_ALLOCATOR = eina_error_msg_register("Error allocating the surface data");
 		EMAGE_ERROR_LOADING = eina_error_msg_register("Error loading the image");
+		EMAGE_ERROR_SAVING = eina_error_msg_register("Error saving the image");
 
 		/* the modules */
 #if 1
@@ -258,7 +332,7 @@ EAPI Eina_Bool emage_info_load(const char *file, int *w, int *h, Enesim_Converte
 {
 	Emage_Provider *prov;
 
-	prov = _provider_get(file);
+	prov = _load_provider_get(file);
 	if (!prov)
 	{
 		eina_error_set(EMAGE_ERROR_PROVIDER);
@@ -282,9 +356,9 @@ EAPI Eina_Bool emage_load(const char *file, Enesim_Surface **s,
 		Enesim_Format f, Eina_Mempool *mpool, const char *options)
 {
 	Emage_Provider *prov;
-	Eina_Error err;
+	Eina_Error err = 0;
 
-	prov = _provider_get(file);
+	prov = _load_provider_get(file);
 	if (!prov)
 	{
 		eina_error_set(EMAGE_ERROR_PROVIDER);
@@ -299,18 +373,19 @@ EAPI Eina_Bool emage_load(const char *file, Enesim_Surface **s,
 }
 /**
  * Load an image asynchronously
-
+ *
  * @param file The image file to load
  * @param s The surface to write the image pixels to. It must not be NULL.
  * @param f The desired format the image should be converted to
  * @param mpool The mempool that will create the surface in case the surface
  * reference is NULL
+ * @param cb The function that will get called once the load is done
  * @param data User provided data
  * @param options Any option the emage provider might require
  */
 EAPI void emage_load_async(const char *file, Enesim_Surface **s,
 		Enesim_Format f, Eina_Mempool *mpool,
-		Emage_Load_Callback cb, void *data, const char *options)
+		Emage_Callback cb, void *data, const char *options)
 {
 	Emage_Job *j;
 
@@ -318,13 +393,66 @@ EAPI void emage_load_async(const char *file, Enesim_Surface **s,
 	j->file = file;
 	j->cb = cb;
 	j->data = data;
-	j->s = s;
-	j->pool = mpool;
-	j->f = f;
 	j->err = 0;
+	j->type = EMAGE_LOAD;
+	j->op.load.s = s;
+	j->op.load.pool = mpool;
+	j->op.load.f = f;
 	/* create a thread that loads the image on background and sends
 	 * a command into the fifo fd */
 	pthread_create(&tid, NULL, _thread_load, j);
+}
+/**
+ * Save an image synchronously
+ *
+ * @param file The image file to save
+ * @param s The surface to read the image pixels from. It must not be NULL.
+ * @param options Any option the emage provider might require
+ * @return EINA_TRUE in case the image was saved correctly. EINA_FALSE if not
+ */
+EAPI Eina_Bool emage_save(const char *file, Enesim_Surface *s, const char *options)
+{
+	Emage_Provider *prov;
+	Eina_Error err = 0;
+
+	prov = _save_provider_get(file);
+	if (!prov)
+	{
+		eina_error_set(EMAGE_ERROR_PROVIDER);
+		return EINA_FALSE;
+	}
+	if (!_provider_data_save(prov, file, s, &err))
+	{
+		eina_error_set(err);
+		return EINA_FALSE;
+	}
+	return EINA_TRUE;
+}
+/**
+ * Save an image asynchronously
+ *
+ * @param file The image file to save
+ * @param s The surface to read the image pixels from. It must not be NULL.
+ * @param cb The function that will get called once the save is done
+ * @param data User provided data
+ * @param options Any option the emage provider might require
+ *
+ */
+EAPI void emage_save_async(const char *file, Enesim_Surface *s, Emage_Callback cb,
+		void *data, const char *options)
+{
+	Emage_Job *j;
+
+	j = malloc(sizeof(Emage_Job));
+	j->file = file;
+	j->cb = cb;
+	j->data = data;
+	j->err = 0;
+	j->type = EMAGE_SAVE;
+	j->op.save.s = s;
+	/* create a thread that saves the image on background and sends
+	 * a command into the fifo fd */
+	pthread_create(&tid, NULL, _thread_save, j);
 }
 /**
  * @brief Call every asynchronous callback set
@@ -349,16 +477,12 @@ EAPI void emage_dispatch(void)
 	/* read from the fifo fd and call the needed callbacks */
 	while (read(_fifo[0], &j, sizeof(j)) > 0)
 	{
-		j->cb(j->s ? *j->s : NULL, j->data, j->err);
+		if (j->type == EMAGE_LOAD)
+			j->cb(j->op.load.s ? *j->op.load.s : NULL, j->data, j->err);
+		else
+			j->cb(j->op.save.s, j->data, j->err);
 		free(j);
 	}
-}
-/**
- *
- */
-EAPI Enesim_Surface * emage_save(const char *file)
-{
-
 }
 /**
  *

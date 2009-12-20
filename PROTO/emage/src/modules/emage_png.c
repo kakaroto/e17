@@ -31,6 +31,20 @@ Eina_Bool _png_loadable(const char *file)
 	return EINA_TRUE;
 }
 
+Eina_Bool _png_saveable(const char *file)
+{
+	char *d;
+
+	d = strrchr(file, '.');
+	if (!d) return EINA_FALSE;
+
+	d++;
+	if (!strcasecmp(d, "png"))
+		return EINA_TRUE;
+
+	return EINA_FALSE;
+}
+
 Eina_Bool _png_info_load(const char *file, int *w, int *h, Enesim_Converter_Format *sfmt)
 {
 	Enesim_Surface *s;
@@ -199,25 +213,29 @@ err_setup:
 	return ret;
 }
 
-Eina_Bool _png_save(void)
+Eina_Bool _png_save(const char *file, Enesim_Surface *s)
 {
-#if 0
 	FILE *f;
-	int num_passes = 1, pass;
-	int x, y, j;
+	int y;
 	int w, h;
-	Enesim_Surface_Data esdata;
-	uint32_t *ptr, *data;
+	uint32_t *sdata;
+	uint32_t *data;
+	/* FIXME fix this, it should be part of the options */
+	const int compress = 0;
 
 	png_structp png_ptr;
 	png_infop info_ptr;
 	png_bytep row_ptr, png_data = NULL;
 	png_color_8 sig_bit;
 
-	f = fopen(file, "wb");
-	if (!f) return;
+	Enesim_Converter_Data cdata;
+	Enesim_Converter_1D conv;
 
-	png_ptr = png_create_write_struct(PNG_LIBPNG_VER_STRING, NULL, NULL, NULL);
+	f = fopen(file, "wb");
+	if (!f)
+		return EINA_FALSE;
+
+	png_ptr = png_create_write_struct(PNG_LIBPNG_VER_STRING, NULL, NULL,NULL);
 	if (!png_ptr)
 	goto error_ptr;
 
@@ -228,43 +246,24 @@ Eina_Bool _png_save(void)
 	if (setjmp(png_ptr->jmpbuf))
 	goto error_jmp;
 
-	//	if (s->flags & RGBA_SURFACE_HAS_ALPHA)
-
+	sdata = enesim_surface_data_get(s);
+	enesim_surface_size_get(s, &w, &h);
+	data = malloc(w * sizeof(uint32_t));
+	if (!data)
 	{
-		enesim_surface_data_get(s, &esdata);
-		enesim_surface_size_get(s, &w, &h);
-		data = malloc(w * h * sizeof(uint32_t));
-		if (!data)
-		{
-			fclose(f);
-			png_destroy_write_struct(&png_ptr, (png_infopp) & info_ptr);
-			png_destroy_info_struct(png_ptr, (png_infopp) & info_ptr);
-			return;
-		}
-		memcpy(data, esdata.argb8888_unpre.plane0, w * h * sizeof(uint32_t));
-		//enesim_color_data_argb_unpremul(data, w * h);
-		png_init_io(png_ptr, f);
-		png_set_IHDR(png_ptr, info_ptr, w, h, 8,
-				PNG_COLOR_TYPE_RGB_ALPHA, png_ptr->interlaced,
-				PNG_COMPRESSION_TYPE_BASE, PNG_FILTER_TYPE_BASE);
-
+		fclose(f);
+		png_destroy_write_struct(&png_ptr, (png_infopp) & info_ptr);
+		png_destroy_info_struct(png_ptr, (png_infopp) & info_ptr);
+		return EINA_FALSE;
+	}
+	png_init_io(png_ptr, f);
+	png_set_IHDR(png_ptr, info_ptr, w, h, 8,
+			PNG_COLOR_TYPE_RGB_ALPHA, png_ptr->interlaced,
+			PNG_COMPRESSION_TYPE_BASE, PNG_FILTER_TYPE_BASE);
 #ifdef WORDS_BIGENDIAN
-		png_set_swap_alpha(png_ptr);
+	png_set_swap_alpha(png_ptr);
 #else
-		png_set_bgr(png_ptr);
-#endif
-	}
-#if 0
-	else
-	{
-		data = s->data;
-		png_init_io(png_ptr, f);
-		png_set_IHDR(png_ptr, info_ptr, s->w, s->h, 8,
-				PNG_COLOR_TYPE_RGB, png_ptr->interlaced,
-				PNG_COMPRESSION_TYPE_BASE, PNG_FILTER_TYPE_BASE);
-		png_data = alloca(s->w * 3 * sizeof(char));
-
-	}
+	png_set_bgr(png_ptr);
 #endif
 	sig_bit.red = 8;
 	sig_bit.green = 8;
@@ -276,54 +275,46 @@ Eina_Bool _png_save(void)
 	png_write_info(png_ptr, info_ptr);
 	png_set_shift(png_ptr, &sig_bit);
 	png_set_packing(png_ptr);
-	for (pass = 0; pass < num_passes; pass++)
+	/* setup the operator */
+	if (!(conv = enesim_converter_span_get(ENESIM_CONVERTER_ARGB8888, ENESIM_ANGLE_0, ENESIM_FORMAT_ARGB8888)))
 	{
-		ptr = data;
+		printf("Error calling the converter\n");
+		return EINA_FALSE;
+	}
+	cdata.argb8888.plane0 = data;
+	row_ptr = (png_bytep) data;
 
-		for (y = 0; y < h; y++)
-		{
-			// if (s->flags & RGBA_SURFACE_HAS_ALPHA)
-			row_ptr = (png_bytep) ptr;
-#if 0
-			else
-			{
-				for (j = 0, x = 0; x < s->w; x++)
-				{
-					png_data[j++] = (ptr[x] >> 16) & 0xff;
-					png_data[j++] = (ptr[x] >> 8) & 0xff;
-					png_data[j++] = (ptr[x]) & 0xff;
-				}
-				row_ptr = (png_bytep) png_data;
-			}
-#endif
-			png_write_rows(png_ptr, &row_ptr, 1);
-			ptr += w;
-		}
-
+	for (y = 0; y < h; y++)
+	{
+		conv(&cdata, w, sdata);
+		png_write_rows(png_ptr, &row_ptr, 1);
+		sdata += w;
 	}
 	png_write_end(png_ptr, info_ptr);
 	png_destroy_write_struct(&png_ptr, (png_infopp) & info_ptr);
 	png_destroy_info_struct(png_ptr, (png_infopp) & info_ptr);
-	//if (s->flags & RGBA_SURFACE_HAS_ALPHA)
 	free(data);
 	fclose(f);
-	return;
-	error_jmp:
+
+	return EINA_TRUE;
+
+error_jmp:
 	png_destroy_info_struct(png_ptr, (png_infopp)&info_ptr);
-	error_info:
+error_info:
 	png_destroy_write_struct(&png_ptr, (png_infopp)&info_ptr);
-	error_ptr:
+error_ptr:
 	fclose(f);
-	return;
-#endif
+	return EINA_FALSE;
 }
 
 static Emage_Provider _provider = {
 	.name = "png",
 	.type = EMAGE_PROVIDER_SW,
 	.load = _png_load,
+	.save = _png_save,
 	.info_get = _png_info_load,
 	.loadable = _png_loadable,
+	.saveable = _png_saveable,
 };
 /*============================================================================*
  *                             Module API                                     *
