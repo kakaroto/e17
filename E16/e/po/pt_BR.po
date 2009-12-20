@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2009-12-13 12:58+0100\n"
+"POT-Creation-Date: 2009-12-19 15:18+0100\n"
 "PO-Revision-Date: 2009-07-08 14:37+0000\n"
 "Last-Translator: Roberto S. Teixeira <robteix@zaz.com.br>\n"
 "Language-Team: Portuguese <pt@li.org>\n"
@@ -400,108 +400,125 @@ msgstr "Fechar"
 msgid "Create New Iconbox"
 msgstr "Criar Novo Porta-ícone"
 
-#: src/container.c:1501 src/container.c:1577 src/menus.c:2107
+#: src/container.c:1505 src/container.c:1581 src/menus.c:2107
 #, c-format
 msgid "Icon size: %2d"
 msgstr "Tamanho do ícone %2d"
 
-#: src/container.c:1541
+#: src/container.c:1545
 msgid "Transparent background"
 msgstr "Fundo Transparente"
 
-#: src/container.c:1545
+#: src/container.c:1549
 msgid "Hide inner border"
 msgstr "Esconder margem interna"
 
-#: src/container.c:1549
+#: src/container.c:1553
 msgid "Draw base image behind Icons"
 msgstr "Desenhar imagem atrás dos ícones"
 
-#: src/container.c:1553
+#: src/container.c:1557
 msgid "Hide scrollbar when not needed"
 msgstr "Esconder barra de rolagem quando não necessária"
 
-#: src/container.c:1557
+#: src/container.c:1561
 msgid "Automatically resize to fit Icons"
 msgstr "Automaticamente redimensionar para caber ícones"
 
-#: src/container.c:1564
+#: src/container.c:1568
 msgid "Alignment of anchoring when automatically resizing:"
 msgstr "Alinhamento de âncora quando redimensionando automaticamente:"
 
-#: src/container.c:1595
+#: src/container.c:1599
 msgid "Orientation:"
 msgstr "Orientação:"
 
-#: src/container.c:1600
-msgid "Scrollbar side:"
-msgstr "Tamanho das Barras de Rolagem:"
-
-#: src/container.c:1605
-msgid "Scrollbar arrows:"
-msgstr "Setas das Barras de Rolagem:"
-
-#: src/container.c:1608
+#: src/container.c:1602
 msgid "Horizontal"
 msgstr "Horizontal"
 
-#: src/container.c:1613
-msgid "Left / Top"
-msgstr "Esquerda / Topo"
-
-#: src/container.c:1618
-msgid "Start"
-msgstr "Início"
-
-#: src/container.c:1623
+#: src/container.c:1607
 msgid "Vertical"
 msgstr "Vertical"
 
-#: src/container.c:1629
+#: src/container.c:1618
+msgid "Scrollbar side:"
+msgstr "Tamanho das Barras de Rolagem:"
+
+#: src/container.c:1621
+msgid "Left / Top"
+msgstr "Esquerda / Topo"
+
+#: src/container.c:1626
 msgid "Right / Bottom"
 msgstr "Direita / Embaixo"
 
+#: src/container.c:1637
+msgid "Scrollbar arrows:"
+msgstr "Setas das Barras de Rolagem:"
+
+#: src/container.c:1640
+msgid "Start"
+msgstr "Início"
+
 # só baixo parecia estranho...
-#: src/container.c:1635
+#: src/container.c:1645
 msgid "Both ends"
 msgstr "Ambas as pontas"
 
-#: src/container.c:1643
+#: src/container.c:1650
 msgid "End"
 msgstr "Final"
 
-#: src/container.c:1651 src/focus.c:886
+#: src/container.c:1655 src/focus.c:886
 msgid "None"
 msgstr "Nenhuma"
 
-#: src/container.c:1661
+#: src/container.c:1665
 msgid "Show icon names"
 msgstr "Exibir nomes dos ícones"
 
-#: src/container.c:1665
-msgid "Animate when iconifying to this Iconbox"
-msgstr "Animar quando iconificando neste Porta-ícone"
+#: src/container.c:1674
+msgid "Animation mode:"
+msgstr ""
 
-#: src/container.c:1675
+#: src/container.c:1677 src/desktops.c:2570
+msgid "Off"
+msgstr "Desligado"
+
+#: src/container.c:1682
+msgid "Whirl"
+msgstr ""
+
+#: src/container.c:1687 src/settings.c:112 src/settings.c:117
+#: src/settings.c:383
+msgid "Box"
+msgstr "Caixa"
+
+#: src/container.c:1695
+msgid "Animation speed:"
+msgstr ""
+
+#: src/container.c:1710
 msgid "Icon image display policy (if one operation fails, try the next):"
 msgstr ""
 "Política de exibição de imagem dos ícones (se uma falha, tenta a próxima):"
 
-#: src/container.c:1680
+#: src/container.c:1715
 msgid "Snapshot Windows, Use application icon, Use Enlightenment Icon"
 msgstr ""
 "Miniaturas das Janelas, Usar Ícone da Aplicação, Usar Ícone do Enlightenment"
 
-#: src/container.c:1687
+#: src/container.c:1722
 msgid "Use application icon, Use Enlightenment Icon, Snapshot Window"
 msgstr ""
 "Usar Ícone da Aplicação, Usar Ícone do Enlightenment, Miniaturas das Janelas"
 
-#: src/container.c:1692
+#: src/container.c:1727
 msgid "Use Enlightenment Icon, Snapshot Window"
 msgstr "Usar Ícone de Enlightenment, Miniaturas das Janelas"
 
-#: src/container.c:1705
+#: src/container.c:1740
 msgid ""
 "Enlightenment Iconbox\n"
 "Settings Dialog\n"
@@ -596,11 +613,11 @@ msgstr "Topo"
 msgid "Bottom"
 msgstr "Fundo"
 
-#: src/desktops.c:2406 src/pager.c:1920 src/pager.c:1945 src/pager.c:1970
+#: src/desktops.c:2406 src/pager.c:1918 src/pager.c:1943 src/pager.c:1968
 msgid "Left"
 msgstr "Esquerda"
 
-#: src/desktops.c:2412 src/pager.c:1932 src/pager.c:1957 src/pager.c:1982
+#: src/desktops.c:2412 src/pager.c:1930 src/pager.c:1955 src/pager.c:1980
 msgid "Right"
 msgstr "Direita"
 
@@ -631,10 +648,6 @@ msgstr "Dar a volta em áreas de trabalho virtuais"
 #: src/desktops.c:2567
 msgid "Edge Flip Mode:"
 msgstr ""
-
-#: src/desktops.c:2570
-msgid "Off"
-msgstr "Desligado"
 
 #: src/desktops.c:2575
 msgid "On"
@@ -1370,75 +1383,75 @@ msgstr ""
 msgid "Zoom On"
 msgstr ""
 
-#: src/pager.c:1805 src/pager.c:1900
+#: src/pager.c:1803 src/pager.c:1898
 msgid "Pager scanning speed:"
 msgstr "Velocidade de escaneamento:"
 
-#: src/pager.c:1806 src/pager.c:1901
+#: src/pager.c:1804 src/pager.c:1899
 msgid "lines per second"
 msgstr "linhas por segundo"
 
-#: src/pager.c:1839
+#: src/pager.c:1837
 msgid "Enable pager display"
 msgstr "Ativar Pager"
 
-#: src/pager.c:1849
+#: src/pager.c:1847
 msgid "Pager Mode:"
 msgstr ""
 
-#: src/pager.c:1853
+#: src/pager.c:1851
 msgid "Simple"
 msgstr ""
 
-#: src/pager.c:1859
+#: src/pager.c:1857
 msgid "Make miniature snapshots of the screen"
 msgstr "Fazer minuaturas da tela"
 
-#: src/pager.c:1866
+#: src/pager.c:1864
 msgid "Live Update"
 msgstr ""
 
-#: src/pager.c:1877
+#: src/pager.c:1875
 msgid "Smooth high quality snapshots in snapshot mode"
 msgstr "Suavizar minuaturas de alta qualidade em modo miniatura"
 
-#: src/pager.c:1882
+#: src/pager.c:1880
 msgid "Zoom in on pager windows when mouse is over them"
 msgstr "Dar um zoom nas janelas do pager quando o mouse estiver em cima"
 
-#: src/pager.c:1888
+#: src/pager.c:1886
 msgid "Pop up window title when mouse is over the window"
 msgstr "Mostrar título da janela quando mouse estiver em cima"
 
-#: src/pager.c:1893
+#: src/pager.c:1891
 msgid "Continuously scan screen to update pager"
 msgstr "Escanear tela continuamente para atualizar o pager"
 
-#: src/pager.c:1916
+#: src/pager.c:1914
 msgid "Mouse button to select and drag windows:"
 msgstr "Botão do mouse para selecionar e arrastar:"
 
-#: src/pager.c:1926 src/pager.c:1951 src/pager.c:1976
+#: src/pager.c:1924 src/pager.c:1949 src/pager.c:1974
 msgid "Middle"
 msgstr "Meio"
 
-#: src/pager.c:1941
+#: src/pager.c:1939
 msgid "Mouse button to select desktops:"
 msgstr "Botão do mouse para selecionar áreas de trabalho:"
 
-#: src/pager.c:1966
+#: src/pager.c:1964
 msgid "Mouse button to display pager menu:"
 msgstr "Botão do mouse para exibir menu do pager:"
 
-#: src/pager.c:1990
+#: src/pager.c:1988
 msgid "Pagers"
 msgstr ""
 
-#: src/pager.c:1991
+#: src/pager.c:1989
 msgid "Pager Settings"
 msgstr "Configurações do Pager"
 
-#: src/pager.c:1994
+#: src/pager.c:1992
 msgid ""
 "Enlightenment Desktop & Area\n"
 "Pager Settings Dialog\n"
@@ -1543,10 +1556,6 @@ msgstr "Métodos de Redimensionamento:"
 #: src/settings.c:102 src/settings.c:107 src/settings.c:378
 msgid "Technical"
 msgstr "Técnico"
-
-#: src/settings.c:112 src/settings.c:117 src/settings.c:383
-msgid "Box"
-msgstr "Caixa"
 
 #: src/settings.c:122 src/settings.c:127 src/settings.c:388
 msgid "Shaded"
@@ -2612,6 +2621,9 @@ msgstr ""
 #: config/strings.c:191
 msgid "Epplets"
 msgstr ""
+
+#~ msgid "Animate when iconifying to this Iconbox"
+#~ msgstr "Animar quando iconificando neste Porta-ícone"
 
 #, fuzzy
 #~ msgid "Icon size: %2i"
