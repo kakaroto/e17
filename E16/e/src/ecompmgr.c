@@ -1218,7 +1218,7 @@ ECompMgrWinSetPicts(EObj * eo)
 	     XserverRegion       clip;
 
 	     clip = ERegionCreateFromWindow(EobjGetWin(eo));
-	     XFixesSetPictureClipRegion(disp, cw->picture, 0, 0, clip);
+	     EPictureSetClip(cw->picture, clip);
 	     ERegionDestroy(clip);
 	  }
      }
@@ -1809,7 +1809,7 @@ ECompMgrRepaintObj(Picture pbuf, XserverRegion region, EObj * eo, int mode)
 	     clip = ECompMgrRepaintObjSetClip(rgn_clip, region, cw->clip, x, y);
 	     if (EDebug(EDBUG_TYPE_COMPMGR2))
 		ECompMgrWinDumpInfo("ECompMgrRepaintObj solid", eo, clip, 0);
-	     XFixesSetPictureClipRegion(dpy, pbuf, 0, 0, clip);
+	     EPictureSetClip(pbuf, clip);
 	     XRenderComposite(dpy, PictOpSrc, cw->picture, None, pbuf,
 			      0, 0, 0, 0, x + cw->rcx, y + cw->rcy, cw->rcw,
 			      cw->rch);
@@ -1831,7 +1831,7 @@ ECompMgrRepaintObj(Picture pbuf, XserverRegion region, EObj * eo, int mode)
 	     clip = ECompMgrRepaintObjSetClip(rgn_clip, region, cw->clip, x, y);
 	     if (EDebug(EDBUG_TYPE_COMPMGR2))
 		ECompMgrWinDumpInfo("ECompMgrRepaintObj trans", eo, clip, 0);
-	     XFixesSetPictureClipRegion(dpy, pbuf, 0, 0, clip);
+	     EPictureSetClip(pbuf, clip);
 	     if (cw->opacity != OPAQUE && !cw->pict_alpha)
 		cw->pict_alpha =
 		   EPictureCreateSolid(Mode_compmgr.root, True,
@@ -1850,7 +1850,7 @@ ECompMgrRepaintObj(Picture pbuf, XserverRegion region, EObj * eo, int mode)
 	if (clip == None)
 	   clip = ECompMgrRepaintObjSetClip(rgn_clip, region, cw->clip, x, y);
 	ERegionSubtractOffset(clip, x, y, cw->shape, rgn_tmp);
-	XFixesSetPictureClipRegion(dpy, pbuf, 0, 0, clip);
+	EPictureSetClip(pbuf, clip);
 
 	switch (Mode_compmgr.shadow_mode)
 	  {
@@ -1969,7 +1969,7 @@ ECompMgrRepaint(void)
    /* Repaint background, clipped by damage region and opaque windows */
    pict = dsk->o.cmhook->picture;
    D1printf("ECompMgrRepaint desk picture=%#lx\n", pict);
-   XFixesSetPictureClipRegion(dpy, pbuf, 0, 0, region);
+   EPictureSetClip(pbuf, region);
    XRenderComposite(dpy, PictOpSrc, pict, None, pbuf,
 		    0, 0, 0, 0, 0, 0, WinGetW(VROOT), WinGetH(VROOT));
 #endif
@@ -1984,7 +1984,7 @@ ECompMgrRepaint(void)
 
    if (pbuf != rootPicture)
      {
-	XFixesSetPictureClipRegion(dpy, pbuf, 0, 0, Mode_compmgr.damage);
+	EPictureSetClip(pbuf, Mode_compmgr.damage);
 	XRenderComposite(dpy, PictOpSrc, pbuf, None, rootPicture,
 			 0, 0, 0, 0, 0, 0, WinGetW(VROOT), WinGetH(VROOT));
      }

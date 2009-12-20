@@ -1946,6 +1946,12 @@ EPictureCreateBuffer(Win win, int w, int h, Pixmap * ppmap)
    return pict;
 }
 
+void
+EPictureSetClip(Picture pict, XserverRegion clip)
+{
+   XFixesSetPictureClipRegion(disp, pict, 0, 0, clip);
+}
+
 /*
  * Regions
  */

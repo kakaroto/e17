@@ -318,6 +318,7 @@ Picture             EPictureCreate(Window win, int depth, Visual * vis);
 Picture             EPictureCreateSolid(Window xwin, int argb,
 					unsigned int a, unsigned int rgb);
 Picture             EPictureCreateBuffer(Win win, int w, int h, Pixmap * ppmap);
+void                EPictureSetClip(Picture pict, XserverRegion clip);
 
 #endif /* USE_COMPOSITE */
 
