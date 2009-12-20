@@ -1457,8 +1457,6 @@ PagerHandleMouseUp(Pager * p, int px, int py, int button)
 	if (!in_pager)
 	   return;
 	DeskGoto(p->dsk);
-	if (p->dsk != DesksGetCurrent())
-	   SoundPlay(SOUND_DESKTOP_SHUT);
 	DeskCurrentGotoArea(px / p->dw, py / p->dh);
 	return;
      }
