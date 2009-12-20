@@ -1,7 +1,7 @@
 #include <ecorexx/Ecorexx.h>
 #include <evasxx/Evasxx.h>
 #include <edjexx/Edjexx.h>
-#include <textentry/TextEntry.h>
+#include <esmartxx_textentry/TextEntry.h>
 #include "../../common/searchFile.h"
 
 #define WIDTH 300
