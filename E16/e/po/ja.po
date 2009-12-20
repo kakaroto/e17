@@ -12,7 +12,7 @@ msgstr ""
 "Project-Id-Version: enlightenment 0.16.8.15-0.01\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
 "POT-Creation-Date: 2009-12-19 15:18+0100\n"
-"PO-Revision-Date: 2009-10-01 21:20+0900\n"
+"PO-Revision-Date: 2009-12-20 19:53+0900\n"
 "Last-Translator: Yasufumi Haga <yasufumi.haga@nifty.com>\n"
 "Language-Team: Japanese <ja@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -509,7 +509,7 @@ msgstr "アイコンの名前を表示する"
 
 #: src/container.c:1674
 msgid "Animation mode:"
-msgstr ""
+msgstr "アニメーションモード"
 
 #: src/container.c:1677 src/desktops.c:2570
 msgid "Off"
@@ -517,7 +517,7 @@ msgstr "無効"
 
 #: src/container.c:1682
 msgid "Whirl"
-msgstr ""
+msgstr "回転"
 
 #: src/container.c:1687 src/settings.c:112 src/settings.c:117
 #: src/settings.c:383
@@ -525,9 +525,8 @@ msgid "Box"
 msgstr "枠線"
 
 #: src/container.c:1695
-#, fuzzy
 msgid "Animation speed:"
-msgstr "フェーディング速度"
+msgstr "アニメーション速度"
 
 #: src/container.c:1710
 msgid "Icon image display policy (if one operation fails, try the next):"
@@ -882,7 +881,7 @@ msgstr "ウェーブ"
 
 #: src/fx.c:952
 msgid "FX"
-msgstr ""
+msgstr "特殊効果"
 
 #: src/fx.c:953
 msgid "Special FX Settings"
