@@ -460,8 +460,6 @@ void                MoveResizeResizeStart(EWin * ewin, int kbd, int hv);
 
 void                MoveResizeSuspend(void);
 void                MoveResizeResume(void);
-void                MoveResizeHandleKey(unsigned int key);
-void                MoveResizeHandleMotion(void);
 void                MoveResizeEnd(EWin * ewin);
 
 /* size.c */

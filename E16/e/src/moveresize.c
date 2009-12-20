@@ -22,6 +22,7 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 #include "E.h"
+#include "borders.h"
 #include "cursors.h"
 #include "desktops.h"
 #include "emodule.h"
@@ -36,6 +37,7 @@
 #include <X11/keysym.h>
 
 static struct {
+   Win                 events;
    EWin               *ewin;
    char                mode;
    char                using_kbd;
@@ -47,6 +49,8 @@ static struct {
    int                 swapcoord_x, swapcoord_y;
    int                 resize_detail;
 } Mode_mr;
+
+static void         _MoveResizeInit(void);
 
 static int
 _NeedServerGrab(int mode)
@@ -87,6 +91,8 @@ MoveResizeMoveStart(EWin * ewin, int kbd, int constrained, int nogroup)
 
    if (!ewin || ewin->state.inhibit_move)
       return;
+
+   _MoveResizeInit();
 
    Mode_mr.ewin = ewin;
    Mode_mr.using_kbd = kbd;
@@ -129,9 +135,9 @@ MoveResizeMoveStart(EWin * ewin, int kbd, int constrained, int nogroup)
    Efree(gwins);
 
    if (kbd)
-      GrabKeyboardSet(EoGetWin(ewin));
+      GrabKeyboardSet(Mode_mr.events);
    else
-      GrabPointerSet(EoGetWin(ewin), ECSR_ACT_MOVE, 1);
+      GrabPointerSet(Mode_mr.events, ECSR_ACT_MOVE, 1);
 
    Mode_mr.swapcoord_x = EoGetX(ewin);
    Mode_mr.swapcoord_y = EoGetY(ewin);
@@ -247,7 +253,7 @@ _MoveResizeMoveResume(void)
    if (!ewin)
       return;
 
-   GrabPointerSet(EoGetWin(ewin), ECSR_ACT_MOVE, 1);
+   GrabPointerSet(Mode_mr.events, ECSR_ACT_MOVE, 1);
 
    fl = (Mode_mr.mode == 5) ? 4 : 0;
    if (Mode.mode == MODE_MOVE_PENDING)
@@ -294,6 +300,8 @@ MoveResizeResizeStart(EWin * ewin, int kbd, int hv)
 
    if (!ewin || ewin->state.inhibit_resize)
       return;
+
+   _MoveResizeInit();
 
    Mode_mr.ewin = ewin;
 
@@ -419,9 +427,9 @@ MoveResizeResizeStart(EWin * ewin, int kbd, int hv)
    Mode_mr.win_h = ewin->client.h;
 
    if (kbd)
-      GrabKeyboardSet(EoGetWin(ewin));
+      GrabKeyboardSet(Mode_mr.events);
    else
-      GrabPointerSet(EoGetWin(ewin), csr, 1);
+      GrabPointerSet(Mode_mr.events, csr, 1);
 
    EwinShapeSet(ewin);
    ewin->state.show_coords = 1;
@@ -641,7 +649,6 @@ _MoveResizeMoveHandleMotion(void)
 		  ewin1->shape_y += EoGetY(dsk);
 		  ewin1->req_x += EoGetX(dsk);
 		  ewin1->req_y += EoGetY(dsk);
-		  GrabPointerSet(EoGetWin(ewin), ECSR_ACT_MOVE, 1);
 	       }
 	  }
 
@@ -755,8 +762,8 @@ _MoveResizeResizeHandleMotion(void)
    DrawEwinShape(ewin, Conf.movres.mode_resize, x, y, w, h, 1, 0);
 }
 
-void
-MoveResizeHandleKey(unsigned int key)
+static void
+_MoveResizeHandleKey(unsigned int key)
 {
    EWin               *ewin;
    int                 resize, delta, end = 0;
@@ -840,8 +847,8 @@ MoveResizeHandleKey(unsigned int key)
      }
 }
 
-void
-MoveResizeHandleMotion(void)
+static void
+_MoveResizeHandleMotion(void)
 {
    switch (Mode.mode)
      {
@@ -869,11 +876,6 @@ MoveResizeSuspend(void)
      case MODE_MOVE_PENDING:
      case MODE_MOVE:
 	_MoveResizeMoveSuspend();
-	break;
-     case MODE_RESIZE:
-     case MODE_RESIZE_H:
-     case MODE_RESIZE_V:
-	_MoveResizeResizeEnd(NULL);
 	break;
      }
 }
@@ -905,12 +907,47 @@ MoveResizeEnd(EWin * ewin)
      case MODE_MOVE_PENDING:
      case MODE_MOVE:
 	_MoveResizeMoveEnd(ewin);
-	Mode.action_inhibit = 1;
-	break;
-
-     default:
+	Mode.action_inhibit = 1;	// FIXME - REMOVE
 	break;
      }
+}
+
+static void
+_MoveResizeEventHandler(Win win __UNUSED__, XEvent * ev, void *prm __UNUSED__)
+{
+#if 0
+   Eprintf("%s: type=%2d win=%#lx\n", __func__, ev->type, ev->xany.window);
+#endif
+   switch (ev->type)
+     {
+     default:
+	break;
+     case KeyPress:
+	_MoveResizeHandleKey(XLookupKeysym(&ev->xkey, 0));
+	break;
+#if 0
+     case ButtonPress:
+	break;
+#endif
+     case ButtonRelease:
+	MoveResizeEnd(NULL);
+	if (Mode_mr.ewin)
+	   BorderCheckState(Mode_mr.ewin, ev);
+	break;
+     case MotionNotify:
+	_MoveResizeHandleMotion();
+	break;
+     }
+}
+
+static void
+_MoveResizeInit(void)
+{
+   if (Mode_mr.events)
+      return;
+   Mode_mr.events = ECreateEventWindow(VROOT, 0, 0, 1, 1);
+   EMapWindow(Mode_mr.events);
+   EventCallbackRegister(Mode_mr.events, _MoveResizeEventHandler, NULL);
 }
 
 void

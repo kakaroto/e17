@@ -2258,25 +2258,17 @@ EwinHandleEventsToplevel(Win win __UNUSED__, XEvent * ev, void *prm)
 
    switch (ev->type)
      {
-     case KeyPress:
-	MoveResizeHandleKey(XLookupKeysym(&ev->xkey, 0));
-	break;
      case ButtonPress:
 	ActionsCheck("BUTTONBINDINGS", ewin, ev);
 	break;
      case ButtonRelease:
-	MoveResizeEnd(NULL);
 	ActionsCheck("BUTTONBINDINGS", ewin, ev);
-	BorderCheckState(ewin, ev);
 	break;
      case EnterNotify:
 	FocusHandleEnter(ewin, ev);
 	break;
      case LeaveNotify:
 	FocusHandleLeave(ewin, ev);
-	break;
-     case MotionNotify:
-	MoveResizeHandleMotion();
 	break;
      default:
 #if DEBUG_EWIN_EVENTS
