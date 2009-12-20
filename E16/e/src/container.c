@@ -1457,7 +1457,8 @@ typedef struct {
    char                scrollbar_hide;
    char                cover_hide;
    int                 autoresize_anchor;
-   char                anim_mode;
+   int                 anim_mode;
+   int                 anim_speed;
 } ContainerDlgData;
 
 static void
@@ -1486,9 +1487,12 @@ CB_ConfigureContainer(Dialog * d, int val, void *data __UNUSED__)
    ct->cover_hide = dd->cover_hide;
    ct->auto_resize_anchor = dd->autoresize_anchor;
    ct->anim_mode = dd->anim_mode;
+   Conf_containers.anim_time = 1000 - dd->anim_speed;
 
    ContainerRedraw(ct);
+
    ContainersConfigSave();
+   autosave();
 }
 
 static void
@@ -1507,8 +1511,7 @@ _DlgFillContainer(Dialog * d, DItem * table, void *data)
 {
    ContainerDlgData   *dd;
    Container          *ct = (Container *) data;
-   DItem              *di, *table2;
-   DItem              *radio1, *radio2, *radio3, *radio4, *label;
+   DItem              *di, *table2, *radio, *label;
    char                s[256];
 
    dd = DLG_DATA_SET(d, ContainerDlgData);
@@ -1532,6 +1535,7 @@ _DlgFillContainer(Dialog * d, DItem * table, void *data)
    dd->cover_hide = ct->cover_hide;
    dd->autoresize_anchor = ct->auto_resize_anchor;
    dd->anim_mode = ct->anim_mode;
+   dd->anim_speed = 1000 - Conf_containers.anim_time;
 
    DialogSetTitle(d, ct->dlg_title);
 
@@ -1587,71 +1591,71 @@ _DlgFillContainer(Dialog * d, DItem * table, void *data)
    di = DialogAddItem(table, DITEM_SEPARATOR);
 
    table2 = DialogAddItem(table, DITEM_TABLE);
-   DialogItemTableSetOptions(table2, 3, 0, 0, 0);
+   DialogItemTableSetOptions(table2, 5, 0, 0, 0);
 
    di = DialogAddItem(table2, DITEM_TEXT);
    DialogItemSetFill(di, 0, 0);
    DialogItemSetAlign(di, 0, 512);
    DialogItemSetText(di, _("Orientation:"));
 
+   radio = di = DialogAddItem(table2, DITEM_RADIOBUTTON);
+   DialogItemSetText(di, _("Horizontal"));
+   DialogItemRadioButtonSetFirst(di, radio);
+   DialogItemRadioButtonGroupSetVal(di, 0);
+
+   di = DialogAddItem(table2, DITEM_RADIOBUTTON);
+   DialogItemSetText(di, _("Vertical"));
+   DialogItemRadioButtonSetFirst(di, radio);
+   DialogItemRadioButtonGroupSetVal(di, 1);
+   DialogItemRadioButtonGroupSetValPtr(radio, &dd->vert);
+
+   di = DialogAddItem(table2, DITEM_NONE);
+   di = DialogAddItem(table2, DITEM_NONE);
+
    di = DialogAddItem(table2, DITEM_TEXT);
    DialogItemSetFill(di, 0, 0);
    DialogItemSetAlign(di, 0, 512);
    DialogItemSetText(di, _("Scrollbar side:"));
+
+   radio = di = DialogAddItem(table2, DITEM_RADIOBUTTON);
+   DialogItemSetText(di, _("Left / Top"));
+   DialogItemRadioButtonSetFirst(di, radio);
+   DialogItemRadioButtonGroupSetVal(di, 0);
+
+   di = DialogAddItem(table2, DITEM_RADIOBUTTON);
+   DialogItemSetText(di, _("Right / Bottom"));
+   DialogItemRadioButtonSetFirst(di, radio);
+   DialogItemRadioButtonGroupSetVal(di, 1);
+   DialogItemRadioButtonGroupSetValPtr(radio, &dd->side);
+
+   di = DialogAddItem(table2, DITEM_NONE);
+   di = DialogAddItem(table2, DITEM_NONE);
 
    di = DialogAddItem(table2, DITEM_TEXT);
    DialogItemSetFill(di, 0, 0);
    DialogItemSetAlign(di, 0, 512);
    DialogItemSetText(di, _("Scrollbar arrows:"));
 
-   radio1 = di = DialogAddItem(table2, DITEM_RADIOBUTTON);
-   DialogItemSetText(di, _("Horizontal"));
-   DialogItemRadioButtonSetFirst(di, radio1);
-   DialogItemRadioButtonGroupSetVal(di, 0);
-
-   radio2 = di = DialogAddItem(table2, DITEM_RADIOBUTTON);
-   DialogItemSetText(di, _("Left / Top"));
-   DialogItemRadioButtonSetFirst(di, radio2);
-   DialogItemRadioButtonGroupSetVal(di, 0);
-
-   radio3 = di = DialogAddItem(table2, DITEM_RADIOBUTTON);
+   radio = di = DialogAddItem(table2, DITEM_RADIOBUTTON);
    DialogItemSetText(di, _("Start"));
-   DialogItemRadioButtonSetFirst(di, radio3);
+   DialogItemRadioButtonSetFirst(di, radio);
    DialogItemRadioButtonGroupSetVal(di, 0);
-
-   di = DialogAddItem(table2, DITEM_RADIOBUTTON);
-   DialogItemSetText(di, _("Vertical"));
-   DialogItemRadioButtonSetFirst(di, radio1);
-   DialogItemRadioButtonGroupSetVal(di, 1);
-   DialogItemRadioButtonGroupSetValPtr(radio1, &dd->vert);
-
-   di = DialogAddItem(table2, DITEM_RADIOBUTTON);
-   DialogItemSetText(di, _("Right / Bottom"));
-   DialogItemRadioButtonSetFirst(di, radio2);
-   DialogItemRadioButtonGroupSetVal(di, 1);
-   DialogItemRadioButtonGroupSetValPtr(radio2, &dd->side);
 
    di = DialogAddItem(table2, DITEM_RADIOBUTTON);
    DialogItemSetText(di, _("Both ends"));
-   DialogItemRadioButtonSetFirst(di, radio3);
+   DialogItemRadioButtonSetFirst(di, radio);
    DialogItemRadioButtonGroupSetVal(di, 1);
-
-   di = DialogAddItem(table2, DITEM_NONE);
-   di = DialogAddItem(table2, DITEM_NONE);
 
    di = DialogAddItem(table2, DITEM_RADIOBUTTON);
    DialogItemSetText(di, _("End"));
-   DialogItemRadioButtonSetFirst(di, radio3);
+   DialogItemRadioButtonSetFirst(di, radio);
    DialogItemRadioButtonGroupSetVal(di, 2);
-
-   di = DialogAddItem(table2, DITEM_NONE);
-   di = DialogAddItem(table2, DITEM_NONE);
 
    di = DialogAddItem(table2, DITEM_RADIOBUTTON);
    DialogItemSetText(di, _("None"));
-   DialogItemRadioButtonSetFirst(di, radio3);
+   DialogItemRadioButtonSetFirst(di, radio);
    DialogItemRadioButtonGroupSetVal(di, 3);
-   DialogItemRadioButtonGroupSetValPtr(radio3, &dd->arrows);
+   DialogItemRadioButtonGroupSetValPtr(radio, &dd->arrows);
 
    di = DialogAddItem(table, DITEM_SEPARATOR);
 
@@ -1661,9 +1665,40 @@ _DlgFillContainer(Dialog * d, DItem * table, void *data)
 	DialogItemSetText(di, _("Show icon names"));
 	DialogItemCheckButtonSetPtr(di, &dd->shownames);
 
-	di = DialogAddItem(table, DITEM_CHECKBUTTON);
-	DialogItemSetText(di, _("Animate when iconifying to this Iconbox"));
-	DialogItemCheckButtonSetPtr(di, &dd->anim_mode);
+	table2 = DialogAddItem(table, DITEM_TABLE);
+	DialogItemTableSetOptions(table2, 4, 0, 1, 0);
+
+	di = DialogAddItem(table2, DITEM_TEXT);
+	DialogItemSetFill(di, 0, 0);
+	DialogItemSetAlign(di, 0, 512);
+	DialogItemSetText(di, _("Animation mode:"));
+
+	radio = di = DialogAddItem(table2, DITEM_RADIOBUTTON);
+	DialogItemSetText(di, _("Off"));
+	DialogItemRadioButtonSetFirst(di, radio);
+	DialogItemRadioButtonGroupSetVal(di, 0);
+
+	di = DialogAddItem(table2, DITEM_RADIOBUTTON);
+	DialogItemSetText(di, _("Whirl"));
+	DialogItemRadioButtonSetFirst(di, radio);
+	DialogItemRadioButtonGroupSetVal(di, 1);
+
+	di = DialogAddItem(table2, DITEM_RADIOBUTTON);
+	DialogItemSetText(di, _("Box"));
+	DialogItemRadioButtonSetFirst(di, radio);
+	DialogItemRadioButtonGroupSetVal(di, 2);
+	DialogItemRadioButtonGroupSetValPtr(radio, &dd->anim_mode);
+
+	di = DialogAddItem(table, DITEM_TEXT);
+	DialogItemSetFill(di, 0, 0);
+	DialogItemSetAlign(di, 0, 512);
+	DialogItemSetText(di, _("Animation speed:"));
+
+	di = DialogAddItem(table, DITEM_SLIDER);
+	DialogItemSliderSetBounds(di, 0, 1000);
+	DialogItemSliderSetUnits(di, 10);
+	DialogItemSliderSetJump(di, 50);
+	DialogItemSliderSetValPtr(di, &dd->anim_speed);
 
 	di = DialogAddItem(table, DITEM_SEPARATOR);
 
@@ -1674,25 +1709,25 @@ _DlgFillContainer(Dialog * d, DItem * table, void *data)
 			  _
 			  ("Icon image display policy (if one operation fails, try the next):"));
 
-	radio4 = di = DialogAddItem(table, DITEM_RADIOBUTTON);
+	radio = di = DialogAddItem(table, DITEM_RADIOBUTTON);
 	DialogItemSetText(di,
 			  _
 			  ("Snapshot Windows, Use application icon, Use Enlightenment Icon"));
-	DialogItemRadioButtonSetFirst(di, radio4);
+	DialogItemRadioButtonSetFirst(di, radio);
 	DialogItemRadioButtonGroupSetVal(di, 0);
 
 	di = DialogAddItem(table, DITEM_RADIOBUTTON);
 	DialogItemSetText(di,
 			  _
 			  ("Use application icon, Use Enlightenment Icon, Snapshot Window"));
-	DialogItemRadioButtonSetFirst(di, radio4);
+	DialogItemRadioButtonSetFirst(di, radio);
 	DialogItemRadioButtonGroupSetVal(di, 1);
 
 	di = DialogAddItem(table, DITEM_RADIOBUTTON);
 	DialogItemSetText(di, _("Use Enlightenment Icon, Snapshot Window"));
-	DialogItemRadioButtonSetFirst(di, radio4);
+	DialogItemRadioButtonSetFirst(di, radio);
 	DialogItemRadioButtonGroupSetVal(di, 2);
-	DialogItemRadioButtonGroupSetValPtr(radio4, &dd->icon_mode);
+	DialogItemRadioButtonGroupSetValPtr(radio, &dd->icon_mode);
      }
 }
 
