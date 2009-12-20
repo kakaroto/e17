@@ -31,9 +31,6 @@ public:
   
   void setAutoFill (bool enable);
   
-private:
-  cairo_surface_t *mCairoSurface;
-
 };
 
 } // end namespace Esmartxx

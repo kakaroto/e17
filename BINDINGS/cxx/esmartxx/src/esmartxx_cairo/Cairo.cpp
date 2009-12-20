@@ -43,7 +43,7 @@ cairo_surface_t* Cairo::getSurface ()
 
 bool Cairo::setSurface (cairo_surface_t *cairo_surface)
 {
-  return esmart_image_cairo_surface_set (o, mCairoSurface);
+  return esmart_image_cairo_surface_set (o, cairo_surface);
 }
 
 void Cairo::setAutoFill (bool enable)
