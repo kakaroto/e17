@@ -161,8 +161,6 @@ void                EWindowSync(Win win);
 void                EWindowSetGeometry(Win win, int x, int y, int w, int h,
 				       int bw);
 void                EWindowSetMapped(Win win, int mapped);
-void                ESelectInputChange(Win win, unsigned long set,
-				       unsigned long clear);
 
 void                EMoveWindow(Win win, int x, int y);
 void                EResizeWindow(Win win, int w, int h);
@@ -190,6 +188,8 @@ int                 ETranslateCoordinates(Win src_w, Win dst_w,
 int                 EDrawableCheck(Drawable draw, int grab);
 
 void                ESelectInput(Win win, unsigned int event_mask);
+void                ESelectInputChange(Win win, unsigned int set,
+				       unsigned int clear);
 void                EChangeWindowAttributes(Win win, unsigned int mask,
 					    XSetWindowAttributes * attr);
 void                ESetWindowBorderWidth(Win win, unsigned int bw);

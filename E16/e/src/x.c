@@ -1022,6 +1022,17 @@ ESelectInput(Win win, unsigned int event_mask)
 }
 
 void
+ESelectInputChange(Win win, unsigned int set, unsigned int clear)
+{
+   XWindowAttributes   xwa;
+
+   XGetWindowAttributes(disp, win->xwin, &xwa);
+   xwa.your_event_mask |= set;
+   xwa.your_event_mask &= ~clear;
+   XSelectInput(disp, win->xwin, xwa.your_event_mask);
+}
+
+void
 EChangeWindowAttributes(Win win, unsigned int mask, XSetWindowAttributes * attr)
 {
    XChangeWindowAttributes(disp, win->xwin, mask, attr);
@@ -1115,17 +1126,6 @@ EQueryPointer(Win win, int *px, int *py, Window * pchild, unsigned int *pmask)
    xwin = (win) ? win->xwin : WinGetXwin(VROOT);
 
    return EXQueryPointer(xwin, px, py, pchild, pmask);
-}
-
-void
-ESelectInputChange(Win win, unsigned long set, unsigned long clear)
-{
-   XWindowAttributes   xwa;
-
-   XGetWindowAttributes(disp, win->xwin, &xwa);
-   xwa.your_event_mask |= set;
-   xwa.your_event_mask &= ~clear;
-   XSelectInput(disp, win->xwin, xwa.your_event_mask);
 }
 
 int
