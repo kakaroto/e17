@@ -65,6 +65,10 @@ else:
                        extra_link_args=["-g"],
                        **pkgconfig('"elementary"'))
 
+headers = ['include/elementary/c_elementary.pxd',
+           'include/elementary/__init__.py',
+          ]
+
 setup(
     name = 'python-elementary',
     version = '0.1',
@@ -76,7 +80,7 @@ setup(
     long_description = '',
     keywords = 'wrapper bindings ui elementary graphics',
     packages = find_packages(),
- #   headers = headers,
+    headers = headers,
  #   classifiers = 
  #   packages = 
  #   install_requires = ['elementary','python-evas>=0.2.1'],
