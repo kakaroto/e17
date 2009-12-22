@@ -1323,6 +1323,7 @@ def list_clicked(obj, it):
     ic2.standard_set("clock")
     ic2.scale_set(0, 0)
     it2 = li.item_append("How", ic, ic2)
+    print it2.base_get()
 
     bx = elementary.Box(win)
     bx.horizontal_set(True)

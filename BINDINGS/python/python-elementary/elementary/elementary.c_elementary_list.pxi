@@ -171,10 +171,7 @@ cdef class ListItem:
         obj = elm_list_item_end_get(self.item)
         if obj == NULL:
             return None
-        data = c_evas.evas_object_data_get(obj, "python-evas")
-        if data == NULL:
-            return None
-        return <Object>data
+        return evas.c_evas._Object_from_instance(<long>obj)
 
     def base_get(self):
         cdef c_evas.Evas_Object *obj
@@ -183,10 +180,7 @@ cdef class ListItem:
         obj = elm_list_item_base_get(self.item)
         if obj == NULL:
             return None
-        data = c_evas.evas_object_data_get(obj, "python-evas")
-        if data == NULL:
-            return None
-        return <Object>data
+        return evas.c_evas._Object_from_instance(<long>obj)
 
 
 cdef class List(Object):
