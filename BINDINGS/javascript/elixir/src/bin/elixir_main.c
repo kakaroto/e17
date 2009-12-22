@@ -18,6 +18,8 @@
 
 extern char **environ;
 
+extern FILE *tracker;
+
 static void*
 elixir_env(void* handle, const char** name, const char** value, void* context)
 {
@@ -68,6 +70,8 @@ elixir_help(void)
    fprintf(stderr, " -r, --random               : Randomly allocate some stuff on the stack.\n");
    fprintf(stderr, " -s, --security authorized  : List of authorized security module separated by ','.\n");
    fprintf(stderr, " -e, --external authorized  : List of authorized file format separated by ','.\n");
+   fprintf(stderr, " -i, --pid file             : Put elixir pid in file.\n");
+   fprintf(stderr, " -a, --tracker file         : When executing a script put it's name in the stack.\n");
    fprintf(stderr, "\n");
 }
 
@@ -83,6 +87,8 @@ static const struct option      lopt[] = {
   { "random", 0, 0, 0 },
   { "security", 1, 0, 0 },
   { "group", 1, 0, 0 },
+  { "pid", 1, 0, 0 },
+  { "tracker", 1, 0, 0 },
   { 0, 0, 0, 0 }
 };
 
@@ -142,7 +148,7 @@ main(int argc, char **argv)
         int             option_index = 0;
         int             c;
 
-        c = getopt_long(argc, argv, "mc:t:l:hu:d:p:o:rs:e:g:", lopt, &option_index);
+        c = getopt_long(argc, argv, "mc:t:l:hu:d:p:o:rs:e:g:i:a:", lopt, &option_index);
         if (c == -1)
           break ;
 
@@ -164,6 +170,8 @@ main(int argc, char **argv)
 		case 10: c = 's'; break;
 		case 11: c = 'e'; break;
 		case 12: c = 'g'; break;
+		case 13: c = 'i'; break;
+		case 14: c = 'a'; break;
                }
           }
 
@@ -262,6 +270,25 @@ main(int argc, char **argv)
               break;
 	   case 'r':
 	      stack = alloca(random() & 0xFF);
+	      break;
+	   case 'i':
+	     {
+		FILE *fid;
+
+		fid = fopen(optarg, "w");
+		if (fid)
+		  {
+		     pid_t pid;
+
+		     pid = getpid();
+		     fprintf(fid, "%i\n", pid);
+		     fclose(fid);
+		  }
+
+		break;
+	     }
+	   case 'a':
+	      tracker = fopen(optarg, "w");
 	      break;
            case 'h': /* Help. */
            case '?':

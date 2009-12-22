@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <assert.h>
+#include <libgen.h>
 
 #include <jsxdrapi.h>
 
@@ -34,6 +35,8 @@ struct gc_cx_s
 };
 
 static elixir_virtual_chroot_t  _evct = ELIXIR_VCHROOT_ALL;
+
+EAPI FILE *tracker = NULL;
 
 extern char*    files_root;
 extern int      files_root_length;
@@ -548,6 +551,8 @@ elixir_init(void)
 
    elixir_unlock_cx(result->cx);
 
+   JS_SetRuntimePrivate(result->rt, eina_array_new(4));
+
    return result;
 
   error:
@@ -621,8 +626,13 @@ elixir_shutdown(Elixir_Runtime *er)
    if (!er->clone)
      {
         if (er->rt)
-          JS_DestroyRuntime(er->rt);
+	  {
+	     eina_array_free(JS_GetRuntimePrivate(er->rt));
+	     JS_DestroyRuntime(er->rt);
+	  }
      }
+
+
    free(er);
 }
 
@@ -852,12 +862,39 @@ elixir_script_get_current_out(void)
 Eina_Bool
 elixir_script_run(Elixir_Script *es, jsval *rval)
 {
-   FILE         *save;
-   JSBool        status;
-   jsval         tmp;
+   Eina_Array *exe;
+   FILE *save;
+   char *dupc;
+   char *file;
+   char *dot;
+   JSBool status;
+   jsval tmp;
 
    if (!es)
      return EINA_FALSE;
+
+   /* Extract application name */
+   dupc = strdupa(elixir_loader_filename(es->file));
+   if (!dupc) return EINA_FALSE;
+
+   file = basename(dupc);
+   dot = strrchr(file, '.');
+   if (!dot) return EINA_FALSE;
+   *dot = '\0';
+   /* *** */
+
+   exe = JS_GetRuntimePrivate(es->er->rt);
+
+   if (eina_array_count_get(exe) > 0
+       && strcmp(eina_array_data_get(exe, eina_array_count_get(exe) - 1), file) == 0)
+     file = NULL;
+
+   if (file)
+     {
+	if (tracker) fprintf(tracker, "%s\n", file);
+
+	eina_array_push(exe, strdup(file));
+     }
 
    elixir_lock_cx(es->er->cx);
 
@@ -867,6 +904,14 @@ elixir_script_run(Elixir_Script *es, jsval *rval)
    out = save;
 
    elixir_unlock_cx(es->er->cx);
+
+   if (file)
+     {
+	free(eina_array_pop(exe));
+
+	if (tracker && eina_array_count_get(exe) > 1)
+	  fprintf(tracker, "%s\n", (char*) eina_array_data_get(exe, eina_array_count_get(exe) - 1));
+     }
 
    if (status == JS_FALSE)
      return EINA_FALSE;
