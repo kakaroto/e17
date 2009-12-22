@@ -5154,3 +5154,34 @@ Container and pager menus should be destroyed on close.
 Fix unintended overrides of buttons.cfg in ...buttons.
 Add MenuCreateFromBackgrounds, eliminate menus.cfg.
 Fix compile as C++.
+
+-------------------------------------------------------------------------------
+
+Sun Dec 20 08:49:15 CET 2009
+
+--- 1.0.1.002 ---
+
+Change Ecore_X_ID etc. to unsigned int (when not using ecore_x).
+Refactor ecore_hints.
+Attempt to fix various pager issues:
+- Raise windows before dragging.
+- Sometimes clicking in the pager causes incorrect area switch.
+- Sometimes pager "hiwin" gets stuck to pointer.
+Doc cleanups:
+- Merge e16-docs-src.xml and README.xml into e16.xml.
+- Remove README
+- Remove edox documentation generation stuff.
+- Add simple e16.man.
+  E16 documentation in edox format (e16-docs package) is now considered obsolete.
+Fix menus not being reloaded in certain situations.
+Use new event window for move/resize.
+Iconbox configuration dialog stuff:
+- Add configuration of iconification animation speed.
+- Add configuration of alternate iconification animation mode.
+- Tweak layout.
+Japanese translation update (Yasufumi Haga).
+Move Picture/Region functions to x.c.
+Avoid using ERegion..Offset().
+Introduce EPictureSetClip().
+Move ESelectInputChange(), change arguments to int.
+
