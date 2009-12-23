@@ -1727,6 +1727,7 @@ collections
                         size: 10;
                         min: 1 1;
                         align: 0.5 0.5;
+                        text_class: "module_small_s";
                     }
                 }
             }
@@ -1750,6 +1751,7 @@ collections
                         min: 1 1;
                         max: 1 1;
                         align: 0.5 1.0;
+                        text_class: "module_large";
                     }
                 }
             }
@@ -1808,6 +1810,7 @@ collections
                         min: 1 1;
                         max: 1 1;
                         align: 0.0 0.5;
+                        text_class: "module_small";
                     }
                 }
             }
@@ -1853,6 +1856,7 @@ collections
                         min: 1 1;
                         max: 1 1;
                         align: 1.0 0.5;
+                        text_class: "module_small";
                     }
                 }
             }
@@ -1888,6 +1892,7 @@ collections
                         size: 16;
                         min: 1 1;
                         align: 0.5 0.5;
+                        text_class: "module_normal_s";
                     }
                 }
             }
