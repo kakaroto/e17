@@ -3,14 +3,14 @@
 
 #ifndef ELM_LIB_QUICKLAUNCH
 
+/* local function prototypes */
 static void _cb_win_del(void *data, Evas_Object *obj, void *event);
 static void _cb_btn_close_clicked(void *data, Evas_Object *obj, void *event);
-
-static Evas_Object *win = NULL;
 
 EAPI int 
 elm_main(int argc, char **argv) 
 {
+   Evas_Object *win;
    Evas_Object *bg, *box, *btn, *lbl;
 
    win = elm_win_add(NULL, "elm_fullscreen", ELM_WIN_BASIC);
@@ -48,6 +48,7 @@ elm_main(int argc, char **argv)
    return 0;
 }
 
+/* local functions */
 static void 
 _cb_win_del(void *data, Evas_Object *obj, void *event) 
 {
