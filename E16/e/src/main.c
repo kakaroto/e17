@@ -21,6 +21,9 @@
  * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
+#include <sys/utsname.h>
+#include <signal.h>
+#include <time.h>
 #include "E.h"
 #include "comms.h"
 #include "cursors.h"
@@ -38,9 +41,6 @@
 #include "snaps.h"
 #include "user.h"
 #include "xwin.h"
-#include <sys/utsname.h>
-#include <signal.h>
-#include <time.h>
 
 const char          e_wm_name[] = "e16";
 const char          e_wm_version[] = VERSION;
