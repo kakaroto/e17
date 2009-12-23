@@ -43,6 +43,7 @@ static struct _Id_Type _tab[] =
      {"/ig/images/weather/storm.gif", EWEATHER_TYPE_SCATTERED_THUNDERSTORMS}, 
      {"/ig/images/weather/chance_of_tstorm.gif", EWEATHER_TYPE_ISOLATED_THUNDERSTORMS}, 
      {"/ig/images/weather/sleet.gif", EWEATHER_TYPE_RAIN_SNOW}, 
+     {"/ig/images/weather/rain_snow.gif", EWEATHER_TYPE_RAIN_SNOW},
      {"/ig/images/weather/snow.gif", EWEATHER_TYPE_SNOW}, 
      {"/ig/images/weather/icy.gif", EWEATHER_TYPE_SNOW}, 
      {"/ig/images/weather/dust.gif", EWEATHER_TYPE_FOGGY}, 
@@ -87,7 +88,7 @@ static void _init(EWeather *eweather)
    inst->weather = eweather;
    inst->host = eina_stringshare_add("www.google.com");
 
-   ecore_con_init();
+   printf("INIT %d\n",ecore_con_init());
 
    inst->add_handler =
       ecore_event_handler_add(ECORE_CON_EVENT_SERVER_ADD,
@@ -149,6 +150,7 @@ _weather_cb_check(void *data)
 {
    Instance *inst;
 
+   printf("CHECK\n");
    if (!(inst = data)) return 0;
    if (inst->server) ecore_con_server_del(inst->server);
    inst->server = NULL;
@@ -158,8 +160,12 @@ _weather_cb_check(void *data)
 	ecore_con_server_connect(ECORE_CON_REMOTE_SYSTEM, inst->weather->proxy.host,
 	      inst->weather->proxy.port, inst);
    else
+     {
      inst->server =
 	ecore_con_server_connect(ECORE_CON_REMOTE_SYSTEM, inst->host, 80, inst);
+
+   printf("CHECX %p\n", inst->server);
+     }
 
    if (!inst->server) return 0;
 
@@ -176,6 +182,7 @@ _server_add(void *data, int type, void *event)
    char *s;
    int i;
 
+   printf("SERVER ADD\n");
    if (!(inst = data)) return 1;
    if(!inst->weather->code) return 0;
 
@@ -260,7 +267,6 @@ _parse(Instance *inst)
    location[0] = 0;
 
    if (inst->buffer == NULL) return 0;
-
 
    //printf("%s\n", inst->buffer);
    
