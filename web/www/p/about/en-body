@@ -100,7 +100,7 @@
    <p>
     Pretty much any application written using Core EFL libraries will use one
     or more of these depending on its needs. It may only need the lower level
-    ones or use all of them to the top of the stack. Each library fulfils a
+    ones or use all of them to the top of the stack. Each library fulfills a
     purpose, so it may be skipped if not needed.
    </p>
    
@@ -227,7 +227,7 @@
     library that retains state of all objects in it. They are created then
     manipulated until they are no longer needed, at which point they are
     deleted. This allows the programmer to work in terms that a designer
-    thinks of. It is a direct mapping, as opposed to having to convert the
+    thinks of. It is direct mapping, as opposed to having to convert the
     concepts into drawing commands in the right order, calculate minimum
     drawing calls needed to get the job done etc.
    </p>
