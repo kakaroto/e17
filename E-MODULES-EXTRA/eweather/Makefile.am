@@ -5,7 +5,7 @@ MAINTAINERCLEANFILES = Makefile.in aclocal.m4 config.guess config.h.in \
 
 SUBDIRS = src
 
-EDJE_FLAGS = -v
+EDJE_FLAGS = -v -id .
 
 filesdir = $(datadir)
 files_DATA = module.desktop eweather.edj
