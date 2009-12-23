@@ -71,6 +71,8 @@ typedef union _Enesim_Converter_Data
 	Enesim_Converter_Argb8888 argb8888;
 	Enesim_Converter_Rgb565 rgb565;
 	Enesim_Converter_A8 a8;
+	unsigned int w;
+	unsigned int h;
 } Enesim_Converter_Data;
 
 typedef void (*Enesim_Converter_2D)(Enesim_Converter_Data *data, uint32_t dw, uint32_t dh,
@@ -90,6 +92,8 @@ EAPI void enesim_converter_surface_register(Enesim_Converter_2D cnv,
 EAPI Enesim_Converter_Format enesim_converter_format_get(uint8_t aoffset, uint8_t alen,
 		uint8_t roffset, uint8_t rlen, uint8_t goffset, uint8_t glen,
 		uint8_t boffset, uint8_t blen);
+
+EAPI uint8_t enesim_converter_format_depth_get(Enesim_Converter_Format fmt);
 
 EAPI Enesim_Converter_1D enesim_converter_span_get(Enesim_Converter_Format dfmt,
 		Enesim_Angle angle, Enesim_Format f);

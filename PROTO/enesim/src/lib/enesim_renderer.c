@@ -122,7 +122,7 @@ EAPI void enesim_renderer_surface_draw(Enesim_Renderer *r, Enesim_Surface *s,
 	Enesim_Format dfmt;
 
 	ENESIM_MAGIC_CHECK_RENDERER(r);
-	//ENESIM_MAGIC_CHECK_SURFACE(s);
+	ENESIM_MAGIC_CHECK_SURFACE(s);
 
 	if (!clip)
 		enesim_surface_size_get(s, &w, &h);

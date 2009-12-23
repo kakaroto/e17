@@ -44,8 +44,15 @@ static void _span_identity(Enesim_Renderer *r, int x, int y, unsigned int len, u
 		Layer *l;
 
 		l = eina_list_data_get(ll);
-		enesim_renderer_span_fill(l->r, x, y, len, tmp);
-		l->span(dst, len, tmp, 0, NULL);
+		if (!l->span)
+		{
+			enesim_renderer_span_fill(l->r, x, y, len, dst);
+		}
+		else
+		{
+			enesim_renderer_span_fill(l->r, x, y, len, tmp);
+			l->span(dst, len, tmp, 0, NULL);
+		}
 	}
 }
 
@@ -93,8 +100,11 @@ EAPI void enesim_renderer_compound_layer_add(Enesim_Renderer *r,
 	l = malloc(sizeof(Layer));
 	l->r = rend;
 	/* FIXME what about the surface formats here? */
-	l->span = enesim_compositor_span_get(rop, &fmt, ENESIM_FORMAT_ARGB8888,
-			ENESIM_COLOR_FULL, ENESIM_FORMAT_NONE);
+	if (rop != ENESIM_FILL)
+		l->span = enesim_compositor_span_get(rop, &fmt, ENESIM_FORMAT_ARGB8888,
+				ENESIM_COLOR_FULL, ENESIM_FORMAT_NONE);
+	else
+		l->span = NULL;
 	c->layers = eina_list_append(c->layers, l);
 }
 

@@ -8,7 +8,6 @@ ENESIM_UTILHEADERS = \
 enesim_main.h \
 enesim_surface.h \
 enesim_curve.h \
-enesim_format.h \
 enesim_converter.h \
 enesim_matrix.h \
 enesim_perlin.h \

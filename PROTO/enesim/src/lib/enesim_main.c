@@ -25,8 +25,9 @@ static int _init = 0;
  *                                   API                                      *
  *============================================================================*/
 /**
- * To be documented
- * FIXME: To be fixed
+ * Initialize the library
+ * You must call this function before calling any other function
+ * @return The number of times the library has been initialized
  */
 EAPI int enesim_init(void)
 {
@@ -47,9 +48,10 @@ EAPI int enesim_init(void)
 	}
 	return _init;
 }
+
 /**
- * To be documented
- * FIXME: To be fixed
+ * Shutdowns the library
+ * You must call this function after you finish using the library
  */
 EAPI void enesim_shutdown(void)
 {
@@ -58,3 +60,29 @@ EAPI void enesim_shutdown(void)
 	eina_shutdown();
 }
 
+/**
+ * Gets the string based name of a format
+ * @param f The format to get the name from
+ * @return The name of the format
+ */
+EAPI const char * enesim_format_name_get(Enesim_Format f)
+{
+	switch (f)
+	{
+		case ENESIM_FORMAT_ARGB8888:
+		return "argb8888";
+
+		case ENESIM_FORMAT_XRGB8888:
+		return "xrgb8888";
+
+		case ENESIM_FORMAT_ARGB8888_SPARSE:
+		return "argb8888sp";
+
+		case ENESIM_FORMAT_A8:
+		return "a8";
+
+		default:
+		return NULL;
+
+	}
+}

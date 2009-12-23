@@ -71,5 +71,6 @@ typedef enum _Enesim_Direction
 EAPI int enesim_init(void);
 EAPI void enesim_shutdown(void);
 
+EAPI const char * enesim_format_name_get(Enesim_Format f);
 
 #endif /*ENESIM_MAIN_H_*/

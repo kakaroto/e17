@@ -18,6 +18,13 @@
 #ifndef _SURFACE_H
 #define _SURFACE_H
 
+#define ENESIM_MAGIC_SURFACE 0xe7e51401
+#define ENESIM_MAGIC_CHECK_SURFACE(d)\
+	do {\
+		if (!EINA_MAGIC_CHECK(d, ENESIM_MAGIC_SURFACE))\
+			EINA_MAGIC_FAIL(d, ENESIM_MAGIC_SURFACE);\
+	} while(0)
+
 struct _Enesim_Surface
 {
 	EINA_MAGIC;

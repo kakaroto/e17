@@ -52,7 +52,6 @@ extern "C" {
 #endif
 /* core headers */
 #include "enesim_main.h"
-#include "enesim_format.h"
 #include "enesim_surface.h"
 /* util headers */
 #include "enesim_perlin.h"

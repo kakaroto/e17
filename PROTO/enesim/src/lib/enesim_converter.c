@@ -88,3 +88,30 @@ EAPI Enesim_Converter_Format enesim_converter_rgb_format_get(uint8_t aoffset, ui
 			(roffset == 0) && (rlen == 0) && (aoffset == 0) && (alen == 8))
 		return ENESIM_CONVERTER_A8;
 }
+
+/**
+ * Gets the pixel depth of the converter format
+ * @param fmt The converter format to get the depth from
+ * @return The depth in bits per pixel
+ */
+EAPI uint8_t enesim_converter_format_depth_get(Enesim_Converter_Format fmt)
+{
+	switch (fmt)
+	{
+		case ENESIM_CONVERTER_RGB565:
+		return 16;
+
+		case ENESIM_CONVERTER_ARGB8888:
+		case ENESIM_CONVERTER_ARGB8888_PRE:
+		return 32;
+
+		case ENESIM_CONVERTER_A8:
+		case ENESIM_CONVERTER_GRAY:
+		return 8;
+
+		default:
+		return 0;
+	}
+}
+
+
