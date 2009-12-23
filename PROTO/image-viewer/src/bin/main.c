@@ -445,13 +445,16 @@ on_settings_edit_entry_change(void *data, Evas_Object *obj, void *event_info)
    int len;
 
    txt = elm_entry_markup_to_utf8(elm_entry_entry_get(obj));
-   len = strlen(txt);
-   if (txt[len - 1] == '\n') txt[len - 1] = '\0';
-   iv->config->image_editor = eina_stringshare_add(txt);
+   if (txt)
+     {
+       len = strlen(txt);
+       if (txt[len - 1] == '\n') txt[len - 1] = '\0';
+       iv->config->image_editor = eina_stringshare_add(txt);
 
-   free(txt);
+       free(txt);
 
-   config_save(iv);
+       config_save(iv);
+     }
 }
 
 static void
