@@ -10,6 +10,25 @@
  */
 /* number to checks for magic png info */
 #define PNG_BYTES_TO_CHECK 4
+
+static Eina_Bool _png_format_get(int color_type, Enesim_Converter_Format *fmt)
+{
+	switch (color_type)
+	{
+		case PNG_COLOR_TYPE_RGB_ALPHA:
+		*fmt = ENESIM_CONVERTER_ARGB8888;
+		break;
+
+		case PNG_COLOR_TYPE_GRAY:
+		*fmt = ENESIM_CONVERTER_A8;
+		break;
+
+		default:
+		return EINA_FALSE;
+	}
+
+	return EINA_TRUE;
+}
 /*============================================================================*
  *                          Emage Provider API                                *
  *============================================================================*/
@@ -91,16 +110,15 @@ Eina_Bool _png_info_load(const char *file, int *w, int *h, Enesim_Converter_Form
 	}
 	png_init_io(png_ptr, f);
 	png_read_info(png_ptr, info_ptr);
-	png_get_IHDR(png_ptr, info_ptr, (png_uint_32 *) (&w32), (png_uint_32 *) (&h32), &bit_depth, &color_type, &interlace_type, NULL, NULL);
+	png_get_IHDR(png_ptr, info_ptr, (png_uint_32 *) (&w32),
+			(png_uint_32 *) (&h32), &bit_depth, &color_type,
+			&interlace_type, NULL, NULL);
 	if (w) *w = w32;
 	if (h) *h = h32;
 	if (!sfmt)
 		return EINA_TRUE;
-	if (color_type == PNG_COLOR_TYPE_RGB_ALPHA)
-		*sfmt = ENESIM_CONVERTER_ARGB8888;
-	else if (color_type == PNG_COLOR_TYPE_GRAY)
-		*sfmt = ENESIM_CONVERTER_A8;
-	return EINA_TRUE;
+
+	return _png_format_get(color_type, sfmt);
 }
 
 Eina_Bool _png_load(const char *file, Enesim_Converter_Data *data)
@@ -111,6 +129,8 @@ Eina_Bool _png_load(const char *file, Enesim_Converter_Data *data)
 	unsigned char **lines;
 	char hasa, hasg;
 	int i;
+	Enesim_Converter_Format fmt;
+	int pixel_inc;
 
 	png_uint_32 w32, h32;
 	png_structp png_ptr = NULL;
@@ -161,6 +181,13 @@ Eina_Bool _png_load(const char *file, Enesim_Converter_Data *data)
 			(png_uint_32 *) (&h32), &bit_depth, &color_type,
 			&interlace_type, NULL, NULL);
 
+	if (!_png_format_get(color_type, &fmt))
+	{
+		png_destroy_read_struct(&png_ptr, &info_ptr, NULL);
+		fclose(f);
+		return EINA_FALSE;
+	}
+
 	if (color_type == PNG_COLOR_TYPE_PALETTE)
 		png_set_expand(png_ptr);
 	if (info_ptr->color_type == PNG_COLOR_TYPE_RGB_ALPHA)
@@ -189,6 +216,13 @@ Eina_Bool _png_load(const char *file, Enesim_Converter_Data *data)
 	if (png_get_valid(png_ptr, info_ptr, PNG_INFO_tRNS))
 		png_set_expand(png_ptr);
 
+	pixel_inc = enesim_converter_format_depth_get(fmt) / 8;
+	if (!pixel_inc)
+	{
+		ret = EINA_FALSE;
+		goto err_setup;
+	}
+
 	lines = (unsigned char **) alloca(h32 * sizeof(unsigned char *));
 
 	if (hasg)
@@ -201,7 +235,7 @@ Eina_Bool _png_load(const char *file, Enesim_Converter_Data *data)
 	for (i = 0; i < h32; i++)
 	{
 		lines[i] = ((unsigned char *)(sdata)) + (i * w32
-				* sizeof(uint32_t));
+				* pixel_inc);
 	}
 	png_read_image(png_ptr, lines);
 	png_read_end(png_ptr, info_ptr);
@@ -237,14 +271,14 @@ Eina_Bool _png_save(const char *file, Enesim_Surface *s)
 
 	png_ptr = png_create_write_struct(PNG_LIBPNG_VER_STRING, NULL, NULL,NULL);
 	if (!png_ptr)
-	goto error_ptr;
+		goto error_ptr;
 
 	info_ptr = png_create_info_struct(png_ptr);
 	if (!info_ptr)
-	goto error_info;
+		goto error_info;
 
 	if (setjmp(png_ptr->jmpbuf))
-	goto error_jmp;
+		goto error_jmp;
 
 	sdata = enesim_surface_data_get(s);
 	enesim_surface_size_get(s, &w, &h);
@@ -304,6 +338,7 @@ error_info:
 	png_destroy_write_struct(&png_ptr, (png_infopp)&info_ptr);
 error_ptr:
 	fclose(f);
+
 	return EINA_FALSE;
 }
 

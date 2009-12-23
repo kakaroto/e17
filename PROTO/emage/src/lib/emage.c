@@ -104,17 +104,20 @@ static void _provider_data_convert(Enesim_Converter_Data *cdata,
 	enesim_renderer_state_cleanup(_importer);
 }
 
-static void _provider_info_load(Emage_Provider *p, const char *file,
+static Eina_Bool _provider_info_load(Emage_Provider *p, const char *file,
 		int *w, int *h, Enesim_Converter_Format *sfmt)
 {
+	Eina_Bool ret;
 	int pw, ph;
 	Enesim_Converter_Format pfmt;
 
 	/* get the info from the image */
-	p->info_get(file, &pw, &ph, &pfmt);
+	ret = p->info_get(file, &pw, &ph, &pfmt);
 	if (w) *w = pw;
 	if (h) *h = ph;
 	if (sfmt) *sfmt = pfmt;
+
+	return ret;
 }
 
 static Eina_Bool _provider_data_load(Emage_Provider *p, const char *file,
@@ -127,7 +130,11 @@ static Eina_Bool _provider_data_load(Emage_Provider *p, const char *file,
 	Enesim_Converter_Format cfmt;
 	Enesim_Converter_Data cdata;
 
-	_provider_info_load(p, file, &w, &h, &cfmt);
+	if (!_provider_info_load(p, file, &w, &h, &cfmt))
+	{
+		*err = EMAGE_ERROR_LOADING;
+		return EINA_FALSE;
+	}
 	/* create a buffer of format cfmt where the provider will fill */
 	_provider_data_create(&cdata, cfmt, w, h);
 	if (!*s)
