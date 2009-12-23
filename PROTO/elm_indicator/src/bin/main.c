@@ -308,16 +308,12 @@ _cb_btn_dual_clicked(void *data, Evas_Object *obj, void *event)
 
    /* we do a mode set on the root xwindow so that illume module can read 
     * the current setting and adjust accordingly */
-   if (mode == ECORE_X_ILLUME_MODE_SINGLE) 
-     {
-        ecore_x_e_illume_mode_set(xwin, ECORE_X_ILLUME_MODE_DUAL);
-        ecore_x_e_illume_mode_send(xwin, ECORE_X_ILLUME_MODE_DUAL);
-     }
+   if (mode <= ECORE_X_ILLUME_MODE_SINGLE) 
+     mode = ECORE_X_ILLUME_MODE_DUAL;
    else 
-     {
-        ecore_x_e_illume_mode_set(xwin, ECORE_X_ILLUME_MODE_SINGLE);
-        ecore_x_e_illume_mode_send(xwin, ECORE_X_ILLUME_MODE_SINGLE);
-     }
+     mode = ECORE_X_ILLUME_MODE_SINGLE;
+   ecore_x_e_illume_mode_set(xwin, mode);
+   ecore_x_e_illume_mode_send(xwin, mode);
 }
 
 static void 
@@ -332,15 +328,11 @@ _cb_btn_kbd_clicked(void *data, Evas_Object *obj, void *event)
    state = ecore_x_e_virtual_keyboard_state_get(xwin);
    if ((state == ECORE_X_VIRTUAL_KEYBOARD_STATE_OFF) || 
        (state == ECORE_X_VIRTUAL_KEYBOARD_STATE_UNKNOWN)) 
-     {
-        ecore_x_e_virtual_keyboard_state_set(xwin, 
-                                             ECORE_X_VIRTUAL_KEYBOARD_STATE_ON);
-     }
+     ecore_x_e_virtual_keyboard_state_set(xwin, 
+                                          ECORE_X_VIRTUAL_KEYBOARD_STATE_ON);
    else 
-     {
-        ecore_x_e_virtual_keyboard_state_set(xwin, 
-                                             ECORE_X_VIRTUAL_KEYBOARD_STATE_OFF);
-     }
+     ecore_x_e_virtual_keyboard_state_set(xwin, 
+                                          ECORE_X_VIRTUAL_KEYBOARD_STATE_OFF);
 
    _toggle_kbd_icon(xwin, obj);
 }
