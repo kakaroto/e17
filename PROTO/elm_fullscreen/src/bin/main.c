@@ -4,7 +4,6 @@
 #ifndef ELM_LIB_QUICKLAUNCH
 
 /* local function prototypes */
-static void _cb_win_del(void *data, Evas_Object *obj, void *event);
 static void _cb_btn_close_clicked(void *data, Evas_Object *obj, void *event);
 
 EAPI int 
@@ -16,8 +15,8 @@ elm_main(int argc, char **argv)
    win = elm_win_add(NULL, "elm_fullscreen", ELM_WIN_BASIC);
    elm_win_title_set(win, "Illume Fullscreen Window");
    elm_win_fullscreen_set(win, EINA_TRUE);
+   elm_win_autodel_set(win, EINA_TRUE);
    elm_win_keyboard_mode_set(win, ELM_WIN_KEYBOARD_ALPHA);
-   evas_object_smart_callback_add(win, "delete-request", _cb_win_del, NULL);
 
    bg = elm_bg_add(win);
    evas_object_size_hint_weight_set(bg, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
@@ -49,12 +48,6 @@ elm_main(int argc, char **argv)
 }
 
 /* local functions */
-static void 
-_cb_win_del(void *data, Evas_Object *obj, void *event) 
-{
-   elm_exit();
-}
-
 static void 
 _cb_btn_close_clicked(void *data, Evas_Object *obj, void *event) 
 {
