@@ -178,7 +178,7 @@ cdef class Object(evas.c_evas.Object):
         """
         return self._callback_add_full(event, None, func, *args, **kargs)
 
-    def _callback_del(self, char *event, event_conv, func):
+    def _callback_del(self, char *event, func):
         """Remove a smart callback.
 
         Removes a callback that was added by L{callback_add()}.
@@ -191,6 +191,16 @@ cdef class Object(evas.c_evas.Object):
         @raise ValueError: if there was no B{func} connected with this event.
         """
         return self._callback_del_full(event, None, func)
+
+    def _callback_remove(self, event, func=None, *args, **kwargs):
+        import warnings
+        warnings.warn("use _callback_del_full() instead.", DeprecationWarning)
+        if func is not None:
+            return self._callback_del(event, func)
+        else:
+            self._elmcallbacks.pop(event)
+            c_evas.evas_object_smart_callback_del(self.obj, event,
+                                                  _object_callback)
 
     def _get_obj_addr(self):
         """
