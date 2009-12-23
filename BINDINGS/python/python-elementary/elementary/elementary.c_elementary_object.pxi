@@ -38,7 +38,7 @@ cdef class Object(evas.c_evas.Object):
     """
     elementary.Object
 
-    An abstract class to manage object and callback handling. All 
+    An abstract class to manage object and callback handling. All
     widgets are based on this class
     """
     def scale_set(self, scale):
@@ -110,10 +110,12 @@ cdef class Object(evas.c_evas.Object):
 
         @parm: B{event} Name of the event
         @parm: B{callback} Function should be called, when the event occured
-        @parm: B{args}     Argument tuple passed to the function when called
-        @parm: B{kwargs}    Argument dictionnary passed to the function when called
+        @parm: B{args} Argument tuple passed to the function when called
+        @parm: B{kwargs} Argument dictionnary passed to the function when
+               called
         """
         cdef object cbt
+        cdef void *data
 
         if not callable(callback):
             raise TypeError("callback is not callable")
@@ -127,16 +129,17 @@ cdef class Object(evas.c_evas.Object):
         else:
             self._elmcallbacks[event] = [cbt]
             # register callback
-            c_evas.evas_object_smart_callback_add(self.obj, event, _object_callback,
-                                                  <void*>self._elmcallbacks[event])
+            data = <void*>self._elmcallbacks[event]
+            c_evas.evas_object_smart_callback_add(self.obj, event,
+                                                  _object_callback, data)
 
-    def _callback_remove(self, event, func = None, *args, **kwargs):
+    def _callback_remove(self, event, func=None, *args, **kwargs):
         """Removes all callback functions for the event
 
         Will remove all callback functions for the specified event.
 
         @parm: B{event} Name of the event whose events should be removed
-        @parm: B{func}  If set, will remove only this callback
+        @parm: B{func} If set, will remove only this callback
         """
         if self._elmcallbacks and self._elmcallbacks.has_key(event):
             if func is None:
@@ -145,7 +148,8 @@ cdef class Object(evas.c_evas.Object):
                 self._elmcallbacks[event] = None
             else:
                 for i, cbt in enumerate(self._elmcallbacks[event]):
-                    if cbt is not None and (self, func, args, kwargs) == <object>cbt:
+                    if (cbt is not None
+                        and (self, func, args, kwargs) == <object>cbt):
                         self._elmcallbacks[event][i] = None
                 if not self._elmcallbacks[event]:
                     c_evas.evas_object_smart_callback_del(self.obj, event,
