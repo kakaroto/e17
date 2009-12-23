@@ -17,15 +17,20 @@
 #
 
 
-cdef void _object_callback(void *cbtl, c_evas.Evas_Object *o, void *event_info) with gil:
-    l = <object>cbtl
-    for cbt in l:
+cdef void _object_callback(void *data,
+                           c_evas.Evas_Object *o, void *event_info) with gil:
+    cdef Object obj
+    cdef object event, ei
+    obj = <Object>c_evas.evas_object_data_get(o, "python-evas")
+    event = <object>data
+    lst = tuple(obj._elmcallbacks[event])
+    for event_conv, func, args, kargs in lst:
         try:
-            (obj, callback, args, kwargs) = <object>cbt
-            if event_info != NULL:
-               callback(obj, <long>event_info, *args, **kwargs)
+            if event_conv is None:
+                func(obj, *args, **kargs)
             else:
-               callback(obj, *args, **kwargs)
+                ei = event_conv(<long>event_info)
+                func(obj, ei, *args, **kargs)
         except Exception, e:
             traceback.print_exc()
 
@@ -102,58 +107,90 @@ cdef class Object(evas.c_evas.Object):
         """
         elm_object_scroll_freeze_push(self.obj)
 
-    def _callback_add(self, event, callback, *args, **kwargs):
-        """Add a callback for this object
+    def _callback_add_full(self, char *event, event_conv, func, *args, **kargs):
+        """Add a callback for the smart event specified by event.
 
-        Add a function as new callback-function for a specified event. The
-        function will be called, if the event occured.
-
-        @parm: B{event} Name of the event
-        @parm: B{callback} Function should be called, when the event occured
-        @parm: B{args} Argument tuple passed to the function when called
-        @parm: B{kwargs} Argument dictionnary passed to the function when
-               called
+        @parm: B{event} event name
+        @parm: B{event_conv} Conversion function to get the
+               pointer (as a long) to the object to be given to the
+               function as the second parameter. If None, then no
+               parameter will be given to the callback.
+        @parm: B{func} what to callback. Should have the signature:
+           C{function(object, event_info, *args, **kargs)}
+           C{function(object, *args, **kargs)} (if no event_conv is provided)
+        @raise TypeError: if B{func} is not callable.
+        @raise TypeError: if B{event_conv} is not callable or None.
         """
-        cdef object cbt
-        cdef void *data
-
-        if not callable(callback):
-            raise TypeError("callback is not callable")
-
-        cbt = (self, callback, args, kwargs)
+        if not callable(func):
+            raise TypeError("func must be callable")
+        if event_conv is not None and not callable(event_conv):
+            raise TypeError("event_conv must be None or callable")
 
         if self._elmcallbacks is None:
             self._elmcallbacks = {}
-        if self._elmcallbacks.has_key(event):
-            self._elmcallbacks[event].append(cbt)
-        else:
-            self._elmcallbacks[event] = [cbt]
-            # register callback
-            data = <void*>self._elmcallbacks[event]
+
+        e = intern(event)
+        lst = self._elmcallbacks.setdefault(e, [])
+        if not lst:
             c_evas.evas_object_smart_callback_add(self.obj, event,
-                                                  _object_callback, data)
+                                                  _object_callback, <void *>e)
+        lst.append((event_conv, func, args, kargs))
 
-    def _callback_remove(self, event, func=None, *args, **kwargs):
-        """Removes all callback functions for the event
+    def _callback_del_full(self, char *event, event_conv, func):
+        """Remove a smart callback.
 
-        Will remove all callback functions for the specified event.
+        Removes a callback that was added by L{callback_add()}.
 
-        @parm: B{event} Name of the event whose events should be removed
-        @parm: B{func} If set, will remove only this callback
+        @parm: B{event} event name
+        @parm: B{event_conv} same as registered with _callback_add_full()
+        @parm: B{func} what to callback, should have be previously registered.
+        @precond: B{event}, B{event_conv} and B{func} must be used as
+           parameter for L{_callback_add_full()}.
+
+        @raise ValueError: if there was no B{func} connected with this event.
         """
-        if self._elmcallbacks and self._elmcallbacks.has_key(event):
-            if func is None:
-                c_evas.evas_object_smart_callback_del(self.obj, event,
-                                                      _object_callback)
-                self._elmcallbacks[event] = None
-            else:
-                for i, cbt in enumerate(self._elmcallbacks[event]):
-                    if (cbt is not None
-                        and (self, func, args, kwargs) == <object>cbt):
-                        self._elmcallbacks[event][i] = None
-                if not self._elmcallbacks[event]:
-                    c_evas.evas_object_smart_callback_del(self.obj, event,
-                                                          _object_callback)
+        try:
+            lst = self._elmcallbacks[event]
+        except KeyError, e:
+            raise ValueError("Unknown event %r" % e)
+
+        i = -1
+        for i, (ec, f, a, k) in enumerate(lst):
+            if event_conv == ec and func == f:
+                break
+        else:
+            raise ValueError("Callback %s was not registered with event %r" %
+                             (func, e))
+
+        lst.pop(i)
+        if lst:
+            return
+        self._elmcallbacks.pop(event)
+        c_evas.evas_object_smart_callback_del(self.obj, event, _object_callback)
+
+    def _callback_add(self, char *event, func, *args, **kargs):
+        """Add a callback for the smart event specified by event.
+
+        @parm: B{event} event name
+        @parm: B{func} what to callback. Should have the signature:
+           C{function(object, *args, **kargs)}
+        @raise TypeError: if B{func} is not callable.
+        """
+        return self._callback_add_full(event, None, func, *args, **kargs)
+
+    def _callback_del(self, char *event, event_conv, func):
+        """Remove a smart callback.
+
+        Removes a callback that was added by L{callback_add()}.
+
+        @parm: B{event} event name
+        @parm: B{func} what to callback, should have be previously registered.
+        @precond: B{event} and B{func} must be used as parameter for
+           L{_callback_add_full()}.
+
+        @raise ValueError: if there was no B{func} connected with this event.
+        """
+        return self._callback_del_full(event, None, func)
 
     def _get_obj_addr(self):
         """
