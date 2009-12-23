@@ -101,15 +101,18 @@ places_init(void)
 void
 places_shutdown(void)
 {
-   ecore_timer_del(poller);
+   if (poller) ecore_timer_del(poller);
 
-   e_dbus_signal_handler_del(conn, sh_added);
-   e_dbus_signal_handler_del(conn, sh_removed);
+   if (conn) 
+     {
+        e_dbus_signal_handler_del(conn, sh_added);
+        e_dbus_signal_handler_del(conn, sh_removed);
+     }
 
    while (volumes)
       _places_volume_del((Volume*)volumes->data);
 
-   e_dbus_connection_close(conn);
+   if (conn) e_dbus_connection_close(conn);
 }
 
 void
