@@ -390,6 +390,7 @@ static              GLXPixmap
 GetGlPixmap(Window xwin, Drawable draw)
 {
    static const int    attrs[] = {
+      GLX_TEXTURE_TARGET_EXT, GLX_TEXTURE_2D_EXT,
       GLX_TEXTURE_FORMAT_EXT, GLX_TEXTURE_FORMAT_RGB_EXT,
       0
    };
