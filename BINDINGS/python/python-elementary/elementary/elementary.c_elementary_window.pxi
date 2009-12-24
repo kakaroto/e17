@@ -44,22 +44,20 @@ cdef class Window(Object):
     def callback_destroy_add(self, func, *args, **kwargs):
         self._callback_add("delete-request", func, *args, **kwargs)
 
-    def callback_destroy_remove(self, func = None, *args, **kwargs):
-        self._callback_remove("delete-request", func, *args, **kwargs)
-
+    def callback_destroy_del(self, func):
+        self._callback_del("delete-request", func)
 
     def callback_focus_in_add(self, func, *args, **kwargs):
         self._callback_add("focus-in", func, *args, **kwargs)
 
-    def callback_focus_in_remove(self, func = None, *args, **kwargs):
-        self._callback_remove("focus-in", func, *args, **kwargs)
-
+    def callback_focus_in_del(self, func):
+        self._callback_del("focus-in", func)
 
     def callback_focus_out_add(self, func, *args, **kwargs):
         self._callback_add("focus-out", func, *args, **kwargs)
 
-    def callback_focus_out_remove(self, func = None, *args, **kwargs):
-        self._callback_remove("focus-out", func, *args, **kwargs)
+    def callback_focus_out_del(self, func):
+        self._callback_del("focus-out")
 
 
     def resize_object_add(self,c_evas.Object obj):

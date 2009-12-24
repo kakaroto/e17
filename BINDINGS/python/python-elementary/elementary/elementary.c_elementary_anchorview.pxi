@@ -28,31 +28,20 @@ class AnchorViewInfo:
         self.hover_top = False
         self.hover_bottom = False
 
-cdef void _anchorview_callback(void *cbtl, c_evas.Evas_Object *o, void *event_info) with gil:
-    cdef Elm_Entry_Anchorview_Info *ei
-    l = <object>cbtl
-    for cbt in l:
-        try:
-            obj, callback, args, kwargs = cbt
-            if event_info is NULL:
-                av = None
-            else:
-                ei = <Elm_Entry_Anchorview_Info*>event_info
-                av = AnchorViewInfo()
-                av.name = ei.name
-                av.button = ei.button
-                av.hover = Hover(None, <object>ei.hover);
-                av.anchor = (ei.anchor.x, ei.anchor.y,
-                             ei.anchor.w, ei.anchor.h)
-                av.hover_parent = (ei.hover_parent.x, ei.hover_parent.y,
-                                   ei.hover_parent.w, ei.hover_parent.h)
-                av.hover_left = ei.hover_left
-                av.hover_right = ei.hover_right
-                av.hover_top = ei.hover_top
-                av.hover_bottom = ei.hover_bottom
-            callback(obj, av, *args, **kwargs)
-        except Exception, e:
-            traceback.print_exc()
+def _anchorview_conv(long addr):
+    cdef Elm_Entry_Anchorview_Info *ei = <Elm_Entry_Anchorview_Info *>addr
+    av = AnchorViewInfo()
+    av.name = ei.name
+    av.button = ei.button
+    av.hover = Hover(None, <object>ei.hover);
+    av.anchor = (ei.anchor.x, ei.anchor.y, ei.anchor.w, ei.anchor.h)
+    av.hover_parent = (ei.hover_parent.x, ei.hover_parent.y,
+                       ei.hover_parent.w, ei.hover_parent.h)
+    av.hover_left = ei.hover_left
+    av.hover_right = ei.hover_right
+    av.hover_top = ei.hover_top
+    av.hover_bottom = ei.hover_bottom
+    return av
 
 cdef class AnchorView(Object):
     """
@@ -76,7 +65,7 @@ cdef class AnchorView(Object):
         self._set_obj(elm_anchorview_add(parent.obj))
         self._cbs = {}
 
-    def callback_clicked_add(self, func, *args, **kwargs):
+    def callback_clicked_add(self, func, *args, **kargs):
         """ Bound to signal "anchor, clicked"
 
         The callback should have the following signature:
@@ -87,38 +76,11 @@ cdef class AnchorView(Object):
         The value set is either the callback function or a tuple like
             (callback, *args, **kargs)
         """
-        cdef object cbt
+        return self._callback_add_full("anchor,clicked", _anchorview_conv,
+                                       func, *args, **kargs)
 
-        if not callable(func):
-            raise TypeError("callback is not callable")
-
-        event = "anchor,clicked"
-
-        cbt = (self, func, args, kwargs)
-
-        if self._cbs.has_key(event):
-            self._cbs[event].append(cbt)
-        else:
-            self._cbs[event] = [cbt]
-            # register callback
-            c_evas.evas_object_smart_callback_add(self.obj, event,
-                                                  _anchorview_callback,
-                                                  <void *>self._cbs[event])
-
-    def callback_clicked_remove(self, func = None, *args, **kwargs):
-        event = "anchor,clicked"
-        if self._cbs and self._cbs.has_keys(event):
-            if func is None:
-                c_evas.evas_object_smart_callback_del(self.obj, event,
-                                                      _anchorview_callback)
-                self._cbs[event] = None
-            else:
-                for i, cbt in enumerate(self._cbs[event]):
-                    if cbt is not None and (self, func, args, kwargs) == <object>cbt:
-                        self._cbs[event][i] = None
-                if not self._cbs[event]:
-                    c_evas.evas_object_smart_callback_del(self.obj, event,
-                                                          _anchorview_callback)
+    def callback_clicked_del(self, func):
+        return self._callback_del_full("anchor,clicked", _anchorview_conv, func)
 
     def text_set(self, text):
         """

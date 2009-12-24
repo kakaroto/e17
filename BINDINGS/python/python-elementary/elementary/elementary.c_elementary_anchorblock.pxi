@@ -28,31 +28,20 @@ class AnchorBlockInfo:
         self.hover_top = False
         self.hover_bottom = False
 
-cdef void _anchorblock_callback(void *cbtl, c_evas.Evas_Object *o, void *event_info) with gil:
-    cdef Elm_Entry_Anchorblock_Info *ei
-    l = <object>cbtl
-    for cbt in l:
-        try:
-            obj, callback, a, ka = cbt
-            if event_info is NULL:
-                ab = None
-            else:
-                ei = <Elm_Entry_Anchorblock_Info*>event_info
-                ab = AnchorBlockInfo()
-                ab.name = ei.name
-                ab.button = ei.button
-                ab.hover = Hover(None, <object>ei.hover);
-                ab.anchor = (ei.anchor.x, ei.anchor.y,
-                             ei.anchor.w, ei.anchor.h)
-                ab.hover_parent = (ei.hover_parent.x, ei.hover_parent.y,
-                                   ei.hover_parent.w, ei.hover_parent.h)
-                ab.hover_left = ei.hover_left
-                ab.hover_right = ei.hover_right
-                ab.hover_top = ei.hover_top
-                ab.hover_bottom = ei.hover_bottom
-            callback(obj, ab, *a, **ka)
-        except Exception, e:
-            traceback.print_exc()
+def _anchorblock_conv(long addr):
+    cdef Elm_Entry_Anchorblock_Info *ei = <Elm_Entry_Anchorblock_Info *>addr
+    ab = AnchorBlockInfo()
+    ab.name = ei.name
+    ab.button = ei.button
+    ab.hover = Hover(None, <object>ei.hover);
+    ab.anchor = (ei.anchor.x, ei.anchor.y, ei.anchor.w, ei.anchor.h)
+    ab.hover_parent = (ei.hover_parent.x, ei.hover_parent.y,
+                       ei.hover_parent.w, ei.hover_parent.h)
+    ab.hover_left = ei.hover_left
+    ab.hover_right = ei.hover_right
+    ab.hover_top = ei.hover_top
+    ab.hover_bottom = ei.hover_bottom
+    return ab
 
 cdef class AnchorBlock(Object):
     """
@@ -78,7 +67,7 @@ cdef class AnchorBlock(Object):
         self._set_obj(elm_anchorblock_add(parent.obj))
         self._cbs = {}
 
-    def callback_clicked_add(self, func, *args, **kwargs):
+    def callback_clicked_add(self, func, *args, **kargs):
         """ Bound to signal "anchor, clicked"
 
         The callback should have the following signature:
@@ -89,38 +78,12 @@ cdef class AnchorBlock(Object):
         The value set is either the callback function or a tuple like
             (callback, *args, **kwargs)
         """
-        cdef object cbt
+        return self._callback_add_full("anchor,clicked", _anchorblock_conv,
+                                       func, *args, **kargs)
 
-        if not callable(func):
-            raise TypeError("callback is not callable")
-
-        event = "anchor,clicked"
-
-        cbt = (self, func, args, kwargs)
-
-        if self._cbs.has_key(event):
-            self._cbs[event].append(cbt)
-        else:
-            self._cbs[event] = [cbt]
-            # register callback
-            c_evas.evas_object_smart_callback_add(self.obj, event,
-                                                  _anchorblock_callback,
-                                                  <void *>self._cbs[event])
-
-    def callback_clicked_remove(self, func = None, *args, **kwargs):
-        event = "anchor,clicked"
-        if self._cbs and self._cbs.has_keys(event):
-            if func is None:
-                c_evas.evas_object_smart_callback_del(self.obj, event,
-                                                      _anchorblock_callback)
-                self._cbs[event] = None
-            else:
-                for i, cbt in enumerate(self._cbs[event]):
-                    if cbt is not None and (self, func, args, kwargs) == <object>cbt:
-                        self._cbs[event][i] = None
-                if not self._cbs[event]:
-                    c_evas.evas_object_smart_callback_del(self.obj, event,
-                                                          _anchorblock_callback)
+    def callback_clicked_del(self, func):
+        return self._callback_del_full("anchor,clicked", _anchorblock_conv,
+                                       func)
 
     def text_set(self, text):
         """

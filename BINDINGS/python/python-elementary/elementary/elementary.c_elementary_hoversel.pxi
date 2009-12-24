@@ -94,22 +94,20 @@ cdef class Hoversel(Object):
     def callback_clicked_add(self, func, *args, **kwargs):
         self._callback_add("clicked", func, *args, **kwargs)
 
-    def callback_clicked_remove(self, func = None, *args, **kwargs):
-        self._callback_remove("clicked", func, *args, **kwargs)
-
+    def callback_clicked_del(self, func):
+        self._callback_del("clicked", func)
 
     def callback_selected_add(self, func, *args, **kwargs):
         self._callback_add("selected", func, *args, **kwargs)
 
-    def callback_selected_remove(self, func = None, *args, **kwargs):
-        self._callback_remove("selected", func, *args, **kwargs)
-
+    def callback_selected_del(self, func):
+        self._callback_del("selected", func)
 
     def callback_dismissed_add(self, func, *args, **kwargs):
         self._callback_add("dismissed", func, *args, **kwargs)
 
-    def callback_dismissed_remove(self, func = None, *args, **kwargs):
-        self._callback_remove("dismissed", func, *args, **kwargs)
+    def callback_dismissed_del(self, func):
+        self._callback_del("dismissed", func)
 
 
     def hover_parent_set(self, c_evas.Object parent):

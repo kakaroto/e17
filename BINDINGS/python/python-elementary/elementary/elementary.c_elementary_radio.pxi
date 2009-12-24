@@ -42,5 +42,5 @@ cdef class Radio(Object):
     def callback_changed_add(self, func, *args, **kwargs):
         self._callback_add("changed", func, *args, **kwargs)
 
-    def callback_changed_remove(self, func = None, *args, **kwargs):
-        self._callback_remove("changed", func, *args, **kwargs)
+    def callback_changed_del(self, func):
+        self._callback_del("changed", func)

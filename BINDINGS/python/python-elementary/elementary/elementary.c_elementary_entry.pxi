@@ -39,86 +39,74 @@ cdef class Entry(Object):
     def callback_changed_add(self, func, *args, **kwargs):
         self._callback_add("changed", func, *args, **kwargs)
 
-    def callback_changed_remove(self, func = None, *args, **kwargs):
-        self._callback_remove("changed", func, *args, **kwargs)
-
+    def callback_changed_del(self, func):
+        self._callback_del("changed", func)
 
     def callback_selection_start_add(self, func, *args, **kwargs):
         self._callback_add("selection,start", func, *args, **kwargs)
 
-    def callback_selection_start_remove(self, func = None, *args, **kwargs):
-        self._callback_remove("selection,start", func, *args, **kwargs)
-
+    def callback_selection_start_del(self, func):
+        self._callback_del("selection,start", func)
 
     def callback_selection_changed_add(self, func, *args, **kwargs):
         self._callback_add("selection,changed", func, *args, **kwargs)
 
-    def callback_selection_changed_remove(self, func = None, *args, **kwargs):
-        self._callback_remove("selection,changed", func, *args, **kwargs)
-
+    def callback_selection_changed_del(self, func):
+        self._callback_del("selection,changed", func)
 
     def callback_selection_cleared_add(self, func, *args, **kwargs):
         self._callback_add("selection,cleared", func, *args, **kwargs)
 
-    def callback_selection_cleared_remove(self, func = None, *args, **kwargs):
-        self._callback_remove("selection,cleared", func, *args, **kwargs)
-
+    def callback_selection_cleared_del(self, func):
+        self._callback_del("selection,cleared", func)
 
     def callback_selection_paste_add(self, func, *args, **kwargs):
         self._callback_add("selection,paste", func, *args, **kwargs)
 
-    def callback_selection_paste_remove(self, func = None, *args, **kwargs):
-        self._callback_remove("selection,paste", func, *args, **kwargs)
-
+    def callback_selection_paste_del(self, func):
+        self._callback_del("selection,paste", func)
 
     def callback_selection_copy_add(self, func, *args, **kwargs):
         self._callback_add("selection,copy", func, *args, **kwargs)
 
-    def callback_selection_copy_remove(self, func = None, *args, **kwargs):
-        self._callback_remove("selection,copy", func, *args, **kwargs)
-
+    def callback_selection_copy_del(self, func):
+        self._callback_del("selection,copy", func)
 
     def callback_selection_cut_add(self, func, *args, **kwargs):
         self._callback_add("selection,cut", func, *args, **kwargs)
 
-    def callback_selection_cut_remove(self, func = None, *args, **kwargs):
-        self._callback_remove("selection,cut", func, *args, **kwargs)
-
+    def callback_selection_cut_del(self, func):
+        self._callback_del("selection,cut", func)
 
     def callback_cursor_changed_add(self, func, *args, **kwargs):
         self._callback_add("cursor,changed", func, *args, **kwargs)
 
-    def callback_cursor_changed_remove(self, func = None, *args, **kwargs):
-        self._callback_remove("cursor,changed", func, *args, **kwargs)
-
+    def callback_cursor_changed_del(self, func):
+        self._callback_del("cursor,changed", func)
 
     def callback_anchor_clicked_add(self, func, *args, **kwargs):
         self._callback_add("anchor,clicked", func, *args, **kwargs)
 
-    def callback_anchor_clicked_remove(self, func = None, *args, **kwargs):
-        self._callback_remove("anchor,clicked", func, *args, **kwargs)
-
+    def callback_anchor_clicked_del(self, func):
+        self._callback_del("anchor,clicked", func)
 
     def callback_activated_add(self, func, *args, **kwargs):
         self._callback_add("activated", func, *args, **kwargs)
 
-    def callback_activated_remove(self, func = None, *args, **kwargs):
-        self._callback_remove("activated", func, *args, **kwargs)
-
+    def callback_activated_del(self, func):
+        self._callback_del("activated", func)
 
     def callback_clicked_add(self, func, *args, **kwargs):
         self._callback_add("clicked", func, *args, **kwargs)
 
-    def callback_clicked_remove(self, func = None, *args, **kwargs):
-        self._callback_remove("clicked", func, *args, **kwargs)
-
+    def callback_clicked_del(self, func):
+        self._callback_del("clicked", func)
 
     def callback_double_clicked_add(self, func, *args, **kwargs):
         self._callback_add("clicked,double", func, *args, **kwargs)
 
-    def callback_double_clicked_remove(self, func = None, *args, **kwargs):
-        self._callback_remove("clicked,double", func, *args, **kwargs)
-
+    def callback_double_clicked_del(self, func):
+        self._callback_del("clicked,double", func)
 
     def single_line_set(self, single_line):
         elm_entry_single_line_set(self.obj, single_line)

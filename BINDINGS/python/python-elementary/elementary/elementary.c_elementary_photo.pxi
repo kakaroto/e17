@@ -24,8 +24,8 @@ cdef class Photo(Object):
     def callback_clicked_add(self, func, *args, **kwargs):
         self._callback_add("clicked", func, *args, **kwargs)
 
-    def callback_clicked_remove(self, func = None, *args, **kwargs):
-        self._callback_remove("clicked", func, *args, **kwargs)
+    def callback_clicked_del(self, func):
+        self._callback_del("clicked", func)
 
     def file_set(self, filename):
         elm_photo_file_set(self.obj, filename)

@@ -27,6 +27,15 @@ cdef void _list_item_del_cb(void *data, c_evas.Evas_Object *o, void *event_info)
     (obj, callback, it, a, ka) = <object>data
     it.__del_cb()
 
+def _list_item_conv(long addr):
+    cdef Elm_List_Item *it = <Elm_List_Item *>addr
+    cdef void *data = elm_list_item_data_get(it)
+    if data == NULL:
+        return None
+    else:
+        cbt = <object>data
+        return cbt[0]
+
 cdef enum Elm_List_Item_Insert_Kind:
     ELM_LIST_ITEM_INSERT_APPEND
     ELM_LIST_ITEM_INSERT_PREPEND
@@ -251,21 +260,29 @@ cdef class List(Object):
         return ret
 
     def callback_clicked_add(self, func, *args, **kwargs):
-        self._callback_add("clicked", func, *args, **kwargs)
+        self._callback_add_full("clicked", _list_item_conv,
+                                func, *args, **kwargs)
 
-    def callback_clicked_remove(self, func = None, *args, **kwargs):
-        self._callback_remove("clicked", func, *args, **kwargs)
-
+    def callback_clicked_del(self, func):
+        self._callback_del_full("clicked",  _list_item_conv, func)
 
     def callback_selected_add(self, func, *args, **kwargs):
-        self._callback_add("selected", func, *args, **kwargs)
+        self._callback_add_full("selected", _list_item_conv,
+                                func, *args, **kwargs)
 
-    def callback_selected_remove(self, func = None, *args, **kwargs):
-        self._callback_remove("selected", func, *args, **kwargs)
-
+    def callback_selected_del(self, func):
+        self._callback_del_full("selected", _list_item_conv, func)
 
     def callback_unselected_add(self, func, *args, **kwargs):
-        self._callback_add("unselected", func, *args, **kwargs)
+        self._callback_add_full("unselected", _list_item_conv,
+                                func, *args, **kwargs)
 
-    def callback_unselected_remove(self, func = None, *args, **kwargs):
-        self._callback_remove("unselected", func, *args, **kwargs)
+    def callback_unselected_del(self, func):
+        self._callback_del_full("unselected", _list_item_conv, func)
+
+    def callback_longpressed_add(self, func, *args, **kwargs):
+        self._callback_add_full("longpressed", _list_item_conv,
+                                func, *args, **kwargs)
+
+    def callback_longpressed_del(self, func):
+        self._callback_del_full("longpressed", _list_item_conv, func)
