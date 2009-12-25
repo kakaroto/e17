@@ -16,7 +16,7 @@ AC_DEFUN([EFL_CHECK_COVERAGE],
 dnl configure option
 
 AC_ARG_ENABLE([coverage],
-   [AC_HELP_STRING([--enable-coverage], [compile with coverage profiling instrumentation @<:@default=no@:>@])],
+   [AC_HELP_STRING([--enable-coverage], [enable coverage profiling instrumentation @<:@default=disabled@:>@])],
    [
     if test "x${enableval}" = "xyes" ; then
        _efl_enable_coverage="yes"
@@ -24,14 +24,14 @@ AC_ARG_ENABLE([coverage],
        _efl_enable_coverage="no"
     fi
    ],
-   [_efl_enable_coverage="no"]
-)
+   [_efl_enable_coverage="no"])
+
 AC_MSG_CHECKING([whether to use profiling instrumentation])
 AC_MSG_RESULT([$_efl_enable_coverage])
 
 dnl lcov check
 
-if test ! "x$1" = "xyes" -a "x$_efl_enable_coverage" = "xyes" ; then
+if test "x$_efl_enable_coverage" = "xyes" && test ! "x$1" = "xyes" ; then
    AC_MSG_WARN([Coverage report requested but tests not being built, disable profiling instrumentation.])
    AC_MSG_WARN([Run configure with --enable-tests])
    _efl_enable_coverage="no"
@@ -56,9 +56,7 @@ AC_SUBST(EFL_COVERAGE_LIBS)
 
 AM_CONDITIONAL(EFL_ENABLE_COVERAGE, test "x${_efl_enable_coverage}" = "xyes")
 
-if test "x${_efl_enable_coverage}" = "xyes" ; then
-   ifelse([$2], , :, [$2])
-else
-   ifelse([$3], , :, [$3])
-fi
+AS_IF([test "x$_efl_enable_coverage" = "xyes"], [$2], [$3])
 ])
+
+dnl End of efl_coverage.m4
