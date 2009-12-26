@@ -40,6 +40,9 @@
 #if USE_GLX
 #include "eglx.h"
 #endif
+#if USE_XI2
+#include "X11/extensions/XInput2.h"
+#endif
 
 #define DEBUG_XWIN   0
 #define DEBUG_PIXMAP 0
@@ -1018,18 +1021,58 @@ ESetWindowBackground(Win win, unsigned int col)
 void
 ESelectInput(Win win, unsigned int event_mask)
 {
+#if USE_XI2
+
+#define EVENTS_TO_XI \
+  (/* KeyPressMask | KeyReleaseMask | */ \
+   ButtonPressMask | ButtonReleaseMask | PointerMotionMask)
+
+   win->event_mask = event_mask;
+
+   if (Mode.server.extensions & XEXT_XI)
+     {
+	XIEventMask         em;
+	unsigned char       mask[(XI_LASTEVENT + 8) / 8];
+
+	em.deviceid = XIAllMasterDevices;	/* XIAllDevices; */
+	em.mask_len = sizeof(mask);
+	em.mask = mask;
+	memset(mask, 0, sizeof(mask));
+#if 0
+	if (event_mask & KeyPressMask)
+	   XISetMask(mask, XI_KeyPress);
+	if (event_mask & KeyReleaseMask)
+	   XISetMask(mask, XI_KeyRelease);
+#endif
+	if (event_mask & ButtonPressMask)
+	   XISetMask(mask, XI_ButtonPress);
+	if (event_mask & ButtonReleaseMask)
+	   XISetMask(mask, XI_ButtonRelease);
+	if (event_mask & PointerMotionMask)
+	   XISetMask(mask, XI_Motion);
+	XISelectEvents(disp, win->xwin, &em, 1);
+	event_mask &= ~EVENTS_TO_XI;
+     }
+#endif
+
    XSelectInput(disp, win->xwin, event_mask);
 }
 
 void
 ESelectInputChange(Win win, unsigned int set, unsigned int clear)
 {
+#if USE_XI2
+   win->event_mask |= set;
+   win->event_mask &= ~clear;
+   ESelectInput(win, win->event_mask);
+#else
    XWindowAttributes   xwa;
 
    XGetWindowAttributes(disp, win->xwin, &xwa);
    xwa.your_event_mask |= set;
    xwa.your_event_mask &= ~clear;
    XSelectInput(disp, win->xwin, xwa.your_event_mask);
+#endif
 }
 
 void

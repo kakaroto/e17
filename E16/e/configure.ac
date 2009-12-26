@@ -158,6 +158,13 @@ if test "x$enable_xft" = "xyes"; then
 fi
 AM_CONDITIONAL(USE_LIBXFT, test "x$enable_xft" = "xyes")
 
+AC_ARG_ENABLE(xi2,
+  [  --enable-xi2            compile with XI2 support (experimental) @<:@default=no@:>@],,
+  enable_xi2=no)
+if test "x$enable_xi2" = "xyes"; then
+  PKG_CHECK_MODULES(XI, xi >= 1.3, AC_DEFINE(USE_XI2, 1, [XI2 support]), enable_xi2=no)
+fi
+
 AC_ARG_ENABLE(ecore,
   [  --enable-ecore          use ecore functions (for testing only - DO NOT USE!) @<:@default=no@:>@],,
   enable_ecore=no)
@@ -435,6 +442,7 @@ echo "  Compile with ecore/ecore_x ... $enable_ecore"
 echo "  GLX .......................... $enable_glx"
 echo "  ScreenSaver .................. $enable_xscrnsaver"
 echo "  D-Bus ........................ $enable_dbus"
+echo "  XI2 .......................... $enable_xi2"
 echo
 echo "Installation path .............. $prefix"
 echo "  Install HTML docs ............ $enable_docs"

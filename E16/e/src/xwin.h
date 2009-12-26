@@ -111,6 +111,9 @@ struct _xwin {
    Colormap            cmap;
    Pixmap              bgpmap;
    unsigned int        bgcol;
+#if USE_XI2
+   unsigned int        event_mask;
+#endif
 };
 
 Win                 ELookupXwin(Window xwin);

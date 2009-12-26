@@ -121,7 +121,9 @@ e16_CPPFLAGS = -I$(top_builddir) \
 	$(MODULE_CFLAGS) \
 	$(IMLIB2_CFLAGS) \
 	$(DBUS_CFLAGS) \
-	$(X_CFLAGS) $(CWARNFLAGS) \
+	$(XI_CFLAGS) \
+	$(X_CFLAGS) \
+	$(CWARNFLAGS) \
 	-D LOCALEDIR=\"$(datadir)/locale\" \
 	-D ENLIGHTENMENT_BIN=\"$(bindir)\" \
 	-D ENLIGHTENMENT_LIB=\"$(pkglibdir)\" \
@@ -134,6 +136,7 @@ LDADD = \
 	$(IMLIB2_LIBS)		\
 	$(MODULE_LIBS)		\
 	$(GLX_LIBS)		\
+	$(XI_LIBS)		\
 	$(X_LIBS)		\
 	$(SM_LIBS)		\
 	$(XINERAMA_LIBS)	\

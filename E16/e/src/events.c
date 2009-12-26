@@ -49,6 +49,9 @@
 #if USE_GLX
 #include <GL/glx.h>
 #endif
+#if USE_XI2
+#include <X11/extensions/XInput2.h>
+#endif
 
 #if ENABLE_DEBUG_EVENTS
 static const char  *EventName(unsigned int type);
@@ -153,6 +156,64 @@ ExtInitRR(int available)
 }
 #endif
 
+#if USE_XI2
+static int          xi_major_op = 0;
+
+static              Bool
+EInputQueryExtension(Display * dpy,
+		     int *event_base_return, int *error_base_return)
+{
+   return XQueryExtension(dpy, "XInputExtension", &xi_major_op,
+			  event_base_return, error_base_return);
+}
+
+static              Status
+EInputQueryVersion(Display * dpy,
+		   int *major_version_return, int *minor_version_return)
+{
+   *major_version_return = XI_2_Major;
+   *minor_version_return = XI_2_Minor;
+
+   return XIQueryVersion(dpy, major_version_return, minor_version_return);
+}
+
+#include "X11/extensions/XInput.h"
+
+static void
+ExtInitInput(int available)
+{
+   int                 i, j, nd;
+   XDeviceInfo        *dvi, *dvis;
+   char               *p;
+
+   if (!available)
+      return;
+
+   if (!EDebug(EDBUG_TYPE_VERBOSE))
+      return;
+
+   dvis = XListInputDevices(disp, &nd);
+   Eprintf("Dev  id nc use name\n");
+   for (i = 0; i < nd; i++)
+     {
+	dvi = dvis + i;
+	Eprintf(" %2d %#3lx  %d  %d %-32s", i,
+		dvi->id, dvi->num_classes, dvi->use, dvi->name);
+	p = (char *)dvi->inputclassinfo;
+	for (j = 0; j < dvi->num_classes; j++)
+	  {
+	     XAnyClassPtr        pcany = (XAnyClassPtr) p;
+
+	     printf("  %#3lx %3d", pcany->class, pcany->length);
+	     p += pcany->length;
+	  }
+	printf("\n");
+
+     }
+   XFreeDeviceList(dvis);
+}
+#endif
+
 static const EServerExt Extensions[] = {
    {"Shape", XEXT_SHAPE, XShapeQueryExtension, XShapeQueryVersion,
     ExtInitShape},
@@ -175,6 +236,9 @@ static const EServerExt Extensions[] = {
 #endif
 #if USE_GLX
    {"GLX", XEXT_GLX, glXQueryExtension, glXQueryVersion, NULL},
+#endif
+#if USE_XI2
+   {"Input", XEXT_XI, EInputQueryExtension, EInputQueryVersion, ExtInitInput},
 #endif
 };
 
@@ -634,6 +698,47 @@ EventsCompress(XEvent * evq, int count)
 #endif
 }
 
+#if USE_XI2
+static void
+EventFetchXI2(XEvent * ev)
+{
+   XIDeviceEvent      *xie;
+
+   if (!XGetEventData(disp, &ev->xcookie))
+      return;
+
+   xie = (XIDeviceEvent *) ev->xcookie.data;
+
+   if (EDebug(EDBUG_TYPE_XI2))
+      Eprintf("%s: %#lx: XI2 ext=%d type=%d devid=%d srcid=%d\n",
+	      "EventsFetch", xie->event, xie->extension,
+	      xie->evtype, xie->deviceid, xie->sourceid);
+
+   switch (ev->xcookie.evtype)
+     {
+     default:
+	break;
+     case XI_ButtonPress:
+     case XI_ButtonRelease:
+     case XI_Motion:
+	ev->type = ev->xcookie.evtype;
+	ev->xbutton.window = xie->event;
+	ev->xbutton.root = xie->root;
+	ev->xbutton.subwindow = xie->child;
+	ev->xbutton.time = xie->time;
+	ev->xbutton.x = (int)xie->event_x;
+	ev->xbutton.y = (int)xie->event_y;
+	ev->xbutton.x_root = (int)xie->root_x;
+	ev->xbutton.y_root = (int)xie->root_y;
+	ev->xbutton.button = xie->detail;
+	ev->xbutton.state = xie->mods.effective;
+	ev->xbutton.same_screen = 1;	/* FIXME */
+	break;
+     }
+   XFreeEventData(disp, &ev->xcookie);
+}
+#endif
+
 static int
 EventsFetch(XEvent ** evq_p, int *evq_n)
 {
@@ -654,6 +759,14 @@ EventsFetch(XEvent ** evq_p, int *evq_n)
 	for (; i < count; i++, ev++)
 	  {
 	     XNextEvent(disp, ev);
+#if USE_XI2
+	     if (ev->type == GenericEvent)
+	       {
+		  if (ev->xcookie.extension == xi_major_op)
+		     EventFetchXI2(ev);
+		  continue;
+	       }
+#endif /* USE_XI2 */
 
 	     /* Map some event types to E internals */
 	     if (ev->type == event_base_shape + ShapeNotify)
