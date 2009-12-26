@@ -952,7 +952,4 @@ __END
 #define ADD_BACKGROUND_SCALED_RETAIN_ASPECT_ALIGN_BOTTOM(file)\
   __BACKGROUND_LAYER file 0 1 512 1024 1024 0
 
-/*********** Directory definition macros **************************/
-#define E_SCRIPTS_DIR ENLIGHTENMENT_ROOT/scripts/
-
 #endif /* __E16_DEFINITIONS__ */
