@@ -907,7 +907,7 @@ MoveResizeEnd(EWin * ewin)
      case MODE_MOVE_PENDING:
      case MODE_MOVE:
 	_MoveResizeMoveEnd(ewin);
-	Mode.action_inhibit = 1;	// FIXME - REMOVE
+	Mode.action_inhibit = 1;
 	break;
      }
 }
