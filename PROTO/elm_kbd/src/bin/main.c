@@ -1,5 +1,6 @@
 #include "elm_kbd.h"
 #include <Ecore_Str.h>
+#include <Ecore_X.h>
 
 #ifndef ELM_LIB_QUICKLAUNCH
 
@@ -11,6 +12,8 @@ static Evas_Object *win = NULL;
 EAPI int 
 elm_main(int argc, char **argv) 
 {
+   Ecore_X_Window xwin;
+   Ecore_X_Window_State states[2];
    Evas_Object *bg;
    int w, h;
 
@@ -18,6 +21,12 @@ elm_main(int argc, char **argv)
    elm_win_title_set(win, "Elm Keyboard");
    evas_object_smart_callback_add(win, "delete-request", _cb_win_del, NULL);
    elm_win_keyboard_win_set(win, EINA_TRUE);
+
+   xwin = elm_win_xwindow_get(win);
+   states[0] = ECORE_X_WINDOW_STATE_SKIP_TASKBAR;
+   states[1] = ECORE_X_WINDOW_STATE_SKIP_PAGER;
+   ecore_x_netwm_window_state_set(xwin, states, 2);
+   ecore_x_icccm_hints_set(xwin, 0, 0, 0, 0, 0, 0, 0);
 
    bg = elm_bg_add(win);
    evas_object_size_hint_weight_set(bg, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
