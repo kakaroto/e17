@@ -230,6 +230,10 @@ static void _free(Grid *g)
 /*============================================================================*
  *                                   API                                      *
  *============================================================================*/
+/**
+ * To be documented
+ * FIXME: To be fixed
+ */
 EAPI Enesim_Renderer * enesim_renderer_grid_new(void)
 {
 	Enesim_Renderer *r;
@@ -245,7 +249,10 @@ EAPI Enesim_Renderer * enesim_renderer_grid_new(void)
 
 	return r;
 }
-
+/**
+ * To be documented
+ * FIXME: To be fixed
+ */
 EAPI void enesim_renderer_grid_inside_size_set(Enesim_Renderer *r, unsigned int w, unsigned int h)
 {
 	Grid *g = (Grid *)r;
@@ -255,14 +262,20 @@ EAPI void enesim_renderer_grid_inside_size_set(Enesim_Renderer *r, unsigned int 
 	g->wi = eina_f16p16_int_from(w);
 	g->hi = eina_f16p16_int_from(h);
 }
-
+/**
+ * To be documented
+ * FIXME: To be fixed
+ */
 EAPI void enesim_renderer_grid_inside_color_set(Enesim_Renderer *r, Enesim_Color color)
 {
 	Grid *g = (Grid *)r;
 
 	g->inside.color = color;
 }
-
+/**
+ * To be documented
+ * FIXME: To be fixed
+ */
 EAPI void enesim_renderer_grid_outside_size_set(Enesim_Renderer *r, unsigned int w, unsigned int h)
 {
 	Grid *g = (Grid *)r;
@@ -270,7 +283,10 @@ EAPI void enesim_renderer_grid_outside_size_set(Enesim_Renderer *r, unsigned int
 	g->outside.w = w;
 	g->outside.h = h;
 }
-
+/**
+ * To be documented
+ * FIXME: To be fixed
+ */
 EAPI void enesim_renderer_grid_outside_color_set(Enesim_Renderer *r, Enesim_Color color)
 {
 	Grid *g = (Grid *)r;

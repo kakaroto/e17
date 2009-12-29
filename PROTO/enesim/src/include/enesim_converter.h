@@ -21,8 +21,9 @@
 /**
  * @defgroup Enesim_Converter_Group Converter
  * @{
- *
- *
+ */
+
+/*
  * ENESIM_CONVERTER_FORMAT_A8
  * +---------------+----------------+
  * |     Alpha     |      Alpha     |

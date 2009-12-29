@@ -198,6 +198,10 @@ static void _free(Enesim_Renderer *r)
 /*============================================================================*
  *                                   API                                      *
  *============================================================================*/
+/**
+ * To be documented
+ * FIXME: To be fixed
+ */
 EAPI Enesim_Renderer * enesim_renderer_circle_new(void)
 {
 	Enesim_Renderer *r;
@@ -215,7 +219,10 @@ EAPI Enesim_Renderer * enesim_renderer_circle_new(void)
 
 	return r;
 }
-
+/**
+ * To be documented
+ * FIXME: To be fixed
+ */
 EAPI void enesim_renderer_circle_center_set(Enesim_Renderer *r, float x, float y)
 {
 	Circle *circ;
@@ -224,7 +231,10 @@ EAPI void enesim_renderer_circle_center_set(Enesim_Renderer *r, float x, float y
 	circ->x = x;
 	circ->y = y;
 }
-
+/**
+ * To be documented
+ * FIXME: To be fixed
+ */
 EAPI void enesim_renderer_circle_radius_set(Enesim_Renderer *r, float radius)
 {
 	Circle *circ;

@@ -280,6 +280,10 @@ static void _free(Checker *s)
 /*============================================================================*
  *                                   API                                      *
  *============================================================================*/
+/**
+ * Creates a checker renderer
+ * @return The new renderer
+ */
 EAPI Enesim_Renderer * enesim_renderer_checker_new(void)
 {
 	Enesim_Renderer *r;
@@ -295,21 +299,30 @@ EAPI Enesim_Renderer * enesim_renderer_checker_new(void)
 
 	return r;
 }
-
+/**
+ * To be documented
+ * FIXME: To be fixed
+ */
 EAPI void enesim_renderer_checker_color1_set(Enesim_Renderer *r, Enesim_Color color)
 {
 	Checker *s = (Checker *)r;
 
 	s->color1 = color;
 }
-
+/**
+ * To be documented
+ * FIXME: To be fixed
+ */
 EAPI void enesim_renderer_checker_color2_set(Enesim_Renderer *r, Enesim_Color color)
 {
 	Checker *s = (Checker *)r;
 
 	s->color2 = color;
 }
-
+/**
+ * To be documented
+ * FIXME: To be fixed
+ */
 EAPI void enesim_renderer_checker_size_set(Enesim_Renderer *r, int w, int h)
 {
 	Checker *s = (Checker *)r;

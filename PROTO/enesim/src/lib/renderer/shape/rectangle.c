@@ -649,6 +649,10 @@ static void _free(Enesim_Renderer *p)
 /*============================================================================*
  *                                   API                                      *
  *============================================================================*/
+/**
+ * To be documented
+ * FIXME: To be fixed
+ */
 EAPI Enesim_Renderer * enesim_renderer_rectangle_new(void)
 {
 	Enesim_Renderer *p;
@@ -668,7 +672,10 @@ EAPI Enesim_Renderer * enesim_renderer_rectangle_new(void)
 	//   if (!rectangle_setup_state(p, 0)) { free(rect); return NULL; }
 	return p;
 }
-
+/**
+ * To be documented
+ * FIXME: To be fixed
+ */
 EAPI void enesim_renderer_rectangle_size_set(Enesim_Renderer *p, int w, int h)
 {
 	Rectangle *rect;
@@ -684,7 +691,10 @@ EAPI void enesim_renderer_rectangle_size_set(Enesim_Renderer *p, int w, int h)
 	rect->w = w;
 	rect->h = h;
 }
-
+/**
+ * To be documented
+ * FIXME: To be fixed
+ */
 EAPI void enesim_renderer_rectangle_corner_radius_set(Enesim_Renderer *p, float radius)
 {
 	Rectangle *rect;
@@ -698,7 +708,10 @@ EAPI void enesim_renderer_rectangle_corner_radius_set(Enesim_Renderer *p, float 
 	rect->corner.radius = radius;
 	p->changed = EINA_TRUE;
 }
-
+/**
+ * To be documented
+ * FIXME: To be fixed
+ */
 EAPI void enesim_renderer_rectangle_corners_set(Enesim_Renderer *p, int tl, int tr, int bl, int br)
 {
 	Rectangle  *rect;

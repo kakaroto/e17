@@ -718,6 +718,10 @@ static void _state_cleanup(Enesim_Renderer *p)
 /*============================================================================*
  *                                   API                                      *
  *============================================================================*/
+/**
+ * To be documented
+ * FIXME: To be fixed
+ */
 EAPI Enesim_Renderer * enesim_renderer_figure_new(void)
 {
 	Enesim_Renderer *p;
@@ -735,7 +739,10 @@ EAPI Enesim_Renderer * enesim_renderer_figure_new(void)
 
 	return p;
 }
-
+/**
+ * To be documented
+ * FIXME: To be fixed
+ */
 EAPI void enesim_renderer_figure_polygon_add(Enesim_Renderer *p)
 {
 	Enesim_Renderer_Shape *f;
@@ -760,7 +767,10 @@ EAPI void enesim_renderer_figure_polygon_add(Enesim_Renderer *p)
 	o->npolys++;
 	o->changed = 1;
 }
-
+/**
+ * To be documented
+ * FIXME: To be fixed
+ */
 EAPI void enesim_renderer_figure_polygon_vertex_add(Enesim_Renderer *p,
 		float x, float y)
 {
@@ -796,7 +806,10 @@ EAPI void enesim_renderer_figure_polygon_vertex_add(Enesim_Renderer *p,
 	poly->nverts++;
 	o->changed = 1;
 }
-
+/**
+ * To be documented
+ * FIXME: To be fixed
+ */
 EAPI void enesim_renderer_figure_extents_get(Enesim_Renderer *p, int *lx,
 		int *ty, int *rx, int *by)
 {
@@ -826,7 +839,10 @@ EAPI void enesim_renderer_figure_extents_get(Enesim_Renderer *p, int *lx,
 	if (by)
 		*by = (o->byy + 0xffff) >> 16;
 }
-
+/**
+ * To be documented
+ * FIXME: To be fixed
+ */
 EAPI void enesim_renderer_figure_clear(Enesim_Renderer *p)
 {
 	Enesim_Renderer_Shape *f;

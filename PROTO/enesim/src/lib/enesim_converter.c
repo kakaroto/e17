@@ -40,31 +40,48 @@ void enesim_converter_shutdown(void)
 /*============================================================================*
  *                                   API                                      *
  *============================================================================*/
+/**
+ * To be documented
+ * FIXME: To be fixed
+ */
 EAPI void enesim_converter_span_register(Enesim_Converter_1D cnv,
 		Enesim_Converter_Format dfmt, Enesim_Angle angle, Enesim_Format sfmt)
 {
 
 	_converters_1d[dfmt][angle][sfmt] = cnv;
 }
-
+/**
+ * To be documented
+ * FIXME: To be fixed
+ */
 EAPI void enesim_converter_surface_register(Enesim_Converter_2D cnv,
 		Enesim_Converter_Format dfmt, Enesim_Angle angle, Enesim_Format sfmt)
 {
 	_converters_2d[dfmt][angle][sfmt] = cnv;
 }
 
+/**
+ * To be documented
+ * FIXME: To be fixed
+ */
 EAPI Enesim_Converter_1D enesim_converter_span_get(Enesim_Converter_Format dfmt,
 		Enesim_Angle angle, Enesim_Format f)
 {
 	return _converters_1d[dfmt][angle][f];
 }
 
+/**
+ * To be documented
+ * FIXME: To be fixed
+ */
 EAPI Enesim_Converter_2D enesim_converter_surface_get(Enesim_Converter_Format dfmt,
 		Enesim_Angle angle, Enesim_Format f)
 {
 	return _converters_2d[dfmt][angle][f];
 }
 /**
+ * To be documented
+ * FIXME: To be fixed
  * FIXME how to handle the gray?
  */
 EAPI Enesim_Converter_Format enesim_converter_rgb_format_get(uint8_t aoffset, uint8_t alen,
@@ -113,5 +130,3 @@ EAPI uint8_t enesim_converter_format_depth_get(Enesim_Converter_Format fmt)
 		return 0;
 	}
 }
-
-

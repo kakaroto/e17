@@ -129,6 +129,10 @@ static void _free(Enesim_Renderer *r)
 /*============================================================================*
  *                                   API                                      *
  *============================================================================*/
+/**
+ * To be documented
+ * FIXME: To be fixed
+ */
 EAPI Enesim_Renderer * enesim_renderer_transition_new(void)
 {
 	Enesim_Renderer *r;
@@ -145,7 +149,10 @@ EAPI Enesim_Renderer * enesim_renderer_transition_new(void)
 
 	return r;
 }
-
+/**
+ * To be documented
+ * FIXME: To be fixed
+ */
 EAPI void enesim_renderer_transition_value_set(Enesim_Renderer *r, float interp_value)
 {
 	Transition *t = (Transition *)r;
@@ -158,7 +165,10 @@ EAPI void enesim_renderer_transition_value_set(Enesim_Renderer *r, float interp_
 		return;
 	t->interp = 1 + (255 * interp_value);
 }
-
+/**
+ * To be documented
+ * FIXME: To be fixed
+ */
 EAPI void enesim_renderer_transition_source_set(Enesim_Renderer *r, Enesim_Renderer *r0)
 {
 	Transition *t;
@@ -170,7 +180,10 @@ EAPI void enesim_renderer_transition_source_set(Enesim_Renderer *r, Enesim_Rende
 		return;
 	t->r0.rend = r0;
 }
-
+/**
+ * To be documented
+ * FIXME: To be fixed
+ */
 EAPI void enesim_renderer_transition_target_set(Enesim_Renderer *r, Enesim_Renderer *r1)
 {
 	Transition *t;
@@ -182,8 +195,11 @@ EAPI void enesim_renderer_transition_target_set(Enesim_Renderer *r, Enesim_Rende
 		return;
 	t->r1.rend = r1;
 }
-
-/* FIXME why do we need this? */
+/**
+ * To be documented
+ * FIXME: To be fixed
+ * FIXME why do we need this?
+ */
 EAPI void enesim_renderer_transition_offset_set(Enesim_Renderer *r, int x, int y)
 {
 	Transition *t = (Transition *)r;

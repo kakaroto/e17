@@ -92,6 +92,10 @@ static Eina_Bool _state_setup(Enesim_Renderer *r)
 /*============================================================================*
  *                                   API                                      *
  *============================================================================*/
+/**
+ * To be documented
+ * FIXME: To be fixed
+ */
 EAPI Enesim_Renderer * enesim_renderer_importer_new(void)
 {
 	Importer *i;
@@ -104,21 +108,30 @@ EAPI Enesim_Renderer * enesim_renderer_importer_new(void)
 	r->state_setup = ENESIM_RENDERER_STATE_SETUP(_state_setup);
 	return r;
 }
-
+/**
+ * To be documented
+ * FIXME: To be fixed
+ */
 EAPI void enesim_renderer_importer_angle_set(Enesim_Renderer *r, Enesim_Angle angle)
 {
 	Importer *i = (Importer *)r;
 
 	i->angle = angle;
 }
-
+/**
+ * To be documented
+ * FIXME: To be fixed
+ */
 EAPI void enesim_renderer_importer_data_set(Enesim_Renderer *r, Enesim_Converter_Data *cdata)
 {
 	Importer *i = (Importer *)r;
 
 	i->cdata = *cdata;
 }
-
+/**
+ * To be documented
+ * FIXME: To be fixed
+ */
 EAPI void enesim_renderer_importer_format_set(Enesim_Renderer *r, Enesim_Converter_Format fmt)
 {
 	Importer *i = (Importer *)r;

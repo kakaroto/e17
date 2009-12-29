@@ -183,6 +183,10 @@ static Eina_Bool _state_setup(Enesim_Renderer *r)
 /*============================================================================*
  *                                   API                                      *
  *============================================================================*/
+/**
+ * To be documented
+ * FIXME: To be fixed
+ */
 EAPI Enesim_Renderer * enesim_renderer_hswitch_new(void)
 {
 	Enesim_Renderer *r;
@@ -197,7 +201,10 @@ EAPI Enesim_Renderer * enesim_renderer_hswitch_new(void)
 
 	return r;
 }
-
+/**
+ * To be documented
+ * FIXME: To be fixed
+ */
 EAPI void enesim_renderer_hswitch_w_set(Enesim_Renderer *r, int w)
 {
 	Hswitch *hs = (Hswitch *)r;
@@ -206,7 +213,10 @@ EAPI void enesim_renderer_hswitch_w_set(Enesim_Renderer *r, int w)
 		return;
 	hs->w = w;
 }
-
+/**
+ * To be documented
+ * FIXME: To be fixed
+ */
 EAPI void enesim_renderer_hswitch_h_set(Enesim_Renderer *r, int h)
 {
 	Hswitch *hs = (Hswitch *)r;
@@ -215,7 +225,10 @@ EAPI void enesim_renderer_hswitch_h_set(Enesim_Renderer *r, int h)
 		return;
 	hs->h = h;
 }
-
+/**
+ * To be documented
+ * FIXME: To be fixed
+ */
 EAPI void enesim_renderer_hswitch_left_set(Enesim_Renderer *r,
 		Enesim_Renderer *left)
 {
@@ -223,7 +236,10 @@ EAPI void enesim_renderer_hswitch_left_set(Enesim_Renderer *r,
 
 	hs->lrend = left;
 }
-
+/**
+ * To be documented
+ * FIXME: To be fixed
+ */
 EAPI void enesim_renderer_hswitch_right_set(Enesim_Renderer *r,
 		Enesim_Renderer *right)
 {
@@ -231,7 +247,10 @@ EAPI void enesim_renderer_hswitch_right_set(Enesim_Renderer *r,
 
 	hs->rrend = right;
 }
-
+/**
+ * To be documented
+ * FIXME: To be fixed
+ */
 EAPI void enesim_renderer_hswitch_step_set(Enesim_Renderer *r, float step)
 {
 	Hswitch *hs = (Hswitch *)r;

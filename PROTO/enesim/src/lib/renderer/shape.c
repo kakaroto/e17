@@ -34,6 +34,10 @@ void enesim_renderer_shape_init(Enesim_Renderer *r)
 /*============================================================================*
  *                                   API                                      *
  *============================================================================*/
+/**
+ * To be documented
+ * FIXME: To be fixed
+ */
 EAPI void enesim_renderer_shape_outline_weight_set(Enesim_Renderer *r, float weight)
 {
 	Enesim_Renderer_Shape *s;
@@ -43,7 +47,10 @@ EAPI void enesim_renderer_shape_outline_weight_set(Enesim_Renderer *r, float wei
 	s = (Enesim_Renderer_Shape *)r;
 	s->stroke.weight = weight;
 }
-
+/**
+ * To be documented
+ * FIXME: To be fixed
+ */
 EAPI void enesim_renderer_shape_outline_color_set(Enesim_Renderer *r, Enesim_Color color)
 {
 	Enesim_Renderer_Shape *s;
@@ -51,7 +58,10 @@ EAPI void enesim_renderer_shape_outline_color_set(Enesim_Renderer *r, Enesim_Col
 	s = (Enesim_Renderer_Shape *)r;
 	s->stroke.color = color;
 }
-
+/**
+ * To be documented
+ * FIXME: To be fixed
+ */
 EAPI void enesim_renderer_shape_outline_renderer_set(Enesim_Renderer *r, Enesim_Renderer *outline)
 {
 	Enesim_Renderer_Shape *s;
@@ -59,7 +69,10 @@ EAPI void enesim_renderer_shape_outline_renderer_set(Enesim_Renderer *r, Enesim_
 	s = (Enesim_Renderer_Shape *)r;
 	s->stroke.rend = outline;
 }
-
+/**
+ * To be documented
+ * FIXME: To be fixed
+ */
 EAPI void enesim_renderer_shape_fill_color_set(Enesim_Renderer *r, Enesim_Color color)
 {
 	Enesim_Renderer_Shape *s;
@@ -67,7 +80,10 @@ EAPI void enesim_renderer_shape_fill_color_set(Enesim_Renderer *r, Enesim_Color 
 	s = (Enesim_Renderer_Shape *)r;
 	s->fill.color = color;
 }
-
+/**
+ * To be documented
+ * FIXME: To be fixed
+ */
 EAPI void enesim_renderer_shape_fill_renderer_set(Enesim_Renderer *r, Enesim_Renderer *fill)
 {
 	Enesim_Renderer_Shape *s;
@@ -75,7 +91,10 @@ EAPI void enesim_renderer_shape_fill_renderer_set(Enesim_Renderer *r, Enesim_Ren
 	s = (Enesim_Renderer_Shape *)r;
 	s->fill.rend = fill;
 }
-
+/**
+ * To be documented
+ * FIXME: To be fixed
+ */
 EAPI void enesim_renderer_shape_draw_mode_set(Enesim_Renderer *r, Enesim_Shape_Draw_Mode draw_mode)
 {
 	Enesim_Renderer_Shape *s;

@@ -274,6 +274,10 @@ static void path_destroy(Enesim_Renderer *p)
 /*============================================================================*
  *                                   API                                      *
  *============================================================================*/
+/**
+ * To be documented
+ * FIXME: To be fixed
+ */
 EAPI Enesim_Renderer * enesim_renderer_path_new(void)
 {
 	Enesim_Renderer *p;
@@ -298,7 +302,10 @@ EAPI Enesim_Renderer * enesim_renderer_path_new(void)
 
 	return p;
 }
-
+/**
+ * To be documented
+ * FIXME: To be fixed
+ */
 EAPI void enesim_renderer_path_move_to(Enesim_Renderer *p, float x, float y)
 {
 	x = ((int) (2* x + 0.5)) / 2.0;
@@ -306,13 +313,20 @@ EAPI void enesim_renderer_path_move_to(Enesim_Renderer *p, float x, float y)
 	_move_to(p, x, y);
 }
 
+/**
+ * To be documented
+ * FIXME: To be fixed
+ */
 EAPI void enesim_renderer_path_line_to(Enesim_Renderer *p, float x, float y)
 {
 	x = ((int) (2* x + 0.5)) / 2.0;
 	y = ((int) (2* y + 0.5)) / 2.0;
 	_line_to(p, x, y);
 }
-
+/**
+ * To be documented
+ * FIXME: To be fixed
+ */
 EAPI void enesim_renderer_path_squadratic_to(Enesim_Renderer *p, float x,
 		float y)
 {
@@ -320,7 +334,10 @@ EAPI void enesim_renderer_path_squadratic_to(Enesim_Renderer *p, float x,
 	y = ((int) (2* y + 0.5)) / 2.0;
 	_squadratic_to(p, x, y);
 }
-
+/**
+ * To be documented
+ * FIXME: To be fixed
+ */
 EAPI void enesim_renderer_path_quadratic_to(Enesim_Renderer *p, float ctrl_x,
 		float ctrl_y, float x, float y)
 {
@@ -328,7 +345,10 @@ EAPI void enesim_renderer_path_quadratic_to(Enesim_Renderer *p, float ctrl_x,
 	y = ((int) (2* y + 0.5)) / 2.0;
 	_quadratic_to(p, ctrl_x, ctrl_y, x, y);
 }
-
+/**
+ * To be documented
+ * FIXME: To be fixed
+ */
 EAPI void enesim_renderer_path_cubic_to(Enesim_Renderer *p, float ctrl_x0,
 		float ctrl_y0, float ctrl_x, float ctrl_y, float x, float y)
 {
@@ -336,7 +356,10 @@ EAPI void enesim_renderer_path_cubic_to(Enesim_Renderer *p, float ctrl_x0,
 	y = ((int) (2* y + 0.5)) / 2.0;
 	_cubic_to(p, ctrl_x0, ctrl_y0, ctrl_x, ctrl_y, x, y);
 }
-
+/**
+ * To be documented
+ * FIXME: To be fixed
+ */
 EAPI void enesim_renderer_path_scubic_to(Enesim_Renderer *p, float ctrl_x,
 		float ctrl_y, float x, float y)
 {
@@ -344,8 +367,10 @@ EAPI void enesim_renderer_path_scubic_to(Enesim_Renderer *p, float ctrl_x,
 	y = ((int) (2* y + 0.5)) / 2.0;
 	_scubic_to(p, ctrl_x, ctrl_y, x, y);
 }
-
-// do this more efficiently.. but for now:
+/**
+ * To be documented
+ * FIXME do this more efficiently.. but for now:
+ */
 EAPI void enesim_renderer_path_extents_get(Enesim_Renderer *p, int *lx,
 		int *ty, int *rx, int *by)
 {
@@ -356,7 +381,10 @@ EAPI void enesim_renderer_path_extents_get(Enesim_Renderer *p, int *lx,
 
 	enesim_renderer_figure_extents_get(o->figure, lx, ty, rx, by);
 }
-
+/**
+ * To be documented
+ * FIXME: To be fixed
+ */
 EAPI void enesim_renderer_path_clear(Enesim_Renderer *p)
 {
 	Enesim_Renderer_Shape *f;

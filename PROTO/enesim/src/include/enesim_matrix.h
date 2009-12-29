@@ -1,9 +1,28 @@
+/* ENESIM - Direct Rendering Library
+ * Copyright (C) 2007-2008 Jorge Luis Zapata
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library.
+ * If not, see <http://www.gnu.org/licenses/>.
+ */
 #ifndef ENESIM_MATRIX_H_
 #define ENESIM_MATRIX_H_
-
-/* TODO
- * Create all this Macros
- * Replace all float * with Enesim_Matrix
+/**
+ * @defgroup Enesim_Matrix_Group Matrix
+ * @{
+ * @todo
+ * - Create all this Macros
+ * - Replace all float * with Enesim_Matrix
  */
 #define ENESIM_MATRIX_XX(m) m[0]
 
@@ -79,6 +98,7 @@ EAPI void enesim_quad_coords_set(Enesim_Quad *q, float x1, float y1, float x2,
 EAPI void enesim_quad_coords_get(Enesim_Quad *q, float *x1, float *y1,
 		float *x2, float *y2, float *x3, float *y3, float *x4,
 		float *y4);
-
-
+/**
+ * @}
+ */
 #endif /*ENESIM_MATRIX_H_*/

@@ -132,6 +132,10 @@ static void _free(Enesim_Renderer *r)
 /*============================================================================*
  *                                   API                                      *
  *============================================================================*/
+/**
+ * To be documented
+ * FIXME: To be fixed
+ */
 EAPI Enesim_Renderer * enesim_renderer_perlin_new(void)
 {
 	Enesim_Renderer *r;
@@ -150,34 +154,50 @@ EAPI Enesim_Renderer * enesim_renderer_perlin_new(void)
 
 	return r;
 }
-
+/**
+ * To be documented
+ * FIXME: To be fixed
+ */
 EAPI void enesim_renderer_perlin_octaves_set(Enesim_Renderer *r, unsigned int octaves)
 {
 	Perlin *p = (Perlin *)r;
 
 	p->octaves = octaves;
 }
-
+/**
+ * To be documented
+ * FIXME: To be fixed
+ */
 EAPI void enesim_renderer_perlin_persistence_set(Enesim_Renderer *r, float persistence)
 {
 	Perlin *p = (Perlin *)r;
 
 	p->persistence = persistence;
 }
-
+/**
+ * To be documented
+ * FIXME: To be fixed
+ */
 EAPI void enesim_renderer_perlin_amplitude_set(Enesim_Renderer *r, float ampl)
 {
 	Perlin *p = (Perlin *)r;
 
 	p->ampl.val = ampl;
 }
+/**
+ * To be documented
+ * FIXME: To be fixed
+ */
 EAPI void enesim_renderer_perlin_xfrequency_set(Enesim_Renderer *r, float freq)
 {
 	Perlin *p = (Perlin *)r;
 
 	p->xfreq.val = freq;
 }
-
+/**
+ * To be documented
+ * FIXME: To be fixed
+ */
 EAPI void enesim_renderer_perlin_yfrequency_set(Enesim_Renderer *r, float freq)
 {
 	Perlin *p = (Perlin *)r;

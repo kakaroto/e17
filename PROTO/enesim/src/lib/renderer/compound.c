@@ -74,6 +74,10 @@ static Eina_Bool _state_setup(Enesim_Renderer *r)
 /*============================================================================*
  *                                   API                                      *
  *============================================================================*/
+/**
+ * To be documented
+ * FIXME: To be fixed
+ */
 EAPI Enesim_Renderer * enesim_renderer_compound_new(void)
 {
 	Compound *c;
@@ -88,7 +92,10 @@ EAPI Enesim_Renderer * enesim_renderer_compound_new(void)
 
 	return r;
 }
-
+/**
+ * To be documented
+ * FIXME: To be fixed
+ */
 EAPI void enesim_renderer_compound_layer_add(Enesim_Renderer *r,
 		Enesim_Renderer *rend, Enesim_Rop rop)
 {

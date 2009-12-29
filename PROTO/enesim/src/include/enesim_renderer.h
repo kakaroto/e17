@@ -20,7 +20,6 @@
 
 /**
  * @defgroup Enesim_Renderer_Group Renderer
- *
  * @{
  */
 typedef struct _Enesim_Renderer Enesim_Renderer; /**< Renderer Handler */
@@ -33,7 +32,10 @@ EAPI void enesim_renderer_span_fill(Enesim_Renderer *r, int x, int y,
 		unsigned int len, uint32_t *dst);
 EAPI void enesim_renderer_surface_draw(Enesim_Renderer *r, Enesim_Surface *s,
 		Enesim_Rop rop, Enesim_Color color, Eina_Rectangle *clip);
-
+/**
+ * @defgroup Enesim_Renderer_Shapes_Group Shapes
+ * @{
+ */
 typedef enum _Enesim_Shape_Draw_Mode
 {
 	ENESIM_SHAPE_DRAW_MODE_FILL = 0,
@@ -41,103 +43,51 @@ typedef enum _Enesim_Shape_Draw_Mode
 	ENESIM_SHAPE_DRAW_MODE_STROKE_FILL = 2,
 } Enesim_Shape_Draw_Mode;
 
-EAPI Enesim_Renderer * enesim_renderer_hswitch_new(void);
-EAPI void enesim_renderer_hswitch_w_set(Enesim_Renderer *r, int w);
-EAPI void enesim_renderer_hswitch_h_set(Enesim_Renderer *r, int h);
-EAPI void enesim_renderer_hswitch_left_set(Enesim_Renderer *r,
-		Enesim_Renderer *left);
-EAPI void enesim_renderer_hswitch_right_set(Enesim_Renderer *r,
-		Enesim_Renderer *right);
-EAPI void enesim_renderer_hswitch_step_set(Enesim_Renderer *r, float step);
-
-EAPI Enesim_Renderer * enesim_renderer_surface_new(void);
-EAPI void enesim_renderer_surface_x_set(Enesim_Renderer *r, int x);
-EAPI void enesim_renderer_surface_y_set(Enesim_Renderer *r, int y);
-EAPI void enesim_renderer_surface_w_set(Enesim_Renderer *r, int w);
-EAPI void enesim_renderer_surface_h_set(Enesim_Renderer *r, int h);
-EAPI void enesim_renderer_surface_src_set(Enesim_Renderer *r, Enesim_Surface *src);
-
-
-EAPI Enesim_Renderer * enesim_renderer_rectangle_new(void);
-EAPI void enesim_renderer_rectangle_size_set(Enesim_Renderer *p, int w, int h);
-EAPI void enesim_renderer_rectangle_corner_radius_set(Enesim_Renderer *p, float radius);
-EAPI void enesim_renderer_rectangle_corners_set(Enesim_Renderer *p, int tl, int tr, int bl, int br);
-
-EAPI Enesim_Renderer * enesim_renderer_circle_new(void);
-EAPI void enesim_renderer_circle_center_set(Enesim_Renderer *r, float x, float y);
-EAPI void enesim_renderer_circle_radius_set(Enesim_Renderer *r, float radius);
-
-EAPI Enesim_Renderer * enesim_renderer_ellipse_new(void);
-EAPI void enesim_renderer_ellipse_center_set(Enesim_Renderer *p, float x, float y);
-EAPI void enesim_renderer_ellipse_radii_set(Enesim_Renderer *p, float radius_x, float radius_y);
-
 EAPI void enesim_renderer_shape_outline_weight_set(Enesim_Renderer *r, float weight);
 EAPI void enesim_renderer_shape_outline_color_set(Enesim_Renderer *r, Enesim_Color stroke_color);
 EAPI void enesim_renderer_shape_outline_renderer_set(Enesim_Renderer *r, Enesim_Renderer *o);
 EAPI void enesim_renderer_shape_fill_color_set(Enesim_Renderer *r, Enesim_Color fill_color);
 EAPI void enesim_renderer_shape_fill_renderer_set(Enesim_Renderer *r, Enesim_Renderer *f);
 EAPI void enesim_renderer_shape_draw_mode_set(Enesim_Renderer *r, Enesim_Shape_Draw_Mode draw_mode);
-
-EAPI Enesim_Renderer * enesim_renderer_checker_new(void);
-EAPI void enesim_renderer_checker_color1_set(Enesim_Renderer *r, uint32_t color);
-EAPI void enesim_renderer_checker_color2_set(Enesim_Renderer *r, uint32_t color);
-EAPI void enesim_renderer_checker_size_set(Enesim_Renderer *r, int w, int h);
-
-EAPI Enesim_Renderer * enesim_renderer_transition_new(void);
-EAPI void enesim_renderer_transition_value_set(Enesim_Renderer *r, float interp_value);
-EAPI void enesim_renderer_transition_source_set(Enesim_Renderer *r, Enesim_Renderer *r0);
-EAPI void enesim_renderer_transition_target_set(Enesim_Renderer *r, Enesim_Renderer *r1);
-EAPI void enesim_renderer_transition_offset_set(Enesim_Renderer *r, int x, int y);
-
-EAPI Enesim_Renderer * enesim_renderer_stripes_new(void);
-EAPI void enesim_renderer_stripes_color_set(Enesim_Renderer *p,
-		Enesim_Color c0, Enesim_Color c1);
-EAPI void enesim_renderer_stripes_thickness_set(Enesim_Renderer *p,
-		float thickness_0, float thickness_1);
-
-EAPI Enesim_Renderer * enesim_renderer_dispmap_new(void);
-EAPI void enesim_renderer_dispmap_map_set(Enesim_Renderer *r, Enesim_Surface *map);
-EAPI void enesim_renderer_dispmap_src_set(Enesim_Renderer *r, Enesim_Surface *src);
-EAPI void enesim_renderer_dispmap_scale_set(Enesim_Renderer *r, float scale);
-
-EAPI Enesim_Renderer * enesim_renderer_raddist_new(void);
-EAPI void enesim_renderer_raddist_radius_set(Enesim_Renderer *r, float radius);
-EAPI void enesim_renderer_raddist_scale_set(Enesim_Renderer *r, float scale);
-EAPI void enesim_renderer_raddist_src_set(Enesim_Renderer *r, Enesim_Surface *src);
-EAPI void enesim_renderer_raddist_center_set(Enesim_Renderer *r, int ox, int oy);
-
-EAPI Enesim_Renderer * enesim_renderer_importer_new(void);
-EAPI void enesim_renderer_importer_angle_set(Enesim_Renderer *r, Enesim_Angle angle);
-EAPI void enesim_renderer_importer_data_set(Enesim_Renderer *r, Enesim_Converter_Data *cdata);
-EAPI void enesim_renderer_importer_format_set(Enesim_Renderer *r, Enesim_Converter_Format fmt);
-
-EAPI Enesim_Renderer * enesim_renderer_perlin_new(void);
-EAPI void enesim_renderer_perlin_octaves_set(Enesim_Renderer *r, unsigned int octaves);
-EAPI void enesim_renderer_perlin_persistence_set(Enesim_Renderer *r, float persistence);
-EAPI void enesim_renderer_perlin_xfrequency_set(Enesim_Renderer *r, float freq);
-EAPI void enesim_renderer_perlin_yfrequency_set(Enesim_Renderer *r, float freq);
-
-EAPI Enesim_Renderer * enesim_renderer_gradient_linear_new(void);
-EAPI void enesim_renderer_gradient_linear_pos_set(Enesim_Renderer *r, float x0,
-		float y0, float x1, float y1);
-
-
-EAPI void enesim_renderer_gradient_stop_add(Enesim_Renderer *r, Enesim_Color c,
-		float pos);
-EAPI void enesim_renderer_gradient_clear(Enesim_Renderer *r);
-
-
-EAPI Enesim_Renderer * enesim_renderer_compound_new(void);
-EAPI void enesim_renderer_compound_layer_add(Enesim_Renderer *r,
-		Enesim_Renderer *rend, Enesim_Rop rop);
-EAPI void enesim_renderer_compound_clear(Enesim_Renderer *r);
-
+/**
+ * @defgroup Enesim_Renderer_Rectangle_Group Rectangle
+ * @{
+ */
+EAPI Enesim_Renderer * enesim_renderer_rectangle_new(void);
+EAPI void enesim_renderer_rectangle_size_set(Enesim_Renderer *p, int w, int h);
+EAPI void enesim_renderer_rectangle_corner_radius_set(Enesim_Renderer *p, float radius);
+EAPI void enesim_renderer_rectangle_corners_set(Enesim_Renderer *p, int tl, int tr, int bl, int br);
+/**
+ * @}
+ * @defgroup Enesim_Renderer_Circle_Group Circle
+ * @{
+ */
+EAPI Enesim_Renderer * enesim_renderer_circle_new(void);
+EAPI void enesim_renderer_circle_center_set(Enesim_Renderer *r, float x, float y);
+EAPI void enesim_renderer_circle_radius_set(Enesim_Renderer *r, float radius);
+/**
+ * @}
+ * @defgroup Enesim_Renderer_Ellipse_Group Ellipse
+ * @{
+ */
+EAPI Enesim_Renderer * enesim_renderer_ellipse_new(void);
+EAPI void enesim_renderer_ellipse_center_set(Enesim_Renderer *p, float x, float y);
+EAPI void enesim_renderer_ellipse_radii_set(Enesim_Renderer *p, float radius_x, float radius_y);
+/**
+ * @}
+ * @defgroup Enesim_Renderer_Figure_Group Figure
+ * @{
+ */
 EAPI Enesim_Renderer * enesim_renderer_figure_new(void);
 EAPI void enesim_renderer_figure_polygon_add(Enesim_Renderer *p);
 EAPI void enesim_renderer_figure_polygon_vertex_add(Enesim_Renderer *p, float x, float y);
 EAPI void enesim_renderer_figure_extents_get(Enesim_Renderer *p, int *lx, int *ty, int *rx, int *by);
 EAPI void enesim_renderer_figure_clear(Enesim_Renderer *p);
-
+/**
+ * @}
+ * @defgroup Enesim_Renderer_Path_Group Path
+ * @{
+ */
 EAPI Enesim_Renderer * enesim_renderer_path_new(void);
 EAPI void enesim_renderer_path_move_to(Enesim_Renderer *p, float x, float y);
 EAPI void enesim_renderer_path_line_to(Enesim_Renderer *p, float x, float y);
@@ -152,14 +102,129 @@ EAPI void enesim_renderer_path_scubic_to(Enesim_Renderer *p, float ctrl_x, float
 EAPI void enesim_renderer_path_extents_get(Enesim_Renderer *p, int *lx, int *ty, int *rx,
 		int *by);
 EAPI void enesim_renderer_path_clear(Enesim_Renderer *p);
+/**
+ * @}
+ * @}
+ * @defgroup Enesim_Renderer_Hswitch_Group Horizontal Switch
+ * @{
+ */
+EAPI Enesim_Renderer * enesim_renderer_hswitch_new(void);
+EAPI void enesim_renderer_hswitch_w_set(Enesim_Renderer *r, int w);
+EAPI void enesim_renderer_hswitch_h_set(Enesim_Renderer *r, int h);
+EAPI void enesim_renderer_hswitch_left_set(Enesim_Renderer *r,
+		Enesim_Renderer *left);
+EAPI void enesim_renderer_hswitch_right_set(Enesim_Renderer *r,
+		Enesim_Renderer *right);
+EAPI void enesim_renderer_hswitch_step_set(Enesim_Renderer *r, float step);
+/**
+ * @}
+ * @defgroup Enesim_Renderer_Surface_Group Surface
+ * @{
+ */
+EAPI Enesim_Renderer * enesim_renderer_surface_new(void);
+EAPI void enesim_renderer_surface_x_set(Enesim_Renderer *r, int x);
+EAPI void enesim_renderer_surface_y_set(Enesim_Renderer *r, int y);
+EAPI void enesim_renderer_surface_w_set(Enesim_Renderer *r, int w);
+EAPI void enesim_renderer_surface_h_set(Enesim_Renderer *r, int h);
+EAPI void enesim_renderer_surface_src_set(Enesim_Renderer *r, Enesim_Surface *src);
+/**
+ * @}
+ * @defgroup Enesim_Renderer_Checker_Group Checker
+ * @image html renderer_checker.png
+ * @{
+ */
+EAPI Enesim_Renderer * enesim_renderer_checker_new(void);
+EAPI void enesim_renderer_checker_color1_set(Enesim_Renderer *r, uint32_t color);
+EAPI void enesim_renderer_checker_color2_set(Enesim_Renderer *r, uint32_t color);
+EAPI void enesim_renderer_checker_size_set(Enesim_Renderer *r, int w, int h);
+/**
+ * @}
+ * @defgroup Enesim_Renderer_Transition_Group Transition
+ * @{
+ */
+EAPI Enesim_Renderer * enesim_renderer_transition_new(void);
+EAPI void enesim_renderer_transition_value_set(Enesim_Renderer *r, float interp_value);
+EAPI void enesim_renderer_transition_source_set(Enesim_Renderer *r, Enesim_Renderer *r0);
+EAPI void enesim_renderer_transition_target_set(Enesim_Renderer *r, Enesim_Renderer *r1);
+EAPI void enesim_renderer_transition_offset_set(Enesim_Renderer *r, int x, int y);
+/**
+ * @}
+ * @defgroup Enesim_Renderer_Stripes_Group Stripes
+ * @{
+ */
+EAPI Enesim_Renderer * enesim_renderer_stripes_new(void);
+EAPI void enesim_renderer_stripes_color_set(Enesim_Renderer *p,
+		Enesim_Color c0, Enesim_Color c1);
+EAPI void enesim_renderer_stripes_thickness_set(Enesim_Renderer *p,
+		float thickness_0, float thickness_1);
+/**
+ * @}
+ * @defgroup Enesim_Renderer_Dispmap_Group Displacement Map
+ * @{
+ */
+EAPI Enesim_Renderer * enesim_renderer_dispmap_new(void);
+EAPI void enesim_renderer_dispmap_map_set(Enesim_Renderer *r, Enesim_Surface *map);
+EAPI void enesim_renderer_dispmap_src_set(Enesim_Renderer *r, Enesim_Surface *src);
+EAPI void enesim_renderer_dispmap_scale_set(Enesim_Renderer *r, float scale);
+/**
+ * @}
+ * @defgroup Enesim_Renderer_Raddist_Group Radial Distortion
+ * @{
+ */
+EAPI Enesim_Renderer * enesim_renderer_raddist_new(void);
+EAPI void enesim_renderer_raddist_radius_set(Enesim_Renderer *r, float radius);
+EAPI void enesim_renderer_raddist_scale_set(Enesim_Renderer *r, float scale);
+EAPI void enesim_renderer_raddist_src_set(Enesim_Renderer *r, Enesim_Surface *src);
+EAPI void enesim_renderer_raddist_center_set(Enesim_Renderer *r, int ox, int oy);
+/**
+ * @}
+ * @defgroup Enesim_Renderer_Importer_Group Importer
+ * @{
+ */
+EAPI Enesim_Renderer * enesim_renderer_importer_new(void);
+EAPI void enesim_renderer_importer_angle_set(Enesim_Renderer *r, Enesim_Angle angle);
+EAPI void enesim_renderer_importer_data_set(Enesim_Renderer *r, Enesim_Converter_Data *cdata);
+EAPI void enesim_renderer_importer_format_set(Enesim_Renderer *r, Enesim_Converter_Format fmt);
+/**
+ * @}
+ * @defgroup Enesim_Renderer_Perlin_Group Perlin
+ * @{
+ */
+EAPI Enesim_Renderer * enesim_renderer_perlin_new(void);
+EAPI void enesim_renderer_perlin_octaves_set(Enesim_Renderer *r, unsigned int octaves);
+EAPI void enesim_renderer_perlin_persistence_set(Enesim_Renderer *r, float persistence);
+EAPI void enesim_renderer_perlin_xfrequency_set(Enesim_Renderer *r, float freq);
+EAPI void enesim_renderer_perlin_yfrequency_set(Enesim_Renderer *r, float freq);
 
+EAPI Enesim_Renderer * enesim_renderer_gradient_linear_new(void);
+EAPI void enesim_renderer_gradient_linear_pos_set(Enesim_Renderer *r, float x0,
+		float y0, float x1, float y1);
+
+
+EAPI void enesim_renderer_gradient_stop_add(Enesim_Renderer *r, Enesim_Color c,
+		float pos);
+EAPI void enesim_renderer_gradient_clear(Enesim_Renderer *r);
+/**
+ * @}
+ * @defgroup Enesim_Renderer_Compound_Group Compound
+ * @{
+ */
+EAPI Enesim_Renderer * enesim_renderer_compound_new(void);
+EAPI void enesim_renderer_compound_layer_add(Enesim_Renderer *r,
+		Enesim_Renderer *rend, Enesim_Rop rop);
+EAPI void enesim_renderer_compound_clear(Enesim_Renderer *r);
+/**
+ * @}
+ * @defgroup Enesim_Renderer_Grid_Group Grid
+ * @{
+ */
 EAPI Enesim_Renderer * enesim_renderer_grid_new(void);
 EAPI void enesim_renderer_grid_inside_size_set(Enesim_Renderer *r, unsigned int w, unsigned int h);
 EAPI void enesim_renderer_grid_inside_color_set(Enesim_Renderer *r, Enesim_Color color);
 EAPI void enesim_renderer_grid_outside_size_set(Enesim_Renderer *r, unsigned int w, unsigned int h);
 EAPI void enesim_renderer_grid_outside_color_set(Enesim_Renderer *r, Enesim_Color color);
-
 /**
+ * @}
  * @}
  */
 

@@ -99,14 +99,16 @@ EAPI void enesim_renderer_span_fill(Enesim_Renderer *r, int x, int y,
 	if (r->span)
 		r->span(r, x, y, len, dst);
 }
-
+/**
+ * To be documented
+ * FIXME: To be fixed
+ */
 EAPI void enesim_renderer_origin_set(Enesim_Renderer *r, int x, int y)
 {
 	ENESIM_MAGIC_CHECK_RENDERER(r);
 	r->ox = x;
 	r->oy = y;
 }
-
 /**
  * To be documented
  * FIXME: To be fixed

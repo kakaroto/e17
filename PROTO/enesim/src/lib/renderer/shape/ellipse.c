@@ -367,6 +367,10 @@ static void _free(Enesim_Renderer *p)
 /*============================================================================*
  *                                   API                                      *
  *============================================================================*/
+/**
+ * To be documented
+ * FIXME: To be fixed
+ */
 EAPI Enesim_Renderer * enesim_renderer_ellipse_new(void)
 {
 	Enesim_Renderer *p;
@@ -387,7 +391,10 @@ EAPI Enesim_Renderer * enesim_renderer_ellipse_new(void)
 	//   if (!ellipse_setup_state(p, 0)) { free(ellipse); return NULL; }
 	return p;
 }
-
+/**
+ * To be documented
+ * FIXME: To be fixed
+ */
 EAPI void enesim_renderer_ellipse_center_set(Enesim_Renderer *p, float x, float y)
 {
 	Ellipse *ellipse;
@@ -400,7 +407,10 @@ EAPI void enesim_renderer_ellipse_center_set(Enesim_Renderer *p, float x, float 
 	ellipse->y = y;
 	p->changed = EINA_TRUE;
 }
-
+/**
+ * To be documented
+ * FIXME: To be fixed
+ */
 EAPI void enesim_renderer_ellipse_radii_set(Enesim_Renderer *p, float radius_x, float radius_y)
 {
 	Ellipse *ellipse;

@@ -22,15 +22,15 @@
  * @defgroup Enesim_Surface_Group Surface
  * @{
  *
- * TODO
- * + Add a pitch, this is good for different planes, still the width and height
+ * @todo
+ * - Add a pitch, this is good for different planes, still the width and height
  * are good things to have so the pitch
- * + Add a data provider: as a parameter to the new, so the destruction is
+ * - Add a data provider: as a parameter to the new, so the destruction is
  * handled by the library itself, same for data get, etc.
- * + Add a surface iterator
- * + Normalize the occurences of argb, colors, etc. Always premul or flat
+ * - Add a surface iterator
+ * - Normalize the occurences of argb, colors, etc. Always premul or flat
  * argb8888?
- * + Be able to pass an Eina_Allocator to surface_new
+ * - Be able to pass an Eina_Allocator to surface_new
  */
 typedef struct _Enesim_Surface 	Enesim_Surface; /**< Surface Handler */
 

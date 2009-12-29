@@ -193,6 +193,10 @@ void enesim_compositor_span_pixel_color_register(Enesim_Compositor_Span sp,
 /*============================================================================*
  *                                   API                                      *
  *============================================================================*/
+/**
+ * To be documented
+ * FIXME: To be fixed
+ */
 EAPI Enesim_Compositor_Span enesim_compositor_span_get(Enesim_Rop rop,
 		Enesim_Format *dfmt, Enesim_Format sfmt, Enesim_Color color,
 		Enesim_Format mfmt)
@@ -219,7 +223,10 @@ EAPI Enesim_Compositor_Span enesim_compositor_span_get(Enesim_Rop rop,
 		return _span_mask_color_get(rop, dfmt, mfmt, color);
 	}
 }
-
+/**
+ * To be documented
+ * FIXME: To be fixed
+ */
 EAPI Enesim_Compositor_Point enesim_compositor_point_get(Enesim_Rop rop,
 		Enesim_Format *dfmt, Enesim_Format sfmt, Enesim_Color color,
 		Enesim_Format mfmt)

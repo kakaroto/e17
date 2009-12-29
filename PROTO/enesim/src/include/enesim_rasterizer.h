@@ -111,9 +111,16 @@ EAPI void enesim_rasterizer_vertex_add(Enesim_Rasterizer *r, float x, float y);
 EAPI Eina_Bool enesim_rasterizer_generate(Enesim_Rasterizer *r, Eina_Rectangle *rect, Enesim_Scanline_Callback cb, void *data);
 EAPI void enesim_rasterizer_delete(Enesim_Rasterizer *r);
 EAPI void enesim_rasterizer_reset(Enesim_Rasterizer *r);
-
+/**
+ * @defgroup Enesim_Rasterizer_Cpsc_Group Cpsc Rasterizer
+ * @{
+ */
 EAPI Enesim_Rasterizer * enesim_rasterizer_cpsc_new(void);
-
+/**
+ * @}
+ * @defgroup Enesim_Rasterizer_Kiia_Group Kiia Rasterizer
+ * @{
+ */
 typedef struct _Enesim_Rasterizer_Kiia Enesim_Rasterizer_Kiia;
 /**
  *
@@ -129,11 +136,17 @@ typedef enum
 EAPI Enesim_Rasterizer * enesim_rasterizer_kiia_new(Enesim_Rasterizer_Kiia_Count count);
 EAPI void enesim_rasterizer_kiia_count_set(Enesim_Rasterizer *k, Enesim_Rasterizer_Kiia_Count count);
 EAPI void enesim_rasterizer_kiia_rule_set(Enesim_Rasterizer *r, Enesim_Rasterizer_Fill_Rule rule);
-
+/**
+ * @}
+ * @defgroup Enesim_Rasterizer_Circle_Group Circle Rasterizer
+ * @{
+ */
 EAPI Enesim_Rasterizer * enesim_rasterizer_circle_new(void);
 EAPI void enesim_rasterizer_circle_fill_policy_set(Enesim_Rasterizer *c, Enesim_Rasterizer_Fill_Policy po);
 EAPI void enesim_rasterizer_circle_radius_set(Enesim_Rasterizer *c, float radius);
-
-/** @} */ //End of Enesim_Rasterizer_Group
+/**
+ * @}
+ * @}
+ */ //End of Enesim_Rasterizer_Group
 
 #endif /*ENESIM_RASTERIZER_H_*/

@@ -38,9 +38,6 @@
  *
  * @file
  * @brief Enesim API
- * @defgroup Enesim_Group API
- * @{
- *
  */
 
 #include "Eina.h"
@@ -67,5 +64,4 @@ extern "C" {
 }
 #endif
 
-/** @} */
 #endif

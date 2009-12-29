@@ -262,6 +262,10 @@ static void _free(Enesim_Renderer *r)
 /*============================================================================*
  *                                   API                                      *
  *============================================================================*/
+/**
+ * To be documented
+ * FIXME: To be fixed
+ */
 EAPI Enesim_Renderer * enesim_renderer_surface_new(void)
 {
 	Enesim_Renderer *r;
@@ -277,7 +281,10 @@ EAPI Enesim_Renderer * enesim_renderer_surface_new(void)
 
 	return r;
 }
-
+/**
+ * To be documented
+ * FIXME: To be fixed
+ */
 EAPI void enesim_renderer_surface_x_set(Enesim_Renderer *r, int x)
 {
 	Surface *s = (Surface *)r;
@@ -287,7 +294,10 @@ EAPI void enesim_renderer_surface_x_set(Enesim_Renderer *r, int x)
 	s->x = x;
 	r->changed = EINA_TRUE;
 }
-
+/**
+ * To be documented
+ * FIXME: To be fixed
+ */
 EAPI void enesim_renderer_surface_y_set(Enesim_Renderer *r, int y)
 {
 	Surface *s = (Surface *)r;
@@ -297,7 +307,10 @@ EAPI void enesim_renderer_surface_y_set(Enesim_Renderer *r, int y)
 	s->y = y;
 	r->changed = EINA_TRUE;
 }
-
+/**
+ * To be documented
+ * FIXME: To be fixed
+ */
 EAPI void enesim_renderer_surface_w_set(Enesim_Renderer *r, int w)
 {
 	Surface *s = (Surface *)r;
@@ -307,7 +320,10 @@ EAPI void enesim_renderer_surface_w_set(Enesim_Renderer *r, int w)
 	s->w = w;
 	r->changed = EINA_TRUE;
 }
-
+/**
+ * To be documented
+ * FIXME: To be fixed
+ */
 EAPI void enesim_renderer_surface_h_set(Enesim_Renderer *r, int h)
 {
 	Surface *s = (Surface *)r;
@@ -317,7 +333,10 @@ EAPI void enesim_renderer_surface_h_set(Enesim_Renderer *r, int h)
 	s->h = h;
 	r->changed = EINA_TRUE;
 }
-
+/**
+ * To be documented
+ * FIXME: To be fixed
+ */
 EAPI void enesim_renderer_surface_src_set(Enesim_Renderer *r, Enesim_Surface *src)
 {
 	Surface *s = (Surface *)r;

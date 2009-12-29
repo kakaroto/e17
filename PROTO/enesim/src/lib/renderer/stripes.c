@@ -98,6 +98,10 @@ static void stripes_destroy(Enesim_Renderer *p)
 /*============================================================================*
  *                                   API                                      *
  *============================================================================*/
+/**
+ * Creates a stripe renderer
+ * @return The new renderer
+ */
 EAPI Enesim_Renderer * enesim_renderer_stripes_new(void)
 {
 	Enesim_Renderer *p;
@@ -111,7 +115,10 @@ EAPI Enesim_Renderer * enesim_renderer_stripes_new(void)
 	enesim_renderer_init(p);
 	return p;
 }
-
+/**
+ * To be documented
+ * FIXME: To be fixed
+ */
 EAPI void enesim_renderer_stripes_color_set(Enesim_Renderer *p,
 		Enesim_Color c0, Enesim_Color c1)
 {
@@ -121,7 +128,10 @@ EAPI void enesim_renderer_stripes_color_set(Enesim_Renderer *p,
 	st->s0.color = c0;
 	st->s1.color = c1;
 }
-
+/**
+ * To be documented
+ * FIXME: To be fixed
+ */
 EAPI void enesim_renderer_stripes_thickness_set(Enesim_Renderer *p,
 		float thickness_0, float thickness_1)
 {
