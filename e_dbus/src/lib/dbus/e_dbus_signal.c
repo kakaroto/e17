@@ -182,6 +182,7 @@ e_dbus_signal_handler_add(E_DBus_Connection *conn, const char *sender, const cha
      sh->sender = NULL;	
 
   sh->cb_signal = cb_signal;
+  sh->get_name_owner_pending = NULL;
   sh->data = data;
   sh->delete_me = 0;
 

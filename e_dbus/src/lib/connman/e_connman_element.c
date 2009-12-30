@@ -580,6 +580,10 @@ _e_connman_element_array_print(FILE *fp, E_Connman_Array *array)
 	 EINA_ARRAY_ITER_NEXT(array->array, i, item, iterator)
 	   fprintf(fp, "\"%s\", ", (const char *)item);
 	 break;
+      case DBUS_TYPE_STRING:
+	 EINA_ARRAY_ITER_NEXT(array->array, i, item, iterator)
+	   fprintf(fp, "\"%s\", ", (const char *)item);
+	 break;
       case DBUS_TYPE_BYTE:
 	 EINA_ARRAY_ITER_NEXT(array->array, i, item, iterator)
 	   fprintf(fp, "%#02hhx (\"%c\"), ", (unsigned char)(long)item,
@@ -890,6 +894,15 @@ _e_connman_element_iter_get_array(DBusMessageIter *itr, const char *key)
 		_e_connman_element_item_register(key, path);
 	     }
 	     break;
+	   case DBUS_TYPE_STRING:
+	     {
+		const char *str;
+
+		dbus_message_iter_get_basic(&e_itr, &str);
+		str = eina_stringshare_add(str);
+		eina_array_push(array->array, str);
+	     }
+	     break;
 	   case DBUS_TYPE_BYTE:
 	     {
 		unsigned char byte;
@@ -928,7 +941,7 @@ _e_connman_element_get_properties_callback(void *user_data, DBusMessage *msg, DB
      {
 	DBusMessageIter e_itr, v_itr;
 	const char *key;
-	void *value;
+	void *value = NULL;
 	int r;
 
 	t = dbus_message_iter_get_arg_type(&s_itr);
@@ -951,8 +964,13 @@ _e_connman_element_get_properties_callback(void *user_data, DBusMessage *msg, DB
 	t = dbus_message_iter_get_arg_type(&v_itr);
 	if (t == DBUS_TYPE_ARRAY)
 	  value = _e_connman_element_iter_get_array(&v_itr, key);
-	else if (t != DBUS_TYPE_INVALID)
+	else if (t != DBUS_TYPE_INVALID) {
 	  dbus_message_iter_get_basic(&v_itr, &value);
+	} else {
+	   ERR("E-Dbus connman: property has invalid type %s", key);
+	   continue;
+	}
+
 	r = _e_connman_element_property_value_add(element, key, t, value);
 	if (r < 0)
 	  ERR("E-Dbus connman: failed to add property value %s (%c)", key, t);
