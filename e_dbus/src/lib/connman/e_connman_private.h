@@ -27,6 +27,7 @@ extern const char *e_connman_prop_devices;
 extern const char *e_connman_prop_interface;
 extern const char *e_connman_prop_ipv4_address;
 extern const char *e_connman_prop_ipv4_method;
+extern const char *e_connman_prop_address;
 extern const char *e_connman_prop_name;
 extern const char *e_connman_prop_network;
 extern const char *e_connman_prop_networks;

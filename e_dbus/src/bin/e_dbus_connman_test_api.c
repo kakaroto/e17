@@ -343,6 +343,7 @@ static const struct test_desc test_desc_manager[] = {
 };
 
 static const struct test_desc test_desc_device[] = {
+  TEST_DESC_STRING_GET(e_connman_device_address_get, 0),
   TEST_DESC_STRING_GET(e_connman_device_name_get, 0),
   TEST_DESC_STRING_GET(e_connman_device_type_get, 0),
   TEST_DESC_STRING_GET(e_connman_device_interface_get, 0),
@@ -364,6 +365,7 @@ static const struct test_desc test_desc_profile[] = {
 };
 
 static const struct test_desc test_desc_network[] = {
+  TEST_DESC_STRING_GET(e_connman_network_address_get, 0),
   TEST_DESC_STRING_GET(e_connman_network_name_get, 0),
   TEST_DESC_BOOL_GET(e_connman_network_connected_get, 0),
   TEST_DESC_UCHAR_GET(e_connman_network_strength_get, 1),

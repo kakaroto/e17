@@ -21,6 +21,35 @@ e_connman_network_get(const char *path)
 }
 
 /**
+ * Get property "Address" value.
+ *
+ * If this property isn't found then 0 is returned.
+ * If zero is returned, then this call failed and parameter-returned
+ * values shall be considered invalid.
+ *
+ * The network hardware address (mac-address for ethernet, wifi...).
+ *
+ * This address can be used for directly displaying it in
+ * the application. It has pure informational purpose.
+ *
+ * @param network path to get property.
+ * @param address where to store the property value, must be a pointer
+ *        to string (const char **), it will not be allocated or
+ *        copied and references will be valid until element changes,
+ *        so copy it if you want to use it later.
+ *
+ * @return 1 on success, 0 otherwise.
+ */
+bool
+e_connman_network_address_get(const E_Connman_Element *network, const char **address)
+{
+   EINA_SAFETY_ON_NULL_RETURN_VAL(network, 0);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(address, 0);
+   return e_connman_element_property_get_stringshared
+     (network, e_connman_prop_address, NULL, address);
+}
+
+/**
  * Get property "Name" value.
  *
  * If this property isn't found then 0 is returned.

@@ -36,6 +36,7 @@ const char *e_connman_prop_devices = NULL;
 const char *e_connman_prop_interface = NULL;
 const char *e_connman_prop_ipv4_address = NULL;
 const char *e_connman_prop_ipv4_method = NULL;
+const char *e_connman_prop_address = NULL;
 const char *e_connman_prop_name = NULL;
 const char *e_connman_prop_network = NULL;
 const char *e_connman_prop_networks = NULL;
@@ -290,6 +291,8 @@ e_connman_system_init(E_DBus_Connection *edbus_conn)
      e_connman_prop_ipv4_address = eina_stringshare_add("IPv4.Address");
    if (e_connman_prop_ipv4_method == NULL)
      e_connman_prop_ipv4_method = eina_stringshare_add("IPv4.Method");
+   if (e_connman_prop_address == NULL)
+     e_connman_prop_address = eina_stringshare_add("Address");
    if (e_connman_prop_name == NULL)
      e_connman_prop_name = eina_stringshare_add("Name");
    if (e_connman_prop_network == NULL)
@@ -414,6 +417,7 @@ e_connman_system_shutdown(void)
    _stringshare_del(&e_connman_prop_interface);
    _stringshare_del(&e_connman_prop_ipv4_address);
    _stringshare_del(&e_connman_prop_ipv4_method);
+   _stringshare_del(&e_connman_prop_address);
    _stringshare_del(&e_connman_prop_name);
    _stringshare_del(&e_connman_prop_network);
    _stringshare_del(&e_connman_prop_networks);

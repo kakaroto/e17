@@ -401,6 +401,28 @@ _on_cmd_device_propose_scan(char *cmd, char *args)
 }
 
 static int
+_on_cmd_device_get_address(char *cmd, char *args)
+{
+   const char *address, *path;
+   E_Connman_Element *e;
+
+   if (!args)
+     {
+	fputs("ERROR: missing the device path\n", stderr);
+	return 1;
+     }
+   _tok(args);
+   path = args;
+
+   e = e_connman_device_get(path);
+   if (e_connman_device_address_get(e, &address))
+     printf(":::Device %s Address = \"%s\"\n", path, address);
+   else
+     fputs("ERROR: can't get device address\n", stderr);
+   return 1;
+}
+
+static int
 _on_cmd_device_get_name(char *cmd, char *args)
 {
    const char *name, *path;
@@ -732,6 +754,28 @@ _on_cmd_profile_get_services(char *cmd, char *args)
 
 
 /* Network Commands */
+
+static int
+_on_cmd_network_get_address(char *cmd, char *args)
+{
+   const char *address, *path;
+   E_Connman_Element *e;
+
+   if (!args)
+     {
+	fputs("ERROR: missing the network path\n", stderr);
+	return 1;
+     }
+   _tok(args);
+   path = args;
+
+   e = e_connman_network_get(path);
+   if (e_connman_network_address_get(e, &address))
+     printf(":::Network %s Address = \"%s\"\n", path, address);
+   else
+     fputs("ERROR: can't get network address\n", stderr);
+   return 1;
+}
 
 static int
 _on_cmd_network_get_name(char *cmd, char *args)
@@ -1583,6 +1627,7 @@ _on_input(void *data, Ecore_Fd_Handler *fd_handler)
      {"manager_get_offline_mode", _on_cmd_manager_get_offline_mode},
      {"manager_set_offline_mode", _on_cmd_manager_set_offline_mode},
      {"device_propose_scan", _on_cmd_device_propose_scan},
+     {"device_get_address", _on_cmd_device_get_address},
      {"device_get_name", _on_cmd_device_get_name},
      {"device_get_type", _on_cmd_device_get_type},
      {"device_get_interface", _on_cmd_device_get_interface},
@@ -1596,6 +1641,7 @@ _on_input(void *data, Ecore_Fd_Handler *fd_handler)
      {"profile_get_offline_mode", _on_cmd_profile_get_offline_mode},
      {"profile_set_offline_mode", _on_cmd_profile_set_offline_mode},
      {"profile_get_services", _on_cmd_profile_get_services},
+     {"network_get_address", _on_cmd_network_get_address},
      {"network_get_name", _on_cmd_network_get_name},
      {"network_get_connected", _on_cmd_network_get_connected},
      {"network_get_strength", _on_cmd_network_get_strength},

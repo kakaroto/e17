@@ -236,6 +236,8 @@ extern "C" {
 
   EAPI bool e_connman_device_propose_scan(E_Connman_Element *device, E_DBus_Method_Return_Cb cb, const void *data) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
 
+  EAPI bool e_connman_device_address_get(const E_Connman_Element *device, const char **address);
+
   EAPI bool e_connman_device_name_get(const E_Connman_Element *device, const char **name) EINA_ARG_NONNULL(1, 2) EINA_PURE EINA_WARN_UNUSED_RESULT;
 
   EAPI bool e_connman_device_type_get(const E_Connman_Element *device, const char **type) EINA_ARG_NONNULL(1, 2) EINA_PURE EINA_WARN_UNUSED_RESULT;
@@ -252,8 +254,6 @@ extern "C" {
 
   EAPI bool e_connman_device_networks_get(const E_Connman_Element *device, unsigned int *count, E_Connman_Element ***p_elements) EINA_ARG_NONNULL(1, 2, 3) EINA_PURE EINA_WARN_UNUSED_RESULT;
 
-  // TODO: address_get
-
 
   /* Network Methods: Low-Level API
    *
@@ -261,6 +261,8 @@ extern "C" {
    * use the services API instead.
    */
   EAPI E_Connman_Element *e_connman_network_get(const char *path) EINA_ARG_NONNULL(1) EINA_PURE EINA_WARN_UNUSED_RESULT;
+
+  EAPI bool e_connman_network_address_get(const E_Connman_Element *network, const char **address) EINA_ARG_NONNULL(1, 2) EINA_PURE EINA_WARN_UNUSED_RESULT;
 
   EAPI bool e_connman_network_name_get(const E_Connman_Element *network, const char **name) EINA_ARG_NONNULL(1, 2) EINA_PURE EINA_WARN_UNUSED_RESULT;
 
@@ -278,7 +280,6 @@ extern "C" {
 
   EAPI bool e_connman_network_wifi_passphrase_get(const E_Connman_Element *network, const char **wifi_passphare) EINA_ARG_NONNULL(1, 2) EINA_PURE EINA_WARN_UNUSED_RESULT;
 
-  // TODO: address_get
   // TODO: wifi_channel_get (missing in their docs)
   // TODO: wifi_eap_get (missing in their docs, only if ieee8021x)
   // TODO: frequency_get (missing in their docs)

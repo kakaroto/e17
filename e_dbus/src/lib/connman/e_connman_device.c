@@ -43,6 +43,35 @@ e_connman_device_propose_scan(E_Connman_Element *device, E_DBus_Method_Return_Cb
 }
 
 /**
+ * Get property "Address" value.
+ *
+ * If this property isn't found then 0 is returned.
+ * If zero is returned, then this call failed and parameter-returned
+ * values shall be considered invalid.
+ *
+ * The device address (mac-address for ethernet, wifi...).
+ *
+ * This address can be used for directly displaying it in
+ * the application. It has pure informational purpose.
+ *
+ * @param device path to get property.
+ * @param address where to store the property value, must be a pointer
+ *        to string (const char **), it will not be allocated or
+ *        copied and references will be valid until element changes,
+ *        so copy it if you want to use it later.
+ *
+ * @return 1 on success, 0 otherwise.
+ */
+bool
+e_connman_device_address_get(const E_Connman_Element *device, const char **address)
+{
+   EINA_SAFETY_ON_NULL_RETURN_VAL(device, 0);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(address, 0);
+   return e_connman_element_property_get_stringshared
+     (device, e_connman_prop_address, NULL, address);
+}
+
+/**
  * Get property "Name" value.
  *
  * If this property isn't found then 0 is returned.
