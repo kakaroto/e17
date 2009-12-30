@@ -377,6 +377,56 @@ _on_cmd_manager_set_offline_mode(char *cmd, char *args)
    return 1;
 }
 
+static int
+_on_cmd_manager_request_scan(char *cmd, char *args)
+{
+   if (args)
+     _tok(args);
+
+   if (!args)
+     args = "";
+
+   if (e_connman_manager_request_scan(args, NULL, NULL))
+     printf(":::Manager Request Scan for %s\n", args[0] ? args : "<all>");
+   else
+     fputs("ERROR: can't request scan on manager\n", stderr);
+   return 1;
+}
+
+static int
+_on_cmd_manager_technology_enable(char *cmd, char *args)
+{
+   if (!args)
+     {
+	fputs("ERROR: missing the technology type\n", stderr);
+	return 1;
+     }
+   _tok(args);
+
+   if (e_connman_manager_technology_enable(args, NULL, NULL))
+     printf(":::Manager Enable Technology %s\n", args);
+   else
+     fputs("ERROR: can't enable technology on manager\n", stderr);
+   return 1;
+}
+
+static int
+_on_cmd_manager_technology_disable(char *cmd, char *args)
+{
+   if (!args)
+     {
+	fputs("ERROR: missing the technology type\n", stderr);
+	return 1;
+     }
+   _tok(args);
+
+   if (e_connman_manager_technology_disable(args, NULL, NULL))
+     printf(":::Manager Disable Technology %s\n", args);
+   else
+     fputs("ERROR: can't disable technology on manager\n", stderr);
+   return 1;
+}
+
 /* Device Commands */
 static int
 _on_cmd_device_propose_scan(char *cmd, char *args)
@@ -1722,6 +1772,9 @@ _on_input(void *data, Ecore_Fd_Handler *fd_handler)
      {"manager_get_state", _on_cmd_manager_get_state},
      {"manager_get_offline_mode", _on_cmd_manager_get_offline_mode},
      {"manager_set_offline_mode", _on_cmd_manager_set_offline_mode},
+     {"manager_request_scan", _on_cmd_manager_request_scan},
+     {"manager_technology_enable", _on_cmd_manager_technology_enable},
+     {"manager_technology_disable", _on_cmd_manager_technology_disable},
      {"device_propose_scan", _on_cmd_device_propose_scan},
      {"device_get_address", _on_cmd_device_get_address},
      {"device_get_name", _on_cmd_device_get_name},

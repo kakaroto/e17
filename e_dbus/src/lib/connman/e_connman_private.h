@@ -63,6 +63,7 @@ extern const char *e_connman_prop_apn;
 extern const char *e_connman_prop_mcc;
 extern const char *e_connman_prop_mnc;
 extern const char *e_connman_prop_roaming;
+extern const char *e_connman_prop_technology_default;
 
 extern int _e_dbus_connman_log_dom;
 

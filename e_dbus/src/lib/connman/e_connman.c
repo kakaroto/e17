@@ -72,6 +72,7 @@ const char *e_connman_prop_apn = NULL;
 const char *e_connman_prop_mcc = NULL;
 const char *e_connman_prop_mnc = NULL;
 const char *e_connman_prop_roaming = NULL;
+const char *e_connman_prop_technology_default = NULL;
 
 
 int _e_dbus_connman_log_dom = -1;
@@ -366,6 +367,8 @@ e_connman_system_init(E_DBus_Connection *edbus_conn)
      e_connman_prop_mnc = eina_stringshare_add("MCN");
    if (e_connman_prop_roaming == NULL)
      e_connman_prop_roaming = eina_stringshare_add("Roaming");
+   if (e_connman_prop_technology_default == NULL)
+     e_connman_prop_technology_default = eina_stringshare_add("DefaultTechnology");
 
    e_connman_conn = edbus_conn;
    cb_name_owner_changed = e_dbus_signal_handler_add
@@ -462,6 +465,7 @@ e_connman_system_shutdown(void)
    _stringshare_del(&e_connman_prop_mcc);
    _stringshare_del(&e_connman_prop_mnc);
    _stringshare_del(&e_connman_prop_roaming);
+   _stringshare_del(&e_connman_prop_technology_default);
 
    if (pending_get_name_owner)
      {

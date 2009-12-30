@@ -288,3 +288,121 @@ e_connman_manager_services_get(unsigned int *count, E_Connman_Element ***p_eleme
    return e_connman_element_objects_array_get_stringshared
      (element, e_connman_prop_services, count, p_elements);
 }
+
+/**
+ * Request to trigger a scan for given technology.
+ *
+ * Call method RequestScan(type) on server in order to
+ * find new services and networks for such technology type.
+ *
+ * The empty string for type means all technolgies.
+ *
+ * @param type technology type to scan. Empty or NULL for all technologies.
+ * @param cb function to call when server replies or some error happens.
+ * @param data data to give to cb when it is called.
+ *
+ * @return 1 on success, 0 otherwise.
+ */
+bool
+e_connman_manager_request_scan(const char *type, E_DBus_Method_Return_Cb cb, const void *data)
+{
+   const char name[] = "RequestScan";
+   E_Connman_Element *element;
+
+   if (!type)
+     type = "";
+
+   element = e_connman_manager_get();
+   if (!element)
+     return 0;
+
+   return e_connman_element_call_with_string
+     (element, name, type, NULL,
+      &element->_pending.request_scan, cb, data);
+}
+
+/**
+ * Enable specified type of technology.
+ *
+ * Call method EnableTechnology(type) on server.
+ *
+ * @param type technology type to enable.
+ * @param cb function to call when server replies or some error happens.
+ * @param data data to give to cb when it is called.
+ *
+ * @return 1 on success, 0 otherwise.
+ */
+bool
+e_connman_manager_technology_enable(const char *type, E_DBus_Method_Return_Cb cb, const void *data)
+{
+   const char name[] = "EnableTechnology";
+   E_Connman_Element *element;
+
+   EINA_SAFETY_ON_NULL_RETURN_VAL(type, 0);
+
+   element = e_connman_manager_get();
+   if (!element)
+     return 0;
+
+   return e_connman_element_call_with_string
+     (element, name, type, NULL,
+      &element->_pending.technology_enable, cb, data);
+}
+
+/**
+ * Disable specified type of technology.
+ *
+ * Call method DisableTechnology(type) on server.
+ *
+ * @param type technology type to disable.
+ * @param cb function to call when server replies or some error happens.
+ * @param data data to give to cb when it is called.
+ *
+ * @return 1 on success, 0 otherwise.
+ */
+bool
+e_connman_manager_technology_disable(const char *type, E_DBus_Method_Return_Cb cb, const void *data)
+{
+   const char name[] = "DisableTechnology";
+   E_Connman_Element *element;
+
+   EINA_SAFETY_ON_NULL_RETURN_VAL(type, 0);
+
+   element = e_connman_manager_get();
+   if (!element)
+     return 0;
+
+   return e_connman_element_call_with_string
+     (element, name, type, NULL,
+      &element->_pending.technology_disable, cb, data);
+}
+
+/**
+ * Get property "DefaultTechnology" value.
+ *
+ * If this property isn't found then 0 is returned.
+ * If zero is returned, then this call failed and parameter-returned
+ * values shall be considered invalid.
+ *
+ *The current connected technology which holds the default route.
+ *
+ * @param type where to store the property value, must be a pointer
+ *        to string (const char **), it will not be allocated or
+ *        copied and references will be valid until element changes,
+ *        so copy it if you want to use it later.
+ *
+ * @return 1 on success, 0 otherwise.
+ */
+bool
+e_connman_manager_technology_default_get(const char **type)
+{
+   E_Connman_Element *element;
+
+   EINA_SAFETY_ON_NULL_RETURN_VAL(type, 0);
+
+   element = e_connman_manager_get();
+   if (!element)
+     return 0;
+   return e_connman_element_property_get_stringshared
+     (element, e_connman_prop_technology_default, NULL, type);
+}

@@ -56,6 +56,9 @@ extern "C" {
 	Eina_Inlist *property_set;
 	Eina_Inlist *agent_register;
 	Eina_Inlist *agent_unregister;
+	Eina_Inlist *request_scan;
+	Eina_Inlist *technology_enable;
+	Eina_Inlist *technology_disable;
 	Eina_Inlist *device_propose_scan;
 	Eina_Inlist *service_connect;
 	Eina_Inlist *service_disconnect;
@@ -76,28 +79,31 @@ extern "C" {
   EAPI unsigned int e_connman_system_shutdown(void);
 
   /* Manager Methods */
-  EAPI E_Connman_Element *e_connman_manager_get(void) EINA_ARG_NONNULL(1) EINA_PURE EINA_WARN_UNUSED_RESULT;
+  EAPI E_Connman_Element *e_connman_manager_get(void) EINA_PURE EINA_WARN_UNUSED_RESULT;
 
-  EAPI bool e_connman_manager_agent_register(const char *object_path, E_DBus_Method_Return_Cb cb, const void *data);
-  EAPI bool e_connman_manager_agent_unregister(const char *object_path, E_DBus_Method_Return_Cb cb, const void *data);
+  EAPI bool e_connman_manager_agent_register(const char *object_path, E_DBus_Method_Return_Cb cb, const void *data) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
+  EAPI bool e_connman_manager_agent_unregister(const char *object_path, E_DBus_Method_Return_Cb cb, const void *data) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
 
-  EAPI bool e_connman_manager_state_get(const char **state);
+  EAPI bool e_connman_manager_state_get(const char **state) EINA_PURE EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
 
-  EAPI bool e_connman_manager_offline_mode_get(bool *offline);
-  EAPI bool e_connman_manager_offline_mode_set(bool offline, E_DBus_Method_Return_Cb cb, const void *data);
+  EAPI bool e_connman_manager_offline_mode_get(bool *offline) EINA_PURE EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
+  EAPI bool e_connman_manager_offline_mode_set(bool offline, E_DBus_Method_Return_Cb cb, const void *data) EINA_WARN_UNUSED_RESULT;
 
-  EAPI bool e_connman_manager_profiles_get(unsigned int *count, E_Connman_Element ***p_elements);
-  EAPI bool e_connman_manager_devices_get(unsigned int *count, E_Connman_Element ***p_elements);
-  EAPI bool e_connman_manager_services_get(unsigned int *count, E_Connman_Element ***p_elements);
+  EAPI bool e_connman_manager_profiles_get(unsigned int *count, E_Connman_Element ***p_elements) EINA_WARN_UNUSED_RESULT;
+  EAPI bool e_connman_manager_devices_get(unsigned int *count, E_Connman_Element ***p_elements) EINA_WARN_UNUSED_RESULT;
+  EAPI bool e_connman_manager_services_get(unsigned int *count, E_Connman_Element ***p_elements) EINA_WARN_UNUSED_RESULT;
+
+  EAPI bool e_connman_manager_request_scan(const char *type, E_DBus_Method_Return_Cb cb, const void *data) EINA_WARN_UNUSED_RESULT;
+
+  EAPI bool e_connman_manager_technology_default_get(const char **type) EINA_ARG_NONNULL(1) EINA_PURE EINA_WARN_UNUSED_RESULT;
+
+  EAPI bool e_connman_manager_technology_enable(const char *type, E_DBus_Method_Return_Cb cb, const void *data) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
+  EAPI bool e_connman_manager_technology_disable(const char *type, E_DBus_Method_Return_Cb cb, const void *data) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
 
   // TODO: profile_create()
   // TODO: profile_remove()
   // TODO: profile_active_get()
   // TODO: profile_active_set()
-  // TODO: request_scan()
-  // TODO: technology_enable()
-  // TODO: technology_disable()
-  // TODO: technology_default_get()
   // TODO: technologies_available_get()
   // TODO: technologies_enabled_get()
   // TODO: technologies_connected_get()

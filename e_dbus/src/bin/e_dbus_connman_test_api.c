@@ -335,6 +335,7 @@ _test_element(E_Connman_Element *element, const struct test_desc *test_descs)
 static const struct test_desc test_desc_manager[] = {
   TEST_DESC_STRING_GET_GLOBAL(e_connman_manager_state_get, 0),
   TEST_DESC_BOOL_GET_GLOBAL(e_connman_manager_offline_mode_get, 0),
+  //TEST_DESC_STRING_SET_GLOBAL(e_connman_manager_request_scan, 0),
   //TEST_DESC_BOOL_SET_GLOBAL(e_connman_manager_offline_mode_set, 0),
   TEST_DESC_ELEMENTS_GET_GLOBAL(e_connman_manager_profiles_get, 0),
   TEST_DESC_ELEMENTS_GET_GLOBAL(e_connman_manager_devices_get, 0),
