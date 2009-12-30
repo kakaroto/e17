@@ -702,6 +702,7 @@ e_connman_element_free(E_Connman_Element *element)
    e_connman_element_pending_cancel_and_free(&element->_pending.property_set);
    e_connman_element_pending_cancel_and_free(&element->_pending.agent_register);
    e_connman_element_pending_cancel_and_free(&element->_pending.agent_unregister);
+   e_connman_element_pending_cancel_and_free(&element->_pending.request_scan);
    e_connman_element_pending_cancel_and_free(&element->_pending.device_propose_scan);
    e_connman_element_pending_cancel_and_free(&element->_pending.service_connect);
    e_connman_element_pending_cancel_and_free(&element->_pending.service_disconnect);
@@ -1521,8 +1522,8 @@ _e_connman_element_property_changed_callback(void *data, DBusMessage *msg)
    E_Connman_Element *element = (E_Connman_Element *)data;
    DBusMessageIter itr, v_itr;
    int t, r, changed = 0;
-   const char *name;
-   void *value;
+   const char *name = NULL;
+   void *value = NULL;
 
    DBG("Property changed in element %s", element->path);
 
@@ -1531,13 +1532,19 @@ _e_connman_element_property_changed_callback(void *data, DBusMessage *msg)
 
    t = dbus_message_iter_get_arg_type(&itr);
    if (!_dbus_iter_type_check(t, DBUS_TYPE_STRING))
-     ERR("missing name in property changed signal");
+     {
+	ERR("missing name in property changed signal");
+	return;
+     }
    dbus_message_iter_get_basic(&itr, &name);
 
    dbus_message_iter_next(&itr);
    t = dbus_message_iter_get_arg_type(&itr);
    if (!_dbus_iter_type_check(t, DBUS_TYPE_VARIANT))
-     ERR("missing value in property changed signal");
+     {
+	ERR("missing value in property changed signal");
+	return;
+     }
    dbus_message_iter_recurse(&itr, &v_itr);
    t = dbus_message_iter_get_arg_type(&v_itr);
 
@@ -1545,6 +1552,12 @@ _e_connman_element_property_changed_callback(void *data, DBusMessage *msg)
      value = _e_connman_element_iter_get_array(&v_itr, name);
    else if (t != DBUS_TYPE_INVALID)
      dbus_message_iter_get_basic(&v_itr, &value);
+   else
+     {
+	ERR("property has invalid type %s", name);
+	return;
+     }
+
    r = _e_connman_element_property_value_add(element, name, t, value);
    if (r < 0)
      ERR("failed to add property value %s (%c)", name, t);
