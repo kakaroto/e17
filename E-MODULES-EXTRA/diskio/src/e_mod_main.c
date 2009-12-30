@@ -253,8 +253,8 @@ _diskio_set(void *data)
 				 dummy6, dummy7, dummy8, bytes_r_new=0, bytes_w_new=0;
 
    inst = data;
-   if (!inst) return 0;
-   if (!inst->conf_item) return 0;
+   if (!inst) return 1;
+   if (!inst->conf_item) return 1;
 
    edje_object_part_text_set(inst->o_diskio, "e.text.display_name",
                              inst->conf_item->disk);
@@ -265,7 +265,7 @@ _diskio_set(void *data)
 	 { 
         edje_object_signal_emit(inst->o_diskio, "read,off", "");
         edje_object_signal_emit(inst->o_diskio, "write,off", "");
-		return 0;
+		return 1;
 	 }
 
    fgets(buffer, sizeof(buffer), statfile);
