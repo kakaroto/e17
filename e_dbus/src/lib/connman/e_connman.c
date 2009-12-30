@@ -50,12 +50,15 @@ const char *e_connman_prop_remember = NULL;
 const char *e_connman_prop_scan_interval = NULL;
 const char *e_connman_prop_scanning = NULL;
 const char *e_connman_prop_state = NULL;
-const char *e_connman_prop_strengh = NULL;
+const char *e_connman_prop_strength = NULL;
+const char *e_connman_prop_frequency = NULL;
 const char *e_connman_prop_type = NULL;
 const char *e_connman_prop_wifi_mode = NULL;
 const char *e_connman_prop_wifi_passphrase = NULL;
 const char *e_connman_prop_wifi_security = NULL;
 const char *e_connman_prop_wifi_ssid = NULL;
+const char *e_connman_prop_wifi_channel = NULL;
+const char *e_connman_prop_wifi_eap = NULL;
 const char *e_connman_prop_error = NULL;
 const char *e_connman_prop_mode = NULL;
 const char *e_connman_prop_security = NULL;
@@ -319,8 +322,10 @@ e_connman_system_init(E_DBus_Connection *edbus_conn)
      e_connman_prop_scanning = eina_stringshare_add("Scanning");
    if (e_connman_prop_state == NULL)
      e_connman_prop_state = eina_stringshare_add("State");
-   if (e_connman_prop_strengh == NULL)
-     e_connman_prop_strengh = eina_stringshare_add("Strength");
+   if (e_connman_prop_strength == NULL)
+     e_connman_prop_strength = eina_stringshare_add("Strength");
+   if (e_connman_prop_frequency == NULL)
+     e_connman_prop_frequency = eina_stringshare_add("Frequency");
    if (e_connman_prop_type == NULL)
      e_connman_prop_type = eina_stringshare_add("Type");
    if (e_connman_prop_wifi_mode == NULL)
@@ -331,6 +336,10 @@ e_connman_system_init(E_DBus_Connection *edbus_conn)
      e_connman_prop_wifi_security = eina_stringshare_add("WiFi.Security");
    if (e_connman_prop_wifi_ssid == NULL)
      e_connman_prop_wifi_ssid = eina_stringshare_add("WiFi.SSID");
+   if (e_connman_prop_wifi_channel == NULL)
+     e_connman_prop_wifi_channel = eina_stringshare_add("WiFi.Channel");
+   if (e_connman_prop_wifi_eap == NULL)
+     e_connman_prop_wifi_eap = eina_stringshare_add("WiFi.EAP");
    if (e_connman_prop_error == NULL)
      e_connman_prop_error = eina_stringshare_add("Error");
    if (e_connman_prop_mode == NULL)
@@ -431,12 +440,15 @@ e_connman_system_shutdown(void)
    _stringshare_del(&e_connman_prop_scan_interval);
    _stringshare_del(&e_connman_prop_scanning);
    _stringshare_del(&e_connman_prop_state);
-   _stringshare_del(&e_connman_prop_strengh);
+   _stringshare_del(&e_connman_prop_strength);
+   _stringshare_del(&e_connman_prop_frequency);
    _stringshare_del(&e_connman_prop_type);
    _stringshare_del(&e_connman_prop_wifi_mode);
    _stringshare_del(&e_connman_prop_wifi_passphrase);
    _stringshare_del(&e_connman_prop_wifi_security);
    _stringshare_del(&e_connman_prop_wifi_ssid);
+   _stringshare_del(&e_connman_prop_wifi_channel);
+   _stringshare_del(&e_connman_prop_wifi_eap);
    _stringshare_del(&e_connman_prop_error);
    _stringshare_del(&e_connman_prop_mode);
    _stringshare_del(&e_connman_prop_security);

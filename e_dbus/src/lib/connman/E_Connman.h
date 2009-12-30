@@ -270,6 +270,8 @@ extern "C" {
 
   EAPI bool e_connman_network_strength_get(const E_Connman_Element *network, unsigned char *strength) EINA_ARG_NONNULL(1, 2) EINA_PURE EINA_WARN_UNUSED_RESULT;
 
+  EAPI bool e_connman_network_frequency_get(const E_Connman_Element *network, unsigned short *frequency) EINA_ARG_NONNULL(1, 2) EINA_PURE EINA_WARN_UNUSED_RESULT;
+
   EAPI bool e_connman_network_device_get(const E_Connman_Element *network, E_Connman_Element **element) EINA_ARG_NONNULL(1, 2) EINA_PURE EINA_WARN_UNUSED_RESULT;
 
   EAPI bool e_connman_network_wifi_ssid_get(const E_Connman_Element *network, unsigned int *count, unsigned char **wifi_ssid) EINA_ARG_NONNULL(1, 2, 3) EINA_PURE EINA_WARN_UNUSED_RESULT;
@@ -278,10 +280,13 @@ extern "C" {
 
   EAPI bool e_connman_network_wifi_security_get(const E_Connman_Element *network, const char **wifi_security) EINA_ARG_NONNULL(1, 2) EINA_PURE EINA_WARN_UNUSED_RESULT;
 
-  EAPI bool e_connman_network_wifi_passphrase_get(const E_Connman_Element *network, const char **wifi_passphare) EINA_ARG_NONNULL(1, 2) EINA_PURE EINA_WARN_UNUSED_RESULT;
+  EAPI bool e_connman_network_wifi_passphrase_get(const E_Connman_Element *network, const char **wifi_passphrase) EINA_ARG_NONNULL(1, 2) EINA_PURE EINA_WARN_UNUSED_RESULT;
 
-  // TODO: wifi_channel_get (missing in their docs)
-  // TODO: wifi_eap_get (missing in their docs, only if ieee8021x)
+  EAPI bool e_connman_network_wifi_channel_get(const E_Connman_Element *network, unsigned short *wifi_channel) EINA_ARG_NONNULL(1, 2) EINA_PURE EINA_WARN_UNUSED_RESULT;
+
+  EAPI bool e_connman_network_wifi_eap_get(const E_Connman_Element *network, const char **wifi_eap) EINA_ARG_NONNULL(1, 2) EINA_PURE EINA_WARN_UNUSED_RESULT;
+
+
   // TODO: frequency_get (missing in their docs)
 
 #ifdef __cplusplus

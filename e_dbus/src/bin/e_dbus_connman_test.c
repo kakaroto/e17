@@ -846,6 +846,29 @@ _on_cmd_network_get_strength(char *cmd, char *args)
 }
 
 static int
+_on_cmd_network_get_frequency(char *cmd, char *args)
+{
+   char *path;
+   unsigned short frequency;
+   E_Connman_Element *e;
+
+   if (!args)
+     {
+	fputs("ERROR: missing the network path\n", stderr);
+	return 1;
+     }
+   _tok(args);
+   path = args;
+
+   e = e_connman_network_get(path);
+   if (e_connman_network_frequency_get(e, &frequency))
+     printf(":::Network %s Frequency = %#04hx (%d)\n", path, frequency, frequency);
+   else
+     fputs("ERROR: can't get network frequency\n", stderr);
+   return 1;
+}
+
+static int
 _on_cmd_network_get_device(char *cmd, char *args)
 {
    E_Connman_Element *e, *device;
@@ -959,6 +982,51 @@ _on_cmd_network_get_wifi_passphrase(char *cmd, char *args)
      printf(":::Network %s Wifi Passphrase = \"%s\"\n", path, wifi_passphrase);
    else
      fputs("ERROR: can't get network wifi passphrase\n", stderr);
+   return 1;
+}
+
+static int
+_on_cmd_network_get_wifi_channel(char *cmd, char *args)
+{
+   char *path;
+   E_Connman_Element *e;
+   unsigned short wifi_channel;
+
+   if (!args)
+     {
+	fputs("ERROR: missing the network path\n", stderr);
+	return 1;
+     }
+   _tok(args);
+   path = args;
+
+   e = e_connman_network_get(path);
+   if (e_connman_network_wifi_channel_get(e, &wifi_channel))
+     printf(":::Network %s Wifi Channel = %#02hx (%d)\n", path, wifi_channel, wifi_channel);
+   else
+     fputs("ERROR: can't get network wifi channel\n", stderr);
+   return 1;
+}
+
+static int
+_on_cmd_network_get_wifi_eap(char *cmd, char *args)
+{
+   const char *wifi_eap, *path;
+   E_Connman_Element *e;
+
+   if (!args)
+     {
+	fputs("ERROR: missing the network path\n", stderr);
+	return 1;
+     }
+   _tok(args);
+   path = args;
+
+   e = e_connman_network_get(path);
+   if (e_connman_network_wifi_eap_get(e, &wifi_eap))
+     printf(":::Network %s Wifi EAP = \"%s\"\n", path, wifi_eap);
+   else
+     fputs("ERROR: can't get network wifi eap\n", stderr);
    return 1;
 }
 
@@ -1645,11 +1713,14 @@ _on_input(void *data, Ecore_Fd_Handler *fd_handler)
      {"network_get_name", _on_cmd_network_get_name},
      {"network_get_connected", _on_cmd_network_get_connected},
      {"network_get_strength", _on_cmd_network_get_strength},
+     {"network_get_frequency", _on_cmd_network_get_frequency},
      {"network_get_device", _on_cmd_network_get_device},
      {"network_get_wifi_ssid", _on_cmd_network_get_wifi_ssid},
      {"network_get_wifi_mode", _on_cmd_network_get_wifi_mode},
      {"network_get_wifi_security", _on_cmd_network_get_wifi_security},
      {"network_get_wifi_passphrase", _on_cmd_network_get_wifi_passphrase},
+     {"network_get_wifi_channel", _on_cmd_network_get_wifi_channel},
+     {"network_get_wifi_eap", _on_cmd_network_get_wifi_eap},
      {"service_connect", _on_cmd_service_connect},
      {"service_disconnect", _on_cmd_service_disconnect},
      {"service_remove", _on_cmd_service_remove},

@@ -517,7 +517,7 @@ e_connman_service_strength_get(const E_Connman_Element *service, unsigned char *
    EINA_SAFETY_ON_NULL_RETURN_VAL(service, 0);
    EINA_SAFETY_ON_NULL_RETURN_VAL(strength, 0);
    return e_connman_element_property_get_stringshared
-     (service, e_connman_prop_strengh, NULL, strength);
+     (service, e_connman_prop_strength, NULL, strength);
 }
 
 /**

@@ -123,7 +123,31 @@ e_connman_network_strength_get(const E_Connman_Element *network, unsigned char *
    EINA_SAFETY_ON_NULL_RETURN_VAL(network, 0);
    EINA_SAFETY_ON_NULL_RETURN_VAL(strength, 0);
    return e_connman_element_property_get_stringshared
-     (network, e_connman_prop_strengh, NULL, strength);
+     (network, e_connman_prop_strength, NULL, strength);
+}
+
+/**
+ * Get property "Frequency" value.
+ *
+ * If this property isn't found then 0 is returned.
+ * If zero is returned, then this call failed and parameter-returned
+ * values shall be considered invalid.
+ *
+ * Indicates the frequency of the network.
+ *
+ * @param network path to get property.
+ * @param frequency where to store the property value, must be a pointer
+ *        to uint16 (unsigned short*).
+ *
+ * @return 1 on success, 0 otherwise.
+ */
+bool
+e_connman_network_frequency_get(const E_Connman_Element *network, unsigned short *frequency)
+{
+   EINA_SAFETY_ON_NULL_RETURN_VAL(network, 0);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(frequency, 0);
+   return e_connman_element_property_get_stringshared
+     (network, e_connman_prop_frequency, NULL, frequency);
 }
 
 /**
@@ -275,4 +299,57 @@ e_connman_network_wifi_passphrase_get(const E_Connman_Element *network, const ch
    EINA_SAFETY_ON_NULL_RETURN_VAL(wifi_passphrase, 0);
    return e_connman_element_property_get_stringshared
      (network, e_connman_prop_wifi_passphrase, NULL, wifi_passphrase);
+}
+
+/**
+ * Get property "WiFi.Channel" value.
+ *
+ * If this property isn't found then 0 is returned.
+ * If zero is returned, then this call failed and parameter-returned
+ * values shall be considered invalid.
+ *
+ * Indicates the channel this network is.
+ *
+ * @param network path to get property.
+ * @param channel where to store the property value, must be a pointer
+ *        to uint16 (unsigned short*).
+ *
+ * @return 1 on success, 0 otherwise.
+ */
+bool
+e_connman_network_wifi_channel_get(const E_Connman_Element *network, unsigned short *wifi_channel)
+{
+   EINA_SAFETY_ON_NULL_RETURN_VAL(network, 0);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(wifi_channel, 0);
+   return e_connman_element_property_get_stringshared
+     (network, e_connman_prop_wifi_channel, NULL, wifi_channel);
+}
+
+/**
+ * Get property "WiFi.EAP" value.
+ *
+ * If this property isn't found then 0 is returned.
+ * If zero is returned, then this call failed and parameter-returned
+ * values shall be considered invalid.
+ *
+ * This property is only available if WiFi.Security is "ieee8021x".
+ *
+ * For systems using PolicyKit, the access to this value
+ * will be protected by the security policy.
+ *
+ * @param network path to get property.
+ * @param wifi_eap where to store the property value, must be a pointer
+ *        to string (const char **), it will not be allocated or
+ *        copied and references will be valid until element changes,
+ *        so copy it if you want to use it later.
+ *
+ * @return 1 on success, 0 otherwise.
+ */
+bool
+e_connman_network_wifi_eap_get(const E_Connman_Element *network, const char **wifi_eap)
+{
+   EINA_SAFETY_ON_NULL_RETURN_VAL(network, 0);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(wifi_eap, 0);
+   return e_connman_element_property_get_stringshared
+     (network, e_connman_prop_wifi_eap, NULL, wifi_eap);
 }

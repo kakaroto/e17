@@ -369,11 +369,14 @@ static const struct test_desc test_desc_network[] = {
   TEST_DESC_STRING_GET(e_connman_network_name_get, 0),
   TEST_DESC_BOOL_GET(e_connman_network_connected_get, 0),
   TEST_DESC_UCHAR_GET(e_connman_network_strength_get, 1),
+  TEST_DESC_USHORT_GET(e_connman_network_frequency_get, 1),
   TEST_DESC_ELEMENT_GET(e_connman_network_device_get, 0),
   TEST_DESC_UCHAR_ARRAY_GET(e_connman_network_wifi_ssid_get, 1),
   TEST_DESC_STRING_GET(e_connman_network_wifi_mode_get, 1),
   TEST_DESC_STRING_GET(e_connman_network_wifi_security_get, 1),
   TEST_DESC_STRING_GET(e_connman_network_wifi_passphrase_get, 1),
+  TEST_DESC_USHORT_GET(e_connman_network_wifi_channel_get, 1),
+  TEST_DESC_STRING_GET(e_connman_network_wifi_eap_get, 1),
   TEST_DESC_SENTINEL
 };
 
