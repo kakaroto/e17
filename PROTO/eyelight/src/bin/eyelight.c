@@ -355,6 +355,7 @@ static const Ecore_Getopt options = {
                     ecore_getopt_callback_ecore_evas_list_engines, NULL),
             ECORE_GETOPT_STORE_TRUE('d', "display-areas", "display the borders of each area"),
             ECORE_GETOPT_STORE_STR('b', "no-thumbs-bg", "deactivate the creation of the thumbnails list in the background, saves a lot of memory, some mode (expose, slideshow) will be slow"),
+            ECORE_GETOPT_STORE_TRUE('H', "hd", "Display the presentation with a default size of 1280x720"),
             ECORE_GETOPT_HELP('h', "help"),
             ECORE_GETOPT_SENTINEL
         }
@@ -372,6 +373,10 @@ int main(int argc, char*argv[])
     char* presentation = NULL;
     unsigned char with_border = 0;
     unsigned char no_thumbs_bg = 0;
+    unsigned char hd = 0;
+
+    Evas_Coord sizew = 1024;
+    Evas_Coord sizeh = 768;
 
     if (!ecore_init()) {
         evas_shutdown ();
@@ -397,6 +402,7 @@ int main(int argc, char*argv[])
         ECORE_GETOPT_VALUE_BOOL(engines_listed),
         ECORE_GETOPT_VALUE_BOOL(with_border),
         ECORE_GETOPT_VALUE_BOOL(no_thumbs_bg),
+        ECORE_GETOPT_VALUE_BOOL(hd),
         ECORE_GETOPT_VALUE_BOOL(exit_option),
     };
 
@@ -426,12 +432,18 @@ int main(int argc, char*argv[])
         exit(EXIT_FAILURE);
     }
 
+    if(hd)
+    {
+        sizew = 1280;
+        sizeh = 720;
+    }
+
     if(!engine)
     {
-        ee = ecore_evas_software_x11_new (NULL, 0,  0, 0, 1024, 768);
+        ee = ecore_evas_software_x11_new (NULL, 0,  0, 0, sizew, sizeh);
         if (!ee) {
             printf ("Can not find Software X11 engine. Trying DirectDraw engine...\n");
-            ee = ecore_evas_software_ddraw_new (NULL,  0, 0, 1024, 768);
+            ee = ecore_evas_software_ddraw_new (NULL,  0, 0, sizew, sizeh);
             if (!ee) {
                 fprintf (stderr,"Can not find DirectDraw engine.\n");
                 evas_shutdown ();
@@ -442,8 +454,9 @@ int main(int argc, char*argv[])
     }
     else
     {
-        ee = ecore_evas_new(engine, 0, 0, 1024, 768, NULL);
+        ee = ecore_evas_new(engine, 0, 0, sizew, sizeh, NULL);
     }
+
     if(!ee)
     {
         fprintf(stderr,"Failed to init the evas engine! \n");
@@ -469,7 +482,7 @@ int main(int argc, char*argv[])
     eyelight_object_presentation_file_set(eyelight_smart, presentation);
     eyelight_object_border_set(eyelight_smart, with_border);
     evas_object_move(eyelight_smart,0,0);
-    evas_object_resize(eyelight_smart, 1024, 768);
+    evas_object_resize(eyelight_smart, sizew, sizeh);
     evas_object_show(eyelight_smart);
 
     container= evas_object_rectangle_add(evas);
@@ -480,8 +493,7 @@ int main(int argc, char*argv[])
     evas_object_event_callback_add(container,EVAS_CALLBACK_MOUSE_UP, mouse_event_up_cb, NULL);
     evas_object_repeat_events_set(container,1);
     evas_object_show(container);
-    evas_object_resize(container, 1024,768);
-
+    evas_object_resize(container, sizew, sizeh);
 
     evas_object_raise(container);
 
