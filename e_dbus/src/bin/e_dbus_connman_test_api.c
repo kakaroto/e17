@@ -358,6 +358,7 @@ static const struct test_desc test_desc_device[] = {
 
 static const struct test_desc test_desc_profile[] = {
   TEST_DESC_STRING_GET(e_connman_profile_name_get, 1),
+  //TEST_DESC_STRING_SET(e_connman_profile_name_set, 1),
   TEST_DESC_BOOL_GET(e_connman_profile_offline_mode_get, 0),
   //TEST_DESC_BOOL_SET(e_connman_profile_offline_mode_set, 0),
   TEST_DESC_ELEMENTS_GET(e_connman_profile_services_get, 1),

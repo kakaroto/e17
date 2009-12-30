@@ -107,14 +107,14 @@ extern "C" {
 
   /* Profile Methods */
   EAPI E_Connman_Element *e_connman_profile_get(const char *path) EINA_ARG_NONNULL(1) EINA_PURE EINA_WARN_UNUSED_RESULT;
+
   EAPI bool e_connman_profile_name_get(const E_Connman_Element *profile, const char **name) EINA_ARG_NONNULL(1, 2) EINA_PURE EINA_WARN_UNUSED_RESULT;
+  EAPI bool e_connman_profile_name_set(E_Connman_Element *profile, const char *name, E_DBus_Method_Return_Cb cb, const void *data) EINA_ARG_NONNULL(1, 2) EINA_WARN_UNUSED_RESULT;
 
   EAPI bool e_connman_profile_offline_mode_get(const E_Connman_Element *profile, bool *offline) EINA_ARG_NONNULL(1, 2) EINA_PURE EINA_WARN_UNUSED_RESULT;
   EAPI bool e_connman_profile_offline_mode_set(E_Connman_Element *profile, bool offline, E_DBus_Method_Return_Cb cb, const void *data) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
 
   EAPI bool e_connman_profile_services_get(const E_Connman_Element *profile, unsigned int *count, E_Connman_Element ***p_elements) EINA_ARG_NONNULL(1, 2, 3) EINA_PURE EINA_WARN_UNUSED_RESULT;
-
-  // TODO: name_set()
 
 
   /* Services Methods */
@@ -286,8 +286,6 @@ extern "C" {
 
   EAPI bool e_connman_network_wifi_eap_get(const E_Connman_Element *network, const char **wifi_eap) EINA_ARG_NONNULL(1, 2) EINA_PURE EINA_WARN_UNUSED_RESULT;
 
-
-  // TODO: frequency_get (missing in their docs)
 
 #ifdef __cplusplus
 }

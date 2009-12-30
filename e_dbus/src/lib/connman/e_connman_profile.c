@@ -27,7 +27,7 @@ e_connman_profile_get(const char *path)
  * If zero is returned, then this call failed and parameter-returned
  * values shall be considered invalid.
  *
- * The profile name.
+ * The profile name, if set with e_connman_profile_name_set()
  *
  * @param profile path to get property.
  * @param name where to store the property value, must be a pointer
@@ -36,6 +36,7 @@ e_connman_profile_get(const char *path)
  *        so copy it if you want to use it later.
  *
  * @return 1 on success, 0 otherwise.
+ * @see e_connman_profile_name_set()
  */
 bool
 e_connman_profile_name_get(const E_Connman_Element *profile, const char **name)
@@ -44,6 +45,28 @@ e_connman_profile_name_get(const E_Connman_Element *profile, const char **name)
    EINA_SAFETY_ON_NULL_RETURN_VAL(name, 0);
    return e_connman_element_property_get_stringshared
      (profile, e_connman_prop_name, NULL, name);
+}
+
+/**
+ * Call method SetProperty("Name", name) at the given element on server.
+ *
+ * This is a server call, not local, so it may fail and in that case
+ * no property is updated locally. If the value was set the event
+ * E_CONNMAN_EVENT_ELEMENT_UPDATED will be added to main loop.
+ *
+ * @param name value to set.
+ * @param cb function to call when server replies or some error happens.
+ * @param data data to give to cb when it is called.
+ *
+ * @return 1 on success, 0 otherwise.
+ * @see e_connman_profile_name_get()
+ */
+bool
+e_connman_profile_name_set(E_Connman_Element *profile, const char *name, E_DBus_Method_Return_Cb cb, const void *data)
+{
+   EINA_SAFETY_ON_NULL_RETURN_VAL(profile, 0);
+   return e_connman_element_property_set_full
+     (profile, e_connman_prop_name, DBUS_TYPE_STRING, name, cb, data);
 }
 
 /**

@@ -673,6 +673,34 @@ _on_cmd_profile_get_name(char *cmd, char *args)
 }
 
 static int
+_on_cmd_profile_set_name(char *cmd, char *args)
+{
+   char *path, *next_args;
+   E_Connman_Element *e;
+
+   if (!args)
+     {
+	fputs("ERROR: missing the profile path\n", stderr);
+	return 1;
+     }
+   path = args;
+   next_args = _tok(args);
+   if (!next_args)
+     {
+	fputs("ERROR: missing the offline mode value\n", stderr);
+	return 1;
+     }
+   _tok(next_args);
+
+   e = e_connman_profile_get(path);
+   if (e_connman_profile_name_set(e, next_args, NULL, NULL))
+     printf(":::Profile %s Name set to %hhu\n", path, next_args);
+   else
+     fputs("ERROR: can't set profile name\n", stderr);
+   return 1;
+}
+
+static int
 _on_cmd_profile_get_offline_mode(char *cmd, char *args)
 {
    char *path;
@@ -1706,6 +1734,7 @@ _on_input(void *data, Ecore_Fd_Handler *fd_handler)
      {"device_get_scanning", _on_cmd_device_get_scanning},
      {"device_get_networks", _on_cmd_device_get_networks},
      {"profile_get_name", _on_cmd_profile_get_name},
+     {"profile_set_name", _on_cmd_profile_set_name},
      {"profile_get_offline_mode", _on_cmd_profile_get_offline_mode},
      {"profile_set_offline_mode", _on_cmd_profile_set_offline_mode},
      {"profile_get_services", _on_cmd_profile_get_services},
