@@ -9,11 +9,11 @@ But only valid language folders will be considered, a valid language folder
 consists of at least a:
 
     *   home.html.php
-    *   messages.php
+    *   messages.inc.php
 
 Keep the filenames intact, the english page names are used as the ID, you can
-localize your page name in messages.php I created a minimal spanish translation
-to serve as an example.
+localize your page name in messages.inc.php I created a minimal spanish
+translation to serve as an example.
 
 When someone visits a page a list of languages available for that page will be
 displayed. When someone selects it the language will be added to the vistor's
@@ -25,7 +25,7 @@ displayed.
 Adding new pages
 ================
 Besides adding the `.html.php` file in your language's folder you have to
-update `messages.php` since its used to display the page name, even in the
+update `messages.inc.php` since its used to display the page name, even in the
 fallback language.
 
 

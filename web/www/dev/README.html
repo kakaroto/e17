@@ -317,149 +317,214 @@ additional details.</p>
 /index.php               Those who want to hack the php code.
 /lib/*.php               Those who want to hack the php code.
 /pages/README.rst.txt    Those who want to add content or translate it.
+/SITEMAP.rst.txt         Those who want to add content or translate it.
 /style/README.rst.txt    Those who want to change the desing of the website.
 /news/README.rst.txt     Those who want to add news articles.
 </pre>
 <p>All these README files reveal some inner workings of each system that someone
 hacking the php code might be interested, these explanations are really simple
 and usually atop of the file.</p>
-<p>All readme files have prettier html versions genrated with restructured text,
-any standard pythong installation with docutils should contain this command:</p>
+<p>All README files have prettier HTML versions generated with restructured text,
+any standard python installation with docutils should contain this command:</p>
 <pre class="literal-block">
 rst2html README.rst.txt &gt; README.html
 </pre>
+<div class="contents topic" id="contents">
+<p class="topic-title first">Contents</p>
+<ul class="simple">
+<li><a class="reference internal" href="#directory-structure" id="id1">Directory Structure</a></li>
+<li><a class="reference internal" href="#todo" id="id2">TODO</a><ul>
+<li><a class="reference internal" href="#stage-1-brochure-pages" id="id3">Stage 1: Brochure pages</a></li>
+<li><a class="reference internal" href="#stage-2-wiki-reorganization" id="id4">Stage 2: Wiki reorganization</a></li>
+<li><a class="reference internal" href="#stage-3-design-of-external-sites-and-doxygen" id="id5">Stage 3: Design of External sites and Doxygen</a><ul>
+<li><a class="reference internal" href="#notes-about-stage-3" id="id6">Notes about stage 3</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#stage-4-polish-the-brochures" id="id7">Stage 4: Polish the brochures</a></li>
+<li><a class="reference internal" href="#stage-5-polish-the-external-sites" id="id8">Stage 5: <strong>Polish the external sites</strong></a></li>
+</ul>
+</li>
+</ul>
+</div>
 <div class="section" id="directory-structure">
-<h1>Directory Structure</h1>
+<h1><a class="toc-backref" href="#id1">Directory Structure</a></h1>
 <pre class="literal-block">
-.cache/                 &lt;- Cache file, to force a reload `touch` it.
-lib/                    &lt;- our own and and 3rd party libs
-images/                 &lt;- Image folder for the content.
-images/home             &lt;- Image folder for the content on the home, etc.
+.cache/                  &lt;- Cache file, to force a reload `touch` it.
+lib/                     &lt;- our own and and 3rd party libs
+images/                  &lt;- Image folder for the content.
+images/home              &lt;- Image folder for the content on the home, etc.
 style/
-    css/                &lt;- CSS and grid.php to generate the semantic grids.
-    images/             &lt;- Images for the design.
-pages/                  &lt;- Website contents and main layout files.
-    english/            &lt;- Content files for the english language.
-        home.html.php   &lt;- Content with spiced-up-markup for the home
-        messages.php    &lt;- Localized page names and messages.
+    css/                 &lt;- CSS and grid.php to generate the semantic grids.
+    images/              &lt;- Images for the design.
+pages/                   &lt;- Website contents and main layout files.
+    english/             &lt;- Content files for the english language.
+        home.html.php    &lt;- Content with spiced-up-markup for the home
+        messages.inc.php &lt;- Localized page names and messages.
         ..
     ..
-materials/              &lt;- (or dev/materials) Various design resources.
-index.php               &lt;- The website's spine.
+materials/               &lt;- (or dev/materials) Various design resources.
+index.php                &lt;- The website's spine.
 </pre>
 </div>
 <div class="section" id="todo">
-<h1>TODO</h1>
-<ol class="arabic">
-<li><p class="first">Cleanup current design (mostly display:none), move around elements, resize
-some things, add some extra margins. For all pages. Vertical rhythm.</p>
-</li>
-<li><p class="first">Cleanup code from index.php, remove unnecessary handlers. Use a controller
-folder?</p>
-</li>
-<li><p class="first">Profile the code execution. How much is time is really lifiting content from
-planet and exchange? How much time does configure and before consume?</p>
-</li>
-<li><p class="first">Implement sort by rating (before the &amp;limit=n kicks in) in the
-exchange.enlightenment.org feed generator. I tried but the amount of code
-overwelmed me. I will have to spend time learning sympony to do this and I
-don't have it right now.</p>
-</li>
-<li><p class="first">Add some spanish content</p>
+<h1><a class="toc-backref" href="#id2">TODO</a></h1>
+<div class="section" id="stage-1-brochure-pages">
+<h2><a class="toc-backref" href="#id3">Stage 1: Brochure pages</a></h2>
 <ol class="arabic simple">
-<li>pages/español/messages.php</li>
-<li>pages/español/home.php</li>
-<li>news/español/ante-ultima</li>
+<li><em>(DONE: awayting for feedback)</em> Design a complete
+sitemap with stub content that includes the relationship between the
+wiki and the brochures, most content is going to the wiki, I agree with
+that, the brochures are an adverstiment and a portal to the wiki.</li>
+<li>Write the markup with the stub content.</li>
+<li>Merge the content written by raster into the stub pages.</li>
+<li>Merge the content I wrote in other places into and write the remaining
+content (not much).</li>
+<li>Generate the layout for these pages using the semantic grid system I
+already made (currently based on blueprint), fix the vertical rythm of
+some of the objects and and cleanup the unnecessary objects.</li>
+<li>Add the (new) graphical elements to the design, change all colors to match
+the pallete, replace some of the blueprint's default design decisions with
+my own.</li>
+<li>Create the stubs for the wiki pages pointed from the brochures.</li>
+<li><strong>Release the brochure pages into the main site</strong></li>
+</ol>
+</div>
+<div class="section" id="stage-2-wiki-reorganization">
+<h2><a class="toc-backref" href="#id4">Stage 2: Wiki reorganization</a></h2>
+<ol class="arabic simple">
+<li>Write the rest of content of the perviously mentioned stub pages. These
+pages might point to other stub pages if there was not content available
+to be used.</li>
+<li>Merge existing content in subdomains like svn.enlightenment.org and
+packages into the wiki.</li>
+<li>Merge the content of the older E17 user guide into a new, <strong>smaller</strong> one
+as outlined by the sitemap.</li>
+<li>Add special CSS to trac.e.org so certiain elements from the content float
+next to eachother like the brochure pages in the main wiki pages, only
+that, no other design update for any other page.</li>
+<li><strong>Announce the wiki restructurization and explain the general idea.</strong></li>
+</ol>
+</div>
+<div class="section" id="stage-3-design-of-external-sites-and-doxygen">
+<h2><a class="toc-backref" href="#id5">Stage 3: Design of External sites and Doxygen</a></h2>
+<ol class="arabic simple">
+<li><a class="reference external" href="http://trac.enlightenment.org/">http://trac.enlightenment.org/</a><ol class="arabic">
+<li>Remove a lot of crap hanging around the interface (markup).</li>
+<li>Implement the new design matching the brochure pages..</li>
 </ol>
 </li>
-<li><p class="first">Test the localization.</p>
-</li>
-<li><p class="first">Commit changes (perhaps the last commit?).</p>
-</li>
-<li><p class="first">Write the content of the &quot;brochure&quot; pages that still contain stubs (the
-content is outlined in <cite>materials/README.site_map.txt</cite>):</p>
-<blockquote>
-<ol class="arabic simple">
-<li>desktop</li>
-<li>development</li>
-<li>introduction and resources for artists</li>
+<li><a class="reference external" href="http://exchange.enlightenment.org/">http://exchange.enlightenment.org/</a><ol class="arabic">
+<li>Implement the new design matching the brochure pages.</li>
+<li>Ask the developer to implement sort by rating (before the &amp;limit=n
+kicks in) in the feed generator. I tried but the amount
+of code overwelmed me. I will have to spend time learning sympony
+to do this and I don't have it right now.</li>
 </ol>
-</blockquote>
 </li>
-<li><p class="first">Insert the new semantic grid generator I developed apart from this site
-instead of the currently used one and update the template file.</p>
+<li>Subdomains that will be removed or redirected.<ol class="arabic">
+<li><a class="reference external" href="http://svn.enlightenment.org/">http://svn.enlightenment.org/</a> Move the content to a wiki page and
+redirect the visitors there.</li>
+<li><a class="reference external" href="http://packages.enlightenment.org/">http://packages.enlightenment.org/</a> Move the content to a wiki page and
+redirect the visitors there.</li>
+<li><a class="reference external" href="http://docs.enlightenment.org/">http://docs.enlightenment.org/</a> Should redirect visitors to a wiki page
+that will now be used as index for documentation instead of the docs
+page as it does now.</li>
+<li><a class="reference external" href="http://bugs.enlightenment.org/">http://bugs.enlightenment.org/</a> Redirect to trac bug reporting page.</li>
+<li><a class="reference external" href="http://bugzilla.enlightenment.org/">http://bugzilla.enlightenment.org/</a> Redirect to trac bug reporting page.</li>
+<li><a class="reference external" href="http://trac.enlightenment.org/">http://trac.enlightenment.org/</a> should automatically redirect to <cite>/e</cite>
+right now it displays a very unproffesional error page.</li>
+<li><a class="reference external" href="http://wiki.enlightenment.org/">http://wiki.enlightenment.org/</a> Remove it already, all the non traspased
+content at this point will be lost, most of which was written by me :(
+...but screw it.</li>
+</ol>
 </li>
-<li><p class="first">Improve news system</p>
+<li>Subdomains or external pages that will be redesigned at this point.<ol class="arabic">
+<li><a class="reference external" href="http://www.enlightenment.org/donate/">http://www.enlightenment.org/donate/</a> will be added to the
+brochure page system and redesigned so it can be translated in the
+future.</li>
+</ol>
+</li>
+<li>Redesign doxygen for the core libraries and any other generated content
+that I don't know off to match the new style of the site.</li>
+<li><strong>Announce something?</strong></li>
+</ol>
+<div class="section" id="notes-about-stage-3">
+<h3><a class="toc-backref" href="#id6">Notes about stage 3</a></h3>
+<ul class="simple">
+<li>Subdomains and external pages that will be redesigned during <strong>Stage 6</strong><ul>
+<li><a class="reference external" href="http://planet.enlightenment.org/">http://planet.enlightenment.org/</a></li>
+<li><a class="reference external" href="http://l10n.enlightenment.org/">http://l10n.enlightenment.org/</a></li>
+<li><a class="reference external" href="http://git.enlightenment.org/">http://git.enlightenment.org/</a></li>
+</ul>
+</li>
+<li>Subdomains and external pages I don't now what the hell I should do.<ul>
+<li><a class="reference external" href="http://fr.enlightenment.org/">http://fr.enlightenment.org/</a> looks like a cool community page to be
+linked from the community brochure page, should I ask to redesign it?</li>
+<li><a class="reference external" href="http://forum.enlightenment.org/">http://forum.enlightenment.org/</a> Seems to be ignored by developers yet
+used by the users. Should I redesign it and include it in the
+community brochure page or remove it?</li>
+<li><a class="reference external" href="http://download.enlightenment.org/">http://download.enlightenment.org/</a> What is this for? It should it be
+redesigned, ignored or removed?. I can make a simple redesign of the
+files apache uses for the directory listing if needed.</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div class="section" id="stage-4-polish-the-brochures">
+<h2><a class="toc-backref" href="#id7">Stage 4: Polish the brochures</a></h2>
 <ol class="arabic simple">
+<li>Cleanup code from index.php, remove unnecessary handlers. Use a
+controller folder?</li>
+<li>Add the new sorted by rating + limit to the exchange theme getter.</li>
+<li>Improve news system<ol class="arabic">
 <li>Add missing date filters for the news system.</li>
 <li>Match formats of the dates displayed for planet articles and local
 articles.</li>
 </ol>
 </li>
-<li><p class="first"><em>¿Add a list of applications (similar to the list of themes) in exchange to
-the home page? ¿Or add it to the desktop shell page (after all named
-community)?</em></p>
+<li>Profile the code execution. How much is time is really lifiting content
+from planet and exchange? How much time does configure and before
+consume?. etc</li>
+<li>Make the cache_refresh system a daemon and remove the call from before();</li>
+<li>Add some spanish content<ol class="arabic">
+<li>pages/español/messages.inc.php</li>
+<li>pages/español/home.html.php</li>
+<li>news/español/one-of-the-latter-news-file</li>
+<li>Test the localization (I had already tested it while I developed it by
+adding pages that consisted on random function calls, useless menus
+and &quot;I'm Jennifer Lopez, I like tacos and burritos&quot; as content this is
+simply an &quot;official testing&quot;).</li>
+</ol>
 </li>
-<li><p class="first">Merge the donation page and code.</p>
-</li>
-<li><p class="first">Add the wiki pages refered from the brochure pages that do not exist yet.
-Mostly merging existent pages and writting some additional content.</p>
-</li>
-<li><p class="first">Modify the enlightenment.org &quot;official&quot; palette to include greyscale with
-the same values.</p>
-</li>
-<li><p class="first"><strong>Do the &quot;decorative&quot; part of the design for all pages.</strong></p>
-</li>
-<li><p class="first">Commit and ask for feedback on the mailing list</p>
-</li>
-<li><p class="first">Search a way for the content writers and translators to tidy-up the
+<li>Search a way for the content writers and translators to tidy-up the
 <cite>.html.php</cite> files for indentation and wrapping without HTMLtidy, which
 fucks up the php tags. Shouldn't be that hard, actually, as I don't intend
-to validate the markup in any way, simply indent tags and wrap text.</p>
-</li>
-<li><p class="first"><strong>If everything is well is it time to reeplace the old website?</strong></p>
-</li>
-<li><p class="first">Redierct <a class="reference external" href="http://trac.enlightenment.org/">http://trac.enlightenment.org/</a> to <a class="reference external" href="http://trac.enlightenment.org/e">http://trac.enlightenment.org/e</a>
-right now it displays an error message.</p>
-</li>
-<li><p class="first">Do a throrough reestructuring and reorganization of the Trac wiki, most of
-these are written partially or totally, some of the content is still in the
-old wiki, specially the pages outlined in the <cite>README.site_map.txt</cite> file
-inside the materials folder:</p>
+to validate the markup in any way, simply indent tags and wrap text.</li>
+<li><strong>The translation fest can start now</strong></li>
+</ol>
+</div>
+<div class="section" id="stage-5-polish-the-external-sites">
+<h2><a class="toc-backref" href="#id8">Stage 5: <strong>Polish the external sites</strong></a></h2>
 <ol class="arabic simple">
-<li>main page: Split between Developers, Users and Artists.</li>
-<li>Create an index for manuals &amp; API references</li>
-<li>Create a minimized user guide without explaining every single dialog, if
-you need a manual to explain a configuration dialog <strong>your dialog is
-broken</strong></li>
-<li>Create a COMPLETE contributing page with an invitation and explanations
-for coders, translators, etc (most of this was written already)</li>
+<li><a class="reference external" href="http://trac.enlightenment.org/">http://trac.enlightenment.org/</a><ol class="arabic">
+<li>Determine an standard for translated wiki articles in trac.</li>
+<li><em>whisful thinking</em> I can program a module to create a web based
+front-end to the mailing list for registered users that reesmebles a
+forum with a trusted user system to prevent spam.</li>
 </ol>
 </li>
-<li><p class="first">Redesign doxygen, trac, exchange, themes etc.</p>
-<ol class="arabic simple">
-<li>wtf is <a class="reference external" href="http://l10n.enlightenment.org">http://l10n.enlightenment.org</a>? are there other subdomains? we
-hould remove them most of them and move their content to the wiki. ONLY
-the subdomains that can't be removed will be redisgned.</li>
-</ol>
-</li>
-<li><p class="first">Things I would like to add to exchange.enlightenment.org</p>
-<ol class="arabic simple">
+<li><a class="reference external" href="http://exchange.enlightenment.org/">http://exchange.enlightenment.org/</a><ol class="arabic">
 <li>Some sort of forum or other community feature besides comments.</li>
 <li>Merge login system with trac's.</li>
 <li>Automatic, server-side screenshot generation.</li>
 </ol>
 </li>
-<li><p class="first">Things I would like to add to trac sometime.</p>
-<blockquote>
-<ol class="arabic simple">
-<li>Remove a lot of crap hanging around the interface.</li>
-<li>A web based front-end to the mailing list for registered users that
-reesmebles a forum with a trusted user system to prevent spam.</li>
+<li>Redesign the rest of the external pages as outlined in <strong>Stage: 4</strong>.</li>
+<li><strong>Now we are a complete and consistent website and community that rivals not
+only other open source projects but corporations like redhat, etc.</strong></li>
 </ol>
-</blockquote>
-</li>
-</ol>
+</div>
 </div>
 </div>
 </body>

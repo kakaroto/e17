@@ -63,8 +63,8 @@ function _messages_init ($language)
     $messages = array ();
     if ( !$messages = cache("array.messages[$language]") )
     {
-        $path = file_path(option('pages_dir'), $language, 'messages.php');
-        $fall = file_path(option('pages_dir'), option('fallback_language'), 'messages.php');
+        $path = file_path(option('pages_dir'), $language, 'messages.inc.php');
+        $fall = file_path(option('pages_dir'), option('fallback_language'), 'messages.inc.php');
 
         if ( !file_exists($fall) )
             halt("Required message file '$fall' does not exist");

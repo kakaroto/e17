@@ -79,7 +79,7 @@ function _languages_init ( )
             if ( is_dir($path) ) {
                 if ( !file_exists(file_path($path, 'home.html.php')) )
                     unset($nodes[$i]);
-                if ( !file_exists(file_path($path, 'messages.php')) )
+                if ( !file_exists(file_path($path, 'messages.inc.php')) )
                     unset($nodes[$i]);
 
             } else

@@ -1,4 +1,11 @@
 <?php
+/**
+    This cache system is simple but works well, I have benchmarked it and fared
+    very well. The only thing we need is  to remove calls to cache_reset()
+    and replace it with a simple daemon that cleanups the cache files
+    following more advanced parameters.
+*/
+
 date_default_timezone_set("UTC");
 
 function cache_init ()

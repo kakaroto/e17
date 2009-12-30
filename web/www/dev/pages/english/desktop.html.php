@@ -140,7 +140,7 @@
 </div>
 
 <div id="contribute">
-    <h3>Contribute</h4>
+    <h3>Contribute</h3>
 
     <div class="bugs">
         <h4>Reporting Bugs</h4>
