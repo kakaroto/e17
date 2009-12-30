@@ -151,6 +151,8 @@ extern "C" {
 
   EAPI bool e_connman_service_favorite_get(const E_Connman_Element *service, bool *favorite) EINA_ARG_NONNULL(1, 2) EINA_PURE EINA_WARN_UNUSED_RESULT;
 
+  EAPI bool e_connman_service_immutable_get(const E_Connman_Element *service, bool *immutable) EINA_ARG_NONNULL(1, 2) EINA_PURE EINA_WARN_UNUSED_RESULT;
+
   EAPI bool e_connman_service_auto_connect_get(const E_Connman_Element *service, bool *auto_connect) EINA_ARG_NONNULL(1, 2) EINA_PURE EINA_WARN_UNUSED_RESULT;
   EAPI bool e_connman_service_auto_connect_set(E_Connman_Element *service, bool auto_connect, E_DBus_Method_Return_Cb cb, const void *data) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
 
@@ -169,7 +171,6 @@ extern "C" {
 
   EAPI bool e_connman_service_ipv4_address_get(const E_Connman_Element *service, const char **address) EINA_ARG_NONNULL(1, 2) EINA_PURE EINA_WARN_UNUSED_RESULT;
 
-  // TODO: immutable_get
   // TODO: ipv4_netmask_get
   // TODO: ipv4_gateway_get
   // TODO: ipv4_configuration_metod_get

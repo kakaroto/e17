@@ -52,6 +52,7 @@ extern const char *e_connman_prop_security;
 extern const char *e_connman_prop_passphrase;
 extern const char *e_connman_prop_passphrase_required;
 extern const char *e_connman_prop_favorite;
+extern const char *e_connman_prop_immutable;
 extern const char *e_connman_prop_auto_connect;
 extern const char *e_connman_prop_setup_required;
 extern const char *e_connman_prop_apn;

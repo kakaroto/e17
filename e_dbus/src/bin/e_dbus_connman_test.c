@@ -1296,6 +1296,29 @@ _on_cmd_service_get_favorite(char *cmd, char *args)
 }
 
 static int
+_on_cmd_service_get_immutable(char *cmd, char *args)
+{
+   const char *path;
+   bool immutable;
+   E_Connman_Element *e;
+
+   if (!args)
+     {
+	fputs("ERROR: missing the service path\n", stderr);
+	return 1;
+     }
+   _tok(args);
+   path = args;
+
+   e = e_connman_service_get(path);
+   if (e_connman_service_immutable_get(e, &immutable))
+     printf(":::Service %s Immutable = %hhu\n", path, immutable);
+   else
+     fputs("ERROR: can't get service immutable\n", stderr);
+   return 1;
+}
+
+static int
 _on_cmd_service_get_auto_connect(char *cmd, char *args)
 {
    const char *path;
@@ -1597,6 +1620,7 @@ _on_input(void *data, Ecore_Fd_Handler *fd_handler)
      {"service_get_passphrase_required", _on_cmd_service_get_passphrase_required},
      {"service_get_strength", _on_cmd_service_get_strength},
      {"service_get_favorite", _on_cmd_service_get_favorite},
+     {"service_get_immutable", _on_cmd_service_get_immutable},
      {"service_get_auto_connect", _on_cmd_service_get_auto_connect},
      {"service_set_auto_connect", _on_cmd_service_set_auto_connect},
      {"service_get_setup_required", _on_cmd_service_get_setup_required},

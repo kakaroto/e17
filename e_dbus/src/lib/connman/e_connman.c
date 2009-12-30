@@ -61,6 +61,7 @@ const char *e_connman_prop_security = NULL;
 const char *e_connman_prop_passphrase = NULL;
 const char *e_connman_prop_passphrase_required = NULL;
 const char *e_connman_prop_favorite = NULL;
+const char *e_connman_prop_immutable = NULL;
 const char *e_connman_prop_auto_connect = NULL;
 const char *e_connman_prop_setup_required = NULL;
 const char *e_connman_prop_apn = NULL;
@@ -339,6 +340,8 @@ e_connman_system_init(E_DBus_Connection *edbus_conn)
      e_connman_prop_passphrase_required = eina_stringshare_add("PassphraseRequired");
    if (e_connman_prop_favorite == NULL)
      e_connman_prop_favorite = eina_stringshare_add("Favorite");
+   if (e_connman_prop_immutable == NULL)
+     e_connman_prop_immutable = eina_stringshare_add("Immutable");
    if (e_connman_prop_auto_connect == NULL)
      e_connman_prop_auto_connect = eina_stringshare_add("AutoConnect");
    if (e_connman_prop_setup_required == NULL)
@@ -436,6 +439,7 @@ e_connman_system_shutdown(void)
    _stringshare_del(&e_connman_prop_passphrase);
    _stringshare_del(&e_connman_prop_passphrase_required);
    _stringshare_del(&e_connman_prop_favorite);
+   _stringshare_del(&e_connman_prop_immutable);
    _stringshare_del(&e_connman_prop_auto_connect);
    _stringshare_del(&e_connman_prop_setup_required);
    _stringshare_del(&e_connman_prop_apn);

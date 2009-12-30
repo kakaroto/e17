@@ -550,6 +550,31 @@ e_connman_service_favorite_get(const E_Connman_Element *service, bool *favorite)
 }
 
 /**
+ * Get property "Immutable" value.
+ *
+ * This value will be set to true if the service is configured
+ * externally via a configuration file.
+ *
+ * The only valid operation are e_connman_service_connect() and
+ * e_connman_service_disconnect(). The e_connman_service_remove()
+ * method will result in an error.
+
+ * @param service_path to get property.
+ * @param immutable where to store the property value, must be a
+ *        pointer to bollean (bool *).
+ *
+ * @return 1 on success, 0 otherwise.
+ */
+bool
+e_connman_service_immutable_get(const E_Connman_Element *service, bool *immutable)
+{
+   EINA_SAFETY_ON_NULL_RETURN_VAL(service, 0);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(immutable, 0);
+   return e_connman_element_property_get_stringshared
+     (service, e_connman_prop_immutable, NULL, immutable);
+}
+
+/**
  * Get property "AutoConnect" value.
  *
  * If this property isn't found then 0 is returned.

@@ -356,7 +356,7 @@ static const struct test_desc test_desc_device[] = {
 };
 
 static const struct test_desc test_desc_profile[] = {
-  TEST_DESC_STRING_GET(e_connman_profile_name_get, 0),
+  TEST_DESC_STRING_GET(e_connman_profile_name_get, 1),
   TEST_DESC_BOOL_GET(e_connman_profile_offline_mode_get, 0),
   //TEST_DESC_BOOL_SET(e_connman_profile_offline_mode_set, 0),
   TEST_DESC_ELEMENTS_GET(e_connman_profile_services_get, 1),
@@ -379,16 +379,17 @@ static const struct test_desc test_desc_service[] = {
   /* TODO: need to check exactly what properties may fail */
   TEST_DESC_STRING_GET(e_connman_service_state_get, 1),
   TEST_DESC_STRING_GET(e_connman_service_error_get, 1),
-  TEST_DESC_STRING_GET(e_connman_service_name_get, 1),
-  TEST_DESC_STRING_GET(e_connman_service_type_get, 1),
+  TEST_DESC_STRING_GET(e_connman_service_name_get, 0),
+  TEST_DESC_STRING_GET(e_connman_service_type_get, 0),
   TEST_DESC_STRING_GET(e_connman_service_mode_get, 1),
   TEST_DESC_STRING_GET(e_connman_service_security_get, 1),
   TEST_DESC_STRING_GET(e_connman_service_passphrase_get, 1),
   //TEST_DESC_STRING_SET(e_connman_service_passphrase_set, 1),
   TEST_DESC_BOOL_GET(e_connman_service_passphrase_required_get, 1),
   TEST_DESC_UCHAR_GET(e_connman_service_strength_get, 1),
-  TEST_DESC_BOOL_GET(e_connman_service_favorite_get, 1),
-  TEST_DESC_BOOL_GET(e_connman_service_auto_connect_get, 1),
+  TEST_DESC_BOOL_GET(e_connman_service_favorite_get, 0),
+  TEST_DESC_BOOL_GET(e_connman_service_immutable_get, 0),
+  TEST_DESC_BOOL_GET(e_connman_service_auto_connect_get, 0),
   //TEST_DESC_BOOL_SET(e_connman_service_auto_connect_set, 1),
   TEST_DESC_BOOL_GET(e_connman_service_setup_required_get, 1),
   TEST_DESC_STRING_GET(e_connman_service_apn_get, 1),
