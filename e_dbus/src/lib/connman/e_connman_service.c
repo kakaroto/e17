@@ -13,7 +13,7 @@ e_connman_service_get(const char *path)
 
    if (!e_connman_element_is_service(service))
      {
-	WRN("E-Dbus connman: path '%s' is not a service!", path);
+	WRN("path '%s' is not a service!", path);
 	return NULL;
      }
 
@@ -126,16 +126,16 @@ e_connman_service_remove(E_Connman_Element *service, E_DBus_Method_Return_Cb cb,
  *
  * @return 1 on success, 0 otherwise.
  */
- bool
- e_connman_service_clear_property(E_Connman_Element *service, const char *property, E_DBus_Method_Return_Cb cb, const void *data)
- {
-    const char name[] = "ClearProperty";
+bool
+e_connman_service_clear_property(E_Connman_Element *service, const char *property, E_DBus_Method_Return_Cb cb, const void *data)
+{
+   const char name[] = "ClearProperty";
 
-    EINA_SAFETY_ON_NULL_RETURN_VAL(service, 0);
-    EINA_SAFETY_ON_NULL_RETURN_VAL(property, 0);
-    /* FIXME TODO */
-    return 0;
- }
+   EINA_SAFETY_ON_NULL_RETURN_VAL(service, 0);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(property, 0);
+   /* FIXME TODO */
+   return 0;
+}
 
 /**
  * Move service before in favorites list.
