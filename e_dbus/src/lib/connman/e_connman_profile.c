@@ -29,7 +29,7 @@ e_connman_profile_get(const char *path)
  *
  * The profile name.
  *
- * @param profile_path to get property.
+ * @param profile path to get property.
  * @param name where to store the property value, must be a pointer
  *        to string (const char **), it will not be allocated or
  *        copied and references will be valid until element changes,

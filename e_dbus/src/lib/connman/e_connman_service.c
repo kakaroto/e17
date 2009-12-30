@@ -32,7 +32,7 @@ e_connman_service_get(const char *path)
  * automatically. If no cable is plugged in this method
  * will fail.
  *
- * @param service_path to call method on server.
+ * @param service path to call method on server.
  * @param cb function to call when server replies or some error happens.
  * @param data data to give to cb when it is called.
  *
@@ -62,7 +62,7 @@ e_connman_service_connect(E_Connman_Element *service, E_DBus_Method_Return_Cb cb
  * This method can also be used to abort a previous
  * connectiong attempt via the Connect method.
  *
- * @param service_path to call method on server.
+ * @param service path to call method on server.
  * @param cb function to call when server replies or some error happens.
  * @param data data to give to cb when it is called.
  *
@@ -99,7 +99,7 @@ e_connman_service_disconnect(E_Connman_Element *service, E_DBus_Method_Return_Cb
  * an error message. It is not possible to remove these
  * kind of devices.
  *
- * @param service_path to call method on server.
+ * @param service path to call method on server.
  * @param cb function to call when server replies or some error happens.
  * @param data data to give to cb when it is called.
  *
@@ -119,7 +119,7 @@ e_connman_service_remove(E_Connman_Element *service, E_DBus_Method_Return_Cb cb,
  * Clears the value of the specified property.
  *
  *
- * @param service_path to call method on server.
+ * @param service path to call method on server.
  * @param property to be cleared.
  * @param cb function to call when server replies or some error happens.
  * @param data data to give to cb when it is called.
@@ -149,7 +149,7 @@ e_connman_service_clear_property(E_Connman_Element *service, const char *propert
  * The target service object must be part of this
  * profile. Moving between profiles is not supported.
  *
- * @param service_path to call method on server.
+ * @param service path to call method on server.
  * @param object_path object service.
  * @param cb function to call when server replies or some error happens.
  * @param data data to give to cb when it is called.
@@ -179,7 +179,7 @@ e_connman_service_move_before(E_Connman_Element *service, const char *object_pat
  * The target service object must be part of this
  * profile. Moving between profiles is not supported.
  *
- * @param service_path to call method on server.
+ * @param service path to call method on server.
  * @param cb function to call when server replies or some error happens.
  * @param data data to give to cb when it is called.
  *
@@ -209,7 +209,7 @@ e_connman_service_move_after(E_Connman_Element *service, const char *object_path
  * Valid states are "idle", "failure", "association",
  * "configuration" and "ready".
  *
- * @param service_path to get property.
+ * @param service path to get property.
  * @param state where to store the property value, must be a pointer
  *        to string (const char **), it will not be allocated or
  *        copied and references will be valid until element changes,
@@ -246,7 +246,7 @@ e_connman_service_state_get(const E_Connman_Element *service, const char **state
  *
  * Current defined error code is "dhcp-failed".
  *
- * @param service_path to get property.
+ * @param service path to get property.
  * @param error where to store the property value, must be a pointer
  *        to string (const char **), it will not be allocated or
  *        copied and references will be valid until element changes,
@@ -278,7 +278,7 @@ e_connman_service_error_get(const E_Connman_Element *service, const char **error
  * For Ethernet devices and hidden WiFi networks it is
  * not guaranteed that this property is present.
  *
- * @param service_path to get property.
+ * @param service path to get property.
  * @param name where to store the property value, must be a pointer
  *        to string (const char **), it will not be allocated or
  *        copied and references will be valid until element changes,
@@ -308,7 +308,7 @@ e_connman_service_name_get(const E_Connman_Element *service, const char **name)
  * advanced properties or showing the correct icon
  * to the user.
  *
- * @param service_path to get property.
+ * @param service path to get property.
  * @param type where to store the property value, must be a pointer
  *        to string (const char **), it will not be allocated or
  *        copied and references will be valid until element changes,
@@ -344,7 +344,7 @@ e_connman_service_type_get(const E_Connman_Element *service, const char **type)
  * This property might be only present for WiFi and
  * Cellular services.
  *
- * @param service_path to get property.
+ * @param service path to get property.
  * @param mode where to store the property value, must be a pointer
  *        to string (const char **), it will not be allocated or
  *        copied and references will be valid until element changes,
@@ -377,7 +377,7 @@ e_connman_service_mode_get(const E_Connman_Element *service, const char **mode)
  * This property might be only present for WiFi
  * services.
  *
- * @param service_path to get property.
+ * @param service path to get property.
  * @param security where to store the property value, must be a pointer
  *        to string (const char **), it will not be allocated or
  *        copied and references will be valid until element changes,
@@ -411,7 +411,7 @@ e_connman_service_security_get(const E_Connman_Element *service, const char **se
  * This property might also not always be included
  * since it is protected by a different security policy.
  *
- * @param service_path to get property.
+ * @param service path to get property.
  * @param passphrase where to store the property value, must be a pointer
  *        to string (const char **), it will not be allocated or
  *        copied and references will be valid until element changes,
@@ -446,7 +446,7 @@ e_connman_service_passphrase_get(const E_Connman_Element *service, const char **
  * This property might also not always be included
  * since it is protected by a different security policy.
  *
- * @param service_path to get property.
+ * @param service path to get property.
  * @param passphrase value to set.
  * @param cb function to call when server replies or some error happens.
  * @param data data to give to cb when it is called.
@@ -477,7 +477,7 @@ e_connman_service_passphrase_set(E_Connman_Element *service, const char *passphr
  * passphrase is needed, then this property will
  * be set to false.
  *
- * @param service_path to get property.
+ * @param service path to get property.
  * @param passphrase_required where to store the property value, must be a
  *        pointer to boolean (bool *).
  *
@@ -505,7 +505,7 @@ e_connman_service_passphrase_required_get(const E_Connman_Element *service, bool
  * This property will not be present for Ethernet
  * devices.
  *
- * @param service_path to get property.
+ * @param service path to get property.
  * @param strength where to store the property value, must be a pointer
  *        to byte (unsigned char*).
  *
@@ -534,7 +534,7 @@ e_connman_service_strength_get(const E_Connman_Element *service, unsigned char *
  * it back to false the Remove() method needs to be
  * used.
  *
- * @param service_path to get property.
+ * @param service path to get property.
  * @param favorite where to store the property value, must be a
  *        pointer to boolean (bool *).
  *
@@ -559,7 +559,7 @@ e_connman_service_favorite_get(const E_Connman_Element *service, bool *favorite)
  * e_connman_service_disconnect(). The e_connman_service_remove()
  * method will result in an error.
 
- * @param service_path to get property.
+ * @param service path to get property.
  * @param immutable where to store the property value, must be a
  *        pointer to bollean (bool *).
  *
@@ -588,7 +588,7 @@ e_connman_service_immutable_get(const E_Connman_Element *service, bool *immutabl
  * this value to prevent or permit automatic
  * connection attempts.
  *
- * @param service_path to get property.
+ * @param service path to get property.
  * @param auto_connect where to store the property value, must be a
  *        pointer to boolean (bool *).
  *
@@ -618,7 +618,7 @@ e_connman_service_auto_connect_get(const E_Connman_Element *service, bool *auto_
  * this value to prevent or permit automatic
  * connection attempts.
  *
- * @param service_path to get property.
+ * @param service path to get property.
  * @param service_favorite where to store the property value, must be a
  *        pointer to boolean (bool *).
  *
@@ -646,7 +646,7 @@ e_connman_service_auto_connect_set(E_Connman_Element *service, bool auto_connect
  * In most cases it is required to fill in the APN
  * details.
  *
- * @param service_path to get property.
+ * @param service path to get property.
  * @param setup_required where to store the property value, must be a
  *        pointer to boolean (bool *).
  *
@@ -678,7 +678,7 @@ e_connman_service_setup_required_get(const E_Connman_Element *service, bool *set
  * This property might also not always be included
  * since it is protected by a different security policy.
  *
- * @param service_path to get property.
+ * @param service path to get property.
  * @param apn where to store the property value, must be a pointer
  *        to string (const char **), it will not be allocated or
  *        copied and references will be valid until element changes,
@@ -713,7 +713,7 @@ e_connman_service_apn_get(const E_Connman_Element *service, const char **apn)
  * This property might also not always be included
  * since it is protected by a different security policy.
  *
- * @param service_path to get property.
+ * @param service path to get property.
  * @param passphrase value to set.
  * @param cb function to call when server replies or some error happens.
  * @param data data to give to cb when it is called.
@@ -740,7 +740,7 @@ e_connman_service_apn_set(E_Connman_Element *service, const char *apn, E_DBus_Me
  * If the service is Cellular, then this property
  * contains the Mobile Country Code.
  *
- * @param service_path to get property.
+ * @param service path to get property.
  * @param mcc where to store the property value, must be a pointer
  *        to string (const char **), it will not be allocated or
  *        copied and references will be valid until element changes,
@@ -767,7 +767,7 @@ e_connman_service_mcc_get(const E_Connman_Element *service, const char **mcc)
  * If the service is Cellular, then this property
  * contains the Mobile Network Code.
  *
- * @param service_path to get property.
+ * @param service path to get property.
  * @param mnc where to store the property value, must be a pointer
  *        to string (const char **), it will not be allocated or
  *        copied and references will be valid until element changes,
@@ -797,7 +797,7 @@ e_connman_service_mnc_get(const E_Connman_Element *service, const char **mnc)
  * indicates connections to a foreign provider when
  * traveling abroad.
  *
- * @param service_path to get property.
+ * @param service path to get property.
  * @param roaming where to store the property value, must be a
  *        pointer to boolean (bool *).
  *
@@ -822,7 +822,7 @@ e_connman_service_roaming_get(const E_Connman_Element *service, bool *roaming)
  * The IPv4 configuration method. Possible values here
  * are "dhcp" and "static".
  *
- * @param service_path to get property.
+ * @param service path to get property.
  * @param method where to store the property value, must be a pointer
  *        to string (const char **), it will not be allocated or
  *        copied and references will be valid until element changes,
@@ -848,7 +848,7 @@ e_connman_service_ipv4_method_get(const E_Connman_Element *service, const char *
  *
  * The current configured IPv4 address.
  *
- * @param service_path to get property.
+ * @param service path to get property.
  * @param address where to store the property value, must be a pointer
  *        to string (const char **), it will not be allocated or
  *        copied and references will be valid until element changes,

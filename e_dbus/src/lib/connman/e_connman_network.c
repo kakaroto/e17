@@ -31,7 +31,7 @@ e_connman_network_get(const char *path)
  * example in case of WiFi this should be the UTF-8
  * valid version of the SSID.
  *
- * @param network_path to get property.
+ * @param network path to get property.
  * @param name where to store the property value, must be a pointer
  *        to string (const char **), it will not be allocated or
  *        copied and references will be valid until element changes,
@@ -57,7 +57,7 @@ e_connman_network_name_get(const E_Connman_Element *network, const char **name)
  *
  * Indicates that this network is currently connected.
  *
- * @param network_path to get property.
+ * @param network path to get property.
  * @param connected where to store the property value, must be a pointer
  *        to boolean (bool **).
  *
@@ -82,7 +82,7 @@ e_connman_network_connected_get(const E_Connman_Element *network, bool *connecte
  * Indicates the signal strength of the network. This
  * is a normalized value between 0 and 100.
  *
- * @param network_path to get property.
+ * @param network path to get property.
  * @param strength where to store the property value, must be a pointer
  *        to byte (unsigned char*).
  *
@@ -101,7 +101,7 @@ e_connman_network_strength_get(const E_Connman_Element *network, unsigned char *
  * Get the device element this network
  * belongs to.
  *
- * @param network_path to get property.
+ * @param network path to get property.
  * @param element where to store element, just changed if return is 1
  *
  * @return 1 on success, 0 otherwise
@@ -131,7 +131,7 @@ e_connman_network_device_get(const E_Connman_Element *network, E_Connman_Element
  * If the network type is WiFi, then this property is
  * present and contains the binary SSID value.
  *
- * @param network_path to get property.
+ * @param network path to get property.
  * @param count return the number of elements in array.
  * @param wifi_ssid where to store the property value, must be a pointer
  *        to array of bytes (unsigned char **).
@@ -166,7 +166,7 @@ e_connman_network_wifi_ssid_get(const E_Connman_Element *network, unsigned int *
  * case the network was manually created it is also
  * changeable.
  *
- * @param network_path to get property.
+ * @param network path to get property.
  * @param wifi_mode where to store the property value, must be a pointer
  *        to string (const char **), it will not be allocated or
  *        copied and references will be valid until element changes,
@@ -200,7 +200,7 @@ e_connman_network_wifi_mode_get(const E_Connman_Element *network, const char **w
  *
  * Possible values are "none", "wep", "wpa" and "wpa2".
  *
- * @param network_path to get property.
+ * @param network path to get property.
  * @param wifi_security where to store the property value, must be a pointer
  *        to string (const char **), it will not be allocated or
  *        copied and references will be valid until element changes,
@@ -231,7 +231,7 @@ e_connman_network_wifi_security_get(const E_Connman_Element *network, const char
  * For systems using PolicyKit, the access to this value
  * will be protected by the security policy.
  *
- * @param network_path to get property.
+ * @param network path to get property.
  * @param wifi_passphrase where to store the property value, must be a pointer
  *        to string (const char **), it will not be allocated or
  *        copied and references will be valid until element changes,

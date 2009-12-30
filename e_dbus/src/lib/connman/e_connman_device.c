@@ -26,7 +26,7 @@ e_connman_device_get(const char *path)
  * Call method ProposeScan() at the given device on server in order to propose it
  * to scan.
  *
- * @param device_path to call method on server.
+ * @param device path to call method on server.
  * @param cb function to call when server replies or some error happens.
  * @param data data to give to cb when it is called.
  *
@@ -54,7 +54,7 @@ e_connman_device_propose_scan(E_Connman_Element *device, E_DBus_Method_Return_Cb
  * This name can be used for directly displaying it in
  * the application. It has pure informational purpose.
  *
- * @param device_path to get property.
+ * @param device path to get property.
  * @param name where to store the property value, must be a pointer
  *        to string (const char **), it will not be allocated or
  *        copied and references will be valid until element changes,
@@ -80,7 +80,7 @@ e_connman_device_name_get(const E_Connman_Element *device, const char **name)
  *
  * The device type (for example "ethernet", "wifi" etc.)
  *
- * @param device_path to get property.
+ * @param device path to get property.
  * @param type where to store the property value, must be a pointer
  *        to string (const char **), it will not be allocated or
  *        copied and references will be valid until element changes,
@@ -109,7 +109,7 @@ e_connman_device_type_get(const E_Connman_Element *device, const char **type)
  * This value is for pure informational purposes. It
  * is not guaranteed that it is always present.
  *
- * @param device_path to get property.
+ * @param device path to get property.
  * @param interface where to store the property value, must be a pointer
  *        to string (const char **), it will not be allocated or
  *        copied and references will be valid until element changes,
@@ -145,7 +145,7 @@ e_connman_device_interface_get(const E_Connman_Element *device, const char **int
  * example would be modifications via the "ifconfig"
  * command line utility.
  *
- * @param device_path to get property.
+ * @param device path to get property.
  * @param powered where to store the property value, must be a pointer
  *        to boolean (bool *).
  *
@@ -180,7 +180,7 @@ e_connman_device_powered_get(const E_Connman_Element *device, bool *powered)
  * example would be modifications via the "ifconfig"
  * command line utility.
  *
- * @param device_path to set property.
+ * @param device path to set property.
  * @param powered value to set.
  * @param cb function to call when server replies or some error happens.
  * @param data data to give to cb when it is called.
@@ -214,7 +214,7 @@ e_connman_device_powered_set(E_Connman_Element *device, bool powered, E_DBus_Met
  * of devices. Some might not support background
  * scanning at all.
  *
- * @param device_path to get property.
+ * @param device path to get property.
  * @param scan_interval where to store the property value, must be a pointer
  *        to uint16 (unsigned short *).
  *
@@ -248,7 +248,7 @@ e_connman_device_scan_interval_get(const E_Connman_Element *device, unsigned sho
  * of devices. Some might not support background
  * scanning at all.
  *
- * @param device_path to set property.
+ * @param device path to set property.
  * @param scan_interval value to set.
  * @param cb function to call when server replies or some error happens.
  * @param data data to give to cb when it is called.
@@ -278,7 +278,7 @@ e_connman_device_scan_interval_set(E_Connman_Element *device, unsigned short sca
  * driver about it. Use this property only for visual
  * indication.
  *
- * @param device_path to get property.
+ * @param device path to get property.
  * @param scanning where to store the property value, must be a pointer
  *        to boolean (bool *).
  *
@@ -296,7 +296,7 @@ e_connman_device_scanning_get(const E_Connman_Element *device, bool *scanning)
 /**
  * Get array of network elements.
  *
- * @param device_path to get property.
+ * @param device path to get property.
  * @param count return the number of elements in array.
  * @param elements where to store elements array, just changed if return is 1.
  *        Elements are not referenced and in no particular order.
