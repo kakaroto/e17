@@ -445,6 +445,7 @@ _diskio_conf_item_get(const char *id)
      }
    else 
      {
+        uuid++;
         for (l = diskio_conf->conf_items; l; l = l->next) 
           {
              if (!(ci = l->data)) continue;
