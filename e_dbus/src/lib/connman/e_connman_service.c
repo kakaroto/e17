@@ -804,7 +804,6 @@ e_connman_service_roaming_get(const E_Connman_Element *service, bool *roaming)
  *        so copy it if you want to use it later.
  *
  * @return 1 on success, 0 otherwise.
- * @see e_connman_service_ipv4_method_set()
  */
 bool
 e_connman_service_ipv4_method_get(const E_Connman_Element *service, const char **method)
@@ -813,33 +812,6 @@ e_connman_service_ipv4_method_get(const E_Connman_Element *service, const char *
    EINA_SAFETY_ON_NULL_RETURN_VAL(method, 0);
    return e_connman_element_property_get_stringshared
      (service, e_connman_prop_ipv4_method, NULL, method);
-}
-
-/**
- * Set property "IPv4.Method" value.
- *
- * If this property isn't found then 0 is returned.
- * If zero is returned, then this call failed and parameter-returned
- * values shall be considered invalid.
- *
- * The IPv4 configuration method. Possible values here
- * are "dhcp" and "static".
- *
- * @param service_path to get property.
- * @param method value to set.
- * @param cb function to call when server replies or some error happens.
- * @param data data to give to cb when it is called.
- *
- * @return 1 on success, 0 otherwise.
- * @see e_connman_service_ipv4_method_get()
- */
-bool
-e_connman_service_ipv4_method_set(E_Connman_Element *service, const char *method, E_DBus_Method_Return_Cb cb, const void *data)
-{
-   EINA_SAFETY_ON_NULL_RETURN_VAL(service, 0);
-   return e_connman_element_property_set_full
-     (service, e_connman_prop_ipv4_method, DBUS_TYPE_STRING,
-      method, cb, data);
 }
 
 /**
@@ -858,7 +830,6 @@ e_connman_service_ipv4_method_set(E_Connman_Element *service, const char *method
  *        so copy it if you want to use it later.
  *
  * @return 1 on success, 0 otherwise.
- * @see e_connman_service_ipv4_address_set()
  */
 bool
 e_connman_service_ipv4_address_get(const E_Connman_Element *service, const char **address)
@@ -867,30 +838,4 @@ e_connman_service_ipv4_address_get(const E_Connman_Element *service, const char 
    EINA_SAFETY_ON_NULL_RETURN_VAL(address, 0);
    return e_connman_element_property_get_stringshared
      (service, e_connman_prop_ipv4_address, NULL, address);
-}
-
-/**
- * Set property "IPv4.Address" value.
- *
- * If this property isn't found then 0 is returned.
- * If zero is returned, then this call failed and parameter-returned
- * values shall be considered invalid.
- *
- * The current configured IPv4 address.
- *
- * @param service_path to get property.
- * @param address value to set.
- * @param cb function to call when server replies or some error happens.
- * @param data data to give to cb when it is called.
- *
- * @return 1 on success, 0 otherwise.
- * @see e_connman_service_ipv4_address_get()
- */
-bool
-e_connman_service_ipv4_address_set(E_Connman_Element *service, const char *address, E_DBus_Method_Return_Cb cb, const void *data)
-{
-   EINA_SAFETY_ON_NULL_RETURN_VAL(service, 0);
-   return e_connman_element_property_set_full
-     (service, e_connman_prop_ipv4_address, DBUS_TYPE_STRING,
-      address, cb, data);
 }

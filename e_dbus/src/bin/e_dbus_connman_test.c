@@ -282,22 +282,6 @@ _on_cmd_manager_get_devices(char *cmd, char *args)
 }
 
 static int
-_on_cmd_manager_get_connections(char *cmd, char *args)
-{
-   unsigned int count;
-   E_Connman_Element **connections;
-
-   if (!e_connman_manager_connections_get(&count, &connections))
-     {
-	fputs("ERROR: can't get connections\n", stderr);
-	return 1;
-     }
-   printf("BEG: all manager connections elements count = %d\n", count);
-   _elements_print(connections, count);
-   return 1;
-}
-
-static int
 _on_cmd_manager_get_services(char *cmd, char *args)
 {
    unsigned int count;
@@ -325,7 +309,7 @@ _on_cmd_manager_register_agent(char *cmd, char *args)
      }
 
    path = args;
-   if (e_connman_manager_register_agent(path, NULL, NULL))
+   if (e_connman_manager_agent_register(path, NULL, NULL))
      printf(":::Registering agent %s...\n", path);
    else
      fprintf(stderr, "ERROR: can't register agent %s\n", path);
@@ -345,7 +329,7 @@ _on_cmd_manager_unregister_agent(char *cmd, char *args)
      }
 
    path = args;
-   if (e_connman_manager_unregister_agent(path, NULL, NULL))
+   if (e_connman_manager_agent_unregister(path, NULL, NULL))
      printf(":::Unregistering agent %s...\n", path);
    else
      fprintf(stderr, "ERROR: can't unregister agent %s\n", path);
@@ -361,35 +345,6 @@ _on_cmd_manager_get_state(char *cmd, char *args)
      printf(":::Manager state = \"%s\"\n", state);
    else
      fputs("ERROR: can't get manager state\n", stderr);
-   return 1;
-}
-
-static int
-_on_cmd_manager_get_policy(char *cmd, char *args)
-{
-   const char *policy;
-   if (e_connman_manager_policy_get(&policy))
-     printf(":::Manager policy = \"%s\"\n", policy);
-   else
-     fputs("ERROR: can't get manager policy\n", stderr);
-   return 1;
-}
-
-static int
-_on_cmd_manager_set_policy(char *cmd, char *args)
-{
-   char *policy;
-   if (!args)
-     {
-	fputs("ERROR: missing the policy value\n", stderr);
-	return 1;
-     }
-   _tok(args);
-   policy = args;
-   if (e_connman_manager_policy_set(policy, NULL, NULL))
-     printf(":::Manager policy set to \"%s\"\n", policy);
-   else
-     fputs("ERROR: can't set manager policy\n", stderr);
    return 1;
 }
 
@@ -423,57 +378,6 @@ _on_cmd_manager_set_offline_mode(char *cmd, char *args)
 }
 
 /* Device Commands */
-
-static int
-_on_cmd_device_create_network(char *cmd, char *args)
-{
-   char *path;
-   E_Connman_Element *e;
-
-   if (!args)
-     {
-	fputs("ERROR: missing the device path\n", stderr);
-	return 1;
-     }
-   _tok(args);
-   path = args;
-   e = e_connman_device_get(path);
-   if (e_connman_device_network_create(e, NULL, NULL))
-     printf(":::Creating Network %s...\n", path);
-   else
-     fputs("ERROR: can't create network\n", stderr);
-   return 1;
-}
-
-static int
-_on_cmd_device_remove_network(char *cmd, char *args)
-{
-   char *path, *device_path;
-   E_Connman_Element *e;
-
-   if (!args)
-     {
-	fputs("ERROR: missing the device path\n", stderr);
-	return 1;
-     }
-   device_path = args;
-   path = _tok(args);
-
-   if (!path)
-     {
-	fputs("ERROR: missing the object network\n", stderr);
-	return 1;
-     }
-   _tok(path);
-
-   e = e_connman_device_get(device_path);
-   if (e_connman_device_network_remove(e, path, NULL, NULL))
-     printf(":::Removing Network %s...\n", path);
-   else
-     fputs("ERROR: can't remove network\n", stderr);
-   return 1;
-}
-
 static int
 _on_cmd_device_propose_scan(char *cmd, char *args)
 {
@@ -559,116 +463,6 @@ _on_cmd_device_get_interface(char *cmd, char *args)
      printf(":::Device %s Interface = \"%s\"\n", path, interface);
    else
      fputs("ERROR: can't get device interface\n", stderr);
-   return 1;
-}
-
-static int
-_on_cmd_device_get_policy(char *cmd, char *args)
-{
-   const char *policy, *path;
-   E_Connman_Element *e;
-
-   if (!args)
-     {
-	fputs("ERROR: missing the device path\n", stderr);
-	return 1;
-     }
-   _tok(args);
-   path = args;
-
-   e = e_connman_device_get(path);
-   if (e_connman_device_policy_get(e, &policy))
-     printf(":::Device %s Policy = \"%s\"\n", path, policy);
-   else
-     fputs("ERROR: can't get device policy\n", stderr);
-   return 1;
-}
-
-static int
-_on_cmd_device_set_policy(char *cmd, char *args)
-{
-   char *policy;
-   const char *device_path;
-   E_Connman_Element *e;
-
-   if (!args)
-     {
-	fputs("ERROR: missing the device path\n", stderr);
-	return 1;
-     }
-   device_path = args;
-   policy = _tok(args);
-
-   if (!policy)
-     {
-	fputs("ERROR: missing the policy value\n", stderr);
-	return 1;
-     }
-   _tok(policy);
-
-   e = e_connman_device_get(device_path);
-   if (e_connman_device_policy_set(e, policy, NULL, NULL))
-     printf(":::Device %s policy set to \"%s\"\n", device_path, policy);
-   else
-     fputs("ERROR: can't set device policy\n", stderr);
-   return 1;
-}
-
-static int
-_on_cmd_device_get_priority(char *cmd, char *args)
-{
-   char *path;
-   unsigned char priority;
-   E_Connman_Element *e;
-
-   if (!args)
-     {
-	fputs("ERROR: missing the device path\n", stderr);
-	return 1;
-     }
-   _tok(args);
-   path = args;
-
-   e = e_connman_device_get(path);
-   if (e_connman_device_priority_get(e, &priority))
-     printf(":::Device %s Priority = %#02hhx (%d)\n", path, priority, priority);
-   else
-     fputs("ERROR: can't get device priority\n", stderr);
-   return 1;
-}
-
-static int
-_on_cmd_device_set_priority(char *cmd, char *args)
-{
-   char *next_args, *device_path, *p;
-   unsigned char priority;
-   E_Connman_Element *e;
-
-   if (!args)
-     {
-	fputs("ERROR: missing the device path\n", stderr);
-	return 1;
-     }
-   device_path = args;
-   next_args = _tok(args);
-   if (!next_args)
-     {
-	fputs("ERROR: missing the priority value\n", stderr);
-	return 1;
-     }
-   _tok(next_args);
-   priority = strtol(next_args, &p, 0);
-   if (p == next_args)
-     {
-	fprintf(stderr, "ERROR: invalid number \"%s\".\n", next_args);
-	return 1;
-     }
-
-   e = e_connman_device_get(device_path);
-   if (e_connman_device_priority_set(e, priority, NULL, NULL))
-     printf(":::Device %s priority set to %d\n", device_path, priority);
-   else
-     fputs("ERROR: can't set device priority\n", stderr);
    return 1;
 }
 
@@ -936,231 +730,8 @@ _on_cmd_profile_get_services(char *cmd, char *args)
    return 1;
 }
 
-/* Connection Commands */
-
-static int
-_on_cmd_connection_get_type(char *cmd, char *args)
-{
-   const char *type, *path;
-   E_Connman_Element *e;
-
-   if (!args)
-     {
-	fputs("ERROR: missing the connection path\n", stderr);
-	return 1;
-     }
-   _tok(args);
-   path = args;
-
-   e = e_connman_connection_get(path);
-   if (e_connman_connection_type_get(e, &type))
-     printf(":::Connection %s Type = \"%s\"\n", path, type);
-   else
-     fputs("ERROR: can't get connection type\n", stderr);
-   return 1;
-}
-
-static int
-_on_cmd_connection_get_interface(char *cmd, char *args)
-{
-   const char *interface, *path;
-   E_Connman_Element *e;
-
-   if (!args)
-     {
-	fputs("ERROR: missing the connection path\n", stderr);
-	return 1;
-     }
-   _tok(args);
-   path = args;
-
-   e = e_connman_connection_get(path);
-   if (e_connman_connection_interface_get(e, &interface))
-     printf(":::Connection %s Interface = \"%s\"\n", path, interface);
-   else
-     fputs("ERROR: can't get connection type\n", stderr);
-   return 1;
-}
-
-static int
-_on_cmd_connection_get_device(char *cmd, char *args)
-{
-   E_Connman_Element *e, *device;
-   char *path;
-
-   if (!args)
-     {
-	fputs("ERROR: missing the connection path\n", stderr);
-	return 1;
-     }
-   _tok(args);
-   path = args;
-
-   e = e_connman_connection_get(path);
-   if (!e_connman_connection_device_get(e, &device))
-     fputs("ERROR: can't get connection device\n", stderr);
-   else
-     e_connman_element_print(stderr, device);
-   return 1;
-}
-
-static int
-_on_cmd_connection_get_network(char *cmd, char *args)
-{
-   E_Connman_Element *e, *network;
-   char *path;
-
-   if (!args)
-     {
-	fputs("ERROR: missing the connection path\n", stderr);
-	return 1;
-     }
-   _tok(args);
-   path = args;
-
-   e = e_connman_connection_get(path);
-   if (!e_connman_connection_network_get(e, &network))
-     fputs("ERROR: can't get connection network\n", stderr);
-   else
-     e_connman_element_print(stderr, network);
-   return 1;
-}
-
-static int
-_on_cmd_connection_get_strength(char *cmd, char *args)
-{
-   char *path;
-   unsigned char strength;
-   E_Connman_Element *e;
-
-   if (!args)
-     {
-	fputs("ERROR: missing the connection path\n", stderr);
-	return 1;
-     }
-   _tok(args);
-   path = args;
-
-   e = e_connman_connection_get(path);
-   if (e_connman_connection_strength_get(e, &strength))
-     printf(":::Connection %s Strength = %#02hhx (%d)\n", path, strength, strength);
-   else
-     fputs("ERROR: can't get connection strength\n", stderr);
-   return 1;
-}
-
-static int
-_on_cmd_connection_get_default(char *cmd, char *args)
-{
-   char *path;
-   bool connection_default;
-   E_Connman_Element *e;
-
-   if (!args)
-     {
-	fputs("ERROR: missing the connection path\n", stderr);
-	return 1;
-     }
-   _tok(args);
-   path = args;
-
-   e = e_connman_connection_get(path);
-   if (e_connman_connection_default_get(e, &connection_default))
-     printf(":::Connection %s Default = %hhu\n", path, connection_default);
-   else
-     fputs("ERROR: can't get connection default\n", stderr);
-   return 1;
-}
-
-static int
-_on_cmd_connection_get_ipv4_method(char *cmd, char *args)
-{
-   const char *method, *path;
-   E_Connman_Element *e;
-
-   if (!args)
-     {
-	fputs("ERROR: missing the connection path\n", stderr);
-	return 1;
-     }
-   _tok(args);
-   path = args;
-
-   e = e_connman_connection_get(path);
-   if (e_connman_connection_ipv4_method_get(e, &method))
-     printf(":::Connection %s IPv4 Method = \"%s\"\n", path, method);
-   else
-     fputs("ERROR: can't get connection ipv4 method\n", stderr);
-   return 1;
-}
-
-static int
-_on_cmd_connection_get_ipv4_address(char *cmd, char *args)
-{
-   const char *address, *path;
-   E_Connman_Element *e;
-
-   if (!args)
-     {
-	fputs("ERROR: missing the connection path\n", stderr);
-	return 1;
-     }
-   _tok(args);
-   path = args;
-
-   e = e_connman_connection_get(path);
-   if (e_connman_connection_ipv4_address_get(e, &address))
-     printf(":::Connection %s IPv4 Address = \"%s\"\n", path, address);
-   else
-     fputs("ERROR: can't get connection ipv4 address\n", stderr);
-   return 1;
-}
 
 /* Network Commands */
-
-static int
-_on_cmd_network_connect(char *cmd, char *args)
-{
-   char *path;
-   E_Connman_Element *e;
-
-   if (!args)
-     {
-	fputs("ERROR: missing the network path\n", stderr);
-	return 1;
-     }
-   _tok(args);
-   path = args;
-
-   e = e_connman_network_get(path);
-   if (e_connman_network_connect(e, NULL, NULL))
-     printf(":::Connecting to Network %s...\n", path);
-   else
-     fputs("ERROR: can't connect to network\n", stderr);
-   return 1;
-}
-
-static int
-_on_cmd_network_disconnect(char *cmd, char *args)
-{
-   char *path;
-   E_Connman_Element *e;
-
-   if (!args)
-     {
-	fputs("ERROR: missing the network path\n", stderr);
-	return 1;
-     }
-   _tok(args);
-   path = args;
-
-   e = e_connman_network_get(path);
-   if (e_connman_network_disconnect(e, NULL, NULL))
-     printf(":::Disconnecting Network %s...\n", path);
-   else
-     fputs("ERROR: can't disconnect network\n", stderr);
-   return 1;
-}
 
 static int
 _on_cmd_network_get_name(char *cmd, char *args)
@@ -1185,29 +756,6 @@ _on_cmd_network_get_name(char *cmd, char *args)
 }
 
 static int
-_on_cmd_network_get_available(char *cmd, char *args)
-{
-   const char *path;
-   bool available;
-   E_Connman_Element *e;
-
-   if (!args)
-     {
-	fputs("ERROR: missing the network path\n", stderr);
-	return 1;
-     }
-   _tok(args);
-   path = args;
-
-   e = e_connman_network_get(path);
-   if (e_connman_network_available_get(e, &available))
-     printf(":::Network %s Available = %hhu\n", path, available);
-   else
-     fputs("ERROR: can't get network available\n", stderr);
-   return 1;
-}
-
-static int
 _on_cmd_network_get_connected(char *cmd, char *args)
 {
    char *path;
@@ -1227,59 +775,6 @@ _on_cmd_network_get_connected(char *cmd, char *args)
      printf(":::Network %s Connected = %hhu\n", path, connected);
    else
      fputs("ERROR: can't get network connected\n", stderr);
-   return 1;
-}
-
-static int
-_on_cmd_network_get_remember(char *cmd, char *args)
-{
-   char *path;
-   bool remember;
-   E_Connman_Element *e;
-
-   if (!args)
-     {
-	fputs("ERROR: missing the network path\n", stderr);
-	return 1;
-     }
-   _tok(args);
-   path = args;
-
-   e = e_connman_network_get(path);
-   if (e_connman_network_remember_get(e, &remember))
-     printf(":::Network %s Remember = %hhu\n", path, remember);
-   else
-     fputs("ERROR: can't get network remember\n", stderr);
-   return 1;
-}
-
-static int
-_on_cmd_network_set_remember(char *cmd, char *args)
-{
-   char *network_path, *next_args;
-   bool remember;
-   E_Connman_Element *e;
-
-   if (!args)
-     {
-	fputs("ERROR: missing the network path\n", stderr);
-	return 1;
-     }
-   network_path = args;
-   next_args = _tok(args);
-   if (!next_args)
-     {
-	fputs("ERROR: missing the remember value\n", stderr);
-	return 1;
-     }
-   _tok(next_args);
-   remember = !!atol(next_args);
-
-   e = e_connman_network_get(network_path);
-   if (e_connman_network_remember_set(e, remember, NULL, NULL))
-     printf(":::Network %s remember set to %d\n", network_path, remember);
-   else
-     fputs("ERROR: can't set network remember\n", stderr);
    return 1;
 }
 
@@ -1380,36 +875,6 @@ _on_cmd_network_get_wifi_mode(char *cmd, char *args)
 }
 
 static int
-_on_cmd_network_set_wifi_mode(char *cmd, char *args)
-{
-   char *wifi_mode;
-   const char *network_path;
-   E_Connman_Element *e;
-
-   if (!args)
-     {
-	fputs("ERROR: missing the network path\n", stderr);
-	return 1;
-     }
-   network_path = args;
-   wifi_mode = _tok(args);
-
-   if (!wifi_mode)
-     {
-	fputs("ERROR: missing the wifi mode value\n", stderr);
-	return 1;
-     }
-   _tok(wifi_mode);
-
-   e = e_connman_network_get(network_path);
-   if (e_connman_network_wifi_mode_set(e, wifi_mode, NULL, NULL))
-     printf(":::Network %s wifi mode set to \"%s\"\n", network_path, wifi_mode);
-   else
-     fputs("ERROR: can't set network wifi mode\n", stderr);
-   return 1;
-}
-
-static int
 _on_cmd_network_get_wifi_security(char *cmd, char *args)
 {
    const char *wifi_security, *path;
@@ -1428,35 +893,6 @@ _on_cmd_network_get_wifi_security(char *cmd, char *args)
      printf(":::Network %s Wifi Security = \"%s\"\n", path, wifi_security);
    else
      fputs("ERROR: can't get network wifi security\n", stderr);
-   return 1;
-}
-
-static int
-_on_cmd_network_set_wifi_security(char *cmd, char *args)
-{
-   char *wifi_security, *network_path;
-   E_Connman_Element *e;
-
-   if (!args)
-     {
-	fputs("ERROR: missing the network path\n", stderr);
-	return 1;
-     }
-   network_path = args;
-   wifi_security = _tok(args);
-
-   if (!wifi_security)
-     {
-	fputs("ERROR: missing the wifi security value\n", stderr);
-	return 1;
-     }
-   _tok(wifi_security);
-
-   e = e_connman_network_get(network_path);
-   if (e_connman_network_wifi_security_set(e, wifi_security, NULL, NULL))
-     printf(":::Network %s wifi security set to \"%s\"\n", network_path, wifi_security);
-   else
-     fputs("ERROR: can't set network wifi security\n", stderr);
    return 1;
 }
 
@@ -1482,37 +918,7 @@ _on_cmd_network_get_wifi_passphrase(char *cmd, char *args)
    return 1;
 }
 
-static int
-_on_cmd_network_set_wifi_passphrase(char *cmd, char *args)
-{
-   char *wifi_passphrase, *network_path;
-   E_Connman_Element *e;
-
-   if (!args)
-     {
-	fputs("ERROR: missing the network path\n", stderr);
-	return 1;
-     }
-   network_path = args;
-   wifi_passphrase = _tok(args);
-
-   if (!wifi_passphrase)
-     {
-	fputs("ERROR: missing the wifi passphrase value\n", stderr);
-	return 1;
-     }
-   _tok(wifi_passphrase);
-
-   e = e_connman_network_get(network_path);
-   if (e_connman_network_wifi_passphrase_set(e, wifi_passphrase, NULL, NULL))
-     printf(":::Network %s wifi passphrase set to \"%s\"\n", network_path, wifi_passphrase);
-   else
-     fputs("ERROR: can't set network wifi passphrase\n", stderr);
-   return 1;
-}
-
 /* Services Commands */
-
 static int
 _on_cmd_service_connect(char *cmd, char *args)
 {
@@ -2107,35 +1513,6 @@ _on_cmd_service_get_ipv4_method(char *cmd, char *args)
 }
 
 static int
-_on_cmd_service_set_ipv4_method(char *cmd, char *args)
-{
-   char *ipv4_method, *path;
-   E_Connman_Element *e;
-
-   if (!args)
-     {
-	fputs("ERROR: missing the service path\n", stderr);
-	return 1;
-     }
-   path = args;
-   ipv4_method = _tok(args);
-
-   if (!ipv4_method)
-     {
-	fputs("ERROR: missing the ipv4 method value\n", stderr);
-	return 1;
-     }
-   _tok(ipv4_method);
-
-   e = e_connman_service_get(path);
-   if (e_connman_service_ipv4_method_set(e, ipv4_method, NULL, NULL))
-     printf(":::Service %s set to ipv4 method\"%s\"\n", path, ipv4_method);
-   else
-     fputs("ERROR: can't set service ipv4 method\n", stderr);
-   return 1;
-}
-
-static int
 _on_cmd_service_get_ipv4_address(char *cmd, char *args)
 {
    const char *ipv4_address, *path;
@@ -2154,35 +1531,6 @@ _on_cmd_service_get_ipv4_address(char *cmd, char *args)
      printf(":::Service %s ipv4 address = \"%s\"\n", path, ipv4_address);
    else
      fputs("ERROR: can't get service ipv4 address\n", stderr);
-   return 1;
-}
-
-static int
-_on_cmd_service_set_ipv4_address(char *cmd, char *args)
-{
-   char *ipv4_address, *path;
-   E_Connman_Element *e;
-
-   if (!args)
-     {
-	fputs("ERROR: missing the service path\n", stderr);
-	return 1;
-     }
-   path = args;
-   ipv4_address= _tok(args);
-
-   if (!ipv4_address)
-     {
-	fputs("ERROR: missing the ipv4 address value\n", stderr);
-	return 1;
-     }
-   _tok(ipv4_address);
-
-   e = e_connman_service_get(path);
-   if (e_connman_service_ipv4_address_set(e, ipv4_address, NULL, NULL))
-     printf(":::Service %s ipv4 address set to \"%s\"\n", path, ipv4_address);
-   else
-     fputs("ERROR: can't set service ipv4 address\n", stderr);
    return 1;
 }
 
@@ -2205,25 +1553,16 @@ _on_input(void *data, Ecore_Fd_Handler *fd_handler)
      {"manager_get", _on_cmd_manager_get},
      {"manager_get_profiles", _on_cmd_manager_get_profiles},
      {"manager_get_devices", _on_cmd_manager_get_devices},
-     {"manager_get_connections", _on_cmd_manager_get_connections},
      {"manager_get_services", _on_cmd_manager_get_services},
      {"manager_register_agent", _on_cmd_manager_register_agent},
      {"manager_unregister_agent", _on_cmd_manager_unregister_agent},
      {"manager_get_state", _on_cmd_manager_get_state},
-     {"manager_get_policy", _on_cmd_manager_get_policy},
-     {"manager_set_policy", _on_cmd_manager_set_policy},
      {"manager_get_offline_mode", _on_cmd_manager_get_offline_mode},
      {"manager_set_offline_mode", _on_cmd_manager_set_offline_mode},
-     {"device_create_network", _on_cmd_device_create_network},
-     {"device_remove_network", _on_cmd_device_remove_network},
      {"device_propose_scan", _on_cmd_device_propose_scan},
      {"device_get_name", _on_cmd_device_get_name},
      {"device_get_type", _on_cmd_device_get_type},
      {"device_get_interface", _on_cmd_device_get_interface},
-     {"device_get_policy", _on_cmd_device_get_policy},
-     {"device_set_policy", _on_cmd_device_set_policy},
-     {"device_get_priority", _on_cmd_device_get_priority},
-     {"device_set_priority", _on_cmd_device_set_priority},
      {"device_get_powered", _on_cmd_device_get_powered},
      {"device_set_powered", _on_cmd_device_set_powered},
      {"device_get_scan_interval", _on_cmd_device_get_scan_interval},
@@ -2234,30 +1573,14 @@ _on_input(void *data, Ecore_Fd_Handler *fd_handler)
      {"profile_get_offline_mode", _on_cmd_profile_get_offline_mode},
      {"profile_set_offline_mode", _on_cmd_profile_set_offline_mode},
      {"profile_get_services", _on_cmd_profile_get_services},
-     {"connection_get_type", _on_cmd_connection_get_type},
-     {"connection_get_interface", _on_cmd_connection_get_interface},
-     {"connection_get_strength", _on_cmd_connection_get_strength},
-     {"connection_get_default", _on_cmd_connection_get_default},
-     {"connection_get_device", _on_cmd_connection_get_device},
-     {"connection_get_network", _on_cmd_connection_get_network},
-     {"connection_get_ipv4_method", _on_cmd_connection_get_ipv4_method},
-     {"connection_get_ipv4_address", _on_cmd_connection_get_ipv4_address},
-     {"network_connect", _on_cmd_network_connect},
-     {"network_disconnect", _on_cmd_network_disconnect},
      {"network_get_name", _on_cmd_network_get_name},
-     {"network_get_available", _on_cmd_network_get_available},
      {"network_get_connected", _on_cmd_network_get_connected},
-     {"network_get_remember", _on_cmd_network_get_remember},
-     {"network_set_remember", _on_cmd_network_set_remember},
      {"network_get_strength", _on_cmd_network_get_strength},
      {"network_get_device", _on_cmd_network_get_device},
      {"network_get_wifi_ssid", _on_cmd_network_get_wifi_ssid},
      {"network_get_wifi_mode", _on_cmd_network_get_wifi_mode},
-     {"network_set_wifi_mode", _on_cmd_network_set_wifi_mode},
      {"network_get_wifi_security", _on_cmd_network_get_wifi_security},
-     {"network_set_wifi_security", _on_cmd_network_set_wifi_security},
      {"network_get_wifi_passphrase", _on_cmd_network_get_wifi_passphrase},
-     {"network_set_wifi_passphrase", _on_cmd_network_set_wifi_passphrase},
      {"service_connect", _on_cmd_service_connect},
      {"service_disconnect", _on_cmd_service_disconnect},
      {"service_remove", _on_cmd_service_remove},
@@ -2283,9 +1606,7 @@ _on_input(void *data, Ecore_Fd_Handler *fd_handler)
      {"service_get_mnc", _on_cmd_service_get_mnc},
      {"service_get_roaming", _on_cmd_service_get_roaming},
      {"service_get_ipv4_method", _on_cmd_service_get_ipv4_method},
-     {"service_set_ipv4_method", _on_cmd_service_set_ipv4_method},
      {"service_get_ipv4_address", _on_cmd_service_get_ipv4_address},
-     {"service_set_ipv4_address", _on_cmd_service_set_ipv4_address},
      {NULL, NULL}
    };
 

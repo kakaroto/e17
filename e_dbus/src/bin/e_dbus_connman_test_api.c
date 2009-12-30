@@ -334,13 +334,10 @@ _test_element(E_Connman_Element *element, const struct test_desc *test_descs)
 
 static const struct test_desc test_desc_manager[] = {
   TEST_DESC_STRING_GET_GLOBAL(e_connman_manager_state_get, 0),
-  TEST_DESC_STRING_GET_GLOBAL(e_connman_manager_policy_get, 0),
-  //TEST_DESC_STRING_SET_GLOBAL(e_connman_manager_policy_set, 0),
   TEST_DESC_BOOL_GET_GLOBAL(e_connman_manager_offline_mode_get, 0),
   //TEST_DESC_BOOL_SET_GLOBAL(e_connman_manager_offline_mode_set, 0),
   TEST_DESC_ELEMENTS_GET_GLOBAL(e_connman_manager_profiles_get, 0),
   TEST_DESC_ELEMENTS_GET_GLOBAL(e_connman_manager_devices_get, 0),
-  TEST_DESC_ELEMENTS_GET_GLOBAL(e_connman_manager_connections_get, 1),
   TEST_DESC_ELEMENTS_GET_GLOBAL(e_connman_manager_services_get, 1),
   TEST_DESC_SENTINEL
 };
@@ -349,10 +346,6 @@ static const struct test_desc test_desc_device[] = {
   TEST_DESC_STRING_GET(e_connman_device_name_get, 0),
   TEST_DESC_STRING_GET(e_connman_device_type_get, 0),
   TEST_DESC_STRING_GET(e_connman_device_interface_get, 0),
-  TEST_DESC_STRING_GET(e_connman_device_policy_get, 0),
-  //TEST_DESC_STRING_SET(e_connman_device_policy_set, 0),
-  TEST_DESC_UCHAR_GET(e_connman_device_priority_get, 0),
-  //TEST_DESC_UCHAR_SET(e_connman_device_priority_set, 0),
   TEST_DESC_BOOL_GET(e_connman_device_powered_get, 0),
   //TEST_DESC_BOOL_SET(e_connman_device_powered_set, 0),
   TEST_DESC_USHORT_GET(e_connman_device_scan_interval_get, 1),
@@ -370,33 +363,15 @@ static const struct test_desc test_desc_profile[] = {
   TEST_DESC_SENTINEL
 };
 
-static const struct test_desc test_desc_connection[] = {
-  TEST_DESC_STRING_GET(e_connman_connection_type_get, 0),
-  TEST_DESC_STRING_GET(e_connman_connection_interface_get, 0),
-  TEST_DESC_UCHAR_GET(e_connman_connection_strength_get, 0),
-  TEST_DESC_BOOL_GET(e_connman_connection_default_get, 0),
-  TEST_DESC_ELEMENT_GET(e_connman_connection_device_get, 0),
-  TEST_DESC_ELEMENT_GET(e_connman_connection_network_get, 0),
-  TEST_DESC_STRING_GET(e_connman_connection_ipv4_method_get, 0),
-  TEST_DESC_STRING_GET(e_connman_connection_ipv4_address_get, 0),
-  TEST_DESC_SENTINEL
-};
-
 static const struct test_desc test_desc_network[] = {
   TEST_DESC_STRING_GET(e_connman_network_name_get, 0),
-  TEST_DESC_BOOL_GET(e_connman_network_available_get, 0),
   TEST_DESC_BOOL_GET(e_connman_network_connected_get, 0),
-  TEST_DESC_BOOL_GET(e_connman_network_remember_get, 0),
-  //TEST_DESC_BOOL_SET(e_connman_network_remember_set, 0),
   TEST_DESC_UCHAR_GET(e_connman_network_strength_get, 1),
   TEST_DESC_ELEMENT_GET(e_connman_network_device_get, 0),
   TEST_DESC_UCHAR_ARRAY_GET(e_connman_network_wifi_ssid_get, 1),
   TEST_DESC_STRING_GET(e_connman_network_wifi_mode_get, 1),
-  // TEST_DESC_STRING_SET(e_connman_network_wifi_mode_set, 1),
   TEST_DESC_STRING_GET(e_connman_network_wifi_security_get, 1),
-  // TEST_DESC_STRING_SET(e_connman_network_wifi_security_set, 1),
   TEST_DESC_STRING_GET(e_connman_network_wifi_passphrase_get, 1),
-  //TEST_DESC_STRING_SET(e_connman_network_wifi_passphrase_set, 1),
   TEST_DESC_SENTINEL
 };
 
@@ -422,9 +397,7 @@ static const struct test_desc test_desc_service[] = {
   TEST_DESC_STRING_GET(e_connman_service_mnc_get, 1),
   TEST_DESC_BOOL_GET(e_connman_service_roaming_get, 1),
   TEST_DESC_STRING_GET(e_connman_service_ipv4_method_get, 1),
-  //TEST_DESC_STRING_SET(e_connman_service_ipv4_method_set, 1),
   TEST_DESC_STRING_GET(e_connman_service_ipv4_address_get, 1),
-  //TEST_DESC_STRING_SET(e_connman_service_ipv4_address_set, 1),
   TEST_DESC_SENTINEL
 };
 
@@ -468,8 +441,6 @@ _test_element_timer(void *data)
      _test_element(element, test_desc_device);
    else if (e_connman_element_is_profile(element))
      _test_element(element, test_desc_profile);
-   else if (e_connman_element_is_connection(element))
-     _test_element(element, test_desc_connection);
    else if (e_connman_element_is_network(element))
      _test_element(element, test_desc_network);
    else if (e_connman_element_is_manager(element))

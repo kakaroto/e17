@@ -700,10 +700,6 @@ e_connman_element_free(E_Connman_Element *element)
 
    e_connman_element_pending_cancel_and_free(&element->_pending.properties_get);
    e_connman_element_pending_cancel_and_free(&element->_pending.property_set);
-   e_connman_element_pending_cancel_and_free(&element->_pending.network_create);
-   e_connman_element_pending_cancel_and_free(&element->_pending.network_remove);
-   e_connman_element_pending_cancel_and_free(&element->_pending.network_connect);
-   e_connman_element_pending_cancel_and_free(&element->_pending.network_disconnect);
    e_connman_element_pending_cancel_and_free(&element->_pending.agent_register);
    e_connman_element_pending_cancel_and_free(&element->_pending.agent_unregister);
    e_connman_element_pending_cancel_and_free(&element->_pending.device_propose_scan);

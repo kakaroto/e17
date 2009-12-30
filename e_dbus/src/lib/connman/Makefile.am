@@ -13,7 +13,6 @@ libeconnman_la_SOURCES = \
 E_Connman.h \
 e_connman_private.h \
 e_connman.c \
-e_connman_connection.c \
 e_connman_device.c \
 e_connman_element.c \
 e_connman_manager.c \
