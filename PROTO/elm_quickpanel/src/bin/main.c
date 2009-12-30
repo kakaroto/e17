@@ -21,7 +21,6 @@ elm_main(int argc, char **argv)
         win = elm_win_add(NULL, "elm_quickpanel", ELM_WIN_BASIC);
         elm_win_title_set(win, "Illume Quickpanel Window");
         elm_win_autodel_set(win, EINA_TRUE);
-        elm_win_layer_set(win, 160);
 
         xwin = elm_win_xwindow_get(win);
         /* set hints to skip taskbar & pager */
