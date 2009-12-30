@@ -66,6 +66,7 @@ extern "C" {
 	Eina_Inlist *service_remove;
 	Eina_Inlist *service_move_before;
 	Eina_Inlist *service_move_after;
+	Eina_Inlist *service_clear_property;
      } _pending;
      struct {
 	Ecore_Idler *changed;

@@ -712,6 +712,7 @@ e_connman_element_free(E_Connman_Element *element)
    e_connman_element_pending_cancel_and_free(&element->_pending.service_remove);
    e_connman_element_pending_cancel_and_free(&element->_pending.service_move_before);
    e_connman_element_pending_cancel_and_free(&element->_pending.service_move_after);
+   e_connman_element_pending_cancel_and_free(&element->_pending.service_clear_property);
 
    e_connman_element_extra_properties_free(element);
    eina_stringshare_del(element->interface);
@@ -1120,6 +1121,31 @@ e_connman_element_call_with_path(E_Connman_Element *element, const char *method_
 
    dbus_message_iter_init_append(msg, &itr);
    dbus_message_iter_append_basic(&itr, DBUS_TYPE_OBJECT_PATH, &string);
+
+   return e_connman_element_message_send
+     (element, method_name, cb, msg, pending, user_cb, user_data);
+}
+
+bool
+e_connman_element_call_with_string(E_Connman_Element *element, const char *method_name, const char *string, E_DBus_Method_Return_Cb cb, Eina_Inlist **pending, E_DBus_Method_Return_Cb user_cb, const void *user_data)
+{
+   DBusMessageIter itr;
+   DBusMessage *msg;
+
+   EINA_SAFETY_ON_NULL_RETURN_VAL(element, 0);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(method_name, 0);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(string, 0);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(pending, 0);
+
+   msg = dbus_message_new_method_call
+     (e_connman_system_bus_name_get(), element->path, element->interface,
+      method_name);
+
+   if (!msg)
+     return 0;
+
+   dbus_message_iter_init_append(msg, &itr);
+   dbus_message_iter_append_basic(&itr, DBUS_TYPE_STRING, &string);
 
    return e_connman_element_message_send
      (element, method_name, cb, msg, pending, user_cb, user_data);

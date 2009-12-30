@@ -133,8 +133,9 @@ e_connman_service_clear_property(E_Connman_Element *service, const char *propert
 
    EINA_SAFETY_ON_NULL_RETURN_VAL(service, 0);
    EINA_SAFETY_ON_NULL_RETURN_VAL(property, 0);
-   /* FIXME TODO */
-   return 0;
+   return e_connman_element_call_with_string
+     (service, name, property, NULL, &service->_pending.service_clear_property,
+      cb, data);
 }
 
 /**
