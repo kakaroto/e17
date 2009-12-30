@@ -564,6 +564,67 @@ e_connman_element_objects_array_get_stringshared(const E_Connman_Element *elemen
    return 1;
 }
 
+/* strings are just pointers (references), no strdup or stringshare_add/ref */
+bool
+e_connman_element_strings_array_get_stringshared(const E_Connman_Element *element, const char *property, unsigned int *count, const char ***strings)
+{
+   const char **ret, **p;
+   Eina_Array_Iterator iterator;
+   E_Connman_Array *array;
+   unsigned int i;
+   int type;
+   void *item;
+
+   EINA_SAFETY_ON_NULL_RETURN_VAL(element, 0);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(property, 0);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(count, 0);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(strings, 0);
+
+   *count = 0;
+   *strings = NULL;
+
+   if (!e_connman_element_property_get_stringshared
+       (element, property, &type, &array))
+     return 0;
+
+   if (type != DBUS_TYPE_ARRAY)
+     {
+	ERR("property %s is not an array!", property);
+	return 0;
+     }
+
+   if ((!array) || (!array->array) || (array->type == DBUS_TYPE_INVALID))
+     return 0;
+
+   if (array->type != DBUS_TYPE_STRING)
+     {
+	ERR("property %s is not an array of strings!", property);
+	return 0;
+     }
+
+   *count = eina_array_count_get(array->array);
+   ret = malloc(*count * sizeof(char *));
+   if (!ret)
+     {
+	ERR("could not allocate return array of %d strings: %s",
+	    *count, strerror(errno));
+	*count = 0;
+	return 0;
+     }
+   p = ret;
+
+   EINA_ARRAY_ITER_NEXT(array->array, i, item, iterator)
+     {
+	if (!item)
+	  continue;
+	*p = item;
+	p++;
+     }
+   *count = p - ret;
+   *strings = ret;
+   return 1;
+}
+
 void
 _e_connman_element_array_print(FILE *fp, E_Connman_Array *array)
 {
@@ -1726,13 +1787,6 @@ e_connman_element_is_profile(const E_Connman_Element *element)
 {
    EINA_SAFETY_ON_NULL_RETURN_VAL(element, 0);
    return _e_connman_element_is(element, e_connman_iface_profile);
-}
-
-bool
-e_connman_element_is_connection(const E_Connman_Element *element)
-{
-   EINA_SAFETY_ON_NULL_RETURN_VAL(element, 0);
-   return _e_connman_element_is(element, e_connman_iface_connection);
 }
 
 bool

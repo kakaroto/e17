@@ -212,6 +212,27 @@ _test_bool_get_global(const char *name, bool (*func)(bool *value))
    return ret;
 }
 
+static bool
+_test_strings_get_global(const char *name, bool (*func)(unsigned int *count, const char ***elements))
+{
+   const char **value;
+   unsigned int count;
+   bool ret;
+
+   INF("BEGIN: testing strings get %s\n", name);
+   ret = func(&count, &value);
+   if (ret)
+     {
+	INF("SUCCESS: testing strings get %s: %p\n", name, value);
+	free(value);
+     }
+   else
+     WRN("FAILURE: testing strings get %s\n", name);
+
+   return ret;
+}
+
+
 struct test_desc
 {
    const char *name;
@@ -227,6 +248,7 @@ struct test_desc
      TEST_DESC_TYPE_ELEMENTS_GET_GLOBAL,
      TEST_DESC_TYPE_STRING_GET_GLOBAL,
      TEST_DESC_TYPE_BOOL_GET_GLOBAL,
+     TEST_DESC_TYPE_STRINGS_GET_GLOBAL,
      TEST_DESC_TYPE_LAST
    } type;
    union {
@@ -241,6 +263,7 @@ struct test_desc
       bool (*elements_get_global)(unsigned int *count, E_Connman_Element ***elements);
       bool (*string_get_global)(const char **value);
       bool (*bool_get_global)(bool *value);
+      bool (*strings_get_global)(unsigned int *count, const char ***strings);
       void *dummy;
    } func;
    bool may_fail;
@@ -268,6 +291,8 @@ struct test_desc
   {#_func, TEST_DESC_TYPE_STRING_GET_GLOBAL, .func.string_get_global=_func, may_fail}
 #define TEST_DESC_BOOL_GET_GLOBAL(_func, may_fail)			\
   {#_func, TEST_DESC_TYPE_BOOL_GET_GLOBAL, .func.bool_get_global=_func, may_fail}
+#define TEST_DESC_STRINGS_GET_GLOBAL(_func, may_fail)			\
+  {#_func, TEST_DESC_TYPE_STRINGS_GET_GLOBAL, .func.strings_get_global=_func, may_fail}
 #define TEST_DESC_SENTINEL {NULL, TEST_DESC_TYPE_LAST, .func.dummy=NULL}
 
 static bool
@@ -323,6 +348,10 @@ _test_element(E_Connman_Element *element, const struct test_desc *test_descs)
 	      r = _test_bool_get_global
 		(itr->name, itr->func.bool_get_global);
 	      break;
+	   case TEST_DESC_TYPE_STRINGS_GET_GLOBAL:
+	      r = _test_strings_get_global
+		(itr->name, itr->func.strings_get_global);
+	      break;
 	   default:
 	      ERR("unknown test type %d (%s)\n", itr->type, itr->name);
 	      r = 0;
@@ -365,6 +394,9 @@ static const struct test_desc test_desc_manager[] = {
   TEST_DESC_ELEMENTS_GET_GLOBAL(e_connman_manager_devices_get, 0),
   TEST_DESC_ELEMENTS_GET_GLOBAL(e_connman_manager_services_get, 1),
   TEST_DESC_STRING_GET_GLOBAL(e_connman_manager_technology_default_get, 0),
+  TEST_DESC_STRINGS_GET_GLOBAL(e_connman_manager_technologies_available_get, 0),
+  TEST_DESC_STRINGS_GET_GLOBAL(e_connman_manager_technologies_enabled_get, 0),
+  TEST_DESC_STRINGS_GET_GLOBAL(e_connman_manager_technologies_connected_get, 0),
   TEST_DESC_ELEMENT_GET_GLOBAL(e_connman_manager_profile_active_get, 0),
   TEST_DESC_SENTINEL
 };

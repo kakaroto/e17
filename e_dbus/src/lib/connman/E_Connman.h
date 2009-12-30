@@ -101,6 +101,10 @@ extern "C" {
   EAPI bool e_connman_manager_technology_enable(const char *type, E_DBus_Method_Return_Cb cb, const void *data) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
   EAPI bool e_connman_manager_technology_disable(const char *type, E_DBus_Method_Return_Cb cb, const void *data) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
 
+  EAPI bool e_connman_manager_technologies_available_get(unsigned int *count, const char ***strings) EINA_ARG_NONNULL(1, 2) EINA_WARN_UNUSED_RESULT;
+  EAPI bool e_connman_manager_technologies_enabled_get(unsigned int *count, const char ***strings) EINA_ARG_NONNULL(1, 2) EINA_WARN_UNUSED_RESULT;
+  EAPI bool e_connman_manager_technologies_connected_get(unsigned int *count, const char ***strings) EINA_ARG_NONNULL(1, 2) EINA_WARN_UNUSED_RESULT;
+
   EAPI bool e_connman_manager_profile_remove(const E_Connman_Element *profile, E_DBus_Method_Return_Cb cb, const void *data) EINA_WARN_UNUSED_RESULT;
 
   EAPI bool e_connman_manager_profile_active_get(E_Connman_Element **profile) EINA_ARG_NONNULL(1) EINA_PURE EINA_WARN_UNUSED_RESULT;
@@ -108,9 +112,6 @@ extern "C" {
 
 
   // TODO: profile_create()
-  // TODO: technologies_available_get()
-  // TODO: technologies_enabled_get()
-  // TODO: technologies_connected_get()
   // TODO: service_connect() (actually creates and connect)
   // TODO: signal E_CONNMAN_EVENT_MANAGER_STATE_CHANGED
 
@@ -233,7 +234,6 @@ extern "C" {
   EAPI bool e_connman_element_is_manager(const E_Connman_Element *element) EINA_ARG_NONNULL(1) EINA_PURE EINA_WARN_UNUSED_RESULT;
   EAPI bool e_connman_element_is_device(const E_Connman_Element *element) EINA_ARG_NONNULL(1) EINA_PURE EINA_WARN_UNUSED_RESULT;
   EAPI bool e_connman_element_is_profile(const E_Connman_Element *element) EINA_ARG_NONNULL(1) EINA_PURE EINA_WARN_UNUSED_RESULT;
-  EAPI bool e_connman_element_is_connection(const E_Connman_Element *element) EINA_ARG_NONNULL(1) EINA_PURE EINA_WARN_UNUSED_RESULT;
   EAPI bool e_connman_element_is_network(const E_Connman_Element *element) EINA_ARG_NONNULL(1) EINA_PURE EINA_WARN_UNUSED_RESULT;
   EAPI bool e_connman_element_is_service(const E_Connman_Element *element) EINA_ARG_NONNULL(1) EINA_PURE EINA_WARN_UNUSED_RESULT;
 

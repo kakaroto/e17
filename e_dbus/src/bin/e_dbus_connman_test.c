@@ -5,16 +5,26 @@
 #include <errno.h>
 
 static void
-_elements_print(E_Connman_Element **elements, int count)
+_elements_print(E_Connman_Element **elements, unsigned int count)
 {
-   int i;
+   unsigned int i;
    for (i = 0; i < count; i++)
      {
 	printf("--- element %d:\n", i);
 	e_connman_element_print(stdout, elements[i]);
      }
    free(elements);
-   printf("END: all elements count = %d\n", count);
+   printf("END: all elements count = %u\n", count);
+}
+
+static void
+_strings_print(const char **strings, unsigned int count)
+{
+   unsigned int i;
+   for (i = 0; i < count; i++)
+     printf("--- strings %d: \"%s\"\n", i, strings[i]);
+   free(strings);
+   printf("END: all strings count = %u\n", count);
 }
 
 static int
@@ -424,6 +434,57 @@ _on_cmd_manager_technology_disable(char *cmd, char *args)
      printf(":::Manager Disable Technology %s\n", args);
    else
      fputs("ERROR: can't disable technology on manager\n", stderr);
+   return 1;
+}
+
+static int
+_on_cmd_manager_get_technologies_available(char *cmd, char *args)
+{
+   const char **strings;
+   unsigned int count;
+
+   if (!e_connman_manager_technologies_available_get(&count, &strings))
+     fputs("ERROR: can't get available technologies\n", stderr);
+   else
+     {
+	printf("BEG: available technologies count = %u\n", count);
+	_strings_print(strings, count);
+     }
+
+   return 1;
+}
+
+static int
+_on_cmd_manager_get_technologies_enabled(char *cmd, char *args)
+{
+   const char **strings;
+   unsigned int count;
+
+   if (!e_connman_manager_technologies_enabled_get(&count, &strings))
+     fputs("ERROR: can't get enabled technologies\n", stderr);
+   else
+     {
+	printf("BEG: enabled technologies count = %u\n", count);
+	_strings_print(strings, count);
+     }
+
+   return 1;
+}
+
+static int
+_on_cmd_manager_get_technologies_connected(char *cmd, char *args)
+{
+   const char **strings;
+   unsigned int count;
+
+   if (!e_connman_manager_technologies_connected_get(&count, &strings))
+     fputs("ERROR: can't get connected technologies\n", stderr);
+   else
+     {
+	printf("BEG: connected technologies count = %u\n", count);
+	_strings_print(strings, count);
+     }
+
    return 1;
 }
 
@@ -1827,6 +1888,9 @@ _on_input(void *data, Ecore_Fd_Handler *fd_handler)
      {"manager_request_scan", _on_cmd_manager_request_scan},
      {"manager_technology_enable", _on_cmd_manager_technology_enable},
      {"manager_technology_disable", _on_cmd_manager_technology_disable},
+     {"manager_get_technologies_available", _on_cmd_manager_get_technologies_available},
+     {"manager_get_technologies_enabled", _on_cmd_manager_get_technologies_enabled},
+     {"manager_get_technologies_connected", _on_cmd_manager_get_technologies_connected},
      {"manager_profile_remove", _on_cmd_manager_profile_remove},
      {"manager_profile_get_active", _on_cmd_manager_profile_get_active},
      {"manager_profile_set_active", _on_cmd_manager_profile_set_active},

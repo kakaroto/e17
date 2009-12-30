@@ -74,6 +74,9 @@ const char *e_connman_prop_mcc = NULL;
 const char *e_connman_prop_mnc = NULL;
 const char *e_connman_prop_roaming = NULL;
 const char *e_connman_prop_technology_default = NULL;
+const char *e_connman_prop_technologies_available = NULL;
+const char *e_connman_prop_technologies_enabled= NULL;
+const char *e_connman_prop_technologies_connected = NULL;
 
 
 int _e_dbus_connman_log_dom = -1;
@@ -372,6 +375,12 @@ e_connman_system_init(E_DBus_Connection *edbus_conn)
      e_connman_prop_roaming = eina_stringshare_add("Roaming");
    if (e_connman_prop_technology_default == NULL)
      e_connman_prop_technology_default = eina_stringshare_add("DefaultTechnology");
+   if (e_connman_prop_technologies_available == NULL)
+     e_connman_prop_technologies_available = eina_stringshare_add("AvailableTechnologies");
+   if (e_connman_prop_technologies_enabled == NULL)
+     e_connman_prop_technologies_enabled = eina_stringshare_add("EnabledTechnologies");
+   if (e_connman_prop_technologies_connected == NULL)
+     e_connman_prop_technologies_connected = eina_stringshare_add("ConnectedTechnologies");
 
    e_connman_conn = edbus_conn;
    cb_name_owner_changed = e_dbus_signal_handler_add
@@ -470,6 +479,9 @@ e_connman_system_shutdown(void)
    _stringshare_del(&e_connman_prop_mnc);
    _stringshare_del(&e_connman_prop_roaming);
    _stringshare_del(&e_connman_prop_technology_default);
+   _stringshare_del(&e_connman_prop_technologies_available);
+   _stringshare_del(&e_connman_prop_technologies_enabled);
+   _stringshare_del(&e_connman_prop_technologies_connected);
 
    if (pending_get_name_owner)
      {

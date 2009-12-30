@@ -65,6 +65,9 @@ extern const char *e_connman_prop_mcc;
 extern const char *e_connman_prop_mnc;
 extern const char *e_connman_prop_roaming;
 extern const char *e_connman_prop_technology_default;
+extern const char *e_connman_prop_technologies_available;
+extern const char *e_connman_prop_technologies_enabled;
+extern const char *e_connman_prop_technologies_connected;
 
 extern int _e_dbus_connman_log_dom;
 
@@ -140,6 +143,7 @@ E_Connman_Element *e_connman_element_register(const char *path, const char *inte
 void e_connman_element_unregister(E_Connman_Element *element);
 
 bool e_connman_element_objects_array_get_stringshared(const E_Connman_Element *element, const char *property, unsigned int *count, E_Connman_Element ***elements);
+bool e_connman_element_strings_array_get_stringshared(const E_Connman_Element *element, const char *property, unsigned int *count, const char ***strings);
 unsigned char *e_connman_element_bytes_array_get_stringshared(const E_Connman_Element *element, const char *property, unsigned int *count);
 
 bool e_connman_element_message_send(E_Connman_Element *element, const char *method_name, E_DBus_Method_Return_Cb cb, DBusMessage *msg, Eina_Inlist **pending, E_DBus_Method_Return_Cb user_cb, const void *user_data);

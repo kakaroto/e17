@@ -184,7 +184,9 @@ e_connman_manager_offline_mode_set(bool offline, E_DBus_Method_Return_Cb cb, con
  *
  * @param count return the number of elements in array.
  * @param p_elements array with all elements, these are not referenced
- *        and in no particular order, just set if return is 1.
+ *        and in no particular order, just set if return is 1.  The
+ *        array itself is allocated using malloc() and should be freed
+ *        after usage is done.
  *
  * @return 1 on success, 0 otherwise.
  */
@@ -208,7 +210,9 @@ e_connman_manager_profiles_get(unsigned int *count, E_Connman_Element ***p_eleme
  *
  * @param count return the number of elements in array.
  * @param p_elements array with all elements, these are not referenced
- *        and in no particular order, just set if return is 1.
+ *        and in no particular order, just set if return is 1.  The
+ *        array itself is allocated using malloc() and should be freed
+ *        after usage is done.
  *
  * @return 1 on success, 0 otherwise.
  */
@@ -225,30 +229,6 @@ e_connman_manager_devices_get(unsigned int *count, E_Connman_Element ***p_elemen
      return 0;
    return e_connman_element_objects_array_get_stringshared
      (element, e_connman_prop_devices, count, p_elements);
-}
-
-/**
- * Get array of connection elements.
- *
- * @param count return the number of elements in array.
- * @param p_elements array with all elements, these are not referenced
- *        and in no particular order, just set if return is 1.
- *
- * @return 1 on success, 0 otherwise.
- */
-bool
-e_connman_manager_connections_get(unsigned int *count, E_Connman_Element ***p_elements)
-{
-   E_Connman_Element *element;
-
-   EINA_SAFETY_ON_NULL_RETURN_VAL(count, 0);
-   EINA_SAFETY_ON_NULL_RETURN_VAL(p_elements, 0);
-
-   element = e_connman_manager_get();
-   if (!element)
-     return 0;
-   return e_connman_element_objects_array_get_stringshared
-     (element, e_connman_prop_connections, count, p_elements);
 }
 
 /**
@@ -270,7 +250,9 @@ e_connman_manager_connections_get(unsigned int *count, E_Connman_Element ***p_el
  *
  * @param count return the number of elements in array.
  * @param p_elements array with all elements, these are not referenced
- *        and in no particular order, just set if return is 1.
+ *        and in no particular order, just set if return is 1.  The
+ *        array itself is allocated using malloc() and should be freed
+ *        after usage is done.
  *
  * @return 1 on success, 0 otherwise.
  */
@@ -508,4 +490,92 @@ e_connman_manager_profile_active_set(const E_Connman_Element *profile, E_DBus_Me
    return e_connman_element_property_set_full
      (element, e_connman_prop_profile_active, DBUS_TYPE_OBJECT_PATH,
       profile->path, cb, data);
+}
+
+
+/**
+ * Get array of strings representing the available technologies.
+ *
+ * @param count return the number of elements in array.
+ * @param p_strings array with pointers to internal strings. These
+ *        strings are not copied in any way, and they are granted to
+ *        be eina_stringshare instances, so one can use
+ *        eina_stringshare_ref() if he wants to save memory and cpu to
+ *        get an extra reference. The array itself is allocated using
+ *        malloc() and should be freed after usage is done. This
+ *        pointer is just set if return is 1.
+ *
+ * @return 1 on success, 0 otherwise.
+ */
+bool
+e_connman_manager_technologies_available_get(unsigned int *count, const char ***p_strings)
+{
+   E_Connman_Element *element;
+
+   EINA_SAFETY_ON_NULL_RETURN_VAL(count, 0);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(p_strings, 0);
+
+   element = e_connman_manager_get();
+   if (!element)
+     return 0;
+   return e_connman_element_strings_array_get_stringshared
+     (element, e_connman_prop_technologies_available, count, p_strings);
+}
+
+/**
+ * Get array of strings representing the enabled technologies.
+ *
+ * @param count return the number of elements in array.
+ * @param p_strings array with pointers to internal strings. These
+ *        strings are not copied in any way, and they are granted to
+ *        be eina_stringshare instances, so one can use
+ *        eina_stringshare_ref() if he wants to save memory and cpu to
+ *        get an extra reference. The array itself is allocated using
+ *        malloc() and should be freed after usage is done. This
+ *        pointer is just set if return is 1.
+ *
+ * @return 1 on success, 0 otherwise.
+ */
+bool
+e_connman_manager_technologies_enabled_get(unsigned int *count, const char ***p_strings)
+{
+   E_Connman_Element *element;
+
+   EINA_SAFETY_ON_NULL_RETURN_VAL(count, 0);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(p_strings, 0);
+
+   element = e_connman_manager_get();
+   if (!element)
+     return 0;
+   return e_connman_element_strings_array_get_stringshared
+     (element, e_connman_prop_technologies_enabled, count, p_strings);
+}
+
+/**
+ * Get array of strings representing the connected technologies.
+ *
+ * @param count return the number of elements in array.
+ * @param p_strings array with pointers to internal strings. These
+ *        strings are not copied in any way, and they are granted to
+ *        be eina_stringshare instances, so one can use
+ *        eina_stringshare_ref() if he wants to save memory and cpu to
+ *        get an extra reference. The array itself is allocated using
+ *        malloc() and should be freed after usage is done. This
+ *        pointer is just set if return is 1.
+ *
+ * @return 1 on success, 0 otherwise.
+ */
+bool
+e_connman_manager_technologies_connected_get(unsigned int *count, const char ***p_strings)
+{
+   E_Connman_Element *element;
+
+   EINA_SAFETY_ON_NULL_RETURN_VAL(count, 0);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(p_strings, 0);
+
+   element = e_connman_manager_get();
+   if (!element)
+     return 0;
+   return e_connman_element_strings_array_get_stringshared
+     (element, e_connman_prop_technologies_connected, count, p_strings);
 }
