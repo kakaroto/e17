@@ -11,7 +11,7 @@ elm_main(int argc, char **argv)
 {
    int i = 0;
 
-   for (i = 0; i < 2; i++) 
+   for (i = 0; i < 3; i++) 
      {
         Evas_Object *win, *bg, *lbl;
         Ecore_X_Window xwin;
@@ -21,7 +21,7 @@ elm_main(int argc, char **argv)
         win = elm_win_add(NULL, "elm_quickpanel", ELM_WIN_BASIC);
         elm_win_title_set(win, "Illume Quickpanel Window");
         elm_win_autodel_set(win, EINA_TRUE);
-//        elm_win_borderless_set(win, EINA_TRUE);
+        elm_win_layer_set(win, 160);
 
         xwin = elm_win_xwindow_get(win);
         /* set hints to skip taskbar & pager */
@@ -33,12 +33,22 @@ elm_main(int argc, char **argv)
         /* set this window as a quickpanel */
         ecore_x_e_illume_quickpanel_set(xwin, 1);
 
+        /* set quickpanel priority */
+        if (i == 1) 
+          ecore_x_e_illume_quickpanel_priority_major_set(xwin, 2);
+        else 
+          ecore_x_e_illume_quickpanel_priority_major_set(xwin, i);
+        ecore_x_e_illume_quickpanel_priority_minor_set(xwin, i);
+
         bg = elm_bg_add(win);
         evas_object_size_hint_weight_set(bg, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
         elm_win_resize_object_add(win, bg);
         evas_object_show(bg);
 
-        snprintf(buff, sizeof(buff), "This is quickpanel %d", i);
+        snprintf(buff, sizeof(buff), 
+                 "This is quickpanel %d - Priority: Major %d Minor %d", i, 
+                 ecore_x_e_illume_quickpanel_priority_major_get(xwin), 
+                 ecore_x_e_illume_quickpanel_priority_minor_get(xwin));
         lbl = elm_label_add(win);
         elm_label_label_set(lbl, buff);
         evas_object_size_hint_weight_set(lbl, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
