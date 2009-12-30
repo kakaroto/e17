@@ -75,43 +75,6 @@ extern "C" {
   EAPI unsigned int e_connman_system_init(E_DBus_Connection *edbus_conn) EINA_ARG_NONNULL(1);
   EAPI unsigned int e_connman_system_shutdown(void);
 
-  /* Low-Level API */
-  EAPI bool e_connman_manager_sync_elements(void);
-
-  EAPI bool e_connman_elements_get_all(unsigned int *count, E_Connman_Element ***p_elements) EINA_ARG_NONNULL(1, 2) EINA_PURE EINA_WARN_UNUSED_RESULT;
-  EAPI bool e_connman_elements_get_all_type(const char *type, unsigned int *count, E_Connman_Element ***p_elements) EINA_ARG_NONNULL(1, 2, 3) EINA_PURE EINA_WARN_UNUSED_RESULT;
-  EAPI E_Connman_Element *e_connman_element_get(const char *path);
-
-  EAPI void e_connman_element_listener_add(E_Connman_Element *element, void (*cb)(void *data, const E_Connman_Element *element), const void *data, void (*free_data)(void *data)) EINA_ARG_NONNULL(1, 2);
-  EAPI void e_connman_element_listener_del(E_Connman_Element *element, void (*cb)(void *data, const E_Connman_Element *element), const void *data) EINA_ARG_NONNULL(1, 2);
-
-  EAPI int e_connman_element_ref(E_Connman_Element *element) EINA_ARG_NONNULL(1);
-  EAPI int e_connman_element_unref(E_Connman_Element *element) EINA_ARG_NONNULL(1);
-
-  EAPI void e_connman_element_print(FILE *fp, const E_Connman_Element *element) EINA_ARG_NONNULL(1, 2);
-
-
-  EAPI bool e_connman_element_properties_sync(E_Connman_Element *element) EINA_ARG_NONNULL(1);
-  EAPI bool e_connman_element_properties_sync_full(E_Connman_Element *element, E_DBus_Method_Return_Cb cb, const void *data) EINA_ARG_NONNULL(1);
-
-  EAPI bool e_connman_element_property_set(E_Connman_Element *element, const char *prop, int type, const void *value) EINA_ARG_NONNULL(1, 2) EINA_WARN_UNUSED_RESULT;
-  EAPI bool e_connman_element_property_set_full(E_Connman_Element *element, const char *prop, int type, const void *value, E_DBus_Method_Return_Cb cb, const void *data) EINA_ARG_NONNULL(1, 2) EINA_WARN_UNUSED_RESULT;
-
-  EAPI void e_connman_element_properties_list(const E_Connman_Element *element, bool (*cb)(void *data, const E_Connman_Element *element, const char *name, int type, const void *value), const void *data) EINA_ARG_NONNULL(1, 2);
-
-  EAPI bool e_connman_element_property_type_get_stringshared(const E_Connman_Element *element, const char *name, int *type) EINA_ARG_NONNULL(1, 2, 3) EINA_PURE EINA_WARN_UNUSED_RESULT;
-  EAPI bool e_connman_element_property_type_get(const E_Connman_Element *element, const char *name, int *type) EINA_ARG_NONNULL(1, 2, 3) EINA_PURE EINA_WARN_UNUSED_RESULT;
-  EAPI bool e_connman_element_property_get_stringshared(const E_Connman_Element *element, const char *name, int *type, void *value) EINA_ARG_NONNULL(1, 2, 4) EINA_PURE EINA_WARN_UNUSED_RESULT;
-  EAPI bool e_connman_element_property_get(const E_Connman_Element *element, const char *name, int *type, void *value) EINA_ARG_NONNULL(1, 2, 4) EINA_PURE EINA_WARN_UNUSED_RESULT;
-
-  EAPI bool e_connman_element_is_manager(const E_Connman_Element *element) EINA_ARG_NONNULL(1) EINA_PURE EINA_WARN_UNUSED_RESULT;
-  EAPI bool e_connman_element_is_device(const E_Connman_Element *element) EINA_ARG_NONNULL(1) EINA_PURE EINA_WARN_UNUSED_RESULT;
-  EAPI bool e_connman_element_is_profile(const E_Connman_Element *element) EINA_ARG_NONNULL(1) EINA_PURE EINA_WARN_UNUSED_RESULT;
-  EAPI bool e_connman_element_is_connection(const E_Connman_Element *element) EINA_ARG_NONNULL(1) EINA_PURE EINA_WARN_UNUSED_RESULT;
-  EAPI bool e_connman_element_is_network(const E_Connman_Element *element) EINA_ARG_NONNULL(1) EINA_PURE EINA_WARN_UNUSED_RESULT;
-  EAPI bool e_connman_element_is_service(const E_Connman_Element *element) EINA_ARG_NONNULL(1) EINA_PURE EINA_WARN_UNUSED_RESULT;
-
-
   /* Manager Methods */
   EAPI E_Connman_Element *e_connman_manager_get(void) EINA_ARG_NONNULL(1) EINA_PURE EINA_WARN_UNUSED_RESULT;
 
@@ -142,30 +105,6 @@ extern "C" {
   // TODO: signal E_CONNMAN_EVENT_MANAGER_STATE_CHANGED
 
 
-  /* Device Methods: Low-Level API */
-  EAPI E_Connman_Element *e_connman_device_get(const char *path) EINA_ARG_NONNULL(1) EINA_PURE EINA_WARN_UNUSED_RESULT;
-
-  EAPI bool e_connman_device_propose_scan(E_Connman_Element *device, E_DBus_Method_Return_Cb cb, const void *data) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
-
-  EAPI bool e_connman_device_name_get(const E_Connman_Element *device, const char **name) EINA_ARG_NONNULL(1, 2) EINA_PURE EINA_WARN_UNUSED_RESULT;
-
-  EAPI bool e_connman_device_type_get(const E_Connman_Element *device, const char **type) EINA_ARG_NONNULL(1, 2) EINA_PURE EINA_WARN_UNUSED_RESULT;
-
-  EAPI bool e_connman_device_interface_get(const E_Connman_Element *device, const char **interface) EINA_ARG_NONNULL(1, 2) EINA_PURE EINA_WARN_UNUSED_RESULT;
-
-  EAPI bool e_connman_device_powered_get(const E_Connman_Element *device, bool *powered) EINA_ARG_NONNULL(1, 2) EINA_PURE EINA_WARN_UNUSED_RESULT;
-  EAPI bool e_connman_device_powered_set(E_Connman_Element *device, bool powered, E_DBus_Method_Return_Cb cb, const void *data) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
-
-  EAPI bool e_connman_device_scan_interval_get(const E_Connman_Element *device, unsigned short *scan_interval) EINA_ARG_NONNULL(1, 2) EINA_PURE EINA_WARN_UNUSED_RESULT;
-  EAPI bool e_connman_device_scan_interval_set(E_Connman_Element *device, unsigned short scan_interval, E_DBus_Method_Return_Cb cb, const void *data) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
-
-  EAPI bool e_connman_device_scanning_get(const E_Connman_Element *device, bool *scanning) EINA_ARG_NONNULL(1, 2) EINA_PURE EINA_WARN_UNUSED_RESULT;
-
-  EAPI bool e_connman_device_networks_get(const E_Connman_Element *device, unsigned int *count, E_Connman_Element ***p_elements) EINA_ARG_NONNULL(1, 2, 3) EINA_PURE EINA_WARN_UNUSED_RESULT;
-
-  // TODO: address_get
-
-
   /* Profile Methods */
   EAPI E_Connman_Element *e_connman_profile_get(const char *path) EINA_ARG_NONNULL(1) EINA_PURE EINA_WARN_UNUSED_RESULT;
   EAPI bool e_connman_profile_name_get(const E_Connman_Element *profile, const char **name) EINA_ARG_NONNULL(1, 2) EINA_PURE EINA_WARN_UNUSED_RESULT;
@@ -176,31 +115,6 @@ extern "C" {
   EAPI bool e_connman_profile_services_get(const E_Connman_Element *profile, unsigned int *count, E_Connman_Element ***p_elements) EINA_ARG_NONNULL(1, 2, 3) EINA_PURE EINA_WARN_UNUSED_RESULT;
 
   // TODO: name_set()
-
-
-  /* Network Methods: Low-Level API (Informational-only) */
-  EAPI E_Connman_Element *e_connman_network_get(const char *path) EINA_ARG_NONNULL(1) EINA_PURE EINA_WARN_UNUSED_RESULT;
-
-  EAPI bool e_connman_network_name_get(const E_Connman_Element *network, const char **name) EINA_ARG_NONNULL(1, 2) EINA_PURE EINA_WARN_UNUSED_RESULT;
-
-  EAPI bool e_connman_network_connected_get(const E_Connman_Element *network, bool *connected) EINA_ARG_NONNULL(1, 2) EINA_PURE EINA_WARN_UNUSED_RESULT;
-
-  EAPI bool e_connman_network_strength_get(const E_Connman_Element *network, unsigned char *strength) EINA_ARG_NONNULL(1, 2) EINA_PURE EINA_WARN_UNUSED_RESULT;
-
-  EAPI bool e_connman_network_device_get(const E_Connman_Element *network, E_Connman_Element **element) EINA_ARG_NONNULL(1, 2) EINA_PURE EINA_WARN_UNUSED_RESULT;
-
-  EAPI bool e_connman_network_wifi_ssid_get(const E_Connman_Element *network, unsigned int *count, unsigned char **wifi_ssid) EINA_ARG_NONNULL(1, 2, 3) EINA_PURE EINA_WARN_UNUSED_RESULT;
-
-  EAPI bool e_connman_network_wifi_mode_get(const E_Connman_Element *network, const char **wifi_mode) EINA_ARG_NONNULL(1, 2) EINA_PURE EINA_WARN_UNUSED_RESULT;
-
-  EAPI bool e_connman_network_wifi_security_get(const E_Connman_Element *network, const char **wifi_security) EINA_ARG_NONNULL(1, 2) EINA_PURE EINA_WARN_UNUSED_RESULT;
-
-  EAPI bool e_connman_network_wifi_passphrase_get(const E_Connman_Element *network, const char **wifi_passphare) EINA_ARG_NONNULL(1, 2) EINA_PURE EINA_WARN_UNUSED_RESULT;
-
-  // TODO: address_get
-  // TODO: wifi_channel_get (missing in their docs)
-  // TODO: wifi_eap_get (missing in their docs, only if ieee8021x)
-  // TODO: frequency_get (missing in their docs)
 
 
   /* Services Methods */
@@ -271,6 +185,102 @@ extern "C" {
   // TODO: ethernet_mtu_get
   // TODO: ethernet_speed_get
   // TODO: ethernet_duplex_get
+
+  /* Low-Level API:
+   *
+   * Should just be used to work around problems until proper solution
+   * is made into e_connman.
+   */
+  EAPI bool e_connman_manager_sync_elements(void);
+
+  EAPI bool e_connman_elements_get_all(unsigned int *count, E_Connman_Element ***p_elements) EINA_ARG_NONNULL(1, 2) EINA_PURE EINA_WARN_UNUSED_RESULT;
+  EAPI bool e_connman_elements_get_all_type(const char *type, unsigned int *count, E_Connman_Element ***p_elements) EINA_ARG_NONNULL(1, 2, 3) EINA_PURE EINA_WARN_UNUSED_RESULT;
+  EAPI E_Connman_Element *e_connman_element_get(const char *path);
+
+  EAPI void e_connman_element_listener_add(E_Connman_Element *element, void (*cb)(void *data, const E_Connman_Element *element), const void *data, void (*free_data)(void *data)) EINA_ARG_NONNULL(1, 2);
+  EAPI void e_connman_element_listener_del(E_Connman_Element *element, void (*cb)(void *data, const E_Connman_Element *element), const void *data) EINA_ARG_NONNULL(1, 2);
+
+  EAPI int e_connman_element_ref(E_Connman_Element *element) EINA_ARG_NONNULL(1);
+  EAPI int e_connman_element_unref(E_Connman_Element *element) EINA_ARG_NONNULL(1);
+
+  EAPI void e_connman_element_print(FILE *fp, const E_Connman_Element *element) EINA_ARG_NONNULL(1, 2);
+
+
+  EAPI bool e_connman_element_properties_sync(E_Connman_Element *element) EINA_ARG_NONNULL(1);
+  EAPI bool e_connman_element_properties_sync_full(E_Connman_Element *element, E_DBus_Method_Return_Cb cb, const void *data) EINA_ARG_NONNULL(1);
+
+  EAPI bool e_connman_element_property_set(E_Connman_Element *element, const char *prop, int type, const void *value) EINA_ARG_NONNULL(1, 2) EINA_WARN_UNUSED_RESULT;
+  EAPI bool e_connman_element_property_set_full(E_Connman_Element *element, const char *prop, int type, const void *value, E_DBus_Method_Return_Cb cb, const void *data) EINA_ARG_NONNULL(1, 2) EINA_WARN_UNUSED_RESULT;
+
+  EAPI void e_connman_element_properties_list(const E_Connman_Element *element, bool (*cb)(void *data, const E_Connman_Element *element, const char *name, int type, const void *value), const void *data) EINA_ARG_NONNULL(1, 2);
+
+  EAPI bool e_connman_element_property_type_get_stringshared(const E_Connman_Element *element, const char *name, int *type) EINA_ARG_NONNULL(1, 2, 3) EINA_PURE EINA_WARN_UNUSED_RESULT;
+  EAPI bool e_connman_element_property_type_get(const E_Connman_Element *element, const char *name, int *type) EINA_ARG_NONNULL(1, 2, 3) EINA_PURE EINA_WARN_UNUSED_RESULT;
+  EAPI bool e_connman_element_property_get_stringshared(const E_Connman_Element *element, const char *name, int *type, void *value) EINA_ARG_NONNULL(1, 2, 4) EINA_PURE EINA_WARN_UNUSED_RESULT;
+  EAPI bool e_connman_element_property_get(const E_Connman_Element *element, const char *name, int *type, void *value) EINA_ARG_NONNULL(1, 2, 4) EINA_PURE EINA_WARN_UNUSED_RESULT;
+
+  EAPI bool e_connman_element_is_manager(const E_Connman_Element *element) EINA_ARG_NONNULL(1) EINA_PURE EINA_WARN_UNUSED_RESULT;
+  EAPI bool e_connman_element_is_device(const E_Connman_Element *element) EINA_ARG_NONNULL(1) EINA_PURE EINA_WARN_UNUSED_RESULT;
+  EAPI bool e_connman_element_is_profile(const E_Connman_Element *element) EINA_ARG_NONNULL(1) EINA_PURE EINA_WARN_UNUSED_RESULT;
+  EAPI bool e_connman_element_is_connection(const E_Connman_Element *element) EINA_ARG_NONNULL(1) EINA_PURE EINA_WARN_UNUSED_RESULT;
+  EAPI bool e_connman_element_is_network(const E_Connman_Element *element) EINA_ARG_NONNULL(1) EINA_PURE EINA_WARN_UNUSED_RESULT;
+  EAPI bool e_connman_element_is_service(const E_Connman_Element *element) EINA_ARG_NONNULL(1) EINA_PURE EINA_WARN_UNUSED_RESULT;
+
+
+  /* Device Methods: Low-Level API
+   *
+   * Fine tune device, such as turn off and change scan interval.
+   */
+  EAPI E_Connman_Element *e_connman_device_get(const char *path) EINA_ARG_NONNULL(1) EINA_PURE EINA_WARN_UNUSED_RESULT;
+
+  EAPI bool e_connman_device_propose_scan(E_Connman_Element *device, E_DBus_Method_Return_Cb cb, const void *data) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
+
+  EAPI bool e_connman_device_name_get(const E_Connman_Element *device, const char **name) EINA_ARG_NONNULL(1, 2) EINA_PURE EINA_WARN_UNUSED_RESULT;
+
+  EAPI bool e_connman_device_type_get(const E_Connman_Element *device, const char **type) EINA_ARG_NONNULL(1, 2) EINA_PURE EINA_WARN_UNUSED_RESULT;
+
+  EAPI bool e_connman_device_interface_get(const E_Connman_Element *device, const char **interface) EINA_ARG_NONNULL(1, 2) EINA_PURE EINA_WARN_UNUSED_RESULT;
+
+  EAPI bool e_connman_device_powered_get(const E_Connman_Element *device, bool *powered) EINA_ARG_NONNULL(1, 2) EINA_PURE EINA_WARN_UNUSED_RESULT;
+  EAPI bool e_connman_device_powered_set(E_Connman_Element *device, bool powered, E_DBus_Method_Return_Cb cb, const void *data) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
+
+  EAPI bool e_connman_device_scan_interval_get(const E_Connman_Element *device, unsigned short *scan_interval) EINA_ARG_NONNULL(1, 2) EINA_PURE EINA_WARN_UNUSED_RESULT;
+  EAPI bool e_connman_device_scan_interval_set(E_Connman_Element *device, unsigned short scan_interval, E_DBus_Method_Return_Cb cb, const void *data) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
+
+  EAPI bool e_connman_device_scanning_get(const E_Connman_Element *device, bool *scanning) EINA_ARG_NONNULL(1, 2) EINA_PURE EINA_WARN_UNUSED_RESULT;
+
+  EAPI bool e_connman_device_networks_get(const E_Connman_Element *device, unsigned int *count, E_Connman_Element ***p_elements) EINA_ARG_NONNULL(1, 2, 3) EINA_PURE EINA_WARN_UNUSED_RESULT;
+
+  // TODO: address_get
+
+
+  /* Network Methods: Low-Level API
+   *
+   * The network API is informational only, to set these parameters,
+   * use the services API instead.
+   */
+  EAPI E_Connman_Element *e_connman_network_get(const char *path) EINA_ARG_NONNULL(1) EINA_PURE EINA_WARN_UNUSED_RESULT;
+
+  EAPI bool e_connman_network_name_get(const E_Connman_Element *network, const char **name) EINA_ARG_NONNULL(1, 2) EINA_PURE EINA_WARN_UNUSED_RESULT;
+
+  EAPI bool e_connman_network_connected_get(const E_Connman_Element *network, bool *connected) EINA_ARG_NONNULL(1, 2) EINA_PURE EINA_WARN_UNUSED_RESULT;
+
+  EAPI bool e_connman_network_strength_get(const E_Connman_Element *network, unsigned char *strength) EINA_ARG_NONNULL(1, 2) EINA_PURE EINA_WARN_UNUSED_RESULT;
+
+  EAPI bool e_connman_network_device_get(const E_Connman_Element *network, E_Connman_Element **element) EINA_ARG_NONNULL(1, 2) EINA_PURE EINA_WARN_UNUSED_RESULT;
+
+  EAPI bool e_connman_network_wifi_ssid_get(const E_Connman_Element *network, unsigned int *count, unsigned char **wifi_ssid) EINA_ARG_NONNULL(1, 2, 3) EINA_PURE EINA_WARN_UNUSED_RESULT;
+
+  EAPI bool e_connman_network_wifi_mode_get(const E_Connman_Element *network, const char **wifi_mode) EINA_ARG_NONNULL(1, 2) EINA_PURE EINA_WARN_UNUSED_RESULT;
+
+  EAPI bool e_connman_network_wifi_security_get(const E_Connman_Element *network, const char **wifi_security) EINA_ARG_NONNULL(1, 2) EINA_PURE EINA_WARN_UNUSED_RESULT;
+
+  EAPI bool e_connman_network_wifi_passphrase_get(const E_Connman_Element *network, const char **wifi_passphare) EINA_ARG_NONNULL(1, 2) EINA_PURE EINA_WARN_UNUSED_RESULT;
+
+  // TODO: address_get
+  // TODO: wifi_channel_get (missing in their docs)
+  // TODO: wifi_eap_get (missing in their docs, only if ieee8021x)
+  // TODO: frequency_get (missing in their docs)
 
 #ifdef __cplusplus
 }
