@@ -30,9 +30,7 @@ eyelight.pc.in \
 eyelight.pc \
 README.in \
 README \
-Doxyfile \
-doc \
-gendoc
+doc
 
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = eyelight.pc
