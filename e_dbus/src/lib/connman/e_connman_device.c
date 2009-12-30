@@ -21,7 +21,7 @@ e_connman_device_get(const char *path)
 }
 
 static void
-_e_connman_device_network_create_callback(void *user_data, DBusMessage *msg, DBusError *err)
+_e_connman_device_network_create_callback(void *user_data __UNUSED__, DBusMessage *msg __UNUSED__, DBusError *err __UNUSED__)
 {
    WRN("FIXME need to receive the network object path");
 }

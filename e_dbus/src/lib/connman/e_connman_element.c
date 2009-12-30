@@ -60,7 +60,7 @@ struct _E_Connman_Element_Listener
 
 
 static void
-_e_connman_element_event_no_free(void *data, void *ev)
+_e_connman_element_event_no_free(void *data __UNUSED__, void *ev)
 {
    E_Connman_Element *element = ev;
    e_connman_element_unref(element);
@@ -220,7 +220,7 @@ _e_connman_element_listeners_call(E_Connman_Element *element)
  ***********************************************************************/
 
 static void
-_e_connman_element_array_free(E_Connman_Array *array, E_Connman_Array *new)
+_e_connman_element_array_free(E_Connman_Array *array, E_Connman_Array *new __UNUSED__)
 {
    Eina_Array_Iterator iterator;
    unsigned int i;
@@ -1324,7 +1324,7 @@ struct e_connman_elements_for_each_data
 };
 
 Eina_Bool
-_e_connman_elements_for_each(Eina_Hash *hash, const char *key, void *data, void *fdata)
+_e_connman_elements_for_each(Eina_Hash *hash __UNUSED__, const char *key, void *data, void *fdata)
 {
    struct e_connman_elements_for_each_data *each_data = fdata;
 
@@ -1372,7 +1372,7 @@ _e_connman_elements_get_allocate(unsigned int *count, E_Connman_Element ***p_ele
 }
 
 Eina_Bool
-_e_connman_elements_get_all(Eina_Hash *hash, const char *key, void *data, void *fdata)
+_e_connman_elements_get_all(Eina_Hash *hash __UNUSED__, const char *key __UNUSED__, void *data, void *fdata)
 {
    E_Connman_Element *element = data;
    E_Connman_Element ***p_ret = fdata;
@@ -1421,7 +1421,7 @@ struct e_connman_elements_get_all_str_data
 };
 
 Eina_Bool
-_e_connman_elements_get_all_type(Eina_Hash *hash, const char *key, void *e, void *user_data)
+_e_connman_elements_get_all_type(Eina_Hash *hash __UNUSED__, const char *key __UNUSED__, void *e, void *user_data)
 {
    struct e_connman_elements_get_all_str_data *data = user_data;
    E_Connman_Element *element = e;
@@ -1583,7 +1583,7 @@ e_connman_element_register(const char *path, const char *interface)
 }
 
 static void
-_e_connman_element_event_unregister_and_free(void *data, void *ev)
+_e_connman_element_event_unregister_and_free(void *data __UNUSED__, void *ev)
 {
    E_Connman_Element *element = ev;
    e_connman_element_unref(element);
