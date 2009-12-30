@@ -427,6 +427,58 @@ _on_cmd_manager_technology_disable(char *cmd, char *args)
    return 1;
 }
 
+static int
+_on_cmd_manager_profile_remove(char *cmd, char *args)
+{
+   E_Connman_Element *e;
+
+   if (!args)
+     {
+	fputs("ERROR: missing the profile path\n", stderr);
+	return 1;
+     }
+   _tok(args);
+
+   e = e_connman_profile_get(args);
+   if (e_connman_manager_profile_remove(e, NULL, NULL))
+     printf(":::Manager Remove Profile %s\n", args);
+   else
+     fputs("ERROR: can't remove profile from manager\n", stderr);
+   return 1;
+}
+
+static int
+_on_cmd_manager_profile_get_active(char *cmd, char *args)
+{
+   E_Connman_Element *e;
+
+   if (!e_connman_manager_profile_active_get(&e))
+     fputs("ERROR: can't active_get profile from manager\n", stderr);
+   else
+     e_connman_element_print(stderr, e);
+   return 1;
+}
+
+static int
+_on_cmd_manager_profile_set_active(char *cmd, char *args)
+{
+   E_Connman_Element *e;
+
+   if (!args)
+     {
+	fputs("ERROR: missing the profile path\n", stderr);
+	return 1;
+     }
+   _tok(args);
+
+   e = e_connman_profile_get(args);
+   if (e_connman_manager_profile_active_set(e, NULL, NULL))
+     printf(":::Manager Active Profile set to %s\n", args);
+   else
+     fputs("ERROR: can't set active profile\n", stderr);
+   return 1;
+}
+
 /* Device Commands */
 static int
 _on_cmd_device_propose_scan(char *cmd, char *args)
@@ -744,7 +796,7 @@ _on_cmd_profile_set_name(char *cmd, char *args)
 
    e = e_connman_profile_get(path);
    if (e_connman_profile_name_set(e, next_args, NULL, NULL))
-     printf(":::Profile %s Name set to %hhu\n", path, next_args);
+     printf(":::Profile %s Name set to %s\n", path, next_args);
    else
      fputs("ERROR: can't set profile name\n", stderr);
    return 1;
@@ -1775,6 +1827,9 @@ _on_input(void *data, Ecore_Fd_Handler *fd_handler)
      {"manager_request_scan", _on_cmd_manager_request_scan},
      {"manager_technology_enable", _on_cmd_manager_technology_enable},
      {"manager_technology_disable", _on_cmd_manager_technology_disable},
+     {"manager_profile_remove", _on_cmd_manager_profile_remove},
+     {"manager_profile_get_active", _on_cmd_manager_profile_get_active},
+     {"manager_profile_set_active", _on_cmd_manager_profile_set_active},
      {"device_propose_scan", _on_cmd_device_propose_scan},
      {"device_get_address", _on_cmd_device_get_address},
      {"device_get_name", _on_cmd_device_get_name},

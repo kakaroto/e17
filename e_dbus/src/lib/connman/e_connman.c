@@ -45,6 +45,7 @@ const char *e_connman_prop_policy = NULL;
 const char *e_connman_prop_powered = NULL;
 const char *e_connman_prop_priority = NULL;
 const char *e_connman_prop_profiles = NULL;
+const char *e_connman_prop_profile_active = NULL;
 const char *e_connman_prop_services = NULL;
 const char *e_connman_prop_remember = NULL;
 const char *e_connman_prop_scan_interval = NULL;
@@ -313,6 +314,8 @@ e_connman_system_init(E_DBus_Connection *edbus_conn)
      e_connman_prop_priority = eina_stringshare_add("Priority");
    if (e_connman_prop_profiles == NULL)
      e_connman_prop_profiles = eina_stringshare_add("Profiles");
+   if (e_connman_prop_profile_active == NULL)
+     e_connman_prop_profile_active = eina_stringshare_add("ActiveProfile");
    if (e_connman_prop_services == NULL)
      e_connman_prop_services = eina_stringshare_add("Services");
    if (e_connman_prop_remember == NULL)
@@ -438,6 +441,7 @@ e_connman_system_shutdown(void)
    _stringshare_del(&e_connman_prop_powered);
    _stringshare_del(&e_connman_prop_priority);
    _stringshare_del(&e_connman_prop_profiles);
+   _stringshare_del(&e_connman_prop_profile_active);
    _stringshare_del(&e_connman_prop_services);
    _stringshare_del(&e_connman_prop_remember);
    _stringshare_del(&e_connman_prop_scan_interval);

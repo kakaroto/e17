@@ -384,7 +384,7 @@ e_connman_manager_technology_disable(const char *type, E_DBus_Method_Return_Cb c
  * If zero is returned, then this call failed and parameter-returned
  * values shall be considered invalid.
  *
- *The current connected technology which holds the default route.
+ * The current connected technology which holds the default route.
  *
  * @param type where to store the property value, must be a pointer
  *        to string (const char **), it will not be allocated or
@@ -405,4 +405,107 @@ e_connman_manager_technology_default_get(const char **type)
      return 0;
    return e_connman_element_property_get_stringshared
      (element, e_connman_prop_technology_default, NULL, type);
+}
+
+/**
+ * Remove specified profile.
+ *
+ * Call method RemoveProfile(profile) on server.
+ *
+ * It is not possible to remove the current active profile. To remove
+ * the active profile a different one must be selected via
+ * ActiveProfile property first.
+ *
+ * At minimum one profile must be available all the time.
+ *
+ * @param profile element to remove, must be of type profile.
+ * @param cb function to call when server replies or some error happens.
+ * @param data data to give to cb when it is called.
+ *
+ * @return 1 on success, 0 otherwise.
+ */
+bool
+e_connman_manager_profile_remove(const E_Connman_Element *profile, E_DBus_Method_Return_Cb cb, const void *data)
+{
+   E_Connman_Element *element;
+   const char name[] = "RemoveProfile";
+
+   EINA_SAFETY_ON_NULL_RETURN_VAL(profile, 0);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(profile->path, 0);
+
+   if (!e_connman_element_is_profile(profile))
+     return 0;
+
+   element = e_connman_manager_get();
+   if (!element)
+     return 0;
+
+   return e_connman_element_call_with_path
+     (element, name, profile->path, NULL,
+      &element->_pending.profile_remove, cb, data);
+}
+
+/**
+ * Get property "ActiveProfile" value.
+ *
+ * If this property isn't found then 0 is returned.
+ * If zero is returned, then this call failed and parameter-returned
+ * values shall be considered invalid.
+ *
+ * @param element where to store the element, just changed if return is 1
+ *
+ * @return 1 on success, 0 otherwise.
+ *
+ * @see e_connman_manager_profile_active_set()
+ */
+bool
+e_connman_manager_profile_active_get(E_Connman_Element **profile)
+{
+   E_Connman_Element *element;
+   char *profile_path;
+
+   EINA_SAFETY_ON_NULL_RETURN_VAL(profile, 0);
+
+   element = e_connman_manager_get();
+   if (!element)
+     return 0;
+   if (!e_connman_element_property_get_stringshared
+       (element, e_connman_prop_profile_active, NULL, &profile_path))
+     return 0;
+   *profile = e_connman_element_get(profile_path);
+   return 1;
+}
+
+/**
+ * Call method SetProperty("ActiveProfile", profile) at the given
+ * element on server.
+ *
+ * This is a server call, not local, so it may fail and in that case
+ * no property is updated locally. If the value was set the event
+ * E_CONNMAN_EVENT_ELEMENT_UPDATED will be added to main loop.
+ *
+ * @param profile object to set.
+ * @param cb function to call when server replies or some error happens.
+ * @param data data to give to cb when it is called.
+ *
+ * @return 1 on success, 0 otherwise.
+ * @see e_connman_manager_profile_active_get()
+ */
+bool
+e_connman_manager_profile_active_set(const E_Connman_Element *profile, E_DBus_Method_Return_Cb cb, const void *data)
+{
+   E_Connman_Element *element;
+
+   EINA_SAFETY_ON_NULL_RETURN_VAL(profile, 0);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(profile->path, 0);
+
+   if (!e_connman_element_is_profile(profile))
+     return 0;
+
+   element = e_connman_manager_get();
+   if (!element)
+     return 0;
+   return e_connman_element_property_set_full
+     (element, e_connman_prop_profile_active, DBUS_TYPE_OBJECT_PATH,
+      profile->path, cb, data);
 }

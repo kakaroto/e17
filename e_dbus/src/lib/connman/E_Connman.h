@@ -59,6 +59,7 @@ extern "C" {
 	Eina_Inlist *request_scan;
 	Eina_Inlist *technology_enable;
 	Eina_Inlist *technology_disable;
+	Eina_Inlist *profile_remove;
 	Eina_Inlist *device_propose_scan;
 	Eina_Inlist *service_connect;
 	Eina_Inlist *service_disconnect;
@@ -100,10 +101,13 @@ extern "C" {
   EAPI bool e_connman_manager_technology_enable(const char *type, E_DBus_Method_Return_Cb cb, const void *data) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
   EAPI bool e_connman_manager_technology_disable(const char *type, E_DBus_Method_Return_Cb cb, const void *data) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
 
+  EAPI bool e_connman_manager_profile_remove(const E_Connman_Element *profile, E_DBus_Method_Return_Cb cb, const void *data) EINA_WARN_UNUSED_RESULT;
+
+  EAPI bool e_connman_manager_profile_active_get(E_Connman_Element **profile) EINA_ARG_NONNULL(1) EINA_PURE EINA_WARN_UNUSED_RESULT;
+  EAPI bool e_connman_manager_profile_active_set(const E_Connman_Element *profile, E_DBus_Method_Return_Cb cb, const void *data) EINA_WARN_UNUSED_RESULT;
+
+
   // TODO: profile_create()
-  // TODO: profile_remove()
-  // TODO: profile_active_get()
-  // TODO: profile_active_set()
   // TODO: technologies_available_get()
   // TODO: technologies_enabled_get()
   // TODO: technologies_connected_get()

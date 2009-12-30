@@ -36,6 +36,7 @@ extern const char *e_connman_prop_policy;
 extern const char *e_connman_prop_powered;
 extern const char *e_connman_prop_priority;
 extern const char *e_connman_prop_profiles;
+extern const char *e_connman_prop_profile_active;
 extern const char *e_connman_prop_services;
 extern const char *e_connman_prop_remember;
 extern const char *e_connman_prop_scan_interval;

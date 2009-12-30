@@ -146,6 +146,22 @@ _test_elements_get(E_Connman_Element *element, const char *name, bool (*func)(co
 }
 
 static bool
+_test_element_get_global(const char *name, bool (*func)(E_Connman_Element **value))
+{
+   E_Connman_Element *value;
+   bool ret;
+
+   INF("BEGIN: testing element get %s\n", name);
+   ret = func(&value);
+   if (ret)
+     INF("SUCCESS: testing element get %s: %p\n", name, value);
+   else
+     WRN("FAILURE: testing element get %s\n", name);
+
+   return ret;
+}
+
+static bool
 _test_elements_get_global(const char *name, bool (*func)(unsigned int *count, E_Connman_Element ***elements))
 {
    E_Connman_Element **value;
@@ -207,6 +223,7 @@ struct test_desc
      TEST_DESC_TYPE_UCHAR_ARRAY_GET,
      TEST_DESC_TYPE_ELEMENT_GET,
      TEST_DESC_TYPE_ELEMENTS_GET,
+     TEST_DESC_TYPE_ELEMENT_GET_GLOBAL,
      TEST_DESC_TYPE_ELEMENTS_GET_GLOBAL,
      TEST_DESC_TYPE_STRING_GET_GLOBAL,
      TEST_DESC_TYPE_BOOL_GET_GLOBAL,
@@ -220,6 +237,7 @@ struct test_desc
       bool (*uchar_array_get)(const E_Connman_Element *element, unsigned int *count, unsigned char **value);
       bool (*element_get)(const E_Connman_Element *element, E_Connman_Element **value);
       bool (*elements_get)(const E_Connman_Element *element, unsigned int *count, E_Connman_Element ***elements);
+      bool (*element_get_global)(E_Connman_Element **element);
       bool (*elements_get_global)(unsigned int *count, E_Connman_Element ***elements);
       bool (*string_get_global)(const char **value);
       bool (*bool_get_global)(bool *value);
@@ -242,6 +260,8 @@ struct test_desc
   {#_func, TEST_DESC_TYPE_ELEMENT_GET, .func.element_get=_func, may_fail}
 #define TEST_DESC_ELEMENTS_GET(_func, may_fail)				\
   {#_func, TEST_DESC_TYPE_ELEMENTS_GET, .func.elements_get=_func, may_fail}
+#define TEST_DESC_ELEMENT_GET_GLOBAL(_func, may_fail)			\
+  {#_func, TEST_DESC_TYPE_ELEMENT_GET_GLOBAL, .func.element_get_global=_func, may_fail}
 #define TEST_DESC_ELEMENTS_GET_GLOBAL(_func, may_fail)			\
   {#_func, TEST_DESC_TYPE_ELEMENTS_GET_GLOBAL, .func.elements_get_global=_func, may_fail}
 #define TEST_DESC_STRING_GET_GLOBAL(_func, may_fail)			\
@@ -286,6 +306,10 @@ _test_element(E_Connman_Element *element, const struct test_desc *test_descs)
 	   case TEST_DESC_TYPE_ELEMENTS_GET:
 	      r = _test_elements_get
 		(element, itr->name, itr->func.elements_get);
+	      break;
+	   case TEST_DESC_TYPE_ELEMENT_GET_GLOBAL:
+	      r = _test_element_get_global
+		(itr->name, itr->func.element_get_global);
 	      break;
 	   case TEST_DESC_TYPE_ELEMENTS_GET_GLOBAL:
 	      r = _test_elements_get_global
@@ -340,6 +364,8 @@ static const struct test_desc test_desc_manager[] = {
   TEST_DESC_ELEMENTS_GET_GLOBAL(e_connman_manager_profiles_get, 0),
   TEST_DESC_ELEMENTS_GET_GLOBAL(e_connman_manager_devices_get, 0),
   TEST_DESC_ELEMENTS_GET_GLOBAL(e_connman_manager_services_get, 1),
+  TEST_DESC_STRING_GET_GLOBAL(e_connman_manager_technology_default_get, 0),
+  TEST_DESC_ELEMENT_GET_GLOBAL(e_connman_manager_profile_active_get, 0),
   TEST_DESC_SENTINEL
 };
 
