@@ -34,9 +34,14 @@ const char *e_connman_prop_default = NULL;
 const char *e_connman_prop_device = NULL;
 const char *e_connman_prop_devices = NULL;
 const char *e_connman_prop_interface = NULL;
-const char *e_connman_prop_ipv4_address = NULL;
-const char *e_connman_prop_ipv4_method = NULL;
+const char *e_connman_prop_ipv4 = NULL;
+const char *e_connman_prop_ipv4_configuration = NULL;
+const char *e_connman_prop_ethernet = NULL;
+const char *e_connman_prop_method = NULL;
 const char *e_connman_prop_address = NULL;
+const char *e_connman_prop_gateway = NULL;
+const char *e_connman_prop_netmask = NULL;
+const char *e_connman_prop_mtu = NULL;
 const char *e_connman_prop_name = NULL;
 const char *e_connman_prop_network = NULL;
 const char *e_connman_prop_networks = NULL;
@@ -295,12 +300,22 @@ e_connman_system_init(E_DBus_Connection *edbus_conn)
      e_connman_prop_devices = eina_stringshare_add("Devices");
    if (e_connman_prop_interface == NULL)
      e_connman_prop_interface = eina_stringshare_add("Interface");
-   if (e_connman_prop_ipv4_address == NULL)
-     e_connman_prop_ipv4_address = eina_stringshare_add("IPv4.Address");
-   if (e_connman_prop_ipv4_method == NULL)
-     e_connman_prop_ipv4_method = eina_stringshare_add("IPv4.Method");
+   if (e_connman_prop_ipv4 == NULL)
+     e_connman_prop_ipv4 = eina_stringshare_add("IPv4");
+   if (e_connman_prop_ipv4_configuration == NULL)
+     e_connman_prop_ipv4_configuration = eina_stringshare_add("IPv4.Configuration");
+   if (e_connman_prop_ethernet == NULL)
+     e_connman_prop_ethernet = eina_stringshare_add("Ethernet");
+   if (e_connman_prop_method == NULL)
+     e_connman_prop_method = eina_stringshare_add("Method");
    if (e_connman_prop_address == NULL)
      e_connman_prop_address = eina_stringshare_add("Address");
+   if (e_connman_prop_gateway == NULL)
+     e_connman_prop_gateway = eina_stringshare_add("Gateway");
+   if (e_connman_prop_netmask == NULL)
+     e_connman_prop_netmask = eina_stringshare_add("Netmask");
+   if (e_connman_prop_mtu == NULL)
+     e_connman_prop_mtu = eina_stringshare_add("MTU");
    if (e_connman_prop_name == NULL)
      e_connman_prop_name = eina_stringshare_add("Name");
    if (e_connman_prop_network == NULL)
@@ -439,9 +454,14 @@ e_connman_system_shutdown(void)
    _stringshare_del(&e_connman_prop_device);
    _stringshare_del(&e_connman_prop_devices);
    _stringshare_del(&e_connman_prop_interface);
-   _stringshare_del(&e_connman_prop_ipv4_address);
-   _stringshare_del(&e_connman_prop_ipv4_method);
+   _stringshare_del(&e_connman_prop_ipv4);
+   _stringshare_del(&e_connman_prop_ipv4_configuration);
+   _stringshare_del(&e_connman_prop_ethernet);
+   _stringshare_del(&e_connman_prop_method);
    _stringshare_del(&e_connman_prop_address);
+   _stringshare_del(&e_connman_prop_gateway);
+   _stringshare_del(&e_connman_prop_netmask);
+   _stringshare_del(&e_connman_prop_mtu);
    _stringshare_del(&e_connman_prop_name);
    _stringshare_del(&e_connman_prop_network);
    _stringshare_del(&e_connman_prop_networks);

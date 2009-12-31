@@ -9,6 +9,7 @@ typedef struct _E_Connman_Element_Pending E_Connman_Element_Pending;
 typedef struct _E_Connman_Element_Call_Data E_Connman_Element_Call_Data;
 typedef struct _E_Connman_Element_Property E_Connman_Element_Property;
 typedef struct _E_Connman_Element_Listener E_Connman_Element_Listener;
+typedef struct _E_Connman_Element_Dict_Entry E_Connman_Element_Dict_Entry;
 
 struct _E_Connman_Array
 {
@@ -47,6 +48,20 @@ struct _E_Connman_Element_Property
       const char *path;
       void *variant;
       E_Connman_Array *array;
+   } value;
+};
+
+struct _E_Connman_Element_Dict_Entry
+{
+   const char *name;
+   int type;
+   union {
+      bool boolean;
+      const char *str;
+      unsigned short u16;
+      unsigned int u32;
+      unsigned char byte;
+      const char *path;
    } value;
 };
 
@@ -220,6 +235,131 @@ _e_connman_element_listeners_call(E_Connman_Element *element)
  ***********************************************************************/
 
 static void
+_e_connman_element_dict_entry_free(E_Connman_Element_Dict_Entry *entry)
+{
+   switch (entry->type)
+     {
+      case DBUS_TYPE_BOOLEAN:
+      case DBUS_TYPE_BYTE:
+      case DBUS_TYPE_UINT16:
+      case DBUS_TYPE_UINT32:
+	 break;
+      case DBUS_TYPE_OBJECT_PATH:
+	 eina_stringshare_del(entry->value.path);
+	 break;
+      case DBUS_TYPE_STRING:
+	 eina_stringshare_del(entry->value.str);
+	 break;
+      default:
+	 ERR("don't know how to free dict entry '%s' of type %c (%d)",
+	     entry->name, entry->type, entry->type);
+     }
+
+   eina_stringshare_del(entry->name);
+   free(entry);
+}
+
+static E_Connman_Element_Dict_Entry *
+_e_connman_element_dict_entry_new(DBusMessageIter *itr)
+{
+   E_Connman_Element_Dict_Entry *entry;
+   DBusMessageIter e_itr, v_itr;
+   int t;
+   const char *key = NULL;
+   void *value = NULL;
+
+   dbus_message_iter_recurse(itr, &e_itr);
+
+   t = dbus_message_iter_get_arg_type(&e_itr);
+   if (!_dbus_iter_type_check(t, DBUS_TYPE_STRING))
+     {
+	ERR("invalid format for dict entry. first type not a string: %c (%d)",
+	    t, t);
+	return NULL;
+     }
+
+   dbus_message_iter_get_basic(&e_itr, &key);
+   if (!key || !key[0])
+     {
+	ERR("invalid format for dict entry. no key.");
+	return NULL;
+     }
+
+   dbus_message_iter_next(&e_itr);
+   t = dbus_message_iter_get_arg_type(&e_itr);
+   if (!_dbus_iter_type_check(t, DBUS_TYPE_VARIANT))
+     {
+	ERR("invalid format for dict entry '%s'. "
+	    "second type not a variant: %c (%d)",
+	    key, t, t);
+	return NULL;
+     }
+
+   dbus_message_iter_recurse(&e_itr, &v_itr);
+
+   t = dbus_message_iter_get_arg_type(&v_itr);
+   if ((t == DBUS_TYPE_INVALID) || (t == DBUS_TYPE_ARRAY))
+     {
+	ERR("invalid type for dict value for entry '%s': %c (%d)",
+	    key, t, t);
+	return NULL;
+     }
+
+   entry = calloc(1, sizeof(*entry));
+   if (!entry)
+     {
+	ERR("could not allocate memory for dict entry.");
+	return NULL;
+     }
+
+   dbus_message_iter_get_basic(&v_itr, &value);
+   switch (t)
+     {
+      case DBUS_TYPE_BOOLEAN:
+	 entry->value.boolean = (bool)(long)value;
+	 break;
+      case DBUS_TYPE_BYTE:
+	 entry->value.byte = (unsigned char)(long)value;
+	 break;
+      case DBUS_TYPE_UINT16:
+	 entry->value.u16 = (unsigned short)(long)value;
+	 break;
+      case DBUS_TYPE_UINT32:
+	 entry->value.u32 = (unsigned int)(long)value;
+	 break;
+      case DBUS_TYPE_STRING:
+	 entry->value.str = eina_stringshare_add(value);
+	 break;
+      case DBUS_TYPE_OBJECT_PATH:
+	 entry->value.path = eina_stringshare_add(value);
+	 break;
+      default:
+	 ERR("don't know how to create dict entry '%s' for of type %c (%d)",
+	     key, t, t);
+	 free(entry);
+	 return NULL;
+     }
+
+   entry->name = eina_stringshare_add(key);
+   entry->type = t;
+   return entry;
+}
+
+static E_Connman_Element_Dict_Entry *
+_e_connman_element_array_dict_find_stringshared(const E_Connman_Array *array, const char *key)
+{
+   E_Connman_Element_Dict_Entry *entry;
+   Eina_Array_Iterator iterator;
+   unsigned int i;
+
+   EINA_ARRAY_ITER_NEXT(array->array, i, entry, iterator)
+     if (entry->name == key)
+       return entry;
+
+   return NULL;
+}
+
+static void
 _e_connman_element_array_free(E_Connman_Array *array, E_Connman_Array *new __UNUSED__)
 {
    Eina_Array_Iterator iterator;
@@ -231,6 +371,11 @@ _e_connman_element_array_free(E_Connman_Array *array, E_Connman_Array *new __UNU
 
    switch (array->type)
      {
+      case DBUS_TYPE_BOOLEAN:
+      case DBUS_TYPE_BYTE:
+      case DBUS_TYPE_UINT16:
+      case DBUS_TYPE_UINT32:
+	 break;
       case DBUS_TYPE_OBJECT_PATH:
 	 EINA_ARRAY_ITER_NEXT(array->array, i, item, iterator)
 	   eina_stringshare_del(item);
@@ -239,7 +384,13 @@ _e_connman_element_array_free(E_Connman_Array *array, E_Connman_Array *new __UNU
 	 EINA_ARRAY_ITER_NEXT(array->array, i, item, iterator)
 	   eina_stringshare_del(item);
 	 break;
+      case DBUS_TYPE_DICT_ENTRY:
+	 EINA_ARRAY_ITER_NEXT(array->array, i, item, iterator)
+	   _e_connman_element_dict_entry_free(item);
+	 break;
       default:
+	 ERR("don't know how to free array of values of type %c (%d)",
+	     array->type, array->type);
 	 break;
      }
    eina_array_free(array->array);
@@ -295,10 +446,6 @@ _e_connman_element_get_interface(const char *key)
       case 'N':
 	 if (strcmp(tail, "etworks") == 0)
 	   interface = e_connman_iface_network;
-	 break;
-      case 'C':
-	 if (strcmp(tail, "onnections") == 0)
-	   interface = e_connman_iface_connection;
 	 break;
       case 'S':
 	 if (strcmp(tail, "ervices") == 0)
@@ -625,7 +772,7 @@ e_connman_element_strings_array_get_stringshared(const E_Connman_Element *elemen
    return 1;
 }
 
-void
+static void
 _e_connman_element_array_print(FILE *fp, E_Connman_Array *array)
 {
    Eina_Array_Iterator iterator;
@@ -650,7 +797,47 @@ _e_connman_element_array_print(FILE *fp, E_Connman_Array *array)
 	   fprintf(fp, "%#02hhx (\"%c\"), ", (unsigned char)(long)item,
 		   (unsigned char)(long)item);
 	 break;
-      case DBUS_TYPE_INVALID:
+      case DBUS_TYPE_UINT16:
+	 EINA_ARRAY_ITER_NEXT(array->array, i, item, iterator)
+	   fprintf(fp, "%#04hx (%hu), ", (unsigned short)(long)item,
+		   (unsigned short)(long)item);
+	 break;
+      case DBUS_TYPE_UINT32:
+	 EINA_ARRAY_ITER_NEXT(array->array, i, item, iterator)
+	   fprintf(fp, "%#08x (%u), ", (unsigned int)(long)item,
+		   (unsigned int)(long)item);
+	 break;
+      case DBUS_TYPE_DICT_ENTRY:
+	 fputs("{ ", fp);
+	 EINA_ARRAY_ITER_NEXT(array->array, i, item, iterator)
+	   {
+	      E_Connman_Element_Dict_Entry *entry = item;
+	      fprintf(fp, "%s: ", entry->name);
+	      switch (entry->type)
+		{
+		 case DBUS_TYPE_OBJECT_PATH:
+		    fprintf(fp, "\"%s\", ", entry->value.path);
+		    break;
+		 case DBUS_TYPE_STRING:
+		    fprintf(fp, "\"%s\", ", entry->value.str);
+		    break;
+		 case DBUS_TYPE_BYTE:
+		    fprintf(fp, "%#02hhx (\"%c\"), ",
+			    entry->value.byte, entry->value.byte);
+		    break;
+		 case DBUS_TYPE_UINT16:
+		    fprintf(fp, "%#04hx (%hu), ",
+			    entry->value.u16, entry->value.u16);
+		    break;
+		 case DBUS_TYPE_UINT32:
+		    fprintf(fp, "%#08x (%u), ",
+			    entry->value.u32, entry->value.u32);
+		    break;
+		 default:
+		    fprintf(fp, "<UNKNOWN TYPE '%c'>", entry->type);
+		}
+	   }
+	 fputs("}", fp);
 	 break;
       default:
 	 fprintf(fp, "<UNKNOWN ARRAY TYPE '%c'>", array->type);
@@ -940,12 +1127,18 @@ _e_connman_element_iter_get_array(DBusMessageIter *itr, const char *key)
 
    dbus_message_iter_recurse(itr, &e_itr);
    array->type = dbus_message_iter_get_arg_type(&e_itr);
+   if (array->type == DBUS_TYPE_INVALID)
+     {
+	DBG("array %s is of type 'invalid' (empty?)", key);
+	eina_array_free(array->array);
+	free(array);
+	return NULL;
+     }
+
    do
      {
 	switch (array->type)
 	  {
-	   case DBUS_TYPE_INVALID:
-	      break;
 	   case DBUS_TYPE_OBJECT_PATH:
 	     {
 		const char *path;
@@ -972,9 +1165,20 @@ _e_connman_element_iter_get_array(DBusMessageIter *itr, const char *key)
 		eina_array_push(array->array, (void *)(long)byte);
 	     }
 	     break;
+	   case DBUS_TYPE_DICT_ENTRY:
+	     {
+		E_Connman_Element_Dict_Entry *entry;
+		entry = _e_connman_element_dict_entry_new(&e_itr);
+		if (entry)
+		  eina_array_push(array->array, entry);
+	     }
+	     break;
 	   default:
-	      ERR("don't know how to get property type %c (%d)",
-		  array->type, array->type);
+	      ERR("don't know how to build array '%s' of type %c (%d)",
+		  key, array->type, array->type);
+	      eina_array_free(array->array);
+	      free(array);
+	      return NULL;
 	  }
      }
    while (dbus_message_iter_next(&e_itr));
@@ -1305,6 +1509,99 @@ e_connman_element_list_properties(const E_Connman_Element *element, bool (*cb)(v
 	if (!cb((void *)data, element, p->name, p->type, value))
 	  return;
      }
+}
+
+/**
+ * Get dict value given its key inside a dict property.
+ *
+ * This will look into properties for one of type dict that contains
+ * the given key, to find the property.  If no property is found then
+ * 0 is returned.
+ *
+ * If zero is returned, then this call failed and parameter-returned
+ * values shall be considered invalid.
+ *
+ * @param element which element to get the property
+ * @param dict_name property name, must be previously stringshared
+ * @param key key inside dict, must be previously stringshared
+ * @param type if provided it will contain the value type.
+ * @param value where to store the property value, must be a pointer to the
+ *        exact type, (bool *) for booleans, (char **) for strings, and so on.
+ *
+ * @return 1 on success, 0 otherwise.
+ */
+bool
+e_connman_element_property_dict_get_stringshared(const E_Connman_Element *element, const char *dict_name, const char *key, int *type, void *value)
+{
+   const E_Connman_Element_Property *p;
+
+   EINA_SAFETY_ON_NULL_RETURN_VAL(element, 0);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(dict_name, 0);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(key, 0);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(value, 0);
+
+   EINA_INLIST_FOREACH(element->props, p)
+     {
+	E_Connman_Element_Dict_Entry *entry;
+	E_Connman_Array *array;
+
+	if (p->name != dict_name)
+	  continue;
+	if (p->type != DBUS_TYPE_ARRAY)
+	  {
+	     WRN("element %s (%p) has property \"%s\" is not an array: %c (%d)",
+		 element->path, element, dict_name, p->type, p->type);
+	     return 0;
+	  }
+	array = p->value.array;
+	if ((!array) || (array->type != DBUS_TYPE_DICT_ENTRY))
+	  {
+	     int t = array ? array->type : DBUS_TYPE_INVALID;
+	     WRN("element %s (%p) has property \"%s\" is not a dict: %c (%d)",
+		 element->path, element, dict_name, t, t);
+	     return 0;
+	  }
+	entry = _e_connman_element_array_dict_find_stringshared(array, key);
+	if (!entry)
+	  {
+	     WRN("element %s (%p) has no dict property with name \"%s\" with "
+		 "key \"%s\".",
+		 element->path, element, dict_name, key);
+	     return 0;
+	  }
+
+	if (type) *type = entry->type;
+
+	switch (entry->type)
+	  {
+	   case DBUS_TYPE_BOOLEAN:
+	      *(bool *)value = entry->value.boolean;
+	      return 1;
+	   case DBUS_TYPE_BYTE:
+	      *(unsigned char *)value = entry->value.byte;
+	      return 1;
+	   case DBUS_TYPE_UINT16:
+	      *(unsigned short *)value = entry->value.u16;
+	      return 1;
+	   case DBUS_TYPE_UINT32:
+	      *(unsigned int *)value = entry->value.u32;
+	      return 1;
+	   case DBUS_TYPE_STRING:
+	      *(const char **)value = entry->value.str;
+	      return 1;
+	   case DBUS_TYPE_OBJECT_PATH:
+	      *(const char **)value = entry->value.path;
+	      return 1;
+	   default:
+	      ERR("don't know how to get property %s, key %s type %c (%d)",
+		  dict_name, key, entry->type, entry->type);
+	      return 0;
+	  }
+     }
+
+   WRN("element %s (%p) has no property with name \"%s\".",
+       element->path, element, dict_name);
+   return 0;
 }
 
 /**

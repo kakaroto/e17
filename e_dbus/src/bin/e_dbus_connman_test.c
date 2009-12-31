@@ -1832,7 +1832,7 @@ _on_cmd_service_get_ipv4_method(char *cmd, char *args)
 
    e = e_connman_service_get(path);
    if (e_connman_service_ipv4_method_get(e, &ipv4_method))
-     printf(":::Service %s ipv4 method = \"%s\"\n", path, ipv4_method);
+     printf(":::Service %s IPv4 Method = \"%s\"\n", path, ipv4_method);
    else
      fputs("ERROR: can't get service ipv4 method\n", stderr);
    return 1;
@@ -1854,9 +1854,236 @@ _on_cmd_service_get_ipv4_address(char *cmd, char *args)
 
    e = e_connman_service_get(path);
    if (e_connman_service_ipv4_address_get(e, &ipv4_address))
-     printf(":::Service %s ipv4 address = \"%s\"\n", path, ipv4_address);
+     printf(":::Service %s IPv4 Address = \"%s\"\n", path, ipv4_address);
    else
      fputs("ERROR: can't get service ipv4 address\n", stderr);
+   return 1;
+}
+
+static int
+_on_cmd_service_get_ipv4_gateway(char *cmd, char *args)
+{
+   const char *ipv4_gateway, *path;
+   E_Connman_Element *e;
+
+   if (!args)
+     {
+	fputs("ERROR: missing the service path\n", stderr);
+	return 1;
+     }
+   _tok(args);
+   path = args;
+
+   e = e_connman_service_get(path);
+   if (e_connman_service_ipv4_gateway_get(e, &ipv4_gateway))
+     printf(":::Service %s IPv4 Gateway = \"%s\"\n", path, ipv4_gateway);
+   else
+     fputs("ERROR: can't get service ipv4 gateway\n", stderr);
+   return 1;
+}
+
+static int
+_on_cmd_service_get_ipv4_netmask(char *cmd, char *args)
+{
+   const char *ipv4_netmask, *path;
+   E_Connman_Element *e;
+
+   if (!args)
+     {
+	fputs("ERROR: missing the service path\n", stderr);
+	return 1;
+     }
+   _tok(args);
+   path = args;
+
+   e = e_connman_service_get(path);
+   if (e_connman_service_ipv4_netmask_get(e, &ipv4_netmask))
+     printf(":::Service %s IPv4 Netmask = \"%s\"\n", path, ipv4_netmask);
+   else
+     fputs("ERROR: can't get service ipv4 netmask\n", stderr);
+   return 1;
+}
+
+static int
+_on_cmd_service_get_ipv4_configuration_method(char *cmd, char *args)
+{
+   const char *ipv4_method, *path;
+   E_Connman_Element *e;
+
+   if (!args)
+     {
+	fputs("ERROR: missing the service path\n", stderr);
+	return 1;
+     }
+   _tok(args);
+   path = args;
+
+   e = e_connman_service_get(path);
+   if (e_connman_service_ipv4_configuration_method_get(e, &ipv4_method))
+     printf(":::Service %s IPv4 Configuration Method = \"%s\"\n",
+	    path, ipv4_method);
+   else
+     fputs("ERROR: can't get service ipv4_configuration method\n", stderr);
+   return 1;
+}
+
+static int
+_on_cmd_service_get_ipv4_configuration_address(char *cmd, char *args)
+{
+   const char *ipv4_address, *path;
+   E_Connman_Element *e;
+
+   if (!args)
+     {
+	fputs("ERROR: missing the service path\n", stderr);
+	return 1;
+     }
+   _tok(args);
+   path = args;
+
+   e = e_connman_service_get(path);
+   if (e_connman_service_ipv4_configuration_address_get(e, &ipv4_address))
+     printf(":::Service %s IPv4 Configuration Address = \"%s\"\n",
+	    path, ipv4_address);
+   else
+     fputs("ERROR: can't get service ipv4_configuration address\n", stderr);
+   return 1;
+}
+
+static int
+_on_cmd_service_get_ipv4_configuration_gateway(char *cmd, char *args)
+{
+   const char *ipv4_gateway, *path;
+   E_Connman_Element *e;
+
+   if (!args)
+     {
+	fputs("ERROR: missing the service path\n", stderr);
+	return 1;
+     }
+   _tok(args);
+   path = args;
+
+   e = e_connman_service_get(path);
+   if (e_connman_service_ipv4_configuration_gateway_get(e, &ipv4_gateway))
+     printf(":::Service %s IPv4 Configuration Gateway = \"%s\"\n",
+	    path, ipv4_gateway);
+   else
+     fputs("ERROR: can't get service ipv4_configuration gateway\n", stderr);
+   return 1;
+}
+
+static int
+_on_cmd_service_get_ipv4_configuration_netmask(char *cmd, char *args)
+{
+   const char *ipv4_netmask, *path;
+   E_Connman_Element *e;
+
+   if (!args)
+     {
+	fputs("ERROR: missing the service path\n", stderr);
+	return 1;
+     }
+   _tok(args);
+   path = args;
+
+   e = e_connman_service_get(path);
+   if (e_connman_service_ipv4_configuration_netmask_get(e, &ipv4_netmask))
+     printf(":::Service %s IPv4 Configuration Netmask = \"%s\"\n",
+	    path, ipv4_netmask);
+   else
+     fputs("ERROR: can't get service ipv4 configuration netmask\n", stderr);
+   return 1;
+}
+
+static int
+_on_cmd_service_get_ethernet_method(char *cmd, char *args)
+{
+   const char *ethernet_method, *path;
+   E_Connman_Element *e;
+
+   if (!args)
+     {
+	fputs("ERROR: missing the service path\n", stderr);
+	return 1;
+     }
+   _tok(args);
+   path = args;
+
+   e = e_connman_service_get(path);
+   if (e_connman_service_ethernet_method_get(e, &ethernet_method))
+     printf(":::Service %s Ethernet Method = \"%s\"\n", path, ethernet_method);
+   else
+     fputs("ERROR: can't get service ethernet method\n", stderr);
+   return 1;
+}
+
+static int
+_on_cmd_service_get_ethernet_address(char *cmd, char *args)
+{
+   const char *ethernet_address, *path;
+   E_Connman_Element *e;
+
+   if (!args)
+     {
+	fputs("ERROR: missing the service path\n", stderr);
+	return 1;
+     }
+   _tok(args);
+   path = args;
+
+   e = e_connman_service_get(path);
+   if (e_connman_service_ethernet_address_get(e, &ethernet_address))
+     printf(":::Service %s Ethernet Address = \"%s\"\n",
+	    path, ethernet_address);
+   else
+     fputs("ERROR: can't get service ethernet address\n", stderr);
+   return 1;
+}
+
+static int
+_on_cmd_service_get_ethernet_mtu(char *cmd, char *args)
+{
+   const char *path;
+   E_Connman_Element *e;
+   unsigned short ethernet_mtu;
+
+   if (!args)
+     {
+	fputs("ERROR: missing the service path\n", stderr);
+	return 1;
+     }
+   _tok(args);
+   path = args;
+
+   e = e_connman_service_get(path);
+   if (e_connman_service_ethernet_mtu_get(e, &ethernet_mtu))
+     printf(":::Service %s Ethernet MTU = %hu\n", path, ethernet_mtu);
+   else
+     fputs("ERROR: can't get service ethernet mtu\n", stderr);
+   return 1;
+}
+
+static int
+_on_cmd_service_get_ethernet_netmask(char *cmd, char *args)
+{
+   const char *ethernet_netmask, *path;
+   E_Connman_Element *e;
+
+   if (!args)
+     {
+	fputs("ERROR: missing the service path\n", stderr);
+	return 1;
+     }
+   _tok(args);
+   path = args;
+
+   e = e_connman_service_get(path);
+   if (e_connman_service_ethernet_netmask_get(e, &ethernet_netmask))
+     printf(":::Service %s Ethernet Netmask = \"%s\"\n",
+	    path, ethernet_netmask);
+   else
+     fputs("ERROR: can't get service ethernet netmask\n", stderr);
    return 1;
 }
 
@@ -1949,6 +2176,16 @@ _on_input(void *data, Ecore_Fd_Handler *fd_handler)
      {"service_get_roaming", _on_cmd_service_get_roaming},
      {"service_get_ipv4_method", _on_cmd_service_get_ipv4_method},
      {"service_get_ipv4_address", _on_cmd_service_get_ipv4_address},
+     {"service_get_ipv4_gateway", _on_cmd_service_get_ipv4_gateway},
+     {"service_get_ipv4_netmask", _on_cmd_service_get_ipv4_netmask},
+     {"service_get_ipv4_configuration_method", _on_cmd_service_get_ipv4_configuration_method},
+     {"service_get_ipv4_configuration_address", _on_cmd_service_get_ipv4_configuration_address},
+     {"service_get_ipv4_configuration_gateway", _on_cmd_service_get_ipv4_configuration_gateway},
+     {"service_get_ipv4_configuration_netmask", _on_cmd_service_get_ipv4_configuration_netmask},
+     {"service_get_ethernet_method", _on_cmd_service_get_ethernet_method},
+     {"service_get_ethernet_address", _on_cmd_service_get_ethernet_address},
+     {"service_get_ethernet_mtu", _on_cmd_service_get_ethernet_mtu},
+     {"service_get_ethernet_netmask", _on_cmd_service_get_ethernet_netmask},
      {NULL, NULL}
    };
 

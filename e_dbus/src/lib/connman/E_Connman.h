@@ -182,21 +182,32 @@ extern "C" {
 
   EAPI bool e_connman_service_ipv4_address_get(const E_Connman_Element *service, const char **address) EINA_ARG_NONNULL(1, 2) EINA_PURE EINA_WARN_UNUSED_RESULT;
 
-  // TODO: ipv4_netmask_get
-  // TODO: ipv4_gateway_get
-  // TODO: ipv4_configuration_metod_get
-  // TODO: ipv4_configuration_metod_set
-  // TODO: ipv4_configuration_address_get
+  EAPI bool e_connman_service_ipv4_gateway_get(const E_Connman_Element *service, const char **gateway) EINA_ARG_NONNULL(1, 2) EINA_PURE EINA_WARN_UNUSED_RESULT;
+
+  EAPI bool e_connman_service_ipv4_netmask_get(const E_Connman_Element *service, const char **netmask) EINA_ARG_NONNULL(1, 2) EINA_PURE EINA_WARN_UNUSED_RESULT;
+
+  EAPI bool e_connman_service_ipv4_configuration_method_get(const E_Connman_Element *service, const char **method) EINA_ARG_NONNULL(1, 2) EINA_PURE EINA_WARN_UNUSED_RESULT;
+
+  EAPI bool e_connman_service_ipv4_configuration_address_get(const E_Connman_Element *service, const char **address) EINA_ARG_NONNULL(1, 2) EINA_PURE EINA_WARN_UNUSED_RESULT;
+
+  EAPI bool e_connman_service_ipv4_configuration_gateway_get(const E_Connman_Element *service, const char **gateway) EINA_ARG_NONNULL(1, 2) EINA_PURE EINA_WARN_UNUSED_RESULT;
+
+  EAPI bool e_connman_service_ipv4_configuration_netmask_get(const E_Connman_Element *service, const char **netmask) EINA_ARG_NONNULL(1, 2) EINA_PURE EINA_WARN_UNUSED_RESULT;
+
+  EAPI bool e_connman_service_ethernet_method_get(const E_Connman_Element *service, const char **method) EINA_ARG_NONNULL(1, 2) EINA_PURE EINA_WARN_UNUSED_RESULT;
+
+  EAPI bool e_connman_service_ethernet_address_get(const E_Connman_Element *service, const char **address) EINA_ARG_NONNULL(1, 2) EINA_PURE EINA_WARN_UNUSED_RESULT;
+
+  EAPI bool e_connman_service_ethernet_mtu_get(const E_Connman_Element *service, unsigned short *mtu) EINA_ARG_NONNULL(1, 2) EINA_PURE EINA_WARN_UNUSED_RESULT;
+
+  EAPI bool e_connman_service_ethernet_netmask_get(const E_Connman_Element *service, const char **netmask) EINA_ARG_NONNULL(1, 2) EINA_PURE EINA_WARN_UNUSED_RESULT;
+
+  // TODO: ipv4_configuration_method_set
   // TODO: ipv4_configuration_address_set
-  // TODO: ipv4_configuration_netmask_get
   // TODO: ipv4_configuration_netmask_set
-  // TODO: ipv4_configuration_gateway_get
   // TODO: ipv4_configuration_gateway_set
-  // TODO: ethernet_method_get
-  // TODO: ethernet_address_get
-  // TODO: ethernet_mtu_get
-  // TODO: ethernet_speed_get
-  // TODO: ethernet_duplex_get
+  // TODO: ethernet_speed_get (not in connman yet)
+  // TODO: ethernet_duplex_get (not in connman yet)
 
   /* Low-Level API:
    *
@@ -228,6 +239,7 @@ extern "C" {
 
   EAPI bool e_connman_element_property_type_get_stringshared(const E_Connman_Element *element, const char *name, int *type) EINA_ARG_NONNULL(1, 2, 3) EINA_PURE EINA_WARN_UNUSED_RESULT;
   EAPI bool e_connman_element_property_type_get(const E_Connman_Element *element, const char *name, int *type) EINA_ARG_NONNULL(1, 2, 3) EINA_PURE EINA_WARN_UNUSED_RESULT;
+  EAPI bool e_connman_element_property_dict_get_stringshared(const E_Connman_Element *element, const char *dict_name, const char *key_name, int *type, void *value) EINA_ARG_NONNULL(1, 2, 4) EINA_PURE EINA_WARN_UNUSED_RESULT;
   EAPI bool e_connman_element_property_get_stringshared(const E_Connman_Element *element, const char *name, int *type, void *value) EINA_ARG_NONNULL(1, 2, 4) EINA_PURE EINA_WARN_UNUSED_RESULT;
   EAPI bool e_connman_element_property_get(const E_Connman_Element *element, const char *name, int *type, void *value) EINA_ARG_NONNULL(1, 2, 4) EINA_PURE EINA_WARN_UNUSED_RESULT;
 

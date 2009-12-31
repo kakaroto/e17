@@ -819,8 +819,8 @@ e_connman_service_roaming_get(const E_Connman_Element *service, bool *roaming)
  * If zero is returned, then this call failed and parameter-returned
  * values shall be considered invalid.
  *
- * The IPv4 configuration method. Possible values here
- * are "dhcp" and "static".
+ * The IPv4 method in use. Possible values here are "dhcp" and
+ * "static".
  *
  * @param service path to get property.
  * @param method where to store the property value, must be a pointer
@@ -835,12 +835,124 @@ e_connman_service_ipv4_method_get(const E_Connman_Element *service, const char *
 {
    EINA_SAFETY_ON_NULL_RETURN_VAL(service, 0);
    EINA_SAFETY_ON_NULL_RETURN_VAL(method, 0);
-   return e_connman_element_property_get_stringshared
-     (service, e_connman_prop_ipv4_method, NULL, method);
+   return e_connman_element_property_dict_get_stringshared
+     (service, e_connman_prop_ipv4, e_connman_prop_method, NULL, method);
 }
 
 /**
  * Get property "IPv4.Address" value.
+ *
+ * If this property isn't found then 0 is returned.
+ * If zero is returned, then this call failed and parameter-returned
+ * values shall be considered invalid.
+ *
+ * The current IPv4 address.
+ *
+ * @param service path to get property.
+ * @param address where to store the property value, must be a pointer
+ *        to string (const char **), it will not be allocated or
+ *        copied and references will be valid until element changes,
+ *        so copy it if you want to use it later.
+ *
+ * @return 1 on success, 0 otherwise.
+ */
+bool
+e_connman_service_ipv4_address_get(const E_Connman_Element *service, const char **address)
+{
+   EINA_SAFETY_ON_NULL_RETURN_VAL(service, 0);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(address, 0);
+   return e_connman_element_property_dict_get_stringshared
+     (service, e_connman_prop_ipv4, e_connman_prop_address, NULL, address);
+}
+
+/**
+ * Get property "IPv4.Gateway" value.
+ *
+ * If this property isn't found then 0 is returned.
+ * If zero is returned, then this call failed and parameter-returned
+ * values shall be considered invalid.
+ *
+ * The current IPv4 gateway.
+ *
+ * @param service path to get property.
+ * @param gateway where to store the property value, must be a pointer
+ *        to string (const char **), it will not be allocated or
+ *        copied and references will be valid until element changes,
+ *        so copy it if you want to use it later.
+ *
+ * @return 1 on success, 0 otherwise.
+ */
+bool
+e_connman_service_ipv4_gateway_get(const E_Connman_Element *service, const char **gateway)
+{
+   EINA_SAFETY_ON_NULL_RETURN_VAL(service, 0);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(gateway, 0);
+   return e_connman_element_property_dict_get_stringshared
+     (service, e_connman_prop_ipv4, e_connman_prop_gateway, NULL, gateway);
+}
+
+/**
+ * Get property "IPv4.Netmask" value.
+ *
+ * If this property isn't found then 0 is returned.
+ * If zero is returned, then this call failed and parameter-returned
+ * values shall be considered invalid.
+ *
+ * The current IPv4 netmask.
+ *
+ * @param service path to get property.
+ * @param netmask where to store the property value, must be a pointer
+ *        to string (const char **), it will not be allocated or
+ *        copied and references will be valid until element changes,
+ *        so copy it if you want to use it later.
+ *
+ * @return 1 on success, 0 otherwise.
+ */
+bool
+e_connman_service_ipv4_netmask_get(const E_Connman_Element *service, const char **netmask)
+{
+   EINA_SAFETY_ON_NULL_RETURN_VAL(service, 0);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(netmask, 0);
+   return e_connman_element_property_dict_get_stringshared
+     (service, e_connman_prop_ipv4, e_connman_prop_netmask, NULL, netmask);
+}
+
+/**
+ * Get property "IPv4.Configuration.Method" value.
+ *
+ * Unlike IPv4.Method, this is the user-set value, rather than the
+ * actual value.
+ *
+ * If this property isn't found then 0 is returned.
+ * If zero is returned, then this call failed and parameter-returned
+ * values shall be considered invalid.
+ *
+ * The IPv4 configured method. Possible values here are "dhcp" and
+ * "static".
+ *
+ * @param service path to get property.
+ * @param method where to store the property value, must be a pointer
+ *        to string (const char **), it will not be allocated or
+ *        copied and references will be valid until element changes,
+ *        so copy it if you want to use it later.
+ *
+ * @return 1 on success, 0 otherwise.
+ */
+bool
+e_connman_service_ipv4_configuration_method_get(const E_Connman_Element *service, const char **method)
+{
+   EINA_SAFETY_ON_NULL_RETURN_VAL(service, 0);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(method, 0);
+   return e_connman_element_property_dict_get_stringshared
+     (service, e_connman_prop_ipv4_configuration, e_connman_prop_method,
+      NULL, method);
+}
+
+/**
+ * Get property "IPv4.Configuration.Address" value.
+ *
+ * Unlike IPv4.Address, this is the user-set value, rather than the
+ * actual value.
  *
  * If this property isn't found then 0 is returned.
  * If zero is returned, then this call failed and parameter-returned
@@ -857,10 +969,175 @@ e_connman_service_ipv4_method_get(const E_Connman_Element *service, const char *
  * @return 1 on success, 0 otherwise.
  */
 bool
-e_connman_service_ipv4_address_get(const E_Connman_Element *service, const char **address)
+e_connman_service_ipv4_configuration_address_get(const E_Connman_Element *service, const char **address)
 {
    EINA_SAFETY_ON_NULL_RETURN_VAL(service, 0);
    EINA_SAFETY_ON_NULL_RETURN_VAL(address, 0);
-   return e_connman_element_property_get_stringshared
-     (service, e_connman_prop_ipv4_address, NULL, address);
+   return e_connman_element_property_dict_get_stringshared
+     (service, e_connman_prop_ipv4_configuration, e_connman_prop_address,
+      NULL, address);
+}
+
+/**
+ * Get property "IPv4.Configuration.Gateway" value.
+ *
+ * Unlike IPv4.Gateway, this is the user-set value, rather than the
+ * actual value.
+ *
+ * If this property isn't found then 0 is returned.
+ * If zero is returned, then this call failed and parameter-returned
+ * values shall be considered invalid.
+ *
+ * The current configured IPv4 gateway.
+ *
+ * @param service path to get property.
+ * @param gateway where to store the property value, must be a pointer
+ *        to string (const char **), it will not be allocated or
+ *        copied and references will be valid until element changes,
+ *        so copy it if you want to use it later.
+ *
+ * @return 1 on success, 0 otherwise.
+ */
+bool
+e_connman_service_ipv4_configuration_gateway_get(const E_Connman_Element *service, const char **gateway)
+{
+   EINA_SAFETY_ON_NULL_RETURN_VAL(service, 0);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(gateway, 0);
+   return e_connman_element_property_dict_get_stringshared
+     (service, e_connman_prop_ipv4_configuration, e_connman_prop_gateway,
+      NULL, gateway);
+}
+
+/**
+ * Get property "IPv4.Configuration.Netmask" value.
+ *
+ * Unlike IPv4.Netmask, this is the user-set value, rather than the
+ * actual value.
+ *
+ * If this property isn't found then 0 is returned.
+ * If zero is returned, then this call failed and parameter-returned
+ * values shall be considered invalid.
+ *
+ * The current configured IPv4 netmask.
+ *
+ * @param service path to get property.
+ * @param netmask where to store the property value, must be a pointer
+ *        to string (const char **), it will not be allocated or
+ *        copied and references will be valid until element changes,
+ *        so copy it if you want to use it later.
+ *
+ * @return 1 on success, 0 otherwise.
+ */
+bool
+e_connman_service_ipv4_configuration_netmask_get(const E_Connman_Element *service, const char **netmask)
+{
+   EINA_SAFETY_ON_NULL_RETURN_VAL(service, 0);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(netmask, 0);
+   return e_connman_element_property_dict_get_stringshared
+     (service, e_connman_prop_ipv4_configuration, e_connman_prop_netmask,
+      NULL, netmask);
+}
+
+/**
+ * Get property "Ethernet.Method" value.
+ *
+ * If this property isn't found then 0 is returned.
+ * If zero is returned, then this call failed and parameter-returned
+ * values shall be considered invalid.
+ *
+ * The Ethernet configuration method. Possible values here "auto".
+ *
+ * @param service path to get property.
+ * @param method where to store the property value, must be a pointer
+ *        to string (const char **), it will not be allocated or
+ *        copied and references will be valid until element changes,
+ *        so copy it if you want to use it later.
+ *
+ * @return 1 on success, 0 otherwise.
+ */
+bool
+e_connman_service_ethernet_method_get(const E_Connman_Element *service, const char **method)
+{
+   EINA_SAFETY_ON_NULL_RETURN_VAL(service, 0);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(method, 0);
+   return e_connman_element_property_dict_get_stringshared
+     (service, e_connman_prop_ethernet, e_connman_prop_method, NULL, method);
+}
+
+/**
+ * Get property "Ethernet.Address" value.
+ *
+ * If this property isn't found then 0 is returned.
+ * If zero is returned, then this call failed and parameter-returned
+ * values shall be considered invalid.
+ *
+ * The current configured Ethernet address (mac-address).
+ *
+ * @param service path to get property.
+ * @param address where to store the property value, must be a pointer
+ *        to string (const char **), it will not be allocated or
+ *        copied and references will be valid until element changes,
+ *        so copy it if you want to use it later.
+ *
+ * @return 1 on success, 0 otherwise.
+ */
+bool
+e_connman_service_ethernet_address_get(const E_Connman_Element *service, const char **address)
+{
+   EINA_SAFETY_ON_NULL_RETURN_VAL(service, 0);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(address, 0);
+   return e_connman_element_property_dict_get_stringshared
+     (service, e_connman_prop_ethernet, e_connman_prop_address, NULL, address);
+}
+
+/**
+ * Get property "Ethernet.Gateway" value.
+ *
+ * If this property isn't found then 0 is returned.
+ * If zero is returned, then this call failed and parameter-returned
+ * values shall be considered invalid.
+ *
+ * The current configured Ethernet MTU.
+ *
+ * @param service path to get property.
+ * @param gateway where to store the property value, must be a pointer
+ *        to string (const char **), it will not be allocated or
+ *        copied and references will be valid until element changes,
+ *        so copy it if you want to use it later.
+ *
+ * @return 1 on success, 0 otherwise.
+ */
+bool
+e_connman_service_ethernet_mtu_get(const E_Connman_Element *service, unsigned short *mtu)
+{
+   EINA_SAFETY_ON_NULL_RETURN_VAL(service, 0);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(mtu, 0);
+   return e_connman_element_property_dict_get_stringshared
+     (service, e_connman_prop_ethernet, e_connman_prop_mtu, NULL, mtu);
+}
+
+/**
+ * Get property "Ethernet.Netmask" value.
+ *
+ * If this property isn't found then 0 is returned.
+ * If zero is returned, then this call failed and parameter-returned
+ * values shall be considered invalid.
+ *
+ * The current configured Ethernet netmask.
+ *
+ * @param service path to get property.
+ * @param netmask where to store the property value, must be a pointer
+ *        to string (const char **), it will not be allocated or
+ *        copied and references will be valid until element changes,
+ *        so copy it if you want to use it later.
+ *
+ * @return 1 on success, 0 otherwise.
+ */
+bool
+e_connman_service_ethernet_netmask_get(const E_Connman_Element *service, const char **netmask)
+{
+   EINA_SAFETY_ON_NULL_RETURN_VAL(service, 0);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(netmask, 0);
+   return e_connman_element_property_dict_get_stringshared
+     (service, e_connman_prop_ethernet, e_connman_prop_netmask, NULL, netmask);
 }
