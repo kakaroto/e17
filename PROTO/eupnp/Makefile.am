@@ -11,7 +11,7 @@ MAINTAINERCLEANFILES = \
 	ltmain.sh \
 	missing
 
-SUBDIRS = src doc tools
+SUBDIRS = src
 
 EXTRA_DIST = \
 	README \
@@ -19,7 +19,7 @@ EXTRA_DIST = \
 	COPYING \
 	Doxyfile
 
-.PHONY: doc
+.PHONY: doc tools
 
 if USE_MODULE_EUPNP_ECORE
    pecore = eupnp-ecore.pc
@@ -28,6 +28,16 @@ endif
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = eupnp-0.pc $(pecore)
 
+# Tools
+
+tools:
+if EUPNP_BUILD_TOOLS
+	@echo "entering tools/"
+	make
+	make -C tools all
+else
+	@echo "reconfigure with --enable-tools"
+endif
 
 # Documentation
 doc:
