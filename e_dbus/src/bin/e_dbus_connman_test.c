@@ -335,7 +335,8 @@ _on_cmd_manager_register_agent(char *cmd, char *args)
      }
 
    path = args;
-   if (e_connman_manager_agent_register(path, NULL, NULL))
+   if (e_connman_manager_agent_register
+       (path, _method_success_check, "manager_register_agent"))
      printf(":::Registering agent %s...\n", path);
    else
      fprintf(stderr, "ERROR: can't register agent %s\n", path);
@@ -355,7 +356,8 @@ _on_cmd_manager_unregister_agent(char *cmd, char *args)
      }
 
    path = args;
-   if (e_connman_manager_agent_unregister(path, NULL, NULL))
+   if (e_connman_manager_agent_unregister
+       (path, _method_success_check, "manager_unregister_agent"))
      printf(":::Unregistering agent %s...\n", path);
    else
      fprintf(stderr, "ERROR: can't unregister agent %s\n", path);
@@ -396,7 +398,9 @@ _on_cmd_manager_set_offline_mode(char *cmd, char *args)
      }
    _tok(args);
    offline = !!atol(args);
-   if (e_connman_manager_offline_mode_set(offline, NULL, NULL))
+   if (e_connman_manager_offline_mode_set
+       (offline, _method_success_check, "manager_set_offline_mode"))
+
      printf(":::Manager Offline Mode set to %hhu\n", offline);
    else
      fputs("ERROR: can't set manager offline mode\n", stderr);
@@ -412,7 +416,8 @@ _on_cmd_manager_request_scan(char *cmd, char *args)
    if (!args)
      args = "";
 
-   if (e_connman_manager_request_scan(args, NULL, NULL))
+   if (e_connman_manager_request_scan
+       (args, _method_success_check, "manager_request_scan"))
      printf(":::Manager Request Scan for %s\n", args[0] ? args : "<all>");
    else
      fputs("ERROR: can't request scan on manager\n", stderr);
@@ -429,7 +434,8 @@ _on_cmd_manager_technology_enable(char *cmd, char *args)
      }
    _tok(args);
 
-   if (e_connman_manager_technology_enable(args, NULL, NULL))
+   if (e_connman_manager_technology_enable
+       (args, _method_success_check, "manager_technology_enable"))
      printf(":::Manager Enable Technology %s\n", args);
    else
      fputs("ERROR: can't enable technology on manager\n", stderr);
@@ -446,7 +452,8 @@ _on_cmd_manager_technology_disable(char *cmd, char *args)
      }
    _tok(args);
 
-   if (e_connman_manager_technology_disable(args, NULL, NULL))
+   if (e_connman_manager_technology_disable
+       (args, _method_success_check, "manager_technology_disable"))
      printf(":::Manager Disable Technology %s\n", args);
    else
      fputs("ERROR: can't disable technology on manager\n", stderr);
@@ -517,7 +524,8 @@ _on_cmd_manager_profile_remove(char *cmd, char *args)
    _tok(args);
 
    e = e_connman_profile_get(args);
-   if (e_connman_manager_profile_remove(e, NULL, NULL))
+   if (e_connman_manager_profile_remove
+       (e, _method_success_check, "manager_profile_remove"))
      printf(":::Manager Remove Profile %s\n", args);
    else
      fputs("ERROR: can't remove profile from manager\n", stderr);
@@ -549,7 +557,8 @@ _on_cmd_manager_profile_set_active(char *cmd, char *args)
    _tok(args);
 
    e = e_connman_profile_get(args);
-   if (e_connman_manager_profile_active_set(e, NULL, NULL))
+   if (e_connman_manager_profile_active_set
+       (e, _method_success_check, "manager_profile_set_active"))
      printf(":::Manager Active Profile set to %s\n", args);
    else
      fputs("ERROR: can't set active profile\n", stderr);
@@ -572,7 +581,8 @@ _on_cmd_device_propose_scan(char *cmd, char *args)
    path = args;
 
    e = e_connman_device_get(path);
-   if (e_connman_device_propose_scan(e, NULL, NULL))
+   if (e_connman_device_propose_scan
+       (e, _method_success_check, "device_propose_scan"))
      printf(":::Proposing scan %s...\n", path);
    else
      fputs("ERROR: can't propose scan\n", stderr);
@@ -712,7 +722,8 @@ _on_cmd_device_set_powered(char *cmd, char *args)
    powered = !!atol(next_args);
 
    e = e_connman_device_get(device_path);
-   if (e_connman_device_powered_set(e, powered, NULL, NULL))
+   if (e_connman_device_powered_set
+       (e, powered, _method_success_check, "device_set_powered"))
      printf(":::Device %s powered set to %hhu\n", device_path, powered);
    else
      fputs("ERROR: can't set device powered\n", stderr);
@@ -769,7 +780,8 @@ _on_cmd_device_set_scan_interval(char *cmd, char *args)
      }
 
    e = e_connman_device_get(device_path);
-   if (e_connman_device_scan_interval_set(e, scan_interval, NULL, NULL))
+   if (e_connman_device_scan_interval_set
+       (e, scan_interval, _method_success_check, "device_set_scan_interval"))
      printf(":::Device %s scan interval set to %hu\n", device_path, scan_interval);
    else
      fputs("ERROR: can't set device scan interval\n", stderr);
@@ -872,7 +884,8 @@ _on_cmd_profile_set_name(char *cmd, char *args)
    _tok(next_args);
 
    e = e_connman_profile_get(path);
-   if (e_connman_profile_name_set(e, next_args, NULL, NULL))
+   if (e_connman_profile_name_set
+       (e, next_args, _method_success_check, "profile_set_name"))
      printf(":::Profile %s Name set to %s\n", path, next_args);
    else
      fputs("ERROR: can't set profile name\n", stderr);
@@ -925,7 +938,8 @@ _on_cmd_profile_set_offline_mode(char *cmd, char *args)
    offline = !!atol(next_args);
 
    e = e_connman_profile_get(path);
-   if (e_connman_profile_offline_mode_set(e, offline, NULL, NULL))
+   if (e_connman_profile_offline_mode_set
+       (e, offline, _method_success_check, "profile_set_offline_mode"))
      printf(":::Profile %s Offline Mode set to %hhu\n", path, offline);
    else
      fputs("ERROR: can't set profile offline mode\n", stderr);
@@ -1253,7 +1267,8 @@ _on_cmd_service_connect(char *cmd, char *args)
    path = args;
 
    e = e_connman_service_get(path);
-   if (e_connman_service_connect(e, NULL, NULL))
+   if (e_connman_service_connect
+       (e, _method_success_check, "service_connect"))
      printf(":::Connecting to Service %s...\n", path);
    else
      fputs("ERROR: can't connect to service\n", stderr);
@@ -1275,7 +1290,8 @@ _on_cmd_service_disconnect(char *cmd, char *args)
    path = args;
 
    e = e_connman_service_get(path);
-   if (e_connman_service_disconnect(e, NULL, NULL))
+   if (e_connman_service_disconnect
+       (e, _method_success_check, "service_disconnect"))
      printf(":::Disconnecting Service %s...\n", path);
    else
      fputs("ERROR: can't disconnect service\n", stderr);
@@ -1297,7 +1313,8 @@ _on_cmd_service_remove(char *cmd, char *args)
    path = args;
 
    e = e_connman_service_get(path);
-   if (e_connman_service_remove(e, NULL, NULL))
+   if (e_connman_service_remove
+       (e, _method_success_check, "service_remove"))
      printf(":::Removing Service %s...\n", path);
    else
      fputs("ERROR: can't remove service\n", stderr);
@@ -1326,7 +1343,8 @@ _on_cmd_service_move_before(char *cmd, char *args)
    _tok(path);
 
    e = e_connman_service_get(service_path);
-   if (e_connman_service_move_before(e, path, NULL, NULL))
+   if (e_connman_service_move_before
+       (e, path, _method_success_check, "service_move_before"))
      printf(":::Moving before %s...\n", path);
    else
      fputs("ERROR: can't move before\n", stderr);
@@ -1355,7 +1373,8 @@ _on_cmd_service_move_after(char *cmd, char *args)
    _tok(path);
 
    e = e_connman_service_get(service_path);
-   if (e_connman_service_move_after(e, path, NULL, NULL))
+   if (e_connman_service_move_after
+       (e, path, _method_success_check, "service_move_after"))
      printf(":::Moving after %s...\n", path);
    else
      fputs("ERROR: can't move after\n", stderr);
@@ -1538,7 +1557,8 @@ _on_cmd_service_set_passphrase(char *cmd, char *args)
    _tok(passphrase);
 
    e = e_connman_service_get(path);
-   if (e_connman_service_passphrase_set(e, passphrase, NULL, NULL))
+   if (e_connman_service_passphrase_set
+       (e, passphrase, _method_success_check, "service_set_passphrase"))
      printf(":::Service %s passphrase set to \"%s\"\n", path, passphrase);
    else
      fputs("ERROR: can't set service passphrase\n", stderr);
@@ -1684,7 +1704,8 @@ _on_cmd_service_set_auto_connect(char *cmd, char *args)
    auto_connect = !!atol(next_args);
 
    e = e_connman_service_get(path);
-   if (e_connman_service_auto_connect_set(e, auto_connect, NULL, NULL))
+   if (e_connman_service_auto_connect_set
+       (e, auto_connect, _method_success_check, "service_set_auto_connect"))
      printf(":::Service %s auto connect set to %d\n", path, auto_connect);
    else
      fputs("ERROR: can't set service auto connect\n", stderr);
@@ -1758,7 +1779,8 @@ _on_cmd_service_set_apn(char *cmd, char *args)
    _tok(apn);
 
    e = e_connman_service_get(path);
-   if (e_connman_service_apn_set(e, apn, NULL, NULL))
+   if (e_connman_service_apn_set
+       (e, apn, _method_success_check, "service_set_apn"))
      printf(":::Service %s APN set to \"%s\"\n", path, apn);
    else
      fputs("ERROR: can't set service APN\n", stderr);
