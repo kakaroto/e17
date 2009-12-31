@@ -1039,6 +1039,102 @@ e_connman_service_ipv4_configuration_netmask_get(const E_Connman_Element *servic
 }
 
 /**
+ * Set IPv4 to connect automatically using DHCP.
+ *
+ * @param service path to set.
+ * @param cb function to call when server replies or some error happens.
+ * @param data data to give to cb when it is called.
+ *
+ * @return 1 on success, 0 otherwise.
+ */
+bool
+e_connman_service_ipv4_configure_dhcp(E_Connman_Element *service, E_DBus_Method_Return_Cb cb, const void *data)
+{
+   const char method[] = "dhcp";
+   EINA_SAFETY_ON_NULL_RETURN_VAL(service, 0);
+   return e_connman_element_property_dict_set_full
+     (service, e_connman_prop_ipv4_configuration, e_connman_prop_method,
+      DBUS_TYPE_STRING, method, cb, data);
+}
+
+/**
+ * Set IPv4 to connect using manually set parameters.
+ *
+ * @param service path to set.
+ * @param address IPv4 address.
+ * @param netmask IPv4 netmask, or @c NULL for "/32"
+ * @param cb function to call when server replies or some error happens.
+ * @param data data to give to cb when it is called.
+ *
+ * @return 1 on success, 0 otherwise.
+ */
+bool
+e_connman_service_ipv4_configure_manual(E_Connman_Element *service, const char *address, const char *netmask, E_DBus_Method_Return_Cb cb, const void *data)
+{
+   const char name[] = "SetProperty";
+   const char *method = "manual"; /* not method[] as gcc screws it with dbus */
+   DBusMessage *msg;
+   DBusMessageIter itr, variant, dict, entry;
+
+   EINA_SAFETY_ON_NULL_RETURN_VAL(service, 0);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(address, 0);
+
+   msg = dbus_message_new_method_call
+     (e_connman_system_bus_name_get(), service->path, service->interface, name);
+
+   if (!msg)
+     return 0;
+
+   dbus_message_iter_init_append(msg, &itr);
+   dbus_message_iter_append_basic
+     (&itr, DBUS_TYPE_STRING, &e_connman_prop_ipv4_configuration);
+
+   dbus_message_iter_open_container
+     (&itr, DBUS_TYPE_VARIANT,
+      (DBUS_TYPE_ARRAY_AS_STRING
+       DBUS_DICT_ENTRY_BEGIN_CHAR_AS_STRING
+       DBUS_TYPE_STRING_AS_STRING
+       DBUS_TYPE_STRING_AS_STRING
+       DBUS_DICT_ENTRY_END_CHAR_AS_STRING),
+      &variant);
+   dbus_message_iter_open_container
+     (&variant, DBUS_TYPE_ARRAY,
+      (DBUS_DICT_ENTRY_BEGIN_CHAR_AS_STRING
+       DBUS_TYPE_STRING_AS_STRING
+       DBUS_TYPE_STRING_AS_STRING
+       DBUS_DICT_ENTRY_END_CHAR_AS_STRING),
+      &dict);
+
+   dbus_message_iter_open_container(&dict, DBUS_TYPE_DICT_ENTRY, NULL, &entry);
+   dbus_message_iter_append_basic
+     (&entry, DBUS_TYPE_STRING, &e_connman_prop_method);
+   dbus_message_iter_append_basic(&entry, DBUS_TYPE_STRING, &method);
+   dbus_message_iter_close_container(&dict, &entry);
+
+   dbus_message_iter_open_container(&dict, DBUS_TYPE_DICT_ENTRY, NULL, &entry);
+   dbus_message_iter_append_basic
+     (&entry, DBUS_TYPE_STRING, &e_connman_prop_address);
+   dbus_message_iter_append_basic(&entry, DBUS_TYPE_STRING, &address);
+   dbus_message_iter_close_container(&dict, &entry);
+
+   if (netmask)
+     {
+	dbus_message_iter_open_container
+	  (&dict, DBUS_TYPE_DICT_ENTRY, NULL, &entry);
+	dbus_message_iter_append_basic
+	  (&entry, DBUS_TYPE_STRING, &e_connman_prop_netmask);
+	dbus_message_iter_append_basic(&entry, DBUS_TYPE_STRING, &netmask);
+	dbus_message_iter_close_container(&dict, &entry);
+     }
+
+   dbus_message_iter_close_container(&variant, &dict);
+   dbus_message_iter_close_container(&itr, &variant);
+
+   return e_connman_element_message_send
+     (service, name, NULL, msg, &service->_pending.property_set, cb, data);
+}
+
+/**
  * Get property "Ethernet.Method" value.
  *
  * If this property isn't found then 0 is returned.

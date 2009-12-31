@@ -202,10 +202,11 @@ extern "C" {
 
   EAPI bool e_connman_service_ethernet_netmask_get(const E_Connman_Element *service, const char **netmask) EINA_ARG_NONNULL(1, 2) EINA_PURE EINA_WARN_UNUSED_RESULT;
 
-  // TODO: ipv4_configuration_method_set
-  // TODO: ipv4_configuration_address_set
-  // TODO: ipv4_configuration_netmask_set
-  // TODO: ipv4_configuration_gateway_set
+  /* Methods to configure IPv4 service */
+  EAPI bool e_connman_service_ipv4_configure_dhcp(E_Connman_Element *service, E_DBus_Method_Return_Cb cb, const void *data) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
+  EAPI bool e_connman_service_ipv4_configure_manual(E_Connman_Element *service, const char *address, const char *netmask, E_DBus_Method_Return_Cb cb, const void *data) EINA_ARG_NONNULL(1, 2) EINA_WARN_UNUSED_RESULT;
+
+
   // TODO: ethernet_speed_get (not in connman yet)
   // TODO: ethernet_duplex_get (not in connman yet)
 
@@ -234,6 +235,7 @@ extern "C" {
 
   EAPI bool e_connman_element_property_set(E_Connman_Element *element, const char *prop, int type, const void *value) EINA_ARG_NONNULL(1, 2) EINA_WARN_UNUSED_RESULT;
   EAPI bool e_connman_element_property_set_full(E_Connman_Element *element, const char *prop, int type, const void *value, E_DBus_Method_Return_Cb cb, const void *data) EINA_ARG_NONNULL(1, 2) EINA_WARN_UNUSED_RESULT;
+  EAPI bool e_connman_element_property_dict_set_full(E_Connman_Element *element, const char *prop, const char *key, int type, const void *value, E_DBus_Method_Return_Cb cb, const void *data) EINA_ARG_NONNULL(1, 2, 3) EINA_WARN_UNUSED_RESULT;
 
   EAPI void e_connman_element_properties_list(const E_Connman_Element *element, bool (*cb)(void *data, const E_Connman_Element *element, const char *name, int type, const void *value), const void *data) EINA_ARG_NONNULL(1, 2);
 

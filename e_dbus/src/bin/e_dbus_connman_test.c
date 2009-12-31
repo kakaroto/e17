@@ -5,6 +5,22 @@
 #include <errno.h>
 
 static void
+_method_success_check(void *data, DBusMessage *msg, DBusError *error)
+{
+   const char *name = data;
+
+   if ((!error) || (!dbus_error_is_set(error)))
+     {
+	printf("SUCCESS: method %s() finished successfully.\n", name);
+	return;
+     }
+
+   printf("FAILURE: method %s() finished with error: %s %s\n",
+	  name, error->name, error->message);
+   dbus_error_free(error);
+}
+
+static void
 _elements_print(E_Connman_Element **elements, unsigned int count)
 {
    unsigned int i;
@@ -1997,6 +2013,67 @@ _on_cmd_service_get_ipv4_configuration_netmask(char *cmd, char *args)
 }
 
 static int
+_on_cmd_service_ipv4_configure_dhcp(char *cmd, char *args)
+{
+   char *path;
+   E_Connman_Element *e;
+
+   if (!args)
+     {
+	fputs("ERROR: missing the service path\n", stderr);
+	return 1;
+     }
+   path = args;
+   _tok(args);
+
+   e = e_connman_service_get(path);
+   if (e_connman_service_ipv4_configure_dhcp
+       (e, _method_success_check, "service_ipv4_configure_dhcp"))
+     printf(":::Service %s IPv4 Configuration set to DHCP\n", path);
+   else
+     fputs("ERROR: can't set service ipv4_configuration dhcp\n", stderr);
+   return 1;
+}
+
+static int
+_on_cmd_service_ipv4_configure_manual(char *cmd, char *args)
+{
+   char *path, *next_args, *address, *netmask = NULL;
+   E_Connman_Element *e;
+
+   if (!args)
+     {
+	fputs("ERROR: missing the service path\n", stderr);
+	return 1;
+     }
+   path = args;
+   next_args = _tok(args);
+   if (!next_args)
+     {
+	fputs("ERROR: missing the service address\n", stderr);
+	return 1;
+     }
+
+   address = next_args;
+   next_args = _tok(next_args);
+   if (next_args)
+     {
+	netmask = next_args;
+	_tok(next_args);
+     }
+
+   e = e_connman_service_get(path);
+   if (e_connman_service_ipv4_configure_manual
+       (e, address, netmask,
+	_method_success_check, "service_ipv4_configure_manual"))
+     printf(":::Service %s IPv4 Configuration set to Manual (%s/%s)\n",
+	    path, address, netmask);
+   else
+     fputs("ERROR: can't set service ipv4_configuration manual\n", stderr);
+   return 1;
+}
+
+static int
 _on_cmd_service_get_ethernet_method(char *cmd, char *args)
 {
    const char *ethernet_method, *path;
@@ -2182,6 +2259,8 @@ _on_input(void *data, Ecore_Fd_Handler *fd_handler)
      {"service_get_ipv4_configuration_address", _on_cmd_service_get_ipv4_configuration_address},
      {"service_get_ipv4_configuration_gateway", _on_cmd_service_get_ipv4_configuration_gateway},
      {"service_get_ipv4_configuration_netmask", _on_cmd_service_get_ipv4_configuration_netmask},
+     {"service_ipv4_configure_dhcp", _on_cmd_service_ipv4_configure_dhcp},
+     {"service_ipv4_configure_manual", _on_cmd_service_ipv4_configure_manual},
      {"service_get_ethernet_method", _on_cmd_service_get_ethernet_method},
      {"service_get_ethernet_address", _on_cmd_service_get_ethernet_address},
      {"service_get_ethernet_mtu", _on_cmd_service_get_ethernet_mtu},

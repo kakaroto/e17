@@ -482,6 +482,8 @@ _e_connman_element_objects_array_register(E_Connman_Array *array, const char *na
    unsigned int i;
    void *item;
 
+   if (!array)
+     return;
    if (array->type != DBUS_TYPE_OBJECT_PATH)
      return;
    EINA_ARRAY_ITER_NEXT(array->array, i, item, iterator)
@@ -1291,6 +1293,83 @@ e_connman_element_properties_sync(E_Connman_Element *element)
 {
    EINA_SAFETY_ON_NULL_RETURN_VAL(element, 0);
    return e_connman_element_sync_properties_full(element, NULL, NULL);
+}
+
+/**
+ * Call method SetProperty(prop, {key: value}) at the given element on server.
+ *
+ * This is a server call, not local, so it may fail and in that case
+ * no property is updated locally. If the value was set the event
+ * E_CONNMAN_EVENT_ELEMENT_UPDATED will be added to main loop.
+ *
+ * @param element to call method on server.
+ * @param prop property name.
+ * @param key dict key name.
+ * @param type DBus type to use for value.
+ * @param value pointer to value, just like regular DBus, see
+ *        dbus_message_iter_append_basic().
+ * @param cb function to call when server replies or some error happens.
+ * @param data data to give to cb when it is called.
+ *
+ * @return 1 on success, 0 otherwise.
+ */
+bool
+e_connman_element_property_dict_set_full(E_Connman_Element *element, const char *prop, const char *key, int type, const void *value, E_DBus_Method_Return_Cb cb, const void *data)
+{
+   const char name[] = "SetProperty";
+   DBusMessage *msg;
+   DBusMessageIter itr, variant, dict, entry;
+   char typestr[32];
+
+   EINA_SAFETY_ON_NULL_RETURN_VAL(element, 0);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(prop, 0);
+
+   msg = dbus_message_new_method_call
+     (e_connman_system_bus_name_get(), element->path, element->interface, name);
+
+   if (!msg)
+     return 0;
+
+   dbus_message_iter_init_append(msg, &itr);
+   dbus_message_iter_append_basic(&itr, DBUS_TYPE_STRING, &prop);
+
+   if ((size_t)snprintf(typestr, sizeof(typestr),
+			(DBUS_TYPE_ARRAY_AS_STRING
+			 DBUS_DICT_ENTRY_BEGIN_CHAR_AS_STRING
+			 DBUS_TYPE_STRING_AS_STRING
+			 "%c"
+			 DBUS_DICT_ENTRY_END_CHAR_AS_STRING),
+			type) >= sizeof(typestr))
+     {
+	ERR("sizeof(typestr) is too small!");
+	return 0;
+     }
+
+   dbus_message_iter_open_container(&itr, DBUS_TYPE_VARIANT, typestr, &variant);
+
+   snprintf(typestr, sizeof(typestr),
+	    (DBUS_DICT_ENTRY_BEGIN_CHAR_AS_STRING
+	     DBUS_TYPE_STRING_AS_STRING
+	     "%c"
+	     DBUS_DICT_ENTRY_END_CHAR_AS_STRING),
+	    type);
+
+   dbus_message_iter_open_container(&variant, DBUS_TYPE_ARRAY, typestr, &dict);
+   dbus_message_iter_open_container(&dict, DBUS_TYPE_DICT_ENTRY, NULL, &entry);
+
+   dbus_message_iter_append_basic(&entry, DBUS_TYPE_STRING, &key);
+
+   if ((type == DBUS_TYPE_STRING) || (type == DBUS_TYPE_OBJECT_PATH))
+     dbus_message_iter_append_basic(&entry, type, &value);
+   else
+     dbus_message_iter_append_basic(&entry, type, value);
+
+   dbus_message_iter_close_container(&dict, &entry);
+   dbus_message_iter_close_container(&variant, &dict);
+   dbus_message_iter_close_container(&itr, &variant);
+
+   return e_connman_element_message_send
+     (element, name, NULL, msg, &element->_pending.property_set, cb, data);
 }
 
 /**
