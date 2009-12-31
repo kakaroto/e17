@@ -69,7 +69,7 @@ EAPI Eina_Bool            eupnp_http_message_is_request(const char *msg) EINA_AR
 
 EAPI Eupnp_HTTP_Header   *eupnp_http_header_new(const char *key, int key_len, const char *value, int value_len) EINA_ARG_NONNULL(1,2,3);
 EAPI void                 eupnp_http_header_free(Eupnp_HTTP_Header *h) EINA_ARG_NONNULL(1);
-EAPI const char          *eupnp_http_header_get(Eina_Array *headers, const char *key) EINA_ARG_NONNULL(1,2);
+EAPI const char          *eupnp_http_header_get(const Eina_Array *headers, const char *key) EINA_ARG_NONNULL(1,2);
 
 EAPI Eupnp_HTTP_Request  *eupnp_http_request_new(const char *method, int method_len, const char *uri, int uri_len, const char *httpver, int httpver_len, void *resource, void (*resource_free)(void *resource)) EINA_ARG_NONNULL(1,2,3,4,5,6,7,8);
 EAPI void                 eupnp_http_request_free(Eupnp_HTTP_Request *r) EINA_ARG_NONNULL(1);

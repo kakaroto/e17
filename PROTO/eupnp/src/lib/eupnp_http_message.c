@@ -250,7 +250,7 @@ eupnp_http_header_key_lower(Eupnp_HTTP_Header *h)
  * @return value of the header associated with the key or NULL if not found.
  */
 const char *
-eupnp_http_header_get(Eina_Array *headers, const char *key)
+eupnp_http_header_get(const Eina_Array *headers, const char *key)
 {
    CHECK_NULL_RET_VAL(headers, NULL);
    CHECK_NULL_RET_VAL(key, NULL);
