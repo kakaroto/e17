@@ -64,6 +64,8 @@ src/lib/Makefile
 src/lib/eupnp_ecore/Makefile
 src/tests/Makefile
 tools/Makefile
+tools/igd/Makefile
+tools/lighting/Makefile
 ])
 
 
