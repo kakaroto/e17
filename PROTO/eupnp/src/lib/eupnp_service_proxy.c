@@ -760,16 +760,10 @@ eupnp_service_proxy_init(void)
    if (_eupnp_service_proxy_init_count)
       return ++_eupnp_service_proxy_init_count;
 
-   if (!eina_init())
-     {
-	fprintf(stderr, "Failed to initialize eina module.\n");
-	return 0;
-     }
-
    if (!eupnp_log_init())
      {
 	fprintf(stderr, "Could not initialize eupnp error module.\n");
-	goto error_init_error;
+	return 0;
      }
 
    if ((_log_dom = eina_log_domain_register("Eupnp.ServiceProxy", EINA_COLOR_BLUE)) < 0)
@@ -800,16 +794,12 @@ eupnp_service_proxy_init(void)
 
    return ++_eupnp_service_proxy_init_count;
 
-   action_resp_error:
-      eupnp_event_server_shutdown();
    evt_server_error:
       eupnp_service_parser_shutdown();
    service_parser_init_error:
       eina_log_domain_unregister(_log_dom);
    log_dom_error:
       eupnp_log_shutdown();
-   error_init_error:
-      eina_shutdown();
 
    return 0;
 }
@@ -831,7 +821,6 @@ eupnp_service_proxy_shutdown(void)
    eupnp_service_parser_shutdown();
    eina_log_domain_unregister(_log_dom);
    eupnp_log_shutdown();
-   eina_shutdown();
 
    return --_eupnp_service_proxy_init_count;
 }
@@ -1088,13 +1077,12 @@ eupnp_service_proxy_action_send(Eupnp_Service_Proxy *proxy, const char *action, 
 
    Eupnp_Request request;
 
-   // FIXME This strdup below introduces a leak
    request = eupnp_core_http_request_send(url,
 					  NULL,
 					  add_headers,
 					  "text/xml; charset=utf-8",
 					  strlen(message),
-					  strdup(message),
+					  message,
 					  EUPNP_REQUEST_DATA_CB(_request_data_ready),
 					  EUPNP_REQUEST_COMPLETED_CB(_request_completed),
 					  req);

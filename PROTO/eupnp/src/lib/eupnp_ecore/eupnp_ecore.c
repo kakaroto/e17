@@ -103,6 +103,7 @@ struct _Eupnp_Ecore_Request {
    Eupnp_Request_Data_Cb data_cb;
    Ecore_Con_Url *con;
    void *data;
+   const char *body;
 };
 
 static int
@@ -162,6 +163,7 @@ _ecore_request_completed_cb(void *data, int type, void *event)
      }
 
    request->completed_cb(((Eupnp_Request)request), request->data, req);
+
    eupnp_http_request_free(req);
 
    return 0;
@@ -200,13 +202,28 @@ _ecore_request(const char *url, const char *req, Eina_Array *additional_headers,
    if (!con)
      {
 	ERROR_D(_log_dom, "Failed to add an ecore con url job");
-	return NULL;
+	goto con_error;
      }
 
    request->data = data;
    request->data_cb = data_cb;
    request->completed_cb = completed_cb;
    request->con = con;
+   request->body = NULL;
+
+   // Use a copy of body and free it under request completion. We can't assume
+   // the request framework copies it.
+   if (body)
+     {
+	request->body = strdup(body);
+
+	if (!request->body)
+	  {
+	     ERROR_D(_log_dom, "Failed to copy request body.");
+	     goto body_error;
+	  }
+     }
+
    ecore_con_url_data_set(con, request);
 
    DEBUG_D(_log_dom, "Adding additional headers %p.", additional_headers);
@@ -227,17 +244,26 @@ _ecore_request(const char *url, const char *req, Eina_Array *additional_headers,
 
    DEBUG_D(_log_dom, "Sending request %p", request);
 
-   if (!ecore_con_url_send(con, body, body_length, content_type))
+   if (!ecore_con_url_send(con,
+			   request->body,
+			   body_length,
+			   content_type))
      {
 	ERROR_D(_log_dom, "Failed to send request request");
-	ecore_con_url_destroy(con);
-	free(request);
-	return NULL;
+	goto send_error;
      }
 
    DEBUG_D(_log_dom, "Finished sending request.");
 
    return request;
+
+   send_error:
+	free((char *)request->body);
+   body_error:
+	ecore_con_url_destroy(con);
+   con_error:
+	free(request);
+	return NULL;
 }
 
 static void
@@ -245,6 +271,7 @@ _ecore_request_free(Eupnp_Request request)
 {
    CHECK_NULL_RET(request);
    Eupnp_Ecore_Request *dl = request;
+   free((char *)dl->body);
    ecore_con_url_destroy(dl->con);
    free(dl);
 }
