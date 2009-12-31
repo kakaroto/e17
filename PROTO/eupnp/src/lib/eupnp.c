@@ -104,10 +104,16 @@ eupnp_init(void)
 {
    if (_eupnp_main_count) return ++_eupnp_main_count;
 
+   if (!eina_init())
+     {
+	fprintf(stderr, "Failed to initialize eina\n");
+	return _eupnp_main_count;
+     }
+
    if (!eupnp_log_init())
      {
 	fprintf(stderr, "Failed to initialize eupnp error module\n");
-	return _eupnp_main_count;
+	goto log_init_error;
      }
 
    if (!eupnp_event_bus_init())
@@ -154,6 +160,8 @@ eupnp_init(void)
       eupnp_event_bus_shutdown();
    event_bus_init_error:
       eupnp_log_shutdown();
+   log_init_error:
+      eina_shutdown();
 
    return 0;
 }
@@ -176,6 +184,7 @@ eupnp_shutdown(void)
    eupnp_device_info_shutdown();
    eupnp_event_bus_shutdown();
    eupnp_log_shutdown();
+   eina_shutdown();
 
    return --_eupnp_main_count;
 }
