@@ -1,4 +1,40 @@
-Eupnp is a lightweight event-driven UPnP library.
+= Eupnp =
+
+Eupnp is a lightweight event-driven UPnP library written in C. It
+implements the UPnP specification of control points, that is, Eupnp is
+capable of discovering and controlling UPnP devices (printers, routers, lights,
+media players, media servers and so on).
+
+== Features ==
+
+- UPnP stack implementation (discovery, description, control, eventing)
+- SSDP (Simple Service Discovery Protocol) client implementation
+- Multi-toolkit (works with different convenience libraries - e.g. eupnp-ecore)
+
+=== Eupnp-Ecore ===
+
+Eupnp-Ecore is a convenience library that links Eupnp to Ecore, providing Eupnp
+the functional requirements - e.g. webserver, downloads, timers.
+
+Currently it is the only convenience library available.
+
+== Library dependencies ==
+
+- libxml-2.0
+- Eina
+
+=== Eupnp-Ecore dependencies ===
+
+- Ecore
+- Ecore-Con module compiled with CURL support
+
+== Compiling and Installing ==
+
+1. ./autogen.sh
+2. make
+3. make install (as root with 'su' or 'sudo', if required)
+
+== Links ==
 
 More info:
 - Eupnp:   http://trac.enlightenment.org/e/wiki/Eupnp
