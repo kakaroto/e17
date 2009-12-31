@@ -65,24 +65,22 @@ _client_data_ready(void *buffer, int size, void *data)
    memcpy(bcopy, buffer, size);
    bcopy[size] = '\0';
 
-   DEBUG_D(_log_dom, "event is %s", bcopy);
+   DEBUG_D(_log_dom, "Event is %s", bcopy);
 
-   Eupnp_HTTP_Request *req = eupnp_http_request_parse(bcopy, bcopy, free);
+   Eupnp_HTTP_Request *req = eupnp_http_request_parse(bcopy, NULL, NULL);
 
    if (!req)
      {
-	memcpy(bcopy, buffer, size);
-	bcopy[size] = '\0';
 	DEBUG_D(_log_dom, "Special case: %s", bcopy);
 	ERROR_D(_log_dom, "Could not parse event notification.");
+	free(bcopy);
 	return;
      }
 
    int t = strtol((char *)(req->uri + 1), NULL, 10);
    eupnp_event_bus_publish(t, (void *)req->payload);
-
-   host_header_err:
-	eupnp_http_request_free(req);
+   eupnp_http_request_free(req);
+   free(bcopy);
 }
 
 /*
