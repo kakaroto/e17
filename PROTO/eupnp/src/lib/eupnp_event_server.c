@@ -46,7 +46,6 @@ static int _port = 0;
 static const char *_url = NULL;
 static int _event_server_init_count = 0;
 static int _log_dom = -1;
-static int _backends = 0;
 
 static void
 _client_data_ready(void *buffer, int size, void *data)
