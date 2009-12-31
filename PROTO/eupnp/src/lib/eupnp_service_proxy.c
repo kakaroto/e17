@@ -450,7 +450,6 @@ eupnp_event_subscriber_free(Eupnp_Event_Subscriber *subscriber)
    free(subscriber);
 }
 
-static int _eupnp_service_proxy_init_count = 0;
 static int _log_dom = -1;
 extern int EUPNP_ERROR_SERVICE_PARSER_INSUFFICIENT_FEED;
 
@@ -744,6 +743,8 @@ eupnp_service_proxy_dump(Eupnp_Service_Proxy *proxy)
    eupnp_service_proxy_state_table_dump(proxy);
 }
 
+static Eina_Bool _event_server_inited = EINA_FALSE;
+
 /*
  * Public API
  */
@@ -754,54 +755,23 @@ eupnp_service_proxy_dump(Eupnp_Service_Proxy *proxy)
 * @return On error, returns 0. Otherwise, returns the number of times it's been
 * called.
 */
-EAPI int
+Eina_Bool
 eupnp_service_proxy_init(void)
 {
-   if (_eupnp_service_proxy_init_count)
-      return ++_eupnp_service_proxy_init_count;
-
-   if (!eupnp_log_init())
-     {
-	fprintf(stderr, "Could not initialize eupnp error module.\n");
-	return 0;
-     }
-
    if ((_log_dom = eina_log_domain_register("Eupnp.ServiceProxy", EINA_COLOR_BLUE)) < 0)
      {
 	ERROR("Failed to create logging domain for service proxy module.");
-	goto log_dom_error;
+	return EINA_FALSE;
      }
 
    if ((_action_log_dom = eina_log_domain_register("Eupnp.ActionParser", EINA_COLOR_BLUE)) < 0)
      {
 	ERROR("Failed to create logging domain for action parser module.");
-	goto log_dom_error;
-     }
-
-   if (!eupnp_service_parser_init())
-     {
-	ERROR("Could not initialize eupnp service parser module.");
-	goto service_parser_init_error;
-     }
-
-   if (!eupnp_event_server_init())
-     {
-	ERROR("Failed to initialize eupnp event server module.");
-	goto evt_server_error;
+	return EINA_FALSE;
      }
 
    INFO_D(_log_dom, "Initializing service proxy module.");
-
-   return ++_eupnp_service_proxy_init_count;
-
-   evt_server_error:
-      eupnp_service_parser_shutdown();
-   service_parser_init_error:
-      eina_log_domain_unregister(_log_dom);
-   log_dom_error:
-      eupnp_log_shutdown();
-
-   return 0;
+   return EINA_TRUE;
 }
 
 /**
@@ -809,20 +779,14 @@ eupnp_service_proxy_init(void)
  *
  * @return 0 if completely shutted down the module.
  */
-EAPI int
+Eina_Bool
 eupnp_service_proxy_shutdown(void)
 {
-   if (_eupnp_service_proxy_init_count != 1)
-      return --_eupnp_service_proxy_init_count;
-
    INFO_D(_log_dom, "Shutting down service proxy module.");
 
-   eupnp_event_server_shutdown();
-   eupnp_service_parser_shutdown();
+   if (_event_server_inited) eupnp_event_server_shutdown();
    eina_log_domain_unregister(_log_dom);
-   eupnp_log_shutdown();
-
-   return --_eupnp_service_proxy_init_count;
+   return EINA_TRUE;
 }
 
 /**
@@ -833,7 +797,7 @@ eupnp_service_proxy_shutdown(void)
  *
  * @see eupnp_service_proxy_ref(), eupnp_service_proxy_unref()
  */
-EAPI void
+void
 eupnp_service_proxy_new(Eupnp_Service_Info *service, Eupnp_Service_Proxy_Ready_Cb ready_cb, void *data)
 {
    CHECK_NULL_RET(service);
@@ -1151,6 +1115,17 @@ eupnp_service_proxy_state_variable_events_subscribe(Eupnp_Service_Proxy *proxy, 
    if (!eupnp_service_proxy_has_variable(proxy, var_name)) return NULL;
 
    DEBUG_D(_log_dom, "Subscribe stage 1");
+
+   if (!_event_server_inited)
+     {
+        if (!eupnp_event_server_init())
+	  {
+	     ERROR_D(_log_dom, "Failed to initialize event server");
+	     return NULL;
+	  }
+	else
+	   _event_server_inited = EINA_TRUE;
+     }
 
    const char *listen_addr = eupnp_event_server_url_get();
    int id, callback_len, eventing_url_len;

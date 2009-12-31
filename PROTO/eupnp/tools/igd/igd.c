@@ -176,24 +176,19 @@ igd_client_win_create(void)
 EAPI int
 elm_main(int argc, char **argv)
 {
+   int ret = -1;
    Eupnp_Control_Point *c;
+
+   if (!eupnp_init())
+     {
+	fprintf(stderr, "Failed to initialize eupnp module.\n");
+	return -1;
+     }
 
    if (!eupnp_ecore_init())
      {
-	fprintf(stderr, "Could not initialize eupnp-ecore\n");
-	return 0;
-     }
-
-   if (!eina_init())
-     {
-	fprintf(stderr, "Failed to initialize eina error module.\n");
-	goto list_init_error;
-     }
-
-   if (!eupnp_control_point_init())
-     {
-	fprintf(stderr, "Could not initialize program resources\n");
-	goto eupnp_cp_init_error;
+	fprintf(stderr, "Could not initialize eupnp-ecore module\n");
+	goto eupnp_ecore_init_err;
      }
 
    c = eupnp_control_point_new();
@@ -225,20 +220,16 @@ elm_main(int argc, char **argv)
    elm_run();
 
    /* Shutdown procedure */
+   ret = 0;
    elm_shutdown();
    eupnp_control_point_stop(c);
    eupnp_control_point_free(c);
-   eupnp_control_point_shutdown();
-   eina_shutdown();
-   eupnp_ecore_shutdown();
-   return 0;
 
    eupnp_cp_alloc_error:
-      eupnp_control_point_shutdown();
-   eupnp_cp_init_error:
-      eina_shutdown();
-   list_init_error:
       eupnp_ecore_shutdown();
+   eupnp_ecore_init_err:
+      eupnp_shutdown();
+
    return -1;
 }
 ELM_MAIN()

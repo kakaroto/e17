@@ -44,9 +44,6 @@ struct _Eupnp_Service_Info {
 };
 
 
-EAPI int                   eupnp_service_info_init(void);
-EAPI int                   eupnp_service_info_shutdown(void);
-
 EAPI Eupnp_Service_Info   *eupnp_service_info_new(const char *udn, const char *location, const char *service_type, void *resource, void (*resource_free)(void *resource)) EINA_ARG_NONNULL(1,2,3,4);
 EAPI void                  eupnp_service_info_free(Eupnp_Service_Info *d) EINA_ARG_NONNULL(1);
 EAPI Eupnp_Service_Info   *eupnp_service_info_ref(Eupnp_Service_Info *service_info) EINA_ARG_NONNULL(1);

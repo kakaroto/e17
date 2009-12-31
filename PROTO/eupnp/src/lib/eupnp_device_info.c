@@ -38,7 +38,6 @@
  * Private API
  */
 
-static int _eupnp_device_info_main_count = 0;
 static int _log_dom = -1;
 extern int EUPNP_ERROR_DEVICE_PARSER_INSUFFICIENT_FEED;
 
@@ -151,64 +150,18 @@ eupnp_device_info_embedded_device_list_clear(Eupnp_Device_Info *d)
  * @return On error, returns 0. Otherwise, returns the number of times the
  * module has been initialized.
  */
-EAPI int
+Eina_Bool
 eupnp_device_info_init(void)
 {
-   if (_eupnp_device_info_main_count)
-      return ++_eupnp_device_info_main_count;
-
-   if (!eupnp_log_init())
-     {
-	fprintf(stderr, "Could not initialize eupnp error module.\n");
-	return 0;
-     }
-
    if ((_log_dom = eina_log_domain_register("Eupnp.DeviceInfo", EINA_COLOR_BLUE)) < 0)
      {
 	ERROR("Failed to create logging domain for DeviceInfo module.");
-	goto log_dom_error;
-     }
-
-   if (!eupnp_event_bus_init())
-     {
-	ERROR("Could not initialize eupnp event bus module.");
-	goto event_bus_init_error;
-     }
-
-   if (!eupnp_service_proxy_init())
-     {
-	ERROR("Could not initialize eupnp service proxy module.");
-	goto service_proxy_init_error;
-     }
-
-   if (!eupnp_device_parser_init())
-     {
-	ERROR("Could not initialize eupnp device parser module.");
-	goto device_parser_init_error;
-     }
-
-   if (!eupnp_service_parser_init())
-     {
-	ERROR("Could not initialize eupnp service parser module.");
-	goto service_parser_init_error;
+	return EINA_FALSE;
      }
 
    INFO_D(_log_dom, "Initializing device info module.");
 
-   return ++_eupnp_device_info_main_count;
-
-   service_parser_init_error:
-      eupnp_device_parser_shutdown();
-   device_parser_init_error:
-      eupnp_service_proxy_shutdown();
-   service_proxy_init_error:
-      eupnp_event_bus_shutdown();
-   event_bus_init_error:
-      eina_log_domain_unregister(_log_dom);
-   log_dom_error:
-      eupnp_log_shutdown();
-
-   return 0;
+   return EINA_TRUE;
 }
 
 /**
@@ -216,21 +169,12 @@ eupnp_device_info_init(void)
  *
  * @return 0 if completely shutted down the module.
  */
-EAPI int
+Eina_Bool
 eupnp_device_info_shutdown(void)
 {
-   if (_eupnp_device_info_main_count != 1)
-      return --_eupnp_device_info_main_count;
-
    INFO_D(_log_dom, "Shutting down device info module.");
-   eupnp_service_parser_shutdown();
-   eupnp_device_parser_shutdown();
-   eupnp_service_proxy_shutdown();
-   eupnp_event_bus_shutdown();
    eina_log_domain_unregister(_log_dom);
-   eupnp_log_shutdown();
-
-   return --_eupnp_device_info_main_count;
+   return EINA_TRUE;
 }
 
 /**

@@ -24,8 +24,6 @@
 
 #include <Eina.h>
 
-#include "Eupnp.h"
-
 #include "eupnp_ssdp.h"
 #include "eupnp_log.h"
 #include "eupnp_event_bus.h"
@@ -44,9 +42,6 @@ typedef struct _Eupnp_Control_Point Eupnp_Control_Point;
 struct _Eupnp_Control_Point {
    Eupnp_SSDP_Client *ssdp_client;
 };
-
-EAPI int                  eupnp_control_point_init(void);
-EAPI int                  eupnp_control_point_shutdown(void);
 
 EAPI Eupnp_Control_Point *eupnp_control_point_new(void);
 EAPI void                 eupnp_control_point_free(Eupnp_Control_Point *c) EINA_ARG_NONNULL(1);

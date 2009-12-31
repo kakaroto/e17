@@ -132,9 +132,6 @@ struct _Eupnp_State_Variable_Allowed_Value {
    const char *value;
 };
 
-EAPI int                    eupnp_service_proxy_init(void);
-EAPI int                    eupnp_service_proxy_shutdown(void);
-
 EAPI void                    eupnp_service_proxy_new(Eupnp_Service_Info *service, Eupnp_Service_Proxy_Ready_Cb ready_cb, void *data);
 EAPI Eupnp_Service_Proxy    *eupnp_service_proxy_ref(Eupnp_Service_Proxy *proxy);
 EAPI void                    eupnp_service_proxy_unref(Eupnp_Service_Proxy *proxy);

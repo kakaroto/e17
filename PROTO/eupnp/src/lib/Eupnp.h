@@ -131,11 +131,11 @@
  *
  */
 
+#include "eupnp_private.h"
 #include "eupnp_core.h"
 #include "eupnp_udp_transport.h"
 #include "eupnp_http_message.h"
 #include "eupnp_utils.h"
-#include "eupnp_log.h"
 #include "eupnp_event_bus.h"
 #include "eupnp_ssdp.h"
 #include "eupnp_control_point.h"

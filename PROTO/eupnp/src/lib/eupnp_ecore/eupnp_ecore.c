@@ -534,12 +534,6 @@ eupnp_ecore_init(void)
 	goto con_url_fail;
      }
 
-   if (!eupnp_log_init())
-     {
-	fprintf(stderr, "Could not initialize eupnp error module.\n");
-	goto error_fail;
-     }
-
    if ((_log_dom = eina_log_domain_register("Eupnp.Ecore", EINA_COLOR_BLUE)) < 0)
      {
 	ERROR("Failed to create error domain for eupnp ecore library.");
@@ -588,8 +582,6 @@ eupnp_ecore_init(void)
    data_handler_err:
 	eina_log_domain_unregister(_log_dom);
    log_dom_fail:
-	eupnp_log_shutdown();
-   error_fail:
 	ecore_con_url_shutdown();
    con_url_fail:
         ecore_con_shutdown();
@@ -619,7 +611,6 @@ eupnp_ecore_shutdown(void)
    ecore_event_handler_del(completed_handler);
    ecore_event_handler_del(data_handler);
    eina_log_domain_unregister(_log_dom);
-   eupnp_log_shutdown();
    ecore_con_url_shutdown();
    ecore_con_shutdown();
    ecore_shutdown();

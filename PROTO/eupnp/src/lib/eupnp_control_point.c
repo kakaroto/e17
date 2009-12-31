@@ -27,7 +27,6 @@
 
 #include <Eina.h>
 
-#include "Eupnp.h"
 #include "eupnp_control_point.h"
 
 /**
@@ -40,7 +39,6 @@
  * Private API
  */
 
-static int _eupnp_control_point_main_count = 0;
 static int _log_dom = -1; // Logging domain
 static Eupnp_Subscriber *_device_found = NULL;
 
@@ -68,40 +66,13 @@ _on_device_found(void *user_data, Eupnp_Event_Type type, void *event_data)
  * @return On error, returns 0. Otherwise, returns the number of times it's been
  * called.
  */
-EAPI int
+Eina_Bool
 eupnp_control_point_init(void)
 {
-   if (_eupnp_control_point_main_count)
-      return ++_eupnp_control_point_main_count;
-
-   if (!eina_init())
-     {
-	fprintf(stderr, "Failed to initialize eina module.\n");
-	return _eupnp_control_point_main_count;
-     }
-
-   if (!eupnp_ssdp_init())
-     {
-	fprintf(stderr, "Failed to initialize eupnp ssdp module\n");
-	goto ssdp_init_err;
-     }
-
-   if (!eupnp_log_init())
-     {
-	fprintf(stderr, "Failed to initialize eupnp error module\n");
-	goto error_init_error;
-     }
-
    if ((_log_dom = eina_log_domain_register("Eupnp.ControlPoint", EINA_COLOR_BLUE)) < 0)
      {
 	fprintf(stderr, "Failed to create control point logging domain.\n");
-	goto log_dom_error;
-     }
-
-   if (!eupnp_event_bus_init())
-     {
-	ERROR("Failed to initialize eupnp event bus module.");
-	goto event_bus_init_error;
+	return EINA_FALSE;
      }
 
    // TODO add a option for skipping this device mount
@@ -114,20 +85,11 @@ eupnp_control_point_init(void)
      }
 
    INFO_D(_log_dom, "Initializing control point module.");
-
-   return ++_eupnp_control_point_main_count;
+   return EINA_TRUE;
 
    subscribe_error:
-	eupnp_event_bus_shutdown();
-   event_bus_init_error:
-        eina_log_domain_unregister(_log_dom);
-   log_dom_error:
-	eupnp_log_shutdown;
-   error_init_error:
-	eupnp_ssdp_shutdown();
-   ssdp_init_err:
-	eina_shutdown();
-   return 0;
+	eina_log_domain_unregister(_log_dom);
+	return EINA_FALSE;
 }
 
 /**
@@ -135,22 +97,13 @@ eupnp_control_point_init(void)
  *
  * @return 0 if completely shutted down the module.
  */
-EAPI int
+Eina_Bool
 eupnp_control_point_shutdown(void)
 {
-   if (_eupnp_control_point_main_count != 1)
-      return --_eupnp_control_point_main_count;
-
    INFO_D(_log_dom, "Shutting down control point module.");
-
    eupnp_event_bus_unsubscribe(_device_found);
-   eupnp_event_bus_shutdown();
    eina_log_domain_unregister(_log_dom);
-   eupnp_log_shutdown();
-   eupnp_ssdp_shutdown();
-   eina_shutdown();
-
-   return --_eupnp_control_point_main_count;
+   return EINA_FALSE;
 }
 
 /**

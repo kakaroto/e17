@@ -284,31 +284,26 @@ check_changed(void *data, Evas_Object *obj, void *event_info)
 EAPI int
 elm_main(int argc, char **argv)
 {
+   int ret = -1;
    Eupnp_Control_Point *c;
-
-   if (!eina_init())
-     {
-	fprintf(stderr, "Failed to initialize eina library.\n");
-	return 0;
-     }
 
    if ((_log_domain = eina_log_domain_register("lighting_control",
 					       EINA_COLOR_GREEN)) < 0)
      {
 	fprintf(stderr, "Failed to register a logger for the application.\n");
-	goto log_dom_failure;
-     }
-
-   if (!eupnp_ecore_init())
-     {
-	fprintf(stderr, "Could not initialize eupnp-ecore\n");
-	goto eupnp_ecore_failure;
+	return -1;
      }
 
    if (!eupnp_init())
      {
 	fprintf(stderr, "Could not initialize application resources\n");
 	goto eupnp_init_error;
+     }
+
+   if (!eupnp_ecore_init())
+     {
+	fprintf(stderr, "Could not initialize eupnp-ecore\n");
+	goto eupnp_ecore_failure;
      }
 
    c = eupnp_control_point_new();
@@ -342,26 +337,19 @@ elm_main(int argc, char **argv)
    elm_run();
 
    /* Shutdown procedure */
+   ret = 0;
    elm_shutdown();
    eupnp_control_point_stop(c);
    eupnp_control_point_free(c);
-   eupnp_shutdown();
-   eupnp_ecore_shutdown();
-   eina_log_domain_unregister(_log_domain);
-   _log_domain = -1;
-   eina_shutdown();
-   return 0;
 
    eupnp_cp_alloc_error:
       eupnp_shutdown();
-   eupnp_init_error:
-      eupnp_ecore_shutdown();
    eupnp_ecore_failure:
+      eupnp_ecore_shutdown();
+   eupnp_init_error:
      eina_log_domain_unregister(_log_domain);
      _log_domain = -1;
-   log_dom_failure:
-     eina_shutdown();
 
-   return -1;
+   return ret;
 }
 ELM_MAIN()

@@ -28,10 +28,7 @@
 #include "eupnp_event_bus.h"
 
 
-EAPI int   eupnp_event_server_init(void);
-EAPI int   eupnp_event_server_shutdown(void);
-
-EAPI const char *eupnp_event_server_url_get();
-EAPI int         eupnp_event_server_request_subscribe(Eupnp_Callback cb, void *data);
+const char *eupnp_event_server_url_get();
+int         eupnp_event_server_request_subscribe(Eupnp_Callback cb, void *data);
 
 #endif /* _EUPNP_EVENT_SERVER_H */

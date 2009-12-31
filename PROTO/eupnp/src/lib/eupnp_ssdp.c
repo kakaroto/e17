@@ -121,7 +121,6 @@
  * Private API
  */
 
-static int _eupnp_ssdp_main_count = 0;
 static int _log_dom = -1;
 
 
@@ -504,45 +503,13 @@ _eupnp_ssdp_forward_sock_event(void *data, Eupnp_Fd_Handler fd_handler)
  * @return On error, returns 0. Otherwise, returns the number of times it's been
  * called.
  */
-EAPI int
+Eina_Bool
 eupnp_ssdp_init(void)
 {
-if (_eupnp_ssdp_main_count) return ++_eupnp_ssdp_main_count;
-
-   if (!eina_init())
-     {
-	fprintf(stderr, "Failed to initialize eina module.\n");
-	return 0;
-     }
-
-   if (!eupnp_log_init())
-     {
-	fprintf(stderr, "Failed to initialize eupnp log module.\n");
-	goto log_init_err;
-     }
-
    if ((_log_dom = eina_log_domain_register("Eupnp.SSDP", EINA_COLOR_BLUE)) < 0)
      {
 	ERROR("Failed to create logging domain for ssdp module.");
-	goto log_dom_error;
-     }
-
-   if (!eupnp_event_bus_init())
-     {
-	ERROR("Failed to initialize eupnp event bus module");
-	goto event_bus_init_error;
-     }
-
-   if (!eupnp_device_info_init())
-     {
-	ERROR("Failed to initialize eupnp device info module");
-	goto device_info_init_error;
-     }
-
-   if (!eupnp_service_info_init())
-     {
-	ERROR("Failed to initialize eupnp service info module");
-	goto service_info_init_error;
+	return EINA_FALSE;
      }
 
    _eupnp_ssdp_notify = (char *) eina_stringshare_add("NOTIFY");
@@ -551,21 +518,7 @@ if (_eupnp_ssdp_main_count) return ++_eupnp_ssdp_main_count;
 
    INFO_D(_log_dom, "Initializing ssdp module.");
 
-   return ++_eupnp_ssdp_main_count;
-
-   /* Init error handling */
-   service_info_init_error:
-      eupnp_device_info_shutdown();
-   device_info_init_error:
-      eupnp_event_bus_shutdown();
-   event_bus_init_error:
-      eina_log_domain_unregister(_log_dom);
-   log_dom_error:
-      eupnp_log_shutdown();
-   log_init_err:
-      eina_shutdown();
-
-   return 0;
+   return EINA_TRUE;
 }
 
 /**
@@ -573,21 +526,18 @@ if (_eupnp_ssdp_main_count) return ++_eupnp_ssdp_main_count;
  *
  * @return 0 if completely shutted down the module.
  */
-EAPI int
+Eina_Bool
 eupnp_ssdp_shutdown(void)
 {
-   if (_eupnp_ssdp_main_count != 1) return --_eupnp_ssdp_main_count;
-
    INFO_D(_log_dom, "Shutting down ssdp module.");
 
-   eupnp_service_info_shutdown();
-   eupnp_device_info_shutdown();
-   eupnp_event_bus_shutdown();
    eina_log_domain_unregister(_log_dom);
-   eupnp_log_shutdown();
-   eina_shutdown();
 
-   return --_eupnp_ssdp_main_count;
+   if (_eupnp_ssdp_notify) eina_stringshare_del(_eupnp_ssdp_notify);
+   if (_eupnp_ssdp_msearch) eina_stringshare_del(_eupnp_ssdp_msearch);
+   if (_eupnp_ssdp_http_version) eina_stringshare_del(_eupnp_ssdp_http_version);
+
+   return EINA_FALSE;
 }
 
 /**

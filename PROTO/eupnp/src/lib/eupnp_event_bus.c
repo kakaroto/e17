@@ -121,7 +121,6 @@
  */
 
 static Eina_List *subscribers = NULL;
-static int _eupnp_event_bus_main_count = 0;
 static int _log_dom = -1;
 static int _event_max = EUPNP_EVENT_COUNT;
 
@@ -181,34 +180,19 @@ eupnp_event_bus_clear_subscribers(void)
  * @return On error, returns 0. Otherwise, returns the number of times it's been
  *         called.
  */
-EAPI int
+Eina_Bool
 eupnp_event_bus_init(void)
 {
-   if (_eupnp_event_bus_main_count) return ++_eupnp_event_bus_main_count;
-
-   if (!eina_init())
-     {
-	fprintf(stderr, "Failed to initialize eina module.\n");
-	return _eupnp_event_bus_main_count;
-     }
-
-   if (!eupnp_log_init())
-     {
-	fprintf(stderr, "Failed to initialize eupnp log module.\n");
-	eina_shutdown();
-	return _eupnp_event_bus_main_count;
-     }
-
-   if ((_log_dom = eina_log_domain_register("Eupnp.EventBus", EINA_COLOR_BLUE)) < 0)
+   if ((_log_dom =
+	eina_log_domain_register("Eupnp.EventBus", EINA_COLOR_BLUE)) < 0)
      {
 	ERROR("Failed to create event bus logging domain.");
-	eupnp_shutdown();
-	return _eupnp_event_bus_main_count;
+	return EINA_FALSE;
      }
 
    INFO_D(_log_dom, "Initializing event bus module.");
 
-   return ++_eupnp_event_bus_main_count;
+   return EINA_TRUE;
 }
 
 /**
@@ -216,19 +200,13 @@ eupnp_event_bus_init(void)
  *
  * @return 0 if completely shutted down the module.
  */
-EAPI int
+Eina_Bool
 eupnp_event_bus_shutdown(void)
 {
-   if (_eupnp_event_bus_main_count != 1) return --_eupnp_event_bus_main_count;
-
    INFO_D(_log_dom, "Shutting down event bus module.");
-
    eupnp_event_bus_clear_subscribers();
    eina_log_domain_unregister(_log_dom);
-   eupnp_log_shutdown();
-   eina_shutdown();
-
-   return --_eupnp_event_bus_main_count;
+   return EINA_TRUE;
 }
 
 /**

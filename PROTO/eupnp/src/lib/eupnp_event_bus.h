@@ -69,9 +69,6 @@ struct _Eupnp_Subscriber {
    void *user_data;
 };
 
-EAPI int                eupnp_event_bus_init(void);
-EAPI int                eupnp_event_bus_shutdown(void);
-
 EAPI void               eupnp_event_bus_publish(Eupnp_Event_Type event_type, void *event_data);
 EAPI Eupnp_Subscriber  *eupnp_event_bus_subscribe(Eupnp_Event_Type event_type, Eupnp_Callback cb, void *user_data) EINA_ARG_NONNULL(2);
 EAPI void               eupnp_event_bus_unsubscribe(Eupnp_Subscriber *s) EINA_ARG_NONNULL(1);

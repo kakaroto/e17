@@ -37,7 +37,6 @@
  * Private API
  */
 
-static int _eupnp_service_info_main_count = 0;
 static int _log_dom = -1;
 
 /*
@@ -50,30 +49,18 @@ static int _log_dom = -1;
  * @return On error, returns 0. Otherwise, returns the number of times it's been
  * called.
  */
-EAPI int
+Eina_Bool
 eupnp_service_info_init(void)
 {
-   if (_eupnp_service_info_main_count)
-      return ++_eupnp_service_info_main_count;
-
-   if (!eupnp_log_init())
-     {
-	fprintf(stderr, "Could not initialize eupnp error module.\n");
-	return 0;
-     }
-
-   if ((_log_dom = eina_log_domain_register("Eupnp.ServiceInfo", EINA_COLOR_BLUE)) < 0)
+   if ((_log_dom =
+	eina_log_domain_register("Eupnp.ServiceInfo", EINA_COLOR_BLUE)) < 0)
      {
 	ERROR("Failed to create logging domain for service info module.");
-	eupnp_log_shutdown();
-	return 0;
+	return EINA_FALSE;
      }
 
    INFO_D(_log_dom, "Initializing service info module.");
-
-   return ++_eupnp_service_info_main_count;
-
-   return 0;
+   return EINA_TRUE;
 }
 
 /**
@@ -81,18 +68,12 @@ eupnp_service_info_init(void)
  *
  * @return 0 if completely shutted down the module.
  */
-EAPI int
+Eina_Bool
 eupnp_service_info_shutdown(void)
 {
-   if (_eupnp_service_info_main_count != 1)
-      return --_eupnp_service_info_main_count;
-
    INFO_D(_log_dom, "Shutting down service info module.");
-
    eina_log_domain_unregister(_log_dom);
-   eupnp_log_shutdown();
-
-   return --_eupnp_service_info_main_count;
+   return EINA_TRUE;
 }
 
 /**

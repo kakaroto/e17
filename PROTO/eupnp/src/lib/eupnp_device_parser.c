@@ -53,8 +53,6 @@
 	((char *)to)[len] = '\0';                               \
      }
 
-
-static int _eupnp_device_parser_init_count = 0;
 static int _log_dom = -1;
 
 typedef struct _Eupnp_Device_Parser_State Eupnp_Device_Parser_State;
@@ -725,25 +723,10 @@ eupnp_device_parse_check_finished(Eupnp_Device_Info *d)
 
 int EUPNP_ERROR_DEVICE_PARSER_INSUFFICIENT_FEED = 0;
 
-int
+Eina_Bool
 eupnp_device_parser_init(void)
 {
-   if (_eupnp_device_parser_init_count)
-      return ++_eupnp_device_parser_init_count;
-
    xmlInitParser();
-
-   if (!eina_init())
-     {
-	fprintf(stderr, "Failed to initialize eina error module.\n");
-	goto eina_init_error;
-     }
-
-   if (!eupnp_log_init())
-     {
-	fprintf(stderr, "Could not initialize eupnp log module.\n");
-	goto eupnp_log_init_error;
-     }
 
    EUPNP_ERROR_DEVICE_PARSER_INSUFFICIENT_FEED = eina_error_msg_register("Parser feeded with less than 4 chars. Feed it with at least 4 chars");
 
@@ -753,50 +736,22 @@ eupnp_device_parser_init(void)
 	goto log_dom_error;
      }
 
-   if (!eupnp_service_info_init())
-     {
-	ERROR("Could not initialize eupnp service info module.");
-	goto service_info_init_error;
-     }
-
-   if (!eupnp_service_proxy_init())
-     {
-	ERROR("Could not initialize eupnp service proxy module.");
-	goto proxy_init_error;
-     }
-
    INFO_D(_log_dom, "Initializing device parser module.");
 
-   return ++_eupnp_device_parser_init_count;
+   return EINA_TRUE;
 
-   proxy_init_error:
-      eupnp_service_info_shutdown();
-   service_info_init_error:
-      eina_log_domain_unregister(_log_dom);
    log_dom_error:
-      eupnp_log_shutdown();
-   eupnp_log_init_error:
-      eina_shutdown();
-   eina_init_error:
       xmlCleanupParser();
-
-   return 0;
+      return EINA_FALSE;
 }
 
 
-int
+Eina_Bool
 eupnp_device_parser_shutdown(void)
 {
-   if (_eupnp_device_parser_init_count != 1)
-      return --_eupnp_device_parser_init_count;
-
    INFO_D(_log_dom, "Shutting down device parser module.");
 
-   eupnp_service_proxy_shutdown();
-   eupnp_service_info_shutdown();
    eina_log_domain_unregister(_log_dom);
-   eupnp_log_shutdown();
-   eina_shutdown();
 
    /* http://xmlsoft.org/html/libxml-parser.html#xmlCleanupParser
     *
@@ -806,7 +761,7 @@ eupnp_device_parser_shutdown(void)
     */
    xmlCleanupParser();
 
-   return --_eupnp_device_parser_init_count;
+   return EINA_TRUE;
 }
 
 

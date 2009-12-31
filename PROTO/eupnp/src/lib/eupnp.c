@@ -90,7 +90,6 @@ static int _eupnp_main_count = 0;
  *
  */
 
-
 /**
  * Initializes Eupnp library.
  *
@@ -122,16 +121,28 @@ eupnp_init(void)
 	goto event_bus_init_error;
      }
 
-   if (!eupnp_device_info_init())
-     {
-	fprintf(stderr, "Failed to initialize eupnp device info module.\n");
-	goto device_info_init_error;
-     }
-
    if (!eupnp_service_info_init())
      {
 	fprintf(stderr, "Failed to initialize eupnp service info module.\n");
 	goto service_info_init_error;
+     }
+
+   if (!eupnp_device_parser_init())
+     {
+	fprintf(stderr, "Failed to initialize eupnp device parser module.\n");
+	goto device_parser_init_error;
+     }
+
+   if (!eupnp_service_parser_init())
+     {
+	fprintf(stderr, "Failed to initialize eupnp service parser module.\n");
+	goto service_parser_init_error;
+     }
+
+   if (!eupnp_device_info_init())
+     {
+	fprintf(stderr, "Failed to initialize eupnp device info module.\n");
+	goto device_info_init_error;
      }
 
    if (!eupnp_ssdp_init())
@@ -146,17 +157,28 @@ eupnp_init(void)
 	goto control_point_init_error;
      }
 
-   INFO("Initializing eupnp library");
+   if (!eupnp_service_proxy_init())
+     {
+	fprintf(stderr, "Failed to initialize eupnp service proxy module.\n");
+	goto service_proxy_init_error;
+     }
 
+   INFO("Initializing eupnp library");
    return ++_eupnp_main_count;
 
+   service_proxy_init_error:
+      eupnp_control_point_shutdown();
    control_point_init_error:
       eupnp_ssdp_shutdown();
    ssdp_init_error:
-      eupnp_service_info_shutdown();
-   service_info_init_error:
       eupnp_device_info_shutdown();
    device_info_init_error:
+      eupnp_service_parser_shutdown();
+   service_parser_init_error:
+      eupnp_device_parser_shutdown();
+   device_parser_init_error:
+      eupnp_service_info_shutdown();
+   service_info_init_error:
       eupnp_event_bus_shutdown();
    event_bus_init_error:
       eupnp_log_shutdown();
@@ -180,8 +202,10 @@ eupnp_shutdown(void)
 
    eupnp_control_point_shutdown();
    eupnp_ssdp_shutdown();
-   eupnp_service_info_shutdown();
    eupnp_device_info_shutdown();
+   eupnp_service_parser_shutdown();
+   eupnp_device_parser_shutdown();
+   eupnp_service_info_shutdown();
    eupnp_event_bus_shutdown();
    eupnp_log_shutdown();
    eina_shutdown();

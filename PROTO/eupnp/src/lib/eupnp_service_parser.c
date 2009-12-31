@@ -34,7 +34,6 @@
  * Private API
  */
 
-static int _eupnp_service_parser_init = 0;
 static int _log_dom = -1;
 
 typedef struct _Eupnp_Service_Parser_State Eupnp_Service_Parser_State;
@@ -915,20 +914,10 @@ eupnp_service_parse_check_finished(Eupnp_Service_Proxy *d)
 
 EAPI int EUPNP_ERROR_SERVICE_PARSER_INSUFFICIENT_FEED = 0;
 
-
-EAPI int
+Eina_Bool
 eupnp_service_parser_init(void)
 {
-   if (_eupnp_service_parser_init)
-      return ++_eupnp_service_parser_init;
-
    xmlInitParser();
-
-   if (!eupnp_log_init())
-     {
-	fprintf(stderr, "Could not initialize eupnp error module.\n");
-	goto log_init_error;
-     }
 
    EUPNP_ERROR_SERVICE_PARSER_INSUFFICIENT_FEED = eina_error_msg_register("Parser feeded with less than 4 chars. Feed it with at least 4 chars");
 
@@ -940,29 +929,21 @@ eupnp_service_parser_init(void)
 
    INFO_D(_log_dom, "Initializing service parser module.");
 
-   return ++_eupnp_service_parser_init;
+   return EINA_TRUE;
 
    log_dom_error:
-     eupnp_log_shutdown();
-   log_init_error:
      xmlCleanupParser();
 
-   return 0;
+   return EINA_FALSE;
 }
 
-EAPI int
+Eina_Bool
 eupnp_service_parser_shutdown(void)
 {
-   if (_eupnp_service_parser_init != 1)
-      return --_eupnp_service_parser_init;
-
    INFO_D(_log_dom, "Shutting down service parser module.");
-
    eina_log_domain_unregister(_log_dom);
-   eupnp_log_shutdown();
    xmlCleanupParser();
-
-   return --_eupnp_service_parser_init;
+   return EINA_TRUE;
 }
 
 EAPI Eina_Bool

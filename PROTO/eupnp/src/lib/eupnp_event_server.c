@@ -44,7 +44,6 @@ static Eupnp_Server _event_server = NULL;
 static const char *_host = NULL;
 static int _port = 0;
 static const char *_url = NULL;
-static int _event_server_init_count = 0;
 static int _log_dom = -1;
 
 static void
@@ -87,27 +86,13 @@ _client_data_ready(void *buffer, int size, void *data)
  * Public API
  */
 
-EAPI int
+Eina_Bool
 eupnp_event_server_init(void)
 {
-   if (_event_server_init_count) return ++_event_server_init_count;
-
-   if (!eupnp_log_init())
-     {
-	fprintf(stderr, "Failed to initialize eupnp log module.\n");
-	return _event_server_init_count;
-     }
-
    if ((_log_dom = eina_log_domain_register("Eupnp.EventServer", EINA_COLOR_BLUE)) < 0)
      {
 	fprintf(stderr, "Failed to create a new logging domain.\n");
 	goto log_domain_fail;
-     }
-
-   if (!eupnp_event_bus_init())
-     {
-	ERROR("Failed to initialize eupnp event bus library.");
-	goto event_bus_fail;
      }
 
    _host = (char *)eupnp_utils_default_host_ip_get();
@@ -139,7 +124,7 @@ eupnp_event_server_init(void)
 
    INFO_D(_log_dom, "Initializing event server module.");
 
-   return ++_event_server_init_count;
+   return EINA_TRUE;
 
    server_creation_err:
 	free((char *)_url);
@@ -149,29 +134,23 @@ eupnp_event_server_init(void)
 	eupnp_event_bus_shutdown();
    event_bus_fail:
 	eina_log_domain_unregister(_log_dom);
-	_log_dom = -1;
    log_domain_fail:
-	eupnp_log_shutdown();
+	_log_dom = -1;
 
-   return 0;
+   return EINA_FALSE;
 }
 
-EAPI int
+Eina_Bool
 eupnp_event_server_shutdown(void)
 {
-   if (_event_server_init_count != 1) return --_event_server_init_count;
-
    INFO_D(_log_dom, "Shutting down event server module.");
    free((char *)_host);
    free((char *)_url);
    _port = -1;
    eupnp_core_server_free(_event_server);
-   eupnp_event_bus_shutdown();
    eina_log_domain_unregister(_log_dom);
    _log_dom = -1;
-   eupnp_log_shutdown();
-
-   return --_event_server_init_count;
+   return EINA_TRUE;
 }
 
 

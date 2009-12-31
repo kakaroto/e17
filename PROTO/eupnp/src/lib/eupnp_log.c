@@ -27,12 +27,10 @@
 
 #include <Eina.h>
 
-#include "Eupnp.h"
 #include "eupnp_log.h"
 
 
-static int _eupnp_log_init_count = 0;
-EAPI int EUPNP_LOGGING_DOM_GLOBAL = -1;
+int EUPNP_LOGGING_DOM_GLOBAL = -1;
 
 
 /*
@@ -43,27 +41,18 @@ EAPI int EUPNP_LOGGING_DOM_GLOBAL = -1;
  * @return On error, returns 0. Otherwise, returns the number of times it's been
  * called.
  */
-EAPI int
+Eina_Bool
 eupnp_log_init(void)
 {
-   if (_eupnp_log_init_count) return ++_eupnp_log_init_count;
-
-   if (!eina_init())
-     {
-	fprintf(stderr, "Failed to initialize eina module.\n");
-	return 0;
-     }
-
    EUPNP_LOGGING_DOM_GLOBAL = eina_log_domain_register("Eupnp", EINA_COLOR_RESET);
 
    if (EUPNP_LOGGING_DOM_GLOBAL < 0)
      {
 	fprintf(stderr, "Failed to register global error domain.\n");
-	eina_shutdown();
-	return 0;
+	return EINA_FALSE;
      }
 
-   return ++_eupnp_log_init_count;
+   return EINA_TRUE;
 }
 
 /*
@@ -71,13 +60,9 @@ eupnp_log_init(void)
  *
  * @return 0 if completely shutted down.
  */
-EAPI int
+Eina_Bool
 eupnp_log_shutdown(void)
 {
-   if (_eupnp_log_init_count != 1) return --_eupnp_log_init_count;
-
    eina_log_domain_unregister(EUPNP_LOGGING_DOM_GLOBAL);
-   eina_shutdown();
-
-   return --_eupnp_log_init_count;
+   return EINA_TRUE;
 }

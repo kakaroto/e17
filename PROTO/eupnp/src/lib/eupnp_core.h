@@ -24,7 +24,6 @@
 
 #include <Eina.h>
 
-#include "Eupnp.h"
 #include "eupnp_http_message.h"
 
 typedef void* Eupnp_Fd_Handler;

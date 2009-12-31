@@ -65,9 +65,6 @@ struct _Eupnp_SSDP_Client {
 };
 
 
-EAPI int                 eupnp_ssdp_init(void);
-EAPI int                 eupnp_ssdp_shutdown(void);
-
 EAPI Eupnp_SSDP_Client  *eupnp_ssdp_client_new(void);
 EAPI void                eupnp_ssdp_client_free(Eupnp_SSDP_Client *c) EINA_ARG_NONNULL(1);
 EAPI Eina_Bool           eupnp_ssdp_client_start(Eupnp_SSDP_Client *c) EINA_ARG_NONNULL(1);
