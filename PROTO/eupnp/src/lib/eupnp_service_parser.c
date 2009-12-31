@@ -924,19 +924,13 @@ eupnp_service_parser_init(void)
 
    xmlInitParser();
 
-   if (!eina_init())
-     {
-	fprintf(stderr, "Failed to initialize eina error module.\n");
-	return 0;
-     }
-
-   EUPNP_ERROR_SERVICE_PARSER_INSUFFICIENT_FEED = eina_error_msg_register("Parser feeded with less than 4 chars. Feed it with at least 4 chars");
-
    if (!eupnp_log_init())
      {
 	fprintf(stderr, "Could not initialize eupnp error module.\n");
 	goto log_init_error;
      }
+
+   EUPNP_ERROR_SERVICE_PARSER_INSUFFICIENT_FEED = eina_error_msg_register("Parser feeded with less than 4 chars. Feed it with at least 4 chars");
 
    if ((_log_dom = eina_log_domain_register("Eupnp.ServiceParser", EINA_COLOR_BLUE)) < 0)
      {
@@ -948,11 +942,10 @@ eupnp_service_parser_init(void)
 
    return ++_eupnp_service_parser_init;
 
-
    log_dom_error:
      eupnp_log_shutdown();
    log_init_error:
-     eina_shutdown();
+     xmlCleanupParser();
 
    return 0;
 }
