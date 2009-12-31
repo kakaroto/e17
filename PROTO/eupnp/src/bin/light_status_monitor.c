@@ -108,28 +108,22 @@ int main(void)
    Eupnp_Control_Point *c;
    int ret = -1;
 
-   if (!eupnp_log_init())
+   if (!eupnp_ecore_init())
      {
-	fprintf(stderr, "Failed to initialize eina log module.\n");
+	fprintf(stderr, "Failed to initialize eupnp module.\n");
 	return ret;
+     }
+
+   if (!eupnp_init())
+     {
+	fprintf(stderr, "Could not initialize eupnp-ecore\n");
+	goto eupnp_ecore_init_error;
      }
 
    if ((_log_domain = eina_log_domain_register("LightStatusMonitor", EINA_COLOR_BLUE)) < 0)
      {
 	fprintf(stderr, "Failed to create a logging domain for the application.\n");
 	goto log_domain_reg_error;
-     }
-
-   if (!eupnp_ecore_init())
-     {
-	fprintf(stderr, "Could not initialize eupnp-ecore\n");
-	goto eupnp_ecore_init_error;
-     }
-
-   if (!eupnp_control_point_init())
-     {
-	fprintf(stderr, "Could not initialize program resources\n");
-	goto eupnp_cp_init_error;
      }
 
    c = eupnp_control_point_new();
@@ -164,14 +158,11 @@ int main(void)
    eupnp_control_point_free(c);
 
    eupnp_cp_alloc_error:
-      eupnp_control_point_shutdown();
-   eupnp_cp_init_error:
-      eupnp_ecore_shutdown();
-   eupnp_ecore_init_error:
       eina_log_domain_unregister(_log_domain);
    log_domain_reg_error:
-      eupnp_log_shutdown();
+      eupnp_shutdown();
+   eupnp_ecore_init_error:
+      eupnp_ecore_shutdown();
 
    return ret;
 }
-
