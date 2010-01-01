@@ -3,9 +3,6 @@
 
 #ifndef ELM_LIB_QUICKLAUNCH
 
-/* local function prototypes */
-static void _cb_win_del(void *data, Evas_Object *obj, void *event);
-
 EAPI int 
 elm_main(int argc, char **argv) 
 {
@@ -18,7 +15,8 @@ elm_main(int argc, char **argv)
         Ecore_X_Window_State states[2];
         char buff[PATH_MAX];
 
-        win = elm_win_add(NULL, "elm_quickpanel", ELM_WIN_BASIC);
+        snprintf(buff, sizeof(buff), "elm_quickpanel:%d", i);
+        win = elm_win_add(NULL, buff, ELM_WIN_BASIC);
         elm_win_title_set(win, "Illume Quickpanel Window");
         elm_win_autodel_set(win, EINA_TRUE);
 
@@ -34,10 +32,15 @@ elm_main(int argc, char **argv)
 
         /* set quickpanel priority */
         if (i == 1) 
-          ecore_x_e_illume_quickpanel_priority_major_set(xwin, 2);
+          {
+             ecore_x_e_illume_quickpanel_priority_major_set(xwin, 2);
+             ecore_x_e_illume_quickpanel_priority_minor_set(xwin, 3);
+          }
         else 
-          ecore_x_e_illume_quickpanel_priority_major_set(xwin, i);
-        ecore_x_e_illume_quickpanel_priority_minor_set(xwin, i);
+          {
+             ecore_x_e_illume_quickpanel_priority_major_set(xwin, i);
+             ecore_x_e_illume_quickpanel_priority_minor_set(xwin, i);
+          }
 
         bg = elm_bg_add(win);
         evas_object_size_hint_weight_set(bg, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
