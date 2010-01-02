@@ -1,0 +1,7 @@
+recursive-include eupnp *.pyx *.pxi *.py
+recursive-include include *.pxd *.py
+include ez_setup.py gen-doc-api.sh
+include AUTHORS COPYING-PLAIN COPYING README
+include eupnp/eupnp.c_eupnp.[ch]
+global-exclude .cvsignore
+prune debian

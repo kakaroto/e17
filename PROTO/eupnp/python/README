@@ -1,0 +1,41 @@
+PYTHON BINDINGS FOR EUPNP
+
+
+REQUIREMENTS
+============
+
+ * Eupnp
+ * Eupnp-Ecore
+ ** Ecore       (indirect, Eupnp-Ecore dependency)
+ * Cython >= 0.9.8
+ * Python >= 2.4
+ * Python-setuptools >= 0.6_rc3
+
+
+BUILDING AND INSTALLING
+=======================
+
+For most users, execute build.sh for building the bindings. You may choose where
+to install it (--prefix, --home, --system). PYTHONPATH (installation directory)
+environment variable is usually required.
+
+For example:
+
+    sudo PYTHONPATH=/usr/local/lib/python2.6/site-packages ./build.sh --prefix=/usr/local
+
+
+The build.sh script will build and install only the headers on the specified
+location. This installation will link to your eupnp/python folder, so you
+shouldn't delete it.
+
+An alternative is to perform a full install (which copies everything):
+
+    sudo python setup.py install
+
+You can choose where to install by using command options, see output
+of "python setup.py <command> --help", example:
+
+    python setup.py install --help
+
+Options can also be set in file "setup.cfg".
+
