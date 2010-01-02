@@ -5,7 +5,7 @@ includedir=@includedir@
 
 Name: eupnp-ecore
 Description: Integrates Eupnp library with Ecore
-Requires: eupnp ecore ecore-con
+Requires: eupnp-0 ecore ecore-con
 Version: @VERSION@
 Libs: -L${libdir} -leupnp_ecore
 Cflags: -I${includedir}
