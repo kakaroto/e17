@@ -96,21 +96,24 @@ __dbus_callback_check_and_init(const char *file, int line, const char *function,
    if (!msg)
      {
 	if (err)
-	  ERR(file, function, line,
-              "an error was reported by server: "
-              "name=\"%s\", message=\"%s\"",
-              err->name, err->message);
+	  eina_log_print(_e_dbus_connman_log_dom, EINA_LOG_LEVEL_ERR,
+			 file, function, line,
+			 "an error was reported by server: "
+			 "name=\"%s\", message=\"%s\"",
+			 err->name, err->message);
 	else
-	  ERR(file, function, line,
-              "callback without message arguments!");
+	  eina_log_print(_e_dbus_connman_log_dom, EINA_LOG_LEVEL_ERR,
+			 file, function, line,
+			 "callback without message arguments!");
 
 	return 0;
      }
 
    if (!dbus_message_iter_init(msg, itr))
      {
-       ERR(file, function, line,
-           "could not init iterator.");
+	  eina_log_print(_e_dbus_connman_log_dom, EINA_LOG_LEVEL_ERR,
+			 file, function, line,
+			 "could not init iterator.");
 	return 0;
      }
 
