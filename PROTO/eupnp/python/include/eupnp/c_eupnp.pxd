@@ -15,7 +15,22 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with this Python-Eupnp.  If not, see <http://www.gnu.org/licenses/>.
 
+ctypedef int Eina_Bool
 
 cdef extern from "Eupnp.h":
     int eupnp_init()
     int eupnp_shutdown()
+
+cdef extern from "eupnp_ecore.h":
+    int eupnp_ecore_init()
+    int eupnp_ecore_shutdown()
+
+cdef extern from "eupnp_control_point.h":
+
+    ctypedef struct Eupnp_Control_Point
+
+    Eupnp_Control_Point *eupnp_control_point_new()
+    void eupnp_control_point_free(Eupnp_Control_Point *c)
+    Eina_Bool eupnp_control_point_start(Eupnp_Control_Point *c)
+    Eina_Bool eupnp_control_point_stop(Eupnp_Control_Point *c)
+    Eina_Bool eupnp_control_point_discovery_request_send(Eupnp_Control_Point *c, int mx, char *search_target)

@@ -61,7 +61,7 @@ eupnpmodule = Extension('eupnp.c_eupnp',
                                 ],
                        depends=['include/eupnp/c_eupnp.pxd',
                                 ],
-                       **pkgconfig('"eupnp-0"'))
+                       **pkgconfig('"eupnp-0 eupnp-ecore"'))
 
 trove_classifiers = [
     "Development Status :: 3 - Alpha",

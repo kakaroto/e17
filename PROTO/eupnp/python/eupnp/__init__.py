@@ -19,6 +19,6 @@
 
 import c_eupnp
 
-from c_eupnp import shutdown
+from c_eupnp import shutdown, ControlPoint
 
 c_eupnp.init()

@@ -20,7 +20,10 @@ __extra_epydoc_fields__ = (
     )
 
 def init():
-    return eupnp_init()
+    return eupnp_init() and eupnp_ecore_init()
 
 def shutdown():
-    return eupnp_shutdown()
+    return eupnp_ecore_shutdown() and eupnp_shutdown()
+
+
+include "eupnp.c_eupnp_control_point.pxi"
