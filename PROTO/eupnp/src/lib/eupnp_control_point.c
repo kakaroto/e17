@@ -28,6 +28,7 @@
 #include <Eina.h>
 
 #include "eupnp_control_point.h"
+#include "eupnp_private.h"
 
 /**
  * @addtogroup Eupnp_Control_Point_Module Control Point

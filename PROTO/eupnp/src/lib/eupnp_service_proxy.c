@@ -33,7 +33,6 @@
 #include "eupnp_service_proxy.h"
 #include "eupnp_log.h"
 #include "eupnp_core.h"
-#include "eupnp_event_server.h"
 #include "eupnp_service_info.h"
 #include "eupnp_http_message.h"
 #include "eupnp_soap.h"
@@ -218,7 +217,7 @@ start_element_ns(void *state, const xmlChar *name, const xmlChar *prefix, const 
 	  break;
 
 	case INSIDE_ACTION_RESPONSE:
-	  s->arg = eupnp_service_action_argument_new();
+	  s->arg = (Eupnp_Service_Action_Argument *) eupnp_service_action_argument_new();
 	  s->arg->name = strdup(name);
 	  DEBUG_D(_action_log_dom, "Writing variable %s", s->arg->name);
 	  s->state = INSIDE_ACTION_ARG;
@@ -1127,7 +1126,7 @@ eupnp_service_proxy_state_variable_events_subscribe(Eupnp_Service_Proxy *proxy, 
 	   _event_server_inited = EINA_TRUE;
      }
 
-   const char *listen_addr = eupnp_event_server_url_get();
+   const char *listen_addr = (const char *) eupnp_event_server_url_get();
    int id, callback_len, eventing_url_len;
    Eupnp_Event_Subscriber *ret = NULL;
 

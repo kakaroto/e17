@@ -28,7 +28,6 @@
 #include <Eina.h>
 
 #include "Eupnp.h"
-#include "eupnp_event_server.h"
 #include "eupnp_log.h"
 #include "eupnp_core.h"
 #include "eupnp_private.h"
@@ -161,7 +160,7 @@ eupnp_event_server_shutdown(void)
  * Associate the pair (cb, from_addr) to an event type that will be emitted by
  * the server whenever events occur.
  */
-EAPI int
+int
 eupnp_event_server_request_subscribe(Eupnp_Callback cb, void *data)
 {
    CHECK_NULL_RET_VAL(cb, EINA_FALSE);
@@ -187,7 +186,7 @@ eupnp_event_server_request_subscribe(Eupnp_Callback cb, void *data)
  *
  * @return Listening url
  */
-EAPI const char *
+const char *
 eupnp_event_server_url_get()
 {
    return _url;

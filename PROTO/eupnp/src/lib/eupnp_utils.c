@@ -41,10 +41,10 @@
 #include <Eina.h>
 
 #include "Eupnp.h"
-#include "eupnp_utils.h"
+#include "eupnp_private.h"
 
 
-EAPI char *
+char *
 eupnp_utils_current_date_http_string_get()
 {
    struct tm tm;
@@ -61,7 +61,7 @@ eupnp_utils_current_date_http_string_get()
    return strdup(date);
 }
 
-EAPI int
+int
 eupnp_utils_random_port_get()
 {
    srand(time(NULL));
@@ -71,7 +71,7 @@ eupnp_utils_random_port_get()
 /*
  * Returns the length of <scheme>://<netloc> from a complete URL.
  */
-EAPI int
+int
 eupnp_utils_url_base_get(const char *url)
 {
    if (!url) return 0;
@@ -96,7 +96,7 @@ eupnp_utils_url_base_get(const char *url)
  * Returns EINA_TRUE if the url is relative, that is, does not contain
  * <scheme>://<netloc>.
  */
-EAPI Eina_Bool
+Eina_Bool
 eupnp_utils_url_is_relative(const char *url)
 {
    if (!eupnp_utils_url_base_get(url)) return EINA_TRUE;
@@ -106,7 +106,7 @@ eupnp_utils_url_is_relative(const char *url)
 /*
  * Returns the current system time
  */
-EAPI double
+double
 eupnp_time_get(void) {
    struct timeval tv;
    gettimeofday(&tv, NULL);
@@ -198,7 +198,7 @@ get_host_ip(const char *name)
 * Author: Jorn Baayen <jorn@openedhand.com>
 *
 */
-EAPI const char *
+const char *
 eupnp_utils_default_host_ip_get(void)
 {
    FILE *fp;

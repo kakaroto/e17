@@ -28,7 +28,6 @@
 #include "eupnp_log.h"
 #include "eupnp_event_bus.h"
 #include "eupnp_device_info.h"
-#include "eupnp_private.h"
 
 /*
  * Generic Search Targets (ST's)

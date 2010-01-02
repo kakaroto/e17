@@ -28,6 +28,7 @@
 
 #include "Eupnp.h"
 #include "eupnp_log.h"
+#include "eupnp_private.h"
 
 
 /*
