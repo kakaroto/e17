@@ -59,10 +59,7 @@ def pkgconfig(*packages, **kw):
 eupnpmodule = Extension('eupnp.c_eupnp',
                        sources=['eupnp/eupnp.c_eupnp.pyx',
                                 ],
-                       depends=[
-                                #'eupnp/eupnp.c_eupnp_object.pxi',
-                                #'eupnp/eupnp.c_eupnp_message.pxi',
-                                'include/eupnp/c_eupnp.pxd',
+                       depends=['include/eupnp/c_eupnp.pxd',
                                 ],
                        **pkgconfig('"eupnp-0"'))
 
@@ -94,19 +91,17 @@ class eupnp_build_ext(build_ext):
 
 
 setup(name='python-eupnp',
-      version='0.3.1',
+      version='0.0.1',
       license='LGPL',
-      author='Gustavo Sverzut Barbieri',
-      author_email='barbieri@gmail.com',
-      url='http://www.enlightenment.org/',
+      author='Andre Dieb Martins',
+      author_email='andre.dieb@gmail.com',
+      url='http://trac.enlightenment.org/e/wiki/Eupnp',
       description='Python bindings for eupnp',
       long_description=long_description,
       keywords='wrapper binding eupnp upnp',
       classifiers=trove_classifiers,
       packages=find_packages(),
-#      install_requires=['python-evas>=0.3.1'],
       install_requires=[],
-#      setup_requires=['python-evas>=0.3.1'],
       setup_requires=[],
       ext_modules=[eupnpmodule],
       zip_safe=False,
