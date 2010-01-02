@@ -23,7 +23,10 @@ def init():
     return eupnp_init() and eupnp_ecore_init()
 
 def shutdown():
-    return eupnp_ecore_shutdown() and eupnp_shutdown()
+    return eupnp_ecore_shutdown() or eupnp_shutdown()
 
 
 include "eupnp.c_eupnp_control_point.pxi"
+include "eupnp.c_eupnp_event_bus.pxi"
+
+bus = Bus()

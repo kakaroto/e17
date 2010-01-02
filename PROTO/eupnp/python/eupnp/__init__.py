@@ -19,6 +19,6 @@
 
 import c_eupnp
 
-from c_eupnp import shutdown, ControlPoint
+from c_eupnp import shutdown, ControlPoint, bus
 
 c_eupnp.init()

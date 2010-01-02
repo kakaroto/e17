@@ -15,29 +15,9 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with this Python-Eupnp.  If not, see <http://www.gnu.org/licenses/>.
 
-cimport c_eupnp
-cimport python_exc
-import traceback
+cdef extern from "Python.h":
+    void Py_INCREF(object)
+    void Py_DECREF(object)
 
-
-cdef class ControlPoint:
-    cdef c_eupnp.Eupnp_Control_Point* _cp
-
-    def __cinit__(self):
-        self._cp = c_eupnp.eupnp_control_point_new()
-        if self._cp is not NULL:
-            python_exc.PyErr_NoMemory()
-
-    def __dealloc__(self):
-        if self._cp is not NULL:
-            c_eupnp.eupnp_control_point_free(self._cp)
-
-    def start(self):
-        return c_eupnp.eupnp_control_point_start(self._cp)
-
-    def stop(self):
-        return c_eupnp.eupnp_control_point_stop(self._cp)
-
-    cpdef discovery_send(self, mx, search_target):
-        return c_eupnp.eupnp_control_point_discovery_request_send \
-            (self._cp, mx, search_target)
+cdef extern from "eupnp/util.h":
+    int Py_REFCOUNT(object)

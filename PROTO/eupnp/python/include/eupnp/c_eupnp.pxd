@@ -26,7 +26,6 @@ cdef extern from "eupnp_ecore.h":
     int eupnp_ecore_shutdown()
 
 cdef extern from "eupnp_control_point.h":
-
     ctypedef struct Eupnp_Control_Point
 
     Eupnp_Control_Point *eupnp_control_point_new()
@@ -34,3 +33,21 @@ cdef extern from "eupnp_control_point.h":
     Eina_Bool eupnp_control_point_start(Eupnp_Control_Point *c)
     Eina_Bool eupnp_control_point_stop(Eupnp_Control_Point *c)
     Eina_Bool eupnp_control_point_discovery_request_send(Eupnp_Control_Point *c, int mx, char *search_target)
+
+cdef extern from "eupnp_event_bus.h":
+    ctypedef struct Eupnp_Subscriber
+    ctypedef enum Eupnp_Event_Type:
+       EUPNP_EVENT_NONE
+       EUPNP_EVENT_DEVICE_FOUND
+       EUPNP_EVENT_DEVICE_GONE
+       EUPNP_EVENT_SERVICE_FOUND
+       EUPNP_EVENT_SERVICE_GONE
+       EUPNP_EVENT_DEVICE_READY
+       EUPNP_EVENT_COUNT
+
+    ctypedef Eina_Bool (*Eupnp_Callback)(void *user_data, Eupnp_Event_Type event_type, void *event_data)
+
+    void eupnp_event_bus_publish(Eupnp_Event_Type event_type, void *event_data)
+    Eupnp_Subscriber *eupnp_event_bus_subscribe(Eupnp_Event_Type event_type, Eupnp_Callback cb, void *user_data)
+    void eupnp_event_bus_unsubscribe(Eupnp_Subscriber *s)
+    Eupnp_Event_Type eupnp_event_bus_event_type_new()
