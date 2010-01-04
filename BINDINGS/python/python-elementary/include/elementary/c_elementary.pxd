@@ -29,6 +29,7 @@ cdef extern from "Python.h":
     # object.h
     void Py_INCREF(object)
     void Py_DECREF(object)
+    int  PY_REFCOUNT(object)
 
 cdef enum Elm_Win_Type:
     ELM_WIN_BASIC

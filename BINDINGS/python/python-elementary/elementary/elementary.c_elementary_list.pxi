@@ -34,7 +34,7 @@ def _list_item_conv(long addr):
         return None
     else:
         cbt = <object>data
-        return cbt[0]
+        return cbt[2]
 
 cdef enum Elm_List_Item_Insert_Kind:
     ELM_LIST_ITEM_INSERT_APPEND
@@ -103,6 +103,21 @@ cdef class ListItem:
         Py_INCREF(self)
         elm_list_item_del_cb_set(self.item, _list_item_del_cb)
 
+    def __str__(self):
+        return ("%s(label=%r, icon=%s, end=%s, "
+                "callback=%r, args=%r, kargs=%s)") % \
+            (self.__class__.__name__, self.label_get(), bool(self.icon_get()),
+             bool(self.end_get()), self.cbt[1], self.cbt[3], self.cbt[4])
+
+    def __repr__(self):
+        return ("%s(%#x, refcount=%d, Elm_List_Item=%#x, "
+                "label=%r, icon=%s, end=%s, "
+                "callback=%r, args=%r, kargs=%s)") % \
+            (self.__class__.__name__, <unsigned long><void *>self,
+             PY_REFCOUNT(self), <unsigned long><void *>self.item,
+             self.label_get(), bool(self.icon_get()),
+             bool(self.end_get()), self.cbt[1], self.cbt[3], self.cbt[4])
+
     def delete(self):
         if self.item == NULL:
             raise ValueError("Object already deleted")
@@ -115,6 +130,10 @@ cdef class ListItem:
         elm_list_item_show(self.item)
 
     def data_get(self):
+        """Returns the callback data given at creation time.
+
+        @rtype: tuple of (args, kargs), args is tuple, kargs is dict.
+        """
         cdef void* data
         data = elm_list_item_data_get(self.item)
         if data == NULL:
@@ -124,16 +143,40 @@ cdef class ListItem:
 
             return (a, ka)
 
+    property data:
+        def __get__(self):
+            return self.data_get()
+
     def icon_get(self):
+        """Returns the icon object set for this list item at creation time.
+
+        @rtype: evas.c_evas.Object
+        """
         cdef c_evas.Evas_Object *icon
         icon = elm_list_item_icon_get(self.item)
         return evas.c_evas._Object_from_instance(<long> icon)
 
+    property icon:
+        def __get__(self):
+            return self.icon_get()
+
     def label_get(self):
+        """Returns the label string set for this list item.
+
+        @rtype: str
+        """
         return elm_list_item_label_get(self.item)
 
-    def label_set(self, label):
+    def label_set(self, char *label):
+        """Set the label string for this list item."""
         elm_list_item_label_set(self.item, label)
+
+    property label:
+        def __get__(self):
+            return self.label_get()
+
+        def __set__(self, label):
+            self.label_set(label)
 
     def prev(self):
         import warnings
@@ -174,6 +217,13 @@ cdef class ListItem:
         return it
 
     def end_get(self):
+        """Returns the end object set for this list item at creation time.
+
+        End object will be placed at the right side, may contain an
+        action or status for this item.
+
+        @rtype: evas.c_evas.Object
+        """
         cdef c_evas.Evas_Object *obj
         cdef void *data
 
@@ -182,7 +232,20 @@ cdef class ListItem:
             return None
         return evas.c_evas._Object_from_instance(<long>obj)
 
+    property end:
+        def __get__(self):
+            return self.end_get()
+
     def base_get(self):
+        """Returns the base object set for this list item.
+
+        Base object is the one that visually represents the list item
+        row. It must not be changed in a way that breaks the list
+        behavior (like deleting the base!), but it might be used to
+        feed Edje signals to add more features to row representation.
+
+        @rtype: edje.Edje
+        """
         cdef c_evas.Evas_Object *obj
         cdef void *data
 
@@ -190,6 +253,10 @@ cdef class ListItem:
         if obj == NULL:
             return None
         return evas.c_evas._Object_from_instance(<long>obj)
+
+    property base:
+        def __get__(self):
+            return self.base_get()
 
 
 cdef class List(Object):
