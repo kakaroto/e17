@@ -1,0 +1,78 @@
+Introduction
+------------
+
+Entrance (v.) 
+1. To put into a trance.
+2. To fill with delight, wonder, or enchantment.
+
+Entrance is a login/display manager for UNIX X11 displays. It is 
+designed to be extremely customizable and aesthetically attractive
+-- a refreshing relief from the traditional dull and boring interfaces 
+of XDM and its descendants.
+
+Compiling & Installing
+----------------------
+
+To compile, you need the following libraries (if you're using a
+package-based system, be sure to install the devel packages):
+
+- Evas
+- Ecore
+- Edje
+- Esmart
+- PAM (optional)
+
+Then, type:
+> ./autogen.sh
+> make
+> su -c 'make install'
+
+Usage
+-----
+
+To start an X session using Entrance, just type 'entranced' at the prompt. 
+Entrance also works well with initscripts, so you can modify 
+/etc/X11/prefdm or /etc/init.d/dm to launch entranced. A startup script 
+(etc/init.d/entrance) is also installed for your convenience. For those 
+who would like to see what Entrance looks like before using it to start 
+sessions, run "entrance --test". This will launch entrance in a window
+(800x600 by default), and xterm will be executed instead of the selected 
+session. For more information type entrance --help.
+
+WARNING: Do not attempt to launch entranced from an existing X session. It
+will cause all sorts of havoc and may even blow a hole in the back of your
+monitor. Run "entrance" instead.
+
+To set up your sessions, edit the build_config.sh script in the data/config
+directory before compiling to specify the names of the X sessions on your 
+machine. After installation, you will need to directly edit
+/etc/entrance_config.cfg using an ecore_config editor like ecore_config. The
+default sessions are designed to work on a Debian 3.0 installation, so you
+will likely need to update your db before Entrance can work for you. While 
+adding sessions, please note that:
+
+- A session without a path is assumed to be an Xsession name, and will be
+  launched using Xsession. Otherwise, the specific path will be executed
+  (this is useful for those of you using E17, for example).
+- The Failsafe session should be left as is (with "failsafe" as path)
+- You do not need to add a default session; that is added automatically.
+- You need to update the session count entry before you finish.
+
+PAM is recommended for authentication. If you are compiling for a system
+that does not have PAM support, configure should automatically set your
+config settings appropriately so that crypt/shadow authentication is used
+instead. If you wish to manually set the authentication method, edit the
+/entrance/auth entry in the config db (0 for crypt, 1 for PAM, 2 for shadow).
+
+You may specify a custom background Edje file for Entrance by modifying
+the "/entrance/background" key in your Entrance config. Entrance can load
+background collections from Entrance themes or E17 background files. If
+no background is specified, Entrance will use the default background
+specified in your theme.
+
+Take a look at README.edje for a guide to the theme format and a detailed
+explanation of how sessions and users work.
+
+Code contributors and developers needed!
+
+

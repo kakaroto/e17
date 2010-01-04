@@ -1,0 +1,2239 @@
+#define FRAME LOSSY 90
+
+images {
+   image: "e17_brushed.png" COMP;
+   image: "e17_reflection_shadow_overlay.png" LOSSY 70;
+   image: "e17_panel.png" COMP;
+   image: "panel_shadow.png" LOSSY 80;
+   image: "arrow_up.png" COMP;
+   image: "arrow_down.png" COMP;
+   
+   image: "sm_loop_eintro_121.png" FRAME;
+   image: "sm_loop_eintro_122.png" FRAME;
+   image: "sm_loop_eintro_123.png" FRAME;
+   image: "sm_loop_eintro_124.png" FRAME;
+   image: "sm_loop_eintro_125.png" FRAME;
+   image: "sm_loop_eintro_126.png" FRAME;
+   image: "sm_loop_eintro_127.png" FRAME;
+   image: "sm_loop_eintro_128.png" FRAME;
+   image: "sm_loop_eintro_129.png" FRAME;
+   image: "sm_loop_eintro_130.png" FRAME;
+   image: "sm_loop_eintro_131.png" FRAME;
+   image: "sm_loop_eintro_132.png" FRAME;
+   image: "sm_loop_eintro_133.png" FRAME;
+   image: "sm_loop_eintro_134.png" FRAME;
+   image: "sm_loop_eintro_135.png" FRAME;
+   image: "sm_loop_eintro_136.png" FRAME;
+   image: "sm_loop_eintro_137.png" FRAME;
+   image: "sm_loop_eintro_138.png" FRAME;
+   image: "sm_loop_eintro_139.png" FRAME;
+   image: "sm_loop_eintro_140.png" FRAME;
+   image: "sm_loop_eintro_141.png" FRAME;
+   image: "sm_loop_eintro_142.png" FRAME;
+   image: "sm_loop_eintro_143.png" FRAME;
+   image: "sm_loop_eintro_144.png" FRAME;
+   image: "sm_loop_eintro_145.png" FRAME;
+   image: "sm_loop_eintro_146.png" FRAME;
+   image: "sm_loop_eintro_147.png" FRAME;
+   image: "sm_loop_eintro_148.png" FRAME;
+   image: "sm_loop_eintro_149.png" FRAME;
+   image: "sm_loop_eintro_150.png" FRAME;
+   image: "sm_loop_eintro_151.png" FRAME;
+   image: "sm_loop_eintro_152.png" FRAME;
+   image: "sm_loop_eintro_153.png" FRAME;
+   image: "sm_loop_eintro_154.png" FRAME;
+   image: "sm_loop_eintro_155.png" FRAME;
+   image: "sm_loop_eintro_156.png" FRAME;
+   image: "sm_loop_eintro_157.png" FRAME;
+   image: "sm_loop_eintro_158.png" FRAME;
+   image: "sm_loop_eintro_159.png" FRAME;
+   image: "sm_loop_eintro_160.png" FRAME;
+   image: "sm_loop_eintro_161.png" FRAME;
+   image: "sm_loop_eintro_162.png" FRAME;
+   image: "sm_loop_eintro_163.png" FRAME;
+   image: "sm_loop_eintro_164.png" FRAME;
+   image: "sm_loop_eintro_165.png" FRAME;
+   image: "sm_loop_eintro_166.png" FRAME;
+   image: "sm_loop_eintro_167.png" FRAME;
+   image: "sm_loop_eintro_168.png" FRAME;
+   image: "sm_loop_eintro_169.png" FRAME;
+   image: "sm_loop_eintro_170.png" FRAME;
+   image: "sm_loop_eintro_171.png" FRAME;
+   image: "sm_loop_eintro_172.png" FRAME;
+   image: "sm_loop_eintro_173.png" FRAME;
+   image: "sm_loop_eintro_174.png" FRAME;
+   image: "sm_loop_eintro_175.png" FRAME;
+   image: "sm_loop_eintro_176.png" FRAME;
+   image: "sm_loop_eintro_177.png" FRAME;
+   image: "sm_loop_eintro_178.png" FRAME;
+   image: "sm_loop_eintro_179.png" FRAME;
+   image: "sm_loop_eintro_180.png" FRAME;
+   image: "sm_loop_eintro_181.png" FRAME;
+   image: "sm_loop_eintro_182.png" FRAME;
+   image: "sm_loop_eintro_183.png" FRAME;
+   image: "sm_loop_eintro_184.png" FRAME;
+   image: "sm_loop_eintro_185.png" FRAME;
+   image: "sm_loop_eintro_186.png" FRAME;
+   image: "sm_loop_eintro_187.png" FRAME;
+   image: "sm_loop_eintro_188.png" FRAME;
+   image: "sm_loop_eintro_189.png" FRAME;
+   image: "sm_loop_eintro_190.png" FRAME;
+   image: "sm_loop_eintro_191.png" FRAME;
+   image: "sm_loop_eintro_192.png" FRAME;
+   image: "sm_loop_eintro_193.png" FRAME;
+   image: "sm_loop_eintro_194.png" FRAME;
+   image: "sm_loop_eintro_195.png" FRAME;
+   image: "sm_loop_eintro_196.png" FRAME;
+   image: "sm_loop_eintro_197.png" FRAME;
+   image: "sm_loop_eintro_198.png" FRAME;
+   image: "sm_loop_eintro_199.png" FRAME;
+   image: "sm_loop_eintro_200.png" FRAME;
+   image: "sm_loop_eintro_201.png" FRAME;
+   image: "sm_loop_eintro_202.png" FRAME;
+   image: "sm_loop_eintro_203.png" FRAME;
+   image: "sm_loop_eintro_204.png" FRAME;
+   image: "sm_loop_eintro_205.png" FRAME;
+   image: "sm_loop_eintro_206.png" FRAME;
+   image: "sm_loop_eintro_207.png" FRAME;
+   image: "sm_loop_eintro_208.png" FRAME;
+   image: "sm_loop_eintro_209.png" FRAME;
+   image: "sm_loop_eintro_210.png" FRAME;
+   image: "sm_loop_eintro_211.png" FRAME;
+   image: "sm_loop_eintro_212.png" FRAME;
+   image: "sm_loop_eintro_213.png" FRAME;
+   image: "sm_loop_eintro_214.png" FRAME;
+   image: "sm_loop_eintro_215.png" FRAME;
+   image: "sm_loop_eintro_216.png" FRAME;
+   image: "sm_loop_eintro_217.png" FRAME;
+   image: "sm_loop_eintro_218.png" FRAME;
+   image: "sm_loop_eintro_219.png" FRAME;
+   image: "sm_loop_eintro_220.png" FRAME;
+   image: "sm_loop_eintro_221.png" FRAME;
+   image: "sm_loop_eintro_222.png" FRAME;
+   image: "sm_loop_eintro_223.png" FRAME;
+   image: "sm_loop_eintro_224.png" FRAME;
+   image: "sm_loop_eintro_225.png" FRAME;
+   image: "sm_loop_eintro_226.png" FRAME;
+   image: "sm_loop_eintro_227.png" FRAME;
+   image: "sm_loop_eintro_228.png" FRAME;
+   image: "sm_loop_eintro_229.png" FRAME;
+   image: "sm_loop_eintro_230.png" FRAME;
+   image: "sm_loop_eintro_231.png" FRAME;
+   image: "sm_loop_eintro_232.png" FRAME;
+   image: "sm_loop_eintro_233.png" FRAME;
+   image: "sm_loop_eintro_234.png" FRAME;
+   image: "sm_loop_eintro_235.png" FRAME;
+   image: "sm_loop_eintro_236.png" FRAME;
+   image: "sm_loop_eintro_237.png" FRAME;
+   image: "sm_loop_eintro_238.png" FRAME;
+   image: "sm_loop_eintro_239.png" FRAME;
+   image: "sm_loop_eintro_240.png" FRAME;
+
+   image: "e17_clock_bg.png" COMP;
+   image: "e17_clock_fg.png" COMP;
+   image: "e17_clock_seconds_00.png" COMP;
+   image: "e17_clock_seconds_01.png" COMP;
+   image: "e17_clock_seconds_02.png" COMP;
+   image: "e17_clock_seconds_03.png" COMP;
+   image: "e17_clock_seconds_04.png" COMP;
+   image: "e17_clock_seconds_05.png" COMP;
+   image: "e17_clock_seconds_06.png" COMP;
+   image: "e17_clock_seconds_07.png" COMP;
+   image: "e17_clock_seconds_08.png" COMP;
+   image: "e17_clock_seconds_09.png" COMP;
+   image: "e17_clock_seconds_10.png" COMP;
+   image: "e17_clock_seconds_11.png" COMP;
+   image: "e17_clock_seconds_12.png" COMP;
+   image: "e17_clock_seconds_13.png" COMP;
+   image: "e17_clock_seconds_14.png" COMP;
+   image: "e17_clock_seconds_15.png" COMP;
+   image: "e17_clock_seconds_16.png" COMP;
+   image: "e17_clock_seconds_17.png" COMP;
+   image: "e17_clock_seconds_18.png" COMP;
+   image: "e17_clock_seconds_19.png" COMP;
+   image: "e17_clock_seconds_20.png" COMP;
+   image: "e17_clock_seconds_21.png" COMP;
+   image: "e17_clock_seconds_22.png" COMP;
+   image: "e17_clock_seconds_23.png" COMP;
+   image: "e17_clock_seconds_24.png" COMP;
+   image: "e17_clock_seconds_25.png" COMP;
+   image: "e17_clock_seconds_26.png" COMP;
+   image: "e17_clock_seconds_27.png" COMP;
+   image: "e17_clock_seconds_28.png" COMP;
+   image: "e17_clock_seconds_29.png" COMP;
+   image: "e17_clock_seconds_30.png" COMP;
+   image: "e17_clock_seconds_31.png" COMP;
+   image: "e17_clock_seconds_32.png" COMP;
+   image: "e17_clock_seconds_33.png" COMP;
+   image: "e17_clock_seconds_34.png" COMP;
+   image: "e17_clock_seconds_35.png" COMP;
+   image: "e17_clock_seconds_36.png" COMP;
+   image: "e17_clock_seconds_37.png" COMP;
+   image: "e17_clock_seconds_38.png" COMP;
+   image: "e17_clock_seconds_39.png" COMP;
+   image: "e17_clock_seconds_40.png" COMP;
+   image: "e17_clock_seconds_41.png" COMP;
+   image: "e17_clock_seconds_42.png" COMP;
+   image: "e17_clock_seconds_43.png" COMP;
+   image: "e17_clock_seconds_44.png" COMP;
+   image: "e17_clock_seconds_45.png" COMP;
+   image: "e17_clock_seconds_46.png" COMP;
+   image: "e17_clock_seconds_47.png" COMP;
+   image: "e17_clock_seconds_48.png" COMP;
+   image: "e17_clock_seconds_49.png" COMP;
+   image: "e17_clock_seconds_50.png" COMP;
+   image: "e17_clock_seconds_51.png" COMP;
+   image: "e17_clock_seconds_52.png" COMP;
+   image: "e17_clock_seconds_53.png" COMP;
+   image: "e17_clock_seconds_54.png" COMP;
+   image: "e17_clock_seconds_55.png" COMP;
+   image: "e17_clock_seconds_56.png" COMP;
+   image: "e17_clock_seconds_57.png" COMP;
+   image: "e17_clock_seconds_58.png" COMP;
+   image: "e17_clock_seconds_59.png" COMP;
+   image: "e17_clock_hour_00.png" COMP;
+   image: "e17_clock_hour_01.png" COMP;
+   image: "e17_clock_hour_02.png" COMP;
+   image: "e17_clock_hour_03.png" COMP;
+   image: "e17_clock_hour_04.png" COMP;
+   image: "e17_clock_hour_05.png" COMP;
+   image: "e17_clock_hour_06.png" COMP;
+   image: "e17_clock_hour_07.png" COMP;
+   image: "e17_clock_hour_08.png" COMP;
+   image: "e17_clock_hour_09.png" COMP;
+   image: "e17_clock_hour_10.png" COMP;
+   image: "e17_clock_hour_11.png" COMP;
+   image: "e17_clock_hour_12.png" COMP;
+   image: "e17_clock_hour_13.png" COMP;
+   image: "e17_clock_hour_14.png" COMP;
+   image: "e17_clock_hour_15.png" COMP;
+   image: "e17_clock_hour_16.png" COMP;
+   image: "e17_clock_hour_17.png" COMP;
+   image: "e17_clock_hour_18.png" COMP;
+   image: "e17_clock_hour_19.png" COMP;
+   image: "e17_clock_hour_20.png" COMP;
+   image: "e17_clock_hour_21.png" COMP;
+   image: "e17_clock_hour_22.png" COMP;
+   image: "e17_clock_hour_23.png" COMP;
+   image: "e17_clock_hour_24.png" COMP;
+   image: "e17_clock_hour_25.png" COMP;
+   image: "e17_clock_hour_26.png" COMP;
+   image: "e17_clock_hour_27.png" COMP;
+   image: "e17_clock_hour_28.png" COMP;
+   image: "e17_clock_hour_29.png" COMP;
+   image: "e17_clock_hour_30.png" COMP;
+   image: "e17_clock_hour_31.png" COMP;
+   image: "e17_clock_hour_32.png" COMP;
+   image: "e17_clock_hour_33.png" COMP;
+   image: "e17_clock_hour_34.png" COMP;
+   image: "e17_clock_hour_35.png" COMP;
+   image: "e17_clock_hour_36.png" COMP;
+   image: "e17_clock_hour_37.png" COMP;
+   image: "e17_clock_hour_38.png" COMP;
+   image: "e17_clock_hour_39.png" COMP;
+   image: "e17_clock_hour_40.png" COMP;
+   image: "e17_clock_hour_41.png" COMP;
+   image: "e17_clock_hour_42.png" COMP;
+   image: "e17_clock_hour_43.png" COMP;
+   image: "e17_clock_hour_44.png" COMP;
+   image: "e17_clock_hour_45.png" COMP;
+   image: "e17_clock_hour_46.png" COMP;
+   image: "e17_clock_hour_47.png" COMP;
+   image: "e17_clock_hour_48.png" COMP;
+   image: "e17_clock_hour_49.png" COMP;
+   image: "e17_clock_hour_50.png" COMP;
+   image: "e17_clock_hour_51.png" COMP;
+   image: "e17_clock_hour_52.png" COMP;
+   image: "e17_clock_hour_53.png" COMP;
+   image: "e17_clock_hour_54.png" COMP;
+   image: "e17_clock_hour_55.png" COMP;
+   image: "e17_clock_hour_56.png" COMP;
+   image: "e17_clock_hour_57.png" COMP;
+   image: "e17_clock_hour_58.png" COMP;
+   image: "e17_clock_hour_59.png" COMP;
+   image: "e17_clock_minutes_00.png" COMP;
+   image: "e17_clock_minutes_01.png" COMP;
+   image: "e17_clock_minutes_02.png" COMP;
+   image: "e17_clock_minutes_03.png" COMP;
+   image: "e17_clock_minutes_04.png" COMP;
+   image: "e17_clock_minutes_05.png" COMP;
+   image: "e17_clock_minutes_06.png" COMP;
+   image: "e17_clock_minutes_07.png" COMP;
+   image: "e17_clock_minutes_08.png" COMP;
+   image: "e17_clock_minutes_09.png" COMP;
+   image: "e17_clock_minutes_10.png" COMP;
+   image: "e17_clock_minutes_11.png" COMP;
+   image: "e17_clock_minutes_12.png" COMP;
+   image: "e17_clock_minutes_13.png" COMP;
+   image: "e17_clock_minutes_14.png" COMP;
+   image: "e17_clock_minutes_15.png" COMP;
+   image: "e17_clock_minutes_16.png" COMP;
+   image: "e17_clock_minutes_17.png" COMP;
+   image: "e17_clock_minutes_18.png" COMP;
+   image: "e17_clock_minutes_19.png" COMP;
+   image: "e17_clock_minutes_20.png" COMP;
+   image: "e17_clock_minutes_21.png" COMP;
+   image: "e17_clock_minutes_22.png" COMP;
+   image: "e17_clock_minutes_23.png" COMP;
+   image: "e17_clock_minutes_24.png" COMP;
+   image: "e17_clock_minutes_25.png" COMP;
+   image: "e17_clock_minutes_26.png" COMP;
+   image: "e17_clock_minutes_27.png" COMP;
+   image: "e17_clock_minutes_28.png" COMP;
+   image: "e17_clock_minutes_29.png" COMP;
+   image: "e17_clock_minutes_30.png" COMP;
+   image: "e17_clock_minutes_31.png" COMP;
+   image: "e17_clock_minutes_32.png" COMP;
+   image: "e17_clock_minutes_33.png" COMP;
+   image: "e17_clock_minutes_34.png" COMP;
+   image: "e17_clock_minutes_35.png" COMP;
+   image: "e17_clock_minutes_36.png" COMP;
+   image: "e17_clock_minutes_37.png" COMP;
+   image: "e17_clock_minutes_38.png" COMP;
+   image: "e17_clock_minutes_39.png" COMP;
+   image: "e17_clock_minutes_40.png" COMP;
+   image: "e17_clock_minutes_41.png" COMP;
+   image: "e17_clock_minutes_42.png" COMP;
+   image: "e17_clock_minutes_43.png" COMP;
+   image: "e17_clock_minutes_44.png" COMP;
+   image: "e17_clock_minutes_45.png" COMP;
+   image: "e17_clock_minutes_46.png" COMP;
+   image: "e17_clock_minutes_47.png" COMP;
+   image: "e17_clock_minutes_48.png" COMP;
+   image: "e17_clock_minutes_49.png" COMP;
+   image: "e17_clock_minutes_50.png" COMP;
+   image: "e17_clock_minutes_51.png" COMP;
+   image: "e17_clock_minutes_52.png" COMP;
+   image: "e17_clock_minutes_53.png" COMP;
+   image: "e17_clock_minutes_54.png" COMP;
+   image: "e17_clock_minutes_55.png" COMP;
+   image: "e17_clock_minutes_56.png" COMP;
+   image: "e17_clock_minutes_57.png" COMP;
+   image: "e17_clock_minutes_58.png" COMP;
+   image: "e17_clock_minutes_59.png" COMP;
+
+   image: "entry_overlay.png" COMP;
+   image: "entry_bg1.png" COMP;
+   image: "entry_bg2.png" COMP;
+   image: "entry_cursor.png" COMP;
+
+   image: "user_ok.png" LOSSY 90;
+   image: "pass_ok.png" LOSSY 90;
+   
+   image: "power_button_0.png" LOSSY 90;
+   image: "power_button_1.png" LOSSY 90;
+   image: "power_button_glow_0.png" LOSSY 90;
+   image: "power_button_glow_1.png" LOSSY 90;
+
+   image: "reset_button_0.png" LOSSY 90;
+   image: "reset_button_1.png" LOSSY 90;
+   image: "reset_button_glow_0.png" LOSSY 90;
+   image: "reset_button_glow_1.png" LOSSY 90;
+   
+   image: "e17_button0.png" LOSSY 90;
+   image: "e17_button1.png" LOSSY 90;
+
+   image: "side_shadow.png" COMP;
+   
+   image: "default_preview.png"		LOSSY 80;
+}
+
+collections {
+   group {
+      name: "Background";
+      parts {
+	 part {
+	    name: "bg_clip";
+	    type: RECT;
+	    mouse_events: 0;
+	    description {
+	       state: "default" 0.0;
+	       visible: 1;
+	       color:       255 255 255 255;
+	    }
+	    description {
+	       state: "hidden" 0.0;
+	       visible: 0;
+	       color:       255 255 255 0;
+	    }
+	 }
+         part {
+	    name: "background";
+	    description {
+	       state: "default" 0.0;
+               visible: 1; /* Background will be loaded by application */
+	       image {
+		  normal: "e17_brushed.png";
+	       }
+	       fill {
+		  size {
+		     relative: 0 0;
+		     offset:   400 300;
+		  }
+	       }
+	    }
+	 }
+	 part {
+	    name: "reflection_shadow_overlay";
+	    description {
+	       state: "default" 0.0;
+	       image {
+		  normal: "e17_reflection_shadow_overlay.png";
+	       }
+	    }
+	 }
+	 
+      }
+   }
+      
+   group {
+      name: "Main";
+      script {
+	 public sessions_visible;
+	 
+	 public clock_cb(val) {
+	    new buf[11];
+	    new year, month, day, yearday, weekday, hour, minute;
+	    new Float:second;
+	    new v;
+	    
+	    date(year, month, day, yearday, weekday, hour, minute, second);
+	    v = round(second);
+	    timer(1.0 - (second - v), "clock_cb", 1);
+	    buf[0] = 0;
+	    if (v < 10) {snprintf(buf, 10, "0%i", v);}
+	    else        {snprintf(buf, 10, "%i", v);}
+	    set_state(PART:"seconds", buf, 0.0);
+	    v = minute;
+	    buf[0] = 0;
+	    if (v < 10) {snprintf(buf, 10, "0%i", v);}
+	    else        {snprintf(buf, 10, "%i", v);}
+	    set_state(PART:"minutes", buf, 0.0);
+	    v = ((hour % 12) * 5) + ((minute * 5) / 60);
+	    buf[0] = 0;
+	    if (v < 10) {snprintf(buf, 10, "0%i", v);}
+	    else        {snprintf(buf, 10, "%i", v);}
+	    set_state(PART:"hour", buf, 0.0);
+	 }
+      }
+      parts {
+	 part {
+	    name: "all_clip";
+	    type: RECT;
+	    mouse_events: 0;
+	    description {
+	       state: "default" 0.0;
+	       visible: 1;
+	       color:       255 255 255 255;
+	    }
+	    description {
+	       state: "hidden" 0.0;
+	       visible: 0;
+	       color:       255 255 255 0;
+	    }
+	 }
+	 part {
+	    name:          "power_button";
+	    mouse_events:  1;
+	    description {
+	       state:    "default" 0.0;
+	       min:      64 64;
+	       max:      64 64;
+	       align:    1.0 1.0;
+	       rel1 {
+		  relative: 0.98  0.98;
+		  offset:   0     0;
+	       }
+	       rel2 {
+		  relative: 0.98  0.98;
+		  offset:   0     0;
+	       }
+	       image {
+		  normal: "power_button_0.png";
+	       }
+	    }
+	    description {
+	       state:    "clicked" 0.0;
+	       inherit: "default" 0.0;
+	       image {
+		  normal: "power_button_1.png";
+	       }
+	    }
+	 }
+	 part {
+	    name:          "power_button_glow";
+	    mouse_events:  0;
+	    description {
+	       state:    "default" 0.0;
+	       visible:   0;
+	       rel1 {
+		  to:       "power_button";
+	       }
+	       rel2 {
+		  to:       "power_button";
+	       }
+	       color:       255 255 255 0;
+	       image {
+		  normal: "power_button_glow_0.png";
+	       }
+	    }
+	    description {
+	       state:    "hilited" 0.0;
+	       inherit:  "default"  0.0;
+	       visible:   1;
+	       color:       255 255 255 255;
+	    }
+	    description {
+	       state:    "clicked" 0.0;
+               inherit:  "default"  0.0;
+	       visible:   1;
+	       color:       255 255 255 255;
+	       image {
+		  normal: "power_button_glow_1.png";
+	       }
+	    }
+	 }
+	 
+	 part {
+	    name:          "reset_button";
+	    mouse_events:  1;
+	    description {
+	       state:    "default" 0.0;
+	       min:      64 64;
+	       max:      64 64;
+	       align:    0.0 1.0;
+	       rel1 {
+		  relative: 0.02  0.98;
+		  offset:   0     0;
+	       }
+	       rel2 {
+		  relative: 0.02  0.98;
+		  offset:   0     0;
+	       }
+	       image {
+		  normal: "reset_button_0.png";
+	       }
+	    }
+	    description {
+	       state:    "clicked" 0.0;
+	       inherit: "default" 0.0;
+	       image {
+		  normal: "reset_button_1.png";
+	       }
+	    }
+	 }
+	 part {
+	    name:          "reset_button_glow";
+	    mouse_events:  0;
+	    description {
+	       state:    "default" 0.0;
+	       visible:   0;
+	       rel1 {
+		  to:       "reset_button";
+	       }
+	       rel2 {
+		  to:       "reset_button";
+	       }
+	       color:       255 255 255 0;
+	       image {
+		  normal: "reset_button_glow_0.png";
+	       }
+	    }
+	    description {
+	       state:    "hilited" 0.0;
+	       inherit:  "default"  0.0;
+	       visible:   1;
+	       color:       255 255 255 255;
+	    }
+	    description {
+	       state:    "clicked" 0.0;
+               inherit:  "default"  0.0;
+	       visible:   1;
+	       color:       255 255 255 255;
+	       image {
+		  normal: "reset_button_glow_1.png";
+	       }
+	    }
+	 }
+	 
+	 part {
+	    name: "clock_bg";
+	    description {
+	       state: "default" 0.0;
+	       aspect: 1.0 1.0;
+	       min:      64 64;
+	       max:      64 64;
+	       align:    0.5 0.0;
+	       rel1 {
+		  relative: 0.5  0.02;
+		  offset:   0    0;
+	       }
+	       rel2 {
+		  relative: 0.5  0.02;
+		  offset:   0    0;
+	       }
+	       image {
+		  normal: "e17_clock_bg.png";
+	       }
+	    }
+	 }
+#ifdef IND
+#undef IND
+#endif	 
+#define IND "seconds"	 
+	 part {
+	    name: IND;
+	    mouse_events: 0;
+	    description {
+	       state: "default" 0.0;
+	       aspect: 1.0 1.0;
+	       rel1 {
+		  to: "clock_bg";
+		  relative: 0.1 0.1;
+	       }
+	       rel2 {
+		  to: "clock_bg";
+		  relative: 0.9 0.9;
+	       }
+	       image {
+		  normal: "e17_clock_"IND"_00.png";
+	       }
+	    }
+#ifdef HAND
+#undef HAND
+#endif	    
+#define HAND(num) \
+	    description { \
+	       state: num 0.0; \
+	       inherit: "default" 0.0; \
+	       image { \
+		  normal: "e17_clock_"IND"_"num".png"; \
+	       } \
+	    }
+	    HAND("00")
+	    HAND("01")
+	    HAND("02")
+	    HAND("03")
+	    HAND("04")
+	    HAND("05")
+	    HAND("06")
+	    HAND("07")
+	    HAND("08")
+	    HAND("09")
+	    HAND("10")
+	    HAND("11")
+	    HAND("12")
+	    HAND("13")
+	    HAND("14")
+	    HAND("15")
+	    HAND("16")
+	    HAND("17")
+	    HAND("18")
+	    HAND("19")
+	    HAND("20")
+	    HAND("21")
+	    HAND("22")
+	    HAND("23")
+	    HAND("24")
+	    HAND("25")
+	    HAND("26")
+	    HAND("27")
+	    HAND("28")
+	    HAND("29")
+	    HAND("30")
+	    HAND("31")
+	    HAND("32")
+	    HAND("33")
+	    HAND("34")
+	    HAND("35")
+	    HAND("36")
+	    HAND("37")
+	    HAND("38")
+	    HAND("39")
+	    HAND("40")
+	    HAND("41")
+	    HAND("42")
+	    HAND("43")
+	    HAND("44")
+	    HAND("45")
+	    HAND("46")
+	    HAND("47")
+	    HAND("48")
+	    HAND("49")
+	    HAND("50")
+	    HAND("51")
+	    HAND("52")
+	    HAND("53")
+	    HAND("54")
+	    HAND("55")
+	    HAND("56")
+	    HAND("57")
+	    HAND("58")
+	    HAND("59")
+	 }
+#ifdef IND
+#undef IND
+#endif	 
+#define IND "minutes"
+	 part {
+	    name: IND;
+	    mouse_events: 0;
+	    description {
+	       state: "default" 0.0;
+	       aspect: 1.0 1.0;
+	       rel1 {
+		  to: "clock_bg";
+		  relative: 0.1 0.1;
+	       }
+	       rel2 {
+		  to: "clock_bg";
+		  relative: 0.9 0.9;
+	       }
+	       image {
+		  normal: "e17_clock_"IND"_00.png";
+	       }
+	    }
+#ifdef HAND
+#undef HAND
+#endif	    
+#define HAND(num) \
+	    description { \
+	       state: num 0.0; \
+	       inherit: "default" 0.0; \
+	       image { \
+		  normal: "e17_clock_"IND"_"num".png"; \
+	       } \
+	    }
+	    HAND("00")
+	    HAND("01")
+	    HAND("02")
+	    HAND("03")
+	    HAND("04")
+	    HAND("05")
+	    HAND("06")
+	    HAND("07")
+	    HAND("08")
+	    HAND("09")
+	    HAND("10")
+	    HAND("11")
+	    HAND("12")
+	    HAND("13")
+	    HAND("14")
+	    HAND("15")
+	    HAND("16")
+	    HAND("17")
+	    HAND("18")
+	    HAND("19")
+	    HAND("20")
+	    HAND("21")
+	    HAND("22")
+	    HAND("23")
+	    HAND("24")
+	    HAND("25")
+	    HAND("26")
+	    HAND("27")
+	    HAND("28")
+	    HAND("29")
+	    HAND("30")
+	    HAND("31")
+	    HAND("32")
+	    HAND("33")
+	    HAND("34")
+	    HAND("35")
+	    HAND("36")
+	    HAND("37")
+	    HAND("38")
+	    HAND("39")
+	    HAND("40")
+	    HAND("41")
+	    HAND("42")
+	    HAND("43")
+	    HAND("44")
+	    HAND("45")
+	    HAND("46")
+	    HAND("47")
+	    HAND("48")
+	    HAND("49")
+	    HAND("50")
+	    HAND("51")
+	    HAND("52")
+	    HAND("53")
+	    HAND("54")
+	    HAND("55")
+	    HAND("56")
+	    HAND("57")
+	    HAND("58")
+	    HAND("59")
+	 }
+#ifdef IND
+#undef IND
+#endif	 
+#define IND "hour"	 
+	 part {
+	    name: IND;
+	    mouse_events: 0;
+	    description {
+	       state: "default" 0.0;
+	       aspect: 1.0 1.0;
+	       rel1 {
+		  to: "clock_bg";
+		  relative: 0.2 0.2;
+	       }
+	       rel2 {
+		  to: "clock_bg";
+		  relative: 0.8 0.8;
+	       }
+	       image {
+		  normal: "e17_clock_"IND"_00.png";
+	       }
+	    }
+#ifdef HAND
+#undef HAND
+#endif	    
+#define HAND(num) \
+	    description { \
+	       state: num 0.0; \
+	       inherit: "default" 0.0; \
+	       image { \
+		  normal: "e17_clock_"IND"_"num".png"; \
+	       } \
+	    }
+	    HAND("00")
+	    HAND("01")
+	    HAND("02")
+	    HAND("03")
+	    HAND("04")
+	    HAND("05")
+	    HAND("06")
+	    HAND("07")
+	    HAND("08")
+	    HAND("09")
+	    HAND("10")
+	    HAND("11")
+	    HAND("12")
+	    HAND("13")
+	    HAND("14")
+	    HAND("15")
+	    HAND("16")
+	    HAND("17")
+	    HAND("18")
+	    HAND("19")
+	    HAND("20")
+	    HAND("21")
+	    HAND("22")
+	    HAND("23")
+	    HAND("24")
+	    HAND("25")
+	    HAND("26")
+	    HAND("27")
+	    HAND("28")
+	    HAND("29")
+	    HAND("30")
+	    HAND("31")
+	    HAND("32")
+	    HAND("33")
+	    HAND("34")
+	    HAND("35")
+	    HAND("36")
+	    HAND("37")
+	    HAND("38")
+	    HAND("39")
+	    HAND("40")
+	    HAND("41")
+	    HAND("42")
+	    HAND("43")
+	    HAND("44")
+	    HAND("45")
+	    HAND("46")
+	    HAND("47")
+	    HAND("48")
+	    HAND("49")
+	    HAND("50")
+	    HAND("51")
+	    HAND("52")
+	    HAND("53")
+	    HAND("54")
+	    HAND("55")
+	    HAND("56")
+	    HAND("57")
+	    HAND("58")
+	    HAND("59")
+	 }
+	 part {
+	    name: "clock_fg";
+	    mouse_events: 0;
+	    description {
+	       state: "default" 0.0;
+	       rel1 {
+		  to: "clock_bg";
+	       }
+	       rel2 {
+		  to: "clock_bg";
+	       }
+	       image {
+		  normal: "e17_clock_fg.png";
+	       }
+	    }
+	 }
+	 part {
+	    name:   "entrance.date";
+	    type:   TEXT;
+            effect: SHADOW;
+	    description {
+	       state:    "default" 0.0;
+	       align:    0.5 0.0;
+	       rel1 {
+		  relative: 0.0  1.0;
+		  offset:   0    0;
+		  to:       "clock_bg";
+	       }
+	       rel2 {
+		  relative: 1.0  1.0;
+		  offset:   0    0;
+		  to:       "clock_bg";
+	       }
+               color: 0 0 0 128;
+	       color3: 255 255 255 128;
+	       text {
+		  text:     "";
+		  font:     "Sans";
+		  size:     10;
+		  align:   0.5 0.5;
+		  min:     1 1;
+	       }
+	    }
+	 }
+	 part {
+	    name:          "panel_1_shadow";
+	    mouse_events:  0;
+	    clip_to: "all_clip";
+	    description {
+	       state:    "default" 0.0;
+	       rel1 {
+		  relative: 0.0  0.0;
+		  offset:   -66   -66;
+		  to:       "panel_1_bg";
+	       }
+	       rel2 {
+		  relative: 1.0  1.0;
+		  offset:   125   125;
+		  to:       "panel_1_bg";
+	       }
+	       image {
+		  normal: "panel_shadow.png";
+		  border: 160 160 160 160;
+	       }
+	    }
+	 }
+	 part {
+	    name:          "sessions_shadow";
+	    mouse_events:  0;
+	    clip_to: "all_clip";
+	    description {
+	       state:    "default" 0.0;
+	       visible: 0;
+	       color: 255 255 255 0;
+	       rel1 {
+		  relative: 0.0  0.0;
+		  offset:   -66   -66;
+		  to:       "sessions_clip";
+	       }
+	       rel2 {
+		  relative: 1.0  1.0;
+		  offset:   125   125;
+		  to:       "sessions_clip";
+	       }
+	       image {
+		  normal: "panel_shadow.png";
+		  border: 160 160 160 160;
+	       }
+	    }
+	    description {
+	       state:    "visible" 0.0;
+	       inherit: "default" 0.0;
+	       visible: 1;
+	       color: 255 255 255 255;
+	    }
+	 }
+	 part {
+	    name: "sessions_clip";
+	    mouse_events: 0;
+	    clip_to: "all_clip";
+	    type: RECT;
+	    description {
+	       state: "default" 0.0;
+	       visible: 0;
+	       min:   120 100;
+	       align: 0.0 0.0;
+	       rel1 {
+		  relative: 0.0 0.0;
+		  offset: 0 8;
+		  to: "panel_1_bg";
+	       }
+	       rel2 {
+		  relative: 0.0 1.0;
+		  offset: 0 -9;
+		  to: "panel_1_bg";
+	       }
+	       color: 255 255 255 255;
+	    }
+	    description {
+	       state: "visible" 0.0;
+	       inherit: "default" 0.0;
+	       visible: 1;
+	       align: 1.0 0.0;
+	       rel1 {
+		  offset: -1 8;
+	       }
+	       rel2 {
+		  offset: -1 -9;
+	       }
+	    }
+	 }
+	 part {
+	    name: "sessions";
+	    mouse_events: 0;
+	    clip_to: "sessions_clip";
+	    description {
+	       state: "default" 0.0;
+	       rel1 {
+		  to: "sessions_clip";
+	       }
+	       rel2 {
+		  to: "sessions_clip";
+	       }
+	       image {
+		  normal: "e17_panel.png";
+		  border: 2 2 2 2;
+	       }
+	    }
+	 }
+	 part { name: "bt_scroll_up";
+	    mouse_events: 1;
+	    clip_to: "all_clip";
+	    description { state: "default" 0.0;
+	       rel1.to: "sessions";
+	       rel1.relative: 0.0 0.9;
+	       rel2.to: "sessions";
+	       rel2.relative: 0.5 1.0;
+	       image {
+		  normal: "e17_button0.png";
+		  border: 7 7 7 7;
+	       }
+	    }
+	    description { state: "clicked" 0.0;
+	       inherit: "default" 0.0;
+	       image.normal: "e17_button1.png";
+	    }
+	 }
+	 part { name: "bt_scroll_up_icon";
+	    type: IMAGE;
+	    mouse_events: 1;
+	    repeat_events: 1;
+	    clip_to: "all_clip";
+	    description { state: "default" 0.0;
+	       aspect: 1 1;
+	       aspect_preference: BOTH;
+	       rel1.to: "bt_scroll_up";
+	       rel2.to: "bt_scroll_up";
+	       image {
+		  normal: "arrow_up.png";
+		  border: 7 7 7 7;
+	       }
+	    }
+	 }
+	 part { name: "bt_scroll_down";
+	    mouse_events: 1;
+	    clip_to: "all_clip";
+	    description { state: "default" 0.0;
+	       rel1.to: "sessions";
+	       rel1.relative: 0.5 0.9;
+	       rel2.to: "sessions";
+	       rel2.relative: 1.0 1.0;
+	       image {
+		  normal: "e17_button0.png";
+		  border: 7 7 7 7;
+	       }
+	    }
+	    description { state: "clicked" 0.0;
+	       inherit: "default" 0.0;
+	       image.normal: "e17_button1.png";
+	    }
+	 }
+	 part { name: "bt_scroll_down_icon";
+	    type: IMAGE;
+	    mouse_events: 1;
+	    repeat_events: 1;
+	    clip_to: "all_clip";
+	    description { state: "default" 0.0;
+	       aspect: 1 1;
+	       aspect_preference: BOTH;
+	       rel1.to: "bt_scroll_down";
+	       rel2.to: "bt_scroll_down";
+	       image {
+		  normal: "arrow_down.png";
+		  border: 7 7 7 7;
+	       }
+	    }
+	 }
+	 part {
+	    name: "entrance.xsessions.list";
+	    type: SWALLOW;
+	    mouse_events: 1;
+	    clip_to: "sessions_clip";
+	    description {
+	       state: "default" 0.0;
+	       visible: 1;
+	       rel1 {
+		  relative: 0.0 0.0;
+		  offset: 4 4;
+		  to: "sessions";
+	       }
+	       rel2 {
+		  relative: 1.0 0.9;
+		  offset: -5 -5;
+		  to: "sessions";
+	       }
+	    }
+	 }
+	 part {
+	    name: "sessions_side_shadow";
+	    mouse_events: 0;
+	    clip_to: "sessions_clip";
+	    description {
+	       state: "default" 0.0;
+	       min: 16 0;
+	       max: 16 9999999;
+	       rel1 {
+                  relative: 0.0 0.0;
+		  offset: -16 0;
+		  to_y: "sessions";
+		  to_x: "panel_1_bg";
+	       }
+	       rel2 {
+                  relative: 0.0 1.0;
+		  offset: -1 -1;
+		  to_y: "sessions";
+		  to_x: "panel_1_bg";
+	       }
+	       image {
+		  normal: "side_shadow.png";
+	       }
+	       fill {
+		  size {
+		     relative: 0.0 0.0;
+		     offset: 16 32;
+		  }
+	       }
+	    }
+	 }
+	 part {
+	    name:          "panel_1_bg";
+	    clip_to: "all_clip";
+	    //color_class:   "bg";
+	    mouse_events:  0;
+	    description {
+	       state:    "default" 0.0;
+	       min:      280 280;
+	       rel1 {
+		  relative: 0.5  0.5;
+		  offset:   0 0;
+	       }
+	       rel2 {
+		  relative: 0.5  0.5;
+		  offset:   0 0;
+	       }
+	       image {
+		  normal: "e17_panel.png";
+		  border: 2 2 2 2;
+	       }
+	    }
+	 }
+	 part {
+	    name:          "entrance.xsessions.selected";
+	    mouse_events:  0;
+	    type:          SWALLOW;
+            clip_to: "all_clip";
+	    description {
+	       state: "default" 0.0;
+	       visible: 1;
+	       min: 110 28;
+	       align: 0.0 1.0;
+	       rel1 {
+		  to: "panel_1_bg";
+		  relative: 0.0 1.0;
+		  offset: 4 -4;
+	       }
+	       rel2 {
+		  to: "panel_1_bg";
+		  relative: 0.0 1.0;
+		  offset: 4 -4;
+	       }
+	    }
+	 }
+	 part {
+	    name: "logo";
+	    clip_to: "all_clip";
+	    description {
+	       state: "default" 0.0;
+	       visible: 1;
+//	       min: 187 247
+	       min: 94 124;
+	       max: 94 124;
+	       align: 0.5 0.0;
+               rel1 {
+		  to: "panel_1_bg";
+		  relative: 0.0 0.0;
+		  offset: 0 8;
+	       }
+	       rel2 {
+		  to: "panel_1_bg";
+		  relative: 1.0 0.0;
+		  offset: -1 8;
+	       }
+	       image {
+		  normal: "sm_loop_eintro_240.png";
+		  tween: "sm_loop_eintro_121.png";
+		  tween: "sm_loop_eintro_122.png";
+		  tween: "sm_loop_eintro_123.png";
+		  tween: "sm_loop_eintro_124.png";
+		  tween: "sm_loop_eintro_125.png";
+		  tween: "sm_loop_eintro_126.png";
+		  tween: "sm_loop_eintro_127.png";
+		  tween: "sm_loop_eintro_128.png";
+		  tween: "sm_loop_eintro_129.png";
+		  tween: "sm_loop_eintro_130.png";
+		  tween: "sm_loop_eintro_131.png";
+		  tween: "sm_loop_eintro_132.png";
+		  tween: "sm_loop_eintro_133.png";
+		  tween: "sm_loop_eintro_134.png";
+		  tween: "sm_loop_eintro_135.png";
+		  tween: "sm_loop_eintro_136.png";
+		  tween: "sm_loop_eintro_137.png";
+		  tween: "sm_loop_eintro_138.png";
+		  tween: "sm_loop_eintro_139.png";
+		  tween: "sm_loop_eintro_140.png";
+		  tween: "sm_loop_eintro_141.png";
+		  tween: "sm_loop_eintro_142.png";
+		  tween: "sm_loop_eintro_143.png";
+		  tween: "sm_loop_eintro_144.png";
+		  tween: "sm_loop_eintro_145.png";
+		  tween: "sm_loop_eintro_146.png";
+		  tween: "sm_loop_eintro_147.png";
+		  tween: "sm_loop_eintro_148.png";
+		  tween: "sm_loop_eintro_149.png";
+		  tween: "sm_loop_eintro_150.png";
+		  tween: "sm_loop_eintro_151.png";
+		  tween: "sm_loop_eintro_152.png";
+		  tween: "sm_loop_eintro_153.png";
+		  tween: "sm_loop_eintro_154.png";
+		  tween: "sm_loop_eintro_155.png";
+		  tween: "sm_loop_eintro_156.png";
+		  tween: "sm_loop_eintro_157.png";
+		  tween: "sm_loop_eintro_158.png";
+		  tween: "sm_loop_eintro_159.png";
+		  tween: "sm_loop_eintro_160.png";
+		  tween: "sm_loop_eintro_161.png";
+		  tween: "sm_loop_eintro_162.png";
+		  tween: "sm_loop_eintro_163.png";
+		  tween: "sm_loop_eintro_164.png";
+		  tween: "sm_loop_eintro_165.png";
+		  tween: "sm_loop_eintro_166.png";
+		  tween: "sm_loop_eintro_167.png";
+		  tween: "sm_loop_eintro_168.png";
+		  tween: "sm_loop_eintro_169.png";
+		  tween: "sm_loop_eintro_170.png";
+		  tween: "sm_loop_eintro_171.png";
+		  tween: "sm_loop_eintro_172.png";
+		  tween: "sm_loop_eintro_173.png";
+		  tween: "sm_loop_eintro_174.png";
+		  tween: "sm_loop_eintro_175.png";
+		  tween: "sm_loop_eintro_176.png";
+		  tween: "sm_loop_eintro_177.png";
+		  tween: "sm_loop_eintro_178.png";
+		  tween: "sm_loop_eintro_179.png";
+		  tween: "sm_loop_eintro_180.png";
+		  tween: "sm_loop_eintro_181.png";
+		  tween: "sm_loop_eintro_182.png";
+		  tween: "sm_loop_eintro_183.png";
+		  tween: "sm_loop_eintro_184.png";
+		  tween: "sm_loop_eintro_185.png";
+		  tween: "sm_loop_eintro_186.png";
+		  tween: "sm_loop_eintro_187.png";
+		  tween: "sm_loop_eintro_188.png";
+		  tween: "sm_loop_eintro_189.png";
+		  tween: "sm_loop_eintro_190.png";
+		  tween: "sm_loop_eintro_191.png";
+		  tween: "sm_loop_eintro_192.png";
+		  tween: "sm_loop_eintro_193.png";
+		  tween: "sm_loop_eintro_194.png";
+		  tween: "sm_loop_eintro_195.png";
+		  tween: "sm_loop_eintro_196.png";
+		  tween: "sm_loop_eintro_197.png";
+		  tween: "sm_loop_eintro_198.png";
+		  tween: "sm_loop_eintro_199.png";
+		  tween: "sm_loop_eintro_200.png";
+		  tween: "sm_loop_eintro_201.png";
+		  tween: "sm_loop_eintro_202.png";
+		  tween: "sm_loop_eintro_203.png";
+		  tween: "sm_loop_eintro_204.png";
+		  tween: "sm_loop_eintro_205.png";
+		  tween: "sm_loop_eintro_206.png";
+		  tween: "sm_loop_eintro_207.png";
+		  tween: "sm_loop_eintro_208.png";
+		  tween: "sm_loop_eintro_209.png";
+		  tween: "sm_loop_eintro_210.png";
+		  tween: "sm_loop_eintro_211.png";
+		  tween: "sm_loop_eintro_212.png";
+		  tween: "sm_loop_eintro_213.png";
+		  tween: "sm_loop_eintro_214.png";
+		  tween: "sm_loop_eintro_215.png";
+		  tween: "sm_loop_eintro_216.png";
+		  tween: "sm_loop_eintro_217.png";
+		  tween: "sm_loop_eintro_218.png";
+		  tween: "sm_loop_eintro_219.png";
+		  tween: "sm_loop_eintro_220.png";
+		  tween: "sm_loop_eintro_221.png";
+		  tween: "sm_loop_eintro_222.png";
+		  tween: "sm_loop_eintro_223.png";
+		  tween: "sm_loop_eintro_224.png";
+		  tween: "sm_loop_eintro_225.png";
+		  tween: "sm_loop_eintro_226.png";
+		  tween: "sm_loop_eintro_227.png";
+		  tween: "sm_loop_eintro_228.png";
+		  tween: "sm_loop_eintro_229.png";
+		  tween: "sm_loop_eintro_230.png";
+		  tween: "sm_loop_eintro_231.png";
+		  tween: "sm_loop_eintro_232.png";
+		  tween: "sm_loop_eintro_233.png";
+		  tween: "sm_loop_eintro_234.png";
+		  tween: "sm_loop_eintro_235.png";
+		  tween: "sm_loop_eintro_236.png";
+		  tween: "sm_loop_eintro_237.png";
+		  tween: "sm_loop_eintro_238.png";
+		  tween: "sm_loop_eintro_239.png";
+	       }
+	    }
+	 }
+	 part {
+	    name:   "entrance.hostname";
+	    type:   TEXT;
+            effect: SOFT_SHADOW;
+	    clip_to: "all_clip";
+	    description {
+	       state:    "default" 0.0;
+	       align:    0.5 0.0;
+	       rel1 {
+		  relative: 0.0  1.0;
+		  offset:   4    4;
+		  to_x:     "panel_1_bg";
+		  to_y:     "logo";
+	       }
+	       rel2 {
+		  relative: 1.0  1.0;
+		  offset:   -5   4;
+		  to_x:     "panel_1_bg";
+		  to_y:     "logo";
+	       }
+	       color: 255 255 255 255;
+	       color3: 0 0 0 32;
+	       text {
+		  text:     "Welcome to machine:";
+		  font:     "Sans:style=Bold";
+		  size:     16;
+		  min:     0 1;
+		  align:   0.5 0.5;
+	       }
+	    }
+	 }
+	 part {
+	    name:   "entrance.userpass";
+	    type:   TEXT;
+            effect: SHADOW;
+	    clip_to: "all_clip";
+	    description {
+	       state:    "default" 0.0;
+	       align:    0.5 0.0;
+	       rel1 {
+		  relative: 0.0  1.0;
+		  offset:   0    0;
+		  to:       "entrance.hostname";
+	       }
+	       rel2 {
+		  relative: 1.0  1.0;
+		  offset:   -1  0;
+		  to:       "entrance.hostname";
+	       }
+               color: 0 0 0 128;
+	       color3: 255 255 255 128;
+	       text {
+		  text:     "Please enter your user name";
+		  font:     "Sans";
+		  size:     10;
+		  min:       1 1;
+		  align:   0.5 0.5;
+	       }
+	    }
+	    description {
+	       state:    "enter_pass" 0.0;
+	       inherit:  "default" 0.0;
+	       text {
+		  text:     "Please enter your password";
+	       }
+	    }
+	 }
+	 part {
+	    name:          "user";
+	    mouse_events:  1;
+	    clip_to: "all_clip";
+	    description {
+	       state:    "default" 0.0;
+	       min:      24 24;
+	       align:    1.0 1.0;
+	       rel1 {
+		  relative: 1.0  1.0;
+		  offset:   -5   -5;
+		  to:       "panel_1_bg";
+	       }
+	       rel2 {
+		  relative: 1.0  1.0;
+		  offset:   -5   -5;
+		  to:       "panel_1_bg";
+	       }
+	       color: 255 255 255 128;
+	       image {
+		  normal: "user_ok.png";
+	       }
+	    }
+	    description {
+	       state:    "active" 0.0;
+	       inherit:  "default" 0.0;
+	       color: 255 255 255 255;
+	    }
+	    description {
+	       state:    "wrong" 0.0;
+	       inherit:  "default" 0.0;
+	       color: 255 48 48 255;
+	    }
+	 }
+	 part {
+	    name:          "password";
+	    mouse_events:  1;
+	    clip_to: "all_clip";
+	    description {
+	       state:    "default" 0.0;
+	       min:      24 24;
+	       align:    1.0 1.0;
+	       rel1 {
+		  relative: 0.0  1.0;
+		  offset:   -5   -1;
+		  to:       "user";
+	       }
+	       rel2 {
+		  relative: 0.0  1.0;
+		  offset:   -5   -1;
+		  to:       "user";
+	       }
+	       color: 255 255 255 128;
+	       image {
+		  normal: "pass_ok.png";
+	       }
+	    }
+	    description {
+	       state:    "active" 0.0;
+	       inherit:  "default" 0.0;
+	       color: 255 255 255 255;
+	    }
+	    description {
+	       state:    "wrong" 0.0;
+	       inherit:  "default" 0.0;
+	       color: 255 48 48 255;
+	    }
+	 }
+	 part {
+	    name:          "user_entry_bg";
+	    mouse_events:  0;
+	    clip_to: "all_clip";
+	    description {
+	       state:    "default" 0.0;
+	       min:      128 22;
+	       align:    0.5 0.0;
+	       rel1 {
+		  relative: 0.0  1.0;
+		  offset:   12   8;
+		  to_x:       "panel_1_bg";
+		  to_y:       "entrance.userpass";
+	       }
+	       rel2 {
+		  relative: 1.0  1.0;
+		  offset:   -13  8;
+		  to_x:     "panel_1_bg";
+		  to_y:     "entrance.userpass";
+	       }
+	       image {
+		  normal: "entry_bg1.png";
+		  border:    8 8 8 8;
+	       }
+	    }
+	    description {
+	       state:    "active" 0.0;
+	       inherit:  "default" 0.0;
+	       image {
+		  normal: "entry_bg2.png";
+	       }
+	    }
+	 }
+	 part {
+	    name: "user_entry_clip";
+	    type: RECT;
+	    mouse_events: 0;
+	    clip_to: "all_clip";
+	    description {
+	       state: "default" 0.0;
+	       visible: 1;
+	       rel1 {
+                  relative: 0.0  0.0;
+		  offset:   2    2;
+		  to:       "user_entry_bg";
+	       }
+	       rel2 {
+                  relative: 1.0  1.0;
+		  offset:   -3  -3;
+		  to:       "user_entry_bg";
+	       }
+	       color:       255 255 255 255;
+	    }
+	 }
+	 part {
+	    name:   "entrance.entry.user";
+	    type:   TEXT;
+            effect: NONE;
+	    clip_to: "user_entry_clip";
+	    description {
+	       state:    "default" 0.0;
+	       align:    0.0 0.5;
+	       rel1 {
+		  relative: 0.0  0.0;
+		  offset:   4    1;
+		  to:       "user_entry_clip";
+	       }
+	       rel2 {
+		  relative: 0.0  1.0;
+		  offset:   -5   -2;
+		  to:       "user_entry_clip";
+	       }
+	       color: 0 0 0 255;
+	       text {
+		  text:     "";
+		  font:     "Sans";
+		  size:     10;
+                  min:      1 0;
+		  align:   0.0 0.5;
+	       }
+	    }
+	 }
+	 part {
+	    name:          "user_entry_cursor";
+	    mouse_events:  0;
+	    clip_to:       "user_entry_clip";
+	    description {
+	       state:    "default" 0.0;
+	       visible:  0;
+	       color:    255 255 255 0;
+	       min:      18 18;
+	       max:      18 18;
+	       rel1 {
+		  relative: 1.0  0.5;
+		  offset:   1    0;
+		  to:       "entrance.entry.user";
+	       }
+	       rel2 {
+		  relative: 1.0  0.5;
+		  offset:   18    0;
+		  to:       "entrance.entry.user";
+	       }
+	       image {
+		  normal: "entry_cursor.png";
+	       }
+	    }
+	    description {
+	       state:    "active" 0.0;
+	       inherit:  "default" 0.0;
+	       visible:  1;
+	       color:    255 255 255 255;
+	    }
+	 }
+	 part {
+	    name: "user_entry_overlay";
+	    mouse_events: 0;
+	    clip_to: "all_clip";
+	    description {
+	       state: "default" 0.0;
+	       visible: 1;
+	       rel1 {
+		  to:       "user_entry_bg";
+	       }
+	       rel2 {
+		  to:       "user_entry_bg";
+	       }
+	       image {
+		  normal: "entry_overlay.png";
+		  border:    8 8 8 8;
+	       }
+	    }
+	 }
+
+	 
+	 part {
+	    name:          "pass_entry_bg";
+	    mouse_events:  0;
+	    clip_to: "all_clip";
+	    description {
+	       state:    "default" 0.0;
+	       min:      128 22;
+	       align:    0.5 0.0;
+	       rel1 {
+		  relative: 0.0  1.0;
+		  offset:   12   8;
+		  to_x:       "panel_1_bg";
+		  to_y:       "user_entry_bg";
+	       }
+	       rel2 {
+		  relative: 1.0  1.0;
+		  offset:   -13  8;
+		  to_x:     "panel_1_bg";
+		  to_y:     "user_entry_bg";
+	       }
+	       image {
+		  normal: "entry_bg1.png";
+		  border:    8 8 8 8;
+	       }
+	    }
+	    description {
+	       state:    "active" 0.0;
+	       inherit:  "default" 0.0;
+	       image {
+		  normal: "entry_bg2.png";
+	       }
+	    }
+	 }
+	 part {
+	    name: "pass_entry_clip";
+	    type: RECT;
+	    mouse_events: 0;
+	    clip_to: "all_clip";
+	    description {
+	       state: "default" 0.0;
+	       visible: 1;
+	       rel1 {
+                  relative: 0.0  0.0;
+		  offset:   2    2;
+		  to:       "pass_entry_bg";
+	       }
+	       rel2 {
+                  relative: 1.0  1.0;
+		  offset:   -3  -3;
+		  to:       "pass_entry_bg";
+	       }
+	       color:       255 255 255 255;
+	    }
+	 }
+	 part {
+	    name:   "entrance.entry.pass";
+	    type:   TEXT;
+            effect: NONE;
+	    clip_to: "pass_entry_clip";
+	    description {
+	       state:    "default" 0.0;
+	       align:    0.0 0.5;
+	       rel1 {
+		  relative: 0.0  0.0;
+		  offset:   4    1;
+		  to:       "pass_entry_clip";
+	       }
+	       rel2 {
+		  relative: 0.0  1.0;
+		  offset:   -5   -2;
+		  to:       "pass_entry_clip";
+	       }
+	       color: 0 0 0 255;
+	       text {
+		  text:     "";
+		  font:     "Sans";
+		  size:     10;
+                  min:      1 0;
+		  align:   0.0 0.5;
+	       }
+	    }
+	 }
+	 part {
+	    name:          "pass_entry_cursor";
+	    mouse_events:  0;
+	    clip_to:       "pass_entry_clip";
+	    description {
+	       state:    "default" 0.0;
+	       visible:  0;
+	       color:    255 255 255 0;
+	       min:      18 18;
+	       max:      18 18;
+	       rel1 {
+		  relative: 1.0  0.5;
+		  offset:   1    0;
+		  to:       "entrance.entry.pass";
+	       }
+	       rel2 {
+		  relative: 1.0  0.5;
+		  offset:   18    0;
+		  to:       "entrance.entry.pass";
+	       }
+	       image {
+		  normal: "entry_cursor.png";
+	       }
+	    }
+	    description {
+	       state:    "active" 0.0;
+	       inherit:  "default" 0.0;
+	       visible:  1;
+	       color:    255 255 255 255;
+	    }
+	 }
+	 part {
+	    name: "pass_entry_overlay";
+	    mouse_events: 0;
+	    clip_to: "all_clip";
+	    description {
+	       state: "default" 0.0;
+	       visible: 1;
+	       rel1 {
+		  to:       "pass_entry_bg";
+	       }
+	       rel2 {
+		  to:       "pass_entry_bg";
+	       }
+	       image {
+		  normal: "entry_overlay.png";
+		  border:    8 8 8 8;
+	       }
+	    }
+	 }
+      }
+      programs {
+	 program {
+	    name: "init";
+	    signal: "load";
+	    source: "";
+	    script {
+	       clock_cb(0);
+	       set_int(sessions_visible, 0);
+	    }
+	 }
+	 
+	 program {
+	    name:       "logo_animate";
+	    action:     STATE_SET "default" 0.0;
+	    transition: LINEAR 4.0;
+	    target:     "logo";
+	    after:      "logo_animate";
+	 }
+	 
+	 program {
+	    name:       "power_button_in";
+	    signal:     "mouse,in";
+	    source:     "power_button";
+	    action:     STATE_SET "hilited" 0.0;
+	    transition: LINEAR 0.5;
+	    target:     "power_button_glow";
+	 }
+	 program {
+	    name:       "power_button_out";
+	    signal:     "mouse,out";
+	    source:     "power_button";
+	    action:     STATE_SET "default" 0.0;
+	    transition: LINEAR 0.5;
+	    target:     "power_button_glow";
+	 }
+	 program {
+	    name:       "power_button_down";
+	    signal:     "mouse,down,1";
+	    source:     "power_button";
+	    action:     STATE_SET "clicked" 0.0;
+	    transition: LINEAR 0.0;
+	    target:     "power_button";
+	    target:     "power_button_glow";
+	 }
+	 program {
+	    name:       "power_button_up";
+	    signal:     "mouse,up,1";
+	    source:     "power_button";
+	    action:     STATE_SET "default" 0.0;
+	    transition: LINEAR 0.0;
+	    target:     "power_button";
+	    target:     "power_button_glow";
+	 }
+	 program {
+	    name:       "power_button_up2";
+	    signal:     "mouse,clicked,1";
+	    source:     "power_button";
+	    action:     STATE_SET "hilited" 0.0;
+	    target:     "power_button_glow";
+	    after:      "power_button_up3";
+	 }
+	 program {
+	    name:       "power_button_up3";
+	    action:     STATE_SET "hidden" 0.0;
+	    transition: SINUSOIDAL 2.0;
+	    target:     "all_clip";
+	 }
+	 program {
+	    name:       "up_button_down";
+	    signal:     "mouse,down,1";
+	    source:     "bt_scroll_up";
+	    action:     STATE_SET "clicked" 0.0;
+	    target:     "bt_scroll_up";
+	    after:	"up_button_down2";
+	 }
+	 program {
+	    name:       "up_button_down2";
+	    signal:     "";
+	    source:     "";
+	    action:     SIGNAL_EMIT "entrance,sessions,scroll,up" "";
+	 }	
+	 program {
+	    name:       "up_button_up";
+	    signal:     "mouse,up,1";
+	    source:     "bt_scroll_up";
+	    action:     STATE_SET "default" 0.0;
+	    target:     "bt_scroll_up";
+	    after:	"up_button_up2";
+	 }
+	 program {
+	    name:       "up_button_up2";
+	    signal:     "";
+	    source:     "";
+	    action:     SIGNAL_EMIT "entrance,sessions,scroll,stop" "";
+	 }	
+	 program {
+	    name:       "down_button_down";
+	    signal:     "mouse,down,1";
+	    source:     "bt_scroll_down";
+	    action:     STATE_SET "clicked" 0.0;
+	    target:     "bt_scroll_down";
+	    after:	"down_button_down2";
+	 }
+	 program {
+	    name:       "down_button_down2";
+	    signal:     "";
+	    source:     "";
+	    action:     SIGNAL_EMIT "entrance,sessions,scroll,down" "";
+	 }	
+	 program {
+	    name:       "down_button_up";
+	    signal:     "mouse,up,1";
+	    source:     "bt_scroll_down";
+	    action:     STATE_SET "default" 0.0;
+	    target:     "bt_scroll_down";
+	    after:	"down_button_up2";
+	 }
+	 program {
+	    name:       "down_button_up2";
+	    signal:     "";
+	    source:     "";
+	    action:     SIGNAL_EMIT "entrance,sessions,scroll,stop" "";
+	 }	
+	 program {
+	    name:       "power_button_clicked";
+	    signal:     "mouse,clicked,1";
+	    source:     "power_button";
+	    action:     SIGNAL_EMIT "entrance,system,halt" "";
+	    in:         4.0 0.0;
+	 }	 
+	 
+	 program {
+	    name:       "reset_button_in";
+	    signal:     "mouse,in";
+	    source:     "reset_button";
+	    action:     STATE_SET "hilited" 0.0;
+	    transition: LINEAR 0.5;
+	    target:     "reset_button_glow";
+	 }
+	 program {
+	    name:       "reset_button_out";
+	    signal:     "mouse,out";
+	    source:     "reset_button";
+	    action:     STATE_SET "default" 0.0;
+	    transition: LINEAR 0.5;
+	    target:     "reset_button_glow";
+	 }
+	 program {
+	    name:       "reset_button_down";
+	    signal:     "mouse,down,1";
+	    source:     "reset_button";
+	    action:     STATE_SET "clicked" 0.0;
+	    transition: LINEAR 0.0;
+	    target:     "reset_button";
+	    target:     "reset_button_glow";
+	 }
+	 program {
+	    name:       "reset_button_up";
+	    signal:     "mouse,up,1";
+	    source:     "reset_button";
+	    action:     STATE_SET "default" 0.0;
+	    transition: LINEAR 0.0;
+	    target:     "reset_button";
+	    target:     "reset_button_glow";
+	 }
+	 program {
+	    name:       "reset_button_up2";
+	    signal:     "mouse,clicked,1";
+	    source:     "reset_button";
+	    action:     STATE_SET "hilited" 0.0;
+	    target:     "reset_button_glow";
+	    after:      "reset_button_up3";
+	 }
+	 program {
+	    name:       "reset_button_up3";
+	    action:     STATE_SET "hidden" 0.0;
+	    transition: SINUSOIDAL 2.0;
+	    target:     "all_clip";
+	 }
+	 program {
+	    name:       "reset_button_clicked";
+	    signal:     "mouse,clicked,1";
+	    source:     "reset_button";
+	    action:     SIGNAL_EMIT "entrance,system,reboot" "";
+	    in:         4.0 0.0;
+	 }	 
+	 
+	 program {
+	    name:       "user_startup";
+	    signal:     "show";
+	    source:     "";
+	    action:     SIGNAL_EMIT "user" "on";
+	    after:      "logo_animate";
+	 }
+	 program {
+	    name:       "user_active";
+	    signal:     "user";
+	    source:     "on";
+	    action:     STATE_SET "active" 0.0;
+	    target:     "user_entry_bg";
+	    target:     "user_entry_cursor";
+	 }
+	 program {
+	    name:       "user_active2";
+	    signal:     "user";
+	    source:     "on";
+	    action:     SIGNAL_EMIT "entrance,label,user" "";
+	 }
+	 program {
+	    name:       "user_inactive";
+	    signal:     "user";
+	    source:     "off";
+	    action:     STATE_SET "default" 0.0;
+	    target:     "user_entry_bg";
+	    target:     "user_entry_cursor";
+	 }
+	 program {
+	    name:       "pass_active";
+	    signal:     "pass";
+	    source:     "on";
+	    action:     STATE_SET "active" 0.0;
+	    target:     "pass_entry_bg";
+	    target:     "pass_entry_cursor";
+	 }
+	 program {
+	    name:       "pass_active3";
+	    signal:     "pass";
+	    source:     "on";
+	    action:     SIGNAL_EMIT "entrance,label,pass" "";
+	 }
+	 program {
+	    name:       "pass_inactive";
+	    signal:     "pass";
+	    source:     "off";
+	    action:     STATE_SET "default" 0.0;
+	    target:     "pass_entry_bg";
+	    target:     "pass_entry_cursor";
+	 }
+	 
+	 
+	 program {
+	    name:       "user_ok_1";
+	    signal:     "entrance,user,success";
+	    source:     "";
+	    action:     SIGNAL_EMIT "user" "off";
+	    after:      "user_ok_2";
+	    after:      "user_ok_3";
+	 }
+	 program {
+	    name:       "user_ok_2";
+	    action:     SIGNAL_EMIT "pass" "on";
+	 }
+	 program {
+	    name:       "user_ok_3";
+	    action:     STATE_SET "active" 0.0;
+	    target:     "user";
+	 }
+	 program {
+	    name:       "user_fail_1";
+	    signal:     "entrance,user,fail";
+	    source:     "";
+	    action:     STATE_SET "wrong" 0.0;
+	    target:     "user";
+	    after:      "user_fail_2";
+	 }
+	 program {
+	    name:       "user_fail_2";
+	    action:     STATE_SET "default" 0.0;
+	    transition: SINUSOIDAL 2.0;
+	    target:     "user";
+	 }
+	 program {
+	    name:       "pass_fail_1";
+	    signal:     "entrance,user,auth,fail";
+	    source:     "";
+	    action:     SIGNAL_EMIT "pass" "off";
+	    after:      "pass_fail_2";
+	 }
+	 program {
+	    name:       "pass_fail_2";
+	    action:     SIGNAL_EMIT "user" "on";
+	    after:      "pass_fail_3";
+	 }
+	 program {
+	    name:       "pass_fail_3";
+	    action:     STATE_SET "default" 0.0;
+	    target:     "user";
+	    after:      "pass_fail_4";
+	 }
+	 program {
+	    name:       "pass_fail_4";
+	    action:     STATE_SET "wrong" 0.0;
+	    target:     "password";
+	    after:      "pass_fail_5";
+	 }
+	 program {
+	    name:       "pass_fail_5";
+	    action:     STATE_SET "default" 0.0;
+	    transition: SINUSOIDAL 2.0;
+	    target:     "password";
+	 }
+	 /* when auth is successful */
+	 program {
+	    name:       "on_successful_authentication";
+	    signal:     "entrance,user,auth,success";
+	    source:     "";
+	    action:     STATE_SET "hidden" 0.0;
+	    transition: SINUSOIDAL 1.0;
+	    target:     "all_clip";
+	    after:      "on_successful_authentication_2";
+	 }
+	 program {
+	    name:       "on_successful_authentication_2";
+	    signal:     "";
+	    source:     "";
+	    action:     SIGNAL_EMIT "entrance,user,auth,success,done" "";
+	 }
+
+	 program {
+	    name: "session_selected";
+	    signal: "entrance,xsession,selected";
+	    source: "";
+	    script {
+	       new vis = get_int(sessions_visible);
+	       if (vis == 1) {
+		  emit("sessions_hide", "");
+		  set_int(sessions_visible, 0);
+	       }
+	       else if (vis == 0) {
+		  emit("sessions_show", "");
+		  set_int(sessions_visible, 1);
+	       }
+	       else {
+		  set_int(sessions_visible, 0);
+	       }
+	    }
+	 }
+	 program {
+	    name: "sessions_show";
+	    signal: "sessions_show";
+	    source: "";
+	    action: STATE_SET "visible" 0.0;
+	    transition: DECELERATE 0.5;
+	    target: "sessions_clip";
+	    target: "sessions_shadow";
+	 }
+	 program {
+	    name: "sessions_hide";
+	    signal: "sessions_hide";
+	    source: "";
+	    action: STATE_SET "default" 0.0;
+	    transition: ACCELERATE 0.5;
+	    target: "sessions_clip";
+	    target: "sessions_shadow";
+	 }
+      }
+   }
+   group {
+      name: "Session";
+      min: 110 28;
+      parts {
+	 part {
+	    name:          "bg";
+	    mouse_events:  0;
+	    description {
+	       state:    "default" 0.0;
+	       image {
+		  normal: "e17_button0.png";
+		  border: 8 8 8 8;
+	       }
+	    }
+	    description {
+	       state:    "clicked" 0.0;
+	       inherit:  "default" 0.0;
+	       image {
+		  normal: "e17_button1.png";
+	       }
+	    }
+	 }
+	 part {
+	    name: "entrance.xsession.icon";
+	    type: SWALLOW;
+	    mouse_events: 0;
+	    description {
+	       state: "default" 0.0;
+	       visible: 1;
+	       aspect: 1.0 1.0;
+	       align: 0.0 0.5;
+	       aspect_preference: VERTICAL;
+	       rel1 {
+		  relative: 0.0 0.0;
+		  offset: 6 6;
+		  to: "bg";
+	       }
+	       rel2 {
+		  relative: 0.0 1.0;
+		  offset: 6 -7;
+		  to: "bg";
+	       }
+	    }
+	 }
+	 part {
+	    name: "entrance.xsession.title";
+	    type: TEXT;
+	    mouse_events: 0;
+	    effect: SHADOW;
+	    description {
+	       state: "default" 0.0;
+	       visible: 1;
+	       rel1 {
+		  relative: 1.0 0.0;
+		  offset: 2 0;
+		  to: "entrance.xsession.icon";
+	       }
+	       rel2 {
+		  relative: 1.0 1.0;
+		  offset: -7 -1;
+		  to_y: "entrance.xsession.icon";
+		  to_x: "bg";
+	       }
+	       color: 0 0 0 128;
+	       color3: 255 255 255 128;
+	       text {
+		  text: "Session Name";
+		  font: "Sans";
+		  size:  10;
+		  align: 0.0 0.5;
+		  min:   0 1;
+	       }
+	    }
+	    description {
+	       state: "clicked" 0.0;
+	       inherit: "default" 0.0;
+	       color: 0 0 0 192;
+	       color3: 255 255 255 192;
+	    }
+	 }
+	 part {
+	    name: "event_rect";
+	    type: RECT;
+	    mouse_events: 1;
+	    description {
+	       state: "default" 0.0;
+	       visible: 1;
+	       color: 0 0 0 0;
+	    }
+	 }
+      }
+      programs {
+	 program {
+	    name: "session_sel1";
+	    signal: "mouse,down,1";
+	    source: "event_rect";
+	    action: STATE_SET "clicked" 0.0;
+	    target: "entrance.xsession.title";
+	    target: "bg";
+	 }
+	 program {
+	    name: "session_sel2";
+	    signal: "mouse,up,1";
+	    source: "event_rect";
+	    action: STATE_SET "default" 0.0;
+	    target: "entrance.xsession.title";
+	    target: "bg";
+	 }
+	 program {
+	    name: "session_sel3";
+	    signal: "mouse,clicked,1";
+	    source: "event_rect";
+	    action: SIGNAL_EMIT "entrance,xsession,selected" "";
+	 }
+      }
+   }
+   group
+     {
+	name: "Preview";
+	min: 320 240;
+	max: 320 240; 
+	parts
+	  {
+	     part
+	       {
+		  name: "img";
+		  type: IMAGE;
+		  mouse_events: 1;
+		  description
+		    {
+		       state: "default" 0.0;
+		       min: 320 240;
+		       max: 320 240; 
+		       visible: 1;
+		       rel1
+			 {
+			    relative: 0.0 0.0;
+			    offset: 2 2;
+			 }
+		       rel2
+			 {
+			    relative: 1.0 1.0;
+			    offset: -2 -2;
+			 }
+		       image {
+			  normal: "default_preview.png";
+		       }
+		    }
+	       }
+	  }
+	programs
+	  {
+	     program
+	       {
+		  name: "PreviewClicked";
+		  signal: "mouse,clicked,1";
+		  source: "img";
+		  action: SIGNAL_EMIT "PreviewSelected" "";
+	       }
+	  }
+     }
+}
+

@@ -1,0 +1,9 @@
+src/daemon/auth.c
+src/daemon/entranced_display.c
+src/daemon/ipc.c
+src/configgui/main.c
+src/client/entrance_config.c
+src/client/entrance_session.c
+src/client/entrance_ipc.c
+src/client/entrance_x_session.c
+src/client/main.c

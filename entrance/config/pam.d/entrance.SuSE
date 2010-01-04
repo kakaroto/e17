@@ -1,0 +1,8 @@
+#%PAM-1.0
+auth     required       pam_unix2.so    nullok #set_secrpc
+account  required       pam_unix2.so
+password required       pam_pwcheck.so  nullok
+password required       pam_unix2.so    nullok use_first_pass use_authtok
+session  required       pam_unix2.so    debug # trace or none
+#session  required       pam_devperm.so
+session  required       pam_resmgr.so

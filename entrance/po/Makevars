@@ -1,0 +1,7 @@
+DOMAIN = $(PACKAGE)
+subdir = po
+top_builddir = ..
+XGETTEXT_OPTIONS = --keyword=_ --keyword=N_ --from-code=UTF-8 --foreign-user
+COPYRIGHT_HOLDER = Enlightenment development team
+MSGID_BUGS_ADDRESS = enlightenment-devel@lists.sourceforge.net
+EXTRA_LOCALE_CATEGORIES = 

@@ -1,0 +1,14 @@
+#!/bin/sh
+# Wrapper script to set up login environment:
+# Load up all the junk in /etc/profile first, and then
+# pass control to entrance proper.
+
+test -f /etc/profile && . /etc/profile
+
+@PAM_CONFIG@
+
+exec @prefix@/bin/entrance "$@"
+
+#fallback
+exec entrance "$@"
+
