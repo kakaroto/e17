@@ -51,10 +51,8 @@ class PartHandler_Move(PartHandler):
 
 class PartHandler_T(PartHandler):
     def part_move(self, obj):
-        x, y, w0, h0 = obj.geometry
-        w, h = self.size
-        self.pos = (x + (w0 - w)/2, y - h)
-        if w0 < 10:
+        self.bottom_center = obj.top_center
+        if obj.size[0] < 10:
             self.hide()
         else:
             self.show()
@@ -102,10 +100,8 @@ class PartHandler_TR(PartHandler):
 
 class PartHandler_B(PartHandler):
     def part_move(self, obj):
-        x, y, w0, h0 = obj.geometry
-        w, h = self.size
-        self.pos = (x + (w0 - w)/2, y + h0)
-        if w0 < 10:
+        self.top_center = obj.bottom_center
+        if obj.size[0] < 10:
             self.hide()
         else:
             self.show()
@@ -153,10 +149,8 @@ class PartHandler_BL(PartHandler):
 
 class PartHandler_L(PartHandler):
     def part_move(self, obj):
-        x, y, w0, h0 = obj.geometry
-        w, h = self.size
-        self.pos = (x - w, y + (h0 - h)/2)
-        if h0 < 10:
+        self.right_center = obj.left_center
+        if obj.size[1] < 10:
             self.hide()
         else:
             self.show()
@@ -173,10 +167,8 @@ class PartHandler_L(PartHandler):
 
 class PartHandler_R(PartHandler):
     def part_move(self, obj):
-        x, y, w0, h0 = obj.geometry
-        w, h = self.size
-        self.pos = (x + w0, y + (h0 - h)/2)
-        if h0 < 10:
+        self.left_center = obj.right_center
+        if obj.size[1] < 10:
             self.hide()
         else:
             self.show()
