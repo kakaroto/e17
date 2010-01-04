@@ -24,4 +24,7 @@ cdef class Notepad(Object):
     def file_set(self, file, format):
         elm_notepad_file_set(self.obj, file, format)
 
+    def bounce_set(self, h, v):
+        elm_notepad_bounce_set(self.obj, h, v)
+
 

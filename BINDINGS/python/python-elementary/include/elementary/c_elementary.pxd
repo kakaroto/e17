@@ -375,6 +375,7 @@ cdef extern from "Elementary.h":
     # Notepad object
     evas.c_evas.Evas_Object *elm_notepad_add(evas.c_evas.Evas_Object *parent)
     void elm_notepad_file_set(evas.c_evas.Evas_Object *obj, char *file, Elm_Text_Format format)
+    void elm_notepad_bounce_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool h_bounce, evas.c_evas.Eina_Bool v_bounce)
 
     # Anchorview object
     evas.c_evas.Evas_Object *elm_anchorview_add(evas.c_evas.Evas_Object *parent)
@@ -382,6 +383,7 @@ cdef extern from "Elementary.h":
     void elm_anchorview_hover_parent_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Evas_Object *parent)
     void elm_anchorview_hover_style_set(evas.c_evas.Evas_Object *obj, char *style)
     void elm_anchorview_hover_end(evas.c_evas.Evas_Object *obj)
+    void elm_anchorview_bounce_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool h_bounce, evas.c_evas.Eina_Bool v_bounce)
 
     # Anchorblock object
     evas.c_evas.Evas_Object *elm_anchorblock_add(evas.c_evas.Evas_Object *parent)
@@ -461,6 +463,7 @@ cdef extern from "Elementary.h":
     void elm_list_item_label_set(Elm_List_Item *item, char* text)
     Elm_List_Item *elm_list_item_prev(Elm_List_Item *it)
     Elm_List_Item *elm_list_item_next(Elm_List_Item *it)
+    void elm_list_bounce_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool h_bounce, evas.c_evas.Eina_Bool v_bounce)
 
 
     # Carousel object

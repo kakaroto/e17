@@ -95,6 +95,9 @@ cdef class AnchorView(Object):
         """
         elm_anchorview_text_set(self.obj, text)
 
+    def bounce_set(self, h, v):
+        elm_anchorview_bounce_set(self.obj, h, v)
+
     def hover_parent_set(self, c_evas.Object parent):
         """
         Set the parent of the hover popup

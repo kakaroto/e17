@@ -313,6 +313,9 @@ cdef class List(Object):
     def always_select_mode_set(self, always_select):
         elm_list_always_select_mode_set(self.obj, always_select)
 
+    def bounce_set(self, h, v):
+        elm_list_bounce_set(self.obj, h, v)
+
     def selected_item_get(self):
         cdef Elm_List_Item *obj
         cdef void *data
