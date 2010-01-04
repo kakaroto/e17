@@ -1,9 +1,0 @@
-.deps
-Makefile
-Makefile.in
-entrance_wrapper
-entranced
-entrance_edit.lo
-entrance_edit2
-libentrance_edit.la
-.libs
