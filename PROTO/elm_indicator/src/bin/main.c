@@ -9,7 +9,6 @@
 /* local function prototypes */
 static int _cb_client_message(void *data, int type, void *event);
 static void _cb_win_del(void *data, Evas_Object *obj, void *event);
-static void _cb_win_move(void *data, Evas_Object *obj, void *event);
 static int _cb_win_property_change(void *data, int type, void *event);
 static void _cb_btn_home_clicked(void *data, Evas_Object *obj, void *event);
 static void _cb_btn_mode_clicked(void *data, Evas_Object *obj, void *event);
@@ -40,7 +39,6 @@ elm_main(int argc, char **argv)
    ind = elm_win_add(NULL, "elm_indicator", ELM_WIN_BASIC);
    elm_win_title_set(ind, "Illume Indicator Window");
    evas_object_smart_callback_add(ind, "delete-request", _cb_win_del, NULL);
-   evas_object_smart_callback_add(ind, "moved", _cb_win_move, NULL);
    xwin = elm_win_xwindow_get(ind);
    ecore_x_icccm_hints_set(xwin, 0, 0, 0, 0, 0, 0, 0);
 
@@ -166,15 +164,6 @@ _cb_win_del(void *data, Evas_Object *obj, void *event)
      ecore_event_handler_del(handler);
 
    elm_exit();
-}
-
-static void 
-_cb_win_move(void *data, Evas_Object *obj, void *event) 
-{
-   int x, y;
-
-   elm_win_screen_position_get(obj, &x, &y);
-   printf("Moved To: %d\n", y);
 }
 
 static int 
@@ -306,7 +295,6 @@ _cb_rect_mouse_move(void *data, Evas *evas, Evas_Object *obj, void *event)
    if (y != ny) 
      {
         ecore_x_window_move(xwin, x, ny);
-        evas_object_move(win, x, ny);
         my = py;
      }
 }
