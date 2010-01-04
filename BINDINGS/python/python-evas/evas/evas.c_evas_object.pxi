@@ -521,6 +521,30 @@ cdef public class Object [object PyEvasObject, type PyEvasObject_Type]:
             x, y = spec
             evas_object_move(self.obj, x, y)
 
+    def top_center_get(self):
+        "@rtype: tuple of int"
+        cdef int x, y, w
+        evas_object_geometry_get(self.obj, &x, &y, &w, NULL)
+        return (x + w/2, y)
+
+    def top_center_set(self, int x, int y):
+        "Set (x, y) of top-center."
+        cdef int w
+        evas_object_geometry_get(self.obj, NULL, NULL, &w, NULL)
+        evas_object_move(self.obj, x - w/2, y)
+
+    property top_center:
+        def __get__(self): # replicated to avoid performance hit
+            cdef int x, y, w
+            evas_object_geometry_get(self.obj, &x, &y, &w, NULL)
+            return (x + w/2, y)
+
+        def __set__(self, spec):
+            cdef int x, y, w
+            x, y = spec
+            evas_object_geometry_get(self.obj, NULL, NULL, &w, NULL)
+            evas_object_move(self.obj, x - w/2, y)
+
     def top_right_get(self):
         "@rtype: tuple of int"
         cdef int x, y, w
@@ -545,6 +569,54 @@ cdef public class Object [object PyEvasObject, type PyEvasObject_Type]:
             evas_object_geometry_get(self.obj, NULL, NULL, &w, NULL)
             evas_object_move(self.obj, x - w, y)
 
+    def left_center_get(self):
+        "@rtype: tuple of int"
+        cdef int x, y, h
+        evas_object_geometry_get(self.obj, &x, &y, NULL, &h)
+        return (x, y + h/2)
+
+    def left_center_set(self, int x, int y):
+        "Set (x, y) of left-center."
+        cdef int h
+        evas_object_geometry_get(self.obj, NULL, NULL, NULL, &h)
+        evas_object_move(self.obj, x, y - h/2)
+
+    property left_center:
+        def __get__(self): # replicated to avoid performance hit
+            cdef int x, y, h
+            evas_object_geometry_get(self.obj, &x, &y, NULL, &h)
+            return (x, y + h/2)
+
+        def __set__(self, spec):
+            cdef int x, y, h
+            x, y = spec
+            evas_object_geometry_get(self.obj, NULL, NULL, NULL, &h)
+            evas_object_move(self.obj, x, y - h/2)
+
+    def right_center_get(self):
+        "@rtype: tuple of int"
+        cdef int x, y, w, h
+        evas_object_geometry_get(self.obj, &x, &y, &w, &h)
+        return (x + w, y + h/2)
+
+    def right_center_set(self, int x, int y):
+        "Set (x, y) of right-center."
+        cdef int w, h
+        evas_object_geometry_get(self.obj, NULL, NULL, &w, &h)
+        evas_object_move(self.obj, x - w, y - h/2)
+
+    property right_center:
+        def __get__(self): # replicated to avoid performance hit
+            cdef int x, y, w, h
+            evas_object_geometry_get(self.obj, &x, &y, &w, &h)
+            return (x + w, y + h/2)
+
+        def __set__(self, spec):
+            cdef int x, y, w, h
+            x, y = spec
+            evas_object_geometry_get(self.obj, NULL, NULL, &w, &h)
+            evas_object_move(self.obj, x - w, y - h/2)
+
     def bottom_left_get(self):
         "@rtype: tuple of int"
         cdef int x, y, h
@@ -568,6 +640,30 @@ cdef public class Object [object PyEvasObject, type PyEvasObject_Type]:
             x, y = spec
             evas_object_geometry_get(self.obj, NULL, NULL, NULL, &h)
             evas_object_move(self.obj, x, y - h)
+
+    def bottom_center_get(self):
+        "@rtype: tuple of int"
+        cdef int x, y, w, h
+        evas_object_geometry_get(self.obj, &x, &y, &w, &h)
+        return (x + w/2, y + h)
+
+    def bottom_center_set(self, int x, int y):
+        "Set (x, y) of bottom-center."
+        cdef int w, h
+        evas_object_geometry_get(self.obj, NULL, NULL, &w, &h)
+        evas_object_move(self.obj, x - w/2, y - h)
+
+    property bottom_center:
+        def __get__(self): # replicated to avoid performance hit
+            cdef int x, y, w, h
+            evas_object_geometry_get(self.obj, &x, &y, &w, &h)
+            return (x + w/2, y + h)
+
+        def __set__(self, spec):
+            cdef int x, y, w, h
+            x, y = spec
+            evas_object_geometry_get(self.obj, NULL, NULL, &w, &h)
+            evas_object_move(self.obj, x - w/2, y - h)
 
     def bottom_right_get(self):
         "@rtype: tuple of int"
