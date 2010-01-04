@@ -293,8 +293,22 @@ cdef class List(Object):
     def multi_select_set(self, multi):
         elm_list_multi_select_set(self.obj, multi)
 
+    property multi_select:
+        def __get__(self):
+            return elm_list_multi_select_get(self.obj)
+
+        def __set__(self, multi):
+            elm_list_multi_select_set(self.obj, multi)
+
     def horizontal_mode_set(self, Elementary_List_Mode mode):
         elm_list_horizontal_mode_set(self.obj, mode)
+
+    property horizontal_mode:
+        def __get__(self):
+            return elm_list_horizontal_mode_get(self.obj)
+
+        def __set__(self, Elementary_List_Mode mode):
+            elm_list_horizontal_mode_set(self.obj, mode)
 
     def always_select_mode_set(self, always_select):
         elm_list_always_select_mode_set(self.obj, always_select)
