@@ -55,7 +55,7 @@ else
 	usage 1 "Wrong value."
 fi
 
-ecore_config -c $DB -k $1 -$type $2
+ecore_config -c "$DB" -k "$1" -$type "$2"
 
 chmod 644 $DB
 
