@@ -21,8 +21,28 @@ __extra_epydoc_fields__ = (
     ("parm", "Parameter", "Parameters"), # epydoc don't support pyrex properly
     )
 
+cdef int _ecore_events_registered = 0
+
 def init():
-    return ecore_init()
+    r = ecore_init()
+    global _ecore_events_registered
+    if r > 0 and _ecore_events_registered == 0:
+        _ecore_events_registered = 1
+
+        global _event_type_mapping
+        _event_type_mapping = {
+            ECORE_EVENT_SIGNAL_USER: EventSignalUser,
+            ECORE_EVENT_SIGNAL_HUP: EventSignalHup,
+            ECORE_EVENT_SIGNAL_EXIT: EventSignalExit,
+            ECORE_EVENT_SIGNAL_POWER: EventSignalPower,
+            ECORE_EVENT_SIGNAL_REALTIME: EventSignalRealtime,
+            ECORE_EXE_EVENT_ADD: EventExeAdd,
+            ECORE_EXE_EVENT_DEL: EventExeDel,
+            ECORE_EXE_EVENT_DATA: EventExeData,
+            ECORE_EXE_EVENT_ERROR: EventExeData,
+            }
+
+    return r
 
 
 def shutdown():
@@ -107,3 +127,4 @@ include "ecore.c_ecore_idle_enterer.pxi"
 include "ecore.c_ecore_idle_exiter.pxi"
 include "ecore.c_ecore_fd_handler.pxi"
 include "ecore.c_ecore_events.pxi"
+include "ecore.c_ecore_exe.pxi"

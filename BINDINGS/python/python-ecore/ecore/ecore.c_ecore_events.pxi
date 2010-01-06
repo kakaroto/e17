@@ -161,3 +161,224 @@ def event_handler_add(int type, func, *args, **kargs):
        @rtype: L{EventHandler}
     """
     return EventHandler(type, func, *args, **kargs)
+
+
+cdef class EventSignalUser(Event):
+    """Represents SIGUSR1 or SIGUSR2.
+
+    See property C{number} to detect if it was SIGUSR1 or SIGUSR2
+
+    """
+    cdef int _set_obj(self, void *o) except 0:
+        cdef Ecore_Event_Signal_User *obj
+        obj = <Ecore_Event_Signal_User*>o
+        self.number = obj.number
+        return 1
+
+    def __str__(self):
+        return "%s(number=%d)" % (self.__class__.__name__, self.number)
+
+    def __repr__(self):
+        return "%s(number=%d)" % (self.__class__.__name__, self.number)
+
+
+cdef class EventSignalUser1(EventSignalUser):
+    """Represents SIGUSR1."""
+    def __str__(self):
+        return "%s()" % (self.__class__.__name__,)
+
+    def __repr__(self):
+        return "%s()" % (self.__class__.__name__,)
+
+
+cdef class EventSignalUser2(EventSignalUser):
+    """Represents SIGUSR2."""
+    def __str__(self):
+        return "%s()" % (self.__class__.__name__,)
+
+    def __repr__(self):
+        return "%s()" % (self.__class__.__name__,)
+
+
+cdef class EventHandlerSignalUser(EventHandler):
+    """Specialized event handler that creates specialized event instances.
+
+    Unlike EventHandler, this class will create specialized event of
+    classes L{EventSignalUser1} or L{EventSignalUser2}
+    instead of generic L{EventSignalUser}.
+    """
+    def __init__(self, func, *args, **kargs):
+        EventHandler.__init__(self, ECORE_EVENT_SIGNAL_USER,
+                              func, *args, **kargs)
+
+    cdef int _exec(self, void *event) except 2:
+        cdef Ecore_Event_Signal_User *obj = <Ecore_Event_Signal_User *>event
+        cdef EventSignalUser e
+        if obj.number == 1:
+            e = EventSignalUser1()
+        elif obj.number == 2:
+            e = EventSignalUser2()
+        else:
+            e = EventSignalUser()
+        e._set_obj(event)
+        return bool(self.func(e, *self.args, **self.kargs))
+
+
+def on_signal_user(func, *args, **kargs):
+    """Create an ecore event handler for ECORE_EVENT_SIGNAL_USER
+
+       @see: L{EventHandler}
+       @see: L{EventHandlerSignalUser}
+    """
+    return EventHandlerSignalUser(func, *args, **kargs)
+
+
+cdef class EventSignalHup(Event):
+    """"Represents SIGHUP."""
+    cdef int _set_obj(self, void *o) except 0:
+        return 1
+
+    def __str__(self):
+        return "%s()" % (self.__class__.__name__,)
+
+    def __repr__(self):
+        return "%s()" % (self.__class__.__name__,)
+
+
+def on_signal_hup(func, *args, **kargs):
+    """Create an ecore event handler for ECORE_EVENT_SIGNAL_HUP
+
+       @see: L{EventHandler}
+    """
+    return EventHandler(ECORE_EVENT_SIGNAL_HUP, func, *args, **kargs)
+
+
+cdef class EventSignalExit(Event):
+    """"Represents exit request signals: SIGINT, SIGQUIT and SIGTERM.
+
+    See properties C{interrupt}, C{quit} and C{terminate} to detect
+    which signal happened.
+    """
+    cdef int _set_obj(self, void *o) except 0:
+        cdef Ecore_Event_Signal_Exit *obj
+        obj = <Ecore_Event_Signal_Exit*>o
+        self.interrupt = bool(obj.interrupt)
+        self.quit = bool(obj.quit)
+        self.terminate = bool(obj.terminate)
+        return 1
+
+    def __str__(self):
+        return "%s(interrupt=%s, quit=%s, terminate=%s)" % \
+            (self.__class__.__name__, self.interrupt, self.quit, self.terminate)
+
+    def __repr__(self):
+        return "%s(interrupt=%s, quit=%s, terminate=%s)" % \
+            (self.__class__.__name__, self.interrupt, self.quit, self.terminate)
+
+
+cdef class EventSignalQuit(EventSignalExit):
+    """Represents SIGQUIT."""
+    def __str__(self):
+        return "%s()" % (self.__class__.__name__,)
+
+    def __repr__(self):
+        return "%s()" % (self.__class__.__name__,)
+
+
+cdef class EventSignalInterrupt(EventSignalExit):
+    """Represents SIGINT."""
+    def __str__(self):
+        return "%s()" % (self.__class__.__name__,)
+
+    def __repr__(self):
+        return "%s()" % (self.__class__.__name__,)
+
+
+cdef class EventSignalTerminate(EventSignalExit):
+    """Represents SIGTERM."""
+    def __str__(self):
+        return "%s()" % (self.__class__.__name__,)
+
+    def __repr__(self):
+        return "%s()" % (self.__class__.__name__,)
+
+
+cdef class EventHandlerSignalExit(EventHandler):
+    """Specialized event handler that creates specialized event instances.
+
+    Unlike EventHandler, this class will create specialized event of
+    classes L{EventSignalQuit}, L{EventSignalInterrupt} or
+    L{EventSignalTerminate} instead of generic L{EventSignalExit}.
+    """
+    def __init__(self, func, *args, **kargs):
+        EventHandler.__init__(self, ECORE_EVENT_SIGNAL_EXIT,
+                              func, *args, **kargs)
+
+    cdef int _exec(self, void *event) except 2:
+        cdef Ecore_Event_Signal_Exit *obj = <Ecore_Event_Signal_Exit *>event
+        cdef EventSignalUser e
+        if obj.terminate:
+            e = EventSignalTerminate()
+        elif obj.interrupt:
+            e = EventSignalInterrupt()
+        elif obj.quit:
+            e = EventSignalQuit()
+        else:
+            e = EventSignalExit()
+        e._set_obj(event)
+        return bool(self.func(e, *self.args, **self.kargs))
+
+
+def on_signal_exit(func, *args, **kargs):
+    """Create an ecore event handler for ECORE_EVENT_SIGNAL_EXIT
+
+       @see: L{EventHandler}
+       @see: L{EventHandlerSignalExit}
+    """
+    return EventHandlerSignalExit(func, *args, **kargs)
+
+
+cdef class EventSignalPower(Event):
+    """"Represents SIGPWR."""
+    cdef int _set_obj(self, void *o) except 0:
+        return 1
+
+    def __str__(self):
+        return "%s()" % (self.__class__.__name__,)
+
+    def __repr__(self):
+        return "%s()" % (self.__class__.__name__,)
+
+
+def on_signal_power(func, *args, **kargs):
+    """Create an ecore event handler for ECORE_EVENT_SIGNAL_POWER
+
+       @see: L{EventHandler}
+    """
+    return EventHandler(ECORE_EVENT_SIGNAL_POWER, func, *args, **kargs)
+
+
+cdef class EventSignalRealtime(Event):
+    """"Represents SIGRTMIN+N.
+
+    See property C{num} for the exact number that happened.
+    """
+    cdef int _set_obj(self, void *o) except 0:
+        cdef Ecore_Event_Signal_Realtime *obj
+        obj = <Ecore_Event_Signal_Realtime*>o
+        self.num = obj.num
+        return 1
+
+    def __str__(self):
+        return "%s(num=%d)" % (self.__class__.__name__, self.num)
+
+    def __repr__(self):
+        return "%s(num=%d)" % (self.__class__.__name__, self.num)
+
+
+def on_signal_realtime(func, *args, **kargs):
+    """Create an ecore event handler for ECORE_EVENT_SIGNAL_REALTIME
+
+       @see: L{EventHandler}
+    """
+    return EventHandler(ECORE_EVENT_SIGNAL_REALTIME, func, *args, **kargs)
