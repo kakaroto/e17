@@ -438,25 +438,7 @@ int main(int argc, char*argv[])
         sizeh = 720;
     }
 
-    if(!engine)
-    {
-        ee = ecore_evas_software_x11_new (NULL, 0,  0, 0, sizew, sizeh);
-        if (!ee) {
-            printf ("Can not find Software X11 engine. Trying DirectDraw engine...\n");
-            ee = ecore_evas_software_ddraw_new (NULL,  0, 0, sizew, sizeh);
-            if (!ee) {
-                fprintf (stderr,"Can not find DirectDraw engine.\n");
-                evas_shutdown ();
-                ecore_shutdown ();
-                return EXIT_FAILURE;
-            }
-        }
-    }
-    else
-    {
-        ee = ecore_evas_new(engine, 0, 0, sizew, sizeh, NULL);
-    }
-
+    ee = ecore_evas_new(engine, 0, 0, sizew, sizeh, NULL);
     if(!ee)
     {
         fprintf(stderr,"Failed to init the evas engine! \n");
