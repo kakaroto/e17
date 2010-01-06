@@ -409,8 +409,6 @@ entrance_config_free(Entrance_Config * e)
          free(e->background);
       if (e->pointer)
          free(e->pointer);
-      if (e->use_default_greeting)
-         free(e->use_default_greeting);
       if (e->date.string)
          free(e->date.string);
       if (e->time.string)
