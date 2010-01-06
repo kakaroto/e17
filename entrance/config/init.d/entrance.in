@@ -16,7 +16,7 @@
 #
 set -e
 
-PATH=/sbin:/bin:@prefix@/sbin:@prefix@/bin:@prefix@/libexec:@prefix@/libexec/entrance
+PATH=$PATH:@prefix@/sbin:@prefix@/bin:@prefix@/libexec:@prefix@/libexec/entrance
 DAEMON=@prefix@/sbin/entranced
 
 test -x $DAEMON || exit 0
@@ -62,7 +62,7 @@ case "$1" in
         log_end_msg $?
   ;;
   reload)
-        log_daemon_msg "Scheduling reload of Entrance Login Manager configuration" "gdm"
+        log_daemon_msg "Scheduling reload of Entrance Login Manager configuration" "entranced"
         set +e
         start-stop-daemon --stop --signal USR1 --quiet --pidfile \
                 /var/run/entranced.pid --name entranced
