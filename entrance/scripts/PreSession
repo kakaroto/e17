@@ -1,0 +1,18 @@
+#!/bin/bash
+# Entrance PreSession script.
+# Contains things which are to be ran before session is started.
+# After this script, session is started.
+# You can write here things which you normally write into $HOME/.xsession.
+# Just don't write there execution command for any desktop,
+# that is handled by session management.
+# Author: quaker66 <quaker66@gmail.com>
+
+# ubuntu dbus fix
+if test -z "$DBUS_SESSION_BUS_ADDRESS"; then
+eval `dbus-launch --sh-syntax --exit-with-session`
+fi
+
+# a little workaround. needs FIXME.
+touch $HOME/.Xauthority
+
+exit 0

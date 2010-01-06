@@ -25,6 +25,7 @@ entrance_SOURCES = \
 entrance_LDADD = @EDJE_LIBS@ @EFREET_LIBS@ @ECORE_LIBS@ @EVAS_LIBS@ \
 @ESMART_LIBS@
 
+entrance_login_LDADD = @ECORE_LIBS@
 entrance_login_SOURCES = \
 	entrance_login.c \
 	entrance_auth.c entrance_auth.h \

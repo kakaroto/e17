@@ -495,14 +495,16 @@ entrance_session_start_user_session(Entrance_Session * e)
    /* Shutdown subsytems */
    edje_shutdown();
    syslog(LOG_INFO, "DEBUG4");
-   ecore_evas_shutdown();
+   ecore_file_shutdown();
    syslog(LOG_INFO, "DEBUG5");
-   ecore_config_shutdown();
+   ecore_evas_shutdown();
    syslog(LOG_INFO, "DEBUG6");
-   ecore_x_sync();
+   ecore_config_shutdown();
    syslog(LOG_INFO, "DEBUG7");
-   entrance_ipc_shutdown();
+   ecore_x_sync();
    syslog(LOG_INFO, "DEBUG8");
+   entrance_ipc_shutdown();
+   syslog(LOG_INFO, "DEBUG9");
 
    switch ((pid = fork()))
    {
@@ -875,6 +877,16 @@ _entrance_session_execute_in_shell(char *user, char *shell, char *session_cmd,
    int res = 0;
    char *shell_cmd;
    char buf[PATH_MAX];
+   
+   /* THIS COULD BE HANDLED BETTER. FIXME WHEN REWRITING.
+    *
+    * Run PreSession script */
+   snprintf(buf, sizeof(buf), "%s/%s/PreSession", PACKAGE_CFG_DIR, PACKAGE);
+   if (ecore_file_exists(buf) && ecore_file_can_exec(buf))
+     {
+       syslog(LOG_NOTICE, "Executing PreSession script.");
+       ecore_exe_run(buf, NULL);
+     }
 
    /* If the user's passwd entry has a shell try to run it in login mode */
    if (shell && (strlen(shell) > 0))

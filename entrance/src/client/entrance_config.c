@@ -209,7 +209,7 @@ entrance_config_populate(Entrance_Config * e)
       else if (!access("/etc/shadow", F_OK))
       {
          syslog(LOG_CRIT,
-                _("/etc/shadow was found but couldn't be read. Run entrance as root."));
+                "/etc/shadow was found but couldn't be read. Run entrance as root.");
          if (getuid() == 0)
          {
             exit(EXITCODE);
@@ -219,7 +219,7 @@ entrance_config_populate(Entrance_Config * e)
 #ifndef HAVE_PAM
    else
       syslog(LOG_WARNING,
-             _("Entrance has been built without PAM support, so PAM isn't used for authentication!"));
+             "Entrance has been built without PAM support, so PAM isn't used for authentication!");
 #endif
 }
 

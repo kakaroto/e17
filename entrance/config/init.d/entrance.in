@@ -18,6 +18,7 @@ set -e
 
 PATH=$PATH:@prefix@/sbin:@prefix@/bin:@prefix@/libexec:@prefix@/libexec/entrance
 DAEMON=@prefix@/sbin/entranced
+PIDFILE=/var/run/entrance/entranced.pid
 
 test -x $DAEMON || exit 0
 

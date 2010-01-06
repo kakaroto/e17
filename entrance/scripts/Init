@@ -1,0 +1,9 @@
+#!/bin/bash
+# Entrance Init script.
+# Contains things which are to be ran when Entrance comes up
+# (right after X server start and root window settings).
+# After this script, session is started.
+# Don't write here anything about user.
+# You can write there X related things though.
+# Author: quaker66 <quaker66@gmail.com>
+exit 0

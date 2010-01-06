@@ -5,6 +5,8 @@
 #include <sys/wait.h>
 #include <errno.h>
 #include <signal.h>
+#include <Ecore.h>
+#include <Ecore_File.h>
 
 #include "../config.h"
 
@@ -15,6 +17,7 @@ int
 entrance_end_user_session(Entrance_Auth * e)
 {
    int pamerr;
+   char buf[PATH_MAX];
 
    if (!e->pam.handle)
       return ERROR_NO_PAM_INIT;
@@ -26,6 +29,16 @@ entrance_end_user_session(Entrance_Auth * e)
       syslog(LOG_CRIT, "PAM: %s.", pam_strerror(e->pam.handle, pamerr));
       return ERROR_NO_PAM_INIT;
    }
+   
+   /* THIS COULD BE HANDLED BETTER. FIXME WHEN REWRITING.
+    *
+    * Run PostSession script */
+   snprintf(buf, sizeof(buf), "%s/%s/PostSession", PACKAGE_CFG_DIR, PACKAGE);
+   if (ecore_file_exists(buf) && ecore_file_can_exec(buf))
+     {
+       syslog(LOG_NOTICE, "Executing PostSession script.");
+       ecore_exe_run(buf, NULL);
+     }
 
    return E_SUCCESS;
 }
@@ -49,6 +62,11 @@ main(int argc, char **argv)
    char *display = NULL;
    Entrance_Auth *e = NULL;
 #endif
+
+   if (!ecore_init())
+      return (-1);
+   if (!ecore_file_init())
+      return (-1);
 
    openlog("entrance_login", LOG_PID, LOG_DAEMON);
 
@@ -150,5 +168,7 @@ main(int argc, char **argv)
    }
    syslog(LOG_CRIT, "Wait error: %s", strerror(errno));
    closelog();
+   ecore_file_shutdown();
+   ecore_shutdown();
    return -1;
 }

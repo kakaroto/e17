@@ -325,10 +325,10 @@ config/Makefile
 config/init.d/Makefile
 config/init.d/entrance
 config/pam.d/Makefile
+scripts/Makefile
 data/Makefile
 data/config/Makefile
 data/config/build_config.sh
-data/fonts/Makefile
 data/images/Makefile
 data/images/sessions/Makefile
 data/users/Makefile

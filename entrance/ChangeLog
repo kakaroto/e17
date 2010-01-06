@@ -1,3 +1,9 @@
+2010-01-06 quaker66 <quaker66@gmail.com>
+	* scripts: added some scripts to be ran before session starts/after login, when entrance shows up and when entrance ends. see readme for more info. the code is implemented inside entrance client and the scripts are purely optional, when they exist and are executable, they're ran, otherwise not.
+	* po: unmarked some syslog strings as translatable(why i marked it?)
+	* data/themes/darkrock: make it use fontconfig for fonts instead of Vera font. It can show non-ascii characters now.
+	* data/fonts: removed since the fonts were just provided for themes and are not used anymore.
+
 2010-01-04 quaker66 <quaker66@gmail.com>
 	* ALIVE AGAIN!
 	* src/client: make session list scrollability support working, export some strings from edje to C, add option to config to use translatable greeting message

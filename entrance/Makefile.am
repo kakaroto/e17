@@ -1,6 +1,6 @@
 ## Process this file with automake to produce Makefile.in
 
-SUBDIRS = data config src po
+SUBDIRS = data config scripts src po
 
 EXTRA_DIST = \
 	autogen.sh README README.edje AUTHORS COPYING entrance.spec \

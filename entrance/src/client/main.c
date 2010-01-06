@@ -13,6 +13,7 @@
 #include <Esmart/Esmart_Container.h>
 #include <Ecore_Config.h>
 #include <Ecore_Getopt.h>
+#include <Ecore_File.h>
 #include <Efreet.h>
 #include "entrance.h"
 #include "entrance_session.h"
@@ -706,6 +707,8 @@ main(int argc, char *argv[])
    /* Basic ecore initialization */
    if (!ecore_init())
       return (-1);
+   if (!ecore_file_init())
+      return (-1);
    if (ecore_config_init("entrance") != ECORE_CONFIG_ERR_SUCC)
    {
       ecore_shutdown();
@@ -838,6 +841,19 @@ main(int argc, char *argv[])
       }
 
       ecore_idle_enterer_add(idler_after_cb, NULL);
+
+      if (!testing)
+      {
+         /* THIS COULD BE HANDLED BETTER. FIXME WHEN REWRITING.
+          *
+          * Run Init script */
+          snprintf(buf, sizeof(buf), "%s/%s/Init", PACKAGE_CFG_DIR, PACKAGE);
+          if (ecore_file_exists(buf) && ecore_file_can_exec(buf))
+            {
+              syslog(LOG_NOTICE, "Executing Init script.");
+              ecore_exe_run(buf, NULL);
+            }
+      }
 
       entrance_session_ecore_evas_set(session, e);
       entrance_ipc_session_set(session);

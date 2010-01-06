@@ -1,3 +1,3 @@
 MAINTAINERCLEANFILES = Makefile.in
-SUBDIRS = config images themes fonts users
+SUBDIRS = config images themes users
 

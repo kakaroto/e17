@@ -5,217 +5,217 @@ msgid ""
 msgstr ""
 "Project-Id-Version: entrance\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2010-01-04 21:03+0100\n"
-"PO-Revision-Date: 2010-01-04 21:04+0100\n"
+"POT-Creation-Date: 2010-01-06 16:36+0100\n"
+"PO-Revision-Date: 2010-01-06 16:37+0100\n"
 "Last-Translator: quaker66 <quaker66@gmail.com>\n"
 "Language-Team: it <it@li.org>\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=utf-8\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: src/daemon/auth.c:44
+#: ../src/daemon/auth.c:44
 #, c-format
 msgid "Cookie generation failed: could not open %s\n"
 msgstr "Generazione del cookie fallita: errore di apertura %s\n"
 
-#: src/daemon/auth.c:51
+#: ../src/daemon/auth.c:51
 #, c-format
 msgid "Cookie generation failed: could not read %s\n"
 msgstr "Generazione del cookie fallita: errore di lettura %s\n"
 
-#: src/daemon/auth.c:104
+#: ../src/daemon/auth.c:104
 msgid "entranced_auth_purge: Write failed!\n"
 msgstr "entranced_auth_purge: Scrittura fallita!\n"
 
-#: src/daemon/auth.c:173
+#: ../src/daemon/auth.c:173
 msgid "Generated MIT-MAGIC-COOKIE-1 "
 msgstr "Generato MIT-MAGIC-COOKIE-1 "
 
-#: src/daemon/auth.c:179
+#: ../src/daemon/auth.c:179
 msgid "Auth generation failed.\n"
 msgstr "Generazione file di autenticazione fallita.\n"
 
-#: src/daemon/auth.c:301
+#: ../src/daemon/auth.c:301
 msgid "_entrance_auth_entry_add: Auth write failed!\n"
 msgstr "_entrance_auth_entry_add: Scrittura del file di autenticazione fallita!\n"
 
-#: src/daemon/auth.c:314
+#: ../src/daemon/auth.c:314
 msgid "_entrance_auth_entry_add: Could not add auth entry to list!\n"
 msgstr "_entrance_auth_entry_add: Impossibile aggiungere la voce autenticazione alla lista!\n"
 
-#: src/daemon/auth.c:339
+#: ../src/daemon/auth.c:339
 #, c-format
 msgid "entranced_auth_display_secure: Setting up access for display %s\n"
 msgstr "entranced_auth_display_secure: Configurazione dell'accesso al display %s\n"
 
-#: src/daemon/auth.c:402
+#: ../src/daemon/auth.c:402
 #, c-format
 msgid "entranced_auth_display_secure: Successfully set up access for %s (localhost)\n"
 msgstr "entranced_auth_display_secure: Setup effettuato con successo per %s (localhost)\n"
 
-#: src/daemon/auth.c:419
+#: ../src/daemon/auth.c:419
 msgid "entranced_auth_user_add: Adding auth cookie\n"
 msgstr "entranced_auth_user_add: Aggiunta cookie di autenticazione\n"
 
-#: src/daemon/auth.c:440
+#: ../src/daemon/auth.c:440
 #, c-format
 msgid "entranced_auth_user_add: Unable to write auth file %s\n"
 msgstr "entranced_auth_user_add: Impossibile scrivere il file di autenticazione %s\n"
 
-#: src/daemon/auth.c:483
+#: ../src/daemon/auth.c:483
 #, c-format
 msgid "entranced_auth_user_add: Opened %s for writing cookies\n"
 msgstr "entranced_auth_user_add: Aperto %s per scrivere i cookie\n"
 
-#: src/daemon/auth.c:505
+#: ../src/daemon/auth.c:505
 #, c-format
 msgid "entranced_auth_user_add: Finished writing auth entries to %s\n"
 msgstr "entranced_auth_user_add: Scrittura dei valori di autenticazione in %s\n"
 
-#: src/daemon/auth.c:521
+#: ../src/daemon/auth.c:521
 #, c-format
 msgid "entranced_auth_user_remove: Removing cookie from %s\n"
 msgstr "entranced_auth_user_remove: Rimozione cookie da %s\n"
 
-#: src/daemon/entranced_display.c:161
+#: ../src/daemon/entranced_display.c:161
 #, c-format
 msgid "Entranced_Start_Server_Once: Executing %s\n"
 msgstr "Entranced_Start_Server_Once: In esecuzione %s\n"
 
-#: src/daemon/entranced_display.c:220
+#: ../src/daemon/entranced_display.c:220
 msgid "Entranced_Start_Server_Once: Attempt to start X server failed.\n"
 msgstr "Entranced_Start_Server_Once: Tentativo di avviare il server X fallito.\n"
 
-#: src/daemon/ipc.c:23
+#: ../src/daemon/ipc.c:23
 msgid "_entranced_ipc_client_add: Received event\n"
 msgstr "_entranced_ipc_client_add: Evento ricevuto\n"
 
-#: src/daemon/ipc.c:35
+#: ../src/daemon/ipc.c:35
 msgid "_entranced_ipc_client_del: Received event\n"
 msgstr "_entranced_ipc_client_del: Evento ricevuto\n"
 
-#: src/daemon/ipc.c:79
+#: ../src/daemon/ipc.c:79
 #, c-format
 msgid "_entranced_ipc_client_data: All tokens received; wrote cookie to user dir %s\n"
 msgstr "_entranced_ipc_client_data: Tutti i token ricevuti; cookie scritto nella directory dell'utente %s\n"
 
-#: src/daemon/ipc.c:87
+#: ../src/daemon/ipc.c:87
 #, c-format
 msgid "_entranced_ipc_client_data: Failed to write cookie to %s\n"
 msgstr "_entranced_ipc_client_data: Scrittura dei cookie fallita %s\n"
 
-#: src/daemon/ipc.c:94
+#: ../src/daemon/ipc.c:94
 #, c-format
 msgid "_entranced_ipc_client_data: Received [%i] [%i] [%i] [%i] \"%s\"\n"
 msgstr "_entranced_ipc_client_data: Ricevuto [%i] [%i] [%i] [%i] \"%s\"\n"
 
-#: src/daemon/ipc.c:128
+#: ../src/daemon/ipc.c:128
 #, c-format
 msgid "entranced_ipc_init: Failed to open socket %s.\n"
 msgstr "entranced_ipc_init: Apertura socket fallita %s.\n"
 
-#: src/daemon/ipc.c:137
+#: ../src/daemon/ipc.c:137
 msgid "entranced_ipc_init: Success\n"
 msgstr "entranced_ipc_init: Successo\n"
 
-#: src/daemon/ipc.c:154
+#: ../src/daemon/ipc.c:154
 msgid "entranced_ipc_shutdown: Success\n"
 msgstr "entranced_ipc_shutdown: Successo\n"
 
-#: src/configgui/main.c:138
+#: ../src/configgui/main.c:138
 msgid "Entrance Edit GUI"
 msgstr "Interfaccia di configurazione di Entrance"
 
-#: src/configgui/main.c:158
+#: ../src/configgui/main.c:158
 msgid "Appearance"
 msgstr "Aspetto"
 
-#: src/configgui/main.c:172
+#: ../src/configgui/main.c:172
 msgid "Use builtin(translatable) greeting message"
 msgstr "Usa il messaggio di benvenuto di default (traducibile)"
 
-#: src/configgui/main.c:179
+#: ../src/configgui/main.c:179
 msgid "Greeting prefix:"
 msgstr "Prefisso di benvenuto:"
 
-#: src/configgui/main.c:203
+#: ../src/configgui/main.c:203
 msgid "Greeting suffix:"
 msgstr "Suffisso di benvenuto:"
 
-#: src/configgui/main.c:227
+#: ../src/configgui/main.c:227
 msgid "Date format:"
 msgstr "Formato data:"
 
-#: src/configgui/main.c:251
+#: ../src/configgui/main.c:251
 msgid "Time format:"
 msgstr "Formato orario:"
 
-#: src/configgui/main.c:275
+#: ../src/configgui/main.c:275
 msgid "Entrance theme:"
 msgstr "Tema Entrance:"
 
-#: src/configgui/main.c:299
+#: ../src/configgui/main.c:299
 msgid "Entrance Daemon settings"
 msgstr "Configurazione del Demone Entrance"
 
-#: src/configgui/main.c:309
+#: ../src/configgui/main.c:309
 msgid "Number of attempts:"
 msgstr "Numero di tentativi:"
 
-#: src/configgui/main.c:325
+#: ../src/configgui/main.c:325
 msgid "X server:"
 msgstr "X server:"
 
-#: src/configgui/main.c:369
+#: ../src/configgui/main.c:369
 msgid "Automatic login"
 msgstr "Login automatico"
 
-#: src/configgui/main.c:376
+#: ../src/configgui/main.c:376
 msgid "Autologin user:"
 msgstr "Accesso automatico per l'utente:"
 
-#: src/configgui/main.c:402
+#: ../src/configgui/main.c:402
 msgid "Pre-selected user"
 msgstr "Utente pre-selezionato"
 
-#: src/configgui/main.c:411
+#: ../src/configgui/main.c:411
 msgid "Remember users"
 msgstr "Ricorda utenti"
 
-#: src/configgui/main.c:418
+#: ../src/configgui/main.c:418
 msgid "Number of remembers:"
 msgstr "Numero di ricordi:"
 
-#: src/configgui/main.c:434
+#: ../src/configgui/main.c:434
 msgid "System"
 msgstr "Sistema"
 
-#: src/configgui/main.c:448
+#: ../src/configgui/main.c:448
 msgid "Reboot allowed"
 msgstr "Permetti il riavvio"
 
-#: src/configgui/main.c:457
+#: ../src/configgui/main.c:457
 msgid "Shutdown allowed"
 msgstr "Permetti lo spegnimento"
 
-#: src/configgui/main.c:466
+#: ../src/configgui/main.c:466
 msgid "PAM Authentication"
 msgstr "Autenticazione PAM"
 
-#: src/configgui/main.c:473
+#: ../src/configgui/main.c:473
 msgid "Don't forget to save your settings before closing app."
 msgstr "Non scordare di salvare le tue impostazioni prima di chiudere l'applicazione."
 
-#: src/configgui/main.c:486
+#: ../src/configgui/main.c:486
 msgid "Save settings"
 msgstr "Impostazioni di salvataggio"
 
-#: src/configgui/main.c:492
+#: ../src/configgui/main.c:492
 msgid "Exit application"
 msgstr "Esci dall'applicazione"
 
-#: src/configgui/main.c:507
-#: src/client/main.c:729
+#: ../src/configgui/main.c:507
+#: ../src/client/main.c:732
 #, c-format
 msgid ""
 "Locale set failed!\n"
@@ -224,120 +224,123 @@ msgstr ""
 "Assegnamento localizzazione fallito!\n"
 "Per favore assicurati di avere i tuoi file di localizzazione installati per \"%s\"\n"
 
-#: src/configgui/main.c:514
+#: ../src/configgui/main.c:514
 #, c-format
 msgid "You need root permissions to run this\n"
 msgstr "Hai bisogni dei permessi di amministrazione per avviare questo\n"
 
-#: src/client/entrance_config.c:212
-msgid "/etc/shadow was found but couldn't be read. Run entrance as root."
-msgstr "/etc/shadow è stato trovato ma non è leggibile. Esegui entrance come amministratore."
-
-#: src/client/entrance_config.c:222
-msgid "Entrance has been built without PAM support, so PAM isn't used for authentication!"
-msgstr "Entrance è stato compilato senza supporto PAM, per cui PAM non è usato per l'autenticazione!"
-
-#: src/client/entrance_session.c:70
+#: ../src/client/entrance_session.c:70
 #, c-format
 msgid "Could not load %s\n"
 msgstr "Impossibile leggere %s\n"
 
-#: src/client/entrance_session.c:426
+#: ../src/client/entrance_session.c:426
 #, c-format
 msgid "Selected session command: %s"
 msgstr "Comando della sessione selezionata: %s"
 
-#: src/client/entrance_ipc.c:24
+#: ../src/client/entrance_ipc.c:24
 #, c-format
 msgid "_entrance_ipc_server_add: Received event\n"
 msgstr "_entrance_ipc_server_add: Evento ricevuto\n"
 
-#: src/client/entrance_ipc.c:40
+#: ../src/client/entrance_ipc.c:40
 #, c-format
 msgid "_entrance_ipc_server_del: Received event\n"
 msgstr "_entrance_ipc_server_del: Evento ricevuto\n"
 
-#: src/client/entrance_ipc.c:57
+#: ../src/client/entrance_ipc.c:57
 #, c-format
 msgid "_entrance_ipc_server_data: Received [%i] [%i] (%i) \"%s\"\n"
 msgstr "_entrance_ipc_server_data: Ricevuto [%i] [%i] (%i) \"%s\"\n"
 
-#: src/client/entrance_ipc.c:63
+#: ../src/client/entrance_ipc.c:63
 #, c-format
 msgid "_entrance_ipc_server_data: Xauthority write success\n"
 msgstr "_entrance_ipc_server_data: Successo nella scrittura di Xauthority\n"
 
-#: src/client/entrance_ipc.c:69
+#: ../src/client/entrance_ipc.c:69
 #, c-format
 msgid "_entrance_ipc_server_data: Xauthority write failure!\n"
 msgstr "_entrance_ipc_server_data: Fallimento nella scrittura di Xauthority!\n"
 
-#: src/client/entrance_ipc.c:76
+#: ../src/client/entrance_ipc.c:76
 #, c-format
 msgid "_entrance_ipc_server_data: Invalid message received\n"
 msgstr "_entrance_ipc_server_data: Ricevuto un messaggio non valido\n"
 
-#: src/client/entrance_ipc.c:95
+#: ../src/client/entrance_ipc.c:95
 #, c-format
 msgid "_entrance_ipc_client_add: Received event\n"
 msgstr "_entrance_ipc_client_add: Evento ricevuto\n"
 
-#: src/client/entrance_ipc.c:111
+#: ../src/client/entrance_ipc.c:111
 #, c-format
 msgid "_entrance_ipc_client_del: Received event\n"
 msgstr "_entrance_ipc_client_del: Evento ricevuto\n"
 
-#: src/client/entrance_ipc.c:128
+#: ../src/client/entrance_ipc.c:128
 #, c-format
 msgid "_entrance_ipc_client_data: Received [%i] [%i] (%i) \"%s\"\n"
 msgstr "_entrance_ipc_client_data: Ricevuto [%i] [%i] (%i) \"%s\"\n"
 
-#: src/client/entrance_x_session.c:177
+#: ../src/client/entrance_x_session.c:177
 #, c-format
 msgid "Failed on: %s\n"
 msgstr "Fallimento in: %s\n"
 
-#: src/client/main.c:69
+#: ../src/client/main.c:70
 msgid "Welcome to"
 msgstr "Benvenuto in"
 
-#: src/client/main.c:75
+#: ../src/client/main.c:76
 #, c-format
 msgid "Welcome to Localhost"
 msgstr "Benvenuto in Localhost"
 
-#: src/client/main.c:298
+#: ../src/client/main.c:299
 #, c-format
 msgid "Unknown signal Emission(%s)"
 msgstr "Emissione di un segnale sconosciuto(%s)"
 
-#: src/client/main.c:573
+#: ../src/client/main.c:574
 #, c-format
 msgid "Unknown Container Orientation\n"
 msgstr "Orientamento di un Contenitore Sconosciuto\n"
 
-#: src/client/main.c:737
+#: ../src/client/main.c:740
 msgid "ERROR: could not parse command line options.\n"
 msgstr "ERRORE: impossibile trasmettere le opzioni da linea di comando.\n"
 
-#: src/client/main.c:746
+#: ../src/client/main.c:749
 msgid "Invalid non-option argument"
 msgstr "Argomento invalido, non è un'opzione"
 
-#: src/client/main.c:883
+#: ../src/client/main.c:899
 #, c-format
 msgid "Fatal error: Could not initialize ecore_evas!\n"
 msgstr "Errore fatale: impossibile inizializzare ecore_evas!\n"
 
-#: src/client/main.c:972
+#: ../src/client/main.c:988
 msgid "Entrance - Testing Mode"
 msgstr "Entrance - Modalità di Test"
 
-#: src/client/main.c:1181
+#: ../src/client/main.c:1197
 msgid "Please enter your user name"
 msgstr "Per favore inserisci il tuo nome utente"
 
-#: src/client/main.c:1183
+#: ../src/client/main.c:1199
 msgid "Please enter your password"
 msgstr "Per favore inserisci la tua password"
+
+#~ msgid "/etc/shadow was found but couldn't be read. Run entrance as root."
+#~ msgstr ""
+#~ "/etc/shadow è stato trovato ma non è leggibile. Esegui entrance come "
+#~ "amministratore."
+#~ msgid ""
+#~ "Entrance has been built without PAM support, so PAM isn't used for "
+#~ "authentication!"
+#~ msgstr ""
+#~ "Entrance è stato compilato senza supporto PAM, per cui PAM non è usato "
+#~ "per l'autenticazione!"
 
