@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # Entrance Init script.
 # Contains things which are to be ran when Entrance comes up
 # (right after X server start and root window settings).

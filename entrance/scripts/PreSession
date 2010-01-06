@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # Entrance PreSession script.
 # Contains things which are to be ran before session is started.
 # After this script, session is started.

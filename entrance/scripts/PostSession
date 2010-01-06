@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # Entrance PostSession script.
 # Contains things which are to be ran after session is started.
 # After this script, entrance ends and system is rebooted,
