@@ -108,15 +108,15 @@ _basic_create_widgets(E_Config_Dialog * cfd, Evas * evas,
   e_widget_framelist_object_append(of, ob);
   e_widget_list_object_append(o, of, 1, 1, 0.5);
 
-  of = e_widget_frametable_add(evas, D_("Yahoo Forecasts Code"), 0);
-  ob = e_widget_label_add(evas, D_("Yahoo Forecasts Code/US Zip Code"));
+  of = e_widget_frametable_add(evas, D_("Weather.com Forecasts Code"), 0);
+  ob = e_widget_label_add(evas, D_("Forecasts Code/US Zip Code"));
   e_widget_frametable_object_append(of, ob, 0, 0, 1, 1, 1, 0, 1, 0);
   ob = e_widget_entry_add(evas, &cfdata->code, NULL, NULL, NULL);
   e_widget_size_min_set(ob, 100, 1);
   e_widget_frametable_object_append(of, ob, 1, 0, 1, 1, 1, 0, 1, 0);
   ob = e_widget_label_add(evas, D_("To find the code for your area, go to:"));
   e_widget_frametable_object_append(of, ob, 0, 1, 1, 1, 1, 0, 1, 0);
-  snprintf(buf, sizeof(buf), D_("%s, find your area, and look at the URL"), "http://weather.yahoo.com");
+  snprintf(buf, sizeof(buf), D_("%s, find your area, and look at the URL"), "http://www.weather.com");
   ob = e_widget_label_add(evas, buf);
   e_widget_frametable_object_append(of, ob, 0, 2, 2, 1, 1, 0, 1, 0);
   e_widget_list_object_append(o, of, 1, 1, 0.5);
