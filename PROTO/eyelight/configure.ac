@@ -73,6 +73,8 @@ data/Makefile
 data/viewer/Makefile
 data/themes/Makefile
 data/themes/default/Makefile
+data/themes/default/fonts/Makefile
+data/themes/default/transition/Makefile
 ])
 
 

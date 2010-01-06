@@ -43,5 +43,16 @@ edit/edit_image.c
 libeyelight_la_DEPENDENCIES = $(top_builddir)/config.h
 libeyelight_la_LDFLAGS = @eyelight_libs@
 
+EXTRA_DIST = \
+eyelight_common.h \
+eyelight_compiler_parser.h \
+Eyelight_Edit.h \
+Eyelight.h \
+edit/edit.h \
+eyelight_object.h \
+Eyelight_Smart.h \
+eyelight_viewer.h \
+eyelight_viewer_thumbnails.h
+
 clean-local:
 	@rm -rf *.gcno
