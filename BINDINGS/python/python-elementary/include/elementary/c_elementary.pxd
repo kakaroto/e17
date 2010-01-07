@@ -395,13 +395,15 @@ cdef extern from "Elementary.h":
     # Bubble object
     evas.c_evas.Evas_Object *elm_bubble_add(evas.c_evas.Evas_Object *parent)
     void elm_bubble_label_set(evas.c_evas.Evas_Object *obj, char *label)
+    char *elm_bubble_label_get(evas.c_evas.Evas_Object *obj)
     void elm_bubble_info_set(evas.c_evas.Evas_Object *obj, char *info)
     void elm_bubble_content_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Evas_Object *content)
     void elm_bubble_icon_set(evas.c_evas.Evas_Object *pbj, evas.c_evas.Evas_Object *icon)
-    void elm_bubble_corner_set(evas.c_evas.Evas_Object *obj, char *corner) 
+    evas.c_evas.Evas_Object *elm_bubble_icon_get(evas.c_evas.Evas_Object *obj)
+    void elm_bubble_corner_set(evas.c_evas.Evas_Object *obj, char *corner)
 
     # Photo object
-    evas.c_evas.Evas_Object *elm_photo_add(evas.c_evas.Evas_Object *parent) 
+    evas.c_evas.Evas_Object *elm_photo_add(evas.c_evas.Evas_Object *parent)
     void elm_photo_file_set(evas.c_evas.Evas_Object *obj, char *file)
     void elm_photo_size_set(evas.c_evas.Evas_Object *obj, int size)
 

@@ -24,6 +24,20 @@ cdef class Bubble(Object):
     def label_set(self, label):
         elm_bubble_label_set(self.obj, label)
 
+    def label_get(self):
+        cdef char *l
+        l = elm_bubble_label_get(self.obj)
+        if l == NULL:
+            return None
+        return l
+
+    property label:
+        def __get__(self):
+            return self.label_get()
+
+        def __set__(self, value):
+            self.label_set(value)
+
     def info_set(self, info):
         elm_bubble_info_set(self.obj, info)
 
@@ -32,6 +46,18 @@ cdef class Bubble(Object):
 
     def icon_set(self, c_evas.Object icon):
         elm_bubble_icon_set(self.obj, icon.obj)
+
+    def icon_get(self):
+        cdef c_evas.Evas_Object *icon
+        icon = elm_bubble_icon_get(self.obj)
+        return evas.c_evas._Object_from_instance(<long> icon)
+
+    property icon:
+        def __get__(self):
+            return self.icon_get()
+
+        def __set__(self, value):
+            self.icon_set(value)
 
     def corner_set(self, corner):
         elm_bubble_corner_set(self.obj, corner)
