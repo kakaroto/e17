@@ -14,7 +14,7 @@
 #define AllocTag2(p, desc)
 #define AllocTag_dynamic_description(p, data)
 #define AllocTag(p, data)
-#define Debug(STATEMENT...)
+//#define Debug(STATEMENT...)
 #define Dout(cntrl, data)
 #define DoutFatal(cntrl, data) LibcwDoutFatal(, , cntrl, data)
 #define ForAllDebugChannels(STATEMENT...)
