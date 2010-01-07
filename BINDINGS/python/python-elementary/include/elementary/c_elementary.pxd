@@ -452,6 +452,7 @@ cdef extern from "Elementary.h":
     Elm_List_Item *elm_list_selected_item_get(evas.c_evas.Evas_Object *obj)
     evas.c_evas.Eina_List     *elm_list_selected_items_get(evas.c_evas.Evas_Object *obj)
     void         elm_list_item_selected_set(Elm_List_Item *item, evas.c_evas.Eina_Bool selected)
+    evas.c_evas.Eina_Bool      elm_list_item_selected_get(Elm_List_Item *item)
     void         elm_list_item_show(Elm_List_Item *item)
     void         elm_list_item_del(Elm_List_Item *item)
     void         elm_list_item_del_cb_set(Elm_List_Item *item, void (*func)(void *data, evas.c_evas.Evas_Object *obj, void *event_info))

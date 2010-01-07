@@ -126,6 +126,13 @@ cdef class ListItem:
     def selected_set(self, selected):
         elm_list_item_selected_set(self.item, selected)
 
+    property selected:
+        def __get__(self):
+            return elm_list_item_selected_get(self.item)
+
+        def __set__(self, selected):
+            elm_list_item_selected_set(self.item, selected)
+
     def show(self):
         elm_list_item_show(self.item)
 
