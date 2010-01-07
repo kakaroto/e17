@@ -51,6 +51,8 @@ elif [ "$type" = "rgb" ]; then
 	type="r"
 elif [ "$type" = "bool" ]; then
 	type="b"
+elif [ "$(echo $1|egrep '^\/entrance\/session\/\d+\/session" ] || [ "$(echo $1|egrep '^\/entrance\/session\/\d+\/title" ] || [ "$(echo $1|egrep '^\/entrance\/session\/\d+\/icon" ]; then
+	type="s"
 else
 	usage 1 "Wrong value."
 fi
