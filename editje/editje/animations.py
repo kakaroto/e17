@@ -159,10 +159,10 @@ class AnimationDetails(EditjeDetails):
 
         self._parent.main_edje.signal_callback_add("timestop", "*",
                                                    self._timeline_cb)
-        self.e.animation.event_callback_add("animation.changed", self._update)
-        self.e.animation.event_callback_add("animation.unselected", self._update)
-        self.e.animation.event_callback_add("state.added", self._timestop_add)
-        self.e.animation.event_callback_add("state.changed", self._update_states)
+        self.e.animation.callback_add("animation.changed", self._update)
+        self.e.animation.callback_add("animation.unselected", self._update)
+        self.e.animation.callback_add("state.added", self._timestop_add)
+        self.e.animation.callback_add("state.changed", self._update_states)
 
     def _update(self, emissor, data):
         self._header_table["name"].value = data

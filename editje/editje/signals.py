@@ -30,7 +30,7 @@ from details_widget_color import WidgetColor
 from details_widget_button import WidgetButton
 from details_widget_actionslist import WidgetActionsList
 from floater import Wizard
-from clist import CList, CListView
+from clist import CList
 from prop import Property, PropertyTable
 
 
@@ -38,55 +38,49 @@ class SignalsList(CList):
     def __init__(self, parent):
         CList.__init__(self, parent)
         self.e = parent.e
+
+        self._options_load()
         self.options = True
 
-        self.e.event_callback_add("signals.changed", self._signals_update)
-        self.e.event_callback_add("signal.added", self._signal_added)
-        self.e.event_callback_add("signal.removed", self._signal_removed)
+        self.e.callback_add("signals.changed", self._signals_update)
+        self.e.callback_add("signal.added", self._signal_added)
+        self.e.callback_add("signal.removed", self._signal_removed)
 
-        self.e.signal.event_callback_add("program.changed", self._signal_changed)
-        self.e.signal.event_callback_add("program.unselected", self._signal_changed)
-
-        self.event_callback_add("item.selected", self._item_changed)
-        self.event_callback_add("item.unselected", self._item_changed)
-
-    def _view_load(self):
-        self._selected = None
-        self._view = SignalsListView(self, self.parent.view)
+        self.e.signal.callback_add("program.changed", self._signal_changed)
+        self.e.signal.callback_add("program.unselected", self._signal_changed)
 
     def _signals_update(self, emissor, data):
-        self.populate(data)
+        self.clear()
+        for i in data:
+            self.add(i)
+        self.go()
 
     def _signal_added(self, emissor, data):
         self.add(data)
+        self.go()
         self.open = True
         self.select(data)
 
     def _signal_removed(self, emissor, data):
-        self.view.remove(data)
+        self.remove(data)
 
     def _signal_changed(self, emissor, data):
-        if data != self._selected:
-            if data:
-                self.select(data)
-            else:
-                self.unselect()
+        self.selection_clear()
+        self.select(data)
 
-    def _item_changed(self, emissor, data):
-        if self.e.signal.name != data:
-            self.e.signal.name = data
+    # Selection
+    def _selected_cb(self, li, it):
+        CList._selected_cb(self, li, it)
+        name = it.label_get()
+        self.e.signal.name = name
+        self._options_edje.signal_emit("remove,enable", "")
 
-    def new(self):
-        NewSignalPopUp(self.parent).open()
+    def _unselected_cb(self, li, it):
+        CList._unselected_cb(self, li, it)
+        if not self._selected:
+            self._options_edje.signal_emit("remove,disable", "")
 
-    def remove(self):
-        if self._selected:
-            signal = self._selected
-            self.select("")
-            self.e.signal_del(signal)
-
-
-class SignalsListView(CListView):
+    # Options
     def _options_load(self):
         self._options_edje = edje.Edje(self.edje_get().evas,
                                file=self._theme_file,
@@ -102,19 +96,11 @@ class SignalsListView(CListView):
         self._options = False
 
     def _new_cb(self, obj, emission, source):
-        self.controller.new()
+        NewSignalPopUp(self._parent).open()
 
     def _remove_cb(self, obj, emission, source):
-        self.controller.remove()
-
-    def select(self, name):
-        CListView.select(self, name)
-        self._options_edje.signal_emit("remove,enable", "")
-
-    def unselect(self, name):
-        CListView.unselect(self, name)
-        self._options_edje.signal_emit("remove,disable", "")
-
+        for i in self.selected:
+            self.e.signal_del(i[0])
 
 class NewSignalPopUp(Wizard):
 
@@ -262,7 +248,7 @@ class SignalDetails(EditjeDetails):
         prop.widget_add("s", WidgetEntry(self))
         self["out"].property_add(prop)
 
-        self.e.signal.event_callback_add("program.changed",self._update)
+        self.e.signal.callback_add("program.changed",self._update)
 
     def _update(self, emissor, data):
         self._header_table["name"].value = data

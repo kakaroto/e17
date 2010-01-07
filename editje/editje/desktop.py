@@ -34,22 +34,22 @@ class Desktop(Controller):
         Controller.__init__(self, parent)
 
         self.e = parent.e
-        self.e.event_callback_add("group.changed", self._group_load)
-        self.e.event_callback_add("group.min.changed", self._group_min_load)
-        self.e.event_callback_add("group.max.changed", self._group_max_load)
-        self.e.event_callback_add("part.added",
+        self.e.callback_add("group.changed", self._group_load)
+        self.e.callback_add("group.min.changed", self._group_min_load)
+        self.e.callback_add("group.max.changed", self._group_max_load)
+        self.e.callback_add("part.added",
                                   self._part_added)
-        self.e.part.event_callback_add("part.changed",
+        self.e.part.callback_add("part.changed",
                                        self._part_load)
-        self.e.part.event_callback_add("part.unselected",
+        self.e.part.callback_add("part.unselected",
                                        self._part_load)
-        self.e.part.state.event_callback_add("rel1x.changed",
+        self.e.part.state.callback_add("rel1x.changed",
                                              self._rel1x_load)
-        self.e.part.state.event_callback_add("rel1y.changed",
+        self.e.part.state.callback_add("rel1y.changed",
                                              self._rel1y_load)
-        self.e.part.state.event_callback_add("rel2x.changed",
+        self.e.part.state.callback_add("rel2x.changed",
                                              self._rel2x_load)
-        self.e.part.state.event_callback_add("rel2y.changed",
+        self.e.part.state.callback_add("rel2y.changed",
                                              self._rel2y_load)
 
     def _view_load(self):

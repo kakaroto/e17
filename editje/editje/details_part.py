@@ -33,7 +33,7 @@ class PartDetails(EditjeDetails):
         EditjeDetails.__init__(self, parent,
                                group="editje/collapsable/part_properties")
 
-        self.e.part.event_callback_add("part.changed", self._part_update)
+        self.e.part.callback_add("part.changed", self._part_update)
 
         self.title_set("part properties")
 

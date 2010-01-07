@@ -19,7 +19,7 @@
 import edje
 import elementary
 
-from clist import CList, CListView
+from clist import CList
 import animations
 
 
@@ -27,56 +27,49 @@ class AnimationsList(CList):
     def __init__(self, parent):
         CList.__init__(self, parent)
         self.e = parent.e
+
+        self._options_load()
         self.options = True
 
-        self.e.event_callback_add("animations.changed", self._animations_update)
-        self.e.event_callback_add("animation.added", self._animation_added)
-        self.e.event_callback_add("animation.removed", self._animation_removed)
+        self.e.callback_add("animations.changed", self._animations_update)
+        self.e.callback_add("animation.added", self._animation_added)
+        self.e.callback_add("animation.removed", self._animation_removed)
 
-        self.e.animation.event_callback_add("animation.changed", self._animation_changed)
-        self.e.animation.event_callback_add("animation.unselected", self._animation_changed)
-
-        self.event_callback_add("item.selected", self._item_changed)
-        self.event_callback_add("item.unselected", self._item_changed)
-
-    def _view_load(self):
-        self._selected = None
-        self._view = AnimationsListView(self, self.parent.view)
+        self.e.animation.callback_add("animation.changed", self._animation_changed)
+        self.e.animation.callback_add("animation.unselected", self._animation_changed)
 
     def _animations_update(self, emissor, data):
-        self.populate(data)
-#        self.select("")
+        self.clear()
+        for i in data:
+            self.add(i)
+        self.go()
 
     def _animation_added(self, emissor, data):
         self.add(data)
+        self.go()
         self.open = True
         self.select(data)
 
     def _animation_removed(self, emissor, data):
-        self.view.remove(data)
+        self.remove(data)
 
     def _animation_changed(self, emissor, data):
-        if data != self._selected:
-            if data:
-                self.select(data)
-            else:
-                self.unselect()
+        self.selection_clear()
+        self.select(data)
 
-    def _item_changed(self, emissor, data):
-        if self.e.animation.name != data:
-            self.e.animation.name = data
+    # Selection
+    def _selected_cb(self, li, it):
+        CList._selected_cb(self, li, it)
+        name = it.label_get()
+        self.e.animation.name = name
+        self._options_edje.signal_emit("remove,enable", "")
 
-    def new(self):
-        animations.NewAnimationPopUp(self.parent).open()
+    def _unselected_cb(self, li, it):
+        CList._unselected_cb(self, li, it)
+        if not self._selected:
+            self._options_edje.signal_emit("remove,disable", "")
 
-    def remove(self):
-        if self._selected:
-            anim = self._selected
-            self.select("")
-            self.e.animation_del(anim)
-
-
-class AnimationsListView(CListView):
+    # Options
     def _options_load(self):
         self._options_edje = edje.Edje(self.edje_get().evas,
                         file=self._theme_file,
@@ -92,15 +85,8 @@ class AnimationsListView(CListView):
         self._options = False
 
     def _new_cb(self, obj, emission, source):
-        self.controller.new()
+        animations.NewAnimationPopUp(self._parent).open()
 
     def _remove_cb(self, obj, emission, source):
-        self.controller.remove()
-
-    def select(self, name):
-        CListView.select(self, name)
-        self._options_edje.signal_emit("remove,enable", "")
-
-    def unselect(self, name):
-        CListView.unselect(self, name)
-        self._options_edje.signal_emit("remove,disable", "")
+        for i in self.selected:
+            self.e.animation_del(i[0])

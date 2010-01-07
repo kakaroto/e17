@@ -36,8 +36,8 @@ class EditablePart(Manager, object):
         self.state = EditableState(self)
 
         self._part_unselect_cb(self, None)
-        self.e.event_callback_add("group.changed", self._part_unselect_cb)
-        self.e.event_callback_add("part.removed", self._part_removed_cb)
+        self.e.callback_add("group.changed", self._part_unselect_cb)
+        self.e.callback_add("part.removed", self._part_removed_cb)
 
     def _part_unselect_cb(self, emissor, data):
         self.name = ""
@@ -81,10 +81,10 @@ class EditablePart(Manager, object):
     # States
     def _states_init(self):
         self.states = None
-        self.event_callback_add("part.changed", self._states_reload_cb)
-        self.event_callback_add("part.unselected", self._states_reload_cb)
-        self.event_callback_add("state.added", self._states_reload_cb)
-        self.event_callback_add("state.removed", self._states_reload_cb)
+        self.callback_add("part.changed", self._states_reload_cb)
+        self.callback_add("part.unselected", self._states_reload_cb)
+        self.callback_add("state.added", self._states_reload_cb)
+        self.callback_add("state.removed", self._states_reload_cb)
 
     def _states_reload_cb(self, emissor, data):
         if data and self._part:

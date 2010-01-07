@@ -112,7 +112,7 @@ class Editable(Manager, object):
 
     def _min_max_init(self):
         self._min_max_update(self, None)
-        self.event_callback_add("group.changed", self._min_max_update)
+        self.callback_add("group.changed", self._min_max_update)
 
     def _min_max_update(self, emissor, data):
         if data:
@@ -151,8 +151,8 @@ class Editable(Manager, object):
     # Modifications
     def _modification_init(self):
         self._modification_clear_cb(self, None)
-        self.event_callback_add("saved", self._modification_clear_cb)
-        self.event_callback_add("group.changed", self._modification_clear_cb)
+        self.callback_add("saved", self._modification_clear_cb)
+        self.callback_add("group.changed", self._modification_clear_cb)
 
     def _modification_clear_cb(self, emissor, data):
         self._modificated = False
@@ -174,9 +174,9 @@ class Editable(Manager, object):
     # Parts
     def _parts_init(self):
         self.parts = None
-        self.event_callback_add("group.changed", self._parts_reload_cb)
-        self.event_callback_add("part.added", self._parts_reload_cb)
-        self.event_callback_add("part.removed", self._parts_reload_cb)
+        self.callback_add("group.changed", self._parts_reload_cb)
+        self.callback_add("part.added", self._parts_reload_cb)
+        self.callback_add("part.removed", self._parts_reload_cb)
 
     def _parts_reload_cb(self, emissor, data):
         self.parts = self._edje.parts
@@ -198,7 +198,7 @@ class Editable(Manager, object):
     # Programs
     def _programs_init(self):
         self.programs = None
-        self.event_callback_add("group.changed", self._programs_reload_cb)
+        self.callback_add("group.changed", self._programs_reload_cb)
 
     def _programs_reload_cb(self, emissor, data):
         self.programs = self._edje.programs
@@ -234,7 +234,7 @@ class Editable(Manager, object):
 
     def _animations_init(self):
         self._animations = None
-        self.event_callback_add("programs.changed", self._animations_reload_cb)
+        self.callback_add("programs.changed", self._animations_reload_cb)
 
     def _animations_reload_cb(self, emissor, data):
         self._animations = map(lambda x: x[1:x.rindex("@")],
@@ -312,7 +312,7 @@ class Editable(Manager, object):
 
     def _signals_init(self):
         self._signals = None
-        self.event_callback_add("programs.changed", self._signals_reload_cb)
+        self.callback_add("programs.changed", self._signals_reload_cb)
 
     def _signals_reload_cb(self, emissor, data):
         self._signals = [e for e in self.programs if not e.startswith("@")]

@@ -32,6 +32,7 @@ from details_part import PartDetails
 from details_state import PartStateDetails
 from popups import ImagePopUp, FontPopUp
 from desktop import Desktop
+from collapsable import CollapsablesBox
 from parts_list import PartsList
 from animations_list import AnimationsList
 from animations import AnimationDetails
@@ -156,7 +157,7 @@ class Editje(elementary.Window):
     ###########
     def _toolbar_static_init(self):
         self._toolbar_filename_cb(self, "< none >")
-        self.e.event_callback_add("filename.changed",
+        self.e.callback_add("filename.changed",
                                   self._toolbar_filename_cb)
 
         self.main_edje.part_text_set("details_group_label", "Group:")
@@ -171,7 +172,7 @@ class Editje(elementary.Window):
                                      self._group_name_entry)
 
         self._toolbar_group_cb(self, "< none >")
-        self.e.event_callback_add("group.changed",
+        self.e.callback_add("group.changed",
                                   self._toolbar_group_cb)
 
         self._toolbar_bt_init(self.main_edje, "open.bt", "Open", self._open_cb)
@@ -246,7 +247,7 @@ class Editje(elementary.Window):
 #        part = self.e.part.name
 #        def play_end(emissor, data):
 #            self.e.part.name = part
-#        self.e.animation.event_callback_add("animation.play.end", play_end)
+#        self.e.animation.callback_add("animation.play.end", play_end)
         self.e.part.name = ""
         self.e.animation.play()
 
@@ -388,17 +389,25 @@ class Editje(elementary.Window):
         self._toolbar_bt_init(edj, "font_list.bt", "Fonts", self._font_list_cb)
 
         # Mainbar
-        mainbar = PartsList(self)
-        mainbar.title = "Parts"
-        mainbar.options = True
-        mainbar.open = True
-        mainbar.view.show()
+        mainbar = CollapsablesBox(self)
+        mainbar.size_hint_weight_set(evas.EVAS_HINT_EXPAND,
+                                     evas.EVAS_HINT_EXPAND)
+        mainbar.size_hint_align_set(evas.EVAS_HINT_FILL,
+                                    evas.EVAS_HINT_FILL)
+        mainbar.show()
+
+        list = PartsList(self)
+        list.title = "Parts"
+        list.options = True
+        list.open = True
+        mainbar.pack_end(list)
+        list.show()
 
         # Sidebar
         sidebar = self._parts_sidebar_create()
 
         self._mode_add("Parts", "editje/icon/part",
-                       toolbar, mainbar.view, sidebar)
+                       toolbar, mainbar, sidebar)
 
     def _parts_sidebar_create(self):
         box = elementary.Box(self)
@@ -454,7 +463,7 @@ class Editje(elementary.Window):
         self._toolbar_bt_init(edj, "stop.bt", "Stop", self._stop_cb)
 
         # Mainbar
-        mainbar = elementary.Box(self)
+        mainbar = CollapsablesBox(self)
         mainbar.size_hint_weight_set(evas.EVAS_HINT_EXPAND,
                                      evas.EVAS_HINT_EXPAND)
         mainbar.size_hint_align_set(evas.EVAS_HINT_FILL,
@@ -465,14 +474,14 @@ class Editje(elementary.Window):
         list.options = True
         list.title = "Animations"
         list.open = True
-        mainbar.pack_end(list.view)
-        list.view.show()
+        mainbar.pack_end(list)
+        list.show()
 
         list = PartsList(self)
         list.title = "Parts"
         list.open = True
-        mainbar.pack_end(list.view)
-        list.view.show()
+        mainbar.pack_end(list)
+        list.show()
 
         # Sidebar
         sidebar = self._animations_sidebar_create()
@@ -519,10 +528,19 @@ class Editje(elementary.Window):
         toolbar.show()
 
         # Mainbar
-        mainbar = SignalsList(self)
-        mainbar.title = "Signals"
-        mainbar.open = True
-        mainbar.options = True
+        mainbar = CollapsablesBox(self)
+        mainbar.size_hint_weight_set(evas.EVAS_HINT_EXPAND,
+                                     evas.EVAS_HINT_EXPAND)
+        mainbar.size_hint_align_set(evas.EVAS_HINT_FILL,
+                                    evas.EVAS_HINT_FILL)
+        mainbar.show()
+
+        list = SignalsList(self)
+        list.title = "Signals"
+        list.open = True
+        list.options = True
+        mainbar.pack_end(list)
+        list.show()
 
         # Sidebar
         sidebar = SignalDetails(self)
@@ -530,13 +548,13 @@ class Editje(elementary.Window):
         sidebar.show()
 
         self._mode_add("Signals", "editje/icon/signal",
-                       toolbar, mainbar.view, sidebar)
+                       toolbar, mainbar, sidebar)
 
     # HACKS
     def _hacks_init(self):
-        self.e.event_callback_add("group.changed",
+        self.e.callback_add("group.changed",
                                        self._group_changed_cb)
-        self.e.part.event_callback_add("part.changed",
+        self.e.part.callback_add("part.changed",
                                        self._part_selected_cb)
 
     def _group_changed_cb(self, emissor, data):

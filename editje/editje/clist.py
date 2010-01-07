@@ -16,93 +16,167 @@
 # You should have received a copy of the GNU Lesser General Public
 # License along with Editje.  If not, see
 # <http://www.gnu.org/licenses/>.
+import evas
 import edje
 import elementary
 
-from collapsable import Collapsable, CollapsableView
+from collapsable import Collapsable
 
 
 class CList(Collapsable):
-    def _view_load(self):
-        self._selected = None
-        self._view = CListView(self, self.parent.view)
 
-    def populate(self, list):
-        self._view.populate(list)
-        if self._selected:
-            self._view.select(self._selected)
+    def __init__(self, parent):
+        Collapsable.__init__(self, parent)
+        self._content_load()
 
-    def add(self, item):
-        self._view.add(item)
-        self.event_emit("item.added", item)
+        self._first = None
+        self._items = {}
+        self._selected = {}
+        self.multi = False
 
-    def remove(self, item):
-        self._view.remove(item)
-        self.event_emit("item.removed", item)
-        if self._selected == item:
-            self._view.select(None)
-
-    def select(self, item):
-        if self._selected != item:
-            self._selected = item
-            self._view.select(item)
-            self.event_emit("item.selected", self._selected)
-
-    def unselect(self):
-        self._view.unselect(self._selected)
-        self._selected = None
-        self.event_emit("item.unselected", self._selected)
-
-    def _item_select_cb(self, list, it, item, *args, **kwargs):
-        if self._selected != item:
-            self.select(item)
-
-
-class CListView(CollapsableView):
     def _content_load(self):
-        self.list = elementary.List(self.parent_view)
-        self.list.style_set("editje.collapsable")
-        self.content_set("content", self.list)
-        self.list.show()
+        self._list = elementary.List(self._parent)
+        self._list.style_set("editje.collapsable")
+        self._list.bounce_set(False, False)
+        self._list.callback_selected_add(self._selected_cb)
+        self._list.callback_unselected_add(self._unselected_cb)
+        self.content_set("content", self._list)
+        self._list.show()
 
+    # List
+    def clear(self):
         self._first = None
-        self.items = {}
+        self._items.clear()
+        self._list.clear()
 
-    def populate(self, list):
-        self._first = None
-        self.items.clear()
-        self.list.clear()
-        if list:
-            self._first = self._add(list[0])
-        for item in list[1:]:
-            self._add(item)
-        self.list.go()
+    def add(self, item, data=None):
+        if not self._items.get(item):
+            i = self._list.item_append(item, None, None, None, data)
+            self._items[item] = i
+            self.event_emit("item.added", item)
+            if self._selected.get(item):
+                i.selected = True
 
     def remove(self, item):
-        self.items[item].delete()
-        self.list.go()
-        del self.items[item]
+        i = self._items.get(item)
+        if i:
+            i.delete()
+            self._list.go()
+            del self._items[item]
+            self.event_emit("item.removed", item)
 
-    def _add(self, item):
-        if not item in self.items:
-            i = self.list.item_append(item, None, None,
-                                      self.controller._item_select_cb, item)
-            self.items[item] = i
-            return i
+    def go(self):
+        self._selected.clear()
+        for i in self._list.selected_items_get():
+            self._selected[i.label_get()] = True
+        self._list.go()
 
-    def add(self, item):
-        self._add(item)
-        self.list.go()
+    # Selection
+    def select(self, item):
+        i = self._items.get(item)
+        if i and not i.selected:
+            i.selected_set(True)
 
-    def select(self, name):
-        item = self.items.get(name)
-        if name and item:
-            item.selected_set(True)
-        elif self._first:
+    def select_first(self):
+        if self._first and not self._first.selected:
             self._first.selected_set(True)
 
-    def unselect(self, name):
-        item = self.items.get(name)
-        if name and item:
-            item.selected_set(False)
+    def _selected_cb(self, li, it):
+        data = (it.label_get(),) + it.data_get()[0]
+        if not self._selected.has_key(data[0]):
+            self._selected[data[0]] = True
+            self.event_emit("item.selected", data)
 
+    def unselect(self, item):
+        i = self._items.get(item)
+        if i and i.selected:
+            i.selected_set(False)
+
+    def _unselected_cb(self, li, it):
+        data = (it.label_get(),) + it.data_get()[0]
+        if self._selected.has_key(data[0]):
+            self._selected.pop(data[0], None)
+            self.event_emit("item.unselected", data)
+
+    def selection_clear(self):
+        for i in self._list.selected_items_get():
+            i.selected_set(False)
+
+    def _selected_get(self):
+        ret = []
+        for s in self._selected.iterkeys():
+            ret.append((s,) + self._items[s].data_get()[0])
+        return ret
+
+    selected = property(_selected_get)
+
+    # Multi
+    def _multi_set(self, value):
+        self._list.multi_select = value
+
+    def _multi_get(self):
+        return self._list.multi_select
+
+    multi = property(_multi_get, _multi_set)
+
+if __name__ == "__main__":
+    from collapsable import CollapsablesBox
+
+    elementary.init()
+    elementary.policy_set(elementary.ELM_POLICY_QUIT,
+                          elementary.ELM_POLICY_QUIT_LAST_WINDOW_CLOSED)
+    win = elementary.Window("Test", elementary.ELM_WIN_BASIC)
+    win.title_set("Test")
+    win.autodel_set(True)
+    win.resize(300, 600)
+
+    bg = elementary.Background(win)
+    win.resize_object_add(bg)
+    bg.size_hint_weight_set(evas.EVAS_HINT_EXPAND, evas.EVAS_HINT_EXPAND)
+    bg.show()
+
+    bx = CollapsablesBox(win)
+    bx.size_hint_weight_set(evas.EVAS_HINT_EXPAND,
+                            evas.EVAS_HINT_EXPAND)
+    bx.size_hint_align_set(evas.EVAS_HINT_FILL,
+                           evas.EVAS_HINT_FILL)
+    win.resize_object_add(bx)
+    bx.show()
+
+    i = CList(bx)
+    i.title = "Item1"
+    i.open = True
+    bx.pack_end(i)
+    i.show()
+
+    i.add("One", None)
+    i.add("Two", (1,1))
+    i.add("Three", (1,1))
+    i.add("Four", (1,1))
+    i.add("XXX", (1,1))
+    i.add("YYY", (1,1))
+    i.add("KKK", (1,1))
+    i.add("ZZZ", (1,1))
+    i.go()
+
+    i = CList(bx)
+    i.title = "Item2"
+    i.open = True
+    i.multi = True
+    bx.pack_end(i)
+    i.show()
+
+    i.add("One", None)
+    i.add("Two", (1,1))
+    i.add("Three", (1,1))
+    i.add("Four", (1,1))
+    i.add("XXX", (1,1))
+    i.add("YYY", )
+    i.add("KKK", (1,1))
+    i.add("ZZZ", (1,1))
+    i.go()
+
+    win.show()
+
+    elementary.run()
+    elementary.shutdown()

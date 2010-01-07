@@ -19,7 +19,7 @@
 import edje
 import elementary
 
-from clist import CList, CListView
+from clist import CList
 from newpart import NewPart
 
 
@@ -28,63 +28,51 @@ class PartsList(CList):
         CList.__init__(self, parent)
         self.e = parent.e
 
-        self.e.event_callback_add("parts.changed", self._parts_update)
-        self.e.event_callback_add("part.added", self._part_added)
-        self.e.event_callback_add("part.removed", self._part_removed)
+        self._options_load()
 
-        self.e.part.event_callback_add("part.changed", self._part_changed)
-        self.e.part.event_callback_add("part.unselected", self._part_changed)
+        self.e.callback_add("parts.changed", self._parts_update)
+        self.e.callback_add("part.added", self._part_added)
+        self.e.callback_add("part.removed", self._part_removed)
 
-        self.event_callback_add("item.selected", self._item_changed)
-        self.event_callback_add("item.unselected", self._item_changed)
-
-    def _view_load(self):
-        self._selected = None
-        self._view = PartsListView(self, self.parent.view)
+        self.e.part.callback_add("part.changed", self._part_changed)
+        self.e.part.callback_add("part.unselected", self._part_changed)
 
     def _parts_update(self, emissor, data):
-        self.populate(data[::-1])
+        self.clear()
+        for i in data[::-1]:
+            self.add(i)
+        self.go()
 
     def _part_added(self, emissor, data):
         self.add(data)
+        self.go()
         self.open = True
         self.select(data)
 
     def _part_removed(self, emissor, data):
-        self.view.remove(data)
+        self.remove(data)
 
     def _part_changed(self, emissor, data):
-        if data != self._selected:
-            if data:
-                self.select(data)
-            else:
-                self.unselect()
+        self.selection_clear()
+        self.select(data)
 
-    def _item_changed(self, emissor, data):
-        if self.e.part.name != data:
-            self.e.part.name = data
+    # Selection
+    def _selected_cb(self, li, it):
+        CList._selected_cb(self, li, it)
+        name = it.label_get()
+        self.e.part.name = name
+        self._options_edje.signal_emit("up,enable", "")
+        self._options_edje.signal_emit("down,enable", "")
+        self._options_edje.signal_emit("remove,enable", "")
 
-    def new(self):
-        NewPart(self.parent).open()
+    def _unselected_cb(self, li, it):
+        CList._unselected_cb(self, li, it)
+        if not self._selected:
+            self._options_edje.signal_emit("up,disable", "")
+            self._options_edje.signal_emit("down,disable", "")
+            self._options_edje.signal_emit("remove,disable", "")
 
-    def remove(self):
-        if self._selected:
-            part = self._selected
-            self.select("")
-            self.e.part_del(part)
-
-    def up(self):
-        if self.e.part._part:
-            self.e.part._part.restack_above()
-            self.e._parts_reload_cb(self, None)
-
-    def down(self):
-        if self.e.part._part:
-            self.e.part._part.restack_below()
-            self.e._parts_reload_cb(self, None)
-
-
-class PartsListView(CListView):
+    # Options
     def _options_load(self):
         self._options_edje = edje.Edje(self.edje_get().evas,
                                 file=self._theme_file,
@@ -108,25 +96,18 @@ class PartsListView(CListView):
         self._options = False
 
     def _new_cb(self, obj, emission, source):
-        self.controller.new()
+        NewPart(self._parent).open()
 
     def _up_cb(self, obj, emission, source):
-        self.controller.up()
+        if self.e.part._part:
+            self.e.part._part.restack_above()
+            self.e._parts_reload_cb(self, None)
 
     def _down_cb(self, obj, emission, source):
-        self.controller.down()
+        if self.e.part._part:
+            self.e.part._part.restack_below()
+            self.e._parts_reload_cb(self, None)
 
     def _remove_cb(self, obj, emission, source):
-        self.controller.remove()
-
-    def select(self, name):
-        CListView.select(self, name)
-        self._options_edje.signal_emit("up,enable", "")
-        self._options_edje.signal_emit("down,enable", "")
-        self._options_edje.signal_emit("remove,enable", "")
-
-    def unselect(self, name):
-        CListView.unselect(self, name)
-        self._options_edje.signal_emit("up,disable", "")
-        self._options_edje.signal_emit("down,disable", "")
-        self._options_edje.signal_emit("remove,disable", "")
+        for i in self.selected:
+            self.e.part_del(i[0])

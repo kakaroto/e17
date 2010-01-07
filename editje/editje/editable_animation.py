@@ -36,8 +36,8 @@ class EditableAnimation(Manager, object):
         self.program = EditableProgram(self.e)
 
         self._animation_unselect_cb(self, None)
-        self.e.event_callback_add("group.changed", self._animation_unselect_cb)
-        self.e.event_callback_add("animation.removed", self._animation_removed_cb)
+        self.e.callback_add("group.changed", self._animation_unselect_cb)
+        self.e.callback_add("animation.removed", self._animation_removed_cb)
 
 
     def _animation_unselect_cb(self, emissor, data):
@@ -83,10 +83,10 @@ class EditableAnimation(Manager, object):
     # States
     def _states_init(self):
         self.timestops = []
-        self.event_callback_add("animation.changed", self._states_reload_cb)
-        self.event_callback_add("animation.unselected", self._states_reload_cb)
-        self.event_callback_add("animation.changed", self._state_reload_cb)
-        self.event_callback_add("animation.unselected", self._state_reload_cb)
+        self.callback_add("animation.changed", self._states_reload_cb)
+        self.callback_add("animation.unselected", self._states_reload_cb)
+        self.callback_add("animation.changed", self._state_reload_cb)
+        self.callback_add("animation.unselected", self._state_reload_cb)
 
     def _states_reload_cb(self, emissor, data):
         self.timestops = []

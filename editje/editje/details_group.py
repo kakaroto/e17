@@ -42,7 +42,7 @@ class GroupDetails(EditjeDetails):
         wid.parser_out = lambda x: int(x)
         prop.widget_add("h", wid)
         self["main"].property_add(prop)
-        self.e.event_callback_add("group.min.changed", self._min_update)
+        self.e.callback_add("group.min.changed", self._min_update)
 
         prop = Property(parent, "max")
         wid = WidgetEntry(self)
@@ -54,7 +54,7 @@ class GroupDetails(EditjeDetails):
         wid.parser_out = lambda x: int(x)
         prop.widget_add("h", wid)
         self["main"].property_add(prop)
-        self.e.event_callback_add("group.max.changed", self._max_update)
+        self.e.callback_add("group.max.changed", self._max_update)
 
         prop = Property(parent, "current")
         wid = WidgetEntry(self)
@@ -66,7 +66,7 @@ class GroupDetails(EditjeDetails):
         wid.parser_out = lambda x: int(x)
         prop.widget_add("h", wid)
         self["main"].property_add(prop)
-        self.e.event_callback_add("group.changed", self._group_update)
+        self.e.callback_add("group.changed", self._group_update)
 
     def _group_update(self, emissor, data):
         self["main"]["current"].value = self.e._edje.size

@@ -29,14 +29,14 @@ class EditableState(Manager, object):
         self._name = None
 
         self.name = ""
-        self.event_callback_add("state.unselected", self._rel1_reset)
-        self.event_callback_add("state.unselected", self._rel2_reset)
-        self.event_callback_add("state.changed", self._rel1_load)
-        self.event_callback_add("state.changed", self._rel2_load)
+        self.callback_add("state.unselected", self._rel1_reset)
+        self.callback_add("state.unselected", self._rel2_reset)
+        self.callback_add("state.changed", self._rel1_load)
+        self.callback_add("state.changed", self._rel2_load)
 
 
-        editable_part.event_callback_add("part.unselected", self._reset_cb)
-        editable_part.event_callback_add("part.changed", self._load_cb)
+        editable_part.callback_add("part.unselected", self._reset_cb)
+        editable_part.callback_add("part.changed", self._load_cb)
 
     def _reset_cb(self, emissor, data):
         self.name = ""

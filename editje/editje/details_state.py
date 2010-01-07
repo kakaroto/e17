@@ -46,7 +46,7 @@ class StatesPopUp(Floater):
 
         self.content_set(self.states)
 
-        self._parent.e.part.event_callback_add("states.changed",
+        self._parent.e.part.callback_add("states.changed",
                                                self._list_populate)
         self._list_populate()
 
@@ -92,15 +92,15 @@ class PartStateDetails(EditjeDetails):
 
         self.edje_get().signal_emit("cl,option,enable", "editje")
 
-        self.e.part.state.event_callback_add("state.changed",
+        self.e.part.state.callback_add("state.changed",
                                              self._state_changed_cb)
-        self.e.part.state.event_callback_add("rel1x.changed",
+        self.e.part.state.callback_add("rel1x.changed",
                                              self._state_rels_changed_cb)
-        self.e.part.state.event_callback_add("rel1y.changed",
+        self.e.part.state.callback_add("rel1y.changed",
                                              self._state_rels_changed_cb)
-        self.e.part.state.event_callback_add("rel2x.changed",
+        self.e.part.state.callback_add("rel2x.changed",
                                              self._state_rels_changed_cb)
-        self.e.part.state.event_callback_add("rel2y.changed",
+        self.e.part.state.callback_add("rel2y.changed",
                                              self._state_rels_changed_cb)
         self._hide_all()
 
