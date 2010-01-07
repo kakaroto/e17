@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2009 Kim Woelders
+ * Copyright (C) 2004-2010 Kim Woelders
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -151,7 +151,7 @@ ECfgFileFindValue(ECfgFile * ecf, const char *key)
  */
 
 static void
-CfgItemLoad(ECfgFile * ecf, const char *prefix, const CfgItem * ci)
+CfgItemLoad(ECfgFile * ecf, const char *prefix, const CfgItem * ci, int dflt)
 {
    char                buf[1024];
    const char         *name = buf;
@@ -169,7 +169,8 @@ CfgItemLoad(ECfgFile * ecf, const char *prefix, const CfgItem * ci)
       return;
 
    value = (ecf) ? ECfgFileFindValue(ecf, name) : NULL;
-   CfgItemSetFromString(ci, value, 1);
+   if (value || dflt)
+      CfgItemSetFromString(ci, value, 1);
 }
 
 static void
@@ -200,22 +201,21 @@ ConfigurationGetFile(char *buf, int len)
    return buf;
 }
 
-void
-ConfigurationLoad(void)
+static void
+_ConfigurationLoad(const char *file, int dflt)
 {
    int                 i, nml, j, ncl;
    const EModule      *const *pml, *pm;
    const CfgItem      *pcl;
-   char                buf[4096];
    ECfgFile           *ecf;
 
    if (EDebug(EDBUG_TYPE_CONFIG))
       Eprintf("ConfigurationLoad\n");
 
-   memset(&Conf, 0, sizeof(EConf));
-
-   ecf = e16_db_open_read(ConfigurationGetFile(buf, sizeof(buf)));
+   ecf = e16_db_open_read(file);
    /* NB! We have to assign the defaults even if it doesn't exist */
+   if (!ecf && !dflt)
+      return;
 
    /* Load module configs */
    MODULE_LIST_GET(pml, nml);
@@ -225,12 +225,22 @@ ConfigurationLoad(void)
 	ncl = pm->cfg.num;
 	pcl = pm->cfg.lst;
 	for (j = 0; j < ncl; j++)
-	   CfgItemLoad(ecf, pm->name, pcl + j);
+	   CfgItemLoad(ecf, pm->name, pcl + j, dflt);
      }
    MODULE_LIST_FREE(pml);
 
    if (ecf)
       e16_db_close(ecf);
+}
+
+void
+ConfigurationLoad(void)
+{
+   char                buf[4096];
+
+   memset(&Conf, 0, sizeof(EConf));
+
+   _ConfigurationLoad(ConfigurationGetFile(buf, sizeof(buf)), 1);
 }
 
 void
