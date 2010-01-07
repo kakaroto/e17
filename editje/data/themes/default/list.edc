@@ -242,7 +242,7 @@ collections {
                target: "clipper";
                target: "options.bg";
                target: "content.bg";
-               after: "opened";
+               after: "closed";
             }
             program { name: "closed";
                action: SIGNAL_EMIT "closed" "editje/collapsable/list";

@@ -92,7 +92,7 @@ class CollapsableView(View, Layout):
         edje.signal_callback_add("opened", "editje/collapsable/list",
                                  self._opened_cb)
         edje.signal_callback_add("closed", "editje/collapsable/list",
-                                 self._opened_cb)
+                                 self._closed_cb)
 
         self._open = False
         self.open = False
