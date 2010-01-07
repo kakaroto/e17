@@ -192,7 +192,7 @@ EAPI unsigned int etch_timer_fps_get(Etch *e)
 	return e->fps;
 }
 /**
- * Advance the global time by one second per frame
+ * Advance the global time by one unit of seconds per frame
  * @param e The Etch instance
  */
 EAPI void etch_timer_tick(Etch *e)
@@ -226,7 +226,7 @@ EAPI void etch_timer_get(Etch *e, unsigned long *secs, unsigned long *usecs)
 	etch_time_secs_to(&e->curr, secs, usecs);
 }
 /**
- * Moe the Etch global time to the specific frame
+ * Move the Etch global time to the specific frame
  * @param e The Etch instance
  * @param frame Frame to go
  */

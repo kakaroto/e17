@@ -24,15 +24,9 @@
  * @mainpage Etch
  * @section intro Introduction
  * Etch is an abstract time based animation library. It animates values
- * of different types through different methods.
- *
+ * of different types through different methods
  * @file
  * @brief Etch API
- * @defgroup Etch_Group API
- * @{
- */
-
-/**
  * @defgroup Etch_Core_Group Core
  * The main object to interact with the Etch library is an Etch object.
  * An Etch object handles the global time and serves as a container
@@ -43,6 +37,7 @@ EAPI void etch_init(void);
 EAPI void etch_shutdown(void);
 
 typedef struct _Etch Etch; /**< Etch Opaque Handler */
+
 EAPI Etch * etch_new(void);
 EAPI void etch_delete(Etch *e);
 EAPI void etch_timer_fps_set(Etch *e, unsigned int fps);
@@ -100,19 +95,31 @@ typedef struct _Etch_Data
 typedef struct _Etch_Animation Etch_Animation; /**< Animation Opaque Handler */
 typedef struct _Etch_Animation_Keyframe Etch_Animation_Keyframe; /**< Animation Keyframe Opaque Handler */
 
+/**
+ * Possible animation types
+ */
 typedef enum _Etch_Animation_Type
 {
-	ETCH_ANIMATION_DISCRETE,
-	ETCH_ANIMATION_LINEAR,
-	ETCH_ANIMATION_COSIN,
-	ETCH_ANIMATION_QUADRATIC,
-	ETCH_ANIMATION_CUBIC,
+	ETCH_ANIMATION_DISCRETE, /**< The values are not interpolated, just discrete values */
+	ETCH_ANIMATION_LINEAR, /**< Linear interpolation */
+	ETCH_ANIMATION_COSIN, /***< Cosin interpolation */
+	ETCH_ANIMATION_QUADRATIC, /**< Quadratic bezier interpolation */
+	ETCH_ANIMATION_CUBIC, /**< Cubic bezier interpolation */
 	ETCH_ANIMATION_TYPES
 } Etch_Animation_Type;
 
-/** Callback function used when a property value changes */
+/**
+ * Callback function used when a property value changes
+ * @param curr The current value
+ * @param prev The previous value
+ * @param data User provided data
+ */
 typedef void (*Etch_Animation_Callback)(const Etch_Data *curr, const Etch_Data *prev, void *data);
-/** Callback function used when an animation is started or stopped */
+/**
+ * Callback function used when an animation is started or stopped
+ * @param a The animation that triggered the event
+ * @param data User provided data
+ */
 typedef void (*Etch_Animation_State_Callback)(Etch_Animation *a, void *data);
 
 EAPI Etch_Animation * etch_animation_add(Etch *e, Etch_Data_Type dtype,
@@ -141,7 +148,6 @@ EAPI void etch_animation_keyframe_cubic_value_set(Etch_Animation_Keyframe *k, Et
 		Etch_Data *cp2);
 EAPI void etch_animation_keyframe_quadratic_value_set(Etch_Animation_Keyframe *k, Etch_Data *cp1);
 /**
- * @}
  * @}
  */
 #endif /*ETCH_H_*/
