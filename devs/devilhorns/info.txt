@@ -5,7 +5,7 @@ Name: Christopher Michael
 Location: New Jersey, USA
 E-Mail: devilhorns@comcast.net
 WWW: http://home.comcast.net/~devilhorns
-Managing: General E patch monkey, emprint, emodules
+Managing: General E patch monkey, emprint, emodules, illume2
 Group: Core, Applications, Libraries
 Platform: Gentoo/Sabayon
 
