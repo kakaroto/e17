@@ -407,8 +407,13 @@ entrance_session_start_user_session(Entrance_Session * e)
    {
       if (!strcmp(exs->session, "default"))
          session_cmd = strdup(e->config->xsession);
-      else if (exs->session[0] == '/')
-         session_cmd = strdup(exs->session);
+      // XXX: what's this for? we don't need it, it just causes problems
+      // because it runs things directly, not using Xsession.
+      // that causes bugs with dbus for example.
+      // works better without it - comment for now
+      //
+      //else if (exs->session[0] == '/')
+      //   session_cmd = strdup(exs->session);
       else
       {
          session_cmd = strdup(e->config->xsession);

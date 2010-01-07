@@ -59,7 +59,7 @@ case "$1" in
         set +e
         start-stop-daemon --stop --quiet --exec "$DAEMON"
         set -e
-        rm $PIDFILE
+        if test -f $PIDFILE; then rm $PIDFILE; fi
         log_end_msg $?
   ;;
   reload)

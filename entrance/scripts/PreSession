@@ -7,11 +7,6 @@
 # that is handled by session management.
 # Author: quaker66 <quaker66@gmail.com>
 
-# ubuntu dbus fix
-if test -z "$DBUS_SESSION_BUS_ADDRESS"; then
-eval `dbus-launch --sh-syntax --exit-with-session`
-fi
-
 # a little workaround. needs FIXME.
 touch $HOME/.Xauthority
 
