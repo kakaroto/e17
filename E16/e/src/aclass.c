@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2000-2007 Carsten Haitzler, Geoff Harrison and various contributors
- * Copyright (C) 2004-2009 Kim Woelders
+ * Copyright (C) 2004-2010 Kim Woelders
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -1001,7 +1001,7 @@ ActionclassEvent(ActionClass * ac, XEvent * ev, EWin * ewin)
    int                 i, type, button, modifiers, ok, mouse, mask, val = 0;
    Action             *aa;
 
-   if (Mode.action_inhibit || (ewin && ewin->state.inhibit_actions))
+   if (ewin && ewin->state.inhibit_actions)
       return 0;
 
    key = type = button = modifiers = mouse = 0;
