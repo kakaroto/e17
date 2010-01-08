@@ -50,7 +50,7 @@ cdef class Part:
         r = edje_edit_part_name_set(self.edje.obj, self.name, newname)
         if r == 0:
             return False
-        self.name = newname
+        self._name = newname
         return True
 
     property type:
