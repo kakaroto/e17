@@ -35,6 +35,7 @@ from desktop import Desktop
 from collapsable import CollapsablesBox
 from parts_list import PartsList
 from animations_list import AnimationsList
+from widgets_list import WidgetsList
 from animations import AnimationDetails
 from signals import SignalsList, SignalDetails
 from groupselector import GroupChange
@@ -388,6 +389,12 @@ class Editje(elementary.Window):
         list = PartsList(self)
         list.title = "Parts"
         list.options = True
+        list.open = True
+        mainbar.pack_end(list)
+        list.show()
+
+        list = WidgetsList(self)
+        list.title = "Widgets"
         list.open = True
         mainbar.pack_end(list)
         list.show()
