@@ -27,6 +27,7 @@ from details_widget_color import WidgetColor
 from details_widget_button import WidgetButton
 from details_widget_combo import WidgetCombo
 from details_widget_partlist import WidgetPartList
+from details_widget_font import WidgetFont
 from floater import Floater
 from prop import Property, PropertyTable
 import popups
@@ -316,7 +317,7 @@ class PartStateDetails(EditjeDetails):
         self["text"].property_add(prop)
 
         prop = Property(self._parent, "font")
-        prop.widget_add("f", WidgetEntry(self))
+        prop.widget_add("f", WidgetFont(self))
         self["text"].property_add(prop)
 
         prop = Property(self._parent, "size")
