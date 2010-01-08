@@ -62,13 +62,12 @@ ecore_config -c $DB -k /entrance/greeting/use_default -i 1
 ecore_config -c $DB -k /entrance/greeting/before -s "Welcome to"
 ecore_config -c $DB -k /entrance/greeting/after -s ""
 
-count=0
-ecore_config -c $DB -k /entrance/session/0/session -s "default"
-ecore_config -c $DB -k /entrance/session/0/title -s "Default"
-ecore_config -c $DB -k /entrance/session/0/icon -s "default.png"
+ecore_config -c $DB -k /entrance/session/session -s "default"
+ecore_config -c $DB -k /entrance/session/title -s "Default"
+ecore_config -c $DB -k /entrance/session/icon -s "default.png"
 #if [ -z "$SESSION_DIR" ] ; then
 #	count=`(expr $count + 6)`
-#	ecore_config -c $DB -k /entrance/session/1/session -s "@prefix@/bin/enlightenment"
+#	ecore_config -c $DB -k /entrance/session/1/session -s "/usr/bin/enlightenment"
 #	ecore_config -c $DB -k /entrance/session/1/title -s "E17"
 #	ecore_config -c $DB -k /entrance/session/1/icon -s "enlightenment.png"
 #	ecore_config -c $DB -k /entrance/session/2/session -s "kde"
@@ -92,7 +91,7 @@ ecore_config -c $DB -k /entrance/session/0/icon -s "default.png"
 #		ecore_config -c $DB -k /entrance/session/$count/icon -s "$s.png"
 #	done
 #fi
-count=`(expr $count + 1)`
+count=0
 ecore_config -c $DB -k /entrance/session/$count/session -s "failsafe"
 ecore_config -c $DB -k /entrance/session/$count/title -s "Failsafe"
 ecore_config -c $DB -k /entrance/session/$count/icon -s "failsafe.png"

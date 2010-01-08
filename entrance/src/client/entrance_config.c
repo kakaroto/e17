@@ -73,9 +73,9 @@ _entrance_config_defaults_set()
    ecore_config_int_default("/entrance/system/halt", 1);
 
    ecore_config_int_default("/entrance/session/count", 1);
-   ecore_config_string_default("/entrance/session/0/session", "default");
-   ecore_config_string_default("/entrance/session/0/title", "Default");
-   ecore_config_string_default("/entrance/session/0/icon", "default.png");
+   ecore_config_string_default("/entrance/session/default", "default");
+   ecore_config_string_default("/entrance/session/title", "Default");
+   ecore_config_string_default("/entrance/session/icon", "default.png");
 
    ecore_config_string_default("/entrance/xsession", ENTRANCE_XSESSION);
 
@@ -130,6 +130,7 @@ entrance_config_populate(Entrance_Config * e)
    e->reboot = ecore_config_int_get("/entrance/system/reboot");
    e->halt = ecore_config_int_get("/entrance/system/halt");
    e->xsession = ecore_config_string_get("/entrance/xsession");
+   e->default_session = ecore_config_string_get("/entrance/session/default");
 
    num_user = ecore_config_int_get("/entrance/user/count");
    for (i = 0; i < num_user; i++)
@@ -159,6 +160,23 @@ entrance_config_populate(Entrance_Config * e)
                free(session);
          }
       }
+   }
+   
+   Entrance_X_Session *exs;
+   char *title;
+   
+   snprintf(buf, PATH_MAX, "/entrance/session/title");
+   title = ecore_config_string_get(buf);
+   snprintf(buf, PATH_MAX, "/entrance/session/session");
+   session = ecore_config_string_get(buf);
+   snprintf(buf, PATH_MAX, "/entrance/session/icon");
+   icon = ecore_config_string_get(buf);
+
+   if ((exs = entrance_x_session_new(title, icon, session)))
+   {
+      e->sessions.keys = eina_list_append(e->sessions.keys, title);
+      if (!e->sessions.hash) e->sessions.hash = eina_hash_string_superfast_new(NULL);
+      eina_hash_add(e->sessions.hash, exs->name, exs);
    }
 
    /* Search the local session directory first. */
@@ -241,157 +259,6 @@ entrance_config_load(char *file)
       entrance_config_populate(e);
    }
    return (e);
-}
-
-void
-entrance_config_print(Entrance_Config * e)
-{
-   int i = 0;
-   char buf[PATH_MAX];
-   Entrance_User *eu;
-   Entrance_X_Session *exs;
-   Eina_List *l = NULL;
-   char *strings[] = { "/entrance/theme",
-      "/entrance/pointer", "/entrance/date_format", "/entrance/time_format",
-      "/entrance/greeting/before", "/entrance/greeting/after",
-      "/entrance/xsession"
-   };
-   char *values[] = { e->theme, e->pointer, e->date.string,
-      e->time.string, e->before.string, e->after.string
-   };
-   int ssize = sizeof(strings) / sizeof(char *);
-
-   char *intstrings[] = { "/entrance/greeting/use_default", "/entrance/engine", "/entrance/system/reboot",
-      "/entrance/system/halt", "/entrance/users/remember",
-      "/entrance/users/remember_n", "/entrance/auth"
-   };
-   int intvalues[] = { e->engine, e->reboot, e->halt, e->users.remember,
-      e->users.remember_n, e->auth
-   };
-   int intsize = sizeof(intstrings) / sizeof(int);
-
-   for (i = 0; i < ssize; i++)
-   {
-      printf("%s %s\n", strings[i], values[i]);
-   }
-   for (i = 0; i < intsize; i++)
-   {
-      printf("%s %d\n", intstrings[i], intvalues[i]);
-   }
-   for (i = 0, l = e->users.keys; l; l = l->next, i++)
-   {
-      if ((eu = eina_hash_find(e->users.hash, (char *) l->data)))
-      {
-         snprintf(buf, PATH_MAX, "/entrance/user/%d/user", i);
-         printf("%s %s\n", buf, eu->name);
-         snprintf(buf, PATH_MAX, "/entrance/user/%d/session", i);
-         printf("%s %s\n", buf, eu->session);
-         snprintf(buf, PATH_MAX, "/entrance/user/%d/icon", i);
-         printf("%s %s\n", buf, eu->icon);
-      }
-      else
-         i--;
-   }
-   snprintf(buf, PATH_MAX, "/entrance/user/count");
-   printf("%s %d\n", buf, i);
-   for (i = 0, l = e->sessions.keys; l; l = l->next, i++)
-   {
-      if (l->data)
-      {
-         if ((exs = eina_hash_find(e->sessions.hash, (char *) l->data)))
-         {
-            snprintf(buf, PATH_MAX, "/entrance/session/%d/title", i);
-            printf("%s %s\n", buf, exs->name);
-            snprintf(buf, PATH_MAX, "/entrance/session/%d/session", i);
-            printf("%s %s\n", buf, exs->session);
-            snprintf(buf, PATH_MAX, "/entrance/session/%d/icon", i);
-            printf("%s %s\n", buf, exs->icon);
-         }
-      }
-   }
-   snprintf(buf, PATH_MAX, "/entrance/session/count");
-   printf("%s %d\n", buf, i);
-}
-
-void
-entrance_config_store(Entrance_Config * e)
-{
-   int i = 0;
-   char buf[PATH_MAX];
-   Entrance_User *eu;
-   Entrance_X_Session *exs;
-   Eina_List *l = NULL;
-   char *strings[] = { "/entrance/theme", "/entrance/background",
-      "/entrance/pointer", "/entrance/date_format", "/entrance/time_format",
-      "/entrance/greeting/before", "/entrance/greeting/after",
-      "/entrance/xsession"
-   };
-   char *values[] = { e->theme, e->background, e->pointer, e->date.string,
-      e->time.string, e->before.string, e->after.string
-   };
-   int ssize = sizeof(strings) / sizeof(char *);
-
-   char *intstrings[] = { "/entrance/greeting/use_default", "/entrance/engine", "/entrance/system/reboot",
-      "/entrance/system/halt", "/entrance/users/remember",
-      "/entrance/users/remember_n", "/entrance/auth"
-   };
-   int intvalues[] = { e->engine, e->reboot, e->halt, e->users.remember,
-      e->users.remember_n, e->auth
-   };
-   int intsize = sizeof(intstrings) / sizeof(int);
-
-   for (i = 0; i < ssize; i++)
-   {
-      ecore_config_string_set(strings[i], values[i]);
-   }
-   for (i = 0; i < intsize; i++)
-   {
-      ecore_config_int_set(intstrings[i], intvalues[i]);
-   }
-   for (i = 0, l = e->users.keys; l; l = l->next, i++)
-   {
-      if ((eu = eina_hash_find(e->users.hash, (char *) l->data)))
-      {
-         snprintf(buf, PATH_MAX, "/entrance/user/%d/user", i);
-         ecore_config_string_set(buf, eu->name);
-         snprintf(buf, PATH_MAX, "/entrance/user/%d/session", i);
-         ecore_config_string_set(buf, eu->session);
-         snprintf(buf, PATH_MAX, "/entrance/user/%d/icon", i);
-         ecore_config_string_set(buf, eu->icon);
-      }
-      else
-         i--;
-   }
-   snprintf(buf, PATH_MAX, "/entrance/user/count");
-   ecore_config_int_set(buf, i);
-   for (i = 0, l = e->sessions.keys; l; l = l->next, i++)
-   {
-      if (l->data)
-      {
-         if ((exs = eina_hash_find(e->sessions.hash, (char *) l->data)))
-         {
-            snprintf(buf, PATH_MAX, "/entrance/session/%d/title", i);
-            ecore_config_string_set(buf, exs->name);
-            snprintf(buf, PATH_MAX, "/entrance/session/%d/session", i);
-            ecore_config_string_set(buf, exs->session);
-            snprintf(buf, PATH_MAX, "/entrance/session/%d/icon", i);
-            ecore_config_string_set(buf, exs->icon);
-         }
-      }
-   }
-   snprintf(buf, PATH_MAX, "/entrance/session/count");
-   ecore_config_int_set(buf, i);
-}
-
-int
-entrance_config_save(Entrance_Config * e, const char *file)
-{
-   if (file)
-   {
-      entrance_config_store(e);
-      ecore_config_file_save(file);
-   }
-   return (1);
 }
 
 /**
@@ -587,19 +454,3 @@ _cb_x_sessions_free(const Eina_Hash *hash, const void *key, void *data, void *fd
   entrance_x_session_free(x_session);
   return TRUE;
 }
-
-#if 0
-int
-main(int argc, char *argv[])
-{
-   Entrance_Config e;
-
-   while (--argc)
-   {
-      e = entrance_config_parse(argv[argc]);
-      entrance_config_print(e);
-      entrance_config_free(e);
-   }
-   return (0);
-}
-#endif

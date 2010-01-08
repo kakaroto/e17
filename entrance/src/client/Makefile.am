@@ -2,7 +2,7 @@
 MAINTAINERCLEANFILES = Makefile.in
 
 INCLUDES = @EDJE_CFLAGS@ @EFREET_CFLAGS@ @ECORE_CFLAGS@ @EVAS_CFLAGS@ \
-@ESMART_CFLAGS@
+@ESMART_CFLAGS@ @ELEMENTARY_CFLAGS@
 
 entrancelibexecdir = $(libexecdir)/$(PACKAGE)
 
@@ -23,17 +23,10 @@ entrance_SOURCES = \
 	entrance.h main.c 
 
 entrance_LDADD = @EDJE_LIBS@ @EFREET_LIBS@ @ECORE_LIBS@ @EVAS_LIBS@ \
-@ESMART_LIBS@
+@ESMART_LIBS@ @ELEMENTARY_LIBS@
 
 entrance_login_LDADD = @ECORE_LIBS@
 entrance_login_SOURCES = \
 	entrance_login.c \
 	entrance_auth.c entrance_auth.h \
 	util.c util.h
-
-#entrance_edit_SOURCES = \
-#	entrance_edit.c \
-#	entrance_config.c entrance_user.c \
-#	util.c entrance_x_session.c entrance_smart.c
-#entrance_edit_LDADD = @EDJE_LIBS@ @EFREET_LIBS@ @ECORE_LIBS@ @EVAS_LIBS@ \
-#@ESMART_LIBS@ -lesmart_container -lesmart_text_entry

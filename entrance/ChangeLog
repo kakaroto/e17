@@ -1,6 +1,6 @@
-2010-01-07 quaker66 <quaker66@gmail.com>
-	* scripts: remove dbus hack.
-	* src/client/entrance_config: when session from /usr/share/xsession executed, run it also through Xsession file. Fixes dbus and other things.
+2010-01-08 quaker66 <quaker66@gmail.com>
+	* src/client: remove some old unneeded code = preparation for rewrite. Add support for selecting default entrance session from config.
+	* data/config: update it
 
 2010-01-06 quaker66 <quaker66@gmail.com>
 	* scripts: added some scripts to be ran before session starts/after login, when entrance shows up and when entrance ends. see readme for more info. the code is implemented inside entrance client and the scripts are purely optional, when they exist and are executable, they're ran, otherwise not.

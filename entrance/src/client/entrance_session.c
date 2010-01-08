@@ -788,13 +788,13 @@ entrance_session_x_session_default_get(Entrance_Session * e)
 {
    Eina_List *l = NULL;
    Entrance_X_Session *result = NULL;
+   
 
    if (e && e->config)
    {
       if ((l = e->config->sessions.keys))
       {
-         result =
-            eina_hash_find(e->config->sessions.hash, (const char *) l->data);
+         result = eina_hash_find(e->config->sessions.hash, ecore_config_string_get("/entrance/session/title"));
       }
    }
    return (result);

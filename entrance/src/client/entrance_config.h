@@ -118,6 +118,7 @@ struct _Entrance_Config
    } sessions;
 
    char *xsession;
+   char *default_session;
 
    struct
    {
@@ -143,11 +144,9 @@ struct _Entrance_Config
 typedef struct _Entrance_Config Entrance_Config;
 
 Entrance_Config *entrance_config_load(char *file);
-void entrance_config_print(Entrance_Config * e);
 void entrance_config_free(Entrance_Config * e);
 void entrance_config_prepend_recent_user(Entrance_Config * e, char *str);
 void entrance_config_user_list_save(Entrance_Config * e, const char *file);
 void entrance_config_prevuser_save(char *user, const char *file);
-int  entrance_config_save(Entrance_Config * e, const char *file);
 
 #endif
