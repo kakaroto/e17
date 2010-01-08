@@ -125,7 +125,7 @@ class Editje(elementary.Window):
             self.main_edje.signal_emit("desktop,blocker,disable", "")
 
     def select_group(self):
-        gc = GroupChange(self)
+        gc = GroupChange(self, cancel=False)
         gc.file = self.e.filename
         gc.open()
 

@@ -32,6 +32,7 @@ class GroupChange(elementary.InnerWindow):
         self._notification = None
 
         self._gs = GroupSelector(self)
+        self._cancel_enabled = cancel
         if cancel:
             self._gs.action_add("Cancel", self._cancel)
         self._gs.action_add("Ok", self._ok)
@@ -49,6 +50,9 @@ class GroupChange(elementary.InnerWindow):
     group = property(fset=_group_set)
 
     def open(self):
+        if not self._cancel_enabled and len(self._gs.groups) == 1:
+            self._ok(None)
+            return
         self._parent.block(True)
         self.show()
 
@@ -150,6 +154,11 @@ class GroupSelector(elementary.Table):
         return self._file
 
     file = property(_file_get, _file_set)
+
+    def _groups_get(self):
+        return self._groups_list
+
+    groups = property(_groups_get)
 
     def _group_set(self, value):
         item = self._groups_items.get(value)
