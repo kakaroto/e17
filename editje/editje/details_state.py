@@ -64,8 +64,8 @@ class StatesPopUp(Floater):
         return self._selstate
 
     def close(self):
-        self._parent.e.part.event_callback_del("states.changed",
-                                               self._list_populate)
+        self._parent.e.part.callback_del("states.changed",
+                                         self._list_populate)
         Floater.close(self)
 
 
