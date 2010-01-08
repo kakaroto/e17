@@ -90,17 +90,6 @@ class Editje(elementary.Window):
         self.main_edje = self.main_layout.edje_get()
         self.main_layout.show()
 
-    # Hack, remove when spaced is not needed
-    def _collapsable_size_hint_changed(self, obj, spacer, objs, *args, **kwargs):
-        for o in objs:
-            wx, wy = o.size_hint_weight
-            if wy > 0.0:
-                break
-        else:
-            spacer.size_hint_weight_set(1.0, 1.0)
-            return
-        spacer.size_hint_weight_set(1.0, 0.0)
-
     def save(self):
         self.block(True)
         self.e.save()
@@ -410,7 +399,7 @@ class Editje(elementary.Window):
                        toolbar, mainbar, sidebar)
 
     def _parts_sidebar_create(self):
-        box = elementary.Box(self)
+        box = CollapsablesBox(self)
         box.size_hint_weight_set(1.0, 0.0)
         box.size_hint_align_set(-1.0, 0.0)
         box.show()
@@ -429,22 +418,6 @@ class Editje(elementary.Window):
         self.part_state_details = PartStateDetails(self)
         box.pack_end(self.part_state_details)
         self.part_state_details.show()
-
-        spacer = self.evas.Rectangle(color=(0, 0, 0, 0))
-        spacer.size_hint_weight_set(1.0, 1.0)
-        spacer.size_hint_align_set(-1.0, -1.0)
-        data = (spacer, (self.group_details, self.part_details, self.part_state_details))
-        self.group_details.event_callback_add(
-            evas.EVAS_CALLBACK_CHANGED_SIZE_HINTS,
-            self._collapsable_size_hint_changed, *data)
-        self.part_details.event_callback_add(
-            evas.EVAS_CALLBACK_CHANGED_SIZE_HINTS,
-            self._collapsable_size_hint_changed, *data)
-        self.part_state_details.event_callback_add(
-            evas.EVAS_CALLBACK_CHANGED_SIZE_HINTS,
-            self._collapsable_size_hint_changed, *data)
-        box.pack_end(spacer)
-        spacer.show()
 
         return box
 
@@ -490,7 +463,7 @@ class Editje(elementary.Window):
                        toolbar, mainbar, sidebar)
 
     def _animations_sidebar_create(self):
-        box = elementary.Box(self)
+        box = CollapsablesBox(self)
         box.size_hint_weight_set(1.0, 0.0)
         box.size_hint_align_set(-1.0, 0.0)
         box.show()
@@ -504,19 +477,6 @@ class Editje(elementary.Window):
         self.anim_state_details.open()
         box.pack_end(self.anim_state_details)
         self.anim_state_details.show()
-
-        spacer = self.evas.Rectangle(color=(0, 0, 0, 0))
-        spacer.size_hint_weight_set(1.0, 1.0)
-        spacer.size_hint_align_set(-1.0, -1.0)
-        data = (spacer, (self.anim_details, self.anim_state_details))
-        self.anim_details.event_callback_add(
-                evas.EVAS_CALLBACK_CHANGED_SIZE_HINTS,
-                self._collapsable_size_hint_changed, *data)
-        self.anim_state_details.event_callback_add(
-                evas.EVAS_CALLBACK_CHANGED_SIZE_HINTS,
-                self._collapsable_size_hint_changed, *data)
-        box.pack_end(spacer)
-        spacer.show()
 
         return box
 
