@@ -15,7 +15,7 @@ void eweather_free(EWeather *eweather)
    if(eweather->plugin.array)
      {
 	eina_module_list_unload(eweather->plugin.array);
-	eina_module_list_flush(eweather->plugin.array);
+	eina_module_list_free(eweather->plugin.array);
      }
 
    EINA_LIST_FREE(eweather->data, e_data)

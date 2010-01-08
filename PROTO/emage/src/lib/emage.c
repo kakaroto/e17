@@ -312,7 +312,7 @@ EAPI void emage_shutdown(void)
 	{
 		/* unload every module */
 #if 1
-		eina_module_list_flush(_modules);
+		eina_module_list_free(_modules);
 #else
 		png_provider_exit();
 #endif
