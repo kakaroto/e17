@@ -24,6 +24,9 @@ cdef class Layout(Object):
     def file_set(self, filename, group):
         elm_layout_file_set(self.obj, filename, group)
 
+    def theme_set(self, clas, group, style)
+        elm_layout_theme_set(self.obj, clas, group, style)
+
     def content_set(self, swallow, c_evas.Object content):
         cdef c_evas.Evas_Object *o
         if content is not None:
@@ -36,3 +39,5 @@ cdef class Layout(Object):
         cdef c_evas.Evas_Object *obj = elm_layout_edje_get(self.obj)
         return evas.c_evas._Object_from_instance(<long> obj)
 
+    def sizing_eval(self):
+        elm_layout_sizing_eval(self.obj);

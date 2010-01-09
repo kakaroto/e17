@@ -336,8 +336,10 @@ cdef extern from "Elementary.h":
     # Layout object
     evas.c_evas.Evas_Object *elm_layout_add(evas.c_evas.Evas_Object *parent)
     void elm_layout_file_set(evas.c_evas.Evas_Object *obj, char *file, char *group)
+    evas.c_evas.Eina_Bool elm_layout_theme_set(evas.c_evas.Evas_Object *obj, char *clas, char *group, char *style)
     void elm_layout_content_set(evas.c_evas.Evas_Object *obj, char *swallow, evas.c_evas.Evas_Object *content)
     evas.c_evas.Evas_Object *elm_layout_edje_get(evas.c_evas.Evas_Object *obj)
+    void elm_layout_sizing_eval(evas.c_evas.Evas_Object *obj)
 
     # Notify object
     evas.c_evas.Evas_Object *elm_notify_add(evas.c_evas.Evas_Object *parent)
