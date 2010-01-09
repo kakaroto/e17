@@ -1143,6 +1143,8 @@ _profile_parse(int argc, char **argv)
 	     i++;
 	     if      (!strcmp(argv[i], "qvga"))   {win_w = 320 ; win_h = 240 ;}
 	     else if (!strcmp(argv[i], "qvga-p")) {win_w = 240 ; win_h = 320 ;}
+	     else if (!strcmp(argv[i], "hvga"))   {win_w = 320 ; win_h = 480 ;}
+	     else if (!strcmp(argv[i], "hvga-p")) {win_w = 480 ; win_h = 320 ;}
 	     else if (!strcmp(argv[i], "vga"))    {win_w = 640 ; win_h = 480 ;}
 	     else if (!strcmp(argv[i], "vga-p"))  {win_w = 480 ; win_h = 640 ;}
 	     else if (!strcmp(argv[i], "wvga"))   {win_w = 800 ; win_h = 480 ;}
@@ -1378,8 +1380,8 @@ _engine_args(int argc, char **argv)
 #endif
 		"\n"
 		"Where PROFILE can be one of:\n"
-		"  qvga qvga-p vga vga-p wvga wvga-p svga svga-p xga xga-p wxga wxga-p\n"
-		"  n800 pal 720p wsvga wsvga-p\n"
+		"  qvga qvga-p hvga hvga-p vga vga-p wvga wvga-p svga svga-p xga xga-p\n"
+		"  wxga wxga-p n800 pal 720p wsvga wsvga-p\n"
 		);
 	exit(-1);
      }
