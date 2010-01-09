@@ -24,7 +24,7 @@ cdef class Layout(Object):
     def file_set(self, filename, group):
         elm_layout_file_set(self.obj, filename, group)
 
-    def theme_set(self, clas, group, style)
+    def theme_set(self, clas, group, style):
         elm_layout_theme_set(self.obj, clas, group, style)
 
     def content_set(self, swallow, c_evas.Object content):
