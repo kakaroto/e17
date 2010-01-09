@@ -1,11 +1,11 @@
 import eupnp
 
 
-def mycb(evt_data, event_type, *args, **kwargs):
+def mycb(evt_data, *args, **kwargs):
     print 'mycb: ', evt_data, args, kwargs
     return False
 
-def mycb2(evt_data, event_type, *args, **kwargs):
+def mycb2(evt_data, *args, **kwargs):
     print 'mycb2: ', evt_data, args, kwargs
     return True
 

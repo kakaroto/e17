@@ -28,5 +28,6 @@ def shutdown():
 
 include "eupnp.c_eupnp_control_point.pxi"
 include "eupnp.c_eupnp_event_bus.pxi"
+include "eupnp.c_eupnp_device.pxi"
 
 bus = Bus()

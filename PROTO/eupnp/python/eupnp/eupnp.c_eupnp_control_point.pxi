@@ -17,7 +17,6 @@
 
 cimport c_eupnp
 cimport python_exc
-import traceback
 
 
 cdef class ControlPoint:
