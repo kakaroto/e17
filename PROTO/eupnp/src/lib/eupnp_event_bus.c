@@ -220,7 +220,7 @@ eupnp_event_bus_shutdown(void)
 EAPI void
 eupnp_event_bus_publish(Eupnp_Event_Type event_type, void *event_data)
 {
-   if (event_type <= EUPNP_EVENT_NONE) return;
+   if (event_type < 0) return;
    if (event_type >= _event_max) return;
    Eina_List *l, *l_next;
    Eupnp_Subscriber *s;
@@ -272,7 +272,8 @@ EAPI Eupnp_Subscriber *
 eupnp_event_bus_subscribe(Eupnp_Event_Type event_type, Eupnp_Callback cb, void *user_data)
 {
    CHECK_NULL_RET_VAL(cb, NULL);
-   if (event_type <= EUPNP_EVENT_NONE || event_type >= _event_max)
+
+   if (event_type < 0 || event_type >= _event_max)
      {
 	ERROR_D(_log_dom, "Failed to subscribe for event type %d, callback %p, data %p", event_type, cb, user_data);
 	return NULL;

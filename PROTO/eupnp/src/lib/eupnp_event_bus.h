@@ -35,7 +35,6 @@ typedef struct _Eupnp_Subscriber Eupnp_Subscriber;
  * @see eupnp_event_bus_event_type_new()
  */
 typedef enum {
-   EUPNP_EVENT_NONE,
    EUPNP_EVENT_DEVICE_FOUND,
    EUPNP_EVENT_DEVICE_GONE,
    EUPNP_EVENT_SERVICE_FOUND,
