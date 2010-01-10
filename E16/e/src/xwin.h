@@ -324,6 +324,8 @@ Picture             EPictureCreateSolid(Window xwin, int argb,
 Picture             EPictureCreateBuffer(Win win, int w, int h, Pixmap * ppmap);
 void                EPictureSetClip(Picture pict, XserverRegion clip);
 
+Pixmap              EWindowGetPixmap(const Win win);
+
 #endif /* USE_COMPOSITE */
 
 #endif /* _XWIN_H_ */

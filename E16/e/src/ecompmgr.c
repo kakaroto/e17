@@ -875,18 +875,6 @@ ECompMgrWinSetShape(EObj * eo)
       ERegionShow("shape", cw->shape, NULL);
 }
 
-static              Pixmap
-EWindowGetNamePixmap(const struct _xwin *win)
-{
-   XWindowAttributes   xwa;
-
-   if (XGetWindowAttributes(disp, win->xwin, &xwa) == 0 ||
-       xwa.map_state == IsUnmapped)
-      return None;
-
-   return XCompositeNameWindowPixmap(disp, WinGetXwin(win));
-}
-
 Pixmap
 ECompMgrWinGetPixmap(const EObj * eo)
 {
@@ -901,7 +889,7 @@ ECompMgrWinGetPixmap(const EObj * eo)
    if (eo->noredir)
       return None;
 
-   cw->pixmap = EWindowGetNamePixmap(EobjGetWin(eo));
+   cw->pixmap = EWindowGetPixmap(EobjGetWin(eo));
 
    return cw->pixmap;
 }
@@ -1189,7 +1177,7 @@ ECompMgrWinSetPicts(EObj * eo)
    if (cw->pixmap == None && eo->shown && !eo->noredir &&
        (Mode_compmgr.use_pixmap || (eo->fade && Conf_compmgr.fading.enable)))
      {
-	cw->pixmap = EWindowGetNamePixmap(EobjGetWin(eo));
+	cw->pixmap = EWindowGetPixmap(EobjGetWin(eo));
 	D2printf("ECompMgrWinSetPicts %#lx: Pmap=%#lx\n", EobjGetXwin(eo),
 		 cw->pixmap);
      }

@@ -1922,6 +1922,20 @@ EGetTimestamp(void)
 
 #if USE_COMPOSITE
 
+#include <X11/extensions/Xcomposite.h>
+
+Pixmap
+EWindowGetPixmap(const Win win)
+{
+   XWindowAttributes   xwa;
+
+   if (XGetWindowAttributes(disp, win->xwin, &xwa) == 0 ||
+       xwa.map_state == IsUnmapped)
+      return None;
+
+   return XCompositeNameWindowPixmap(disp, WinGetXwin(win));
+}
+
 /*
  * Pictures
  */
