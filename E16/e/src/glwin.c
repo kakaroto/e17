@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2007-2009 Kim Woelders
+ * Copyright (C) 2007-2010 Kim Woelders
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -699,8 +699,7 @@ GlwinExit(void)
    if (GLWin.eo)
      {
 	EventCallbackUnregister(EobjGetWin(GLWin.eo), GlwinEvent, &GLWin);
-	EobjUnmap(GLWin.eo);
-	EobjDestroy(GLWin.eo);
+	EobjWindowDestroy(GLWin.eo);
 	GLWin.eo = NULL;
      }
 

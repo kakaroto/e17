@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2008 Kim Woelders
+ * Copyright (C) 2004-2010 Kim Woelders
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -282,6 +282,10 @@ EobjWindowCreate(int type, int x, int y, int w, int h, int su, const char *name)
 void
 EobjWindowDestroy(EObj * eo)
 {
+#if USE_COMPOSITE
+   if (eo->shown && !eo->inputonly)
+      EobjUnmap(eo);
+#endif
    EobjDestroy(eo);
 }
 
