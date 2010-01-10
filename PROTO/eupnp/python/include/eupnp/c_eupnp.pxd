@@ -59,14 +59,41 @@ cdef extern from "eupnp_event_bus.h":
 
 cdef extern from "eupnp_device_info.h":
     ctypedef struct Eupnp_Device_Info:
+        char *udn
+        char *location
+        char *base_URL
+        char *device_type
+        char *friendly_name
+        char *manufacturer
+        char *manufacturer_URL
+        char *model_description
+        char *model_name
+        char *model_number
+        char *model_URL
+        char *serial_number
+        char *upc
+        char *presentation_URL
+        int spec_version_major
+        int spec_version_minor
         Eina_Inlist *services
         Eina_Inlist *devices
+        int refcount
 
     ctypedef struct Eupnp_Device_Icon
+    Eupnp_Device_Info *eupnp_device_info_ref(Eupnp_Device_Info *device_info)
+    void eupnp_device_info_unref(Eupnp_Device_Info *device_info)
+    void eupnp_device_info_fetch(Eupnp_Device_Info *device_info)
 
 cdef extern from "eupnp_service_info.h":
     ctypedef struct Eupnp_Service_Info:
+        char *udn
+        char *location
+        char *service_type
         char *id
+        char *control_URL
+        char *scpd_URL
+        char *eventsub_URL
+
 
 cdef extern from "eupnp_service_proxy.h":
     ctypedef struct Eupnp_Service_Proxy

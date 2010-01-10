@@ -70,25 +70,31 @@ cdef Eina_Bool _event_cb(void *user_data,
                          void *event_data) with gil:
     cdef object t
     cdef build_callback_t cb
+    cdef int dbg
     t = <object>user_data
 
-    # Find specific build callbacks, otherwise just to a python object
+    # Find specific build callbacks, otherwise just cast to a python object
     if <int>type >= cbs_len:
         cb = _generic_build
     else:
         cb = cbs[<int>type]
 
-    # Get user response
+    # Get callback response, False means unsubscription
     try:
         ret = t[0](cb(event_data), *t[1], **t[2])
     except Exception, e:
         traceback.print_exc()
 
-    python.Py_DECREF(t) # take ref of <object> cast
     if not ret:
-        python.Py_DECREF(t)
+        try:
+            _subscriptions[type].remove(t)
+        except ValueError, v:
+            traceback.print_exc()
         return <Eina_Bool>0
     return <Eina_Bool>1
+
+
+_subscriptions = {}
 
 
 cdef class Bus:
@@ -117,7 +123,8 @@ cdef class Bus:
             raise TypeError("cb must be callable")
 
         data = (callback, args, kwargs)
-        python.Py_INCREF(data)
+        lst = _subscriptions.setdefault(event_type, [])
+        lst.append(data)
         handle = c_eupnp.eupnp_event_bus_subscribe(<Eupnp_Event_Type>event_type, <Eupnp_Callback>_event_cb, <void*>data)
         return <long>handle
 
