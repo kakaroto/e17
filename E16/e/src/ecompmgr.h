@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2008 Kim Woelders
+ * Copyright (C) 2004-2010 Kim Woelders
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -40,7 +40,7 @@ typedef struct {
 
 int                 ECompMgrIsActive(void);
 
-int                 ECompMgrDeskConfigure(Desk * dsk);
+void                ECompMgrDeskConfigure(Desk * dsk);
 
 Pixmap              ECompMgrGetRootBuffer(void);
 
@@ -71,8 +71,6 @@ void                ECompMgrRepaint(void);
 #else
 
 #define ECompMgrIsActive()          0
-
-#define ECompMgrDeskConfigure(dsk)  0
 
 #define ECompMgrGetRootBuffer()     None
 

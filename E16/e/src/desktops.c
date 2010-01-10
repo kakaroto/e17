@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2000-2007 Carsten Haitzler, Geoff Harrison and various contributors
- * Copyright (C) 2004-2009 Kim Woelders
+ * Copyright (C) 2004-2010 Kim Woelders
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -521,9 +521,10 @@ DeskBackgroundConfigure(Desk * dsk)
 
    if (dsk->viewable || !dsk->bg.bg)
      {
-#if !USE_BG_WIN_ON_ALL_DESKS
-	if (ECompMgrDeskConfigure(dsk))
+#if USE_COMPOSITE && !USE_BG_WIN_ON_ALL_DESKS
+	if (ECompMgrIsActive())
 	  {
+	     ECompMgrDeskConfigure(dsk);
 	     ESetWindowBackgroundPixmap(win, None);
 	  }
 	else

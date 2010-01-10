@@ -299,7 +299,7 @@ ECompMgrMoveResizeFix(EObj * eo, int x, int y, int w, int h)
  * Desk background
  */
 
-int
+void
 ECompMgrDeskConfigure(Desk * dsk)
 {
    EObj               *eo;
@@ -309,17 +309,8 @@ ECompMgrDeskConfigure(Desk * dsk)
    XRenderPictureAttributes pa;
    Pixmap              pmap;
 
-   if (!Mode_compmgr.active)
-      return 0;
-
    eo = dsk->bg.o;
-   if (!eo)
-      return 1;
-
-   ECompMgrWinInvalidate(eo, INV_PICTURE);
-
-   if (!dsk->viewable && dsk->bg.bg)
-      return 1;
+   cw = eo->cmhook;
 
    if (dsk->bg.pmap == None)
      {
@@ -338,6 +329,8 @@ ECompMgrDeskConfigure(Desk * dsk)
 	pmap = dsk->bg.pmap;
      }
 
+   ECompMgrWinInvalidate(eo, INV_PICTURE);
+
    pa.repeat = True;
    pictfmt = XRenderFindVisualFormat(disp, WinGetVisual(VROOT));
    pict = XRenderCreatePicture(disp, pmap, pictfmt, CPRepeat, &pa);
@@ -345,17 +338,14 @@ ECompMgrDeskConfigure(Desk * dsk)
    if (pmap != dsk->bg.pmap)
       XFreePixmap(disp, pmap);
 
-   /* New background, all must be repainted */
-   ECompMgrDamageAll();
-
-   cw = eo->cmhook;
    cw->picture = pict;
 
    D1printf
       ("ECompMgrDeskConfigure: Desk %d: using pixmap %#lx picture=%#lx\n",
        dsk->num, pmap, cw->picture);
 
-   return 1;
+   /* New background, all must be repainted */
+   ECompMgrDamageAll();
 }
 #endif
 
