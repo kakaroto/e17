@@ -1086,7 +1086,6 @@ ECompMgrWinFadeOut(EObj * eo)
 	   0x10000000);
 #endif
    cw->fadeout = 1;
-   ECompMgrWinInvalidate(eo, INV_PICTURE);
    ECompMgrWinFade(eo, cw->opacity, 0x10000000);
 }
 
@@ -1164,7 +1163,10 @@ ECompMgrWinUnmap(EObj * eo)
    ECompMgrDamageMergeObject(eo, cw->extents);
    _ECM_SET_STACK_CHANGED();
    if (Conf_compmgr.fading.enable && eo->fade && !eo->gone)
-      ECompMgrWinFadeOut(eo);
+     {
+	ECompMgrWinInvalidate(eo, INV_PICTURE);
+	ECompMgrWinFadeOut(eo);
+     }
    else
       ECompMgrWinInvalidate(eo, INV_PIXMAP);
 }
