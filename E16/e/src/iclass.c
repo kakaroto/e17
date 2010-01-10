@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2000-2007 Carsten Haitzler, Geoff Harrison and various contributors
- * Copyright (C) 2004-2009 Kim Woelders
+ * Copyright (C) 2004-2010 Kim Woelders
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -200,7 +200,6 @@ ImagestateCreate(const char *file)
    return is;
 }
 
-#if ENABLE_DESTROY
 static void
 ImagestateDestroy(ImageState * is)
 {
@@ -218,15 +217,19 @@ ImagestateDestroy(ImageState * is)
    Efree(is);
 }
 
-static void
-FreeImageStateArray(ImageStateArray * isa)
+static ImageState  *
+ImagestateSet(ImageState ** isp, const char *name)
 {
-   ImagestateDestroy(isa->normal);
-   ImagestateDestroy(isa->hilited);
-   ImagestateDestroy(isa->clicked);
-   ImagestateDestroy(isa->disabled);
+   ImageState         *is;
+
+   is = ImagestateCreate(name);
+
+   if (*isp)
+      ImagestateDestroy(*isp);
+   *isp = is;
+
+   return is;
 }
-#endif /* ENABLE_DESTROY */
 
 static void
 ImagestateColorsAlloc(ImageState * is)
@@ -309,24 +312,20 @@ ImageclassCreate(const char *name)
    ecore_list_prepend(iclass_list, ic);
 
    ic->name = Estrdup(name);
-   ic->norm.normal = ic->norm.hilited = ic->norm.clicked = ic->norm.disabled =
-      NULL;
-   ic->active.normal = ic->active.hilited = ic->active.clicked =
-      ic->active.disabled = NULL;
-   ic->sticky.normal = ic->sticky.hilited = ic->sticky.clicked =
-      ic->sticky.disabled = NULL;
-   ic->sticky_active.normal = ic->sticky_active.hilited =
-      ic->sticky_active.clicked = ic->sticky_active.disabled = NULL;
-   ic->padding.left = 0;
-   ic->padding.right = 0;
-   ic->padding.top = 0;
-   ic->padding.bottom = 0;
-   ic->ref_count = 0;
 
    return ic;
 }
 
 #if ENABLE_DESTROY
+static void
+FreeImageStateArray(ImageStateArray * isa)
+{
+   ImagestateDestroy(isa->normal);
+   ImagestateDestroy(isa->hilited);
+   ImagestateDestroy(isa->clicked);
+   ImagestateDestroy(isa->disabled);
+}
+
 static void
 ImageclassDestroy(ImageClass * ic)
 {
@@ -506,52 +505,52 @@ ImageclassConfigLoad(FILE * fs)
 	  case CONFIG_DESKTOP:
 	     /* don't ask... --mandrake */
 	  case ICLASS_NORMAL:
-	     ic->norm.normal = is = ImagestateCreate(s2);
+	     is = ImagestateSet(&ic->norm.normal, s2);
 	     continue;
 	  case ICLASS_CLICKED:
-	     ic->norm.clicked = is = ImagestateCreate(s2);
+	     is = ImagestateSet(&ic->norm.clicked, s2);
 	     continue;
 	  case ICLASS_HILITED:
-	     ic->norm.hilited = is = ImagestateCreate(s2);
+	     is = ImagestateSet(&ic->norm.hilited, s2);
 	     continue;
 	  case ICLASS_DISABLED:
-	     ic->norm.disabled = is = ImagestateCreate(s2);
+	     is = ImagestateSet(&ic->norm.disabled, s2);
 	     continue;
 	  case ICLASS_STICKY_NORMAL:
-	     ic->sticky.normal = is = ImagestateCreate(s2);
+	     is = ImagestateSet(&ic->sticky.normal, s2);
 	     continue;
 	  case ICLASS_STICKY_CLICKED:
-	     ic->sticky.clicked = is = ImagestateCreate(s2);
+	     is = ImagestateSet(&ic->sticky.clicked, s2);
 	     continue;
 	  case ICLASS_STICKY_HILITED:
-	     ic->sticky.hilited = is = ImagestateCreate(s2);
+	     is = ImagestateSet(&ic->sticky.hilited, s2);
 	     continue;
 	  case ICLASS_STICKY_DISABLED:
-	     ic->sticky.disabled = is = ImagestateCreate(s2);
+	     is = ImagestateSet(&ic->sticky.disabled, s2);
 	     continue;
 	  case ICLASS_ACTIVE_NORMAL:
-	     ic->active.normal = is = ImagestateCreate(s2);
+	     is = ImagestateSet(&ic->active.normal, s2);
 	     continue;
 	  case ICLASS_ACTIVE_CLICKED:
-	     ic->active.clicked = is = ImagestateCreate(s2);
+	     is = ImagestateSet(&ic->active.clicked, s2);
 	     continue;
 	  case ICLASS_ACTIVE_HILITED:
-	     ic->active.hilited = is = ImagestateCreate(s2);
+	     is = ImagestateSet(&ic->active.hilited, s2);
 	     continue;
 	  case ICLASS_ACTIVE_DISABLED:
-	     ic->active.disabled = is = ImagestateCreate(s2);
+	     is = ImagestateSet(&ic->active.disabled, s2);
 	     continue;
 	  case ICLASS_STICKY_ACTIVE_NORMAL:
-	     ic->sticky_active.normal = is = ImagestateCreate(s2);
+	     is = ImagestateSet(&ic->sticky_active.normal, s2);
 	     continue;
 	  case ICLASS_STICKY_ACTIVE_CLICKED:
-	     ic->sticky_active.clicked = is = ImagestateCreate(s2);
+	     is = ImagestateSet(&ic->sticky_active.clicked, s2);
 	     continue;
 	  case ICLASS_STICKY_ACTIVE_HILITED:
-	     ic->sticky_active.hilited = is = ImagestateCreate(s2);
+	     is = ImagestateSet(&ic->sticky_active.hilited, s2);
 	     continue;
 	  case ICLASS_STICKY_ACTIVE_DISABLED:
-	     ic->sticky_active.disabled = is = ImagestateCreate(s2);
+	     is = ImagestateSet(&ic->sticky_active.disabled, s2);
 	     continue;
 	  }
 
@@ -562,7 +561,8 @@ ImageclassConfigLoad(FILE * fs)
 	switch (i1)
 	  {
 	  case ICLASS_LRTB:
-	     is->border = EMALLOC(EImageBorder, 1);
+	     if (!is->border)
+		is->border = EMALLOC(EImageBorder, 1);
 	     l = r = t = b = 0;
 	     sscanf(p2, "%i %i %i %i", &l, &r, &t, &b);
 	     is->border->left = l;

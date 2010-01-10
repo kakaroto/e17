@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2000-2007 Carsten Haitzler, Geoff Harrison and various contributors
- * Copyright (C) 2004-2009 Kim Woelders
+ * Copyright (C) 2004-2010 Kim Woelders
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -70,9 +70,8 @@ TextstateCreate(const char *font)
    return ts;
 }
 
-#if ENABLE_DESTROY
 static void
-TextStateDestroy(TextState * ts)
+TextstateDestroy(TextState * ts)
 {
    if (!ts)
       return;
@@ -83,7 +82,20 @@ TextStateDestroy(TextState * ts)
 
    Efree(ts);
 }
-#endif
+
+static TextState   *
+TextstateSet(TextState ** tsp, const char *name)
+{
+   TextState          *ts;
+
+   ts = TextstateCreate(name);
+
+   if (*tsp)
+      TextstateDestroy(*tsp);
+   *tsp = ts;
+
+   return ts;
+}
 
 static TextClass   *
 TextclassCreate(const char *name)
@@ -263,52 +275,52 @@ TextclassConfigLoad(FILE * fs)
 	     continue;
 	  case CONFIG_DESKTOP:
 	  case ICLASS_NORMAL:
-	     tc->norm.normal = ts = TextstateCreate(s2);
+	     ts = TextstateSet(&tc->norm.normal, s2);
 	     continue;
 	  case ICLASS_CLICKED:
-	     tc->norm.clicked = ts = TextstateCreate(s2);
+	     ts = TextstateSet(&tc->norm.clicked, s2);
 	     continue;
 	  case ICLASS_HILITED:
-	     tc->norm.hilited = ts = TextstateCreate(s2);
+	     ts = TextstateSet(&tc->norm.hilited, s2);
 	     continue;
 	  case ICLASS_DISABLED:
-	     tc->norm.disabled = ts = TextstateCreate(s2);
+	     ts = TextstateSet(&tc->norm.disabled, s2);
 	     continue;
 	  case ICLASS_STICKY_NORMAL:
-	     tc->sticky.normal = ts = TextstateCreate(s2);
+	     ts = TextstateSet(&tc->sticky.normal, s2);
 	     continue;
 	  case ICLASS_STICKY_CLICKED:
-	     tc->sticky.clicked = ts = TextstateCreate(s2);
+	     ts = TextstateSet(&tc->sticky.clicked, s2);
 	     continue;
 	  case ICLASS_STICKY_HILITED:
-	     tc->sticky.hilited = ts = TextstateCreate(s2);
+	     ts = TextstateSet(&tc->sticky.hilited, s2);
 	     continue;
 	  case ICLASS_STICKY_DISABLED:
-	     tc->sticky.disabled = ts = TextstateCreate(s2);
+	     ts = TextstateSet(&tc->sticky.disabled, s2);
 	     continue;
 	  case ICLASS_ACTIVE_NORMAL:
-	     tc->active.normal = ts = TextstateCreate(s2);
+	     ts = TextstateSet(&tc->active.normal, s2);
 	     continue;
 	  case ICLASS_ACTIVE_CLICKED:
-	     tc->active.clicked = ts = TextstateCreate(s2);
+	     ts = TextstateSet(&tc->active.clicked, s2);
 	     continue;
 	  case ICLASS_ACTIVE_HILITED:
-	     tc->active.hilited = ts = TextstateCreate(s2);
+	     ts = TextstateSet(&tc->active.hilited, s2);
 	     continue;
 	  case ICLASS_ACTIVE_DISABLED:
-	     tc->active.disabled = ts = TextstateCreate(s2);
+	     ts = TextstateSet(&tc->active.disabled, s2);
 	     continue;
 	  case ICLASS_STICKY_ACTIVE_NORMAL:
-	     tc->sticky_active.normal = ts = TextstateCreate(s2);
+	     ts = TextstateSet(&tc->sticky_active.normal, s2);
 	     continue;
 	  case ICLASS_STICKY_ACTIVE_CLICKED:
-	     tc->sticky_active.clicked = ts = TextstateCreate(s2);
+	     ts = TextstateSet(&tc->sticky_active.clicked, s2);
 	     continue;
 	  case ICLASS_STICKY_ACTIVE_HILITED:
-	     tc->sticky_active.hilited = ts = TextstateCreate(s2);
+	     ts = TextstateSet(&tc->sticky_active.hilited, s2);
 	     continue;
 	  case ICLASS_STICKY_ACTIVE_DISABLED:
-	     tc->sticky_active.disabled = ts = TextstateCreate(s2);
+	     ts = TextstateSet(&tc->sticky_active.disabled, s2);
 	     continue;
 	  }
 
