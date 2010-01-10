@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2009 Kim Woelders
+ * Copyright (C) 2004-2010 Kim Woelders
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -405,7 +405,7 @@ ECompMgrDamageMerge(XserverRegion damage)
    if (Mode_compmgr.got_damage)
      {
 	if (EDebug(EDBUG_TYPE_COMPMGR3))
-	   ERegionShow("ECompMgrDamageMerge add:", damage);
+	   ERegionShow("ECompMgrDamageMerge add:", damage, NULL);
 
 	ERegionUnion(Mode_compmgr.damage, damage);
      }
@@ -420,7 +420,7 @@ ECompMgrDamageMerge(XserverRegion damage)
    Mode_compmgr.got_damage = 1;
 
    if (EDebug(EDBUG_TYPE_COMPMGR3))
-      ERegionShow("ECompMgrDamageMerge all:", Mode_compmgr.damage);
+      ERegionShow("ECompMgrDamageMerge all:", Mode_compmgr.damage, NULL);
 }
 
 static void
@@ -835,7 +835,7 @@ ECompMgrWinSetExtents(EObj * eo)
 	    r.height);
 
    if (EDebug(EDBUG_TYPE_COMPMGR))
-      ERegionShow("extents", cw->extents);
+      ERegionShow("extents", cw->extents, NULL);
 }
 
 /* Region of shaped window in screen coordinates */
@@ -872,7 +872,7 @@ ECompMgrWinSetShape(EObj * eo)
 
    D1printf("shape %#lx: %d %d\n", EobjGetXwin(eo), cw->shape_x, cw->shape_y);
    if (EDebug(EDBUG_TYPE_COMPMGR))
-      ERegionShow("shape", cw->shape);
+      ERegionShow("shape", cw->shape, NULL);
 }
 
 static              Pixmap
@@ -1323,7 +1323,7 @@ ECompMgrWinMoveResize(EObj * eo, int change_xy, int change_wh, int change_bw)
      }
 
    if (EDebug(EDBUG_TYPE_COMPMGR3))
-      ERegionShow("old-extents:", cw->extents);
+      ERegionShow("old-extents:", cw->extents, NULL);
 
 #if 0				/* FIXME - We shouldn't have to update clip if transparent */
    if (cw->mode == WINDOW_UNREDIR || cw->mode == WINDOW_SOLID)
@@ -1424,7 +1424,7 @@ ECompMgrWinReparent(EObj * eo, Desk * dsk, int change_xy)
 
    /* Invalidate old window region */
    if (EDebug(EDBUG_TYPE_COMPMGR3))
-      ERegionShow("old-extents:", cw->extents);
+      ERegionShow("old-extents:", cw->extents, NULL);
    ECompMgrDamageMergeObject(eo, cw->extents);
    if (change_xy)
      {
@@ -1558,28 +1558,30 @@ ECompMgrWinDamage(EObj * eo, XEvent * ev __UNUSED__)
 }
 
 static void
-ECompMgrWinDumpInfo(const char *txt, EObj * eo, XserverRegion rgn, int force)
+ECompMgrWinDumpInfo(const char *txt, EObj * eo, XserverRegion rgn, int ipc)
 {
+   void                (*prf) (const char *fmt, ...);
    ECmWinInfo         *cw = eo->cmhook;
 
-   Eprintf("%s %#lx: %d,%d %dx%d: %s\n", txt, EobjGetXwin(eo),
-	   EobjGetX(eo), EobjGetY(eo), EobjGetW(eo), EobjGetH(eo),
-	   EobjGetName(eo));
+   prf = (ipc) ? IpcPrintf : Eprintf;
+
+   prf("%s %#lx: %d,%d %dx%d: %s\n", txt, EobjGetXwin(eo),
+       EobjGetX(eo), EobjGetY(eo), EobjGetW(eo), EobjGetH(eo), EobjGetName(eo));
    if (!cw)
      {
-	Eprintf("Not managed\n");
+	prf("Not managed\n");
 	return;
      }
 
-   if (force || EDebug(EDBUG_TYPE_COMPMGR3))
+   if (ipc || EDebug(EDBUG_TYPE_COMPMGR3))
      {
-	Eprintf(" - pict=%#lx pmap=%#lx\n", cw->picture, cw->pixmap);
+	prf(" - pict=%#lx pmap=%#lx\n", cw->picture, cw->pixmap);
 
-	ERegionShow("win extents", cw->extents);
-	ERegionShow("win shape  ", cw->shape);
-	ERegionShow("win clip   ", cw->clip);
+	ERegionShow("win extents", cw->extents, prf);
+	ERegionShow("win shape  ", cw->shape, prf);
+	ERegionShow("win clip   ", cw->clip, prf);
 	if (rgn != None)
-	   ERegionShow("region", rgn);
+	   ERegionShow("region", rgn, prf);
      }
 }
 
@@ -1944,7 +1946,7 @@ ECompMgrRepaint(void)
    D2printf("ECompMgrRepaint rootBuffer=%#lx rootPicture=%#lx\n",
 	    rootBuffer, rootPicture);
    if (EDebug(EDBUG_TYPE_COMPMGR2))
-      ERegionShow("damage", Mode_compmgr.damage);
+      ERegionShow("damage", Mode_compmgr.damage, NULL);
 
    pbuf = rootBuffer;
 
@@ -1964,7 +1966,7 @@ ECompMgrRepaint(void)
    Picture             pict;
 
    if (EDebug(EDBUG_TYPE_COMPMGR2))
-      ERegionShow("after opaque", region);
+      ERegionShow("after opaque", region, NULL);
 
    /* Repaint background, clipped by damage region and opaque windows */
    pict = dsk->o.cmhook->picture;

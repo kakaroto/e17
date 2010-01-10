@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2000-2007 Carsten Haitzler, Geoff Harrison and various contributors
- * Copyright (C) 2004-2009 Kim Woelders
+ * Copyright (C) 2004-2010 Kim Woelders
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -2195,28 +2195,31 @@ ERegionIsEmpty(XserverRegion rgn)
 #endif
 
 void
-ERegionShow(const char *txt, XserverRegion rgn)
+ERegionShow(const char *txt, XserverRegion rgn,
+	    void (*prf) (const char *fmt, ...))
 {
    int                 i, nr;
    XRectangle         *pr;
 
+   prf = (prf) ? prf : Eprintf;
+
    if (rgn == None)
      {
-	Eprintf(" - region: %s %#lx is None\n", txt, rgn);
+	prf(" - region: %s %#lx is None\n", txt, rgn);
 	return;
      }
 
    pr = XFixesFetchRegion(disp, rgn, &nr);
    if (!pr || nr <= 0)
      {
-	Eprintf(" - region: %s %#lx is empty\n", txt, rgn);
+	prf(" - region: %s %#lx is empty\n", txt, rgn);
 	goto done;
      }
 
-   Eprintf(" - region: %s %#lx:\n", txt, rgn);
+   prf(" - region: %s %#lx:\n", txt, rgn);
    for (i = 0; i < nr; i++)
-      Eprintf("%4d: %4d+%4d %4dx%4d\n", i, pr[i].x, pr[i].y, pr[i].width,
-	      pr[i].height);
+      prf("%4d: %4d+%4d %4dx%4d\n", i, pr[i].x, pr[i].y, pr[i].width,
+	  pr[i].height);
 
  done:
    if (pr)
