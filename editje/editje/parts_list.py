@@ -36,6 +36,7 @@ class PartsList(CList):
 
         self.e.part.callback_add("part.changed", self._part_changed)
         self.e.part.callback_add("part.unselected", self._part_changed)
+        self.e.part.callback_add("name.changed", self._name_changed)
 
     def _parts_update(self, emissor, data):
         self.clear()
@@ -51,10 +52,23 @@ class PartsList(CList):
 
     def _part_removed(self, emissor, data):
         self.remove(data)
+        if not self._selected and self._first:
+            self._first.selected = True
 
     def _part_changed(self, emissor, data):
         self.selection_clear()
         self.select(data)
+
+    def _name_changed(self, emissor, data):
+        for s in self._selected.iterkeys():
+            item = self._items[s]
+            if item.label_get() == data[0]:
+                item.label_set(data[1])
+                self._selected[data[1]] = self._selected[data[0]]
+                self._items[data[1]] = self._items[data[0]]
+                del self._selected[data[0]]
+                del self._items[data[0]]
+                return
 
     # Selection
     def _selected_cb(self, li, it):

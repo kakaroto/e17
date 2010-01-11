@@ -34,6 +34,7 @@ class PartDetails(EditjeDetails):
                                group="editje/collapsable/part_properties")
 
         self.e.part.callback_add("part.changed", self._part_update)
+        self.e.part.callback_add("name.changed", self._part_update)
 
         self.title_set("part properties")
 
@@ -42,10 +43,11 @@ class PartDetails(EditjeDetails):
                          'FAR SHADOW', 'FAR SOFT SHADOW', 'GLOW']
 
         self._header_table = PropertyTable(parent)
+        self._header_table._value_changed = self.header_prop_value_changed
 
         prop = Property(parent, "name")
         wid = WidgetEntry(self)
-        wid.disabled_set(True)
+        wid.disabled_set(False)
         prop.widget_add("n", wid)
         self._header_table.property_add(prop)
 
@@ -80,6 +82,11 @@ class PartDetails(EditjeDetails):
 
         self.main_hide()
         self.group_hide("textblock")
+
+    def header_prop_value_changed(self, prop, value, group):
+        if prop == "name":
+            if not self.e.part.rename(value):
+                self._header_table["name"].value = self.e.part.name
 
     def prop_value_changed(self, prop, value, group):
         if not group:

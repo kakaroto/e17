@@ -68,9 +68,13 @@ class EditablePart(Manager, object):
 
     def rename(self, name):
         if self._name != name:
+            old_name = self._part.name
             self._part.name = name
-            self._name = self._part.name
-            self.event_emit("name.changed", self._name)
+            if self._part.name == name:
+                self._name = self._part.name
+                self.event_emit("name.changed", (old_name, self._name))
+                return True
+            return False
 
     # Type
     def _type_get(self):
