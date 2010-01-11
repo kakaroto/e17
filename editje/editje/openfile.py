@@ -26,7 +26,9 @@ import elementary
 from editje import Editje
 from fileselector import FileSelector
 from popups import NewFilePopUp
+from popups import ConfirmPopUp
 import sysconfig
+import string
 
 class OpenFile(elementary.Window):
     def __init__(self, theme="default"):
@@ -100,17 +102,58 @@ class OpenFile(elementary.Window):
         popup.move(x + 150, y + 140)
         popup.resize(300, 200)
 
+    def list_files_on_diretory(self):
+        path = os.getenv("PWD")
+        list = os.listdir(path)
+        list.sort(key=str.lower)
+        files = []
+        for file in list:
+            if not file.startswith("."):
+                full = os.path.join(path, file)
+                if os.path.isfile(full):
+                    if file.endswith(".edj"):
+                        files.append(file)
+        return files
+
+
     def _open_template(self, data):
-        dest_name = self._newfile_pop.entry
-        if dest_name == "":
+        self.dest_name = self._newfile_pop.entry
+
+        if self.dest_name == "":
             self._notify("Please enter a name for the new file")
             return
 
-        if not dest_name.endswith(".edj"):
-            dest_name += ".edj"
+        if not self.dest_name.endswith(".edj"):
+            self.dest_name += ".edj"
+
+        exist = False
+
+        for item in self.list_files_on_diretory():
+            if self.dest_name == item:
+                exist = True
+
+        if exist:
+            self._newfile_pop.hide()
+            self._confirm_pop = ConfirmPopUp(self)
+            self._confirm_pop.action_add("Yes", self._confirm_yes_cb)
+            self._confirm_pop.action_add("No", self._confirm_no_cb)
+            self._confirm_pop.set_message(self.dest_name)
+            self._confirm_pop.open()
+        else:
+            self._open_file()
+
+    def _confirm_yes_cb(self, data):
+        self._open_file()
+
+    def _confirm_no_cb(self, data):
+        self._confirm_pop.close()
+        self._confirm_pop = None
+        self._newfile_pop.open()
+
+    def _open_file(self):
         # TODO: multiple template types to choose from in the future
         t = sysconfig.template_file_get("default")
-        dest = os.path.join(self._fs.path, dest_name)
+        dest = os.path.join(self._fs.path, self.dest_name)
         shutil.copyfile(t, dest)
 
         editje = Editje()

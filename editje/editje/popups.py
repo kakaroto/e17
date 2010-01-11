@@ -398,3 +398,46 @@ class FontPopUp(PopUp):
         self.fs.hide()
         self.list.show()
         self.content_set("fonts.list", self.list)
+
+
+class ConfirmPopUp(PopUp):
+    def __init__(self, parent, group=None, select_cb=None):
+        PopUp.__init__(self, parent, group or "editje/confirm")
+        self.style_set("minimal")
+
+        self.label_set("header.title", "Overwrite existing file ?")
+
+        self._set_controls()
+
+    def set_message(self,message):
+        self.label_set("filename",message)
+
+    def action_add(self, label, func_cb, data=None):
+        btn = Button(self)
+        btn.label_set(label)
+        btn.data["clicked"] = (func_cb, data)
+        btn.callback_clicked_add(self._action_btn_clicked)
+        btn.size_hint_min_set(100, 30)
+        btn.size_hint_max_set(100, 30)
+        btn.show()
+        self.box.pack_end(btn)
+
+    def _action_btn_clicked(self, bt, *args, **kwargs):
+        func, udata = bt.data["clicked"]
+        func(udata)
+
+    def _set_controls(self):
+        self.box = Box(self)
+        self.box.size_hint_weight_set(evas.EVAS_HINT_EXPAND,
+                                      evas.EVAS_HINT_EXPAND)
+        self.box.size_hint_align_set(evas.EVAS_HINT_FILL,
+                                     evas.EVAS_HINT_FILL)
+        self.box.horizontal_set(True)
+        self.box.show()
+        self.content_set("actions", self.box)
+
+    def _close_cb(self, data):
+        self.close()
+
+    def close(self):
+        PopUp.close(self)
