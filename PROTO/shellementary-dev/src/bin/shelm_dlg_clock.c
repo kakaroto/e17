@@ -1,15 +1,15 @@
 #include "shelm.h"
 
 void 
-shelm_scale_dialog(const char *window_title, const char *window_text, int window_width, int window_height, const char *window_background, double slider_value, double slider_min_value, double slider_max_value, const char *slider_step, Eina_Bool slider_partial, Eina_Bool slider_hide_value, Eina_Bool slider_inverted, const char *slider_unit_format, const char *slider_label, const char *slider_icon, Eina_Bool slider_vertical)
+shelm_clock_dialog(const char *window_title, const char *window_text, int window_width, int window_height, const char *window_background, Eina_Bool show_seconds, Eina_Bool show_am_pm, const char *time, Eina_Bool is_editable)
 {
-  Evas_Object *window, *background, *frame, *box, *slider, *buttonbar, *button_cancel, *button_ok;
+  Evas_Object *window, *background, *frame, *box, *clock, *buttonbar, *button_cancel, *button_ok;
   char buf[PATH_MAX];
 
   if (window_title)
-    window = create_window("shellementary-scaledialog", window_title, cancel_callback);
+    window = create_window("shellementary-clockdialog", window_title, cancel_callback);
   else
-    window = create_window("shellementary-scaledialog", _("Adjust the value"), cancel_callback);
+    window = create_window("shellementary-clockdialog", _("Set the time"), cancel_callback);
 
   background = create_background(window, window_background, EINA_TRUE);
   elm_win_resize_object_add(window, background);
@@ -31,9 +31,9 @@ shelm_scale_dialog(const char *window_title, const char *window_text, int window
       evas_object_show(label);
     }
 
-  slider = create_slider(window, slider_value, slider_min_value, slider_max_value, slider_step, slider_partial, slider_hide_value, slider_inverted, slider_unit_format, slider_label, slider_icon, slider_vertical);
-  elm_box_pack_end(box, slider);
-  evas_object_show(slider);
+  clock = create_clock(window, show_seconds, show_am_pm, time, is_editable);
+  elm_box_pack_end(box, clock);
+  evas_object_show(clock);
 
   buttonbar = create_box(window, EINA_TRUE);
   elm_box_pack_end(box, buttonbar);
@@ -47,7 +47,7 @@ shelm_scale_dialog(const char *window_title, const char *window_text, int window
 
   snprintf(buf, sizeof(buf), "%s/icon-ok.png", PACKAGE_DATA_DIR);
   button_ok = create_button(window, buf, _("OK"));
-  evas_object_smart_callback_add(button_ok, "clicked", slider_callback, slider);
+  evas_object_smart_callback_add(button_ok, "clicked", clock_callback, clock);
   elm_box_pack_end(buttonbar, button_ok);
   evas_object_show(button_ok);
 

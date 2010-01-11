@@ -131,7 +131,7 @@ _args_init(int argc, char **argv)
 	    }
       else if (!strcmp(argv[1], "--clock"))
 	    {
-	      arguments->dlg_entry_enabled = EINA_TRUE;
+	      arguments->dlg_clock_enabled = EINA_TRUE;
 	      for (i; i < argc + 1; i++)
 	        {
 	          argv[i] = argv[i + 1];
@@ -203,6 +203,10 @@ elm_main(int argc, char **argv)
    else if (arguments->dlg_scale_enabled)
     {
 	  shelm_scale_dialog(arguments->window_title, arguments->window_text, arguments->window_width, arguments->window_height, arguments->window_bg, arguments->scale_value, arguments->scale_min_value, arguments->scale_max_value, arguments->scale_step, arguments->scale_print_partial, arguments->scale_hide_value, arguments->scale_inverted, arguments->scale_unit_format, arguments->scale_label, arguments->scale_icon, arguments->scale_vertical);
+    }
+   else if (arguments->dlg_clock_enabled)
+    {
+	  shelm_clock_dialog(arguments->window_title, arguments->window_text, arguments->window_width, arguments->window_height, arguments->window_bg, arguments->clock_show_seconds, arguments->clock_show_am_pm, arguments->clock_time, arguments->clock_editable);
     }
   else
     shelm_about_dialog();

@@ -102,6 +102,7 @@ SH_API void            list_dialog_callback(void *data, Evas_Object *obj, void *
 SH_API void            cancel_callback(void *data, Evas_Object *obj, void *event_info); // clicked Cancel button, should return value 1
 SH_API void            entry_callback(void *data, Evas_Object *obj, void *event_info); // prints entry text
 SH_API void            slider_callback(void *data, Evas_Object *obj, void *event_info); // print slider value when clicked OK
+SH_API void            clock_callback(void *data, Evas_Object *obj, void *event_info); // print clock info
 
 // dialog prototypes
 void                   shelm_about_dialog(); // when no arguments entered
@@ -109,5 +110,6 @@ void                   shelm_entry_dialog(const char *window_title, const char *
 void                   shelm_simple_dialog(const char *window_title, const char *window_text, int window_width, int window_height, const char *window_background, const char *window_icccm_name, const char *window_default_title, const char *window_default_icon); // error, warning, info dialogs
 void                   shelm_question_dialog(const char *window_title, const char *window_text, int window_width, int window_height, const char *window_background); // question dialog
 void                   shelm_scale_dialog(const char *window_title, const char *window_text, int window_width, int window_height, const char *window_background, double slider_value, double slider_min_value, double slider_max_value, const char *slider_step, Eina_Bool slider_partial, Eina_Bool slider_hide_value, Eina_Bool slider_inverted, const char *slider_unit_format, const char *slider_label, const char *slider_icon, Eina_Bool slider_vertical);
+void                   shelm_clock_dialog(const char *window_title, const char *window_text, int window_width, int window_height, const char *window_background, Eina_Bool show_seconds, Eina_Bool show_am_pm, const char *time, Eina_Bool is_editable);
 #endif
 

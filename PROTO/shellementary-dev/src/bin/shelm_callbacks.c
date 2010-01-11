@@ -26,6 +26,19 @@ slider_callback(void *data, Evas_Object *obj, void *event_info)
 }
 
 SH_API void
+clock_callback(void *data, Evas_Object *obj, void *event_info)
+{
+  Evas_Object *clock = data;
+  char value[PATH_MAX];
+  int h, m, s;
+  elm_clock_time_get(clock, &h, &m, &s);
+  snprintf(value, sizeof(value), "%i:%i:%i", h, m, s);
+
+  printf("%s\n", value);
+  elm_exit();
+}
+
+SH_API void
 entry_callback(void *data, Evas_Object *obj, void *event_info)
 {
   Evas_Object *entry = data;
