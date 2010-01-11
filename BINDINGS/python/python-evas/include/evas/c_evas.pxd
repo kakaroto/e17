@@ -192,6 +192,10 @@ cdef extern from "Evas.h":
     ctypedef struct Evas_Textblock_Style
     ctypedef struct Evas_Textblock_Cursor
 
+    ctypedef struct Evas_Smart_Cb_Description:
+        char *name
+        char *type
+
     ctypedef struct Evas_Smart_Class:
         char *name
         int version
@@ -207,6 +211,8 @@ cdef extern from "Evas.h":
         void (*calculate)(Evas_Object *o)
         void (*member_add)(Evas_Object *o, Evas_Object *child)
         void (*member_del)(Evas_Object *o, Evas_Object *child)
+        Evas_Smart_Class *parent
+        Evas_Smart_Cb_Description *callbacks
         void *data
 
 
@@ -218,6 +224,8 @@ cdef extern from "Evas.h":
         Evas_Point output
         Evas_Point canvas
 
+    ctypedef struct Evas_Device
+
     ctypedef struct Evas_Event_Mouse_In:
         int buttons
         Evas_Point output
@@ -227,6 +235,7 @@ cdef extern from "Evas.h":
         Evas_Lock *locks
         unsigned int timestamp
         Evas_Event_Flags event_flags
+        Evas_Device *dev
 
     ctypedef struct Evas_Event_Mouse_Out:
         int buttons
@@ -237,6 +246,7 @@ cdef extern from "Evas.h":
         Evas_Lock *locks
         unsigned int timestamp
         Evas_Event_Flags event_flags
+        Evas_Device *dev
 
     ctypedef struct Evas_Event_Mouse_Down:
         int button
@@ -248,6 +258,7 @@ cdef extern from "Evas.h":
         Evas_Button_Flags flags
         unsigned int timestamp
         Evas_Event_Flags event_flags
+        Evas_Device *dev
 
     ctypedef struct Evas_Event_Mouse_Up:
         int button
@@ -259,6 +270,7 @@ cdef extern from "Evas.h":
         Evas_Button_Flags flags
         unsigned int timestamp
         Evas_Event_Flags event_flags
+        Evas_Device *dev
 
     ctypedef struct Evas_Event_Mouse_Move:
         int buttons
@@ -269,6 +281,7 @@ cdef extern from "Evas.h":
         Evas_Lock *locks
         unsigned int timestamp
         Evas_Event_Flags event_flags
+        Evas_Device *dev
 
     ctypedef struct Evas_Event_Mouse_Wheel:
         int direction # 0 = default up/down wheel
@@ -280,6 +293,7 @@ cdef extern from "Evas.h":
         Evas_Lock *locks
         unsigned int timestamp
         Evas_Event_Flags event_flags
+        Evas_Device *dev
 
     ctypedef struct Evas_Event_Key_Down:
         char *keyname
@@ -291,6 +305,7 @@ cdef extern from "Evas.h":
         char *compose
         unsigned int timestamp
         Evas_Event_Flags event_flags
+        Evas_Device *dev
 
     ctypedef struct Evas_Event_Key_Up:
         char *keyname
@@ -302,12 +317,14 @@ cdef extern from "Evas.h":
         char *compose
         unsigned int timestamp
         Evas_Event_Flags event_flags
+        Evas_Device *dev
 
     ctypedef struct Evas_Event_Hold:
         int hold
         void *data
         unsigned int timestamp
         Evas_Event_Flags event_flags
+        Evas_Device *dev
 
 
     ####################################################################
