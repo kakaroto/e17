@@ -89,7 +89,7 @@ _args_init(int argc, char **argv)
     ECORE_GETOPT_VALUE_DOUBLE(arguments->scale_value),
     ECORE_GETOPT_VALUE_DOUBLE(arguments->scale_min_value),
     ECORE_GETOPT_VALUE_DOUBLE(arguments->scale_max_value),
-    ECORE_GETOPT_VALUE_DOUBLE(arguments->scale_step),
+    ECORE_GETOPT_VALUE_STR(arguments->scale_step),
     ECORE_GETOPT_VALUE_BOOL(arguments->scale_print_partial),
     ECORE_GETOPT_VALUE_BOOL(arguments->scale_hide_value),
     ECORE_GETOPT_VALUE_BOOL(arguments->scale_inverted),
@@ -142,7 +142,7 @@ _args_init(int argc, char **argv)
 	    }
       else if (!strcmp(argv[1], "--scale"))
 	    {
-	      arguments->dlg_entry_enabled = EINA_TRUE;
+	      arguments->dlg_scale_enabled = EINA_TRUE;
 	      for (i; i < argc + 1; i++)
 	        {
 	          argv[i] = argv[i + 1];
@@ -199,6 +199,10 @@ elm_main(int argc, char **argv)
   else if (arguments->dlg_question_enabled)
     {
 	  shelm_question_dialog(arguments->window_title, arguments->window_text, arguments->window_width, arguments->window_height, arguments->window_bg);
+    }
+   else if (arguments->dlg_scale_enabled)
+    {
+	  shelm_scale_dialog(arguments->window_title, arguments->window_text, arguments->window_width, arguments->window_height, arguments->window_bg, arguments->scale_value, arguments->scale_min_value, arguments->scale_max_value, arguments->scale_step, arguments->scale_print_partial, arguments->scale_hide_value, arguments->scale_inverted, arguments->scale_unit_format, arguments->scale_label, arguments->scale_icon, arguments->scale_vertical);
     }
   else
     shelm_about_dialog();

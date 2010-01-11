@@ -13,6 +13,17 @@ cancel_callback(void *data, Evas_Object *obj, void *event_info)
   elm_exit();
 }
 
+SH_API void
+slider_callback(void *data, Evas_Object *obj, void *event_info)
+{
+  Evas_Object *slider = data;
+  double value;
+
+  value = elm_slider_value_get(slider);
+
+  printf("%f\n", value);
+  elm_exit();
+}
 
 SH_API void
 entry_callback(void *data, Evas_Object *obj, void *event_info)

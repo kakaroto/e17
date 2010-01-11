@@ -171,7 +171,7 @@ const Ecore_Getopt scale_opts = {
      ('\0', "min-value", "Set slider minimal value."),
      ECORE_GETOPT_STORE_DOUBLE
      ('\0', "max-value", "Set slider maximal value."),
-     ECORE_GETOPT_STORE_DOUBLE
+     ECORE_GETOPT_STORE_STR
      ('\0', "step", "Set slider step."),
      ECORE_GETOPT_COUNT('\0', "print-partial", "Print partial values."),
      ECORE_GETOPT_COUNT('\0', "hide-value", "Hide value."),
