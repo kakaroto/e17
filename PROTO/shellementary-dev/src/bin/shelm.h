@@ -106,5 +106,6 @@ SH_API void            entry_callback(void *data, Evas_Object *obj, void *event_
 void                   shelm_about_dialog(); // when no arguments entered
 void                   shelm_entry_dialog(const char *window_title, const char *window_text, int window_width, int window_height, const char *window_background, const char *entry_text, Eina_Bool entry_hide_text); // entry dialog
 void                   shelm_simple_dialog(const char *window_title, const char *window_text, int window_width, int window_height, const char *window_background, const char *window_icccm_name, const char *window_default_title, const char *window_default_icon); // error, warning, info dialogs
+void				   shelm_question_dialog(const char *window_title, const char *window_text, int window_width, int window_height, const char *window_background); // question dialog
 #endif
 

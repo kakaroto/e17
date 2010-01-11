@@ -108,49 +108,49 @@ _args_init(int argc, char **argv)
   if (argv[1])
     {
       if (!strcmp(argv[1], "--entry"))
-	{
-	  arguments->dlg_entry_enabled = EINA_TRUE;
-	  for (i; i < argc + 1; i++)
 	    {
-	      argv[i] = argv[i + 1];
-	      argv[argc] = NULL;
-	    }
-	  argc--;
-	  arg_index = ecore_getopt_parse(&entry_opts, entry_values, argc, argv);
-	}
+	      arguments->dlg_entry_enabled = EINA_TRUE;
+	      for (i; i < argc + 1; i++)
+	        {
+    	      argv[i] = argv[i + 1];
+    	      argv[argc] = NULL;
+    	    }
+	      argc--;
+    	  arg_index = ecore_getopt_parse(&entry_opts, entry_values, argc, argv);
+    	}
       else if (!strcmp(argv[1], "--text-info"))
-	{
-	  arguments->dlg_entry_enabled = EINA_TRUE;
-	  for (i; i < argc + 1; i++)
-	    {
-	      argv[i] = argv[i + 1];
-	      argv[argc] = NULL;
+    	{
+	      arguments->dlg_entry_enabled = EINA_TRUE;
+	      for (i; i < argc + 1; i++)
+	        {
+	          argv[i] = argv[i + 1];
+	          argv[argc] = NULL;
+	        }
+	      argc--;
+	      arg_index = ecore_getopt_parse(&textinfo_opts, textinfo_values, argc, argv);
 	    }
-	  argc--;
-	  arg_index = ecore_getopt_parse(&textinfo_opts, textinfo_values, argc, argv);
-	}
       else if (!strcmp(argv[1], "--clock"))
-	{
-	  arguments->dlg_entry_enabled = EINA_TRUE;
-	  for (i; i < argc + 1; i++)
 	    {
-	      argv[i] = argv[i + 1];
-	      argv[argc] = NULL;
+	      arguments->dlg_entry_enabled = EINA_TRUE;
+	      for (i; i < argc + 1; i++)
+	        {
+	          argv[i] = argv[i + 1];
+	          argv[argc] = NULL;
+	        }
+	      argc--;
+	      arg_index = ecore_getopt_parse(&clock_opts, clock_values, argc, argv);
 	    }
-	  argc--;
-	  arg_index = ecore_getopt_parse(&clock_opts, clock_values, argc, argv);
-	}
       else if (!strcmp(argv[1], "--scale"))
-	{
-	  arguments->dlg_entry_enabled = EINA_TRUE;
-	  for (i; i < argc + 1; i++)
 	    {
-	      argv[i] = argv[i + 1];
-	      argv[argc] = NULL;
+	      arguments->dlg_entry_enabled = EINA_TRUE;
+	      for (i; i < argc + 1; i++)
+	        {
+	          argv[i] = argv[i + 1];
+	          argv[argc] = NULL;
+	        }
+	      argc--;
+	      arg_index = ecore_getopt_parse(&scale_opts, scale_values, argc, argv);
 	    }
-	  argc--;
-	  arg_index = ecore_getopt_parse(&scale_opts, scale_values, argc, argv);
-	}
       else
         arg_index = ecore_getopt_parse(&general_opts, general_values, argc, argv);
     }
@@ -170,6 +170,7 @@ _args_init(int argc, char **argv)
 EAPI int
 elm_main(int argc, char **argv)
 {
+  char buf[PATH_MAX];
   if (!_args_init(argc, argv))
     {
       fprintf(stderr, "Cannot parse arguments, exiting.");
@@ -177,13 +178,28 @@ elm_main(int argc, char **argv)
     }
 
   if (arguments->dlg_entry_enabled)
-    shelm_entry_dialog(arguments->window_title, arguments->window_text, arguments->window_width, arguments->window_height, arguments->window_bg, arguments->entry_entry_text, arguments->entry_hide_text);
+    {
+      shelm_entry_dialog(arguments->window_title, arguments->window_text, arguments->window_width, arguments->window_height, arguments->window_bg, arguments->entry_entry_text, arguments->entry_hide_text);
+    }
   else if (arguments->dlg_error_enabled)
-    shelm_simple_dialog(arguments->window_title, arguments->window_text, arguments->window_width, arguments->window_height, arguments->window_bg, "errordialog", _("Error!"), "/usr/share/shellementary/icon-error.png");
+    {
+	  snprintf(buf, sizeof(buf), "%s/icon-error.png", PACKAGE_DATA_DIR);
+      shelm_simple_dialog(arguments->window_title, arguments->window_text, arguments->window_width, arguments->window_height, arguments->window_bg, "errordialog", _("Error!"), buf);
+    }
   else if (arguments->dlg_warning_enabled)
-    shelm_simple_dialog(arguments->window_title, arguments->window_text, arguments->window_width, arguments->window_height, arguments->window_bg, "warningdialog", _("Warning!"), "/usr/share/shellementary/icon-warning.png");
+    {
+	  snprintf(buf, sizeof(buf), "%s/icon-warning.png", PACKAGE_DATA_DIR);
+      shelm_simple_dialog(arguments->window_title, arguments->window_text, arguments->window_width, arguments->window_height, arguments->window_bg, "warningdialog", _("Warning!"), buf);
+    }
   else if (arguments->dlg_info_enabled)
-    shelm_simple_dialog(arguments->window_title, arguments->window_text, arguments->window_width, arguments->window_height, arguments->window_bg, "infodialog", _("Information"), "/usr/share/shellementary/icon-info.png");
+    {
+	  snprintf(buf, sizeof(buf), "%s/icon-info.png", PACKAGE_DATA_DIR);
+      shelm_simple_dialog(arguments->window_title, arguments->window_text, arguments->window_width, arguments->window_height, arguments->window_bg, "infodialog", _("Information"), buf);
+    }
+  else if (arguments->dlg_question_enabled)
+    {
+	  shelm_question_dialog(arguments->window_title, arguments->window_text, arguments->window_width, arguments->window_height, arguments->window_bg);
+    }
   else
     shelm_about_dialog();
 

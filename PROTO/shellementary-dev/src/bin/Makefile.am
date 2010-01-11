@@ -19,6 +19,7 @@ shellementary_SOURCES = shelm.c \
 			\
 			shelm_dlg_entry.c \
 			shelm_dlg_simpleicon.c \
+			shelm_dlg_question.c \
 			\
 			shelm_about.c
 
