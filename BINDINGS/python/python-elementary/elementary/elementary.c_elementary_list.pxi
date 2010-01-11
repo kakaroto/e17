@@ -185,10 +185,9 @@ cdef class ListItem:
         def __set__(self, label):
             self.label_set(label)
 
-    def prev(self):
-        import warnings
-        warnings.warn("use prev_get() instead.", DeprecationWarning)
-        self.item = elm_list_item_prev(self.item)
+    property prev:
+        def __get__(self):
+            return self.prev_get()
 
     def prev_get(self):
         cdef Elm_List_Item *item
@@ -205,10 +204,9 @@ cdef class ListItem:
         (obj, callback, it, a, ka) = <object>data
         return it
 
-    def next(self):
-        import warnings
-        warnings.warn("use next_get() instead.", DeprecationWarning)
-        self.item = elm_list_item_next(self.item)
+    property next:
+        def __get__(self):
+            return self.next_get()
 
     def next_get(self):
         cdef Elm_List_Item *item
