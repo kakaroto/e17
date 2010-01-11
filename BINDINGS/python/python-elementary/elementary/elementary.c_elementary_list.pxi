@@ -195,13 +195,14 @@ cdef class ListItem:
         cdef void *data
 
         item = elm_list_item_prev(self.item)
-
         if item == NULL:
             return None
+
         data = elm_list_item_data_get(item)
         if data == NULL:
             return None
-        (obj, callback, d, it) = <object>data
+
+        (obj, callback, it, a, ka) = <object>data
         return it
 
     def next(self):
@@ -214,13 +215,14 @@ cdef class ListItem:
         cdef void *data
 
         item = elm_list_item_next(self.item)
-
         if item == NULL:
             return None
+
         data = elm_list_item_data_get(item)
         if data == NULL:
             return None
-        (obj, callback, d, it) = <object>data
+
+        (obj, callback, it, a, ka) = <object>data
         return it
 
     def end_get(self):
