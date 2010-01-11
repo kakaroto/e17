@@ -18,7 +18,7 @@
 #include <e.h>
 #include <E_DBus.h>
 #include <E_Hal.h>
-#include <sys/vfs.h>
+#include <sys/statvfs.h>
 #include <errno.h>
 #include "config.h"
 #include "e_mod_main.h"
@@ -621,13 +621,13 @@ _places_human_size_get(unsigned long long size)
 static unsigned long long
 _places_free_space_get(const char *mount)
 {
-   struct statfs s;
+   struct statvfs s;
 //printf("GET SPACE of %s\n", mount);
    if (!mount) return 0;
-   if (statfs(mount, &s) != 0)
+   if (statvfs(mount, &s) != 0)
       return 0;
 //printf("   SPACE %d\n", (s.f_bfree * s.f_bsize));
-   return (unsigned long long)(s.f_bfree * s.f_bsize);
+   return (unsigned long long)s.f_bavail * (unsigned long long)s.f_bsize;
 }
 
 static void

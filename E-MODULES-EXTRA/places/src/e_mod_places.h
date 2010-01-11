@@ -26,7 +26,7 @@ typedef struct _Volume
    unsigned char mounted;
    const char *mount_point;
    const char *fstype;
-   long long size;
+   unsigned long long size;
    
    const char *bus;
    const char *drive_type;
