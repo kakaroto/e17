@@ -113,6 +113,8 @@ static const struct {
    { "EVAS_HINT_EXPAND", EVAS_HINT_EXPAND },
    { "EVAS_HINT_FILL", EVAS_HINT_FILL },
 
+   { "EVAS_SMART_CLASS_VERSION", EVAS_SMART_CLASS_VERSION },
+
    { NULL, 0 }
 };
 

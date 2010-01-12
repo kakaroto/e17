@@ -232,6 +232,8 @@ func_color_set(Evas_Object *obj, int r, int g, int b, int a)
 #define ELX_CALL_CHECK(Func)			\
   if (!(Func)) return JS_FALSE;
 
+
+
 static JSBool
 elixir_evas_smart_class_new(JSContext *cx, uintN argc, jsval *vp)
 {
@@ -265,7 +267,8 @@ elixir_evas_smart_class_new(JSContext *cx, uintN argc, jsval *vp)
    if (JS_GetProperty(cx, val[0].v.obj, "data", &any) == JS_FALSE)
      any = JSVAL_NULL;
 
-   if (esc.version != 3)
+   /* FIXME: We don't take into account parent and callbacks right now. */
+   if (esc.version != 4)
      {
 	JS_ReportError(cx, "Wrong version for Smart Object Class.");
 	return JS_FALSE;
