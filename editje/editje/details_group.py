@@ -58,10 +58,12 @@ class GroupDetails(EditjeDetails):
 
         prop = Property(parent, "current")
         wid = WidgetEntry(self)
+        wid.disabled_set(True)
         wid.parser_in = lambda x: str(x)
         wid.parser_out = lambda x: int(x)
         prop.widget_add("w", wid)
         wid = WidgetEntry(self)
+        wid.disabled_set(True)
         wid.parser_in = lambda x: str(x)
         wid.parser_out = lambda x: int(x)
         prop.widget_add("h", wid)

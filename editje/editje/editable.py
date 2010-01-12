@@ -129,10 +129,15 @@ class Editable(Manager, object):
 
     def _max_set(self, value):
         if self._max != value:
-            self._max = value
-            self._edje_group.w_max = value[0]
-            self._edje_group.h_max = value[1]
-            self.event_emit("group.max.changed", value)
+            w, h = value
+            if w < self._min[0]:
+                w = self._min[0]
+            if h < self._min[1]:
+                h = self._min[1]
+            self._max = (w, h)
+            self._edje_group.w_max = w
+            self._edje_group.h_max = h
+            self.event_emit("group.max.changed", self._max)
 
     group_max = property(_max_get, _max_set)
 
@@ -141,10 +146,15 @@ class Editable(Manager, object):
 
     def _min_set(self, value):
         if self._min != value:
-            self._min = value
-            self._edje_group.w_min = value[0]
-            self._edje_group.h_min = value[1]
-            self.event_emit("group.min.changed", value)
+            w, h = value
+            if w > self._max[0]:
+                w = self._max[0]
+            if h > self._max[1]:
+                h = self._max[1]
+            self._min = (w, h)
+            self._edje_group.w_min = w
+            self._edje_group.h_min = h
+            self.event_emit("group.min.changed", self._min)
 
     group_min = property(_min_get, _min_set)
 
