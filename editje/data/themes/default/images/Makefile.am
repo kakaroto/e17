@@ -9,6 +9,7 @@ desktop_resize_handler.png \
 dialog_entry_bg.png \
 grid.png \
 ico_animation.png \
+ico_back.png \
 ico_cancel.png \
 ico_closed.png \
 ico_confirm.png \
