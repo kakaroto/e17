@@ -45,8 +45,8 @@ class WidgetsList(Collapsable):
         list.append(("TextBlock", edje.EDJE_PART_TYPE_TEXTBLOCK, none))
         list.append(("Gradient", edje.EDJE_PART_TYPE_GRADIENT, none))
         list.append(("Group", edje.EDJE_PART_TYPE_GROUP, none))
-        list.append(("Box", edje.EDJE_PART_TYPE_BOX, none))
-        list.append(("Table", edje.EDJE_PART_TYPE_TABLE, none))
+        #list.append(("Box", edje.EDJE_PART_TYPE_BOX, none))
+        #list.append(("Table", edje.EDJE_PART_TYPE_TABLE, none))
 
         for type in edje.ExternalIterator():
             module = type.module
