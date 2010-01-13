@@ -317,6 +317,9 @@ elixir_evas_smart_class_new(JSContext *cx, uintN argc, jsval *vp)
    if (!fesc->name) fesc->name = esc.name;
    else sprintf((char*) fesc->name, "elixir/%s", esc.name);
 
+   fesc->parent = NULL;
+   fesc->callbacks = NULL;
+
    es = evas_smart_class_new(fesc);
 
    evas_smart_class = elixir_class_request("Evas_Smart", NULL);
