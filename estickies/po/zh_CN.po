@@ -1,14 +1,15 @@
 # Chinese translations for estickies package
 # estickies 软件包的简体中文翻译.
-# This file is put in the public domain.
+# Copyright (C) 2010 Free Software Foundation, Inc.
+# This file is distributed under the same license as the estickies package.
 # Aron Xu <happyaron.xu@gmail.com>, 2009.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: estickies HEAD\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2009-12-03 17:22+0800\n"
-"PO-Revision-Date: 2009-12-03 17:27+0800\n"
+"POT-Creation-Date: 2010-01-13 12:54+0800\n"
+"PO-Revision-Date: 2010-01-13 12:55+0800\n"
 "Last-Translator: Aron Xu <happyaron.xu@gmail.com>\n"
 "Language-Team: Chinese (simplified) <i18n-zh@googlegroups.com>\n"
 "MIME-Version: 1.0\n"
