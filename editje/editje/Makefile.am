@@ -24,6 +24,7 @@ details_widget_button.py \
 details_widget_color.py \
 details_widget_combo.py \
 details_widget_entry.py \
+details_widget_font.py \
 details_widget_partlist.py \
 details_widget.py \
 editable_animation.py \
@@ -43,4 +44,5 @@ parts_list.py \
 popups.py \
 prop.py \
 signals.py \
-sysconfig.py
+sysconfig.py \
+widgets_list.py
