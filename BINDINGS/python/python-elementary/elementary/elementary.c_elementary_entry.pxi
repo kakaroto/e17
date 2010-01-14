@@ -142,6 +142,9 @@ cdef class Entry(Object):
     def select_all(self):
         elm_entry_select_all(self.obj)
 
+    def context_menu_disabled_set(self, disabled):
+        elm_entry_context_menu_disabled_set(self.obj, disabled)
+
     markup_to_utf8 = staticmethod(Entry_markup_to_utf8)
 
     utf8_to_markup = staticmethod(Entry_utf8_to_markup)

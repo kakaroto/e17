@@ -372,6 +372,7 @@ cdef extern from "Elementary.h":
     void elm_entry_select_all(evas.c_evas.Evas_Object *obj)
     char        *elm_entry_markup_to_utf8(char *s)
     char        *elm_entry_utf8_to_markup(char *s)
+    void elm_entry_context_menu_disabled_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool disabled)
     # Composite objects
 
     # Notepad object
