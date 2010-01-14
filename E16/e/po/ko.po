@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.17.1\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2009-12-20 13:07+0100\n"
+"POT-Creation-Date: 2010-01-14 19:50+0100\n"
 "PO-Revision-Date: 2004-08-29 01:02:30+0900\n"
 "Last-Translator: Michael Kim <lavnrose@e.sarang.net>\n"
 "Language-Team: Korean <translation-team-ko@lists.sourceforge.net>\n"
@@ -51,7 +51,7 @@ msgstr ""
 "Kim Woelders - kim@woelders.dk\n"
 
 #: src/aclass.c:211 src/backgrounds.c:236 src/borders.c:693 src/buttons.c:183
-#: src/cursors.c:131 src/iclass.c:338 src/tclass.c:113 src/tooltips.c:135
+#: src/cursors.c:131 src/iclass.c:337 src/tclass.c:125 src/tooltips.c:135
 #, c-format
 msgid "%u references remain\n"
 msgstr "%u개의 참조가 남아있습니다\n"
@@ -169,7 +169,7 @@ msgstr "무시"
 msgid "Restart Enlightenment"
 msgstr "인라이튼먼트 재시작"
 
-#: src/alert.c:570 src/setup.c:168
+#: src/alert.c:570 src/setup.c:170
 msgid "Quit Enlightenment"
 msgstr "인라이튼먼트 종료"
 
@@ -177,8 +177,8 @@ msgstr "인라이튼먼트 종료"
 msgid "Attention !!!"
 msgstr "주목 !!!"
 
-#: src/alert.c:583 src/dialog.c:693 src/dialog.c:1899 src/events.c:87
-#: src/setup.c:157 src/sound.c:310
+#: src/alert.c:583 src/dialog.c:693 src/dialog.c:1899 src/events.c:90
+#: src/setup.c:159 src/sound.c:310
 msgid "OK"
 msgstr "확인"
 
@@ -513,7 +513,7 @@ msgstr "아이콘 이름 보여주기"
 msgid "Animation mode:"
 msgstr ""
 
-#: src/container.c:1677 src/desktops.c:2570
+#: src/container.c:1677 src/desktops.c:2571
 msgid "Off"
 msgstr ""
 
@@ -609,57 +609,57 @@ msgstr ""
 "데스크탑을 제일 밑으로 내리기 위해서는\n"
 "여기를 클릭하세요.\n"
 
-#: src/desktops.c:2331
+#: src/desktops.c:2332
 msgid "Number of virtual desktops:\n"
 msgstr "가상 데스크탑 수:\n"
 
-#: src/desktops.c:2356
+#: src/desktops.c:2357
 msgid "Slide desktops around when changing"
 msgstr "데스크탑 바꿀 때 미끄러짐"
 
-#: src/desktops.c:2362
+#: src/desktops.c:2363
 #, fuzzy
 msgid "Desktop Slide speed:\n"
 msgstr "데스크탑 미끄러짐 속도: (느림)\n"
 
-#: src/desktops.c:2376
+#: src/desktops.c:2377
 msgid "Wrap desktops around"
 msgstr "가상 데스크탑 이동을 반복"
 
-#: src/desktops.c:2384
+#: src/desktops.c:2385
 msgid "Display desktop dragbar"
 msgstr "데스크탑 끌기막대 표시"
 
-#: src/desktops.c:2390
+#: src/desktops.c:2391
 msgid "Drag bar position:"
 msgstr "끌기막대 위치:"
 
-#: src/desktops.c:2394
+#: src/desktops.c:2395
 msgid "Top"
 msgstr "위"
 
-#: src/desktops.c:2400
+#: src/desktops.c:2401
 msgid "Bottom"
 msgstr "아래"
 
-#: src/desktops.c:2406 src/pager.c:1918 src/pager.c:1943 src/pager.c:1968
+#: src/desktops.c:2407 src/pager.c:1918 src/pager.c:1943 src/pager.c:1968
 msgid "Left"
 msgstr "왼쪽"
 
-#: src/desktops.c:2412 src/pager.c:1930 src/pager.c:1955 src/pager.c:1980
+#: src/desktops.c:2413 src/pager.c:1930 src/pager.c:1955 src/pager.c:1980
 msgid "Right"
 msgstr "오른쪽"
 
-#: src/desktops.c:2420 src/menus-misc.c:604
+#: src/desktops.c:2421 src/menus-misc.c:604
 #, fuzzy
 msgid "Desks"
 msgstr "데스크탑"
 
-#: src/desktops.c:2421
+#: src/desktops.c:2422
 msgid "Multiple Desktop Settings"
 msgstr "여러 데스크탑 설정"
 
-#: src/desktops.c:2424
+#: src/desktops.c:2425
 msgid ""
 "Enlightenment Multiple Desktop\n"
 "Settings Dialog\n"
@@ -667,39 +667,39 @@ msgstr ""
 "인라이튼먼트 여러 데스크탑\n"
 "설정 대화상자\n"
 
-#: src/desktops.c:2524
+#: src/desktops.c:2525
 msgid "Virtual Desktop size:\n"
 msgstr "가상 데스크탑 크기:\n"
 
-#: src/desktops.c:2560
+#: src/desktops.c:2561
 msgid "Wrap virtual desktops around"
 msgstr "가상 데스크탑 주변을 겹치기"
 
-#: src/desktops.c:2567
+#: src/desktops.c:2568
 msgid "Edge Flip Mode:"
 msgstr ""
 
-#: src/desktops.c:2575
+#: src/desktops.c:2576
 msgid "On"
 msgstr ""
 
-#: src/desktops.c:2580
+#: src/desktops.c:2581
 msgid "Only when moving window"
 msgstr ""
 
-#: src/desktops.c:2586
+#: src/desktops.c:2587
 msgid "Resistance at edge of screen:\n"
 msgstr "스크린 변두리에서의 저항감:\n"
 
-#: src/desktops.c:2598
+#: src/desktops.c:2599
 msgid "Areas"
 msgstr ""
 
-#: src/desktops.c:2599
+#: src/desktops.c:2600
 msgid "Virtual Desktop Settings"
 msgstr "가상 데스크탑 설정"
 
-#: src/desktops.c:2602
+#: src/desktops.c:2603
 msgid ""
 "Enlightenment Virtual Desktop\n"
 "Settings Dialog\n"
@@ -711,7 +711,7 @@ msgstr ""
 msgid "Apply"
 msgstr "적용"
 
-#: src/ecompmgr.c:2315
+#: src/ecompmgr.c:2297
 msgid ""
 "Cannot enable Composite Manager.\n"
 "Use xdpyinfo to check that\n"
@@ -719,11 +719,11 @@ msgid ""
 "extensions are loaded."
 msgstr ""
 
-#: src/events.c:87
+#: src/events.c:90
 msgid "X server setup error"
 msgstr "X 서버 설정 오류"
 
-#: src/events.c:88
+#: src/events.c:91
 msgid ""
 "FATAL ERROR:\n"
 "\n"
@@ -1525,7 +1525,7 @@ msgstr ""
 "인라이튼먼트 데스크탑과 영역\n"
 "페이저 설정 대화상자\n"
 
-#: src/session.c:344
+#: src/session.c:345
 msgid ""
 "ERROR!\n"
 "\n"
@@ -1551,11 +1551,11 @@ msgstr ""
 "\n"
 "... 그러길 바랍니다.\n"
 
-#: src/session.c:644
+#: src/session.c:645
 msgid "Are you sure?"
 msgstr "확실한가요?"
 
-#: src/session.c:646
+#: src/session.c:647
 msgid ""
 "\n"
 "\n"
@@ -1569,48 +1569,48 @@ msgstr ""
 "\n"
 "\n"
 
-#: src/session.c:656
+#: src/session.c:657
 #, fuzzy
 msgid "  Yes, Shut Down  "
 msgstr "  예, 로그아웃  "
 
-#: src/session.c:658
+#: src/session.c:659
 #, fuzzy
 msgid "  Yes, Reboot  "
 msgstr "  예, 로그아웃  "
 
-#: src/session.c:661
+#: src/session.c:662
 msgid "  Yes, Log Out  "
 msgstr "  예, 로그아웃  "
 
-#: src/session.c:663
+#: src/session.c:664
 msgid "  No  "
 msgstr "  아니오  "
 
-#: src/session.c:798
+#: src/session.c:799
 msgid "Enable Session Script"
 msgstr ""
 
-#: src/session.c:803
+#: src/session.c:804
 #, fuzzy
 msgid "Enable Logout Dialog"
 msgstr "대화상자 머리 사용"
 
-#: src/session.c:808
+#: src/session.c:809
 msgid "Enable Reboot/Halt on Logout"
 msgstr ""
 
-#: src/session.c:814
+#: src/session.c:815
 #, fuzzy
 msgid "Session"
 msgstr "기타 설정"
 
-#: src/session.c:815
+#: src/session.c:816
 #, fuzzy
 msgid "Session Settings"
 msgstr "기타 설정"
 
-#: src/session.c:818
+#: src/session.c:819
 #, fuzzy
 msgid ""
 "Enlightenment Session\n"
@@ -1889,7 +1889,7 @@ msgstr ""
 msgid "Enlightenment Settings"
 msgstr "인라이튼먼트 시작중..."
 
-#: src/setup.c:58
+#: src/setup.c:60
 msgid ""
 "Enlightenment cannot connect to the display nominated by\n"
 "your shell's DISPLAY environment variable. You may set this\n"
@@ -1913,11 +1913,11 @@ msgstr ""
 "시스템 관리자 혹은 X 서버 제작사에 연락하거나 X, xdm과\n"
 "startx 등의 도움말을 미리 읽어보시기 바랍니다.\n"
 
-#: src/setup.c:156
+#: src/setup.c:158
 msgid "Another Window Manager is already running"
 msgstr "다른 창 관리자기 이미 수행중입니다"
 
-#: src/setup.c:158
+#: src/setup.c:160
 msgid ""
 "Another Window Manager is already running.\n"
 "\n"
@@ -1925,15 +1925,15 @@ msgid ""
 "you can successfully run Enlightenment.\n"
 msgstr ""
 
-#: src/setup.c:167
+#: src/setup.c:169
 msgid "X server version error"
 msgstr "X 서버 버전 오류"
 
-#: src/setup.c:167
+#: src/setup.c:169
 msgid "Ignore this error"
 msgstr "이 오류 무시"
 
-#: src/setup.c:169
+#: src/setup.c:171
 #, c-format
 msgid ""
 "WARNING:\n"

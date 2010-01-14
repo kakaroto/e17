@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: e16-0.16-0.99.99.901\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2009-12-20 13:07+0100\n"
+"POT-Creation-Date: 2010-01-14 19:50+0100\n"
 "PO-Revision-Date: 2009-05-15 16:33+0200\n"
 "Last-Translator: Tristan D. <trinine@free.fr>\n"
 "Language-Team: French <http://www.linuxmao.org>\n"
@@ -45,7 +45,7 @@ msgstr ""
 "Kim Woelders - kim@woelders.dk\n"
 
 #: src/aclass.c:211 src/backgrounds.c:236 src/borders.c:693 src/buttons.c:183
-#: src/cursors.c:131 src/iclass.c:338 src/tclass.c:113 src/tooltips.c:135
+#: src/cursors.c:131 src/iclass.c:337 src/tclass.c:125 src/tooltips.c:135
 #, c-format
 msgid "%u references remain\n"
 msgstr "Il reste %u références\n"
@@ -165,7 +165,7 @@ msgstr "Ignorer"
 msgid "Restart Enlightenment"
 msgstr "Redémarrer Enlightenment"
 
-#: src/alert.c:570 src/setup.c:168
+#: src/alert.c:570 src/setup.c:170
 msgid "Quit Enlightenment"
 msgstr "Quitter Enlightenment"
 
@@ -173,8 +173,8 @@ msgstr "Quitter Enlightenment"
 msgid "Attention !!!"
 msgstr "Attention !!!"
 
-#: src/alert.c:583 src/dialog.c:693 src/dialog.c:1899 src/events.c:87
-#: src/setup.c:157 src/sound.c:310
+#: src/alert.c:583 src/dialog.c:693 src/dialog.c:1899 src/events.c:90
+#: src/setup.c:159 src/sound.c:310
 msgid "OK"
 msgstr "OK"
 
@@ -509,7 +509,7 @@ msgstr "Afficher les noms des icônes"
 msgid "Animation mode:"
 msgstr ""
 
-#: src/container.c:1677 src/desktops.c:2570
+#: src/container.c:1677 src/desktops.c:2571
 msgid "Off"
 msgstr "Glissement désactivé"
 
@@ -603,55 +603,55 @@ msgid ""
 "to the bottom.\n"
 msgstr "Cliquez ici pour abaisser ce bureau.\n"
 
-#: src/desktops.c:2331
+#: src/desktops.c:2332
 msgid "Number of virtual desktops:\n"
 msgstr "Nombre de bureaux :\n"
 
-#: src/desktops.c:2356
+#: src/desktops.c:2357
 msgid "Slide desktops around when changing"
 msgstr "Faire glisser les bureaux lors des déplacements"
 
-#: src/desktops.c:2362
+#: src/desktops.c:2363
 msgid "Desktop Slide speed:\n"
 msgstr "Vitesse de glissement des bureaux:\n"
 
-#: src/desktops.c:2376
+#: src/desktops.c:2377
 msgid "Wrap desktops around"
 msgstr "Placer les bureaux en boucle"
 
-#: src/desktops.c:2384
+#: src/desktops.c:2385
 msgid "Display desktop dragbar"
 msgstr "Afficher la barre de bureau"
 
-#: src/desktops.c:2390
+#: src/desktops.c:2391
 msgid "Drag bar position:"
 msgstr "Position de la barre de bureau:"
 
-#: src/desktops.c:2394
+#: src/desktops.c:2395
 msgid "Top"
 msgstr "Haut"
 
-#: src/desktops.c:2400
+#: src/desktops.c:2401
 msgid "Bottom"
 msgstr "Bas"
 
-#: src/desktops.c:2406 src/pager.c:1918 src/pager.c:1943 src/pager.c:1968
+#: src/desktops.c:2407 src/pager.c:1918 src/pager.c:1943 src/pager.c:1968
 msgid "Left"
 msgstr "Gauche"
 
-#: src/desktops.c:2412 src/pager.c:1930 src/pager.c:1955 src/pager.c:1980
+#: src/desktops.c:2413 src/pager.c:1930 src/pager.c:1955 src/pager.c:1980
 msgid "Right"
 msgstr "Droit"
 
-#: src/desktops.c:2420 src/menus-misc.c:604
+#: src/desktops.c:2421 src/menus-misc.c:604
 msgid "Desks"
 msgstr "Bureaux multiples"
 
-#: src/desktops.c:2421
+#: src/desktops.c:2422
 msgid "Multiple Desktop Settings"
 msgstr "Paramètres des Bureaux multiples"
 
-#: src/desktops.c:2424
+#: src/desktops.c:2425
 msgid ""
 "Enlightenment Multiple Desktop\n"
 "Settings Dialog\n"
@@ -659,39 +659,39 @@ msgstr ""
 "Dialogue de paramétrage des\n"
 "Bureaux multiples\n"
 
-#: src/desktops.c:2524
+#: src/desktops.c:2525
 msgid "Virtual Desktop size:\n"
 msgstr "Nombre de bureaux virtuels:\n"
 
-#: src/desktops.c:2560
+#: src/desktops.c:2561
 msgid "Wrap virtual desktops around"
 msgstr "Placer les bureaux virtuels en boucle"
 
-#: src/desktops.c:2567
+#: src/desktops.c:2568
 msgid "Edge Flip Mode:"
 msgstr "Bords sensitifs et mode de glissement:"
 
-#: src/desktops.c:2575
+#: src/desktops.c:2576
 msgid "On"
 msgstr "Glissement activé"
 
-#: src/desktops.c:2580
+#: src/desktops.c:2581
 msgid "Only when moving window"
 msgstr "Seulement lors des déplacements de fenêtre"
 
-#: src/desktops.c:2586
+#: src/desktops.c:2587
 msgid "Resistance at edge of screen:\n"
 msgstr "Sensibilité des bords:\n"
 
-#: src/desktops.c:2598
+#: src/desktops.c:2599
 msgid "Areas"
 msgstr "Bureaux virtuels"
 
-#: src/desktops.c:2599
+#: src/desktops.c:2600
 msgid "Virtual Desktop Settings"
 msgstr "Paramètres des Bureaux virtuels"
 
-#: src/desktops.c:2602
+#: src/desktops.c:2603
 msgid ""
 "Enlightenment Virtual Desktop\n"
 "Settings Dialog\n"
@@ -703,7 +703,7 @@ msgstr ""
 msgid "Apply"
 msgstr "Appliquer"
 
-#: src/ecompmgr.c:2315
+#: src/ecompmgr.c:2297
 msgid ""
 "Cannot enable Composite Manager.\n"
 "Use xdpyinfo to check that\n"
@@ -715,11 +715,11 @@ msgstr ""
 "les extensions Composite, Damage,\n"
 "Fixes, et Render sont bien chargées."
 
-#: src/events.c:87
+#: src/events.c:90
 msgid "X server setup error"
 msgstr "Erreur de configuration du serveur X"
 
-#: src/events.c:88
+#: src/events.c:91
 msgid ""
 "FATAL ERROR:\n"
 "\n"
@@ -1491,7 +1491,7 @@ msgstr ""
 "Dialogue de paramétrage\n"
 "du Pager\n"
 
-#: src/session.c:344
+#: src/session.c:345
 msgid ""
 "ERROR!\n"
 "\n"
@@ -1517,11 +1517,11 @@ msgstr ""
 "\n"
 "... Enfin j'espère. (Les traducteurs ne sont pas responsables de de délire)\n"
 
-#: src/session.c:644
+#: src/session.c:645
 msgid "Are you sure?"
 msgstr "Êtes-vous sûr ?"
 
-#: src/session.c:646
+#: src/session.c:647
 msgid ""
 "\n"
 "\n"
@@ -1535,43 +1535,43 @@ msgstr ""
 "\n"
 "\n"
 
-#: src/session.c:656
+#: src/session.c:657
 msgid "  Yes, Shut Down  "
 msgstr "  Oui, Éteindre  "
 
-#: src/session.c:658
+#: src/session.c:659
 msgid "  Yes, Reboot  "
 msgstr "  Oui, Redémarrer  "
 
-#: src/session.c:661
+#: src/session.c:662
 msgid "  Yes, Log Out  "
 msgstr "  Oui, Quitter  "
 
-#: src/session.c:663
+#: src/session.c:664
 msgid "  No  "
 msgstr "  Non  "
 
-#: src/session.c:798
+#: src/session.c:799
 msgid "Enable Session Script"
 msgstr "Activer le script de session"
 
-#: src/session.c:803
+#: src/session.c:804
 msgid "Enable Logout Dialog"
 msgstr "Activer le dialogue de fermeture de session"
 
-#: src/session.c:808
+#: src/session.c:809
 msgid "Enable Reboot/Halt on Logout"
 msgstr "Activer Rebooter/Arrêter à la fermeture de session"
 
-#: src/session.c:814
+#: src/session.c:815
 msgid "Session"
 msgstr "Session"
 
-#: src/session.c:815
+#: src/session.c:816
 msgid "Session Settings"
 msgstr "Paramètres de Session"
 
-#: src/session.c:818
+#: src/session.c:819
 msgid ""
 "Enlightenment Session\n"
 "Settings Dialog\n"
@@ -1839,7 +1839,7 @@ msgstr ""
 msgid "Enlightenment Settings"
 msgstr "Paramètres d'Enlightenment..."
 
-#: src/setup.c:58
+#: src/setup.c:60
 msgid ""
 "Enlightenment cannot connect to the display nominated by\n"
 "your shell's DISPLAY environment variable. You may set this\n"
@@ -1862,11 +1862,11 @@ msgstr ""
 "xdm, startx, ou vous pouvez contacter votre administrateur, ou encore\n"
 "lire la documentation (man startx, man xdm, man X).\n"
 
-#: src/setup.c:156
+#: src/setup.c:158
 msgid "Another Window Manager is already running"
 msgstr "Un autre gestionnaire de fenêtres est déjà lancé"
 
-#: src/setup.c:158
+#: src/setup.c:160
 msgid ""
 "Another Window Manager is already running.\n"
 "\n"
@@ -1878,15 +1878,15 @@ msgstr ""
 "Vous devrez quitter votre gestionnaire de fenêtres actuel avant\n"
 "de pouvoir lancer Enlightenment.\n"
 
-#: src/setup.c:167
+#: src/setup.c:169
 msgid "X server version error"
 msgstr "Erreur de version du serveur X"
 
-#: src/setup.c:167
+#: src/setup.c:169
 msgid "Ignore this error"
 msgstr "Ignorer cette erreur"
 
-#: src/setup.c:169
+#: src/setup.c:171
 #, c-format
 msgid ""
 "WARNING:\n"

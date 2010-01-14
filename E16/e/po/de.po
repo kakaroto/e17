@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 16\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2009-12-20 13:07+0100\n"
+"POT-Creation-Date: 2010-01-14 19:50+0100\n"
 "PO-Revision-Date: 2009-05-31 15:13+0100\n"
 "Last-Translator: Peter Wehrfritz <peter.wehrfritz@web.de>\n"
 "Language-Team: Enlightenment l10n <enlightenment-intl@lists.sourceforge."
@@ -51,7 +51,7 @@ msgstr ""
 "Kim Woelders - kim@woelders.dk\n"
 
 #: src/aclass.c:211 src/backgrounds.c:236 src/borders.c:693 src/buttons.c:183
-#: src/cursors.c:131 src/iclass.c:338 src/tclass.c:113 src/tooltips.c:135
+#: src/cursors.c:131 src/iclass.c:337 src/tclass.c:125 src/tooltips.c:135
 #, c-format
 msgid "%u references remain\n"
 msgstr "%u Referenzen verbleiben\n"
@@ -188,7 +188,7 @@ msgstr "Enlightenment neu starten"
 # src/main.c:92 src/memory.c:197 src/memory.c:278 src/memory.c:298
 # src/memory.c:379 src/memory.c:396 src/setup.c:295 src/setup.c:329
 # src/setup.c:341 src/setup.c:403
-#: src/alert.c:570 src/setup.c:168
+#: src/alert.c:570 src/setup.c:170
 msgid "Quit Enlightenment"
 msgstr "Enlightenment verlassen"
 
@@ -203,8 +203,8 @@ msgstr "Achtung!"
 # src/settings.c:1460 src/settings.c:1522 src/settings.c:1610
 # src/settings.c:2012 src/settings.c:3405 src/settings.c:3750
 # src/settings.c:4048 src/settings.c:4186 src/snaps.c:547 src/sound.c:262
-#: src/alert.c:583 src/dialog.c:693 src/dialog.c:1899 src/events.c:87
-#: src/setup.c:157 src/sound.c:310
+#: src/alert.c:583 src/dialog.c:693 src/dialog.c:1899 src/events.c:90
+#: src/setup.c:159 src/sound.c:310
 msgid "OK"
 msgstr "OK"
 
@@ -611,7 +611,7 @@ msgstr "Iconnamen anzeigen"
 msgid "Animation mode:"
 msgstr ""
 
-#: src/container.c:1677 src/desktops.c:2570
+#: src/container.c:1677 src/desktops.c:2571
 msgid "Off"
 msgstr "An"
 
@@ -718,69 +718,69 @@ msgstr ""
 "ganz nach unten zu heben.\n"
 
 # src/settings.c:882
-#: src/desktops.c:2331
+#: src/desktops.c:2332
 msgid "Number of virtual desktops:\n"
 msgstr "Anzahl virtueller Desktops:\n"
 
 # src/settings.c:1750
-#: src/desktops.c:2356
+#: src/desktops.c:2357
 msgid "Slide desktops around when changing"
 msgstr "Desktops gleiten beim Wechseln herum"
 
 # src/settings.c:1922
-#: src/desktops.c:2362
+#: src/desktops.c:2363
 msgid "Desktop Slide speed:\n"
 msgstr "Desktop-Gleitgeschwindigkeit:\n"
 
 # src/settings.c:1120
-#: src/desktops.c:2376
+#: src/desktops.c:2377
 msgid "Wrap desktops around"
 msgstr "Virtuelle Desktops zyklisch durchlaufen"
 
 # src/settings.c:1858
-#: src/desktops.c:2384
+#: src/desktops.c:2385
 msgid "Display desktop dragbar"
 msgstr "Desktop-Ziehbalken anzeigen"
 
 # src/settings.c:1867
-#: src/desktops.c:2390
+#: src/desktops.c:2391
 msgid "Drag bar position:"
 msgstr "Position des Ziehbalkens:"
 
 # src/settings.c:1878
-#: src/desktops.c:2394
+#: src/desktops.c:2395
 msgid "Top"
 msgstr "Oben"
 
 # src/settings.c:1885
-#: src/desktops.c:2400
+#: src/desktops.c:2401
 msgid "Bottom"
 msgstr "Unten"
 
 # src/settings.c:218 src/settings.c:250 src/settings.c:282
 # src/settings.c:1896
-#: src/desktops.c:2406 src/pager.c:1918 src/pager.c:1943 src/pager.c:1968
+#: src/desktops.c:2407 src/pager.c:1918 src/pager.c:1943 src/pager.c:1968
 msgid "Left"
 msgstr "Links"
 
 # src/settings.c:234 src/settings.c:266 src/settings.c:298
 # src/settings.c:1903
-#: src/desktops.c:2412 src/pager.c:1930 src/pager.c:1955 src/pager.c:1980
+#: src/desktops.c:2413 src/pager.c:1930 src/pager.c:1955 src/pager.c:1980
 msgid "Right"
 msgstr "Rechts"
 
 # src/snaps.c:453
-#: src/desktops.c:2420 src/menus-misc.c:604
+#: src/desktops.c:2421 src/menus-misc.c:604
 msgid "Desks"
 msgstr "Desktops"
 
 # src/settings.c:856
-#: src/desktops.c:2421
+#: src/desktops.c:2422
 msgid "Multiple Desktop Settings"
 msgstr "Mehrfach-Desktop-Einstellungen"
 
 # src/main.c:89
-#: src/desktops.c:2424
+#: src/desktops.c:2425
 msgid ""
 "Enlightenment Multiple Desktop\n"
 "Settings Dialog\n"
@@ -789,43 +789,43 @@ msgstr ""
 "Einstellungsdialog\n"
 
 # src/settings.c:1066
-#: src/desktops.c:2524
+#: src/desktops.c:2525
 msgid "Virtual Desktop size:\n"
 msgstr "Virtuelle Desktopgröße:\n"
 
 # src/settings.c:1120
-#: src/desktops.c:2560
+#: src/desktops.c:2561
 msgid "Wrap virtual desktops around"
 msgstr "Virtuelle Desktops zyklisch durchlaufen"
 
-#: src/desktops.c:2567
+#: src/desktops.c:2568
 msgid "Edge Flip Mode:"
 msgstr "Magische Kanten Modus"
 
-#: src/desktops.c:2575
+#: src/desktops.c:2576
 msgid "On"
 msgstr "Aus"
 
-#: src/desktops.c:2580
+#: src/desktops.c:2581
 msgid "Only when moving window"
 msgstr "Nur beim Verschieben von Fenstern"
 
 # src/settings.c:1134
-#: src/desktops.c:2586
+#: src/desktops.c:2587
 msgid "Resistance at edge of screen:\n"
 msgstr "Widerstand der Bildschirmkante:\n"
 
-#: src/desktops.c:2598
+#: src/desktops.c:2599
 msgid "Areas"
 msgstr "Bereiche"
 
 # src/settings.c:1040
-#: src/desktops.c:2599
+#: src/desktops.c:2600
 msgid "Virtual Desktop Settings"
 msgstr "Einstellungen zu virtuellen Desktops"
 
 # src/settings.c:1040
-#: src/desktops.c:2602
+#: src/desktops.c:2603
 msgid ""
 "Enlightenment Virtual Desktop\n"
 "Settings Dialog\n"
@@ -842,7 +842,7 @@ msgstr ""
 msgid "Apply"
 msgstr "Übernehmen"
 
-#: src/ecompmgr.c:2315
+#: src/ecompmgr.c:2297
 msgid ""
 "Cannot enable Composite Manager.\n"
 "Use xdpyinfo to check that\n"
@@ -855,12 +855,12 @@ msgstr ""
 "Render-Erweiterungen geladen sind."
 
 # src/setup.c:294 src/setup.c:340
-#: src/events.c:87
+#: src/events.c:90
 msgid "X server setup error"
 msgstr "Einstellungsfehler im X-Server"
 
 # src/setup.c:296
-#: src/events.c:88
+#: src/events.c:91
 msgid ""
 "FATAL ERROR:\n"
 "\n"
@@ -1756,7 +1756,7 @@ msgstr ""
 "für den Pager\n"
 
 # src/session.c:1039
-#: src/session.c:344
+#: src/session.c:345
 msgid ""
 "ERROR!\n"
 "\n"
@@ -1783,12 +1783,12 @@ msgstr ""
 "... hoffentlich.\n"
 
 # src/handlers.c:235 src/session.c:1178
-#: src/session.c:644
+#: src/session.c:645
 msgid "Are you sure?"
 msgstr "Sind Sie sicher?"
 
 # src/session.c:1180
-#: src/session.c:646
+#: src/session.c:647
 msgid ""
 "\n"
 "\n"
@@ -1803,49 +1803,49 @@ msgstr ""
 "\n"
 
 # src/session.c:1184
-#: src/session.c:656
+#: src/session.c:657
 msgid "  Yes, Shut Down  "
 msgstr "  Ja, herunterfahren"
 
 # src/session.c:1184
-#: src/session.c:658
+#: src/session.c:659
 msgid "  Yes, Reboot  "
 msgstr "  Ja, neu starten"
 
 # src/session.c:1184
-#: src/session.c:661
+#: src/session.c:662
 msgid "  Yes, Log Out  "
 msgstr "  Ja, abmelden  "
 
 # src/session.c:1185
-#: src/session.c:663
+#: src/session.c:664
 msgid "  No  "
 msgstr "  Nein  "
 
-#: src/session.c:798
+#: src/session.c:799
 msgid "Enable Session Script"
 msgstr "Verwende Sitzungsskript"
 
-#: src/session.c:803
+#: src/session.c:804
 msgid "Enable Logout Dialog"
 msgstr "Abmeldedialog aktivieren"
 
-#: src/session.c:808
+#: src/session.c:809
 msgid "Enable Reboot/Halt on Logout"
 msgstr "Aktiviere Neustart/Ausschalten beim Abmelden"
 
 # src/settings.c:393
-#: src/session.c:814
+#: src/session.c:815
 msgid "Session"
 msgstr "Sitzung"
 
 # src/settings.c:393
-#: src/session.c:815
+#: src/session.c:816
 msgid "Session Settings"
 msgstr "Sitzungs-Einstellungen"
 
 # src/main.c:89
-#: src/session.c:818
+#: src/session.c:819
 msgid ""
 "Enlightenment Session\n"
 "Settings Dialog\n"
@@ -2148,7 +2148,7 @@ msgid "Enlightenment Settings"
 msgstr "Enlightenment Einstellungen"
 
 # src/setup.c:222
-#: src/setup.c:58
+#: src/setup.c:60
 msgid ""
 "Enlightenment cannot connect to the display nominated by\n"
 "your shell's DISPLAY environment variable. You may set this\n"
@@ -2174,11 +2174,11 @@ msgstr ""
 "oder startx, bevor Sie weitermachen.\n"
 
 # src/handlers.c:217
-#: src/setup.c:156
+#: src/setup.c:158
 msgid "Another Window Manager is already running"
 msgstr "Ein anderer Fenstermanager läuft bereits"
 
-#: src/setup.c:158
+#: src/setup.c:160
 msgid ""
 "Another Window Manager is already running.\n"
 "\n"
@@ -2191,17 +2191,17 @@ msgstr ""
 "Enlightenment starten können.\n"
 
 # src/setup.c:402
-#: src/setup.c:167
+#: src/setup.c:169
 msgid "X server version error"
 msgstr "X-Server-Versionsfehler"
 
 # src/setup.c:403
-#: src/setup.c:167
+#: src/setup.c:169
 msgid "Ignore this error"
 msgstr "Ignoriere diesen Fehler"
 
 # src/setup.c:404
-#: src/setup.c:169
+#: src/setup.c:171
 #, c-format
 msgid ""
 "WARNING:\n"

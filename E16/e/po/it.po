@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2009-12-20 13:07+0100\n"
+"POT-Creation-Date: 2010-01-14 19:50+0100\n"
 "PO-Revision-Date: 2009-05-16 22:36+0200\n"
 "Last-Translator: Massimo Maiurana <maiurana@gmail.com>\n"
 "Language-Team: none\n"
@@ -43,7 +43,7 @@ msgstr ""
 "Kim Woelders - kim@woelders.dk\n"
 
 #: src/aclass.c:211 src/backgrounds.c:236 src/borders.c:693 src/buttons.c:183
-#: src/cursors.c:131 src/iclass.c:338 src/tclass.c:113 src/tooltips.c:135
+#: src/cursors.c:131 src/iclass.c:337 src/tclass.c:125 src/tooltips.c:135
 #, c-format
 msgid "%u references remain\n"
 msgstr "%u riferimenti rimasti\n"
@@ -165,7 +165,7 @@ msgstr "Ignora questo"
 msgid "Restart Enlightenment"
 msgstr "Riavvia Enlightenment"
 
-#: src/alert.c:570 src/setup.c:168
+#: src/alert.c:570 src/setup.c:170
 msgid "Quit Enlightenment"
 msgstr "Arresta Enlightenment"
 
@@ -173,8 +173,8 @@ msgstr "Arresta Enlightenment"
 msgid "Attention !!!"
 msgstr "Attenzione !!!"
 
-#: src/alert.c:583 src/dialog.c:693 src/dialog.c:1899 src/events.c:87
-#: src/setup.c:157 src/sound.c:310
+#: src/alert.c:583 src/dialog.c:693 src/dialog.c:1899 src/events.c:90
+#: src/setup.c:159 src/sound.c:310
 msgid "OK"
 msgstr "OK"
 
@@ -508,7 +508,7 @@ msgstr "Mostra nome icone"
 msgid "Animation mode:"
 msgstr ""
 
-#: src/container.c:1677 src/desktops.c:2570
+#: src/container.c:1677 src/desktops.c:2571
 msgid "Off"
 msgstr "Disattivato"
 
@@ -605,55 +605,55 @@ msgstr ""
 "Cliccare quí per abbassare questo desktop\n"
 "in fondo.\n"
 
-#: src/desktops.c:2331
+#: src/desktops.c:2332
 msgid "Number of virtual desktops:\n"
 msgstr "Numero di desktop virtuali:\n"
 
-#: src/desktops.c:2356
+#: src/desktops.c:2357
 msgid "Slide desktops around when changing"
 msgstr "Scorri desktop al cambio"
 
-#: src/desktops.c:2362
+#: src/desktops.c:2363
 msgid "Desktop Slide speed:\n"
 msgstr "Velocitá scorrimento desktop:\n"
 
-#: src/desktops.c:2376
+#: src/desktops.c:2377
 msgid "Wrap desktops around"
 msgstr "Concatena desktop estremi"
 
-#: src/desktops.c:2384
+#: src/desktops.c:2385
 msgid "Display desktop dragbar"
 msgstr "Mostra barra trascinamento desktop"
 
-#: src/desktops.c:2390
+#: src/desktops.c:2391
 msgid "Drag bar position:"
 msgstr "Posizione barra trascinamento:"
 
-#: src/desktops.c:2394
+#: src/desktops.c:2395
 msgid "Top"
 msgstr "Alto"
 
-#: src/desktops.c:2400
+#: src/desktops.c:2401
 msgid "Bottom"
 msgstr "Basso"
 
-#: src/desktops.c:2406 src/pager.c:1918 src/pager.c:1943 src/pager.c:1968
+#: src/desktops.c:2407 src/pager.c:1918 src/pager.c:1943 src/pager.c:1968
 msgid "Left"
 msgstr "Sinistra"
 
-#: src/desktops.c:2412 src/pager.c:1930 src/pager.c:1955 src/pager.c:1980
+#: src/desktops.c:2413 src/pager.c:1930 src/pager.c:1955 src/pager.c:1980
 msgid "Right"
 msgstr "Destra"
 
-#: src/desktops.c:2420 src/menus-misc.c:604
+#: src/desktops.c:2421 src/menus-misc.c:604
 msgid "Desks"
 msgstr "Desktop"
 
-#: src/desktops.c:2421
+#: src/desktops.c:2422
 msgid "Multiple Desktop Settings"
 msgstr "Impostazioni desktop multipli"
 
-#: src/desktops.c:2424
+#: src/desktops.c:2425
 msgid ""
 "Enlightenment Multiple Desktop\n"
 "Settings Dialog\n"
@@ -661,39 +661,39 @@ msgstr ""
 "Finestra configurazione desktop\n"
 "multipli di Enlightenment\n"
 
-#: src/desktops.c:2524
+#: src/desktops.c:2525
 msgid "Virtual Desktop size:\n"
 msgstr "Dimensione desktop virtuale:\n"
 
-#: src/desktops.c:2560
+#: src/desktops.c:2561
 msgid "Wrap virtual desktops around"
 msgstr "Concatena desktop virtuali estremi"
 
-#: src/desktops.c:2567
+#: src/desktops.c:2568
 msgid "Edge Flip Mode:"
 msgstr "Cambio desktop con puntatore al confine:"
 
-#: src/desktops.c:2575
+#: src/desktops.c:2576
 msgid "On"
 msgstr "Attivato"
 
-#: src/desktops.c:2580
+#: src/desktops.c:2581
 msgid "Only when moving window"
 msgstr "Solo trascinando finestre"
 
-#: src/desktops.c:2586
+#: src/desktops.c:2587
 msgid "Resistance at edge of screen:\n"
 msgstr "Resistenza al confine dello schermo:\n"
 
-#: src/desktops.c:2598
+#: src/desktops.c:2599
 msgid "Areas"
 msgstr "Aree"
 
-#: src/desktops.c:2599
+#: src/desktops.c:2600
 msgid "Virtual Desktop Settings"
 msgstr "Impostazione desktop virtuali"
 
-#: src/desktops.c:2602
+#: src/desktops.c:2603
 msgid ""
 "Enlightenment Virtual Desktop\n"
 "Settings Dialog\n"
@@ -705,7 +705,7 @@ msgstr ""
 msgid "Apply"
 msgstr "Applica"
 
-#: src/ecompmgr.c:2315
+#: src/ecompmgr.c:2297
 msgid ""
 "Cannot enable Composite Manager.\n"
 "Use xdpyinfo to check that\n"
@@ -717,11 +717,11 @@ msgstr ""
 "estensioni Composite, Damage, Fixes, e\n"
 "Render siano caricate."
 
-#: src/events.c:87
+#: src/events.c:90
 msgid "X server setup error"
 msgstr "Errore configurazione del server X"
 
-#: src/events.c:88
+#: src/events.c:91
 msgid ""
 "FATAL ERROR:\n"
 "\n"
@@ -1498,7 +1498,7 @@ msgstr ""
 "Finestra configurazione\n"
 "Pager di Enlightenment\n"
 
-#: src/session.c:344
+#: src/session.c:345
 msgid ""
 "ERROR!\n"
 "\n"
@@ -1524,11 +1524,11 @@ msgstr ""
 "\n"
 "... almeno spero.\n"
 
-#: src/session.c:644
+#: src/session.c:645
 msgid "Are you sure?"
 msgstr "Siete sicuri?"
 
-#: src/session.c:646
+#: src/session.c:647
 msgid ""
 "\n"
 "\n"
@@ -1542,43 +1542,43 @@ msgstr ""
 "\n"
 "\n"
 
-#: src/session.c:656
+#: src/session.c:657
 msgid "  Yes, Shut Down  "
 msgstr "  Sí, spegni  "
 
-#: src/session.c:658
+#: src/session.c:659
 msgid "  Yes, Reboot  "
 msgstr "  Sí, riavvia  "
 
-#: src/session.c:661
+#: src/session.c:662
 msgid "  Yes, Log Out  "
 msgstr "  Sí, esci  "
 
-#: src/session.c:663
+#: src/session.c:664
 msgid "  No  "
 msgstr "  No  "
 
-#: src/session.c:798
+#: src/session.c:799
 msgid "Enable Session Script"
 msgstr "Abilita script di sessione"
 
-#: src/session.c:803
+#: src/session.c:804
 msgid "Enable Logout Dialog"
 msgstr "Abilita finestra di uscita"
 
-#: src/session.c:808
+#: src/session.c:809
 msgid "Enable Reboot/Halt on Logout"
 msgstr "Abilita riavvio/arresto all'uscita"
 
-#: src/session.c:814
+#: src/session.c:815
 msgid "Session"
 msgstr "Sessione"
 
-#: src/session.c:815
+#: src/session.c:816
 msgid "Session Settings"
 msgstr "Impostazioni sessione"
 
-#: src/session.c:818
+#: src/session.c:819
 msgid ""
 "Enlightenment Session\n"
 "Settings Dialog\n"
@@ -1842,7 +1842,7 @@ msgstr ""
 msgid "Enlightenment Settings"
 msgstr "Impostazioni di Enlightenment"
 
-#: src/setup.c:58
+#: src/setup.c:60
 msgid ""
 "Enlightenment cannot connect to the display nominated by\n"
 "your shell's DISPLAY environment variable. You may set this\n"
@@ -1866,11 +1866,11 @@ msgstr ""
 "del vostro sistema locale, o il fornitore del server X, o leggete\n"
 "le pagine di manuale di X, xdm e startx prima di procedere.\n"
 
-#: src/setup.c:156
+#: src/setup.c:158
 msgid "Another Window Manager is already running"
 msgstr "Un altro Window Manager é giá in esecuzione"
 
-#: src/setup.c:158
+#: src/setup.c:160
 msgid ""
 "Another Window Manager is already running.\n"
 "\n"
@@ -1882,15 +1882,15 @@ msgstr ""
 "Dovrete chiudere l'attuale Window Manager prima\n"
 "di riuscire a eseguire Enlightenment con successo.\n"
 
-#: src/setup.c:167
+#: src/setup.c:169
 msgid "X server version error"
 msgstr "Errore di versione del server X"
 
-#: src/setup.c:167
+#: src/setup.c:169
 msgid "Ignore this error"
 msgstr "Ignora questo errore"
 
-#: src/setup.c:169
+#: src/setup.c:171
 #, c-format
 msgid ""
 "WARNING:\n"

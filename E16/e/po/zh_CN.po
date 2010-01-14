@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: e16\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2009-12-20 13:07+0100\n"
+"POT-Creation-Date: 2010-01-14 19:50+0100\n"
 "PO-Revision-Date: 2009-07-06 09:05+0000\n"
 "Last-Translator: Careone <zzbusagain@yahoo.com.cn>\n"
 "Language-Team: Chinese/Simplified <i18n-translation@lists.linux.net.cn>\n"
@@ -45,7 +45,7 @@ msgstr ""
 "Kim Woelders - kim@woelders.dk\n"
 
 #: src/aclass.c:211 src/backgrounds.c:236 src/borders.c:693 src/buttons.c:183
-#: src/cursors.c:131 src/iclass.c:338 src/tclass.c:113 src/tooltips.c:135
+#: src/cursors.c:131 src/iclass.c:337 src/tclass.c:125 src/tooltips.c:135
 #, c-format
 msgid "%u references remain\n"
 msgstr ""
@@ -164,7 +164,7 @@ msgstr "忽略这个"
 msgid "Restart Enlightenment"
 msgstr "重启 Enlightenment"
 
-#: src/alert.c:570 src/setup.c:168
+#: src/alert.c:570 src/setup.c:170
 msgid "Quit Enlightenment"
 msgstr "退出 Enlightenment"
 
@@ -172,8 +172,8 @@ msgstr "退出 Enlightenment"
 msgid "Attention !!!"
 msgstr "注意！！！"
 
-#: src/alert.c:583 src/dialog.c:693 src/dialog.c:1899 src/events.c:87
-#: src/setup.c:157 src/sound.c:310
+#: src/alert.c:583 src/dialog.c:693 src/dialog.c:1899 src/events.c:90
+#: src/setup.c:159 src/sound.c:310
 msgid "OK"
 msgstr "确定"
 
@@ -487,7 +487,7 @@ msgstr "显示图标名称"
 msgid "Animation mode:"
 msgstr ""
 
-#: src/container.c:1677 src/desktops.c:2570
+#: src/container.c:1677 src/desktops.c:2571
 msgid "Off"
 msgstr "关闭"
 
@@ -571,55 +571,55 @@ msgstr ""
 "点击这里来下降桌面\n"
 "到底部。\n"
 
-#: src/desktops.c:2331
+#: src/desktops.c:2332
 msgid "Number of virtual desktops:\n"
 msgstr "虚拟桌面的数量：\n"
 
-#: src/desktops.c:2356
+#: src/desktops.c:2357
 msgid "Slide desktops around when changing"
 msgstr "更改桌面时拉幕式切换"
 
-#: src/desktops.c:2362
+#: src/desktops.c:2363
 msgid "Desktop Slide speed:\n"
 msgstr "桌面切换速度：\n"
 
-#: src/desktops.c:2376
+#: src/desktops.c:2377
 msgid "Wrap desktops around"
 msgstr "包围桌面"
 
-#: src/desktops.c:2384
+#: src/desktops.c:2385
 msgid "Display desktop dragbar"
 msgstr "显示桌面拖拽栏"
 
-#: src/desktops.c:2390
+#: src/desktops.c:2391
 msgid "Drag bar position:"
 msgstr "拖动栏位置："
 
-#: src/desktops.c:2394
+#: src/desktops.c:2395
 msgid "Top"
 msgstr "顶部"
 
-#: src/desktops.c:2400
+#: src/desktops.c:2401
 msgid "Bottom"
 msgstr "底部"
 
-#: src/desktops.c:2406 src/pager.c:1918 src/pager.c:1943 src/pager.c:1968
+#: src/desktops.c:2407 src/pager.c:1918 src/pager.c:1943 src/pager.c:1968
 msgid "Left"
 msgstr "左侧"
 
-#: src/desktops.c:2412 src/pager.c:1930 src/pager.c:1955 src/pager.c:1980
+#: src/desktops.c:2413 src/pager.c:1930 src/pager.c:1955 src/pager.c:1980
 msgid "Right"
 msgstr "右侧"
 
-#: src/desktops.c:2420 src/menus-misc.c:604
+#: src/desktops.c:2421 src/menus-misc.c:604
 msgid "Desks"
 msgstr "桌面"
 
-#: src/desktops.c:2421
+#: src/desktops.c:2422
 msgid "Multiple Desktop Settings"
 msgstr "多桌面设置"
 
-#: src/desktops.c:2424
+#: src/desktops.c:2425
 msgid ""
 "Enlightenment Multiple Desktop\n"
 "Settings Dialog\n"
@@ -627,39 +627,39 @@ msgstr ""
 "Enlightenment 多桌面\n"
 "设置对话框\n"
 
-#: src/desktops.c:2524
+#: src/desktops.c:2525
 msgid "Virtual Desktop size:\n"
 msgstr "虚拟桌面大小：\n"
 
-#: src/desktops.c:2560
+#: src/desktops.c:2561
 msgid "Wrap virtual desktops around"
 msgstr "包围虚拟桌面"
 
-#: src/desktops.c:2567
+#: src/desktops.c:2568
 msgid "Edge Flip Mode:"
 msgstr "边缘翻转模式："
 
-#: src/desktops.c:2575
+#: src/desktops.c:2576
 msgid "On"
 msgstr "开启"
 
-#: src/desktops.c:2580
+#: src/desktops.c:2581
 msgid "Only when moving window"
 msgstr "仅移动窗口时开启"
 
-#: src/desktops.c:2586
+#: src/desktops.c:2587
 msgid "Resistance at edge of screen:\n"
 msgstr "抵抗屏幕边界\n"
 
-#: src/desktops.c:2598
+#: src/desktops.c:2599
 msgid "Areas"
 msgstr "区域"
 
-#: src/desktops.c:2599
+#: src/desktops.c:2600
 msgid "Virtual Desktop Settings"
 msgstr "虚拟桌面设置"
 
-#: src/desktops.c:2602
+#: src/desktops.c:2603
 msgid ""
 "Enlightenment Virtual Desktop\n"
 "Settings Dialog\n"
@@ -671,7 +671,7 @@ msgstr ""
 msgid "Apply"
 msgstr "应用"
 
-#: src/ecompmgr.c:2315
+#: src/ecompmgr.c:2297
 msgid ""
 "Cannot enable Composite Manager.\n"
 "Use xdpyinfo to check that\n"
@@ -679,11 +679,11 @@ msgid ""
 "extensions are loaded."
 msgstr ""
 
-#: src/events.c:87
+#: src/events.c:90
 msgid "X server setup error"
 msgstr "X 服务设置错误"
 
-#: src/events.c:88
+#: src/events.c:91
 msgid ""
 "FATAL ERROR:\n"
 "\n"
@@ -1372,7 +1372,7 @@ msgstr ""
 "Enlightenment 桌面区域\n"
 "分页器设置对话框\n"
 
-#: src/session.c:344
+#: src/session.c:345
 msgid ""
 "ERROR!\n"
 "\n"
@@ -1387,11 +1387,11 @@ msgid ""
 "... I hope.\n"
 msgstr ""
 
-#: src/session.c:644
+#: src/session.c:645
 msgid "Are you sure?"
 msgstr "您确定吗？"
 
-#: src/session.c:646
+#: src/session.c:647
 msgid ""
 "\n"
 "\n"
@@ -1405,43 +1405,43 @@ msgstr ""
 "\n"
 "\n"
 
-#: src/session.c:656
+#: src/session.c:657
 msgid "  Yes, Shut Down  "
 msgstr "  是的，关机  "
 
-#: src/session.c:658
+#: src/session.c:659
 msgid "  Yes, Reboot  "
 msgstr "  是的，重启  "
 
-#: src/session.c:661
+#: src/session.c:662
 msgid "  Yes, Log Out  "
 msgstr "  是的，注销  "
 
-#: src/session.c:663
+#: src/session.c:664
 msgid "  No  "
 msgstr "  不是  "
 
-#: src/session.c:798
+#: src/session.c:799
 msgid "Enable Session Script"
 msgstr "启用会话脚本"
 
-#: src/session.c:803
+#: src/session.c:804
 msgid "Enable Logout Dialog"
 msgstr "启用注销对话框"
 
-#: src/session.c:808
+#: src/session.c:809
 msgid "Enable Reboot/Halt on Logout"
 msgstr "在注销中启用重启/关机"
 
-#: src/session.c:814
+#: src/session.c:815
 msgid "Session"
 msgstr "会话"
 
-#: src/session.c:815
+#: src/session.c:816
 msgid "Session Settings"
 msgstr "会话设置"
 
-#: src/session.c:818
+#: src/session.c:819
 msgid ""
 "Enlightenment Session\n"
 "Settings Dialog\n"
@@ -1705,7 +1705,7 @@ msgstr ""
 msgid "Enlightenment Settings"
 msgstr "Enlightenment 设置"
 
-#: src/setup.c:58
+#: src/setup.c:60
 msgid ""
 "Enlightenment cannot connect to the display nominated by\n"
 "your shell's DISPLAY environment variable. You may set this\n"
@@ -1719,11 +1719,11 @@ msgid ""
 "startx manual pages before proceeding.\n"
 msgstr ""
 
-#: src/setup.c:156
+#: src/setup.c:158
 msgid "Another Window Manager is already running"
 msgstr ""
 
-#: src/setup.c:158
+#: src/setup.c:160
 msgid ""
 "Another Window Manager is already running.\n"
 "\n"
@@ -1731,15 +1731,15 @@ msgid ""
 "you can successfully run Enlightenment.\n"
 msgstr ""
 
-#: src/setup.c:167
+#: src/setup.c:169
 msgid "X server version error"
 msgstr "X 服务版本错误"
 
-#: src/setup.c:167
+#: src/setup.c:169
 msgid "Ignore this error"
 msgstr "忽略此错误"
 
-#: src/setup.c:169
+#: src/setup.c:171
 #, c-format
 msgid ""
 "WARNING:\n"
