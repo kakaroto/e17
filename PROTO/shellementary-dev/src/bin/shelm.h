@@ -6,12 +6,18 @@
 #include <Elementary.h>
 #include <Ecore_Getopt.h>
 #include <Ecore.h>
+#include <fcntl.h>
+#include <string.h>
 // gettext stuff
 #ifdef HAVE_LOCALE_H
 # include <locale.h>
 #endif
 #include "config.h"
 #define _(x) gettext(x)
+#ifdef E_FREE
+#undef E_FREE
+#endif
+#define E_FREE(ptr) if(ptr) { ptr = NULL; free (ptr);}
 
 # ifdef SH_API
 #  undef SH_API
@@ -92,7 +98,7 @@ SH_API Evas_Object    *create_label(Evas_Object *parent, const char *text);
 SH_API Evas_Object    *create_scroller(Evas_Object *parent, Eina_Bool scroller_has_one_line);
 SH_API Evas_Object    *create_entry(Evas_Object *parent, Eina_Bool entry_has_one_line, const char *entry_text, Eina_Bool entry_hide_text, Eina_Bool entry_line_nowrap, Eina_Bool entry_editable);
 SH_API Evas_Object    *create_icon(Evas_Object *parent, const char *iconfile);
-SH_API Evas_Object    *create_list(Evas_Object *parent, Eina_List *listitems);
+SH_API Evas_Object    *create_list(Evas_Object *parent);
 SH_API Evas_Object    *create_clock(Evas_Object *parent, Eina_Bool show_seconds, Eina_Bool show_am_pm, const char *time, Eina_Bool is_editable);
 SH_API Evas_Object    *create_slider(Evas_Object *parent, double slider_value, double slider_min_value, double slider_max_value, const char *slider_step, Eina_Bool slider_partial, Eina_Bool slider_hide_value, Eina_Bool slider_inverted, const char *slider_unit_format, const char *slider_label, const char *slider_icon, Eina_Bool slider_vertical);
 
@@ -103,6 +109,8 @@ SH_API void            cancel_callback(void *data, Evas_Object *obj, void *event
 SH_API void            entry_callback(void *data, Evas_Object *obj, void *event_info); // prints entry text
 SH_API void            slider_callback(void *data, Evas_Object *obj, void *event_info); // print slider value when clicked OK
 SH_API void            clock_callback(void *data, Evas_Object *obj, void *event_info); // print clock info
+SH_API int             _read_stdin_entry(void *data, Ecore_Fd_Handler *fd_handler);
+SH_API int             _read_stdin_list(void *data, Ecore_Fd_Handler *fd_handler);
 
 // dialog prototypes
 void                   shelm_about_dialog(); // when no arguments entered
@@ -111,5 +119,8 @@ void                   shelm_simple_dialog(const char *window_title, const char 
 void                   shelm_question_dialog(const char *window_title, const char *window_text, int window_width, int window_height, const char *window_background); // question dialog
 void                   shelm_scale_dialog(const char *window_title, const char *window_text, int window_width, int window_height, const char *window_background, double slider_value, double slider_min_value, double slider_max_value, const char *slider_step, Eina_Bool slider_partial, Eina_Bool slider_hide_value, Eina_Bool slider_inverted, const char *slider_unit_format, const char *slider_label, const char *slider_icon, Eina_Bool slider_vertical);
 void                   shelm_clock_dialog(const char *window_title, const char *window_text, int window_width, int window_height, const char *window_background, Eina_Bool show_seconds, Eina_Bool show_am_pm, const char *time, Eina_Bool is_editable);
+void                   shelm_textinfo_dialog(const char *window_title, const char *window_text, int window_width, int window_height, const char *window_background, const char *textinfo_filename, Eina_Bool textinfo_editable, Eina_Bool textinfo_nowrap);
+void                   shelm_list_dialog(const char *window_title, const char *window_text, int window_width, int window_height, const char *window_background, const char **listitems, int args_num, int argc);
+
 #endif
 

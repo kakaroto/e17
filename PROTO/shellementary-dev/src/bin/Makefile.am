@@ -22,6 +22,8 @@ shellementary_SOURCES = shelm.c \
 			shelm_dlg_question.c \
 			shelm_dlg_scale.c \
 			shelm_dlg_clock.c \
+			shelm_dlg_textinfo.c \
+			shelm_dlg_list.c \
 			\
 			shelm_about.c
 

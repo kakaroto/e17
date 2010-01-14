@@ -147,19 +147,14 @@ create_icon(Evas_Object *parent, const char *iconfile)
 }
 
 SH_API Evas_Object *
-create_list(Evas_Object *parent, Eina_List *listitems)
+create_list(Evas_Object *parent)
 {
   Evas_Object *elmlist;
-  Eina_List *l;
-  const char *data;
 
   elmlist = elm_list_add(parent);
 
   evas_object_size_hint_weight_set(elmlist, 1.0, 1.0);
   evas_object_size_hint_align_set(elmlist, -1.0, -1.0);
-
-  EINA_LIST_FOREACH(listitems, l, data)
-    elm_list_item_append(elmlist, data, NULL, NULL, NULL, NULL);
 
   return elmlist;
 }

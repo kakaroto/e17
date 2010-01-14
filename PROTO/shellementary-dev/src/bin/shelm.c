@@ -1,11 +1,12 @@
 #include "shelm.h"
 #include "shelm_getopt.h"
 
+static int arg_index;
+
 // add values into struct got from ecore_getopt.
 static Eina_Bool
 _args_init(int argc, char **argv)
 {
-  int arg_index;
   int i;
   arguments = calloc(1, sizeof(Arguments_struct));
 
@@ -120,7 +121,7 @@ _args_init(int argc, char **argv)
     	}
       else if (!strcmp(argv[1], "--text-info"))
     	{
-	      arguments->dlg_entry_enabled = EINA_TRUE;
+	      arguments->dlg_textinfo_enabled = EINA_TRUE;
 	      for (i; i < argc + 1; i++)
 	        {
 	          argv[i] = argv[i + 1];
@@ -171,6 +172,7 @@ EAPI int
 elm_main(int argc, char **argv)
 {
   char buf[PATH_MAX];
+  int i = 0;
   if (!_args_init(argc, argv))
     {
       fprintf(stderr, "Cannot parse arguments, exiting.");
@@ -207,6 +209,14 @@ elm_main(int argc, char **argv)
    else if (arguments->dlg_clock_enabled)
     {
 	  shelm_clock_dialog(arguments->window_title, arguments->window_text, arguments->window_width, arguments->window_height, arguments->window_bg, arguments->clock_show_seconds, arguments->clock_show_am_pm, arguments->clock_time, arguments->clock_editable);
+    }
+   else if (arguments->dlg_textinfo_enabled)
+    {
+	  shelm_textinfo_dialog(arguments->window_title, arguments->window_text, arguments->window_width, arguments->window_height, arguments->window_bg, arguments->textinfo_filename, arguments->textinfo_editable, arguments->textinfo_nowrap);
+    }
+   else if (arguments->dlg_list_enabled)
+    {
+	  shelm_list_dialog(arguments->window_title, arguments->window_text, arguments->window_width, arguments->window_height, arguments->window_bg, argv, arg_index, argc);
     }
   else
     shelm_about_dialog();
