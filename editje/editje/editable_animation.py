@@ -198,8 +198,6 @@ class EditableAnimation(Manager, object):
         self._current_idx = self.timestops.index(time)
         self._current = time
         self.program.name = "@%s@%.2f" % (self._name, time)
-        if not self.e.part.name:
-            self.e.part.name = self.e.parts[0]
         statename = self.program.name + " 0.00"
         self.e.part.state.name = statename
         for p in self.e.parts:
