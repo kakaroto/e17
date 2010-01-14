@@ -173,6 +173,14 @@ elm_main(int argc, char **argv)
 {
   char buf[PATH_MAX];
   int i = 0;
+
+  // initialize gettext
+  setlocale(LC_ALL, "");
+  bindtextdomain(PACKAGE, PACKAGE_LOCALE_DIR);
+  textdomain(PACKAGE);
+  
+  if (!getenv("SHELM_TOUCHSCREEN")) elm_finger_size_set(1);
+
   if (!_args_init(argc, argv))
     {
       fprintf(stderr, "Cannot parse arguments, exiting.");

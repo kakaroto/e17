@@ -1,10 +1,5 @@
-TODO in C:
+TODO - main:
 
-shelm_dlg_textinfo.c
-shelm_dlg_list.c
-shelm_dlg_question.c
-shelm_dlg_scale.c
-shelm_dlg_clock.c
 shelm_dlg_genlist.c
 shelm_dlg_progressbar.c
 shelm_dlg_filechooser.c

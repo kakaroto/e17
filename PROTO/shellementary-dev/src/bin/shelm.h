@@ -8,10 +8,9 @@
 #include <Ecore.h>
 #include <fcntl.h>
 #include <string.h>
+#include <sys/stat.h>
 // gettext stuff
-#ifdef HAVE_LOCALE_H
-# include <locale.h>
-#endif
+#include <locale.h>
 #include "config.h"
 #define _(x) gettext(x)
 #ifdef E_FREE

@@ -1,6 +1,3 @@
-DEVELOPENMENT VERSION!! DO NOT TRANSLATE!! JUST FOR TESTING! USE PYTHON VERSION INSTEAD IF YOU WANT TO USE IT IN YOUR SCRIPTS!
-
-
 Shellementary application
 
 This is an application made as a replacement for "zenity" but in Elementary.
@@ -16,3 +13,12 @@ To build and install it, do the following:
 	./autogen.sh
 	make
 	make install (as root)
+	
+USAGE
+
+See --help parameter. If some dialog has extra parameters than standard, you can do for example
+	shellementary --scale --help
+
+If you want to use Shellementary on touchscreen devices like PDAs(= you want support for finger size
+to scale buttons etc for fingers), make environment variable SHELM_TOUCHSCREEN with any value
+and it will then support elementary's finger size thing.

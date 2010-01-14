@@ -1,5 +1,4 @@
 #include "shelm.h"
-#include <sys/stat.h>
 
 SH_API void
 destroy(void *data, Evas_Object *obj, void *event_info)
@@ -75,12 +74,12 @@ static Eina_Bool _stdin_prepare(Ecore_Fd_Handler *fd_handler)
 
    if (ecore_main_fd_handler_active_get(fd_handler, ECORE_FD_ERROR))
      {
-       perror("fd error, exit.");
+       perror(_("fd error, exit."));
        ecore_main_loop_quit();
        return EINA_FALSE;
      }
        else if (!ecore_main_fd_handler_active_get(fd_handler, ECORE_FD_READ)) {
-       perror("nothing to read?");
+       perror(_("nothing to read?"));
        return EINA_FALSE;
      }
    // nonblocking :)

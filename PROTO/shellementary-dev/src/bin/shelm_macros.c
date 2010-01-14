@@ -8,7 +8,7 @@ create_window(const char *window_name, const char *window_title, void *destroy)
   window = elm_win_add(NULL, window_name, ELM_WIN_DIALOG_BASIC);
 
   elm_win_title_set(window, window_title);
-  evas_object_smart_callback_add(window, "delete-request", destroy, NULL);
+  evas_object_smart_callback_add(window, "delete,request", destroy, NULL);
 
   return window;
 }

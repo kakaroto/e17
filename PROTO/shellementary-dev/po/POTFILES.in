@@ -2,3 +2,8 @@ src/bin/shelm.c
 src/bin/shelm_about.c
 src/bin/shelm_dlg_entry.c
 src/bin/shelm_dlg_simpleicon.c
+src/bin/shelm_dlg_list.c
+src/bin/shelm_dlg_question.c
+src/bin/shelm_dlg_scale.c
+src/bin/shelm_dlg_textinfo.c
+src/bin/shelm_callbacks.c
