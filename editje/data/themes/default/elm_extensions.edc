@@ -290,8 +290,7 @@
 // Custom Hoversel
 ////////////////////////////////////////////////////////////////////////////
    group {
-      //name: "elm/button/base/hoversel_vertical/editje";
-      name: "elm/button/base/hoversel_vertical";
+      name: "elm/button/base/hoversel_vertical/editje";
       parts {
          part {
             name: "outline";
