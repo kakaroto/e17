@@ -18,6 +18,6 @@ struct _Elm_Home_Exec
 
 EAPI int elm_home_init(void);
 EAPI int elm_home_shutdown(void);
-EAPI void elm_home_win_new(void);
+EAPI void elm_home_win_new(Ecore_X_Window zone);
 
 #endif

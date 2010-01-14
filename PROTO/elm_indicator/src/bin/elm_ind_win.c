@@ -63,7 +63,7 @@ elm_ind_win_new(Ecore_X_Window zone)
    evas_object_size_hint_aspect_set(icon, EVAS_ASPECT_CONTROL_VERTICAL, 1, 1);
    btn = elm_button_add(iwin->win);
    elm_button_icon_set(btn, icon);
-   evas_object_smart_callback_add(btn, "clicked", _cb_btn_home_clicked, NULL);
+   evas_object_smart_callback_add(btn, "clicked", _cb_btn_home_clicked, iwin);
    evas_object_size_hint_align_set(btn, EVAS_HINT_FILL, 0.0);
    elm_box_pack_end(box, btn);
    evas_object_show(btn);
@@ -83,7 +83,7 @@ elm_ind_win_new(Ecore_X_Window zone)
    iwin->handlers = 
      eina_list_append(iwin->handlers, 
                       ecore_event_handler_add(ECORE_X_EVENT_CLIENT_MESSAGE, 
-                                              _cb_client_message, btn));
+                                              _cb_client_message, iwin));
 
    /* create kbd toggle button */
    icon = elm_icon_add(iwin->win);
@@ -125,7 +125,7 @@ elm_ind_win_new(Ecore_X_Window zone)
    evas_object_show(iwin->win);
 
    /* create first home window */
-//   elm_home_win_new();
+   elm_home_win_new(zone);
 
    return iwin;
 }
@@ -140,7 +140,12 @@ _cb_win_del(void *data, Evas_Object *obj, void *event)
 static void 
 _cb_btn_home_clicked(void *data, Evas_Object *obj, void *event) 
 {
-   elm_home_win_new();
+   Elm_Ind_Win *iwin;
+   Ecore_X_Window zone;
+
+   if (!(iwin = data)) return;
+   zone = (Ecore_X_Window)evas_object_data_get(iwin->win, "zone");
+   elm_home_win_new(zone);
 }
 
 static void 
@@ -181,15 +186,20 @@ _cb_btn_kbd_clicked(void *data, Evas_Object *obj, void *event)
 static int 
 _cb_client_message(void *data, int type, void *event) 
 {
+   Elm_Ind_Win *iwin;
    Ecore_X_Event_Client_Message *ev;
 
    ev = event;
-   if (ev->message_type == ECORE_X_ATOM_E_ILLUME_HOME)
-     elm_home_win_new();
-   else if (ev->message_type == ECORE_X_ATOM_E_ILLUME_MODE) 
+   if (!(iwin = data)) return 1;
+   if (ev->message_type == ECORE_X_ATOM_E_ILLUME_HOME) 
      {
-        printf("Ind Got Mode Message\n");
+        Ecore_X_Window zone;
+
+        zone = (Ecore_X_Window)evas_object_data_get(iwin->win, "zone");
+        elm_home_win_new(zone);
      }
+   else if (ev->message_type == ECORE_X_ATOM_E_ILLUME_MODE) 
+     _set_mode_icon(iwin);
    return 1;
 }
 
@@ -223,11 +233,13 @@ _cb_rect_mouse_down(void *data, Evas *evas, Evas_Object *obj, void *event)
    if (ev->button == 1) 
      {
         Elm_Ind_Win *iwin;
-        Ecore_X_Window xwin;
+        Ecore_X_Window xwin, zone;
 
         if (!(iwin = data)) return;
         xwin = elm_win_xwindow_get(iwin->win);
         if (ecore_x_e_illume_drag_locked_get(xwin)) return;
+        zone = (Ecore_X_Window)evas_object_data_get(iwin->win, "zone");
+        if (!ecore_x_e_illume_drag_get(zone)) return;
         ecore_x_e_illume_drag_start_send(xwin);
         ecore_x_pointer_last_xy_get(NULL, &my);
      }
@@ -242,8 +254,8 @@ _cb_rect_mouse_move(void *data, Evas *evas, Evas_Object *obj, void *event)
    int x, y, h, py, ny, dy, zh;
 
    ev = event;
-   if (!(iwin = data)) return;
    if (ev->event_flags & EVAS_EVENT_FLAG_ON_HOLD) return;
+   if (!(iwin = data)) return;
 
    xwin = elm_win_xwindow_get(iwin->win);
    if (ecore_x_e_illume_drag_locked_get(xwin)) return;
@@ -262,7 +274,7 @@ _cb_rect_mouse_move(void *data, Evas *evas, Evas_Object *obj, void *event)
    ecore_x_pointer_last_xy_get(NULL, &py);
    dy = ((zh - h) / 8);
 
-   if (ev->cur.output.y > ev->prev.output.y) 
+   if (ev->cur.output.y >= ev->prev.output.y) 
      {
         if ((py - my) < dy) return;
      }

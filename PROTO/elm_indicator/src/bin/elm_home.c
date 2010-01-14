@@ -84,10 +84,11 @@ elm_home_shutdown(void)
 }
 
 EAPI void 
-elm_home_win_new(void) 
+elm_home_win_new(Ecore_X_Window zone) 
 {
    Elm_Home_Win *hwin;
    Evas_Object *bg;
+   int x, y, w, h;
 
    hwin = calloc(1, sizeof(Elm_Home_Win));
    if (!hwin) return;
@@ -124,7 +125,9 @@ elm_home_win_new(void)
      }
 #endif
 
-   evas_object_resize(hwin->win, 200, 200);
+   ecore_x_window_geometry_get(zone, &x, &y, &w, &h);
+   evas_object_move(hwin->win, x, y);
+   evas_object_resize(hwin->win, w, h);
    evas_object_show(hwin->win);
 
    hwins = eina_list_append(hwins, hwin);
