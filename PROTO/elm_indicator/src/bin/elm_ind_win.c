@@ -24,6 +24,7 @@ elm_ind_win_new(Ecore_X_Window zone)
    Elm_Ind_Win *iwin;
    Ecore_X_Window xwin;
    Ecore_X_Window_State states[2];
+   Ecore_X_Illume_Mode mode;
    Evas_Object *bg, *box, *icon, *btn, *rect;
    char buff[PATH_MAX];
    int zx, zy, zw;
@@ -126,6 +127,11 @@ elm_ind_win_new(Ecore_X_Window zone)
 
    /* create first home window */
    elm_home_win_new(zone);
+
+   /* create second home window if needed */
+   mode = ecore_x_e_illume_mode_get(zone);
+   if (mode > ECORE_X_ILLUME_MODE_SINGLE)
+     elm_home_win_new(zone);
 
    return iwin;
 }
