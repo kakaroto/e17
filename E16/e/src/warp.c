@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2000-2007 Carsten Haitzler, Geoff Harrison and various contributors
- * Copyright (C) 2004-2009 Kim Woelders
+ * Copyright (C) 2004-2010 Kim Woelders
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -477,25 +477,6 @@ WarpFocusHandleEvent(Win win __UNUSED__, XEvent * ev, void *prm __UNUSED__)
  * Warplist module
  */
 
-static void
-WarplistCfgValidate(void)
-{
-   static const char   fix_mode[8] = { 0, 1, 2, 2, 1, 2, 2, 2 };
-
-   Conf.warplist.icon_mode = fix_mode[Conf.warplist.icon_mode & 0x7];
-}
-
-static void
-WarplistSighan(int sig, void *prm __UNUSED__)
-{
-   switch (sig)
-     {
-     case ESIGNAL_INIT:
-	WarplistCfgValidate();
-	break;
-     }
-}
-
 static const CfgItem WarplistCfgItems[] = {
    CFG_ITEM_BOOL(Conf.warplist, enable, 1),
    CFG_ITEM_BOOL(Conf.warplist, showsticky, 1),
@@ -505,14 +486,14 @@ static const CfgItem WarplistCfgItems[] = {
    CFG_ITEM_BOOL(Conf.warplist, warpfocused, 1),
    CFG_ITEM_BOOL(Conf.warplist, raise_on_select, 1),
    CFG_ITEM_BOOL(Conf.warplist, warp_on_select, 0),
-   CFG_ITEM_INT(Conf.warplist, icon_mode, 2),
+   CFG_ITEM_INT(Conf.warplist, icon_mode, 3),
 };
 #define N_CFG_ITEMS (sizeof(WarplistCfgItems)/sizeof(CfgItem))
 
 extern const EModule ModWarplist;
 const EModule       ModWarplist = {
    "warplist", "warp",
-   WarplistSighan,
+   NULL,
    {0, NULL},
    {N_CFG_ITEMS, WarplistCfgItems}
 };

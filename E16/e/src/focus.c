@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2000-2007 Carsten Haitzler, Geoff Harrison and various contributors
- * Copyright (C) 2004-2009 Kim Woelders
+ * Copyright (C) 2004-2010 Kim Woelders
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -873,13 +873,13 @@ _DlgFillFocus(Dialog * d, DItem * table, void *data __UNUSED__)
    DialogItemSetColSpan(di, 2);
    DialogItemSetText(di, _("First E Icon, then App Icon"));
    DialogItemRadioButtonSetFirst(di, radio2);
-   DialogItemRadioButtonGroupSetVal(di, 2);
+   DialogItemRadioButtonGroupSetVal(di, 4);
 
    di = DialogAddItem(table, DITEM_RADIOBUTTON);
    DialogItemSetColSpan(di, 2);
    DialogItemSetText(di, _("First App Icon, then E Icon"));
    DialogItemRadioButtonSetFirst(di, radio2);
-   DialogItemRadioButtonGroupSetVal(di, 1);
+   DialogItemRadioButtonGroupSetVal(di, 3);
 
    di = DialogAddItem(table, DITEM_RADIOBUTTON);
    DialogItemSetColSpan(di, 2);

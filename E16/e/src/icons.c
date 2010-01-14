@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2000-2007 Carsten Haitzler, Geoff Harrison and various contributors
- * Copyright (C) 2004-2009 Kim Woelders
+ * Copyright (C) 2004-2010 Kim Woelders
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -222,10 +222,12 @@ IB_GetFallbackIcon(EWin * ewin, int size)
    return im;
 }
 
-#define N_MODES 3
+#define N_MODES 5
 #define N_TYPES 3
 static const char   ewin_icon_modes[N_MODES][N_TYPES] = {
    {EWIN_ICON_TYPE_SNAP, EWIN_ICON_TYPE_FB, EWIN_ICON_TYPE_NONE},
+   {EWIN_ICON_TYPE_APP, EWIN_ICON_TYPE_IMG, EWIN_ICON_TYPE_SNAP},
+   {EWIN_ICON_TYPE_IMG, EWIN_ICON_TYPE_APP, EWIN_ICON_TYPE_SNAP},
    {EWIN_ICON_TYPE_APP, EWIN_ICON_TYPE_IMG, EWIN_ICON_TYPE_FB},
    {EWIN_ICON_TYPE_IMG, EWIN_ICON_TYPE_APP, EWIN_ICON_TYPE_FB},
 };
