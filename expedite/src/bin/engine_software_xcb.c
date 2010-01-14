@@ -46,7 +46,7 @@ engine_software_xcb_args(int argc, char **argv)
    xcb_screen_iterator_t          iter;
    Evas_Engine_Info_Software_X11 *einfo;
    xcb_intern_atom_reply_t       *reply;
-   char                          *str;
+   const char                    *str;
    xcb_intern_atom_cookie_t       cookie1;
    xcb_intern_atom_cookie_t       cookie2;
    xcb_intern_atom_cookie_t       cookie3;
@@ -77,6 +77,12 @@ engine_software_xcb_args(int argc, char **argv)
 
    conn = xcb_connect(NULL, &s);
    if (xcb_connection_has_error(conn)) return 0;
+
+   cookie1 = xcb_intern_atom_unchecked(conn, 0, strlen("STRING"), "STRING");
+   cookie2 = xcb_intern_atom_unchecked(conn, 0, strlen("WM_NAME"), "WM_NAME");
+   cookie3 = xcb_intern_atom_unchecked(conn, 0, strlen("WM_CLASS"), "WM_CLASS");
+   cookie4 = xcb_intern_atom_unchecked(conn, 0, strlen("WM_NORMAL_HINTS)"), "WM_NORMAL_HINTS)");
+   cookie5 = xcb_intern_atom_unchecked(conn, 0, strlen("WM_SIZE_HINTS)"), "WM_SIZE_HINTS)");
 
    s_tmp = s;
    iter = xcb_setup_roots_iterator(xcb_get_setup(conn));
@@ -140,17 +146,19 @@ engine_software_xcb_args(int argc, char **argv)
 	goto destroy_window;
      }
 
-/*    XStoreName(disp, win, "Expedite - Evas Test Suite"); */
+   str = "expedite\0Expedite";
 
-   cookie1 = xcb_intern_atom_unchecked(conn, 0, strlen("STRING"), "STRING");
-   cookie2 = xcb_intern_atom_unchecked(conn, 0, strlen("WM_NAME"), "WM_NAME");
-   cookie3 = xcb_intern_atom_unchecked(conn, 0, strlen("WM_CLASS"), "WM_CLASS");
-   cookie4 = xcb_intern_atom_unchecked(conn, 0, strlen("WM_NORMAL_HINTS)"), "WM_NORMAL_HINTS)");
-   cookie5 = xcb_intern_atom_unchecked(conn, 0, strlen("WM_SIZE_HINTS)"), "WM_SIZE_HINTS)");
+   memset(&hints, 0, sizeof(hints));
+   hints.flags = XCB_SIZE_US_SIZE_HINT | XCB_SIZE_P_SIZE_HINT | XCB_SIZE_P_MIN_SIZE_HINT | XCB_SIZE_P_MAX_SIZE_HINT;
+   hints.min_width = win_w;
+   hints.max_width = win_w;
+   hints.min_height = win_h;
+   hints.max_height = win_h;
 
    reply = xcb_intern_atom_reply(conn, cookie1, NULL);
    string = reply->atom;
    free(reply);
+
    reply = xcb_intern_atom_reply(conn, cookie2, NULL);
    wm_name = reply->atom;
    free(reply);
@@ -159,17 +167,6 @@ engine_software_xcb_args(int argc, char **argv)
                        wm_name, string, 8,
                        strlen("Expedite - Evas Test Suite"), "Expedite - Evas Test Suite");
 
-/*    chint.res_name = "expedite"; */
-/*    chint.res_class = "Expedite"; */
-/*    XSetClassHint(disp, win, &chint); */
-
-   l1 = strlen("expedite");
-   l2 = strlen("Expedite");
-   str = (char *)malloc(l1 + l2 + 1);
-   memcpy(str, "expedite", l1);
-   str[l1] = '\0';
-   memcpy(str + l1 + 1, "Expedite", l2);
-
    reply = xcb_intern_atom_reply(conn, cookie3, NULL);
    wm_class = reply->atom;
    free(reply);
@@ -177,19 +174,6 @@ engine_software_xcb_args(int argc, char **argv)
    xcb_change_property(conn, XCB_PROP_MODE_REPLACE, win,
                        wm_class, string, 8,
                        l1 + l2 + 1, str);
-   free(str);
-
-/*    szhints.flags = PMinSize | PMaxSize | PSize | USSize; */
-/*    szhints.min_width = szhints.max_width = win_w; */
-/*    szhints.min_height = szhints.max_height = win_h; */
-/*    XSetWMNormalHints(disp, win, &szhints); */
-
-   memset(&hints, 0, sizeof(hints));
-   hints.flags = XCB_SIZE_US_SIZE_HINT | XCB_SIZE_P_SIZE_HINT | XCB_SIZE_P_MIN_SIZE_HINT | XCB_SIZE_P_MAX_SIZE_HINT;
-   hints.min_width = win_w;
-   hints.max_width = win_w;
-   hints.min_height = win_h;
-   hints.max_height = win_h;
 
    reply = xcb_intern_atom_reply(conn, cookie4, NULL);
    wm_normal_hint = reply->atom;
@@ -212,6 +196,11 @@ engine_software_xcb_args(int argc, char **argv)
  destroy_window:
    xcb_destroy_window(conn, win);
  close_connection:
+   free(xcb_intern_atom_reply(conn, cookie1, NULL));
+   free(xcb_intern_atom_reply(conn, cookie2, NULL));
+   free(xcb_intern_atom_reply(conn, cookie3, NULL));
+   free(xcb_intern_atom_reply(conn, cookie4, NULL));
+   free(xcb_intern_atom_reply(conn, cookie5, NULL));
    xcb_disconnect(conn);
 
    return 0;
