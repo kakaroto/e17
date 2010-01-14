@@ -5,6 +5,9 @@
 #  include "config.h"
 # endif
 
+#include <Ecore.h>
+#include <Ecore_X.h>
+#include <Ecore_X_Atoms.h>
 # include <Elementary.h>
 
 # ifdef ELM_INDICATOR_API
