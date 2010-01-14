@@ -76,7 +76,7 @@ engine_software_xcb_args(int argc, char **argv)
    if (!ok) return 0;
 
    conn = xcb_connect(NULL, &s);
-   if (!conn) return 0;
+   if (xcb_connection_has_error(conn)) return 0;
 
    s_tmp = s;
    iter = xcb_setup_roots_iterator(xcb_get_setup(conn));
