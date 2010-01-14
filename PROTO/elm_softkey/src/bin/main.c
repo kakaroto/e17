@@ -1,71 +1,118 @@
-#include "elm_softkey.h"
 #include <Ecore_X.h>
+#include <Ecore_X_Atoms.h>
+#include "elm_softkey.h"
 
 #ifndef ELM_LIB_QUICKLAUNCH
 
+/* local function prototypes */
 static void _cb_win_del(void *data, Evas_Object *obj, void *event);
 static void _cb_btn_close_clicked(void *data, Evas_Object *obj, void *event);
 static void _cb_btn_back_clicked(void *data, Evas_Object *obj, void *event);
 
-static Evas_Object *win = NULL;
+/* local variables */
 
 EAPI int 
 elm_main(int argc, char **argv) 
 {
-   Evas_Object *bg, *box, *btn, *icon;
-   Ecore_X_Window xwin;
-   char buff[PATH_MAX];
+   Ecore_X_Window *roots = NULL;
+   int num = 0, i = 0;
 
-   win = elm_win_add(NULL, "elm_softkey", ELM_WIN_DOCK);
-   elm_win_title_set(win, "Illume Softkey Window");
-   evas_object_smart_callback_add(win, "delete-request", _cb_win_del, NULL);
+   roots = ecore_x_window_root_list(&num);
+   if ((!roots) || (num <= 0)) return EXIT_FAILURE;
 
-   xwin = elm_win_xwindow_get(win);
-   ecore_x_icccm_hints_set(xwin, 0, 0, 0, 0, 0, 0, 0);
+   for (i = 0; i < num; i++) 
+     {
+        Ecore_X_Window *zones;
+        int x = 0, count = 0;
 
-   bg = elm_bg_add(win);
-   evas_object_size_hint_weight_set(bg, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-   elm_win_resize_object_add(win, bg);
-   evas_object_show(bg);
+        count = 
+          ecore_x_window_prop_window_list_get(roots[i], 
+                                              ECORE_X_ATOM_E_ILLUME_ZONE_LIST, 
+                                              &zones);
+        printf("Count: %d\n", count);
+        if (!zones) continue;
+        for (x = 0; x < count; x++) 
+          {
+             Evas_Object *win;
+             Evas_Object *bg, *box, *btn, *icon;
+             Ecore_X_Window xwin;
+             Ecore_X_Window_State states[2];
+             char buff[PATH_MAX];
+             int zx, zy, zw, zh;
 
-   box = elm_box_add(win);
-   elm_box_horizontal_set(box, EINA_TRUE);
-   evas_object_size_hint_weight_set(box, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-   elm_win_resize_object_add(win, box);
-   evas_object_show(box);
+             /* create new window */
+             win = elm_win_add(NULL, "elm_softkey", ELM_WIN_DOCK);
+             elm_win_title_set(win, "Illume Softkey Window");
+             evas_object_smart_callback_add(win, "delete-request", 
+                                            _cb_win_del, NULL);
 
-   icon = elm_icon_add(win);
-   snprintf(buff, sizeof(buff), "%s/images/back.png", PACKAGE_DATA_DIR);
-   elm_icon_file_set(icon, buff, NULL);
-   evas_object_size_hint_aspect_set(icon, EVAS_ASPECT_CONTROL_VERTICAL, 1, 1);
+             xwin = elm_win_xwindow_get(win);
+             ecore_x_icccm_hints_set(xwin, 0, 0, 0, 0, 0, 0, 0);
+             states[0] = ECORE_X_WINDOW_STATE_SKIP_TASKBAR;
+             states[1] = ECORE_X_WINDOW_STATE_SKIP_PAGER;
+             ecore_x_netwm_window_state_set(xwin, states, 2);
 
-   btn = elm_button_add(win);
-   elm_button_icon_set(btn, icon);
-   evas_object_smart_callback_add(btn, "clicked", _cb_btn_back_clicked, win);
-   evas_object_size_hint_align_set(btn, 1.0, 0.5);
-   elm_box_pack_end(box, btn);
-   evas_object_show(btn);
-   evas_object_show(icon);
+             bg = elm_bg_add(win);
+             evas_object_size_hint_weight_set(bg, EVAS_HINT_EXPAND, 
+                                              EVAS_HINT_EXPAND);
+             elm_win_resize_object_add(win, bg);
+             evas_object_show(bg);
 
-   icon = elm_icon_add(win);
-   snprintf(buff, sizeof(buff), "%s/images/close.png", PACKAGE_DATA_DIR);
-   elm_icon_file_set(icon, buff, NULL);
-   evas_object_size_hint_aspect_set(icon, EVAS_ASPECT_CONTROL_VERTICAL, 1, 1);
+             box = elm_box_add(win);
+             elm_box_horizontal_set(box, EINA_TRUE);
+             evas_object_size_hint_weight_set(box, EVAS_HINT_EXPAND, 
+                                              EVAS_HINT_EXPAND);
+             elm_win_resize_object_add(win, box);
+             evas_object_show(box);
 
-   btn = elm_button_add(win);
-   elm_button_icon_set(btn, icon);
-   evas_object_smart_callback_add(btn, "clicked", _cb_btn_close_clicked, win);
-   evas_object_size_hint_align_set(btn, 1.0, 0.5);
-   elm_box_pack_end(box, btn);
-   evas_object_show(btn);
-   evas_object_show(icon);
+             icon = elm_icon_add(win);
+             snprintf(buff, sizeof(buff), "%s/images/back.png", 
+                      PACKAGE_DATA_DIR);
+             elm_icon_file_set(icon, buff, NULL);
+             evas_object_size_hint_aspect_set(icon, 
+                                              EVAS_ASPECT_CONTROL_VERTICAL, 
+                                              1, 1);
 
-   evas_object_resize(win, 200, 32);
-   evas_object_show(win);
+             btn = elm_button_add(win);
+             elm_button_icon_set(btn, icon);
+             evas_object_smart_callback_add(btn, "clicked", 
+                                            _cb_btn_back_clicked, win);
+             evas_object_size_hint_align_set(btn, 1.0, 0.5);
+             elm_box_pack_end(box, btn);
+             evas_object_show(btn);
+             evas_object_show(icon);
+
+             icon = elm_icon_add(win);
+             snprintf(buff, sizeof(buff), "%s/images/close.png", 
+                      PACKAGE_DATA_DIR);
+             elm_icon_file_set(icon, buff, NULL);
+             evas_object_size_hint_aspect_set(icon, 
+                                              EVAS_ASPECT_CONTROL_VERTICAL, 
+                                              1, 1);
+
+             btn = elm_button_add(win);
+             elm_button_icon_set(btn, icon);
+             evas_object_smart_callback_add(btn, "clicked", 
+                                            _cb_btn_close_clicked, win);
+             evas_object_size_hint_align_set(btn, 1.0, 0.5);
+             elm_box_pack_end(box, btn);
+             evas_object_show(btn);
+             evas_object_show(icon);
+
+             ecore_x_window_geometry_get(zones[x], &zx, &zy, &zw, &zh);
+             printf("Zone: %d %d %d %d\n", zx, zy, zw, zh);
+             evas_object_move(win, zx, (zy + zh - 32));
+             evas_object_resize(win, zw, 32);
+             evas_object_show(win);
+          }
+        free(zones);
+     }
+   free(roots);
 
    elm_run();
+
    elm_shutdown();
-   return 0;
+   return EXIT_SUCCESS;
 }
 
 static void 
