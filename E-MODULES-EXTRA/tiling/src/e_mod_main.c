@@ -766,8 +766,10 @@ _e_mod_action_move_bottom(E_Object *obj, const char *params)
 /***************************************************************************/
 
 static void
-_e_module_tiling_cb_hook(void *data, E_Border *bd)
+_e_module_tiling_cb_hook(void *data, void *border)
 {
+   E_Border *bd = border;
+
    if (!bd || TILE_LOOP_CHECKS(bd) ||
        (!bd->changes.size && !bd->changes.pos && (eina_list_data_find(tinfo->client_list, bd) == bd)))
 	return;
@@ -854,7 +856,7 @@ _e_module_tiling_desk_before_show(void *data, int type, void *event)
 }
 
 static Eina_Bool
-_clear_bd_from_info_hash(const Eina_Hash *hash, const char *key, void *data, void *fdata)
+_clear_bd_from_info_hash(const Eina_Hash *hash, const void *key, void *data, void *fdata)
 {
    Tiling_Info *ti = data;
    E_Event_Border_Desk_Set *ev = fdata;
@@ -952,7 +954,7 @@ e_mod_tiling_rearrange()
 /***************************************************************************/
 
 static Eina_Bool
-_clear_info_hash(const Eina_Hash *hash, const char *key, void *data, void *fdata)
+_clear_info_hash(const Eina_Hash *hash, const void *key, void *data, void *fdata)
 {
    Tiling_Info *ti = data;
    eina_list_free(ti->floating_windows);
