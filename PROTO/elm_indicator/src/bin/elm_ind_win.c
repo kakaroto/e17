@@ -32,6 +32,7 @@ elm_ind_win_new(Ecore_X_Window zone)
    iwin = calloc(1, sizeof(Elm_Ind_Win));
    if (!iwin) return NULL;
 
+   iwin->dragging = 0;
    iwin->win = elm_win_add(NULL, "elm_indicator", ELM_WIN_BASIC);
    evas_object_data_set(iwin->win, "zone", (const void *)zone);
    elm_win_title_set(iwin->win, "Illume Indicator Window");
@@ -119,11 +120,12 @@ elm_ind_win_new(Ecore_X_Window zone)
    evas_object_show(rect);
 
    ecore_x_window_geometry_get(zone, &zx, &zy, &zw, NULL);
-   ecore_x_e_illume_top_shelf_geometry_set(ecore_x_window_root_first_get(), 
-                                           zx, zy, zw, 32);
    evas_object_move(iwin->win, zx, zy);
    evas_object_resize(iwin->win, zw, 32);
    evas_object_show(iwin->win);
+
+   ecore_x_e_illume_top_shelf_geometry_set(ecore_x_window_root_first_get(), 
+                                           zx, zy, zw, 32);
 
    /* create first home window */
    elm_home_win_new(zone);
@@ -132,6 +134,13 @@ elm_ind_win_new(Ecore_X_Window zone)
    mode = ecore_x_e_illume_mode_get(zone);
    if (mode > ECORE_X_ILLUME_MODE_SINGLE)
      elm_home_win_new(zone);
+
+   if (mode < ECORE_X_ILLUME_MODE_DUAL_TOP) 
+     ecore_x_e_illume_drag_locked_set(xwin, 1);
+   else if (mode == ECORE_X_ILLUME_MODE_DUAL_TOP)
+     ecore_x_e_illume_drag_locked_set(xwin, 0);
+   else if (mode == ECORE_X_ILLUME_MODE_DUAL_LEFT)
+     ecore_x_e_illume_drag_locked_set(xwin, 1);
 
    return iwin;
 }
@@ -235,7 +244,6 @@ _cb_rect_mouse_down(void *data, Evas *evas, Evas_Object *obj, void *event)
    Evas_Event_Mouse_Down *ev;
 
    ev = event;
-   if (ev->event_flags & EVAS_EVENT_FLAG_ON_HOLD) return;
    if (ev->button == 1) 
      {
         Elm_Ind_Win *iwin;
@@ -244,8 +252,7 @@ _cb_rect_mouse_down(void *data, Evas *evas, Evas_Object *obj, void *event)
         if (!(iwin = data)) return;
         xwin = elm_win_xwindow_get(iwin->win);
         if (ecore_x_e_illume_drag_locked_get(xwin)) return;
-        zone = (Ecore_X_Window)evas_object_data_get(iwin->win, "zone");
-        if (!ecore_x_e_illume_drag_get(zone)) return;
+        iwin->dragging = 1;
         ecore_x_e_illume_drag_start_send(xwin);
         ecore_x_pointer_last_xy_get(NULL, &my);
      }
@@ -260,11 +267,10 @@ _cb_rect_mouse_move(void *data, Evas *evas, Evas_Object *obj, void *event)
    int x, y, h, py, ny, dy, zh;
 
    ev = event;
-   if (ev->event_flags & EVAS_EVENT_FLAG_ON_HOLD) return;
    if (!(iwin = data)) return;
+   if (!iwin->dragging) return;
 
    xwin = elm_win_xwindow_get(iwin->win);
-   if (ecore_x_e_illume_drag_locked_get(xwin)) return;
    zone = (Ecore_X_Window)evas_object_data_get(iwin->win, "zone");
 
    /* grab the size of the screen */
@@ -280,18 +286,19 @@ _cb_rect_mouse_move(void *data, Evas *evas, Evas_Object *obj, void *event)
    ecore_x_pointer_last_xy_get(NULL, &py);
    dy = ((zh - h) / 8);
 
-   if (ev->cur.output.y >= ev->prev.output.y) 
+   if (ev->cur.output.y > ev->prev.output.y) 
      {
         if ((py - my) < dy) return;
      }
-   else 
+   else if (ev->cur.output.y < ev->prev.output.y)
      {
         if ((my - py) < dy) return;
      }
+   else return;
 
    if (py > my)
      ny = y + dy;
-   else if (py <= my)
+   else if (py < my)
      ny = y - dy;
    else return;
 
@@ -308,15 +315,14 @@ _cb_rect_mouse_up(void *data, Evas *evas, Evas_Object *obj, void *event)
    Elm_Ind_Win *iwin;
    Ecore_X_Window xwin;
    Evas_Event_Mouse_Up *ev;
-   Evas_Object *win;
 
    ev = event;
-   if (ev->event_flags & EVAS_EVENT_FLAG_ON_HOLD) return;
    if (ev->button != 1) return;
    if (!(iwin = data)) return;
+   if (!iwin->dragging) return;
    xwin = elm_win_xwindow_get(iwin->win);
-   if (ecore_x_e_illume_drag_locked_get(xwin)) return;
    ecore_x_e_illume_drag_end_send(xwin);
+   iwin->dragging = 0;
    my = 0;
 }
 
