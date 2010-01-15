@@ -1,7 +1,6 @@
 #ifndef E_NOTIFY_H
 #define E_NOTIFY_H
 
-#include <Ecore_Data.h>
 #include <Evas.h>
 #include <E_DBus.h>
 

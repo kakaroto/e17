@@ -1,7 +1,6 @@
 #ifndef E_HAL_H
 #define E_HAL_H
 #include <E_DBus.h>
-#include <Ecore_Data.h>
 #include <eina_stringshare.h>
 
 #ifdef EAPI
