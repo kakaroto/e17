@@ -39,12 +39,14 @@ class SwapFile(object):
             self.__swapfile = mkstemp(".swp", "editje_")[1]
             if not self.__filepath:
                 self.__filepath = sysconfig.template_file_get("default")
-            print self.__filepath, self.__swapfile
             copyfile(self.__filepath, self.__swapfile)
             self.__compiled_file = True
             self.__filepath = ""
             self.__opened = True
             return
+
+        if not self.__filepath:
+            raise Exception("No file")
 
         if path.exists(self.__swapfile):
             if mode == RESTORE:
@@ -68,7 +70,6 @@ class SwapFile(object):
         self.__swapfile = path.join(dir, "." + file + ".editje_swp.edj")
 
     def __swap_create(self):
-        print self.__compiled_file
         if self.__compiled_file:
             copyfile(self.__filepath, self.__swapfile)
         else:
@@ -119,26 +120,28 @@ class SwapFile(object):
         self.__new = True
         self.__filepath = ""
 
-    def _filename_get(self):
+    def _file_get(self):
         return self.__filepath
 
-    def _filename_set(self, filepath):
+    def _file_set(self, filepath):
         if self.__opened:
             return
 
-        self.__filepath = filepath
         if not filepath:
+            self.__filepath = ""
             self.__swapfile = ""
             return
 
         if not (path.exists(filepath) and path.isfile(filepath)):
             raise Exception("File not found")
 
+        self.__filepath = filepath
+
         self.__file_check()
 
         self.__swap_update()
 
-    filename = property(_filename_get, _filename_set)
+    file = property(_file_get, _file_set)
 
     def _workfile_get(self):
         return self.__swapfile

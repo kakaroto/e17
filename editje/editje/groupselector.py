@@ -41,7 +41,6 @@ class GroupChange(elementary.InnerWindow):
 
     def _file_set(self, file):
         self._gs.file = file
-        print "XXX", file, self._gs.file
 
     file = property(fset=_file_set)
 
