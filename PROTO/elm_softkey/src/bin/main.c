@@ -100,7 +100,10 @@ elm_main(int argc, char **argv)
              evas_object_show(icon);
 
              ecore_x_window_geometry_get(zones[x], &zx, &zy, &zw, &zh);
-             printf("Zone: %d %d %d %d\n", zx, zy, zw, zh);
+             ecore_x_e_illume_bottom_panel_geometry_set(ecore_x_window_root_first_get(), 
+                                                        zx, (zy + zh - 32), 
+                                                        zw, 32);
+
              evas_object_move(win, zx, (zy + zh - 32));
              evas_object_resize(win, zw, 32);
              evas_object_show(win);
