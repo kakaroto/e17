@@ -71,6 +71,7 @@ class NewPart(Wizard):
         self._name.single_line_set(True)
         self._name.size_hint_weight_set(evas.EVAS_HINT_EXPAND, 0.0)
         self._name.size_hint_align_set(evas.EVAS_HINT_FILL, 0.0)
+        self._name.context_menu_disabled_set(True)
         #self._name.entry_set("")
         self._name.show()
 

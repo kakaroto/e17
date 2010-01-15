@@ -38,6 +38,7 @@ class WidgetFont(Widget):
         self.entry.single_line_set(1)
         self.entry.style_set("editje.details")
         self.entry.size_hint_weight_set(1.0, 0.0)
+        self.entry.context_menu_disabled_set(True)
         self.entry.callback_activated_add(self._entry_activate_cb)
         self.entry.callback_changed_add(self._entry_changed_cb)
         self.entry.callback_double_clicked_add(self._dblclick_cb)

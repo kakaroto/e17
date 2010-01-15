@@ -78,6 +78,7 @@ class NewFilePopUp(PopUp):
         self._newfile_name.size_hint_weight_set(evas.EVAS_HINT_EXPAND, 0.0)
         self._newfile_name.size_hint_align_set(evas.EVAS_HINT_FILL, 0.5)
         self._newfile_name.entry_set("")
+        self._newfile_name.context_menu_disabled_set(True)
         self._newfile_name.show()
 
         scr.content_set(self._newfile_name)

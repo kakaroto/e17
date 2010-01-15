@@ -73,6 +73,7 @@ class NewAnimationPopUp(Wizard):
         self._name.size_hint_align_set(evas.EVAS_HINT_FILL, 0.5)
         self._name.callback_activated_add(self._name_activated_cb)
         self._name.entry_set("")
+        self._name.context_menu_disabled_set(True)
         self._name.show()
 
         scr.content_set(self._name)
