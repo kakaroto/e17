@@ -333,7 +333,7 @@ collections {
                rel2 {
                   to: "details_bg";
                   relative: 0.0 0.9;
-                  offset: 45 -1;
+                  offset: 80 -1;
                }
             }
          }
@@ -346,15 +346,14 @@ collections {
                state: "default" 0.0;
                align: 0.0 0.5;
                rel1 {
-                  to_x: "details_bg";
-                  to_y: "details_group_label";
-                  relative: 0.0 0.0;
-                  offset: 50 0;
+                  to: "details_group_label";
+                  relative: 1.0 0.0;
+                  offset: 2 0;
                }
                rel2 {
                   to_x: "details_bg";
                   to_y: "details_group_label";
-                  relative: 0.9 1.0;
+                  relative: 1.0 1.0;
                   offset: -1 -3;
                }
             }
