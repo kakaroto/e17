@@ -36,9 +36,13 @@ if __name__ == "__main__":
     files = sys.argv[1:]
     if files:
         for file in files:
-            sf = SwapFile()
-            sf.file = os.path.realpath(file)
-            sf.open()
+            try:
+                sf = SwapFile()
+                sf.file = os.path.realpath(file)
+                sf.open()
+            except Exception as e:
+                print "Error with file", file, ":", e
+                continue
 
             editje = Editje(sf)
             editje.show()

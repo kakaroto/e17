@@ -201,7 +201,7 @@ class Editje(elementary.Window):
     def _open_cb(self, obj, emission, source):
         from openfile import OpenFile
         open = OpenFile()
-        open.path = os.path.dirname(self.e.realname_get())
+        open.path = os.path.dirname(self.e.filename)
         open.show()
 
     def _save_cb(self, obj, emission, source):
