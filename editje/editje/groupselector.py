@@ -41,6 +41,7 @@ class GroupChange(elementary.InnerWindow):
 
     def _file_set(self, file):
         self._gs.file = file
+        print "XXX", file, self._gs.file
 
     file = property(fset=_file_set)
 
@@ -80,6 +81,9 @@ class GroupSelector(elementary.Table):
         self.size_hint_weight_set(evas.EVAS_HINT_EXPAND,
                                   evas.EVAS_HINT_EXPAND)
         self.homogenous_set(False)
+
+        self._file = ""
+        self._group = ""
 
         self._groups_init()
         self._preview_init()

@@ -46,7 +46,7 @@ def debug_cb(obj, emission, source):
 
 class Editje(elementary.Window):
 
-    def __init__(self, theme="default"):
+    def __init__(self, swapfile, theme="default"):
         self.theme = sysconfig.theme_file_get(theme)
 
         self.group_details = None
@@ -60,19 +60,25 @@ class Editje(elementary.Window):
 
         elementary.Window.__init__(self, "editje", elementary.ELM_WIN_BASIC)
         self.title_set("Editje - Edje Editor")
+        self.callback_destroy_add(self._destroy_cb)
         self.autodel_set(True)
         self.resize(800, 600)
 
         # Load Edje Theme File
         self._load_theme()
 
-        self.e = Editable(self.main_layout.edje_get().evas)
+        self.e = Editable(self.main_layout.edje_get().evas, swapfile)
 
         # Setup Windows Parts
         self._toolbar_static_init()
         self._desktop_init()
         self._modes_init()
         self._hacks_init()
+
+        self.select_group()
+
+    def _destroy_cb(self, obj):
+        self.e.close()
 
     def _cmd_write(self, cls, *args):
         cmd = "CMD,%s" % (cls,)
@@ -96,13 +102,10 @@ class Editje(elementary.Window):
         self.e.save()
         self.block(False)
 
-    def _file_set(self, file):
-        self.e.filename = file
-
     def _file_get(self):
         return self.e.filename
 
-    file = property(_file_get, _file_set)
+    file = property(_file_get)
 
     def _group_set(self, group):
         self.e.group = group
@@ -126,7 +129,7 @@ class Editje(elementary.Window):
 
     def select_group(self):
         gc = GroupChange(self, cancel=False)
-        gc.file = self.e.filename
+        gc.file = self.e.workfile
         gc.open()
 
     ###########
@@ -146,7 +149,7 @@ class Editje(elementary.Window):
     # TOOLBAR
     ###########
     def _toolbar_static_init(self):
-        self._toolbar_filename_cb(self, "< none >")
+        self._toolbar_filename_cb(self, self.e.filename)
         self.e.callback_add("filename.changed",
                                   self._toolbar_filename_cb)
 
@@ -187,7 +190,7 @@ class Editje(elementary.Window):
     def _swap_cb(self, obj, emission, source):
         gc = GroupChange(self)
         self.resize_object_add(gc)
-        gc.file = self.e.filename
+        gc.file = self.e.workfile
         gc.group = self.e.group
         gc.open()
 
@@ -217,7 +220,7 @@ class Editje(elementary.Window):
         w.resize_object_add(b)
         b.show()
         l = elementary.Layout(w)
-        l.file_set(self.file, self.group)
+        l.file_set(self.e.workfile, self.group)
         l.size_hint_weight_set(1.0, 1.0)
         l.show()
         w.resize_object_add(l)

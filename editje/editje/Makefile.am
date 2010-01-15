@@ -45,4 +45,5 @@ popups.py \
 prop.py \
 signals.py \
 sysconfig.py \
+swapfile.py \
 widgets_list.py

@@ -19,6 +19,8 @@
 
 import os
 import shutil
+import string
+
 import evas
 import edje
 import elementary
@@ -27,8 +29,8 @@ from editje import Editje
 from fileselector import FileSelector
 from popups import NewFilePopUp
 from popups import ConfirmPopUp
+from swapfile import SwapFile
 import sysconfig
-import string
 
 class OpenFile(elementary.Window):
     def __init__(self, theme="default"):
@@ -39,9 +41,9 @@ class OpenFile(elementary.Window):
                                    elementary.ELM_WIN_BASIC)
         self.title_set("Open Edje")
         self.autodel_set(True)
-        self.resize(600, 480)
 
         self._notification = None
+        self._swapfile = SwapFile()
 
         bg = elementary.Background(self)
         self.resize_object_add(bg)
@@ -49,26 +51,23 @@ class OpenFile(elementary.Window):
                                 evas.EVAS_HINT_EXPAND)
         bg.show()
 
+        self._pager = elementary.Pager(self)
+        self._pager.size_hint_weight_set(evas.EVAS_HINT_EXPAND,
+                                         evas.EVAS_HINT_EXPAND)
+        self._pager.size_hint_align_set(evas.EVAS_HINT_FILL,
+                                        evas.EVAS_HINT_FILL)
+        self.resize_object_add(self._pager)
+        self._pager.show()
+
         self._fs = FileSelector(self)
         self._fs.filter = self._filter
         self._fs.action_add("New", self._new)
         self._fs.action_add("Cancel", self._cancel)
         self._fs.action_add("Ok", self._open)
-        self.resize_object_add(self._fs)
         self._fs.show()
+        self._pager.content_push(self._fs)
 
-        self._load_shade()
-
-    def block(self, bool):
-        if bool:
-            self.shade.show()
-        else:
-            self.shade.hide()
-
-    def _load_shade(self):
-        self.shade = evas.Rectangle(self.evas, color=(0, 0, 0, 200))
-        self.shade.size_hint_weight_set(1.0, 1.0)
-        self.resize_object_add(self.shade)
+        self.resize(600, 480)
 
     def _filter(self, file):
         return file.endswith(".edc") or file.endswith(".edj")
@@ -83,24 +82,16 @@ class OpenFile(elementary.Window):
             self._notify("Select file")
             return
 
-        list = edje.file_collection_list(self._fs.file)
-        if not list and not self._fs.file.endswith(".edc"):
+        if not self._filter(self._fs.file):
             self._notify("Invalid file")
             return
 
-        editje = Editje()
-        editje.file = self._fs.file
-        if len(list) == 1:
-            editje.group = list[0]
-        else:
-            editje.select_group()
+        self._swapfile.file = self._fs.file
+        self._swapfile.open()
+
+        editje = Editje(self._swapfile)
         editje.show()
         self._cancel(bt)
-
-    def _state_popup_place(self, popup):
-        x, y, w, h = self.geometry
-        popup.move(x + 150, y + 140)
-        popup.resize(300, 200)
 
     def list_files_on_diretory(self):
         path = os.getenv("PWD")
@@ -116,63 +107,15 @@ class OpenFile(elementary.Window):
         return files
 
 
-    def _open_template(self, data):
-        self.dest_name = self._newfile_pop.entry
-
-        if self.dest_name == "":
-            self._notify("Please enter a name for the new file")
-            return
-
-        if not self.dest_name.endswith(".edj"):
-            self.dest_name += ".edj"
-
-        exist = False
-
-        for item in self.list_files_on_diretory():
-            if self.dest_name == item:
-                exist = True
-
-        if exist:
-            self._newfile_pop.hide()
-            self._confirm_pop = ConfirmPopUp(self)
-            self._confirm_pop.action_add("Yes", self._confirm_yes_cb)
-            self._confirm_pop.action_add("No", self._confirm_no_cb)
-            self._confirm_pop.set_message(self.dest_name)
-            self._confirm_pop.open()
-        else:
-            self._open_file()
-
-    def _confirm_yes_cb(self, data):
-        self._open_file()
-
-    def _confirm_no_cb(self, data):
-        self._confirm_pop.close()
-        self._confirm_pop = None
-        self._newfile_pop.open()
-
-    def _open_file(self):
-        # TODO: multiple template types to choose from in the future
-        t = sysconfig.template_file_get("default")
-        dest = os.path.join(self._fs.path, self.dest_name)
-        shutil.copyfile(t, dest)
-
-        editje = Editje()
-        editje.file = dest
-        editje.group = "default"
-
-        self._pop_cancel(None)
-        editje.show()
-        self._cancel(None)
-
     def _new(self, bt):
-        self._newfile_pop = NewFilePopUp(self)
-        self._newfile_pop.action_add("Ok", self._open_template)
-        self._newfile_pop.action_add("Cancel", self._pop_cancel)
-        self._newfile_pop.open()
+        self._swapfile.file = ""
+        self._swapfile.new = True
+        self._swapfile.open()
 
-    def _pop_cancel(self, data):
-        self._newfile_pop.close()
-        self._newfile_pop = None
+        editje = Editje(self._swapfile)
+        editje.show()
+        self._cancel(bt)
+#        self._templates_load()
 
     def _cancel(self, bt):
         self.hide()
@@ -201,3 +144,20 @@ class OpenFile(elementary.Window):
 
         self._notification.show()
 
+
+
+    def _templates_load(self):
+        tb = elementary.Table(self)
+        tb.size_hint_weight_set(evas.EVAS_HINT_EXPAND,
+                                evas.EVAS_HINT_EXPAND)
+        tb.size_hint_align_set(evas.EVAS_HINT_FILL,
+                               evas.EVAS_HINT_FILL)
+        tb.show()
+        self._pager.content_push(tb)
+
+
+    def _templates_cancel(self):
+        self._pager.content_pop()
+
+    def _templates_ok(self):
+        pass

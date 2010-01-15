@@ -16,6 +16,10 @@
 # You should have received a copy of the GNU Lesser General Public
 # License along with Editje.  If not, see
 # <http://www.gnu.org/licenses/>.
+from os import system, popen, getcwd, remove, path, chdir
+from shutil import move, copyfile
+from tempfile import gettempdir
+
 import edje
 from edje.edit import EdjeEdit
 
@@ -23,21 +27,19 @@ from event_manager import Manager
 from editable_part import EditablePart
 from editable_program import EditableProgram
 from editable_animation import EditableAnimation
-from os import system, popen, getcwd, remove, path, chdir
-from shutil import move
+from swapfile import SwapFile
 
 class Editable(Manager, object):
 
-    def __init__(self, canvas):
+    def __init__(self, canvas, swapfile):
         Manager.__init__(self)
 
         self._canvas = canvas
 
-        self._filename = ""
+        self._swapfile = swapfile
+
         self._group = ""
         self._edje = None
-        self._edc = False
-        self._edc_path = ""
 
         self._min_max_init()
         self._modification_init()
@@ -57,35 +59,15 @@ class Editable(Manager, object):
     edje = property(_edje_get)
 
     # Filename
-    def realname_get(self):
-        if self._edc:
-            return self._edc_path
-        else:
-            return self._filename
-
     def _filename_get(self):
-        return self._filename
+        return self._swapfile.file
 
-    def _filename_set(self, value):
-        if value == self._filename:
-            return
-        if not value.endswith(".edc"):
-            self._filename = value
-            self._edje = None
-            self._edje_group = None
-            self._edc = False
-        else:
-            self._edc_path = value
-            tmp_file = "/tmp/" + path.basename(value)[:-3] + "edj";
-            old_dir = getcwd()
-            chdir(path.dirname(value))
-            system('edje_cc ' + value + ' ' + tmp_file);
-            chdir(old_dir)
-            self._filename = tmp_file
-            self._edc = True
-        self.event_emit("filename.changed", value)
+    filename = property(_filename_get)
 
-    filename = property(_filename_get, _filename_set)
+    def _workfile_get(self):
+        return self._swapfile.workfile
+
+    workfile = property(_workfile_get)
 
     # Group Name
     def _group_get(self):
@@ -94,7 +76,7 @@ class Editable(Manager, object):
     def _group_set(self, value):
         if value != self._group:
             self._group = value
-            self._edje = EdjeEdit(self._canvas, file=self._filename,
+            self._edje = EdjeEdit(self._canvas, file=self._swapfile.workfile,
                                   group=self._group)
             self._edje_group = self._edje.current_group
             self.event_emit("group.changed", value)
@@ -167,14 +149,13 @@ class Editable(Manager, object):
     def _modification_clear_cb(self, emissor, data):
         self._modificated = False
 
+    def close(self):
+        self._swapfile.close()
+
     def save(self):
 #        if self._modificated:
         if self._edje.save():
-            if self._edc == True:
-                edje_decc_options = " -no-build-sh -current-dir"
-                popen('edje_decc ' + self._filename + edje_decc_options)
-                move(getcwd() + "/generated_source.edc", self._edc_path)
-                remove("/tmp/" + path.basename(self._filename))
+            self._swapfile.save()
             self.event_emit("saved")
         else:
             self.event_emit("saved.error")

@@ -25,6 +25,7 @@ import elementary
 
 from editje.editje import Editje
 from editje.openfile import OpenFile
+from editje.swapfile import SwapFile
 
 if __name__ == "__main__":
     elementary.init()
@@ -32,14 +33,15 @@ if __name__ == "__main__":
     elementary.policy_set(elementary.ELM_POLICY_QUIT,
                           elementary.ELM_POLICY_QUIT_LAST_WINDOW_CLOSED)
 
-    if len(sys.argv) > 1:
-        editje = Editje()
-        editje.file = os.path.realpath(sys.argv[1])
-        if len(sys.argv) > 2:
-            editje.group = sys.argv[2]
-        else:
-            editje.select_group()
-        editje.show()
+    files = sys.argv[1:]
+    if files:
+        for file in files:
+            sf = SwapFile()
+            sf.file = os.path.realpath(file)
+            sf.open()
+
+            editje = Editje(sf)
+            editje.show()
     else:
         OpenFile().show()
 
