@@ -6,7 +6,7 @@
 
 static Display *disp = NULL;
 static Window win = 0;
-static first_expose = 0;
+static int first_expose = 0;
 
 int
 engine_software_16_x11_args(int argc, char **argv)
