@@ -3,7 +3,6 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <inttypes.h>
-#include <Ecore_Data.h>
 #include "e_notify_private.h"
 
 /* private functions */
