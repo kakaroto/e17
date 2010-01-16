@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
 "POT-Creation-Date: 2010-01-14 19:50+0100\n"
-"PO-Revision-Date: 2009-05-14 19:11+0100\n"
+"PO-Revision-Date: 2010-01-15 18:12+0100\n"
 "Last-Translator: Kim Woelders <kim@woelders.dk>\n"
 "Language-Team: Danish\n"
 "MIME-Version: 1.0\n"
@@ -287,7 +287,7 @@ msgstr "Baggrund tilsidesætter tema"
 
 #: src/backgrounds.c:2197
 msgid "Enable background transparency compatibility mode"
-msgstr "Aktivér baggrundskompatibilitetsmode"
+msgstr "Aktivér baggrundskompatibilitetsmodus"
 
 #: src/backgrounds.c:2221 src/mod-trans.c:200
 msgid "Background"
@@ -485,7 +485,7 @@ msgstr "Vis ikonnavne"
 
 #: src/container.c:1674
 msgid "Animation mode:"
-msgstr ""
+msgstr "Animationsmodus:"
 
 #: src/container.c:1677 src/desktops.c:2571
 msgid "Off"
@@ -493,7 +493,7 @@ msgstr "Deaktiveret"
 
 #: src/container.c:1682
 msgid "Whirl"
-msgstr ""
+msgstr "Spiral"
 
 #: src/container.c:1687 src/settings.c:112 src/settings.c:117
 #: src/settings.c:383
@@ -501,9 +501,8 @@ msgid "Box"
 msgstr "Boks"
 
 #: src/container.c:1695
-#, fuzzy
 msgid "Animation speed:"
-msgstr "Fadinghastighed:"
+msgstr "Animationshastighed:"
 
 #: src/container.c:1710
 msgid "Icon image display policy (if one operation fails, try the next):"
