@@ -79,6 +79,7 @@ PKG_CHECK_MODULES([EDBUS], [
   ecore >= 0.9.9
 ])
 
+AC_FUNC_ALLOCA
 
 dnl evas
 if test "x${enable_enotify}" = "xyes" ; then
