@@ -5185,3 +5185,24 @@ Avoid using ERegion..Offset().
 Introduce EPictureSetClip().
 Move ESelectInputChange(), change arguments to int.
 
+-------------------------------------------------------------------------------
+
+Sat Jan 16 07:49:30 CET 2010
+
+--- 1.0.1.901 ---
+
+Fix name clash related to SUSv4 signal.h (patch by Pietro Cerutti, ticket 487).
+Fix creating GL pixmap in certain situations (when using mesa?).
+Play with XI2.
+Remove useless definition.
+Tweak configuration loading.
+Eliminate Mode.action_inhibit.
+Show EObj info via ipc when appropriate.
+Move EWindowGetNamePixmap() to x.c (and rename).
+Avoid some memory leaks with incorrect themes.
+Remove some redundant checks.
+Unmap internal windows before destroying.
+- Fixes progress bar rendering when CM is active.
+Scale new icons down to 48x48 pixels.
+Change iconbox fallback icon mode back to snapshot.
+Do not propagate key events.
