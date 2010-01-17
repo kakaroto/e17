@@ -4,7 +4,7 @@
 #include "e_mod_net.h"
 #include "e_mod_gadcon.h"
 
-EAPI Config_Item *
+Config_Item *
 _config_item_get(const char *id) 
 {
    Eina_List *l;
@@ -46,10 +46,10 @@ _config_item_get(const char *id)
    return ci;
 }
 
-EAPI Ecore_List *
+Eina_List *
 _config_devices_get(void) 
 {
-   Ecore_List *devs = NULL;
+   Eina_List *devs = NULL;
 #ifndef __FreeBSD__
    FILE *f;
    char buf[256];
@@ -59,8 +59,6 @@ _config_devices_get(void)
    f = fopen("/proc/net/dev", "r");
    if (!f) return NULL;
 
-   devs = ecore_list_new();
-   ecore_list_free_cb_set(devs, free);
    while (fgets(buf, 256, f)) 
      {
 	int i = 0;
@@ -73,7 +71,7 @@ _config_devices_get(void)
 		    &dummy, &dummy, &dummy, &dummy, &dummy, &dummy, &dummy,
 		    &dummy, &dummy, &dummy, &dummy, &dummy, &dummy) < 17)
 	  continue;
-	ecore_list_append(devs, strdup(dev));
+	devs = eina_list_append(devs, strdup(dev));
      }
    fclose(f);
 #else
@@ -83,21 +81,18 @@ _config_devices_get(void)
    d = opendir("/dev/net");
    if (!d) return NULL;
 
-   devs = ecore_list_new();
-   ecore_list_free_cb_set(devs, free);
    while ((dentry = readdir(d)) != NULL) 
      {
 	if (strstr(dentry->d_name,".") == NULL)     
-	  ecore_list_append(devs, strdup(dentry->d_name));
+	  devs = eina_list_append(devs, strdup(dentry->d_name));
      } 
    closedir(d);
 #endif
 
-   if (devs) ecore_list_first_goto(devs);
    return devs;
 }
 
-EAPI void 
+void 
 _config_updated(Config_Item *ci)
 {
    Eina_List *l;

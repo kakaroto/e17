@@ -10,7 +10,7 @@ struct _E_Config_Dialog_Data
    int limit, show_text;
    int show_popup;
    
-   Ecore_List *devs;
+   Eina_List *devs;
    int num;
 };
 
@@ -20,7 +20,7 @@ static void _fill_data(Config_Item *ci, E_Config_Dialog_Data *cfdata);
 static Evas_Object *_basic_create(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cfdata);
 static int _apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata);
 
-EAPI void 
+void 
 _configure_net_module(void *data) 
 {
    E_Config_Dialog *cfd;
@@ -61,7 +61,7 @@ _create_data(E_Config_Dialog *cfd)
 static void 
 _free_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata) 
 {
-   if (cfdata->devs) ecore_list_destroy(cfdata->devs);
+   if (cfdata->devs) eina_list_free(cfdata->devs);
    E_FREE(cfdata->device);
    E_FREE(cfdata->app);
    E_FREE(cfdata);
@@ -72,6 +72,7 @@ _free_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
 static void 
 _fill_data(Config_Item *ci, E_Config_Dialog_Data *cfdata) 
 {
+   Eina_List *l;
    char *tmp;
    int i = 0;
    
@@ -89,7 +90,7 @@ _fill_data(Config_Item *ci, E_Config_Dialog_Data *cfdata)
    
    cfdata->devs = _config_devices_get();
    if (!cfdata->devs) return;
-   while ((tmp = ecore_list_next(cfdata->devs)) != NULL)
+   EINA_LIST_FOREACH(cfdata->devs, l, tmp)
      {
 	if (!cfdata->device) continue;
 	if (!strcmp(cfdata->device, tmp)) 
@@ -106,6 +107,7 @@ _basic_create(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cfdata)
 {
    Evas_Object *o, *ob, *of;
    E_Radio_Group *rg;
+   Eina_List *l;
    char *tmp;
    int i = 0;
    
@@ -136,8 +138,7 @@ _basic_create(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cfdata)
    
    of = e_widget_framelist_add(evas, D_("Device Settings"), 0);
    rg = e_widget_radio_group_new(&(cfdata->num));
-   ecore_list_first_goto(cfdata->devs);
-   while ((tmp = ecore_list_next(cfdata->devs)) != NULL) 
+   EINA_LIST_FOREACH(cfdata->devs, l, tmp)
      {
 	ob = e_widget_radio_add(evas, tmp, i, rg);
 	e_widget_framelist_object_append(of, ob);
@@ -155,7 +156,7 @@ _apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
    Config_Item *ci;
    
    ci = cfd->data;
-   tmp = ecore_list_index_goto(cfdata->devs, cfdata->num);
+   tmp = eina_list_nth(cfdata->devs, cfdata->num);
    if (tmp != NULL) 
      {
 	eina_stringshare_del(ci->device);
