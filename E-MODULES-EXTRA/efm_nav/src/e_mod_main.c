@@ -14,49 +14,33 @@ struct _Instance
 };
 
 /* local function protos */
-static E_Gadcon_Client *_gc_init          (E_Gadcon *gc, const char *name, 
-					   const char *id, const char *style);
-static void             _gc_shutdown      (E_Gadcon_Client *gcc);
-static void             _gc_orient        (E_Gadcon_Client *gcc, E_Gadcon_Orient orient);
-static char            *_gc_label         (E_Gadcon_Client_Class *client_class);
-static Evas_Object     *_gc_icon          (E_Gadcon_Client_Class *client_class, Evas *evas);
-static const char      *_gc_id_new        (E_Gadcon_Client_Class *client_class);
-static void             _cb_mouse_down    (void *data, Evas *e, 
-					   Evas_Object *obj, void *event_info);
-static void             _cb_key_down      (void *data, Evas *e,
-                                           Evas_Object *obj, void *event_info);
-static void             _cb_back_click    (void *data, Evas_Object *obj, 
-					   const char *emission, 
-					   const char *source);
-static void             _cb_forward_click (void *data, Evas_Object *obj, 
-					   const char *emission, 
-					   const char *source);
-static void             _cb_up_click      (void *data, Evas_Object *obj, 
-					   const char *emission, 
-					   const char *source);
-static void             _cb_refresh_click (void *data, Evas_Object *obj, 
-					   const char *emission, 
-					   const char *source);
-static void             _cb_favorites_click (void *data, Evas_Object *obj, 
-                                             const char *emission, 
-                                             const char *source);
-static void             _cb_changed       (void *data, Evas_Object *obj, 
-					   void *event_info);
-static void             _cb_dir_changed   (void *data, Evas_Object *obj, 
-					   void *event_info);
+static E_Gadcon_Client *_gc_init(E_Gadcon *gc, const char *name, const char *id, const char *style);
+static void _gc_shutdown(E_Gadcon_Client *gcc);
+static void _gc_orient(E_Gadcon_Client *gcc, E_Gadcon_Orient orient);
+static char *_gc_label(E_Gadcon_Client_Class *client_class);
+static Evas_Object *_gc_icon(E_Gadcon_Client_Class *client_class, Evas *evas);
+static const char *_gc_id_new(E_Gadcon_Client_Class *client_class);
+static void _cb_mouse_down(void *data, Evas *e, Evas_Object *obj, void *event_info);
+static void _cb_key_down(void *data, Evas *e, Evas_Object *obj, void *event_info);
+static void _cb_back_click(void *data, Evas_Object *obj, const char *emission, const char *source);
+static void _cb_forward_click(void *data, Evas_Object *obj, const char *emission, const char *source);
+static void _cb_up_click(void *data, Evas_Object *obj, const char *emission, const char *source);
+static void _cb_refresh_click(void *data, Evas_Object *obj, const char *emission, const char *source);
+static void _cb_favorites_click(void *data, Evas_Object *obj, const char *emission, const char *source);
+static void _cb_changed(void *data, Evas_Object *obj, void *event_info);
+static void _cb_dir_changed(void *data, Evas_Object *obj, void *event_info);
 
 static Eina_List *instances = NULL;
-static E_Module *nav_mod = NULL;
+static const char *_nav_mod_dir = NULL;
 
 /* local gadcon functions */
 static const E_Gadcon_Client_Class _gc_class = 
 {
    GADCON_CLIENT_CLASS_VERSION, "efm_nav", 
-   {
-      _gc_init, _gc_shutdown, _gc_orient, _gc_label, _gc_icon, _gc_id_new, NULL,
-      e_gadcon_site_is_efm_toolbar
-   },
-   E_GADCON_CLIENT_STYLE_PLAIN
+     {
+        _gc_init, _gc_shutdown, _gc_orient, _gc_label, _gc_icon, _gc_id_new, NULL,
+          e_gadcon_site_is_efm_toolbar
+     }, E_GADCON_CLIENT_STYLE_PLAIN
 };
 
 static E_Gadcon_Client *
@@ -64,13 +48,12 @@ _gc_init(E_Gadcon *gc, const char *name, const char *id, const char *style)
 {
    Instance *inst = NULL;
    Evas_Object *o_fm;
-   char buf[4096];
+   char buf[PATH_MAX];
 
    inst = E_NEW(Instance, 1);
    if (!inst) return NULL;
 
-   snprintf(buf, sizeof(buf), "%s/e-module-efm_nav.edj", 
-	    e_module_dir_get(nav_mod));
+   snprintf(buf, sizeof(buf), "%s/e-module-efm_nav.edj", _nav_mod_dir);
 
    inst->o_base = edje_object_add(gc->evas);
    if (!e_theme_edje_object_set(inst->o_base, "base/theme/modules/efm_nav", 
@@ -164,8 +147,9 @@ _gc_shutdown(E_Gadcon_Client *gcc)
    instances = eina_list_remove(instances, inst);
    o_fm = e_toolbar_fm2_get(inst->tbar);
    if (o_fm)
-      evas_object_event_callback_del(o_fm, EVAS_CALLBACK_KEY_DOWN, _cb_key_down);
-   EINA_LIST_FREE(inst->history, s) eina_stringshare_del(s);
+     evas_object_event_callback_del(o_fm, EVAS_CALLBACK_KEY_DOWN, _cb_key_down);
+   EINA_LIST_FREE(inst->history, s) 
+     eina_stringshare_del(s);
    if (inst->o_favorites) evas_object_del(inst->o_favorites);
    if (inst->o_back) evas_object_del(inst->o_back);
    if (inst->o_up) evas_object_del(inst->o_up);
@@ -209,10 +193,9 @@ static Evas_Object *
 _gc_icon(E_Gadcon_Client_Class *client_class, Evas *evas) 
 {
    Evas_Object *o = NULL;
-   char buf[4096];
+   char buf[PATH_MAX];
 
-   snprintf(buf, sizeof(buf), "%s/e-module-efm_nav.edj", 
-	    e_module_dir_get(nav_mod));
+   snprintf(buf, sizeof(buf), "%s/e-module-efm_nav.edj", _nav_mod_dir);
    o = edje_object_add(evas);
    edje_object_file_set(o, buf, "icon");
    return o;
@@ -221,7 +204,7 @@ _gc_icon(E_Gadcon_Client_Class *client_class, Evas *evas)
 static const char *
 _gc_id_new(E_Gadcon_Client_Class *client_class) 
 {
-   char buf[4096];
+   char buf[PATH_MAX];
 
    snprintf(buf, sizeof(buf), "%s.%d", _gc_class.name, 
 	    (eina_list_count(instances) + 1));
@@ -229,20 +212,20 @@ _gc_id_new(E_Gadcon_Client_Class *client_class)
 }
 
 /* E Module API Functions */
-EAPI E_Module_Api e_modapi = 
-{
-   E_MODULE_API_VERSION, "EFM Navigation"
-};
+EAPI E_Module_Api e_modapi = { E_MODULE_API_VERSION, "EFM Navigation" };
 
 EAPI void *
 e_modapi_init(E_Module *m) 
 {
-   char buf[4095];
-   snprintf(buf, sizeof(buf), "%s/locale", e_module_dir_get(m));
+   char buf[PATH_MAX];
+
+   _nav_mod_dir = eina_stringshare_add(m->dir);
+
+   snprintf(buf, sizeof(buf), "%s/locale", _nav_mod_dir);
+
    bindtextdomain(PACKAGE, buf);
    bind_textdomain_codeset(PACKAGE, "UTF-8");
 
-   nav_mod = m;
    e_gadcon_provider_register(&_gc_class);
    return m;
 }
@@ -251,7 +234,8 @@ EAPI int
 e_modapi_shutdown(E_Module *m) 
 {
    e_gadcon_provider_unregister(&_gc_class);
-   nav_mod = NULL;
+   if (_nav_mod_dir) eina_stringshare_del(_nav_mod_dir);
+   _nav_mod_dir = NULL;
    return 1;
 }
 
@@ -273,16 +257,16 @@ _cb_key_down(void *data, Evas *e, Evas_Object *obj, void *event_info)
    if (evas_key_modifier_is_set(ev->modifiers, "Alt"))
      {
         if (!strcmp(ev->key, "Left"))
-           _cb_back_click(inst, obj, "e,action,click", "e");
+          _cb_back_click(inst, obj, "e,action,click", "e");
         else if (!strcmp(ev->key, "Right"))
-           _cb_forward_click(inst, obj, "e,action,click", "e");
+          _cb_forward_click(inst, obj, "e,action,click", "e");
         else if (!strcmp(ev->key, "Up"))
-           _cb_up_click(inst, obj, "e,action,click", "e");
+          _cb_up_click(inst, obj, "e,action,click", "e");
      }
    else if (evas_key_modifier_is_set(ev->modifiers, "Control"))
      {
         if (!strcmp(ev->key, "r"))
-           _cb_refresh_click(inst, obj, "e,action,click", "e");
+          _cb_refresh_click(inst, obj, "e,action,click", "e");
      }
 }
 
@@ -303,7 +287,7 @@ _cb_mouse_down(void *data, Evas *e, Evas_Object *obj, void *event_info)
    e_gadcon_client_util_menu_items_append(inst->gcc, mn, 0);
    ecore_x_pointer_xy_get(zone->container->win, &x, &y);
    e_menu_activate_mouse(mn, zone, x, y, 1, 1, 
-			 E_MENU_POP_DIRECTION_DOWN, ev->timestamp);
+			 E_MENU_POP_DIRECTION_AUTO, ev->timestamp);
 }
 
 static void 
@@ -317,7 +301,8 @@ _cb_back_click(void *data, Evas_Object *obj, const char *emission, const char *s
    if ((!inst) || (!inst->tbar)) return;
    o_fm = e_toolbar_fm2_get(inst->tbar);
    if (!o_fm) return;
-   if (!inst->current || inst->current == eina_list_last(inst->history)) return;
+   if ((!inst->current) || 
+       (inst->current == eina_list_last(inst->history))) return;
    inst->current = eina_list_next(inst->current);
    hist = inst->current ? eina_list_data_get(inst->current) : NULL;
    if (!hist) 
@@ -339,9 +324,8 @@ _cb_forward_click(void *data, Evas_Object *obj, const char *emission, const char
 
    inst = data;
    if ((!inst) || (!inst->tbar)) return;
-   o_fm = e_toolbar_fm2_get(inst->tbar);
-   if (!o_fm) return;
-   if (!inst->current || inst->current == inst->history) return;
+   if (!(o_fm = e_toolbar_fm2_get(inst->tbar))) return;
+   if ((!inst->current) || (inst->current == inst->history)) return;
    inst->current = eina_list_prev(inst->current);
    hist = eina_list_data_get(inst->current);
    if (!hist) 
@@ -359,13 +343,10 @@ _cb_refresh_click(void *data, Evas_Object *obj, const char *emission, const char
 {
    Instance *inst;
    Evas_Object *o_fm;
-   char *hist;
-   int i = 0;
 
    inst = data;
    if ((!inst) || (!inst->tbar)) return;
-   o_fm = e_toolbar_fm2_get(inst->tbar);
-   if (!o_fm) return;
+   if (!(o_fm = e_toolbar_fm2_get(inst->tbar))) return;
    // Don't destroy forward history when refreshing
    inst->ignore_dir = 1;
    e_fm2_path_set(o_fm, NULL, e_fm2_real_path_get(o_fm));
@@ -380,8 +361,7 @@ _cb_up_click(void *data, Evas_Object *obj, const char *emission, const char *sou
 
    inst = data;
    if ((!inst) || (!inst->tbar)) return;
-   o_fm = e_toolbar_fm2_get(inst->tbar);
-   if (!o_fm) return;
+   if (!(o_fm = e_toolbar_fm2_get(inst->tbar))) return;
    t = strdup(e_fm2_real_path_get(o_fm));
    p = strrchr(t, '/');
    if (p)
@@ -393,9 +373,11 @@ _cb_up_click(void *data, Evas_Object *obj, const char *emission, const char *sou
         //edje_object_signal_emit(inst->o_up, "e,state,enabled", "e");
      }
    else 
-     edje_object_signal_emit(inst->o_up, "e,state,disabled", "e");
-   edje_object_message_signal_process(inst->o_up);
-   
+     {
+        edje_object_signal_emit(inst->o_up, "e,state,disabled", "e");
+        edje_object_message_signal_process(inst->o_up);
+     }
+
    free(t);
 }
 
@@ -407,8 +389,7 @@ _cb_favorites_click(void *data, Evas_Object *obj, const char *emission, const ch
 
    inst = data;
    if ((!inst) || (!inst->tbar)) return;
-   o_fm = e_toolbar_fm2_get(inst->tbar);
-   if (!o_fm) return;
+   if (!(o_fm = e_toolbar_fm2_get(inst->tbar))) return;
    e_fm2_path_set(o_fm, "favorites", "/");
 }
 
@@ -431,13 +412,12 @@ _cb_dir_changed(void *data, Evas_Object *obj, void *event_info)
 
    inst = data;
    if ((!inst) || (!inst->tbar)) return;
-   o_fm = e_toolbar_fm2_get(inst->tbar);
-   if (!o_fm) return;
-   path = e_fm2_real_path_get(o_fm);
-   if (!path) return;
+   if (!(o_fm = e_toolbar_fm2_get(inst->tbar))) return;
+   if (!(path = e_fm2_real_path_get(o_fm))) return;
    if (!inst->ignore_dir) 
      {
         const char *t;
+
         t = inst->current ? eina_list_data_get(inst->current) : NULL;
         if(t != path)
           {
@@ -449,16 +429,17 @@ _cb_dir_changed(void *data, Evas_Object *obj, void *event_info)
 		       inst->history = eina_list_next(inst->history);
 		    }
 	       }
-             inst->history = eina_list_prepend(inst->history, eina_stringshare_ref(path));
+             inst->history = 
+               eina_list_prepend(inst->history, eina_stringshare_ref(path));
 	     inst->current = inst->history;
           }
      }
    inst->ignore_dir = 0;
 
    if (!strcmp(path, "/"))
-	 edje_object_signal_emit(inst->o_up, "e,state,disabled", "e");
+     edje_object_signal_emit(inst->o_up, "e,state,disabled", "e");
    else
-	 edje_object_signal_emit(inst->o_up, "e,state,enabled", "e");
+     edje_object_signal_emit(inst->o_up, "e,state,enabled", "e");
    edje_object_message_signal_process(inst->o_up);
 
    count = eina_list_count(inst->history);
