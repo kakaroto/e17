@@ -357,7 +357,6 @@ gboolean table_check_func (GtkTreeModel *model, GtkTreePath *path,
   gchar *tree_path_str;
   gboolean has_child;
   gint depth;
-  gchar buffer[128];
 
   gtk_tree_model_get (model, iter,
                       COL_DESCRIPTION, &description,
