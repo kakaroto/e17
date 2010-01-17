@@ -568,7 +568,7 @@ Evas_Object *eyelight_object_item_video_add(Eyelight_Viewer *pres, Eyelight_Slid
 
     /* basic video object setup */
     Evas_Object *o_inter = emotion_object_add(pres->evas);
-    if (!emotion_object_init(o_inter, pres->video_module))
+    if (!emotion_object_init(o_inter, NULL))
     {
         ERR("Emotion init failed !\n");
         exit (0);

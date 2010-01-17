@@ -140,8 +140,6 @@ struct Eyelight_Viewer
     //list of type Eyelight_Slide
     Eina_List* slides;
 
-    char *video_module;
-
     int size;
     int current;
     Eyelight_Slide* slide_with_transition[2];

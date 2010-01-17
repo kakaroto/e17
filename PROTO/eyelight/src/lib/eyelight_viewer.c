@@ -67,7 +67,6 @@ Eyelight_Viewer* eyelight_viewer_new(Evas* evas, const char* presentation, const
     eyelight_viewer_theme_file_set(pres,theme);
     eyelight_viewer_presentation_file_set(pres, presentation);
 
-    pres->video_module = strdup("xine");
     return pres;
 }
 
@@ -227,7 +226,6 @@ void eyelight_viewer_destroy(Eyelight_Viewer**pres)
 
     EYELIGHT_FREE((*pres)->theme);
     EYELIGHT_FREE((*pres)->elt_file);
-    EYELIGHT_FREE((*pres)->video_module);
 
     eyelight_viewer_clean(*pres);
 

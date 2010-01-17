@@ -134,7 +134,6 @@ int* _eyelight_viewer_thumbnails_create(Eyelight_Viewer* pres,int pos,int size_w
     Eyelight_Viewer *pres_copy = calloc(1,sizeof(Eyelight_Viewer));
     pres_copy->evas = e;
     pres_copy->size = pres->size;
-    pres_copy->video_module = pres->video_module;
     pres_copy->compiler = pres->compiler;
     pres_copy->theme = pres->theme;
     pres_copy->elt_file = pres->elt_file;

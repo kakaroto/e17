@@ -225,11 +225,11 @@ static const Eyelight_Prop_Value_Type eyelight_prop_value_type[]=
 struct eyelight_node
 {
     int type;
-    union
-    {
-        Eyelight_Node_Name name;
-        char* value;
-    };
+
+    /* This two value could be an union, but Eet doesn't support it yet, so removed it for now. */
+    Eyelight_Node_Name name;
+    char* value;
+
     Eyelight_Node * father;
     Eina_List *l;
 
