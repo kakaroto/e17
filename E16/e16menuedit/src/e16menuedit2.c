@@ -31,6 +31,7 @@
 #include <sys/types.h>
 #include <string.h>
 #include <stdarg.h>
+#include <glib/gstdio.h>
 #include "callbacks.h"
 #include "e16menuedit2.h"
 #include "file.h"
