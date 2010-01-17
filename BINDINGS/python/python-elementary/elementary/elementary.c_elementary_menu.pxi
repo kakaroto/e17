@@ -135,6 +135,10 @@ cdef class MenuItem:
         def __get__(self):
             return self.subitems_get()
 
+cdef void _menu_item_separator_del_cb(void *data, c_evas.Evas_Object *o, void *event_info) with gil:
+    it = <object>data
+    it.__del_cb()
+
 cdef class MenuItemSeparator:
     cdef Elm_Menu_Item *obj
 
@@ -149,8 +153,9 @@ cdef class MenuItemSeparator:
             parent_obj = parent.obj
         self.obj = elm_menu_item_separator_add(menu.obj, parent_obj)
 
+        elm_menu_item_data_set(self.obj, <void*>self)
         Py_INCREF(self)
-        elm_menu_item_del_cb_set(self.obj, _menu_item_del_cb)
+        elm_menu_item_del_cb_set(self.obj, _menu_item_separator_del_cb)
 
     def delete(self):
         """Delete the menu item"""

@@ -597,5 +597,6 @@ cdef extern from "Elementary.h":
     void  elm_menu_item_del(Elm_Menu_Item *item)
     void  elm_menu_item_del_cb_set(Elm_Menu_Item *it, void (*func)(void *data, evas.c_evas.Evas_Object *obj, void *event_info))
     void *elm_menu_item_data_get(Elm_Menu_Item *it)
+    void  elm_menu_item_data_set(Elm_Menu_Item *item, void *data)
     evas.c_evas.Evas_Object *elm_menu_object_get(Elm_Menu_Item *it)
     evas.c_evas.Eina_List *elm_menu_item_subitems_get(Elm_Menu_Item *item)
