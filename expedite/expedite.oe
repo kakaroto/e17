@@ -4,7 +4,7 @@ MAINTAINER = "Carsten Haitzler (Rasterman) <raster@rasterman.com>"
 SECTION = "e/test"
 PRIORITY = "optional"
 DEPENDS = "evas"
-PV = "0.6.0"
+PV = "0.7.0"
 PR = "1"
 
 do_prepsources () {

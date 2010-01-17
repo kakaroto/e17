@@ -32,7 +32,6 @@ static Evas_Object *o_menu_icon_sel = NULL;
 static Evas_Object *o_menu_icon_sel2 = NULL;
 static Evas_Object *o_menu_text_sel = NULL;
 static Evas_Object *o_menu_title = NULL;
-static Evas_Object *o_menu_title2 = NULL;
 static Eina_List   *menu = NULL;
 static int          menu_sel = 0;
 static int          menu_active = 0;
@@ -72,7 +71,6 @@ _ui_all(void)
 
    evas_object_hide(o_menu_logo);
    evas_object_hide(o_menu_title);
-   evas_object_hide(o_menu_title2);
    evas_object_hide(o_menu_icon);
    evas_object_hide(o_menu_icon_sel);
    evas_object_hide(o_menu_icon_sel2);
@@ -117,7 +115,6 @@ _ui_num(int n)
 
    evas_object_hide(o_menu_logo);
    evas_object_hide(o_menu_title);
-   evas_object_hide(o_menu_title2);
    evas_object_hide(o_menu_icon);
    evas_object_hide(o_menu_icon_sel);
    evas_object_hide(o_menu_icon_sel2);
@@ -157,7 +154,6 @@ _ui_select(void)
 
    evas_object_hide(o_menu_logo);
    evas_object_hide(o_menu_title);
-   evas_object_hide(o_menu_title2);
    evas_object_hide(o_menu_icon);
    evas_object_hide(o_menu_icon_sel);
    evas_object_hide(o_menu_icon_sel2);
@@ -317,18 +313,6 @@ _ui_setup(void)
    evas_object_show(o);
    o_wallpaper = o;
 
-/*
-   o = evas_object_image_add(evas);
-   evas_object_move(o, 0, 0);
-   evas_object_image_file_set(o, PACKAGE_DATA_DIR"/data/bg.png", NULL);
-   evas_object_image_fill_set(o, 0, 0, win_w, win_h);
-   evas_object_image_smooth_scale_set(o, 0);
-   evas_object_resize(o, win_w, win_h);
-   evas_object_layer_set(o, -99);
-   evas_object_show(o);
-   o_wallpaper = o;
- */
-
    o = evas_object_text_add(evas);
    evas_object_text_font_set(o, "Vera-Bold", 10);
    evas_object_text_text_set(o, "EXPEDITE");
@@ -357,7 +341,7 @@ _ui_setup(void)
 
    o = evas_object_image_add(evas);
    evas_object_move(o, (win_w - 120) / 2, ((win_h - 160) / 2));
-   evas_object_image_file_set(o, build_path("logo.png"), NULL);
+   evas_object_image_file_set(o, build_path("e-logo.png"), NULL);
    evas_object_image_fill_set(o, 0, 0, 120, 160);
    evas_object_resize(o, 120, 160);
    evas_object_layer_set(o, -98);
@@ -375,8 +359,8 @@ _ui_setup(void)
    o = evas_object_image_add(evas);
    evas_object_move(o, 0, 0);
    evas_object_image_file_set(o, build_path("icon_sel.png"), NULL);
-   evas_object_resize(o, 56, 56);
-   evas_object_image_fill_set(o, 0, 0, 56, 56);
+   evas_object_resize(o, 48, 48);
+   evas_object_image_fill_set(o, 0, 0, 48, 48);
    o_menu_icon_sel = o;
 
    o = evas_object_image_add(evas);
@@ -384,29 +368,11 @@ _ui_setup(void)
    evas_object_image_file_set(o, build_path("text_sel.png"), NULL);
    evas_object_resize(o, 96, 32);
    evas_object_image_fill_set(o, 0, 0, 96, 32);
-   evas_object_image_border_set(o, 8, 8, 8, 8);
+   evas_object_image_border_set(o, 7, 7, 7, 7);
    o_menu_text_sel = o;
 
-   o = evas_object_image_add(evas);
-   evas_object_move(o, 0, 0);
-   evas_object_image_file_set(o, build_path("icon_sel2.png"), NULL);
-   evas_object_resize(o, 56, 41);
-   evas_object_image_fill_set(o, 0, 0, 56, 41);
-   o_menu_icon_sel2 = o;
-
    o = evas_object_text_add(evas);
-   evas_object_text_font_set(o, "Vera-Bold", 10);
-   evas_object_text_text_set(o, "");
-   evas_object_color_set(o, 100, 100, 100, 100);
-   evas_object_pass_events_set(o, 1);
-   evas_object_geometry_get(o, NULL, NULL, &w, &h);
-   x = ((win_w - w) / 2) + 1;
-   y = ((win_h - h) / 2) + 1;
-   evas_object_move(o, x, y);
-   o_menu_title2 = o;
-
-   o = evas_object_text_add(evas);
-   evas_object_text_font_set(o, "Vera-Bold", 10);
+   evas_object_text_font_set(o, "Vera", 10);
    evas_object_text_text_set(o, "");
    evas_object_color_set(o, 0, 0, 0, 100);
    evas_object_pass_events_set(o, 1);
@@ -568,25 +534,18 @@ ui_loop(void)
 		  a = 255 - (255 * a);
 
 		  o = o_menu_icon_sel;
-		  evas_object_move(o, x - ((56 - w) / 2), y - ((56 - h) / 2));
+		  evas_object_move(o, x - ((48 - w) / 2), y - ((48 - h) / 2));
 		  evas_object_color_set(o, a, a, a, a);
 
-		  o = o_menu_icon_sel2;
-		  evas_object_move(o, (win_w - 56) / 2, (win_h / 2) + len - 4);
-
 		  o = o_menu_title;
-		  evas_object_color_set(o, 0, 0, 0, a);
+		  evas_object_color_set(o, 255, 255, 255, a);
 		  evas_object_text_text_set(o, mi->text);
 		  evas_object_geometry_get(o, NULL, NULL, &tw, &th);
 	          x = (win_w - tw) / 2;
-	          y = (win_h / 2) + len + 40;
+	          y = (win_h / 2) + len + 48;
 	          evas_object_move(o, x, y);
 
-		  o = o_menu_title2;
-		  evas_object_color_set(o, a / 2, a / 2, a / 2, a / 2);
-		  evas_object_text_text_set(o, mi->text);
-	          evas_object_move(o, x + 1, y + 1);
-
+				 
 		  o = o_menu_text_sel;
 		  w = tw + 24;
 		  h = 28;
@@ -606,7 +565,6 @@ ui_loop(void)
         evas_object_move(o_menu_logo, (win_w - 120) / 2, ((win_h - 160) / 2));
 	evas_object_show(o_menu_logo);
 	evas_object_show(o_menu_title);
-	evas_object_show(o_menu_title2);
 	evas_object_show(o_menu_icon);
 	evas_object_show(o_menu_icon_sel);
 	evas_object_show(o_menu_icon_sel2);

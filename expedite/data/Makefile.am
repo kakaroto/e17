@@ -14,8 +14,8 @@ VeraSe.ttf \
 VeraSeBd.ttf \
 fonts.alias \
 fonts.dir \
-bg.png \
 logo.png \
+e-logo.png \
 e.png \
 image.png \
 bar.png \
@@ -24,7 +24,6 @@ pan.png \
 tp.png \
 tp.yuv \
 icon_sel.png \
-icon_sel2.png \
 text_sel.png \
 exit.png \
 watch.png \
