@@ -20,12 +20,12 @@ static Evas_Object *_basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Co
 static int _basic_apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata);
 static void _fill_data(Rain *rn, E_Config_Dialog_Data *cfdata);
 
-EAPI E_Config_Dialog *e_int_config_rain_module(E_Container *con)
+EAPI E_Config_Dialog *e_int_config_rain_module(E_Container *con, const char *params)
 {
    E_Config_Dialog *cfd;
    E_Config_Dialog_View *v;
    Rain *r;
-   char buf[4096];
+   char buf[PATH_MAX];
 
    r = rain_module->data;
 

@@ -36,7 +36,7 @@ e_modapi_init(E_Module *m)
 				 buf, e_int_config_rain_module);
 
    rain = _rain_init(m);
-rain_module = m;
+   rain_module = m;
    return rain;
 }
 
@@ -67,8 +67,7 @@ e_modapi_save(E_Module *m)
    Rain *rain;
 
    rain = m->data;
-   if (!rain)
-      return 1;
+   if (!rain) return 1;
    e_config_domain_save("module.rain", rain->conf_edd, rain->conf);
    return 1;
 }
@@ -81,8 +80,7 @@ _rain_init(E_Module *m)
    Eina_List *managers, *l, *l2;
 
    rain = calloc(1, sizeof(Rain));
-   if (!rain)
-      return NULL;
+   if (!rain) return NULL;
 
    rain->module = m;
    rain->conf_edd = E_CONFIG_DD_NEW("Rain_Config", Config);
