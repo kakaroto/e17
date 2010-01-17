@@ -115,6 +115,8 @@ struct Eyelight_Viewer
 
     Eyelight_Compiler *compiler;
     char* theme;
+    char *dump_in;
+    char *dump_out;
 
     int default_size_w;
     int default_size_h;

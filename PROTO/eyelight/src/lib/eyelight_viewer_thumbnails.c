@@ -19,10 +19,10 @@
 #include "eyelight_viewer.h"
 
 
-int* _eyelight_viewer_thumbnails_create(Eyelight_Viewer* pres,int pos, int w, int h);
-int _eyelight_viewer_thumbnails_load_idle(void *data);
-int* _eyelight_viewer_thumbnails_resize(const int* pixel,int src_w,int src_h,int new_w,int new_h);
-const Eyelight_Thumb* _eyelight_viewer_thumbnails_get(Eyelight_Viewer* pres, int pos, int w, int h);
+static int* _eyelight_viewer_thumbnails_create(Eyelight_Viewer* pres,int pos, int w, int h);
+static int _eyelight_viewer_thumbnails_load_idle(void *data);
+static int* _eyelight_viewer_thumbnails_resize(const char *file, int index, const int* pixel,int src_w,int src_h,int new_w,int new_h);
+static const Eyelight_Thumb* _eyelight_viewer_thumbnails_get(Eyelight_Viewer* pres, int pos, int w, int h);
 
 void eyelight_viewer_thumbnails_background_load_start(Eyelight_Viewer* pres)
 {
@@ -52,7 +52,7 @@ void eyelight_viewer_thumbnails_size_set(Eyelight_Viewer *pres, int w, int h)
     for(i=0; i<eyelight_viewer_size_get(pres); i++)
     {
         Eyelight_Slide *slide = eina_list_nth(pres->slides, i);
-        if(slide->thumb.thumb)
+        if(slide->thumb.thumb || (pres->dump_in && slide->thumb.pos >= 0))
         {
             EYELIGHT_FREE(slide->thumb.thumb);
             eyelight_viewer_thumbnails_get(pres, i);
@@ -88,7 +88,7 @@ const Eyelight_Thumb* eyelight_viewer_thumbnails_custom_size_get(Eyelight_Viewer
  * @return returns a slide if success,
  * NULL if an error is occurs
  */
-const Eyelight_Thumb* _eyelight_viewer_thumbnails_get(Eyelight_Viewer* pres, int pos, int size_w, int size_h)
+static const Eyelight_Thumb* _eyelight_viewer_thumbnails_get(Eyelight_Viewer* pres, int pos, int size_w, int size_h)
 {
     Eet_File* file;
     unsigned int w,h;
@@ -98,13 +98,18 @@ const Eyelight_Thumb* _eyelight_viewer_thumbnails_get(Eyelight_Viewer* pres, int
 
     if(!slide->thumb.thumb)
     {
-        slide->thumb.thumb = _eyelight_viewer_thumbnails_create(pres,pos,size_w,size_h);
+        if (pres->dump_in)
+	  slide->thumb.pos = pos;
+	else
+	  {
+	     slide->thumb.thumb = _eyelight_viewer_thumbnails_create(pres,pos,size_w,size_h);
 
-        if(!slide->thumb.thumb)
-            return NULL;
+	     if(!slide->thumb.thumb)
+	       return NULL;
 
-        slide->thumb.w = size_w;
-        slide->thumb.h = size_h;
+	     slide->thumb.w = size_w;
+	     slide->thumb.h = size_h;
+	  }
 
         if(pres->thumbnails.done_cb)
             pres->thumbnails.done_cb(pres, pos, &(slide->thumb),
@@ -114,7 +119,7 @@ const Eyelight_Thumb* _eyelight_viewer_thumbnails_get(Eyelight_Viewer* pres, int
     return &(slide->thumb);
 }
 
-int* _eyelight_viewer_thumbnails_create(Eyelight_Viewer* pres,int pos,int size_w, int size_h)
+static int* _eyelight_viewer_thumbnails_create(Eyelight_Viewer* pres,int pos,int size_w, int size_h)
 {
     Ecore_Evas    *ee;
     Evas *e;
@@ -165,7 +170,7 @@ int* _eyelight_viewer_thumbnails_create(Eyelight_Viewer* pres,int pos,int size_w
 
     pixel = ecore_evas_buffer_pixels_get(ee);
 
-    pixel_resize = _eyelight_viewer_thumbnails_resize(pixel,buffer_w,buffer_h,
+    pixel_resize = _eyelight_viewer_thumbnails_resize(pres->dump_out, pos, pixel,buffer_w,buffer_h,
             size_w,
             size_h);
 
@@ -192,7 +197,7 @@ void eyelight_viewer_thumbnails_clean(Eyelight_Viewer* pres, int min, int max)
         }
 }
 
-int* _eyelight_viewer_thumbnails_resize(const int* pixel,int src_w,int src_h,int new_w,int new_h)
+static int* _eyelight_viewer_thumbnails_resize(const char *file, int pos, const int* pixel,int src_w,int src_h,int new_w,int new_h)
 {
     Ecore_Evas* ee;
     Evas* e;
@@ -216,6 +221,31 @@ int* _eyelight_viewer_thumbnails_resize(const int* pixel,int src_w,int src_h,int
     new_pixel_copy = malloc(sizeof(int)*new_w*new_h);
     memcpy(new_pixel_copy,new_pixel,sizeof(int)*new_w*new_h);
 
+    /* FIXME: This could be done in another thread, would make startup more interactiv. */
+    if (file)
+      {
+	 char buffer[10];
+	 Eet_File *ef;
+	 char *tmp;
+	 int bytes;
+
+	 eina_convert_itoa(pos, buffer);
+
+	 tmp = alloca(strlen(buffer) + 16);
+
+	 strcpy(tmp, "eyelight/thumb/");
+	 strcat(tmp, buffer);
+
+	 ef = eet_open(file, EET_FILE_MODE_READ_WRITE);
+
+	 if (ef)
+	   {
+	      bytes = eet_data_image_write(ef, tmp, new_pixel, new_w, new_h, 0, 1, 0, 0);
+
+	      eet_close(ef);
+	   }
+      }
+
     evas_object_image_data_set(o_image,NULL);
 
     ecore_evas_free(ee);
@@ -223,7 +253,7 @@ int* _eyelight_viewer_thumbnails_resize(const int* pixel,int src_w,int src_h,int
     return new_pixel_copy;
 }
 
-int _eyelight_viewer_thumbnails_load_idle(void *data)
+static int _eyelight_viewer_thumbnails_load_idle(void *data)
 {
     Eyelight_Viewer* pres = (Eyelight_Viewer*)data;
 

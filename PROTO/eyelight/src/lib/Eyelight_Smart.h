@@ -11,6 +11,9 @@ EAPI void eyelight_object_theme_file_set(Evas_Object *obj, const char* theme);
 EAPI const char* eyelight_object_presentation_file_get(Evas_Object *obj);
 EAPI const char* eyelight_object_theme_file_get(Evas_Object *obj);
 
+EAPI void eyelight_object_eye_file_set(Evas_Object *obj, const char *eye);
+EAPI void eyelight_object_dump_file_set(Evas_Object *obj, const char *dump);
+
 EAPI void eyelight_object_border_set(Evas_Object *obj, int border);
 EAPI int eyelight_object_size_get(Evas_Object* obj);
 

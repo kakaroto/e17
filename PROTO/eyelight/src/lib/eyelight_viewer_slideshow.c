@@ -100,10 +100,25 @@ void _eyelight_viewer_slideshow_slides_load(Eyelight_Viewer* pres)
                 o_image = evas_object_image_add(pres->evas);
                 pres->slideshow_image_thumbnails[i] = o_image;
 
-                evas_object_image_size_set(o_image, thumb->w, thumb->h);
-                evas_object_image_data_set(o_image,thumb->thumb);
-                evas_object_image_filled_set(o_image,1);
-                evas_object_show(o_image);
+		if (thumb->thumb)
+		  {
+		     evas_object_image_size_set(o_image, thumb->w, thumb->h);
+		     evas_object_image_data_set(o_image,thumb->thumb);
+		     evas_object_image_filled_set(o_image,1);
+		  }
+		else
+		  {
+		     char key[256];
+		     int w;
+		     int h;
+
+		     snprintf(key, sizeof (key), "eyelight/thumb/%i", thumb->pos);
+		     evas_object_image_file_set(o_image, pres->dump_in, key);
+		     evas_object_image_size_get(o_image, &w, &h);
+		     evas_object_image_fill_set(o_image, 0, 0, w, h);
+		  }
+
+		evas_object_show(o_image);
                 snprintf(buf,EYELIGHT_BUFLEN,"object.swallow_%d",i+1);
                 edje_object_part_swallow(pres->slideshow_background,buf,o_image);
             }

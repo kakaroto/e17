@@ -129,6 +129,25 @@ EAPI const char* eyelight_object_theme_file_get(Evas_Object *obj)
     return eyelight_viewer_theme_file_get(sd->pres);
 }
 
+EAPI void eyelight_object_eye_file_set(Evas_Object *obj, const char *eye)
+{
+    Smart_Data *sd;
+    E_SMART_OBJ_GET(sd, obj, E_OBJ_NAME);
+    if (!sd->pres || !eye) return;
+
+    eyelight_object_theme_file_set(obj, eye);
+    eyelight_viewer_eye_file_set(sd->pres, eye);
+}
+
+EAPI void eyelight_object_dump_file_set(Evas_Object *obj, const char *dump)
+{
+    Smart_Data *sd;
+    E_SMART_OBJ_GET(sd, obj, E_OBJ_NAME);
+    if (!sd->pres) return;
+
+    eyelight_viewer_dump_file_set(sd->pres, dump);
+}
+
 void eyelight_object_border_set(Evas_Object *obj, int border)
 {
     Smart_Data *sd;

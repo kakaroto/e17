@@ -137,6 +137,34 @@ int eyelight_viewer_new_presentation_file_set(Eyelight_Viewer *pres, const char*
     DBG("## Number of slides: %d",pres->size);
 }
 
+int eyelight_viewer_eye_file_set(Eyelight_Viewer *pres, const char *eye)
+{
+    EYELIGHT_FREE(pres->dump_in);
+    if (!eye || !ecore_file_exists(eye))
+      return EINA_FALSE;
+
+    pres->dump_in = strdup(eye);
+
+    return EINA_TRUE;
+}
+
+int eyelight_viewer_dump_file_set(Eyelight_Viewer *pres, const char *dump)
+{
+    EYELIGHT_FREE(pres->dump_out);
+    if (!dump)
+      return EINA_FALSE;
+
+    pres->dump_out = strdup(dump);
+
+    if (pres->theme)
+      {
+	 int res = ecore_file_cp(pres->theme, pres->dump_out);
+	 fprintf(stderr, "CP file: %i\n", res);
+      }
+
+    return EINA_TRUE;
+}
+
 /**
  * Set the presentation elt file
  */
@@ -226,6 +254,8 @@ void eyelight_viewer_destroy(Eyelight_Viewer**pres)
 
     EYELIGHT_FREE((*pres)->theme);
     EYELIGHT_FREE((*pres)->elt_file);
+    EYELIGHT_FREE((*pres)->dump_in);
+    EYELIGHT_FREE((*pres)->dump_out);
 
     eyelight_viewer_clean(*pres);
 
@@ -239,6 +269,7 @@ Eyelight_Slide* eyelight_slide_new(Eyelight_Viewer *pres)
 {
     Eyelight_Slide *slide = calloc(1,sizeof(Eyelight_Slide));
     slide->pres = pres;
+    slide->thumb.pos = -1;
     return slide;
 }
 

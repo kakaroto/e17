@@ -59,6 +59,8 @@ void eyelight_edit_slide_insert(Eyelight_Viewer *pres, int after)
 
     Eyelight_Slide *slide = calloc(1,sizeof(Eyelight_Slide));
 
+    slide->thumb.pos = -1;
+
     if(after<0)
         pres->slides = eina_list_prepend(pres->slides, slide);
     else if(after>=pres->size)

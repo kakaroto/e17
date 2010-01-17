@@ -341,8 +341,9 @@ static const Ecore_Getopt options = {
     "Launch eyelight, presentation viewer\n\n"
         "%prog use Edje to display a presentation.  \n\n\n"
         "Examples: \n"
-        "eyelight -p presentation/eyelight.elt -t theme/default -e opengl-x11\n"
-        "eyelight -p presentation/eyelight.elt",
+        "eyelight -p presentation/eyelight.elt -t theme/default -e opengl-x11 -o presentation/eyelight.eye\n"
+        "eyelight -p presentation/eyelight.elt\n"
+        "eyelight -y presentation/eyelight.eye\n",
         1,
         {
             ECORE_GETOPT_VERSION('V', "version"),
@@ -357,6 +358,8 @@ static const Ecore_Getopt options = {
             ECORE_GETOPT_STORE_STR('b', "no-thumbs-bg", "deactivate the creation of the thumbnails list in the background, saves a lot of memory, some mode (expose, slideshow) will be slow"),
             ECORE_GETOPT_STORE_TRUE('H', "hd", "Display the presentation with a default size of 1280x720"),
             ECORE_GETOPT_HELP('h', "help"),
+	    ECORE_GETOPT_STORE_STR('o', "dump", "dump all generated value/image/theme inside a file use it with -y"),
+	    ECORE_GETOPT_STORE_STR('y', "eye", "use an eye file, faster than elt + theme"),
             ECORE_GETOPT_SENTINEL
         }
 };
@@ -371,6 +374,8 @@ int main(int argc, char*argv[])
     char* engine = NULL;
     char* theme = NULL;
     char* presentation = NULL;
+    char* dump_in = NULL;
+    char* dump_out = NULL;
     unsigned char with_border = 0;
     unsigned char no_thumbs_bg = 0;
     unsigned char hd = 0;
@@ -404,6 +409,8 @@ int main(int argc, char*argv[])
         ECORE_GETOPT_VALUE_BOOL(no_thumbs_bg),
         ECORE_GETOPT_VALUE_BOOL(hd),
         ECORE_GETOPT_VALUE_BOOL(exit_option),
+	ECORE_GETOPT_VALUE_STR(dump_out),
+	ECORE_GETOPT_VALUE_STR(dump_in)
     };
 
     ecore_app_args_set(argc, (const char **) argv);
@@ -420,15 +427,25 @@ int main(int argc, char*argv[])
     if(exit_option || engines_listed)
         return 0;
 
-    if(!presentation)
+    if ((presentation || theme) && dump_in)
+    {
+       fprintf(stderr, "You can't set an eye file as an input if you want to specify a theme and a presentation.\nBetter specify it with -o.\n");
+       return EXIT_FAILURE;
+    }
+
+    if((dump_out || !dump_in) && !presentation)
     {
         fprintf(stderr,"A presentation is required !\n");
         return EXIT_FAILURE;
     }
 
-    if(ecore_file_is_dir(presentation) || !ecore_file_exists(presentation))
+    if(presentation && (ecore_file_is_dir(presentation) || !ecore_file_exists(presentation)))
     {
         fprintf(stderr,"The presentation file doesn't exists \n");
+        exit(EXIT_FAILURE);
+    } else if (dump_in && (ecore_file_is_dir(dump_in) || !ecore_file_exists(dump_in)))
+    {
+        fprintf(stderr,"The eye file doesn't exists \n");
         exit(EXIT_FAILURE);
     }
 
@@ -462,6 +479,8 @@ int main(int argc, char*argv[])
     eyelight_smart = eyelight_object_add(evas);
     eyelight_object_theme_file_set(eyelight_smart, theme);
     eyelight_object_presentation_file_set(eyelight_smart, presentation);
+    eyelight_object_eye_file_set(eyelight_smart, dump_in);
+    eyelight_object_dump_file_set(eyelight_smart, dump_out);
     eyelight_object_border_set(eyelight_smart, with_border);
     evas_object_move(eyelight_smart,0,0);
     evas_object_resize(eyelight_smart, sizew, sizeh);

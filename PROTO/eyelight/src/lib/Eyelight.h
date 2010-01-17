@@ -46,6 +46,7 @@ struct Eyelight_Thumb
     int* thumb;
     int w;
     int h;
+    int pos;
 };
 
 
@@ -61,7 +62,9 @@ EAPI Eyelight_Viewer_State eyelight_viewer_state_get(Eyelight_Viewer* pres);
 EAPI void eyelight_viewer_thumbnails_size_set(Eyelight_Viewer *pres, int w, int h);
 
 EAPI int eyelight_viewer_presentation_file_set(Eyelight_Viewer *pres, const char* presentation);
+EAPI int eyelight_viewer_eye_file_set(Eyelight_Viewer *pres, const char *eye);
 EAPI int eyelight_viewer_theme_file_set(Eyelight_Viewer *pres, const char* theme);
+EAPI int eyelight_viewer_dump_file_set(Eyelight_Viewer *pres, const char *eye);
 EAPI int eyelight_viewer_new_presentation_file_set(Eyelight_Viewer *pres, const char* presentation);
 EAPI const char* eyelight_viewer_presentation_file_get(Eyelight_Viewer *pres);
 EAPI const char* eyelight_viewer_theme_file_get(Eyelight_Viewer *pres);
