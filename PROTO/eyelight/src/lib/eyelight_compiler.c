@@ -3,6 +3,11 @@
 #include "eyelight_compiler_parser.h"
 #include "eyelight_object.h"
 
+#include <sys/mman.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <unistd.h>
+
 void eyelight_compile_block_image(Eyelight_Viewer *pres, Eyelight_Slide *slide, Eyelight_Node *node_image, const char *area);
 void eyelight_compile_block_item(Eyelight_Viewer *pres, Eyelight_Slide *slide, Eyelight_Node *node_item, const char *area, int depth, char *numbering, int numbering_id);
 
@@ -36,11 +41,32 @@ Eyelight_Compiler* eyelight_elt_load(char *input_file)
 
     if(input_file)
     {
-        p = eyelight_source_fetch(compiler->input_file,&end);
-        eyelight_parse(compiler,p,end);
-    }
+       struct stat file_stat;
 
-    EYELIGHT_FREE(p);
+       compiler->input = fopen(input_file,"r");
+       if(!compiler->input)
+       {
+	  ERR("Can't open the file %s",input_file);
+	  exit(EXIT_FAILURE);
+       }
+
+       if (fstat(fileno(compiler->input), &file_stat))
+       {
+	  ERR("Can't stat the file %s",input_file);
+	  exit(EXIT_FAILURE);
+       }
+
+       compiler->mmap = mmap(NULL, file_stat.st_size, PROT_READ, MAP_SHARED, fileno(compiler->input), 0);
+       if (!compiler->mmap)
+       {
+	  ERR("Can't mmap the file %s",input_file);
+	  exit(EXIT_FAILURE);
+       }
+
+       compiler->size = file_stat.st_size;
+
+       eyelight_parse(compiler, compiler->mmap, compiler->mmap + compiler->size);
+    }
 
     return compiler;
 }
@@ -76,6 +102,11 @@ void eyelight_compiler_free(Eyelight_Compiler **p_compiler)
     if(!p_compiler || !(*p_compiler)) return ;
 
     EYELIGHT_FREE(compiler->input_file);
+
+    if (compiler->mmap)
+      munmap(compiler->mmap, compiler->size);
+    if (compiler->input)
+      fclose(compiler->input);
 
     EYELIGHT_FREE(compiler);
 }

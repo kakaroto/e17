@@ -242,6 +242,10 @@ struct eyelight_compiler
 {
     char* input_file;
 
+    FILE* input;
+    char* mmap;
+    size_t size;
+
     int display_areas;
 
     //the line number, use to display a message
@@ -311,11 +315,6 @@ void eyelight_theme_area_desc_get(Eyelight_Slide *slide, const char* area_name,
  * Remove a quote " at the start and the end of p
  */
 char* eyelight_remove_quote(char* p);
-/**
- * Load the file file in the char
- * Returns the content of the file, p_end is the end of the string
- */
-char* eyelight_source_fetch(char* file, char** p_end);
 
 
 char* eyelight_retrieve_value_of_prop(Eyelight_Node* node,int i);
