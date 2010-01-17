@@ -167,7 +167,7 @@ EAPI Eina_List*
 exchange_local_theme_list_get(const char *dir)
 {
    Exchange_Object *td = NULL;
-   Ecore_List *files;
+   Eina_List *files;
    Eina_List *themes = NULL;
    char *filename;
 
@@ -180,19 +180,24 @@ exchange_local_theme_list_get(const char *dir)
    }
 
    files = ecore_file_ls(dir);
-   while ((filename = ecore_list_next(files)))
+   EINA_LIST_FREE(files, filename)
    {
       char path[4096];
       char *ext;
       
       ext = strrchr(filename, '.');
-      if (!ext || strcmp(ext, ".edj")) continue;
+      if (!ext || strcmp(ext, ".edj"))
+      {
+         free(filename);
+         continue;
+      }
 
       snprintf(path, sizeof(path), "%s/%s", dir, filename);
       td = exchange_local_theme_all_data_get(path);
       themes = eina_list_append(themes, td);
+      free(filename);
    }
-   ecore_list_destroy(files);
+
    return themes;
 }
 
