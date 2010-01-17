@@ -1,5 +1,5 @@
 /* Copyright (C) 2004 Andreas Volz and various contributors
- * 
+ *
  * Permission  is  hereby granted, free of charge, to any person ob-
  * taining a copy of  this  software  and  associated  documentation
  * files  (the "Software"), to deal in the Software without restric-
@@ -7,13 +7,13 @@
  * fy, merge, publish, distribute, sublicense, and/or sell copies of
  * the Software, and to permit persons to whom the Software is  fur-
  * nished to do so, subject to the following conditions:
- * 
+ *
  * The  above  copyright  notice and this permission notice shall be
  * included in all copies of the  Software,  its  documentation  and
  * marketing & publicity materials, and acknowledgment shall be giv-
  * en in the documentation, materials  and  software  packages  that
  * this Software was used.
- * 
+ *
  * THE  SOFTWARE  IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
  * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO  THE  WARRANTIES
  * OF  MERCHANTABILITY,  FITNESS FOR A PARTICULAR PURPOSE AND NONIN-
@@ -131,7 +131,7 @@ void open_icon_chooser (GtkWidget *treeview_menu)
       model = gtk_tree_view_get_model (GTK_TREE_VIEW (treeview_menu));
       select = gtk_tree_view_get_selection (GTK_TREE_VIEW (treeview_menu));
 
-      if (gtk_tree_selection_get_selected (select, &model, &iter) 
+      if (gtk_tree_selection_get_selected (select, &model, &iter)
 	&& filename != NULL)
       {
         const gchar *entry_select;

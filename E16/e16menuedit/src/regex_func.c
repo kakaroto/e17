@@ -1,5 +1,5 @@
 /* Copyright (C) 2004 Andreas Volz and various contributors
- * 
+ *
  * Permission  is  hereby granted, free of charge, to any person ob-
  * taining a copy of  this  software  and  associated  documentation
  * files  (the "Software"), to deal in the Software without restric-
@@ -7,13 +7,13 @@
  * fy, merge, publish, distribute, sublicense, and/or sell copies of
  * the Software, and to permit persons to whom the Software is  fur-
  * nished to do so, subject to the following conditions:
- * 
+ *
  * The  above  copyright  notice and this permission notice shall be
  * included in all copies of the  Software,  its  documentation  and
  * marketing & publicity materials, and acknowledgment shall be giv-
  * en in the documentation, materials  and  software  packages  that
  * this Software was used.
- * 
+ *
  * THE  SOFTWARE  IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
  * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO  THE  WARRANTIES
  * OF  MERCHANTABILITY,  FITNESS FOR A PARTICULAR PURPOSE AND NONIN-
@@ -29,10 +29,10 @@
 #include "regex_func.h"
 
 /*
- * Match string against the extended regular expression 
- * in pattern, treating errors as no match. 
- * 
- * return 0 for match, 1 for no match 
+ * Match string against the extended regular expression
+ * in pattern, treating errors as no match.
+ *
+ * return 0 for match, 1 for no match
  */
 /* --> TODO: error handling regerror()! */
 
@@ -100,7 +100,7 @@ int regex_sub2 (regex_t *re, const char *string, char *pattern,
   regmatch_t *submatch;
   struct substrings *ss = NULL;
   int string_len = strlen (string);
-  
+
   maxsub = maxsub + 1;
 
   submatch = malloc (maxsub * sizeof (*submatch));

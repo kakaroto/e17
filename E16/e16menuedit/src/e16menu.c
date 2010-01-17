@@ -1,5 +1,5 @@
 /* Copyright (C) 2004 Andreas Volz and various contributors
- * 
+ *
  * Permission  is  hereby granted, free of charge, to any person ob-
  * taining a copy of  this  software  and  associated  documentation
  * files  (the "Software"), to deal in the Software without restric-
@@ -7,13 +7,13 @@
  * fy, merge, publish, distribute, sublicense, and/or sell copies of
  * the Software, and to permit persons to whom the Software is  fur-
  * nished to do so, subject to the following conditions:
- * 
+ *
  * The  above  copyright  notice and this permission notice shall be
  * included in all copies of the  Software,  its  documentation  and
  * marketing & publicity materials, and acknowledgment shall be giv-
  * en in the documentation, materials  and  software  packages  that
  * this Software was used.
- * 
+ *
  * THE  SOFTWARE  IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
  * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO  THE  WARRANTIES
  * OF  MERCHANTABILITY,  FITNESS FOR A PARTICULAR PURPOSE AND NONIN-
@@ -97,7 +97,7 @@ GtkTreeModel *load_menus_from_disk (void)
 	menu_regex (s, &data);
 
 	data[3] = to_utf8 (buf);
-      
+
         gtk_tree_store_append (store, &iter, NULL);
         gtk_tree_store_set (store, &iter,
                             COL_DESCRIPTION, data[0],
@@ -116,7 +116,7 @@ GtkTreeModel *load_menus_from_disk (void)
       else
       {
         gchar **data;
-      
+
 	menu_regex (s, &data);
 
         gtk_tree_store_append (store, &sub_iter, &iter);
@@ -165,7 +165,7 @@ void load_sub_menu_from_disk (char *file_to_load, GtkTreeStore *store,
 
 #ifdef DEBUG
   g_print ("Loading submenu: %s\n", buf);
-#endif /* DEBUG */   
+#endif /* DEBUG */
 
   if (!menufile)
     return;
@@ -178,9 +178,9 @@ void load_sub_menu_from_disk (char *file_to_load, GtkTreeStore *store,
       if (first)
         first = 0;
       else
-      {        
+      {
         gchar **data;
-      
+
 	menu_regex (s, &data);
 
         gtk_tree_store_append (store, &sub_iter, iter);
@@ -241,7 +241,7 @@ gboolean table_save_func (GtkTreeModel *model, GtkTreePath *path,
 
   if (!g_path_is_absolute (params))
   {
-    /* Tarnation! A relative path */    
+    /* Tarnation! A relative path */
     //realfile = g_strjoin ("/", gv.epath, params, NULL);
     realfile = g_strdup_printf ("%s/%s", gv.epath, params);
     //g_print ("FILE: %s,%s,%s\n", gv.epath, params, realfile);
@@ -262,9 +262,9 @@ gboolean table_save_func (GtkTreeModel *model, GtkTreePath *path,
 
   if (depth > 0)
   {
-#ifdef WRITE_FILE  
+#ifdef WRITE_FILE
     menu_ptr = fopen (menu_file[depth-1], "a+");
-#endif /* WRITE_FILE */  
+#endif /* WRITE_FILE */
     if (menu_ptr == NULL)
     {
       printf ("Couldn't save menu to: %s\n", menu_file[depth-1]);
@@ -272,31 +272,31 @@ gboolean table_save_func (GtkTreeModel *model, GtkTreePath *path,
 
     if (has_child)
     {
-#ifdef WRITE_FILE      
+#ifdef WRITE_FILE
       menu_ptr2 = fopen (menu_file[depth], "w");
       if (menu_ptr2 == NULL)
       {
         printf ("Couldn't save menu to: %s\n", menu_file[depth]);
       }
-#endif /* WRITE_FILE */     
+#endif /* WRITE_FILE */
 
       sprintf (buffer, "\"%s\"\n", description);
-#ifdef WRITE_FILE    
+#ifdef WRITE_FILE
       fprintf (menu_ptr2, "%s", from_utf8 (buffer));
       fclose (menu_ptr2);
 #else
       g_print ("write header to: \"%s\"\n", menu_file[depth]);
-#endif /* !WRITE_FILE */    
+#endif /* !WRITE_FILE */
 
       sprintf (buffer, "\"%s\"\t%s\tmenu\t\"%s\"\n",
                description[0] == '\0' ? "NULL" : description,
                icon[0] == '\0' ? "NULL" : icon,
                params[0] == '\0' ? "" : params);
-#ifdef WRITE_FILE      
+#ifdef WRITE_FILE
       fprintf (menu_ptr, "%s", from_utf8 (buffer));
 #else
       g_print ("write menu to: \"%s\"\n", menu_file[depth-1]);
-#endif /* WRITE_FILE */     
+#endif /* WRITE_FILE */
     }
     else
     {
@@ -308,15 +308,15 @@ gboolean table_save_func (GtkTreeModel *model, GtkTreePath *path,
       fprintf (menu_ptr, "%s", from_utf8 (buffer));
 #else
       g_print ("write exec to: \"%s\"\n", menu_file[depth-1]);
-#endif /*WRITE_FILE */    
+#endif /*WRITE_FILE */
     }
-#ifdef WRITE_FILE  
+#ifdef WRITE_FILE
     fclose (menu_ptr);
-#endif /*WRITE_FILE */   
+#endif /*WRITE_FILE */
   }
   else
   {
-#ifdef WRITE_FILE    
+#ifdef WRITE_FILE
     menu_ptr2 = fopen (menu_file[depth], "w");
     if (menu_ptr2 == NULL)
     {
@@ -325,12 +325,12 @@ gboolean table_save_func (GtkTreeModel *model, GtkTreePath *path,
 #endif /*WRITE_FILE */
 
     sprintf (buffer, "\"%s\"\n", description);
-#ifdef WRITE_FILE  
+#ifdef WRITE_FILE
     fprintf (menu_ptr2, "%s", from_utf8 (buffer));
     fclose (menu_ptr2);
 #else
     g_print ("write first header to: \"%s\"\n", menu_file[depth]);
-#endif /* WRITE_FILE */      
+#endif /* WRITE_FILE */
   }
 
 #ifndef WRITE_FILE

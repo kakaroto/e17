@@ -1,5 +1,5 @@
 /* Copyright (C) 2004 Andreas Volz and various contributors
- * 
+ *
  * Permission  is  hereby granted, free of charge, to any person ob-
  * taining a copy of  this  software  and  associated  documentation
  * files  (the "Software"), to deal in the Software without restric-
@@ -7,13 +7,13 @@
  * fy, merge, publish, distribute, sublicense, and/or sell copies of
  * the Software, and to permit persons to whom the Software is  fur-
  * nished to do so, subject to the following conditions:
- * 
+ *
  * The  above  copyright  notice and this permission notice shall be
  * included in all copies of the  Software,  its  documentation  and
  * marketing & publicity materials, and acknowledgment shall be giv-
  * en in the documentation, materials  and  software  packages  that
  * this Software was used.
- * 
+ *
  * THE  SOFTWARE  IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
  * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO  THE  WARRANTIES
  * OF  MERCHANTABILITY,  FITNESS FOR A PARTICULAR PURPOSE AND NONIN-
@@ -180,7 +180,7 @@ void on_menu_info_activate (GtkMenuItem *menuitem,
   gtk_window_set_icon_from_file (GTK_WINDOW (info_window),
                                  pixmap_file,
                                  NULL);
-  g_free (pixmap_file);				     
+  g_free (pixmap_file);
 }
 
 void on_toolbutton_save_clicked (GtkToolButton *toolbutton,
@@ -264,7 +264,7 @@ on_treeview_menu_button_press_event (GtkWidget *widget,
   pop_menu1 = lookup_libglade_widget ("pop_menu1", "pop_menu1");
 
   if (event->button == 3)
-  {    
+  {
     //deactivate_dragndrop (treeview_menu);
     gtk_menu_popup (GTK_MENU (pop_menu1),
                     NULL,
@@ -344,7 +344,7 @@ on_menu_properties_activate            (GtkMenuItem     *menuitem,
   pixmap_file = searchPixmapFile ("e16menuedit2-icon.png");
   gtk_window_set_icon_from_file (GTK_WINDOW (properties_window),
                                  pixmap_file, NULL);
-  g_free (pixmap_file);				 
+  g_free (pixmap_file);
 
   filename_properties = g_strdup_printf ("%s/%s/properties",
                                          homedir (getuid ()), APP_HOME);
@@ -376,7 +376,7 @@ on_properties_close_clicked            (GtkButton       *button,
   GtkTreeIter iter;
   gboolean valid;
   GtkTreeModel* treemodel;
-  GtkWidget *properties_window;  
+  GtkWidget *properties_window;
 
   filename_properties = g_strdup_printf ("%s/%s/properties",
                                          homedir (getuid ()), APP_HOME);
