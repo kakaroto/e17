@@ -235,7 +235,6 @@ struct eyelight_node
 
     //additional fields
     Evas_Object *obj;
-    Eyelight_Area *area;
 };
 
 struct eyelight_compiler
