@@ -99,7 +99,11 @@ static const Eyelight_Thumb* _eyelight_viewer_thumbnails_get(Eyelight_Viewer* pr
     if(!slide->thumb.thumb)
     {
         if (pres->dump_in)
-	  slide->thumb.pos = pos;
+	  {
+	     slide->thumb.pos = pos;
+	     slide->thumb.w = size_w;
+	     slide->thumb.h = size_h;
+	  }
 	else
 	  {
 	     slide->thumb.thumb = _eyelight_viewer_thumbnails_create(pres,pos,size_w,size_h);
@@ -142,6 +146,8 @@ static int* _eyelight_viewer_thumbnails_create(Eyelight_Viewer* pres,int pos,int
     pres_copy->compiler = pres->compiler;
     pres_copy->theme = pres->theme;
     pres_copy->elt_file = pres->elt_file;
+    pres_copy->dump_out = pres->dump_out;
+    pres_copy->dump_in = pres->dump_in;
 
     for(i=0;i<pres_copy->size;i++)
         pres_copy->slides = eina_list_append(pres_copy->slides, eyelight_slide_new(pres_copy));
@@ -241,7 +247,7 @@ static int* _eyelight_viewer_thumbnails_resize(const char *file, int pos, const 
 	 if (ef)
 	   {
 	      bytes = eet_data_image_write(ef, tmp, new_pixel, new_w, new_h, 0, 1, 0, 0);
-	      DBG("Inserting thumb %i", pos);
+	      DBG("Inserting thumb %i (%i, %i)", pos, new_w, new_h);
 
 	      eet_close(ef);
 	   }

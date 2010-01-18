@@ -27,6 +27,7 @@ void eyelight_slide_transitions_get(Eyelight_Viewer* pres,int id_slide, const ch
 
 static void eyelight_node_prepare(Eyelight_Node *root, int *index, const char *path, Evas *e, Eet_File *ef);
 static Eet_Data_Descriptor *eyelight_node_data_descriptor(void);
+static void eyelight_node_parent_set(Eyelight_Node *node, Eyelight_Node *parent);
 
 /*
  * @brief Create a tree from a presentation file
@@ -112,6 +113,42 @@ Eyelight_Compiler* eyelight_elt_load(const char *input_file, const char *dump_ou
     return compiler;
 }
 
+Eyelight_Compiler* eyelight_eye_load(const char *dump_in)
+{
+   Eyelight_Compiler* compiler;
+   Eet_Data_Descriptor *edd;
+   Eet_File *ef;
+
+   if (!dump_in)
+     return NULL;
+
+   ef = eet_open(dump_in, EET_FILE_MODE_READ);
+   if (!ef)
+     return NULL;
+
+   edd = eyelight_node_data_descriptor();
+
+   compiler = calloc(1,sizeof(Eyelight_Compiler));
+   compiler->line = 1;
+   compiler->last_open_block = -1;
+   compiler->root = eet_data_read_cipher(ef, edd, "eyelight/root", NULL);
+   compiler->input_file = strdup(dump_in);
+   compiler->display_areas = 0;
+   compiler->ef = ef;
+
+   eet_data_descriptor_free(edd);
+
+   if (!compiler->root)
+     {
+	free(compiler);
+	eet_close(ef);
+	return NULL;
+     }
+
+   eyelight_node_parent_set(compiler->root, NULL);
+
+   return compiler;
+}
 
 /*
  * @brief create a new compiler
@@ -144,6 +181,9 @@ void eyelight_compiler_free(Eyelight_Compiler **p_compiler)
 
     EYELIGHT_FREE(compiler->input_file);
 
+    if (compiler->ef)
+      eet_close(compiler->ef);
+
     if (compiler->mmap)
       munmap(compiler->mmap, compiler->size);
     if (compiler->input)
@@ -161,6 +201,7 @@ Eyelight_Node *eyelight_node_new(int type,Eyelight_Node_Name name, Eyelight_Node
     node->type = type;
     node->father = father;
     node->name = name;
+    node->do_free = EINA_TRUE;
     if(father)
     {
         father->l = eina_list_append(father->l,node);
@@ -177,7 +218,7 @@ void eyelight_node_free(Eyelight_Node** current, Eyelight_Node *not_free)
     Eyelight_Node* node;
     Eina_List *l;
 
-    if((*current)->type==EYELIGHT_NODE_TYPE_VALUE)
+    if((*current)->type==EYELIGHT_NODE_TYPE_VALUE && (*current)->do_free)
         EYELIGHT_FREE((*current)->value);
 
     EINA_LIST_FOREACH( (*current)->l ,l ,node)
@@ -229,8 +270,10 @@ Eyelight_Node* eyelight_retrieve_node_prop(Eyelight_Node* current, Eyelight_Node
     Eina_List *l;
 
     EINA_LIST_FOREACH(current->l, l, node)
-      if(node->type == EYELIGHT_NODE_TYPE_PROP && node->name == prop)
-	return node;
+      {
+	 if(node->type == EYELIGHT_NODE_TYPE_PROP && node->name == prop)
+	   return node;
+      }
 
     return NULL;
 }
@@ -909,6 +952,28 @@ static void eyelight_node_prepare(Eyelight_Node *root, int *index, const char *p
      }
 }
 
+static void eyelight_node_parent_set(Eyelight_Node *node, Eyelight_Node *parent)
+{
+   Eyelight_Node *child;
+   Eina_List *l;
+
+   if (!node) return ;
+
+   node->father = parent;
+
+   EINA_LIST_FOREACH(node->l, l, child)
+     {
+	switch (node->type)
+	  {
+	   case EYELIGHT_NODE_TYPE_BLOCK:
+	      eyelight_node_parent_set(child, node);
+	      break;
+	   default:
+	      break;
+	  }
+     }
+}
+
 int eyelight_nb_slides_get(Eyelight_Compiler* compiler)
 {
     Eyelight_Node* node;
@@ -933,25 +998,25 @@ void eyelight_slide_transitions_get(Eyelight_Viewer* pres,int id_slide, const ch
     Eyelight_Compiler *compiler = pres->compiler;
     Eina_List *l;
 
-    l = compiler->root->l;
-    while( l && i_slide<id_slide)
-    {
-        node = eina_list_data_get(l);
-        switch(node->type)
-        {
+    EINA_LIST_FOREACH(compiler->root->l, l, node)
+      {
+	 if (!(i_slide < id_slide))
+	   break;
+
+	 switch(node->type)
+	   {
             case EYELIGHT_NODE_TYPE_BLOCK:
-                switch(node->name)
-                {
-                    case EYELIGHT_NAME_SLIDE:
-                        node_slide = node;
-                        i_slide++;
-                        break;
-                }
-                break;
+	       switch(node->name)
+		 {
+		  case EYELIGHT_NAME_SLIDE:
+		     node_slide = node;
+		     i_slide++;
+		     break;
+		 }
+	       break;
             default : break;
-        }
-        l = eina_list_next(l);
-    }
+	   }
+      }
 
     *next = "none";
     *previous = "none";

@@ -143,7 +143,27 @@ int eyelight_viewer_eye_file_set(Eyelight_Viewer *pres, const char *eye)
     if (!eye || !ecore_file_exists(eye))
       return EINA_FALSE;
 
+    eyelight_viewer_clean(pres);
+
+    pres->elt_file = NULL;
     pres->dump_in = strdup(eye);
+    pres -> compiler = eyelight_eye_load(eye);
+    pres->size = eyelight_nb_slides_get(pres->compiler);
+
+    int i;
+    for(i=0; i<pres->size; i++)
+    {
+        pres->slides = eina_list_append(pres->slides, eyelight_slide_new(pres));
+    }
+
+    eyelight_viewer_slide_goto(pres,0);
+
+    eyelight_viewer_thumbnails_background_load_stop(pres);
+    eyelight_viewer_thumbnails_background_load_start(pres);
+
+    DBG("## EYE Presentation file: %s",pres->dump_in);
+    DBG("## Theme: %s",pres->theme);
+    DBG("## Number of slides: %d",pres->size);
 
     return EINA_TRUE;
 }
@@ -362,6 +382,9 @@ void eyelight_viewer_resize(Eyelight_Viewer*pres, Evas_Coord w, Evas_Coord h)
 
     pres->current_size_w = w;
     pres->current_size_h = h;
+
+    pres->thumbnails.default_size_w = pres->current_size_w/4;
+    pres->thumbnails.default_size_h = pres->current_size_h/4;
 
     EINA_LIST_FOREACH(pres->slides, l, slide)
     {

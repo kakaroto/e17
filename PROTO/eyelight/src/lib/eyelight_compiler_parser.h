@@ -235,6 +235,7 @@ struct eyelight_node
 
     //additional fields
     Evas_Object *obj;
+    Eina_Bool do_free: 1;
 };
 
 struct eyelight_compiler
@@ -244,6 +245,8 @@ struct eyelight_compiler
     FILE* input;
     char* mmap;
     size_t size;
+
+    Eet_File *ef;
 
     int display_areas;
     int index;
@@ -283,6 +286,7 @@ struct eyelight_video
 #define EYELIGHT_NODE_TYPE_VALUE 2
 
 Eyelight_Compiler* eyelight_elt_load(const char *input_file, const char *dump_out);
+Eyelight_Compiler* eyelight_eye_load(const char *dump_in);
 
 Eyelight_Node_Name eyelight_name_get(char* p);
 const char *eyelight_string_name_get(Eyelight_Node_Name name);
