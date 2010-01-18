@@ -68,9 +68,72 @@ cdef class ToolbarItem:
             raise ValueError("Object already deleted")
         elm_toolbar_item_del(self.obj)
 
+    def icon_get(self):
+        cdef c_evas.Evas_Object *icon
+        icon = elm_toolbar_item_icon_get(self.obj)
+        return evas.c_evas._Object_from_instance(<long> icon)
+
+    property icon:
+        def __get__(self):
+            return self.icon_get()
+
+    def label_set(self, label):
+        elm_toolbar_item_label_set(self.obj, label)
+
+    def label_get(self):
+        cdef char *l
+        l = elm_toolbar_item_label_get(self.obj)
+        if l == NULL:
+            return None
+        return l
+
+    property label:
+        def __get__(self):
+            return self.label_get()
+
+        def __set__(self, value):
+            self.label_set(value)
+
     def select(self):
         """Select the item"""
         elm_toolbar_item_select(self.obj)
+
+    def disabled_set(self, disabled):
+        elm_toolbar_item_disabled_set(self.obj, disabled)
+
+    def disabled_get(self):
+        return elm_toolbar_item_disabled_get(self.obj)
+
+    property disabled:
+        def __set__(self, disabled):
+            elm_toolbar_item_disabled_set(self.obj, disabled)
+
+        def __get__(self):
+            return elm_toolbar_item_disabled_get(self.obj)
+
+    def separator_set(self, separator):
+        elm_toolbar_item_separator_set(self.obj, separator)
+
+    def separator_get(self):
+        return elm_toolbar_item_separator_get(self.obj)
+
+    property separator:
+        def __set__(self, separator):
+            elm_toolbar_item_separator_set(self.obj, separator)
+
+        def __get__(self):
+            return elm_toolbar_item_separator_get(self.obj)
+
+    def menu_set(self, menu):
+        elm_toolbar_item_menu_set(self.obj, menu)
+
+    def menu_get(self):
+        cdef c_evas.Evas_Object *menu
+        menu = elm_toolbar_item_menu_get(self.obj)
+        if menu == NULL:
+            return None
+        else:
+            Menu(None, <object>menu)
 
 cdef class Toolbar(Object):
     """
@@ -80,6 +143,7 @@ cdef class Toolbar(Object):
         Object.__init__(self, parent.evas)
         self._set_obj(elm_toolbar_add(parent.obj))
 
+
     def scrollable_set(self, scrollable):
         """
         Set the scrollable property
@@ -87,6 +151,51 @@ cdef class Toolbar(Object):
         @parm: L{scrollable}
         """
         elm_toolbar_scrollable_set(self.obj, scrollable)
+
+    property scrollable:
+        def __set__(self, scrollable):
+            elm_toolbar_scrollable_set(self.obj, scrollable)
+
+
+    def menu_parent_set(self, c_evas.Object parent):
+        elm_toolbar_menu_parent_set(self.obj, parent.obj)
+
+    property menu_parent:
+        def __set__(self, c_evas.Object parent):
+            elm_toolbar_menu_parent_set(self.obj, parent.obj)
+
+
+    def homogenous_set(self, homogenous):
+        elm_toolbar_homogenous_set(self.obj, homogenous)
+
+    property homogenous:
+        def __set__(self, homogenous):
+            elm_toolbar_homogenous_set(self.obj, homogenous)
+
+
+    def align_set(self, align):
+        elm_toolbar_align_set(self.obj, align)
+
+    property align:
+        def __set__(self, align):
+            elm_toolbar_align_set(self.obj, align)
+
+
+    def icon_size_set(self, icon_size):
+        elm_toolbar_icon_size_set(self.obj, icon_size)
+
+    def icon_size_get(self, icon_size):
+        return elm_toolbar_icon_size_get(self.obj)
+
+    property icon_size:
+        def __set__(self, icon_size):
+            elm_toolbar_icon_size_set(self.obj, icon_size)
+
+        def __get__(self):
+            return elm_toolbar_icon_size_get(self.obj)
+
+    def item_unselect_all(self):
+        elm_toolbar_item_unselect_all(self.obj)
 
     def item_add(self, c_evas.Object icon, label, callback, *args, **kargs):
         """

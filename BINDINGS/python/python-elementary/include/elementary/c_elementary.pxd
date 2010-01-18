@@ -434,12 +434,29 @@ cdef extern from "Elementary.h":
 
     # Toolbar object
     evas.c_evas.Evas_Object *elm_toolbar_add(evas.c_evas.Evas_Object *parent)
-    Elm_Toolbar_Item *elm_toolbar_item_add(evas.c_evas.Evas_Object *obj, evas.c_evas.Evas_Object *icon, char *label, 
-                    void (*func) (void *data, evas.c_evas.Evas_Object *obj, void *event_info), void *data)
-    void         elm_toolbar_item_del(Elm_Toolbar_Item *item)
-    void         elm_toolbar_item_select(Elm_Toolbar_Item *item)
-    void         elm_toolbar_scrollable_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool scrollable)
-    void         elm_toolbar_item_del_cb_set(Elm_Toolbar_Item *it, void (*func)(void *data, evas.c_evas.Evas_Object *obj, void *event_info))
+    void elm_toolbar_icon_size_set(evas.c_evas.Evas_Object *obj, int icon_size)
+    int elm_toolbar_icon_size_get(evas.c_evas.Evas_Object *obj)
+    Elm_Toolbar_Item *elm_toolbar_item_add(evas.c_evas.Evas_Object *obj,
+                                           evas.c_evas.Evas_Object *icon, char *label,
+                                           void (*func) (void *data, evas.c_evas.Evas_Object *obj, void *event_info), void *data)
+    evas.c_evas.Evas_Object *elm_toolbar_item_icon_get(Elm_Toolbar_Item *item)
+    char *elm_toolbar_item_label_get(Elm_Toolbar_Item *item)
+    void  elm_toolbar_item_label_set(Elm_Toolbar_Item *item, char *label)
+    void  elm_toolbar_item_del(Elm_Toolbar_Item *item)
+    void  elm_toolbar_item_del_cb_set(Elm_Toolbar_Item *it, void (*func)(void *data, evas.c_evas.Evas_Object *obj, void *event_info))
+    void  elm_toolbar_item_select(Elm_Toolbar_Item *item)
+    void  elm_toolbar_scrollable_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool scrollable)
+    evas.c_evas.Eina_Bool elm_toolbar_item_disabled_get(Elm_Toolbar_Item *item)
+    void  elm_toolbar_item_disabled_set(Elm_Toolbar_Item *item, evas.c_evas.Eina_Bool disabled)
+    void  elm_toolbar_item_separator_set(Elm_Toolbar_Item *item, evas.c_evas.Eina_Bool separator)
+    evas.c_evas.Eina_Bool elm_toolbar_item_separator_get(Elm_Toolbar_Item *item)
+    void  elm_toolbar_scrollable_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool scrollable)
+    void  elm_toolbar_homogenous_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool homogenous)
+    void  elm_toolbar_menu_parent_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Evas_Object *parent)
+    void  elm_toolbar_item_unselect_all(evas.c_evas.Evas_Object *obj)
+    void  elm_toolbar_align_set(evas.c_evas.Evas_Object *obj, double align)
+    void  elm_toolbar_item_menu_set(Elm_Toolbar_Item *item, evas.c_evas.Eina_Bool menu)
+    evas.c_evas.Evas_Object *elm_toolbar_item_menu_get(Elm_Toolbar_Item *item)
 
     # List object
     evas.c_evas.Evas_Object *elm_list_add(evas.c_evas.Evas_Object *parent)
