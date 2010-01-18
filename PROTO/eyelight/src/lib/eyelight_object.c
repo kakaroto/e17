@@ -45,7 +45,6 @@ Evas_Object *eyelight_object_area_obj_get(Eyelight_Viewer *pres, Eyelight_Slide 
     return slide->obj;
 }
 
-
 Evas_Object *eyelight_object_title_add(Eyelight_Viewer *pres, Eyelight_Slide *slide, Eyelight_Node *node, const char *default_text)
 {
     char buf[EYELIGHT_BUFLEN];

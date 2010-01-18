@@ -187,18 +187,11 @@ Eyelight_Node* eyelight_retrieve_node_prop(Eyelight_Node* current, Eyelight_Node
     int find = 0;
     Eina_List *l;
 
-    l = current->l;
-    while(!find && l)
-    {
-        node = eina_list_data_get(l);
-        if(node->type == EYELIGHT_NODE_TYPE_PROP && node->name == prop)
-            find = 1;
-        l=eina_list_next(l);
-    }
-    if(!find)
-        return NULL;
-    else
-        return node;
+    EINA_LIST_FOREACH(current->l, l, node)
+      if(node->type == EYELIGHT_NODE_TYPE_PROP && node->name == prop)
+	return node;
+
+    return NULL;
 }
 
 /*
@@ -271,7 +264,6 @@ char *eyelight_compile_image_path_new(Eyelight_Viewer *pres, const char *image)
 {
     if(image[0] == '/')
         return strdup(image);
-
 
     char *path_pres = ecore_file_dir_get(pres->elt_file);
     char *path_image = calloc(strlen(path_pres)+1+strlen(image)+1,sizeof(char));
