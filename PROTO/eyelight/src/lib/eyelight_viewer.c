@@ -159,7 +159,7 @@ int eyelight_viewer_dump_file_set(Eyelight_Viewer *pres, const char *dump)
     if (pres->theme)
       {
 	 int res = ecore_file_cp(pres->theme, pres->dump_out);
-	 fprintf(stderr, "CP file: %i\n", res);
+	 DBG("Inserting theme file [%s]", pres->theme);
       }
 
     return EINA_TRUE;

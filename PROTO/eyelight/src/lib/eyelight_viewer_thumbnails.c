@@ -241,6 +241,7 @@ static int* _eyelight_viewer_thumbnails_resize(const char *file, int pos, const 
 	 if (ef)
 	   {
 	      bytes = eet_data_image_write(ef, tmp, new_pixel, new_w, new_h, 0, 1, 0, 0);
+	      DBG("Inserting thumb %i", pos);
 
 	      eet_close(ef);
 	   }

@@ -101,6 +101,8 @@ Eyelight_Compiler* eyelight_elt_load(const char *input_file, const char *dump_ou
 	    eet_data_write_cipher(ef, edd, "eyelight/root", NULL, compiler->root, 1);
 	    eet_data_descriptor_free(edd);
 
+	    DBG("Inserting eyelight/root");
+
 	    eet_close(ef);
 
 	    EYELIGHT_FREE(path);
@@ -867,7 +869,7 @@ static void eyelight_node_rewrite(Eyelight_Node *l, int index, const char *path,
 
    evas_object_del(im);
 
-   fprintf(stderr, "Rewriting [%s] => [%s]\n", tmp, new_name);
+   DBG("Inserting [%s] for [%s]", new_name, tmp);
 
    EYELIGHT_FREE(l->value);
    l->value = new_name;
