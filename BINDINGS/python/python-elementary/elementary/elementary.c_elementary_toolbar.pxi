@@ -31,11 +31,11 @@ cdef class ToolbarItem:
     """
     A item for the toolbar
     """
-    cdef Elm_Toolbar_Item *item
+    cdef Elm_Toolbar_Item *obj
     cdef object cbt
 
     def __del_cb(self):
-        self.item = NULL
+        self.obj = NULL
         self.cbt = None
         Py_DECREF(self)
 
@@ -57,20 +57,20 @@ cdef class ToolbarItem:
 
         self.cbt = (toolbar, callback, self, args, kargs)
         cbdata = <void*>self.cbt
-        self.item = elm_toolbar_item_add(toolbar.obj, ic, label, cb, cbdata)
+        self.obj = elm_toolbar_item_add(toolbar.obj, ic, label, cb, cbdata)
 
         Py_INCREF(self)
-        elm_toolbar_item_del_cb_set(self.item, _toolbar_item_del_cb)
+        elm_toolbar_item_del_cb_set(self.obj, _toolbar_item_del_cb)
 
     def delete(self):
         """Delete the item"""
-        if self.item == NULL:
+        if self.obj == NULL:
             raise ValueError("Object already deleted")
-        elm_toolbar_item_del(self.item)
+        elm_toolbar_item_del(self.obj)
 
     def select(self):
         """Select the item"""
-        elm_toolbar_item_select(self.item)
+        elm_toolbar_item_select(self.obj)
 
 cdef class Toolbar(Object):
     """
@@ -86,10 +86,7 @@ cdef class Toolbar(Object):
 
         @parm: L{scrollable}
         """
-        if scrollable:
-            elm_toolbar_scrollable_set(self.obj, 1)
-        else:
-            elm_toolbar_scrollable_set(self.obj, 0)
+        elm_toolbar_scrollable_set(self.obj, scrollable)
 
     def item_add(self, c_evas.Object icon, label, callback, *args, **kargs):
         """

@@ -33,7 +33,7 @@ def _anchorblock_conv(long addr):
     ab = AnchorBlockInfo()
     ab.name = ei.name
     ab.button = ei.button
-    ab.hover = Hover(None, <object>ei.hover);
+    ab.hover = Hover(None, <object>ei.hover)
     ab.anchor = (ei.anchor.x, ei.anchor.y, ei.anchor.w, ei.anchor.h)
     ab.hover_parent = (ei.hover_parent.x, ei.hover_parent.y,
                        ei.hover_parent.w, ei.hover_parent.h)

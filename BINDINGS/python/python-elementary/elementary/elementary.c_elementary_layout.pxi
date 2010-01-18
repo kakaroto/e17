@@ -40,4 +40,4 @@ cdef class Layout(Object):
         return evas.c_evas._Object_from_instance(<long> obj)
 
     def sizing_eval(self):
-        elm_layout_sizing_eval(self.obj);
+        elm_layout_sizing_eval(self.obj)

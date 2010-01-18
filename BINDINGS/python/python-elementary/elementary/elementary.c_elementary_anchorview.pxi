@@ -33,7 +33,7 @@ def _anchorview_conv(long addr):
     av = AnchorViewInfo()
     av.name = ei.name
     av.button = ei.button
-    av.hover = Hover(None, <object>ei.hover);
+    av.hover = Hover(None, <object>ei.hover)
     av.anchor = (ei.anchor.x, ei.anchor.y, ei.anchor.w, ei.anchor.h)
     av.hover_parent = (ei.hover_parent.x, ei.hover_parent.y,
                        ei.hover_parent.w, ei.hover_parent.h)
