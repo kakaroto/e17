@@ -35,6 +35,7 @@ if __name__ == "__main__":
 
     files = sys.argv[1:]
     if files:
+        count = 0
         for file in files:
             try:
                 sf = SwapFile()
@@ -46,6 +47,9 @@ if __name__ == "__main__":
 
             editje = Editje(sf)
             editje.show()
+            count += 1
+        if not count:
+            exit(1)
     else:
         OpenFile().show()
 

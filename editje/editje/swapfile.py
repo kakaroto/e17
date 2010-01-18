@@ -19,6 +19,9 @@
 from os import system, remove, path, getcwd, chdir, listdir
 from shutil import copyfile, move, rmtree
 from tempfile import mkstemp, mkdtemp
+from subprocess import Popen, PIPE
+import re
+import filecmp
 
 import sysconfig
 
@@ -34,7 +37,7 @@ class SwapFile(object):
         self.__compiled_file = False
         self.__opened = False
 
-    def open(self, mode=None):
+    def open(self, mode=REPLACE):
         if self.__new:
             self.__swapfile = mkstemp(".swp", "editje_")[1]
             if not self.__filepath:
@@ -46,13 +49,14 @@ class SwapFile(object):
             return
 
         if not self.__filepath:
-            raise Exception("No file")
+            raise FileNotSet(self)
 
         if path.exists(self.__swapfile):
-            if mode == RESTORE:
+            if mode == RESTORE or filecmp.cmp(self.__filepath, self.__swapfile):
+                self.__opened = True
                 return
             elif mode != REPLACE:
-                raise Exception("Cache exists")
+                raise CacheAlreadyExists(self)
 
         self.__swap_create()
         self.__opened = True
@@ -63,7 +67,7 @@ class SwapFile(object):
         elif self.__filepath.endswith(".edc"):
             self.__compiled_file = False
         else:
-            raise Exception("Unknown format")
+            raise UnknownFileType(self)
 
     def __swap_update(self):
         dir, file = path.split(self.__filepath)
@@ -73,14 +77,12 @@ class SwapFile(object):
         if self.__compiled_file:
             copyfile(self.__filepath, self.__swapfile)
         else:
-            orig_dir = getcwd()
             dir, file = path.split(self.__filepath)
-            chdir(dir)
-            system('edje_cc ' + file + ' ' + self.__swapfile);
-            chdir(orig_dir)
+            compiler = Popen(('edje_cc', file, self.__swapfile), cwd=dir, bufsize=-1, stderr=PIPE);
+            err = compiler.communicate()[1]
             if not (path.exists(self.__swapfile) and
                     path.isfile(self.__swapfile)):
-                raise Exception("Compiler Error")
+                raise CompileError(self, re.sub('\x1b.*?m', '', err))
 
     def save(self, filepath=None, mode=None):
         if not self.__opened:
@@ -88,14 +90,14 @@ class SwapFile(object):
 
         if filepath:
             if path.exists(self.__swapfile) and mode != REPLACE:
-                raise Exception("File exists")
+                raise FileAlreadyExists(self)
             self.__filepath = filepath
             self.__file_check()
             swap = self.__swapfile
             self.__swap_update()
             move(swap, self.__swapfile)
         elif self.__new:
-            raise Exception("Filename not defined")
+            raise FileNotSet(self)
 
         if self.__compiled_file:
             copyfile(self.__swapfile, self.__filepath)
@@ -133,7 +135,7 @@ class SwapFile(object):
             return
 
         if not (path.exists(filepath) and path.isfile(filepath)):
-            raise Exception("File not found")
+            raise FileNotFound(self)
 
         self.__filepath = filepath
 
@@ -158,3 +160,35 @@ class SwapFile(object):
         return self.__new
 
     new = property(_new_get, _new_set)
+
+
+class SwapFileError(Exception):
+    def __init__(self, swapfile):
+        self.swapfile = swapfile
+
+class FileNotSet(SwapFileError):
+    def __str__(self):
+        return "File not set."
+
+class UnknownFileType(SwapFileError):
+    def __str__(self):
+        return "Unknown File type."
+
+class CacheAlreadyExists(SwapFileError):
+    def __str__(self):
+        return self.swapfile.file + " : Swap file (" + self.swapfile.workfile + ") exists."
+
+class CompileError(SwapFileError):
+    def __init__(self, swapfile, message):
+        SwapFileError.__init__(self, swapfile)
+        self.message = message
+    def __str__(self):
+        return self.swapfile.file + " : Compile Error\n" + self.message
+
+class FileAlreadyExists(SwapFileError):
+    def __str__(self):
+        return self.swapfile.file + " : File exists."
+
+class FileNotFound(SwapFileError):
+    def __str__(self):
+        return self.swapfile.file + " : File not found."

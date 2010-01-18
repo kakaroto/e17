@@ -87,12 +87,12 @@ class OpenFile(elementary.Window):
     path = property(fset=_path_set)
 
     def _open(self, bt):
-        if not self._filter(self._fs.file):
-            self._notify("Invalid file")
+        try:
+            self._swapfile.file = self._fs.file
+            self._swapfile.open()
+        except Exception as e:
+            self._notify(str(e))
             return
-
-        self._swapfile.file = self._fs.file
-        self._swapfile.open()
 
         editje = Editje(self._swapfile)
         editje.show()
