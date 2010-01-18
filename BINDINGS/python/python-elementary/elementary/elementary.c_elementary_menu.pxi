@@ -165,9 +165,12 @@ cdef class MenuItemSeparator:
 
 
 cdef class Menu(Object):
-    def __init__(self, c_evas.Object parent):
-        Object.__init__(self, parent.evas)
-        self._set_obj(elm_menu_add(parent.obj))
+    def __init__(self, c_evas.Object parent, obj = None):
+        if obj is None:
+            Object.__init__(self, parent.evas)
+            self._set_obj(elm_menu_add(parent.obj))
+        else:
+            self._set_obj(<c_evas.Evas_Object*>obj)
 
     def parent_set(self, c_evas.Object parent):
         elm_menu_parent_set(self.obj, parent.obj)
