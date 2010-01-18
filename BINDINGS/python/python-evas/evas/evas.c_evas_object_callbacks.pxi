@@ -86,6 +86,20 @@ cdef void cb_mouse_move(void *data, Evas *e,
     event._unset_obj()
 
 
+cdef void cb_multi_down(void *data, Evas *e,
+                        Evas_Object *obj, void *e_inf) with gil:
+    print "Not implemented"
+
+cdef void cb_multi_up(void *data, Evas *e,
+                      Evas_Object *obj, void *e_inf) with gil:
+    print "Not implemented"
+
+
+cdef void cb_multi_move(void *data, Evas *e,
+                        Evas_Object *obj, void *e_inf) with gil:
+    print "Not implemented"
+
+
 cdef void cb_mouse_wheel(void *data, Evas *e,
                          Evas_Object *obj, void *e_inf) with gil:
     cdef EventMouseWheel event
@@ -177,13 +191,16 @@ cdef void cb_image_preloaded(void *data, Evas *e,
 
 cdef int evas_event_callbacks_len
 cdef evas_event_callback_t evas_event_callbacks[20]
-evas_event_callbacks_len = 20
+evas_event_callbacks_len = 23
 evas_event_callbacks[<int>EVAS_CALLBACK_MOUSE_IN] = cb_mouse_in
 evas_event_callbacks[<int>EVAS_CALLBACK_MOUSE_OUT] = cb_mouse_out
 evas_event_callbacks[<int>EVAS_CALLBACK_MOUSE_DOWN] = cb_mouse_down
 evas_event_callbacks[<int>EVAS_CALLBACK_MOUSE_UP] = cb_mouse_up
 evas_event_callbacks[<int>EVAS_CALLBACK_MOUSE_MOVE] = cb_mouse_move
 evas_event_callbacks[<int>EVAS_CALLBACK_MOUSE_WHEEL] = cb_mouse_wheel
+evas_event_callbacks[<int>EVAS_CALLBACK_MULTI_DOWN] = cb_multi_down
+evas_event_callbacks[<int>EVAS_CALLBACK_MULTI_UP] = cb_multi_up
+evas_event_callbacks[<int>EVAS_CALLBACK_MULTI_MOVE] = cb_multi_move
 evas_event_callbacks[<int>EVAS_CALLBACK_FREE] = cb_free
 evas_event_callbacks[<int>EVAS_CALLBACK_KEY_DOWN] = cb_key_down
 evas_event_callbacks[<int>EVAS_CALLBACK_KEY_UP] = cb_key_up
