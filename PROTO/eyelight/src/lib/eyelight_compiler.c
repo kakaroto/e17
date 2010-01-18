@@ -174,10 +174,12 @@ Eyelight_Compiler* eyelight_compiler_new(const char* input_file, int display_are
  */
 void eyelight_compiler_free(Eyelight_Compiler **p_compiler)
 {
-    Eyelight_Compiler* compiler = *p_compiler;
+    Eyelight_Compiler* compiler;
     char* str;
 
     if(!p_compiler || !(*p_compiler)) return ;
+
+    compiler = *p_compiler;
 
     EYELIGHT_FREE(compiler->input_file);
 
@@ -188,6 +190,8 @@ void eyelight_compiler_free(Eyelight_Compiler **p_compiler)
       munmap(compiler->mmap, compiler->size);
     if (compiler->input)
       fclose(compiler->input);
+
+    eyelight_node_free(&(compiler->root), NULL);
 
     EYELIGHT_FREE(compiler);
 }

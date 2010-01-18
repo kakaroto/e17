@@ -145,8 +145,9 @@ int eyelight_viewer_eye_file_set(Eyelight_Viewer *pres, const char *eye)
 
     eyelight_viewer_clean(pres);
 
-    pres->elt_file = NULL;
+    EYELIGHT_FREE(pres->elt_file);
     pres->dump_in = strdup(eye);
+
     pres -> compiler = eyelight_eye_load(eye);
     pres->size = eyelight_nb_slides_get(pres->compiler);
 
