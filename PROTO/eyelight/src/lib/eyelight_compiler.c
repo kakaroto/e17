@@ -26,6 +26,7 @@ int eyelight_nb_slides_get(Eyelight_Compiler* compiler);
 void eyelight_slide_transitions_get(Eyelight_Viewer* pres,int id_slide, const char** previous, const char** next);
 
 static void eyelight_node_prepare(Eyelight_Node *root, int *index, const char *path, Evas *e, Eet_File *ef);
+static Eet_Data_Descriptor *eyelight_node_data_descriptor(void);
 
 /*
  * @brief Create a tree from a presentation file
@@ -70,6 +71,7 @@ Eyelight_Compiler* eyelight_elt_load(const char *input_file, const char *dump_ou
 
        if (dump_out)
 	 {
+	    Eet_Data_Descriptor *edd;
 	    Ecore_Evas *ee;
 	    Eet_File *ef;
 	    Evas *e;
@@ -94,6 +96,10 @@ Eyelight_Compiler* eyelight_elt_load(const char *input_file, const char *dump_ou
 	    eyelight_node_prepare(compiler->root, &compiler->index, path, e, ef);
 
 	    ecore_evas_free(ee);
+
+	    edd = eyelight_node_data_descriptor();
+	    eet_data_write_cipher(ef, edd, "eyelight/root", NULL, compiler->root, 1);
+	    eet_data_descriptor_free(edd);
 
 	    eet_close(ef);
 
@@ -1185,4 +1191,21 @@ void eyelight_theme_area_desc_get(Eyelight_Slide *slide, const char* area_name,
     }
     else
         WARN("The description (rel1, rel2 ...) of the area \"%s\" is not found", area_name);
+}
+
+static Eet_Data_Descriptor *
+eyelight_node_data_descriptor(void)
+{
+   Eet_Data_Descriptor *enode;
+   Eet_Data_Descriptor_Class eddc;
+
+   EET_EINA_FILE_DATA_DESCRIPTOR_CLASS_SET(&eddc, Eyelight_Node);
+   enode = eet_data_descriptor_file_new(&eddc);
+
+   EET_DATA_DESCRIPTOR_ADD_BASIC(enode, Eyelight_Node, "type", type, EET_T_INT);
+   EET_DATA_DESCRIPTOR_ADD_BASIC(enode, Eyelight_Node, "name", name, EET_T_INT);
+   EET_DATA_DESCRIPTOR_ADD_BASIC(enode, Eyelight_Node, "value", value, EET_T_STRING);
+   EET_DATA_DESCRIPTOR_ADD_LIST(enode, Eyelight_Node, "l", l, enode);
+
+   return enode;
 }
