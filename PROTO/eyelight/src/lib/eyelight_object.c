@@ -165,7 +165,7 @@ Evas_Object *eyelight_object_header_image_add(Eyelight_Viewer *pres, Eyelight_Sl
                     edje_object_load_error_get(o_header_image));
         const Evas_Object *part_image = edje_object_part_object_get(o_header_image, "object.header_image");
         char *image_path = eyelight_compile_image_path_new(pres,header_image);
-        evas_object_image_file_set((Evas_Object*)part_image, image_path, NULL);
+        evas_object_image_file_set((Evas_Object*)part_image, image_path, pres->dump_in || pres->dump_out ? header_image : NULL);
         EYELIGHT_FREE(image_path);
         evas_object_size_hint_align_set(o_header_image, -1, -1);
         evas_object_size_hint_weight_set(o_header_image, -1, -1);
@@ -267,7 +267,7 @@ Evas_Object *eyelight_object_foot_image_add(Eyelight_Viewer *pres, Eyelight_Slid
                     edje_object_load_error_get(o_foot_image));
         const Evas_Object *part_image = edje_object_part_object_get(o_foot_image, "object.foot_image");
         char *image_path = eyelight_compile_image_path_new(pres,foot_image);
-        evas_object_image_file_set((Evas_Object*)part_image, image_path, NULL);
+        evas_object_image_file_set((Evas_Object*)part_image, image_path, pres->dump_in || pres->dump_out ? foot_image : NULL);
         EYELIGHT_FREE(image_path);
         evas_object_size_hint_align_set(o_foot_image, -1, -1);
         evas_object_size_hint_weight_set(o_foot_image, -1, -1);
@@ -377,7 +377,7 @@ Evas_Object *eyelight_object_item_image_add(Eyelight_Viewer *pres, Eyelight_Slid
                 edje_object_load_error_get(o_image));
     const Evas_Object *part_image = edje_object_part_object_get(o_image, "object.image");
     char *image_path = eyelight_compile_image_path_new(pres,image);
-    evas_object_image_file_set((Evas_Object*)part_image, image_path, NULL);
+    evas_object_image_file_set((Evas_Object*)part_image, image_path, pres->dump_in || pres->dump_out ? image : NULL);
     evas_object_size_hint_align_set(o_image, -1, -1);
     evas_object_size_hint_weight_set(o_image, -1, -1);
     edje_object_scale_set(o_image, pres->current_scale);
@@ -395,7 +395,7 @@ Evas_Object *eyelight_object_item_image_add(Eyelight_Viewer *pres, Eyelight_Slid
     {
         Evas_Coord w, h;
         Evas_Object *o = evas_object_image_add(evas_object_evas_get(o_area));
-        evas_object_image_file_set(o, image_path, NULL);
+        evas_object_image_file_set(o, image_path,  pres->dump_in || pres->dump_out ? image : NULL);
         evas_object_image_size_get(o, &w, &h);
         evas_object_del(o);
         aspect_x = w/(float)h;

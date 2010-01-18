@@ -84,7 +84,7 @@ int eyelight_viewer_presentation_file_set(Eyelight_Viewer *pres, const char* pre
     else
         pres->elt_file = NULL;
 
-    pres -> compiler = eyelight_elt_load(pres->elt_file);
+    pres -> compiler = eyelight_elt_load(pres->elt_file, pres->dump_out);
     pres->size = eyelight_nb_slides_get(pres->compiler);
 
     int i;
@@ -117,7 +117,7 @@ int eyelight_viewer_new_presentation_file_set(Eyelight_Viewer *pres, const char*
     else
         pres->elt_file = NULL;
 
-    pres -> compiler = eyelight_elt_load(pres->elt_file);
+    pres -> compiler = eyelight_elt_load(pres->elt_file, pres->dump_out);
     pres->size = eyelight_nb_slides_get(pres->compiler);
 
     int i;

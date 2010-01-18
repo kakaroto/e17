@@ -247,6 +247,7 @@ struct eyelight_compiler
     size_t size;
 
     int display_areas;
+    int index;
 
     //the line number, use to display a message
     int line;
@@ -282,13 +283,13 @@ struct eyelight_video
 #define EYELIGHT_NODE_TYPE_PROP 1
 #define EYELIGHT_NODE_TYPE_VALUE 2
 
-Eyelight_Compiler* eyelight_elt_load(char *input_file);
+Eyelight_Compiler* eyelight_elt_load(const char *input_file, const char *dump_out);
 
 Eyelight_Node_Name eyelight_name_get(char* p);
 const char *eyelight_string_name_get(Eyelight_Node_Name name);
 int eyelight_save(Eyelight_Node *root, const char *file);
 
-Eyelight_Compiler* eyelight_compiler_new(char* input_file, int display_areas);
+Eyelight_Compiler* eyelight_compiler_new(const char* input_file, int display_areas);
 void eyelight_compiler_free(Eyelight_Compiler **p_compiler);
 Eyelight_Node *eyelight_node_new(int type,Eyelight_Node_Name name, Eyelight_Node* father);
 void eyelight_node_free(Eyelight_Node** current, Eyelight_Node *not_free);

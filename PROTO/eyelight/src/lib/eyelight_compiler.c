@@ -25,11 +25,12 @@ int eyelight_nb_slides_get(Eyelight_Compiler* compiler);
 
 void eyelight_slide_transitions_get(Eyelight_Viewer* pres,int id_slide, const char** previous, const char** next);
 
+static void eyelight_node_prepare(Eyelight_Node *root, int *index, const char *path, Evas *e, Eet_File *ef);
 
 /*
  * @brief Create a tree from a presentation file
  */
-Eyelight_Compiler* eyelight_elt_load(char *input_file)
+Eyelight_Compiler* eyelight_elt_load(const char *input_file, const char *dump_out)
 {
     FILE* output;
     char* end;
@@ -66,6 +67,38 @@ Eyelight_Compiler* eyelight_elt_load(char *input_file)
        compiler->size = file_stat.st_size;
 
        eyelight_parse(compiler, compiler->mmap, compiler->mmap + compiler->size);
+
+       if (dump_out)
+	 {
+	    Ecore_Evas *ee;
+	    Eet_File *ef;
+	    Evas *e;
+	    char *path = ecore_file_dir_get(input_file);
+
+	    ef = eet_open(dump_out, EET_FILE_MODE_READ_WRITE);
+	    if (!ef)
+	      {
+		 ERR("Can't create output file for dumping presentation.\n");
+		 exit(EXIT_FAILURE);
+	      }
+
+	    ee = ecore_evas_buffer_new(1, 1);
+	    if (!ee)
+	      {
+		 ERR("Can't create buffer surface for dumping presentation.\n");
+		 exit(EXIT_FAILURE);
+	      }
+
+	    e = ecore_evas_get(ee);
+
+	    eyelight_node_prepare(compiler->root, &compiler->index, path, e, ef);
+
+	    ecore_evas_free(ee);
+
+	    eet_close(ef);
+
+	    EYELIGHT_FREE(path);
+	 }
     }
 
     return compiler;
@@ -75,7 +108,7 @@ Eyelight_Compiler* eyelight_elt_load(char *input_file)
 /*
  * @brief create a new compiler
  */
-Eyelight_Compiler* eyelight_compiler_new(char* input_file, int display_areas)
+Eyelight_Compiler* eyelight_compiler_new(const char* input_file, int display_areas)
 {
     Eyelight_Compiler* compiler;
 
@@ -262,6 +295,10 @@ Eyelight_Area *eyelight_retrieve_area_from_node(Eyelight_Slide *slide, Eyelight_
  */
 char *eyelight_compile_image_path_new(Eyelight_Viewer *pres, const char *image)
 {
+    if (pres->dump_in)
+        return strdup(pres->dump_in);
+    if (pres->dump_out)
+        return strdup(pres->dump_out);
     if(image[0] == '/')
         return strdup(image);
 
@@ -773,6 +810,95 @@ void eyelight_compile(Eyelight_Viewer *pres, Eyelight_Slide *slide, int id_slide
             default_header_image,
             default_foot_text, default_foot_image
             );
+}
+
+static void eyelight_node_rewrite(Eyelight_Node *l, int index, const char *path, Evas *evas, Eet_File *ef)
+{
+   Evas_Object *im;
+   void *data;
+   char *tmp;
+   char *new_name;
+   int load_err;
+   int w;
+   int h;
+   int alpha;
+   int bytes;
+
+   if (strlen(l->value) == 0)
+     return ;
+
+   tmp = alloca(strlen(path) + strlen(l->value) + 2);
+   sprintf(tmp, "%s/%s", path, l->value);
+
+   im = evas_object_image_add(evas);
+   evas_object_image_file_set(im, tmp, NULL);
+   load_err = evas_object_image_load_error_get(im);
+   if (load_err != EVAS_LOAD_ERROR_NONE)
+     {
+	ERR("Impossible to load file to include in pres: %s\n", tmp);
+	exit(EXIT_FAILURE);
+     }
+
+   evas_object_image_size_get(im, &w, &h);
+   alpha = evas_object_image_alpha_get(im);
+   data = evas_object_image_data_get(im, 0);
+
+   if (!data)
+     {
+	ERR("Impossible to get pixels data for: %s\n", tmp);
+	exit(EXIT_FAILURE);
+     }
+
+   new_name = malloc(27);
+   snprintf(new_name, 27, "eyelight/images/%i", index);
+
+   bytes = eet_data_image_write(ef, new_name, data, w, h, alpha, 1, 0, 0);
+   if (bytes <= 0)
+     {
+	ERR("Impossible to put pixels data in section %s of %p from %s\n", new_name, ef, tmp);
+	exit(EXIT_FAILURE);
+     }
+
+   evas_object_del(im);
+
+   fprintf(stderr, "Rewriting [%s] => [%s]\n", tmp, new_name);
+
+   EYELIGHT_FREE(l->value);
+   l->value = new_name;
+}
+
+static void eyelight_node_prepare(Eyelight_Node *root, int *index, const char *path, Evas *e, Eet_File *ef)
+{
+   Eyelight_Node *node;
+   Eyelight_Node *n;
+   Eina_List *l;
+
+   if (!root) return ;
+
+   EINA_LIST_FOREACH(root->l, l, node)
+     {
+	switch (node->type)
+	  {
+	   case EYELIGHT_NODE_TYPE_PROP:
+	      switch (node->name)
+		{
+		 case EYELIGHT_NAME_FOOT_IMAGE:
+		 case EYELIGHT_NAME_HEADER_IMAGE:
+		 case EYELIGHT_NAME_IMAGE:
+		    n = eina_list_data_get(node->l);
+		    eyelight_node_rewrite(n, *index++, path, e, ef);
+		    break;
+		 default:
+		    break;
+		}
+	      break;
+	   case EYELIGHT_NODE_TYPE_BLOCK:
+	      eyelight_node_prepare(node, index, path, e, ef);
+	      break;
+	   default:
+	      break;
+	  }
+     }
 }
 
 int eyelight_nb_slides_get(Eyelight_Compiler* compiler)
