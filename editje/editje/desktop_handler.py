@@ -27,7 +27,6 @@ class Handler(edje.Edje):
         self._parent = parent
         edje.Edje.__init__(self, parent.evas, file=parent.theme, group=group)
         self.on_mouse_down_add(self.__mouse_down_cb)
-        self.on_mouse_up_add(self.__mouse_up_cb)
         self._move_animator = None
 
     @evas.decorators.del_callback
@@ -43,6 +42,7 @@ class Handler(edje.Edje):
         self._last = self._start
         self._move_animator = ecore.animator_add(self.__move_animator_do)
         self.down(*event.position.output)
+        self.on_mouse_up_add(self.__mouse_up_cb)
 
     def __move_animator_do(self):
         cur = self.evas.pointer_output_xy_get()
@@ -59,6 +59,7 @@ class Handler(edje.Edje):
         return True
 
     def __mouse_up_cb(self, obj, event):
+        self.on_mouse_up_del(self.__mouse_up_cb)
         sx, sy, sw, sh = self._parent.parent_view.region_get()
         dw = event.position.output[0] - self._start[0]
         dw += sx - self._start_region[0]
@@ -70,5 +71,6 @@ class Handler(edje.Edje):
 
         del self._start
         del self._last
-        self._move_animator.delete()
-        self._move_animator = None
+        if self._move_animator:
+            self._move_animator.delete()
+            self._move_animator = None
