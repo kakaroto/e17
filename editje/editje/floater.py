@@ -83,6 +83,7 @@ class Wizard(InnerWindow):
         InnerWindow.__init__(self, parent)
 
         self._parent = parent
+        self.__actions_list = {}
 
         self.__layout = Layout(parent)
         self.__theme_file = sysconfig.theme_file_get("default")
@@ -156,8 +157,13 @@ class Wizard(InnerWindow):
                 btn.icon_set(ico)
                 ico.show()
 
+            self.__actions_list[label] = btn
+
             btn.show()
             actions.pack_end(btn)
+
+    def action_disabled_set(self, label, disabled):
+        self.__actions_list[label].disabled_set(disabled)
 
     def goto(self, page):
         page = self.__pages.get(page)

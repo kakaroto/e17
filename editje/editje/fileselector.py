@@ -22,9 +22,12 @@ import os
 import evas
 import elementary
 
-class FileSelector(elementary.Table):
+from event_manager import Manager
+
+class FileSelector(Manager, elementary.Table):
 
     def __init__(self, parent):
+        Manager.__init__(self)
         self._parent = parent
         elementary.Table.__init__(self, parent)
         self.size_hint_align_set(evas.EVAS_HINT_FILL,
@@ -45,6 +48,7 @@ class FileSelector(elementary.Table):
         self._file = ""
         self.path = os.getenv("PWD")
         self.multi = False
+        self.__actions_list = {}
 
     def _navigator_init(self):
         bx = elementary.Box(self._parent)
@@ -131,6 +135,8 @@ class FileSelector(elementary.Table):
                                         evas.EVAS_HINT_FILL)
         self._files.size_hint_weight_set(evas.EVAS_HINT_EXPAND,
                                          evas.EVAS_HINT_EXPAND)
+        self._files.callback_selected_add(self._file_selected)
+        self._files.callback_unselected_add(self._file_unselected)
         bx.pack_end(self._files)
         self._files.show()
 
@@ -197,6 +203,7 @@ class FileSelector(elementary.Table):
 
     def _update(self, obj):
         self._files.clear()
+        self.event_emit("file.selection_clear", None)
         self._directories.clear()
 
         hidden = self._hidden.state_get()
@@ -231,6 +238,14 @@ class FileSelector(elementary.Table):
 
     def _path_change(self, en):
         self.path = self._nav_path.entry_get()
+
+    def _file_selected(self, li, it):
+        self.event_emit("file.selected", it.data_get()[0][0])
+
+    def _file_unselected(self, li, it):
+        self.event_emit("file.unselected", it.data_get()[0][0])
+        if not self._files.selected_items_get():
+            self.event_emit("file.selection_clear", None)
 
     # PATH
     def _path_set(self, path):
@@ -304,9 +319,13 @@ class FileSelector(elementary.Table):
             btn.icon_set(ico)
             ico.show()
 
+        self.__actions_list[label] = btn
+
         btn.show()
         self._actions.pack_end(btn)
 
+    def action_disabled_set(self, label, disabled):
+        self.__actions_list[label].disabled_set(disabled)
 
 if __name__ == "__main__":
     elementary.init()

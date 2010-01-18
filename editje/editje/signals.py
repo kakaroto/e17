@@ -114,9 +114,14 @@ class NewSignalPopUp(Wizard):
 
         self.action_add("default", "Cancel", self._cancel, icon="cancel")
         self.action_add("default", "Add", self._add, icon="confirm")
+        self.action_disabled_set("Add", True)
         self.goto("default")
+        self._name.callback_changed_add(self._name_changed_cb)
 
         self._name.focus()
+
+        self._type = None
+
 
     def _name_init(self):
         bx2 = elementary.Box(self)
@@ -164,7 +169,7 @@ class NewSignalPopUp(Wizard):
         ico.size_hint_aspect_set(evas.EVAS_ASPECT_CONTROL_VERTICAL, 1, 1)
         ico.show()
         list.item_append("Animation", ico, None, self._type_select,
-                         edje.EDJE_ACTION_TYPE_NONE).selected_set(True)
+                         edje.EDJE_ACTION_TYPE_NONE)
         ico = elementary.Icon(self)
         ico.file_set(theme_file, "editje/icon/signal")
         ico.size_hint_aspect_set(evas.EVAS_ASPECT_CONTROL_VERTICAL, 1, 1)
@@ -179,8 +184,19 @@ class NewSignalPopUp(Wizard):
         self.content_append("default", list)
         list.show()
 
+    def _name_changed_cb(self, obj):
+        self._check_name_and_type()
+
     def _type_select(self, l, it, action, *args, **kwargs):
         self._type = action
+        self._check_name_and_type()
+
+    def _check_name_and_type(self):
+        name = self._name.entry_get()
+        if self._type != None and name != "" and name != "<br>":
+            self.action_disabled_set("Add", False)
+        else:
+            self.action_disabled_set("Add", True)
 
     def _add(self, popup, data):
         name = self._name.entry_get().replace("<br>", "")

@@ -64,10 +64,19 @@ class OpenFile(elementary.Window):
         self._fs.action_add("New", self._new)
         self._fs.action_add("Cancel", self._cancel)
         self._fs.action_add("Ok", self._open)
+        self._fs.action_disabled_set("Ok", True)
+        self._fs.callback_add("file.selected", self._file_selected)
+        self._fs.callback_add("file.selection_clear", self._file_unselected)
         self._fs.show()
         self._pager.content_push(self._fs)
 
         self.resize(600, 480)
+
+    def _file_selected(self, obj, data):
+        self._fs.action_disabled_set("Ok", False)
+
+    def _file_unselected(self, obj, data):
+        self._fs.action_disabled_set("Ok", True)
 
     def _filter(self, file):
         return file.endswith(".edc") or file.endswith(".edj")
@@ -78,10 +87,6 @@ class OpenFile(elementary.Window):
     path = property(fset=_path_set)
 
     def _open(self, bt):
-        if not self._fs.file:
-            self._notify("Select file")
-            return
-
         if not self._filter(self._fs.file):
             self._notify("Invalid file")
             return

@@ -40,6 +40,7 @@ class NewAnimationPopUp(Wizard):
 
         self.action_add("default", "Cancel", self._cancel, icon="cancel")
         self.action_add("default", "Add", self._add, icon="confirm")
+        self.action_disabled_set("Add", True)
         self.goto("default")
 
         self._name.focus()
@@ -72,6 +73,7 @@ class NewAnimationPopUp(Wizard):
         self._name.size_hint_weight_set(evas.EVAS_HINT_EXPAND, 0.0)
         self._name.size_hint_align_set(evas.EVAS_HINT_FILL, 0.5)
         self._name.callback_activated_add(self._name_activated_cb)
+        self._name.callback_changed_add(self._name_changed_cb)
         self._name.entry_set("")
         self._name.context_menu_disabled_set(True)
         self._name.show()
@@ -82,11 +84,15 @@ class NewAnimationPopUp(Wizard):
     def _name_activated_cb(self, obj):
         self._add(None, None)
 
+    def _name_changed_cb(self, obj):
+        name = self._name.entry_get()
+        if name != "" and name != "<br>":
+            self.action_disabled_set("Add", False)
+        else:
+            self.action_disabled_set("Add", True)
+
     def _add(self, popup, data):
         name = self._name.entry_get().replace("<br>", "")
-        if name == "":
-            self._notify("Please set part name")
-            return
 
         success = self._parent.e.animation_add(name)
         if success:

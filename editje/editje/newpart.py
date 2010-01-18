@@ -35,12 +35,15 @@ class NewPart(Wizard):
 
         self.action_add("default", "Cancel", self._cancel, icon="cancel")
         self.action_add("default", "Add", self._add, icon="confirm")
+        self.action_disabled_set("Add", True)
+
         self.goto("default")
         edje.message_signal_process()
         self._name_changed = False
         self._name.callback_changed_add(self._name_changed_cb)
 
         self._name.focus()
+        self._type = None
 
     def _name_init(self):
         bx2 = elementary.Box(self)
@@ -82,6 +85,7 @@ class NewPart(Wizard):
 
     def _name_changed_cb(self, obj):
         self._name_changed = True
+        self._check_name_and_type()
 
     def _types_init(self):
         list = elementary.List(self)
@@ -120,6 +124,14 @@ class NewPart(Wizard):
         else:
             self._external_selector_toggle(False)
             self._default_name_set(it.label_get())
+        self._check_name_and_type()
+
+    def _check_name_and_type(self):
+        name = self._name.entry_get()
+        if self._type != None and name != "" and name != "<br>":
+            self.action_disabled_set("Add", False)
+        else:
+            self.action_disabled_set("Add", True)
 
     def _default_name_set(self, name):
         if self._name_changed:
@@ -140,9 +152,6 @@ class NewPart(Wizard):
 
     def _add(self, popup, data):
         name = self._name.entry_get().replace("<br>", "")
-        if name == "":
-            self._notify("Please set part name")
-            return
 
         success = self._parent.e.part_add(name, self._type,
                                           self.external.type, signal=False)
