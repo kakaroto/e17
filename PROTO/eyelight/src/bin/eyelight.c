@@ -501,13 +501,13 @@ int main(int argc, char*argv[])
     evas_font_cache_set(evas, 512 * 1024);
 
     eyelight_smart = eyelight_object_add(evas);
+    evas_object_resize(eyelight_smart, sizew, sizeh);
     eyelight_object_theme_file_set(eyelight_smart, theme);
     eyelight_object_dump_file_set(eyelight_smart, dump_out);
     eyelight_object_presentation_file_set(eyelight_smart, presentation);
     eyelight_object_border_set(eyelight_smart, with_border);
     eyelight_object_eye_file_set(eyelight_smart, dump_in);
     evas_object_move(eyelight_smart,0,0);
-    evas_object_resize(eyelight_smart, sizew, sizeh);
     evas_object_show(eyelight_smart);
 
     container= evas_object_rectangle_add(evas);

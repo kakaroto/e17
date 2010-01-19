@@ -384,7 +384,6 @@ Evas_Object *eyelight_object_item_image_add(Eyelight_Viewer *pres, Eyelight_Slid
     evas_object_show(o_image);
     edje_object_part_box_append(o_area,buf,o_image);
 
-
     if(border)
         edje_object_signal_emit(o_image, "border,show","eyelight");
     if(shadow)

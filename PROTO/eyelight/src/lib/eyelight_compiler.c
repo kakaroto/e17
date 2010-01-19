@@ -25,14 +25,14 @@ int eyelight_nb_slides_get(Eyelight_Compiler* compiler);
 
 void eyelight_slide_transitions_get(Eyelight_Viewer* pres,int id_slide, const char** previous, const char** next);
 
-static void eyelight_node_prepare(Eyelight_Node *root, int *index, const char *path, Evas *e, Eet_File *ef);
+static void eyelight_node_prepare(Eyelight_Node *root, int *index, const char *path, Evas *e, Eet_File *ef, int presw, int presh);
 static Eet_Data_Descriptor *eyelight_node_data_descriptor(void);
 static void eyelight_node_parent_set(Eyelight_Node *node, Eyelight_Node *parent);
 
 /*
  * @brief Create a tree from a presentation file
  */
-Eyelight_Compiler* eyelight_elt_load(const char *input_file, const char *dump_out)
+Eyelight_Compiler* eyelight_elt_load(const char *input_file, const char *dump_out, int presw, int presh)
 {
     FILE* output;
     char* end;
@@ -94,7 +94,7 @@ Eyelight_Compiler* eyelight_elt_load(const char *input_file, const char *dump_ou
 
 	    e = ecore_evas_get(ee);
 
-	    eyelight_node_prepare(compiler->root, &compiler->index, path, e, ef);
+	    eyelight_node_prepare(compiler->root, &compiler->index, path, e, ef, presw, presh);
 
 	    ecore_evas_free(ee);
 
@@ -867,7 +867,7 @@ void eyelight_compile(Eyelight_Viewer *pres, Eyelight_Slide *slide, int id_slide
             );
 }
 
-static void eyelight_node_rewrite(Eyelight_Node *l, int index, const char *path, Evas *evas, Eet_File *ef)
+static void eyelight_node_rewrite(Eyelight_Node *l, int index, const char *path, Evas *evas, Eet_File *ef, int presw, int presh)
 {
    Evas_Object *im;
    void *data;
@@ -895,6 +895,12 @@ static void eyelight_node_rewrite(Eyelight_Node *l, int index, const char *path,
      }
 
    evas_object_image_size_get(im, &w, &h);
+   if (w <= 1 && h <= 1)
+     {
+	evas_object_image_load_size_set(im, presw, presh);
+	evas_object_image_size_get(im, &w, &h);
+     }
+
    alpha = evas_object_image_alpha_get(im);
    data = evas_object_image_data_get(im, 0);
 
@@ -922,7 +928,7 @@ static void eyelight_node_rewrite(Eyelight_Node *l, int index, const char *path,
    l->value = new_name;
 }
 
-static void eyelight_node_prepare(Eyelight_Node *root, int *index, const char *path, Evas *e, Eet_File *ef)
+static void eyelight_node_prepare(Eyelight_Node *root, int *index, const char *path, Evas *e, Eet_File *ef, int presw, int presh)
 {
    Eyelight_Node *node;
    Eyelight_Node *n;
@@ -941,14 +947,14 @@ static void eyelight_node_prepare(Eyelight_Node *root, int *index, const char *p
 		 case EYELIGHT_NAME_HEADER_IMAGE:
 		 case EYELIGHT_NAME_IMAGE:
 		    n = eina_list_data_get(node->l);
-		    eyelight_node_rewrite(n, *index++, path, e, ef);
+		    eyelight_node_rewrite(n, (*index)++, path, e, ef, presw, presh);
 		    break;
 		 default:
 		    break;
 		}
 	      break;
 	   case EYELIGHT_NODE_TYPE_BLOCK:
-	      eyelight_node_prepare(node, index, path, e, ef);
+	      eyelight_node_prepare(node, index, path, e, ef, presw, presh);
 	      break;
 	   default:
 	      break;

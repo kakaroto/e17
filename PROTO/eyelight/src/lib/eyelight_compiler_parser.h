@@ -285,7 +285,7 @@ struct eyelight_video
 #define EYELIGHT_NODE_TYPE_PROP 1
 #define EYELIGHT_NODE_TYPE_VALUE 2
 
-Eyelight_Compiler* eyelight_elt_load(const char *input_file, const char *dump_out);
+Eyelight_Compiler* eyelight_elt_load(const char *input_file, const char *dump_out, int presw, int presh);
 Eyelight_Compiler* eyelight_eye_load(const char *dump_in);
 
 Eyelight_Node_Name eyelight_name_get(char* p);
