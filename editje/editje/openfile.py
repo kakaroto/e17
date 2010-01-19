@@ -164,8 +164,6 @@ class OpenFile(elementary.Window):
 
         self._notification = ErrorNotify(self)
 
-        self._notification.title = "Title"
-
         if isinstance(err, swapfile.CacheAlreadyExists):
             self._notification.title = "Swap file already exists"
             lb = elementary.Label(self._notification)

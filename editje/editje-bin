@@ -25,7 +25,7 @@ import elementary
 
 from editje.editje import Editje
 from editje.openfile import OpenFile
-from editje.swapfile import SwapFile
+import editje.swapfile as swapfile
 
 if __name__ == "__main__":
     elementary.init()
@@ -38,11 +38,34 @@ if __name__ == "__main__":
         count = 0
         for file in files:
             try:
-                sf = SwapFile()
+                sf = swapfile.SwapFile()
                 sf.file = os.path.realpath(file)
                 sf.open()
+            except swapfile.CacheAlreadyExists as e:
+                print "\033[1mSwap file to", file, "already exists\033[0m"
+                print "Another program may be editing the same file."
+                print "Or an edit session for this file crashed."
+                opt = None
+                while opt != "i" and opt != "r" and opt != "a":
+                    opt = None
+                    while not opt:
+                        opt = raw_input("(I)gnore swap, (R)ecovery or (A)bort? ")
+                    opt = opt[0].lower()
+                if opt == "i":
+                    sf.open(swapfile.REPLACE)
+                elif opt == "r":
+                    sf.open(swapfile.RESTORE)
+                elif opt == "a":
+                    continue
+            except swapfile.CompileError as e:
+                print "\033[1mCompiler Error:", file, "\033[0m"
+                print e.message
+                raw_input("(press enter)")
+                continue
             except Exception as e:
-                print "Error with file", file, ":", e
+                print "\033[1mError with file:", file, "\033[0m"
+                print e
+                raw_input("(press enter)")
                 continue
 
             editje = Editje(sf)
