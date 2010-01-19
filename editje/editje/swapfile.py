@@ -37,7 +37,7 @@ class SwapFile(object):
         self.__compiled_file = False
         self.__opened = False
 
-    def open(self, mode=REPLACE):
+    def open(self, mode=None):
         if self.__new:
             self.__swapfile = mkstemp(".swp", "editje_")[1]
             if not self.__filepath:

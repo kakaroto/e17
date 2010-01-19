@@ -2,6 +2,7 @@ MAINTAINERCLEANFILES = Makefile.in sysconfig.py
 
 # ls -1 *.py | sed -e 's/\(.*\)/\1 \\/g'
 pkgpython_PYTHON = \
+actions_box.py \
 animations_list.py \
 animations.py \
 clist.py \
@@ -33,6 +34,7 @@ editable_program.py \
 editable.py \
 editable_state.py \
 editje.py \
+error_notify.py \
 event_manager.py \
 fileselector.py \
 floater.py \

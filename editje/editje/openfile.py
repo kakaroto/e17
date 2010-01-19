@@ -29,8 +29,9 @@ from editje import Editje
 from fileselector import FileSelector
 from popups import NewFilePopUp
 from popups import ConfirmPopUp
-from swapfile import SwapFile
+import swapfile
 import sysconfig
+from error_notify import ErrorNotify
 
 class OpenFile(elementary.Window):
     def __init__(self, theme="default"):
@@ -43,7 +44,7 @@ class OpenFile(elementary.Window):
         self.autodel_set(True)
 
         self._notification = None
-        self._swapfile = SwapFile()
+        self._swapfile = swapfile.SwapFile()
 
         bg = elementary.Background(self)
         self.resize_object_add(bg)
@@ -86,17 +87,23 @@ class OpenFile(elementary.Window):
 
     path = property(fset=_path_set)
 
-    def _open(self, bt):
+    def _open(self, bt, mode=None):
         try:
             self._swapfile.file = self._fs.file
-            self._swapfile.open()
+            self._swapfile.open(mode)
         except Exception as e:
-            self._notify(str(e))
+            self._notify_err(e)
             return
 
         editje = Editje(self._swapfile)
         editje.show()
         self._cancel(bt)
+
+    def _open_forced(self, bt, data):
+        self._open(bt, swapfile.REPLACE)
+
+    def _open_recovery(self, bt, data):
+        self._open(bt, swapfile.RESTORE)
 
     def list_files_on_diretory(self):
         path = os.getenv("PWD")
@@ -149,7 +156,43 @@ class OpenFile(elementary.Window):
 
         self._notification.show()
 
+    def _notify_err(self, err):
+        if self._notification:
+            self._notification.hide()
+            self._notification.delete()
+            self._notification = None
 
+        self._notification = ErrorNotify(self)
+
+        self._notification.title = "Title"
+
+        if isinstance(err, swapfile.CacheAlreadyExists):
+            self._notification.title = "Swap file already exists"
+            lb = elementary.Label(self._notification)
+            lb.label_set("Another program may be editing the same file.<br>" +
+                         "Or an edit session for this file crashed.")
+            self._notification.pack_end(lb)
+            lb.show()
+            self._notification.action_add("Ignore Swap", self._open_forced)
+            self._notification.action_add("Recovery", self._open_recovery)
+            self._notification.action_add("Abort", self._notify_abort)
+        elif isinstance(err, swapfile.CompileError):
+            self._notification.title = "Compiler Error"
+            lb = elementary.Label(self._notification)
+            lb.label_set(string.replace(str(err.message), '\n', '<br>'))
+            self._notification.pack_end(lb)
+            lb.show()
+            self._notification.action_add("Ok", self._notify_abort)
+        else:
+            self._notification.title = string.replace(str(err), ':', '<br>')
+            self._notification.action_add("Ok", self._notify_abort)
+
+        self._notification.show()
+
+    def _notify_abort(self, bt, data):
+        self._notification.hide()
+        self._notification.delete()
+        self._notification = None
 
     def _templates_load(self):
         tb = elementary.Table(self)
