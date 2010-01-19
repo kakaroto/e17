@@ -5,7 +5,7 @@
 /* metadata */
 #define FNAME image_blend_solid_border_start
 #define NAME "Image Blend Solid Border"
-#define ICON "flower.png"
+#define ICON "blend.png"
 
 #ifndef PROTO
 # ifndef UI

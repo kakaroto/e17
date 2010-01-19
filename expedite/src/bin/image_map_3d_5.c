@@ -5,7 +5,7 @@
 /* metadata */
 #define FNAME image_map_3d_5_start
 #define NAME "Image Map 3D 5"
-#define ICON "pulse.png"
+#define ICON "3d.png"
 
 #ifndef PROTO
 # ifndef UI

@@ -5,7 +5,7 @@
 /* metadata */
 #define FNAME widgets_file_icons_2_start
 #define NAME "Widgets File Icons 2"
-#define ICON "flower.png"
+#define ICON "widgets.png"
 
 #ifndef PROTO
 # ifndef UI

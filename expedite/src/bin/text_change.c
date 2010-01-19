@@ -5,7 +5,7 @@
 /* metadata */
 #define FNAME text_change_start
 #define NAME "Text Change"
-#define ICON "mushroom.png"
+#define ICON "text.png"
 
 #ifndef PROTO
 # ifndef UI

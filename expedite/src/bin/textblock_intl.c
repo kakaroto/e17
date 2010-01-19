@@ -5,7 +5,7 @@
 /* metadata */
 #define FNAME textblock_intl_start
 #define NAME "Textblock Intl"
-#define ICON "mushroom.png"
+#define ICON "text.png"
 
 #ifndef PROTO
 # ifndef UI

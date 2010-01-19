@@ -5,7 +5,7 @@
 /* metadata */
 #define FNAME image_crossfade_start
 #define NAME "Image Crossfade"
-#define ICON "mushroom.png"
+#define ICON "blend.png"
 
 #ifndef PROTO
 # ifndef UI

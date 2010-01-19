@@ -5,7 +5,7 @@
 /* metadata */
 #define FNAME image_map_3d_4_start
 #define NAME "Image Map 3D 4"
-#define ICON "bug.png"
+#define ICON "3d.png"
 
 #ifndef PROTO
 # ifndef UI

@@ -5,7 +5,7 @@
 /* metadata */
 #define FNAME image_data_argb_alpha_start
 #define NAME "Image Data ARGB Alpha"
-#define ICON "mushroom.png"
+#define ICON "data.png"
 
 #ifndef PROTO
 # ifndef UI

@@ -5,7 +5,7 @@
 /* metadata */
 #define FNAME image_quality_scale_start
 #define NAME "Image Quality Scale"
-#define ICON "mushroom.png"
+#define ICON "data.png"
 
 #ifndef PROTO
 # ifndef UI

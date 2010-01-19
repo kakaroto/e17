@@ -5,7 +5,7 @@
 /* metadata */
 #define FNAME image_blend_smooth_scaled_start
 #define NAME "Image Blend Smooth Scaled"
-#define ICON "flower.png"
+#define ICON "blend.png"
 
 #ifndef PROTO
 # ifndef UI

@@ -5,7 +5,7 @@
 /* metadata */
 #define FNAME image_map_color_nearest_solid_rotate_start
 #define NAME "Image Map Color Nearest Solid Rotate"
-#define ICON "mushroom.png"
+#define ICON "map.png"
 
 #ifndef PROTO
 # ifndef UI

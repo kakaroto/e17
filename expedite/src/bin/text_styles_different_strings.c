@@ -5,7 +5,7 @@
 /* metadata */
 #define FNAME text_styles_different_strings_start
 #define NAME "Text Styles Different Strings"
-#define ICON "mushroom.png"
+#define ICON "text.png"
 
 #ifndef PROTO
 # ifndef UI

@@ -5,7 +5,7 @@
 /* metadata */
 #define FNAME image_data_ycbcr601pl_wide_stride_start
 #define NAME "Image Data YCbCr 601 Pointer List Wide Stride"
-#define ICON "mushroom.png"
+#define ICON "data.png"
 
 #ifndef PROTO
 # ifndef UI

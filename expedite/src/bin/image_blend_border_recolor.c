@@ -5,7 +5,7 @@
 /* metadata */
 #define FNAME image_blend_border_recolor_start
 #define NAME "Image Blend Border Recolor"
-#define ICON "flower.png"
+#define ICON "blend.png"
 
 #ifndef PROTO
 # ifndef UI

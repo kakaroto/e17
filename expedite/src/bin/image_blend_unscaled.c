@@ -5,7 +5,7 @@
 /* metadata */
 #define FNAME image_blend_unscaled_start
 #define NAME "Image Blend Unscaled"
-#define ICON "flower.png"
+#define ICON "blend.png"
 
 #ifndef PROTO
 # ifndef UI

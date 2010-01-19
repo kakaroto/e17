@@ -45,6 +45,14 @@ cube2.png \
 cube3.png \
 cube4.png \
 cube5.png \
-cube6.png
+cube6.png \
+text.png \
+rect.png \
+blend.png \
+map.png \
+3d.png \
+data.png \
+widgets.png
+
 
 EXTRA_DIST = $(files_DATA)

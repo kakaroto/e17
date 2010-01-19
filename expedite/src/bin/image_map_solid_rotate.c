@@ -5,7 +5,7 @@
 /* metadata */
 #define FNAME image_map_solid_rotate_start
 #define NAME "Image Map Solid Rotate"
-#define ICON "mushroom.png"
+#define ICON "map.png"
 
 #ifndef PROTO
 # ifndef UI

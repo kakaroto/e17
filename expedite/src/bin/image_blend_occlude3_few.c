@@ -5,7 +5,7 @@
 /* metadata */
 #define FNAME image_blend_occlude3_few_start
 #define NAME "Image Blend Occlude 3 Few"
-#define ICON "flower.png"
+#define ICON "blend.png"
 
 #ifndef PROTO
 # ifndef UI

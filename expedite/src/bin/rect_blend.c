@@ -5,7 +5,7 @@
 /* metadata */
 #define FNAME rect_blend_start
 #define NAME "Rect Blend"
-#define ICON "flower.png"
+#define ICON "rect.png"
 
 #ifndef PROTO
 # ifndef UI

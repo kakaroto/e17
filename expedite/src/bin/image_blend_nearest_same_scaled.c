@@ -5,7 +5,7 @@
 /* metadata */
 #define FNAME image_blend_nearest_same_scaled_start
 #define NAME "Image Blend Nearest Same Scaled"
-#define ICON "flower.png"
+#define ICON "blend.png"
 
 #ifndef PROTO
 # ifndef UI

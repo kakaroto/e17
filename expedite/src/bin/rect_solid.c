@@ -5,7 +5,7 @@
 /* metadata */
 #define FNAME rect_solid_start
 #define NAME "Rect Solid"
-#define ICON "flower.png"
+#define ICON "rect.png"
 
 #ifndef PROTO
 # ifndef UI

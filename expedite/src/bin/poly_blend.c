@@ -5,7 +5,7 @@
 /* metadata */
 #define FNAME poly_blend_start
 #define NAME "Polygon Blend"
-#define ICON "flower.png"
+#define ICON "rect.png"
 
 #ifndef PROTO
 # ifndef UI

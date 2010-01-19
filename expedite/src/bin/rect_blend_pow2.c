@@ -5,7 +5,7 @@
 /* metadata */
 #define FNAME rect_blend_pow2_start
 #define NAME "Rect Blend Power 2"
-#define ICON "flower.png"
+#define ICON "rect.png"
 
 #ifndef PROTO
 # ifndef UI

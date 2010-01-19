@@ -5,7 +5,7 @@
 /* metadata */
 #define FNAME text_basic_start
 #define NAME "Text Basic"
-#define ICON "mushroom.png"
+#define ICON "text.png"
 
 #ifndef PROTO
 # ifndef UI
