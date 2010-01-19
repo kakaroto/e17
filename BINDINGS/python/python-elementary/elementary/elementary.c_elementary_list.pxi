@@ -377,3 +377,6 @@ cdef class List(Object):
 
     def callback_longpressed_del(self, func):
         self._callback_del_full("longpressed", _list_item_conv, func)
+
+    def scroller_policy_set(self, policy_h, policy_v):
+        elm_list_scroller_policy_set(self.obj, policy_h, policy_v)

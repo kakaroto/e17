@@ -488,6 +488,7 @@ cdef extern from "Elementary.h":
     Elm_List_Item *elm_list_item_prev(Elm_List_Item *it)
     Elm_List_Item *elm_list_item_next(Elm_List_Item *it)
     void elm_list_bounce_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool h_bounce, evas.c_evas.Eina_Bool v_bounce)
+    void 	elm_list_scroller_policy_set(evas.c_evas.Evas_Object *obj, Elm_Scroller_Policy policy_h, Elm_Scroller_Policy policy_v)
 
 
     # Carousel object
