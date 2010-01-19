@@ -277,6 +277,12 @@ engine_software_16_wince_args(int argc, char **argv)
 
  destroy_window:
    DestroyWindow(window);
+   ShowWindow(task_bar, SW_SHOW);
+   EnableWindow(task_bar, TRUE);
+   ShowWindow(sip_icon, SW_SHOW);
+   EnableWindow(sip_icon, TRUE);
+   ShowWindow(sip_icon, SW_SHOW);
+   EnableWindow(sip_icon, TRUE);
  unregister_class:
    UnregisterClass(L"Evas_Software_16_WinCE_Test", instance);
  free_library:
