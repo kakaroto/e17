@@ -29,7 +29,6 @@ elm_main(int argc, char **argv)
           ecore_x_window_prop_window_list_get(roots[i], 
                                               ECORE_X_ATOM_E_ILLUME_ZONE_LIST, 
                                               &zones);
-        printf("Count: %d\n", count);
         if (!zones) continue;
         for (x = 0; x < count; x++) 
           {
@@ -45,6 +44,7 @@ elm_main(int argc, char **argv)
              elm_win_title_set(win, "Illume Softkey Window");
              evas_object_smart_callback_add(win, "delete-request", 
                                             _cb_win_del, NULL);
+             evas_object_data_set(win, "zone", (const void *)zones[x]);
 
              xwin = elm_win_xwindow_get(win);
              ecore_x_icccm_hints_set(xwin, 0, 0, 0, 0, 0, 0, 0);
@@ -130,7 +130,7 @@ _cb_btn_close_clicked(void *data, Evas_Object *obj, void *event)
    Evas_Object *win;
    Ecore_X_Window xwin;
 
-   win = data;
+   if (!(win = data)) return;
    xwin = elm_win_xwindow_get(win);
    ecore_x_e_illume_close_send(xwin);
 }
@@ -139,11 +139,11 @@ static void
 _cb_btn_back_clicked(void *data, Evas_Object *obj, void *event) 
 {
    Evas_Object *win;
-   Ecore_X_Window xwin;
+   Ecore_X_Window zone;
 
-   win = data;
-   xwin = elm_win_xwindow_get(win);
-   ecore_x_e_illume_back_send(xwin);
+   if (!(win = data)) return;
+   zone = (Ecore_X_Window)evas_object_data_get(win, "zone");
+   ecore_x_e_illume_back_send(zone);
 }
 
 #endif
