@@ -237,8 +237,8 @@ engine_software_16_wince_args(int argc, char **argv)
    ShowWindow(task_bar, SW_HIDE);
    EnableWindow(task_bar, FALSE);
    sip_window = FindWindow(L"SipWndClass", NULL);
-   ShowWindow(sip_icon, SW_HIDE);
-   EnableWindow(sip_icon, FALSE);
+   ShowWindow(sip_window, SW_HIDE);
+   EnableWindow(sip_window, FALSE);
    sip_icon = FindWindow(L"MS_SIPBUTTON", NULL);
    ShowWindow(sip_icon, SW_HIDE);
    EnableWindow(sip_icon, FALSE);
@@ -279,8 +279,8 @@ engine_software_16_wince_args(int argc, char **argv)
    DestroyWindow(window);
    ShowWindow(task_bar, SW_SHOW);
    EnableWindow(task_bar, TRUE);
-   ShowWindow(sip_icon, SW_SHOW);
-   EnableWindow(sip_icon, TRUE);
+   ShowWindow(sip_window, SW_SHOW);
+   EnableWindow(sip_window, TRUE);
    ShowWindow(sip_icon, SW_SHOW);
    EnableWindow(sip_icon, TRUE);
  unregister_class:
@@ -311,7 +311,23 @@ engine_software_16_wince_loop(void)
 void
 engine_software_16_wince_shutdown(void)
 {
+   HWND task_bar;
+   HWND sip_window;
+   HWND sip_icon;
+
    DestroyWindow(window);
+
+   /* show top level windows (Task bar, SIP and SIP button */
+   task_bar = FindWindow(L"HHTaskBar", NULL);
+   ShowWindow(task_bar, SW_SHOW);
+   EnableWindow(task_bar, TRUE);
+   sip_window = FindWindow(L"SipWndClass", NULL);
+   ShowWindow(sip_window, SW_SHOW);
+   EnableWindow(sip_window, TRUE);
+   sip_icon = FindWindow(L"MS_SIPBUTTON", NULL);
+   ShowWindow(sip_icon, SW_SHOW);
+   EnableWindow(sip_icon, TRUE);
+
    UnregisterClass(L"Evas_Software_16_WinCE_Test", instance);
    FreeLibrary(instance);
 }
