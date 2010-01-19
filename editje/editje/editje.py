@@ -171,7 +171,7 @@ class Editje(elementary.Window):
 
         self._toolbar_bt_init(self.main_edje, "open.bt", "Open", self._open_cb)
         self._toolbar_bt_init(self.main_edje, "save.bt", "Save", self._save_cb)
-        self._toolbar_bt_init(self.main_edje, "swap.bt", "Swap", self._swap_cb)
+        self._toolbar_bt_init(self.main_edje, "group.bt", "Groups", self._group_cb)
 
         self._toolbar_bt_init(self.main_edje, "run.bt", "Run", self._run_cb)
 
@@ -188,7 +188,7 @@ class Editje(elementary.Window):
     def _toolbar_group_cb(self, emissor, data):
         self._group_name_entry.entry_set(data)
 
-    def _swap_cb(self, obj, emission, source):
+    def _group_cb(self, obj, emission, source):
         gc = GroupChange(self)
         self.resize_object_add(gc)
         gc.file = self.e.workfile

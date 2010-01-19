@@ -20,7 +20,7 @@ import edje
 import elementary
 
 from clist import CList
-import animations
+import popups
 
 
 class AnimationsList(CList):
@@ -85,7 +85,7 @@ class AnimationsList(CList):
         self._options = False
 
     def _new_cb(self, obj, emission, source):
-        animations.NewAnimationPopUp(self._parent).open()
+        popups.NewAnimationNamePopUp(self._parent).open()
 
     def _remove_cb(self, obj, emission, source):
         for i in self.selected:

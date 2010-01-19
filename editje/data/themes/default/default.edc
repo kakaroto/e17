@@ -195,7 +195,7 @@ collections {
          TOOLBAR_BT_MAIN("save.bt", "ico_save.png")
 
          part {
-            name: "swap.bt";
+            name: "group.bt";
             type: RECT;
             mouse_events: 1;
             description {
@@ -217,7 +217,7 @@ collections {
                }
             }
          }
-         TOOLBAR_BT_MAIN("swap.bt", "ico_swap.png")
+         TOOLBAR_BT_MAIN("group.bt", "ico_group.png")
 
          part {
             name: "run.bt";
@@ -229,13 +229,13 @@ collections {
                align: 0.0 0.5;
                aspect: 1.5 1.0;
                rel1 {
-                  to_x: "swap.bt";
+                  to_x: "group.bt";
                   to_y: "toolbar";
                   relative: 1.0 0.1;
 		  offset: 0 0;
                }
                rel2 {
-                  to_x: "swap.bt";
+                  to_x: "group.bt";
                   to_y: "toolbar";
                   relative: 1.0 0.9;
                   offset: 0 -1;

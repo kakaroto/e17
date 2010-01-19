@@ -20,6 +20,7 @@
 import evas
 import edje
 import elementary
+import popups
 
 class GroupChange(elementary.InnerWindow):
     def __init__(self, parent, cancel=True):
@@ -32,6 +33,7 @@ class GroupChange(elementary.InnerWindow):
         self._notification = None
 
         self._gs = GroupSelector(self)
+        self._gs.action_add("New", self._new)
         self._cancel_enabled = cancel
         if cancel:
             self._gs.action_add("Cancel", self._cancel)
@@ -65,6 +67,9 @@ class GroupChange(elementary.InnerWindow):
         if self._gs.group:
             self._parent.group = self._gs.group
             self.close()
+
+    def _new(self, bt):
+        None
 
     def _cancel(self, bt):
         self.close()
@@ -208,7 +213,7 @@ if __name__ == "__main__":
 
     fs = GroupSelector(win)
     win.resize_object_add(fs)
-    fs.file = "./test/sample2.edj"
+#    fs.file = "./test/sample2.edj"
     fs.action_add("Ok", None)
     fs.action_add("Cancel", None)
     fs.show()
