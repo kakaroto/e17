@@ -22,23 +22,21 @@ import edje
 import elementary
 import popups
 
-class GroupChange(elementary.InnerWindow):
+from floater import Wizard
+
+class GroupChange(Wizard):
     def __init__(self, parent, cancel=True):
+        Wizard.__init__(self, parent, "Open Edje")
+        self.page_add("default")
+
         self._parent = parent
-        elementary.InnerWindow.__init__(self, parent)
-        self.title_set("Open Edje")
-        self.autodel_set(True)
-        self.resize(600, 480)
-
-        self._notification = None
-
         self._gs = GroupSelector(self)
         self._gs.action_add("New", self._new)
         self._cancel_enabled = cancel
         if cancel:
             self._gs.action_add("Cancel", self._cancel)
         self._gs.action_add("Ok", self._ok)
-        self.content_set(self._gs)
+        self.content_append("default", self._gs)
         self._gs.show()
 
     def _file_set(self, file):
@@ -68,11 +66,65 @@ class GroupChange(elementary.InnerWindow):
             self._parent.group = self._gs.group
             self.close()
 
-    def _new(self, bt):
-        None
-
     def _cancel(self, bt):
         self.close()
+
+    def _new(self, bt):
+        self.page_add("new group")
+        self.style_set("minimal")
+        self._new_group_init()
+        self.action_add("new group", "Cancel", self._back, icon="cancel")
+        self.action_add("new group", "Add", self._add, icon="confirm")
+
+    def _new_group_init(self):
+        bx = elementary.Box(self)
+        bx.horizontal_set(True)
+        bx.size_hint_weight_set(evas.EVAS_HINT_EXPAND, 0.0)
+        bx.size_hint_align_set(evas.EVAS_HINT_FILL, evas.EVAS_HINT_FILL)
+        self.content_append("new group", bx)
+        bx.show()
+
+        lb = elementary.Label(self)
+        lb.label_set("Name:")
+        bx.pack_end(lb)
+        lb.show()
+
+        src = elementary.Scroller(self)
+        src.size_hint_weight_set(evas.EVAS_HINT_EXPAND, evas.EVAS_HINT_EXPAND)
+        src.size_hint_align_set(evas.EVAS_HINT_FILL, evas.EVAS_HINT_FILL)
+        src.content_min_limit(False, True)
+        src.policy_set(elementary.ELM_SCROLLER_POLICY_OFF,
+                elementary.ELM_SCROLLER_POLICY_OFF)
+        src.bounce_set(False, False)
+        bx.pack_end(src)
+
+        self._name = elementary.Entry(self)
+        self._name.single_line_set(True)
+        self._name.size_hint_weight_set(evas.EVAS_HINT_EXPAND, 0.0)
+        self._name.size_hint_align_set(evas.EVAS_HINT_FILL, 0.0)
+        self._name.context_menu_disabled_set(True)
+        self._name.show()
+
+        self._name_changed = False
+
+        src.content_set(self._name)
+        src.show()
+
+    def _add(self, popup, data):
+        name = self._name.entry_get().replace("<br>", "")
+
+        success = self._parent.e._edje.group_add(name)
+
+        if success:
+            self.goto("default")
+            self.style_set("normal")
+            self._gs.group_update()
+        else:
+            self._notify("Choose another name")
+
+    def _back(self, popup, data):
+        self.goto("default")
+        self.style_set("normal")
 
 
 class GroupSelector(elementary.Table):
@@ -150,6 +202,11 @@ class GroupSelector(elementary.Table):
     def _group_select(self, li, it, group):
         self._group = group
         self._preview.file_set(self.file, self._group)
+
+    def group_update(self):
+        self._groups_list = edje.file_collection_list(self._file)
+        if self._groups_list:
+            self._update(self)
 
     def _file_set(self, file):
         self._groups_list = edje.file_collection_list(file)
