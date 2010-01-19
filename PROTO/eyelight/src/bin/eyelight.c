@@ -102,8 +102,19 @@ static const Eyelight_Key keys[] = {
     { "Stop", EYELIGHT_QUIT },
     { "Prior", EYELIGHT_WINDOW_PREVIOUS },
     { "Next", EYELIGHT_WINDOW_NEXT },
+    { "FP/Up", EYELIGHT_UP },
+    { "RC/Up", EYELIGHT_UP },
+    { "RCL/Up", EYELIGHT_UP },
+    { "GP/Up", EYELIGHT_UP },
     { "Up", EYELIGHT_UP },
+    { "FP/Down", EYELIGHT_DOWN },
+    { "RC/Down", EYELIGHT_DOWN },
+    { "RCL/Down", EYELIGHT_DOWN },
+    { "GP/Down", EYELIGHT_DOWN },
     { "Down", EYELIGHT_DOWN },
+    { "RC/Ok", EYELIGHT_SELECT },
+    { "FP/Ok", EYELIGHT_SELECT },
+    { "KP_Enter", EYELIGHT_SELECT },
     { "Return", EYELIGHT_SELECT },
     { "h", EYELIGHT_HELP },
     { "H", EYELIGHT_HELP },
@@ -154,11 +165,23 @@ display_help(Evas *e)
     is_help = 1;
 }
 
+static unsigned int timestamp = 0;
+
+void time_cb(void *data, Evas *e, Evas_Object *obj, void *event_info)
+{
+    Evas_Event_Key_Up *event = (Evas_Event_Key_Up*) event_info;
+
+    timestamp = event->timestamp;
+}
+
 void slide_cb(void *data, Evas *e, Evas_Object *obj, void *event_info)
 {
     Evas_Event_Key_Down* event = (Evas_Event_Key_Down*) event_info;
     Eyelight_Event_Action action = EYELIGHT_NONE;
     unsigned int i;
+
+    if (event->timestamp == timestamp)
+      return ;
 
     for (i = 0; i < sizeof (keys) / sizeof (Eyelight_Key); ++i)
         if (strcmp(event->keyname, keys[i].keyname) == 0)
@@ -304,7 +327,7 @@ void slide_cb(void *data, Evas *e, Evas_Object *obj, void *event_info)
                     return ;
                     break;
                 default:
-                    if (strlen(event->key) == 1 && strchr("0123456789", *event->key) != NULL)
+                    if (event->key && strlen(event->key) == 1 && strchr("0123456789", *event->key) != NULL)
                     {
                         eyelight_object_gotoslide_start(eyelight_smart);
                         eyelight_object_gotoslide_digit_add(eyelight_smart,atoi(event->key));
@@ -475,6 +498,7 @@ int main(int argc, char*argv[])
 
     evas = ecore_evas_get (ee);
     evas_output_viewport_get(evas, NULL, NULL, &w_win, &h_win);
+    evas_font_cache_set(evas, 512 * 1024);
 
     eyelight_smart = eyelight_object_add(evas);
     eyelight_object_theme_file_set(eyelight_smart, theme);
@@ -488,7 +512,8 @@ int main(int argc, char*argv[])
 
     container= evas_object_rectangle_add(evas);
     evas_object_color_set(container,0,0,0,0);
-    evas_object_event_callback_add(container,EVAS_CALLBACK_KEY_DOWN, slide_cb, NULL);
+    evas_object_event_callback_add(container,EVAS_CALLBACK_KEY_UP, slide_cb, NULL);
+    evas_object_event_callback_add(container,EVAS_CALLBACK_KEY_DOWN, time_cb, NULL);
     evas_object_event_callback_add(container,EVAS_CALLBACK_MOUSE_MOVE, mouse_event_cb, NULL);
     evas_object_event_callback_add(container,EVAS_CALLBACK_MOUSE_IN, mouse_event_cb, NULL);
     evas_object_event_callback_add(container,EVAS_CALLBACK_MOUSE_UP, mouse_event_up_cb, NULL);
