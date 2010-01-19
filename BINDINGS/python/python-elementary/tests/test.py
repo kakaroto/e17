@@ -2427,6 +2427,12 @@ def notify_clicked(obj, it):
     bt.show()
 
     bt = elementary.Button(win)
+    bt.label_set("Center")
+    bt.callback_clicked_add(notify_show, win, elementary.ELM_NOTIFY_ORIENT_CENTER)
+    tb.pack(bt, 1, 1, 1, 1)
+    bt.show()
+
+    bt = elementary.Button(win)
     bt.label_set("Bottom")
     bt.callback_clicked_add(notify_show, win, elementary.ELM_NOTIFY_ORIENT_BOTTOM)
     tb.pack(bt, 1, 2, 1, 1)
