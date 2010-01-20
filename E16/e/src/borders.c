@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2000-2007 Carsten Haitzler, Geoff Harrison and various contributors
- * Copyright (C) 2004-2009 Kim Woelders
+ * Copyright (C) 2004-2010 Kim Woelders
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -901,6 +901,15 @@ BorderWinpartEventMouseUp(EWinBit * wbit, XEvent * ev)
    if (ev)
      {
 	GrabPointerRelease();
+	/*
+	 * During a move/resize operation initiated by a border part click
+	 * the ButtonRelease event may be reported on the border part window
+	 * if the event happens before the pointer grab is moved to the
+	 * move/resize event window.
+	 * This can be tested e.g. by inserting usleep(100000) at the start
+	 * of BorderWinpartEventMouseDown().
+	 */
+	MoveResizeEnd(ewin);
      }
 
    if ((wbit->state == STATE_CLICKED) && (!wbit->left))
