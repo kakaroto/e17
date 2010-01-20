@@ -176,6 +176,172 @@ FX_Ripple_Pause(void)
      }
 }
 
+/****************************** WAVES ***************************************/
+/* by tsade :)                                                              */
+/****************************************************************************/
+
+#define FX_WAVE_WATERH 64
+#define FX_WAVE_WATERW 64
+#define FX_WAVE_DEPTH  10
+#define FX_WAVE_GRABH  (FX_WAVE_WATERH + FX_WAVE_DEPTH)
+#define FX_WAVE_CROSSPERIOD 0.42
+static Pixmap       fx_wave_above = None;
+static Win          fx_wave_win = NULL;
+static int          fx_wave_count = 0;
+static Timer       *fx_wave_timer = NULL;
+
+static int
+FX_Wave_timeout(void *data __UNUSED__)
+{
+   /* Variables */
+   static double       incv = 0, inch = 0;
+   static double       incx = 0;
+   double              incx2;
+   static GC           gc1 = 0, gc = 0;
+   int                 y;
+   EObj               *bgeo;
+
+   bgeo = DeskGetBackgroundObj(DesksGetCurrent());
+
+   /* Check to see if we need to create stuff */
+   if (!fx_wave_above)
+     {
+	XGCValues           gcv;
+
+	fx_wave_win = EobjGetWin(bgeo);
+
+	fx_wave_above =
+	   ECreatePixmap(fx_wave_win, WinGetW(VROOT), FX_WAVE_WATERH * 2, 0);
+	if (gc)
+	   EXFreeGC(gc);
+	if (gc1)
+	   EXFreeGC(gc1);
+	gcv.subwindow_mode = IncludeInferiors;
+	gc = EXCreateGC(WinGetXwin(fx_wave_win), GCSubwindowMode, &gcv);
+	gc1 = EXCreateGC(WinGetXwin(fx_wave_win), 0L, &gcv);
+     }
+
+   /* On the zero, grab the desktop again. */
+   if (fx_wave_count == 0)
+     {
+	XCopyArea(disp, WinGetXwin(fx_wave_win), fx_wave_above, gc, 0,
+		  WinGetH(VROOT) - (FX_WAVE_WATERH * 3), WinGetW(VROOT),
+		  FX_WAVE_WATERH * 2, 0, 0);
+     }
+
+   /* Increment and roll the counter */
+   fx_wave_count++;
+   if (fx_wave_count > 32)
+      fx_wave_count = 0;
+
+   /* Increment and roll some other variables */
+   incv += 0.40;
+   if (incv > (M_PI_2 * 4))
+      incv = 0;
+
+   inch += 0.32;
+   if (inch > (M_PI_2 * 4))
+      inch = 0;
+
+   incx += 0.32;
+   if (incx > (M_PI_2 * 4))
+      incx = 0;
+
+   SET_GC_CLIP(bgeo, gc1);
+
+   /* Copy the area to correct bugs */
+   if (fx_wave_count == 0)
+     {
+	XCopyArea(disp, fx_wave_above, WinGetXwin(fx_wave_win), gc1, 0,
+		  WinGetH(VROOT) - FX_WAVE_GRABH, WinGetW(VROOT),
+		  FX_WAVE_DEPTH * 2, 0, WinGetH(VROOT) - FX_WAVE_GRABH);
+     }
+
+   /* Go through the bottom couple (FX_WAVE_WATERH) lines of the window */
+   for (y = 0; y < FX_WAVE_WATERH; y++)
+     {
+	/* Variables */
+	double              aa, a, p;
+	int                 yoff, off, yy;
+	int                 x;
+
+	/* Figure out the side-to-side movement */
+	p = (((double)(FX_WAVE_WATERH - y)) / ((double)FX_WAVE_WATERH));
+	a = p * p * 48 + incv;
+	yoff = y + (int)(sin(a) * 7) + 1;
+	yy = (FX_WAVE_WATERH * 2) - yoff;
+	aa = p * p * FX_WAVE_WATERH + inch;
+	off = (int)(sin(aa) * 10 * (1 - p));
+
+	/* Set up the next part */
+	incx2 = incx;
+
+	/* Go through the width of the screen, in block sizes */
+	for (x = 0; x < WinGetW(VROOT); x += FX_WAVE_WATERW)
+	  {
+	     /* Variables */
+	     int                 sx;
+
+	     /* Add something to incx2 and roll it */
+	     incx2 += FX_WAVE_CROSSPERIOD;
+
+	     if (incx2 > (M_PI_2 * 4))
+		incx2 = 0;
+
+	     /* Figure it out */
+	     sx = (int)(sin(incx2) * FX_WAVE_DEPTH);
+
+	     /* Display this block */
+	     XCopyArea(disp, fx_wave_above, WinGetXwin(fx_wave_win), gc1, x, yy,	/* x, y */
+		       FX_WAVE_WATERW, 1,	/* w, h */
+		       off + x, WinGetH(VROOT) - FX_WAVE_WATERH + y + sx	/* dx, dy */
+		);
+	  }
+     }
+
+   return 1;
+}
+
+static void
+FX_Waves_Init(const char *name __UNUSED__)
+{
+   fx_wave_count = 0;
+   TIMER_ADD(fx_wave_timer, 0.066, FX_Wave_timeout, NULL);
+}
+
+static void
+FX_Waves_Desk(void)
+{
+   EFreePixmap(fx_wave_above);
+   fx_wave_count = 0;
+   fx_wave_above = 0;
+}
+
+static void
+FX_Waves_Quit(void)
+{
+   TIMER_DEL(fx_wave_timer);
+   EClearArea(fx_wave_win, 0, WinGetH(VROOT) - FX_WAVE_WATERH,
+	      WinGetW(VROOT), FX_WAVE_WATERH);
+}
+
+static void
+FX_Waves_Pause(void)
+{
+   static char         paused = 0;
+
+   if (!paused)
+     {
+	FX_Waves_Quit();
+	paused = 1;
+     }
+   else
+     {
+	FX_Waves_Init(NULL);
+	paused = 0;
+     }
+}
+
 #if E_FX_RAINDROPS
 #include "piximg.h"
 
@@ -462,172 +628,6 @@ FX_Raindrops_Pause(void)
 }
 
 #endif /* E_FX_RAINDROPS */
-
-/****************************** WAVES ***************************************/
-/* by tsade :)                                                              */
-/****************************************************************************/
-
-#define FX_WAVE_WATERH 64
-#define FX_WAVE_WATERW 64
-#define FX_WAVE_DEPTH  10
-#define FX_WAVE_GRABH  (FX_WAVE_WATERH + FX_WAVE_DEPTH)
-#define FX_WAVE_CROSSPERIOD 0.42
-static Pixmap       fx_wave_above = None;
-static Win          fx_wave_win = NULL;
-static int          fx_wave_count = 0;
-static Timer       *fx_wave_timer = NULL;
-
-static int
-FX_Wave_timeout(void *data __UNUSED__)
-{
-   /* Variables */
-   static double       incv = 0, inch = 0;
-   static double       incx = 0;
-   double              incx2;
-   static GC           gc1 = 0, gc = 0;
-   int                 y;
-   EObj               *bgeo;
-
-   bgeo = DeskGetBackgroundObj(DesksGetCurrent());
-
-   /* Check to see if we need to create stuff */
-   if (!fx_wave_above)
-     {
-	XGCValues           gcv;
-
-	fx_wave_win = EobjGetWin(bgeo);
-
-	fx_wave_above =
-	   ECreatePixmap(fx_wave_win, WinGetW(VROOT), FX_WAVE_WATERH * 2, 0);
-	if (gc)
-	   EXFreeGC(gc);
-	if (gc1)
-	   EXFreeGC(gc1);
-	gcv.subwindow_mode = IncludeInferiors;
-	gc = EXCreateGC(WinGetXwin(fx_wave_win), GCSubwindowMode, &gcv);
-	gc1 = EXCreateGC(WinGetXwin(fx_wave_win), 0L, &gcv);
-     }
-
-   /* On the zero, grab the desktop again. */
-   if (fx_wave_count == 0)
-     {
-	XCopyArea(disp, WinGetXwin(fx_wave_win), fx_wave_above, gc, 0,
-		  WinGetH(VROOT) - (FX_WAVE_WATERH * 3), WinGetW(VROOT),
-		  FX_WAVE_WATERH * 2, 0, 0);
-     }
-
-   /* Increment and roll the counter */
-   fx_wave_count++;
-   if (fx_wave_count > 32)
-      fx_wave_count = 0;
-
-   /* Increment and roll some other variables */
-   incv += 0.40;
-   if (incv > (M_PI_2 * 4))
-      incv = 0;
-
-   inch += 0.32;
-   if (inch > (M_PI_2 * 4))
-      inch = 0;
-
-   incx += 0.32;
-   if (incx > (M_PI_2 * 4))
-      incx = 0;
-
-   SET_GC_CLIP(bgeo, gc1);
-
-   /* Copy the area to correct bugs */
-   if (fx_wave_count == 0)
-     {
-	XCopyArea(disp, fx_wave_above, WinGetXwin(fx_wave_win), gc1, 0,
-		  WinGetH(VROOT) - FX_WAVE_GRABH, WinGetW(VROOT),
-		  FX_WAVE_DEPTH * 2, 0, WinGetH(VROOT) - FX_WAVE_GRABH);
-     }
-
-   /* Go through the bottom couple (FX_WAVE_WATERH) lines of the window */
-   for (y = 0; y < FX_WAVE_WATERH; y++)
-     {
-	/* Variables */
-	double              aa, a, p;
-	int                 yoff, off, yy;
-	int                 x;
-
-	/* Figure out the side-to-side movement */
-	p = (((double)(FX_WAVE_WATERH - y)) / ((double)FX_WAVE_WATERH));
-	a = p * p * 48 + incv;
-	yoff = y + (int)(sin(a) * 7) + 1;
-	yy = (FX_WAVE_WATERH * 2) - yoff;
-	aa = p * p * FX_WAVE_WATERH + inch;
-	off = (int)(sin(aa) * 10 * (1 - p));
-
-	/* Set up the next part */
-	incx2 = incx;
-
-	/* Go through the width of the screen, in block sizes */
-	for (x = 0; x < WinGetW(VROOT); x += FX_WAVE_WATERW)
-	  {
-	     /* Variables */
-	     int                 sx;
-
-	     /* Add something to incx2 and roll it */
-	     incx2 += FX_WAVE_CROSSPERIOD;
-
-	     if (incx2 > (M_PI_2 * 4))
-		incx2 = 0;
-
-	     /* Figure it out */
-	     sx = (int)(sin(incx2) * FX_WAVE_DEPTH);
-
-	     /* Display this block */
-	     XCopyArea(disp, fx_wave_above, WinGetXwin(fx_wave_win), gc1, x, yy,	/* x, y */
-		       FX_WAVE_WATERW, 1,	/* w, h */
-		       off + x, WinGetH(VROOT) - FX_WAVE_WATERH + y + sx	/* dx, dy */
-		);
-	  }
-     }
-
-   return 1;
-}
-
-static void
-FX_Waves_Init(const char *name __UNUSED__)
-{
-   fx_wave_count = 0;
-   TIMER_ADD(fx_wave_timer, 0.066, FX_Wave_timeout, NULL);
-}
-
-static void
-FX_Waves_Desk(void)
-{
-   EFreePixmap(fx_wave_above);
-   fx_wave_count = 0;
-   fx_wave_above = 0;
-}
-
-static void
-FX_Waves_Quit(void)
-{
-   TIMER_DEL(fx_wave_timer);
-   EClearArea(fx_wave_win, 0, WinGetH(VROOT) - FX_WAVE_WATERH,
-	      WinGetW(VROOT), FX_WAVE_WATERH);
-}
-
-static void
-FX_Waves_Pause(void)
-{
-   static char         paused = 0;
-
-   if (!paused)
-     {
-	FX_Waves_Quit();
-	paused = 1;
-     }
-   else
-     {
-	FX_Waves_Init(NULL);
-	paused = 0;
-     }
-}
 
 #if E_FX_IMAGESPINNER
 
