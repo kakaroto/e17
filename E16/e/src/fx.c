@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2000-2007 Carsten Haitzler, Geoff Harrison and various contributors
- * Copyright (C) 2004-2009 Kim Woelders
+ * Copyright (C) 2004-2010 Kim Woelders
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -155,6 +155,8 @@ static void
 FX_Ripple_Quit(void)
 {
    TIMER_DEL(fx_ripple_timer);
+   if (!fx_ripple_win)
+      return;
    EClearArea(fx_ripple_win, 0, WinGetH(VROOT) - fx_ripple_waterh,
 	      WinGetW(VROOT), fx_ripple_waterh);
 }
@@ -321,6 +323,8 @@ static void
 FX_Waves_Quit(void)
 {
    TIMER_DEL(fx_wave_timer);
+   if (!fx_wave_win)
+      return;
    EClearArea(fx_wave_win, 0, WinGetH(VROOT) - FX_WAVE_WATERH,
 	      WinGetW(VROOT), FX_WAVE_WATERH);
 }
