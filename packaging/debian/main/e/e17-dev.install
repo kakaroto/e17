@@ -1,0 +1,3 @@
+debian/tmp/usr/lib/pkgconfig/enlightenment.pc
+debian/tmp/usr/lib/pkgconfig/everything.pc
+debian/tmp/usr/include/enlightenment/*.h

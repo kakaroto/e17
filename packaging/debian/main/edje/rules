@@ -1,0 +1,13 @@
+#!/usr/bin/make -f
+
+include /usr/share/cdbs/1/class/autotools.mk
+include /usr/share/cdbs/1/rules/debhelper.mk
+
+LDFLAGS += -Wl,-z,defs -Wl,--as-needed
+
+install/libedje-doc::
+	$(MAKE) doc
+	cp -R $(DEB_SRCDIR)/doc/html debian/libedje-doc/usr/share/doc/libedje-doc/
+
+#DEB_INSTALL_MANPAGES_libedje-doc := $(DEB_SRCDIR)/doc/man/man3/*.3
+DEB_CONFIGURE_EXTRA_FLAGS := --enable-doc

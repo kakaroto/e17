@@ -1,0 +1,9 @@
+Document: epdf
+Title: Epdf documentation
+Author: Vincent 'caro' Torri
+Abstract: This document describes Epdf API.
+Section: Programming/C
+
+Format: HTML
+Index: /usr/share/doc/libepdf-doc/html/index.html
+Files: /usr/share/doc/libepdf-doc/html/*.html

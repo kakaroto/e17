@@ -1,0 +1,28 @@
+Source: epsilon
+Section: libs
+Priority: optional
+Maintainer: Falko Schmidt <falko@alphagemini.org>
+Build-Depends: cdbs, debhelper (>= 6), zlib1g-dev, libevas-dev, libecore-dev, libedje-dev, libpng12-dev, libeina-dev, libxine-dev (>= 1.0.0)
+Standards-Version: 3.8.2
+Homepage: http://www.enlightenment.org
+
+Package: libepsilon0-dev
+Section: libdevel
+Architecture: any
+Depends: libepsilon0 (= ${Source-Version})
+Provides: libepsilon-dev
+Description: Enlightenment thumbnailing library development files
+ This is a small, display independent, and quick thumbnailing library.
+ .
+ This package contains headers and static libraries for development with
+ libepsilon.
+
+Package: libepsilon0
+Architecture: any
+Depends: ${shlibs:Depends}
+Provides: libepsilon
+Replaces: libepsilon-bin
+Description: Enlightenment thumbnailing library API
+ This is a small, display independent, and quick thumbnailing library.
+ .
+ This package contains the shared library, binary program and xine thumbnailer plugin.

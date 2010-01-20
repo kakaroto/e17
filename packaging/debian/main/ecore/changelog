@@ -1,0 +1,174 @@
+ecore (0.9.9.063+svn44144-4) unstable; urgency=low
+
+  * Version for packages.enlightenment.org
+  * Conversion back to cdbs for now, when hardy won't be supported, i'll use dh7
+
+ -- quaker <quaker66@gmail.com>  Sat, 16 Jan 2010 14:26:08 +0100
+
+ecore (0.9.9.063-3) unstable; urgency=low
+
+  * Build libecore-fb on sh4 (Closes: #561322)
+  * Switch from CDBS to dh7
+  * configure option --disable-ecore-evas-fb is no longer recognized, use
+    --disable-ecore-evas-directfb instead
+
+ -- Albin Tonnerre <lutin@debian.org>  Sun, 10 Jan 2010 21:26:51 +0100
+
+ecore (0.9.9.063-2) unstable; urgency=low
+
+  * Enable Glib support in ecore
+
+ -- Albin Tonnerre <lutin@debian.org>  Tue, 15 Dec 2009 17:56:17 +0100
+
+ecore (0.9.9.063-1) unstable; urgency=low
+
+  * New upstream snapshot
+  * Bump Standards-Version to 3.8.3
+  * Prevent the doc from being built when not necessary, and move
+    doxygen to B-D-I
+  * Remove DEB_DH_STRIP_ARGS, cdbs figures this out
+  * debian/control: update my email address
+
+ -- Albin Tonnerre <lutin@debian.org>  Fri, 04 Dec 2009 21:05:11 +0100
+
+ecore (0.9.9.062-1) unstable; urgency=low
+
+  * New upstream snapshot
+
+ -- Albin Tonnerre <albin.tonnerre@gmail.com>  Mon, 03 Aug 2009 18:54:50 +0200
+
+ecore (0.9.9.061-3) unstable; urgency=low
+
+  * The previous patch got applied wrong, fix debian/rules
+  * Add lpia to the architectures for libecore-fb, so that Ubuntu can use it.
+
+ -- Albin Tonnerre <albin.tonnerre@gmail.com>  Mon, 20 Jul 2009 18:29:34 +0200
+
+ecore (0.9.9.061-2) unstable; urgency=low
+
+  * Build using -Wl,-z,defs and -Wl,--as-needed
+  * Link against  libgnutls instead of libssl
+  * Patch from Cyril Brulebois to fix framebuffer-related issues on non-linux
+    architectures (Closes: #536092)
+
+ -- Albin Tonnerre <albin.tonnerre@gmail.com>  Tue, 14 Jul 2009 21:05:35 +0200
+
+ecore (0.9.9.061-1) unstable; urgency=low
+
+  * New upstream snapshot
+  * Rename packages due to API changes
+  * Update Standards-Version to 3.8.2, no change required
+  * Upload to unstable
+
+ -- Albin Tonnerre <albin.tonnerre@gmail.com>  Sat, 20 Jun 2009 17:33:26 +0200
+
+ecore (0.9.9.060-1) experimental; urgency=low
+
+  * New SVN snapshot
+    - Drop patches, no longer needed
+    - Massive renaming due to upstream SONAME change.
+      + Replace symbols with shlibs files as a consequence
+      + Update .install files
+  * Move libecore-dbg to the debug section
+  * Make libecore-dbg recommend libecore-*
+  * Bump Standards-Version to 3.8.1, no change required
+  * Package names purposedly don't match SONAME, in an attempt to make the
+    former a bit more meaningful than libecore-foo-ver-pre-01-0
+    - Override the lintian warning: package-name-doesnt-match-sonames
+
+ -- Albin Tonnerre <albin.tonnerre@gmail.com>  Tue, 05 May 2009 18:44:14 +0200
+
+ecore (0.9.9.050+svn20090202-1) experimental; urgency=low
+
+   * New SVN snapshot
+    - libecore-con0 is now libecore-0.9.9.050a due to API change
+      + remove libecore-con0.symbols
+    - Update shlibs for libecore-0.9.9.050a due to new functions added to API
+    - refresh patches
+    - Use new 'make doc' target to generate the documentation:
+      + Add --enable-doc to configure options
+      + use 'make doc'
+      + build-depend on doxygen
+   * Use a proper short description for libecore-dbg
+   * Remove spurious dependency of libecore-file0 on libfam0
+   * Build-depend on x11proto-xext-dev and libxtst-dev to get the illume
+     keyboards working. Probably Closes: #514021
+
+ -- Albin Tonnerre <albin.tonnerre@gmail.com>  Thu, 05 Feb 2009 18:31:20 +0100
+
+ecore (0.9.9.050+svn20081201-2) experimental; urgency=low
+
+  * Remove version name from -dev packages name
+  * [lintian] Add ${misc:Depends} to libecore-doc too
+
+ -- Albin Tonnerre <albin.tonnerre@gmail.com>  Tue, 06 Jan 2009 22:03:11 +0100
+
+ecore (0.9.9.050+svn20081201-1) experimental; urgency=low
+
+  * Upstream SVN snapshot
+    - Packages renamed due to API changes
+      + libecore-dev->libecore-0.9.9.050a-dev, libecore0->libecore-0.9.9.050a
+    - Add debian/patches/{01-fix-library-soname,02-reapply-autofoo}: Use release
+      instead of version-info to create libecore0 SONAME, to prevent things
+      from breaking when the ABI changes again. This only affects libecore, not
+      the other libraries.
+    - Remove the symbols file for libecore0 as it it's almost useless now
+    - build-depend and make libecore-0.9.9.050a-dev depend on libeina-0.0.1a-dev
+    - update libecore-{con,evas}0.symbols
+  * [lintian] Add ${misc:Depends} to package dependencies
+
+ -- Albin Tonnerre <albin.tonnerre@gmail.com>  Sun, 07 Dec 2008 13:13:41 +0100
+
+ecore (0.9.9.050-1) experimental; urgency=low
+
+  * New upstream release
+  * Add symbols files.
+  * debian/control:
+    - Bump Standards-Version to 3.8.0
+    - Drop Build-Dependency on doxygen
+    - Bump B-D on libevas0 to >= 0.9.9.050, libecore-evas0 uses symbols from it.
+    - B-D on dpkg-dev (>= 1.14.8) as we're using symbols files support
+  * CFLAGS += -fvisibility=hidden to avoid exporting private symbols
+
+ -- Albin Tonnerre <albin.tonnerre@gmail.com>  Mon, 10 Nov 2008 00:27:15 +0100
+
+ecore (0.9.9.043-1) experimental; urgency=low
+
+  [ Albin Tonnerre ]
+  * New upstream release
+  * debian/control:
+    - Build-Depend on libeet-dev (>= 1.0.0) as per ./configure
+    - Build-Depend on libevas-dev (>= 0.9.9.043) to get evas-fb.pc
+  * debian/rules: Docs are now prebuilt in the tarball
+
+ -- Jan Lübbe <jluebbe@debian.org>  Fri, 23 May 2008 18:48:22 +0200
+
+ecore (0.9.9.042-4) experimental; urgency=low
+
+  [ Albin Tonnerre ]
+  * debian/control: libjpeg62-dev doesn't belong to libecore-dev depends.
+
+ -- Jan Lübbe <jluebbe@debian.org>  Sun, 04 May 2008 22:23:32 +0200
+
+ecore (0.9.9.042-3) experimental; urgency=low
+
+  * Add Depends to libecore-dev to allow building libraries depending on
+    libecore.
+
+ -- Jan Lübbe <jluebbe@debian.org>  Wed, 19 Mar 2008 15:55:10 +0100
+
+ecore (0.9.9.042-2) experimental; urgency=low
+
+  * Change doc-base section to Programming/C
+  * debian/control:
+    - Update my name
+    - libecore-dev must depend on libecore-*0 do allow correct generation
+      of shlibdeps
+
+ -- Jan Lübbe <jluebbe@debian.org>  Mon, 17 Mar 2008 15:04:00 +0100
+
+ecore (0.9.9.042-1) experimental; urgency=low
+
+  * Initial Release (Closes: #466536)
+
+ -- Albin Tonnerre <albin.tonnerre@gmail.com>  Tue, 19 Feb 2008 01:24:05 +0100

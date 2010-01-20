@@ -1,0 +1,115 @@
+eina (0.9.9.063+svn44144-4) unstable; urgency=low
+
+  * Version for packages.enlightenment.org
+
+ -- quaker <quaker66@gmail.com>  Sat, 16 Jan 2010 15:46:52 +0100
+
+eina (0.9.9.063-3) unstable; urgency=low
+
+  * Add debian/patches/03_fix_compile_hurd: fix FTBFS on Hurd
+
+ -- Albin Tonnerre <lutin@debian.org>  Tue, 15 Dec 2009 18:13:52 +0100
+
+eina (0.9.9.063-2) unstable; urgency=low
+
+  * Add debian/patches/01_fix_compile_kbsd.diff:
+    - Fix FTBFS on kfreebsd, thanks to Cyril Brulebois (Closes: #560745)
+  * Add debian/patches/02_eina_test_rbtree_timeout.diff:
+    - Some tests in the testsuite take a long time to run, causing FTBFS on
+      several architectures, as the default timeout is 4 seconds. Wait for 5
+      minutes instead, that should be enough. (Closes: #560742)
+  * debian/rules: make the check-stamp target depend on build-arch
+
+ -- Albin Tonnerre <lutin@debian.org>  Sun, 13 Dec 2009 12:27:44 +0100
+
+eina (0.9.9.063-1) unstable; urgency=low
+
+  * New upstream release
+  * Fix description formating (Closes: #535480)
+  * Fix configure invocation for building static modules
+  * The testsuite is no longer buggy, let's stop ignoring failures
+  * debian/control: update my email address
+
+ -- Albin Tonnerre <lutin@debian.org>  Thu, 03 Dec 2009 15:52:26 +0100
+
+eina (0.0.2.062-2) unstable; urgency=low
+
+  * No longer build with -O3
+  * Prevent the doc from being built when it's not needed. Allows moving
+    doxygen to Build-Depends-Indep
+  * No longer use DEB_DH_STRIP_ARGS, CDBS handles that automatically
+  * debian/copyright: update download location and website URL
+  * Add support for running the testsuite during the build (ignore the
+    result for now, though, as there's still a testsuite bug that needs
+    fixing)
+  * Bump Standards-Version to 3.8.3
+
+ -- Albin Tonnerre <albin.tonnerre@gmail.com>  Mon, 24 Aug 2009 17:40:22 +0200
+
+eina (0.0.2.062-1) unstable; urgency=low
+
+  * New upstream snapshot
+  * This time the API broke, so drop the patches and use the upstream soname
+
+ -- Albin Tonnerre <albin.tonnerre@gmail.com>  Sun, 02 Aug 2009 17:04:34 +0200
+
+eina (0.0.2.061-1) unstable; urgency=low
+
+  * New upstream snapshot
+    - Re-add patches to fix library soname. Upstream bumps the SONAME on every
+      new snapshot, but no API/ABI changes happened between 0.0.2.060 and
+      0.0.2.061, so let's use the SONAME currently used in the archive
+  * Update shlibs, as new symbols were added
+  * Update Standards-Version to 3.8.2, no change required
+  * Upload to unstable
+
+ -- Albin Tonnerre <albin.tonnerre@gmail.com>  Sat, 20 Jun 2009 17:20:35 +0200
+
+eina (0.0.2.060-1) experimental; urgency=low
+
+  * New SVN snapshot
+    - Drop patches, no longer needed
+    - Package renaming due to upstream SONAME change.
+      + Update shlibs and .install files
+  * Move libeina-dbg to the new debug section
+  * Package name purposedly doesn't match SONAME, in an attempt to make the
+    former a bit more meaningful than libeina-ver-pre-01-0
+    - Override the lintian warning: package-name-doesnt-match-soname
+
+ -- Albin Tonnerre <albin.tonnerre@gmail.com>  Tue, 05 May 2009 18:16:19 +0200
+
+eina (0.0.1~svn20090323-1) experimental; urgency=low
+
+  * New SVN snapshot
+    - refresh patches
+    - Bump shlibs
+  * Update Standards-Version, no change required
+  * make the packaging copyright point to /usr/share/common-licenses/GPL-2
+    instead of /GPL
+
+ -- Albin Tonnerre <albin.tonnerre@gmail.com>  Mon, 23 Mar 2009 18:38:19 +0100
+
+eina (0.0.1~svn20090128-1) experimental; urgency=low
+
+  * New SVN snapshot
+    - libeina-0.0.1a is now libeina-0.0.1b, due to API break
+    - refresh patches
+  * Remove a part concerning libeina-dev from the description of libeina-0.0.1b
+
+ -- Albin Tonnerre <albin.tonnerre@gmail.com>  Wed, 28 Jan 2009 23:28:36 +0100
+
+eina (0.0.1~svn20081120-2) experimental; urgency=low
+
+  * Remove version number from -dev package name since it's not really useful
+  * [lintian] Fix W: copyright-with-old-dh-make-debian-copyright
+
+ -- Albin Tonnerre <albin.tonnerre@gmail.com>  Tue, 06 Jan 2009 22:11:01 +0100
+
+eina (0.0.1~svn20081120-1) experimental; urgency=low
+
+  * Initial Release (Closes: #506916)
+  * debian/patches/{01-fix-library-soname,02-reapply-autofoo}: Use release
+    instead of version-info to create the library SONAME, to prevent things
+    from breaking when the ABI changes.
+
+ -- Albin Tonnerre <albin.tonnerre@gmail.com>  Thu, 11 Dec 2008 20:52:23 +0100

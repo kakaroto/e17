@@ -1,0 +1,39 @@
+Source: epdf
+Section: libs
+Priority: optional
+Maintainer: quaker <quaker66@gmail.com>
+Build-Depends: cdbs, debhelper (>= 6), efl-dev, libpoppler-dev, doxygen
+Standards-Version: 3.8.2
+Homepage: http://www.enlightenment.org
+
+Package: libepdf0
+Architecture: any
+Depends: ${shlibs:Depends}
+Description: Enlightenment PDF Library
+ Enlightenment PDF library based on Poppler
+ .
+ This package contains the library itself.
+
+Package: libepdf-bin
+Architecture: any
+Depends: ${shlibs:Depends}, libepdf0 (= ${Source-Version})
+Description: Enlightenment PDF Library
+ Enlightenment PDF library based on Poppler
+ .
+ This package contains tests.
+
+Package: libepdf-dev
+Architecture: any
+Depends: ${shlibs:Depends}, libepdf0 (= ${Source-Version})
+Description: Enlightenment PDF Library
+ Enlightenment PDF library based on Poppler
+ .
+ This package developenment files.
+
+Package: libepdf-doc
+Architecture: any
+Depends: ${shlibs:Depends}, libepdf0
+Description: Enlightenment PDF Library
+ Enlightenment PDF library based on Poppler
+ .
+ This package contains documentation.

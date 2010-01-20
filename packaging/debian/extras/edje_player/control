@@ -1,0 +1,14 @@
+Source: edje-player
+Section: graphics
+Priority: optional
+Maintainer: quaker <quaker66@gmail.com>
+Build-Depends: cdbs, debhelper (>= 6), libeina-dev, libecore-dev, libevas-dev, libedje-dev
+Standards-Version: 3.8.2
+Homepage: http://www.enlightenment.org
+
+Package: edje-player
+Architecture: any
+Depends: ${shlibs:Depends}, libedje-bin
+Description: A simple player for edj files
+ A simple player for edje files.
+ Useable for example with edje calculator :)

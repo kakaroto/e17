@@ -1,0 +1,4 @@
+debian/tmp/usr/lib/enlightenment/modules/iiirk/*.desktop
+debian/tmp/usr/lib/enlightenment/modules/iiirk/*.edj
+debian/tmp/usr/lib/enlightenment/modules/iiirk/*/*.so
+debian/tmp/usr/lib/enlightenment/modules/iiirk/locale/*

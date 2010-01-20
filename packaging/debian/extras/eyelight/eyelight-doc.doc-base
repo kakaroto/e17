@@ -1,0 +1,9 @@
+Document: eyelight
+Title: Eyelight documentation
+Author: Atton Jonathan
+Abstract: This document describes Eyelight API.
+Section: Programming/C
+
+Format: HTML
+Index: /usr/share/doc/eyelight-doc/html/index.html
+Files: /usr/share/doc/eyelight-doc/html/*.html

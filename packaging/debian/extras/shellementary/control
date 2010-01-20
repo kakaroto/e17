@@ -1,0 +1,14 @@
+Source: shellementary
+Section: x11
+Priority: optional
+Maintainer: quaker <quaker66@gmail.com>
+Build-Depends: cdbs, debhelper (>= 6), libelementary-dev, gettext, efl-dev
+Standards-Version: 3.8.3
+
+Package: shellementary
+Architecture: all
+Depends: ${shlibs:Depends}
+Description: Shellementary app
+ Shellementary is a zenity replacement written in C and Elementary.
+ It supports the same arguments as zenity, so it should be 95% compatible(5% = some missing arguments..)
+ Sometimes, app supports even more arguments than zenity.

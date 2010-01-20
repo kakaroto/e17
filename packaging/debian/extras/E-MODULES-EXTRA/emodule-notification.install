@@ -1,0 +1,4 @@
+debian/tmp/usr/lib/enlightenment/modules/notification/*.desktop
+debian/tmp/usr/lib/enlightenment/modules/notification/*.edj
+debian/tmp/usr/lib/enlightenment/modules/notification/*/*.so
+debian/tmp/usr/lib/enlightenment/modules/notification/locale/*

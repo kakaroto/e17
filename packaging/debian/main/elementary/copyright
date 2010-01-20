@@ -1,0 +1,37 @@
+This package was debianized by Joachim Breitner on 
+Wed, 04 Feb 2009 17:26:27 +0100 and uses parts of the work done by Albin
+Tonnerre <albin.tonnerre@gmail.com> and Falko Schmidt <falko@alphagemini.org>
+
+The source was downloaded from
+http://download.enlightenment.org/snapshots/LATEST/
+For more information, see:
+
+	http://trac.enlightenment.org/e/wiki/Elementary
+
+Upstream Authors:
+	Carsten Haitzler <raster@rasterman.com>
+	Gustavo Sverzut Barbieri <barbieri@gmail.com>
+	Cedric Bail <cedric.bail@free.fr>
+
+Copyright: Copyright (C) 2008 Upstream Authors
+
+License:
+    This library is free software; you can redistribute it and/or
+    modify it under the terms of the GNU Lesser General Public
+    License as published by the Free Software Foundation; either
+    version 2.1 of the License, or (at your option) any later version.
+
+    This library is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+    Lesser General Public License for more details.
+
+    You should have received a copy of the GNU Lesser General Public
+    License along with this library; if not, write to the Free Software
+    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+
+On Debian systems, the complete text of the GNU Library General
+Public License can be found in `/usr/share/common-licenses/LGPL-2.1'.
+
+The Debian packaging is Copyright (C) 2009, Debian Pkg-e Team <pkg-e-devel@lists.alioth.debian.org>
+and is licensed under the GPL, see `/usr/share/common-licenses/GPL'.

@@ -1,0 +1,4 @@
+debian/tmp/usr/lib/enlightenment/modules/uptime/*.desktop
+debian/tmp/usr/lib/enlightenment/modules/uptime/*.edj
+debian/tmp/usr/lib/enlightenment/modules/uptime/*/*.so
+debian/tmp/usr/lib/enlightenment/modules/uptime/locale/*

@@ -1,0 +1,38 @@
+Source: ecomp
+Section: x11
+Priority: optional
+Maintainer: quaker <quaker66@gmail.com>
+Build-Depends: cdbs, debhelper (>= 6), libeet-dev, libeina-dev, xorg-dev, libxslt1-dev, libjpeg62-dev,  libpng12-dev,  librsvg2-dev,  libgl1-mesa-dev, libglu1-mesa-dev, libxml2-dev, intltool
+Standards-Version: 3.8.2
+
+Package: ecomorph-core
+Architecture: any
+Depends: ${shlibs:Depends}
+Replaces: compiz-fusion-bcop
+Description: A compiz port for E17
+ This package provides a core.
+
+Package: ecomorph-e17
+Architecture: all
+Depends: e17, emodule-ecomorph
+Description: A transitional package
+ A transitional package for upgrades.
+
+Package: ecomorph-e17-data
+Architecture: all
+Depends: e17-data
+Description: A transitional package
+ A transitional package for upgrades.
+
+Package: ecomorph-e17-dev
+Architecture: all
+Depends: e17-dev
+Description: A transitional package
+ A transitional package for upgrades.
+
+Package: ecomorph-e17-dbg
+Architecture: all
+Depends: e17-dbg
+Priority: extra
+Description: A transitional package
+ A transitional package for upgrades.

@@ -1,0 +1,14 @@
+Source: eyesight
+Section: graphics
+Priority: optional
+Maintainer: quaker <quaker66@gmail.com>
+Build-Depends: cdbs, debhelper (>= 6), libeina-dev, libecore-dev, libevas-dev, libedje-dev, libefreet-dev, libesmart0-dev, libepdf-dev
+Standards-Version: 3.8.2
+Homepage: http://www.enlightenment.org
+
+Package: eyesight
+Architecture: any
+Depends: ${shlibs:Depends}
+Description: A PDF viewer based on EFL
+ Eyesight is a PDF/DVI/PS viewer. Currently built
+ just with PDF support due to missing dependencies.

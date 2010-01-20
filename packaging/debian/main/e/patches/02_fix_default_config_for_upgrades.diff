@@ -1,0 +1,64 @@
+diff --git a/config/default/e.src b/config/default/e.src
+index 68fe2b8..4de2e16 100644
+--- a/config/default/e.src
++++ b/config/default/e.src
+@@ -527,4 +527,57 @@ group "E_Config" struct {
+   value "syscon.extra.icon_size" int: 48;
+   value "syscon.timeout" double: 0.0;
+   value "syscon.do_input" uchar: 0;
++  group "syscon.actions" list {
++    group "E_Config_Syscon_Action" struct {
++      value "action" string: "halt";
++      value "params" string: "now";
++      value "button" string: "button";
++      value "icon" string: "enlightenment/halt";
++      value "is_main" int: 1;
++    }
++  }
++  group "syscon.actions" list {
++    group "E_Config_Syscon_Action" struct {
++      value "action" string: "suspend";
++      value "params" string: "now";
++      value "button" string: "button";
++      value "icon" string: "enlightenment/suspend";
++      value "is_main" int: 1;
++    }
++  }
++  group "syscon.actions" list {
++    group "E_Config_Syscon_Action" struct {
++      value "action" string: "desk_lock";
++      value "button" string: "button";
++      value "icon" string: "enlightenment/desklock_menu";
++      value "is_main" int: 1;
++    }
++  }
++  group "syscon.actions" list {
++    group "E_Config_Syscon_Action" struct {
++      value "action" string: "reboot";
++      value "params" string: "now";
++      value "button" string: "button";
++      value "icon" string: "enlightenment/reboot";
++      value "is_main" int: 0;
++    }
++  }
++  group "syscon.actions" list {
++    group "E_Config_Syscon_Action" struct {
++      value "action" string: "hibernate";
++      value "params" string: "now";
++      value "button" string: "button";
++      value "icon" string: "enlightenment/hibernate";
++      value "is_main" int: 0;
++    }
++  }
++  group "syscon.actions" list {
++    group "E_Config_Syscon_Action" struct {
++      value "action" string: "logout";
++      value "params" string: "now";
++      value "button" string: "button";
++      value "icon" string: "enlightenment/logout";
++      value "is_main" int: 0;
++    }
++  }
+   value "mode.presentation" uchar: 0;
+   value "mode.offline" uchar: 0;  
+ }

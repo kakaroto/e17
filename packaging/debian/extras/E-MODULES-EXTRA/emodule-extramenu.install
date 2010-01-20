@@ -1,0 +1,3 @@
+debian/tmp/usr/lib/enlightenment/modules/extramenu/*.desktop
+debian/tmp/usr/lib/enlightenment/modules/extramenu/*.edj
+debian/tmp/usr/lib/enlightenment/modules/extramenu/*/*.so

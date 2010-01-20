@@ -1,0 +1,3 @@
+debian/tmp/usr/lib/enlightenment/modules/winlist-ng/*.desktop
+debian/tmp/usr/lib/enlightenment/modules/winlist-ng/*.edj
+debian/tmp/usr/lib/enlightenment/modules/winlist-ng/*/*.so

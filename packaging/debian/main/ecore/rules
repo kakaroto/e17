@@ -1,0 +1,33 @@
+#!/usr/bin/make -f
+
+include /usr/share/cdbs/1/class/autotools.mk
+include /usr/share/cdbs/1/rules/debhelper.mk
+
+CFLAGS += -fvisibility=hidden
+LDFLAGS += -Wl,-z,defs -Wl,--as-needed
+
+build/libecore-doc::
+	$(MAKE) doc
+
+install/libecore-doc::
+	mkdir -p debian/libecore-doc/usr/share/doc/libecore-doc/
+	cp -R $(DEB_SRCDIR)/doc/html debian/libecore-doc/usr/share/doc/libecore-doc/
+
+$(patsubst %,install/%,$(filter %-svn-03, $(DEB_ALL_PACKAGES))) ::
+	sed "s/PACKAGE/$(cdbs_curpkg)/" debian/pkg-name-soname.lintian-overrides.in > debian/$(cdbs_curpkg).lintian-overrides
+
+clean::
+	rm -f debian/*.lintian-overrides
+
+#DEB_INSTALL_MANPAGES_libecore-doc := $(DEB_SRCDIR)/doc/man/man3/*.3
+DEB_INSTALL_MANPAGES_libecore-bin := debian/ecore_config.1
+DEB_DH_STRIP_ARGS := --dbg-package=libecore-dbg
+DEB_CONFIGURE_EXTRA_FLAGS := --enable-ecore-fb \
+	--enable-ecore-evas-fb \
+	--disable-ecore-directfb \
+	--disable-ecore-evas-directfb \
+	--disable-rpath \
+	--disable-openssl \
+	--enable-gnutls \
+	--enable-glib \
+	--enable-doc

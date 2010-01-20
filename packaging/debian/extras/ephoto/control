@@ -1,0 +1,13 @@
+Source: ephoto
+Section: graphics
+Priority: optional
+Maintainer: quaker <quaker66@gmail.com>
+Build-Depends: cdbs, debhelper (>= 6), efl-dev, libethumb-dev, libexif-dev
+Standards-Version: 3.8.2
+Homepage: http://www.enlightenment.org
+
+Package: ephoto
+Architecture: any
+Depends: ${shlibs:Depends}
+Description: Ephoto Image Viewer/Editor/Manipulator/Slideshow creator
+ Icons belong to the Tango project (http://tango.freedesktop.org)

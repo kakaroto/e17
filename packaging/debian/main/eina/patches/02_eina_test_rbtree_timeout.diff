@@ -1,0 +1,11 @@
+diff --git a/src/tests/eina_test_rbtree.c b/src/tests/eina_test_rbtree.c
+index a7b66e6..c7badf4 100644
+--- a/src/tests/eina_test_rbtree.c
++++ b/src/tests/eina_test_rbtree.c
+@@ -283,5 +283,6 @@ eina_test_rbtree(TCase *tc)
+    tcase_add_test(tc, eina_rbtree_simple_remove);
+    tcase_add_test(tc, eina_rbtree_simple_remove2);
+    tcase_add_test(tc, eina_rbtree_simple_remove3);
++   tcase_set_timeout(tc, 300);
+ }
+ 

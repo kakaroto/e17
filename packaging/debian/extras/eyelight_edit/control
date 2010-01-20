@@ -1,0 +1,13 @@
+Source: eyelight-edit
+Section: x11
+Priority: optional
+Maintainer: quaker <quaker66@gmail.com>
+Build-Depends: cdbs, debhelper (>= 6), libelementary-dev, libeyelight-dev
+Standards-Version: 3.8.2
+Homepage: http://www.enlightenment.org
+
+Package: eyelight-edit
+Architecture: any
+Depends: ${shlibs:Depends}, libedje-bin
+Description: An editor for Eyelight presentations
+ An easy-to-use editor for Eyelight presentations.

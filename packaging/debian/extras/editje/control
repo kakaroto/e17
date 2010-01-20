@@ -1,0 +1,15 @@
+Source: editje
+Section: x11
+Priority: extra
+Maintainer: quaker <quaker66@gmail.com>
+Build-Depends: cdbs, debhelper (>= 6), python-evas, python-ecore, python-edje, libedje-bin, python-elementary, efl-dev, python-all-dev, python-evas-dev
+Standards-Version: 3.8.2
+
+Package: editje
+Architecture: all
+Depends: python-evas, python-ecore, python-edje, libedje-bin, python-elementary, python-all
+Description: Edje editor app
+ Editje is an Edje editor oriented towards UI design, and not just being a GUI
+ over the edc syntax.
+ It provides three major modes: standard edition, animations and signals
+ management.

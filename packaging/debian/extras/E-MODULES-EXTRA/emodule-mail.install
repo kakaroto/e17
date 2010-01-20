@@ -1,0 +1,4 @@
+debian/tmp/usr/lib/enlightenment/modules/mail/*.edj
+debian/tmp/usr/lib/enlightenment/modules/mail/*.desktop
+debian/tmp/usr/lib/enlightenment/modules/mail/*/*.so
+debian/tmp/usr/lib/enlightenment/modules/mail/locale/*

@@ -1,0 +1,177 @@
+evas (0.9.9.063+svn44144-3) unstable; urgency=low
+
+  * Version for packages.enlightenment.org
+
+ -- quaker <quaker66@gmail.com>  Sat, 17 Jan 2010 13:50:25 +0100
+
+evas (0.9.9.063-2) unstable; urgency=low
+
+  * Enable the XCB backend in libevas-engines-software-x11 (Closes: #562919)
+  * Build the framebuffer engine on sh4
+
+ -- Albin Tonnerre <lutin@debian.org>  Tue, 29 Dec 2009 12:52:47 +0100
+
+evas (0.9.9.063-1) unstable; urgency=low
+
+  * New upstream release
+  * Remove DEB_DH_STRIP_ARGS, cdbs figures this out
+  * Bump Standards-Version to 3.8.3
+  * Make the software-generic engine built-in, and fix configure invocation
+  * Prevent the doc from being built when not necessary, and move
+    doxygen to B-D-I
+  * debian/control: update my email address
+
+ -- Albin Tonnerre <lutin@debian.org>  Fri, 04 Dec 2009 20:44:44 +0100
+
+evas (0.9.9.062-1) unstable; urgency=low
+
+  * New upstream snapshot
+
+ -- Albin Tonnerre <albin.tonnerre@gmail.com>  Sun, 02 Aug 2009 17:30:09 +0200
+
+evas (0.9.9.061-3) unstable; urgency=low
+
+  * Add lpia to the architecture list for libevas-engine-fb so that Ubuntu can
+    use it.
+
+ -- Albin Tonnerre <albin.tonnerre@gmail.com>  Mon, 20 Jul 2009 18:47:05 +0200
+
+evas (0.9.9.061-2) unstable; urgency=low
+
+  * Patch from Cyril Brulebois to fix framebuffer-related issues on non-linux
+    architectures (Closes: #536086)
+  * Update Standards-Version to 3.8.2
+
+ -- Albin Tonnerre <albin.tonnerre@gmail.com>  Tue, 14 Jul 2009 20:20:21 +0200
+
+evas (0.9.9.061-1) unstable; urgency=low
+
+  * New upstream snapshot
+  * Change packages name due to API changes
+  * Explicitly disable fribidi support for now
+  * Refactoring of the engine packages
+    - Add the version into the package name to avoid possible breakages, now
+      that different evas versions can be installed at the same time
+  * Upload to unstable
+
+ -- Albin Tonnerre <albin.tonnerre@gmail.com>  Wed, 24 Jun 2009 23:12:19 +0200
+
+evas (0.9.9.060-1) experimental; urgency=low
+
+  * New SVN snapshot
+    - Drop patches, no longer needed
+    - Massive renaming due to upstream SONAME change.
+  * debian/control:
+    - Update Standards-Version, no change required
+    - Move libevas-dbg to the debug section
+    - Remove spurious build-dep on libdirectfb-dev, and disable the dfb engine
+  * debian/rules:
+    - Disable the build of the software 16bits engine since it's not usable
+    - Enable SSE on non-amd64 architectures again
+    - Enable dither mask
+  * Package name purposedly doesn't match SONAME, in an attempt to make the
+    former a bit more meaningful than libevas-ver-pre-01-0
+    - Override the lintian warning: package-name-doesnt-match-sonames
+
+ -- Albin Tonnerre <albin.tonnerre@gmail.com>  Tue, 05 May 2009 18:25:18 +0200
+
+evas (0.9.9.050+svn20090204-1) experimental; urgency=low
+
+  [ Albin Tonnerre ]
+  * New SVN snapshot
+    - libevas-0.9.9.050a is now libevas-0.9.9.050b due to API change
+    - refresh patches
+    - Use new 'make doc' target to generate the documentation:
+      + Add --enable-doc to configure options
+      + use 'make doc'
+      + build-depend on doxygen
+  * Revert back to using libevas-engines and libevas-engines-extras, if the
+    engines <-> evas interface breaks, it will be handled by bumping the
+    SONAME for libevas
+
+  [ Nikita V. Youshchenko ]
+  * Make dependency on libeina-dev versioned.
+  * Add myself to uploaders. 
+
+ -- Nikita V. Youshchenko <yoush@debian.org>  Sun, 08 Mar 2009 12:41:32 +0300
+
+evas (0.9.9.050+svn20081206-2) experimental; urgency=low
+
+  * Remove version from -dev package name, since it's not really useful
+
+ -- Albin Tonnerre <albin.tonnerre@gmail.com>  Tue, 06 Jan 2009 22:01:03 +0100
+
+evas (0.9.9.050+svn20081206-1) experimental; urgency=low
+
+  * Upstream SVN snapshot
+    - Packages renamed due to API changes
+    - Add debian/patches/{01-fix-library-soname,02-reapply-autofoo}: Use release
+      instead of version-info to create the library SONAME, to prevent things
+      from breaking when the ABI changes again
+    - Remove the symbols file as it it's almost useless now
+      + As a consequence, B-D on dpkg-dev >= 1.14.8 is no longer needed
+  * debian/rules: Add --disable-image-loader-edb to configure flags as this
+    image loader,though deprecated, is built by default
+  * [lintian] Add ${misc:Depends} to package dependencies
+
+ -- Albin Tonnerre <albin.tonnerre@gmail.com>  Sun, 07 Dec 2008 12:07:39 +0100
+
+evas (0.9.9.050-2) experimental; urgency=low
+
+  * Move MMX-specific symbols to debian/libevas0.symbols.{amd64,i386}
+    - Fixes FTBFS on non-x86 architectures (Closes: #502588)
+  * debian/rules: explicitely disable SSE on non-amd64 architectures
+
+ -- Albin Tonnerre <albin.tonnerre@gmail.com>  Sun, 09 Nov 2008 23:54:56 +0100
+
+evas (0.9.9.050-1) experimental; urgency=low
+
+  [ Albin Tonnerre ]
+  * New upstream release
+  * Add a symbols file for libevas0
+  * CFLAGS += -fvisibility=hidden to avoid exporting private symbols.
+  * debian/control:
+    - Bump Standards-Version to 3.8.0
+    - Drop Build-Dependency on doxygen as docs are now in the upstream tarball.
+    - Build-Depend on dpkg-dev >= 1.14.8 as we're using symbols support.
+    - Bump B-D on libeet-dev >= 1.1.0, evas uses symbols from the new version.
+  * Add the directfb rendering engine to libevas-engines-extras, now that it has
+    been rewritten:
+    - debian/control: Build-Depend on libdirectfb-dev, update description.
+    - debian/rules: Add --enable-directfb to the configure flags
+
+ -- Jan Lübbe <jluebbe@debian.org>  Fri, 17 Oct 2008 11:30:50 +0200
+
+evas (0.9.9.043-1) experimental; urgency=low
+
+  [ Jan Lübbe ]
+  * New upstream snapshot
+  * debian/rules:
+    - Docs are now prebuilt in the tarball
+  * debian/control:
+    - Depend on eet >= 1.0.1 (configure checks for the new version)
+    - Break long lines
+
+  [ Albin Tonnerre ]
+  * debian/rules: Disable pthreads on hppa
+
+ -- Jan Lübbe <jluebbe@debian.org>  Wed, 21 May 2008 21:12:54 +0200
+
+evas (0.9.9.042-2) experimental; urgency=low
+
+  [ Albin Tonnerre ]
+  * debian/control:
+    - Remove nonexistent Suggests: libevas-all
+    - Recommend libevas-engines
+    - libevas-dev depends on libfontconfig1-dev / libeet-dev for static linking
+
+  [ Jan Lübbe ]
+  * debian/libevas-doc.doc-base: change Section to Programming/C
+
+ -- Jan Lübbe <jluebbe@debian.org>  Sun, 04 May 2008 21:52:05 +0200
+
+evas (0.9.9.042-1) experimental; urgency=low
+
+  * Initial release (Closes: #461969)
+
+ -- Albin Tonnerre <albin.tonnerre@gmail.com>  Fri, 15 Feb 2008 12:52:42 +0100

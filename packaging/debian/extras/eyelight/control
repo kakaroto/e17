@@ -1,0 +1,47 @@
+Source: eyelight
+Section: x11
+Priority: optional
+Maintainer: quaker <quaker66@gmail.com>
+Build-Depends: cdbs, debhelper (>= 6), efl-dev, libemotion0-dev, libpng12-dev, doxygen, libedje-bin
+Standards-Version: 3.8.2
+Homepage: http://www.enlightenment.org
+
+Package: eyelight
+Architecture: any
+Depends: ${shlibs:Depends}, eyelight-data
+Description: EFL presentation tool
+ A presentation tool based on Enlightenment Foundation Libraries.
+ .
+ This package contains the binaries.
+
+Package: libeyelight0
+Architecture: any
+Depends: ${shlibs:Depends}
+Description: EFL presentation tool
+ A presentation tool based on Enlightenment Foundation Libraries.
+ .
+ This package contains the library.
+
+Package: libeyelight-dev
+Architecture: any
+Depends: ${shlibs:Depends}, libeyelight0 (= ${Source-Version})
+Description: EFL presentation tool
+ A presentation tool based on Enlightenment Foundation Libraries.
+ .
+ This package contains developenment files for the library.
+
+Package: eyelight-doc
+Architecture: any
+Depends: ${shlibs:Depends}, eyelight
+Description: EFL presentation tool
+ A presentation tool based on Enlightenment Foundation Libraries.
+ .
+ This package contains documentation.
+
+Package: eyelight-data
+Architecture: all
+Depends: ${shlibs:Depends}, eyelight
+Description: EFL presentation tool
+ A presentation tool based on Enlightenment Foundation Libraries.
+ .
+ This package contains data files.

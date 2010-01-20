@@ -1,0 +1,19 @@
+elementary (0.6.0.063+svn44144-2) unstable; urgency=low
+
+  * Version for packages.enlightenment.org
+
+ -- quaker <quaker66@gmail.com>  Sat, 16 Jan 2010 15:48:54 +0100
+
+elementary (0.6.0.063-1) unstable; urgency=low
+
+  * New upstream snapshot
+  * debian/copyright: update, as the license changed from LGPL2 to LGPL2.1
+  * debian/control: update my email address
+
+ -- Albin Tonnerre <lutin@debian.org>  Sat, 05 Dec 2009 17:22:48 +0100
+
+elementary (0.5.1.0-1) unstable; urgency=low
+
+  * Initial upload (Closes: #539884)
+
+ -- Albin Tonnerre <albin.tonnerre@gmail.com>  Sat, 05 Sep 2009 18:20:17 +0200

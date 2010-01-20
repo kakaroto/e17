@@ -1,0 +1,68 @@
+Source: elementary
+Section: libs
+Priority: optional
+Maintainer: Debian Pkg-e Team <pkg-e-devel@lists.alioth.debian.org>
+Uploaders: Joachim Breitner <nomeata@debian.org>, Albin Tonnerre <lutin@debian.org>
+Build-Depends: debhelper (>= 6), cdbs, doxygen, pkg-config, libeina-dev (>= 0.9.9.063), libeet-dev, libevas-dev (>= 0.9.9.063), libecore-dev (>= 0.9.9.063), libedje-dev (>= 0.9.93.063)
+Standards-Version: 3.8.3
+Homepage: http://www.enlightenment.org
+
+Package: libelementary-svn-05
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, libelementary-data (= ${source:Version})
+Conflicts: libelm-svn-05, libelm-svn-03, libelm-svn-02, libelm-svn-01, libelm0
+Description: The Elementary widget set library
+ Elementary is a widget set based on the Enlightenment Foundation Libraries,
+ primarily aimed at creating graphical user interfaces for mobile and embedded
+ devices.
+
+Package: libelementary-bin
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Conflicts: libelm-bin
+Description: The Elementary widget set library - helper programs
+ Elementary is a widget set based on the Enlightenment Foundation Libraries,
+ primarily aimed at creating graphical user interfaces for mobile and embedded
+ devices.
+ .
+ This package contains the elementary_run and elementary_quicklaunch helpers
+
+Package: libelementary-data
+Architecture: all
+Depends: ${misc:Depends}
+Conflicts: libelm-data
+Description: runtime data-files for libelementary
+ Elementary is a widget set based on the Enlightenment Foundation Libraries,
+ primarily aimed at creating graphical user interfaces for mobile and embedded
+ devices.
+ .
+ This package contains graphics and styles needed by applications using
+ elementary.
+
+Package: libelementary-dev
+Section: libdevel
+Architecture: any
+Depends: ${misc:Depends}, libelementary-svn-05 (= ${binary:Version}), libeet-dev, libeina-dev (>= 0.9.9.063), libevas-dev (>= 0.9.9.063), libecore-dev (>= 0.9.9.063), libedje-dev (>= 0.9.93.063), pkg-config
+Conflicts: libelm-svn-05, libelm-svn-03, libelm-svn-02, libelm-svn-01, libelm0
+Description: Development files for libelementary
+ Elementary is a widget set based on the Enlightenment Foundation Libraries,
+ primarily aimed at creating graphical user interfaces for mobile and embedded
+ devices.
+ .
+ This package contains headers and static libraries for development with
+ libelementary.
+
+Package: libelementary-dbg
+Architecture: any
+Section: debug
+Depends: ${misc:Depends}, libelementary-svn-05 (= ${binary:Version})
+Priority: extra
+Description: debugging symbols for use with libelementary
+ Elementary is a widget set based on the Enlightenment Foundation Libraries,
+ primarily aimed at creating graphical user interfaces for mobile and embedded
+ devices.
+ .
+ This package contains unstripped shared libraries. It is provided primarily
+ to provide a backtrace with names in a debugger, this makes it somewhat easier
+ to interpret core dumps. The libraries are installed in /usr/lib/debug and
+ are automatically used by gdb.
