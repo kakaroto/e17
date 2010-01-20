@@ -512,8 +512,8 @@ int main(int argc, char*argv[])
 
     container= evas_object_rectangle_add(evas);
     evas_object_color_set(container,0,0,0,0);
-    evas_object_event_callback_add(container,EVAS_CALLBACK_KEY_UP, slide_cb, NULL);
-    evas_object_event_callback_add(container,EVAS_CALLBACK_KEY_DOWN, time_cb, NULL);
+    evas_object_event_callback_add(container,EVAS_CALLBACK_KEY_DOWN, slide_cb, NULL);
+    evas_object_event_callback_add(container,EVAS_CALLBACK_KEY_UP, time_cb, NULL);
     evas_object_event_callback_add(container,EVAS_CALLBACK_MOUSE_MOVE, mouse_event_cb, NULL);
     evas_object_event_callback_add(container,EVAS_CALLBACK_MOUSE_IN, mouse_event_cb, NULL);
     evas_object_event_callback_add(container,EVAS_CALLBACK_MOUSE_UP, mouse_event_up_cb, NULL);

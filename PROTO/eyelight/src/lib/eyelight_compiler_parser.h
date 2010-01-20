@@ -310,6 +310,7 @@ void eyelight_compile(Eyelight_Viewer *pres, Eyelight_Slide *slide, int id_slide
 void eyelight_parse(Eyelight_Compiler* compiler,char *p, char* end);
 
 char *eyelight_compile_image_path_new(Eyelight_Viewer *pres, const char *image);
+char *eyelight_compile_object_path_new(Eyelight_Viewer *pres, const char *image);
 void eyelight_theme_areas_create(Eyelight_Viewer *pres, Eyelight_Slide *slide);
 Eina_List *eyelight_theme_areas_get(Eyelight_Slide *slide);
 void eyelight_theme_area_desc_get(Eyelight_Slide *slide, const char* area_name,

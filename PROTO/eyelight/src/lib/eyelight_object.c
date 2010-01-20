@@ -559,7 +559,7 @@ Evas_Object *eyelight_object_item_video_add(Eyelight_Viewer *pres, Eyelight_Slid
                 edje_object_load_error_get(o_video));
 
 
-    char *video_path = eyelight_compile_image_path_new(pres,video);
+    char *video_path = eyelight_compile_object_path_new(pres,video);
 
     if(!ecore_file_exists(video_path))
         WARN("Video %s not found !\n",video_path);
@@ -742,7 +742,7 @@ Evas_Object *eyelight_object_item_edje_add(Eyelight_Viewer *pres, Eyelight_Slide
         WARN("load group eyelight/item_edje error! %d \n",
                 edje_object_load_error_get(o_edje));
 
-    char *edje_path = eyelight_compile_image_path_new(pres,edje_file);
+    char *edje_path = eyelight_compile_object_path_new(pres,edje_file);
     Evas_Object *o_inter = edje_object_add(pres->evas);
     edje_object_scale_set(o_inter, pres->current_scale);
 

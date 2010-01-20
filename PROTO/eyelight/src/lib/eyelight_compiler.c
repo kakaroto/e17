@@ -368,6 +368,21 @@ char *eyelight_compile_image_path_new(Eyelight_Viewer *pres, const char *image)
     return path_image;
 }
 
+char *eyelight_compile_object_path_new(Eyelight_Viewer *pres, const char *image)
+{
+    if(image[0] == '/')
+        return strdup(image);
+
+    char *path_pres = ecore_file_dir_get(pres->elt_file ? pres->elt_file : pres->dump_in);
+    char *path_image = calloc(strlen(path_pres)+1+strlen(image)+1,sizeof(char));
+    path_image[0] = '\0';
+    strcat(path_image, path_pres);
+    strcat(path_image,"/");
+    strcat(path_image,image);
+    EYELIGHT_FREE(path_pres);
+
+    return path_image;
+}
 
 /*
  * @brief compile a block item (text ...)
