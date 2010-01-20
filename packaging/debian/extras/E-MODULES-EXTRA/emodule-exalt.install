@@ -1,4 +1,0 @@
-debian/tmp/usr/lib/enlightenment/modules/exalt/*.desktop
-debian/tmp/usr/lib/enlightenment/modules/exalt/*.edj
-debian/tmp/usr/lib/enlightenment/modules/exalt/*/*.so
-debian/tmp/usr/lib/enlightenment/modules/exalt/locale/*

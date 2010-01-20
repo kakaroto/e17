@@ -1,6 +1,0 @@
-debian/tmp/usr/include/*
-debian/tmp/usr/lib/lib*.a
-debian/tmp/usr/lib/lib*.so
-debian/tmp/usr/lib/ewl/engines/*.so
-debian/tmp/usr/lib/pkgconfig/ewl.pc
-debian/tmp/usr/share/ewl/examples usr/share/doc/libewl1-dev

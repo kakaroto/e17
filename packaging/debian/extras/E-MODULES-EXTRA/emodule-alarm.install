@@ -1,4 +1,0 @@
-debian/tmp/usr/lib/enlightenment/modules/alarm/*.desktop
-debian/tmp/usr/lib/enlightenment/modules/alarm/*.edj
-debian/tmp/usr/lib/enlightenment/modules/alarm/*/*.so
-debian/tmp/usr/lib/enlightenment/modules/alarm/locale/*

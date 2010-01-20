@@ -11,7 +11,7 @@ DEBIAN_SUITES=($UNSTABLE_CODENAME $TESTING_CODENAME $STABLE_CODENAME
     "unstable" "testing" "stable")
 
 # List of Ubuntu suites. Update these when needed.
-UBUNTU_SUITES=("karmic" "jaunty" "intrepid" "hardy")
+UBUNTU_SUITES=("lucid" "karmic" "jaunty" "intrepid" "hardy")
 
 # Mirrors to use. Update these to your preferred mirror.
 DEBIAN_MIRROR="ftp.debian.org"
@@ -53,7 +53,7 @@ else
 fi
 
 case $ARCH in
-	armel|lpia)
+	armel|lpia|powerpc)
 		if $(echo ${UBUNTU_SUITES[@]} | grep -q "$DIST"); then
     			MIRRORSITE="http://$UBUNTU_PORTS_MIRROR/ubuntu-ports/"
 		fi
@@ -64,7 +64,7 @@ OTHERMIRROR="deb file://$PBUILDERPLACE/$NAME/result/ /"
 
 if $(echo ${UBUNTU_SUITES[@]} | grep -q "$DIST"); then
 	case $ARCH in
-		armel|lpia)
+		armel|lpia|powerpc)
 			if [ -z "$OTHERMIRROR" ]; then
 				OTHERMIRROR="deb http://$UBUNTU_PORTS_MIRROR/ubuntu-ports/ $DIST-security $COMPONENTS | deb http://$UBUNTU_PORTS_MIRROR/ubuntu-ports/ $DIST-updates $COMPONENTS"
 			else
@@ -90,9 +90,6 @@ BINDMOUNTS="${CCACHE_DIR} $PBUILDERPLACE/$NAME/result"
 
 # build dependencies + ccache
 
-BUILDDEPENDS="cdbs m4 autoconf automake automake1.4 automake1.7 automake1.9 libtool pkg-config texinfo zlib1g-dev libpng12-dev libjpeg62-dev libfreetype6-dev xorg-dev libx11-dev libx11-xcb-dev x11proto-.*-dev libdbus-1-dev libdbus-glib-1-dev dbus dbus-x11 hal libhal-dev libhal-storage-dev libpam0g-dev libpam-runtime librsvg2-dev libinotifytools0-dev inotify-tools curl libcurl3 libcurl3-openssl-dev libcurl4-openssl-dev openssl openssl-blacklist libungif4-dev libungif4g libtiff4-dev cvs libmpd-dev libasound2-dev libxine1 locales wpasupplicant git gettext git-core subversion libdirectfb-bin libdirectfb-dev libxslt1-dev libx11* xsltproc flex bison python-dbus python-setuptools libdirectfb-dev python-all-dev python-pyrex thunar mpd xorg-dev doxygen"
-if [ "$DIST" = "karmic" ]; then
-	EXTRAPACKAGES="$BUILDDEPENDS ccache gcc-4.3 g++-4.3"
-else
-	EXTRAPACKAGES="$BUILDDEPENDS ccache"
-fi
+BUILDDEPENDS="cdbs m4 autoconf automake automake1.4 automake1.7 automake1.9 libtool pkg-config texinfo xorg-dev cvs libmpd-dev libasound2-dev libxine1 locales git gettext git-core subversion python-setuptools python-all-dev python-pyrex thunar mpd xorg-dev doxygen"
+
+EXTRAPACKAGES="$BUILDDEPENDS ccache"

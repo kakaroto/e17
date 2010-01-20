@@ -54,6 +54,10 @@ Suite: karmic
 Config: generic-ubuntu
 Keyring: ubuntu-archive-keyring.gpg
 
+Suite: lucid
+Config: generic-ubuntu
+Keyring: ubuntu-archive-keyring.gpg
+
 Suite: oldstable
 Keyring: debian-archive-keyring.gpg
 

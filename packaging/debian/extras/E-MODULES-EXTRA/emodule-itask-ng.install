@@ -1,4 +1,0 @@
-debian/tmp/usr/lib/enlightenment/modules/itask-ng/*.desktop
-debian/tmp/usr/lib/enlightenment/modules/itask-ng/*.edj
-debian/tmp/usr/lib/enlightenment/modules/itask-ng/*/*.so
-debian/tmp/usr/lib/enlightenment/modules/itask-ng/locale/*

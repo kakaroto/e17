@@ -1,3 +1,0 @@
-debian/tmp/usr/lib/enlightenment/modules/diskio/*.desktop
-debian/tmp/usr/lib/enlightenment/modules/diskio/*.edj
-debian/tmp/usr/lib/enlightenment/modules/diskio/*/*.so

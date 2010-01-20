@@ -27,6 +27,8 @@ md5path="$eurl/SOURCES-MD5"
 localpath="$HOME/repository_folder"
 # this is where chroot(packed/unpacked) and final result before tree preparation will be, change if you haven't got much space in /var
 pbuilderplace="/var/cache/pbuilder"
+# set to 1 if pbuilderplace is in place where you have write permissions.
+pbuilderplaceperms="0"
 # do apt-get update before installing deps?
 doupdate="1"
 # install dependencies on --setup?
@@ -46,16 +48,27 @@ distros=(
 # karmic - x86*
 "karmic#i386"
 "karmic#amd64"
-# hardy, intrepid, jaunty - armel
+# lucid - x86*
+"lucid#i386"
+"lucid#amd64"
+# armel
 "hardy#armel"
 "intrepid#armel"
 "jaunty#armel"
 "karmic#armel"
-# hardy, intrepid, jaunty - lpia
+"lucid#armel"
+# lpia
 "hardy#lpia"
 "intrepid#lpia"
 "jaunty#lpia"
 "karmic#lpia"
+"lucid#lpia"
+# powerpc
+"hardy#powerpc"
+"intrepid#powerpc"
+"jaunty#powerpc"
+"karmic#powerpc"
+"lucid#powerpc"
 ## debian
 # lenny - x86*
 "lenny#i386"
@@ -70,6 +83,10 @@ distros=(
 "lenny#armel"
 "squeeze#armel"
 "sid#armel"
+# lenny, squeeze, sid - powerpc
+"lenny#powerpc"
+"squeeze#powerpc"
+"sid#powerpc"
 )
 
 # list of distros to build database for.
@@ -79,6 +96,7 @@ dtb=(
 "intrepid"
 "jaunty"
 "karmic"
+"lucid"
 ## debian
 "lenny"
 "squeeze"
@@ -91,6 +109,7 @@ archs=(
 "amd64"
 "armel"
 "lpia"
+"powerpc"
 )
 
 # list of things to compile, comment out things which you don't want to compile, or which are not made for your distro
@@ -112,20 +131,26 @@ compile_list=(
 "emotion"
 "ethumb"
 "exml"
-"ewl"
 "etk"
 "exchange"
+"epdf"
+"libeweather"
 # extra apps
 "ecomp"
-"ecomorph-e17"
 "emprint"
 "exalt"
-"edje_editor"
 "edje_viewer"
-"elitaire"
+"edje_player"
+"empower"
 "estickies"
+"entrance"
+"shellementary"
 "expedite"
 "image-viewer"
+"eyesight"
+"ephoto"
+"eyelight"
+"eyelight_edit"
 # extra modules
 "E-MODULES-EXTRA"
 # python stuff
@@ -144,7 +169,7 @@ compile_list=(
 "python-efl_utils"
 # python apps
 "keys"
-"shellementary"
+"editje"
 # canola stuff - ubuntu only
 "python-dispatcher"
 "lightmediascanner"
@@ -163,7 +188,7 @@ download() {
 echo "DOWNLOADING PACKAGES WITH RSYNC..."
 for down in ${compile_list[@]}; do
 	case $down in
-		eina|eet|evas|ecore|embryo|edje|e_dbus|efreet|e17|elementary) rsync --partial --progress --recursive --rsh=ssh $username@$eserver:$path/main/$down ./
+		eina|eet|evas|ecore|embryo|edje|e_dbus|efreet|e|elementary) rsync --partial --progress --recursive --rsh=ssh $username@$eserver:$path/main/$down ./
 		;;
 		*) rsync --partial --progress --recursive --rsh=ssh $username@$eserver:$path/extras/$down ./
 		;;
@@ -178,7 +203,9 @@ for md5 in ${compile_list[@]}; do
 		;;
 		e) check="e17"
 		;;
-		edje_editor) check="edje-editor"
+		edje_player) check="edje-player"
+		;;
+		edje_viewer) check="edje-viewer"
 		;;
 		E-MODULES-EXTRA) check="emodules"
 		;;
@@ -228,7 +255,7 @@ sed -i 's/OTHERMIRROR=\"deb file/#OTHERMIRROR=\"deb file/g' $HOME/.pbuilderrc
 echo "CREATING CHROOTS..."
 for chroots in ${distros[@]}; do
 	echo "Creating chroot: $(echo $chroots | sed 's/#.*//'):$(echo $chroots | sed 's/.*#//')"
-	sudo mkdir $pbuilderplace/build/$(echo $chroots | sed 's/#.*//')-$(echo $chroots | sed 's/.*#//')
+	sudo mkdir -p $pbuilderplace/build/$(echo $chroots | sed 's/#.*//')-$(echo $chroots | sed 's/.*#//')
 	sudo DIST=$(echo $chroots | sed 's/#.*//') ARCH=$(echo $chroots | sed 's/.*#//') PBUILDERPLACE="$pbuilderplace" pbuilder create --basetgz $pbuilderplace/$(echo $chroots | sed 's/#.*//')-$(echo $chroots | sed 's/.*#//')-base.tgz --buildplace $pbuilderplace/build --debootstrapopts --include=sysv-rc
 	if [ "$?" -ge "1" ]; then
 		echo "ERROR, exitting."
@@ -246,7 +273,7 @@ updatechroots() {
 echo "UPDATING CHROOTS..."
 for uchroots in ${distros[@]}; do
 	echo "Updating chroot: $(echo $uchroots | sed 's/#.*//'):$(echo $uchroots | sed 's/.*#//')"
-	sudo mkdir $pbuilderplace/build/$(echo $uchroots | sed 's/#.*//')-$(echo $uchroots | sed 's/.*#//')
+	sudo mkdir -p $pbuilderplace/build/$(echo $uchroots | sed 's/#.*//')-$(echo $uchroots | sed 's/.*#//')
 	sudo DIST=$(echo $uchroots | sed 's/#.*//') ARCH=$(echo $uchroots | sed 's/.*#//') PBUILDERPLACE="$pbuilderplace" pbuilder update --override-config --basetgz $pbuilderplace/$(echo $uchroots | sed 's/#.*//')-$(echo $uchroots | sed 's/.*#//')-base.tgz
 	if [ "$?" -ge "1" ]; then
 		echo "ERROR, exitting."
@@ -310,35 +337,10 @@ for distrocomp in ${distros[@]}; do
 		pbuildpath="$pbuilderplace/$(echo $distrocomp | sed 's/#.*//')-$(echo $distrocomp | sed 's/.*#//')"
 		cd $comp
 		echo "Compiling: $comp"
-		if [ "$comp" = "elitaire" ] && [ "$(echo $distrocomp | sed 's/#.*//')" = "karmic" ]; then
-			rm updatealt
-			echo -e "rm /usr/bin/gcc /usr/bin/g++\nln -s /usr/bin/gcc-4.3 /usr/bin/gcc\nln -s /usr/bin/g++-4.3 /usr/bin/g++" > updatealt
-			chmod +x updatealt
-			sudo DIST="$(echo $distrocomp | sed 's/#.*//')" ARCH="$(echo $distrocomp | sed 's/.*#//')" PBUILDERPLACE="$pbuilderplace" pbuilder execute --buildplace $pbuilderplace/build/$(echo $distrocomp | sed 's/#.*//')-$(echo $distrocomp | sed 's/.*#//') --save-after-exec --no-targz -- updatealt
-			if [ "$?" -ge "1" ]; then
-				echo "ERROR, exitting."
-				exit 1
-			fi
-			sudo DIST="$(echo $distrocomp | sed 's/#.*//')" ARCH="$(echo $distrocomp | sed 's/.*#//')" PBUILDERPLACE="$pbuilderplace" pbuilder build --debbuildopts "-b" --buildresult $pbuilderplace/$(echo $distrocomp | sed 's/#.*//')-$(echo $distrocomp | sed 's/.*#//')/result --buildplace $pbuilderplace/build/$(echo $distrocomp | sed 's/#.*//')-$(echo $distrocomp | sed 's/.*#//') --no-targz *.dsc
-			if [ "$?" -ge "1" ]; then
-				echo "ERROR, exitting."
-				exit 1
-			fi
-			rm updatealt
-			echo -e "rm /usr/bin/gcc /usr/bin/g++\nln -s /usr/bin/gcc-4.4 /usr/bin/gcc\nln -s /usr/bin/g++-4.4 /usr/bin/g++" > updatealt
-			chmod +x updatealt
-			sudo DIST="$(echo $distrocomp | sed 's/#.*//')" ARCH="$(echo $distrocomp | sed 's/.*#//')" PBUILDERPLACE="$pbuilderplace" pbuilder execute --buildplace $pbuilderplace/build/$(echo $distrocomp | sed 's/#.*//')-$(echo $distrocomp | sed 's/.*#//') --save-after-exec --no-targz -- updatealt
-			if [ "$?" -ge "1" ]; then
-				echo "ERROR, exitting."
-				exit 1
-			fi
-			rm updatealt
-		else
-			sudo DIST="$(echo $distrocomp | sed 's/#.*//')" ARCH="$(echo $distrocomp | sed 's/.*#//')" PBUILDERPLACE="$pbuilderplace" pbuilder build --debbuildopts "-b" --buildresult $pbuilderplace/$(echo $distrocomp | sed 's/#.*//')-$(echo $distrocomp | sed 's/.*#//')/result --buildplace $pbuilderplace/build/$(echo $distrocomp | sed 's/#.*//')-$(echo $distrocomp | sed 's/.*#//') --no-targz *.dsc
-			if [ "$?" -ge "1" ]; then
-				echo "ERROR, exitting."
-				exit 1
-			fi
+		sudo DIST="$(echo $distrocomp | sed 's/#.*//')" ARCH="$(echo $distrocomp | sed 's/.*#//')" PBUILDERPLACE="$pbuilderplace" pbuilder build --debbuildopts "-b" --buildresult $pbuilderplace/$(echo $distrocomp | sed 's/#.*//')-$(echo $distrocomp | sed 's/.*#//')/result --buildplace $pbuilderplace/build/$(echo $distrocomp | sed 's/#.*//')-$(echo $distrocomp | sed 's/.*#//') --no-targz *.dsc
+		if [ "$?" -ge "1" ]; then
+			echo "ERROR, exitting."
+			exit 1
 		fi
 		cd ..
 		sudo rm -rf $pbuilderplace/build/$(echo $distrocomp | sed 's/#.*//')-$(echo $distrocomp | sed 's/.*#//')/tmp/buildd/*
@@ -500,6 +502,22 @@ cd $localpath
 if [ "$?" -ge "1" ]; then
 	echo "Failed to change directory to $localpath. It looks that folder does not exist, run script with --setup."
 	exit 1
+fi
+
+if test "$pbuilderplaceperms" = "1"; then
+	mkdir -p $pbuilderplace/aptcache
+	mkdir -p $pbuilderplace/build
+	mkdir -p $pbuilderplace/pbuildd
+	mkdir -p $pbuilderplace/pbuilder-mnt
+	mkdir -p $pbuilderplace/pbuilder-umlresult
+	mkdir -p $pbuilderplace/result
+else
+	sudo mkdir -p $pbuilderplace/aptcache
+	sudo mkdir -p $pbuilderplace/build
+	sudo mkdir -p $pbuilderplace/pbuildd
+	sudo mkdir -p $pbuilderplace/pbuilder-mnt
+	sudo mkdir -p $pbuilderplace/pbuilder-umlresult
+	sudo mkdir -p $pbuilderplace/result
 fi
 
 while [ "$1" != "" ]; do
