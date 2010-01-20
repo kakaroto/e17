@@ -26,11 +26,5 @@ AUTHORS \
 COPYING \
 COPYING-PLAIN \
 autogen.sh \
-eyelight.pc.in \
-eyelight.pc \
-README.in \
-README \
-Doxyfile \
-doc \
-gendoc
+README
 

@@ -15,5 +15,6 @@ clean-local:
 	rm -rf *.edj *~
 
 uninstall:
-	rm -rf $(DESTDIR)$(pkgdatadir)²
+	rm -rf $(DESTDIR)$(pkgdatadir)
 
+EXTRA_DIST = theme.edc $(wildcard images/*.png)
