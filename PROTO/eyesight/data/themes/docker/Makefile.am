@@ -9,5 +9,4 @@ docker.edj: Makefile
 clean:
 	rm -f *.edj
 
-EXTRA_DIST = border_trans.edc border_opaque.edc error_dialog.edc main.edc \
-	toolbar1_icon.edc
+EXTRA_DIST = $(wildcard *.edc) $(wildcard fonts/*.ttf)
