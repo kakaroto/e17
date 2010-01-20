@@ -69,17 +69,17 @@ e16.spec
 e16*.tar.gz
 
 docs/*.html
+docs/e16.1
 
 misc/e16-gnome.desktop
 misc/e16-kde.desktop
 misc/e16.desktop
+misc/e16.desktop-app
+misc/starte16
 
 dox/edox
 eesh/eesh
 epp/epp
 src/e16
-
-man/e16.man
-man/e16.pod
 
 build
