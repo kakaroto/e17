@@ -25,6 +25,7 @@ import evas
 import sysconfig
 from details import EditjeDetails
 from details_widget_entry import WidgetEntry
+from details_widget_signals import WidgetSignal
 from details_widget_boolean import WidgetBoolean
 from details_widget_color import WidgetColor
 from details_widget_button import WidgetButton
@@ -233,7 +234,7 @@ class SignalDetails(EditjeDetails):
         self.content_set("part_state.swallow", self._header_table)
 
         prop = Property(parent, "signal")
-        prop.widget_add("s", WidgetEntry(self))
+        prop.widget_add("s", WidgetSignal(self))
         self["main"].property_add(prop)
 
         prop = Property(parent, "source")

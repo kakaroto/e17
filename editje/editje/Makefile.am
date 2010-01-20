@@ -27,6 +27,7 @@ details_widget_combo.py \
 details_widget_entry.py \
 details_widget_font.py \
 details_widget_partlist.py \
+details_widget_signals.py \
 details_widget.py \
 editable_animation.py \
 editable_part.py \
