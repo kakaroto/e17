@@ -11,7 +11,7 @@ filesdir = $(datadir)
 files_DATA = module.desktop eweather.edj
 
 EXTRA_DIST = module.desktop.in \
-	     eweather.edc
+	     eweather.edc icon-weather.png
 
 %.edj:  %.edc
 	$(EDJE_CC) $(EDJE_FLAGS) $< $@
