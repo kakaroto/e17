@@ -22,6 +22,6 @@ install-exec-hook:
 uninstall-hook:
 			rm -f $(DESTDIR)$(bindir)/empower-askpass
 
-EXTRA_DIST = 
+EXTRA_DIST = Empower.h
 
 MAINTAINERCLEANFILES = Makefile.in config.h.in
