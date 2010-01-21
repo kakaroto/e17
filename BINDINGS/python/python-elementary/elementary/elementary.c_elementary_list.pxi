@@ -172,7 +172,11 @@ cdef class ListItem:
 
         @rtype: str
         """
-        return elm_list_item_label_get(self.item)
+        cdef char *l
+        l = elm_list_item_label_get(self.item)
+        if l == NULL:
+            return None
+        return l
 
     def label_set(self, char *label):
         """Set the label string for this list item."""

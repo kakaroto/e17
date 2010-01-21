@@ -84,7 +84,11 @@ cdef class HoverselItem:
         return (icon_file, icon_group, cicon_type)
 
     def label_get(self):
-        return elm_hoversel_item_label_get(self.item)
+        cdef char *l
+        l = elm_hoversel_item_label_get(self.item)
+        if l == NULL:
+            return None
+        return l
 
 cdef class Hoversel(Object):
     def __init__(self, c_evas.Object parent):
