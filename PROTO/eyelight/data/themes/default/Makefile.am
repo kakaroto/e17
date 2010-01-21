@@ -1,22 +1,26 @@
-MAINTAINERCLEANFILES = Makefile.in theme.edj
+MAINTAINERCLEANFILES = Makefile.in
+
 SUBDIRS = transition fonts
 
-EDJ = theme.edj
 
+EDJE_FLAGS = \
+-v \
+-id $(top_srcdir)/data/themes/default \
+-fd $(top_srcdir)/data/themes/default
 
-EDJE_FLAGS = -v
-
-theme.edj:  theme.edc
-	$(EDJE_CC) $(EDJE_FLAGS) theme.edc
+theme.edj: Makefile $(EXTRA_DIST)
+	$(EDJE_CC) $(EDJE_FLAGS) \
+	$(top_srcdir)/data/themes/default/theme.edc \
+	$(top_builddir)/data/themes/default/theme.edj
 
 icondir = $(pkgdatadir)/themes/default
-icon_DATA =  $(EDJ)
+icon_DATA = theme.edj
 
 clean-local:
 	rm -rf *.edj *~
 
 uninstall:
-	rm -rf $(DESTDIR)$(pkgdatadir)²
+	rm -rf $(DESTDIR)$(pkgdatadir)/themes/default
 
 EXTRA_DIST = \
 background_bottom.png \
