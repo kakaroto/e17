@@ -64,6 +64,8 @@ data/Makefile
 data/other/Makefile
 data/themes/Makefile
 data/themes/docker/Makefile
+data/themes/docker/img/Makefile
+data/themes/docker/main_window/Makefile
 ])
 
 echo

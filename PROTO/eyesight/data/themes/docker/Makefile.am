@@ -1,3 +1,5 @@
+SUBDIRS = img main_window
+
 EDJE_FLAGS = -v -id img/ -id img/icons -fd fonts/
 
 themedir = $(prefix)/share/eyesight/themes/docker

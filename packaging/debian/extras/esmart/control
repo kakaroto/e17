@@ -17,7 +17,7 @@ Description: The Esmart Prototype Library
 Package: libesmart0-dev
 Architecture: any
 Section: libdevel
-Depends: libesmart0 (= ${Source-Version}), efl-dev, libepsilon0-dev
+Depends: libesmart0 (= ${Source-Version}), efl-dev, libepsilon0-dev, libimlib2-dev
 Replaces: libesmart-dev
 Description: Development files for Esmart
  Esmart is a utility library based on the libraries provided by the
