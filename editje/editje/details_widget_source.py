@@ -24,21 +24,16 @@ from details_widget_entry_button import WidgetEntryButton
 from floater import Floater
 
 
-class WidgetFont(WidgetEntryButton):
-
-    def __init__(self, parent):
-        WidgetEntryButton.__init__(self,parent)
-        self.entry_value = "Sans"
-        self.rect.label_set("Aa")
+class WidgetSource(WidgetEntryButton):
 
     def _items_load(self):
         list = []
 
-        for item in  self.parent.evas.font_available_list():
+        for item in self.parent.e.parts:
             list.append((item, item))
         return list
 
     def _actions_init(self):
-        self._pop.title_set("Fonts")
+        self._pop.title_set("Parts list")
         self._pop.action_add("None", self._select_cb, "")
         WidgetEntryButton._actions_init(self)

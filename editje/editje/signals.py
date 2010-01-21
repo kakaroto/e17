@@ -26,6 +26,7 @@ import sysconfig
 from details import EditjeDetails
 from details_widget_entry import WidgetEntry
 from details_widget_signals import WidgetSignal
+from details_widget_source import WidgetSource
 from details_widget_boolean import WidgetBoolean
 from details_widget_color import WidgetColor
 from details_widget_button import WidgetButton
@@ -238,7 +239,7 @@ class SignalDetails(EditjeDetails):
         self["main"].property_add(prop)
 
         prop = Property(parent, "source")
-        prop.widget_add("s", WidgetEntry(self))
+        prop.widget_add("s", WidgetSource(self))
         self["main"].property_add(prop)
 
         prop = Property(parent, "delay")
@@ -259,11 +260,11 @@ class SignalDetails(EditjeDetails):
         self.group_add("out")
 
         prop = Property(parent, "signal")
-        prop.widget_add("s", WidgetEntry(self))
+        prop.widget_add("s", WidgetSignal(self))
         self["out"].property_add(prop)
 
         prop = Property(parent, "source")
-        prop.widget_add("s", WidgetEntry(self))
+        prop.widget_add("s", WidgetSource(self))
         self["out"].property_add(prop)
 
         self.e.signal.callback_add("program.changed",self._update)
