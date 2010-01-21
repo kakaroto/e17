@@ -24,17 +24,44 @@ from elementary import Layout, Button, InnerWindow, Box, Pager, Background, \
 
 import sysconfig
 
-class Floater:
-
+class Floater(object):
     def __init__(self, parent):
         self._parent = parent
         self.popup = Layout(parent)
+        self.size_hint_min_set(0, 0)
+        self._size_hint_min_cbs = []
+        self._action_btns = []
+        self._min_size_hints = [0, 0]
 
         theme_file = sysconfig.theme_file_get("default")
         self.popup.file_set(theme_file, "editje/floater")
 
     def title_set(self, title):
+        self.title = title
         self.popup.edje_get().part_text_set("title.text", title)
+
+    def size_hint_min_get(self):
+        return self._min_size_hints
+
+    def size_hint_min_set(self, w, h):
+        self._min_size_hints = [w, h]
+
+    def on_changed_size_hints_add(self, func, *args, **kargs):
+        if not callable(func):
+            raise TypeError("func must be callable")
+
+        r = (func, args, kargs)
+        self._size_hint_min_cbs.append(r)
+
+    def on_changed_size_hints_del(self, func):
+        i = None
+        for i, r in enumerate(self._size_hint_min_cbs):
+            if func == r[0]:
+                break
+        else:
+            raise ValueError("Callback %s was not registered before" % func)
+
+        self._size_hint_min_cbs.pop(i)
 
     def content_set(self, content):
         content.size_hint_weight_set(1.0, 1.0)
@@ -43,6 +70,8 @@ class Floater:
 
     def action_add(self, label, func_cb, data = None):
         btn = Button(self._parent)
+        self._action_btns.append(btn)
+        btn.on_changed_size_hints_add(self._size_hint_min_recalc)
         btn.label_set(label)
         btn.callback_clicked_add(self._action_btn_clicked)
         btn.size_hint_weight_set(1.0, 1.0)
@@ -50,6 +79,22 @@ class Floater:
         btn.data["clicked"] = (func_cb, data)
         btn.show()
         self.popup.edje_get().part_box_append("actions", btn)
+
+    def _children_changed_cb(self):
+        for cb in self._size_hint_min_cbs:
+            func, args, kargs = cb
+            func(self, *args, **kargs)
+
+    def _size_hint_min_recalc(self, obj, *args, **kwargs):
+        o_min_w, o_min_h = self.size_hint_min_get()
+        self.size_hint_min_set(0, 0)
+
+        for b in self._action_btns:
+            b_min_w, b_min_h = b.size_hint_min_get()
+            self._min_size_hints[0] += b_min_w + 10
+            self._min_size_hints[1] += b_min_h + 10
+
+        self._children_changed_cb()
 
     def show(self):
         self.popup.show()

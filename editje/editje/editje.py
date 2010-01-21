@@ -150,8 +150,7 @@ class Editje(elementary.Window):
     ###########
     def _toolbar_static_init(self):
         self._toolbar_filename_cb(self, self.e.filename)
-        self.e.callback_add("filename.changed",
-                                  self._toolbar_filename_cb)
+        self.e.callback_add("filename.changed", self._toolbar_filename_cb)
 
         self.main_edje.part_text_set("details_group_label", "Group:")
 

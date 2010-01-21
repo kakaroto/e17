@@ -317,13 +317,13 @@ collections {
             mouse_events: 0;
             description {
                state: "default" 0.0;
-               align: 1.0 0.5;
+               align: 0.0 0.5;
                color_class: "default_label";
                text {
                   text: "LABEL";
                   font: "Sans:style=Bold";
                   size: 10;
-                  align: 1.0 0.5;
+                  align: 0.0 0.5;
                }
                rel1 {
                   to: "details_bg";
@@ -333,7 +333,7 @@ collections {
                rel2 {
                   to: "details_bg";
                   relative: 0.0 0.9;
-                  offset: 80 -1;
+                  offset: 60 -1;
                }
             }
          }
@@ -777,7 +777,7 @@ collections {
    group {
        name: "editje/collapsable/part_properties";
        parts {
-           HEADER_BASE(50, 20, "cl.content")
+           HEADER_BASE(65, 20, "cl.content")
            part {
                name: "part_name.swallow";
                type: SWALLOW;
@@ -826,7 +826,7 @@ collections {
    group {
        name: "editje/collapsable/part_state";
        parts {
-           HEADER_BASE(35, 15, "cl.content")
+           HEADER_BASE(40, 15, "cl.content")
            part {
                name: "part_state.swallow";
                type: SWALLOW;
@@ -927,23 +927,23 @@ collections {
             mouse_events: 0;
             description {
                state: "default" 0.0;
-               align: 0.5 0.5;
+               align: 0.5 0.0;
                color: 50 50 50 255;
                text {
                   text: "title";
                   font: "Sans";
                   size: 10;
-                  align: 0.0 0.5;
+                  align: 0.0 0.0;
                }
                rel1 {
-                   to: "shadow";
-                   relative: 0.0 0.0;
-                   offset: 5 0;
+                  to: "shadow";
+                  relative: 0.0 0.0;
+                  offset: 1 0;
                }
                rel2 {
                   to: "shadow";
                   relative: 1.0 1.0;
-                  offset: -6 -1;
+                  offset: -1 -1;
                }
             }
          }

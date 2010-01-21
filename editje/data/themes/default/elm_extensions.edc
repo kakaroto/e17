@@ -42,7 +42,8 @@
          }
          style {
             name: "entry_single_textblock_disabled_style";
-            base: "font=Sans font_size=10 align=left color=#00000080 wrap=none";
+            base: "font=Sans font_size=10 align=center color=#00000080" \
+	      " wrap=none";
             tag:  "br" "\n";
          }
       }

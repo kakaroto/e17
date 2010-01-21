@@ -34,6 +34,8 @@ import popups
 
 
 class StatesPopUp(Floater):
+    padding_x = 20
+    padding_y = 20
 
     def __init__(self, parent):
         Floater.__init__(self, parent)
@@ -47,9 +49,11 @@ class StatesPopUp(Floater):
 
         self.content_set(self.states)
 
-        self._parent.e.part.callback_add("states.changed",
-                                               self._list_populate)
+        self._parent.e.part.callback_add("states.changed", self._list_populate)
         self._list_populate()
+
+    def padding_get(self):
+        return self.padding_x, self.padding_y
 
     def _list_populate(self, *args):
         self.states.clear()
@@ -71,6 +75,8 @@ class StatesPopUp(Floater):
 
 
 class PartStateDetails(EditjeDetails):
+    state_pop_min_w = 200
+    state_pop_min_h = 300
 
     def __init__(self, parent, anim=False):
         if anim:
@@ -156,44 +162,53 @@ class PartStateDetails(EditjeDetails):
                                             "editje/collapsable",
                                             self._anim_opt_clicked_cb)
 
-    def _state_popup_place(self, popup):
+    def _state_popup_place(self, popup, *args, **kargs):
         x, y, w, h = self.edje_get().geometry
         cw, ch = self.evas.size
-        ow, oh = 200, 300
+        ow, oh = popup.size_hint_min_get()
+
+        if ow < self.state_pop_min_w:
+            ow = self.state_pop_min_w
+        if oh < self.state_pop_min_h:
+            oh = self.state_pop_min_h
+
         ox = x - (ow - w) / 2
         oy = y - (oh - h) / 2
 
-        if ox < 0:
-            ox = 0
-        elif ox + ow >= cw:
-            ox = cw - ow
+        padding_x, padding_y = popup.padding_get()
 
-        if oy < 0:
-            oy = 0;
-        elif oy + oh >= ch:
-            oy = ch - oh
+        if ox - padding_x < 0:
+            ox = padding_x
+        elif ox + ow + padding_x >= cw:
+            ox = cw - ow - padding_x
+
+        if oy < padding_y:
+            oy = padding_y
+        elif oy + oh + padding_y>= ch:
+            oy = ch - oh - padding_y
 
         popup.move(ox, oy)
         popup.resize(ow, oh)
 
     def _edit_opt_clicked_cb(self, obj, emission, source):
         popup = StatesPopUp(self._parent)
+        popup.on_changed_size_hints_add(self._state_popup_place)
         popup.action_add("Select", self._state_selected_cb)
         popup.action_add("Reset to", self._reset_to_state_cb)
         popup.action_add("Delete", self._state_delete_cb)
         popup.action_add("Cancel", self._popup_cancel_cb)
-        self._state_popup_place(popup)
         popup.show()
 
     def _anim_opt_clicked_cb(self, obj, emission, source):
         popup = StatesPopUp(self._parent)
+        popup.on_changed_size_hints_add(self._state_popup_place)
         popup.action_add("Reset to", self._reset_to_state_cb)
         popup.action_add("Cancel", self._popup_cancel_cb)
-        self._state_popup_place(popup)
         popup.show()
 
     def _state_selected_cb(self, popup, data):
         self.e.part.state.name = popup.selected_get()
+        popup.on_changed_size_hints_del(self._state_popup_place)
         popup.close()
 
     def _state_delete_cb(self, popup, data):
@@ -207,9 +222,11 @@ class PartStateDetails(EditjeDetails):
         self.state.copy_from(popup.selected_get())
         print "COPIED",popup.selected_get(),"TO",self.state.name
         self.e.part.state.event_emit("state.changed", self.state.name)
+        popup.on_changed_size_hints_del(self._state_popup_place)
         popup.close()
 
     def _popup_cancel_cb(self, popup, data):
+        popup.on_changed_size_hints_del(self._state_popup_place)
         popup.close()
 
     def editable_set(self, obj):
