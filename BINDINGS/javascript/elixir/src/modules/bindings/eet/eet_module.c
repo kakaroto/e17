@@ -10,8 +10,16 @@ static const elixir_parameter_t* _object_str_object_str[] = {
   &jsobject_parameter,
   &string_parameter,
   &jsobject_parameter,
-  &string_parameter
+  &string_parameter,
+  NULL
 };
+
+static const elixir_parameter_t* _eet_data_str[] = {
+  &eet_parameter,
+  &string_parameter,
+  NULL
+};
+
 
 static JSBool
 elixir_eet_data_encode(JSContext *cx, uintN argc, jsval *vp)
@@ -35,8 +43,32 @@ elixir_eet_data_encode(JSContext *cx, uintN argc, jsval *vp)
    return JS_TRUE;
 }
 
+static JSBool
+elixir_eet_data_decode(JSContext *cx, uintN argc, jsval *vp)
+{
+   Elixir_Eet_Data *dt;
+   const char *key;
+   JSObject *obj;
+   elixir_value_t val[2];
+
+   /* Default with no key */
+   val[1].v.str = NULL;
+
+   if (!elixir_params_check_with_options(cx, _eet_data_str, val, argc, JS_ARGV(cx, vp), 2))
+     return JS_FALSE;
+
+   GET_PRIVATE(cx, val[0].v.obj, dt);
+   key = elixir_get_string_bytes(val[1].v.str, NULL);
+
+   obj = elixir_from_eet_data(cx, dt, key);
+   JS_SET_RVAL(cx, vp, OBJECT_TO_JSVAL(obj));
+
+   return JS_TRUE;
+}
+
 static JSFunctionSpec eet_functions[] = {
   ELIXIR_FN(eet_data_encode, 4, JSPROP_ENUMERATE, 0  ),
+  ELIXIR_FN(eet_data_decode, 2, JSPROP_ENUMERATE, 0  ),
   JS_FS_END
 };
 

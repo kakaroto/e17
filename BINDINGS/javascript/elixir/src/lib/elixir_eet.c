@@ -323,12 +323,312 @@ elixir_to_eet_data(JSContext *cx, jsval data, const char *name, jsval descriptor
 #endif
 }
 
+typedef struct _Elixir_Eet_Node_Converter Elixir_Eet_Node_Converter;
+
+struct _Elixir_Eet_Node_Converter
+{
+   JSContext *cx;
+
+   Eina_List *gc;
+};
+
+static jsval *
+_elixir_gc_js_new(Elixir_Eet_Node_Converter *ctx)
+{
+   jsval *vp;
+
+   vp = malloc(sizeof (jsval));
+   if (!vp) return NULL;
+
+   *vp = JSVAL_NULL;
+   elixir_rval_register(ctx->cx, vp);
+
+   ctx->gc = eina_list_prepend(ctx->gc, vp);
+
+   return vp;
+}
+
+static void
+ _elixir_gc_js_delete(Elixir_Eet_Node_Converter *ctx, jsval *vp)
+{
+   ctx->gc = eina_list_remove(ctx->gc, vp);
+   elixir_rval_delete(ctx->cx, vp);
+   free(vp);
+}
+
+static void *
+_elixir_eet_struct_alloc(const char *type, void *user_data)
+{
+   Elixir_Eet_Node_Converter *ctx = user_data;
+   JSObject *obj;
+   jsval *vp;
+
+   vp = _elixir_gc_js_new(ctx);
+   if (!vp) return NULL;
+
+   obj = JS_NewObject(ctx->cx, NULL, NULL, NULL);
+   if (!obj)
+     {
+	_elixir_gc_js_delete(ctx, vp);
+	return NULL;
+     }
+
+   *vp = OBJECT_TO_JSVAL(obj);
+   return vp;
+}
+
+static void
+_elixir_eet_struct_add(void *parent, const char *name, void *child, void *user_data)
+{
+   Elixir_Eet_Node_Converter *ctx = user_data;
+   jsval *inside;
+   jsval *add;
+
+   inside = parent;
+   add = child;
+
+   JS_DefineProperty(ctx->cx, JSVAL_TO_OBJECT(*inside), name, add ? *add : JSVAL_NULL, NULL, NULL,
+		     JSPROP_ENUMERATE | JSPROP_READONLY);
+
+   _elixir_gc_js_delete(ctx, child);
+}
+
+static void *
+_elixir_eet_array(Eina_Bool variable, const char *name, int count, void *user_data)
+{
+   Elixir_Eet_Node_Converter *ctx = user_data;
+   JSObject *obj;
+   jsval *vp;
+
+   vp = _elixir_gc_js_new(ctx);
+   if (!vp) return NULL;
+
+   obj = JS_NewArrayObject(ctx->cx, 0, NULL);
+   if (!obj)
+     {
+	_elixir_gc_js_delete(ctx, vp);
+	return NULL;
+     }
+
+   *vp = OBJECT_TO_JSVAL(obj);
+   return vp;
+}
+
+static void
+_elixir_eet_insert(void *array, int index, void *child, void *user_data)
+{
+   Elixir_Eet_Node_Converter *ctx = user_data;
+   jsval *inside;
+   jsval *add;
+   jsval vp;
+
+   inside = array;
+   add = child;
+
+   JS_SetElement(ctx->cx, JSVAL_TO_OBJECT(*inside), index, add);
+
+   _elixir_gc_js_delete(ctx, child);
+}
+
+static void *
+_elixir_eet_list(const char *name, void *user_data)
+{
+   Elixir_Eet_Node_Converter *ctx = user_data;
+   JSObject *obj;
+   jsval *vp;
+
+   vp = _elixir_gc_js_new(ctx);
+   if (!vp) return NULL;
+
+   obj = JS_NewArrayObject(ctx->cx, 0, NULL);
+   if (!obj)
+     {
+	_elixir_gc_js_delete(ctx, vp);
+	return NULL;
+     }
+
+   *vp = OBJECT_TO_JSVAL(obj);
+   return vp;
+}
+
+static void
+_elixir_eet_append(void *list, void *child, void *user_data)
+{
+   Elixir_Eet_Node_Converter *ctx = user_data;
+   jsval *inside;
+   jsval *add;
+   jsuint length = 0;
+
+   inside = list;
+   add = child;
+
+   JS_GetArrayLength(ctx->cx, JSVAL_TO_OBJECT(*inside), &length);
+
+   JS_SetElement(ctx->cx, JSVAL_TO_OBJECT(*inside), length, add);
+
+   _elixir_gc_js_delete(ctx, child);
+}
+
+static void *_elixir_eet_hash(void *parent, const char *name, const char *key, void *value, void *user_data)
+{
+   Elixir_Eet_Node_Converter *ctx = user_data;
+   jsval *vp = NULL;
+   jsval *inside;
+   jsval *child;
+   jsval hash;
+
+   inside = parent;
+   child = value;
+
+   if (!JS_GetProperty(ctx->cx, JSVAL_TO_OBJECT(*inside), name, &hash))
+     return NULL;
+
+   if (hash == JSVAL_VOID)
+     {
+	JSObject *obj;
+
+	obj = JS_NewObject(ctx->cx, NULL, NULL, NULL);
+	if (!obj)
+	  return NULL;
+
+	hash = OBJECT_TO_JSVAL(obj);
+	elixir_rval_register(ctx->cx, &hash);
+
+	if (!JS_DefineProperty(ctx->cx, JSVAL_TO_OBJECT(*inside), name, hash,
+			       NULL, NULL, JSPROP_ENUMERATE | JSPROP_READONLY))
+	  goto on_error;
+     }
+   else
+     elixir_rval_register(ctx->cx, &hash);
+
+   if (!JS_DefineProperty(ctx->cx, JSVAL_TO_OBJECT(hash), key, *child, NULL, NULL,
+			  JSPROP_ENUMERATE | JSPROP_READONLY))
+     goto on_error;
+
+   vp = _elixir_gc_js_new(ctx);
+   if (!vp)
+     goto on_error;
+
+   if (!JS_GetProperty(ctx->cx, JSVAL_TO_OBJECT(*inside), key, vp))
+     {
+	_elixir_gc_js_delete(ctx, vp);
+	goto on_error;
+     }
+
+ on_error:
+   elixir_rval_delete(ctx->cx, &hash);
+   return vp;
+}
+
+static void *_elixir_eet_simple(int type, Eet_Node_Data *data, void *user_data)
+{
+   Elixir_Eet_Node_Converter *ctx = user_data;
+   jsval *vp;
+
+   vp = _elixir_gc_js_new(ctx);
+   if (!vp) return NULL;
+
+   switch (type)
+     {
+      case EET_T_CHAR:
+	 *vp = INT_TO_JSVAL((int)(data->value.c));
+	 break;
+      case EET_T_SHORT:
+	 *vp = INT_TO_JSVAL((int)(data->value.s));
+	 break;
+      case EET_T_INT:
+	 *vp = INT_TO_JSVAL(data->value.i);
+	 break;
+      case EET_T_LONG_LONG:
+ 	 *vp = DOUBLE_TO_JSVAL((double)(data->value.l));
+	 break;
+      case EET_T_FLOAT:
+	 *vp = DOUBLE_TO_JSVAL((double)(data->value.f));
+	 break;
+      case EET_T_DOUBLE:
+	 *vp = DOUBLE_TO_JSVAL(data->value.d);
+	 break;
+      case EET_T_UCHAR:
+	 *vp = INT_TO_JSVAL((int)(data->value.uc));
+	 break;
+      case EET_T_USHORT:
+	 *vp = INT_TO_JSVAL((int)(data->value.us));
+	 break;
+      case EET_T_UINT:
+	 *vp = INT_TO_JSVAL((unsigned int)(data->value.ui));
+	 break;
+      case EET_T_ULONG_LONG:
+ 	 *vp = DOUBLE_TO_JSVAL((double)(data->value.ul));
+	 break;
+      case EET_T_STRING:
+      case EET_T_INLINED_STRING:
+	{
+	   JSString *str;
+
+	   str = elixir_dup(ctx->cx, data->value.str);
+	   if (!str) goto on_error;
+	   *vp = STRING_TO_JSVAL(str);
+
+	   break;
+	}
+      case EET_T_NULL:
+	 *vp = JSVAL_NULL;
+	 break;
+     }
+
+   return vp;
+
+ on_error:
+   _elixir_gc_js_delete(ctx, vp);
+   return NULL;
+}
+
+static Eet_Node_Walk Elixir_Eet_Node_Walk = {
+  _elixir_eet_struct_alloc,
+  _elixir_eet_struct_add,
+  _elixir_eet_array,
+  _elixir_eet_insert,
+  _elixir_eet_list,
+  _elixir_eet_append,
+  _elixir_eet_hash,
+  _elixir_eet_simple
+};
+
 EAPI JSObject *
 elixir_from_eet_data(JSContext *cx, Elixir_Eet_Data *data, const char *cipher)
 {
 #ifdef BUILD_MODULE_EET
-   /* FIXME: Need help from Eet to get an Eet_Node * from a eet_data. */
-   return NULL;
+   Elixir_Eet_Node_Converter context;
+   Eet_Node *root;
+   JSObject *result = NULL;
+   jsval *vp;
+
+   root = eet_data_node_decode_cipher(data->data, cipher, data->count);
+
+   if (!root) return NULL;
+
+   context.cx = cx;
+   context.gc = NULL;
+
+   vp = eet_node_walk(NULL, NULL, root, &Elixir_Eet_Node_Walk, &context);
+
+   if (vp)
+     result = JSVAL_TO_OBJECT(*vp);
+
+   if (!elixir_object_register(cx, &result, NULL))
+     return NULL;
+
+   while (context.gc)
+     {
+	vp = eina_list_data_get(context.gc);
+	_elixir_gc_js_delete(&context, vp);
+     }
+
+   eet_node_del(root);
+
+   elixir_object_unregister(cx, &result);
+
+   return result;
 #else
    return NULL;
 #endif

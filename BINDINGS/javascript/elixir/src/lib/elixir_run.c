@@ -395,8 +395,9 @@ elixir_rval_new(JSContext *cx, JSClass *class, void *data, jsval *rval)
      goto on_first_error;
    if (!JS_AddRoot(cx, &new))
      goto on_first_error;
-   if (!JS_SetPrivate(cx, new, data))
-     goto on_error;
+   if (data)
+     if (!JS_SetPrivate(cx, new, data))
+       goto on_error;
 
    *rval = OBJECT_TO_JSVAL(new);
    if (!JS_AddRoot(cx, rval))
