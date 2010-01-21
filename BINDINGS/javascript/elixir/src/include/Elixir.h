@@ -525,10 +525,16 @@ EAPI JSObject *elixir_return_script(JSContext* cx, jsval *vp, Elixir_Script *es)
 
 #define GET_PRIVATE(CX, OBJ, PTR)		\
   if (!OBJ)					\
-    return JS_FALSE;				\
+    {						\
+       JS_ReportError(CX, "Empty object !\n");	\
+       return JS_FALSE;				\
+    }						\
   PTR = JS_GetPrivate(CX, OBJ);			\
   if (!PTR)					\
-    return JS_FALSE;
+    {						\
+       JS_ReportError(CX, "Empty object !\n");	\
+       return JS_FALSE;				\
+    }
 
 EAPI void                        elixir_class_init(void);
 EAPI void                        elixir_class_shutdown(void);

@@ -489,7 +489,9 @@ elixir_function_run(JSContext *cx, JSFunction *callback, JSObject *parent, int a
 
    if (JS_CallFunction(cx, parent, callback, argc, argv, rval) == JS_FALSE)
      {
-	JS_ReportError(cx, "Error in: %s", JS_GetFunctionName(callback));
+	JS_ReportPendingException(cx);
+	JS_ReportError(cx, "inside %s", JS_GetFunctionName(callback));
+	JS_ReportPendingException(cx);
         ret = EINA_FALSE;
 	JS_GetPendingException(cx, rval);
 	JS_ClearPendingException(cx);
