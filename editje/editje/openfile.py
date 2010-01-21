@@ -91,7 +91,7 @@ class OpenFile(elementary.Window):
         try:
             self._swapfile.file = self._fs.file
             self._swapfile.open(mode)
-        except Exception as e:
+        except Exception, e:
             self._notify_err(e)
             return
 

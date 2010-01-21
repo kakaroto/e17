@@ -41,7 +41,7 @@ if __name__ == "__main__":
                 sf = swapfile.SwapFile()
                 sf.file = os.path.realpath(file)
                 sf.open()
-            except swapfile.CacheAlreadyExists as e:
+            except swapfile.CacheAlreadyExists, e:
                 print "\033[1mSwap file to", file, "already exists\033[0m"
                 print "Another program may be editing the same file."
                 print "Or an edit session for this file crashed."
@@ -57,12 +57,12 @@ if __name__ == "__main__":
                     sf.open(swapfile.RESTORE)
                 elif opt == "a":
                     continue
-            except swapfile.CompileError as e:
+            except swapfile.CompileError, e:
                 print "\033[1mCompiler Error:", file, "\033[0m"
                 print e.message
                 raw_input("(press enter)")
                 continue
-            except Exception as e:
+            except Exception, e:
                 print "\033[1mError with file:", file, "\033[0m"
                 print e
                 raw_input("(press enter)")
