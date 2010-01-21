@@ -14,6 +14,7 @@ google_la_DEPENDENCIES = $(top_builddir)/config.h
 google_la_LIBADD = @E_LIBS@
 google_la_LDFLAGS = -module -avoid-version
 
+EXTRA_DIST = google_logo.jpg
 
 clean-local:
 	rm -rf *~
