@@ -1,4 +1,5 @@
 #include <Ecore_X.h>
+#include <Ecore_X_Atoms.h>
 #include "elm_quickpanel.h"
 
 #ifndef ELM_LIB_QUICKLAUNCH
@@ -6,7 +7,12 @@
 EAPI int 
 elm_main(int argc, char **argv) 
 {
-   int i = 0;
+   Ecore_X_Window *zones;
+   int i = 0, zone_count = 0;
+
+   zone_count = 
+     ecore_x_window_prop_window_list_get(ecore_x_window_root_first_get(), 
+                                         ECORE_X_ATOM_E_ILLUME_ZONE_LIST, &zones);
 
    for (i = 0; i < 3; i++) 
      {
@@ -16,6 +22,7 @@ elm_main(int argc, char **argv)
         char buff[PATH_MAX];
 
         snprintf(buff, sizeof(buff), "elm_quickpanel:%d", i);
+
         win = elm_win_add(NULL, buff, ELM_WIN_BASIC);
         elm_win_title_set(win, "Illume Quickpanel Window");
         elm_win_autodel_set(win, EINA_TRUE);
@@ -60,6 +67,17 @@ elm_main(int argc, char **argv)
         evas_object_size_hint_min_set(win, 100, 32);
         evas_object_resize(win, 100, 32);
         evas_object_show(win);
+
+        if (i == 0) 
+          {
+             if ((zones) && (zone_count > 1)) 
+               {
+                  xwin = elm_win_xwindow_get(win);
+                  ecore_x_e_illume_quickpanel_zone_set(xwin, &zones[1]);
+                  ecore_x_e_illume_quickpanel_zone_request_send(ecore_x_window_root_first_get(), xwin);
+                  free(zones);
+               }
+          }
      }
 
    elm_run();
