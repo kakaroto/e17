@@ -25,8 +25,10 @@ exalt_sys_conf.h \
 exalt_wireless.h \
 exalt_wireless_network.h \
 exalt_configuration.h \
+exalt_wpa_supplicant.h \
 exalt_vpnc.h \
 iw/iwlib.h \
+iw/wireless.h \
 exalt_configuration_network.h
 
 libexalt_la_SOURCES = \
@@ -45,6 +47,7 @@ libexalt_private.h \
 exalt_configuration.c \
 exalt_wpa_supplicant.c \
 iw/iwlib.c \
+iw/iwlib_custom.c \
 exalt_configuration_network.c \
 $(EXALTHEADERS)
 
