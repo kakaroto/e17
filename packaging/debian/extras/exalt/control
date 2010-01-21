@@ -32,7 +32,7 @@ Description: EFL-based network manager
 
 Package: exalt-daemon
 Architecture: any
-Depends: ${shlibs:Depends}, iproute, libexalt0 (= ${Source-Version})
+Depends: ${shlibs:Depends}, iproute, libexalt0 (= ${Source-Version}), hal
 Section: net
 Suggests: wpasupplicant
 Conflicts: network-manager
