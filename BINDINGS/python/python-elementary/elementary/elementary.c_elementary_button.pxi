@@ -30,6 +30,9 @@ cdef class Button(Object):
     def label_set(self, label):
         elm_button_label_set(self.obj, label)
 
+    def label_get(self):
+        return elm_button_label_get(self.obj)
+
     def icon_set(self, c_evas.Object icon):
         elm_button_icon_set(self.obj, icon.obj)
 
