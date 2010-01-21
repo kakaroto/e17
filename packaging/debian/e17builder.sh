@@ -155,7 +155,6 @@ compile_list=(
 "E-MODULES-EXTRA"
 # python stuff
 "cython" # ubuntu hardy only
-"virtkey" # debian-only
 # python bindings
 "python-evas"
 "python-ecore"
@@ -168,7 +167,6 @@ compile_list=(
 "python-elementary"
 "python-efl_utils"
 # python apps
-"keys"
 "editje"
 # canola stuff - ubuntu only
 "python-dispatcher"

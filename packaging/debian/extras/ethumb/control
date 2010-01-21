@@ -32,7 +32,7 @@ Description: Enlightenment thumbnailing library
 
 Package: libethumb-dev
 Architecture: any
-Depends: libethumb1 (= ${Source-Version}), libethumb-plugins, libemotion0-dev, libepdf-dev
+Depends: libethumb1 (= ${Source-Version}), libethumb-plugins, libemotion0-dev, libepdf-dev, libecore-dev, libeina-dev, libevas-dev, libedje-dev, libedbus-dev
 Description: Enlightenment thumbnailing library
  Thumbnailing library meant to replace epsilon.
  .

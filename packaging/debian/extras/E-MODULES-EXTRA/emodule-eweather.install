@@ -1,4 +1,3 @@
 debian/tmp/usr/lib/enlightenment/modules/eweather/*.desktop
 debian/tmp/usr/lib/enlightenment/modules/eweather/*.edj
 debian/tmp/usr/lib/enlightenment/modules/eweather/*/*.so
-debian/tmp/usr/lib/enlightenment/modules/eweather/locale/*
