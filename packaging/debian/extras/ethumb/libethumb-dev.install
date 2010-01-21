@@ -2,4 +2,3 @@ debian/tmp/usr/include/*
 debian/tmp/usr/lib/*.so
 debian/tmp/usr/lib/*.a
 debian/tmp/usr/lib/pkgconfig/*
-debian/tmp/usr/lib/ethumb/plugins/*.a

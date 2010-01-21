@@ -129,11 +129,11 @@ compile_list=(
 "epsilon"
 "esmart"
 "emotion"
+"epdf"
 "ethumb"
 "exml"
 "etk"
 "exchange"
-"epdf"
 "libeweather"
 # extra apps
 "ecomp"

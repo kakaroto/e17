@@ -24,16 +24,8 @@ Description: Enlightenment PDF Library
 
 Package: libepdf-dev
 Architecture: any
-Depends: ${shlibs:Depends}, libepdf0 (= ${Source-Version})
+Depends: ${shlibs:Depends}, libepdf0 (= ${Source-Version}), libevas-dev, libecore-dev, libpoppler-dev
 Description: Enlightenment PDF Library
  Enlightenment PDF library based on Poppler
  .
  This package developenment files.
-
-Package: libepdf-doc
-Architecture: any
-Depends: ${shlibs:Depends}, libepdf0
-Description: Enlightenment PDF Library
- Enlightenment PDF library based on Poppler
- .
- This package contains documentation.
