@@ -8,6 +8,7 @@
 #ifndef ELM_LIB_QUICKLAUNCH
 
 /* local function prototypes */
+
 /* local variables */
 static Eina_List *ind_wins = NULL;
 static Eina_List *handlers = NULL;

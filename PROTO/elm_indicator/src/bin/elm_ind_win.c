@@ -15,9 +15,6 @@ static void _cb_rect_mouse_up(void *data, Evas *evas, Evas_Object *obj, void *ev
 static void _set_mode_icon(Elm_Ind_Win *iwin);
 static void _set_kbd_icon(Ecore_X_Window xwin, Evas_Object *btn);
 
-/* local variables */
-static int my = 0;
-
 EAPI Elm_Ind_Win *
 elm_ind_win_new(Ecore_X_Window zone) 
 {
@@ -32,7 +29,6 @@ elm_ind_win_new(Ecore_X_Window zone)
    iwin = calloc(1, sizeof(Elm_Ind_Win));
    if (!iwin) return NULL;
 
-   iwin->dragging = 0;
    iwin->win = elm_win_add(NULL, "elm_indicator", ELM_WIN_BASIC);
    evas_object_data_set(iwin->win, "zone", (const void *)zone);
    elm_win_title_set(iwin->win, "Illume Indicator Window");
@@ -215,6 +211,7 @@ _cb_client_message(void *data, int type, void *event)
      }
    else if (ev->message_type == ECORE_X_ATOM_E_ILLUME_MODE) 
      _set_mode_icon(iwin);
+
    return 1;
 }
 
@@ -250,11 +247,12 @@ _cb_rect_mouse_down(void *data, Evas *evas, Evas_Object *obj, void *event)
         Ecore_X_Window xwin, zone;
 
         if (!(iwin = data)) return;
+        iwin->mouse_down = 1;
         xwin = elm_win_xwindow_get(iwin->win);
         if (ecore_x_e_illume_drag_locked_get(xwin)) return;
-        iwin->dragging = 1;
-        ecore_x_e_illume_drag_start_send(xwin);
-        ecore_x_pointer_last_xy_get(NULL, &my);
+        iwin->drag.start = 1;
+        iwin->drag.dnd = 0;
+        ecore_x_pointer_last_xy_get(NULL, &iwin->drag.y);
      }
 }
 
@@ -268,9 +266,16 @@ _cb_rect_mouse_move(void *data, Evas *evas, Evas_Object *obj, void *event)
 
    ev = event;
    if (!(iwin = data)) return;
-   if (!iwin->dragging) return;
-
    xwin = elm_win_xwindow_get(iwin->win);
+   if (iwin->drag.start) 
+     {
+        ecore_x_e_illume_drag_start_send(xwin);
+        iwin->drag.dnd = 1;
+        iwin->drag.start = 0;
+     }
+
+   if (!iwin->drag.dnd) return;
+
    zone = (Ecore_X_Window)evas_object_data_get(iwin->win, "zone");
 
    /* grab the size of the screen */
@@ -288,24 +293,24 @@ _cb_rect_mouse_move(void *data, Evas *evas, Evas_Object *obj, void *event)
 
    if (ev->cur.output.y > ev->prev.output.y) 
      {
-        if ((py - my) < dy) return;
+        if ((py - iwin->drag.y) < dy) return;
      }
    else if (ev->cur.output.y < ev->prev.output.y)
      {
-        if ((my - py) < dy) return;
+        if ((iwin->drag.y - py) < dy) return;
      }
    else return;
 
-   if (py > my)
+   if (py > iwin->drag.y)
      ny = y + dy;
-   else if (py < my)
+   else if (py < iwin->drag.y)
      ny = y - dy;
    else return;
 
    if (y != ny) 
      {
         ecore_x_window_move(xwin, x, ny);
-        my = py;
+        iwin->drag.y = py;
      }
 }
 
@@ -319,11 +324,29 @@ _cb_rect_mouse_up(void *data, Evas *evas, Evas_Object *obj, void *event)
    ev = event;
    if (ev->button != 1) return;
    if (!(iwin = data)) return;
-   if (!iwin->dragging) return;
-   xwin = elm_win_xwindow_get(iwin->win);
-   ecore_x_e_illume_drag_end_send(xwin);
-   iwin->dragging = 0;
-   my = 0;
+   if ((!iwin->drag.dnd) && (iwin->mouse_down == 1)) 
+     {
+        Ecore_X_Illume_Quickpanel_State state;
+
+        state = ECORE_X_ILLUME_QUICKPANEL_STATE_ON;
+        xwin = ecore_x_window_root_first_get();
+        ecore_x_e_illume_quickpanel_state_set(xwin, state);
+        ecore_x_e_illume_quickpanel_state_send(xwin, state);
+     }
+   else if (iwin->drag.dnd) 
+     {
+        int x, y, w, h;
+
+        xwin = elm_win_xwindow_get(iwin->win);
+        ecore_x_window_geometry_get(xwin, &x, &y, &w, &h);
+        ecore_x_e_illume_drag_end_send(xwin);
+        xwin = ecore_x_window_root_first_get();
+        ecore_x_e_illume_top_shelf_geometry_set(xwin, x, y, w, h);
+     }
+   iwin->drag.start = 0;
+   iwin->drag.dnd = 0;
+   iwin->drag.y = 0;
+   iwin->mouse_down = 0;
 }
 
 static void 

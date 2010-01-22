@@ -7,7 +7,11 @@ struct _Elm_Ind_Win
 {
    Evas_Object *win, *mode, *kbd;
    Eina_List *handlers;
-   unsigned char dragging : 1;
+   struct 
+     {
+        int y, start, dnd;
+     } drag;
+   int mouse_down;
 };
 
 EAPI Elm_Ind_Win *elm_ind_win_new(Ecore_X_Window zone);
