@@ -50,16 +50,15 @@ class WidgetsList(Collapsable):
 
         for type in edje.ExternalIterator():
             module = type.module
-            name = type.name
             label = type.label_get()
 
             list = self._loaded_types.get(module)
             if not list:
                 list = []
                 self._loaded_types[module] = list
-            elif (name, label) in list:
+            elif (type.name, label, type) in list:
                 continue
-            list.append((label, edje.EDJE_PART_TYPE_EXTERNAL, name))
+            list.append((label, edje.EDJE_PART_TYPE_EXTERNAL, type))
 
     # Groups
     def _content_load(self):
@@ -94,7 +93,10 @@ class WidgetsList(Collapsable):
         list.bounce_set(False, False)
         list.callback_selected_add(self._widget_selected_cb)
         for widget in self._loaded_types[group]:
-            list.item_append(widget[0], None, None, None, widget)
+            ico = None
+            if widget[1] == edje.EDJE_PART_TYPE_EXTERNAL:
+                ico = widget[2].icon_add(self.e._canvas)
+            list.item_append(widget[0], ico, None, None, widget)
         list.go()
         list.show()
 
@@ -120,7 +122,9 @@ class WidgetsList(Collapsable):
 
     # Widgets
     def _widget_selected_cb(self, li, it):
-        label, type, external = it.data_get()[0][0]
+        label, edje_type, type = it.data_get()[0][0]
+
+        type_name = ""
 
         count = 0
         for p in self._parent.e.parts:
@@ -128,12 +132,15 @@ class WidgetsList(Collapsable):
                 count += 1
         name = label + "%.2d" % count
 
-        success = self._parent.e.part_add(name, type,
-                                          external, signal=False)
+        if (edje_type == edje.EDJE_PART_TYPE_EXTERNAL):
+            type_name = type.name
+
+        success = self._parent.e.part_add(name, edje_type,
+                                          type_name, signal=False)
         if success:
-            self._part_init(name, type)
+            self._part_init(name, edje_type)
             self._parent.e.event_emit("part.added", name)
-            if type == edje.EDJE_PART_TYPE_EXTERNAL:
+            if edje_type == edje.EDJE_PART_TYPE_EXTERNAL:
                 self._parent.e._edje.external_add(self._group)
         it.selected = False
 

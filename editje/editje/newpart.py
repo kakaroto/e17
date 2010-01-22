@@ -219,6 +219,7 @@ class ExternalSelector(elementary.Box):
 
         self._module = ""
         self._type = ""
+        self._parent = parent
 
         self._type_selected_cb = type_cb
 
@@ -248,9 +249,9 @@ class ExternalSelector(elementary.Box):
             if not list:
                 list = []
                 self._loaded_types[module] = list
-            elif (name, label) in list:
+            elif (name, label, type) in list:
                 continue
-            list.append((name, label))
+            list.append((name, label, type))
 
     def _modules_init(self):
         self._modules = elementary.List(self)
@@ -293,11 +294,15 @@ class ExternalSelector(elementary.Box):
         list.sort(key=lambda x:(str.lower(x[0])))
 
         if list:
-            name, label = list[0]
-            self._types.item_append(label, None, None, self._type_select,
+            name, label, type = list[0]
+
+            ico = type.icon_add(self._parent._parent.e._canvas)
+
+            self._types.item_append(label, ico, None, self._type_select,
                                     name).selected_set(False)
-        for (name, label) in list[1:]:
-            self._types.item_append(label, None, None, self._type_select, name)
+        for (name, label, type) in list[1:]:
+            ico = type.icon_add(self._parent._parent.e._canvas)
+            self._types.item_append(label, ico, None, self._type_select, name)
 
         self._types.go()
 
