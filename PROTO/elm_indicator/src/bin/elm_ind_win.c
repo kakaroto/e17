@@ -47,6 +47,18 @@ elm_ind_win_new(Ecore_X_Window zone)
    elm_win_resize_object_add(iwin->win, bg);
    evas_object_show(bg);
 
+   /* create rect to handle dragging */
+   rect = evas_object_rectangle_add(evas_object_evas_get(iwin->win));
+   evas_object_color_set(rect, 0, 0, 0, 0);
+   elm_win_resize_object_add(iwin->win, rect);
+   evas_object_event_callback_add(rect, EVAS_CALLBACK_MOUSE_DOWN, 
+                                  _cb_rect_mouse_down, iwin);
+   evas_object_event_callback_add(rect, EVAS_CALLBACK_MOUSE_MOVE, 
+                                  _cb_rect_mouse_move, iwin);
+   evas_object_event_callback_add(rect, EVAS_CALLBACK_MOUSE_UP, 
+                                  _cb_rect_mouse_up, iwin);
+   evas_object_show(rect);
+
    /* add packing box to window */
    box = elm_box_add(iwin->win);
    elm_box_horizontal_set(box, EINA_TRUE);
@@ -100,20 +112,6 @@ elm_ind_win_new(Ecore_X_Window zone)
      eina_list_append(iwin->handlers, 
                       ecore_event_handler_add(ECORE_X_EVENT_WINDOW_PROPERTY, 
                                               _cb_win_property_change, btn));
-
-   /* create rect to handle dragging */
-   rect = evas_object_rectangle_add(evas_object_evas_get(iwin->win));
-   evas_object_color_set(rect, 0, 0, 0, 0);
-   elm_win_resize_object_add(iwin->win, rect);
-   evas_object_event_callback_add(rect, EVAS_CALLBACK_MOUSE_DOWN, 
-                                  _cb_rect_mouse_down, iwin);
-   evas_object_event_callback_add(rect, EVAS_CALLBACK_MOUSE_MOVE, 
-                                  _cb_rect_mouse_move, iwin);
-   evas_object_event_callback_add(rect, EVAS_CALLBACK_MOUSE_UP, 
-                                  _cb_rect_mouse_up, iwin);
-   evas_object_repeat_events_set(rect, EINA_TRUE);
-   evas_object_raise(rect);
-   evas_object_show(rect);
 
    ecore_x_window_geometry_get(zone, &zx, &zy, &zw, NULL);
    evas_object_move(iwin->win, zx, zy);
@@ -238,14 +236,14 @@ static void
 _cb_rect_mouse_down(void *data, Evas *evas, Evas_Object *obj, void *event) 
 {
    Evas_Event_Mouse_Down *ev;
+   Elm_Ind_Win *iwin;
 
    ev = event;
+   if (!(iwin = data)) return;
    if (ev->button == 1) 
      {
-        Elm_Ind_Win *iwin;
         Ecore_X_Window xwin, zone;
 
-        if (!(iwin = data)) return;
         iwin->mouse_down = 1;
         xwin = elm_win_xwindow_get(iwin->win);
         if (ecore_x_e_illume_drag_locked_get(xwin)) return;
@@ -319,18 +317,16 @@ _cb_rect_mouse_up(void *data, Evas *evas, Evas_Object *obj, void *event)
    Elm_Ind_Win *iwin;
    Ecore_X_Window xwin;
    Evas_Event_Mouse_Up *ev;
+   Ecore_X_Window zone;
 
    ev = event;
    if (ev->button != 1) return;
    if (!(iwin = data)) return;
+   zone = (Ecore_X_Window)evas_object_data_get(iwin->win, "zone");
    if ((!iwin->drag.dnd) && (iwin->mouse_down == 1)) 
      {
-        Ecore_X_Illume_Quickpanel_State state;
-
-        state = ECORE_X_ILLUME_QUICKPANEL_STATE_ON;
-        xwin = ecore_x_window_root_first_get();
-        ecore_x_e_illume_quickpanel_state_set(xwin, state);
-        ecore_x_e_illume_quickpanel_state_send(xwin, state);
+        ecore_x_e_illume_quickpanel_state_send
+          (zone, ECORE_X_ILLUME_QUICKPANEL_STATE_ON);
      }
    else if (iwin->drag.dnd) 
      {
@@ -338,9 +334,9 @@ _cb_rect_mouse_up(void *data, Evas *evas, Evas_Object *obj, void *event)
 
         xwin = elm_win_xwindow_get(iwin->win);
         ecore_x_window_geometry_get(xwin, &x, &y, &w, &h);
+        ecore_x_e_illume_top_shelf_geometry_set(zone, x, y, w, h);
         ecore_x_e_illume_drag_end_send(xwin);
-        xwin = ecore_x_window_root_first_get();
-        ecore_x_e_illume_top_shelf_geometry_set(xwin, x, y, w, h);
+        ecore_x_e_illume_quickpanel_position_update_send(xwin);
      }
    iwin->drag.start = 0;
    iwin->drag.dnd = 0;
