@@ -1,6 +1,7 @@
 #include <e.h>
 #include <Ecore.h>
 #include <Ecore_File.h>
+#include <Ecore_Data.h>
 #include "e_mod_main.h"
 
 typedef struct _Instance Instance;
