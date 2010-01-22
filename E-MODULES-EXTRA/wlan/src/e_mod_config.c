@@ -1,4 +1,5 @@
 #include <e.h>
+#include <Ecore_Data.h>
 #include "e_mod_main.h"
 
 struct _E_Config_Dialog_Data
