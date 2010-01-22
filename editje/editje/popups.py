@@ -134,6 +134,7 @@ class ImagePopUp(PopUp):
         self.select_cb = select_cb
         self.fs = None
         self._preview_image_resize_timer = None
+        self._actions_list = {}
 
         self.preview_image = self.layout_edje.evas.FilledImage()
         self.content_set("image.preview", self.preview_image)
@@ -174,9 +175,20 @@ class ImagePopUp(PopUp):
         btn.callback_clicked_add(self._action_btn_clicked)
         btn.size_hint_min_set(100, 30)
         btn.size_hint_max_set(100, 30)
+        self._actions_list[label] = btn
         btn.show()
 
         self.box.pack_end(btn)
+
+    def _actions_hide(self):
+        self._actions_list["Select"].hide()
+        self._actions_list["Add new"].hide()
+        self._actions_list["Close"].hide()
+
+    def _actions_show(self):
+        self._actions_list["Select"].show()
+        self._actions_list["Add new"].show()
+        self._actions_list["Close"].show()
 
     def _action_btn_clicked(self, bt, *args, **kwargs):
         func, udata = bt.data["clicked"]
@@ -254,6 +266,7 @@ class ImagePopUp(PopUp):
         self.close()
 
     def _add_cb(self, data):
+        self._actions_hide()
         if self.fs is None:
             self.fs = Fileselector(self)
             self.fs.size_hint_weight_set(1.0, 1.0)
@@ -272,6 +285,7 @@ class ImagePopUp(PopUp):
         self._set_new_image(selected)
 
     def _fs_done_cb(self, obj, selected):
+        self._actions_show()
         if selected is not None:
             self._parent.editable.image_add(selected)
             self.list.clear()
