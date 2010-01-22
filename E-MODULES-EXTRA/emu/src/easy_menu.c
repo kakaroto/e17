@@ -20,7 +20,7 @@ static void _easy_menu_menu_cb_free(void *obj);
  * @param   func the pointer to your face.
  * @param   data the pointer to your face.
  */
-EAPI Easy_Menu *
+Easy_Menu *
 easy_menu_add_menus(char *name, char *category, char *input, int length, void (*func) (void *data, E_Menu *m, E_Menu_Item *mi),
                     void *data)
 {

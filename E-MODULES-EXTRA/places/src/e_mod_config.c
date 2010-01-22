@@ -26,7 +26,7 @@ static Evas_Object *_basic_create(E_Config_Dialog *cfd, Evas *evas, E_Config_Dia
 static int _basic_apply(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata);
 
 /* External Functions */
-EAPI E_Config_Dialog *
+E_Config_Dialog *
 e_int_config_places_module(E_Container *con, const char *params) 
 {
    E_Config_Dialog *cfd = NULL;

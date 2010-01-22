@@ -22,7 +22,7 @@ static void _fill_data(E_Config_Dialog_Data *cfdata);
 static Evas_Object *_basic_create(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cfdata);
 static int _basic_apply(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata);
 
-EAPI E_Config_Dialog *
+E_Config_Dialog *
 e_int_config_notification_module(E_Container *con, const char *params __UNUSED__) 
 {
    E_Config_Dialog *cfd = NULL;

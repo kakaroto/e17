@@ -23,7 +23,7 @@ static Evas_Object *_adv_create(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialo
 static int _adv_apply(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata);
 static void _cb_disable_check(void *data, Evas_Object *obj);
 
-EAPI E_Config_Dialog *
+E_Config_Dialog *
 e_int_config_screenshot_module(E_Container *con, const char *params)
 {
    E_Config_Dialog *cfd = NULL;

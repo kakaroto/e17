@@ -50,7 +50,7 @@ get_vdesk(E_Config_Dialog_Data *cfdata, int x, int y, int zone_num)
    return NULL;
 }
 
-EAPI E_Config_Dialog *
+E_Config_Dialog *
 e_int_config_tiling_module(E_Container *con, const char *params)
 {
    E_Config_Dialog *cfd;

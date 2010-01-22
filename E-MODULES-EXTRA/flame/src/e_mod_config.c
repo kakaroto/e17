@@ -23,7 +23,7 @@ static int _advanced_apply_data (E_Config_Dialog * cfd,
 				 E_Config_Dialog_Data * cfdata);
 static void _fill_data (Flame * f, E_Config_Dialog_Data * cfdata);
 
-EAPI E_Config_Dialog *
+E_Config_Dialog *
 e_int_config_flame_module(E_Container *con, const char *params) 
 {
    E_Config_Dialog *cfd;

@@ -62,8 +62,8 @@ EAPI int e_modapi_shutdown(E_Module *m);
 EAPI int e_modapi_save(E_Module *m);
 
 /* Function for calling the modules config dialog */
-EAPI E_Config_Dialog *e_int_config_config_module(E_Container *con);
-EAPI void _e_mod_config_menu_add(void *data, E_Menu *m);
+E_Config_Dialog *e_int_config_config_module(E_Container *con);
+void _e_mod_config_menu_add(void *data, E_Menu *m);
 
 
 extern Config *config_conf;

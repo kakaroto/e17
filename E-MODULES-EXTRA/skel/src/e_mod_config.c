@@ -19,7 +19,7 @@ static int _basic_apply(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata);
 /* External Functions */
 
 /* Function for calling our personal dialog menu */
-EAPI E_Config_Dialog *
+E_Config_Dialog *
 e_int_config_skel_module(E_Container *con) 
 {
    E_Config_Dialog *cfd = NULL;

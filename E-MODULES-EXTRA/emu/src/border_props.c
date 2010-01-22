@@ -31,7 +31,7 @@ static Evas_Object *_border_props_dialog_advanced_create_widgets(E_Config_Dialog
 static char *_true = "true";
 static char *_false = "false";
 
-EAPI void
+void
 border_props_dialog(E_Container *con, E_Border * bd)
 {
    E_Config_Dialog *cfd;
@@ -53,7 +53,7 @@ border_props_dialog(E_Container *con, E_Border * bd)
      }
 }
 
-EAPI char *
+char *
 border_props_substitute(E_Border * bd, char type)
 {
    int found = 1;

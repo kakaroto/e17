@@ -384,7 +384,7 @@ EAPI int e_modapi_shutdown(E_Module *m);
 EAPI int e_modapi_save(E_Module *m);
 
 /* Function for calling the modules config dialog */
-EAPI E_Config_Dialog *e_int_config_exalt_module(E_Container *con, const char *params __UNUSED__);
+E_Config_Dialog *e_int_config_exalt_module(E_Container *con, const char *params __UNUSED__);
 
 extern Config *exalt_conf;
 

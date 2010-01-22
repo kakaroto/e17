@@ -56,7 +56,7 @@ EAPI int e_modapi_shutdown(E_Module *m);
 EAPI int e_modapi_save(E_Module *m);
 
 /* Function for calling the modules config dialog */
-EAPI E_Config_Dialog *e_int_config_diskio_module(E_Container *con, Config_Item *ci);
+E_Config_Dialog *e_int_config_diskio_module(E_Container *con, Config_Item *ci);
 
 extern Config *diskio_conf;
 

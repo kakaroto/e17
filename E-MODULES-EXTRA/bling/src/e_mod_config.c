@@ -31,7 +31,7 @@ static int _advanced_apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfda
 static void _fill_data(Bling *b, E_Config_Dialog_Data *cfdata);
 
 
-EAPI E_Config_Dialog *
+E_Config_Dialog *
 e_int_config_bling_module(E_Container *con)
 {
    E_Config_Dialog *cfd;

@@ -20,7 +20,7 @@ static int _basic_apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
 static void _fill_data(Population *pop, E_Config_Dialog_Data *cfdata);
 //static E_Config_Dialog *
 //_pager_config_dialog(E_Container *con, const char *params)
-EAPI E_Config_Dialog *
+E_Config_Dialog *
 e_int_config_penguins_module(E_Container *con, const char *params)
 {
    E_Config_Dialog *cfd;
