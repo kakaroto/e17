@@ -30,12 +30,12 @@ struct _Config_Item
    Instance *inst;
 };
 
-EAPI Config_Item *_weather_config_item_get(Instance *inst, const char *id);
-EAPI void _weather_config_updated(Config_Item *ci);
-EAPI void _weather_config_new(void);
-EAPI void _weather_config_free(void);
+EINTERN Config_Item *_weather_config_item_get(Instance *inst, const char *id);
+EINTERN void _weather_config_updated(Config_Item *ci);
+EINTERN void _weather_config_new(void);
+EINTERN void _weather_config_free(void);
 
-EAPI E_Config_Dialog *weather_config_dialog(Config_Item *ci);
+EINTERN E_Config_Dialog *weather_config_dialog(Config_Item *ci);
 
 
 extern Config *weather_cfg;

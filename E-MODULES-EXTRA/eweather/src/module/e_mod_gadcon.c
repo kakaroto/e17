@@ -183,19 +183,19 @@ _gc_cb_menu_post(void *data, E_Menu  *menu)
 }
 
 /* public functions */
-void
+EINTERN void
 _gc_register(void)
 {
    e_gadcon_provider_register(&_gc_class);
 }
 
-void
+EINTERN void
 _gc_unregister(void)
 {
    e_gadcon_provider_unregister(&_gc_class);
 }
 
-const char *
+EINTERN const char *
 _gc_name(void)
 {
    return _gc_class.name;

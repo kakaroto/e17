@@ -6,7 +6,7 @@
 static void _config_updated(Config_Item *ci);
 
 /* public functions */
-EAPI Config_Item *
+EINTERN Config_Item *
 _weather_config_item_get(Instance *inst, const char *id) 
 {
    Config_Item *ci;
@@ -58,7 +58,7 @@ _weather_config_item_get(Instance *inst, const char *id)
 
 
 
-EAPI void 
+EINTERN void 
 _weather_config_new() 
 {
    weather_cfg = E_NEW(Config, 1);
@@ -79,7 +79,7 @@ _weather_config_new()
    e_config_save_queue();
 }
 
-EAPI void 
+EINTERN void 
 _weather_config_free(void) 
 {
    E_FREE(weather_cfg);
