@@ -113,19 +113,19 @@ _gc_id_new(E_Gadcon_Client_Class *client_class)
    return ci->id;
 }
 
-EAPI void 
+EINTERN void 
 _gc_register(void) 
 {
    e_gadcon_provider_register(&_gc_class);
 }
 
-EAPI void 
+EINTERN void 
 _gc_unregister(void) 
 {
    e_gadcon_provider_unregister(&_gc_class);
 }
 
-EAPI const char *
+EINTERN const char *
 _gc_name(void)
 {
    return _gc_class.name;

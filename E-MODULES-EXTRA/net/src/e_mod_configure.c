@@ -20,7 +20,7 @@ static void _fill_data(Config_Item *ci, E_Config_Dialog_Data *cfdata);
 static Evas_Object *_basic_create(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cfdata);
 static int _apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata);
 
-void 
+EINTERN void 
 _configure_net_module(void *data) 
 {
    E_Config_Dialog *cfd;

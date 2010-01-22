@@ -4,7 +4,7 @@
 #include "e_mod_net.h"
 #include "e_mod_gadcon.h"
 
-Config_Item *
+EINTERN Config_Item *
 _config_item_get(const char *id) 
 {
    Eina_List *l;
@@ -46,7 +46,7 @@ _config_item_get(const char *id)
    return ci;
 }
 
-Eina_List *
+EINTERN Eina_List *
 _config_devices_get(void) 
 {
    Eina_List *devs = NULL;
@@ -92,7 +92,7 @@ _config_devices_get(void)
    return devs;
 }
 
-void 
+EINTERN void 
 _config_updated(Config_Item *ci)
 {
    Eina_List *l;

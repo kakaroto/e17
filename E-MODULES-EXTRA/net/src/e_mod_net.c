@@ -39,7 +39,7 @@ get_ifmib_general(int row, struct ifmibdata *ifmd)
 }
 #endif
 
-EAPI int 
+EINTERN int 
 _cb_poll(void *data) 
 {
    Instance *inst;
@@ -135,7 +135,7 @@ _cb_poll(void *data)
    return 1;
 }
 
-EAPI void 
+EINTERN void 
 _cb_mouse_down(void *data, Evas *evas, Evas_Object *obj, void *event) 
 {
    Instance *inst;
@@ -182,7 +182,7 @@ _cb_mouse_down(void *data, Evas *evas, Evas_Object *obj, void *event)
      }
 }
 
-EAPI void 
+EINTERN void 
 _cb_mouse_in(void *data, Evas_Object *obj, const char *emission, const char *source)
 {
    Instance *inst;
@@ -216,7 +216,7 @@ _cb_mouse_in(void *data, Evas_Object *obj, const char *emission, const char *sou
    e_gadcon_popup_show(inst->popup);
 }
 
-EAPI void 
+EINTERN void 
 _cb_mouse_out(void *data, Evas_Object *obj, const char *emission, const char *source)
 {
    Instance *inst;

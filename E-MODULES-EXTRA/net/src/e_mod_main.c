@@ -5,7 +5,7 @@
 
 static E_Config_DD *conf_edd = NULL;
 static E_Config_DD *item_edd = NULL;
-Config *net_cfg = NULL;
+EINTERN Config *net_cfg = NULL;
 
 EAPI E_Module_Api e_modapi = { E_MODULE_API_VERSION, "Net" };
 

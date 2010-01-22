@@ -22,10 +22,10 @@ struct _Config_Item
    int show_popup;
 };
 
-Config_Item *_config_item_get(const char *id);
-Eina_List *_config_devices_get(void);
-void _config_updated(Config_Item *ci);
+EINTERN Config_Item *_config_item_get(const char *id);
+EINTERN Eina_List *_config_devices_get(void);
+EINTERN void _config_updated(Config_Item *ci);
 
-extern Config *net_cfg;
+EINTERN extern Config *net_cfg;
 
 #endif
