@@ -56,6 +56,42 @@ char* eyelight_remove_quote(char* p)
 }
 
 /*
+ * @brief replace \n by <br>
+ */
+char* eyelight_remove_slashn(char* p)
+{
+    int count = 0;
+    int i,j;
+
+    for(i=0; i<strlen(p);i++)
+    {
+        if(p[i]=='\n')
+            count++;
+    }
+
+    char* new = malloc(sizeof(char)*(strlen(p)+1+count*3));
+
+    i=0;
+    j=0;
+    while(p[i]!='\0')
+    {
+        if(p[i]=='\n')
+        {
+            new[j++] = '<';
+            new[j++] = 'b';
+            new[j++] = 'r';
+            new[j++] = '>';
+            i++;
+        }
+        else
+            new[j++] = p[i++];
+    }
+    new[j]='\0';
+    return new;
+}
+
+
+/*
  * @brief test if a char is a token (; : ....)
  */
 int eyelight_is_char_token(char* p)
@@ -161,6 +197,7 @@ char* eyelight_next_token(Eyelight_Compiler* compiler,char *p, char *end, char *
     int done = 0;
     int string = 0;
     int in_comment = 0;
+    int i;
 
     if(p>=end)
         return NULL;
@@ -224,6 +261,10 @@ char* eyelight_next_token(Eyelight_Compiler* compiler,char *p, char *end, char *
     *new_p = p;
     new_token = eyelight_remove_quote(token);
     EYELIGHT_FREE(token);
+    token = new_token;
+    new_token = eyelight_remove_slashn(token);
+    EYELIGHT_FREE(token);
+
     return new_token;
 }
 

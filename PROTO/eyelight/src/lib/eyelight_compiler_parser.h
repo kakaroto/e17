@@ -71,8 +71,8 @@ static const Eyelight_Name_Key eyelight_name_keys[] = {
     { "name", EYELIGHT_NAME_NAME },
     { "text", EYELIGHT_NAME_TEXT },
     { "image", EYELIGHT_NAME_IMAGE },
-    { "aspect", EYELIGHT_NAME_ASPECT }, 
-    { "keep_aspect", EYELIGHT_NAME_KEEP_ASPECT }, 
+    { "aspect", EYELIGHT_NAME_ASPECT },
+    { "keep_aspect", EYELIGHT_NAME_KEEP_ASPECT },
     { "file", EYELIGHT_NAME_FILE },
     { "group", EYELIGHT_NAME_GROUP },
     { "transition", EYELIGHT_NAME_TRANSITION },
@@ -88,7 +88,8 @@ static const Eyelight_Name_Key eyelight_name_keys[] = {
     { "replay", EYELIGHT_NAME_REPLAY},
     { "shadow", EYELIGHT_NAME_SHADOW},
     { "presentation", EYELIGHT_NAME_PRESENTATION},
-    { "theme", EYELIGHT_NAME_THEME}
+    { "theme", EYELIGHT_NAME_THEME},
+    { "code", EYELIGHT_NAME_CODE}
 };
 
 struct Eyelight_Valid_Prop_Block
@@ -125,8 +126,10 @@ static const Eyelight_Valid_Prop_Block eyelight_valid_prop_block[] =
     { EYELIGHT_NAME_AREA, EYELIGHT_NAME_IMAGE },
     { EYELIGHT_NAME_AREA, EYELIGHT_NAME_VIDEO },
     { EYELIGHT_NAME_AREA, EYELIGHT_NAME_LAYOUT },
+    { EYELIGHT_NAME_AREA, EYELIGHT_NAME_CODE },
     { EYELIGHT_NAME_ITEMS, EYELIGHT_NAME_TEXT },
     { EYELIGHT_NAME_ITEMS, EYELIGHT_NAME_NUMBERING },
+    { EYELIGHT_NAME_ITEMS, EYELIGHT_NAME_CODE },
     { EYELIGHT_NAME_ITEM, EYELIGHT_NAME_TEXT },
     { EYELIGHT_NAME_IMAGE, EYELIGHT_NAME_IMAGE },
     { EYELIGHT_NAME_IMAGE, EYELIGHT_NAME_BORDER },

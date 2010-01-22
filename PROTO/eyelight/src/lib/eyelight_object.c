@@ -48,6 +48,7 @@ Evas_Object *eyelight_object_area_obj_get(Eyelight_Viewer *pres, Eyelight_Slide 
 Evas_Object *eyelight_object_title_add(Eyelight_Viewer *pres, Eyelight_Slide *slide, Eyelight_Node *node, const char *default_text)
 {
     char buf[EYELIGHT_BUFLEN];
+    int w, h;
 
     //set the title
     Eyelight_Node *node_title = eyelight_retrieve_node_prop(node, EYELIGHT_NAME_TITLE);
@@ -66,6 +67,8 @@ Evas_Object *eyelight_object_title_add(Eyelight_Viewer *pres, Eyelight_Slide *sl
             WARN("load group eyelight/title error! %d \n",
                     edje_object_load_error_get(o_title));
         edje_object_part_text_set(o_title,"object.title",title);
+	edje_object_size_min_calc(o_title, &w, &h);
+	evas_object_size_hint_min_set(o_title, w, h);
         evas_object_size_hint_align_set(o_title, -1, -1);
         evas_object_size_hint_weight_set(o_title, -1, -1);
         edje_object_scale_set(o_title, pres->current_scale);
@@ -100,6 +103,7 @@ Evas_Object *eyelight_object_title_add(Eyelight_Viewer *pres, Eyelight_Slide *sl
 Evas_Object *eyelight_object_subtitle_add(Eyelight_Viewer *pres, Eyelight_Slide *slide, Eyelight_Node *node, const char *default_text)
 {
     char buf[EYELIGHT_BUFLEN];
+    int w, h;
 
     Eyelight_Node *node_subtitle = eyelight_retrieve_node_prop(node, EYELIGHT_NAME_SUBTITLE);
     const char * subtitle = NULL;
@@ -116,6 +120,8 @@ Evas_Object *eyelight_object_subtitle_add(Eyelight_Viewer *pres, Eyelight_Slide 
             WARN("load group eyelight/subtitle error! %d \n",
                     edje_object_load_error_get(o_subtitle));
         edje_object_part_text_set(o_subtitle,"object.subtitle",subtitle);
+	edje_object_size_min_calc(o_subtitle, &w, &h);
+	evas_object_size_hint_min_set(o_subtitle, w, h);
         evas_object_size_hint_align_set(o_subtitle, -1, -1);
         evas_object_size_hint_weight_set(o_subtitle, -1, -1);
         edje_object_scale_set(o_subtitle, pres->current_scale);
@@ -148,6 +154,7 @@ Evas_Object *eyelight_object_subtitle_add(Eyelight_Viewer *pres, Eyelight_Slide 
 Evas_Object *eyelight_object_header_image_add(Eyelight_Viewer *pres, Eyelight_Slide *slide, Eyelight_Node *node, const char *default_image)
 {
     char buf[EYELIGHT_BUFLEN];
+    int w, h;
 
     Eyelight_Node *node_header_image = eyelight_retrieve_node_prop(node, EYELIGHT_NAME_HEADER_IMAGE);
     const char * header_image = NULL;
@@ -167,6 +174,8 @@ Evas_Object *eyelight_object_header_image_add(Eyelight_Viewer *pres, Eyelight_Sl
         char *image_path = eyelight_compile_image_path_new(pres,header_image);
         evas_object_image_file_set((Evas_Object*)part_image, image_path, pres->dump_in || pres->dump_out ? header_image : NULL);
         EYELIGHT_FREE(image_path);
+	edje_object_size_min_calc(o_header_image, &w, &h);
+	evas_object_size_hint_min_set(o_header_image, w, h);
         evas_object_size_hint_align_set(o_header_image, -1, -1);
         evas_object_size_hint_weight_set(o_header_image, -1, -1);
         edje_object_scale_set(o_header_image, pres->current_scale);
@@ -201,6 +210,7 @@ Evas_Object *eyelight_object_header_image_add(Eyelight_Viewer *pres, Eyelight_Sl
 Evas_Object *eyelight_object_foot_text_add(Eyelight_Viewer *pres, Eyelight_Slide *slide, Eyelight_Node *node, const char *default_text)
 {
     char buf[EYELIGHT_BUFLEN];
+    int w, h;
 
     Eyelight_Node *node_foot_text = eyelight_retrieve_node_prop(node, EYELIGHT_NAME_FOOT_TEXT);
     const char * foot_text = NULL;
@@ -217,6 +227,8 @@ Evas_Object *eyelight_object_foot_text_add(Eyelight_Viewer *pres, Eyelight_Slide
             WARN("load group eyelight/foot_text error! %d \n",
                     edje_object_load_error_get(o_foot_text));
         edje_object_part_text_set(o_foot_text,"object.foot_text",foot_text);
+	edje_object_size_min_calc(o_foot_text, &w, &h);
+	evas_object_size_hint_min_set(o_foot_text, w, h);
         evas_object_size_hint_align_set(o_foot_text, -1, -1);
         evas_object_size_hint_weight_set(o_foot_text, -1, -1);
         edje_object_scale_set(o_foot_text, pres->current_scale);
@@ -250,6 +262,7 @@ Evas_Object *eyelight_object_foot_text_add(Eyelight_Viewer *pres, Eyelight_Slide
 Evas_Object *eyelight_object_foot_image_add(Eyelight_Viewer *pres, Eyelight_Slide *slide, Eyelight_Node *node, const char *default_image)
 {
     char buf[EYELIGHT_BUFLEN];
+    int w, h;
 
     Eyelight_Node *node_foot_image = eyelight_retrieve_node_prop(node, EYELIGHT_NAME_FOOT_IMAGE);
     const char * foot_image = NULL;
@@ -269,6 +282,8 @@ Evas_Object *eyelight_object_foot_image_add(Eyelight_Viewer *pres, Eyelight_Slid
         char *image_path = eyelight_compile_image_path_new(pres,foot_image);
         evas_object_image_file_set((Evas_Object*)part_image, image_path, pres->dump_in || pres->dump_out ? foot_image : NULL);
         EYELIGHT_FREE(image_path);
+	edje_object_size_min_calc(o_foot_image, &w, &h);
+	evas_object_size_hint_min_set(o_foot_image, w, h);
         evas_object_size_hint_align_set(o_foot_image, -1, -1);
         evas_object_size_hint_weight_set(o_foot_image, -1, -1);
         edje_object_scale_set(o_foot_image, pres->current_scale);
@@ -304,6 +319,7 @@ Evas_Object *eyelight_object_foot_image_add(Eyelight_Viewer *pres, Eyelight_Slid
 Evas_Object *eyelight_object_pages_add(Eyelight_Viewer *pres, Eyelight_Slide *slide, int slide_number, int nb_slides)
 {
     char buf[1024], buf_area[EYELIGHT_BUFLEN];
+    int w, h;
 
     Evas_Object *o_area = eyelight_object_area_obj_get(pres, slide, "pages", buf_area);
     snprintf(buf,1024," %d/%d",slide_number+1,nb_slides);
@@ -312,6 +328,8 @@ Evas_Object *eyelight_object_pages_add(Eyelight_Viewer *pres, Eyelight_Slide *sl
         WARN("load group eyelight/pages error! %d \n",
                 edje_object_load_error_get(o_pages));
     edje_object_part_text_set(o_pages,"object.pages",buf);
+    edje_object_size_min_calc(o_pages, &w, &h);
+    evas_object_size_hint_min_set(o_pages, w, h);
     evas_object_size_hint_align_set(o_pages, -1, -1);
     evas_object_size_hint_weight_set(o_pages, -1, -1);
     edje_object_scale_set(o_pages, pres->current_scale);
@@ -329,6 +347,7 @@ Evas_Object *eyelight_object_pages_add(Eyelight_Viewer *pres, Eyelight_Slide *sl
 Evas_Object *eyelight_object_item_text_add(Eyelight_Viewer *pres, Eyelight_Slide *slide, Eyelight_Node *node, const char *area, const char *text)
 {
     char buf[EYELIGHT_BUFLEN];
+    int w, h;
 
     Evas_Object *o_area = eyelight_object_area_obj_get(pres, slide, area, buf);
 
@@ -337,6 +356,9 @@ Evas_Object *eyelight_object_item_text_add(Eyelight_Viewer *pres, Eyelight_Slide
         WARN("load group eyelight/item_text error! %d \n",
                 edje_object_load_error_get(o_text));
     edje_object_part_text_set(o_text,"object.text",text);
+
+    edje_object_size_min_calc(o_text, &w, &h);
+    evas_object_size_hint_min_set(o_text, w, h);
     evas_object_size_hint_align_set(o_text, -1.0, 0.0);
     evas_object_size_hint_weight_set(o_text, 1.0, 1.0);
     edje_object_scale_set(o_text, pres->current_scale);
@@ -364,10 +386,55 @@ Evas_Object *eyelight_object_item_text_add(Eyelight_Viewer *pres, Eyelight_Slide
     return o_text;
 }
 
+Evas_Object *eyelight_object_item_code_add(Eyelight_Viewer *pres, Eyelight_Slide *slide, Eyelight_Node *node, const char *area, const char *text)
+{
+    char buf[EYELIGHT_BUFLEN];
+    int w, h;
+
+    Evas_Object *o_area = eyelight_object_area_obj_get(pres, slide, area, buf);
+
+    Evas_Object *o_text = edje_object_add(pres->evas);
+    if(edje_object_file_set(o_text, pres->theme, "eyelight/item_code") ==  0)
+        WARN("load group eyelight/item_code error! %d \n",
+                edje_object_load_error_get(o_text));
+
+    //TODO: HERE we can parse and set colors to the text !
+    edje_object_part_text_set(o_text,"object.text",text);
+
+    edje_object_size_min_calc(o_text, &w, &h);
+    evas_object_size_hint_min_set(o_text, w, h);
+
+    evas_object_size_hint_align_set(o_text, -1.0, 0.0);
+    evas_object_size_hint_weight_set(o_text, 1.0, 1.0);
+    edje_object_scale_set(o_text, pres->current_scale);
+    evas_object_show(o_text);
+    edje_object_part_box_append(o_area,buf,o_text);
+
+    if(pres->edit_mode)
+    {
+        node->obj = o_text;
+        edje_object_signal_emit(o_text, "edit,mode,1", "eyelight");
+        Eyelight_Edit *edit = calloc(1,sizeof(Eyelight_Edit));
+        edit->obj = o_text;
+        edit->node = node;
+        edit->slide = slide;
+        edit->data = pres->edit_data;
+        slide->edits = eina_list_append(slide->edits, edit);
+
+        if(pres->edit_cb)
+            edje_object_signal_callback_add(o_text, "select", "image", pres->edit_cb, edit);
+    }
+
+    slide->items_all = eina_list_append(
+            slide->items_all,
+            o_text);
+    return o_text;
+}
 
 Evas_Object *eyelight_object_item_image_add(Eyelight_Viewer *pres, Eyelight_Slide *slide, Eyelight_Node *node, const char *area, const char *image, int border, int shadow, double aspect_x, double aspect_y, int keep_aspect)
 {
     char buf[EYELIGHT_BUFLEN];
+    int w, h;
 
     Evas_Object *o_area = eyelight_object_area_obj_get(pres, slide, area, buf);
 
@@ -378,6 +445,8 @@ Evas_Object *eyelight_object_item_image_add(Eyelight_Viewer *pres, Eyelight_Slid
     const Evas_Object *part_image = edje_object_part_object_get(o_image, "object.image");
     char *image_path = eyelight_compile_image_path_new(pres,image);
     evas_object_image_file_set((Evas_Object*)part_image, image_path, pres->dump_in || pres->dump_out ? image : NULL);
+    edje_object_size_min_calc(o_image, &w, &h);
+    evas_object_size_hint_min_set(o_image, w, h);
     evas_object_size_hint_align_set(o_image, -1, -1);
     evas_object_size_hint_weight_set(o_image, -1, -1);
     edje_object_scale_set(o_image, pres->current_scale);
@@ -389,7 +458,7 @@ Evas_Object *eyelight_object_item_image_add(Eyelight_Viewer *pres, Eyelight_Slid
     if(shadow)
         edje_object_signal_emit(o_image, "shadow,show","eyelight");
 
-    
+
     if(keep_aspect)
     {
         Evas_Coord w, h;
@@ -496,6 +565,7 @@ void _video_obj_replay_cb(void *data, Evas_Object *o, void *event_info)
 Evas_Object *eyelight_object_item_presentation_add(Eyelight_Viewer *pres, Eyelight_Slide *slide, Eyelight_Node *node, const char *area, const char *presentation, const char *theme, int border, int shadow)
 {
     char buf[EYELIGHT_BUFLEN];
+    int w, h;
 
     Evas_Object *o_area = eyelight_object_area_obj_get(pres, slide, area, buf);
 
@@ -517,6 +587,8 @@ Evas_Object *eyelight_object_item_presentation_add(Eyelight_Viewer *pres, Eyelig
     if(border)
         edje_object_signal_emit(o_pres, "border,show","eyelight");
 
+    edje_object_size_min_calc(o_pres, &w, &h);
+    evas_object_size_hint_min_set(o_pres, w, h);
     evas_object_size_hint_align_set(o_pres, -1, -1);
     evas_object_size_hint_weight_set(o_pres, -1, -1);
     evas_object_show(o_pres);
@@ -550,6 +622,7 @@ Evas_Object *eyelight_object_item_presentation_add(Eyelight_Viewer *pres, Eyelig
 Evas_Object *eyelight_object_item_video_add(Eyelight_Viewer *pres, Eyelight_Slide *slide, Eyelight_Node *node, const char *area, const char *video, int alpha, int autoplay, int replay, int border, int shadow)
 {
     char buf[EYELIGHT_BUFLEN];
+    int w, h;
 
     Evas_Object *o_area = eyelight_object_area_obj_get(pres, slide, area, buf);
 
@@ -624,6 +697,8 @@ Evas_Object *eyelight_object_item_video_add(Eyelight_Viewer *pres, Eyelight_Slid
 
     evas_object_color_set(o_inter, 255, 255, 255, alpha);
 
+    edje_object_size_min_calc(o_video, &w, &h);
+    evas_object_size_hint_min_set(o_video, w, h);
     evas_object_size_hint_align_set(o_video, -1, -1);
     evas_object_size_hint_weight_set(o_video, -1, -1);
     edje_object_scale_set(o_video, pres->current_scale);
@@ -642,6 +717,7 @@ Evas_Object *eyelight_object_item_video_add(Eyelight_Viewer *pres, Eyelight_Slid
 Evas_Object *eyelight_object_item_simple_text_add(Eyelight_Viewer *pres, Eyelight_Slide *slide, Eyelight_Node *node, const char *area, int depth, const char *text)
 {
     char buf[EYELIGHT_BUFLEN];
+    int w, h;
 
     Evas_Object *o_area = eyelight_object_area_obj_get(pres, slide, area, buf);
 
@@ -650,8 +726,10 @@ Evas_Object *eyelight_object_item_simple_text_add(Eyelight_Viewer *pres, Eyeligh
         WARN("load group eyelight/item_simple_text error! %d \n",
                 edje_object_load_error_get(o_text));
     edje_object_part_text_set(o_text,"object.text",text);
-    evas_object_size_hint_align_set(o_text, -1, -1);
-    evas_object_size_hint_weight_set(o_text, -1, -1);
+    edje_object_size_min_calc(o_text, &w, &h);
+    evas_object_size_hint_min_set(o_text, w, h);
+    evas_object_size_hint_align_set(o_text, -1.0, 0.0);
+    evas_object_size_hint_weight_set(o_text, 1.0, 1.0);
     edje_object_scale_set(o_text, pres->current_scale);
     evas_object_show(o_text);
 
@@ -686,6 +764,7 @@ Evas_Object *eyelight_object_item_simple_text_add(Eyelight_Viewer *pres, Eyeligh
 Evas_Object *eyelight_object_item_numbering_text_add(Eyelight_Viewer *pres, Eyelight_Slide *slide, Eyelight_Node *node, const char *area, char *numbering_id, int depth, const char *text)
 {
     char buf[EYELIGHT_BUFLEN],buf2[EYELIGHT_BUFLEN];
+    int w, h;
 
     Evas_Object *o_area = eyelight_object_area_obj_get(pres, slide, area, buf);
 
@@ -694,12 +773,14 @@ Evas_Object *eyelight_object_item_numbering_text_add(Eyelight_Viewer *pres, Eyel
         WARN("load group eyelight/item_simple_text error! %d \n",
                 edje_object_load_error_get(o_text));
     edje_object_part_text_set(o_text,"object.text",text);
+    edje_object_size_min_calc(o_text, &w, &h);
+    evas_object_size_hint_min_set(o_text, w, h);
 
     snprintf(buf2,EYELIGHT_BUFLEN, " %s) ", numbering_id);
     edje_object_part_text_set(o_text,"object.numbering",buf2);
 
-    evas_object_size_hint_align_set(o_text, -1, -1);
-    evas_object_size_hint_weight_set(o_text, -1, -1);
+    evas_object_size_hint_align_set(o_text, -1, 0.0);
+    evas_object_size_hint_weight_set(o_text, 1, 1);
     edje_object_scale_set(o_text, pres->current_scale);
     evas_object_show(o_text);
 
@@ -734,6 +815,7 @@ Evas_Object *eyelight_object_item_numbering_text_add(Eyelight_Viewer *pres, Eyel
 Evas_Object *eyelight_object_item_edje_add(Eyelight_Viewer *pres, Eyelight_Slide *slide, Eyelight_Node *node, const char *area, const char *edje_file, const char *edje_group)
 {
     char buf[EYELIGHT_BUFLEN];
+    int w, h;
 
     Evas_Object *o_area = eyelight_object_area_obj_get(pres, slide, area, buf);
 
@@ -755,6 +837,8 @@ Evas_Object *eyelight_object_item_edje_add(Eyelight_Viewer *pres, Eyelight_Slide
 
     EYELIGHT_FREE(edje_path);
 
+    edje_object_size_min_calc(o_edje, &w, &h);
+    evas_object_size_hint_min_set(o_edje, w, h);
     evas_object_size_hint_align_set(o_edje, -1, -1);
     evas_object_size_hint_weight_set(o_edje, -1, -1);
     edje_object_scale_set(o_edje, pres->current_scale);
@@ -789,12 +873,15 @@ Evas_Object *eyelight_object_item_edje_add(Eyelight_Viewer *pres, Eyelight_Slide
 Evas_Object *eyelight_object_custom_area_add(Eyelight_Viewer *pres, Eyelight_Slide *slide, Eyelight_Node *node, const char *area, double rel1_x, double rel1_y, double rel2_x, double rel2_y)
 {
     char buf[EYELIGHT_BUFLEN];
+    int w, h;
 
     Evas_Object *o_area = edje_object_add(pres->evas);
     if(edje_object_file_set(o_area, pres->theme, "eyelight/custom_area") ==  0)
         WARN("load group eyelight/custom_area error! %d \n",
                 edje_object_load_error_get(o_area));
 
+    edje_object_size_min_calc(o_area, &w, &h);
+    evas_object_size_hint_min_set(o_area, w, h);
     evas_object_size_hint_align_set(o_area, -1, -1);
     evas_object_size_hint_weight_set(o_area, -1, -1);
     edje_object_scale_set(o_area, pres->current_scale);

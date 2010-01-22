@@ -393,36 +393,39 @@ void eyelight_compile_block_item(Eyelight_Viewer *pres, Eyelight_Slide *slide, E
     Eina_List *l;
     EINA_LIST_FOREACH(node_item->l, l, node)
     {
-        if(node->type == EYELIGHT_NODE_TYPE_PROP
-                && node->name == EYELIGHT_NAME_TEXT)
-        {
-            if(!numbering)
-                eyelight_object_item_simple_text_add(
-                        pres,slide,node_item, area,depth,
-                        eyelight_retrieve_value_of_prop(node,0));
-            else if(strcmp(numbering,"normal")==0)
-            {
-                char dec[EYELIGHT_BUFLEN];
-                snprintf(dec,EYELIGHT_BUFLEN,"%d",
-                        numbering_id);
+       if(node->type == EYELIGHT_NODE_TYPE_PROP)
+	 {
+	    if (node->name == EYELIGHT_NAME_TEXT)
+	      {
+		 if(!numbering)
+		   eyelight_object_item_simple_text_add(pres,slide,node_item, area,depth,
+							eyelight_retrieve_value_of_prop(node,0));
+		 else if(strcmp(numbering,"normal")==0)
+		   {
+		      char dec[EYELIGHT_BUFLEN];
+		      snprintf(dec,EYELIGHT_BUFLEN,"%d",
+			       numbering_id);
 
-                eyelight_object_item_numbering_text_add(
-                        pres,slide, node_item, area,dec,depth,
-                        eyelight_retrieve_value_of_prop(node,0));
-            }
-            else //roman
-            {
-                char dec[EYELIGHT_BUFLEN],
-                     roman[EYELIGHT_BUFLEN];
-                snprintf(dec,EYELIGHT_BUFLEN,"%d",
-                        numbering_id);
-                eyelight_decimal_to_roman(dec,roman);
-                eyelight_object_item_numbering_text_add(
-                        pres,slide,node_item,area,roman,depth,
-                        eyelight_retrieve_value_of_prop(node,0));
-
-            }
-        }
+		      eyelight_object_item_numbering_text_add(pres,slide, node_item, area,dec,depth,
+							      eyelight_retrieve_value_of_prop(node,0));
+		   }
+		 else //roman
+		   {
+		      char dec[EYELIGHT_BUFLEN],
+			roman[EYELIGHT_BUFLEN];
+		      snprintf(dec,EYELIGHT_BUFLEN,"%d",
+			       numbering_id);
+		      eyelight_decimal_to_roman(dec,roman);
+		      eyelight_object_item_numbering_text_add(pres,slide,node_item,area,roman,depth,
+							      eyelight_retrieve_value_of_prop(node,0));
+		   }
+	      }
+	    else if (node->name == EYELIGHT_NAME_CODE)
+	      {
+		 eyelight_object_item_code_add(pres, slide, node, area,
+					       eyelight_retrieve_value_of_prop(node,0));
+	      }
+	 }
     }
 }
 
@@ -455,7 +458,7 @@ void eyelight_compile_block_image(Eyelight_Viewer *pres, Eyelight_Slide *slide, 
 
     if(node_shadow)
         shadow = atoi(eyelight_retrieve_value_of_prop(node_shadow,0));
-    
+
     if(node_keep_aspect)
         keep_aspect = atoi(eyelight_retrieve_value_of_prop(node_keep_aspect,0));
 
@@ -647,6 +650,11 @@ int eyelight_compile_block_items(Eyelight_Viewer *pres, Eyelight_Slide *slide, E
                         numbering_id++;
                         id_item++;
                         break;
+		 case EYELIGHT_NAME_CODE:
+		    eyelight_object_item_code_add(pres, slide, node, area,
+						  eyelight_retrieve_value_of_prop(node,0));
+		    id_item++;
+		    break;
                 }
                 break;
         }
@@ -733,6 +741,9 @@ void eyelight_compile_block_area(Eyelight_Viewer *pres, Eyelight_Slide *slide, E
                     case EYELIGHT_NAME_VIDEO:
                         eyelight_object_item_video_add(pres,slide, node, area,
                                 eyelight_retrieve_value_of_prop(node,0),255,0,1,0,0);
+		    case EYELIGHT_NAME_CODE:
+			eyelight_object_item_code_add(pres, slide, node, area,
+                                eyelight_retrieve_value_of_prop(node,0));
                 }
                 break;
         }
