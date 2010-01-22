@@ -54,10 +54,19 @@ elm_main(int argc, char **argv)
         elm_win_resize_object_add(win, bg);
         evas_object_show(bg);
 
-        snprintf(buff, sizeof(buff), 
-                 "This is quickpanel %d - Priority: Major %d Minor %d", i, 
-                 ecore_x_e_illume_quickpanel_priority_major_get(xwin), 
-                 ecore_x_e_illume_quickpanel_priority_minor_get(xwin));
+        if (i == 1) 
+          {
+             snprintf(buff, sizeof(buff), 
+                      "This is quickpanel %d - Priority: Major %d Minor %d", 
+                      i, 2, 3);
+          }
+        else 
+          {
+             snprintf(buff, sizeof(buff), 
+                      "This is quickpanel %d - Priority: Major %d Minor %d", 
+                      i, i, i);
+          }
+
         lbl = elm_label_add(win);
         elm_label_label_set(lbl, buff);
         evas_object_size_hint_weight_set(lbl, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
@@ -74,7 +83,7 @@ elm_main(int argc, char **argv)
                {
                   xwin = elm_win_xwindow_get(win);
                   ecore_x_e_illume_quickpanel_zone_set(xwin, &zones[1]);
-                  ecore_x_e_illume_quickpanel_zone_request_send(ecore_x_window_root_first_get(), xwin);
+                  ecore_x_e_illume_quickpanel_zone_request_send(zones[1], xwin);
                   free(zones);
                }
           }
