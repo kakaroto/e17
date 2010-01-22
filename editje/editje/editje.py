@@ -340,12 +340,7 @@ class Editje(elementary.Window):
                 for p in self.e.parts:
                     part = self.e._edje.part_get(p)
                     self._prevstates.append((p, part.state_selected_get()))
-            if self.e.animation.name:
-                self.e.animation._current()
-                if self.e.part.name:
-                    self.e.part.state.name = self.e.part._part.state_selected_get()
-            else:
-                self.anim_state_details._hide_all()
+            self.anim_state_details._hide_all()
         else:
             self.e.animation.name = None
             self.main_edje.signal_emit("mode,anim,off", "editje")
@@ -358,6 +353,7 @@ class Editje(elementary.Window):
                     if p == self.e.part.name:
                         self.e.part.state.name = s
                 del self._prevstates
+            self.part_state_details._hide_all()
 
         self._modes_selector.label_set("Mode: " + name)
 
