@@ -20,7 +20,7 @@ EXTRA_DIST = module.desktop.in \
 	$(EDJE_CC) $(EDJE_FLAGS) $< $@
 
 clean-local:
-	e-module-flame.edj module.desktop e_modules-flame.spec *~
+	rm -f e-module-flame.edj module.desktop e_modules-flame.spec *~
 
 uninstall:
 	rm -rf $(DESTDIR)$(datadir)
