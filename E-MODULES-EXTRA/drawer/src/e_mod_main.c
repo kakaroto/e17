@@ -367,7 +367,7 @@ e_modapi_save(E_Module *m)
    return 1;
 }
 
-EAPI Eina_List *
+Eina_List *
 drawer_plugins_list(Drawer_Plugin_Category cat)
 {
    char buf[4096];
@@ -420,7 +420,7 @@ drawer_plugins_list(Drawer_Plugin_Category cat)
    return ret;
 }
 
-EAPI void
+void
 drawer_plugins_list_free(Eina_List *list)
 {
    Eina_List *l = NULL;
@@ -435,7 +435,7 @@ drawer_plugins_list_free(Eina_List *list)
    eina_list_free(list);
 }
 
-EAPI Drawer_Plugin *
+Drawer_Plugin *
 drawer_plugin_load(Config_Item *ci, Drawer_Plugin_Category cat, const char *name)
 {
    Instance *inst = NULL;
@@ -460,7 +460,7 @@ drawer_plugin_load(Config_Item *ci, Drawer_Plugin_Category cat, const char *name
    return NULL;
 }
 
-EAPI Evas_Object *
+Evas_Object *
 drawer_plugin_config_button_get(Config_Item *ci, Evas *evas, Drawer_Plugin_Category cat)
 {
    Instance *inst = NULL;

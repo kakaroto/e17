@@ -29,7 +29,7 @@ static void _sources_list_cb_change(void *data, Evas_Object *obj);
 static void _views_list_cb_change(void *data, Evas_Object *obj);
 
 /* External Functions */
-EAPI E_Config_Dialog *
+E_Config_Dialog *
 e_int_config_drawer_module(E_Container *con, Config_Item *ci) 
 {
    E_Config_Dialog *cfd = NULL;

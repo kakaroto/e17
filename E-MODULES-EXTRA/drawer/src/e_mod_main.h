@@ -54,10 +54,10 @@ EAPI void            * e_modapi_init(E_Module *m);
 EAPI int               e_modapi_shutdown(E_Module *m);
 EAPI int               e_modapi_save(E_Module *m);
 
-EAPI Eina_List       * drawer_plugins_list(Drawer_Plugin_Category cat);
-EAPI void              drawer_plugins_list_free(Eina_List *list);
-EAPI Drawer_Plugin   * drawer_plugin_load(Config_Item *ci, Drawer_Plugin_Category cat, const char *name);
-EAPI Evas_Object     * drawer_plugin_config_button_get(Config_Item *ci, Evas *evas, Drawer_Plugin_Category cat);
+Eina_List       * drawer_plugins_list(Drawer_Plugin_Category cat);
+void              drawer_plugins_list_free(Eina_List *list);
+Drawer_Plugin   * drawer_plugin_load(Config_Item *ci, Drawer_Plugin_Category cat, const char *name);
+Evas_Object     * drawer_plugin_config_button_get(Config_Item *ci, Evas *evas, Drawer_Plugin_Category cat);
 
 /* Function for calling the modules config dialog */
 EAPI E_Config_Dialog * e_int_config_drawer_module(E_Container *con, Config_Item *ci);
