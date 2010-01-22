@@ -120,8 +120,7 @@ elm_ind_win_new(Ecore_X_Window zone)
    evas_object_resize(iwin->win, zw, 32);
    evas_object_show(iwin->win);
 
-   ecore_x_e_illume_top_shelf_geometry_set(ecore_x_window_root_first_get(), 
-                                           zx, zy, zw, 32);
+   ecore_x_e_illume_top_shelf_geometry_set(zone, zx, zy, zw, 32);
 
    /* create first home window */
    elm_home_win_new(zone);
