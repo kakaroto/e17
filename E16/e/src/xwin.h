@@ -218,6 +218,7 @@ int                 EShapeSetShape(Win win, int x, int y, Win src_win);
 int                 EShapePropagate(Win win);
 int                 EShapeCheck(Win win);
 Pixmap              EWindowGetShapePixmap(Win win);
+Pixmap              EWindowGetShapePixmapInverted(Win win);
 
 Bool                EQueryPointer(Win win, int *px, int *py,
 				  Window * pchild, unsigned int *pmask);

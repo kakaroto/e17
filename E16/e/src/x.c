@@ -1534,9 +1534,8 @@ EShapeSetShape(Win win, int x, int y, Win src_win)
    return win->num_rect != 0;
 }
 
-/* Build mask from window shape rects */
-Pixmap
-EWindowGetShapePixmap(Win win)
+static              Pixmap
+_EWindowGetShapePixmap(Win win, unsigned int fg, unsigned int bg)
 {
    Pixmap              mask;
    GC                  gc;
@@ -1549,10 +1548,10 @@ EWindowGetShapePixmap(Win win)
    mask = ECreatePixmap(win, win->w, win->h, 1);
    gc = EXCreateGC(mask, 0, NULL);
 
-   XSetForeground(disp, gc, 0);
+   XSetForeground(disp, gc, bg);
    XFillRectangle(disp, mask, gc, 0, 0, win->w, win->h);
 
-   XSetForeground(disp, gc, 1);
+   XSetForeground(disp, gc, fg);
    rect = win->rects;
    for (i = 0; i < win->num_rect; i++)
       XFillRectangle(disp, mask, gc, rect[i].x, rect[i].y,
@@ -1561,6 +1560,20 @@ EWindowGetShapePixmap(Win win)
    EXFreeGC(gc);
 
    return mask;
+}
+
+/* Build mask from window shape rects */
+Pixmap
+EWindowGetShapePixmap(Win win)
+{
+   return _EWindowGetShapePixmap(win, 1, 0);
+}
+
+/* Build inverted mask from window shape rects */
+Pixmap
+EWindowGetShapePixmapInverted(Win win)
+{
+   return _EWindowGetShapePixmap(win, 0, 1);
 }
 
 Pixmap
