@@ -15,28 +15,43 @@
 
 function planet ( $limit )
 {
-    $url = option('planet_url');
-    $xml = simplexml_load_file($url);
+    static $articles = array ();
 
-    $entries = array ();
-    for ($i = 0; $i < $limit; $i++)
-        $entries[] = $xml->entry[$i];
+    if ( empty ($articles) )
+        $articles = _planet_init(25);
 
-    $result = array ();
-    foreach ($entries as $i => $entry) {
-        $result[$i]['title'] = (string) $entry->title;
-        $result[$i]['link'] = (string) $entry->id;
-        $result[$i]['author'] = (string) $entry->author->name;
-        $result[$i]['date'] = substr(str_replace('T', ' ', (string) $entry->updated), 0, -6);
+    return array_slice($articles, 0, $limit, true);
+}
 
-        $summary = trim((string) $entry->content);
-        $summary = strip_tags($summary);
-        $summary = substr($summary, 0, 250) . '...';
+function _planet_init( $limit )
+{
+    $articles = array ();
+    if ( !$articles = cache("array.planet.articles") )
+    {
+        $url = option('planet_url');
+        $xml = simplexml_load_file($url);
 
-        $result[$i]['summary'] = $summary;
+        $entries = array ();
+        for ($i = 0; $i < $limit; $i++)
+            $entries[] = $xml->entry[$i];
+
+        $articles = array ();
+        foreach ($entries as $i => $entry) {
+            $articles[$i]['title'] = (string) $entry->title;
+            $articles[$i]['link'] = (string) $entry->id;
+            $articles[$i]['author'] = (string) $entry->author->name;
+            $articles[$i]['date'] = substr(str_replace('T', ' ', (string) $entry->updated), 0, -6);
+
+            $summary = trim((string) $entry->content);
+            $summary = strip_tags($summary);
+            $summary = substr($summary, 0, 250) . '...';
+
+            $articles[$i]['summary'] = $summary;
+        }
+        cache("array.planet.articles", $articles);
     }
 
-    return $result;
+    return $articles;
 }
 
 ?>

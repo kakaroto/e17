@@ -318,7 +318,7 @@ additional details.</p>
 /lib/*.php               Those who want to hack the php code.
 /pages/README.rst.txt    Those who want to add content or translate it.
 /SITEMAP.rst.txt         Those who want to add content or translate it.
-/style/README.rst.txt    Those who want to change the desing of the website.
+/style/README.rst.txt    Those who want to change the design of the website.
 /news/README.rst.txt     Those who want to add news articles.
 </pre>
 <p>All these README files reveal some inner workings of each system that someone
@@ -349,20 +349,20 @@ rst2html README.rst.txt &gt; README.html
 <div class="section" id="directory-structure">
 <h1><a class="toc-backref" href="#id1">Directory Structure</a></h1>
 <pre class="literal-block">
-.cache/                  &lt;- Cache file, to force a reload `touch` it.
-lib/                     &lt;- our own and and 3rd party libs
-images/                  &lt;- Image folder for the content.
-images/home              &lt;- Image folder for the content on the home, etc.
+images/
+    home/                &lt;- Images for the content (in home)
 style/
-    css/                 &lt;- CSS and grid.php to generate the semantic grids.
+    css/                 &lt;- CSS and grid generator.
     images/              &lt;- Images for the design.
-pages/                   &lt;- Website contents and main layout files.
+pages/
     english/             &lt;- Content files for the english language.
         home.html.php    &lt;- Content with spiced-up-markup for the home
         messages.inc.php &lt;- Localized page names and messages.
-        ..
-    ..
+news/
+    english/             &lt;- News Folder for the english language.
+        YYYYMMDD-HHMMSS  &lt;- News File for the english language
 materials/               &lt;- (or dev/materials) Various design resources.
+lib/                     &lt;- Our own and and 3rd party php libs.
 index.php                &lt;- The website's spine.
 </pre>
 </div>

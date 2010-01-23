@@ -1,6 +1,5 @@
 <?php
 /**
-
     Welcome to the new code for e.org. I tried to keep the code simple and
     the languages in the content for pages and news articles compartmentalized.
 
@@ -14,7 +13,8 @@
     other conveniences.Take a look at http://limonade.sofa-design.net/README.htm
     if you are interested.
 
-    Also, be careful about not deleting the call to "run()", near the end.
+    Also, be careful about not deleting the call to "run()", after the dispatch
+    calls.
 
     Execution flow
     ==============
@@ -51,7 +51,7 @@
         *   Enables error display back on.
         *   Sets the default callback for the error dispatcher.
         *   Calls index.php::configure().
-        *   Requires_once every php file in the /lib/ directory.      !important
+        *   Requires_once every php file in the /lib/ directory.
         *   Setups the session.
         *   Defines other functions like after() and route_missing() if they
             werent defined by any library or index.
@@ -90,7 +90,7 @@
 
 require_once 'lib/limonade.php';
 
-//DELETEME: Temporary function, delete on productio
+//DELETEME: Temporary function, delete on production
 #. Move contact back to about?n.
 function debug ($a)
 {
@@ -130,11 +130,13 @@ function before ()
 
     # Forces cache_reset() to delete everything every page load when localhost
     $localhost = preg_match('/^localhost(\:\d+)?/', $_SERVER['HTTP_HOST']);
-    if ( ($localhost) and is_dir(option('cache_dir')) )
+    if ( ($localhost) and is_dir(option('cache_dir')) ) {
         touch(option('cache_dir'));
+        cache_reset();
+    }
 
-    # Only if the dates of the options 'cache_dir' and 'cache_reference' differ.
-    cache_reset();
+    # Reset the cache every 30 minutes
+    cache_reset_every(1800);
 
     # Guarantee that params('language') will always be valid.
     $language = params('language');
@@ -148,13 +150,30 @@ function before ()
     # Default variables avialable to all views as "$language" for example.
     set('language', params('language'));
     set('motto',    message('motto'));
-    set('header',   array ('development', 'desktop', 'news', 'about') );
-    set('footer',   array ('home', 'desktop', 'development', 'artists', 'news', 'about') );
+    set('header',   array ('about', 'news', 'libraries', 'desktop', 'community') );
+    set('footer',   array ('about', 'news', 'libraries', 'desktop', 'community') );
     set('pages',    page_list_merge(params('language'), option('fallback_language')));
 }
 
+
+/* Setup he index */
 dispatch('/', 'home');
 dispatch('/home/:language', 'home');
+dispatch('/libraries/:language', 'libraries');
+dispatch('/community/:language', 'community');
+dispatch('/artists/:language', 'artists');
+dispatch('/about/:language', 'about');
+dispatch('/development/:language', 'development');
+dispatch('/desktop/:language', 'desktop');
+dispatch('/news/:language', 'news');
+dispatch('/article/:id/:language', 'render_article');
+dispatch ('set_language/:language/**', 'set_language');
+error(E_USER_ERROR, 'render_user_error');
+
+/* Executes the request */
+run();
+
+/* "controllers" */
 function home ()
 {
     if ( !$file = page('home') ) halt(NOT_FOUND);
@@ -168,7 +187,28 @@ function home ()
     return html($file);
 }
 
-dispatch('/artists/:language', 'artists');
+function libraries ()
+{
+    if ( !$file = page('libraries') ) halt(NOT_FOUND);
+
+    set('page', 'libraries');
+    set('name', message('libraries'));
+
+    return html($file);
+}
+
+
+function community ()
+{
+    if ( !$file = page('community') ) halt(NOT_FOUND);
+
+    set('page', 'community');
+    set('name', message('community'));
+
+    return html($file);
+}
+
+
 function artists ()
 {
     if ( !$file = page('artists') ) halt(NOT_FOUND);
@@ -179,7 +219,7 @@ function artists ()
     return html($file);
 }
 
-dispatch('/about/:language', 'about');
+
 function about ()
 {
     if ( !$file = page('about') ) halt(NOT_FOUND);
@@ -192,7 +232,6 @@ function about ()
     return html($file);
 }
 
-dispatch('/development/:language', 'development');
 function development ()
 {
     if ( !$file = page('development') ) halt(NOT_FOUND);
@@ -235,7 +274,6 @@ function development ()
     return html($file);
 }
 
-dispatch('/desktop/:language', 'desktop');
 function desktop ()
 {
     if ( !$file = page('desktop') ) halt(NOT_FOUND);
@@ -269,7 +307,6 @@ function desktop ()
     return html($file);
 }
 
-dispatch('/news/:language', 'news');
 function news ()
 {
     if ( !$file = page('news') ) halt(NOT_FOUND);
@@ -282,7 +319,6 @@ function news ()
     return html($file);
 }
 
-dispatch('/article/:id/:language', 'render_article');
 function render_article ()
 {
     if ( !$file = page('article') ) halt(NOT_FOUND);
@@ -294,8 +330,9 @@ function render_article ()
     return html($file);
 }
 
+
+
 # Set the language for the session cookie.
-dispatch ('set_language/:language/**', 'set_language');
 function set_language ( )
 {
     session_language(params('language'));
@@ -314,7 +351,7 @@ function not_found($errno, $errstr, $errfile=null, $errline=null)
     return html($file);
 }
 
-error(E_USER_ERROR, 'render_user_error');
+
 function render_user_error($errno, $errstr, $errfile=null, $errline=null)
 {
     before();
@@ -330,6 +367,5 @@ function render_user_error($errno, $errstr, $errfile=null, $errline=null)
     return html($file);
 }
 
-/* Careful here... */
-run();
+
 ?>

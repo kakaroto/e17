@@ -14,7 +14,7 @@ This is the reading list list::
     /lib/*.php               Those who want to hack the php code.
     /pages/README.rst.txt    Those who want to add content or translate it.
     /SITEMAP.rst.txt         Those who want to add content or translate it.
-    /style/README.rst.txt    Those who want to change the desing of the website.
+    /style/README.rst.txt    Those who want to change the design of the website.
     /news/README.rst.txt     Those who want to add news articles.
 
 All these README files reveal some inner workings of each system that someone
@@ -35,26 +35,25 @@ Directory Structure
 
 ::
 
-    .cache/                  <- Cache file, to force a reload `touch` it.
-    lib/                     <- our own and and 3rd party libs
-    images/                  <- Image folder for the content.
-    images/home              <- Image folder for the content on the home, etc.
+    images/
+        home/                <- Images for the content (in home)
     style/
-        css/                 <- CSS and grid.php to generate the semantic grids.
+        css/                 <- CSS and grid generator.
         images/              <- Images for the design.
-    pages/                   <- Website contents and main layout files.
+    pages/
         english/             <- Content files for the english language.
             home.html.php    <- Content with spiced-up-markup for the home
             messages.inc.php <- Localized page names and messages.
-            ..
-        ..
+    news/
+        english/             <- News Folder for the english language.
+            YYYYMMDD-HHMMSS  <- News File for the english language
     materials/               <- (or dev/materials) Various design resources.
+    lib/                     <- Our own and and 3rd party php libs.
     index.php                <- The website's spine.
 
 
 TODO
 ====
-
 
 Stage 1: Brochure pages
 -----------------------

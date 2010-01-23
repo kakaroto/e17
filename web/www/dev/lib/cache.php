@@ -50,6 +50,29 @@ function cache_reset ()
     }
 }
 
+# Time based cache reset
+function cache_reset_every ( $seconds )
+{
+    $dir = option('cache_dir');
+
+    if ( !file_exists($dir) )
+        cache_init();
+
+    $current = date("U");
+    $cache   = date("U", filemtime($dir));
+
+    if ($current - $cache > $seconds)
+    {
+        $files = file_list_dir($dir);
+        foreach ($files as $file)
+            if ( !unlink(file_path($dir, $file)) )
+                halt("Cannot remove cache file '$dir/$file'.");
+
+        if( !touch($dir, $current) )
+            halt("Cannot touch the directory '$dir'.");
+    }
+}
+
 # Serializes the data structure $value as file $filename or returns the
 # unserialized data in $filename if $value is not set.
 function cache ($filename, $value = null)

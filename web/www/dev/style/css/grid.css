@@ -336,3 +336,22 @@ body.artists #edje .edje-app-diagram    { float:left; overflow: hidden; width: 4
 
 body.artists #elementary       { width:950px; margin:0 auto; display: block }
 body.artists #elementary:after { content:"\0020"; display:block; height:0; clear:both;visibility:hidden; overflow:hidden; }
+
+
+/* ****************************** Libraries ***************************** */
+
+body.libraries #developers { width:950px; margin:0 auto; display: block }
+body.libraries #developers { float:left; overflow: hidden; width: 550px; margin-right:10px;  }
+
+body.libraries #artists { float:left; overflow: hidden; width: 390px; margin-right: 0;  }
+
+body.libraries #artists .more { width:950px; margin:0 auto; display: block }
+body.libraries #artists .more .learn { float:left; overflow: hidden; width: 150px; margin-right:10px;  }
+body.libraries #artists .more .tools { float:left; overflow: hidden; width: 230px; margin-right: 0;  }
+
+body.libraries #libraries { width:950px; margin:0 auto; display: block }
+body.libraries #libraries { float:left; overflow: hidden; width: 950px; margin-right: 0;  }
+
+body.libraries .core { float:left; overflow: hidden; width: 390px; margin-right:10px;  }
+body.libraries .bindings { float:left; overflow: hidden; width: 230px; margin-right:10px;  }
+body.libraries .examples { float:left; overflow: hidden; width: 230px; margin-right: 0;  }

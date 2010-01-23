@@ -5,17 +5,16 @@ $messages = array
 /* Page Names */
 'home'          => 'home',
 'about'         => 'about',
-'desktop'       => 'desktop',
-'development'   => 'development',
-'artists'       => 'artists',
+'desktop'       => 'E17',
 'news'          => 'news',
 'article'       => 'article',
+'libraries'     => 'EFL',
+'community'     => 'community',
 
 /* Other messages */
 'motto'         => 'Beauty at your fingertips',
 'not_found'     => 'Not Found (404)',
 'fatal_error'   => 'Fatal Error',
-
 
 /* Mailing list Descriptions */
 'Enlightenment Announce'                => 'Recieve notification of all new releases.',
@@ -30,6 +29,6 @@ $messages = array
 'invalid_language:'  => 'The language provided is not valid, a fallback language will be used. Invalid language: ',
 'article_not_found:' => 'The requested article cannot be found: ',
 
-/* Finish */
+/* The End */
 );
 ?>

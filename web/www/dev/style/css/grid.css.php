@@ -151,3 +151,22 @@ body.artists #edje .edje-app-diagram    { <?php column(6, 'last') ?> }
 
 body.artists #elementary       { <?php column_container() ?> }
 body.artists #elementary:after { <?php clearfix() ?> }
+
+
+/* ****************************** Libraries ***************************** */
+
+body.libraries #developers { <?php column_container() ?> }
+body.libraries #developers { <?php column(7) ?> }
+
+body.libraries #artists { <?php column(5, 'last') ?> }
+
+body.libraries #artists .more { <?php column_container() ?> }
+body.libraries #artists .more .learn { <?php column(2) ?> }
+body.libraries #artists .more .tools { <?php column(3, 'last') ?> }
+
+body.libraries #libraries { <?php column_container() ?> }
+body.libraries #libraries { <?php column(12) ?> }
+
+body.libraries .core { <?php column(5) ?> }
+body.libraries .bindings { <?php column(3) ?> }
+body.libraries .examples { <?php column(3, 'last') ?> }

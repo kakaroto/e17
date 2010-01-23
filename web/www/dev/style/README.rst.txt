@@ -1,5 +1,5 @@
 ##################
-The desinger's den
+The designer's den
 ##################
 
 We all know that CSS will never be completely independent from markup if we
