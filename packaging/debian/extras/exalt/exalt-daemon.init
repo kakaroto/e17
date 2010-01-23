@@ -47,6 +47,7 @@ if test "$(stat -c %d/%i /)" = "$(stat -Lc %d/%i /proc/1/root)"; then
 	else
 		start-stop-daemon --start --quiet --user $USER --exec $DAEMON
 	fi
+	ifconfig lo up
 else
 	log_warning_msg "This appears to be a chrooted enviornment... exiting"
 	log_end_msg 0

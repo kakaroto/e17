@@ -8,6 +8,14 @@ DEB_CONFIGURE_EXTRA_FLAGS := --disable-rpath --with-wpa-supplicant=/sbin/wpa_sup
 DEB_MAKE_CLEAN_TARGET := distclean
 DEB_DH_INSTALLINIT_ARGS := -- start 26 2 3 4 5 . stop 14 0 1 6 .
 
+install/libexalt0::
+	mkdir -p debian/libexalt0/etc/dbus-1/system.d
+	mkdir -p debian/libexalt0/usr/share/dbus-1/services
+	chmod 755 debian/libexalt0/etc/dbus-1/system.d
+	chmod 755 debian/libexalt0/usr/share/dbus-1/services
+	/usr/bin/install -m 644 debian/etc_dbus-1_system_d_exalt.conf debian/libexalt0/etc/dbus-1/system.d/exalt.conf
+	/usr/bin/install -m 644 debian/usr_share_dbus-1_services_org.e.Exalt.service debian/libexalt0/usr/share/dbus-1/services/org.e.Exalt.service
+
 clean::
 	[ ! -f Makefile ] || make distclean
 

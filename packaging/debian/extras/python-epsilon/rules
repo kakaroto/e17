@@ -6,9 +6,9 @@ DEB_PYTHON_SYSTEM := pycentral
 include /usr/share/cdbs/1/rules/debhelper.mk
 include /usr/share/cdbs/1/class/python-distutils.mk
 
-install/python-epsilon-doc::
+install/python-emotion-doc::
 	./gen-doc-api.sh
 
 clean::
-	rm -rf python_epsilon.egg-info
+	rm -rf python_emotion.egg-info
 

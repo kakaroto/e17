@@ -1,2 +1,3 @@
 debian/tmp/usr/bin/elementary_quicklaunch
 debian/tmp/usr/bin/elementary_run
+debian/tmp/usr/bin/elementary_test

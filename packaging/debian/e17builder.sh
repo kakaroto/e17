@@ -277,6 +277,7 @@ for uchroots in ${distros[@]}; do
 		echo "ERROR, exitting."
 		exit 1
 	fi
+	sudo rmdir $pbuilderplace/build/$(echo $uchroots | sed 's/#.*//')-$(echo $uchroots | sed 's/.*#//')
 done
 }
 
