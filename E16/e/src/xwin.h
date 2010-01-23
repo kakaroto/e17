@@ -266,7 +266,7 @@ Pixmap              EXCreatePixmapCopy(Pixmap src, unsigned int w,
 
 GC                  EXCreateGC(Drawable draw, unsigned long mask,
 			       XGCValues * val);
-int                 EXFreeGC(GC gc);
+void                EXFreeGC(GC gc);
 
 void                EXSendEvent(Window xwin, long event_mask, XEvent * ev);
 

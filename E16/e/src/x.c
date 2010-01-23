@@ -1667,10 +1667,11 @@ EXCreateGC(Drawable draw, unsigned long mask, XGCValues * val)
    return XCreateGC(disp, draw, mask, val);
 }
 
-int
+void
 EXFreeGC(GC gc)
 {
-   return XFreeGC(disp, gc);
+   if (gc)
+      XFreeGC(disp, gc);
 }
 
 void

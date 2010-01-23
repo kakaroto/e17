@@ -89,10 +89,8 @@ FX_ripple_timeout(void *data __UNUSED__)
 	fx_ripple_above =
 	   ECreatePixmap(fx_ripple_win, WinGetW(VROOT),
 			 fx_ripple_waterh * 2, 0);
-	if (gc)
-	   EXFreeGC(gc);
-	if (gc1)
-	   EXFreeGC(gc1);
+	EXFreeGC(gc);
+	EXFreeGC(gc1);
 	gcv.subwindow_mode = IncludeInferiors;
 	gc = EXCreateGC(WinGetXwin(fx_ripple_win), GCSubwindowMode, &gcv);
 	gc1 = EXCreateGC(WinGetXwin(fx_ripple_win), 0L, &gcv);
@@ -214,10 +212,9 @@ FX_Wave_timeout(void *data __UNUSED__)
 
 	fx_wave_above =
 	   ECreatePixmap(fx_wave_win, WinGetW(VROOT), FX_WAVE_WATERH * 2, 0);
-	if (gc)
-	   EXFreeGC(gc);
-	if (gc1)
-	   EXFreeGC(gc1);
+
+	EXFreeGC(gc);
+	EXFreeGC(gc1);
 	gcv.subwindow_mode = IncludeInferiors;
 	gc = EXCreateGC(WinGetXwin(fx_wave_win), GCSubwindowMode, &gcv);
 	gc1 = EXCreateGC(WinGetXwin(fx_wave_win), 0L, &gcv);
@@ -408,11 +405,8 @@ FX_raindrops_timeout(void *data __UNUSED__)
 
 	fx_raindrops_win = EobjGetWin(bgeo);
 
-	if (gc)
-	   EXFreeGC(gc);
-	if (gc1)
-	   EXFreeGC(gc1);
-
+	EXFreeGC(gc);
+	EXFreeGC(gc1);
 	gcv.subwindow_mode = IncludeInferiors;
 	gc = EXCreateGC(WinGetXwin(fx_raindrops_win), GCSubwindowMode, &gcv);
 	gc1 = EXCreateGC(WinGetXwin(fx_raindrops_win), 0L, &gcv);
