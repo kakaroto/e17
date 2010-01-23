@@ -411,21 +411,17 @@ FX_raindrops_timeout(void *data __UNUSED__)
 	gc = EXCreateGC(WinGetXwin(fx_raindrops_win), GCSubwindowMode, &gcv);
 	gc1 = EXCreateGC(WinGetXwin(fx_raindrops_win), 0L, &gcv);
 
-	fx_raindrops_draw =
-	   ECreatePixImg(WinGetXwin(fx_raindrops_win), fx_raindrop_size,
-			 fx_raindrop_size);
+	fx_raindrops_draw = PixImgCreate(fx_raindrop_size, fx_raindrop_size);
 	if (!fx_raindrops_draw)
 	   return 0;
 
 	for (i = 0; i < fx_raindrops_number; i++)
 	  {
 	     fx_raindrops[i].buf =
-		ECreatePixImg(WinGetXwin(fx_raindrops_win), fx_raindrop_size,
-			      fx_raindrop_size);
+		PixImgCreate(fx_raindrop_size, fx_raindrop_size);
 	     if (fx_raindrops[i].buf)
-		XShmGetImage(disp, WinGetXwin(fx_raindrops_win),
-			     fx_raindrops[i].buf->xim, fx_raindrops[i].x,
-			     fx_raindrops[i].y, 0xffffffff);
+		PixImgFill(fx_raindrops[i].buf, WinGetXwin(fx_raindrops_win),
+			   fx_raindrops[i].x, fx_raindrops[i].y);
 	     if (!fx_raindrops[i].buf)
 		return 0;
 	  }
@@ -502,9 +498,8 @@ FX_raindrops_timeout(void *data __UNUSED__)
 			 }
 		    }
 	       }
-	     XShmGetImage(disp, WinGetXwin(fx_raindrops_win),
-			  fx_raindrops[i].buf->xim,
-			  fx_raindrops[i].x, fx_raindrops[i].y, 0xffffffff);
+	     PixImgFill(fx_raindrops[i].buf, WinGetXwin(fx_raindrops_win),
+			fx_raindrops[i].x, fx_raindrops[i].y);
 	  }
 	percent_done =
 	   1 + ((fx_raindrops[i].count << 8) / fx_raindrop_duration);
@@ -557,10 +552,9 @@ FX_raindrops_timeout(void *data __UNUSED__)
 		    }
 	       }
 	  }
-	XShmPutImage(disp, WinGetXwin(fx_raindrops_win), gc1,
-		     fx_raindrops_draw->xim, 0, 0,
-		     fx_raindrops[i].x, fx_raindrops[i].y, fx_raindrop_size,
-		     fx_raindrop_size, False);
+	PixImgPaste(fx_raindrops_draw, WinGetXwin(fx_raindrops_win), gc1,
+		    0, 0, fx_raindrop_size, fx_raindrop_size,
+		    fx_raindrops[i].x, fx_raindrops[i].y);
 	ESync(0);
      }
 
@@ -599,11 +593,11 @@ FX_Raindrops_Quit(void)
 	EClearArea(fx_raindrops_win, fx_raindrops[i].x, fx_raindrops[i].y,
 		   fx_raindrop_size, fx_raindrop_size);
 	if (fx_raindrops[i].buf)
-	   EDestroyPixImg(fx_raindrops[i].buf);
+	   PixImgDestroy(fx_raindrops[i].buf);
 	fx_raindrops[i].buf = NULL;
      }
    if (fx_raindrops_draw)
-      EDestroyPixImg(fx_raindrops_draw);
+      PixImgDestroy(fx_raindrops_draw);
    fx_raindrops_draw = NULL;
    fx_raindrops_win = None;
 }

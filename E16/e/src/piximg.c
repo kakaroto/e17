@@ -1,5 +1,6 @@
 /*
  * Copyright (C) 2000-2007 Carsten Haitzler, Geoff Harrison and various contributors
+ * Copyright (C) 2010 Kim Woelders
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -28,34 +29,9 @@
 #include <X11/Xutil.h>
 #include <X11/extensions/XShm.h>
 
-void
-EFillPixmap(Window win, Pixmap pmap, int x, int y, int w, int h)
-{
-   XGCValues           gcv;
-   GC                  gc;
-
-   gcv.subwindow_mode = IncludeInferiors;
-   gc = EXCreateGC(win, GCSubwindowMode, &gcv);
-   XCopyArea(disp, win, pmap, gc, x, y, w, h, x, y);
-   EXFreeGC(gc);
-}
-
-void
-EPastePixmap(Window win, Pixmap pmap, int x, int y, int w, int h)
-{
-   XGCValues           gcv;
-   GC                  gc;
-
-   gcv.subwindow_mode = IncludeInferiors;
-   gc = EXCreateGC(win, GCSubwindowMode, &gcv);
-   XCopyArea(disp, pmap, win, gc, x, y, w, h, x, y);
-   EXFreeGC(gc);
-}
-
 PixImg             *
-ECreatePixImg(Window win, int w, int h)
+PixImgCreate(int w, int h)
 {
-   XGCValues           gcv;
    PixImg             *pi;
 
    pi = EMALLOC(PixImg, 1);
@@ -84,23 +60,8 @@ ECreatePixImg(Window win, int w, int h)
 		       XShmAttach(disp, pi->shminfo);
 		       ESync(0);
 		       if (Dpy.last_error_code == 0)
-			 {
-			    pi->pmap =
-			       XShmCreatePixmap(disp, win, pi->shminfo->shmaddr,
-						pi->shminfo, w, h,
-						WinGetDepth(VROOT));
-			    if (pi->pmap)
-			      {
-				 gcv.subwindow_mode = IncludeInferiors;
-				 pi->gc =
-				    EXCreateGC(win, GCSubwindowMode, &gcv);
-				 if (pi->gc)
-				    return pi;
-
-				 EFreePixmap(pi->pmap);
-			      }
-			    XShmDetach(disp, pi->shminfo);
-			 }
+			  return pi;
+		       XShmDetach(disp, pi->shminfo);
 		       shmdt(pi->shminfo->shmaddr);
 		    }
 		  shmctl(pi->shminfo->shmid, IPC_RMID, 0);
@@ -114,7 +75,7 @@ ECreatePixImg(Window win, int w, int h)
 }
 
 void
-EDestroyPixImg(PixImg * pi)
+PixImgDestroy(PixImg * pi)
 {
    if (!pi)
       return;
@@ -124,111 +85,87 @@ EDestroyPixImg(PixImg * pi)
    shmctl(pi->shminfo->shmid, IPC_RMID, 0);
    XDestroyImage(pi->xim);
    Efree(pi->shminfo);
-   EFreePixmap(pi->pmap);
-   EXFreeGC(pi->gc);
    Efree(pi);
 }
 
-void
-EBlendRemoveShape(Win win, Pixmap pmap, int x, int y)
+static int
+_fix_bounds(int *px, int *py, int *pw, int *ph, int *pox, int *poy)
 {
-   static GC           gc = 0;
-   Window              root = WinGetXwin(VROOT);
-   int                 w, h;
+   int                 x, y, w, h, ox, oy, wmax, hmax;
 
-   if (!win)
-     {
-	if (gc)
-	   EXFreeGC(gc);
-	gc = 0;
-	return;
-     }
+   wmax = WinGetW(VROOT);
+   hmax = WinGetH(VROOT);
 
-   if (win->num_rect <= 0)
-      return;
-
-   w = WinGetW(win);
-   h = WinGetH(win);
-
-   if (!gc)
-     {
-	XGCValues           gcv;
-	GC                  gcm;
-	Pixmap              mask;
-	XRectangle         *rl;
-	int                 i;
-
-	gcv.subwindow_mode = IncludeInferiors;
-	gc = EXCreateGC(root, GCSubwindowMode, &gcv);
-
-	mask = XCreatePixmap(disp, root, w, h, 1);
-	gcm = EXCreateGC(mask, 0, NULL);
-	XSetForeground(disp, gcm, 1);
-	XFillRectangle(disp, mask, gcm, 0, 0, w, h);
-	XSetForeground(disp, gcm, 0);
-	rl = win->rects;
-	for (i = 0; i < win->num_rect; i++)
-	   XFillRectangle(disp, mask, gcm, rl[i].x, rl[i].y, rl[i].width,
-			  rl[i].height);
-	XSetClipMask(disp, gc, mask);
-	EXFreeGC(gcm);
-	XFreePixmap(disp, mask);
-     }
-
-   XSetClipOrigin(disp, gc, x, y);
-   XCopyArea(disp, pmap, root, gc, x, y, w, h, x, y);
-}
-
-void
-EBlendPixImg(Win win, PixImg * s1, PixImg * s2, PixImg * dst, int x, int y,
-	     int w, int h)
-{
-   static GC           gc = 0;
-   Window              root = WinGetXwin(VROOT);
-   int                 i, j, ox, oy;
-
-   if (!win)
-     {
-	if (gc)
-	   EXFreeGC(gc);
-	gc = 0;
-	return;
-     }
-
-   if (!gc)
-     {
-	XGCValues           gcv;
-
-	gcv.subwindow_mode = IncludeInferiors;
-	gc = EXCreateGC(root, GCSubwindowMode, &gcv);
-	if (win->rects)
-	   XSetClipRectangles(disp, gc, x, y, win->rects, win->num_rect,
-			      win->ord);
-     }
-   else
-      XSetClipOrigin(disp, gc, x, y);
+   x = *px;
+   y = *py;
+   w = *pw;
+   h = *ph;
 
    ox = 0;
    oy = 0;
-   if ((x >= WinGetW(VROOT)) || (y >= WinGetH(VROOT)))
-      return;
-   if (x + w > WinGetW(VROOT))
-      w -= ((x + w) - WinGetW(VROOT));
+
+   if (x + w > wmax)
+      w -= (x + w - wmax);
    if (x < 0)
      {
 	ox = -x;
 	w -= ox;
 	x = 0;
      }
-   if (y + h > WinGetH(VROOT))
-      h -= ((y + h) - WinGetH(VROOT));
+
+   if (y + h > hmax)
+      h -= (y + h - hmax);
    if (y < 0)
      {
 	oy = -y;
 	h -= oy;
 	y = 0;
      }
-   if ((w <= 0) || (h <= 0))
+
+   if (w <= 0 || h <= 0)
+      return 1;
+
+   *px = x;
+   *py = y;
+   *pw = w;
+   *ph = h;
+   if (pox)
+      *pox = ox;
+   if (poy)
+      *poy = oy;
+
+   return 0;
+}
+
+void
+PixImgFill(PixImg * pi, Drawable draw, int x, int y)
+{
+   XShmGetImage(disp, draw, pi->xim, x, y, 0xffffffff);
+}
+
+void
+PixImgPaste(PixImg * pi, Drawable draw, GC gc, int xs, int ys,
+	    int w, int h, int xt, int yt)
+{
+   /* FIXME - No bounds checking if (xs,ys) != (xt,yt) */
+   if (xs == xt && ys == yt)
+     {
+	if (_fix_bounds(&xs, &ys, &w, &h, NULL, NULL))
+	   return;
+	xt = xs;
+	yt = ys;
+     }
+
+   XShmPutImage(disp, draw, gc, pi->xim, xs, ys, xt, yt, w, h, False);
+}
+
+void
+PixImgBlend(PixImg * s1, PixImg * s2, PixImg * dst, Drawable draw, GC gc,
+	    int x, int y, int w, int h)
+{
+   int                 i, j, ox, oy;
+
+   if (_fix_bounds(&x, &y, &w, &h, &ox, &oy))
       return;
 
    ESync(0);
@@ -534,9 +471,5 @@ EBlendPixImg(Win win, PixImg * s1, PixImg * s2, PixImg * dst, int x, int y,
 	  }
 	break;
      }
-/* workaround since XCopyArea doesnt always work with shared pixmaps */
-   XShmPutImage(disp, root, gc, dst->xim, ox, oy, x, y, w, h, False);
-/*      XCopyArea(disp, dst->pmap, root, gc, ox, oy, w, h, x, y); */
-/* I dont believe it - you cannot do this to a shared pixmaps to the screen */
-/* XCopyArea(disp, dst->pmap, root, dst->gc, x, y, w, h, x, y); */
+   XShmPutImage(disp, draw, gc, dst->xim, ox, oy, x, y, w, h, False);
 }

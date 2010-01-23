@@ -253,21 +253,19 @@ static PixImg      *ewin_pi = NULL;
 static PixImg      *draw_pi = NULL;
 
 static void
-_PixImgsCreate(Window root, const EWin * ewin)
+_PixImgsCreate(const EWin * ewin)
 {
-   root_pi = ECreatePixImg(root, WinGetW(VROOT), WinGetH(VROOT));
-   ewin_pi = ECreatePixImg(root, EoGetW(ewin), EoGetH(ewin));
-   draw_pi = ECreatePixImg(root, EoGetW(ewin), EoGetH(ewin));
+   root_pi = PixImgCreate(WinGetW(VROOT), WinGetH(VROOT));
+   ewin_pi = PixImgCreate(EoGetW(ewin), EoGetH(ewin));
+   draw_pi = PixImgCreate(EoGetW(ewin), EoGetH(ewin));
 }
 
 static void
 _PixImgsDestroy(void)
 {
-   EDestroyPixImg(root_pi);
-   EDestroyPixImg(ewin_pi);
-   EDestroyPixImg(draw_pi);
-   EBlendRemoveShape(NULL, 0, 0, 0);
-   EBlendPixImg(NULL, NULL, NULL, NULL, 0, 0, 0, 0);
+   PixImgDestroy(root_pi);
+   PixImgDestroy(ewin_pi);
+   PixImgDestroy(draw_pi);
    root_pi = NULL;
    ewin_pi = NULL;
    draw_pi = NULL;
@@ -277,7 +275,7 @@ void
 DrawEwinShape(EWin * ewin, int md, int x, int y, int w, int h,
 	      int firstlast, int seqno)
 {
-   static GC           gc = 0;
+   static GC           gc = NULL, gc2 = NULL;
    static Pixmap       b2 = 0, b3 = 0;
    Window              root = WinGetXwin(VROOT);
    int                 x1, y1, w1, h1, dx, dy;
@@ -364,7 +362,7 @@ DrawEwinShape(EWin * ewin, int md, int x, int y, int w, int h,
 	goto done;
      }
 
-   if (!gc)
+   if (!gc && md < 5)
      {
 	XGCValues           gcv;
 
@@ -409,12 +407,18 @@ DrawEwinShape(EWin * ewin, int md, int x, int y, int w, int h,
 	break;
      case 5:
 	{
+	   int                 wt, ht;
+
+	   wt = EoGetW(ewin);
+	   ht = EoGetH(ewin);
+
 	   if (firstlast == 0)
 	     {
-		GC                  gc2;
+		XGCValues           gcv;
+		Pixmap              pmap, mask;
 
 		_PixImgsDestroy();
-		_PixImgsCreate(root, ewin);
+		_PixImgsCreate(ewin);
 		if ((!root_pi) || (!ewin_pi) || (!draw_pi))
 		  {
 		     _PixImgsDestroy();
@@ -424,18 +428,29 @@ DrawEwinShape(EWin * ewin, int md, int x, int y, int w, int h,
 				   firstlast, seqno);
 		     return;
 		  }
-		EFillPixmap(root, root_pi->pmap, x1, y1, EoGetW(ewin),
-			    EoGetH(ewin));
-		gc2 = EXCreateGC(root_pi->pmap, 0, NULL);
-		XCopyArea(disp, root_pi->pmap, ewin_pi->pmap, gc2, x1, y1,
+
+		gcv.subwindow_mode = IncludeInferiors;
+		gc = EXCreateGC(root, GCSubwindowMode, &gcv);
+		if (EoGetWin(ewin)->num_rect > 0)
+		  {
+		     gc2 = EXCreateGC(root, GCSubwindowMode, &gcv);
+		     mask = EWindowGetShapePixmapInverted(EoGetWin(ewin));
+		     XSetClipMask(disp, gc2, mask);
+		     XFreePixmap(disp, mask);
+		  }
+
+		PixImgFill(root_pi, root, 0, 0);
+
+		pmap = ECreatePixmap(VROOT, WinGetW(VROOT), WinGetH(VROOT), 0);
+		XCopyArea(disp, root, pmap, gc, x1, y1,
 			  EoGetW(ewin), EoGetH(ewin), 0, 0);
-		EXFreeGC(gc2);
-		EBlendPixImg(EoGetWin(ewin), root_pi, ewin_pi, draw_pi, x, y,
-			     EoGetW(ewin), EoGetH(ewin));
+		PixImgFill(ewin_pi, pmap, 0, 0);
+		EFreePixmap(pmap);
+
+		PixImgBlend(root_pi, ewin_pi, draw_pi, root, gc, x, y, wt, ht);
 	     }
 	   else if (firstlast == 1)
 	     {
-		int                 wt, ht;
 		int                 adx, ady;
 
 		dx = x - x1;
@@ -448,80 +463,61 @@ DrawEwinShape(EWin * ewin, int md, int x, int y, int w, int h,
 		   ady = -dy;
 		else
 		   ady = dy;
-		wt = EoGetW(ewin);
-		ht = EoGetH(ewin);
 		if ((adx <= wt) && (ady <= ht))
 		  {
-		     if (dx < 0)
-			EFillPixmap(root, root_pi->pmap, x, y, -dx, ht);
-		     else if (dx > 0)
-			EFillPixmap(root, root_pi->pmap, x + wt - dx, y,
-				    dx, ht);
-		     if (dy < 0)
-			EFillPixmap(root, root_pi->pmap, x, y, wt, -dy);
-		     else if (dy > 0)
-			EFillPixmap(root, root_pi->pmap, x, y + ht - dy,
-				    wt, dy);
-		  }
-		else
-		   EFillPixmap(root, root_pi->pmap, x, y, wt, ht);
-		if ((adx <= wt) && (ady <= ht))
-		  {
-		     EBlendPixImg(EoGetWin(ewin), root_pi, ewin_pi, draw_pi,
-				  x, y, EoGetW(ewin), EoGetH(ewin));
+		     PixImgBlend(root_pi, ewin_pi, draw_pi, root, gc,
+				 x, y, wt, ht);
 		     if (dx > 0)
-			EPastePixmap(root, root_pi->pmap, x1, y1, dx, ht);
+			PixImgPaste11(root_pi, root, gc, x1, y1, dx, ht);
 		     else if (dx < 0)
-			EPastePixmap(root, root_pi->pmap, x1 + wt + dx,
-				     y1, -dx, ht);
+			PixImgPaste11(root_pi, root, gc,
+				      x1 + wt + dx, y1, -dx, ht);
 		     if (dy > 0)
-			EPastePixmap(root, root_pi->pmap, x1, y1, wt, dy);
+			PixImgPaste11(root_pi, root, gc, x1, y1, wt, dy);
 		     else if (dy < 0)
-			EPastePixmap(root, root_pi->pmap, x1,
-				     y1 + ht + dy, wt, -dy);
+			PixImgPaste11(root_pi, root, gc,
+				      x1, y1 + ht + dy, wt, -dy);
 		  }
 		else
 		  {
-		     EPastePixmap(root, root_pi->pmap, x1, y1, wt, ht);
-		     EBlendPixImg(EoGetWin(ewin), root_pi, ewin_pi, draw_pi,
-				  x, y, EoGetW(ewin), EoGetH(ewin));
+		     PixImgPaste11(root_pi, root, gc, x1, y1, wt, ht);
+		     PixImgBlend(root_pi, ewin_pi, draw_pi, root, gc,
+				 x, y, wt, ht);
 		  }
-		EBlendRemoveShape(EoGetWin(ewin), root_pi->pmap, x, y);
+		if (gc2)
+		  {
+		     XSetClipOrigin(disp, gc2, x, y);
+		     PixImgPaste11(root_pi, root, gc2, x, y, wt, ht);
+		  }
 	     }
 	   else if (firstlast == 2)
 	     {
-		EPastePixmap(root, root_pi->pmap, x1, y1, EoGetW(ewin),
-			     EoGetH(ewin));
+		PixImgPaste11(root_pi, root, gc, x1, y1, wt, ht);
 		_PixImgsDestroy();
+		EXFreeGC(gc2);
+		gc2 = NULL;
 	     }
 	   else if (firstlast == 3)
 	     {
-		EPastePixmap(root, root_pi->pmap, x, y, EoGetW(ewin),
-			     EoGetH(ewin));
-		if (root_pi)
-		   EDestroyPixImg(root_pi);
+		PixImgPaste11(root_pi, root, gc, x1, y1, wt, ht);
+		PixImgDestroy(root_pi);
 		root_pi = NULL;
 	     }
 	   else if (firstlast == 4)
 	     {
-		int                 wt, ht;
-
-		wt = EoGetW(ewin);
-		ht = EoGetH(ewin);
-		root_pi = ECreatePixImg(root, WinGetW(VROOT), WinGetH(VROOT));
-		EFillPixmap(root, root_pi->pmap, x, y, wt, ht);
-		EBlendPixImg(EoGetWin(ewin), root_pi, ewin_pi, draw_pi, x, y,
-			     EoGetW(ewin), EoGetH(ewin));
+		root_pi = PixImgCreate(WinGetW(VROOT), WinGetH(VROOT));
+		PixImgFill(root_pi, root, 0, 0);
+		PixImgBlend(root_pi, ewin_pi, draw_pi, root, gc, x, y, wt, ht);
 	     }
 	   CoordsShow(ewin);
 	}
 	break;
      }
 
-   if (firstlast == 2)
+   if (firstlast == 2 && gc)
      {
 	EXFreeGC(gc);
-	gc = 0;
+	gc = NULL;
      }
 
  done:

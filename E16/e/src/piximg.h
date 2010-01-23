@@ -1,5 +1,6 @@
 /*
  * Copyright (C) 2000-2007 Carsten Haitzler, Geoff Harrison and various contributors
+ * Copyright (C) 2010 Kim Woelders
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -29,19 +30,18 @@
 typedef struct _PixImg {
    XImage             *xim;
    XShmSegmentInfo    *shminfo;
-   Pixmap              pmap;
-   GC                  gc;
 } PixImg;
 
-void                EFillPixmap(Window win, Pixmap pmap, int x, int y, int w,
+PixImg             *PixImgCreate(int w, int h);
+void                PixImgDestroy(PixImg * pi);
+void                PixImgFill(PixImg * pi, Drawable draw, int x, int y);
+void                PixImgPaste(PixImg * pi, Drawable draw, GC gc,
+				int xs, int ys, int w, int h, int xt, int yt);
+void                PixImgBlend(PixImg * s1, PixImg * s2, PixImg * dst,
+				Drawable draw, GC gc, int x, int y, int w,
 				int h);
-void                EPastePixmap(Window win, Pixmap pmap, int x, int y, int w,
-				 int h);
 
-PixImg             *ECreatePixImg(Window win, int w, int h);
-void                EDestroyPixImg(PixImg * pi);
-void                EBlendRemoveShape(Win win, Pixmap pmap, int x, int y);
-void                EBlendPixImg(Win win, PixImg * s1, PixImg * s2,
-				 PixImg * dst, int x, int y, int w, int h);
+#define PixImgPaste11(pi, draw, gc, x, y, w, h) \
+    PixImgPaste(pi, draw, gc, x, y, w, h, x, y)
 
 #endif /* _PIXIMG_H_ */
