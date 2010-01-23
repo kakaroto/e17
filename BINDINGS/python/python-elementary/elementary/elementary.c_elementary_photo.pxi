@@ -28,7 +28,10 @@ cdef class Photo(Object):
         self._callback_del("clicked", func)
 
     def file_set(self, filename):
-        elm_photo_file_set(self.obj, filename)
+        if filename:
+           elm_photo_file_set(self.obj, filename)
+        else:
+           elm_photo_file_set(self.obj, NULL)
 
     def size_set(self, size):
         elm_photo_size_set(self.obj, size)
