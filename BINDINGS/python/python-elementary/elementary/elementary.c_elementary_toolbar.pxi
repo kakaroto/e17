@@ -197,7 +197,7 @@ cdef class Toolbar(Object):
     def item_unselect_all(self):
         elm_toolbar_item_unselect_all(self.obj)
 
-    def item_add(self, c_evas.Object icon, label, callback, *args, **kargs):
+    def item_add(self, c_evas.Object icon, label, callback = None, *args, **kargs):
         """
         Adds a new item to the toolbar
 
