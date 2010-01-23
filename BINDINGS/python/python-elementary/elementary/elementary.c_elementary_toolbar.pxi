@@ -133,7 +133,7 @@ cdef class ToolbarItem:
         if menu == NULL:
             return None
         else:
-            Menu(None, <object>menu)
+            return Menu(None, <object>menu)
 
 cdef class Toolbar(Object):
     """
