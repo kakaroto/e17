@@ -7,12 +7,7 @@
 EAPI int 
 elm_main(int argc, char **argv) 
 {
-   Ecore_X_Window *zones;
-   int i = 0, zone_count = 0;
-
-   zone_count = 
-     ecore_x_window_prop_window_list_get(ecore_x_window_root_first_get(), 
-                                         ECORE_X_ATOM_E_ILLUME_ZONE_LIST, &zones);
+   int i = 0;
 
    for (i = 0; i < 3; i++) 
      {
@@ -26,27 +21,18 @@ elm_main(int argc, char **argv)
         win = elm_win_add(NULL, buff, ELM_WIN_BASIC);
         elm_win_title_set(win, "Illume Quickpanel Window");
         elm_win_autodel_set(win, EINA_TRUE);
-
-        xwin = elm_win_xwindow_get(win);
-        /* set hints to skip taskbar & pager */
-        states[0] = ECORE_X_WINDOW_STATE_SKIP_TASKBAR;
-        states[1] = ECORE_X_WINDOW_STATE_SKIP_PAGER;
-        ecore_x_netwm_window_state_set(xwin, states, 2);
-        /* set hints to not take focus */
-        ecore_x_icccm_hints_set(xwin, 0, 0, 0, 0, 0, 0, 0);
-        /* set this window as a quickpanel */
-        ecore_x_e_illume_quickpanel_set(xwin, 1);
+        elm_win_quickpanel_set(win, 1);
 
         /* set quickpanel priority */
         if (i == 1) 
           {
-             ecore_x_e_illume_quickpanel_priority_major_set(xwin, 2);
-             ecore_x_e_illume_quickpanel_priority_minor_set(xwin, 3);
+             elm_win_quickpanel_priority_major_set(win, 2);
+             elm_win_quickpanel_priority_minor_set(win, 3);
           }
         else 
           {
-             ecore_x_e_illume_quickpanel_priority_major_set(xwin, i);
-             ecore_x_e_illume_quickpanel_priority_minor_set(xwin, i);
+             elm_win_quickpanel_priority_major_set(win, i);
+             elm_win_quickpanel_priority_minor_set(win, i);
           }
 
         bg = elm_bg_add(win);
@@ -77,16 +63,7 @@ elm_main(int argc, char **argv)
         evas_object_resize(win, 100, 32);
         evas_object_show(win);
 
-        if (i == 0) 
-          {
-             if ((zones) && (zone_count > 1)) 
-               {
-                  xwin = elm_win_xwindow_get(win);
-                  ecore_x_e_illume_quickpanel_zone_set(xwin, &zones[1]);
-                  ecore_x_e_illume_quickpanel_zone_request_send(zones[1], xwin);
-                  free(zones);
-               }
-          }
+        if (i == 0) elm_win_quickpanel_zone_set(win, 1);
      }
 
    elm_run();
