@@ -8,7 +8,7 @@ Standards-Version: 3.8.3
 Package: entrance
 Section: x11
 Architecture: any
-Depends: ${shlibs:Depends}
+Depends: ${shlibs:Depends}, libecore-bin
 Description: The enlightened login manager.
  Entrance is a login manager similar to gdm or kdm, it is based on the 
  Enlightenment Foundation Libraries.  It is fully themeable via Edje.
