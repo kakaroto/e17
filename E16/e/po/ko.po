@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.17.1\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2010-01-14 19:50+0100\n"
+"POT-Creation-Date: 2010-01-23 14:58+0100\n"
 "PO-Revision-Date: 2004-08-29 01:02:30+0900\n"
 "Last-Translator: Michael Kim <lavnrose@e.sarang.net>\n"
 "Language-Team: Korean <translation-team-ko@lists.sourceforge.net>\n"
@@ -422,7 +422,7 @@ msgstr "인라이튼먼트 시작중..."
 msgid "Settings..."
 msgstr "포커스 설정"
 
-#: src/container.c:1189 src/dialog.c:705 src/pager.c:1010 config/strings.c:30
+#: src/container.c:1189 src/dialog.c:705 src/pager.c:1009 config/strings.c:30
 #: config/strings.c:122
 msgid "Close"
 msgstr "닫기"
@@ -642,11 +642,11 @@ msgstr "위"
 msgid "Bottom"
 msgstr "아래"
 
-#: src/desktops.c:2407 src/pager.c:1918 src/pager.c:1943 src/pager.c:1968
+#: src/desktops.c:2407 src/pager.c:1917 src/pager.c:1942 src/pager.c:1967
 msgid "Left"
 msgstr "왼쪽"
 
-#: src/desktops.c:2413 src/pager.c:1930 src/pager.c:1955 src/pager.c:1980
+#: src/desktops.c:2413 src/pager.c:1929 src/pager.c:1954 src/pager.c:1979
 msgid "Right"
 msgstr "오른쪽"
 
@@ -857,31 +857,31 @@ msgstr ""
 "인라이튼먼트 포커스\n"
 "설정 대화상자\n"
 
-#: src/fx.c:935
+#: src/fx.c:927
 msgid "Effects"
 msgstr "효과"
 
-#: src/fx.c:938
+#: src/fx.c:930
 msgid "Enable Effect: Raindrops"
 msgstr "효과 사용: 빗방울"
 
-#: src/fx.c:942
+#: src/fx.c:934
 msgid "Ripples"
 msgstr "잔물결"
 
-#: src/fx.c:946
+#: src/fx.c:938
 msgid "Waves"
 msgstr "물결"
 
-#: src/fx.c:952
+#: src/fx.c:944
 msgid "FX"
 msgstr ""
 
-#: src/fx.c:953
+#: src/fx.c:945
 msgid "Special FX Settings"
 msgstr "특수효과 설정"
 
-#: src/fx.c:956
+#: src/fx.c:948
 msgid ""
 "Enlightenment Special Effects\n"
 "Settings Dialog\n"
@@ -1399,125 +1399,125 @@ msgstr ""
 "인라이튼먼트 테마 투명도 설정\n"
 "설정 대화상자\n"
 
-#: src/pager.c:999 config/strings.c:49 config/strings.c:121
+#: src/pager.c:998 config/strings.c:49 config/strings.c:121
 msgid "Window Options"
 msgstr "창 옵션"
 
-#: src/pager.c:1006 config/strings.c:51 config/strings.c:124
+#: src/pager.c:1005 config/strings.c:51 config/strings.c:124
 msgid "Iconify"
 msgstr "아이콘화"
 
-#: src/pager.c:1014 config/strings.c:123
+#: src/pager.c:1013 config/strings.c:123
 msgid "Annihilate"
 msgstr "전멸시킴"
 
-#: src/pager.c:1018
+#: src/pager.c:1017
 msgid "Stick / Unstick"
 msgstr "고착 / 잡아뗌"
 
-#: src/pager.c:1025
+#: src/pager.c:1024
 msgid "Desktop Options"
 msgstr "데스크탑 옵션"
 
-#: src/pager.c:1031
+#: src/pager.c:1030
 msgid "Pager Settings..."
 msgstr "페이저 설정..."
 
-#: src/pager.c:1036
+#: src/pager.c:1035
 msgid "Snapshotting Off"
 msgstr "스냅샷 사용않함"
 
-#: src/pager.c:1040
+#: src/pager.c:1039
 msgid "High Quality Off"
 msgstr "고해상도 사용않함"
 
-#: src/pager.c:1042
+#: src/pager.c:1041
 msgid "High Quality On"
 msgstr "고해상도 사용"
 
-#: src/pager.c:1047
+#: src/pager.c:1046
 msgid "Snapshotting On"
 msgstr "스냅샷 사용"
 
-#: src/pager.c:1051
+#: src/pager.c:1050
 msgid "Zoom Off"
 msgstr ""
 
-#: src/pager.c:1053
+#: src/pager.c:1052
 msgid "Zoom On"
 msgstr ""
 
-#: src/pager.c:1803 src/pager.c:1898
+#: src/pager.c:1802 src/pager.c:1897
 msgid "Pager scanning speed:"
 msgstr "페이저 스캐닝 속도:"
 
-#: src/pager.c:1804 src/pager.c:1899
+#: src/pager.c:1803 src/pager.c:1898
 msgid "lines per second"
 msgstr "초당 줄수"
 
-#: src/pager.c:1837
+#: src/pager.c:1836
 msgid "Enable pager display"
 msgstr "페이저 표시 가능"
 
-#: src/pager.c:1847
+#: src/pager.c:1846
 msgid "Pager Mode:"
 msgstr ""
 
-#: src/pager.c:1851
+#: src/pager.c:1850
 #, fuzzy
 msgid "Simple"
 msgstr "잔물결"
 
-#: src/pager.c:1857
+#: src/pager.c:1856
 msgid "Make miniature snapshots of the screen"
 msgstr "축소된 화면의 스냅샷 만들기"
 
-#: src/pager.c:1864
+#: src/pager.c:1863
 msgid "Live Update"
 msgstr ""
 
-#: src/pager.c:1875
+#: src/pager.c:1874
 msgid "Smooth high quality snapshots in snapshot mode"
 msgstr "스냅샷 모드에서 부드러운 고해상도 스냅샷"
 
-#: src/pager.c:1880
+#: src/pager.c:1879
 msgid "Zoom in on pager windows when mouse is over them"
 msgstr "마우스가 페이저 안의 창 위에 있을 때 그 창 확대"
 
-#: src/pager.c:1886
+#: src/pager.c:1885
 msgid "Pop up window title when mouse is over the window"
 msgstr "마우스가 페이저 안의 창 위에 있을 때 그 창 제목 보여주기"
 
-#: src/pager.c:1891
+#: src/pager.c:1890
 msgid "Continuously scan screen to update pager"
 msgstr "페이저를 갱신하기 위해 연속적으로 화면 스캔"
 
-#: src/pager.c:1914
+#: src/pager.c:1913
 msgid "Mouse button to select and drag windows:"
 msgstr "창을 선택하고 끌기 위한 마우스 버튼:"
 
-#: src/pager.c:1924 src/pager.c:1949 src/pager.c:1974
+#: src/pager.c:1923 src/pager.c:1948 src/pager.c:1973
 msgid "Middle"
 msgstr "중간"
 
-#: src/pager.c:1939
+#: src/pager.c:1938
 msgid "Mouse button to select desktops:"
 msgstr "데스크탑을 선택할 마우스 버튼"
 
-#: src/pager.c:1964
+#: src/pager.c:1963
 msgid "Mouse button to display pager menu:"
 msgstr "페이저 메뉴를 표시할 마우스 버튼:"
 
-#: src/pager.c:1988
+#: src/pager.c:1987
 #, fuzzy
 msgid "Pagers"
 msgstr "페이저 설정"
 
-#: src/pager.c:1989
+#: src/pager.c:1988
 msgid "Pager Settings"
 msgstr "페이저 설정"
 
-#: src/pager.c:1992
+#: src/pager.c:1991
 msgid ""
 "Enlightenment Desktop & Area\n"
 "Pager Settings Dialog\n"

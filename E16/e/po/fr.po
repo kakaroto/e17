@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: e16-0.16-0.99.99.901\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2010-01-14 19:50+0100\n"
+"POT-Creation-Date: 2010-01-23 14:58+0100\n"
 "PO-Revision-Date: 2009-05-15 16:33+0200\n"
 "Last-Translator: Tristan D. <trinine@free.fr>\n"
 "Language-Team: French <http://www.linuxmao.org>\n"
@@ -419,7 +419,7 @@ msgstr "Démarrage d'Enlightenment..."
 msgid "Settings..."
 msgstr "Paramètres..."
 
-#: src/container.c:1189 src/dialog.c:705 src/pager.c:1010 config/strings.c:30
+#: src/container.c:1189 src/dialog.c:705 src/pager.c:1009 config/strings.c:30
 #: config/strings.c:122
 msgid "Close"
 msgstr "Fermer"
@@ -635,11 +635,11 @@ msgstr "Haut"
 msgid "Bottom"
 msgstr "Bas"
 
-#: src/desktops.c:2407 src/pager.c:1918 src/pager.c:1943 src/pager.c:1968
+#: src/desktops.c:2407 src/pager.c:1917 src/pager.c:1942 src/pager.c:1967
 msgid "Left"
 msgstr "Gauche"
 
-#: src/desktops.c:2413 src/pager.c:1930 src/pager.c:1955 src/pager.c:1980
+#: src/desktops.c:2413 src/pager.c:1929 src/pager.c:1954 src/pager.c:1979
 msgid "Right"
 msgstr "Droit"
 
@@ -849,31 +849,31 @@ msgstr ""
 "Dialogue de paramétrage du\n"
 "Focus\n"
 
-#: src/fx.c:935
+#: src/fx.c:927
 msgid "Effects"
 msgstr "Effets"
 
-#: src/fx.c:938
+#: src/fx.c:930
 msgid "Enable Effect: Raindrops"
 msgstr "Activer l'effet: Gouttes de pluie"
 
-#: src/fx.c:942
+#: src/fx.c:934
 msgid "Ripples"
 msgstr "Ondes"
 
-#: src/fx.c:946
+#: src/fx.c:938
 msgid "Waves"
 msgstr "Vagues"
 
-#: src/fx.c:952
+#: src/fx.c:944
 msgid "FX"
 msgstr "Effets spéciaux"
 
-#: src/fx.c:953
+#: src/fx.c:945
 msgid "Special FX Settings"
 msgstr "Paramètres des Effets spéciaux"
 
-#: src/fx.c:956
+#: src/fx.c:948
 msgid ""
 "Enlightenment Special Effects\n"
 "Settings Dialog\n"
@@ -1367,123 +1367,123 @@ msgstr ""
 "Dialogue de paramétrage de\n"
 "Transparence\n"
 
-#: src/pager.c:999 config/strings.c:49 config/strings.c:121
+#: src/pager.c:998 config/strings.c:49 config/strings.c:121
 msgid "Window Options"
 msgstr "Options de Fenêtre"
 
-#: src/pager.c:1006 config/strings.c:51 config/strings.c:124
+#: src/pager.c:1005 config/strings.c:51 config/strings.c:124
 msgid "Iconify"
 msgstr "Icônifier"
 
-#: src/pager.c:1014 config/strings.c:123
+#: src/pager.c:1013 config/strings.c:123
 msgid "Annihilate"
 msgstr "Tuer"
 
-#: src/pager.c:1018
+#: src/pager.c:1017
 msgid "Stick / Unstick"
 msgstr "Coller/Décoller"
 
-#: src/pager.c:1025
+#: src/pager.c:1024
 msgid "Desktop Options"
 msgstr "Options de Bureau"
 
-#: src/pager.c:1031
+#: src/pager.c:1030
 msgid "Pager Settings..."
 msgstr "Paramètres du Pager..."
 
-#: src/pager.c:1036
+#: src/pager.c:1035
 msgid "Snapshotting Off"
 msgstr "Désactiver Capture d'écran"
 
-#: src/pager.c:1040
+#: src/pager.c:1039
 msgid "High Quality Off"
 msgstr "Désactiver Haute Qualité"
 
-#: src/pager.c:1042
+#: src/pager.c:1041
 msgid "High Quality On"
 msgstr "Activer Haute Qualité"
 
-#: src/pager.c:1047
+#: src/pager.c:1046
 msgid "Snapshotting On"
 msgstr "Activer Capture d'écran"
 
-#: src/pager.c:1051
+#: src/pager.c:1050
 msgid "Zoom Off"
 msgstr "Désactiver le Zoom"
 
-#: src/pager.c:1053
+#: src/pager.c:1052
 msgid "Zoom On"
 msgstr "Activer le Zoom"
 
-#: src/pager.c:1803 src/pager.c:1898
+#: src/pager.c:1802 src/pager.c:1897
 msgid "Pager scanning speed:"
 msgstr "Vitesse de balayage du pager:"
 
-#: src/pager.c:1804 src/pager.c:1899
+#: src/pager.c:1803 src/pager.c:1898
 msgid "lines per second"
 msgstr "lignes par seconde"
 
-#: src/pager.c:1837
+#: src/pager.c:1836
 msgid "Enable pager display"
 msgstr "Activer l'affichage du Pager"
 
-#: src/pager.c:1847
+#: src/pager.c:1846
 msgid "Pager Mode:"
 msgstr "Mode du Pager:"
 
-#: src/pager.c:1851
+#: src/pager.c:1850
 msgid "Simple"
 msgstr "Simple"
 
-#: src/pager.c:1857
+#: src/pager.c:1856
 msgid "Make miniature snapshots of the screen"
 msgstr "Faire des mini-captures d'écran"
 
-#: src/pager.c:1864
+#: src/pager.c:1863
 msgid "Live Update"
 msgstr "Mise à jour en temps réel"
 
-#: src/pager.c:1875
+#: src/pager.c:1874
 msgid "Smooth high quality snapshots in snapshot mode"
 msgstr "Faire des captures de haute qualité"
 
-#: src/pager.c:1880
+#: src/pager.c:1879
 msgid "Zoom in on pager windows when mouse is over them"
 msgstr "Zoomer sur les fenêtres lorsque la souris passe dessus"
 
-#: src/pager.c:1886
+#: src/pager.c:1885
 msgid "Pop up window title when mouse is over the window"
 msgstr "Afficher le titre de la fenêtre lorsque la souris passe dessus"
 
-#: src/pager.c:1891
+#: src/pager.c:1890
 msgid "Continuously scan screen to update pager"
 msgstr "Balayer continuellement l'écran pour mettre le Pager à jour"
 
-#: src/pager.c:1914
+#: src/pager.c:1913
 msgid "Mouse button to select and drag windows:"
 msgstr "Bouton de la souris pour sélectionner et déplacer les fenêtres:"
 
-#: src/pager.c:1924 src/pager.c:1949 src/pager.c:1974
+#: src/pager.c:1923 src/pager.c:1948 src/pager.c:1973
 msgid "Middle"
 msgstr "Milieu"
 
-#: src/pager.c:1939
+#: src/pager.c:1938
 msgid "Mouse button to select desktops:"
 msgstr "Bouton de la souris pour sélectionner les bureaux:"
 
-#: src/pager.c:1964
+#: src/pager.c:1963
 msgid "Mouse button to display pager menu:"
 msgstr "Bouton de la souris pour afficher le menu du pager:"
 
-#: src/pager.c:1988
+#: src/pager.c:1987
 msgid "Pagers"
 msgstr "Pager"
 
-#: src/pager.c:1989
+#: src/pager.c:1988
 msgid "Pager Settings"
 msgstr "Paramètres du Pager"
 
-#: src/pager.c:1992
+#: src/pager.c:1991
 msgid ""
 "Enlightenment Desktop & Area\n"
 "Pager Settings Dialog\n"

@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: e16\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2010-01-14 19:50+0100\n"
+"POT-Creation-Date: 2010-01-23 14:58+0100\n"
 "PO-Revision-Date: 2009-07-06 09:05+0000\n"
 "Last-Translator: Careone <zzbusagain@yahoo.com.cn>\n"
 "Language-Team: Chinese/Simplified <i18n-translation@lists.linux.net.cn>\n"
@@ -397,7 +397,7 @@ msgstr "Enlightenment 启动中..."
 msgid "Settings..."
 msgstr "设置..."
 
-#: src/container.c:1189 src/dialog.c:705 src/pager.c:1010 config/strings.c:30
+#: src/container.c:1189 src/dialog.c:705 src/pager.c:1009 config/strings.c:30
 #: config/strings.c:122
 msgid "Close"
 msgstr "关闭"
@@ -603,11 +603,11 @@ msgstr "顶部"
 msgid "Bottom"
 msgstr "底部"
 
-#: src/desktops.c:2407 src/pager.c:1918 src/pager.c:1943 src/pager.c:1968
+#: src/desktops.c:2407 src/pager.c:1917 src/pager.c:1942 src/pager.c:1967
 msgid "Left"
 msgstr "左侧"
 
-#: src/desktops.c:2413 src/pager.c:1930 src/pager.c:1955 src/pager.c:1980
+#: src/desktops.c:2413 src/pager.c:1929 src/pager.c:1954 src/pager.c:1979
 msgid "Right"
 msgstr "右侧"
 
@@ -803,31 +803,31 @@ msgstr ""
 "Enlightenment 焦点\n"
 "设置对话框\n"
 
-#: src/fx.c:935
+#: src/fx.c:927
 msgid "Effects"
 msgstr "效果"
 
-#: src/fx.c:938
+#: src/fx.c:930
 msgid "Enable Effect: Raindrops"
 msgstr "启用效果：雨滴"
 
-#: src/fx.c:942
+#: src/fx.c:934
 msgid "Ripples"
 msgstr "波纹"
 
-#: src/fx.c:946
+#: src/fx.c:938
 msgid "Waves"
 msgstr "波浪"
 
-#: src/fx.c:952
+#: src/fx.c:944
 msgid "FX"
 msgstr "FX"
 
-#: src/fx.c:953
+#: src/fx.c:945
 msgid "Special FX Settings"
 msgstr "特殊 FX 设置"
 
-#: src/fx.c:956
+#: src/fx.c:948
 msgid ""
 "Enlightenment Special Effects\n"
 "Settings Dialog\n"
@@ -1248,123 +1248,123 @@ msgstr ""
 "Enlightenment 选择性透明\n"
 "设置对话框\n"
 
-#: src/pager.c:999 config/strings.c:49 config/strings.c:121
+#: src/pager.c:998 config/strings.c:49 config/strings.c:121
 msgid "Window Options"
 msgstr "窗口选项"
 
-#: src/pager.c:1006 config/strings.c:51 config/strings.c:124
+#: src/pager.c:1005 config/strings.c:51 config/strings.c:124
 msgid "Iconify"
 msgstr ""
 
-#: src/pager.c:1014 config/strings.c:123
+#: src/pager.c:1013 config/strings.c:123
 msgid "Annihilate"
 msgstr ""
 
-#: src/pager.c:1018
+#: src/pager.c:1017
 msgid "Stick / Unstick"
 msgstr ""
 
-#: src/pager.c:1025
+#: src/pager.c:1024
 msgid "Desktop Options"
 msgstr "桌面选项"
 
-#: src/pager.c:1031
+#: src/pager.c:1030
 msgid "Pager Settings..."
 msgstr "分页器设置..."
 
-#: src/pager.c:1036
+#: src/pager.c:1035
 msgid "Snapshotting Off"
 msgstr "关闭实时快照"
 
-#: src/pager.c:1040
+#: src/pager.c:1039
 msgid "High Quality Off"
 msgstr "关闭高质量"
 
-#: src/pager.c:1042
+#: src/pager.c:1041
 msgid "High Quality On"
 msgstr "开启高质量"
 
-#: src/pager.c:1047
+#: src/pager.c:1046
 msgid "Snapshotting On"
 msgstr "开启实时快照"
 
-#: src/pager.c:1051
+#: src/pager.c:1050
 msgid "Zoom Off"
 msgstr "关闭缩放"
 
-#: src/pager.c:1053
+#: src/pager.c:1052
 msgid "Zoom On"
 msgstr "开启缩放"
 
-#: src/pager.c:1803 src/pager.c:1898
+#: src/pager.c:1802 src/pager.c:1897
 msgid "Pager scanning speed:"
 msgstr "分页器扫描速度："
 
-#: src/pager.c:1804 src/pager.c:1899
+#: src/pager.c:1803 src/pager.c:1898
 msgid "lines per second"
 msgstr "每秒行数"
 
-#: src/pager.c:1837
+#: src/pager.c:1836
 msgid "Enable pager display"
 msgstr "启用分页器显示"
 
-#: src/pager.c:1847
+#: src/pager.c:1846
 msgid "Pager Mode:"
 msgstr "分页器模式："
 
-#: src/pager.c:1851
+#: src/pager.c:1850
 msgid "Simple"
 msgstr "简单"
 
-#: src/pager.c:1857
+#: src/pager.c:1856
 msgid "Make miniature snapshots of the screen"
 msgstr "显示屏幕微缩快照"
 
-#: src/pager.c:1864
+#: src/pager.c:1863
 msgid "Live Update"
 msgstr "实时更新"
 
-#: src/pager.c:1875
+#: src/pager.c:1874
 msgid "Smooth high quality snapshots in snapshot mode"
 msgstr ""
 
-#: src/pager.c:1880
+#: src/pager.c:1879
 msgid "Zoom in on pager windows when mouse is over them"
 msgstr ""
 
-#: src/pager.c:1886
+#: src/pager.c:1885
 msgid "Pop up window title when mouse is over the window"
 msgstr ""
 
-#: src/pager.c:1891
+#: src/pager.c:1890
 msgid "Continuously scan screen to update pager"
 msgstr ""
 
-#: src/pager.c:1914
+#: src/pager.c:1913
 msgid "Mouse button to select and drag windows:"
 msgstr "选择和拖动窗口的鼠标按钮："
 
-#: src/pager.c:1924 src/pager.c:1949 src/pager.c:1974
+#: src/pager.c:1923 src/pager.c:1948 src/pager.c:1973
 msgid "Middle"
 msgstr "中键"
 
-#: src/pager.c:1939
+#: src/pager.c:1938
 msgid "Mouse button to select desktops:"
 msgstr "选择桌面的鼠标按钮："
 
-#: src/pager.c:1964
+#: src/pager.c:1963
 msgid "Mouse button to display pager menu:"
 msgstr "显示分页器菜单的鼠标按钮："
 
-#: src/pager.c:1988
+#: src/pager.c:1987
 msgid "Pagers"
 msgstr "分页器"
 
-#: src/pager.c:1989
+#: src/pager.c:1988
 msgid "Pager Settings"
 msgstr "分页器设置"
 
-#: src/pager.c:1992
+#: src/pager.c:1991
 msgid ""
 "Enlightenment Desktop & Area\n"
 "Pager Settings Dialog\n"

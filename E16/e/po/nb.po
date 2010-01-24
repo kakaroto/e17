@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2010-01-14 19:50+0100\n"
+"POT-Creation-Date: 2010-01-23 14:58+0100\n"
 "PO-Revision-Date: 2008-10-09 10:43+0200\n"
 "Last-Translator: Kjartan Maraas <kmaraas@gnome.org>\n"
 "Language-Team: Norwegian <no@li.org>\n"
@@ -403,7 +403,7 @@ msgstr "Enlightenment starter opp..."
 msgid "Settings..."
 msgstr "Innstillinger..."
 
-#: src/container.c:1189 src/dialog.c:705 src/pager.c:1010 config/strings.c:30
+#: src/container.c:1189 src/dialog.c:705 src/pager.c:1009 config/strings.c:30
 #: config/strings.c:122
 msgid "Close"
 msgstr "Avbryt"
@@ -621,11 +621,11 @@ msgstr "Topp"
 msgid "Bottom"
 msgstr "Bunn"
 
-#: src/desktops.c:2407 src/pager.c:1918 src/pager.c:1943 src/pager.c:1968
+#: src/desktops.c:2407 src/pager.c:1917 src/pager.c:1942 src/pager.c:1967
 msgid "Left"
 msgstr "Venstre"
 
-#: src/desktops.c:2413 src/pager.c:1930 src/pager.c:1955 src/pager.c:1980
+#: src/desktops.c:2413 src/pager.c:1929 src/pager.c:1954 src/pager.c:1979
 msgid "Right"
 msgstr "Høyre"
 
@@ -834,31 +834,31 @@ msgstr ""
 "Dialog for innstilling \n"
 "av fokus i Enlightenment\n"
 
-#: src/fx.c:935
+#: src/fx.c:927
 msgid "Effects"
 msgstr "Effekter"
 
-#: src/fx.c:938
+#: src/fx.c:930
 msgid "Enable Effect: Raindrops"
 msgstr "Slå på effekt: Regndråper"
 
-#: src/fx.c:942
+#: src/fx.c:934
 msgid "Ripples"
 msgstr "Krusninger"
 
-#: src/fx.c:946
+#: src/fx.c:938
 msgid "Waves"
 msgstr "Bølger"
 
-#: src/fx.c:952
+#: src/fx.c:944
 msgid "FX"
 msgstr "FX"
 
-#: src/fx.c:953
+#: src/fx.c:945
 msgid "Special FX Settings"
 msgstr "Spesiell effekter"
 
-#: src/fx.c:956
+#: src/fx.c:948
 msgid ""
 "Enlightenment Special Effects\n"
 "Settings Dialog\n"
@@ -1365,124 +1365,124 @@ msgstr ""
 "Dialog for innstilling av\n"
 "Enlightenments verktøytips\n"
 
-#: src/pager.c:999 config/strings.c:49 config/strings.c:121
+#: src/pager.c:998 config/strings.c:49 config/strings.c:121
 msgid "Window Options"
 msgstr "Valg for vinduer"
 
-#: src/pager.c:1006 config/strings.c:51 config/strings.c:124
+#: src/pager.c:1005 config/strings.c:51 config/strings.c:124
 msgid "Iconify"
 msgstr "Ikonifiser"
 
-#: src/pager.c:1014 config/strings.c:123
+#: src/pager.c:1013 config/strings.c:123
 msgid "Annihilate"
 msgstr "Fjern"
 
-#: src/pager.c:1018
+#: src/pager.c:1017
 msgid "Stick / Unstick"
 msgstr "Stødig / ustødig"
 
-#: src/pager.c:1025
+#: src/pager.c:1024
 msgid "Desktop Options"
 msgstr "Valg for skrivebordet"
 
-#: src/pager.c:1031
+#: src/pager.c:1030
 msgid "Pager Settings..."
 msgstr "Innstillinger for skrivebordsoversikt"
 
-#: src/pager.c:1036
+#: src/pager.c:1035
 msgid "Snapshotting Off"
 msgstr "Ikke ta bilder av skjerm"
 
-#: src/pager.c:1040
+#: src/pager.c:1039
 msgid "High Quality Off"
 msgstr "Høy kvalitet av"
 
-#: src/pager.c:1042
+#: src/pager.c:1041
 msgid "High Quality On"
 msgstr "Høy kvalitet på"
 
-#: src/pager.c:1047
+#: src/pager.c:1046
 msgid "Snapshotting On"
 msgstr "Ta bilder av skjerm"
 
-#: src/pager.c:1051
+#: src/pager.c:1050
 msgid "Zoom Off"
 msgstr ""
 
-#: src/pager.c:1053
+#: src/pager.c:1052
 msgid "Zoom On"
 msgstr ""
 
-#: src/pager.c:1803 src/pager.c:1898
+#: src/pager.c:1802 src/pager.c:1897
 msgid "Pager scanning speed:"
 msgstr "Oppfriskningshastighet for skrivebordsoversikt:"
 
-#: src/pager.c:1804 src/pager.c:1899
+#: src/pager.c:1803 src/pager.c:1898
 msgid "lines per second"
 msgstr "linjer pr. sekund"
 
-#: src/pager.c:1837
+#: src/pager.c:1836
 msgid "Enable pager display"
 msgstr "Bruk skrivebordsoversikt"
 
-#: src/pager.c:1847
+#: src/pager.c:1846
 msgid "Pager Mode:"
 msgstr ""
 
-#: src/pager.c:1851
+#: src/pager.c:1850
 msgid "Simple"
 msgstr "Enkel"
 
-#: src/pager.c:1857
+#: src/pager.c:1856
 msgid "Make miniature snapshots of the screen"
 msgstr "Lag miniatyrbilder av skjermen"
 
-#: src/pager.c:1864
+#: src/pager.c:1863
 msgid "Live Update"
 msgstr ""
 
-#: src/pager.c:1875
+#: src/pager.c:1874
 msgid "Smooth high quality snapshots in snapshot mode"
 msgstr "Lag miniatyrbilder av skjerm med høy kvalitet"
 
-#: src/pager.c:1880
+#: src/pager.c:1879
 msgid "Zoom in on pager windows when mouse is over them"
 msgstr "Zoom inn vinduer på skrivebordsoversikt når musa er over dem"
 
-#: src/pager.c:1886
+#: src/pager.c:1885
 msgid "Pop up window title when mouse is over the window"
 msgstr "Framhev vindustittel når musa er over vinudet"
 
-#: src/pager.c:1891
+#: src/pager.c:1890
 msgid "Continuously scan screen to update pager"
 msgstr "Oppdater skrivebordsoversikt kontinurlig "
 
-#: src/pager.c:1914
+#: src/pager.c:1913
 msgid "Mouse button to select and drag windows:"
 msgstr "Musknapp som velger og drar vinduer:"
 
-#: src/pager.c:1924 src/pager.c:1949 src/pager.c:1974
+#: src/pager.c:1923 src/pager.c:1948 src/pager.c:1973
 msgid "Middle"
 msgstr "Midtre"
 
-#: src/pager.c:1939
+#: src/pager.c:1938
 msgid "Mouse button to select desktops:"
 msgstr "Musknapp som velger skrivebord:"
 
-#: src/pager.c:1964
+#: src/pager.c:1963
 msgid "Mouse button to display pager menu:"
 msgstr "Musknapp som bringer opp menyen til skrivebordsoversikten:"
 
-#: src/pager.c:1988
+#: src/pager.c:1987
 #, fuzzy
 msgid "Pagers"
 msgstr "Skrivebordsoversikt"
 
-#: src/pager.c:1989
+#: src/pager.c:1988
 msgid "Pager Settings"
 msgstr "Skrivebordsoversikt"
 
-#: src/pager.c:1992
+#: src/pager.c:1991
 msgid ""
 "Enlightenment Desktop & Area\n"
 "Pager Settings Dialog\n"

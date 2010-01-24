@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2010-01-14 19:50+0100\n"
+"POT-Creation-Date: 2010-01-23 14:58+0100\n"
 "PO-Revision-Date: 2000-01-04 23:15+0100\n"
 "Last-Translator: Adam Kisiel <kisiel@if.pw.edu.pl>\n"
 "Language-Team: Polshi <pl@li.org>\n"
@@ -408,7 +408,7 @@ msgstr "Uruchamianie Enlightenment..."
 msgid "Settings..."
 msgstr "Ustawienia Aktywacji"
 
-#: src/container.c:1189 src/dialog.c:705 src/pager.c:1010 config/strings.c:30
+#: src/container.c:1189 src/dialog.c:705 src/pager.c:1009 config/strings.c:30
 #: config/strings.c:122
 msgid "Close"
 msgstr "Zamknij"
@@ -629,11 +629,11 @@ msgstr "Góra"
 msgid "Bottom"
 msgstr "Dó³"
 
-#: src/desktops.c:2407 src/pager.c:1918 src/pager.c:1943 src/pager.c:1968
+#: src/desktops.c:2407 src/pager.c:1917 src/pager.c:1942 src/pager.c:1967
 msgid "Left"
 msgstr "Lewo"
 
-#: src/desktops.c:2413 src/pager.c:1930 src/pager.c:1955 src/pager.c:1980
+#: src/desktops.c:2413 src/pager.c:1929 src/pager.c:1954 src/pager.c:1979
 msgid "Right"
 msgstr "Prawo"
 
@@ -844,32 +844,32 @@ msgstr ""
 "Aktywacja Enlightenment\n"
 "Okno ustawieñ\n"
 
-#: src/fx.c:935
+#: src/fx.c:927
 msgid "Effects"
 msgstr ""
 
-#: src/fx.c:938
+#: src/fx.c:930
 #, fuzzy
 msgid "Enable Effect: Raindrops"
 msgstr "Nie da siê wy¶wietliæ kropli deszczu"
 
-#: src/fx.c:942
+#: src/fx.c:934
 msgid "Ripples"
 msgstr ""
 
-#: src/fx.c:946
+#: src/fx.c:938
 msgid "Waves"
 msgstr ""
 
-#: src/fx.c:952
+#: src/fx.c:944
 msgid "FX"
 msgstr ""
 
-#: src/fx.c:953
+#: src/fx.c:945
 msgid "Special FX Settings"
 msgstr "Ustawienia Efektów specjalnych"
 
-#: src/fx.c:956
+#: src/fx.c:948
 msgid ""
 "Enlightenment Special Effects\n"
 "Settings Dialog\n"
@@ -1397,125 +1397,125 @@ msgstr ""
 "Okno Ustawieñ\n"
 "Podpowiedzi Enlightenment\n"
 
-#: src/pager.c:999 config/strings.c:49 config/strings.c:121
+#: src/pager.c:998 config/strings.c:49 config/strings.c:121
 msgid "Window Options"
 msgstr "Opcje Okna"
 
-#: src/pager.c:1006 config/strings.c:51 config/strings.c:124
+#: src/pager.c:1005 config/strings.c:51 config/strings.c:124
 msgid "Iconify"
 msgstr "Zwiñ do Ikony"
 
-#: src/pager.c:1014 config/strings.c:123
+#: src/pager.c:1013 config/strings.c:123
 msgid "Annihilate"
 msgstr "Zniszcz"
 
-#: src/pager.c:1018
+#: src/pager.c:1017
 msgid "Stick / Unstick"
 msgstr "Przyklej/Odklej"
 
-#: src/pager.c:1025
+#: src/pager.c:1024
 msgid "Desktop Options"
 msgstr "Opcje pulpitu"
 
-#: src/pager.c:1031
+#: src/pager.c:1030
 msgid "Pager Settings..."
 msgstr "Opcje Podgl±du Pulpitu..."
 
-#: src/pager.c:1036
+#: src/pager.c:1035
 msgid "Snapshotting Off"
 msgstr "Wy³±cz 'Zdjêcie Ekranu'"
 
-#: src/pager.c:1040
+#: src/pager.c:1039
 msgid "High Quality Off"
 msgstr "Wy³±cz Wysok± Jako¶æ"
 
-#: src/pager.c:1042
+#: src/pager.c:1041
 msgid "High Quality On"
 msgstr "W³±cz Wysok± Jako¶æ"
 
-#: src/pager.c:1047
+#: src/pager.c:1046
 msgid "Snapshotting On"
 msgstr "W³±cz 'Zdjêcie Ekranu'"
 
-#: src/pager.c:1051
+#: src/pager.c:1050
 msgid "Zoom Off"
 msgstr ""
 
-#: src/pager.c:1053
+#: src/pager.c:1052
 msgid "Zoom On"
 msgstr ""
 
-#: src/pager.c:1803 src/pager.c:1898
+#: src/pager.c:1802 src/pager.c:1897
 msgid "Pager scanning speed:"
 msgstr "Szybko¶æ skanowania w Podgl±dzie Pulpitu:"
 
-#: src/pager.c:1804 src/pager.c:1899
+#: src/pager.c:1803 src/pager.c:1898
 msgid "lines per second"
 msgstr "linii na sekundê"
 
-#: src/pager.c:1837
+#: src/pager.c:1836
 msgid "Enable pager display"
 msgstr "W³±cz Podgl±d Pulpitu"
 
-#: src/pager.c:1847
+#: src/pager.c:1846
 msgid "Pager Mode:"
 msgstr ""
 
-#: src/pager.c:1851
+#: src/pager.c:1850
 #, fuzzy
 msgid "Simple"
 msgstr "Rozmiar"
 
-#: src/pager.c:1857
+#: src/pager.c:1856
 msgid "Make miniature snapshots of the screen"
 msgstr "Rób miniaturowe zdjêcia ekranu"
 
-#: src/pager.c:1864
+#: src/pager.c:1863
 msgid "Live Update"
 msgstr ""
 
-#: src/pager.c:1875
+#: src/pager.c:1874
 msgid "Smooth high quality snapshots in snapshot mode"
 msgstr "Wyg³adzaj wysokiej jako¶ci zdjêcia w trybie 'Zdjêcia Ekranu'"
 
-#: src/pager.c:1880
+#: src/pager.c:1879
 msgid "Zoom in on pager windows when mouse is over them"
 msgstr "Powiêksz okna w Podgl±dzie Pulpitu, gdy jest nad nimi wska¼nik myszy"
 
-#: src/pager.c:1886
+#: src/pager.c:1885
 msgid "Pop up window title when mouse is over the window"
 msgstr "Wy¶wietl tytu³ okna, gdy jest nad nim wska¼nik myszy"
 
-#: src/pager.c:1891
+#: src/pager.c:1890
 msgid "Continuously scan screen to update pager"
 msgstr "Skanuj bez przerwy ekran i uaktualniaj Podgl±d Pulpitu"
 
-#: src/pager.c:1914
+#: src/pager.c:1913
 msgid "Mouse button to select and drag windows:"
 msgstr "Przycisk myszy s³u¿acy do wybierania i przeci±gania okien :"
 
-#: src/pager.c:1924 src/pager.c:1949 src/pager.c:1974
+#: src/pager.c:1923 src/pager.c:1948 src/pager.c:1973
 msgid "Middle"
 msgstr "¦rodek"
 
-#: src/pager.c:1939
+#: src/pager.c:1938
 msgid "Mouse button to select desktops:"
 msgstr "Przycisk myszy s³u¿±cy do wybierania Pulpitów :"
 
-#: src/pager.c:1964
+#: src/pager.c:1963
 msgid "Mouse button to display pager menu:"
 msgstr "Przycisk myszy s³u¿acy do wy¶wietlania menu Podgl±du Pulpitu :"
 
-#: src/pager.c:1988
+#: src/pager.c:1987
 #, fuzzy
 msgid "Pagers"
 msgstr "Ustawienia Podgladu Pulpitu"
 
-#: src/pager.c:1989
+#: src/pager.c:1988
 msgid "Pager Settings"
 msgstr "Ustawienia Podgladu Pulpitu"
 
-#: src/pager.c:1992
+#: src/pager.c:1991
 msgid ""
 "Enlightenment Desktop & Area\n"
 "Pager Settings Dialog\n"
