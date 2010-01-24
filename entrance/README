@@ -10,6 +10,22 @@ designed to be extremely customizable and aesthetically attractive
 -- a refreshing relief from the traditional dull and boring interfaces 
 of XDM and its descendants.
 
+PAM - READ CAREFULLY
+--------------------
+
+There is default pam configuration file installed with entrance, but
+it does not work on these distros:
+
+- Gentoo
+- Arch Linux
+
+Please use entrance.gentoo file from config/pam.d, which is not installed
+by default. ALSO, package maintainers of these distros, use it by your
+installer as alternative.
+
+As for entrance.SuSE, standard config file should work, but if it doesnt,
+use this one.
+
 Compiling & Installing
 ----------------------
 
