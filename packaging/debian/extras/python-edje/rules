@@ -7,7 +7,11 @@ include /usr/share/cdbs/1/rules/debhelper.mk
 include /usr/share/cdbs/1/class/python-distutils.mk
 
 install/python-edje-doc::
-	./gen-doc-api.sh
+	mkdir -p doc/api/html
+	PYTHONPATH="./build/`ls ./build|grep 'lib.*-2.5'`" python2.5 /usr/bin/epydoc --html -o doc/api/html \
+		-n "Python-Edje API" \
+		edje.c_edje \
+		edje.decorators
 
 clean::
 	find edje -name '*.c' | xargs rm -rf

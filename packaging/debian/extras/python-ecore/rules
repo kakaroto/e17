@@ -7,7 +7,16 @@ include /usr/share/cdbs/1/rules/debhelper.mk
 include /usr/share/cdbs/1/class/python-distutils.mk
 
 install/python-ecore-doc::
-	./gen-doc-api.sh
+	mkdir -p doc/api/html
+	PYTHONPATH="./build/`ls ./build|grep 'lib.*-2.5'`" python2.5 /usr/bin/epydoc --html -o doc/api/html \
+		-n "Python-Ecore API" \
+		ecore.c_ecore \
+		ecore.evas.c_ecore_evas \
+		ecore.imf.c_ecore_imf \
+		ecore.x.c_ecore_x \
+		ecore.x.screensaver \
+		ecore.evas.utils
+
 
 clean::
 	find ecore -name '*.c' | xargs rm -rf
