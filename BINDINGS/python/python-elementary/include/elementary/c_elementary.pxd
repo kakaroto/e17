@@ -99,6 +99,12 @@ cdef enum Elm_Scroller_Policy:
     ELM_SCROLLER_POLICY_ON
     ELM_SCROLLER_POLICY_OFF
 
+cdef enum Elm_Panel_Orient:
+    ELM_PANEL_ORIENT_TOP,
+    ELM_PANEL_ORIENT_BOTTOM,
+    ELM_PANEL_ORIENT_LEFT,
+    ELM_PANEL_ORIENT_RIGHT,
+
 cdef extern from "Ecore_X.h":
     ctypedef unsigned int Ecore_X_ID
     ctypedef Ecore_X_ID Ecore_X_Window
@@ -618,3 +624,8 @@ cdef extern from "Elementary.h":
     void  elm_menu_item_data_set(Elm_Menu_Item *item, void *data)
     evas.c_evas.Evas_Object *elm_menu_object_get(Elm_Menu_Item *it)
     evas.c_evas.Eina_List *elm_menu_item_subitems_get(Elm_Menu_Item *item)
+
+    # Panel
+    evas.c_evas.Evas_Object *elm_panel_add(evas.c_evas.Evas_Object *parent)
+    void elm_panel_orient_set(evas.c_evas.Evas_Object *obj, Elm_Panel_Orient orient)
+    void elm_panel_content_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Evas_Object *content)
