@@ -56,7 +56,7 @@ AC_ARG_WITH(xbin,
             [
                 xbin="$withval"
             ], [
-                AC_PATH_PROG(xbin, X, /usr/X11R6/bin, $PATH:/usr/X11R6/bin:/usr/X11R7/bin)
+                AC_PATH_PROG(xbin, X, /usr/bin, $PATH:/usr/X11R6/bin:/usr/X11R7/bin)
                 xbin=`dirname $xbin`
             ])
 AC_DEFINE_UNQUOTED(X_BINARIES, "${xbin}", [Path to X binaries])
