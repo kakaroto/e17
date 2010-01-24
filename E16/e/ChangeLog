@@ -5160,7 +5160,6 @@ Fix compile as C++.
 Sun Dec 20 08:49:15 CET 2009
 
 --- 1.0.1.002 ---
-
 Change Ecore_X_ID etc. to unsigned int (when not using ecore_x).
 Refactor ecore_hints.
 Attempt to fix various pager issues:
@@ -5190,7 +5189,6 @@ Move ESelectInputChange(), change arguments to int.
 Sat Jan 16 07:49:30 CET 2010
 
 --- 1.0.1.901 ---
-
 Fix name clash related to SUSv4 signal.h (patch by Pietro Cerutti, ticket 487).
 Fix creating GL pixmap in certain situations (when using mesa?).
 Play with XI2.
@@ -5206,3 +5204,13 @@ Unmap internal windows before destroying.
 Scale new icons down to 48x48 pixels.
 Change iconbox fallback icon mode back to snapshot.
 Do not propagate key events.
+
+-------------------------------------------------------------------------------
+
+Sat Jan 23 15:08:18 CET 2010
+
+--- 1.0.2 ---
+Fix move/resize sometimes not being terminated properly.
+Add function to create inverted shape pixmap.
+Add check, no need for return value in EXFreeGC().
+Fix old translucent move mode when shm pixmaps are not available.
