@@ -472,6 +472,8 @@ entrance_session_start_user_session(Entrance_Session * e)
          }
       }
 
+      chdir (e->auth->pw->pw_dir);
+
       if ((pamenv = pam_getenvlist(e->auth->pam.handle)) != NULL)
       {
 	for (envitem = pamenv; *envitem; envitem++)
