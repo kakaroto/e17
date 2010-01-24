@@ -94,6 +94,70 @@ def box_vert_clicked(obj, it):
     win.show()
 # }}}
 
+#----- Box Vert 2 -{{{-
+def boxvert2_del_cb(bt, bx):
+    bx.unpack(bt)
+    bt.move(0, 0)
+    bt.color_set(128, 64, 0, 128)
+
+def box_vert2_clicked(obj, it):
+    win = elementary.Window("box-vert2", elementary.ELM_WIN_BASIC)
+    win.title_set("Box Vert 2")
+    win.autodel_set(True)
+
+    bg = elementary.Background(win)
+    win.resize_object_add(bg)
+    bg.size_hint_weight_set(evas.EVAS_HINT_EXPAND, evas.EVAS_HINT_EXPAND)
+    bg.show()
+
+    bx = elementary.Box(win)
+    win.resize_object_add(bx)
+    bx.size_hint_weight_set(0.0, 0.0)
+    bx.show()
+
+    bt = elementary.Button(win)
+    bt.label_set("Button 1")
+    bt.size_hint_align_set(evas.EVAS_HINT_FILL, evas.EVAS_HINT_FILL)
+    bt.size_hint_weight_set(0.0, 0.0)
+    bt.callback_clicked_add(boxvert2_del_cb, bx)
+    bx.pack_end(bt)
+    bt.show()
+
+    bt = elementary.Button(win)
+    bt.label_set("Button 2")
+    bt.size_hint_align_set(evas.EVAS_HINT_FILL, evas.EVAS_HINT_FILL)
+    bt.size_hint_weight_set(0.0, 0.0)
+    bt.callback_clicked_add(boxvert2_del_cb, bx)
+    bx.pack_end(bt)
+    bt.show()
+
+    bt = elementary.Button(win)
+    bt.label_set("Button 3")
+    bt.size_hint_align_set(evas.EVAS_HINT_FILL, evas.EVAS_HINT_FILL)
+    bt.size_hint_weight_set(0.0, 0.0)
+    bt.callback_clicked_add(boxvert2_del_cb, bx)
+    bx.pack_end(bt)
+    bt.show()
+
+    bt = elementary.Button(win)
+    bt.label_set("Button 4")
+    bt.size_hint_align_set(evas.EVAS_HINT_FILL, evas.EVAS_HINT_FILL)
+    bt.size_hint_weight_set(0.0, 0.0)
+    bt.callback_clicked_add(boxvert2_del_cb, bx)
+    bx.pack_end(bt)
+    bt.show()
+
+    bt = elementary.Button(win)
+    bt.label_set("Button 5")
+    bt.size_hint_align_set(evas.EVAS_HINT_FILL, evas.EVAS_HINT_FILL)
+    bt.size_hint_weight_set(0.0, 0.0)
+    bt.callback_clicked_add(boxvert2_del_cb, bx)
+    bx.pack_end(bt)
+    bt.show()
+
+    win.show()
+# }}}
+
 #----- Box Horiz -{{{-
 def box_horiz_clicked(obj, it):
     win = elementary.Window("box-horiz", elementary.ELM_WIN_BASIC)
@@ -2698,6 +2762,7 @@ if __name__ == "__main__":
                ("Bg Image", bg_image_clicked),
                ("Icon Transparent", icon_transparent_clicked),
                ("Box Vert", box_vert_clicked),
+               ("Box Vert 2", box_vert2_clicked),
                ("Box Horiz", box_horiz_clicked),
                ("Buttons", buttons_clicked),
                ("Toggles", toggles_clicked),
