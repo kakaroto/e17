@@ -44,6 +44,9 @@ class Handler(edje.Edje):
         self.down(*event.position.output)
         self.on_mouse_up_add(self.__mouse_up_cb)
 
+    def down(self, x, y):
+        return
+
     def __move_animator_do(self):
         cur = self.evas.pointer_output_xy_get()
         if cur == self._last:
@@ -57,6 +60,9 @@ class Handler(edje.Edje):
         dh += sy - self._start_region[1]
         self.move(dw, dh)
         return True
+
+    def move(self, dw, dh):
+        return
 
     def __mouse_up_cb(self, obj, event):
         self.on_mouse_up_del(self.__mouse_up_cb)
@@ -74,3 +80,6 @@ class Handler(edje.Edje):
         if self._move_animator:
             self._move_animator.delete()
             self._move_animator = None
+
+    def up(self, dw, dh):
+        return
