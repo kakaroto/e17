@@ -37,7 +37,7 @@ class WidgetsList(Collapsable):
         self._loaded_types = {}
         list = []
         none = ""
-        self._loaded_types["edje"] = list
+        self._loaded_types["Edje"] = list
         list.append(("Rectangle", edje.EDJE_PART_TYPE_RECTANGLE, none))
         list.append(("Text", edje.EDJE_PART_TYPE_TEXT, none))
         list.append(("Image", edje.EDJE_PART_TYPE_IMAGE, none))
@@ -49,13 +49,13 @@ class WidgetsList(Collapsable):
         #list.append(("Table", edje.EDJE_PART_TYPE_TABLE, none))
 
         for type in edje.ExternalIterator():
-            module = type.module
+            module_name = type.module_name
             label = type.label_get()
 
-            list = self._loaded_types.get(module)
+            list = self._loaded_types.get(module_name)
             if not list:
                 list = []
-                self._loaded_types[module] = list
+                self._loaded_types[module_name] = list
             elif (type.name, label, type) in list:
                 continue
             list.append((label, edje.EDJE_PART_TYPE_EXTERNAL, type))
@@ -85,7 +85,7 @@ class WidgetsList(Collapsable):
         group = it.label_get()
         self._group = group
 
-        self._options_edje.part_text_set("group_name", group) 
+        self._options_edje.part_text_set("group_name", group)
 
         self.options = True
 
@@ -141,7 +141,7 @@ class WidgetsList(Collapsable):
             self._part_init(name, edje_type)
             self._parent.e.event_emit("part.added", name)
             if edje_type == edje.EDJE_PART_TYPE_EXTERNAL:
-                self._parent.e._edje.external_add(self._group)
+                self._parent.e._edje.external_add(type.module)
         it.selected = False
 
     def _part_init(self, name, type):
