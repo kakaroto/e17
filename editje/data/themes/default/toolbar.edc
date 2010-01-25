@@ -154,6 +154,7 @@ collections {
             }
 	 }
 
+#if 0
          part {
             name: "image_list.bt";
             type: RECT;
@@ -174,7 +175,6 @@ collections {
          }
          TOOLBAR_BT_MAIN("image_list.bt", "ico_images.png")
 
-#if 0
          part {
             name: "font_list.bt";
             type: RECT;
