@@ -1,0 +1,7 @@
+Login:        romanhornik
+Name:         Roman Horník
+Location:     Seč, Czech Republic
+E-Mail:       roman.hornik@gmail.com
+Contributing: debian packaging
+Platform:     Debian (Linux)
+
