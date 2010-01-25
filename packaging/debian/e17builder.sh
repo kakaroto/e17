@@ -205,6 +205,8 @@ for md5 in ${compile_list[@]}; do
 		;;
 		edje_viewer) check="edje-viewer"
 		;;
+		eyelight_edit) check="eyelight-edit"
+		;;
 		E-MODULES-EXTRA) check="emodules"
 		;;
 		python-e_dbus) check="python-edbus"
