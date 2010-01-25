@@ -420,7 +420,6 @@ _elixir_eet_insert(void *array, int index, void *child, void *user_data)
    Elixir_Eet_Node_Converter *ctx = user_data;
    jsval *inside;
    jsval *add;
-   jsval vp;
 
    inside = array;
    add = child;

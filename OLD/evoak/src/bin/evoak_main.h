@@ -10,7 +10,6 @@
 #include <Ecore_Fb.h>
 #include <Ecore_Con.h>
 #include <Ecore_Ipc.h>
-#include <Ecore_Job.h>
 #include <Eet.h>
 #include <Edje.h>
 #include <Embryo.h>

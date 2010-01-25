@@ -13,7 +13,6 @@
 #include <Ecore_Con.h>
 #include <Ecore_Evas.h>
 #include <Ecore.h>
-#include <Ecore_Job.h>
 
 /* STD */
 #include <string>

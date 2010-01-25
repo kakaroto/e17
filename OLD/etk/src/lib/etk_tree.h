@@ -23,7 +23,6 @@
 #include <stdarg.h>
 
 #include <Evas.h>
-#include <Ecore_Job.h>
 
 #include "etk_widget.h"
 #include "etk_types.h"

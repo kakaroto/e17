@@ -397,9 +397,6 @@ EINA_CHECK_STATIC(ecore_file, [ecore-file])
 ELIXIR_CHECK_PKG_MODULE(ECORE_IPC, [ecore-ipc], [Ecore Ipc module binding support])
 EINA_CHECK_STATIC(ecore_ipc, [ecore-ipc])
 
-ELIXIR_CHECK_PKG_MODULE(ECORE_JOB, [ecore-job], [Ecore Job module binding support])
-EINA_CHECK_STATIC(ecore_job, [ecore-job])
-
 ELIXIR_CHECK_PKG_MODULE(ECORE_DOWNLOAD, [ecore-download], [Ecore Download binding module support])
 EINA_CHECK_STATIC(ecore_download, [ecore-download])
 
@@ -483,7 +480,6 @@ src/modules/bindings/ecore/Makefile
 src/modules/bindings/ecore_con/Makefile
 src/modules/bindings/ecore_download/Makefile
 src/modules/bindings/ecore_evas/Makefile
-src/modules/bindings/ecore_job/Makefile
 src/modules/bindings/edje/Makefile
 src/modules/bindings/mix/Makefile
 src/modules/bindings/sqlite/Makefile
@@ -540,7 +536,6 @@ echo "  Ecore-Download......: ${have_ecore_download}"
 echo "  Ecore-Evas..........: ${have_ecore_evas}"
 echo "  Ecore-file..........: ${have_ecore_file}"
 echo "  Ecore-ipc...........: ${have_ecore_ipc}"
-echo "  Ecore-job...........: ${have_ecore_job}"
 echo "  Edje................: $have_edje"
 echo "  Eet.................: $have_eet"
 echo

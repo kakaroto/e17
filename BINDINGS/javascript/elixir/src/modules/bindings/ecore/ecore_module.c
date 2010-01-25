@@ -35,6 +35,10 @@ static elixir_parameter_t               _ecore_thread_parameter = {
    "Ecore_Thread", JOBJECT, NULL
 };
 
+static elixir_parameter_t               _ecore_job_parameter = {
+   "Ecore_Job", JOBJECT, NULL
+};
+
 static const elixir_parameter_t*        _int_func_any_params[4] = {
    &int_parameter,
    &function_parameter,
@@ -120,6 +124,11 @@ static const elixir_parameter_t*        _ecore_animator_params[2] = {
 static const elixir_parameter_t*	_ecore_thread_params[2] = {
   &_ecore_thread_parameter,
   NULL
+};
+
+static const elixir_parameter_t*              _ecore_job_params[2] = {
+   &_ecore_job_parameter,
+   NULL
 };
 
 /* Need to be correctly done. */
@@ -977,6 +986,67 @@ elixir_ecore_thread_cancel(JSContext *cx, uintN argc, jsval *vp)
    return JS_TRUE;
 }
 
+static void
+_elixir_ecore_job_cb(void* data)
+{
+   JSObject*            parent;
+   JSContext*           cx;
+   JSFunction*          cb;
+   jsval                js_return;
+   jsval                argv[1];
+
+   cb = elixir_void_get_private(data);
+   cx = elixir_void_get_cx(data);
+   parent = elixir_void_get_parent(data);
+   if (!cx || !parent || !cb)
+     return ;
+
+   elixir_function_start(cx);
+
+   argv[0] = elixir_void_get_jsval(data);
+
+   elixir_function_run(cx, cb, parent, 1, argv, &js_return);
+
+   elixir_function_stop(cx);
+}
+
+static JSBool
+elixir_ecore_job_add(JSContext *cx, uintN argc, jsval *vp)
+{
+   Ecore_Job *ej;
+   void *data;
+   elixir_value_t val[2];
+
+   if (!elixir_params_check(cx, _func_any_params, val, argc, JS_ARGV(cx, vp)))
+     return JS_FALSE;
+
+   /* If you don't call ecore_job_del, this will leak. Perhaps better to implement ecore_job directly in JS. */
+   data = elixir_void_new(cx, JS_THIS_OBJECT(cx, vp), val[1].v.any, val[0].v.fct);
+
+   ej = ecore_job_add(_elixir_ecore_job_cb, data);
+
+   elixir_return_ptr(cx, vp, ej, elixir_class_request("ecore_job", NULL));
+   return JS_TRUE;
+}
+
+static JSBool
+elixir_ecore_job_del(JSContext *cx, uintN argc, jsval *vp)
+{
+   Ecore_Job *ej;
+   void *data;
+   elixir_value_t val[1];
+
+   if (!elixir_params_check(cx, _ecore_job_params, val, argc, JS_ARGV(cx, vp)))
+     return JS_FALSE;
+
+   GET_PRIVATE(cx, val[0].v.obj, ej);
+
+   data = ecore_job_del(ej);
+
+   JS_SET_RVAL(cx, vp, elixir_void_free(data));
+   return JS_TRUE;
+}
+
 static JSFunctionSpec        ecore_functions[] = {
   ELIXIR_FN(ecore_init, 0, JSPROP_ENUMERATE, 0 ),
   ELIXIR_FN(ecore_shutdown, 0, JSPROP_ENUMERATE, 0 ),
@@ -1015,6 +1085,8 @@ static JSFunctionSpec        ecore_functions[] = {
   ELIXIR_FN(ecore_event_current_event_get, 0, JSPROP_ENUMERATE, 0 ),
   ELIXIR_FN(ecore_thread_run, 3, JSPROP_ENUMERATE, 0 ),
   ELIXIR_FN(ecore_thread_cancel, 1, JSPROP_ENUMERATE, 0 ),
+  ELIXIR_FN(ecore_job_add, 2, JSPROP_READONLY, 0 ),
+  ELIXIR_FN(ecore_job_del, 1, JSPROP_READONLY, 0 ),
   JS_FS_END
 };
 
@@ -1070,6 +1142,7 @@ module_open(Elixir_Module *em, JSContext *cx, JSObject *parent)
    _ecore_idle_exiter_parameter.class = elixir_class_request("Ecore_Idle_Exiter", NULL);
    _ecore_timer_parameter.class = elixir_class_request("Ecore_Timer", NULL);
    _ecore_animator_parameter.class = elixir_class_request("Ecore_Animator", NULL);
+   _ecore_job_parameter.class = elixir_class_request("ecore_job", NULL);
 
    return EINA_TRUE;
 

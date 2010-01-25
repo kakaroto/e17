@@ -37,10 +37,6 @@ if EINA_STATIC_BUILD_ECORE_EVAS
 elixir_compile_LDADD += @ECORE_EVAS_LIBS@
 endif
 
-if EINA_STATIC_BUILD_ECORE_JOB
-elixir_compile_LDADD += @ECORE_JOB_LIBS@
-endif
-
 if EINA_STATIC_BUILD_EDJE
 elixir_compile_LDADD += @EDJE_LIBS@
 endif
@@ -82,10 +78,6 @@ endif
 
 if EINA_STATIC_BUILD_ECORE_EVAS
 elixir_LDADD += @ECORE_EVAS_LIBS@
-endif
-
-if EINA_STATIC_BUILD_ECORE_JOB
-elixir_LDADD += @ECORE_JOB_LIBS@
 endif
 
 if EINA_STATIC_BUILD_EDJE

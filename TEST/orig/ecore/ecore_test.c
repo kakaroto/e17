@@ -1,5 +1,4 @@
 #include <Ecore.h>
-#include <Ecore_Job.h>
 #include <Ecore_X.h>
 #include <Ecore_Evas.h>
 #include <Ecore_Con.h>
@@ -739,7 +738,6 @@ main(int argc, const char **argv)
    /* init ecore */
    ecore_init();
    /* init ecore job */
-   ecore_job_init();
    /* tell ecore what our arguments are */
    ecore_app_args_set(argc, argv);
 
@@ -837,8 +835,6 @@ main(int argc, const char **argv)
    ecore_ipc_shutdown();
    /* shut down ecore_con */
    ecore_con_shutdown();
-   /* shut down ecore_job */
-   ecore_job_shutdown();
    /* shut down ecore */
    ecore_shutdown();
    return 0;

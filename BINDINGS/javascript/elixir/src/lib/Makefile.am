@@ -60,12 +60,6 @@ libelixir_la_LIBADD += @ECORE_EVAS_LIBS@
 INCLUDES += @ECORE_EVAS_CFLAGS@
 endif
 
-if EINA_STATIC_BUILD_ECORE_JOB
-libelixir_la_SOURCES += $(top_srcdir)/src/modules/bindings/ecore_job/ecore_job_module.c
-libelixir_la_LIBADD += @ECORE_JOB_LIBS@
-INCLUDES += @ECORE_JOB_CFLAGS@
-endif
-
 if EINA_STATIC_BUILD_EDJE
 libelixir_la_SOURCES += $(top_srcdir)/src/modules/bindings/edje/edje_module.c
 libelixir_la_SOURCES += $(top_srcdir)/src/modules/bindings/edje/edje_layout_module.c

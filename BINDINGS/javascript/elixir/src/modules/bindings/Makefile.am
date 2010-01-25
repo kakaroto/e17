@@ -10,7 +10,6 @@ ecore 		\
 ecore_con 	\
 ecore_download 	\
 ecore_evas 	\
-ecore_job 	\
 edje		\
 mix 		\
 sqlite

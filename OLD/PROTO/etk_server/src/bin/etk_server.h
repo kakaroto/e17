@@ -17,7 +17,6 @@
 #include <Ecore.h>
 #include <Ecore_File.h>
 #include <Ecore_Con.h>
-#include <Ecore_Job.h>
 #include <Ecore_Data.h>
 
 #define ETK_SERVER_LIBETK "libetk.so"

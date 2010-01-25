@@ -55,7 +55,6 @@
 #include <Ecore_Evas.h>
 #include <Ecore_Con.h>
 #include <Ecore_Ipc.h>
-#include <Ecore_Job.h>
 #include <Ecore_Txt.h>
 #include <Ecore_Config.h>
 #include <Ecore_Desktop.h>

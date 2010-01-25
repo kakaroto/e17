@@ -6,7 +6,6 @@
 
 #include <Ecore.h>
 #include <Ecore_Evas.h>
-#include <Ecore_Job.h>
 #include <Ecore_File.h>
 #include <Evas.h>
 #include <Edje.h>

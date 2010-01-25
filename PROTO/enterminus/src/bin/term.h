@@ -18,7 +18,6 @@
 #include <Ecore.h>
 #include <Evas.h>
 #include <Ecore_Evas.h>
-#include <Ecore_Job.h>
 #include <Ecore_X.h>
 #include "config.h"
 
