@@ -198,6 +198,7 @@ cdef extern from "Edje.h":
     ctypedef struct Edje_External_Type:
         unsigned int abi_version
         char *module
+        char *module_name
         evas.c_evas.Evas_Object *(*add)(void *data, evas.c_evas.Evas *evas, evas.c_evas.Evas_Object *parent, evas.c_evas.Eina_List *params)
         void (*state_set)(void *data, evas.c_evas.Evas_Object *obj, void *from_params, void *to_params, float pos)
         void (*signal_emit)(void *data, evas.c_evas.Evas_Object *obj, char *emission, char *source)

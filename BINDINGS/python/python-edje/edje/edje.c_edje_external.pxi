@@ -238,6 +238,12 @@ cdef class ExternalType:
                 return None
             return self._obj.module
 
+    property module_name:
+        def __get__(self):
+            if self._obj.module_name == NULL:
+                return None
+            return self._obj.module_name
+
     def label_get(self):
         cdef char *l
         if self._obj.label_get == NULL:
