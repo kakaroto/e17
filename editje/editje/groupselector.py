@@ -31,7 +31,7 @@ class GroupChange(Wizard):
 
         self._parent = parent
         self._gs = GroupSelector(self)
-        self._gs.action_add("New", self._new)
+#        self._gs.action_add("New", self._new)
         self._cancel_enabled = cancel
         if cancel:
             self._gs.action_add("Cancel", self._cancel)
