@@ -9,7 +9,7 @@ Homepage: http://www.enlightenment.org
 Package: libeweather0
 Section: libs
 Architecture: any
-Depends: ${shlibs:Depends}, libeweather-data
+Depends: ${shlibs:Depends}, libeweather-data, libeweather-plugins
 Description: Enlightenment weather library
  A library providing weather smart object,
  all functions needed to create functional weather application
