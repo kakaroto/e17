@@ -70,6 +70,8 @@ class GroupChange(Wizard):
         self.close()
 
     def _new(self, bt):
+        if self._gs.group:
+            self._parent.group = self._gs._group_get()
         self.page_add("new group")
         self.style_set("minimal")
         self._new_group_init()
@@ -110,17 +112,21 @@ class GroupChange(Wizard):
         src.content_set(self._name)
         src.show()
 
+        self._name.focus()
+
     def _add(self, popup, data):
         name = self._name.entry_get().replace("<br>", "")
 
-        success = self._parent.e._edje.group_add(name)
-
-        if success:
-            self.goto("default")
-            self.style_set("normal")
-            self._gs.group_update()
+        if name == "":
+            self._notify("Choose a name for the new group")
         else:
-            self._notify("Choose another name")
+            success = self._parent.e._edje.group_add(name)
+            if success:
+                self.goto("default")
+                self.style_set("normal")
+                self._gs.group_update()
+            else:
+                self._notify("Choose another name")
 
     def _back(self, popup, data):
         self.goto("default")
@@ -196,6 +202,7 @@ class GroupSelector(elementary.Table):
             item.selected_set(True)
         else:
             self._groups_items[self._groups_list[0]].selected_set(True)
+            self._parent._parent._group = self._groups_list[0]
 
         self._groups.go()
 
@@ -204,7 +211,7 @@ class GroupSelector(elementary.Table):
         self._preview.file_set(self.file, self._group)
 
     def group_update(self):
-        self._groups_list = edje.file_collection_list(self._file)
+        self._groups_list = edje.file_collection_list(self.file)
         if self._groups_list:
             self._update(self)
 
