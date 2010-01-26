@@ -106,10 +106,11 @@ class SwapFile(object):
             temp_dir = mkdtemp(prefix="editje_")
             chdir(temp_dir)
             system('edje_decc ' + self.__swapfile + ' -no-build-sh -current-dir')
-            move("./generated_source.edc", self.__filepath)
+            copyfile("./generated_source.edc", self.__filepath)
+            remove("./generated_source.edc")
             dir, file = path.split(self.__filepath)
             for file in listdir(temp_dir):
-                move(file, dir)
+                copyfile(file, path.join(dir, file))
             chdir(orig_dir)
             rmtree(temp_dir)
 
