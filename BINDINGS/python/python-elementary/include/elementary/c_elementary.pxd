@@ -118,7 +118,7 @@ cdef extern from "Ecore_Evas.h":
 cdef extern from "Eina.h":
     ctypedef struct Eina_List
 
-cdef extern from "Ecore_Job.h":
+cdef extern from "Ecore.h":
     ctypedef struct Ecore_Job
 
 ctypedef struct Elm_Win:
