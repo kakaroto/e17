@@ -20,7 +20,7 @@ static int _basic_apply(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata);
 
 /* Function for calling our personal dialog menu */
 E_Config_Dialog *
-e_int_config_skel_module(E_Container *con) 
+e_int_config_skel_module(E_Container *con, const char *params) 
 {
    E_Config_Dialog *cfd = NULL;
    E_Config_Dialog_View *v = NULL;
