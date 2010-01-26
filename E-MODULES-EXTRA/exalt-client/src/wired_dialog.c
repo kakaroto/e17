@@ -270,8 +270,8 @@ void if_wired_disabled_update(Instance *inst)
             is_ip = exalt_address_is(string);
         }
 
-        e_dialog_button_disable_num_set(inst->wired.dialog,0,!is_ip);
-        e_dialog_button_disable_num_set(inst->wired.dialog,1,!is_ip);
+//        e_dialog_button_disable_num_set(inst->wired.dialog,0,!is_ip);
+//        e_dialog_button_disable_num_set(inst->wired.dialog,1,!is_ip);
     }
 }
 
