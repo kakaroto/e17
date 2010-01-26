@@ -29,7 +29,7 @@ elm_ind_win_new(Ecore_X_Window zone)
    iwin = calloc(1, sizeof(Elm_Ind_Win));
    if (!iwin) return NULL;
 
-   iwin->win = elm_win_add(NULL, "elm_indicator", ELM_WIN_BASIC);
+   iwin->win = elm_win_add(NULL, "elm_indicator", ELM_WIN_DOCK);
    evas_object_data_set(iwin->win, "zone", (const void *)zone);
    elm_win_title_set(iwin->win, "Illume Indicator Window");
    evas_object_smart_callback_add(iwin->win, "delete-request", 
@@ -118,7 +118,8 @@ elm_ind_win_new(Ecore_X_Window zone)
    evas_object_resize(iwin->win, zw, 32);
    evas_object_show(iwin->win);
 
-   ecore_x_e_illume_top_shelf_geometry_set(zone, zx, zy, zw, 32);
+   ecore_x_e_illume_top_shelf_geometry_set(ecore_x_window_root_first_get(), 
+                                           zx, zy, zw, 32);
 
    /* create first home window */
    elm_home_win_new(zone);
