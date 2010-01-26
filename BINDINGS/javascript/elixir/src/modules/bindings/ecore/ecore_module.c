@@ -1085,8 +1085,10 @@ static JSFunctionSpec        ecore_functions[] = {
   ELIXIR_FN(ecore_event_current_event_get, 0, JSPROP_ENUMERATE, 0 ),
   ELIXIR_FN(ecore_thread_run, 3, JSPROP_ENUMERATE, 0 ),
   ELIXIR_FN(ecore_thread_cancel, 1, JSPROP_ENUMERATE, 0 ),
+#if 0
   ELIXIR_FN(ecore_job_add, 2, JSPROP_READONLY, 0 ),
   ELIXIR_FN(ecore_job_del, 1, JSPROP_READONLY, 0 ),
+#endif
   JS_FS_END
 };
 
