@@ -1390,6 +1390,7 @@ elixir_ecore_con_url_data_set(JSContext *cx, uintN argc, jsval *vp)
 {
    Ecore_Con_Url *curl;
    void *data;
+   void *old;
    elixir_value_t val[2];
 
    if (!elixir_params_check(cx, _ecore_con_url_any_params, val, argc, JS_ARGV(cx, vp)))
@@ -1397,10 +1398,12 @@ elixir_ecore_con_url_data_set(JSContext *cx, uintN argc, jsval *vp)
 
    GET_PRIVATE(cx, val[0].v.obj, curl);
 
-   data = elixir_void_new(cx, JS_THIS_OBJECT(cx, vp), val[1].v.any, elixir_void_get_private(ecore_con_url_data_get(curl)));
+   old = ecore_con_url_data_get(curl);
 
-   elixir_void_free(ecore_con_url_data_get(curl));
+   data = elixir_void_new(cx, elixir_void_get_parent(old), val[1].v.any, elixir_void_get_private(old));
+
    ecore_con_url_data_set(curl, data);
+   elixir_void_free(old);
 
    return JS_TRUE;
 }
