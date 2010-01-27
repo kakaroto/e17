@@ -192,6 +192,22 @@ class EditableAnimation(Manager, object):
         self.timestops.pop(idx)
         self.event_emit("state.removed", time)
 
+    def _part_state_create(self, part):
+        time_idx = self._current_idx
+        time_idx -= 1
+        statename = self.program.name
+        orig_state = "default 0.00"
+        while time_idx >= 0:
+            time = self.timestops[time_idx]
+            name = "@%s@%.2f 0.00" % (self._name, time)
+            if part.state_exist(name):
+                orig_state = name
+                break
+            time_idx -= 1
+        part.state_copy(orig_state, statename)
+        part.state_selected_set(statename)
+        self.program.target_add(part.name)
+
     def _state_set(self, time):
         if not self._name:
             return
@@ -202,7 +218,10 @@ class EditableAnimation(Manager, object):
         self.e.part.state.name = statename
         for p in self.e.parts:
             part = self.e._edje.part_get(p)
-            part.state_selected_set(statename)
+            if part.state_exist(statename):
+                part.state_selected_set(statename)
+            else:
+                self._part_state_create(part)
         self.event_emit("state.changed", self.e.part.state.name)
 
     def _state_get(self):
