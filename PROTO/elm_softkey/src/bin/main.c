@@ -114,6 +114,9 @@ elm_main(int argc, char **argv)
 
    elm_run();
 
+   ecore_x_e_illume_bottom_panel_geometry_set(ecore_x_window_root_first_get(), 
+                                              0, 0, 0, 0);
+
    elm_shutdown();
    return EXIT_SUCCESS;
 }
