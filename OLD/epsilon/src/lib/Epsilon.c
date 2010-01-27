@@ -866,7 +866,7 @@ _epsilon_open_png_file_reading (const char *filename)
 	}
       else
 	{
-	  if ((ret = png_check_sig ((png_bytep)buf, bytes)))
+	  if (!(ret = png_sig_cmp(buf, 0, bytes)))
 	    rewind (fp);
 	  else
 	    {
