@@ -56,7 +56,7 @@ class Basics(unittest.TestCase):
     # Data
 
     def test_data(self):
-        print self.edj.data
+        pass
 
     def test_data_add(self):
         pass
@@ -67,7 +67,7 @@ class Basics(unittest.TestCase):
     # Text Style
 
     def test_text_styles(self):
-        print self.edj.text_styles
+        pass
 
     def test_text_styles_get(self):
         pass
@@ -95,7 +95,6 @@ class Basics(unittest.TestCase):
     # Part
 
     def test_parts(self):
-        print self.edj.parts
         self.assertEqual(self.edj.parts, ['main_rect', 'main_text', 'main_image', 'main_swallow', 'main_textblock', 'main_gradient', 'main_group', 'main_box', 'main_table'])
 
     def test_part_get(self):
@@ -104,7 +103,6 @@ class Basics(unittest.TestCase):
         self.assertEqual(self.edj.part_get("noexist"), None)
 
     def test_part_add(self):
-        print "PART_ADD"
 #        self.assertFalse(self.edj.part_add("fail1", edje.EDJE_PART_TYPE_NONE))
 #        self.assertFalse(self.edj.part_add("fail2", edje.EDJE_PART_TYPE_LAST))
 #        self.assertFalse(self.edj.part_add("fail3", edje.EDJE_PART_TYPE_LAST + 1))
