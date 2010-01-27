@@ -52,7 +52,7 @@ class SwapFile(object):
             raise FileNotSet(self)
 
         if path.exists(self.__swapfile):
-            if mode == RESTORE or filecmp.cmp(self.__filepath, self.__swapfile):
+            if mode == RESTORE: # or filecmp.cmp(self.__filepath, self.__swapfile):
                 self.__opened = True
                 return
             elif mode != REPLACE:
