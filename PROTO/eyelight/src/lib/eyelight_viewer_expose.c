@@ -78,6 +78,16 @@ void eyelight_viewer_expose_start(Eyelight_Viewer* pres,int select)
     _eyelight_viewer_expose_slides_load(pres);
 }
 
+static void
+_image_resize_func(void *data, Evas *e, Evas_Object *obj, void *event_info)
+{
+    int tw;
+    int th;
+
+    evas_object_geometry_get(obj, NULL, NULL, &tw, &th);
+    evas_object_image_fill_set(obj, 0, 0, tw, th);
+}
+
 void _eyelight_viewer_expose_slides_load(Eyelight_Viewer* pres)
 {
     int i;
@@ -114,8 +124,6 @@ void _eyelight_viewer_expose_slides_load(Eyelight_Viewer* pres)
         }
         else
         {
-	    int tw;
-	    int th;
 	   /* FIXME: Cleanup required, sharing more code with eyelight_viewer_slideshow.c */
 	   /* FIXME: Should be possible to do this asynchronously. */
             snprintf(buf,EYELIGHT_BUFLEN,"object.swallow_%d_%d",pos_y,pos_x);
@@ -137,14 +145,11 @@ void _eyelight_viewer_expose_slides_load(Eyelight_Viewer* pres)
 
 		 snprintf(key, sizeof (key), "eyelight/thumb/%i", thumb->pos);
 		 evas_object_image_file_set(o_image, pres->dump_in, key);
+		 evas_object_event_callback_add(o_image, EVAS_CALLBACK_RESIZE, _image_resize_func, NULL);
 	      }
 
             evas_object_show(o_image);
             edje_object_part_swallow(pres->expose_background,buf,o_image);
-
-	    edje_object_part_geometry_get(pres->expose_background, buf, 0, 0, &tw, &th);
-	    if (!thumb->thumb)
-	      evas_object_image_fill_set(o_image, 0, 0, tw, th);
 
             snprintf(buf,EYELIGHT_BUFLEN,"show,%d_%d",pos_y,pos_x);
             edje_object_signal_emit(pres->expose_background,buf,"eyelight");
