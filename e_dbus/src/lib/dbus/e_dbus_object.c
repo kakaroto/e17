@@ -4,8 +4,6 @@
 
 #include <string.h>
 
-#include <Ecore_Data.h>
-
 #include "e_dbus_private.h"
 
 static E_DBus_Interface *introspectable_interface = NULL;
@@ -14,7 +12,7 @@ static E_DBus_Interface *properties_interface = NULL;
 typedef struct E_DBus_Method E_DBus_Method;
 typedef struct E_DBus_Signal E_DBus_Signal;
 
-Ecore_Strbuf * e_dbus_object_introspect(E_DBus_Object *obj);
+Eina_Strbuf * e_dbus_object_introspect(E_DBus_Object *obj);
 
 static void e_dbus_object_unregister(DBusConnection *conn, void *user_data);
 static DBusHandlerResult e_dbus_object_handler(DBusConnection *conn, DBusMessage *message, void *user_data);
@@ -27,11 +25,11 @@ static void e_dbus_object_method_free(E_DBus_Method *m);
 static E_DBus_Signal *e_dbus_signal_new(const char *name, const char *signature);
 static void e_dbus_object_signal_free(E_DBus_Signal *s);
 
-static void _introspect_indent_append(Ecore_Strbuf *buf, int level);
-static void _introspect_interface_append(Ecore_Strbuf *buf, E_DBus_Interface *iface, int level);
-static void _introspect_method_append(Ecore_Strbuf *buf, E_DBus_Method *method, int level);
-static void _introspect_signal_append(Ecore_Strbuf *buf, E_DBus_Signal *signal, int level);
-static void _introspect_arg_append(Ecore_Strbuf *buf, const char *type, const char *direction, int level);
+static void _introspect_indent_append(Eina_Strbuf *buf, int level);
+static void _introspect_interface_append(Eina_Strbuf *buf, E_DBus_Interface *iface, int level);
+static void _introspect_method_append(Eina_Strbuf *buf, E_DBus_Method *method, int level);
+static void _introspect_signal_append(Eina_Strbuf *buf, E_DBus_Signal *signal, int level);
+static void _introspect_arg_append(Eina_Strbuf *buf, const char *type, const char *direction, int level);
 
 
 //static Eina_List *standard_methods = NULL;
@@ -86,7 +84,7 @@ static DBusMessage *
 cb_introspect(E_DBus_Object *obj, DBusMessage *msg)
 {
   DBusMessage *ret;
-  Ecore_Strbuf *buf;
+  Eina_Strbuf *buf;
 
   if (obj->introspection_dirty || !obj->introspection_data)
   {
@@ -98,8 +96,8 @@ cb_introspect(E_DBus_Object *obj, DBusMessage *msg)
     }
 
     if (obj->introspection_data) free(obj->introspection_data);
-    obj->introspection_data = strdup(ecore_strbuf_string_get(buf));
-    ecore_strbuf_free(buf);
+    obj->introspection_data = strdup(eina_strbuf_string_get(buf));
+    eina_strbuf_free(buf);
   }
   //printf("XML: \n\n%s\n\n", obj->introspection_data);
   ret = dbus_message_new_method_return(msg);
@@ -562,50 +560,50 @@ e_dbus_object_unregister(DBusConnection *conn __UNUSED__, void *user_data __UNUS
   /* free up the object struct? */
 }
 
-Ecore_Strbuf *
+Eina_Strbuf *
 e_dbus_object_introspect(E_DBus_Object *obj)
 {
-  Ecore_Strbuf *buf;
+  Eina_Strbuf *buf;
   int level = 0;
   E_DBus_Interface *iface;
   Eina_List *l;
 
-  buf = ecore_strbuf_new();
+  buf = eina_strbuf_new();
 
   /* Doctype */
-  ecore_strbuf_append(buf, "<!DOCTYPE node PUBLIC \"-//freedesktop//DTD D-BUS Object Introspection 1.0//EN\"\n \"http://www.freedesktop.org/standards/dbus/1.0/introspect.dtd\">\n");
+  eina_strbuf_append(buf, "<!DOCTYPE node PUBLIC \"-//freedesktop//DTD D-BUS Object Introspection 1.0//EN\"\n \"http://www.freedesktop.org/standards/dbus/1.0/introspect.dtd\">\n");
 
-  ecore_strbuf_append(buf, "<node name=\"");
-  ecore_strbuf_append(buf, obj->path);
-  ecore_strbuf_append(buf, "\">\n");
+  eina_strbuf_append(buf, "<node name=\"");
+  eina_strbuf_append(buf, obj->path);
+  eina_strbuf_append(buf, "\">\n");
   level++;
 
   EINA_LIST_FOREACH(obj->interfaces, l, iface)
     _introspect_interface_append(buf, iface, level);
 
-  ecore_strbuf_append(buf, "</node>\n");
+  eina_strbuf_append(buf, "</node>\n");
   return buf;
 }
 
 static void
-_introspect_indent_append(Ecore_Strbuf *buf, int level)
+_introspect_indent_append(Eina_Strbuf *buf, int level)
 {
   /* XXX optimize this? */
   int i = level * 2;
   while (i-- > 0)
-    ecore_strbuf_append_char(buf, ' ');
+    eina_strbuf_append_char(buf, ' ');
 }
 static void
-_introspect_interface_append(Ecore_Strbuf *buf, E_DBus_Interface *iface, int level)
+_introspect_interface_append(Eina_Strbuf *buf, E_DBus_Interface *iface, int level)
 {
   E_DBus_Method *method;
   E_DBus_Signal *signal;
   Eina_List *l;
 
   _introspect_indent_append(buf, level);
-  ecore_strbuf_append(buf, "<interface name=\"");
-  ecore_strbuf_append(buf, iface->name);
-  ecore_strbuf_append(buf, "\">\n");
+  eina_strbuf_append(buf, "<interface name=\"");
+  eina_strbuf_append(buf, iface->name);
+  eina_strbuf_append(buf, "\">\n");
   level++;
 
   DBG("introspect iface: %s", iface->name);
@@ -616,19 +614,19 @@ _introspect_interface_append(Ecore_Strbuf *buf, E_DBus_Interface *iface, int lev
 
   level--;
   _introspect_indent_append(buf, level);
-  ecore_strbuf_append(buf, "</interface>\n");
+  eina_strbuf_append(buf, "</interface>\n");
 }
 static void
-_introspect_method_append(Ecore_Strbuf *buf, E_DBus_Method *method, int level)
+_introspect_method_append(Eina_Strbuf *buf, E_DBus_Method *method, int level)
 {
   DBusSignatureIter iter;
   char *type;
 
   _introspect_indent_append(buf, level);
   DBG("introspect method: %s\n", method->member);
-  ecore_strbuf_append(buf, "<method name=\"");
-  ecore_strbuf_append(buf, method->member);
-  ecore_strbuf_append(buf, "\">\n");
+  eina_strbuf_append(buf, "<method name=\"");
+  eina_strbuf_append(buf, method->member);
+  eina_strbuf_append(buf, "\">\n");
   level++;
 
   /* append args */
@@ -663,20 +661,20 @@ _introspect_method_append(Ecore_Strbuf *buf, E_DBus_Method *method, int level)
 
   level--;
   _introspect_indent_append(buf, level);
-  ecore_strbuf_append(buf, "</method>\n");
+  eina_strbuf_append(buf, "</method>\n");
 }
 
 static void
-_introspect_signal_append(Ecore_Strbuf *buf, E_DBus_Signal *signal, int level)
+_introspect_signal_append(Eina_Strbuf *buf, E_DBus_Signal *signal, int level)
 {
   DBusSignatureIter iter;
   char *type;
 
   _introspect_indent_append(buf, level);
   DBG("introspect signal: %s", signal->name);
-  ecore_strbuf_append(buf, "<signal name=\"");
-  ecore_strbuf_append(buf, signal->name);
-  ecore_strbuf_append(buf, "\">\n");
+  eina_strbuf_append(buf, "<signal name=\"");
+  eina_strbuf_append(buf, signal->name);
+  eina_strbuf_append(buf, "\">\n");
   level++;
 
   /* append args */
@@ -696,20 +694,20 @@ _introspect_signal_append(Ecore_Strbuf *buf, E_DBus_Signal *signal, int level)
 
   level--;
   _introspect_indent_append(buf, level);
-  ecore_strbuf_append(buf, "</signal>\n");
+  eina_strbuf_append(buf, "</signal>\n");
 }
 
 static void
-_introspect_arg_append(Ecore_Strbuf *buf, const char *type, const char *direction, int level)
+_introspect_arg_append(Eina_Strbuf *buf, const char *type, const char *direction, int level)
 {
   _introspect_indent_append(buf, level);
-  ecore_strbuf_append(buf, "<arg type=\"");
-  ecore_strbuf_append(buf, type);
+  eina_strbuf_append(buf, "<arg type=\"");
+  eina_strbuf_append(buf, type);
   if (direction)
   {
-    ecore_strbuf_append(buf, "\" direction=\"");
-    ecore_strbuf_append(buf, direction);
+    eina_strbuf_append(buf, "\" direction=\"");
+    eina_strbuf_append(buf, direction);
   }
-  ecore_strbuf_append(buf, "\"/>\n");
+  eina_strbuf_append(buf, "\"/>\n");
 }
 
