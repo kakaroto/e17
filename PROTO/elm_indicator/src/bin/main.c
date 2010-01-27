@@ -60,6 +60,9 @@ elm_main(int argc, char **argv)
         free(iwin);
      }
 
+   ecore_x_e_illume_top_shelf_geometry_set(ecore_x_window_root_first_get(), 
+                                           0, 0, 0, 0);
+
    elm_shutdown();
    return EXIT_SUCCESS;
 }
