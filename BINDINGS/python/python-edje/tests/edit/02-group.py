@@ -26,7 +26,8 @@ class Basics(unittest.TestCase):
         self.assertFalse(self.group.rename("g1"))
         self.assertTrue(self.group.rename("main"))
         self.assertTrue(self.group.rename("gNewName"))
-        self.assertTrue(self.group.rename("main"))
+        self.edj.save()
+        self.assertTrue("gNewName" in edje.file_collection_list("test.edj"))
 
     def test_w_min(self):
         self.assertEqual(self.group.w_min, 123)
@@ -50,8 +51,8 @@ class Basics(unittest.TestCase):
 
     def test_delete(self):
         self.assertTrue(self.edj.group_exist("main"))
-#        self.assertTrue(self.group.delete())                 #segfault
-#        self.assertFalse(self.edj.group_exist("main"))
+        self.assertTrue(self.group.delete())
+        self.assertFalse(self.edj.group_exist("main"))
 
 edje.file_cache_set(0)
 unittest.main()

@@ -32,10 +32,14 @@ class Basics(unittest.TestCase):
         self.assertNotEqual(self.edj.current_group, None)
 
     def test_group_add(self):
-        self.assertTrue(self.edj.group_add("gNEW"))
+        self.assertTrue(self.edj.group_add("new"))
         self.assertFalse(self.edj.group_add("main"))
         self.assertFalse(self.edj.group_add("g1"))
-        self.assertFalse(self.edj.group_add("gNEW"))
+        self.assertFalse(self.edj.group_add("new"))
+        new = edje.edit.EdjeEdit(self.canvas.evas, file="test.edj", group="new")
+        new.save()
+        self.assertTrue("new" in edje.file_collection_list("test.edj"))
+        self.assertTrue(self.edj.group_add("new2"))
         self.assertTrue(self.edj.group_add(""))
 
     def test_group_exist(self):
