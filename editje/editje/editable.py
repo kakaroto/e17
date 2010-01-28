@@ -112,9 +112,13 @@ class Editable(Manager, object):
     def _max_set(self, value):
         if self._max != value:
             w, h = value
-            if w < self._min[0]:
+            if w < 0:
+                w = 0
+            elif w < self._min[0]:
                 w = self._min[0]
-            if h < self._min[1]:
+            if h < 0:
+                h = 0
+            elif h < self._min[1]:
                 h = self._min[1]
             self._max = (w, h)
             self._edje_group.w_max = w
@@ -129,9 +133,13 @@ class Editable(Manager, object):
     def _min_set(self, value):
         if self._min != value:
             w, h = value
-            if w > self._max[0]:
+            if w < 0:
+                w = 0
+            elif w > self._max[0]:
                 w = self._max[0]
-            if h > self._max[1]:
+            if h < 0:
+                h = 0
+            elif h > self._max[1]:
                 h = self._max[1]
             self._min = (w, h)
             self._edje_group.w_min = w
