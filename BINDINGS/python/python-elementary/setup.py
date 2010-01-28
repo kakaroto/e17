@@ -71,7 +71,7 @@ headers = ['include/elementary/c_elementary.pxd',
 
 setup(
     name = 'python-elementary',
-    version = '0.1',
+    version = '0.2',
     license = 'LGPL',
     author = 'Simon Busch',
     author_email = 'morphis@gravedo.de',
