@@ -247,8 +247,6 @@ _elixir_ecore_con_client_get(JSContext *cx, Ecore_Con_Client *clt)
    data = ecore_con_client_data_get(clt);
    if (!data)
      {
-	elixir_debug_print("building Ecore_Con_Client %p", clt);
-
 	result = elixir_build_ptr(cx, clt, elixir_class_request("Ecore_Con_Client", NULL));
 	if (!result) return NULL;
 
@@ -1601,6 +1599,7 @@ static const struct {
   { "ECORE_CON_URL_TIME_IFMODSINCE", ECORE_CON_URL_TIME_IFMODSINCE },
   { "ECORE_CON_URL_TIME_IFUNMODSINCE", ECORE_CON_URL_TIME_IFUNMODSINCE },
   { "ECORE_CON_URL_TIME_LASTMOD", ECORE_CON_URL_TIME_LASTMOD },
+  { "ECORE_CON_REMOTE_UDP", ECORE_CON_REMOTE_UDP },
   { "ECORE_CON_REMOTE_NODELAY", ECORE_CON_REMOTE_NODELAY },
   { "ECORE_CON_REMOTE_TCP", ECORE_CON_REMOTE_TCP },
   { "ECORE_CON_REMOTE_MCAST", ECORE_CON_REMOTE_MCAST },
