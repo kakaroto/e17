@@ -26,7 +26,7 @@ These utilities include transition effects, timeline animators and more.
 """
 
 setup(name = 'python-efl-utils',
-      version = '0.1.4',
+      version = '0.2.0',
       license = 'LGPL',
       author='Gustavo Sverzut Barbieri',
       author_email='barbieri@gmail.com',

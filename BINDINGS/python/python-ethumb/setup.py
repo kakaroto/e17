@@ -112,7 +112,7 @@ class ethumb_build_ext(build_ext):
 
 
 setup(name='python-ethumb',
-      version='0.1',
+      version='0.2',
       license='LGPL',
       author='Rafael Antognolli',
       author_email='antognolli@profusion.mobi',
