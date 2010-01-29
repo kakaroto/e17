@@ -74,6 +74,9 @@ AC_SUBST(glew_libs)
 # Software SDL
 EXPEDITE_CHECK_ENGINE([software-sdl], [Software SDL], "yes")
 
+# GL SDL
+EXPEDITE_CHECK_ENGINE([opengl-sdl], [OpenGL SDL], "yes")
+
 # FB
 EXPEDITE_CHECK_ENGINE([fb], [Framebuffer], "yes")
 
@@ -166,7 +169,7 @@ fi
 
 # SDL
 
-if test "x$have_software_sdl" = "xyes"; then
+if test "x$have_software_sdl" = "xyes" -o "x$have_gl_sdl" = "xyes"; then
    PKG_CHECK_MODULES([SDL], [sdl], [have_sdl="yes"], [have_sdl="no"])
 fi
 AM_CONDITIONAL(BUILD_SDL, test "x$have_sdl" = "xyes")
@@ -255,6 +258,7 @@ echo "    Software DirectDraw..........: ${have_software_ddraw}"
 echo "    Direct3D.....................: ${have_direct3d}"
 echo "    Open GL Glew.................: ${have_opengl_glew}"
 echo "    Software SDL.................: ${have_software_sdl}"
+echo "    Open GL SDL..................: ${have_opengl_sdl}"
 echo "    FB...........................: ${have_fb}"
 echo "    DirectFB.....................: ${have_directfb}"
 echo "    Quartz.......................: ${have_quartz}"

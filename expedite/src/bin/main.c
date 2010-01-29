@@ -1268,6 +1268,13 @@ _engine_args(int argc, char **argv)
 	shutdown_func = engine_software_sdl_shutdown;
      }
 #endif
+#if HAVE_EVAS_OPENGL_SDL
+   if (engine_gl_sdl_args(argc, argv))
+     {
+	loop_func = engine_gl_sdl_loop;
+	shutdown_func = engine_gl_sdl_shutdown;
+     }
+#endif
 #if HAVE_EVAS_FB
    if (engine_fb_args(argc, argv))
      {
@@ -1358,6 +1365,9 @@ _engine_args(int argc, char **argv)
 #endif
 #if HAVE_EVAS_SOFTWARE_SDL
                " sdl sdl-16"
+#endif
+#if HAVE_EVAS_OPENGL_SDL
+               " gl-sdl"
 #endif
 #if HAVE_EVAS_FB
 	       	" fb"
