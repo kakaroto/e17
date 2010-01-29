@@ -329,8 +329,16 @@ main(int argc, char **argv)
    if (strstr(docdir, "/ABOUT"))
       show_top_bar = 0;
 
+   /* now we'll set the locale */
+   setlocale(LC_ALL, "");
+   if (!XSupportsLocale())
+      setlocale(LC_ALL, "C");
+   XSetLocaleModifiers("");
+   setlocale(LC_ALL, NULL);
+   /* I dont want any internationalisation of my numeric input & output */
+   setlocale(LC_NUMERIC, "C");
+
    sprintf(s, "%s/%s", docdir, docfile);
-   findLocalizedFile(s);
 
    LoadFile(s, docfile);
 
@@ -339,16 +347,6 @@ main(int argc, char **argv)
 	printf("%s: Cannot open X display.\n", argv[0]);
 	exit(0);
      }
-
-   /* now we'll set the locale */
-   setlocale(LC_ALL, "");
-   if (!XSupportsLocale())
-      setlocale(LC_ALL, "C");
-   XSetLocaleModifiers("");
-   setlocale(LC_ALL, NULL);
-
-   /* I dont want any internationalisation of my numeric input & output */
-   setlocale(LC_NUMERIC, "C");
 
    VRootInit();
 
@@ -571,7 +569,6 @@ main(int argc, char **argv)
 				 if (exe[0] != '/')
 				   {
 				      sprintf(tmp, "%s/%s", docdir, exe);
-				      findLocalizedFile(tmp);
 				      exe = tmp;
 				   }
 				 p = popen(exe, "r");

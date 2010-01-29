@@ -32,10 +32,6 @@
 #define MAX(a,b)  ((a)>(b)?(a):(b))
 #endif
 
-#if defined(HAVE_WCTYPE_H) && defined(HAVE_WCHAR_T) && !defined(__FreeBSD__)
-#define USE_WORD_MB
-#endif
-
 #define USE_XFONT 0
 
 typedef struct _efont Efont;
@@ -99,11 +95,6 @@ void                TextDraw(TextState * ts, Window win, char *text,
 int                 exists(char *s);
 void                freestrlist(char **l, int num);
 void                word(char *s, int num, char *wd);
-
-#ifdef USE_WORD_MB
-void                word_mb(char *s, int num, char *wd, int *spaceflag);
-#endif
-int                 findLocalizedFile(char *fname);
 
 /* format.c */
 int                 GetObjects(FILE * f);
