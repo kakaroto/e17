@@ -111,9 +111,9 @@ class Editable(Manager, object):
         key = self._group + "@pref_size"
         data = self._edje.data_get(key)
         if not data:
-            self._edje.data_add(key, "300x300")
-            w = 300
-            h = 300
+            self._edje.data_add(key, "480x800")
+            w = 480
+            h = 800
         else:
             w, h = data.split("x")
             w = int(w)
