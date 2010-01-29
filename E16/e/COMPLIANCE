@@ -102,8 +102,8 @@ Application Window Properties
 [+] _NET_WM_ICON
 [-] _NET_WM_PID
 [-] _NET_WM_HANDLED_ICONS
-[-] _NET_WM_USER_TIME
-[-] _NET_WM_USER_TIME_WINDOW
+[/] _NET_WM_USER_TIME
+[/] _NET_WM_USER_TIME_WINDOW
 [+] _NET_FRAME_EXTENTS
 
 Window Manager Protocols

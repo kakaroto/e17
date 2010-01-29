@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2008 Kim Woelders
+ * Copyright (C) 2004-2010 Kim Woelders
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -223,6 +223,7 @@ extern unsigned int atoms_netwm[];
 #define ECORE_X_ATOM_NET_WM_ICON			atoms_netwm[56]
 
 #define ECORE_X_ATOM_NET_WM_USER_TIME			atoms_netwm[57]
+#define ECORE_X_ATOM_NET_WM_USER_TIME_WINDOW		atoms_netwm[58]
 
 #if 0				/* Not used */
 #define ECORE_X_ATOM_NET_WM_ICON_GEOMETRY		atoms_netwm[0]
@@ -231,27 +232,27 @@ extern unsigned int atoms_netwm[];
 
 #define ECORE_X_ATOM_NET_WM_PING			atoms_netwm[0]
 #endif
-#define ECORE_X_ATOM_NET_WM_SYNC_REQUEST		atoms_netwm[58]
-#define ECORE_X_ATOM_NET_WM_SYNC_REQUEST_COUNTER	atoms_netwm[59]
+#define ECORE_X_ATOM_NET_WM_SYNC_REQUEST		atoms_netwm[59]
+#define ECORE_X_ATOM_NET_WM_SYNC_REQUEST_COUNTER	atoms_netwm[60]
 
-#define ECORE_X_ATOM_NET_WM_WINDOW_OPACITY		atoms_netwm[60]
+#define ECORE_X_ATOM_NET_WM_WINDOW_OPACITY		atoms_netwm[61]
 
 /* Misc window ops */
-#define ECORE_X_ATOM_NET_CLOSE_WINDOW			atoms_netwm[61]
-#define ECORE_X_ATOM_NET_MOVERESIZE_WINDOW		atoms_netwm[62]
-#define ECORE_X_ATOM_NET_WM_MOVERESIZE			atoms_netwm[63]
-#define ECORE_X_ATOM_NET_RESTACK_WINDOW			atoms_netwm[64]
+#define ECORE_X_ATOM_NET_CLOSE_WINDOW			atoms_netwm[62]
+#define ECORE_X_ATOM_NET_MOVERESIZE_WINDOW		atoms_netwm[63]
+#define ECORE_X_ATOM_NET_WM_MOVERESIZE			atoms_netwm[64]
+#define ECORE_X_ATOM_NET_RESTACK_WINDOW			atoms_netwm[65]
 
 #if 0				/* Not yet implemented */
 #define ECORE_X_ATOM_NET_REQUEST_FRAME_EXTENTS		atoms_netwm[0]
 #endif
 
 /* Startup notification */
-#define ECORE_X_ATOM_NET_STARTUP_ID			atoms_netwm[65]
-#define ECORE_X_ATOM_NET_STARTUP_INFO_BEGIN		atoms_netwm[66]
-#define ECORE_X_ATOM_NET_STARTUP_INFO			atoms_netwm[67]
+#define ECORE_X_ATOM_NET_STARTUP_ID			atoms_netwm[66]
+#define ECORE_X_ATOM_NET_STARTUP_INFO_BEGIN		atoms_netwm[67]
+#define ECORE_X_ATOM_NET_STARTUP_INFO			atoms_netwm[68]
 
-#define CHECK_COUNT_NETWM 68
+#define CHECK_COUNT_NETWM 69
 
 void                ecore_x_netwm_init(void);
 

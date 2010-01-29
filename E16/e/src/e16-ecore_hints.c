@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2009 Kim Woelders
+ * Copyright (C) 2004-2010 Kim Woelders
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -786,6 +786,7 @@ static const char  *const atoms_netwm_names[] = {
    "_NET_WM_ICON",
 
    "_NET_WM_USER_TIME",
+   "_NET_WM_USER_TIME_WINDOW",
 
 #if 0				/* Not used */
    "_NET_WM_ICON_GEOMETRY",

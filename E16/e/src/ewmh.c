@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2003-2009 Kim Woelders
+ * Copyright (C) 2003-2010 Kim Woelders
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -170,6 +170,10 @@ EWMH_Init(Window win_wm_check)
    atom_list[atom_count++] = ECORE_X_ATOM_NET_WM_STRUT;
 
    atom_list[atom_count++] = ECORE_X_ATOM_NET_FRAME_EXTENTS;
+
+   atom_list[atom_count++] = ECORE_X_ATOM_NET_WM_USER_TIME;
+   atom_list[atom_count++] = ECORE_X_ATOM_NET_WM_USER_TIME_WINDOW;
+
    atom_list[atom_count++] = ECORE_X_ATOM_NET_WM_WINDOW_OPACITY;
 
    ecore_x_window_prop_atom_set(WinGetXwin(VROOT),
@@ -828,7 +832,9 @@ EWMH_ProcessPropertyChange(EWin * ewin, Atom atom_change)
      }
    if (atom_change == ECORE_X_ATOM_NET_WM_USER_TIME)
      {
+#if 0				/* Remove? */
 	EWMH_GetWindowUserTime(ewin);
+#endif
 	return 1;
      }
 
