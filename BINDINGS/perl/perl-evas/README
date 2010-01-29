@@ -1,7 +1,0 @@
-These are the Evas perl bindings. It requires:
-
-libimlib2
-libevas
-Imlib2 perl bindings
-
-muhri <muhri@muhri.net>

@@ -1,0 +1,134 @@
+Eina_Accessor *             T_PTR
+Eina_Bool                   T_IV
+Eina_Bool *                 T_PTR
+Eina_Iterator *             T_PTR
+Eina_List *                 T_PTR
+Elm_Flip_Mode               T_IV
+Elm_Genlist_Item *          T_PTR
+Elm_Genlist_Item_Class *    T_PTR
+Elm_Genlist_Item_Flags      T_IV
+Elm_Hover_Axis              T_IV
+Elm_Hoversel_Item           T_PTR
+Elm_Hoversel_Item *         T_PTROBJ
+Elm_Icon_Type               T_IV
+Elm_Icon_Type *             T_PTR
+Elm_Image_Orient            T_IV
+Elm_List_Item *             T_ELM_LIST
+Elm_List_Mode               T_PTR
+Elm_Map_Group_Class *       T_PTROBJ
+Elm_Map_Marker *            T_PTROBJ
+Elm_Map_Marker_Class *      T_PTROBJ
+Elm_Map_Zoom_Mode           T_IV
+Elm_Menu_Item *             T_PTROBJ
+Elm_Notify_Orient           T_IV
+Elm_Panel_Orient            T_IV
+Elm_Photocam_Zoom_Mode      T_IV
+Elm_Scroller_Policy         T_IV
+Elm_Slideshow_Item *        T_PTROBJ
+Elm_Text_Format             T_IV
+Elm_Toolbar_Item *          T_PTROBJ
+Elm_Win_Keyboard_Mode       T_IV
+Elm_Win_Type                T_IV
+Evas *                      T_PTR
+Evas_Angle                  T_IV
+Evas_Aspect_Control         T_IV
+Evas_Aspect_Control *       T_PTR
+Evas_Border_Fill_Mode       T_IV
+Evas_Button_Flags           T_IV 
+Evas_Callback_Type          T_IV
+Evas_Colorspace             T_IV
+Evas_Coord                  T_IV
+Evas_Coord *                T_PTR
+Evas_Cserve_Config *        T_PTR
+Evas_Cserve_Image_Cache *   T_PTR
+Evas_Cserve_Stats *         T_PTR
+Evas_Eingine_Info *         T_PTR
+Evas_Engine_Info *          T_PTR
+Evas_Font_Hinting_Flags     T_IV
+Evas_Font_Size              T_IV
+Evas_Font_Size *            T_PTR
+Evas_Image_Scale_Hint       T_IV
+Evas_Imaging_Font *         T_PTR
+Evas_Imaging_Image *        T_PTR
+Evas_Lock *                 T_PTR
+Evas_Map *                  T_PTR
+Evas_Modifier *             T_PTR
+Evas_Modifier_Mask          T_UV
+Evas_Native_Surface *       T_PTR
+Evas_Object *               T_EVAS_OBJECT
+Evas_Object_Box_Api *       T_PTR
+Evas_Object_Box_Data *      T_PTR
+Evas_Object_Box_Layout      T_PTR
+Evas_Object_Box_Option *    T_PTR
+Evas_Object_Pointer_Mode    T_IV
+Evas_Object_Table_Homogeneous_Mode    T_IV
+Evas_Pixel_Import_Source *  T_PTR
+Evas_Render_Op              T_IV
+Evas_Smart *                T_PTR
+Evas_Smart *                T_PTR
+Evas_Smart_Cb               T_PTR 
+Evas_Smart_Class *          T_PTR
+Evas_Text_Style_Type        T_IV
+Evas_Textblock_Cursor *     T_PTR
+Evas_Textblock_Style *      T_PTR
+Evas_Textblock_Text_Type    T_IV
+Evas_Transform *            T_PTR
+const Eina_List *           T_PTR
+const Elm_List_Item *       T_PTR
+const Elm_Menu_Item *       T_PTROBJ
+const Elm_Slideshow_Item_Class *    T_PTROBJ
+const Evas *                T_PTR
+const Evas_Lock *           T_PTR
+const Evas_Modifier *       T_PTR
+const Evas_Object *         T_EVAS_OBJECT
+const Evas_Textblock_Cursor *    T_PTR
+const char *                T_PV
+const char **               T_PV
+const void *                T_PTR
+double *                    T_PTR
+float *                     T_PTR
+int *                       T_PTR
+unsigned int *              T_PTR
+Ecore_Timer *               T_PTR
+
+################################################################################
+INPUT
+T_EVAS_OBJECT
+        if (!SvROK($arg)) {
+            $var = NULL;
+        }
+        else {
+            if (sv_derived_from($arg, \"${ntype}\")) {
+                IV tmp = SvIV((SV*)SvRV($arg));
+                $var = INT2PTR($type,tmp);
+            }
+            else {
+                Perl_croak(aTHX_ \"%s: %s is not of type %s\",
+                            ${$ALIAS?\q[GvNAME(CvGV(cv))]:\qq[\"$pname\"]},
+                            \"$var\", \"$ntype\");
+            }
+        }
+
+T_ELM_LIST
+        if (!SvROK($arg)) {
+            $var = NULL;
+        }
+        else {
+            if (sv_derived_from($arg, \"${ntype}\")) {
+                IV tmp = SvIV((SV*)SvRV($arg));
+                $var = INT2PTR($type,tmp);
+            }
+            else {
+                Perl_croak(aTHX_ \"%s: %s is not of type %s\",
+                            ${$ALIAS?\q[GvNAME(CvGV(cv))]:\qq[\"$pname\"]},
+                            \"$var\", \"$ntype\");
+            }
+        }
+    
+################################################################################
+OUTPUT
+T_EVAS_OBJECT
+        sv_setref_pv($arg, \"${ntype}\", (void*)$var);
+
+T_ELM_LIST
+        sv_setref_pv($arg, \"${ntype}\", (void*)$var);

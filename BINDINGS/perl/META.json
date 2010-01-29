@@ -1,0 +1,24 @@
+{
+   "resources" : {
+      "repository" : "http://github.com/aflott/libefl-perl",
+      "homepage" : "http://search.cpan.org/dist/EFL"
+   },
+   "meta-spec" : {
+      "version" : 1.4,
+      "url" : "http://module-build.sourceforge.net/META-spec-v1.4.html"
+   },
+   "generated_by" : "Dist::Zilla version 1.100160",
+   "version" : "0.501",
+   "name" : "EFL",
+   "author" : [
+      "Adam Flott <adam@npjh.com>"
+   ],
+   "license" : "lgpl",
+   "requires" : {
+      "perl" : "5.10.0",
+      "Test::More" : "0.83",
+      "Sub::Exporter" : "0"
+   },
+   "abstract" : "Perl bindings for the Enlightenment Foundation Libraries"
+}
+

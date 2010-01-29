@@ -1,0 +1,18 @@
+---
+abstract: 'Perl bindings for the Enlightenment Foundation Libraries'
+author:
+  - 'Adam Flott <adam@npjh.com>'
+generated_by: 'Dist::Zilla version 1.100160'
+license: lgpl
+meta-spec:
+  url: http://module-build.sourceforge.net/META-spec-v1.4.html
+  version: 1.4
+name: EFL
+requires:
+  Sub::Exporter: 0
+  Test::More: 0.83
+  perl: 5.10.0
+resources:
+  homepage: http://search.cpan.org/dist/EFL
+  repository: http://github.com/aflott/libefl-perl
+version: 0.501
