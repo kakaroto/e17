@@ -26,11 +26,7 @@ cdef class Group:
 
     def delete(self):
         """@rtype: bool"""
-        cdef unsigned char r
-        r = edje_edit_group_del(self.edje.obj)
-        if r == 0:
-            return False
-        return True
+        return False
 
     property w_min:
         def __get__(self):

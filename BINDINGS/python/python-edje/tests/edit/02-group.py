@@ -50,9 +50,9 @@ class Basics(unittest.TestCase):
         self.assertEqual(self.group.h_max, 1111)
 
     def test_delete(self):
-        self.assertTrue(self.edj.group_exist("main"))
-        self.assertTrue(self.group.delete())
-        self.assertFalse(self.edj.group_exist("main"))
+        self.assertTrue(self.edj.group_exist("g1"))
+        self.assertTrue(self.edj.group_del("g1"))
+        self.assertFalse(self.edj.group_exist("g1"))
 
 edje.file_cache_set(0)
 unittest.main()

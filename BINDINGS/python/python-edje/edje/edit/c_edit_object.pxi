@@ -35,6 +35,10 @@ cdef class EdjeEdit(edje.c_edje.Edje): # [object PyEdjeEdit, type PyEdjeEdit_Typ
             return False
         return True
 
+    def save_all(self):
+        """@rtype: bool"""
+        return bool(edje_edit_save_all(self.obj))
+
     def print_internal_status(self):
         edje_edit_print_internal_status(self.obj)
 
@@ -52,6 +56,10 @@ cdef class EdjeEdit(edje.c_edje.Edje): # [object PyEdjeEdit, type PyEdjeEdit_Typ
         if r == 0:
             return False
         return True
+
+    def group_del(self, char *name):
+        """@rtype: bool"""
+        return bool(edje_edit_group_del(self.obj, name))
 
     def group_exist(self, char *name):
         """@rtype: bool"""
