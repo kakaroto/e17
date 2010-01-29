@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2000-2007 Carsten Haitzler, Geoff Harrison and various contributors
- * Copyright (C) 2008 Kim Woelders
+ * Copyright (C) 2008-2010 Kim Woelders
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -21,10 +21,16 @@
  * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-#include "dox.h"
+#include "config.h"
+#include <stdlib.h>
+#include <string.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <unistd.h>
 #ifdef USE_WORD_MB
 # include <wctype.h>
 #endif
+#include "dox.h"
 
 int
 exists(char *s)
@@ -111,6 +117,7 @@ word(char *s, int num, char *wd)
 }
 
 #ifdef USE_WORD_MB
+#error
 void
 word_mb(char *s, int num, char *wd, int *spaceflag)
 {
@@ -264,6 +271,9 @@ word_mb(char *s, int num, char *wd, int *spaceflag)
 }
 #endif
 
+#ifdef HAVE_LOCALE_H
+#include <locale.h>
+#endif
 int
 findLocalizedFile(char *fname)
 {
