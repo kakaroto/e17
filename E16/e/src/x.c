@@ -1941,13 +1941,7 @@ EGetTimestamp(void)
 Pixmap
 EWindowGetPixmap(const Win win)
 {
-   XWindowAttributes   xwa;
-
-   if (XGetWindowAttributes(disp, win->xwin, &xwa) == 0 ||
-       xwa.map_state == IsUnmapped)
-      return None;
-
-   return XCompositeNameWindowPixmap(disp, WinGetXwin(win));
+   return (win->mapped) ? XCompositeNameWindowPixmap(disp, win->xwin) : None;
 }
 
 /*
