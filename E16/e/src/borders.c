@@ -876,7 +876,9 @@ BorderWinpartEventMouseDown(EWinBit * wbit, XEvent * ev)
    EWin               *ewin = wbit->ewin;
    int                 part = wbit - ewin->bits;
 
+#if 0				/* Remove? */
    GrabPointerSet(wbit->win, 0, 0);
+#endif
 
    wbit->state = STATE_CLICKED;
 #if DEBUG_BORDER_EVENTS
@@ -900,7 +902,9 @@ BorderWinpartEventMouseUp(EWinBit * wbit, XEvent * ev)
 
    if (ev)
      {
+#if 0				/* Remove? */
 	GrabPointerRelease();
+#endif
 	/*
 	 * During a move/resize operation initiated by a border part click
 	 * the ButtonRelease event may be reported on the border part window
