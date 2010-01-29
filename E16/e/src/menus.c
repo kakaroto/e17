@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2000-2007 Carsten Haitzler, Geoff Harrison and various contributors
- * Copyright (C) 2004-2009 Kim Woelders
+ * Copyright (C) 2004-2010 Kim Woelders
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -1837,7 +1837,15 @@ MenuStyleConfigLoad(FILE * fs)
 	     goto done;
 	  case CONFIG_CLASSNAME:
 	     ms = MenuStyleCreate(s2);
-	     break;
+	     continue;
+	  }
+
+	/* ms needed */
+	if (!ms)
+	   break;
+
+	switch (i1)
+	  {
 	  case CONFIG_TEXT:
 	     ms->tclass = TextclassAlloc(s2, 1);
 	     break;

@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2000-2007 Carsten Haitzler, Geoff Harrison and various contributors
- * Copyright (C) 2004-2009 Kim Woelders
+ * Copyright (C) 2004-2010 Kim Woelders
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -886,7 +886,6 @@ TextstateTextDraw(TextState * ts, Win win, Drawable draw, const char *text,
 	   textwidth_limit, textheight_limit, text);
 #endif
 
-   xx = x;
    yy = y;
 
    if (ts->ops->FdcInit(ts, win, draw))

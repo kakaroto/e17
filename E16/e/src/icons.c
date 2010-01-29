@@ -36,7 +36,7 @@ NetwmIconFindBestSize(unsigned int *val, unsigned int len, int size)
    int                 k = -1;
 
    sz = (unsigned int)size;
-   sj = sbest = 0;
+   sbest = 0;
    for (i = 0; i < len;)
      {
 	j = i;

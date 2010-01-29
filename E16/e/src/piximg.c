@@ -368,7 +368,7 @@ PixImgBlend(PixImg * s1, PixImg * s2, PixImg * dst, Drawable draw, GC gc,
 			  pptr3 = (unsigned short *)ptr3;
 			  pp1 = *pptr1;
 			  pp2 = *pptr2;
-			  *pptr3++ =
+			  *pptr3 =
 			     ((pp1 >> 1) &
 			      ((0x78 << 7) | (0x78 << 2) | (0x78 >> 3)))
 			     +

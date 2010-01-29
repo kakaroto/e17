@@ -178,11 +178,10 @@ static int
 BorderWinpartDraw(EWin * ewin, int i)
 {
    EWinBit            *ewb = &ewin->bits[i];
-   int                 move = 0, resize = 0, ret = 0;
+   int                 resize = 0, ret = 0;
 
    if ((ewb->x != ewb->cx) || (ewb->y != ewb->cy))
      {
-	move = 1;
 	ewb->cx = ewb->x;
 	ewb->cy = ewb->y;
 	ret = 1;
@@ -1388,13 +1387,12 @@ BorderGetFallback(void)
     * least E won't barf on us then.
     */
    Border             *b;
-   ActionClass        *ac;
 
    b = BorderFind("__fb_bd");
    if (b)
       return b;
 
-   ac = BorderGetFallbackAclass();	/* Creates the fallback ac */
+   BorderGetFallbackAclass();	/* Creates the fallback ac */
 
    /* Create fallback border */
    b = BorderCreate("__fb_bd");

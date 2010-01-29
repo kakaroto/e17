@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2000-2007 Carsten Haitzler, Geoff Harrison and various contributors
- * Copyright (C) 2007 Kim Woelders
+ * Copyright (C) 2007-2010 Kim Woelders
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -49,7 +49,7 @@ E_ls(const char *dir, int *num)
 	return NULL;
      }
    /* count # of entries in dir (worst case) */
-   for (dirlen = 0; (dp = readdir(dirp)) != NULL; dirlen++)
+   for (dirlen = 0; readdir(dirp); dirlen++)
       ;
    if (!dirlen)
      {

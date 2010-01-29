@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2000-2007 Carsten Haitzler, Geoff Harrison and various contributors
- * Copyright (C) 2004-2009 Kim Woelders
+ * Copyright (C) 2004-2010 Kim Woelders
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -502,8 +502,10 @@ MenuCreateFromBorders(const char *name, MenuStyle * ms)
    MenuSetTitle(m, _("Border"));
 
    lst = BordersGetList(&num);
-   if (lst)
-      Quicksort((void **)lst, 0, num - 1, BorderNameCompare);
+   if (!lst)
+      return m;
+
+   Quicksort((void **)lst, 0, num - 1, BorderNameCompare);
    for (i = 0; i < num; i++)
      {
 	/* if its not internal (ie doesnt start with _ ) */

@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2000-2007 Carsten Haitzler, Geoff Harrison and various contributors
- * Copyright (C) 2004-2009 Kim Woelders
+ * Copyright (C) 2004-2010 Kim Woelders
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -1030,7 +1030,6 @@ GroupsConfigure(const char *params)
    l = 0;
    s[0] = '\0';
    sscanf(p, "%100s %n", s, &l);
-   p += l;
 
    ewin = GetContextEwin();
 
@@ -1104,7 +1103,7 @@ IPC_GroupInfo(const char *params)
 static void
 IPC_GroupOps(const char *params)
 {
-   Group              *group = Mode_groups.current;
+   Group              *group;
    char                windowid[128];
    char                operation[128];
    char                groupid[128];

@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2000-2007 Carsten Haitzler, Geoff Harrison and various contributors
- * Copyright (C) 2004-2008 Kim Woelders
+ * Copyright (C) 2004-2010 Kim Woelders
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -724,7 +724,6 @@ ArrangeGetRectList(RectBox ** pfixed, int *nfixed, RectBox ** pfloating,
    fixed = EMALLOC(RectBox, num);
    if (!fixed)
       goto done;
-   rb = fixed;
 
    dsk = (ewin) ? EoGetDesk(ewin) : DesksGetCurrent();
 
@@ -845,14 +844,13 @@ ArrangeGetRectList(RectBox ** pfixed, int *nfixed, RectBox ** pfloating,
 void
 ArrangeEwinXY(EWin * ewin, int *px, int *py)
 {
-   EWin               *const *lst;
    int                 i, num;
    RectBox            *fixed, *ret, newrect;
 
    fixed = NULL;
    ret = NULL;
 
-   lst = EwinListGetAll(&num);
+   EwinListGetAll(&num);
    if (num <= 1)
      {
 	ArrangeEwinCenteredXY(ewin, px, py);

@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2000-2007 Carsten Haitzler, Geoff Harrison and various contributors
- * Copyright (C) 2004-2009 Kim Woelders
+ * Copyright (C) 2004-2010 Kim Woelders
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -670,39 +670,37 @@ DialogAddHeader(Dialog * d __UNUSED__, DItem * parent, const char *img,
    di = DialogAddItem(table, DITEM_TEXT);
    DialogItemSetText(di, txt);
 
-   di = DialogAddItem(parent, DITEM_SEPARATOR);
+   DialogAddItem(parent, DITEM_SEPARATOR);
 }
 
 static void
 DialogAddFooter(Dialog * d, DItem * parent, int flags, DialogCallbackFunc * cb)
 {
-   DItem              *table, *di;
+   DItem              *table;
    int                 n_buttons;
 
    if (!(flags & DLG_NO_SEPARATOR))
-      di = DialogAddItem(parent, DITEM_SEPARATOR);
+      DialogAddItem(parent, DITEM_SEPARATOR);
 
    table = DialogAddItem(parent, DITEM_TABLE);
    DialogItemSetAlign(table, 512, 0);
    DialogItemSetFill(table, 0, 0);
 
-   /* FIXME - The "real" dialog buttons are slightly different */
    n_buttons = 0;
    if (flags & 1)
      {
-	di = DialogItemAddButton(table, _("OK"), cb, 0, 1, DLG_BUTTON_OK);
+	DialogItemAddButton(table, _("OK"), cb, 0, 1, DLG_BUTTON_OK);
 	n_buttons++;
      }
    if (flags & 2)
      {
-	di = DialogItemAddButton(table, _("Apply"), cb, 1, 0, DLG_BUTTON_APPLY);
+	DialogItemAddButton(table, _("Apply"), cb, 1, 0, DLG_BUTTON_APPLY);
 	DialogBindKey(d, "Return", cb, 1, NULL);
 	n_buttons++;
      }
    if (flags & 4)
      {
-	di =
-	   DialogItemAddButton(table, _("Close"), NULL, 0, 1, DLG_BUTTON_CLOSE);
+	DialogItemAddButton(table, _("Close"), NULL, 0, 1, DLG_BUTTON_CLOSE);
 	DialogBindKey(d, "Escape", DialogCallbackClose, 0, NULL);
 	n_buttons++;
      }

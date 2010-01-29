@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2009 Kim Woelders
+ * Copyright (C) 2004-2010 Kim Woelders
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -89,7 +89,6 @@ static int
 _FontConfigLoad(FILE * fs)
 {
    int                 err = 0;
-   FontAlias          *fa;
    char                s[FILEPATH_LEN_MAX];
    char                s1[128], *p2;
    int                 i2;
@@ -106,7 +105,7 @@ _FontConfigLoad(FILE * fs)
 	   continue;
 	if (strncmp(s, "font-", 5))
 	   continue;
-	fa = FontAliasCreate(s1, p2);
+	FontAliasCreate(s1, p2);
      }
 
    return err;

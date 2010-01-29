@@ -2530,7 +2530,7 @@ _DlgFillAreas(Dialog * d, DItem * table, void *data __UNUSED__)
    table2 = DialogAddItem(table, DITEM_TABLE);
    DialogItemTableSetOptions(table2, 2, 0, 0, 0);
 
-   di = DialogAddItem(table2, DITEM_NONE);
+   DialogAddItem(table2, DITEM_NONE);
 
    di = slider = DialogAddItem(table2, DITEM_SLIDER);
    DialogItemSliderSetMinLength(di, 10);
@@ -2555,13 +2555,13 @@ _DlgFillAreas(Dialog * d, DItem * table, void *data __UNUSED__)
    DialogItemSetCallback(slider, CB_AreaDisplayRedraw, 0, di);
    DialogItemSetCallback(slider2, CB_AreaDisplayRedraw, 0, di);
 
-   di = DialogAddItem(table, DITEM_SEPARATOR);
+   DialogAddItem(table, DITEM_SEPARATOR);
 
    di = DialogAddItem(table, DITEM_CHECKBUTTON);
    DialogItemSetText(di, _("Wrap virtual desktops around"));
    DialogItemCheckButtonSetPtr(di, &dd->area_wraparound);
 
-   di = DialogAddItem(table, DITEM_SEPARATOR);
+   DialogAddItem(table, DITEM_SEPARATOR);
 
    di = DialogAddItem(table, DITEM_TEXT);
    DialogItemSetAlign(di, 0, 512);

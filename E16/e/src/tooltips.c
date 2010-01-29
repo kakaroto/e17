@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2000-2007 Carsten Haitzler, Geoff Harrison and various contributors
- * Copyright (C) 2004-2009 Kim Woelders
+ * Copyright (C) 2004-2010 Kim Woelders
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -327,29 +327,24 @@ TooltipShow(ToolTip * tt, const char *text, ActionClass * ac, int x, int y)
 		switch (ActionGetButton(aa))
 		  {
 		  case 1:
-		     ic = TooltipCreateIclass("TOOLTIP_MOUSEBUTTON_1",
-					      "pix/mouse_1.png", &cols[1],
-					      &temp_h);
+		     TooltipCreateIclass("TOOLTIP_MOUSEBUTTON_1",
+					 "pix/mouse_1.png", &cols[1], &temp_h);
 		     break;
 		  case 2:
-		     ic = TooltipCreateIclass("TOOLTIP_MOUSEBUTTON_2",
-					      "pix/mouse_2.png", &cols[1],
-					      &temp_h);
+		     TooltipCreateIclass("TOOLTIP_MOUSEBUTTON_2",
+					 "pix/mouse_2.png", &cols[1], &temp_h);
 		     break;
 		  case 3:
-		     ic = TooltipCreateIclass("TOOLTIP_MOUSEBUTTON_3",
-					      "pix/mouse_3.png", &cols[1],
-					      &temp_h);
+		     TooltipCreateIclass("TOOLTIP_MOUSEBUTTON_3",
+					 "pix/mouse_3.png", &cols[1], &temp_h);
 		     break;
 		  case 4:
-		     ic = TooltipCreateIclass("TOOLTIP_MOUSEBUTTON_4",
-					      "pix/mouse_4.png", &cols[1],
-					      &temp_h);
+		     TooltipCreateIclass("TOOLTIP_MOUSEBUTTON_4",
+					 "pix/mouse_4.png", &cols[1], &temp_h);
 		     break;
 		  case 5:
-		     ic = TooltipCreateIclass("TOOLTIP_MOUSEBUTTON_5",
-					      "pix/mouse_5.png", &cols[1],
-					      &temp_h);
+		     TooltipCreateIclass("TOOLTIP_MOUSEBUTTON_5",
+					 "pix/mouse_5.png", &cols[1], &temp_h);
 		     break;
 		  case 0:
 		  default:
@@ -360,37 +355,30 @@ TooltipShow(ToolTip * tt, const char *text, ActionClass * ac, int x, int y)
 	     if (modifiers)
 	       {
 		  if (modifiers & ShiftMask)
-		     ic = TooltipCreateIclass("TOOLTIP_KEY_SHIFT",
-					      "pix/key_shift.png",
-					      &cols[2], &temp_h);
+		     TooltipCreateIclass("TOOLTIP_KEY_SHIFT",
+					 "pix/key_shift.png",
+					 &cols[2], &temp_h);
 		  if (modifiers & LockMask)
-		     ic = TooltipCreateIclass("TOOLTIP_KEY_LOCK",
-					      "pix/key_lock.png",
-					      &cols[3], &temp_h);
+		     TooltipCreateIclass("TOOLTIP_KEY_LOCK",
+					 "pix/key_lock.png", &cols[3], &temp_h);
 		  if (modifiers & ControlMask)
-		     ic = TooltipCreateIclass("TOOLTIP_KEY_CTRL",
-					      "pix/key_ctrl.png",
-					      &cols[4], &temp_h);
+		     TooltipCreateIclass("TOOLTIP_KEY_CTRL",
+					 "pix/key_ctrl.png", &cols[4], &temp_h);
 		  if (modifiers & Mod1Mask)
-		     ic = TooltipCreateIclass("TOOLTIP_KEY_MOD1",
-					      "pix/key_mod1.png",
-					      &cols[5], &temp_h);
+		     TooltipCreateIclass("TOOLTIP_KEY_MOD1",
+					 "pix/key_mod1.png", &cols[5], &temp_h);
 		  if (modifiers & Mod2Mask)
-		     ic = TooltipCreateIclass("TOOLTIP_KEY_MOD2",
-					      "pix/key_mod2.png",
-					      &cols[6], &temp_h);
+		     TooltipCreateIclass("TOOLTIP_KEY_MOD2",
+					 "pix/key_mod2.png", &cols[6], &temp_h);
 		  if (modifiers & Mod3Mask)
-		     ic = TooltipCreateIclass("TOOLTIP_KEY_MOD3",
-					      "pix/key_mod3.png",
-					      &cols[7], &temp_h);
+		     TooltipCreateIclass("TOOLTIP_KEY_MOD3",
+					 "pix/key_mod3.png", &cols[7], &temp_h);
 		  if (modifiers & Mod4Mask)
-		     ic = TooltipCreateIclass("TOOLTIP_KEY_MOD4",
-					      "pix/key_mod4.png",
-					      &cols[8], &temp_h);
+		     TooltipCreateIclass("TOOLTIP_KEY_MOD4",
+					 "pix/key_mod4.png", &cols[8], &temp_h);
 		  if (modifiers & Mod5Mask)
-		     ic = TooltipCreateIclass("TOOLTIP_KEY_MOD5",
-					      "pix/key_mod5.png",
-					      &cols[9], &temp_h);
+		     TooltipCreateIclass("TOOLTIP_KEY_MOD5",
+					 "pix/key_mod5.png", &cols[9], &temp_h);
 	       }
 
 	     temp_w = cols[0] + cols[1] + cols[2] + cols[3] + cols[4] +
@@ -417,8 +405,6 @@ TooltipShow(ToolTip * tt, const char *text, ActionClass * ac, int x, int y)
    if (tt->tooltippic)
      {
 	im = ImageclassGetImage(tt->tooltippic, 0, 0, 0);
-	ix = 0;
-	iy = 0;
 	if (im)
 	  {
 	     EImageGetSize(im, &iw, &ih);

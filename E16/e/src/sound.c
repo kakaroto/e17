@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2000-2007 Carsten Haitzler, Geoff Harrison and various contributors
- * Copyright (C) 2004-2009 Kim Woelders
+ * Copyright (C) 2004-2010 Kim Woelders
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -335,7 +335,6 @@ static int
 _SoundConfigParse(FILE * fs)
 {
    int                 err = 0;
-   SoundClass         *sc;
    char                s[FILEPATH_LEN_MAX];
    char                s1[FILEPATH_LEN_MAX];
    char                s2[FILEPATH_LEN_MAX];
@@ -355,7 +354,7 @@ _SoundConfigParse(FILE * fs)
 	     Eprintf("*** Ignoring line: %s\n", s);
 	     continue;
 	  }
-	sc = SclassCreate(s1, s2);
+	SclassCreate(s1, s2);
      }
 #if 0				/* Errors here are just ignored */
    if (err)

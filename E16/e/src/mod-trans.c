@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2004-2007 Jaron Omega
- * Copyright (C) 2004-2009 Kim Woelders
+ * Copyright (C) 2004-2010 Kim Woelders
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -141,7 +141,7 @@ _DlgFillThemeTrans(Dialog * d, DItem * table, void *data __UNUSED__)
    di = DialogAddItem(table, DITEM_SEPARATOR);
    DialogItemSetColSpan(di, 7);
 
-   di = DialogAddItem(table, DITEM_NONE);
+   DialogAddItem(table, DITEM_NONE);
 
    di = DialogAddItem(table, DITEM_TEXT);
    DialogItemSetAlign(di, 0, 512);

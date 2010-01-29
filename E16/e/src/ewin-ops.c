@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2000-2007 Carsten Haitzler, Geoff Harrison and various contributors
- * Copyright (C) 2004-2009 Kim Woelders
+ * Copyright (C) 2004-2010 Kim Woelders
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -814,24 +814,15 @@ EwinInstantUnShade(EWin * ewin)
 
    x = EoGetX(ewin);
    y = EoGetY(ewin);
-   w = EoGetW(ewin);
-   h = EoGetH(ewin);
 
    switch (ewin->border->shadedir)
      {
      default:
-     case 0:
-	w = ewin->client.w + ewin->border->border.left +
-	   ewin->border->border.right;
 	break;
      case 1:
 	w = ewin->client.w + ewin->border->border.left +
 	   ewin->border->border.right;
 	x = x + EoGetW(ewin) - w;
-	break;
-     case 2:
-	h = ewin->client.h + ewin->border->border.top +
-	   ewin->border->border.bottom;
 	break;
      case 3:
 	h = ewin->client.h + ewin->border->border.top +

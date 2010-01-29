@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2000-2007 Carsten Haitzler, Geoff Harrison and various contributors
- * Copyright (C) 2004-2009 Kim Woelders
+ * Copyright (C) 2004-2010 Kim Woelders
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -44,12 +44,12 @@ void
 SkipTillEnd(FILE * fs)
 {
    char                s[FILEPATH_LEN_MAX];
-   int                 i1, i2, fields;
+   int                 i1, i2;
 
    while (GetLine(s, sizeof(s), fs))
      {
 	i1 = i2 = 0;
-	fields = sscanf(s, "%i %i", &i1, &i2);
+	sscanf(s, "%i %i", &i1, &i2);
 	if (i1 == CONFIG_CLOSE)
 	   return;
 	if (i2 == CONFIG_OPEN)

@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2000-2007 Carsten Haitzler, Geoff Harrison and various contributors
- * Copyright (C) 2004-2008 Kim Woelders
+ * Copyright (C) 2004-2010 Kim Woelders
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -351,8 +351,6 @@ ShowAlert(const char *title,
      }
    mh += 10;
 
-   w = (wid - ww) / 2;
-   h = (hih - hh) / 2;
    if (str1 && sscanf(str1, "%s", line) > 0)
      {
 	w = 5 + (((ww - 20 - mh) * 0) / 4);

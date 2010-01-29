@@ -303,10 +303,11 @@ AclassConfigLoad(FILE * fs)
 	     key[0] = '\0';
 	     break;
 	  case CONFIG_CLOSE:
-	     ac->tooltipstring =
-		(aclass_tooltipstring) ? Estrdup((aclass_tooltipstring[0]) ?
-						 aclass_tooltipstring :
-						 "?!?") : NULL;
+	     if (ac)
+		ac->tooltipstring =
+		   (aclass_tooltipstring) ? Estrdup((aclass_tooltipstring[0]) ?
+						    aclass_tooltipstring :
+						    "?!?") : NULL;
 	     err = 0;
 	     goto done;
 
@@ -609,7 +610,7 @@ ActionEncode(Action * aa, char *buf, int len)
       *p++ = '5';
    if (p == mod)
       *p++ = '-';
-   *p++ = '\0';
+   *p = '\0';
 
    switch (aa->event)
      {
@@ -830,7 +831,7 @@ AclassConfigWrite(const ActionClass * ac, void (*prf) (const char *fmt, ...))
    prf("Aclass %s %s\n", ac->name, (ac->global)? "global" : "normal");
    if (ac->tooltipstring)
      {
-	len = AclassEncodeTT(ac->tooltipstring, s, sizeof(s));
+	AclassEncodeTT(ac->tooltipstring, s, sizeof(s));
 	prf(s);
      }
    for (i = 0; i < ac->num; i++)
@@ -842,7 +843,7 @@ AclassConfigWrite(const ActionClass * ac, void (*prf) (const char *fmt, ...))
 	prf(s);
 	if (aa->tooltipstring)
 	  {
-	     len = AclassEncodeTT(aa->tooltipstring, s, sizeof(s));
+	     AclassEncodeTT(aa->tooltipstring, s, sizeof(s));
 	     prf(s);
 	  }
      }
@@ -854,10 +855,9 @@ static void
 _ac_prf(const char *fmt, ...)
 {
    va_list             args;
-   int                 len;
 
    va_start(args, fmt);
-   len = vfprintf(_ac_fs, fmt, args);
+   vfprintf(_ac_fs, fmt, args);
    va_end(args);
 }
 

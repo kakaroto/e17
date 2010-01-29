@@ -863,12 +863,13 @@ int
 EWMH_ProcessClientClientMessage(EWin * ewin, XClientMessageEvent * ev)
 {
    int                 source;
-   Time                ts;
+
+/* Time                ts; */
 
    if (ev->message_type == ECORE_X_ATOM_NET_ACTIVE_WINDOW)
      {
 	source = OPSRC(ev->data.l[0]);
-	ts = ev->data.l[1];
+/*	ts = ev->data.l[1]; */
 /*	cwin = ev->data.l[2]; */
 	EwinOpActivate(ewin, source, 1);
 	return 1;

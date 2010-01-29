@@ -520,7 +520,7 @@ _ecore_list_first_remove(Ecore_List * list)
    if (list->current == old)
       list->current = list->first;
    else
-      (list->index ? list->index-- : 0);
+      list->index--;
 
    if (list->last == old)
       list->last = list->first;

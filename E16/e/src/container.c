@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2000-2007 Carsten Haitzler, Geoff Harrison and various contributors
- * Copyright (C) 2004-2009 Kim Woelders
+ * Copyright (C) 2004-2010 Kim Woelders
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -418,11 +418,12 @@ ContainerLayoutImageWin(Container * ct)
 	item_pad = 2;
      }
 
+   pad = (ct->ic_box) ? ImageclassGetPadding(ct->ic_box) : NULL;
+
    xo = 0;
    yo = 0;
-   if (ct->ic_box)
+   if (pad)
      {
-	pad = ImageclassGetPadding(ct->ic_box);
 	xo += pad->left;
 	yo += pad->top;
      }
@@ -484,9 +485,8 @@ ContainerLayoutImageWin(Container * ct)
 	   xo += cto->wo + item_pad;
      }
 
-   if (ct->ic_box)
+   if (pad)
      {
-	pad = ImageclassGetPadding(ct->ic_box);
 	xo += pad->right;
 	yo += pad->bottom;
      }
@@ -499,7 +499,7 @@ ContainerLayoutImageWin(Container * ct)
    if (ct->orientation)
      {
 	ct->iwin_fixh = ct->iconsize;
-	if (ct->ic_box)
+	if (pad)
 	   ct->iwin_fixh += pad->left + pad->right;
 	if (ct->draw_icon_base)
 	   ct->iwin_fixh += padl + padr;
@@ -508,7 +508,7 @@ ContainerLayoutImageWin(Container * ct)
    else
      {
 	ct->iwin_fixh = ct->iconsize;
-	if (ct->ic_box)
+	if (pad)
 	   ct->iwin_fixh += pad->top + pad->bottom;
 	if (ct->draw_icon_base)
 	   ct->iwin_fixh += padt + padb;
@@ -1573,7 +1573,7 @@ _DlgFillContainer(Dialog * d, DItem * table, void *data)
    DialogItemSliderSetJump(di, 8);
    DialogItemSliderSetValPtr(di, &dd->autoresize_anchor);
 
-   di = DialogAddItem(table, DITEM_SEPARATOR);
+   DialogAddItem(table, DITEM_SEPARATOR);
 
    label = di = DialogAddItem(table, DITEM_TEXT);
    DialogItemSetFill(di, 0, 0);
@@ -1588,7 +1588,7 @@ _DlgFillContainer(Dialog * d, DItem * table, void *data)
    DialogItemSliderSetValPtr(di, &dd->iconsize);
    DialogItemSetCallback(di, CB_IconSizeSlider, 0, label);
 
-   di = DialogAddItem(table, DITEM_SEPARATOR);
+   DialogAddItem(table, DITEM_SEPARATOR);
 
    table2 = DialogAddItem(table, DITEM_TABLE);
    DialogItemTableSetOptions(table2, 5, 0, 0, 0);
@@ -1609,8 +1609,8 @@ _DlgFillContainer(Dialog * d, DItem * table, void *data)
    DialogItemRadioButtonGroupSetVal(di, 1);
    DialogItemRadioButtonGroupSetValPtr(radio, &dd->vert);
 
-   di = DialogAddItem(table2, DITEM_NONE);
-   di = DialogAddItem(table2, DITEM_NONE);
+   DialogAddItem(table2, DITEM_NONE);
+   DialogAddItem(table2, DITEM_NONE);
 
    di = DialogAddItem(table2, DITEM_TEXT);
    DialogItemSetFill(di, 0, 0);
@@ -1628,8 +1628,8 @@ _DlgFillContainer(Dialog * d, DItem * table, void *data)
    DialogItemRadioButtonGroupSetVal(di, 1);
    DialogItemRadioButtonGroupSetValPtr(radio, &dd->side);
 
-   di = DialogAddItem(table2, DITEM_NONE);
-   di = DialogAddItem(table2, DITEM_NONE);
+   DialogAddItem(table2, DITEM_NONE);
+   DialogAddItem(table2, DITEM_NONE);
 
    di = DialogAddItem(table2, DITEM_TEXT);
    DialogItemSetFill(di, 0, 0);
@@ -1657,7 +1657,7 @@ _DlgFillContainer(Dialog * d, DItem * table, void *data)
    DialogItemRadioButtonGroupSetVal(di, 3);
    DialogItemRadioButtonGroupSetValPtr(radio, &dd->arrows);
 
-   di = DialogAddItem(table, DITEM_SEPARATOR);
+   DialogAddItem(table, DITEM_SEPARATOR);
 
    if (ct->type == IB_TYPE_ICONBOX)
      {
@@ -1700,7 +1700,7 @@ _DlgFillContainer(Dialog * d, DItem * table, void *data)
 	DialogItemSliderSetJump(di, 50);
 	DialogItemSliderSetValPtr(di, &dd->anim_speed);
 
-	di = DialogAddItem(table, DITEM_SEPARATOR);
+	DialogAddItem(table, DITEM_SEPARATOR);
 
 	di = DialogAddItem(table, DITEM_TEXT);
 	DialogItemSetFill(di, 0, 0);

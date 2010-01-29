@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2000-2007 Carsten Haitzler, Geoff Harrison and various contributors
- * Copyright (C) 2004-2009 Kim Woelders
+ * Copyright (C) 2004-2010 Kim Woelders
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -145,7 +145,7 @@ _DlgFillMoveResize(Dialog * d __UNUSED__, DItem * table, void *data __UNUSED__)
    DialogItemRadioButtonGroupSetVal(di, 5);
    DialogItemRadioButtonGroupSetValPtr(radio1, &dd->move);
 
-   di = DialogAddItem(table, DITEM_NONE);
+   DialogAddItem(table, DITEM_NONE);
 
    di = DialogAddItem(table, DITEM_CHECKBUTTON);
    DialogItemSetColSpan(di, 2);
@@ -395,7 +395,7 @@ _DlgFillPlacement(Dialog * d __UNUSED__, DItem * table, void *data __UNUSED__)
    DialogItemRadioButtonGroupSetVal(di, 4);
    DialogItemRadioButtonGroupSetValPtr(radio, &dd->slide_mode);
 
-   di = DialogAddItem(table, DITEM_NONE);
+   DialogAddItem(table, DITEM_NONE);
 
    di = DialogAddItem(table, DITEM_TEXT);
    DialogItemSetFill(di, 0, 0);

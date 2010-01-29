@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2000-2007 Carsten Haitzler, Geoff Harrison and various contributors
- * Copyright (C) 2004-2009 Kim Woelders
+ * Copyright (C) 2004-2010 Kim Woelders
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -1083,8 +1083,8 @@ BackgroundsConfigLoad(FILE * fs)
 	  {
 	  case CONFIG_CLOSE:
 	     if (!ignore && !bg && name)
-		bg = BackgroundCreate(name, color, bg1, i1, i2, i3, i4, i5,
-				      i6, bg2, j1, j2, j3, j4, j5);
+		BackgroundCreate(name, color, bg1, i1, i2, i3, i4, i5,
+				 i6, bg2, j1, j2, j3, j4, j5);
 	     goto done;
 
 	  case CONFIG_COLORMOD:
@@ -1137,7 +1137,7 @@ BackgroundsConfigLoad(FILE * fs)
 	     r = g = b = 0;
 	     sscanf(s, "%*s %d %d %d", &r, &g, &b);
 	     COLOR32_FROM_RGB(color, r, g, b);
-	     if (ignore)
+	     if (bg && ignore)
 		bg->bg_solid = color;
 	     break;
 
@@ -1149,7 +1149,7 @@ BackgroundsConfigLoad(FILE * fs)
 		  Efree(bg1);
 		  bg1 = Estrdup(s2);
 	       }
-	     else
+	     else if (bg)
 	       {
 		  Efree(bg->bg.file);
 		  Efree(bg->top.file);
@@ -1172,7 +1172,7 @@ BackgroundsConfigLoad(FILE * fs)
 		  Efree(bg2);
 		  bg2 = Estrdup(s2);
 	       }
-	     else
+	     else if (bg)
 	       {
 		  bg->top.file = Estrdup(s2);
 		  bg->top.keep_aspect = j1;
@@ -2035,7 +2035,7 @@ _DlgFillBackground(Dialog * d, DItem * table, void *data)
    table3 = DialogAddItem(table2, DITEM_TABLE);
    DialogItemTableSetOptions(table3, 3, 0, 0, 0);
 
-   di = DialogAddItem(table3, DITEM_NONE);
+   DialogAddItem(table3, DITEM_NONE);
 
    di = tmp_w[6] = DialogAddItem(table3, DITEM_SLIDER);
    DialogItemSliderSetMinLength(di, 10);
@@ -2044,7 +2044,7 @@ _DlgFillBackground(Dialog * d, DItem * table, void *data)
    DialogItemSliderSetJump(di, 64);
    DialogItemSliderSetValPtr(di, &tmp_bg_xjust);
 
-   di = DialogAddItem(table3, DITEM_NONE);
+   DialogAddItem(table3, DITEM_NONE);
 
    di = tmp_w[7] = DialogAddItem(table3, DITEM_SLIDER);
    DialogItemSliderSetMinLength(di, 10);
@@ -2070,7 +2070,7 @@ _DlgFillBackground(Dialog * d, DItem * table, void *data)
    DialogItemSliderSetJump(di, 64);
    DialogItemSliderSetValPtr(di, &tmp_bg_yperc);
 
-   di = DialogAddItem(table3, DITEM_NONE);
+   DialogAddItem(table3, DITEM_NONE);
 
    di = tmp_w[9] = DialogAddItem(table3, DITEM_SLIDER);
    DialogItemSliderSetMinLength(di, 10);
@@ -2124,7 +2124,7 @@ _DlgFillBackground(Dialog * d, DItem * table, void *data)
    for (i = 0; i < 10; i++)
       DialogItemSetCallback(tmp_w[i], CB_DesktopMiniDisplayRedraw, 0, area);
 
-   di = DialogAddItem(table, DITEM_SEPARATOR);
+   DialogAddItem(table, DITEM_SEPARATOR);
 
    table2 = DialogAddItem(table, DITEM_TABLE);
    DialogItemTableSetOptions(table2, 3, 0, 0, 0);
@@ -2182,7 +2182,7 @@ _DlgFillBackground(Dialog * d, DItem * table, void *data)
    DialogItemSliderSetValPtr(di, &tmp_bg_sel_sliderval);
    DialogItemSetCallback(bg_sel_slider, CB_BGAreaSlide, 0, NULL);
 
-   di = DialogAddItem(table, DITEM_SEPARATOR);
+   DialogAddItem(table, DITEM_SEPARATOR);
 
    di = DialogAddItem(table, DITEM_CHECKBUTTON);
    DialogItemSetText(di, _("Use dithering in Hi-Colour"));
@@ -2197,7 +2197,7 @@ _DlgFillBackground(Dialog * d, DItem * table, void *data)
 		     _("Enable background transparency compatibility mode"));
    DialogItemCheckButtonSetPtr(di, &tmp_root_hint);
 
-   di = DialogAddItem(table, DITEM_SEPARATOR);
+   DialogAddItem(table, DITEM_SEPARATOR);
 
    di = label = DialogAddItem(table, DITEM_TEXT);
    DialogItemSetAlign(di, 512, 512);
@@ -2338,7 +2338,6 @@ BackgroundSet2(const char *name, const char *params)
 {
    Background         *bg;
    unsigned int        color;
-   unsigned int        i;
    int                 r, g, b;
    char                bgf[FILEPATH_LEN_MAX], topf[FILEPATH_LEN_MAX];
    int                 tile, keep_aspect, tkeep_aspect;
@@ -2350,11 +2349,11 @@ BackgroundSet2(const char *name, const char *params)
 
    bgf[0] = topf[0] = '\0';
    r = g = b = 99;
-   i = sscanf(params,
-	      "%i %i %i %4000s %i %i %i %i %i %i %4000s %i %i %i %i %i",
-	      &r, &g, &b,
-	      bgf, &tile, &keep_aspect, &xjust, &yjust, &xperc, &yperc,
-	      topf, &tkeep_aspect, &txjust, &tyjust, &txperc, &typerc);
+   sscanf(params,
+	  "%i %i %i %4000s %i %i %i %i %i %i %4000s %i %i %i %i %i",
+	  &r, &g, &b,
+	  bgf, &tile, &keep_aspect, &xjust, &yjust, &xperc, &yperc,
+	  topf, &tkeep_aspect, &txjust, &tyjust, &txperc, &typerc);
    COLOR32_FROM_RGB(color, r, g, b);
 
    bg = BackgroundFind(name);
@@ -2366,9 +2365,9 @@ BackgroundSet2(const char *name, const char *params)
      }
    else
      {
-	bg = BackgroundCreate(name, color, bgf, tile, keep_aspect, xjust,
-			      yjust, xperc, yperc, topf, tkeep_aspect,
-			      txjust, tyjust, txperc, typerc);
+	BackgroundCreate(name, color, bgf, tile, keep_aspect, xjust,
+			 yjust, xperc, yperc, topf, tkeep_aspect,
+			 txjust, tyjust, txperc, typerc);
      }
 }
 
@@ -2435,7 +2434,7 @@ BackgroundsIpc(const char *params)
 	  }
 	else
 	  {
-	     bg = BrackgroundCreateFromImage(prm, p, NULL, 0);
+	     BrackgroundCreateFromImage(prm, p, NULL, 0);
 	  }
      }
    else if (!strncmp(cmd, "set", 2))
