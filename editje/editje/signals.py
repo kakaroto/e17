@@ -302,6 +302,7 @@ class SignalDetails(EditjeDetails):
                 self["main"]["action"].value = ""
         elif action == edje.EDJE_ACTION_TYPE_SIGNAL_EMIT:
             self["main"]["action"].hide()
+            self.group_hide("out")
             self.group_show("out")
 
             state = self.e.signal._program.state_get()
