@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2005-2007 Carsten Haitzler
- * Copyright (C) 2006-2007 Kim Woelders
+ * Copyright (C) 2006-2010 Kim Woelders
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -57,6 +57,20 @@ MyRoot(Display * dpy)
    return root;
 }
 
+/* find the real Xlib and the real X function */
+static void        *
+GetFunc(const char *name)
+{
+   void               *func;
+
+   if (!lib_xlib)
+      lib_xlib = dlopen("libX11.so", RTLD_GLOBAL | RTLD_LAZY);
+
+   func = dlsym(lib_xlib, name);
+
+   return func;
+}
+
 typedef             Window(CWF) (Display * _display, Window _parent, int _x,
 				 int _y, unsigned int _width,
 				 unsigned int _height,
@@ -75,11 +89,8 @@ XCreateWindow(Display * display, Window parent, int x, int y,
 {
    static CWF         *func = NULL;
 
-   /* find the real Xlib and the real X function */
-   if (!lib_xlib)
-      lib_xlib = dlopen("libX11.so", RTLD_GLOBAL | RTLD_LAZY);
    if (!func)
-      func = (CWF *) dlsym(lib_xlib, "XCreateWindow");
+      func = (CWF *) GetFunc("XCreateWindow");
 
    if (parent == DefaultRootWindow(display))
       parent = MyRoot(display);
@@ -104,11 +115,8 @@ XCreateSimpleWindow(Display * display, Window parent, int x, int y,
 {
    static CSWF        *func = NULL;
 
-   /* find the real Xlib and the real X function */
-   if (!lib_xlib)
-      lib_xlib = dlopen("libX11.so", RTLD_GLOBAL | RTLD_LAZY);
    if (!func)
-      func = (CSWF *) dlsym(lib_xlib, "XCreateSimpleWindow");
+      func = (CSWF *) GetFunc("XCreateSimpleWindow");
 
    if (parent == DefaultRootWindow(display))
       parent = MyRoot(display);
@@ -126,11 +134,8 @@ XReparentWindow(Display * display, Window window, Window parent, int x, int y)
 {
    static RWF         *func = NULL;
 
-   /* find the real Xlib and the real X function */
-   if (!lib_xlib)
-      lib_xlib = dlopen("libX11.so", RTLD_GLOBAL | RTLD_LAZY);
    if (!func)
-      func = (RWF *) dlsym(lib_xlib, "XReparentWindow");
+      func = (RWF *) GetFunc("XReparentWindow");
 
    if (parent == DefaultRootWindow(display))
       parent = MyRoot(display);
