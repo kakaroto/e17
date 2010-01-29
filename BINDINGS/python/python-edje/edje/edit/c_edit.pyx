@@ -29,7 +29,6 @@ __extra_epydoc_fields__ = (
 
 include "c_edit_object.pxi"
 include "c_edit_object_group.pxi"
-include "c_edit_object_data.pxi"
 include "c_edit_object_color_class.pxi"
 include "c_edit_object_text_style.pxi"
 include "c_edit_object_spectra.pxi"

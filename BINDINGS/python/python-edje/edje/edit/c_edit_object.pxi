@@ -77,11 +77,27 @@ cdef class EdjeEdit(edje.c_edje.Edje): # [object PyEdjeEdit, type PyEdjeEdit_Typ
             return ret
 
     def data_get(self, char *name):
-        return Data(self, name)
+        cdef char *val
+        val = edje_edit_data_value_get(self.obj, name)
+        if val == NULL:
+            return None
+        r = val
+        edje_edit_string_free(val)
+        return r
+
+    def data_set(self, char *name, char *value):
+        return edje_edit_data_value_set(self.obj, name, value)
 
     def data_add(self, char *name, char *value):
         cdef unsigned char r
         r = edje_edit_data_add(self.obj, name, value)
+        if r == 0:
+            return False
+        return True
+
+    def data_rename(self, char *old, char *new):
+        cdef unsigned char r
+        r = edje_edit_data_name_set(self.obj, old, new)
         if r == 0:
             return False
         return True
