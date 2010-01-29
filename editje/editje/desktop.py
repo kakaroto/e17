@@ -37,6 +37,7 @@ class Desktop(Controller):
         self.e.callback_add("group.changed", self._group_load)
         self.e.callback_add("group.min.changed", self._group_min_load)
         self.e.callback_add("group.max.changed", self._group_max_load)
+        self.e.callback_add("group.size.changed", self._group_size_load)
         self.e.callback_add("part.added",
                                   self._part_added)
         self.e.part.callback_add("part.changed",
@@ -63,6 +64,9 @@ class Desktop(Controller):
 
     def _group_max_load(self, emissor, data):
         self._view.manager.group_max_set(*data)
+
+    def _group_size_load(self, emissor, data):
+        self._view.manager.group_resize(*data)
 
     def _part_load(self, emissor, data):
         if data:
@@ -299,18 +303,7 @@ class EditManager(View, evas.ClippedSmartObject):
         self.group_resize(*self._group.size)
 
     def group_resize(self, w, h):
-        max_w, max_h = self._group_max
-        min_w, min_h = self._group_min
-        if max_w and w > max_w:
-            w = max_w
-        elif min_w and w < min_w:
-            w = min_w
-
-        if max_h and h > max_h:
-            h = max_h
-        elif min_h and h < min_h:
-            h = min_h
-        self._group.resize(w, h)
+        self.parent_view.controller.e.group_size = (w, h)
         self.padding_update()
 
     # Group
@@ -326,7 +319,6 @@ class EditManager(View, evas.ClippedSmartObject):
             self._group.hide()
             self.member_del(self._group)
         self._group = group
-        self.group_resize(300, 300)
         self._padding_init(self)
         self._group_member_add()
         self.outside_area.lower()

@@ -58,24 +58,18 @@ class GroupDetails(EditjeDetails):
 
         prop = Property(parent, "current")
         wid = WidgetEntry(self)
-        wid.disabled_set(True)
         wid.parser_in = lambda x: str(x)
         wid.parser_out = lambda x: int(x)
         prop.widget_add("w", wid)
         wid = WidgetEntry(self)
-        wid.disabled_set(True)
         wid.parser_in = lambda x: str(x)
         wid.parser_out = lambda x: int(x)
         prop.widget_add("h", wid)
         self["main"].property_add(prop)
-        self.e.callback_add("group.changed", self._group_update)
+        self.e.callback_add("group.size.changed", self._group_update)
 
     def _group_update(self, emissor, data):
-        self["main"]["current"].value = self.e._edje.size
-        self.e._edje.on_resize_add(self._group_resized)
-
-    def _group_resized(self, obj):
-        self["main"]["current"].value = obj.size
+        self["main"]["current"].value = self.e.group_size
 
     def _min_update(self, emissor, data):
         self["main"]["min"].value = data
@@ -92,21 +86,5 @@ class GroupDetails(EditjeDetails):
                 self.e.group_max = value
         elif prop == "current":
             if value:
-                self["main"]["current"].value = self.e._edje.size
-            else:
-                w, h = value
-                w_min, h_min = self.e.group_min
-                w_max, h_max = self.e.group_max
-
-                if w < w_min:
-                    w = w_min
-                elif w_max > 0 and w > w_max:
-                    w = w_max
-
-                if h < h_min:
-                    h = h_min
-                elif h_max > 0 and h > h_max:
-                    h = h_max
-
-                self.e._edje.resize(w, h)
-                self.prop_set("current", (w, h))
+                self.e.group_size = value
+                self["main"]["current"].value = self.e.group_size

@@ -97,14 +97,28 @@ class Editable(Manager, object):
         self.callback_add("group.changed", self._min_max_update)
 
     def _min_max_update(self, emissor, data):
-        if data:
-            self._max = (self._edje_group.w_max, self._edje_group.h_max)
-            self.event_emit("group.max.changed", self._max)
-            self._min = (self._edje_group.w_min, self._edje_group.h_min)
-            self.event_emit("group.min.changed", self._min)
-        else:
+        if not data:
             self._max = None
             self._min = None
+            self._size = None
+            return
+
+        self._max = (self._edje_group.w_max, self._edje_group.h_max)
+        self.event_emit("group.max.changed", self._max)
+        self._min = (self._edje_group.w_min, self._edje_group.h_min)
+        self.event_emit("group.min.changed", self._min)
+        
+        key = self._group + "@pref_size"
+        data = self._edje.data_get(key)
+        if not data:
+            self._edje.data_add(key, "300x300")
+            w = 300
+            h = 300
+        else:
+            w, h = data.split("x")
+            w = int(w)
+            h = int(h)
+        self.group_size = (w, h)
 
     def _max_get(self):
         return self._max
@@ -147,6 +161,35 @@ class Editable(Manager, object):
             self.event_emit("group.min.changed", self._min)
 
     group_min = property(_min_get, _min_set)
+
+    def _size_get(self):
+        return self._size
+
+    def _size_set(self, value):
+        if self._size == value:
+            return
+
+        w, h = value
+        max_w, max_h = self._max
+        min_w, min_h = self._min
+
+        if min_w and w < min_w:
+            w = min_w
+        elif max_w and w > max_w:
+            w = max_w
+
+        if min_h and h < min_h:
+            h = min_h
+        elif max_h and h > max_h:
+            h = max_h
+
+        self._size = (w, h)
+        self._edje.size = (w, h)
+        key = self._group + "@pref_size"
+        self._edje.data_set(key, "%dx%d" % self._size)
+        self.event_emit("group.size.changed", self._size)
+
+    group_size = property(_size_get, _size_set)
 
     # Modifications
     def _modification_init(self):

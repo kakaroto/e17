@@ -209,11 +209,12 @@ class Editje(elementary.Window):
 
     def _run_cb(self, obj, emission, source):
         def _test_window_closed(obj):
+            self.e.group_size = w.size
             obj.delete()
             self.block(False)
         w = elementary.Window("edje-test", elementary.ELM_WIN_BASIC)
         w.callback_destroy_add(_test_window_closed)
-        w.resize(300, 300)
+        w.resize(*self.e.group_size)
         w.title_set("Edje Test")
         b = elementary.Background(w)
         b.size_hint_weight_set(1.0, 1.0)
