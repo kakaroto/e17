@@ -85,7 +85,8 @@ class AnimationsList(CList):
         self._options = False
 
     def _new_cb(self, obj, emission, source):
-        popups.NewAnimationNamePopUp(self._parent).open()
+        anim_wiz = popups.NewAnimationWizard(self._parent)
+        anim_wiz.open()
 
     def _remove_cb(self, obj, emission, source):
         for i in self.selected:

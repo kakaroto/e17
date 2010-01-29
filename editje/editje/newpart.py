@@ -1,4 +1,3 @@
-#
 # Copyright (C) 2009 Samsung Electronics.
 #
 # This file is part of Editje.
@@ -16,197 +15,14 @@
 # You should have received a copy of the GNU Lesser General Public
 # License along with Editje.  If not, see
 # <http://www.gnu.org/licenses/>.
+
 import evas
 import edje
 import elementary
 
 from floater import Wizard
+from groupselector import NameEntry
 
-class NewPart(Wizard):
-
-    def __init__(self, parent):
-        Wizard.__init__(self, parent, "New Part")
-        self.page_add("default")
-#        self.style_set("minimal")
-
-        self._name_init()
-        self._types_init()
-        self._externals_init()
-
-        self.action_add("default", "Cancel", self._cancel, icon="cancel")
-        self.action_add("default", "Add", self._add, icon="confirm")
-        self.action_disabled_set("Add", True)
-
-        self.goto("default")
-        edje.message_signal_process()
-        self._name_changed = False
-        self._name.callback_changed_add(self._name_changed_cb)
-
-        self._name.focus()
-        self._type = None
-
-    def _name_init(self):
-        bx2 = elementary.Box(self)
-        bx2.horizontal_set(True)
-        bx2.size_hint_weight_set(evas.EVAS_HINT_EXPAND, 0.0)
-        bx2.size_hint_align_set(evas.EVAS_HINT_FILL,
-                                evas.EVAS_HINT_FILL)
-        self.content_append("default", bx2)
-        bx2.show()
-
-        lb = elementary.Label(self)
-        lb.label_set("Name:")
-        bx2.pack_end(lb)
-        lb.show()
-
-        scr = elementary.Scroller(self)
-        scr.size_hint_weight_set(evas.EVAS_HINT_EXPAND,
-                                 evas.EVAS_HINT_EXPAND)
-        scr.size_hint_align_set(evas.EVAS_HINT_FILL,
-                                evas.EVAS_HINT_FILL)
-        scr.content_min_limit(False, True)
-        scr.policy_set(elementary.ELM_SCROLLER_POLICY_OFF,
-                       elementary.ELM_SCROLLER_POLICY_OFF)
-        scr.bounce_set(False, False)
-        bx2.pack_end(scr)
-
-        self._name = elementary.Entry(self)
-        self._name.single_line_set(True)
-        self._name.size_hint_weight_set(evas.EVAS_HINT_EXPAND, 0.0)
-        self._name.size_hint_align_set(evas.EVAS_HINT_FILL, 0.0)
-        self._name.context_menu_disabled_set(True)
-        #self._name.entry_set("")
-        self._name.show()
-
-        self._name_changed = False
-
-        scr.content_set(self._name)
-        scr.show()
-
-    def _name_changed_cb(self, obj):
-        self._name_changed = True
-        self._check_name_and_type()
-
-    def _types_init(self):
-        list = elementary.List(self)
-        list.size_hint_weight_set(1.0, 1.0)
-        list.size_hint_align_set(-1.0, -1.0)
-
-        list.item_append("Rectangle", None, None, self._type_select,
-                         edje.EDJE_PART_TYPE_RECTANGLE).selected_set(False)
-        list.item_append("Text", None, None, self._type_select,
-                         edje.EDJE_PART_TYPE_TEXT)
-        list.item_append("Image", None, None, self._type_select,
-                         edje.EDJE_PART_TYPE_IMAGE)
-        list.item_append("Swallow", None, None, self._type_select,
-                         edje.EDJE_PART_TYPE_SWALLOW)
-        list.item_append("TextBlock", None, None, self._type_select,
-                         edje.EDJE_PART_TYPE_TEXTBLOCK)
-        list.item_append("Gradient", None, None, self._type_select,
-                         edje.EDJE_PART_TYPE_GRADIENT)
-        list.item_append("Group", None, None, self._type_select,
-                         edje.EDJE_PART_TYPE_GROUP)
-#        list.item_append("Box", None, None, self._type_select,
-#                         edje.EDJE_PART_TYPE_BOX)
-#        list.item_append("Table", None, None, self._type_select,
-#                         edje.EDJE_PART_TYPE_TABLE)
-        list.item_append("External Widget", None, None, self._type_select,
-                         edje.EDJE_PART_TYPE_EXTERNAL)
-        list.go()
-
-        self.content_append("default", list)
-        list.show()
-
-    def _type_select(self, li, it, type):
-        self._type = type
-        if type == edje.EDJE_PART_TYPE_EXTERNAL:
-            self._external_selector_toggle(True)
-        else:
-            self._external_selector_toggle(False)
-            self._default_name_set(it.label_get())
-        self._check_name_and_type()
-
-    def _check_name_and_type(self):
-        name = self._name.entry_get()
-        if self._type != None and name != "" and name != "<br>":
-            self.action_disabled_set("Add", False)
-        else:
-            self.action_disabled_set("Add", True)
-
-    def _default_name_set(self, name):
-        if self._name_changed:
-            return
-        count = 0
-        for p in self._parent.e.parts:
-            if p.startswith(name):
-                count += 1
-        self._name.entry_set(name + "%.2d" % count)
-        edje.message_signal_process()
-        self._name_changed = False
-
-    def _externals_init(self):
-        self.external = ExternalSelector(self, self._default_name_set)
-        self.external.size_hint_weight_set(0, 0)
-        self.content_append("default", self.external)
-        self.external.show()
-
-    def _add(self, popup, data):
-        name = self._name.entry_get().replace("<br>", "")
-
-        success = self._parent.e.part_add(name, self._type,
-                                          self.external.type, signal=False)
-        if success:
-            self._part_init(name, self._type)
-            self._parent.e.event_emit("part.added", name)
-            if self._type == edje.EDJE_PART_TYPE_EXTERNAL:
-                self._parent.e._edje.external_add(self.external.module)
-        else:
-            self._notify("Choose another name")
-
-    def _part_init(self, name, type):
-        part = self._parent.e._edje.part_get(name)
-        statename = part.state_selected_get()
-        state = part.state_get(statename)
-
-        w, h = self._parent.e._edje.size
-        state.rel1_relative_set(0.0, 0.0)
-        state.rel1_offset_set(w / 4, h / 4)
-        state.rel2_relative_set(0.0, 0.0)
-        state.rel2_offset_set(w * 3 / 4, h * 3 / 4)
-
-        if type == edje.EDJE_PART_TYPE_RECTANGLE:
-            self._part_init_rectangle(part, state)
-        elif type == edje.EDJE_PART_TYPE_TEXT:
-            self._part_init_text(part, state)
-        elif type == edje.EDJE_PART_TYPE_EXTERNAL:
-            self._part_init_external(part, state)
-        self.close()
-
-    def _part_init_rectangle(self, part, state):
-        part.mouse_events = False
-
-        state.color_set(0, 255, 0, 128)
-
-    def _part_init_text(self, part, state):
-        part.mouse_events = False
-
-        state.color_set(0, 0, 0, 255)
-        state.text_set("YOUR TEXT HERE")
-        state.font_set("Sans")
-        state.text_size_set(16)
-
-    def _part_init_external(self, part, state):
-        pass
-
-    def _external_selector_toggle(self, show):
-        if show:
-            self.external.size_hint_weight_set(evas.EVAS_HINT_EXPAND,
-                                               evas.EVAS_HINT_EXPAND)
-        else:
-            self.external.size_hint_weight_set(0, 0)
-
-    def _cancel(self, popup, data):
-        self.close()
 
 class ExternalSelector(elementary.Box):
     def __init__(self, parent, type_cb):
@@ -311,3 +127,163 @@ class ExternalSelector(elementary.Box):
         if self._type_selected_cb:
             name = it.label_get().replace(" ", "")
             self._type_selected_cb(name)
+
+
+class TypesList(elementary.List):
+    def __init__(self, parent, type_select_cb=None):
+        elementary.List.__init__(self, parent)
+        self._parent = parent
+        self._type_select_cb = type_select_cb
+
+        self.size_hint_align_set(evas.EVAS_HINT_FILL, evas.EVAS_HINT_FILL)
+        self.size_hint_weight_set(evas.EVAS_HINT_EXPAND, evas.EVAS_HINT_EXPAND)
+
+        self.item_append("Rectangle", None, None, self._type_select_cb,
+                         edje.EDJE_PART_TYPE_RECTANGLE)
+        self.item_append("Text", None, None, self._type_select_cb,
+                         edje.EDJE_PART_TYPE_TEXT)
+        self.item_append("Image", None, None, self._type_select_cb,
+                         edje.EDJE_PART_TYPE_IMAGE)
+        self.item_append("Swallow", None, None, self._type_select_cb,
+                         edje.EDJE_PART_TYPE_SWALLOW)
+        self.item_append("Textblock", None, None, self._type_select_cb,
+                         edje.EDJE_PART_TYPE_TEXTBLOCK)
+        self.item_append("Gradient", None, None, self._type_select_cb,
+                         edje.EDJE_PART_TYPE_GRADIENT)
+        self.item_append("Group", None, None, self._type_select_cb,
+                         edje.EDJE_PART_TYPE_GROUP)
+        # self.item_append("Box", None, None, self._type_select_cb,
+        #                  edje.EDJE_PART_TYPE_BOX)
+        # self.item_append("Table", None, None, self._type_select_cb,
+        #                  edje.EDJE_PART_TYPE_TABLE)
+        self.item_append("External widget", None, None, self._type_select_cb,
+                         edje.EDJE_PART_TYPE_EXTERNAL)
+        self.go()
+
+
+class NewPartWizard(Wizard):
+    def __init__(self, parent, parts_list_cb=None, new_part_cb=None):
+        # TODO: to be used on the future (see next FIXME tag)
+        # if not new_part_cb:
+        #     raise TypeError("You must set a callback for part addition on" \
+        #                     " NewPartWizard objects.")
+        # self._new_part_cb = new_part_cb
+
+        Wizard.__init__(self, parent)
+        self._parts_list_cb = parts_list_cb
+        self._type = None
+
+        self.page_add("default", "New Part",
+                      "Name the new part to be inserted and choose its type.")
+
+        self._part_name_entry = NameEntry(
+            self, changed_cb=self._name_changed_cb,
+            weight_hints=(evas.EVAS_HINT_EXPAND, 0.0),
+            align_hints=(evas.EVAS_HINT_FILL, evas.EVAS_HINT_FILL))
+        self.content_add("default", self._part_name_entry)
+        self._part_name_entry.show()
+
+        self._types_list = TypesList(self, self._type_select)
+        self.content_add("default", self._types_list)
+        self._types_list.show()
+
+        self._ext_list = ExternalSelector(self, self._default_name_set)
+        self._ext_list.size_hint_weight_set(0.0, 0.0)
+        self.content_add("default", self._ext_list)
+        self._ext_list.show()
+
+        self.action_add("default", "Cancel", self._cancel)
+        self.action_add("default", "Add", self._add)
+        self.action_disabled_set("Add", True)
+
+        edje.message_signal_process()
+        self._name_changed = False
+
+    def _name_changed_cb(self, obj):
+        self._name_changed = True
+        self._check_name_and_type()
+
+    def _type_select(self, list_, item, label, *args, **kwargs):
+        self._type = label
+        if self._type == edje.EDJE_PART_TYPE_EXTERNAL:
+            self._external_selector_toggle(True)
+        else:
+            self._external_selector_toggle(False)
+            self._default_name_set(item.label_get())
+        self._check_name_and_type()
+
+    def _check_name_and_type(self):
+        name = self._part_name_entry.entry
+        if self._type is not None and name != "":
+            self.action_disabled_set("Add", False)
+        else:
+            self.action_disabled_set("Add", True)
+
+    def _default_name_set(self, name):
+        if self._name_changed:
+            return
+        count = 0
+        for p in self._parent.e.parts:
+            if p.startswith(name):
+                count += 1
+        self._part_name_entry.entry = name + "%.2d" % count
+        edje.message_signal_process()
+        self._name_changed = False
+
+    # FIXME: horrible design here, won't fix it now
+    def _add(self):
+        name = self._part_name_entry.entry
+
+        success = self._parent.e.part_add(name, self._type,
+                                          self._ext_list.type, signal=False)
+
+        if success:
+            self._part_init(name, self._type)
+            self._parent.e.event_emit("part.added", name)
+            if self._type == edje.EDJE_PART_TYPE_EXTERNAL:
+                self._parent.e._edje.external_add(self._ext_list.module)
+        else:
+            self._notify("Choose another name")
+
+    def _part_init(self, name, type_):
+        part = self._parent.e._edje.part_get(name)
+        statename = part.state_selected_get()
+        state = part.state_get(statename)
+
+        w, h = self._parent.e._edje.size
+        state.rel1_relative_set(0.0, 0.0)
+        state.rel1_offset_set(w / 4, h / 4)
+        state.rel2_relative_set(0.0, 0.0)
+        state.rel2_offset_set(w * 3 / 4, h * 3 / 4)
+
+        if type_ == edje.EDJE_PART_TYPE_RECTANGLE:
+            self._part_init_rectangle(part, state)
+        elif type_ == edje.EDJE_PART_TYPE_TEXT:
+            self._part_init_text(part, state)
+        elif type_ == edje.EDJE_PART_TYPE_EXTERNAL:
+            self._part_init_external(part, state)
+        self.close()
+
+    def _part_init_rectangle(self, part, state):
+        part.mouse_events = False
+        state.color_set(0, 255, 0, 128)
+
+    def _part_init_text(self, part, state):
+        part.mouse_events = False
+        state.color_set(0, 0, 0, 255)
+        state.text_set("YOUR TEXT HERE")
+        state.font_set("Sans")
+        state.text_size_set(16)
+
+    def _part_init_external(self, part, state):
+        pass
+
+    def _external_selector_toggle(self, show):
+        if show:
+            self._ext_list.size_hint_weight_set(evas.EVAS_HINT_EXPAND,
+                                                evas.EVAS_HINT_EXPAND)
+        else:
+            self._ext_list.size_hint_weight_set(0, 0)
+
+    def _cancel(self):
+        self.close()

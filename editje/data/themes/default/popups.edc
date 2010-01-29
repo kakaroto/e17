@@ -17,88 +17,8 @@
  * License along with Editje.  If not, see
  * <http://www.gnu.org/licenses/>.
  */
-//////////////
-// ELM Extension
-//////////////
+
 collections {
-   group {
-      name: "elm/entry/base-single/editje_dialog";
-      parts {
-         part {
-            name: "bg";
-            type: IMAGE;
-            mouse_events: 1;
-            description {
-               state: "default" 0.0;
-               color: 255 255 255 255;
-               image {
-                  normal: "dialog_entry_bg.png";
-                  border: 20 20 0 0;
-               }
-            }
-         }
-         part {
-            name: "elm.text";
-            type: TEXTBLOCK;
-            mouse_events: 1;
-            scale: 1;
-            entry_mode: EDITABLE;
-            select_mode: EXPLICIT;
-            multiline: 0;
-            source: "elm/entry/selection/default"; // selection under
-            source4: "elm/entry/cursor/default"; // cursorover
-            source5: "elm/entry/anchor/default"; // anchor under
-            description {
-               state: "default" 0.0;
-               text {
-                  style: "dialog_entry_single_style";
-                  min: 1 1;
-	            }
-               rel1 {
-                  to: "bg";
-                  offset: 5 5;
-               }
-               rel2 {
-                  to: "bg";
-                  offset: -6 -6;
-               }
-	         }
-	         description {
-               state: "disabled" 0.0;
-               inherit: "default" 0.0;
-	            text {
-		            style: "dialog_entry_single_disabled_style";
-		            min: 0 1;
-	            }
-	         }
-	      }
-      }
-      programs {
-	      program {
-            name: "focus";
-            signal: "load";
-	         source: "";
-	         action: FOCUS_SET;
-	         target: "elm.text";
-	      }
-	      program {
-            name: "disable";
-	         signal: "elm,state,disabled";
-	         source: "elm";
-            action: STATE_SET "disabled" 0.0;
-            target: "elm.text";
-         }
-         program {
-            name: "enable";
-            signal: "elm,state,enabled";
-            source: "elm";
-            action: STATE_SET "default" 0.0;
-            target: "elm.text";
-         }
-      }
-   }
-
-
 ////////////////////////////////////////////////////////////////////////////
 // Image Select Popup
 ////////////////////////////////////////////////////////////////////////////
@@ -559,9 +479,9 @@ collections {
       }
    }
 
-////////////////////////////////////////////////////////////////////////////
-// Simple floating popup
-////////////////////////////////////////////////////////////////////////////
+/*
+ * Popup: this is going to be merged/deleted soon
+ */
    group {
       name: "editje/popup";
       parts {
@@ -632,6 +552,167 @@ collections {
                   relative: 0.0 1.0;
                }
             }
+         }
+      }
+   }
+
+/*
+ * Wizard inner windows' layout
+ */
+   group {
+      name: "editje/wizard";
+
+      parts {
+         part {
+            name: "bg";
+            type: RECT;
+            description {
+               state: "default" 0.0;
+               color: 224 224 224 255;
+            }
+            description {
+               state: "white" 0.0;
+               inherit: "default" 0.0;
+               color: 255 255 255 255;
+            }
+         }
+         part {
+            name: "title.bg";
+            type: GRADIENT;
+            description {
+               state: "default" 0.0;
+               gradient.spectrum: "bg";
+               rel1 {
+                  to: "bg";
+                  relative: 0.0 0.0;
+                  offset: 0 0;
+               }
+               rel2 {
+                  to: "bg";
+                  relative: 1.0 0.0;
+                  offset: 0 20;
+               }
+            }
+         }
+         part {
+            name: "title.text";
+            type: TEXT;
+            description {
+               state: "default" 0.0;
+               align: 0.5 0.5;
+               color_class: "default_label";
+               text {
+                  text: "TITLE";
+                  font: "Sans:style=Bold";
+                  size: 11;
+                  align: 0.5 0.5;
+               }
+               rel1.to: "title.bg";
+               rel2.to: "title.bg";
+            }
+         }
+         part {
+            name: "subtitle.bg";
+            type: RECT;
+            description {
+               state: "default" 0.0;
+               rel1 {
+                  to: "title.bg";
+                  relative: 0.0 1.0;
+               }
+               rel2 {
+                  to: "title.bg";
+                  relative: 1.0 1.0;
+                  offset: -1 29;
+               }
+            }
+            description {
+	       state: "hidden" 0.0;
+	       inherit: "default" 0.0;
+               rel1 {
+                  to: "title.bg";
+                  relative: 0.0 1.0;
+               }
+               rel2 {
+                  to: "title.bg";
+                  relative: 0.0 1.0;
+                  offset: 0 0;
+               }
+            }
+         }
+         part {
+            name: "subtitle.text";
+            type: TEXT;
+            description {
+               state: "default" 0.0;
+               align: 0.0 0.5;
+               color_class: "default_label";
+               text {
+                  text: "SUBTITLE";
+                  font: "Sans";
+                  size: 9;
+                  align: 0.0 0.5;
+               }
+               rel1 {
+                  to: "subtitle.bg";
+                  offset: 10 0;
+               }
+               rel2.to: "subtitle.bg";
+            }
+         }
+         part {
+            name: "content.clipper";
+            type: RECT;
+            description {
+               state: "default" 0.0;
+               color: 255 255 255 255;
+               rel1 {
+                  to: "subtitle.bg";
+                  relative: 0.0 1.0;
+               }
+               rel2.to: "bg";
+            }
+         }
+         part {
+            name: "content";
+            clip_to: "content.clipper";
+            type: SWALLOW;
+            description {
+               state: "default" 0.0;
+               rel1 {
+                  to: "subtitle.bg";
+                  relative: 0.0 1.0;
+               }
+            }
+         }
+      }
+
+      programs {
+         program {
+            name: "hide_subtitle";
+            signal: "wizard,subtitle,hide";
+            action: STATE_SET "hidden" 0.0;
+            target: "subtitle.bg";
+         }
+         program {
+            name: "show_subtitle";
+            signal: "wizard,subtitle,show";
+            action: STATE_SET "default" 0.0;
+            target: "subtitle.bg";
+         }
+
+
+         program {
+            name: "white_bg";
+            signal: "wizard,bg,alternate";
+            action: STATE_SET "white" 0.0;
+            target: "bg";
+         }
+         program {
+            name: "default_bg";
+            signal: "wizard,bg,default";
+            action: STATE_SET "default" 0.0;
+            target: "bg";
          }
       }
    }

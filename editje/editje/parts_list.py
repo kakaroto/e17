@@ -1,4 +1,3 @@
-#
 # Copyright (C) 2009 Samsung Electronics.
 #
 # This file is part of Editje.
@@ -16,11 +15,12 @@
 # You should have received a copy of the GNU Lesser General Public
 # License along with Editje.  If not, see
 # <http://www.gnu.org/licenses/>.
+
 import edje
 import elementary
 
 from clist import CList
-from newpart import NewPart
+from newpart import NewPartWizard
 
 
 class PartsList(CList):
@@ -110,7 +110,8 @@ class PartsList(CList):
         self._options = False
 
     def _new_cb(self, obj, emission, source):
-        NewPart(self._parent).open()
+        new_part_wiz = NewPartWizard(self._parent)
+        new_part_wiz.open()
 
     def _up_cb(self, obj, emission, source):
         if self.e.part._part:

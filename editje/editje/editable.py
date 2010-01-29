@@ -1,4 +1,3 @@
-#
 # Copyright (C) 2009 Samsung Electronics.
 #
 # This file is part of Editje.
@@ -16,9 +15,6 @@
 # You should have received a copy of the GNU Lesser General Public
 # License along with Editje.  If not, see
 # <http://www.gnu.org/licenses/>.
-from os import system, popen, getcwd, remove, path, chdir
-from shutil import move, copyfile
-from tempfile import gettempdir
 
 import edje
 from edje.edit import EdjeEdit
@@ -30,7 +26,6 @@ from editable_animation import EditableAnimation
 from swapfile import SwapFile
 
 class Editable(Manager, object):
-
     def __init__(self, canvas, swapfile):
         Manager.__init__(self)
 
@@ -83,6 +78,16 @@ class Editable(Manager, object):
 
     group = property(_group_get, _group_set)
 
+
+    # FIXME: not working yet!
+    def group_add(self, grp_name):
+        if not self._edje:
+            self._edje = EdjeEdit(
+                self._canvas, file=self._swapfile.workfile,
+                group=edje.file_collection_list(self._swapfile.workfile)[0])
+
+        return self._edje.group_add(grp_name)
+
     def group_rename(self, name):
         if not self._group:
             return
@@ -107,7 +112,7 @@ class Editable(Manager, object):
         self.event_emit("group.max.changed", self._max)
         self._min = (self._edje_group.w_min, self._edje_group.h_min)
         self.event_emit("group.min.changed", self._min)
-        
+
         key = self._group + "@pref_size"
         data = self._edje.data_get(key)
         if not data:

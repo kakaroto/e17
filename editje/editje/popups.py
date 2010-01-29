@@ -1,4 +1,3 @@
-#
 # Copyright (C) 2009 Samsung Electronics.
 #
 # This file is part of Editje.
@@ -16,17 +15,18 @@
 # You should have received a copy of the GNU Lesser General Public
 # License along with Editje.  If not, see
 # <http://www.gnu.org/licenses/>.
+
 import os
 
-import edje
 import evas
 import ecore
 from elementary import InnerWindow, Layout, List, Entry, Scroller, Label, \
                        Fileselector, Button, Box, ELM_SCROLLER_POLICY_OFF
 
 import sysconfig
-from controller import Controller, View
 from floater import Wizard
+from groupselector import NameEntry
+
 
 class PopUp(InnerWindow):
     def __init__(self, parent, group=None):
@@ -393,83 +393,47 @@ class ConfirmPopUp(PopUp):
     def close(self):
         PopUp.close(self)
 
-class NewNamePopUp(Wizard):
 
-    def __init__(self, parent, label):
-        Wizard.__init__(self, parent, label)
-        self.page_add("default")
-        self.style_set("minimal")
+class NewAnimationWizard(Wizard):
+    def __init__(self, parent):
+        Wizard.__init__(self, parent)
 
-        self._name_init()
+        self.page_add("default", "New Animation",
+                      "Name the new animation to be created.",
+                      separator=True)
 
-        self.action_add("default", "Cancel", self._cancel, icon="cancel")
-        self.action_add("default", "Add", self._internal_add, icon="confirm")
+        self._anim_name_entry = NameEntry(
+            self, changed_cb=self._name_changed_cb,
+            weight_hints=(evas.EVAS_HINT_EXPAND, 0.0),
+            align_hints=(evas.EVAS_HINT_FILL, 0.5))
+        self.content_add("default", self._anim_name_entry)
+        self._anim_name_entry.show()
+
+        self.alternate_background_set(True)
+
+        self.action_add("default", "Cancel", self._cancel)
+        self.action_add("default", "Add", self._add)
         self.action_disabled_set("Add", True)
-        self.goto("default")
-
-        self._name.focus()
-
-    def _name_init(self):
-        bx2 = Box(self)
-        bx2.horizontal_set(True)
-        bx2.size_hint_weight_set(1.0, 0.0)
-        bx2.size_hint_align_set(-1.0, 0.0)
-        bx2.size_hint_min_set(160, 160)
-        self.content_append("default", bx2)
-        bx2.show()
-
-        lb = Label(self)
-        lb.label_set("Name:")
-        bx2.pack_end(lb)
-        lb.show()
-
-        scr = Scroller(self)
-        scr.size_hint_weight_set(evas.EVAS_HINT_EXPAND, 0.0)
-        scr.size_hint_align_set(evas.EVAS_HINT_FILL, evas.EVAS_HINT_FILL)
-        scr.content_min_limit(False, True)
-        scr.policy_set(ELM_SCROLLER_POLICY_OFF, ELM_SCROLLER_POLICY_OFF)
-        scr.bounce_set(False, False)
-        bx2.pack_end(scr)
-
-        self._name = Entry(self)
-        self._name.single_line_set(True)
-        self._name.size_hint_weight_set(evas.EVAS_HINT_EXPAND, 0.0)
-        self._name.size_hint_align_set(evas.EVAS_HINT_FILL, 0.5)
-        self._name.callback_activated_add(self._name_activated_cb)
-        self._name.callback_changed_add(self._name_changed_cb)
-        self._name.entry_set("")
-        self._name.context_menu_disabled_set(True)
-        self._name.show()
-
-        scr.content_set(self._name)
-        scr.show()
-
-    def _name_activated_cb(self, obj):
-        self._internal_add(None, None)
 
     def _name_changed_cb(self, obj):
-        name = self._name.entry_get()
-        if name != "" and name != "<br>":
+        self._add()
+
+    def _name_changed_cb(self, obj):
+        name = self._anim_name_entry.entry
+        if name != "":
             self.action_disabled_set("Add", False)
         else:
             self.action_disabled_set("Add", True)
 
-    def _internal_add(self, popup, data):
-        name = self._name.entry_get().replace("<br>", "")
-        
-        self._add(name)
-        return
-
-    def _cancel(self, popup, data):
-        self.close()
-
-class NewAnimationNamePopUp(NewNamePopUp):
-    def __init__(self, parent):
-        NewNamePopUp.__init__(self, parent, "New Animation")
-
-    def _add(self, name):
+    # FIXME: more horrible design, here, fix it later
+    def _add(self):
+        name = self._anim_name_entry.entry
         success = self._parent.e.animation_add(name)
         if success:
             self.close()
         else:
-            self._notify("Choice another name")
+            self.notify("There is an animation with this name in the "
+                        "group, already. Please choose another name.")
+
+    def _cancel(self):
+        self.close()

@@ -1,4 +1,3 @@
-#
 # Copyright (C) 2009 Samsung Electronics.
 #
 # This file is part of Editje.
@@ -16,31 +15,30 @@
 # You should have received a copy of the GNU Lesser General Public
 # License along with Editje.  If not, see
 # <http://www.gnu.org/licenses/>.
-import os
 
+import evas
+import ecore
 import edje
 import elementary
-import evas
 
 import sysconfig
 from details import EditjeDetails
 from details_widget_entry import WidgetEntry
 from details_widget_signals import WidgetSignal
 from details_widget_source import WidgetSource
-from details_widget_boolean import WidgetBoolean
-from details_widget_color import WidgetColor
-from details_widget_button import WidgetButton
 from details_widget_actionslist import WidgetActionsList
 from floater import Wizard
 from clist import CList
 from prop import Property, PropertyTable
+from groupselector import NameEntry
 
 
 class SignalsList(CList):
-    def __init__(self, parent):
+    def __init__(self, parent, new_sig_cb):
         CList.__init__(self, parent)
         self.e = parent.e
 
+        self._new_sig_cb = new_sig_cb
         self._options_load()
         self.options = True
 
@@ -98,126 +96,106 @@ class SignalsList(CList):
         self._options = False
 
     def _new_cb(self, obj, emission, source):
-        NewSignalPopUp(self._parent).open()
+        sig_wiz = NewSignalWizard(
+            self._parent, new_sig_cb=self._new_sig_cb)
+        sig_wiz.open()
 
     def _remove_cb(self, obj, emission, source):
         for i in self.selected:
             self.e.signal_del(i[0])
 
-class NewSignalPopUp(Wizard):
 
-    def __init__(self, parent):
-        Wizard.__init__(self, parent, "New Signal")
-        self.page_add("default")
-#        self.style_set("minimal")
+class TypesList(elementary.List):
+    def __init__(self, parent, type_select_cb=None):
+        elementary.List.__init__(self, parent)
+        self._parent = parent
+        self._type_select_cb = type_select_cb
 
-        self._name_init()
-        self._types_init()
-
-        self.action_add("default", "Cancel", self._cancel, icon="cancel")
-        self.action_add("default", "Add", self._add, icon="confirm")
-        self.action_disabled_set("Add", True)
-        self.goto("default")
-        self._name.callback_changed_add(self._name_changed_cb)
-
-        self._name.focus()
-
-        self._type = None
-
-
-    def _name_init(self):
-        bx2 = elementary.Box(self)
-        bx2.horizontal_set(True)
-        bx2.size_hint_weight_set(1.0, 0.0)
-        bx2.size_hint_align_set(-1.0, 0.0)
-        bx2.size_hint_min_set(160,160)
-        self.content_append("default", bx2)
-        bx2.show()
-
-        lb = elementary.Label(self)
-        lb.label_set("Name:")
-        bx2.pack_end(lb)
-        lb.show()
-
-        scr = elementary.Scroller(self)
-        scr.size_hint_weight_set(evas.EVAS_HINT_EXPAND, 0.0)
-        scr.size_hint_align_set(evas.EVAS_HINT_FILL, evas.EVAS_HINT_FILL)
-        scr.content_min_limit(False, True)
-        scr.policy_set(elementary.ELM_SCROLLER_POLICY_OFF,
-                       elementary.ELM_SCROLLER_POLICY_OFF)
-        scr.bounce_set(False, False)
-        bx2.pack_end(scr)
-
-        self._name = elementary.Entry(self)
-        self._name.single_line_set(True)
-        self._name.size_hint_weight_set(evas.EVAS_HINT_EXPAND, 0.0)
-        self._name.size_hint_align_set(evas.EVAS_HINT_FILL, 0.5)
-        self._name.entry_set("")
-        self._name.context_menu_disabled_set(True)
-        self._name.show()
-
-        scr.content_set(self._name)
-        scr.show()
-
-    def _types_init(self):
-        list = elementary.List(self)
-        list.size_hint_weight_set(1.0, 1.0)
-        list.size_hint_align_set(-1.0, -1.0)
+        self.size_hint_align_set(evas.EVAS_HINT_FILL, evas.EVAS_HINT_FILL)
+        self.size_hint_weight_set(evas.EVAS_HINT_EXPAND, evas.EVAS_HINT_EXPAND)
 
         theme_file = sysconfig.theme_file_get("default")
 
-        ico = elementary.Icon(self)
+        ico = elementary.Icon(parent)
         ico.file_set(theme_file, "editje/icon/animation")
         ico.size_hint_aspect_set(evas.EVAS_ASPECT_CONTROL_VERTICAL, 1, 1)
         ico.show()
-        list.item_append("Animation", ico, None, self._type_select,
-                         edje.EDJE_ACTION_TYPE_NONE)
-        ico = elementary.Icon(self)
+        self.item_append("Animation triggering signal", ico, None,
+                         self._type_select_cb, edje.EDJE_ACTION_TYPE_NONE)
+        ico = elementary.Icon(parent)
         ico.file_set(theme_file, "editje/icon/signal")
         ico.size_hint_aspect_set(evas.EVAS_ASPECT_CONTROL_VERTICAL, 1, 1)
         ico.show()
-        list.item_append("Signal", ico, None, self._type_select,
+        self.item_append("General purpose signal", ico, None,
+                         self._type_select_cb,
                          edje.EDJE_ACTION_TYPE_SIGNAL_EMIT)
-#        list.item_append("Script", None, None, self._type_select,
-#                         edje.EDJE_ACTION_TYPE_SCRIPT)
+        # self.item_append("Script triggering signal", None, None,
+        #                  self._type_select_cb, edje.EDJE_ACTION_TYPE_SCRIPT)
 
-        list.go()
+        self.go()
 
-        self.content_append("default", list)
-        list.show()
+
+class NewSignalWizard(Wizard):
+    def __init__(self, parent, new_sig_cb=None):
+        if not new_sig_cb:
+            raise TypeError("You must set a callback for new signals on" \
+                            " NewSignalWizard objects.")
+
+        Wizard.__init__(self, parent)
+
+        self.page_add("default", "New Signal",
+                      "Name the new signal to be created and choose its type.")
+
+        self._sig_name_entry = NameEntry(
+            self, changed_cb=self._name_changed_cb,
+            weight_hints=(evas.EVAS_HINT_EXPAND, 0.0),
+            align_hints=(evas.EVAS_HINT_FILL, evas.EVAS_HINT_FILL))
+        self.content_add("default", self._sig_name_entry)
+        self._sig_name_entry.show()
+
+        self._types_list = TypesList(self, self._type_select)
+        self.content_add("default", self._types_list)
+        self._types_list.show()
+
+        self.action_add("default", "Cancel", self._cancel)
+        self.action_add("default", "Create", self._add)
+        self.action_disabled_set("Create", True)
+
+        self._new_sig_cb = new_sig_cb
+        self._type = None
 
     def _name_changed_cb(self, obj):
         self._check_name_and_type()
 
-    def _type_select(self, l, it, action, *args, **kwargs):
-        self._type = action
+    def _type_select(self, list_, item, label, *args, **kwargs):
+        self._type = label
         self._check_name_and_type()
 
     def _check_name_and_type(self):
-        name = self._name.entry_get()
-        if self._type != None and name != "" and name != "<br>":
-            self.action_disabled_set("Add", False)
+        name = self._sig_name_entry.entry
+        if self._type is not None and name != "":
+            self.action_disabled_set("Create", False)
         else:
-            self.action_disabled_set("Add", True)
+            self.action_disabled_set("Create", True)
 
-    def _add(self, popup, data):
-        name = self._name.entry_get().replace("<br>", "")
+    def _add(self):
+        name = self._sig_name_entry.entry.replace("<br>", "")
         if name == "":
-            self._notify("Please set part name")
+            self.notify("Please give a name to the new signal.")
             return
 
-        success = self._parent.e.signal_add(name, self._type)
+        success = self._new_sig_cb(name, self._type)
         if success:
-            self.close()
+            ecore.idler_add(self.close)
         else:
-            self._notify("Choice another name")
+            self.notify("There is a signal with this name in the "
+                        "group, already. Please choose another name.")
 
-    def _cancel(self, popup, data):
+    def _cancel(self):
         self.close()
 
 
 class SignalDetails(EditjeDetails):
-
     def __init__(self, parent):
         EditjeDetails.__init__(self, parent,
                                group="editje/collapsable/part_state")
@@ -342,3 +320,4 @@ class SignalDetails(EditjeDetails):
             elif prop == "source":
                 self.e.signal._program.state2_set(value)
                 tbl["source"].value = value
+

@@ -1,4 +1,3 @@
-#
 # Copyright (C) 2009 Samsung Electronics.
 #
 # This file is part of Editje.
@@ -38,14 +37,13 @@ from animations_list import AnimationsList
 from widgets_list import WidgetsList
 from animations import AnimationDetails
 from signals import SignalsList, SignalDetails
-from groupselector import GroupChange
+from groupselector import GroupSelectionWizard
 
 def debug_cb(obj, emission, source):
     print "%s: %s %s" % (obj, emission, source)
 
 
 class Editje(elementary.Window):
-
     def __init__(self, swapfile, theme="default"):
         self.theme = sysconfig.theme_file_get(theme)
 
@@ -128,9 +126,24 @@ class Editje(elementary.Window):
             self.main_edje.signal_emit("desktop,blocker,disable", "")
 
     def select_group(self):
-        gc = GroupChange(self, cancel=False)
-        gc.file = self.e.workfile
-        gc.open()
+        # TODO: when setting file/group via command line is done, don't
+        # instantiate the wizard
+        grp_wiz = GroupSelectionWizard(
+            self, switch_only=True, selected_cb=self._group_wizard_selection_cb,
+            new_grp_cb=self._group_wizard_new_group_cb)
+        grp_wiz.file_set(self.e.workfile)
+        grp_wiz.open()
+
+    # FIXME: not working yet!
+    def _group_wizard_new_group_cb(self, grp_name):
+        success = self.e.group_add(grp_name)
+        if success:
+            self.group = grp_name
+        return success
+
+    def _group_wizard_selection_cb(self, selection):
+        if selection:
+            self.group = selection
 
     ###########
     # DESKTOP
@@ -188,11 +201,13 @@ class Editje(elementary.Window):
         self._group_name_entry.entry_set(data)
 
     def _group_cb(self, obj, emission, source):
-        gc = GroupChange(self)
-        self.resize_object_add(gc)
-        gc.file = self.e.workfile
-        gc.group = self.e.group
-        gc.open()
+        grp_wiz = GroupSelectionWizard(
+            self, switch_only=False,
+            selected_cb=self._group_wizard_selection_cb,
+            new_grp_cb=self._group_wizard_new_group_cb)
+
+        grp_wiz.file_set(self.e.workfile, self.e.group)
+        grp_wiz.open()
 
     def _toolbar_bt_init(self, edje, part, name, callback):
         edje.part_text_set(part + ".label", name)
@@ -271,7 +286,7 @@ class Editje(elementary.Window):
 
     def _toolbar_init(self):
         self._toolbar_pager = elementary.Pager(self)
-        self._toolbar_pager.style_set("editje.toolbar")
+        self._toolbar_pager.style_set("editje.downwards")
         self._toolbar_pager.size_hint_weight_set(evas.EVAS_HINT_EXPAND,
                                                  evas.EVAS_HINT_EXPAND)
         self._toolbar_pager.size_hint_align_set(evas.EVAS_HINT_FILL,
@@ -297,7 +312,7 @@ class Editje(elementary.Window):
         self._modes_selector.show()
 
         self._mainbar_pager = elementary.Pager(self)
-        self._mainbar_pager.style_set("editje.mainbar")
+        self._mainbar_pager.style_set("editje.rightwards")
         self._mainbar_pager.size_hint_weight_set(evas.EVAS_HINT_EXPAND,
                                                  evas.EVAS_HINT_EXPAND)
         self._mainbar_pager.size_hint_align_set(evas.EVAS_HINT_FILL,
@@ -307,7 +322,7 @@ class Editje(elementary.Window):
 
     def _sidebar_init(self):
         self._sidebar_pager = elementary.Pager(self)
-        self._sidebar_pager.style_set("editje.sidebar")
+        self._sidebar_pager.style_set("editje.leftwards")
         self._sidebar_pager.size_hint_weight_set(evas.EVAS_HINT_EXPAND,
                                                  evas.EVAS_HINT_EXPAND)
         self._sidebar_pager.size_hint_align_set(evas.EVAS_HINT_FILL,
@@ -502,7 +517,10 @@ class Editje(elementary.Window):
                                     evas.EVAS_HINT_FILL)
         mainbar.show()
 
-        list = SignalsList(self)
+        def new_sig_cb(name, type_):
+            return self.e.signal_add(name, type_)
+
+        list = SignalsList(self, new_sig_cb)
         list.title = "Signals"
         list.open = True
         list.options = True
