@@ -1,5 +1,4 @@
 #include <e.h>
-#include <Ecore_Str.h>
 #include "config.h"
 #include "e_mod_main.h"
 #include "e_mod_config.h"
@@ -175,7 +174,7 @@ _population_init(E_Module *m)
    files = ecore_file_ls(buf);
    EINA_LIST_FREE(files, filename)
    {
-      if (ecore_str_has_suffix(filename, ".edj"))
+      if (eina_str_has_suffix(filename, ".edj"))
       {
          snprintf(buf, sizeof(buf), "%s/themes/%s", e_module_dir_get(m), filename);
          name = edje_file_data_get(buf, "PopulationName");
@@ -197,7 +196,7 @@ _population_init(E_Module *m)
 }
 
 Eina_Bool 
-_action_free(const Eina_Hash *hash, const char *key, void *data, void *fdata)
+_action_free(const Eina_Hash *hash, const void *key, void *data, void *fdata)
 {
    Action *a;
    a = data;
