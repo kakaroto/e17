@@ -3,7 +3,6 @@
  */
 #include <Eet.h>
 #include <Ecore.h>
-#include <Ecore_Str.h>
 #include <Ecore_X.h>
 #include <Ecore_File.h>
 #include <Elementary.h>
@@ -1093,7 +1092,7 @@ on_idler(void *data)
 
 	iv->dirs = eina_list_remove_list(iv->dirs, iv->dirs);
 	files = ecore_file_ls(dir);
-	if (ecore_str_has_suffix(dir, "/"))
+	if (eina_str_has_suffix(dir, "/"))
 	  snprintf(buf2, sizeof(buf2), "%s", dir);
 	else
 	  snprintf(buf2, sizeof(buf2), "%s/", dir);
