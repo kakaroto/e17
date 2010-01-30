@@ -21,7 +21,6 @@
 #include <Edje.h>
 #include <Edje_Edit.h>
 #include <Etk.h>
-#include <Ecore_Str.h>
 #include "config.h"
 #include "main.h"
 
@@ -229,7 +228,7 @@ load_edje(char *file)
       dialog_alert_show("<b>ERROR</b>:<br>Can't read file.");
       return 0;
    }
-   if (!ecore_str_has_suffix(realp, ".edj"))  //TODO: better check
+   if (!eina_str_has_suffix(realp, ".edj"))  //TODO: better check
    {
       dialog_alert_show("<b>ERROR</b>:<br>File is not an edje file.");
       return 0;
