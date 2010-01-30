@@ -1,5 +1,4 @@
 #include "elm_kbd.h"
-#include <Ecore_Str.h>
 #include <Ecore_X.h>
 
 #ifndef ELM_LIB_QUICKLAUNCH
@@ -78,7 +77,7 @@ _load_keys(Evas_Object *obj, Evas_Coord *w, Evas_Coord *h)
         p = strrchr(file, '.');
         if ((p) && (!strcmp(p, ".kbd"))) 
           {
-             if (ecore_strlcpy(buff + len, file, sizeof(buff) - len) >= sizeof(buff) - len)
+             if (eina_strlcpy(buff + len, file, sizeof(buff) - len) >= sizeof(buff) - len)
                continue;
              kbs = eina_list_append(kbs, eina_stringshare_add(buff));
           }
