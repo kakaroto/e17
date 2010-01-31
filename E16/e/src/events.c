@@ -111,7 +111,7 @@ ExtInitSync(int available)
      {
 	if (!strcmp(xssc[i].name, "SERVERTIME"))
 	   Mode.display.server_time = xssc[i].counter;
-	if (EDebug(EDBUG_TYPE_SYNC))
+	if (EDebug(EDBUG_TYPE_VERBOSE))
 	   Eprintf(" Sync counter %2d: %10s %#lx %#x:%#x\n", i,
 		   xssc[i].name, xssc[i].counter,
 		   XSyncValueHigh32(xssc[i].resolution),
@@ -153,6 +153,48 @@ ExtInitRR(int available)
 
    /* Listen for RandR events */
    XRRSelectInput(disp, WinGetXwin(VROOT), RRScreenChangeNotifyMask);
+
+#if 0				/* Debug */
+   if (EDebug(EDBUG_TYPE_VERBOSE))
+     {
+	XRRScreenResources *psr;
+	XRRCrtcInfo        *pci;
+	XRROutputInfo      *poi;
+	int                 i;
+
+	psr = XRRGetScreenResources(disp, WinGetXwin(VROOT));
+	if (!psr)
+	   return;
+
+	Eprintf("CRTC  ID      X,Y         WxH     mode   rot   nout\n");
+	for (i = 0; i < psr->ncrtc; i++)
+	  {
+	     pci = XRRGetCrtcInfo(disp, psr, psr->crtcs[i]);
+	     if (!pci)
+		break;
+	     Eprintf("%3d  %#04lx  %4d,%4d   %4ux%4u  %#04lx %4d %5d\n",
+		     i, psr->crtcs[i],
+		     pci->x, pci->y, pci->width, pci->height,
+		     pci->mode, pci->rotation, pci->noutput);
+	     XRRFreeCrtcInfo(pci);
+	  }
+
+	Eprintf("OUTP  ID  Name            WxH     crtc  ncrtc nclon nmode\n");
+	for (i = 0; i < psr->noutput; i++)
+	  {
+	     poi = XRRGetOutputInfo(disp, psr, psr->outputs[i]);
+	     if (!poi)
+		break;
+	     Eprintf("%3d  %#04lx %-8s     %4lux%4lu  %#04lx %4d %5d %5d\n",
+		     i, psr->outputs[i],
+		     poi->name, poi->mm_width, poi->mm_height,
+		     poi->crtc, poi->ncrtc, poi->nclone, poi->nmode);
+	     XRRFreeOutputInfo(poi);
+	  }
+
+	XRRFreeScreenResources(psr);
+     }
+#endif
 }
 #endif
 
