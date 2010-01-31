@@ -593,10 +593,13 @@ FocusHandleLeave(EWin * ewin __UNUSED__, XEvent * ev)
    Window              win = ev->xcrossing.window;
 
    /* Leaving root may mean entering other screen */
-   if (win == WinGetXwin(VROOT) &&
-       (ev->xcrossing.mode == NotifyNormal &&
-	ev->xcrossing.detail != NotifyInferior))
-      FocusToEWin(NULL, FOCUS_DESK_LEAVE);
+   if (win == WinGetXwin(VROOT) && ev->xcrossing.mode == NotifyNormal)
+     {
+	if (ev->xcrossing.detail != NotifyInferior)
+	   FocusToEWin(NULL, FOCUS_DESK_LEAVE);
+	else if (Mode.focuswin == NULL)
+	   FocusToEWin(NULL, FOCUS_DESK_ENTER);
+     }
 }
 
 void
