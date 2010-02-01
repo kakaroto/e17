@@ -113,6 +113,7 @@ class Editable(Manager, object):
         self._min = (self._edje_group.w_min, self._edje_group.h_min)
         self.event_emit("group.min.changed", self._min)
 
+        self._size = None
         key = self._group + "@pref_size"
         data = self._edje.data_get(key)
         if not data:
