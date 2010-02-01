@@ -77,7 +77,6 @@ class Editable(Manager, object):
 
     group = property(_group_get, _group_set)
 
-
     # FIXME: not working yet!
     def group_add(self, grp_name):
         if not self._edje:
@@ -89,10 +88,15 @@ class Editable(Manager, object):
 
     def group_rename(self, name):
         if not self._group:
-            return
+            return False
+        if not name:
+            return False
+        if self._edje.group_exist(name):
+            return False
 
         self._edje_group.rename(name)
         self._group = name
+        return True
 
     # GROUP Min/Max
 

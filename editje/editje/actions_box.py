@@ -50,7 +50,7 @@ class ActionsBox(elementary.Box):
         btn.show()
         self.pack_end(btn)
 
-    def action_enable_set(self, label, value):
+    def action_disabled_set(self, label, value):
         bt = self._actions.get(label)
         if bt:
-            bt.disabled_set(not value)
+            bt.disabled_set(value)

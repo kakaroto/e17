@@ -190,7 +190,8 @@ class Editje(elementary.Window):
 
     def _group_name_changed(self, obj, *args, **kwargs):
         new_name = obj.entry_get().replace("<br>", "")
-        self.e.group_rename(new_name)
+        if not self.e.group_rename(new_name):
+            obj.entry_set(self.e.group)
 
     def _toolbar_filename_cb(self, emissor, data):
         self.main_edje.part_text_set("details_filename", data)

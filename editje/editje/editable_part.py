@@ -65,6 +65,8 @@ class EditablePart(Manager, object):
     name = property(_name_get, _name_set)
 
     def rename(self, name):
+        if not name:
+            return False
         if self._name != name:
             old_name = self._part.name
             self._part.name = name

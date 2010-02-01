@@ -251,8 +251,9 @@ class OpenFile(elementary.Window):
                                             evas.EVAS_HINT_EXPAND)
         self._new_entry.size_hint_align_set(evas.EVAS_HINT_FILL, 0.5)
         sc.content_set(self._new_entry)
+        self._new_entry.callback_changed_add(self._name_changed_cb)
         self._new_entry.show()
-        
+
         self._notification.action_add("Cancel", self._notify_abort)
         self._notification.action_add("Create", self._new_popup_create)
 
@@ -260,6 +261,7 @@ class OpenFile(elementary.Window):
 
     def _new_popup_create(self, bt, mode=None):
         name = self._new_entry.entry_get()
+
         if not name.endswith(".edj"):
             name += ".edj"
         file = os.path.join(self._fs.path, name)
@@ -301,3 +303,14 @@ class OpenFile(elementary.Window):
         editje = Editje(self._swapfile)
         editje.show()
         self._cancel(None)
+
+    def _name_changed_cb(self, obj):
+        self._name_chaged = True
+        self._check_name()
+
+    def _check_name(self):
+        name = self._new_entry.entry_get()
+        if name:
+            self._notification.action_disabled_set("Create", False)
+        else:
+            self._notification.action_disabled_set("Create", True)

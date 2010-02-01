@@ -59,6 +59,9 @@ class ErrorNotify(elementary.Notify):
     def action_add(self, label, func_cb, icon=None, data=None):
         self._actions.action_add(label, func_cb, icon, data)
 
+    def action_disabled_set(self, label, disabled):
+        self._actions.action_disabled_set(label, disabled)
+
     def pack_end(self, obj):
         self._table.pack_before(obj, self._actions)
 

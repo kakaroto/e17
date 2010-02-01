@@ -195,9 +195,6 @@ class GroupSelectionWizard(Wizard):
         if new_grp_cb:
             def group_added(cb_func):
                 name = self._grp_name_entry.entry
-                if not name:
-                    self.notify("Please name the group to be created.")
-                    return
 
                 success = cb_func(name)
                 if not success:
@@ -210,7 +207,8 @@ class GroupSelectionWizard(Wizard):
             self.page_add("new_group", "Create a new group",
                           "Enter a name for a new group in the file.",
                           separator=True)
-            self._grp_name_entry = NameEntry(self)
+            self._grp_name_entry = NameEntry(self,
+                    changed_cb=self._name_changed_cb)
             self.content_add("new_group", self._grp_name_entry)
             self._grp_name_entry.show()
             self.action_add("new_group", "Cancel", self.goto, "group_list")
@@ -261,3 +259,14 @@ class GroupSelectionWizard(Wizard):
         self._groups_list.file = file_
         # if group:
         #     self._groups_list.selection = group
+
+    def _name_changed_cb(self, obj):
+        self._name_chaged = True
+        self._check_name()
+
+    def _check_name(self):
+        name = self._grp_name_entry.entry
+        if name:
+            self.action_disabled_set("Create", False)
+        else:
+            self.action_disabled_set("Create", True)
