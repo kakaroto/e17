@@ -16,8 +16,7 @@ SUBDIRS = src
 EXTRA_DIST = \
 	README \
 	AUTHORS \
-	COPYING \
-	Doxyfile
+	COPYING
 
 .PHONY: doc tools
 

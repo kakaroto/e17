@@ -20,8 +20,7 @@ EUPNPHEADERS = \
 	eupnp_service_info.h \
 	eupnp_service_proxy.h \
 	eupnp_event_bus.h \
-	eupnp_core.h \
-	eupnp_soap.h
+	eupnp_core.h
 
 noinst_HEADERS = eupnp_private.h
 
