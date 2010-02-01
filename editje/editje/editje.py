@@ -134,7 +134,6 @@ class Editje(elementary.Window):
         grp_wiz.file_set(self.e.workfile)
         grp_wiz.open()
 
-    # FIXME: not working yet!
     def _group_wizard_new_group_cb(self, grp_name):
         success = self.e.group_add(grp_name)
         if success:

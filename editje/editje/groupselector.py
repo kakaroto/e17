@@ -192,11 +192,7 @@ class GroupSelectionWizard(Wizard):
         if not switch_only:
             self.action_add("group_list", "Cancel", self.close)
 
-        # FIXME: fix group addition infra before letting this UI,
-        # which is *fine*, go
-
-        # if new_grp_cb:
-        if False:
+        if new_grp_cb:
             def group_added(cb_func):
                 name = self._grp_name_entry.entry
                 if not name:
@@ -240,7 +236,6 @@ class GroupSelectionWizard(Wizard):
         else:
             self.alternate_background_set(False)
 
-    # FIXME: return to it when group addition gets fixed
     def _goto_new_group(self):
         self.goto("new_group", alt_bg_style=True)
 
