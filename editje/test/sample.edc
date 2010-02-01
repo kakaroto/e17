@@ -120,7 +120,7 @@ collections {
                   to: "content";
                }
                params {
-                  string: "text" "127.0.0.1";
+                  //string: "text" "127.0.0.1";
                   int: "single line" "1";
                   int: "password" "0";
                }
