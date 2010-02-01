@@ -94,6 +94,10 @@ class GroupsList(elementary.List):
 
         self.go()
 
+    def selection_clear(self):
+        for i in self.selected_items_get():
+            i.selected_set(False)
+
 
 # TODO: maybe this widget is generic enough to be moved to general
 # widgets definition file
@@ -223,7 +227,7 @@ class GroupSelectionWizard(Wizard):
         self._preview = PreviewFrame(self)
         self.content_add("group_preview", self._preview)
         self._preview.show()
-        self.action_add("group_preview", "Cancel", self.goto, "group_list")
+        self.action_add("group_preview", "Cancel", self._goto_group_list)
         self.action_add("group_preview", "Delete", self._delete_group)
         self.action_add("group_preview", "Open", self._group_selected)
 
@@ -245,12 +249,17 @@ class GroupSelectionWizard(Wizard):
                                 self._groups_list.selection)
         self.goto("group_preview")
 
+    def _goto_group_list(self):
+        self._groups_list.selection_clear()
+        self.goto("group_list")
+
     def _group_selected(self):
         self._select_cb(self._groups_list.selection)
         ecore.idler_add(self.close)
 
     def _delete_group(self):
         print "FIXME: group deletion to be added soon."
+        self.notify("Group deletion to be added soon.")
         self.goto("group_list")
 
     def file_set(self, file_, group=None):
