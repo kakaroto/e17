@@ -176,6 +176,8 @@ int main(void)
    /* Start control point */
    eupnp_control_point_start(c);
 
+   eupnp_control_point_discovery_request_send(c, 5, "upnp:rootdevice");
+
    ret = 0;
    INFO_D(_log_domain, "Started sniffing on the UPnP network.");
    ecore_main_loop_begin();
