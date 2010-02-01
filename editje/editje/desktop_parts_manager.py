@@ -17,7 +17,6 @@
 # License along with Editje.  If not, see
 # <http://www.gnu.org/licenses/>.
 import evas
-import edje
 
 
 class PartViewport(evas.Rectangle):

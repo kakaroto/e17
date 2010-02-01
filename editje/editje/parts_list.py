@@ -17,7 +17,6 @@
 # <http://www.gnu.org/licenses/>.
 
 import edje
-import elementary
 
 from clist import CList
 from newpart import NewPartWizard

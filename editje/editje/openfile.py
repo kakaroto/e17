@@ -22,7 +22,6 @@ import shutil
 import string
 
 import evas
-import edje
 import elementary
 
 from editje import Editje

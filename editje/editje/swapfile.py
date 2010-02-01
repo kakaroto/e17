@@ -21,7 +21,6 @@ from shutil import copyfile, move, rmtree
 from tempfile import mkstemp, mkdtemp
 from subprocess import Popen, PIPE
 import re
-import filecmp
 
 import sysconfig
 

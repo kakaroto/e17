@@ -23,7 +23,7 @@ import elementary
 
 from controller import Controller, View
 from desktop_handler import Handler
-from desktop_part_listener import PartListener, PartHighlight
+from desktop_part_listener import PartListener
 import desktop_part_handlers as part_handlers
 from desktop_parts_manager import PartsManager
 
@@ -527,27 +527,3 @@ class PartHighlight(PartListener, edje.Edje):
     def part_move(self, obj):
         self.geometry = obj.geometry
         self.show()
-
-class RelativePartListener(PartListener):
-    def __init__(self):
-        PartListener.__init__(self)
-        self._rel_to = None
-        self._rel_rel = None
-        self._rel_ofs = None
-
-    def _rel_set(self, rel):
-        if self._rel_to:
-            self._rel_to.on_move_del(self.part_move)
-            self._rel_to.on_resize_add(self.part_move)
-
-        if part:
-            self._part = part
-            part.on_move_add(self.part_move)
-            part.on_resize_add(self.part_move)
-            self.part_move(part)
-            self.show()
-        else:
-            self._part = None
-            self.hide()
-
-    rel = property(fset=_rel_set)

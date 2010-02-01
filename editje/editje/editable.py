@@ -23,7 +23,6 @@ from event_manager import Manager
 from editable_part import EditablePart
 from editable_program import EditableProgram
 from editable_animation import EditableAnimation
-from swapfile import SwapFile
 
 class Editable(Manager, object):
     def __init__(self, canvas, swapfile):

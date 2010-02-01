@@ -20,8 +20,8 @@ import os
 
 import evas
 import ecore
-from elementary import InnerWindow, Layout, List, Entry, Scroller, Label, \
-                       Fileselector, Button, Box, ELM_SCROLLER_POLICY_OFF
+from elementary import InnerWindow, Layout, List, Scroller, Fileselector, \
+                       Button, Box
 
 import sysconfig
 from floater import Wizard
@@ -414,9 +414,6 @@ class NewAnimationWizard(Wizard):
         self.action_add("default", "Cancel", self._cancel)
         self.action_add("default", "Add", self._add)
         self.action_disabled_set("Add", True)
-
-    def _name_changed_cb(self, obj):
-        self._add()
 
     def _name_changed_cb(self, obj):
         name = self._anim_name_entry.entry

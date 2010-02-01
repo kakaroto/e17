@@ -17,7 +17,6 @@
 # License along with Editje.  If not, see
 # <http://www.gnu.org/licenses/>.
 import edje
-from edje.edit import EdjeEdit
 
 from event_manager import Manager
 from editable_program import EditableProgram
@@ -173,6 +172,9 @@ class EditableAnimation(Manager, object):
 
         # Search
         idx = self.timestops.index(time)
+
+        progname = "@%s@%.2f" % (self._name, time)
+        prog = self.e.program_get(progname)
 
         # Unlink
         prev = self.timestops[idx - 1]

@@ -21,7 +21,6 @@ import sys
 
 import evas
 import edje
-from edje.edit import EdjeEdit
 import elementary
 
 import sysconfig

@@ -17,7 +17,6 @@
 # License along with Editje.  If not, see
 # <http://www.gnu.org/licenses/>.
 import edje
-from edje.edit import EdjeEdit
 
 from event_manager import Manager
 

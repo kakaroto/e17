@@ -21,8 +21,6 @@ import edje
 from details import EditjeDetails
 from details_widget_entry import WidgetEntry
 from details_widget_boolean import WidgetBoolean
-from details_widget_color import WidgetColor
-from details_widget_button import WidgetButton
 from details_widget_combo import WidgetCombo
 from details_widget_partlist import WidgetPartList
 from prop import Property, PropertyTable

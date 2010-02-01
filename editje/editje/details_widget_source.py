@@ -16,12 +16,7 @@
 # You should have received a copy of the GNU Lesser General Public
 # License along with Editje.  If not, see
 # <http://www.gnu.org/licenses/>.
-import edje
-import evas
-import elementary
-
 from details_widget_entry_button import WidgetEntryButton
-from floater import Floater
 
 
 class WidgetSource(WidgetEntryButton):
