@@ -25,7 +25,7 @@ AM_PROG_LIBTOOL
 
 
 
-PKG_CHECK_MODULES(EFL, eflxx evasxx ecore ecore-x ecore-evas ecore-config)
+PKG_CHECK_MODULES(EFL, eflxx evasxx ecore ecore-x ecore-evas ecore-config ecore-data)
 AC_OUTPUT([
 Makefile
 include/Makefile

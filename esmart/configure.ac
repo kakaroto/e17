@@ -69,6 +69,7 @@ PKG_CHECK_MODULES(RESIZE, [
 PKG_CHECK_MODULES(TRANSX11, [
     evas >= 0.9.9
     ecore-x >= 0.9.9
+    ecore-data >= 0.9.9
     imlib2 >= 1.0.0
     eina-0
   ], [

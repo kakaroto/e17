@@ -109,10 +109,11 @@ fi
 #dbusservicedir=`$PKG_CONFIG --variable=session_bus_system-services_dir dbus-1`
 #AC_SUBST(dbusservicedir)
 
-requirements="ecore eet ecore-file ehal edbus evas dbus-1"
+requirements="ecore eet ecore-data ecore-file ehal edbus evas dbus-1"
 
 PKG_CHECK_MODULES(EXALT, [
   ecore >= 0.9.9.037,
+  ecore-data >= 0.9.9.037,
   eet >= 0.9.9.038,
   ecore-file >= 0.9.9,
   ehal >= 0.1.0.002,

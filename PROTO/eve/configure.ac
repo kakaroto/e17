@@ -14,7 +14,7 @@ AC_PROG_CC
 
 ### Checks for libraries
 
-PKG_CHECK_MODULES([EVE], [ecore-evas edje ewebkit])
+PKG_CHECK_MODULES([EVE], [ecore-data ecore-evas edje ewebkit])
 
 
 ### Checks for compiler characteristics

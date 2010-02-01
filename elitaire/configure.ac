@@ -73,6 +73,7 @@ PKG_CHECK_MODULES(ELITAIRE, [
   evas
   ecore
   ecore-config
+  ecore-data
   ecore-evas
   ecore-file
   edje

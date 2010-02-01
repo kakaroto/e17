@@ -31,6 +31,7 @@ ALL_LINGUAS=""
 
 PKG_CHECK_MODULES(EXML, [
   ecore
+  ecore-data
   libxml-2.0
   libxslt
 ])

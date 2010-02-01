@@ -18,7 +18,7 @@ AM_PROG_CC_C_O
 
 AM_PROG_LIBTOOL
 
-requirements="ecore ecore-evas ecore-file evas edje"
+requirements="ecore ecore-data ecore-evas ecore-file evas edje"
 
 
 AC_SUBST(version_info)
@@ -47,6 +47,7 @@ PKG_CHECK_MODULES(EYELIGHT, [
                         ecore >= 0.9.9.037,
                         ecore-evas >= 0.9.9.038,
                         ecore-file >= 0.9.9,
+                        ecore-data >= 0.9.9,
                         evas >= 0.9.9.40,
                         edje >= 0.5
                         emotion >= 0.1

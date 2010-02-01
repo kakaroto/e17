@@ -82,6 +82,7 @@ PKG_CHECK_MODULES(ECORE, [
   ecore-file >= 0.9.9
   ecore-ipc >= 0.9.9
   ecore-config >= 0.9.9
+  ecore-data >= 0.9.9
 ])
 PKG_CHECK_MODULES(EDJE, [edje >= 0.5.0])
 PKG_CHECK_MODULES(ESMART, [

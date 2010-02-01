@@ -85,7 +85,7 @@ dnl Set PACKAGE_SOURCE_DIR in config.h.
 packagesrcdir=`cd $srcdir && pwd`
 AC_DEFINE_UNQUOTED(PACKAGE_SOURCE_DIR, "${packagesrcdir}", [Source Code Directory])
 
-PKG_CHECK_MODULES(ECORE, [ecore >= 0.9.9.043])
+PKG_CHECK_MODULES(ECORE, [ecore >= 0.9.9.043 ecore-data])
 PKG_CHECK_MODULES(EDJE, [edje >= 0.5.0.043])
 PKG_CHECK_MODULES(EVAS, [evas >= 0.9.9.043])
 PKG_CHECK_MODULES(ETK, [etk >= 0.1.0.042])

@@ -30,6 +30,7 @@ PKG_CHECK_MODULES([EYESIGHT],
 		  [evas
 		  ecore
 		  ecore-evas
+		  ecore-data
 		  edje
         efreet])
         
