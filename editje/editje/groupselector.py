@@ -241,6 +241,7 @@ class GroupSelectionWizard(Wizard):
         self._preview.group_set(self._groups_list.file,
                                 self._groups_list.selection)
         self.goto("group_preview")
+        self.title_text = "Group preview - \"%s\"" % self._groups_list.selection
 
     def _goto_group_list(self):
         self._groups_list.selection_clear()

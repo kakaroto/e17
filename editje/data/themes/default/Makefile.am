@@ -29,7 +29,8 @@ shadow.edc \
 styles.edc \
 timeline.edc \
 timeline_transition.edc \
-toolbar.edc
+toolbar.edc \
+buttons.edc
 
 default.edj: Makefile $(EXTRA_DIST)
 	$(EDJE_CC) $(EDJE_FLAGS) \

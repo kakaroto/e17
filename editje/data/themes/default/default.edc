@@ -27,6 +27,7 @@
 #include "toolbar.edc"
 #include "popups.edc"
 #include "desktop.edc"
+#include "buttons.edc"
 
 collections {
    group {

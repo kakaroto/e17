@@ -105,34 +105,50 @@ class SignalsList(CList):
             self.e.signal_del(i[0])
 
 
-class TypesList(elementary.List):
+class SignalTypesButtons(elementary.Layout):
     def __init__(self, parent, type_select_cb=None):
-        elementary.List.__init__(self, parent)
+        elementary.Layout.__init__(self, parent)
         self._parent = parent
         self._type_select_cb = type_select_cb
 
-        self.size_hint_align_set(evas.EVAS_HINT_FILL, evas.EVAS_HINT_FILL)
-        self.size_hint_weight_set(evas.EVAS_HINT_EXPAND, evas.EVAS_HINT_EXPAND)
-
         theme_file = sysconfig.theme_file_get("default")
 
-        ico = elementary.Icon(parent)
-        ico.file_set(theme_file, "editje/icon/animation")
-        ico.size_hint_aspect_set(evas.EVAS_ASPECT_CONTROL_VERTICAL, 1, 1)
-        ico.show()
-        self.item_append("Animation triggering signal", ico, None,
-                         self._type_select_cb, edje.EDJE_ACTION_TYPE_NONE)
-        ico = elementary.Icon(parent)
-        ico.file_set(theme_file, "editje/icon/signal")
-        ico.size_hint_aspect_set(evas.EVAS_ASPECT_CONTROL_VERTICAL, 1, 1)
-        ico.show()
-        self.item_append("General purpose signal", ico, None,
-                         self._type_select_cb,
-                         edje.EDJE_ACTION_TYPE_SIGNAL_EMIT)
-        # self.item_append("Script triggering signal", None, None,
-        #                  self._type_select_cb, edje.EDJE_ACTION_TYPE_SCRIPT)
+        self._file_set(theme_file, "editje/list/signal_type_buttons")
+        self._labels_set()
 
-        self.go()
+    def _file_set(self, file_, group):
+        elementary.Layout.file_set(self, file_, group)
+        self._edje = self.edje_get()
+        self._edje.signal_callback_add(
+            "animation_sig,selected", "editje/signal_type_buttons",
+            self._sig_cb)
+        self._edje.signal_callback_add(
+            "general_sig,selected", "editje/signal_type_buttons", self._sig_cb)
+
+    def _labels_set(self):
+        # TODO: later, make long strings fit in the second labels
+        # with textblocks
+
+        self._edje.part_text_set(
+            "button_01.label", "Animation triggering signal")
+        self._edje.part_text_set("button_01.sublabel", "")
+
+        # "Choose it if you want that a signal"
+        # " coming from an UI element interaction to trigger an animation."
+
+        self._edje.part_text_set(
+            "button_02.label", "General purpose signal")
+        self._edje.part_text_set("button_02.sublabel", "")
+
+        # "Choose it if you "
+        # "want that a signal coming from an UI element interaction"
+        # " to yield another custom signal."
+
+    def _sig_cb(self, obj, emission, source):
+        if emission == "animation_sig,selected":
+            self._type_select_cb(edje.EDJE_ACTION_TYPE_NONE)
+        elif emission == "general_sig,selected":
+            self._type_select_cb(edje.EDJE_ACTION_TYPE_SIGNAL_EMIT)
 
 
 class NewSignalWizard(Wizard):
@@ -142,6 +158,7 @@ class NewSignalWizard(Wizard):
                             " NewSignalWizard objects.")
 
         Wizard.__init__(self, parent)
+        self._type = None
 
         self.page_add("default", "New Signal",
                       "Name the new signal to be created and choose its type.")
@@ -153,22 +170,25 @@ class NewSignalWizard(Wizard):
         self.content_add("default", self._sig_name_entry)
         self._sig_name_entry.show()
 
-        self._types_list = TypesList(self, self._type_select)
-        self.content_add("default", self._types_list)
-        self._types_list.show()
+        self._types_btns = SignalTypesButtons(self, self._type_select)
+        self._types_btns.size_hint_weight_set(evas.EVAS_HINT_EXPAND,
+                                              evas.EVAS_HINT_EXPAND)
+        self._types_btns.size_hint_align_set(evas.EVAS_HINT_FILL,
+                                             evas.EVAS_HINT_FILL)
+        self.content_add("default", self._types_btns)
+        self._types_btns.show()
 
         self.action_add("default", "Cancel", self._cancel)
         self.action_add("default", "Create", self._add)
         self.action_disabled_set("Create", True)
 
         self._new_sig_cb = new_sig_cb
-        self._type = None
 
     def _name_changed_cb(self, obj):
         self._check_name_and_type()
 
-    def _type_select(self, list_, item, label, *args, **kwargs):
-        self._type = label
+    def _type_select(self, type_):
+        self._type = type_
         self._check_name_and_type()
 
     def _check_name_and_type(self):
@@ -179,7 +199,7 @@ class NewSignalWizard(Wizard):
             self.action_disabled_set("Create", True)
 
     def _add(self):
-        name = self._sig_name_entry.entry.replace("<br>", "")
+        name = self._sig_name_entry.entry
         if name == "":
             self.notify("Please give a name to the new signal.")
             return

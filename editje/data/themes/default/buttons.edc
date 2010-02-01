@@ -1,0 +1,356 @@
+/*
+ * Copyright (C) 2009 Samsung Electronics.
+ *
+ * This file is part of Editje.
+ *
+ * Editje is free software: you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * Editje is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with Editje.  If not, see
+ * <http://www.gnu.org/licenses/>.
+ */
+
+
+collections {
+   group {
+      name: "editje/list/signal_type_buttons";
+
+      parts {
+         part {
+            name: "content.bg";
+            mouse_events: 0;
+            type: "RECT";
+
+            description {
+               state: "default" 0.0;
+               color: 0 0 0 0;
+            }
+         }
+
+         part {
+            name: "button_01.bg";
+            mouse_events: 0;
+            type: "IMAGE";
+
+            description {
+               state: "default" 0.0;
+               image {
+                  normal: "dialog_entry_bg.png";
+                  border: 20 20 0 0;
+               }
+
+               rel1 {
+                  relative: 0.1 0.1;
+                  to: "content.bg";
+               }
+               rel2 {
+                  relative: 0.9 0.1;
+                  offset: -1 100;
+                  to: "content.bg";
+               }
+            }
+            description {
+               state: "hover" 0.0;
+               inherit: "default" 0.0;
+               color: 200 200 200 255;
+            }
+            description {
+               state: "selected" 0.0;
+               inherit: "default" 0.0;
+               color: 120 120 120 255;
+            }
+         }
+
+         part {
+            name: "button_01.ico";
+            mouse_events: 0;
+            type: "IMAGE";
+
+            description {
+               state: "default" 0.0;
+               image.normal: "ico_animation.png";
+               aspect: 1.0 1.0;
+
+               rel1 {
+                  relative: 0.05 0.2;
+                  to: "button_01.bg";
+               }
+               rel2 {
+                  relative: 0.25 0.8;
+                  offset: -1 -1;
+                  to: "button_01.bg";
+               }
+            }
+         }
+
+         part {
+            name: "button_01.label";
+            type: TEXT;
+            mouse_events: 0;
+            description {
+               state: "default" 0.0;
+               align: 0.0 0.5;
+               color_class: "default_label";
+               text {
+                  text: "label";
+                  font: "Sans:style=bold";
+                  size: 14;
+                  align: 0.0 0.5;
+                  min: 1 1;
+                  max: 1 0;
+               }
+               rel1 {
+                  relative: 1.0 0.10;
+                  to_x: "button_01.ico";
+                  to_y: "button_01.bg";
+                  offset: 20 0;
+               }
+               rel2 {
+                  relative: 0.90 0.50;
+                  to: "button_01.bg";
+               }
+            }
+         }
+
+         part {
+            name: "button_01.sublabel";
+            type: TEXT;
+            mouse_events: 0;
+            description {
+               state: "default" 0.0;
+               align: 0.0 0.5;
+               color_class: "default_label";
+               text {
+                  text: "sublabel-TEST";
+                  font: "Sans:style=bold";
+                  size: 10;
+                  align: 0.0 0.5;
+                  min: 1 1;
+                  max: 1 0;
+               }
+               rel1 {
+                  relative: 0.0 1.0;
+                  to: "button_01.label";
+                  offset: 0 10;
+               }
+               rel2 {
+                  relative: 0.90 0.95;
+                  to: "button_01.bg";
+               }
+            }
+         }
+
+         part {
+            name: "button_01.clipper";
+            mouse_events: 1;
+            type: "RECT";
+
+            description {
+               state: "default" 0.0;
+               color: 0 0 0 0;
+               rel1.to: "button_01.bg";
+               rel2.to: "button_01.bg";
+            }
+         }
+
+         part {
+            name: "button_02.bg";
+            mouse_events: 0;
+            type: "IMAGE";
+
+            description {
+               state: "default" 0.0;
+               image {
+                  normal: "dialog_entry_bg.png";
+                  border: 20 20 0 0;
+               }
+
+               rel1 {
+                  relative: 0.0 1.0;
+                  offset: 0 30;
+                  to: "button_01.bg";
+               }
+               rel2 {
+                  relative: 1.0 1.0;
+                  offset: -1 130;
+                  to: "button_01.bg";
+               }
+            }
+            description {
+               state: "hover" 0.0;
+               inherit: "default" 0.0;
+               color: 200 200 200 255;
+            }
+            description {
+               state: "selected" 0.0;
+               inherit: "default" 0.0;
+               color: 120 120 120 255;
+            }
+         }
+
+         part {
+            name: "button_02.ico";
+            mouse_events: 0;
+            type: "IMAGE";
+
+            description {
+               state: "default" 0.0;
+               image.normal: "ico_signal.png";
+               aspect: 1.0 1.0;
+
+               rel1 {
+                  relative: 0.05 0.2;
+                  to: "button_02.bg";
+               }
+               rel2 {
+                  relative: 0.25 0.8;
+                  offset: -1 -1;
+                  to: "button_02.bg";
+               }
+            }
+         }
+
+         part {
+            name: "button_02.label";
+            type: TEXT;
+            mouse_events: 0;
+            description {
+               state: "default" 0.0;
+               align: 0.0 0.5;
+               color_class: "default_label";
+               text {
+                  text: "label";
+                  font: "Sans:style=bold";
+                  size: 14;
+                  align: 0.0 0.5;
+                  min: 1 1;
+                  max: 1 0;
+               }
+               rel1 {
+                  relative: 1.0 0.10;
+                  to_x: "button_02.ico";
+                  to_y: "button_02.bg";
+                  offset: 20 0;
+               }
+               rel2 {
+                  relative: 0.90 0.50;
+                  to: "button_02.bg";
+               }
+            }
+         }
+
+         part {
+            name: "button_02.sublabel";
+            type: TEXT;
+            mouse_events: 0;
+            description {
+               state: "default" 0.0;
+               align: 0.0 0.5;
+               color_class: "default_label";
+               text {
+                  text: "sublabel";
+                  font: "Sans:style=bold";
+                  size: 10;
+                  align: 0.0 0.5;
+                  min: 1 1;
+                  max: 1 0;
+               }
+               rel1 {
+                  relative: 0.0 1.0;
+                  to: "button_02.label";
+                  offset: 0 10;
+               }
+               rel2 {
+                  relative: 0.90 0.95;
+                  to: "button_02.bg";
+               }
+            }
+         }
+
+         part {
+            name: "button_02.clipper";
+            mouse_events: 1;
+            type: "RECT";
+
+            description {
+               state: "default" 0.0;
+               color: 0 0 0 0;
+               rel1.to: "button_02.bg";
+               rel2.to: "button_02.bg";
+            }
+         }
+
+         programs {
+            /* program { */
+            /*    name: "button_01.hover"; */
+            /*    signal: "mouse,in"; */
+            /*    source: "button_01.clipper"; */
+            /*    action: STATE_SET "hover" 0.0; */
+            /*    target: "button_01.bg"; */
+            /*    after: "button_02.unselect"; */
+            /* } */
+
+            program {
+               name: "button_01.select";
+               signal: "mouse,clicked,1";
+               source: "button_01.clipper";
+               action: STATE_SET "selected" 0.0;
+               target: "button_01.bg";
+               after: "button_01.selected";
+            }
+
+            program {
+               name: "button_01.selected";
+               action: SIGNAL_EMIT "animation_sig,selected"
+                  "editje/signal_type_buttons";
+               after: "button_02.unselect";
+            }
+
+            program {
+               name: "button_02.unselect";
+               action: STATE_SET "default" 0.0;
+               target: "button_02.bg";
+            }
+
+            /* program { */
+            /*    name: "button_02.hover"; */
+            /*    signal: "mouse,in"; */
+            /*    source: "button_02.clipper"; */
+            /*    action: STATE_SET "hover" 0.0; */
+            /*    target: "button_02.bg"; */
+            /*    after: "button_01.unselect"; */
+            /* } */
+
+            program {
+               name: "button_02.select";
+               signal: "mouse,clicked,1";
+               source: "button_02.clipper";
+               action: STATE_SET "selected" 0.0;
+               target: "button_02.bg";
+               after: "button_02.selected";
+            }
+
+            program {
+               name: "button_02.selected";
+               action: SIGNAL_EMIT "general_sig,selected"
+                  "editje/signal_type_buttons";
+               after: "button_01.unselect";
+            }
+
+            program {
+               name: "button_01.unselect";
+               action: STATE_SET "default" 0.0;
+               target: "button_01.bg";
+            }
+         }
+      }
+   }
+}
