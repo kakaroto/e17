@@ -65,42 +65,45 @@ cbs[<int>c_eupnp.EUPNP_EVENT_SERVICE_FOUND] = _build_service_found_event
 cbs[<int>c_eupnp.EUPNP_EVENT_SERVICE_GONE] = _build_service_gone_event
 
 
-cdef Eina_Bool _event_cb(void *user_data,
-                         Eupnp_Event_Type type,
-                         void *event_data) with gil:
-    cdef object t
+cdef int _event_cb(void *user_data,
+                   Eupnp_Event_Type type,
+                   void *event_data) with gil:
+    cdef object bus
+    cdef object args
+    cdef object kwargs
+    cdef object user_cb
     cdef build_callback_t cb
-    cdef int dbg
-    t = <object>user_data
+    cdef bool ret = True
+
+    (bus, user_cb, args, kwargs) = <object>user_data
 
     # Find specific build callbacks, otherwise just cast to a python object
-    if <int>type >= cbs_len:
-        cb = _generic_build
-    else:
-        cb = cbs[<int>type]
+    cb = _generic_build if <int>type >= cbs_len else cbs[<int>type]
 
     # Get callback response, False means unsubscription
     try:
-        ret = t[0](cb(event_data), *t[1], **t[2])
+        ret = user_cb(cb(event_data), *args, **kwargs)
     except Exception, e:
         traceback.print_exc()
 
     if not ret:
         try:
-            _subscriptions[type].remove(t)
+            bus._subscriptions[type].remove(<object>user_data)
         except ValueError, v:
             traceback.print_exc()
         return <Eina_Bool>0
     return <Eina_Bool>1
 
 
-_subscriptions = {}
-
 
 cdef class Bus:
     EVENT_DEVICE_FOUND = c_eupnp.EUPNP_EVENT_DEVICE_FOUND
     EVENT_DEVICE_GONE = c_eupnp.EUPNP_EVENT_DEVICE_GONE
     EVENT_DEVICE_READY = c_eupnp.EUPNP_EVENT_DEVICE_READY
+    cdef public dict _subscriptions
+
+    def __cinit__(self, *args, **kwargs):
+        self._subscriptions = {}
 
     def event_type_new(self):
         return c_eupnp.eupnp_event_bus_event_type_new()
@@ -122,10 +125,10 @@ cdef class Bus:
         if not callable(callback):
             raise TypeError("cb must be callable")
 
-        data = (callback, args, kwargs)
-        lst = _subscriptions.setdefault(event_type, [])
+        data = (self, callback, args, kwargs)
+        lst = self._subscriptions.setdefault(event_type, [])
         lst.append(data)
-        handle = c_eupnp.eupnp_event_bus_subscribe(<Eupnp_Event_Type>event_type, <Eupnp_Callback>_event_cb, <void*>data)
+        handle = c_eupnp.eupnp_event_bus_subscribe(<Eupnp_Event_Type>event_type, _event_cb, <void*>data)
         return <long>handle
 
     cpdef unsubscribe(self, handle):

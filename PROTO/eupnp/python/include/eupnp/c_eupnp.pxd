@@ -23,7 +23,6 @@ ctypedef struct Eina_Inlist:
 
 ctypedef object (*build_callback_t)(void *event_data)
 
-
 cdef extern from "Eupnp.h":
     int eupnp_init()
     int eupnp_shutdown()
@@ -93,6 +92,8 @@ cdef extern from "eupnp_service_info.h":
         char *control_URL
         char *scpd_URL
         char *eventsub_URL
+    Eupnp_Service_Info *eupnp_service_info_ref(Eupnp_Service_Info *service_info)
+    void eupnp_service_info_unref(Eupnp_Service_Info *service_info)
 
 
 cdef extern from "eupnp_service_proxy.h":

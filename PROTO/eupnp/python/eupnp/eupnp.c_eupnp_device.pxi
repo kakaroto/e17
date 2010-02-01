@@ -19,45 +19,56 @@ cimport c_eupnp
 cimport python
 
 
-cdef void _proxy_ready_cb(void *data, Eupnp_Service_Proxy *proxy):
-    cdef object t
-    cdef object self
-    cdef Eupnp_Service_Info* s
-
-    t = <object> data
-    self = t[0]
-    s = <Eupnp_Service_Info*> t[1]
-
-    self._services[str(s.id)] = <long>c_eupnp.eupnp_service_proxy_ref(proxy)
-    python.Py_DECREF(t)
-
-
 cdef class Device:
     cdef c_eupnp.Eupnp_Device_Info *_root
     cdef bool _ready
     cdef bool _gone
+    cdef dict _services
 
     def __cinit__(self, ready=False, gone=False):
+        self._services = {}
+        self._root = NULL
         self._ready = ready
         self._gone = gone
-        self._root = NULL
 
     def __dealloc__(self):
         if self._root:
-            self._unset_obj()
+            if self._services:
+                self._services.clear()
+            c_eupnp.eupnp_device_info_unref(self._root)
+            self._root = NULL
 
     cdef _set_obj(self, void *obj):
+        python.Py_INCREF(self)
         self._root = c_eupnp.eupnp_device_info_ref(<Eupnp_Device_Info*>obj)
-
-    cdef _unset_obj(self):
-        c_eupnp.eupnp_device_info_unref(self._root)
-        self._root = NULL
 
     def __str__(self):
         return '%s(ready=%s, gone=%s, udn="%s", device_type="%s", location="%s", '\
-               'friendly_name="%s")' % \
+               'friendly_name="%s", refs=%d)' % \
                (self.__class__.__name__, self._ready, self._gone, self.udn,
-                self.device_type, self.location, self.friendly_name)
+                self.device_type, self.location, self.friendly_name,
+                python.Py_REFCOUNT(self))
+
+    def services_get(self):
+        cdef Eina_Inlist *itr
+        cdef Eupnp_Service_Info *s
+        cdef Service service
+
+        if not self._services:
+            itr = <Eina_Inlist*> self._root.services
+
+            while itr != NULL:
+                s = <Eupnp_Service_Info*> itr
+                service = Service()
+                service._set_obj(s)
+                self._services[service.id] = service
+                itr = itr.prev
+
+        return self._services
+
+    property services:
+        def __get__(self):
+            return self.services_get()
 
     def udn_get(self):
         return self._root.udn
@@ -178,9 +189,23 @@ cdef class Service:
 
     def __cinit__(self, gone=False):
         self._gone = gone
+        self._service = NULL
+
+    def __dealloc__(self):
+        print 'dealloc service'
+        if self._service is not NULL:
+            c_eupnp.eupnp_service_info_unref(self._service)
+            self._service = NULL
 
     cdef _set_obj(self, void *obj):
-        self._service = <Eupnp_Service_Info*> obj
+        python.Py_INCREF(self)
+        self._service = c_eupnp.eupnp_service_info_ref(<Eupnp_Service_Info*> obj)
+
+    def __str__(self):
+        return '%s(gone=%s, udn="%s", id="%s", type="%s", '\
+               'refs=%d)' % \
+               (self.__class__.__name__, self._gone, self.udn,
+                self.id, self.service_type, python.Py_REFCOUNT(self))
 
     def udn_get(self):
         return self._service.udn
