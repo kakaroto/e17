@@ -208,9 +208,9 @@ class PartStateDetails(EditjeDetails):
         self.part = self.e.part._part
         state = self.part.state_selected_get()
         if self._animmode:
-            self._header_table["name"].value = part.name
+            self._header_table["name"].value = self.part.name
             self._header_table["type"].value = \
-                self._part_type_to_text(part.type)
+                self._part_type_to_text(self.part.type)
         else:
             if state == "(null) 0.00":
                 state = "default 0.00"
