@@ -98,6 +98,12 @@ class PartStateDetails(EditjeDetails):
 
         self.edje_get().signal_emit("cl,option,enable", "editje")
 
+        self.e.callback_add("group.changed",
+                                             self._edje_load)
+        self.e.part.callback_add("part.changed",
+                                             self._part_update)
+        self.e.part.callback_add("part.renamed",
+                                             self._part_update)
         self.e.part.state.callback_add("state.changed",
                                              self._state_changed_cb)
         self.e.part.state.callback_add("rel1x.changed",
@@ -228,15 +234,15 @@ class PartStateDetails(EditjeDetails):
         popup.on_changed_size_hints_del(self._state_popup_place)
         popup.close()
 
-    def editable_set(self, obj):
-        self.editable = obj
+    def _edje_load(self, emissor, data):
+        self.editable = self.e.edje
 
-    def active_part_set(self, part):
-        self.part = part
-        state = part.state_selected_get()
+    def _part_update(self, emissor, data):
+        self.part = self.e.part._part
+        state = self.part.state_selected_get()
         if self._animmode:
-            self._header_table["name"].value = part.name
-            self._header_table["type"].value = self._part_type_to_text(part.type)
+            self._header_table["name"].value = self.part.name
+            self._header_table["type"].value = self._part_type_to_text(self.part.type)
         else:
             if state == "(null) 0.00":
                 state = "default 0.00"
@@ -245,7 +251,7 @@ class PartStateDetails(EditjeDetails):
             #    print st
             #    self.state_prop[1].item_add(st)
             self._header_table["state"].value = state
-        self.state = part.state_get(state)
+        self.state = self.part.state_get(state)
         self._update()
         self.open()
 

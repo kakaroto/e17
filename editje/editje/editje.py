@@ -70,7 +70,6 @@ class Editje(elementary.Window):
         self._toolbar_static_init()
         self._desktop_init()
         self._modes_init()
-        self._hacks_init()
 
         self.select_group()
 
@@ -533,21 +532,3 @@ class Editje(elementary.Window):
 
         self._mode_add("Signals", "editje/icon/signal",
                        toolbar, mainbar, sidebar)
-
-    # HACKS
-    def _hacks_init(self):
-        self.e.callback_add("group.changed",
-                                       self._group_changed_cb)
-        self.e.part.callback_add("part.changed",
-                                       self._part_selected_cb)
-
-    def _group_changed_cb(self, emissor, data):
-        self.editable = self.e.edje
-
-        self.part_state_details.editable_set(self.editable)
-        self.anim_state_details.editable_set(self.editable)
-
-    def _part_selected_cb(self, emissor, name):
-        part = self.editable.part_get(name)
-        self.part_state_details.active_part_set(part)
-        self.anim_state_details.active_part_set(part)

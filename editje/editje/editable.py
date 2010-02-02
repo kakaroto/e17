@@ -35,16 +35,16 @@ class Editable(Manager, object):
         self._group = ""
         self._edje = None
 
+        self.animation = EditableAnimation(self)
+        self.part = EditablePart(self)
+        self.signal = EditableProgram(self)
+
         self._min_max_init()
         self._modification_init()
         self._parts_init()
         self._programs_init()
         self._animations_init()
         self._signals_init()
-
-        self.animation = EditableAnimation(self)
-        self.part = EditablePart(self)
-        self.signal = EditableProgram(self)
 
     # Edje
     def _edje_get(self):
@@ -228,6 +228,8 @@ class Editable(Manager, object):
         self.callback_add("group.changed", self._parts_reload_cb)
         self.callback_add("part.added", self._parts_reload_cb)
         self.callback_add("part.removed", self._parts_reload_cb)
+        self.callback_add("part.removed", self._parts_reload_cb)
+        self.part.callback_add("name.changed", self._parts_reload_cb)
 
     def _parts_reload_cb(self, emissor, data):
         self.parts = self._edje.parts
