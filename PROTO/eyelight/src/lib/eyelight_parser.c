@@ -248,7 +248,12 @@ char* eyelight_next_token(Eyelight_Compiler* compiler,char *p, char *end, char *
         else if(!in_comment)
             done = 1;
         else
-            p++;
+	{
+	   if (*p == '\n')
+	     compiler->line++;
+
+	   p++;
+	}
     }
 
     if(!tok_start)
