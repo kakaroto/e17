@@ -1,0 +1,107 @@
+# Italian translation for Shellementary.
+# This file is put in the public domain.
+# Massimo Maiurana <maiurana@gmail.com>, 2010.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Shellementary\n"
+"Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
+"POT-Creation-Date: 2010-02-01 18:47+0400\n"
+"PO-Revision-Date: 2010-02-02 13:37+0400\n"
+"Last-Translator: Massimo Maiurana <maiurana@gmail.com>\n"
+"Language-Team: none\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: src/bin/shelm.c:197
+msgid "Error!"
+msgstr "Errore!"
+
+#: src/bin/shelm.c:202
+msgid "Warning!"
+msgstr "Avvertimento!"
+
+#: src/bin/shelm.c:207
+msgid "Information"
+msgstr "Informazione"
+
+#: src/bin/shelm_about.c:9
+msgid "About Shellementary"
+msgstr "A proposito di Shellementary"
+
+#: src/bin/shelm_about.c:34
+msgid ""
+"<b>Display dialogs from shell scripts</><br>Written as a zenity replacement, "
+"supports the same arguments<br><b>http://svn.enlightenment.org/svn/e/trunk/"
+"PROTO/shellementary</><br>Based on great Elementary toolkit by <b>raster</> "
+"and C programming language.<br><b>License:</> GNU General Public License v3"
+msgstr ""
+"<b>Visualizza finestre di dialogo da script di shell</><br>"
+"Concepito come alternativa per Zenity, supporta gli stessi argomenti<br>"
+"<b>http://svn.enlightenment.org/svn/e/trunk/PROTO/shellementary</><br>"
+"Basato sul grandioso toolkit Elementary di <b>raster</> e il linguaggio di "
+"programmation C.<br><b>Licenza :</> GNU General Public License v3"
+
+#: src/bin/shelm_about.c:43
+msgid ""
+"<b>Author:</> quaker (quaker66@gmail.com)<br><br><b>Credits:</"
+"><br><b>Carsten Haitzler (raster)</> for Enlightenment DR17, great "
+"Elementary toolkit and help with developenment<br><b>Christopher Michael "
+"(devilhorns)</> for help with developenment<br>"
+msgstr ""
+"<b>Autore:</> quaker (quaker66@gmail.com)<br><br><b>Crediti :</"
+"><br><b>Carsten Haitzler (raster)</> per Enlightenment DR17, il grandioso "
+"toolkit Elementary e l'aiuto nello sviluppo<br><b>Christopher Michael "
+"(devilhorns)</> per l'aiuto nello sviluppo<br>"
+
+#: src/bin/shelm_about.c:58
+msgid "Close"
+msgstr "Chiudi"
+
+#: src/bin/shelm_dlg_entry.c:12
+msgid "Enter something here"
+msgstr "Inserire qualcosa qui"
+
+#: src/bin/shelm_dlg_entry.c:47 src/bin/shelm_dlg_list.c:56
+#: src/bin/shelm_dlg_scale.c:43 src/bin/shelm_dlg_textinfo.c:82
+msgid "Cancel"
+msgstr "Annulla"
+
+#: src/bin/shelm_dlg_entry.c:53 src/bin/shelm_dlg_simpleicon.c:44
+#: src/bin/shelm_dlg_list.c:62 src/bin/shelm_dlg_scale.c:49
+#: src/bin/shelm_dlg_textinfo.c:88
+msgid "OK"
+msgstr "OK"
+
+#: src/bin/shelm_dlg_list.c:12
+msgid "Select an item"
+msgstr "Selezionare un elemento"
+
+#: src/bin/shelm_dlg_question.c:12
+msgid "Question"
+msgstr "Domanda"
+
+#: src/bin/shelm_dlg_question.c:48
+msgid "No"
+msgstr "No"
+
+#: src/bin/shelm_dlg_question.c:54
+msgid "Yes"
+msgstr "Sì"
+
+#: src/bin/shelm_dlg_scale.c:12
+msgid "Adjust the value"
+msgstr "Modifica il valore"
+
+#: src/bin/shelm_dlg_textinfo.c:12
+msgid "Text Information"
+msgstr "Testo informativo"
+
+#: src/bin/shelm_callbacks.c:77
+msgid "fd error, exit."
+msgstr "Errore di fd, uscita."
+
+#: src/bin/shelm_callbacks.c:82
+msgid "nothing to read?"
+msgstr "nulla da leggere?"

@@ -7,9 +7,9 @@ msgstr ""
 "Project-Id-Version: Entrance\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
 "POT-Creation-Date: 2010-01-28 06:37+0400\n"
-"PO-Revision-Date: 2010-01-31 10:05+0400\n"
+"PO-Revision-Date: 2010-02-02 08:25+0400\n"
 "Last-Translator: batden <batden@orange.fr>\n"
-"Language-Team: French <LL@li.ogr>\n"
+"Language-Team: Enlightenment French Team <pourunmondesansgourou@gmail.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -42,29 +42,21 @@ msgstr "Échec de l'authentification.\n"
 
 #: src/daemon/auth.c:301
 msgid "_entrance_auth_entry_add: Auth write failed!\n"
-msgstr ""
-"_entrance_auth_entry_add : échec à l'écriture de l'authentification !\n"
+msgstr "_entrance_auth_entry_add : échec à l'écriture de l'authentification !\n"
 
 #: src/daemon/auth.c:314
 msgid "_entrance_auth_entry_add: Could not add auth entry to list!\n"
-msgstr ""
-"_entrance_auth_entry_add : impossible d'ajouter une entrée à la "
-"liste d'authentification !\n"
+msgstr "_entrance_auth_entry_add : impossible d'ajouter une entrée à la liste d'authentification !\n"
 
 #: src/daemon/auth.c:339
 #, c-format
 msgid "entranced_auth_display_secure: Setting up access for display %s\n"
-msgstr ""
-"entranced_auth_display_secure : paramétrage de l'accès à l'affichage %s\n"
+msgstr "entranced_auth_display_secure : paramétrage de l'accès à l'affichage %s\n"
 
 #: src/daemon/auth.c:402
 #, c-format
-msgid ""
-"entranced_auth_display_secure: Successfully set up access for %s "
-"(localhost)\n"
-msgstr ""
-"entranced_auth_display_secure : paramétrage de l'accès à %s (localhost) "
-"réalisé avec succès.\n"
+msgid "entranced_auth_display_secure: Successfully set up access for %s (localhost)\n"
+msgstr "entranced_auth_display_secure : paramétrage de l'accès à %s (localhost) réalisé avec succès.\n"
 
 #: src/daemon/auth.c:419
 msgid "entranced_auth_user_add: Adding auth cookie\n"
@@ -73,22 +65,17 @@ msgstr "entranced_auth_user_add : ajout du cookie d'authentification\n"
 #: src/daemon/auth.c:440
 #, c-format
 msgid "entranced_auth_user_add: Unable to write auth file %s\n"
-msgstr ""
-"entranced_auth_user_add : l'écriture du fichier d'authentification %s a "
-"échoué\n"
+msgstr "entranced_auth_user_add : l'écriture du fichier d'authentification %s a échoué\n"
 
 #: src/daemon/auth.c:483
 #, c-format
 msgid "entranced_auth_user_add: Opened %s for writing cookies\n"
-msgstr ""
-"entranced_auth_user_add : ouverture de %s pour l'écriture des cookies\n"
+msgstr "entranced_auth_user_add : ouverture de %s pour l'écriture des cookies\n"
 
 #: src/daemon/auth.c:505
 #, c-format
 msgid "entranced_auth_user_add: Finished writing auth entries to %s\n"
-msgstr ""
-"entranced_auth_user_add : écriture des entrées d'authentification pour %s "
-"terminée\n"
+msgstr "entranced_auth_user_add : écriture des entrées d'authentification pour %s terminée\n"
 
 #: src/daemon/auth.c:521
 #, c-format
@@ -98,17 +85,15 @@ msgstr "entranced_auth_user_remove : suppression du cookie de %s\n"
 #: src/daemon/entranced_display.c:161
 #, c-format
 msgid "Entranced_Start_Server_Once: Executing %s\n"
-msgstr "Entranced_Start_Server_Once : éxecution de %s\n"
+msgstr "Entranced_Start_Server_Once : exécution de %s\n"
 
 #: src/daemon/entranced_display.c:220
 msgid "Entranced_Start_Server_Once: Attempt to start X server failed.\n"
-msgstr ""
-"Entranced_Start_Server_Once : échec de la tentative de démarrage du serveur "
-"X.\n"
+msgstr "Entranced_Start_Server_Once : échec de la tentative de démarrage du serveur X.\n"
 
 #: src/daemon/ipc.c:23
 msgid "_entranced_ipc_client_add: Received event\n"
-msgstr "_entranced_ipc_client_add: événement reçu\n"
+msgstr "_entranced_ipc_client_add : événement reçu\n"
 
 #: src/daemon/ipc.c:35
 msgid "_entranced_ipc_client_del: Received event\n"
@@ -116,12 +101,8 @@ msgstr "_entranced_ipc_client_del : événement reçu\n"
 
 #: src/daemon/ipc.c:79
 #, c-format
-msgid ""
-"_entranced_ipc_client_data: All tokens received; wrote cookie to user dir %"
-"s\n"
-msgstr ""
-"_entranced_ipc_client_data : jetons bien reçus ; cookie écrit dans le "
-"répertoire %s de l'utilisateur\n"
+msgid "_entranced_ipc_client_data: All tokens received; wrote cookie to user dir %s\n"
+msgstr "_entranced_ipc_client_data : jetons bien reçus ; cookie écrit dans le répertoire %s de l'utilisateur\n"
 
 #: src/daemon/ipc.c:87
 #, c-format
@@ -208,7 +189,7 @@ msgstr "Mémorisation des utilisateurs"
 
 #: src/configgui/main.c:418
 msgid "Number of remembers:"
-msgstr "Nombre des mémorisations :"
+msgstr "Nombre de mémorisations :"
 
 #: src/configgui/main.c:434
 msgid "System"
@@ -224,7 +205,7 @@ msgstr "Autoriser l'extinction"
 
 #: src/configgui/main.c:466
 msgid "PAM Authentication"
-msgstr "Authenfication PAM"
+msgstr "Authentification PAM"
 
 #: src/configgui/main.c:473
 msgid "Don't forget to save your settings before closing app."
@@ -238,15 +219,15 @@ msgstr "Sauvegarder la configuration"
 msgid "Exit application"
 msgstr "Quitter l'application"
 
-#: src/configgui/main.c:507 src/client/main.c:732
+#: src/configgui/main.c:507
+#: src/client/main.c:732
 #, c-format
 msgid ""
 "Locale set failed!\n"
 "Please make sure you have your locale files installed for \"%s\"\n"
 msgstr ""
 "La définition de la locale a échoué !\n"
-"Veuillez vous assurer de la présence des fichiers de localisation pour \"%s"
-"\"\n"
+"Veuillez vous assurer de la présence des fichiers de localisation pour \"%s\"\n"
 
 #: src/configgui/main.c:514
 #, c-format
@@ -286,8 +267,7 @@ msgstr "_entrance_ipc_server_data : écriture du fichier Xauthority réussie\n"
 #: src/client/entrance_ipc.c:69
 #, c-format
 msgid "_entrance_ipc_server_data: Xauthority write failure!\n"
-msgstr ""
-"_entrance_ipc_server_data : échec à l'écriture du fichier Xauthority !\n"
+msgstr "_entrance_ipc_server_data : échec à l'écriture du fichier Xauthority !\n"
 
 #: src/client/entrance_ipc.c:76
 #, c-format
@@ -335,8 +315,7 @@ msgstr "Orientation du conteneur inconnue\n"
 
 #: src/client/main.c:740
 msgid "ERROR: could not parse command line options.\n"
-msgstr ""
-"ERREUR : impossible d'interpréter les options de la ligne de commande.\n"
+msgstr "ERREUR : impossible d'interpréter les options de la ligne de commande.\n"
 
 #: src/client/main.c:749
 msgid "Invalid non-option argument"
@@ -358,3 +337,4 @@ msgstr "Veuillez entrer votre nom d'utilisateur"
 #: src/client/main.c:1199
 msgid "Please enter your password"
 msgstr "Veuillez entrer votre mot de passe"
+
