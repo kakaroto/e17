@@ -9,7 +9,6 @@
 #include <Ecore_Config.h>
 #include <Ecore_Data.h>
 #include <Ecore_Ipc.h>
-#include <Ecore_Txt.h>
 #include <Ecore_Con.h>
 #include <Ecore_Evas.h>
 #include <Ecore.h>
