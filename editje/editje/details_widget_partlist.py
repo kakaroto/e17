@@ -1,4 +1,3 @@
-#
 # Copyright (C) 2009 Samsung Electronics.
 #
 # This file is part of Editje.
@@ -16,6 +15,7 @@
 # You should have received a copy of the GNU Lesser General Public
 # License along with Editje.  If not, see
 # <http://www.gnu.org/licenses/>.
+
 import elementary
 
 from details_widget_button import WidgetButton
@@ -23,6 +23,8 @@ from floater import Floater
 
 
 class WidgetPartList(WidgetButton):
+    pop_min_w = 200
+    pop_min_h = 300
 
     def __init__(self, parent):
         WidgetButton.__init__(self, parent)
@@ -57,12 +59,13 @@ class WidgetPartList(WidgetButton):
         return list
 
     def _actions_init(self):
-        self._pop.title_set("List")
+        self._pop.title_set("Placement reference")
         self._pop.action_add("None", self._select_cb, "")
         self._pop.action_add("Cancel", self._cancel_clicked)
 
     def _open(self, bt, *args):
-        self._pop = Floater(self.parent)
+        self._pop = Floater(self.parent, self.obj)
+        self._pop.size_min_set(self.pop_min_w, self.pop_min_h)
         list = elementary.List(self.parent)
 
         for item, action in self._items_load():
@@ -74,29 +77,9 @@ class WidgetPartList(WidgetButton):
 
         list.go()
         list.show()
+
         self._pop.content_set(list)
-
         self._actions_init()
-
-        x, y, w, h = self.obj.geometry
-
-        cw, ch = self.obj.evas.size
-        ow, oh = 200, 300
-        ox = x - (ow - w) / 2
-        oy = y - (oh - h) / 2
-
-        if ox < 0:
-            ox = 0
-        elif ox + ow >= cw:
-            ox = cw - ow
-
-        if oy < 0:
-            oy = 0
-        elif oy + oh >= ch:
-            oy = ch - oh
-
-        self._pop.move(ox, oy)
-        self._pop.resize(ow, oh)
         self._pop.show()
 
     def _cancel_clicked(self, popup, data):

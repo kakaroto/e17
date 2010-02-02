@@ -30,5 +30,5 @@ class WidgetActionsList(WidgetPartList):
         return list
 
     def _actions_init(self):
-        self._pop.title_set("List")
+        self._pop.title_set("Animations")
         self._pop.action_add("Cancel", self._cancel_clicked)

@@ -54,14 +54,6 @@ class WidgetColor(Widget):
         self.scr.content_min_limit(False, True)
         self.scr.show()
 
-        self.pop = Floater(self.parent)
-        self.picker = colorpicker.Colorpicker(self.parent)
-        self.picker.show()
-        self.pop.content_set(self.picker)
-        self.pop.title_set("Color")
-        self.pop.action_add("Set", self._set_clicked)
-        self.pop.action_add("Cancel", self._cancel_clicked)
-
         ed = parent.edje_get()
         file = ed.file_get()[0]
         self.rect = edje.Edje(ed.evas, file=file, group="colorpreviewer")
@@ -69,6 +61,14 @@ class WidgetColor(Widget):
         self.rect.size_hint_min_set(*self.rect.size_min_get())
         self.rect.on_mouse_down_add(self._sample_clicked_cb)
         self.rect.show()
+
+        self.pop = Floater(self.parent, self.rect)
+        self.picker = colorpicker.Colorpicker(self.parent)
+        self.picker.show()
+        self.pop.content_set(self.picker)
+        self.pop.title_set("Color")
+        self.pop.action_add("Set", self._set_clicked)
+        self.pop.action_add("Cancel", self._cancel_clicked)
 
         self.obj = elementary.Box(parent)
         self.obj.horizontal_set(True)
@@ -138,25 +138,6 @@ class WidgetColor(Widget):
 
     def _sample_clicked_cb(self, obj, event):
         self.picker.current_color_set(*self.color)
-        x, y, w, h = self.rect.geometry
-
-        cw, ch = self.rect.evas.size
-        ow, oh = self.pop.popup.size_hint_min_get()
-        ox = x - (ow - w) / 2
-        oy = y - (oh - h) / 2
-
-        if ox - self.padding_x < 0:
-            ox = self.padding_x
-        elif ox + ow + self.padding_x >= cw:
-            ox = cw - ow - self.padding_x
-
-        if oy < self.padding_y:
-            oy = self.padding_y
-        elif oy + oh + self.padding_y>= ch:
-            oy = ch - oh - self.padding_y
-
-        self.pop.move(ox, oy)
-        self.pop.resize(ow, oh)
         self.pop.show()
 
     def _set_clicked(self, popup, data):

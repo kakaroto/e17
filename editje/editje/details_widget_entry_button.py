@@ -23,6 +23,8 @@ from floater import Floater
 
 
 class WidgetEntryButton(Widget):
+    pop_min_w = 200
+    pop_min_h = 300
 
     def __init__(self, parent):
         Widget.__init__(self)
@@ -102,43 +104,25 @@ class WidgetEntryButton(Widget):
         self._pop.action_add("Cancel", self._cancel_clicked)
 
     def _open(self, bt, *args):
-        self._pop = Floater(self.parent)
+        self._pop = Floater(self.parent, self.obj)
+        self._pop.size_min_set(self.pop_min_w, self.pop_min_h)
+
         list = elementary.List(self.parent)
 
         for item, returned_value in self._items_load():
             i = list.item_append(item, None, None, self._list_select_cb,
-                                     returned_value)
+                                 returned_value)
 
             if returned_value == self.value:
                 i.selected_set(True)
 
-        list.scroller_policy_set(elementary.ELM_SCROLLER_POLICY_OFF, elementary.ELM_SCROLLER_POLICY_ON)
+        list.scroller_policy_set(elementary.ELM_SCROLLER_POLICY_OFF,
+                                 elementary.ELM_SCROLLER_POLICY_ON)
         list.go()
         list.show()
 
         self._pop.content_set(list)
-
         self._actions_init()
-
-        x, y, w, h = self.obj.geometry
-
-        cw, ch = self.obj.evas.size
-        ow, oh = 200, 300
-        ox = x - (ow - w) / 2
-        oy = y - (oh - h) / 2
-
-        if ox < 0:
-            ox = 0
-        elif ox + ow >= cw:
-            ox = cw - ow
-
-        if oy < 0:
-            oy = 0
-        elif oy + oh >= ch:
-            oy = ch - oh
-
-        self._pop.move(ox, oy)
-        self._pop.resize(ow, oh)
         self._pop.show()
 
     def _cancel_clicked(self, popup, data):

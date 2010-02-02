@@ -19,89 +19,127 @@
 import evas
 import edje
 from elementary import Layout, Button, InnerWindow, Box, Pager, \
-                       Icon, Label, Notify, ELM_NOTIFY_ORIENT_TOP
-
+                       Icon, Label, Notify, ELM_NOTIFY_ORIENT_TOP, Separator
 import sysconfig
 
-from elementary import Separator
 
 class Floater(object):
-    def __init__(self, parent):
+    default_padding_x = 20
+    default_padding_y = 20
+    default_align_x = 0.5
+    default_align_y = 0.5
+
+    def __init__(self, parent, rel_to_obj=None):
+        if not rel_to_obj:
+            raise TypeError("You must pass an object whose geometry the Floater"
+                            " will use to move itself in the canvas.")
         self._parent = parent
-        self.popup = Layout(parent)
-        self.size_hint_min_set(0, 0)
-        self._size_hint_min_cbs = []
+        self._rel_to_obj = rel_to_obj
+
+        self._padding_x = self.default_padding_x
+        self._padding_y = self.default_padding_y
+        self._align_x = self.default_align_x
+        self._align_y = self.default_align_y
+
         self._action_btns = []
-        self._min_size_hints = [0, 0]
+        self._min_size = [0, 0]
 
         theme_file = sysconfig.theme_file_get("default")
-        self.popup.file_set(theme_file, "editje/floater")
+
+        self._popup = Layout(parent)
+        self._popup.on_changed_size_hints_add(self._move_and_resize)
+        self._popup.file_set(theme_file, "editje/floater")
+
+    def padding_set(self, pad_x, pad_y):
+        self._padding_x = pad_x
+        self._padding_y = pad_y
+
+    def padding_get(self):
+        return self._padding_x, self._padding_y
+
+    # padding WRT to the *whole canvas* corners
+    padding = property(fset=padding_set, fget=padding_get)
+
+    def align_set(self, align_x, align_y):
+        self._align_x = align_x
+        self._align_y = align_y
+
+    def align_get(self):
+        return self._align_x, self._align_y
+
+    # alignment WRT to *rel_to_obj*
+    align = property(fset=align_set, fget=align_get)
+
+    def _move_and_resize(self, obj, *args, **kargs):
+        x, y, w, h = self._rel_to_obj.geometry
+        cw, ch = self._rel_to_obj.evas.size
+
+        ow, oh = self.size_hint_min_get()
+        if ow < self._min_size[0]:
+            ow = self._min_size[0]
+        if oh < self._min_size[1]:
+            oh = self._min_size[1]
+
+        ox = x - int((ow - w) * self._align_x)
+        oy = y - int((oh - h) * self._align_y)
+
+        px, py = self.padding
+
+        if ox - px < 0:
+            ox = px
+        elif ox + ow + px >= cw:
+            ox = cw - ow - px
+
+        if oy < py:
+            oy = py
+        elif oy + oh + py>= ch:
+            oy = ch - oh - py
+
+        self._popup.resize(ow, oh)
+        self._popup.move(ox, oy)
 
     def title_set(self, title):
         self.title = title
-        self.popup.edje_get().part_text_set("title.text", title)
+        self._popup.edje_get().part_text_set("title.text", title)
 
     def size_hint_min_get(self):
-        return self._min_size_hints
+        w, h = self._popup.size_hint_min_get()
 
-    def size_hint_min_set(self, w, h):
-        self._min_size_hints = [w, h]
+        bw = 0
+        for b in self._action_btns:
+            b_min_w, unused = b.size_hint_min_get()
+            bw += b_min_w + 5
 
-    def on_changed_size_hints_add(self, func, *args, **kargs):
-        if not callable(func):
-            raise TypeError("func must be callable")
+        if bw > w:
+            w = bw
 
-        r = (func, args, kargs)
-        self._size_hint_min_cbs.append(r)
+        return (w, h)
 
-    def on_changed_size_hints_del(self, func):
-        i = None
-        for i, r in enumerate(self._size_hint_min_cbs):
-            if func == r[0]:
-                break
-        else:
-            raise ValueError("Callback %s was not registered before" % func)
-
-        self._size_hint_min_cbs.pop(i)
+    def size_min_set(self, w, h):
+        self._min_size = [w, h]
 
     def content_set(self, content):
         content.size_hint_weight_set(1.0, 1.0)
         content.size_hint_align_set(-1.0, -1.0)
-        self.popup.content_set("content", content)
+        self._popup.content_set("content", content)
 
     def action_add(self, label, func_cb, data = None):
         btn = Button(self._parent)
         self._action_btns.append(btn)
-        btn.on_changed_size_hints_add(self._size_hint_min_recalc)
         btn.label_set(label)
         btn.callback_clicked_add(self._action_btn_clicked)
         btn.size_hint_weight_set(1.0, 1.0)
         btn.size_hint_align_set(-1.0, -1.0)
         btn.data["clicked"] = (func_cb, data)
         btn.show()
-        self.popup.edje_get().part_box_append("actions", btn)
-
-    def _children_changed_cb(self):
-        for cb in self._size_hint_min_cbs:
-            func, args, kargs = cb
-            func(self, *args, **kargs)
-
-    def _size_hint_min_recalc(self, obj, *args, **kwargs):
-        o_min_w, o_min_h = self.size_hint_min_get()
-        self.size_hint_min_set(0, 0)
-
-        for b in self._action_btns:
-            b_min_w, b_min_h = b.size_hint_min_get()
-            self._min_size_hints[0] += b_min_w + 10
-            self._min_size_hints[1] += b_min_h + 10
-
-        self._children_changed_cb()
+        self._popup.edje_get().part_box_append("actions", btn)
 
     def show(self):
-        self.popup.show()
+        self._move_and_resize(self._popup)
+        self._popup.show()
 
     def hide(self):
-        self.popup.hide()
+        self._popup.hide()
 
     def open(self):
         self._parent.block(True)
@@ -110,13 +148,13 @@ class Floater(object):
     def close(self):
         self.hide()
         self._parent.block(False)
-        self.popup.delete()
+        self._popup.delete()
 
     def move(self, *args):
-        self.popup.move(*args)
+        self._popup.move(*args)
 
     def resize(self, *args):
-        self.popup.resize(*args)
+        self._popup.resize(*args)
 
     def _action_btn_clicked(self, obj, *args, **kwargs):
         func, udata = obj.data["clicked"]
