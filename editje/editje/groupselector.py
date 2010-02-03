@@ -171,8 +171,32 @@ class PreviewFrame(elementary.Scroller):
         self.content_set(self._group)
         self.show()
 
+    def _dimensions_retrieve_no_zero(self, func):
+        w, h = func()
+
+        if w == 0:
+            w = h
+        if h == 0:
+            h = w
+
+        return w, h
+
     def group_set(self, file_, group):
         self._group.file_set(file_, group)
+
+        min_w, min_h = self._dimensions_retrieve_no_zero(
+            self._group.size_min_get)
+
+        if not min_w:
+            min_w, min_h = self._dimensions_retrieve_no_zero(
+                self._group.size_min_calc)
+
+        if not min_w:
+            min_w, min_h = 300, 300
+
+        self._group.size_hint_min_set(min_w, min_h)
+        self._group.size_hint_max_set(min_w, min_h)
+        self._group.size_hint_align_set(0.5, 0.5)
 
 
 class GroupSelectionWizard(Wizard):
