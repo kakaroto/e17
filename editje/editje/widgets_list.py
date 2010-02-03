@@ -65,7 +65,7 @@ class WidgetsList(Collapsable):
     # Groups
     def _content_load(self):
         self._pager = elementary.Pager(self)
-        self._pager.style_set("editje.mainbar")
+        self._pager.style_set("editje.rightwards")
         self._pager.size_hint_weight_set(evas.EVAS_HINT_EXPAND,
                                          evas.EVAS_HINT_EXPAND)
         self._pager.size_hint_align_set(evas.EVAS_HINT_FILL,

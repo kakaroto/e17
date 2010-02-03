@@ -34,10 +34,11 @@ class OpenFile(elementary.Window):
     def __init__(self, theme="default"):
 
         self.theme = sysconfig.theme_file_get(theme)
+        elementary.theme_extension_add(self.theme)
 
         elementary.Window.__init__(self, "openfile",
                                    elementary.ELM_WIN_BASIC)
-        self.title_set("Open Edje")
+        self.title_set("Open file")
         self.autodel_set(True)
 
         self._notification = None
@@ -54,6 +55,7 @@ class OpenFile(elementary.Window):
                                          evas.EVAS_HINT_EXPAND)
         self._pager.size_hint_align_set(evas.EVAS_HINT_FILL,
                                         evas.EVAS_HINT_FILL)
+        self._pager.style_set("editje.rightwards")
         self.resize_object_add(self._pager)
         self._pager.show()
 
