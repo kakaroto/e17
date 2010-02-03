@@ -214,7 +214,7 @@ class Editable(Manager, object):
 
     def save(self):
 #        if self._modificated:
-        if self._edje.save():
+        if self._edje.save_all():
             self._swapfile.save()
             self.event_emit("saved")
         else:
