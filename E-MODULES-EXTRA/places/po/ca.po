@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: places.HEAD\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
 "POT-Creation-Date: 2010-02-03 00:01+0100\n"
-"PO-Revision-Date: 2010-02-03 15:27+0100\n"
+"PO-Revision-Date: 2010-02-03 20:31+0100\n"
 "Last-Translator: marc furtià puig <marc.furtia@gmail.com>\n"
 "Language-Team: Ukrainian <translation@linux.org.ua>\n"
 "MIME-Version: 1.0\n"
@@ -46,7 +46,7 @@ msgstr "Mostra en el menú"
 #: src/e_mod_config.c:149
 #: src/e_mod_places.c:402
 msgid "Home"
-msgstr "Домівка"
+msgstr "Inici"
 
 #: src/e_mod_config.c:152
 #: src/e_mod_places.c:411
@@ -61,9 +61,8 @@ msgstr "Deixalla"
 #: src/e_mod_config.c:158
 #: src/e_mod_places.c:232
 #: src/e_mod_places.c:430
-#, fuzzy
 msgid "Filesystem"
-msgstr "Arrel Disc"
+msgstr "Sistema de fitxers"
 
 #: src/e_mod_config.c:161
 #: src/e_mod_places.c:439
