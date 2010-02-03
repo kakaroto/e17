@@ -243,7 +243,7 @@ class NewPartWizard(Wizard):
             if self._type == edje.EDJE_PART_TYPE_EXTERNAL:
                 self._parent.e._edje.external_add(self._ext_list.module)
         else:
-            self._notify("Choose another name")
+            self.notify("Choose another name")
 
     def _part_init(self, name, type_):
         part = self._parent.e._edje.part_get(name)
