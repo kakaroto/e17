@@ -265,6 +265,7 @@ class SignalDetails(EditjeDetails):
         prop.widget_add("s", WidgetSource(self))
         self["out"].property_add(prop)
 
+        self.e.callback_add("signal.added", self._update)
         self.e.callback_add("signal.removed", self._removed)
         self.e.signal.callback_add("program.changed",self._update)
 
