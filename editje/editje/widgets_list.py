@@ -126,11 +126,13 @@ class WidgetsList(Collapsable):
 
         type_name = ""
 
-        count = 0
+        max = 0
         for p in self._parent.e.parts:
             if p.startswith(label):
-                count += 1
-        name = label + "%.2d" % count
+                num = int(p[len(label):])
+                if num > max:
+                    max = num
+        name = label + "%.2d" % (max + 1)
 
         if (edje_type == edje.EDJE_PART_TYPE_EXTERNAL):
             type_name = type.name

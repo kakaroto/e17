@@ -222,11 +222,13 @@ class NewPartWizard(Wizard):
     def _default_name_set(self, name):
         if self._name_changed:
             return
-        count = 0
+        max = 0
         for p in self._parent.e.parts:
             if p.startswith(name):
-                count += 1
-        self._part_name_entry.entry = name + "%.2d" % count
+                num = int(p[len(name):])
+                if num > max:
+                    max = num
+        self._part_name_entry.entry = name + "%.2d" % (max + 1)
         edje.message_signal_process()
         self._name_changed = False
 
