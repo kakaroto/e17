@@ -1,0 +1,110 @@
+# This file is put in the public domain.
+#
+# Marc Furtià i Puig <marcfurtia@gmail.com>, 2009.
+msgid ""
+msgstr ""
+"Project-Id-Version: places.HEAD\n"
+"Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
+"POT-Creation-Date: 2010-02-03 00:01+0100\n"
+"PO-Revision-Date: 2010-02-03 15:27+0100\n"
+"Last-Translator: marc furtià puig <marc.furtia@gmail.com>\n"
+"Language-Team: Ukrainian <translation@linux.org.ua>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Launchpad-Export-Date: 2009-11-13 11:33+0000\n"
+"X-Generator: Launchpad (build Unknown)\n"
+
+#: src/e_mod_config.c:51
+msgid "Places Configuration"
+msgstr "Configuració Llocs"
+
+#: src/e_mod_config.c:118
+msgid "General"
+msgstr "General"
+
+#: src/e_mod_config.c:121
+msgid "Show in main menu"
+msgstr "Mostra en el menú principal"
+
+#: src/e_mod_config.c:125
+msgid "Mount volumes on insert"
+msgstr "Monta unitats a l'insertar"
+
+#: src/e_mod_config.c:129
+msgid "Open filemanager on insert"
+msgstr "Obre el manegador de fitxers al insertar"
+
+#: src/e_mod_config.c:133
+msgid "Use a custom file manager"
+msgstr "Utilitza el managador de fitxers predeterminat"
+
+#: src/e_mod_config.c:146
+msgid "Show in menu"
+msgstr "Mostra en el menú"
+
+#: src/e_mod_config.c:149
+#: src/e_mod_places.c:402
+msgid "Home"
+msgstr "Домівка"
+
+#: src/e_mod_config.c:152
+#: src/e_mod_places.c:411
+msgid "Desktop"
+msgstr "Escriptori"
+
+#: src/e_mod_config.c:155
+#: src/e_mod_places.c:421
+msgid "Trash"
+msgstr "Deixalla"
+
+#: src/e_mod_config.c:158
+#: src/e_mod_places.c:232
+#: src/e_mod_places.c:430
+#, fuzzy
+msgid "Filesystem"
+msgstr "Arrel Disc"
+
+#: src/e_mod_config.c:161
+#: src/e_mod_places.c:439
+msgid "Temp"
+msgstr "Temporal"
+
+#: src/e_mod_config.c:164
+msgid "Favorites"
+msgstr "Favorits"
+
+#: src/e_mod_main.c:75
+msgid "Files"
+msgstr "Fitxers"
+
+#: src/e_mod_main.c:77
+#: src/e_mod_places.c:502
+msgid "Places"
+msgstr "LLocs"
+
+#: src/e_mod_main.c:443
+msgid "Configuration"
+msgstr "Configuració"
+
+#: src/e_mod_places.c:237
+msgid "No Name"
+msgstr "Sense Nom"
+
+#: src/e_mod_places.c:692
+msgid "free of"
+msgstr "lliure de"
+
+#: src/e_mod_places.c:698
+#, c-format
+msgid "%s Not Mounted"
+msgstr "%s No Montada"
+
+#: src/e_mod_places.c:715
+msgid "unmount"
+msgstr "desmonta"
+
+#: src/e_mod_places.c:721
+msgid "eject"
+msgstr "extreu"
+
