@@ -1,11 +1,13 @@
-dnl Copyright (C) 2008 Vincent Torri <vtorri at univ-evry dot fr>
+dnl Copyright (C) 2010 Vincent Torri <vtorri at univ-evry dot fr>
 dnl That code is public domain and can be freely used or copied.
 
-dnl Macro that check if several ASM instruction sets are available or not.
+dnl Macro that check if several pthread library is available or not.
 
-dnl Usage: EFL_CHECK_EFL_CHECK_PTHREAD(want_pthread_spin[, ACTION-IF-FOUND [, ACTION-IF-NOT-FOUND]])
-dnl Call AC_SUBST(EFL_PTHREAD_FLAGS)
+dnl Usage: EFL_CHECK_PTHREAD(want_pthread_spin[, ACTION-IF-FOUND [, ACTION-IF-NOT-FOUND]])
+dnl Call AC_SUBST(EFL_PTHREAD_CFLAGS)
+dnl Call AC_SUBST(EFL_PTHREAD_LIBS)
 dnl Define EFL_HAVE_PTHREAD
+dnl Define EFL_HAVE_PTHREAD_SPINLOCK
 
 AC_DEFUN([EFL_CHECK_PTHREAD],
 [
