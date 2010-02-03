@@ -199,12 +199,21 @@ static JSBool
 elixir_ecore_evas_free(JSContext *cx, uintN argc, jsval *vp)
 {
    Ecore_Evas *ee;
+   void *data;
    elixir_value_t val[1];
 
    if (!elixir_params_check(cx, _ecore_evas_params, val, argc, JS_ARGV(cx, vp)))
      return JS_FALSE;
 
    GET_PRIVATE(cx, val[0].v.obj, ee);
+
+   data = evas_data_attach_get(ecore_evas_get(ee));
+   evas_data_attach_set(ecore_evas_get(ee), NULL);
+   elixir_void_free(data);
+
+   data = ecore_evas_data_get(ee, "_elixir_jsval");
+   ecore_evas_data_set(ee, "_elixir_jsval", NULL);
+   elixir_void_free(data);
 
    ecore_evas_free(ee);
 
@@ -428,6 +437,7 @@ elixir_ecore_evas_get(JSContext *cx, uintN argc, jsval *vp)
    JSClass *evas_class;
    Ecore_Evas *ee;
    jsval *tmp;
+   JSObject *jo;
    Evas *e;
    elixir_value_t val[1];
 
@@ -445,14 +455,13 @@ elixir_ecore_evas_get(JSContext *cx, uintN argc, jsval *vp)
 
    e = ecore_evas_get(ee);
 
-   evas_class = elixir_class_request("evas", NULL);
-
-   elixir_return_ptr(cx, vp, e, evas_class);
+   jo = elixir_build_ptr(cx, e, elixir_class_request("evas", NULL));
+   if (!jo) return JS_FALSE;
 
    tmp = malloc(sizeof (jsval));
    if (!tmp) return JS_FALSE;
 
-   *tmp = JS_RVAL(cx, vp);
+   *tmp = OBJECT_TO_JSVAL(jo);
    if (!elixir_rval_register(cx, tmp))
      {
 	free(tmp);
@@ -461,6 +470,7 @@ elixir_ecore_evas_get(JSContext *cx, uintN argc, jsval *vp)
 
    ecore_evas_data_set(ee, "elixir_evas_jsval", tmp);
 
+   JS_SET_RVAL(cx, vp, *tmp);
    return JS_TRUE;
 }
 

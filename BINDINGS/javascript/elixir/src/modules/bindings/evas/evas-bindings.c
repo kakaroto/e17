@@ -9,6 +9,10 @@
 
 #include "evas-bindings.h"
 
+#ifdef BUILD_MODULE_ECORE_EVAS
+# include <Ecore_Evas.h>
+#endif
+
 static elixir_parameter_t               _evas_parameter = {
   "Evas", JOBJECT, NULL
 };
@@ -414,6 +418,52 @@ evas_object_to_jsval(JSContext *cx, Evas_Object *obj, jsval *rval)
    evas_object_event_callback_add(obj, EVAS_CALLBACK_DEL, _elixir_evas_object, cx);
 
    return EINA_TRUE;
+}
+
+Eina_Bool
+evas_to_jsval(JSContext *cx, Evas *e, jsval *rval)
+{
+#ifdef BUILD_MODULE_ECORE_EVAS
+   Ecore_Evas *ee;
+   JSObject *jo;
+   jsval *tmp;
+
+   if (!e)
+     {
+	*rval = JSVAL_NULL;
+	return EINA_TRUE;
+     }
+
+   ee = evas_data_attach_get(e);
+   if (ee)
+     {
+	tmp = ecore_evas_data_get(ee, "elixir_evas_jsval");
+	if (tmp)
+	  {
+	     *rval = *tmp;
+	     return EINA_TRUE;
+	  }
+     }
+
+   tmp = malloc(sizeof (jsval));
+   if (!tmp) return EINA_FALSE;
+
+   jo = elixir_build_ptr(cx, e, elixir_class_request("evas", NULL));
+   if (!jo) return EINA_FALSE;
+
+   *tmp = OBJECT_TO_JSVAL(jo);
+   if (!elixir_rval_register(cx, tmp))
+     {
+	free(tmp);
+	return EINA_FALSE;
+     }
+
+   ecore_evas_data_set(ee, "elixir_evas_jsval", tmp);
+
+   return EINA_TRUE;
+#else
+   return EINA_FALSE;
+#endif
 }
 
 static JSFunctionSpec	evas_functions[] = {

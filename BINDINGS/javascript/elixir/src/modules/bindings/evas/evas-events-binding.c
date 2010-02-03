@@ -284,12 +284,16 @@ elixir_event_callback(void *data, Evas *e, Evas_Object *obj, void *event)
      case EVAS_CALLBACK_MOVE:
      case EVAS_CALLBACK_RESIZE:
      case EVAS_CALLBACK_RESTACK:
+     case EVAS_CALLBACK_CANVAS_FOCUS_IN:
+     case EVAS_CALLBACK_CANVAS_FOCUS_OUT:
+     case EVAS_CALLBACK_RENDER_FLUSH_PRE:
+     case EVAS_CALLBACK_RENDER_FLUSH_POST:
         break;
      default:
 	abort();
      }
 
-   if (!elixir_rval_new(cx, elixir_class_request("evas", NULL), e, argv + 1))
+   if (!evas_to_jsval(cx, e, argv + 1))
      goto on_error;
 
    if (!evas_object_to_jsval(cx, obj, &js_obj))

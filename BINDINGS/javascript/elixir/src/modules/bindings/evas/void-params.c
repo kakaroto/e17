@@ -5,22 +5,6 @@
 #include "evas-bindings.h"
 
 static JSBool
-elixir_evas_new(JSContext *cx, uintN argc, jsval *vp)
-{
-   JSClass *evas_class;
-   Evas *evas;
-
-   if (!elixir_params_check(cx, void_params, NULL, argc, JS_ARGV(cx, vp)))
-     return JS_FALSE;
-
-   evas = evas_new();
-   evas_class = elixir_class_request("evas", NULL);
-
-   elixir_return_ptr(cx, vp, evas, evas_class);
-   return JS_TRUE;
-}
-
-static JSBool
 elixir_evas_render_method_list(JSContext *cx, uintN argc, jsval *vp)
 {
    Eina_List *walker;
@@ -86,7 +70,6 @@ FAST_CALL_PARAMS(evas_shutdown, elixir_int_params_void);
 static JSFunctionSpec     void_params_function[] = {
   ELIXIR_FN(evas_init, 0, JSPROP_ENUMERATE, 0 ),
   ELIXIR_FN(evas_shutdown, 0, JSPROP_ENUMERATE, 0 ),
-  ELIXIR_FN(evas_new, 0, JSPROP_ENUMERATE, 0 ),
   ELIXIR_FN(evas_render_method_list, 0, JSPROP_ENUMERATE, 0 ),
   ELIXIR_FN(evas_textblock_style_new, 0, JSPROP_ENUMERATE, 0 ),
   ELIXIR_FN(evas_alloc_error, 0, JSPROP_ENUMERATE, 0 ),

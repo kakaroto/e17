@@ -92,5 +92,6 @@ Eina_Bool elixir_new_evas_font(JSContext *cx,
 
 const char *evas_object_to_elixir_object(Evas_Object *obj);
 Eina_Bool evas_object_to_jsval(JSContext *cx, Evas_Object *obj, jsval *rval);
+Eina_Bool evas_to_jsval(JSContext *cx, Evas *e, jsval *rval);
 
 #endif		/* _EVAS_BINDINGS_H__ */

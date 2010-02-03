@@ -798,8 +798,7 @@ FAST_CALL_PARAMS_CAST(edje_object_part_object_get, elixir_evas_object_params_edj
 FAST_CALL_PARAMS(edje_object_part_swallow_get, elixir_evas_object_params_edje_object_string);
 
 static JSBool
-elixir_int_params_edje_object_string(int (*func)(const Evas_Object *obj, const char *part),
-                                     JSContext* cx, uintN argc, jsval *vp)
+elixir_edje_object_part_drag_dir_get(JSContext *cx, uintN argc, jsval *vp)
 {
    Evas_Object *eo;
    const char *part;
@@ -808,14 +807,25 @@ elixir_int_params_edje_object_string(int (*func)(const Evas_Object *obj, const c
    if (!elixir_string_params_edje_object_string_ret(cx, argc, vp, &eo, &part))
      return JS_FALSE;
 
-   ret = func(eo, part);
+   ret = edje_object_part_drag_dir_get(eo, part);
 
    JS_SET_RVAL(cx, vp, INT_TO_JSVAL(ret));
    return JS_TRUE;
 }
 
-FAST_CALL_PARAMS(edje_object_part_drag_dir_get, elixir_int_params_edje_object_string);
-FAST_CALL_PARAMS(edje_object_part_exists, elixir_int_params_edje_object_string);
+static JSBool
+elixir_edje_object_part_exists(JSContext *cx, uintN argc, jsval *vp)
+{
+   Evas_Object *eo;
+   const char *part;
+   Eina_Bool res;
+
+   if (!elixir_string_params_edje_object_string_ret(cx, argc, vp, &eo, &part))
+     return JS_FALSE;
+
+   JS_SET_RVAL(cx, vp, BOOLEAN_TO_JSVAL(edje_object_part_exists(eo, part)));
+   return JS_TRUE;
+}
 
 static int
 _elixir_edje_object_load_error_get(Evas_Object *obj)
@@ -941,9 +951,28 @@ elixir_void_params_edje_object_2strings(void (*func)(Evas_Object *obj, const cha
    return JS_TRUE;
 }
 
-FAST_CALL_PARAMS(edje_object_part_text_set, elixir_void_params_edje_object_2strings);
 FAST_CALL_PARAMS(edje_object_signal_emit, elixir_void_params_edje_object_2strings);
 FAST_CALL_PARAMS(edje_object_part_text_insert, elixir_void_params_edje_object_2strings);
+
+static JSBool
+elixir_edje_object_part_text_set(JSContext *cx, uintN argc, jsval *vp)
+{
+   Evas_Object *eo;
+   const char *part;
+   const char *text;
+   elixir_value_t val[3];
+
+   if (!elixir_params_check(cx, _edje_object_2strings_params, val, argc, JS_ARGV(cx, vp)))
+     return JS_FALSE;
+
+   GET_PRIVATE(cx, val[0].v.obj, eo);
+   part = elixir_get_string_bytes(val[1].v.str, NULL);
+   text = elixir_get_string_bytes(val[2].v.str, NULL);
+
+   JS_SET_RVAL(cx, vp, BOOLEAN_TO_JSVAL(edje_object_part_text_set(eo, part, text)));
+   return JS_TRUE;
+}
+
 
 static JSBool
 elixir_edje_object_part_text_anchor_geometry_get(JSContext *cx, uintN argc, jsval *vp)
@@ -984,7 +1013,7 @@ elixir_edje_object_part_text_anchor_geometry_get(JSContext *cx, uintN argc, jsva
 }
 
 static JSBool
-elixir_void_params_edje_object_string_2double(void (*func)(Evas_Object *obj, const char *part, double d1, double d2),
+elixir_void_params_edje_object_string_2double(Eina_Bool (*func)(Evas_Object *obj, const char *part, double d1, double d2),
                                               JSContext *cx, uintN argc, jsval *vp)
 {
    Evas_Object *eo;
@@ -1001,8 +1030,7 @@ elixir_void_params_edje_object_string_2double(void (*func)(Evas_Object *obj, con
    d1 = val[2].v.dbl;
    d2 = val[3].v.dbl;
 
-   func(eo, part, d1, d2);
-
+   JS_SET_RVAL(cx, vp, BOOLEAN_TO_JSVAL(func(eo, part, d1, d2)));
    return JS_TRUE;
 }
 
@@ -1302,7 +1330,7 @@ elixir_edje_object_file_get(JSContext *cx, uintN argc, jsval *vp)
 
 static JSBool
 elixir_p1p2_params_edje_object_string_2double(const char *p1, const char *p2,
-                                              void (*func)(const Evas_Object *obj, const char *part, double *p1, double *p2),
+                                              Eina_Bool (*func)(const Evas_Object *obj, const char *part, double *p1, double *p2),
                                               JSContext *cx, uintN argc, jsval *vp)
 {
    const char *part;
@@ -1310,6 +1338,7 @@ elixir_p1p2_params_edje_object_string_2double(const char *p1, const char *p2,
    Evas_Object *eo;
    double d1;
    double d2;
+   Eina_Bool res;
    elixir_value_t val[2];
 
    if (!elixir_params_check(cx, _edje_object_string_params, val, argc, JS_ARGV(cx, vp)))
@@ -1318,7 +1347,12 @@ elixir_p1p2_params_edje_object_string_2double(const char *p1, const char *p2,
    GET_PRIVATE(cx, val[0].v.obj, eo);
    part = elixir_get_string_bytes(val[1].v.str, NULL);
 
-   func(eo, part, &d1, &d2);
+   res = func(eo, part, &d1, &d2);
+   if (!res)
+     {
+	JS_SET_RVAL(cx, vp, JSVAL_NULL);
+	return JS_TRUE;
+     }
 
    js_obj = JS_NewObject(cx, elixir_class_request("edje_drag", NULL), NULL, NULL);
    if (!js_obj)
@@ -1333,7 +1367,7 @@ elixir_p1p2_params_edje_object_string_2double(const char *p1, const char *p2,
 }
 
 static JSBool
-elixir_dxdy_params_edje_object_string_2double(void (*func)(const Evas_Object *obj, const char *part, double *dx, double *dy),
+elixir_dxdy_params_edje_object_string_2double(Eina_Bool (*func)(const Evas_Object *obj, const char *part, double *dx, double *dy),
                                               JSContext *cx, uintN argc, jsval *vp)
 {
    return elixir_p1p2_params_edje_object_string_2double("dx", "dy", func, cx, argc, vp);

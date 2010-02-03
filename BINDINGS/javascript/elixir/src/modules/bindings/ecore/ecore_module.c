@@ -554,9 +554,12 @@ _ecore_int_func_void(void* data)
    return ret;
 }
 
+typedef void *(*Elixir_Ecore_Add)(int (*callback)(void *data), const void *data);
+typedef void *(*Elixir_Ecore_Del)(void *handler);
+
 static JSBool
 elixir_ecore_add(JSContext *cx, uintN argc, jsval *vp,
-		 void *(*func)(int (*cb)(void *data), const void *data),
+		 Elixir_Ecore_Add func,
 		 const char *parent_class)
 {
    Elixir_Ecore_Handler *eeh;
@@ -592,7 +595,7 @@ elixir_ecore_add(JSContext *cx, uintN argc, jsval *vp,
 
 static JSBool
 elixir_ecore_del(JSContext *cx, uintN argc, jsval *vp,
-		 void *(*func)(void *handler),
+		 Elixir_Ecore_Del func,
 		 const elixir_parameter_t *params[])
 {
    Elixir_Ecore_Handler *eeh = NULL;
@@ -636,49 +639,49 @@ elixir_ecore_del(JSContext *cx, uintN argc, jsval *vp,
 static JSBool
 elixir_ecore_idler_add(JSContext *cx, uintN argc, jsval *vp)
 {
-   return elixir_ecore_add(cx, argc, vp, ecore_idler_add, "Ecore_Idler");
+   return elixir_ecore_add(cx, argc, vp, (Elixir_Ecore_Add)ecore_idler_add, "Ecore_Idler");
 }
 
 static JSBool
 elixir_ecore_idler_del(JSContext *cx, uintN argc, jsval *vp)
 {
-   return elixir_ecore_del(cx, argc, vp, ecore_idler_del, _ecore_idler_params);
+   return elixir_ecore_del(cx, argc, vp, (Elixir_Ecore_Del)ecore_idler_del, _ecore_idler_params);
 }
 
 static JSBool
 elixir_ecore_idle_enterer_add(JSContext *cx, uintN argc, jsval *vp)
 {
-   return elixir_ecore_add(cx, argc, vp, ecore_idle_enterer_add, "Ecore_Idle_Enterer");
+   return elixir_ecore_add(cx, argc, vp, (Elixir_Ecore_Add)ecore_idle_enterer_add, "Ecore_Idle_Enterer");
 }
 
 static JSBool
 elixir_ecore_idle_enterer_del(JSContext *cx, uintN argc, jsval *vp)
 {
-   return elixir_ecore_del(cx, argc, vp, ecore_idle_enterer_del, _ecore_idle_enterer_params);
+   return elixir_ecore_del(cx, argc, vp, (Elixir_Ecore_Del)ecore_idle_enterer_del, _ecore_idle_enterer_params);
 }
 
 static JSBool
 elixir_ecore_idle_exiter_add(JSContext *cx, uintN argc, jsval *vp)
 {
-   return elixir_ecore_add(cx, argc, vp, ecore_idle_exiter_add, "Ecore_Idle_Exiter");
+   return elixir_ecore_add(cx, argc, vp, (Elixir_Ecore_Add)ecore_idle_exiter_add, "Ecore_Idle_Exiter");
 }
 
 static JSBool
 elixir_ecore_idle_exiter_del(JSContext *cx, uintN argc, jsval *vp)
 {
-   return elixir_ecore_del(cx, argc, vp, ecore_idle_exiter_del, _ecore_idle_exiter_params);
+   return elixir_ecore_del(cx, argc, vp, (Elixir_Ecore_Del)ecore_idle_exiter_del, _ecore_idle_exiter_params);
 }
 
 static JSBool
 elixir_ecore_animator_add(JSContext *cx, uintN argc, jsval *vp)
 {
-   return elixir_ecore_add(cx, argc, vp, ecore_animator_add, "Ecore_Animator");
+   return elixir_ecore_add(cx, argc, vp, (Elixir_Ecore_Add)ecore_animator_add, "Ecore_Animator");
 }
 
 static JSBool
 elixir_ecore_animator_del(JSContext *cx, uintN argc, jsval *vp)
 {
-   return elixir_ecore_del(cx, argc, vp, ecore_animator_del, _ecore_animator_params);
+   return elixir_ecore_del(cx, argc, vp, (Elixir_Ecore_Del)ecore_animator_del, _ecore_animator_params);
 }
 
 static JSBool
@@ -751,7 +754,7 @@ FAST_CALL_PARAMS(ecore_timer_thaw, elixir_void_ecore_timer);
 static JSBool
 elixir_ecore_timer_del(JSContext *cx, uintN argc, jsval *vp)
 {
-   return elixir_ecore_del(cx, argc, vp, ecore_timer_del, _ecore_timer_params);
+   return elixir_ecore_del(cx, argc, vp, (Elixir_Ecore_Del)ecore_timer_del, _ecore_timer_params);
 }
 
 static JSBool
