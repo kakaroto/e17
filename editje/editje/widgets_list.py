@@ -16,6 +16,8 @@
 # You should have received a copy of the GNU Lesser General Public
 # License along with Editje.  If not, see
 # <http://www.gnu.org/licenses/>.
+import re
+
 import evas
 import edje
 import elementary
@@ -128,7 +130,7 @@ class WidgetsList(Collapsable):
 
         max = 0
         for p in self._parent.e.parts:
-            if p.startswith(label):
+            if re.match("%s\d{2,}" % label, p):
                 num = int(p[len(label):])
                 if num > max:
                     max = num

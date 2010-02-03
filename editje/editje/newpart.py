@@ -15,6 +15,7 @@
 # You should have received a copy of the GNU Lesser General Public
 # License along with Editje.  If not, see
 # <http://www.gnu.org/licenses/>.
+import re
 
 import evas
 import edje
@@ -224,7 +225,7 @@ class NewPartWizard(Wizard):
             return
         max = 0
         for p in self._parent.e.parts:
-            if p.startswith(name):
+            if re.match("%s\d{2,}" % name, p):
                 num = int(p[len(name):])
                 if num > max:
                     max = num
