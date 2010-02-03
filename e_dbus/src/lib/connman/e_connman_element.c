@@ -524,6 +524,7 @@ _e_connman_element_property_update(E_Connman_Element_Property *property, int typ
 	      property->value.byte = (unsigned char)(long)data;
 	      changed = 1;
 	   }
+	 break;
       case DBUS_TYPE_UINT16:
 	 if (changed || property->value.u16 != (unsigned short)(long)data)
 	   {
