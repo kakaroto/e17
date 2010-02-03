@@ -265,12 +265,23 @@ class SignalDetails(EditjeDetails):
         prop.widget_add("s", WidgetSource(self))
         self["out"].property_add(prop)
 
+        self.e.callback_add("signal.removed", self._removed)
         self.e.signal.callback_add("program.changed",self._update)
+
+    def _removed(self, emissor, data):
+        self._header_table["name"].value = None
+        self["main"]["signal"].hide_value()
+        self["main"]["source"].hide_value()
+        self["main"]["delay"].hide_value()
+        self["main"]["action"].hide_value()
+        self["out"]["signal"].hide_value()
+        self["out"]["source"].hide_value()
 
     def _update(self, emissor, data):
         self._header_table["name"].value = data
 
         signal = self.e.signal.signal
+        self["main"]["signal"].show_value()
         if signal:
             self["main"]["signal"].value = signal
         else:
@@ -278,16 +289,18 @@ class SignalDetails(EditjeDetails):
             self["main"]["signal"].value = ""
 
         source = self.e.signal.source
+        self["main"]["source"].show_value()
         if source:
             self["main"]["source"].value = source
         else:
             self.e.signal.source = ""
             self["main"]["source"].value = ""
 
+        self["main"]["delay"].show_value()
         self["main"]["delay"].value = self.e.signal.in_time
 
         action = self.e.signal._program.action_get()
-
+        self["main"]["action"].show_value()
         if action == edje.EDJE_ACTION_TYPE_NONE:
             self["main"]["action"].show()
             self.group_hide("out")
@@ -304,12 +317,14 @@ class SignalDetails(EditjeDetails):
             self.group_show("out")
 
             state = self.e.signal._program.state_get()
+            self["out"]["signal"].show_value()
             if state:
                 self["out"]["signal"].value = state
             else:
                 self["out"]["signal"].value = ""
 
             state = self.e.signal._program.state2_get()
+            self["out"]["source"].show_value()
             if state:
                 self["out"]["source"].value = state
             else:

@@ -84,10 +84,18 @@ class AnimationDetails(EditjeDetails):
 
         self._parent.main_edje.signal_callback_add("timestop", "*",
                                                    self._timeline_cb)
+        self.e.callback_add("animation.removed", self._removed)
         self.e.animation.callback_add("animation.changed", self._update)
         self.e.animation.callback_add("animation.unselected", self._update)
         self.e.animation.callback_add("state.added", self._timestop_add)
         self.e.animation.callback_add("state.changed", self._update_states)
+
+    def _removed(self, emissor, data):
+        self._header_table["name"].value = None
+        self["main"]["current"].hide_value()
+        self["main"]["previous"].hide_value()
+        self["main"]["next"].hide_value()
+        self["main"]["transition"].hide_value()
 
     def _update(self, emissor, data):
         self._header_table["name"].value = data
@@ -117,20 +125,26 @@ class AnimationDetails(EditjeDetails):
 
     def _update_states(self, emissor, data):
         step = self.e.animation.state
+        self["main"]["current"].show_value()
         self["main"]["current"].value = str(step)
+
         prev = self.e.animation.state_prev()
+        self["main"]["previous"].show_value()
         if prev is None:
             prev = 0.0
             self["main"]["previous"].value = "None"
         else:
             self["main"]["previous"].value = str(prev)
+
         next = self.e.animation.state_next()
+        self["main"]["next"].show_value()
         if next is None:
             self["main"]["next"].value = "None"
         else:
             self["main"]["next"].value = str(next)
 
         t = self._transitions[self.e.animation.program.transition]
+        self["main"]["transition"].show_value()
         self["main"]["transition"].value = (t, str(step - prev))
 
         sig = "ts,%.1g,selected" % self.e.animation.state

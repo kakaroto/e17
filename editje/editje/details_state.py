@@ -102,6 +102,8 @@ class PartStateDetails(EditjeDetails):
                                              self._part_update)
         self.e.part.callback_add("part.renamed",
                                              self._part_update)
+        self.e.part.callback_add("part.unselected",
+                                             self._part_removed)
         self.e.part.state.callback_add("state.changed",
                                              self._state_changed_cb)
         self.e.part.state.callback_add("rel1x.changed",
@@ -222,6 +224,17 @@ class PartStateDetails(EditjeDetails):
         self.state = self.part.state_get(state)
         self._update()
         self.open()
+
+    def _part_removed(self, emissor, data):
+        if not self.e.part:
+            return
+
+        if self._animmode:
+            self._header_table["name"].value = None
+            self._header_table["type"].value = None
+        else:
+            self._header_table["state"].value = None
+        self._hide_all()
 
     def _part_type_to_text(self, type):
         parttypes = ['NONE', 'RECTANGLE', 'TEXT', 'IMAGE', 'SWALLOW',

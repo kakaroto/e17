@@ -122,13 +122,25 @@ class Property(object):
 
     name = property(_name_get)
 
-    def show(self):
+    def show_label(self):
         self._label_obj.show()
+
+    def show_value(self):
         self._value_obj.show()
 
-    def hide(self):
+    def show(self):
+        self.show_label()
+        self.show_value()
+
+    def hide_label(self):
         self._label_obj.hide()
+
+    def hide_value(self):
         self._value_obj.hide()
+
+    def hide(self):
+        self.hide_label()
+        self.hide_value()
 
     def _label_obj_get(self):
         return self._label_obj

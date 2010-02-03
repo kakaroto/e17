@@ -33,6 +33,7 @@ class PartDetails(EditjeDetails):
 
         self.e.part.callback_add("part.changed", self._part_update)
         self.e.part.callback_add("name.changed", self._part_update)
+        self.e.part.callback_add("part.unselected", self._part_removed)
 
         self.title_set("part properties")
 
@@ -45,7 +46,7 @@ class PartDetails(EditjeDetails):
 
         prop = Property(parent, "name")
         wid = WidgetEntry(self)
-        wid.disabled_set(False)
+        wid.disabled_set(True)
         prop.widget_add("n", wid)
         self._header_table.property_add(prop)
 
@@ -112,6 +113,7 @@ class PartDetails(EditjeDetails):
     def _part_update(self, emissor, data):
         if not self.e.part._part:
             return
+
         self._header_table["name"].value = self.e.part.name
         type = self._part_type_to_text(self.e.part._part.type)
         self._header_table["type"].value = type
@@ -120,21 +122,41 @@ class PartDetails(EditjeDetails):
         self.group_hide("textblock")
         if self.e.part._part.type == edje.EDJE_PART_TYPE_TEXT:
             self._update_text_props()
-            self.group_show("textblock")
+
+    def _part_removed(self, emissor, data):
+        self._header_table["name"].value = None
+        self._header_table["type"].value = None
+
+        self.main_hide()
+        self.group_hide("textblock")
+        if not self.e.part._part:
+            return
+
+        self["main"]["clip_to"].hide_value()
+        self["main"]["mouse_events"].hide_value()
+        self["main"]["repeat_events"].hide_value()
+        if self.e.part._part.type == edje.EDJE_PART_TYPE_TEXT:
+            self["textblock"]["effect"].hide_value()
 
     def _update_common_props(self):
         self.main_hide()
+
         clipper = self.e.part._part.clip_to
+        self["main"]["clip_to"].show_value()
         if clipper:
             self["main"]["clip_to"].value = clipper
         else:
             self["main"]["clip_to"].value = ""
+
+        self["main"]["mouse_events"].show_value()
         self["main"]["mouse_events"].value = self.e.part._part.mouse_events
+
+        self["main"]["repeat_events"].show_value()
         self["main"]["repeat_events"].value = self.e.part._part.repeat_events
         self.main_show()
 
     def _update_text_props(self):
-        self.group_hide("textblock")
+        self["textblock"]["effect"].show_value()
         self["textblock"]["effect"].value = self._effects[self.e.part._part.effect]
         self.group_show("textblock")
 
