@@ -46,7 +46,6 @@ class PartDetails(EditjeDetails):
 
         prop = Property(parent, "name")
         wid = WidgetEntry(self)
-        wid.disabled_set(True)
         prop.widget_add("n", wid)
         self._header_table.property_add(prop)
 
