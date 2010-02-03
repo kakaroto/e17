@@ -28,6 +28,12 @@ RESTORE = 1
 REPLACE = 2
 
 class SwapFile(object):
+    __opened_files = {}
+
+    def is_opened(self, filename=None):
+        if not filename:
+            filename = self.__filepath
+        return self.__opened_files.has_key(filename)
 
     def __init__(self):
         self.__new = False
@@ -47,6 +53,9 @@ class SwapFile(object):
             self.__opened = True
             return
 
+        if self.__opened_files.has_key(self.__filepath):
+            raise FileOpened(self)
+
         if not self.__filepath:
             raise FileNotSet(self)
 
@@ -59,6 +68,7 @@ class SwapFile(object):
 
         self.__swap_create()
         self.__opened = True
+        self.__opened_files[self.__filepath] = self
 
     def __file_check(self):
         if self.__filepath.endswith(".edj"):
@@ -88,6 +98,9 @@ class SwapFile(object):
             return
 
         if filepath:
+            opened = self.__opened_files.get(self.__filepath)
+            if opened != self:
+                raise FileOpened(self)
             if path.exists(self.__swapfile) and mode != REPLACE:
                 raise FileAlreadyExists(self)
             self.__filepath = filepath
@@ -113,10 +126,13 @@ class SwapFile(object):
             chdir(orig_dir)
             rmtree(temp_dir)
 
+        self.__opened_files[self.__filepath] = self
+
     def close(self):
         if not self.__opened:
             return
 
+        del self.__opened_files[self.__filepath]
         remove(self.__swapfile)
         self.__swapfile = None
         self.__new = True
@@ -192,3 +208,7 @@ class FileAlreadyExists(SwapFileError):
 class FileNotFound(SwapFileError):
     def __str__(self):
         return self.swapfile.file + " : File not found."
+
+class FileOpened(SwapFileError):
+    def __str__(self):
+        return self.swapfile.file + " : File opened."

@@ -273,9 +273,12 @@ class OpenFile(elementary.Window):
                 self._notification.delete()
                 self._notification = None
             self._notification = ErrorNotify(self)
-            self._notification.title = "File already exists"
             self._notification.action_add("Rename", self._new_rename)
-            self._notification.action_add("Overwrite", self._new_forced, None, file)
+            if self._swapfile.is_opened(file):
+                self._notification.title = "File already exists and opened"
+            else:
+                self._notification.title = "File already exists"
+                self._notification.action_add("Overwrite", self._new_forced, None, file)
             self._notification.action_add("Abort", self._notify_abort)
             self._notification.show()
             return
