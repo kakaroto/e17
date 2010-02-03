@@ -248,8 +248,7 @@ cdef extern from "Elementary.h":
 
     evas.c_evas.Evas_Object *elm_win_inwin_add(evas.c_evas.Evas_Object *obj)
     void elm_win_inwin_activate(evas.c_evas.Evas_Object *obj)
-    void elm_win_inwin_style_set(evas.c_evas.Evas_Object *obj, char *style)
-    void         elm_win_inwin_content_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Evas_Object *content)
+    void elm_win_inwin_content_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Evas_Object *content)
 
     # Background object
     evas.c_evas.Evas_Object *elm_bg_add(evas.c_evas.Evas_Object *parent)
@@ -292,7 +291,6 @@ cdef extern from "Elementary.h":
     void elm_button_label_set(evas.c_evas.Evas_Object *obj, char *label)
     void elm_button_icon_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Evas_Object *icon)
     evas.c_evas.Evas_Object *elm_button_icon_get(evas.c_evas.Evas_Object *obj)
-    void elm_button_style_set(evas.c_evas.Evas_Object *obj, char *style)
     char* elm_button_label_get(evas.c_evas.Evas_Object *obj)
 
     # Scroller object
@@ -325,7 +323,6 @@ cdef extern from "Elementary.h":
     evas.c_evas.Evas_Object* elm_frame_add(evas.c_evas.Evas_Object *parent)
     void elm_frame_label_set(evas.c_evas.Evas_Object *obj, char *label)
     void elm_frame_content_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Evas_Object *content)
-    void elm_frame_style_set(evas.c_evas.Evas_Object *obj, char *style)
 
     # Table object
     evas.c_evas.Evas_Object *elm_table_add(evas.c_evas.Evas_Object *parent)

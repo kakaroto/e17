@@ -52,6 +52,3 @@ cdef class Button(Object):
         icon = elm_button_icon_get(self.obj)
         return evas.c_evas._Object_from_instance(<long> icon)
 
-    def style_set(self, style):
-        elm_button_style_set(self.obj, style)
-

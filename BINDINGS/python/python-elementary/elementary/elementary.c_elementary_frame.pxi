@@ -27,9 +27,6 @@ cdef class Frame(Object):
     def content_set(self, c_evas.Object content):
         elm_frame_content_set(self.obj, content.obj)
 
-    def style_set(self, style):
-        elm_frame_style_set(self.obj, style)
-
     def best_content_location_get(self, axis):
         elm_hover_best_content_location_get(self.obj, axis)
 

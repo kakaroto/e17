@@ -30,17 +30,6 @@ cdef class InnerWindow(Window):
         """
         elm_win_inwin_activate(self.obj)
 
-    def style_set(self, style):
-        """
-        Set the style for the inner window. Available styles are
-        - default
-        - minimal
-        - minimal_vertical
-
-        @parm: B{style} style for the inner window
-        """
-        elm_win_inwin_style_set(self.obj, style)
-
     def content_set(self, c_evas.Object content):
         elm_win_inwin_content_set(self.obj, content.obj)
 
