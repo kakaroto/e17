@@ -20,7 +20,7 @@ fi
 
 EFL_FNMATCH_LIBS=""
 
-if (! test "x${ac_cv_search_fnmatch}" = "xnone required") && (! test "x${ac_cv_search_fnmatch}" = "xnone required") ; then
+if (! test "x${ac_cv_search_fnmatch}" = "xnone required") && (! test "x${ac_cv_search_fnmatch}" = "xno") && (! test "x${ac_cv_search_fnmatch}" = "x-levil") ; then
    EFL_FNMATCH_LIBS=${ac_cv_search_fnmatch}
 fi
 
