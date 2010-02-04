@@ -34,6 +34,7 @@ extern const char *e_connman_iface_profile;
 extern const char *e_connman_iface_service;
 extern const char *e_connman_iface_device;
 extern const char *e_connman_iface_connection;
+extern const char *e_connman_iface_technology;
 
 extern const char *e_connman_prop_available;
 extern const char *e_connman_prop_connected;

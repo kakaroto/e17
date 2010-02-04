@@ -26,6 +26,7 @@ const char *e_connman_iface_profile = NULL;
 const char *e_connman_iface_service = NULL;
 const char *e_connman_iface_device = NULL;
 const char *e_connman_iface_connection = NULL;
+const char *e_connman_iface_technology = NULL;
 
 const char *e_connman_prop_available = NULL;
 const char *e_connman_prop_connected = NULL;
@@ -285,6 +286,8 @@ e_connman_system_init(E_DBus_Connection *edbus_conn)
      e_connman_iface_device = eina_stringshare_add("org.moblin.connman.Device");
    if (e_connman_iface_connection == NULL)
      e_connman_iface_connection = eina_stringshare_add("org.moblin.connman.Connection");
+   if (e_connman_iface_technology == NULL)
+     e_connman_iface_technology = eina_stringshare_add("org.moblin.connman.Technology");
 
    if (e_connman_prop_available == NULL)
      e_connman_prop_available = eina_stringshare_add("Available");
@@ -446,6 +449,7 @@ e_connman_system_shutdown(void)
    _stringshare_del(&e_connman_iface_service);
    _stringshare_del(&e_connman_iface_device);
    _stringshare_del(&e_connman_iface_connection);
+   _stringshare_del(&e_connman_iface_technology);
 
    _stringshare_del(&e_connman_prop_available);
    _stringshare_del(&e_connman_prop_connected);

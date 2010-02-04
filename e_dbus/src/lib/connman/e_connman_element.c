@@ -451,6 +451,10 @@ _e_connman_element_get_interface(const char *key)
 	 if (strcmp(tail, "ervices") == 0)
 	   interface = e_connman_iface_service;
 	 break;
+      case 'T':
+	 if (strcmp(tail, "echnologies") == 0)
+	   interface = e_connman_iface_technology;
+	 break;
       default:
 	 break;
      }
@@ -2275,4 +2279,11 @@ e_connman_element_is_service(const E_Connman_Element *element)
 {
    EINA_SAFETY_ON_NULL_RETURN_VAL(element, 0);
    return _e_connman_element_is(element, e_connman_iface_service);
+}
+
+bool
+e_connman_element_is_technology(const E_Connman_Element *element)
+{
+   EINA_SAFETY_ON_NULL_RETURN_VAL(element, 0);
+   return _e_connman_element_is(element, e_connman_iface_technology);
 }
