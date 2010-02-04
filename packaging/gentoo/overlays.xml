@@ -2,7 +2,7 @@
 <layman>
   <overlay
      status="unofficial"
-     type="git"
+     type="svn"
      src="http://svn.enlightenment.org/svn/e/trunk/packaging/gentoo"
      contact="barbieri@profusion.mobi"
      name="efl">
