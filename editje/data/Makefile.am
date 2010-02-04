@@ -5,6 +5,9 @@ SUBDIRS = themes templates
 desktopdir = $(datadir)/applications
 desktop_DATA = editje.desktop
 
+applicationdir = $(datadir)/application-registry
+application_DATA = editje.applications
+
 icondir = $(datadir)/icons
 icon_DATA = editje.png
 

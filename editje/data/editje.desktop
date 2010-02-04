@@ -6,3 +6,4 @@ Icon=editje
 Exec=editje %F
 Terminal=false
 Categories=Development;
+MimeType=text/edje;application/edje;

@@ -1,0 +1,7 @@
+editje
+	command=editje
+	name=Editje
+	can_open_multiple_files=true
+	expects_uris=false
+	requires_terminal=false
+	mime_types=text/edje,application/edje
