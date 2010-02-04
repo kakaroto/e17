@@ -2095,8 +2095,6 @@ e_connman_element_unregister(E_Connman_Element *element)
 
    if (elements)
      eina_hash_del_by_key(elements, element->path);
-
-   _e_connman_element_unregister_internal(element);
 }
 
 /**
