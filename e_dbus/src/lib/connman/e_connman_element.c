@@ -490,6 +490,105 @@ _e_connman_element_objects_array_register(E_Connman_Array *array, const char *na
      _e_connman_element_item_register(name, item);
 }
 
+/* Match 2 arrays to find which are new and which are old elements
+ * For new elements, register them under prop_name property
+ * For old elements, unregister them, sending proper DEL event
+ */
+static void
+_e_connman_element_array_match(E_Connman_Array *old, E_Connman_Array *new, const char *prop_name)
+{
+   Eina_List *deleted = NULL;
+   Eina_Array_Iterator iter_old, iter_new;
+   unsigned int i_old = 0, i_new = 0;
+   void *item_old, *item_new;
+   Eina_List *l;
+   void *data;
+
+   if (!old)
+     return;
+   if (old->type != DBUS_TYPE_OBJECT_PATH)
+     return;
+
+   if ((!new) || (!new->array) || eina_array_count_get(new->array) == 0)
+     {
+	if ((!old) || (!old->array) || eina_array_count_get(old->array) == 0)
+	  return;
+	else
+	  {
+	     iter_old = old->array->data;
+	     goto out_remove_remaining;
+	  }
+     }
+
+   iter_new = new->array->data;
+   item_new = *iter_new;
+   EINA_ARRAY_ITER_NEXT(old->array, i_old, item_old, iter_old)
+     {
+	if (item_old == item_new)
+	  {
+	     i_new++;
+	     if (i_new >= eina_array_count_get(new->array))
+	       {
+		  i_old++;
+		  break;
+	       }
+
+	     iter_new++;
+	     item_new = *iter_new;
+	  }
+	else
+	  deleted = eina_list_append(deleted, item_old);
+     }
+
+   for(; i_new < eina_array_count_get(new->array); iter_new++, i_new++)
+     {
+	bool found = 0;
+	item_new = *iter_new;
+	if (!item_new)
+	  break;
+
+	EINA_LIST_FOREACH(deleted, l, data)
+	  {
+	     if (data == item_new)
+	       {
+		  deleted = eina_list_remove_list(deleted, l);
+		  found = 1;
+		  break;
+	       }
+	  }
+	if (!found)
+	  {
+	    _e_connman_element_item_register(prop_name, item_new);
+	    DBG("Add element %s\n", (const char *) item_new);
+	  }
+     }
+
+   /* everybody after i_old on old->array + everybody from deleted list
+      will be removed
+    */
+   EINA_LIST_FREE(deleted, data)
+     {
+	E_Connman_Element *e = e_connman_element_get(data);
+	if (e)
+	  e_connman_element_unregister(e);
+	DBG("Delete element %s\n", (const char *) data);
+     }
+
+out_remove_remaining:
+   for(; i_old < eina_array_count_get(old->array); iter_old++, i_old++)
+     {
+	E_Connman_Element *e;
+	item_old = *iter_old;
+	if (!item_old)
+	  break;
+
+	e = e_connman_element_get(item_old);
+	if (e)
+	  e_connman_element_unregister(e);
+	DBG("Delete element %s\n", (const char *) item_old);
+     }
+}
+
 static bool
 _e_connman_element_property_update(E_Connman_Element_Property *property, int type, void *data)
 {
@@ -571,8 +670,8 @@ _e_connman_element_property_update(E_Connman_Element_Property *property, int typ
 	 if (!changed)
 	   if (property->value.array)
 	     {
+		_e_connman_element_array_match(property->value.array, data, property->name);
 		_e_connman_element_array_free(property->value.array, data);
-		_e_connman_element_objects_array_register(data, property->name);
 	     }
 	 property->value.array = data;
 	 changed = 1;
