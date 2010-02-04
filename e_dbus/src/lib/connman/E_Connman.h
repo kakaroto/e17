@@ -206,6 +206,13 @@ extern "C" {
   EAPI bool e_connman_service_ipv4_configure_dhcp(E_Connman_Element *service, E_DBus_Method_Return_Cb cb, const void *data) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
   EAPI bool e_connman_service_ipv4_configure_manual(E_Connman_Element *service, const char *address, const char *netmask, E_DBus_Method_Return_Cb cb, const void *data) EINA_ARG_NONNULL(1, 2) EINA_WARN_UNUSED_RESULT;
 
+  /* Technologies methods */
+  EAPI E_Connman_Element *e_connman_technology_get(const char *path) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
+
+  EAPI bool e_connman_technology_state_get(const E_Connman_Element *technology, const char **state) EINA_ARG_NONNULL(1, 2) EINA_WARN_UNUSED_RESULT;
+  EAPI bool e_connman_technology_name_get(const E_Connman_Element *technology, const char **state) EINA_ARG_NONNULL(1, 2) EINA_WARN_UNUSED_RESULT;
+  EAPI bool e_connman_technology_type_get(const E_Connman_Element *technology, const char **state) EINA_ARG_NONNULL(1, 2) EINA_WARN_UNUSED_RESULT;
+  EAPI bool e_connman_technology_devices_get(const E_Connman_Element *technology, unsigned int *count, E_Connman_Element ***t_elements) EINA_ARG_NONNULL(1, 2, 3) EINA_WARN_UNUSED_RESULT;
 
   // TODO: ethernet_speed_get (not in connman yet)
   // TODO: ethernet_duplex_get (not in connman yet)
