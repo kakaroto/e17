@@ -1,0 +1,83 @@
+# Copyright 1999-2010 Gentoo Foundation
+# Distributed under the terms of the GNU General Public License v2
+# $Header: $
+
+EKEY_STATE=snap
+E_NO_NLS="1"
+inherit efl
+
+SRC_URI="http://download.enlightenment.org/releases/${P}.tar.bz2"
+
+DESCRIPTION="E file chunk reading/writing library"
+HOMEPAGE="http://trac.enlightenment.org/e/wiki/Eet"
+
+IUSE="+threads debug test gnutls ssl"
+
+RDEPEND="media-libs/jpeg
+	dev-libs/eina
+	sys-libs/zlib
+	gnutls? ( net-libs/gnutls )
+	!gnutls? ( ssl? ( dev-libs/openssl ) )"
+DEPEND="${RDEPEND}
+	test? ( dev-libs/check )"
+
+src_compile() {
+	local SSL_FLAGS="" DEBUG_FLAGS="" TEST_FLAGS=""
+
+	# ???: should we use 'use_enable' for these as well?
+	if use debug; then
+		DEBUG_FLAGS="
+		  --disable-amalgamation
+		  --enable-assert
+		"
+	else
+		DEBUG_FLAGS="
+		  --enable-amalgamation
+		  --disable-assert
+		"
+	fi
+
+	if use test; then
+		TEST_FLAGS="
+		  --enable-tests
+		  --enable-coverage
+		"
+	fi
+
+	if use gnutls; then
+		if use ssl; then
+			ewarn "You have enabled both 'ssl' and 'gnutls', so we will use"
+			ewarn "gnutls and not openssl for cipher and signature support"
+		fi
+		SSL_FLAGS="
+		  --enable-cipher
+		  --enable-signature
+		  --disable-openssl
+		  --enable-gnutls
+		"
+	elif use ssl; then
+		SSL_FLAGS="
+		  --enable-cipher
+		  --enable-signature
+		  --enable-openssl
+		  --disable-gnutls
+		"
+	else
+		SSL_FLAGS="
+		  --disable-cipher
+		  --disable-signature
+		  --disable-openssl
+		  --disable-gnutls
+		"
+	fi
+
+	export MY_ECONF="
+	  ${MY_ECONF}
+	  $(use_enable threads pthread)
+	  ${SSL_FLAGS}
+	  ${DEBUG_FLAGS}
+	  ${TEST_FLAGS}
+	"
+
+	efl_src_compile
+}

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE pkgmetadata SYSTEM "http://www.gentoo.org/dtd/metadata.dtd">
+<pkgmetadata>
+<herd>no-herd</herd>
+<maintainer>
+ <name>Gustavo Sverzut Barbieri</name>
+ <email>barbieri@profusion.mobi</email>
+ <description>Enlightenment developer doing packages until it's merged into Gentoo</description>
+</maintainer>
+<use>
+ <flag name="exchange">Enable Enlightenment's <pkg>net-libs/exchange</pkg> to get themes and wallpapers.</flag>
+ <flag name="tracker">Enable the search plugin using <pkg>app-misc/tracker</pkg> in Everything launcher.</flag>
+ <flag name="pm-utils">Integrate with <pkg>sys-power/pm-utils</pkg> to provide hibernate and suspend.</flag>
+ <flag name="xinerama">Enable multiple screen setup (xinerama and xrandr).</flag>
+ <flag name="connman">Enable <pkg>net-misc/connman</pkg> support to manage network connections.</flag>
+</use>
+</pkgmetadata>

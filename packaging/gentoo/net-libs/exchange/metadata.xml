@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE pkgmetadata SYSTEM "http://www.gentoo.org/dtd/metadata.dtd">
+<pkgmetadata>
+<maintainer>
+ <name>Gustavo Sverzut Barbieri</name>
+ <email>barbieri@profusion.mobi</email>
+ <description>Enlightenment developer doing packages until it's merged into Gentoo</description>
+</maintainer>
+</pkgmetadata>

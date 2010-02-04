@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE pkgmetadata SYSTEM "http://www.gentoo.org/dtd/metadata.dtd">
+<pkgmetadata>
+<herd>no-herd</herd>
+<maintainer>
+ <name>Gustavo Sverzut Barbieri</name>
+ <email>barbieri@profusion.mobi</email>
+ <description>Enlightenment developer doing packages until it's merged into Gentoo</description>
+</maintainer>
+<longdescription>
+This is meant to be a detailed and comprehensive benchmark suite
+for <pkg>media-libs/evas</pkg>.
+
+The images can be interchanged for demonstration purposes. Logo.png
+should have some areas of alpha to demonstrate transparency.
+</longdescription>
+</pkgmetadata>

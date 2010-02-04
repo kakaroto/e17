@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<layman>
+  <overlay
+     status="unofficial"
+     type="git"
+     src="http://svn.enlightenment.org/svn/e/trunk/packaging/gentoo"
+     contact="barbieri@profusion.mobi"
+     name="efl">
+    <link>http://trac.enlightenment.org/e/wiki/Gentoo</link>
+    <description>experimental enlightenment/efl ebuilds</description>
+  </overlay>
+</layman>

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE pkgmetadata SYSTEM "http://www.gentoo.org/dtd/metadata.dtd">
+<pkgmetadata>
+<herd>no-herd</herd>
+<maintainer>
+ <name>Gustavo Sverzut Barbieri</name>
+ <email>barbieri@profusion.mobi</email>
+ <description>Enlightenment developer doing packages until it's merged into Gentoo</description>
+</maintainer>
+<use>
+ <flag name="hal">Enable interfacing with <pkg>sys-apps/hal</pkg> DBus API.</flag>
+ <flag name="connman">Enable interfacing with <pkg>net-misc/connman</pkg> DBus API.</flag>
+ <flag name="libnotify">Enable interfacing with <pkg>x11-libs/libnotify</pkg> DBus API.</flag>
+</use>
+</pkgmetadata>
