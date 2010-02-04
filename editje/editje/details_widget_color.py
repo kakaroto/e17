@@ -119,10 +119,13 @@ class WidgetColor(Widget):
                     a = 255
             except Exception, e:
                 return
-        r = int(r)
-        g = int(g)
-        b = int(b)
-        a = int(a)
+        try:
+            r = int(r)
+            g = int(g)
+            b = int(b)
+            a = int(a)
+        except Exception, e:
+            return
         self.color = (r, g, b, a)
         self.rect.color_class_set("colorpicker.sample", r, g, b, a,
                                   0, 0, 0, 0, 0, 0, 0, 0)
