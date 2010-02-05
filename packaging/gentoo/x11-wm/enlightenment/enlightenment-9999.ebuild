@@ -39,6 +39,7 @@ src_compile() {
 	  $(use_enable pam)
 	  $(use_enable alsa mixer)
 	  $(use_enable connman)
+	  $(use_enable exchange)
 	"
 	efl_src_compile
 }
