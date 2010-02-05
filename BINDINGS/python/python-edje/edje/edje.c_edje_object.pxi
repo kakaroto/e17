@@ -224,6 +224,7 @@ cdef public class Edje(evas.c_evas.Object) [object PyEdje, type PyEdje_Type]:
         s = edje_object_data_get(self.obj, key)
         if s != NULL:
             return s
+        return None
 
     def file_set(self, char *file, char *group):
         "@raise EdjeLoadError: if error occurred during load."

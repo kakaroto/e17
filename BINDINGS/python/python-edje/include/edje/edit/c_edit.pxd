@@ -69,6 +69,13 @@ cdef extern from "Edje_Edit.h":
     evas.c_evas.Eina_Bool edje_edit_data_value_set(evas.c_evas.Evas_Object * obj, char *itemname, char *value)
     evas.c_evas.Eina_Bool edje_edit_data_name_set(evas.c_evas.Evas_Object *obj, char *itemname, char *newname)
 
+    evas.c_evas.Eina_List * edje_edit_group_data_list_get(evas.c_evas.Evas_Object *obj)
+    evas.c_evas.Eina_Bool edje_edit_group_data_add(evas.c_evas.Evas_Object *obj, char *itemname, char *value)
+    evas.c_evas.Eina_Bool edje_edit_group_data_del(evas.c_evas.Evas_Object *obj, char *itemname)
+    char * edje_edit_group_data_value_get(evas.c_evas.Evas_Object * obj, char *itemname)
+    evas.c_evas.Eina_Bool edje_edit_group_data_value_set(evas.c_evas.Evas_Object * obj, char *itemname, char *value)
+    evas.c_evas.Eina_Bool edje_edit_group_data_name_set(evas.c_evas.Evas_Object *obj, char *itemname, char *newname)
+
     # COLOR CLASSES API
     evas.c_evas.Eina_List * edje_edit_color_classes_list_get(evas.c_evas.Evas_Object * obj)
     evas.c_evas.Eina_Bool edje_edit_color_class_add(evas.c_evas.Evas_Object *obj, char *name)
