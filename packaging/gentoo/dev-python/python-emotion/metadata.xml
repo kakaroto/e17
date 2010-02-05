@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE pkgmetadata SYSTEM "http://www.gentoo.org/dtd/metadata.dtd">
+<pkgmetadata>
+<herd>no-herd</herd>
+<maintainer>
+ <email>enlightenment@gentoo.org</email>
+ <name>Enlightenment-Gentoo maintainers</name>
+</maintainer>
+<longdescription>
+Exposes EFL/Emotion library as Python module.
+
+Emotion encapsulates media libraries such as GStreamer and Xine to
+work witin EFL applications using Evas and Ecore.
+
+See media-libs/emotion.
+</longdescription>
+</pkgmetadata>

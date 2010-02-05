@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE pkgmetadata SYSTEM "http://www.gentoo.org/dtd/metadata.dtd">
+<pkgmetadata>
+<herd>no-herd</herd>
+<maintainer>
+ <email>enlightenment@gentoo.org</email>
+ <name>Enlightenment-Gentoo maintainers</name>
+</maintainer>
+<longdescription>
+Nice development utilities and helpers around EFL.
+
+Reusable code for your projects based on Enlightenment Foundation Libraries.
+</longdescription>
+</pkgmetadata>

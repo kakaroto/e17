@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE pkgmetadata SYSTEM "http://www.gentoo.org/dtd/metadata.dtd">
+<pkgmetadata>
+<herd>no-herd</herd>
+<maintainer>
+ <email>enlightenment@gentoo.org</email>
+ <name>Enlightenment-Gentoo maintainers</name>
+</maintainer>
+<longdescription>
+Exposes EFL/Elementary library as Python module.
+
+Elementary is a graphical user interface (GUI) toolkit built on top of
+Evas, Ecore and Edje.
+
+See media-libs/elementary.
+</longdescription>
+</pkgmetadata>

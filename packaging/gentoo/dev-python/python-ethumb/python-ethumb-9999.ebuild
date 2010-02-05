@@ -1,0 +1,54 @@
+# Copyright 1999-2010 Gentoo Foundation
+# Distributed under the terms of the GNU General Public License v2
+# $Header: $
+
+EAPI="2"
+NEED_PYTHON="2.4"
+E_NO_NLS="1"
+E_NO_DOC="2"
+E_NO_VISIBILITY="1"
+ESVN_SUB_PROJECT="BINDINGS/python"
+
+inherit efl python distutils
+
+DESCRIPTION="Python bindings for Ethumb thumbnailing library"
+IUSE="+dbus examples"
+
+RDEPEND=">=media-libs/ethumb-9999[dbus?]"
+
+DEPEND="
+	>=dev-python/setuptools-0.6_rc9
+	>=dev-python/pyrex-0.9.8.5
+	>=dev-python/cython-0.12
+	${RDEPEND}"
+
+src_unpack() {
+	efl_src_unpack
+}
+
+src_compile() {
+	if use dbus; then
+		export ETHUMB_BUILD_CLIENT=1
+	else
+		export ETHUMB_BUILD_CLIENT=0
+	fi
+
+	distutils_src_compile
+}
+
+src_install() {
+	if use dbus; then
+		export ETHUMB_BUILD_CLIENT=1
+	else
+		export ETHUMB_BUILD_CLIENT=0
+	fi
+
+	distutils_src_install
+
+	if use examples; then
+		insinto /usr/share/doc/${PF}
+		doins -r examples
+
+		find "${D}/usr/share/doc/${PF}" '(' -name CVS -o -name .svn -o -name .git ')' -type d -exec rm -rf '{}' \; 2>/dev/null
+	fi
+}
