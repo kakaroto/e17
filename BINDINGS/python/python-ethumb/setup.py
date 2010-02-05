@@ -111,6 +111,14 @@ class ethumb_build_ext(build_ext):
         self.pyrex_include_dirs.extend(self.include_dirs)
 
 
+module_list = [ethumbmodule]
+
+if int(os.environ.get("ETHUMB_BUILD_CLIENT", 1)):
+    module_list.append(ethumbclientmodule)
+else:
+    print "NOTICE: not building ethumb.client module as requested " \
+          "by ETHUMB_BUILD_CLIENT=0!"
+
 setup(name='python-ethumb',
       version='0.2',
       license='LGPL',
@@ -122,7 +130,7 @@ setup(name='python-ethumb',
       keywords='wrapper binding enlightenment graphics jpg jpeg png thumbnail freedesktop.org',
       classifiers=trove_classifiers,
       packages=find_packages(),
-      ext_modules=[ethumbmodule, ethumbclientmodule],
+      ext_modules=module_list,
       zip_safe=False,
       cmdclass={'build_ext': ethumb_build_ext,},
       )
