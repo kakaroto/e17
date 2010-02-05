@@ -1,6 +1,0 @@
-libeflpp_edje.la
-.deps
-.libs
-Makefile
-Makefile.in
-eflpp_edje.lo

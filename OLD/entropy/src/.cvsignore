@@ -1,9 +1,0 @@
-*.o
-*.lo
-*.swp
-*.swo
-.deps
-.libs
-entropy
-Makefile
-Makefile.in

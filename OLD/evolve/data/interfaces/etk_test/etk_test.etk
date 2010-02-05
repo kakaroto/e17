@@ -1,5 +1,0 @@
-#include "macros.etk"
-#include "main_window.etk"
-#include "button_window.etk"
-#include "image_window.etk"
-#include "edje.etk"  

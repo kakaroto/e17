@@ -1,1 +1,0 @@
-SUBDIRS = container textentry group

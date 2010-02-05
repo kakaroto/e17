@@ -1,9 +1,0 @@
-*.lo
-.libs
-.deps
-*.la
-Makefile
-Makefile.in
-.*.swp
-errors
-CommitLog

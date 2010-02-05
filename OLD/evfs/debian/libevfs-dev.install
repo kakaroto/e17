@@ -1,4 +1,0 @@
-debian/tmp/usr/lib/libevfs.so
-debian/tmp/usr/lib/libevfs.a
-debian/tmp/usr/include/evfs/*
-debian/tmp/usr/lib/pkgconfig/*.pc

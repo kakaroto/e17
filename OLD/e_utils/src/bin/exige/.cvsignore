@@ -1,9 +1,0 @@
-Makefile
-Makefile.in
-exige
-exg_callback.o
-exg_conf.o
-exg_gui.o
-exg_main.o
-.libs
-.deps

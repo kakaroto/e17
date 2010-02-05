@@ -1,5 +1,0 @@
-/* Define a custom theme using Edje for the etk window widget */
-edje
-{
-#include "etk_test.edc"
-}

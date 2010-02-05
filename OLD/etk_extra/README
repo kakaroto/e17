@@ -1,7 +1,0 @@
-Etk Extra
-=========
-
-Etk extra is a collection of extra widgets, models, or anything that doesnt
-fit directly in the Etk source tree. Every component is in the form of a
-shared object that can be linked against by your application.
-

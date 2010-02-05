@@ -1,1 +1,0 @@
-valgrind --logfile=log ./enotes

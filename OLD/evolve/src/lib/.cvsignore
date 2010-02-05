@@ -1,9 +1,0 @@
-.deps
-.libs
-Makefile
-Makefile.in
-evolve.c
-libevolve_la-evolve.c
-libevolve_la-evolve.h
-*.lo
-libevolve.la

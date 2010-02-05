@@ -1,1 +1,0 @@
-SUBDIRS = hash list

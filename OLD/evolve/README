@@ -1,8 +1,0 @@
-*** BETA BETA BETA BETA ***
-
-Evolve is a library that allows you to specify an Etk application's interface
-using an Edje (C style) like language. The sources (.etk files) can be compiled
-(into .eet files) and can then be hooked up to your applications logic.
-
-Evolve also contains a gui, Evolve Builder that allows you to build Evolve
-files using a graphical user interface (work in progress).

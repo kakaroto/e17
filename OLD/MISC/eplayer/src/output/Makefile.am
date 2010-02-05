@@ -1,1 +1,0 @@
-SUBDIRS = alsa oss solaris

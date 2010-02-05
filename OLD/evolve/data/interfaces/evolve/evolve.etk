@@ -1,7 +1,0 @@
-#include "main_window.etk"
-#include "palette_window.etk"
-
-edje
-{
-#include "evolve.edc"
-}

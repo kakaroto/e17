@@ -1,6 +1,0 @@
-libeflpp_ecore.la
-.deps
-.libs
-Makefile
-Makefile.in
-*.lo

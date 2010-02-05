@@ -1,9 +1,0 @@
-.deps
-.libs
-Makefile
-Makefile.in
-erss
-*.o
-*.swp
-config.h
-stamp-h1

@@ -1,9 +1,0 @@
-group {
-    name, "menu_item";
-    parts {
-       #include "parts/menu_item_parts.edc"
-    }
-    programs {
-        #include "programs/menu_item_progs.edc"
-    }
-}
