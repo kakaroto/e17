@@ -3,15 +3,15 @@
 <pkgmetadata>
 <herd>no-herd</herd>
 <maintainer>
- <name>Gustavo Sverzut Barbieri</name>
  <email>barbieri@profusion.mobi</email>
+ <name>Gustavo Sverzut Barbieri</name>
  <description>Enlightenment developer doing packages until it's merged into Gentoo</description>
 </maintainer>
 <use>
  <flag name="experimental">Enable experimental features such as calc and program caching.</flag>
 </use>
 <longdescription>
-Edje is a complex graphical design & layout library based on Evas that
+Edje is a complex graphical design and layout library based on Evas that
 provides an abstraction layer between the application code and the
 interface, while allowing extremely flexible dynamic layouts and
 animations.

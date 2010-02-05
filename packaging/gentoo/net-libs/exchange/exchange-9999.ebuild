@@ -9,6 +9,7 @@ E_NO_DOC="1"
 inherit efl
 
 DESCRIPTION="Enlightenment way to exchange contributed stuff"
+IUSE=""
 
 DEPEND="
 	>=dev-libs/eina-9999

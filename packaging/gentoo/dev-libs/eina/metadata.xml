@@ -3,8 +3,8 @@
 <pkgmetadata>
 <herd>no-herd</herd>
 <maintainer>
- <name>Gustavo Sverzut Barbieri</name>
  <email>barbieri@profusion.mobi</email>
+ <name>Gustavo Sverzut Barbieri</name>
  <description>Enlightenment developer doing packages until it's merged into Gentoo</description>
 </maintainer>
 <use>
@@ -18,7 +18,6 @@
  <flag name="default-mempool">By default use system's allocator (pass-through) instead of custom choice for Eina's own data structures.</flag>
  <flag name="static-modules">Build modules built-in, avoiding dynamically loading and linking them.</flag>
 </use>
-<description>Enlightenment's data types library (List, hash, etc) in C.</description>
 <longdescription>
 Eina is a multi-platform library that provides optimized data types
 and useful tools for projects.

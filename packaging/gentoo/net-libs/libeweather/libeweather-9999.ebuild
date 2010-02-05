@@ -7,6 +7,7 @@ ESVN_SUB_PROJECT="PROTO"
 inherit efl
 
 DESCRIPTION="Enlightenment's weather information fetching and parsing framework"
+IUSE=""
 
 LICENSE="LGPL-2.1"
 

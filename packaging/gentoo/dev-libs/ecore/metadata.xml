@@ -3,11 +3,14 @@
 <pkgmetadata>
 <herd>no-herd</herd>
 <maintainer>
- <name>Gustavo Sverzut Barbieri</name>
  <email>barbieri@profusion.mobi</email>
+ <name>Gustavo Sverzut Barbieri</name>
  <description>Enlightenment developer doing packages until it's merged into Gentoo</description>
 </maintainer>
 <use>
+ <flag name="glib">Enable <pkg>dev-libs/glib</pkg> eventloop support</flag>
+ <flag name="xim">Enable X11 XiM input method</flag>
+ <flag name="xprint">Enable X11 Xprint support</flag>
  <flag name="inotify">Enable support for inotify</flag>
  <flag name="evas">Provides easy to use canvas by gluing <pkg>media-libs/evas</pkg> and various input/output systems.</flag>
  <flag name="tslib">Build with tslib support for touchscreen devices.</flag>

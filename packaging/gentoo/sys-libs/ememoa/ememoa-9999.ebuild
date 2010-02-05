@@ -25,9 +25,9 @@ else
 	# TODO: project did not release any tarball or snapshot!
 fi
 
-RDEPEND="dev-util/pkgconfig"
+RDEPEND=""
 DEPEND="
-	${RDEPEND}
+	dev-util/pkgconfig
 	doc? ( app-doc/doxygen )"
 
 src_configure() {

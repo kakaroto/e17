@@ -3,8 +3,8 @@
 <pkgmetadata>
 <herd>no-herd</herd>
 <maintainer>
- <name>Gustavo Sverzut Barbieri</name>
  <email>barbieri@profusion.mobi</email>
+ <name>Gustavo Sverzut Barbieri</name>
  <description>Enlightenment developer doing packages until it's merged into Gentoo</description>
 </maintainer>
 <longdescription>

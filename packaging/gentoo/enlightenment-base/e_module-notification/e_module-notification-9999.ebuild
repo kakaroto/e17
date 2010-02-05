@@ -9,6 +9,7 @@ E_NO_DOC="1"
 inherit efl
 
 DESCRIPTION="Enlightenment's notification daemon using libnotify/notify-osd standard"
+IUSE=""
 
 RDEPEND="
 	>=x11-wm/enlightenment-9999
