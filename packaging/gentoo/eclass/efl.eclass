@@ -32,6 +32,11 @@ inherit eutils libtool flag-o-matic
 # E_NO_NLS: if defined, the package do not support NLS (gettext)
 # E_NO_DOC: if defined, the package do not support documentation (doxygen)
 # E_NO_VISIBILITY: if defined, the package do not support -fvisibility=hidden
+#
+# Python support:
+# E_PYTHON: if defined, the package is Python/distutils
+# E_CYTHON: if defined, the package is Cython bindings (implies E_PYTHON)
+# E_NO_EXAMPLES: if defined, the Python package does not provide examples
 
 E_LIVE_SERVER_DEFAULT_SVN="http://svn.enlightenment.org/svn/e/trunk"
 
@@ -56,6 +61,22 @@ elif [[ -n ${E_SNAP_DATE} ]] ; then
 	E_STATE="snap"
 else
 	E_STATE="release"
+fi
+
+if [[ ! -z "${E_CYTHON}" ]]; then
+	E_PYTHON="1"
+fi
+
+if [[ ! -z "${E_PYTHON}" ]]; then
+	WANT_AUTOTOOLS="no"
+	WANT_AUTOCONF="no"
+	WANT_AUTOMAKE="no"
+
+	E_NO_VISIBILITY="1"
+
+	NEED_PYTHON="2.4"
+
+	inherit python distutils
 fi
 
 if [[ ${WANT_AUTOTOOLS} == "yes" ]] ; then
@@ -99,6 +120,20 @@ if [[ -z "${E_NO_DOC}" ]]; then
 	DEPEND="${DEPEND} doc? ( app-doc/doxygen )"
 fi
 
+if [[ ! -z "${E_CYTHON}" ]]; then
+	# both pyrex and cython, otherwise setuptools/distutils do not
+	# generate .c files.
+	DEPEND="${DEPEND} >=dev-python/pyrex-0.9.8.5 >=dev-python/cython-0.12"
+fi
+
+if [[ ! -z "${E_PYTHON}" ]]; then
+	DEPEND="${DEPEND} >=dev-python/setuptools-0.6_rc9"
+
+	if [[ -z "${E_NO_EXAMPLES}" ]]; then
+		IUSE="${IUSE} examples"
+	fi
+fi
+
 if [[ -z "${E_NO_VISIBILITY}" ]] && [[ $(gcc-major-version) -ge 4 ]]; then
 	append-flags -fvisibility=hidden
 fi
@@ -133,13 +168,16 @@ efl_die() {
 }
 
 efl_src_test() {
-	if use test; then
-		emake -j1 check || die "Make check failed. see above for details"
+	if [[ -z "${E_PYTHON}" ]]; then
+		if use test; then
+			emake -j1 check || die "Make check failed. see above for details"
+		fi
 	fi
 }
 
 # the stupid gettextize script prevents non-interactive mode, so we hax it
 gettext_modify() {
+	[[ -z "${E_NO_NLS}" ]] || return 0
 	use nls || return 0
 	cp $(type -P gettextize) "${T}"/ || die "could not copy gettextize"
 	sed -i \
@@ -162,82 +200,108 @@ efl_src_prepare() {
 
 	[[ -s gendoc ]] && chmod a+rx gendoc
 
-	if [[ -e configure.ac || -e configure.in ]] && \
-		[[ "${WANT_AUTOTOOLS}" == "yes" ]]; then
-		if grep -qE '^[[:space:]]*AM_GNU_GETTEXT_VERSION' configure.*; then
-			local autopoint_log_file="${T}/autopoint.$$"
+	if [[ -z "${E_PYTHON}" ]]; then
+		if [[ -e configure.ac || -e configure.in ]] && \
+			[[ "${WANT_AUTOTOOLS}" == "yes" ]]; then
+			if grep -qE '^[[:space:]]*AM_GNU_GETTEXT_VERSION' configure.*; then
+				local autopoint_log_file="${T}/autopoint.$$"
 
-			ebegin "Running autopoint"
+				ebegin "Running autopoint"
 
-			autopoint -f &> "${autopoint_log_file}"
+				autopoint -f &> "${autopoint_log_file}"
 
-			if ! eend $?; then
-				ewarn "Autopoint failed"
-				ewarn "Log in ${autopoint_log_file}"
-				ewarn "(it makes sense only when compile fails afterwards)"
+				if ! eend $?; then
+					ewarn "Autopoint failed"
+					ewarn "Log in ${autopoint_log_file}"
+					ewarn "(it makes sense only when compile fails afterwards)"
+				fi
+
+				if grep -qi 'cvs program not found' "${autopoint_log_file}"; then
+					ewarn "This error seems to be due missing CVS"
+					ewarn "(it's usage hardcoded into autopoint code)"
+					ewarn "Please 'emerge cvs' if compilation will fail"
+					ebeep 3
+				fi
 			fi
-
-			if grep -qi 'cvs program not found' "${autopoint_log_file}"; then
-				ewarn "This error seems to be due missing CVS"
-				ewarn "(it's usage hardcoded into autopoint code)"
-				ewarn "Please 'emerge cvs' if compilation will fail"
-				ebeep 3
-			fi
-		fi
 
 		# someone forgot these very useful file...
-		touch README
+			touch README
 
-		eautoreconf
-		local x
-		for x in config.{guess,sub} ; do
-			[[ ! -L ${x} ]] && continue
-			rm -f ${x}
-			touch ${x}
-		done
+			eautoreconf
+			local x
+			for x in config.{guess,sub} ; do
+				[[ ! -L ${x} ]] && continue
+				rm -f ${x}
+				touch ${x}
+			done
+		fi
+
+		epunt_cxx
+		elibtoolize
 	fi
-
-	epunt_cxx
-	elibtoolize
 }
 
 efl_src_configure() {
-	if [[ -x ${ECONF_SOURCE:-.}/configure ]]; then
-		[[ -z "${E_NO_NLS}" ]] && MY_ECONF="${MY_ECONF} $(use_enable nls)"
-		[[ -z "${E_NO_DOC}" ]] && MY_ECONF="${MY_ECONF} $(use_enable doc)"
+	if [[ -z "${E_PYTHON}" ]]; then
+		if [[ -x ${ECONF_SOURCE:-.}/configure ]]; then
+			[[ -z "${E_NO_NLS}" ]] && MY_ECONF="${MY_ECONF} $(use_enable nls)"
+			[[ -z "${E_NO_DOC}" ]] && MY_ECONF="${MY_ECONF} $(use_enable doc)"
 
-		econf --disable-static "${MY_ECONF}" || efl_die "configure failed"
+			econf --disable-static "${MY_ECONF}" || efl_die "configure failed"
+		fi
 	fi
 }
 
 efl_src_compile() {
-	emake || efl_die "emake failed"
+	if [[ -z "${E_PYTHON}" ]]; then
+		emake || efl_die "emake failed"
 
-	if use doc; then
-		if [[ -x ./gendoc ]]; then
-			./gendoc || efl_die "gendoc failed"
-		else
-			emake doc
+		if [[ -z "${E_NO_DOC}" ]] && use doc; then
+			if [[ -x ./gendoc ]]; then
+				./gendoc || efl_die "gendoc failed"
+			else
+				emake doc
+			fi
+		fi
+	else
+		distutils_src_compile
+		if [[ -z "${E_NO_DOC}" ]] && use doc; then
+			if [[ -x ./gendoc ]]; then
+				./gendoc || efl_die "gendoc failed"
+			fi
 		fi
 	fi
 }
 
 efl_src_install() {
-	emake install DESTDIR="${D}" || efl_die
+	if [[ -z "${E_PYTHON}" ]]; then
 
-	find "${D}" -name .svn -type d -exec rm -rf '{}' \; 2>/dev/null
-	find "${D}" -name '*.la' -delete
+		emake install DESTDIR="${D}" || efl_die
 
-	for d in AUTHORS ChangeLog NEWS README TODO ${EDOCS}; do
-		[[ -f ${d} ]] && dodoc ${d}
-	done
+		find "${D}" -name .svn -type d -exec rm -rf '{}' \; 2>/dev/null
+		find "${D}" -name '*.la' -delete
 
-	if use doc && [[ -d doc ]]; then
+		for d in AUTHORS ChangeLog NEWS README TODO ${EDOCS}; do
+			[[ -f ${d} ]] && dodoc ${d}
+		done
+	else
+		distutils_src_install
+
+		if [[ -z "${E_NO_EXAMPLES}" ]] && use examples; then
+			insinto /usr/share/doc/${PF}
+			doins -r examples
+
+			find "${D}/usr/share/doc/${PF}" -name .svn -type d -exec rm -rf '{}' \; 2>/dev/null
+		fi
+	fi
+
+	if [[ -z "${E_NO_DOC}" ]] && use doc && [[ -d doc ]]; then
 		if [[ -d doc/html ]]; then
 			dohtml -r doc/html/*
 		else
 			dohtml -r doc/*
 		fi
+		find "${D}/usr/share/doc/${PF}" -name .svn -type d -exec rm -rf '{}' \; 2>/dev/null
 	fi
 }
 
