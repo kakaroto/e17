@@ -181,18 +181,24 @@ class PreviewFrame(elementary.Scroller):
 
         return w, h
 
-    def group_set(self, file_, group):
-        self._group.file_set(file_, group)
+    def group_set(self, file_, group_name):
+        self._group.file_set(file_, group_name)
 
-        min_w, min_h = self._dimensions_retrieve_no_zero(
-            self._group.size_min_get)
-
-        if not min_w:
+        key = "pref_size"
+        data = self._group.data_get(key)
+        if data:
+            w, h = data.split("x")
+            min_w, min_h = int(w), int(h)
+        else:
             min_w, min_h = self._dimensions_retrieve_no_zero(
-                self._group.size_min_calc)
+                self._group.size_min_get)
 
-        if not min_w:
-            min_w, min_h = 300, 300
+            if not min_w:
+                min_w, min_h = self._dimensions_retrieve_no_zero(
+                    self._group.size_min_calc)
+
+            if not min_w:
+                min_w, min_h = 300, 300
 
         self._group.size_hint_min_set(min_w, min_h)
         self._group.size_hint_max_set(min_w, min_h)

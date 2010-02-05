@@ -25,6 +25,9 @@ from editable_program import EditableProgram
 from editable_animation import EditableAnimation
 
 class Editable(Manager, object):
+    default_display_size = (500, 500)
+    pref_size_key = "pref_size"
+
     def __init__(self, canvas, swapfile):
         Manager.__init__(self)
 
@@ -116,17 +119,16 @@ class Editable(Manager, object):
         self._min = (self._edje_group.w_min, self._edje_group.h_min)
         self.event_emit("group.min.changed", self._min)
 
-        self._size = None
-        key = self._group + "@pref_size"
-        data = self._edje.data_get(key)
+        data = self._edje.group_data_get(self.pref_size_key)
+
         if not data:
-            self._edje.data_add(key, "480x800")
-            w = 480
-            h = 800
+            w, h = self.default_display_size
         else:
+            self._size = None
             w, h = data.split("x")
             w = int(w)
             h = int(h)
+
         self.group_size = (w, h)
 
     def _max_get(self):
@@ -194,8 +196,13 @@ class Editable(Manager, object):
 
         self._size = (w, h)
         self._edje.size = (w, h)
-        key = self._group + "@pref_size"
-        self._edje.data_set(key, "%dx%d" % self._size)
+
+        value = self._edje.group_data_get(self.pref_size_key)
+        if not value:
+            self._edje.group_data_add(self.pref_size_key, "0x0")
+
+        self._edje.group_data_set(self.pref_size_key, "%dx%d" % self._size)
+
         self.event_emit("group.size.changed", self._size)
 
     group_size = property(_size_get, _size_set)
