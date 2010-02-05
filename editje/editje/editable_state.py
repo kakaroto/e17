@@ -197,3 +197,43 @@ class EditableState(Manager, object):
     rel1y = property(_rel1y_get, _rel1y_set)
     rel2x = property(_rel2x_get, _rel2x_set)
     rel2y = property(_rel2y_get, _rel2y_set)
+
+    def _max_get(self):
+        return self._state.max
+
+    def _max_set(self, value):
+        if self._state.max != value:
+            min = self.min
+            w, h = value
+            if w < 0:
+                w = -1
+            elif min[0] and w < min[0]:
+                w = min[0]
+            if h < 0:
+                h = -1
+            elif min[1] and h < min[1]:
+                h = min[1]
+            self._state.max = (w, h)
+            self.event_emit("part.state.max.changed", (w, h))
+
+    max = property(_max_get, _max_set)
+
+    def _min_get(self):
+        return self._state.min
+
+    def _min_set(self, value):
+        if self._state.min != value:
+            max = self._state.max
+            w, h = value
+            if w < 0:
+                w = 0
+            elif max[0] >= 0 and w > max[0]:
+                w = max[0]
+            if h < 0:
+                h = 0
+            elif max[1] >= 0 and h > max[1]:
+                h = max[1]
+            self._state.min = (w, h)
+            self.event_emit("part.state.min.changed", (w, h))
+
+    min = property(_min_get, _min_set)

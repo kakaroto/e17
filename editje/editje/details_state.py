@@ -114,6 +114,10 @@ class PartStateDetails(EditjeDetails):
                                              self._state_rels_changed_cb)
         self.e.part.state.callback_add("rel2y.changed",
                                              self._state_rels_changed_cb)
+        self.e.part.state.callback_add("part.state.min.changed",
+                                             self._update_min)
+        self.e.part.state.callback_add("part.state.max.changed",
+                                             self._update_max)
         self._hide_all()
 
     def _del_handler(self, o):
@@ -624,9 +628,15 @@ class PartStateDetails(EditjeDetails):
             self.group_show("external")
         return False
 
+    def _update_min(self, emissor, data):
+        self["main"]["min"].value = data
+
+    def _update_max(self, emissor, data):
+        self["main"]["max"].value = data
+
     def _update_common(self):
-        self["main"]["min"].value = self.state.min
-        self["main"]["max"].value = self.state.max
+        self._update_min(self, self.e.part.state.min)
+        self._update_max(self, self.e.part.state.max)
 
         (x, y, w, h) = self.editable.part_geometry_get(self.part.name)
         self["main"]["current"].value = w, h
@@ -744,12 +754,10 @@ class PartStateDetails(EditjeDetails):
         tbl = self["main"]
         if prop == "min":
             if value is not None:
-                self.state.min_set(*value)
-            tbl["min"].value = self.state.min
+                self.e.part.state.min = value
         elif prop == "max":
             if value is not None:
-                self.state.max_set(*value)
-            tbl["max"].value = self.state.max
+                self.e.part.state.max = value
         elif prop == "color":
             self.state.color_set(*value)
         elif prop == "visible":
