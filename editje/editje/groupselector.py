@@ -232,7 +232,7 @@ class GroupSelectionWizard(Wizard):
                                 "file, already. Please choose another name.")
                     return
 
-                self._group_selected()
+                self._group_selected(name)
 
             self.page_add("new_group", "Create a new group",
                           "Enter a name for a new group in the file.",
@@ -277,8 +277,10 @@ class GroupSelectionWizard(Wizard):
         self._groups_list.selection_clear()
         self.goto("group_list")
 
-    def _group_selected(self):
-        self._select_cb(self._groups_list.selection)
+    def _group_selected(self, grp_name=None):
+        if grp_name is None:
+            grp_name = self._groups_list.selection
+        self._select_cb(grp_name)
         ecore.idler_add(self.close)
 
     def _delete_group(self):

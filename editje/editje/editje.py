@@ -133,10 +133,7 @@ class Editje(elementary.Window):
         grp_wiz.open()
 
     def _group_wizard_new_group_cb(self, grp_name):
-        success = self.e.group_add(grp_name)
-        if success:
-            self.group = grp_name
-        return success
+        return self.e.group_add(grp_name)
 
     def _group_wizard_selection_cb(self, selection):
         if selection:
