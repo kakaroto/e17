@@ -2,8 +2,7 @@
 <!DOCTYPE pkgmetadata SYSTEM "http://www.gentoo.org/dtd/metadata.dtd">
 <pkgmetadata>
 <maintainer>
- <email>barbieri@profusion.mobi</email>
- <name>Gustavo Sverzut Barbieri</name>
- <description>Enlightenment developer doing packages until it's merged into Gentoo</description>
+ <email>enlightenment@gentoo.org</email>
+ <name>Enlightenment-Gentoo maintainers</name>
 </maintainer>
 </pkgmetadata>

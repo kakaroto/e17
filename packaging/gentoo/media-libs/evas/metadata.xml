@@ -3,9 +3,8 @@
 <pkgmetadata>
 <herd>no-herd</herd>
 <maintainer>
- <email>barbieri@profusion.mobi</email>
- <name>Gustavo Sverzut Barbieri</name>
- <description>Enlightenment developer doing packages until it's merged into Gentoo</description>
+ <email>enlightenment@gentoo.org</email>
+ <name>Enlightenment-Gentoo maintainers</name>
 </maintainer>
 <use>
  <flag name="cserve">Enable Evas shared image cache server.</flag>

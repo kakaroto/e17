@@ -3,9 +3,8 @@
 <pkgmetadata>
 <herd>no-herd</herd>
 <maintainer>
- <email>barbieri@profusion.mobi</email>
- <name>Gustavo Sverzut Barbieri</name>
- <description>Enlightenment developer doing packages until it's merged into Gentoo</description>
+ <email>enlightenment@gentoo.org</email>
+ <name>Enlightenment-Gentoo maintainers</name>
 </maintainer>
 <longdescription>
 Embryo is primarily a shared library that gives you an API to load and control

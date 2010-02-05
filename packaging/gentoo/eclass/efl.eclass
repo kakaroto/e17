@@ -111,7 +111,7 @@ efl_warning_msg() {
 	fi
 	if [[ ${E_STATE} == "snap" ]] ; then
 		ewarn "Please do not contact the E team about bugs in Gentoo."
-		ewarn "Only contact barbieri@profusion.mobi via e-mail or bugzilla."
+		ewarn "Only contact enlightenment@gentoo.org via e-mail or bugzilla."
 		ewarn "Remember, this stuff is DEV only code so dont cry when"
 		ewarn "I break you :)."
 	elif [[ ${E_STATE} == "live" ]] ; then
@@ -124,7 +124,7 @@ efl_warning_msg() {
 
 efl_die() {
 	efl_warning_msg
-	die "$@"$'\n'"!!! SEND BUG REPORTS TO barbieri@profusion.mobi NOT THE E TEAM"
+	die "$@"$'\n'"!!! SEND BUG REPORTS TO enlightenment@gentoo.org NOT THE E TEAM"
 }
 
 efl_pkg_setup() {

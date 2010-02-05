@@ -3,9 +3,8 @@
 <pkgmetadata>
 <herd>no-herd</herd>
 <maintainer>
- <email>barbieri@profusion.mobi</email>
- <name>Gustavo Sverzut Barbieri</name>
- <description>Enlightenment developer doing packages until it's merged into Gentoo</description>
+ <email>enlightenment@gentoo.org</email>
+ <name>Enlightenment-Gentoo maintainers</name>
 </maintainer>
 <longdescription>
 Memory pool allocator that help to improve memory allocation speed and
