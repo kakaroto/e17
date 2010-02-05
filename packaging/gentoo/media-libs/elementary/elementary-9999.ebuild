@@ -17,6 +17,6 @@ RDEPEND="
 	>=media-libs/edje-9999
 	dbus? ( >=dev-libs/e_dbus-9999 )
 	xdg? ( >=dev-libs/efreet-9999 )
-	weather? ( >=net-libs/libeweather )
+	weather? ( >=net-libs/libeweather-9999 )
 	"
 DEPEND="${RDEPEND}"

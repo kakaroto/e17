@@ -8,7 +8,7 @@ inherit efl
 DESCRIPTION="Enlightenment's core event abstraction layer and OS abstraction layer"
 HOMEPAGE="http://trac.enlightenment.org/e/wiki/Ecore"
 
-IUSE="glib threads xim curl gnutls ssl inotify evas directfb fbcon opengl sdl X xcb xinerama xprint xscreensaver tslib"
+IUSE="glib threads +xim curl gnutls ssl +inotify +evas directfb fbcon opengl sdl X xcb xinerama +xprint +xscreensaver +tslib"
 
 # TODO: ecore-config should be deprecated upstream soon, so eet dep is gone
 # XXX: if xinerama, xprint or xscreensaver are not enabled but the required

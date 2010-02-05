@@ -5,6 +5,7 @@
 EAPI="2"
 ESVN_SUB_PROJECT="PROTO"
 E_NO_NLS="1"
+E_NO_VISIBILITY="1"
 inherit efl
 
 DESCRIPTION="View PDF files using EFL applications."
