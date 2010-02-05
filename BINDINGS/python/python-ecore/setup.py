@@ -143,6 +143,31 @@ class ecore_build_ext(build_ext):
         self.include_dirs.insert(0, 'include')
         self.pyrex_include_dirs.extend(self.include_dirs)
 
+module_list = [ecoremodule]
+
+if int(os.environ.get("ECORE_BUILD_EVAS", 1)):
+    module_list.append(ecoreevasmodule)
+else:
+    print "NOTICE: not building ecore.evas module as requested " \
+          "by ECORE_BUILD_EVAS=0!"
+
+if int(os.environ.get("ECORE_BUILD_X", 1)):
+    module_list.append(ecorexmodule)
+else:
+    print "NOTICE: not building ecore.x module as requested " \
+          "by ECORE_BUILD_X=0!"
+
+if int(os.environ.get("ECORE_BUILD_XSCREENSAVER", 1)):
+    module_list.append(ecorexscreensavermodule)
+else:
+    print "NOTICE: not building ecore.xscreensaver module as requested " \
+          "by ECORE_BUILD_XSCREENSAVER=0!"
+
+if int(os.environ.get("ECORE_BUILD_IMF", 1)):
+    module_list.append(ecoreimfmodule)
+else:
+    print "NOTICE: not building ecore.imf module as requested " \
+          "by ECORE_BUILD_IMF=0!"
 
 setup(name='python-ecore',
       version='0.4.0',
@@ -157,9 +182,7 @@ setup(name='python-ecore',
       packages=find_packages(),
       install_requires=['python-evas>=0.4.0'],
       setup_requires=['python-evas>=0.4.0'],
-      ext_modules=[ecoremodule, ecoreevasmodule, ecorexmodule,
-                   ecorexscreensavermodule, ecoreimfmodule,
-                  ],
+      ext_modules=module_list,
       zip_safe=False,
       cmdclass={'build_ext': ecore_build_ext,},
       )
