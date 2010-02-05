@@ -4,6 +4,7 @@
 #
 # Author: vapier@gentoo.org
 # Modified: barbieri@profusion.mobi
+# Modified: NightNord@gmail.com
 
 inherit eutils libtool flag-o-matic
 
@@ -35,25 +36,32 @@ inherit eutils libtool flag-o-matic
 E_LIVE_SERVER_DEFAULT_SVN="http://svn.enlightenment.org/svn/e/trunk"
 
 E_STATE="release"
-if [[ ${PV/9999} != ${PV} ]] ; then
-	E_LIVE_SERVER=${E_LIVE_SERVER:-${E_LIVE_SERVER_DEFAULT_SVN}}
-	E_STATE="live"
-	WANT_AUTOTOOLS="yes"
 
+if [[ ${PV/9999} != ${PV} ]] ; then
+	E_STATE="live"
+	PROPERTIES="live"
+
+	: ${WANT_AUTOTOOLS:=yes}
+
+	[[ -n ${E_LIVE_OFFLINE} ]] && ESCM_OFFLINE="yes"
+
+	E_LIVE_SERVER=${E_LIVE_SERVER:-${E_LIVE_SERVER_DEFAULT_SVN}}
 	ESVN_URI_APPEND=${ESVN_URI_APPEND:-${PN}}
 	ESVN_PROJECT="enlightenment/${ESVN_SUB_PROJECT}"
-	ESVN_REPO_URI=${ESVN_SERVER:-${E_LIVE_SERVER_DEFAULT_SVN}}/${ESVN_SUB_PROJECT}/${ESVN_URI_APPEND}
+	ESVN_REPO_URI=${E_LIVE_SERVER}/${ESVN_SUB_PROJECT}/${ESVN_URI_APPEND}
+
 	E_S_APPEND=${ESVN_URI_APPEND}
-	E_LIVE_SOURCE="svn"
 	inherit subversion
 elif [[ -n ${E_SNAP_DATE} ]] ; then
 	E_STATE="snap"
 else
 	E_STATE="release"
 fi
+
 if [[ ${WANT_AUTOTOOLS} == "yes" ]] ; then
-	WANT_AUTOCONF=${E_WANT_AUTOCONF:-latest}
-	WANT_AUTOMAKE=${E_WANT_AUTOMAKE:-latest}
+	: ${WANT_AUTOCONF:=${E_WANT_AUTOCONF:-latest}}
+	: ${WANT_AUTOMAKE:=${E_WANT_AUTOMAKE:-latest}}
+
 	inherit autotools
 fi
 
@@ -66,37 +74,33 @@ esac
 
 LICENSE="BSD"
 SLOT="0"
+
 case ${EKEY_STATE:-${E_STATE}} in
 	release) KEYWORDS="alpha amd64 arm hppa ia64 mips ppc ppc64 sh sparc x86 ~x86-fbsd";;
 	snap)    KEYWORDS="~alpha ~amd64 ~arm ~hppa ~ia64 ~mips ~ppc ~ppc64 ~sh ~sparc ~x86 ~x86-fbsd";;
 	live)    KEYWORDS="";;
 esac
+
 DEPEND="${DEPEND} dev-util/pkgconfig"
-MY_ECONF="--disable-static"
+MY_ECONF=""
 
 if [[ -z "${E_NO_NLS}" ]]; then
 	IUSE="${IUSE} nls"
 	DEPEND="${DEPEND} nls? ( sys-devel/gettext )"
-	MY_ECONF="${MY_ECONF} $(use_enable nls)"
 
 	# gettext (via `autopoint`) needs to run cvs #245073
-	[[ ${E_STATE} == "live" ]] && DEPEND="${DEPEND} dev-util/cvs"
+	if [[ ${E_STATE} == "live" ]] && [[ ${WANT_AUTOTOOLS} == "yes" ]]; then
+		DEPEND="${DEPEND} dev-util/cvs"
+	fi
 fi
 
 if [[ -z "${E_NO_DOC}" ]]; then
 	IUSE="${IUSE} doc"
 	DEPEND="${DEPEND} doc? ( app-doc/doxygen )"
-	MY_ECONF="${MY_ECONF} $(use_enable doc)"
 fi
 
-if [[ -z "${E_NO_VISIBILITY}" ]]; then
-	if [[ $(gcc-major-version) -ge 4 ]]; then
-		append-flags -fvisibility=hidden
-	fi
-fi
-
-if [[ "${E_STATE}" != "release" ]]; then
-	IUSE="${IUSE} debug"
+if [[ -z "${E_NO_VISIBILITY}" ]] && [[ $(gcc-major-version) -ge 4 ]]; then
+	append-flags -fvisibility=hidden
 fi
 
 case ${EURI_STATE:-${E_STATE}} in
@@ -109,6 +113,7 @@ efl_warning_msg() {
 	if [[ -n ${E_LIVE_SERVER} ]] ; then
 		einfo "Using user server for live sources: ${E_LIVE_SERVER}"
 	fi
+
 	if [[ ${E_STATE} == "snap" ]] ; then
 		ewarn "Please do not contact the E team about bugs in Gentoo."
 		ewarn "Only contact enlightenment@gentoo.org via e-mail or bugzilla."
@@ -125,10 +130,6 @@ efl_warning_msg() {
 efl_die() {
 	efl_warning_msg
 	die "$@"$'\n'"!!! SEND BUG REPORTS TO enlightenment@gentoo.org NOT THE E TEAM"
-}
-
-efl_pkg_setup() {
-	: efl_warning_msg
 }
 
 efl_src_test() {
@@ -148,52 +149,70 @@ gettext_modify() {
 
 efl_src_unpack() {
 	if [[ ${E_STATE} == "live" ]] ; then
-		case ${E_LIVE_SOURCE} in
-			svn) subversion_src_unpack;;
-			*)   die "eek!";;
-		esac
+		subversion_src_unpack
 	else
 		unpack ${A}
 	fi
-	gettext_modify
-	[[ -s gendoc ]] && chmod a+rx gendoc
+
+	cd "${S}"
 }
 
-efl_src_compile() {
-	# gstreamer sucks, work around it doing stupid stuff
-	export GST_REGISTRY="${S}/registry.xml"
+efl_src_prepare() {
+	gettext_modify
 
-	if use debug; then
-		strip-flags
-		append-flags -g
-		if ! hasq nostrip $FEATURES && ! hasq splitdebug $FEATURES; then
-			ewarn "Compiling with USE=debug but portage will strip binaries!"
-			ewarn "Please use portage FEATURES=nostrip or splitdebug"
-			ewarn "See http://www.gentoo.org/proj/en/qa/backtraces.xml"
+	[[ -s gendoc ]] && chmod a+rx gendoc
+
+	if [[ -e configure.ac || -e configure.in ]] && \
+		[[ "${WANT_AUTOTOOLS}" == "yes" ]]; then
+		if grep -qE '^[[:space:]]*AM_GNU_GETTEXT_VERSION' configure.*; then
+			local autopoint_log_file="${T}/autopoint.$$"
+
+			ebegin "Running autopoint"
+
+			autopoint -f &> "${autopoint_log_file}"
+
+			if ! eend $?; then
+				ewarn "Autopoint failed"
+				ewarn "Log in ${autopoint_log_file}"
+				ewarn "(it makes sense only when compile fails afterwards)"
+			fi
+
+			if grep -qi 'cvs program not found' "${autopoint_log_file}"; then
+				ewarn "This error seems to be due missing CVS"
+				ewarn "(it's usage hardcoded into autopoint code)"
+				ewarn "Please 'emerge cvs' if compilation will fail"
+				ebeep 3
+			fi
 		fi
-	fi
 
-	if [[ ! -e configure ]] ; then
-		env \
-			PATH="${T}:${PATH}" \
-			NOCONFIGURE=yes \
-			USER=blah \
-			./autogen.sh \
-			|| efl_die "autogen failed"
-		# symlinked files will cause sandbox violation
+		# someone forgot these very useful file...
+		touch README
+
+		eautoreconf
 		local x
 		for x in config.{guess,sub} ; do
 			[[ ! -L ${x} ]] && continue
 			rm -f ${x}
 			touch ${x}
 		done
-	elif [[ ${WANT_AUTOTOOLS} == "yes" ]] ; then
-		eautoreconf
 	fi
+
 	epunt_cxx
 	elibtoolize
-	econf ${MY_ECONF} || efl_die "econf failed"
+}
+
+efl_src_configure() {
+	if [[ -x ${ECONF_SOURCE:-.}/configure ]]; then
+		[[ -z "${E_NO_NLS}" ]] && MY_ECONF="${MY_ECONF} $(use_enable nls)"
+		[[ -z "${E_NO_DOC}" ]] && MY_ECONF="${MY_ECONF} $(use_enable doc)"
+
+		econf --disable-static "${MY_ECONF}" || efl_die "configure failed"
+	fi
+}
+
+efl_src_compile() {
 	emake || efl_die "emake failed"
+
 	if use doc; then
 		if [[ -x ./gendoc ]]; then
 			./gendoc || efl_die "gendoc failed"
@@ -205,11 +224,14 @@ efl_src_compile() {
 
 efl_src_install() {
 	emake install DESTDIR="${D}" || efl_die
-	find "${D}" '(' -name CVS -o -name .svn -o -name .git ')' -type d -exec rm -rf '{}' \; 2>/dev/null
+
+	find "${D}" -name .svn -type d -exec rm -rf '{}' \; 2>/dev/null
 	find "${D}" -name '*.la' -delete
+
 	for d in AUTHORS ChangeLog NEWS README TODO ${EDOCS}; do
 		[[ -f ${d} ]] && dodoc ${d}
 	done
+
 	if use doc && [[ -d doc ]]; then
 		if [[ -d doc/html ]]; then
 			dohtml -r doc/html/*
@@ -219,8 +241,4 @@ efl_src_install() {
 	fi
 }
 
-efl_pkg_postinst() {
-	: efl_warning_msg
-}
-
-EXPORT_FUNCTIONS pkg_setup src_unpack src_compile src_install pkg_postinst src_test
+EXPORT_FUNCTIONS src_unpack src_prepare src_configure src_compile src_install src_test
