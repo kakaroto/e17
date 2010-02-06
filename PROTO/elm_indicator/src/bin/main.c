@@ -1,6 +1,3 @@
-#include <Ecore.h>
-#include <Ecore_X.h>
-#include <Ecore_X_Atoms.h>
 #include "elm_indicator.h"
 #include "elm_home.h"
 #include "elm_ind_win.h"

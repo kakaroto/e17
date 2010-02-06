@@ -1,5 +1,3 @@
-#include <Ecore_X.h>
-#include <Ecore_X_Atoms.h>
 #include "elm_quickpanel.h"
 
 #ifndef ELM_LIB_QUICKLAUNCH
@@ -64,6 +62,7 @@ elm_main(int argc, char **argv)
         evas_object_show(win);
 
         if (i == 0) elm_win_quickpanel_zone_set(win, 1);
+        else elm_win_quickpanel_zone_set(win, 0);
      }
 
    elm_run();

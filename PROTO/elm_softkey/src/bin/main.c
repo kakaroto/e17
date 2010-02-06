@@ -1,5 +1,3 @@
-#include <Ecore_X.h>
-#include <Ecore_X_Atoms.h>
 #include "elm_softkey.h"
 
 #ifndef ELM_LIB_QUICKLAUNCH

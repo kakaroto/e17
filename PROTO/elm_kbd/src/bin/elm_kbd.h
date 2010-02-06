@@ -5,6 +5,7 @@
 #  include "config.h"
 # endif
 
+# include <Ecore_X.h>
 # include <Elementary.h>
 
 # ifdef ELM_KBD_API

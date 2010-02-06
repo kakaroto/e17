@@ -170,7 +170,7 @@ _cb_btn_mode_clicked(void *data, Evas_Object *obj, void *event)
    mode += 1;
    if (mode > ECORE_X_ILLUME_MODE_DUAL_LEFT)
      mode = ECORE_X_ILLUME_MODE_SINGLE;
-   ecore_x_e_illume_mode_set(zone, mode);
+//   ecore_x_e_illume_mode_set(zone, mode);
    ecore_x_e_illume_mode_send(zone, mode);
    _set_mode_icon(iwin);
 }

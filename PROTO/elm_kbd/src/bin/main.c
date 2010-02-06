@@ -1,5 +1,4 @@
 #include "elm_kbd.h"
-#include <Ecore_X.h>
 
 #ifndef ELM_LIB_QUICKLAUNCH
 
