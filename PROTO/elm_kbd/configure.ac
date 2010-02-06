@@ -63,7 +63,7 @@ fi
 AC_MSG_RESULT([$e_cv_debug])
 
 PKG_CHECK_MODULES(ELM_KBD, [
-  ecore
+  ecore-x
   elementary
 ])
 
