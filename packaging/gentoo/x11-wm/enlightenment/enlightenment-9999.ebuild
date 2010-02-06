@@ -31,7 +31,7 @@ RDEPEND="
 	 >=media-libs/evas-9999[X,opengl?,eet,jpeg,png,safety-checks]"
 DEPEND="${RDEPEND}"
 
-src_compile() {
+src_configure() {
 	# NOTE: mixer is plugin-able, but just alsa is provided atm.
 	export MY_ECONF="
 	  ${MY_ECONF}
@@ -41,7 +41,7 @@ src_compile() {
 	  $(use_enable connman)
 	  $(use_enable exchange)
 	"
-	efl_src_compile
+	efl_src_configure
 }
 
 src_install() {

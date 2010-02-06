@@ -8,7 +8,7 @@ inherit efl
 
 DESCRIPTION="hardware-accelerated retained canvas API"
 
-IUSE="mmx sse altivec +threads +fontconfig bidi +cserve directfb fbcon opengl sdl X xcb +eet gif +jpeg +pnm +png svg +tiff +xpm static-modules +safety-checks"
+IUSE="debug mmx sse altivec +threads +fontconfig bidi +cserve directfb fbcon opengl sdl X xcb +eet gif +jpeg +pnm +png svg +tiff +xpm static-modules +safety-checks"
 
 RDEPEND="
 	>=dev-libs/eina-9999
@@ -36,7 +36,7 @@ RDEPEND="
 	tiff? ( media-libs/tiff )"
 DEPEND="${RDEPEND}"
 
-src_compile() {
+src_configure() {
 	local SAFETY_CHECKS_FLAGS="" X_FLAGS="" STATIC_FLAGS=""
 
 	# ???: should we use 'use_enable' for these as well?
@@ -158,5 +158,5 @@ src_compile() {
 	  ${SAFETY_CHECKS_FLAGS}
 	"
 
-	efl_src_compile
+	efl_src_configure
 }

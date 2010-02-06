@@ -26,8 +26,7 @@ RDEPEND="
 	)"
 DEPEND="${RDEPEND}"
 
-
-src_compile() {
+src_configure() {
 	if ! use xine && ! use gstreamer; then
 		die "Emotion needs at least one media system to be useful!"
 		die "Compile media-libs/emotion with USE=xine or gstreamer."
@@ -50,5 +49,5 @@ src_compile() {
 		addpredict "/root/.gconf"
 	fi
 
-	efl_src_compile
+	efl_src_configure
 }

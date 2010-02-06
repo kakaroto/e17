@@ -30,6 +30,12 @@ DEPEND="
 	dev-util/pkgconfig
 	doc? ( app-doc/doxygen )"
 
+src_prepare() {
+	[[ "${PV}" == "9999" ]] && eautoreconf
+	epunt_cxx
+	elibtoolize
+}
+
 src_configure() {
 	if use debug; then
 		if ! hasq nostrip $FEATURES && ! hasq splitdebug $FEATURES; then
@@ -48,10 +54,10 @@ src_configure() {
 	if ! use doc; then
 		export MY_ECONF="${MY_ECONF} DOXYGEN=/bin/true"
 	fi
-
-	[[ "${PV}" == "9999" ]] && eautoreconf
-	elibtoolize
 	econf "${MY_ECONF}" || die "econf failed"
+}
+
+src_compile() {
 	emake || die "emake failed"
 
 	if use doc; then

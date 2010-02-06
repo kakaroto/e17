@@ -25,7 +25,7 @@ RDEPEND="
 	!X? ( xcb? ( x11-libs/xcb-util ) )"
 DEPEND="${RDEPEND}"
 
-src_compile() {
+src_configure() {
 	local x_or_xcb=""
 
 	if ! use directfb && ! use fbcon && ! use sdl && ! use X && ! use xcb; then
@@ -62,5 +62,5 @@ src_compile() {
 	  $(use_enable X xrender-x11)
 	  $(use_enable xcb xrender-xcb)
 	"
-	efl_src_compile
+	efl_src_configure
 }

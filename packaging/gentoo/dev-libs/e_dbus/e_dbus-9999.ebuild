@@ -18,7 +18,7 @@ RDEPEND="
 	libnotify? ( >=media-libs/evas-9999 )"
 DEPEND="${RDEPEND}"
 
-src_compile() {
+src_configure() {
 	export MY_ECONF="
 	  ${MY_ECONF}
 	  --disable-enm
@@ -27,5 +27,5 @@ src_compile() {
 	  $(use_enable connman econnman)
 	  $(use_enable libnotify enotify)
 	"
-	efl_src_compile
+	efl_src_configure
 }

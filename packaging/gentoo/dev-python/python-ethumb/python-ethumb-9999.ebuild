@@ -17,14 +17,14 @@ RDEPEND=">=media-libs/ethumb-9999[dbus?]"
 
 DEPEND="${RDEPEND}"
 
-src_compile() {
+src_configure() {
 	if use dbus; then
 		export ETHUMB_BUILD_CLIENT=1
 	else
 		export ETHUMB_BUILD_CLIENT=0
 	fi
 
-	efl_src_compile
+	efl_src_configure
 }
 
 src_install() {

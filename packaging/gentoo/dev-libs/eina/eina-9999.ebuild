@@ -9,7 +9,7 @@ inherit efl
 DESCRIPTION="Enlightenment's data types library (List, hash, etc) in C."
 HOMEPAGE="http://trac.enlightenment.org/e/wiki/Eina"
 LICENSE="LGPL-2.1"
-IUSE="mmx sse sse2 altivec +threads test +safety-checks +mempool-chained mempool-ememoa-fixed mempool-ememoa-unknown mempool-fixed-bitmap +mempool-pass-through mempool-buddy default-mempool +static-modules"
+IUSE="mmx sse sse2 altivec +threads test +safety-checks +mempool-chained mempool-ememoa-fixed mempool-ememoa-unknown mempool-fixed-bitmap +mempool-pass-through mempool-buddy default-mempool +static-modules debug"
 
 RDEPEND="
 	mempool-ememoa-fixed? ( sys-libs/ememoa )
@@ -18,7 +18,7 @@ DEPEND="
 	${RDEPEND}
 	test? ( dev-libs/glib dev-libs/check )"
 
-src_compile() {
+src_configure() {
 	local DEBUG_FLAGS="" SAFETY_CHECKS_FLAGS="" TEST_FLAGS="" EMEMOA_FLAGS=""
 
 	# ???: should we use 'use_enable' for these as well?
@@ -100,5 +100,5 @@ src_compile() {
 	  ${EMEMOA_FLAGS}
 	"
 
-	efl_src_compile
+	efl_src_configure
 }

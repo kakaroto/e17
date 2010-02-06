@@ -11,7 +11,7 @@ HOMEPAGE="http://trac.enlightenment.org/e/wiki/Ethumb"
 
 LICENSE="LGPL-3"
 
-IUSE="+dbus emotion epdf"
+IUSE="+dbus emotion epdf debug"
 
 RDEPEND="
 	>=dev-libs/eina-9999
@@ -24,7 +24,7 @@ RDEPEND="
 
 DEPEND="${RDEPEND}"
 
-src_compile() {
+src_configure() {
 	local DEBUG_FLAGS=""
 
 	if ! use debug; then
@@ -39,5 +39,5 @@ src_compile() {
 	  $(use_enable epdf)
 	  ${DEBUG_FLAGS}"
 
-	efl_src_compile
+	efl_src_configure
 }

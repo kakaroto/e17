@@ -19,7 +19,7 @@ RDEPEND="media-libs/jpeg
 DEPEND="${RDEPEND}
 	test? ( dev-libs/check )"
 
-src_compile() {
+src_configure() {
 	local SSL_FLAGS="" DEBUG_FLAGS="" TEST_FLAGS=""
 
 	# ???: should we use 'use_enable' for these as well?
@@ -77,5 +77,5 @@ src_compile() {
 	  ${TEST_FLAGS}
 	"
 
-	efl_src_compile
+	efl_src_configure
 }

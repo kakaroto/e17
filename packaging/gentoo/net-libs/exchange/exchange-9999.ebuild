@@ -20,13 +20,12 @@ DEPEND="
 
 RDEPEND="${DEPEND}"
 
-
-src_compile() {
+src_configure() {
 	export MY_ECONF="
 	  ${MY_ECONF}
 	  --disable-etk
 	  --disable-ewl
 	"
 
-	efl_src_compile
+	efl_src_configure
 }

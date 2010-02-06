@@ -42,7 +42,7 @@ RDEPEND="
 	!X? ( xcb? ( x11-libs/xcb-util ) )"
 DEPEND="${RDEPEND}"
 
-src_compile() {
+src_configure() {
 	local SSL_FLAGS="" EVAS_FLAGS="" X_FLAGS=""
 
 	# ???: should we use 'use_enable' for these as well?
@@ -195,5 +195,5 @@ src_compile() {
 	  ${EVAS_FLAGS}
 	  ${X_FLAGS}
 	"
-	efl_src_compile
+	efl_src_configure
 }

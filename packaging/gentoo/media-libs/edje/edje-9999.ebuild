@@ -9,7 +9,7 @@ inherit efl elisp-common
 DESCRIPTION="graphical layout and animation library"
 HOMEPAGE="http://trac.enlightenment.org/e/wiki/Edje"
 
-IUSE="vim-syntax emacs experimental"
+IUSE="vim-syntax emacs experimental debug"
 
 RDEPEND="
 	dev-lang/lua
@@ -24,7 +24,7 @@ DEPEND="${RDEPEND}"
 
 SITEFILE=50${PN}-gentoo.el
 
-src_compile() {
+src_configure() {
 	# TODO: detect FPU-less architectures and use --enable-fixed-point
 	export MY_ECONF="
 	  ${MY_ECONF}
@@ -33,7 +33,7 @@ src_compile() {
 	  $(use_enable experimental edje-calc-cache)
 	  $(use_with vim-syntax vim /usr/share/vim)
 	"
-	efl_src_compile
+	efl_src_configure
 }
 
 src_install() {

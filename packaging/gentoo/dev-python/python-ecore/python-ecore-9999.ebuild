@@ -20,7 +20,7 @@ DEPEND="
 	>=dev-python/python-evas-9999
 	${RDEPEND}"
 
-src_compile() {
+src_configure() {
 	if use evas; then
 		export ECORE_BUILD_EVAS=1
 	else
@@ -43,7 +43,7 @@ src_compile() {
 		fi
 	fi
 
-	efl_src_compile
+	efl_src_configure
 }
 
 src_install() {
