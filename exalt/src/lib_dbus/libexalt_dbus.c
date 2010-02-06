@@ -194,10 +194,12 @@ void exalt_dbus_free(Exalt_DBus_Conn** conn)
     if ((*conn)->connect.free_data)
         (*conn)->connect.free_data((*conn)->connect.data);
 
-    e_dbus_signal_handler_del((*conn)->e_conn, (*conn)->scan_notify_handler);
-    e_dbus_signal_handler_del((*conn)->e_conn, (*conn)->notify_handler);
-    if((*conn)->name_owner_changed_handler)
-        e_dbus_signal_handler_del((*conn)->e_conn, (*conn)->name_owner_changed_handler);
+   if ((*conn)->scan_notify_handler)
+     e_dbus_signal_handler_del((*conn)->e_conn, (*conn)->scan_notify_handler);
+   if ((*conn)->notify_handler)
+     e_dbus_signal_handler_del((*conn)->e_conn, (*conn)->notify_handler);
+   if ((*conn)->name_owner_changed_handler)
+     e_dbus_signal_handler_del((*conn)->e_conn, (*conn)->name_owner_changed_handler);
 
     e_dbus_connection_close((*conn)->e_conn);
     EXALT_FREE((*conn)->notify);
