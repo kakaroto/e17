@@ -168,6 +168,7 @@ dispatch('/desktop/:language', 'desktop');
 dispatch('/news/:language', 'news');
 dispatch('/article/:id/:language', 'render_article');
 dispatch ('set_language/:language/**', 'set_language');
+dispatch('/:page/:language', 'generic');
 error(E_USER_ERROR, 'render_user_error');
 
 /* Executes the request */
@@ -197,6 +198,15 @@ function libraries ()
     return html($file);
 }
 
+function generic ()
+{
+    if ( !$file = page(params('page'))) halt(NOT_FOUND);
+
+    set('page', params('page'));
+    set('name', message(params('page')));
+
+    return html($file);
+}
 
 function community ()
 {

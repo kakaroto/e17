@@ -9,7 +9,7 @@
             </a>
         </h3>
 
-        <p class="data">by
+        <p class="data"> by
             <a href="mailto:<?php echo $article['mail'] ?>">
             <span class="author"><?php echo $article['author'] ?></span></a> -
             <span class="date"><?php echo $article['date'] ?></span>
@@ -28,20 +28,20 @@
 
     <?php foreach ( $planet as $article): ?>
     <div class="summary">
-        <h4>
+        <h3>
             <a href="<?php echo $article['link'] ?>">
                 <?php echo $article['title'] ?>
             </a>
-        </h4>
+        </h3>
 
-        <p class="data"> <small> by
+        <p class="data"> by
             <span class="author"><?php echo $article['author'] ?></span> -
             <span class="date"><?php echo $article['date'] ?></span>
-        </small> </p>
+        </p>
 
-        <p class="summary"> <small>
+        <p class="summary">
             <?php echo $article['summary']; ?>
-        </small> </p>
+        </p>
     </div>
     <?php endforeach; ?>
 

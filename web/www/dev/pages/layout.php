@@ -11,12 +11,12 @@
     <link href="<?php url_style_image('favicon.png') ?>" rel="icon" type="image/ico" >
     <link href="<?php url_style_image('favicon.png') ?>" rel="shortcut icon"  type="image/ico">
 
-    <link rel="stylesheet" href="<?php url_css('grid.css') ?>" type="text/css">
-    <link rel="stylesheet" href="<?php url_css($page .'.css') ?>" type="text/css">
-    <!--[if lt IE 8]> <link rel="stylesheet" href="<?php url_css('blueprint.ie.css') ?>" type="text/css" media="screen, projection"> <![endif]-->
+    <link rel="stylesheet" href="<?php url_css('print.css') ?>" type="text/css" media="print">
+    <link rel="stylesheet" href="<?php url_css('screen.css') ?>" type="text/css" media="screen, projection">
+    <link rel="stylesheet" href="<?php url_css($page .'.css') ?>" type="text/css" media="screen, projection">
+    <!--[if lt IE 8]><link rel="stylesheet" href="<?php url_css('ie.css') ?>" type="text/css" media="screen, projection"><![endif]-->
 
-    <!-- Use gridfox2!: http://www.puidokas.com/gridfox-20-alpha-release/ with
-         these settings, 950px width, 12 columns, 10px gutter, 18px row -->
+
 </head>
 
 <body class="<?php echo $page ?>">

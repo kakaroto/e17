@@ -5,10 +5,11 @@ $messages = array
 /* Page Names */
 'home'          => 'home',
 'about'         => 'about',
-'desktop'       => 'E17',
+'desktop'       => 'window manager',
 'news'          => 'news',
 'article'       => 'article',
-'libraries'     => 'EFL',
+'libraries'     => 'development libraries',
+'alt_libraries'     => 'alternative libraries page',
 'community'     => 'community',
 
 /* Other messages */
