@@ -103,7 +103,6 @@ case ${EKEY_STATE:-${E_STATE}} in
 esac
 
 DEPEND="${DEPEND} dev-util/pkgconfig"
-MY_ECONF=""
 
 if [[ -z "${E_NO_NLS}" ]]; then
 	IUSE="${IUSE} nls"
@@ -224,7 +223,7 @@ efl_src_prepare() {
 				fi
 			fi
 
-		# someone forgot these very useful file...
+			# someone forgot these very useful file...
 			touch README
 
 			eautoreconf
@@ -247,7 +246,7 @@ efl_src_configure() {
 			[[ -z "${E_NO_NLS}" ]] && MY_ECONF="${MY_ECONF} $(use_enable nls)"
 			[[ -z "${E_NO_DOC}" ]] && MY_ECONF="${MY_ECONF} $(use_enable doc)"
 
-			econf --disable-static "${MY_ECONF}" || efl_die "configure failed"
+			econf ${MY_ECONF} --disable-static || efl_die "configure failed"
 		fi
 	fi
 }
