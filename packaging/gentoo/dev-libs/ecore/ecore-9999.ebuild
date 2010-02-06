@@ -11,9 +11,6 @@ HOMEPAGE="http://trac.enlightenment.org/e/wiki/Ecore"
 IUSE="glib threads +xim curl gnutls ssl +inotify +evas directfb fbcon opengl sdl X xcb xinerama +xprint +xscreensaver +tslib"
 
 # TODO: ecore-config should be deprecated upstream soon, so eet dep is gone
-# XXX: if xinerama, xprint or xscreensaver are not enabled but the required
-# XXX: libs are present in the system, ecore will use them and dependencies
-# XXX: will be incorrectly handled. This needs fixing in ecore upstream.
 RDEPEND="
 	>=dev-libs/eina-9999
 	>=dev-libs/eet-9999
@@ -141,7 +138,6 @@ src_compile() {
 		  --enable-ecore-x
 		  --disable-ecore-x-xcb
 		"
-		# TODO: disable xinerama, xprint and xscreensaver based on use flags
 
 	elif use xcb; then
 		X_FLAGS="
@@ -152,6 +148,20 @@ src_compile() {
 		X_FLAGS="
 		  --disable-ecore-x
 		  --disable-ecore-x-xcb
+		"
+	fi
+
+	if [[ ! -z "$x_or_xcb" ]]; then
+		X_FLAGS="
+		  $(use_enable xinerama ecore-x-xinerama)
+		  $(use_enable xprint ecore-x-xprint)
+		  $(use_enable xscreensaver ecore-x-screensaver)
+		"
+	else
+		X_FLAGS="
+		  --disable-ecore-x-xinerama
+		  --disable-ecore-x-xprint
+		  --disable-ecore-x-screensaver
 		"
 	fi
 
@@ -179,6 +189,7 @@ src_compile() {
 	  $(use_enable inotify)
 	  $(use_enable directfb ecore-directfb)
 	  $(use_enable fbcon ecore-fb)
+	  $(use_enable tslib)
 	  $(use_enable sdl ecore-sdl)
 	  ${SSL_FLAGS}
 	  ${EVAS_FLAGS}
