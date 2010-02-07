@@ -137,6 +137,8 @@ id3 tag image loader/saver for Imlib2
 
 %install
 %{__make} %{?mflags_install} DESTDIR=$RPM_BUILD_ROOT install
+%{__rm} -f $RPM_BUILD_ROOT%{_libdir}/%{name}/filters/*.a
+%{__rm} -f $RPM_BUILD_ROOT%{_libdir}/%{name}/loaders/*.a
 
 %clean
 test "x$RPM_BUILD_ROOT" != "x/" && rm -rf $RPM_BUILD_ROOT
