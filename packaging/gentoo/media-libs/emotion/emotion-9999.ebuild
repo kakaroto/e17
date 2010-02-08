@@ -44,10 +44,10 @@ src_configure() {
 	  $(use_enable gstreamer gstreamer $MODULE_ARGUMENT)
 	"
 
-	if use gstreamer; then
-		addpredict "/root/.gconfd"
-		addpredict "/root/.gconf"
-	fi
+	# work around GStreamer's desire to check registry, which by default
+	# results in sandbox access violation.
+	export GST_REGISTRY="${T}"/registry.xml
+	export GST_PLUGIN_SYSTEM_PATH="${T}"
 
 	efl_src_configure
 }
