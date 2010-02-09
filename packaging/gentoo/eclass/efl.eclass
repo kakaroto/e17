@@ -32,6 +32,7 @@ inherit eutils libtool flag-o-matic
 # E_NO_NLS: if defined, the package do not support NLS (gettext)
 # E_NO_DOC: if defined, the package do not support documentation (doxygen)
 # E_NO_VISIBILITY: if defined, the package do not support -fvisibility=hidden
+# E_NO_DISABLE_STATIC: if defined, do not append --disable-static
 #
 # Python support:
 # E_PYTHON: if defined, the package is Python/distutils
@@ -245,8 +246,9 @@ efl_src_configure() {
 		if [[ -x ${ECONF_SOURCE:-.}/configure ]]; then
 			[[ -z "${E_NO_NLS}" ]] && MY_ECONF="${MY_ECONF} $(use_enable nls)"
 			[[ -z "${E_NO_DOC}" ]] && MY_ECONF="${MY_ECONF} $(use_enable doc)"
+			[[ -z "${E_NO_DISABLE_STATIC}" ]] && MY_ECONF="${MY_ECONF} --disable-static"
 
-			econf ${MY_ECONF} --disable-static || efl_die "configure failed"
+			econf ${MY_ECONF} || efl_die "configure failed"
 		fi
 	fi
 }
