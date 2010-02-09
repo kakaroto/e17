@@ -7,7 +7,6 @@ animations_list.py \
 animations.py \
 clist.py \
 collapsable.py \
-collapselist.py \
 colorpicker.py \
 controller.py \
 desktop_handler.py \
