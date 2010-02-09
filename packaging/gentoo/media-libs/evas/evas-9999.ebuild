@@ -7,6 +7,7 @@ E_NO_NLS="1"
 inherit efl
 
 DESCRIPTION="hardware-accelerated retained canvas API"
+HOMEPAGE="http://trac.enlightenment.org/e/wiki/Evas"
 
 IUSE="debug mmx sse altivec +threads +fontconfig bidi +cserve directfb fbcon opengl sdl X xcb +eet gif +jpeg +pnm +png svg +tiff +xpm static-modules +safety-checks"
 
