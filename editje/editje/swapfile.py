@@ -62,6 +62,7 @@ class SwapFile(object):
         if path.exists(self.__swapfile):
             if mode == RESTORE: # or filecmp.cmp(self.__filepath, self.__swapfile):
                 self.__opened = True
+                self.__opened_files[self.__filepath] = self
                 return
             elif mode != REPLACE:
                 raise CacheAlreadyExists(self)
