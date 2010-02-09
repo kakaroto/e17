@@ -34,12 +34,11 @@ class EditableAnimation(Manager, object):
 
         self.program = EditableProgram(self.e)
 
-        self._animation_unselect_cb(self, None)
-        self.e.callback_add("group.changed", self._animation_unselect_cb)
+        self._name = None
+        self.e.callback_add("group.changed", self._group_changed_cb)
         self.e.callback_add("animation.removed", self._animation_removed_cb)
 
-
-    def _animation_unselect_cb(self, emissor, data):
+    def _group_changed_cb(self, emissor, data):
         self.name = None
 
     def _animation_removed_cb(self, emissor, data):
@@ -58,6 +57,9 @@ class EditableAnimation(Manager, object):
                     self.event_emit("animation.changed", self._name)
             else:
                 self._name = ""
+                for p in self.e.parts:
+                    part = self.e._edje.part_get(p)
+                    part.state_selected_set("default 0.00")
                 self.event_emit("animation.unselected")
 
     def _name_get(self):
