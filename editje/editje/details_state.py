@@ -46,6 +46,7 @@ class StatesPopUp(Floater):
         self.states.size_hint_weight_set(1.0, 1.0)
         self.states.size_hint_align_set(-1.0, -1.0)
         self.states.show()
+        self._selstate = None
 
         self.content_set(self.states)
 
@@ -60,7 +61,10 @@ class StatesPopUp(Floater):
         self.states.go()
 
     def _state_selected_cb(self, obj, event, state):
-        self._selstate = state
+        if self._selstate != state:
+            self._selstate = state
+            self._parent.e.part.state.name = state
+        self.hide()
 
     def selected_get(self):
         return self._selstate
