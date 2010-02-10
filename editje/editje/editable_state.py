@@ -62,6 +62,11 @@ class EditableState(Manager, object):
             else:
                 self.event_emit("state.unselected")
 
+    def name_set(self, new_name):
+        self._state.name_set(new_name)
+        self.event_emit("state.renamed", self._name)
+        self._name_set(new_name)
+
     def _name_get(self):
         return self._name
 

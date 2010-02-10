@@ -580,14 +580,18 @@ class PartStateDetails(EditjeDetails):
 
     def _state_entry_changed_cb(self, obj, *args, **kwargs):
         state = obj.value.split(None, 1)
+        old = self.e.part.state.name
+
         if len(state) == 1:
             st = state[0] + " 0.00"
         else:
             st = " ".join(state)
-        if not self.part.state_exist(st):
-            self.part.state_copy(self.state.name, state[0])
-            self.e.part.event_emit("state.added", st)
-        self.e.part.state.name = st
+
+        if (not self.part.state_exist(st)) and old.split(None, 1)[0] != "default":
+            self.e.part.state.name_set(st)
+        else:
+            obj.value = old
+
 
     def _hide_all(self):
         self.main_hide()
