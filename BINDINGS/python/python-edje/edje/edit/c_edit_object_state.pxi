@@ -31,6 +31,10 @@ cdef class State:
         def __get__(self):
             return self._name
 
+    def name_set(self, new_name):
+        return edje_edit_state_name_set(self.edje.obj, self.part, self._name,
+                                        new_name)
+
     def copy_from(self, from_state):
         return bool(edje_edit_state_copy(self.edje.obj, self.part,
                                          from_state, self.name))
