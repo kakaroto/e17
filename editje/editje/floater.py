@@ -171,7 +171,6 @@ class Wizard(InnerWindow):
         InnerWindow.__init__(self, parent)
 
         self._parent = parent
-        self.__actions_list = {}
         self.style_set("minimal") # size fallbacks to __layout's min/max
 
         self.__layout = edje.Edje(self.evas)
@@ -241,7 +240,7 @@ class Wizard(InnerWindow):
         box.pack_end(actions)
         actions.show()
 
-        self.__pages[name] = (title, subtitle, box, content, actions)
+        self.__pages[name] = (title, subtitle, box, content, actions, {})
         self.title_text = title
         self.subtitle_text = subtitle
         self.__pager.content_push(box)
@@ -249,13 +248,14 @@ class Wizard(InnerWindow):
     def content_add(self, pg_name, c):
         page = self.__pages.get(pg_name)
         if page:
-            title, subtitle, box, content, actions = page
+            title, subtitle, box, content, actions, action_btns = page
             content.pack_end(c)
 
+    # TODO: add support for equal-named actions on a page, if needed
     def action_add(self, pg_name, label, func_cb, data=None, icon=None):
         page = self.__pages.get(pg_name)
         if page:
-            title, subtitle, box, content, actions = page
+            title, subtitle, box, content, actions, action_btns = page
 
             btn = Button(self._parent)
             btn.label_set(label)
@@ -272,18 +272,21 @@ class Wizard(InnerWindow):
                 btn.icon_set(ico)
                 ico.show()
 
-            self.__actions_list[label] = btn
+            action_btns[label] = btn
 
             btn.show()
             actions.pack_end(btn)
 
-    def action_disabled_set(self, label, disabled):
-        self.__actions_list[label].disabled_set(disabled)
+    def action_disabled_set(self, pg_name, label, disabled):
+        page = self.__pages.get(pg_name)
+        if page:
+            title, subtitle, box, content, actions, action_btns = page
+            action_btns[label].disabled_set(disabled)
 
     def goto(self, page):
         page = self.__pages.get(page)
         if page:
-            title, subtitle, box, content, actions = page
+            title, subtitle, box, content, actions, action_btns = page
             self.title_text = title
             self.subtitle_text = subtitle
             self.__pager.content_promote(box)

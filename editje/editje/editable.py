@@ -71,16 +71,22 @@ class Editable(Manager, object):
         return self._group
 
     def _group_set(self, value):
-        if value != self._group:
-            self._group = value
-            self._edje = EdjeEdit(self._canvas, file=self._swapfile.workfile,
-                                  group=self._group)
+        if not value:
+            value = ""
+            self.event_emit("group.changed", value)
+            self._edje and self._edje.delete()
+            self._edje = None
+            self._edje_group = None
+        elif value != self._group:
+            self._edje = EdjeEdit(
+                self._canvas, file=self._swapfile.workfile, group=value)
             self._edje_group = self._edje.current_group
             self.event_emit("group.changed", value)
 
+        self._group = value
+
     group = property(_group_get, _group_set)
 
-    # FIXME: not working yet!
     def group_add(self, grp_name):
         if not self._edje:
             self._edje = EdjeEdit(
@@ -88,6 +94,24 @@ class Editable(Manager, object):
                 group=edje.file_collection_list(self._swapfile.workfile)[0])
 
         return self._edje.group_add(grp_name)
+
+    def group_del(self, grp_name):
+        all_grps = edje.file_collection_list(self._swapfile.workfile)
+        for g in all_grps:
+            if g != grp_name:
+                dummy_grp = g
+                break
+
+        if not self._edje or self._group == grp_name:
+            self.group = ""
+
+            dummy_edje = EdjeEdit(
+                self._canvas, file=self._swapfile.workfile, group=dummy_grp)
+            r = dummy_edje.group_del(grp_name)
+            dummy_edje.delete()
+            return r
+
+        return self._edje.group_del(grp_name)
 
     def group_rename(self, name):
         if not self._group:
@@ -214,13 +238,13 @@ class Editable(Manager, object):
         self.callback_add("group.changed", self._modification_clear_cb)
 
     def _modification_clear_cb(self, emissor, data):
-        self._modificated = False
+        self._modified = False
 
     def close(self):
         self._swapfile.close()
 
     def save(self):
-#        if self._modificated:
+#        if self._modified:
         if self._edje.save_all():
             self._swapfile.save()
             self.event_emit("saved")
@@ -231,12 +255,19 @@ class Editable(Manager, object):
 
     # Parts
     def _parts_init(self):
-        self.parts = None
-        self.callback_add("group.changed", self._parts_reload_cb)
+        self.parts = []
+        self.callback_add("group.changed", self._parts_load_cb)
         self.callback_add("part.added", self._parts_reload_cb)
         self.callback_add("part.removed", self._parts_reload_cb)
         self.callback_add("part.removed", self._parts_reload_cb)
         self.part.callback_add("name.changed", self._parts_reload_cb)
+
+    def _parts_load_cb(self, emissor, data):
+        if data:
+            self.parts = self._edje.parts
+        else:
+            self.parts = []
+        self.event_emit("parts.changed", self.parts)
 
     def _parts_reload_cb(self, emissor, data):
         self.parts = self._edje.parts
@@ -244,29 +275,33 @@ class Editable(Manager, object):
 
     def part_add(self, name, type, source="", signal=True):
         if self._edje.part_add(name, type, source):
-            self._modificated = True
+            self._modified = True
             if signal:
                 self.event_emit("part.added", name)
             return True
 
     def part_del(self, name):
         if self._edje.part_del(name):
-            self._modificated = True
+            self._modified = True
             self.event_emit("part.removed", name)
             return True
 
     # Programs
     def _programs_init(self):
-        self.programs = None
+        self.programs = []
         self.callback_add("group.changed", self._programs_reload_cb)
 
     def _programs_reload_cb(self, emissor, data):
-        self.programs = self._edje.programs
+        if data:
+            self.programs = self._edje.programs
+        else:
+            self.programs = []
+
         self.event_emit("programs.changed", self.programs)
 
     def program_add(self, name):
         if self._edje.program_add(name):
-            self._modificated = True
+            self._modified = True
             self.programs.append(name)
             self.event_emit("program.added", name)
             return True
@@ -274,7 +309,7 @@ class Editable(Manager, object):
 
     def program_del(self, name):
         if self._edje.program_del(name):
-            self._modificated = True
+            self._modified = True
             self.programs.remove(name)
             self.event_emit("program.removed", name)
             return True
@@ -307,7 +342,7 @@ class Editable(Manager, object):
         if name in self._animations:
             return False
 
-        self._modificated = True
+        self._modified = True
 
         # END
         endname = "@%s@end" % name
@@ -362,7 +397,7 @@ class Editable(Manager, object):
         self.program_del(stopname)
         self.event_emit("animation.removed", name)
         self._animations.pop(self._animations.index(name))
-        self._modificated = True
+        self._modified = True
 
     # Signals
     def _signal_get(self):

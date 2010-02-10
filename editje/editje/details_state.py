@@ -101,28 +101,23 @@ class PartStateDetails(EditjeDetails):
 
         self.edje_get().signal_emit("cl,option,enable", "editje")
 
-        self.e.callback_add("group.changed",
-                                             self._edje_load)
-        self.e.part.callback_add("part.changed",
-                                             self._part_update)
-        self.e.part.callback_add("part.renamed",
-                                             self._part_update)
-        self.e.part.callback_add("part.unselected",
-                                             self._part_removed)
-        self.e.part.state.callback_add("state.changed",
-                                             self._state_changed_cb)
-        self.e.part.state.callback_add("rel1x.changed",
-                                             self._state_rels_changed_cb)
-        self.e.part.state.callback_add("rel1y.changed",
-                                             self._state_rels_changed_cb)
-        self.e.part.state.callback_add("rel2x.changed",
-                                             self._state_rels_changed_cb)
-        self.e.part.state.callback_add("rel2y.changed",
-                                             self._state_rels_changed_cb)
-        self.e.part.state.callback_add("part.state.min.changed",
-                                             self._update_min)
-        self.e.part.state.callback_add("part.state.max.changed",
-                                             self._update_max)
+        self.e.callback_add("group.changed", self._edje_load)
+        self.e.part.callback_add("part.changed", self._part_update)
+        self.e.part.callback_add("part.renamed", self._part_update)
+        self.e.part.callback_add("part.unselected", self._part_removed)
+        self.e.part.state.callback_add("state.changed", self._state_changed_cb)
+        self.e.part.state.callback_add(
+            "rel1x.changed", self._state_rels_changed_cb)
+        self.e.part.state.callback_add(
+            "rel1y.changed", self._state_rels_changed_cb)
+        self.e.part.state.callback_add(
+            "rel2x.changed", self._state_rels_changed_cb)
+        self.e.part.state.callback_add(
+            "rel2y.changed", self._state_rels_changed_cb)
+        self.e.part.state.callback_add(
+            "part.state.min.changed", self._update_min)
+        self.e.part.state.callback_add(
+            "part.state.max.changed", self._update_max)
         self._hide_all()
 
     def _del_handler(self, o):

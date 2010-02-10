@@ -105,11 +105,13 @@ class PartsManager(evas.ClippedSmartObject):
     def _edje_set(self, edje):
         if self._edje == edje:
             return
+
         self._edje = edje
         if edje:
             self._parts_reload()
             self.show()
         else:
+            self._parts_del()
             self.hide()
 
     def _edje_get(self):

@@ -195,7 +195,7 @@ class NewPartWizard(Wizard):
 
         self.action_add("default", "Cancel", self._cancel)
         self.action_add("default", "Add", self._add)
-        self.action_disabled_set("Add", True)
+        self.action_disabled_set("default", "Add", True)
 
         edje.message_signal_process()
         self._name_changed = False
@@ -216,9 +216,9 @@ class NewPartWizard(Wizard):
     def _check_name_and_type(self):
         name = self._part_name_entry.entry
         if self._type is not None and name != "":
-            self.action_disabled_set("Add", False)
+            self.action_disabled_set("default", "Add", False)
         else:
-            self.action_disabled_set("Add", True)
+            self.action_disabled_set("default", "Add", True)
 
     def _default_name_set(self, name):
         if self._name_changed:

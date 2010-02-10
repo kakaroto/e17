@@ -180,7 +180,7 @@ class NewSignalWizard(Wizard):
 
         self.action_add("default", "Cancel", self._cancel)
         self.action_add("default", "Create", self._add)
-        self.action_disabled_set("Create", True)
+        self.action_disabled_set("default", "Create", True)
 
         self._new_sig_cb = new_sig_cb
 
@@ -194,9 +194,9 @@ class NewSignalWizard(Wizard):
     def _check_name_and_type(self):
         name = self._sig_name_entry.entry
         if self._type is not None and name != "":
-            self.action_disabled_set("Create", False)
+            self.action_disabled_set("default", "Create", False)
         else:
-            self.action_disabled_set("Create", True)
+            self.action_disabled_set("default", "Create", True)
 
     def _add(self):
         name = self._sig_name_entry.entry

@@ -37,26 +37,22 @@ class Desktop(Controller):
         self.e.callback_add("group.min.changed", self._group_min_load)
         self.e.callback_add("group.max.changed", self._group_max_load)
         self.e.callback_add("group.size.changed", self._group_size_load)
-        self.e.callback_add("part.added",
-                                  self._part_added)
-        self.e.part.callback_add("part.changed",
-                                       self._part_load)
-        self.e.part.callback_add("part.unselected",
-                                       self._part_load)
-        self.e.part.state.callback_add("rel1x.changed",
-                                             self._rel1x_load)
-        self.e.part.state.callback_add("rel1y.changed",
-                                             self._rel1y_load)
-        self.e.part.state.callback_add("rel2x.changed",
-                                             self._rel2x_load)
-        self.e.part.state.callback_add("rel2y.changed",
-                                             self._rel2y_load)
+        self.e.callback_add("part.added", self._part_added)
+        self.e.part.callback_add("part.changed", self._part_load)
+        self.e.part.callback_add("part.unselected", self._part_load)
+        self.e.part.state.callback_add("rel1x.changed", self._rel1x_load)
+        self.e.part.state.callback_add("rel1y.changed", self._rel1y_load)
+        self.e.part.state.callback_add("rel2x.changed", self._rel2x_load)
+        self.e.part.state.callback_add("rel2y.changed", self._rel2y_load)
 
     def _view_load(self):
         self._view = DesktopView(self, self.parent.view)
 
     def _group_load(self, emissor, data):
-        self._view.group = self.e._edje
+        if data:
+            self._view.group = self.e._edje
+        else:
+            self._view.group = None
 
     def _group_min_load(self, emissor, data):
         self._view.manager.group_min_set(*data)
@@ -317,14 +313,18 @@ class EditManager(View, evas.ClippedSmartObject):
         if self._group:
             self._group.hide()
             self.member_del(self._group)
-        self._group = group
-        self._padding_init(self)
-        self._group_member_add()
-        self.outside_area.lower()
-        group.show()
-        for obj in self._group_listeners:
-            obj.group = group
-        self.parts_manager.edje = group
+
+        if not group:
+            self._group = None
+        else:
+            self._group = group
+            self._padding_init(self)
+            self._group_member_add()
+            self.outside_area.lower()
+            group.show()
+            for obj in self._group_listeners:
+                obj.group = group
+        self.parts_manager.edje = self._group
 
     def _group_get(self):
         return self._group

@@ -127,17 +127,26 @@ class Editje(elementary.Window):
         # TODO: when setting file/group via command line is done, don't
         # instantiate the wizard
         grp_wiz = GroupSelectionWizard(
-            self, switch_only=True, selected_cb=self._group_wizard_selection_cb,
-            new_grp_cb=self._group_wizard_new_group_cb)
+            self, switch_only=True,
+            selected_set_cb=self._group_wizard_selection_set_cb,
+            selected_get_cb=self._group_wizard_selection_get_cb,
+            new_grp_cb=self._group_wizard_new_group_cb,
+            del_grp_cb=self._group_wizard_del_group_cb)
         grp_wiz.file_set(self.e.workfile)
         grp_wiz.open()
 
     def _group_wizard_new_group_cb(self, grp_name):
         return self.e.group_add(grp_name)
 
-    def _group_wizard_selection_cb(self, selection):
+    def _group_wizard_del_group_cb(self, grp_name):
+        return self.e.group_del(grp_name)
+
+    def _group_wizard_selection_set_cb(self, selection):
         if selection:
             self.group = selection
+
+    def _group_wizard_selection_get_cb(self):
+        return self.group
 
     ###########
     # DESKTOP
@@ -172,8 +181,7 @@ class Editje(elementary.Window):
                                      self._group_name_entry)
 
         self._toolbar_group_cb(self, "< none >")
-        self.e.callback_add("group.changed",
-                                  self._toolbar_group_cb)
+        self.e.callback_add("group.changed", self._toolbar_group_cb)
 
         self._toolbar_bt_init(self.main_edje, "open.bt", "Open", self._open_cb)
         self._toolbar_bt_init(self.main_edje, "save.bt", "Save", self._save_cb)
@@ -198,8 +206,10 @@ class Editje(elementary.Window):
     def _group_cb(self, obj, emission, source):
         grp_wiz = GroupSelectionWizard(
             self, switch_only=False,
-            selected_cb=self._group_wizard_selection_cb,
-            new_grp_cb=self._group_wizard_new_group_cb)
+            selected_set_cb=self._group_wizard_selection_set_cb,
+            selected_get_cb=self._group_wizard_selection_get_cb,
+            new_grp_cb=self._group_wizard_new_group_cb,
+            del_grp_cb=self._group_wizard_del_group_cb)
 
         grp_wiz.file_set(self.e.workfile, self.e.group)
         grp_wiz.open()

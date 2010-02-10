@@ -413,14 +413,14 @@ class NewAnimationWizard(Wizard):
 
         self.action_add("default", "Cancel", self._cancel)
         self.action_add("default", "Add", self._add)
-        self.action_disabled_set("Add", True)
+        self.action_disabled_set("default", "Add", True)
 
     def _name_changed_cb(self, obj):
         name = self._anim_name_entry.entry
         if name != "":
-            self.action_disabled_set("Add", False)
+            self.action_disabled_set("default", "Add", False)
         else:
-            self.action_disabled_set("Add", True)
+            self.action_disabled_set("default", "Add", True)
 
     # FIXME: more horrible design, here, fix it later
     def _add(self):
