@@ -19,6 +19,7 @@
 import ecore
 import edje
 import elementary
+import re
 
 from details import EditjeDetails
 from details_widget_entry import WidgetEntry
@@ -178,7 +179,7 @@ class PartStateDetails(EditjeDetails):
     def _edit_opt_clicked_cb(self, obj, emission, source):
         icon = self.edje_get().part_object_get("cl.options")
         popup = StatesPopUp(self._parent, icon)
-        popup.action_add("Select", self._state_selected_cb)
+        popup.action_add("New", self._state_add_new_cb)
         popup.action_add("Reset to", self._reset_to_state_cb)
         popup.action_add("Delete", self._state_delete_cb)
         popup.action_add("Cancel", self._popup_cancel_cb)
@@ -194,6 +195,28 @@ class PartStateDetails(EditjeDetails):
     def _state_selected_cb(self, popup, data):
         self.e.part.state.name = popup.selected_get()
         popup.close()
+
+    def _state_add_new_cb(self, popup, data):
+        max = 0
+        cur_state = self.e.part.state.name.split(None,1)
+        if re.match("[a-zA-Z]*\d{2,}", cur_state[0]):
+            cur = cur_state[0][:-2]
+        else:
+            cur = cur_state[0]
+
+        for p in self.e.part.states:
+             state = p.split(None, 1)
+             if re.match("%s\d{2,}" % cur, state[0]):
+                 num = int(state[0][len(cur):])
+                 if num > max:
+                       max = num
+        nst = cur + "%.2d" % (max + 1)
+        st = nst + " 0.00"
+        if not self.part.state_exist(st):
+            self.part.state_copy(self.state.name, nst)
+            self.e.part.event_emit("state.added", st)
+            self.e.part.state.name = st
+
 
     def _state_delete_cb(self, popup, data):
         st = popup.selected_get()
