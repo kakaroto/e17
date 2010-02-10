@@ -27,7 +27,6 @@
 \usepackage{xunicode}
 \usepackage{xltxtra}
 \defaultfontfeatures{Mapping=tex-text}
-\setmonofont[Scale=0.9]{Monaco}
 
 \renewcommand{\textbullet}{-}
 
