@@ -19,7 +19,6 @@
 import elementary
 
 from details_widget import Widget
-from floater import Floater
 
 
 class WidgetEntryButton(Widget):
@@ -73,8 +72,7 @@ class WidgetEntryButton(Widget):
         self.delayed_callback = 0
 
     def _value_set(self, val):
-        self.entry.entry_set(val)
-        self.entry_value = val
+        self._internal_value_set(val)
 
     def _value_get(self):
         return self.entry_value
@@ -96,46 +94,13 @@ class WidgetEntryButton(Widget):
     def _dblclick_cb(self, obj):
         self.entry.select_all()
 
-    def _items_load(self):
-        list = []
-        return list
-
-    def _actions_init(self):
-        self._pop.action_add("Cancel", self._cancel_clicked)
-
-    def _open(self, bt, *args):
-        self._pop = Floater(self.parent, self.obj)
-        self._pop.size_min_set(self.pop_min_w, self.pop_min_h)
-
-        list = elementary.List(self.parent)
-
-        for item, returned_value in self._items_load():
-            i = list.item_append(item, None, None, self._list_select_cb,
-                                 returned_value)
-
-            if returned_value == self.value:
-                i.selected_set(True)
-
-        list.scroller_policy_set(elementary.ELM_SCROLLER_POLICY_OFF,
-                                 elementary.ELM_SCROLLER_POLICY_ON)
-        list.go()
-        list.show()
-
-        self._pop.content_set(list)
-        self._actions_init()
-        self._pop.show()
-
-    def _cancel_clicked(self, popup, data):
-        self._pop.hide()
-
-    def _select_cb(self, obj, data):
-        item = data
-        self.value = item
-        self._callback_call("changed")
-        self._cancel_clicked(list, item)
-
-    def _list_select_cb(self, list, it, entry_value):
-        self._select_cb(list, entry_value)
 
     def _internal_value_get(self):
         return self.entry.entry_get().replace("<br>", "")
+
+    def _internal_value_set(self, val):
+        if val is None:
+            val = ""
+        self.entry.entry_set(val)
+        self.entry_value = val
+        self.entry.select_all()

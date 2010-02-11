@@ -16,10 +16,10 @@
 # You should have received a copy of the GNU Lesser General Public
 # License along with Editje.  If not, see
 # <http://www.gnu.org/licenses/>.
-from details_widget_entry_button import WidgetEntryButton
+from details_widget_entry_button_list import WidgetEntryButtonList
 
 
-class WidgetSource(WidgetEntryButton):
+class WidgetSource(WidgetEntryButtonList):
 
     def _items_load(self):
         list = []
@@ -31,4 +31,4 @@ class WidgetSource(WidgetEntryButton):
     def _actions_init(self):
         self._pop.title_set("Parts list")
         self._pop.action_add("None", self._select_cb, "")
-        WidgetEntryButton._actions_init(self)
+        WidgetEntryButtonList._actions_init(self)

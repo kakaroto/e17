@@ -16,13 +16,13 @@
 # You should have received a copy of the GNU Lesser General Public
 # License along with Editje.  If not, see
 # <http://www.gnu.org/licenses/>.
-from details_widget_entry_button import WidgetEntryButton
+from details_widget_entry_button_list import WidgetEntryButtonList
 
 
-class WidgetFont(WidgetEntryButton):
+class WidgetFont(WidgetEntryButtonList):
 
     def __init__(self, parent):
-        WidgetEntryButton.__init__(self,parent)
+        WidgetEntryButtonList.__init__(self,parent)
         self.entry_value = "Sans"
         self.rect.label_set("Aa")
 
@@ -36,4 +36,4 @@ class WidgetFont(WidgetEntryButton):
     def _actions_init(self):
         self._pop.title_set("Fonts")
         self._pop.action_add("None", self._select_cb, "")
-        WidgetEntryButton._actions_init(self)
+        WidgetEntryButtonList._actions_init(self)
