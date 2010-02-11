@@ -8,7 +8,6 @@
 /* private functions */
 static Eina_List * e_notification_action_list_new();
 static E_Notification_Action *e_notification_action_new(const char *id, const char *name);
-static void e_notification_action_free(E_Notification_Action *act);
 
 /* (con|de)structor */
 
@@ -215,16 +214,6 @@ e_notification_action_new(const char *id, const char *name)
   act->id = strdup(id);
   act->name = strdup(name);
   return act;
-}
-
-
-static void
-e_notification_action_free(E_Notification_Action *act)
-{
-  if (!act) return;
-  if (act->id) free(act->id);
-  if (act->name) free(act->name);
-  free(act);
 }
 
 
