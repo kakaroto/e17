@@ -1,0 +1,13 @@
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+libdir=@libdir@
+includedir=@includedir@
+datarootdir=@datarootdir@
+datadir=@datadir@
+
+Name: libeflvala
+Description: EFL Vala Convenience Objects
+Version: @VERSION@
+Requires: eina-0 evas ecore edje elementary
+Libs: -L${libdir} -leflvala
+Cflags: -I${includedir}/eflvala-1.0

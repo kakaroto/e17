@@ -1,0 +1,18 @@
+e*.vapi & libeflvala
+=====================
+
+e*.vapi contains vala bindings for the
+Enlightenment Foundation Libraries.
+It is usable with or without libeflvala.
+
+libeflvala contains additional convenience
+objects for applications written in vala
+using the efl.
+
+Roadmap
+=======
+
+Full Elementary support is going to be done first,
+adding dependencies (evas) as we go. Later on,
+adding edje and ecore for applications that do not
+want to use elementary.

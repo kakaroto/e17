@@ -1,0 +1,12 @@
+.deps/
+.libs/
+*.stamp
+*.c
+*.h
+*.lo
+*.o
+
+testeina
+testevas
+testecore
+testelementary
