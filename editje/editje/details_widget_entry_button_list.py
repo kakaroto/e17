@@ -28,6 +28,8 @@ class WidgetEntryButtonList(WidgetEntryButton):
 
     def __init__(self, parent):
         WidgetEntryButton.__init__(self,parent)
+        self._pop = None
+        self._pop_list = None
 
     def _items_load(self):
         list = []
@@ -37,35 +39,38 @@ class WidgetEntryButtonList(WidgetEntryButton):
         self._pop.action_add("Cancel", self._cancel_clicked)
 
     def _open(self, bt, *args):
-        self._pop = Floater(self.parent, self.obj)
-        self._pop.size_min_set(self.pop_min_w, self.pop_min_h)
+        if not self._pop:
+            self._pop = Floater(bt, self.obj)
+            self._pop.size_min_set(self.pop_min_w, self.pop_min_h)
+            self._actions_init()
 
-        list = elementary.List(self.parent)
+            self._pop_list = elementary.List(self._pop._popup)
 
-        for item, returned_value in self._items_load():
-            i = list.item_append(item, None, None, self._list_select_cb,
-                                 returned_value)
+            self._pop_list.scroller_policy_set(elementary.ELM_SCROLLER_POLICY_OFF,
+                                               elementary.ELM_SCROLLER_POLICY_ON)
+            self._pop.content_set(self._pop_list)
+            self._pop_list.show()
 
-            if returned_value == self.value:
-                i.selected_set(True)
+        self._list_update()
 
-        list.scroller_policy_set(elementary.ELM_SCROLLER_POLICY_OFF,
-                                 elementary.ELM_SCROLLER_POLICY_ON)
-        list.go()
-        list.show()
-
-        self._pop.content_set(list)
-        self._actions_init()
         self._pop.show()
+
+    def _list_update(self):
+        self._pop_list.clear()
+        for label, value in self._items_load():
+            it = self._pop_list.item_append(label, data=value)
+
+            if value == self.value:
+                it.selected_set(True)
+        self._pop_list.go()
 
     def _cancel_clicked(self, popup, data):
         self._pop.hide()
 
-    def _select_cb(self, obj, data):
-        item = data
-        self.value = item
+    def _select_cb(self, li, id):
+        self.value = li.selected_item_get().data_get()[0][0]
         self._callback_call("changed")
-        self._cancel_clicked(list, item)
+        self._cancel_clicked(list, li)
 
     def _list_select_cb(self, list, it, entry_value):
         self._select_cb(list, entry_value)
