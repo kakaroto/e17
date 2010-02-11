@@ -257,6 +257,7 @@ extern "C" {
   EAPI bool e_connman_element_is_profile(const E_Connman_Element *element) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
   EAPI bool e_connman_element_is_network(const E_Connman_Element *element) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
   EAPI bool e_connman_element_is_service(const E_Connman_Element *element) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
+  EAPI bool e_connman_element_is_technology(const E_Connman_Element *element) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
 
 
   /* Device Methods: Low-Level API
