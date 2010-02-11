@@ -16,6 +16,25 @@
     <link rel="stylesheet" href="<?php url_css($page .'.css') ?>" type="text/css" media="screen, projection">
     <!--[if lt IE 8]><link rel="stylesheet" href="<?php url_css('ie.css') ?>" type="text/css" media="screen, projection"><![endif]-->
 
+    <script type="text/javascript">
+        var gOverride = {
+            urlBase: 'http://gridder.andreehansson.se/releases/latest/',
+            gColor: '#00f',
+            gColumns: 12,
+            gOpacity: 0.10,
+            gWidth: 9,
+            pColor: '#00f',
+            pHeight: 18,
+            pOffset: 0,
+            pOpacity: 0.15,
+            center: true,
+            gEnabled: true,
+            pEnabled: true,
+            setupEnabled: true,
+            fixFlash: true,
+            size: 960
+        };
+    </script>
 
 </head>
 
