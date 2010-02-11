@@ -1,22 +1,26 @@
 spectra {
-	spectrum {
-		name: "shadow";
-		color: 0 0 0 255 1;
-		color: 0 0 0 0 1;
-	}
+   spectrum {
+      name: "shadow";
+      color: 0 0 0 255 1;
+      color: 0 0 0 0 1;
+   }
 }
+
 images {
    image: "image.png" COMP;
    image: "shadow_under.png" COMP;
 }
+
 fonts {
    font: "DejaVuSans-Bold.ttf" "Bold";
    font: "DejaVuSans.ttf" "Regular";
    font: "DejaVuSansMono.ttf" "Mono";
 }
+
 collections {
    group {
       name: "layout";
+      min: 500 500;
 
       parts {
          part {

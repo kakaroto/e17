@@ -5,6 +5,7 @@ externals {
 collections {
    group {
       name: "main";
+      min: 300 300;
 
       parts {
          part {
