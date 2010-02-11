@@ -42,7 +42,7 @@ static int _log_dom = -1;
 extern int EUPNP_ERROR_DEVICE_PARSER_INSUFFICIENT_FEED;
 
 static void
-device_data_ready(void *buffer, int size, void *data)
+eupnp_device_info_data_ready(void *buffer, int size, void *data)
 {
    DEBUG_D(_log_dom, "Device data ready callback for device %p", data);
    Eupnp_Device_Info *device_info = data;
@@ -73,7 +73,7 @@ device_data_ready(void *buffer, int size, void *data)
 }
 
 static void
-device_download_completed(Eupnp_Request *request, void *data, const Eupnp_HTTP_Request *req)
+eupnp_device_info_download_completed(Eupnp_Request *request, void *data, const Eupnp_HTTP_Request *req)
 {
    DEBUG_D(_log_dom, "Finished building device %p callback called", data);
    eupnp_device_info_unref(data);
@@ -140,10 +140,6 @@ eupnp_device_info_embedded_device_list_clear(Eupnp_Device_Info *d)
      }
 }
 
-/*
- * Public API
- */
-
 /**
  * Initializes the device info module.
  *
@@ -193,7 +189,7 @@ eupnp_device_info_new(const char *udn, const char *location, void *resource, voi
 {
    Eupnp_Device_Info *d;
 
-   d = malloc(sizeof(Eupnp_Device_Info));
+   d = calloc(1, sizeof(Eupnp_Device_Info));
 
    if (!d)
      {
@@ -208,24 +204,6 @@ eupnp_device_info_new(const char *udn, const char *location, void *resource, voi
    d->udn = udn;
    d->location = location;
    d->refcount = 1;
-   d->device_type = NULL;
-   d->friendly_name = NULL;
-   d->base_URL = NULL;
-   d->manufacturer = NULL;
-   d->manufacturer_URL = NULL;
-   d->model_description = NULL;
-   d->model_name = NULL;
-   d->model_number = NULL;
-   d->model_URL = NULL;
-   d->serial_number = NULL;
-   d->upc = NULL;
-   d->presentation_URL = NULL;
-   d->xml_parser = NULL;
-   d->icons = NULL;
-   d->services = NULL;
-   d->embedded_devices = NULL;
-   d->spec_version_minor = 0;
-   d->spec_version_major = 0;
    d->_resource = resource;
    d->_resource_free = resource_free;
 
@@ -373,8 +351,8 @@ eupnp_device_info_fetch(Eupnp_Device_Info *device_info)
    eupnp_device_info_ref(device_info);
 
    if (!eupnp_core_http_request_send(device_info->location, "GET", NULL, NULL, 0,
-				     NULL, EUPNP_REQUEST_DATA_CB(device_data_ready),
-				     EUPNP_REQUEST_COMPLETED_CB(device_download_completed),
+				     NULL, EUPNP_REQUEST_DATA_CB(eupnp_device_info_data_ready),
+				     EUPNP_REQUEST_COMPLETED_CB(eupnp_device_info_download_completed),
 				     device_info))
       ERROR_D(_log_dom, "Could not add a new download job for device %p", device_info);
 }

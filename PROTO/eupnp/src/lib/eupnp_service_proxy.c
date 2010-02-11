@@ -752,7 +752,7 @@ eupnp_service_proxy_new(Eupnp_Service_Info *service, Eupnp_Service_Proxy_Ready_C
    CHECK_NULL_RET(service->service_type);
 
    Eupnp_Service_Proxy *proxy;
-   proxy = malloc(sizeof(Eupnp_Service_Proxy));
+   proxy = calloc(1, sizeof(Eupnp_Service_Proxy));
 
    CHECK_NULL_RET(proxy);
 
@@ -760,11 +760,6 @@ eupnp_service_proxy_new(Eupnp_Service_Info *service, Eupnp_Service_Proxy_Ready_C
    proxy->base_URL = strdup(service->location);
    proxy->eventsub_URL = strdup(service->eventsub_URL);
    proxy->service_type = strdup(service->service_type);
-   proxy->xml_parser = NULL;
-   proxy->actions = NULL;
-   proxy->state_table = NULL;
-   proxy->spec_version_minor = 0;
-   proxy->spec_version_major = 0;
    proxy->ready_cb = ready_cb;
    proxy->ready_cb_data = data;
    proxy->refcount = 1;
@@ -859,15 +854,22 @@ eupnp_service_proxy_action_send(Eupnp_Service_Proxy *proxy, const char *action, 
    CHECK_NULL_RET_VAL(proxy->base_URL, EINA_FALSE);
    CHECK_NULL_RET_VAL(action, EINA_FALSE);
 
+   Eupnp_Action_Request *req;
+   Eupnp_HTTP_Header *header;
+   Eina_Array *add_headers;
+   Eupnp_Request request;
+   char *full_action_uri = NULL;
+   char *message = NULL;
+   char *url = NULL;
+   unsigned int arg_type;
+   const char *arg_name;
+   va_list va_args;
+
    if (!eupnp_service_proxy_has_action(proxy, action))
      {
 	ERROR_D(_log_dom, "Proxy does not contain the requested action.");
 	return EINA_FALSE;
      }
-
-   char *message = NULL;
-   char *url = NULL;
-   char *full_action_uri = NULL;
 
    if (asprintf(&url, "%s%s", proxy->base_URL, proxy->control_URL) < 0)
      {
@@ -881,10 +883,7 @@ eupnp_service_proxy_action_send(Eupnp_Service_Proxy *proxy, const char *action, 
 	goto action_mount_fail;
      }
 
-   Eupnp_Action_Request *req;
-
    req = malloc(sizeof(Eupnp_Action_Request));
-
    if (!req)
      {
 	ERROR_D(_log_dom, "Failed to create a new action request.");
@@ -893,19 +892,17 @@ eupnp_service_proxy_action_send(Eupnp_Service_Proxy *proxy, const char *action, 
 
    DEBUG_D(_log_dom, "Created action request %p", req);
 
-   Eina_Array *add_headers = eina_array_new(1);
-
+   add_headers = eina_array_new(1);
    if (!add_headers)
      {
 	ERROR_D(_log_dom, "Failed to create additional headers array");
 	goto headers_fail;
      }
 
-   Eupnp_HTTP_Header *header = eupnp_http_header_new("SOAPAction",
-						     strlen("SOAPAction"),
-						     full_action_uri,
-						     strlen(full_action_uri));
-
+   header = eupnp_http_header_new("SOAPAction",
+				  strlen("SOAPAction"),
+				  full_action_uri,
+				  strlen(full_action_uri));
    if (!header)
      {
 	ERROR_D(_log_dom, "Failed to create soap header");
@@ -937,14 +934,10 @@ eupnp_service_proxy_action_send(Eupnp_Service_Proxy *proxy, const char *action, 
 
    DEBUG_D(_log_dom, "Message stage 1: %s", message);
 
-   va_list va_args;
-   const char *arg_name;
-   unsigned int arg_type;
-
+   // {arg_name, arg_type, arg_value}, ..., NULL!
    va_start(va_args, data);
    arg_name = va_arg(va_args, const char *);
 
-   // {arg_name, arg_type, arg_value}, ..., NULL!
    while (arg_name)
      {
 	// Collect arg_type
@@ -982,8 +975,6 @@ eupnp_service_proxy_action_send(Eupnp_Service_Proxy *proxy, const char *action, 
      }
 
    DEBUG_D(_log_dom, "Message stage 3: %s", message);
-
-   Eupnp_Request request;
 
    request = eupnp_core_http_request_send(url,
 					  NULL,
@@ -1056,6 +1047,14 @@ eupnp_service_proxy_state_variable_events_subscribe(Eupnp_Service_Proxy *proxy, 
    CHECK_NULL_RET_VAL(proxy->base_URL, EINA_FALSE);
    CHECK_NULL_RET_VAL(proxy->eventsub_URL, EINA_FALSE);
 
+   Eupnp_Event_Subscriber *subscriber;
+   Eupnp_Event_Subscriber *ret = NULL;
+   Eupnp_HTTP_Header *host, *callback, *nt, *tout;
+   Eina_Array *add_headers;
+   Eupnp_Request req;
+   const char *listen_addr;
+   int id, callback_len, eventing_url_len;
+
    if (!eupnp_service_proxy_has_variable(proxy, var_name)) return NULL;
 
    DEBUG_D(_log_dom, "Subscribe stage 1");
@@ -1071,19 +1070,14 @@ eupnp_service_proxy_state_variable_events_subscribe(Eupnp_Service_Proxy *proxy, 
 	   _event_server_inited = EINA_TRUE;
      }
 
-   const char *listen_addr = (const char *) eupnp_event_server_url_get();
-   int id, callback_len, eventing_url_len;
-   Eupnp_Event_Subscriber *ret = NULL;
-
+   listen_addr = (const char *) eupnp_event_server_url_get();
    if (!listen_addr)
      {
 	ERROR_D(_log_dom, "Failed to retrieve event server URL.");
 	return NULL;
      }
 
-   Eupnp_Event_Subscriber *subscriber;
-   subscriber = malloc(sizeof(Eupnp_Event_Subscriber));
-
+   subscriber = calloc(1, sizeof(Eupnp_Event_Subscriber));
    if (!subscriber)
      {
 	ERROR_D(_log_dom, "Could not alloc a new event subscriber.");
@@ -1094,10 +1088,6 @@ eupnp_service_proxy_state_variable_events_subscribe(Eupnp_Service_Proxy *proxy, 
    subscriber->cb = cb;
    subscriber->state_var = eupnp_service_proxy_state_variable_get(proxy, var_name, 0);
    subscriber->proxy = eupnp_service_proxy_ref(proxy);
-   subscriber->eventing_url = NULL;
-   subscriber->callback = NULL;
-   subscriber->sid = NULL;
-   subscriber->sid_len = 0;
 
    /* Sent subscription, subscribe for answers */
    if ((id = eupnp_event_server_request_subscribe(EUPNP_CALLBACK(eupnp_event_notification_cb), subscriber)) < 0)
@@ -1120,8 +1110,7 @@ eupnp_service_proxy_state_variable_events_subscribe(Eupnp_Service_Proxy *proxy, 
 	goto eventing_url_fail;
      }
 
-   Eina_Array *add_headers = eina_array_new(5);
-
+   add_headers = eina_array_new(5);
    if (!add_headers)
      {
 	ERROR_D(_log_dom, "Could not create headers for subscription.");
@@ -1131,32 +1120,23 @@ eupnp_service_proxy_state_variable_events_subscribe(Eupnp_Service_Proxy *proxy, 
    // HOST: domain name or IP address and optional port components of eventing
    // URL, i.e. host:port
 
-   Eupnp_HTTP_Header *host = eupnp_http_header_new("HOST",
-						   strlen("HOST"),
-						   proxy->base_URL + 7,
-						   strlen(proxy->base_URL) - 7);
+   host = eupnp_http_header_new("HOST", strlen("HOST"), proxy->base_URL + 7,
+				strlen(proxy->base_URL) - 7);
    if (!host) goto host_header_err;
 
-   Eupnp_HTTP_Header *callback = eupnp_http_header_new("CALLBACK",
-						       strlen("CALLBACK"),
-						       subscriber->callback,
-						       callback_len);
+   callback = eupnp_http_header_new("CALLBACK", strlen("CALLBACK"),
+				    subscriber->callback, callback_len);
    if (!callback) goto callback_header_err;
 
-   Eupnp_HTTP_Header *nt = eupnp_http_header_new("NT", strlen("NT"),
-						 "upnp:event",
-						 strlen("upnp:event"));
+   nt = eupnp_http_header_new("NT", strlen("NT"), "upnp:event",
+			      strlen("upnp:event"));
    if (!nt) goto nt_header_err;
-
-   Eupnp_HTTP_Header *tout;
 
    DEBUG_D(_log_dom, "Subscribe stage 3");
 
    if (infinite_subscription)
-     tout = eupnp_http_header_new("TIMEOUT",
-				  strlen("TIMEOUT"),
-				  "infinite",
-				  strlen("infinite"));
+     tout = eupnp_http_header_new("TIMEOUT", strlen("TIMEOUT"),
+				     "infinite", strlen("infinite"));
    else
      {
 	char *tmp = NULL;
@@ -1164,11 +1144,8 @@ eupnp_service_proxy_state_variable_events_subscribe(Eupnp_Service_Proxy *proxy, 
 	if (asprintf(&tmp, "Second-%d", timeout) < 0)
 	   goto timeout_print_err;
 
-	tout = eupnp_http_header_new("TIMEOUT",
-				     strlen("TIMEOUT"),
-				     tmp,
-				     strlen(tmp));
-
+	tout = eupnp_http_header_new("TIMEOUT", strlen("TIMEOUT"),
+				        tmp,  strlen(tmp));
 	free(tmp);
 
 	if (!tout) goto timeout_header_err;
@@ -1176,17 +1153,12 @@ eupnp_service_proxy_state_variable_events_subscribe(Eupnp_Service_Proxy *proxy, 
 
    if (!eina_array_push(add_headers, host))
 	goto header_array_push_error;
-
    if (!eina_array_push(add_headers, callback))
 	goto header_array_push_error;
-
    if (!eina_array_push(add_headers, nt))
 	goto header_array_push_error;
-
    if (!eina_array_push(add_headers, tout))
 	goto header_array_push_error;
-
-   Eupnp_Request req;
 
    req = eupnp_core_http_request_send(subscriber->eventing_url,
 				      "SUBSCRIBE",
@@ -1197,7 +1169,6 @@ eupnp_service_proxy_state_variable_events_subscribe(Eupnp_Service_Proxy *proxy, 
 				      EUPNP_REQUEST_DATA_CB(eupnp_subscription_data_ready),
 				      EUPNP_REQUEST_COMPLETED_CB(eupnp_subscription_completed),
 				      subscriber);
-
    if (!req)
      {
 	ERROR_D(_log_dom, "Failed to send subscription");
@@ -1241,27 +1212,26 @@ eupnp_service_proxy_state_variable_events_unsubscribe(Eupnp_Event_Subscriber *su
    CHECK_NULL_RET_VAL(subscriber->sid, EINA_FALSE);
 
    Eina_Bool ret = EINA_FALSE;
+   Eina_Array *add_headers;
+   Eupnp_HTTP_Header *host, *sid;
+   Eupnp_Request req;
 
    DEBUG_D(_log_dom, "Unsubscribing subscriber %p (%s)", subscriber, subscriber->sid);
 
-   Eina_Array *add_headers = eina_array_new(2);
-
-   Eupnp_HTTP_Header *host = eupnp_http_header_new("HOST", strlen("HOST"),
-						   subscriber->proxy->base_URL + 7,
-						   strlen(subscriber->proxy->base_URL) - 7);
+   add_headers = eina_array_new(2);
+   host = eupnp_http_header_new("HOST", strlen("HOST"),
+				subscriber->proxy->base_URL + 7,
+				strlen(subscriber->proxy->base_URL) - 7);
    if (!host) goto host_header_err;
 
-   Eupnp_HTTP_Header *sid = eupnp_http_header_new("SID", strlen("SID"),
-						  subscriber->sid,
-						  subscriber->sid_len);
+   sid = eupnp_http_header_new("SID", strlen("SID"), subscriber->sid,
+			       subscriber->sid_len);
    if (!sid) goto sid_header_err;
 
    if (!eina_array_push(add_headers, host))
       goto unsub_header_push_err;
    if (!eina_array_push(add_headers, sid))
       goto unsub_header_push_err;
-
-   Eupnp_Request req;
 
    req = eupnp_core_http_request_send(subscriber->eventing_url,
 				      "UNSUBSCRIBE",
@@ -1272,7 +1242,6 @@ eupnp_service_proxy_state_variable_events_unsubscribe(Eupnp_Event_Subscriber *su
 				      EUPNP_REQUEST_DATA_CB(eupnp_unsubscribe_data_ready),
 				      EUPNP_REQUEST_COMPLETED_CB(eupnp_unsubscribe_completed),
 				      subscriber);
-
    if (!req)
      {
 	ERROR_D(_log_dom, "Failed to send unsubscribe message for subscriber %p", subscriber);

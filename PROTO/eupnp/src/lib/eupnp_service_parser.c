@@ -93,16 +93,12 @@ eupnp_service_action_new(void)
 {
    Eupnp_Service_Action *a;
 
-   a = malloc(sizeof(Eupnp_Service_Action));
-
+   a = calloc(1, sizeof(Eupnp_Service_Action));
    if (!a)
      {
 	ERROR_D(_log_dom, "Could not alloc for service action");
 	return NULL;
      }
-
-   a->name = NULL;
-   a->arguments = NULL;
 
    return a;
 }
@@ -142,15 +138,15 @@ Eupnp_Service_Action_Argument *
 eupnp_service_action_argument_new(void)
 {
    Eupnp_Service_Action_Argument *arg;
-   arg = malloc(sizeof(Eupnp_Service_Action_Argument));
 
-   CHECK_NULL_RET_VAL(arg, NULL);
+   arg = calloc(1, sizeof(Eupnp_Service_Action_Argument));
+   if (!arg)
+     {
+	ERROR_D(_log_dom, "Failed to alloc for service action argument.");
+	return NULL;
+     }
 
-   arg->name = NULL;
    arg->direction = EUPNP_ARGUMENT_DIRECTION_IN;
-   arg->related_state_variable = NULL;
-   arg->retval = NULL;
-   arg->value = NULL;
 
    return arg;
 }
@@ -190,22 +186,15 @@ eupnp_service_state_variable_new1(void)
 {
    Eupnp_State_Variable *st;
 
-   st = malloc(sizeof(Eupnp_State_Variable));
-
+   st = calloc(1, sizeof(Eupnp_State_Variable));
    if (!st)
      {
 	ERROR_D(_log_dom, "Could not alloc for new state variable");
 	return NULL;
      }
 
-   st->name = NULL;
    st->send_events = EINA_TRUE;
    st->data_type = EUPNP_DATA_TYPE_STRING;
-   st->default_value = NULL;
-   st->allowed_value_list = NULL;
-   st->range_min = NULL;
-   st->range_max = NULL;
-   st->range_step = NULL;
 
    return st;
 }
@@ -323,15 +312,12 @@ eupnp_service_state_variable_allowed_value_new(void)
 {
    Eupnp_State_Variable_Allowed_Value *v;
 
-   v = malloc(sizeof(Eupnp_State_Variable_Allowed_Value));
-
+   v = calloc(1, sizeof(Eupnp_State_Variable_Allowed_Value));
    if (!v)
      {
 	ERROR_D(_log_dom, "Could not alloc for allowed value");
 	return NULL;
      }
-
-   v->value = NULL;
 
    return v;
 }
@@ -830,15 +816,13 @@ eupnp_service_parser_new(const char *first_chunk, int first_chunk_len, Eupnp_Ser
 
    Eupnp_Service_Parser *p;
 
-   p = malloc(sizeof(Eupnp_Service_Parser));
+   p = calloc(1, sizeof(Eupnp_Service_Parser));
 
    if (!p)
      {
 	ERROR_D(_log_dom, "Failed to alloc for service parser");
 	return NULL;
      }
-
-   memset(&p->handler, 0, sizeof(xmlSAXHandler));
 
    p->handler.initialized = XML_SAX2_MAGIC;
    p->handler.characters = &_characters;
@@ -851,12 +835,7 @@ eupnp_service_parser_new(const char *first_chunk, int first_chunk_len, Eupnp_Ser
     * will get data written into.
     */
    p->state.state = START;
-   p->state.state_skip = 0;
    p->state.data = d;
-   p->state.building_action = NULL;
-   p->state.building_arg = NULL;
-   p->state.building_state_var = NULL;
-   p->state.building_allowed_value = NULL;
    p->state.send_events = EINA_TRUE; // default is YES
 
    p->ctx = xmlCreatePushParserCtxt(&p->handler, &p->state, first_chunk,

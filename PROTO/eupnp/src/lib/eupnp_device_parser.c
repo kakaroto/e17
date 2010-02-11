@@ -146,31 +146,11 @@ _embedded_devices_parse_finish(Eupnp_Device_Info *d)
      }
 }
 
-static void
-eupnp_device_parser_state_new(Eupnp_Device_Parser_State *s)
-{
-   s->parent = NULL;
-   s->state = START;
-   s->state_skip = 0;
-   s->device = NULL;
-   s->icon = NULL;
-   s->service = NULL;
-   s->ctx = NULL;
-}
-
 static Eupnp_Device_Icon *
 eupnp_icon_new(void)
 {
    Eupnp_Device_Icon *icon;
-   icon = malloc(sizeof(Eupnp_Device_Icon));
-   if (!icon) return NULL;
-
-   icon->mimetype = NULL;
-   icon->url = NULL;
-   icon->width = 0;
-   icon->height = 0;
-   icon->depth = 0;
-
+   icon = calloc(1, sizeof(Eupnp_Device_Icon));
    return icon;
 }
 
@@ -393,7 +373,7 @@ start_element_ns(void *state, const xmlChar *name, const xmlChar *prefix, const 
 	    {
 	       Eupnp_Device_Parser_State *new;
 
-	       new = malloc(sizeof(Eupnp_Device_Parser_State));
+	       new = calloc(1, sizeof(Eupnp_Device_Parser_State));
 
 	       if (!new)
 		  {
@@ -403,8 +383,6 @@ start_element_ns(void *state, const xmlChar *name, const xmlChar *prefix, const 
 		  }
 
 	       DEBUG_D(_log_dom, "Switching context %p -> %p", s, new);
-
-	       eupnp_device_parser_state_new(new);
 
 	       // Save parent for switching back context
 	       new->parent = s;
@@ -644,15 +622,12 @@ eupnp_device_parser_new(const char *first_chunk, int first_chunk_len, Eupnp_Devi
 
    Eupnp_Device_Parser *p;
 
-   p = malloc(sizeof(Eupnp_Device_Parser));
-
+   p = calloc(1, sizeof(Eupnp_Device_Parser));
    if (!p)
      {
 	ERROR_D(_log_dom, "Failed to alloc for device parser");
 	return NULL;
      }
-
-   memset(&p->handler, 0, sizeof(xmlSAXHandler));
 
    p->handler.initialized = XML_SAX2_MAGIC;
    p->handler.characters = &_characters;
@@ -664,7 +639,6 @@ eupnp_device_parser_new(const char *first_chunk, int first_chunk_len, Eupnp_Devi
     * Setup parser state to START, attach the device info object that
     * will get data written into.
     */
-   eupnp_device_parser_state_new(&p->state);
    p->state.device = d;
 
    p->ctx = xmlCreatePushParserCtxt(&p->handler, &p->state, first_chunk,

@@ -113,7 +113,7 @@ eupnp_service_info_new(const char *udn, const char *location, const char *servic
    CHECK_NULL_RET_VAL(udn, NULL);
    Eupnp_Service_Info *d;
 
-   d = malloc(sizeof(Eupnp_Service_Info));
+   d = calloc(1, sizeof(Eupnp_Service_Info));
 
    if (!d)
      {
@@ -126,10 +126,6 @@ eupnp_service_info_new(const char *udn, const char *location, const char *servic
    d->udn = udn;
    d->location = location;
    d->service_type = service_type;
-   d->id = NULL;
-   d->control_URL = NULL;
-   d->scpd_URL = NULL;
-   d->eventsub_URL = NULL;
    d->refcount = 1;
    d->_resource = resource;
    d->_resource_free = resource_free;
