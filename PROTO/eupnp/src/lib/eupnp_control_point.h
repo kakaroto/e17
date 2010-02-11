@@ -25,7 +25,6 @@
 #include <Eina.h>
 
 #include "eupnp_ssdp.h"
-#include "eupnp_log.h"
 #include "eupnp_event_bus.h"
 #include "eupnp_device_info.h"
 

@@ -31,7 +31,6 @@
 #include "Eupnp.h"
 #include "eupnp_ssdp.h"
 #include "eupnp_core.h"
-#include "eupnp_log.h"
 #include "eupnp_udp_transport.h"
 #include "eupnp_device_info.h"
 #include "eupnp_service_info.h"

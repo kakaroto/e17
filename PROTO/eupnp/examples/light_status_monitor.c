@@ -35,6 +35,17 @@
 
 static int _log_domain = -1;
 
+#ifdef INF
+  #undef INF
+#endif
+#define INF(...) EINA_LOG_DOM_INFO(_log_domain, __VA_ARGS__)
+
+#ifdef ERR
+  #undef ERR
+#endif
+#define ERR(...) EINA_LOG_DOM_ERR(_log_domain, __VA_ARGS__)
+
+
 /*
  * Receives a status change event sent from a light device. Copies the event
  * data received and prints it.
@@ -48,11 +59,11 @@ on_status_event(Eupnp_State_Variable *var, void *buffer, int size, void *data)
 	tmp = malloc(sizeof(char)*(size + 1));
 	memcpy(tmp, buffer, size);
 	tmp[size] = '\0';
-	INFO_D(_log_domain, "Status changed event data: %s", tmp);
+	INF("Status changed event data: %s", tmp);
 	free(tmp);
      }
    else
-	ERROR_D(_log_domain, "Status event incomplete.");
+	ERR("Status event incomplete.");
 
    return EINA_TRUE;
 }
@@ -72,7 +83,7 @@ on_switch_power_proxy_ready(void *data, Eupnp_Service_Proxy *proxy)
 							    EINA_FALSE, // Infinite subscription
 							    100,        // 100 seconds subscription
 							    NULL))
-     ERROR_D(_log_domain, "Failed to subscribe for events on Status variable.");
+     ERR("Failed to subscribe for events on Status variable.");
 }
 
 /*
@@ -100,7 +111,7 @@ on_device_ready(void *user_data, Eupnp_Event_Type event_type, void *event_data)
  * Sends a search for all upnp devices on the network and monitors BinaryLight
  * and DimmableLight devices light status.
  *
- * Run "EINA_LOG_LEVELS=LightStatusMonitor:5 ./light_status_monitor" for
+ * Run "EINA_LOG_LEVELS=light_status_monitor:5 ./light_status_monitor" for
  * watching all log messages.
  */
 int main(void)
@@ -120,7 +131,7 @@ int main(void)
 	goto eupnp_ecore_init_error;
      }
 
-   if ((_log_domain = eina_log_domain_register("LightStatusMonitor", EINA_COLOR_BLUE)) < 0)
+   if ((_log_domain = eina_log_domain_register("light_status_monitor", EINA_COLOR_BLUE)) < 0)
      {
 	fprintf(stderr, "Failed to create a logging domain for the application.\n");
 	goto log_domain_reg_error;
@@ -143,15 +154,15 @@ int main(void)
 
    /* Send a test search for all devices*/
    if (!eupnp_control_point_discovery_request_send(c, 5, EUPNP_ST_SSDP_ALL))
-	ERROR_D(_log_domain, "Failed to perform MSearch.");
+	ERR("Failed to perform MSearch.");
    else
-	INFO_D(_log_domain, "MSearch sent sucessfully.");
+	INF("MSearch sent sucessfully.");
 
    ret = 0;
 
-   INFO_D(_log_domain, "Finished starting.");
+   INF("Finished starting.");
    ecore_main_loop_begin();
-   INFO_D(_log_domain, "Closing application.");
+   INF("Closing application.");
 
    /* Shutdown procedure */
    eupnp_control_point_stop(c);

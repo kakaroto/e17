@@ -33,8 +33,8 @@
 #include <arpa/inet.h>
 
 #include "Eupnp.h"
-#include "eupnp_log.h"
 #include "eupnp_udp_transport.h"
+#include "eupnp_private.h"
 
 
 /**

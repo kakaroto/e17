@@ -26,9 +26,11 @@
 #include <stdio.h>
 
 #include "Eupnp.h"
+#include "eupnp_private.h"
 
 
 static int _eupnp_main_count = 0;
+int EUPNP_LOGGING_DOM_GLOBAL = -1;
 
 /**
  * @page eupnp_app_writing Writing an Application
@@ -109,9 +111,11 @@ eupnp_init(void)
 	return _eupnp_main_count;
      }
 
-   if (!eupnp_log_init())
+   EUPNP_LOGGING_DOM_GLOBAL = eina_log_domain_register("Eupnp", EINA_COLOR_RESET);
+
+   if (EUPNP_LOGGING_DOM_GLOBAL < 0)
      {
-	fprintf(stderr, "Failed to initialize eupnp error module\n");
+	fprintf(stderr, "Failed to register global error domain for eupnp.\n");
 	goto log_init_error;
      }
 
@@ -181,7 +185,7 @@ eupnp_init(void)
    service_info_init_error:
       eupnp_event_bus_shutdown();
    event_bus_init_error:
-      eupnp_log_shutdown();
+   eina_log_domain_unregister(EUPNP_LOGGING_DOM_GLOBAL);
    log_init_error:
       eina_shutdown();
 
@@ -207,7 +211,7 @@ eupnp_shutdown(void)
    eupnp_device_parser_shutdown();
    eupnp_service_info_shutdown();
    eupnp_event_bus_shutdown();
-   eupnp_log_shutdown();
+   eina_log_domain_unregister(EUPNP_LOGGING_DOM_GLOBAL);
    eina_shutdown();
 
    return --_eupnp_main_count;

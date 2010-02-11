@@ -37,6 +37,17 @@
 
 static _log_domain = -1;
 
+#ifdef INF
+  #undef INF
+#endif
+#define INF(...) EINA_LOG_DOM_INFO(_log_domain, __VA_ARGS__)
+
+#ifdef ERR
+  #undef ERR
+#endif
+#define ERR(...) EINA_LOG_DOM_ERR(_log_domain, __VA_ARGS__)
+
+
 /*
  * Receives the Browse action (see below) response. For the
  * ContentDirectory:Browse() action, we expect a DIDL formatted XML containing
@@ -47,12 +58,12 @@ static _log_domain = -1;
 static void
 action_response(void *data, Eina_Inlist *evented_vars)
 {
-   INFO_D(_log_domain, "Browse response. %p", evented_vars);
+   INF("Browse response. %p", evented_vars);
 
    Eupnp_Service_Action_Argument *arg;
 
    EINA_INLIST_FOREACH(evented_vars, arg)
-     INFO_D(_log_domain, "%s: %s", arg->name, arg->value);
+     INF("%s: %s", arg->name, arg->value);
 }
 
 
@@ -74,7 +85,7 @@ on_proxy_ready(void *data, Eupnp_Service_Proxy *proxy)
 					"RequestedCount", EUPNP_TYPE_INT, 25,
 					"SortCriteria", EUPNP_TYPE_STRING, "dc:title",
 					NULL))
-      ERROR_D(_log_domain, "Failed to send proxy action.");
+      ERR("Failed to send proxy action.");
 }
 
 /*
@@ -97,7 +108,7 @@ on_device_ready(void *user_data, Eupnp_Event_Type event_type, void *event_data)
 }
 
 /*
- * Run "EINA_LOG_LEVEL=0 EINA_LOG_LEVELS=MediaServerBrowser:5 ./media_server_browser"
+ * Run "EINA_LOG_LEVELS=media_server_browser:5 ./media_server_browser"
  * for watching only application log messages.
  */
 int main(void)
@@ -111,7 +122,7 @@ int main(void)
 	return ret;
      }
 
-   if ((_log_domain = eina_log_domain_register("MediaServerBrowser", EINA_COLOR_BLUE)) < 0)
+   if ((_log_domain = eina_log_domain_register("media_server_browser", EINA_COLOR_BLUE)) < 0)
      {
 	fprintf(stderr, "Failed to create a logging domain for the application.\n");
 	goto log_domain_reg_error;
@@ -141,16 +152,16 @@ int main(void)
    /* Send a test search for media server devices */
    if (!eupnp_control_point_discovery_request_send(c, 5, MEDIA_SERVER_DEVICE_TYPE))
      {
-	ERROR_D(_log_domain, "Failed to perform MSearch.");
+	ERR("Failed to perform MSearch.");
      }
    else
-	INFO_D(_log_domain, "MSearch sent sucessfully.");
+	INF("MSearch sent sucessfully.");
 
    ret = 0;
 
-   INFO_D(_log_domain, "Finished starting media server browser.");
+   INF("Finished starting media server browser.");
    ecore_main_loop_begin();
-   INFO_D(_log_domain, "Closing application.");
+   INF("Closing application.");
 
    /* Shutdown procedure */
    eupnp_control_point_stop(c);

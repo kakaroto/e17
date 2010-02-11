@@ -31,6 +31,11 @@
 
 static int _log_domain = -1;
 
+#ifdef INF
+  #undef INF
+#endif
+#define INF(...) EINA_LOG_DOM_INFO(_log_domain, __VA_ARGS__)
+
 /*
  * Receives a built device. Note that although this device object is the same
  * as the one received on the on_device_found callback, it contains a lot more
@@ -53,7 +58,7 @@ on_device_found(void *user_data, Eupnp_Event_Type event_type, void *event_data)
 {
    Eupnp_Device_Info *d = event_data;
 
-   INFO_D(_log_domain, "Device found: %s", d->udn);
+   INF("Device found: %s", d->udn);
 
    return EINA_TRUE;
 }
@@ -78,9 +83,9 @@ on_device_gone(void *user_data, Eupnp_Event_Type event_type, void *event_data)
 
    if (d)
      {
-	INFO_D(_log_domain, "Device gone");
-	INFO_D(_log_domain, "\tudn: %s", d->udn);
-	INFO_D(_log_domain, "\tlocation: %s", d->location);
+	INF("Device gone");
+	INF("\tudn: %s", d->udn);
+	INF("\tlocation: %s", d->location);
      }
 
    return EINA_FALSE;
@@ -96,10 +101,10 @@ on_service_found(void *user_data, Eupnp_Event_Type event_type, void *event_data)
 
    if (s)
      {
-	INFO_D(_log_domain, "Service found");
-	INFO_D(_log_domain, "\tudn: %s", s->udn);
-	INFO_D(_log_domain, "\ttype: %s", s->service_type);
-	INFO_D(_log_domain, "\tlocation: %s", s->location);
+	INF("Service found");
+	INF("\tudn: %s", s->udn);
+	INF("\ttype: %s", s->service_type);
+	INF("\tlocation: %s", s->location);
      }
 
    return EINA_TRUE;
@@ -115,17 +120,17 @@ on_service_gone(void *user_data, Eupnp_Event_Type event_type, void *event_data)
 
    if (s)
      {
-	INFO_D(_log_domain, "Service gone");
-	INFO_D(_log_domain, "\tudn: %s", s->udn);
-	INFO_D(_log_domain, "\ttype: %s", s->service_type);
-	INFO_D(_log_domain, "\tlocation: %s", s->location);
+	INF("Service gone");
+	INF("\tudn: %s", s->udn);
+	INF("\ttype: %s", s->service_type);
+	INF("\tlocation: %s", s->location);
      }
 
    return EINA_TRUE;
 }
 
 /*
- * Run with "EINA_LOG_LEVELS=UPnPSniffer:4,Eupnp.DeviceInfo:4 ./upnp_sniffer"
+ * Run with "EINA_LOG_LEVELS=upnp_sniffer:4,Eupnp.DeviceInfo:4 ./upnp_sniffer"
  * for watching all log messages.
  */
 int main(void)
@@ -139,7 +144,7 @@ int main(void)
 	return ret;
      }
 
-   if ((_log_domain = eina_log_domain_register("UPnPSniffer", EINA_COLOR_BLUE)) < 0)
+   if ((_log_domain = eina_log_domain_register("upnp_sniffer", EINA_COLOR_BLUE)) < 0)
      {
 	fprintf(stderr, "Failed to create a logging domain for the application.\n");
 	goto log_domain_reg_error;
@@ -179,9 +184,9 @@ int main(void)
    eupnp_control_point_discovery_request_send(c, 5, "upnp:rootdevice");
 
    ret = 0;
-   INFO_D(_log_domain, "Started sniffing on the UPnP network.");
+   INF("Started sniffing on the UPnP network.");
    ecore_main_loop_begin();
-   INFO_D(_log_domain, "Shutting down application.");
+   INF("Shutting down application.");
 
    /* Shutdown procedure */
    eupnp_control_point_stop(c);

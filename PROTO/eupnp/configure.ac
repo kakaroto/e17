@@ -63,6 +63,15 @@ AC_OPTIONAL_MODULE([eupnp_ecore], true, [CHECK_MODULE_ECORE])
 EFL_CHECK_DOXYGEN([build_doc="yes"], [build_doc="no"])
 
 
+# Build Eupnp examples
+want_examples="yes"
+AC_ARG_ENABLE([examples],
+   [AC_HELP_STRING([--disable-examples], [do not build examples. @<:@default=yes@:>@])],
+   [want_examples=$enableval], [want_examples="no"])
+AM_CONDITIONAL(EUPNP_BUILD_EXAMPLES, test "x${want_examples}" = "xyes")
+
+
+
 # Build Eupnp tools
 want_tools="no"
 have_tools="no"
@@ -91,7 +100,7 @@ eupnp-ecore.pc
 Makefile
 doc/Makefile
 src/Makefile
-src/bin/Makefile
+examples/Makefile
 src/lib/Makefile
 src/lib/eupnp_ecore/Makefile
 src/tests/Makefile
@@ -126,6 +135,7 @@ SUMMARY_EOF
 echo -e " * modules.........: $MODS $UNUSED_MODS"
 echo -e " * documentation...: $build_doc"
 echo -e " * tools...........: $have_tools"
+echo -e " * examples........: $want_examples"
 
 echo
 

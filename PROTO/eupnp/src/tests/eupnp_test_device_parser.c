@@ -23,9 +23,12 @@
 #include <string.h>
 #include "eupnp_suite.h"
 
-#include "eupnp_log.h"
 #include "eupnp_device_info.h"
 #include "eupnp_device_parser.h"
+
+#ifdef INFO
+#undef INFO
+#define INFO(...) printf(__VA_ARGS__)
 
 static long
 get_file_size(FILE *f)
@@ -39,9 +42,7 @@ get_file_size(FILE *f)
 
 START_TEST(eupnp_xml_parse_complete)
 {
-   eupnp_device_info_init();
-   eupnp_log_init();
-   eupnp_device_parser_init();
+   eupnp_init();
 
    INFO("Test: complete xml parsing");
    FILE *xml;
@@ -67,9 +68,7 @@ START_TEST(eupnp_xml_parse_complete)
 
    free(buffer);
    eupnp_device_info_unref(device_info);
-   eupnp_device_parser_shutdown();
-   eupnp_log_shutdown();
-   eupnp_device_info_shutdown();
+   eupnp_shutdown();
 }
 END_TEST
 
@@ -78,10 +77,7 @@ END_TEST
 
 START_TEST(eupnp_xml_parse_partial)
 {
-   eupnp_device_info_init();
-   eupnp_log_init();
-   eupnp_device_parser_init();
-
+   eupnp_init();
    INFO("Incremental XML parsing");
 
    Eupnp_Device_Info *device_info;
@@ -126,9 +122,7 @@ START_TEST(eupnp_xml_parse_partial)
    free(buffer);
    free(tmp);
    eupnp_device_info_unref(device_info);
-   eupnp_device_parser_shutdown();
-   eupnp_log_shutdown();
-   eupnp_device_info_shutdown();
+   eupnp_shutdown();
 }
 END_TEST
 

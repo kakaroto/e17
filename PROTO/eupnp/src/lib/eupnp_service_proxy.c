@@ -31,7 +31,6 @@
 
 #include "Eupnp.h"
 #include "eupnp_service_proxy.h"
-#include "eupnp_log.h"
 #include "eupnp_core.h"
 #include "eupnp_service_info.h"
 #include "eupnp_http_message.h"

@@ -29,7 +29,6 @@
 #include <Eina.h>
 
 #include "Eupnp.h"
-#include "eupnp_log.h"
 #include "eupnp_http_message.h"
 #include "eupnp_udp_transport.h"
 #include "eupnp_private.h"
