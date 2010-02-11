@@ -119,16 +119,6 @@
  * @li Ecore, Ecore-con (with curl support)
  * @li libxml-2.0
  *
- * @section eupnp_subsec_todo TODO
- *
- * @li Finish GUI examples (IGD client, universal control point, lighting client)
- * @li Implement device icon fetch
- * @li Implement libeupnp-av (UPnP Audio/Video specification)
- * @li Fix building facility to not depend on Elementary, make it optional and disable build of elm-based examples when not present
- * @li Screenshots of examples
- * @li Finish API documentation
- * @li Tutorial
- *
  */
 
 #include "eupnp_core.h"

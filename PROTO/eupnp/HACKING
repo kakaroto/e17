@@ -1,0 +1,38 @@
+DEBUGGING
+=========
+
+Eupnp uses Eina logging facilities for its components. The logging domains
+registered are:
+
+General Purpose:
+   * Eupnp:              system, smaller protocols
+   * Eupnp.EventBus:     inter-component communication
+   * Eupnp.ControlPoint: search
+   * Eupnp.SSDP:         SSDP client
+   * Eupnp.Ecore:        eupnp-ecore binding
+
+Metadata objects:
+   * Eupnp.DeviceInfo:   device objects
+   * Eupnp.ServiceInfo:  service objects
+
+Action objects:
+   * Eupnp.ServiceProxy: service objects proxies (remote calls)
+   * Eupnp.EventServer:  UPnP events
+
+XML Parsers:
+   * Eupnp.ActionParser:  parser for remote calls
+   * Eupnp.ServiceParser: parser for services
+   * Eupnp.DeviceParser:  parser for devices
+
+
+For enabling one or more domains in your eupnp application, use the
+EINA_LOG_LEVELS envvar, e.g.:
+
+  $ EINA_LOG_LEVELS=Eupnp.DeviceInfo:5,Eupnp.ServiceInfo:3 ./my_application
+
+The above envvar will set Eupnp.DeviceInfo logging to 5 (finest) and
+Eupnp.ServiceInfo to 3 (mid).
+
+
+Logging levels for all domains can be set using the EINA_LG_LEVEL envvar, useful
+for bug reports.
