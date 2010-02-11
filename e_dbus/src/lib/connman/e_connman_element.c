@@ -479,21 +479,6 @@ _e_connman_element_item_register(const char *key, const char *item)
      WRN("could not get properties of %s", element->path);
 }
 
-static void
-_e_connman_element_objects_array_register(E_Connman_Array *array, const char *name)
-{
-   Eina_Array_Iterator iterator;
-   unsigned int i;
-   void *item;
-
-   if (!array)
-     return;
-   if (array->type != DBUS_TYPE_OBJECT_PATH)
-     return;
-   EINA_ARRAY_ITER_NEXT(array->array, i, item, iterator)
-     _e_connman_element_item_register(name, item);
-}
-
 /* Match 2 arrays to find which are new and which are old elements
  * For new elements, register them under prop_name property
  * For old elements, unregister them, sending proper DEL event
