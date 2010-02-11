@@ -1,4 +1,4 @@
-AC_INIT([libeflvala], [0.1.0.0], [mlauer@vanille-media.de], [libeflvala])
+AC_INIT([libeflvala], [0.5.0], [mlauer@vanille-media.de], [libeflvala])
 AC_CONFIG_SRCDIR([Makefile.am])
 AC_CONFIG_HEADERS(config.h)
 AM_INIT_AUTOMAKE([dist-bzip2])
