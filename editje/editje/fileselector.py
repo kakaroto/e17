@@ -51,7 +51,7 @@ class FileSelector(Manager, elementary.Table):
         self.__actions_list = {}
 
     def _navigator_init(self):
-        bx = elementary.Box(self._parent)
+        bx = elementary.Box(self)
         bx.size_hint_weight_set(evas.EVAS_HINT_EXPAND,
                                 evas.EVAS_HINT_EXPAND)
         bx.size_hint_align_set(evas.EVAS_HINT_FILL,
@@ -59,11 +59,11 @@ class FileSelector(Manager, elementary.Table):
         self.pack(bx, 0, 0, 1, 4)
         bx.show()
 
-        self._nav_home = elementary.Button(self._parent)
+        self._nav_home = elementary.Button(self)
         self._nav_home.size_hint_weight_set(evas.EVAS_HINT_EXPAND, 0.0)
         self._nav_home.size_hint_align_set(evas.EVAS_HINT_FILL, 0.0)
         self._nav_home.label_set("Home")
-        ic = elementary.Icon(self._parent)
+        ic = elementary.Icon(self)
         ic.standard_set("home")
         ic.scale_set(0, 0)
         self._nav_home.icon_set(ic)
@@ -71,18 +71,18 @@ class FileSelector(Manager, elementary.Table):
         bx.pack_end(self._nav_home)
         self._nav_home.show()
 
-        sp = elementary.Separator(self._parent)
+        sp = elementary.Separator(self)
         sp.size_hint_align_set(evas.EVAS_HINT_FILL, 0.0)
         sp.size_hint_weight_set(evas.EVAS_HINT_EXPAND, 0.0)
         sp.horizontal_set(True)
         bx.pack_end(sp)
         sp.show()
 
-        self._nav_up = elementary.Button(self._parent)
+        self._nav_up = elementary.Button(self)
         self._nav_up.size_hint_weight_set(evas.EVAS_HINT_EXPAND, 0.0)
         self._nav_up.size_hint_align_set(evas.EVAS_HINT_FILL, 0.0)
         self._nav_up.label_set("Up")
-        ic = elementary.Icon(self._parent)
+        ic = elementary.Icon(self)
         ic.standard_set("arrow_up")
         ic.scale_set(0, 0)
         self._nav_up.icon_set(ic)
@@ -90,7 +90,7 @@ class FileSelector(Manager, elementary.Table):
         bx.pack_end(self._nav_up)
         self._nav_up.show()
 
-        self._directories = elementary.List(self._parent)
+        self._directories = elementary.List(self)
         self._directories.size_hint_align_set(evas.EVAS_HINT_FILL,
                                             evas.EVAS_HINT_FILL)
         self._directories.size_hint_weight_set(evas.EVAS_HINT_EXPAND,
@@ -100,7 +100,7 @@ class FileSelector(Manager, elementary.Table):
         self._directories.show()
 
     def _files_init(self):
-        bx = elementary.Box(self._parent)
+        bx = elementary.Box(self)
         bx.size_hint_weight_set(evas.EVAS_HINT_EXPAND,
                                 evas.EVAS_HINT_EXPAND)
         bx.size_hint_align_set(evas.EVAS_HINT_FILL,
@@ -108,7 +108,7 @@ class FileSelector(Manager, elementary.Table):
         self.pack(bx, 1, 0, 3, 4)
         bx.show()
 
-        sc = elementary.Scroller(self._parent)
+        sc = elementary.Scroller(self)
         sc.content_min_limit(0, 1)
         sc.policy_set(elementary.ELM_SCROLLER_POLICY_OFF,
                       elementary.ELM_SCROLLER_POLICY_OFF)
@@ -118,7 +118,7 @@ class FileSelector(Manager, elementary.Table):
         bx.pack_end(sc)
         sc.show()
 
-        self._nav_path = elementary.Entry(self._parent)
+        self._nav_path = elementary.Entry(self)
         self._nav_path.single_line_set(True)
         self._nav_path.size_hint_weight_set(evas.EVAS_HINT_EXPAND,
                                             evas.EVAS_HINT_EXPAND)
@@ -130,7 +130,7 @@ class FileSelector(Manager, elementary.Table):
         sc.content_set(self._nav_path)
         self._nav_path.show()
 
-        self._files = elementary.List(self._parent)
+        self._files = elementary.List(self)
         self._files.size_hint_align_set(evas.EVAS_HINT_FILL,
                                         evas.EVAS_HINT_FILL)
         self._files.size_hint_weight_set(evas.EVAS_HINT_EXPAND,
@@ -150,7 +150,7 @@ class FileSelector(Manager, elementary.Table):
     multi = property(_multi_get, _multi_set)
 
     def _actions_init(self):
-        sp = elementary.Separator(self._parent)
+        sp = elementary.Separator(self)
         sp.size_hint_align_set(evas.EVAS_HINT_FILL, 0.5)
         sp.size_hint_weight_set(evas.EVAS_HINT_EXPAND, 0.0)
         sp.size_hint_min_set(600, 1)
@@ -158,7 +158,7 @@ class FileSelector(Manager, elementary.Table):
         self.pack(sp, 0, 4, 4, 1)
         sp.show()
 
-        self._actions = elementary.Box(self._parent)
+        self._actions = elementary.Box(self)
         self._actions.horizontal_set(True)
         self._actions.size_hint_weight_set(evas.EVAS_HINT_EXPAND, 0.0)
         self._actions.size_hint_align_set(1.0, evas.EVAS_HINT_FILL)
@@ -166,7 +166,7 @@ class FileSelector(Manager, elementary.Table):
         self._actions.show()
 
     def _filter_init(self):
-        bx = elementary.Box(self._parent)
+        bx = elementary.Box(self)
         bx.horizontal_set(True)
         bx.size_hint_weight_set(evas.EVAS_HINT_EXPAND, 0.0)
         bx.size_hint_align_set(evas.EVAS_HINT_FILL,
@@ -174,7 +174,7 @@ class FileSelector(Manager, elementary.Table):
         self.pack(bx, 0, 5, 2, 1)
         bx.show()
 
-        self._hidden = elementary.Check(self._parent)
+        self._hidden = elementary.Check(self)
         self._hidden.size_hint_align_set(evas.EVAS_HINT_FILL, 0.5)
         self._hidden.size_hint_weight_set(evas.EVAS_HINT_EXPAND, 0.0)
         self._hidden.state_set(False)
@@ -183,7 +183,7 @@ class FileSelector(Manager, elementary.Table):
         bx.pack_end(self._hidden)
         self._hidden.show()
 
-        self._filter = elementary.Check(self._parent)
+        self._filter = elementary.Check(self)
         self._filter.size_hint_align_set(evas.EVAS_HINT_FILL, 0.5)
         self._filter.size_hint_weight_set(evas.EVAS_HINT_EXPAND, 0.0)
         self._filter.label_set("Filter extensions")
@@ -216,13 +216,13 @@ class FileSelector(Manager, elementary.Table):
             if hidden or not file.startswith("."):
                 full = os.path.join(path, file)
                 if os.path.isdir(full):
-                    ic = elementary.Icon(self._parent)
+                    ic = elementary.Icon(self)
                     ic.standard_set("folder")
                     ic.scale_set(0, 0)
                     self._directories.item_append(file, ic, None, None, full)
                 elif os.path.isfile(full):
                     if not filter or self._filter_call(full):
-                        ic = elementary.Icon(self._parent)
+                        ic = elementary.Icon(self)
                         ic.standard_set("file")
                         ic.scale_set(0, 0)
                         item = self._files.item_append(file, ic, None, None,
@@ -304,7 +304,7 @@ class FileSelector(Manager, elementary.Table):
     filter = property(fset=_filter_set)
 
     def action_add(self, label, func_cb, data=None, icon=None):
-        btn = elementary.Button(self._parent)
+        btn = elementary.Button(self)
         btn.size_hint_weight_set(evas.EVAS_HINT_EXPAND, 0.0)
         btn.size_hint_align_set(evas.EVAS_HINT_FILL, 0.0)
         btn.label_set(label)
@@ -314,7 +314,7 @@ class FileSelector(Manager, elementary.Table):
             btn.data["clicked"] = data
 
         if icon:
-            ico = elementary.Icon(self._parent)
+            ico = elementary.Icon(self)
             ico.file_set(self.__theme_file, "editje/icon/" + icon)
             btn.icon_set(ico)
             ico.show()
