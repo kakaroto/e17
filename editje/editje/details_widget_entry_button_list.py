@@ -48,6 +48,7 @@ class WidgetEntryButtonList(WidgetEntryButton):
 
             self._pop_list.scroller_policy_set(elementary.ELM_SCROLLER_POLICY_OFF,
                                                elementary.ELM_SCROLLER_POLICY_ON)
+            self._pop_list.callback_selected_add(self._select_cb)
             self._pop.content_set(self._pop_list)
             self._pop_list.show()
 
@@ -58,7 +59,7 @@ class WidgetEntryButtonList(WidgetEntryButton):
     def _list_update(self):
         self._pop_list.clear()
         for label, value in self._items_load():
-            it = self._pop_list.item_append(label, data=value)
+            it = self._pop_list.item_append(label, None, None, None, value)
 
             if value == self.value:
                 it.selected_set(True)
