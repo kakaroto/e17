@@ -110,6 +110,7 @@ if test "x$enable_sound_esound" = "xyes"; then
   AC_DEFINE(HAVE_SOUND, 1, [Sound support])
   AC_DEFINE(HAVE_SOUND_ESD, 1, [EsounD sound support])
   AC_DEFINE(USE_SOUND_LOADER_AUDIOFILE, 1, [Use audiofile sound loader])
+  PKG_CHECK_MODULES(AUDIOFILE, audiofile,,)
   enable_sound=esound
 fi
 AM_CONDITIONAL(USE_LIBESD, test "x$enable_sound_esound" = "xyes")
