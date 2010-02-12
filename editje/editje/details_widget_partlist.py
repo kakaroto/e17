@@ -30,6 +30,7 @@ class WidgetPartList(WidgetButton):
         WidgetButton.__init__(self, parent)
         self._value = None
         self.clicked = self._open
+        self._pop = None
 
     def show(self):
         for o in self.objs:
@@ -64,6 +65,8 @@ class WidgetPartList(WidgetButton):
         self._pop.action_add("Cancel", self._cancel_clicked)
 
     def _open(self, bt, *args):
+        if self._pop:
+            self._pop.hide()
         self._pop = Floater(self.parent, self.obj)
         self._pop.size_min_set(self.pop_min_w, self.pop_min_h)
         list = elementary.List(self.parent)
