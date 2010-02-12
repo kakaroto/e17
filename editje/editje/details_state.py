@@ -30,8 +30,7 @@ from details_widget_partlist import WidgetPartList
 from details_widget_font import WidgetFont
 from floater import Floater
 from prop import Property, PropertyTable
-import popups
-
+from filewizard import ImageSelectionWizard
 
 class StatesPopUp(Floater):
     min_w = 200
@@ -77,14 +76,23 @@ class StatesPopUp(Floater):
 
 
 class PartStateDetails(EditjeDetails):
+
     state_pop_min_w = 200
     state_pop_min_h = 300
 
-    def __init__(self, parent, anim=False):
+    def __init__(self, parent, anim=False, img_new_img_cb=None,
+                 img_list_get_cb=None, img_id_get_cb=None,
+                 workfile_name_get_cb=None):
+
         if anim:
             self._anim_init(parent)
         else:
             self._edit_init(parent)
+
+        self._img_new_img_cb = img_new_img_cb
+        self._img_list_get_cb = img_list_get_cb
+        self._img_id_get_cb = img_id_get_cb
+        self._workfile_name_get_cb = workfile_name_get_cb
 
         self._animmode = anim
         self._update_schedule = None
@@ -580,8 +588,12 @@ class PartStateDetails(EditjeDetails):
         self.group_add("external")
 
     def _image_btn_clicked(self, *args):
-        popups.ImagePopUp(self._parent,
-                          select_cb=self._image_selected_cb).show()
+        ImageSelectionWizard(self._parent,
+                selected_cb=self._image_selected_cb,
+                file_add_cb=self._img_new_img_cb,
+                file_list_cb=self._img_list_get_cb,
+                img_id_get_cb=self._img_id_get_cb,
+                workfile_get_cb=self._workfile_name_get_cb).show()
 
     def _image_selected_cb(self, image):
         self["image"]["normal"].value = image

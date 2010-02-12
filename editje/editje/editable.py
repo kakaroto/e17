@@ -16,6 +16,8 @@
 # License along with Editje.  If not, see
 # <http://www.gnu.org/licenses/>.
 
+import os
+
 import edje
 from edje.edit import EdjeEdit
 
@@ -230,6 +232,17 @@ class Editable(Manager, object):
         self.event_emit("group.size.changed", self._size)
 
     group_size = property(_size_get, _size_set)
+
+    #Images
+    def images_get(self):
+        return self.edje.images
+
+    def image_id_get(self, name):
+        return self.edje.image_id_get(name)
+
+    def image_add(self, img):
+        if os.path.basename(img) not in self.images_get():
+            self.edje.image_add(img)
 
     # Modifications
     def _modification_init(self):

@@ -28,7 +28,6 @@ from editable import Editable
 from details_group import GroupDetails
 from details_part import PartDetails
 from details_state import PartStateDetails
-from popups import ImagePopUp, FontPopUp
 from desktop import Desktop
 from collapsable import CollapsablesBox
 from parts_list import PartsList
@@ -37,6 +36,7 @@ from widgets_list import WidgetsList
 from animations import AnimationDetails
 from signals import SignalsList, SignalDetails
 from groupselector import GroupSelectionWizard
+from filewizard import ImageSelectionWizard
 
 def debug_cb(obj, emission, source):
     print "%s: %s %s" % (obj, emission, source)
@@ -47,7 +47,6 @@ class Editje(elementary.Window):
         self.theme = sysconfig.theme_file_get(theme)
 
         self.group_details = None
-        self.editable = None
         self._mode = None
 
         elementary.theme_extension_add(self.theme)
@@ -147,6 +146,18 @@ class Editje(elementary.Window):
 
     def _group_wizard_selection_get_cb(self):
         return self.group
+
+    def _image_wizard_new_image_cb(self, img):
+         self.e.image_add(img)
+
+    def _image_wizard_image_list_get_cb(self):
+        return self.e.images_get()
+
+    def _image_wizard_image_id_get_cb(self, name):
+        return self.e.image_id_get(name)
+
+    def _workfile_name_get_cb(self):
+        return self.e.workfile
 
     ###########
     # DESKTOP
@@ -253,10 +264,11 @@ class Editje(elementary.Window):
         print "Options ...."
 
     def _image_list_cb(self, obj, emission, source):
-        ImagePopUp(self).open()
+        ImageSelectionWizard(self).open()
 
     def _font_list_cb(self, obj, emission, source):
-        FontPopUp(self).show()
+        #TODO: FontSelectionWizard(self).open()
+        return
 
     def _play_cb(self, obj, emission, source):
 #        part = self.e.part.name
@@ -443,7 +455,11 @@ class Editje(elementary.Window):
         box.pack_end(self.part_details)
         self.part_details.show()
 
-        self.part_state_details = PartStateDetails(self)
+        self.part_state_details = PartStateDetails(self, \
+                img_new_img_cb=self._image_wizard_new_image_cb, \
+                img_list_get_cb=self._image_wizard_image_list_get_cb, \
+                img_id_get_cb=self._image_wizard_image_id_get_cb, \
+                workfile_name_get_cb=self._workfile_name_get_cb)
         box.pack_end(self.part_state_details)
         self.part_state_details.show()
 

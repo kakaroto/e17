@@ -40,6 +40,7 @@ editje.py \
 error_notify.py \
 event_manager.py \
 fileselector.py \
+filewizard.py \
 floater.py \
 groupselector.py \
 __init__.py \
