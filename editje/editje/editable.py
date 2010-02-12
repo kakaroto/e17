@@ -44,7 +44,8 @@ class Editable(Manager, object):
         self.part = EditablePart(self)
         self.signal = EditableProgram(self)
 
-        self._min_max_init()
+        self._size = None
+        self._size_init()
         self._modification_init()
         self._parts_init()
         self._programs_init()
@@ -129,15 +130,16 @@ class Editable(Manager, object):
 
     # GROUP Min/Max
 
-    def _min_max_init(self):
-        self._min_max_update(self, None)
-        self.callback_add("group.changed", self._min_max_update)
+    def _size_init(self):
+        self._group_size_update(self, None)
+        self.callback_add("group.changed", self._group_size_update)
 
-    def _min_max_update(self, emissor, data):
-        if not data:
+    def _group_size_update(self, emissor, grp_name):
+        self._size = None
+
+        if not grp_name:
             self._max = None
             self._min = None
-            self._size = None
             return
 
         self._max = (self._edje_group.w_max, self._edje_group.h_max)
@@ -150,7 +152,6 @@ class Editable(Manager, object):
         if not data:
             w, h = self.default_display_size
         else:
-            self._size = None
             w, h = data.split("x")
             w = int(w)
             h = int(h)
@@ -226,7 +227,6 @@ class Editable(Manager, object):
         value = self._edje.group_data_get(self.pref_size_key)
         if not value:
             self._edje.group_data_add(self.pref_size_key, "0x0")
-
         self._edje.group_data_set(self.pref_size_key, "%dx%d" % self._size)
 
         self.event_emit("group.size.changed", self._size)

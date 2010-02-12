@@ -95,28 +95,6 @@ class GroupsList(elementary.List):
 
     selection = property(fset=_selection_set, fget=_selection_get)
 
-    def _update(self):
-        self.clear()
-        if not self._groups:
-            self._selection = ""
-            return
-        self._groups_items = {}
-
-        for group in self._groups:
-            item = self.item_append(group, None, None, self._select, group)
-            self._groups_items[group] = item
-
-        # TODO: make a way to let items highlighted but not actually
-        # select()-ed, in the sense of selection callbacks
-
-        # item = self._groups_items.get(self._selection)
-        # if item:
-        #     item.selected_set(True)
-        # else:
-        #     self._groups_items[self._groups[0]].selected_set(True)
-
-        self.go()
-
     def selection_clear(self):
         for i in self.selected_items_get():
             i.selected_set(False)
@@ -251,7 +229,6 @@ class GroupSelectionWizard(Wizard):
         self._select_set_cb = selected_set_cb
         self._select_get_cb = selected_get_cb
         self._delete_cb = del_grp_cb
-        self._last_selected = None
 
         self.page_add("group_list", "Select a group",
                       "Select an existing group to edit, or create a new one.")
@@ -320,7 +297,6 @@ class GroupSelectionWizard(Wizard):
         r = self._select_set_cb(grp_name)
         if not r:
             self.notify("Error while selecting this group.")
-        self._last_selected = grp_name
         ecore.idler_add(self.close)
 
     def _delete_group(self):
