@@ -3,12 +3,12 @@
 REQUIREMENTS
 ============
 
- * Evas >= 0.9.9.043
- * Ecore >= 0.9.9.043
- * Cython >= 0.9.8
+ * Evas >= 0.9.9.063
+ * Ecore >= 0.9.9.063
+ * Cython >= 0.12
  * Python-Evas
  * Python >= 2.4
- * Python-setuptools >= 0.6_rc3
+ * Python-setuptools >= 0.6_rc9
 
 
 BUILDING AND INSTALLING
@@ -30,6 +30,15 @@ of "python setup.py <command> --help", example:
         python setup.py install --help
 
 Options can also be set in file "setup.cfg".
+
+Ecore provides lots of system-specific modules, such as Win32,
+DirectFB and X11. In order to disable them use the following
+environment variables:
+
+  * ECORE_BUILD_EVAS=0
+  * ECORE_BUILD_X=0
+  * ECORE_BUILD_XSCREENSAVER=0
+  * ECORE_BUILD_IMF=0
 
 
 TROUBLESHOOTING

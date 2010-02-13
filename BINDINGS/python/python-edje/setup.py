@@ -63,7 +63,7 @@ edjemodule = Extension('edje.c_edje',
                                 'edje/edje.c_edje_message.pxi',
                                 'include/edje/c_edje.pxd',
                                 ],
-                       **pkgconfig('"edje >= 0.9.9.050"'))
+                       **pkgconfig('"edje >= 0.9.9.063"'))
 
 edjeeditmodule = Extension('edje.edit.c_edit',
                        sources=['edje/edit/c_edit.pyx',
@@ -76,7 +76,7 @@ edjeeditmodule = Extension('edje.edit.c_edit',
                                 'edje/edit/c_edit_object_state.pxi',
                                 'include/edje/edit/c_edit.pxd',
                                 ],
-                       **pkgconfig('"edje >= 0.9.9.050"'))
+                       **pkgconfig('"edje >= 0.9.9.063"'))
 
 
 trove_classifiers = [

@@ -3,10 +3,10 @@
 REQUIREMENTS
 ============
 
- * Python-Evas >= 0.1.1
- * Python-Ecore >= 0.1.1
+ * Python-Evas >= 0.4.0
+ * Python-Ecore >= 0.4.0
  * Python >= 2.4
- * Python-setuptools >= 0.6_rc3
+ * Python-setuptools >= 0.6_rc9
 
 
 BUILDING AND INSTALLING

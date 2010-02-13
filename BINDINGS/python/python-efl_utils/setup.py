@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 from ez_setup import use_setuptools
-use_setuptools('0.6c3')
+use_setuptools('0.6c9')
 
 from setuptools import setup, find_packages
 
@@ -25,17 +25,17 @@ Utilities to aid development of EFL applications.
 These utilities include transition effects, timeline animators and more.
 """
 
-setup(name = 'python-efl-utils',
-      version = '0.2.0',
-      license = 'LGPL',
+setup(name='python-efl-utils',
+      version='0.2.0',
+      license='LGPL',
       author='Gustavo Sverzut Barbieri',
       author_email='barbieri@gmail.com',
       url='http://www.enlightenment.org/',
-      description = 'Python utilities to EFL development',
-      long_description = long_description,
-      keywords = 'enlightenment graphics raster evas canvas utilities efl',
-      classifiers = trove_classifiers,
-      packages = find_packages(),
+      description='Python utilities to EFL development',
+      long_description=long_description,
+      keywords='enlightenment graphics raster evas canvas utilities efl',
+      classifiers=trove_classifiers,
+      packages=find_packages(),
       zip_safe=True,
       )
 

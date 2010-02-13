@@ -13,80 +13,109 @@ if not os.path.exists("elementary/elementary.c_elementary.c"):
             "You need Pyrex -- "
             "http://www.cosc.canterbury.ac.nz/greg.ewing/python/Pyrex/")
 
-from distutils.core import setup
-from setuptools import find_packages
-from distutils.extension import Extension
+from setuptools import setup, find_packages, Extension
+import subprocess
+import shlex
+
 from Cython.Distutils import build_ext
-import commands
 
-debug = False
+def getstatusoutput(cmdline):
+    cmd = shlex.split(cmdline)
+    p = subprocess.Popen(cmd, stdout=subprocess.PIPE)
+    out, err = p.communicate()
+    return p.returncode, out
 
-class elementary_build_ext(build_ext):
-    def finalize_options(self):
-        build_ext.finalize_options(self)
-        self.include_dirs.insert(0,'include')
-        self.pyrex_include_dirs.extend(self.include_dirs)
 
 def pkgconfig(*packages, **kw):
-    flag_map = {'-I': 'include_dirs', '-L': 'library_dirs', '-l': 'libraries'}
+    flag_map = {'-I': 'include_dirs', '-L': 'library_dirs', '-l': 'libraries',
+                '-D': 'prepro_vars'}
     pkgs = ' '.join(packages)
     cmdline = 'pkg-config --libs --cflags %s' % pkgs
 
-    status, output = commands.getstatusoutput(cmdline)
+    status, output = getstatusoutput(cmdline)
     if status != 0:
         raise ValueError("could not find pkg-config module: %s" % pkgs)
 
     for token in output.split():
-        if flag_map.get(token[:2]):
-            kw.setdefault(flag_map.get(token[:2]), []).append(token[2:])
+        flag  = flag_map.get(token[:2], None)
+        if flag is not None:
+            kw.setdefault(flag, []).append(token[2:])
         elif token.startswith("-Wl,"):
             kw.setdefault("extra_link_args", []).append(token)
         else:
             kw.setdefault("extra_compile_args", []).append(token)
+
+    if "extra_link_args" in kw:
+        print "Using extra_link_args: %s" % " ".join(kw["extra_link_args"])
+    if "extra_compile_args" in kw:
+        print "Using extra_compile_args: %s" % " ".join(kw["extra_compile_args"])
+
     return kw
 
 depends = ['include/elementary/c_elementary.pxd']
-
 for root, dirs, files in os.walk('elementary'):
     for file in files:
         if file.endswith('.pxi'):
             depends.append('elementary/' + file)
-            
-if not debug:
-    elementary_mod = Extension('elementary.c_elementary',
-                       sources=['elementary/elementary.c_elementary.pyx'],
-                       depends=depends,
-                       **pkgconfig('"elementary"'))
-else:
-    elementary_mod = Extension('elementary.c_elementary',
-                       sources=['elementary/elementary.c_elementary.pyx'],
-                       depends=depends,
-                       extra_compile_args=["-g"],
-                       extra_link_args=["-g"],
-                       **pkgconfig('"elementary"'))
 
-headers = ['include/elementary/c_elementary.pxd',
-           'include/elementary/__init__.py',
-          ]
+elementary_mod = Extension('elementary.c_elementary',
+                           sources=['elementary/elementary.c_elementary.pyx'],
+                           depends=depends,
+                           **pkgconfig('"elementary >= 0.6.0.063"'))
+
+
+class elementary_build_ext(build_ext):
+    def finalize_options(self):
+        build_ext.finalize_options(self)
+        self.include_dirs.insert(0, 'include')
+        self.pyrex_include_dirs.extend(self.include_dirs)
+
+
+trove_classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Environment :: Console :: Framebuffer",
+    "Environment :: X11 Applications",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: GNU Library or Lesser General Public License (LGPL)",
+    "Operating System :: MacOS :: MacOS X",
+    "Operating System :: POSIX",
+    "Programming Language :: C",
+    "Programming Language :: Python",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: Software Development :: User Interfaces",
+    ]
+
+long_description = """\
+Python bindings for Elementary, part of Enlightenment Foundation Libraries.
+
+Elementary is a widget set. It is a new-style of widget set much more
+canvas object based than anything else. Why not ETK? Why not EWL? Well
+they both tend to veer away from the core of Evas, Ecore and Edje a
+lot to build their own worlds. Also I wanted something focused on
+embedded devices - specifically small touchscreens. Unlike GTK+ and
+Qt, 75% of the 'widget set' is already embodied in a common core -
+Ecore, Edje, Evas etc. So this fine-grained library splitting means
+all of this is shared, just a new widget 'personality' is on top. And
+that is...
+
+Elementary, my dear Watson. Elementary.
+"""
 
 setup(
-    name = 'python-elementary',
-    version = '0.2',
-    license = 'LGPL',
-    author = 'Simon Busch',
-    author_email = 'morphis@gravedo.de',
+    name='python-elementary',
+    version='0.4.0',
+    license='LGPL',
+    author='Simon Busch',
+    author_email='morphis@gravedo.de',
     url='http://www.freeesmartphone.org',
-    description = 'Python bindings for Elementary',
-    long_description = '',
-    keywords = 'wrapper bindings ui elementary graphics',
-    packages = find_packages(),
-    headers = headers,
- #   classifiers = 
- #   packages = 
- #   install_requires = ['elementary','python-evas>=0.2.1'],
- #   setup_requires = ['elemtnary','python-evas>=0.2.1'],
- #   headers = 
- #   zip_safe=False,
-    cmdclass = {"build_ext": elementary_build_ext},
-    ext_modules = [elementary_mod]
+    description='Python bindings for Elementary',
+    long_description='',
+    keywords='wrapper bindings ui elementary graphics',
+    packages=find_packages(),
+    classifiers=trove_classifiers,
+    install_requires=['python-evas>=0.4.0'],
+    setup_requires=['python-evas>=0.4.0'],
+    zip_safe=False,
+    cmdclass={"build_ext": elementary_build_ext},
+    ext_modules=[elementary_mod]
 )

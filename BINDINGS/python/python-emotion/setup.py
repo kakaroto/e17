@@ -61,7 +61,7 @@ emotionmodule = Extension('emotion.c_emotion',
                                    ],
                           depends=['include/emotion/c_emotion.pxd',
                                    ],
-                          **pkgconfig('"emotion >= 0.1.0.042"'))
+                          **pkgconfig('"emotion >= 0.1.0.043"'))
 
 
 trove_classifiers = [

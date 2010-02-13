@@ -3,13 +3,13 @@
 REQUIREMENTS
 ============
 
- * Emotion >= 0.1.0.042
- * Evas >= 0.9.9.043  (indirect, Emotion dependency)
- * Ecore >= 0.9.9.043 (indirect, Emotion dependency)
- * Python-Evas
- * Cython >= 0.9.8
+ * Emotion >= 0.1.0.043
+ * Evas >= 0.9.9.063  (indirect, Emotion dependency)
+ * Ecore >= 0.9.9.063 (indirect, Emotion dependency)
+ * Python-Evas >= 0.4.0
+ * Cython >= 0.12
  * Python >= 2.4
- * Python-setuptools >= 0.6_rc3
+ * Python-setuptools >= 0.6_rc9
 
 
 BUILDING AND INSTALLING

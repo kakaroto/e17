@@ -3,10 +3,10 @@
 REQUIREMENTS
 ============
 
- * Evas >= 0.9.9.043
- * Cython >= 0.9.8
+ * Evas >= 0.9.9.063
+ * Cython >= 0.12
  * Python >= 2.4
- * Python-setuptools >= 0.6_rc3
+ * Python-setuptools >= 0.6_rc9
 
 
 BUILDING AND INSTALLING

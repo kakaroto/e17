@@ -61,6 +61,12 @@ fi
 
 PYLIBDIR=`python -c "import distutils.sysconfig; print distutils.sysconfig.get_python_lib(prefix='$PREFIX')"`
 
+if ! python -c "import sys; sys.exit([-1, 0][('$PYLIBDIR' in sys.path)])"; then
+    die "library dir $PYLIBDIR not in \$PYTHONPATH or any known sys.path"
+fi
+if [ ! -d "$PREFIX" ]; then
+    die "prefix $PREFIX is not a directory"
+fi
 if ! touch "$PREFIX" 2>/dev/null; then
     die "no permission to write to $PREFIX. needs sudo?"
 fi
