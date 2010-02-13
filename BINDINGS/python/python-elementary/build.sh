@@ -80,9 +80,6 @@ fi
 if ! which cython >/dev/null; then
     die "cython is not installed"
 fi
-if ! which pyrexc >/dev/null; then
-    die "pyrexc (python-pyrex) is not installed"
-fi
 
 if [ -z "$TMPDIR" ]; then
     TMPDIR="/tmp"

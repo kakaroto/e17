@@ -3,21 +3,17 @@ import os
 
 if not os.path.exists("elementary/elementary.c_elementary.c"):
     try:
-        import Cython
+        from Cython.Distutils import build_ext
+        # work around stupid setuptools that insists on just checking pyrex
+        sys.modules['Pyrex'] = sys.modules['Cython']
     except ImportError:
         raise SystemExit("You need Cython -- http://cython.org/")
-    try:
-        import Pyrex
-    except ImportError:
-        raise SystemExit(
-            "You need Pyrex -- "
-            "http://www.cosc.canterbury.ac.nz/greg.ewing/python/Pyrex/")
+else:
+    from distutils.command.build_ext import build_ext
 
 from setuptools import setup, find_packages, Extension
 import subprocess
 import shlex
-
-from Cython.Distutils import build_ext
 
 def getstatusoutput(cmdline):
     cmd = shlex.split(cmdline)
@@ -68,7 +64,8 @@ class elementary_build_ext(build_ext):
     def finalize_options(self):
         build_ext.finalize_options(self)
         self.include_dirs.insert(0, 'include')
-        self.pyrex_include_dirs.extend(self.include_dirs)
+        if hasattr(self, "pyrex_include_dirs"):
+            self.pyrex_include_dirs.extend(self.include_dirs)
 
 
 trove_classifiers = [
