@@ -256,10 +256,8 @@ _on_cmd_property_set(char *cmd, char *args)
    fprintf(stderr, "set_property %s [%p] %s %c %p...\n",
 	   args, element, name, type, value);
    if (!e_connman_element_property_set(element, name, type, value))
-     {
 	fputs("ERROR: error setting property.\n", stderr);
-	return 1;
-     }
+
    return 1;
 }
 
