@@ -29,6 +29,7 @@
 #include "Eupnp.h"
 #include "eupnp_private.h"
 
+
 /**
  * Private API
  */
@@ -39,17 +40,17 @@ extern int EUPNP_ERROR_DEVICE_PARSER_INSUFFICIENT_FEED;
 static void
 eupnp_device_info_data_ready(void *buffer, int size, void *data)
 {
-   DEBUG_D(_log_dom, "Device data ready callback for device %p", data);
+   DBG("Device data ready callback for device %p", data);
    Eupnp_Device_Info *device_info = data;
    eupnp_device_info_ref(device_info);
 
    if (eupnp_device_parse_xml_buffer(buffer, size, device_info))
      {
-	DEBUG_D(_log_dom, "Parsed XML successfully at buffer %p for device info %p", buffer, device_info);
+	DBG("Parsed XML successfully at buffer %p for device info %p", buffer, device_info);
 
 	if (!device_info->xml_parser)
 	  {
-	     DEBUG_D(_log_dom, "Finished building device %p. Publishing event...", data);
+	     DBG("Finished building device %p. Publishing event...", data);
 	     eupnp_event_bus_publish(EUPNP_EVENT_DEVICE_READY, device_info);
 	  }
      }
@@ -58,10 +59,10 @@ eupnp_device_info_data_ready(void *buffer, int size, void *data)
 	if (eina_error_get() == EUPNP_ERROR_DEVICE_PARSER_INSUFFICIENT_FEED)
 	  {
 	     // TODO treat size < 4 case
-	     WARN_D(_log_dom, "Len < 4 case.");
+	     WRN("Len < 4 case.");
 	  }
 
-	ERROR_D(_log_dom, "Failed to parse XML at buffer %p for device info %p", buffer, device_info);
+	ERR("Failed to parse XML at buffer %p for device info %p", buffer, device_info);
      }
 
    eupnp_device_info_unref(device_info);
@@ -70,7 +71,7 @@ eupnp_device_info_data_ready(void *buffer, int size, void *data)
 static void
 eupnp_device_info_download_completed(Eupnp_Request *request, void *data, const Eupnp_HTTP_Request *req)
 {
-   DEBUG_D(_log_dom, "Finished building device %p callback called", data);
+   DBG("Finished building device %p callback called", data);
    eupnp_device_info_unref(data);
    eupnp_core_http_request_free(request);
 }
@@ -102,12 +103,12 @@ eupnp_device_icon_dump(Eupnp_Device_Icon *icon)
 {
    CHECK_NULL_RET(icon);
 
-   INFO_D(_log_dom, "\tIcon dump");
-   INFO_D(_log_dom, "\t\tMimetype: %s", icon->mimetype);
-   INFO_D(_log_dom, "\t\tURL: %s", icon->url);
-   INFO_D(_log_dom, "\t\twidth: %d", icon->width);
-   INFO_D(_log_dom, "\t\theight: %d", icon->height);
-   INFO_D(_log_dom, "\t\tdepth: %d", icon->depth);
+   INF("\tIcon dump");
+   INF("\t\tMimetype: %s", icon->mimetype);
+   INF("\t\tURL: %s", icon->url);
+   INF("\t\twidth: %d", icon->width);
+   INF("\t\theight: %d", icon->height);
+   INF("\t\tdepth: %d", icon->depth);
 }
 
 static void
@@ -150,7 +151,7 @@ eupnp_device_info_init(void)
 	return EINA_FALSE;
      }
 
-   INFO_D(_log_dom, "Initializing device info module.");
+   INF("Initializing device info module.");
 
    return EINA_TRUE;
 }
@@ -163,7 +164,7 @@ eupnp_device_info_init(void)
 Eina_Bool
 eupnp_device_info_shutdown(void)
 {
-   INFO_D(_log_dom, "Shutting down device info module.");
+   INF("Shutting down device info module.");
    eina_log_domain_unregister(_log_dom);
    return EINA_TRUE;
 }
@@ -188,7 +189,7 @@ eupnp_device_info_new(const char *udn, const char *location, void *resource, voi
 
    if (!d)
      {
-	ERROR_D(_log_dom, "Failed to allocate memory for device info");
+	ERR("Failed to allocate memory for device info");
 
 	if (resource && resource_free)
 	   resource_free(resource);
@@ -258,7 +259,7 @@ eupnp_device_info_ref(Eupnp_Device_Info *device_info)
 {
    CHECK_NULL_RET_VAL(device_info, NULL);
 
-   DEBUG_D(_log_dom, "Device %p refcount %d -> %d", device_info, device_info->refcount, device_info->refcount + 1);
+   DBG("Device %p refcount %d -> %d", device_info, device_info->refcount, device_info->refcount + 1);
 
    device_info->refcount++;
 
@@ -281,7 +282,7 @@ eupnp_device_info_unref(Eupnp_Device_Info *device_info)
 	return;
      }
 
-   DEBUG_D(_log_dom, "Device %p refcount %d -> %d", device_info, device_info->refcount, device_info->refcount - 1);
+   DBG("Device %p refcount %d -> %d", device_info, device_info->refcount, device_info->refcount - 1);
 
    device_info->refcount--;
 
@@ -341,7 +342,7 @@ eupnp_device_info_fetch(Eupnp_Device_Info *device_info)
    CHECK_NULL_RET(device_info);
    CHECK_NULL_RET(device_info->location);
 
-   DEBUG_D(_log_dom, "Fetching device %p info from %s", device_info, device_info->location);
+   DBG("Fetching device %p info from %s", device_info, device_info->location);
 
    eupnp_device_info_ref(device_info);
 
@@ -349,7 +350,7 @@ eupnp_device_info_fetch(Eupnp_Device_Info *device_info)
 				     NULL, EUPNP_REQUEST_DATA_CB(eupnp_device_info_data_ready),
 				     EUPNP_REQUEST_COMPLETED_CB(eupnp_device_info_download_completed),
 				     device_info))
-      ERROR_D(_log_dom, "Could not add a new download job for device %p", device_info);
+      ERR("Could not add a new download job for device %p", device_info);
 }
 
 EAPI void
@@ -361,22 +362,22 @@ eupnp_device_info_dump(const Eupnp_Device_Info *device_info)
    Eupnp_Service_Info *service;
    Eupnp_Device_Info *device;
 
-   INFO_D(_log_dom, "Device %p dump:", device_info);
-   INFO_D(_log_dom, "\tname: %s", device_info->friendly_name);
-   INFO_D(_log_dom, "\tudn: %s", device_info->udn);
-   INFO_D(_log_dom, "\ttype: %s", device_info->device_type);
-   INFO_D(_log_dom, "\tlocation: %s", device_info->location);
-   INFO_D(_log_dom, "\tbase URL: %s", device_info->base_url);
-   INFO_D(_log_dom, "\tspec: %d.%d", device_info->spec_version_major,
+   INF("Device %p dump:", device_info);
+   INF("\tname: %s", device_info->friendly_name);
+   INF("\tudn: %s", device_info->udn);
+   INF("\ttype: %s", device_info->device_type);
+   INF("\tlocation: %s", device_info->location);
+   INF("\tbase URL: %s", device_info->base_url);
+   INF("\tspec: %d.%d", device_info->spec_version_major,
 	device_info->spec_version_minor);
-   INFO_D(_log_dom, "\tupc: %s", device_info->upc);
-   INFO_D(_log_dom, "\tpresentation URL: %s", device_info->presentation_url);
-   INFO_D(_log_dom, "\tmanufacturer: %s", device_info->manufacturer);
-   INFO_D(_log_dom, "\tmanufacturer URL: %s", device_info->manufacturer_url);
-   INFO_D(_log_dom, "\tmodel name: %s", device_info->model_name);
-   INFO_D(_log_dom, "\tmodel description: %s", device_info->model_description);
-   INFO_D(_log_dom, "\tmodel URL: %s", device_info->model_url);
-   INFO_D(_log_dom, "\tserial number: %s", device_info->serial_number);
+   INF("\tupc: %s", device_info->upc);
+   INF("\tpresentation URL: %s", device_info->presentation_url);
+   INF("\tmanufacturer: %s", device_info->manufacturer);
+   INF("\tmanufacturer URL: %s", device_info->manufacturer_url);
+   INF("\tmodel name: %s", device_info->model_name);
+   INF("\tmodel description: %s", device_info->model_description);
+   INF("\tmodel URL: %s", device_info->model_url);
+   INF("\tserial number: %s", device_info->serial_number);
 
    if (device_info->icons)
      EINA_INLIST_FOREACH(device_info->icons, icon)

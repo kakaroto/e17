@@ -47,7 +47,7 @@ static int _log_dom = -1;
 static void
 _client_data_ready(void *buffer, int size, void *data)
 {
-   DEBUG_D(_log_dom, "Event received, size %d!", size);
+   DBG("Event received, size %d!", size);
 
    char *bcopy = NULL;
 
@@ -55,21 +55,21 @@ _client_data_ready(void *buffer, int size, void *data)
 
    if (!bcopy)
      {
-	DEBUG_D(_log_dom, "Failed to copy event notification data to buffer.");
+	DBG("Failed to copy event notification data to buffer.");
 	return;
      }
 
    memcpy(bcopy, buffer, size);
    bcopy[size] = '\0';
 
-   DEBUG_D(_log_dom, "Event is %s", bcopy);
+   DBG("Event is %s", bcopy);
 
    Eupnp_HTTP_Request *req = eupnp_http_request_parse(bcopy, NULL, NULL);
 
    if (!req)
      {
-	DEBUG_D(_log_dom, "Special case: %s", bcopy);
-	ERROR_D(_log_dom, "Could not parse event notification.");
+	DBG("Special case: %s", bcopy);
+	ERR("Could not parse event notification.");
 	free(bcopy);
 	return;
      }
@@ -120,7 +120,7 @@ eupnp_event_server_init(void)
 	goto server_creation_err;
      }
 
-   INFO_D(_log_dom, "Initializing event server module.");
+   INF("Initializing event server module.");
 
    return EINA_TRUE;
 
@@ -141,7 +141,7 @@ eupnp_event_server_init(void)
 Eina_Bool
 eupnp_event_server_shutdown(void)
 {
-   INFO_D(_log_dom, "Shutting down event server module.");
+   INF("Shutting down event server module.");
    free((char *)_host);
    free((char *)_url);
    _port = -1;
@@ -173,7 +173,7 @@ eupnp_event_server_request_subscribe(Eupnp_Callback cb, void *data)
 
    if (!sub)
      {
-	ERROR_D(_log_dom, "Failed to subscribe on event bus.");
+	ERR("Failed to subscribe on event bus.");
 	return -1;
      }
 

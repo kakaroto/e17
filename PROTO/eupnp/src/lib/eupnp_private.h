@@ -32,7 +32,7 @@
                                     "HOST: %s:%d\r\n"             \
                                     "MAN: \"ssdp:discover\"\r\n"  \
                                     "MX: %d\r\n"                  \
-                                    "ST: %s\r\n\r\n"              \
+                                    "ST: %s\r\n\r\n"
 
 #define STR(x) #x
 #define XSTR(x) STR(x)
@@ -61,12 +61,25 @@ extern int EUPNP_LOGGING_DOM_GLOBAL;
 #define ERROR(...) EINA_LOG_DOM_ERR(EUPNP_LOGGING_DOM_GLOBAL, __VA_ARGS__)
 #define CRIT(...) EINA_LOG_DOM_CRIT(EUPNP_LOGGING_DOM_GLOBAL, __VA_ARGS__)
 
+#ifdef DBG
+  #undef DBG
+#endif
+#define DBG(...) EINA_LOG_DOM_DBG(_log_dom, __VA_ARGS__)
 
-#define WARN_D(DOM, ...) EINA_LOG_DOM_WARN(DOM, __VA_ARGS__)
-#define DEBUG_D(DOM, ...) EINA_LOG_DOM_DBG(DOM, __VA_ARGS__)
-#define INFO_D(DOM, ...) EINA_LOG_DOM_INFO(DOM, __VA_ARGS__)
-#define ERROR_D(DOM, ...) EINA_LOG_DOM_ERR(DOM, __VA_ARGS__)
-#define CRIT_D(DOM, ...) EINA_LOG_DOM_CRIT(DOM, __VA_ARGS__)
+#ifdef INF
+  #undef INF
+#endif
+#define INF(...) EINA_LOG_DOM_INFO(_log_dom, __VA_ARGS__)
+
+#ifdef ERR
+  #undef ERR
+#endif
+#define ERR(...) EINA_LOG_DOM_ERR(_log_dom, __VA_ARGS__)
+
+#ifdef WRN
+  #undef WRN
+#endif
+#define WRN(...) EINA_LOG_DOM_ERR(_log_dom, __VA_ARGS__)
 
 
 Eupnp_Service_Info   *eupnp_service_info_new(const char *udn, const char *location, const char *service_type, void *resource, void (*resource_free)(void *resource)) EINA_ARG_NONNULL(1,2,3,4);

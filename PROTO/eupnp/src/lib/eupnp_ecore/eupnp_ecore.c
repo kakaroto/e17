@@ -113,7 +113,7 @@ _ecore_request_data_cb(void *data, int type, void *event)
    Ecore_Con_Url *url_con = e->url_con;
    Eupnp_Ecore_Request *request = ecore_con_url_data_get(url_con);
 
-   DEBUG_D(_log_dom, "Data available event for object %p", request);
+   DBG("Data available event for object %p", request);
 
    request->data_cb(e->data, e->size, request->data);
 
@@ -128,7 +128,7 @@ _ecore_request_completed_cb(void *data, int type, void *event)
    Ecore_Con_Url *url_con = e->url_con;
    Eupnp_Ecore_Request *request = ecore_con_url_data_get(url_con);
 
-   DEBUG_D(_log_dom, "Request completed for object %p, status %d", request->data, e->status);
+   DBG("Request completed for object %p, status %d", request->data, e->status);
 
    /* Copy headers */
    char *packet = NULL;
@@ -142,14 +142,14 @@ _ecore_request_completed_cb(void *data, int type, void *event)
 	  {
 	   if ((asprintf(&packet, "%s%s", packet, s)) < 0)
 	     {
-		ERROR_D(_log_dom, "Failed to remount http headers.");
+		ERR("Failed to remount http headers.");
 		goto headers_mount_error;
 	     }
 	  }
 	else
 	   if ((asprintf(&packet, "%s", s)) < 0)
 	     {
-		ERROR_D(_log_dom, "Failed to remount http headers.");
+		ERR("Failed to remount http headers.");
 		goto headers_mount_error;
 	     }
      }
@@ -158,7 +158,7 @@ _ecore_request_completed_cb(void *data, int type, void *event)
 
    if (!req)
      {
-	ERROR_D(_log_dom, "Failed to parse http headers for request.");
+	ERR("Failed to parse http headers for request.");
 	goto headers_mount_error;
      }
 
@@ -180,7 +180,7 @@ _ecore_request(const char *url, const char *req, Eina_Array *additional_headers,
    CHECK_NULL_RET_VAL(data_cb, NULL);
    CHECK_NULL_RET_VAL(completed_cb, NULL);
 
-   DEBUG_D(_log_dom, "Creating new %s request for url %s, data %p, headers %p, content-type %s, size %d", req, url, data, additional_headers, content_type, body_length);
+   DBG("Creating new %s request for url %s, data %p, headers %p, content-type %s, size %d", req, url, data, additional_headers, content_type, body_length);
 
    Ecore_Con_Url *con;
    Eupnp_Ecore_Request *request;
@@ -189,7 +189,7 @@ _ecore_request(const char *url, const char *req, Eina_Array *additional_headers,
 
    if (!request)
      {
-	ERROR_D(_log_dom, "Failed to alloc for a new ecore con request object.");
+	ERR("Failed to alloc for a new ecore con request object.");
 	return NULL;
      }
 
@@ -201,7 +201,7 @@ _ecore_request(const char *url, const char *req, Eina_Array *additional_headers,
 
    if (!con)
      {
-	ERROR_D(_log_dom, "Failed to add an ecore con url job");
+	ERR("Failed to add an ecore con url job");
 	goto con_error;
      }
 
@@ -219,14 +219,14 @@ _ecore_request(const char *url, const char *req, Eina_Array *additional_headers,
 
 	if (!request->body)
 	  {
-	     ERROR_D(_log_dom, "Failed to copy request body.");
+	     ERR("Failed to copy request body.");
 	     goto body_error;
 	  }
      }
 
    ecore_con_url_data_set(con, request);
 
-   DEBUG_D(_log_dom, "Adding additional headers %p.", additional_headers);
+   DBG("Adding additional headers %p.", additional_headers);
 
    /* Insert additional headers */
 
@@ -237,23 +237,23 @@ _ecore_request(const char *url, const char *req, Eina_Array *additional_headers,
 	Eupnp_HTTP_Header *h;
 	EINA_ARRAY_ITER_NEXT(additional_headers, i, h, it)
 	  {
-	     DEBUG_D(_log_dom, "Appending header %s: %s to request request", h->key, h->value);
+	     DBG("Appending header %s: %s to request request", h->key, h->value);
 	     ecore_con_url_additional_header_add(con, h->key, h->value);
 	  }
      }
 
-   DEBUG_D(_log_dom, "Sending request %p", request);
+   DBG("Sending request %p", request);
 
    if (!ecore_con_url_send(con,
 			   request->body,
 			   body_length,
 			   content_type))
      {
-	ERROR_D(_log_dom, "Failed to send request request");
+	ERR("Failed to send request request");
 	goto send_error;
      }
 
-   DEBUG_D(_log_dom, "Finished sending request.");
+   DBG("Finished sending request.");
 
    return request;
 
@@ -280,7 +280,7 @@ _ecore_request_free(Eupnp_Request request)
 static Eupnp_Server
 _ecore_server_add(const char *name, int port, Eupnp_Client_Data_Cb cb, void *data)
 {
-   DEBUG_D(_log_dom, "Creating server for %s, port %d, cb %p, data %p", name, port, cb, data);
+   DBG("Creating server for %s, port %d, cb %p, data %p", name, port, cb, data);
 
    Eupnp_Ecore_Server *server;
 
@@ -288,7 +288,7 @@ _ecore_server_add(const char *name, int port, Eupnp_Client_Data_Cb cb, void *dat
 
    if (!server)
      {
-	DEBUG_D(_log_dom, "Failed to alloc for a new server");
+	DBG("Failed to alloc for a new server");
 	return NULL;
      }
 
@@ -299,7 +299,7 @@ _ecore_server_add(const char *name, int port, Eupnp_Client_Data_Cb cb, void *dat
 
    if (!server->server)
      {
-	DEBUG_D(_log_dom, "Failed to create ecore con server for %s:%d", name, port);
+	DBG("Failed to create ecore con server for %s:%d", name, port);
 	free(server);
 	return NULL;
      }
@@ -311,7 +311,7 @@ static const char *
 _ecore_server_url_get(Eupnp_Server server)
 {
    Eupnp_Ecore_Server *srv = server;
-   DEBUG_D(_log_dom, "Server ip: %s", ecore_con_server_ip_get(srv->server));
+   DBG("Server ip: %s", ecore_con_server_ip_get(srv->server));
    return (const char *)ecore_con_server_ip_get(srv->server);
 }
 
@@ -362,18 +362,18 @@ _ecore_srv_respond_ok(Ecore_Con_Client *client)
 		       "Content-Length: 0\r\n"
 		       "Connection: close\r\n\r\n", date)) < 0)
      {
-	ERROR_D(_log_dom, "Failed to send ok message.");
+	ERR("Failed to send ok message.");
 	free(date);
 	return;
      }
 
    free(date);
 
-   DEBUG_D(_log_dom, "Responding to client %p %d chars", client, len);
+   DBG("Responding to client %p %d chars", client, len);
 
    if (ecore_con_client_send(client, response, len) < 0)
      {
-	ERROR_D(_log_dom, "Failed to send ok message stage 2.");
+	ERR("Failed to send ok message stage 2.");
 	return;
      }
 }
@@ -394,7 +394,7 @@ _ecore_srv_find_total_len(Client_Data *d)
 
    d->total_len = strtol(len, NULL, 10);
    eupnp_http_request_free(req);
-   DEBUG_D(_log_dom, "Found content length header: %d", d->total_len);
+   DBG("Found content length header: %d", d->total_len);
 }
 
 static int
@@ -402,11 +402,11 @@ _ecore_srv_client_data_cb(void *data, int type, void *event)
 {
    Ecore_Con_Event_Client_Data *e = event;
    Client_Data *d = _ecore_srv_client_get(e->client);
-   DEBUG_D(_log_dom, "Data for client %p (%p)", e->client, d);
+   DBG("Data for client %p (%p)", e->client, d);
 
    if (!d)
      {
-	ERROR_D(_log_dom, "Received data event for untracked client %p", e->client);
+	ERR("Received data event for untracked client %p", e->client);
 	return 1;
      }
 
@@ -415,7 +415,7 @@ _ecore_srv_client_data_cb(void *data, int type, void *event)
 
    if (!tmp)
      {
-	ERROR_D(_log_dom, "Failed to alloc more for client data %p", e->client);
+	ERR("Failed to alloc more for client data %p", e->client);
 	return 1;
      }
 
@@ -429,7 +429,7 @@ _ecore_srv_client_data_cb(void *data, int type, void *event)
    if ((d->buf_len - _ecore_srv_headers_len(d->buf)) >= d->total_len)
       _ecore_srv_respond_ok(d->client);
 
-   DEBUG_D(_log_dom, "Total len is %d, buf len is %d", d->total_len, d->buf_len - _ecore_srv_headers_len(d->buf));
+   DBG("Total len is %d, buf len is %d", d->total_len, d->buf_len - _ecore_srv_headers_len(d->buf));
 
    return 1;
 }
@@ -439,13 +439,13 @@ _ecore_srv_client_add_cb(void *data, int type, void *event)
 {
    Ecore_Con_Event_Client_Add *e = event;
    Client_Data *d = NULL;
-   DEBUG_D(_log_dom, "Client add event %p at ip %s", e->client, ecore_con_client_ip_get(e->client));
+   DBG("Client add event %p at ip %s", e->client, ecore_con_client_ip_get(e->client));
 
    d = malloc(sizeof(Client_Data));
 
    if (!d)
      {
-	ERROR_D(_log_dom, "Could not alloc for a client %p", e->client);
+	ERR("Could not alloc for a client %p", e->client);
 	return 1;
      }
 
@@ -463,7 +463,7 @@ static int
 _ecore_srv_client_del_cb(void *data, int type, void *event)
 {
    Ecore_Con_Event_Client_Del *e = event;
-   DEBUG_D(_log_dom, "Client del event %p at ip %s", e->client, ecore_con_client_ip_get(e->client));
+   DBG("Client del event %p at ip %s", e->client, ecore_con_client_ip_get(e->client));
 
    Eina_List *l;
    Client_Data *d;
@@ -471,19 +471,19 @@ _ecore_srv_client_del_cb(void *data, int type, void *event)
    EINA_LIST_FOREACH(srv_clients, l, d)
 	if (d->client == e->client)
 	  {
-	     DEBUG_D(_log_dom, "Found client for del event: %p", e->client);
+	     DBG("Found client for del event: %p", e->client);
 	     srv_clients = eina_list_remove(srv_clients, d);
 	     break;
 	  }
 
    if (!d)
      {
-	ERROR_D(_log_dom, "Del event on untracked client %p", e->client);
+	ERR("Del event on untracked client %p", e->client);
 	return 1;
      }
 
    // Forward event to server
-   DEBUG_D(_log_dom, "Forwarding completed data event to callback.");
+   DBG("Forwarding completed data event to callback.");
 
    Ecore_Con_Server *server = ecore_con_client_server_get(e->client);
    Eupnp_Ecore_Server *srv = ecore_con_server_data_get(server);
@@ -567,7 +567,7 @@ eupnp_ecore_init(void)
    cli_del_handler = ecore_event_handler_add(ECORE_CON_EVENT_CLIENT_DEL, _ecore_srv_client_del_cb, NULL);
    if (!cli_del_handler) goto cli_del_handler_err;
 
-   INFO_D(_log_dom, "Initializing eupnp-ecore library.");
+   INF("Initializing eupnp-ecore library.");
 
    return ++_eupnp_ecore_init_count;
 
@@ -603,7 +603,7 @@ eupnp_ecore_shutdown(void)
 {
    if (_eupnp_ecore_init_count != 1) return --_eupnp_ecore_init_count;
 
-   INFO_D(_log_dom, "Shutting down eupnp-ecore library.");
+   INF("Shutting down eupnp-ecore library.");
 
    ecore_event_handler_del(cli_del_handler);
    ecore_event_handler_del(cli_added_handler);

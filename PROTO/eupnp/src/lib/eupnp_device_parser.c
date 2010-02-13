@@ -42,7 +42,7 @@
         to = malloc(sizeof(char)*(len+1));                      \
 	if (!to)                                                \
 	  {                                                     \
-	     ERROR_D(_log_dom,                                  \
+	     ERR(                                 \
 	             "Could not alloc for device information"); \
 	     return;                                            \
 	  }                                                     \
@@ -168,52 +168,52 @@ _characters(void *state, const xmlChar *ch, int len)
 	  break;
 
 	case INSIDE_URLBASE:
-	  DEBUG_D(_log_dom, "Writing device URL base");
+	  DBG("Writing device URL base");
 	  COPY_CHARACTERS(d->base_url, ch, len);
 	  break;
 
 	case INSIDE_DEVICETYPE:
-	  DEBUG_D(_log_dom, "Writing device type");
+	  DBG("Writing device type");
 	  COPY_CHARACTERS(d->device_type, ch, len);
 	  break;
 
 	case INSIDE_DEVICE_FRIENDLYNAME:
-	  DEBUG_D(_log_dom, "Writing device friendly name");
+	  DBG("Writing device friendly name");
 	  COPY_CHARACTERS(d->friendly_name, ch, len);
 	  break;
 
 	case INSIDE_MANUFACTURER:
-	  DEBUG_D(_log_dom, "Writing device manufacturer");
+	  DBG("Writing device manufacturer");
 	  COPY_CHARACTERS(d->manufacturer, ch, len);
 	  break;
 
 	case INSIDE_MANUFACTURER_URL:
-	  DEBUG_D(_log_dom, "Writing device manufacturer URL");
+	  DBG("Writing device manufacturer URL");
 	  COPY_CHARACTERS(d->manufacturer_url, ch, len);
 	  break;
 
 	case INSIDE_MODEL_DESCRIPTION:
-	  DEBUG_D(_log_dom, "Writing device model descr.");
+	  DBG("Writing device model descr.");
 	  COPY_CHARACTERS(d->model_description, ch, len);
 	  break;
 
 	case INSIDE_MODEL_NAME:
-	  DEBUG_D(_log_dom, "Writing device model name");
+	  DBG("Writing device model name");
 	  COPY_CHARACTERS(d->model_name, ch, len);
 	  break;
 
 	case INSIDE_MODEL_URL:
-	  DEBUG_D(_log_dom, "Writing device model URL");
+	  DBG("Writing device model URL");
 	  COPY_CHARACTERS(d->model_url, ch, len);
 	  break;
 
 	case INSIDE_SERIAL_NUMBER:
-	  DEBUG_D(_log_dom, "Writing device serial number");
+	  DBG("Writing device serial number");
 	  COPY_CHARACTERS(d->serial_number, ch, len);
 	  break;
 
 	case INSIDE_UPC:
-	  DEBUG_D(_log_dom, "Writing device's UPC");
+	  DBG("Writing device's UPC");
 	  COPY_CHARACTERS(d->upc, ch, len);
 	  break;
 
@@ -221,67 +221,67 @@ _characters(void *state, const xmlChar *ch, int len)
 	  /* Device must have an UDN received on the NOTIFY message and must
 	   * match the one on the XML
 	   */
-	  DEBUG_D(_log_dom, "Checking for device's UDN consistency");
+	  DBG("Checking for device's UDN consistency");
 	  if (!d->udn)
 	    {
-	       DEBUG_D(_log_dom, "Writing device's udn");
+	       DBG("Writing device's udn");
 	       COPY_CHARACTERS(d->udn, ch, len);
 	    }
-	  else DEBUG_D(_log_dom, "Device XML UDN already parsed from HTTP message.");
+	  else DBG("Device XML UDN already parsed from HTTP message.");
 	  break;
 
 	case INSIDE_PRESENTATION_URL:
-	  DEBUG_D(_log_dom, "Writing device presentation URL");
+	  DBG("Writing device presentation URL");
 	  COPY_CHARACTERS(d->presentation_url, ch, len);
 	  break;
 
 	case INSIDE_ICON_MIMETYPE:
-	  DEBUG_D(_log_dom, "Writing a device icon's mimetype");
+	  DBG("Writing a device icon's mimetype");
 	  COPY_CHARACTERS(s->icon->mimetype, ch, len);
 	  break;
 
 	case INSIDE_ICON_URL:
-	  DEBUG_D(_log_dom, "Writing a device icon's url");
+	  DBG("Writing a device icon's url");
 	  COPY_CHARACTERS(s->icon->url, ch, len);
 	  break;
 
 	case INSIDE_ICON_WIDTH:
-	  DEBUG_D(_log_dom, "Writing a device icon's width");
+	  DBG("Writing a device icon's width");
 	  s->icon->width = strtol(ch, NULL, 10);
 	  break;
 
 	case INSIDE_ICON_HEIGHT:
-	  DEBUG_D(_log_dom, "Writing a device icon's height");
+	  DBG("Writing a device icon's height");
 	  s->icon->height = strtol(ch, NULL, 10);
 	  break;
 
 	case INSIDE_ICON_DEPTH:
-	  DEBUG_D(_log_dom, "Writing a device icon's depth");
+	  DBG("Writing a device icon's depth");
 	  s->icon->depth = strtol(ch, NULL, 10);
 	  break;
 
 	case INSIDE_SERVICE_TYPE:
-	  DEBUG_D(_log_dom, "Writing a service's type");
+	  DBG("Writing a service's type");
 	  COPY_CHARACTERS(s->service->service_type, ch, len);
 	  break;
 
 	case INSIDE_SERVICE_ID:
-	  DEBUG_D(_log_dom, "Writing a service's ID");
+	  DBG("Writing a service's ID");
 	  COPY_CHARACTERS(s->service->id, ch, len);
 	  break;
 
 	case INSIDE_SERVICE_SCPDURL:
-	  DEBUG_D(_log_dom, "Writing a service's SCPD URL");
+	  DBG("Writing a service's SCPD URL");
 	  COPY_CHARACTERS(s->service->scpd_url, ch, len);
 	  break;
 
 	case INSIDE_SERVICE_EVENTSUB_URL:
-	  DEBUG_D(_log_dom, "Writing a service's eventsub URL");
+	  DBG("Writing a service's eventsub URL");
 	  COPY_CHARACTERS(s->service->eventsub_url, ch, len);
 	  break;
 
 	case INSIDE_SERVICE_CONTROL_URL:
-	  DEBUG_D(_log_dom, "Writing a service's control URL");
+	  DBG("Writing a service's control URL");
 	  COPY_CHARACTERS(s->service->control_url, ch, len);
 	  break;
      }
@@ -299,7 +299,7 @@ error(void *state, const char *msg, ...)
 static void
 start_element_ns(void *state, const xmlChar *name, const xmlChar *prefix, const xmlChar *URI, int nb_namespaces, const xmlChar **namespaces, int nb_attributes, int nb_defaulted, const xmlChar **attributes)
 {
-   DEBUG_D(_log_dom, "Start NS at %s, prefix=%s, uri=%s, ndefs=%d, nattrs=%d", name, prefix, URI, nb_namespaces, nb_attributes);
+   DBG("Start NS at %s, prefix=%s, uri=%s, ndefs=%d, nattrs=%d", name, prefix, URI, nb_namespaces, nb_attributes);
 
    Eupnp_Device_Parser_State *s = state;
    Eupnp_Device_Info *d = s->device;
@@ -342,7 +342,7 @@ start_element_ns(void *state, const xmlChar *name, const xmlChar *prefix, const 
 
 	       if (!s->device)
 	         {
-		    ERROR_D(_log_dom, "Failed to alloc for new device");
+		    ERR("Failed to alloc for new device");
 		    s->state_skip++;
 		    break;
 		 }
@@ -374,12 +374,12 @@ start_element_ns(void *state, const xmlChar *name, const xmlChar *prefix, const 
 
 	       if (!new)
 		  {
-		     ERROR_D(_log_dom, "Could not alloc for device list, skipping it!");
+		     ERR("Could not alloc for device list, skipping it!");
 		     s->state_skip++;
 		     break;
 		  }
 
-	       DEBUG_D(_log_dom, "Switching context %p -> %p", s, new);
+	       DBG("Switching context %p -> %p", s, new);
 
 	       // Save parent for switching back context
 	       new->parent = s;
@@ -391,7 +391,7 @@ start_element_ns(void *state, const xmlChar *name, const xmlChar *prefix, const 
 	       // Inject new state on context -> alters parser target
 	       s->ctx->userData = new;
 
-	       DEBUG_D(_log_dom, "Finished switch");
+	       DBG("Finished switch");
 	       break;
 	    }
 	  else if (!strcmp(name, "serviceList"))
@@ -419,7 +419,7 @@ start_element_ns(void *state, const xmlChar *name, const xmlChar *prefix, const 
 		s->icon = eupnp_icon_new();
 		if (!s->icon)
 		  {
-		     ERROR_D(_log_dom, "Could not alloc memory for icon");
+		     ERR("Could not alloc memory for icon");
 		     s->state_skip++;
 		     break;
 		  }
@@ -436,7 +436,7 @@ start_element_ns(void *state, const xmlChar *name, const xmlChar *prefix, const 
 	     s->state = INSIDE_ICON_URL;
 	  else
 	    {
-		WARN_D(_log_dom, "Unknown tag on building icon");
+		WRN("Unknown tag on building icon");
 		s->state_skip++;
 	    }
 	  break;
@@ -460,17 +460,17 @@ start_element_ns(void *state, const xmlChar *name, const xmlChar *prefix, const 
 	    {
 	       if (!d->base_url)
 	         {
-		     DEBUG_D(_log_dom, "Base URL not set, parsing from location %s", d->location);
+		     DBG("Base URL not set, parsing from location %s", d->location);
 		     int base_url_len = eupnp_utils_url_base_get(d->location);
-		     DEBUG_D(_log_dom, "Base URL len is %d", base_url_len);
+		     DBG("Base URL len is %d", base_url_len);
 		     if (base_url_len) COPY_CHARACTERS(d->base_url, d->location, base_url_len);
-		     DEBUG_D(_log_dom, "Base URL set is %s", d->base_url);
+		     DBG("Base URL set is %s", d->base_url);
 		 }
 
 	       s->service = eupnp_service_info_new(d->udn, d->base_url, NULL, NULL, NULL);
 	       if (!s->service)
 	         {
-		    ERROR_D(_log_dom, "Could not alloc memory for service");
+		    ERR("Could not alloc memory for service");
 		    s->state_skip++;
 		    break;
 		 }
@@ -500,7 +500,7 @@ end_element_ns(void *state, const xmlChar *name, const xmlChar *prefix, const xm
    Eupnp_Device_Parser_State *s = state;
    Eupnp_Device_Info *d = s->device;
 
-   DEBUG_D(_log_dom, "End element at %s, prefix=%s, URI=%s", name, prefix, URI);
+   DBG("End element at %s, prefix=%s, URI=%s", name, prefix, URI);
 
    if (s->state_skip)
      {
@@ -518,7 +518,7 @@ end_element_ns(void *state, const xmlChar *name, const xmlChar *prefix, const xm
 	case INSIDE_DEVICE:
 	  if (!s->parent)
 	    {
-	       DEBUG_D(_log_dom, "Finished building device.");
+	       DBG("Finished building device.");
 	       s->state = INSIDE_ROOT;
 	       break;
 	    }
@@ -526,7 +526,7 @@ end_element_ns(void *state, const xmlChar *name, const xmlChar *prefix, const xm
 	    {
 	       eupnp_device_info_device_add(s->parent->device, s->device);
 	       eupnp_device_info_unref(s->device);
-	       DEBUG_D(_log_dom, "Finished building embedded device");
+	       DBG("Finished building embedded device");
 	    }
 
 	  s->state = INSIDE_DEVICELIST;
@@ -536,12 +536,12 @@ end_element_ns(void *state, const xmlChar *name, const xmlChar *prefix, const xm
 	  if (!s->parent)
 	    {
 	       // No parent means root
-	       DEBUG_D(_log_dom, "Finished building device list");
+	       DBG("Finished building device list");
 	       s->state = INSIDE_ROOT;
 	       break;
 	    }
 
-	  DEBUG_D(_log_dom, "Switching context %p -> %p", s, s->parent);
+	  DBG("Switching context %p -> %p", s, s->parent);
 
 	  // Switch back to previous context
 	  s->ctx->userData = s->parent;
@@ -613,7 +613,7 @@ eupnp_device_parser_new(const char *first_chunk, int first_chunk_len, Eupnp_Devi
 {
    if (first_chunk_len < 4)
      {
-	WARN_D(_log_dom, "First chunk length less than 4 chars, user must provide more than 4.");
+	WRN("First chunk length less than 4 chars, user must provide more than 4.");
 	return NULL;
      }
 
@@ -622,7 +622,7 @@ eupnp_device_parser_new(const char *first_chunk, int first_chunk_len, Eupnp_Devi
    p = calloc(1, sizeof(Eupnp_Device_Parser));
    if (!p)
      {
-	ERROR_D(_log_dom, "Failed to alloc for device parser");
+	ERR("Failed to alloc for device parser");
 	return NULL;
      }
 
@@ -669,7 +669,7 @@ eupnp_device_parse_finish(Eupnp_Device_Info *d)
 {
    if (!d) return;
    if (!d->xml_parser) return;
-   DEBUG_D(_log_dom, "Device parse finish");
+   DBG("Device parse finish");
 
    Eina_Bool ret;
    Eupnp_Device_Parser *parser = d->xml_parser;
@@ -707,7 +707,7 @@ eupnp_device_parser_init(void)
 	goto log_dom_error;
      }
 
-   INFO_D(_log_dom, "Initializing device parser module.");
+   INF("Initializing device parser module.");
 
    return EINA_TRUE;
 
@@ -720,7 +720,7 @@ eupnp_device_parser_init(void)
 Eina_Bool
 eupnp_device_parser_shutdown(void)
 {
-   INFO_D(_log_dom, "Shutting down device parser module.");
+   INF("Shutting down device parser module.");
 
    eina_log_domain_unregister(_log_dom);
 
@@ -757,7 +757,7 @@ eupnp_device_parse_xml_buffer(const char *buffer, int buffer_len, Eupnp_Device_I
 
 	if (!d->xml_parser)
           {
-	     ERROR_D(_log_dom, "Failed to parse first chunk");
+	     ERR("Failed to parse first chunk");
 	     goto parse_ret;
 	  }
 
@@ -777,12 +777,12 @@ eupnp_device_parse_xml_buffer(const char *buffer, int buffer_len, Eupnp_Device_I
    // Progressive feeds
    if (parser->state.state == FINISH)
      {
-	WARN_D(_log_dom, "Already finished parsing");
+	WRN("Already finished parsing");
 	ret = EINA_TRUE;
 	goto parse_ret;
      }
 
-   DEBUG_D(_log_dom, "Parsing XML (%d) at %p", buffer_len, buffer);
+   DBG("Parsing XML (%d) at %p", buffer_len, buffer);
 
    if (!xmlParseChunk(parser->ctx, buffer, buffer_len, 0))
      {

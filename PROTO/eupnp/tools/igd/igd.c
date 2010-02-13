@@ -11,9 +11,31 @@
 #define IGD_WAN_CONN_DEVICE "urn:schemas-upnp-org:device:WANConnectionDevice:1"
 #define IGD_DEVICE_ST IGD_DEVICE_TYPE
 
+#ifdef INF
+  #undef INF
+#endif
+#define INF(...) EINA_LOG_DOM_INFO(_log_domain, __VA_ARGS__)
+
+#ifdef ERR
+  #undef ERR
+#endif
+#define ERR(...) EINA_LOG_DOM_ERR(_log_domain, __VA_ARGS__)
+
+#ifdef WRN
+  #undef WRN
+#endif
+#define WRN(...) EINA_LOG_DOM_WARN(_log_domain, __VA_ARGS__)
+
+#ifdef DBG
+  #undef DBG
+#endif
+#define DBG(...) EINA_LOG_DOM_DBG(_log_domain, __VA_ARGS__)
+
+
 /*
  * List of found devices
  */
+static int _log_domain = -1;
 static Evas_Object *li = NULL;
 static Eina_List *device_list = NULL;
 
@@ -39,7 +61,7 @@ device_list_device_add(Eupnp_Device_Info *d)
 
    if (!device)
      {
-	ERROR("Failed to create a new device list item.\n");
+	ERR("Failed to create a new device list item.");
 	return;
      }
 
@@ -53,7 +75,7 @@ device_list_device_add(Eupnp_Device_Info *d)
    elm_list_item_show(device->item);
    elm_list_go(li);
 
-   INFO("Appending device %s to list!\n", d->udn);
+   INF("Appending device %s to list!", d->udn);
    device_list = eina_list_append(device_list, device);
 }
 
@@ -92,7 +114,7 @@ on_device_ready(void *user_data, Eupnp_Event_Type event_type, void *event_data)
 	// Found an IGD device
 	if (is_device_added(d))
 	  {
-	     DEBUG("Device already added. Skipped.\n");
+	     DBG("Device already added. Skipped.");
 	     return EINA_TRUE;
 	  }
 
@@ -181,21 +203,27 @@ elm_main(int argc, char **argv)
 
    if (!eupnp_init())
      {
-	fprintf(stderr, "Failed to initialize eupnp module.\n");
+	fprintf(stderr, "Failed to initialize eupnp module.");
 	return -1;
      }
 
    if (!eupnp_ecore_init())
      {
-	fprintf(stderr, "Could not initialize eupnp-ecore module\n");
+	fprintf(stderr, "Could not initialize eupnp-ecore module");
 	goto eupnp_ecore_init_err;
+     }
+
+   if ((_log_domain = eina_log_domain_register("light_status_monitor", EINA_COLOR_BLUE)) < 0)
+     {
+	fprintf(stderr, "Failed to create a logging domain for the application.");
+	goto log_domain_reg_error;
      }
 
    c = eupnp_control_point_new();
 
    if (!c)
      {
-	fprintf(stderr, "Could not create control point instance\n");
+	fprintf(stderr, "Could not create control point instance");
 	goto eupnp_cp_alloc_error;
      }
 
@@ -212,10 +240,10 @@ elm_main(int argc, char **argv)
    /* Send a test search for all devices*/
    if (!eupnp_control_point_discovery_request_send(c, 5, IGD_DEVICE_ST))
      {
-	WARN("Failed to perform MSearch.\n");
+	WRN("Failed to perform MSearch.");
      }
    else
-	DEBUG("MSearch sent sucessfully.\n");
+	DBG("MSearch sent sucessfully.");
 
    elm_run();
 
@@ -226,6 +254,8 @@ elm_main(int argc, char **argv)
    eupnp_control_point_free(c);
 
    eupnp_cp_alloc_error:
+      eina_log_domain_unregister(_log_domain);
+   log_domain_reg_error:
       eupnp_ecore_shutdown();
    eupnp_ecore_init_err:
       eupnp_shutdown();

@@ -134,7 +134,7 @@ eupnp_subscriber_new(Eupnp_Event_Type event_type, Eupnp_Callback cb, void *user_
 
    if (!s)
      {
-	ERROR_D(_log_dom, "failed to alloc subscriber");
+	ERR("failed to alloc subscriber");
 	eina_error_set(EINA_ERROR_OUT_OF_MEMORY);
 	return NULL;
      }
@@ -188,7 +188,7 @@ eupnp_event_bus_init(void)
 	return EINA_FALSE;
      }
 
-   INFO_D(_log_dom, "Initializing event bus module.");
+   INF("Initializing event bus module.");
 
    return EINA_TRUE;
 }
@@ -201,7 +201,7 @@ eupnp_event_bus_init(void)
 Eina_Bool
 eupnp_event_bus_shutdown(void)
 {
-   INFO_D(_log_dom, "Shutting down event bus module.");
+   INF("Shutting down event bus module.");
    eupnp_event_bus_clear_subscribers();
    eina_log_domain_unregister(_log_dom);
    return EINA_TRUE;
@@ -223,16 +223,16 @@ eupnp_event_bus_publish(Eupnp_Event_Type event_type, void *event_data)
    Eina_List *l, *l_next;
    Eupnp_Subscriber *s;
 
-   DEBUG_D(_log_dom, "Publishing event type %d", event_type);
+   DBG("Publishing event type %d", event_type);
 
    // Publish
    EINA_LIST_FOREACH(subscribers, l, s)
       if (s->type == event_type)
         {
-	   DEBUG_D(_log_dom, "Found interested subscriber at %p", s);
+	   DBG("Found interested subscriber at %p", s);
 	   if (!s->cb(s->user_data, event_type, event_data))
 	     {
-		DEBUG_D(_log_dom, "Subscriber %p requested unsubscribe (returned false)", s);
+		DBG("Subscriber %p requested unsubscribe (returned false)", s);
 		s->deleted = EINA_TRUE;
 	     }
 	}
@@ -241,7 +241,7 @@ eupnp_event_bus_publish(Eupnp_Event_Type event_type, void *event_data)
    EINA_LIST_FOREACH_SAFE(subscribers, l, l_next, s)
       if (s->deleted)
 	{
-	   DEBUG_D(_log_dom, "Unsubscribing subscriber %p (%d)", s, s->type);
+	   DBG("Unsubscribing subscriber %p (%d)", s, s->type);
 	   subscribers = eina_list_remove(subscribers, s);
 	   eupnp_subscriber_free(s);
 	}
@@ -273,7 +273,7 @@ eupnp_event_bus_subscribe(Eupnp_Event_Type event_type, Eupnp_Callback cb, void *
 
    if (event_type < 0 || event_type >= _event_max)
      {
-	ERROR_D(_log_dom, "Failed to subscribe for event type %d, callback %p, data %p", event_type, cb, user_data);
+	ERR("Failed to subscribe for event type %d, callback %p, data %p", event_type, cb, user_data);
 	return NULL;
      }
 
@@ -282,7 +282,7 @@ eupnp_event_bus_subscribe(Eupnp_Event_Type event_type, Eupnp_Callback cb, void *
 
    subscribers = eina_list_append(subscribers, s);
 
-   DEBUG_D(_log_dom, "Subscribing callback %p for events %d, data %p", cb, event_type, user_data);
+   DBG("Subscribing callback %p for events %d, data %p", cb, event_type, user_data);
 
    return s;
 }
@@ -308,13 +308,13 @@ eupnp_event_bus_unsubscribe(Eupnp_Subscriber *s)
    EINA_LIST_FOREACH_SAFE(subscribers, l, l_next, it)
       if (it == s)
 	{
-	   DEBUG_D(_log_dom, "Unsubscribing subscriber %p", s);
+	   DBG("Unsubscribing subscriber %p", s);
 	   subscribers = eina_list_remove(subscribers, it);
 	   eupnp_subscriber_free(it);
 	   return;
 	}
 
-   WARN_D(_log_dom, "Could not find subscriber %p on subscribers list", s);
+   WRN("Could not find subscriber %p on subscribers list", s);
 }
 
 /**

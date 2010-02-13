@@ -55,7 +55,7 @@
         to = malloc(sizeof(char)*(len+1));                      \
 	if (!to)                                                \
 	  {                                                     \
-	     ERROR_D(_action_log_dom,                           \
+	     ERR_(                          \
 	             "Could not alloc for action information"); \
 	     return;                                            \
 	  }                                                     \
@@ -116,6 +116,10 @@ static int _log_dom = -1;
 extern int EUPNP_ERROR_SERVICE_PARSER_INSUFFICIENT_FEED;
 static Eina_Bool _event_server_inited = EINA_FALSE;
 
+#define WRN_(...) EINA_LOG_DOM_WARN(_action_log_dom, __VA_ARGS__)
+#define ERR_(...) EINA_LOG_DOM_ERR(_action_log_dom, __VA_ARGS__)
+#define DBG_(...) EINA_LOG_DOM_DBG(_action_log_dom, __VA_ARGS__)
+
 static void
 eupnp_action_parser_chars_cb(void *state, const xmlChar *ch, int len)
 {
@@ -134,7 +138,7 @@ eupnp_action_parser_chars_cb(void *state, const xmlChar *ch, int len)
 
 	       if (asprintf(&tmp, "%s%s", s->arg->value, copy) < 0)
 	         {
-		    ERROR_D(_action_log_dom, "Failed to concatenate result.");
+		    ERR_("Failed to concatenate result.");
 		    free(copy);
 		    break;
 		 }
@@ -147,7 +151,7 @@ eupnp_action_parser_chars_cb(void *state, const xmlChar *ch, int len)
 	    // First data chunk, possibly the only one
 	    COPY_CHARACTERS(s->arg->value, ch, len);
 
-	  DEBUG_D(_action_log_dom, "Writing variable %s value: %s", s->arg->name, s->arg->value);
+	  DBG_("Writing variable %s value: %s", s->arg->name, s->arg->value);
 	  break;
      }
 }
@@ -168,7 +172,7 @@ eupnp_action_parser_element_start_cb(void *state, const xmlChar *name,
 				     int nb_attributes, int nb_defaulted,
 				     const xmlChar **attributes)
 {
-   DEBUG_D(_action_log_dom, "Start NS at %s, prefix=%s, uri=%s, ndefs=%d, nattrs=%d", name, prefix, URI, nb_namespaces, nb_attributes);
+   DBG_("Start NS at %s, prefix=%s, uri=%s, ndefs=%d, nattrs=%d", name, prefix, URI, nb_namespaces, nb_attributes);
 
    Eupnp_Action_Parser_Context *s = state;
 
@@ -198,7 +202,7 @@ eupnp_action_parser_element_start_cb(void *state, const xmlChar *name,
 	case ACTION_INSIDE_RESPONSE:
 	  s->arg = (Eupnp_Service_Action_Argument *) eupnp_service_action_argument_new();
 	  s->arg->name = strdup(name);
-	  DEBUG_D(_action_log_dom, "Writing variable %s", s->arg->name);
+	  DBG_("Writing variable %s", s->arg->name);
 	  s->state = ACTION_INSIDE_ARG;
 	  break;
 
@@ -216,7 +220,7 @@ eupnp_action_parser_element_end_cb(void *state, const xmlChar *name,
 {
    Eupnp_Action_Parser_Context *s = state;
 
-   DEBUG_D(_action_log_dom, "End element at %s, prefix=%s, URI=%s", name, prefix, URI);
+   DBG_("End element at %s, prefix=%s, URI=%s", name, prefix, URI);
 
    if (s->state_skip)
      {
@@ -241,7 +245,7 @@ eupnp_action_parser_element_end_cb(void *state, const xmlChar *name,
 	case ACTION_INSIDE_ARG:
 	  // Finished parsing an OUT arg, append it to the list and move
 	  // back to find more args.
-	  DEBUG_D(_action_log_dom, "Added variable %p:%s to evented vars list", s->arg, s->arg->name);
+	  DBG_("Added variable %p:%s to evented vars list", s->arg, s->arg->name);
 	  s->evented_vars = eina_inlist_append(s->evented_vars, EINA_INLIST_GET(s->arg));
 	  s->arg = NULL;
 	  s->state = ACTION_INSIDE_RESPONSE;
@@ -256,14 +260,14 @@ eupnp_action_parser_new(const char *first_chunk, int first_chunk_len, Eupnp_Acti
 
    if (first_chunk_len < 4)
      {
-	WARN_D(_action_log_dom, "First chunk length less than 4 chars, user must provide more than 4.");
+	WRN_("First chunk length less than 4 chars, user must provide more than 4.");
 	return NULL;
      }
 
    p = calloc(1, sizeof(Eupnp_Action_Parser));
    if (!p)
      {
-	ERROR_D(_action_log_dom, "Failed to alloc for action parser");
+	ERR_("Failed to alloc for action parser");
 	return NULL;
      }
 
@@ -307,7 +311,7 @@ eupnp_action_parse_post_parse(Eupnp_Action_Request *req)
    Eupnp_Action_Parser *p = req->xml_parser;
 
    if (p->state.state == ACTION_FINISH) {
-      DEBUG_D(_action_log_dom, "Action parsed successfully.");
+      DBG_("Action parsed successfully.");
 
       xmlParseChunk(p->ctx, NULL, 0, 1);
       req->evented_vars = p->state.evented_vars;
@@ -340,7 +344,7 @@ eupnp_action_parse_xml_buffer(const char *buffer, int buffer_len, Eupnp_Action_R
 
 	if (!req->xml_parser)
 	  {
-	     ERROR_D(_action_log_dom, "Failed to parse first chunk.");
+	     ERR_("Failed to parse first chunk.");
 	     goto parse_ret;
 	  }
 
@@ -352,19 +356,19 @@ eupnp_action_parse_xml_buffer(const char *buffer, int buffer_len, Eupnp_Action_R
 
    if (!parser->ctx)
      {
-	ERROR_D(_action_log_dom, "chunk_len < 4 case.");
+	ERR_("chunk_len < 4 case.");
 	return EINA_FALSE;
      }
 
    // Progressive feeds
    if (parser->state.state == ACTION_FINISH)
      {
-	WARN_D(_action_log_dom, "Already finished parsing");
+	WRN_("Already finished parsing");
 	ret = EINA_TRUE;
 	goto parse_ret;
      }
 
-   DEBUG_D(_action_log_dom, "Parsing XML (%d) at %p", buffer_len, buffer);
+   DBG_("Parsing XML (%d) at %p", buffer_len, buffer);
 
    if (!xmlParseChunk(parser->ctx, buffer, buffer_len, 1))
      {
@@ -402,15 +406,15 @@ _data_ready(void *buffer, int size, void *data)
    Eupnp_Service_Proxy *proxy = data;
    eupnp_service_proxy_ref(proxy);
 
-   DEBUG_D(_log_dom, "Data ready for proxy %p, with xml parser at %p", proxy, proxy->xml_parser);
+   DBG("Data ready for proxy %p, with xml parser at %p", proxy, proxy->xml_parser);
 
    if (eupnp_service_parse_buffer(buffer, size, proxy))
      {
-	DEBUG_D(_log_dom, "Parsed XML successfully at buffer %p for proxy %p", buffer, proxy);
+	DBG("Parsed XML successfully at buffer %p for proxy %p", buffer, proxy);
 
 	if (!proxy->xml_parser)
 	  {
-	     DEBUG_D(_log_dom, "Finished building service proxy %p, forwarding to ready callback.", proxy);
+	     DBG("Finished building service proxy %p, forwarding to ready callback.", proxy);
 	     proxy->ready_cb(proxy->ready_cb_data, proxy);
 	  }
      }
@@ -419,10 +423,10 @@ _data_ready(void *buffer, int size, void *data)
 	if (eina_error_get() == EUPNP_ERROR_SERVICE_PARSER_INSUFFICIENT_FEED)
 	  {
 	     // TODO treat size < 4 case
-	     WARN_D(_log_dom, "Len < 4 case.");
+	     WRN("Len < 4 case.");
 	  }
 
-	ERROR_D(_log_dom, "Failed to parse XML at buffer %p for proxy %p", buffer, proxy);
+	ERR("Failed to parse XML at buffer %p for proxy %p", buffer, proxy);
      }
 
    eupnp_service_proxy_unref(proxy);
@@ -433,7 +437,7 @@ _download_completed(Eupnp_Request request, void *data, const Eupnp_HTTP_Request 
 {
    Eupnp_Service_Proxy *proxy = data;
 
-   DEBUG_D(_log_dom, "Proxy download completed %p", proxy);
+   DBG("Proxy download completed %p", proxy);
    eupnp_core_http_request_free(request);
 
    // Unreference ref made at service_proxy_fetch()
@@ -450,22 +454,22 @@ eupnp_request_data_ready(void *buffer, int size, void *data)
    Eupnp_Action_Request *req = data;
    Eupnp_Service_Proxy *proxy = req->proxy;
 
-   DEBUG_D(_log_dom, "Request data ready for proxy %p", proxy);
+   DBG("Request data ready for proxy %p", proxy);
 
    if (eupnp_action_parse_xml_buffer(buffer, size, req))
      {
-	DEBUG_D(_log_dom, "Parsed action response XML buffer successfully %p, req %p", buffer, req);
+	DBG("Parsed action response XML buffer successfully %p, req %p", buffer, req);
 
 	if (!req->xml_parser)
 	  {
 	     // parser == NULL means the action response XML parsing is
 	     // complete, so forward it to the user.
-	     DEBUG_D(_log_dom, "Finished parsing action response. %p", req);
+	     DBG("Finished parsing action response. %p", req);
 	     req->response_cb(req->data, req->evented_vars);
 	  }
      }
    else
-     ERROR_D(_log_dom, "Failed to parse action XML at buffer %p for proxy %p", buffer, proxy);
+     ERR("Failed to parse action XML at buffer %p for proxy %p", buffer, proxy);
 }
 
 static void
@@ -479,7 +483,7 @@ eupnp_action_request_free(Eupnp_Action_Request *req)
 static void
 eupnp_request_completed(Eupnp_Request request, void *data, const Eupnp_HTTP_Request *req)
 {
-   DEBUG_D(_log_dom, "Proxy action request completed %p", data);
+   DBG("Proxy action request completed %p", data);
    Eupnp_Action_Request *action_req = data;
    eupnp_core_http_request_free(request);
    eupnp_action_request_free(action_req);
@@ -493,7 +497,7 @@ static void
 eupnp_subscription_data_ready(void *buffer, int size, void *data)
 {
    Eupnp_Event_Subscriber *sub = data;
-   DEBUG_D(_log_dom, "Subscription answer for req %p", sub);
+   DBG("Subscription answer for req %p", sub);
    // TODO check for errors
 }
 
@@ -501,18 +505,18 @@ static void
 eupnp_subscription_completed(Eupnp_Request request, void *data, const Eupnp_HTTP_Request *req)
 {
    Eupnp_Event_Subscriber *sub = data;
-   DEBUG_D(_log_dom, "Finished subscription %p", sub);
-   DEBUG_D(_log_dom, "Request headers!!! %p", req);
+   DBG("Finished subscription %p", sub);
+   DBG("Request headers!!! %p", req);
 
    eupnp_http_request_dump(req);
 
    const char *sid = eupnp_http_header_get(req->headers, "sid");
 
    if (!sid)
-	ERROR_D(_log_dom, "Could not find SID header for request.");
+	ERR("Could not find SID header for request.");
    else
      {
-	DEBUG_D(_log_dom, "SID: %s", sid);
+	DBG("SID: %s", sid);
 	sub->sid = strdup(sid);
 	sub->sid_len = strlen(sub->sid);
      }
@@ -527,19 +531,19 @@ eupnp_subscription_completed(Eupnp_Request request, void *data, const Eupnp_HTTP
 void
 eupnp_unsubscribe_data_ready(void *buffer, int size, void *data)
 {
-   DEBUG_D(_log_dom, "Unsubscription data %s", (char *)data);
+   DBG("Unsubscription data %s", (char *)data);
 }
 
 void
 eupnp_unsubscribe_completed(Eupnp_Request request, void *data, const Eupnp_HTTP_Request *req)
 {
-   DEBUG_D(_log_dom, "Finished unsubscription");
+   DBG("Finished unsubscription");
    Eupnp_Event_Subscriber *subscriber = data;
    eupnp_http_request_dump(req);
    // TODO check for errors
    eupnp_core_http_request_free(request);
 
-   DEBUG_D(_log_dom, "Freeing subscriber object after unsubscription.");
+   DBG("Freeing subscriber object after unsubscription.");
    eupnp_event_subscriber_free(subscriber);
 }
 
@@ -551,7 +555,7 @@ eupnp_unsubscribe_completed(Eupnp_Request request, void *data, const Eupnp_HTTP_
 static Eina_Bool
 eupnp_event_notification_cb(void *data, Eupnp_Event_Type event_type, void *event_data)
 {
-   DEBUG_D(_log_dom, "Received event notification, subscriber %p, event %d", data, event_type);
+   DBG("Received event notification, subscriber %p, event %d", data, event_type);
    Eupnp_Event_Subscriber *subscriber = data;
    if (!subscriber->cb(subscriber->state_var, event_data, strlen((char *)event_data), subscriber->data))
      {
@@ -624,7 +628,7 @@ eupnp_service_proxy_fetch(Eupnp_Service_Proxy *proxy, const char *base_url, cons
 				     EUPNP_REQUEST_DATA_CB(_data_ready),
 				     EUPNP_REQUEST_COMPLETED_CB(_download_completed), proxy))
 	  {
-	     ERROR_D(_log_dom, "Could not add a new download job for device %p", proxy);
+	     ERR("Could not add a new download job for device %p", proxy);
 	     eupnp_service_proxy_unref(proxy);
 	  }
      }
@@ -634,7 +638,7 @@ eupnp_service_proxy_fetch(Eupnp_Service_Proxy *proxy, const char *base_url, cons
 
 	if (asprintf(&complete_url, "%s%s", base_url, scpd_url) < 0)
 	  {
-	     ERROR_D(_log_dom, "Could not form complete url for service proxy.");
+	     ERR("Could not form complete url for service proxy.");
 	     return;
 	  }
 
@@ -642,7 +646,7 @@ eupnp_service_proxy_fetch(Eupnp_Service_Proxy *proxy, const char *base_url, cons
 				     EUPNP_REQUEST_DATA_CB(_data_ready),
 				     EUPNP_REQUEST_COMPLETED_CB(_download_completed), proxy))
 	  {
-	     ERROR_D(_log_dom, "Could not add a new download job for device %p", proxy);
+	     ERR("Could not add a new download job for device %p", proxy);
 	     eupnp_service_proxy_unref(proxy);
 	  }
 
@@ -678,10 +682,10 @@ eupnp_service_proxy_dump(Eupnp_Service_Proxy *proxy)
 {
    CHECK_NULL_RET(proxy);
 
-   INFO_D(_log_dom, "\tService Proxy dump");
-   INFO_D(_log_dom, "\t\tversion: %d.%d", proxy->spec_version_major, proxy->spec_version_minor);
-   INFO_D(_log_dom, "\t\tcontrol URL: %s", proxy->control_url);
-   INFO_D(_log_dom, "\t\tbase URL: %s", proxy->base_url);
+   INF("\tService Proxy dump");
+   INF("\t\tversion: %d.%d", proxy->spec_version_major, proxy->spec_version_minor);
+   INF("\t\tcontrol URL: %s", proxy->control_url);
+   INF("\t\tbase URL: %s", proxy->base_url);
    eupnp_service_proxy_actions_dump(proxy);
    eupnp_service_proxy_state_table_dump(proxy);
 }
@@ -711,7 +715,7 @@ eupnp_service_proxy_init(void)
 	return EINA_FALSE;
      }
 
-   INFO_D(_log_dom, "Initializing service proxy module.");
+   INF("Initializing service proxy module.");
    return EINA_TRUE;
 }
 
@@ -723,7 +727,7 @@ eupnp_service_proxy_init(void)
 Eina_Bool
 eupnp_service_proxy_shutdown(void)
 {
-   INFO_D(_log_dom, "Shutting down service proxy module.");
+   INF("Shutting down service proxy module.");
 
    if (_event_server_inited) eupnp_event_server_shutdown();
    eina_log_domain_unregister(_log_dom);
@@ -776,7 +780,7 @@ eupnp_service_proxy_ref(Eupnp_Service_Proxy *proxy)
 
    proxy->refcount++;
 
-   DEBUG_D(_log_dom, "Service proxy %p refcount %d -> %d", proxy,
+   DBG("Service proxy %p refcount %d -> %d", proxy,
 	   proxy->refcount - 1, proxy->refcount);
 
    return proxy;
@@ -800,7 +804,7 @@ eupnp_service_proxy_unref(Eupnp_Service_Proxy *proxy)
 
    proxy->refcount--;
 
-   DEBUG_D(_log_dom, "Service proxy %p refcount %d -> %d", proxy,
+   DBG("Service proxy %p refcount %d -> %d", proxy,
 	   proxy->refcount + 1, proxy->refcount);
 
    if (!proxy->refcount)
@@ -864,35 +868,35 @@ eupnp_service_proxy_action_send(Eupnp_Service_Proxy *proxy, const char *action, 
 
    if (!eupnp_service_proxy_has_action(proxy, action))
      {
-	ERROR_D(_log_dom, "Proxy does not contain the requested action.");
+	ERR("Proxy does not contain the requested action.");
 	return EINA_FALSE;
      }
 
    if (asprintf(&url, "%s%s", proxy->base_url, proxy->control_url) < 0)
      {
-	ERROR_D(_log_dom, "Could not mount url for sending action %s", action);
+	ERR("Could not mount url for sending action %s", action);
 	return EINA_FALSE;
      }
 
    if (asprintf(&full_action_uri, "\"%s#%s\"", proxy->service_type, action) < 0)
      {
-	ERROR_D(_log_dom, "Could not mount full action URI.");
+	ERR("Could not mount full action URI.");
 	goto action_mount_fail;
      }
 
    req = malloc(sizeof(Eupnp_Action_Request));
    if (!req)
      {
-	ERROR_D(_log_dom, "Failed to create a new action request.");
+	ERR("Failed to create a new action request.");
 	goto req_alloc_fail;
      }
 
-   DEBUG_D(_log_dom, "Created action request %p", req);
+   DBG("Created action request %p", req);
 
    add_headers = eina_array_new(1);
    if (!add_headers)
      {
-	ERROR_D(_log_dom, "Failed to create additional headers array");
+	ERR("Failed to create additional headers array");
 	goto headers_fail;
      }
 
@@ -902,13 +906,13 @@ eupnp_service_proxy_action_send(Eupnp_Service_Proxy *proxy, const char *action, 
 				  strlen(full_action_uri));
    if (!header)
      {
-	ERROR_D(_log_dom, "Failed to create soap header");
+	ERR("Failed to create soap header");
 	goto header_fail;
      }
 
    if (!eina_array_push(add_headers, header))
      {
-	ERROR_D(_log_dom, "Failed to push header into headers");
+	ERR("Failed to push header into headers");
 	goto array_push_fail;
      }
 
@@ -925,11 +929,11 @@ eupnp_service_proxy_action_send(Eupnp_Service_Proxy *proxy, const char *action, 
 		SOAP_ENVELOPE_BEGIN, SOAP_BODY_BEGIN,
 		action, proxy->service_type) < 0)
      {
-	ERROR_D(_log_dom, "Failed to create body message for action %s (stage 1)", action);
+	ERR("Failed to create body message for action %s (stage 1)", action);
 	goto message_fail;
      }
 
-   DEBUG_D(_log_dom, "Message stage 1: %s", message);
+   DBG("Message stage 1: %s", message);
 
    // {arg_name, arg_type, arg_value}, ..., NULL!
    va_start(va_args, data);
@@ -944,18 +948,18 @@ eupnp_service_proxy_action_send(Eupnp_Service_Proxy *proxy, const char *action, 
 	  {
 	     case EUPNP_TYPE_INT:
 		if (!SOAP_ARGUMENT_APPEND(message, arg_name, "%d", int, va_args))
-		   ERROR_D(_log_dom, "Failed to append in parameter %s", arg_name);
+		   ERR("Failed to append in parameter %s", arg_name);
 		break;
 	     case EUPNP_TYPE_DOUBLE:
 		if (!SOAP_ARGUMENT_APPEND(message, arg_name, "%f", double, va_args))
-		   ERROR_D(_log_dom, "Failed to append in parameter %s", arg_name);
+		   ERR("Failed to append in parameter %s", arg_name);
 		break;
 	     case EUPNP_TYPE_STRING:
 		if (!SOAP_ARGUMENT_APPEND(message, arg_name, "%s", const char *, va_args))
-		   ERROR_D(_log_dom, "Failed to append in parameter %s", arg_name);
+		   ERR("Failed to append in parameter %s", arg_name);
 		break;
 	     default:
-		ERROR_D(_log_dom, "Failed to parse argument type.");
+		ERR("Failed to parse argument type.");
 		goto arg_parse_fail;
 	  }
 
@@ -967,11 +971,11 @@ eupnp_service_proxy_action_send(Eupnp_Service_Proxy *proxy, const char *action, 
 		"%s</u:%s>%s%s",
 		message, action, SOAP_BODY_END, SOAP_ENVELOPE_END) < 0)
      {
-	ERROR_D(_log_dom, "Failed to create body message for action %s (stage 3)", action);
+	ERR("Failed to create body message for action %s (stage 3)", action);
 	goto message_fail;
      }
 
-   DEBUG_D(_log_dom, "Message stage 3: %s", message);
+   DBG("Message stage 3: %s", message);
 
    request = eupnp_core_http_request_send(url,
 					  NULL,
@@ -985,11 +989,11 @@ eupnp_service_proxy_action_send(Eupnp_Service_Proxy *proxy, const char *action, 
 
    if (!request)
      {
-	ERROR_D(_log_dom, "Failed to perform request for action %s", action);
+	ERR("Failed to perform request for action %s", action);
 	goto request_fail;
      }
 
-   DEBUG_D(_log_dom, "Finished sending request.");
+   DBG("Finished sending request.");
 
    eina_array_free(add_headers);
    eupnp_http_header_free(header);
@@ -1054,13 +1058,13 @@ eupnp_service_proxy_state_variable_events_subscribe(Eupnp_Service_Proxy *proxy, 
 
    if (!eupnp_service_proxy_has_variable(proxy, var_name)) return NULL;
 
-   DEBUG_D(_log_dom, "Subscribe stage 1");
+   DBG("Subscribe stage 1");
 
    if (!_event_server_inited)
      {
         if (!eupnp_event_server_init())
 	  {
-	     ERROR_D(_log_dom, "Failed to initialize event server");
+	     ERR("Failed to initialize event server");
 	     return NULL;
 	  }
 	else
@@ -1070,14 +1074,14 @@ eupnp_service_proxy_state_variable_events_subscribe(Eupnp_Service_Proxy *proxy, 
    listen_addr = (const char *) eupnp_event_server_url_get();
    if (!listen_addr)
      {
-	ERROR_D(_log_dom, "Failed to retrieve event server URL.");
+	ERR("Failed to retrieve event server URL.");
 	return NULL;
      }
 
    subscriber = calloc(1, sizeof(Eupnp_Event_Subscriber));
    if (!subscriber)
      {
-	ERROR_D(_log_dom, "Could not alloc a new event subscriber.");
+	ERR("Could not alloc a new event subscriber.");
 	goto subscriber_alloc_fail;
      }
 
@@ -1089,20 +1093,20 @@ eupnp_service_proxy_state_variable_events_subscribe(Eupnp_Service_Proxy *proxy, 
    /* Sent subscription, subscribe for answers */
    if ((id = eupnp_event_server_request_subscribe(EUPNP_CALLBACK(eupnp_event_notification_cb), subscriber)) < 0)
      {
-	ERROR_D(_log_dom, "Failed to subscribe for data events on event server.");
+	ERR("Failed to subscribe for data events on event server.");
 	goto subscribe_err;
      }
 
    if ((callback_len = asprintf(&subscriber->callback, "<%s/%d>", listen_addr, id)) < 0)
      {
-	ERROR_D(_log_dom, "Failed to mount callback URL.");
+	ERR("Failed to mount callback URL.");
 	subscriber->callback = NULL;
 	goto listen_url_err;
      }
 
    if ((eventing_url_len = asprintf(&subscriber->eventing_url, "%s%s", proxy->base_url, proxy->eventsub_url)) < 0)
      {
-	ERROR_D(_log_dom, "Failed to compose complete event sub URL.");
+	ERR("Failed to compose complete event sub URL.");
 	subscriber->eventing_url = NULL;
 	goto eventing_url_fail;
      }
@@ -1110,7 +1114,7 @@ eupnp_service_proxy_state_variable_events_subscribe(Eupnp_Service_Proxy *proxy, 
    add_headers = eina_array_new(5);
    if (!add_headers)
      {
-	ERROR_D(_log_dom, "Could not create headers for subscription.");
+	ERR("Could not create headers for subscription.");
 	goto header_array_fail;
      }
 
@@ -1129,7 +1133,7 @@ eupnp_service_proxy_state_variable_events_subscribe(Eupnp_Service_Proxy *proxy, 
 			      strlen("upnp:event"));
    if (!nt) goto nt_header_err;
 
-   DEBUG_D(_log_dom, "Subscribe stage 3");
+   DBG("Subscribe stage 3");
 
    if (infinite_subscription)
      tout = eupnp_http_header_new("TIMEOUT", strlen("TIMEOUT"),
@@ -1168,7 +1172,7 @@ eupnp_service_proxy_state_variable_events_subscribe(Eupnp_Service_Proxy *proxy, 
 				      subscriber);
    if (!req)
      {
-	ERROR_D(_log_dom, "Failed to send subscription");
+	ERR("Failed to send subscription");
 	goto req_fail;
      }
 
@@ -1213,7 +1217,7 @@ eupnp_service_proxy_state_variable_events_unsubscribe(Eupnp_Event_Subscriber *su
    Eupnp_HTTP_Header *host, *sid;
    Eupnp_Request req;
 
-   DEBUG_D(_log_dom, "Unsubscribing subscriber %p (%s)", subscriber, subscriber->sid);
+   DBG("Unsubscribing subscriber %p (%s)", subscriber, subscriber->sid);
 
    add_headers = eina_array_new(2);
    host = eupnp_http_header_new("HOST", strlen("HOST"),
@@ -1241,12 +1245,12 @@ eupnp_service_proxy_state_variable_events_unsubscribe(Eupnp_Event_Subscriber *su
 				      subscriber);
    if (!req)
      {
-	ERROR_D(_log_dom, "Failed to send unsubscribe message for subscriber %p", subscriber);
+	ERR("Failed to send unsubscribe message for subscriber %p", subscriber);
 	goto unsub_req_err;
      }
 
    ret = EINA_TRUE;
-   DEBUG_D(_log_dom, "Finished sending unsubscribe message %p (%s)", subscriber, subscriber->sid);
+   DBG("Finished sending unsubscribe message %p (%s)", subscriber, subscriber->sid);
 
    unsub_req_err:
    unsub_header_push_err:

@@ -149,7 +149,7 @@ parse_usn(const char *usn, const char **udn, int *udn_len, const char **service_
 
    if (strncmp(usn, "uuid:", 5))
      {
-	ERROR_D(_log_dom, "Failed to parse USN: missing \"uuid:\" (original: %s)", usn);
+	ERR("Failed to parse USN: missing \"uuid:\" (original: %s)", usn);
 	return EINA_FALSE;
      }
 
@@ -169,7 +169,7 @@ parse_usn(const char *usn, const char **udn, int *udn_len, const char **service_
      {
 	if (*(tmp1 + 1) != ':')
 	  {
-	     ERROR_D(_log_dom, "Invalid USN: single colon after device uuid: %s", usn);
+	     ERR("Invalid USN: single colon after device uuid: %s", usn);
 	     return EINA_FALSE;
 	  }
 	*udn = usn;
@@ -186,7 +186,7 @@ parse_usn(const char *usn, const char **udn, int *udn_len, const char **service_
 
 	if (strncmp(tmp1, "urn:", 4))
 	  {
-	     ERROR_D(_log_dom, "Invalid USN: type string does not contain urn.");
+	     ERR("Invalid USN: type string does not contain urn.");
 	     return EINA_FALSE;
 	  }
 
@@ -196,7 +196,7 @@ parse_usn(const char *usn, const char **udn, int *udn_len, const char **service_
 
 	if (!tmp2)
 	  {
-	     ERROR_D(_log_dom, "Incomplete USN: %s", usn);
+	     ERR("Incomplete USN: %s", usn);
 	     return EINA_FALSE;
 	  }
 
@@ -212,7 +212,7 @@ parse_usn(const char *usn, const char **udn, int *udn_len, const char **service_
 	
 	if (!*udn)
 	  {
-	     ERROR_D(_log_dom, "Failed to parse USN, type not recognized");
+	     ERR("Failed to parse USN, type not recognized");
 	     return EINA_FALSE;
 	  }
 
@@ -247,25 +247,25 @@ process_response(Eupnp_HTTP_Response *r)
 
    if (!location)
      {
-	ERROR_D(_log_dom, "Invalid response: missing location");
+	ERR("Invalid response: missing location");
 	goto on_resp_error;
      }
 
    if (!usn)
      {
-	ERROR_D(_log_dom, "Invalid response: missing usn");
+	ERR("Invalid response: missing usn");
 	goto on_resp_error;
      }
 
    if (!parse_usn(usn, &udn, &udn_len, &service_type))
      {
-	ERROR_D(_log_dom, "Failed to parse resposne USN: %s", usn);
+	ERR("Failed to parse resposne USN: %s", usn);
 	goto on_resp_error;
      }
 
    if (!eupnp_http_response_header_add(r, "udn", 3, udn, udn_len))
      {
-	ERROR_D(_log_dom, "Failed to add udn header.");
+	ERR("Failed to add udn header.");
 	goto on_resp_error;
      }
 
@@ -276,7 +276,7 @@ process_response(Eupnp_HTTP_Response *r)
 
 	if (!service_info)
 	  {
-	     ERROR_D(_log_dom, "Could not create service event.");
+	     ERR("Could not create service event.");
 	     return;
 	  }
 
@@ -294,7 +294,7 @@ process_response(Eupnp_HTTP_Response *r)
 
 	if (!device_info)
 	  {
-	     ERROR_D(_log_dom, "Could not create device event.");
+	     ERR("Could not create device event.");
 	     return;
 	  }
 
@@ -305,7 +305,7 @@ process_response(Eupnp_HTTP_Response *r)
 	return;
      }
 
-   DEBUG_D(_log_dom, "SSDP response not identified");
+   DBG("SSDP response not identified");
    eupnp_http_response_dump(r);
 
    on_resp_error:
@@ -335,20 +335,20 @@ process_notify_request(Eupnp_HTTP_Request *m)
 
    if (!nts)
      {
-	ERROR_D(_log_dom, "Invalid NOTIFY: nts header not found");
+	ERR("Invalid NOTIFY: nts header not found");
 	goto on_req_error;
      }
 
    if (!usn)
      {
-	ERROR_D(_log_dom, "Invalid NOTIFY: missing usn");
+	ERR("Invalid NOTIFY: missing usn");
 	eupnp_http_request_dump(m);
 	goto on_req_error;
      }
 
    if (!parse_usn(usn, &udn, &udn_len, &service_type))
      {
-	DEBUG_D(_log_dom, "Failed to parse usn %s", usn);
+	DBG("Failed to parse usn %s", usn);
 	eupnp_http_request_dump(m);
 	goto on_req_error;
      }
@@ -356,7 +356,7 @@ process_notify_request(Eupnp_HTTP_Request *m)
    // Add the udn as a header so that it gets collected automatically
    if (!eupnp_http_request_header_add(m, "udn", 3, udn, udn_len))
      {
-	DEBUG_D(_log_dom, "Failed to add udn header.");
+	DBG("Failed to add udn header.");
 	goto on_req_error;
      }
 
@@ -365,7 +365,7 @@ process_notify_request(Eupnp_HTTP_Request *m)
      {
 	if (!location)
 	  {
-	     ERROR_D(_log_dom, "Invalid NOTIFY: alive and location missing");
+	     ERR("Invalid NOTIFY: alive and location missing");
 	     goto on_req_error;
 	  }
 	if (service_type)
@@ -382,7 +382,7 @@ process_notify_request(Eupnp_HTTP_Request *m)
      }
    else
      {
-	ERROR_D(_log_dom, "Invalid NOTIFY: not alive, nor byebye");
+	ERR("Invalid NOTIFY: not alive, nor byebye");
 	goto on_req_error;
      }
 
@@ -394,7 +394,7 @@ process_notify_request(Eupnp_HTTP_Request *m)
 
 	if (!service_info)
 	  {
-	     ERROR_D(_log_dom, "Could not create service event.");
+	     ERR("Could not create service event.");
 	     return;
 	  }
 
@@ -413,7 +413,7 @@ process_notify_request(Eupnp_HTTP_Request *m)
 
 	if (!device_info)
 	  {
-	     ERROR_D(_log_dom, "Could not create device event.");
+	     ERR("Could not create device event.");
 	     return;
 	  }
 
@@ -424,7 +424,7 @@ process_notify_request(Eupnp_HTTP_Request *m)
 	return;
      }
 
-   DEBUG_D(_log_dom, "SSDP request not identified");
+   DBG("SSDP request not identified");
    eupnp_http_request_dump(m);
 
    on_req_error:
@@ -446,20 +446,20 @@ _eupnp_ssdp_on_datagram_available(Eupnp_SSDP_Client *ssdp)
 
    if (!d)
      {
-	ERROR_D(_log_dom, "Could not retrieve a valid datagram");
+	ERR("Could not retrieve a valid datagram");
 	return;
      }
 
    if (eupnp_http_message_is_response(d->data))
      {
-	DEBUG_D(_log_dom, "Response message from %s:%d", d->host, d->port);
+	DBG("Response message from %s:%d", d->host, d->port);
 
 	Eupnp_HTTP_Response *r;
 	r = eupnp_http_response_parse(d->data, d, (void *)eupnp_udp_transport_datagram_free);
 
 	if (!r)
 	  {
-	     ERROR_D(_log_dom, "Failed parsing response datagram");
+	     ERR("Failed parsing response datagram");
 	     eupnp_udp_transport_datagram_free(d);
 	     return;
 	  }
@@ -473,14 +473,14 @@ _eupnp_ssdp_on_datagram_available(Eupnp_SSDP_Client *ssdp)
 
 	if (!m)
 	  {
-	     ERROR_D(_log_dom, "Failed parsing request datagram sent by %s:%d", d->host, d->port);
+	     ERR("Failed parsing request datagram sent by %s:%d", d->host, d->port);
 	     eupnp_udp_transport_datagram_free(d);
 	     return;
 	  }
 
 	if (m->method == _eupnp_ssdp_notify)
 	  {
-	     DEBUG_D(_log_dom, "NOTIFY message from %s:%d", d->host, d->port);
+	     DBG("NOTIFY message from %s:%d", d->host, d->port);
 	     process_notify_request(m);
 	  }
 	  else
@@ -518,7 +518,7 @@ eupnp_ssdp_init(void)
    _eupnp_ssdp_msearch = (char *) eina_stringshare_add("M-SEARCH");
    _eupnp_ssdp_http_version = (char *) eina_stringshare_add(EUPNP_HTTP_VERSION);
 
-   INFO_D(_log_dom, "Initializing ssdp module.");
+   INF("Initializing ssdp module.");
 
    return EINA_TRUE;
 }
@@ -531,7 +531,7 @@ eupnp_ssdp_init(void)
 Eina_Bool
 eupnp_ssdp_shutdown(void)
 {
-   INFO_D(_log_dom, "Shutting down ssdp module.");
+   INF("Shutting down ssdp module.");
 
    eina_log_domain_unregister(_log_dom);
 
@@ -557,7 +557,7 @@ eupnp_ssdp_client_new(void)
    if (!ssdp)
      {
 	eina_error_set(EINA_ERROR_OUT_OF_MEMORY);
-	ERROR_D(_log_dom, "Could not create SSDP client instance.");
+	ERR("Could not create SSDP client instance.");
 	return NULL;
      }
 
@@ -567,7 +567,7 @@ eupnp_ssdp_client_new(void)
 
    if (!ssdp->udp_transport)
      {
-	ERROR_D(_log_dom, "Could not create SSDP client instance.");
+	ERR("Could not create SSDP client instance.");
 	free(ssdp);
 	return NULL;
      }
@@ -592,7 +592,7 @@ eupnp_ssdp_client_start(Eupnp_SSDP_Client *c)
 
    if (c->socket_handler)
      {
-	WARN_D(_log_dom, "Tried to start SSDP client twice.");
+	WRN("Tried to start SSDP client twice.");
 	return EINA_FALSE;
      }
 
@@ -613,17 +613,17 @@ eupnp_ssdp_client_stop(Eupnp_SSDP_Client *c)
 
    if (!c->socket_handler)
      {
-	WARN_D(_log_dom, "Tried to stop SSDP client when already stopped.");
+	WRN("Tried to stop SSDP client when already stopped.");
 	return EINA_FALSE;
      }
 
    if (eupnp_core_fd_handler_del(c->socket_handler))
      {
-	DEBUG_D(_log_dom, "Removed SSDP socket handler successfully.");
+	DBG("Removed SSDP socket handler successfully.");
 	return EINA_TRUE;
      }
 
-   ERROR_D(_log_dom, "Failed to remove SSDP socket handler.");
+   ERR("Failed to remove SSDP socket handler.");
    return EINA_FALSE;
 }
 
@@ -659,7 +659,7 @@ eupnp_ssdp_discovery_request_send(Eupnp_SSDP_Client *c, int mx, const char *sear
    if (asprintf(&msearch, EUPNP_SSDP_MSEARCH_TEMPLATE,
                 EUPNP_SSDP_ADDR, EUPNP_SSDP_PORT, mx, search_target) < 0)
      {
-	ERROR_D(_log_dom, "Could not allocate buffer for search message.");
+	ERR("Could not allocate buffer for search message.");
 	return EINA_FALSE;
      }
 
@@ -667,7 +667,7 @@ eupnp_ssdp_discovery_request_send(Eupnp_SSDP_Client *c, int mx, const char *sear
    if (eupnp_udp_transport_sendto(c->udp_transport, msearch, EUPNP_SSDP_ADDR,
                                EUPNP_SSDP_PORT) < 0)
      {
-	ERROR_D(_log_dom, "Could not send search message.");
+	ERR("Could not send search message.");
 	return EINA_FALSE;
      }
 

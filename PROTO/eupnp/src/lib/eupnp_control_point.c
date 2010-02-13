@@ -80,11 +80,11 @@ eupnp_control_point_init(void)
 						   EUPNP_CALLBACK(_on_device_found),
 						   NULL)))
      {
-	ERROR( "Failed to subscribe to device found event.");
+	ERROR("Failed to subscribe to device found event.");
 	goto subscribe_error;
      }
 
-   INFO_D(_log_dom, "Initializing control point module.");
+   INF("Initializing control point module.");
    return EINA_TRUE;
 
    subscribe_error:
@@ -100,7 +100,7 @@ eupnp_control_point_init(void)
 Eina_Bool
 eupnp_control_point_shutdown(void)
 {
-   INFO_D(_log_dom, "Shutting down control point module.");
+   INF("Shutting down control point module.");
    eupnp_event_bus_unsubscribe(_device_found);
    eina_log_domain_unregister(_log_dom);
    return EINA_FALSE;
@@ -121,7 +121,7 @@ eupnp_control_point_new(void)
    if (!c)
      {
 	eina_error_set(EINA_ERROR_OUT_OF_MEMORY);
-	ERROR_D(_log_dom, "Could not allocate a new control point.");
+	ERR("Could not allocate a new control point.");
 	return NULL;
      }
 
@@ -129,7 +129,7 @@ eupnp_control_point_new(void)
 
    if (!c->ssdp_client)
      {
-	ERROR_D(_log_dom, "Could not create a ssdp instance for the control point.");
+	ERR("Could not create a ssdp instance for the control point.");
 	free(c);
 	return NULL;
      }
@@ -146,7 +146,7 @@ EAPI void
 eupnp_control_point_free(Eupnp_Control_Point *c)
 {
    CHECK_NULL_RET(c);
-   DEBUG_D(_log_dom, "Freeing control point %p", c);
+   DBG("Freeing control point %p", c);
    if (c->ssdp_client) eupnp_ssdp_client_free(c->ssdp_client);
    free(c);
 }
@@ -160,7 +160,7 @@ EAPI Eina_Bool
 eupnp_control_point_start(Eupnp_Control_Point *c)
 {
    CHECK_NULL_RET_VAL(c, EINA_FALSE);
-   DEBUG_D(_log_dom, "Starting control point %p", c);
+   DBG("Starting control point %p", c);
    eupnp_ssdp_client_start(c->ssdp_client);
    return EINA_TRUE;
 }
@@ -174,7 +174,7 @@ EAPI Eina_Bool
 eupnp_control_point_stop(Eupnp_Control_Point *c)
 {
    CHECK_NULL_RET_VAL(c, EINA_FALSE);
-   DEBUG_D(_log_dom, "Stopping control point %p", c);
+   DBG("Stopping control point %p", c);
    eupnp_ssdp_client_stop(c->ssdp_client);
    return EINA_TRUE;
 }
@@ -194,6 +194,6 @@ eupnp_control_point_stop(Eupnp_Control_Point *c)
 EAPI Eina_Bool
 eupnp_control_point_discovery_request_send(Eupnp_Control_Point *c, int mx, const char *search_target)
 {
-   DEBUG_D(_log_dom, "Discovery request sent for target %s with mx %d", search_target, mx);
+   DBG("Discovery request sent for target %s with mx %d", search_target, mx);
    return eupnp_ssdp_discovery_request_send(c->ssdp_client, mx, search_target);
 }
