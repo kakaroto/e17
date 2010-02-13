@@ -20,6 +20,8 @@
 // TODO:
 // * evas cache
 // * evas image preloading
+// * event callbacks
+// * async fd
 
 [CCode (cprefix = "Evas_", lower_case_cprefix = "evas_", cheader_filename = "Evas.h")]
 namespace Evas
@@ -91,7 +93,7 @@ namespace Evas
         DEFAULT,
         SOLID
     }
-    
+
     //=======================================================================
     [CCode (cprefix = "EVAS_IMAGE_SCALE_HINT_", cname = "Evas.h")]
     public enum ImageScaleHint
@@ -129,6 +131,10 @@ namespace Evas
 
         public void data_attach_set( void *data );
         public void* data_attach_get();
+
+        public void focus_in();
+        public void focus_out();
+        public bool focus_state_get();
 
         public void image_cache_flush();
         public void image_cache_reload();
@@ -182,6 +188,10 @@ namespace Evas
 
         public void util_rotate( double degrees, Evas.Coord cx, Evas.Coord cy );
         public void util_zoom( double zoomx, double zoomy, Evas.Coord cx, Evas.Coord cy );
+        public void util_rotate_3d( double dx, double dy, double dz, Evas.Coord cx, Evas.Coord cy, Evas.Coord cz, Evas.Coord px, Evas.Coord py, Evas.Coord z0, Evas.Coord foc );
+        public void util_perspective( Evas.Coord px, Evas.Coord py, Evas.Coord z0, Evas.Coord foc );
+
+        public bool util_clockwise_get();
 
         public void smooth_set( bool enabled );
         public bool smooth_get();

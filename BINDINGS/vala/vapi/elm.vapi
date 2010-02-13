@@ -178,6 +178,8 @@ public class Win : Elm.Object
     public bool shaped_get();
     public void alpha_set( bool alpha );
     public bool alpha_get();
+    public bool transparent_get();
+    public void transparent_set( bool transparent );
     public void override_set( bool override_ );
     public bool override_get();
     public void fullscreen_set( bool fullscreen );
@@ -342,6 +344,9 @@ public class Label : Elm.Object
     public void label_set( string label );
     public unowned string label_get();
     public void line_wrap_set( bool wrap );
+    public bool line_wrap_get();
+    public void wrap_width_set( Evas.Coord w );
+    public Evas.Coord wrap_width_get();
 }
 
 
@@ -386,6 +391,8 @@ public class Table : Elm.Object
     public void homogenous_set( bool homogenous );
     public void pack( Elm.Object subobj, int x, int y, int w, int h );
     public void padding_set( Evas.Coord horizontal, Evas.Coord vertical );
+    public void unpack( Elm.Object subobj );
+    public void clear();
 }
 
 
@@ -882,6 +889,8 @@ public class GenlistItem
    public bool expanded_get();
    public void disabled_set( bool disabled );
    public bool disabled_get();
+   public void display_only_set( bool display_only );
+   public bool display_only_get();
 
    public void show();
    public void bring_in();
