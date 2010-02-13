@@ -65,37 +65,6 @@ ecoremodule = Extension('ecore.c_ecore',
                         **pkgconfig('"ecore >= 0.9.9.063" ''"eina-0 >= 0.9.9.063"'))
 
 
-ecoreevasmodule = Extension('ecore.evas.c_ecore_evas',
-                            sources=['ecore/evas/ecore.evas.c_ecore_evas.pyx'],
-                            depends=['ecore/evas/ecore.evas.c_ecore_evas_base.pxi',
-                                     'ecore/evas/ecore.evas.c_ecore_evas_software_x11.pxi',
-                                     'ecore/evas/ecore.evas.c_ecore_evas_gl_x11.pxi',
-                                     'ecore/evas/ecore.evas.c_ecore_evas_xrender_x11.pxi',
-                                     'ecore/evas/ecore.evas.c_ecore_evas_fb.pxi',
-#                                     'ecore/evas/ecore.evas.c_ecore_evas_directfb.pxi',
-                                     'ecore/evas/ecore.evas.c_ecore_evas_buffer.pxi',
-                                     'ecore/evas/ecore.evas.c_ecore_evas_software_x11_16.pxi',
-                                     'include/ecore/evas/c_ecore_evas.pxd',
-                                     ],
-                            **pkgconfig('"ecore-evas >= 0.9.9.063" ''"eina-0 >= 0.9.9.063"'))
-
-ecorexmodule = Extension('ecore.x.c_ecore_x',
-                         sources=['ecore/x/ecore.x.c_ecore_x.pyx'],
-                         depends=['ecore/x/ecore.x.c_ecore_x_window.pxi',
-                                  'include/ecore/x/c_ecore_x.pxd',
-                                 ],
-                         **pkgconfig('"ecore-x >= 0.9.9.063" ''"eina-0 >= 0.9.9.063"'))
-
-ecorexscreensavermodule = Extension('ecore.x.screensaver',
-                                    sources=['ecore/x/ecore.x.screensaver.pyx'],
-                                    depends=['include/ecore/x/screensaver.pxd'],
-                                    **pkgconfig('"ecore-x >= 0.9.9.063" ''"eina-0 >= 0.9.9.063"'))
-
-ecoreimfmodule = Extension('ecore.imf.c_ecore_imf',
-                           sources=['ecore/imf/ecore.imf.c_ecore_imf.pyx'],
-                           depends=['include/ecore/imf/c_ecore_imf.pxd',
-                                   ],
-                           **pkgconfig('"ecore-imf >= 0.9.9.063" ''"eina-0 >= 0.9.9.063"'))
 
 trove_classifiers = [
     "Development Status :: 3 - Alpha",
@@ -143,24 +112,55 @@ class ecore_build_ext(build_ext):
 module_list = [ecoremodule]
 
 if int(os.environ.get("ECORE_BUILD_EVAS", 1)):
+    ecoreevasmodule = Extension(
+        'ecore.evas.c_ecore_evas',
+        sources=['ecore/evas/ecore.evas.c_ecore_evas.pyx'],
+        depends=['ecore/evas/ecore.evas.c_ecore_evas_base.pxi',
+                 'ecore/evas/ecore.evas.c_ecore_evas_software_x11.pxi',
+                 'ecore/evas/ecore.evas.c_ecore_evas_gl_x11.pxi',
+                 'ecore/evas/ecore.evas.c_ecore_evas_xrender_x11.pxi',
+                 'ecore/evas/ecore.evas.c_ecore_evas_fb.pxi',
+                 #'ecore/evas/ecore.evas.c_ecore_evas_directfb.pxi',
+                 'ecore/evas/ecore.evas.c_ecore_evas_buffer.pxi',
+                 'ecore/evas/ecore.evas.c_ecore_evas_software_x11_16.pxi',
+                 'include/ecore/evas/c_ecore_evas.pxd',
+                 ],
+        **pkgconfig('"ecore-evas >= 0.9.9.063" ''"eina-0 >= 0.9.9.063"'))
     module_list.append(ecoreevasmodule)
 else:
     print "NOTICE: not building ecore.evas module as requested " \
           "by ECORE_BUILD_EVAS=0!"
 
 if int(os.environ.get("ECORE_BUILD_X", 1)):
+    ecorexmodule = Extension(
+        'ecore.x.c_ecore_x',
+        sources=['ecore/x/ecore.x.c_ecore_x.pyx'],
+        depends=['ecore/x/ecore.x.c_ecore_x_window.pxi',
+                 'include/ecore/x/c_ecore_x.pxd',
+                 ],
+        **pkgconfig('"ecore-x >= 0.9.9.063" ''"eina-0 >= 0.9.9.063"'))
     module_list.append(ecorexmodule)
 else:
     print "NOTICE: not building ecore.x module as requested " \
           "by ECORE_BUILD_X=0!"
 
 if int(os.environ.get("ECORE_BUILD_XSCREENSAVER", 1)):
+    ecorexscreensavermodule = Extension(
+        'ecore.x.screensaver',
+        sources=['ecore/x/ecore.x.screensaver.pyx'],
+        depends=['include/ecore/x/screensaver.pxd'],
+        **pkgconfig('"ecore-x >= 0.9.9.063" ''"eina-0 >= 0.9.9.063"'))
     module_list.append(ecorexscreensavermodule)
 else:
     print "NOTICE: not building ecore.xscreensaver module as requested " \
           "by ECORE_BUILD_XSCREENSAVER=0!"
 
 if int(os.environ.get("ECORE_BUILD_IMF", 1)):
+    ecoreimfmodule = Extension(
+        'ecore.imf.c_ecore_imf',
+        sources=['ecore/imf/ecore.imf.c_ecore_imf.pyx'],
+        depends=['include/ecore/imf/c_ecore_imf.pxd'],
+        **pkgconfig('"ecore-imf >= 0.9.9.063" ''"eina-0 >= 0.9.9.063"'))
     module_list.append(ecoreimfmodule)
 else:
     print "NOTICE: not building ecore.imf module as requested " \

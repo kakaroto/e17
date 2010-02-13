@@ -59,14 +59,6 @@ ethumbmodule = Extension('ethumb.c_ethumb',
                                    ],
                           **pkgconfig('"ethumb >= 0.1"'))
 
-ethumbclientmodule = Extension('ethumb.client',
-                          sources=['ethumb/ethumb.client.pyx',
-                                   ],
-                          depends=['include/ethumb/c_ethumb.pxd',
-                                   'include/ethumb/client.pxd',
-                                   ],
-                          **pkgconfig('"ethumb >= 0.1" "ethumb_client >= 0.1"'))
-
 
 trove_classifiers = [
     "Development Status :: 3 - Alpha",
@@ -109,6 +101,13 @@ class ethumb_build_ext(build_ext):
 module_list = [ethumbmodule]
 
 if int(os.environ.get("ETHUMB_BUILD_CLIENT", 1)):
+    ethumbclientmodule = Extension(
+        'ethumb.client',
+        sources=['ethumb/ethumb.client.pyx'],
+        depends=['include/ethumb/c_ethumb.pxd',
+                 'include/ethumb/client.pxd',
+                 ],
+        **pkgconfig('"ethumb >= 0.1" "ethumb_client >= 0.1"'))
     module_list.append(ethumbclientmodule)
 else:
     print "NOTICE: not building ethumb.client module as requested " \
