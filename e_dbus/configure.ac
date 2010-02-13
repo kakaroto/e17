@@ -29,12 +29,14 @@ VMIC=`echo $PACKAGE_VERSION | awk -F. '{printf("%s", $3);}'`
 SNAP=`echo $PACKAGE_VERSION | awk -F. '{printf("%s", $4);}'`
 version_info=`expr $VMAJ + $VMIN`":$VMIC:$VMIN"
 econnman_release_info="-release $release"
+ebluez_release_info="-release $release"
 edbus_release_info="-release $release"
 ehal_release_info="-release $release"
 enm_release_info="-release $release"
 enotify_release_info="-release $release"
 AC_SUBST(version_info)
 AC_SUBST(econnman_release_info)
+AC_SUBST(ebluez_release_info)
 AC_SUBST(edbus_release_info)
 AC_SUBST(ehal_release_info)
 AC_SUBST(enm_release_info)
@@ -55,6 +57,11 @@ AC_ARG_ENABLE([econnman],
    [AC_HELP_STRING([--enable-econnman], [Enable econnman build])],
    [enable_econnman=$enableval],
    [enable_econnman="yes"])
+
+AC_ARG_ENABLE([ebluez],
+   [AC_HELP_STRING([--enable-ebluez], [Enable ebluez build])],
+   [enable_ebluez=$enableval],
+   [enable_ebluez="yes"])
 
 AC_ARG_ENABLE([enotify],
    [AC_HELP_STRING([--disable-enotify], [Disable enotify build])],
@@ -118,6 +125,7 @@ AM_CONDITIONAL([BUILD_EHAL],     [test "x${enable_ehal}"     = "xyes"])
 AM_CONDITIONAL([BUILD_ENM],      [test "x${enable_enm}"      = "xyes"])
 AM_CONDITIONAL([BUILD_ENOTIFY],  [test "x${enable_enotify}"  = "xyes"])
 AM_CONDITIONAL([BUILD_ECONNMAN], [test "x${enable_econnman}" = "xyes"])
+AM_CONDITIONAL([BUILD_EBLUEZ], [test "x${enable_ebluez}" = "xyes"])
 
 EFL_EDBUS_BUILD=""
 lt_enable_auto_import=""
@@ -140,12 +148,14 @@ src/lib/hal/Makefile
 src/lib/nm/Makefile
 src/lib/notification/Makefile
 src/lib/connman/Makefile
+src/lib/bluez/Makefile
 src/bin/Makefile
 edbus.pc
 ehal.pc
 enotify.pc
 enm.pc
 econnman.pc
+ebluez.pc
 ])
 
 
@@ -166,6 +176,7 @@ echo
 echo "    EHal...............: $enable_ehal"
 echo "    ENM................: $enable_enm"
 echo "    EConnman...........: $enable_econnman"
+echo "    EBluez.............: $enable_ebluez"
 echo "    ENotify............: $enable_enotify"
 echo
 echo "Compilation............: make (or gmake)"

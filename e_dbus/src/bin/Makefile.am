@@ -6,6 +6,7 @@ EDBUS_CPPFLAGS = \
 -I$(top_srcdir)/src/lib/nm \
 -I$(top_srcdir)/src/lib/notification \
 -I$(top_srcdir)/src/lib/connman \
+-I$(top_srcdir)/src/lib/bluez \
 @EDBUS_CFLAGS@ \
 @EINA_CFLAGS@
 
@@ -27,13 +28,17 @@ if BUILD_ECONNMAN
 ECONNMAN_PROG = e_dbus_connman_test
 ECONNMAN_PROG_NOINST = e_dbus_connman_test_api
 endif
+if BUILD_EBLUEZ
+EBLUEZ_PROG = e_dbus_bluez_test
+endif
 
 bin_PROGRAMS = \
 $(EDBUS_PROG) \
 $(EHAL_PROG) \
 $(ENM_PROG) \
 $(ENOTIFY_PROG) \
-$(ECONNMAN_PROG)
+$(ECONNMAN_PROG) \
+$(EBLUEZ_PROG)
 
 noinst_PROGRAMS = \
 $(ECONNMAN_PROG_NOINST)
@@ -119,4 +124,11 @@ e_dbus_connman_test_api_SOURCES = e_dbus_connman_test_api.c
 e_dbus_connman_test_api_CPPFLAGS = $(EDBUS_CPPFLAGS)
 e_dbus_connman_test_api_LDADD = $(top_builddir)/src/lib/dbus/libedbus.la $(top_builddir)/src/lib/connman/libeconnman.la
 e_dbus_connman_test_api_DEPENDENCIES = $(top_builddir)/src/lib/dbus/libedbus.la $(top_builddir)/src/lib/connman/libeconnman.la
+endif
+
+if BUILD_EBLUEZ
+e_dbus_bluez_test_SOURCES = e_dbus_bluez_test.c
+e_dbus_bluez_test_CPPFLAGS = $(EDBUS_CPPFLAGS)
+e_dbus_bluez_test_LDADD = $(top_builddir)/src/lib/dbus/libedbus.la $(top_builddir)/src/lib/bluez/libebluez.la
+e_dbus_bluez_test_DEPENDENCIES = $(top_builddir)/src/lib/dbus/libedbus.la $(top_builddir)/src/lib/bluez/libebluez.la
 endif

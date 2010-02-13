@@ -20,4 +20,7 @@ endif
 if BUILD_ECONNMAN
 ECONNMAN_PC = econnman.pc
 endif
-pkgconfig_DATA = edbus.pc $(EHAL_PC) $(ENM_PC) $(ENOTIFY_PC) $(ECONNMAN_PC)
+if BUILD_EBLUEZ
+EBLUEZ_PC = ebluez.pc
+endif
+pkgconfig_DATA = edbus.pc $(EHAL_PC) $(ENM_PC) $(ENOTIFY_PC) $(ECONNMAN_PC) $(EBLUEZ_PC)
