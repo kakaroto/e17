@@ -5,6 +5,22 @@
 #include <errno.h>
 
 static void
+_method_success_check(void *data, DBusMessage *msg, DBusError *error)
+{
+   const char *name = data;
+
+   if ((!error) || (!dbus_error_is_set(error)))
+     {
+	printf("SUCCESS: method %s() finished successfully.\n", name);
+	return;
+     }
+
+   printf("FAILURE: method %s() finished with error: %s %s\n",
+	  name, error->name, error->message);
+   dbus_error_free(error);
+}
+
+static void
 _elements_print(E_Bluez_Element **elements, unsigned int count)
 {
    unsigned int i;
@@ -246,6 +262,60 @@ _on_cmd_manager_get(char *cmd, char *args)
 }
 
 static int
+_on_cmd_adapter_register_agent(char *cmd, char *args)
+{
+   char *next_args, *path, *cap;
+   E_Bluez_Element *element = _element_from_args(args, &next_args);
+
+   if (!element)
+	   return 1;
+
+   if (!next_args) {
+	   fputs("ERROR: missing parameters name, type and value.\n", stderr);
+	   return 1;
+   }
+
+   path = next_args;
+   cap = _tok(path);
+   if (!cap) {
+	   fputs("ERROR: missing parameters name, type and value.\n", stderr);
+	   return 1;
+   }
+
+   if (e_bluez_adapter_agent_register(element,
+       path, cap, _method_success_check, "adapter_register_agent"))
+     printf(":::Registering agent %s (%s)...\n", path, cap);
+   else
+     fprintf(stderr, "ERROR: can't register agent %s\n", path);
+
+   return 1;
+}
+
+static int
+_on_cmd_adapter_unregister_agent(char *cmd, char *args)
+{
+   char *path, *next_args;
+   E_Bluez_Element *element = _element_from_args(args, &next_args);
+
+   if (!element)
+	   return 1;
+
+   if (!args)
+     {
+	fputs("ERROR: missing the object path\n", stderr);
+	return 1;
+     }
+
+   path = next_args;
+   if (e_bluez_adapter_agent_unregister(element,
+       path, _method_success_check, "adapter_unregister_agent"))
+     printf(":::Unregistering agent %s...\n", path);
+   else
+     fprintf(stderr, "ERROR: can't unregister agent %s\n", path);
+
+   return 1;
+}
+static int
 _on_input(void *data, Ecore_Fd_Handler *fd_handler)
 {
    char buf[256];
@@ -261,6 +331,8 @@ _on_input(void *data, Ecore_Fd_Handler *fd_handler)
      {"get_properties", _on_cmd_get_properties},
      {"set_property", _on_cmd_property_set},
      {"manager_get", _on_cmd_manager_get},
+     {"adapter_register_agent", _on_cmd_adapter_register_agent},
+     {"adapter_unregister_agent", _on_cmd_adapter_unregister_agent},
      {NULL, NULL}
    };
 

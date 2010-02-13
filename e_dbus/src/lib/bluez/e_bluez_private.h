@@ -113,3 +113,4 @@ bool e_bluez_element_message_send(E_Bluez_Element *element, const char *method_n
 bool e_bluez_element_call_full(E_Bluez_Element *element, const char *method_name, E_DBus_Method_Return_Cb cb, Eina_Inlist **pending, E_DBus_Method_Return_Cb user_cb, const void *user_data);
 bool e_bluez_element_call_with_path(E_Bluez_Element *element, const char *method_name, const char *string, E_DBus_Method_Return_Cb cb, Eina_Inlist **pending, E_DBus_Method_Return_Cb user_cb, const void *user_data);
 bool e_bluez_element_call_with_string(E_Bluez_Element *element, const char *method_name, const char *string, E_DBus_Method_Return_Cb cb, Eina_Inlist **pending, E_DBus_Method_Return_Cb user_cb, const void *user_data);
+bool e_bluez_element_call_with_path_and_string(E_Bluez_Element *element, const char *method_name, const char *path, const char *string, E_DBus_Method_Return_Cb cb, Eina_Inlist **pending, E_DBus_Method_Return_Cb user_cb, const void *user_data);

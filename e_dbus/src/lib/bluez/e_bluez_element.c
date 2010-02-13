@@ -1560,6 +1560,33 @@ e_bluez_element_call_with_string(E_Bluez_Element *element, const char *method_na
      (element, method_name, cb, msg, pending, user_cb, user_data);
 }
 
+bool
+e_bluez_element_call_with_path_and_string(E_Bluez_Element *element, const char *method_name, const char *path, const char *string, E_DBus_Method_Return_Cb cb, Eina_Inlist **pending, E_DBus_Method_Return_Cb user_cb, const void *user_data)
+{
+   DBusMessageIter itr;
+   DBusMessage *msg;
+
+   EINA_SAFETY_ON_NULL_RETURN_VAL(element, 0);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(method_name, 0);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(path, 0);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(string, 0);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(pending, 0);
+
+   msg = dbus_message_new_method_call
+     (e_bluez_system_bus_name_get(), element->path, element->interface,
+      method_name);
+
+   if (!msg)
+     return 0;
+
+   dbus_message_iter_init_append(msg, &itr);
+   dbus_message_iter_append_basic(&itr, DBUS_TYPE_OBJECT_PATH, &path);
+   dbus_message_iter_append_basic(&itr, DBUS_TYPE_STRING, &string);
+
+   return e_bluez_element_message_send
+     (element, method_name, cb, msg, pending, user_cb, user_data);
+}
+
 /**
  * Get property type.
  *
