@@ -23,22 +23,6 @@ EAPI int E_BLUEZ_EVENT_ELEMENT_UPDATED = 0;
 const char *e_bluez_iface_manager = NULL;
 const char *e_bluez_iface_adapter = NULL;
 const char *e_bluez_iface_device = NULL;
-const char *e_bluez_prop_address = NULL;
-const char *e_bluez_prop_name = NULL;
-const char *e_bluez_prop_alias = NULL;
-const char *e_bluez_prop_class = NULL;
-const char *e_bluez_prop_icon = NULL;
-const char *e_bluez_prop_paired = NULL;
-const char *e_bluez_prop_trusted = NULL;
-const char *e_bluez_prop_connected = NULL;
-const char *e_bluez_prop_uuids = NULL;
-const char *e_bluez_prop_powered = NULL;
-const char *e_bluez_prop_discoverable = NULL;
-const char *e_bluez_prop_pairable = NULL;
-const char *e_bluez_prop_discoverabletimeout = NULL;
-const char *e_bluez_prop_pairabletimeout = NULL;
-const char *e_bluez_prop_discovering = NULL;
-const char *e_bluez_prop_devices = NULL;
 
 int _e_dbus_bluez_log_dom = -1;
 
@@ -238,38 +222,6 @@ e_bluez_system_init(E_DBus_Connection *edbus_conn)
 		e_bluez_iface_adapter = eina_stringshare_add("org.bluez.Adapter");
 	if (e_bluez_iface_device == NULL)
 		e_bluez_iface_device = eina_stringshare_add("org.bluez.Device");
-	if (e_bluez_prop_address == NULL)
-		e_bluez_prop_address = eina_stringshare_add("Address");
-	if (e_bluez_prop_name == NULL)
-		e_bluez_prop_name = eina_stringshare_add("Name");
-	if (e_bluez_prop_alias == NULL)
-		e_bluez_prop_alias = eina_stringshare_add("Alias");
-	if (e_bluez_prop_class == NULL)
-		e_bluez_prop_class = eina_stringshare_add("Class");
-	if (e_bluez_prop_icon == NULL)
-		e_bluez_prop_icon = eina_stringshare_add("Icon");
-	if (e_bluez_prop_paired == NULL)
-		e_bluez_prop_paired = eina_stringshare_add("Paired");
-	if (e_bluez_prop_trusted == NULL)
-		e_bluez_prop_trusted = eina_stringshare_add("Trusted");
-	if (e_bluez_prop_connected == NULL)
-		e_bluez_prop_connected = eina_stringshare_add("Connected");
-	if (e_bluez_prop_uuids == NULL)
-		e_bluez_prop_uuids = eina_stringshare_add("UUIDs");
-	if (e_bluez_prop_powered == NULL)
-		e_bluez_prop_powered = eina_stringshare_add("Powered");
-	if (e_bluez_prop_discoverable == NULL)
-		e_bluez_prop_discoverable = eina_stringshare_add("Discoverable");
-	if (e_bluez_prop_pairable == NULL)
-		e_bluez_prop_pairable = eina_stringshare_add("Pairable");
-	if (e_bluez_prop_discoverabletimeout == NULL)
-		e_bluez_prop_discoverabletimeout = eina_stringshare_add("DiscoverableTimeout");
-	if (e_bluez_prop_pairabletimeout == NULL)
-		e_bluez_prop_pairabletimeout = eina_stringshare_add("PairableTimeout");
-	if (e_bluez_prop_discovering == NULL)
-		e_bluez_prop_discovering = eina_stringshare_add("Discovering");
-	if (e_bluez_prop_devices == NULL)
-		e_bluez_prop_devices = eina_stringshare_add("Devices");
 
 	e_bluez_conn = edbus_conn;
 	cb_name_owner_changed = e_dbus_signal_handler_add
@@ -318,21 +270,5 @@ e_bluez_system_shutdown(void)
 	_stringshare_del(&e_bluez_iface_manager);
 	_stringshare_del(&e_bluez_iface_adapter);
 	_stringshare_del(&e_bluez_iface_device);
-	_stringshare_del(&e_bluez_prop_address);
-	_stringshare_del(&e_bluez_prop_name);
-	_stringshare_del(&e_bluez_prop_alias);
-	_stringshare_del(&e_bluez_prop_class);
-	_stringshare_del(&e_bluez_prop_icon);
-	_stringshare_del(&e_bluez_prop_paired);
-	_stringshare_del(&e_bluez_prop_trusted);
-	_stringshare_del(&e_bluez_prop_connected);
-	_stringshare_del(&e_bluez_prop_uuids);
-	_stringshare_del(&e_bluez_prop_powered);
-	_stringshare_del(&e_bluez_prop_discoverable);
-	_stringshare_del(&e_bluez_prop_pairable);
-	_stringshare_del(&e_bluez_prop_discoverabletimeout);
-	_stringshare_del(&e_bluez_prop_pairabletimeout);
-	_stringshare_del(&e_bluez_prop_discovering);
-	_stringshare_del(&e_bluez_prop_devices);
 	return 0;
 }
