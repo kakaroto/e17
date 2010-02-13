@@ -121,9 +121,7 @@ if [[ -z "${E_NO_DOC}" ]]; then
 fi
 
 if [[ ! -z "${E_CYTHON}" ]]; then
-	# both pyrex and cython, otherwise setuptools/distutils do not
-	# generate .c files.
-	DEPEND="${DEPEND} >=dev-python/pyrex-0.9.8.5 >=dev-python/cython-0.12"
+	DEPEND="${DEPEND} >=dev-python/cython-0.12"
 fi
 
 if [[ ! -z "${E_PYTHON}" ]]; then
