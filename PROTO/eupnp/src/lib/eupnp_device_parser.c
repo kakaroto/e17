@@ -30,8 +30,6 @@
 #include <Eina.h>
 
 #include "Eupnp.h"
-#include "eupnp_device_info.h"
-#include "eupnp_service_info.h"
 #include "eupnp_private.h"
 
 /**
@@ -138,8 +136,8 @@ _embedded_devices_parse_finish(Eupnp_Device_Info *d)
 	if (d->location && !embedded->location)
 	   embedded->location = strdup(d->location);
 
-	if (d->base_URL && !embedded->base_URL)
-	   embedded->base_URL = strdup(d->base_URL);
+	if (d->base_url && !embedded->base_url)
+	   embedded->base_url = strdup(d->base_url);
 
 	_embedded_devices_parse_finish(embedded);
      }
@@ -171,7 +169,7 @@ _characters(void *state, const xmlChar *ch, int len)
 
 	case INSIDE_URLBASE:
 	  DEBUG_D(_log_dom, "Writing device URL base");
-	  COPY_CHARACTERS(d->base_URL, ch, len);
+	  COPY_CHARACTERS(d->base_url, ch, len);
 	  break;
 
 	case INSIDE_DEVICETYPE:
@@ -191,7 +189,7 @@ _characters(void *state, const xmlChar *ch, int len)
 
 	case INSIDE_MANUFACTURER_URL:
 	  DEBUG_D(_log_dom, "Writing device manufacturer URL");
-	  COPY_CHARACTERS(d->manufacturer_URL, ch, len);
+	  COPY_CHARACTERS(d->manufacturer_url, ch, len);
 	  break;
 
 	case INSIDE_MODEL_DESCRIPTION:
@@ -206,7 +204,7 @@ _characters(void *state, const xmlChar *ch, int len)
 
 	case INSIDE_MODEL_URL:
 	  DEBUG_D(_log_dom, "Writing device model URL");
-	  COPY_CHARACTERS(d->model_URL, ch, len);
+	  COPY_CHARACTERS(d->model_url, ch, len);
 	  break;
 
 	case INSIDE_SERIAL_NUMBER:
@@ -234,7 +232,7 @@ _characters(void *state, const xmlChar *ch, int len)
 
 	case INSIDE_PRESENTATION_URL:
 	  DEBUG_D(_log_dom, "Writing device presentation URL");
-	  COPY_CHARACTERS(d->presentation_URL, ch, len);
+	  COPY_CHARACTERS(d->presentation_url, ch, len);
 	  break;
 
 	case INSIDE_ICON_MIMETYPE:
@@ -274,17 +272,17 @@ _characters(void *state, const xmlChar *ch, int len)
 
 	case INSIDE_SERVICE_SCPDURL:
 	  DEBUG_D(_log_dom, "Writing a service's SCPD URL");
-	  COPY_CHARACTERS(s->service->scpd_URL, ch, len);
+	  COPY_CHARACTERS(s->service->scpd_url, ch, len);
 	  break;
 
 	case INSIDE_SERVICE_EVENTSUB_URL:
 	  DEBUG_D(_log_dom, "Writing a service's eventsub URL");
-	  COPY_CHARACTERS(s->service->eventsub_URL, ch, len);
+	  COPY_CHARACTERS(s->service->eventsub_url, ch, len);
 	  break;
 
 	case INSIDE_SERVICE_CONTROL_URL:
 	  DEBUG_D(_log_dom, "Writing a service's control URL");
-	  COPY_CHARACTERS(s->service->control_URL, ch, len);
+	  COPY_CHARACTERS(s->service->control_url, ch, len);
 	  break;
      }
 }
@@ -460,16 +458,16 @@ start_element_ns(void *state, const xmlChar *name, const xmlChar *prefix, const 
 	case INSIDE_SERVICE:
 	  if (!s->service)
 	    {
-	       if (!d->base_URL)
+	       if (!d->base_url)
 	         {
 		     DEBUG_D(_log_dom, "Base URL not set, parsing from location %s", d->location);
 		     int base_url_len = eupnp_utils_url_base_get(d->location);
 		     DEBUG_D(_log_dom, "Base URL len is %d", base_url_len);
-		     if (base_url_len) COPY_CHARACTERS(d->base_URL, d->location, base_url_len);
-		     DEBUG_D(_log_dom, "Base URL set is %s", d->base_URL);
+		     if (base_url_len) COPY_CHARACTERS(d->base_url, d->location, base_url_len);
+		     DEBUG_D(_log_dom, "Base URL set is %s", d->base_url);
 		 }
 
-	       s->service = eupnp_service_info_new(d->udn, d->base_URL, NULL, NULL, NULL);
+	       s->service = eupnp_service_info_new(d->udn, d->base_url, NULL, NULL, NULL);
 	       if (!s->service)
 	         {
 		    ERROR_D(_log_dom, "Could not alloc memory for service");

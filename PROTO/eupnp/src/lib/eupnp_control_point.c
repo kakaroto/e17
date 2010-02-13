@@ -27,7 +27,6 @@
 
 #include <Eina.h>
 
-#include "eupnp_control_point.h"
 #include "eupnp_private.h"
 
 /**
@@ -178,25 +177,6 @@ eupnp_control_point_stop(Eupnp_Control_Point *c)
    DEBUG_D(_log_dom, "Stopping control point %p", c);
    eupnp_ssdp_client_stop(c->ssdp_client);
    return EINA_TRUE;
-}
-
-/**
- * Retrieves the socket associated with the ssdp module.
- *
- * This socket is used for the UPnP Discovery step and for broadcasting MSearch
- * messages.
- *
- * @param c Eupnp_Control_Point instance
- *
- * @return The ssdp socket.
- */
-EAPI int
-eupnp_control_point_ssdp_socket_get(Eupnp_Control_Point *c)
-{
-   CHECK_NULL_RET_VAL(c, -1);
-   CHECK_NULL_RET_VAL(c->ssdp_client, -1);
-   DEBUG_D(_log_dom, "Retrieving control point %p socket %d", c, c->ssdp_client->udp_transport->socket);
-   return c->ssdp_client->udp_transport->socket;
 }
 
 /**

@@ -30,9 +30,7 @@
 #include <libxml/SAX2.h>
 
 #include "Eupnp.h"
-#include "eupnp_service_proxy.h"
 #include "eupnp_core.h"
-#include "eupnp_service_info.h"
 #include "eupnp_http_message.h"
 #include "eupnp_private.h"
 
@@ -599,9 +597,9 @@ eupnp_service_proxy_free(Eupnp_Service_Proxy *proxy)
 	  }
      }
 
-   free((char *)proxy->control_URL);
-   free((char *)proxy->eventsub_URL);
-   free((char *)proxy->base_URL);
+   free((char *)proxy->control_url);
+   free((char *)proxy->eventsub_url);
+   free((char *)proxy->base_url);
    free((char *)proxy->service_type);
 
    free(proxy);
@@ -682,8 +680,8 @@ eupnp_service_proxy_dump(Eupnp_Service_Proxy *proxy)
 
    INFO_D(_log_dom, "\tService Proxy dump");
    INFO_D(_log_dom, "\t\tversion: %d.%d", proxy->spec_version_major, proxy->spec_version_minor);
-   INFO_D(_log_dom, "\t\tcontrol URL: %s", proxy->control_URL);
-   INFO_D(_log_dom, "\t\tbase URL: %s", proxy->base_URL);
+   INFO_D(_log_dom, "\t\tcontrol URL: %s", proxy->control_url);
+   INFO_D(_log_dom, "\t\tbase URL: %s", proxy->base_url);
    eupnp_service_proxy_actions_dump(proxy);
    eupnp_service_proxy_state_table_dump(proxy);
 }
@@ -745,9 +743,9 @@ eupnp_service_proxy_new(Eupnp_Service_Info *service, Eupnp_Service_Proxy_Ready_C
 {
    CHECK_NULL_RET(service);
    CHECK_NULL_RET(service->location);
-   CHECK_NULL_RET(service->control_URL);
+   CHECK_NULL_RET(service->control_url);
    CHECK_NULL_RET(ready_cb);
-   CHECK_NULL_RET(service->scpd_URL);
+   CHECK_NULL_RET(service->scpd_url);
    CHECK_NULL_RET(service->service_type);
 
    Eupnp_Service_Proxy *proxy;
@@ -755,15 +753,15 @@ eupnp_service_proxy_new(Eupnp_Service_Info *service, Eupnp_Service_Proxy_Ready_C
 
    CHECK_NULL_RET(proxy);
 
-   proxy->control_URL = strdup(service->control_URL);
-   proxy->base_URL = strdup(service->location);
-   proxy->eventsub_URL = strdup(service->eventsub_URL);
+   proxy->control_url = strdup(service->control_url);
+   proxy->base_url = strdup(service->location);
+   proxy->eventsub_url = strdup(service->eventsub_url);
    proxy->service_type = strdup(service->service_type);
    proxy->ready_cb = ready_cb;
    proxy->ready_cb_data = data;
    proxy->refcount = 1;
 
-   eupnp_service_proxy_fetch(proxy, service->location, service->scpd_URL);
+   eupnp_service_proxy_fetch(proxy, service->location, service->scpd_url);
 }
 
 /**
@@ -809,7 +807,7 @@ eupnp_service_proxy_unref(Eupnp_Service_Proxy *proxy)
       eupnp_service_proxy_free(proxy);
 }
 
-EAPI Eupnp_State_Variable *
+EAPI const Eupnp_State_Variable *
 eupnp_service_proxy_state_variable_get(const Eupnp_Service_Proxy *proxy, const char *name, int name_len)
 {
    CHECK_NULL_RET_VAL(proxy, NULL);
@@ -818,7 +816,7 @@ eupnp_service_proxy_state_variable_get(const Eupnp_Service_Proxy *proxy, const c
 
    if (!name_len) name_len = strlen(name);
 
-   Eupnp_State_Variable *st;
+   const Eupnp_State_Variable *st;
 
    EINA_INLIST_FOREACH(proxy->state_table, st)
      {
@@ -849,8 +847,8 @@ EAPI Eina_Bool
 eupnp_service_proxy_action_send(Eupnp_Service_Proxy *proxy, const char *action, Eupnp_Action_Response_Cb response_cb, void *data, ...)
 {
    CHECK_NULL_RET_VAL(proxy, EINA_FALSE);
-   CHECK_NULL_RET_VAL(proxy->control_URL, EINA_FALSE);
-   CHECK_NULL_RET_VAL(proxy->base_URL, EINA_FALSE);
+   CHECK_NULL_RET_VAL(proxy->control_url, EINA_FALSE);
+   CHECK_NULL_RET_VAL(proxy->base_url, EINA_FALSE);
    CHECK_NULL_RET_VAL(action, EINA_FALSE);
 
    Eupnp_Action_Request *req;
@@ -870,7 +868,7 @@ eupnp_service_proxy_action_send(Eupnp_Service_Proxy *proxy, const char *action, 
 	return EINA_FALSE;
      }
 
-   if (asprintf(&url, "%s%s", proxy->base_URL, proxy->control_URL) < 0)
+   if (asprintf(&url, "%s%s", proxy->base_url, proxy->control_url) < 0)
      {
 	ERROR_D(_log_dom, "Could not mount url for sending action %s", action);
 	return EINA_FALSE;
@@ -1043,8 +1041,8 @@ eupnp_service_proxy_state_variable_events_subscribe(Eupnp_Service_Proxy *proxy, 
    CHECK_NULL_RET_VAL(proxy, EINA_FALSE);
    CHECK_NULL_RET_VAL(var_name, EINA_FALSE);
    CHECK_NULL_RET_VAL(cb, EINA_FALSE);
-   CHECK_NULL_RET_VAL(proxy->base_URL, EINA_FALSE);
-   CHECK_NULL_RET_VAL(proxy->eventsub_URL, EINA_FALSE);
+   CHECK_NULL_RET_VAL(proxy->base_url, EINA_FALSE);
+   CHECK_NULL_RET_VAL(proxy->eventsub_url, EINA_FALSE);
 
    Eupnp_Event_Subscriber *subscriber;
    Eupnp_Event_Subscriber *ret = NULL;
@@ -1085,7 +1083,7 @@ eupnp_service_proxy_state_variable_events_subscribe(Eupnp_Service_Proxy *proxy, 
 
    subscriber->data = data;
    subscriber->cb = cb;
-   subscriber->state_var = eupnp_service_proxy_state_variable_get(proxy, var_name, 0);
+   subscriber->state_var = (Eupnp_State_Variable *)eupnp_service_proxy_state_variable_get(proxy, var_name, 0);
    subscriber->proxy = eupnp_service_proxy_ref(proxy);
 
    /* Sent subscription, subscribe for answers */
@@ -1102,7 +1100,7 @@ eupnp_service_proxy_state_variable_events_subscribe(Eupnp_Service_Proxy *proxy, 
 	goto listen_url_err;
      }
 
-   if ((eventing_url_len = asprintf(&subscriber->eventing_url, "%s%s", proxy->base_URL, proxy->eventsub_URL)) < 0)
+   if ((eventing_url_len = asprintf(&subscriber->eventing_url, "%s%s", proxy->base_url, proxy->eventsub_url)) < 0)
      {
 	ERROR_D(_log_dom, "Failed to compose complete event sub URL.");
 	subscriber->eventing_url = NULL;
@@ -1119,8 +1117,8 @@ eupnp_service_proxy_state_variable_events_subscribe(Eupnp_Service_Proxy *proxy, 
    // HOST: domain name or IP address and optional port components of eventing
    // URL, i.e. host:port
 
-   host = eupnp_http_header_new("HOST", strlen("HOST"), proxy->base_URL + 7,
-				strlen(proxy->base_URL) - 7);
+   host = eupnp_http_header_new("HOST", strlen("HOST"), proxy->base_url + 7,
+				strlen(proxy->base_url) - 7);
    if (!host) goto host_header_err;
 
    callback = eupnp_http_header_new("CALLBACK", strlen("CALLBACK"),
@@ -1219,8 +1217,8 @@ eupnp_service_proxy_state_variable_events_unsubscribe(Eupnp_Event_Subscriber *su
 
    add_headers = eina_array_new(2);
    host = eupnp_http_header_new("HOST", strlen("HOST"),
-				subscriber->proxy->base_URL + 7,
-				strlen(subscriber->proxy->base_URL) - 7);
+				subscriber->proxy->base_url + 7,
+				strlen(subscriber->proxy->base_url) - 7);
    if (!host) goto host_header_err;
 
    sid = eupnp_http_header_new("SID", strlen("SID"), subscriber->sid,

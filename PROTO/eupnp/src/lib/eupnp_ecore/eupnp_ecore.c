@@ -25,7 +25,7 @@
 #include <Ecore_Con.h>
 #include <Eina.h>
 
-#include "eupnp_ecore.h"
+#include "Eupnp_Ecore.h"
 #include "eupnp_core.h"
 #include "eupnp_private.h"
 #include "eupnp_http_message.h"

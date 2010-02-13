@@ -29,13 +29,9 @@
 #include <Eina.h>
 
 #include "Eupnp.h"
-#include "eupnp_ssdp.h"
 #include "eupnp_core.h"
 #include "eupnp_udp_transport.h"
-#include "eupnp_device_info.h"
-#include "eupnp_service_info.h"
 #include "eupnp_http_message.h"
-#include "eupnp_event_bus.h"
 #include "eupnp_private.h"
 
 
@@ -121,6 +117,13 @@
  */
 
 static int _log_dom = -1;
+
+/**
+ * Shared strings, retrieve them with stringshare{ref|add}
+ */
+static char *_eupnp_ssdp_notify = NULL;
+static char *_eupnp_ssdp_msearch = NULL;
+static char *_eupnp_ssdp_http_version = NULL;
 
 
 /**

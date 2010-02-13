@@ -361,7 +361,7 @@ _characters(void *state, const xmlChar *ch, int len)
 {
    Eupnp_Service_Parser_State *s = state;
    Eupnp_Service_Proxy *p = s->data;
-   Eupnp_State_Variable *related = NULL;
+   const Eupnp_State_Variable *related = NULL;
 
    switch (s->state)
      {
@@ -409,10 +409,10 @@ _characters(void *state, const xmlChar *ch, int len)
 		    ERROR_D(_log_dom, "Could not create state variable (related stage)");
 		    break;
 		 }
-	       eupnp_service_proxy_state_variable_add(p, related);
+	       eupnp_service_proxy_state_variable_add(p, (Eupnp_State_Variable *)related);
 	    }
 
-	  s->building_arg->related_state_variable = related;
+	  s->building_arg->related_state_variable = (Eupnp_State_Variable *)related;
 	  related = NULL;
 	  break;
 

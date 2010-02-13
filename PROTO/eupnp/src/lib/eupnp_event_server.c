@@ -31,7 +31,6 @@
 #include "Eupnp.h"
 #include "eupnp_core.h"
 #include "eupnp_private.h"
-#include "eupnp_event_bus.h"
 #include "eupnp_http_message.h"
 
 

@@ -42,6 +42,11 @@
 # define EAPI
 #endif
 
+#include <Eina.h>
+#include "eupnp_core.h"
+#include "eupnp_udp_transport.h"
+#include "eupnp_http_message.h"
+
 /**
  * @mainpage
  *
@@ -121,17 +126,177 @@
  *
  */
 
-#include "eupnp_core.h"
-#include "eupnp_udp_transport.h"
-#include "eupnp_http_message.h"
-#include "eupnp_event_bus.h"
-#include "eupnp_ssdp.h"
-#include "eupnp_control_point.h"
-#include "eupnp_service_proxy.h"
-#include "eupnp_service_info.h"
-#include "eupnp_device_info.h"
+#define EUPNP_ST_SSDP_ALL           "ssdp:all"
+#define EUPNP_ST_UPNP_ROOTDEVICE    "upnp:rootdevice"
+#define EUPNP_SSDP_NOTIFY_ALIVE     "ssdp:alive"
+#define EUPNP_SSDP_NOTIFY_BYEBYE    "ssdp:byebye"
+
+/**
+ * @enum Eupnp_Event_Type
+ *
+ * Built-in event types.
+ *
+ * @see eupnp_event_bus_event_type_new()
+ */
+typedef enum {
+   EUPNP_EVENT_DEVICE_FOUND,
+   EUPNP_EVENT_DEVICE_GONE,
+   EUPNP_EVENT_SERVICE_FOUND,
+   EUPNP_EVENT_SERVICE_GONE,
+   EUPNP_EVENT_DEVICE_READY,
+   EUPNP_EVENT_COUNT,
+} Eupnp_Event_Type;
+
+typedef enum {
+   EUPNP_TYPE_INT = 1,
+   EUPNP_TYPE_DOUBLE,
+   EUPNP_TYPE_STRING
+} Eupnp_Types;
+
+typedef enum {
+   EUPNP_ARGUMENT_DIRECTION_IN,
+   EUPNP_ARGUMENT_DIRECTION_OUT
+} Eupnp_Argument_Direction;
+
+typedef struct _Eupnp_Device_Info Eupnp_Device_Info;
+typedef struct _Eupnp_Service_Info Eupnp_Service_Info;
+typedef struct _Eupnp_Service_Proxy Eupnp_Service_Proxy;
+typedef struct _Eupnp_Service_Action_Argument Eupnp_Service_Action_Argument;
+typedef struct _Eupnp_Event_Subscriber Eupnp_Event_Subscriber;
+typedef struct _Eupnp_Control_Point Eupnp_Control_Point;
+typedef struct _Eupnp_SSDP_Client Eupnp_SSDP_Client;
+typedef struct _Eupnp_Subscriber Eupnp_Subscriber;
+typedef struct _Eupnp_State_Variable Eupnp_State_Variable;
+
+typedef Eina_Bool (*Eupnp_State_Variable_Event_Cb)(Eupnp_State_Variable *var, void *buffer, int size, void *data);
+typedef void (*Eupnp_Service_Proxy_Ready_Cb)(void *data, Eupnp_Service_Proxy *proxy);
+typedef void (*Eupnp_Action_Response_Cb)(void *data, Eina_Inlist *evented_vars);
+typedef Eina_Bool (*Eupnp_Callback) (void *user_data, Eupnp_Event_Type event_type, void *event_data);
+
+struct _Eupnp_Control_Point {
+   Eupnp_SSDP_Client *ssdp_client;
+};
+
+struct _Eupnp_SSDP_Client {
+   Eupnp_UDP_Transport *udp_transport;
+
+   /* Private */
+   Eupnp_Fd_Handler socket_handler;
+};
+
+struct _Eupnp_Subscriber {
+   Eupnp_Event_Type type;
+   Eupnp_Callback cb;
+   Eina_Bool deleted:1;
+   void *user_data;
+};
+
+struct _Eupnp_Service_Info {
+   EINA_INLIST;
+
+   const char *udn;
+   const char *location;
+   const char *service_type;
+   const char *id;
+   const char *control_url;
+   const char *scpd_url;
+   const char *eventsub_url;
+
+   /* Private */
+   int refcount;
+   void *_resource; /* Shared resource */
+   void (*_resource_free)(void *resource); /* Resource free function */
+};
+
+struct _Eupnp_Device_Info {
+   EINA_INLIST;
+
+   const char *udn;
+   const char *location;
+   const char *base_url;
+   const char *device_type;
+   const char *friendly_name;
+   const char *manufacturer;
+   const char *manufacturer_url;
+   const char *model_description;
+   const char *model_name;
+   const char *model_number;
+   const char *model_url;
+   const char *serial_number;
+   const char *upc;
+   const char *presentation_url;
+   int spec_version_major;
+   int spec_version_minor;
+
+   Eina_Inlist *icons;            /* List of Eupnp_Device_Icon */
+   Eina_Inlist *services;         /* List of Eupnp_Service_Info */
+   Eina_Inlist *embedded_devices; /* List of Eupnp_Device_Info */
+
+   /* Private */
+   void *xml_parser;
+   int refcount;
+   void *_resource; /* Shared resource */
+   void (*_resource_free)(void *resource); /* Resource free function */
+};
+
+struct _Eupnp_Service_Action_Argument {
+   EINA_INLIST;
+   const char *name;
+   const char *value;
+   Eupnp_Argument_Direction direction;
+   Eupnp_State_Variable *related_state_variable;
+   void *retval; // Optional
+};
+
+/**
+ * @def EUPNP_CALLBACK(f)
+ *
+ * Converts a function to an Eupnp_Callback callback type.
+ *
+ * @param func Function to convert to an Eupnp_Callback
+ */
+#define EUPNP_CALLBACK(f) ((Eupnp_Callback) f)
+#define EUPNP_STATE_VARIABLE_EVENT_CB(f) ((Eupnp_State_Variable_Event_Cb)f)
+#define EUPNP_SERVICE_PROXY_READY_CB(f) ((Eupnp_Service_Proxy_Ready_Cb)f)
+#define EUPNP_ACTION_RESPONSE_CB(f) ((Eupnp_Action_Response_Cb)f)
+
 
 EAPI int eupnp_init(void);
 EAPI int eupnp_shutdown(void);
+
+EAPI Eupnp_Control_Point *eupnp_control_point_new(void);
+EAPI void                 eupnp_control_point_free(Eupnp_Control_Point *c) EINA_ARG_NONNULL(1);
+EAPI Eina_Bool            eupnp_control_point_start(Eupnp_Control_Point *c) EINA_ARG_NONNULL(1);
+EAPI Eina_Bool            eupnp_control_point_stop(Eupnp_Control_Point *c) EINA_ARG_NONNULL(1);
+EAPI Eina_Bool            eupnp_control_point_discovery_request_send(Eupnp_Control_Point *c, int mx, const char *search_target) EINA_ARG_NONNULL(1,2,3);
+
+EAPI void                 eupnp_event_bus_publish(Eupnp_Event_Type event_type, void *event_data);
+EAPI Eupnp_Subscriber    *eupnp_event_bus_subscribe(Eupnp_Event_Type event_type, Eupnp_Callback cb, void *user_data) EINA_ARG_NONNULL(2);
+EAPI void                 eupnp_event_bus_unsubscribe(Eupnp_Subscriber *s) EINA_ARG_NONNULL(1);
+EAPI Eupnp_Event_Type     eupnp_event_bus_event_type_new(void);
+
+EAPI Eupnp_Service_Info         *eupnp_service_info_ref(Eupnp_Service_Info *service_info) EINA_ARG_NONNULL(1);
+EAPI void                        eupnp_service_info_unref(Eupnp_Service_Info *service_info) EINA_ARG_NONNULL(1);
+
+EAPI Eupnp_Device_Info          *eupnp_device_info_ref(Eupnp_Device_Info *device_info) EINA_ARG_NONNULL(1);
+EAPI void                        eupnp_device_info_unref(Eupnp_Device_Info *device_info) EINA_ARG_NONNULL(1);
+EAPI void                        eupnp_device_info_fetch(Eupnp_Device_Info *device_info) EINA_ARG_NONNULL(1);
+EAPI const Eupnp_Service_Info   *eupnp_device_info_service_get_by_type(const Eupnp_Device_Info *device_info, const char *service_type) EINA_ARG_NONNULL(1,2);
+
+EAPI void                        eupnp_service_proxy_new(Eupnp_Service_Info *service, Eupnp_Service_Proxy_Ready_Cb ready_cb, void *data) EINA_ARG_NONNULL(1,2);
+EAPI Eupnp_Service_Proxy        *eupnp_service_proxy_ref(Eupnp_Service_Proxy *proxy) EINA_ARG_NONNULL(1);
+EAPI void                        eupnp_service_proxy_unref(Eupnp_Service_Proxy *proxy) EINA_ARG_NONNULL(1);
+EAPI Eina_Bool                   eupnp_service_proxy_has_action(const Eupnp_Service_Proxy *proxy, const char *action) EINA_ARG_NONNULL(1,2);
+EAPI Eina_Bool                   eupnp_service_proxy_has_variable(const Eupnp_Service_Proxy *proxy, const char *variable_name) EINA_ARG_NONNULL(1,2);
+EAPI Eina_Bool                   eupnp_service_proxy_action_send(Eupnp_Service_Proxy *proxy, const char *action, Eupnp_Action_Response_Cb response_cb, void *data, ...) EINA_ARG_NONNULL(1,2,3);
+EAPI Eupnp_Event_Subscriber     *eupnp_service_proxy_state_variable_events_subscribe(Eupnp_Service_Proxy *proxy, const char *var_name, Eupnp_State_Variable_Event_Cb cb, Eina_Bool auto_renew, Eina_Bool infinite_subscription, int timeout, void *data) EINA_ARG_NONNULL(1,2,3);
+EAPI Eina_Bool                   eupnp_service_proxy_state_variable_events_unsubscribe(Eupnp_Event_Subscriber *subscriber) EINA_ARG_NONNULL(1);
+EAPI const Eupnp_State_Variable *eupnp_service_proxy_state_variable_get(const Eupnp_Service_Proxy *proxy, const char *name, int name_len) EINA_ARG_NONNULL(1,2);
+
+EAPI Eupnp_SSDP_Client   *eupnp_ssdp_client_new(void);
+EAPI void                 eupnp_ssdp_client_free(Eupnp_SSDP_Client *c) EINA_ARG_NONNULL(1);
+EAPI Eina_Bool            eupnp_ssdp_client_start(Eupnp_SSDP_Client *c) EINA_ARG_NONNULL(1);
+EAPI Eina_Bool            eupnp_ssdp_client_stop(Eupnp_SSDP_Client *c) EINA_ARG_NONNULL(1);
+EAPI Eina_Bool            eupnp_ssdp_discovery_request_send(Eupnp_SSDP_Client *c, int mx, const char *search_target) EINA_ARG_NONNULL(1,2,3);
 
 #endif /* _EUPNP_H */

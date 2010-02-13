@@ -11,14 +11,8 @@ lib_LTLIBRARIES = libeupnp.la
 
 EUPNPHEADERS = \
 	Eupnp.h \
-	eupnp_ssdp.h \
 	eupnp_http_message.h \
 	eupnp_udp_transport.h \
-	eupnp_control_point.h \
-	eupnp_device_info.h \
-	eupnp_service_info.h \
-	eupnp_service_proxy.h \
-	eupnp_event_bus.h \
 	eupnp_core.h
 
 noinst_HEADERS = eupnp_private.h

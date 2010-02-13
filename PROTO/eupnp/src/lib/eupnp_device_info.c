@@ -27,10 +27,6 @@
 #include <string.h>
 
 #include "Eupnp.h"
-#include "eupnp_device_info.h"
-#include "eupnp_service_info.h"
-#include "eupnp_service_proxy.h"
-#include "eupnp_event_bus.h"
 #include "eupnp_private.h"
 
 /**
@@ -221,16 +217,16 @@ eupnp_device_info_free(Eupnp_Device_Info *d)
 
    free((char *)d->device_type);
    free((char *)d->friendly_name);
-   free((char *)d->base_URL);
+   free((char *)d->base_url);
    free((char *)d->manufacturer);
-   free((char *)d->manufacturer_URL);
+   free((char *)d->manufacturer_url);
    free((char *)d->model_description);
    free((char *)d->model_name);
    free((char *)d->model_number);
-   free((char *)d->model_URL);
+   free((char *)d->model_url);
    free((char *)d->serial_number);
    free((char *)d->upc);
-   free((char *)d->presentation_URL);
+   free((char *)d->presentation_url);
 
    if (d->icons) eupnp_device_info_icon_list_clear(d);
    if (d->services) eupnp_device_info_service_list_clear(d);
@@ -370,16 +366,16 @@ eupnp_device_info_dump(const Eupnp_Device_Info *device_info)
    INFO_D(_log_dom, "\tudn: %s", device_info->udn);
    INFO_D(_log_dom, "\ttype: %s", device_info->device_type);
    INFO_D(_log_dom, "\tlocation: %s", device_info->location);
-   INFO_D(_log_dom, "\tbase URL: %s", device_info->base_URL);
+   INFO_D(_log_dom, "\tbase URL: %s", device_info->base_url);
    INFO_D(_log_dom, "\tspec: %d.%d", device_info->spec_version_major,
 	device_info->spec_version_minor);
    INFO_D(_log_dom, "\tupc: %s", device_info->upc);
-   INFO_D(_log_dom, "\tpresentation URL: %s", device_info->presentation_URL);
+   INFO_D(_log_dom, "\tpresentation URL: %s", device_info->presentation_url);
    INFO_D(_log_dom, "\tmanufacturer: %s", device_info->manufacturer);
-   INFO_D(_log_dom, "\tmanufacturer URL: %s", device_info->manufacturer_URL);
+   INFO_D(_log_dom, "\tmanufacturer URL: %s", device_info->manufacturer_url);
    INFO_D(_log_dom, "\tmodel name: %s", device_info->model_name);
    INFO_D(_log_dom, "\tmodel description: %s", device_info->model_description);
-   INFO_D(_log_dom, "\tmodel URL: %s", device_info->model_URL);
+   INFO_D(_log_dom, "\tmodel URL: %s", device_info->model_url);
    INFO_D(_log_dom, "\tserial number: %s", device_info->serial_number);
 
    if (device_info->icons)

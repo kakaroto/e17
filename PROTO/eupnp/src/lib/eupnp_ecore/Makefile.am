@@ -5,7 +5,7 @@ AM_CFLAGS = -I$(top_srcdir)/src/lib @EINA_CFLAGS@ @ECORE_CFLAGS@ @ECORECON_CFLAG
 
 lib_LTLIBRARIES = libeupnp_ecore.la
 
-EUPNPECOREHEADERS = eupnp_ecore.h
+EUPNPECOREHEADERS = Eupnp_Ecore.h
 
 libeupnp_ecore_la_SOURCES = \
 	eupnp_ecore.c

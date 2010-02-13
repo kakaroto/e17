@@ -29,7 +29,6 @@
 #include <Eina.h>
 
 #include "Eupnp.h"
-#include "eupnp_service_info.h"
 #include "eupnp_private.h"
 
 /**
@@ -96,11 +95,11 @@ eupnp_service_info_new(const char *udn, const char *location, const char *servic
     *
     * In the first case, this service will be published to the user, who might
     * request for a proxy. For retrieving this proxy, we need both base_URL and
-    * control_URL - the first we already have, but the latter is only defined
+    * control_url - the first we already have, but the latter is only defined
     * inside the root device's XML, so we need to fetch this XML and find this
-    * service's control_URL.
+    * service's control_url.
     * TODO 1 or 2 below
-    *   1. Write a simple and fast parser for retrieving this control_URL
+    *   1. Write a simple and fast parser for retrieving this control_url
     *   2. Adapt eupnp_device_parser.c to implement feature specified on item 1
     *
     * In the second case (SSDP), there's no control URL and we're fine by just
@@ -162,9 +161,9 @@ eupnp_service_info_free(Eupnp_Service_Info *d)
    DEBUG_D(_log_dom, "Freeing service info %p", d);
 
    free((char *)d->id);
-   free((char *)d->control_URL);
-   free((char *)d->scpd_URL);
-   free((char *)d->eventsub_URL);
+   free((char *)d->control_url);
+   free((char *)d->scpd_url);
+   free((char *)d->eventsub_url);
 
    /* Free the shared resource */
    if ((d->_resource) && (d->_resource_free))
@@ -230,7 +229,8 @@ eupnp_service_info_dump(const Eupnp_Service_Info *service_info)
    INFO_D(_log_dom, "\t\tlocation: %s", service_info->location);
    INFO_D(_log_dom, "\t\ttype: %s", service_info->service_type);
    INFO_D(_log_dom, "\t\tid: %s", service_info->id);
-   INFO_D(_log_dom, "\t\tcontrol URL: %s", service_info->control_URL);
-   INFO_D(_log_dom, "\t\tscpd URL: %s", service_info->scpd_URL);
-   INFO_D(_log_dom, "\t\teventsub URL: %s", service_info->eventsub_URL);
+   INFO_D(_log_dom, "\t\tcontrol URL: %s", service_info->control_url);
+   INFO_D(_log_dom, "\t\tscpd URL: %s", service_info->scpd_url);
+   INFO_D(_log_dom, "\t\teventsub URL: %s", service_info->eventsub_url);
 }
+

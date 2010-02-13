@@ -22,7 +22,6 @@
 #ifndef _EUPNP_ECORE_H
 #define _EUPNP_ECORE_H
 
-
 int eupnp_ecore_init(void);
 int eupnp_ecore_shutdown(void);
 

@@ -57,9 +57,7 @@ static Eina_Bool
 on_device_found(void *user_data, Eupnp_Event_Type event_type, void *event_data)
 {
    Eupnp_Device_Info *d = event_data;
-
    INF("Device found: %s", d->udn);
-
    return EINA_TRUE;
 }
 
