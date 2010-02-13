@@ -209,7 +209,7 @@ _on_cmd_property_set(char *cmd, char *args)
      {
       case DBUS_TYPE_BOOLEAN:
 	 vlong = !!atol(next_args);
-	 value = (void *)vlong;
+	 value = &vlong;
 	 fprintf(stderr, "DBG: boolean is: %ld\n", vlong);
 	 break;
       case DBUS_TYPE_UINT16:
