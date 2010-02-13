@@ -390,3 +390,110 @@ eupnp_device_info_dump(const Eupnp_Device_Info *device_info)
      EINA_INLIST_FOREACH(device_info->embedded_devices, device)
         eupnp_device_info_dump(device);
 }
+
+EAPI const char *
+eupnp_device_info_udn_get(const Eupnp_Device_Info *device_info)
+{
+   CHECK_NULL_RET_VAL(device_info, NULL);
+   return device_info->udn;
+}
+
+EAPI const char *
+eupnp_device_info_location_get(const Eupnp_Device_Info *device_info)
+{
+   CHECK_NULL_RET_VAL(device_info, NULL);
+   return device_info->location;
+}
+
+EAPI const char *
+eupnp_device_info_base_url_get(const Eupnp_Device_Info *device_info)
+{
+   CHECK_NULL_RET_VAL(device_info, NULL);
+   return device_info->base_url;
+}
+
+EAPI const char *
+eupnp_device_info_device_type_get(const Eupnp_Device_Info *device_info)
+{
+   CHECK_NULL_RET_VAL(device_info, NULL);
+   return device_info->device_type;
+}
+
+EAPI const char *
+eupnp_device_info_friendly_name_get(const Eupnp_Device_Info *device_info)
+{
+   CHECK_NULL_RET_VAL(device_info, NULL);
+   return device_info->friendly_name;
+}
+
+EAPI const char *
+eupnp_device_info_manufacturer_get(const Eupnp_Device_Info *device_info)
+{
+   CHECK_NULL_RET_VAL(device_info, NULL);
+   return device_info->manufacturer;
+}
+
+EAPI const char *
+eupnp_device_info_manufacturer_url_get(const Eupnp_Device_Info *device_info)
+{
+   CHECK_NULL_RET_VAL(device_info, NULL);
+   return device_info->manufacturer_url;
+}
+
+EAPI const char *
+eupnp_device_info_model_description_get(const Eupnp_Device_Info *device_info)
+{
+   CHECK_NULL_RET_VAL(device_info, NULL);
+   return device_info->model_description;
+}
+
+EAPI const char *
+eupnp_device_info_model_name_get(const Eupnp_Device_Info *device_info)
+{
+   CHECK_NULL_RET_VAL(device_info, NULL);
+   return device_info->model_name;
+}
+
+EAPI const char *
+eupnp_device_info_model_number_get(const Eupnp_Device_Info *device_info)
+{
+   CHECK_NULL_RET_VAL(device_info, NULL);
+   return device_info->model_number;
+}
+
+EAPI const char *
+eupnp_device_info_model_url_get(const Eupnp_Device_Info *device_info)
+{
+   CHECK_NULL_RET_VAL(device_info, NULL);
+   return device_info->model_url;
+}
+
+EAPI const char *
+eupnp_device_info_serial_number_get(const Eupnp_Device_Info *device_info)
+{
+   CHECK_NULL_RET_VAL(device_info, NULL);
+   return device_info->serial_number;
+}
+
+EAPI const char *
+eupnp_device_info_upc_get(const Eupnp_Device_Info *device_info)
+{
+   CHECK_NULL_RET_VAL(device_info, NULL);
+   return device_info->upc;
+}
+
+EAPI const char *
+eupnp_device_info_presentation_url_get(const Eupnp_Device_Info *device_info)
+{
+   CHECK_NULL_RET_VAL(device_info, NULL);
+   return device_info->presentation_url;
+}
+
+EAPI void
+eupnp_device_info_spec_version_get(const Eupnp_Device_Info *device_info, int *minor, int *major)
+{
+   CHECK_NULL_RET(device_info);
+   *minor = device_info->spec_version_minor;
+   *major = device_info->spec_version_major;
+}
+

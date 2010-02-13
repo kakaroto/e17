@@ -283,6 +283,22 @@ EAPI void                        eupnp_device_info_unref(Eupnp_Device_Info *devi
 EAPI void                        eupnp_device_info_fetch(Eupnp_Device_Info *device_info) EINA_ARG_NONNULL(1);
 EAPI const Eupnp_Service_Info   *eupnp_device_info_service_get_by_type(const Eupnp_Device_Info *device_info, const char *service_type) EINA_ARG_NONNULL(1,2);
 
+EAPI const char                 *eupnp_device_info_udn_get(const Eupnp_Device_Info *device_info) EINA_ARG_NONNULL(1);
+EAPI const char                 *eupnp_device_info_location_get(const Eupnp_Device_Info *device_info) EINA_ARG_NONNULL(1);
+EAPI const char                 *eupnp_device_info_base_url_get(const Eupnp_Device_Info *device_info) EINA_ARG_NONNULL(1);
+EAPI const char                 *eupnp_device_info_device_type_get(const Eupnp_Device_Info *device_info) EINA_ARG_NONNULL(1);
+EAPI const char                 *eupnp_device_info_friendly_name_get(const Eupnp_Device_Info *device_info) EINA_ARG_NONNULL(1);
+EAPI const char                 *eupnp_device_info_manufacturer_get(const Eupnp_Device_Info *device_info) EINA_ARG_NONNULL(1);
+EAPI const char                 *eupnp_device_info_manufacturer_url_get(const Eupnp_Device_Info *device_info) EINA_ARG_NONNULL(1);
+EAPI const char                 *eupnp_device_info_model_description_get(const Eupnp_Device_Info *device_info) EINA_ARG_NONNULL(1);
+EAPI const char                 *eupnp_device_info_model_name_get(const Eupnp_Device_Info *device_info) EINA_ARG_NONNULL(1);
+EAPI const char                 *eupnp_device_info_model_number_get(const Eupnp_Device_Info *device_info) EINA_ARG_NONNULL(1);
+EAPI const char                 *eupnp_device_info_model_url_get(const Eupnp_Device_Info *device_info) EINA_ARG_NONNULL(1);
+EAPI const char                 *eupnp_device_info_serial_number_get(const Eupnp_Device_Info *device_info) EINA_ARG_NONNULL(1);
+EAPI const char                 *eupnp_device_info_upc_get(const Eupnp_Device_Info *device_info) EINA_ARG_NONNULL(1);
+EAPI const char                 *eupnp_device_info_presentation_url_get(const Eupnp_Device_Info *device_info) EINA_ARG_NONNULL(1);
+EAPI void                        eupnp_device_info_spec_version_get(const Eupnp_Device_Info *device_info, int *minor, int *major) EINA_ARG_NONNULL(1,2,3);
+
 EAPI void                        eupnp_service_proxy_new(Eupnp_Service_Info *service, Eupnp_Service_Proxy_Ready_Cb ready_cb, void *data) EINA_ARG_NONNULL(1,2);
 EAPI Eupnp_Service_Proxy        *eupnp_service_proxy_ref(Eupnp_Service_Proxy *proxy) EINA_ARG_NONNULL(1);
 EAPI void                        eupnp_service_proxy_unref(Eupnp_Service_Proxy *proxy) EINA_ARG_NONNULL(1);
