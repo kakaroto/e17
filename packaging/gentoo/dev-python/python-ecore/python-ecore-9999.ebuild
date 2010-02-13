@@ -17,7 +17,7 @@ RDEPEND=">=dev-libs/ecore-9999[evas?,X?,xscreensaver?]"
 
 # python-evas is just required to build as it includes some useful header files
 DEPEND="
-	>=dev-python/python-evas-9999
+	evas? ( >=dev-python/python-evas-9999 )
 	${RDEPEND}"
 
 src_configure() {

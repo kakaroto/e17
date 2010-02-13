@@ -15,7 +15,7 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with this Python-Edje.  If not, see <http://www.gnu.org/licenses/>.
 
-cimport evas.python as python
+cimport python
 cimport evas.c_evas
 import evas.c_evas
 cimport edje.c_edje

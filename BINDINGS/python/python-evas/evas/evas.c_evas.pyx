@@ -15,13 +15,21 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with this Python-Evas.  If not, see <http://www.gnu.org/licenses/>.
 
-cimport evas.python as python
+cimport python
 
 __extra_epydoc_fields__ = (
     ("parm", "Parameter", "Parameters"), # epydoc don't support pyrex properly
     )
 
+
+cdef int PY_REFCOUNT(object o):
+    return o.ob_refcnt
+
+
 def init():
+    if evas_event_callbacks_len != EVAS_CALLBACK_LAST:
+        raise SystemError("Number of callbacks changed from %d to %d." %
+                          (evas_event_callbacks_len, EVAS_CALLBACK_LAST))
     return evas_init()
 
 
@@ -327,9 +335,13 @@ class EvasLoadError(Exception):
         Exception.__init__(self, "%s (file=%s, key=%s)" % (msg, filename, key))
 
 
-cdef void _install_metaclass(python.PyTypeObject *ctype, object metaclass):
+cdef extern from "Python.h":
+    ctypedef struct PyTypeObject:
+        PyTypeObject *ob_type
+
+cdef void _install_metaclass(PyTypeObject *ctype, object metaclass):
     python.Py_INCREF(metaclass)
-    ctype.ob_type = <python.PyTypeObject*>metaclass
+    ctype.ob_type = <PyTypeObject*>metaclass
 
 
 class EvasObjectMeta(type):

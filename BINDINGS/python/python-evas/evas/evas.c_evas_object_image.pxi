@@ -17,6 +17,10 @@
 
 # This file is included verbatim by c_evas.pyx
 
+# TODO: remove me after usage is update to new buffer api
+cdef extern from "Python.h":
+    int PyObject_AsReadBuffer(obj, void **buffer, Py_ssize_t *buffer_len) except -1
+
 
 def image_mask_fill(Image source, Image mask, Image surface, int x_mask, int y_mask, int x_surface, int y_surface):
     evas_object_image_mask_fill(source.obj, mask.obj, surface.obj,
@@ -569,7 +573,8 @@ cdef public class Image(Object) [object PyEvasImage, type PyEvasImage_Type]:
             evas_object_image_data_set(self.obj, NULL)
             return
 
-        python.PyObject_AsReadBuffer(buf, &p_data, &size)
+        # TODO: update to new buffer api
+        PyObject_AsReadBuffer(buf, &p_data, &size)
         if p_data != NULL:
             expected_size = _data_size_get(self.obj)
             if size < expected_size:
@@ -594,9 +599,7 @@ cdef public class Image(Object) [object PyEvasImage, type PyEvasImage_Type]:
         self.event_callback_del(EVAS_CALLBACK_IMAGE_PRELOADED, func)
 
 
-cdef extern from "Python.h":
-    cdef python.PyTypeObject PyEvasImage_Type # hack to install metaclass
-
+cdef PyTypeObject PyEvasImage_Type # hack to install metaclass
 _install_metaclass(&PyEvasImage_Type, EvasObjectMeta)
 
 
@@ -626,7 +629,5 @@ cdef public class FilledImage(Image) [object PyEvasFilledImage,
         raise NotImplementedError("FilledImage doesn't support fill_set()")
 
 
-cdef extern from "Python.h":
-    cdef python.PyTypeObject PyEvasFilledImage_Type # hack to install metaclass
-
+cdef PyTypeObject PyEvasFilledImage_Type # hack to install metaclass
 _install_metaclass(&PyEvasFilledImage_Type, EvasObjectMeta)

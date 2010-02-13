@@ -38,7 +38,7 @@ TROUBLESHOOTING
 
 If you get the following error during build_ext:
 
-        include/emotion/c_emotion.pxd:1:8: 'evas.c_evas.pxd' not found
+        include/elementary/c_elementary.pxd:19:8: 'evas.c_evas.pxd' not found
 
 Means that either evas/c_evas.pxd was not installed or it is placed
 at an non-standard place.

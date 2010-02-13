@@ -26,7 +26,5 @@ cdef public class Rectangle(Object) [object PyEvasRectangle,
         self._set_common_params(**kargs)
 
 
-cdef extern from "Python.h":
-    cdef python.PyTypeObject PyEvasRectangle_Type # hack to install metaclass
-
+cdef PyTypeObject PyEvasRectangle_Type # hack to install metaclass
 _install_metaclass(&PyEvasRectangle_Type, EvasObjectMeta)

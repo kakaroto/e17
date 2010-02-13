@@ -190,7 +190,7 @@ cdef void cb_image_preloaded(void *data, Evas *e,
 
 
 cdef int evas_event_callbacks_len
-cdef evas_event_callback_t evas_event_callbacks[23]
+cdef Evas_Event_Cb evas_event_callbacks[23]
 evas_event_callbacks_len = 23
 evas_event_callbacks[<int>EVAS_CALLBACK_MOUSE_IN] = cb_mouse_in
 evas_event_callbacks[<int>EVAS_CALLBACK_MOUSE_OUT] = cb_mouse_out

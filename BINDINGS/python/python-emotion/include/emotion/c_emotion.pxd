@@ -18,11 +18,6 @@
 cimport evas.c_evas
 import evas.c_evas
 
-
-cdef extern from "evas/python_evas_utils.h":
-    int PY_REFCOUNT(object)
-
-
 cdef extern from "Emotion.h":
     ctypedef enum Emotion_Module:
         EMOTION_MODULE_XINE = 0

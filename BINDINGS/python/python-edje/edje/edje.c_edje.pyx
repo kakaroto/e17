@@ -15,13 +15,17 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with this Python-Edje.  If not, see <http://www.gnu.org/licenses/>.
 
-cimport evas.python as python
+cimport python
+cimport stdlib
 cimport evas.c_evas
 import evas.c_evas
 
 __extra_epydoc_fields__ = (
     ("parm", "Parameter", "Parameters"), # epydoc don't support pyrex properly
     )
+
+cdef int PY_REFCOUNT(object o):
+    return o.ob_refcnt
 
 def init():
     cdef int r = edje_init()
@@ -173,7 +177,7 @@ def color_class_list():
     itr = lst
     while itr:
         ret.append(<char*>itr.data)
-        python.free(itr.data)
+        stdlib.free(itr.data)
         itr = itr.next
     evas.c_evas.eina_list_free(lst)
     return ret
@@ -201,7 +205,7 @@ def text_class_list():
     itr = lst
     while itr:
         ret.append(<char*>itr.data)
-        python.free(itr.data)
+        stdlib.free(itr.data)
         itr = itr.next
     evas.c_evas.eina_list_free(lst)
     return ret
@@ -262,10 +266,13 @@ def available_modules_get():
 def module_load(char *name):
     return bool(edje_module_load(name))
 
+cdef extern from "Python.h":
+    ctypedef struct PyTypeObject:
+        PyTypeObject *ob_type
 
-cdef void _install_metaclass(python.PyTypeObject *ctype, object metaclass):
+cdef void _install_metaclass(PyTypeObject *ctype, object metaclass):
     python.Py_INCREF(metaclass)
-    ctype.ob_type = <python.PyTypeObject*>metaclass
+    ctype.ob_type = <PyTypeObject*>metaclass
 
 
 include "edje.c_edje_message.pxi"

@@ -29,7 +29,7 @@ cdef int _free_wrapper_resources(Object obj) except 0:
 
 cdef int _unregister_callbacks(Object obj) except 0:
     cdef Evas_Object *o
-    cdef evas_event_callback_t cb
+    cdef Evas_Event_Cb cb
     o = obj.obj
     if o != NULL:
         for i, lst in enumerate(obj._callbacks):
@@ -1271,7 +1271,7 @@ cdef public class Object [object PyEvasObject, type PyEvasObject_Type]:
         @raise ValueError: if B{type} is unknown.
         @raise TypeError: if B{func} is not callable.
         """
-        cdef evas_event_callback_t cb
+        cdef Evas_Event_Cb cb
 
         if not callable(func):
             raise TypeError("func must be callable")
@@ -1294,7 +1294,7 @@ cdef public class Object [object PyEvasObject, type PyEvasObject_Type]:
         @raise ValueError: if B{type} is unknown or if there was no
            B{func} connected with this type.
         """
-        cdef evas_event_callback_t cb
+        cdef Evas_Event_Cb cb
         if _del_callback_from_list(self, type, func):
             if type != EVAS_CALLBACK_FREE:
                 cb = evas_event_callbacks[type]
@@ -1618,7 +1618,5 @@ cdef public class Object [object PyEvasObject, type PyEvasObject_Type]:
             return self.parent_get()
 
 
-cdef extern from "Python.h":
-    cdef python.PyTypeObject PyEvasObject_Type # hack to install metaclass
-
+cdef PyTypeObject PyEvasObject_Type # hack to install metaclass
 _install_metaclass(&PyEvasObject_Type, EvasObjectMeta)

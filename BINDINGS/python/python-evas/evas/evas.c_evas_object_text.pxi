@@ -349,7 +349,5 @@ cdef public class Text(Object) [object PyEvasText, type PyEvasText_Type]:
             return self.style_pad_get()
 
 
-cdef extern from "Python.h":
-    cdef python.PyTypeObject PyEvasText_Type # hack to install metaclass
-
+cdef PyTypeObject PyEvasText_Type # hack to install metaclass
 _install_metaclass(&PyEvasText_Type, EvasObjectMeta)

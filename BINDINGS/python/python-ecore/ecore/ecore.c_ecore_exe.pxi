@@ -19,6 +19,10 @@
 
 import traceback
 
+# TODO: remove me after usage is update to new buffer api
+cdef extern from "Python.h":
+    int PyObject_AsReadBuffer(obj, void **buffer, Py_ssize_t *buffer_len) except -1
+
 
 cdef exe_flags2str(int value):
     flags = []
@@ -404,7 +408,9 @@ cdef class Exe:
         """
         cdef void *b_data
         cdef Py_ssize_t b_size
-        python.PyObject_AsReadBuffer(buffer, &b_data, &b_size)
+
+        # TODO: update to new buffer api
+        PyObject_AsReadBuffer(buffer, &b_data, &b_size)
         if size <= 0:
             size = b_size
         elif size > b_size:

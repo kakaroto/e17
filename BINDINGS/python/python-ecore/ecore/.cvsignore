@@ -1,5 +1,0 @@
-*.pyc
-*.pyo
-ecore.c_ecore.c
-ecore.c_ecore.h
-ecore.c_ecore.pxi

@@ -1,6 +1,6 @@
-recursive-include elementary *.pyx *.pxi *.py *.h
+recursive-include elementary *.pyx *.pxi *.py
 recursive-include tests *.py *.png *.jpg *.edj
-recursive-include include *.pxd *.h *.py
+recursive-include include *.pxd *.py
+include elementary/elementary.c_elementary.[ch]
 include AUTHORS COPYING README
-global-exclude .cvsignore
 prune debian

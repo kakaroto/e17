@@ -19,17 +19,9 @@
 cimport evas.c_evas
 import evas.c_evas
 
-cdef extern from "Python.h":
-    ctypedef unsigned int size_t
 
-    void *PyMem_Malloc(size_t nbytes)
-    void PyMem_Free(void *p)
-    void memcpy(void *source, void *dest, size_t nbytes)
-
-    # object.h
-    void Py_INCREF(object)
-    void Py_DECREF(object)
-    int  PY_REFCOUNT(object)
+cdef extern from "string.h":
+    void *memcpy(void *dst, void *src, int n)
 
 cdef enum Elm_Win_Type:
     ELM_WIN_BASIC

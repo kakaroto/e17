@@ -18,9 +18,6 @@
 cimport evas.c_evas
 import evas.c_evas
 
-cdef extern from "evas/python_evas_utils.h":
-    int PY_REFCOUNT(object)
-
 cdef extern from "Edje.h":
     ####################################################################
     # Enumerations
@@ -246,7 +243,7 @@ cdef extern from "Edje.h":
     void edje_extern_object_max_size_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Evas_Coord maxw, evas.c_evas.Evas_Coord maxh)
     void edje_extern_object_aspect_set(evas.c_evas.Evas_Object *obj, Edje_Aspect_Control aspect, evas.c_evas.Evas_Coord aw, evas.c_evas.Evas_Coord ah)
 
-    evas.c_evas.Evas_Object *edje_object_add(evas.c_evas.Evas *evas)
+    evas.c_evas.Evas_Object *edje_object_add(evas.c_evas.Evas *)
 
     char *edje_object_data_get(evas.c_evas.Evas_Object *obj, char *key)
 

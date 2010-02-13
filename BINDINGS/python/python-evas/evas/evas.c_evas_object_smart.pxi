@@ -704,9 +704,7 @@ cdef public class SmartObject(Object) [object PyEvasSmartObject,
         return obj
 
 
-cdef extern from "Python.h":
-    cdef python.PyTypeObject PyEvasSmartObject_Type # hack to install metaclass
-
+cdef PyTypeObject PyEvasSmartObject_Type # hack to install metaclass
 _install_metaclass(&PyEvasSmartObject_Type, EvasSmartObjectMeta)
 
 
@@ -783,7 +781,5 @@ cdef public class ClippedSmartObject(SmartObject) \
         evas_object_clip_unset(self.clipper.obj)
 
 
-cdef extern from "Python.h":
-    cdef python.PyTypeObject PyEvasClippedSmartObject_Type # hack to install metaclass
-
+cdef PyTypeObject PyEvasClippedSmartObject_Type # hack to install metaclass
 _install_metaclass(&PyEvasClippedSmartObject_Type, EvasSmartObjectMeta)

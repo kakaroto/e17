@@ -46,9 +46,9 @@ TROUBLESHOOTING
 
 If you get the following error during build_ext:
 
-        ecore/ecore.c_ecore.pyx:1:8: 'evas.python.pxd' not found
+        ecore/evas/ecore.evas.c_ecore_evas.pyx:19:8: 'evas.c_evas.pxd' not found
 
-Means that either evas/python.pxd was not installed or it is placed
+Means that either evas/c_evas.pxd was not installed or it is placed
 at an non-standard place.
 
 If it's not installed at all, please do so by:

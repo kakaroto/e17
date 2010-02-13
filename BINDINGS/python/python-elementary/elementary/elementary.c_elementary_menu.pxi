@@ -34,7 +34,7 @@ cdef class MenuItem:
     def __del_cb(self):
         self.obj = NULL
         self.cbt = None
-        Py_DECREF(self)
+        python.Py_DECREF(self)
 
     def __init__(self, c_evas.Object menu, MenuItem parent, label, c_evas.Object icon,
                  callback, *args, **kargs):
@@ -60,7 +60,7 @@ cdef class MenuItem:
         self.obj = elm_menu_item_add(menu.obj, parent_obj, icon_obj, label,
                                           cb, cbdata)
 
-        Py_INCREF(self)
+        python.Py_INCREF(self)
         elm_menu_item_del_cb_set(self.obj, _menu_item_del_cb)
 
     def delete(self):
@@ -144,7 +144,7 @@ cdef class MenuItemSeparator:
 
     def __del_cb(self):
         self.obj = NULL
-        Py_DECREF(self)
+        python.Py_DECREF(self)
 
     def __init__(self, c_evas.Object menu, MenuItem parent):
         cdef Elm_Menu_Item *parent_obj = NULL
@@ -154,7 +154,7 @@ cdef class MenuItemSeparator:
         self.obj = elm_menu_item_separator_add(menu.obj, parent_obj)
 
         elm_menu_item_data_set(self.obj, <void*>self)
-        Py_INCREF(self)
+        python.Py_INCREF(self)
         elm_menu_item_del_cb_set(self.obj, _menu_item_separator_del_cb)
 
     def delete(self):

@@ -60,7 +60,6 @@ ethumbmodule = Extension('ethumb.c_ethumb',
                           sources=['ethumb/ethumb.c_ethumb.pyx',
                                    ],
                           depends=['include/ethumb/c_ethumb.pxd',
-                                   'include/ethumb/python.pxd',
                                    ],
                           **pkgconfig('"ethumb >= 0.1"'))
 
@@ -69,7 +68,6 @@ ethumbclientmodule = Extension('ethumb.client',
                                    ],
                           depends=['include/ethumb/c_ethumb.pxd',
                                    'include/ethumb/client.pxd',
-                                   'include/ethumb/python.pxd',
                                    ],
                           **pkgconfig('"ethumb >= 0.1" "ethumb_client >= 0.1"'))
 

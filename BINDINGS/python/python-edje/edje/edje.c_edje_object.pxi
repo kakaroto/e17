@@ -454,7 +454,7 @@ cdef public class Edje(evas.c_evas.Object) [object PyEdje, type PyEdje_Type]:
             return None
         else:
             str = s
-            python.free(s)
+            stdlib.free(s)
             return str
 
     def part_swallow(self, char *part, c_evas.Object obj):
@@ -944,9 +944,7 @@ class EdjeObjectMeta(evas.c_evas.EvasObjectMeta):
                 txt_append(name)
 
 
-cdef extern from "Python.h":
-    cdef python.PyTypeObject PyEdje_Type # hack to install metaclass
-
+cdef PyTypeObject PyEdje_Type # hack to install metaclass
 _install_metaclass(&PyEdje_Type, EdjeObjectMeta)
 
 

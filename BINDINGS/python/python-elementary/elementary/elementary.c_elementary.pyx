@@ -19,19 +19,21 @@
 import sys
 import evas.c_evas
 cimport evas.c_evas as c_evas
-cimport evas.python
+cimport python
 import traceback
 
+cdef int PY_REFCOUNT(object o):
+    return o.ob_refcnt
+
 def init():
-    # Partly from python-etk
     cdef int argc, i, arg_len
     cdef char **argv, *arg
     argc_orig = argc = len(sys.argv)
-    argv = <char **>PyMem_Malloc(argc * sizeof(char *))
+    argv = <char **>python.PyMem_Malloc(argc * sizeof(char *))
     for i from 0 <= i < argc:
         arg = sys.argv[i]
         arg_len = len(sys.argv[i])
-        argv[i] = <char *>PyMem_Malloc(arg_len + 1)
+        argv[i] = <char *>python.PyMem_Malloc(arg_len + 1)
         memcpy(argv[i], arg, arg_len + 1)
 
     elm_init(argc, argv)
@@ -97,8 +99,6 @@ def theme_overlay_add(item):
 
 def theme_extension_add(item):
     elm_theme_extension_add(item)
-
-
 
 
 include "elementary.c_elementary_object.pxi"

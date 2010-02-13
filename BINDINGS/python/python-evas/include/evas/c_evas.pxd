@@ -16,8 +16,13 @@
 # along with this Python-Evas.  If not, see <http://www.gnu.org/licenses/>.
 
 cdef extern from "evas/python_evas_utils.h":
-    int PY_REFCOUNT(object)
+    ctypedef struct Evas_Point:
+        int x
+        int y
 
+    ctypedef struct Evas_Position:
+        Evas_Point output
+        Evas_Point canvas
 
 cdef extern from "Evas.h":
     ####################################################################
@@ -59,6 +64,7 @@ cdef extern from "Evas.h":
         EVAS_CALLBACK_CHANGED_SIZE_HINTS
         EVAS_CALLBACK_IMAGE_PRELOADED
 
+    cdef int EVAS_CALLBACK_LAST
 
     ctypedef enum Evas_Pixel_Format:
         EVAS_PIXEL_FORMAT_NONE        = 0
@@ -218,15 +224,6 @@ cdef extern from "Evas.h":
         Evas_Smart_Cb_Description *callbacks
         void *data
 
-
-    ctypedef struct Evas_Point:
-        int x
-        int y
-
-    ctypedef struct Evas_Position:
-        Evas_Point output
-        Evas_Point canvas
-
     ctypedef struct Evas_Device
 
     ctypedef struct Evas_Event_Mouse_In:
@@ -337,7 +334,7 @@ cdef extern from "Evas.h":
     ctypedef int Eina_Bool
     ctypedef int Evas_Angle
     ctypedef int Evas_Font_Size
-    ctypedef void (*evas_event_callback_t)(void *data, Evas *e, Evas_Object *obj, void *event_info)
+    ctypedef void (*Evas_Event_Cb)(void *data, Evas *e, Evas_Object *obj, void *event_info)
 
     ####################################################################
     # Engine
@@ -520,8 +517,8 @@ cdef extern from "Evas.h":
     int evas_async_events_fd_get()
     int evas_async_events_process()
 
-    void evas_object_event_callback_add(Evas_Object *obj, Evas_Callback_Type type, evas_event_callback_t func, void *data)
-    void *evas_object_event_callback_del(Evas_Object *obj, Evas_Callback_Type type, evas_event_callback_t func)
+    void evas_object_event_callback_add(Evas_Object *obj, Evas_Callback_Type type, Evas_Event_Cb func, void *data)
+    void *evas_object_event_callback_del(Evas_Object *obj, Evas_Callback_Type type, Evas_Event_Cb func)
 
     void evas_object_pass_events_set(Evas_Object *obj, Eina_Bool p)
     Eina_Bool evas_object_pass_events_get(Evas_Object *obj)

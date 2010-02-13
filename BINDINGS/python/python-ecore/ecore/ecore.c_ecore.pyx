@@ -15,13 +15,16 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with this Python-Ecore.  If not, see <http://www.gnu.org/licenses/>.
 
-cimport evas.python as python
+cimport python
 
 __extra_epydoc_fields__ = (
     ("parm", "Parameter", "Parameters"), # epydoc don't support pyrex properly
     )
 
 cdef int _ecore_events_registered = 0
+
+cdef int PY_REFCOUNT(object o):
+    return o.ob_refcnt
 
 def init():
     r = ecore_init()

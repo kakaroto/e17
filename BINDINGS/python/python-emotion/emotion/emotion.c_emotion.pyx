@@ -22,6 +22,11 @@ __extra_epydoc_fields__ = (
     ("parm", "Parameter", "Parameters"), # epydoc don't support pyrex properly
     )
 
+
+cdef int PY_REFCOUNT(object o):
+    return o.ob_refcnt
+
+
 cdef void _emotion_callback(void *data,
                             evas.c_evas.Evas_Object *o, void *ei) with gil:
     cdef Emotion obj
