@@ -13,6 +13,7 @@ Distribution: %{?_distribution:%{_distribution}}%{!?_distribution:any}
 Prefix: %{_prefix}
 BuildRoot: /var/tmp/%{name}-%{version}-%{release}-root
 Obsoletes: e16-keyedit
+Requires: e16 >= 1.0.1
 
 %description
 e16keyedit provides a graphical interface for managing keybindings in

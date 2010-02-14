@@ -1,3 +1,7 @@
+Version 0.7
+- Make e16keyedit work in e16 window mode.
+- Use new keybingdings ipc interface (requires e16 >= 1.0.1).
+
 Version 0.6
 - Look for e16keyedit.db in default location if EROOT is not set.
 - Remove pre 0.16.8 compatibility. Makes things work with post 0.16.8.
