@@ -22,6 +22,7 @@
  */
 #include "E.h"
 #include "e16-ecore_list.h"
+#include "parse.h"
 
 typedef struct {
    char               *name;
@@ -89,23 +90,27 @@ static int
 _FontConfigLoad(FILE * fs)
 {
    int                 err = 0;
-   char                s[FILEPATH_LEN_MAX];
-   char                s1[128], *p2;
-   int                 i2;
+   char                s[FILEPATH_LEN_MAX], *ss, *name, *font;
+   int                 len;
 
-   while (GetLine(s, sizeof(s), fs))
+   for (;;)
      {
-	s1[0] = '\0';
-	i2 = 0;
-	sscanf(s, "%120s %n", s1, &i2);
-	if (i2 <= 0)
+	ss = fgets(s, sizeof(s), fs);
+	if (!ss)
+	   break;
+
+	len = strcspn(s, "#\r\n");
+	if (len <= 0)
 	   continue;
-	p2 = s + i2;
-	if (!p2[0])
+
+	name = font = NULL;
+	parse(s, "%S%S", &name, &font);
+	if (!name || !font)
 	   continue;
-	if (strncmp(s, "font-", 5))
+
+	if (strncmp(name, "font-", 5))
 	   continue;
-	FontAliasCreate(s1, p2);
+	FontAliasCreate(name, font);
      }
 
    return err;
