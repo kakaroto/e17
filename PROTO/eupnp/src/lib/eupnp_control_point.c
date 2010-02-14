@@ -39,7 +39,7 @@
  * Private API
  */
 
-static int _log_dom = -1; // Logging domain
+static int _log_dom = -1;
 static Eupnp_Subscriber *_device_found = NULL;
 
 /**
@@ -50,10 +50,19 @@ static Eupnp_Subscriber *_device_found = NULL;
 static Eina_Bool
 _on_device_found(void *user_data, Eupnp_Event_Type type, void *event_data)
 {
-   // TODO add an option for skipping this device mount
-   Eupnp_Device_Info *device_info = event_data;
-   eupnp_device_info_fetch(eupnp_device_info_ref(device_info));
-   eupnp_device_info_unref(device_info);
+   if (eupnp_event_bus_type_has_subscriber(EUPNP_EVENT_DEVICE_READY))
+     {
+	DBG("Detected subscribers for DEVICE_READY, performing fetch().");
+	Eupnp_Device_Info *device_info = event_data;
+	eupnp_device_info_fetch(eupnp_device_info_ref(device_info));
+	eupnp_device_info_unref(device_info);
+     }
+   else
+     {
+	DBG("No subscribers for DEVICE_READY, ignoring internal DEVICE_INFO hook.");
+     }
+
+   return EINA_TRUE;
 }
 
 /*
@@ -75,7 +84,6 @@ eupnp_control_point_init(void)
 	return EINA_FALSE;
      }
 
-   // TODO add a option for skipping this device mount
    if (!(_device_found = eupnp_event_bus_subscribe(EUPNP_EVENT_DEVICE_FOUND,
 						   EUPNP_CALLBACK(_on_device_found),
 						   NULL)))

@@ -330,3 +330,21 @@ eupnp_event_bus_event_type_new(void)
    _event_max++;
    return _event_max - 1;
 }
+
+/**
+ * Returns whether the type has subscribers.
+ *
+ * @return EINA_TRUE if the type @p type has any subscribers, EINA_FALSE
+ * otherwise.
+ */
+EAPI Eina_Bool
+eupnp_event_bus_type_has_subscriber(Eupnp_Event_Type type)
+{
+   Eina_List *l, *l_next;
+   Eupnp_Subscriber *s;
+
+   EINA_LIST_FOREACH(subscribers, l, s)
+     if (s->type == type) return EINA_TRUE;
+
+   return EINA_FALSE;
+}

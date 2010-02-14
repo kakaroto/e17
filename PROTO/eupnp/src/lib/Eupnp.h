@@ -274,6 +274,8 @@ EAPI void                 eupnp_event_bus_publish(Eupnp_Event_Type event_type, v
 EAPI Eupnp_Subscriber    *eupnp_event_bus_subscribe(Eupnp_Event_Type event_type, Eupnp_Callback cb, void *user_data) EINA_ARG_NONNULL(2);
 EAPI void                 eupnp_event_bus_unsubscribe(Eupnp_Subscriber *s) EINA_ARG_NONNULL(1);
 EAPI Eupnp_Event_Type     eupnp_event_bus_event_type_new(void);
+EAPI Eina_Bool            eupnp_event_bus_type_has_subscriber(Eupnp_Event_Type type);
+
 
 EAPI Eupnp_Service_Info         *eupnp_service_info_ref(Eupnp_Service_Info *service_info) EINA_ARG_NONNULL(1);
 EAPI void                        eupnp_service_info_unref(Eupnp_Service_Info *service_info) EINA_ARG_NONNULL(1);

@@ -155,7 +155,6 @@ int main(void)
      }
 
    c = eupnp_control_point_new();
-
    if (!c)
      {
 	fprintf(stderr, "Could not create control point instance\n");
