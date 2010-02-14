@@ -754,7 +754,7 @@ AclassConfigLineParse(char *s, ActionClass ** pac, Action ** paa)
    *paa = aa;
 }
 
-static void
+static int
 AclassConfigLoad2(FILE * fs)
 {
    char                s[FILEPATH_LEN_MAX], *ss;
@@ -769,6 +769,8 @@ AclassConfigLoad2(FILE * fs)
 
 	AclassConfigLineParse(s, &ac, &aa);
      }
+
+   return 0;
 }
 
 static void
@@ -801,21 +803,7 @@ AclassConfigParseIpc(const char *p)
 static void
 AclassConfigLoadConfig(const char *name)
 {
-   char               *file;
-   FILE               *fs;
-
-   file = ConfigFileFind(name, NULL, 0);
-   if (!file)
-      return;
-
-   fs = fopen(file, "r");
-   Efree(file);
-   if (!fs)
-      return;
-
-   AclassConfigLoad2(fs);
-
-   fclose(fs);
+   ConfigFileLoad(name, NULL, AclassConfigLoad2, 0);
 }
 
 static void
