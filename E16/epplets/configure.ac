@@ -32,9 +32,6 @@ AC_PROG_INSTALL
 dnl# Check the sanity of what we've done so far
 AM_SANITY_CHECK
 
-dnl# Most people don't want the developer-only clutter
-AM_MAINTAINER_MODE
-
 dnl# Look for needed programs
 AC_CHECK_PROG(RM, rm, rm, true)
 AC_CHECK_PROG(CP, cp, cp, false)
