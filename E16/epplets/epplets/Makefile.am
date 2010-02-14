@@ -55,7 +55,7 @@ E_Exec_epplet_LDFLAGS = -rpath $(libdir)
 
 E_SD_epplet_SOURCES = E-SD.c esdcloak.c utils.c utils.h esdcloak.h
 E_SD_epplet_DEPENDENCIES = $(top_builddir)/api/libepplet.la
-E_SD_epplet_LDFLAGS = -rpath $(libdir) -lesd
+E_SD_epplet_LDFLAGS = -rpath $(libdir) -lesd -lm
 
 E_Load_epplet_SOURCES = E-Load.c
 E_Load_epplet_DEPENDENCIES = $(top_builddir)/api/libepplet.la
@@ -69,11 +69,11 @@ E_LoadMeter_epplet_LDADD = $(LDADD) $(GTLIBS)
 
 E_Clock_epplet_SOURCES = E-Clock.c
 E_Clock_epplet_DEPENDENCIES = $(top_builddir)/api/libepplet.la
-E_Clock_epplet_LDFLAGS = -rpath $(libdir)
+E_Clock_epplet_LDFLAGS = -rpath $(libdir) -lm
 
 E_MoonClock_epplet_SOURCES = E-MoonClock.c CalcEphem.c CalcEphem.h Moon.c
 E_MoonClock_epplet_DEPENDENCIES = $(top_builddir)/api/libepplet.la
-E_MoonClock_epplet_LDFLAGS = -rpath $(libdir)
+E_MoonClock_epplet_LDFLAGS = -rpath $(libdir) -lm
 
 E_Time_epplet_SOURCES = E-Time.c
 E_Time_epplet_DEPENDENCIES = $(top_builddir)/api/libepplet.la
@@ -146,16 +146,16 @@ E_ScreenShoot_epplet_SOURCES = \
 E-ScreenShoot.c cloak.c utils.c utils.h cloak.h \
 E-ScreenShoot_ftp.c E-ScreenShoot_ftp.h
 E_ScreenShoot_epplet_DEPENDENCIES = $(top_builddir)/api/libepplet.la
-E_ScreenShoot_epplet_LDFLAGS = -rpath $(libdir)
+E_ScreenShoot_epplet_LDFLAGS = -rpath $(libdir) -lm
 
 E_NetGraph_epplet_SOURCES = E-NetGraph.c net.c net.h
 E_NetGraph_epplet_DEPENDENCIES = $(top_builddir)/api/libepplet.la
-E_NetGraph_epplet_LDFLAGS = -rpath $(libdir)
+E_NetGraph_epplet_LDFLAGS = -rpath $(libdir) -lm
 
 E_ScreenSave_epplet_SOURCES = \
 E-ScreenSave.c cloak.c utils.c utils.h cloak.h
 E_ScreenSave_epplet_DEPENDENCIES = $(top_builddir)/api/libepplet.la
-E_ScreenSave_epplet_LDFLAGS = -rpath $(libdir)
+E_ScreenSave_epplet_LDFLAGS = -rpath $(libdir) -lm
 
 E_UrlWatch_epplet_SOURCES = E-UrlWatch.c E-UrlWatch.h utils.c utils.h
 E_UrlWatch_epplet_DEPENDENCIES = $(top_builddir)/api/libepplet.la
@@ -163,7 +163,7 @@ E_UrlWatch_epplet_LDFLAGS = -rpath $(libdir)
 
 E_Mountbox_epplet_SOURCES = E-Mountbox.c
 E_Mountbox_epplet_DEPENDENCIES = $(top_builddir)/api/libepplet.la
-E_Mountbox_epplet_LDFLAGS = -rpath $(libdir)
+E_Mountbox_epplet_LDFLAGS = -rpath $(libdir) -lm
 
 E_Pinger_epplet_SOURCES = E-Pinger.c
 E_Pinger_epplet_DEPENDENCIES = $(top_builddir)/api/libepplet.la
