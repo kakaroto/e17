@@ -881,7 +881,7 @@ check_e16_version(void)
    CommsSend("ver");
    msg = wait_for_ipc_msg();
    if (!msg)
-      return 0;
+      goto do_check;
 
    s = msg;
    while (*s && *s != '.')
@@ -892,6 +892,7 @@ check_e16_version(void)
 
    free(msg);
 
+ do_check:
    if (ver < VER(1, 0, 1))
      {
 	printf("Sorry, e16 version >= 1.0.1 is required.\n");
