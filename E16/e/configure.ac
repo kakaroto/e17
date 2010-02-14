@@ -95,7 +95,6 @@ if test "x$enable_sound_pulse" = "xyes"; then
   PKG_CHECK_MODULES(AUDIOFILE, audiofile,,)
   enable_sound=pulseaudio
   enable_sound_esound=no
-  PA_LIBS="$PA_LIBS $AUDIOFILE_LIBS"
 fi
 AM_CONDITIONAL(USE_LIBPA, test "x$enable_sound_pulse" = "xyes")
 
@@ -190,7 +189,8 @@ if test "x$enable_glx" = "xyes"; then
       AC_MSG_ERROR([Cannot find GLX libraries])
     ])
   AC_CHECK_LIB(GL, glXBindTexImageEXT,
-      AC_DEFINE(HAVE_GLX_glXBindTexImageEXT, 1, [glXBindTexImageEXT is available]))
+      AC_DEFINE(HAVE_GLX_glXBindTexImageEXT, 1, [glXBindTexImageEXT is available]),
+      GLX_LIBS="$GLX_LIBS -ldl")
   AC_SUBST(GLX_LIBS)
 fi
 AM_CONDITIONAL(ENABLE_GLX, test "x$enable_glx" = "xyes")

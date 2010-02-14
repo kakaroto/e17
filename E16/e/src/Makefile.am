@@ -148,6 +148,7 @@ LDADD = \
 if BUILD_MODULES
 
 e16_LDFLAGS = -export-dynamic
+MODULE_LIBS = $(DLOPEN_LIBS)
 
 libe16dir = $(pkglibdir)
 
