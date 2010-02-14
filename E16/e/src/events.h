@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2006-2008 Kim Woelders
+ * Copyright (C) 2006-2010 Kim Woelders
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -46,6 +46,6 @@ typedef void        (EventFdHandler) (void);
 EventFdDesc        *EventFdRegister(int fd, EventFdHandler * handler);
 void                EventFdUnregister(EventFdDesc * efd);
 
-int                 EventsGetXY(int *px, int *py);
+int                 EventsUpdateXY(int *px, int *py);
 
 #endif /* _EVENTS_H_ */

@@ -26,7 +26,6 @@
 #include "cursors.h"
 #include "desktops.h"
 #include "emodule.h"
-#include "events.h"
 #include "ewins.h"
 #include "focus.h"
 #include "grabs.h"
@@ -98,7 +97,8 @@ MoveResizeMoveStart(EWin * ewin, int kbd, int constrained, int nogroup)
    Mode_mr.using_kbd = kbd;
    Mode_mr.nogroup = nogroup;
 
-   EventsGetXY(&cx, &cy);
+   cx = Mode.events.cx;
+   cy = Mode.events.cy;
 
    SoundPlay(SOUND_MOVE_START);
 
@@ -305,7 +305,8 @@ MoveResizeResizeStart(EWin * ewin, int kbd, int hv)
 
    Mode_mr.ewin = ewin;
 
-   EventsGetXY(&cx, &cy);
+   cx = Mode.events.cx;
+   cy = Mode.events.cy;
 
    SoundPlay(SOUND_RESIZE_START);
 

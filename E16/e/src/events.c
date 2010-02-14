@@ -367,7 +367,7 @@ EventsInit(void)
 }
 
 int
-EventsGetXY(int *px, int *py)
+EventsUpdateXY(int *px, int *py)
 {
    int                 ss;
 

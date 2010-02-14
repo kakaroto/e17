@@ -859,7 +859,7 @@ AddToFamily(EWin * ewin, Window xwin, int startup)
 	     /* the window there */
 	     DeskGoto(dsk);
 
-	     EventsGetXY(&cx, &cy);
+	     EventsUpdateXY(&cx, &cy);
 
 	     /* try to center the window on the mouse pointer */
 	     cx -= EoGetW(ewin) / 2;
@@ -907,19 +907,18 @@ AddToFamily(EWin * ewin, Window xwin, int startup)
    /* if we should slide it in and are not currently in the middle of a slide */
    if ((manplace) && (!ewin->state.placed))
      {
-	int                 rx, ry;
+	int                 cx, cy;
 
 	/* if the loser has manual placement on and the app asks to be on */
 	/*  a desktop, then send E to that desktop so the user can place */
 	/* the window there */
 	DeskGoto(dsk);
 
-	EQueryPointer(NULL, &rx, &ry, NULL, NULL);
-	Mode.events.cx = rx;
-	Mode.events.cy = ry;
+	EventsUpdateXY(&cx, &cy);
+
 	ewin->state.placed = 1;
-	x = Mode.events.cx - 8;
-	y = Mode.events.cy - 8;
+	x = cx - 8;
+	y = cy - 8;
 	GrabPointerSet(VROOT, ECSR_GRAB, 0);
 	EoSetFloating(ewin, 1);	/* Causes reparenting to root */
 	EwinOpFloatAt(ewin, OPSRC_USER, x, y);
