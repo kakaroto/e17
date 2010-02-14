@@ -32,10 +32,10 @@
    <h3>Platform Support</h3>
    
    <center>
-    <a href=http://trac/enlightenment.org/e/wiki/Platforms><?php img("linux.png", "Linux");?></a>
-    <a href=http://trac/enlightenment.org/e/wiki/Platforms><?php img("bsd.png", "BSD");?></a>
-    <a href=http://trac/enlightenment.org/e/wiki/Platforms><?php img("windows.png", "Windows");?></a>
-    <a href=http://trac/enlightenment.org/e/wiki/Platforms><?php img("apple.png", "Apple");?></a>
+    <a href=http://trac.enlightenment.org/e/wiki/Platforms><?php img("linux.png", "Linux");?></a>
+    <a href=http://trac.enlightenment.org/e/wiki/Platforms><?php img("bsd.png", "BSD");?></a>
+    <a href=http://trac.enlightenment.org/e/wiki/Platforms><?php img("windows.png", "Windows");?></a>
+    <a href=http://trac.enlightenment.org/e/wiki/Platforms><?php img("apple.png", "Apple");?></a>
    </center>
    
    <p>
