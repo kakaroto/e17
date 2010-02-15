@@ -365,6 +365,7 @@ class Editje(elementary.Window):
         if name == "Signals":
             self.desktop_block(True)
         else:
+            self.e.signal.name = None
             self.desktop_block(False)
 
         if name == "Animations":

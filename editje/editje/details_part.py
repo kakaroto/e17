@@ -1,4 +1,3 @@
-#
 # Copyright (C) 2009 Samsung Electronics.
 #
 # This file is part of Editje.
@@ -16,6 +15,7 @@
 # You should have received a copy of the GNU Lesser General Public
 # License along with Editje.  If not, see
 # <http://www.gnu.org/licenses/>.
+
 import edje
 
 from details import EditjeDetails
@@ -26,7 +26,6 @@ from details_widget_partlist import WidgetPartList
 from prop import Property, PropertyTable
 
 class PartDetails(EditjeDetails):
-
     def __init__(self, parent):
         EditjeDetails.__init__(self, parent,
                                group="editje/collapsable/part_properties")
@@ -114,8 +113,10 @@ class PartDetails(EditjeDetails):
             return
 
         self._header_table["name"].value = self.e.part.name
+        self._header_table["name"].show_value()
         type = self._part_type_to_text(self.e.part._part.type)
         self._header_table["type"].value = type
+        self._header_table["type"].show_value()
         self._update_common_props()
 
         self.group_hide("textblock")
@@ -124,7 +125,9 @@ class PartDetails(EditjeDetails):
 
     def _part_removed(self, emissor, data):
         self._header_table["name"].value = None
+        self._header_table["name"].hide_value()
         self._header_table["type"].value = None
+        self._header_table["type"].hide_value()
 
         self.main_hide()
         self.group_hide("textblock")

@@ -217,8 +217,8 @@ class NewSignalWizard(Wizard):
 
 class SignalDetails(EditjeDetails):
     def __init__(self, parent):
-        EditjeDetails.__init__(self, parent,
-                               group="editje/collapsable/part_state")
+        EditjeDetails.__init__(
+            self, parent, group="editje/collapsable/part_state")
 
         self.title_set("signal")
 
@@ -267,19 +267,38 @@ class SignalDetails(EditjeDetails):
 
         self.e.callback_add("signal.added", self._update)
         self.e.callback_add("signal.removed", self._removed)
-        self.e.signal.callback_add("program.changed",self._update)
+        self.e.callback_add("group.changed", self._removed)
+        self.e.signal.callback_add("program.changed", self._update)
+        self.e.signal.callback_add("program.unselected", self._removed)
 
     def _removed(self, emissor, data):
         self._header_table["name"].value = None
+        self._header_table["name"].hide_value()
+
+        self["main"]["signal"].value = ""
         self["main"]["signal"].hide_value()
+
+        self["main"]["source"].value = ""
         self["main"]["source"].hide_value()
+
+        self["main"]["delay"].value = (None, None)
         self["main"]["delay"].hide_value()
+
+        self["main"]["action"].value = ""
         self["main"]["action"].hide_value()
+
+        self.group_hide("out")
+        self.group_show("out")
+
+        self["out"]["signal"].value = ""
         self["out"]["signal"].hide_value()
+
+        self["out"]["source"].value = ""
         self["out"]["source"].hide_value()
 
     def _update(self, emissor, data):
         self._header_table["name"].value = data
+        self._header_table["name"].show_value()
 
         signal = self.e.signal.signal
         self["main"]["signal"].show_value()
@@ -301,6 +320,7 @@ class SignalDetails(EditjeDetails):
         self["main"]["delay"].value = self.e.signal.in_time
 
         action = self.e.signal._program.action_get()
+
         self["main"]["action"].show_value()
         if action == edje.EDJE_ACTION_TYPE_NONE:
             self["main"]["action"].show()

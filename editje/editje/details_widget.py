@@ -1,4 +1,3 @@
-#
 # Copyright (C) 2009 Samsung Electronics.
 #
 # This file is part of Editje.
@@ -19,7 +18,6 @@
 
 
 class Widget(object):
-
     def __init__(self):
         self._callbacks = dict()
         self._in_parser = None

@@ -1,4 +1,3 @@
-#
 # Copyright (C) 2009 Samsung Electronics.
 #
 # This file is part of Editje.
@@ -16,12 +15,13 @@
 # You should have received a copy of the GNU Lesser General Public
 # License along with Editje.  If not, see
 # <http://www.gnu.org/licenses/>.
+
 import edje
 
 from event_manager import Manager
 
-class EditableProgram(Manager, object):
 
+class EditableProgram(Manager, object):
     def __init__(self, editable):
         Manager.__init__(self)
 
@@ -32,14 +32,16 @@ class EditableProgram(Manager, object):
     # Name
     def _name_set(self, value):
         if not self.e._edje:
-            value = None
+            return
 
-        if self._name != value:
-            if value:
-                if value in self.e.programs:
-                    self._name = value
-                    self._program_fetch()
-                    self.event_emit("program.changed", self.name)
+        if not value:
+            self._name = None
+            self.event_emit("program.unselected")
+        elif self._name != value:
+            if value in self.e.programs:
+                self._name = value
+                self._program_fetch()
+                self.event_emit("program.changed", self.name)
             else:
                 self._name = None
                 self._program = None

@@ -76,7 +76,6 @@ class StatesPopUp(Floater):
 
 
 class PartStateDetails(EditjeDetails):
-
     state_pop_min_w = 200
     state_pop_min_h = 300
 
@@ -245,16 +244,15 @@ class PartStateDetails(EditjeDetails):
         state = self.part.state_selected_get()
         if self._animmode:
             self._header_table["name"].value = self.part.name
+            self._header_table["name"].show_value()
             self._header_table["type"].value = \
                 self._part_type_to_text(self.part.type)
+            self._header_table["type"].show_value()
         else:
             if state == "(null) 0.00":
                 state = "default 0.00"
-            #self.state_prop[1].clear()
-            #for st in part.states:
-            #    print st
-            #    self.state_prop[1].item_add(st)
             self._header_table["state"].value = state
+            self._header_table["state"].show_value()
         self.state = self.part.state_get(state)
         self._update()
         self.open()
@@ -265,9 +263,12 @@ class PartStateDetails(EditjeDetails):
 
         if self._animmode:
             self._header_table["name"].value = None
+            self._header_table["name"].hide_value()
             self._header_table["type"].value = None
+            self._header_table["type"].hide_value()
         else:
             self._header_table["state"].value = None
+            self._header_table["state"].hide_value()
         self._hide_all()
 
     def _part_type_to_text(self, type):

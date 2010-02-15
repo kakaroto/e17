@@ -1,4 +1,3 @@
-#
 # Copyright (C) 2009 Samsung Electronics.
 #
 # This file is part of Editje.
@@ -16,15 +15,16 @@
 # You should have received a copy of the GNU Lesser General Public
 # License along with Editje.  If not, see
 # <http://www.gnu.org/licenses/>.
+
 import elementary
 
 from prop import PropertyTable
 
 
 class EditjeDetails(elementary.Layout):
-
     def __init__(self, parent, group="editje/collapsable/default"):
         elementary.Layout.__init__(self, parent)
+
         self.file_set(parent.theme, group)
         self._parent = parent
         self._proptable = PropertyTable(parent)

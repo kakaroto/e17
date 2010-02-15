@@ -1,4 +1,3 @@
-#
 # Copyright (C) 2009 Samsung Electronics.
 #
 # This file is part of Editje.
@@ -16,13 +15,13 @@
 # You should have received a copy of the GNU Lesser General Public
 # License along with Editje.  If not, see
 # <http://www.gnu.org/licenses/>.
+
 import edje
 
 from event_manager import Manager
 from editable_program import EditableProgram
 
 class EditableAnimation(Manager, object):
-
     def __init__(self, editable):
         Manager.__init__(self)
 
@@ -48,13 +47,15 @@ class EditableAnimation(Manager, object):
     # Name
     def _name_set(self, value):
         if not self.e._edje:
-            value = None
+            return
 
-        if self._name != value:
-            if value:
-                if value in self.e.animations:
-                    self._name = value
-                    self.event_emit("animation.changed", self._name)
+        if not value:
+            self._name = ""
+            self.event_emit("animation.unselected")
+        elif self._name != value:
+            if value in self.e.animations:
+                self._name = value
+                self.event_emit("animation.changed", self._name)
             else:
                 self._name = ""
                 for p in self.e.parts:

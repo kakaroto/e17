@@ -1,4 +1,3 @@
-#
 # Copyright (C) 2009 Samsung Electronics.
 #
 # This file is part of Editje.
@@ -16,11 +15,11 @@
 # You should have received a copy of the GNU Lesser General Public
 # License along with Editje.  If not, see
 # <http://www.gnu.org/licenses/>.
+
 import elementary
 
 
 class ValueBox(elementary.Box):
-
     def __init__(self, parent):
         elementary.Box.__init__(self, parent)
         self.horizontal_set(True)
@@ -48,10 +47,14 @@ class ValueBox(elementary.Box):
             self._values_list[0].value = value
             return
         elif type(value) != tuple and type(value) != list:
-            print type(value)
-            raise TypeError(value)
+            raise TypeError("Type of value data to be set (%s) mismatch the"
+                            "expected ones, which are tuples or lists of "
+                            "cardinality (%d)" % \
+                                (type(value), len(self._values_list)))
         if len(value) != len(self._values_list):
-            raise IndexError(value)
+            raise IndexError("Cardinality of values to be set (%d) mismatch the"
+                             "cardinality of widgets in the box (%d)" % \
+                                 (len(value), len(self._values_list)))
         for i, w in enumerate(self._values_list):
             w.value = value[i]
 
@@ -95,7 +98,6 @@ class ValueBox(elementary.Box):
 
 
 class Property(object):
-
     def __init__(self, parent, name):
         self._name = name
         self._parent = parent
@@ -179,7 +181,6 @@ class Property(object):
 
 
 class PropertyTable(elementary.Table):
-
     def __init__(self, parent):
         elementary.Table.__init__(self, parent)
 

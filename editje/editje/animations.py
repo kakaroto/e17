@@ -1,4 +1,3 @@
-#
 # Copyright (C) 2009 Samsung Electronics.
 #
 # This file is part of Editje.
@@ -16,13 +15,14 @@
 # You should have received a copy of the GNU Lesser General Public
 # License along with Editje.  If not, see
 # <http://www.gnu.org/licenses/>.
+
 from details import EditjeDetails
 from details_widget_entry import WidgetEntry
 from details_widget_combo import WidgetCombo
 from prop import Property, PropertyTable
 
-class AnimationDetails(EditjeDetails):
 
+class AnimationDetails(EditjeDetails):
     def __init__(self, parent):
         EditjeDetails.__init__(self, parent,
                                group="editje/collapsable/part_properties")
@@ -86,12 +86,13 @@ class AnimationDetails(EditjeDetails):
                                                    self._timeline_cb)
         self.e.callback_add("animation.removed", self._removed)
         self.e.animation.callback_add("animation.changed", self._update)
-        self.e.animation.callback_add("animation.unselected", self._update)
+        self.e.animation.callback_add("animation.unselected", self._removed)
         self.e.animation.callback_add("state.added", self._timestop_add)
         self.e.animation.callback_add("state.changed", self._update_states)
 
     def _removed(self, emissor, data):
         self._header_table["name"].value = None
+        self._header_table["length"].value = None
         self["main"]["current"].hide_value()
         self["main"]["previous"].hide_value()
         self["main"]["next"].hide_value()
