@@ -45,6 +45,7 @@ EFL_CHECK_COVERAGE([${enable_tests}], [enable_coverage="yes"], [enable_coverage=
 # Optional modules
 
 ## Ecore
+
 AM_CONDITIONAL(HAVE_ECORE, false)
 define([CHECK_MODULE_ECORE],
 [
@@ -58,7 +59,17 @@ AC_CHECK_PKG(ECORECON, ecore-con, [], [ECORE=false])
 AC_OPTIONAL_MODULE([eupnp_ecore], true, [CHECK_MODULE_ECORE])
 
 
-# Documentation
+## AV
+
+AM_CONDITIONAL(HAVE_AV, false)
+define([CHECK_MODULE_AV],
+[
+AC_CHECK_PKG(EINA, eina-0, [], [EINA=false])
+])
+AC_OPTIONAL_MODULE([eupnp_av], true, [CHECK_MODULE_AV])
+
+
+## Documentation
 
 EFL_CHECK_DOXYGEN([build_doc="yes"], [build_doc="no"])
 
@@ -77,7 +88,7 @@ want_tools="no"
 have_tools="no"
 
 AC_ARG_ENABLE([tools],
-   [AC_HELP_STRING([--disable-tools], [disable tools build. @<:@default=yes@:>@])],
+   [AC_HELP_STRING([--disable-tools], [do not build tools. @<:@default=yes@:>@])],
    [want_tools=$enableval], [want_tools="no"])
 
 if test "x$want_tools" = "xyes"; then
@@ -97,12 +108,14 @@ AM_CONDITIONAL(EUPNP_BUILD_TOOLS, test "x${have_tools}" = "xyes")
 AC_OUTPUT([
 eupnp-0.pc
 eupnp-ecore.pc
+eupnp-av.pc
 Makefile
 doc/Makefile
 src/Makefile
 examples/Makefile
 src/lib/Makefile
 src/lib/eupnp_ecore/Makefile
+src/lib/eupnp_av/Makefile
 src/tests/Makefile
 tools/Makefile
 tools/igd/Makefile

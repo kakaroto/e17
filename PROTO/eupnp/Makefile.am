@@ -28,8 +28,12 @@ if USE_MODULE_EUPNP_ECORE
    pecore = eupnp-ecore.pc
 endif
 
+if USE_MODULE_EUPNP_AV
+   pav = eupnp-av.pc
+endif
+
 pkgconfigdir = $(libdir)/pkgconfig
-pkgconfig_DATA = eupnp-0.pc $(pecore)
+pkgconfig_DATA = eupnp-0.pc $(pecore) $(pav)
 
 # Tools
 

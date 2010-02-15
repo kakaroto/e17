@@ -17,7 +17,7 @@ dnl
 AC_ARG_ENABLE([doc],
    [AC_HELP_STRING(
        [--disable-doc],
-       [Disable documentation build @<:@default=yes@:>@])],
+       [do not build documentation @<:@default=yes@:>@])],
    [
     if test "x${enableval}" = "xyes" ; then
        efl_enable_doc="yes"

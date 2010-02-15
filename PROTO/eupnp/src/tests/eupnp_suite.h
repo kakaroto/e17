@@ -31,6 +31,7 @@ struct _Eupnp_Test_Case {
    void (*build) (TCase *t);
 };
 
-void eupnp_test_device_parser(TCase *t);
+void eupnp_test_av_didl_parser(TCase *t);
+
 
 #endif /* _EUPNP_SUITE_H */

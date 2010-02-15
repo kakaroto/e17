@@ -27,7 +27,7 @@
 #include "eupnp_suite.h"
 
 static const Eupnp_Test_Case cases[] = {
-   { "Device Parser", eupnp_test_device_parser },
+   { "AV DIDL", eupnp_test_av_didl_parser},
    { NULL, NULL }
 };
 

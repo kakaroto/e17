@@ -13,9 +13,10 @@ check_PROGRAMS = eupnp_suite
 
 eupnp_suite_SOURCES = 	\
 eupnp_suite.c 		\
-eupnp_test_device_parser.c
+eupnp_av_test.c
 
-eupnp_suite_LDADD = @LIBXML2_LIBS@ @EINA_LIBS@ @CHECK_LIBS@ $(top_builddir)/src/lib/libeupnp.la
+eupnp_suite_LDADD = @LIBXML2_LIBS@ @EINA_LIBS@ @CHECK_LIBS@ $(top_builddir)/src/lib/libeupnp.la $(top_builddir)/src/lib/eupnp_av/libeupnp_av.la
+
 
 endif
 

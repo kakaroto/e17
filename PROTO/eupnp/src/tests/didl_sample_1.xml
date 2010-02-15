@@ -1,0 +1,51 @@
+<?xml version="1.0"?>
+<DIDL-Lite xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:upnp="urn:schemas-upnp-org:metadata-1-0/upnp/"
+           xmlns="urn:schemas-upnp-org:metadata-1-0/DIDL-Lite/">
+      <container id="3" parentID="1" childCount="4" restricted="false"
+searchable="true">
+             <dc:title>Singles Soundtrack</dc:title>
+             <dc:creator>Various Artists</dc:creator>
+             <upnp:class>object.container.album.musicAlbum</upnp:class>
+             <upnp:searchClass includeDerived="false">
+                   object.item.audioItem.musicTrack
+             </upnp:searchClass>
+             <upnp:createClass includeDerived="false">
+                   object.item.audioItem.musicTrack
+             </upnp:createClass>
+      </container>
+      <container id="4" parentID="1" childCount="3" restricted="false"
+searchable="true">
+             <dc:title>Brand New Day</dc:title>
+             <dc:creator>Sting</dc:creator>
+             <upnp:class>object.container.album.musicAlbum</upnp:class>
+             <upnp:searchClass includeDerived="false">
+                   object.item.audioItem.musicTrack
+             </upnp:searchClass>
+             <upnp:createClass includeDerived="false">
+                   object.item.audioItem.musicTrack
+             </upnp:createClass>
+      </container>
+      <container id="12" parentID="2" restricted="false"
+searchable="true">
+             <dc:title>Mexico Trip</dc:title>
+             <upnp:class>object.container.album.photoAlbum</upnp:class>
+             <upnp:searchClass includeDerived="false" >
+                   object.item.imageItem.photo
+             </upnp:searchClass>
+             <upnp:createClass includeDerived="false">
+                   object.item.imageItem.photo
+             </upnp:createClass>
+      </container>
+      <container id="13" parentID="2" restricted="false"
+searchable="true">
+             <dc:title>Christmas</dc:title>
+             <upnp:class>object.container.album.photoAlbum</upnp:class>
+             <upnp:searchClass includeDerived="false" >
+                   object.item.imageItem.photo
+             </upnp:searchClass>
+             <upnp:createClass includeDerived="false">
+                   object.item.imageItem.photo
+             </upnp:createClass>
+      </container>
+</DIDL-Lite>
+
