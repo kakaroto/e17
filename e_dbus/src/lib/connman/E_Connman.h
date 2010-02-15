@@ -91,7 +91,6 @@ extern "C" {
   EAPI bool e_connman_manager_offline_mode_set(bool offline, E_DBus_Method_Return_Cb cb, const void *data) EINA_WARN_UNUSED_RESULT;
 
   EAPI bool e_connman_manager_profiles_get(unsigned int *count, E_Connman_Element ***p_elements) EINA_WARN_UNUSED_RESULT;
-  EAPI bool e_connman_manager_devices_get(unsigned int *count, E_Connman_Element ***p_elements) EINA_WARN_UNUSED_RESULT;
   EAPI bool e_connman_manager_services_get(unsigned int *count, E_Connman_Element ***p_elements) EINA_WARN_UNUSED_RESULT;
 
   EAPI bool e_connman_manager_request_scan(const char *type, E_DBus_Method_Return_Cb cb, const void *data) EINA_WARN_UNUSED_RESULT;

@@ -290,22 +290,6 @@ _on_cmd_manager_get_profiles(char *cmd, char *args)
 }
 
 static int
-_on_cmd_manager_get_devices(char *cmd, char *args)
-{
-   unsigned int count;
-   E_Connman_Element **devices;
-
-   if (!e_connman_manager_devices_get(&count, &devices))
-     {
-	fputs("ERROR: can't get devices\n", stderr);
-	return 1;
-     }
-   printf("BEG: all manager devices elements count = %d\n", count);
-   _elements_print(devices, count);
-   return 1;
-}
-
-static int
 _on_cmd_manager_get_services(char *cmd, char *args)
 {
    unsigned int count;
@@ -2202,7 +2186,6 @@ _on_input(void *data, Ecore_Fd_Handler *fd_handler)
      {"set_property", _on_cmd_property_set},
      {"manager_get", _on_cmd_manager_get},
      {"manager_get_profiles", _on_cmd_manager_get_profiles},
-     {"manager_get_devices", _on_cmd_manager_get_devices},
      {"manager_get_services", _on_cmd_manager_get_services},
      {"manager_register_agent", _on_cmd_manager_register_agent},
      {"manager_unregister_agent", _on_cmd_manager_unregister_agent},

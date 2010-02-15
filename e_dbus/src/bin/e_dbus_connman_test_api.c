@@ -391,7 +391,6 @@ static const struct test_desc test_desc_manager[] = {
   //TEST_DESC_STRING_SET_GLOBAL(e_connman_manager_request_scan, 0),
   //TEST_DESC_BOOL_SET_GLOBAL(e_connman_manager_offline_mode_set, 0),
   TEST_DESC_ELEMENTS_GET_GLOBAL(e_connman_manager_profiles_get, 0),
-  TEST_DESC_ELEMENTS_GET_GLOBAL(e_connman_manager_devices_get, 0),
   TEST_DESC_ELEMENTS_GET_GLOBAL(e_connman_manager_services_get, 1),
   TEST_DESC_STRING_GET_GLOBAL(e_connman_manager_technology_default_get, 0),
   TEST_DESC_STRINGS_GET_GLOBAL(e_connman_manager_technologies_available_get, 0),
