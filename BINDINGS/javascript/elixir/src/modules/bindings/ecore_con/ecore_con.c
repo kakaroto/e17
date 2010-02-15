@@ -24,6 +24,11 @@ static elixir_parameter_t               _ecore_con_url_parameter = {
   "Ecore_Con_Url", JOBJECT, NULL
 };
 
+static const elixir_parameter_t*        _2string_params[3] = {
+  &string_parameter,
+  &string_parameter,
+  NULL
+};
 static const elixir_parameter_t*        _int_string_int_any_params[5] = {
   &int_parameter,
   &string_parameter,
@@ -74,12 +79,6 @@ static const elixir_parameter_t*        _ecore_con_url_string_params[3] = {
   &string_parameter,
   NULL
 };
-static const elixir_parameter_t*        _ecore_con_url_2string_params[4] = {
-  &_ecore_con_url_parameter,
-  &string_parameter,
-  &string_parameter,
-  NULL
-};
 static const elixir_parameter_t*	_ecore_con_url_int_params[3] = {
   &_ecore_con_url_parameter,
   &int_parameter,
@@ -89,6 +88,12 @@ static const elixir_parameter_t*        _ecore_con_url_2int_params[4] = {
   &_ecore_con_url_parameter,
   &int_parameter,
   &int_parameter,
+  NULL
+};
+static const elixir_parameter_t*        _ecore_con_url_2string_params[4] = {
+  &_ecore_con_url_parameter,
+  &string_parameter,
+  &string_parameter,
   NULL
 };
 static const elixir_parameter_t*        _ecore_con_url_4string_params[6] = {
@@ -1356,6 +1361,29 @@ elixir_ecore_con_url_new(JSContext *cx, uintN argc, jsval *vp)
 }
 
 static JSBool
+elixir_ecore_con_url_custom_new(JSContext *cx, uintN argc, jsval *vp)
+{
+   Ecore_Con_Url *curl;
+   const char *url;
+   const char *custom_request;
+   JSObject *result;
+   elixir_value_t val[2];
+
+   if (!elixir_params_check(cx, _2string_params, val, argc, JS_ARGV(cx, vp)))
+     return JS_FALSE;
+
+   url = elixir_get_string_bytes(val[0].v.str, NULL);
+   custom_request = elixir_get_string_bytes(val[1].v.str, NULL);
+
+   curl = ecore_con_url_custom_new(url, custom_request);
+
+   result = elixir_return_ptr(cx, vp, curl, elixir_class_request("Ecore_Con_Url", NULL));
+   if (curl)
+     ecore_con_url_data_set(curl, elixir_void_new(cx, result, JSVAL_NULL, NULL));
+   return JS_TRUE;
+}
+
+static JSBool
 elixir_ecore_con_url_destroy(JSContext *cx, uintN argc, jsval *vp)
 {
    Elixir_Con_Data *ecd;
@@ -1421,6 +1449,74 @@ elixir_ecore_con_url_data_get(JSContext *cx, uintN argc, jsval *vp)
    data = ecore_con_url_data_get(curl);
 
    JS_SET_RVAL(cx, vp, elixir_void_get_jsval(data));
+   return JS_TRUE;
+}
+
+static JSBool
+elixir_ecore_con_url_additional_header_add(JSContext *cx, uintN argc, jsval *vp)
+{
+   Ecore_Con_Url *curl;
+   const char *key;
+   const char *value;
+   elixir_value_t val[3];
+
+   if (!elixir_params_check(cx, _ecore_con_url_2string_params, val, argc, JS_ARGV(cx, vp)))
+     return JS_FALSE;
+
+   GET_PRIVATE(cx, val[0].v.obj, curl);
+   key = elixir_get_string_bytes(val[1].v.str, NULL);
+   value = elixir_get_string_bytes(val[2].v.str, NULL);
+
+   ecore_con_url_additional_header_add(curl, key, value);
+
+   return JS_TRUE;
+}
+
+static JSBool
+elixir_ecore_con_url_additional_headers_clear(JSContext *cx, uintN argc, jsval *vp)
+{
+   Ecore_Con_Url *curl;
+   elixir_value_t val[2];
+
+   if (!elixir_params_check(cx, _ecore_con_url_params, val, argc, JS_ARGV(cx, vp)))
+     return JS_FALSE;
+
+   GET_PRIVATE(cx, val[0].v.obj, curl);
+
+   ecore_con_url_additional_headers_clear(curl);
+
+   return JS_TRUE;
+}
+
+static JSBool
+elixir_ecore_con_url_response_headers_get(JSContext *cx, uintN argc, jsval *vp)
+{
+   Ecore_Con_Url *curl;
+   const Eina_List *headers;
+   const char *header;
+   const Eina_List *l;
+   JSObject *array;
+   jsval jelt;
+   int i = 0;
+   elixir_value_t val[2];
+
+   if (!elixir_params_check(cx, _ecore_con_url_params, val, argc, JS_ARGV(cx, vp)))
+     return JS_FALSE;
+
+   GET_PRIVATE(cx, val[0].v.obj, curl);
+
+   headers = ecore_con_url_response_headers_get(curl);
+
+   array = elixir_return_array(cx, vp);
+   if (!array) return JS_FALSE;
+
+   EINA_LIST_FOREACH(headers, l, header)
+     {
+	jelt = STRING_TO_JSVAL(elixir_dup(cx, header));
+	JS_DefineElement(cx, array, i, jelt, NULL, NULL, JSPROP_INDEX | JSPROP_ENUMERATE | JSPROP_READONLY);
+	i++;
+     }
+
    return JS_TRUE;
 }
 
@@ -1500,7 +1596,6 @@ elixir_void_params_ecore_con_url_int(void (*func)(Ecore_Con_Url*, int),
    return JS_TRUE;
 }
 
-FAST_CALL_PARAMS(ecore_con_url_fd_set, elixir_void_params_ecore_con_url_int);
 FAST_CALL_PARAMS(ecore_con_url_verbose_set, elixir_void_params_ecore_con_url_int);
 FAST_CALL_PARAMS(ecore_con_url_ftp_use_epsv_set, elixir_void_params_ecore_con_url_int);
 
@@ -1572,14 +1667,17 @@ static JSFunctionSpec           ecore_con_functions[] = {
   ELIXIR_FN(ecore_con_client_ip_get, 1, JSPROP_ENUMERATE, 0 ),
   ELIXIR_FN(ecore_con_client_flush, 1, JSPROP_ENUMERATE, 0 ),
   ELIXIR_FN(ecore_con_url_new, 1, JSPROP_ENUMERATE, 0 ),
+  ELIXIR_FN(ecore_con_url_custom_new, 2, JSPROP_ENUMERATE, 0 ),
   ELIXIR_FN(ecore_con_url_destroy, 1, JSPROP_ENUMERATE, 0 ),
   ELIXIR_FN(ecore_con_url_url_set, 2, JSPROP_ENUMERATE, 0 ),
   ELIXIR_FN(ecore_con_url_send, 4, JSPROP_ENUMERATE, 0 ),
-  ELIXIR_FN(ecore_con_url_fd_set, 2, JSPROP_ENUMERATE, 0 ),
   ELIXIR_FN(ecore_con_url_verbose_set, 2, JSPROP_ENUMERATE, 0 ),
   ELIXIR_FN(ecore_con_url_ftp_use_epsv_set, 2, JSPROP_ENUMERATE, 0 ),
   ELIXIR_FN(ecore_con_url_data_set, 2, JSPROP_ENUMERATE, 0 ),
   ELIXIR_FN(ecore_con_url_data_get, 1, JSPROP_ENUMERATE, 0 ),
+  ELIXIR_FN(ecore_con_url_additional_header_add, 3, JSPROP_ENUMERATE, 0 ),
+  ELIXIR_FN(ecore_con_url_additional_headers_clear, 1, JSPROP_ENUMERATE, 0 ),
+  ELIXIR_FN(ecore_con_url_response_headers_get, 1, JSPROP_ENUMERATE, 0 ),
   ELIXIR_FN(ecore_con_url_received_bytes_get, 1, JSPROP_ENUMERATE, 0 ),
   ELIXIR_FN(ecore_con_url_time, 3, JSPROP_ENUMERATE, 0 ),
   ELIXIR_FN(ecore_con_url_ftp_upload, 4, JSPROP_ENUMERATE, 0 ),
