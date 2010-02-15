@@ -201,12 +201,13 @@ efl_src_prepare() {
 	if [[ -z "${E_PYTHON}" ]]; then
 		if [[ -e configure.ac || -e configure.in ]] && \
 			[[ "${WANT_AUTOTOOLS}" == "yes" ]]; then
-			if grep -qE '^[[:space:]]*AM_GNU_GETTEXT_VERSION' configure.*; then
+			if [[ -z "${E_NO_NLS}" ]] && \
+				grep -qE '^[[:space:]]*AM_GNU_GETTEXT_VERSION' configure.{ac,in}; then
 				local autopoint_log_file="${T}/autopoint.$$"
 
 				ebegin "Running autopoint"
 
-				autopoint -f &> "${autopoint_log_file}"
+				eautopoint -f &> "${autopoint_log_file}"
 
 				if ! eend $?; then
 					ewarn "Autopoint failed"
@@ -222,16 +223,12 @@ efl_src_prepare() {
 				fi
 			fi
 
-			# someone forgot these very useful file...
-			touch README
+			# autotools expect README, when README.in is around, but README
+			# is created later in configure step
+			[[ -f README.in ]] && touch README
 
 			eautoreconf
 			local x
-			for x in config.{guess,sub} ; do
-				[[ ! -L ${x} ]] && continue
-				rm -f ${x}
-				touch ${x}
-			done
 		fi
 
 		epunt_cxx
