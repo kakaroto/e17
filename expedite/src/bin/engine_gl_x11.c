@@ -40,9 +40,10 @@ engine_gl_x11_args(int argc, char **argv)
      }
 
    einfo->info.display = disp;
-   einfo->info.visual = einfo->func.best_visual_get(disp, DefaultScreen(disp));
-   einfo->info.colormap = einfo->func.best_colormap_get(disp, DefaultScreen(disp));
-   einfo->info.depth = einfo->func.best_depth_get(disp, DefaultScreen(disp));
+   einfo->info.screen = DefaultScreen(einfo->info.display);
+   einfo->info.visual = einfo->func.best_visual_get(einfo);
+   einfo->info.colormap = einfo->func.best_colormap_get(einfo);
+   einfo->info.depth = einfo->func.best_depth_get(einfo);
    attr.backing_store = NotUseful;
    attr.colormap = einfo->info.colormap;
    attr.border_pixel = 0;
