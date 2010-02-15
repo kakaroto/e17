@@ -1,0 +1,13 @@
+Login:        rui
+IRC Nick:     [Rui]
+Cloak:        developer/rui
+Name:         Rui Seabra
+Location:     Lisboa, Portugal
+E-Mail:       rms@1407.org
+WWW:          http://blog.1407.org/
+Managing:     elmdentica
+Contributing: elementary (at start)
+Group:        Applications, Libraries, WebSite
+Platform:     GNU/Linux (Debian, Ubuntu, Fedora, OpenEmbedded/OpenMoko)
+GeoData:      38.7,-9.2
+
