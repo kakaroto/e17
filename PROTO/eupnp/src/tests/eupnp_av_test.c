@@ -33,13 +33,15 @@
 static void
 container_found(void *data, DIDL_Container *container)
 {
-   INFO("Container found %p\n", container);
+   INFO("Container id %s (parentID=%s) found\n", container->parent.id,
+	container->parent.parentID);
 }
 
 static void
 item_found(void *data, DIDL_Item *item)
 {
-   INFO("Item found %p\n", item);
+   INFO("Item id %s (parentID=%s) found\n", item->parent.id,
+	item->parent.parentID);
 }
 
 

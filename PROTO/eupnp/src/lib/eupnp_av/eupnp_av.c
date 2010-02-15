@@ -37,8 +37,10 @@ enum {
    START,
    DIDLLITE,
    ITEM,
+   ITEM_TAG,
    RES,
    CONTAINER,
+   CONTAINER_TAG,
    ERROR,
    END
 };
@@ -60,6 +62,7 @@ struct _Context
 
    /* user data */
    void *data;
+   char *tag;
 };
 
 static void
@@ -74,6 +77,77 @@ eupnp_av_item_res_append(void *_item, void *_res)
    item->res = eina_list_append(item->res, res);
 }
 
+#define MATCH(attr) !strncmp(attributes[index], attr, strlen(attr))
+#define COPYATTR(index) strndup(attributes[index+3], \
+			        attributes[index+4] - attributes[index+3])
+
+static void
+eupnp_av_didl_object_parse_basic_attrs(DIDL_Object *obj, int nb_attributes,
+					    int nb_defaulted,
+					    const xmlChar **attributes)
+{
+   int i;
+   int index = 0;
+
+   for (i = 0; i < nb_attributes; ++i, index += 5)
+     {
+	if (MATCH("id"))
+	  obj->id = COPYATTR(index);
+	if (MATCH("parentID"))
+	  obj->parentID = COPYATTR(index);
+	if (MATCH("title"))
+	  obj->title = COPYATTR(index);
+	if (MATCH("creator"))
+	  obj->creator = COPYATTR(index);
+	if (MATCH("restricted"))
+	  obj->restricted = !strncmp(attributes[index+3], "true",
+				     strlen("true"));
+	if (MATCH("writeStatus"))
+	  obj->writeStatus = COPYATTR(index);
+     }
+}
+
+static void
+eupnp_av_didl_object_parse_item_attrs(DIDL_Item *item, int nb_attributes,
+				      int nb_defaulted,
+				      const xmlChar **attributes)
+{
+   eupnp_av_didl_object_parse_basic_attrs(&item->parent, nb_attributes,
+					  nb_defaulted, attributes);
+
+   int i;
+   int index = 0;
+
+   for (i = 0; i < nb_attributes; ++i, index += 5)
+     {
+     }
+}
+
+static void
+eupnp_av_didl_object_parse_container_attrs(DIDL_Container *c, int nb_attributes,
+					    int nb_defaulted,
+					    const xmlChar **attributes)
+{
+   eupnp_av_didl_object_parse_basic_attrs(&c->parent, nb_attributes,
+					  nb_defaulted, attributes);
+
+   int i;
+   int index = 0;
+
+   for (i = 0; i < nb_attributes; ++i, index += 5)
+     {
+	if (MATCH("searchable"))
+	  c->searchable = !strcmp(attributes[index+3], "true");
+	if (MATCH("childCount"))
+	  {
+	     char *copy = COPYATTR(index);
+	     c->childCount = atoi(copy);
+	     free(copy);
+	  }
+     }
+}
+
+
 static void
 eupnp_av_element_ns_start(void *ctx, const xmlChar *name, const xmlChar *prefix,
 			  const xmlChar *URI, int nb_namespaces,
@@ -81,8 +155,9 @@ eupnp_av_element_ns_start(void *ctx, const xmlChar *name, const xmlChar *prefix,
 			  int nb_defaulted, const xmlChar **attributes)
 {
    Context *c = ctx;
+   int i;
 
-   DBG("Start element %s state %d", name, c->state);
+   // DBG("Start element %s state %d", name, c->state);
 
    switch (c->state)
      {
@@ -97,11 +172,17 @@ eupnp_av_element_ns_start(void *ctx, const xmlChar *name, const xmlChar *prefix,
 	    {
 	       c->state = ITEM;
 	       c->item = calloc(1, sizeof(DIDL_Item));
+	       eupnp_av_didl_object_parse_item_attrs(c->item, nb_attributes,
+						     nb_defaulted, attributes);
 	    }
 	  else if (!strcmp(name, "container"))
 	    {
 	       c->state = CONTAINER;
 	       c->container = calloc(1, sizeof(DIDL_Container));
+	       eupnp_av_didl_object_parse_container_attrs(c->container,
+							  nb_attributes,
+							  nb_defaulted,
+							  attributes);
 	    }
 	  else
 	     c->skip++;
@@ -113,18 +194,21 @@ eupnp_av_element_ns_start(void *ctx, const xmlChar *name, const xmlChar *prefix,
 	       c->res = calloc(1, sizeof(DIDL_Resource));
 	    }
 	  else
-	     c->skip++;
+	    {
+	       c->state = ITEM_TAG;
+	       c->tag = strdup(name);
+	    }
 	  break;
 	case CONTAINER:
-	  DBG("Tag %s inside container", name);
-	  c->skip++;
+	  c->state = CONTAINER_TAG;
+	  c->tag = strdup(name);
 	  break;
 	default:
 	  ERR("Unexpected tag %s", name);
 	  c->state = ERROR;
      }
 
-   DBG("After start element %s state %d", name, c->state);
+   // DBG("After start element %s state %d", name, c->state);
 }
 
 static void
@@ -132,28 +216,28 @@ eupnp_av_on_characters(void *ctx, const xmlChar *ch, int len)
 {
    Context *c = ctx;
 
-   DBG("On characters state %d", c->state);
-
-   if (c->skip)
-     {
-	char *c = malloc(sizeof(char) * (len + 1));
-	memcpy(c, ch, len);
-	c[len] = '\0';
-	DBG("State skipped, chars %s", c);
-	free(c);
-	return;
-     }
+   // DBG("On characters state %d", c->state);
 
    switch (c->state)
      {
+	case CONTAINER_TAG:
+	  if (!strcmp(c->tag, "class"))
+	     c->container->parent.cls = strndup(ch, len);
+	  else if (!strcmp(c->tag, "searchClass"))
+	     c->container->searchClass = strndup(ch, len);
+	  else if (!strcmp(c->tag, "createClass"))
+	     c->container->createClass = strndup(ch, len);
+	  break;
+	case ITEM_TAG:
+	  if (!strcmp(c->tag, "class"))
+	     c->item->parent.cls = strndup(ch, len);
+	  else if (!strcmp(c->tag, "refID"))
+	     c->item->refID= strndup(ch, len);
+	  break;
 	case ITEM:
-	  DBG("On item, chars");
 	  break;
 	case CONTAINER:
-	  DBG("On container, chars");
 	  break;
-	default:
-	  DBG("Chars...");
      }
 }
 
@@ -163,7 +247,7 @@ eupnp_av_element_ns_end(void *ctx, const xmlChar *name, const xmlChar *prefix,
 {
    Context *c = ctx;
 
-   DBG("End element %s state %d", name, c->state);
+   // DBG("End element %s state %d", name, c->state);
 
    if (c->skip)
      {
@@ -191,11 +275,21 @@ eupnp_av_element_ns_end(void *ctx, const xmlChar *name, const xmlChar *prefix,
 	  c->res = NULL;
 	  c->state = ITEM;
 	  break;
+	case ITEM_TAG:
+	  c->state = ITEM;
+	  if (c->tag) free(c->tag);
+	  c->tag = NULL;
+	  break;
+	case CONTAINER_TAG:
+	  c->state = CONTAINER;
+	  if (c->tag) free(c->tag);
+	  c->tag = NULL;
+	  break;
 	default:
 	  ERR("End element error at tag %s", name);
      }
 
-   DBG("End element %s state %d", name, c->state);
+   // DBG("End element %s state %d", name, c->state);
 }
 
 static void
@@ -218,8 +312,6 @@ eupnp_av_didl_parse(const char *didl_xml,
    xmlSAXHandler handler;
    xmlParserCtxtPtr ctx;
    Eina_Bool ret = EINA_FALSE;
-
-   DBG("Parsing %s.", didl_xml);
 
    c = calloc(1, sizeof(Context));
    c->parsed_item = item_cb;

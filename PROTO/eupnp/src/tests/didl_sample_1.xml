@@ -1,8 +1,7 @@
 <?xml version="1.0"?>
 <DIDL-Lite xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:upnp="urn:schemas-upnp-org:metadata-1-0/upnp/"
            xmlns="urn:schemas-upnp-org:metadata-1-0/DIDL-Lite/">
-      <container id="3" parentID="1" childCount="4" restricted="false"
-searchable="true">
+      <container id="3" parentID="1" childCount="4" restricted="false" searchable="true">
              <dc:title>Singles Soundtrack</dc:title>
              <dc:creator>Various Artists</dc:creator>
              <upnp:class>object.container.album.musicAlbum</upnp:class>
@@ -13,8 +12,7 @@ searchable="true">
                    object.item.audioItem.musicTrack
              </upnp:createClass>
       </container>
-      <container id="4" parentID="1" childCount="3" restricted="false"
-searchable="true">
+      <container id="4" parentID="1" childCount="3" restricted="false" searchable="true">
              <dc:title>Brand New Day</dc:title>
              <dc:creator>Sting</dc:creator>
              <upnp:class>object.container.album.musicAlbum</upnp:class>
@@ -47,5 +45,31 @@ searchable="true">
                    object.item.imageItem.photo
              </upnp:createClass>
       </container>
+
+<item id="14" parentID="3" restricted="false">
+      <dc:title>Sunset on the beach</dc:title>
+      <dc:date>2001-10-20</dc:date>
+      <upnp:class>object.item.imageItem.photo</upnp:class>
+      <res protocolInfo="http-get:*:image/jpeg:*" size="20000">
+            http://10.0.0.1/getcontent.asp?id=14
+      </res>
+</item>
+<item id="15" parentID="4" restricted="false">
+      <dc:title>Playing in the pool</dc:title>
+      <dc:date>2001-10-25</dc:date>
+      <upnp:class>object.item.imageItem.photo</upnp:class>
+      <res protocolInfo="http-get:*:image/jpeg:*" size="25000">
+            http://10.0.0.1/getcontent.asp?id=15
+      </res>
+</item>
+<item id="20" refID="15" parentID="13" restricted="false">
+      <dc:title>Playing in the pool</dc:title>
+      <dc:date>2001-10-25</dc:date>
+      <upnp:class>object.item.imageItem.photo</upnp:class>
+      <res protocolInfo="http-get:*:image/jpeg:*" size="25000">
+            http://10.0.0.1/getcontent.asp?id=15
+      </res>
+</item>
+
 </DIDL-Lite>
 
