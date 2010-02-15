@@ -207,7 +207,7 @@ e_connman_service_move_after(E_Connman_Element *service, const char *object_path
  * The service state information.
  *
  * Valid states are "idle", "failure", "association",
- * "configuration" and "ready".
+ * "configuration", "ready", "login" and "online".
  *
  * @param service path to get property.
  * @param state where to store the property value, must be a pointer
