@@ -300,8 +300,9 @@ EAPI Enesim_Renderer * enesim_renderer_checker_new(void)
 	return r;
 }
 /**
- * To be documented
- * FIXME: To be fixed
+ * Sets the color of the even squares
+ * @param[in] r The checker renderer
+ * @param[in] color The color
  */
 EAPI void enesim_renderer_checker_color1_set(Enesim_Renderer *r, Enesim_Color color)
 {
@@ -310,8 +311,9 @@ EAPI void enesim_renderer_checker_color1_set(Enesim_Renderer *r, Enesim_Color co
 	s->color1 = color;
 }
 /**
- * To be documented
- * FIXME: To be fixed
+ * Sets the color of the odd squares
+ * @param[in] r The checker renderer
+ * @param[in] color The color
  */
 EAPI void enesim_renderer_checker_color2_set(Enesim_Renderer *r, Enesim_Color color)
 {
@@ -320,8 +322,8 @@ EAPI void enesim_renderer_checker_color2_set(Enesim_Renderer *r, Enesim_Color co
 	s->color2 = color;
 }
 /**
- * To be documented
- * FIXME: To be fixed
+ * Sets the size of the squares
+ * @param[in] r The checker renderer
  */
 EAPI void enesim_renderer_checker_size_set(Enesim_Renderer *r, int w, int h)
 {

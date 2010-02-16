@@ -116,8 +116,10 @@ EAPI Enesim_Renderer * enesim_renderer_stripes_new(void)
 	return p;
 }
 /**
- * To be documented
- * FIXME: To be fixed
+ * Sets the color of the stripes
+ * @param[in] p The stripes renderer
+ * @param[in] c0 The even stripes color
+ * @param[in] c1 The odd stripes color
  */
 EAPI void enesim_renderer_stripes_color_set(Enesim_Renderer *p,
 		Enesim_Color c0, Enesim_Color c1)
@@ -129,8 +131,10 @@ EAPI void enesim_renderer_stripes_color_set(Enesim_Renderer *p,
 	st->s1.color = c1;
 }
 /**
- * To be documented
- * FIXME: To be fixed
+ * Sets the thickness of the stripes
+ * @param[in] p The stripes renderer
+ * @param[in] thickness_0 The even stripes thickness
+ * @param[in] thickness_0 The odd stripes thickness
  */
 EAPI void enesim_renderer_stripes_thickness_set(Enesim_Renderer *p,
 		float thickness_0, float thickness_1)

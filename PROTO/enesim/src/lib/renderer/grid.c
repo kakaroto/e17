@@ -231,8 +231,12 @@ static void _free(Grid *g)
  *                                   API                                      *
  *============================================================================*/
 /**
- * To be documented
- * FIXME: To be fixed
+ * Creates a new grid renderer
+ *
+ * A grid renderer is composed of an inside box and an outside outline.
+ * Both, the inside and outside elements can be configurable through the
+ * color, width and height.
+ * @return The renderer
  */
 EAPI Enesim_Renderer * enesim_renderer_grid_new(void)
 {
@@ -250,8 +254,10 @@ EAPI Enesim_Renderer * enesim_renderer_grid_new(void)
 	return r;
 }
 /**
- * To be documented
- * FIXME: To be fixed
+ * Sets the width and height of the inner box of a grid renderer
+ * @param[in] r The grid renderer
+ * @param[in] w The width
+ * @param[in] h The height
  */
 EAPI void enesim_renderer_grid_inside_size_set(Enesim_Renderer *r, unsigned int w, unsigned int h)
 {
@@ -263,8 +269,9 @@ EAPI void enesim_renderer_grid_inside_size_set(Enesim_Renderer *r, unsigned int 
 	g->hi = eina_f16p16_int_from(h);
 }
 /**
- * To be documented
- * FIXME: To be fixed
+ * Sers the color of the inner box of a grid renderer
+ * @param[in] r The grid renderer
+ * @param[in] color The color
  */
 EAPI void enesim_renderer_grid_inside_color_set(Enesim_Renderer *r, Enesim_Color color)
 {
@@ -273,8 +280,10 @@ EAPI void enesim_renderer_grid_inside_color_set(Enesim_Renderer *r, Enesim_Color
 	g->inside.color = color;
 }
 /**
- * To be documented
- * FIXME: To be fixed
+ * Sets the width and height of the outline of a grid renderer
+ * @param[in] r The grid renderer
+ * @param[in] w The width
+ * @param[in] h The height
  */
 EAPI void enesim_renderer_grid_outside_size_set(Enesim_Renderer *r, unsigned int w, unsigned int h)
 {
@@ -284,8 +293,9 @@ EAPI void enesim_renderer_grid_outside_size_set(Enesim_Renderer *r, unsigned int
 	g->outside.h = h;
 }
 /**
- * To be documented
- * FIXME: To be fixed
+ * Sers the color of the outline of a grid renderer
+ * @param[in] r The grid renderer
+ * @param[in] color The color
  */
 EAPI void enesim_renderer_grid_outside_color_set(Enesim_Renderer *r, Enesim_Color color)
 {

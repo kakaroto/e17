@@ -75,8 +75,8 @@ static Eina_Bool _state_setup(Enesim_Renderer *r)
  *                                   API                                      *
  *============================================================================*/
 /**
- * To be documented
- * FIXME: To be fixed
+ * Creates a compound renderer
+ * @return The new renderer
  */
 EAPI Enesim_Renderer * enesim_renderer_compound_new(void)
 {
@@ -93,8 +93,10 @@ EAPI Enesim_Renderer * enesim_renderer_compound_new(void)
 	return r;
 }
 /**
- * To be documented
- * FIXME: To be fixed
+ * Adds a layer
+ * @param[in] r The compound renderer
+ * @param[in] rend The renderer for the new layer
+ * @param[in] rop The raster operation for the new layer
  */
 EAPI void enesim_renderer_compound_layer_add(Enesim_Renderer *r,
 		Enesim_Renderer *rend, Enesim_Rop rop)
@@ -115,6 +117,10 @@ EAPI void enesim_renderer_compound_layer_add(Enesim_Renderer *r,
 	c->layers = eina_list_append(c->layers, l);
 }
 
+/**
+ * Clears up all the layers
+ * @param[in] r The compound renderer
+ */
 EAPI void enesim_renderer_compound_clear(Enesim_Renderer *r)
 {
 

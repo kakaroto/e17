@@ -39,14 +39,14 @@ typedef struct _Enesim_Matrix
 	float xx, xy, xz;
 	float yx, yy, yz;
 	float zx, zy, zz;
-} Enesim_Matrix;
+} Enesim_Matrix; /**< Floating point matrix handler */
 
 typedef struct _Enesim_F16p16_Matrix
 {
 	Eina_F16p16 xx, xy, xz;
 	Eina_F16p16 yx, yy, yz;
 	Eina_F16p16 zx, zy, zz;
-} Enesim_F16p16_Matrix;
+} Enesim_F16p16_Matrix; /**< Fixed point matrix handler */
 
 typedef struct _Enesim_Quad
 {
@@ -54,7 +54,7 @@ typedef struct _Enesim_Quad
 	float x1, y1;
 	float x2, y2;
 	float x3, y3;
-} Enesim_Quad;
+} Enesim_Quad; /**< Quadrangle handler */
 
 EAPI Enesim_Matrix_Type enesim_matrix_type_get(Enesim_Matrix *m);
 EAPI void enesim_matrix_values_set(Enesim_Matrix *m, float a, float b, float c,

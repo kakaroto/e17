@@ -130,8 +130,8 @@ static void _free(Enesim_Renderer *r)
  *                                   API                                      *
  *============================================================================*/
 /**
- * To be documented
- * FIXME: To be fixed
+ * Creates a transition renderer
+ * @return The new renderer
  */
 EAPI Enesim_Renderer * enesim_renderer_transition_new(void)
 {
@@ -150,8 +150,11 @@ EAPI Enesim_Renderer * enesim_renderer_transition_new(void)
 	return r;
 }
 /**
- * To be documented
- * FIXME: To be fixed
+ * Sets the transition level
+ * @param[in] r The transition renderer
+ * @param[in] interp_value The transition level. A value of 0 will render
+ * the source renderer, a value of 1 will render the target renderer
+ * and any other value will inteprolate between both renderers
  */
 EAPI void enesim_renderer_transition_value_set(Enesim_Renderer *r, float interp_value)
 {
@@ -166,8 +169,9 @@ EAPI void enesim_renderer_transition_value_set(Enesim_Renderer *r, float interp_
 	t->interp = 1 + (255 * interp_value);
 }
 /**
- * To be documented
- * FIXME: To be fixed
+ * Sets the source renderer
+ * @param[in] r The transition renderer
+ * @param[in] r0 The source renderer
  */
 EAPI void enesim_renderer_transition_source_set(Enesim_Renderer *r, Enesim_Renderer *r0)
 {
@@ -181,8 +185,9 @@ EAPI void enesim_renderer_transition_source_set(Enesim_Renderer *r, Enesim_Rende
 	t->r0.rend = r0;
 }
 /**
- * To be documented
- * FIXME: To be fixed
+ * Sets the target renderer
+ * @param[in] r The transition renderer
+ * @param[in] r1 The target renderer
  */
 EAPI void enesim_renderer_transition_target_set(Enesim_Renderer *r, Enesim_Renderer *r1)
 {

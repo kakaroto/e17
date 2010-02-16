@@ -54,14 +54,7 @@ EAPI void enesim_surface_pixel_components_from(uint32_t *color,
 		Enesim_Format f, uint8_t a, uint8_t r, uint8_t g, uint8_t b);
 EAPI void enesim_surface_pixel_components_to(uint32_t color,
 		Enesim_Format f, uint8_t *a, uint8_t *r, uint8_t *g, uint8_t *b);
-#if 0
-EAPI uint32_t enesim_surface_pixel_argb_to(Enesim_Surface_Pixel *sp);
-EAPI void enesim_surface_pixel_argb_from(Enesim_Surface_Pixel *dp, Enesim_Format *df, uint32_t argb);
-EAPI void enesim_surface_pixel_convert(Enesim_Surface_Pixel *sp, Enesim_Surface_Pixel *dp, Enesim_Format *df);
 
-EAPI void enesim_surface_pixel_components_to(Enesim_Surface_Pixel *color,
-		uint8_t *a, uint8_t *r, uint8_t *g, uint8_t *b);
-#endif
 /** @} */ //End of Enesim_Surface_Group
 
 
