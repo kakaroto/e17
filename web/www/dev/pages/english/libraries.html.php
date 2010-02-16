@@ -31,8 +31,8 @@
         </p>
     </div>
     <div class="promotion">
-        <!-- I would like to make this list dynamic -->
         <ul>
+            <!-- Dynamic List -->
             <li>
                 <p>
                     French ISP <a href="http://www.free.fr">Free.fr</a> is
@@ -72,6 +72,14 @@
                 </p>
             </li>
         </ul>
+    </div>
+    <div class="more">
+        <p class="install">
+            <a href="#WikiPageInstall">Installation Instructions</a>
+        </p>
+        <p class="inthewild">
+            <a href="#inthewild">Enlightenment in the Wild</a>
+        </p>
     </div>
 </div>
 <div id="features">
@@ -163,12 +171,12 @@
             Interfaces can be built directly on the canvas by the designer
             using a <a class="local" href="#edje">simple declarative
             language</a> either by hand or through <a class="local" href=
-            "#tools">tools</a>.
+            "#editje">design software</a>.
         </p>
         <p>
-            This <a class="local" href="#edje">language</a> allows the artist
-            to mix image files and native elements intelligently using
-            features like smart scaling based on image border detection.
+            This language allows the artist to mix image files and native
+            design elements intelligently using features like smart scaling
+            based on image border detection.
         </p>
         <p class="more">
             <a href="#graphics">graphics system architecture</a>
@@ -184,6 +192,7 @@
             Enlightenment Video Channel
         </h4>
         <ul>
+            <!-- Dynamic List -->
             <li class="first">
                 <div class="wrapper">
                     <object width="320" height="265">
@@ -264,74 +273,60 @@
         </ul>
         <p class="more">
             <a href="?video">Video Channel</a>
-        <p>
+        </p>
     </div>
     <div class="architecture">
         <h4>
             Graphics System Architecture
         </h4>
-        <div class="evas">
+        <div id="evas">
             <p>
-                <strong>Evas</strong> is the canvas layer. It is not a drawing
-                library. It is not like OpenGL, Cairo, XRender, GDI, DirectFB
-                etc. It is a scene graph library that retains state of all
-                objects in it. They are created then manipulated until they
-                are no longer needed, at which point they are deleted. This
-                allows the programmer to work in terms that a designer thinks
-                of. It is direct mapping, as opposed to having to convert the
-                concepts into drawing commands in the right order, calculate
-                minimum drawing calls needed to get the job done etc.
+                <strong>Evas</strong> is the canvas layer. Unlike drawing
+                libraries like OpenGL, Cairo or GDI, it works as a <em>scene
+                graph library</em>, retaining the state of all objects
+                contained. It is direct mapping and allows the programmer to
+                work in terms that a designer thinks of.
             </p>
             <p>
                 Evas also handles abstracting the rendering mechanism. With
-                zero changes the same application can move from software to
-                OpenGL rendering, as they all use an abstracted scene graph to
-                describe the world (canvas) to Evas. Evas supports multiple
-                targets, but the most useful are the high-speed software
-                rendering engines and OpenGL (as well as OpenGL-ES 2.0).
+                zero changes the same application can move from Software
+                Rendering to OpenGL (including ES 2.0) or others. All
+                features, including 3D object manipulation, are efficently
+                supported by the software rendering engine and upwards.
             </p>
             <p>
-                Evas not only does quality rendering and compositing, but also
-                can scale, rotate and fully 3D transform objects, allowing for
-                sought-after 3D effects in your interfaces. It supplies these
-                abilities in both software and OpenGL rendering, so you are
-                never caught with unexpected loss of features. The software
-                rendering is even fast enough to provide the 3D without any
-                acceleration on devices for simple uses.
+                All features and abstraction in Evas is made avaiable to
+                derivate libraires like Edje and Elementary due to the fact
+                that they are esentially extensions to Evas graphical objects.
+                <a class="more" href=
+                "http://trac.enlightenment.org/e/wiki/Evas">More about
+                Evas</a>
             </p>
         </div>
-        <div class="edje">
+        <div id="edje">
             <p>
                 <strong>Edje</strong> is a meta-object design library that is
-                somewhere between Flash, PSD, SVG and HTML+CSS. It separates
-                design out from code and into a dynamically loaded data file.
-                This file is compressed and loaded very quickly, along with
-                being cached and shared betweeen instances.
-            </p>
-            <p>
-                This allows design to be provided at runtime by different
-                design (EDJ) files, leaving the programmer to worry about
-                overall application implementation and coarse grained UI as
-                opposed to needing to worry about all the little details that
-                the artists may vary even until the day before shipping the
-                product.
+                somewhere between Flash, PSD, SVG. Using a simple declarative
+                language (ala CSS) called EDC. This separates design out of
+                code and into a compressed data file that can be loaded
+                dynamically at runtime. This leaves the programmer to worry
+                about overall application implementation and coarse grained
+                UI. <a class="more" href=
+                "http://trac.enlightenment.org/e/wiki/Edje">More about
+                Edje</a>
             </p>
         </div>
-        <div class="elementary">
+        <div id="elementary">
             <p>
-                <strong>Elementary</strong> is a widget set. It is a new-style
-                of widget set much more canvas object based than anything
-                else. Why not ETK? Why not EWL? Well they both tend to veer
-                away from the core of Evas, Ecore and Edje a lot to build
-                their own worlds. Also I wanted something focused on embedded
-                devices - specifically small touchscreens.
-            </p>
-            <p>
-                Unlike GTK+ and Qt, 75% of the "widget set" is already
-                embodied in a common core - Ecore, Edje, Evas etc. So this
-                fine-grained library splitting means all of this is shared,
-                just a new widget "personality" is on top. And that is...
-                Elementary, my dear watson. Elementary.
+                <strong>Elementary</strong> is a widget set designed to merge
+                into the Edje model to various degrees at the developer's
+                discretion. Focused on embedded devices and specifically small
+                touchscreens, Elementary adpats perfectly to regular desktop
+                applications. Unlike other widget sets it relays on smaller,
+                independent libraires and focuses itself solely on the
+                interface functionality. <a class="more" href=
+                "http://trac.enlightenment.org/e/wiki/Elementary">More about
+                Elementary</a>
             </p>
         </div>
     </div>
@@ -340,11 +335,61 @@
             Resources for Artists
         </h4>
         <ul>
-            <li class="editje">
-                <span><strong>Editje</strong> is a graphical Edje editor.</span>
-                [SCREENSHOT AS BACKGROUND]
-                <a href="#">Try it!</a>
+            <li id="editje">
+                <span><strong>Editje</strong> is a graphical Edje
+                editor.</span> <a href="#">Try it!</a>
+            </li>
+            <li>
+                <span>Visit the</span> <a href=
+                "http://trac.enlightenment.org/e/wiki/Artists">Artists Wiki
+                Page</a>
+            </li>
+            <li>Latest Artist News:
+                <ul>
+                    <!-- Dynamically Generated -->
+                    <li>
+                        <a href="#">Planet article tagged artists 1</a>
+                    </li>
+                    <li>
+                        <a href="#">Planet article tagged artists 2</a>
+                    </li>
+                    <li>
+                        <a href="#">Planet article tagged artists 3</a>
+                    </li>
+                    <li>
+                        <a href="#">Planet article tagged artists 4</a>
+                    </li>
+                </ul><a class="more" href=
+                "http://planet.enlightenment.org/?tags=artists">More
+                Articles</a>
             </li>
         </ul>
     </div>
 </div>
+<!--<div id="libraries">
+    <h3>
+        More about the <abbr title=
+        "Enlightenment Foundation Libraries">EFL</abbr>
+    </h3>
+    <div class="core">
+        <h4>
+            The Core Libraries
+        </h4>
+        <p>
+            Enlightenment, the window manager is built on top of building
+            blocks known as EFL (the Enlightenment Foundation Libraries).
+            There are more than can be sensibly put into the simple block
+            diagram above, but this covers the essentials.
+        </p><a href="http://trac.enlightenment.org/e/wiki/EFL"><img src=
+        "http://enlightenment.org/p/about/d/diagram-efl-simple-small.png"
+        style="width: 240px; height: 360px; border: 0pt none;" alt=
+        "Simple E stack"></a>
+        <p>
+            Pretty much any application written using Core EFL libraries will
+            use one or more of these depending on its needs. It may only need
+            the lower level ones or use all of them to the top of the stack.
+            Each library fulfills a purpose, so it may be skipped if not
+            needed.
+        </p>
+    </div>
+</div>-->
