@@ -1615,5 +1615,6 @@ cdef public class Object [object PyEvasObject, type PyEvasObject_Type]:
             return self.parent_get()
 
 
-cdef PyTypeObject PyEvasObject_Type # hack to install metaclass
+cdef extern from "Evas.h": # hack to force type to be known
+    cdef PyTypeObject PyEvasObject_Type # hack to install metaclass
 _install_metaclass(&PyEvasObject_Type, EvasObjectMeta)

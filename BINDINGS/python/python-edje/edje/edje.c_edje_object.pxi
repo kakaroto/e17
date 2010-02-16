@@ -944,7 +944,8 @@ class EdjeObjectMeta(evas.c_evas.EvasObjectMeta):
                 txt_append(name)
 
 
-cdef PyTypeObject PyEdje_Type # hack to install metaclass
+cdef extern from "Edje.h": # hack to force type to be known
+    cdef PyTypeObject PyEdje_Type # hack to install metaclass
 _install_metaclass(&PyEdje_Type, EdjeObjectMeta)
 
 

@@ -240,5 +240,6 @@ cdef public class Gradient(Object) [object PyEvasGradient,
             self.offset_set(value)
 
 
-cdef PyTypeObject PyEvasGradient_Type # hack to install metaclass
+cdef extern from "Evas.h": # hack to force type to be known
+    cdef PyTypeObject PyEvasGradient_Type # hack to install metaclass
 _install_metaclass(&PyEvasGradient_Type, EvasObjectMeta)

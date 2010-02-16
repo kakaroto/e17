@@ -151,5 +151,6 @@ cdef public class Textblock(Object) [object PyEvasTextblock, type PyEvasTextbloc
         def __get__(self):
             return self.style_insets_get()
 
-cdef PyTypeObject PyEvasTextblock_Type # hack to install metaclass
+cdef extern from "Evas.h": # hack to force type to be known
+    cdef PyTypeObject PyEvasTextblock_Type # hack to install metaclass
 _install_metaclass(&PyEvasTextblock_Type, EvasObjectMeta)

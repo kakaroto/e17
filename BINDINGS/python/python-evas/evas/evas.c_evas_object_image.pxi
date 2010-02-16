@@ -599,7 +599,8 @@ cdef public class Image(Object) [object PyEvasImage, type PyEvasImage_Type]:
         self.event_callback_del(EVAS_CALLBACK_IMAGE_PRELOADED, func)
 
 
-cdef PyTypeObject PyEvasImage_Type # hack to install metaclass
+cdef extern from "Evas.h": # hack to force type to be known
+    cdef PyTypeObject PyEvasImage_Type # hack to install metaclass
 _install_metaclass(&PyEvasImage_Type, EvasObjectMeta)
 
 
@@ -629,5 +630,6 @@ cdef public class FilledImage(Image) [object PyEvasFilledImage,
         raise NotImplementedError("FilledImage doesn't support fill_set()")
 
 
-cdef PyTypeObject PyEvasFilledImage_Type # hack to install metaclass
+cdef extern from "Evas.h": # hack to force type to be known
+    cdef PyTypeObject PyEvasFilledImage_Type # hack to install metaclass
 _install_metaclass(&PyEvasFilledImage_Type, EvasObjectMeta)
