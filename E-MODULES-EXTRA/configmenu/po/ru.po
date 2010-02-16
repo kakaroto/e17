@@ -1,0 +1,78 @@
+# Russian translation for enlightenment
+# Copyright (c) 2009 Rosetta Contributors and Canonical Ltd 2009
+# This file is distributed under the same license as the enlightenment package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2009.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: enlightenment\n"
+"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
+"POT-Creation-Date: 2009-12-01 15:38+0800\n"
+"PO-Revision-Date: 2009-12-13 15:43+0000\n"
+"Last-Translator: Black Raven <Unknown>\n"
+"Language-Team: Russian <ru@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Launchpad-Export-Date: 2009-12-14 04:36+0000\n"
+"X-Generator: Launchpad (build Unknown)\n"
+
+#. create new config dialog
+#: ../src/e_mod_config.c:39
+msgid "Config Menu Module"
+msgstr "Модуль \"Настройка меню\""
+
+#: ../src/e_mod_config.c:79
+msgid "General"
+msgstr "Общее"
+
+#: ../src/e_mod_config.c:81
+msgid "Extend Settings Menu"
+msgstr "Расширить меню настроек"
+
+#: ../src/e_mod_main.c:198
+msgid ""
+"Config Menu Module Configuration data needed upgrading. Your old "
+"configuration<br> has been wiped and a new set of defaults initialized. "
+"This<br>will happen regularly during development, so don't report a<br>bug. "
+"This simply means the module needs new configuration<br>data by default for "
+"usable functionality that your old<br>configuration simply lacks. This new "
+"set of defaults will fix<br>that by adding it in. You can re-configure "
+"things now to your<br>liking. Sorry for the inconvenience.<br>"
+msgstr ""
+"Необходимо обновить настройки модуля \"Настройка меню\". Ваши старые "
+"настройки<br> были стерты и новые настройки заполнены значениями по "
+"умолчанию.<br> Это будет случаться регулярно в процессе разработки, и не "
+"нужно <br>сообщать об ошибках. Это всего лишь означает, что модулю <br> "
+"необходимы настройки для новой функциональности, о которой<br> старые "
+"настройки просто не знают. Новые настройки<br> это исправляют. Сейчас вы "
+"можете перенастроить все как вам нравится.<br> Приносим извинения за "
+"неудобства."
+
+#: ../src/e_mod_main.c:218
+msgid ""
+"Your Config Menu Module configuration is NEWER than the module version. This "
+"is very<br>strange. This should not happen unless you downgraded<br>the "
+"module or copied the configuration from a place where<br>a newer version of "
+"the module was running. This is bad and<br>as a precaution your "
+"configuration has been now restored to<br>defaults. Sorry for the "
+"inconvenience.<br>"
+msgstr ""
+"Версия настроек модуля \"Настройка меню\" НОВЕЕ чем версия модуля.<br>Это "
+"очень странно, и это не должно происходить, если только вы не <br> "
+"переходили на более старую версию или копировали настройки откуда-то, <br> "
+"где работала более новая версия модуля. Это плохо, и на всякий "
+"случай<br>ваша конфигурация была сброшена на значения по "
+"умолчанию.<br>Приносим извинения за неудобства."
+
+#: ../src/e_mod_main.c:397
+msgid "Config Menu"
+msgstr "Настройка Меню"
+
+#: ../src/e_mod_main.c:480
+msgid "Config Menu Configuration Updated"
+msgstr "Настройки модуля \"Настройка Меню\" обновлены"
+
+#: ../src/e_mod_main.c:615
+msgid "Configuration"
+msgstr "Настройки"

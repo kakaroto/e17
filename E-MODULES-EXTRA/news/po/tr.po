@@ -7,19 +7,19 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
-"POT-Creation-Date: 2009-11-05 16:07+0800\n"
-"PO-Revision-Date: 2009-11-25 08:13+0000\n"
-"Last-Translator: Mustafa Yılmaz <apshalasha@gmail.com>\n"
+"POT-Creation-Date: 2009-12-01 15:38+0800\n"
+"PO-Revision-Date: 2010-02-07 23:14+0000\n"
+"Last-Translator: ugur <Unknown>\n"
 "Language-Team: Turkish <tr@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2009-11-26 04:38+0000\n"
+"X-Launchpad-Export-Date: 2010-02-09 05:11+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 
 #: ../src/e_mod_main.c:52
 msgid "Config init failed"
-msgstr ""
+msgstr "Yapılandırma başlatılamadı"
 
 #: ../src/e_mod_main.c:53
 msgid "Parser init failed"
@@ -59,7 +59,7 @@ msgstr ""
 
 #: ../src/news_config_dialog.c:90
 msgid "News Main Configuration"
-msgstr ""
+msgstr "Temel  Haber Ayarları"
 
 #: ../src/news_config_dialog.c:190 ../src/news_config_dialog.c:228
 #: ../src/news_config_dialog_feeds.c:358
@@ -72,7 +72,7 @@ msgstr ""
 
 #: ../src/news_config_dialog.c:197 ../src/news_config_dialog.c:305
 msgid "News Viewer"
-msgstr ""
+msgstr "Haber Gösterici"
 
 #: ../src/news_config_dialog.c:199
 msgid "Font size"
@@ -115,7 +115,7 @@ msgstr "Hiçbir zaman"
 
 #: ../src/news_config_dialog.c:257
 msgid "Only on urgent feeds"
-msgstr ""
+msgstr "Sadece önemli beslemeler"
 
 #: ../src/news_config_dialog.c:263
 msgid "On all feeds"
@@ -136,19 +136,19 @@ msgstr ""
 
 #: ../src/news_config_dialog.c:307
 msgid "Unread feeds first"
-msgstr ""
+msgstr "Okunmamış beslemeler başta"
 
 #: ../src/news_config_dialog.c:309
 msgid "Unread articles first"
-msgstr ""
+msgstr "Okunmamış yazılar başta"
 
 #: ../src/news_config_dialog.c:311
 msgid "Sort articles by date"
-msgstr ""
+msgstr "Yazıları tarihe göre sırala"
 
 #: ../src/news_config_dialog.c:314
 msgid "Font"
-msgstr ""
+msgstr "Yazı tipi"
 
 #: ../src/news_config_dialog.c:324
 msgid "Font Shadow"
@@ -156,43 +156,43 @@ msgstr ""
 
 #: ../src/news_config_dialog.c:336
 msgid "Proxy"
-msgstr ""
+msgstr "Vekil Sunucu"
 
 #: ../src/news_config_dialog.c:338
 msgid "Enable"
-msgstr ""
+msgstr "Etkin"
 
 #: ../src/news_config_dialog.c:340
 msgid "Host"
-msgstr ""
+msgstr "Sunucu"
 
 #: ../src/news_config_dialog.c:344
 msgid "Port"
-msgstr ""
+msgstr "Bağlantı Noktası"
 
 #: ../src/news_config_dialog_category.c:50
 msgid "News Category Configuration"
-msgstr ""
+msgstr "Haber Kategorisi Ayarları"
 
 #: ../src/news_config_dialog_category.c:135
 msgid "Icon"
-msgstr ""
+msgstr "Simge"
 
 #: ../src/news_config_dialog_category.c:145
 #: ../src/news_config_dialog_feed.c:410
 msgid "Name"
-msgstr ""
+msgstr "Ad"
 
 #: ../src/news_config_dialog_category.c:203
 #: ../src/news_config_dialog_feed.c:543
 msgid "Select an Icon"
-msgstr ""
+msgstr "Simge seçin"
 
 #. buttons at the bottom
 #: ../src/news_config_dialog_category.c:228
 #: ../src/news_config_dialog_feed.c:568
 msgid "OK"
-msgstr ""
+msgstr "Tamam"
 
 #: ../src/news_config_dialog_category.c:229
 #: ../src/news_config_dialog_feed.c:569

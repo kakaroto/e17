@@ -1,0 +1,286 @@
+# Lithuanian translation for enlightenment
+# Copyright (c) 2010 Rosetta Contributors and Canonical Ltd 2010
+# This file is distributed under the same license as the enlightenment package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2010.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: enlightenment\n"
+"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
+"POT-Creation-Date: 2009-12-01 15:38+0800\n"
+"PO-Revision-Date: 2010-01-31 14:10+0000\n"
+"Last-Translator: Joshas <Unknown>\n"
+"Language-Team: Lithuanian <lt@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Launchpad-Export-Date: 2010-02-01 04:45+0000\n"
+"X-Generator: Launchpad (build Unknown)\n"
+
+#. create new config dialog
+#: ../src/e_mod_config.c:41
+msgid "Exalt Configuration"
+msgstr "Exalt konfigūracija"
+
+#: ../src/e_mod_config.c:84
+msgid "General"
+msgstr "Bendri"
+
+#: ../src/e_mod_config.c:89
+msgid "Basic mode"
+msgstr "Paprasta veiksena"
+
+#: ../src/e_mod_config.c:91
+msgid "Advanced mode"
+msgstr "Sudėtingesnė veiksena"
+
+#: ../src/e_mod_config.c:97
+msgid "Wireless network"
+msgstr "Bevielis tinklas"
+
+#: ../src/e_mod_config.c:99
+msgid "Save the configuration of each wireless network"
+msgstr "Išsaugoti kiekvieno belaidžio tinklo konfigūraciją"
+
+#: ../src/e_mod_config.c:104
+msgid "Notifications"
+msgstr "Pranešimai"
+
+#: ../src/e_mod_config.c:106
+msgid "Enable the notifications"
+msgstr "Įjungti pranešimus"
+
+#: ../src/e_mod_main.c:232
+msgid "Exalt Warning"
+msgstr "Exalt įspėjimas"
+
+#: ../src/e_mod_main.c:235
+msgid "Warning"
+msgstr "Įspėjimas"
+
+#: ../src/e_mod_main.c:236
+msgid "NetworkManager has been detected on your computer."
+msgstr "Jūsų kompiuteryje aptiktas NetworkManager."
+
+#: ../src/e_mod_main.c:238
+msgid ""
+"Exalt can't work properly if networkManager is running, please stop "
+"NetworkManager or Exalt."
+msgstr ""
+"Exalt negali deramai dirbti, jei veikia NetworkManager. Prašome sustabdyti "
+"NetworkManager arba Exalt."
+
+#: ../src/e_mod_main.c:241
+msgid "Ok"
+msgstr "Gerai"
+
+#: ../src/e_mod_main.c:368
+msgid "exalt"
+msgstr "exalt"
+
+#: ../src/e_mod_main.c:453
+msgid "exalt Configuration Updated"
+msgstr "exalt konfigūracija atnaujinta"
+
+#: ../src/e_mod_main.c:521
+msgid "Configuration"
+msgstr "Konfigūracija"
+
+#: ../src/popup.c:43
+msgid "DNS configuration"
+msgstr "DNS konfigūracija"
+
+#: ../src/popup.c:47
+msgid "Network configuration"
+msgstr "Tinklo konfigūracija"
+
+#: ../src/popup.c:53
+msgid "Modem dialer"
+msgstr "Modemo rinkiklis"
+
+#: ../src/popup.c:57
+msgid "Mobile Phone (3G)"
+msgstr "Mobilusis telefonas (3G)"
+
+#: ../src/popup.c:229
+msgid "No IP Address"
+msgstr "Nėra IP adreso"
+
+#: ../src/popup.c:233 ../src/wired_dialog.c:42
+msgid "Wired interface"
+msgstr "Laidinė sąsaja"
+
+#: ../src/popup.c:236
+msgid "Wireless interface"
+msgstr "Belaidė sąsaja"
+
+#: ../src/wired_dialog.c:36
+msgid "Wired Configuration Settings"
+msgstr "Laidinės konfigūracijos nuostatos"
+
+#: ../src/wired_dialog.c:51 ../src/network_dialog.c:54
+#: ../src/wireless_dialog.c:36
+msgid "Activate"
+msgstr "Aktyvinti"
+
+#: ../src/wired_dialog.c:54 ../src/network_dialog.c:57
+#: ../src/wireless_dialog.c:39
+msgid "Deactivate"
+msgstr "Pasyvinti"
+
+#: ../src/wired_dialog.c:58 ../src/network_dialog.c:61
+msgid "DHCP (Dynamic host configuration protocol)"
+msgstr "DHCP (Dinaminis stočių konfigūravimo protokolas)"
+
+#: ../src/wired_dialog.c:63 ../src/network_dialog.c:66
+msgid "Static"
+msgstr "Statinis"
+
+#: ../src/wired_dialog.c:68 ../src/network_dialog.c:71
+msgid "IP address: "
+msgstr "IP adresas: "
+
+#: ../src/wired_dialog.c:73 ../src/network_dialog.c:76
+msgid "Netmask address: "
+msgstr "Tinklo kaukės adresas: "
+
+#: ../src/wired_dialog.c:78 ../src/network_dialog.c:81
+msgid "Gateway address: "
+msgstr "Tinklų sietuvo adresas: "
+
+#: ../src/wired_dialog.c:83 ../src/network_dialog.c:86
+msgid "Command: "
+msgstr "Komanda: "
+
+#. 
+#. 
+#: ../src/wired_dialog.c:96 ../src/network_dialog.c:98
+#: ../src/network_dialog.c:677 ../src/network_dialog.c:723
+#: ../src/network_dialog.c:771 ../src/wireless_dialog.c:52
+msgid "OK"
+msgstr "Gerai"
+
+#: ../src/wired_dialog.c:97 ../src/network_dialog.c:99
+msgid "Apply"
+msgstr "Pritaikyti"
+
+#: ../src/wired_dialog.c:98 ../src/network_dialog.c:100
+#: ../src/network_dialog.c:678 ../src/network_dialog.c:724
+#: ../src/network_dialog.c:772
+msgid "Cancel"
+msgstr "Atsisakyti"
+
+#: ../src/network_dialog.c:17
+msgid "Wireless Configuration Settings"
+msgstr "Belaidžio tinklo konfigūracijos nuostatos"
+
+#: ../src/network_dialog.c:25
+msgid "Network information"
+msgstr "Tinklo informacija"
+
+#: ../src/network_dialog.c:27
+msgid "Essid: "
+msgstr "Essid: "
+
+#: ../src/network_dialog.c:32
+msgid "Address: "
+msgstr "Adresas: "
+
+#: ../src/network_dialog.c:37
+msgid "Quality: "
+msgstr "Kokybė: "
+
+#. IFACE frame
+#: ../src/network_dialog.c:45
+msgid "Wireless interface configuration"
+msgstr "Belaidės sąsajos konfigūracija"
+
+#: ../src/network_dialog.c:91
+msgid "Add to favorites: "
+msgstr "Pridėti prie mėgiamiausių: "
+
+#: ../src/network_dialog.c:203
+msgid "WEP information"
+msgstr "WEP informacija"
+
+#: ../src/network_dialog.c:205
+msgid "Description: "
+msgstr "Aprašas: "
+
+#: ../src/network_dialog.c:207
+msgid "WEP"
+msgstr "WEP"
+
+#: ../src/network_dialog.c:225
+msgid "Hexadecimal Key"
+msgstr "Šešioliktainis raktas"
+
+#: ../src/network_dialog.c:229
+msgid "ASCII Key"
+msgstr "ASCII raktas"
+
+#: ../src/network_dialog.c:235 ../src/network_dialog.c:313
+msgid "Password: "
+msgstr "Slaptažodis: "
+
+#: ../src/network_dialog.c:258
+msgid "WPA information"
+msgstr "WPA informacija"
+
+#: ../src/network_dialog.c:324
+msgid "CA certificate: "
+msgstr "CA sertifikatas: "
+
+#: ../src/network_dialog.c:336
+msgid "Client certificate: "
+msgstr "Kliento sertifikatas: "
+
+#: ../src/network_dialog.c:349
+msgid "Private key: "
+msgstr "Privatus raktas: "
+
+#: ../src/network_dialog.c:666
+msgid "Select the company certificate"
+msgstr "Parinkite kompanijos sertifikatą"
+
+#: ../src/network_dialog.c:712 ../src/network_dialog.c:760
+msgid "Select the client certificate"
+msgstr "Parinkite kliento sertifikatą"
+
+#: ../src/dns_dialog.c:20
+msgid "DNS (Domain Name Server) Settings"
+msgstr "DNS (Sričių vardų serverio) nuostatos"
+
+#: ../src/dns_dialog.c:25
+msgid "DNS (Domain Name Server) configuration"
+msgstr "DNS (Sričių vardų serverio) konfigūracija"
+
+#. 
+#. buttons
+#: ../src/dns_dialog.c:45
+msgid "Add"
+msgstr "Pridėti"
+
+#: ../src/dns_dialog.c:47
+msgid "Replace"
+msgstr "Pakeisti"
+
+#: ../src/dns_dialog.c:49
+msgid "Delete"
+msgstr "Pašalinti"
+
+#: ../src/dns_dialog.c:59
+msgid "Close"
+msgstr "Užverti"
+
+#: ../src/wireless_dialog.c:21
+msgid "Wireless Interface Settings"
+msgstr "Belaidės sąsajos nuostatos"
+
+#: ../src/wireless_dialog.c:27
+msgid "wireless interface"
+msgstr "belaidė sąsaja"
+
+#: ../src/wireless_dialog.c:42
+msgid "Create a new network"
+msgstr "Sukurti naują tinklą"

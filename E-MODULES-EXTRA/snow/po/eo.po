@@ -6,31 +6,31 @@ msgid ""
 msgstr ""
 "Project-Id-Version: eo\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2009-08-25 17:14+0800\n"
-"PO-Revision-Date: 2008-02-11 19:50+0100\n"
-"Last-Translator: Olivier M. <olivierweb@ifrance.com>\n"
+"POT-Creation-Date: 2009-12-01 15:38+0800\n"
+"PO-Revision-Date: 2010-01-20 21:51+0000\n"
+"Last-Translator: Michael Moroni <haikara90@gmail.com>\n"
 "Language-Team: Esperanto <translation-team-eo@lists.sourceforge.net>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: KBabel 1.11.4\n"
+"X-Launchpad-Export-Date: 2010-01-21 04:34+0000\n"
+"X-Generator: Launchpad (build Unknown)\n"
 
 #: ../src/e_mod_config.c:42
 msgid "Snow Configuration"
-msgstr "Konfiguraĵo de Neĝo"
+msgstr "Agordoj de Neĝo"
 
 #: ../src/e_mod_config.c:99
 msgid "General Settings"
-msgstr "Ĝeneralaj Agordoj"
+msgstr "Ĝeneralaj agordoj"
 
 #: ../src/e_mod_config.c:100
 msgid "Show Trees"
-msgstr "Vidigi Arbojn"
+msgstr "Montri arbojn"
 
 #: ../src/e_mod_config.c:104
 msgid "Snow Density"
-msgstr "Neĝa Denseco"
+msgstr "Denseco de neĝo"
 
 #: ../src/e_mod_config.c:106
 msgid "Sparse"

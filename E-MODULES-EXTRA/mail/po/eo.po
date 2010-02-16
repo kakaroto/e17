@@ -7,26 +7,27 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Mail\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2009-08-25 17:14+0800\n"
-"PO-Revision-Date: 2009-02-01 06:13+0000\n"
-"Last-Translator: William Theaker <Wsttrollboy@gmail.com>\n"
+"POT-Creation-Date: 2009-12-01 15:38+0800\n"
+"PO-Revision-Date: 2010-01-24 16:32+0000\n"
+"Last-Translator: Michael Moroni <haikara90@gmail.com>\n"
 "Language-Team: Esperanto <translation-team-eo@lists.sourceforge.net>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Launchpad-Export-Date: 2010-01-25 04:49+0000\n"
+"X-Generator: Launchpad (build Unknown)\n"
 
 #: ../src/e_mod_config_box.c:71
 msgid "Mailbox Configuration"
-msgstr "Agordo de retposxtkesto"
+msgstr "Agordoj pri retpoŝtkesto"
 
 #: ../src/e_mod_config_box.c:163 ../src/e_mod_config.c:94
 msgid "General Settings"
-msgstr "Gxenerala agordoj"
+msgstr "Ĝeneralaj agordoj"
 
 #: ../src/e_mod_config_box.c:165
 msgid "Start Program When New Mail Arrives"
-msgstr "Eki programaron kiam nova retmesagxo alvenas"
+msgstr "Ruli programaron kiam nova retmesaĝo alvenas"
 
 #: ../src/e_mod_config_box.c:170
 msgid "Program:"
@@ -34,7 +35,7 @@ msgstr "Programaro:"
 
 #: ../src/e_mod_config_box.c:182
 msgid "Mailbox Type"
-msgstr "Tipo de retposxtkesto"
+msgstr "Tipo de retpoŝtkesto"
 
 #: ../src/e_mod_config_box.c:184
 msgid "Pop3"
@@ -54,11 +55,11 @@ msgstr "Mbox"
 
 #: ../src/e_mod_config_box.c:196
 msgid "Monitor Mbox file permanently"
-msgstr "Elrigardi la dosieron Mbox cxiam"
+msgstr "Atentigi la dosieron Mbox ĉiam"
 
 #: ../src/e_mod_config_box.c:213
 msgid "Port Settings"
-msgstr "Agordoj de pordo"
+msgstr "Agordoj pri pordoj"
 
 #: ../src/e_mod_config_box.c:215
 msgid "Use SSL:"
@@ -82,7 +83,7 @@ msgstr "Loka:"
 
 #: ../src/e_mod_config_box.c:241
 msgid "Mailbox Settings"
-msgstr "Konto de retposxtkesto"
+msgstr "Konto de retpoŝtkesto"
 
 #: ../src/e_mod_config_box.c:242
 msgid "Name:"
@@ -90,11 +91,11 @@ msgstr "Nomo:"
 
 #: ../src/e_mod_config_box.c:247
 msgid "Mail Host:"
-msgstr "Servilo retmesagxoj:"
+msgstr "Servilo de retmesaĝoj:"
 
 #: ../src/e_mod_config_box.c:252
 msgid "Username:"
-msgstr "Uzantanomo:"
+msgstr "Uzantnomo:"
 
 #: ../src/e_mod_config_box.c:257
 msgid "Password:"
@@ -102,11 +103,11 @@ msgstr "Pasvorto:"
 
 #: ../src/e_mod_config_box.c:263
 msgid "New Mail Path:"
-msgstr "Nova vojo de retmesagxoj:"
+msgstr "Nova vojo de retmesaĝoj:"
 
 #: ../src/e_mod_config_box.c:275
 msgid "Current Mail Path:"
-msgstr "Nuna vojo de retmesagxoj:"
+msgstr "Nuna vojo de retmesaĝoj:"
 
 #: ../src/e_mod_config_box.c:433
 msgid "Inbox"
@@ -114,19 +115,19 @@ msgstr "Enirkesto"
 
 #: ../src/e_mod_config.c:53
 msgid "Mail Configuration"
-msgstr "Agordo de Retmesagxo"
+msgstr "Agordoj pri retmesaĝoj"
 
 #: ../src/e_mod_config.c:96
 msgid "Always Show Labels"
-msgstr "Cxiam vidigi etikedojn"
+msgstr "Montri etikedojn ĉiam"
 
 #: ../src/e_mod_config.c:99
 msgid "Show Mailbox Popup"
-msgstr "Vidigi sprucxfenetran de retposxtkesto"
+msgstr "Montri spruĉfenetron de retpoŝtkesto"
 
 #: ../src/e_mod_config.c:102
 msgid "Show All Boxes In Popup"
-msgstr "Vidigi cxiujn kestojn en sprucxfenestro"
+msgstr "Montri ĉiujn kestojn en spruĉfenestro"
 
 #: ../src/e_mod_config.c:104
 msgid "Check Interval"
@@ -139,7 +140,7 @@ msgstr "%2.0f minutoj"
 
 #: ../src/e_mod_config.c:112
 msgid "Mail Boxes"
-msgstr "Retposxtkestoj"
+msgstr "Retpoŝtkestoj"
 
 #: ../src/e_mod_config.c:122
 msgid "Add"
@@ -147,7 +148,7 @@ msgstr "Aldoni"
 
 #: ../src/e_mod_config.c:126
 msgid "Delete"
-msgstr "Forvisxi"
+msgstr "Forigi"
 
 #: ../src/e_mod_config.c:132
 msgid "Configure..."
@@ -163,4 +164,4 @@ msgstr "Retpoŝtkestoj"
 
 #: ../src/e_mod_main.c:266
 msgid "Configuration"
-msgstr "Agordo"
+msgstr "Agordoj"

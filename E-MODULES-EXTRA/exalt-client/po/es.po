@@ -6,275 +6,283 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2009-11-27 01:05+1100\n"
-"PO-Revision-Date: 2009-01-18 04:55+0000\n"
-"Last-Translator: DiegoJ <diegojromerolopez@gmail.com>\n"
+"POT-Creation-Date: 2009-12-01 15:38+0800\n"
+"PO-Revision-Date: 2009-12-28 09:18+0000\n"
+"Last-Translator: Paco Molinero <paco@byasl.com>\n"
 "Language-Team: Spanish <es@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"X-Launchpad-Export-Date: 2009-12-29 04:35+0000\n"
+"X-Generator: Launchpad (build Unknown)\n"
 
-#: src/e_mod_config.c:41
-#, fuzzy
+#. create new config dialog
+#: ../src/e_mod_config.c:41
 msgid "Exalt Configuration"
-msgstr "Configuración"
+msgstr "Configuración Exalt"
 
-#: src/e_mod_config.c:84
+#: ../src/e_mod_config.c:84
 msgid "General"
 msgstr "General"
 
-#: src/e_mod_config.c:89
+#: ../src/e_mod_config.c:89
 msgid "Basic mode"
-msgstr ""
+msgstr "Modo básico"
 
-#: src/e_mod_config.c:91
+#: ../src/e_mod_config.c:91
 msgid "Advanced mode"
-msgstr ""
+msgstr "Modo avanzado"
 
-#: src/e_mod_config.c:97
+#: ../src/e_mod_config.c:97
 msgid "Wireless network"
-msgstr ""
+msgstr "Red inalámbrica"
 
-#: src/e_mod_config.c:99
+#: ../src/e_mod_config.c:99
 msgid "Save the configuration of each wireless network"
-msgstr ""
+msgstr "Guardar la configuración de cada red inalámbrica"
 
-#: src/e_mod_config.c:104
-#, fuzzy
+#: ../src/e_mod_config.c:104
 msgid "Notifications"
-msgstr "Configuración"
+msgstr "Notificaciones"
 
-#: src/e_mod_config.c:106
+#: ../src/e_mod_config.c:106
 msgid "Enable the notifications"
-msgstr ""
+msgstr "Activar notificaciones"
 
-#: src/e_mod_main.c:232
+#: ../src/e_mod_main.c:232
 msgid "Exalt Warning"
-msgstr ""
+msgstr "Aviso Exalt"
 
-#: src/e_mod_main.c:235
+#: ../src/e_mod_main.c:235
 msgid "Warning"
-msgstr ""
+msgstr "Aviso"
 
-#: src/e_mod_main.c:236
+#: ../src/e_mod_main.c:236
 msgid "NetworkManager has been detected on your computer."
-msgstr ""
+msgstr "Se ha detectado NetworkManager en su equipo."
 
-#: src/e_mod_main.c:238
+#: ../src/e_mod_main.c:238
 msgid ""
 "Exalt can't work properly if networkManager is running, please stop "
 "NetworkManager or Exalt."
 msgstr ""
+"Exalt no puede trabajar correctamente si NetworkManager se está ejecutando; "
+"por favor cierre NetworManager o Exalt."
 
-#: src/e_mod_main.c:241
+#: ../src/e_mod_main.c:241
 msgid "Ok"
-msgstr ""
+msgstr "Aceptar"
 
-#: src/e_mod_main.c:368
+#: ../src/e_mod_main.c:368
 msgid "exalt"
 msgstr "exalt"
 
-#: src/e_mod_main.c:453
+#: ../src/e_mod_main.c:453
 msgid "exalt Configuration Updated"
 msgstr "Configuración de exalt actualizada"
 
-#: src/e_mod_main.c:521
+#: ../src/e_mod_main.c:521
 msgid "Configuration"
 msgstr "Configuración"
 
-#: src/popup.c:43
-#, fuzzy
+#: ../src/popup.c:43
 msgid "DNS configuration"
-msgstr "Configuración"
+msgstr "Configuración DNS"
 
-#: src/popup.c:47
-#, fuzzy
+#: ../src/popup.c:47
 msgid "Network configuration"
-msgstr "Configuración"
+msgstr "Configuración de red"
 
-#: src/popup.c:53
+#: ../src/popup.c:53
 msgid "Modem dialer"
-msgstr ""
+msgstr "Marcador del módem"
 
-#: src/popup.c:57
+#: ../src/popup.c:57
 msgid "Mobile Phone (3G)"
-msgstr ""
+msgstr "Móvil (3G)"
 
-#: src/popup.c:229
+#: ../src/popup.c:229
 msgid "No IP Address"
-msgstr ""
+msgstr "No hay dirección IP"
 
-#: src/popup.c:233 src/wired_dialog.c:42
+#: ../src/popup.c:233 ../src/wired_dialog.c:42
 msgid "Wired interface"
-msgstr ""
+msgstr "Interfaz cableada"
 
-#: src/popup.c:236
+#: ../src/popup.c:236
 msgid "Wireless interface"
-msgstr ""
+msgstr "Interfaz inalámbrica"
 
-#: src/wired_dialog.c:36
-#, fuzzy
+#: ../src/wired_dialog.c:36
 msgid "Wired Configuration Settings"
-msgstr "Configuración"
+msgstr "Ajustes de la configuración de la conexión cableada"
 
-#: src/wired_dialog.c:51 src/network_dialog.c:54 src/wireless_dialog.c:36
+#: ../src/wired_dialog.c:51 ../src/network_dialog.c:54
+#: ../src/wireless_dialog.c:36
 msgid "Activate"
-msgstr ""
+msgstr "Activar"
 
-#: src/wired_dialog.c:54 src/network_dialog.c:57 src/wireless_dialog.c:39
+#: ../src/wired_dialog.c:54 ../src/network_dialog.c:57
+#: ../src/wireless_dialog.c:39
 msgid "Deactivate"
-msgstr ""
+msgstr "Desactivar"
 
-#: src/wired_dialog.c:58 src/network_dialog.c:61
+#: ../src/wired_dialog.c:58 ../src/network_dialog.c:61
 msgid "DHCP (Dynamic host configuration protocol)"
-msgstr ""
+msgstr "DHCP (Protocolo de Configuración Dinámica del Anfitrión)"
 
-#: src/wired_dialog.c:63 src/network_dialog.c:66
+#: ../src/wired_dialog.c:63 ../src/network_dialog.c:66
 msgid "Static"
-msgstr ""
+msgstr "Estático"
 
-#: src/wired_dialog.c:68 src/network_dialog.c:71
+#: ../src/wired_dialog.c:68 ../src/network_dialog.c:71
 msgid "IP address: "
-msgstr ""
+msgstr "Dirección IP: "
 
-#: src/wired_dialog.c:73 src/network_dialog.c:76
+#: ../src/wired_dialog.c:73 ../src/network_dialog.c:76
 msgid "Netmask address: "
-msgstr ""
+msgstr "Dirección de máscara de red: "
 
-#: src/wired_dialog.c:78 src/network_dialog.c:81
+#: ../src/wired_dialog.c:78 ../src/network_dialog.c:81
 msgid "Gateway address: "
-msgstr ""
+msgstr "Dirección de la puerta de enlace: "
 
-#: src/wired_dialog.c:83 src/network_dialog.c:86
+#: ../src/wired_dialog.c:83 ../src/network_dialog.c:86
 msgid "Command: "
-msgstr ""
+msgstr "Orden: "
 
-#: src/wired_dialog.c:96 src/network_dialog.c:98 src/network_dialog.c:677
-#: src/network_dialog.c:723 src/network_dialog.c:771 src/wireless_dialog.c:52
+#. 
+#. 
+#: ../src/wired_dialog.c:96 ../src/network_dialog.c:98
+#: ../src/network_dialog.c:677 ../src/network_dialog.c:723
+#: ../src/network_dialog.c:771 ../src/wireless_dialog.c:52
 msgid "OK"
-msgstr ""
+msgstr "Aceptar"
 
-#: src/wired_dialog.c:97 src/network_dialog.c:99
+#: ../src/wired_dialog.c:97 ../src/network_dialog.c:99
 msgid "Apply"
-msgstr ""
+msgstr "Aplicar"
 
-#: src/wired_dialog.c:98 src/network_dialog.c:100 src/network_dialog.c:678
-#: src/network_dialog.c:724 src/network_dialog.c:772
+#: ../src/wired_dialog.c:98 ../src/network_dialog.c:100
+#: ../src/network_dialog.c:678 ../src/network_dialog.c:724
+#: ../src/network_dialog.c:772
 msgid "Cancel"
-msgstr ""
+msgstr "Cancelar"
 
-#: src/network_dialog.c:17
-#, fuzzy
+#: ../src/network_dialog.c:17
 msgid "Wireless Configuration Settings"
-msgstr "Configuración de exalt actualizada"
+msgstr "Ajustes de la configuración de la conexión inalámbrica"
 
-#: src/network_dialog.c:25
+#: ../src/network_dialog.c:25
 msgid "Network information"
-msgstr ""
+msgstr "Información de red"
 
-#: src/network_dialog.c:27
+#: ../src/network_dialog.c:27
 msgid "Essid: "
-msgstr ""
+msgstr "Essid: "
 
-#: src/network_dialog.c:32
+#: ../src/network_dialog.c:32
 msgid "Address: "
-msgstr ""
+msgstr "Dirección: "
 
-#: src/network_dialog.c:37
+#: ../src/network_dialog.c:37
 msgid "Quality: "
-msgstr ""
+msgstr "Calidad: "
 
-#: src/network_dialog.c:45
+#. IFACE frame
+#: ../src/network_dialog.c:45
 msgid "Wireless interface configuration"
-msgstr ""
+msgstr "Configuración de la interfaz de la conexión inalámbrica"
 
-#: src/network_dialog.c:91
+#: ../src/network_dialog.c:91
 msgid "Add to favorites: "
-msgstr ""
+msgstr "Añadir a favoritos: "
 
-#: src/network_dialog.c:203
+#: ../src/network_dialog.c:203
 msgid "WEP information"
-msgstr ""
+msgstr "Información WEP"
 
-#: src/network_dialog.c:205
+#: ../src/network_dialog.c:205
 msgid "Description: "
-msgstr ""
+msgstr "Descripción: "
 
-#: src/network_dialog.c:207
+#: ../src/network_dialog.c:207
 msgid "WEP"
-msgstr ""
+msgstr "WEP"
 
-#: src/network_dialog.c:225
+#: ../src/network_dialog.c:225
 msgid "Hexadecimal Key"
-msgstr ""
+msgstr "Clave hexadecimal"
 
-#: src/network_dialog.c:229
+#: ../src/network_dialog.c:229
 msgid "ASCII Key"
-msgstr ""
+msgstr "Clave ASCII"
 
-#: src/network_dialog.c:235 src/network_dialog.c:313
+#: ../src/network_dialog.c:235 ../src/network_dialog.c:313
 msgid "Password: "
-msgstr ""
+msgstr "Contraseña: "
 
-#: src/network_dialog.c:258
+#: ../src/network_dialog.c:258
 msgid "WPA information"
-msgstr ""
+msgstr "Información WPA"
 
-#: src/network_dialog.c:324
+#: ../src/network_dialog.c:324
 msgid "CA certificate: "
-msgstr ""
+msgstr "Certificado CA: "
 
-#: src/network_dialog.c:336
+#: ../src/network_dialog.c:336
 msgid "Client certificate: "
-msgstr ""
+msgstr "Certificado de cliente: "
 
-#: src/network_dialog.c:349
+#: ../src/network_dialog.c:349
 msgid "Private key: "
-msgstr ""
+msgstr "Clave privada: "
 
-#: src/network_dialog.c:666
+#: ../src/network_dialog.c:666
 msgid "Select the company certificate"
-msgstr ""
+msgstr "Seleccionar el certificado de la compañía"
 
-#: src/network_dialog.c:712 src/network_dialog.c:760
+#: ../src/network_dialog.c:712 ../src/network_dialog.c:760
 msgid "Select the client certificate"
-msgstr ""
+msgstr "Seleccionar el certificado del cliente"
 
-#: src/dns_dialog.c:20
+#: ../src/dns_dialog.c:20
 msgid "DNS (Domain Name Server) Settings"
-msgstr ""
+msgstr "Ajustes de DNS (Nombre del Servidor de Dominio)"
 
-#: src/dns_dialog.c:25
+#: ../src/dns_dialog.c:25
 msgid "DNS (Domain Name Server) configuration"
-msgstr ""
+msgstr "Configuración de DNS (Nombre del Servidor de Dominio)"
 
-#: src/dns_dialog.c:45
+#. 
+#. buttons
+#: ../src/dns_dialog.c:45
 msgid "Add"
-msgstr ""
+msgstr "Añadir"
 
-#: src/dns_dialog.c:47
+#: ../src/dns_dialog.c:47
 msgid "Replace"
-msgstr ""
+msgstr "Reemplazar"
 
-#: src/dns_dialog.c:49
+#: ../src/dns_dialog.c:49
 msgid "Delete"
-msgstr ""
+msgstr "Borrar"
 
-#: src/dns_dialog.c:59
+#: ../src/dns_dialog.c:59
 msgid "Close"
-msgstr ""
+msgstr "Cerrar"
 
-#: src/wireless_dialog.c:21
+#: ../src/wireless_dialog.c:21
 msgid "Wireless Interface Settings"
-msgstr ""
+msgstr "Configuración de la interfaz inalámbrica"
 
-#: src/wireless_dialog.c:27
+#: ../src/wireless_dialog.c:27
 msgid "wireless interface"
-msgstr ""
+msgstr "interfaz inalámbrica"
 
-#: src/wireless_dialog.c:42
+#: ../src/wireless_dialog.c:42
 msgid "Create a new network"
-msgstr ""
+msgstr "Crear una red nueva"
 
 #~ msgid "exalt Module"
 #~ msgstr "Módulo exalt"

@@ -6,23 +6,23 @@ msgid ""
 msgstr ""
 "Project-Id-Version: eo\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2009-08-25 17:14+0800\n"
-"PO-Revision-Date: 2008-02-11 19:49+0100\n"
-"Last-Translator: Olivier M. <olivierweb@ifrance.com>\n"
+"POT-Creation-Date: 2009-12-01 15:38+0800\n"
+"PO-Revision-Date: 2010-01-20 21:41+0000\n"
+"Last-Translator: Michael Moroni <haikara90@gmail.com>\n"
 "Language-Team: Esperanto <translation-team-eo@lists.sourceforge.net>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: KBabel 1.11.4\n"
+"X-Launchpad-Export-Date: 2010-01-21 04:34+0000\n"
+"X-Generator: Launchpad (build Unknown)\n"
 
 #: ../src/e_mod_config.c:30
 msgid "Taskbar Configuration"
-msgstr "Konfiguraĵo de TaskListelo"
+msgstr "Agordoj de Taskobreto"
 
 #: ../src/e_mod_config.c:71
 msgid "Display"
-msgstr "Vidigi"
+msgstr "Ekrano"
 
 #: ../src/e_mod_config.c:72
 msgid "Show windows from all desktops"
@@ -30,8 +30,8 @@ msgstr "Montri fenestrojn de ĉiuj labortabloj"
 
 #: ../src/e_mod_main.c:294 ../src/e_mod_main.c:667
 msgid "Taskbar"
-msgstr "Taskolistelo"
+msgstr "Taskobreto"
 
 #: ../src/e_mod_main.c:656
 msgid "Configuration"
-msgstr "Konfiguraĵo"
+msgstr "Agordoj"

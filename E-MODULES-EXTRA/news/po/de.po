@@ -7,14 +7,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
-"POT-Creation-Date: 2009-11-05 16:07+0800\n"
-"PO-Revision-Date: 2009-08-28 12:56+0000\n"
-"Last-Translator: Dieter Smorra <Unknown>\n"
+"POT-Creation-Date: 2009-12-01 15:38+0800\n"
+"PO-Revision-Date: 2009-12-05 10:48+0000\n"
+"Last-Translator: MixCool <lars.thoms@mixcool.de>\n"
 "Language-Team: German <de@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2009-11-12 04:52+0000\n"
+"X-Launchpad-Export-Date: 2009-12-06 04:44+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 
 #: ../src/e_mod_main.c:52
@@ -132,7 +132,7 @@ msgstr ""
 
 #: ../src/news_config_dialog.c:285
 msgid "Show on timeout ?"
-msgstr ""
+msgstr "Bei Zeitüberschreitung anzeigen?"
 
 #: ../src/news_config_dialog.c:307
 msgid "Unread feeds first"
@@ -144,7 +144,7 @@ msgstr ""
 
 #: ../src/news_config_dialog.c:311
 msgid "Sort articles by date"
-msgstr ""
+msgstr "Artikel nach Datum sortieren"
 
 #: ../src/news_config_dialog.c:314
 msgid "Font"

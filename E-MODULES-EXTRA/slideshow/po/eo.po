@@ -7,15 +7,15 @@ msgid ""
 msgstr ""
 "Project-Id-Version: eo\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2009-08-25 17:14+0800\n"
-"PO-Revision-Date: 2009-05-11 00:14+0000\n"
-"Last-Translator: Olivier <eliovir@nospam.gmail.com>\n"
+"POT-Creation-Date: 2009-12-01 15:38+0800\n"
+"PO-Revision-Date: 2010-01-20 21:54+0000\n"
+"Last-Translator: Michael Moroni <haikara90@gmail.com>\n"
 "Language-Team: Esperanto <translation-team-eo@lists.sourceforge.net>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Lokalize 0.3\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Launchpad-Export-Date: 2010-01-21 04:34+0000\n"
+"X-Generator: Launchpad (build Unknown)\n"
 
 #: ../src/e_mod_config.c:37
 msgid "Slideshow Configuration"
@@ -27,12 +27,12 @@ msgstr "Cikla Tempo"
 
 #: ../src/e_mod_config.c:92
 msgid "Disable Timer"
-msgstr "Neebligi Tempoplanilon"
+msgstr "Malaktivigi tempmezurilon"
 
 #: ../src/e_mod_config.c:95
 #, c-format
 msgid "%3.0f seconds"
-msgstr "%3.0f secondoj"
+msgstr "%3.0f sekundoj"
 
 #: ../src/e_mod_config.c:100
 msgid "Directory"
@@ -40,36 +40,36 @@ msgstr "Dosierujo"
 
 #: ../src/e_mod_config.c:102
 msgid "Sub-directory to use for backgrounds"
-msgstr "Patraj dosierujoj por uzado de ekranfonoj"
+msgstr "Subdosierujoj por uzado de fonoj"
 
 #: ../src/e_mod_config.c:109
 msgid "Extra"
-msgstr "Ekstra"
+msgstr "Plia"
 
 #: ../src/e_mod_config.c:110
 msgid "Randomize order"
-msgstr "Senvicigi ordon"
+msgstr "Hazardigi ordon"
 
 #: ../src/e_mod_config.c:113
 msgid "Set wallpaper on all desktops"
-msgstr "Difini tapeton sur ĉiuj labortabloj"
+msgstr "Difini fonon por ĉiuj labortabloj"
 
 #: ../src/e_mod_config.c:115
 msgid "Set wallpaper on current desktop"
-msgstr "Difini tapeton sur nuna labortablo"
+msgstr "Difini fonon sur nuna labortablo"
 
 #: ../src/e_mod_config.c:117
 msgid "Set wallpaper on current screen"
-msgstr "Difini tapeton sur nuna ekrano"
+msgstr "Difini fonon sur nuna ekrano"
 
 #: ../src/e_mod_config.c:121
 msgid "Set wallpaper on current monitor (Xinerama support)"
-msgstr "Difini tapeton sur nuna monitoro (Xinerama subteno)"
+msgstr "Difini fonon sur nuna monitoro (Xinerama subteno)"
 
 #: ../src/e_mod_main.c:136
 msgid "Slideshow"
-msgstr "Foliprezento"
+msgstr "Bildoprezento"
 
 #: ../src/e_mod_main.c:180
 msgid "Configuration"
-msgstr "Konfiguraĵo"
+msgstr "Agordoj"

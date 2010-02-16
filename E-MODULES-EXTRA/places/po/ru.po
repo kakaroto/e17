@@ -7,25 +7,25 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
-"POT-Creation-Date: 2009-11-05 16:07+0800\n"
-"PO-Revision-Date: 2009-11-10 23:09+0000\n"
-"Last-Translator: Serguey G Basalaev <SBasalaev@gmail.com>\n"
+"POT-Creation-Date: 2009-12-01 15:38+0800\n"
+"PO-Revision-Date: 2009-12-13 15:25+0000\n"
+"Last-Translator: Black Raven <Unknown>\n"
 "Language-Team: Russian <ru@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2009-11-12 04:54+0000\n"
+"X-Launchpad-Export-Date: 2009-12-14 04:36+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 
 #. create new config dialog
 #: ../src/e_mod_config.c:51
 msgid "Places Configuration"
-msgstr ""
+msgstr "Настройка мест"
 
 #. General frame
 #: ../src/e_mod_config.c:118
 msgid "General"
-msgstr ""
+msgstr "Общее"
 
 #: ../src/e_mod_config.c:121
 msgid "Show in main menu"
@@ -50,7 +50,7 @@ msgstr "Показывать в меню"
 
 #: ../src/e_mod_config.c:149 ../src/e_mod_places.c:399
 msgid "Home"
-msgstr ""
+msgstr "Домашняя папка"
 
 #: ../src/e_mod_config.c:152 ../src/e_mod_places.c:408
 msgid "Desktop"
@@ -67,7 +67,7 @@ msgstr "Файловая система"
 
 #: ../src/e_mod_config.c:161 ../src/e_mod_places.c:436
 msgid "Temp"
-msgstr ""
+msgstr "Временные файлы"
 
 #: ../src/e_mod_config.c:164
 msgid "Favorites"
@@ -92,7 +92,7 @@ msgstr "Без имени"
 
 #: ../src/e_mod_places.c:689
 msgid "free of"
-msgstr ""
+msgstr "свободно на"
 
 #: ../src/e_mod_places.c:695
 #, c-format

@@ -6,85 +6,84 @@ msgid ""
 msgstr ""
 "Project-Id-Version: eo\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2007-12-10 17:14+0100\n"
-"PO-Revision-Date: 2008-02-11 20:14+0100\n"
-"Last-Translator: Olivier M. <olivierweb@ifrance.com>\n"
+"POT-Creation-Date: 2009-12-01 15:38+0800\n"
+"PO-Revision-Date: 2010-01-24 16:49+0000\n"
+"Last-Translator: Michael Moroni <haikara90@gmail.com>\n"
 "Language-Team: Esperanto <translation-team-eo@lists.sourceforge.net>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: KBabel 1.11.4\n"
+"X-Launchpad-Export-Date: 2010-01-25 04:49+0000\n"
+"X-Generator: Launchpad (build Unknown)\n"
 "X-Language-Team: Esperanto <translation-team-eo@lists.sourceforge.net>\n"
-"X-Poedit-Language: Esperanto\n"
-"X-Poedit-Basepath: .\n"
 "X-Poedit-SearchPath-0: /usr/portage/distfiles/cvs-src/e17/apps/ephoto/src\n"
+"X-Poedit-Basepath: .\n"
+"X-Poedit-Language: Esperanto\n"
 
-#: src/module/e_mod_config.c:104
+#: ../src/e_mod_config.c:104
 msgid "Language Module Settings"
-msgstr "Agordoj de Lingva Modulo"
+msgstr "Agordoj de modulo pri lingvo"
 
-#: src/module/e_mod_config.c:174 src/module/e_mod_config.c:249
+#: ../src/e_mod_config.c:174 ../src/e_mod_config.c:249
 msgid "Available Languages"
-msgstr "Haveblaj Lingvoj"
+msgstr "Haveblaj lingvoj"
 
-#: src/module/e_mod_config.c:182 src/module/e_mod_config.c:257
+#: ../src/e_mod_config.c:182 ../src/e_mod_config.c:257
 msgid "Selected Languages"
-msgstr "Elektitaj Lingvoj"
+msgstr "Elektitaj lingvoj"
 
-#: src/module/e_mod_config.c:198 src/module/e_mod_config.c:273
+#: ../src/e_mod_config.c:198 ../src/e_mod_config.c:273
 msgid "Up"
 msgstr "Supren"
 
-#: src/module/e_mod_config.c:203 src/module/e_mod_config.c:278
+#: ../src/e_mod_config.c:203 ../src/e_mod_config.c:278
 msgid "Down"
 msgstr "Malsupren"
 
-#: src/module/e_mod_config.c:211 src/module/e_mod_config.c:304
+#: ../src/e_mod_config.c:211 ../src/e_mod_config.c:304
 msgid "Language Switch Policy"
-msgstr "Strategio de Lingva Interŝanĝo"
+msgstr "Strategio de interŝanĝo de lingvo"
 
-#: src/module/e_mod_config.c:214 src/module/e_mod_config.c:307
+#: ../src/e_mod_config.c:214 ../src/e_mod_config.c:307
 msgid "Global"
-msgstr "Malloka"
+msgstr "Ĉiea"
 
-#: src/module/e_mod_config.c:217 src/module/e_mod_config.c:310
+#: ../src/e_mod_config.c:217 ../src/e_mod_config.c:310
 msgid "Window"
 msgstr "Fenestro"
 
-#: src/module/e_mod_config.c:220 src/module/e_mod_config.c:313
+#: ../src/e_mod_config.c:220 ../src/e_mod_config.c:313
 msgid "Application"
 msgstr "Aplikaĵo"
 
-#: src/module/e_mod_config.c:287
+#: ../src/e_mod_config.c:287
 msgid "Keyboard Model"
-msgstr "Klavarmodelo"
+msgstr "Ŝablono de klavaro"
 
-#: src/module/e_mod_config.c:295
+#: ../src/e_mod_config.c:295
 msgid "Layout Variant"
-msgstr "Varianto de Aranĝo"
+msgstr "Varianto de aranĝoj"
 
-#: src/module/e_mod_keybindings.c:6 src/module/e_mod_main.c:113
+#: ../src/e_mod_keybindings.c:6 ../src/e_mod_main.c:116
 msgid "Language"
 msgstr "Lingvo"
 
-#: src/module/e_mod_keybindings.c:7
+#: ../src/e_mod_keybindings.c:7
 msgid "Switch To Next Language"
-msgstr "Ŝalti al Sekva Lingvo"
+msgstr "Ŝalti al sekva lingvo"
 
-#: src/module/e_mod_keybindings.c:8
+#: ../src/e_mod_keybindings.c:8
 msgid "Switch To Previous Language"
-msgstr "Ŝalti al Antaŭa Lingvo"
+msgstr "Ŝalti al antaŭa lingvo"
 
-#: src/module/e_mod_main.c:399
+#: ../src/e_mod_main.c:429
 msgid "Configuration"
-msgstr "Agordo"
+msgstr "Agordoj"
 
-#: src/module/e_mod_main.c:404
+#: ../src/e_mod_main.c:434
 msgid "Configure Key Bindings"
-msgstr "Agordi Klavkombinojn"
+msgstr "Agordi klavkombinojn"
 
-#: src/module/e_mod_main.c:421
+#: ../src/e_mod_main.c:451
 msgid "Module Configuration"
-msgstr "Modula Agordo"
-
+msgstr "Agordoj pri modulo"

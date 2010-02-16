@@ -7,69 +7,69 @@ msgid ""
 msgstr ""
 "Project-Id-Version: eo\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2009-11-06 19:13-0500\n"
-"PO-Revision-Date: 2009-05-11 00:12+0000\n"
-"Last-Translator: Olivier <eliovir@nospam.gmail.com>\n"
+"POT-Creation-Date: 2009-12-01 15:38+0800\n"
+"PO-Revision-Date: 2010-01-24 16:24+0000\n"
+"Last-Translator: Michael Moroni <haikara90@gmail.com>\n"
 "Language-Team: Esperanto <translation-team-eo@lists.sourceforge.net>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Lokalize 0.3\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Launchpad-Export-Date: 2010-01-25 04:49+0000\n"
+"X-Generator: Launchpad (build Unknown)\n"
 
-#: src/e_mod_config.c:36
+#: ../src/e_mod_config.c:36
 msgid "Weather Configuration"
-msgstr "Agordo de Vetero"
+msgstr "Agordo de vetero"
 
-#: src/e_mod_config.c:78
+#: ../src/e_mod_config.c:78
 msgid "Display Settings"
-msgstr "Vidigaj Agordoj"
+msgstr "Agordoj pri montrilo"
 
-#: src/e_mod_config.c:80
+#: ../src/e_mod_config.c:80
 msgid "Simple"
-msgstr "Simpla"
+msgstr "Simple"
 
-#: src/e_mod_config.c:82
+#: ../src/e_mod_config.c:82
 msgid "Detailed"
-msgstr "Detala"
+msgstr "Detale"
 
-#: src/e_mod_config.c:84
+#: ../src/e_mod_config.c:84
 msgid "Poll Time"
 msgstr "Ofteco de ĝisdatigo"
 
-#: src/e_mod_config.c:86
+#: ../src/e_mod_config.c:86
 #, c-format
 msgid "%2.0f minutes"
 msgstr "%2.0f minutoj"
 
-#: src/e_mod_config.c:91
+#: ../src/e_mod_config.c:91
 msgid "Degree Settings"
-msgstr "Degraj Agordoj"
+msgstr "Agordoj de gradoj"
 
-#: src/e_mod_config.c:93
+#: ../src/e_mod_config.c:93
 msgid "Celsius"
-msgstr "Celsius"
+msgstr "Celsio"
 
-#: src/e_mod_config.c:95
+#: ../src/e_mod_config.c:95
 msgid "Farenheit"
-msgstr "Farenheit"
+msgstr "Farenhejto"
 
-#: src/e_mod_config.c:99 src/e_mod_config.c:100
+#: ../src/e_mod_config.c:99 ../src/e_mod_config.c:100
 msgid "ICAO Code"
 msgstr "Kodo de ICAO"
 
-#: src/e_mod_config.c:105
+#: ../src/e_mod_config.c:105
 msgid "Get your ICAO code at:"
-msgstr "Akhavi vian Kodo de ICAO en :"
+msgstr "Obteni vian kodon de ICAO al:"
 
-#: src/e_mod_config.c:107
+#: ../src/e_mod_config.c:107
 msgid "http://www.weather.gov/tg/siteloc.shtml"
 msgstr "http://www.weather.gov/tg/siteloc.shtml"
 
-#: src/e_mod_main.c:171
+#: ../src/e_mod_main.c:171
 msgid "Weather"
 msgstr "Vetero"
 
-#: src/e_mod_main.c:215
+#: ../src/e_mod_main.c:215
 msgid "Configuration"
-msgstr "Konfiguraĵo"
+msgstr "Agordoj"

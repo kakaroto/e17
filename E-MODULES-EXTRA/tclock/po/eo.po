@@ -7,19 +7,19 @@ msgid ""
 msgstr ""
 "Project-Id-Version: eo\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2009-11-05 16:07+0800\n"
-"PO-Revision-Date: 2009-10-18 16:23+0000\n"
-"Last-Translator: Eliovir <Unknown>\n"
+"POT-Creation-Date: 2009-12-01 15:38+0800\n"
+"PO-Revision-Date: 2010-01-20 21:49+0000\n"
+"Last-Translator: Michael Moroni <haikara90@gmail.com>\n"
 "Language-Team: Esperanto <translation-team-eo@lists.sourceforge.net>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2009-11-12 04:52+0000\n"
+"X-Launchpad-Export-Date: 2010-01-21 04:34+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 
 #: ../src/e_mod_config.c:39
 msgid "Tclock Settings"
-msgstr "Agordoj de Tclock"
+msgstr "Agordoj de Thorloĝo"
 
 #: ../src/e_mod_config.c:88
 msgid "Top"
@@ -27,12 +27,12 @@ msgstr "Supre"
 
 #: ../src/e_mod_config.c:90
 msgid "Show Top Line"
-msgstr "Vidigi Supran Linion"
+msgstr "Montri supran linion"
 
 #: ../src/e_mod_config.c:98 ../src/e_mod_config.c:113
 #: ../src/e_mod_config.c:129
 msgid "Consult strftime(3) for format syntax"
-msgstr "Konsultu strftime(3) por sintakso aranĝo"
+msgstr "Konsulti strftime(3) por aranĝo de sintakso"
 
 #: ../src/e_mod_config.c:102
 msgid "Bottom"
@@ -40,7 +40,7 @@ msgstr "Malsupre"
 
 #: ../src/e_mod_config.c:104
 msgid "Show Bottom Line"
-msgstr "Vidigi Malsupran Linion"
+msgstr "Vidigi malsupran linion"
 
 #: ../src/e_mod_config.c:117
 msgid "Tool Tip"
@@ -48,11 +48,11 @@ msgstr "Ŝpruchelpilo"
 
 #: ../src/e_mod_config.c:119
 msgid "Show Tooltip"
-msgstr "Vidigi ŝpruchelpilon"
+msgstr "Montri ŝpruchelpilon"
 
 #: ../src/e_mod_main.c:141
 msgid "TClock"
-msgstr "TClock THorloĝo"
+msgstr "THorloĝo"
 
 #: ../src/e_mod_main.c:184
 msgid "Settings"
