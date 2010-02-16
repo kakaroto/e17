@@ -61,13 +61,122 @@ cdef class EventPoint:
             raise IndexError("list index out of range")
 
 
+cdef class EventCoordPoint:
+    cdef void _set_obj(self, Evas_Coord_Point *obj):
+        self.obj = obj
+
+    cdef void _unset_obj(self):
+        self.obj = NULL
+
+    def __str__(self):
+        self._check_validity()
+        return "%s(%d, %d)" % (self.__class__.__name__, self.obj.x, self.obj.y)
+
+    cdef void _check_validity(self) except *:
+        if self.obj == NULL:
+            raise ValueError("EventPoint object is invalid.")
+
+    property x:
+        def __get__(self):
+            self._check_validity()
+            return self.obj.x
+
+    property y:
+        def __get__(self):
+            self._check_validity()
+            return self.obj.y
+
+    property xy:
+        def __get__(self):
+            self._check_validity()
+            return (self.obj.x, self.obj.y)
+
+    def __len__(self):
+        self._check_validity()
+        return 2
+
+    def __getitem__(self, int index):
+        self._check_validity()
+        if index == 0:
+            return self.obj.x
+        elif index == 1:
+            return self.obj.y
+        else:
+            raise IndexError("list index out of range")
+
+
+cdef class EventPrecisionPoint:
+    cdef void _set_obj(self, Evas_Coord_Precision_Point *obj):
+        self.obj = obj
+
+    cdef void _unset_obj(self):
+        self.obj = NULL
+
+    def __str__(self):
+        self._check_validity()
+        return "%s(x=%d, y=%d, xsub=%f, ysub=%f)" % \
+               (self.__class__.__name__, self.obj.x, self.obj.y,
+                self.obj.xsub, self.obj.ysub)
+
+    cdef void _check_validity(self) except *:
+        if self.obj == NULL:
+            raise ValueError("EventPoint object is invalid.")
+
+    property x:
+        def __get__(self):
+            self._check_validity()
+            return self.obj.x
+
+    property y:
+        def __get__(self):
+            self._check_validity()
+            return self.obj.y
+
+    property xsub:
+        def __get__(self):
+            self._check_validity()
+            return self.obj.xsub
+
+    property ysub:
+        def __get__(self):
+            self._check_validity()
+            return self.obj.ysub
+
+    property xy:
+        def __get__(self):
+            self._check_validity()
+            return (self.obj.x, self.obj.y)
+
+    property xysub:
+        def __get__(self):
+            self._check_validity()
+            return (self.obj.xsub, self.obj.ysub)
+
+    def __len__(self):
+        self._check_validity()
+        return 4
+
+    def __getitem__(self, int index):
+        self._check_validity()
+        if index == 0:
+            return self.obj.x
+        elif index == 1:
+            return self.obj.y
+        elif index == 2:
+            return self.obj.xsub
+        elif index == 3:
+            return self.obj.ysub
+        else:
+            raise IndexError("list index out of range")
+
+
 
 cdef class EventPosition:
-    cdef void _set_objs(self, void *output, void *canvas):
+    cdef void _set_objs(self, Evas_Point *output, Evas_Coord_Point *canvas):
         self.output = EventPoint()
-        self.output._set_obj(<Evas_Point*>output)
-        self.canvas = EventPoint()
-        self.canvas._set_obj(<Evas_Point*>canvas)
+        self.output._set_obj(output)
+        self.canvas = EventCoordPoint()
+        self.canvas._set_obj(canvas)
 
     cdef void _unset_objs(self):
         self.output._unset_obj()
@@ -77,6 +186,25 @@ cdef class EventPosition:
         return "%s(output=(%d, %d), canvas=(%d, %d))" % \
                (self.__class__.__name__, self.output.x, self.output.y,
                 self.canvas.x, self.canvas.y)
+
+
+
+cdef class EventPrecisionPosition:
+    cdef void _set_objs(self, Evas_Point *output, Evas_Coord_Precision_Point *canvas):
+        self.output = EventPoint()
+        self.output._set_obj(output)
+        self.canvas = EventPrecisionPoint()
+        self.canvas._set_obj(canvas)
+
+    cdef void _unset_objs(self):
+        self.output._unset_obj()
+        self.canvas._unset_obj()
+
+    def __str__(self):
+        return "%s(output=(%d, %d), canvas=(x=%d, y=%d, xsub=%f, ysub=%f))" % \
+               (self.__class__.__name__, self.output.x, self.output.y,
+                self.canvas.x, self.canvas.y,
+                self.canvas.xsub, self.canvas.ysub)
 
 
 
@@ -189,11 +317,11 @@ cdef class EventMouseDown:
     def __str__(self):
         self._check_validity()
         return ("%s(button=%d, output=(%d, %d), canvas=(%d, %d), "
-                "timestamp=%d, event_flags=%#x)") % \
+                "timestamp=%d, event_flags=%#x, flags=%#x)") % \
                 (self.__class__.__name__, self.obj.button,
                  self.obj.output.x, self.obj.output.y,
                  self.obj.canvas.x, self.obj.canvas.y,
-                 self.obj.timestamp, self.event_flags)
+                 self.obj.timestamp, self.event_flags, self.flags)
 
     property button:
         def __get__(self):
@@ -213,6 +341,15 @@ cdef class EventMouseDown:
         def __set__(self, flags):
             self._check_validity()
             self.obj.event_flags = flags
+
+    property flags:
+        def __get__(self):
+            self._check_validity()
+            return <int>self.obj.flags
+
+        def __set__(self, flags):
+            self._check_validity()
+            self.obj.flags = flags
 
     def modifier_is_set(self, modifier):
         self._check_validity()
@@ -235,11 +372,11 @@ cdef class EventMouseUp:
     def __str__(self):
         self._check_validity()
         return ("%s(button=%d, output=(%d, %d), canvas=(%d, %d), "
-                "timestamp=%d, event_flags=%#x)") % \
+                "timestamp=%d, event_flags=%#x, flags=%#x)") % \
                 (self.__class__.__name__, self.obj.button,
                  self.obj.output.x, self.obj.output.y,
                  self.obj.canvas.x, self.obj.canvas.y,
-                 self.obj.timestamp, self.event_flags)
+                 self.obj.timestamp, self.event_flags, self.flags)
 
     property button:
         def __get__(self):
@@ -259,6 +396,15 @@ cdef class EventMouseUp:
         def __set__(self, flags):
             self._check_validity()
             self.obj.event_flags = flags
+
+    property flags:
+        def __get__(self):
+            self._check_validity()
+            return <int>self.obj.flags
+
+        def __set__(self, flags):
+            self._check_validity()
+            self.obj.flags = flags
 
     def modifier_is_set(self, modifier):
         self._check_validity()
@@ -298,6 +444,244 @@ cdef class EventMouseMove:
         def __get__(self):
             self._check_validity()
             return self.obj.buttons
+
+    property timestamp:
+        def __get__(self):
+            self._check_validity()
+            return self.obj.timestamp
+
+    property event_flags:
+        def __get__(self):
+            self._check_validity()
+            return <int>self.obj.event_flags
+
+        def __set__(self, flags):
+            self._check_validity()
+            self.obj.event_flags = flags
+
+    def modifier_is_set(self, modifier):
+        self._check_validity()
+        return evas_key_modifier_is_set(self.obj.modifiers, modifier)
+
+cdef class EventMultiDown:
+    cdef void _set_obj(self, void *ptr):
+        self.obj = <Evas_Event_Multi_Down*>ptr
+        self.position = EventPrecisionPosition()
+        self.position._set_objs(&self.obj.output, &self.obj.canvas)
+
+    cdef void _unset_obj(self):
+        self.obj = NULL
+        self.position._unset_objs()
+
+    cdef void _check_validity(self) except *:
+        if self.obj == NULL:
+            raise ValueError("EventMultiDown object is invalid.")
+
+    def __str__(self):
+        self._check_validity()
+        return ("%s(device=%d, radius=(%f, x=%f, y=%f), pressure=%f, angle=%f, "
+                "output=(%d, %d), canvas=(%d, %d, xsub=%f, ysub=%f), "
+                "timestamp=%d, event_flags=%#x, flags=%#x)") % \
+                (self.__class__.__name__, self.obj.device,
+                 self.radius, self.radius_x, self.radius_y,
+                 self.pressure, self.angle,
+                 self.obj.output.x, self.obj.output.y,
+                 self.obj.canvas.x, self.obj.canvas.y,
+                 self.obj.canvas.xsub, self.obj.canvas.ysub,
+                 self.obj.timestamp, self.event_flags, self.flags)
+
+    property device:
+        def __get__(self):
+            self._check_validity()
+            return self.obj.device
+
+    property radius:
+        def __get__(self):
+            self._check_validity()
+            return self.obj.radius
+
+    property radius_x:
+        def __get__(self):
+            self._check_validity()
+            return self.obj.radius_x
+
+    property radius_y:
+        def __get__(self):
+            self._check_validity()
+            return self.obj.radius_y
+
+    property pressure:
+        def __get__(self):
+            self._check_validity()
+            return self.obj.pressure
+
+    property angle:
+        def __get__(self):
+            self._check_validity()
+            return self.obj.angle
+
+    property timestamp:
+        def __get__(self):
+            self._check_validity()
+            return self.obj.timestamp
+
+    property event_flags:
+        def __get__(self):
+            self._check_validity()
+            return <int>self.obj.event_flags
+
+        def __set__(self, flags):
+            self._check_validity()
+            self.obj.event_flags = flags
+
+    property flags:
+        def __get__(self):
+            self._check_validity()
+            return <int>self.obj.flags
+
+        def __set__(self, flags):
+            self._check_validity()
+            self.obj.flags = flags
+
+    def modifier_is_set(self, modifier):
+        self._check_validity()
+        return evas_key_modifier_is_set(self.obj.modifiers, modifier)
+
+cdef class EventMultiUp:
+    cdef void _set_obj(self, void *ptr):
+        self.obj = <Evas_Event_Multi_Up*>ptr
+        self.position = EventPrecisionPosition()
+        self.position._set_objs(&self.obj.output, &self.obj.canvas)
+
+    cdef void _unset_obj(self):
+        self.obj = NULL
+        self.position._unset_objs()
+
+    cdef void _check_validity(self) except *:
+        if self.obj == NULL:
+            raise ValueError("EventMultiUp object is invalid.")
+
+    def __str__(self):
+        self._check_validity()
+        return ("%s(device=%d, radius=(%f, x=%f, y=%f), pressure=%f, angle=%f, "
+                "output=(%d, %d), canvas=(%d, %d, xsub=%f, ysub=%f), "
+                "timestamp=%d, event_flags=%#x, flags=%#x)") % \
+                (self.__class__.__name__, self.obj.device,
+                 self.radius, self.radius_x, self.radius_y,
+                 self.pressure, self.angle,
+                 self.obj.output.x, self.obj.output.y,
+                 self.obj.canvas.x, self.obj.canvas.y,
+                 self.obj.canvas.xsub, self.obj.canvas.ysub,
+                 self.obj.timestamp, self.event_flags, self.flags)
+
+    property device:
+        def __get__(self):
+            self._check_validity()
+            return self.obj.device
+
+    property radius:
+        def __get__(self):
+            self._check_validity()
+            return self.obj.radius
+
+    property radius_x:
+        def __get__(self):
+            self._check_validity()
+            return self.obj.radius_x
+
+    property radius_y:
+        def __get__(self):
+            self._check_validity()
+            return self.obj.radius_y
+
+    property pressure:
+        def __get__(self):
+            self._check_validity()
+            return self.obj.pressure
+
+    property angle:
+        def __get__(self):
+            self._check_validity()
+            return self.obj.angle
+
+    property timestamp:
+        def __get__(self):
+            self._check_validity()
+            return self.obj.timestamp
+
+    property event_flags:
+        def __get__(self):
+            self._check_validity()
+            return <int>self.obj.event_flags
+
+        def __set__(self, flags):
+            self._check_validity()
+            self.obj.event_flags = flags
+
+    property flags:
+        def __get__(self):
+            self._check_validity()
+            return <int>self.obj.flags
+
+        def __set__(self, flags):
+            self._check_validity()
+            self.obj.flags = flags
+
+    def modifier_is_set(self, modifier):
+        self._check_validity()
+        return evas_key_modifier_is_set(self.obj.modifiers, modifier)
+
+cdef class EventMultiMove:
+    cdef void _set_obj(self, void *ptr):
+        self.obj = <Evas_Event_Multi_Move*>ptr
+        self.position = EventPrecisionPosition()
+        self.position._set_objs(&self.obj.cur.output, &self.obj.cur.canvas)
+
+    cdef void _unset_obj(self):
+        self.obj = NULL
+        self.position._unset_objs()
+
+    cdef void _check_validity(self) except *:
+        if self.obj == NULL:
+            raise ValueError("EventMultiMove object is invalid.")
+
+    def __str__(self):
+        self._check_validity()
+        return ("%s(radius=(%f, x=%f, y=%f), pressure=%f, angle=%f, "
+                "output=(%d, %d), canvas=(%d, %d, xsub=%f, ysub=%f), "
+                "timestamp=%d, event_flags=%#x)") % \
+                (self.__class__.__name__,
+                 self.radius, self.radius_x, self.radius_y,
+                 self.pressure, self.angle,
+                 self.obj.cur.output.x, self.obj.cur.output.y,
+                 self.obj.cur.canvas.x, self.obj.cur.canvas.y,
+                 self.obj.cur.canvas.xsub, self.obj.cur.canvas.ysub,
+                 self.obj.timestamp, self.event_flags)
+
+    property radius:
+        def __get__(self):
+            self._check_validity()
+            return self.obj.radius
+
+    property radius_x:
+        def __get__(self):
+            self._check_validity()
+            return self.obj.radius_x
+
+    property radius_y:
+        def __get__(self):
+            self._check_validity()
+            return self.obj.radius_y
+
+    property pressure:
+        def __get__(self):
+            self._check_validity()
+            return self.obj.pressure
+
+    property angle:
+        def __get__(self):
+            self._check_validity()
+            return self.obj.angle
 
     property timestamp:
         def __get__(self):

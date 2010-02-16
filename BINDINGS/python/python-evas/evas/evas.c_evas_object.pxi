@@ -19,22 +19,22 @@
 
 import traceback
 
-cdef int _free_wrapper_resources(Object obj) except 0:
+cdef int _object_free_wrapper_resources(Object obj) except 0:
     cdef int i
-    for i from 0 <= i < evas_event_callbacks_len:
+    for i from 0 <= i < evas_object_event_callbacks_len:
         obj._callbacks[i] = None
     obj.data.clear()
     return 1
 
 
-cdef int _unregister_callbacks(Object obj) except 0:
+cdef int _object_unregister_callbacks(Object obj) except 0:
     cdef Evas_Object *o
-    cdef Evas_Event_Cb cb
+    cdef Evas_Object_Event_Cb cb
     o = obj.obj
     if o != NULL:
         for i, lst in enumerate(obj._callbacks):
             if lst is not None:
-                cb = evas_event_callbacks[i]
+                cb = evas_object_event_callbacks[i]
                 evas_object_event_callback_del(o, i, cb)
 
     evas_object_event_callback_del(o, EVAS_CALLBACK_FREE, obj_free_cb)
@@ -57,11 +57,11 @@ cdef void obj_free_cb(void *data, Evas *e,
             except Exception, e:
                 traceback.print_exc()
 
-    _free_wrapper_resources(self)
+    _object_free_wrapper_resources(self)
     python.Py_DECREF(self)
 
 
-cdef _register_decorated_callbacks(obj):
+cdef _object_register_decorated_callbacks(obj):
     if not hasattr(obj, "__evas_event_callbacks__"):
         return
 
@@ -70,8 +70,8 @@ cdef _register_decorated_callbacks(obj):
         obj.event_callback_add(evt, attr_value)
 
 
-cdef _add_callback_to_list(Object obj, int type, func, args, kargs):
-    if type < 0 or type >= evas_event_callbacks_len:
+cdef _object_add_callback_to_list(Object obj, int type, func, args, kargs):
+    if type < 0 or type >= evas_object_event_callbacks_len:
         raise ValueError("Invalid callback type")
 
     r = (func, args, kargs)
@@ -84,8 +84,8 @@ cdef _add_callback_to_list(Object obj, int type, func, args, kargs):
         return True
 
 
-cdef _del_callback_from_list(Object obj, int type, func):
-    if type < 0 or type >= evas_event_callbacks_len:
+cdef _object_del_callback_from_list(Object obj, int type, func):
+    if type < 0 or type >= evas_object_event_callbacks_len:
         raise ValueError("Invalid callback type")
 
     lst = obj._callbacks[type]
@@ -223,7 +223,7 @@ cdef public class Object [object PyEvasObject, type PyEvasObject_Type]:
         self.obj = NULL
         self.evas = None
         self.data = dict()
-        self._callbacks = [None] * evas_event_callbacks_len
+        self._callbacks = [None] * evas_object_event_callbacks_len
 
     def __init__(self, Canvas evas not None):
         self.evas = evas
@@ -256,8 +256,8 @@ cdef public class Object [object PyEvasObject, type PyEvasObject_Type]:
 
     cdef int _unset_obj(self) except 0:
         assert self.obj != NULL, "Object must wrap something"
-        _unregister_callbacks(self)
-        _free_wrapper_resources(self)
+        _object_unregister_callbacks(self)
+        _object_free_wrapper_resources(self)
         assert evas_object_data_del(self.obj, "python-evas") == <void*>self, \
                "Evas_Object has incorrect python-evas data"
         self.obj = NULL
@@ -274,7 +274,7 @@ cdef public class Object [object PyEvasObject, type PyEvasObject_Type]:
         evas_object_data_set(obj, "python-evas", <void *>self)
         evas_object_event_callback_add(obj, EVAS_CALLBACK_FREE, obj_free_cb,
                                        <void *>self)
-        _register_decorated_callbacks(self)
+        _object_register_decorated_callbacks(self)
         return 1
 
     def _set_evas(self, Canvas evas not None):
@@ -284,7 +284,7 @@ cdef public class Object [object PyEvasObject, type PyEvasObject_Type]:
         cdef void *data
         cdef Evas_Object *obj
 
-        _unregister_callbacks(self)
+        _object_unregister_callbacks(self)
         self.data = None
         self._callbacks = None
         obj = self.obj
@@ -1271,17 +1271,15 @@ cdef public class Object [object PyEvasObject, type PyEvasObject_Type]:
         @raise ValueError: if B{type} is unknown.
         @raise TypeError: if B{func} is not callable.
         """
-        cdef Evas_Event_Cb cb
+        cdef Evas_Object_Event_Cb cb
 
         if not callable(func):
             raise TypeError("func must be callable")
 
-        if _add_callback_to_list(self, type, func, args, kargs):
+        if _object_add_callback_to_list(self, type, func, args, kargs):
             if type != EVAS_CALLBACK_FREE:
-                cb = evas_event_callbacks[type]
-                evas_object_event_callback_add(self.obj,
-                                               <Evas_Callback_Type>type,
-                                               cb, <void*>self)
+                cb = evas_object_event_callbacks[type]
+                evas_object_event_callback_add(self.obj, type, cb, <void*>self)
 
     def event_callback_del(self, int type, func):
         """Remove callback for the given event.
@@ -1294,12 +1292,11 @@ cdef public class Object [object PyEvasObject, type PyEvasObject_Type]:
         @raise ValueError: if B{type} is unknown or if there was no
            B{func} connected with this type.
         """
-        cdef Evas_Event_Cb cb
-        if _del_callback_from_list(self, type, func):
+        cdef Evas_Object_Event_Cb cb
+        if _object_del_callback_from_list(self, type, func):
             if type != EVAS_CALLBACK_FREE:
-                cb = evas_event_callbacks[type]
-                evas_object_event_callback_del(self.obj,
-                                               <Evas_Callback_Type>type, cb)
+                cb = evas_object_event_callbacks[type]
+                evas_object_event_callback_del(self.obj, type, cb)
 
     def on_mouse_in_add(self, func, *a, **k):
         """Same as event_callback_add(EVAS_CALLBACK_MOUSE_IN, ...)

@@ -17,6 +17,64 @@
 
 # This file is included verbatim by c_evas.pyx
 
+cdef int _canvas_free_wrapper_resources(Canvas canvas) except 0:
+    cdef int i
+    for i from 0 <= i < evas_canvas_event_callbacks_len:
+        canvas._callbacks[i] = None
+    return 1
+
+
+cdef int _canvas_unregister_callbacks(Canvas canvas) except 0:
+    cdef Evas *e
+    cdef Evas_Event_Cb cb
+    e = canvas.obj
+    if e != NULL:
+        for i, lst in enumerate(canvas._callbacks):
+            if lst is not None:
+                cb = evas_canvas_event_callbacks[i]
+                evas_event_callback_del(e, i, cb)
+    return 1
+
+
+cdef _canvas_add_callback_to_list(Canvas canvas, int type, func, args, kargs):
+    if type < 0 or type >= evas_canvas_event_callbacks_len:
+        raise ValueError("Invalid callback type")
+
+    r = (func, args, kargs)
+    lst = canvas._callbacks[type]
+    if lst is not None:
+        lst.append(r)
+        return False
+    else:
+        canvas._callbacks[type] = [r]
+        return True
+
+
+cdef _canvas_del_callback_from_list(Canvas canvas, int type, func):
+    if type < 0 or type >= evas_canvas_event_callbacks_len:
+        raise ValueError("Invalid callback type")
+
+    lst = canvas._callbacks[type]
+    if not lst:
+        raise ValueError("Callback %s was not registered with type %d" %
+                         (func, type))
+
+    i = None
+    for i, r in enumerate(lst):
+        if func == r[0]:
+            break
+    else:
+        raise ValueError("Callback %s was not registered with type %d" %
+                         (func, type))
+
+    lst.pop(i)
+    if len(lst) == 0:
+        canvas._callbacks[type] = None
+        return True
+    else:
+        return False
+
+
 cdef public class Canvas [object PyEvasCanvas, type PyEvasCanvas_Type]:
     """Evas Canvas.
 
@@ -61,6 +119,7 @@ cdef public class Canvas [object PyEvasCanvas, type PyEvasCanvas_Type]:
     """
     def __new__(self, *a, **ka):
         self.obj = NULL
+        self._callbacks = [None] * evas_canvas_event_callbacks_len
 
     def __init__(self, method=None, size=None, viewport=None):
         self._new_evas()
@@ -73,14 +132,18 @@ cdef public class Canvas [object PyEvasCanvas, type PyEvasCanvas_Type]:
 
     def __dealloc__(self):
         if self.obj:
+            _canvas_unregister_callbacks(self)
             Canvas_forget(<long>self.obj)
             evas_free(self.obj)
             self.obj = NULL
+        self._callbacks = None
 
     cdef int _set_obj(self, Evas *obj) except 0:
         assert self.obj == NULL, "Object must be clean"
         self.obj = obj
         Canvas_remember(<long>self.obj, self)
+        _canvas_unregister_callbacks(self)
+        _canvas_free_wrapper_resources(self)
         return 1
 
     cdef int _unset_obj(self) except 0:
@@ -576,6 +639,97 @@ cdef public class Canvas [object PyEvasCanvas, type PyEvasCanvas_Type]:
     def freeze_get(self):
         "@rtype: int"
         return evas_event_freeze_get(self.obj)
+
+    def event_callback_add(self, int type, func, *args, **kargs):
+        """Add a new callback for the given event.
+
+        @parm: B{type} an integer with event type code, like
+               C{EVAS_CALLBACK_CANVAS_FOCUS_IN},
+               C{EVAS_CALLBACK_RENDER_FLUSH_PRE} and other
+               C{EVAS_CALLBACK_*} constants.
+        @parm: B{func} function to call back, this function will have one of
+               the following signatures:
+                - C{function(object, event, *args, **kargs)}
+                - C{function(object, *args, **kargs)}
+               The former is used by events that provide more data
+               (none so far), while the second is used by events
+               without. Parameters given at the end of
+               C{event_callback_add()} will be given to the callback.
+               Note that the object passed to the callback in B{event}
+               parameter will only be valid during the callback, using
+               it after callback returns will raise an ValueError.
+
+        @raise ValueError: if B{type} is unknown.
+        @raise TypeError: if B{func} is not callable.
+        """
+        cdef Evas_Event_Cb cb
+
+        if not callable(func):
+            raise TypeError("func must be callable")
+
+        if _canvas_add_callback_to_list(self, type, func, args, kargs):
+            cb = evas_canvas_event_callbacks[type]
+            evas_event_callback_add(self.obj, type, cb, <void*>self)
+
+    def event_callback_del(self, int type, func):
+        """Remove callback for the given event.
+
+        @parm: B{type} an integer with event type code.
+        @parm: B{func} function used with L{event_callback_add()}.
+        @precond: B{type} and B{func} must be used as parameter for
+           L{event_callback_add()}.
+
+        @raise ValueError: if B{type} is unknown or if there was no
+           B{func} connected with this type.
+        """
+        cdef Evas_Event_Cb cb
+        if _canvas_del_callback_from_list(self, type, func):
+            cb = evas_canvas_event_callbacks[type]
+            evas_event_callback_del(self.obj, type, cb)
+
+    def on_canvas_focus_in_add(self, func, *a, **k):
+        """Same as event_callback_add(EVAS_CALLBACK_CANVAS_FOCUS_IN, ...)
+
+        Expected signature: C{function(object, *args, **kargs)}
+        """
+        self.event_callback_add(EVAS_CALLBACK_CANVAS_FOCUS_IN, func, *a, **k)
+
+    def on_canvas_focus_in_del(self, func):
+        "Same as event_callback_del(EVAS_CALLBACK_CANVAS_FOCUS_IN, ...)"
+        self.event_callback_del(EVAS_CALLBACK_CANVAS_FOCUS_IN, func)
+
+    def on_canvas_focus_out_add(self, func, *a, **k):
+        """Same as event_callback_add(EVAS_CALLBACK_CANVAS_FOCUS_OUT, ...)
+
+        Expected signature: C{function(object, *args, **kargs)}
+        """
+        self.event_callback_add(EVAS_CALLBACK_CANVAS_FOCUS_OUT, func, *a, **k)
+
+    def on_canvas_focus_out_del(self, func):
+        "Same as event_callback_del(EVAS_CALLBACK_CANVAS_FOCUS_OUT, ...)"
+        self.event_callback_del(EVAS_CALLBACK_CANVAS_FOCUS_OUT, func)
+
+    def on_render_flush_pre_add(self, func, *a, **k):
+        """Same as event_callback_add(EVAS_CALLBACK_RENDER_FLUSH_PRE, ...)
+
+        Expected signature: C{function(object, *args, **kargs)}
+        """
+        self.event_callback_add(EVAS_CALLBACK_RENDER_FLUSH_PRE, func, *a, **k)
+
+    def on_render_flush_pre_del(self, func):
+        "Same as event_callback_del(EVAS_CALLBACK_RENDER_FLUSH_PRE, ...)"
+        self.event_callback_del(EVAS_CALLBACK_RENDER_FLUSH_PRE, func)
+
+    def on_render_flush_post_add(self, func, *a, **k):
+        """Same as event_callback_add(EVAS_CALLBACK_RENDER_FLUSH_POST, ...)
+
+        Expected signature: C{function(object, *args, **kargs)}
+        """
+        self.event_callback_add(EVAS_CALLBACK_RENDER_FLUSH_POST, func, *a, **k)
+
+    def on_render_flush_post_del(self, func):
+        "Same as event_callback_del(EVAS_CALLBACK_RENDER_FLUSH_POST, ...)"
+        self.event_callback_del(EVAS_CALLBACK_RENDER_FLUSH_POST, func)
 
     # Event feeding
     def feed_hold(self, int hold, unsigned int timestamp):

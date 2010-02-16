@@ -1,18 +1,23 @@
 import sys
 import os
 
-if not os.path.exists("evas/evas.c_evas.c"):
-    try:
-        from Cython.Distutils import build_ext
-        # work around stupid setuptools that insists on just checking pyrex
-        sys.modules['Pyrex'] = sys.modules['Cython']
-    except ImportError:
-        raise SystemExit("You need Cython -- http://cython.org/")
-else:
-    from distutils.command.build_ext import build_ext
+try:
+    from Cython.Distutils import build_ext
+    # work around stupid setuptools that insists on just checking pyrex
+    sys.modules['Pyrex'] = sys.modules['Cython']
+    have_cython = True
+except ImportError:
+    have_cython = False
+
+if not have_cython and not os.path.exists("evas/evas.c_evas.c"):
+    raise SystemExit("You need Cython -- http://cython.org/")
 
 from ez_setup import use_setuptools
 use_setuptools('0.6c9')
+
+if not have_cython:
+    print "No cython installed, using existing generated C files."
+    from setuptools.command.build_ext import build_ext
 
 from setuptools import setup, find_packages, Extension
 from distutils.command.install_headers import install_headers
@@ -59,7 +64,11 @@ evasmodule = Extension('evas.c_evas',
                                 'evas/evas_object_image_rotate.c',
                                 'evas/evas_object_image_mask.c'
                                 ],
-                       depends=['evas/evas.c_evas_canvas.pxi',
+                       depends=['evas/evas.c_evas_rect.pxi',
+                                'evas/evas.c_evas_canvas_callbacks.pxi',
+                                'evas/evas.c_evas_canvas.pxi',
+                                'evas/evas.c_evas_object_events.pxi',
+                                'evas/evas.c_evas_object_callbacks.pxi',
                                 'evas/evas.c_evas_object.pxi',
                                 'evas/evas.c_evas_object_smart.pxi',
                                 'evas/evas.c_evas_object_rectangle.pxi',
@@ -68,7 +77,7 @@ evasmodule = Extension('evas.c_evas',
                                 'evas/evas.c_evas_object_gradient.pxi',
                                 'evas/evas.c_evas_object_polygon.pxi',
                                 'evas/evas.c_evas_object_text.pxi',
-                                'include/evas/c_evas.pxd',
+                                'evas/evas.c_evas_object_textblock.pxi',
                                 ],
                        **pkgconfig('"evas >= 0.9.9.063" "eina-0 >= 0.9.9.063"')
                        )
@@ -76,7 +85,6 @@ evasmodule = Extension('evas.c_evas',
 
 headers = ['evas/evas.c_evas.h',
            'include/evas/evas_object_image_python_extras.h',
-           'include/evas/python_evas_utils.h',
            'include/evas/c_evas.pxd',
            'include/evas/__init__.py',
            ]

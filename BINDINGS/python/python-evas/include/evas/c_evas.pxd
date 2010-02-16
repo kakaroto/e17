@@ -15,16 +15,17 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with this Python-Evas.  If not, see <http://www.gnu.org/licenses/>.
 
-cdef extern from "evas/python_evas_utils.h":
-    ctypedef struct Evas_Point:
-        int x
-        int y
-
-    ctypedef struct Evas_Position:
-        Evas_Point output
-        Evas_Point canvas
-
 cdef extern from "Evas.h":
+    ####################################################################
+    # Basic Types
+    #
+
+    ctypedef int Evas_Coord
+    ctypedef int Eina_Bool
+    ctypedef int Evas_Angle
+    ctypedef int Evas_Font_Size
+
+
     ####################################################################
     # Enumerations
     #
@@ -38,32 +39,34 @@ cdef extern from "Evas.h":
         EVAS_TEXT_INVALID = -1
         EVAS_TEXT_SPECIAL = -2
 
-
-    ctypedef enum Evas_Callback_Type:
-        EVAS_CALLBACK_MOUSE_IN
-        EVAS_CALLBACK_MOUSE_OUT
-        EVAS_CALLBACK_MOUSE_DOWN
-        EVAS_CALLBACK_MOUSE_UP
-        EVAS_CALLBACK_MOUSE_MOVE
-        EVAS_CALLBACK_MOUSE_WHEEL
-        EVAS_CALLBACK_MULTI_DOWN
-        EVAS_CALLBACK_MULTI_UP
-        EVAS_CALLBACK_MULTI_MOVE
-        EVAS_CALLBACK_FREE
-        EVAS_CALLBACK_KEY_DOWN
-        EVAS_CALLBACK_KEY_UP
-        EVAS_CALLBACK_FOCUS_IN
-        EVAS_CALLBACK_FOCUS_OUT
-        EVAS_CALLBACK_SHOW
-        EVAS_CALLBACK_HIDE
-        EVAS_CALLBACK_MOVE
-        EVAS_CALLBACK_RESIZE
-        EVAS_CALLBACK_RESTACK
-        EVAS_CALLBACK_DEL
-        EVAS_CALLBACK_HOLD
-        EVAS_CALLBACK_CHANGED_SIZE_HINTS
-        EVAS_CALLBACK_IMAGE_PRELOADED
-
+    ctypedef int Evas_Callback_Type
+    cdef int EVAS_CALLBACK_MOUSE_IN
+    cdef int EVAS_CALLBACK_MOUSE_OUT
+    cdef int EVAS_CALLBACK_MOUSE_DOWN
+    cdef int EVAS_CALLBACK_MOUSE_UP
+    cdef int EVAS_CALLBACK_MOUSE_MOVE
+    cdef int EVAS_CALLBACK_MOUSE_WHEEL
+    cdef int EVAS_CALLBACK_MULTI_DOWN
+    cdef int EVAS_CALLBACK_MULTI_UP
+    cdef int EVAS_CALLBACK_MULTI_MOVE
+    cdef int EVAS_CALLBACK_FREE
+    cdef int EVAS_CALLBACK_KEY_DOWN
+    cdef int EVAS_CALLBACK_KEY_UP
+    cdef int EVAS_CALLBACK_FOCUS_IN
+    cdef int EVAS_CALLBACK_FOCUS_OUT
+    cdef int EVAS_CALLBACK_SHOW
+    cdef int EVAS_CALLBACK_HIDE
+    cdef int EVAS_CALLBACK_MOVE
+    cdef int EVAS_CALLBACK_RESIZE
+    cdef int EVAS_CALLBACK_RESTACK
+    cdef int EVAS_CALLBACK_DEL
+    cdef int EVAS_CALLBACK_HOLD
+    cdef int EVAS_CALLBACK_CHANGED_SIZE_HINTS
+    cdef int EVAS_CALLBACK_IMAGE_PRELOADED
+    cdef int EVAS_CALLBACK_CANVAS_FOCUS_IN
+    cdef int EVAS_CALLBACK_CANVAS_FOCUS_OUT
+    cdef int EVAS_CALLBACK_RENDER_FLUSH_PRE
+    cdef int EVAS_CALLBACK_RENDER_FLUSH_POST
     cdef int EVAS_CALLBACK_LAST
 
     ctypedef enum Evas_Pixel_Format:
@@ -191,6 +194,28 @@ cdef extern from "Evas.h":
         int w
         int h
 
+    ctypedef struct Evas_Point:
+        int x
+        int y
+
+    ctypedef struct Evas_Coord_Point: # Evas_Coord is int now
+        Evas_Coord x
+        Evas_Coord y
+
+    ctypedef struct Evas_Coord_Precision_Point: # Evas_Coord is int now
+        Evas_Coord x
+        Evas_Coord y
+        double xsub
+        double ysub
+
+    ctypedef struct Evas_Position:
+        Evas_Point output
+        Evas_Coord_Point canvas
+
+    ctypedef struct Evas_Precision_Position:
+        Evas_Point output
+        Evas_Coord_Precision_Point canvas
+
     ctypedef struct Evas_Hash
     ctypedef struct Evas
     ctypedef struct Evas_Object
@@ -229,7 +254,7 @@ cdef extern from "Evas.h":
     ctypedef struct Evas_Event_Mouse_In:
         int buttons
         Evas_Point output
-        Evas_Point canvas
+        Evas_Coord_Point canvas
         void *data
         Evas_Modifier *modifiers
         Evas_Lock *locks
@@ -240,7 +265,7 @@ cdef extern from "Evas.h":
     ctypedef struct Evas_Event_Mouse_Out:
         int buttons
         Evas_Point output
-        Evas_Point canvas
+        Evas_Coord_Point canvas
         void *data
         Evas_Modifier *modifiers
         Evas_Lock *locks
@@ -251,7 +276,7 @@ cdef extern from "Evas.h":
     ctypedef struct Evas_Event_Mouse_Down:
         int button
         Evas_Point output
-        Evas_Point canvas
+        Evas_Coord_Point canvas
         void *data
         Evas_Modifier *modifiers
         Evas_Lock *locks
@@ -263,7 +288,7 @@ cdef extern from "Evas.h":
     ctypedef struct Evas_Event_Mouse_Up:
         int button
         Evas_Point output
-        Evas_Point canvas
+        Evas_Coord_Point canvas
         void *data
         Evas_Modifier *modifiers
         Evas_Lock *locks
@@ -283,11 +308,60 @@ cdef extern from "Evas.h":
         Evas_Event_Flags event_flags
         Evas_Device *dev
 
+
+    ctypedef struct Evas_Event_Multi_Down:
+        int device
+        double radius
+        double radius_x
+        double radius_y
+        double pressure
+        double angle
+        Evas_Point output
+        Evas_Coord_Precision_Point canvas
+        void *data
+        Evas_Modifier *modifiers
+        Evas_Lock *locks
+        Evas_Button_Flags flags
+        unsigned int timestamp
+        Evas_Event_Flags event_flags
+        Evas_Device *dev
+
+    ctypedef struct Evas_Event_Multi_Up:
+        int device
+        double radius
+        double radius_x
+        double radius_y
+        double pressure
+        double angle
+        Evas_Point output
+        Evas_Coord_Precision_Point canvas
+        void *data
+        Evas_Modifier *modifiers
+        Evas_Lock *locks
+        Evas_Button_Flags flags
+        unsigned int timestamp
+        Evas_Event_Flags event_flags
+        Evas_Device *dev
+
+    ctypedef struct Evas_Event_Multi_Move:
+        double radius
+        double radius_x
+        double radius_y
+        double pressure
+        double angle
+        Evas_Precision_Position cur
+        void *data
+        Evas_Modifier *modifiers
+        Evas_Lock *locks
+        unsigned int timestamp
+        Evas_Event_Flags event_flags
+        Evas_Device *dev
+
     ctypedef struct Evas_Event_Mouse_Wheel:
         int direction # 0 = default up/down wheel
         int z         # ...,-2,-1 = down, 1,2,... = up */
         Evas_Point output
-        Evas_Point canvas
+        Evas_Coord_Point canvas
         void *data
         Evas_Modifier *modifiers
         Evas_Lock *locks
@@ -330,11 +404,8 @@ cdef extern from "Evas.h":
     ####################################################################
     # Other typedefs
     #
-    ctypedef int Evas_Coord
-    ctypedef int Eina_Bool
-    ctypedef int Evas_Angle
-    ctypedef int Evas_Font_Size
-    ctypedef void (*Evas_Event_Cb)(void *data, Evas *e, Evas_Object *obj, void *event_info)
+    ctypedef void (*Evas_Event_Cb)(void *data, Evas *e, void *event_info)
+    ctypedef void (*Evas_Object_Event_Cb)(void *data, Evas *e, Evas_Object *obj, void *event_info)
 
     ####################################################################
     # Engine
@@ -517,8 +588,11 @@ cdef extern from "Evas.h":
     int evas_async_events_fd_get()
     int evas_async_events_process()
 
-    void evas_object_event_callback_add(Evas_Object *obj, Evas_Callback_Type type, Evas_Event_Cb func, void *data)
-    void *evas_object_event_callback_del(Evas_Object *obj, Evas_Callback_Type type, Evas_Event_Cb func)
+    void evas_object_event_callback_add(Evas_Object *obj, Evas_Callback_Type type, Evas_Object_Event_Cb func, void *data)
+    void *evas_object_event_callback_del(Evas_Object *obj, Evas_Callback_Type type, Evas_Object_Event_Cb func)
+
+    void evas_event_callback_add(Evas *e, Evas_Callback_Type type, Evas_Event_Cb func, void *data)
+    void *evas_event_callback_del(Evas *e, Evas_Callback_Type type, Evas_Event_Cb func)
 
     void evas_object_pass_events_set(Evas_Object *obj, Eina_Bool p)
     Eina_Bool evas_object_pass_events_get(Evas_Object *obj)
@@ -765,11 +839,35 @@ cdef class EventPoint:
     cdef void _check_validity(self) except *
 
 
+cdef class EventCoordPoint:
+    cdef Evas_Coord_Point *obj
+
+    cdef void _set_obj(self, Evas_Coord_Point *obj)
+    cdef void _unset_obj(self)
+    cdef void _check_validity(self) except *
+
+
+cdef class EventPrecisionPoint:
+    cdef Evas_Coord_Precision_Point *obj
+
+    cdef void _set_obj(self, Evas_Coord_Precision_Point *obj)
+    cdef void _unset_obj(self)
+    cdef void _check_validity(self) except *
+
+
 cdef class EventPosition:
     cdef readonly EventPoint output
-    cdef readonly EventPoint canvas
+    cdef readonly EventCoordPoint canvas
 
-    cdef void _set_objs(self, void *output, void *canvas)
+    cdef void _set_objs(self, Evas_Point *output, Evas_Coord_Point *canvas)
+    cdef void _unset_objs(self)
+
+
+cdef class EventPrecisionPosition:
+    cdef readonly EventPoint output
+    cdef readonly EventPrecisionPoint canvas
+
+    cdef void _set_objs(self, Evas_Point *output, Evas_Coord_Precision_Point *canvas)
     cdef void _unset_objs(self)
 
 
@@ -819,6 +917,33 @@ cdef class EventMouseMove:
     cdef void _check_validity(self) except *
 
 
+cdef class EventMultiDown:
+    cdef Evas_Event_Multi_Down *obj
+    cdef readonly EventPrecisionPosition position
+
+    cdef void _set_obj(self, void *ptr)
+    cdef void _unset_obj(self)
+    cdef void _check_validity(self) except *
+
+
+cdef class EventMultiUp:
+    cdef Evas_Event_Multi_Up *obj
+    cdef readonly EventPrecisionPosition position
+
+    cdef void _set_obj(self, void *ptr)
+    cdef void _unset_obj(self)
+    cdef void _check_validity(self) except *
+
+
+cdef class EventMultiMove:
+    cdef Evas_Event_Multi_Move *obj
+    cdef readonly EventPrecisionPosition position
+
+    cdef void _set_obj(self, void *ptr)
+    cdef void _unset_obj(self)
+    cdef void _check_validity(self) except *
+
+
 cdef class EventMouseWheel:
     cdef Evas_Event_Mouse_Wheel *obj
     cdef readonly EventPosition position
@@ -854,6 +979,7 @@ cdef class EventHold:
 
 cdef public class Canvas [object PyEvasCanvas, type PyEvasCanvas_Type]:
     cdef Evas *obj
+    cdef object _callbacks
 
     cdef int _set_obj(self, Evas *obj) except 0
     cdef int _unset_obj(self) except 0

@@ -27,9 +27,13 @@ cdef int PY_REFCOUNT(object o):
 
 
 def init():
-    if evas_event_callbacks_len != EVAS_CALLBACK_LAST:
-        raise SystemError("Number of callbacks changed from %d to %d." %
-                          (evas_event_callbacks_len, EVAS_CALLBACK_LAST))
+    # when changing these, also change __init__.py!
+    if evas_object_event_callbacks_len != EVAS_CALLBACK_LAST:
+        raise SystemError("Number of object callbacks changed from %d to %d." %
+                          (evas_object_event_callbacks_len, EVAS_CALLBACK_LAST))
+    if evas_canvas_event_callbacks_len != EVAS_CALLBACK_LAST:
+        raise SystemError("Number of canvas callbacks changed from %d to %d." %
+                          (evas_canvas_event_callbacks_len, EVAS_CALLBACK_LAST))
     return evas_init()
 
 
@@ -365,6 +369,7 @@ class EvasObjectMeta(type):
 
 
 include "evas.c_evas_rect.pxi"
+include "evas.c_evas_canvas_callbacks.pxi"
 include "evas.c_evas_canvas.pxi"
 include "evas.c_evas_object_events.pxi"
 include "evas.c_evas_object_callbacks.pxi"
