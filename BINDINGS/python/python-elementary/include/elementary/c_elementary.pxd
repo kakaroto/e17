@@ -167,7 +167,7 @@ cdef extern from "Elementary.h":
     # Basic elementary functions
     void elm_init(int argc,char** argv)
     void elm_shutdown()
-    void elm_run()
+    void elm_run() nogil
     void elm_exit()
 
     # Quicklaunch

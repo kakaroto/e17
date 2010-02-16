@@ -103,8 +103,8 @@ cdef extern from "Ecore.h":
     int ecore_init()
     int ecore_shutdown()
 
-    void ecore_main_loop_iterate()
-    void ecore_main_loop_begin()
+    void ecore_main_loop_iterate() nogil
+    void ecore_main_loop_begin() nogil
     void ecore_main_loop_quit()
 
     int ecore_main_loop_glib_integrate()

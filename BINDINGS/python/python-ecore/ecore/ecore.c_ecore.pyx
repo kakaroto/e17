@@ -59,16 +59,13 @@ def main_loop_quit():
 
 def main_loop_begin():
     "Enter main loop, this function will not return until L{main_loop_quit()}."
-    python.Py_BEGIN_ALLOW_THREADS
-    ecore_main_loop_begin()
-    python.Py_END_ALLOW_THREADS
-
+    with nogil:
+        ecore_main_loop_begin()
 
 def main_loop_iterate():
     "Force main loop to process requests (timers, fd handlers, idlers, ...)"
-    python.Py_BEGIN_ALLOW_THREADS
-    ecore_main_loop_iterate()
-    python.Py_END_ALLOW_THREADS
+    with nogil:
+        ecore_main_loop_iterate()
 
 def main_loop_glib_integrate():
     """Ask Ecore to integrate with GLib, running its default GMainContext.

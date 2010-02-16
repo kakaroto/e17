@@ -42,7 +42,8 @@ def shutdown():
     elm_shutdown()
 
 def run():
-    elm_run()
+    with nogil:
+        elm_run()
 
 def exit():
     elm_exit()
