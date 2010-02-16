@@ -17,9 +17,6 @@
 
 cimport evas.c_evas
 
-cdef extern from "evas/python_evas_utils.h":
-    int PY_REFCOUNT(object)
-
 cdef extern from "Eina.h":
     ctypedef struct Eina_List:
         void *data

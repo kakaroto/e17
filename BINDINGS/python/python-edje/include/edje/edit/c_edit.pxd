@@ -20,9 +20,6 @@ import evas.c_evas
 cimport edje.c_edje
 import edje.c_edje
 
-cdef extern from "evas/python_evas_utils.h":
-    int PY_REFCOUNT(object)
-
 
 cdef extern from "Edje_Edit.h":
     ####################################################################

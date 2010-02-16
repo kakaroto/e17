@@ -15,9 +15,6 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with this Python-Ecore.  If not, see <http://www.gnu.org/licenses/>.
 
-cdef extern from "evas/python_evas_utils.h":
-    int PY_REFCOUNT(object)
-
 
 cdef extern from "Ecore.h":
     ctypedef enum Ecore_Fd_Handler_Flags:
