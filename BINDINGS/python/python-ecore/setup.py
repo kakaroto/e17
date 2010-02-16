@@ -1,18 +1,23 @@
 import sys
 import os
 
-if not os.path.exists("ecore/ecore.c_ecore.c"):
-    try:
-        from Cython.Distutils import build_ext
-        # work around stupid setuptools that insists on just checking pyrex
-        sys.modules['Pyrex'] = sys.modules['Cython']
-    except ImportError:
-        raise SystemExit("You need Cython -- http://cython.org/")
-else:
-    from distutils.command.build_ext import build_ext
+try:
+    from Cython.Distutils import build_ext
+    # work around stupid setuptools that insists on just checking pyrex
+    sys.modules['Pyrex'] = sys.modules['Cython']
+    have_cython = True
+except ImportError:
+    have_cython = False
+
+if not have_cython and not os.path.exists("ecore/ecore.c_ecore.c"):
+    raise SystemExit("You need Cython -- http://cython.org/")
 
 from ez_setup import use_setuptools
 use_setuptools('0.6c9')
+
+if not have_cython:
+    print "No cython installed, using existing generated C files."
+    from setuptools.command.build_ext import build_ext
 
 from setuptools import setup, find_packages, Extension
 import subprocess
