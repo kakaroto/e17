@@ -1,4 +1,4 @@
-# Brazilian Portuguese translation for enlightenment
+# Finnish translation for enlightenment
 # Copyright (c) 2009 Rosetta Contributors and Canonical Ltd 2009
 # This file is distributed under the same license as the enlightenment package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, 2009.
@@ -8,66 +8,66 @@ msgstr ""
 "Project-Id-Version: enlightenment\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2009-12-01 15:38+0800\n"
-"PO-Revision-Date: 2010-02-14 04:55+0000\n"
-"Last-Translator: Teylo Laundos Aguiar <teylo.aguiar@gmail.com>\n"
-"Language-Team: Brazilian Portuguese <pt_BR@li.org>\n"
+"PO-Revision-Date: 2009-12-10 14:13+0000\n"
+"Last-Translator: Jussi Aalto <jta_lnx@dnainternet.net>\n"
+"Language-Team: Finnish <fi@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2010-02-15 04:49+0000\n"
+"X-Launchpad-Export-Date: 2009-12-11 04:35+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 
 #: ../src/lib/ewl_stock.c:19
 msgid "STOCK|About"
-msgstr "STOCK|Sobre"
+msgstr ""
 
 #: ../src/lib/ewl_stock.c:20
 msgid "STOCK|Add"
-msgstr "STOCK|Adicionar"
+msgstr "Lisää"
 
 #: ../src/lib/ewl_stock.c:21
 msgid "STOCK|Apply"
-msgstr "STOCK|Adicionar"
+msgstr "Käytä"
 
 #. Arrow
 #: ../src/lib/ewl_stock.c:22
 msgid "STOCK|Bottom"
-msgstr "STOCK|Botão"
+msgstr ""
 
 #. Arrow
 #: ../src/lib/ewl_stock.c:23
 msgid "STOCK|Down"
-msgstr "STOCK|Baixar"
+msgstr ""
 
 #. Arrow
 #: ../src/lib/ewl_stock.c:24
 msgid "STOCK|First"
-msgstr "STOCK|Primeiro"
+msgstr ""
 
 #. Arrow
 #: ../src/lib/ewl_stock.c:25
 msgid "STOCK|Last"
-msgstr "STOCK|Último"
+msgstr ""
 
 #. Arrow
 #: ../src/lib/ewl_stock.c:26
 msgid "STOCK|Left"
-msgstr "STOCK|Esquerda"
+msgstr ""
 
 #. Arrow
 #: ../src/lib/ewl_stock.c:27
 msgid "STOCK|Right"
-msgstr "STOCK|Direita"
+msgstr ""
 
 #. Arrow
 #: ../src/lib/ewl_stock.c:28
 msgid "STOCK|Top"
-msgstr "STOCK|Topo"
+msgstr ""
 
 #. Arrow
 #: ../src/lib/ewl_stock.c:29
 msgid "STOCK|Up"
-msgstr "STOCK|"
+msgstr ""
 
 #: ../src/lib/ewl_stock.c:30
 msgid "STOCK|Bold"
@@ -75,43 +75,43 @@ msgstr ""
 
 #: ../src/lib/ewl_stock.c:31
 msgid "STOCK|Cancel"
-msgstr "STOCK|Cancelar"
+msgstr "Peruuta"
 
 #: ../src/lib/ewl_stock.c:32
 msgid "STOCK|Clear"
-msgstr "STOCK|Limpar"
+msgstr ""
 
 #: ../src/lib/ewl_stock.c:33
 msgid "STOCK|Close"
-msgstr "STOCK|Fechar"
+msgstr "Sulje"
 
 #: ../src/lib/ewl_stock.c:34
 msgid "STOCK|Copy"
-msgstr "STOCK|Copiar"
+msgstr "Kopioi"
 
 #: ../src/lib/ewl_stock.c:35
 msgid "STOCK|Cut"
-msgstr "STOCK|Cortar"
+msgstr "Leikkaa"
 
 #: ../src/lib/ewl_stock.c:36
 msgid "STOCK|Delete"
-msgstr "STOCK|Deletar"
+msgstr "Poista"
 
 #: ../src/lib/ewl_stock.c:37
 msgid "STOCK|Edit"
-msgstr "STOCK|Editar"
+msgstr "Muokkaa"
 
 #: ../src/lib/ewl_stock.c:38
 msgid "STOCK|Execute"
-msgstr "STCOK|Executar"
+msgstr ""
 
 #: ../src/lib/ewl_stock.c:39
 msgid "STOCK|Find"
-msgstr "STOCK|Procurar"
+msgstr "Etsi"
 
 #: ../src/lib/ewl_stock.c:40
 msgid "STOCK|Find and replace"
-msgstr "STOCK|Procurar e substituir"
+msgstr "Etsi ja korvaa"
 
 #: ../src/lib/ewl_stock.c:41
 msgid "STOCK|Flip horizontal"
@@ -123,15 +123,15 @@ msgstr ""
 
 #: ../src/lib/ewl_stock.c:43
 msgid "STOCK|Fullscreen"
-msgstr "STOCK|Tela inteira"
+msgstr ""
 
 #: ../src/lib/ewl_stock.c:44
 msgid "STOCK|Help"
-msgstr "STOCK|Ajuda"
+msgstr "Ohje"
 
 #: ../src/lib/ewl_stock.c:45
 msgid "STOCK|Home"
-msgstr "STOCK|Inicio"
+msgstr ""
 
 #: ../src/lib/ewl_stock.c:46
 msgid "STOCK|Indent"
@@ -163,7 +163,7 @@ msgstr ""
 
 #: ../src/lib/ewl_stock.c:53
 msgid "STOCK|Next"
-msgstr ""
+msgstr "Seuraava"
 
 #: ../src/lib/ewl_stock.c:54
 msgid "STOCK|Pause"
@@ -175,7 +175,7 @@ msgstr ""
 
 #: ../src/lib/ewl_stock.c:56
 msgid "STOCK|Previous"
-msgstr ""
+msgstr "Edellinen"
 
 #: ../src/lib/ewl_stock.c:57
 msgid "STOCK|Record"
@@ -191,19 +191,19 @@ msgstr ""
 
 #: ../src/lib/ewl_stock.c:60
 msgid "STOCK|New"
-msgstr ""
+msgstr "Uusi"
 
 #: ../src/lib/ewl_stock.c:61
 msgid "STOCK|Ok"
-msgstr ""
+msgstr "Ok"
 
 #: ../src/lib/ewl_stock.c:62
 msgid "STOCK|Open"
-msgstr ""
+msgstr "Avaa"
 
 #: ../src/lib/ewl_stock.c:63
 msgid "STOCK|Paste"
-msgstr ""
+msgstr "Liitä"
 
 #: ../src/lib/ewl_stock.c:64
 msgid "STOCK|Preferences"
@@ -211,19 +211,19 @@ msgstr ""
 
 #: ../src/lib/ewl_stock.c:65
 msgid "STOCK|Print"
-msgstr ""
+msgstr "Tulosta"
 
 #: ../src/lib/ewl_stock.c:66
 msgid "STOCK|Print preview"
-msgstr ""
+msgstr "Tulostuksen esikatselu"
 
 #: ../src/lib/ewl_stock.c:67
 msgid "STOCK|Properties"
-msgstr ""
+msgstr "Ominaisuudet"
 
 #: ../src/lib/ewl_stock.c:68
 msgid "STOCK|Quit"
-msgstr ""
+msgstr "Lopeta"
 
 #: ../src/lib/ewl_stock.c:69
 msgid "STOCK|Redo"
@@ -247,23 +247,23 @@ msgstr ""
 
 #: ../src/lib/ewl_stock.c:74
 msgid "STOCK|Save"
-msgstr ""
+msgstr "Tallenna"
 
 #: ../src/lib/ewl_stock.c:75
 msgid "STOCK|Save as"
-msgstr ""
+msgstr "Tallenna nimellä"
 
 #: ../src/lib/ewl_stock.c:76
 msgid "STOCK|Select all"
-msgstr ""
+msgstr "Valitse kaikki"
 
 #: ../src/lib/ewl_stock.c:77
 msgid "STOCK|Sort ascending"
-msgstr ""
+msgstr "Järjestä nousevasti"
 
 #: ../src/lib/ewl_stock.c:78
 msgid "STOCK|Sort descending"
-msgstr ""
+msgstr "Järjestä laskevasti"
 
 #: ../src/lib/ewl_stock.c:79
 msgid "STOCK|Spell check"
@@ -279,7 +279,7 @@ msgstr ""
 
 #: ../src/lib/ewl_stock.c:82
 msgid "STOCK|Undo"
-msgstr ""
+msgstr "Kumoa"
 
 #: ../src/lib/ewl_stock.c:83
 msgid "STOCK|Unindent"
@@ -295,20 +295,20 @@ msgstr ""
 
 #: ../src/lib/ewl_stock.c:86
 msgid "STOCK|Zoom in"
-msgstr ""
+msgstr "Lähennä"
 
 #: ../src/lib/ewl_stock.c:87
 msgid "STOCK|Zoom out"
-msgstr ""
+msgstr "Loitonna"
 
 #: ../src/lib/ewl_colordialog.c:58
 msgid "Ewl Colordialog"
-msgstr ""
+msgstr "Ewl-väridialogi"
 
 #: ../src/lib/ewl_colorpicker.c:193
 msgid "COLOR|Current:"
-msgstr ""
+msgstr "Nykyinen:"
 
 #: ../src/lib/ewl_colorpicker.c:211
 msgid "COLOR|Previous:"
-msgstr ""
+msgstr "Edellinen:"
