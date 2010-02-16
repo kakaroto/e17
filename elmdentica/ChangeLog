@@ -1,0 +1,51 @@
+2010-??-??  release 0.8.1
+	* zoom avatars when pressing them for about 1s
+	* better url handling via an inwin
+
+2009-12-27  release 0.8.0
+	* multiple accounts at the same time
+	* use an sqlite3 database for posts cache (in and out, although out still is incomplete)
+	* cache management
+
+2009-10-11  release 0.7.0
+	* Replacement of the side buttons by hover's fired up by pressing for about 1s over the bubble
+	* Usage of inwins for entering user and domain data in the settings window
+	* Usage of hoversel to gain a few more space on the toolbar, specially for future features.
+
+2009-07-12  release 0.6.0
+
+	* Makefile.am (SUBDIRS): Add po.
+	(ACLOCAL_AMFLAGS): New variable.
+	(EXTRA_DIST): New variable.
+	* configure.ac (AC_OUTPUT): Add po/Makefile.in.
+
+2009-07-09 - release 0.5.1
+	* Fix a crasher bug in the text entry for posting
+	* Create ~/.elmdentica/cache/icons so showing icons will be able to work 
+	* Adds domain editing 
+	* If no account exists, force the settings dialog
+	* If no domain exists, force editing domains
+	* Capture http errors when they happen
+	* Detects links (but doesn't do anyting useful with them yet)
+
+2009-07-03 - release 0.5.0
+	* Move auth configuration into gconf
+	* Use dialogs to add/delete accounts
+	* Support twitter
+
+2009-06-29 - release 0.4.0
+	* Add retweet/repeat/recycle button
+	* Add reply button
+	* Add source when posting
+
+2009-06-28 - release 0.3.0
+	* timeline now displays icons (and even using a cache)
+	* add button for toggling fullscreen mode
+	* improved usage of libcurl
+
+2009-06-25 - release 0.2.0
+	* displays the friends timeline yet more nicely 
+
+2009-06-25 - release 0.1.0
+	* sends messages
+	* displays the friends timeline nicely 

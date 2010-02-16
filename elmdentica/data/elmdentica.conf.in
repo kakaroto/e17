@@ -1,0 +1,5 @@
+#
+# Change to other than yes to avoid starting omnewrotate automatically
+# on X startup and resuming from suspend.
+#
+START="yes"

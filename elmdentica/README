@@ -1,0 +1,11 @@
+Elementary Identi.ca client
+Author:  Rui Miguel Silva Seabra <rms@1407.org>
+License: GPLv3+.
+Description: A simple Identi.ca client with Elementary UI
+
+######################
+# How to make it run #
+######################
+
+0. Typical "./configure ; make ; make install" compilation process
+1. Click on the desktop icon

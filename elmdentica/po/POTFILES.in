@@ -1,0 +1,5 @@
+# List of source files which contain translatable strings.
+src/curl.c
+src/elmdentica.c
+src/twitter.c
+src/settings.c
