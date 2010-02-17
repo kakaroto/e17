@@ -88,4 +88,7 @@ Eina_Bool eupnp_av_didl_parse(const char *didl_xml,
 			      Eupnp_AV_DIDL_Container_Parsed_Cb container_cb,
 			      void *data);
 
+const char *eupnp_av_didl_object_title_get(DIDL_Object *obj);
+const char *eupnp_av_didl_object_id_get(DIDL_Object *obj);
+
 #endif

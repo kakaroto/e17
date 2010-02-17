@@ -66,6 +66,34 @@ struct _Context
 };
 
 static void
+eupnp_av_item_dump(DIDL_Item *item)
+{
+   CHECK_NULL_RET(item);
+
+   Eina_List *l;
+   DIDL_Resource *res;
+
+   DBG("Item refId=%s", item->refID);
+
+   EINA_LIST_FOREACH(item->res, l, res)
+     {
+	DBG("\tResource");
+	DBG("\t\timportUri: %s", res->importUri);
+	DBG("\t\tprotocolInfo: %s", res->protocolInfo);
+	DBG("\t\tsize: %ld", res->size);
+	DBG("\t\tduration: %s", res->duration);
+	DBG("\t\tbitrate: %u", res->bitrate);
+	DBG("\t\tsampleFrequency: %u", res->sampleFrequency);
+	DBG("\t\tbitsPerSample: %u", res->bitsPerSample);
+	DBG("\t\tnrAudioChannels: %u", res->nrAudioChannels);
+	DBG("\t\tresolution: %s", res->resolution);
+	DBG("\t\tcolorDepth: %u", res->colorDepth);
+	DBG("\t\tprotection: %s", res->protection);
+	DBG("\t\tvalue: %s", res->value);
+     }
+}
+
+static void
 eupnp_av_item_res_append(void *_item, void *_res)
 {
    CHECK_NULL_RET(_item);
@@ -95,8 +123,6 @@ eupnp_av_didl_object_parse_basic_attrs(DIDL_Object *obj, int nb_attributes,
 	  obj->id = COPYATTR(index);
 	else if (MATCH("parentID"))
 	  obj->parentID = COPYATTR(index);
-	else if (MATCH("title"))
-	  obj->title = COPYATTR(index);
 	else if (MATCH("creator"))
 	  obj->creator = COPYATTR(index);
 	else if (MATCH("restricted"))
@@ -295,12 +321,16 @@ eupnp_av_on_characters(void *ctx, const xmlChar *ch, int len)
 	     c->container->searchClass = strndup(ch, len);
 	  else if (!strcmp(c->tag, "createClass"))
 	     c->container->createClass = strndup(ch, len);
+	  else if (!strcmp(c->tag, "title"))
+	     c->container->parent.title = strndup(ch, len);
 	  break;
 	case ITEM_TAG:
 	  if (!strcmp(c->tag, "class"))
 	     c->item->parent.cls = strndup(ch, len);
 	  else if (!strcmp(c->tag, "refID"))
 	     c->item->refID= strndup(ch, len);
+	  else if (!strcmp(c->tag, "title"))
+	     c->item->parent.title = strndup(ch, len);
 	  break;
 	case ITEM:
 	  break;
@@ -337,6 +367,7 @@ eupnp_av_element_ns_end(void *ctx, const xmlChar *name, const xmlChar *prefix,
 	  c->state = DIDLLITE;
 	  break;
 	case ITEM:
+	  eupnp_av_item_dump(c->item);
 	  c->parsed_item(c->data, c->item);
 	  c->item = NULL;
 	  c->state = DIDLLITE;
@@ -436,4 +467,18 @@ eupnp_av_shutdown(void)
    xmlCleanupParser();
    eina_shutdown();
    return EINA_TRUE;
+}
+
+const char *
+eupnp_av_didl_object_title_get(DIDL_Object *obj)
+{
+   CHECK_NULL_RET_VAL(obj, NULL);
+   return obj->title;
+}
+
+const char *
+eupnp_av_didl_object_id_get(DIDL_Object *obj)
+{
+   CHECK_NULL_RET_VAL(obj, NULL);
+   return obj->id;
 }
