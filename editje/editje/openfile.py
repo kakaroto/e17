@@ -295,7 +295,7 @@ class OpenFile(elementary.Window):
         
     def _new_rename(self, bt, data):
         self._notify_abort(bt, None)
-        self._new(bt, None)
+        self._new_popup()
 
     def _new_open(self, file):
         try:
