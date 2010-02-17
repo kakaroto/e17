@@ -40,8 +40,14 @@ container_found(void *data, DIDL_Container *container)
 static void
 item_found(void *data, DIDL_Item *item)
 {
+   Eina_List *l;
+   DIDL_Resource *r;
+
    INFO("Item id %s (parentID=%s) found\n", item->parent.id,
 	item->parent.parentID);
+
+   EINA_LIST_FOREACH(item->res, l, r)
+     INFO("\tresource %s protocolInfo: %s\n", r->value, r->protocolInfo);
 }
 
 

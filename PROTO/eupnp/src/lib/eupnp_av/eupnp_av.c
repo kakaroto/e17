@@ -93,16 +93,16 @@ eupnp_av_didl_object_parse_basic_attrs(DIDL_Object *obj, int nb_attributes,
      {
 	if (MATCH("id"))
 	  obj->id = COPYATTR(index);
-	if (MATCH("parentID"))
+	else if (MATCH("parentID"))
 	  obj->parentID = COPYATTR(index);
-	if (MATCH("title"))
+	else if (MATCH("title"))
 	  obj->title = COPYATTR(index);
-	if (MATCH("creator"))
+	else if (MATCH("creator"))
 	  obj->creator = COPYATTR(index);
-	if (MATCH("restricted"))
+	else if (MATCH("restricted"))
 	  obj->restricted = !strncmp(attributes[index+3], "true",
 				     strlen("true"));
-	if (MATCH("writeStatus"))
+	else if (MATCH("writeStatus"))
 	  obj->writeStatus = COPYATTR(index);
      }
 }
@@ -138,7 +138,7 @@ eupnp_av_didl_object_parse_container_attrs(DIDL_Container *c, int nb_attributes,
      {
 	if (MATCH("searchable"))
 	  c->searchable = !strcmp(attributes[index+3], "true");
-	if (MATCH("childCount"))
+	else if (MATCH("childCount"))
 	  {
 	     char *copy = COPYATTR(index);
 	     c->childCount = atoi(copy);
@@ -147,6 +147,66 @@ eupnp_av_didl_object_parse_container_attrs(DIDL_Container *c, int nb_attributes,
      }
 }
 
+static void
+eupnp_av_didl_object_parse_res_attrs(DIDL_Resource *r, int nb_attributes,
+				     int nb_defaulted,
+				     const xmlChar **attributes)
+{
+   int i;
+   int index = 0;
+
+   for (i = 0; i < nb_attributes; ++i, index += 5)
+     {
+	char *copy;
+
+	if (MATCH("importUri"))
+	   r->importUri = COPYATTR(index);
+	else if (MATCH("protocolInfo"))
+	   r->protocolInfo = COPYATTR(index);
+	else if (MATCH("size"))
+	  {
+	     copy = COPYATTR(index);
+	     r->size = atol(copy);
+	     free(copy);
+	  }
+	else if (MATCH("duration"))
+	   r->duration = COPYATTR(index);
+	else if (MATCH("bitrate"))
+	  {
+	     copy = COPYATTR(index);
+	     r->bitrate = atoi(copy);
+	     free(copy);
+	  }
+	else if (MATCH("sampleFrequency"))
+	  {
+	     copy = COPYATTR(index);
+	     r->sampleFrequency= atoi(copy);
+	     free(copy);
+	  }
+	else if (MATCH("bitsPerSample"))
+	  {
+	     copy = COPYATTR(index);
+	     r->bitsPerSample = atoi(copy);
+	     free(copy);
+	  }
+	else if (MATCH("nrAudioChannels"))
+	  {
+	     copy = COPYATTR(index);
+	     r->nrAudioChannels = atoi(copy);
+	     free(copy);
+	  }
+	else if (MATCH("resolution"))
+	  r->resolution = COPYATTR(index);
+	else if (MATCH("colorDepth"))
+	  {
+	     copy = COPYATTR(index);
+	     r->colorDepth = atoi(copy);
+	     free(copy);
+	  }
+	else if (MATCH("protection"))
+	  r->protection = COPYATTR(index);
+     }
+}
 
 static void
 eupnp_av_element_ns_start(void *ctx, const xmlChar *name, const xmlChar *prefix,
@@ -192,6 +252,8 @@ eupnp_av_element_ns_start(void *ctx, const xmlChar *name, const xmlChar *prefix,
 	    {
 	       c->state = RES;
 	       c->res = calloc(1, sizeof(DIDL_Resource));
+	       eupnp_av_didl_object_parse_res_attrs(c->res, nb_attributes,
+						    nb_defaulted, attributes);
 	    }
 	  else
 	    {
@@ -215,6 +277,12 @@ static void
 eupnp_av_on_characters(void *ctx, const xmlChar *ch, int len)
 {
    Context *c = ctx;
+   const char *end;
+
+   /* trim spaces */
+   while (isspace(*ch)) { len--; ch++; }
+   end = ch + len - 1;
+   while (end > (const char *)ch && isspace(*end)) { end--; len--; }
 
    // DBG("On characters state %d", c->state);
 
@@ -237,6 +305,9 @@ eupnp_av_on_characters(void *ctx, const xmlChar *ch, int len)
 	case ITEM:
 	  break;
 	case CONTAINER:
+	  break;
+	case RES:
+	  c->res->value = strndup(ch, len);
 	  break;
      }
 }

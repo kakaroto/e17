@@ -48,6 +48,8 @@ struct _DIDL_Resource {
    const char *resolution;
    unsigned int colorDepth;
    const char *protection;
+
+   const char *value;
 };
 
 struct _DIDL_Object {
