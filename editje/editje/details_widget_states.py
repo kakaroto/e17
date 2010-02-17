@@ -21,7 +21,7 @@ import evas
 
 from details_widget_entry_button import WidgetEntryButton
 from floater import Floater
-from elementary import Notify, Label, Box, ELM_NOTIFY_ORIENT_BOTTOM
+from elementary import Label, Box
 
 import sysconfig
 import re
@@ -31,37 +31,22 @@ class WidgetStates(WidgetEntryButton):
     pop_min_w = 200
     pop_min_h = 300
 
-    def __init__(self, parent, mainwindow, editable):
+    def __init__(self, parent, editable):
         WidgetEntryButton.__init__(self, parent)
-        self.mainwindow = mainwindow
         self.editable = editable
         self._selstate = None
         self.theme_file = sysconfig.theme_file_get("default")
+
         ico = elementary.Icon(self.rect)
         ico.file_set(self.theme_file, "editje/icon/options")
         ico.show()
         self.rect.label_set("")
         self.rect.icon_set(ico)
-        self._pop = Floater(self.rect, self.obj)
-        self._pop.size_min_set(self.pop_min_w, self.pop_min_h)
-        self._pop.title_set("States selection")
-        self.states = elementary.List(self._pop._popup)
-        self.states.size_hint_weight_set(1.0, 1.0)
-        self.states.size_hint_align_set(-1.0, -1.0)
-        self._pop.content_set(self.states)
-	self.states.show()
 
-        self.editable.part.callback_add("states.changed", self._list_populate)
-        self._actions_init()
-
-
-    def _actions_init(self):
-        self._pop.action_add("New", self._state_add_new_cb)
-        self._pop.action_add("Cancel", self._cancel_clicked)
+        self._pop = None
 
     def _open(self, bt, *args):
-        self._list_populate()
-        self.show()
+        self.open()
 
     def _list_populate(self, *args):
         self.states.clear()
@@ -140,7 +125,7 @@ class WidgetStates(WidgetEntryButton):
             self.parent.part.state_copy(self.parent.state.name, nst)
             self.editable.part.event_emit("state.added", st)
             self.editable.part.state.name = st
-
+            self.close()
 
     def _remove_state_cb(self, obj, event, st):
         self.editable.part.state_del(st[1])
@@ -153,27 +138,43 @@ class WidgetStates(WidgetEntryButton):
         self.editable.part.state.event_emit("state.changed", self.parent.state.name)
 
     def _cancel_clicked(self, popup, data):
-        self.hide()
+        self.close()
 
     def _states_select_cb(self, states, it, state):
         if self._selstate != state:
             self._selstate = state
             self.editable.part.state.name = state
-        self.hide()
-
-    def hide(self):
-        self._pop.hide()
-
-    def show(self):
-        self._pop.show()
+        self.close()
 
     def selected_get(self):
         return self._selstate
 
+    def open(self):
+        if not self._pop:
+            self._pop = Floater(self.rect, self.obj)
+            self._pop.size_min_set(self.pop_min_w, self.pop_min_h)
+            self._pop.title_set("States selection")
+
+            self.states = elementary.List(self._pop)
+            self.states.size_hint_weight_set(1.0, 1.0)
+            self.states.size_hint_align_set(-1.0, -1.0)
+            self._pop.content_set(self.states)
+            self.states.show()
+
+            self._pop.action_add("New", self._state_add_new_cb)
+            self._pop.action_add("Cancel", self._cancel_clicked)
+
+            self.editable.part.callback_add("states.changed", self._list_populate)
+
+        self._list_populate()
+        self._pop.show()
+
     def close(self):
-        self.editable.part.callback_del("states.changed",
-                                         self._list_populate)
-        self._pop.close()
+        if not self._pop:
+            return
+        self.editable.part.callback_del("states.changed",  self._list_populate)
+        self._pop.hide()
+        self._pop = None
 
     def _entry_changed_cb(self, obj, *args, **kwargs):
         WidgetEntryButton._entry_changed_cb(self, obj, *args, **kwargs)

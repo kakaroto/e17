@@ -98,7 +98,7 @@ class PartStateDetails(EditjeDetails):
         self._header_table = PropertyTable(parent)
 
         prop = Property(parent, "state")
-        wid = WidgetStates(self, parent, self.e)
+        wid = WidgetStates(self, self.e)
         prop.widget_add("s", wid)
         self._header_table.property_add(prop)
         wid.changed = self._state_entry_changed_cb
