@@ -30,7 +30,7 @@ from details_widget_font import WidgetFont
 from details_widget_states import WidgetStates
 from floater import Floater
 from prop import Property, PropertyTable
-
+from filewizard import ImageSelectionWizard
 
 class PartStateDetails(EditjeDetails):
     state_pop_min_w = 200
