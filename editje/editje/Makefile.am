@@ -30,6 +30,7 @@ details_widget_font.py \
 details_widget_partlist.py \
 details_widget_signals.py \
 details_widget_source.py \
+details_widget_states.py \
 details_widget.py \
 editable_animation.py \
 editable_part.py \

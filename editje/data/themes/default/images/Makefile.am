@@ -11,6 +11,7 @@ grid.png \
 ico_animation.png \
 ico_back.png \
 ico_cancel.png \
+ico_cancel_disabled.png \
 ico_closed.png \
 ico_confirm.png \
 ico_down.png \
@@ -23,6 +24,7 @@ ico_open.png \
 ico_opened.png \
 ico_options.png \
 ico_part.png \
+ico_part_disabled.png \
 ico_play.png \
 ico_previous.png \
 ico_remove.png \

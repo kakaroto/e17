@@ -19,7 +19,6 @@
 import ecore
 import edje
 import elementary
-import re
 
 from details import EditjeDetails
 from details_widget_entry import WidgetEntry
@@ -28,51 +27,9 @@ from details_widget_color import WidgetColor
 from details_widget_button import WidgetButton
 from details_widget_partlist import WidgetPartList
 from details_widget_font import WidgetFont
+from details_widget_states import WidgetStates
 from floater import Floater
 from prop import Property, PropertyTable
-from filewizard import ImageSelectionWizard
-
-class StatesPopUp(Floater):
-    min_w = 200
-    min_h = 300
-
-    def __init__(self, parent, rel_to_obj=None):
-        Floater.__init__(self, parent, rel_to_obj)
-        self.size_min_set(self.min_w, self.min_h)
-
-        self.title_set("States selection")
-
-        self.states = elementary.List(parent)
-        self.states.size_hint_weight_set(1.0, 1.0)
-        self.states.size_hint_align_set(-1.0, -1.0)
-        self.states.show()
-        self._selstate = None
-
-        self.content_set(self.states)
-
-        self._parent.e.part.callback_add("states.changed", self._list_populate)
-        self._list_populate()
-
-    def _list_populate(self, *args):
-        self.states.clear()
-        for s in self._parent.e.part.states:
-            self.states.item_append(s, None, None, self._state_selected_cb, s)
-
-        self.states.go()
-
-    def _state_selected_cb(self, obj, event, state):
-        if self._selstate != state:
-            self._selstate = state
-            self._parent.e.part.state.name = state
-        self.hide()
-
-    def selected_get(self):
-        return self._selstate
-
-    def close(self):
-        self._parent.e.part.callback_del("states.changed",
-                                         self._list_populate)
-        Floater.close(self)
 
 
 class PartStateDetails(EditjeDetails):
@@ -141,16 +98,12 @@ class PartStateDetails(EditjeDetails):
         self._header_table = PropertyTable(parent)
 
         prop = Property(parent, "state")
-        wid = WidgetEntry(self)
+        wid = WidgetStates(self, parent, self.e)
         prop.widget_add("s", wid)
         self._header_table.property_add(prop)
         wid.changed = self._state_entry_changed_cb
 
         self.content_set("part_state.swallow", self._header_table)
-
-        self.edje_get().signal_callback_add("cl,option,clicked",
-                                            "editje/collapsable",
-                                            self._edit_opt_clicked_cb)
 
     def _anim_init(self, parent):
         EditjeDetails.__init__(self, parent,
@@ -173,68 +126,6 @@ class PartStateDetails(EditjeDetails):
         self._header_table.property_add(prop)
 
         self.content_set("part_name.swallow", self._header_table)
-
-        self.edje_get().signal_callback_add("cl,option,clicked",
-                                            "editje/collapsable",
-                                            self._anim_opt_clicked_cb)
-
-    def _edit_opt_clicked_cb(self, obj, emission, source):
-        icon = self.edje_get().part_object_get("cl.options")
-        popup = StatesPopUp(self._parent, icon)
-        popup.action_add("New", self._state_add_new_cb)
-        popup.action_add("Reset to", self._reset_to_state_cb)
-        popup.action_add("Delete", self._state_delete_cb)
-        popup.action_add("Cancel", self._popup_cancel_cb)
-        popup.show()
-
-    def _anim_opt_clicked_cb(self, obj, emission, source):
-        icon = self.edje_get().part_object_get("cl.options")
-        popup = StatesPopUp(self._parent, icon)
-        popup.action_add("Reset to", self._reset_to_state_cb)
-        popup.action_add("Cancel", self._popup_cancel_cb)
-        popup.show()
-
-    def _state_selected_cb(self, popup, data):
-        self.e.part.state.name = popup.selected_get()
-        popup.close()
-
-    def _state_add_new_cb(self, popup, data):
-        max = 0
-        cur_state = self.e.part.state.name.split(None,1)
-        if re.match("[a-zA-Z]*\d{2,}", cur_state[0]):
-            cur = cur_state[0][:-2]
-        else:
-            cur = cur_state[0]
-
-        for p in self.e.part.states:
-             state = p.split(None, 1)
-             if re.match("%s\d{2,}" % cur, state[0]):
-                 num = int(state[0][len(cur):])
-                 if num > max:
-                       max = num
-        nst = cur + "%.2d" % (max + 1)
-        st = nst + " 0.00"
-        if not self.part.state_exist(st):
-            self.part.state_copy(self.state.name, nst)
-            self.e.part.event_emit("state.added", st)
-            self.e.part.state.name = st
-
-
-    def _state_delete_cb(self, popup, data):
-        st = popup.selected_get()
-        if st == "default 0.00":
-            return
-        print "DELETE STATE", st
-        self.e.part.state_del(st)
-
-    def _reset_to_state_cb(self, popup, data):
-        self.state.copy_from(popup.selected_get())
-        print "COPIED",popup.selected_get(),"TO",self.state.name
-        self.e.part.state.event_emit("state.changed", self.state.name)
-        popup.close()
-
-    def _popup_cancel_cb(self, popup, data):
-        popup.close()
 
     def _edje_load(self, emissor, data):
         self.editable = self.e.edje
