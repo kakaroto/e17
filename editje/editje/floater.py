@@ -22,6 +22,7 @@ from elementary import Layout, Button, InnerWindow, Box, Pager, \
                        Icon, Label, Notify, ELM_NOTIFY_ORIENT_TOP, Separator
 import sysconfig
 
+_instance = None
 
 class Floater(Layout):
     default_padding_x = 20
@@ -136,7 +137,17 @@ class Floater(Layout):
 
     def show(self):
         self._move_and_resize(self)
+        global _instance
+        if _instance:
+            _instance.hide()
+        _instance = self
         Layout.show(self)
+
+    def hide(self):
+        global _instance
+        if _instance == self:
+            _instance = None
+        Layout.hide(self)
 
     def open(self):
         self._parent.block(True)
@@ -309,6 +320,19 @@ class Wizard(InnerWindow):
         lb.show()
 
         self.__notification.show()
+
+    def show(self):
+        global _instance
+        if _instance:
+            _instance.hide()
+        _instance = self
+        InnerWindow.show(self)
+
+    def hide(self):
+        global _instance
+        if _instance == self:
+            _instance = None
+        InnerWindow.hide(self)
 
     def open(self):
         self._parent.block(True)
