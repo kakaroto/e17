@@ -21,6 +21,24 @@ _method_success_check(void *data, DBusMessage *msg, DBusError *error)
 }
 
 static void
+_default_adapter_callback(void *data, DBusMessage *msg, DBusError *err)
+{
+   E_Bluez_Element *element;
+   const char *path;
+
+   if (dbus_message_get_args(msg, NULL, DBUS_TYPE_OBJECT_PATH, &path,
+                           DBUS_TYPE_INVALID) == FALSE)
+           printf("FAILURE: failed to get default adapter\n");
+
+   printf("SUCCESS: default adapter: %s\n", path);
+
+   element = e_bluez_element_get(path);
+   e_bluez_element_print(stdout, element);
+   return;
+
+}
+
+static void
 _elements_print(E_Bluez_Element **elements, unsigned int count)
 {
    unsigned int i;
@@ -260,6 +278,13 @@ _on_cmd_manager_get(char *cmd, char *args)
    e_bluez_element_print(stderr, element);
    return 1;
 }
+
+static int
+_on_cmd_manager_default_adapter(char *cmd, char *args)
+{
+   return e_bluez_manager_default_adapter(_default_adapter_callback);
+}
+
 /* Adapter Commands */
 
 static int
@@ -395,6 +420,7 @@ _on_input(void *data, Ecore_Fd_Handler *fd_handler)
      {"get_properties", _on_cmd_get_properties},
      {"set_property", _on_cmd_property_set},
      {"manager_get", _on_cmd_manager_get},
+     {"manager_default_adapter", _on_cmd_manager_default_adapter},
      {"adapter_register_agent", _on_cmd_adapter_register_agent},
      {"adapter_unregister_agent", _on_cmd_adapter_unregister_agent},
      {"adapter_get_address", _on_cmd_adapter_get_address},
