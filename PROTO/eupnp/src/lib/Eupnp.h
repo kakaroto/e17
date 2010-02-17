@@ -301,7 +301,7 @@ EAPI const char                 *eupnp_device_info_upc_get(const Eupnp_Device_In
 EAPI const char                 *eupnp_device_info_presentation_url_get(const Eupnp_Device_Info *device_info) EINA_ARG_NONNULL(1);
 EAPI void                        eupnp_device_info_spec_version_get(const Eupnp_Device_Info *device_info, int *minor, int *major) EINA_ARG_NONNULL(1,2,3);
 
-EAPI void                        eupnp_service_proxy_new(Eupnp_Service_Info *service, Eupnp_Service_Proxy_Ready_Cb ready_cb, void *data) EINA_ARG_NONNULL(1,2);
+EAPI void                        eupnp_service_proxy_new(const Eupnp_Service_Info *service, Eupnp_Service_Proxy_Ready_Cb ready_cb, void *data) EINA_ARG_NONNULL(1,2);
 EAPI Eupnp_Service_Proxy        *eupnp_service_proxy_ref(Eupnp_Service_Proxy *proxy) EINA_ARG_NONNULL(1);
 EAPI void                        eupnp_service_proxy_unref(Eupnp_Service_Proxy *proxy) EINA_ARG_NONNULL(1);
 EAPI Eina_Bool                   eupnp_service_proxy_has_action(const Eupnp_Service_Proxy *proxy, const char *action) EINA_ARG_NONNULL(1,2);

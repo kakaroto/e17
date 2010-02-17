@@ -636,11 +636,23 @@ eupnp_service_proxy_fetch(Eupnp_Service_Proxy *proxy, const char *base_url, cons
      {
 	char *complete_url = NULL;
 
-	if (asprintf(&complete_url, "%s%s", base_url, scpd_url) < 0)
+	if ((base_url[strlen(base_url)] == '/' && scpd_url[0] != '/') ||
+	    (base_url[strlen(base_url)] != '/' && scpd_url[0] == '/'))
 	  {
-	     ERR("Could not form complete url for service proxy.");
-	     return;
+	     if (asprintf(&complete_url, "%s%s", base_url, scpd_url) < 0)
+	       {
+		  ERR("Could not form complete url for service proxy.");
+		  return;
+	       }
 	  }
+	else
+	     if (asprintf(&complete_url, "%s/%s", base_url, scpd_url) < 0)
+	       {
+		  ERR("Could not form complete url for service proxy.");
+		  return;
+	       }
+
+	DBG("Complete url is %s", complete_url);
 
 	if (!eupnp_core_http_request_send(complete_url, "GET", NULL, NULL, 0, NULL,
 				     EUPNP_REQUEST_DATA_CB(_data_ready),
@@ -743,7 +755,7 @@ eupnp_service_proxy_shutdown(void)
  * @see eupnp_service_proxy_ref(), eupnp_service_proxy_unref()
  */
 void
-eupnp_service_proxy_new(Eupnp_Service_Info *service, Eupnp_Service_Proxy_Ready_Cb ready_cb, void *data)
+eupnp_service_proxy_new(const Eupnp_Service_Info *service, Eupnp_Service_Proxy_Ready_Cb ready_cb, void *data)
 {
    CHECK_NULL_RET(service);
    CHECK_NULL_RET(service->location);
