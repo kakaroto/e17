@@ -69,14 +69,14 @@ class WidgetStates(WidgetEntryButton):
 
             old = self.parent.state.name
 
-            box = elementary.Box(self._pop._popup)
+            box = elementary.Box(self._pop)
             box.horizontal_set(True)
             box.show()
 
             it = self.states.item_append(s, None, box, self._states_select_cb, s)
 
-            ico1 = elementary.Icon(self._pop._popup)
-            ico2 = elementary.Icon(self._pop._popup)
+            ico1 = elementary.Icon(self._pop)
+            ico2 = elementary.Icon(self._pop)
 
             if s == self.editable.part.state.name:
                 ico1.file_set(self.theme_file, "editje/icon/part_disabled")
@@ -92,14 +92,14 @@ class WidgetStates(WidgetEntryButton):
             ico1.show()
             ico2.show()
 
-            btn1 = elementary.Button(self._pop._popup)
+            btn1 = elementary.Button(self._pop)
             btn1.icon_set(ico1)
             btn1.style_set("editje.details")
             btn1.label_set("")
             btn1.callback_clicked_add(self._reset_state_to_cb, None, (old, s))
             btn1.show()
 
-            btn2 = elementary.Button(self._pop._popup)
+            btn2 = elementary.Button(self._pop)
             btn2.icon_set(ico2)
             btn2.style_set("editje.details")
             btn2.label_set("")

@@ -44,7 +44,7 @@ class WidgetEntryButtonList(WidgetEntryButton):
             self._pop.size_min_set(self.pop_min_w, self.pop_min_h)
             self._actions_init()
 
-            self._pop_list = elementary.List(self._pop._popup)
+            self._pop_list = elementary.List(self._pop)
 
             self._pop_list.scroller_policy_set(elementary.ELM_SCROLLER_POLICY_OFF,
                                                elementary.ELM_SCROLLER_POLICY_ON)

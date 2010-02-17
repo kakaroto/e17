@@ -23,7 +23,7 @@ from elementary import Layout, Button, InnerWindow, Box, Pager, \
 import sysconfig
 
 
-class Floater(object):
+class Floater(Layout):
     default_padding_x = 20
     default_padding_y = 20
     default_align_x = 0.5
@@ -33,6 +33,12 @@ class Floater(object):
         if not rel_to_obj:
             raise TypeError("You must pass an object whose geometry the Floater"
                             " will use to move itself in the canvas.")
+        Layout.__init__(self, parent)
+        self.on_changed_size_hints_add(self._move_and_resize)
+
+        theme_file = sysconfig.theme_file_get("default")
+        self.file_set(theme_file, "editje/floater")
+
         self._parent = parent
         self._rel_to_obj = rel_to_obj
 
@@ -43,12 +49,6 @@ class Floater(object):
 
         self._action_btns = []
         self._min_size = [0, 0]
-
-        theme_file = sysconfig.theme_file_get("default")
-
-        self._popup = Layout(parent)
-        self._popup.on_changed_size_hints_add(self._move_and_resize)
-        self._popup.file_set(theme_file, "editje/floater")
 
     def padding_set(self, pad_x, pad_y):
         self._padding_x = pad_x
@@ -95,15 +95,15 @@ class Floater(object):
         elif oy + oh + py>= ch:
             oy = ch - oh - py
 
-        self._popup.resize(ow, oh)
-        self._popup.move(ox, oy)
+        self.resize(ow, oh)
+        self.move(ox, oy)
 
     def title_set(self, title):
         self.title = title
-        self._popup.edje_get().part_text_set("title.text", title)
+        self.edje_get().part_text_set("title.text", title)
 
     def size_hint_min_get(self):
-        w, h = self._popup.size_hint_min_get()
+        w, h = Layout.size_hint_min_get(self)
 
         bw = 0
         for b in self._action_btns:
@@ -121,7 +121,7 @@ class Floater(object):
     def content_set(self, content):
         content.size_hint_weight_set(1.0, 1.0)
         content.size_hint_align_set(-1.0, -1.0)
-        self._popup.content_set("content", content)
+        Layout.content_set(self, "content", content)
 
     def action_add(self, label, func_cb, data = None):
         btn = Button(self._parent)
@@ -132,14 +132,11 @@ class Floater(object):
         btn.size_hint_align_set(-1.0, -1.0)
         btn.data["clicked"] = (func_cb, data)
         btn.show()
-        self._popup.edje_get().part_box_append("actions", btn)
+        self.edje_get().part_box_append("actions", btn)
 
     def show(self):
-        self._move_and_resize(self._popup)
-        self._popup.show()
-
-    def hide(self):
-        self._popup.hide()
+        self._move_and_resize(self)
+        Layout.show(self)
 
     def open(self):
         self._parent.block(True)
@@ -148,13 +145,13 @@ class Floater(object):
     def close(self):
         self.hide()
         self._parent.block(False)
-        self._popup.delete()
+        self.delete()
 
     def move(self, *args):
-        self._popup.move(*args)
+        Layout.move(self, *args)
 
     def resize(self, *args):
-        self._popup.resize(*args)
+        Layout.resize(self, *args)
 
     def _action_btn_clicked(self, obj, *args, **kwargs):
         func, udata = obj.data["clicked"]
