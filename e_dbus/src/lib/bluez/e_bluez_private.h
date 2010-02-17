@@ -31,6 +31,22 @@ static const char manager_path[] = "/";
 extern const char *e_bluez_iface_manager;
 extern const char *e_bluez_iface_adapter;
 extern const char *e_bluez_iface_device;
+extern const char *e_bluez_prop_address;
+extern const char *e_bluez_prop_name;
+extern const char *e_bluez_prop_alias;
+extern const char *e_bluez_prop_class;
+extern const char *e_bluez_prop_icon;
+extern const char *e_bluez_prop_paired;
+extern const char *e_bluez_prop_trusted;
+extern const char *e_bluez_prop_connected;
+extern const char *e_bluez_prop_uuids;
+extern const char *e_bluez_prop_powered;
+extern const char *e_bluez_prop_discoverable;
+extern const char *e_bluez_prop_pairable;
+extern const char *e_bluez_prop_discoverabletimeout;
+extern const char *e_bluez_prop_pairabletimeout;
+extern const char *e_bluez_prop_discovering;
+extern const char *e_bluez_prop_devices;
 
 extern int _e_dbus_bluez_log_dom;
 
