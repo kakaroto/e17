@@ -27,13 +27,13 @@ foreach($list as $new)
      }
 
      echo "    <item>\n";
-     echo "      <title>".$new['title']."</title>\n";
+     echo "      <title><![CDATA[".$new['title']."]]></title>\n";
      echo "      <link>http://enlightenment.org/p.php?p=$page/show&amp;l=$lang&amp;news_id=$nid</link>\n";
      echo "      <guid isPermaLink=\"true\">http://enlightenment.org/p.php?p=$page/show&amp;l=$lang&amp;news_id=$nid</guid>\n";
      echo "      <source>http://enlightenment.org/rss.php?p=$page&amp;=$lang</source>\n";
-     echo "      <description>".$new['content']."</description>\n";
+     echo "      <description><![CDATA[".$new['content']."]]></description>\n";
      echo "      <pubDate>$pubdate</pubDate>\n";
-     echo "      <author>".$new['email']." (".$new['author'].")</author>\n";
+     echo "      <author><![CDATA[".$new['email']." (".$new['author']."]]>)</author>\n";
      echo "    </item>\n";
    }
 }
