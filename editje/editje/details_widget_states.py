@@ -130,7 +130,7 @@ class WidgetStates(WidgetEntryButton):
     def _remove_state_cb(self, obj, event, st):
         self.editable.part.state_del(st[1])
         self.editable.part.state.name = st[0]
-        self.show()
+        self.open()
 
     def _reset_state_to_cb(self, obj, event, st):
         self.editable.part.state.name = st[0]
