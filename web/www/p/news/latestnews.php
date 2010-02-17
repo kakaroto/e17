@@ -25,6 +25,7 @@ foreach($list as $new)
      echo "<p class='news-latest-body'>" . $before . "</p>\n";
    }
 }
-echo "<p align='right'><a href='p.php?p=news&l=" . $news->lang . "' title='News'>Archives</a></p>";
+echo '<p align="right"><a href="/p.php?p=news&amp;l='.$news->lang.'" title="News">Archives</a></p>';
+echo '<p align="right"><a href="/rss.php?p=news&amp;l='.$news->lang.'">RSS 2.0 updates&nbsp;<img src="/i/feed-icon-14x14.png" alt="rss" border="0" /></a></p>';
 ?>
 
