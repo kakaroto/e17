@@ -1,5 +1,4 @@
 <?php header("Content-type: application/xml"); ?>
-<?xml version="1.0"?>
 <?php include 'site/site.php'; ?>
 <rss version="2.0">
   <channel>
