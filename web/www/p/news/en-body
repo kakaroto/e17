@@ -29,8 +29,9 @@ if ($news->has_archives() == true)
 }
 
 ?>
+
+    <p><a href="/rss.php?p=<?php echo $page; ?>&amp;l=<?php echo $lang; ?>"><img src="/i/feed-icon-14x14.png" alt="rss" border="0" /> Be informed of updates using RSS 2.0.</a></p>
    </div>
   </td>
  </tr>
 </table>
-      

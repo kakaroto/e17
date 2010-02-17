@@ -8,6 +8,14 @@
 <link rel="shortcut icon" href="favicon.png" type="image/x-icon">
 <link rel="icon" href="favicon.png" type="image/ico">
 <link rel="shortcut icon" href="favicon.png" type="image/ico">
+<?php
+
+if (is_file("p/$page/$lang-head")) include "p/$page/$lang-head";
+
+if (is_file("p/$page/$lang-rss"))
+   echo '<link rel="alternate" type="application/rss+xml" title="RSS" href="rss.php?p=$page&l=$lang">';
+
+ ?>
 </head>
 
 <body>
