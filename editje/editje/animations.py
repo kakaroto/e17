@@ -97,6 +97,7 @@ class AnimationDetails(EditjeDetails):
         self["main"]["previous"].hide_value()
         self["main"]["next"].hide_value()
         self["main"]["transition"].hide_value()
+        self._timeline_clear()
 
     def _update(self, emissor, data):
         self._header_table["name"].value = data
@@ -111,11 +112,14 @@ class AnimationDetails(EditjeDetails):
             self.e.animation.state_add(t)
         self.e.animation.state = t
 
-    def _timeline_update(self):
-        for i in range(1, 11):
+    def _timeline_clear(self):
+        for i in range(0, 11):
             sig = "ts,%.1g," % (i/10.0)
             self._parent.main_edje.signal_emit(sig + "disable", "editje")
             self._parent.main_edje.signal_emit(sig + "unselected", "editje")
+
+    def _timeline_update(self):
+        self._timeline_clear()
         for s in self.e.animation.timestops:
             sig = "ts,%.1g,enable" % s
             self._parent.main_edje.signal_emit(sig, "editje")
