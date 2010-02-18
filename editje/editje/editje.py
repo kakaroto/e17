@@ -515,7 +515,11 @@ class Editje(elementary.Window):
         box.pack_end(self.anim_details)
         self.anim_details.show()
 
-        self.anim_state_details = PartStateDetails(self, True) # fix
+        self.anim_state_details = PartStateDetails(self, True, \
+                img_new_img_cb=self._image_wizard_new_image_cb, \
+                img_list_get_cb=self._image_wizard_image_list_get_cb, \
+                img_id_get_cb=self._image_wizard_image_id_get_cb, \
+                workfile_name_get_cb=self._workfile_name_get_cb) # fix
         self.anim_state_details.open()
         box.pack_end(self.anim_state_details)
         self.anim_state_details.show()
