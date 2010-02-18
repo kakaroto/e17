@@ -17,15 +17,24 @@
  * License along with Editje.  If not, see
  * <http://www.gnu.org/licenses/>.
  */
+
+
 styles {
    style {
       name: "dialog_entry_single_style";
       base: "font=Sans font_size=14 align=left color=#000000FF wrap=none";
       tag:  "br" "\n";
    }
+
    style {
       name: "dialog_entry_single_style.disabled";
       base: "font=Sans font_size=14 align=left color=#00000080 wrap=none";
+      tag:  "br" "\n";
+   }
+
+   style {
+      name: "editje_small_wrapped_subtext";
+      base: "font=Sans font_size=10 align=left color=#000000FF wrap=word";
       tag:  "br" "\n";
    }
 }

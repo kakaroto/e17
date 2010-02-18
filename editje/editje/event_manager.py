@@ -41,7 +41,7 @@ class Manager:
         del self.__callbacks[event]
 
     def event_emit(self, event, data=None):
-#        print "EMIT", event, self, data
+        # print "EMIT", event, self, data
         queue = len(self.queue)
         list = self.__callbacks.get(event)
         if list:
@@ -50,5 +50,5 @@ class Manager:
         if not queue:
             while self.queue:
                 event, callback, emissor, data = self.queue.pop(0)
-#                print "\t", event, callback, emissor, data
+                # print "\t", event, callback, emissor, data
                 callback(emissor, data)

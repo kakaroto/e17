@@ -105,10 +105,9 @@ class SignalsList(CList):
             self.e.signal_del(i[0])
 
 
-class SignalTypesButtons(elementary.Layout):
+class SignalTypesButtons(edje.Edje):
     def __init__(self, parent, type_select_cb=None):
-        elementary.Layout.__init__(self, parent)
-        self._parent = parent
+        edje.Edje.__init__(self, parent.evas)
         self._type_select_cb = type_select_cb
 
         theme_file = sysconfig.theme_file_get("default")
@@ -117,32 +116,27 @@ class SignalTypesButtons(elementary.Layout):
         self._labels_set()
 
     def _file_set(self, file_, group):
-        elementary.Layout.file_set(self, file_, group)
-        self._edje = self.edje_get()
-        self._edje.signal_callback_add(
+        edje.Edje.file_set(self, file_, group)
+
+        self.signal_callback_add(
             "animation_sig,selected", "editje/signal_type_buttons",
             self._sig_cb)
-        self._edje.signal_callback_add(
+        self.signal_callback_add(
             "general_sig,selected", "editje/signal_type_buttons", self._sig_cb)
 
     def _labels_set(self):
-        # TODO: later, make long strings fit in the second labels
-        # with textblocks
-
-        self._edje.part_text_set(
+        self.part_text_set(
             "button_01.label", "Animation triggering signal")
-        self._edje.part_text_set("button_01.sublabel", "")
+        self.part_text_set(
+            "button_01.sublabel", "Choose it if you want a signal"
+            " coming from an UI element interaction to trigger an animation.")
 
-        # "Choose it if you want that a signal"
-        # " coming from an UI element interaction to trigger an animation."
-
-        self._edje.part_text_set(
+        self.part_text_set(
             "button_02.label", "General purpose signal")
-        self._edje.part_text_set("button_02.sublabel", "")
-
-        # "Choose it if you "
-        # "want that a signal coming from an UI element interaction"
-        # " to yield another custom signal."
+        self.part_text_set(
+            "button_02.sublabel", "Choose it if you "
+            "want a signal coming from an UI element interaction"
+            " to yield another custom signal.")
 
     def _sig_cb(self, obj, emission, source):
         if emission == "animation_sig,selected":

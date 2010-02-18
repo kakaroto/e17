@@ -16,12 +16,8 @@
 # License along with Editje.  If not, see
 # <http://www.gnu.org/licenses/>.
 
-import os
-
 import evas
-import ecore
-from elementary import InnerWindow, Layout, List, Scroller, Fileselector, \
-                       Button, Box
+from elementary import InnerWindow, Layout, Button, Box
 
 import sysconfig
 from floater import Wizard

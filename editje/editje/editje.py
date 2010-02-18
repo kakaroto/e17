@@ -45,10 +45,6 @@ def debug_cb(obj, emission, source):
 class Editje(elementary.Window):
     def __init__(self, swapfile, theme="default"):
         self.theme = sysconfig.theme_file_get(theme)
-
-        self.group_details = None
-        self._mode = None
-
         elementary.theme_extension_add(self.theme)
 
         for m in edje.available_modules_get():
@@ -313,7 +309,6 @@ class Editje(elementary.Window):
                                      self._toolbar_pager)
         self._toolbar_pager.show()
 
-
     def _mainbar_init(self):
         bx = elementary.Box(self)
         bx.size_hint_weight_set(evas.EVAS_HINT_EXPAND, evas.EVAS_HINT_EXPAND)
@@ -325,7 +320,8 @@ class Editje(elementary.Window):
         self._modes_selector.hover_parent_set(self)
         self._modes_selector.label_set("Mode")
         self._modes_selector.size_hint_weight_set(evas.EVAS_HINT_EXPAND, 0.0)
-        self._modes_selector.size_hint_align_set(evas.EVAS_HINT_FILL,evas.EVAS_HINT_FILL)
+        self._modes_selector.size_hint_align_set(
+            evas.EVAS_HINT_FILL, evas.EVAS_HINT_FILL)
         bx.pack_end(self._modes_selector)
         self._modes_selector.show()
 
@@ -349,7 +345,8 @@ class Editje(elementary.Window):
         self._sidebar_pager.show()
 
     def _mode_add(self, name, icon, toolbar, mainbar, sidebar):
-        item = self._modes_selector.item_add(name, "", 0, self._mode_set_cb, name)
+        item = self._modes_selector.item_add(
+            name, "", 0, self._mode_set_cb, name)
         self._modes[name] = (item, toolbar, mainbar, sidebar)
         item.icon_set(self.theme, icon, elementary.ELM_ICON_FILE)
         self._toolbar_pager.content_push(toolbar)

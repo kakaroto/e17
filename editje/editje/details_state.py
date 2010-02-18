@@ -513,11 +513,11 @@ class PartStateDetails(EditjeDetails):
         else:
             st = " ".join(state)
 
-        if (not self.part.state_exist(st)) and old.split(None, 1)[0] != "default":
+        if (not self.part.state_exist(st)) and \
+                old.split(None, 1)[0] != "default":
             self.e.part.state.name_set(st)
         else:
             obj.value = old
-
 
     def _hide_all(self):
         self.main_hide()

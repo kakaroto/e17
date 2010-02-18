@@ -42,19 +42,18 @@ collections {
 
             description {
                state: "default" 0.0;
+               min: 420 120;
+
+               rel1 {
+                  relative: 0.5 0.3;
+               }
+               rel2 {
+                  relative: 0.5 0.3;
+               }
+
                image {
                   normal: "dialog_entry_bg.png";
                   border: 20 20 0 0;
-               }
-
-               rel1 {
-                  relative: 0.1 0.1;
-                  to: "content.bg";
-               }
-               rel2 {
-                  relative: 0.9 0.1;
-                  offset: -1 100;
-                  to: "content.bg";
                }
             }
             description {
@@ -65,7 +64,7 @@ collections {
             description {
                state: "selected" 0.0;
                inherit: "default" 0.0;
-               color: 120 120 120 255;
+               color: 190 190 190 255;
             }
          }
 
@@ -108,13 +107,13 @@ collections {
                   max: 1 0;
                }
                rel1 {
-                  relative: 1.0 0.10;
+                  relative: 1.0 0.05;
                   to_x: "button_01.ico";
                   to_y: "button_01.bg";
                   offset: 20 0;
                }
                rel2 {
-                  relative: 0.90 0.50;
+                  relative: 0.90 0.45;
                   to: "button_01.bg";
                }
             }
@@ -122,24 +121,18 @@ collections {
 
          part {
             name: "button_01.sublabel";
-            type: TEXT;
+            type: TEXTBLOCK;
             mouse_events: 0;
             description {
                state: "default" 0.0;
                align: 0.0 0.5;
-               color_class: "default_label";
                text {
-                  text: "sublabel-TEST";
-                  font: "Sans:style=bold";
-                  size: 10;
-                  align: 0.0 0.5;
-                  min: 1 1;
-                  max: 1 0;
+                  style: "editje_small_wrapped_subtext";
+                  min: 0 1;
                }
                rel1 {
                   relative: 0.0 1.0;
                   to: "button_01.label";
-                  offset: 0 10;
                }
                rel2 {
                   relative: 0.90 0.95;
@@ -168,20 +161,18 @@ collections {
 
             description {
                state: "default" 0.0;
+               min: 420 120;
+
+               rel1 {
+                  relative: 0.5 0.7;
+               }
+               rel2 {
+                  relative: 0.5 0.7;
+               }
+
                image {
                   normal: "dialog_entry_bg.png";
                   border: 20 20 0 0;
-               }
-
-               rel1 {
-                  relative: 0.0 1.0;
-                  offset: 0 30;
-                  to: "button_01.bg";
-               }
-               rel2 {
-                  relative: 1.0 1.0;
-                  offset: -1 130;
-                  to: "button_01.bg";
                }
             }
             description {
@@ -192,7 +183,7 @@ collections {
             description {
                state: "selected" 0.0;
                inherit: "default" 0.0;
-               color: 120 120 120 255;
+               color: 190 190 190 255;
             }
          }
 
@@ -231,17 +222,17 @@ collections {
                   font: "Sans:style=bold";
                   size: 14;
                   align: 0.0 0.5;
-                  min: 1 1;
+                  min: 0 1;
                   max: 1 0;
                }
                rel1 {
-                  relative: 1.0 0.10;
+                  relative: 1.0 0.05;
                   to_x: "button_02.ico";
                   to_y: "button_02.bg";
                   offset: 20 0;
                }
                rel2 {
-                  relative: 0.90 0.50;
+                  relative: 0.90 0.45;
                   to: "button_02.bg";
                }
             }
@@ -249,24 +240,18 @@ collections {
 
          part {
             name: "button_02.sublabel";
-            type: TEXT;
+            type: TEXTBLOCK;
             mouse_events: 0;
             description {
                state: "default" 0.0;
                align: 0.0 0.5;
-               color_class: "default_label";
                text {
-                  text: "sublabel";
-                  font: "Sans:style=bold";
-                  size: 10;
-                  align: 0.0 0.5;
-                  min: 1 1;
-                  max: 1 0;
+                  style: "editje_small_wrapped_subtext";
+                  min: 0 1;
                }
                rel1 {
                   relative: 0.0 1.0;
                   to: "button_02.label";
-                  offset: 0 10;
                }
                rel2 {
                   relative: 0.90 0.95;
