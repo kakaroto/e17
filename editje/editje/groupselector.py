@@ -316,10 +316,8 @@ class GroupSelectionWizard(Wizard):
         self._groups_list.update()
         self.goto("group_list")
 
-    def file_set(self, file_, group=None):
-        self._groups_list.file = file_
-        # if group:
-        #     self._groups_list.selection = group
+    def file_set(self, file):
+        self._groups_list.file = file
 
     def _name_changed_cb(self, obj):
         self._name_chaged = True

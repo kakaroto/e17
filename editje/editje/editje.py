@@ -218,7 +218,7 @@ class Editje(elementary.Window):
             new_grp_cb=self._group_wizard_new_group_cb,
             del_grp_cb=self._group_wizard_del_group_cb)
 
-        grp_wiz.file_set(self.e.workfile, self.e.group)
+        grp_wiz.file_set(self.e.workfile)
         grp_wiz.open()
 
     def _toolbar_bt_init(self, edje, part, name, callback):
