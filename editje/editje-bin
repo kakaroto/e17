@@ -26,8 +26,27 @@ import elementary
 from editje.editje import Editje
 from editje.openfile import OpenFile
 import editje.swapfile as swapfile
+from editje.popup_win import PopupWindow
 
 if __name__ == "__main__":
+    def cancel(bt, pop):
+        pop.hide()
+        pop.delete()
+    def open_ignore_swap(bt, data):
+        pop, sf = data
+        sf.open(swapfile.REPLACE)
+        pop.hide()
+        editje = Editje(sf)
+        editje.show()
+        pop.delete()
+    def open_recovery_swap(bt, data):
+        pop, sf = data
+        sf.open(swapfile.RESTORE)
+        pop.hide()
+        editje = Editje(sf)
+        editje.show()
+        pop.delete()
+
     elementary.init()
     elementary.finger_size_set(15)
     elementary.policy_set(elementary.ELM_POLICY_QUIT,
@@ -35,44 +54,57 @@ if __name__ == "__main__":
 
     files = sys.argv[1:]
     if files:
-        count = 0
         for file in files:
             try:
                 sf = swapfile.SwapFile()
                 sf.file = os.path.realpath(file)
                 sf.open()
             except swapfile.CacheAlreadyExists, e:
-                print "\033[1mSwap file to", file, "already exists\033[0m"
-                print "Another program may be editing the same file."
-                print "Or an edit session for this file crashed."
-                opt = None
-                while opt != "i" and opt != "r" and opt != "a":
-                    opt = None
-                    while not opt:
-                        opt = raw_input("(I)gnore swap, (R)ecovery or (A)bort? ")
-                    opt = opt[0].lower()
-                if opt == "i":
-                    sf.open(swapfile.REPLACE)
-                elif opt == "r":
-                    sf.open(swapfile.RESTORE)
-                elif opt == "a":
-                    continue
+                pop = PopupWindow()
+                pop.title = "Editje - Swap file already exists"
+                
+                lb = elementary.Label(pop)
+                lb.label_set("Swap file to " + file + " already exists<br>" +
+                             "Another program may be editing the same file.<br>" +
+                             "Or an edit session for this file crashed.")
+                pop.pack_end(lb)
+                lb.show()
+
+                pop.action_add("Ignore Swap", open_ignore_swap, data=(pop, sf))
+                pop.action_add("Recovery", open_ignore_swap, data=(pop, sf))
+                pop.action_add("Abort", cancel, data=pop)
+
+                pop.show()
+                continue
             except swapfile.CompileError, e:
-                print "\033[1mCompiler Error:", file, "\033[0m"
-                print e.message
-                raw_input("(press enter)")
+                pop = PopupWindow()
+                pop.title = "Editje - Compiler Error"
+
+                lb = elementary.Label(pop)
+                lb.label_set("Compile Error: " + file + "<br>" + e.message)
+                pop.pack_end(lb)
+                lb.show()
+
+                pop.action_add("OK", cancel, data=pop)
+
+                pop.show()
                 continue
             except Exception, e:
-                print "\033[1mError with file:", file, "\033[0m"
-                print e
-                raw_input("(press enter)")
+                pop = PopupWindow()
+                pop.title = "Editje - File Error"
+
+                lb = elementary.Label(pop)
+                lb.label_set("Error with file: " + file + "<br>" + str(e))
+                pop.pack_end(lb)
+                lb.show()
+
+                pop.action_add("OK", cancel, data=pop)
+
+                pop.show()
                 continue
 
             editje = Editje(sf)
             editje.show()
-            count += 1
-        if not count:
-            exit(1)
     else:
         OpenFile().show()
 

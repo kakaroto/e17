@@ -222,7 +222,7 @@ class OpenFile(elementary.Window):
         self._notification = ErrorNotify(self)
 
         self._notification.title = "        New Edje File       "
-        
+
         bx = elementary.Box(self._notification)
         bx.horizontal_set(True)
         bx.size_hint_weight_set(evas.EVAS_HINT_EXPAND,
@@ -287,12 +287,12 @@ class OpenFile(elementary.Window):
 
         shutil.copyfile(sysconfig.template_file_get("default"), file)
         self._new_open(file)
-        
+
     def _new_forced(self, bt, file):
         self._notify_abort(bt, None)
         shutil.copyfile(sysconfig.template_file_get("default"), file)
         self._new_open(file)
-        
+
     def _new_rename(self, bt, data):
         self._notify_abort(bt, None)
         self._new_popup()

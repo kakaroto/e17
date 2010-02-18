@@ -49,6 +49,7 @@ newpart.py \
 openfile.py \
 parts_list.py \
 popups.py \
+popup_win.py \
 prop.py \
 signals.py \
 sysconfig.py \
