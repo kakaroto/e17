@@ -326,6 +326,7 @@ class Wizard(InnerWindow):
         if _instance:
             _instance.hide()
         _instance = self
+        self._parent.block(True)
         InnerWindow.show(self)
 
     def hide(self):
@@ -333,14 +334,13 @@ class Wizard(InnerWindow):
         if _instance == self:
             _instance = None
         InnerWindow.hide(self)
+        self._parent.block(False)
 
     def open(self):
-        self._parent.block(True)
         self.show()
 
     def close(self):
         self.hide()
-        self._parent.block(False)
         self.delete()
 
     def __action_btn_clicked(self, obj, *args, **kwargs):
