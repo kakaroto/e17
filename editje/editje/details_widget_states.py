@@ -42,6 +42,7 @@ class WidgetStates(WidgetEntryButton):
         ico.show()
         self.rect.label_set("")
         self.rect.icon_set(ico)
+        self.rect.size_hint_min_set(24, 24)
 
         self._pop = None
 
