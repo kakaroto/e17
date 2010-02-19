@@ -34,11 +34,12 @@ from groupselector import NameEntry
 
 
 class SignalsList(CList):
-    def __init__(self, parent, new_sig_cb):
+    def __init__(self, parent, new_sig_cb, sigs_list_cb):
         CList.__init__(self, parent)
         self.e = parent.e
 
         self._new_sig_cb = new_sig_cb
+        self._sigs_list_cb = sigs_list_cb
         self._options_load()
         self.options = True
 
@@ -85,19 +86,18 @@ class SignalsList(CList):
         self._options_edje = edje.Edje(self.edje_get().evas,
                                file=self._theme_file,
                                group="editje/collapsable/list/options/signals")
-        self._options_edje.signal_callback_add("new",
-                                "editje/collapsable/list/options",
-                                self._new_cb)
-        self._options_edje.signal_callback_add("remove",
-                                "editje/collapsable/list/options",
-                                self._remove_cb)
+        self._options_edje.signal_callback_add(
+            "new", "editje/collapsable/list/options", self._new_cb)
+        self._options_edje.signal_callback_add(
+            "remove", "editje/collapsable/list/options", self._remove_cb)
         self._options_edje.signal_emit("remove,disable", "")
         self.content_set("options", self._options_edje)
         self._options = False
 
     def _new_cb(self, obj, emission, source):
         sig_wiz = NewSignalWizard(
-            self._parent, new_sig_cb=self._new_sig_cb)
+            self._parent, new_sig_cb=self._new_sig_cb,
+            sigs_list_cb=self._sigs_list_cb)
         sig_wiz.open()
 
     def _remove_cb(self, obj, emission, source):
@@ -146,10 +146,10 @@ class SignalTypesButtons(edje.Edje):
 
 
 class NewSignalWizard(Wizard):
-    def __init__(self, parent, new_sig_cb=None):
-        if not new_sig_cb:
-            raise TypeError("You must set a callback for new signals on" \
-                            " NewSignalWizard objects.")
+    def __init__(self, parent, new_sig_cb=None, sigs_list_cb=None):
+        if not new_sig_cb or not sigs_list_cb:
+            raise TypeError("You must set callbacks for signals retrieval and"
+                            " creation on NewSignalWizard objects.")
 
         Wizard.__init__(self, parent)
         self._type = None
@@ -177,6 +177,7 @@ class NewSignalWizard(Wizard):
         self.action_disabled_set("default", "Create", True)
 
         self._new_sig_cb = new_sig_cb
+        self._sigs_list_cb = sigs_list_cb
 
     def _name_changed_cb(self, obj):
         self._check_name_and_type()
@@ -186,24 +187,39 @@ class NewSignalWizard(Wizard):
         self._check_name_and_type()
 
     def _check_name_and_type(self):
-        name = self._sig_name_entry.entry
-        if self._type is not None and name != "":
+        error_msg = "This signal name is already used in this group"
+
+        def good():
+            self._sig_name_entry.status_label = ""
             self.action_disabled_set("default", "Create", False)
-        else:
+
+        def bad():
+            self._sig_name_entry.status_label = error_msg
             self.action_disabled_set("default", "Create", True)
+
+        def incomplete():
+            self._sig_name_entry.status_label = ""
+            self.action_disabled_set("default", "Create", True)
+
+        name = self._sig_name_entry.entry
+        if not name or self._type is None:
+            incomplete()
+            return
+
+        if name in self._sigs_list_cb():
+            bad()
+            return
+
+        good()
 
     def _add(self):
         name = self._sig_name_entry.entry
-        if name == "":
-            self.notify("Please give a name to the new signal.")
-            return
 
         success = self._new_sig_cb(name, self._type)
         if success:
             ecore.idler_add(self.close)
         else:
-            self.notify("There is a signal with this name in the "
-                        "group, already. Please choose another name.")
+            self.notify("Error creating new signal.")
 
     def _cancel(self):
         self.close()

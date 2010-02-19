@@ -9,24 +9,141 @@
 #
 # Editje is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 # GNU Lesser General Public License for more details.
 #
 # You should have received a copy of the GNU Lesser General Public
-# License along with Editje.  If not, see
+# License along with Editje. If not, see
 # <http://www.gnu.org/licenses/>.
-import re
 
 import evas
 import edje
 import elementary
 
+import re
+
+from clist import CList
 from floater import Wizard
 from groupselector import NameEntry
 
 
+class PartsList(CList):
+    def __init__(self, parent, canvas, editable_grp):
+        CList.__init__(self, parent)
+        self._edit_grp = editable_grp
+
+        self._canvas = canvas
+        self._options_load()
+
+        self._edit_grp.callback_add("parts.changed", self._parts_update)
+        self._edit_grp.callback_add("part.added", self._part_added)
+        self._edit_grp.callback_add("part.removed", self._part_removed)
+
+        self._edit_grp.part.callback_add("part.changed", self._part_changed)
+        self._edit_grp.part.callback_add("part.unselected", self._part_changed)
+        self._edit_grp.part.callback_add("name.changed", self._name_changed)
+
+    def _parts_update(self, emissor, data):
+        self.clear()
+        for i in data[::-1]:
+            self.add(i)
+        self.go()
+
+    def _part_added(self, emissor, data):
+        self.add(data)
+        self.go()
+        self.open = True
+        self.select(data)
+
+    def _part_removed(self, emissor, data):
+        self.remove(data)
+        if not self._selected and self._first:
+            self._first.selected = True
+
+    def _part_changed(self, emissor, data):
+        self.selection_clear()
+        self.select(data)
+
+    def _name_changed(self, emissor, data):
+        for s in self._selected.iterkeys():
+            item = self._items[s]
+            if item.label_get() == data[0]:
+                item.label_set(data[1])
+                self._selected[data[1]] = self._selected[data[0]]
+                self._items[data[1]] = self._items[data[0]]
+                del self._selected[data[0]]
+                del self._items[data[0]]
+                return
+
+    # Selection
+    def _selected_cb(self, li, it):
+        CList._selected_cb(self, li, it)
+        name = it.label_get()
+        self._edit_grp.part.name = name
+        self._options_edje.signal_emit("up,enable", "")
+        self._options_edje.signal_emit("down,enable", "")
+        self._options_edje.signal_emit("remove,enable", "")
+
+    def _unselected_cb(self, li, it):
+        CList._unselected_cb(self, li, it)
+        if not self._selected:
+            self._options_edje.signal_emit("up,disable", "")
+            self._options_edje.signal_emit("down,disable", "")
+            self._options_edje.signal_emit("remove,disable", "")
+
+    # Options
+    def _options_load(self):
+        self._options_edje = edje.Edje(
+            self.edje_get().evas, file=self._theme_file,
+            group="editje/collapsable/list/options/parts")
+        self._options_edje.signal_callback_add(
+            "new", "editje/collapsable/list/options", self._new_cb)
+        self._options_edje.signal_callback_add(
+            "up", "editje/collapsable/list/options", self._up_cb)
+        self._options_edje.signal_callback_add(
+            "down", "editje/collapsable/list/options", self._down_cb)
+        self._options_edje.signal_callback_add(
+            "remove", "editje/collapsable/list/options", self._remove_cb)
+        self._options_edje.signal_emit("up,disable", "")
+        self._options_edje.signal_emit("down,disable", "")
+        self._options_edje.signal_emit("remove,disable", "")
+        self.content_set("options", self._options_edje)
+        self._options = False
+
+    def _new_cb(self, obj, emission, source):
+        def parts_list_cb():
+            return self._edit_grp.parts
+
+        def part_add_cb(part_name, part_type, source, signal=True):
+            return self._edit_grp.part_add(part_name, part_type, source, signal)
+
+        def part_get_cb(part_name):
+            return self._edit_grp.part_get(part_name)
+
+        def grp_size_get_cb():
+            return self._edit_grp.group_size
+
+        new_part_wiz = NewPartWizard(self._parent, self._canvas, parts_list_cb,
+                                     part_add_cb, part_get_cb, grp_size_get_cb)
+        new_part_wiz.open()
+
+    def _up_cb(self, obj, emission, source):
+        if self._edit_grp.part._part:
+            self._edit_grp.part._part.restack_above()
+            self._edit_grp._parts_reload_cb(self, None)
+
+    def _down_cb(self, obj, emission, source):
+        if self._edit_grp.part._part:
+            self._edit_grp.part._part.restack_below()
+            self._edit_grp._parts_reload_cb(self, None)
+
+    def _remove_cb(self, obj, emission, source):
+        for i in self.selected:
+            self._edit_grp.part_del(i[0])
+
+
 class ExternalSelector(elementary.Box):
-    def __init__(self, parent, type_cb):
+    def __init__(self, parent, canvas, type_cb):
         elementary.Box.__init__(self, parent)
         self.horizontal_set(True)
         self.size_hint_weight_set(evas.EVAS_HINT_EXPAND,
@@ -36,7 +153,7 @@ class ExternalSelector(elementary.Box):
 
         self._module = ""
         self._type = ""
-        self._parent = parent
+        self._canvas = canvas
 
         self._type_selected_cb = type_cb
 
@@ -113,12 +230,12 @@ class ExternalSelector(elementary.Box):
         if list:
             name, label, type = list[0]
 
-            ico = type.icon_add(self._parent._parent.e._canvas)
+            ico = type.icon_add(self._canvas)
 
             self._types.item_append(label, ico, None, self._type_select,
                                     name).selected_set(False)
         for (name, label, type) in list[1:]:
-            ico = type.icon_add(self._parent._parent.e._canvas)
+            ico = type.icon_add(self._canvas)
             self._types.item_append(label, ico, None, self._type_select, name)
 
         self._types.go()
@@ -163,15 +280,21 @@ class TypesList(elementary.List):
 
 
 class NewPartWizard(Wizard):
-    def __init__(self, parent, parts_list_cb=None, new_part_cb=None):
-        # TODO: to be used on the future (see next FIXME tag)
-        # if not new_part_cb:
-        #     raise TypeError("You must set a callback for part addition on" \
-        #                     " NewPartWizard objects.")
-        # self._new_part_cb = new_part_cb
+    def __init__(self, parent, canvas=None, parts_list_cb=None,
+                 part_add_cb=None, part_get_cb=None, grp_size_get_cb=None):
+        if not canvas or not parts_list_cb or not part_add_cb or \
+                not part_get_cb or not grp_size_get_cb:
+            raise TypeError("You must set a canvas object and callbacks for"
+                            " parts {retrieval,addition} and group size"
+                            " retrieval on NewPartWizard objects.")
+        self._canvas = canvas
+        self._parts_list_cb = parts_list_cb
+        self._part_add_cb = part_add_cb
+        self._part_get_cb = part_get_cb
+        self._grp_size_get_cb = grp_size_get_cb
 
         Wizard.__init__(self, parent)
-        self._parts_list_cb = parts_list_cb
+        self._parent = parent
         self._type = None
 
         self.page_add("default", "New Part",
@@ -188,7 +311,8 @@ class NewPartWizard(Wizard):
         self.content_add("default", self._types_list)
         self._types_list.show()
 
-        self._ext_list = ExternalSelector(self, self._default_name_set)
+        self._ext_list = ExternalSelector(
+            self, self._canvas, self._default_name_set)
         self._ext_list.size_hint_weight_set(0.0, 0.0)
         self.content_add("default", self._ext_list)
         self._ext_list.show()
@@ -214,17 +338,36 @@ class NewPartWizard(Wizard):
         self._check_name_and_type()
 
     def _check_name_and_type(self):
-        name = self._part_name_entry.entry
-        if self._type is not None and name != "":
+        error_msg = "This part name is already used in this group"
+
+        def good():
+            self._part_name_entry.status_label = ""
             self.action_disabled_set("default", "Add", False)
-        else:
+
+        def bad():
+            self._part_name_entry.status_label = error_msg
             self.action_disabled_set("default", "Add", True)
+
+        def incomplete():
+            self._part_name_entry.status_label = ""
+            self.action_disabled_set("default", "Add", True)
+
+        name = self._part_name_entry.entry
+        if not name or not self._type:
+            incomplete()
+            return
+
+        if name in self._parts_list_cb():
+            bad()
+            return
+
+        good()
 
     def _default_name_set(self, name):
         if self._name_changed:
             return
         max = 0
-        for p in self._parent.e.parts:
+        for p in self._parts_list_cb():
             if re.match("%s\d{2,}" % name, p):
                 num = int(p[len(name):])
                 if num > max:
@@ -233,27 +376,27 @@ class NewPartWizard(Wizard):
         edje.message_signal_process()
         self._name_changed = False
 
-    # FIXME: horrible design here, won't fix it now
+    # FIXME: see if add and external_add fit together, later.
+    # Leaving it ugly, for now
     def _add(self):
         name = self._part_name_entry.entry
 
-        success = self._parent.e.part_add(name, self._type,
-                                          self._ext_list.type, signal=False)
+        success = self._part_add_cb(
+            name, self._type, self._ext_list.type)
 
         if success:
             self._part_init(name, self._type)
-            self._parent.e.event_emit("part.added", name)
             if self._type == edje.EDJE_PART_TYPE_EXTERNAL:
                 self._parent.e._edje.external_add(self._ext_list.module)
         else:
-            self.notify("Choose another name")
+            self.notify("Error adding new part.")
 
     def _part_init(self, name, type_):
-        part = self._parent.e._edje.part_get(name)
+        part = self._part_get_cb(name)
         statename = part.state_selected_get()
         state = part.state_get(statename)
 
-        w, h = self._parent.e._edje.size
+        w, h = self._grp_size_get_cb()
         state.rel1_relative_set(0.0, 0.0)
         state.rel1_offset_set(w / 4, h / 4)
         state.rel2_relative_set(0.0, 0.0)

@@ -16,10 +16,157 @@
 # License along with Editje.  If not, see
 # <http://www.gnu.org/licenses/>.
 
+import edje
+import evas
+
 from details import EditjeDetails
 from details_widget_entry import WidgetEntry
 from details_widget_combo import WidgetCombo
 from prop import Property, PropertyTable
+from floater import Wizard
+from clist import CList
+from groupselector import NameEntry
+
+
+class AnimationsList(CList):
+    def __init__(self, parent, new_anim_cb, anims_list_cb):
+        CList.__init__(self, parent)
+        self.e = parent.e
+
+        self._new_anim_cb = new_anim_cb
+        self._anims_list_cb = anims_list_cb
+
+        self._options_load()
+        self.options = True
+
+        self.e.callback_add("animations.changed", self._animations_update)
+        self.e.callback_add("animation.added", self._animation_added)
+        self.e.callback_add("animation.removed", self._animation_removed)
+
+        self.e.animation.callback_add("animation.changed", self._animation_changed)
+        self.e.animation.callback_add("animation.unselected", self._animation_changed)
+
+    def _animations_update(self, emissor, data):
+        self.clear()
+        for i in data:
+            self.add(i)
+        self.go()
+
+    def _animation_added(self, emissor, data):
+        self.add(data)
+        self.go()
+        self.open = True
+        self.select(data)
+
+    def _animation_removed(self, emissor, data):
+        self.remove(data)
+
+    def _animation_changed(self, emissor, data):
+        self.selection_clear()
+        self.select(data)
+
+    # Selection
+    def _selected_cb(self, li, it):
+        CList._selected_cb(self, li, it)
+        name = it.label_get()
+        self.e.animation.name = name
+        self._options_edje.signal_emit("remove,enable", "")
+
+    def _unselected_cb(self, li, it):
+        CList._unselected_cb(self, li, it)
+        if not self._selected:
+            self._options_edje.signal_emit("remove,disable", "")
+
+    # Options
+    def _options_load(self):
+        self._options_edje = edje.Edje(self.edje_get().evas,
+                        file=self._theme_file,
+                        group="editje/collapsable/list/options/animations")
+        self._options_edje.signal_callback_add("new",
+                                "editje/collapsable/list/options",
+                                self._new_cb)
+        self._options_edje.signal_callback_add("remove",
+                                "editje/collapsable/list/options",
+                                self._remove_cb)
+        self._options_edje.signal_emit("remove,disable", "")
+        self.content_set("options", self._options_edje)
+        self._options = False
+
+    def _new_cb(self, obj, emission, source):
+        anim_wiz = NewAnimationWizard(
+            self._parent, new_anim_cb=self._new_anim_cb,
+            anims_list_cb=self._anims_list_cb)
+        anim_wiz.open()
+
+    def _remove_cb(self, obj, emission, source):
+        for i in self.selected:
+            self.e.animation_del(i[0])
+
+
+class NewAnimationWizard(Wizard):
+    def __init__(self, parent, new_anim_cb=None, anims_list_cb=None):
+        if not new_anim_cb or not anims_list_cb:
+            raise TypeError("You must set callbacks for animations retrieval"
+                            " and creation on NewAnimationWizard objects.")
+
+        Wizard.__init__(self, parent)
+
+        self.page_add("default", "New Animation",
+                      "Name the new animation to be created.",
+                      separator=True)
+
+        self._anim_name_entry = NameEntry(
+            self, changed_cb=self._name_changed_cb,
+            weight_hints=(evas.EVAS_HINT_EXPAND, 0.0),
+            align_hints=(evas.EVAS_HINT_FILL, 0.5))
+        self.content_add("default", self._anim_name_entry)
+        self._anim_name_entry.show()
+
+        self.alternate_background_set(True)
+
+        self.action_add("default", "Cancel", self._cancel)
+        self.action_add("default", "Add", self._add)
+        self.action_disabled_set("default", "Add", True)
+
+        self._new_anim_cb = new_anim_cb
+        self._anims_list_cb = anims_list_cb
+
+    def _name_changed_cb(self, obj):
+        error_msg = "This animation name already exists in this group"
+
+        def good():
+            self._anim_name_entry.status_label = ""
+            self.action_disabled_set("default", "Add", False)
+
+        def bad():
+            self._anim_name_entry.status_label = error_msg
+            self.action_disabled_set("default", "Add", True)
+
+        def ugly():
+            self._anim_name_entry.status_label = ""
+            self.action_disabled_set("default", "Add", True)
+
+        name = self._anim_name_entry.entry
+        if not name:
+            ugly()
+            return
+
+        if name in self._anims_list_cb():
+            bad()
+            return
+
+        good()
+
+    def _add(self):
+        name = self._anim_name_entry.entry
+        success = self._new_anim_cb(name)
+        if success:
+            self.close()
+        else:
+            self.notify("Error creating new animation.")
+
+    def _cancel(self):
+        self.close()
 
 
 class AnimationDetails(EditjeDetails):

@@ -98,6 +98,14 @@ class Editable(Manager, object):
 
         return self._edje.group_add(grp_name)
 
+    def group_exists(self, grp_name):
+        if not self._edje:
+            self._edje = EdjeEdit(
+                self._canvas, file=self._swapfile.workfile,
+                group=edje.file_collection_list(self._swapfile.workfile)[0])
+
+        return self._edje.group_exist(grp_name)
+
     def group_del(self, grp_name):
         all_grps = edje.file_collection_list(self._swapfile.workfile)
         for g in all_grps:
@@ -292,12 +300,17 @@ class Editable(Manager, object):
             if signal:
                 self.event_emit("part.added", name)
             return True
+        return False
+
+    def part_get(self, part_name):
+        return self._edje.part_get(part_name)
 
     def part_del(self, name):
         if self._edje.part_del(name):
             self._modified = True
             self.event_emit("part.removed", name)
             return True
+        return False
 
     # Programs
     def _programs_init(self):

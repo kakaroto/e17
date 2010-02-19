@@ -25,18 +25,22 @@ import elementary
 
 import sysconfig
 from editable import Editable
+
+from desktop import Desktop
+from collapsable import CollapsablesBox
+
 from details_group import GroupDetails
 from details_part import PartDetails
 from details_state import PartStateDetails
-from desktop import Desktop
-from collapsable import CollapsablesBox
-from parts_list import PartsList
-from animations_list import AnimationsList
-from widgets_list import WidgetsList
-from animations import AnimationDetails
+
+from parts import PartsList
+from animations import AnimationDetails, AnimationsList
 from signals import SignalsList, SignalDetails
+
+from widgets_list import WidgetsList
 from groupselector import GroupSelectionWizard
 from filewizard import ImageSelectionWizard
+
 
 def debug_cb(obj, emission, source):
     print "%s: %s %s" % (obj, emission, source)
@@ -47,6 +51,7 @@ class Editje(elementary.Window):
         self.theme = sysconfig.theme_file_get(theme)
         elementary.theme_extension_add(self.theme)
 
+        # external modules
         for m in edje.available_modules_get():
             edje.module_load(m)
 
@@ -59,7 +64,7 @@ class Editje(elementary.Window):
         # Load Edje Theme File
         self._load_theme()
 
-        self.e = Editable(self.main_layout.edje_get().evas, swapfile)
+        self.e = Editable(self.evas, swapfile)
 
         # Setup Windows Parts
         self._toolbar_static_init()
@@ -126,9 +131,13 @@ class Editje(elementary.Window):
             selected_set_cb=self._group_wizard_selection_set_cb,
             selected_get_cb=self._group_wizard_selection_get_cb,
             new_grp_cb=self._group_wizard_new_group_cb,
+            check_grp_cb=self._group_wizard_check_group_cb,
             del_grp_cb=self._group_wizard_del_group_cb)
         grp_wiz.file_set(self.e.workfile)
         grp_wiz.open()
+
+    def _group_wizard_check_group_cb(self, grp_name):
+        return self.e.group_exists(grp_name)
 
     def _group_wizard_new_group_cb(self, grp_name):
         return self.e.group_add(grp_name)
@@ -216,6 +225,7 @@ class Editje(elementary.Window):
             selected_set_cb=self._group_wizard_selection_set_cb,
             selected_get_cb=self._group_wizard_selection_get_cb,
             new_grp_cb=self._group_wizard_new_group_cb,
+            check_grp_cb=self._group_wizard_check_group_cb,
             del_grp_cb=self._group_wizard_del_group_cb)
 
         grp_wiz.file_set(self.e.workfile)
@@ -417,7 +427,7 @@ class Editje(elementary.Window):
                                     evas.EVAS_HINT_FILL)
         mainbar.show()
 
-        list = PartsList(self)
+        list = PartsList(self, self.evas, self.e)
         list.title = "Parts"
         list.options = True
         list.open = True
@@ -485,14 +495,20 @@ class Editje(elementary.Window):
                                     evas.EVAS_HINT_FILL)
         mainbar.show()
 
-        list = AnimationsList(self)
+        def new_anim_cb(name):
+            return self.e.animation_add(name)
+
+        def anims_list_cb():
+            return self.e.animations
+
+        list = AnimationsList(self, new_anim_cb, anims_list_cb)
         list.options = True
         list.title = "Animations"
         list.open = True
         mainbar.pack_end(list)
         list.show()
 
-        list = PartsList(self)
+        list = PartsList(self, self.evas, self.e)
         list.title = "Parts"
         list.open = True
         mainbar.pack_end(list)
@@ -544,7 +560,10 @@ class Editje(elementary.Window):
         def new_sig_cb(name, type_):
             return self.e.signal_add(name, type_)
 
-        list = SignalsList(self, new_sig_cb)
+        def sigs_list_cb():
+            return self.e.signals
+
+        list = SignalsList(self, new_sig_cb, sigs_list_cb)
         list.title = "Signals"
         list.open = True
         list.options = True

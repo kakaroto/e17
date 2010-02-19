@@ -2,22 +2,23 @@ MAINTAINERCLEANFILES = Makefile.in sysconfig.py
 
 # ls -1 *.py | sed -e 's/\(.*\)/\1 \\/g'
 pkgpython_PYTHON = \
+__init__.py \
 actions_box.py \
-animations_list.py \
 animations.py \
 clist.py \
 collapsable.py \
 colorpicker.py \
 controller.py \
+desktop.py \
 desktop_handler.py \
 desktop_part_handlers.py \
 desktop_part_listener.py \
 desktop_parts_manager.py \
-desktop.py \
+details.py \
 details_group.py \
 details_part.py \
-details.py \
 details_state.py \
+details_widget.py \
 details_widget_actionslist.py \
 details_widget_boolean.py \
 details_widget_button.py \
@@ -31,11 +32,10 @@ details_widget_partlist.py \
 details_widget_signals.py \
 details_widget_source.py \
 details_widget_states.py \
-details_widget.py \
+editable.py \
 editable_animation.py \
 editable_part.py \
 editable_program.py \
-editable.py \
 editable_state.py \
 editje.py \
 error_notify.py \
@@ -44,14 +44,12 @@ fileselector.py \
 filewizard.py \
 floater.py \
 groupselector.py \
-__init__.py \
-newpart.py \
 openfile.py \
-parts_list.py \
-popups.py \
+parts.py \
 popup_win.py \
+popups.py \
 prop.py \
 signals.py \
-sysconfig.py \
 swapfile.py \
+sysconfig.py \
 widgets_list.py

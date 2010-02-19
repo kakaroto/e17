@@ -9,12 +9,11 @@
 #
 # Editje is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 # GNU Lesser General Public License for more details.
 #
 # You should have received a copy of the GNU Lesser General Public
-# License along with Editje.  If not, see
-# <http://www.gnu.org/licenses/>.
+# License along with Editje. If not, see <http://www.gnu.org/licenses/>.
 
 import evas
 import ecore
@@ -102,6 +101,7 @@ class GroupsList(elementary.List):
 
 # TODO: maybe this widget is generic enough to be moved to a general
 # widgets definition file
+# FIXME: the status label will be visually refactored
 class NameEntry(elementary.Box):
     default_weight_hints = (evas.EVAS_HINT_EXPAND, evas.EVAS_HINT_EXPAND)
     default_align_hints = (evas.EVAS_HINT_FILL, evas.EVAS_HINT_FILL)
@@ -109,7 +109,6 @@ class NameEntry(elementary.Box):
     def __init__(self, parent, changed_cb=None,
                  weight_hints=(), align_hints=()):
         elementary.Box.__init__(self, parent)
-        self.horizontal_set(True)
 
         if weight_hints:
             self.size_hint_weight_set(*weight_hints)
@@ -120,10 +119,22 @@ class NameEntry(elementary.Box):
         else:
             self.size_hint_align_set(*self.default_align_hints)
 
-        label = elementary.Label(parent)
-        label.label_set("Name: ")
-        self.pack_end(label)
-        label.show()
+        self._entry_bx = elementary.Box(parent)
+        self._entry_bx.horizontal_set(True)
+        self._entry_bx.size_hint_weight_set(
+            evas.EVAS_HINT_EXPAND, evas.EVAS_HINT_EXPAND)
+        self._entry_bx.size_hint_align_set(
+            evas.EVAS_HINT_FILL, evas.EVAS_HINT_FILL)
+        self._entry_bx.show()
+
+        entry_lb = elementary.Label(parent)
+        entry_lb.label_set("Name: ")
+        entry_lb.show()
+        self._entry_bx.pack_end(entry_lb)
+
+        self._status_lb = elementary.Label(parent)
+        self._status_lb.label_set("")
+        self._status_lb.show()
 
         scroller = elementary.Scroller(parent)
         scroller.size_hint_weight_set(evas.EVAS_HINT_EXPAND, 0.0)
@@ -132,7 +143,7 @@ class NameEntry(elementary.Box):
         scroller.policy_set(elementary.ELM_SCROLLER_POLICY_OFF,
                             elementary.ELM_SCROLLER_POLICY_OFF)
         scroller.bounce_set(False, False)
-        self.pack_end(scroller)
+        self._entry_bx.pack_end(scroller)
         scroller.show()
 
         self._name = elementary.Entry(parent)
@@ -148,6 +159,9 @@ class NameEntry(elementary.Box):
         self._name.show()
         self._name.focus()
 
+        self.pack_end(self._entry_bx)
+        self.pack_end(self._status_lb)
+
     def _entry_set(self, value):
         self._name.entry_set(value)
 
@@ -156,6 +170,15 @@ class NameEntry(elementary.Box):
         return entry
 
     entry = property(fset=_entry_set, fget=_entry_get)
+
+    def _status_label_set(self, value):
+        self._status_lb.label_set(value)
+
+    def _status_label_get(self):
+        status_label = self._status_lb.label_get()
+        return status_label
+
+    status_label = property(fset=_status_label_set, fget=_status_label_get)
 
 
 class PreviewFrame(elementary.Scroller):
@@ -219,15 +242,17 @@ class PreviewFrame(elementary.Scroller):
 
 class GroupSelectionWizard(Wizard):
     def __init__(self, parent, selected_group=None, selected_set_cb=None,
-                 selected_get_cb=None, new_grp_cb=None, del_grp_cb=None):
-        if not selected_set_cb or not selected_get_cb or not new_grp_cb or not \
-                del_grp_cb:
+                 selected_get_cb=None, new_grp_cb=None, check_grp_cb=None,
+                 del_grp_cb=None):
+        if not selected_set_cb or not selected_get_cb or not new_grp_cb or \
+                not check_grp_cb or not del_grp_cb:
             raise TypeError("You must set callbacks for group" \
-                            " {selection,addition,deletion} on" \
+                            " {selection,addition,checking,deletion} on" \
                             " GroupSelectionWizard objects.")
         Wizard.__init__(self, parent)
         self._select_set_cb = selected_set_cb
         self._select_get_cb = selected_get_cb
+        self._check_group_cb = check_grp_cb
         self._delete_cb = del_grp_cb
         self._selected_group = selected_group
 
@@ -245,8 +270,7 @@ class GroupSelectionWizard(Wizard):
 
             success = cb_func(name)
             if not success:
-                self.notify("There is a group with this name in the "
-                            "file, already. Please choose another name.")
+                self.notify("Error creating new group.")
                 return
 
             self._group_selected(name)
@@ -323,12 +347,31 @@ class GroupSelectionWizard(Wizard):
         self._groups_list.file = file
 
     def _name_changed_cb(self, obj):
-        self._name_chaged = True
         self._check_name()
 
     def _check_name(self):
-        name = self._grp_name_entry.entry
-        if name:
+        error_msg = "This group name already exists in the file"
+
+        def good():
+            self._grp_name_entry.status_label = ""
             self.action_disabled_set("new_group", "Create", False)
-        else:
+
+        def bad():
+            self._grp_name_entry.status_label = error_msg
             self.action_disabled_set("new_group", "Create", True)
+
+        def ugly():
+            self._grp_name_entry.status_label = ""
+            self.action_disabled_set("new_group", "Create", True)
+
+        name = self._grp_name_entry.entry
+        if not name:
+            ugly()
+            return
+
+        exists = self._check_group_cb(name)
+        if exists:
+            bad()
+            return
+
+        good()

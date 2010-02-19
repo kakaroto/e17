@@ -21,7 +21,6 @@ from elementary import InnerWindow, Layout, Button, Box
 
 import sysconfig
 from floater import Wizard
-from groupselector import NameEntry
 
 
 class PopUp(InnerWindow):
@@ -99,45 +98,3 @@ class ConfirmPopUp(PopUp):
 
     def close(self):
         PopUp.close(self)
-
-
-class NewAnimationWizard(Wizard):
-    def __init__(self, parent):
-        Wizard.__init__(self, parent)
-
-        self.page_add("default", "New Animation",
-                      "Name the new animation to be created.",
-                      separator=True)
-
-        self._anim_name_entry = NameEntry(
-            self, changed_cb=self._name_changed_cb,
-            weight_hints=(evas.EVAS_HINT_EXPAND, 0.0),
-            align_hints=(evas.EVAS_HINT_FILL, 0.5))
-        self.content_add("default", self._anim_name_entry)
-        self._anim_name_entry.show()
-
-        self.alternate_background_set(True)
-
-        self.action_add("default", "Cancel", self._cancel)
-        self.action_add("default", "Add", self._add)
-        self.action_disabled_set("default", "Add", True)
-
-    def _name_changed_cb(self, obj):
-        name = self._anim_name_entry.entry
-        if name != "":
-            self.action_disabled_set("default", "Add", False)
-        else:
-            self.action_disabled_set("default", "Add", True)
-
-    # FIXME: more horrible design, here, fix it later
-    def _add(self):
-        name = self._anim_name_entry.entry
-        success = self._parent.e.animation_add(name)
-        if success:
-            self.close()
-        else:
-            self.notify("There is an animation with this name in the "
-                        "group, already. Please choose another name.")
-
-    def _cancel(self):
-        self.close()
