@@ -7,5 +7,5 @@ MAINTAINERCLEANFILES = Makefile.in aclocal.m4 config.guess \
 
 EXTRA_DIST = AUTHORS COPYING COPYING-PLAIN
 
-filesdir = $(datadir)/elm_fullscreen/
+filesdir = $(datadir)/elm_quickpanel/
 files_DATA = AUTHORS COPYING
