@@ -117,6 +117,16 @@
  */
 
 static int _log_dom = -1;
+#undef DBG
+#undef INF
+#undef WRN
+#undef ERR
+#undef CRIT
+#define DBG(...) EINA_LOG_DOM_DBG(_log_dom, __VA_ARGS__)
+#define INF(...) EINA_LOG_DOM_INFO(_log_dom, __VA_ARGS__)
+#define WRN(...) EINA_LOG_DOM_ERR(_log_dom, __VA_ARGS__)
+#define ERR(...) EINA_LOG_DOM_ERR(_log_dom, __VA_ARGS__)
+#define CRIT(...) EINA_LOG_DOM_CRIT(_log_dom, __VA_ARGS__)
 
 /**
  * Shared strings, retrieve them with stringshare{ref|add}
@@ -510,7 +520,9 @@ eupnp_ssdp_init(void)
 {
    if ((_log_dom = eina_log_domain_register("Eupnp.SSDP", EINA_COLOR_BLUE)) < 0)
      {
-	ERROR("Failed to create logging domain for ssdp module.");
+	EINA_LOG_DOM_ERR
+	  (EUPNP_LOGGING_DOM_GLOBAL,
+	   "Failed to create logging domain for ssdp module.");
 	return EINA_FALSE;
      }
 
@@ -588,7 +600,7 @@ eupnp_ssdp_client_new(void)
 EAPI Eina_Bool
 eupnp_ssdp_client_start(Eupnp_SSDP_Client *c)
 {
-   CHECK_NULL_RET_VAL(c, EINA_FALSE);
+   CHECK_NULL_RET(c, EINA_FALSE);
 
    if (c->socket_handler)
      {
@@ -609,7 +621,7 @@ eupnp_ssdp_client_start(Eupnp_SSDP_Client *c)
 EAPI Eina_Bool
 eupnp_ssdp_client_stop(Eupnp_SSDP_Client *c)
 {
-   CHECK_NULL_RET_VAL(c, EINA_FALSE);
+   CHECK_NULL_RET(c, EINA_FALSE);
 
    if (!c->socket_handler)
      {

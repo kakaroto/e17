@@ -51,6 +51,16 @@
      }
 
 static int _log_dom = -1;
+#undef DBG
+#undef INF
+#undef WRN
+#undef ERR
+#undef CRIT
+#define DBG(...) EINA_LOG_DOM_DBG(_log_dom, __VA_ARGS__)
+#define INF(...) EINA_LOG_DOM_INFO(_log_dom, __VA_ARGS__)
+#define WRN(...) EINA_LOG_DOM_ERR(_log_dom, __VA_ARGS__)
+#define ERR(...) EINA_LOG_DOM_ERR(_log_dom, __VA_ARGS__)
+#define CRIT(...) EINA_LOG_DOM_CRIT(_log_dom, __VA_ARGS__)
 
 typedef struct _Eupnp_Device_Parser_State Eupnp_Device_Parser_State;
 typedef struct _Eupnp_Device_Parser Eupnp_Device_Parser;
@@ -703,7 +713,9 @@ eupnp_device_parser_init(void)
 
    if ((_log_dom = eina_log_domain_register("Eupnp.DeviceParser", EINA_COLOR_BLUE)) < 0)
      {
-	ERROR("Failed to create logging domain for device parser module.");
+	EINA_LOG_DOM_ERR
+	  (EUPNP_LOGGING_DOM_GLOBAL,
+	   "Failed to create logging domain for device parser module.");
 	goto log_dom_error;
      }
 

@@ -58,7 +58,7 @@ eupnp_http_datagram_line_parse(const char *msg, const char **headers_start, cons
 
    if (!end)
      {
-	ERROR("Could not parse DATAGRAM.");
+	ERR("Could not parse DATAGRAM.");
 	return EINA_FALSE;
      }
 
@@ -70,7 +70,7 @@ eupnp_http_datagram_line_parse(const char *msg, const char **headers_start, cons
 
    if (!end)
      {
-	ERROR("Could not parse HTTP.");
+	ERR("Could not parse HTTP.");
 	return EINA_FALSE;
      }
 
@@ -80,7 +80,7 @@ eupnp_http_datagram_line_parse(const char *msg, const char **headers_start, cons
 
    if (!end)
      {
-	ERROR("Could not parse HTTP request.");
+	ERR("Could not parse HTTP request.");
 	return EINA_FALSE;
      }
 
@@ -124,7 +124,7 @@ eupnp_http_datagram_header_next_parse(const char **line_start, const char **hkey
 
    if (**hvalue == '\r' && *(*hvalue+1) == '\n')
      {
-	DEBUG("Empty header value!");
+	DBG("Empty header value!");
 	*line_start = *hvalue + 2;
 	*hvalue_len = 0;
 	return EINA_TRUE;
@@ -135,7 +135,7 @@ eupnp_http_datagram_header_next_parse(const char **line_start, const char **hkey
 
    if (**hvalue == '\r' && *(*hvalue+1) == '\n')
      {
-	DEBUG("Empty header value!");
+	DBG("Empty header value!");
 	*line_start = *hvalue + 2;
 	*hvalue_len = 0;
 	return EINA_TRUE;
@@ -148,7 +148,7 @@ eupnp_http_datagram_header_next_parse(const char **line_start, const char **hkey
 
    if (*(end+2) != '\n')
      {
-	DEBUG("Header parsing error: character after carrier is not \\n Possibly headers end");
+	DBG("Header parsing error: character after carrier is not \\n Possibly headers end");
 	return EINA_FALSE;
      }
 
@@ -196,7 +196,7 @@ eupnp_http_header_new(const char *key, int key_len, const char *value, int value
    if (!h)
      {
 	eina_error_set(EINA_ERROR_OUT_OF_MEMORY);
-	ERROR("header alloc error.");
+	ERR("header alloc error.");
 	return NULL;
      }
 
@@ -251,8 +251,8 @@ eupnp_http_header_key_lower(Eupnp_HTTP_Header *h)
 const char *
 eupnp_http_header_get(const Eina_Array *headers, const char *key)
 {
-   CHECK_NULL_RET_VAL(headers, NULL);
-   CHECK_NULL_RET_VAL(key, NULL);
+   CHECK_NULL_RET(headers, NULL);
+   CHECK_NULL_RET(key, NULL);
 
    Eina_Array_Iterator it;
    int i;
@@ -291,7 +291,7 @@ eupnp_http_request_new(const char *method, int method_len, const char *uri, int 
    if (!h)
      {
 	eina_error_set(EINA_ERROR_OUT_OF_MEMORY);
-	ERROR("Could not create HTTP message.");
+	ERR("Could not create HTTP message.");
 	return NULL;
      }
 
@@ -299,7 +299,7 @@ eupnp_http_request_new(const char *method, int method_len, const char *uri, int 
 
    if (!h->headers)
      {
-	ERROR("Could not allocate memory for HTTP headers table.");
+	ERR("Could not allocate memory for HTTP headers table.");
 	goto req_headers_error;
      }
 
@@ -307,7 +307,7 @@ eupnp_http_request_new(const char *method, int method_len, const char *uri, int 
 
    if (!h->method)
      {
-	ERROR("Could not stringshare HTTP request method.");
+	ERR("Could not stringshare HTTP request method.");
 	goto req_method_error;
      }
 
@@ -315,7 +315,7 @@ eupnp_http_request_new(const char *method, int method_len, const char *uri, int 
 
    if (!h->http_version)
      {
-	ERROR("Could not stringshare HTTP request version.");
+	ERR("Could not stringshare HTTP request version.");
 	goto req_httpver_error;
      }
 
@@ -323,7 +323,7 @@ eupnp_http_request_new(const char *method, int method_len, const char *uri, int 
 
    if (!h->uri)
      {
-	ERROR("Could not stringshare HTTP request URI.");
+	ERR("Could not stringshare HTTP request URI.");
 	goto req_uri_error;
      }
 
@@ -398,13 +398,13 @@ eupnp_http_request_dump(const Eupnp_HTTP_Request *r)
 {
    CHECK_NULL_RET(r);
 
-   DEBUG("Dumping HTTP request");
+   DBG("Dumping HTTP request");
    if (r->method)
-      DEBUG("* Method: %s", r->method);
+      DBG("* Method: %s", r->method);
    if (r->uri)
-      DEBUG("* URI: %s", r->uri);
+      DBG("* URI: %s", r->uri);
    if (r->http_version)
-      DEBUG("* HTTP Version: %s", r->http_version);
+     DBG("* HTTP Version: %s", r->http_version);
 
    if (r->headers)
      {
@@ -413,11 +413,11 @@ eupnp_http_request_dump(const Eupnp_HTTP_Request *r)
 	int i;
 
 	EINA_ARRAY_ITER_NEXT(r->headers, i, h, it)
-	   DEBUG("** %s:\t%s", h->key, h->value);
+	   DBG("** %s:\t%s", h->key, h->value);
      }
 
    if (r->payload)
-      DEBUG("* Payload: %s", r->payload);
+      DBG("* Payload: %s", r->payload);
 
 }
 
@@ -449,13 +449,13 @@ eupnp_http_request_header_add(Eupnp_HTTP_Request *r, const char *key, int key_le
    if (!h)
      {
 	eina_error_set(EINA_ERROR_OUT_OF_MEMORY);
-	ERROR("header alloc error.");
+	ERR("header alloc error.");
 	return EINA_FALSE;
      }
 
    if (!eina_array_push(r->headers, h))
      {
-	WARN("incomplete headers");
+	WRN("incomplete headers");
 	eupnp_http_header_free(h);
 	return EINA_FALSE;
      }
@@ -477,9 +477,9 @@ eupnp_http_request_header_add(Eupnp_HTTP_Request *r, const char *key, int key_le
 const char *
 eupnp_http_request_header_get(Eupnp_HTTP_Request *r, const char *key)
 {
-   CHECK_NULL_RET_VAL(r, NULL);
-   CHECK_NULL_RET_VAL(r->headers, NULL);
-   CHECK_NULL_RET_VAL(key, NULL);
+   CHECK_NULL_RET(r, NULL);
+   CHECK_NULL_RET(r->headers, NULL);
+   CHECK_NULL_RET(key, NULL);
 
    return eupnp_http_header_get(r->headers, key);
 }
@@ -510,7 +510,7 @@ eupnp_http_response_new(const char *httpver, int httpver_len, const char *status
    if (!r)
      {
 	eina_error_set(EINA_ERROR_OUT_OF_MEMORY);
-	ERROR("Could not create HTTP response.");
+	ERR("Could not create HTTP response.");
 	return NULL;
      }
 
@@ -518,7 +518,7 @@ eupnp_http_response_new(const char *httpver, int httpver_len, const char *status
 
    if (!r->headers)
      {
-	ERROR("Could not allocate memory for HTTP headers.");
+	ERR("Could not allocate memory for HTTP headers.");
 	goto resp_headers_error;
      }
 
@@ -526,7 +526,7 @@ eupnp_http_response_new(const char *httpver, int httpver_len, const char *status
 
    if (!r->http_version)
      {
-	ERROR("Could not stringshare http response version.");
+	ERR("Could not stringshare http response version.");
 	goto resp_httpver_error;
      }
 
@@ -536,7 +536,7 @@ eupnp_http_response_new(const char *httpver, int httpver_len, const char *status
 
    if (!r->reason_phrase)
      {
-	ERROR("Could not stringshare http response phrase.");
+	ERR("Could not stringshare http response phrase.");
 	goto resp_reason_error;
      }
 
@@ -605,13 +605,13 @@ eupnp_http_response_dump(Eupnp_HTTP_Response *r)
 {
    CHECK_NULL_RET(r);
 
-   DEBUG("Dumping HTTP response");
+   DBG("Dumping HTTP response");
    if (r->http_version)
-      DEBUG("* HTTP Version: %s", r->http_version);
+      DBG("* HTTP Version: %s", r->http_version);
    if (r->status_code)
-      DEBUG("* Status Code: %d", r->status_code);
+      DBG("* Status Code: %d", r->status_code);
    if (r->reason_phrase)
-      DEBUG("* Reason Phrase: %s", r->reason_phrase);
+      DBG("* Reason Phrase: %s", r->reason_phrase);
 
    if (r->headers)
      {
@@ -620,7 +620,7 @@ eupnp_http_response_dump(Eupnp_HTTP_Response *r)
 	int i;
 
 	EINA_ARRAY_ITER_NEXT(r->headers, i, h, it)
-	   DEBUG("** %s: %s", h->key, h->value);
+	   DBG("** %s: %s", h->key, h->value);
      }
 }
 
@@ -652,13 +652,13 @@ eupnp_http_response_header_add(Eupnp_HTTP_Response *r, const char *key, int key_
    if (!h)
      {
 	eina_error_set(EINA_ERROR_OUT_OF_MEMORY);
-	ERROR("header alloc error.");
+	ERR("header alloc error.");
 	return EINA_FALSE;
      }
 
    if (!eina_array_push(r->headers, h))
      {
-	WARN("incomplete headers");
+	WRN("incomplete headers");
 	eupnp_http_header_free(h);
 	return EINA_FALSE;
      }
@@ -680,9 +680,9 @@ eupnp_http_response_header_add(Eupnp_HTTP_Response *r, const char *key, int key_
 const char *
 eupnp_http_response_header_get(Eupnp_HTTP_Response *r, const char *key)
 {
-   CHECK_NULL_RET_VAL(r, NULL);
-   CHECK_NULL_RET_VAL(r->headers, NULL);
-   CHECK_NULL_RET_VAL(key, NULL);
+   CHECK_NULL_RET(r, NULL);
+   CHECK_NULL_RET(r->headers, NULL);
+   CHECK_NULL_RET(key, NULL);
 
    return eupnp_http_header_get(r->headers, key);
 }
@@ -734,7 +734,7 @@ eupnp_http_message_is_request(const char *msg)
 Eupnp_HTTP_Request *
 eupnp_http_request_parse(const char *msg, void *resource, void (*resource_free)(void *resource))
 {
-   CHECK_NULL_RET_VAL(msg, NULL);
+   CHECK_NULL_RET(msg, NULL);
 
    Eupnp_HTTP_Request *r;
    const char *method;
@@ -748,7 +748,7 @@ eupnp_http_request_parse(const char *msg, void *resource, void (*resource_free)(
 
    if (!eupnp_http_datagram_line_parse(msg, &headers_start, &method, &method_len, &uri, &uri_len, &http_version, &httpver_len))
      {
-	ERROR("Could not parse request line.");
+	ERR("Could not parse request line.");
 	return NULL;
      }
 
@@ -758,7 +758,7 @@ eupnp_http_request_parse(const char *msg, void *resource, void (*resource_free)(
 
    if (!r)
      {
-	ERROR("Could not create new HTTP request.");
+	ERR("Could not create new HTTP request.");
 	return NULL;
      }
 
@@ -770,7 +770,7 @@ eupnp_http_request_parse(const char *msg, void *resource, void (*resource_free)(
 	  {
 	     if (!eupnp_http_request_header_add(r, hkey_begin, hk_len, hv_begin, hv_len))
 	       {
-		  ERROR("Could not add header to the request.");
+		  ERR("Could not add header to the request.");
 		  break;
 	       }
 
@@ -813,9 +813,9 @@ eupnp_http_request_parse(const char *msg, void *resource, void (*resource_free)(
 Eupnp_HTTP_Response *
 eupnp_http_response_parse(const char *msg, void *resource, void (*resource_free)(void *resource))
 {
-   CHECK_NULL_RET_VAL(msg, NULL);
-   CHECK_NULL_RET_VAL(resource, NULL);
-   CHECK_NULL_RET_VAL(resource_free, NULL);
+   CHECK_NULL_RET(msg, NULL);
+   CHECK_NULL_RET(resource, NULL);
+   CHECK_NULL_RET(resource_free, NULL);
 
    Eupnp_HTTP_Response *r;
    const char *reason_phrase;
@@ -831,7 +831,7 @@ eupnp_http_response_parse(const char *msg, void *resource, void (*resource_free)
 		(msg, &headers_start, &http_version, &httpver_len, &status_code,
 		 &sc_len, &reason_phrase, &rp_len))
      {
-	ERROR("Could not parse response line.");
+	ERR("Could not parse response line.");
 	return NULL;
      }
 
@@ -841,7 +841,7 @@ eupnp_http_response_parse(const char *msg, void *resource, void (*resource_free)
 
    if (!r)
      {
-	ERROR("Could not create new HTTP response.");
+	ERR("Could not create new HTTP response.");
 	return NULL;
      }
 
@@ -853,7 +853,7 @@ eupnp_http_response_parse(const char *msg, void *resource, void (*resource_free)
 	  {
 	     if (!eupnp_http_response_header_add(r, hkey_begin, hk_len, hv_begin, hv_len))
 	       {
-		  ERROR("Could not add header to the response.");
+		  ERR("Could not add header to the response.");
 		  break;
 	       }
 	  }

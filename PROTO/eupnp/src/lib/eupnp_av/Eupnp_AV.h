@@ -24,6 +24,32 @@
 
 #include <Eina.h>
 
+#ifdef EAPI
+# undef EAPI
+#endif
+
+#ifdef _WIN32
+# ifdef E_UPNP_BUILD
+#  ifdef DLL_EXPORT
+#   define EAPI __declspec(dllexport)
+#  else
+#   define EAPI
+#  endif /* ! DLL_EXPORT */
+# else
+#  define EAPI __declspec(dllimport)
+# endif /* ! E_UPNP_BUILD */
+#else
+# ifdef __GNUC__
+#  if __GNUC__ >= 4
+#   define EAPI __attribute__ ((visibility("default")))
+#  else
+#   define EAPI
+#  endif
+# else
+#  define EAPI
+# endif
+#endif /* ! _WIN32 */
+
 typedef struct _DIDL_Resource  DIDL_Resource;
 typedef struct _DIDL_Object    DIDL_Object;
 typedef struct _DIDL_Container DIDL_Container;
@@ -79,16 +105,16 @@ struct _DIDL_Container {
    Eina_Bool searchable;
 };
 
-Eina_Bool eupnp_av_init(void);
-Eina_Bool eupnp_av_shutdown(void);
+EAPI Eina_Bool eupnp_av_init(void);
+EAPI Eina_Bool eupnp_av_shutdown(void);
 
-Eina_Bool eupnp_av_didl_parse(const char *didl_xml,
-			      int didl_xml_len,
-			      Eupnp_AV_DIDL_Item_Parsed_Cb item_cb,
-			      Eupnp_AV_DIDL_Container_Parsed_Cb container_cb,
-			      void *data);
+EAPI Eina_Bool eupnp_av_didl_parse(const char *didl_xml,
+				   int didl_xml_len,
+				   Eupnp_AV_DIDL_Item_Parsed_Cb item_cb,
+				   Eupnp_AV_DIDL_Container_Parsed_Cb container_cb,
+				   void *data);
 
-const char *eupnp_av_didl_object_title_get(DIDL_Object *obj);
-const char *eupnp_av_didl_object_id_get(DIDL_Object *obj);
+EAPI const char *eupnp_av_didl_object_title_get(DIDL_Object *obj);
+EAPI const char *eupnp_av_didl_object_id_get(DIDL_Object *obj);
 
 #endif

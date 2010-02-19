@@ -64,7 +64,7 @@ eupnp_udp_datagram_new(const char *host, int port, char *data, size_t data_len)
    if (!datagram)
      {
 	eina_error_set(EINA_ERROR_OUT_OF_MEMORY);
-	ERROR("datagram alloc failed.");
+	ERR("datagram alloc failed.");
 	return NULL;
      }
 
@@ -76,7 +76,7 @@ eupnp_udp_datagram_new(const char *host, int port, char *data, size_t data_len)
 	if (!datagram->data)
 	  {
 	     eina_error_set(EINA_ERROR_OUT_OF_MEMORY);
-	     ERROR("could not allocate buffer for new datagram.");
+	     ERR("could not allocate buffer for new datagram.");
 	     return NULL;
 	  }
      }
@@ -114,27 +114,27 @@ eupnp_udp_transport_prepare(Eupnp_UDP_Transport *s)
 
    if (fcntl(s->socket, F_SETFL, O_NONBLOCK) < 0)
      {
-	ERROR(" Error setting nonblocking option on socket. %s",
+	ERR("Error setting nonblocking option on socket. %s",
 	      strerror(errno));
 	return EINA_FALSE;
      }
 
    if (bind(s->socket, (struct sockaddr *) &s->in_addr, s->in_addr_len) < 0)
      {
-	ERROR("Error binding. %s", strerror(errno));
+	ERR("Error binding. %s", strerror(errno));
 	return EINA_FALSE;
      }
 
    if (setsockopt(s->socket, SOL_SOCKET, SO_REUSEADDR, &reuse_addr, sizeof(int)) < 0)
      {
-	ERROR("setsockopt SO_REUSE_ADDR failed. %s", strerror(errno));
+	ERR("setsockopt SO_REUSE_ADDR failed. %s", strerror(errno));
 	return EINA_FALSE;
      }
 
    if (setsockopt(s->socket, IPPROTO_IP, IP_ADD_MEMBERSHIP,&s->mreq,
 		   sizeof(struct ip_mreq)) < 0)
      {
-	ERROR("setsockopt IP_ADD_MEMBERSHIP failed. %s", strerror(errno));
+	ERR("setsockopt IP_ADD_MEMBERSHIP failed. %s", strerror(errno));
 	return EINA_FALSE;
      }
 
@@ -165,7 +165,7 @@ eupnp_udp_transport_new(const char *addr, int port, const char *iface_addr)
 
    if (s->socket < 0)
      {
-	ERROR("Error creating socket. %s", strerror(errno));
+	ERR("Error creating socket. %s", strerror(errno));
 	free(s);
 	return NULL;
      }
@@ -180,7 +180,7 @@ eupnp_udp_transport_new(const char *addr, int port, const char *iface_addr)
 
    if (!eupnp_udp_transport_prepare(s))
      {
-	ERROR("Could not prepare socket.");
+	ERR("Could not prepare socket.");
 	free(s);
 	return NULL;
      }
@@ -224,11 +224,11 @@ eupnp_udp_transport_recv(Eupnp_UDP_Transport *s)
    int data_len;
 
    if (!ioctl(s->socket, FIONREAD, &data_len))
-      DEBUG("Bytes available for reading: %d", data_len);
+      DBG("Bytes available for reading: %d", data_len);
    else
      {
 	// Don't know how many bytes are available, expect EUPNP_UDP_PACKET_LEN.
-	DEBUG("could not determine how many bytes available.");
+	DBG("could not determine how many bytes available.");
 	data_len = EUPNP_UDP_PACKET_LEN;
      }
 
@@ -256,11 +256,11 @@ eupnp_udp_transport_recvfrom(Eupnp_UDP_Transport *s)
    int data_len;
 
    if (!ioctl(s->socket, FIONREAD, &data_len))
-      DEBUG("ioctl says %d bytes available for reading", data_len);
+      DBG("ioctl says %d bytes available for reading", data_len);
    else
      {
 	// Don't know how many bytes are available, expect EUPNP_UDP_PACKET_LEN.
-	DEBUG("could not determine how many bytes available.");
+	DBG("could not determine how many bytes available.");
 	data_len = EUPNP_UDP_PACKET_LEN;
      }
 
@@ -297,7 +297,7 @@ eupnp_udp_transport_sendto(Eupnp_UDP_Transport *s, const void *buffer, const cha
 
    if (inet_aton(addr, &(s->in_addr.sin_addr)) == 0)
      {
-	ERROR("could not convert address. %s", strerror(errno));
+	ERR("could not convert address. %s", strerror(errno));
 	return -1;
      }
 

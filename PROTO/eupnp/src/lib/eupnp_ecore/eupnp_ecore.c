@@ -27,9 +27,24 @@
 
 #include "Eupnp_Ecore.h"
 #include "eupnp_core.h"
-#include "eupnp_private.h"
 #include "eupnp_http_message.h"
 
+
+#define DBG(...) EINA_LOG_DOM_DBG(_log_dom, __VA_ARGS__)
+#define INF(...) EINA_LOG_DOM_INFO(_log_dom, __VA_ARGS__)
+#define ERR(...) EINA_LOG_DOM_ERR(_log_dom, __VA_ARGS__)
+#define WRN(...) EINA_LOG_DOM_ERR(_log_dom, __VA_ARGS__)
+
+#define STR(x) #x
+#define XSTR(x) STR(x)
+
+#define CHECK_NULL_RET(x, ...)						\
+  do {									\
+        if (x == NULL) {                                                \
+	   WRN("%s == NULL!", XSTR(x));					\
+	   return __VA_ARGS__;						\
+        }                                                               \
+    } while (0)
 
 /*
  * Private API
@@ -176,9 +191,9 @@ _ecore_request_completed_cb(void *data, int type, void *event)
 static Eupnp_Request
 _ecore_request(const char *url, const char *req, Eina_Array *additional_headers, const char *content_type, size_t body_length, const char *body, Eupnp_Request_Data_Cb data_cb, Eupnp_Request_Completed_Cb completed_cb, void *data)
 {
-   CHECK_NULL_RET_VAL(url, NULL);
-   CHECK_NULL_RET_VAL(data_cb, NULL);
-   CHECK_NULL_RET_VAL(completed_cb, NULL);
+   CHECK_NULL_RET(url, NULL);
+   CHECK_NULL_RET(data_cb, NULL);
+   CHECK_NULL_RET(completed_cb, NULL);
 
    DBG("Creating new %s request for url %s, data %p, headers %p, content-type %s, size %d", req, url, data, additional_headers, content_type, body_length);
 
@@ -350,12 +365,29 @@ _ecore_srv_headers_len(const char *msg)
    return strstr(msg, "\r\n\r\n") - msg - 4; /* Subtract 4 chars (\r\n\r\n) */
 }
 
+static const char *
+_ecore_srv_current_date_http_string_get(void)
+{
+   time_t t = time(NULL);
+   struct tm *tm = gmtime(&t);
+   static char date[255];
+
+   if (!strftime(date, 255, "%a, %d %b %Y %H:%M:%S %Z", tm))
+     {
+	fprintf(stderr, "Not enough memory to create new date string.\n");
+	return NULL;
+     }
+
+   return date;
+}
+
+
 static void
 _ecore_srv_respond_ok(Ecore_Con_Client *client)
 {
    char *response = NULL;
    int len;
-   char *date = (char *)eupnp_utils_current_date_http_string_get();
+   const char *date = _ecore_srv_current_date_http_string_get();
 
    if ((len = asprintf(&response, "HTTP/1.1 200 OK\r\n"
 		       "Date: %s\r\n"
@@ -363,11 +395,8 @@ _ecore_srv_respond_ok(Ecore_Con_Client *client)
 		       "Connection: close\r\n\r\n", date)) < 0)
      {
 	ERR("Failed to send ok message.");
-	free(date);
 	return;
      }
-
-   free(date);
 
    DBG("Responding to client %p %d chars", client, len);
 
@@ -536,7 +565,8 @@ eupnp_ecore_init(void)
 
    if ((_log_dom = eina_log_domain_register("Eupnp.Ecore", EINA_COLOR_BLUE)) < 0)
      {
-	ERROR("Failed to create error domain for eupnp ecore library.");
+	fprintf(stderr,
+		"Failed to create error domain for eupnp ecore library.\n");
 	goto log_dom_fail;
      }
 

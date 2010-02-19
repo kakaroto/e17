@@ -42,6 +42,17 @@
 static int _log_dom = -1;
 static Eupnp_Subscriber *_device_found = NULL;
 
+#undef DBG
+#undef INF
+#undef WRN
+#undef ERR
+#undef CRIT
+#define DBG(...) EINA_LOG_DOM_DBG(_log_dom, __VA_ARGS__)
+#define INF(...) EINA_LOG_DOM_INFO(_log_dom, __VA_ARGS__)
+#define WRN(...) EINA_LOG_DOM_ERR(_log_dom, __VA_ARGS__)
+#define ERR(...) EINA_LOG_DOM_ERR(_log_dom, __VA_ARGS__)
+#define CRIT(...) EINA_LOG_DOM_CRIT(_log_dom, __VA_ARGS__)
+
 /**
  * Subscribed function for DEVICE_FOUND events.
  *
@@ -80,7 +91,9 @@ eupnp_control_point_init(void)
 {
    if ((_log_dom = eina_log_domain_register("Eupnp.ControlPoint", EINA_COLOR_BLUE)) < 0)
      {
-	fprintf(stderr, "Failed to create control point logging domain.\n");
+	EINA_LOG_DOM_ERR
+	  (EUPNP_LOGGING_DOM_GLOBAL,
+	   "Failed to create control point logging domain.");
 	return EINA_FALSE;
      }
 
@@ -88,7 +101,7 @@ eupnp_control_point_init(void)
 						   EUPNP_CALLBACK(_on_device_found),
 						   NULL)))
      {
-	ERROR("Failed to subscribe to device found event.");
+	ERR("Failed to subscribe to device found event.");
 	goto subscribe_error;
      }
 
@@ -167,7 +180,7 @@ eupnp_control_point_free(Eupnp_Control_Point *c)
 EAPI Eina_Bool
 eupnp_control_point_start(Eupnp_Control_Point *c)
 {
-   CHECK_NULL_RET_VAL(c, EINA_FALSE);
+   CHECK_NULL_RET(c, EINA_FALSE);
    DBG("Starting control point %p", c);
    eupnp_ssdp_client_start(c->ssdp_client);
    return EINA_TRUE;
@@ -181,7 +194,7 @@ eupnp_control_point_start(Eupnp_Control_Point *c)
 EAPI Eina_Bool
 eupnp_control_point_stop(Eupnp_Control_Point *c)
 {
-   CHECK_NULL_RET_VAL(c, EINA_FALSE);
+   CHECK_NULL_RET(c, EINA_FALSE);
    DBG("Stopping control point %p", c);
    eupnp_ssdp_client_stop(c->ssdp_client);
    return EINA_TRUE;

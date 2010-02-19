@@ -28,21 +28,34 @@
 #ifndef _EUPNP_H
 #define _EUPNP_H
 
+#include <Eina.h>
+
 #ifdef EAPI
 # undef EAPI
 #endif
 
-#ifdef __GNUC__
-# if __GNUC__ >= 4
-#  define EAPI __attribute__ ((visibility("default")))
+#ifdef _WIN32
+# ifdef E_UPNP_BUILD
+#  ifdef DLL_EXPORT
+#   define EAPI __declspec(dllexport)
+#  else
+#   define EAPI
+#  endif /* ! DLL_EXPORT */
+# else
+#  define EAPI __declspec(dllimport)
+# endif /* ! E_UPNP_BUILD */
+#else
+# ifdef __GNUC__
+#  if __GNUC__ >= 4
+#   define EAPI __attribute__ ((visibility("default")))
+#  else
+#   define EAPI
+#  endif
 # else
 #  define EAPI
 # endif
-#else
-# define EAPI
-#endif
+#endif /* ! _WIN32 */
 
-#include <Eina.h>
 #include "eupnp_core.h"
 #include "eupnp_udp_transport.h"
 #include "eupnp_http_message.h"

@@ -44,6 +44,18 @@ static int _port = 0;
 static const char *_url = NULL;
 static int _log_dom = -1;
 
+#undef DBG
+#undef INF
+#undef WRN
+#undef ERR
+#undef CRIT
+#define DBG(...) EINA_LOG_DOM_DBG(_log_dom, __VA_ARGS__)
+#define INF(...) EINA_LOG_DOM_INFO(_log_dom, __VA_ARGS__)
+#define WRN(...) EINA_LOG_DOM_ERR(_log_dom, __VA_ARGS__)
+#define ERR(...) EINA_LOG_DOM_ERR(_log_dom, __VA_ARGS__)
+#define CRIT(...) EINA_LOG_DOM_CRIT(_log_dom, __VA_ARGS__)
+
+
 static void
 _client_data_ready(void *buffer, int size, void *data)
 {
@@ -87,24 +99,29 @@ _client_data_ready(void *buffer, int size, void *data)
 Eina_Bool
 eupnp_event_server_init(void)
 {
+   int retries = 5;
+
    if ((_log_dom = eina_log_domain_register("Eupnp.EventServer", EINA_COLOR_BLUE)) < 0)
      {
-	fprintf(stderr, "Failed to create a new logging domain.\n");
+	EINA_LOG_DOM_ERR
+	  (EUPNP_LOGGING_DOM_GLOBAL, "Failed to create a new logging domain.");
 	goto log_domain_fail;
      }
 
+   srand(time(NULL));
    _host = (char *)eupnp_utils_default_host_ip_get();
-   _port = eupnp_utils_random_port_get();
+ retry_port:
+   _port = (49152 + rand() / (RAND_MAX / (65535 - 49152 + 1) + 1));
 
    if (!_host)
      {
-	ERROR("Could not find default host ip.");
+	ERR("Could not find default host ip.");
 	goto host_ip_err;
      }
 
    if (asprintf(&_url, "http://%s:%d", _host, _port) < 0)
      {
-	ERROR("Could not mount listening url.");
+	ERR("Could not mount listening url.");
 	goto listen_url_err;
      }
 
@@ -116,8 +133,12 @@ eupnp_event_server_init(void)
      {
 	// TODO try again with another port, change core to know if it was only
 	// a binding error.
-	ERROR("Could not create a new server");
-	goto server_creation_err;
+	ERR("Could not create a new server");
+	retries--;
+	if (retries > 0)
+	  goto retry_port;
+	else
+	  goto server_creation_err;
      }
 
    INF("Initializing event server module.");
@@ -162,7 +183,7 @@ eupnp_event_server_shutdown(void)
 int
 eupnp_event_server_request_subscribe(Eupnp_Callback cb, void *data)
 {
-   CHECK_NULL_RET_VAL(cb, EINA_FALSE);
+   CHECK_NULL_RET(cb, EINA_FALSE);
 
    Eupnp_Event_Type event = eupnp_event_bus_event_type_new();
 

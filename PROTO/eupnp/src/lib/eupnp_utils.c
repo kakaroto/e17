@@ -44,30 +44,6 @@
 #include "eupnp_private.h"
 
 
-char *
-eupnp_utils_current_date_http_string_get()
-{
-   struct tm tm;
-   time_t t = time(NULL);
-   tm = *gmtime(&t);
-   char date[255];
-
-   if (!strftime(date, 255, "%a, %d %b %Y %H:%M:%S %Z", &tm))
-     {
-	fprintf(stderr, "Not enough memory to create new date string.\n");
-	return NULL;
-     }
-
-   return strdup(date);
-}
-
-int
-eupnp_utils_random_port_get()
-{
-   srand(time(NULL));
-   return (49152 + rand() / (RAND_MAX / (65535 - 49152 + 1) + 1));
-}
-
 /*
  * Returns the length of <scheme>://<netloc> from a complete URL.
  */

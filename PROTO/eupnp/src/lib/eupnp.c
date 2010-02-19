@@ -121,7 +121,7 @@ eupnp_init(void)
 
    if (!eupnp_event_bus_init())
      {
-	fprintf(stderr, "Failed to initialize eupnp event bus module.\n");
+	ERR("Failed to initialize eupnp event bus module.\n");
 	goto event_bus_init_error;
      }
 
@@ -167,7 +167,7 @@ eupnp_init(void)
 	goto service_proxy_init_error;
      }
 
-   INFO("Initializing eupnp library");
+   INF("Initializing eupnp library");
    return ++_eupnp_main_count;
 
    service_proxy_init_error:
@@ -202,7 +202,7 @@ eupnp_shutdown(void)
 {
    if (_eupnp_main_count != 1) return --_eupnp_main_count;
 
-   INFO("Shutting down eupnp library");
+   INF("Shutting down eupnp library");
 
    eupnp_control_point_shutdown();
    eupnp_ssdp_shutdown();

@@ -1,7 +1,7 @@
 MAINTAINERCLEANFILES = Makefile.in
 
-AM_CPPFLAGS = -I$(top_srcdir)/src/lib @EINA_CFLAGS@ @LIBXML2_CFLAGS@
-AM_CFLAGS = -I$(top_srcdir)/src/lib @EINA_CFLAGS@ @LIBXML2_CFLAGS@
+AM_CPPFLAGS = -I$(top_srcdir)/src/lib \
+	@EINA_CFLAGS@ @LIBXML2_CFLAGS@ @E_UPNP_BUILD@
 
 lib_LTLIBRARIES = libeupnp_av.la
 

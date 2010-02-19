@@ -116,6 +116,17 @@ static int _log_dom = -1;
 extern int EUPNP_ERROR_SERVICE_PARSER_INSUFFICIENT_FEED;
 static Eina_Bool _event_server_inited = EINA_FALSE;
 
+#undef DBG
+#undef INF
+#undef WRN
+#undef ERR
+#undef CRIT
+#define DBG(...) EINA_LOG_DOM_DBG(_log_dom, __VA_ARGS__)
+#define INF(...) EINA_LOG_DOM_INFO(_log_dom, __VA_ARGS__)
+#define WRN(...) EINA_LOG_DOM_ERR(_log_dom, __VA_ARGS__)
+#define ERR(...) EINA_LOG_DOM_ERR(_log_dom, __VA_ARGS__)
+#define CRIT(...) EINA_LOG_DOM_CRIT(_log_dom, __VA_ARGS__)
+
 #define WRN_(...) EINA_LOG_DOM_WARN(_action_log_dom, __VA_ARGS__)
 #define ERR_(...) EINA_LOG_DOM_ERR(_action_log_dom, __VA_ARGS__)
 #define DBG_(...) EINA_LOG_DOM_DBG(_action_log_dom, __VA_ARGS__)
@@ -331,8 +342,8 @@ eupnp_action_parse_post_parse(Eupnp_Action_Request *req)
 static Eina_Bool
 eupnp_action_parse_xml_buffer(const char *buffer, int buffer_len, Eupnp_Action_Request *req)
 {
-   CHECK_NULL_RET_VAL(buffer, EINA_FALSE);
-   CHECK_NULL_RET_VAL(req, EINA_FALSE);
+   CHECK_NULL_RET(buffer, EINA_FALSE);
+   CHECK_NULL_RET(req, EINA_FALSE);
    if (!buffer_len) return EINA_FALSE;
 
    Eina_Bool ret = EINA_FALSE;
@@ -717,13 +728,15 @@ eupnp_service_proxy_init(void)
 {
    if ((_log_dom = eina_log_domain_register("Eupnp.ServiceProxy", EINA_COLOR_BLUE)) < 0)
      {
-	ERROR("Failed to create logging domain for service proxy module.");
+	EINA_LOG_DOM_ERR
+	  (EUPNP_LOGGING_DOM_GLOBAL,
+	   "Failed to create logging domain for service proxy module.");
 	return EINA_FALSE;
      }
 
    if ((_action_log_dom = eina_log_domain_register("Eupnp.ActionParser", EINA_COLOR_BLUE)) < 0)
      {
-	ERROR("Failed to create logging domain for action parser module.");
+	ERR("Failed to create logging domain for action parser module.");
 	return EINA_FALSE;
      }
 
@@ -788,7 +801,7 @@ eupnp_service_proxy_new(const Eupnp_Service_Info *service, Eupnp_Service_Proxy_R
 EAPI Eupnp_Service_Proxy *
 eupnp_service_proxy_ref(Eupnp_Service_Proxy *proxy)
 {
-   CHECK_NULL_RET_VAL(proxy, NULL);
+   CHECK_NULL_RET(proxy, NULL);
 
    proxy->refcount++;
 
@@ -826,9 +839,9 @@ eupnp_service_proxy_unref(Eupnp_Service_Proxy *proxy)
 EAPI const Eupnp_State_Variable *
 eupnp_service_proxy_state_variable_get(const Eupnp_Service_Proxy *proxy, const char *name, int name_len)
 {
-   CHECK_NULL_RET_VAL(proxy, NULL);
-   CHECK_NULL_RET_VAL(name, NULL);
-   CHECK_NULL_RET_VAL(proxy->state_table, NULL);
+   CHECK_NULL_RET(proxy, NULL);
+   CHECK_NULL_RET(name, NULL);
+   CHECK_NULL_RET(proxy->state_table, NULL);
 
    if (!name_len) name_len = strlen(name);
 
@@ -846,9 +859,9 @@ eupnp_service_proxy_state_variable_get(const Eupnp_Service_Proxy *proxy, const c
 EAPI Eina_Bool
 eupnp_service_proxy_has_action(const Eupnp_Service_Proxy *proxy, const char *action)
 {
-   CHECK_NULL_RET_VAL(action, EINA_FALSE);
-   CHECK_NULL_RET_VAL(proxy, EINA_FALSE);
-   CHECK_NULL_RET_VAL(proxy->actions, EINA_FALSE);
+   CHECK_NULL_RET(action, EINA_FALSE);
+   CHECK_NULL_RET(proxy, EINA_FALSE);
+   CHECK_NULL_RET(proxy->actions, EINA_FALSE);
 
    Eupnp_Service_Action *a;
 
@@ -862,10 +875,10 @@ eupnp_service_proxy_has_action(const Eupnp_Service_Proxy *proxy, const char *act
 EAPI Eina_Bool
 eupnp_service_proxy_action_send(Eupnp_Service_Proxy *proxy, const char *action, Eupnp_Action_Response_Cb response_cb, void *data, ...)
 {
-   CHECK_NULL_RET_VAL(proxy, EINA_FALSE);
-   CHECK_NULL_RET_VAL(proxy->control_url, EINA_FALSE);
-   CHECK_NULL_RET_VAL(proxy->base_url, EINA_FALSE);
-   CHECK_NULL_RET_VAL(action, EINA_FALSE);
+   CHECK_NULL_RET(proxy, EINA_FALSE);
+   CHECK_NULL_RET(proxy->control_url, EINA_FALSE);
+   CHECK_NULL_RET(proxy->base_url, EINA_FALSE);
+   CHECK_NULL_RET(action, EINA_FALSE);
 
    Eupnp_Action_Request *req;
    Eupnp_HTTP_Header *header;
@@ -1038,9 +1051,9 @@ eupnp_service_proxy_action_send(Eupnp_Service_Proxy *proxy, const char *action, 
 EAPI Eina_Bool
 eupnp_service_proxy_has_variable(const Eupnp_Service_Proxy *proxy, const char *variable_name)
 {
-   CHECK_NULL_RET_VAL(variable_name, EINA_FALSE);
-   CHECK_NULL_RET_VAL(proxy, EINA_FALSE);
-   CHECK_NULL_RET_VAL(proxy->state_table, EINA_FALSE);
+   CHECK_NULL_RET(variable_name, EINA_FALSE);
+   CHECK_NULL_RET(proxy, EINA_FALSE);
+   CHECK_NULL_RET(proxy->state_table, EINA_FALSE);
 
    Eupnp_State_Variable *st;
 
@@ -1054,11 +1067,11 @@ EAPI Eupnp_Event_Subscriber *
 eupnp_service_proxy_state_variable_events_subscribe(Eupnp_Service_Proxy *proxy, const char *var_name, Eupnp_State_Variable_Event_Cb cb, Eina_Bool auto_renew, Eina_Bool infinite_subscription, int timeout, void *data)
 {
    // TODO use auto-renew
-   CHECK_NULL_RET_VAL(proxy, EINA_FALSE);
-   CHECK_NULL_RET_VAL(var_name, EINA_FALSE);
-   CHECK_NULL_RET_VAL(cb, EINA_FALSE);
-   CHECK_NULL_RET_VAL(proxy->base_url, EINA_FALSE);
-   CHECK_NULL_RET_VAL(proxy->eventsub_url, EINA_FALSE);
+   CHECK_NULL_RET(proxy, EINA_FALSE);
+   CHECK_NULL_RET(var_name, EINA_FALSE);
+   CHECK_NULL_RET(cb, EINA_FALSE);
+   CHECK_NULL_RET(proxy->base_url, EINA_FALSE);
+   CHECK_NULL_RET(proxy->eventsub_url, EINA_FALSE);
 
    Eupnp_Event_Subscriber *subscriber;
    Eupnp_Event_Subscriber *ret = NULL;
@@ -1221,8 +1234,8 @@ eupnp_service_proxy_state_variable_events_subscribe(Eupnp_Service_Proxy *proxy, 
 EAPI Eina_Bool
 eupnp_service_proxy_state_variable_events_unsubscribe(Eupnp_Event_Subscriber *subscriber)
 {
-   CHECK_NULL_RET_VAL(subscriber, EINA_FALSE);
-   CHECK_NULL_RET_VAL(subscriber->sid, EINA_FALSE);
+   CHECK_NULL_RET(subscriber, EINA_FALSE);
+   CHECK_NULL_RET(subscriber->sid, EINA_FALSE);
 
    Eina_Bool ret = EINA_FALSE;
    Eina_Array *add_headers;

@@ -1,6 +1,6 @@
 MAINTAINERCLEANFILES = Makefile.in
 
-SUBDIRS = 
+SUBDIRS =
 
 if USE_MODULE_EUPNP_ECORE
   SUBDIRS += eupnp_ecore
@@ -10,8 +10,8 @@ if USE_MODULE_EUPNP_AV
   SUBDIRS += eupnp_av
 endif
 
-AM_CPPFLAGS = -I$(top_srcdir)/src/lib @EINA_CFLAGS@ @LIBXML2_CFLAGS@
-AM_CFLAGS = -I$(top_srcdir)/src/lib @EINA_CFLAGS@ @LIBXML2_CFLAGS@
+AM_CPPFLAGS = -I$(top_srcdir)/src/lib \
+	@EINA_CFLAGS@ @LIBXML2_CFLAGS@ @E_UPNP_BUILD@
 
 lib_LTLIBRARIES = libeupnp.la
 

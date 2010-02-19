@@ -29,7 +29,23 @@
 #include <Eina.h>
 
 #include "Eupnp_AV.h"
-#include "eupnp_private.h"
+
+#define DBG(...) EINA_LOG_DOM_DBG(_log_dom, __VA_ARGS__)
+#define INF(...) EINA_LOG_DOM_INFO(_log_dom, __VA_ARGS__)
+#define ERR(...) EINA_LOG_DOM_ERR(_log_dom, __VA_ARGS__)
+#define WRN(...) EINA_LOG_DOM_ERR(_log_dom, __VA_ARGS__)
+
+#define STR(x) #x
+#define XSTR(x) STR(x)
+
+#define CHECK_NULL_RET(x, ...)						\
+  do {									\
+        if (x == NULL) {                                                \
+	   WRN("%s == NULL!", XSTR(x));					\
+	   return __VA_ARGS__;						\
+        }                                                               \
+    } while (0)
+
 
 static int _log_dom  = -1;
 
@@ -447,7 +463,7 @@ eupnp_av_init(void)
 
    if ((_log_dom = eina_log_domain_register("EupnpAV", EINA_COLOR_BLUE)) < 0)
      {
-	ERROR("Failed to create logging domain for device parser module.");
+	ERR("Failed to create logging domain for device parser module.");
 	goto log_dom_err;
      }
 
@@ -472,13 +488,13 @@ eupnp_av_shutdown(void)
 const char *
 eupnp_av_didl_object_title_get(DIDL_Object *obj)
 {
-   CHECK_NULL_RET_VAL(obj, NULL);
+   CHECK_NULL_RET(obj, NULL);
    return obj->title;
 }
 
 const char *
 eupnp_av_didl_object_id_get(DIDL_Object *obj)
 {
-   CHECK_NULL_RET_VAL(obj, NULL);
+   CHECK_NULL_RET(obj, NULL);
    return obj->id;
 }

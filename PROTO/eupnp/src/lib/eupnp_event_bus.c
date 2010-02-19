@@ -122,6 +122,17 @@ static Eina_List *subscribers = NULL;
 static int _log_dom = -1;
 static int _event_max = EUPNP_EVENT_COUNT;
 
+#undef DBG
+#undef INF
+#undef WRN
+#undef ERR
+#undef CRIT
+#define DBG(...) EINA_LOG_DOM_DBG(_log_dom, __VA_ARGS__)
+#define INF(...) EINA_LOG_DOM_INFO(_log_dom, __VA_ARGS__)
+#define WRN(...) EINA_LOG_DOM_ERR(_log_dom, __VA_ARGS__)
+#define ERR(...) EINA_LOG_DOM_ERR(_log_dom, __VA_ARGS__)
+#define CRIT(...) EINA_LOG_DOM_CRIT(_log_dom, __VA_ARGS__)
+
 /*
  * Constructor for the Eupnp_Subscriber class.
  */
@@ -184,7 +195,9 @@ eupnp_event_bus_init(void)
    if ((_log_dom =
 	eina_log_domain_register("Eupnp.EventBus", EINA_COLOR_BLUE)) < 0)
      {
-	ERROR("Failed to create event bus logging domain.");
+	EINA_LOG_DOM_ERR
+	  (EUPNP_LOGGING_DOM_GLOBAL,
+	   "Failed to create event bus logging domain.");
 	return EINA_FALSE;
      }
 
@@ -269,7 +282,7 @@ eupnp_event_bus_publish(Eupnp_Event_Type event_type, void *event_data)
 EAPI Eupnp_Subscriber *
 eupnp_event_bus_subscribe(Eupnp_Event_Type event_type, Eupnp_Callback cb, void *user_data)
 {
-   CHECK_NULL_RET_VAL(cb, NULL);
+   CHECK_NULL_RET(cb, NULL);
 
    if (event_type < 0 || event_type >= _event_max)
      {

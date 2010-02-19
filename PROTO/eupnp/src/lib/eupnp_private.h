@@ -37,49 +37,21 @@
 #define STR(x) #x
 #define XSTR(x) STR(x)
 
-#define CHECK_NULL_RET(x)                                               \
-    do {                                                                \
+#define CHECK_NULL_RET(x, ...)						\
+  do {									\
         if (x == NULL) {                                                \
-            WARN("%s == NULL!", XSTR(x));                             \
-            return;                                                     \
-        }                                                               \
-    } while (0)
-
-#define CHECK_NULL_RET_VAL(x, val)                                      \
-    do {                                                                \
-        if (x == NULL) {                                                \
-            WARN("%s == NULL!", XSTR(x));                             \
-            return val;                                                 \
+	   WRN("%s == NULL!", XSTR(x));					\
+	   return __VA_ARGS__;						\
         }                                                               \
     } while (0)
 
 extern int EUPNP_LOGGING_DOM_GLOBAL;
 
-#define WARN(...) EINA_LOG_DOM_WARN(EUPNP_LOGGING_DOM_GLOBAL, __VA_ARGS__)
-#define DEBUG(...) EINA_LOG_DOM_DBG(EUPNP_LOGGING_DOM_GLOBAL, __VA_ARGS__)
-#define INFO(...) EINA_LOG_DOM_INFO(EUPNP_LOGGING_DOM_GLOBAL, __VA_ARGS__)
-#define ERROR(...) EINA_LOG_DOM_ERR(EUPNP_LOGGING_DOM_GLOBAL, __VA_ARGS__)
+#define WRN(...) EINA_LOG_DOM_WARN(EUPNP_LOGGING_DOM_GLOBAL, __VA_ARGS__)
+#define DBG(...) EINA_LOG_DOM_DBG(EUPNP_LOGGING_DOM_GLOBAL, __VA_ARGS__)
+#define INF(...) EINA_LOG_DOM_INFO(EUPNP_LOGGING_DOM_GLOBAL, __VA_ARGS__)
+#define ERR(...) EINA_LOG_DOM_ERR(EUPNP_LOGGING_DOM_GLOBAL, __VA_ARGS__)
 #define CRIT(...) EINA_LOG_DOM_CRIT(EUPNP_LOGGING_DOM_GLOBAL, __VA_ARGS__)
-
-#ifdef DBG
-  #undef DBG
-#endif
-#define DBG(...) EINA_LOG_DOM_DBG(_log_dom, __VA_ARGS__)
-
-#ifdef INF
-  #undef INF
-#endif
-#define INF(...) EINA_LOG_DOM_INFO(_log_dom, __VA_ARGS__)
-
-#ifdef ERR
-  #undef ERR
-#endif
-#define ERR(...) EINA_LOG_DOM_ERR(_log_dom, __VA_ARGS__)
-
-#ifdef WRN
-  #undef WRN
-#endif
-#define WRN(...) EINA_LOG_DOM_ERR(_log_dom, __VA_ARGS__)
 
 
 Eupnp_Service_Info   *eupnp_service_info_new(const char *udn, const char *location, const char *service_type, void *resource, void (*resource_free)(void *resource)) EINA_ARG_NONNULL(1,2,3,4);

@@ -36,6 +36,16 @@
  */
 
 static int _log_dom = -1;
+#undef DBG
+#undef INF
+#undef WRN
+#undef ERR
+#undef CRIT
+#define DBG(...) EINA_LOG_DOM_DBG(_log_dom, __VA_ARGS__)
+#define INF(...) EINA_LOG_DOM_INFO(_log_dom, __VA_ARGS__)
+#define WRN(...) EINA_LOG_DOM_ERR(_log_dom, __VA_ARGS__)
+#define ERR(...) EINA_LOG_DOM_ERR(_log_dom, __VA_ARGS__)
+#define CRIT(...) EINA_LOG_DOM_CRIT(_log_dom, __VA_ARGS__)
 
 /*
  * Public API
@@ -53,7 +63,9 @@ eupnp_service_info_init(void)
    if ((_log_dom =
 	eina_log_domain_register("Eupnp.ServiceInfo", EINA_COLOR_BLUE)) < 0)
      {
-	ERROR("Failed to create logging domain for service info module.");
+	EINA_LOG_DOM_ERR
+	  (EUPNP_LOGGING_DOM_GLOBAL,
+	   "Failed to create logging domain for service info module.");
 	return EINA_FALSE;
      }
 
@@ -108,7 +120,7 @@ eupnp_service_info_new(const char *udn, const char *location, const char *servic
     *      only on SSDP mode.
     */
 
-   CHECK_NULL_RET_VAL(udn, NULL);
+   CHECK_NULL_RET(udn, NULL);
    Eupnp_Service_Info *d;
 
    d = calloc(1, sizeof(Eupnp_Service_Info));
@@ -186,7 +198,7 @@ eupnp_service_info_free(Eupnp_Service_Info *d)
 EAPI Eupnp_Service_Info *
 eupnp_service_info_ref(Eupnp_Service_Info *service_info)
 {
-   CHECK_NULL_RET_VAL(service_info, NULL);
+   CHECK_NULL_RET(service_info, NULL);
 
    DBG("Service %p refcount %d -> %d", service_info, service_info->refcount, service_info->refcount + 1);
 

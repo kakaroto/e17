@@ -35,6 +35,16 @@
  */
 
 static int _log_dom = -1;
+#undef DBG
+#undef INF
+#undef WRN
+#undef ERR
+#undef CRIT
+#define DBG(...) EINA_LOG_DOM_DBG(_log_dom, __VA_ARGS__)
+#define INF(...) EINA_LOG_DOM_INFO(_log_dom, __VA_ARGS__)
+#define WRN(...) EINA_LOG_DOM_ERR(_log_dom, __VA_ARGS__)
+#define ERR(...) EINA_LOG_DOM_ERR(_log_dom, __VA_ARGS__)
+#define CRIT(...) EINA_LOG_DOM_CRIT(_log_dom, __VA_ARGS__)
 
 typedef struct _Eupnp_Service_Parser_State Eupnp_Service_Parser_State;
 typedef struct _Eupnp_Service_Parser Eupnp_Service_Parser;
@@ -287,8 +297,8 @@ eupnp_service_state_variable_dump(const Eupnp_State_Variable *st)
 static Eina_Bool
 eupnp_service_state_variable_allowed_value_add(Eupnp_State_Variable *st, Eupnp_State_Variable_Allowed_Value *v)
 {
-   CHECK_NULL_RET_VAL(st, EINA_FALSE);
-   CHECK_NULL_RET_VAL(v, EINA_FALSE);
+   CHECK_NULL_RET(st, EINA_FALSE);
+   CHECK_NULL_RET(v, EINA_FALSE);
 
    st->allowed_value_list = eina_inlist_append(st->allowed_value_list, EINA_INLIST_GET(v));
 
@@ -298,8 +308,8 @@ eupnp_service_state_variable_allowed_value_add(Eupnp_State_Variable *st, Eupnp_S
 static Eina_Bool
 eupnp_service_action_argument_add(Eupnp_Service_Action *action, Eupnp_Service_Action_Argument *arg)
 {
-   CHECK_NULL_RET_VAL(action, EINA_FALSE);
-   CHECK_NULL_RET_VAL(arg, EINA_FALSE);
+   CHECK_NULL_RET(action, EINA_FALSE);
+   CHECK_NULL_RET(arg, EINA_FALSE);
 
    action->arguments = eina_inlist_append(action->arguments, EINA_INLIST_GET(arg));
 
@@ -324,8 +334,8 @@ eupnp_service_state_variable_allowed_value_new(void)
 static Eina_Bool
 eupnp_service_proxy_action_add(Eupnp_Service_Proxy *proxy, Eupnp_Service_Action *action)
 {
-   CHECK_NULL_RET_VAL(proxy, EINA_FALSE);
-   CHECK_NULL_RET_VAL(action, EINA_FALSE);
+   CHECK_NULL_RET(proxy, EINA_FALSE);
+   CHECK_NULL_RET(action, EINA_FALSE);
 
    proxy->actions = eina_inlist_append(proxy->actions, EINA_INLIST_GET(action));
 
@@ -335,8 +345,8 @@ eupnp_service_proxy_action_add(Eupnp_Service_Proxy *proxy, Eupnp_Service_Action 
 static Eina_Bool
 eupnp_service_proxy_state_variable_add(Eupnp_Service_Proxy *proxy, Eupnp_State_Variable *st)
 {
-   CHECK_NULL_RET_VAL(proxy, EINA_FALSE);
-   CHECK_NULL_RET_VAL(st, EINA_FALSE);
+   CHECK_NULL_RET(proxy, EINA_FALSE);
+   CHECK_NULL_RET(st, EINA_FALSE);
 
    proxy->state_table = eina_inlist_append(proxy->state_table, EINA_INLIST_GET(st));
 
@@ -902,7 +912,9 @@ eupnp_service_parser_init(void)
 
    if ((_log_dom = eina_log_domain_register("Eupnp.ServiceParser", EINA_COLOR_BLUE)) < 0)
      {
-	fprintf(stderr, "Failed to create logging domain for service parser module.\n");
+	EINA_LOG_DOM_ERR
+	  (EUPNP_LOGGING_DOM_GLOBAL,
+	   "Failed to create logging domain for service parser module.");
 	goto log_dom_error;
      }
 

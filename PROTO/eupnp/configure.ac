@@ -30,6 +30,15 @@ AC_SUBST(version_info)
 
 AC_CHECK_FUNCS(realpath)
 
+case "$host_os" in
+   mingw32ce* | cegcc*)
+      ;;
+   *)
+      E_UPNP_BUILD="-DE_UPNP_BUILD=1"
+      ;;
+esac
+AC_SUBST(E_UPNP_BUILD)
+
 
 # Required modules
 PKG_CHECK_MODULES(EINA, [eina-0])
