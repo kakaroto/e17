@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE pkgmetadata SYSTEM "http://www.gentoo.org/dtd/metadata.dtd">
+<pkgmetadata>
+<herd>no-herd</herd>
+<maintainer>
+ <email>enlightenment@gentoo.org</email>
+ <name>Enlightenment-Gentoo maintainers</name>
+</maintainer>
+<longdescription>
+
+Eupnp is a lightweight event-driven UPnP library written in C. It
+implements the UPnP specification of control points, that is, Eupnp is
+capable of discovering and controlling UPnP devices (printers,
+routers, lights, media players, media servers and so on).
+
+Features:
+
+- UPnP stack implementation (discovery, description, control, eventing)
+- SSDP (Simple Service Discovery Protocol) client implementation
+- Multi-toolkit (works with different convenience libraries - e.g. eupnp-ecore)
+
+Eupnp-Ecore:
+
+Eupnp-Ecore is a convenience library that links Eupnp to Ecore,
+providing Eupnp the functional requirements - e.g. webserver,
+downloads, timers.
+
+Currently it is the only convenience library available.
+
+</longdescription>
+</pkgmetadata>
