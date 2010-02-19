@@ -1,0 +1,39 @@
+Dynamic sets:
+
+@efl-rebuild	= rebuilds all installed packages from this overlay.
+                  nice for rebuilding, as it will rebuild also
+                  enlightenment-specific dependencies (simple rerun of
+                  emerge on some static set will not). If not using
+                  portage with sets support (<2.2), then use the
+                  following command:
+                  Documentation/scripts/sets/enlightenment.rebuild.sh
+
+@efl-all	= all ebuilds from overlay, excluding those listed
+		  into @efl-broken (see below). Still broken ebuild
+		  might be fetched as dependencies. Use it, if you
+		  want to install and try all known packages of
+		  enlightenment. If not using portage with sets
+                  support (<2.2), then use the following command:
+                  Documentation/scripts/sets/enlightenment.all.sh
+
+Static sets:
+	Meta sets:
+
+		@enlightenment = @enlightenment-modules + @enlightenment-wm
+		@enlightenment-extended = @enlightenment + @efl-misc
+
+@enlightenment-wm	= Pure wm install with deps, no modules, no others.
+
+@enlightenment-modules	= All e-modules and all known to developers
+                          third-party working modules.
+
+
+@efl-misc	= Additional programs considered to be especially useful.
+                  Includes dependencies.
+
+@efl-proto	= Programs considered to be prototypes or some
+		  testing ground. Sometimes it will just not compile,
+		  but sometimes it may contains something geniuos and
+		  awesome. Includes dependencies.
+
+@efl-python     = Python bindings and utilities. Includes dependencies.
