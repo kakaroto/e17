@@ -38,7 +38,6 @@
 
 typedef struct {
    char               *file;
-   char               *real_file;
    EImage             *im;
    char                keep_aspect;
    int                 xjust, yjust;
@@ -67,12 +66,45 @@ static unsigned int bg_seq_no = 0;
 #define N_BG_ASSIGNED 32
 static Background  *bg_assigned[N_BG_ASSIGNED];
 
-char               *
-BackgroundGetUniqueString(const Background * bg)
+static char        *
+_BackgroundGetFile(char **ptr)
 {
-   char                s[256];
-   const char         *chmap =
+   char               *path = *ptr;
+
+   if (isabspath(path))
+      goto done;
+
+   path = ThemeFileFind(path);
+   if (!path)
+      goto done;
+   Efree(*ptr);
+   *ptr = path;
+ done:
+   return path;
+}
+
+static char        *
+_BackgroundGetBgFile(Background * bg)
+{
+   if (!bg || !bg->bg.file)
+      return NULL;
+   return _BackgroundGetFile(&bg->bg.file);
+}
+
+static char        *
+_BackgroundGetFgFile(Background * bg)
+{
+   if (!bg || !bg->top.file)
+      return NULL;
+   return _BackgroundGetFile(&bg->top.file);
+}
+
+char               *
+BackgroundGetUniqueString(Background * bg)
+{
+   static const char  *chmap =
       "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ-_";
+   char                s[256], *f;
    int                 r, g, b;
    int                 n1, n2, n3, n4, n5, f1, f2, f3, f4, f5, f6;
 
@@ -89,32 +121,22 @@ BackgroundGetUniqueString(const Background * bg)
    f4 = 0;
    f5 = 0;
    f6 = 0;
-   if (bg->bg.file)
-     {
-	char               *f;
 
-	f = ThemeFileFind(bg->bg.file);
-	if (f)
-	  {
-	     f1 = fileinode(f);
-	     f2 = filedev(f);
-	     f3 = (int)moddate(f);
-	     Efree(f);
-	  }
-     }
-   if (bg->top.file)
+   f = _BackgroundGetBgFile(bg);
+   if (f)
      {
-	char               *f;
-
-	f = ThemeFileFind(bg->top.file);
-	if (f)
-	  {
-	     f4 = fileinode(f);
-	     f5 = filedev(f);
-	     f6 = (int)moddate(f);
-	     Efree(f);
-	  }
+	f1 = fileinode(f);
+	f2 = filedev(f);
+	f3 = (int)moddate(f);
      }
+   f = _BackgroundGetFgFile(bg);
+   if (f)
+     {
+	f4 = fileinode(f);
+	f5 = filedev(f);
+	f6 = (int)moddate(f);
+     }
+
    Esnprintf(s, sizeof(s),
 	     "%c%c%c%c%c%c" "%c%c%c%c%c%c" "%c%c%c%c%c%c" "%c%c%c%c%c%c"
 	     "%c%c%c%c%c%c" "%c%c%c%c%c%c" "%c%c%c%c%c%c" "%c%c%c%c%c%c"
@@ -211,14 +233,8 @@ BackgroundFilesRemove(Background * bg)
    Efree(bg->bg.file);
    bg->bg.file = NULL;
 
-   Efree(bg->bg.real_file);
-   bg->bg.real_file = NULL;
-
    Efree(bg->top.file);
    bg->top.file = NULL;
-
-   Efree(bg->top.real_file);
-   bg->top.real_file = NULL;
 
    BackgroundImagesFree(bg);
 
@@ -230,7 +246,9 @@ BackgroundDestroy(Background * bg)
 {
    if (!bg)
       return -1;
-
+#if 0
+   Eprintf("%s: %s\n", __func__, bg->name);
+#endif
    if (bg->ref_count > 0)
      {
 	DialogOK("Background Error!", _("%u references remain\n"),
@@ -256,28 +274,23 @@ BackgroundDelete(Background * bg)
 {
    char               *f;
 
-   if (BackgroundDestroy(bg))
+   if (!bg)
+      return;
+#if 0
+   Eprintf("%s: %s\n", __func__, bg->name);
+#endif
+   if (!bg || bg->ref_count > 0)
       return;
 
    /* And delete the actual image files */
-   if (bg->bg.file)
-     {
-	f = ThemeFileFind(bg->bg.file);
-	if (f)
-	  {
-	     E_rm(f);
-	     Efree(f);
-	  }
-     }
-   if (bg->top.file)
-     {
-	f = ThemeFileFind(bg->top.file);
-	if (f)
-	  {
-	     E_rm(f);
-	     Efree(f);
-	  }
-     }
+   f = _BackgroundGetBgFile(bg);
+   if (f)
+      E_rm(f);
+   f = _BackgroundGetFgFile(bg);
+   if (f)
+      E_rm(f);
+
+   BackgroundDestroy(bg);
 }
 #endif /* ENABLE_DIALOGS */
 
@@ -329,7 +342,7 @@ BackgroundCreate(const char *name, unsigned int solid, const char *bgn,
 }
 
 static int
-BackgroundCmp(Background * bg, Background * bgx)
+BackgroundCmp(const Background * bg, const Background * bgx)
 {
    if (*bgx->name != '.')	/* Discard only generated backgrounds */
       return 1;
@@ -545,23 +558,21 @@ BackgroundRealize(Background * bg, Win win, Drawable draw, unsigned int rw,
    GC                  gc;
    int                 x, y, ww, hh;
    unsigned int        w, h;
-   char                hasbg, hasfg;
+   char               *file, hasbg, hasfg;
    EImage             *im;
 
-   if (bg->bg.file && !bg->bg.im)
+   if (!bg->bg.im)
      {
-	if (!bg->bg.real_file)
-	   bg->bg.real_file = ThemeFileFind(bg->bg.file);
-	if (bg->bg.real_file)
-	   bg->bg.im = EImageLoad(bg->bg.real_file);
+	file = _BackgroundGetBgFile(bg);
+	if (file)
+	   bg->bg.im = EImageLoad(file);
      }
 
-   if (bg->top.file && !bg->top.im)
+   if (!bg->top.im)
      {
-	if (!bg->top.real_file)
-	   bg->top.real_file = ThemeFileFind(bg->top.file);
-	if (bg->top.real_file)
-	   bg->top.im = EImageLoad(bg->top.real_file);
+	file = _BackgroundGetFgFile(bg);
+	if (file)
+	   bg->top.im = EImageLoad(bg->top.file);
      }
 
    if (!draw)
@@ -1232,47 +1243,32 @@ BackgroundsConfigSave(void)
 	if (!bg)
 	   continue;
 
+	/* Get full path to files */
+	_BackgroundGetBgFile(bg);
+	_BackgroundGetFgFile(bg);
+	/* Discard if bg file is given but cannot be found (ignore bad fg) */
+	if (bg->bg.file && !isabspath(bg->bg.file))
+	  {
+	     Eprintf("Discard broken background %s (%s)\n",
+		     bg->name, bg->bg.file);
+	     continue;
+	  }
+
 	fprintf(fs, "5 999\n");
 
 	fprintf(fs, "100 %s\n", bg->name);
 	COLOR32_TO_RGB(bg->bg_solid, r, g, b);
 	fprintf(fs, "560 %d %d %d\n", r, g, b);
 
-	if ((bg->bg.file) && (!bg->bg.real_file))
-	   bg->bg.real_file = ThemeFileFind(bg->bg.file);
+	if (bg->bg.file)
+	   fprintf(fs, "561 %s %d %d %d %d %d %d\n",
+		   bg->bg.file, bg->bg_tile, bg->bg.keep_aspect,
+		   bg->bg.xjust, bg->bg.yjust, bg->bg.xperc, bg->bg.yperc);
 
-	if ((bg->top.file) && (!bg->top.real_file))
-	   bg->top.real_file = ThemeFileFind(bg->top.file);
-
-	if ((bg->bg.file) && (bg->bg.real_file))
-	  {
-	     fprintf(fs, "561 %s %d %d %d %d %d %d\n",
-		     bg->bg.real_file, bg->bg_tile,
-		     bg->bg.keep_aspect, bg->bg.xjust,
-		     bg->bg.yjust, bg->bg.xperc, bg->bg.yperc);
-	  }
-	else if (bg->bg.file)
-	  {
-	     fprintf(fs, "561 %s %d %d %d %d %d %d\n",
-		     bg->bg.file, bg->bg_tile,
-		     bg->bg.keep_aspect, bg->bg.xjust,
-		     bg->bg.yjust, bg->bg.xperc, bg->bg.yperc);
-	  }
-
-	if ((bg->top.file) && (bg->top.real_file))
-	  {
-	     fprintf(fs, "562 %s %d %d %d %d %d\n",
-		     bg->top.real_file,
-		     bg->top.keep_aspect, bg->top.xjust,
-		     bg->top.yjust, bg->top.xperc, bg->top.yperc);
-	  }
-	else if (bg->top.file)
-	  {
-	     fprintf(fs, "562 %s %d %d %d %d %d\n",
-		     bg->top.file, bg->top.keep_aspect,
-		     bg->top.xjust, bg->top.yjust, bg->top.xperc,
-		     bg->top.yperc);
-	  }
+	if (bg->top.file)
+	   fprintf(fs, "562 %s %d %d %d %d %d\n",
+		   bg->top.file, bg->top.keep_aspect,
+		   bg->top.xjust, bg->top.yjust, bg->top.xperc, bg->top.yperc);
 
 	for (j = 0; j < N_BG_ASSIGNED; j++)
 	  {

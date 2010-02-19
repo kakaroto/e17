@@ -27,7 +27,7 @@
 /* backgrounds.c */
 Background         *BackgroundFind(const char *name);
 
-char               *BackgroundGetUniqueString(const Background * bg);
+char               *BackgroundGetUniqueString(Background * bg);
 void                BackgroundPixmapSet(Background * bg, Pixmap pmap);
 void                BackgroundDestroyByName(const char *name);
 void                BackgroundRealize(Background * bg, Win win, Drawable draw,
