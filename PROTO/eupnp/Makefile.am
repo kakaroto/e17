@@ -1,3 +1,5 @@
+ACLOCAL_AMFLAGS = -I m4
+
 MAINTAINERCLEANFILES = \
 	Makefile.in \
 	aclocal.m4 \
@@ -20,7 +22,11 @@ endif
 EXTRA_DIST = \
 	README \
 	AUTHORS \
-	COPYING
+	COPYING \
+	m4/ac-plugins.m4 \
+	m4/efl_coverage.m4 \
+	m4/efl_doxygen.m4 \
+	m4/efl_tests.m4
 
 .PHONY: doc tools
 
