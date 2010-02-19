@@ -160,11 +160,13 @@ collections {
                aspect: 1.5 1.0;
                rel1 {
                   to: "toolbar";
-                  relative: 0.0 0.1;
+                  relative: 0.0 0.0;
+	          offset: 5 5;
                }
                rel2 {
                   to: "toolbar";
-                  relative: 0.0 0.9;
+                  relative: 0.0 1.0;
+	          offset: 5 -11;
                }
             }
          }
@@ -182,14 +184,14 @@ collections {
                rel1 {
                   to_x: "open.bt";
                   to_y: "toolbar";
-                  relative: 1.0 0.1;
-				      offset: 0 0;
+                  relative: 1.0 0.0;
+	          offset: 5 5;
                }
                rel2 {
                   to_x: "open.bt";
                   to_y: "toolbar";
-                  relative: 1.0 0.9;
-                  offset: 0 -1;
+                  relative: 1.0 1.0;
+	          offset: 5 -11;
                }
             }
          }
@@ -207,14 +209,14 @@ collections {
                rel1 {
                   to_x: "save.bt";
                   to_y: "toolbar";
-                  relative: 1.0 0.1;
-		  offset: 0 0;
+                  relative: 1.0 0.0;
+	          offset: 5 5;
                }
                rel2 {
                   to_x: "save.bt";
                   to_y: "toolbar";
-                  relative: 1.0 0.9;
-                  offset: 0 -1;
+                  relative: 1.0 1.0;
+	          offset: 5 -11;
                }
             }
          }
@@ -232,14 +234,14 @@ collections {
                rel1 {
                   to_x: "group.bt";
                   to_y: "toolbar";
-                  relative: 1.0 0.1;
-		  offset: 0 0;
+                  relative: 1.0 0.0;
+	          offset: 5 5;
                }
                rel2 {
                   to_x: "group.bt";
                   to_y: "toolbar";
-                  relative: 1.0 0.9;
-                  offset: 0 -1;
+                  relative: 1.0 1.0;
+	          offset: 5 -11;
                }
             }
          }
@@ -267,48 +269,26 @@ collections {
 
          part {
             name: "details_bg";
-            type: RECT;
+            type: IMAGE;
             mouse_events: 0;
             description {
                state: "default" 0.0;
-               color: 0 0 0 0;
                rel1 {
                   to: "bts-end";
                   relative: 1.0 0.0;
-                  offset: 3 0;
-               }
-               rel2 {
-                  to: "toolbar.contents.swallow";
-                  relative: 0.0 1.0;
-                  offset: -3 -1;
-               }
-            }
-         }
-
-         part {
-            name: "details_filename";
-            type: TEXT;
-            mouse_events: 0;
-            description {
-               state: "default" 0.0;
-               align: 0.0 0.5;
-               color: 50 50 50 255;
-               text {
-                  text: "FILENAME";
-                  font: "Sans:style=Bold";
-                  size: 10;
-                  align: 0.0 0.5;
-                  elipsis: 1.0;
-               }
-               rel1 {
-                  to: "details_bg";
-                  relative: 0.0 0.1;
                   offset: 5 0;
                }
                rel2 {
-                  to: "details_bg";
-                  relative: 1.0 0.4;
+                  to_x: "toolbar.contents.swallow";
+                  to_y: "toolbar";
+                  relative: 0.0 1.0;
+                  offset: -6 -11;
                }
+	       image {
+	          normal: "sunken_box.png";
+	          border: 10 10 10 10;
+	          middle: SOLID;
+	       }
             }
          }
 
@@ -320,21 +300,52 @@ collections {
                state: "default" 0.0;
                align: 0.0 0.5;
                color_class: "default_label";
+	       fixed: 1 1;
                text {
                   text: "LABEL";
                   font: "Sans:style=Bold";
                   size: 10;
-                  align: 0.0 0.5;
+                  align: 0.0 1.0;
+	          min: 1 1;
                }
                rel1 {
                   to: "details_bg";
                   relative: 0.0 0.5;
-                  offset: 5 0;
+                  offset: 10 -18;
                }
                rel2 {
                   to: "details_bg";
-                  relative: 0.0 0.9;
-                  offset: 60 -1;
+                  relative: 0.0 0.5;
+                  offset: 20 -2;
+               }
+            }
+         }
+
+         part {
+            name: "details_file_label";
+            type: TEXT;
+            mouse_events: 0;
+            description {
+               state: "default" 0.0;
+               align: 0.0 0.5;
+               color_class: "default_label";
+	       fixed: 1 1;
+               text {
+                  text: "LABEL";
+                  font: "Sans:style=Bold";
+                  size: 10;
+                  align: 0.0 0.0;
+	          min: 1 1;
+               }
+               rel1 {
+                  to: "details_bg";
+                  relative: 0.0 0.5;
+                  offset: 10 3;
+               }
+               rel2 {
+                  to: "details_bg";
+                  relative: 0.0 0.5;
+                  offset: 20 15;
                }
             }
          }
@@ -345,7 +356,7 @@ collections {
             mouse_events: 1;
             description {
                state: "default" 0.0;
-               align: 0.0 0.5;
+               align: 0.0 1.0;
                rel1 {
                   to: "details_group_label";
                   relative: 1.0 0.0;
@@ -355,7 +366,37 @@ collections {
                   to_x: "details_bg";
                   to_y: "details_group_label";
                   relative: 1.0 1.0;
-                  offset: -1 -3;
+                  offset: -11 0;
+               }
+            }
+	 }
+
+         part {
+            name: "details_filename";
+            type: TEXT;
+            mouse_events: 0;
+            description {
+               state: "default" 0.0;
+               align: 0.0 0.5;
+               color: 50 50 50 255;
+               text {
+                  text: "FILENAME";
+                  font: "Sans";
+                  size: 10;
+                  align: 0.0 0.0;
+                  elipsis: 1.0;
+	          min: 0 1;
+               }
+               rel1 {
+                  to: "details_file_label";
+                  relative: 1.0 0.0;
+                  offset: 2 0;
+               }
+               rel2 {
+                  to_x: "details_bg";
+                  to_y: "details_file_label";
+                  relative: 1.0 1.0;
+                  offset: -11 0;
                }
             }
          }
@@ -375,7 +416,7 @@ collections {
                  rel2 {
                      to_y: "toolbar";
                      relative: 1.0 1.0;
-                     offset: -25 -1;
+                     offset: -6 -1;
                  }
              }
          }

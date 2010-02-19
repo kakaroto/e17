@@ -185,6 +185,7 @@ class Editje(elementary.Window):
         self.e.callback_add("filename.changed", self._toolbar_filename_cb)
 
         self.main_edje.part_text_set("details_group_label", "Group:")
+        self.main_edje.part_text_set("details_file_label", "File:")
 
         self._group_name_entry = elementary.Entry(self)
         self._group_name_entry.context_menu_disabled_set(True)

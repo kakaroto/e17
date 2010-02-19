@@ -45,4 +45,5 @@ images {
    image: "timeline_arrowbase.png" COMP;
    image: "dialog_entry_bg.png" COMP;
    image: "bg2.png" COMP;
+   image: "sunken_box.png" COMP;
 }
