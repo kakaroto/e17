@@ -88,7 +88,9 @@ class SwapFile(object):
             copyfile(self.__filepath, self.__swapfile)
         else:
             dir, file = path.split(self.__filepath)
-            compiler = Popen(('edje_cc', file, self.__swapfile), cwd=dir, bufsize=-1, stderr=PIPE);
+            compiler = Popen(('edje_cc', '-id', 'images', file,
+                              self.__swapfile),
+                             cwd=dir, bufsize=-1, stderr=PIPE)
             err = compiler.communicate()[1]
             if not (path.exists(self.__swapfile) and
                     path.isfile(self.__swapfile)):
