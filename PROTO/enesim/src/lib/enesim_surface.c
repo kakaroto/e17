@@ -88,6 +88,34 @@ enesim_surface_new_allocator_from(Enesim_Format f, int w, int h, Eina_Mempool *m
  *
  */
 EAPI Enesim_Surface *
+enesim_surface_new2(Enesim_Backend b, Enesim_Format f,
+		uint32_t w, uint32_t h, Enesim_Pool *p)
+{
+	Enesim_Surface *s;
+	void *data;
+
+	if (!p) return NULL;
+
+	data = enesim_pool_data_alloc(p, b, f, w, h);
+	if (!data) return NULL;
+
+	s = calloc(1, sizeof(Enesim_Surface));
+	s->w = w;
+	s->h = h;
+	s->stride = w;
+	s->format = f;
+	s->epool = p;
+	s->data = data;
+
+	EINA_MAGIC_SET(s, ENESIM_MAGIC_SURFACE);
+
+	return s;
+}
+
+/**
+ *
+ */
+EAPI Enesim_Surface *
 enesim_surface_new(Enesim_Format f, int w, int h)
 {
 	Enesim_Surface *s;

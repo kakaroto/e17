@@ -15,62 +15,29 @@
  * License along with this library.
  * If not, see <http://www.gnu.org/licenses/>.
  */
-
 #include "Enesim.h"
 #include "enesim_private.h"
-
-typedef struct _Enesim_Eina_Pool
-{
-	Enesim_Pool pool;
-	Eina_Mempool *mp;
-} Enesim_Eina_Pool;
 /*============================================================================*
  *                                  Local                                     *
  *============================================================================*/
-static void * _surface_new(Enesim_Pool *p,
-		Enesim_Backend be, Enesim_Format f,
-		int w, int h)
-{
-	Enesim_Eina_Pool *pool = (Enesim_Eina_Pool *)p;
-	void *data;
-	size_t bytes;
-
-	if (be != ENESIM_BACKEND_SOFTWARE)
-		return NULL;
-
-	bytes = enesim_format_bytes_calc(f, w, h);
-	data = eina_mempool_malloc(pool->mp, bytes);
-
-	return data;
-}
-
-static void _surface_free(Enesim_Pool *p,
-		void *data)
-{
-	Enesim_Eina_Pool *pool = (Enesim_Eina_Pool *)p;
-
-	eina_mempool_free(pool->mp, data);
-}
-
-static void _free(Enesim_Pool *p)
-{
-	Enesim_Eina_Pool *pool = (Enesim_Eina_Pool *)p;
-
-	eina_mempool_del(pool->mp);
-	free(pool);
-}
 /*============================================================================*
  *                                 Global                                     *
  *============================================================================*/
+void * enesim_pool_data_alloc(Enesim_Pool *p, Enesim_Backend be,
+		Enesim_Format fmt, uint32_t w, uint32_t h)
+{
+	if (p->data_alloc) return p->data_alloc(p, be, fmt, w, h);
+}
+
+void enesim_pool_data_free(Enesim_Pool *p, void *data)
+{
+	if (p->data_free) p->data_free(p, data);
+}
+
+void enesim_pool_free(Enesim_Pool *p)
+{
+	if (p->free) p->free(p);
+}
 /*============================================================================*
  *                                   API                                      *
  *============================================================================*/
-EAPI Enesim_Pool * enesim_pool_eina_get(Eina_Mempool *mp)
-{
-	Enesim_Eina_Pool *pool;
-
-	pool = calloc(1, sizeof(Enesim_Eina_Pool));
-	pool->mp = mp;
-
-	return &pool->pool;
-}

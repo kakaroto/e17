@@ -60,6 +60,7 @@ extern "C" {
 #include "enesim_converter.h"
 #include "enesim_compositor.h"
 #include "enesim_rasterizer.h"
+#include "enesim_pool.h"
 #include "enesim_renderer.h"
 
 #ifdef __cplusplus

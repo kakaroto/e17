@@ -12,6 +12,7 @@ enesim_converter.h \
 enesim_matrix.h \
 enesim_perlin.h \
 enesim_compositor.h \
+enesim_pool.h \
 enesim_rasterizer.h \
 enesim_renderer.h
 

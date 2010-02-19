@@ -190,6 +190,7 @@ src/include/Makefile
 src/lib/Makefile
 src/lib/compositor/Makefile
 src/lib/converter/Makefile
+src/lib/pool/Makefile
 src/lib/rasterizer/Makefile
 src/lib/renderer/Makefile
 src/lib/renderer/gradient/Makefile
@@ -230,6 +231,12 @@ echo "  MMX.......................................: ${have_mmx}"
 echo "  SSE.......................................: ${have_sse}"
 echo "  SSE2......................................: ${have_sse2}"
 echo "  ALTIVEC...................................: ${have_altivec}"
+echo
+echo "Backends:"
+echo "  Software..................................: yes"
+echo
+echo "Surface Pools:"
+echo "  Eina......................................: yes"
 echo
 echo "Installation Path...........................: ${prefix}"
 echo

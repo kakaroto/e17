@@ -86,3 +86,27 @@ EAPI const char * enesim_format_name_get(Enesim_Format f)
 
 	}
 }
+
+/**
+ * Get the total size of bytes for a given a format and a size
+ * @param f The format
+ * @param w The width
+ * @param h The height
+ */
+EAPI size_t enesim_format_bytes_calc(Enesim_Format f, uint32_t w, uint32_t h)
+{
+	switch (f)
+	{
+		case ENESIM_FORMAT_ARGB8888:
+		case ENESIM_FORMAT_XRGB8888:
+		case ENESIM_FORMAT_ARGB8888_SPARSE:
+		return w * h * sizeof(uint32_t);
+
+		case ENESIM_FORMAT_A8:
+		return w * h * sizeof(uint8_t);
+
+		default:
+		return 0;
+
+	}
+}

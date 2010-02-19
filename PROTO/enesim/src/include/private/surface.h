@@ -34,6 +34,8 @@ struct _Enesim_Surface
 	uint32_t stride; /* number of bytes per line */
 	void *data;
 	Enesim_Format format;
+	Enesim_Backend backend;
+	Enesim_Pool *epool;
 	Eina_Mempool *pool;
 	void *user; /* user provided data */
 };
