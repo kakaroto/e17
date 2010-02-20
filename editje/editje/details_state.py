@@ -1,4 +1,3 @@
-#
 # Copyright (C) 2009 Samsung Electronics.
 #
 # This file is part of Editje.
@@ -10,15 +9,14 @@
 #
 # Editje is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 # GNU Lesser General Public License for more details.
 #
 # You should have received a copy of the GNU Lesser General Public
-# License along with Editje.  If not, see
-# <http://www.gnu.org/licenses/>.
+# License along with Editje. If not, see <http://www.gnu.org/licenses/>.
+
 import ecore
 import edje
-import elementary
 
 from details import EditjeDetails
 from details_widget_entry import WidgetEntry
@@ -28,7 +26,6 @@ from details_widget_button import WidgetButton
 from details_widget_partlist import WidgetPartList
 from details_widget_font import WidgetFont
 from details_widget_states import WidgetStates
-from floater import Floater
 from prop import Property, PropertyTable
 from filewizard import ImageSelectionWizard
 

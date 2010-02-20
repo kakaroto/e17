@@ -127,7 +127,7 @@ class Editje(elementary.Window):
         # TODO: when setting file/group via command line is done, don't
         # instantiate the wizard
         grp_wiz = GroupSelectionWizard(
-            self, selected_group=self.e.group,
+            self, switch_only=True,
             selected_set_cb=self._group_wizard_selection_set_cb,
             selected_get_cb=self._group_wizard_selection_get_cb,
             new_grp_cb=self._group_wizard_new_group_cb,
@@ -222,7 +222,7 @@ class Editje(elementary.Window):
 
     def _group_cb(self, obj, emission, source):
         grp_wiz = GroupSelectionWizard(
-            self, selected_group=self.e.group,
+            self, switch_only=False,
             selected_set_cb=self._group_wizard_selection_set_cb,
             selected_get_cb=self._group_wizard_selection_get_cb,
             new_grp_cb=self._group_wizard_new_group_cb,

@@ -1,4 +1,3 @@
-#
 # Copyright (C) 2010 Samsung Electronics.
 #
 # This file is part of Editje.
@@ -10,18 +9,16 @@
 #
 # Editje is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 # GNU Lesser General Public License for more details.
 #
 # You should have received a copy of the GNU Lesser General Public
-# License along with Editje.  If not, see
-# <http://www.gnu.org/licenses/>.
+# License along with Editje. If not, see <http://www.gnu.org/licenses/>.
+
 import elementary
-import evas
 
 from details_widget_entry_button import WidgetEntryButton
 from floater import Floater
-from elementary import Label, Box
 
 import sysconfig
 import re
@@ -59,7 +56,8 @@ class WidgetStates(WidgetEntryButton):
             box.horizontal_set(True)
             box.show()
 
-            it = self.states.item_append(s, None, box, self._states_select_cb, s)
+            it = self.states.item_append(
+                s, None, box, self._states_select_cb, s)
 
             ico1 = elementary.Icon(self._pop)
             ico2 = elementary.Icon(self._pop)
@@ -70,7 +68,8 @@ class WidgetStates(WidgetEntryButton):
             else:
                 if s == "default 0.00":
                     ico1.file_set(self.theme_file, "editje/icon/part")
-                    ico2.file_set(self.theme_file, "editje/icon/cancel_disabled")
+                    ico2.file_set(
+                        self.theme_file, "editje/icon/cancel_disabled")
                 else:
                     ico1.file_set(self.theme_file, "editje/icon/part")
                     ico2.file_set(self.theme_file, "editje/icon/cancel")
@@ -136,7 +135,8 @@ class WidgetStates(WidgetEntryButton):
     def _reset_state_to_cb(self, obj, event, st):
         self.editable.part.state.name = st[0]
         self.parent.state.copy_from(st[1])
-        self.editable.part.state.event_emit("state.changed", self.parent.state.name)
+        self.editable.part.state.event_emit(
+            "state.changed", self.parent.state.name)
 
     def _cancel_clicked(self, popup, data):
         self.close()

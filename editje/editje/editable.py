@@ -107,11 +107,15 @@ class Editable(Manager, object):
         return self._edje.group_exist(grp_name)
 
     def group_del(self, grp_name):
+        dummy_grp = None
         all_grps = edje.file_collection_list(self._swapfile.workfile)
         for g in all_grps:
             if g != grp_name:
                 dummy_grp = g
                 break
+
+        if not dummy_grp:
+            return False
 
         if not self._edje or self._group == grp_name:
             self.group = ""

@@ -20,7 +20,6 @@ import evas
 from elementary import InnerWindow, Layout, Button, Box
 
 import sysconfig
-from floater import Wizard
 
 
 class PopUp(InnerWindow):
@@ -56,6 +55,7 @@ class PopUp(InnerWindow):
         self.hide()
         self._parent.block(False)
         self.delete()
+
 
 class ConfirmPopUp(PopUp):
     def __init__(self, parent, group=None, select_cb=None):

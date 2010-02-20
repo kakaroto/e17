@@ -241,7 +241,7 @@ class PreviewFrame(elementary.Scroller):
 
 
 class GroupSelectionWizard(Wizard):
-    def __init__(self, parent, selected_group=None, selected_set_cb=None,
+    def __init__(self, parent, switch_only=False, selected_set_cb=None,
                  selected_get_cb=None, new_grp_cb=None, check_grp_cb=None,
                  del_grp_cb=None):
         if not selected_set_cb or not selected_get_cb or not new_grp_cb or \
@@ -254,14 +254,13 @@ class GroupSelectionWizard(Wizard):
         self._select_get_cb = selected_get_cb
         self._check_group_cb = check_grp_cb
         self._delete_cb = del_grp_cb
-        self._selected_group = selected_group
 
         self.page_add("group_list", "Select a group",
                       "Select an existing group to edit, or create a new one.")
         self._groups_list = GroupsList(self, self._goto_preview)
         self.content_add("group_list", self._groups_list)
         self._groups_list.show()
-        if selected_group:
+        if not switch_only:
             self.action_add("group_list", "Cancel", self.close)
         self.action_add("group_list", "New", self._goto_new_group)
 
@@ -309,8 +308,6 @@ class GroupSelectionWizard(Wizard):
     def _goto_preview(self):
         self._preview.group_set(self._groups_list.file,
                                 self._groups_list.selection)
-        self.action_disabled_set("group_preview", "Delete",
-                self._groups_list.selection == self._selected_group)
         self.goto("group_preview")
         self.title_text = "Group preview - \"%s\"" % self._groups_list.selection
 
@@ -335,7 +332,8 @@ class GroupSelectionWizard(Wizard):
         current = self._select_get_cb()
         r = self._delete_cb(grp_name)
         if not r:
-            self.notify("Error while deleting this group")
+            self.notify("Error while deleting this group "
+                        "(only group in the file?)")
             return
 
         if grp_name == current:

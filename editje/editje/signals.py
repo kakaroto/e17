@@ -19,7 +19,6 @@
 import evas
 import ecore
 import edje
-import elementary
 
 import sysconfig
 from details import EditjeDetails
