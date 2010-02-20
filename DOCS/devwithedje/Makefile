@@ -6,11 +6,11 @@ FILE = devwithedje
 all: html latex pdf
 
 html:
-	rst2html.py --cloak-email-addresses --stylesheet=$(FILE).css  $(FILE).txt $(FILE).html
-	
-latex: 
-	rst2latex.py --use-latex-toc --documentclass=book --documentoptions=12pt,a4paper --stylesheet=$(FILE).tex.sty $(FILE).txt $(FILE).tex
- 
+	rst2html --cloak-email-addresses --stylesheet=$(FILE).css  $(FILE).txt $(FILE).html
+
+latex:
+	rst2latex --use-latex-toc --documentclass=book --documentoptions=12pt,a4paper --stylesheet=$(FILE).tex.sty $(FILE).txt $(FILE).tex
+
 pdf:
 	make latex
 	pdflatex $(FILE).tex
