@@ -24,11 +24,11 @@ static int          list_max_count = 0;
 static char         _x_err = 0;
 
 /* the fucntion we use for catching the error */
-static void
+static int
 TmpXError(Display * d, XErrorEvent * ev)
 {
    _x_err = 1;
-   return;
+   return 0;
    d = NULL;
    ev = NULL;
 }
@@ -74,7 +74,7 @@ __imlib_ShmGetXImage(Display * d, Visual * v, Drawable draw, int depth,
                   /* setup a temporary error handler */
                   _x_err = 0;
                   XSync(d, False);
-                  ph = XSetErrorHandler((XErrorHandler) TmpXError);
+                  ph = XSetErrorHandler(TmpXError);
                }
              /* ask X to attach to the shared mem segment */
              XShmAttach(d, si);
@@ -85,7 +85,7 @@ __imlib_ShmGetXImage(Display * d, Visual * v, Drawable draw, int depth,
                   /* wait for X to reply and do this */
                   XSync(d, False);
                   /* reset the error handler */
-                  XSetErrorHandler((XErrorHandler) ph);
+                  XSetErrorHandler(ph);
                   x_does_shm = 1;
                }
 
