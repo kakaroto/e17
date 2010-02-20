@@ -38,7 +38,7 @@ __imlib_ShmCheck(Display * d)
 {
    /* if its there set x_does_shm flag */
    if (XShmQueryExtension(d))
-      x_does_shm = 1;
+      x_does_shm = 2;           /* 2: __imlib_ShmGetXImage tests first XShmAttach */
    /* clear the flag - no shm at all */
    else
       x_does_shm = 0;
@@ -69,17 +69,25 @@ __imlib_ShmGetXImage(Display * d, Visual * v, Drawable draw, int depth,
           {
              XErrorHandler       ph;
 
-             /* setup a temporary error handler */
-             _x_err = 0;
-             ph = XSetErrorHandler((XErrorHandler) TmpXError);
+             if (x_does_shm == 2)
+               {
+                  /* setup a temporary error handler */
+                  _x_err = 0;
+                  XSync(d, False);
+                  ph = XSetErrorHandler((XErrorHandler) TmpXError);
+               }
              /* ask X to attach to the shared mem segment */
              XShmAttach(d, si);
              if (draw != None)
                 XShmGetImage(d, draw, xim, x, y, 0xffffffff);
-             /* wait for X to reply and do this */
-             XSync(d, False);
-             /* reset the error handler */
-             XSetErrorHandler((XErrorHandler) ph);
+             if (x_does_shm == 2)
+               {
+                  /* wait for X to reply and do this */
+                  XSync(d, False);
+                  /* reset the error handler */
+                  XSetErrorHandler((XErrorHandler) ph);
+                  x_does_shm = 1;
+               }
 
              /* if we attached without an error we're set */
              if (_x_err == 0)
