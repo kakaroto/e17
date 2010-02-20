@@ -532,7 +532,6 @@ __imlib_GrabDrawableToRGBA(DATA32 * data, int ox, int oy, int ow, int oh,
    int                 width, height, clipx, clipy;
    XShmSegmentInfo     shminfo, mshminfo;
    XImage             *xim, *mxim;
-   static signed char  x_does_shm = -1;
    XColor              cols[256];
 
    domask = (pdomask) ? *pdomask : 0;

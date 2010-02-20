@@ -7,8 +7,10 @@
 #include <sys/shm.h>
 #include "ximage.h"
 
+/* global flags */
+signed char         x_does_shm = -1;
+
 /* static private variables */
-static signed char  x_does_shm = -1;
 static int          list_num = 0;
 static XImage     **list_xim = NULL;
 static XShmSegmentInfo **list_si = NULL;
