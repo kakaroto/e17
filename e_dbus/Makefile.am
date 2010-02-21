@@ -24,3 +24,5 @@ if BUILD_EBLUEZ
 EBLUEZ_PC = ebluez.pc
 endif
 pkgconfig_DATA = edbus.pc $(EHAL_PC) $(ENM_PC) $(ENOTIFY_PC) $(ECONNMAN_PC) $(EBLUEZ_PC)
+
+EXTRA_DIST = e_dbus.spec
