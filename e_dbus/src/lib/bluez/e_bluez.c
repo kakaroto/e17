@@ -183,7 +183,7 @@ _e_bluez_get_name_owner(void *data __UNUSED__, DBusMessage *msg, DBusError *err)
 }
 
 /**
- * Initialize E Connection Manager (E_Connman) system.
+ * Initialize E BlueZ (E_Bluez) system.
  *
  * This will connect and watch org.moblin.bluez.Manager and Element
  * events and translate to Ecore main loop events, also provide a

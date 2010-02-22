@@ -1365,7 +1365,7 @@ e_bluez_element_properties_sync(E_Bluez_Element *element)
  *
  * This is a server call, not local, so it may fail and in that case
  * no property is updated locally. If the value was set the event
- * E_CONNMAN_EVENT_ELEMENT_UPDATED will be added to main loop.
+ * E_BLUEZ_EVENT_ELEMENT_UPDATED will be added to main loop.
  *
  * @param element to call method on server.
  * @param prop property name.
@@ -1442,7 +1442,7 @@ e_bluez_element_property_dict_set_full(E_Bluez_Element *element, const char *pro
  *
  * This is a server call, not local, so it may fail and in that case
  * no property is updated locally. If the value was set the event
- * E_CONNMAN_EVENT_ELEMENT_UPDATED will be added to main loop.
+ * E_BLUEZ_EVENT_ELEMENT_UPDATED will be added to main loop.
  *
  * @param element to call method on server.
  * @param prop property name.
@@ -2173,7 +2173,7 @@ _e_bluez_element_unregister_internal(E_Bluez_Element *element)
  * Forget about the given element.
  *
  * This will remove the element from the pool of known objects, then
- * add an E_CONNMAN_EVENT_ELEMENT_DEL and after that will unreference it,
+ * add an E_BLUEZ_EVENT_ELEMENT_DEL and after that will unreference it,
  * possible freeing it.
  *
  * @param element element to forget about. Its reference will be removed.
@@ -2192,7 +2192,7 @@ e_bluez_element_unregister(E_Bluez_Element *element)
  * Remove all known elements.
  *
  * This will remove all known elements but will NOT add any
- * E_CONNMAN_EVENT_ELEMENT_DEL to main loop.
+ * E_BLUEZ_EVENT_ELEMENT_DEL to main loop.
  *
  * This is just useful to make sure next e_bluez_manager_sync_elements()
  * will not leave any stale elements. This is unlikely to happen, as
