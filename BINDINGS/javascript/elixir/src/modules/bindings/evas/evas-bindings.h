@@ -3,6 +3,7 @@
 
 #include "Elixir.h"
 
+extern elixir_parameter_t       evas_parameter;
 extern elixir_parameter_t       evas_object_parameter;
 extern elixir_parameter_t       evas_object_rectangle_parameter;
 extern elixir_parameter_t       evas_object_line_parameter;

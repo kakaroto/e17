@@ -4,17 +4,13 @@
 
 #include "evas-bindings.h"
 
-static elixir_parameter_t               _evas_parameter = {
-   "Evas", JOBJECT, NULL
-};
-
 static const elixir_parameter_t*        _evas_params[2] = {
-   &_evas_parameter,
+   &evas_parameter,
    NULL
 };
 
 static const elixir_parameter_t*        _evas_any_params[3] = {
-   &_evas_parameter,
+   &evas_parameter,
    &any_parameter,
    NULL
 };
@@ -261,8 +257,6 @@ load_evas_params(JSContext *cx, JSObject *parent)
 {
    if (!JS_DefineFunctions(cx, parent, evas_params_function))
      return EINA_FALSE;
-
-   _evas_parameter.class = elixir_class_request("evas", NULL);
 
    return EINA_TRUE;
 }

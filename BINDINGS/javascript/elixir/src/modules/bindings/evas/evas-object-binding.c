@@ -4,12 +4,8 @@
 
 #include "evas-bindings.h"
 
-static elixir_parameter_t               _evas_parameter = {
-  "Evas", JOBJECT, NULL
-};
-
 static const elixir_parameter_t*	_evas_double_int_double_bool_params[6] = {
-  &_evas_parameter,
+  &evas_parameter,
   &int_parameter,
   &int_parameter,
   &boolean_parameter,
@@ -17,7 +13,7 @@ static const elixir_parameter_t*	_evas_double_int_double_bool_params[6] = {
   NULL
 };
 static const elixir_parameter_t*	_evas_four_int_double_bool_params[8] = {
-  &_evas_parameter,
+  &evas_parameter,
   &int_parameter,
   &int_parameter,
   &int_parameter,
@@ -264,8 +260,6 @@ load_evas_object_bindings(JSContext *cx, JSObject *parent)
 {
    if (!JS_DefineFunctions(cx, parent, evas_objects_functions))
      return EINA_FALSE;
-
-   _evas_parameter.class = elixir_class_request("evas", NULL);
 
    return EINA_TRUE;
 }

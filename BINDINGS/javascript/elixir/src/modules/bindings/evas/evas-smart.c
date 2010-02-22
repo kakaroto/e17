@@ -7,16 +7,13 @@
 static elixir_parameter_t               _evas_smart_parameter = {
   "Evas_Smart", JOBJECT, NULL
 };
-static elixir_parameter_t               _evas_parameter = {
-  "Evas", JOBJECT, NULL
-};
 
 static const elixir_parameter_t*        _evas_smart_params[2] = {
   &_evas_smart_parameter,
   NULL
 };
 static const elixir_parameter_t*        _evas_evas_smart_params[3] = {
-  &_evas_parameter,
+  &evas_parameter,
   &_evas_smart_parameter,
   NULL
 };
@@ -497,7 +494,6 @@ load_evas_smart_params(JSContext *cx, JSObject *parent)
    if (!JS_DefineFunctions(cx, parent, evas_smart_function))
      return EINA_FALSE;
 
-   _evas_parameter.class = elixir_class_request("evas", NULL);
    _evas_smart_parameter.class = elixir_class_request("Evas_Smart", NULL);
 
    return EINA_TRUE;

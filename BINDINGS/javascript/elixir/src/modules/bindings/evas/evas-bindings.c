@@ -13,10 +13,9 @@
 # include <Ecore_Evas.h>
 #endif
 
-static elixir_parameter_t               _evas_parameter = {
+elixir_parameter_t			evas_parameter = {
   "Evas", JOBJECT, NULL
 };
-
 elixir_parameter_t                      evas_object_parameter = {
   "Evas_Object", JOBJECT, NULL
 };
@@ -516,7 +515,7 @@ module_open(Elixir_Module *em, JSContext *cx, JSObject *parent)
    void **tmp;
    unsigned int i = 0;
 
-   _evas_parameter.class = elixir_class_request("evas", NULL);
+   evas_parameter.class = elixir_class_request("evas", NULL);
    evas_object_parameter.class = elixir_class_request("evas_object", NULL);
    evas_object_rectangle_parameter.class = elixir_class_request("evas_object_rectangle", "evas_object");
    evas_object_line_parameter.class = elixir_class_request("evas_object_line", "evas_object");
