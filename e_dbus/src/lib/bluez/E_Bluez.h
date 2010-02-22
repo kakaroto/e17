@@ -76,6 +76,7 @@ extern "C" {
   EAPI bool e_bluez_adapter_agent_register(E_Bluez_Element *element, const char *object_path, const char *capability, E_DBus_Method_Return_Cb cb, const void *data) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
   EAPI bool e_bluez_adapter_agent_unregister(E_Bluez_Element *element, const char *object_path, E_DBus_Method_Return_Cb cb, const void *data) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
   EAPI bool e_bluez_adapter_address_get(E_Bluez_Element *element, const char **address) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
+  EAPI bool e_bluez_adapter_powered_get(E_Bluez_Element *element, bool *powered) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
 
   EAPI bool e_bluez_adapter_powered_set(E_Bluez_Element *profile, bool powered, E_DBus_Method_Return_Cb cb, const void *data) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
 

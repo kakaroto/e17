@@ -360,6 +360,23 @@ _on_cmd_adapter_get_address(char *cmd, char *args)
 }
 
 static int
+_on_cmd_adapter_get_powered(char *cmd, char *args)
+{
+   char *next_args;
+   bool powered;
+   E_Bluez_Element *element = _element_from_args(args, &next_args);
+
+   if (!element)
+	   return 1;
+
+   if (e_bluez_adapter_powered_get(element, &powered))
+     printf(":::Adapter powered = \"%hhu\"\n", powered);
+   else
+     fputs("ERROR: can't get adapter powered\n", stderr);
+   return 1;
+}
+
+static int
 _on_cmd_adapter_set_powered(char *cmd, char *args)
 {
    char *next_args;
@@ -424,6 +441,7 @@ _on_input(void *data, Ecore_Fd_Handler *fd_handler)
      {"adapter_register_agent", _on_cmd_adapter_register_agent},
      {"adapter_unregister_agent", _on_cmd_adapter_unregister_agent},
      {"adapter_get_address", _on_cmd_adapter_get_address},
+     {"adapter_get_powered", _on_cmd_adapter_get_powered},
      {"adapter_set_powered", _on_cmd_adapter_set_powered},
      {"device_get_name", _on_cmd_device_get_name},
      {NULL, NULL}
