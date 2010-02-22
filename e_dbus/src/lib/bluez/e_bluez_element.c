@@ -1332,7 +1332,7 @@ _e_bluez_element_get_properties_callback(void *user_data, DBusMessage *msg, DBus
  * @return 1 on success, 0 otherwise.
  */
 bool
-e_bluez_element_sync_properties_full(E_Bluez_Element *element, E_DBus_Method_Return_Cb cb, const void *data)
+e_bluez_element_properties_sync_full(E_Bluez_Element *element, E_DBus_Method_Return_Cb cb, const void *data)
 {
    const char name[] = "GetProperties";
 
@@ -1357,7 +1357,7 @@ bool
 e_bluez_element_properties_sync(E_Bluez_Element *element)
 {
    EINA_SAFETY_ON_NULL_RETURN_VAL(element, 0);
-   return e_bluez_element_sync_properties_full(element, NULL, NULL);
+   return e_bluez_element_properties_sync_full(element, NULL, NULL);
 }
 
 /**
