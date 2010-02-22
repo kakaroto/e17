@@ -93,8 +93,8 @@ elm_home_win_new(Ecore_X_Window zone)
    hwin = calloc(1, sizeof(Elm_Home_Win));
    if (!hwin) return;
 
-   hwin->win = elm_win_add(NULL, "elm_indicator_home", ELM_WIN_BASIC);
-   elm_win_title_set(hwin->win, "Illume Home Window");
+   hwin->win = elm_win_add(NULL, "Illume-Home", ELM_WIN_BASIC);
+   elm_win_title_set(hwin->win, "Illume Home");
 
    bg = elm_bg_add(hwin->win);
    evas_object_size_hint_weight_set(bg, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);

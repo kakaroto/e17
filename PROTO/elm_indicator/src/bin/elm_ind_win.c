@@ -29,9 +29,9 @@ elm_ind_win_new(Ecore_X_Window zone)
    iwin = calloc(1, sizeof(Elm_Ind_Win));
    if (!iwin) return NULL;
 
-   iwin->win = elm_win_add(NULL, "elm_indicator", ELM_WIN_DOCK);
+   iwin->win = elm_win_add(NULL, "Illume-Indicator", ELM_WIN_DOCK);
    evas_object_data_set(iwin->win, "zone", (const void *)zone);
-   elm_win_title_set(iwin->win, "Illume Indicator Window");
+   elm_win_title_set(iwin->win, "Illume Indicator");
    evas_object_smart_callback_add(iwin->win, "delete-request", 
                                   _cb_win_del, iwin);
 
@@ -118,8 +118,7 @@ elm_ind_win_new(Ecore_X_Window zone)
    evas_object_resize(iwin->win, zw, 32);
    evas_object_show(iwin->win);
 
-   ecore_x_e_illume_top_shelf_geometry_set(ecore_x_window_root_first_get(), 
-                                           zx, zy, zw, 32);
+   ecore_x_e_illume_indicator_geometry_set(zone, zx, zy, zw, 32);
 
    /* create first home window */
    elm_home_win_new(zone);
@@ -128,13 +127,6 @@ elm_ind_win_new(Ecore_X_Window zone)
    mode = ecore_x_e_illume_mode_get(zone);
    if (mode > ECORE_X_ILLUME_MODE_SINGLE)
      elm_home_win_new(zone);
-
-   if (mode < ECORE_X_ILLUME_MODE_DUAL_TOP) 
-     ecore_x_e_illume_drag_locked_set(xwin, 1);
-   else if (mode == ECORE_X_ILLUME_MODE_DUAL_TOP)
-     ecore_x_e_illume_drag_locked_set(xwin, 0);
-   else if (mode == ECORE_X_ILLUME_MODE_DUAL_LEFT)
-     ecore_x_e_illume_drag_locked_set(xwin, 1);
 
    return iwin;
 }
@@ -200,7 +192,7 @@ _cb_client_message(void *data, int type, void *event)
 
    ev = event;
    if (!(iwin = data)) return 1;
-   if (ev->message_type == ECORE_X_ATOM_E_ILLUME_HOME) 
+   if (ev->message_type == ECORE_X_ATOM_E_ILLUME_HOME_NEW) 
      {
         Ecore_X_Window zone;
 
@@ -335,7 +327,7 @@ _cb_rect_mouse_up(void *data, Evas *evas, Evas_Object *obj, void *event)
 
         xwin = elm_win_xwindow_get(iwin->win);
         ecore_x_window_geometry_get(xwin, &x, &y, &w, &h);
-        ecore_x_e_illume_top_shelf_geometry_set(zone, x, y, w, h);
+        ecore_x_e_illume_indicator_geometry_set(zone, x, y, w, h);
         ecore_x_e_illume_drag_end_send(xwin);
         ecore_x_e_illume_quickpanel_position_update_send(xwin);
      }
