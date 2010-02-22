@@ -25,8 +25,8 @@ elm_main(int argc, char **argv)
 
         count = 
           ecore_x_window_prop_window_list_get(roots[i], 
-                                              ECORE_X_ATOM_E_ILLUME_ZONE_LIST, 
-                                              &zones);
+                                         ECORE_X_ATOM_E_ILLUME_ZONE_LIST, 
+                                         &zones);
         if (!zones) continue;
         for (x = 0; x < count; x++) 
           {
@@ -98,9 +98,8 @@ elm_main(int argc, char **argv)
              evas_object_show(icon);
 
              ecore_x_window_geometry_get(zones[x], &zx, &zy, &zw, &zh);
-             ecore_x_e_illume_bottom_panel_geometry_set(ecore_x_window_root_first_get(), 
-                                                        zx, (zy + zh - 32), 
-                                                        zw, 32);
+             ecore_x_e_illume_softkey_geometry_set(zones[x], zx, 
+                                                   (zy + zh - 32), zw, 32);
 
              evas_object_move(win, zx, (zy + zh - 32));
              evas_object_resize(win, zw, 32);
@@ -112,9 +111,6 @@ elm_main(int argc, char **argv)
 
    elm_run();
 
-   ecore_x_e_illume_bottom_panel_geometry_set(ecore_x_window_root_first_get(), 
-                                              0, 0, 0, 0);
-
    elm_shutdown();
    return EXIT_SUCCESS;
 }
@@ -122,6 +118,11 @@ elm_main(int argc, char **argv)
 static void 
 _cb_win_del(void *data, Evas_Object *obj, void *event) 
 {
+   Ecore_X_Window zone;
+
+   zone = (Ecore_X_Window)evas_object_data_get(obj, "zone");
+   ecore_x_e_illume_softkey_geometry_set(zone, 0, 0, 0, 0);
+
    elm_exit();
 }
 
@@ -144,7 +145,7 @@ _cb_btn_back_clicked(void *data, Evas_Object *obj, void *event)
 
    if (!(win = data)) return;
    zone = (Ecore_X_Window)evas_object_data_get(win, "zone");
-   ecore_x_e_illume_back_send(zone);
+   ecore_x_e_illume_focus_back_send(zone);
 }
 
 #endif
