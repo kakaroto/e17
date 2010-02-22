@@ -109,10 +109,10 @@ e_bluez_adapter_powered_get(E_Bluez_Element *element, bool *powered)
  * @return 1 on success, 0 otherwise.
  */
 bool
-e_bluez_adapter_powered_set(E_Bluez_Element *profile, bool offline, E_DBus_Method_Return_Cb cb, const void *data)
+e_bluez_adapter_powered_set(E_Bluez_Element *element, bool powered, E_DBus_Method_Return_Cb cb, const void *data)
 {
-   EINA_SAFETY_ON_NULL_RETURN_VAL(profile, 0);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(element, 0);
    return e_bluez_element_property_set_full
-     (profile, e_bluez_prop_powered, DBUS_TYPE_BOOLEAN,
-      &offline, cb, data);
+     (element, e_bluez_prop_powered, DBUS_TYPE_BOOLEAN,
+      &powered, cb, data);
 }
