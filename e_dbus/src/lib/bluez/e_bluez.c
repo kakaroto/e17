@@ -334,5 +334,25 @@ e_bluez_system_shutdown(void)
 	_stringshare_del(&e_bluez_prop_pairabletimeout);
 	_stringshare_del(&e_bluez_prop_discovering);
 	_stringshare_del(&e_bluez_prop_devices);
-	return 0;
+
+	if (pending_get_name_owner)
+	{
+		dbus_pending_call_cancel(pending_get_name_owner);
+		pending_get_name_owner = NULL;
+	}
+
+	if (cb_name_owner_changed)
+	{
+		e_dbus_signal_handler_del(e_bluez_conn, cb_name_owner_changed);
+		cb_name_owner_changed = NULL;
+	}
+
+	if (unique_name)
+		_e_bluez_system_name_owner_exit();
+
+	e_bluez_elements_shutdown();
+	eina_log_domain_unregister(_e_dbus_bluez_log_dom);
+	e_bluez_conn = NULL;
+
+	return init_count;
 }
