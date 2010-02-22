@@ -282,7 +282,7 @@ _on_cmd_manager_get(char *cmd, char *args)
 static int
 _on_cmd_manager_default_adapter(char *cmd, char *args)
 {
-   return e_bluez_manager_default_adapter(_default_adapter_callback);
+   return e_bluez_manager_default_adapter(_default_adapter_callback, NULL);
 }
 
 /* Adapter Commands */

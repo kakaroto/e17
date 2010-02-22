@@ -70,7 +70,7 @@ extern "C" {
 
   /* Manager Methods */
   EAPI E_Bluez_Element *e_bluez_manager_get(void) EINA_WARN_UNUSED_RESULT;
-  EAPI bool e_bluez_manager_default_adapter(E_DBus_Method_Return_Cb cb) EINA_WARN_UNUSED_RESULT;
+  EAPI bool e_bluez_manager_default_adapter(E_DBus_Method_Return_Cb cb, void *data) EINA_WARN_UNUSED_RESULT;
 
   /* Adapter Methods */
   EAPI bool e_bluez_adapter_agent_register(E_Bluez_Element *element, const char *object_path, const char *capability, E_DBus_Method_Return_Cb cb, const void *data) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
