@@ -38,8 +38,8 @@ elm_main(int argc, char **argv)
              int zx, zy, zw, zh;
 
              /* create new window */
-             win = elm_win_add(NULL, "elm_softkey", ELM_WIN_DOCK);
-             elm_win_title_set(win, "Illume Softkey Window");
+             win = elm_win_add(NULL, "Illume-Softkey", ELM_WIN_DOCK);
+             elm_win_title_set(win, "Illume Softkey");
              evas_object_smart_callback_add(win, "delete-request", 
                                             _cb_win_del, NULL);
              evas_object_data_set(win, "zone", (const void *)zones[x]);
