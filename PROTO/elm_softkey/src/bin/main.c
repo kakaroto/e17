@@ -130,11 +130,11 @@ static void
 _cb_btn_close_clicked(void *data, Evas_Object *obj, void *event) 
 {
    Evas_Object *win;
-   Ecore_X_Window xwin;
+   Ecore_X_Window zone;
 
    if (!(win = data)) return;
-   xwin = elm_win_xwindow_get(win);
-   ecore_x_e_illume_close_send(xwin);
+   zone = (Ecore_X_Window)evas_object_data_get(win, "zone");
+   ecore_x_e_illume_close_send(zone);
 }
 
 static void 
