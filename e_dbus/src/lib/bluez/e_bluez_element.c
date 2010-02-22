@@ -1118,15 +1118,13 @@ e_bluez_element_message_send(E_Bluez_Element *element, const char *method_name, 
 	*pending = eina_inlist_append(*pending, EINA_INLIST_GET(p));
 	return 1;
      }
-   else
-     {
-	ERR("failed to call %s (obj=%s, path=%s, iface=%s)",
-	    method_name, e_bluez_system_bus_name_get(),
-	    element->path, element->interface);
-	free(data);
-	free(p);
-	return 0;
-     }
+
+   ERR("failed to call %s (obj=%s, path=%s, iface=%s)",
+      method_name, e_bluez_system_bus_name_get(),
+      element->path, element->interface);
+   free(data);
+   free(p);
+   return 0;
 }
 
 bool
