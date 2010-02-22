@@ -116,3 +116,47 @@ e_bluez_adapter_powered_set(E_Bluez_Element *element, bool powered, E_DBus_Metho
      (element, e_bluez_prop_powered, DBUS_TYPE_BOOLEAN,
       &powered, cb, data);
 }
+
+/**
+ * Start Discovery of Bluetooth Devices
+ *
+ * call StartDiscovery()
+ *
+ * @param element the adapter's element.
+ * @param cb function to call when server replies or some error happens.
+ * @param data data to give to cb when it is called.
+ *
+ * @return 1 on success, 0 otherwise.
+ */
+bool
+e_bluez_adapter_start_discovery(E_Bluez_Element *element, E_DBus_Method_Return_Cb cb, const void *data)
+{
+   const char name[] = "StartDiscovery";
+
+   EINA_SAFETY_ON_NULL_RETURN_VAL(element, 0);
+
+   return e_bluez_element_call_full(element, name, NULL,
+		   &element->_pending.start_discovery, cb, data);
+}
+
+/**
+ * Stop Discovery of Bluetooth Devices
+ *
+ * call StopDiscovery()
+ *
+ * @param element the adapter's element.
+ * @param cb function to call when server replies or some error happens.
+ * @param data data to give to cb when it is called.
+ *
+ * @return 1 on success, 0 otherwise.
+ */
+bool
+e_bluez_adapter_stop_discovery(E_Bluez_Element *element, E_DBus_Method_Return_Cb cb, const void *data)
+{
+   const char name[] = "StopDiscovery";
+
+   EINA_SAFETY_ON_NULL_RETURN_VAL(element, 0);
+
+   return e_bluez_element_call_full(element, name, NULL,
+		   &element->_pending.stop_discovery, cb, data);
+}

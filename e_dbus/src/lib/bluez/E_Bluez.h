@@ -56,6 +56,8 @@ extern "C" {
 	Eina_Inlist *property_set;
 	Eina_Inlist *agent_register;
 	Eina_Inlist *agent_unregister;
+	Eina_Inlist *start_discovery;
+	Eina_Inlist *stop_discovery;
      } _pending;
      struct {
 	Ecore_Idler *changed;
@@ -79,7 +81,8 @@ extern "C" {
   EAPI bool e_bluez_adapter_powered_get(E_Bluez_Element *element, bool *powered) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
 
   EAPI bool e_bluez_adapter_powered_set(E_Bluez_Element *profile, bool powered, E_DBus_Method_Return_Cb cb, const void *data) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
-
+  EAPI bool e_bluez_adapter_start_discovery(E_Bluez_Element *element, E_DBus_Method_Return_Cb cb, const void *data) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
+  EAPI bool e_bluez_adapter_stop_discovery(E_Bluez_Element *element, E_DBus_Method_Return_Cb cb, const void *data) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
 
   /* Devices Methods */
   EAPI bool e_bluez_device_name_get(E_Bluez_Element *element, const char **name) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;

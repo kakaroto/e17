@@ -402,6 +402,40 @@ _on_cmd_adapter_set_powered(char *cmd, char *args)
    return 1;
 }
 
+static int
+_on_cmd_adapter_start_discovery(char *cmd, char *args)
+{
+   char *next_args;
+   E_Bluez_Element *element = _element_from_args(args, &next_args);
+
+   if (!element)
+	   return 1;
+
+   if (e_bluez_adapter_start_discovery(element,
+        _method_success_check, "adapter_start_discovery"))
+     printf(":::Adapter Start Discovery for %s\n", element->path);
+   else
+     fputs("ERROR: can't start discovery on adapter \n", stderr);
+   return 1;
+}
+
+static int
+_on_cmd_adapter_stop_discovery(char *cmd, char *args)
+{
+   char *next_args;
+   E_Bluez_Element *element = _element_from_args(args, &next_args);
+
+   if (!element)
+	   return 1;
+
+   if (e_bluez_adapter_stop_discovery(element,
+        _method_success_check, "adapter_stop_discovery"))
+     printf(":::Adapter Stop Discovery for %s\n", element->path);
+   else
+     fputs("ERROR: can't stop discovery on adapter \n", stderr);
+   return 1;
+}
+
 /* Devices Commands */
 
 static int
@@ -443,6 +477,8 @@ _on_input(void *data, Ecore_Fd_Handler *fd_handler)
      {"adapter_get_address", _on_cmd_adapter_get_address},
      {"adapter_get_powered", _on_cmd_adapter_get_powered},
      {"adapter_set_powered", _on_cmd_adapter_set_powered},
+     {"adapter_start_discovery", _on_cmd_adapter_start_discovery},
+     {"adapter_stop_discovery", _on_cmd_adapter_stop_discovery},
      {"device_get_name", _on_cmd_device_get_name},
      {NULL, NULL}
    };
