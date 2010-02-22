@@ -68,6 +68,7 @@ e_bluez_adapter_agent_unregister(E_Bluez_Element *element, const char *object_pa
 bool
 e_bluez_adapter_address_get(E_Bluez_Element *element, const char **address)
 {
+   EINA_SAFETY_ON_NULL_RETURN_VAL(element, 0);
    EINA_SAFETY_ON_NULL_RETURN_VAL(address, 0);
 
    return e_bluez_element_property_get_stringshared
