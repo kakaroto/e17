@@ -18,7 +18,7 @@
 
     <script type="text/javascript">
         var gOverride = {
-            urlBase: 'http://gridder.andreehansson.se/releases/latest/',
+//             urlBase: 'http://gridder.andreehansson.se/releases/latest/',
             gColor: '#00f',
             gColumns: 12,
             gOpacity: 0.10,

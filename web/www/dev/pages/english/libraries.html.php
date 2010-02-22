@@ -78,7 +78,7 @@
             <a href="#WikiPageInstall">Installation Instructions</a>
         </p>
         <p class="inthewild">
-            <a href="#inthewild">Enlightenment in the Wild</a>
+            <a href="/dev/?news/inthewild">Enlightenment in the Wild</a>
         </p>
     </div>
 </div>
@@ -272,7 +272,7 @@
             </li>
         </ul>
         <p class="more">
-            <a href="?video">Video Channel</a>
+            <a href="?video">The Enlightenment Video Channel</a>
         </p>
     </div>
     <div class="architecture">
@@ -334,39 +334,53 @@
         <h4>
             Resources for Artists
         </h4>
-        <ul>
-            <li id="editje">
-                <span><strong>Editje</strong> is a graphical Edje
-                editor.</span> <a href="#">Try it!</a>
-            </li>
-            <li>
-                <span>Visit the</span> <a href=
+        <div id="editje">
+            <img src="editje-shot.png" alt="Editje Screenshot">
+            <h5>
+                Editje
+            </h5>
+            <h6>
+                The graphical Edje editor
+            </h6>
+            <p>
+                Load binary or source Edje files in this <abbr title=
+                "What You See Is What You Get">WYSIWYG</abbr> editor and save
+                your changes respecting either format.
+            </p><a href="#">Try it!</a>
+        </div>
+        <div class="wiki">
+            <h5>
+                The <a href=
                 "http://trac.enlightenment.org/e/wiki/Artists">Artists Wiki
                 Page</a>
-            </li>
-            <li>Latest Artist News:
-                <ul>
-                    <!-- Dynamically Generated -->
-                    <li>
-                        <a href="#">Planet article tagged artists 1</a>
-                    </li>
-                    <li>
-                        <a href="#">Planet article tagged artists 2</a>
-                    </li>
-                    <li>
-                        <a href="#">Planet article tagged artists 3</a>
-                    </li>
-                    <li>
-                        <a href="#">Planet article tagged artists 4</a>
-                    </li>
-                </ul><a class="more" href=
-                "http://planet.enlightenment.org/?tags=artists">More
-                Articles</a>
-            </li>
-        </ul>
+            </h5>
+            <ul>
+                <li>
+                    <a href=
+                    "http://trac.enlightenment.org/e/wiki/Artists"></a><a href="http://trac.enlightenment.org/e/wiki/Artists"></a>
+                    <a href=
+                    "http://trac.enlightenment.org/e/wiki/Artists#Documentation">
+                    Documentation</a>
+                </li>
+                <li>
+                    <a href=
+                    "http://trac.enlightenment.org/e/wiki/Artists#Tutorials">Tutorials</a>
+                </li>
+                <li>
+                    <a href=
+                    "http://trac.enlightenment.org/e/wiki/Artists#UsefulSoftware">
+                    Useful Applications</a>
+                </li>
+                <li>
+                    <a href=
+                    "http://trac.enlightenment.org/e/wiki/Artists#UsefulScripts">
+                    Scripts</a>
+                </li>
+            </ul>
+        </div>
     </div>
 </div>
-<!--<div id="libraries">
+<div id="libraries">
     <h3>
         More about the <abbr title=
         "Enlightenment Foundation Libraries">EFL</abbr>
@@ -375,21 +389,204 @@
         <h4>
             The Core Libraries
         </h4>
-        <p>
-            Enlightenment, the window manager is built on top of building
-            blocks known as EFL (the Enlightenment Foundation Libraries).
-            There are more than can be sensibly put into the simple block
-            diagram above, but this covers the essentials.
-        </p><a href="http://trac.enlightenment.org/e/wiki/EFL"><img src=
-        "http://enlightenment.org/p/about/d/diagram-efl-simple-small.png"
-        style="width: 240px; height: 360px; border: 0pt none;" alt=
-        "Simple E stack"></a>
-        <p>
-            Pretty much any application written using Core EFL libraries will
-            use one or more of these depending on its needs. It may only need
-            the lower level ones or use all of them to the top of the stack.
-            Each library fulfills a purpose, so it may be skipped if not
-            needed.
+        <div class="intro">
+            <p>
+                Enlightenment, the window manager is built on top of building
+                blocks known as EFL (the Enlightenment Foundation Libraries).
+                There are more than can be sensibly put into the simple block
+                diagram above, but this covers the essentials.
+            </p>
+            <p>
+                Pretty much any application written using Core EFL libraries
+                will use one or more of these depending on its needs. It may
+                only need the lower level ones or use all of them to the top
+                of the stack. Each library fulfills a purpose, so it may be
+                skipped if not needed.
+            </p>
+        </div>
+        <div class="diagram">
+            <a href="http://trac.enlightenment.org/e/wiki/EFL"><img src=
+            "http://enlightenment.org/p/about/d/diagram-efl-simple-small.png"
+            alt="Simple E stack"></a>
+        </div>
+        <div class="libraries">
+            <h5>
+                The Core Libraries
+            </h5>
+            <ul>
+                <li>
+                    <a href=
+                    "http://trac.enlightenment.org/e/wiki/Evas">Evas</a>
+                </li>
+                <li>
+                    <a href=
+                    "http://trac.enlightenment.org/e/wiki/Eina">Eina</a>
+                </li>
+                <li>
+                    <a href=
+                    "http://trac.enlightenment.org/e/wiki/Edje">Edje</a>
+                </li>
+                <li>
+                    <a href="http://trac.enlightenment.org/e/wiki/Eet">Eet</a>
+                </li>
+                <li>
+                    <a href=
+                    "http://trac.enlightenment.org/e/wiki/Ecore">Ecore</a>
+                </li>
+                <li>
+                    <a href=
+                    "http://trac.enlightenment.org/e/wiki/Efreet">Efreet</a>
+                </li>
+                <li>
+                    <a href=
+                    "http://trac.enlightenment.org/e/wiki/Edbus">Edbus</a>
+                </li>
+                <li>
+                    <a href=
+                    "http://trac.enlightenment.org/e/wiki/Elementary">Elementary</a>
+                </li>
+            </ul>
+        </div>
+        <div class="bindings">
+            <h5>
+                Language bindings
+            </h5>
+            <ul>
+                <li>
+                    <a href=
+                    "http://trac.enlightenment.org/e/wiki/Python">Python</a>
+                </li>
+                <li>
+                    <a href=
+                    "http://trac.enlightenment.org/e/wiki/Javascript">Javascript</a>
+                </li>
+                <li>
+                    <a href=
+                    "http://trac.enlightenment.org/e/wiki/Perl">Perl</a>
+                </li>
+                <li>
+                    <a href="http://trac.enlightenment.org/e/wiki/C++">C++</a>
+                </li>
+                <li>
+                    <a href=
+                    "http://trac.enlightenment.org/e/wiki/Ruby">Ruby</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div id="inthewild">
+        <h4>
+            Enlightenment in the Wild
+        </h4>
+        <ul>
+            <!-- Dynamic List -->
+            <li>
+                <p>
+                    French ISP <a href="http://www.free.fr">Free.fr</a> is
+                    currently distributing millons of <a href=
+                    "http://www.free.fr/adsl/pages/television/multimedia.html">
+                    Freebox HD</a> set-top boxes. Shippend with the
+                    <abbr title=
+                    "Enlightenment Foundation Libraries">EFL</abbr>-based
+                    <a href="http://code.google.com/p/freebox-elixir/">Elixr
+                    SDK</a> preinstaled. <a class="more" href="#">Learn
+                    More</a>
+                </p>
+            </li>
+            <li>
+                <p>
+                    Thousands of <a href=
+                    "http://wiki.openmoko.org/wiki/Neo_FreeRunner">Openmoko
+                    Freerunner</a> phones have been sold which included the
+                    <abbr title=
+                    "Enlightenment Foundation Libraries">EFL</abbr> as part of
+                    the <a href=
+                    "http://wiki.openmoko.org/wiki/Openmoko_developer_guide">SDK</a>
+                    and the Enlightement DR0.17 desktop adjusted to mobile
+                    usage through the <a href=
+                    "http://wiki.openmoko.org/wiki/Illume">illumine
+                    module</a>. <a class="more" href="#">Learn More</a>
+                </p>
+            </li>
+            <li>
+                <p>
+                    <a href="http://www.fixstars.com/en/products/ydl/">Yellow
+                    Dog Linux</a>, a distrubtion ported to the PlayStation 3
+                    under contract by Sony, ships with the <abbr title=
+                    "Enlightenment Foundation Libraries">EFL</abbr> and
+                    Enlightenment DR0.17 as the <a href=
+                    "http://www.fixstars.com/en/products/ydl/e17.html">default
+                    destktop</a>.<a class="more" href="#">Learn More</a>
+                </p>
+            </li>
+            <li>
+                <p>
+                    French ISP <a href="http://www.free.fr">Free.fr</a> is
+                    currently distributing millons of <a href=
+                    "http://www.free.fr/adsl/pages/television/multimedia.html">
+                    Freebox HD</a> set-top boxes. Shippend with the
+                    <abbr title=
+                    "Enlightenment Foundation Libraries">EFL</abbr>-based
+                    <a href="http://code.google.com/p/freebox-elixir/">Elixr
+                    SDK</a> preinstaled. <a class="more" href="#">Learn
+                    More</a>
+                </p>
+            </li>
+            <li>
+                <p>
+                    Thousands of <a href=
+                    "http://wiki.openmoko.org/wiki/Neo_FreeRunner">Openmoko
+                    Freerunner</a> phones have been sold which included the
+                    <abbr title=
+                    "Enlightenment Foundation Libraries">EFL</abbr> as part of
+                    the <a href=
+                    "http://wiki.openmoko.org/wiki/Openmoko_developer_guide">SDK</a>
+                    and the Enlightement DR0.17 desktop adjusted to mobile
+                    usage through the <a href=
+                    "http://wiki.openmoko.org/wiki/Illume">illumine
+                    module</a>. <a class="more" href="#">Learn More</a>
+                </p>
+            </li>
+        </ul>
+    </div>
+    <div class="applications">
+        <h4>
+            Featured Applications
+        </h4>
+        <ul><!-- Dynamic List -->
+            <li>
+                <a href=
+                "http://exchange.enlightenment.org/application/show/193"><img src="http://exchange.enlightenment.org/files/application/193/smallthumb.png"
+                alt="Shellementary Screenshot"></a>
+                <p>
+                    Zenity replacement written in elementary and C. It allows
+                    you to give your shell scripts a GUI...
+                </p>
+            </li>
+           <li>
+                <a href="http://exchange.enlightenment.org/application/show/164">
+                    <img src="http://exchange.enlightenment.org/files/application/164/smallthumb.png" alt="Enna screenshot">
+                </a>
+                <p>Enna is a Media Center application. Featuring a simple user interface, Enna is based on the powerful Enlightenment...
+            </li>
+            <li>
+                <a href="http://exchange.enlightenment.org/application/show/114">
+                    <img src="http://exchange.enlightenment.org/files/application/114/smallthumb.png" alt="Emphasis Screenshot">
+                </a>
+                <p>A fully featured frontend for the well-known MPD. </p>
+            </li>
+            <li>
+                <a href="http://exchange.enlightenment.org/application/show/84">
+                    <img src="http://exchange.enlightenment.org/files/application/84/smallthumb.png" alt="Exalt Screenshot">
+                </a>
+                <p>Exalt is a network manager built for E17 by Watchwolf. It already has every feature you need to setup basic networking both...
+            </li>
+        </ul>
+        <p class="more">
+            <a href=
+            "http://exchange.enlightenment.org/application">More <abbr title=
+            "Enlightenment Foundation Libraires">EFL</abbr>-based
+            Software</a>.
         </p>
     </div>
-</div>-->
+</div>
