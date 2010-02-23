@@ -1,0 +1,6 @@
+[Desktop Entry]
+Type=Link
+Name=Quick Access
+Icon=e-module-quickaccess
+Comment=<title>Quick Access:</title><br>provides quick access to chosen applications.
+X-Enlightenment-ModuleType=system
