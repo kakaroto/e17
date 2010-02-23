@@ -24,7 +24,7 @@ class WidgetSource(WidgetEntryButtonList):
     def _floater_list_items_update(self):
         list = []
 
-        for item in self.parent.e.parts:
+        for item in self._list_get_cb():
             list.append((item, item))
         return list
 

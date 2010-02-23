@@ -22,9 +22,10 @@ from floater_opener import FloaterListOpener
 
 
 class WidgetPartList(FloaterListOpener, WidgetButton):
-    def __init__(self, parent, title=None):
-        FloaterListOpener.__init__(self)
+    def __init__(self, parent, title=None, list_get_cb=None):
+        FloaterListOpener.__init__(self, list_get_cb)
         WidgetButton.__init__(self, parent)
+
         self._value = None
         self._title = title or ""
         self.clicked = self._open
@@ -55,7 +56,7 @@ class WidgetPartList(FloaterListOpener, WidgetButton):
 
     def _floater_list_items_update(self):
         list = []
-        for item in self.parent.e.parts:
+        for item in self._list_get_cb():
             list.append((item, item))
         return list
 

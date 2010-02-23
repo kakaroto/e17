@@ -1,4 +1,3 @@
-#
 # Copyright (C) 2009 Samsung Electronics.
 #
 # This file is part of Editje.
@@ -10,12 +9,12 @@
 #
 # Editje is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 # GNU Lesser General Public License for more details.
 #
 # You should have received a copy of the GNU Lesser General Public
-# License along with Editje.  If not, see
-# <http://www.gnu.org/licenses/>.
+# License along with Editje. If not, see <http://www.gnu.org/licenses/>.
+
 import elementary
 
 from details_widget_entry_button import WidgetEntryButton
@@ -23,8 +22,8 @@ from floater_opener import FloaterListOpener
 
 
 class WidgetEntryButtonList(FloaterListOpener, WidgetEntryButton):
-    def __init__(self, parent):
-        FloaterListOpener.__init__(self)
+    def __init__(self, parent, list_get_cb=None):
+        FloaterListOpener.__init__(self, list_get_cb)
         WidgetEntryButton.__init__(self, parent)
 
     def value_set(self, value):

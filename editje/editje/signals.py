@@ -245,8 +245,11 @@ class SignalDetails(EditjeDetails):
         prop.widget_add("s", WidgetSignal(self))
         self["main"].property_add(prop)
 
+        def parts_get():
+            return self.e.parts
+
         prop = Property(parent, "source")
-        prop.widget_add("s", WidgetSource(self))
+        prop.widget_add("s", WidgetSource(self, parts_get))
         self["main"].property_add(prop)
 
         prop = Property(parent, "delay")
@@ -260,8 +263,12 @@ class SignalDetails(EditjeDetails):
         prop.widget_add("range", wid)
         self["main"].property_add(prop)
 
+        def programs_get():
+            return self.e.programs
+
         prop = Property(parent, "action")
-        prop.widget_add("a", WidgetActionsList(self, "Animations"))
+        prop.widget_add(
+            "a", WidgetActionsList(self, "Animations", programs_get))
         self["main"].property_add(prop)
 
         self.group_add("out")

@@ -24,7 +24,7 @@ class WidgetActionsList(WidgetPartList):
 
     def _floater_list_items_update(self):
         list = []
-        for item in self.parent.e.programs:
+        for item in self._list_get_cb():
             if item.startswith("@") and item.endswith("@0.00"):
                 fixedname = item[1:item.rindex("@")]
                 list.append((fixedname, item))

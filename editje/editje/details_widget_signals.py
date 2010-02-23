@@ -20,6 +20,8 @@ from details_widget_entry_button_list import WidgetEntryButtonList
 
 
 class WidgetSignal(WidgetEntryButtonList):
+    def __init__(self, parent, list_get_cb=None):
+        WidgetEntryButtonList.__init__(self, parent, list_get_cb)
 
     def _floater_list_items_update(self):
         list = []

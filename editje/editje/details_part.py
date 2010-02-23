@@ -24,6 +24,27 @@ from details_widget_combo import WidgetCombo
 from details_widget_partlist import WidgetPartList
 from prop import Property, PropertyTable
 
+
+class WidgetClippersList(WidgetPartList):
+    def __init__(self, parent, title=None, list_get_cb=None,
+                 sel_part_get_cb=None):
+        if not sel_part_get_cb:
+            raise TypeError("You must set a callback for selected part" \
+                            " retrieval on WidgetClippersList objects.")
+        self._sel_part_get_cb = sel_part_get_cb
+        WidgetPartList.__init__(self, parent, title, list_get_cb)
+
+    def _floater_list_items_update(self):
+        list = []
+        sel_part = self._sel_part_get_cb()
+
+        for item in self._list_get_cb():
+            if item == sel_part:
+                continue
+            list.append((item, item))
+        return list
+
+
 class PartDetails(EditjeDetails):
     def __init__(self, parent):
         EditjeDetails.__init__(self, parent,
@@ -55,8 +76,15 @@ class PartDetails(EditjeDetails):
 
         self.content_set("part_name.swallow", self._header_table)
 
+        def parts_get():
+            return self.e.parts
+
+        def sel_part_get():
+            return self.e.part.name
+
         prop = Property(parent, "clip_to")
-        prop.widget_add("to", WidgetPartList(self, "Clipper selection"))
+        prop.widget_add("to", WidgetClippersList(
+                self, "Clipper selection", parts_get, sel_part_get))
         self["main"].property_add(prop)
         prop = Property(parent, "mouse_events")
         prop.widget_add("me", WidgetBoolean(self))
@@ -158,7 +186,8 @@ class PartDetails(EditjeDetails):
 
     def _update_text_props(self):
         self["textblock"]["effect"].show_value()
-        self["textblock"]["effect"].value = self._effects[self.e.part._part.effect]
+        self["textblock"]["effect"].value = \
+            self._effects[self.e.part._part.effect]
         self.group_show("textblock")
 
     def _part_type_to_text(self, type):
