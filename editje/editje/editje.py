@@ -426,6 +426,14 @@ class Editje(elementary.Window):
         ico.show()
         self._modes_selector.icon = ico
 
+    def _set_scrolled_contents(self, box):
+        scr = elementary.Scroller(self)
+        scr.style_set("editje.collapsable")
+        scr.bounce_set(False, False)
+        scr.content_set(box)
+        scr.show()
+        return scr
+
     # Parts
 
     def _parts_init(self):
@@ -475,8 +483,6 @@ class Editje(elementary.Window):
 
         self.group_details = GroupDetails(self)
         self.group_details.open()
-        self.group_details.size_hint_weight_set(0, 0)
-        self.group_details.size_hint_align_set(-1, -1)
         box.pack_end(self.group_details)
         self.group_details.show()
 
@@ -495,7 +501,7 @@ class Editje(elementary.Window):
         box.pack_end(self.part_state_details)
         self.part_state_details.show()
 
-        return box
+        return self._set_scrolled_contents(box)
 
     # Animations
 
@@ -567,7 +573,7 @@ class Editje(elementary.Window):
         box.pack_end(self.anim_state_details)
         self.anim_state_details.show()
 
-        return box
+        return self._set_scrolled_contents(box)
 
     # Signals
 
@@ -598,9 +604,21 @@ class Editje(elementary.Window):
         list.show()
 
         # Sidebar
-        sidebar = SignalDetails(self)
-        sidebar.open()
-        sidebar.show()
+        sidebar = self._signals_sidebar_create()
 
         self._mode_add("Signals", "editje/icon/signal",
                        toolbar, mainbar, sidebar)
+
+    def _signals_sidebar_create(self):
+        box = CollapsablesBox(self)
+        box.size_hint_weight_set(1.0, 0.0)
+        box.size_hint_align_set(-1.0, 0.0)
+        box.show()
+
+        signal_details = SignalDetails(self)
+        signal_details.open()
+        signal_details.show()
+
+        box.pack_end(signal_details)
+
+        return self._set_scrolled_contents(box)

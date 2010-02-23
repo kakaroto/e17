@@ -16,14 +16,15 @@
 # License along with Editje.  If not, see
 # <http://www.gnu.org/licenses/>.
 
+import edje
 import elementary
 
 from prop import PropertyTable
 
 
-class EditjeDetails(elementary.Layout):
+class EditjeDetails(edje.Edje):
     def __init__(self, parent, group="editje/collapsable/default"):
-        elementary.Layout.__init__(self, parent)
+        edje.Edje.__init__(self, parent.evas_get())
 
         self.file_set(parent.theme, group)
         self._parent = parent
@@ -32,23 +33,37 @@ class EditjeDetails(elementary.Layout):
         self._proptable._value_changed = self.prop_value_changed
         self.e = parent.e
 
+        self._min_size_collapsed = self.size_min_calc()
+        self._min_size = self._min_size_collapsed
+
+        self._opened = False
+
         self._box = elementary.Box(parent)
         self._box.pack_end(self._proptable)
         self._box.size_hint_weight_set(1.0, 0.0)
         self._box.size_hint_align_set(-1.0, 0.0)
         self._box.show()
-        scr = elementary.Scroller(parent)
-        scr.style_set("editje.collapsable")
-        scr.bounce_set(0, 0)
-        scr.content_set(self._box)
-        scr.show()
-        self.content_set("cl.content", scr)
+        self.content_set("cl.content", self._box)
         self.size_hint_weight_set(1.0, 0.0)
         self.size_hint_align_set(-1.0, -1.0)
+        self.size_hint_min_set(*self._min_size_collapsed)
         self.edje_get().signal_callback_add("cl,*", "editje/collapsable",
                                             self._header_toggle_cb)
 
         self._subgroups = dict()
+
+    def _size_hint_changed_cb(self, obj):
+        self._min_size = self.size_min_calc()
+        if self._opened:
+            self.size_hint_min_set(*self._min_size)
+
+    def content_set(self, part, obj):
+        obj.on_changed_size_hints_add(self._size_hint_changed_cb)
+        self.part_swallow(part, obj)
+        self._min_size = self.size_min_calc()
+
+    def edje_get(self):
+        return self
 
     def open(self):
         self.edje_get().signal_emit("mouse,clicked,1", "cl.header.open")
@@ -117,8 +132,13 @@ class EditjeDetails(elementary.Layout):
     def _header_toggle_cb(self, obj, emission, source):
         if emission == "cl,opened":
             self.size_hint_weight_set(1.0, 1.0)
+            self.size_hint_min_set(*self._min_size)
+            self._opened = True
         elif emission == "cl,closed":
             self.size_hint_weight_set(1.0, 0.0)
+            self.size_hint_min_set(*self._min_size_collapsed)
+            self._opened = False
+        self.calc_force()
 
     def __getitem__(self, key):
         if key == "main":
