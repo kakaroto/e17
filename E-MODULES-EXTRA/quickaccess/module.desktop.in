@@ -1,6 +1,10 @@
 [Desktop Entry]
 Type=Link
 Name=Quick Access
+Name[fr]=Rapidos
+Name[it]=Accesso rapido
 Icon=e-module-quickaccess
 Comment=<title>Quick Access:</title><br>provides quick access to chosen applications.
+Comment[fr]=<title>Module Rapidos</title><br>Permet d'accéder rapidement à des applications sélectionnées.
+Comment[it]=<title>Modulo accesso rapido</title><br>Permette di accedere rapidamente ad alcune applicazioni.
 X-Enlightenment-ModuleType=system
