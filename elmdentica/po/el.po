@@ -1,0 +1,262 @@
+# Greek Translation.
+# Copyright (C) YEAR Rui Miguel Silva Seabra
+# This file is distributed under the same license as the PACKAGE package.
+# Giorgos Koutsikos <ragecryx@yahoo.gr>, 2010.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: elmdentica 0.8.0\n"
+"Report-Msgid-Bugs-To: http://code.google.com/p/elmdentica/\n"
+"POT-Creation-Date: 2009-11-29 20:24+0000\n"
+"Last-Translator: Giorgos Koutsikos <ragecryx@yahoo.gr>\n"
+"Language-Team: Greek\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"PO-Revision-Date: \n"
+
+#: src/curl.c:53
+#: src/elmdentica.c:468
+msgid "Error"
+msgstr "Σφάλμα"
+
+#: src/curl.c:54
+msgid "HTTP Error"
+msgstr "Σφάλμα HTTP"
+
+#: src/curl.c:73
+#, fuzzy, c-format
+msgid "%s failed with HTTP Response %ld"
+msgstr "%s απέτυχε με απάντηση HTTP %ld"
+
+#: src/curl.c:85
+#: src/curl.c:123
+#: src/elmdentica.c:499
+#: src/settings.c:838
+msgid "Close"
+msgstr "Κλείσιμο"
+
+#: src/elmdentica.c:115
+#, c-format
+msgid ""
+"Error setting key %s = %s: %s\n"
+")"
+msgstr ""
+"Σφάλμα ορισμού πλήκτρου %s = %s: %s\n"
+")"
+
+#: src/elmdentica.c:276
+#, c-format
+msgid "Error %d: %s\n"
+msgstr "Σφάλμα %d: %s\n"
+
+#: src/elmdentica.c:279
+#, c-format
+msgid "System failed, child exited with status %d\n"
+msgstr ""
+
+#: src/elmdentica.c:295
+msgid "Open this url"
+msgstr "Άνοιγμα του URL"
+
+#: src/elmdentica.c:326
+msgid "Reply"
+msgstr "Απάντηση"
+
+#: src/elmdentica.c:332
+msgid "Repeat"
+msgstr "Επανάληψη"
+
+#: src/elmdentica.c:338
+msgid "Direct message"
+msgstr "Απευθείας μήνυμα"
+
+#: src/elmdentica.c:401
+#, c-format
+msgid "%d s ago..."
+msgstr "%d δευτερόλεπτα πριν"
+
+#: src/elmdentica.c:403
+#, c-format
+msgid "± %d min ago..."
+msgstr "± %d λεπτά πριν"
+
+#: src/elmdentica.c:406
+msgid "> 1 h ago..."
+msgstr "> 1 ώρα πριν..."
+
+#: src/elmdentica.c:408
+#, c-format
+msgid "± %d hs ago..."
+msgstr "± %d ώρες πριν..."
+
+#: src/elmdentica.c:411
+msgid "> a day ago..."
+msgstr "> μια ημέρα πριν..."
+
+#: src/elmdentica.c:413
+#, c-format
+msgid "± %d days ago..."
+msgstr "± %d ημέρες πριν"
+
+#: src/elmdentica.c:415
+msgid "a long ago..."
+msgstr "πολύ παλιά"
+
+#: src/elmdentica.c:469
+msgid "µ-blog Error"
+msgstr "Σφάλμα µ-blog"
+
+#: src/elmdentica.c:745
+#, c-format
+msgid ""
+"\n"
+"Usage:\n"
+"\t-d\tDebug mode (extra yummy output)\n"
+"\t-h\tHelp (what you're reading right now)\n"
+"\n"
+msgstr ""
+
+#: src/elmdentica.c:820
+msgid "ElmDentica: µ-blog at your fingertips"
+msgstr "ElmDentica: "
+
+#: src/elmdentica.c:848
+msgid "Timeline"
+msgstr "Γραμμή χρόνου"
+
+#: src/elmdentica.c:860
+msgid "Post"
+msgstr ""
+
+#: src/elmdentica.c:897
+msgid "More..."
+msgstr "Περισσότερα..."
+
+#: src/elmdentica.c:899
+msgid "Fullscreen"
+msgstr "Πλήρης οθόνη"
+
+#: src/elmdentica.c:900
+#: src/settings.c:794
+msgid "Settings"
+msgstr "Ρυθμίσεις"
+
+#: src/elmdentica.c:922
+msgid "Press here to start typing your message..."
+msgstr "Πατήστε εδώ για να γράψετε το μήνυμα σας..."
+
+#: src/elmdentica.c:936
+msgid " <b>Friends timeline...</b>"
+msgstr ""
+
+#: src/twitter.c:192
+#, c-format
+msgid "FAILED TO SAX FRIENDS: %d\n"
+msgstr ""
+
+#: src/twitter.c:240
+#, c-format
+msgid "Can't open %s for writing: %s\n"
+msgstr "Αδύνατο το άνοιγμα του %s για εγγραφή: %s\n"
+
+#: src/settings.c:217
+msgid "Screen name"
+msgstr "Όνομα"
+
+#: src/settings.c:231
+msgid "Password"
+msgstr "Κωδικός"
+
+#: src/settings.c:259
+msgid "Type"
+msgstr "Τύπος"
+
+#: src/settings.c:275
+msgid "Secure"
+msgstr "Ασφαλές"
+
+#: src/settings.c:275
+msgid "Faster"
+msgstr "Γρηγορότερα"
+
+#: src/settings.c:287
+msgid "Domain"
+msgstr ""
+
+#: src/settings.c:301
+msgid "Base URL"
+msgstr "Βασικό URL"
+
+#: src/settings.c:315
+msgid "Enabled?"
+msgstr "Ενεργοποιημένο?"
+
+#: src/settings.c:327
+msgid "Receive?"
+msgstr "Λήψη?"
+
+#: src/settings.c:339
+msgid "Send?"
+msgstr "Αποστολή?"
+
+#: src/settings.c:351
+msgid "OK"
+msgstr "Οκ"
+
+#: src/settings.c:357
+msgid "Cancel"
+msgstr "Άκυρο"
+
+#: src/settings.c:515
+msgid "Accounts..."
+msgstr "Λογαριασμοί..."
+
+#: src/settings.c:551
+msgid "Add"
+msgstr "Προσθήκη"
+
+#: src/settings.c:564
+msgid "Edit"
+msgstr "Επεξεργασία"
+
+#: src/settings.c:578
+msgid "Delete"
+msgstr "Διαγραφή"
+
+#: src/settings.c:605
+#: src/settings.c:626
+msgid "No posts<br>in cache."
+msgstr "Χωρίς "
+
+#: src/settings.c:607
+#, c-format
+msgid "Currently remembering<br>%d posts."
+msgstr ""
+
+#: src/settings.c:641
+#: src/settings.c:662
+msgid "No messages<br>in cache."
+msgstr "Χωρίς μηνύματα<br>στην προσωρινή μνήμη."
+
+#: src/settings.c:643
+#, c-format
+msgid "Currently remembering<br>%d messages."
+msgstr ""
+
+#: src/settings.c:746
+msgid "Displayed messages:"
+msgstr "Εμφανιζόμενα μηνύματα:"
+
+#: src/settings.c:795
+msgid "ElmDentica settings..."
+msgstr "Ρυθμίσεις ElmDentica..."
+
+#: src/settings.c:823
+msgid "Accounts"
+msgstr "Λογαριασμοί"
+
+#: src/settings.c:828
+msgid "Cache"
+msgstr "Προσωρινή μνήμη"
+
