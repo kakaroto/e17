@@ -40,6 +40,7 @@ shadow_l.png \
 shadow_r.png \
 shadow_under_bigger.png \
 shadow_under.png \
+sunken_box.png \
 timeline_arrowbase.png \
 timeline_bg.png \
 timeline_darkdot.png \
