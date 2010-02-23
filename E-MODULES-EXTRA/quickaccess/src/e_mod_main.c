@@ -49,6 +49,17 @@ _e_quick_access_entry_find(const char *id)
 }
 
 static E_Quick_Access_Entry *
+_e_quick_access_entry_find_exe(const Ecore_Exe *exe)
+{
+   E_Quick_Access_Entry *entry;
+   const Eina_List *n;
+   EINA_LIST_FOREACH(_e_quick_access_entries, n, entry)
+     if (entry->exe == exe)
+       return entry;
+   return NULL;
+}
+
+static E_Quick_Access_Entry *
 _e_quick_access_entry_find_border(const E_Border *bd)
 {
    E_Quick_Access_Entry *entry;
@@ -101,6 +112,8 @@ _e_quick_access_entry_border_get(const E_Quick_Access_Entry *entry)
 static void
 _e_quick_access_entry_border_associate(E_Quick_Access_Entry *entry, E_Border *bd)
 {
+   if (entry->exe) entry->exe = NULL; /* not waiting anymore */
+
    entry->border = bd;
 
    bd->lock_user_location = 1;
@@ -135,7 +148,6 @@ _e_quick_access_entry_border_associate(E_Quick_Access_Entry *entry, E_Border *bd
 static void
 _e_quick_access_border_activate(E_Border *bd)
 {
-   e_border_center(bd);
    e_border_raise(bd);
    e_border_show(bd);
    e_border_focus_set(bd, 1, 1);
@@ -148,13 +160,30 @@ _e_quick_access_border_deactivate(E_Border *bd)
 }
 
 static void
-_e_quick_access_border_new(const E_Quick_Access_Entry *entry)
+_e_quick_access_border_new(E_Quick_Access_Entry *entry)
 {
+   E_Exec_Instance *ei;
+
+   if (entry->exe)
+     {
+	INF("already waiting '%s' to start for '%s' (name=%s, class=%s), "
+	    "run request ignored.",
+	    entry->cmd, entry->id, entry->name, entry->class);
+	return;
+     }
+
    INF("start quick access '%s' (name=%s, class=%s), "
        "run command '%s'",
        entry->id, entry->name, entry->class, entry->cmd);
-   // TODO
-   CRIT("TODO: e_exec(NULL, NULL, entry->cmd, NULL, NULL)!!!!");
+
+   ei = e_exec(NULL, NULL, entry->cmd, NULL, NULL);
+   if ((!ei) || (!ei->exe))
+     {
+	ERR("could not execute '%s'", entry->cmd);
+	return;
+     }
+
+   entry->exe = ei->exe;
 }
 
 static void
@@ -179,14 +208,14 @@ _e_quick_access_toggle_cb(E_Object *obj __UNUSED__, const char *params)
      }
 
    bd = _e_quick_access_entry_border_get(entry);
-   if (bd->focused)
-     {
-	_e_quick_access_border_deactivate(bd);
-	return;
-     }
-
    if (bd)
      {
+	if (bd->focused)
+	  {
+	     _e_quick_access_border_deactivate(bd);
+	     return;
+	  }
+
 	DBG("activate border for identifier '%s' (name=%s, class=%s).",
 	    entry->id, entry->name, entry->class);
 	_e_quick_access_border_activate(bd);
@@ -230,6 +259,30 @@ _e_quick_access_event_border_focus_out_cb(void *data __UNUSED__, int type __UNUS
 
    if (!_e_quick_access_entry_find_border(ev->border)) return 1;
    _e_quick_access_border_deactivate(ev->border);
+   return 1;
+}
+
+static int
+_e_quick_access_event_border_remove_cb(void *data __UNUSED__, int type __UNUSED__, void *event)
+{
+   E_Event_Border_Remove *ev = event;
+   E_Quick_Access_Entry *entry = _e_quick_access_entry_find_border(ev->border);
+
+   if (entry)
+     entry->border = NULL;
+
+   return 1;
+}
+
+static int
+_e_quick_access_event_exe_del_cb(void *data __UNUSED__, int type __UNUSED__, void *event)
+{
+   Ecore_Exe_Event_Del *ev = event;
+   E_Quick_Access_Entry *entry = _e_quick_access_entry_find_exe(ev->exe);
+
+   if (entry)
+     entry->exe = NULL; /* not waiting/running anymore */
+
    return 1;
 }
 
@@ -294,6 +347,8 @@ e_modapi_init(E_Module *m)
      (_e_quick_access_event_handlers, eh)
 
    CB(E_EVENT_BORDER_FOCUS_OUT, border_focus_out);
+   CB(E_EVENT_BORDER_REMOVE, border_remove);
+   CB(ECORE_EXE_EVENT_DEL, exe_del);
 #undef CB
 
    INF("loaded quick_access module, registered %s action.", _act_toggle);

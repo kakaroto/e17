@@ -16,6 +16,7 @@ typedef struct E_Quick_Access_Entry
    const char *class; /* icccm class, stringshared */
    const char *cmd; /* stringshared */
    E_Border *border;
+   Ecore_Exe *exe;
 } E_Quick_Access_Entry;
 
 
