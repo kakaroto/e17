@@ -126,6 +126,8 @@ _e_quick_access_entry_border_associate(E_Quick_Access_Entry *entry, E_Border *bd
    bd->client.netwm.state.skip_taskbar = 1;
    bd->client.netwm.state.skip_pager = 1;
 
+   bd->client.e.state.centered = 1;
+
    bd->sticky = 1;
    bd->want_focus = 1;
 }
