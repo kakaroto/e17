@@ -42,7 +42,7 @@ class WidgetButton(Widget):
         return self._value
 
     def _clicked(self, obj, *args, **kwargs):
-        self._callback_call("clicked")
+        self._callback_call("clicked", obj)
 
     def _clicked_cb_set(self, cb):
         self.callback_add("clicked", cb)

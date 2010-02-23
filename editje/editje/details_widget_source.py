@@ -21,14 +21,20 @@ from details_widget_entry_button_list import WidgetEntryButtonList
 
 class WidgetSource(WidgetEntryButtonList):
 
-    def _items_load(self):
+    def _floater_list_items_update(self):
         list = []
 
         for item in self.parent.e.parts:
             list.append((item, item))
         return list
 
-    def _actions_init(self):
-        self._pop.title_set("Parts list")
-        self._pop.action_add("None", self._select_cb, "")
-        WidgetEntryButtonList._actions_init(self)
+    def _floater_title_init(self):
+        self._floater.title_set("Parts list")
+
+    def _floater_actions_init(self):
+        self._floater.action_add("None", self._none_selected)
+        WidgetEntryButtonList._floater_actions_init(self)
+
+    def _none_selected(self, *args):
+        self.value_set("")
+        self._floater_cancel()

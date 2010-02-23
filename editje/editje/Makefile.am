@@ -43,6 +43,7 @@ event_manager.py \
 fileselector.py \
 filewizard.py \
 floater.py \
+floater_opener.py \
 groupselector.py \
 openfile.py \
 parts.py \

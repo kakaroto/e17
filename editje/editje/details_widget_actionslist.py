@@ -17,11 +17,12 @@
 # License along with Editje.  If not, see
 # <http://www.gnu.org/licenses/>.
 from details_widget_partlist import WidgetPartList
+from floater_opener import FloaterListOpener
 
 
 class WidgetActionsList(WidgetPartList):
 
-    def _items_load(self):
+    def _floater_list_items_update(self):
         list = []
         for item in self.parent.e.programs:
             if item.startswith("@") and item.endswith("@0.00"):
@@ -29,6 +30,8 @@ class WidgetActionsList(WidgetPartList):
                 list.append((fixedname, item))
         return list
 
-    def _actions_init(self):
-        self._pop.title_set("Animations")
-        self._pop.action_add("Cancel", self._cancel_clicked)
+    def _floater_title_init(self):
+        self._floater.title_set("Animations")
+
+    def _floater_actions_init(self):
+        FloaterListOpener._floater_actions_init(self)

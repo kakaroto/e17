@@ -57,7 +57,7 @@ class WidgetEntryButton(Widget):
         self.rect.label_set("...")
         self.rect.size_hint_align_set(-1.0, -1.0)
         self.rect.size_hint_min_set(30,16)
-        self.rect.on_mouse_down_add(self._open)
+        self.rect.callback_clicked_add(self._open)
         self.rect.style_set("editje.details")
         self.rect.show()
 
@@ -93,7 +93,6 @@ class WidgetEntryButton(Widget):
 
     def _dblclick_cb(self, obj):
         self.entry.select_all()
-
 
     def _internal_value_get(self):
         return self.entry.entry_get().replace("<br>", "")

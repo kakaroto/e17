@@ -168,7 +168,6 @@ class Floater(Layout):
         func, udata = obj.data["clicked"]
         func(self, udata)
 
-
 # TODO: move this class elsewhere
 class Wizard(InnerWindow):
     default_width = 500

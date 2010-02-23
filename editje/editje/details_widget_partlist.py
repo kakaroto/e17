@@ -19,18 +19,15 @@
 import elementary
 
 from details_widget_button import WidgetButton
-from floater import Floater
+from floater_opener import FloaterListOpener
 
 
-class WidgetPartList(WidgetButton):
-    pop_min_w = 200
-    pop_min_h = 300
-
+class WidgetPartList(FloaterListOpener, WidgetButton):
     def __init__(self, parent):
+        FloaterListOpener.__init__(self)
         WidgetButton.__init__(self, parent)
         self._value = None
         self.clicked = self._open
-        self._pop = None
 
     def show(self):
         for o in self.objs:
@@ -39,6 +36,9 @@ class WidgetPartList(WidgetButton):
     def hide(self):
         for o in self.objs:
             o.hide()
+
+    def _open(self, widget, bt, *args):
+        self._floater_open(bt)
 
     def _internal_value_set(self, val):
         self._value = val
@@ -53,47 +53,25 @@ class WidgetPartList(WidgetButton):
         else:
             self.obj.label_set("< None >")
 
-    def _items_load(self):
+    def _floater_list_items_update(self):
         list = []
         for item in self.parent.e.parts:
             list.append((item, item))
         return list
 
-    def _actions_init(self):
-        self._pop.title_set("Placement reference")
-        self._pop.action_add("None", self._select_cb, "")
-        self._pop.action_add("Cancel", self._cancel_clicked)
+    def _floater_title_init(self):
+        self._floater.title_set("Placement reference")
 
-    def _open(self, bt, *args):
-        if self._pop:
-            self._pop.hide()
-        self._pop = Floater(self.parent, self.obj)
-        self._pop.size_min_set(self.pop_min_w, self.pop_min_h)
-        list = elementary.List(self.parent)
+    def _floater_actions_init(self):
+        self._floater.action_add("None", self._none_selected)
+        FloaterListOpener._floater_actions_init(self)
 
-        for item, action in self._items_load():
-            if item != self.parent.e.part.name:
-                i = list.item_append(item, None, None, self._list_select_cb,
-                                     action)
-                if item == self.value:
-                    i.selected_set(True)
+    def _none_selected(self, *args):
+        self.value_set("")
+        self._floater_cancel()
 
-        list.go()
-        list.show()
-
-        self._pop.content_set(list)
-        self._actions_init()
-        self._pop.show()
-
-    def _cancel_clicked(self, popup, data):
-        self._pop.hide()
-
-    def _select_cb(self, obj, data):
-        item = data
-        self._value = item
+    def value_set(self, value):
+        self._value = value
+        self._update()
         self._callback_call("changed")
-        self._cancel_clicked(list, item)
-
-    def _list_select_cb(self, list, it, actions, *args, **kwargs):
-        self._select_cb(list, actions)
 
