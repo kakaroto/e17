@@ -62,15 +62,15 @@ current folder, which was selected on the former one. The
 \GUICheckbox{``filter extensions''} checkbox will only list files
 whose extension match \texttt{.edc} or \texttt{.edj}.
 
-%FIXME: the fscking \times, instead of 'x' (not working)
-If a (valid) file on the list on the right is selected, you may click
-the \GUIButton{``Ok''} button and Editje will open it and lead you to
-its main window. The \GUIButton{``New''} button will ask you for a
-name to a \emph{new} file to work on. Just give it a name and hit
+%FIXME: the fscking \times, instead of 'x' (not working) If a (valid)
+file on the list on the right is selected, you may click the
+\GUIButton{``Ok''} button and Editje will open it and lead you to its
+main window. The \GUIButton{``New''} button will ask you for a name to
+a \emph{new} file to work on. Just give it a name and hit
 \GUIButton{``Ok''} to start editing it. To the current date, this new
-group starts with just one group, with no parts and with a default
-size of 480x800 pixels. Group templates will come as an option to
-start new files, shortly.
+file starts with just one group, named ``main'', with no parts and
+with a default size of 500x500 pixels. Group templates will come as an
+option to start new files, shortly.
 
 %% Editje may also be invoked with one or two arguments, which are,
 %% respectively:
@@ -85,7 +85,7 @@ file to open. Whether you choose a file in the dialog shown in figure
 get a dialog box asking for a group to edit, between the ones Editje
 finds inside the chosen file (see figure \ref{fig:choose_group}).
 
-%TODO: bad pic! we gotta fix the centering issue asap
+%FIXME: bad pic! we gotta fix the centering issue asap
 \begin{figure}[h!]
   \centering
   \includegraphics[width=1.0\textwidth]{images/choose_group.png}
@@ -96,11 +96,13 @@ finds inside the chosen file (see figure \ref{fig:choose_group}).
 As you see, in that box you have a list of the group names found in
 the file. When one of the list items is selected, the respective group
 will have a \emph{preview image} shown on another page of the group
-choice dialog (figure\ref{fig:group_preview}). Click on
+choice dialog (figure \ref{fig:group_preview}). Click on
 \GUIButton{``Open''} if you're sure you want to start editing this
 specific group. \GUIButton{``Cancel''} will lead you back to the page
 shown in figure \ref{fig:choose_group} and \GUIButton{``Delete''},
-naturally, will remove that group from the file's group collection.
+naturally, will remove that group from the file's group
+collection\footnote{It will refuse to delete all groups from a file,
+  though.}.
 
 \begin{figure}[h!]
   \centering
@@ -113,16 +115,16 @@ Finally, there's the button \GUIButton{``New''}, found in this
 dialog's first page. As you may imagine, it's going to lead you to a
 third page, asking for a name to the group to be created. From there,
 you may desist and go back one page or, if sure, create and start
-editing the fresh new group. This group will also be 480x800 sized and
+editing the fresh new group. This group will also be 500x500 sized and
 have no parts.
 
 \section{Editje's Window}
 
-Once you open a file, you'll reach Editje's main window, which is depicted
-on figure \ref{fig:main_window}.
+Once you open a file, you'll reach Editje's main window, which is
+depicted on figure \ref{fig:main_window}.
 
-%Notes: - program used to draw the overlaying objects: Kolourpaint
-%       - font used to overlay numbers: Free Sans, 48
+% - program used to draw the overlaying objects: Kolourpaint
+% - font used to overlay numbers: Free Sans, 52
 \begin{figure}[h!]
   \centering
   \includegraphics[width=1.0\textwidth]{images/main_window.png}
@@ -135,7 +137,7 @@ rectangles and numbered. The following is a description of each of
 them:
 
 \begin{description}
-\item[1 -- Actions on edje (\texttt{.edc} and \texttt{.edj} files)]
+\item[1 -- Actions on file and group]
   The first action, \GUIIcon{``Open''}, will call the same dialog
   window you saw if you called Editje with no arguments. When you
   select the file to operate on, you'll get \emph{another} independent
@@ -148,62 +150,66 @@ them:
   before, they get saved in the same format they were opened with, be
   it \texttt{.edc} or \texttt{.edj}.
 
-  The \GUIIcon{``Swap''} one will raise the same box you get when
+  The \GUIIcon{``Groups''} one will raise the same box you get when
   calling Editje with just a file name argument -- the group selection
-  box. It will list all the groups in the current file, and if you
-  select a different one, the edje editor will load it and close the
-  one which was under edition before. Note that, at this stage, it
-  \emph{won't} ask the user if he or she wants to save the
-  modifications on the group being left, so make sure you have them
-  saved before switching groups.
+  box (figure \ref{fig:choose_group}). Those same actions will be
+  available, here. Note that, if you select another group to edit, at
+  this stage it \emph{won't} ask if you want to save the modifications
+  on the group being left, so make sure you have them saved before
+  switching groups.
 
   Finally, there's the \GUIIcon{``Run''} action. It will open a window
   with a \emph{live} version of the group being edited. You'll be
   able, then, to interact with it and test its behavior for user input
   events. Just close that window to get back to normal edition.
 
-\item[2 -- File and group names] On the top of this area you'll see
-  the full path to the file being edited. On the bottom, after the
-  label \GUILabel{``Group:''}, you see the name of the group under
+\item[2 -- File and group names] On the bottom of this area you'll see
+  the full path to the file being edited. On the top, after the label
+  \GUILabel{``Group:''}, you see the name of the group under
   edition. You may change the group's name by editing it directly:
-  it's a text entry. Just hit the return key after you're done and it
-  will be applied.
+  it's a text entry. Just hit the return key after you're done and the
+  change will get applied.
 
 \item[3 -- Mode dependent actions] This region of the main screen is
   populated with action icons accordingly to the \emph{mode} Editje is
   working on (see region 4, which follows). For the initial
-  (``Parts'') mode, this region presents an icon that will lead the
-  user to an \emph{image management} context: it will open a box
-  listing all the images used in the current group. By selecting an
-  image entry on the list on the left, you get a thumbnail preview of
-  it on the right (see figure \ref{fig:select_an_image}). If you click
-  on the \GUIButton{``Add new''} button, a file navigation list takes
-  the place of the previous one. Whenever you select, on the new list,
-  a file of an image, its thumbnail preview will be shown as well (see
-  figure \ref{fig:select_an_image_fs}). Click on the
-  \GUIButton{``Ok''} button, below the file navigation list, and this
-  file will now integrate the list of images of the group (it will be
-  possible to set that image to any image part). If you wish to return
-  to the images on the group list, just hit
-  \GUIButton{``Cancel''}. \GUIButton{``Close''}, naturally, is the
-  button which closes the image management dialog entirely.  Editje's
-  main screen for other modes of operation will appear in their
-  specific sessions.
+  (``Parts'') mode, this region presents an icon which, when clicked,
+  will raise a box with author and licensing information of the edje
+  editor itself.
 
-  \begin{figure}[h!]
-    \centering
-    \includegraphics[width=1.0\textwidth]{images/select_an_image.png}
-    \caption{Image management dialog box}
-    \label{fig:select_an_image}
-  \end{figure}
+% TODO: re-use it somehow when describing the new dialog form
+  %% presents an icon that will lead the
+  %% user to an \emph{image management} context: it will open a box
+  %% listing all the images used in the current group. By selecting an
+  %% image entry on the list on the left, you get a thumbnail preview of
+  %% it on the right (see figure \ref{fig:select_an_image}). If you click
+  %% on the \GUIButton{``Add new''} button, a file navigation list takes
+  %% the place of the previous one. Whenever you select, on the new list,
+  %% a file of an image, its thumbnail preview will be shown as well (see
+  %% figure \ref{fig:select_an_image_fs}). Click on the
+  %% \GUIButton{``Ok''} button, below the file navigation list, and this
+  %% file will now integrate the list of images of the group (it will be
+  %% possible to set that image to any image part). If you wish to return
+  %% to the images on the group list, just hit
+  %% \GUIButton{``Cancel''}. \GUIButton{``Close''}, naturally, is the
+  %% button which closes the image management dialog entirely.  Editje's
+  %% main screen for other modes of operation will appear in their
+  %% specific sessions.
 
-  \begin{figure}[h!]
-    \centering
-    \includegraphics[width=1.0\textwidth]{images/select_an_image_fs.png}
-    \caption{Image management dialog box: adding a new image to the
-      group}
-    \label{fig:select_an_image_fs}
-  \end{figure}
+  %% \begin{figure}[h!]
+  %%   \centering
+  %%   \includegraphics[width=1.0\textwidth]{images/select_an_image.png}
+  %%   \caption{Image management dialog box}
+  %%   \label{fig:select_an_image}
+  %% \end{figure}
+
+  %% \begin{figure}[h!]
+  %%   \centering
+  %%   \includegraphics[width=1.0\textwidth]{images/select_an_image_fs.png}
+  %%   \caption{Image management dialog box: adding a new image to the
+  %%     group}
+  %%   \label{fig:select_an_image_fs}
+  %% \end{figure}
 
 \item[4 -- Mode selection] Editje has \emph{three} modes in which it
   operates:
@@ -220,15 +226,10 @@ them:
   click on the button surrounded by this region and select the desired
   mode.
 
-\item[5 -- Parts list] This is, while in ``Parts'' mode, an area which
-  lists all the parts composing the group being edited and has also
-  some actions on them. These actions will be described better later
-  in the document.
-
-\item[6 -- The group displaying (and manipulation) area] This is where
+\item[5 -- The group displaying (and manipulation) area] This is where
   you actually \emph{see} the effects of your editions on a group and
   its parts. The group boundaries are marked by the thick black lines
-  forming a rectangle and with the symbol, seen in figure
+  forming a rectangle and with the symbol seen in figure
   \ref{fig:group_edje}, at the bottom right corner. This happens to be
   also the icon that, when clicked over and moved, will resize the
   whole group. More on part manipulation will be addressed on section
@@ -241,7 +242,7 @@ them:
   \label{fig:group_edje}
 \end{figure}
 
-\item[7 -- Group and selected part properties] This is the region on
+\item[6 -- Group and selected part properties] This is the region on
   the interface where the user will be able to \emph{see and edit} the
   properties of the group being edited and the selected part, if any
   is selected. There are three collapsable groups of properties
@@ -260,6 +261,15 @@ For each of them, if the user sees only the title on the interface, it
 means that that group of properties is \emph{collapsed}. Just click
 over this title and it will get expanded. These interface groups will
 be described better on section \ref{sec:part_editing}.
+
+\item[7 -- Parts list] This is, while in ``Parts'' mode, an area which
+  lists all the parts composing the group being edited and has also
+  some actions on them. These actions will be described better later
+  in the document. On the bottom of this area, one sees the \emph{list
+    of available widgets/parts}. From this place, you'll se all types
+  of GUI elements Editje supports and it's where you tell the editor
+  to add new ones to the group under edition.
+
 \end{description}
 
 \section{Basic Part Editing}
@@ -288,26 +298,18 @@ in this mode.
 Clicking over any of the list entries will select that given
 \emph{type} to the part being added and give a default name to it,
 appearing in the text entry on the top. You may edit that name as you
-wish. The ``External Widget'' type is special: it's a meta type which
-will let you select objects of external modules (exporting edje
-objects) as parts of your interface. Currently, the only module
-supported is Elementary, which has some of its widgets with properties
-externalized to edje-edition.
+wish\footnote{Editje will complain only if that name belongs to
+  another part already present on the group under edition.}. The
+``External Widget'' type is special: it's a meta type which will let
+you select objects from external modules (exporting edje objects) as
+parts of your interface. Currently, the only module supported is
+Elementary, a widget library which has some of its widgets with
+properties externalized to edje-edition.
 
 Then, if you click over \GUIButton{``External Widget''}, the bottom
 part of the dialog box will show two lists side-by-side. The left one
 lists the modules exporting widgets for edje-edition, while the right
-one lists the actual widgets for the module selected on the left. For
-now, as said before, we have just the Elementary widget library
-exporting widgets this way. Its entry is called \GUIButton{``elm''},
-as seen in figure \ref{fig:external_modules}.
-
-\begin{figure}[h!]
-  \centering
-  \includegraphics[width=1.0\textwidth]{images/external_modules.png}
-  \caption{``New Part'' dialog: external widgets}
-  \label{fig:external_modules}
-\end{figure}
+one lists the actual widgets for the module selected on the left.
 
 Accordingly to figure \ref{fig:add_part_box}, Editje has the following
 supported types of parts:
@@ -326,9 +328,10 @@ supported types of parts:
 If, when adding a new part, you choose the rectangle type, you'll end
 with a new object similar to the one seen on figure
 \ref{fig:new_rectangle}, whose name is, in our context,
-``\texttt{Rectangle00}''.
+``\texttt{Rectangle01}''. Screen regions of interest have been
+numbered, in that figure. If you look at region 3, the parts list,
+you'll see it populated with our new part.
 
-%TODO: edit pic and make region 2's rectangle go till the bottom
 \begin{figure}[h!]
   \centering
   \includegraphics[width=1.0\textwidth]{images/new_rectangle_numbers.png}
@@ -336,20 +339,17 @@ with a new object similar to the one seen on figure
   \label{fig:new_rectangle}
 \end{figure}
 
-Screen regions of interest have been numbered, in that figure. If you
-look at region 2, the parts list, you'll see it populated with our new
-part.
-
 %FIXME: the fscking \times, instead of 'x' (not working)
-The region with number 3 is the actual new rectangle object. By
-default, Editje will put it centered in the group's region, with an
-initial size of 151x151, as seen on region 6, the ``part state''
-collapsable property group (check out the \GUILabel{``current''} and
-\GUILabel{``align''} labels). Note that all the collapsable property
-groups are expanded on figure \ref{fig:new_rectangle}.
+The region with number 4 is the actual new rectangle object. By
+default, Editje will put it centered in the group's region, with half
+of its size and colored with transparent green, as seen on region 7,
+the ``part state'' collapsable property group (check out the
+\GUILabel{``current''} and \GUILabel{``align''} labels). Note that all
+the collapsable property groups are expanded on figure
+\ref{fig:new_rectangle}.
 
-Note, also, the eight black squares over \texttt{Rectangle00}'s
-corners. They, together with the fact that \texttt{Rectangle00} is
+Note, also, the eight black squares over \texttt{Rectangle01}'s
+corners. They, together with the fact that \texttt{Rectangle01} is
 highlighted in the parts list, mean that that specific object is
 \emph{selected} in Editje. These squares are also where the user is
 going to click to visually \emph{resize} the selected object.
@@ -358,8 +358,8 @@ The four squares on the \emph{middle of the part's edges}, when
 clicked and dragged, will grow or shrink it on the perpendicular axis
 relative to the respective edge. The opposite edge will be kept fixed
 on its original position. For example, in figure
-\ref{fig:rectangle_grow_left}, the squared marked in red has been
-dragged to the right, enlarging \texttt{Rectangle00} to that direction
+\ref{fig:rectangle_grow_left}, the square marked in red has been
+dragged to the right, enlarging \texttt{Rectangle01} to that direction
 while keeping the opposite edge where it was.
 
 \begin{figure}[h!]
@@ -375,7 +375,7 @@ perpendicular to the two edges touching the respective square. The
 other two edges will remain on their initial positions. For example,
 in figure \ref{fig:rectangle_grow_diagonal}, the square marked in red
 has been dragged rightwards and upwards its original position. That is
-why you see \texttt{Rectangle00} now larger in width and shorter in
+why you see \texttt{Rectangle01} now larger in width and shorter in
 height.
 
 \begin{figure}[h!]
@@ -389,7 +389,7 @@ Finally, there's a black \emph{circle} centered over the new part's
 visual representation. This is where the user is going to click and
 drag in order to \emph{move} the part around, relative to its
 group. For example, in figure \ref{fig:rectangle_move},
-\texttt{Rectangle00} has been moved to a different position. As you
+\texttt{Rectangle01} has been moved to a different position. As you
 see, a part may be placed outside the boundaries of its group (it may
 be invisible at some state, for example).
 
@@ -419,58 +419,44 @@ boundaries and with no object underneath.
 
 \subsection{Re-stacking and deleting parts}
 
-The parts list, region 3 of figure \ref{fig:main_window}, will exhibit
-three more action buttons, over the actual list of parts, besides the
-\GUIIcon{``+''} one (see region 1 in figure
-\ref{fig:new_rectangle}. Their actions are:
+To illustrate re-stacking of parts, let's add a new rectangle to our
+group, so that it looks really like what was seen in figures
+\ref{fig:rectangle_grow_left}, \ref{fig:rectangle_move} and
+\ref{fig:rectangle_grow_diagonal}. If you look carefully, there is a
+white rectangle as a background on them.
 
-\begin{description}
-\item[\GUIIcon{upwards arrow}] This is the re-stack \emph{above}
-  action.
-\item[\GUIIcon{downwards arrow}] This is the re-stack \emph{below}
-  action. It does the exact opposite of the former action,
-  naturally. If you click on it with \texttt{Rectangle00} selected,
-  being it on the state shown in figure \ref{fig:rectangle_move},
-  you'll get what is depicted on figure \ref{fig:restack}.
-\item[\GUIIcon{``x''}] This is the part removal action. When clicked,
-  the selected part will be totally removed from the group under
-  edition, along with all its states.
-\end{description}
+If you click at the \GUIIcon{``+''} icon (region 1 of figure
+\ref{fig:new_rectangle}) and add another rectangle, you'll end up with
+a part looking exactly as \texttt{Rectangle01}, placed on top of
+it. If you accepted the suggested name, while adding it, it will be
+named ``\texttt{Rectangle02}''. Let's resize it by directly editing
+its size/positioning property values. Figure
+\ref{fig:restack_pre_pre}, region 2, highlights the text entries
+you'll have to edit and hit the return key to resize
+\texttt{Rectangle02}: the \GUIEditable{``relative''} and
+\GUIEditable{``offset''} ones. There are two pairs of them, placed
+inside the property subgroups named \GUILabel{``top-left''} and
+\GUILabel{``bottom-right''}. Make sure \texttt{Rectangle02} is the
+selected part and change that values to exactly what is seen on figure
+\ref{fig:restack_pre_pre}; the part will be then resized to the
+group's dimensions, centered to it, as seen there. You should not care
+if it's not clear how this editing had that effect, because it will be
+better explained at section \ref{sec:part_states}.
 
+%FIXME: look at the alignment bug after text entry changes
 \begin{figure}[h!]
   \centering
-  \includegraphics[width=0.5\textwidth]{images/rectangle_stack.png}
-  \caption{Re-stacking a part}
-  \label{fig:restack}
+  \includegraphics[width=0.95\textwidth]{images/part_resize_entries.png}
+  \caption{New rectangle, with size changed}
+  \label{fig:restack_pre_pre}
 \end{figure}
 
-\subsection{Part clipping and reaction to mouse events}
-
-Let's start looking better into the properties collapsable groups, on
-the right of the main window's screen. The ``part properties'' one,
-marked as region 5 in figure \ref{fig:new_rectangle}, has two text
-labels which give you the name of the selected part and its
-type. Additionally, it has a \GUIEditable{``clip to''} field, which,
-when clicked, will raise a box with a list of clipping objects
-(rectangles) to choose from.
-
-For example, let's add another rectangle besides \texttt{Rectangle00},
-named \texttt{Rectangle01}. Place them so that they overlap, like in
-figure \ref{fig:overlap}.
-
-\begin{figure}[h!]
-  \centering
-  \includegraphics[width=0.5\textwidth]{images/rectangle_overlap.png}
-  \caption{Overlapping objects}
-  \label{fig:overlap}
-\end{figure}
-
-Now, we'll have to advance a little bit and describe one entry of the
-part state properties group, namely the \GUIEditable{``color''}
-one. With \texttt{Rectangle01} selected, expand the ``part state''
-collapsable and look at the color label. It contains a four integer
-numbers text entry and a little rectangular box, which itself is
-colored with the same color as the one the selected object has.
+We now just have to make this new rectangle to look (solid) white.
+Look at region 1 of figure \ref{fig:restack_pre_pre}. It hightlights
+the \GUIEditable{``color''} property of a part (in a given state). It
+contains a four integer numbers text entry and a little rectangular
+box, which itself is colored with the same color the selected object
+has.
 
 Those 4 numbers represent the component values of the part's color (in
 RGB space), being them, respectively:
@@ -483,9 +469,9 @@ RGB space), being them, respectively:
 \end{itemize}
 
 One way of altering that color is by directly editing the text entry
-and hitting the return key. Another easier way is by clicking over the
-colored box besides it. A floating box will appear, just as depicted
-in figure \ref{fig:color_box}.
+and hitting the return key. Another easier way is by clicking over
+that colored box on the right. A floating box will appear, just as
+depicted in figure \ref{fig:color_box}.
 
 \begin{figure}[h!]
   \centering
@@ -501,12 +487,61 @@ directly over those same buttons will increase or decrease those
 values by one unit, only. A snapshot of the color formed by the
 numeric color components is shown in a rectangle on the top of the
 color box. By clicking the \GUIButton{``Set''} button, you'll have the
-color changed, actually.
+color changed, actually. For our objectives, make those values be
+all \emph{255}. After you set the new color, you'll end up with what
+is depicted in figure \ref{fig:restack_pre}.
 
-We're describing this property's use in order to set
-\texttt{Rectangle01}'s color to a default clipper color: 255 255 255
-255. After doing that, you'll get something like figure
-\ref{fig:overlap_white}.
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=0.95\textwidth]{images/rectangle_stack_pre.png}
+  \caption{New rectangle, with size and color changed}
+  \label{fig:restack_pre}
+\end{figure}
+
+Back to re-stacking, region 1 of figure \ref{fig:new_rectangle} will
+exhibit three more action buttons over the actual list of parts,
+besides the \GUIIcon{``+''} one, if a part is selected, which are:
+
+\begin{description}
+\item[\GUIIcon{upwards arrow}] This is the re-stack \emph{above}
+  action.
+\item[\GUIIcon{downwards arrow}] This is the re-stack \emph{below}
+  action. It does the exact opposite of the former action,
+  naturally. If you click on it with \texttt{Rectangle02} selected,
+  being it on the state shown in figure \ref{fig:restack_pre}, you'll
+  get what is depicted on figure \ref{fig:restack}:
+  \texttt{Rectangle01} is now \emph{on top} of the other one.
+\item[\GUIIcon{``-''}] This is the part removal action. When clicked,
+  the selected part will be totally removed from the group under
+  edition, along with all its states.
+\end{description}
+
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=0.95\textwidth]{images/rectangle_stack.png}
+  \caption{Re-stacking a part}
+  \label{fig:restack}
+\end{figure}
+
+\subsection{Part clipping and reaction to mouse events}
+
+Let's start looking better into the properties collapsable groups, on
+the right of the main window's screen. The ``part properties'' one,
+marked as region 5 in figure \ref{fig:new_rectangle}, has two text
+labels which give you the name of the selected part and its type. The
+\GUIEditable{``name''} one is actually an \emph{editable} text
+entry. By changing its contents and hitting the return key, you'll be
+\emph{renaming} the selected part. One will see, additionally, a
+\GUILabel{``clip to''} field, which, when clicked, will raise a box
+with a list of clipping objects (rectangles) to choose from.
+
+For example, suppose we have, again, those two rectangles --
+\texttt{Rectangle01} and \texttt{Rectangle02} -- and a third one,
+being it (solid) white, too\footnote{ It's important that it gets the
+  color ``\texttt{255 255 255 255}'' (a default clipper
+  color).}. Place this third rectangle, which we'll call
+\texttt{Rectangle03}, so that it overlaps with \texttt{Rectangle01},
+just like in figure \ref{fig:overlap_white}.
 
 \begin{figure}[h!]
   \centering
@@ -518,7 +553,7 @@ We're describing this property's use in order to set
 Back to the \GUILabel{``clip to''} field, you can check that both
 rectangles have \GUIEditable{``<None>''} on their entries. This means,
 naturally, that they're not clipped to any other part. Select
-\texttt{Rectangle00} and click on this field. Another floating box
+\texttt{Rectangle01} and click on this field. Another floating box
 will appear, just as seen on figure \ref{fig:clipping_box}.
 
 \begin{figure}[h!]
@@ -529,11 +564,14 @@ will appear, just as seen on figure \ref{fig:clipping_box}.
 \end{figure}
 
 All (other) rectangles in the group are candidates to clip the
-selected object. We'll choose \texttt{Rectangle01}, here, and the
+selected object. We'll choose \texttt{Rectangle03}, here, and the
 effect should be something like figure \ref{fig:overlap_clipped}:
-\texttt{Rectangle00} has only the area overlapping
-\texttt{Rectangle01} colored green. The rest is shown transparent and
-what you see is actually the \texttt{background} rectangle below it.
+\texttt{Rectangle01} has only the area coicinding with
+\texttt{Rectangle03} colored green. The rest is shown transparent and
+what you see is actually \texttt{Rectangle02}. If you call, to
+\texttt{Rectangle01}, the clipper selection box again and click on the
+\GUIButton{``None''} button, you'll get again to the state we were in
+figure \ref{fig:overlap_white}.
 
 \begin{figure}[h!]
   \centering
@@ -541,10 +579,6 @@ what you see is actually the \texttt{background} rectangle below it.
   \caption{Overlapping objects -- clipper and clippee}
   \label{fig:overlap_clipped}
 \end{figure}
-
-If you call, to \texttt{Rectangle00}, the clipper selection box again
-and click on the \GUIButton{``None''} button, you'll get again to the
-state we were in figure \ref{fig:overlap_white}.
 
 To finish the ``part properties'' collapsable group, we have the
 \GUIEditable{``mouse events''} and \GUIEditable{``repeat events''}
@@ -554,8 +588,9 @@ whether the object is receiving mouse events and repeating them,
 respectively.
 
 \subsection{Part states}
+\label{sec:part_states}
 
-Let's now go into the details of the region 6, seen in figure
+Let's now go into the details of the region 7, seen in figure
 \ref{fig:new_rectangle}. If we go back to the state we were in that
 figure, the cited region looked like figure
 \ref{fig:part_state_group}.
@@ -584,7 +619,7 @@ filled for the two regions above, 3 and 4. These two regions denote,
 respectively, the positioning of the \emph{top-left} and
 \emph{bottom-right} corners of the the part's container. Figure
 \ref{fig:rectangle_rel1rel2} highlights these two points for
-\texttt{Rectangle00}, which coincide with two of the part resizing
+\texttt{Rectangle01}, which coincide with two of the part resizing
 squares.
 
 \begin{figure}[h!]
@@ -617,7 +652,7 @@ figure \ref{fig:part_state_group}.
 \begin{figure}[h!]
   \centering
   \includegraphics[width=0.88\textwidth]{images/visibility_false.png}
-  \caption{Making \texttt{Rectangle00} invisible for state
+  \caption{Making \texttt{Rectangle01} invisible for state
     \texttt{default 0.0}}
   \label{fig:visibility_false}
 \end{figure}
@@ -625,7 +660,7 @@ figure \ref{fig:part_state_group}.
 \begin{figure}[h!]
   \centering
   \includegraphics[width=0.88\textwidth]{images/rel_and_offset_changes.png}
-  \caption{Changing \texttt{Rectangle00}'s positioning relative to its
+  \caption{Changing \texttt{Rectangle01}'s positioning relative to its
     group}
   \label{fig:rel_and_offset_changes}
 \end{figure}
@@ -633,8 +668,8 @@ figure \ref{fig:part_state_group}.
 \begin{figure}[h!]
   \centering
   \includegraphics[width=0.88\textwidth]{images/relative_to_other_part.png}
-  \caption{Now making \texttt{Rectangle00} relative to another one,
-    \texttt{Rectangle01}, whose position can be seen on the group
+  \caption{Now making \texttt{Rectangle01} relative to another one,
+    \texttt{Rectangle02}, whose position can be seen on the group
     displaying area.}
   \label{fig:relative_to_other_part}
 \end{figure}
@@ -642,10 +677,10 @@ figure \ref{fig:part_state_group}.
 \begin{figure}[h!]
   \centering
   \includegraphics[width=0.88\textwidth]{images/rel_drag.png}
-  \caption{This is what one gets by just grabbing \texttt{Rectangle01}
+  \caption{This is what one gets by just grabbing \texttt{Rectangle02}
     from the position it had in figure
     \ref{fig:relative_to_other_part} to the one shown here. Because
-    \texttt{Rectangle00} is positioned relatively to it, it is also
+    \texttt{Rectangle01} is positioned relatively to it, it is also
     moved leftwards, proportionally.}
   \label{fig:rel_drag}
 \end{figure}
@@ -665,7 +700,7 @@ you click on that icon, you'll get the dialog box shown in figure
 \end{figure}
 
 Before returning to the actions there available, we'll create a
-\emph{new state} to \texttt{Rectangle00}, being the default one the
+\emph{new state} to \texttt{Rectangle01}, being the default one the
 one we get just after adding it to the group.
 
 Region 1 of figure \ref{fig:part_state_group}, besides showing the
