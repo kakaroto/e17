@@ -29,6 +29,7 @@ collections { group { name: "editje/icon/"_name;            \
                image.normal: "ico_"_name".png";             \
 }}}}}
 
+ICON("editje")
 ICON("new")
 ICON("options")
 ICON("animation")

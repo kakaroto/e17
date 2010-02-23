@@ -24,6 +24,7 @@ import edje
 import elementary
 
 import sysconfig
+from about import About
 from editable import Editable
 
 from desktop import Desktop
@@ -291,6 +292,10 @@ class Editje(elementary.Window):
         #FontSelectionWizard(self).open()
         return
 
+    def _about_cb(self, obj, emission, source):
+        About(self).open()
+        return
+
     def _play_cb(self, obj, emission, source):
 #        part = self.e.part.name
 #        def play_end(emissor, data):
@@ -433,6 +438,7 @@ class Editje(elementary.Window):
         self._toolbar_bt_init(edj, "image_list.bt", "Images",
                               self._image_list_cb)
         self._toolbar_bt_init(edj, "font_list.bt", "Fonts", self._font_list_cb)
+        self._toolbar_bt_init(edj, "about.bt", "About", self._about_cb)
 
         # Mainbar
         mainbar = CollapsablesBox(self)

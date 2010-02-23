@@ -15,6 +15,7 @@ ico_cancel_disabled.png \
 ico_closed.png \
 ico_confirm.png \
 ico_down.png \
+ico_editje.png \
 ico_fonts.png \
 ico_images.png \
 ico_group.png \

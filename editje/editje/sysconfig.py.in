@@ -3,6 +3,8 @@ import os
 
 SYSTEM_THEMES_DIR = '@prefix@/share/editje/data/themes'
 
+VERSION='@VERSION@'
+
 themedirs = []
 themedirs.append(os.path.join(os.path.dirname(__file__),
                               "../data/themes/default"))
