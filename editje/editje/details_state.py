@@ -411,12 +411,14 @@ class PartStateDetails(EditjeDetails):
 #        self.prop_add("scale_hint", wid)
 
     def _rel_props_create(self):
+        rel_to_box_title = "Placement reference"
+
         self.group_add("rel1")
         self.group_title_set("rel1", "top-left")
 
         prop = Property(self._parent, "to")
-        prop.widget_add("x", WidgetPartList(self))
-        prop.widget_add("y", WidgetPartList(self))
+        prop.widget_add("x", WidgetPartList(self, rel_to_box_title))
+        prop.widget_add("y", WidgetPartList(self, rel_to_box_title))
         self["rel1"].property_add(prop)
 
         prop = Property(self._parent, "relative")
@@ -449,8 +451,8 @@ class PartStateDetails(EditjeDetails):
         self.group_title_set("rel2", "bottom-right")
 
         prop = Property(self._parent, "to")
-        prop.widget_add("x", WidgetPartList(self))
-        prop.widget_add("y", WidgetPartList(self))
+        prop.widget_add("x", WidgetPartList(self, rel_to_box_title))
+        prop.widget_add("y", WidgetPartList(self, rel_to_box_title))
         self["rel2"].property_add(prop)
 
         prop = Property(self._parent, "relative")

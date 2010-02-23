@@ -1,4 +1,3 @@
-#
 # Copyright (C) 2010 Samsung Electronics.
 #
 # This file is part of Editje.
@@ -10,16 +9,16 @@
 #
 # Editje is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 # GNU Lesser General Public License for more details.
 #
 # You should have received a copy of the GNU Lesser General Public
-# License along with Editje.  If not, see
-# <http://www.gnu.org/licenses/>.
+# License along with Editje. If not, see <http://www.gnu.org/licenses/>.
 
 import elementary
 
 from floater import Floater
+
 
 class FloaterOpener(object):
     _floater_min_w = 200
@@ -57,12 +56,14 @@ class FloaterOpener(object):
     def _floater_cancel(self, *args):
         self._floater.hide()
 
+
 class FloaterListOpener(FloaterOpener):
     def _floater_content_init(self):
         self._floater_list = elementary.List(self._floater)
 
-        self._floater_list.scroller_policy_set(elementary.ELM_SCROLLER_POLICY_OFF,
-                                               elementary.ELM_SCROLLER_POLICY_ON)
+        self._floater_list.scroller_policy_set(
+            elementary.ELM_SCROLLER_POLICY_OFF,
+            elementary.ELM_SCROLLER_POLICY_ON)
         self._floater_list.callback_selected_add(self._floater_list_select_cb)
         self._floater.content_set(self._floater_list)
         self._floater_list.show()

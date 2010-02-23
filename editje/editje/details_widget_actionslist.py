@@ -30,8 +30,5 @@ class WidgetActionsList(WidgetPartList):
                 list.append((fixedname, item))
         return list
 
-    def _floater_title_init(self):
-        self._floater.title_set("Animations")
-
     def _floater_actions_init(self):
         FloaterListOpener._floater_actions_init(self)

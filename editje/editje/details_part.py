@@ -9,12 +9,11 @@
 #
 # Editje is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 # GNU Lesser General Public License for more details.
 #
 # You should have received a copy of the GNU Lesser General Public
-# License along with Editje.  If not, see
-# <http://www.gnu.org/licenses/>.
+# License along with Editje. If not, see <http://www.gnu.org/licenses/>.
 
 import edje
 
@@ -57,7 +56,7 @@ class PartDetails(EditjeDetails):
         self.content_set("part_name.swallow", self._header_table)
 
         prop = Property(parent, "clip_to")
-        prop.widget_add("to", WidgetPartList(self))
+        prop.widget_add("to", WidgetPartList(self, "Clipper selection"))
         self["main"].property_add(prop)
         prop = Property(parent, "mouse_events")
         prop.widget_add("me", WidgetBoolean(self))

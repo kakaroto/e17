@@ -9,12 +9,11 @@
 #
 # Editje is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 # GNU Lesser General Public License for more details.
 #
 # You should have received a copy of the GNU Lesser General Public
-# License along with Editje.  If not, see
-# <http://www.gnu.org/licenses/>.
+# License along with Editje. If not, see <http://www.gnu.org/licenses/>.
 
 import elementary
 
@@ -23,10 +22,11 @@ from floater_opener import FloaterListOpener
 
 
 class WidgetPartList(FloaterListOpener, WidgetButton):
-    def __init__(self, parent):
+    def __init__(self, parent, title=None):
         FloaterListOpener.__init__(self)
         WidgetButton.__init__(self, parent)
         self._value = None
+        self._title = title or ""
         self.clicked = self._open
 
     def show(self):
@@ -60,7 +60,7 @@ class WidgetPartList(FloaterListOpener, WidgetButton):
         return list
 
     def _floater_title_init(self):
-        self._floater.title_set("Placement reference")
+        self._floater.title_set(self._title)
 
     def _floater_actions_init(self):
         self._floater.action_add("None", self._none_selected)

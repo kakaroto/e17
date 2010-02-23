@@ -261,7 +261,7 @@ class SignalDetails(EditjeDetails):
         self["main"].property_add(prop)
 
         prop = Property(parent, "action")
-        prop.widget_add("a", WidgetActionsList(self))
+        prop.widget_add("a", WidgetActionsList(self, "Animations"))
         self["main"].property_add(prop)
 
         self.group_add("out")
