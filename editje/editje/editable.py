@@ -256,6 +256,17 @@ class Editable(Manager, object):
         if os.path.basename(img) not in self.images_get():
             self.edje.image_add(img)
 
+    #Fonts
+    def fonts_get(self):
+        return self.edje.fonts
+
+    def font_id_get(self, name):
+        return self.edje.font_id_get(name)
+
+    def font_add(self, fnt):
+        if os.path.basename(fnt) not in self.fonts_get():
+            self.edje.font_add(fnt)
+
     # Modifications
     def _modification_init(self):
         self._modification_clear_cb(self, None)

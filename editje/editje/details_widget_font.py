@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2009 Samsung Electronics.
+# Copyright (C) 2010 Samsung Electronics.
 #
 # This file is part of Editje.
 #
@@ -16,24 +16,36 @@
 # You should have received a copy of the GNU Lesser General Public
 # License along with Editje.  If not, see
 # <http://www.gnu.org/licenses/>.
-from details_widget_entry_button_list import WidgetEntryButtonList
+from details_widget_entry_button import WidgetEntryButton
+from filewizard import FontSelectionWizard
 
+class WidgetFont(WidgetEntryButton):
 
-class WidgetFont(WidgetEntryButtonList):
+    def __init__(self, parent, fnt_new_fnt_cb=None, fnt_list_get_cb=None,
+                 fnt_id_get_cb=None, workfile_name_get_cb=None):
+        WidgetEntryButton.__init__(self, parent)
 
-    def __init__(self, parent):
-        WidgetEntryButtonList.__init__(self,parent)
+        self._parent = parent
+        self._fnt_new_fnt_cb = fnt_new_fnt_cb
+        self._fnt_list_get_cb = fnt_list_get_cb
+        self._fnt_id_get_cb = fnt_id_get_cb
+        self._workfile_name_get_cb = workfile_name_get_cb
+
         self.entry_value = "Sans"
         self.rect.label_set("Aa")
-
-    def _items_load(self):
-        list = []
-
-        for item in  self.parent.evas.font_available_list():
-            list.append((item, item))
-        return list
 
     def _actions_init(self):
         self._pop.title_set("Fonts")
         self._pop.action_add("None", self._select_cb, "")
-        WidgetEntryButtonList._actions_init(self)
+
+    def _open(self, bt, *args):
+        FontSelectionWizard(self._parent,
+                selected_cb=self._font_selected_cb,
+                file_add_cb=self._fnt_new_fnt_cb,
+                file_list_cb=self._fnt_list_get_cb,
+                fnt_id_get_cb=self._fnt_id_get_cb,
+                workfile_get_cb=self._workfile_name_get_cb).show()
+
+    def _font_selected_cb(self, font):
+        self.value = font
+        self._callback_call("changed")

@@ -161,6 +161,17 @@ class Editje(elementary.Window):
     def _image_wizard_image_id_get_cb(self, name):
         return self.e.image_id_get(name)
 
+    def _font_wizard_new_font_cb(self, fnt):
+         self.e.font_add(fnt)
+
+    def _font_wizard_font_list_get_cb(self):
+        font_list = self.e.fonts_get()
+        font_list += self.main_layout.edje_get().evas.font_available_list()
+        return font_list
+
+    def _font_wizard_font_id_get_cb(self, name):
+        return self.e.font_id_get(name)
+
     def _workfile_name_get_cb(self):
         return self.e.workfile
 
@@ -271,10 +282,13 @@ class Editje(elementary.Window):
         print "Options ...."
 
     def _image_list_cb(self, obj, emission, source):
-        ImageSelectionWizard(self).open()
+        #FIXME: Not used
+        #ImageSelectionWizard(self).open()
+        return
 
     def _font_list_cb(self, obj, emission, source):
-        #TODO: FontSelectionWizard(self).open()
+        #FIXME: Not used
+        #FontSelectionWizard(self).open()
         return
 
     def _play_cb(self, obj, emission, source):
@@ -468,6 +482,9 @@ class Editje(elementary.Window):
                 img_new_img_cb=self._image_wizard_new_image_cb, \
                 img_list_get_cb=self._image_wizard_image_list_get_cb, \
                 img_id_get_cb=self._image_wizard_image_id_get_cb, \
+                fnt_new_fnt_cb=self._font_wizard_new_font_cb, \
+                fnt_list_get_cb=self._font_wizard_font_list_get_cb, \
+                fnt_id_get_cb=self._font_wizard_font_id_get_cb, \
                 workfile_name_get_cb=self._workfile_name_get_cb)
         box.pack_end(self.part_state_details)
         self.part_state_details.show()
@@ -536,6 +553,9 @@ class Editje(elementary.Window):
                 img_new_img_cb=self._image_wizard_new_image_cb, \
                 img_list_get_cb=self._image_wizard_image_list_get_cb, \
                 img_id_get_cb=self._image_wizard_image_id_get_cb, \
+                fnt_new_fnt_cb=self._font_wizard_new_font_cb, \
+                fnt_list_get_cb=self._font_wizard_font_list_get_cb, \
+                fnt_id_get_cb=self._font_wizard_font_id_get_cb, \
                 workfile_name_get_cb=self._workfile_name_get_cb) # fix
         self.anim_state_details.open()
         box.pack_end(self.anim_state_details)
