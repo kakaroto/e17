@@ -10,7 +10,7 @@ EDJE_FLAGS = -v \
 	     -id $(top_srcdir)/data/images
 
 theme.edj:  theme.edc
-	$(EDJE_CC) $(EDJE_FLAGS) theme.edc
+	$(EDJE_CC) $(EDJE_FLAGS) $(top_srcdir)/data/theme.edc
 
 icondir = $(pkgdatadir)
 icon_DATA =  $(EDJ)
