@@ -1208,6 +1208,7 @@ static const Expedite_Resolution resolutions[] = {
   { "n800",    720 , 420 },
   { "pal",     720 , 576 },
   { "720p",    1280, 720 },
+  { "1080p",   1920, 1080},
   { "wsvga",   1024, 600 },
   { "wsvga-p", 600 , 1024},
   { NULL, 0, 0 }
