@@ -8,28 +8,17 @@ static Display *disp = NULL;
 static Window win = 0;
 static int first_expose = 0;
 
-int
-engine_software_xlib_args(int argc, char **argv)
+Eina_Bool
+engine_software_xlib_args(const char *engine, int width, int height)
 {
    XSetWindowAttributes attr;
    XClassHint chint;
    XSizeHints szhints;
    Evas_Engine_Info_Software_X11 *einfo;
    int i;
-   int ok = 0;
-
-   for (i = 1; i < argc; i++)
-     {
-	if ((!strcmp(argv[i], "-e")) && (i < (argc - 1)))
-	  {
-	     i++;
-	     if (!strcmp(argv[i], "xlib")) ok = 1;
-	  }
-     }
-   if (!ok) return 0;
 
    disp = XOpenDisplay(NULL);
-   if (!disp) return 0;
+   if (!disp) return EINA_FALSE;
 
    evas_output_method_set(evas, evas_render_method_lookup("software_x11"));
    einfo = (Evas_Engine_Info_Software_X11 *)evas_engine_info_get(evas);
@@ -57,7 +46,7 @@ engine_software_xlib_args(int argc, char **argv)
      KeyPressMask | KeyReleaseMask;
    attr.bit_gravity = ForgetGravity;
    win = XCreateWindow(disp, DefaultRootWindow(disp),
-		       0, 0, win_w, win_h, 0,
+		       0, 0, width, height, 0,
 		       einfo->info.depth, InputOutput,
 		       einfo->info.visual,
 		       CWBackingStore | CWColormap |
@@ -79,21 +68,21 @@ engine_software_xlib_args(int argc, char **argv)
    chint.res_class = "Expedite";
    XSetClassHint(disp, win, &chint);
    szhints.flags = PMinSize | PMaxSize | PSize | USSize;
-   szhints.min_width = szhints.max_width = win_w;
-   szhints.min_height = szhints.max_height = win_h;
+   szhints.min_width = szhints.max_width = width;
+   szhints.min_height = szhints.max_height = height;
    XSetWMNormalHints(disp, win, &szhints);
    XMapWindow(disp, win);
    XSync(disp, False);
    while (!first_expose)
      engine_software_xlib_loop();
-   return 1;
+   return EINA_TRUE;
 
  destroy_window:
    XDestroyWindow(disp, win);
  close_display:
    XCloseDisplay(disp);
 
-   return 0;
+   return EINA_FALSE;
 }
 
 void

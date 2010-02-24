@@ -166,8 +166,8 @@ MainWndProc(HWND   hwnd,
      }
 }
 
-int
-engine_software_16_wince_args(int argc, char **argv)
+Eina_Bool
+engine_software_16_wince_args(const char *engine, int width, int height)
 {
    WNDCLASS                            wc;
    RECT                                rect;
@@ -185,22 +185,15 @@ engine_software_16_wince_args(int argc, char **argv)
    int                                 ok = 0;
    int                                 i;
 
-   for (i = 1; i < argc; i++)
-     {
-        if ((!strcmp(argv[i], "-e")) && (i < (argc - 1)))
-          {
-             i++;
-             if (!strcmp(argv[i], "wince")) ok = 1;
-             if (!strcmp(argv[i], "wince-fb")) { ok = 1; backend = 1; }
-             if (!strcmp(argv[i], "wince-gapi")) { ok = 1; backend = 2; }
-             if (!strcmp(argv[i], "wince-ddraw")) { ok = 1; backend = 3; }
-             if (!strcmp(argv[i], "wince-gdi")) { ok = 1; backend = 4; }
-          }
-     }
-   if (!ok) return 0;
+   if (!strcmp(engine, "wince")) ok = 1;
+   if (!strcmp(engine, "wince-fb")) { ok = 1; backend = 1; }
+   if (!strcmp(engine, "wince-gapi")) { ok = 1; backend = 2; }
+   if (!strcmp(engine, "wince-ddraw")) { ok = 1; backend = 3; }
+   if (!strcmp(engine, "wince-gdi")) { ok = 1; backend = 4; }
+   if (!ok) return EINA_FALSE;
 
    instance = GetModuleHandle(NULL);
-   if (!instance) return 0;
+   if (!instance) return EINA_FALSE;
 
    memset (&wc, 0, sizeof (wc));
    wc.style = CS_HREDRAW | CS_VREDRAW;
@@ -256,8 +249,8 @@ engine_software_16_wince_args(int argc, char **argv)
      }
 
    einfo->info.window = window;
-   einfo->info.width = win_w;
-   einfo->info.height = win_h;
+   einfo->info.width = width;
+   einfo->info.height = height;
    einfo->info.backend = backend;
    einfo->info.rotation = 0;
    if (!evas_engine_info_set(evas, (Evas_Engine_Info *) einfo))
@@ -273,7 +266,7 @@ engine_software_16_wince_args(int argc, char **argv)
    ShowWindow(window, SW_SHOWDEFAULT);
    UpdateWindow(window);
 
-   return 1;
+   return EINA_TRUE;
 
  destroy_window:
    DestroyWindow(window);
@@ -288,7 +281,7 @@ engine_software_16_wince_args(int argc, char **argv)
  free_library:
    FreeLibrary(instance);
 
-   return 0;
+   return EINA_FALSE;
 }
 
 void

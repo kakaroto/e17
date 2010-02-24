@@ -22,30 +22,19 @@ static IDirectFBSurface *_dfb_surface;
           }                                                            \
      }
 
-int
-engine_directfb_args(int argc, char **argv)
+Eina_Bool
+engine_directfb_args(const char *engine, int width, int height)
 {
    Evas_Engine_Info_DirectFB *einfo;
    DFBWindowDescription desc;
    int i;
-   int ok = 0;
-
-   for (i = 1; i < argc; i++)
-     {
-	if ((!strcmp(argv[i], "-e")) && (i < (argc - 1)))
-	  {
-	     i++;
-	     if (!strcmp(argv[i], "directfb")) ok = 1;
-	  }
-     }
-   if (!ok) return 0;
 
    evas_output_method_set(evas, evas_render_method_lookup("directfb"));
    einfo = (Evas_Engine_Info_DirectFB *)evas_engine_info_get(evas);
    if (!einfo)
      {
 	printf("Evas does not support the DirectFB Engine\n");
-	return 0;
+	return EINA_FALSE;
      }
 
    DFBCHECK(DirectFBInit(NULL, NULL));
@@ -58,8 +47,8 @@ engine_directfb_args(int argc, char **argv)
    desc.flags = (DWDESC_POSX | DWDESC_POSY | DWDESC_WIDTH | DWDESC_HEIGHT | DWDESC_PIXELFORMAT);
    desc.posx = 0;
    desc.posy = 0;
-   desc.width = win_w;
-   desc.height = win_h;
+   desc.width = width;
+   desc.height = height;
    desc.pixelformat = DSPF_ARGB;
 
    DFBCHECK(_layer->CreateWindow(_layer, &desc, &_dfb_window));
@@ -74,10 +63,10 @@ engine_directfb_args(int argc, char **argv)
    if (!evas_engine_info_set(evas, (Evas_Engine_Info *) einfo))
      {
 	printf("Evas can not setup the informations of the DirectFB Engine\n");
-	return 0;
+	return EINA_FALSE;
      }
 
-   return 1;
+   return EINA_TRUE;
 }
 
 static void

@@ -7,7 +7,7 @@ extern "C" {
 #endif
 
 
-int  engine_direct3d_args(int argc, char **argv);
+Eina_Bool engine_direct3d_args(const char *engine, int width, int height);
 void engine_direct3d_loop(void);
 void engine_direct3d_shutdown(void);
 

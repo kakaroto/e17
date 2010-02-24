@@ -2,7 +2,7 @@
 #define __ENGINE_SOFTWARE_16_WINCE_H__
 
 
-int  engine_software_16_wince_args(int argc, char **argv);
+Eina_Bool  engine_software_16_wince_args(const char *engine, int width, int height);
 void engine_software_16_wince_loop(void);
 void engine_software_16_wince_shutdown(void);
 

@@ -88,6 +88,24 @@ extern Evas *evas;
 extern int   win_w, win_h;
 extern int   loops;
 
+typedef struct _Expedite_Resolution Expedite_Resolution;
+typedef struct _Expedite_Engine Expedite_Engine;
+
+struct _Expedite_Resolution
+{
+   const char *name;
+   int width;
+   int height;
+};
+
+struct _Expedite_Engine
+{
+   const char *name;
+   Eina_Bool (*init)(const char *engine, int width, int height);
+   void (*loop)(void);
+   void (*shutdown)(void);
+};
+
 void         srnd(void);
 unsigned int rnd(void);
 double       get_time(void);

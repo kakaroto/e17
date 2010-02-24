@@ -46,29 +46,18 @@ static NSWindow * main_window;
 
 @end
 
-int
-engine_quartz_args(int argc, char **argv)
+Eina_Bool
+engine_quartz_args(const char *engine, int width, int height)
 {
    Evas_Engine_Info_Quartz *einfo;
    int i;
-   int ok = 0;
-
-   for (i = 1; i < argc; i++)
-   {
-      if ((!strcmp(argv[i], "-e")) && (i < (argc - 1)))
-      {
-         i++;
-         if (!strcmp(argv[i], "quartz")) ok = 1;
-      }
-   }
-   if (!ok) return 0;
 
    evas_output_method_set(evas, evas_render_method_lookup("quartz"));
    einfo = (Evas_Engine_Info_Quartz *)evas_engine_info_get(evas);
    if (!einfo)
    {
       printf("Evas does not support the Quartz Engine\n");
-      return 0;
+      return EINA_FALSE;
    }
    
    // Set up the Cocoa runtime
@@ -83,30 +72,30 @@ engine_quartz_args(int argc, char **argv)
    [NSApp finishLaunching];
    
    // Create our main window, and embed an EvasView in it
-   main_window = [[NSWindow alloc] initWithContentRect:NSMakeRect(20,500,win_w,win_h) styleMask:(NSTitledWindowMask | NSClosableWindowMask | NSResizableWindowMask | NSMiniaturizableWindowMask) backing:NSBackingStoreBuffered defer:NO screen:nil];
+   main_window = [[NSWindow alloc] initWithContentRect:NSMakeRect(20,500,width,height) styleMask:(NSTitledWindowMask | NSClosableWindowMask | NSResizableWindowMask | NSMiniaturizableWindowMask) backing:NSBackingStoreBuffered defer:NO screen:nil];
    [main_window makeKeyAndOrderFront:NSApp];
    [main_window setTitle:@"Expedite"];
    [main_window makeMainWindow];
    [main_window setAcceptsMouseMovedEvents:YES];
    [NSApp activateIgnoringOtherApps:YES];
    
-   evas_view = [[EvasView alloc] initWithFrame:NSMakeRect(0,0,win_w,win_h)];
+   evas_view = [[EvasView alloc] initWithFrame:NSMakeRect(0,0,width,height)];
    [[main_window contentView] addSubview:evas_view];
    
    // drawRect: must be run at least once, to make sure we've set ctx
    [evas_view display];
    
-   evas_output_size_set(evas, win_w, win_h);
-   evas_output_viewport_set(evas, 0, 0, win_w, win_h);
+   evas_output_size_set(evas, width, height);
+   evas_output_viewport_set(evas, 0, 0, width, height);
 
    einfo->info.context = [evas_view context];
    if (!evas_engine_info_set(evas, (Evas_Engine_Info *) einfo))
      {
 	printf("Evas can not setup the informations of the Quartz Engine\n");
-        exit(-1);
+        return EINA_FALSE;
      }
 
-   return 1;
+   return EINA_TRUE;
 }
 
 void

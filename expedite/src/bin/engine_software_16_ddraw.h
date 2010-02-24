@@ -7,7 +7,7 @@ extern "C" {
 #endif
 
 
-int  engine_software_16_ddraw_args(int argc, char **argv);
+Eina_Bool engine_software_16_ddraw_args(const char *engine, int width, int height);
 void engine_software_16_ddraw_loop(void);
 void engine_software_16_ddraw_shutdown(void);
 

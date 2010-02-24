@@ -1130,41 +1130,142 @@ _engine_go(void)
 {
    return go;
 }
+static const Expedite_Engine engines[] = {
+#if HAVE_EVAS_SOFTWARE_XLIB
+  { "xlib", engine_software_xlib_args, engine_software_xlib_loop, engine_software_xlib_shutdown },
+#endif
+#if HAVE_EVAS_XRENDER_X11
+  { "xr", engine_xrender_x11_args, engine_xrender_x11_loop, engine_xrender_x11_shutdown },
+#endif
+#if HAVE_EVAS_OPENGL_X11
+  { "gl", engine_gl_x11_args, engine_gl_x11_loop, engine_gl_x11_shutdown },
+#endif
+#if HAVE_EVAS_SOFTWARE_XCB
+  { "xcb", engine_software_xcb_args, engine_software_xcb_loop, engine_software_xcb_shutdown },
+#endif
+#if HAVE_EVAS_XRENDER_XCB
+  { "xrxcb", engine_xrender_xcb_args, engine_xrender_xcb_loop, engine_xrender_xcb_shutdown },
+#endif
+#if HAVE_EVAS_SOFTWARE_GDI
+  { "gdi", engine_software_gdi_args, engine_software_gdi_loop, engine_software_gdi_shutdown },
+#endif
+#if HAVE_EVAS_SOFTWARE_DDRAW
+  { "ddraw", engine_software_ddraw_args, engine_software_ddraw_loop, engine_software_ddraw_shutdown },
+#endif
+#if HAVE_EVAS_DIRECT3D
+  { "direct3d",engine_direct3d_args, engine_direct3d_loop, engine_direct3d_shutdown },
+#endif
+#if HAVE_EVAS_OPENGL_GLEW
+  { "glew" , engine_gl_glew_args, engine_gl_glew_loop, engine_gl_glew_shutdown },
+#endif
+#if HAVE_EVAS_SOFTWARE_SDL
+  { "sdl",   engine_software_sdl_args, engine_software_sdl_loop, engine_software_sdl_shutdown },
+  { "sdl-16",engine_software_sdl_args, engine_software_sdl_loop, engine_software_sdl_shutdown },
+#endif
+#if HAVE_EVAS_OPENGL_SDL
+  { "gl-sdl",engine_gl_sdl_args, engine_gl_sdl_loop, engine_gl_sdl_shutdown },
+#endif
+#if HAVE_EVAS_FB
+  { "fb",    engine_fb_args, engine_fb_loop, engine_fb_shutdown },
+#endif
+#if HAVE_EVAS_DIRECTFB
+  { "directfb",engine_directfb_args, engine_directfb_loop, engine_directfb_shutdown },
+#endif
+#if HAVE_EVAS_QUARTZ
+  { "quartz",engine_quartz_args, engine_quartz_loop, engine_quartz_shutdown },
+#endif
+#if HAVE_EVAS_SOFTWARE_16_X11
+  { "x11-16",engine_software_16_x11_args, engine_software_16_x11_loop, engine_software_16_x11_shutdown },
+#endif
+#if HAVE_EVAS_SOFTWARE_16_DDRAW
+  { "ddraw-16",engine_software_16_ddraw_args, engine_software_16_ddraw_loop, engine_software_16_ddraw_shutdown },
+#endif
+#if HAVE_EVAS_SOFTWARE_16_WINCE
+  { "wince", engine_software_16_wince_args, engine_software_16_wince_loop, engine_software_16_wince_shutdown },
+  { "wince-fb", engine_software_16_wince_args, engine_software_16_wince_loop, engine_software_16_wince_shutdown },
+  { "wince-gapi", engine_software_16_wince_args, engine_software_16_wince_loop, engine_software_16_wince_shutdown },
+  { "wince-ddraw", engine_software_16_wince_args, engine_software_16_wince_loop, engine_software_16_wince_shutdown },
+  { "wince-gdi", engine_software_16_wince_args, engine_software_16_wince_loop, engine_software_16_wince_shutdown },
+#endif
+  { NULL, NULL, NULL, NULL }
+};
+
+static const Expedite_Resolution resolutions[] = {
+  { "qvga",    320 , 240 },
+  { "qvga-p",  240 , 320 },
+  { "hvga",    320 , 480 },
+  { "hvga-p",  480 , 320 },
+  { "vga",     640 , 480 },
+  { "vga-p",   480 , 640 },
+  { "wvga",    800 , 480 },
+  { "wvga-p",  480 , 800 },
+  { "svga",    800 , 600 },
+  { "svga-p",  600 , 800 },
+  { "xga",     1024, 768 },
+  { "xga-p",   768 , 1024},
+  { "wxga",    1280, 768 },
+  { "wxga-p",  768 , 1280},
+  { "n800",    720 , 420 },
+  { "pal",     720 , 576 },
+  { "720p",    1280, 720 },
+  { "wsvga",   1024, 600 },
+  { "wsvga-p", 600 , 1024},
+  { NULL, 0, 0 }
+};
+
+static void
+_help(void)
+{
+   int i;
+
+   fprintf(stderr,
+	   "No engine selected.\n"
+	   "\n"
+	   "Options:\n"
+	   "  -datadir path/to/data\n"
+	   "  -a (autorun all tests)\n"
+	   "  -c NUM (loop count for test)\n"
+	   "  -l (list tests)\n"
+	   "  -t TEST-NUM\n"
+	   "  -e ENGINE\n"
+	   "  -p PROFILE\n"
+	   "\n"
+	   "Where ENGINE can be one of:\n"
+	   " ");
+   for (i = 0; engines[i].name != NULL; ++i)
+     fprintf(stderr, " %s", engines[i].name);
+
+   fprintf(stderr,
+	   "\n"
+	   "Where PROFILE can be one of:\n");
+
+   for (i = 0; resolutions[i].name != NULL; ++i)
+     fprintf(stderr, " %s", resolutions[i].name);
+
+   fprintf(stderr, "\n");
+   exit(-1);
+}
 
 static int
 _profile_parse(int argc, char **argv)
 {
-   int i;
+   int i, j;
 
    for (i = 1; i < argc; i++)
      {
 	if ((!strcmp(argv[i], "-p")) && (i < (argc - 1)))
 	  {
 	     i++;
-	     if      (!strcmp(argv[i], "qvga"))   {win_w = 320 ; win_h = 240 ;}
-	     else if (!strcmp(argv[i], "qvga-p")) {win_w = 240 ; win_h = 320 ;}
-	     else if (!strcmp(argv[i], "hvga"))   {win_w = 320 ; win_h = 480 ;}
-	     else if (!strcmp(argv[i], "hvga-p")) {win_w = 480 ; win_h = 320 ;}
-	     else if (!strcmp(argv[i], "vga"))    {win_w = 640 ; win_h = 480 ;}
-	     else if (!strcmp(argv[i], "vga-p"))  {win_w = 480 ; win_h = 640 ;}
-	     else if (!strcmp(argv[i], "wvga"))   {win_w = 800 ; win_h = 480 ;}
-	     else if (!strcmp(argv[i], "wvga-p")) {win_w = 480 ; win_h = 800 ;}
-	     else if (!strcmp(argv[i], "svga"))   {win_w = 800 ; win_h = 600 ;}
-	     else if (!strcmp(argv[i], "svga-p")) {win_w = 600 ; win_h = 800 ;}
-	     else if (!strcmp(argv[i], "xga"))    {win_w = 1024; win_h = 768 ;}
-	     else if (!strcmp(argv[i], "xga-p"))  {win_w = 768 ; win_h = 1024;}
-	     else if (!strcmp(argv[i], "wxga"))   {win_w = 1280; win_h = 768 ;}
-	     else if (!strcmp(argv[i], "wxga-p")) {win_w = 768 ; win_h = 1280;}
-	     else if (!strcmp(argv[i], "n800"))   {win_w = 720 ; win_h = 420 ;}
-             else if (!strcmp(argv[i], "pal"))    {win_w = 720 ; win_h = 576 ;}
-             else if (!strcmp(argv[i], "720p"))   {win_w = 1280; win_h = 720 ;}
-             else if (!strcmp(argv[i], "wsvga"))  {win_w = 1024; win_h = 600 ;}
-             else if (!strcmp(argv[i], "wsvga-p")){win_w = 600 ; win_h = 1024;}
-	     else
-	       {
-		  printf("Invalid profile: %s\n", argv[i]);
-		  return 0;
-	       }
+	     for (j = 0; resolutions[j].name != NULL; ++j)
+	       if (!strcmp(argv[i], resolutions[j].name))
+		 {
+		    win_w = resolutions[j].width;
+		    win_h = resolutions[j].height;
+		    break;
+		 }
+
+	     if (resolutions[j].name == NULL)
+	       _help();
 	  }
 	else if ((!strcmp(argv[i], "-c")) && (i < (argc - 1)))
           {
@@ -1195,206 +1296,33 @@ _engine_args(int argc, char **argv)
    char buf[4096];
    char *prefix;
    int profile_ok;
+   int i, j;
 
    /* FIXME: parse args for geometry, engine etc. */
    profile_ok = _profile_parse(argc, argv);
-#if HAVE_EVAS_SOFTWARE_XLIB
-   if (engine_software_xlib_args(argc, argv))
-     {
-	loop_func = engine_software_xlib_loop;
-	shutdown_func = engine_software_xlib_shutdown;
-     }
-#endif
-#if HAVE_EVAS_XRENDER_X11
-   if (engine_xrender_x11_args(argc, argv))
-     {
-	loop_func = engine_xrender_x11_loop;
-	shutdown_func = engine_xrender_x11_shutdown;
-     }
-#endif
-#if HAVE_EVAS_OPENGL_X11
-   if (engine_gl_x11_args(argc, argv))
-     {
-	loop_func = engine_gl_x11_loop;
-	shutdown_func = engine_gl_x11_shutdown;
-     }
-#endif
-#if HAVE_EVAS_SOFTWARE_XCB
-   if (engine_software_xcb_args(argc, argv))
-     {
-	loop_func = engine_software_xcb_loop;
-	shutdown_func = engine_software_xcb_shutdown;
-     }
-#endif
-#if HAVE_EVAS_XRENDER_XCB
-   if (engine_xrender_xcb_args(argc, argv))
-     {
-	loop_func = engine_xrender_xcb_loop;
-	shutdown_func = engine_xrender_xcb_shutdown;
-     }
-#endif
-#if HAVE_EVAS_SOFTWARE_GDI
-   if (engine_software_gdi_args(argc, argv))
-     {
-	loop_func = engine_software_gdi_loop;
-	shutdown_func = engine_software_gdi_shutdown;
-     }
-#endif
-#if HAVE_EVAS_SOFTWARE_DDRAW
-   if (engine_software_ddraw_args(argc, argv))
-     {
-	loop_func = engine_software_ddraw_loop;
-	shutdown_func = engine_software_ddraw_shutdown;
-     }
-#endif
-#if HAVE_EVAS_DIRECT3D
-   if (engine_direct3d_args(argc, argv))
-     {
-	loop_func = engine_direct3d_loop;
-	shutdown_func = engine_direct3d_shutdown;
-     }
-#endif
-#if HAVE_EVAS_OPENGL_GLEW
-   if (engine_gl_glew_args(argc, argv))
-     {
-	loop_func = engine_gl_glew_loop;
-	shutdown_func = engine_gl_glew_shutdown;
-     }
-#endif
-#if HAVE_EVAS_SOFTWARE_SDL
-   if (engine_software_sdl_args(argc, argv))
-     {
-	loop_func = engine_software_sdl_loop;
-	shutdown_func = engine_software_sdl_shutdown;
-     }
-#endif
-#if HAVE_EVAS_OPENGL_SDL
-   if (engine_gl_sdl_args(argc, argv))
-     {
-	loop_func = engine_gl_sdl_loop;
-	shutdown_func = engine_gl_sdl_shutdown;
-     }
-#endif
-#if HAVE_EVAS_FB
-   if (engine_fb_args(argc, argv))
-     {
-	loop_func = engine_fb_loop;
-	shutdown_func = engine_fb_shutdown;
-     }
-#endif
-#if HAVE_EVAS_DIRECTFB
-   if (engine_directfb_args(argc, argv))
-     {
-	loop_func = engine_directfb_loop;
-	shutdown_func = engine_directfb_shutdown;
-     }
-#endif
-#if HAVE_EVAS_QUARTZ
-   if (engine_quartz_args(argc, argv))
-     {
-	loop_func = engine_quartz_loop;
-	shutdown_func = engine_quartz_shutdown;
-     }
-#endif
-#if HAVE_EVAS_SOFTWARE_16_X11
-   if (engine_software_16_x11_args(argc, argv))
-     {
-	loop_func = engine_software_16_x11_loop;
-	shutdown_func = engine_software_16_x11_shutdown;
-     }
-#endif
-#if HAVE_EVAS_SOFTWARE_16_DDRAW
-   if (engine_software_16_ddraw_args(argc, argv))
-     {
-	loop_func = engine_software_16_ddraw_loop;
-	shutdown_func = engine_software_16_ddraw_shutdown;
-     }
-#endif
-#if HAVE_EVAS_SOFTWARE_16_WINCE
-   if (engine_software_16_wince_args(argc, argv))
-     {
-	loop_func = engine_software_16_wince_loop;
-	shutdown_func = engine_software_16_wince_shutdown;
-     }
-#endif
+
+   evas_output_size_set(evas, win_w, win_h);
+   evas_output_viewport_set(evas, 0, 0, win_w, win_h);
+
+   for (i = 1; i < argc; ++i)
+     if ((!strcmp(argv[i], "-e")) && (i < (argc - 1)))
+       {
+	  ++i;
+
+	  for (j = 0; engines[j].name != NULL; ++j)
+	    if (!strcmp(argv[i], engines[j].name))
+	      {
+		 if (engines[j].init(engines[j].name, win_w, win_h))
+		   {
+		      loop_func = engines[j].loop;
+		      shutdown_func = engines[j].shutdown;
+		   }
+		 break;
+	      }
+       }
+
    if ((!loop_func) || (!profile_ok))
-     {
-	fprintf(stderr,
-		"No engine selected.\n"
-		"\n"
-		"Options:\n"
-		"  -datadir path/to/data\n"
-		"  -a (autorun all tests)\n"
-                "  -c NUM (loop count for test)\n"
-                "  -l (list tests)\n"
-		"  -t TEST-NUM\n"
-		"  -e ENGINE\n"
-		"  -p PROFILE\n"
-		"\n"
-		"Where ENGINE can be one of:\n"
-		" "
-#if HAVE_EVAS_SOFTWARE_XLIB
-	       	" xlib"
-#endif
-#if HAVE_EVAS_XRENDER_X11
-	       	" xr"
-#endif
-#if HAVE_EVAS_OPENGL_X11
-	       	" gl"
-#endif
-#if HAVE_EVAS_SOFTWARE_XCB
-	       	" xcb"
-#endif
-#if HAVE_EVAS_XRENDER_XCB
-	       	" xrxcb"
-#endif
-#if HAVE_EVAS_SOFTWARE_GDI
-	       	" gdi"
-#endif
-#if HAVE_EVAS_SOFTWARE_DDRAW
-	       	" ddraw"
-#endif
-#if HAVE_EVAS_DIRECT3D
-	       	" direct3d"
-#endif
-#if HAVE_EVAS_QUARTZ
-	       	" quartz"
-#endif
-#if HAVE_EVAS_OPENGL_GLEW
-	       	" gl-glew"
-#endif
-#if HAVE_EVAS_SOFTWARE_SDL
-               " sdl sdl-16"
-#endif
-#if HAVE_EVAS_OPENGL_SDL
-               " gl-sdl"
-#endif
-#if HAVE_EVAS_FB
-	       	" fb"
-#endif
-#if HAVE_EVAS_DIRECTFB
-	       	" directfb"
-#endif
-#if HAVE_EVAS_SOFTWARE_16_X11
-	       	" x11-16"
-#endif
-#if HAVE_EVAS_SOFTWARE_16_DDRAW
-	       	" ddraw-16"
-#endif
-#if HAVE_EVAS_SOFTWARE_16_WINCE
-               " wince"
-               " wince-fb"
-               " wince-gapi"
-               " wince-ddraw"
-               " wince-gdi"
-#endif
-		"\n"
-		"Where PROFILE can be one of:\n"
-		"  qvga qvga-p hvga hvga-p vga vga-p wvga wvga-p svga svga-p xga xga-p\n"
-		"  wxga wxga-p n800 pal 720p wsvga wsvga-p\n"
-		);
-	exit(-1);
-     }
+     _help();
 
    datadir = _datadir_parse(argc, argv);
 
@@ -1406,8 +1334,6 @@ _engine_args(int argc, char **argv)
 
    snprintf(buf, 4096, "%s", prefix);
 
-   evas_output_size_set(evas, win_w, win_h);
-   evas_output_viewport_set(evas, 0, 0, win_w, win_h);
    evas_key_modifier_add(evas, "Shift");
    evas_key_modifier_add(evas, "Control");
    evas_key_modifier_add(evas, "Alt");
@@ -1416,7 +1342,7 @@ _engine_args(int argc, char **argv)
    evas_key_lock_add(evas, "Num_Lock");
    evas_key_lock_add(evas, "Scroll_Lock");
    evas_font_path_append(evas, buf);
-// BLAH   
+// BLAH
 //   evas_image_cache_set(evas, 4 * 1024 * 1024);
 //   evas_font_cache_set(evas, 1 * 1024 * 1024);
 }

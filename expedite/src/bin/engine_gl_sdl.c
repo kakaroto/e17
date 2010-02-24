@@ -3,24 +3,12 @@
 
 #include <Evas_Engine_GL_SDL.h>
 
-int
-engine_gl_sdl_args(int argc, char **argv)
+Eina_Bool
+engine_gl_sdl_args(const char *engine, int width, int height)
 {
    Evas_Engine_Info_GL_SDL *einfo;
    int                  i;
-   int                  ok = 0;
 
-   for (i = 1; i < argc; ++i)
-     {
-        if ((!strcmp(argv[i], "-e") && (i < (argc - 1))))
-          {
-             i++;
-             if (!strcmp(argv[i], "gl-sdl")) ok = 1;
-          }
-     }
-   if (!ok) return 0;
-
-   if (ok == 1)
    evas_output_method_set(evas, evas_render_method_lookup("gl_sdl"));
 
    einfo = (Evas_Engine_Info_GL_SDL *) evas_engine_info_get(evas);
@@ -32,10 +20,10 @@ engine_gl_sdl_args(int argc, char **argv)
    if (!evas_engine_info_set(evas, (Evas_Engine_Info *) einfo))
      {
 	printf("Evas could not initialize the GL SDL Engine\n");
-        return 0;
+        return EINA_FALSE;
      }
 
-   return 1;
+   return EINA_TRUE;
 }
 
 void

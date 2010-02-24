@@ -38,8 +38,8 @@ static xcb_screen_t *screen = NULL;
 static xcb_window_t win = 0;
 static int first_expose = 0;
 
-int
-engine_software_xcb_args(int argc, char **argv)
+Eina_Bool
+engine_software_xcb_args(const char *engine, int width, int height)
 {
    struct xcb_size_hints_t        hints;
    uint32_t                       value_list[6];
@@ -63,20 +63,9 @@ engine_software_xcb_args(int argc, char **argv)
    int                            l1;
    int                            l2;
    int                            i;
-   int                            ok = 0;
-
-   for (i = 1; i < argc; i++)
-     {
-	if ((!strcmp(argv[i], "-e")) && (i < (argc - 1)))
-	  {
-	     i++;
-	     if (!strcmp(argv[i], "xcb")) ok = 1;
-	  }
-     }
-   if (!ok) return 0;
 
    conn = xcb_connect(NULL, &s);
-   if (xcb_connection_has_error(conn)) return 0;
+   if (xcb_connection_has_error(conn)) return EINA_FALSE;
 
    cookie1 = xcb_intern_atom_unchecked(conn, 0, strlen("STRING"), "STRING");
    cookie2 = xcb_intern_atom_unchecked(conn, 0, strlen("WM_NAME"), "WM_NAME");
@@ -131,7 +120,7 @@ engine_software_xcb_args(int argc, char **argv)
      goto close_connection;
    xcb_create_window(conn,
                      einfo->info.depth,
-                     win, screen->root, 0, 0, win_w, win_h, 0,
+                     win, screen->root, 0, 0, width, height, 0,
                      XCB_WINDOW_CLASS_INPUT_OUTPUT,
                      ((xcb_visualtype_t *)einfo->info.visual)->visual_id,
                      value_mask,
@@ -150,10 +139,10 @@ engine_software_xcb_args(int argc, char **argv)
 
    memset(&hints, 0, sizeof(hints));
    hints.flags = XCB_SIZE_US_SIZE_HINT | XCB_SIZE_P_SIZE_HINT | XCB_SIZE_P_MIN_SIZE_HINT | XCB_SIZE_P_MAX_SIZE_HINT;
-   hints.min_width = win_w;
-   hints.max_width = win_w;
-   hints.min_height = win_h;
-   hints.max_height = win_h;
+   hints.min_width = width;
+   hints.max_width = width;
+   hints.min_height = height;
+   hints.max_height = height;
 
    reply = xcb_intern_atom_reply(conn, cookie1, NULL);
    string = reply->atom;
@@ -191,7 +180,7 @@ engine_software_xcb_args(int argc, char **argv)
 
    while (!first_expose)
      engine_software_xcb_loop();
-   return 1;
+   return EINA_TRUE;
 
  destroy_window:
    xcb_destroy_window(conn, win);
@@ -203,7 +192,7 @@ engine_software_xcb_args(int argc, char **argv)
    free(xcb_intern_atom_reply(conn, cookie5, NULL));
    xcb_disconnect(conn);
 
-   return 0;
+   return EINA_FALSE;
 }
 
 void

@@ -1,7 +1,7 @@
 #ifndef ENGINE_QUARTZ_H
 #define ENGINE_QUARTZ_H
 
-int  engine_quartz_args(int argc, char **argv);
+Eina_Bool engine_quartz_args(const char *engine, int width, int height);
 void engine_quartz_loop(void);
 void engine_quartz_shutdown(void);
 

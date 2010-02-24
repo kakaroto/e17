@@ -171,8 +171,8 @@ MainWndProc(HWND   hwnd,
      }
 }
 
-int
-engine_direct3d_args(int argc, char **argv)
+Eina_Bool
+engine_direct3d_args(const char *engine, int width, int height)
 {
    WNDCLASS                   wc;
    RECT                       rect;
@@ -182,20 +182,9 @@ engine_direct3d_args(int argc, char **argv)
    DWORD                      style;
    int                        depth;
    int                        i;
-   int                        ok = 0;
-
-   for (i = 1; i < argc; i++)
-     {
-        if ((!strcmp(argv[i], "-e")) && (i < (argc - 1)))
-          {
-             i++;
-             if (!strcmp(argv[i], "direct3d")) ok = 1;
-          }
-     }
-   if (!ok) return 0;
 
    instance = GetModuleHandle(NULL);
-   if (!instance) return 0;
+   if (!instance) return EINA_FALSE;
 
    wc.style = 0;
    wc.lpfnWndProc = MainWndProc;
@@ -213,8 +202,8 @@ engine_direct3d_args(int argc, char **argv)
 
    rect.left = 0;
    rect.top = 0;
-   rect.right = win_w;
-   rect.bottom = win_h;
+   rect.right = width;
+   rect.bottom = height;
    AdjustWindowRect (&rect, WS_OVERLAPPEDWINDOW | WS_SIZEBOX, FALSE);
 
    window = CreateWindowEx(0,
@@ -261,7 +250,7 @@ engine_direct3d_args(int argc, char **argv)
    ShowWindow(window, SW_SHOWDEFAULT);
    UpdateWindow(window);
 
-   return 1;
+   return EINA_TRUE;
 
  destroy_window:
    DestroyWindow(window);
@@ -270,7 +259,7 @@ engine_direct3d_args(int argc, char **argv)
  free_library:
    FreeLibrary(instance);
 
-   return 0;
+   return EINA_FALSE;
 }
 
 void

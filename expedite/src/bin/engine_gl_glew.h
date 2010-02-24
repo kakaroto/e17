@@ -2,7 +2,7 @@
 #define __ENGINE_GL_GLEW_H__
 
 
-int  engine_gl_glew_args(int argc, char **argv);
+Eina_Bool engine_gl_glew_args(const char *engine, int width, int height);
 void engine_gl_glew_loop(void);
 void engine_gl_glew_shutdown(void);
 

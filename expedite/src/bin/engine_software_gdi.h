@@ -6,8 +6,7 @@
 extern "C" {
 #endif
 
-
-int  engine_software_gdi_args(int argc, char **argv);
+Eina_Bool engine_software_gdi_args(const char *engine, int width, int height);
 void engine_software_gdi_loop(void);
 void engine_software_gdi_shutdown(void);
 

@@ -4,26 +4,19 @@
 #include <SDL/SDL.h>
 #include <Evas_Engine_SDL.h>
 
-int
-engine_software_sdl_args(int argc, char **argv)
+Eina_Bool
+engine_software_sdl_args(const char *engine, int width, int height)
 {
    Evas_Engine_Info_SDL *einfo;
    int                  i;
    int                  ok = 0;
 
-   for (i = 1; i < argc; ++i)
-     {
-        if ((!strcmp(argv[i], "-e") && (i < (argc - 1))))
-          {
-             i++;
-             if (!strcmp(argv[i], "sdl")) ok = 1;
-             if (!strcmp(argv[i], "sdl-16")) ok = 2;
-          }
-     }
-   if (!ok) return 0;
+   if (!strcmp(engine, "sdl")) ok = 1;
+   if (!strcmp(engine, "sdl-16")) ok = 2;
+   if (!ok) return EINA_FALSE;
 
    if (ok == 1)
-   evas_output_method_set(evas, evas_render_method_lookup("software_sdl"));
+     evas_output_method_set(evas, evas_render_method_lookup("software_sdl"));
    else
      evas_output_method_set(evas, evas_render_method_lookup("software_16_sdl"));
 
@@ -36,10 +29,10 @@ engine_software_sdl_args(int argc, char **argv)
    if (!evas_engine_info_set(evas, (Evas_Engine_Info *) einfo))
      {
 	printf("Evas can not setup the informations of the Software SDL Engine\n");
-        return 0;
+        return EINA_FALSE;
      }
 
-   return 1;
+   return EINA_TRUE;
 }
 
 void
