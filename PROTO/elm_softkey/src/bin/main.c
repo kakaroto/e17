@@ -99,10 +99,10 @@ elm_main(int argc, char **argv)
 
              ecore_x_window_geometry_get(zones[x], &zx, &zy, &zw, &zh);
              ecore_x_e_illume_softkey_geometry_set(zones[x], zx, 
-                                                   (zy + zh - 32), zw, 32);
+                                                   (zy + zh - 40), zw, 40);
 
-             evas_object_move(win, zx, (zy + zh - 32));
-             evas_object_resize(win, zw, 32);
+             evas_object_move(win, zx, (zy + zh - 40));
+             evas_object_resize(win, zw, 40);
              evas_object_show(win);
           }
         free(zones);
