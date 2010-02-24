@@ -37,12 +37,32 @@ void enesim_renderer_init(Enesim_Renderer *r)
 	r->oy = 0;
 	enesim_f16p16_matrix_identity(&r->matrix.values);
 }
+
+Eina_Bool enesim_renderer_state_setup(Enesim_Renderer *r)
+{
+	if (!r->state_setup) return EINA_TRUE;
+	return r->state_setup(r);
+}
+
+void enesim_renderer_state_cleanup(Enesim_Renderer *r)
+{
+	if (r->state_cleanup)
+		r->state_cleanup(r);
+}
+
+void enesim_renderer_span_fill(Enesim_Renderer *r, int x, int y,
+	unsigned int len, uint32_t *dst)
+{
+	if (r->span)
+		r->span(r, x, y, len, dst);
+}
 /*============================================================================*
  *                                   API                                      *
  *============================================================================*/
 /**
- * To be documented
- * FIXME: To be fixed
+ * Sets the transformation matrix of a renderer
+ * @param[in] r The renderer to set the transformation matrix on
+ * @param[in] m The transformation matrix to set
  */
 EAPI void enesim_renderer_transform_set(Enesim_Renderer *r, Enesim_Matrix *m)
 {
@@ -58,46 +78,16 @@ EAPI void enesim_renderer_transform_set(Enesim_Renderer *r, Enesim_Matrix *m)
 	r->matrix.type = enesim_f16p16_matrix_type_get(&r->matrix.values);
 }
 /**
- * To be documented
- * FIXME: To be fixed
+ * Deletes a renderer
+ * @param[in] r The renderer to delete
  */
 EAPI void enesim_renderer_delete(Enesim_Renderer *r)
 {
 	ENESIM_MAGIC_CHECK_RENDERER(r);
+	enesim_renderer_state_cleanup(r);
 	if (r->free)
 		r->free(r);
 	free(r);
-}
-/**
- * To be documented
- * FIXME: To be fixed
- */
-EAPI Eina_Bool enesim_renderer_state_setup(Enesim_Renderer *r)
-{
-	ENESIM_MAGIC_CHECK_RENDERER(r);
-	if (!r->state_setup) return EINA_TRUE;
-	return r->state_setup(r);
-}
-/**
- * To be documented
- * FIXME: To be fixed
- */
-EAPI void enesim_renderer_state_cleanup(Enesim_Renderer *r)
-{
-	ENESIM_MAGIC_CHECK_RENDERER(r);
-	if (r->state_cleanup)
-		r->state_cleanup(r);
-}
-/**
- * To be documented
- * FIXME: To be fixed
- */
-EAPI void enesim_renderer_span_fill(Enesim_Renderer *r, int x, int y,
-	unsigned int len, uint32_t *dst)
-{
-	ENESIM_MAGIC_CHECK_RENDERER(r);
-	if (r->span)
-		r->span(r, x, y, len, dst);
 }
 /**
  * To be documented
@@ -126,6 +116,7 @@ EAPI void enesim_renderer_surface_draw(Enesim_Renderer *r, Enesim_Surface *s,
 	ENESIM_MAGIC_CHECK_RENDERER(r);
 	ENESIM_MAGIC_CHECK_SURFACE(s);
 
+	enesim_renderer_state_setup(r);
 	if (!clip)
 		enesim_surface_size_get(s, &w, &h);
 	else
@@ -142,7 +133,7 @@ EAPI void enesim_renderer_surface_draw(Enesim_Renderer *r, Enesim_Surface *s,
 	ddata = ddata + (y * stride) + x;
 
 	/* fill the new span */
-	if ((rop == ENESIM_FILL) && (color = ENESIM_COLOR_FULL))
+	if ((rop == ENESIM_FILL) && (color == ENESIM_COLOR_FULL))
 	{
 		while (h--)
 		{

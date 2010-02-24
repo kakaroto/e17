@@ -77,14 +77,12 @@ static void run(Enesim_Renderer *r, Enesim_Surface *dst, const char *mtype,
 	int t;
 	double start, end;
 
-	enesim_renderer_state_setup(r);
 	start = get_time();
 	for (t = 0; t < opt_times; t++)
 	{
 		enesim_renderer_surface_draw(r, dst, opt_rop, ENESIM_COLOR_FULL, NULL);
 	}
 	end = get_time();
-	enesim_renderer_state_cleanup(r);
 	printf("%s    \t[%3.3f sec]\n", mtype, end - start);
 	test_finish(fname, ENESIM_FILL, dst, NULL, NULL, NULL);
 }

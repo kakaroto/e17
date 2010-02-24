@@ -16,13 +16,7 @@ static void dispmap_map_create(Enesim_Surface **s)
 	enesim_renderer_perlin_xfrequency_set(r, 0.01);
 	enesim_renderer_perlin_yfrequency_set(r, 0.08);
 	enesim_renderer_perlin_persistence_set(r, 0.9);
-	enesim_renderer_state_setup(r);
-	for (i = 0; i < opt_height; i++)
-	{
-		enesim_renderer_span_fill(r, 0, i, opt_width, data);
-		data += opt_width;
-	}
-	enesim_renderer_state_cleanup(r);
+	enesim_renderer_surface_draw(r, *s, ENESIM_FILL, ENESIM_COLOR_FULL, NULL);
 	enesim_renderer_delete(r);
 }
 

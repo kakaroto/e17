@@ -116,6 +116,11 @@ static inline void renderer_projective_setup(Enesim_Renderer *r, int x, int y,
 			r->matrix.values.zz;
 }
 
+Eina_Bool enesim_renderer_state_setup(Enesim_Renderer *r);
+void enesim_renderer_state_cleanup(Enesim_Renderer *r);
+void enesim_renderer_span_fill(Enesim_Renderer *r, int x, int y,
+		unsigned int len, uint32_t *dst);
+
 void enesim_renderer_shape_init(Enesim_Renderer *r);
 void enesim_renderer_gradient_init(Enesim_Renderer *r);
 void enesim_renderer_gradient_state_setup(Enesim_Renderer *r, int len);
