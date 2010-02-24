@@ -62,11 +62,11 @@ current folder, which was selected on the former one. The
 \GUICheckbox{``filter extensions''} checkbox will only list files
 whose extension match \texttt{.edc} or \texttt{.edj}.
 
-%FIXME: the fscking \times, instead of 'x' (not working) If a (valid)
-file on the list on the right is selected, you may click the
-\GUIButton{``Ok''} button and Editje will open it and lead you to its
-main window. The \GUIButton{``New''} button will ask you for a name to
-a \emph{new} file to work on. Just give it a name and hit
+%FIXME: the fscking \times, instead of 'x' (not working)
+If a (valid) file on the list on the right is selected, you may click
+the \GUIButton{``Ok''} button and Editje will open it and lead you to
+its main window. The \GUIButton{``New''} button will ask you for a
+name to a \emph{new} file to work on. Just give it a name and hit
 \GUIButton{``Ok''} to start editing it. To the current date, this new
 file starts with just one group, named ``main'', with no parts and
 with a default size of 500x500 pixels. Group templates will come as an
@@ -177,40 +177,6 @@ them:
   will raise a box with author and licensing information of the edje
   editor itself.
 
-% TODO: re-use it somehow when describing the new dialog form
-  %% presents an icon that will lead the
-  %% user to an \emph{image management} context: it will open a box
-  %% listing all the images used in the current group. By selecting an
-  %% image entry on the list on the left, you get a thumbnail preview of
-  %% it on the right (see figure \ref{fig:select_an_image}). If you click
-  %% on the \GUIButton{``Add new''} button, a file navigation list takes
-  %% the place of the previous one. Whenever you select, on the new list,
-  %% a file of an image, its thumbnail preview will be shown as well (see
-  %% figure \ref{fig:select_an_image_fs}). Click on the
-  %% \GUIButton{``Ok''} button, below the file navigation list, and this
-  %% file will now integrate the list of images of the group (it will be
-  %% possible to set that image to any image part). If you wish to return
-  %% to the images on the group list, just hit
-  %% \GUIButton{``Cancel''}. \GUIButton{``Close''}, naturally, is the
-  %% button which closes the image management dialog entirely.  Editje's
-  %% main screen for other modes of operation will appear in their
-  %% specific sessions.
-
-  %% \begin{figure}[h!]
-  %%   \centering
-  %%   \includegraphics[width=1.0\textwidth]{images/select_an_image.png}
-  %%   \caption{Image management dialog box}
-  %%   \label{fig:select_an_image}
-  %% \end{figure}
-
-  %% \begin{figure}[h!]
-  %%   \centering
-  %%   \includegraphics[width=1.0\textwidth]{images/select_an_image_fs.png}
-  %%   \caption{Image management dialog box: adding a new image to the
-  %%     group}
-  %%   \label{fig:select_an_image_fs}
-  %% \end{figure}
-
 \item[4 -- Mode selection] Editje has \emph{three} modes in which it
   operates:
   \begin{itemize}
@@ -266,9 +232,10 @@ be described better on section \ref{sec:part_editing}.
   lists all the parts composing the group being edited and has also
   some actions on them. These actions will be described better later
   in the document. On the bottom of this area, one sees the \emph{list
-    of available widgets/parts}. From this place, you'll se all types
-  of GUI elements Editje supports and it's where you tell the editor
-  to add new ones to the group under edition.
+    of available widgets/parts}. From this place, you'll see all types
+  of GUI elements Editje supports. Interaction with this list is one
+  the ways of telling the editor to add new widgets to the group under
+  edition.
 
 \end{description}
 
@@ -452,7 +419,7 @@ better explained at section \ref{sec:part_states}.
 \end{figure}
 
 We now just have to make this new rectangle to look (solid) white.
-Look at region 1 of figure \ref{fig:restack_pre_pre}. It hightlights
+Look at region 1 of figure \ref{fig:restack_pre_pre}. It highlights
 the \GUIEditable{``color''} property of a part (in a given state). It
 contains a four integer numbers text entry and a little rectangular
 box, which itself is colored with the same color the selected object
@@ -566,7 +533,7 @@ will appear, just as seen on figure \ref{fig:clipping_box}.
 All (other) rectangles in the group are candidates to clip the
 selected object. We'll choose \texttt{Rectangle03}, here, and the
 effect should be something like figure \ref{fig:overlap_clipped}:
-\texttt{Rectangle01} has only the area coicinding with
+\texttt{Rectangle01} has only the area coinciding with
 \texttt{Rectangle03} colored green. The rest is shown transparent and
 what you see is actually \texttt{Rectangle02}. If you call, to
 \texttt{Rectangle01}, the clipper selection box again and click on the
@@ -607,15 +574,16 @@ This is where the selected part's properties which are \emph{bound to
 edition for the part has its name displayed on region 1 (figure
 \ref{fig:part_state_group}). Every new part will have only the default
 state after creation, which is called ``\texttt{default 0.0}'', as the
-reader may know.
+reader may know. Except for the default one, states can be renamed by
+edition of the \GUIEditable{``name''} entry in this region.
 
-Region 2, in that same figure, has general properties, like
+Region 3, in that same figure, has general properties, like
 minimum/maximum size hints, visibility flag, alignment inside part's
 container and color. All of them are text entries which can be altered
 and, after a return key press, have the visual representation updated
 on the group displaying area. The \GUILabel{``current''} label you see
 is not editable and shows the part's current size based on what is
-filled for the two regions above, 3 and 4. These two regions denote,
+filled for the two regions below, 4 and 5. These two regions denote,
 respectively, the positioning of the \emph{top-left} and
 \emph{bottom-right} corners of the the part's container. Figure
 \ref{fig:rectangle_rel1rel2} highlights these two points for
@@ -629,25 +597,18 @@ squares.
   \label{fig:rectangle_rel1rel2}
 \end{figure}
 
-Properties seem inside regions 2, 3 and 4 have the exact meaning of
-the homonymous building blocks found in \texttt{.edc} files.  Their
-meanings should be straightforward to readers with a minimal prior
-knowledge of Edje Data Collections. If you're not familiar with it,
-the document ``The Enlightenment Foundation Libraries -- A Big
-Picture'' gives a good introduction on them. For the ones willing to
-skip it, we quote that text's part on object relative positioning on
-appendix \ref{app:edje_pos}.
-
-%% Figure \ref{fig:part_state_group} is an enlargement of the top-left
-%% and bottom-right properties seen on figure
-%% \ref{fig:rectangle_rel1rel2}.
+Roughly, properties seem inside regions 3, 4 and 5 have the exact
+meaning of the homonymous building blocks found in \texttt{.edc}
+files.  Their meanings should be straightforward to readers with a
+minimal prior knowledge of Edje Data Collections. If you're not
+familiar with it, the document ``The Enlightenment Foundation
+Libraries -- A Big Picture'' gives a good introduction on them. For
+the ones willing to skip it, we quote that text's part on object
+relative positioning on appendix \ref{app:edje_pos}.
 
 Figures \ref{fig:visibility_false} to \ref{fig:rel_drag} illustrate
 some effects one gets by modifying some of the properties seem on
 figure \ref{fig:part_state_group}.
-
-%% What follows is a series of figures
-%% illustrating to effect one gets by modifying some of them.
 
 \begin{figure}[h!]
   \centering
@@ -685,10 +646,11 @@ figure \ref{fig:part_state_group}.
   \label{fig:rel_drag}
 \end{figure}
 
-\subsection{Creating New States}
+\subsection{Managing Parts' States}
+%TODO: being worked on, let it outdated, for now.
 
 The ``part state'' collapsable group, seen in figure
-\ref{fig:part_state_group}, has a region which wasn't cited yet: 5. If
+\ref{fig:part_state_group}, has a region which wasn't cited yet: 2. If
 you click on that icon, you'll get the dialog box shown in figure
 \ref{fig:states_dialog}.
 
@@ -703,6 +665,7 @@ Before returning to the actions there available, we'll create a
 \emph{new state} to \texttt{Rectangle01}, being the default one the
 one we get just after adding it to the group.
 
+%FIXME: text entry renames the state, now
 Region 1 of figure \ref{fig:part_state_group}, besides showing the
 current state's name for a part, is a text entry used to \emph{create}
 new states. If you click on it, edit the text changing
@@ -731,8 +694,8 @@ and \GUIButton{``Cancel''} will close that dialog.
 
 So far, we have only dealt with rectangle parts on the explanation of
 Editje's features. The properties of that type of object have been all
-described, then. Other types of parts have extra properties (which
-reflect on extra GUI entries in Editje) which haven't been discussed,
+described, then. Other types of parts have extra ones (which reflect
+on extra GUI entries in Editje), though, which haven't been discussed
 yet.
 
 \subsection{Text and Textblock Parts}
@@ -760,7 +723,7 @@ choosing the ``OUTLINE SOFT SHADOW'' effect, in figure
 
 \begin{figure}[h!]
   \centering
-  \includegraphics[width=1.0\textwidth]{images/text_effect.png}
+  \includegraphics[width=0.8\textwidth]{images/text_effect.png}
   \caption{Text part with effect}
   \label{fig:text_effect}
 \end{figure}
@@ -771,13 +734,15 @@ text parts, called \GUILabel{``text''} (region 2 in figure
 
 \begin{description}
 \item[\GUIEditable{``text''}:] The actual text to display.
-\item[\GUIEditable{``font''}:] The name of the (system) font to use.
+\item[\GUIEditable{``font''}:] The font to render the text from.
 \item[\GUIEditable{``size''}:] The text size.
 \item[\GUIEditable{``fit''}:] When any of these entries is set to
-  ``True'', Editje will resize the text for it to fit in it's
-  container, in the respective axis. Both are disabled by default.
+  ``True'', Editje will resize the text, so that it to fits in it's
+  container, in the respective axis (the \GUIEditable{``size''} is
+  ignored, if this property is enabled). Both are disabled by default.
 \item[\GUIEditable{``align''}:] Changes the alignment of the actual
-  text inside the part's container, ranging from 0 to 1.
+  text inside the part's container, ranging from 0 (left) to 1
+  (right).
 \item[\GUIEditable{``elipsis''}:] Specifies a point along the actual
   text string to be the least probable of being cut out in case of a
   resizing resulting in something smaller than the text itself. Values
@@ -791,15 +756,18 @@ text parts, called \GUILabel{``text''} (region 2 in figure
 We won't exhibit all of the effects above, for brevity, but some of
 them are display in figure \ref{fig:text_misc}.
 
+%TODO: check it!
 Textblock parts support inside Editje is still being worked on. It
 should be completed soon.
+
+%TODO: introduce the fonts wizard, when it's bug free
 
 \begin{figure}[h!]
   \centering
   \includegraphics[width=0.9\textwidth]{images/text_misc.png}
   \caption{Text part with ``OUTLINE SOFT SHADOW'' effect, customized
     text string (``CHANGED TEXT''), font (Arial) and size (26) and,
-    finally, customized ``change2'' and ``change3'' colors.  }
+    finally, customized ``color2'' and ``color3'' colors.}
   \label{fig:text_misc}
 \end{figure}
 
@@ -807,6 +775,10 @@ should be completed soon.
 
 If the user inserts a new part of the image type, he or she will end
 up with something like what is seen in figure \ref{fig:new_image}.
+The actual figure part is what is indicated in region 1. It may look
+like a transparent rectangle, but it just indicates that you have no
+image file set to it yet. What we get specifically for this part type
+is the \GUILabel{``image''} tab, indicated in region 2.
 
 \begin{figure}[h!]
   \centering
@@ -815,41 +787,71 @@ up with something like what is seen in figure \ref{fig:new_image}.
   \label{fig:new_image}
 \end{figure}
 
-The actual figure part is what is indicated in region 1. It may look
-like a transparent rectangle, but it just indicates that you have no
-image file set to it yet. What we get specifically for this part type
-is the \GUILabel{``image''} tab, indicated in region 2.
-
 The \GUIEditable{``normal''} property receives a reference to an image
 already inserted in the group. Clicking on that box will raise a
 dialog very similar to the one seen in figure
 \ref{fig:select_an_image}, shown here in figure
 \ref{fig:select_an_image_to_part}.
 
-\begin{figure}[h!]
-  \centering
-  \includegraphics[width=0.95\textwidth]{images/select_an_image_to_part.png}
-  \caption{Image management dialog box: selecting images to image parts}
-  \label{fig:select_an_image_to_part}
-\end{figure}
+% TODO: re-use it somehow when describing the new dialog form, *when it's
+% complete
 
-Note that, in this new ``Select an image'' dialog, there's an
-exclusive button: \GUIButton{``Select''}. Clicking on it will bind
-that image to the part under selection, what we show in figure
-\ref{fig:image_part}.
+% presents an icon that will lead the
+% user to an \emph{image management} context: it will open a box
+% listing all the images used in the current group. By selecting an
+% image entry on the list on the left, you get a thumbnail preview of
+% it on the right (see figure \ref{fig:select_an_image}). If you click
+% on the \GUIButton{``Add new''} button, a file navigation list takes
+% the place of the previous one. Whenever you select, on the new list,
+% a file of an image, its thumbnail preview will be shown as well (see
+% figure \ref{fig:select_an_image_fs}). Click on the
+% \GUIButton{``Ok''} button, below the file navigation list, and this
+% file will now integrate the list of images of the group (it will be
+% possible to set that image to any image part). If you wish to return
+% to the images on the group list, just hit
+% \GUIButton{``Cancel''}. \GUIButton{``Close''}, naturally, is the
+% button which closes the image management dialog entirely.  Editje's
+% main screen for other modes of operation will appear in their
+% specific sessions.
 
-\begin{figure}[h!]
-  \centering
-  \includegraphics[width=0.95\textwidth]{images/image_part.png}
-  \caption{Image part, now bound to image file}
-  \label{fig:image_part}
-\end{figure}
+% \begin{figure}[h!]
+%   \centering
+%   \includegraphics[width=1.0\textwidth]{images/select_an_image.png}
+%   \caption{Image management dialog box}
+%   \label{fig:select_an_image}
+% \end{figure}
 
+% \begin{figure}[h!]
+%   \centering
+%   \includegraphics[width=1.0\textwidth]{images/select_an_image_fs.png}
+%   \caption{Image management dialog box: adding a new image to the
+%     group}
+%   \label{fig:select_an_image_fs}
+% \end{figure}
+
+% \begin{figure}[h!]
+%   \centering
+%   \includegraphics[width=0.95\textwidth]{images/select_an_image_to_part.png}
+%   \caption{Image management dialog box: selecting images to image parts}
+%   \label{fig:select_an_image_to_part}
+% \end{figure}
+
+% Note that, in this new ``Select an image'' dialog, there's an
+% exclusive button: \GUIButton{``Select''}. Clicking on it will bind
+% that image to the part under selection, what we show in figure
+% \ref{fig:image_part}.
+
+% \begin{figure}[h!]
+%   \centering
+%   \includegraphics[width=0.95\textwidth]{images/image_part.png}
+%   \caption{Image part, now bound to image file}
+%   \label{fig:image_part}
+% \end{figure}
+
+% TODO: describe them! but when the upper TODO is gone
 We won't describe the other two properties in the new tab, for
 brevity. Gradient support, inside Editje, is also not completely
 finished. It should be ready for use soon.
-
-%TODO: complete it?
 
 \subsection{Swallow and Group Parts}
 
@@ -858,14 +860,29 @@ into which other edje objects (other groups) can be inserted (or
 ``swallowed'') \emph{at run time}. Inside Editje, their management is
 practically the same as of rectangle parts.
 
+% TODO: finish, then!
 Group parts support by Editje is being finished, yet.
 
 \subsection{External Widgets: Elementary}
+%FIXME: explain briefly what each kind of widget is/does!
 
 By now, Elementary is the only external module whose widgets have been
-made available to edje-edition as common part objects. As previously
-said, the screen you're going to be at when adding them to your group
-is the one seen in figure \ref{fig:external_modules}.
+made available to edje-edition as common part objects. Region 6 of
+figure \ref{fig:new_rectangle}, the list of available widgets/parts,
+is a quick way of adding these widgets into the group. The ``Edje''
+entry of that list will lead to a list of the ``common'' UI elements
+one gets -- the ones implemented directly on the evas or edje
+libraries. The ``Elementary'' one, naturally, will list (some) widgets
+provided by that library (see figure \ref{fig:elm_widgets}). Each list
+entry has an icon illustrating the respective widget. Clicking over
+one of them will add that kind of object to the group under edition.
+
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=0.3\textwidth]{images/elm_widgets.png}
+  \caption{List of Elementary widgets to choose from}
+  \label{fig:elm_widgets}
+\end{figure}
 
 In what follows, we document the specific properties one finds for
 each of those widget parts. All of them have, as extra tabs in the
@@ -888,8 +905,11 @@ them:
     supported and using them is accomplished by entering their name
     strings in this entry. In figure \ref{fig:new_button}, we have
     used the ``close'' one, which is that ``X''-like image.
-    %TODO: group parts supported?
+    %TODO: group parts supported as icon?
 \end{description}
+
+The part's type has also been highlighted: note that all external
+module ones will share a common type: ``external''.
 
 \begin{figure}[h!]
   \centering
@@ -911,7 +931,7 @@ being them:
   \item[\GUIEditable{``icon''}:] Has also the meaning you are familiar
     with. In figure \ref{fig:new_checkbox}, we have used the ``file''
     one.
-    %TODO: group parts supported?
+    %TODO: group parts supported as icon?
   \item[\GUIEditable{``state''}:] This is a boolean property telling
     whether the checkbox should be at checked or unchecked
     state. Clicking on it would draw or erase the tip mark inside the
@@ -930,13 +950,15 @@ being them:
 
 Radio buttons are widgets which make no sense to exist alone: they
 appear in \emph{groupings} of two or more. The right way to use them
-in Editje is to add as many of them as needed to your group, assign a
-value to each of them and, then, group them together.
+in Editje is to add as many of these widgets as needed to your group,
+assign a value to each one and, then, \emph{group} them together.
 
 Figure \ref{fig:new_checkbox} shows two recently created radio button
 parts. Those parts' specific properties are highlighted on the figure,
 being them:
 
+%FIXME: these last properties are damn complicated for the end-user
+%i won't mind fixing it here too, for a while
 \begin{description}
   \item[\GUIEditable{``label''}:] Has the same meaning seen on the
     button widget part.
@@ -958,6 +980,8 @@ being them:
 \end{figure}
 
 \subsubsection{Text Entry}
+%FIXME: "text:" property was killed from editje. not updating 'till it gets
+%fixed
 
 Figure \ref{fig:new_entry} shows a recently created text entry
 part. The part's specific properties are highlighted on the figure,
@@ -985,23 +1009,70 @@ being them:
 
 \subsubsection{Slider}
 
-To be completed.
+We have an example of a recently created slider part in figure
+\ref{fig:new_slider}. Its specific properties are highlighted on the
+figure, being them:
+
+\begin{description}
+  \item[\GUIEditable{``label''}:] Text label for the widget.
+  \item[\GUIEditable{``icon''}:] Icon decorating it, if set.
+  \item[\GUIEditable{``min''}:] Minimum value it can be set to.
+  \item[\GUIEditable{``max''}:] Maximum value it can be set to.
+  \item[\GUIEditable{``value''}:] Current displaying value.
+  \item[\GUIEditable{``horizontal''}:] Whether the slider has
+    horizontal or vertical sliding direction.
+  \item[\GUIEditable{``inverted''}:] Whether the slider grows from
+    beginning to end or the contrary. That translates to from top to
+    bottom and from left to right, for vertical and horizontal
+    aspects, respectively.
+  \item[\GUIEditable{``span''}:] This sets the minimum width or height
+    (depending on orientation) of the knob the GUI user will actually
+    drag.
+  \item[\GUIEditable{``unit format''}:] Sets the format of the string
+    displaying the slider's value, besides it.
+  \item[\GUIEditable{``indicator format''}:] Sets the format of the
+    string displaying the slider's value \emph{while it's being
+      dragged}, on top of the knob.
+\end{description}
+
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=0.9\textwidth]{images/new_slider.png}
+  \caption{New slider part}
+  \label{fig:new_slider}
+\end{figure}
 
 \subsubsection{Toggle}
 
-To be completed.
+An Elementary toggle is a widget which records a boolean value, fed by the
+GUI user. An example of a recently created toggle part can be seen in figure
+\ref{fig:new_toggle}. Its specific properties are highlighted on the
+figure, being them:
 
-%------------------------------
-%% The ``group'' one will list the group's properties, naturally, which
-%% at the time are:
-%%   \begin{itemize}
-%%     \item group's minimum and maximum size hints
-%%     \item group's default (current) size.
-%%   \end{itemize}
+\begin{description}
+  \item[\GUIEditable{``label''}:] Text label for the widget.
+  \item[\GUIEditable{``icon''}:] Icon decorating it, if set.
+  \item[\GUIEditable{``label on''}:] The label for its knob, at the
+    ``on'' (true) state.
+  \item[\GUIEditable{``label off''}:] The label for its knob, at the
+    ``off'' (false) state.
+  \item[\GUIEditable{``state''}:] Current state of the widget.
+\end{description}
 
-%% These are all text entries and, in order to modify them, just enter
-%% the new values and hit the return key.
-%------------------------------
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=0.9\textwidth]{images/new_toggle.png}
+  \caption{New toggle part}
+  \label{fig:new_toggle}
+\end{figure}
+
+%FIXME: document the "group" collapsable
+% The ``group'' one will list the group's properties, naturally, which
+% at the time are:
+%   \begin{itemize}
+%     \item group's minimum and maximum size hints
+%     \item group's default (current) size.
+%   \end{itemize}
 
 \section{Animations}
 \label{animation_editing}
@@ -1057,7 +1128,7 @@ shown in figure \ref{fig:animation_mode_numbers}.
 \end{description}
 
 Looking closer to the timeline we see that some times are black and
-some are greyed out. The black ones are existing frames in the
+some are grayed out. The black ones are existing frames in the
 animation and we can jump to these states by clicking on them. By
 clicking on a grey dot, a new frame is added, creating the necessary
 states by copying them from the previous frame in the timeline. In the
