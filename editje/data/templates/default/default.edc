@@ -3,7 +3,7 @@ externals {
 }
 
 collections {
-   group { name: "default";
+   group { name: "main";
    }
 }
 
