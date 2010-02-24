@@ -5,7 +5,7 @@ MAINTAINERCLEANFILES = Makefile.in aclocal.m4 config.guess config.h.in \
 
 SUBDIRS = src po
 
-EDJE_FLAGS = -v
+EDJE_FLAGS = -v -id $(top_srcdir)
 
 filesdir = $(datadir)
 files_DATA = module.desktop e-module-quickaccess.edj

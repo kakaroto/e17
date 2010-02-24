@@ -2,4 +2,6 @@
 
 autoreconf -f -i
 
-[ -z "$NOCONFIGURE" ] && ./configure "$@"
+if [ -z "$NOCONFIGURE" ]; then
+    ./configure "$@"
+fi
