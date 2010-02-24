@@ -25,26 +25,6 @@ from details_widget_partlist import WidgetPartList
 from prop import Property, PropertyTable
 
 
-class WidgetClippersList(WidgetPartList):
-    def __init__(self, parent, title=None, list_get_cb=None,
-                 sel_part_get_cb=None):
-        if not sel_part_get_cb:
-            raise TypeError("You must set a callback for selected part" \
-                            " retrieval on WidgetClippersList objects.")
-        self._sel_part_get_cb = sel_part_get_cb
-        WidgetPartList.__init__(self, parent, title, list_get_cb)
-
-    def _floater_list_items_update(self):
-        list = []
-        sel_part = self._sel_part_get_cb()
-
-        for item in self._list_get_cb():
-            if item == sel_part:
-                continue
-            list.append((item, item))
-        return list
-
-
 class PartDetails(EditjeDetails):
     def __init__(self, parent):
         EditjeDetails.__init__(self, parent,
@@ -83,7 +63,7 @@ class PartDetails(EditjeDetails):
             return self.e.part.name
 
         prop = Property(parent, "clip_to")
-        prop.widget_add("to", WidgetClippersList(
+        prop.widget_add("to", WidgetPartList(
                 self, "Clipper selection", parts_get, sel_part_get))
         self["main"].property_add(prop)
         prop = Property(parent, "mouse_events")

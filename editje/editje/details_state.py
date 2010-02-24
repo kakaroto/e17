@@ -419,9 +419,14 @@ class PartStateDetails(EditjeDetails):
         def parts_get():
             return self.e.parts
 
+        def sel_part_get():
+            return self.e.part.name
+
         prop = Property(self._parent, "to")
-        prop.widget_add("x", WidgetPartList(self, rel_to_box_title, parts_get))
-        prop.widget_add("y", WidgetPartList(self, rel_to_box_title, parts_get))
+        prop.widget_add("x", WidgetPartList(self, rel_to_box_title,
+                                            parts_get, sel_part_get))
+        prop.widget_add("y", WidgetPartList(self, rel_to_box_title,
+                                            parts_get, sel_part_get))
         self["rel1"].property_add(prop)
 
         prop = Property(self._parent, "relative")
@@ -454,8 +459,10 @@ class PartStateDetails(EditjeDetails):
         self.group_title_set("rel2", "bottom-right")
 
         prop = Property(self._parent, "to")
-        prop.widget_add("x", WidgetPartList(self, rel_to_box_title, parts_get))
-        prop.widget_add("y", WidgetPartList(self, rel_to_box_title, parts_get))
+        prop.widget_add("x", WidgetPartList(self, rel_to_box_title,
+                                            parts_get, sel_part_get))
+        prop.widget_add("y", WidgetPartList(self, rel_to_box_title,
+                                            parts_get, sel_part_get))
         self["rel2"].property_add(prop)
 
         prop = Property(self._parent, "relative")

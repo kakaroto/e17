@@ -59,9 +59,8 @@ class FloaterOpener(object):
 
 class FloaterListOpener(FloaterOpener):
     def __init__(self, list_get_cb=None):
-        if not list_get_cb:
-            def null_list():
-                return []
+        def null_list():
+            return []
 
         FloaterOpener.__init__(self)
         self._list_get_cb = list_get_cb or null_list
