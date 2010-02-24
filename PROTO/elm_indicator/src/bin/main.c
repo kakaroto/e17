@@ -8,8 +8,6 @@
 
 /* local variables */
 static Eina_List *ind_wins = NULL;
-static Eina_List *handlers = NULL;
-static int my = 0;
 
 EAPI int 
 elm_main(int argc, char **argv) 
