@@ -300,7 +300,7 @@ cdef class EventWindowStackRequest(ecore.c_ecore.Event):
         return 1
 
 
-cdef class EventDestkopChange(ecore.c_ecore.Event):
+cdef class EventDesktopChange(ecore.c_ecore.Event):
     cdef int _set_obj(self, void *o) except 0:
         cdef Ecore_X_Event_Window_Prop_Desktop_Change *obj
         obj = <Ecore_X_Event_Window_Prop_Desktop_Change *>o
@@ -655,7 +655,7 @@ cdef int x_events_register() except 0:
     reg(ECORE_X_EVENT_WINDOW_STATE_REQUEST, EventWindowStateRequest)
     reg(ECORE_X_EVENT_FRAME_EXTENTS_REQUEST, EventFrameExtentsRequest)
     reg(ECORE_X_EVENT_PING, EventPing)
-    reg(ECORE_X_EVENT_DESKTOP_CHANGE, EventDestkopChange)
+    reg(ECORE_X_EVENT_DESKTOP_CHANGE, EventDesktopChange)
 ##     reg(ECORE_X_EVENT_STARTUP_SEQUENCE_NEW, EventSTartupSequenceNew)       #?
 ##     reg(ECORE_X_EVENT_STARTUP_SEQUENCE_CHANGE, EventStartupSequenceChange) #?
 ##     reg(ECORE_X_EVENT_STARTUP_SEQUENCE_REMOVE, EventStartupSequenceRemove) #?
