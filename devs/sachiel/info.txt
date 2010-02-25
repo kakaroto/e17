@@ -2,8 +2,8 @@ Login:        sachiel
 IRC Nick:     Sachiel
 Cloak:        developer/Sachiel
 Name:         Iván Briano
-Location:     Buenos Aires, Argentina
+Location:     Campinas, Brazil
 E-Mail:       sachieru@gmail.com
 Contributing: edje, elementary, e
 Platform:     Arch (Linux)
-GeoData:      -34.6074 -58.4321
+GeoData:      -22.83083 -47.076893
