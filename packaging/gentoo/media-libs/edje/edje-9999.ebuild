@@ -28,7 +28,7 @@ src_configure() {
 	# TODO: detect FPU-less architectures and use --enable-fixed-point
 	export MY_ECONF="
 	  ${MY_ECONF}
-	  $(use_enable debug amalgamation)
+	  $(use_enable !debug amalgamation)
 	  $(use_enable experimental edje-program-cache)
 	  $(use_enable experimental edje-calc-cache)
 	  $(use_with vim-syntax vim /usr/share/vim)
