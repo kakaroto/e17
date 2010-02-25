@@ -802,6 +802,7 @@ class PartAnimStateDetails(PartStateDetails):
                  img_list_get_cb, img_id_get_cb, fnt_new_fnt_cb,
                  fnt_list_get_cb, fnt_id_get_cb, workfile_name_get_cb,
                  group)
+        self.anim = None
 
     def _header_init(self, parent):
         self.title_set("part properties")
@@ -821,32 +822,60 @@ class PartAnimStateDetails(PartStateDetails):
         self._header_table.property_add(prop)
 
         self.content_set("part_name.swallow", self._header_table)
+        self.e.animation.callback_add("animation.changed", self._anim_selected)
+        self.e.animation.callback_add("animation.unselected",
+                                      self._anim_unselected)
 
         self._state_copy_button = StateCopyButton(self.e)
 
         self.edje_get().signal_callback_add("cl,option,clicked",
                                             "editje/collapsable",
                                             self._state_copy_button._floater_open)
-        self.edje_get().signal_emit("cl,option,enable", "editje")
 
-    def _part_update(self, emissor, data):
-        self.part = self.e.part._part
+    def _show(self):
         state = self.part.state_selected_get()
         self._header_table["name"].value = self.part.name
         self._header_table["name"].show_value()
         self._header_table["type"].value = \
             self._part_type_to_text(self.part.type)
         self._header_table["type"].show_value()
+        self.edje_get().signal_emit("cl,option,enable", "editje")
         self.state = self.part.state_get(state)
         self._update()
         self.open()
 
-    def _part_removed(self, emissor, data):
-        if not self.e.part:
-            return
-
+    def _hide(self):
         self._header_table["name"].value = None
         self._header_table["name"].hide_value()
         self._header_table["type"].value = None
         self._header_table["type"].hide_value()
+        self.edje_get().signal_emit("cl,option,disable", "editje")
         self._hide_all()
+
+    def _part_update(self, emissor, data):
+        self.part = self.e.part._part
+
+        if self.anim:
+            self._show()
+
+    def _part_removed(self, emissor, data):
+        self.part = None
+        self._hide()
+
+    def _anim_selected(self, emissor, data):
+        self.anim = True
+
+        if self.part:
+            self._show()
+
+    def _anim_unselected(self, emissor, data):
+        self.anim = None
+        self._hide()
+
+    def _state_changed_cb(self, emissor, data):
+        if not data:
+            return
+        self.part.state_selected_set(data)
+        self.state = self.e.part.state._state
+        if self.anim:
+            self._update()
