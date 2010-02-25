@@ -29,6 +29,18 @@ collections { group { name: "editje/icon/"_name;            \
                image.normal: "ico_"_name".png";             \
 }}}}}
 
+#define ICON_RIGHT(_name)                                   \
+images { image: "ico_"_name".png" COMP; }                   \
+collections { group { name: "editje/icon/"_name;            \
+      parts { part { name: "icon";                          \
+            type: IMAGE; mouse_events: 0;                   \
+            description { state: "default" 0.0;             \
+               align: 1.0 0.5;                              \
+               aspect: 1.0 1.0;                             \
+               aspect_preference: VERTICAL;                 \
+               image.normal: "ico_"_name".png";             \
+}}}}}
+
 ICON("editje")
 ICON("new")
 ICON("options")
@@ -39,7 +51,7 @@ ICON("images")
 ICON("part")
 ICON("signal")
 ICON("cancel")
-ICON("confirm")
+ICON_RIGHT("confirm")
 ICON("up")
 ICON("remove")
 ICON("down")

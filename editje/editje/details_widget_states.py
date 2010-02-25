@@ -56,6 +56,7 @@ class WidgetStates(WidgetEntryButton):
             if s == self.editable.part.state.name:
                 ico = Icon(self.states)
                 ico.file_set(self.theme_file, "editje/icon/confirm")
+                ico.scale_set(0, 0)
             it = self.states.item_append(s, None, ico, self._show_actions, s)
         self.states.go()
 
