@@ -67,24 +67,24 @@ timer_draw(void *data)
 	 net_get_bytes_inout(device_string, &new_total_bytes_in,
 			     &new_total_bytes_out)) != 0;)
      {
-       if(ignore_no_dev==0)
-       {
-	       Esnprintf(err, sizeof(err),
+	if (ignore_no_dev == 0)
+	  {
+	     Esnprintf(err, sizeof(err),
 		       "Unable to get network device statistics for %s:  %s",
 		       device_string, net_strerror(invalid));
-	       Epplet_dialog_ok(err);
-	       Esync();
-	       config_cb(NULL);
-	       return;
-       }
-       else
-       {
-         new_total_bytes_in=0.0;
-         new_total_bytes_out=0.0;
-         Esync();
-         Epplet_timer(timer_draw, NULL, 0.1, "timer_draw");
-         return;
-       }
+	     Epplet_dialog_ok(err);
+	     Esync();
+	     config_cb(NULL);
+	     return;
+	  }
+	else
+	  {
+	     new_total_bytes_in = 0.0;
+	     new_total_bytes_out = 0.0;
+	     Esync();
+	     Epplet_timer(timer_draw, NULL, 0.1, "timer_draw");
+	     return;
+	  }
      }
    if (new_total_bytes_in != -1.0)
      {
@@ -394,7 +394,8 @@ config_cb(void *data)
 
    cfg_ignore_no_dev = ignore_no_dev;
    Epplet_gadget_show(Epplet_create_togglebutton
-		      (NULL, NULL, 4, 220, 12, 12, &cfg_ignore_no_dev, NULL, NULL));
+		      (NULL, NULL, 4, 220, 12, 12, &cfg_ignore_no_dev, NULL,
+		       NULL));
    Epplet_gadget_show(Epplet_create_label
 		      (20, 220, "Ignore no device error?", 2));
 
