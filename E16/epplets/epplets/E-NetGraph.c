@@ -31,6 +31,7 @@ struct timeval      last_time;
 char               *device_string = NULL, *cfg_device_string = NULL;
 long                max_bytes_in_per_sec = 8192;
 long                max_bytes_out_per_sec = 8192;
+int                 ignore_no_dev = 0, cfg_ignore_no_dev = 0;
 int                 in_color[3];
 int                 out_color[3];
 int                 bg_color[3];
@@ -66,13 +67,24 @@ timer_draw(void *data)
 	 net_get_bytes_inout(device_string, &new_total_bytes_in,
 			     &new_total_bytes_out)) != 0;)
      {
-	Esnprintf(err, sizeof(err),
-		  "Unable to get network device statistics for %s:  %s",
-		  device_string, net_strerror(invalid));
-	Epplet_dialog_ok(err);
-	Esync();
-	config_cb(NULL);
-	return;
+       if(ignore_no_dev==0)
+       {
+	       Esnprintf(err, sizeof(err),
+		       "Unable to get network device statistics for %s:  %s",
+		       device_string, net_strerror(invalid));
+	       Epplet_dialog_ok(err);
+	       Esync();
+	       config_cb(NULL);
+	       return;
+       }
+       else
+       {
+         new_total_bytes_in=0.0;
+         new_total_bytes_out=0.0;
+         Esync();
+         Epplet_timer(timer_draw, NULL, 0.1, "timer_draw");
+         return;
+       }
      }
    if (new_total_bytes_in != -1.0)
      {
@@ -273,6 +285,9 @@ apply_config(void)
    log_scale = cfg_log_scale;
    Epplet_modify_config("log_scale", (log_scale ? "1" : "0"));
 
+   ignore_no_dev = cfg_ignore_no_dev;
+   Epplet_modify_config("ignore_no_dev", (ignore_no_dev ? "1" : "0"));
+
    timer_draw(NULL);
 }
 
@@ -325,7 +340,7 @@ config_cb(void *data)
      }
 
    config_win =
-      Epplet_create_window_config(200, 230, "E-NetGraph Configuration", ok_cb,
+      Epplet_create_window_config(200, 260, "E-NetGraph Configuration", ok_cb,
 				  NULL, apply_cb, NULL, cancel_cb, NULL);
 
    dev_popup = Epplet_create_popup();
@@ -377,6 +392,12 @@ config_cb(void *data)
    Epplet_gadget_show(Epplet_create_label
 		      (20, 188, "Use logarithmic scale?", 2));
 
+   cfg_ignore_no_dev = ignore_no_dev;
+   Epplet_gadget_show(Epplet_create_togglebutton
+		      (NULL, NULL, 4, 220, 12, 12, &cfg_ignore_no_dev, NULL, NULL));
+   Epplet_gadget_show(Epplet_create_label
+		      (20, 220, "Ignore no device error?", 2));
+
    Epplet_window_show(config_win);
    Epplet_window_pop_context();
 
@@ -399,6 +420,7 @@ load_config(void)
    s = Epplet_query_config_def("bg_color", "0");
    bg_color_hex = strtol(s, (char **)NULL, 0);
    log_scale = atoi(Epplet_query_config_def("log_scale", "0"));
+   ignore_no_dev = atoi(Epplet_query_config_def("ignore_no_dev", "0"));
 }
 
 int
