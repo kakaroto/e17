@@ -9,12 +9,11 @@
 #
 # Editje is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 # GNU Lesser General Public License for more details.
 #
 # You should have received a copy of the GNU Lesser General Public
-# License along with Editje.  If not, see
-# <http://www.gnu.org/licenses/>.
+# License along with Editje. If not, see <http://www.gnu.org/licenses/>.
 
 import evas
 import edje
@@ -23,6 +22,7 @@ from elementary import Layout, Button, InnerWindow, Box, Pager, \
 import sysconfig
 
 _instance = None
+
 
 class Floater(Layout):
     default_padding_x = 20
@@ -182,6 +182,7 @@ class Floater(Layout):
         func, udata = obj.data["clicked"]
         func(self, udata)
 
+
 # TODO: move this class elsewhere
 class Wizard(InnerWindow):
     default_width = 500
@@ -196,7 +197,7 @@ class Wizard(InnerWindow):
 
         self.__layout = edje.Edje(self.evas)
         self.__theme_file = sysconfig.theme_file_get("default")
-        self.__width = height or self.default_width
+        self.__width = width or self.default_width
         self.__height = height or self.default_height
         _group = group or self.default_group
         self.__layout.file_set(self.__theme_file, _group)

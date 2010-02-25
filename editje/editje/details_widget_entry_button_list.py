@@ -15,7 +15,6 @@
 # You should have received a copy of the GNU Lesser General Public
 # License along with Editje. If not, see <http://www.gnu.org/licenses/>.
 
-import elementary
 
 from details_widget_entry_button import WidgetEntryButton
 from floater_opener import FloaterListOpener

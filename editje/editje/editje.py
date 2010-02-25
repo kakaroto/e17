@@ -9,12 +9,11 @@
 #
 # Editje is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 # GNU Lesser General Public License for more details.
 #
 # You should have received a copy of the GNU Lesser General Public
-# License along with Editje.  If not, see
-# <http://www.gnu.org/licenses/>.
+# License along with Editje. If not, see <http://www.gnu.org/licenses/>.
 
 import os
 import sys
@@ -40,7 +39,6 @@ from signals import SignalsList, SignalDetails
 
 from widgets_list import WidgetsList
 from groupselector import GroupSelectionWizard
-from filewizard import ImageSelectionWizard
 
 
 def debug_cb(obj, emission, source):
@@ -443,9 +441,13 @@ class Editje(elementary.Window):
         toolbar.show()
 
         edj = toolbar.edje_get()
-        self._toolbar_bt_init(edj, "image_list.bt", "Images",
-                              self._image_list_cb)
+
+        # FIXME: these 2 buttons are (#if 0)-ed at edc, decide if we're killing
+        # it here soon or not
+        self._toolbar_bt_init(
+            edj, "image_list.bt", "Images", self._image_list_cb)
         self._toolbar_bt_init(edj, "font_list.bt", "Fonts", self._font_list_cb)
+
         self._toolbar_bt_init(edj, "about.bt", "About", self._about_cb)
 
         # Mainbar

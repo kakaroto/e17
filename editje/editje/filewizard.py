@@ -1,4 +1,3 @@
-#
 # Copyright (C) 2009 Samsung Electronics.
 #
 # This file is part of Editje.
@@ -10,12 +9,11 @@
 #
 # Editje is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 # GNU Lesser General Public License for more details.
 #
 # You should have received a copy of the GNU Lesser General Public
-# License along with Editje.  If not, see
-# <http://www.gnu.org/licenses/>.
+# License along with Editje. If not, see <http://www.gnu.org/licenses/>.
 
 import os
 
@@ -25,31 +23,30 @@ import elementary
 from fileselector import FileSelector
 from floater import Wizard
 
-class FileSelectionWizard(Wizard):
-    def __init__(self, parent, selected_cb,\
-                 file_add_cb, file_list_cb):
 
+class FileSelectionWizard(Wizard):
+    def __init__(self, parent, selected_cb, file_add_cb, file_list_cb):
         Wizard.__init__(self, parent)
-        self._parent = parent
+
         self._selected_cb = selected_cb
         self._file_add_cb = file_add_cb
         self._file_list_cb = file_list_cb
         self._selection = ""
 
-        self._file_list_pager_created = False
-        self._add_new_file_pager_created = False
-        self._file_preview_pager_created = False
+        self._file_list_page_created = False
+        self._add_new_file_page_created = False
+        self._file_preview_page_created = False
 
         self._file_list_add()
 
         if self._files == []:
-            self._create_add_new_file_pager()
+            self._create_add_new_file_page()
         else:
-            self._create_file_list_pager()
+            self._create_file_list_page()
 
-    def _create_file_list_pager(self):
+    def _create_file_list_page(self):
     #file list - page create and populate
-        self._file_list_pager_created = True
+        self._file_list_page_created = True
         self._add_file_list_header()
 
         self.content_add("file_list", self._file_list)
@@ -58,9 +55,9 @@ class FileSelectionWizard(Wizard):
 
         self._file_list.callback_selected_add(self._goto_preview)
 
-    def _create_add_new_file_pager(self):
+    def _create_add_new_file_page(self):
     #file selector - page create and populate
-        self._add_new_file_pager_created = True
+        self._add_new_file_page_created = True
         self._add_add_new_file_header()
 
         self.action_add("add_new_file", "Go To List", self._back)
@@ -69,9 +66,9 @@ class FileSelectionWizard(Wizard):
         self._file_selector_add()
         self.content_add("add_new_file", self._fs)
 
-    def _create_file_preview_pager(self):
+    def _create_file_preview_page(self):
     #file preview - page create and populate
-        self._file_preview_pager_created = True
+        self._file_preview_page_created = True
         self._add_file_preview_header()
 
         self._add_files_to_preview()
@@ -84,8 +81,8 @@ class FileSelectionWizard(Wizard):
         Wizard.goto(self, page)
 
     def _goto_add_new_file(self):
-        if not self._add_new_file_pager_created:
-            self._create_add_new_file_pager()
+        if not self._add_new_file_page_created:
+            self._create_add_new_file_page()
         self.goto("add_new_file", alt_bg_style=True)
 
     def _goto_preview(self, obj=None, data=None):
@@ -94,23 +91,25 @@ class FileSelectionWizard(Wizard):
         else:
             self._selection = data
 
-        if not self._file_preview_pager_created:
-            self._create_file_preview_pager()
+        if not self._file_preview_page_created:
+            self._create_file_preview_page()
         else:
            self._get_preview_file(self._selection)
 
-        self.goto("file_preview")
+        self.goto("file_preview", alt_bg_style=False)
         self._get_title_text()
 
     def _goto_files_list(self):
         self._update()
-        self.goto("file_list")
+        self.goto("file_list", alt_bg_style=False)
 
     def _file_list_add(self):
         self._files = []
         self._file_list = elementary.List(self)
-        self._file_list.size_hint_align_set(evas.EVAS_HINT_FILL, evas.EVAS_HINT_FILL)
-        self._file_list.size_hint_weight_set(evas.EVAS_HINT_EXPAND, evas.EVAS_HINT_EXPAND)
+        self._file_list.size_hint_align_set(
+            evas.EVAS_HINT_FILL, evas.EVAS_HINT_FILL)
+        self._file_list.size_hint_weight_set(
+            evas.EVAS_HINT_EXPAND, evas.EVAS_HINT_EXPAND)
         self._update()
         self._file_list.show()
 
@@ -126,10 +125,12 @@ class FileSelectionWizard(Wizard):
 
     def _preview_scroller_add(self):
         self._preview_scroller = elementary.Scroller(self)
-        self._preview_scroller.size_hint_align_set(evas.EVAS_HINT_FILL, evas.EVAS_HINT_FILL)
-        self._preview_scroller.size_hint_weight_set(evas.EVAS_HINT_EXPAND, evas.EVAS_HINT_EXPAND)
+        self._preview_scroller.size_hint_align_set(
+            evas.EVAS_HINT_FILL, evas.EVAS_HINT_FILL)
+        self._preview_scroller.size_hint_weight_set(
+            evas.EVAS_HINT_EXPAND, evas.EVAS_HINT_EXPAND)
         self._preview_scroller.policy_set(elementary.ELM_SCROLLER_POLICY_AUTO,
-                elementary.ELM_SCROLLER_POLICY_AUTO)
+                                          elementary.ELM_SCROLLER_POLICY_AUTO)
         self._preview_scroller.bounce_set(False, False)
         self._preview_scroller.content_set(self._preview_file)
         self._preview_scroller.show()
@@ -148,7 +149,8 @@ class FileSelectionWizard(Wizard):
         self._files.sort(key=str.lower)
 
         for i in self._files:
-            self._file_list.item_append(i.split(',',1)[0], None, None, None, None)
+            self._file_list.item_append(
+                i.split(',',1)[0], None, None, None, None)
         self._file_list.go()
 
     def _fs_file_selected_cb(self, obj, data):
@@ -163,8 +165,8 @@ class FileSelectionWizard(Wizard):
             self.action_disabled_set("add_new_file", "Add", True)
 
     def _back(self):
-        if not self._file_list_pager_created:
-            self._create_file_list_pager()
+        if not self._file_list_page_created:
+            self._create_file_list_page()
         self._goto_files_list()
 
     def _back_file_preview(self):
@@ -180,29 +182,29 @@ class FileSelectionWizard(Wizard):
         self._selected_cb(self._selection)
         self.close()
 
-class ImageSelectionWizard(FileSelectionWizard):
 
-    def __init__(self, parent, selected_cb, file_add_cb,\
+class ImageSelectionWizard(FileSelectionWizard):
+    def __init__(self, parent, selected_cb, file_add_cb,
                  file_list_cb, img_id_get_cb, workfile_get_cb):
 
-        FileSelectionWizard.__init__(self, parent, selected_cb,\
-                file_add_cb, file_list_cb)
+        FileSelectionWizard.__init__(
+            self, parent, selected_cb, file_add_cb, file_list_cb)
 
         self._img_id_get_cb = img_id_get_cb
         self._workfile_get_cb = workfile_get_cb
 
     def _add_file_list_header(self):
         self.page_add("file_list", "Select an image",
-                      "Select an image in list, or add a new one")
+                      "Select an image from the group, or add a new one to it")
 
     def _add_add_new_file_header(self):
         self.page_add("add_new_file", "Add a new image",
-                      "Choose the images you want to add",
+                      "Choose an image to add to the group",
                       separator=True)
 
     def _add_file_preview_header(self):
         self.page_add("file_preview", "Image Preview",
-                      "Delete or select this image.")
+                      "Delete or select this image")
 
     def _fs_filter(self, file):
         return file.endswith(".edb") or \
@@ -225,7 +227,7 @@ class ImageSelectionWizard(FileSelectionWizard):
         self._get_preview_file(self._selection)
 
     def _preview_method(self):
-        return self._parent.evas.FilledImage()
+        return evas.FilledImage(self.evas)
 
     def _get_preview_file(self, selection):
         if not selection:
@@ -238,27 +240,12 @@ class ImageSelectionWizard(FileSelectionWizard):
 
     def _fix_image_size(self, img):
         w, h = img.image_size_get()
-
-        #ugly hack :-(
-        win_w = 498
-        win_h = 420
-
-        if w > win_w:
-            new_w = win_w
-        else:
-            new_w = w
-
-        if h > win_h:
-            new_h = win_h
-        else:
-            new_h = h
-
-        img.size_hint_min_set(new_w, new_h)
-        img.size_hint_max_set(new_w, new_h)
+        img.size_hint_min_set(w, h)
+        img.size_hint_max_set(w, h)
         img.size_hint_align_set(0.5, 0.5)
 
-class FontSelectionWizard(FileSelectionWizard):
 
+class FontSelectionWizard(FileSelectionWizard):
     def __init__(self, parent, selected_cb, file_add_cb,\
                  file_list_cb, fnt_id_get_cb, workfile_get_cb):
 
@@ -294,7 +281,7 @@ class FontSelectionWizard(FileSelectionWizard):
         self._get_preview_file(self._selection)
 
     def _preview_method(self):
-        return self._parent.evas.Text()
+        return evas.Text(self.evas)
 
     def _get_preview_file(self, selection):
         self._preview_file.text_set(selection + ". Size: 16")

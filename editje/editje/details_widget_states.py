@@ -14,15 +14,17 @@
 #
 # You should have received a copy of the GNU Lesser General Public
 # License along with Editje. If not, see <http://www.gnu.org/licenses/>.
+
 import re
 
 import evas
-from elementary import Label, Box, Pager, Button, Entry, Scroller, Icon, List
+from elementary import Label, Box, Pager, Button, Icon, List
 
 import sysconfig
 from details_widget_entry_button import WidgetEntryButton
 from floater import Floater
 from groupselector import NameEntry
+
 
 class WidgetStates(WidgetEntryButton):
     pop_min_w = 200
@@ -108,7 +110,8 @@ class WidgetStates(WidgetEntryButton):
 
     def _reset_state_to_cb(self, it, state):
         self.parent.state.copy_from(state)
-        self.editable.part.state.event_emit("state.changed", self.parent.state.name)
+        self.editable.part.state.event_emit(
+            "state.changed", self.parent.state.name)
         self.close()
 
     def _cancel_clicked(self, popup, data):
@@ -147,9 +150,12 @@ class WidgetStates(WidgetEntryButton):
         space.label_set(" ")
         self.actions_box.pack_end(space)
         space.show()
-        btn_changeto = self._action_button_add("Change to", self._states_select_cb, state)
-        btn_resetto = self._action_button_add("Reset to", self._reset_state_to_cb, state)
-        btn_delete = self._action_button_add("Delete", self._remove_state_cb, state)
+        btn_changeto = self._action_button_add(
+            "Change to", self._states_select_cb, state)
+        btn_resetto = self._action_button_add(
+            "Reset to", self._reset_state_to_cb, state)
+        btn_delete = self._action_button_add(
+            "Delete", self._remove_state_cb, state)
 
         if self._is_default(state):
             btn_delete.disabled_set(True)
@@ -175,7 +181,8 @@ class WidgetStates(WidgetEntryButton):
             self.pager = Pager(self._pop)
             self.pager.style_set("editje.rightwards")
             self.states = List(self._pop)
-            self.states.size_hint_weight_set(evas.EVAS_HINT_EXPAND, evas.EVAS_HINT_EXPAND)
+            self.states.size_hint_weight_set(
+                evas.EVAS_HINT_EXPAND, evas.EVAS_HINT_EXPAND)
             self.states.size_hint_align_set(-1.0, -1.0)
             self.states.show()
             self.pager.content_push(self.states)
@@ -184,7 +191,8 @@ class WidgetStates(WidgetEntryButton):
             self._pop.title_set("States selection")
             self._pop.action_add("New", self._state_add_new_cb)
             self._pop.action_add("Close", self._cancel_clicked)
-            self.editable.part.callback_add("states.changed", self._list_populate)
+            self.editable.part.callback_add(
+                "states.changed", self._list_populate)
 
         self._list_populate()
         self._pop.show()
