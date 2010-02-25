@@ -1,0 +1,21 @@
+
+Enki is a photo manager using the EFL and allows the user to manage a list of albums and photos.
+
+
+Dependencies :
+- eina
+- ecore
+- ecore-file
+- eet
+- enlil
+- elementary
+
+
+
+
+
+
+
+
+The icons done.png and camera-video.png comes from the gtk icon theme MyIcons
+
