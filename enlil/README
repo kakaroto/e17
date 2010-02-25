@@ -1,0 +1,15 @@
+
+Enlil is a library using the EFL which allows to manage a list of albums and photos. EET is used to create the database and ecore to manage events and file. flicrkcurl which is optionnal allows to synchronise a library with a flickr account
+
+
+Dependencies :
+- ecore
+- ecore-file
+- eet
+- ethumb_client
+- libexif
+- libiptcdata
+- libxml-2.0
+optionnal :
+- flickcurl
+

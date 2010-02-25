@@ -1,0 +1,13 @@
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+libdir=@libdir@
+includedir=@includedir@
+datarootdir=@datarootdir@
+datadir=@datadir@
+
+Name: Enlil
+Description: no description atm.
+Requires: @requirements@
+Version: @VERSION@
+Libs: -L${libdir} -lenlil
+Cflags: -I${includedir} -I${includedir}/enlil
