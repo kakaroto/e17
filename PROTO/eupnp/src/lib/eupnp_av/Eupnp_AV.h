@@ -55,6 +55,8 @@ typedef struct _DIDL_Object    DIDL_Object;
 typedef struct _DIDL_Container DIDL_Container;
 typedef struct _DIDL_Item      DIDL_Item;
 
+#define DIDL_OBJECT_GET(i) ((DIDL_Object *)i)
+
 typedef void (*Eupnp_AV_DIDL_Container_Parsed_Cb) (void *data,
 						DIDL_Container *container);
 
@@ -83,7 +85,6 @@ struct _DIDL_Object {
    const char *parentID;
    const char *title;
    const char *creator;
-   Eina_List *res;
    const char *cls;
    Eina_Bool restricted;
    const char *writeStatus;
@@ -105,16 +106,45 @@ struct _DIDL_Container {
    Eina_Bool searchable;
 };
 
-EAPI Eina_Bool eupnp_av_init(void);
-EAPI Eina_Bool eupnp_av_shutdown(void);
+EAPI Eina_Bool eupnp_av_init       (void);
+EAPI Eina_Bool eupnp_av_shutdown   (void);
 
-EAPI Eina_Bool eupnp_av_didl_parse(const char *didl_xml,
-				   int didl_xml_len,
-				   Eupnp_AV_DIDL_Item_Parsed_Cb item_cb,
-				   Eupnp_AV_DIDL_Container_Parsed_Cb container_cb,
-				   void *data);
+EAPI Eina_Bool eupnp_av_didl_parse (const char *didl_xml, int didl_xml_len,
+				    Eupnp_AV_DIDL_Item_Parsed_Cb item_cb,
+				    Eupnp_AV_DIDL_Container_Parsed_Cb container_cb,
+				    void *data) EINA_ARG_NONNULL(1, 3, 4);
 
-EAPI const char *eupnp_av_didl_object_title_get(DIDL_Object *obj);
-EAPI const char *eupnp_av_didl_object_id_get(DIDL_Object *obj);
+EAPI const char      *eupnp_av_didl_object_title_get        (DIDL_Object *obj) EINA_ARG_NONNULL(1);
+EAPI const char      *eupnp_av_didl_object_id_get           (DIDL_Object *obj) EINA_ARG_NONNULL(1);
+EAPI const char      *eupnp_av_didl_object_parent_id_get    (DIDL_Object *obj) EINA_ARG_NONNULL(1);
+EAPI const char      *eupnp_av_didl_object_creator_get      (DIDL_Object *obj) EINA_ARG_NONNULL(1);
+EAPI const Eina_List *eupnp_av_didl_object_resources_get    (DIDL_Object *obj) EINA_ARG_NONNULL(1);
+EAPI const char      *eupnp_av_didl_object_class_get        (DIDL_Object *obj) EINA_ARG_NONNULL(1);
+EAPI Eina_Bool        eupnp_av_didl_object_restricted_get   (DIDL_Object *obj) EINA_ARG_NONNULL(1);
+EAPI const char      *eupnp_av_didl_object_write_status_get (DIDL_Object *obj) EINA_ARG_NONNULL(1);
+
+EAPI const char        *eupnp_av_didl_item_ref_id_get (DIDL_Item *obj) EINA_ARG_NONNULL(1);
+EAPI const DIDL_Object *eupnp_av_didl_item_parent_get (DIDL_Item *obj) EINA_ARG_NONNULL(1);
+EAPI void               eupnp_av_didl_item_free       (DIDL_Item *obj) EINA_ARG_NONNULL(1);
+EAPI const Eina_List   *eupnp_av_didl_item_resources_get(DIDL_Item *item) EINA_ARG_NONNULL(1);
+
+EAPI int                eupnp_av_didl_container_child_count_get  (DIDL_Container *obj) EINA_ARG_NONNULL(1);
+EAPI const char        *eupnp_av_didl_container_create_class_get (DIDL_Container *obj) EINA_ARG_NONNULL(1);
+EAPI const char        *eupnp_av_didl_container_search_class_get (DIDL_Container *obj) EINA_ARG_NONNULL(1);
+EAPI Eina_Bool          eupnp_av_didl_container_searchable_get   (DIDL_Container *obj) EINA_ARG_NONNULL(1);
+EAPI const DIDL_Object *eupnp_av_didl_container_parent_get       (DIDL_Container *obj) EINA_ARG_NONNULL(1);
+
+EAPI const char    *eupnp_av_didl_resource_import_uri_get        (DIDL_Resource *res) EINA_ARG_NONNULL(1);
+EAPI const char    *eupnp_av_didl_resource_protocol_info_get     (DIDL_Resource *res) EINA_ARG_NONNULL(1);
+EAPI unsigned long  eupnp_av_didl_resource_size_get              (DIDL_Resource *res) EINA_ARG_NONNULL(1);
+EAPI const char    *eupnp_av_didl_resource_duration_get          (DIDL_Resource *res) EINA_ARG_NONNULL(1);
+EAPI unsigned int   eupnp_av_didl_resource_bitrate_get           (DIDL_Resource *res) EINA_ARG_NONNULL(1);
+EAPI unsigned int   eupnp_av_didl_resource_sample_frequency_get  (DIDL_Resource *res) EINA_ARG_NONNULL(1);
+EAPI unsigned int   eupnp_av_didl_resource_bits_per_sample_get   (DIDL_Resource *res) EINA_ARG_NONNULL(1);
+EAPI unsigned int   eupnp_av_didl_resource_num_audio_channels_get(DIDL_Resource *res) EINA_ARG_NONNULL(1);
+EAPI const char    *eupnp_av_didl_resource_num_resolution_get    (DIDL_Resource *res) EINA_ARG_NONNULL(1);
+EAPI unsigned int   eupnp_av_didl_resource_color_depth_get       (DIDL_Resource *res) EINA_ARG_NONNULL(1);
+EAPI const char    *eupnp_av_didl_resource_protection_get        (DIDL_Resource *res) EINA_ARG_NONNULL(1);
+EAPI const char    *eupnp_av_didl_resource_value_get             (DIDL_Resource *res) EINA_ARG_NONNULL(1);
 
 #endif

@@ -101,7 +101,7 @@ AC_ARG_ENABLE([tools],
    [want_tools=$enableval], [want_tools="no"])
 
 if test "x$want_tools" = "xyes"; then
-   PKG_CHECK_MODULES(ELM, elementary, [have_tools="yes"], [have_tools="no"])
+   AC_CHECK_PKG(ELM, elementary, [have_tools="yes"], [have_tools="no"])
 else
    have_tools="no"
 fi

@@ -39,8 +39,6 @@
 #define CDS_SERVICE_TYPE "urn:schemas-upnp-org:service:ContentDirectory:1"
 #define IS_MEDIA_SERVER(device) !strcmp(device->device_type, MEDIA_SERVER_DEVICE_TYPE)
 
-static _log_domain = -1;
-
 #ifdef INF
   #undef INF
 #endif
@@ -70,41 +68,58 @@ static Elm_Genlist_Item_Class cls;
 static Elm_Genlist_Item_Class cls_didl;
 static Elm_Genlist_Item_Class cls_didl_item;
 static Evas_Object *win, *bg, *box, *gl;
+static _log_domain = -1;
 
-static void
-browse(Eupnp_Service_Proxy *proxy, const char *container_id, void *data);
+static void browse(Eupnp_Service_Proxy *proxy, const char *container_id, void *data);
 
 static void
 item_select(void *data, Evas_Object *obj, void *event_info)
 {
-   Media_Server *ms = data;
-   DIDL_Item *item = (DIDL_Item*)elm_genlist_item_data_get(event_info);
-   DBG("Selecting item %s:%s", item->parent.title, item->parent.id);
+   Media_Server *ms;
+   const DIDL_Item *item;
+
+   item = elm_genlist_item_data_get(event_info);
+   ms = data;
+
+   DBG("Selecting item %s:%s",
+       eupnp_av_didl_object_title_get(DIDL_OBJECT_GET(item)),
+       eupnp_av_didl_object_id_get(DIDL_OBJECT_GET(item)));
 }
 
 
 static void
 container_browse(void *data, Evas_Object *obj, void *event_info)
 {
+   Media_Server *ms;
+   const DIDL_Container *c;
+
+   c = elm_genlist_item_data_get(event_info);
+   ms = data;
+
    DBG("Browsing container %p", obj);
-   Media_Server *ms = data;
-   DIDL_Container *c = (DIDL_Container *)elm_genlist_item_data_get(event_info);
-   DBG("id: %s", eupnp_av_didl_object_id_get(&c->parent));
-   browse(ms->cds, eupnp_av_didl_object_id_get(&c->parent), ms);
+   DBG("id: %s", eupnp_av_didl_object_id_get(DIDL_OBJECT_GET(c)));
+
+   browse(ms->cds, eupnp_av_didl_object_id_get(DIDL_OBJECT_GET(c)), ms);
 }
 
 static Elm_Genlist_Item *
 parent_container_get(Media_Server *ms, Evas_Object *genlist, const char *parentID)
 {
-   Elm_Genlist_Item *item = NULL;
+   Elm_Genlist_Item *item;
    const DIDL_Container *c;
 
    for (item = elm_genlist_first_item_get(genlist); item != NULL;
-	 item = elm_genlist_item_next_get(item))
+	item = elm_genlist_item_next_get(item))
      {
-	if (ms->item == item) continue;
+	// Root
+	if (ms->item == item)
+	  continue;
+
 	c = elm_genlist_item_data_get(item);
-	if (!c) continue;
+
+	if (!c)
+	  continue;
+
 	if (!strcmp(c->parent.id, parentID))
 	  {
 	     //DBG("Parent is %s, item is %p", c->parent.id, item);
@@ -118,23 +133,21 @@ parent_container_get(Media_Server *ms, Evas_Object *genlist, const char *parentI
 void
 on_container_found(void *data, DIDL_Container *c)
 {
-   Media_Server *ms = data;
-   Evas_Object *genlist = elm_genlist_item_genlist_get(ms->item);
+   Media_Server *ms;
+   Evas_Object *genlist;
    Elm_Genlist_Item *parent;
    Elm_Genlist_Item *item;
 
-   /*INF("Container id %p %s:%s (parentID=%s) found", c, c->parent.id, c->parent.title,
-	c->parent.parentID);*/
+   ms = data;
+   genlist = elm_genlist_item_genlist_get(ms->item);
+   parent = parent_container_get(ms, genlist,
+			         eupnp_av_didl_object_parent_id_get(DIDL_OBJECT_GET(c)));
 
-   parent = parent_container_get(ms, genlist, c->parent.parentID);
-   if (!parent) parent = ms->item;
+   if (!parent)
+     parent = ms->item;
 
-   item = elm_genlist_item_append(genlist, &cls_didl,
-				 c,
-				 parent,
-				 ELM_GENLIST_ITEM_SUBITEMS,
-				 &container_browse,
-				 ms);
+   elm_genlist_item_append(genlist, &cls_didl, c, parent,
+			   ELM_GENLIST_ITEM_SUBITEMS, &container_browse, ms);
 
    evas_object_show(genlist);
 }
@@ -142,22 +155,19 @@ on_container_found(void *data, DIDL_Container *c)
 void
 on_item_found(void *data, DIDL_Item *i)
 {
-   Media_Server *ms = data;
+   Media_Server *ms;
    Evas_Object *genlist;
    Elm_Genlist_Item *parent;
-   Elm_Genlist_Item *item;
 
-   //INF("Item id %s (parentID=%s) found", i->parent.id, i->parent.parentID);
+   ms = data;
    genlist = elm_genlist_item_genlist_get(ms->item);
-   parent = parent_container_get(ms, genlist, i->parent.parentID);
-   if (!parent) parent = ms->item;
+   parent = parent_container_get(ms, genlist, eupnp_av_didl_object_parent_id_get(DIDL_OBJECT_GET(i)));
 
-   item = elm_genlist_item_append(genlist, &cls_didl_item,
-			   i,
-			   parent,
-			   ELM_GENLIST_ITEM_NONE,
-			   &item_select,
-			   ms);
+   if (!parent)
+     parent = ms->item;
+
+   elm_genlist_item_append(genlist, &cls_didl_item, i, parent,
+			   ELM_GENLIST_ITEM_NONE, &item_select, ms);
 
    evas_object_show(genlist);
 }
@@ -169,8 +179,11 @@ action_response(void *data, Eina_Inlist *evented_vars)
 
    EINA_INLIST_FOREACH(evented_vars, arg)
      if (!strcmp(arg->name, "Result"))
-	eupnp_av_didl_parse(arg->value, strlen(arg->value),
-			    on_item_found, on_container_found, data);
+       if (eupnp_av_didl_parse(arg->value, strlen(arg->value),
+			       on_item_found, on_container_found, data))
+	  INF("Parsed DIDL fragment successfully.");
+       else
+	  ERR("Failed to parse DIDL fragment.");
 }
 
 static void
@@ -207,6 +220,7 @@ static void
 server_browse(void *data, Evas_Object *obj, void *event_info)
 {
    Media_Server *ms = data;
+
    DBG("Browsing server %s", ms->server->udn);
    browse(ms->cds, "0", ms);
 }
@@ -215,36 +229,38 @@ static void
 on_cds_ready(void *data, Eupnp_Service_Proxy *proxy)
 {
    Media_Server *ms = data;
-   ms->cds = eupnp_service_proxy_ref(proxy);
+
    DBG("Attaching proxy %p to %s", proxy, ms->server->udn);
+   ms->cds = eupnp_service_proxy_ref(proxy);
 }
 
 static Eina_Bool
 on_device_ready(void *user_data, Eupnp_Event_Type event_type, void *event_data)
 {
-   Eupnp_Device_Info *device = event_data;
+   Media_Server *ms;
+   Evas_Object *gl;
+   Eupnp_Device_Info *device;
    const Eupnp_Service_Info *cds;
    Elm_Genlist_Item *item;
-   Evas_Object *gl = user_data;
-   Media_Server *ms;
+
+   gl = user_data;
+   device = event_data;
 
    if (!IS_MEDIA_SERVER(device))
      return EINA_TRUE;
 
    cds = eupnp_device_info_service_get_by_type(device, CDS_SERVICE_TYPE);
+
    if ((!cds) || is_server_known(device))
      return EINA_TRUE;
 
    ms = calloc(1, sizeof(Media_Server));
    ms->server = eupnp_device_info_ref(device);
-   ms->item = elm_genlist_item_append(gl, &cls,
-				      ms,
-				      NULL,
+   ms->item = elm_genlist_item_append(gl, &cls, ms, NULL,
 				      ELM_GENLIST_ITEM_SUBITEMS,
-				      &server_browse,
-				      ms);
+				      &server_browse, ms);
 
-   eupnp_service_proxy_new(cds, EUPNP_SERVICE_PROXY_READY_CB(on_cds_ready), ms);
+   eupnp_service_proxy_new(cds, on_cds_ready, ms);
    servers = eina_list_append(servers, ms);
    evas_object_show(gl);
 
@@ -261,15 +277,14 @@ static char *
 gl_label_get(const void *data, Evas_Object *obj, const char *part)
 {
    const Media_Server *ms = data;
-
    return strdup(ms->server->friendly_name);
 }
 
 static char *
-gl_didl_label_get(const void *data, Evas_Object *obj, const char *part)
+gl_didl_label_get(const void *data, Evas_Object *evas_obj, const char *part)
 {
-   const DIDL_Object *didl = data;
-   return strdup(didl->title);
+   const DIDL_Object *obj = data;
+   return strdup(obj->title);
 }
 
 static Eina_Bool
@@ -348,7 +363,7 @@ void
 av_browser_win_create(void)
 {
    win = elm_win_add(NULL, "main", ELM_WIN_BASIC);
-   elm_win_title_set(win, "Enlightenment UPnP AV");
+   elm_win_title_set(win, "Enlightenment UPnP AV Browser");
    evas_object_smart_callback_add(win, "delete-request", av_browser_del, NULL);
 
    bg = elm_bg_add(win);
@@ -403,7 +418,9 @@ EAPI int
 elm_main(int argc, char **argv)
 {
    Eupnp_Control_Point *c;
-   int ret = -1;
+   int ret;
+
+   ret = -1;
 
    if (!eupnp_av_init())
      {

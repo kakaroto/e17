@@ -47,6 +47,19 @@
     } while (0)
 
 
+
+#define MATCH(attr) !strncmp(attributes[index], attr, strlen(attr))
+
+#define COPYATTR(index) strndup(attributes[index+3], \
+			        attributes[index+4] - attributes[index+3])
+
+#define SHAREATTR(index) eina_stringshare_add_length(attributes[index+3], \
+						     attributes[index+4] - \
+						     attributes[index+3])
+
+#define UNSHARE(p) eina_stringshare_del(p)
+
+
 static int _log_dom  = -1;
 
 enum {
@@ -62,6 +75,7 @@ enum {
 };
 
 typedef struct _Context Context;
+
 struct _Context
 {
    int state;
@@ -85,6 +99,9 @@ static void
 eupnp_av_item_dump(DIDL_Item *item)
 {
    CHECK_NULL_RET(item);
+
+   if (!eina_log_domain_level_check(_log_dom, EINA_LOG_LEVEL_DBG))
+      return;
 
    Eina_List *l;
    DIDL_Resource *res;
@@ -121,10 +138,6 @@ eupnp_av_item_res_append(void *_item, void *_res)
    item->res = eina_list_append(item->res, res);
 }
 
-#define MATCH(attr) !strncmp(attributes[index], attr, strlen(attr))
-#define COPYATTR(index) strndup(attributes[index+3], \
-			        attributes[index+4] - attributes[index+3])
-
 static void
 eupnp_av_didl_object_parse_basic_attrs(DIDL_Object *obj, int nb_attributes,
 					    int nb_defaulted,
@@ -138,14 +151,14 @@ eupnp_av_didl_object_parse_basic_attrs(DIDL_Object *obj, int nb_attributes,
 	if (MATCH("id"))
 	  obj->id = COPYATTR(index);
 	else if (MATCH("parentID"))
-	  obj->parentID = COPYATTR(index);
+	  obj->parentID = SHAREATTR(index);
 	else if (MATCH("creator"))
-	  obj->creator = COPYATTR(index);
+	  obj->creator = SHAREATTR(index);
 	else if (MATCH("restricted"))
 	  obj->restricted = !strncmp(attributes[index+3], "true",
 				     strlen("true"));
 	else if (MATCH("writeStatus"))
-	  obj->writeStatus = COPYATTR(index);
+	  obj->writeStatus = SHAREATTR(index);
      }
 }
 
@@ -157,12 +170,7 @@ eupnp_av_didl_object_parse_item_attrs(DIDL_Item *item, int nb_attributes,
    eupnp_av_didl_object_parse_basic_attrs(&item->parent, nb_attributes,
 					  nb_defaulted, attributes);
 
-   int i;
-   int index = 0;
-
-   for (i = 0; i < nb_attributes; ++i, index += 5)
-     {
-     }
+   // Parse item-specific attributes
 }
 
 static void
@@ -204,7 +212,7 @@ eupnp_av_didl_object_parse_res_attrs(DIDL_Resource *r, int nb_attributes,
 	if (MATCH("importUri"))
 	   r->importUri = COPYATTR(index);
 	else if (MATCH("protocolInfo"))
-	   r->protocolInfo = COPYATTR(index);
+	   r->protocolInfo = SHAREATTR(index);
 	else if (MATCH("size"))
 	  {
 	     copy = COPYATTR(index);
@@ -238,7 +246,7 @@ eupnp_av_didl_object_parse_res_attrs(DIDL_Resource *r, int nb_attributes,
 	     free(copy);
 	  }
 	else if (MATCH("resolution"))
-	  r->resolution = COPYATTR(index);
+	  r->resolution = SHAREATTR(index);
 	else if (MATCH("colorDepth"))
 	  {
 	     copy = COPYATTR(index);
@@ -246,7 +254,7 @@ eupnp_av_didl_object_parse_res_attrs(DIDL_Resource *r, int nb_attributes,
 	     free(copy);
 	  }
 	else if (MATCH("protection"))
-	  r->protection = COPYATTR(index);
+	  r->protection = SHAREATTR(index);
      }
 }
 
@@ -258,8 +266,6 @@ eupnp_av_element_ns_start(void *ctx, const xmlChar *name, const xmlChar *prefix,
 {
    Context *c = ctx;
    int i;
-
-   // DBG("Start element %s state %d", name, c->state);
 
    switch (c->state)
      {
@@ -311,8 +317,6 @@ eupnp_av_element_ns_start(void *ctx, const xmlChar *name, const xmlChar *prefix,
 	  ERR("Unexpected tag %s", name);
 	  c->state = ERROR;
      }
-
-   // DBG("After start element %s state %d", name, c->state);
 }
 
 static void
@@ -326,23 +330,21 @@ eupnp_av_on_characters(void *ctx, const xmlChar *ch, int len)
    end = ch + len - 1;
    while (end > (const char *)ch && isspace(*end)) { end--; len--; }
 
-   // DBG("On characters state %d", c->state);
-
    switch (c->state)
      {
 	case CONTAINER_TAG:
 	  if (!strcmp(c->tag, "class"))
-	     c->container->parent.cls = strndup(ch, len);
+	     c->container->parent.cls = eina_stringshare_add_length(ch, len);
 	  else if (!strcmp(c->tag, "searchClass"))
-	     c->container->searchClass = strndup(ch, len);
+	     c->container->searchClass = eina_stringshare_add_length(ch, len);
 	  else if (!strcmp(c->tag, "createClass"))
-	     c->container->createClass = strndup(ch, len);
+	     c->container->createClass = eina_stringshare_add_length(ch, len);
 	  else if (!strcmp(c->tag, "title"))
 	     c->container->parent.title = strndup(ch, len);
 	  break;
 	case ITEM_TAG:
 	  if (!strcmp(c->tag, "class"))
-	     c->item->parent.cls = strndup(ch, len);
+	     c->item->parent.cls = eina_stringshare_add_length(ch, len);
 	  else if (!strcmp(c->tag, "refID"))
 	     c->item->refID= strndup(ch, len);
 	  else if (!strcmp(c->tag, "title"))
@@ -363,8 +365,6 @@ eupnp_av_element_ns_end(void *ctx, const xmlChar *name, const xmlChar *prefix,
 			const xmlChar *URI)
 {
    Context *c = ctx;
-
-   // DBG("End element %s state %d", name, c->state);
 
    if (c->skip)
      {
@@ -406,8 +406,6 @@ eupnp_av_element_ns_end(void *ctx, const xmlChar *name, const xmlChar *prefix,
 	default:
 	  ERR("End element error at tag %s", name);
      }
-
-   // DBG("End element %s state %d", name, c->state);
 }
 
 static void
@@ -419,7 +417,22 @@ error(void *state, const char *msg, ...)
    va_end(args);
 }
 
-Eina_Bool
+
+/**
+ * Parses a DIDL XML fragment.
+ *
+ * Parses a DIDL XML fragment into DIDL objects (items and containers) and
+ * forwards them to the appropriate callback.
+ *
+ * @param didl_xml DIDL xml fragment
+ * @param didl_xml_len Length of the DIDL xml fragment
+ * @param item_cb Callback to push items into
+ * @param container_cb Callback to push containers into
+ * @param data Data to be passed to the callbacks
+ *
+ * @return EINA_TRUE on success, EINA_FALSE on error.
+ * */
+EAPI Eina_Bool
 eupnp_av_didl_parse(const char *didl_xml,
 		    int didl_xml_len,
 		    Eupnp_AV_DIDL_Item_Parsed_Cb item_cb,
@@ -430,6 +443,11 @@ eupnp_av_didl_parse(const char *didl_xml,
    xmlSAXHandler handler;
    xmlParserCtxtPtr ctx;
    Eina_Bool ret = EINA_FALSE;
+
+   CHECK_NULL_RET(didl_xml, EINA_FALSE);
+   if (didl_xml_len <= 0) return EINA_FALSE;
+   CHECK_NULL_RET(item_cb, EINA_FALSE);
+   CHECK_NULL_RET(container_cb, EINA_FALSE);
 
    c = calloc(1, sizeof(Context));
    c->parsed_item = item_cb;
@@ -452,7 +470,7 @@ eupnp_av_didl_parse(const char *didl_xml,
    return ret;
 }
 
-Eina_Bool
+EAPI Eina_Bool
 eupnp_av_init(void)
 {
    if (!eina_init())
@@ -476,7 +494,7 @@ eupnp_av_init(void)
       return EINA_FALSE;
 }
 
-Eina_Bool
+EAPI Eina_Bool
 eupnp_av_shutdown(void)
 {
    eina_log_domain_unregister(_log_dom);
@@ -485,16 +503,247 @@ eupnp_av_shutdown(void)
    return EINA_TRUE;
 }
 
-const char *
+static void
+eupnp_av_didl_resource_free(DIDL_Resource *res)
+{
+   CHECK_NULL_RET(res);
+
+   free((char *)res->importUri);
+   UNSHARE(res->protocolInfo);
+   free((char *)res->duration);
+   UNSHARE(res->resolution);
+   UNSHARE(res->protection);
+   free((char *)res->value);
+   free(res);
+}
+
+static void
+eupnp_av_didl_object_free(DIDL_Object *obj)
+{
+   CHECK_NULL_RET(obj);
+
+   free((char *)obj->id);
+   UNSHARE(obj->parentID);
+   free((char *)obj->title);
+   UNSHARE(obj->creator);
+   UNSHARE(obj->cls);
+   UNSHARE(obj->writeStatus);
+}
+
+EAPI void
+eupnp_av_didl_item_free(DIDL_Item *item)
+{
+   Eina_List *l;
+   DIDL_Resource *res;
+
+   CHECK_NULL_RET(item);
+
+   eupnp_av_didl_object_free(&item->parent);
+
+   UNSHARE(item->refID);
+
+   EINA_LIST_FOREACH(item->res, l, res)
+     eupnp_av_didl_resource_free(res);
+
+   free(item);
+}
+
+EAPI void
+eupnp_av_didl_container_free(DIDL_Container *c)
+{
+   CHECK_NULL_RET(c);
+
+   eupnp_av_didl_object_free(&c->parent);
+
+   UNSHARE(c->createClass);
+   UNSHARE(c->searchClass);
+}
+
+EAPI const char *
 eupnp_av_didl_object_title_get(DIDL_Object *obj)
 {
    CHECK_NULL_RET(obj, NULL);
    return obj->title;
 }
 
-const char *
+EAPI const char *
 eupnp_av_didl_object_id_get(DIDL_Object *obj)
 {
    CHECK_NULL_RET(obj, NULL);
    return obj->id;
+}
+
+EAPI const char *
+eupnp_av_didl_object_parent_id_get(DIDL_Object *obj)
+{
+   CHECK_NULL_RET(obj, NULL);
+   return obj->parentID;
+}
+
+EAPI const char *
+eupnp_av_didl_object_creator_get(DIDL_Object *obj)
+{
+   CHECK_NULL_RET(obj, NULL);
+   return obj->creator;
+}
+
+EAPI const char *
+eupnp_av_didl_object_class_get(DIDL_Object *obj)
+{
+   CHECK_NULL_RET(obj, NULL);
+   return obj->cls;
+}
+
+EAPI Eina_Bool
+eupnp_av_didl_object_restricted_get(DIDL_Object *obj)
+{
+   CHECK_NULL_RET(obj, EINA_FALSE);
+   return obj->restricted;
+}
+
+EAPI const char *
+eupnp_av_didl_object_write_status_get(DIDL_Object *obj)
+{
+   CHECK_NULL_RET(obj, NULL);
+   return obj->writeStatus;
+}
+
+EAPI const char *
+eupnp_av_didl_item_ref_id_get(DIDL_Item *obj)
+{
+   CHECK_NULL_RET(obj, NULL);
+   return obj->refID;
+}
+
+EAPI const DIDL_Object *
+eupnp_av_didl_item_parent_get(DIDL_Item *obj)
+{
+   CHECK_NULL_RET(obj, NULL);
+   return (const DIDL_Object *)&obj->parent;
+}
+
+EAPI const Eina_List *
+eupnp_av_didl_item_resources_get(DIDL_Item *item)
+{
+   CHECK_NULL_RET(item, NULL);
+   return (const Eina_List *)item->res;
+}
+
+EAPI int
+eupnp_av_didl_container_child_count_get(DIDL_Container *obj)
+{
+   CHECK_NULL_RET(obj, -1);
+   return obj->childCount;
+}
+
+EAPI const char *
+eupnp_av_didl_container_create_class_get(DIDL_Container *obj)
+{
+   CHECK_NULL_RET(obj, NULL);
+   return obj->createClass;
+}
+
+EAPI const char *
+eupnp_av_didl_container_search_class_get(DIDL_Container *obj)
+{
+   CHECK_NULL_RET(obj, NULL);
+   return obj->searchClass;
+}
+
+EAPI Eina_Bool
+eupnp_av_didl_container_searchable_get(DIDL_Container *obj)
+{
+   CHECK_NULL_RET(obj, EINA_FALSE);
+   return obj->searchable;
+}
+
+EAPI const DIDL_Object *
+eupnp_av_didl_container_parent_get(DIDL_Container *obj)
+{
+   CHECK_NULL_RET(obj, NULL);
+   return (const DIDL_Object *)&obj->parent;
+}
+
+EAPI const char *
+eupnp_av_didl_resource_import_uri_get(DIDL_Resource *res)
+{
+   CHECK_NULL_RET(res, NULL);
+   return res->importUri;
+}
+
+EAPI const char *
+eupnp_av_didl_resource_protocol_info_get(DIDL_Resource *res)
+{
+   CHECK_NULL_RET(res, NULL);
+   return res->protocolInfo;
+}
+
+EAPI unsigned long
+eupnp_av_didl_resource_size_get(DIDL_Resource *res)
+{
+   CHECK_NULL_RET(res, 0);
+   return res->size;
+}
+
+EAPI const char *
+eupnp_av_didl_resource_duration_get(DIDL_Resource *res)
+{
+   CHECK_NULL_RET(res, NULL);
+   return res->duration;
+}
+
+EAPI unsigned int
+eupnp_av_didl_resource_bitrate_get(DIDL_Resource *res)
+{
+   CHECK_NULL_RET(res, 0);
+   return res->bitrate;
+}
+
+EAPI unsigned int
+eupnp_av_didl_resource_sample_frequency_get(DIDL_Resource *res)
+{
+   CHECK_NULL_RET(res, 0);
+   return res->sampleFrequency;
+}
+
+EAPI unsigned int
+eupnp_av_didl_resource_bits_per_sample_get(DIDL_Resource *res)
+{
+   CHECK_NULL_RET(res, 0);
+   return res->bitsPerSample;
+}
+
+EAPI unsigned int
+eupnp_av_didl_resource_num_audio_channels_get(DIDL_Resource *res)
+{
+   CHECK_NULL_RET(res, 0);
+   return res->nrAudioChannels;
+}
+
+EAPI const char *
+eupnp_av_didl_resource_num_resolution_get(DIDL_Resource *res)
+{
+   CHECK_NULL_RET(res, NULL);
+   return res->resolution;
+}
+
+EAPI unsigned int
+eupnp_av_didl_resource_color_depth_get(DIDL_Resource *res)
+{
+   CHECK_NULL_RET(res, 0);
+   return res->colorDepth;
+}
+
+EAPI const char *
+eupnp_av_didl_resource_protection_get(DIDL_Resource *res)
+{
+   CHECK_NULL_RET(res, NULL);
+   return res->protection;
+}
+
+EAPI const char *
+eupnp_av_didl_resource_value_get(DIDL_Resource *res)
+{
+   CHECK_NULL_RET(res, NULL);
+   return res->value;
 }
