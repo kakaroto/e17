@@ -211,6 +211,9 @@ class PropertyTable(elementary.Table):
             o.destroy()
         self._props = dict()
 
+    def get(self, key):
+        return self._props.get(key)
+
     def __getitem__(self, key):
         if key in self._props:
             return self._props[key]

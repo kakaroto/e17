@@ -53,15 +53,14 @@ class PartStateDetails(EditjeDetails):
     state_pop_min_w = 200
     state_pop_min_h = 300
 
-    def __init__(self, parent, anim=False, img_new_img_cb=None,
+    def __init__(self, parent, img_new_img_cb=None,
                  img_list_get_cb=None, img_id_get_cb=None,
                  fnt_new_fnt_cb=None, fnt_list_get_cb=None,
-                 fnt_id_get_cb=None, workfile_name_get_cb=None):
+                 fnt_id_get_cb=None, workfile_name_get_cb=None,
+                 group="editje/collapsable/part_state"):
+        EditjeDetails.__init__(self, parent, group)
 
-        if anim:
-            self._anim_init(parent)
-        else:
-            self._edit_init(parent)
+        self._header_init(parent)
 
         self._img_new_img_cb = img_new_img_cb
         self._img_list_get_cb = img_list_get_cb
@@ -71,7 +70,6 @@ class PartStateDetails(EditjeDetails):
         self._fnt_id_get_cb = fnt_id_get_cb
         self._workfile_name_get_cb = workfile_name_get_cb
 
-        self._animmode = anim
         self._update_schedule = None
         self.on_del_add(self._del_handler)
 
@@ -103,15 +101,7 @@ class PartStateDetails(EditjeDetails):
             "part.state.max.changed", self._update_max)
         self._hide_all()
 
-    def _del_handler(self, o):
-        if self._update_schedule is not None:
-            self._update_schedule.delete()
-            self._update_schedule = None
-
-    def _edit_init(self, parent):
-        EditjeDetails.__init__(self, parent,
-                               group="editje/collapsable/part_state")
-
+    def _header_init(self, parent):
         self.title_set("part state")
 
         self._header_table = PropertyTable(parent)
@@ -124,35 +114,10 @@ class PartStateDetails(EditjeDetails):
 
         self.content_set("part_state.swallow", self._header_table)
 
-    def _anim_init(self, parent):
-        EditjeDetails.__init__(self, parent,
-                               group="editje/collapsable/part_properties")
-
-        self.title_set("part properties")
-
-        self._header_table = PropertyTable(parent)
-
-        prop = Property(parent, "name")
-        wid = WidgetEntry(self)
-        wid.disabled_set(True)
-        prop.widget_add("n", wid)
-        self._header_table.property_add(prop)
-
-        prop = Property(parent, "type")
-        wid = WidgetEntry(self)
-        wid.disabled_set(True)
-        prop.widget_add("t", wid)
-        self._header_table.property_add(prop)
-
-        self.content_set("part_name.swallow", self._header_table)
-
-        self._state_copy_button = StateCopyButton(self.e)
-
-        self.edje_get().signal_callback_add("cl,option,clicked",
-                                            "editje/collapsable",
-                                            self._state_copy_button._floater_open)
-        self.edje_get().signal_emit("cl,option,enable", "editje")
-
+    def _del_handler(self, o):
+        if self._update_schedule is not None:
+            self._update_schedule.delete()
+            self._update_schedule = None
 
     def _edje_load(self, emissor, data):
         self.editable = self.e.edje
@@ -160,17 +125,10 @@ class PartStateDetails(EditjeDetails):
     def _part_update(self, emissor, data):
         self.part = self.e.part._part
         state = self.part.state_selected_get()
-        if self._animmode:
-            self._header_table["name"].value = self.part.name
-            self._header_table["name"].show_value()
-            self._header_table["type"].value = \
-                self._part_type_to_text(self.part.type)
-            self._header_table["type"].show_value()
-        else:
-            if state == "(null) 0.00":
-                state = "default 0.00"
-            self._header_table["state"].value = state
-            self._header_table["state"].show_value()
+        if state == "(null) 0.00":
+            state = "default 0.00"
+        self._header_table["state"].value = state
+        self._header_table["state"].show_value()
         self.state = self.part.state_get(state)
         self._update()
         self.open()
@@ -179,14 +137,8 @@ class PartStateDetails(EditjeDetails):
         if not self.e.part:
             return
 
-        if self._animmode:
-            self._header_table["name"].value = None
-            self._header_table["name"].hide_value()
-            self._header_table["type"].value = None
-            self._header_table["type"].hide_value()
-        else:
-            self._header_table["state"].value = None
-            self._header_table["state"].hide_value()
+        self._header_table["state"].value = None
+        self._header_table["state"].hide_value()
         self._hide_all()
 
     def _part_type_to_text(self, type):
@@ -538,8 +490,9 @@ class PartStateDetails(EditjeDetails):
             return
         self.part.state_selected_set(data)
         self.state = self.e.part.state._state
-        if not self._animmode:
-            self._header_table["state"].value = data
+        prop = self._header_table.get("state")
+        if prop:
+            prop.value = data
         self._update()
 
     def _state_rels_changed_cb(self, emissor, data):
@@ -837,3 +790,63 @@ class PartStateDetails(EditjeDetails):
                     self["external"][prop].value = value
                     return
         self.state.external_param_set(prop, value)
+
+
+class PartAnimStateDetails(PartStateDetails):
+    def __init__(self, parent, img_new_img_cb=None,
+                 img_list_get_cb=None, img_id_get_cb=None,
+                 fnt_new_fnt_cb=None, fnt_list_get_cb=None,
+                 fnt_id_get_cb=None, workfile_name_get_cb=None,
+                 group="editje/collapsable/part_properties"):
+        PartStateDetails.__init__(self, parent, img_new_img_cb,
+                 img_list_get_cb, img_id_get_cb, fnt_new_fnt_cb,
+                 fnt_list_get_cb, fnt_id_get_cb, workfile_name_get_cb,
+                 group)
+
+    def _header_init(self, parent):
+        self.title_set("part properties")
+
+        self._header_table = PropertyTable(parent)
+
+        prop = Property(parent, "name")
+        wid = WidgetEntry(self)
+        wid.disabled_set(True)
+        prop.widget_add("n", wid)
+        self._header_table.property_add(prop)
+
+        prop = Property(parent, "type")
+        wid = WidgetEntry(self)
+        wid.disabled_set(True)
+        prop.widget_add("t", wid)
+        self._header_table.property_add(prop)
+
+        self.content_set("part_name.swallow", self._header_table)
+
+        self._state_copy_button = StateCopyButton(self.e)
+
+        self.edje_get().signal_callback_add("cl,option,clicked",
+                                            "editje/collapsable",
+                                            self._state_copy_button._floater_open)
+        self.edje_get().signal_emit("cl,option,enable", "editje")
+
+    def _part_update(self, emissor, data):
+        self.part = self.e.part._part
+        state = self.part.state_selected_get()
+        self._header_table["name"].value = self.part.name
+        self._header_table["name"].show_value()
+        self._header_table["type"].value = \
+            self._part_type_to_text(self.part.type)
+        self._header_table["type"].show_value()
+        self.state = self.part.state_get(state)
+        self._update()
+        self.open()
+
+    def _part_removed(self, emissor, data):
+        if not self.e.part:
+            return
+
+        self._header_table["name"].value = None
+        self._header_table["name"].hide_value()
+        self._header_table["type"].value = None
+        self._header_table["type"].hide_value()
+        self._hide_all()

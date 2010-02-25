@@ -31,7 +31,7 @@ from collapsable import CollapsablesBox
 
 from details_group import GroupDetails
 from details_part import PartDetails
-from details_state import PartStateDetails
+from details_state import PartStateDetails, PartAnimStateDetails
 
 from parts import PartsList
 from animations import AnimationDetails, AnimationsList
@@ -563,7 +563,7 @@ class Editje(elementary.Window):
         box.pack_end(self.anim_details)
         self.anim_details.show()
 
-        self.anim_state_details = PartStateDetails(self, True, \
+        self.anim_state_details = PartAnimStateDetails(self, \
                 img_new_img_cb=self._image_wizard_new_image_cb, \
                 img_list_get_cb=self._image_wizard_image_list_get_cb, \
                 img_id_get_cb=self._image_wizard_image_id_get_cb, \
