@@ -1,4 +1,4 @@
-# Copyright (C) 2007-2008 Tiago Falcao
+# Copyright (C) 2007-2008 ProFUSION embedded systems
 #
 # This file is part of Python-Edje.
 #
@@ -9,11 +9,11 @@
 #
 # Python-Edje is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
 # Lesser General Public License for more details.
 #
 # You should have received a copy of the GNU Lesser General Public License
-# along with this Python-Edje.  If not, see <http://www.gnu.org/licenses/>.
+# along with this Python-Edje. If not, see <http://www.gnu.org/licenses/>.
 
 # This file is included verbatim by edje.edit.pyx
 

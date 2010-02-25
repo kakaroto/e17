@@ -1,4 +1,4 @@
-# Copyright (c) 2008-2009 Tiago Falcao
+# Copyright (c) 2008-2009 ProFUSION embedded systems
 #
 # This file is part of python-elementary.
 #
@@ -9,12 +9,11 @@
 #
 # python-elementary is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 # GNU Lesser General Public License for more details.
 #
 # You should have received a copy of the GNU Lesser General Public License
-# along with python-elementary.  If not, see <http://www.gnu.org/licenses/>.
-#
+# along with python-elementary. If not, see <http://www.gnu.org/licenses/>.
 
 cdef class Notify(Object):
     def __init__(self, c_evas.Object parent):
