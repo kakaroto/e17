@@ -372,7 +372,7 @@ static void
 cfg_popup_cb(void *data)
 {
 
-   int                 n = (int)data;
+   int                 n = (int)(long)data;
 
    switch (n)
      {
@@ -400,7 +400,7 @@ static void
 play_cb(void *data)
 {
 
-   int                 op = (int)data;
+   int                 op = (int)(long)data;
 
    switch (op)
      {
@@ -584,7 +584,7 @@ cancel_cb(void *data)
 static void
 auto_popup_cb(void *data)
 {
-   cfg_auto_setbg = (int)data;
+   cfg_auto_setbg = (int)(long)data;
 }
 
 static void

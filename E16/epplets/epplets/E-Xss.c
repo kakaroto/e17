@@ -145,7 +145,7 @@ static void
 play_cb(void *data)
 {
 
-   int                 op = (int)data;
+   int                 op = (int)(long)data;
 
    switch (op)
      {

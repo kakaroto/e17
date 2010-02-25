@@ -234,7 +234,7 @@ cb_color(void *data)
 {
    char                s[2] = { 0, 0 };
 
-   color = (int)data;
+   color = (int)(long)data;
    s[0] = '0' + color;
    Epplet_modify_config("color", s);
    Epplet_save_config();
