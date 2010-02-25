@@ -56,6 +56,9 @@ class WidgetPartList(FloaterListOpener, WidgetButton):
         return self._value
 
     def _update(self):
+        if not self.obj:
+            return
+
         if self._value:
             self.obj.label_set(self._value)
         else:

@@ -135,6 +135,20 @@ class Floater(Layout):
         btn.show()
         self.edje_get().part_box_append("actions", btn)
 
+    def action_remove(self, label):
+        for action in self._action_btns:
+            if action.label_get() == label:
+                self.edje_get().part_box_remove("actions", action)
+                self._action_btns.remove(action)
+                action.delete()
+
+    def actions_clear(self):
+        for action in self._action_btns:
+            self.edje_get().part_box_remove("actions", action)
+            action.delete()
+        del self._action_btns[:]
+
+
     def show(self):
         self._move_and_resize(self)
         global _instance

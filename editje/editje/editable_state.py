@@ -72,6 +72,10 @@ class EditableState(Manager, object):
 
     name = property(_name_get, _name_set)
 
+    def copy_from(self, state):
+        if self._state.copy_from(state):
+            self.event_emit("state.changed", self._name)
+
     def _rel1_reset(self, emissor, data):
         self._rel1x_to = ""
         self._rel1x_rel = 0.0

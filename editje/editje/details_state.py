@@ -28,6 +28,26 @@ from details_widget_font import WidgetFont
 from details_widget_states import WidgetStates
 from prop import Property, PropertyTable
 from filewizard import ImageSelectionWizard
+from floater_opener import FloaterListOpener
+
+
+class StateCopyButton(FloaterListOpener):
+    def __init__(self, editable):
+        FloaterListOpener.__init__(self)
+        self.e = editable
+
+    def _floater_list_items_update(self):
+        list = []
+        for s in self.e.part.states:
+            list.append((s, s))
+        return list
+
+    def _floater_title_init(self):
+        self._floater.title_set("State Selection")
+
+    def value_set(self, value):
+        self.e.part.state.copy_from(value)
+
 
 class PartStateDetails(EditjeDetails):
     state_pop_min_w = 200
@@ -63,8 +83,6 @@ class PartStateDetails(EditjeDetails):
         self._text_props_create()
         self._gradient_props_create()
         self._external_props_create()
-
-        self.edje_get().signal_emit("cl,option,enable", "editje")
 
         self.e.callback_add("group.changed", self._edje_load)
         self.e.part.callback_add("part.changed", self._part_update)
@@ -127,6 +145,14 @@ class PartStateDetails(EditjeDetails):
         self._header_table.property_add(prop)
 
         self.content_set("part_name.swallow", self._header_table)
+
+        self._state_copy_button = StateCopyButton(self.e)
+
+        self.edje_get().signal_callback_add("cl,option,clicked",
+                                            "editje/collapsable",
+                                            self._state_copy_button._floater_open)
+        self.edje_get().signal_emit("cl,option,enable", "editje")
+
 
     def _edje_load(self, emissor, data):
         self.editable = self.e.edje
@@ -544,6 +570,7 @@ class PartStateDetails(EditjeDetails):
         self.group_hide("g_rel1")
         self.group_hide("g_rel2")
         self.group_hide("external")
+        self.edje_get().signal_emit("cl,option,disable", "editje")
 
     def _update(self):
         if self._update_schedule is not None:
@@ -571,6 +598,7 @@ class PartStateDetails(EditjeDetails):
         elif self.part.type == edje.EDJE_PART_TYPE_EXTERNAL:
             self._update_external()
             self.group_show("external")
+        self.edje_get().signal_emit("cl,option,enable", "editje")
         return False
 
     def _update_min(self, emissor, data):

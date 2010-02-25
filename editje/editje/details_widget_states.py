@@ -14,15 +14,15 @@
 #
 # You should have received a copy of the GNU Lesser General Public
 # License along with Editje. If not, see <http://www.gnu.org/licenses/>.
-
-import elementary
-
-from details_widget_entry_button import WidgetEntryButton
-from floater import Floater
-
-import sysconfig
 import re
 
+import evas
+from elementary import Label, Box, Pager, Button, Entry, Scroller, Icon, List
+
+import sysconfig
+from details_widget_entry_button import WidgetEntryButton
+from floater import Floater
+from groupselector import NameEntry
 
 class WidgetStates(WidgetEntryButton):
     pop_min_w = 200
@@ -34,7 +34,7 @@ class WidgetStates(WidgetEntryButton):
         self._selstate = None
         self.theme_file = sysconfig.theme_file_get("default")
 
-        ico = elementary.Icon(self.rect)
+        ico = Icon(self.rect)
         ico.file_set(self.theme_file, "editje/icon/options")
         ico.show()
         self.rect.label_set("")
@@ -48,66 +48,27 @@ class WidgetStates(WidgetEntryButton):
 
     def _list_populate(self, *args):
         self.states.clear()
+        old = self.parent.state.name
         for s in self.editable.part.states:
-
-            old = self.parent.state.name
-
-            box = elementary.Box(self._pop)
-            box.horizontal_set(True)
-            box.show()
-
-            it = self.states.item_append(
-                s, None, box, self._states_select_cb, s)
-
-            ico1 = elementary.Icon(self._pop)
-            ico2 = elementary.Icon(self._pop)
-
+            ico = None
             if s == self.editable.part.state.name:
-                ico1.file_set(self.theme_file, "editje/icon/part_disabled")
-                ico2.file_set(self.theme_file, "editje/icon/cancel_disabled")
-            else:
-                if s == "default 0.00":
-                    ico1.file_set(self.theme_file, "editje/icon/part")
-                    ico2.file_set(
-                        self.theme_file, "editje/icon/cancel_disabled")
-                else:
-                    ico1.file_set(self.theme_file, "editje/icon/part")
-                    ico2.file_set(self.theme_file, "editje/icon/cancel")
-
-            ico1.show()
-            ico2.show()
-
-            btn1 = elementary.Button(self._pop)
-            btn1.icon_set(ico1)
-            btn1.style_set("editje.details")
-            btn1.label_set("")
-            btn1.callback_clicked_add(self._reset_state_to_cb, None, (old, s))
-            btn1.show()
-
-            btn2 = elementary.Button(self._pop)
-            btn2.icon_set(ico2)
-            btn2.style_set("editje.details")
-            btn2.label_set("")
-            btn2.callback_clicked_add(self._remove_state_cb, None, (old, s))
-            btn2.show()
-
-            if s == self.editable.part.state.name:
-                btn1.disabled_set(True)
-                btn2.disabled_set(True)
-            if s == "default 0.00":
-                btn2.disabled_set(True)
-
-            box.pack_end(btn1)
-            box.pack_end(btn2)
+                ico = Icon(self.states)
+                ico.file_set(self.theme_file, "editje/icon/confirm")
+            it = self.states.item_append(s, None, ico, self._show_actions, s)
         self.states.go()
 
     def _state_add_new_cb(self, popup, data):
+        self.newstate_entry = NameEntry(self._pop)
+        self.newstate_entry.entry = self._state_newname()
+        self.newstate_entry.show()
+        self.pager.content_push(self.newstate_entry)
+        self._pop.actions_clear()
+        self._pop.action_add("Add", self._states_added_cb)
+        self._pop.action_add("Close", self._cancel_clicked)
+
+    def _state_newname(self):
         max = 0
-
-        if self.editable.part.state.name == None:
-            return
-
-        cur_state = self.editable.part.state.name.split(None,1)
+        cur_state = self.editable.part.state.name.split(None, 1)
         if re.match("[a-zA-Z]*\d{2,}", cur_state[0]):
             cur = cur_state[0][:-2]
         else:
@@ -119,52 +80,110 @@ class WidgetStates(WidgetEntryButton):
                  num = int(state[0][len(cur):])
                  if num > max:
                        max = num
-        nst = cur + "%.2d" % (max + 1)
-        st = nst + " 0.00"
+        nst = cur + "%.2d" % (max + 1) + " 0.00"
+        return nst
+
+    def _states_added_cb(self, it, ti):
+        st = self.newstate_entry._entry_get()
+        nst = st.split(None, 1)[0]
         if not self.parent.part.state_exist(st):
             self.parent.part.state_copy(self.parent.state.name, nst)
             self.editable.part.event_emit("state.added", st)
-            self.editable.part.state.name = st
+            self.editable.part.state.name = nst + " 0.00"
             self.close()
 
-    def _remove_state_cb(self, obj, event, st):
-        self.editable.part.state_del(st[1])
-        self.editable.part.state.name = st[0]
-        self.open()
+    def _is_default(self, state):
+        return state == "default 0.00"
 
-    def _reset_state_to_cb(self, obj, event, st):
-        self.editable.part.state.name = st[0]
-        self.parent.state.copy_from(st[1])
-        self.editable.part.state.event_emit(
-            "state.changed", self.parent.state.name)
+    def _remove_state_cb(self, it, state):
+        if not self._is_default(state):
+            if state == self.editable.part.state.name:
+                self.editable.part.state.name = "default 0.00"
+            self.editable.part.state_del(state)
+
+        self._pop.actions_clear()
+        self._pop.action_add("New", self._state_add_new_cb)
+        self._pop.action_add("Close", self._cancel_clicked)
+        self.pager.content_pop()
+
+    def _reset_state_to_cb(self, it, state):
+        self.parent.state.copy_from(state)
+        self.editable.part.state.event_emit("state.changed", self.parent.state.name)
+        self.close()
 
     def _cancel_clicked(self, popup, data):
         self.close()
 
-    def _states_select_cb(self, states, it, state):
-        if self._selstate != state:
-            self._selstate = state
-            self.editable.part.state.name = state
+    def _states_select_cb(self, it, state):
+        self._selstate = state
+        self.editable.part.state.name = state
         self.close()
 
-    def selected_get(self):
-        return self._selstate
+    def _action_button_add(self, label, callback, state):
+        btn = Button(self._pop)
+        btn.label_set(label)
+        btn.callback_clicked_add(callback, state)
+        btn.size_hint_align_set(evas.EVAS_HINT_FILL, evas.EVAS_HINT_FILL)
+        btn.size_hint_weight_set(0.0, 0.0)
+        self.actions_box.pack_end(btn)
+        btn.show()
+        return btn
+
+    def _show_actions(self, it , ti, state):
+        self.actions_box = Box(self._pop)
+        name_box = Box(self._pop)
+        lb_state = Label(self._pop)
+        lb_state.label_set("<b>State: ")
+        lb_name = Label(self._pop)
+        lb_name.label_set(state)
+        name_box.horizontal_set(True)
+        name_box.pack_end(lb_state)
+        lb_state.show()
+        name_box.pack_end(lb_name)
+        lb_name.show()
+        self.actions_box.pack_end(name_box)
+        name_box.show()
+        space = Label(self._pop)
+        space.label_set(" ")
+        self.actions_box.pack_end(space)
+        space.show()
+        btn_changeto = self._action_button_add("Change to", self._states_select_cb, state)
+        btn_resetto = self._action_button_add("Reset to", self._reset_state_to_cb, state)
+        btn_delete = self._action_button_add("Delete", self._remove_state_cb, state)
+
+        if self._is_default(state):
+            btn_delete.disabled_set(True)
+            lb_name.style_set("editje.statedefault")
+        else:
+            lb_name.style_set("editje.statenormal")
+
+        self.pager.content_push(self.actions_box)
+        self._pop.actions_clear()
+        self._pop.action_add("Back", self._back_to_list_cb)
+        self._pop.action_add("Close", self._cancel_clicked)
+
+    def _back_to_list_cb(self, it, ti):
+        self.pager.content_pop()
+        self._pop.actions_clear()
+        self._pop.action_add("New", self._state_add_new_cb)
+        self._pop.action_add("Close", self._cancel_clicked)
+        self.states.selected_item_get().selected_set(False)
 
     def open(self):
         if not self._pop:
             self._pop = Floater(self.rect, self.obj)
+            self.pager = Pager(self._pop)
+            self.pager.style_set("editje.rightwards")
+            self.states = List(self._pop)
+            self.states.size_hint_weight_set(evas.EVAS_HINT_EXPAND, evas.EVAS_HINT_EXPAND)
+            self.states.size_hint_align_set(-1.0, -1.0)
+            self.states.show()
+            self.pager.content_push(self.states)
+            self._pop.content_set(self.pager)
             self._pop.size_min_set(self.pop_min_w, self.pop_min_h)
             self._pop.title_set("States selection")
-
-            self.states = elementary.List(self._pop)
-            self.states.size_hint_weight_set(1.0, 1.0)
-            self.states.size_hint_align_set(-1.0, -1.0)
-            self._pop.content_set(self.states)
-            self.states.show()
-
             self._pop.action_add("New", self._state_add_new_cb)
-            self._pop.action_add("Cancel", self._cancel_clicked)
-
+            self._pop.action_add("Close", self._cancel_clicked)
             self.editable.part.callback_add("states.changed", self._list_populate)
 
         self._list_populate()
@@ -179,7 +198,7 @@ class WidgetStates(WidgetEntryButton):
 
     def _entry_changed_cb(self, obj, *args, **kwargs):
         WidgetEntryButton._entry_changed_cb(self, obj, *args, **kwargs)
-        if self.entry.entry_get() == "default 0.00":
+        if self._is_default(self.entry.entry_get()):
             self.entry.disabled_set(True)
         else:
             self.entry.disabled_set(False)
