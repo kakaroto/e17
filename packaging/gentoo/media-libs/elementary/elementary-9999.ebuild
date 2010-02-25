@@ -22,3 +22,13 @@ RDEPEND="
 	weather? ( >=net-libs/libeweather-9999 )
 	"
 DEPEND="${RDEPEND}"
+
+src_configure() {
+	export MY_ECONF="
+	  ${MY_ECONF}
+	  $(use_enable dbus edbus)
+	  $(use_enable xdg efreet)
+	  $(use_enable weather eweather)
+	"
+	efl_src_configure
+}
