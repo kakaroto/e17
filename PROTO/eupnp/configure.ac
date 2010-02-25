@@ -88,8 +88,10 @@ want_examples="yes"
 AC_ARG_ENABLE([examples],
    [AC_HELP_STRING([--disable-examples], [do not build examples. @<:@default=yes@:>@])],
    [want_examples=$enableval], [want_examples="no"])
+
 AM_CONDITIONAL(EUPNP_BUILD_EXAMPLES, test "x${want_examples}" = "xyes")
 
+AC_CHECK_PKG(ELM, elementary, [have_tools="yes"], [have_tools="no"])
 
 
 # Build Eupnp tools
@@ -156,7 +158,7 @@ SUMMARY_EOF
 
 echo -e " * modules.........: $MODS $UNUSED_MODS"
 echo -e " * documentation...: $build_doc"
-echo -e " * tools...........: $have_tools"
+echo -e " * tools...........: $want_tools"
 echo -e " * examples........: $want_examples"
 
 echo
