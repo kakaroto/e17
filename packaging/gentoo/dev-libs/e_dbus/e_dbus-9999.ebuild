@@ -21,8 +21,6 @@ DEPEND="${RDEPEND}"
 src_configure() {
 	export MY_ECONF="
 	  ${MY_ECONF}
-	  --disable-enm
-	  --disable-build-test-gui
 	  $(use_enable hal ehal)
 	  $(use_enable connman econnman)
 	  $(use_enable libnotify enotify)
