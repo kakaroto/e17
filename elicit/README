@@ -1,58 +1,75 @@
-Elicit 0.9.2
+============
+ Elicit 2.0
+============
+
+Elicit is a designers tool that allows one to magnify sections of the screen and select colors from any application.
+
+
+Dependencies
 ------------
+Elicit is written using the Enlightenment Foundation Libraries, which are available from www.enlightenment.org
 
-Elicit is a screen zoomer / color picker written with the Enlightenment Foundation Libraries (http://www.enlightnement.org). It depends on a large number of libraries that are only available in CVS at the moment, see http://rephorm.com/rephorm/code/efl for installation instructions.
+The following libraries are required:
 
-To install:
+eina
+eet
+evas
+ecore
+embryo
+edje
 
-./configure
-make
-sudo make install
 
-to run, just type: elicit
-
-==============
- Using Elicit
-==============
-
-Winter Theme
+Installation
 ------------
+  ./configure
+  make
+  sudo make install
 
-Click on the scope target and drag around to zoom in on the section of the screen under the mouse.
-Click and drag the eye dropper to select the color under the mouse.
-
-Click on the left border to open up a panel of tools.
-In the first tab, the Red, Green, Blue, Hue, Saturation, and Value values of the current color will be shown, along with the Hex (rgb) representation and the current Zoom level.
-
-Click and hold down on the small up and down arrows to modify the color values. Alternatively, scroll the mouse wheel while over a color value.
-
-To copy the hex value, click on it.
-
-Changing the Zoom value will affect any subsequent zooms.
-
-The second tab stores any saved swatches. To save a swatch, left click on the swatch in the pain section of the gui. To load a saved swatch, left click on it in the panel. To delete a saved swatch, right click on it in the panel.
-
-The third tab is for stored zooms. These function similarly to the swatches. Click on the main zoom area to save.
-
-The fourth tab show all currently available themes (Winter and Summer are provided).
-
-Summer Theme
-------------
-The summer theme functions similarly to the Winter one, except that the swatch and shot tabs are combined into a single one. To access the panel, click the small plus sign.
-
-Scrolling on color values to change them is not yet implemented in Summer.
+  (For code checked out of git, run ./bootstrap first)
 
 
-Enjoy :)
 
-Other features
---------------
+Usage
+-----
+  When elicit begins, there are two empty frames.
 
-Middle click on the main zoom area to load the current shot in the Gimp.
-Middle click on the swatch to color elicit's borders the currently selected color.
-Right click on the shot to turn a pixel grid on and off.
+               .---------------.
+             .-+---------------+
+             | |  +---------+  |
+             | |  |         |  |
+             | |  |         | <---- Shot
+             | |  |         |  |
+             | |  +---------+  |
+             | |  +-+          |
+   Panel --> | |  +-+ <-Swatch |
+             "-+---------------+
+               "---------------"
 
+  
+  The large frame is known as the "shot". Left click on it and drag to magnify the section of the screen underneath the mouse cursor. By default, a dashed border is drawn to show which section of the screen is being magnified.
 
-Known Issues
-------------
-After changing themes, elicit no longer resizes properly. (It will function correctly after quitting and reloading it).
+  After magnifying a section of the screen, click and drag in the shot area with the RIGHT mouse button. This will select a region of the magnified shot, and display its width, height and diagonal length in the upper right corner. Right click without dragging to remove the selection.
+
+  Scroll the mouse wheel over the shot to zoom in and out. Subsequent shots will use the current zoom level. (Note: zooming out beyond the level at which a shot was taken will cause the image data to be tiled to fill the shot area)
+
+  The small frame in the bottom left is known as the "swatch". Left click on it and drag to select the color underneath the mouse cursor.
+
+  Now, click on the left border of the window. A panel will slide out that contains four tabs.
+  
+  The first tab shows information about the currently selected color. At the top are three color sliders showing the Red, Green and Blue values. Next are three sliders for Hue, Saturation and Value.
+  
+  Click and drag on one of the sliders to change its value. For finer control, scroll the mouse wheel over the slider.
+
+  Next is the hex representation of the color. 
+
+  Finally, three related colors are shown (the two triads and the complement). Click on one of them to select that color.
+
+  The second tab shows the current palette. Add the current color to it by clicking on the "+" button. Clicking on an existing color in the palette will select it. To remove a color, select it and click the "-" button. (Alternatively, right click on the color in the palette).
+
+  The palette is stored in ~/.e/apps/elicit/elicit.gpl in the same format as used by the gimp.
+
+  The third tab is currently empty, but will contain a list of saved shots.
+
+  The fourth tab contains configuration options. It is currently under construction, but allows you to toggle the grid in the shot and the box that is drawn while magnifying.
+
+  Finally, click on the "X" to quit.

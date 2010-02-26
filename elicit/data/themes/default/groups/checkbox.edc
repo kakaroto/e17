@@ -1,0 +1,48 @@
+images {
+  image: "check.png" COMP;
+}
+group {
+  name: "elicit.checkbox";
+  parts {
+    part {
+      name: "box";
+      description {
+        state: "default" 0.0;
+        min: 12 12; max: 12 12; fixed: 1 1;
+        image { normal: "frame-shallow.png"; border: 7 7 8 8; }
+      }
+    }
+    part {
+      name: "check";
+      description {
+        state: "default" 0.0;
+        min: 6 6; max: 6 6; fixed: 1 1;
+        rel1.to: "box";
+        rel2.to: "box";
+        color: 255 255 255 0;
+        image { normal: "check.png"; }
+      }
+      description {
+        state: "checked" 0.0;
+        inherit: "default" 0.0;
+        color: 255 255 255 255;
+      }
+    }
+  }
+  programs {
+    program {
+      name: "check";
+      signal: "check";
+      source: "*";
+      action: STATE_SET "checked" 0.0;
+      target: "check";
+    }
+    program {
+      name: "uncheck";
+      signal: "uncheck";
+      source: "*";
+      action: STATE_SET "default" 0.0;
+      target: "check";
+    }
+  }
+}

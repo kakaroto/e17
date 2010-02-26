@@ -1,0 +1,46 @@
+group {
+  name: "elicit.palette.swatch";
+  parts {
+    part {
+      name: "border";
+      type: RECT;
+      description {
+        state: "default" 0.0;
+        rel1.offset: -1 -1;
+        color: 140 140 140 255;
+      }
+      description {
+        state: "selected" 0.0;
+        inherit: "default" 0.0;
+        color: 254 254 254 255;
+      }
+    }
+    part {
+      name: "swatch";
+      type: RECT;
+      description {
+        state: "default" 0.0;
+        rel1 { to: "border"; offset: 1 1; }
+        rel2 { to: "border"; offset: -2 -2; }
+        color_class: "palette.swatch";
+      }
+    }
+  }
+
+  programs {
+    program {
+      name: "swatch.select"; 
+      signal: "elicit,swatch,select";
+      source: "*";
+      action: STATE_SET "selected" 0.0;
+      target: "border";
+    }
+    program {
+      name: "swatch.deselect"; 
+      signal: "elicit,swatch,deselect";
+      source: "*";
+      action: STATE_SET "default" 0.0;
+      target: "border";
+    }
+  }
+}

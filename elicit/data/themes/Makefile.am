@@ -1,1 +1,1 @@
-SUBDIRS = winter summer
+SUBDIRS = default

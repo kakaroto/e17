@@ -1,0 +1,17 @@
+part {
+  name: "shots.todo";
+  type: TEXT;
+  clip_to: "tab.shots.clip";
+  description {
+    state: "default" 0.0;
+    rel1 { to: "tab.shots.clip"; offset: 0 5; }
+    rel2 { to: "tab.shots.clip"; offset: -1 -6; }
+    color: 144 144 144 255;
+    text {
+      font: "Vera";
+      size: 8;
+      text: "Not Yet Implemented";
+      align: 0.5 0.0;
+    }
+  }
+}

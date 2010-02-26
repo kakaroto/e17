@@ -1,4 +1,24 @@
-todo
-----
-  o add panels to spring theme
-  o document all the part names / signals necessary
+--------
+FEATURES
+--------
+
+Ability to save magnified shots
+
+Palette
+  columns
+  name
+  multiple palettes
+
+Configuration
+  zoom level
+
+Load related colors
+
+--------
+  BUGS
+--------
+
+Selecting color in zoom area should ignore grid 
+    (select from image, bypassing X)
+
+Palette scrollframe should scroll to end when adding new swatch

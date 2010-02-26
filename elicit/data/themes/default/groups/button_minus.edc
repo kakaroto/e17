@@ -1,0 +1,65 @@
+images {
+  image: "minus.png" COMP;
+  image: "minus2.png" COMP;
+}
+
+group {
+  name: "elicit.button.minus";
+  min: 16 16;
+  max: 16 16;
+
+  parts {
+    part {
+      name: "button";
+      description {
+        state: "default" 0.0;
+        color: 255 255 255 127;
+        image.normal: "minus.png";
+      }
+      description {
+        state: "highlit" 0.0;
+        image.normal: "minus.png";
+      }
+      description {
+        state: "pressed" 0.0;
+        image.normal: "minus2.png";
+      }
+    }
+  }
+
+  programs {
+    program {
+      name: "button.in";
+      signal: "mouse,in";
+      source: "button";
+      action: STATE_SET "highlit" 0.0;
+      transition: DECELERATE 0.5;
+      target: "button";
+    }
+
+    program {
+      name: "button.out";
+      signal: "mouse,out";
+      source: "button";
+      action: STATE_SET "default" 0.0;
+      transition: DECELERATE 0.5;
+      target: "button";
+    }
+
+    program {
+      name: "button.down";
+      signal: "mouse,down,1";
+      source: "button";
+      action: STATE_SET "pressed" 0.0;
+      target: "button";
+    }
+
+    program {
+      name: "button.up";
+      signal: "mouse,up,1";
+      source: "button";
+      action: STATE_SET "highlit" 0.0;
+      target: "button";
+    }
+  }
+}

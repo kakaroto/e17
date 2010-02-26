@@ -1,11 +1,6 @@
-## Process this file with automake to produce Makefile.in
-
 SUBDIRS = src data
 
-EXTRA_DIST = \
-	README AUTHORS COPYING elicit.spec elicit.spec.in
-
 MAINTAINERCLEANFILES = Makefile.in aclocal.m4 config.guess \
-                       config.h.in config.sub configure install-sh \
-		       ltconfig ltmain.sh missing mkinstalldirs \
-		       stamp-h.in elicit.spec
+                       config.log config.sub configure depcomp \
+		       install-sh ltmain.sh missing
+

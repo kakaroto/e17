@@ -1,0 +1,73 @@
+images {
+  image: "x.png" COMP;
+  image: "x2.png" COMP;
+}
+
+group {
+  name: "elicit.button.close";
+  min: 17 17;
+  max: 17 17;
+
+  parts {
+    part {
+      name: "button";
+      description {
+        state: "default" 0.0;
+        color: 255 255 255 127;
+        image.normal: "x.png";
+      }
+      description {
+        state: "highlit" 0.0;
+        image.normal: "x.png";
+      }
+      description {
+        state: "pressed" 0.0;
+        image.normal: "x2.png";
+      }
+    }
+  }
+
+  programs {
+    program {
+      name: "button.in";
+      signal: "mouse,in";
+      source: "button";
+      action: STATE_SET "highlit" 0.0;
+      transition: DECELERATE 0.5;
+      target: "button";
+    }
+
+    program {
+      name: "button.out";
+      signal: "mouse,out";
+      source: "button";
+      action: STATE_SET "default" 0.0;
+      transition: DECELERATE 0.5;
+      target: "button";
+    }
+
+    program {
+      name: "button.down";
+      signal: "mouse,down,1";
+      source: "button";
+      action: STATE_SET "pressed" 0.0;
+      target: "button";
+    }
+
+    program {
+      name: "button.up";
+      signal: "mouse,up,1";
+      source: "button";
+      action: STATE_SET "highlit" 0.0;
+      target: "button";
+    }
+
+    program {
+      name: "button.up2";
+      signal: "mouse,up,1";
+      source: "button";
+      action: SIGNAL_EMIT "elicit,quit" "";
+    }
+
+  }
+}

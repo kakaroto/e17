@@ -1,0 +1,20 @@
+images {
+  image: "palette_selector.png" COMP;
+}
+
+group {
+  name: "elicit.palette.selector";
+  parts {
+    part {
+      name: "selector";
+      mouse_events: 0;
+      description {
+        state: "default" 0.0;
+        rel1.offset: -4 -6;
+        rel2.offset: 1 4;
+        image.normal: "palette_selector.png";
+        image.border: 10 10 11 11;
+      }
+    }
+  }
+}

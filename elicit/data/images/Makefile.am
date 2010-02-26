@@ -1,6 +1,6 @@
-IMG = grid_cell.png
+IMAGES = grid_cell.png grid_select_box.png
 
-EXTRA_DIST = $(IMG)
+imagesdir = $(pkgdatadir)/images
+images_DATA = $(IMAGES)
 
-imagedir = $(pkgdatadir)/images
-image_DATA = $(IMG)
+EXTRA_DIST = $(IMAGES)
