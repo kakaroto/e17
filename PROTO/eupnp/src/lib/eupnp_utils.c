@@ -201,7 +201,7 @@ eupnp_utils_default_host_ip_get(void)
 	 */
 	if (ret == 2 && dest == 0)
 	  {
-	     found = TRUE;
+	     found = EINA_TRUE;
 	      break;
 	  }
      }
