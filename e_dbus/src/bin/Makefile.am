@@ -2,7 +2,6 @@ MAINTAINERCLEANFILES = Makefile.in
 
 EDBUS_CPPFLAGS = \
 -I$(top_srcdir)/src/lib/dbus \
--I$(top_srcdir)/src/lib/hal \
 -I$(top_srcdir)/src/lib/notification \
 -I$(top_srcdir)/src/lib/connman \
 -I$(top_srcdir)/src/lib/bluez \
@@ -14,9 +13,6 @@ LIBS = \
 @EINA_LIBS@
 
 EDBUS_PROG = e_dbus_test e_dbus_test_client
-if BUILD_EHAL
-EHAL_PROG = e_dbus_hal
-endif
 if BUILD_ENOTIFY
 ENOTIFY_PROG = e_dbus_notify e_dbus_notification_daemon e-notify-send
 endif
@@ -30,7 +26,6 @@ endif
 
 bin_PROGRAMS = \
 $(EDBUS_PROG) \
-$(EHAL_PROG) \
 $(ENOTIFY_PROG) \
 $(ECONNMAN_PROG) \
 $(EBLUEZ_PROG)
@@ -51,27 +46,6 @@ test_client.c
 e_dbus_test_client_CPPFLAGS = $(EDBUS_CPPFLAGS)
 e_dbus_test_client_LDADD = $(top_builddir)/src/lib/dbus/libedbus.la
 e_dbus_test_client_DEPENDENCIES = $(top_builddir)/src/lib/dbus/libedbus.la
-
-
-if BUILD_EHAL
-HALSOURCES = \
-hal.c
-
-e_dbus_hal_CPPFLAGS = \
-$(EDBUS_CPPFLAGS) \
-@HAL_TEST_GUI_CFLAGS@
-
-e_dbus_hal_LIBS = \
-$(top_builddir)/src/lib/dbus/libedbus.la \
-@HAL_TEST_GUI_LIBS@
-
-e_dbus_hal_SOURCES = \
-	$(HALSOURCES)
-
-e_dbus_hal_LDADD = $(top_builddir)/src/lib/dbus/libedbus.la $(top_builddir)/src/lib/hal/libehal.la $(e_dbus_hal_LIBS) 
-e_dbus_hal_DEPENDENCIES = $(top_builddir)/src/lib/dbus/libedbus.la $(top_builddir)/src/lib/hal/libehal.la
-endif
-
 
 if BUILD_ENOTIFY
 e_dbus_notify_SOURCES = \

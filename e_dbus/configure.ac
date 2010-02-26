@@ -105,15 +105,6 @@ if test "x${enable_enotify}" = "xyes" ; then
    PKG_CHECK_MODULES(EVAS, [evas >= 0.9.9], [], [enable_enotify="no"])
 fi
 
-AC_ARG_ENABLE([build-test-gui],
-   [AS_HELP_STRING([--enable-build-test-gui], [Build with gui for testing])],
-   [PKG_CHECK_MODULES([HAL_TEST_GUI],
-       [ewl efreet],
-    # temporarily disable until update to newer tree2 api
-    [AC_DEFINE([EWL_GUI], 0, [An ewl gui for e_dbus_hal])],
-    [AC_DEFINE([EWL_GUI], 0, [An ewl gui for e_dbus_hal])])
-   ])
-
 AM_CONDITIONAL([BUILD_EHAL],     [test "x${enable_ehal}"     = "xyes"])
 AM_CONDITIONAL([BUILD_ENOTIFY],  [test "x${enable_enotify}"  = "xyes"])
 AM_CONDITIONAL([BUILD_ECONNMAN], [test "x${enable_econnman}" = "xyes"])
