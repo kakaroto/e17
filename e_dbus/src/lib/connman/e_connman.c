@@ -117,16 +117,16 @@ e_connman_manager_sync_elements(void)
    E_Connman_Element *manager;
 
    if (!unique_name)
-     return FALSE;
+     return EINA_FALSE;
    manager = e_connman_element_register(manager_path, e_connman_iface_manager);
    if (manager)
      e_connman_element_properties_sync(manager);
    else
-     return FALSE;
+     return EINA_FALSE;
 
    DBG("sync_manager: %s (%s)", unique_name, bus_name);
 
-   return TRUE;
+   return EINA_TRUE;
 }
 
 static void

@@ -27,7 +27,7 @@ _default_adapter_callback(void *data, DBusMessage *msg, DBusError *err)
    const char *path;
 
    if (dbus_message_get_args(msg, NULL, DBUS_TYPE_OBJECT_PATH, &path,
-                           DBUS_TYPE_INVALID) == FALSE)
+                           DBUS_TYPE_INVALID) == EINA_FALSE)
            printf("FAILURE: failed to get default adapter\n");
 
    printf("SUCCESS: default adapter: %s\n", path);

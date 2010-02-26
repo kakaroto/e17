@@ -75,16 +75,16 @@ e_bluez_manager_sync_elements(void)
    E_Bluez_Element *manager;
 
    if (!unique_name)
-     return FALSE;
+     return EINA_FALSE;
    manager = e_bluez_element_register(manager_path, e_bluez_iface_manager);
    if (manager)
      e_bluez_element_properties_sync(manager);
    else
-     return FALSE;
+     return EINA_FALSE;
 
    DBG("sync_manager: %s (%s)", unique_name, bus_name);
 
-   return TRUE;
+   return EINA_TRUE;
 }
 
 static void

@@ -502,7 +502,7 @@ e_dbus_connection_setup(DBusConnection *conn)
   if (!cd) return NULL;
 
   /* connection_setup */
-  dbus_connection_set_exit_on_disconnect(cd->conn, FALSE);
+  dbus_connection_set_exit_on_disconnect(cd->conn, EINA_FALSE);
   dbus_connection_allocate_data_slot(&connection_slot);
 
   dbus_connection_set_data(cd->conn, connection_slot, (void *)cd, e_dbus_connection_free);
