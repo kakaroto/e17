@@ -150,7 +150,7 @@ ECursorRealize(ECursor * ec)
 
    if (ec->file)
      {
-	img = FindFile(ec->file, Mode.theme.path);
+	img = ThemeFileFind(ec->file);
 	_EFREE(ec->file);	/* Ok or not - we never need file again */
 	if (!img)
 	   goto done;
