@@ -95,7 +95,7 @@ _container_add(Evas_Object *obj)
   data->evas = evas_object_evas_get(obj);
 
   /* default is to clip elements */
-  data->clip_elements = TRUE;
+  data->clip_elements = EINA_TRUE;
 
   data->clipper = evas_object_rectangle_add(data->evas);
   evas_object_smart_member_add(data->clipper, obj);
