@@ -10,10 +10,8 @@ HOMEPAGE="http://trac.enlightenment.org/e/wiki/Ecore"
 
 IUSE="glib threads +xim curl gnutls ssl +inotify +evas directfb fbcon opengl sdl X xcb xinerama +xprint +xscreensaver +tslib"
 
-# TODO: ecore-config should be deprecated upstream soon, so eet dep is gone
 RDEPEND="
 	>=dev-libs/eina-9999
-	>=dev-libs/eet-9999
 	glib? ( dev-libs/glib )
 	curl? ( net-misc/curl )
 	gnutls? ( net-libs/gnutls )
@@ -172,10 +170,10 @@ src_configure() {
 
 	export MY_ECONF="
 	  ${MY_ECONF}
-	  --enable-ecore-txt
+	  --disable-ecore-txt
+	  --disable-ecore-config
 	  --enable-ecore-con
 	  --enable-ecore-ipc
-	  --enable-ecore-config
 	  --enable-ecore-file
 	  --enable-ecore-imf
 	  --enable-ecore-input
