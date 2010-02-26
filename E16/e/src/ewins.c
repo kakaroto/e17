@@ -1234,16 +1234,18 @@ EwinEventConfigureRequest(EWin * ewin, XEvent * ev)
 	 * ICCCM ones sent by us */
 	if (!EwinInhGetApp(ewin, move))
 	  {
-#if 1				/* FIXME - ??? */
+#if 0				/* FIXME - ??? */
 	     if (ev->xconfigurerequest.value_mask & CWX)
 		x = ev->xconfigurerequest.x;
 	     if (ev->xconfigurerequest.value_mask & CWY)
 		y = ev->xconfigurerequest.y;
 #else
 	     if (ev->xconfigurerequest.value_mask & CWX)
-		x = ev->xconfigurerequest.x - EoGetX(EoGetDesk(ewin));
+		x = ev->xconfigurerequest.x -
+		   (Mode.wm.win_x + EoGetX(EoGetDesk(ewin)));
 	     if (ev->xconfigurerequest.value_mask & CWY)
-		y = ev->xconfigurerequest.y - EoGetY(EoGetDesk(ewin));
+		y = ev->xconfigurerequest.y -
+		   (Mode.wm.win_y + EoGetY(EoGetDesk(ewin)));
 #endif
 	  }
 	if (!EwinInhGetApp(ewin, size))
