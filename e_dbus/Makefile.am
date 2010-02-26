@@ -11,9 +11,6 @@ pkgconfigdir = $(libdir)/pkgconfig
 if BUILD_EHAL
 EHAL_PC = ehal.pc
 endif
-if BUILD_ENM
-ENM_PC = enm.pc
-endif
 if BUILD_ENOTIFY
 ENOTIFY_PC = enotify.pc
 endif
@@ -23,6 +20,6 @@ endif
 if BUILD_EBLUEZ
 EBLUEZ_PC = ebluez.pc
 endif
-pkgconfig_DATA = edbus.pc $(EHAL_PC) $(ENM_PC) $(ENOTIFY_PC) $(ECONNMAN_PC) $(EBLUEZ_PC)
+pkgconfig_DATA = edbus.pc $(EHAL_PC) $(ENOTIFY_PC) $(ECONNMAN_PC) $(EBLUEZ_PC)
 
 EXTRA_DIST = e_dbus.spec

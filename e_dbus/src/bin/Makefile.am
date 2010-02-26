@@ -3,7 +3,6 @@ MAINTAINERCLEANFILES = Makefile.in
 EDBUS_CPPFLAGS = \
 -I$(top_srcdir)/src/lib/dbus \
 -I$(top_srcdir)/src/lib/hal \
--I$(top_srcdir)/src/lib/nm \
 -I$(top_srcdir)/src/lib/notification \
 -I$(top_srcdir)/src/lib/connman \
 -I$(top_srcdir)/src/lib/bluez \
@@ -17,9 +16,6 @@ LIBS = \
 EDBUS_PROG = e_dbus_test e_dbus_test_client
 if BUILD_EHAL
 EHAL_PROG = e_dbus_hal
-endif
-if BUILD_ENM
-ENM_PROG = e_dbus_nm
 endif
 if BUILD_ENOTIFY
 ENOTIFY_PROG = e_dbus_notify e_dbus_notification_daemon e-notify-send
@@ -35,7 +31,6 @@ endif
 bin_PROGRAMS = \
 $(EDBUS_PROG) \
 $(EHAL_PROG) \
-$(ENM_PROG) \
 $(ENOTIFY_PROG) \
 $(ECONNMAN_PROG) \
 $(EBLUEZ_PROG)
@@ -75,19 +70,6 @@ e_dbus_hal_SOURCES = \
 
 e_dbus_hal_LDADD = $(top_builddir)/src/lib/dbus/libedbus.la $(top_builddir)/src/lib/hal/libehal.la $(e_dbus_hal_LIBS) 
 e_dbus_hal_DEPENDENCIES = $(top_builddir)/src/lib/dbus/libedbus.la $(top_builddir)/src/lib/hal/libehal.la
-endif
-
-
-if BUILD_ENM
-NMSOURCES = \
-nm.c
-
-e_dbus_nm_SOURCES = \
-	$(NMSOURCES)
-
-e_dbus_nm_CPPFLAGS = $(EDBUS_CPPFLAGS)
-e_dbus_nm_LDADD = $(top_builddir)/src/lib/dbus/libedbus.la $(top_builddir)/src/lib/nm/libenm.la
-e_dbus_nm_DEPENDENCIES = $(top_builddir)/src/lib/dbus/libedbus.la $(top_builddir)/src/lib/nm/libenm.la
 endif
 
 
