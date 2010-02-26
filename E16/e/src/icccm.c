@@ -274,7 +274,6 @@ void
 ICCCM_Configure(EWin * ewin)
 {
    XEvent              ev;
-   Window              child;
 
    if (EwinIsInternal(ewin))
       return;
@@ -294,9 +293,10 @@ ICCCM_Configure(EWin * ewin)
    ev.xconfigure.y = ewin->client.y;
 #endif
    if (Mode.wm.window)
-      ETranslateCoordinates(VROOT, RROOT,
-			    ev.xconfigure.x, ev.xconfigure.y,
-			    &ev.xconfigure.x, &ev.xconfigure.y, &child);
+     {
+	ev.xconfigure.x += Mode.wm.win_x;
+	ev.xconfigure.y += Mode.wm.win_y;
+     }
    ev.xconfigure.width = ewin->client.w;
    ev.xconfigure.height = ewin->client.h;
    ev.xconfigure.border_width = 0;

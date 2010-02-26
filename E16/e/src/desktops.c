@@ -1970,8 +1970,14 @@ DeskHandleEvents(Win win __UNUSED__, XEvent * ev, void *prm)
 	break;
 
      case ConfigureNotify:
-	if (ev->xconfigure.window == WinGetXwin(VROOT))
-	   DeskRootResize(0, ev->xconfigure.width, ev->xconfigure.height);
+	if (ev->xconfigure.window != WinGetXwin(VROOT))
+	   break;
+	if (Mode.wm.window)	/* This test should not be necessary but... */
+	  {
+	     Mode.wm.win_x = ev->xconfigure.x;
+	     Mode.wm.win_y = ev->xconfigure.y;
+	  }
+	DeskRootResize(0, ev->xconfigure.width, ev->xconfigure.height);
 	break;
 
      case PropertyNotify:

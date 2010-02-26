@@ -381,16 +381,9 @@ EventsUpdateXY(int *px, int *py)
 static void
 ModeGetXY(int rx, int ry)
 {
-   if (Mode.wm.window)
-     {
-	ETranslateCoordinates(RROOT, VROOT, rx, ry,
-			      &Mode.events.cx, &Mode.events.cy, NULL);
-     }
-   else
-     {
-	Mode.events.cx = rx;
-	Mode.events.cy = ry;
-     }
+   /* Mode.wm.win_x/y should always be 0 if not in window mode */
+   Mode.events.cx = rx - Mode.wm.win_x;
+   Mode.events.cy = ry - Mode.wm.win_y;
 }
 
 static void

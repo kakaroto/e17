@@ -406,7 +406,7 @@ typedef struct {
       char                exit_now;
       char                save_ok;
       char                coredump;
-      int                 win_w, win_h;
+      int                 win_x, win_y, win_w, win_h;
       int                 exit_mode;
       char               *exit_param;
       int                 child_count;
