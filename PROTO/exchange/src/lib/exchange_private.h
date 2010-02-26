@@ -19,6 +19,10 @@
 #ifndef _EXCHANGE_PRIVATE_H
 #define _EXCHANGE_PRIVATE_H
 
+extern int __exchange_log_domain;
+#define DBG(...) EINA_LOG_DOM_DBG(__exchange_log_domain, __VA_ARGS__)
+#define ERR(...) EINA_LOG_DOM_ERR(__exchange_log_domain, __VA_ARGS__)
+
 /* typedef enum {
    PARSER_START,
    PARSER_RSP,

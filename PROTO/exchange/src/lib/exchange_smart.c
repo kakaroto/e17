@@ -37,6 +37,8 @@
  * fix all the typedef names with exchange_*
  */
 
+int __exchange_log_domain = -1;
+
 typedef struct _Exchange_Smart_Data Exchange_Smart_Data;
 
 //Evas Smart Object protos
@@ -287,8 +289,16 @@ exchange_smart_init(void)
 {
    char buf[4096]; //TODO FIXME MAX_PATH
 
-   eina_error_log_level_set(EINA_LOG_LEVEL_WARN);
-   //EINA_LOG_DBG("\n");
+   if (!eina_init())
+      return 0;
+
+   __exchange_log_domain = eina_log_domain_register("Exchange", EINA_COLOR_BLUE);
+   if (__exchange_log_domain < 0)
+     {
+	EINA_LOG_ERR("Could not register log domain: Exchange");
+	eina_shutdown();
+	return 0;
+     }
 
    /* check theme file */
    if (!_smart_theme)
@@ -348,6 +358,8 @@ exchange_smart_shutdown(void)
    if (_smart_theme) eina_stringshare_del(_smart_theme);
    if (_smart_cache) eina_stringshare_del(_smart_cache);
    //if (_smart) TODO How to del the smart class?
+   eina_log_domain_unregister(__exchange_log_domain);
+   __exchange_log_domain = -1;
    eina_shutdown();
 }
 

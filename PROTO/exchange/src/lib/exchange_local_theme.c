@@ -130,7 +130,7 @@ exchange_local_theme_all_data_get(const char *file)
    Exchange_Object *td = NULL;
    char *name;
 
-   EINA_ERROR_PDBG("0 %s\n", file);
+   DBG("0 %s\n", file);
 
    if (!file || !ecore_file_exists(file)) return NULL;
   //EINA_ERROR_PDBG("1 %s\n", file);
@@ -171,11 +171,11 @@ exchange_local_theme_list_get(const char *dir)
    Eina_List *themes = NULL;
    char *filename;
 
-   EINA_ERROR_PDBG("%s\n", dir);
+   DBG("%s\n", dir);
 
    if (!dir || !ecore_file_is_dir(dir))
    {
-      EINA_ERROR_PERR("Local dir not valid '%s'\n", dir);
+      ERR("Local dir not valid '%s'\n", dir);
       return NULL;
    }
 

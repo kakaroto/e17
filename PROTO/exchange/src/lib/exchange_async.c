@@ -267,7 +267,7 @@ exchange_remote_list(const char *group_title,
    int ret;
    char f_templ[] = "/tmp/exchXXXXXX";
 
-   EINA_ERROR_PDBG("GET THEMES LIST\n");
+   DBG("GET THEMES LIST\n");
 
    state = malloc(sizeof(Async_List_Parser));
    if (!state) return 0;

@@ -26,6 +26,12 @@
 #include <Ecore.h>
 #include <Exchange.h>
 
+#define DBG(...) EINA_LOG_DOM_DBG(__exchange_smart_log_domain, __VA_ARGS__)
+#define WRN(...) EINA_LOG_DOM_WARN(__exchange_smart_log_domain, __VA_ARGS__)
+#define ERR(...) EINA_LOG_DOM_ERR(__exchange_smart_log_domain, __VA_ARGS__)
+
+static int __exchange_smart_log_domain = -1;
+
 static Evas_Object *bg, *cont, *exsm;
 
 static void
@@ -85,7 +91,7 @@ on_wheel_down(void *data, Evas_Object *o, const char *em, const char *src)
 static void
 on_button(void *data, Evas_Object *o, const char *em, const char *src)
 {
-   EINA_ERROR_PDBG("THEME SELECTED: %s [%s]\n", em, src);
+   DBG("THEME SELECTED: %s [%s]\n", em, src);
    if (!strcmp(src, "btn_themes")) exchange_smart_object_remote_group_set(exsm, "Border");
    if (!strcmp(src, "btn_wallp")) exchange_smart_object_remote_group_set(exsm, "Wallpaper");
    if (!strcmp(src, "btn_apps")) exchange_smart_object_remote_group_set(exsm, "Applications");
@@ -97,7 +103,7 @@ on_button(void *data, Evas_Object *o, const char *em, const char *src)
 static void
 on_apply(const char *path, void *data)
 {
-   EINA_ERROR_PWARN("THEME SELECTED: %s [%p]\n", path, data);
+   WRN("THEME SELECTED: %s [%p]\n", path, data);
 }
 
 int
@@ -110,6 +116,14 @@ main(int argc, char **argv)
    /* Init Stuff */
    if (!eina_init())
       return 0;
+
+   __exchange_smart_log_domain = eina_log_domain_register("Exchange", EINA_COLOR_BLUE);
+   if (!__exchange_smart_log_domain)
+   {
+      EINA_LOG_ERR("Could not register log domain: Exchange");
+      goto shutdown_eina; //return 0;
+   }
+
    if (!ecore_init())
       goto shutdown_eina; //return 0;
    evas_init();
@@ -142,7 +156,7 @@ main(int argc, char **argv)
    snprintf(buf, sizeof(buf), "%s/exchange_smart.edj", PACKAGE_DATA_DIR);
    if (!ecore_file_exists(buf))
    {
-      EINA_ERROR_PERR("Can't find smart theme file '%s'\n", buf);
+      ERR("Can't find smart theme file '%s'\n", buf);
       return 1;
    }
    cont = edje_object_add(evas);
