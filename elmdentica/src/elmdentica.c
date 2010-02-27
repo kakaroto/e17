@@ -108,16 +108,19 @@ void my_domains_add(void * data, void * user_info) {
 void elmdentica_preset_domain(char * domain, char * apiroot) {
 	GError *err=NULL;
 	char * confkey=NULL;
+	int res = 0;
 
 	g_hash_table_insert(my_domains, domain, apiroot);
 
-	confkey = g_strdup_printf("/apps/elmdentica/domains/%s", domain);
-	gconf_client_set_string(conf_client, confkey, apiroot, &err);
-	if(err != NULL) {
-		fprintf(stderr, _("Error setting key %s = %s: %s\n)"), confkey, apiroot, err->message);
-		g_error_free(err);
+	res = asprintf(&confkey, "/apps/elmdentica/domains/%s", domain);
+	if(res != -1) {
+		gconf_client_set_string(conf_client, confkey, apiroot, &err);
+		if(err != NULL) {
+			fprintf(stderr, _("Error setting key %s = %s: %s\n)"), confkey, apiroot, err->message);
+			g_error_free(err);
+		}
+		free(confkey);
 	}
-	g_free(confkey);
 }
 
 static int count_accounts(void *notUsed, int argc, char **argv, char **azColName) {
@@ -134,7 +137,11 @@ void elmdentica_init(void) {
 	int sqlite_res=0;
 	char *query = NULL;
 
-	db_path=g_strdup_printf("%s/.elmdentica/db", getenv("HOME"));
+	sqlite_res = asprintf(&db_path, "%s/.elmdentica/db", getenv("HOME"));
+	if(sqlite_res == -1) {
+		perror("Too little free memory to even define the db's path\n");
+		exit(2);
+	}
 	sqlite_res = sqlite3_open(db_path, &ed_DB);
 	if(sqlite_res != 0) {
 		printf("Can't open DB at %s: %d\n", db_path, sqlite_res);
@@ -211,13 +218,16 @@ void error_win_del(void *data, Evas_Object *zbr, void *event_info) {
 static void on_direct_message(void *data, Evas_Object *obj, void *event_info) {
 	ub_Bubble * status = (ub_Bubble*)data;
 	char * entry_str;
+	int res = 0;
 
 	if(status) {
-		entry_str = g_strdup_printf("@%s: ", status->screen_name);
-		elm_entry_entry_set(entry, entry_str);
-		dm_to=status->screen_name;
-		g_free(entry_str);
-		elm_object_focus(entry);
+		res = asprintf(&entry_str, "@%s: ", status->screen_name);
+		if(res != -1) {
+			elm_entry_entry_set(entry, entry_str);
+			dm_to=status->screen_name;
+			free(entry_str);
+			elm_object_focus(entry);
+		}
 	}
 }
 
@@ -226,32 +236,38 @@ static void on_repeat(void *data, Evas_Object *obj, void *event_info) {
 	char * entry_str=NULL, *tmp=NULL;
 	GRegex * re=NULL;
 	GError * err=NULL;
+	int res = 0;
 
 	if(status) {
 		re = g_regex_new("<a href='(.*?)('>\\[link\\]</a>)", 0, 0, &err);
 		tmp = g_regex_replace(re, status->message, -1, 0, "\\1", 0, &err);
 		g_regex_unref(re);
 
-		entry_str = g_strdup_printf("♺ @%s: %s", status->screen_name, tmp);
-		elm_entry_entry_set(entry, entry_str);
-		g_free(entry_str);
-		g_free(tmp);
-		elm_object_focus(entry);
-		elm_entry_cursor_end_set(entry);
+		res = asprintf(&entry_str, "♺ @%s: %s", status->screen_name, tmp);
+		if(res != -1) {
+			elm_entry_entry_set(entry, entry_str);
+			free(entry_str);
+			free(tmp);
+			elm_object_focus(entry);
+			elm_entry_cursor_end_set(entry);
+		}
 	}
 }
 
 static void on_reply(void *data, Evas_Object *obj, void *event_info) {
 	ub_Bubble * status = (ub_Bubble*)data;
 	char * entry_str=NULL;
+	int res = 0;
 
 	if(status) {
-		entry_str = g_strdup_printf("@%s: ", status->screen_name);
-		elm_entry_entry_set(entry, entry_str);
-		g_free(entry_str);
-		elm_object_focus(entry);
-		reply_id=status->screen_name;
-		elm_entry_cursor_end_set(entry);
+		res = asprintf(&entry_str, "@%s: ", status->screen_name);
+		if(res != -1) {
+			elm_entry_entry_set(entry, entry_str);
+			free(entry_str);
+			elm_object_focus(entry);
+			reply_id=status->screen_name;
+			elm_entry_cursor_end_set(entry);
+		}
 	}
 }
 
@@ -266,38 +282,43 @@ static void on_open_url(void *data, Evas_Object *obj, void *event_info) {
 	char * url = (char*)data;
 	char * cmd = NULL;
 	struct stat buf;
-	int sys_result;
+	int sys_result = 0;
 
-	if(stat("/usr/bin/woosh", &buf) == 0) {
-		cmd = g_strdup_printf("/usr/bin/woosh -u %s &", url);
+	if(stat("/usr/bin/ventura", &buf) == 0) {
+		sys_result = asprintf(&cmd, "/usr/bin/ventura -u %s &", url);
+	} else if(stat("/usr/bin/woosh", &buf) == 0) {
+		sys_result = asprintf(&cmd, "/usr/bin/woosh -u %s &", url);
 	} else if(stat("/usr/bin/midori", &buf) == 0) {
-		cmd = g_strdup_printf("/usr/bin/midori %s &", url);
+		sys_result = asprintf(&cmd, "/usr/bin/midori %s &", url);
 	} else if(stat("/usr/bin/dillo", &buf) == 0) {
-		cmd = g_strdup_printf("/usr/bin/dillo %s &", url);
+		sys_result = asprintf(&cmd, "/usr/bin/dillo %s &", url);
 	} else if(stat("/usr/bin/xdg-open", &buf) == 0) {
-		cmd = g_strdup_printf("/usr/bin/xdg-open %s &", url);
+		sys_result = asprintf(&cmd, "/usr/bin/xdg-open %s &", url);
 	} else {
 		url_win_del(NULL, NULL, NULL);
-		g_free(data);
+		if(data) free(data);
 		return;
 	}
 
 	url_win_del(NULL, NULL, NULL);
-	sys_result = system(cmd);
-	if(sys_result == -1) {
-		fprintf(stderr, _("Error %d: %s\n"), errno, strerror(errno));
-	} else if(sys_result != 0) {
-		if(! WIFEXITED(sys_result)) {
-			fprintf(stderr, _("System failed, child exited with status %d\n"), WEXITSTATUS(sys_result));
+	if(sys_result != -1) {
+		sys_result = system(cmd);
+		if(sys_result == -1) {
+			fprintf(stderr, _("Error %d: %s\n"), errno, strerror(errno));
+		} else if(sys_result != 0) {
+			if(! WIFEXITED(sys_result)) {
+				fprintf(stderr, _("System failed, child exited with status %d\n"), WEXITSTATUS(sys_result));
+			}
 		}
+		free(cmd);
+		free(data);
 	}
-	g_free(cmd);
-	g_free(data);
 }
 static void on_message_anchor_clicked(void *data, Evas_Object *obj, void *event_info) {
 	Elm_Entry_Anchorblock_Info * info = (Elm_Entry_Anchorblock_Info*)event_info;
 	char * url = strndup((char*)info->name, 1024), *frame_label=NULL, *url2=NULL;
 	Evas_Object *box=NULL, *button=NULL, *buttons=NULL, *frame=NULL, *entry=NULL, *bubble=(Evas_Object*)data;
+	int res = 0;
 
 
 	url_win = elm_win_inwin_add(win);
@@ -311,9 +332,11 @@ static void on_message_anchor_clicked(void *data, Evas_Object *obj, void *event_
 				evas_object_size_hint_weight_set(frame, 1, 1);
 				evas_object_size_hint_align_set(frame, -1, -1);
 
-				frame_label = g_strdup_printf(_("%s posted this link..."), elm_bubble_label_get(bubble));
-				elm_frame_label_set(frame, frame_label);
-				g_free(frame_label);
+				res = asprintf(&frame_label, _("%s posted this link..."), elm_bubble_label_get(bubble));
+				if(res != -1) {
+					elm_frame_label_set(frame, frame_label);
+					free(frame_label);
+				}
 
 				entry = elm_entry_add(win);
 					elm_entry_line_char_wrap_set(entry, TRUE);
@@ -459,14 +482,14 @@ static void on_bubble_mouse_up(void *data, Evas *e, Evas_Object *obj, void *even
 
 static int add_status(void *notUsed, int argc, char **argv, char **azColName) {
 	char *screen_name=NULL, *name=NULL, *status_message=NULL;
-	int id=0, account_id=0, status_id=0;
+	int id=0, account_id=0, status_id=0, res=0;
 	time_t date;
 
 	ub_Bubble * ubBubble = g_malloc0(sizeof(ub_Bubble));
 	Evas_Object *message=NULL, *bubble=NULL, *icon=NULL, *box=NULL;
 	time_t now,status_time,time_delta;
 	char *tmp;
-	char * file_path=NULL, *home=NULL;
+	char * file_path=NULL, *home=NULL, *timestr = NULL;
 	GRegex * re=NULL;
 	GError * err=NULL;
 
@@ -502,33 +525,46 @@ static int add_status(void *notUsed, int argc, char **argv, char **azColName) {
 	time_delta=now-status_time;
 	if(time_delta < 0) time_delta=0;
 	elm_bubble_label_set(bubble, name);
-	if(time_delta < 60)
-		elm_bubble_info_set(bubble, g_strdup_printf(_("%d s ago..."), (int)time_delta));
-	else if(time_delta < 3600)
-		elm_bubble_info_set(bubble, g_strdup_printf(_("± %d min ago..."), (int)time_delta/60));
-	else if(time_delta < 86400) {
+	if(time_delta < 60) {
+		res = asprintf(&timestr, _("%d s ago..."), (int)time_delta);
+		if(res != -1)
+			elm_bubble_info_set(bubble, timestr);
+	} else if(time_delta < 3600) {
+		res = asprintf(&timestr, _("± %d min ago..."), (int)time_delta/60);
+		if(res != -1)
+			elm_bubble_info_set(bubble, timestr);
+	} else if(time_delta < 86400) {
 		if(time_delta < 7200)
 			elm_bubble_info_set(bubble, _("> 1 h ago..."));
-		else
-			elm_bubble_info_set(bubble, g_strdup_printf(_("± %d hs ago..."), (int)time_delta/3600));
+		else {
+			res = asprintf(&timestr, _("± %d hs ago..."), (int)time_delta/3600);
+			if(res != -1)
+				elm_bubble_info_set(bubble, timestr);
+		}
 	} else if(time_delta < 604800) {
 		if(time_delta < 172800)
 			elm_bubble_info_set(bubble, _("> a day ago..."));
-		else
-			elm_bubble_info_set(bubble, g_strdup_printf(_("± %d days ago..."), (int)time_delta/86400));
+		else {
+			res = asprintf(&timestr, _("± %d days ago..."), (int)time_delta/86400);
+			if(res != -1)
+				elm_bubble_info_set(bubble, timestr);
+		}
 	} else
 		elm_bubble_info_set(bubble, _("a long ago..."));
 
+	if(res != -1 && timestr) free(timestr);
+
 	icon = elm_icon_add(win);
 
-        home = getenv("HOME");
-        file_path=g_strdup_printf("%s/.elmdentica/cache/icons/%s", home, screen_name);
-
-	elm_icon_file_set(icon, file_path, "fubar?");
-	evas_object_show(icon);
- 	evas_object_event_callback_add(icon, EVAS_CALLBACK_MOUSE_DOWN, on_bubble_icon_mouse_down, file_path);
- 	evas_object_event_callback_add(icon, EVAS_CALLBACK_MOUSE_UP, on_bubble_icon_mouse_up, file_path);
-	elm_bubble_icon_set(bubble, icon);
+	home = getenv("HOME");
+	res = asprintf(&file_path, "%s/.elmdentica/cache/icons/%s", home, screen_name);
+	if(res != -1) {
+		elm_icon_file_set(icon, file_path, "fubar?");
+		evas_object_show(icon);
+ 		evas_object_event_callback_add(icon, EVAS_CALLBACK_MOUSE_DOWN, on_bubble_icon_mouse_down, file_path);
+ 		evas_object_event_callback_add(icon, EVAS_CALLBACK_MOUSE_UP, on_bubble_icon_mouse_up, file_path);
+		elm_bubble_icon_set(bubble, icon);
+	}
 
 	message = elm_anchorblock_add(win);
 		evas_object_size_hint_align_set(message, -1, 1);
@@ -683,13 +719,16 @@ void fill_message_list() {
 	} else {
 		status2user = g_hash_table_new(g_direct_hash, g_direct_equal);
 	}
-	query = g_strdup_printf("SELECT * FROM messages ORDER BY date DESC LIMIT %d;", MAX_MESSAGES);
-	sqlite3_exec(ed_DB, query, add_status, NULL, &db_err);
-	if(sqlite_res != 0) {
-		printf("Can't run %s: %d => %s\n", query, sqlite_res, db_err);
+	sqlite_res = asprintf(&query, "SELECT * FROM messages ORDER BY date DESC LIMIT %d;", MAX_MESSAGES);
+	if(sqlite_res != -1) {
+		sqlite_res = 0;
+		sqlite3_exec(ed_DB, query, add_status, NULL, &db_err);
+		if(sqlite_res != 0) {
+			printf("Can't run %s: %d => %s\n", query, sqlite_res, db_err);
+		}
+		sqlite3_free(db_err);
+		g_free(query);
 	}
-	sqlite3_free(db_err);
-	g_free(query);
 }
 
 
@@ -765,7 +804,7 @@ static int do_post(void *notUsed, int argc, char **argv, char **azColName) {
 
 	tmp1 = (char*)elm_entry_entry_get(entry);
 	tmp2 = g_strreplace(tmp1, "<br>", " ");
-        msg=ed_curl_escape(tmp2);
+	msg=ed_curl_escape(tmp2);
 	g_free(tmp2);
 
 	switch(type) {
@@ -777,19 +816,23 @@ static int do_post(void *notUsed, int argc, char **argv, char **azColName) {
 	if(res != 0) {
 		if( msg && strlen(msg) > 0 )  {
 			if(dm_to) {
-				query = g_strdup_printf("INSERT INTO posts (account_id, dm_to, message) VALUES (%d, '%s', ?);", id, dm_to);
+				sqlite_res = asprintf(&query, "INSERT INTO posts (account_id, dm_to, message) VALUES (%d, '%s', ?);", id, dm_to);
 				dm_to=NULL;
-			} else
-				query = g_strdup_printf("INSERT INTO posts (account_id, message) VALUES (%d, ?);", id);
-			sqlite_res = sqlite3_prepare(ed_DB, query, 4096, &post_stmt, &missed);
-        		if(sqlite_res == 0) {
-				sqlite3_bind_text(post_stmt, 1, msg, -1, NULL);
-				sqlite3_step(post_stmt);
-				sqlite3_reset(post_stmt);
-				sqlite3_finalize(post_stmt);
-        		} else
-                		fprintf(stderr, "Can't do %s: %d means '%s' was missed in the statement.\n", query, sqlite_res, missed);
-			g_free(query);
+			} else {
+				sqlite_res = asprintf(&query, "INSERT INTO posts (account_id, message) VALUES (%d, ?);", id);
+			}
+
+			if(sqlite_res != -1) {
+				sqlite_res = sqlite3_prepare(ed_DB, query, 4096, &post_stmt, &missed);
+				if(sqlite_res == 0) {
+					sqlite3_bind_text(post_stmt, 1, msg, -1, NULL);
+					sqlite3_step(post_stmt);
+					sqlite3_reset(post_stmt);
+					sqlite3_finalize(post_stmt);
+					} else
+						fprintf(stderr, "Can't do %s: %d means '%s' was missed in the statement.\n", query, sqlite_res, missed);
+				free(query);
+			}
 		}
 	}
 
@@ -818,7 +861,7 @@ static void win_del(void *data, Evas_Object *obj, void *event_info) {
 }
 
 static void on_entry_changed(void *data, Evas_Object *entry, void *event_info) {
-	int i = 140, len=0;
+	int i = 140, len=0, res=0;
 	char * count_str = NULL;
 	char * entry_text = NULL;
 
@@ -837,11 +880,13 @@ static void on_entry_changed(void *data, Evas_Object *entry, void *event_info) {
 	i-=len;
 
 	if(i<0) {
-		count_str = g_strdup_printf("-%dc | ", -1*i);
+		res = asprintf(&count_str, "-%dc | ", -1*i);
 	} else
-		count_str = g_strdup_printf(" %dc | ", i);
-	elm_label_label_set(count, count_str);
-	g_free(count_str);
+		res = asprintf(&count_str, " %dc | ", i);
+	if(res != -1) {
+		elm_label_label_set(count, count_str);
+		free(count_str);
+	}
 }
 
 static void on_entry_clicked(void *data, Evas_Object *entry, void *event_info) {
@@ -871,7 +916,7 @@ EAPI int elm_main(int argc, char **argv)
 {
 
 	static char options[] = "dhm:";
-	int option;
+	int option, res=0;
 	GConfValue *max_msgs;
 	Evas_Object *bg=NULL, *box=NULL, *toolbar=NULL, *bt=NULL, *icon=NULL, *label=NULL, *box2=NULL, *hoversel=NULL;
 	GError * err=NULL;
@@ -890,15 +935,21 @@ EAPI int elm_main(int argc, char **argv)
 	conf_client = gconf_client_get_default();
 
 	home=getenv("HOME");
-	path=g_strdup_printf("%s/.elmdentica", home);
-	mkdir(path, S_IRWXU);
-	g_free(path);
-	path=g_strdup_printf("%s/.elmdentica/cache", home);
-	mkdir(path, S_IRWXU);
-	g_free(path);
-	path=g_strdup_printf("%s/.elmdentica/cache/icons", home);
-	mkdir(path, S_IRWXU);
-	g_free(path);
+	res = asprintf(&path, "%s/.elmdentica", home);
+	if(res != -1) {
+		mkdir(path, S_IRWXU);
+		free(path);
+		res = asprintf(&path, "%s/.elmdentica/cache", home);
+		if(res != -1) {
+			mkdir(path, S_IRWXU);
+			free(path);
+			res = asprintf(&path, "%s/.elmdentica/cache/icons", home);
+			if(res != -1) {
+				mkdir(path, S_IRWXU);
+				free(path);
+			}
+		}
+	}
 
 	max_msgs = gconf_client_get(conf_client, "/apps/elmdentica/max_messages", &err);
 	if(err) {
