@@ -101,7 +101,7 @@ extern "C" {
   EAPI bool e_bluez_adapter_powered_set(E_Bluez_Element *profile, bool powered, E_DBus_Method_Return_Cb cb, const void *data) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
   EAPI bool e_bluez_adapter_start_discovery(E_Bluez_Element *element, E_DBus_Method_Return_Cb cb, const void *data) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
   EAPI bool e_bluez_adapter_stop_discovery(E_Bluez_Element *element, E_DBus_Method_Return_Cb cb, const void *data) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
-bool e_bluez_adapter_create_paired_device(E_Bluez_Element *element, const char *object_path, const char *capability, const char *device, E_DBus_Method_Return_Cb cb, const void *data) EINA_ARG_NONNULL(1,2,4) EINA_WARN_UNUSED_RESULT;
+  EAPI bool e_bluez_adapter_create_paired_device(E_Bluez_Element *element, const char *object_path, const char *capability, const char *device, E_DBus_Method_Return_Cb cb, const void *data) EINA_ARG_NONNULL(1,2,4) EINA_WARN_UNUSED_RESULT;
 
   /* Device Found Methods */
   EAPI void e_bluez_devicefound_free(E_Bluez_Device_Found *device) EINA_ARG_NONNULL(1);
