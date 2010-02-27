@@ -51,7 +51,6 @@ Evas_Object *settings_win=NULL, *settings_area=NULL, *account_editor=NULL, *cach
 Elm_List_Item * current_account_li=NULL, *current_domain_li=NULL;
 
 extern GHashTable *my_accounts;
-extern GHashTable *my_domains;
 
 extern struct sqlite3 *ed_DB;
 extern int MAX_MESSAGES;

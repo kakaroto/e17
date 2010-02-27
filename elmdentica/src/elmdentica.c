@@ -76,13 +76,11 @@ int first_message=1;
 int MAX_MESSAGES=20;
 time_t now;
 
-GHashTable * status2user=NULL;
+Eina_Hash * status2user=NULL;
 char * reply_id=NULL;
 
 char * url_post = NULL;
 char * url_friends = NULL;
-GHashTable *my_domains=NULL;
-GHashTable *my_accounts=NULL;
 
 extern xmlSAXHandler friends_saxHandler;
 
@@ -95,36 +93,6 @@ struct sqlite3 *ed_DB=NULL;
 
 GConfClient *conf_client = NULL;
 GConfEngine *conf_engine = NULL;
-
-void my_domains_add(void * data, void * user_info) {
-	GConfEntry * entry = (GConfEntry*)data;
-	char *key = g_strrstr(gconf_entry_get_key(entry), "/")+1;
-	GConfValue *value = (GConfValue*)gconf_entry_get_value(entry);
-	char *apiroot = (char*)gconf_value_get_string(value);
-
-	g_hash_table_remove(my_domains, key);
-	g_hash_table_insert(my_domains, strndup(key, 1024), strndup(apiroot, 1024));
-
-	gconf_entry_free(entry);
-}
-
-void elmdentica_preset_domain(char * domain, char * apiroot) {
-	GError *err=NULL;
-	char * confkey=NULL;
-	int res = 0;
-
-	g_hash_table_insert(my_domains, domain, apiroot);
-
-	res = asprintf(&confkey, "/apps/elmdentica/domains/%s", domain);
-	if(res != -1) {
-		gconf_client_set_string(conf_client, confkey, apiroot, &err);
-		if(err != NULL) {
-			fprintf(stderr, _("Error setting key %s = %s: %s\n)"), confkey, apiroot, err->message);
-			g_error_free(err);
-		}
-		free(confkey);
-	}
-}
 
 static int count_accounts(void *notUsed, int argc, char **argv, char **azColName) {
 	int count = atoi(argv[0]);
@@ -433,7 +401,7 @@ static void on_bubble_mouse_down(void *data, Evas *e, Evas_Object *obj, void *ev
 
 static void on_bubble_mouse_up(void *data, Evas *e, Evas_Object *obj, void *event_info) {
 	Evas_Object *hover=NULL, *box=NULL, *table=NULL, *button=NULL, *bubble=(Evas_Object*)data;
-	ub_Bubble * ubBubble = g_hash_table_lookup(status2user, bubble);
+	ub_Bubble * ubBubble = eina_hash_find(status2user, bubble);
 	double time_delta;
 	struct timeval tv;
 
@@ -605,7 +573,7 @@ static int add_status(void *notUsed, int argc, char **argv, char **azColName) {
 	evas_object_show(box);
 	elm_box_pack_end(status_list, box);
 
-	g_hash_table_insert(status2user, (void*)bubble, (void*)ubBubble);
+	eina_hash_add(status2user, (void*)bubble, (void*)ubBubble);
 
 	return(0);
 }
@@ -719,7 +687,7 @@ void fill_message_list() {
 
 	if(status2user) {
 	} else {
-		status2user = g_hash_table_new(g_direct_hash, g_direct_equal);
+		status2user = eina_hash_pointer_new(free);
 	}
 	sqlite_res = asprintf(&query, "SELECT * FROM messages ORDER BY date DESC LIMIT %d;", MAX_MESSAGES);
 	if(sqlite_res != -1) {
@@ -908,9 +876,9 @@ EAPI int elm_main(int argc, char **argv)
 
 	LIBXML_TEST_VERSION
 
-	setlocale (LC_ALL, "");
-	bindtextdomain (PACKAGE, LOCALEDIR);
-	textdomain (PACKAGE);
+	setlocale(LC_ALL, "");
+	bindtextdomain(PACKAGE, LOCALEDIR);
+	textdomain(PACKAGE);
 
 	conf_engine = gconf_engine_get_default();
 	g_type_init();
