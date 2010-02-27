@@ -4,6 +4,17 @@
 #include <ctype.h>
 #include <errno.h>
 
+typedef struct _E_Msgbus_Data E_Msgbus_Data;
+
+struct _E_Msgbus_Data {
+	E_DBus_Connection *conn;
+	E_DBus_Object     *obj;
+};
+
+static E_Msgbus_Data *_msgbus_data = NULL;
+
+static E_DBus_Interface *iface = NULL;
+
 static void
 _method_success_check(void *data, DBusMessage *msg, DBusError *error)
 {
@@ -36,6 +47,29 @@ _default_adapter_callback(void *data, DBusMessage *msg, DBusError *err)
    e_bluez_element_print(stdout, element);
    return;
 
+}
+
+static void
+_create_paired_device_cb(void *data, DBusMessage *msg, DBusError *err)
+{
+	e_dbus_object_interface_detach(_msgbus_data->obj, iface);
+	_method_success_check(data, msg, err);
+}
+
+static DBusMessage*
+_request_pincode_cb(E_DBus_Object *obj, DBusMessage *msg)
+{
+	DBusMessage *reply;
+	char *pin[16];
+
+	printf("Enter PIN Code:\n");
+	scanf("%s", *pin);
+
+	reply = dbus_message_new_method_return(msg);
+	dbus_message_append_args(reply, DBUS_TYPE_STRING, &pin,
+			         DBUS_TYPE_INVALID);
+
+	return reply;
 }
 
 static void
@@ -450,6 +484,52 @@ _on_cmd_adapter_stop_discovery(char *cmd, char *args)
    return 1;
 }
 
+static int
+_on_cmd_adapter_create_paired_device(char *cmd, char *args)
+{
+   char *next_args, *path, *cap, *device;
+   E_Bluez_Element *element = _element_from_args(args, &next_args);
+
+   if (!element)
+	   return 1;
+
+   if (!next_args) {
+	   fputs("ERROR: missing parameters name, type and value.\n", stderr);
+	   return 1;
+   }
+
+   path = next_args;
+   cap = _tok(path);
+   if (!cap) {
+	   fputs("ERROR: missing parameters name, type and value.\n", stderr);
+	   return 1;
+   }
+   device = _tok(cap);
+   if (!device) {
+	   fputs("ERROR: missing parameters name, type and value.\n", stderr);
+	   return 1;
+   }
+
+   if (e_bluez_adapter_create_paired_device(element, path, cap, device,
+		_create_paired_device_cb, "adapter_create_paired_device")) {
+     printf(":::Creating Paired Device %s (%s)...\n", path, cap);
+     iface = e_dbus_interface_new("org.bluez.Agent");
+     if (!iface) {
+        fputs("WARNING: Cannot add org.bluez.Agent interface",stderr);
+        return 0;
+     }
+     _msgbus_data->obj = e_dbus_object_add(_msgbus_data->conn, path, NULL);
+     e_dbus_object_interface_attach(_msgbus_data->obj, iface);
+     e_dbus_interface_method_add(iface, "RequestPinCode", "o", "s",
+		     _request_pincode_cb);
+
+   }
+   else
+     fprintf(stderr, "ERROR: can't create paired device %s\n", path);
+
+   return 1;
+}
+
 /* Devices Commands */
 
 static int
@@ -493,6 +573,7 @@ _on_input(void *data, Ecore_Fd_Handler *fd_handler)
      {"adapter_set_powered", _on_cmd_adapter_set_powered},
      {"adapter_start_discovery", _on_cmd_adapter_start_discovery},
      {"adapter_stop_discovery", _on_cmd_adapter_stop_discovery},
+     {"adapter_create_paired_device", _on_cmd_adapter_create_paired_device},
      {"device_get_name", _on_cmd_device_get_name},
      {NULL, NULL}
    };
@@ -575,19 +656,18 @@ _on_input(void *data, Ecore_Fd_Handler *fd_handler)
 int
 main(int argc, char *argv[])
 {
-   E_DBus_Connection *c;
-
    ecore_init();
    e_dbus_init();
    eina_init();
 
-   c = e_dbus_bus_get(DBUS_BUS_SYSTEM);
-   if (!c) {
+   _msgbus_data = calloc(1, sizeof(E_Msgbus_Data));
+   _msgbus_data->conn = e_dbus_bus_get(DBUS_BUS_SYSTEM);
+   if (!_msgbus_data->conn) {
       printf("ERROR: can't connect to system session\n");
       return -1;
    }
 
-   e_bluez_system_init(c);
+   e_bluez_system_init(_msgbus_data->conn);
 
    ecore_event_handler_add(E_BLUEZ_EVENT_ELEMENT_ADD, _on_element_add, NULL);
    ecore_event_handler_add(E_BLUEZ_EVENT_ELEMENT_DEL, _on_element_del, NULL);
@@ -603,7 +683,7 @@ main(int argc, char *argv[])
 
    e_bluez_system_shutdown();
 
-   e_dbus_connection_close(c);
+   e_dbus_connection_close(_msgbus_data->conn);
    eina_shutdown();
    e_dbus_shutdown();
    ecore_shutdown();

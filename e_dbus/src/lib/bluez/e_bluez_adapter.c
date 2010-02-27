@@ -229,3 +229,45 @@ e_bluez_adapter_stop_discovery(E_Bluez_Element *element, E_DBus_Method_Return_Cb
    return e_bluez_element_call_full(element, name, NULL,
 		   &element->_pending.stop_discovery, cb, data);
 }
+
+/**
+ * Create a new Paired Device.
+ *
+ * Call method CreatePairedDevice()
+ *
+ * @param element adapter's element
+ * @param object_path object to be registered.
+ * @param capability input/output agent capabilities
+ * @param device device to pair with
+ * @param cb function to call when server replies or some error happens.
+ * @param data data to give to cb when it is called.
+ *
+ * @return 1 on success, 0 otherwise.
+ */
+bool
+e_bluez_adapter_create_paired_device(E_Bluez_Element *element, const char *object_path, const char *capability, const char *device, E_DBus_Method_Return_Cb cb, const void *data)
+{
+   DBusMessageIter itr;
+   DBusMessage *msg;
+
+   const char name[] = "CreatePairedDevice";
+
+   EINA_SAFETY_ON_NULL_RETURN_VAL(element, 0);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(object_path, 0);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(device, 0);
+
+   msg = dbus_message_new_method_call
+     (e_bluez_system_bus_name_get(), element->path, element->interface,
+      name);
+
+   if (!msg)
+     return 0;
+
+   dbus_message_iter_init_append(msg, &itr);
+   dbus_message_iter_append_basic(&itr, DBUS_TYPE_STRING, &device);
+   dbus_message_iter_append_basic(&itr, DBUS_TYPE_OBJECT_PATH, &object_path);
+   dbus_message_iter_append_basic(&itr, DBUS_TYPE_STRING, &capability);
+
+   return e_bluez_element_message_send(element, name, NULL, msg,
+			 &element->_pending.create_paired_device, cb, data);
+}
