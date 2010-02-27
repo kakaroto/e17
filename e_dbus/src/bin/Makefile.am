@@ -5,6 +5,7 @@ EDBUS_CPPFLAGS = \
 -I$(top_srcdir)/src/lib/notification \
 -I$(top_srcdir)/src/lib/connman \
 -I$(top_srcdir)/src/lib/bluez \
+-I$(top_srcdir)/src/lib/ofono \
 @EDBUS_CFLAGS@ \
 @EINA_CFLAGS@
 
@@ -23,12 +24,16 @@ endif
 if BUILD_EBLUEZ
 EBLUEZ_PROG = e_dbus_bluez_test
 endif
+if BUILD_EOFONO
+EOFONO_PROG = e_dbus_ofono_test
+endif
 
 bin_PROGRAMS = \
 $(EDBUS_PROG) \
 $(ENOTIFY_PROG) \
 $(ECONNMAN_PROG) \
-$(EBLUEZ_PROG)
+$(EBLUEZ_PROG) \
+$(EOFONO_PROG)
 
 noinst_PROGRAMS = \
 $(ECONNMAN_PROG_NOINST)
@@ -87,4 +92,11 @@ e_dbus_bluez_test_SOURCES = e_dbus_bluez_test.c
 e_dbus_bluez_test_CPPFLAGS = $(EDBUS_CPPFLAGS)
 e_dbus_bluez_test_LDADD = $(top_builddir)/src/lib/dbus/libedbus.la $(top_builddir)/src/lib/bluez/libebluez.la
 e_dbus_bluez_test_DEPENDENCIES = $(top_builddir)/src/lib/dbus/libedbus.la $(top_builddir)/src/lib/bluez/libebluez.la
+endif
+
+if BUILD_EOFONO
+e_dbus_ofono_test_SOURCES = e_dbus_ofono_test.c
+e_dbus_ofono_test_CPPFLAGS = $(EDBUS_CPPFLAGS)
+e_dbus_ofono_test_LDADD = $(top_builddir)/src/lib/dbus/libedbus.la $(top_builddir)/src/lib/ofono/libeofono.la
+e_dbus_ofono_test_DEPENDENCIES = $(top_builddir)/src/lib/dbus/libedbus.la $(top_builddir)/src/lib/ofono/libeofono.la
 endif

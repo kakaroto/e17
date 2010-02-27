@@ -20,6 +20,9 @@ endif
 if BUILD_EBLUEZ
 EBLUEZ_PC = ebluez.pc
 endif
-pkgconfig_DATA = edbus.pc $(EHAL_PC) $(ENOTIFY_PC) $(ECONNMAN_PC) $(EBLUEZ_PC)
+if BUILD_EOFONO
+EOFONO_PC = eofono.pc
+endif
+pkgconfig_DATA = edbus.pc $(EHAL_PC) $(ENOTIFY_PC) $(ECONNMAN_PC) $(EBLUEZ_PC) $(EOFONO_PC)
 
 EXTRA_DIST = e_dbus.spec
