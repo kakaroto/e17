@@ -16,6 +16,9 @@
  *
  */
 
+#ifndef _GNU_SOURCE
+# define _GNU_SOURCE
+#endif
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -86,29 +89,34 @@ void messages_insert(int account_id, GList *list) {
 	struct sqlite3_stmt *insert_stmt=NULL;
 	const char *missed=NULL;
 	char *db_err=NULL;
-	char *query=g_strdup_printf("SELECT max(status_id) FROM messages where account_id = %d;", account_id);
+	char *query=NULL;
 
-	sqlite_res = sqlite3_exec(ed_DB, query, set_max_status_id, NULL, &db_err);
-	if(sqlite_res != 0) {
-		fprintf(stderr, "Can't do %s: %d means '%s' was missed in the statement.\n", query, sqlite_res, db_err);
-		sqlite3_free(db_err);
+	sqlite_res = asprintf(&query, "SELECT max(status_id) FROM messages where account_id = %d;", account_id);
+	if(sqlite_res != -1) {
+		sqlite_res = sqlite3_exec(ed_DB, query, set_max_status_id, NULL, &db_err);
+		if(sqlite_res != 0) {
+			fprintf(stderr, "Can't do %s: %d means '%s' was missed in the statement.\n", query, sqlite_res, db_err);
+			sqlite3_free(db_err);
+		}
+		free(query);
 	}
 
-	query=g_strdup_printf("INSERT INTO messages (status_id, account_id, screen_name, name, message, date) VALUES (?, %d, ?, ?, ?, ?);", account_id);;
-	sqlite_res = sqlite3_prepare_v2(ed_DB, query, 4096, &insert_stmt, &missed);
-	if(sqlite_res == 0) {
-		list = g_list_reverse(list);
-		g_list_foreach(list, message_insert, &insert_stmt);
-		sqlite3_finalize(insert_stmt);
-	} else {
-		fprintf(stderr, "Can't do %s: %d means '%s' was missed in the statement.\n", query, sqlite_res, missed);
+	sqlite_res = asprintf(&query, "INSERT INTO messages (status_id, account_id, screen_name, name, message, date) VALUES (?, %d, ?, ?, ?, ?);", account_id);;
+	if(sqlite_res != -1) {
+		sqlite_res = sqlite3_prepare_v2(ed_DB, query, 4096, &insert_stmt, &missed);
+		if(sqlite_res == 0) {
+			list = g_list_reverse(list);
+			g_list_foreach(list, message_insert, &insert_stmt);
+			sqlite3_finalize(insert_stmt);
+		} else {
+			fprintf(stderr, "Can't do %s: %d means '%s' was missed in the statement.\n", query, sqlite_res, missed);
+		}
+		free(query);
 	}
-	g_free(query);
 }
 
 int ed_twitter_post(int account_id, char *screen_name, char *password, char *proto, char *domain, int port, char *base_url, char *msg) {
 	char *ub_status=NULL;
-	char * tmpstr=(char*)NULL;
 	int res=0;
 	http_request * request=NULL;
 
@@ -118,23 +126,23 @@ int ed_twitter_post(int account_id, char *screen_name, char *password, char *pro
 
 	request = g_malloc0(sizeof(http_request));
 
-	if(strlen(msg) > 0) {
+	if(request && strlen(msg) > 0) {
 		if(reply_id) {
-			ub_status = g_strdup_printf("source=%s&status=%s&in_reply_to_status_id=%s", PACKAGE, msg, reply_id);
+			res = asprintf(&ub_status, "source=%s&status=%s&in_reply_to_status_id=%s", PACKAGE, msg, reply_id);
 			reply_id=NULL;
 		} else
-			ub_status = g_strdup_printf("source=%s&status=%s", PACKAGE, msg);
+			res = asprintf(&ub_status, "source=%s&status=%s", PACKAGE, msg);
 
-		request->url = g_strdup_printf("%s://%s:%d%s/statuses/update.xml", proto, domain, port, base_url);
+		if(res != -1) {
+			res  = asprintf(&request->url,"%s://%s:%d%s/statuses/update.xml", proto, domain, port, base_url);
+			if(res != -1) {
+				res = ed_curl_post(screen_name, password, request, ub_status);
 
-		//snprintf(msg, 1024, "%s<br>", msg);
-		res = ed_curl_post(screen_name, password, request, ub_status);
-
-		g_free(ub_status);
-		g_free(request->url);
-		g_free(request);
-
-		curl_free(tmpstr);
+				free(ub_status);
+				free(request->url);
+				free(request);
+			}
+		}
 	}
 
 	return(0);
@@ -154,19 +162,21 @@ void ed_twitter_max_status_id(int account_id, long long int*since_id) {
 	char *query=NULL, *db_err=NULL;
 	int sqlite_res=0;
 	
-	query = g_strdup_printf("SELECT MAX(status_id) FROM messages WHERE account_id = %d;", account_id);
-	sqlite_res = sqlite3_exec(ed_DB, query, ed_twitter_max_status_id_handler, (void*)since_id, &db_err);
-	if(sqlite_res != 0) {
-		printf("Can't run %s: %d = %s\n", query, sqlite_res, db_err);
-		sqlite3_free(db_err);
+	sqlite_res = asprintf(&query, "SELECT MAX(status_id) FROM messages WHERE account_id = %d;", account_id);
+	if(sqlite_res != -1) {
+		sqlite_res = sqlite3_exec(ed_DB, query, ed_twitter_max_status_id_handler, (void*)since_id, &db_err);
+		if(sqlite_res != 0) {
+			fprintf(stderr, "Can't run %s: %d = %s\n", query, sqlite_res, db_err);
+			sqlite3_free(db_err);
+		}
+		free(query);
 	}
-	g_free(query);
 }
 
 void ed_twitter_timeline_friends_get(int account_id, char *screen_name, char *password, char *proto, char *domain, int port, char *base_url) {
-        int xml_res=0;
+	int xml_res=0;
 	long long int since_id=0;
-        http_request * request=g_malloc0(sizeof(http_request));
+	http_request * request=g_malloc0(sizeof(http_request));
 	StatusesList *statuses=(StatusesList*)g_malloc(sizeof(StatusesList));
 	time_t now;
 
@@ -176,31 +186,34 @@ void ed_twitter_timeline_friends_get(int account_id, char *screen_name, char *pa
 
 	ed_twitter_max_status_id(account_id, &since_id);
 	if(since_id > 0)
-        	request->url = g_strdup_printf("%s://%s:%d%s/statuses/friends_timeline.xml?since_id=%lld", proto, domain, port, base_url, since_id);
+        	xml_res = asprintf(&request->url, "%s://%s:%d%s/statuses/friends_timeline.xml?since_id=%lld", proto, domain, port, base_url, since_id);
 	else
-        	request->url = g_strdup_printf("%s://%s:%d%s/statuses/friends_timeline.xml", proto, domain, port, base_url);
+        	xml_res = asprintf(&request->url, "%s://%s:%d%s/statuses/friends_timeline.xml", proto, domain, port, base_url);
 
-	if (debug) printf("gnome-open %s\n", request->url);
+	if(xml_res != -1) {
+		if (debug) printf("gnome-open %s\n", request->url);
 
-        ed_curl_get(screen_name, password, request);
+		ed_curl_get(screen_name, password, request);
 
-        ed_twitter_init_friends();
-	xmlSubstituteEntitiesDefault(1);
+		ed_twitter_init_friends();
+		xmlSubstituteEntitiesDefault(1);
 
-        xml_res = xmlSAXUserParseMemory(&ed_twitter_friends_saxHandler, (void*)statuses, request->content.memory, request->content.size);
+		xml_res = xmlSAXUserParseMemory(&ed_twitter_friends_saxHandler, (void*)statuses, request->content.memory, request->content.size);
 
-        if(xml_res != 0) {
-              fprintf(stderr,_("FAILED TO SAX FRIENDS: %d\n"),xml_res);
-              if (debug) fprintf(stderr,"%s\n",request->content.memory);
-        }
-              if(statuses->state != HASH) {
-                      now = time(NULL);
-                      messages_insert(account_id, statuses->list);
-              } else {
-                      //show_error(statuses);
-        }
+		if(xml_res != 0) {
+			fprintf(stderr,_("FAILED TO SAX FRIENDS: %d\n"),xml_res);
+			if (debug) fprintf(stderr,"%s\n",request->content.memory);
+		}
+		if(statuses->state != HASH) {
+			now = time(NULL);
+			messages_insert(account_id, statuses->list);
+		} else {
+			//show_error(statuses);
+		}
 
-        g_free(request);
+	}
+
+	free(request);
 
 }
 
@@ -223,31 +236,33 @@ void ed_twitter_statuses_insert_avatar(StatusesList *statuses) {
 
 	// check wether it's already cached FIXME: this cache doesn't support updating
 	home = getenv("HOME");
-	file_path=g_strdup_printf("%s/.elmdentica/cache/icons/%s", home, statuses->current->screen_name);
-	file = open(file_path, O_RDONLY);
-	// if not, then fetch the icon and write it to the cache
-	if(file == -1) {
-		file = open(file_path, O_WRONLY | O_CREAT, S_IRUSR|S_IWUSR);
-		if(file != -1) {
-			request = g_malloc0(sizeof(http_request));
-			request->url=avatar;
-			res = ed_curl_get(NULL, NULL, request);
-			if(res == 0)
-				res=write(file, request->content.memory, request->content.size);
+	res = asprintf(&file_path, "%s/.elmdentica/cache/icons/%s", home, statuses->current->screen_name);
+	if(res != 0) {
+		file = open(file_path, O_RDONLY);
+		// if not, then fetch the icon and write it to the cache
+		if(file == -1) {
+			file = open(file_path, O_WRONLY | O_CREAT, S_IRUSR|S_IWUSR);
+			if(file != -1) {
+				request = g_malloc0(sizeof(http_request));
+				request->url=avatar;
+				res = ed_curl_get(NULL, NULL, request);
+				if(res == 0)
+					res=write(file, request->content.memory, request->content.size);
+				close(file);
+
+				free(request);
+			} else {
+				fprintf(stderr, _("Can't open %s for writing: %s\n"),file_path, strerror(errno));
+			}
+		} else
 			close(file);
 
-			g_free(request);
-		} else {
-			fprintf(stderr, _("Can't open %s for writing: %s\n"),file_path, strerror(errno));
-		}
-	} else
-		close(file);
+		free(file_path);
 
-	g_free(file_path);
+		free(avatar);
 
-	g_free(avatar);
-
-	avatar = NULL;
+		avatar = NULL;
+	}
 }
 
 void ed_twitter_friends_startDocument(void *user_data) {
@@ -326,17 +341,17 @@ void ed_twitter_friends_characters(void *user_data, const xmlChar * ch, int len)
 	StatusesList *statuses = (StatusesList*)user_data;
 	ub_Status *status = statuses->current;
 	TimeLineStates * state = &(statuses->state);
-	char * tmp;
-	char * tmp2;
+	char * tmp, *tmp2;
+	int res=0;
 
 
 	if(*state == HASH_ERROR) {
 		tmp = statuses->hash_error;
 		tmp2 = g_strndup((char*)ch, len);
 		if(tmp) {
-			statuses->hash_error = g_strdup_printf ("%s%s",tmp,tmp2);
-			g_free(tmp);
-			g_free(tmp2);
+			res = asprintf(&statuses->hash_error, "%s%s",tmp,tmp2);
+			free(tmp);
+			free(tmp2);
 		} else {
 			statuses->hash_error = tmp2;
 		}
@@ -344,9 +359,9 @@ void ed_twitter_friends_characters(void *user_data, const xmlChar * ch, int len)
 		tmp = statuses->hash_request;
 		tmp2 = g_strndup((char*)ch, len);
 		if(tmp) {
-			statuses->hash_request = g_strdup_printf ("%s%s",tmp,tmp2);
-			g_free(tmp);
-			g_free(tmp2);
+			res = asprintf(&statuses->hash_request, "%s%s",tmp,tmp2);
+			free(tmp);
+			free(tmp2);
 		} else {
 			statuses->hash_request = tmp2;
 		}
@@ -354,9 +369,9 @@ void ed_twitter_friends_characters(void *user_data, const xmlChar * ch, int len)
 		tmp = status->id_str;
 		tmp2 = g_strndup((char*)ch, len);
 		if(tmp) {
-			status->id_str = g_strdup_printf ("%s%s",tmp,tmp2);
-			g_free(tmp);
-			g_free(tmp2);
+			res = asprintf(&status->id_str, "%s%s",tmp,tmp2);
+			free(tmp);
+			free(tmp2);
 		} else {
 			status->id_str = tmp2;
 		}
@@ -364,9 +379,9 @@ void ed_twitter_friends_characters(void *user_data, const xmlChar * ch, int len)
 		tmp = status->name;
 		tmp2 = g_strndup((char*)ch, len);
 		if(tmp) {
-			status->name = g_strdup_printf ("%s%s",tmp,tmp2);
-			g_free(tmp);
-			g_free(tmp2);
+			res = asprintf(&status->name, "%s%s",tmp,tmp2);
+			free(tmp);
+			free(tmp2);
 		} else {
 			status->name = tmp2;
 		}
@@ -374,9 +389,9 @@ void ed_twitter_friends_characters(void *user_data, const xmlChar * ch, int len)
 		tmp = avatar;
 		tmp2 = g_strndup((char*)ch, len);
 		if(tmp) {
-			avatar = g_strdup_printf ("%s%s",tmp,tmp2);
-			g_free(tmp);
-			g_free(tmp2);
+			res = asprintf(&avatar, "%s%s",tmp,tmp2);
+			free(tmp);
+			free(tmp2);
 		} else {
 			avatar = tmp2;
 		}
@@ -384,9 +399,9 @@ void ed_twitter_friends_characters(void *user_data, const xmlChar * ch, int len)
 		tmp = status->screen_name;
 		tmp2 = g_strndup((char*)ch, len);
 		if(tmp) {
-			status->screen_name = g_strdup_printf ("%s%s",tmp,tmp2);
-			g_free(tmp);
-			g_free(tmp2);
+			res = asprintf(&status->screen_name, "%s%s",tmp,tmp2);
+			free(tmp);
+			free(tmp2);
 		} else {
 			status->screen_name = tmp2;
 		}
@@ -394,9 +409,9 @@ void ed_twitter_friends_characters(void *user_data, const xmlChar * ch, int len)
 		tmp = status->created_at_str;
 		tmp2 = g_strndup((char*)ch, len);
 		if(tmp) {
-			status->created_at_str = g_strdup_printf ("%s%s",tmp,tmp2);
-			g_free(tmp);
-			g_free(tmp2);
+			res = asprintf(&status->created_at_str, "%s%s",tmp,tmp2);
+			free(tmp);
+			free(tmp2);
 		} else {
 			status->created_at_str = tmp2;
 		}
@@ -404,9 +419,9 @@ void ed_twitter_friends_characters(void *user_data, const xmlChar * ch, int len)
 		tmp = status->text;
 		tmp2 = g_strndup((char*)ch, len);
 		if(tmp) {
-			status->text = g_strdup_printf ("%s%s",tmp,tmp2);
-			g_free(tmp);
-			g_free(tmp2);
+			res = asprintf(&status->text, "%s%s",tmp,tmp2);
+			free(tmp);
+			free(tmp2);
 		} else {
 			status->text = tmp2;
 		}
