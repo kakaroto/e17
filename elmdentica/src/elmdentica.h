@@ -70,8 +70,6 @@ void error_win_del(void *data, Evas_Object *zbr, void *event_info);
 
 void set_urls(void);
 
-gchar * g_strreplace (const gchar *string, const gchar *search, const gchar *replacement);
-
 void fill_message_list(void);
 
 #endif

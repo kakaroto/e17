@@ -746,27 +746,6 @@ static void on_reload(void *data, Evas_Object *obj, void *event_info)
 	// alarm(5); in the future, setup an alarm for auto reload? a seperate thread? for 1st release it'll depend on explicit user action...
 }
 
-gchar * g_strreplace (const gchar *string, const gchar *search, const gchar *replacement) {
-	gchar *str, **arr;
-
-	g_return_val_if_fail (string != NULL, NULL);
-	g_return_val_if_fail (search != NULL, NULL);
-
-	if (replacement == NULL)
-		replacement = "";
-
-	arr = g_strsplit (string, search, -1);
-
-	if (arr != NULL && arr[0] != NULL)
-		str = g_strjoinv (replacement, arr);
-	else
-		str = g_strdup (string);
-
-	g_strfreev (arr);
-
-	return str;
-}
-
 static void on_fs(void *data, Evas_Object *obj, void *event_info) {
 	if(fullscreen)
 		fullscreen=FALSE;
@@ -778,9 +757,10 @@ static void on_fs(void *data, Evas_Object *obj, void *event_info) {
 
 static int do_post(void *notUsed, int argc, char **argv, char **azColName) {
 	struct sqlite3_stmt *post_stmt=NULL;
-	char *tmp1=NULL, *tmp2=NULL, *msg = NULL, *query = NULL;
+	char *msg = NULL, *query = NULL;
 	const char *missed = NULL;
 	int sqlite_res = 0, res=0;
+	Eina_Strbuf *buf = NULL;
 
 	char *screen_name=NULL, *password=NULL, *proto=NULL, *domain=NULL, *base_url=NULL;
 	int port=0, id=0, type=0;
@@ -805,10 +785,11 @@ static int do_post(void *notUsed, int argc, char **argv, char **azColName) {
 	port = atoi(argv[7]);
 	base_url = argv[8];
 
-	tmp1 = (char*)elm_entry_entry_get(entry);
-	tmp2 = g_strreplace(tmp1, "<br>", " ");
-	msg=ed_curl_escape(tmp2);
-	g_free(tmp2);
+	buf = eina_strbuf_new();
+	eina_strbuf_append(buf, elm_entry_entry_get(entry));
+	eina_strbuf_replace_all(buf, "<br>", " ");
+	msg=ed_curl_escape(eina_strbuf_string_steal(buf));
+	eina_strbuf_free(buf);
 
 	switch(type) {
 		case ACCOUNT_TYPE_TWITTER: { res = ed_twitter_post(id, screen_name, password, proto, domain, port, base_url, msg) ; break; }

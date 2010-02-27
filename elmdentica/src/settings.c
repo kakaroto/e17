@@ -149,11 +149,31 @@ void on_user_data_ok(void *data, Evas_Object *obj, void *event_info) {
 	char *screen_name=NULL, *password=NULL, *domain=NULL, *base_url=NULL, *proto=NULL;
 	int enabled=1, port=443, sqlite_res = 0, *id=NULL, receive=1, send=1, res=0;
 	Elm_List_Item *li;
+	Eina_Strbuf *buf = NULL;
 
-	screen_name = g_strreplace((char*)elm_entry_entry_get(screen_name_entry), "<br>", "");
-	password = g_strreplace((char*)elm_entry_entry_get(password_entry), "<br>", "");
-	domain = g_strreplace((char*)elm_entry_entry_get(domain_entry), "<br>", "");
-	base_url = g_strreplace((char*)elm_entry_entry_get(base_url_entry), "<br>", "");
+	buf = eina_strbuf_new();
+
+	eina_strbuf_append(buf, elm_entry_entry_get(screen_name_entry));
+	eina_strbuf_replace_all(buf, "<br>", "");
+	screen_name = eina_strbuf_string_steal(buf);
+	eina_strbuf_reset(buf);
+
+	eina_strbuf_append(buf, elm_entry_entry_get(password_entry));
+	eina_strbuf_replace_all(buf, "<br>", "");
+	password = eina_strbuf_string_steal(buf);
+	eina_strbuf_reset(buf);
+
+	eina_strbuf_append(buf, elm_entry_entry_get(domain_entry));
+	eina_strbuf_replace_all(buf, "<br>", "");
+	domain = eina_strbuf_string_steal(buf);
+	eina_strbuf_reset(buf);
+
+	eina_strbuf_append(buf, elm_entry_entry_get(base_url_entry));
+	eina_strbuf_replace_all(buf, "<br>", "");
+	base_url = eina_strbuf_string_steal(buf);
+	eina_strbuf_reset(buf);
+
+	eina_strbuf_free(buf);
 
 	if(elm_toggle_state_get(secure_entry)) {
 		proto = "https";
