@@ -519,7 +519,6 @@ static void _flickr_album_photos_sync_photo_new_cb(void *data, Enlil_Album *albu
    snprintf(dest, sizeof(dest), "%s/%s/%s", enlil_album_path_get(album), enlil_album_file_name_get(album), photo_name);
    snprintf(buf, sizeof(buf), "%s/%s", enlil_album_path_get(album), enlil_album_file_name_get(album));
 
-
    Enlil_Photo *photo = enlil_photo_new();
    enlil_photo_name_set(photo, photo_name);
    enlil_photo_file_name_set(photo, photo_name);
@@ -536,6 +535,7 @@ static void _flickr_photo_sizes_get(void *data, Eina_List *sizes, Eina_Bool erro
    Enlil_Flickr_Photo_Size *size;
    Enlil_Flickr_Photo_Size *sizeB = NULL;
    Enlil_Photo *photo = data;
+   const char *p;
    char buf[PATH_MAX];
 
    EINA_LIST_FOREACH(sizes, l, size)
@@ -551,6 +551,23 @@ static void _flickr_photo_sizes_get(void *data, Eina_List *sizes, Eina_Bool erro
    char *strip_ext = ecore_file_strip_ext(enlil_flickr_size_source_get(sizeB));
    const char *ext = enlil_flickr_size_source_get(sizeB) + strlen(strip_ext);
    FREE(strip_ext);
+
+   //the video file name is very strange, example : .com/photos/watchwolf/3478789769/play/orig/b10ccbef3b/
+   //it have no valid extension
+   p = ext;
+   while(p && *p != '\0')
+     {
+	if(*p == '/')
+	  p = NULL;
+	else
+	  p++;
+     }
+
+   if(!p)
+     {
+	enlil_photo_type_set(photo, ENLIL_PHOTO_TYPE_VIDEO);
+	ext = ".avi";
+     }
 
    snprintf(buf, sizeof(buf), "%s%s", enlil_photo_file_name_get(photo), ext);
    enlil_photo_file_name_set(photo, buf);

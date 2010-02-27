@@ -89,6 +89,22 @@ Panel_Image *panel_image_new(Evas_Object *obj, Enlil_Photo *photo)
    evas_object_show(bt);
    elm_box_pack_end(vbox, bt);
 
+   bt = elm_button_add(obj);
+   elm_button_label_set(bt, D_("Save"));
+   evas_object_size_hint_weight_set(bt, 1.0, 0.0);
+   evas_object_size_hint_align_set(bt, -1.0, 0.0);
+   evas_object_smart_callback_add(bt, "clicked", _bt_save_cb, photo);
+   evas_object_show(bt);
+   elm_box_pack_end(vbox, bt);
+
+   bt = elm_button_add(obj);
+   elm_button_label_set(bt, D_("Save as"));
+   evas_object_size_hint_weight_set(bt, 1.0, 0.0);
+   evas_object_size_hint_align_set(bt, -1.0, 0.0);
+   evas_object_smart_callback_add(bt, "clicked", _bt_save_as_cb, photo);
+   evas_object_show(bt);
+   elm_box_pack_end(vbox, bt);
+
    fr = elm_frame_add(obj);
    elm_frame_label_set(fr, D_("Description"));
    evas_object_size_hint_weight_set(fr, 1.0, 1.0);
@@ -765,7 +781,6 @@ void _panel_select_cb(void *data, Tabpanel *tabpanel, Tabpanel_Item *item)
 {
    Enlil_Photo_Data *photo_data = enlil_photo_user_data_get(data);
    current_photo = data;
-   menu_photo_disabled_set(0);
    _update_undo_redo(photo_data->panel_image);
 
    elm_map_bubbles_close(enlil_data->map->map);
@@ -979,8 +994,6 @@ static void _update_undo_redo(Panel_Image *panel_image)
 
    elm_menu_item_disabled_set(panel_image->undo.item_undo, 1);
    elm_menu_item_disabled_set(panel_image->undo.item_redo, 1);
-   menu_undo_disabled_set(1);
-   menu_redo_disabled_set(1);
 
    h = enlil_trans_history_get(panel_image->history);
    current = enlil_trans_history_current_get(panel_image->history);
@@ -1031,7 +1044,6 @@ static void _update_undo_redo(Panel_Image *panel_image)
 	panel_image->undo.items_undo = eina_list_append(panel_image->undo.items_undo, mi_item);
 
 	elm_menu_item_disabled_set(panel_image->undo.item_undo, 0);
-	menu_undo_disabled_set(0);
 	if(item == current)
 	  break;
      }
@@ -1079,7 +1091,6 @@ second_step:
 	panel_image->undo.items_redo = eina_list_append(panel_image->undo.items_redo, mi_item);
 
 	elm_menu_item_disabled_set(panel_image->undo.item_redo, 0);
-	menu_redo_disabled_set(0);
      }
 }
 

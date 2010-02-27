@@ -72,7 +72,7 @@ static void _start_cb(void *data, Enlil_Photo *photo)
 
     evas_object_show(dl->main);
 
-    elm_progressbar_label_set(dl->pb, enlil_photo_file_name_get(photo));
+    elm_progressbar_label_set(dl->pb, enlil_photo_name_get(photo));
     elm_progressbar_pulse_set(dl->pb, 0);
 }
 

@@ -6,6 +6,8 @@ int APP_LOG_DOMAIN;
 
 const char *media_player = NULL;
 Enlil_Data *enlil_data = NULL;
+static Tabpanel_Item *tp_list_photo;
+
 
 static const Ecore_Getopt options = {
      "Enki",
@@ -62,9 +64,6 @@ _notify_bt_close(void *data, Evas_Object *obj, void *event_info)
 static void _tabpanel_select_page1_cb(void *data, Tabpanel *tabpanel, Tabpanel_Item *item)
 {
    //Enlil_Data *enlil_data = data;
-   menu_photo_disabled_set(1);
-   menu_undo_disabled_set(1);
-   menu_redo_disabled_set(1);
 }
 
 static void _photos_list_select_cb(void *data, Tabpanel *tabpanel, Tabpanel_Item *item)
@@ -91,7 +90,7 @@ static void _menu_select_cb(void *data, Tabpanel *tabpanel, Tabpanel_Item *item)
 
 void root_set(const char *root_path)
 {
-   menu_noroot_disabled_set(EINA_FALSE);
+   main_menu_noroot_disabled_set(EINA_FALSE);
 
    photos_list_object_freeze(enlil_data->list_photo->o_list, 1);
    enlil_thumb_clear();
@@ -151,7 +150,7 @@ void root_set(const char *root_path)
    //
    Eina_List *list = enlil_root_eet_path_load();
    Enlil_String *string;
-   menu_update_root_list(list);
+   main_menu_update_libraries_list(list);
    EINA_LIST_FREE(list, string)
      {
 	EINA_STRINGSHARE_DEL(string->string);
@@ -176,13 +175,12 @@ void root_set(const char *root_path)
    else
      enlil_win_bg_set(enlil_data->win, NULL);
    //
-   menu_photo_disabled_set(1);
-   menu_loading_disable_set(1);
+   main_menu_loading_disable_set(1);
 }
 
 int elm_main(int argc, char **argv)
 {
-   Evas_Object *panels, *tabs, *page_1, *bx, *menu;
+   Evas_Object *panels, *tabs, *page_1, *bx;
    Tabpanel_Item *tp_item;
    unsigned char exit_option = 0;
    char *root_path = NULL;
@@ -238,20 +236,19 @@ int elm_main(int argc, char **argv)
    elm_table_pack(tb, bx, 0, 0, 1, 1);
    evas_object_show(bx);
 
-   menu = menu_new(win->win);
-   elm_box_pack_end(bx, menu);
-
-   Evas_Object *flickr = flickr_menu_new(win->win);
-   elm_box_pack_end(bx, flickr);
-
 
    enlil_data->tabpanel = tabpanel_add(win->win);
 
    tabs = tabpanel_tabs_obj_get(enlil_data->tabpanel);
-   evas_object_size_hint_weight_set(tabs, 0.0, 0.0);
+   evas_object_size_hint_weight_set(tabs, 1.0, 0.0);
    evas_object_size_hint_align_set(tabs, -1.0, 0.0);
    evas_object_show(tabs);
-   elm_table_pack(tb, tabs, 0, 1, 1, 1);
+   elm_box_pack_end(bx, tabs);
+
+
+   Evas_Object *flickr = flickr_menu_new(win->win);
+   elm_box_pack_end(bx, flickr);
+
 
    panels = tabpanel_panels_obj_get(enlil_data->tabpanel);
    evas_object_size_hint_weight_set(panels, 1.0, 1.0);
@@ -294,7 +291,7 @@ int elm_main(int argc, char **argv)
 
    List_Photo *list_photo = list_photo_new(win->win);
    list_photo_data_set(list_photo, enlil_data);
-   tabpanel_item_add(list_album->tb_liste_map, D_("Liste"), list_photo->bx,
+   tp_list_photo = tabpanel_item_add(list_album->tb_liste_map, D_("Liste"), list_photo->bx,
 	 _photos_list_select_cb, enlil_data);
 
    Map *map = map_new(win->win);
@@ -326,7 +323,7 @@ int elm_main(int argc, char **argv)
    //
    Eina_List *list = enlil_root_eet_path_load();
    Enlil_String *string;
-   menu_update_root_list(list);
+   main_menu_update_libraries_list(list);
    EINA_LIST_FREE(list, string)
      {
 	EINA_STRINGSHARE_DEL(string->string);
@@ -350,7 +347,7 @@ int elm_main(int argc, char **argv)
    //
 
 
-   menu_noroot_disabled_set(EINA_TRUE);
+   main_menu_noroot_disabled_set(EINA_TRUE);
    if(root_path)
      root_set(root_path);
 
@@ -543,6 +540,11 @@ const char *photo_flickr_edje_signal_get(Photo_Flickr_Enum e)
 	 return "photo_notuptodate";
      }
    return NULL;
+}
+
+void select_list_photo()
+{
+   tabpanel_item_select(tp_list_photo);
 }
 
 ELM_MAIN()

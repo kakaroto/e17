@@ -68,8 +68,8 @@ void load_done_cb(void *data, Enlil_Load *load, int nb_albums, int nb_photos)
 
    enlil_sync_job_all_add(sync);
 
-   menu_loading_disable_set(0);
-   menu_sync_disable_set(1);
+   main_menu_loading_disable_set(0);
+   main_menu_sync_disable_set(1);
 
    enlil_data->nb_photos = nb_photos;
    enlil_data->nb_albums = nb_albums;
@@ -152,7 +152,7 @@ void sync_done_cb(void *data, Enlil_Sync *sync)
    enlil_file_manager_flush();
 
    if(enlil_sync_jobs_count_get(sync) <= 0)
-     menu_sync_disable_set(0);
+     main_menu_sync_disable_set(0);
 }
 
 void sync_start_cb(void *data, Enlil_Sync *sync)
@@ -166,7 +166,7 @@ void sync_error_cb(void *data, Enlil_Sync *sync,  Sync_Error error, const char* 
    printf("SYNC CB ERROR : %s\n",msg);
 
    if(enlil_sync_jobs_count_get(sync) <= 0)
-     menu_sync_disable_set(0);
+     main_menu_sync_disable_set(0);
 }
 
 void sync_album_new_cb(void *data, Enlil_Sync *sync,Enlil_Root *root, Enlil_Album *album)
@@ -348,7 +348,7 @@ void monitor_album_new_cb(void *data, Enlil_Root *root, const char *path)
 
 	enlil_sync_job_album_folder_add(sync, file_name);
 
-	menu_sync_disable_set(1);
+	main_menu_sync_disable_set(1);
      }
 }
 
@@ -363,7 +363,7 @@ void monitor_album_update_cb(void *data, Enlil_Root *root, Enlil_Album *album)
 
 	enlil_sync_job_album_folder_add(sync, file_name);
 
-	menu_sync_disable_set(1);
+	main_menu_sync_disable_set(1);
      }
 }
 
@@ -377,7 +377,7 @@ void monitor_album_delete_cb(void *data, Enlil_Root *root, const char *path)
 	Enlil_Sync *sync = enlil_root_sync_get(root);
 	enlil_sync_job_album_folder_add(sync, file_name);
 
-	menu_sync_disable_set(1);
+	main_menu_sync_disable_set(1);
      }
 }
 
@@ -396,7 +396,7 @@ void monitor_photo_new_cb(void *data, Enlil_Root *root, Enlil_Album *album, cons
 	Enlil_Sync *sync = enlil_root_sync_get(enlil_data->root);
 
 	enlil_sync_job_photo_file_add(sync, enlil_album_file_name_get(album), file_name);
-	menu_sync_disable_set(1);
+	main_menu_sync_disable_set(1);
      }
 }
 
@@ -409,7 +409,7 @@ void monitor_photo_delete_cb(void *data, Enlil_Root *root, Enlil_Album *album, c
 	const char *file_name = ecore_file_file_get(path);
 	Enlil_Sync *sync = enlil_root_sync_get(root);
 	enlil_sync_job_photo_file_add(sync, enlil_album_file_name_get(album), file_name);
-	menu_sync_disable_set(1);
+	main_menu_sync_disable_set(1);
      }
 }
 
@@ -423,7 +423,7 @@ void monitor_photo_update_cb(void *data, Enlil_Root *root, Enlil_Album *album, c
 	Enlil_Sync *sync = enlil_root_sync_get(enlil_data->root);
 
 	enlil_sync_job_photo_file_add(sync, enlil_album_file_name_get(album), file_name);
-	menu_sync_disable_set(1);
+	main_menu_sync_disable_set(1);
      }
 }
 

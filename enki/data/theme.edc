@@ -2025,11 +2025,38 @@ group {
     parts {
         part {
             name: "library";
-            type: SWALLOW;
+            type: BOX;
             description {
                 state : "default" 0.0;
-                rel1.relative: 0.1 0.1;
-                rel2.relative: 0.2 0.2;
+                rel1.relative: 0.15 0.1;
+                rel2.relative: 0.45 0.7;
+                box {
+                    layout: "vertical";
+                }
+            }
+        }
+        part {
+            name: "tools";
+            type: BOX;
+            description {
+                state : "default" 0.0;
+                rel1.relative: 0.6 0.1;
+                rel2.relative: 0.8 0.7;
+                box {
+                    layout: "vertical";
+                }
+            }
+        }
+        part {
+            name: "quit";
+            type: BOX;
+            description {
+                state : "default" 0.0;
+                rel1.relative: 0.75 0.9;
+                rel2.relative: 0.95 0.95;
+                box {
+                    layout: "vertical";
+                }
             }
         }
     }

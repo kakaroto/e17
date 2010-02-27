@@ -372,15 +372,9 @@ void enlil_win_bg_set(Enlil_Win *win, const char *file);
 void root_set(const char *root_path);
 void close_cb(void *data, Evas_Object *obj, void *event_info);
 
-Evas_Object *menu_new(Evas_Object *parent);
+void select_list_photo();
+
 Evas_Object *menu_photo_new(Evas_Object *parent);
-void menu_noroot_disabled_set(Eina_Bool disabled);
-void menu_photo_disabled_set(Eina_Bool disabled);
-void menu_redo_disabled_set(Eina_Bool disabled);
-void menu_undo_disabled_set(Eina_Bool disabled);
-void menu_loading_disable_set(Eina_Bool disabled);
-void menu_sync_disable_set(Eina_Bool disabled);
-void menu_update_root_list(Eina_List *list);
 
 Album_Menu *album_collection_menu_new(Evas_Object *parent, Enlil_Album *album);
 Album_Menu *album_tag_menu_new(Evas_Object *parent, Enlil_Album *album);
@@ -556,5 +550,9 @@ void flickr_album_error_cb(void *data, Enlil_Album *album);
 
 //main menu
 Evas_Object *main_menu_new(Evas_Object *parent);
+void main_menu_update_libraries_list(Eina_List *list);
+void main_menu_loading_disable_set(Eina_Bool disabled);
+void main_menu_sync_disable_set(Eina_Bool disabled);
+void main_menu_noroot_disabled_set(Eina_Bool disabled);
 
 #endif
