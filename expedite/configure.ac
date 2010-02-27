@@ -135,7 +135,7 @@ PKG_CHECK_MODULES([EINA], eina-0)
 
 # Evas
 
-PKG_CHECK_MODULES([EVAS], evas)
+PKG_CHECK_MODULES([EVAS], evas eet)
 
 # Xlib
 
