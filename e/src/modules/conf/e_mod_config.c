@@ -1,28 +1,26 @@
-#include <e.h>
+#include "e.h"
 #include "e_mod_main.h"
 
 struct _E_Config_Dialog_Data 
 {
-   int switch1;
+   int menu_augmentation;
 };
 
-/* Local Function Prototypes */
 static void *_create_data(E_Config_Dialog *cfd);
 static void _free_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata);
 static void _fill_data(E_Config_Dialog_Data *cfdata);
 static Evas_Object *_basic_create(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cfdata);
 static int _basic_apply(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata);
 
-/* External Functions */
 E_Config_Dialog *
-e_int_config_config_module(E_Container *con) 
+e_int_config_conf_module(E_Container *con, const char *params) 
 {
    E_Config_Dialog *cfd = NULL;
    E_Config_Dialog_View *v = NULL;
    char buf[4096];
 
    /* is this config dialog already visible ? */
-   if (e_config_dialog_find("Config", "advanced/config")) return NULL;
+   if (e_config_dialog_find("Conf", "advanced/conf")) return NULL;
 
    v = E_NEW(E_Config_Dialog_View, 1);
    if (!v) return NULL;
@@ -32,19 +30,15 @@ e_int_config_config_module(E_Container *con)
    v->basic.create_widgets = _basic_create;
    v->basic.apply_cfdata = _basic_apply;
 
-   /* Icon in the theme */
-   snprintf(buf, sizeof(buf), "%s/e-module-config.edj", config_conf->module->dir);
+   snprintf(buf, sizeof(buf), "%s/e-module-conf.edj", conf->module->dir);
+   cfd = e_config_dialog_new(con, _("Configuration Panel"), "Conf", 
+                             "advanced/conf", buf, 0, v, NULL);
 
-   /* create new config dialog */
-   cfd = e_config_dialog_new(con, D_("Config Menu Module"), "Config", 
-                             "advanced/config", buf, 0, v, NULL);
-
-   e_dialog_resizable_set(cfd->dia, 1);
-   config_conf->cfd = cfd;
+   e_dialog_resizable_set(cfd->dia, 0);
+   conf->cfd = cfd;
    return cfd;
 }
 
-/* Local Functions */
 static void *
 _create_data(E_Config_Dialog *cfd) 
 {
@@ -58,15 +52,14 @@ _create_data(E_Config_Dialog *cfd)
 static void 
 _free_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata) 
 {
-   config_conf->cfd = NULL;
+   conf->cfd = NULL;
    E_FREE(cfdata);
 }
 
 static void 
 _fill_data(E_Config_Dialog_Data *cfdata) 
 {
-   /* load a temp copy of the config variables */
-   cfdata->switch1 = config_conf->switch1;
+   cfdata->menu_augmentation = conf->menu_augmentation;
 }
 
 static Evas_Object *
@@ -76,10 +69,10 @@ _basic_create(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cfdata)
 
    o = e_widget_list_add(evas, 0, 0);
 
-   of = e_widget_framelist_add(evas, D_("General"), 0);
+   of = e_widget_framelist_add(evas, _("General"), 0);
    e_widget_framelist_content_align_set(of, 0.0, 0.0);
-   ow = e_widget_check_add(evas, D_("Extend Settings Menu"), 
-                           &(cfdata->switch1));
+   ow = e_widget_check_add(evas, _("Show configuration panel contents in Settings menu"), 
+                           &(cfdata->menu_augmentation));
    e_widget_framelist_object_append(of, ow);
    e_widget_list_object_append(o, of, 1, 1, 0.5);
 
@@ -89,22 +82,21 @@ _basic_create(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cfdata)
 static int 
 _basic_apply(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata) 
 {
+   conf->menu_augmentation = cfdata->menu_augmentation;
+   if (conf->aug)
+     {
+    e_int_menus_menu_augmentation_del("config/0", conf->aug);
+    conf->aug = NULL;
+     }
 
-  if (config_conf->switch1 != cfdata->switch1)
-    { 
-      if(cfdata->switch1)
-	maug = e_int_menus_menu_augmentation_add("config/0", _e_mod_config_menu_add, NULL, NULL, NULL);
-      else if (maug)
-	{
-	  e_int_menus_menu_augmentation_del("config/0", maug);
-	  maug = NULL;
-	}
-	
-    }
-  
-    
-    config_conf->switch1 = cfdata->switch1;
-   
-  e_config_save_queue();
+   if (conf->menu_augmentation)
+     {
+       conf->aug = e_int_menus_menu_augmentation_add("config/0", e_mod_config_menu_add, NULL, NULL, NULL);
+       e_int_menus_menu_augmentation_point_disabled_set("config/1", 1);
+     }
+   else
+     e_int_menus_menu_augmentation_point_disabled_set("config/1", 0);
+
+   e_config_save_queue();
    return 1;
 }

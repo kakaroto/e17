@@ -24,9 +24,6 @@ bling - EFLized Composite Manager for E17.
 calendar - A module to show the current day.
 // works OK, but unmaintained propably
 
-configmenu - configuration menu augmentation(categories and control panel items)
-// simple, working, useful. originally created by jeffdameth, now i maintain it a bit.
-
 cpu - A module to monitor cpu load.  (Will be replaced by something better.)
 // unmaintained :) and will be replaced by stats module if i'll write some
 
