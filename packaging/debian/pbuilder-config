@@ -43,10 +43,6 @@ if $(echo ${DEBIAN_SUITES[@]} | grep -q "$DIST"); then
     # Debian configuration
     MIRRORSITE="http://$DEBIAN_MIRROR/debian/"
     COMPONENTS="main contrib non-free"
-    if $(echo "$STABLE_CODENAME stable" | grep -q $DIST); then
-        EXTRAPACKAGES="$EXTRAPACKAGES debian-backports-keyring"
-        OTHERMIRROR="$OTHERMIRROR | deb http://www.backports.org/debian $STABLE_BACKPORTS_SUITE $COMPONENTS"
-    fi
 elif $(echo ${UBUNTU_SUITES[@]} | grep -q "$DIST"); then
     # Ubuntu configuration
     MIRRORSITE="http://$UBUNTU_MIRROR/ubuntu/"
@@ -94,6 +90,6 @@ export PATH="/usr/lib/ccache:${PATH}"
 
 # build dependencies + ccache
 
-BUILDDEPENDS="debian-backports-keyring cdbs m4 autoconf automake automake1.4 automake1.7 automake1.9 libtool pkg-config texinfo xorg-dev cvs libmpd-dev libasound2-dev libxine1 locales gettext git-core subversion python-setuptools python-all-dev python-pyrex thunar mpd xorg-dev doxygen"
+BUILDDEPENDS="cdbs m4 autoconf automake automake1.4 automake1.7 automake1.9 libtool pkg-config texinfo xorg-dev cvs libmpd-dev libasound2-dev libxine1 locales gettext git-core subversion python-setuptools python-all-dev python-pyrex thunar mpd xorg-dev doxygen"
 
 EXTRAPACKAGES="$BUILDDEPENDS ccache"
