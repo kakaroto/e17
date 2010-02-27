@@ -111,9 +111,9 @@
     E_Ofono_Element *e_ofono_element_register(const char *path, const char *interface);
     void e_ofono_element_unregister(E_Ofono_Element *element);
 
-    bool e_ofono_element_message_send(E_Ofono_Element *element, const char *method_name, E_DBus_Method_Return_Cb cb, DBusMessage *msg, Eina_Inlist **pending, E_DBus_Method_Return_Cb user_cb, const void *user_data);
+    bool e_ofono_element_message_send(E_Ofono_Element *element, const char *method_name, const char *interface, E_DBus_Method_Return_Cb cb, DBusMessage *msg, Eina_Inlist **pending, E_DBus_Method_Return_Cb user_cb, const void *user_data);
 
-    bool e_ofono_element_call_full(E_Ofono_Element *element, const char *method_name, E_DBus_Method_Return_Cb cb, Eina_Inlist **pending, E_DBus_Method_Return_Cb user_cb, const void *user_data);
+    bool e_ofono_element_call_full(E_Ofono_Element *element, const char *method_name, const char *interface, E_DBus_Method_Return_Cb cb, Eina_Inlist **pending, E_DBus_Method_Return_Cb user_cb, const void *user_data);
     bool e_ofono_element_call_with_path(E_Ofono_Element *element, const char *method_name, const char *string, E_DBus_Method_Return_Cb cb, Eina_Inlist **pending, E_DBus_Method_Return_Cb user_cb, const void *user_data);
     bool e_ofono_element_call_with_string(E_Ofono_Element *element, const char *method_name, const char *string, E_DBus_Method_Return_Cb cb, Eina_Inlist **pending, E_DBus_Method_Return_Cb user_cb, const void *user_data);
 bool e_ofono_element_call_with_path_and_string(E_Ofono_Element *element, const char *method_name, const char *path, const char *string, E_DBus_Method_Return_Cb cb, Eina_Inlist **pending, E_DBus_Method_Return_Cb user_cb, const void *user_data);

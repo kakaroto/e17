@@ -1108,7 +1108,7 @@ e_ofono_element_unref(E_Ofono_Element *element)
  * @return 1 on success, 0 on failure.
  */
 bool
-e_ofono_element_message_send(E_Ofono_Element *element, const char *method_name, E_DBus_Method_Return_Cb cb, DBusMessage *msg, Eina_Inlist **pending, E_DBus_Method_Return_Cb user_cb, const void *user_data)
+e_ofono_element_message_send(E_Ofono_Element *element, const char *method_name, const char *interface, E_DBus_Method_Return_Cb cb, DBusMessage *msg, Eina_Inlist **pending, E_DBus_Method_Return_Cb user_cb, const void *user_data)
 {
    E_Ofono_Element_Call_Data *data;
    E_Ofono_Element_Pending *p;
@@ -1117,6 +1117,8 @@ e_ofono_element_message_send(E_Ofono_Element *element, const char *method_name, 
    EINA_SAFETY_ON_NULL_RETURN_VAL(method_name, 0);
    EINA_SAFETY_ON_NULL_RETURN_VAL(pending, 0);
    EINA_SAFETY_ON_NULL_RETURN_VAL(msg, 0);
+
+   interface = interface ? : element->interface;
 
    data = malloc(sizeof(*data));
    if (!data)
@@ -1157,7 +1159,7 @@ e_ofono_element_message_send(E_Ofono_Element *element, const char *method_name, 
      {
 	ERR("failed to call %s (obj=%s, path=%s, iface=%s)",
 	    method_name, e_ofono_system_bus_name_get(),
-	    element->path, element->interface);
+	    element->path, interface);
 	free(data);
 	free(p);
 	return 0;
@@ -1165,7 +1167,7 @@ e_ofono_element_message_send(E_Ofono_Element *element, const char *method_name, 
 }
 
 bool
-e_ofono_element_call_full(E_Ofono_Element *element, const char *method_name, E_DBus_Method_Return_Cb cb, Eina_Inlist **pending, E_DBus_Method_Return_Cb user_cb, const void *user_data)
+e_ofono_element_call_full(E_Ofono_Element *element, const char *method_name, const char *interface, E_DBus_Method_Return_Cb cb, Eina_Inlist **pending, E_DBus_Method_Return_Cb user_cb, const void *user_data)
 {
    DBusMessage *msg;
 
@@ -1173,12 +1175,14 @@ e_ofono_element_call_full(E_Ofono_Element *element, const char *method_name, E_D
    EINA_SAFETY_ON_NULL_RETURN_VAL(method_name, 0);
    EINA_SAFETY_ON_NULL_RETURN_VAL(pending, 0);
 
+   interface = interface ? : element->interface;
+
    msg = dbus_message_new_method_call
-     (e_ofono_system_bus_name_get(), element->path, element->interface,
+     (e_ofono_system_bus_name_get(), element->path, interface,
       method_name);
 
    return e_ofono_element_message_send
-     (element, method_name, cb, msg, pending, user_cb, user_data);
+     (element, method_name, interface, cb, msg, pending, user_cb, user_data);
 }
 
 static bool
@@ -1389,7 +1393,8 @@ e_ofono_element_sync_properties_full(E_Ofono_Element *element, E_DBus_Method_Ret
 
    EINA_SAFETY_ON_NULL_RETURN_VAL(element, 0);
    return e_ofono_element_call_full
-     (element, name, _e_ofono_element_get_properties_callback,
+     (element, name, element->interface,
+      _e_ofono_element_get_properties_callback,
       &element->_pending.properties_get, cb, data);
 }
 
@@ -1485,7 +1490,7 @@ e_ofono_element_property_dict_set_full(E_Ofono_Element *element, const char *pro
    dbus_message_iter_close_container(&itr, &variant);
 
    return e_ofono_element_message_send
-     (element, name, NULL, msg, &element->_pending.property_set, cb, data);
+     (element, name, NULL, NULL, msg, &element->_pending.property_set, cb, data);
 }
 
 /**
@@ -1535,7 +1540,7 @@ e_ofono_element_property_set_full(E_Ofono_Element *element, const char *prop, in
    dbus_message_iter_close_container(&itr, &v);
 
    return e_ofono_element_message_send
-     (element, name, NULL, msg, &element->_pending.property_set, cb, data);
+     (element, name, NULL, NULL, msg, &element->_pending.property_set, cb, data);
 }
 
 /**
@@ -1583,7 +1588,7 @@ e_ofono_element_call_with_path(E_Ofono_Element *element, const char *method_name
    dbus_message_iter_append_basic(&itr, DBUS_TYPE_OBJECT_PATH, &string);
 
    return e_ofono_element_message_send
-     (element, method_name, cb, msg, pending, user_cb, user_data);
+     (element, method_name, NULL, cb, msg, pending, user_cb, user_data);
 }
 
 bool
@@ -1608,7 +1613,7 @@ e_ofono_element_call_with_string(E_Ofono_Element *element, const char *method_na
    dbus_message_iter_append_basic(&itr, DBUS_TYPE_STRING, &string);
 
    return e_ofono_element_message_send
-     (element, method_name, cb, msg, pending, user_cb, user_data);
+     (element, method_name, NULL, cb, msg, pending, user_cb, user_data);
 }
 
 bool
@@ -1635,7 +1640,7 @@ e_ofono_element_call_with_path_and_string(E_Ofono_Element *element, const char *
    dbus_message_iter_append_basic(&itr, DBUS_TYPE_STRING, &string);
 
    return e_ofono_element_message_send
-     (element, method_name, cb, msg, pending, user_cb, user_data);
+     (element, method_name, NULL, cb, msg, pending, user_cb, user_data);
 }
 
 /**
