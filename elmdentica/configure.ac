@@ -13,10 +13,6 @@ AC_STDC_HEADERS
 AC_PROG_LIBTOOL
 AC_CONFIG_MACRO_DIR([m4])
 
-dnl PKG_CHECK_MODULES(XRANDR, xrandr, [],
-dnl		[AC_MSG_FAILURE([xrandr not found])]
-dnl		)
-
 PKG_CHECK_MODULES(GLIB, glib-2.0, [],
 		[AC_MSG_FAILURE([glib not found])]
 		)
