@@ -316,7 +316,7 @@ void ed_twitter_friends_endElement(void *user_data, const xmlChar * name) {
 		statuses->state = HASH;
 	} else if(strlen((char*)name) == 2 && strncmp((char*)name, "id", 2) == 0 && statuses->state == FT_ID) {
 		statuses->current->id = atoll(statuses->current->id_str);
-		g_free(statuses->current->id_str);
+		free(statuses->current->id_str);
 		statuses->state = FT_STATUS;
 	} else if(strncmp((char*)name, "status", 6) == 0 && strlen((char*)name) == 6) {
 		statuses->list = g_list_append(statuses->list, (gpointer)statuses->current);
@@ -332,7 +332,7 @@ void ed_twitter_friends_endElement(void *user_data, const xmlChar * name) {
 		statuses->state = FT_USER;
 	else if(statuses->state == FT_CREATED_AT && strncmp((char*)name, "created_at", 10) == 0) {
 		statuses->current->created_at = curl_getdate(statuses->current->created_at_str, NULL);
-		g_free(statuses->current->created_at_str);
+		free(statuses->current->created_at_str);
 		statuses->state = FT_STATUS;
 	} else if(strncmp((char*)name, "text", 4) == 0)
 		statuses->state = FT_STATUS;

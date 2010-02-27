@@ -207,7 +207,7 @@ gint ed_curl_get(char *screen_name, char *password, http_request * request) {
 
 		res = curl_easy_perform(ua);
 
-		g_free(userpwd);
+		free(userpwd);
 
 		curl_easy_getinfo(ua, CURLINFO_CONTENT_LENGTH_DOWNLOAD, &content_length);
 		if((res == 18 && content_length != -1) || res != 0) {
@@ -248,7 +248,7 @@ gint ed_curl_post(char *screen_name, char *password, http_request * request, cha
 
 	res = curl_easy_perform(ua);
 
-	g_free(userpwd);
+	free(userpwd);
 
 	curl_easy_getinfo(ua, CURLINFO_CONTENT_LENGTH_DOWNLOAD, &content_length);
 	if((res == 18 && content_length != -1) || res != 0) {

@@ -151,7 +151,7 @@ void elmdentica_init(void) {
 		exit(sqlite_res);
 	}
 	chmod(db_path, S_IRUSR|S_IWUSR);
-	g_free(db_path);
+	free(db_path);
 
 	query = "CREATE TABLE IF NOT EXISTS accounts (id INTEGER PRIMARY KEY, enabled INTEGER, name TEXT, password TEXT, type INTEGER, proto TEXT, domain TEXT, port INTEGER, base_url TEXT, receive INTEGER, send INTEGER );";
 	sqlite_res = sqlite3_exec(ed_DB, query, NULL, NULL, &db_err);
@@ -277,7 +277,7 @@ static void on_reply(void *data, Evas_Object *obj, void *event_info) {
 
 static void url_win_del(void *data, Evas_Object *obj, void *event_info) {
 	if(data)
-		g_free(data);
+		free(data);
 	evas_object_del(url_win);
 }
 
@@ -346,7 +346,7 @@ static void on_message_anchor_clicked(void *data, Evas_Object *obj, void *event_
 					elm_entry_editable_set(entry, FALSE);
 					url2 = g_strndup(url+1,strlen(url)-2);
 					elm_entry_entry_set(entry, url2);
-					g_free(url2);
+					free(url2);
 				evas_object_show(entry);
 				elm_frame_content_set(frame, entry);
 				elm_box_pack_end(box, frame);
@@ -580,7 +580,7 @@ static int add_status(void *notUsed, int argc, char **argv, char **azColName) {
 		//status_message = g_regex_replace(re, tmp, -1, 0, "<a href='\\1'>\\1</a>\\2", 0, &err);
 		status_message = g_regex_replace(re, tmp, -1, 0, "<a href='\\1'>[link]</a>\\2", 0, &err);
 		g_regex_unref(re);
-		g_free(tmp);
+		free(tmp);
 
 		elm_anchorblock_text_set(message, status_message);
 		evas_object_smart_callback_add(message, "anchor,clicked", on_message_anchor_clicked, bubble);
@@ -654,15 +654,14 @@ void show_error(StatusesList * statuses) {
 }
 
 void del_status(gpointer data, gpointer user_data) {
-
 	ub_Status	* status=(ub_Status*)data;
 
-	g_free(status->id_str);
-	g_free(status->screen_name);
-        g_free(status->name);
-        g_free(status->text);
-        g_free(status->created_at_str);
-	g_free(status);
+	free(status->id_str);
+	free(status->screen_name);
+	free(status->name);
+	free(status->text);
+	free(status->created_at_str);
+	free(status);
 
 }
 
@@ -730,7 +729,7 @@ void fill_message_list() {
 			printf("Can't run %s: %d => %s\n", query, sqlite_res, db_err);
 		}
 		sqlite3_free(db_err);
-		g_free(query);
+		free(query);
 	}
 }
 
@@ -820,7 +819,7 @@ static int do_post(void *notUsed, int argc, char **argv, char **azColName) {
 		}
 	}
 
-	g_free(msg);
+	free(msg);
 
 	return(0);
 }

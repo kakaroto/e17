@@ -214,7 +214,7 @@ void on_user_data_ok(void *data, Evas_Object *obj, void *event_info) {
 			sqlite3_free(db_err);
 			free(query);
 	
-			g_free(id);
+			free(id);
 			id = calloc(1, sizeof(int));
 			get_account_id(screen_name, domain, id);
 
