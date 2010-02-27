@@ -16,7 +16,8 @@ e_bluez.c \
 e_bluez_element.c \
 e_bluez_manager.c \
 e_bluez_adapter.c \
-e_bluez_device.c
+e_bluez_device.c \
+e_bluez_devicefound.c
 
 libebluez_la_LIBADD = \
 @EDBUS_LIBS@ @EVAS_LIBS@ \

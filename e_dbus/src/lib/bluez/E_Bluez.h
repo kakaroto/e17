@@ -93,8 +93,6 @@ extern "C" {
   EAPI bool e_bluez_manager_default_adapter(E_DBus_Method_Return_Cb cb, void *data) EINA_WARN_UNUSED_RESULT;
 
   /* Adapter Methods */
-  EAPI void e_bluez_adapter_device_found_free(E_Bluez_Device_Found *device) EINA_ARG_NONNULL(1);
-  EAPI const char *e_bluez_adapter_device_found_get_alias(E_Bluez_Device_Found *device) EINA_ARG_NONNULL(1);
   EAPI bool e_bluez_adapter_agent_register(E_Bluez_Element *element, const char *object_path, const char *capability, E_DBus_Method_Return_Cb cb, const void *data) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
   EAPI bool e_bluez_adapter_agent_unregister(E_Bluez_Element *element, const char *object_path, E_DBus_Method_Return_Cb cb, const void *data) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
   EAPI bool e_bluez_adapter_address_get(E_Bluez_Element *element, const char **address) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
@@ -104,6 +102,10 @@ extern "C" {
   EAPI bool e_bluez_adapter_start_discovery(E_Bluez_Element *element, E_DBus_Method_Return_Cb cb, const void *data) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
   EAPI bool e_bluez_adapter_stop_discovery(E_Bluez_Element *element, E_DBus_Method_Return_Cb cb, const void *data) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
 bool e_bluez_adapter_create_paired_device(E_Bluez_Element *element, const char *object_path, const char *capability, const char *device, E_DBus_Method_Return_Cb cb, const void *data) EINA_ARG_NONNULL(1,2,4) EINA_WARN_UNUSED_RESULT;
+
+  /* Device Found Methods */
+  EAPI void e_bluez_devicefound_free(E_Bluez_Device_Found *device) EINA_ARG_NONNULL(1);
+  EAPI const char *e_bluez_devicefound_alias_get(E_Bluez_Device_Found *device) EINA_ARG_NONNULL(1);
 
   /* Devices Methods */
   EAPI bool e_bluez_device_name_get(E_Bluez_Element *element, const char **name) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;

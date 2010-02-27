@@ -119,7 +119,7 @@ _on_device_found(void *data, int type, void *info)
    e_bluez_element_array_print(stderr, device->array);
    printf("\n");
 
-   e_bluez_adapter_device_found_free(device);
+   e_bluez_devicefound_free(device);
    return 1;
 }
 
