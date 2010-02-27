@@ -538,7 +538,7 @@ ui_loop(void)
 		  evas_object_color_set(o, a, a, a, a);
 
 		  o = o_menu_title;
-		  evas_object_color_set(o, 255, 255, 255, a);
+		  evas_object_color_set(o, a, a, a, a);
 		  evas_object_text_text_set(o, mi->text);
 		  evas_object_geometry_get(o, NULL, NULL, &tw, &th);
 	          x = (win_w - tw) / 2;
