@@ -447,7 +447,7 @@ _e_bluez_element_get_interface(const char *key)
      }
 
    if (!interface)
-     ERR("bluez reported unknown interface: %s", key);
+     ERR("failed to find interface for property \"%s\"", key);
 
    return interface;
 }

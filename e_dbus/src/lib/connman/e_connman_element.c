@@ -460,7 +460,7 @@ _e_connman_element_get_interface(const char *key)
      }
 
    if (!interface)
-     ERR("connman reported unknown interface: %s", key);
+     ERR("failed to find interface for property \"%s\"", key);
 
    return interface;
 }
