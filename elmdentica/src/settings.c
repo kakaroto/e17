@@ -477,12 +477,14 @@ void on_account_edit(void *data, Evas_Object *obj, void *event_info) {
 
 	if(current_account == 0) return;
 
-	query = g_strdup_printf("SELECT * FROM accounts WHERE id = '%d' LIMIT 1;", current_account);
-	sqlite_res = sqlite3_exec(ed_DB, query, account_edit, data, &db_err);
-        if(sqlite_res != 0)
-        	printf("Can't run %s: %s\n", query, db_err);
-	sqlite3_free(db_err);
-	g_free(query);
+	sqlite_res = asprintf(&query, "SELECT * FROM accounts WHERE id = '%d' LIMIT 1;", current_account);
+	if(sqlite_res != -1) {
+		sqlite_res = sqlite3_exec(ed_DB, query, account_edit, data, &db_err);
+		if(sqlite_res != 0)
+			printf("Can't run %s: %s\n", query, db_err);
+		sqlite3_free(db_err);
+		free(query);
+	}
 }
 
 void on_account_add(void *data, Evas_Object *obj, void *event_info) {
@@ -522,7 +524,7 @@ static int accounts_list_insert(void *user_data, int argc, char **argv, char **a
 	Elm_List_Item * item=NULL;
 	int *id = g_malloc0(sizeof(int));
 	char *key=NULL;
-	int enabled=0;
+	int enabled=0, res=0;
 
 	/*	In this SQL context, these are the columns:
 			argv[0] == id
@@ -532,21 +534,23 @@ static int accounts_list_insert(void *user_data, int argc, char **argv, char **a
 	*/
 
 	*id = atoi(argv[0]);
-	key = g_strdup_printf("%s@%s", argv[1], argv[2]);
-	enabled = atoi(argv[3]);
+	res = asprintf(&key, "%s@%s", argv[1], argv[2]);
+	if(res != 0) {
+		enabled = atoi(argv[3]);
 
-	check = elm_check_add(settings_win);
-	if(enabled)
-		elm_check_state_set(check, TRUE);
-	else
-		elm_check_state_set(check, FALSE);
+		check = elm_check_add(settings_win);
+		if(enabled)
+			elm_check_state_set(check, TRUE);
+		else
+			elm_check_state_set(check, FALSE);
 
-	evas_object_smart_callback_add(check, "changed", on_account_enabled_toggle, id);
-	evas_object_show(check);
+		evas_object_smart_callback_add(check, "changed", on_account_enabled_toggle, id);
+		evas_object_show(check);
 
-	item = elm_list_item_append(list, (char*)key, check, NULL, on_account_selected, id);
-
-	return(0);
+		item = elm_list_item_append(list, (char*)key, check, NULL, on_account_selected, id);
+		return(0);
+	} else {
+		reutrn(1);
 }
 
 void on_settings_accounts(void *data, Evas_Object *toolbar, void *event_info) {
@@ -644,7 +648,7 @@ void on_settings_accounts(void *data, Evas_Object *toolbar, void *event_info) {
 
 static int cache_posts_count(void *user_data, int argc, char **argv, char **azColName) {
 	Evas_Object *label = (Evas_Object*)user_data;
-	int count=0;
+	int count=0, res=0;
 	char *label_str=NULL;
 
 	/*	In this SQL context, these are the columns:
@@ -655,9 +659,11 @@ static int cache_posts_count(void *user_data, int argc, char **argv, char **azCo
 	if(count == 0)
 		elm_label_label_set(label, _("No posts<br>in cache."));
 	else {
-		label_str = g_strdup_printf(_("Currently remembering<br>%d posts."), count);
-		elm_label_label_set(label, label_str);
-		g_free(label_str);
+		res = asprintf(&label_str, _("Currently remembering<br>%d posts."), count);
+		if(res != -1) {
+			elm_label_label_set(label, label_str);
+			free(label_str);
+		}
 	}
 
 	return(0);
@@ -680,7 +686,7 @@ void cache_posts_forget(void *data, Evas_Object *obj, void *event_info) {
 
 static int cache_messages_count(void *user_data, int argc, char **argv, char **azColName) {
 	Evas_Object *label = (Evas_Object*)user_data;
-	int count=0;
+	int count=0, res=0;
 	char *label_str=NULL;
 
 	/*	In this SQL context, these are the columns:
@@ -691,9 +697,11 @@ static int cache_messages_count(void *user_data, int argc, char **argv, char **a
 	if(count == 0)
 		elm_label_label_set(label, _("No messages<br>in cache."));
 	else {
-		label_str = g_strdup_printf(_("Currently remembering<br>%d messages."), count);
-		elm_label_label_set(label, label_str);
-		g_free(label_str);
+		res = asprintf(&label_str, _("Currently remembering<br>%d messages."), count);
+		if(res != -1) {
+			elm_label_label_set(label, label_str);
+			free(label_str);
+		}
 	}
 
 	return(0);
@@ -715,10 +723,14 @@ void cache_messages_forget(void *data, Evas_Object *obj, void *event_info) {
 
 void cache_messages_max_set(Evas_Object *label) {
 	char *count=NULL;
-	count = g_strdup_printf(" %3d  ", MAX_MESSAGES);
-	elm_label_label_set(label, count);
-	g_free(count);
-	gconf_client_set_int(conf_client, "/apps/elmdentica/max_messages", MAX_MESSAGES, NULL);
+	int res=0;
+
+	res = asprintf(&count, " %3d  ", MAX_MESSAGES);
+	if(res != -1) {
+		elm_label_label_set(label, count);
+		free(count);
+		gconf_client_set_int(conf_client, "/apps/elmdentica/max_messages", MAX_MESSAGES, NULL);
+	}
 }
 
 void cache_messages_max_decrease(void *label, Evas_Object *obj, void *event_info) {
@@ -806,10 +818,13 @@ void on_settings_cache(void *data, Evas_Object *toolbar, void *event_info) {
 			label = elm_label_add(settings_win);
 				evas_object_size_hint_weight_set(label, 1, 1);
 				evas_object_size_hint_align_set(label, 0.5, 0.5);
-				count = g_strdup_printf(" %3d  ", MAX_MESSAGES);
-				elm_label_label_set(label, count);
-				g_free(count);
-				evas_object_show(label);
+				sqlite_res = asprintf(&count, " %3d  ", MAX_MESSAGES);
+				if(sqlite_res != -1) {
+					elm_label_label_set(label, count);
+					free(count);
+					evas_object_show(label);
+				}
+				sqlite_res = 0;
 			elm_box_pack_end(box, label);
 
 			button = elm_button_add(settings_win);
