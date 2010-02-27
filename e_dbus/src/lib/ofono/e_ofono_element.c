@@ -454,7 +454,7 @@ _e_ofono_element_get_interface(const char *key)
    return interface;
 }
 
-static void
+static E_Ofono_Element *
 _e_ofono_element_item_register(const char *key, const char *item)
 {
    E_Ofono_Element *element;
@@ -462,10 +462,11 @@ _e_ofono_element_item_register(const char *key, const char *item)
 
    interface = _e_ofono_element_get_interface(key);
    if (!interface)
-     return;
+     return NULL;
    element = e_ofono_element_register(item, interface);
    if ((element) && (!e_ofono_element_properties_sync(element)))
      WRN("could not get properties of %s", element->path);
+   return element;
 }
 
 /* Match 2 arrays to find which are new and which are old elements
@@ -473,7 +474,7 @@ _e_ofono_element_item_register(const char *key, const char *item)
  * For old elements, unregister them, sending proper DEL event
  */
 static void
-_e_ofono_element_array_match(E_Ofono_Array *old, E_Ofono_Array *new, const char *prop_name)
+_e_ofono_element_array_match(E_Ofono_Array *old, E_Ofono_Array *new, const char *prop_name, E_Ofono_Element *element)
 {
    Eina_List *deleted = NULL;
    Eina_Array_Iterator iter_old, iter_new;
@@ -481,11 +482,16 @@ _e_ofono_element_array_match(E_Ofono_Array *old, E_Ofono_Array *new, const char 
    void *item_old, *item_new;
    Eina_List *l;
    void *data;
+   bool interfaces = 0;
 
    if (!old)
      return;
-   if (old->type != DBUS_TYPE_OBJECT_PATH)
+   if ((old->type != DBUS_TYPE_OBJECT_PATH) &&
+       (old->type != DBUS_TYPE_STRING))
      return;
+
+   /* is this a list of interfaces? */
+   interfaces = !strcmp(prop_name, "Interfaces");
 
    if ((!new) || (!new->array) || eina_array_count_get(new->array) == 0)
      {
@@ -536,8 +542,15 @@ _e_ofono_element_array_match(E_Ofono_Array *old, E_Ofono_Array *new, const char 
 	  }
 	if (!found)
 	  {
-	    _e_ofono_element_item_register(prop_name, item_new);
-	    DBG("Add element %s\n", (const char *) item_new);
+	     E_Ofono_Element *e = NULL;
+
+	     if (interfaces)
+	       e = e_ofono_element_register(item_new, element->path);
+	     else
+	       e = _e_ofono_element_item_register(prop_name, item_new);
+
+	     if (e)
+	       DBG("Add element %s\n", e->path, e->interface);
 	  }
      }
 
@@ -546,10 +559,18 @@ _e_ofono_element_array_match(E_Ofono_Array *old, E_Ofono_Array *new, const char 
     */
    EINA_LIST_FREE(deleted, data)
      {
-	E_Ofono_Element *e = e_ofono_element_get(data, prop_name);
+	E_Ofono_Element *e;
+	if (interfaces)
+	  e = e_ofono_element_get(element->path, item_old);
+	else
+	  e = e_ofono_element_get(data,
+				  _e_ofono_element_get_interface(prop_name));
+
 	if (e)
-	  e_ofono_element_unregister(e);
-	DBG("Delete element %s\n", (const char *) data);
+	  {
+	     e_ofono_element_unregister(e);
+	     DBG("Deleted element %s %s\n", e->path, e->interface);
+	  }
      }
 
 out_remove_remaining:
@@ -560,16 +581,22 @@ out_remove_remaining:
 	if (!item_old)
 	  break;
 
-	e = e_ofono_element_get(item_old,
-				_e_ofono_element_get_interface(prop_name));
+	if (interfaces)
+	  e = e_ofono_element_get(element->path, item_old);
+	else
+	  e = e_ofono_element_get(item_old,
+				  _e_ofono_element_get_interface(prop_name));
+
 	if (e)
-	  e_ofono_element_unregister(e);
-	DBG("Delete element %s\n", (const char *) item_old);
+	  {
+	     e_ofono_element_unregister(e);
+	     DBG("Deleted element %s %s\n", e->path, e->interface);
+	  }
      }
 }
 
 static bool
-_e_ofono_element_property_update(E_Ofono_Element_Property *property, int type, void *data)
+_e_ofono_element_property_update(E_Ofono_Element_Property *property, int type, void *data, E_Ofono_Element *element)
 {
    int changed = 0;
 
@@ -649,7 +676,8 @@ _e_ofono_element_property_update(E_Ofono_Element_Property *property, int type, v
 	 if (!changed)
 	   if (property->value.array)
 	     {
-		_e_ofono_element_array_match(property->value.array, data, property->name);
+		_e_ofono_element_array_match(property->value.array, data,
+					     property->name, element);
 		_e_ofono_element_array_free(property->value.array, data);
 	     }
 	 property->value.array = data;
@@ -663,7 +691,7 @@ _e_ofono_element_property_update(E_Ofono_Element_Property *property, int type, v
 }
 
 static E_Ofono_Element_Property *
-_e_ofono_element_property_new(const char *name, int type, void *data)
+_e_ofono_element_property_new(const char *name, int type, void *data, E_Ofono_Element *element)
 {
    E_Ofono_Element_Property *property;
 
@@ -676,7 +704,7 @@ _e_ofono_element_property_new(const char *name, int type, void *data)
      }
 
    property->name = name;
-   _e_ofono_element_property_update(property, type, data);
+   _e_ofono_element_property_update(property, type, data, element);
    return property;
 }
 
@@ -1160,11 +1188,11 @@ _e_ofono_element_property_value_add(E_Ofono_Element *element, const char *name, 
 	if (p->name == name)
 	  {
 	     eina_stringshare_del(name);
-	     return _e_ofono_element_property_update(p, type, value);
+	     return _e_ofono_element_property_update(p, type, value, element);
 	  }
      }
 
-   p = _e_ofono_element_property_new(name, type, value);
+   p = _e_ofono_element_property_new(name, type, value, element);
    if (!p)
      {
 	ERR("could not create property %s (%c)", name, type);
