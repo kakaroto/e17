@@ -94,6 +94,7 @@ extern "C" {
 
   /* Adapter Methods */
   EAPI void e_bluez_adapter_device_found_free(E_Bluez_Device_Found *device) EINA_ARG_NONNULL(1);
+  EAPI const char *e_bluez_adapter_device_found_get_alias(E_Bluez_Device_Found *device) EINA_ARG_NONNULL(1);
   EAPI bool e_bluez_adapter_agent_register(E_Bluez_Element *element, const char *object_path, const char *capability, E_DBus_Method_Return_Cb cb, const void *data) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
   EAPI bool e_bluez_adapter_agent_unregister(E_Bluez_Element *element, const char *object_path, E_DBus_Method_Return_Cb cb, const void *data) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
   EAPI bool e_bluez_adapter_address_get(E_Bluez_Element *element, const char **address) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;

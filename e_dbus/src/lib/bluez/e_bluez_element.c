@@ -8,7 +8,6 @@ typedef struct _E_Bluez_Element_Pending E_Bluez_Element_Pending;
 typedef struct _E_Bluez_Element_Call_Data E_Bluez_Element_Call_Data;
 typedef struct _E_Bluez_Element_Property E_Bluez_Element_Property;
 typedef struct _E_Bluez_Element_Listener E_Bluez_Element_Listener;
-typedef struct _E_Bluez_Element_Dict_Entry E_Bluez_Element_Dict_Entry;
 
 struct _E_Bluez_Element_Pending
 {
@@ -41,21 +40,6 @@ struct _E_Bluez_Element_Property
       const char *path;
       void *variant;
       E_Bluez_Array *array;
-   } value;
-};
-
-struct _E_Bluez_Element_Dict_Entry
-{
-   const char *name;
-   int type;
-   union {
-      bool boolean;
-      const char *str;
-      short i16;
-      unsigned short u16;
-      unsigned int u32;
-      unsigned char byte;
-      const char *path;
    } value;
 };
 
@@ -342,8 +326,8 @@ _e_bluez_element_dict_entry_new(DBusMessageIter *itr)
    return entry;
 }
 
-static E_Bluez_Element_Dict_Entry *
-_e_bluez_element_array_dict_find_stringshared(const E_Bluez_Array *array, const char *key)
+E_Bluez_Element_Dict_Entry *
+e_bluez_element_array_dict_find_stringshared(const E_Bluez_Array *array, const char *key)
 {
    E_Bluez_Element_Dict_Entry *entry;
    Eina_Array_Iterator iterator;
@@ -1742,7 +1726,7 @@ e_bluez_element_property_dict_get_stringshared(const E_Bluez_Element *element, c
 		 element->path, element, dict_name, t, t);
 	     return 0;
 	  }
-	entry = _e_bluez_element_array_dict_find_stringshared(array, key);
+	entry = e_bluez_element_array_dict_find_stringshared(array, key);
 	if (!entry)
 	  {
 	     WRN("element %s (%p) has no dict property with name \"%s\" with "

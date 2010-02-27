@@ -50,6 +50,23 @@ extern const char *e_bluez_prop_devices;
 
 extern int _e_dbus_bluez_log_dom;
 
+typedef struct _E_Bluez_Element_Dict_Entry E_Bluez_Element_Dict_Entry;
+
+struct _E_Bluez_Element_Dict_Entry
+{
+   const char *name;
+   int type;
+   union {
+      bool boolean;
+      const char *str;
+      short i16;
+      unsigned short u16;
+      unsigned int u32;
+      unsigned char byte;
+      const char *path;
+   } value;
+};
+
 #ifndef EINA_LOG_DEFAULT_COLOR
 #define EINA_LOG_DEFAULT_COLOR EINA_COLOR_CYAN
 #endif
@@ -127,6 +144,7 @@ void e_bluez_element_unregister(E_Bluez_Element *element);
 bool e_bluez_element_message_send(E_Bluez_Element *element, const char *method_name, E_DBus_Method_Return_Cb cb, DBusMessage *msg, Eina_Inlist **pending, E_DBus_Method_Return_Cb user_cb, const void *user_data);
 E_Bluez_Array *e_bluez_element_iter_get_array(DBusMessageIter *itr, const char *key);
 void e_bluez_element_event_add(int event_type, E_Bluez_Element *element);
+E_Bluez_Element_Dict_Entry * e_bluez_element_array_dict_find_stringshared(const E_Bluez_Array *array, const char *key);
 void e_bluez_element_array_free(E_Bluez_Array *array, E_Bluez_Array *new __UNUSED__);
 
 bool e_bluez_element_call_full(E_Bluez_Element *element, const char *method_name, E_DBus_Method_Return_Cb cb, Eina_Inlist **pending, E_DBus_Method_Return_Cb user_cb, const void *user_data);
