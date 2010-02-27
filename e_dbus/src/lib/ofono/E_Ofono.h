@@ -76,6 +76,12 @@ extern "C" {
   EAPI bool e_ofono_modem_powered_set(E_Ofono_Element *element, Eina_Bool powered, E_DBus_Method_Return_Cb cb, const void *data);
   EAPI bool e_ofono_modem_name_get(E_Ofono_Element *element, const char **name);
 
+  /* NetworkRegistration Methods */
+  EAPI bool e_ofono_netreg_mode_get(E_Ofono_Element *element, const char **mode);
+  EAPI bool e_ofono_netreg_status_get(E_Ofono_Element *element, const char **status);
+  EAPI bool e_ofono_netreg_operator_get(E_Ofono_Element *element, const char **op);
+  EAPI bool e_ofono_netreg_strength_get(E_Ofono_Element *element, char *strength);
+
   /* Low-Level API:
    *
    * Should just be used to work around problems until proper solution

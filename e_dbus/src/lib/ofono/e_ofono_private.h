@@ -34,6 +34,11 @@
     extern const char *e_ofono_prop_name;
     extern const char *e_ofono_prop_powered;
     extern const char *e_ofono_prop_interfaces;
+    extern const char *e_ofono_iface_network_reg;
+    extern const char *e_ofono_prop_mode;
+    extern const char *e_ofono_prop_status;
+    extern const char *e_ofono_prop_operator;
+    extern const char *e_ofono_prop_strength;
 
     extern int _e_dbus_ofono_log_dom;
 
