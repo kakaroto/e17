@@ -550,7 +550,8 @@ static int accounts_list_insert(void *user_data, int argc, char **argv, char **a
 		item = elm_list_item_append(list, (char*)key, check, NULL, on_account_selected, id);
 		return(0);
 	} else {
-		reutrn(1);
+		return(1);
+	}
 }
 
 void on_settings_accounts(void *data, Evas_Object *toolbar, void *event_info) {
