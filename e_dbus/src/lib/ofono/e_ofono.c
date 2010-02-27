@@ -22,6 +22,10 @@ EAPI int E_OFONO_EVENT_ELEMENT_UPDATED = 0;
 
 const char *e_ofono_iface_manager = NULL;
 const char *e_ofono_prop_modems = NULL;
+const char *e_ofono_iface_modem = NULL;
+const char *e_ofono_prop_name = NULL;
+const char *e_ofono_prop_powered = NULL;
+const char *e_ofono_prop_interfaces = NULL;
 
 int _e_dbus_ofono_log_dom = -1;
 
@@ -219,6 +223,14 @@ e_ofono_system_init(E_DBus_Connection *edbus_conn)
 		e_ofono_iface_manager = eina_stringshare_add("org.ofono.Manager");
 	if (e_ofono_prop_modems == NULL)
 		e_ofono_prop_modems = eina_stringshare_add("Modems");
+	if (e_ofono_iface_modem == NULL)
+		e_ofono_iface_modem = eina_stringshare_add("org.ofono.Modem");
+	if (e_ofono_prop_name == NULL)
+		e_ofono_prop_name = eina_stringshare_add("Name");
+	if (e_ofono_prop_powered == NULL)
+		e_ofono_prop_powered = eina_stringshare_add("Powered");
+	if (e_ofono_prop_interfaces == NULL)
+		e_ofono_prop_interfaces = eina_stringshare_add("Interfaces");
 
 	e_ofono_conn = edbus_conn;
 	cb_name_owner_changed = e_dbus_signal_handler_add
@@ -266,5 +278,9 @@ e_ofono_system_shutdown(void)
 
 	_stringshare_del(&e_ofono_iface_manager);
 	_stringshare_del(&e_ofono_prop_modems);
+	_stringshare_del(&e_ofono_iface_modem);
+	_stringshare_del(&e_ofono_prop_name);
+	_stringshare_del(&e_ofono_prop_powered);
+	_stringshare_del(&e_ofono_prop_interfaces);
 	return 0;
 }

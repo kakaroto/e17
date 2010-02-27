@@ -71,6 +71,11 @@ extern "C" {
   /* Manager Methods */
   EAPI E_Ofono_Element *e_ofono_manager_get(void) EINA_WARN_UNUSED_RESULT;
 
+  /* Modem Methods */
+  EAPI bool e_ofono_modem_powered_get(E_Ofono_Element *element, Eina_Bool *powered);
+  EAPI bool e_ofono_modem_powered_set(E_Ofono_Element *element, Eina_Bool powered, E_DBus_Method_Return_Cb cb, const void *data);
+  EAPI bool e_ofono_modem_name_get(E_Ofono_Element *element, const char **name);
+
   /* Low-Level API:
    *
    * Should just be used to work around problems until proper solution

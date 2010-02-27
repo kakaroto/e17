@@ -30,6 +30,10 @@
 
     extern const char *e_ofono_iface_manager;
     extern const char *e_ofono_prop_modems;
+    extern const char *e_ofono_iface_modem;
+    extern const char *e_ofono_prop_name;
+    extern const char *e_ofono_prop_powered;
+    extern const char *e_ofono_prop_interfaces;
 
     extern int _e_dbus_ofono_log_dom;
 

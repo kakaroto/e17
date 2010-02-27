@@ -268,6 +268,34 @@ _on_cmd_manager_get(char *cmd, char *args)
    return 1;
 }
 
+/* Modem Commands */
+
+static int
+_on_cmd_modem_set_powered(char *cmd, char *args)
+{
+   char *next_args;
+   Eina_Bool powered;
+   E_Ofono_Element *element = _element_from_args("org.ofono.Modem", args, &next_args);
+
+   if (!element)
+	   return 1;
+
+   if (!args)
+     {
+	fputs("ERROR: missing the powered value\n", stderr);
+	return 1;
+     }
+
+   powered = !!atol(next_args);
+
+   if (e_ofono_modem_powered_set
+       (element, powered, _method_success_check, "modem_set_powered"))
+     printf(":::Modem %s Powered set to %hhu\n", element->path, powered);
+   else
+     fputs("ERROR: can't set Modem Powered\n", stderr);
+   return 1;
+}
+
 static int
 _on_input(void *data, Ecore_Fd_Handler *fd_handler)
 {
@@ -284,6 +312,7 @@ _on_input(void *data, Ecore_Fd_Handler *fd_handler)
      {"get_properties", _on_cmd_get_properties},
      {"set_property", _on_cmd_property_set},
      {"manager_get", _on_cmd_manager_get},
+     {"modem_set_powered", _on_cmd_modem_set_powered},
      {NULL, NULL}
    };
 

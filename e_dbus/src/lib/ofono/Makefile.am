@@ -14,7 +14,8 @@ E_Ofono.h \
 e_ofono_private.h \
 e_ofono.c \
 e_ofono_element.c \
-e_ofono_manager.c
+e_ofono_manager.c \
+e_ofono_modem.c
 
 libeofono_la_LIBADD = \
 @EDBUS_LIBS@ @EVAS_LIBS@ \

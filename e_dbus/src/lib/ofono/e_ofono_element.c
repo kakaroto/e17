@@ -444,6 +444,10 @@ _e_ofono_element_get_interface(const char *key)
 
    switch (head)
      {
+      case 'M':
+	 if (strcmp(tail, "odems") == 0)
+	   interface = e_ofono_iface_modem;
+	 break;
       default:
 	 break;
      }
@@ -1342,6 +1346,22 @@ _e_ofono_element_get_properties_callback(void *user_data, DBusMessage *msg, DBus
 	  {
 	     INF("property value changed %s (%c)", key, t);
 	     changed = 1;
+	     if ((strcmp(key, "Interfaces") == 0) && value)
+	       {
+		  char *interface;
+		  Eina_Array_Iterator iterator;
+		  unsigned int i;
+		  E_Ofono_Element *e;
+
+		  EINA_ARRAY_ITER_NEXT(((E_Ofono_Array*)value)->array, i,
+				       interface, iterator)
+		    {
+		       DBG("Found interface %s on %s", interface, element->path);
+		       e = e_ofono_element_register(element->path, interface);
+		       if ((e) && (!e_ofono_element_properties_sync(e)))
+			 WRN("could not get properties of %s", e->path);
+		    }
+	       }
 	  }
      }
    while (dbus_message_iter_next(&s_itr));
@@ -2132,6 +2152,23 @@ _e_ofono_element_property_changed_callback(void *data, DBusMessage *msg)
      {
 	INF("property value changed %s (%c)", name, t);
 	changed = 1;
+	if ((strcmp(name, "Interfaces") == 0) && value)
+	  {
+	     char *interface;
+	     Eina_Array_Iterator iterator;
+	     unsigned int i;
+	     E_Ofono_Element *e;
+
+	     EINA_ARRAY_ITER_NEXT(((E_Ofono_Array*)value)->array, i,
+				  interface, iterator)
+	       {
+		  DBG("Found interface %s on %s", interface, element->path);
+		  e_ofono_element_register(element->path, interface);
+		  e = e_ofono_element_register(element->path, interface);
+		  if ((e) && (!e_ofono_element_properties_sync(e)))
+		    WRN("could not get properties of %s", e->path);
+	       }
+	  }
      }
    if (changed)
      _e_ofono_element_listeners_call(element);
