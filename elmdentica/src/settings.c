@@ -16,6 +16,10 @@
  *
  */
 
+#ifndef _GNU_SOURCE
+# define _GNU_SOURCE
+#endif
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -85,17 +89,18 @@ void on_account_enabled_toggle(void *data, Evas_Object *check, void *event_info)
 	char *query=NULL, *db_err=NULL;
 
 	if(elm_check_state_get(check)) {
-		query = g_strdup_printf("UPDATE accounts set enabled='%d' where id='%d';", 1, *id);
+		sqlite_res = asprintf(&query, "UPDATE accounts set enabled='%d' where id='%d';", 1, *id);
 	} else {
-		query = g_strdup_printf("UPDATE accounts set enabled='%d' where id='%d';", 0, *id);
+		sqlite_res = asprintf(&query, "UPDATE accounts set enabled='%d' where id='%d';", 0, *id);
 	}
 
-        sqlite_res = sqlite3_exec(ed_DB, query, NULL, NULL, &db_err);
-        if(sqlite_res != 0) {
-               	printf("Can't %s: %d = %s\n", query, sqlite_res, db_err);
-        }
-	sqlite3_free(db_err);
-	g_free(query);
+	if(sqlite_res != -1) {
+		sqlite_res = sqlite3_exec(ed_DB, query, NULL, NULL, &db_err);
+		if(sqlite_res != 0)
+			printf("Can't %s: %d = %s\n", query, sqlite_res, db_err);
+		sqlite3_free(db_err);
+		free(query);
+	}
 
 }
 
@@ -104,16 +109,17 @@ void drop_account(Evas_Object *account_list) {
 	char *query=NULL, *db_err=NULL;
 	Elm_List_Item *li;
 
-	query = g_strdup_printf("DELETE FROM accounts WHERE id='%d';", current_account);
-        sqlite_res = sqlite3_exec(ed_DB, query, NULL, NULL, &db_err);
-        if(sqlite_res != 0) {
-               	printf("Can't %s: %d = %s\n", query, sqlite_res, db_err);
-        }
-	sqlite3_free(db_err);
-	g_free(query);
+	sqlite_res = asprintf(&query, "DELETE FROM accounts WHERE id='%d';", current_account);
+	if(sqlite_res != -1) {
+		sqlite_res = sqlite3_exec(ed_DB, query, NULL, NULL, &db_err);
+		if(sqlite_res != 0)
+			printf("Can't %s: %d = %s\n", query, sqlite_res, db_err);
+		sqlite3_free(db_err);
+		free(query);
 
-	li = elm_list_selected_item_get(account_list);
-	if(li) elm_list_item_del(li);
+		li = elm_list_selected_item_get(account_list);
+		if(li) elm_list_item_del(li);
+	}
 }
 
 static int get_account_id_handler(void *data, int argc, char **argv, char **azColName) {
@@ -127,20 +133,21 @@ static int get_account_id_handler(void *data, int argc, char **argv, char **azCo
 void get_account_id(char *screen_name, char *domain, int *id) {
 	char *query=NULL, *db_err=NULL;
 	int sqlite_res = 0;
-	query = g_strdup_printf("SELECT id FROM accounts WHERE name = '%s' AND domain = '%s' LIMIT 1;", screen_name, domain);
-	sqlite_res = sqlite3_exec(ed_DB, query, get_account_id_handler, (void*)id, &db_err);
-        if(sqlite_res != 0) {
-               	printf("Can't run %s: %s\n", query, db_err);
-        }
-	sqlite3_free(db_err);
-	g_free(query);
+	sqlite_res = asprintf(&query, "SELECT id FROM accounts WHERE name = '%s' AND domain = '%s' LIMIT 1;", screen_name, domain);
+	if(sqlite_res != -1) {
+		sqlite_res = sqlite3_exec(ed_DB, query, get_account_id_handler, (void*)id, &db_err);
+		if(sqlite_res != 0)
+			printf("Can't run %s: %s\n", query, db_err);
+		sqlite3_free(db_err);
+		free(query);
+	}
 }
 
 void on_user_data_ok(void *data, Evas_Object *obj, void *event_info) {
 	Evas_Object *account_list = (Evas_Object*)data, *check=NULL;
 	char *account_id=NULL, *query=NULL, *db_err=NULL;
 	char *screen_name=NULL, *password=NULL, *domain=NULL, *base_url=NULL, *proto=NULL;
-	int enabled=1, port=443, sqlite_res = 0, *id=NULL, receive=1, send=1;
+	int enabled=1, port=443, sqlite_res = 0, *id=NULL, receive=1, send=1, res=0;
 	Elm_List_Item *li;
 
 	screen_name = g_strreplace((char*)elm_entry_entry_get(screen_name_entry), "<br>", "");
@@ -167,42 +174,45 @@ void on_user_data_ok(void *data, Evas_Object *obj, void *event_info) {
 	id = g_malloc0(sizeof(int));
 	get_account_id(screen_name, domain, id);
 
-	account_id = g_strdup_printf("%s@%s", screen_name, domain);
-	if(current_account != 0)
-		drop_account(account_list);
+	res = asprintf(&account_id, "%s@%s", screen_name, domain);
+	if(res != -1) {
+		if(current_account != 0)
+			drop_account(account_list);
 
-	if(*id == 0) {
-		query = g_strdup_printf("INSERT INTO accounts (enabled, name, password, type, proto, domain, port, base_url, receive, send) values (%d, '%s', '%s', %d, '%s', '%s', %d, '%s', %d, %d);",
-				enabled, screen_name, password, current_account_type, proto, domain, port, base_url, receive, send);
-	} else {
-		query = g_strdup_printf("INSERT INTO accounts (id, enabled, name, password, type, proto, domain, port, base_url, receive, send) values (%d, %d, '%s', '%s', %d, '%s', '%s', %d, '%s', %d, %d);",
-				*id, enabled, screen_name, password, current_account_type, proto, domain, port, base_url, receive, send);
+		if(*id == 0) {
+			res = asprintf(&query, "INSERT INTO accounts (enabled, name, password, type, proto, domain, port, base_url, receive, send) values (%d, '%s', '%s', %d, '%s', '%s', %d, '%s', %d, %d);",
+					enabled, screen_name, password, current_account_type, proto, domain, port, base_url, receive, send);
+		} else {
+			res = asprintf(&query, "INSERT INTO accounts (id, enabled, name, password, type, proto, domain, port, base_url, receive, send) values (%d, %d, '%s', '%s', %d, '%s', '%s', %d, '%s', %d, %d);",
+					*id, enabled, screen_name, password, current_account_type, proto, domain, port, base_url, receive, send);
+		}
+
+		if(res != -1) {
+			sqlite_res = sqlite3_exec(ed_DB, query, NULL, NULL, &db_err);
+			if(sqlite_res != 0)
+				printf("Can't perform %s: %d => %s\n", query, sqlite_res, db_err);
+			sqlite3_free(db_err);
+			free(query);
+	
+			g_free(id);
+			id = g_malloc0(sizeof(int));
+			get_account_id(screen_name, domain, id);
+
+			check = elm_check_add(settings_win);
+			if(enabled)
+				elm_check_state_set(check, TRUE);
+			else
+				elm_check_state_set(check, FALSE);
+
+			evas_object_smart_callback_add(check, "changed", on_account_enabled_toggle, id);
+			evas_object_show(check);
+
+			li = elm_list_item_append(account_list, account_id, check, NULL, on_account_selected, id);
+
+			elm_list_go(account_list);
+			evas_object_del(user_data_dialog);
+		 }
 	}
-
-        sqlite_res = sqlite3_exec(ed_DB, query, NULL, NULL, &db_err);
-        if(sqlite_res != 0) {
-               	printf("Can't perform %s: %d => %s\n", query, sqlite_res, db_err);
-        }
-	sqlite3_free(db_err);
-	g_free(query);
-
-	g_free(id);
-	id = g_malloc0(sizeof(int));
-	get_account_id(screen_name, domain, id);
-
-	check = elm_check_add(settings_win);
-	if(enabled)
-		elm_check_state_set(check, TRUE);
-	else
-		elm_check_state_set(check, FALSE);
-
-	evas_object_smart_callback_add(check, "changed", on_account_enabled_toggle, id);
-	evas_object_show(check);
-
-	li = elm_list_item_append(account_list, account_id, check, NULL, on_account_selected, id);
-
-	elm_list_go(account_list);
-	evas_object_del(user_data_dialog);
 }
 
 void on_account_type_chose_statusnet(void *data, Evas_Object *obj, void *event_info) {
