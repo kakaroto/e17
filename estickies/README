@@ -1,5 +1,0 @@
-What is Estickies?
-==================
-
-Estickies is a sticky notes application that uses Elementary. It used Etk before but its old maintainer(CodeWarrior) is not working on it anymore so i've rewritten it. :)
-It is a bit buggy and incomplete, but it should work mostly OK. Also needs new features. If you have ideas, add some other stuff into TODO.
