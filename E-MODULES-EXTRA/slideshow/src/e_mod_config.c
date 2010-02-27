@@ -22,7 +22,7 @@ _config_slideshow_module(Config_Item *ci)
    E_Config_Dialog *cfd;
    E_Config_Dialog_View *v;
    E_Container *con;
-   char buf[4096];
+   char buf[PATH_MAX];
 
    v = E_NEW (E_Config_Dialog_View, 1);
 
@@ -130,7 +130,7 @@ static int
 _basic_apply(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
 {
    Config_Item *ci;
-   char buf[4096];
+   char buf[PATH_MAX];
 
    ci = cfd->data;
    ci->poll_time = cfdata->poll_time;
