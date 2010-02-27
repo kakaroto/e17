@@ -1535,6 +1535,11 @@ e_ofono_element_property_set_full(E_Ofono_Element *element, const char *prop, in
    dbus_message_iter_open_container(&itr, DBUS_TYPE_VARIANT, typestr, &v);
    if ((type == DBUS_TYPE_STRING) || (type == DBUS_TYPE_OBJECT_PATH))
      dbus_message_iter_append_basic(&v, type, &value);
+   else if (type == DBUS_TYPE_BOOLEAN)
+     {
+	unsigned int b = *(char *)value;
+	dbus_message_iter_append_basic(&v, type, &b);
+     }
    else
      dbus_message_iter_append_basic(&v, type, value);
    dbus_message_iter_close_container(&itr, &v);
