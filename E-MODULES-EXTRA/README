@@ -26,7 +26,7 @@ cpu - A module to monitor cpu load.  (Will be replaced by something better.)
 
 deskshow - A module to iconify/uniconify all current windows to show the
 desktop.  This is probably obsolete, the functionality is now in E.
-// hmm could be simpler. i'll fix. Should provide just a button.
+// works well, no bugs, small. Should be merged
 
 diskio - visualize disk i/o.
 // as far as i know, works and maintained by morlenxus. should be replaced by stats.
