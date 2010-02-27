@@ -4,18 +4,11 @@
 
 static Eina_Hash *elements = NULL;
 
-typedef struct _E_Bluez_Array E_Bluez_Array;
 typedef struct _E_Bluez_Element_Pending E_Bluez_Element_Pending;
 typedef struct _E_Bluez_Element_Call_Data E_Bluez_Element_Call_Data;
 typedef struct _E_Bluez_Element_Property E_Bluez_Element_Property;
 typedef struct _E_Bluez_Element_Listener E_Bluez_Element_Listener;
 typedef struct _E_Bluez_Element_Dict_Entry E_Bluez_Element_Dict_Entry;
-
-struct _E_Bluez_Array
-{
-   int type;
-   Eina_Array *array;
-};
 
 struct _E_Bluez_Element_Pending
 {
@@ -58,6 +51,7 @@ struct _E_Bluez_Element_Dict_Entry
    union {
       bool boolean;
       const char *str;
+      short i16;
       unsigned short u16;
       unsigned int u32;
       unsigned char byte;
@@ -80,7 +74,7 @@ _e_bluez_element_event_no_free(void *data __UNUSED__, void *ev)
    e_bluez_element_unref(element);
 }
 
-static void
+void
 e_bluez_element_event_add(int event_type, E_Bluez_Element *element)
 {
    e_bluez_element_ref(element);
@@ -240,6 +234,7 @@ _e_bluez_element_dict_entry_free(E_Bluez_Element_Dict_Entry *entry)
      {
       case DBUS_TYPE_BOOLEAN:
       case DBUS_TYPE_BYTE:
+      case DBUS_TYPE_INT16:
       case DBUS_TYPE_UINT16:
       case DBUS_TYPE_UINT32:
 	 break;
@@ -320,6 +315,9 @@ _e_bluez_element_dict_entry_new(DBusMessageIter *itr)
       case DBUS_TYPE_BYTE:
 	 entry->value.byte = (unsigned char)(long)value;
 	 break;
+      case DBUS_TYPE_INT16:
+	 entry->value.i16 = (short)(long)value;
+	 break;
       case DBUS_TYPE_UINT16:
 	 entry->value.u16 = (unsigned short)(long)value;
 	 break;
@@ -358,8 +356,8 @@ _e_bluez_element_array_dict_find_stringshared(const E_Bluez_Array *array, const 
    return NULL;
 }
 
-static void
-_e_bluez_element_array_free(E_Bluez_Array *array, E_Bluez_Array *new __UNUSED__)
+void
+e_bluez_element_array_free(E_Bluez_Array *array, E_Bluez_Array *new __UNUSED__)
 {
    Eina_Array_Iterator iterator;
    unsigned int i;
@@ -372,6 +370,7 @@ _e_bluez_element_array_free(E_Bluez_Array *array, E_Bluez_Array *new __UNUSED__)
      {
       case DBUS_TYPE_BOOLEAN:
       case DBUS_TYPE_BYTE:
+      case DBUS_TYPE_INT16:
       case DBUS_TYPE_UINT16:
       case DBUS_TYPE_UINT32:
 	 break;
@@ -415,7 +414,7 @@ _e_bluez_element_property_value_free(E_Bluez_Element_Property *property)
 	 eina_stringshare_del(property->value.path);
 	 break;
       case DBUS_TYPE_ARRAY:
-	 _e_bluez_element_array_free(property->value.array, NULL);
+	 e_bluez_element_array_free(property->value.array, NULL);
 	 break;
       default:
 	 ERR("don't know how to free value of property type %c (%d)",
@@ -647,7 +646,7 @@ _e_bluez_element_property_update(E_Bluez_Element_Property *property, int type, v
 	   if (property->value.array)
 	     {
 		_e_bluez_element_array_match(property->value.array, data, property->name);
-		_e_bluez_element_array_free(property->value.array, data);
+		e_bluez_element_array_free(property->value.array, data);
 	     }
 	 property->value.array = data;
 	 changed = 1;
@@ -850,8 +849,8 @@ e_bluez_element_strings_array_get_stringshared(const E_Bluez_Element *element, c
    return 1;
 }
 
-static void
-_e_bluez_element_array_print(FILE *fp, E_Bluez_Array *array)
+void
+e_bluez_element_array_print(FILE *fp, E_Bluez_Array *array)
 {
    Eina_Array_Iterator iterator;
    unsigned int i;
@@ -899,9 +898,17 @@ _e_bluez_element_array_print(FILE *fp, E_Bluez_Array *array)
 		 case DBUS_TYPE_STRING:
 		    fprintf(fp, "\"%s\", ", entry->value.str);
 		    break;
+		 case DBUS_TYPE_BOOLEAN:
+		    fprintf(fp, "%hhu, ",
+			    entry->value.boolean);
+		    break;
 		 case DBUS_TYPE_BYTE:
 		    fprintf(fp, "%#02hhx (\"%c\"), ",
 			    entry->value.byte, entry->value.byte);
+		    break;
+		 case DBUS_TYPE_INT16:
+		    fprintf(fp, "%#04hx (%hi), ",
+			    entry->value.i16, entry->value.i16);
 		    break;
 		 case DBUS_TYPE_UINT16:
 		    fprintf(fp, "%#04hx (%hu), ",
@@ -967,7 +974,7 @@ e_bluez_element_print(FILE *fp, const E_Bluez_Element *element)
 	      fprintf(fp, "%u", p->value.u32);
 	      break;
 	   case DBUS_TYPE_ARRAY:
-	      _e_bluez_element_array_print(fp, p->value.array);
+	      e_bluez_element_array_print(fp, p->value.array);
 	      break;
 	   default:
 	      fputs("don't know how to print type", fp);
@@ -1170,8 +1177,8 @@ _e_bluez_element_property_value_add(E_Bluez_Element *element, const char *name, 
    return 1;
 }
 
-static E_Bluez_Array *
-_e_bluez_element_iter_get_array(DBusMessageIter *itr, const char *key)
+E_Bluez_Array *
+e_bluez_element_iter_get_array(DBusMessageIter *itr, const char *key)
 {
    E_Bluez_Array *array;
    DBusMessageIter e_itr;
@@ -1294,7 +1301,7 @@ _e_bluez_element_get_properties_callback(void *user_data, DBusMessage *msg, DBus
 	dbus_message_iter_recurse(&e_itr, &v_itr);
 	t = dbus_message_iter_get_arg_type(&v_itr);
 	if (t == DBUS_TYPE_ARRAY)
-	  value = _e_bluez_element_iter_get_array(&v_itr, key);
+	  value = e_bluez_element_iter_get_array(&v_itr, key);
 	else if (t != DBUS_TYPE_INVALID) {
 	  dbus_message_iter_get_basic(&v_itr, &value);
 	} else {
@@ -1754,6 +1761,9 @@ e_bluez_element_property_dict_get_stringshared(const E_Bluez_Element *element, c
 	   case DBUS_TYPE_BYTE:
 	      *(unsigned char *)value = entry->value.byte;
 	      return 1;
+	   case DBUS_TYPE_INT16:
+	      *(short *)value = entry->value.i16;
+	      return 1;
 	   case DBUS_TYPE_UINT16:
 	      *(unsigned short *)value = entry->value.u16;
 	      return 1;
@@ -2084,7 +2094,7 @@ _e_bluez_element_property_changed_callback(void *data, DBusMessage *msg)
    t = dbus_message_iter_get_arg_type(&v_itr);
 
    if (t == DBUS_TYPE_ARRAY)
-     value = _e_bluez_element_iter_get_array(&v_itr, name);
+     value = e_bluez_element_iter_get_array(&v_itr, name);
    else if (t != DBUS_TYPE_INVALID)
      dbus_message_iter_get_basic(&v_itr, &value);
    else

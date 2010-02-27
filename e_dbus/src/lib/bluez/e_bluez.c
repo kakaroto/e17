@@ -19,6 +19,7 @@ EAPI int E_BLUEZ_EVENT_MANAGER_OUT = 0;
 EAPI int E_BLUEZ_EVENT_ELEMENT_ADD = 0;
 EAPI int E_BLUEZ_EVENT_ELEMENT_DEL = 0;
 EAPI int E_BLUEZ_EVENT_ELEMENT_UPDATED = 0;
+EAPI int E_BLUEZ_EVENT_DEVICE_FOUND = 0;
 
 const char *e_bluez_iface_manager = NULL;
 const char *e_bluez_iface_adapter = NULL;
@@ -196,6 +197,8 @@ _e_bluez_get_name_owner(void *data __UNUSED__, DBusMessage *msg, DBusError *err)
  *   - E_BLUEZ_EVENT_ELEMENT_DEL: element was deleted.
  *   - E_BLUEZ_EVENT_ELEMENT_UPDATED: element was updated (properties
  *     or state changed).
+ *   - E_BLUEZ_EVENT_DEVICE_FOUND: a device was found, raised after calling
+ *     Adapter.StartDiscorvery()
  *
  * Manager IN/OUT events do not provide any event information, just
  * tells you that system is usable or not. After manager is out, all
@@ -231,6 +234,8 @@ e_bluez_system_init(E_DBus_Connection *edbus_conn)
 		E_BLUEZ_EVENT_ELEMENT_DEL = ecore_event_type_new();
 	if (E_BLUEZ_EVENT_ELEMENT_UPDATED == 0)
 		E_BLUEZ_EVENT_ELEMENT_UPDATED = ecore_event_type_new();
+	if (E_BLUEZ_EVENT_DEVICE_FOUND == 0)
+		E_BLUEZ_EVENT_DEVICE_FOUND = ecore_event_type_new();
 
 	if (e_bluez_iface_manager == NULL)
 		e_bluez_iface_manager = eina_stringshare_add("org.bluez.Manager");

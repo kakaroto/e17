@@ -1,5 +1,68 @@
 #include "e_bluez_private.h"
 
+static void
+_device_found_callback(void *data, DBusMessage *msg)
+{
+   E_Bluez_Element *element = (E_Bluez_Element *)data;
+   E_Bluez_Device_Found *device;
+   DBusMessageIter itr;
+   int t;
+   char *name = NULL;
+   void *value = NULL;
+
+   DBG("Device found %s", element->path);
+
+   if (!_dbus_callback_check_and_init(msg, &itr, NULL))
+     return;
+
+   device = calloc(sizeof(E_Bluez_Device_Found), 1);
+   if (!device) {
+       ERR("No memory to alocate E_Bluez_Device_Found");
+       return;
+   }
+
+   t = dbus_message_iter_get_arg_type(&itr);
+   if (!_dbus_iter_type_check(t, DBUS_TYPE_STRING))
+     {
+	ERR("missing device name in DeviceFound");
+	return;
+     }
+   dbus_message_iter_get_basic(&itr, &name);
+
+   dbus_message_iter_next(&itr);
+   t = dbus_message_iter_get_arg_type(&itr);
+   if (!_dbus_iter_type_check(t, DBUS_TYPE_ARRAY))
+     {
+	ERR("missing array in DeviceFound");
+	return;
+     }
+
+   value = e_bluez_element_iter_get_array(&itr, name);
+
+   if (!value)
+      return;
+
+   device->name = eina_stringshare_add(name);
+   device->adapter = element;
+   device->array = value;
+
+   ecore_event_add(E_BLUEZ_EVENT_DEVICE_FOUND, device, NULL, NULL);
+}
+
+/**
+ * Free a E_Bluez_Device_Found struct
+ *
+ * @param device the struct to be freed
+ */
+void
+e_bluez_adapter_device_found_free(E_Bluez_Device_Found *device)
+{
+   EINA_SAFETY_ON_NULL_RETURN(device);
+
+   eina_stringshare_del(device->name);
+   e_bluez_element_array_free(device->array, NULL);
+}
+
 /**
  * Register new agent for handling user requests.
  *
@@ -134,6 +197,12 @@ e_bluez_adapter_start_discovery(E_Bluez_Element *element, E_DBus_Method_Return_C
    const char name[] = "StartDiscovery";
 
    EINA_SAFETY_ON_NULL_RETURN_VAL(element, 0);
+
+   element->device_found_handler =
+     e_dbus_signal_handler_add
+     (e_bluez_conn, e_bluez_system_bus_name_get(),
+      element->path, element->interface, "DeviceFound",
+      _device_found_callback, element);
 
    return e_bluez_element_call_full(element, name, NULL,
 		   &element->_pending.start_discovery, cb, data);

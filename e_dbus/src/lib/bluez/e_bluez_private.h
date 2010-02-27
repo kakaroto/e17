@@ -125,6 +125,9 @@ E_Bluez_Element *e_bluez_element_register(const char *path, const char *interfac
 void e_bluez_element_unregister(E_Bluez_Element *element);
 
 bool e_bluez_element_message_send(E_Bluez_Element *element, const char *method_name, E_DBus_Method_Return_Cb cb, DBusMessage *msg, Eina_Inlist **pending, E_DBus_Method_Return_Cb user_cb, const void *user_data);
+E_Bluez_Array *e_bluez_element_iter_get_array(DBusMessageIter *itr, const char *key);
+void e_bluez_element_event_add(int event_type, E_Bluez_Element *element);
+void e_bluez_element_array_free(E_Bluez_Array *array, E_Bluez_Array *new __UNUSED__);
 
 bool e_bluez_element_call_full(E_Bluez_Element *element, const char *method_name, E_DBus_Method_Return_Cb cb, Eina_Inlist **pending, E_DBus_Method_Return_Cb user_cb, const void *user_data);
 bool e_bluez_element_call_with_path(E_Bluez_Element *element, const char *method_name, const char *string, E_DBus_Method_Return_Cb cb, Eina_Inlist **pending, E_DBus_Method_Return_Cb user_cb, const void *user_data);

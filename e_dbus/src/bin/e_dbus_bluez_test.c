@@ -75,6 +75,20 @@ _on_element_updated(void *data, int type, void *info)
    e_bluez_element_print(stderr, element);
    return 1;
 }
+
+static int
+_on_device_found(void *data, int type, void *info)
+{
+   E_Bluez_Device_Found *device = info;
+   printf("!!! %s\n", device->adapter->path);
+   printf(":::DeviceFound %s\n", device->name);
+   e_bluez_element_array_print(stderr, device->array);
+   printf("\n");
+
+   e_bluez_adapter_device_found_free(device);
+   return 1;
+}
+
 static int
 _on_cmd_quit(char *cmd, char *args)
 {
@@ -579,6 +593,8 @@ main(int argc, char *argv[])
    ecore_event_handler_add(E_BLUEZ_EVENT_ELEMENT_DEL, _on_element_del, NULL);
    ecore_event_handler_add(E_BLUEZ_EVENT_ELEMENT_UPDATED,
 			   _on_element_updated, NULL);
+   ecore_event_handler_add(E_BLUEZ_EVENT_DEVICE_FOUND,
+			   _on_device_found, NULL);
 
    ecore_main_fd_handler_add
      (0, ECORE_FD_READ | ECORE_FD_ERROR, _on_input, NULL, NULL, NULL);

@@ -40,14 +40,18 @@ extern "C" {
   extern int E_BLUEZ_EVENT_ELEMENT_ADD;
   extern int E_BLUEZ_EVENT_ELEMENT_DEL;
   extern int E_BLUEZ_EVENT_ELEMENT_UPDATED;
+  extern int E_BLUEZ_EVENT_DEVICE_FOUND;
 
   typedef struct _E_Bluez_Element E_Bluez_Element;
+  typedef struct _E_Bluez_Array E_Bluez_Array;
+  typedef struct _E_Bluez_Device_Found E_Bluez_Device_Found;
 
   struct _E_Bluez_Element
   {
      const char *path;
      const char *interface;
      E_DBus_Signal_Handler *signal_handler;
+     E_DBus_Signal_Handler *device_found_handler;
      Eina_Inlist *props;
 
      /* private */
@@ -66,6 +70,19 @@ extern "C" {
      int _references;
   };
 
+  struct _E_Bluez_Array
+  {
+     int type;
+     Eina_Array *array;
+  };
+
+  struct _E_Bluez_Device_Found
+  {
+	  E_Bluez_Element *adapter;
+	  const char *name;
+	  E_Bluez_Array *array;
+  };
+
   /* General Public API */
   EAPI unsigned int e_bluez_system_init(E_DBus_Connection *edbus_conn) EINA_ARG_NONNULL(1);
   EAPI unsigned int e_bluez_system_shutdown(void);
@@ -75,6 +92,7 @@ extern "C" {
   EAPI bool e_bluez_manager_default_adapter(E_DBus_Method_Return_Cb cb, void *data) EINA_WARN_UNUSED_RESULT;
 
   /* Adapter Methods */
+  EAPI void e_bluez_adapter_device_found_free(E_Bluez_Device_Found *device) EINA_ARG_NONNULL(1);
   EAPI bool e_bluez_adapter_agent_register(E_Bluez_Element *element, const char *object_path, const char *capability, E_DBus_Method_Return_Cb cb, const void *data) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
   EAPI bool e_bluez_adapter_agent_unregister(E_Bluez_Element *element, const char *object_path, E_DBus_Method_Return_Cb cb, const void *data) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
   EAPI bool e_bluez_adapter_address_get(E_Bluez_Element *element, const char **address) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
@@ -105,7 +123,7 @@ extern "C" {
   EAPI int e_bluez_element_unref(E_Bluez_Element *element) EINA_ARG_NONNULL(1);
 
   EAPI void e_bluez_element_print(FILE *fp, const E_Bluez_Element *element) EINA_ARG_NONNULL(1, 2);
-
+  EAPI void e_bluez_element_array_print(FILE *fp, E_Bluez_Array *array);
 
   EAPI bool e_bluez_element_properties_sync(E_Bluez_Element *element) EINA_ARG_NONNULL(1);
   EAPI bool e_bluez_element_properties_sync_full(E_Bluez_Element *element, E_DBus_Method_Return_Cb cb, const void *data) EINA_ARG_NONNULL(1);
