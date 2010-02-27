@@ -1,0 +1,86 @@
+# Arabic translation for enlightenment
+# Copyright (c) 2009 Free Software Foundation, Inc.
+# This file is distributed under the same license as the enlightenment package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2009.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: enlightenment\n"
+"Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
+"POT-Creation-Date: 2009-11-05 16:07+0800\n"
+"PO-Revision-Date: 2009-10-27 04:13+0000\n"
+"Last-Translator: mohamed 3atef <therock_624@hotmail.com>\n"
+"Language-Team: Arabic <ar@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Launchpad-Export-Date: 2009-11-12 04:53+0000\n"
+"X-Generator: Launchpad (build Unknown)\n"
+
+#: ../src/e_mod_config.c:104
+msgid "Language Module Settings"
+msgstr "إعدادات وحدة اللغة"
+
+#: ../src/e_mod_config.c:174 ../src/e_mod_config.c:249
+msgid "Available Languages"
+msgstr "اللغات المتاحة"
+
+#: ../src/e_mod_config.c:182 ../src/e_mod_config.c:257
+msgid "Selected Languages"
+msgstr "اللغة المختارة"
+
+#: ../src/e_mod_config.c:198 ../src/e_mod_config.c:273
+msgid "Up"
+msgstr "أعلى"
+
+#: ../src/e_mod_config.c:203 ../src/e_mod_config.c:278
+msgid "Down"
+msgstr "أسفل"
+
+#: ../src/e_mod_config.c:211 ../src/e_mod_config.c:304
+msgid "Language Switch Policy"
+msgstr "سياسة تبديل اللغة"
+
+#: ../src/e_mod_config.c:214 ../src/e_mod_config.c:307
+msgid "Global"
+msgstr "عام"
+
+#: ../src/e_mod_config.c:217 ../src/e_mod_config.c:310
+msgid "Window"
+msgstr "النافذة"
+
+#: ../src/e_mod_config.c:220 ../src/e_mod_config.c:313
+msgid "Application"
+msgstr "التطبيق"
+
+#: ../src/e_mod_config.c:287
+msgid "Keyboard Model"
+msgstr "نوع لوحة المفاتيح"
+
+#: ../src/e_mod_config.c:295
+msgid "Layout Variant"
+msgstr "التخطيط البديل"
+
+#: ../src/e_mod_keybindings.c:6 ../src/e_mod_main.c:116
+msgid "Language"
+msgstr "اللغة"
+
+#: ../src/e_mod_keybindings.c:7
+msgid "Switch To Next Language"
+msgstr "تحول للغة التالية"
+
+#: ../src/e_mod_keybindings.c:8
+msgid "Switch To Previous Language"
+msgstr "تحول للغة السابقة"
+
+#: ../src/e_mod_main.c:429
+msgid "Configuration"
+msgstr "الإعدادات"
+
+#: ../src/e_mod_main.c:434
+msgid "Configure Key Bindings"
+msgstr "إعداد مفتاح اﻹرتباط"
+
+#: ../src/e_mod_main.c:451
+msgid "Module Configuration"
+msgstr "إعدادات الوحدة"

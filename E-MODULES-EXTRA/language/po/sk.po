@@ -1,0 +1,83 @@
+# Slovak translation for enlightenment
+# This file is distributed under the same license as the enlightenment package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2009.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: enlightenment\n"
+"Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
+"POT-Creation-Date: 2010-02-06 17:19+0100\n"
+"PO-Revision-Date: 2009-03-24 13:01+0000\n"
+"Last-Translator: helix84 <Unknown>\n"
+"Language-Team: Slovak <sk@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: src/e_mod_config.c:104
+msgid "Language Module Settings"
+msgstr "Nastavenia jazykového modulu"
+
+#: src/e_mod_config.c:174 src/e_mod_config.c:249
+msgid "Available Languages"
+msgstr "Dostupné jazyky"
+
+#: src/e_mod_config.c:182 src/e_mod_config.c:257
+msgid "Selected Languages"
+msgstr "Vybrané jazyky"
+
+#: src/e_mod_config.c:198 src/e_mod_config.c:273
+msgid "Up"
+msgstr "Hore"
+
+#: src/e_mod_config.c:203 src/e_mod_config.c:278
+msgid "Down"
+msgstr "Dolu"
+
+#: src/e_mod_config.c:211 src/e_mod_config.c:304
+msgid "Language Switch Policy"
+msgstr "Politika prepínania jazykov"
+
+#: src/e_mod_config.c:214 src/e_mod_config.c:307
+msgid "Global"
+msgstr "Globálne"
+
+#: src/e_mod_config.c:217 src/e_mod_config.c:310
+msgid "Window"
+msgstr "Okno"
+
+#: src/e_mod_config.c:220 src/e_mod_config.c:313
+msgid "Application"
+msgstr "Aplikácia"
+
+#: src/e_mod_config.c:287
+msgid "Keyboard Model"
+msgstr "Model klávesnice"
+
+#: src/e_mod_config.c:295
+msgid "Layout Variant"
+msgstr "Variant rozloženia"
+
+#: src/e_mod_keybindings.c:6 src/e_mod_main.c:116
+msgid "Language"
+msgstr "Jazyk"
+
+#: src/e_mod_keybindings.c:7
+msgid "Switch To Next Language"
+msgstr "Prepnúť na ďalší jazyk"
+
+#: src/e_mod_keybindings.c:8
+msgid "Switch To Previous Language"
+msgstr "Prepnúť na predošlý jazyk"
+
+#: src/e_mod_main.c:429
+msgid "Configuration"
+msgstr "Konfigurácia"
+
+#: src/e_mod_main.c:434
+msgid "Configure Key Bindings"
+msgstr "Konfigurácia klávesových väzieb"
+
+#: src/e_mod_main.c:451
+msgid "Module Configuration"
+msgstr "Konfigurácia modulu"

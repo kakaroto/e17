@@ -1,0 +1,83 @@
+# Faroese translation for enlightenment
+# This file is distributed under the same license as the enlightenment package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2009.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: enlightenment\n"
+"Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
+"POT-Creation-Date: 2010-02-06 17:19+0100\n"
+"PO-Revision-Date: 2009-07-14 13:51+0000\n"
+"Last-Translator: Gunleif Joensen <Unknown>\n"
+"Language-Team: Faroese <fo@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: src/e_mod_config.c:104
+msgid "Language Module Settings"
+msgstr "Mál mótula setanir"
+
+#: src/e_mod_config.c:174 src/e_mod_config.c:249
+msgid "Available Languages"
+msgstr "Tøk mál"
+
+#: src/e_mod_config.c:182 src/e_mod_config.c:257
+msgid "Selected Languages"
+msgstr "Vald mál"
+
+#: src/e_mod_config.c:198 src/e_mod_config.c:273
+msgid "Up"
+msgstr "Upp"
+
+#: src/e_mod_config.c:203 src/e_mod_config.c:278
+msgid "Down"
+msgstr "Niður"
+
+#: src/e_mod_config.c:211 src/e_mod_config.c:304
+msgid "Language Switch Policy"
+msgstr "Málskiftingar politikkur"
+
+#: src/e_mod_config.c:214 src/e_mod_config.c:307
+msgid "Global"
+msgstr "Heiltøkur"
+
+#: src/e_mod_config.c:217 src/e_mod_config.c:310
+msgid "Window"
+msgstr "Gluggi"
+
+#: src/e_mod_config.c:220 src/e_mod_config.c:313
+msgid "Application"
+msgstr "Nýtsluskipan"
+
+#: src/e_mod_config.c:287
+msgid "Keyboard Model"
+msgstr "Knappaborðs myndil"
+
+#: src/e_mod_config.c:295
+msgid "Layout Variant"
+msgstr "Uppsetingar brigdil"
+
+#: src/e_mod_keybindings.c:6 src/e_mod_main.c:116
+msgid "Language"
+msgstr "Mál"
+
+#: src/e_mod_keybindings.c:7
+msgid "Switch To Next Language"
+msgstr "Skift til næsta mál"
+
+#: src/e_mod_keybindings.c:8
+msgid "Switch To Previous Language"
+msgstr "Skift til fyrra málið"
+
+#: src/e_mod_main.c:429
+msgid "Configuration"
+msgstr "Samanseting"
+
+#: src/e_mod_main.c:434
+msgid "Configure Key Bindings"
+msgstr "Samanset knappabindingar"
+
+#: src/e_mod_main.c:451
+msgid "Module Configuration"
+msgstr "Mótula samanseting"

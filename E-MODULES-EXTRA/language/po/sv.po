@@ -1,0 +1,91 @@
+# Swedish translation of Language module for E17.
+# This file is put in the public domain.
+# Anders Trobäck <enlightenment@troback.com>, 2006.
+# Daniel Nylander <yeager@ubuntu.com>, 2009.
+#
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Language module for E17 N/A\n"
+"Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
+"POT-Creation-Date: 2010-02-06 17:19+0100\n"
+"PO-Revision-Date: 2009-01-10 12:01+0000\n"
+"Last-Translator: Daniel Nylander <yeager@ubuntu.com>\n"
+"Language-Team: Swedish\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: src/e_mod_config.c:104
+msgid "Language Module Settings"
+msgstr "Inställningar för språkmodul"
+
+#: src/e_mod_config.c:174 src/e_mod_config.c:249
+msgid "Available Languages"
+msgstr "Tillgängliga språk"
+
+#: src/e_mod_config.c:182 src/e_mod_config.c:257
+msgid "Selected Languages"
+msgstr "Valda språk"
+
+#: src/e_mod_config.c:198 src/e_mod_config.c:273
+msgid "Up"
+msgstr "Upp"
+
+#: src/e_mod_config.c:203 src/e_mod_config.c:278
+msgid "Down"
+msgstr "Ner"
+
+#: src/e_mod_config.c:211 src/e_mod_config.c:304
+msgid "Language Switch Policy"
+msgstr "Växlingspolicy för språk"
+
+#: src/e_mod_config.c:214 src/e_mod_config.c:307
+msgid "Global"
+msgstr "Allmän"
+
+#: src/e_mod_config.c:217 src/e_mod_config.c:310
+msgid "Window"
+msgstr "Fönster"
+
+#: src/e_mod_config.c:220 src/e_mod_config.c:313
+msgid "Application"
+msgstr "Program"
+
+#: src/e_mod_config.c:287
+msgid "Keyboard Model"
+msgstr "Tangentbordsmodell"
+
+#: src/e_mod_config.c:295
+msgid "Layout Variant"
+msgstr "Variant av layout"
+
+#: src/e_mod_keybindings.c:6 src/e_mod_main.c:116
+msgid "Language"
+msgstr "Språk"
+
+#: src/e_mod_keybindings.c:7
+msgid "Switch To Next Language"
+msgstr "Växla till nästa språk"
+
+#: src/e_mod_keybindings.c:8
+msgid "Switch To Previous Language"
+msgstr "Växla till föregående språk"
+
+#: src/e_mod_main.c:429
+msgid "Configuration"
+msgstr "Konfiguration"
+
+#: src/e_mod_main.c:434
+msgid "Configure Key Bindings"
+msgstr "Konfigurera tangentbindningar"
+
+#: src/e_mod_main.c:451
+msgid "Module Configuration"
+msgstr "Modulkonfiguration"
+
+#~ msgid "Enlightenment Language Enhancment Module"
+#~ msgstr "Enlightenment språk modul"
+
+#~ msgid "This module is used to switch between input languages."
+#~ msgstr "Denna modulen används för att växla mellan inmatningsspråk."

@@ -1,0 +1,85 @@
+# Spanish translation for enlightenment
+# This file is distributed under the same license as the enlightenment package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2009.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: enlightenment\n"
+"Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
+"POT-Creation-Date: 2009-12-01 15:38+0800\n"
+"PO-Revision-Date: 2009-12-10 19:59+0000\n"
+"Last-Translator: Leandro Gómez <leogg@ubuntu.com>\n"
+"Language-Team: Spanish <es@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Launchpad-Export-Date: 2009-12-11 04:35+0000\n"
+"X-Generator: Launchpad (build Unknown)\n"
+
+#: ../src/e_mod_config.c:104
+msgid "Language Module Settings"
+msgstr "Configuración del módulo de idiomas"
+
+#: ../src/e_mod_config.c:174 ../src/e_mod_config.c:249
+msgid "Available Languages"
+msgstr "Idiomas Disponibles"
+
+#: ../src/e_mod_config.c:182 ../src/e_mod_config.c:257
+msgid "Selected Languages"
+msgstr "Idiomas seleccionados"
+
+#: ../src/e_mod_config.c:198 ../src/e_mod_config.c:273
+msgid "Up"
+msgstr "Arriba"
+
+#: ../src/e_mod_config.c:203 ../src/e_mod_config.c:278
+msgid "Down"
+msgstr "Abajo"
+
+#: ../src/e_mod_config.c:211 ../src/e_mod_config.c:304
+msgid "Language Switch Policy"
+msgstr "Política de cambio de Idioma"
+
+#: ../src/e_mod_config.c:214 ../src/e_mod_config.c:307
+msgid "Global"
+msgstr "Global"
+
+#: ../src/e_mod_config.c:217 ../src/e_mod_config.c:310
+msgid "Window"
+msgstr "Ventana"
+
+#: ../src/e_mod_config.c:220 ../src/e_mod_config.c:313
+msgid "Application"
+msgstr "Aplicación"
+
+#: ../src/e_mod_config.c:287
+msgid "Keyboard Model"
+msgstr "Modelo de teclado"
+
+#: ../src/e_mod_config.c:295
+msgid "Layout Variant"
+msgstr "Variante de diseño"
+
+#: ../src/e_mod_keybindings.c:6 ../src/e_mod_main.c:116
+msgid "Language"
+msgstr "Idioma"
+
+#: ../src/e_mod_keybindings.c:7
+msgid "Switch To Next Language"
+msgstr "Cambiar al idioma siguiente"
+
+#: ../src/e_mod_keybindings.c:8
+msgid "Switch To Previous Language"
+msgstr "Cambiar al idioma anterior"
+
+#: ../src/e_mod_main.c:429
+msgid "Configuration"
+msgstr "Configuración"
+
+#: ../src/e_mod_main.c:434
+msgid "Configure Key Bindings"
+msgstr "Configurar asociaciones de teclas"
+
+#: ../src/e_mod_main.c:451
+msgid "Module Configuration"
+msgstr "Configuración de módulos"

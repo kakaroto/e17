@@ -1,0 +1,83 @@
+# Italian translation for E17 language module.
+# This file is put in the public domain.
+# Massimo Maiurana <maiurana@inwind.it>, 2006.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Language\n"
+"Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
+"POT-Creation-Date: 2010-02-06 17:19+0100\n"
+"PO-Revision-Date: 2007-11-18 19:14+0100\n"
+"Last-Translator: Massimo Maiurana <maiurana@inwind.it>\n"
+"Language-Team: none\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: src/e_mod_config.c:104
+msgid "Language Module Settings"
+msgstr "Impostazioni modulo Language"
+
+#: src/e_mod_config.c:174 src/e_mod_config.c:249
+msgid "Available Languages"
+msgstr "Lingue disponibili"
+
+#: src/e_mod_config.c:182 src/e_mod_config.c:257
+msgid "Selected Languages"
+msgstr "Lingue selezionate"
+
+#: src/e_mod_config.c:198 src/e_mod_config.c:273
+msgid "Up"
+msgstr "Su"
+
+#: src/e_mod_config.c:203 src/e_mod_config.c:278
+msgid "Down"
+msgstr "Giù"
+
+#: src/e_mod_config.c:211 src/e_mod_config.c:304
+msgid "Language Switch Policy"
+msgstr "Ambito di commutazione lingua"
+
+#: src/e_mod_config.c:214 src/e_mod_config.c:307
+msgid "Global"
+msgstr "Globale"
+
+#: src/e_mod_config.c:217 src/e_mod_config.c:310
+msgid "Window"
+msgstr "Finestra"
+
+#: src/e_mod_config.c:220 src/e_mod_config.c:313
+msgid "Application"
+msgstr "Applicazione"
+
+#: src/e_mod_config.c:287
+msgid "Keyboard Model"
+msgstr "Modello di tastiera"
+
+#: src/e_mod_config.c:295
+msgid "Layout Variant"
+msgstr "Variante del layout"
+
+#: src/e_mod_keybindings.c:6 src/e_mod_main.c:116
+msgid "Language"
+msgstr "Language"
+
+#: src/e_mod_keybindings.c:7
+msgid "Switch To Next Language"
+msgstr "Passa alla lingua successiva"
+
+#: src/e_mod_keybindings.c:8
+msgid "Switch To Previous Language"
+msgstr "Passa alla lingua precedente"
+
+#: src/e_mod_main.c:429
+msgid "Configuration"
+msgstr "Configurazione"
+
+#: src/e_mod_main.c:434
+msgid "Configure Key Bindings"
+msgstr "Configura scorciatoie di tastiera"
+
+#: src/e_mod_main.c:451
+msgid "Module Configuration"
+msgstr "Configurazione del modulo"

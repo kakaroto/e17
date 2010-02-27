@@ -1,0 +1,86 @@
+# Bulgarian translation for enlightenment
+# Copyright (c) 2009 Rosetta Contributors and Canonical Ltd 2009
+# This file is distributed under the same license as the enlightenment package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2009.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: enlightenment\n"
+"Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
+"POT-Creation-Date: 2010-02-06 17:19+0100\n"
+"PO-Revision-Date: 2009-09-25 16:25+0000\n"
+"Last-Translator: vlood <vlood.vassilev@gmail.com>\n"
+"Language-Team: Bulgarian <bg@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Launchpad-Export-Date: 2009-11-12 04:53+0000\n"
+"X-Generator: Launchpad (build Unknown)\n"
+
+#: src/e_mod_config.c:104
+msgid "Language Module Settings"
+msgstr "Настройки на езиковия модул"
+
+#: src/e_mod_config.c:174 src/e_mod_config.c:249
+msgid "Available Languages"
+msgstr "Налични езици"
+
+#: src/e_mod_config.c:182 src/e_mod_config.c:257
+msgid "Selected Languages"
+msgstr "Избрани езици"
+
+#: src/e_mod_config.c:198 src/e_mod_config.c:273
+msgid "Up"
+msgstr "Нагоре"
+
+#: src/e_mod_config.c:203 src/e_mod_config.c:278
+msgid "Down"
+msgstr "Надолу"
+
+#: src/e_mod_config.c:211 src/e_mod_config.c:304
+msgid "Language Switch Policy"
+msgstr "Правила за смяна на езика"
+
+#: src/e_mod_config.c:214 src/e_mod_config.c:307
+msgid "Global"
+msgstr "Глобални"
+
+#: src/e_mod_config.c:217 src/e_mod_config.c:310
+msgid "Window"
+msgstr "Прозорец"
+
+#: src/e_mod_config.c:220 src/e_mod_config.c:313
+msgid "Application"
+msgstr "Приложение"
+
+#: src/e_mod_config.c:287
+msgid "Keyboard Model"
+msgstr "Модел на клавиатурата"
+
+#: src/e_mod_config.c:295
+msgid "Layout Variant"
+msgstr ""
+
+#: src/e_mod_keybindings.c:6 src/e_mod_main.c:116
+msgid "Language"
+msgstr "Език"
+
+#: src/e_mod_keybindings.c:7
+msgid "Switch To Next Language"
+msgstr "Превключи на следващия език"
+
+#: src/e_mod_keybindings.c:8
+msgid "Switch To Previous Language"
+msgstr "Превключи на предишния език"
+
+#: src/e_mod_main.c:429
+msgid "Configuration"
+msgstr "Настройка"
+
+#: src/e_mod_main.c:434
+msgid "Configure Key Bindings"
+msgstr "Настройка на клавишните команди"
+
+#: src/e_mod_main.c:451
+msgid "Module Configuration"
+msgstr "Настройка на модула"

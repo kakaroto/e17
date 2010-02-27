@@ -1,0 +1,8 @@
+src/e_mod_config.c
+src/e_mod_config.h
+src/e_mod_keybindings.c
+src/e_mod_keybindings.h
+src/e_mod_lang.c
+src/e_mod_lang.h
+src/e_mod_main.c
+src/e_mod_main.h

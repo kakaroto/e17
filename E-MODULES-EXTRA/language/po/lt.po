@@ -1,0 +1,86 @@
+# Lithuanian translation for enlightenment
+# Copyright (c) 2010 Rosetta Contributors and Canonical Ltd 2010
+# This file is distributed under the same license as the enlightenment package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2010.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: enlightenment\n"
+"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
+"POT-Creation-Date: 2009-12-01 15:38+0800\n"
+"PO-Revision-Date: 2010-01-27 17:47+0000\n"
+"Last-Translator: Joshas <Unknown>\n"
+"Language-Team: Lithuanian <lt@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Launchpad-Export-Date: 2010-01-28 04:35+0000\n"
+"X-Generator: Launchpad (build Unknown)\n"
+
+#: ../src/e_mod_config.c:104
+msgid "Language Module Settings"
+msgstr "Kalbos modulio nuostatos"
+
+#: ../src/e_mod_config.c:174 ../src/e_mod_config.c:249
+msgid "Available Languages"
+msgstr "Turimos kalbos"
+
+#: ../src/e_mod_config.c:182 ../src/e_mod_config.c:257
+msgid "Selected Languages"
+msgstr "Parinktos kalbos"
+
+#: ../src/e_mod_config.c:198 ../src/e_mod_config.c:273
+msgid "Up"
+msgstr "Aukštyn"
+
+#: ../src/e_mod_config.c:203 ../src/e_mod_config.c:278
+msgid "Down"
+msgstr "Žemyn"
+
+#: ../src/e_mod_config.c:211 ../src/e_mod_config.c:304
+msgid "Language Switch Policy"
+msgstr "Kalbos perjungimo taisyklė"
+
+#: ../src/e_mod_config.c:214 ../src/e_mod_config.c:307
+msgid "Global"
+msgstr "Visuotinė"
+
+#: ../src/e_mod_config.c:217 ../src/e_mod_config.c:310
+msgid "Window"
+msgstr "Lango"
+
+#: ../src/e_mod_config.c:220 ../src/e_mod_config.c:313
+msgid "Application"
+msgstr "Programos"
+
+#: ../src/e_mod_config.c:287
+msgid "Keyboard Model"
+msgstr "Klaviatūros modelis"
+
+#: ../src/e_mod_config.c:295
+msgid "Layout Variant"
+msgstr "Išdėstymo variantas"
+
+#: ../src/e_mod_keybindings.c:6 ../src/e_mod_main.c:116
+msgid "Language"
+msgstr "Kalba"
+
+#: ../src/e_mod_keybindings.c:7
+msgid "Switch To Next Language"
+msgstr "Perjungti į kitą kalbą"
+
+#: ../src/e_mod_keybindings.c:8
+msgid "Switch To Previous Language"
+msgstr "Perjungti į ankstensnę kalbą"
+
+#: ../src/e_mod_main.c:429
+msgid "Configuration"
+msgstr "Konfigūracija"
+
+#: ../src/e_mod_main.c:434
+msgid "Configure Key Bindings"
+msgstr "Konfigūruoti klavišų saistymus"
+
+#: ../src/e_mod_main.c:451
+msgid "Module Configuration"
+msgstr "Modulio konfigūracija"
