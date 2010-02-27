@@ -100,7 +100,7 @@ void my_domains_add(void * data, void * user_info) {
 	char *apiroot = (char*)gconf_value_get_string(value);
 
 	g_hash_table_remove(my_domains, key);
-	g_hash_table_insert(my_domains, g_strdup(key), g_strdup(apiroot));
+	g_hash_table_insert(my_domains, strndup(key, 1024), strndup(apiroot, 1024));
 
 	gconf_entry_free(entry);
 }
@@ -296,7 +296,7 @@ static void on_open_url(void *data, Evas_Object *obj, void *event_info) {
 }
 static void on_message_anchor_clicked(void *data, Evas_Object *obj, void *event_info) {
 	Elm_Entry_Anchorblock_Info * info = (Elm_Entry_Anchorblock_Info*)event_info;
-	char * url = g_strdup((char*)info->name), *frame_label=NULL, *url2=NULL;
+	char * url = strndup((char*)info->name, 1024), *frame_label=NULL, *url2=NULL;
 	Evas_Object *box=NULL, *button=NULL, *buttons=NULL, *frame=NULL, *entry=NULL, *bubble=(Evas_Object*)data;
 
 
@@ -553,7 +553,7 @@ static int add_status(void *notUsed, int argc, char **argv, char **azColName) {
 
 	ubBubble->box=box;
 	ubBubble->account_id = account_id;
-	ubBubble->screen_name = g_strdup(screen_name);
+	ubBubble->screen_name = strndup(screen_name, 1024);
 	ubBubble->message = status_message;
 
  	//evas_object_event_callback_add(bubble, EVAS_CALLBACK_MOUSE_DOWN, on_bubble_mouse_down, bubble);
