@@ -347,7 +347,7 @@ void ed_twitter_friends_characters(void *user_data, const xmlChar * ch, int len)
 
 	if(*state == HASH_ERROR) {
 		tmp = statuses->hash_error;
-		tmp2 = g_strndup((char*)ch, len);
+		tmp2 = strndup((char*)ch, len);
 		if(tmp) {
 			res = asprintf(&statuses->hash_error, "%s%s",tmp,tmp2);
 			free(tmp);
@@ -357,7 +357,7 @@ void ed_twitter_friends_characters(void *user_data, const xmlChar * ch, int len)
 		}
 	} else if(*state == HASH_REQUEST) {
 		tmp = statuses->hash_request;
-		tmp2 = g_strndup((char*)ch, len);
+		tmp2 = strndup((char*)ch, len);
 		if(tmp) {
 			res = asprintf(&statuses->hash_request, "%s%s",tmp,tmp2);
 			free(tmp);
@@ -367,7 +367,7 @@ void ed_twitter_friends_characters(void *user_data, const xmlChar * ch, int len)
 		}
 	} else if(*state == FT_ID) {
 		tmp = status->id_str;
-		tmp2 = g_strndup((char*)ch, len);
+		tmp2 = strndup((char*)ch, len);
 		if(tmp) {
 			res = asprintf(&status->id_str, "%s%s",tmp,tmp2);
 			free(tmp);
@@ -377,7 +377,7 @@ void ed_twitter_friends_characters(void *user_data, const xmlChar * ch, int len)
 		}
 	} else if(*state == FT_NAME) {
 		tmp = status->name;
-		tmp2 = g_strndup((char*)ch, len);
+		tmp2 = strndup((char*)ch, len);
 		if(tmp) {
 			res = asprintf(&status->name, "%s%s",tmp,tmp2);
 			free(tmp);
@@ -387,7 +387,7 @@ void ed_twitter_friends_characters(void *user_data, const xmlChar * ch, int len)
 		}
 	} else if(*state == FT_AVATAR) {
 		tmp = avatar;
-		tmp2 = g_strndup((char*)ch, len);
+		tmp2 = strndup((char*)ch, len);
 		if(tmp) {
 			res = asprintf(&avatar, "%s%s",tmp,tmp2);
 			free(tmp);
@@ -397,7 +397,7 @@ void ed_twitter_friends_characters(void *user_data, const xmlChar * ch, int len)
 		}
 	} else if(*state == FT_SCREEN_NAME) {
 		tmp = status->screen_name;
-		tmp2 = g_strndup((char*)ch, len);
+		tmp2 = strndup((char*)ch, len);
 		if(tmp) {
 			res = asprintf(&status->screen_name, "%s%s",tmp,tmp2);
 			free(tmp);
@@ -407,7 +407,7 @@ void ed_twitter_friends_characters(void *user_data, const xmlChar * ch, int len)
 		}
 	} else if(*state == FT_CREATED_AT) {
 		tmp = status->created_at_str;
-		tmp2 = g_strndup((char*)ch, len);
+		tmp2 = strndup((char*)ch, len);
 		if(tmp) {
 			res = asprintf(&status->created_at_str, "%s%s",tmp,tmp2);
 			free(tmp);
@@ -417,7 +417,7 @@ void ed_twitter_friends_characters(void *user_data, const xmlChar * ch, int len)
 		}
 	} else if(*state == FT_TEXT) {
 		tmp = status->text;
-		tmp2 = g_strndup((char*)ch, len);
+		tmp2 = strndup((char*)ch, len);
 		if(tmp) {
 			res = asprintf(&status->text, "%s%s",tmp,tmp2);
 			free(tmp);

@@ -344,7 +344,7 @@ static void on_message_anchor_clicked(void *data, Evas_Object *obj, void *event_
 				entry = elm_entry_add(win);
 					elm_entry_line_char_wrap_set(entry, TRUE);
 					elm_entry_editable_set(entry, FALSE);
-					url2 = g_strndup(url+1,strlen(url)-2);
+					url2 = strndup(url+1,strlen(url)-2);
 					elm_entry_entry_set(entry, url2);
 					free(url2);
 				evas_object_show(entry);
