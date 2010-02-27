@@ -16,62 +16,123 @@ may be removed.
 
 
 alarm - Sets reminders and timer.  (Replaces eveil.)
+// looks like unmaintained. kiwi?
 
-bling - EFLized Composite Manager for E17. (Not for users right now).
+bling - EFLized Composite Manager for E17.
+// already replaced by comp module in E.
 
 calendar - A module to show the current day.
+// works OK, but unmaintained propably
+
+configmenu - configuration menu augmentation(categories and control panel items)
+// simple, working, useful. originally created by jeffdameth, now i maintain it a bit.
 
 cpu - A module to monitor cpu load.  (Will be replaced by something better.)
+// unmaintained :) and will be replaced by stats module if i'll write some
 
 deskshow - A module to iconify/uniconify all current windows to show the
 desktop.  This is probably obsolete, the functionality is now in E.
+// hmm could be simpler. i'll fix. Should provide just a button.
 
 diskio - visualize disk i/o.
+// as far as i know, works and maintained by morlenxus. should be replaced by stats.
+
+drawer - nice module providing a few plugins.. used for various things.. see README
+// maintained by urandom, but unstable.
+
+efm_* - some efm plugins extending functionality
+// maintained by various people, works nicely. IMO candidates for merge into E.
 
 emu - Experimental generic scriptable module for E17.
+// unmaintained.
+
+eweather - new libeweather-based weather forecasts module with multiple data sources.
+// maintained, works nicely.
 
 exalt-client - A frontend module for exalt network manager.
+// connman provides the same functionality. so maybe deprecated..
+
+execwatch - run actions periodically
+// works but dunno how it is with maintaining
 
 flame - A module to display flames on the desktop.
+// useless, tiny, eyecandy module. Nobody touched it for so long but still works. Maybe merge with snow and rain?
 
 forecasts - A module to display the current condition and forecasts.
+// replaced by eweather, but works.
+
+iiirk - like taskbar but only for selected apps
+// unmaintained, useless.
 
 language - A module to control active keyboard/keyboard layout/layout variant.
+// newly commited and maintaned by me (quaker66) does not depend on exml anymore, works well.
 
 mail - A module to periodically check for new email.
+// dunno how it is with state. propably works but nobody maintains it(gadget adds without problems)
 
-mem - A module to monitor memory and swap usage.  (Will be replaced by something better.)
+mem - A module to monitor memory and swap usage.
+// same as for cpu module
 
 moon - A module to display moon phase information.
+// should be merged with eweather.. and it is unmaintained.
 
 mpdule - A module to display what's playing in MPD.
+// as far as i know, maintained and working. Using it without probs.
 
 net - A module to monitor traffic on a network device.
+// works. devilhorns, its state?? anyway, should be replaced by stats module.
 
 news - A module to display rss feeds.
+// recently fixed and maintained by kiwi. Needs lots of love, though
+
+notification - a notification daemon for E
+// works, needs a bit of love 
 
 penguins - A module to display fancy penguins on your desktop.
+// created by DaveMDS, works but not touched for long
 
 photo - A module to display pictures on the desktop.
+// does nice segvs, don't use it
 
 places - manage volumes attached to the system.
+// works. maintained. clean and nice.
+
+quickaccess - this module aims to provide quick access to some applications given
+its name/class pair, based on yakuake
+// in developenment, far from ready
 
 rain - A module to display rain on the desktop.
+// works, useless, eyecandy. Should be merged with flame and snow
 
 screenshot - A module to take screenshots, utilizing scrot or import.
+// works - maintained by devilhorns.
+
+skel - skeleton for creating new modules
+// works. maybe it would be good to modify it a bit?
 
 slideshow - A module to cycle desktop backgrounds.
+// as far as i know works, but dunno about maintainer. devilhorns??
 
 snow - A module to display snow on the desktop.
+// works. useless. eyecandy. should be merged with rain and flame.
 
 taskbar - A taskbar module.  (Will be replaced by something better.)
+// works, needs a bit of love though
 
 tclock - A module to display a digital clock on the desktop.  (Will be replaced by something better.)
+// should be merged with clock, also afaik the code is not so good but works.
+
+tiling - ion-like tiling for e17
+// functionality replaced by illume2, no maintainer afaik
 
 uptime - A module to monitor computer uptime.
+// works. but maintainer??
 
 weather - A module to display a weather forecast.
+// replaced by forecasts and eweather. works
 
 winselector - A module to show menu-based access to open windows.
+// works well. but dunno if the maintainer is dead or something.
 
 wlan - A module to monitor a wlan device.
+// same as for net.
