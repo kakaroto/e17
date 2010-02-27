@@ -548,6 +548,10 @@ e_dbus_object_handler(DBusConnection *conn, DBusMessage *message, void *user_dat
   else
     reply = m->func(obj, message);
 
+  /* user can choose reply later */
+  if (!reply)
+    return DBUS_HANDLER_RESULT_HANDLED;
+
   dbus_connection_send(conn, reply, &serial);
   dbus_message_unref(reply);
 
