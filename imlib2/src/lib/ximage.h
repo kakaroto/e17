@@ -4,7 +4,7 @@
 #include <X11/Xlib.h>
 #include <X11/extensions/XShm.h>
 
-__hidden signed char x_does_shm;
+__hidden extern signed char x_does_shm;
 
 void                __imlib_SetMaxXImageCount(Display * d, int num);
 __hidden int        __imlib_GetMaxXImageCount(Display * d);
