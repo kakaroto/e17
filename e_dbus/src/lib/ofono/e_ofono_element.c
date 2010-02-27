@@ -2,6 +2,16 @@
 #include <string.h>
 #include <errno.h>
 
+/*
+ * Maximum size for elements hash key.
+ *
+ * The elements hash key is contructed by concatenating the object path and the
+ * interface for the element (with a colon separating the two strings). D-Bus
+ * interfaces have a maximum size of 255 but object paths have unlimited size.
+ * We're assuming a maximum key size of 4k here, but this might need to be
+ * increased if oFono object paths grows bigger than that.
+ */
+#define MAX_KEY_SIZE 4096
 static Eina_Hash *elements = NULL;
 
 typedef struct _E_Ofono_Array E_Ofono_Array;
@@ -536,7 +546,7 @@ _e_ofono_element_array_match(E_Ofono_Array *old, E_Ofono_Array *new, const char 
     */
    EINA_LIST_FREE(deleted, data)
      {
-	E_Ofono_Element *e = e_ofono_element_get(data);
+	E_Ofono_Element *e = e_ofono_element_get(data, prop_name);
 	if (e)
 	  e_ofono_element_unregister(e);
 	DBG("Delete element %s\n", (const char *) data);
@@ -550,7 +560,8 @@ out_remove_remaining:
 	if (!item_old)
 	  break;
 
-	e = e_ofono_element_get(item_old);
+	e = e_ofono_element_get(item_old,
+				_e_ofono_element_get_interface(prop_name));
 	if (e)
 	  e_ofono_element_unregister(e);
 	DBG("Delete element %s\n", (const char *) item_old);
@@ -770,7 +781,7 @@ e_ofono_element_objects_array_get_stringshared(const E_Ofono_Element *element, c
 
    EINA_ARRAY_ITER_NEXT(array->array, i, item, iterator)
      {
-	E_Ofono_Element *e = e_ofono_element_get(item);
+	E_Ofono_Element *e = e_ofono_element_get(item, property);
 	if (!e)
 	  continue;
 	*p = e;
@@ -2030,12 +2041,16 @@ e_ofono_elements_get_all_type(const char *type, unsigned int *count, E_Ofono_Ele
  * @return element pointer if found, NULL otherwise. No references are added.
  */
 E_Ofono_Element *
-e_ofono_element_get(const char *path)
+e_ofono_element_get(const char *path, const char *interface)
 {
    E_Ofono_Element *element;
+   char key[MAX_KEY_SIZE];
 
    EINA_SAFETY_ON_NULL_RETURN_VAL(path, NULL);
-   element = eina_hash_find(elements, path);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(interface, NULL);
+
+   snprintf(key, MAX_KEY_SIZE, "%s:%s", path, interface);
+   element = eina_hash_find(elements, key);
 
    return element;
 }
@@ -2049,7 +2064,7 @@ _e_ofono_element_property_changed_callback(void *data, DBusMessage *msg)
    const char *name = NULL;
    void *value = NULL;
 
-   DBG("Property changed in element %s", element->path);
+   DBG("Property changed in element %s %s", element->path, element->interface);
 
    if (!_dbus_callback_check_and_init(msg, &itr, NULL))
      return;
@@ -2095,11 +2110,12 @@ _e_ofono_element_property_changed_callback(void *data, DBusMessage *msg)
 }
 
 /**
- * Register the given path, possible creating and element and return it.
+ * Register the given pair (path, interface), possibly creating an
+ * element and return it.
  *
- * This will check if path is already registered, in that case the
- * exiting element is returned. If it was not registered yet, a new
- * element is created, registered and returned.
+ * This will check if (path, interface) is already registered, in
+ * that case the exiting element is returned. If it was not registered
+ * yet, a new element is created, registered and returned.
  *
  * This call will not add extra references to the object.
  *
@@ -2111,11 +2127,13 @@ E_Ofono_Element *
 e_ofono_element_register(const char *path, const char *interface)
 {
    E_Ofono_Element *element;
+   char key[MAX_KEY_SIZE];
 
    EINA_SAFETY_ON_NULL_RETURN_VAL(path, NULL);
    EINA_SAFETY_ON_NULL_RETURN_VAL(interface, NULL);
 
-   element = eina_hash_find(elements, path);
+   snprintf(key, MAX_KEY_SIZE, "%s:%s", path, interface);
+   element = eina_hash_find(elements, key);
    if (element)
      return element;
 
@@ -2123,7 +2141,7 @@ e_ofono_element_register(const char *path, const char *interface)
    if (!element)
      return NULL;
 
-   if (!eina_hash_add(elements, element->path, element))
+   if (!eina_hash_add(elements, key, element))
      {
 	ERR("could not add element %s to hash, delete it.", path);
 	e_ofono_element_free(element);
@@ -2173,11 +2191,14 @@ _e_ofono_element_unregister_internal(E_Ofono_Element *element)
 void
 e_ofono_element_unregister(E_Ofono_Element *element)
 {
+   char key[MAX_KEY_SIZE];
+
    if (!element)
      return;
 
+   snprintf(key, MAX_KEY_SIZE, "%s:%s", element->path, element->interface);
    if (elements)
-     eina_hash_del_by_key(elements, element->path);
+     eina_hash_del_by_key(elements, key);
 }
 
 /**

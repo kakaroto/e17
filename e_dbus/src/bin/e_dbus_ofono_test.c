@@ -37,7 +37,7 @@ static int
 _on_element_add(void *data, int type, void *info)
 {
    E_Ofono_Element *element = info;
-   printf(">>> %s\n", element->path);
+   printf(">>> %s %s\n", element->path, element->interface);
    return 1;
 }
 
@@ -45,7 +45,7 @@ static int
 _on_element_del(void *data, int type, void *info)
 {
    E_Ofono_Element *element = info;
-   printf("<<< %s\n", element->path);
+   printf("<<< %s %s\n", element->path, element->interface);
    return 1;
 }
 
@@ -53,7 +53,7 @@ static int
 _on_element_updated(void *data, int type, void *info)
 {
    E_Ofono_Element *element = info;
-   printf("!!! %s\n", element->path);
+   printf("!!! %s %s\n", element->path, element->interface);
    e_ofono_element_print(stderr, element);
    return 1;
 }
@@ -119,7 +119,7 @@ _on_cmd_get_all(char *cmd, char *args)
 }
 
 static E_Ofono_Element *
-_element_from_args(char *args, char **next_args)
+_element_from_args(char *interface, char *args, char **next_args)
 {
    E_Ofono_Element *element;
 
@@ -130,10 +130,17 @@ _element_from_args(char *args, char **next_args)
 	return NULL;
      }
 
-   *next_args = _tok(args);
-   element = e_ofono_element_get(args);
+   if (!interface)
+     {
+	interface = _tok(args);
+	*next_args = _tok(interface);
+     }
+   else
+     *next_args = _tok(args);
+
+   element = e_ofono_element_get(args, interface);
    if (!element)
-     fprintf(stderr, "ERROR: no element called \"%s\".\n", args);
+     fprintf(stderr, "ERROR: no element called \"%s %s\".\n", args, interface);
 
    return element;
 }
@@ -142,7 +149,7 @@ static int
 _on_cmd_print(char *cmd, char *args)
 {
    char *next_args;
-   E_Ofono_Element *element = _element_from_args(args, &next_args);
+   E_Ofono_Element *element = _element_from_args(NULL, args, &next_args);
    if (element)
      e_ofono_element_print(stdout, element);
    return 1;
@@ -152,7 +159,7 @@ static int
 _on_cmd_get_properties(char *cmd, char *args)
 {
    char *next_args;
-   E_Ofono_Element *element = _element_from_args(args, &next_args);
+   E_Ofono_Element *element = _element_from_args(NULL, args, &next_args);
    if (element)
      e_ofono_element_properties_sync(element);
    return 1;
@@ -162,7 +169,7 @@ static int
 _on_cmd_property_set(char *cmd, char *args)
 {
    char *next_args, *name, *p;
-   E_Ofono_Element *element = _element_from_args(args, &next_args);
+   E_Ofono_Element *element = _element_from_args(NULL, args, &next_args);
    void *value;
    long vlong;
    unsigned short vu16;

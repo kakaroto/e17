@@ -8,5 +8,5 @@
 E_Ofono_Element *
 e_ofono_manager_get(void)
 {
-   return e_ofono_element_get(manager_path);
+   return e_ofono_element_get(manager_path, e_ofono_iface_manager);
 }

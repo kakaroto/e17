@@ -80,7 +80,7 @@ extern "C" {
 
   EAPI bool e_ofono_elements_get_all(unsigned int *count, E_Ofono_Element ***p_elements) EINA_ARG_NONNULL(1, 2) EINA_WARN_UNUSED_RESULT;
   EAPI bool e_ofono_elements_get_all_type(const char *type, unsigned int *count, E_Ofono_Element ***p_elements) EINA_ARG_NONNULL(1, 2, 3) EINA_WARN_UNUSED_RESULT;
-  EAPI E_Ofono_Element *e_ofono_element_get(const char *path);
+  EAPI E_Ofono_Element *e_ofono_element_get(const char *path, const char *interface);
 
   EAPI void e_ofono_element_listener_add(E_Ofono_Element *element, void (*cb)(void *data, const E_Ofono_Element *element), const void *data, void (*free_data)(void *data)) EINA_ARG_NONNULL(1, 2);
   EAPI void e_ofono_element_listener_del(E_Ofono_Element *element, void (*cb)(void *data, const E_Ofono_Element *element), const void *data) EINA_ARG_NONNULL(1, 2);
