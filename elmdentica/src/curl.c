@@ -16,8 +16,10 @@
  *
  */
 
-#include <stdlib.h>
+#define _GNU_SOURCE
+#include <stdio.h>
 #include <string.h>
+#include <stdlib.h>
 
 #include <glib.h>
 #include <glib/gprintf.h>
@@ -158,6 +160,7 @@ char *ed_curl_escape(char *unescaped) {
 
 CURL * ed_curl_init(char *screen_name, char *password, http_request * request) {
 	CURL *ua=NULL;
+	int res = 0;
 
 	ua = curl_easy_init();
 
@@ -174,8 +177,9 @@ CURL * ed_curl_init(char *screen_name, char *password, http_request * request) {
 
 
 		if(screen_name != NULL && password != NULL) {
-			userpwd=g_strdup_printf("%s:%s", screen_name, password);
-			curl_easy_setopt(ua, CURLOPT_USERPWD,   userpwd         		);
+			res = asprintf(&userpwd, "%s:%s", screen_name, password);
+			if(res != -1)
+				curl_easy_setopt(ua, CURLOPT_USERPWD,   userpwd         		);
 		}
 	}
 	return(ua);
