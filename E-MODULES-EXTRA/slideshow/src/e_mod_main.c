@@ -1,7 +1,6 @@
 #include <e.h>
 #include <Ecore.h>
 #include <Ecore_File.h>
-#include <Ecore_Data.h>
 #include "e_mod_main.h"
 
 typedef struct _Instance Instance;
@@ -13,7 +12,7 @@ struct _Instance
    Evas_Object *slide_obj;
    Slideshow *slide;
    Ecore_Timer *check_timer;
-   Ecore_List *bg_list;
+   Eina_List *bg_list;
    const char *display;
    int index, bg_id, bg_count;
    Config_Item *ci;
@@ -107,11 +106,14 @@ _gc_shutdown(E_Gadcon_Client *gcc)
 {
    Instance *inst;
    Slideshow *slide;
+   char *item;
 
    inst = gcc->data;
    slide = inst->slide;
 
-   if (inst->bg_list) ecore_list_destroy(inst->bg_list);
+   EINA_LIST_FREE(inst->bg_list, item)
+     free(item);
+
    if (inst->display) eina_stringshare_del(inst->display);
    if (inst->check_timer) ecore_timer_del(inst->check_timer);
 
@@ -141,7 +143,7 @@ static Evas_Object *
 _gc_icon(E_Gadcon_Client_Class *client_class, Evas *evas)
 {
    Evas_Object *o;
-   char buf[4096];
+   char buf[PATH_MAX];
 
    o = edje_object_add(evas);
    snprintf(buf, sizeof (buf), "%s/e-module-slideshow.edj", 
@@ -191,8 +193,6 @@ _slide_cb_mouse_down(void *data, Evas *e, Evas_Object *obj, void *event_info)
 			       e_util_zone_current_get(e_manager_current_get()), 
 			       x + ev->output.x, y + ev->output.y, 1, 1,
 			       E_MENU_POP_DIRECTION_DOWN, ev->timestamp);
-	evas_event_feed_mouse_up(inst->gcc->gadcon->evas, ev->button,
-				  EVAS_BUTTON_NONE, ev->timestamp, NULL);
      }
    else if (ev->button == 2)
      {
@@ -228,13 +228,11 @@ void
 _slide_config_updated(Config_Item *ci)
 {
    Eina_List *l;
+   Instance *inst;
 
    if (!slide_config) return;
-   for (l = slide_config->instances; l; l = l->next)
+   EINA_LIST_FOREACH(slide_config->instances, l, inst) 
      {
-	Instance *inst;
-
-	inst = l->data;
 	if (inst->ci != ci) continue;
 	if (inst->check_timer) ecore_timer_del(inst->check_timer);
 	if ((inst->ci->disable_timer) || (inst->ci->poll_time == 0))
@@ -249,7 +247,7 @@ _slide_config_item_get(const char *id)
 {
    Eina_List *l;
    Config_Item *ci;
-   char buf[4096];
+   char buf[PATH_MAX];
 
    if (!id)
      {
@@ -269,9 +267,8 @@ _slide_config_item_get(const char *id)
      }
    else
      {
-	for (l = slide_config->items; l; l = l->next)
-	  {
-	     ci = l->data;
+        EINA_LIST_FOREACH(slide_config->items, l, ci) 
+          {
 	     if (!ci->id) continue;
 	     if (!strcmp(ci->id, id)) return ci;
 	 }
@@ -297,7 +294,7 @@ EAPI E_Module_Api e_modapi =
 EAPI void *
 e_modapi_init(E_Module *m)
 {
-   char buf[4096];
+   char buf[PATH_MAX];
 
    snprintf(buf, sizeof(buf), "%s/locale", e_module_dir_get(m));
    bindtextdomain(PACKAGE, buf);
@@ -326,7 +323,6 @@ e_modapi_init(E_Module *m)
    if (!slide_config)
      {
 	Config_Item *ci;
-	char buf[4096];
 
 	snprintf(buf, sizeof (buf), "%s/.e/e/backgrounds", e_user_homedir_get());
 	slide_config = E_NEW(Config, 1);
@@ -386,10 +382,11 @@ static Slideshow *
 _slide_new(Evas *evas)
 {
    Slideshow *ss;
-   char buf[4096];
+   char buf[PATH_MAX];
 
    ss = E_NEW(Slideshow, 1);
-   snprintf(buf, sizeof (buf), "%s/slideshow.edj", e_module_dir_get (slide_config->module));
+   snprintf(buf, sizeof (buf), "%s/slideshow.edj", 
+            e_module_dir_get(slide_config->module));
    ss->img_obj = e_livethumb_add(evas);
    e_livethumb_vsize_set(ss->img_obj, 120, 120);
    evas_object_show(ss->img_obj);
@@ -425,11 +422,11 @@ _slide_cb_check(void *data)
    if (inst->index > inst->bg_count) inst->index = 0;
    if (inst->index <= inst->bg_count)
      {
-	bg = ecore_list_index_goto(inst->bg_list, inst->index);
+        bg = eina_list_nth(inst->bg_list, inst->index);
 	if (bg == NULL)
 	  {
 	     inst->index = 0;
-	     bg = ecore_list_index_goto(inst->bg_list, inst->index);
+             bg = eina_list_nth(inst->bg_list, inst->index);
 	  }
 	if (bg != NULL)
 	  {
@@ -451,9 +448,9 @@ static void
 _slide_get_bg_subdirs(void *data, char *local_path)
 {
    Eina_List *dir_list;
-   char full_path[4096];
-   char item_full_path[4096];
-   char item_local_path[4096];
+   char full_path[PATH_MAX];
+   char item_full_path[PATH_MAX];
+   char item_local_path[PATH_MAX];
    char *item;
    Instance *inst;
 
@@ -471,7 +468,7 @@ _slide_get_bg_subdirs(void *data, char *local_path)
 	if(ecore_file_is_dir(item_full_path))
 	  _slide_get_bg_subdirs(inst, item_local_path);
 	else
-	  ecore_list_append(inst->bg_list, strdup(item_local_path));
+          inst->bg_list = eina_list_append(inst->bg_list, strdup(item_local_path));
 
 	free(item);
      }
@@ -483,16 +480,14 @@ _slide_get_bg_count(void *data)
    Instance *inst;
    char *item;
    Eina_List *dir_list;
-   char item_full_path[4096];
+   char item_full_path[PATH_MAX];
 
    inst = data;
    if (!inst->ci->dir) return;
 
    inst->bg_count = 0;
-   if (inst->bg_list) ecore_list_destroy(inst->bg_list);
-
-   inst->bg_list = ecore_list_new();
-   ecore_list_free_cb_set(inst->bg_list, free);
+   EINA_LIST_FREE(inst->bg_list, item)
+     free(item);
 
    dir_list = ecore_file_ls(inst->ci->dir);
    EINA_LIST_FREE(dir_list, item)
@@ -502,13 +497,11 @@ _slide_get_bg_count(void *data)
 	if(ecore_file_is_dir(item_full_path))
 	  _slide_get_bg_subdirs(inst, item);
 	else
-	  ecore_list_append(inst->bg_list, strdup(item));
+          inst->bg_list = eina_list_append(inst->bg_list, strdup(item));
 	free(item);
      }
 
-   ecore_list_first_goto(inst->bg_list);
-   while ((item = (char *)ecore_list_next(inst->bg_list)) != NULL)
-     inst->bg_count++;
+   inst->bg_count = eina_list_count(inst->bg_list);
 }
 
 static void
@@ -520,7 +513,7 @@ _slide_set_bg(void *data, const char *bg)
    E_Desk *d;
    E_Zone *z;
    int i;
-   char buf[4096];
+   char buf[PATH_MAX];
 
    inst = data;
    if (!(g = inst->gcc->gadcon)) return;
@@ -563,13 +556,13 @@ _slide_set_preview(void *data)
 {
    Instance *inst;
    Slideshow *ss;
-   char buf[4096];
+   char buf[PATH_MAX];
    char *bg;
 
    inst = data;
    ss = inst->slide;
 
-   bg = ecore_list_index_goto(inst->bg_list, inst->index);
+   bg = eina_list_nth(inst->bg_list, inst->index);
    snprintf(buf, sizeof (buf), "%s/%s", inst->ci->dir, bg);
    if (!e_util_edje_collection_exists (buf, "e/desktop/background")) return;
    if (ss->bg_obj) evas_object_del(ss->bg_obj);
