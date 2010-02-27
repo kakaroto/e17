@@ -488,7 +488,7 @@ static int add_status(void *notUsed, int argc, char **argv, char **azColName) {
 	int id=0, account_id=0, status_id=0, res=0;
 	time_t date;
 
-	ub_Bubble * ubBubble = g_malloc0(sizeof(ub_Bubble));
+	ub_Bubble * ubBubble = calloc(1, sizeof(ub_Bubble));
 	Evas_Object *message=NULL, *bubble=NULL, *icon=NULL, *box=NULL;
 	time_t now,status_time,time_delta;
 	char *tmp;

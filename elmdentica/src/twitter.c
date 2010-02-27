@@ -124,7 +124,7 @@ int ed_twitter_post(int account_id, char *screen_name, char *password, char *pro
 		printf("Direct message to %s\n", dm_to);
 	}
 
-	request = g_malloc0(sizeof(http_request));
+	request = calloc(1, sizeof(http_request));
 
 	if(request && strlen(msg) > 0) {
 		if(reply_id) {
@@ -176,7 +176,7 @@ void ed_twitter_max_status_id(int account_id, long long int*since_id) {
 void ed_twitter_timeline_friends_get(int account_id, char *screen_name, char *password, char *proto, char *domain, int port, char *base_url) {
 	int xml_res=0;
 	long long int since_id=0;
-	http_request * request=g_malloc0(sizeof(http_request));
+	http_request * request=calloc(1, sizeof(http_request));
 	StatusesList *statuses=(StatusesList*)g_malloc(sizeof(StatusesList));
 	time_t now;
 
@@ -243,7 +243,7 @@ void ed_twitter_statuses_insert_avatar(StatusesList *statuses) {
 		if(file == -1) {
 			file = open(file_path, O_WRONLY | O_CREAT, S_IRUSR|S_IWUSR);
 			if(file != -1) {
-				request = g_malloc0(sizeof(http_request));
+				request = calloc(1, sizeof(http_request));
 				request->url=avatar;
 				res = ed_curl_get(NULL, NULL, request);
 				if(res == 0)

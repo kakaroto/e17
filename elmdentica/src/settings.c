@@ -171,7 +171,7 @@ void on_user_data_ok(void *data, Evas_Object *obj, void *event_info) {
 		send = 0;
 	}
 
-	id = g_malloc0(sizeof(int));
+	id = calloc(1, sizeof(int));
 	get_account_id(screen_name, domain, id);
 
 	res = asprintf(&account_id, "%s@%s", screen_name, domain);
@@ -195,7 +195,7 @@ void on_user_data_ok(void *data, Evas_Object *obj, void *event_info) {
 			free(query);
 	
 			g_free(id);
-			id = g_malloc0(sizeof(int));
+			id = calloc(1, sizeof(int));
 			get_account_id(screen_name, domain, id);
 
 			check = elm_check_add(settings_win);
@@ -522,7 +522,7 @@ void on_account_delete(void *data, Evas_Object *button, void *event_info) {
 static int accounts_list_insert(void *user_data, int argc, char **argv, char **azColName) {
 	Evas_Object *list = (Evas_Object*)user_data, *check=NULL;
 	Elm_List_Item * item=NULL;
-	int *id = g_malloc0(sizeof(int));
+	int *id = calloc(1, sizeof(int));
 	char *key=NULL;
 	int enabled=0, res=0;
 
