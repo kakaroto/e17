@@ -18,9 +18,6 @@ may be removed.
 alarm - Sets reminders and timer.  (Replaces eveil.)
 // looks like unmaintained. kiwi?
 
-bling - EFLized Composite Manager for E17.
-// already replaced by comp module in E.
-
 calendar - A module to show the current day.
 // works OK, but unmaintained propably
 
