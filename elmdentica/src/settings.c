@@ -50,8 +50,6 @@ Evas_Object *settings_win=NULL, *settings_area=NULL, *account_editor=NULL, *cach
 
 Elm_List_Item * current_account_li=NULL, *current_domain_li=NULL;
 
-extern GHashTable *my_accounts;
-
 extern struct sqlite3 *ed_DB;
 extern int MAX_MESSAGES;
 
@@ -605,7 +603,6 @@ void on_settings_accounts(void *data, Evas_Object *toolbar, void *event_info) {
 			evas_object_show(list);
 			elm_frame_content_set(frame, list);
 		evas_object_show(frame);
-
 		elm_box_pack_end(account_editor, frame);
 
 
@@ -908,7 +905,7 @@ void on_settings(void *data, Evas_Object *obj, void *event_info) {
 				evas_object_show(icon);
 			item = elm_toolbar_item_add(toolbar, icon, _("Accounts"), on_settings_accounts, NULL);
 
-			icon = elm_photo_add(settings_win);
+			icon = elm_icon_add(settings_win);
 				elm_icon_standard_set(icon, "apps");
 				evas_object_show(icon);
 			elm_toolbar_item_add(toolbar, icon, _("Cache"), on_settings_cache, NULL);
