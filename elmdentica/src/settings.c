@@ -236,14 +236,48 @@ void on_account_type_chose_statusnet(void *data, Evas_Object *obj, void *event_i
 	current_account_type=ACCOUNT_TYPE_STATUSNET;
 }
 
+void on_account_type_chose_identica(void *data, Evas_Object *obj, void *event_info) {
+	Evas_Object * eo = NULL;
+	Evas * evas = NULL;
+
+	current_account_type=ACCOUNT_TYPE_TWITTER;
+	evas = evas_object_evas_get(obj);
+	if(evas) {
+		eo = evas_object_name_find(evas, "secure_entry");
+		if(eo) elm_toggle_state_set(eo, TRUE);
+
+		eo = evas_object_name_find(evas, "domain_entry");
+		if(eo) elm_entry_entry_set(eo, "identi.ca");
+
+		eo = evas_object_name_find(evas, "base_url_entry");
+		if(eo) elm_entry_entry_set(eo, "/api");
+	}
+}
 void on_account_type_chose_twitter(void *data, Evas_Object *obj, void *event_info) {
+	Evas_Object * eo = NULL;
+	Evas * evas = NULL;
+
+	current_account_type=ACCOUNT_TYPE_TWITTER;
+	evas = evas_object_evas_get(obj);
+	if(evas) {
+		eo = evas_object_name_find(evas, "secure_entry");
+		if(eo) elm_toggle_state_set(eo, TRUE);
+
+		eo = evas_object_name_find(evas, "domain_entry");
+		if(eo) elm_entry_entry_set(eo, "twitter.com");
+
+		eo = evas_object_name_find(evas, "base_url_entry");
+		if(eo) elm_entry_entry_set(eo, "/");
+	}
+}
+void on_account_type_chose_twitter_api(void *data, Evas_Object *obj, void *event_info) {
 	current_account_type=ACCOUNT_TYPE_TWITTER;
 }
 
 void on_account_type_chosen(void *data, Evas_Object *obj, void *event_info) {
 	Evas_Object *type_hoversel = (Evas_Object*)data;
 	switch(current_account_type) {
-		case ACCOUNT_TYPE_TWITTER: { elm_hoversel_label_set(type_hoversel, "Twitter"); break; }
+		case ACCOUNT_TYPE_TWITTER: { elm_hoversel_label_set(type_hoversel, "Twitter API"); break; }
 		case ACCOUNT_TYPE_STATUSNET:
 		default: { elm_hoversel_label_set(type_hoversel, "StatusNet"); break; }
 	}
@@ -319,8 +353,10 @@ Evas_Object * account_dialog(Evas_Object *parent, char *screen_name, char *passw
 				elm_hoversel_hover_parent_set(type_entry, table);
 
 				elm_hoversel_hover_begin(type_entry);
-					acc_type = elm_hoversel_item_add(type_entry, "StatusNet", NULL, ELM_ICON_NONE, on_account_type_chose_statusnet, type_entry);
+					acc_type = elm_hoversel_item_add(type_entry, "Identi.ca", NULL, ELM_ICON_NONE, on_account_type_chose_identica, type_entry);
+					acc_type = elm_hoversel_item_add(type_entry, "Twitter API", NULL, ELM_ICON_NONE, on_account_type_chose_twitter_api, type_entry);
 					acc_type = elm_hoversel_item_add(type_entry, "Twitter", NULL, ELM_ICON_NONE, on_account_type_chose_twitter, type_entry);
+					acc_type = elm_hoversel_item_add(type_entry, "StatusNet", NULL, ELM_ICON_NONE, on_account_type_chose_statusnet, type_entry);
 					evas_object_smart_callback_add(type_entry, "selected", on_account_type_chosen, type_entry);
 				elm_hoversel_hover_end(type_entry);
 
@@ -328,6 +364,7 @@ Evas_Object * account_dialog(Evas_Object *parent, char *screen_name, char *passw
 			evas_object_show(type_entry);
 
 			secure_entry = elm_toggle_add(user_data_dialog);
+				evas_object_name_set(secure_entry, "secure_entry");
 				evas_object_size_hint_weight_set(secure_entry, 1, 1);
 				evas_object_size_hint_align_set(secure_entry, -1, 0.5);
 				elm_toggle_states_labels_set(secure_entry, _("Secure"), _("Faster"));
@@ -345,6 +382,7 @@ Evas_Object * account_dialog(Evas_Object *parent, char *screen_name, char *passw
 				elm_frame_label_set(frame, _("Domain"));
 
 				domain_entry = elm_entry_add(user_data_dialog);
+					evas_object_name_set(domain_entry, "domain_entry");
 					elm_entry_single_line_set(domain_entry, 1);
 					elm_entry_entry_set(domain_entry, domain);
 					elm_frame_content_set(frame, domain_entry);
@@ -359,6 +397,7 @@ Evas_Object * account_dialog(Evas_Object *parent, char *screen_name, char *passw
 				elm_frame_label_set(frame, _("Base URL"));
 
 				base_url_entry = elm_entry_add(user_data_dialog);
+					evas_object_name_set(base_url_entry, "base_url_entry");
 					elm_entry_single_line_set(base_url_entry, 1);
 					elm_entry_entry_set(base_url_entry, base_url);
 					elm_frame_content_set(frame, base_url_entry);
@@ -615,7 +654,7 @@ void on_settings_accounts(void *data, Evas_Object *toolbar, void *event_info) {
 
 			// add contact
 			icon = elm_icon_add(settings_win);
-				elm_icon_standard_set(icon, "apps");
+				elm_icon_standard_set(icon, "file");
 			evas_object_show(icon);
 
 			button = elm_button_add(settings_win);
@@ -906,7 +945,7 @@ void on_settings(void *data, Evas_Object *obj, void *event_info) {
 			item = elm_toolbar_item_add(toolbar, icon, _("Accounts"), on_settings_accounts, NULL);
 
 			icon = elm_icon_add(settings_win);
-				elm_icon_standard_set(icon, "apps");
+				elm_icon_standard_set(icon, "folder");
 				evas_object_show(icon);
 			elm_toolbar_item_add(toolbar, icon, _("Cache"), on_settings_cache, NULL);
 
