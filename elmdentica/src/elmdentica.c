@@ -404,7 +404,7 @@ static void on_bubble_mouse_down(void *data, Evas *e, Evas_Object *obj, void *ev
 
 static void on_bubble_mouse_up(void *data, Evas *e, Evas_Object *obj, void *event_info) {
 	Evas_Object *hover=NULL, *box=NULL, *table=NULL, *button=NULL, *bubble=(Evas_Object*)data;
-	ub_Bubble * ubBubble = eina_hash_find(status2user, bubble);
+	ub_Bubble * ubBubble = eina_hash_find(status2user, &bubble);
 	double time_delta;
 	struct timeval tv;
 
@@ -448,7 +448,7 @@ static void on_bubble_mouse_up(void *data, Evas *e, Evas_Object *obj, void *even
 		evas_object_show(box);
 
 		elm_hover_parent_set(hover, win);
-		elm_hover_target_set(hover, ubBubble->box);
+		elm_hover_target_set(hover, bubble);
 		elm_hover_content_set(hover, "middle", box);
 	evas_object_show(hover);
 
@@ -561,14 +561,6 @@ static int add_status(void *notUsed, int argc, char **argv, char **azColName) {
 
 	elm_bubble_content_set(bubble, message);
 
-	ubBubble->box=box;
-	ubBubble->account_id = account_id;
-	if(screen_name)
-		ubBubble->screen_name = strndup(screen_name, 1024);
-	else
-		ubBubble->screen_name = strdup("");
-	ubBubble->message = status_message;
-
  	//evas_object_event_callback_add(bubble, EVAS_CALLBACK_MOUSE_DOWN, on_bubble_mouse_down, bubble);
  	//evas_object_event_callback_add(bubble, EVAS_CALLBACK_MOUSE_UP, on_bubble_mouse_up, bubble);
 
@@ -579,7 +571,15 @@ static int add_status(void *notUsed, int argc, char **argv, char **azColName) {
 	evas_object_show(box);
 	elm_box_pack_end(status_list, box);
 
-	eina_hash_add(status2user, (void*)bubble, (void*)ubBubble);
+	ubBubble->box=box;
+	ubBubble->account_id = account_id;
+	if(screen_name)
+		ubBubble->screen_name = strndup(screen_name, 1024);
+	else
+		ubBubble->screen_name = strdup("");
+	ubBubble->message = status_message;
+
+	eina_hash_add(status2user, (void*)&bubble, (void*)ubBubble);
 
 	return(0);
 }
