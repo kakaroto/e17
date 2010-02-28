@@ -3,6 +3,7 @@
 Evas *evas = NULL;
 int win_w = 720, win_h = 420;
 int loops = LOOPS;
+int fullscreen = 0;
 
 static char *datadir = NULL;
 static int go = 1;
@@ -1230,6 +1231,7 @@ _help(void)
 	   "  -t TEST-NUM\n"
 	   "  -e ENGINE\n"
 	   "  -p PROFILE\n"
+	   "  -f use netwm fullscreen request (requires x11 + wm)\n"
 	   "\n"
 	   "Where ENGINE can be one of:\n"
 	   " ");
@@ -1272,6 +1274,10 @@ _profile_parse(int argc, char **argv)
           {
              i++;
              loops = atoi(argv[i]);
+          }
+	else if (!strcmp(argv[i], "-f"))
+          {
+             fullscreen = 1;
           }
      }
    return 1;

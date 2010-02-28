@@ -127,8 +127,6 @@ engine_software_xcb_args(const char *engine, int width, int height)
                      value_list);
    einfo->info.drawable = win;
 
-   xcb_map_window(conn, win);
-   
    if (!evas_engine_info_set(evas, (Evas_Engine_Info *) einfo))
      {
 	printf("Evas can not setup the informations of the Software XCB Engine\n");
@@ -178,6 +176,8 @@ engine_software_xcb_args(const char *engine, int width, int height)
 
    free(xcb_get_input_focus_reply(conn, xcb_get_input_focus_unchecked(conn), NULL));
 
+   xcb_map_window(conn, win);
+   
    while (!first_expose)
      engine_software_xcb_loop();
    return EINA_TRUE;

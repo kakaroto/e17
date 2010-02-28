@@ -23,7 +23,7 @@ engine_software_sdl_args(const char *engine, int width, int height)
    einfo = (Evas_Engine_Info_SDL *) evas_engine_info_get(evas);
 
    /* the following is specific to the engine */
-   einfo->info.fullscreen = 0;
+   einfo->info.fullscreen = fullscreen;
    einfo->info.noframe = 0;
 
    if (!evas_engine_info_set(evas, (Evas_Engine_Info *) einfo))

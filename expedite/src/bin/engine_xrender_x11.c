@@ -2,6 +2,7 @@
 
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
+#include <X11/Xatom.h>
 #include <Evas_Engine_XRender_X11.h>
 
 static Display *disp = NULL;
@@ -58,6 +59,15 @@ engine_xrender_x11_args(const char *engine, int width, int height)
 	goto destroy_window;
      }
 
+   if (fullscreen)
+     {
+        Atom prop  = XInternAtom(disp, "_NET_WM_STATE", False);
+        Atom state = XInternAtom(disp, "_NET_WM_STATE_FULLSCREEN", False);
+        unsigned long data = state;
+        XChangeProperty(disp, win, prop, XA_ATOM, 32, PropModeReplace, 
+                        &data, 1);
+     }
+   
    XStoreName(disp, win, "Expedite - Evas Test Suite");
    chint.res_name = "expedite";
    chint.res_class = "Expedite";

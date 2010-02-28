@@ -87,6 +87,7 @@ extern "C"
 extern Evas *evas;
 extern int   win_w, win_h;
 extern int   loops;
+extern int   fullscreen;
 
 typedef struct _Expedite_Resolution Expedite_Resolution;
 typedef struct _Expedite_Engine Expedite_Engine;

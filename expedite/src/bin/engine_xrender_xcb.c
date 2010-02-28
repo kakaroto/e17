@@ -142,8 +142,6 @@ engine_xrender_xcb_args(const char *engine, int width, int height)
 	goto destroy_window;
      }
 
-   xcb_map_window(conn, win);
-
 /*    XStoreName(disp, win, "Expedite - Evas Test Suite"); */
 
    cookie1 = xcb_intern_atom_unchecked(conn, 0, strlen("STRING"), "STRING");
@@ -208,6 +206,8 @@ engine_xrender_xcb_args(const char *engine, int width, int height)
                        sizeof(hints) / 4, &hints);
 
    free(xcb_get_input_focus_reply(conn, xcb_get_input_focus_unchecked(conn), NULL));
+
+   xcb_map_window(conn, win);
 
    while (!first_expose)
      engine_xrender_xcb_loop();
