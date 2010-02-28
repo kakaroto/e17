@@ -345,7 +345,7 @@ void ed_twitter_friends_characters(void *user_data, const xmlChar * ch, int len)
 	int res=0;
 
 
-	if(*state == HASH_ERROR) {
+	if(*state == HASH_ERROR && ch && len > 0) {
 		tmp = statuses->hash_error;
 		tmp2 = strndup((char*)ch, len);
 		if(tmp) {
@@ -355,7 +355,7 @@ void ed_twitter_friends_characters(void *user_data, const xmlChar * ch, int len)
 		} else {
 			statuses->hash_error = tmp2;
 		}
-	} else if(*state == HASH_REQUEST) {
+	} else if(*state == HASH_REQUEST && ch && len>0) {
 		tmp = statuses->hash_request;
 		tmp2 = strndup((char*)ch, len);
 		if(tmp) {
@@ -365,7 +365,7 @@ void ed_twitter_friends_characters(void *user_data, const xmlChar * ch, int len)
 		} else {
 			statuses->hash_request = tmp2;
 		}
-	} else if(*state == FT_ID) {
+	} else if(*state == FT_ID && ch && len>0) {
 		tmp = status->id_str;
 		tmp2 = strndup((char*)ch, len);
 		if(tmp) {
@@ -375,7 +375,7 @@ void ed_twitter_friends_characters(void *user_data, const xmlChar * ch, int len)
 		} else {
 			status->id_str = tmp2;
 		}
-	} else if(*state == FT_NAME) {
+	} else if(*state == FT_NAME && ch && len>0) {
 		tmp = status->name;
 		tmp2 = strndup((char*)ch, len);
 		if(tmp) {
@@ -385,7 +385,7 @@ void ed_twitter_friends_characters(void *user_data, const xmlChar * ch, int len)
 		} else {
 			status->name = tmp2;
 		}
-	} else if(*state == FT_AVATAR) {
+	} else if(*state == FT_AVATAR && ch && len>0) {
 		tmp = avatar;
 		tmp2 = strndup((char*)ch, len);
 		if(tmp) {
@@ -395,7 +395,7 @@ void ed_twitter_friends_characters(void *user_data, const xmlChar * ch, int len)
 		} else {
 			avatar = tmp2;
 		}
-	} else if(*state == FT_SCREEN_NAME) {
+	} else if(*state == FT_SCREEN_NAME && ch && len>0) {
 		tmp = status->screen_name;
 		tmp2 = strndup((char*)ch, len);
 		if(tmp) {
@@ -405,7 +405,7 @@ void ed_twitter_friends_characters(void *user_data, const xmlChar * ch, int len)
 		} else {
 			status->screen_name = tmp2;
 		}
-	} else if(*state == FT_CREATED_AT) {
+	} else if(*state == FT_CREATED_AT && ch && len>0) {
 		tmp = status->created_at_str;
 		tmp2 = strndup((char*)ch, len);
 		if(tmp) {
@@ -415,7 +415,7 @@ void ed_twitter_friends_characters(void *user_data, const xmlChar * ch, int len)
 		} else {
 			status->created_at_str = tmp2;
 		}
-	} else if(*state == FT_TEXT) {
+	} else if(*state == FT_TEXT && ch && len>0) {
 		tmp = status->text;
 		tmp2 = strndup((char*)ch, len);
 		if(tmp) {
