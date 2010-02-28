@@ -15,7 +15,7 @@ AC_DEFUN([EFL_CHECK_PTHREAD],
 dnl configure option
 
 AC_ARG_ENABLE([pthread],
-   [AC_HELP_STRING([--disable-pthread], [enable POSIX threads code @<:@default=yes@:>@])],
+   [AC_HELP_STRING([--disable-pthread], [enable POSIX threads code @<:@default=auto@:>@])],
    [
     if test "x${enableval}" = "xyes" ; then
        _efl_enable_pthread="yes"
@@ -23,7 +23,7 @@ AC_ARG_ENABLE([pthread],
        _efl_enable_pthread="no"
     fi
    ],
-   [_efl_enable_pthread="yes"])
+   [_efl_enable_pthread="auto"])
 
 AC_MSG_CHECKING([whether to build POSIX threads code])
 AC_MSG_RESULT([${_efl_enable_pthread}])
@@ -32,7 +32,7 @@ dnl check if the compiler supports pthreads
 
 _efl_have_pthread="no"
 
-if test "x${_efl_enable_pthread}" = "xyes" ; then
+if test "x${_efl_enable_pthread}" = "xyes" || test "x${_efl_enable_pthread}" = "xauto" ; then
 
    AC_COMPILE_IFELSE(
       [AC_LANG_PROGRAM([[
@@ -48,7 +48,10 @@ id = pthread_self();
 fi
 
 AC_MSG_CHECKING([whether system support POSIX threads])
-AC_MSG_RESULT([${_efl_enable_pthread}])
+AC_MSG_RESULT([${_efl_have_pthread}])
+if test "$x{_efl_enable_pthread}" = "xyes" && test "x${_efl_have_pthread}" = "xno"; then
+   AC_MSG_ERROR([pthread support requested but not found.])
+fi
 
 if test "x${_efl_have_pthread}" = "xyes" ; then
    case "$host_os" in
@@ -96,6 +99,9 @@ fi
 
 AC_MSG_CHECKING([whether to build POSIX threads spinlock code])
 AC_MSG_RESULT([${_efl_have_pthread_spinlock}])
+if test "$x{_efl_enable_pthread}" = "xyes" && test "x${_efl_have_pthread_spinlock}" = "xno"; then
+   AC_MSG_ERROR([pthread support requested but spinlocks are not supported])
+fi
 
 if test "x${_efl_have_pthread_spinlock}" = "xyes" ; then
    AC_DEFINE(EFL_HAVE_PTHREAD_SPINLOCK, 1, [Define to mention that POSIX threads spinlocks are supported])
