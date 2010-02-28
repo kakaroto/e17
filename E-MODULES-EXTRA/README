@@ -19,7 +19,7 @@ alarm - Sets reminders and timer.  (Replaces eveil.)
 // looks like unmaintained. kiwi?
 
 calendar - A module to show the current day.
-// works OK, but unmaintained propably
+// works OK
 
 cpu - A module to monitor cpu load.  (Will be replaced by something better.)
 // unmaintained :) and will be replaced by stats module if i'll write some
@@ -47,7 +47,7 @@ exalt-client - A frontend module for exalt network manager.
 // connman provides the same functionality. so maybe deprecated..
 
 execwatch - run actions periodically
-// works but dunno how it is with maintaining
+// works
 
 flame - A module to display flames on the desktop.
 // useless, tiny, eyecandy module. Nobody touched it for so long but still works. Maybe merge with snow and rain?
