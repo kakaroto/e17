@@ -4,6 +4,7 @@ config.log
 depcomp
 config.guess
 config.h
+config.h.in
 ltmain.sh
 config.sub
 Makefile
