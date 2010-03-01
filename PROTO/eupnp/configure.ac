@@ -89,9 +89,11 @@ AC_ARG_ENABLE([examples],
    [AC_HELP_STRING([--disable-examples], [do not build examples. @<:@default=yes@:>@])],
    [want_examples=$enableval], [want_examples="no"])
 
-AM_CONDITIONAL(EUPNP_BUILD_EXAMPLES, test "x${want_examples}" = "xyes")
+AC_CHECK_PKG(ELM, elementary, [have_elm="yes"], [have_elm="no"])
+AC_CHECK_PKG(EMOTION, emotion, [have_emotion="yes"], [have_emotion="no"])
 
-AC_CHECK_PKG(ELM, elementary, [have_tools="yes"], [have_tools="no"])
+AM_CONDITIONAL(EUPNP_BUILD_EXAMPLES, test "x${want_examples}" = "xyes")
+AM_CONDITIONAL(EUPNP_BUILD_EXAMPLE_BROWSER, test "x${have_emotion}" = "xyes" -a "x${have_elm}" = "xyes")
 
 
 # Build Eupnp tools
