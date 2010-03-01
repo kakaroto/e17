@@ -43,6 +43,7 @@ collections {
             description {
                state: "default" 0.0;
                min: 420 120;
+               align: 0.5 0.5;
 
                rel1 {
                   relative: 0.5 0.3;
@@ -83,7 +84,7 @@ collections {
                   to: "button_01.bg";
                }
                rel2 {
-                  relative: 0.25 0.8;
+                  relative: 0.20 0.8;
                   offset: -1 -1;
                   to: "button_01.bg";
                }
@@ -101,9 +102,9 @@ collections {
                text {
                   text: "label";
                   font: "Sans:style=bold";
-                  size: 14;
+                  size: 13;
                   align: 0.0 0.5;
-                  min: 1 1;
+                  min: 0 1;
                   max: 1 0;
                }
                rel1 {
@@ -162,6 +163,7 @@ collections {
             description {
                state: "default" 0.0;
                min: 420 120;
+               align: 0.5 0.5;
 
                rel1 {
                   relative: 0.5 0.7;
@@ -202,7 +204,7 @@ collections {
                   to: "button_02.bg";
                }
                rel2 {
-                  relative: 0.25 0.8;
+                  relative: 0.20 0.8;
                   offset: -1 -1;
                   to: "button_02.bg";
                }
@@ -220,7 +222,7 @@ collections {
                text {
                   text: "label";
                   font: "Sans:style=bold";
-                  size: 14;
+                  size: 13;
                   align: 0.0 0.5;
                   min: 0 1;
                   max: 1 0;
