@@ -137,6 +137,7 @@ class PartsManager(evas.ClippedSmartObject):
             part_obj = self._edje.part_object_get(part)
             self.parts[part] = part_obj
             viewport = PartViewport(self._canvas, self, part_obj)
+            viewport.on_del_add(self._part_delete)
             self.viewports[part_obj] = viewport
             self.parts_name[viewport] = part
             self.member_add(viewport)
@@ -146,10 +147,15 @@ class PartsManager(evas.ClippedSmartObject):
             part_obj = self._edje.part_object_get(part)
             self.parts[part] = part_obj
             viewport = PartViewport(self._canvas, self, part_obj)
+            viewport.on_del_add(self._part_delete)
             viewport.stack_update()
             self.viewports[part_obj] = viewport
             self.parts_name[viewport] = part
             self.member_add(viewport)
+
+    def _part_delete(self, viewport):
+        del self.parts_name[viewport]
+        del self.viewports[viewport._part]
 
     def _select_cb(self, part):
         print part
