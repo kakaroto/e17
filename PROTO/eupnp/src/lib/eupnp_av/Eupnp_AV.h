@@ -118,7 +118,6 @@ EAPI const char      *eupnp_av_didl_object_title_get        (const DIDL_Object *
 EAPI const char      *eupnp_av_didl_object_id_get           (const DIDL_Object *obj) EINA_ARG_NONNULL(1);
 EAPI const char      *eupnp_av_didl_object_parent_id_get    (const DIDL_Object *obj) EINA_ARG_NONNULL(1);
 EAPI const char      *eupnp_av_didl_object_creator_get      (const DIDL_Object *obj) EINA_ARG_NONNULL(1);
-EAPI const Eina_List *eupnp_av_didl_object_resources_get    (const DIDL_Object *obj) EINA_ARG_NONNULL(1);
 EAPI const char      *eupnp_av_didl_object_class_get        (const DIDL_Object *obj) EINA_ARG_NONNULL(1);
 EAPI Eina_Bool        eupnp_av_didl_object_restricted_get   (const DIDL_Object *obj) EINA_ARG_NONNULL(1);
 EAPI const char      *eupnp_av_didl_object_write_status_get (const DIDL_Object *obj) EINA_ARG_NONNULL(1);
