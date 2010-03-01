@@ -145,11 +145,11 @@ if test "x$have_software_xlib" = "xyes" -o "x$have_software_16_x11" = "xyes" -o 
       [have_xlib="yes"],
       [have_xlib="no"])
    if test "x$want_evas_simple_x11" = "xyes"; then
-      x_libs="${x_libs} -lX11 -lXext"
+      x_libs="${x_libs} -lX11 -lXext -lXrender"
    else
       x_dir=${x_dir:-/usr/X11R6}
       x_cflags=${x_cflags:--I${x_includes:-$x_dir/include}}
-      x_libs="${x_libs:--L${x_libraries:-$x_dir/lib}} -lX11 -lXext"
+      x_libs="${x_libs:--L${x_libraries:-$x_dir/lib}} -lX11 -lXext -lXrender"
    fi
 fi
 AM_CONDITIONAL(BUILD_X11, [test "x$have_xlib" = "xyes"])
