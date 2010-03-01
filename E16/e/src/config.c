@@ -448,31 +448,32 @@ FindFile(const char *file, const char *themepath)
    if (isabspath(file))
      {
 	p = FindFilePath(file, NULL);
-	if (p)
-	   return p;
+	/* Absolute path - no need to look elsewhere */
+	goto done;
      }
 
    /* look in ~/.e16 first */
    p = FindFilePath(file, EDirUser());
    if (p)
-      return p;
+      goto done;
 
    if (themepath)
      {
 	/* look in theme dir */
 	p = FindFilePath(file, themepath);
 	if (p)
-	   return p;
+	   goto done;
      }
 
    /* look in system config dir */
    Esnprintf(s, sizeof(s), "%s/config", EDirRoot());
    p = FindFilePath(file, s);
-   if (p)
-      return p;
 
-   /* not found.... NULL */
-   return NULL;
+ done:
+#if 0
+   Eprintf("%s %d: %s (%s): %s\n", __func__, 0, file, themepath, p);
+#endif
+   return p;
 }
 
 char               *
