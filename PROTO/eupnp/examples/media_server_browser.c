@@ -31,6 +31,7 @@
 
 #include <Eina.h>
 #include <Elementary.h>
+#include <Emotion.h>
 
 #include "Eupnp.h"
 #include "eupnp_av/Eupnp_AV.h"
@@ -65,13 +66,16 @@ struct _Media_Server {
 
 
 static Media_Server *ms = NULL;
+static DIDL_Item *selected_item = NULL;
 static char *browsing = NULL;
 static Eina_List *servers = NULL;
 static Elm_Genlist_Item_Class cls;
 static Elm_Genlist_Item_Class cls_didl;
 static Elm_Genlist_Item_Class cls_didl_item;
 
-static Evas_Object *win, *bg, *root, *pager, *main_label, *box, *bt;
+static Evas_Object *win, *bg, *root, *pager, *main_label, *box, *hbox, *bt, *emotion, *media_box, *controls;
+static Evas_Object *media_label;
+
 static _log_domain = -1;
 
 static void         browse(Eupnp_Service_Proxy *proxy, const char *container_id, void *data);
@@ -79,17 +83,46 @@ static Evas_Object *folder_icon_get(Evas_Object *obj);
 static Evas_Object *file_icon_get(Evas_Object *obj);
 
 
+static void
+item_play(void *data, Evas_Object *obj, void *event_info)
+{
+   Eina_List *l, *resources;
+   DIDL_Resource *res;
+
+   if (!selected_item)
+     return;
+
+   resources = (Eina_List *)eupnp_av_didl_item_resources_get(selected_item);
+
+   EINA_LIST_FOREACH(resources, l, res)
+     {
+	const char *v = eupnp_av_didl_resource_value_get(res);
+	if (v)
+	  {
+	     emotion_object_play_set(emotion, EINA_FALSE);
+	     DBG("Playing %s", v);
+	     emotion_object_file_set(emotion, v);
+	     emotion_object_play_set(emotion, EINA_TRUE);
+	     elm_label_label_set(media_label, eupnp_av_didl_object_title_get(DIDL_OBJECT_GET(data)));
+	     break;
+	  }
+     }
+}
+
+static void
+item_stop(void *data, Evas_Object *obj, void *event_info)
+{
+   emotion_object_play_set(emotion, EINA_FALSE);
+}
 
 static void
 item_select(void *data, Evas_Object *obj, void *event_info)
 {
-   const DIDL_Item *item;
-
-   item = data;
+   selected_item = data;
 
    DBG("Selecting item %s:%s",
-       eupnp_av_didl_object_title_get(DIDL_OBJECT_GET(item)),
-       eupnp_av_didl_object_id_get(DIDL_OBJECT_GET(item)));
+       eupnp_av_didl_object_title_get(DIDL_OBJECT_GET(data)),
+       eupnp_av_didl_object_id_get(DIDL_OBJECT_GET(data)));
 }
 
 static void
@@ -321,8 +354,6 @@ on_back_clicked(void *data, Evas_Object *obj, void *event_info)
 	    char *p;
 	    p = strrchr(browsing, '/');
 
-	    printf("p is %s\n", p);
-
 	    if (p)
 	       *p = '\0';
 
@@ -349,7 +380,8 @@ av_browser_del(void *data, Evas_Object *obj, void *event_info)
 void
 av_browser_win_create(void)
 {
-   Evas_Object *ic,*vbox;
+   Evas_Object *ic, *vbox;
+   Evas *evas;
 
    win = elm_win_add(NULL, "main", ELM_WIN_BASIC);
    elm_win_title_set(win, "Enlightenment UPnP AV Browser");
@@ -360,11 +392,75 @@ av_browser_win_create(void)
    elm_win_resize_object_add(win, bg);
    evas_object_show(bg);
 
+   hbox = elm_box_add(win);
+   elm_box_horizontal_set(hbox, EINA_TRUE);
+   evas_object_size_hint_align_set(hbox, EVAS_HINT_FILL, EVAS_HINT_FILL);
+   evas_object_size_hint_weight_set(hbox, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+   elm_win_resize_object_add(win, hbox);
+   evas_object_show(hbox);
+
    box = elm_box_add(win);
    evas_object_size_hint_align_set(box, EVAS_HINT_FILL, EVAS_HINT_FILL);
    evas_object_size_hint_weight_set(box, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-   elm_win_resize_object_add(win, box);
    evas_object_show(box);
+   elm_box_pack_start(hbox, box);
+
+   media_box = elm_box_add(win);
+   evas_object_size_hint_align_set(media_box, EVAS_HINT_FILL, EVAS_HINT_FILL);
+   evas_object_size_hint_weight_set(media_box, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+   evas_object_show(media_box);
+   elm_box_pack_end(hbox, media_box);
+
+   media_label = elm_label_add(win);
+   elm_label_label_set(media_label, "No media selected.");
+   evas_object_show(media_label);
+   elm_box_pack_start(media_box, media_label);
+
+   evas = evas_object_evas_get(win);
+   emotion = emotion_object_add(evas);
+   //emotion_object_smooth_scale_set(emotion, EINA_TRUE);
+   evas_object_size_hint_weight_set(emotion, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+   evas_object_size_hint_align_set(emotion, EVAS_HINT_FILL, EVAS_HINT_FILL);
+
+   if (!emotion_object_init(emotion, "gstreamer"))
+     {
+	ERR("Failed to load gstreamer module for playing.");
+     }
+
+   int i;
+
+   for (i = EMOTION_VIS_GOOM; i < EMOTION_VIS_LAST; i++)
+     {
+	if (!emotion_object_vis_supported(emotion, i))
+	  continue;
+
+	emotion_object_vis_set(emotion, i);
+	DBG("Setting visualization %d", i);
+	break;
+     }
+
+   elm_box_pack_end(media_box, emotion);
+   evas_object_show(emotion);
+
+   controls = elm_box_add(win);
+   elm_box_horizontal_set(controls, EINA_TRUE);
+   evas_object_size_hint_weight_set(controls, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+   evas_object_show(controls);
+   elm_box_pack_end(media_box, controls);
+
+   Evas_Object *b;
+
+   b = elm_button_add(win);
+   elm_button_label_set(b, "Play");
+   evas_object_smart_callback_add(b, "clicked", item_play, NULL);
+   elm_box_pack_start(controls, b);
+   evas_object_show(b);
+
+   b = elm_button_add(win);
+   elm_button_label_set(b, "Stop");
+   evas_object_smart_callback_add(b, "clicked", item_stop, NULL);
+   elm_box_pack_end(controls, b);
+   evas_object_show(b);
 
    ic = elm_icon_add(win);
    elm_icon_standard_set(ic, "arrow_left");
@@ -393,7 +489,7 @@ av_browser_win_create(void)
    evas_object_show(root);
    elm_pager_content_push(pager, root);
 
-   evas_object_resize(win, 320, 320);
+   evas_object_resize(win, 600, 480);
    evas_object_show(win);
 }
 
