@@ -21,12 +21,12 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 #include "E.h"
-#include "tclass.h"
 
 #ifdef USE_PANGO
-#include "xwin.h"
 #include <X11/Xft/Xft.h>
 #include <pango/pangoxft.h>
+#include "tclass.h"
+#include "xwin.h"
 
 /*
  * Pango-Xft
