@@ -340,7 +340,16 @@ eupnp_av_on_characters(void *ctx, const xmlChar *ch, int len)
 	  else if (!strcmp(c->tag, "createClass"))
 	     c->container->createClass = eina_stringshare_add_length(ch, len);
 	  else if (!strcmp(c->tag, "title"))
-	     c->container->parent.title = strndup(ch, len);
+	    {
+	       if (!c->container->parent.title)
+		 c->container->parent.title = strndup(ch, len);
+	       else
+	         {
+		    char *tmp = strndup(ch, len);
+		    asprintf(&c->container->parent.title, "%s%s", c->container->parent.title, tmp);
+		    free(tmp);
+		 }
+	    }
 	  break;
 	case ITEM_TAG:
 	  if (!strcmp(c->tag, "class"))
@@ -348,7 +357,16 @@ eupnp_av_on_characters(void *ctx, const xmlChar *ch, int len)
 	  else if (!strcmp(c->tag, "refID"))
 	     c->item->refID= strndup(ch, len);
 	  else if (!strcmp(c->tag, "title"))
-	     c->item->parent.title = strndup(ch, len);
+	    {
+	       if (!c->item->parent.title)
+		c->item->parent.title = strndup(ch, len);
+	       else
+	         {
+		    char *tmp = strndup(ch, len);
+		    asprintf(&c->item->parent.title, "%s%s", c->item->parent.title, tmp);
+		    free(tmp);
+		 }
+	    }
 	  break;
 	case ITEM:
 	  break;
@@ -560,189 +578,189 @@ eupnp_av_didl_container_free(DIDL_Container *c)
 }
 
 EAPI const char *
-eupnp_av_didl_object_title_get(DIDL_Object *obj)
+eupnp_av_didl_object_title_get(const DIDL_Object *obj)
 {
    CHECK_NULL_RET(obj, NULL);
    return obj->title;
 }
 
 EAPI const char *
-eupnp_av_didl_object_id_get(DIDL_Object *obj)
+eupnp_av_didl_object_id_get(const DIDL_Object *obj)
 {
    CHECK_NULL_RET(obj, NULL);
    return obj->id;
 }
 
 EAPI const char *
-eupnp_av_didl_object_parent_id_get(DIDL_Object *obj)
+eupnp_av_didl_object_parent_id_get(const DIDL_Object *obj)
 {
    CHECK_NULL_RET(obj, NULL);
    return obj->parentID;
 }
 
 EAPI const char *
-eupnp_av_didl_object_creator_get(DIDL_Object *obj)
+eupnp_av_didl_object_creator_get(const DIDL_Object *obj)
 {
    CHECK_NULL_RET(obj, NULL);
    return obj->creator;
 }
 
 EAPI const char *
-eupnp_av_didl_object_class_get(DIDL_Object *obj)
+eupnp_av_didl_object_class_get(const DIDL_Object *obj)
 {
    CHECK_NULL_RET(obj, NULL);
    return obj->cls;
 }
 
 EAPI Eina_Bool
-eupnp_av_didl_object_restricted_get(DIDL_Object *obj)
+eupnp_av_didl_object_restricted_get(const DIDL_Object *obj)
 {
    CHECK_NULL_RET(obj, EINA_FALSE);
    return obj->restricted;
 }
 
 EAPI const char *
-eupnp_av_didl_object_write_status_get(DIDL_Object *obj)
+eupnp_av_didl_object_write_status_get(const DIDL_Object *obj)
 {
    CHECK_NULL_RET(obj, NULL);
    return obj->writeStatus;
 }
 
 EAPI const char *
-eupnp_av_didl_item_ref_id_get(DIDL_Item *obj)
+eupnp_av_didl_item_ref_id_get(const DIDL_Item *obj)
 {
    CHECK_NULL_RET(obj, NULL);
    return obj->refID;
 }
 
 EAPI const DIDL_Object *
-eupnp_av_didl_item_parent_get(DIDL_Item *obj)
+eupnp_av_didl_item_parent_get(const DIDL_Item *obj)
 {
    CHECK_NULL_RET(obj, NULL);
    return (const DIDL_Object *)&obj->parent;
 }
 
 EAPI const Eina_List *
-eupnp_av_didl_item_resources_get(DIDL_Item *item)
+eupnp_av_didl_item_resources_get(const DIDL_Item *item)
 {
    CHECK_NULL_RET(item, NULL);
    return (const Eina_List *)item->res;
 }
 
 EAPI int
-eupnp_av_didl_container_child_count_get(DIDL_Container *obj)
+eupnp_av_didl_container_child_count_get(const DIDL_Container *obj)
 {
    CHECK_NULL_RET(obj, -1);
    return obj->childCount;
 }
 
 EAPI const char *
-eupnp_av_didl_container_create_class_get(DIDL_Container *obj)
+eupnp_av_didl_container_create_class_get(const DIDL_Container *obj)
 {
    CHECK_NULL_RET(obj, NULL);
    return obj->createClass;
 }
 
 EAPI const char *
-eupnp_av_didl_container_search_class_get(DIDL_Container *obj)
+eupnp_av_didl_container_search_class_get(const DIDL_Container *obj)
 {
    CHECK_NULL_RET(obj, NULL);
    return obj->searchClass;
 }
 
 EAPI Eina_Bool
-eupnp_av_didl_container_searchable_get(DIDL_Container *obj)
+eupnp_av_didl_container_searchable_get(const DIDL_Container *obj)
 {
    CHECK_NULL_RET(obj, EINA_FALSE);
    return obj->searchable;
 }
 
 EAPI const DIDL_Object *
-eupnp_av_didl_container_parent_get(DIDL_Container *obj)
+eupnp_av_didl_container_parent_get(const DIDL_Container *obj)
 {
    CHECK_NULL_RET(obj, NULL);
    return (const DIDL_Object *)&obj->parent;
 }
 
 EAPI const char *
-eupnp_av_didl_resource_import_uri_get(DIDL_Resource *res)
+eupnp_av_didl_resource_import_uri_get(const DIDL_Resource *res)
 {
    CHECK_NULL_RET(res, NULL);
    return res->importUri;
 }
 
 EAPI const char *
-eupnp_av_didl_resource_protocol_info_get(DIDL_Resource *res)
+eupnp_av_didl_resource_protocol_info_get(const DIDL_Resource *res)
 {
    CHECK_NULL_RET(res, NULL);
    return res->protocolInfo;
 }
 
 EAPI unsigned long
-eupnp_av_didl_resource_size_get(DIDL_Resource *res)
+eupnp_av_didl_resource_size_get(const DIDL_Resource *res)
 {
    CHECK_NULL_RET(res, 0);
    return res->size;
 }
 
 EAPI const char *
-eupnp_av_didl_resource_duration_get(DIDL_Resource *res)
+eupnp_av_didl_resource_duration_get(const DIDL_Resource *res)
 {
    CHECK_NULL_RET(res, NULL);
    return res->duration;
 }
 
 EAPI unsigned int
-eupnp_av_didl_resource_bitrate_get(DIDL_Resource *res)
+eupnp_av_didl_resource_bitrate_get(const DIDL_Resource *res)
 {
    CHECK_NULL_RET(res, 0);
    return res->bitrate;
 }
 
 EAPI unsigned int
-eupnp_av_didl_resource_sample_frequency_get(DIDL_Resource *res)
+eupnp_av_didl_resource_sample_frequency_get(const DIDL_Resource *res)
 {
    CHECK_NULL_RET(res, 0);
    return res->sampleFrequency;
 }
 
 EAPI unsigned int
-eupnp_av_didl_resource_bits_per_sample_get(DIDL_Resource *res)
+eupnp_av_didl_resource_bits_per_sample_get(const DIDL_Resource *res)
 {
    CHECK_NULL_RET(res, 0);
    return res->bitsPerSample;
 }
 
 EAPI unsigned int
-eupnp_av_didl_resource_num_audio_channels_get(DIDL_Resource *res)
+eupnp_av_didl_resource_num_audio_channels_get(const DIDL_Resource *res)
 {
    CHECK_NULL_RET(res, 0);
    return res->nrAudioChannels;
 }
 
 EAPI const char *
-eupnp_av_didl_resource_num_resolution_get(DIDL_Resource *res)
+eupnp_av_didl_resource_num_resolution_get(const DIDL_Resource *res)
 {
    CHECK_NULL_RET(res, NULL);
    return res->resolution;
 }
 
 EAPI unsigned int
-eupnp_av_didl_resource_color_depth_get(DIDL_Resource *res)
+eupnp_av_didl_resource_color_depth_get(const DIDL_Resource *res)
 {
    CHECK_NULL_RET(res, 0);
    return res->colorDepth;
 }
 
 EAPI const char *
-eupnp_av_didl_resource_protection_get(DIDL_Resource *res)
+eupnp_av_didl_resource_protection_get(const DIDL_Resource *res)
 {
    CHECK_NULL_RET(res, NULL);
    return res->protection;
 }
 
 EAPI const char *
-eupnp_av_didl_resource_value_get(DIDL_Resource *res)
+eupnp_av_didl_resource_value_get(const DIDL_Resource *res)
 {
    CHECK_NULL_RET(res, NULL);
    return res->value;

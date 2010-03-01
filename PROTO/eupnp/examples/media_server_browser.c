@@ -58,118 +58,91 @@
 typedef struct _Media_Server Media_Server;
 
 struct _Media_Server {
-   Elm_Genlist_Item *item;
    Eupnp_Service_Proxy *cds;
    Eupnp_Device_Info *server;
+   Elm_List_Item *item;
 };
 
+
+static Media_Server *ms = NULL;
+static char *browsing = NULL;
 static Eina_List *servers = NULL;
 static Elm_Genlist_Item_Class cls;
 static Elm_Genlist_Item_Class cls_didl;
 static Elm_Genlist_Item_Class cls_didl_item;
-static Evas_Object *win, *bg, *box, *gl;
+
+static Evas_Object *win, *bg, *root, *pager, *main_label, *box, *bt;
 static _log_domain = -1;
 
-static void browse(Eupnp_Service_Proxy *proxy, const char *container_id, void *data);
+static void         browse(Eupnp_Service_Proxy *proxy, const char *container_id, void *data);
+static Evas_Object *folder_icon_get(Evas_Object *obj);
+static Evas_Object *file_icon_get(Evas_Object *obj);
+
+
 
 static void
 item_select(void *data, Evas_Object *obj, void *event_info)
 {
-   Media_Server *ms;
    const DIDL_Item *item;
 
-   item = elm_genlist_item_data_get(event_info);
-   ms = data;
+   item = data;
 
    DBG("Selecting item %s:%s",
        eupnp_av_didl_object_title_get(DIDL_OBJECT_GET(item)),
        eupnp_av_didl_object_id_get(DIDL_OBJECT_GET(item)));
 }
 
-
 static void
 container_browse(void *data, Evas_Object *obj, void *event_info)
 {
-   Media_Server *ms;
+   Evas_Object *list;
    const DIDL_Container *c;
 
-   c = elm_genlist_item_data_get(event_info);
-   ms = data;
+   c = data;
 
-   DBG("Browsing container %p", obj);
-   DBG("id: %s", eupnp_av_didl_object_id_get(DIDL_OBJECT_GET(c)));
+   DBG("Browsing %s", eupnp_av_didl_object_id_get(DIDL_OBJECT_GET(c)));
+   asprintf(&browsing, "%s/%s", browsing, eupnp_av_didl_object_title_get(DIDL_OBJECT_GET(c)));
+
+   elm_label_label_set(main_label, browsing);
+
+   list = elm_list_add(pager);
+   evas_object_show(list);
+   elm_pager_content_push(pager, list);
 
    browse(ms->cds, eupnp_av_didl_object_id_get(DIDL_OBJECT_GET(c)), ms);
-}
-
-static Elm_Genlist_Item *
-parent_container_get(Media_Server *ms, Evas_Object *genlist, const char *parentID)
-{
-   Elm_Genlist_Item *item;
-   const DIDL_Container *c;
-
-   for (item = elm_genlist_first_item_get(genlist); item != NULL;
-	item = elm_genlist_item_next_get(item))
-     {
-	// Root
-	if (ms->item == item)
-	  continue;
-
-	c = elm_genlist_item_data_get(item);
-
-	if (!c)
-	  continue;
-
-	if (!strcmp(c->parent.id, parentID))
-	  {
-	     //DBG("Parent is %s, item is %p", c->parent.id, item);
-	     return item;
-	  }
-     }
-
-   return NULL;
 }
 
 void
 on_container_found(void *data, DIDL_Container *c)
 {
-   Media_Server *ms;
-   Evas_Object *genlist;
-   Elm_Genlist_Item *parent;
-   Elm_Genlist_Item *item;
+   Evas_Object *box;
+   Elm_List_Item *item;
 
-   ms = data;
-   genlist = elm_genlist_item_genlist_get(ms->item);
-   parent = parent_container_get(ms, genlist,
-			         eupnp_av_didl_object_parent_id_get(DIDL_OBJECT_GET(c)));
+   DBG("Found container %s", eupnp_av_didl_object_title_get(DIDL_OBJECT_GET(c)));
 
-   if (!parent)
-     parent = ms->item;
+   item = elm_list_item_append(elm_pager_content_top_get(pager),
+			       eupnp_av_didl_object_title_get(DIDL_OBJECT_GET(c)),
+			       folder_icon_get(pager), NULL,
+			       &container_browse, c);
 
-   elm_genlist_item_append(genlist, &cls_didl, c, parent,
-			   ELM_GENLIST_ITEM_SUBITEMS, &container_browse, ms);
-
-   evas_object_show(genlist);
+   elm_list_item_show(item);
+   elm_list_go(elm_pager_content_top_get(pager));
 }
 
 void
 on_item_found(void *data, DIDL_Item *i)
 {
-   Media_Server *ms;
-   Evas_Object *genlist;
-   Elm_Genlist_Item *parent;
+   Elm_List_Item *item;
 
-   ms = data;
-   genlist = elm_genlist_item_genlist_get(ms->item);
-   parent = parent_container_get(ms, genlist, eupnp_av_didl_object_parent_id_get(DIDL_OBJECT_GET(i)));
+   DBG("Found item %s", eupnp_av_didl_object_title_get(DIDL_OBJECT_GET(i)));
 
-   if (!parent)
-     parent = ms->item;
+   item = elm_list_item_append(elm_pager_content_top_get(pager),
+			       eupnp_av_didl_object_title_get(DIDL_OBJECT_GET(i)),
+			       file_icon_get(pager), NULL,
+			       &item_select, i);
 
-   elm_genlist_item_append(genlist, &cls_didl_item, i, parent,
-			   ELM_GENLIST_ITEM_NONE, &item_select, ms);
-
-   evas_object_show(genlist);
+   elm_list_item_show(item);
+   elm_list_go(elm_pager_content_top_get(pager));
 }
 
 static void
@@ -178,12 +151,16 @@ action_response(void *data, Eina_Inlist *evented_vars)
    Eupnp_Service_Action_Argument *arg;
 
    EINA_INLIST_FOREACH(evented_vars, arg)
+    {
+       INF("%s: %s", arg->name, arg->value);
+
      if (!strcmp(arg->name, "Result"))
        if (eupnp_av_didl_parse(arg->value, strlen(arg->value),
 			       on_item_found, on_container_found, data))
 	  INF("Parsed DIDL fragment successfully.");
        else
 	  ERR("Failed to parse DIDL fragment.");
+    }
 }
 
 static void
@@ -196,7 +173,7 @@ browse(Eupnp_Service_Proxy *proxy, const char *container_id, void *data)
 					"Filter", EUPNP_TYPE_STRING, "",
 					"StartingIndex", EUPNP_TYPE_INT, 0,
 					"RequestedCount", EUPNP_TYPE_INT, 25,
-					"SortCriteria", EUPNP_TYPE_STRING, "dc:title",
+					"SortCriteria", EUPNP_TYPE_STRING, "",
 					NULL))
       ERR("Failed to send proxy action.");
 
@@ -219,9 +196,18 @@ is_server_known(Eupnp_Device_Info *device)
 static void
 server_browse(void *data, Evas_Object *obj, void *event_info)
 {
-   Media_Server *ms = data;
+   Evas_Object *list;
 
+   ms = data;
    DBG("Browsing server %s", ms->server->udn);
+   browsing = strdup(ms->server->friendly_name);
+   elm_label_label_set(main_label, browsing);
+
+   list = elm_list_add(pager);
+   evas_object_show(list);
+   elm_pager_content_push(pager, list);
+   evas_object_show(bt);
+
    browse(ms->cds, "0", ms);
 }
 
@@ -234,16 +220,34 @@ on_cds_ready(void *data, Eupnp_Service_Proxy *proxy)
    ms->cds = eupnp_service_proxy_ref(proxy);
 }
 
+static Evas_Object *
+folder_icon_get(Evas_Object *obj)
+{
+   Evas_Object *ic = elm_icon_add(obj);
+   elm_icon_standard_set(ic, "folder");
+   evas_object_size_hint_aspect_set(ic, EVAS_ASPECT_CONTROL_VERTICAL, 1, 1);
+   evas_object_show(ic);
+   return ic;
+}
+
+static Evas_Object *
+file_icon_get(Evas_Object *obj)
+{
+   Evas_Object *ic = elm_icon_add(obj);
+   elm_icon_standard_set(ic, "file");
+   evas_object_size_hint_aspect_set(ic, EVAS_ASPECT_CONTROL_VERTICAL, 1, 1);
+   evas_object_show(ic);
+   return ic;
+}
+
 static Eina_Bool
 on_device_ready(void *user_data, Eupnp_Event_Type event_type, void *event_data)
 {
    Media_Server *ms;
-   Evas_Object *gl;
+   Elm_List_Item *item;
    Eupnp_Device_Info *device;
    const Eupnp_Service_Info *cds;
-   Elm_Genlist_Item *item;
 
-   gl = user_data;
    device = event_data;
 
    if (!IS_MEDIA_SERVER(device))
@@ -256,15 +260,83 @@ on_device_ready(void *user_data, Eupnp_Event_Type event_type, void *event_data)
 
    ms = calloc(1, sizeof(Media_Server));
    ms->server = eupnp_device_info_ref(device);
-   ms->item = elm_genlist_item_append(gl, &cls, ms, NULL,
-				      ELM_GENLIST_ITEM_SUBITEMS,
-				      &server_browse, ms);
+   item = elm_list_item_append(root, ms->server->friendly_name,
+			       folder_icon_get(root), NULL,
+			       &server_browse, ms);
+   elm_list_item_show(item);
+   elm_list_go(root);
 
    eupnp_service_proxy_new(cds, on_cds_ready, ms);
    servers = eina_list_append(servers, ms);
-   evas_object_show(gl);
+   evas_object_show(root);
+   evas_object_show(pager);
 
    return EINA_TRUE;
+}
+
+static void
+media_server_free(Media_Server *ms)
+{
+   if (!ms) return;
+
+   elm_list_item_del(ms->item);
+   eupnp_device_info_unref(ms->server);
+
+   if (ms->cds)
+      eupnp_service_proxy_unref(ms->cds);
+
+   free(ms);
+}
+
+static Eina_Bool
+on_device_gone(void *user_data, Eupnp_Event_Type event_type, void *event_data)
+{
+   Eina_List *l;
+   Media_Server *ms;
+   Eupnp_Device_Info *device;
+
+   device = event_data;
+
+   EINA_LIST_FOREACH(servers, l, ms)
+     {
+	if (!strcmp(ms->server->udn, device->udn)) {
+	   servers = eina_list_remove(servers, ms);
+	   media_server_free(ms);
+	   break;
+	}
+     }
+
+   return EINA_TRUE;
+}
+
+static void
+on_back_clicked(void *data, Evas_Object *obj, void *event_info)
+{
+   if (elm_pager_content_top_get(pager) != elm_pager_content_bottom_get(pager))
+     {
+	elm_pager_content_pop(pager);
+
+	if (browsing)
+	 {
+	    char *p;
+	    p = strrchr(browsing, '/');
+
+	    printf("p is %s\n", p);
+
+	    if (p)
+	       *p = '\0';
+
+	    elm_label_label_set(main_label, browsing);
+	 }
+     }
+   else
+     {
+	elm_label_label_set(main_label, "UPnP Network");
+	free(browsing);
+	browsing = NULL;
+	evas_object_hide(bt);
+     }
+
 }
 
 static void
@@ -273,95 +345,12 @@ av_browser_del(void *data, Evas_Object *obj, void *event_info)
    elm_exit();
 }
 
-static char *
-gl_label_get(const void *data, Evas_Object *obj, const char *part)
-{
-   const Media_Server *ms = data;
-   return strdup(ms->server->friendly_name);
-}
-
-static char *
-gl_didl_label_get(const void *data, Evas_Object *evas_obj, const char *part)
-{
-   const DIDL_Object *obj = data;
-   return strdup(obj->title);
-}
-
-static Eina_Bool
-gl_state_get(const void *data, Evas_Object *obj, const char *part)
-{
-   return EINA_FALSE;
-}
-
-static Evas_Object *
-gl_icon_get(const void *data, Evas_Object *obj, const char *part)
-{
-   if (!strcmp(part, "elm.swallow.icon"))
-     {
-	Evas_Object *ic = elm_icon_add(obj);
-	elm_icon_standard_set(ic, "folder");
-	evas_object_size_hint_aspect_set(ic, EVAS_ASPECT_CONTROL_VERTICAL, 1, 1);
-	evas_object_show(ic);
-	return ic;
-     }
-
-   return NULL;
-}
-
-static Evas_Object *
-gl_didl_item_icon_get(const void *data, Evas_Object *obj, const char *part)
-{
-   if (!strcmp(part, "elm.swallow.icon"))
-     {
-	Evas_Object *ic = elm_icon_add(obj);
-	elm_icon_standard_set(ic, "file");
-	evas_object_size_hint_aspect_set(ic, EVAS_ASPECT_CONTROL_VERTICAL, 1, 1);
-	evas_object_show(ic);
-	return ic;
-     }
-
-   return NULL;
-}
-
-static void
-gl_del(const void *data, Evas_Object *obj)
-{
-}
-
-static void
-gl_expand_req(void *data, Evas_Object *object, void *event_info)
-{
-   Elm_Genlist_Item *it = event_info;
-   elm_genlist_item_subitems_clear(it);
-   elm_genlist_item_expanded_set(it, 1);
-}
-
-static void
-gl_contract_req(void *data, Evas_Object *object, void *event_info)
-{
-   Elm_Genlist_Item *it = event_info;
-   elm_genlist_item_expanded_set(it, 0);
-}
-
-static void
-gl_contracted(void *data, Evas_Object *object, void *event_info)
-{
-   Elm_Genlist_Item *it = event_info;
-   elm_genlist_item_subitems_clear(it);
-}
-
-static void
-gl_expanded(void *data, Evas_Object *object, void *event_info)
-{
-   Elm_Genlist_Item *it = event_info;
-   Evas_Object *gl = elm_genlist_item_genlist_get(it);
-
-   // expand
-}
 
 void
 av_browser_win_create(void)
 {
+   Evas_Object *ic,*vbox;
+
    win = elm_win_add(NULL, "main", ELM_WIN_BASIC);
    elm_win_title_set(win, "Enlightenment UPnP AV Browser");
    evas_object_smart_callback_add(win, "delete-request", av_browser_del, NULL);
@@ -372,39 +361,37 @@ av_browser_win_create(void)
    evas_object_show(bg);
 
    box = elm_box_add(win);
+   evas_object_size_hint_align_set(box, EVAS_HINT_FILL, EVAS_HINT_FILL);
    evas_object_size_hint_weight_set(box, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    elm_win_resize_object_add(win, box);
-
-   gl = elm_genlist_add(win);
-   evas_object_size_hint_align_set(gl, EVAS_HINT_FILL, EVAS_HINT_FILL);
-   evas_object_size_hint_weight_set(gl, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-   evas_object_show(gl);
-
-   cls.item_style = "default";
-   cls.func.label_get = gl_label_get;
-   cls.func.icon_get  = gl_icon_get;
-   cls.func.state_get = gl_state_get;
-   cls.func.del = gl_del;
-
-   cls_didl.item_style = "default";
-   cls_didl.func.label_get = gl_didl_label_get;
-   cls_didl.func.icon_get  = gl_icon_get;
-   cls_didl.func.state_get = gl_state_get;
-   cls_didl.func.del = gl_del;
-
-   cls_didl_item.item_style = "default";
-   cls_didl_item.func.label_get = gl_didl_label_get;
-   cls_didl_item.func.icon_get  = gl_didl_item_icon_get;
-   cls_didl_item.func.state_get = gl_state_get;
-   cls_didl_item.func.del = gl_del;
-
-   evas_object_smart_callback_add(gl, "expand,request", gl_expand_req, gl);
-   evas_object_smart_callback_add(gl, "contract,request", gl_contract_req, gl);
-   evas_object_smart_callback_add(gl, "expanded", gl_expanded, gl);
-   evas_object_smart_callback_add(gl, "contracted", gl_contracted, gl);
-
-   elm_box_pack_end(box, gl);
    evas_object_show(box);
+
+   ic = elm_icon_add(win);
+   elm_icon_standard_set(ic, "arrow_left");
+   evas_object_size_hint_aspect_set(ic, EVAS_ASPECT_CONTROL_VERTICAL, 1, 1);
+   evas_object_show(ic);
+
+   bt = elm_button_add(win);
+   elm_button_label_set(bt, "Back");
+   elm_button_icon_set(bt, ic);
+   evas_object_smart_callback_add(bt, "clicked", on_back_clicked, NULL);
+
+   main_label = elm_label_add(win);
+   elm_label_label_set(main_label, "UPnP Network");
+   evas_object_show(main_label);
+   elm_box_pack_start(box, main_label);
+
+   pager = elm_pager_add(win);
+   evas_object_size_hint_align_set(pager, EVAS_HINT_FILL, EVAS_HINT_FILL);
+   evas_object_size_hint_weight_set(pager, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+   evas_object_show(pager);
+   elm_box_pack_end(box, pager);
+   elm_box_pack_end(box, bt);
+
+   root = elm_list_add(win);
+   evas_object_size_hint_weight_set(root, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+   evas_object_show(root);
+   elm_pager_content_push(pager, root);
 
    evas_object_resize(win, 320, 320);
    evas_object_show(win);
@@ -455,7 +442,9 @@ elm_main(int argc, char **argv)
 	goto eupnp_cp_alloc_error;
      }
    eupnp_event_bus_subscribe(EUPNP_EVENT_DEVICE_READY,
-			     EUPNP_CALLBACK(on_device_ready), gl);
+			     EUPNP_CALLBACK(on_device_ready), pager);
+   eupnp_event_bus_subscribe(EUPNP_EVENT_DEVICE_GONE,
+			     EUPNP_CALLBACK(on_device_gone), NULL);
    eupnp_control_point_start(c);
 
    if (!eupnp_control_point_discovery_request_send(c, 5, MEDIA_SERVER_DEVICE_TYPE))
