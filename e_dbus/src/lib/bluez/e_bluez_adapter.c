@@ -167,6 +167,29 @@ e_bluez_adapter_powered_set(E_Bluez_Element *element, bool powered, E_DBus_Metho
 }
 
 /**
+ * Get property "Discovering" value.
+ *
+ * If this property isn't found then 0 is returned.
+ * If zero is returned, then this call failed and parameter-returned
+ * values shall be considered invalid.
+ *
+ * @param discovering where to store the property value, must be a pointer
+ *        to booleans (bool *).
+ *
+ * @return 1 on success, 0 otherwise.
+ * @see e_bluez_manager_offline_mode_set()
+ */
+bool
+e_bluez_adapter_discovering_get(E_Bluez_Element *element, bool *discovering)
+{
+   EINA_SAFETY_ON_NULL_RETURN_VAL(element, 0);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(discovering, 0);
+
+   return e_bluez_element_property_get_stringshared
+     (element, e_bluez_prop_discovering, NULL, discovering);
+}
+
+/**
  * Start Discovery of Bluetooth Devices
  *
  * call StartDiscovery()
