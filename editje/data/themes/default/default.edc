@@ -34,22 +34,18 @@ collections {
       name: "main";
 
       parts {
-         part {
-            name: "bg";
+         part { name: "bg";
             type: RECT;
             mouse_events: 0;
-            description {
-               state: "default" 0.0;
+            description { state: "default" 0.0;
                color: 0 0 0 255;
             }
          }
 
-         part {
-            name: "desktop.border";
+         part { name: "desktop.border";
             type: RECT;
             mouse_events: 0;
-            description {
-               state: "default" 0.0;
+            description { state: "default" 0.0;
                color: 0 0 0 0;
                rel1 {
                   to_x: "objects_border";
@@ -64,12 +60,10 @@ collections {
             }
          }
 
-         part {
-            name: "desktop.bg";
+         part { name: "desktop.bg";
             type: IMAGE;
             mouse_events: 0;
-            description {
-               state: "default" 0.0;
+            description { state: "default" 0.0;
                image.normal: "grid.png";
                fill {
                   smooth: 0;
@@ -82,28 +76,23 @@ collections {
             }
          }
 
-         part {
-            name: "desktop";
+         part { name: "desktop";
             type: SWALLOW;
             mouse_events: 1;
-            description {
-               state: "default" 0.0;
+            description { state: "default" 0.0;
                rel1.to: "desktop.border";
                rel2.to: "desktop.border";
             }
          }
 
-         part {
-            name: "desktop.blocker";
+         part { name: "desktop.blocker";
             mouse_events: 1;
             type: RECT;
-            description {
-               state: "default" 0.0;
+            description { state: "default" 0.0;
                color: 0 0 0 200;
                rel2.relative: 1.0 0.0;
             }
-            description {
-               state: "enable" 0.0;
+            description { state: "enable" 0.0;
                inherit: "default" 0.0;
                rel2.relative: 1.0 1.0;
             }
@@ -128,12 +117,10 @@ collections {
 
          SHADOW_LINEAR_BOTTOM("timeline_bg", 10)
 
-         part {
-            name: "toolbar";
+         part { name: "toolbar";
             type: IMAGE;
             mouse_events: 0;
-            description {
-               state: "default" 0.0;
+            description { state: "default" 0.0;
                max: 999999 70;
                min: 0 70;
                align: 0.0 0.0;
@@ -149,12 +136,10 @@ collections {
             }
          }
 
-         part {
-            name: "open.bt";
+         part { name: "open.bt";
             type: RECT;
             mouse_events: 1;
-            description {
-               state: "default" 0.0;
+            description { state: "default" 0.0;
                color: 255 0 0 0;
                align: 0.0 0.5;
                aspect: 1.5 1.0;
@@ -172,12 +157,10 @@ collections {
          }
          TOOLBAR_BT_MAIN("open.bt", "ico_open.png")
 
-         part {
-            name: "save.bt";
+         part { name: "save.bt";
             type: RECT;
             mouse_events: 1;
-            description {
-               state: "default" 0.0;
+            description { state: "default" 0.0;
                color: 255 0 0 0;
                align: 0.0 0.5;
                aspect: 1.5 1.0;
@@ -197,12 +180,10 @@ collections {
          }
          TOOLBAR_BT_MAIN("save.bt", "ico_save.png")
 
-         part {
-            name: "group.bt";
+         part { name: "group.bt";
             type: RECT;
             mouse_events: 1;
-            description {
-               state: "default" 0.0;
+            description { state: "default" 0.0;
                color: 255 0 0 0;
                align: 0.0 0.5;
                aspect: 1.5 1.0;
@@ -222,12 +203,10 @@ collections {
          }
          TOOLBAR_BT_MAIN("group.bt", "ico_group.png")
 
-         part {
-            name: "run.bt";
+         part { name: "run.bt";
             type: RECT;
             mouse_events: 1;
-            description {
-               state: "default" 0.0;
+            description { state: "default" 0.0;
                color: 255 0 0 0;
                align: 0.0 0.5;
                aspect: 1.5 1.0;
@@ -247,12 +226,10 @@ collections {
          }
          TOOLBAR_BT_MAIN("run.bt", "ico_run.png")
 
-         part {
-            name: "bts-end";
+         part { name: "bts-end";
             type: RECT;
             mouse_events: 0;
-            description {
-               state: "default" 0.0;
+            description { state: "default" 0.0;
                color: 255 255 255 0;
                rel1 {
                   to: "run.bt";
@@ -267,12 +244,10 @@ collections {
             }
          }
 
-         part {
-            name: "details_bg";
+         part { name: "details_bg";
             type: IMAGE;
             mouse_events: 0;
-            description {
-               state: "default" 0.0;
+            description { state: "default" 0.0;
                rel1 {
                   to: "bts-end";
                   relative: 1.0 0.0;
@@ -292,12 +267,10 @@ collections {
             }
          }
 
-         part {
-            name: "details_group_label";
+         part { name: "details_group_label";
             type: TEXT;
             mouse_events: 0;
-            description {
-               state: "default" 0.0;
+            description { state: "default" 0.0;
                align: 0.0 0.5;
                color_class: "default_label";
 	       fixed: 1 1;
@@ -321,12 +294,10 @@ collections {
             }
          }
 
-         part {
-            name: "details_file_label";
+         part { name: "details_file_label";
             type: TEXT;
             mouse_events: 0;
-            description {
-               state: "default" 0.0;
+            description { state: "default" 0.0;
                align: 0.0 0.5;
                color_class: "default_label";
 	       fixed: 1 1;
@@ -350,12 +321,10 @@ collections {
             }
          }
 
-         part {
-            name: "details_group.swallow";
+         part { name: "details_group.swallow";
             type: SWALLOW;
             mouse_events: 1;
-            description {
-               state: "default" 0.0;
+            description { state: "default" 0.0;
                align: 0.0 1.0;
                rel1 {
                   to: "details_group_label";
@@ -371,12 +340,10 @@ collections {
             }
 	 }
 
-         part {
-            name: "details_filename";
+         part { name: "details_filename";
             type: TEXT;
             mouse_events: 0;
-            description {
-               state: "default" 0.0;
+            description { state: "default" 0.0;
                align: 0.0 0.5;
                color: 50 50 50 255;
                text {
@@ -401,11 +368,9 @@ collections {
             }
          }
 
-         part {
-             name: "toolbar.contents.swallow";
+         part { name: "toolbar.contents.swallow";
              type: SWALLOW;
-             description {
-                 state: "default" 0.0;
+             description { state: "default" 0.0;
                  align: 1.0 0.5;
                  fixed: 1 1;
                  rel1 {
@@ -421,12 +386,10 @@ collections {
              }
          }
 
-         part {
-            name: "objects_border";
+         part { name: "objects_border";
             type: RECT;
             mouse_events: 0;
-            description {
-               state: "default" 0.0;
+            description { state: "default" 0.0;
                color: 163 163 163 255;
                align: 0.0 0.0;
                max: 200 99999;
@@ -444,12 +407,10 @@ collections {
 
          SHADOW_LINEAR_RIGHT_UNDER("objects_border", "timeline_bg", 10)
 
-         part {
-            name: "objects_fill";
+         part { name: "objects_fill";
             type: RECT;
             mouse_events: 0;
-            description {
-               state: "default" 0.0;
+            description { state: "default" 0.0;
                color: 128 128 128 255;
                rel1 {
                   to: "objects_border";
@@ -462,23 +423,19 @@ collections {
             }
          }
 
-         part {
-            name: "objects";
+         part { name: "objects";
             type: SWALLOW;
             mouse_events: 1;
-            description {
-               state: "default" 0.0;
+            description { state: "default" 0.0;
                rel1.to: "objects_fill";
                rel2.to: "objects_fill";
             }
          }
 
-         part {
-            name: "details_border";
+         part { name: "details_border";
             type: RECT;
             mouse_events: 0;
-            description {
-               state: "default" 0.0;
+            description { state: "default" 0.0;
                color: 163 163 163 255;
                max: 300 99999;
                min: 200 200;
@@ -497,12 +454,10 @@ collections {
 
          SHADOW_LINEAR_LEFT_UNDER("details_border", "timeline_bg", 10)
 
-         part {
-            name: "details_fill";
+         part { name: "details_fill";
             type: RECT;
             mouse_events: 0;
-            description {
-               state: "default" 0.0;
+            description { state: "default" 0.0;
                color: 255 255 255 255;
                rel1 {
                   to: "details_border";
@@ -515,27 +470,22 @@ collections {
             }
          }
 
-         part {
-            name: "details";
+         part { name: "details";
             type: SWALLOW;
-            description {
-               state: "default" 0.0;
+            description { state: "default" 0.0;
                rel1.to: "details_fill";
                rel2.to: "details_fill";
             }
          }
 
-         part {
-            name: "blocker";
+         part { name: "blocker";
             mouse_events: 1;
             type: RECT;
-            description {
-               state: "default" 0.0;
+            description { state: "default" 0.0;
                color: 0 0 0 200;
                rel2.relative: 1.0 0.0;
             }
-            description {
-               state: "enable" 0.0;
+            description { state: "enable" 0.0;
                inherit: "default" 0.0;
                rel2.relative: 1.0 1.0;
             }
@@ -582,8 +532,7 @@ collections {
    part { \
       name: "cl.header.bg"; \
       type: GRADIENT; \
-      description { \
-         state: "default" 0.0; \
+      description { state: "default" 0.0; \
          gradient.spectrum: "bg"; \
          rel2 { \
             relative: 1.0 0.0; \
@@ -594,8 +543,7 @@ collections {
    part { \
       name: "cl.header.open"; \
       type: RECT; \
-      description { \
-         state: "default" 0.0; \
+      description { state: "default" 0.0; \
          color: 0 0 0 0; \
          visible: 1; \
          rel1.to: "cl.header.bg"; \
@@ -605,8 +553,7 @@ collections {
             to: "cl.header.bg"; \
          } \
       } \
-      description { \
-         state: "open" 0.0; \
+      description { state: "open" 0.0; \
          inherit: "default" 0.0; \
          visible: 0; \
       } \
@@ -614,8 +561,7 @@ collections {
    part { \
       name: "cl.header.close"; \
       type: RECT; \
-      description { \
-         state: "default" 0.0; \
+      description { state: "default" 0.0; \
          color: 0 0 0 0; \
          visible: 0; \
          rel1.to: "cl.header.bg"; \
@@ -625,8 +571,7 @@ collections {
             to: "cl.header.bg"; \
          } \
       } \
-      description { \
-         state: "open" 0.0; \
+      description { state: "open" 0.0; \
          inherit: "default" 0.0; \
          visible: 1; \
       } \
@@ -635,8 +580,7 @@ collections {
       name: "cl.header.title"; \
       type: TEXT; \
       mouse_events: 0; \
-      description { \
-         state: "default" 0.0; \
+      description { state: "default" 0.0; \
          align: 0.5 0.5; \
          color_class: "default_label"; \
          text { \
@@ -653,8 +597,7 @@ collections {
       name: "cl.clipper"; \
       mouse_events: 0; \
       type: RECT; \
-      description { \
-         state: "default" 0.0; \
+      description { state: "default" 0.0; \
          visible: 0; \
          rel1 { \
             to: "cl.header.bg"; \
@@ -666,8 +609,7 @@ collections {
             offset: -1 -1; \
          } \
       } \
-      description { \
-         state: "open" 0.0; \
+      description { state: "open" 0.0; \
          inherit: "default" 0.0; \
          color: 255 255 255 255; \
          visible: 1; \
@@ -684,8 +626,7 @@ collections {
       clip_to: "cl.clipper"; \
       mouse_events: 0; \
       type: GRADIENT; \
-      description { \
-         state: "default" 0.0; \
+      description { state: "default" 0.0; \
          gradient.spectrum: "shadow"; \
          rel1 { \
             to: "cl.clipper"; \
@@ -747,27 +688,23 @@ collections {
       name: "editje/collapsable/default";
       parts {
          HEADER_BASE(20, 20, "cl.content")
-           part {
-               name: "cl.content.bg";
-               type: "RECT";
-               clip_to: "cl.clipper";
-               description {
-                   state: "default" 0.0;
-                   color: 255 255 255 255;
-                   rel1.to: "cl.content";
-                   rel2.to: "cl.content";
-               }
-           }
-         part {
-            name: "cl.content";
+         part { name: "cl.content.bg";
+            type: "RECT";
+            clip_to: "cl.clipper";
+            description { state: "default" 0.0;
+               color: 255 255 255 255;
+               rel1.to: "cl.content";
+               rel2.to: "cl.content";
+            }
+         }
+         part { name: "cl.content";
             type: SWALLOW;
             clip_to: "cl.clipper";
-            description {
-               state: "default" 0.0;
+            description { state: "default" 0.0;
                color: 255 255 255 255;
                rel1 {
-                   relative: 0.0 1.0;
-                   to: "cl.header.bg";
+                  relative: 0.0 1.0;
+                  to: "cl.header.bg";
                }
             }
          }
@@ -775,185 +712,167 @@ collections {
    }
 
    group {
-       name: "editje/collapsable/part_properties";
-       parts {
-           HEADER_BASE(65, 20, "cl.content")
-           part {
-              name: "cl.options";
-              type: IMAGE;
-              description {
-                 state: "default" 0.0;
-                 image.normal: "ico_options.png";
-                 aspect: 1.0 1.0;
-                 visible: 0;
-                 rel1 {
-                    to: "cl.header.title";
-                    relative: 1.0 0.0;
-                    offset: -20 1;
-                 }
-                 rel2.to: "cl.header.title";
-                 rel2.offset: -5 -2;
-              }
-              description {
-                 state: "enabled" 0.0;
-                 inherit: "default" 0.0;
-                 visible: 1;
-              }
-           }
+      name: "editje/collapsable/part_properties";
+      parts {
+         HEADER_BASE(65, 20, "cl.content")
+         part { name: "cl.options";
+            type: IMAGE;
+            description { state: "default" 0.0;
+               image.normal: "ico_options.png";
+               aspect: 1.0 1.0;
+               visible: 0;
+               rel1 {
+                  to: "cl.header.title";
+                  relative: 1.0 0.0;
+                  offset: -20 1;
+               }
+               rel2.to: "cl.header.title";
+               rel2.offset: -5 -2;
+            }
+            description { state: "enabled" 0.0;
+               inherit: "default" 0.0;
+               color: 255 255 255 255;
+               visible: 1;
+            }
+         }
 
-           program {
-              name: "cl.option.enable";
-              signal: "cl,option,enable";
-              source: "editje";
-              action: STATE_SET "enabled" 0.0;
-              target: "cl.options";
-           }
-           program {
-              name: "cl.option.disable";
-              signal: "cl,option,disable";
-              source: "editje";
-              action: STATE_SET "default" 0.0;
-              target: "cl.options";
-           }
-           program {
-              name: "cl.option.clicked";
-              signal: "mouse,clicked,1";
-              source: "cl.options";
-              action: SIGNAL_EMIT "cl,option,clicked" "editje/collapsable";
-           }
+         program {
+            name: "cl.option.enable";
+            signal: "cl,option,enable";
+            source: "editje";
+            action: STATE_SET "enabled" 0.0;
+            target: "cl.options";
+         }
+         program {
+            name: "cl.option.disable";
+            signal: "cl,option,disable";
+            source: "editje";
+            action: STATE_SET "default" 0.0;
+            target: "cl.options";
+         }
+         program {
+            name: "cl.option.clicked";
+            signal: "mouse,clicked,1";
+            source: "cl.options";
+            action: SIGNAL_EMIT "cl,option,clicked" "editje/collapsable";
+         }
 
-           part {
-               name: "part_name.swallow";
-               type: SWALLOW;
-               description {
-                   state: "default" 0.0;
-                   fixed: 1 1;
-                   rel1 {
-                       to: "cl.header.bg";
-                       relative: 0.0 0.0;
-                       offset: 0 20;
-                   }
-                   rel2 {
-                       to: "cl.header.bg";
-                       relative: 1.0 1.0;
-                       offset: -1 -1;
-                   }
+         part { name: "part_name.swallow";
+            type: SWALLOW;
+            description { state: "default" 0.0;
+               fixed: 1 1;
+               rel1 {
+                  to: "cl.header.bg";
+                  relative: 0.0 0.0;
+                  offset: 0 20;
                }
-           }
-           part {
-               name: "cl.content.bg";
-               type: "RECT";
-               clip_to: "cl.clipper";
-               description {
-                   state: "default" 0.0;
-                   color: 255 255 255 255;
-                   rel1.to: "cl.content";
-                   rel2.to: "cl.content";
+               rel2 {
+                  to: "cl.header.bg";
+                  relative: 1.0 1.0;
+                  offset: -1 -1;
                }
-           }
-           part {
-               name: "cl.content";
-               type: "SWALLOW";
-               clip_to: "cl.clipper";
-               description {
-                   state: "default" 0.0;
-                   color: 255 255 255 255;
-                   rel1 {
-                       relative: 0.0 1.0;
-                       to: "cl.header.bg";
-                   }
+            }
+         }
+         part { name: "cl.content.bg";
+            type: "RECT";
+            clip_to: "cl.clipper";
+            description { state: "default" 0.0;
+               color: 255 255 255 255;
+               rel1.to: "cl.content";
+               rel2.to: "cl.content";
+            }
+         }
+         part { name: "cl.content";
+            type: "SWALLOW";
+            clip_to: "cl.clipper";
+            description { state: "default" 0.0;
+               color: 255 255 255 255;
+               rel1 {
+                  relative: 0.0 1.0;
+                  to: "cl.header.bg";
                }
-           }
-       }
+            }
+         }
+      }
    }
 
    group {
-       name: "editje/collapsable/part_state";
-       parts {
-           HEADER_BASE(40, 15, "cl.content")
-           part {
-               name: "part_state.swallow";
-               type: SWALLOW;
-               description {
-                   state: "default" 0.0;
-                   fixed: 1 1;
-                   rel1 {
-                       to: "cl.header.bg";
-                       relative: 0.0 0.0;
-                       offset: 0 20;
-                   }
-                   rel2 {
-                       to: "cl.header.bg";
-                       relative: 1.0 1.0;
-                       offset: -1 -1;
-                   }
+      name: "editje/collapsable/part_state";
+      parts {
+         HEADER_BASE(40, 15, "cl.content")
+         part { name: "part_state.swallow";
+            type: SWALLOW;
+            description { state: "default" 0.0;
+               fixed: 1 1;
+               rel1 {
+                  to: "cl.header.bg";
+                  relative: 0.0 0.0;
+                  offset: 0 20;
                }
-           }
-           part {
-               name: "cl.content.bg";
-               type: "RECT";
-               clip_to: "cl.clipper";
-               description {
-                   state: "default" 0.0;
-                   color: 255 255 255 255;
-                   rel1.to: "cl.content";
-                   rel2.to: "cl.content";
+               rel2 {
+                  to: "cl.header.bg";
+                  relative: 1.0 1.0;
+                  offset: -1 -1;
                }
-           }
-           part {
-               name: "cl.content";
-               type: "SWALLOW";
-               clip_to: "cl.clipper";
-               description {
-                   state: "default" 0.0;
-                   color: 255 255 255 255;
-                   rel1 {
-                       relative: 0.0 1.0;
-                       to: "cl.header.bg";
-                   }
+            }
+         }
+         part { name: "cl.content.bg";
+            type: "RECT";
+            clip_to: "cl.clipper";
+            description { state: "default" 0.0;
+               color: 255 255 255 255;
+               rel1.to: "cl.content";
+               rel2.to: "cl.content";
+            }
+         }
+         part { name: "cl.content";
+            type: "SWALLOW";
+            clip_to: "cl.clipper";
+            description { state: "default" 0.0;
+               color: 255 255 255 255;
+               rel1 {
+                  relative: 0.0 1.0;
+                  to: "cl.header.bg";
                }
-           }
-       }
+            }
+         }
+      }
    }
 
 ////////////////////////////////////////////////////////////////////////////
 // Property lists misc
 ////////////////////////////////////////////////////////////////////////////
    group {
-       name: "prop_label";
-       parts {
-           part {
-               name: "label";
-               type: TEXT;
-               mouse_events: 0;
-               description {
-                   state: "default" 0.0;
-                   align: 1.0 0.5;
-                   color_class: "default_label";
-                   text {
-                       text: "label";
-                       font: "Sans";
-                       size: 10;
-                       align: 1.0 0.5;
-                       min: 1 1;
-                       max: 1 0;
-                   }
-                   rel1.offset: 3 1;
-                   rel2.offset: -4 -2;
+      name: "prop_label";
+      parts {
+         part { name: "label";
+            type: TEXT;
+            mouse_events: 0;
+            description { state: "default" 0.0;
+               align: 1.0 0.5;
+               color_class: "default_label";
+               text {
+                  text: "label";
+                  font: "Sans";
+                  size: 10;
+                  align: 1.0 0.5;
+                  min: 1 1;
+                  max: 1 0;
                }
-           }
-       }
+               rel1.offset: 3 1;
+               rel2.offset: -4 -2;
+            }
+         }
+      }
    }
 
    group {
       name: "subgroup";
       parts {
-         part {
-            name: "shadow";
+         part { name: "shadow";
             type: GRADIENT;
             mouse_events: 0;
-            description {
-               state: "default" 0.0;
+            description { state: "default" 0.0;
                gradient.spectrum: "shadow";
                rel1 {
                   relative: 0.0 0.0;
@@ -965,12 +884,10 @@ collections {
                }
             }
          }
-         part {
-            name: "title.label";
+         part { name: "title.label";
             type: TEXT;
             mouse_events: 0;
-            description {
-               state: "default" 0.0;
+            description { state: "default" 0.0;
                align: 0.5 0.0;
                color: 50 50 50 255;
                text {
@@ -991,11 +908,9 @@ collections {
                }
             }
          }
-         part {
-            name: "content";
+         part { name: "content";
             type: SWALLOW;
-            description {
-               state: "default" 0.0;
+            description { state: "default" 0.0;
                min: 178 20;
                align: 0.0 0.0;
                rel1 {
@@ -1014,12 +929,10 @@ collections {
 
    group { name: "colorpicker";
       parts {
-         part {
-            name: "sample.shadow";
+         part { name: "sample.shadow";
             type: IMAGE;
             mouse_events: 0;
-            description {
-               state: "default" 0.0;
+            description { state: "default" 0.0;
                rel1 {
                   relative: 0.0 0.0;
                   offset: -6 -2;
@@ -1038,12 +951,10 @@ collections {
             }
          }
 
-         part {
-            name: "sample.bg";
+         part { name: "sample.bg";
             type: IMAGE;
             mouse_events: 0;
-            description {
-               state: "default" 0.0;
+            description { state: "default" 0.0;
                rel1 {
                   relative: 0.0 0.0;
                   offset: 15 15;
@@ -1062,12 +973,10 @@ collections {
             }
          }
 
-         part {
-            name: "sample";
+         part { name: "sample";
             type: RECT;
             mouse_events: 0;
-            description {
-               state: "default" 0.0;
+            description { state: "default" 0.0;
                rel1.to: "sample.bg";
                rel2.to: "sample.bg";
                color: 255 255 255 255;
@@ -1075,12 +984,10 @@ collections {
             }
          }
 
-         part {
-            name: "sliders";
+         part { name: "sliders";
             type: SWALLOW;
             repeat_events: 1;
-            description {
-               state: "default" 0.0;
+            description { state: "default" 0.0;
                min: 200 150;
                rel1 {
                   to_y: "sample.bg";
@@ -1099,12 +1006,10 @@ collections {
    group { name: "colorpreviewer";
       min: 30 16;
       parts {
-         part {
-            name: "sample.shadow";
+         part { name: "sample.shadow";
             type: IMAGE;
             mouse_events: 0;
-            description {
-               state: "default" 0.0;
+            description { state: "default" 0.0;
                rel1 {
                   relative: 0.0 0.0;
                   offset: -6 -2;
@@ -1123,12 +1028,10 @@ collections {
             }
          }
 
-         part {
-            name: "sample.margin";
+         part { name: "sample.margin";
             type: RECT;
             mouse_events: 0;
-            description {
-               state: "default" 0.0;
+            description { state: "default" 0.0;
                color: 32 32 32 255;
                rel1 {
                   relative: 0.0 0.0;
@@ -1143,12 +1046,10 @@ collections {
             }
          }
 
-         part {
-            name: "sample.bg";
+         part { name: "sample.bg";
             type: IMAGE;
             mouse_events: 0;
-            description {
-               state: "default" 0.0;
+            description { state: "default" 0.0;
                rel1 {
                   relative: 0.0 0.0;
                   offset: 8 3;
@@ -1167,12 +1068,10 @@ collections {
             }
          }
 
-         part {
-            name: "sample";
+         part { name: "sample";
             type: RECT;
             mouse_events: 1;
-            description {
-               state: "default" 0.0;
+            description { state: "default" 0.0;
                rel1.to: "sample.bg";
                rel2.to: "sample.bg";
                color: 255 255 255 255;
