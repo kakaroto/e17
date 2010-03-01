@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2009-12-01 15:38+0800\n"
+"POT-Creation-Date: 2010-02-28 12:14+0100\n"
 "PO-Revision-Date: 2010-02-10 11:05+0000\n"
 "Last-Translator: 冯超 <rainofchaos@gmail.com>\n"
 "Language-Team: Chinese (simplified)\n"
@@ -17,93 +17,88 @@ msgstr ""
 "X-Launchpad-Export-Date: 2010-02-11 05:02+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 
-#. create new config dialog
-#: ../src/e_mod_config.c:51
+#: src/e_mod_config.c:51
 msgid "Places Configuration"
 msgstr "Places 配置"
 
-#. General frame
-#: ../src/e_mod_config.c:118
+#: src/e_mod_config.c:118
 msgid "General"
 msgstr "常规"
 
-#: ../src/e_mod_config.c:121
+#: src/e_mod_config.c:121
 msgid "Show in main menu"
 msgstr "在主菜单中显示"
 
-#: ../src/e_mod_config.c:125
+#: src/e_mod_config.c:125
 msgid "Mount volumes on insert"
 msgstr "插入后立刻挂载"
 
-#: ../src/e_mod_config.c:129
+#: src/e_mod_config.c:129
 msgid "Open filemanager on insert"
 msgstr "插入后启动文件管理器"
 
-#: ../src/e_mod_config.c:133
+#: src/e_mod_config.c:133
 msgid "Use a custom file manager"
 msgstr "使用常规文件管理器"
 
-#. Display frame
-#: ../src/e_mod_config.c:146
+#: src/e_mod_config.c:146
 msgid "Show in menu"
 msgstr "在菜单中显示"
 
-#: ../src/e_mod_config.c:149 ../src/e_mod_places.c:399
+#: src/e_mod_config.c:149 src/e_mod_places.c:402
 msgid "Home"
 msgstr "主目录"
 
-#: ../src/e_mod_config.c:152 ../src/e_mod_places.c:408
+#: src/e_mod_config.c:152 src/e_mod_places.c:411
 msgid "Desktop"
 msgstr "桌面"
 
-#: ../src/e_mod_config.c:155 ../src/e_mod_places.c:418
+#: src/e_mod_config.c:155 src/e_mod_places.c:421
 msgid "Trash"
 msgstr "回收站"
 
-#: ../src/e_mod_config.c:158 ../src/e_mod_places.c:229
-#: ../src/e_mod_places.c:427
+#: src/e_mod_config.c:158 src/e_mod_places.c:232 src/e_mod_places.c:430
 msgid "Filesystem"
 msgstr "文件系统"
 
-#: ../src/e_mod_config.c:161 ../src/e_mod_places.c:436
+#: src/e_mod_config.c:161 src/e_mod_places.c:439
 msgid "Temp"
 msgstr "临时文件"
 
-#: ../src/e_mod_config.c:164
+#: src/e_mod_config.c:164
 msgid "Favorites"
 msgstr "收藏夹"
 
-#. Display this Modules config info in the main Config Panel
-#: ../src/e_mod_main.c:75
+#: src/e_mod_main.c:75
 msgid "Files"
 msgstr "文件"
 
-#: ../src/e_mod_main.c:77 ../src/e_mod_places.c:499
+#: src/e_mod_main.c:77 src/e_mod_places.c:502
 msgid "Places"
 msgstr "位置"
 
-#: ../src/e_mod_main.c:443
+#: src/e_mod_main.c:443
 msgid "Configuration"
 msgstr "配置"
 
-#: ../src/e_mod_places.c:234
+#: src/e_mod_places.c:237
 msgid "No Name"
 msgstr "无名称"
 
-#: ../src/e_mod_places.c:689
+#: src/e_mod_places.c:692
 msgid "free of"
 msgstr "免于"
 
-#: ../src/e_mod_places.c:695
+#: src/e_mod_places.c:698
 #, c-format
 msgid "%s Not Mounted"
 msgstr "%s 未挂载"
 
-#: ../src/e_mod_places.c:712
+#: src/e_mod_places.c:715
 msgid "unmount"
 msgstr "卸载"
 
-#: ../src/e_mod_places.c:718
+#: src/e_mod_places.c:721
 msgid "eject"
 msgstr "弹出"
 

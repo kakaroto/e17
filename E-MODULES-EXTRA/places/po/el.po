@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: el\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2009-08-25 17:14+0800\n"
+"POT-Creation-Date: 2010-02-28 12:14+0100\n"
 "PO-Revision-Date: 2008-12-07 16:43+0200\n"
 "Last-Translator: \n"
 "Language-Team: Greek <en@li.org>\n"
@@ -16,94 +16,89 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.11.4\n"
 
-#. create new config dialog
-#: ../src/e_mod_config.c:51
+#: src/e_mod_config.c:51
 msgid "Places Configuration"
 msgstr "Ρύθμιση Τοποθεσιών"
 
-#. General frame
-#: ../src/e_mod_config.c:118
+#: src/e_mod_config.c:118
 msgid "General"
 msgstr "Γενικά"
 
-#: ../src/e_mod_config.c:121
+#: src/e_mod_config.c:121
 msgid "Show in main menu"
 msgstr ""
 
-#: ../src/e_mod_config.c:125
+#: src/e_mod_config.c:125
 msgid "Mount volumes on insert"
 msgstr "Προσάρτηση τόμων κατα την εισαγωγή"
 
-#: ../src/e_mod_config.c:129
+#: src/e_mod_config.c:129
 msgid "Open filemanager on insert"
 msgstr "Άνοιγμα διαχειριστή αρχείων κατά την εισαγωγή"
 
-#: ../src/e_mod_config.c:133
+#: src/e_mod_config.c:133
 msgid "Use a custom file manager"
 msgstr ""
 
-#. Display frame
-#: ../src/e_mod_config.c:146
+#: src/e_mod_config.c:146
 msgid "Show in menu"
 msgstr ""
 
-#: ../src/e_mod_config.c:149 ../src/e_mod_places.c:395
+#: src/e_mod_config.c:149 src/e_mod_places.c:402
 msgid "Home"
 msgstr "Home"
 
-#: ../src/e_mod_config.c:152 ../src/e_mod_places.c:404
+#: src/e_mod_config.c:152 src/e_mod_places.c:411
 msgid "Desktop"
 msgstr "Επιφάνεια Εργασίας"
 
-#: ../src/e_mod_config.c:155 ../src/e_mod_places.c:414
+#: src/e_mod_config.c:155 src/e_mod_places.c:421
 msgid "Trash"
 msgstr "Απορρίμματα"
 
-#: ../src/e_mod_config.c:158 ../src/e_mod_places.c:229
-#: ../src/e_mod_places.c:423
+#: src/e_mod_config.c:158 src/e_mod_places.c:232 src/e_mod_places.c:430
 msgid "Filesystem"
 msgstr "Σύστημα Αρχείων"
 
-#: ../src/e_mod_config.c:161 ../src/e_mod_places.c:432
+#: src/e_mod_config.c:161 src/e_mod_places.c:439
 msgid "Temp"
 msgstr ""
 
-#: ../src/e_mod_config.c:164
+#: src/e_mod_config.c:164
 msgid "Favorites"
 msgstr ""
 
-#. Display this Modules config info in the main Config Panel
-#: ../src/e_mod_main.c:75
+#: src/e_mod_main.c:75
 #, fuzzy
 msgid "Files"
 msgstr "Σύστημα Αρχείων"
 
-#: ../src/e_mod_main.c:77 ../src/e_mod_places.c:495
+#: src/e_mod_main.c:77 src/e_mod_places.c:502
 msgid "Places"
 msgstr "Τοποθεσίες"
 
-#: ../src/e_mod_main.c:443
+#: src/e_mod_main.c:443
 msgid "Configuration"
 msgstr "Ρύθμιση"
 
-#: ../src/e_mod_places.c:234
+#: src/e_mod_places.c:237
 msgid "No Name"
 msgstr "Χωρίς Όνομα"
 
-#: ../src/e_mod_places.c:685
+#: src/e_mod_places.c:692
 msgid "free of"
 msgstr ""
 
-#: ../src/e_mod_places.c:691
+#: src/e_mod_places.c:698
 #, c-format
 msgid "%s Not Mounted"
 msgstr "%s δεν είναι Προσαρτημένο"
 
-#: ../src/e_mod_places.c:708
+#: src/e_mod_places.c:715
 msgid "unmount"
 msgstr "αποπροσάρτηση"
 
-#: ../src/e_mod_places.c:714
+#: src/e_mod_places.c:721
 msgid "eject"
 msgstr "εξαγωγή"
 

@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Places modules\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2009-11-12 14:03+0400\n"
+"POT-Creation-Date: 2010-02-28 12:14+0100\n"
 "PO-Revision-Date: 2009-11-13 12:58+0400\n"
 "Last-Translator: batden <batden@orange.fr>\n"
 "Language-Team: Enlightenment French Team <pourunmondesansgourou@orange.fr>\n"
@@ -45,29 +45,23 @@ msgstr "Utiliser un gestionnaire de fichiers personnalisé"
 msgid "Show in menu"
 msgstr "Afficher dans le menu"
 
-#: src/e_mod_config.c:149
-#: src/e_mod_places.c:399
+#: src/e_mod_config.c:149 src/e_mod_places.c:402
 msgid "Home"
 msgstr "Dossier personnel"
 
-#: src/e_mod_config.c:152
-#: src/e_mod_places.c:408
+#: src/e_mod_config.c:152 src/e_mod_places.c:411
 msgid "Desktop"
 msgstr "Bureau"
 
-#: src/e_mod_config.c:155
-#: src/e_mod_places.c:418
+#: src/e_mod_config.c:155 src/e_mod_places.c:421
 msgid "Trash"
 msgstr "Corbeille"
 
-#: src/e_mod_config.c:158
-#: src/e_mod_places.c:229
-#: src/e_mod_places.c:427
+#: src/e_mod_config.c:158 src/e_mod_places.c:232 src/e_mod_places.c:430
 msgid "Filesystem"
 msgstr "Système"
 
-#: src/e_mod_config.c:161
-#: src/e_mod_places.c:436
+#: src/e_mod_config.c:161 src/e_mod_places.c:439
 msgid "Temp"
 msgstr "/tmp"
 
@@ -79,8 +73,7 @@ msgstr "Favoris"
 msgid "Files"
 msgstr "Fichiers"
 
-#: src/e_mod_main.c:77
-#: src/e_mod_places.c:499
+#: src/e_mod_main.c:77 src/e_mod_places.c:502
 msgid "Places"
 msgstr "Raccourcis"
 
@@ -88,29 +81,29 @@ msgstr "Raccourcis"
 msgid "Configuration"
 msgstr "Configuration"
 
-#: src/e_mod_places.c:234
+#: src/e_mod_places.c:237
 msgid "No Name"
 msgstr "Sans nom"
 
-#: src/e_mod_places.c:689
+#: src/e_mod_places.c:692
 msgid "free of"
 msgstr "libre"
 
-#: src/e_mod_places.c:695
+#: src/e_mod_places.c:698
 #, c-format
 msgid "%s Not Mounted"
 msgstr "%s Pas Monté"
 
-#: src/e_mod_places.c:712
+#: src/e_mod_places.c:715
 msgid "unmount"
 msgstr "démonter"
 
-#: src/e_mod_places.c:718
+#: src/e_mod_places.c:721
 msgid "eject"
 msgstr "éjecter"
 
 #~ msgid "Show"
 #~ msgstr "Afficher"
+
 #~ msgid "File manager (if blank uses Enlightenment)"
 #~ msgstr "Gestionnaire de fichiers (utilise EFM si rien n'est spécifié)"
-

@@ -7,101 +7,96 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Places (e17)\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2009-08-25 17:14+0800\n"
-"PO-Revision-Date: 2009-04-20 20:36+0200\n"
+"POT-Creation-Date: 2010-02-28 12:14+0100\n"
+"PO-Revision-Date: 2010-02-28 12:13+0100\n"
 "Last-Translator: Andreas Volz <andreas@tux-style.de>\n"
 "Language-Team:  <enlightenment-devel@lists.sourceforge.net>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#. create new config dialog
-#: ../src/e_mod_config.c:51
+#: src/e_mod_config.c:51
 msgid "Places Configuration"
 msgstr "Konfiguration der Orte"
 
-#. General frame
-#: ../src/e_mod_config.c:118
+#: src/e_mod_config.c:118
 msgid "General"
 msgstr "Allgemein"
 
-#: ../src/e_mod_config.c:121
+#: src/e_mod_config.c:121
 msgid "Show in main menu"
-msgstr ""
+msgstr "Im Hauptmenü anzeigen"
 
-#: ../src/e_mod_config.c:125
+#: src/e_mod_config.c:125
 msgid "Mount volumes on insert"
 msgstr "Binde Laufwerke beim Einlegen ein"
 
-#: ../src/e_mod_config.c:129
+#: src/e_mod_config.c:129
 msgid "Open filemanager on insert"
 msgstr "Dateimanager automatisch starten"
 
-#: ../src/e_mod_config.c:133
+#: src/e_mod_config.c:133
 msgid "Use a custom file manager"
-msgstr ""
+msgstr "Benutze einen speziellen Datei-Manager"
 
-#. Display frame
-#: ../src/e_mod_config.c:146
+#: src/e_mod_config.c:146
 msgid "Show in menu"
-msgstr ""
+msgstr "Im Menü anzeigen"
 
-#: ../src/e_mod_config.c:149 ../src/e_mod_places.c:395
+#: src/e_mod_config.c:149 src/e_mod_places.c:402
 msgid "Home"
 msgstr "Persönlicher Ordner"
 
-#: ../src/e_mod_config.c:152 ../src/e_mod_places.c:404
+#: src/e_mod_config.c:152 src/e_mod_places.c:411
 msgid "Desktop"
 msgstr "Arbeitsplatz"
 
-#: ../src/e_mod_config.c:155 ../src/e_mod_places.c:414
+#: src/e_mod_config.c:155 src/e_mod_places.c:421
 msgid "Trash"
 msgstr "Mülleimer"
 
-#: ../src/e_mod_config.c:158 ../src/e_mod_places.c:229
-#: ../src/e_mod_places.c:423
+#: src/e_mod_config.c:158 src/e_mod_places.c:232 src/e_mod_places.c:430
 msgid "Filesystem"
 msgstr "Dateisystem"
 
-#: ../src/e_mod_config.c:161 ../src/e_mod_places.c:432
+#: src/e_mod_config.c:161 src/e_mod_places.c:439
 msgid "Temp"
-msgstr ""
+msgstr "Temporäre Daten"
 
-#: ../src/e_mod_config.c:164
+#: src/e_mod_config.c:164
 msgid "Favorites"
-msgstr ""
+msgstr "Favoriten"
 
-#. Display this Modules config info in the main Config Panel
-#: ../src/e_mod_main.c:75
+#: src/e_mod_main.c:75
 msgid "Files"
 msgstr "Dateien"
 
-#: ../src/e_mod_main.c:77 ../src/e_mod_places.c:495
+#: src/e_mod_main.c:77 src/e_mod_places.c:502
 msgid "Places"
 msgstr "Orte"
 
-#: ../src/e_mod_main.c:443
+#: src/e_mod_main.c:443
 msgid "Configuration"
 msgstr "Konfiguration"
 
-#: ../src/e_mod_places.c:234
+#: src/e_mod_places.c:237
 msgid "No Name"
 msgstr "Kein Name"
 
-#: ../src/e_mod_places.c:685
+#: src/e_mod_places.c:692
 msgid "free of"
 msgstr "frei von"
 
-#: ../src/e_mod_places.c:691
+#: src/e_mod_places.c:698
 #, c-format
 msgid "%s Not Mounted"
 msgstr "%s nicht eingebunden"
 
-#: ../src/e_mod_places.c:708
+#: src/e_mod_places.c:715
 msgid "unmount"
-msgstr "Einbindung lösen"
+msgstr "Lösen"
 
-#: ../src/e_mod_places.c:714
+#: src/e_mod_places.c:721
 msgid "eject"
 msgstr "Auswerfen"
 
