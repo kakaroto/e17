@@ -48,6 +48,7 @@
 #define DEBUG_PIXMAP 0
 
 EDisplay            Dpy;
+Display            *disp;
 
 #if USE_COMPOSITE
 static Visual      *argb_visual = NULL;

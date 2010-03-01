@@ -29,7 +29,6 @@
 #include "xtypes.h"
 
 typedef struct {
-   Display            *disp;
    char               *name;
    int                 screens;
    int                 screen;
@@ -45,8 +44,8 @@ typedef struct {
 } EDisplay;
 
 __EXPORT__ extern EDisplay Dpy;
+__EXPORT__ extern Display *disp;
 
-#define disp  Dpy.disp
 #define RROOT Dpy.rroot
 #define VROOT Dpy.vroot
 
