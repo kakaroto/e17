@@ -69,6 +69,7 @@ static Ecore_List  *aclass_list = NULL;
 static Ecore_List  *aclass_list_global = NULL;
 
 static char         mode_action_destroy = 0;
+static char         mode_keybinds_changed = 0;
 
 static void
 RemoveActionType(ActionType * ActionTypeToRemove)
@@ -317,7 +318,7 @@ AclassConfigLoad(FILE * fs)
 	     if (ac)
 	       {
 		  if (!strcmp(s2, "KEYBINDINGS"))
-		     Mode.keybinds_changed = 1;
+		     mode_keybinds_changed = 1;
 		  ActionclassEmpty(ac);
 	       }
 	     else
@@ -722,7 +723,7 @@ AclassConfigLineParse(char *s, ActionClass ** pac, Action ** paa)
 	if (!ac)
 	   ac = ActionclassCreate(prm2, prm3[0] == 'g');
 
-	Mode.keybinds_changed = 1;
+	mode_keybinds_changed = 1;
 	aa = NULL;
      }
    else if (!strncmp(prm1, "Key", 3) || !strncmp(prm1, "Mouse", 5))
@@ -855,7 +856,7 @@ BindingsSave(void)
    char                s[FILEPATH_LEN_MAX], ss[FILEPATH_LEN_MAX];
    FILE               *fs;
 
-   if (!Mode.keybinds_changed)
+   if (!mode_keybinds_changed)
       return;
 
    Etmp(ss);
@@ -1324,7 +1325,7 @@ IPC_KeybindingsSet(const char *params)
    if (!ss || !ss[0])
       return;
 
-   Mode.keybinds_changed = 1;
+   mode_keybinds_changed = 1;
 
    ac = ActionclassFindGlobal("KEYBINDINGS");
    if (ac)

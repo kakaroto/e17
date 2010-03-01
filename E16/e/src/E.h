@@ -422,7 +422,6 @@ typedef struct {
    Win                 context_win;
    char                constrained;
    char                nogroup;
-   char                keybinds_changed;
    char                showing_desktop;
    Window              button_proxy_win;
    char                firsttime;
