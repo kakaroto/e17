@@ -382,10 +382,11 @@ class NewPartWizard(Wizard):
         name = self._part_name_entry.entry
 
         success = self._part_add_cb(
-            name, self._type, self._ext_list.type)
+            name, self._type, self._ext_list.type, signal=False)
 
         if success:
             self._part_init(name, self._type)
+            self._parent.e.event_emit("part.added", name)
             if self._type == edje.EDJE_PART_TYPE_EXTERNAL:
                 self._parent.e._edje.external_add(self._ext_list.module)
         else:
