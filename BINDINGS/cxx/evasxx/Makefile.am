@@ -15,6 +15,9 @@ evasxxdoc_DATA = \
 
 EXTRA_DIST = $(evasxxdoc_DATA)
 
+pkgconfigdir = $(libdir)/pkgconfig
+pkgconfig_DATA = evasxx.pc
+
 # Copy all the spec files. Of cource, only one is actually used.
 dist-hook:
 	for specfile in *.spec; do \

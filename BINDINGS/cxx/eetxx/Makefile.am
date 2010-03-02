@@ -16,6 +16,8 @@ eetxxdoc_DATA = \
 
 EXTRA_DIST = $(eetxxdoc_DATA)
 
+pkgconfigdir = $(libdir)/pkgconfig
+pkgconfig_DATA = eetxx.pc
 
 # Remove doc directory on uninstall
 uninstall-local:

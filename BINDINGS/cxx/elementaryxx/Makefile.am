@@ -15,6 +15,9 @@ elementaryxxdoc_DATA = \
 
 EXTRA_DIST = $(elementaryxxdoc_DATA)
 
+pkgconfigdir = $(libdir)/pkgconfig
+pkgconfig_DATA = elementaryxx.pc
+
 # Copy all the spec files. Of cource, only one is actually used.
 dist-hook:
 	for specfile in *.spec; do \

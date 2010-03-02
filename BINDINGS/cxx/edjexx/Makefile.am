@@ -16,6 +16,8 @@ edjexxdoc_DATA = \
 
 EXTRA_DIST = $(edjexxdoc_DATA)
 
+pkgconfigdir = $(libdir)/pkgconfig
+pkgconfig_DATA = edjexx.pc
 
 # Remove doc directory on uninstall
 uninstall-local:

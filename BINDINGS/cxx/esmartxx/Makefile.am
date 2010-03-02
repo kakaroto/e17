@@ -15,6 +15,12 @@ esmartxxdoc_DATA = \
 
 EXTRA_DIST = $(esmartxxdoc_DATA)
 
+pkgconfigdir = $(libdir)/pkgconfig
+pkgconfig_DATA = \
+	esmartxx_cairo.pc\
+	esmartxx_container.pc\
+	esmartxx_group.pc\
+	esmartxx_textentry.pc
 
 # Remove doc directory on uninstall
 uninstall-local:
