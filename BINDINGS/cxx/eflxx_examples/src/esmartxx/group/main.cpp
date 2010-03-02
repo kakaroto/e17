@@ -1,6 +1,6 @@
 #include <ecorexx/Ecorexx.h>
 #include <evasxx/Evasxx.h>
-#include <esmartxx_group/Group.h>
+#include <esmartxx/Group.h>
 #include "../../common/searchFile.h"
 
 #include <memory>
