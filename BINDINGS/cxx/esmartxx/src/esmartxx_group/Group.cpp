@@ -111,7 +111,7 @@ void Group::resizeHandler (const Eflxx::Size &size)
 
 void Group::showHandler()
 {
-  printf ("Group::showHandler (%p) -> size: %d\n", this, mEvasObjectList.size());
+  //printf ("Group::showHandler (%p) -> size: %d\n", this, mEvasObjectList.size());
   for (list<Evasxx::Object*>::iterator eol_it = mEvasObjectList.begin ();
        eol_it != mEvasObjectList.end ();
        eol_it++)
@@ -123,7 +123,7 @@ void Group::showHandler()
 
 void Group::hideHandler()
 {
-  printf ("Group::hideHandler (%p) -> size: %d\n", this, mEvasObjectList.size());
+  //printf ("Group::hideHandler (%p) -> size: %d\n", this, mEvasObjectList.size());
   for (list<Evasxx::Object*>::iterator eol_it = mEvasObjectList.begin ();
        eol_it != mEvasObjectList.end ();
        eol_it++)

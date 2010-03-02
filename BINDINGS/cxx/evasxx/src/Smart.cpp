@@ -22,7 +22,7 @@ Smart::Smart ()
   
 Smart::Smart(Canvas &canvas)
 {
-  printf ("Smart constructor\n");
+  //printf ("Smart constructor\n");
   
   mFree = true;
  
