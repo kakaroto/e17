@@ -51,7 +51,6 @@ int exalt_main()
 
     e_dbus_init();
     e_hal_init();
-    ecore_string_init();
 
     exalt_eth_interfaces.dbus_conn = e_dbus_bus_get(DBUS_BUS_SYSTEM);
     EXALT_ASSERT_RETURN(exalt_eth_interfaces.dbus_conn!=NULL);

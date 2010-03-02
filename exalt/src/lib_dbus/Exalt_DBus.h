@@ -4,7 +4,6 @@
 #define  EXALT_DBUS_INC
 
 #include <E_DBus.h>
-#include <Ecore_Data.h>
 #include <string.h>
 #include <Exalt.h>
 
