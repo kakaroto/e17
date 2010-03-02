@@ -26,6 +26,7 @@
 #include <Ecore.h>
 #include <Exchange.h>
 
+#define INFO(...) EINA_LOG_DOM_INFO(__exchange_smart_log_domain, __VA_ARGS__)
 #define DBG(...) EINA_LOG_DOM_DBG(__exchange_smart_log_domain, __VA_ARGS__)
 #define WRN(...) EINA_LOG_DOM_WARN(__exchange_smart_log_domain, __VA_ARGS__)
 #define ERR(...) EINA_LOG_DOM_ERR(__exchange_smart_log_domain, __VA_ARGS__)
@@ -88,6 +89,7 @@ on_wheel_down(void *data, Evas_Object *o, const char *em, const char *src)
    if (y > h) y = h;
    exchange_smart_object_offset_set(exsm, x, y);
 }
+
 static void
 on_button(void *data, Evas_Object *o, const char *em, const char *src)
 {
@@ -121,30 +123,29 @@ main(int argc, char **argv)
    if (!__exchange_smart_log_domain)
    {
       EINA_LOG_ERR("Could not register log domain: Exchange");
-      goto shutdown_eina; //return 0;
+      goto shutdown_eina;
    }
 
    if (!ecore_init())
-      goto shutdown_eina; //return 0;
+      goto shutdown_eina;
    evas_init();
    if (!ecore_evas_init())
-      goto shutdown_ecore; //return 0;
+      goto shutdown_ecore;
    if (!ecore_file_init())
-      goto shutdown_evas; //return 0;
+      goto shutdown_evas;
    edje_init();
    if (!exchange_init())
-      goto shutdown_ecore_file; //return 0;
+      goto shutdown_ecore_file;
 
-   /* Create Ecore Evas Window */
-   ee = ecore_evas_software_x11_new(NULL, 0, 0, 450, 400, 0);
-   //ee = ecore_evas_new(NULL, 0, 0, 300, 400, NULL);
+   /* Create Ecore Evas Window */;
+   ee = ecore_evas_new(NULL, 0, 0, 0, 0, NULL);
+   INFO("Using Evas Engine: %s", ecore_evas_engine_name_get(ee));
    evas = ecore_evas_get(ee);
    ecore_evas_title_set(ee, "Exchange Smart Test   (downloads goes in /tmp)");
    ecore_evas_callback_resize_set(ee, on_resize);
    ecore_evas_callback_destroy_set(ee, on_destroy);
-   ecore_evas_size_min_set(ee, 200, 200);
-   ecore_evas_resize(ee, 450, 400);
-   ecore_evas_show(ee);
+   ecore_evas_size_min_set(ee, 450, 200);
+   
 
    /* White Background */
    bg = evas_object_rectangle_add(evas);
@@ -162,7 +163,6 @@ main(int argc, char **argv)
    cont = edje_object_add(evas);
    edje_object_file_set(cont, buf, "exchange/smart/test");
    evas_object_move(cont, 10, 10);
-   evas_object_resize(cont, 200, 300);
    evas_object_show(cont);
    edje_object_signal_callback_add(cont, "drag", "scroller", on_scroll, NULL);
    edje_object_signal_callback_add(cont, "mouse,wheel,0,-1", "shadow", on_wheel_up, NULL);
@@ -179,6 +179,9 @@ main(int argc, char **argv)
    /* Swallow the smart object inside the edje test interface */
    edje_object_part_swallow(cont, "swallow.content", exsm);
 
+   /* Show the window */
+   ecore_evas_resize(ee, 450, 400);
+   ecore_evas_show(ee);
 
    /* Enter the mail loop*/
    ecore_main_loop_begin();
