@@ -135,14 +135,15 @@ edje_edit_string_free(
   bool addGroup (const std::string &name);
  
   /*!
-   * Delete the current group from the given edje.
-   * You can only delete the currently loaded group.
+   * Delete the specified group from the given edje.
+   * You can only delete a currently unused group.
    * All the parts and the programs inside the group will be deleted as well,
    * but not image or font embedded in the edje.
    *
+   * @param group The group to be deleted
    * @return true on success, false on failure
    */
-  bool delGroup ();
+  bool delGroup (const std::string &group);
 
   /*!
    * Check if a group with the given name exist in the edje.

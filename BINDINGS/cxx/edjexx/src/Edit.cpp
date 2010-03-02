@@ -46,9 +46,9 @@ bool Edit::addGroup (const std::string &name)
 }
  
 
-bool Edit::delGroup ()
+bool Edit::delGroup (const std::string &group)
 {
-  return edje_edit_group_del (o);
+  return edje_edit_group_del (o, group.c_str ());
 }
 
 bool Edit::hasGroup (const std::string &group)
