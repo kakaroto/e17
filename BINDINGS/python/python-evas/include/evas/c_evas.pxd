@@ -481,6 +481,7 @@ cdef extern from "Evas.h":
 
     Evas_Object *evas_focus_get(Evas *e)
 
+    Evas_Modifier *evas_key_modifier_get(Evas *e)
     Eina_Bool evas_key_modifier_is_set(Evas_Modifier *m, char *keyname)
 
     void evas_event_freeze(Evas *e)

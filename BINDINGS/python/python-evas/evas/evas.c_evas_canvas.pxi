@@ -640,6 +640,11 @@ cdef public class Canvas [object PyEvasCanvas, type PyEvasCanvas_Type]:
         "@rtype: int"
         return evas_event_freeze_get(self.obj)
 
+    def key_modifier_is_set(self, modifier):
+        "@rtype: bool"
+        return bool(evas_key_modifier_is_set(evas_key_modifier_get(self.obj),
+                                             modifier))
+
     def event_callback_add(self, int type, func, *args, **kargs):
         """Add a new callback for the given event.
 
