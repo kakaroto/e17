@@ -111,7 +111,7 @@ _args_init(int argc, char **argv)
       if (!strcmp(argv[1], "--entry"))
 	    {
 	      arguments->dlg_entry_enabled = EINA_TRUE;
-	      for (i; i < argc + 1; i++)
+	      for (i = 0; i < argc + 1; i++)
 	        {
     	      argv[i] = argv[i + 1];
     	      argv[argc] = NULL;
@@ -122,7 +122,7 @@ _args_init(int argc, char **argv)
       else if (!strcmp(argv[1], "--text-info"))
     	{
 	      arguments->dlg_textinfo_enabled = EINA_TRUE;
-	      for (i; i < argc + 1; i++)
+	      for (i = 0; i < argc + 1; i++)
 	        {
 	          argv[i] = argv[i + 1];
 	          argv[argc] = NULL;
@@ -133,7 +133,7 @@ _args_init(int argc, char **argv)
       else if (!strcmp(argv[1], "--clock"))
 	    {
 	      arguments->dlg_clock_enabled = EINA_TRUE;
-	      for (i; i < argc + 1; i++)
+	      for (i = 0; i < argc + 1; i++)
 	        {
 	          argv[i] = argv[i + 1];
 	          argv[argc] = NULL;
@@ -144,7 +144,7 @@ _args_init(int argc, char **argv)
       else if (!strcmp(argv[1], "--scale"))
 	    {
 	      arguments->dlg_scale_enabled = EINA_TRUE;
-	      for (i; i < argc + 1; i++)
+	      for (i = 0; i < argc + 1; i++)
 	        {
 	          argv[i] = argv[i + 1];
 	          argv[argc] = NULL;

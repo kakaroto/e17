@@ -106,7 +106,7 @@ SH_API Evas_Object *
 create_entry(Evas_Object *parent, Eina_Bool entry_has_one_line, const char *entry_text, Eina_Bool entry_hide_text, Eina_Bool entry_line_nowrap, Eina_Bool entry_editable)
 {
   Evas_Object *entry;
-  char *s;
+  char *s = NULL;
 
   if (entry_text) s = elm_entry_utf8_to_markup(entry_text);
 
