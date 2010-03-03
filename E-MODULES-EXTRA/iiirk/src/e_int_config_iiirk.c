@@ -2,7 +2,6 @@
  * vim:ts=8:sw=3:sts=8:noexpandtab:cino=>5n-3f0^-2{2
  */
 #include <e.h>
-#include <Ecore_Data.h>
 #include "e_mod_main.h"
 
 typedef struct _E_Config_Data 
@@ -16,7 +15,7 @@ struct _E_Config_Dialog_Data
    Evas_Object *o_all, *o_sel;
    Evas_Object *o_add, *o_del;
    Evas_Object *o_up, *o_down;
-   Ecore_List *apps;
+   Eina_List *apps;
 };
 
 /* local protos */
@@ -25,8 +24,8 @@ static void *_create_data(E_Config_Dialog *cfd);
 static void _free_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata);
 static Evas_Object *_basic_create(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cfdata);
 static int _basic_apply(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata);
-static Ecore_List *_load_menu(const char *path);
-static Ecore_List *_load_order(const char *path);
+static Eina_List *_load_menu(const char *path);
+static Eina_List *_load_order(const char *path);
 static void _fill_apps(E_Config_Dialog_Data *cfdata);
 static void _fill_list(E_Config_Dialog_Data *cfdata);
 static int _cb_sort_desks(Efreet_Desktop *d1, Efreet_Desktop *d2);
@@ -128,6 +127,7 @@ static void
 _free_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata) 
 {
    E_Config_Data *data;
+   Efreet_Desktop *tmp;
 
    data = cfdata->data;
    if (data) 
@@ -138,7 +138,11 @@ _free_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
 	if (data->filename) eina_stringshare_del(data->filename);
 	E_FREE(data);
      }
-   if (cfdata->apps) ecore_list_destroy(cfdata->apps);
+   if (cfdata->apps)
+     {
+       EINA_LIST_FREE(cfdata->apps, tmp) efreet_desktop_free(tmp);
+       eina_list_free(cfdata->apps);
+     }
    E_FREE(cfdata);
 }
 
@@ -208,41 +212,37 @@ _basic_apply(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
    return ret;
 }
 
-static Ecore_List *
+static Eina_List *
 _load_menu(const char *path) 
 {
    Efreet_Menu *menu, *entry;
-   Ecore_List *apps = NULL;
+   Eina_List *apps;
    Eina_List *l;
 
-   apps = ecore_list_new();
-   ecore_list_free_cb_set(apps, ECORE_FREE_CB(efreet_desktop_free));
    menu = efreet_menu_parse(path);
    if ((!menu) || (!menu->entries)) return apps;
    EINA_LIST_FOREACH(menu->entries, l, entry)
      {
 	if (entry->type != EFREET_MENU_ENTRY_DESKTOP) continue;
 	efreet_desktop_ref(entry->desktop);
-	ecore_list_append(apps, entry->desktop);
+	apps = eina_list_append(apps, entry->desktop);
      }
    efreet_menu_free(menu);
    return apps;
 }
 
-static Ecore_List *
+static Eina_List *
 _load_order(const char *path) 
 {
    E_Order *order = NULL;
-   Ecore_List *apps = NULL;
-   Efreet_Desktop *desk;
+   Eina_List *apps;
+   Efreet_Desktop *desk = NULL;
 
-   apps = ecore_list_new();
-   ecore_list_free_cb_set(apps, ECORE_FREE_CB(efreet_desktop_free));
    if (!path) return apps;
    order = e_order_new(path);
    if (!order) return apps;
    EINA_LIST_FREE(order->desktops, desk)
-     ecore_list_append(apps, desk);
+     apps = eina_list_append(apps, desk);
    e_object_del(E_OBJECT(order));
    return apps;
 }
@@ -250,13 +250,16 @@ _load_order(const char *path)
 static void 
 _fill_apps(E_Config_Dialog_Data *cfdata) 
 {
-   Eina_List *desks = NULL, *l = NULL;
+   Eina_List *desks, *l;
    Efreet_Desktop *desk = NULL;
    Evas *evas;
    int w;
 
+   l = NULL;
+
    evas = evas_object_evas_get(cfdata->o_all);
    desks = efreet_util_desktop_name_glob_list("*");
+
    desks = eina_list_sort(desks, 0, _cb_sort_desks);
    EINA_LIST_FREE(desks, desk)
 	  {
@@ -264,9 +267,10 @@ _fill_apps(E_Config_Dialog_Data *cfdata)
 	       {
 		  efreet_desktop_ref(desk);
 	     l = eina_list_append(l, desk);
-	       }
-	efreet_desktop_free(desk);
 	  }
+	efreet_desktop_free(desk);
+     }
+
    l = eina_list_sort(l, 0, _cb_sort_desks);
 
    evas_event_freeze(evas);
@@ -278,7 +282,7 @@ _fill_apps(E_Config_Dialog_Data *cfdata)
 	  {
 	     Evas_Object *icon = NULL;
 
-	icon = e_util_desktop_icon_add(desk, 24, evas);
+	     icon = e_util_desktop_icon_add(desk, 24, evas);
 	     e_widget_ilist_append(cfdata->o_all, icon, desk->name, 
 				   _all_list_cb_selected, cfdata, desk->orig_path);
 	efreet_desktop_free(desk);
@@ -296,6 +300,8 @@ static void
 _fill_list(E_Config_Dialog_Data *cfdata) 
 {
    Efreet_Desktop *desk = NULL;
+   Efreet_Desktop *tmp = NULL;
+   Eina_List *l;
    Evas *evas;
    int w;
 
@@ -307,8 +313,7 @@ _fill_list(E_Config_Dialog_Data *cfdata)
    e_widget_ilist_clear(cfdata->o_sel);
    if (cfdata->apps) 
      {
-	ecore_list_first_goto(cfdata->apps);
-	while ((desk = ecore_list_next(cfdata->apps))) 
+	EINA_LIST_FOREACH(cfdata->apps, l, desk)
 	  {
 	     Evas_Object *icon = NULL;
 
@@ -316,7 +321,8 @@ _fill_list(E_Config_Dialog_Data *cfdata)
 	     e_widget_ilist_append(cfdata->o_sel, icon, desk->name, 
 				   _sel_list_cb_selected, cfdata, desk->orig_path);
 	  }
-	ecore_list_destroy(cfdata->apps);
+    EINA_LIST_FREE(cfdata->apps, tmp) efreet_desktop_free(tmp);
+	eina_list_free(cfdata->apps);
      }
    
    cfdata->apps = NULL;
