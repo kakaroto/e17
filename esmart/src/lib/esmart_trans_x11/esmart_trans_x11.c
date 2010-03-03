@@ -12,7 +12,6 @@
 #include <Imlib2.h>
 #include <Ecore.h>
 #include <Ecore_X.h>
-#include <Ecore_Data.h>
 #include <assert.h>
 
 #include "Esmart_Trans_X11.h"
@@ -47,7 +46,7 @@ static void _esmart_trans_x11_clip_set(Evas_Object *o, Evas_Object *clip);
 static void _esmart_trans_x11_clip_unset(Evas_Object *o);
 static int _esmart_trans_x11_property_cb(void *data, int type, void *event);
 
-static Ecore_List       *_objects = NULL;
+static Eina_List        *_objects = NULL;
 static Ecore_X_Window   rroot, vroot;
 static Ecore_X_Atom     rootpmap, rootcolor;
 static Ecore_X_Atom     x_virtual_roots, x_current_desktop, x_num_desktops;
@@ -70,14 +69,14 @@ _esmart_trans_x11_timer_cb(void *data)
 static Esmart_Trans_Object *
 _esmart_trans_x11_object_find(Evas_Object *o)
 {
-   Ecore_List_Node *n;
+   Eina_List *l;
    Esmart_Trans_Object *eto = NULL;
-  
-   for (n = _objects->first; n; n = n->next)
+   void *data;
+   
+   EINA_LIST_FOREACH(_objects, l, data)
    {
-      eto = (Esmart_Trans_Object *) n->data;
-      if (eto->obj == o)
-         break;
+     eto = (Esmart_Trans_Object *) data;
+     if (eto->obj == o) break;
    }
 
    return eto;
@@ -297,15 +296,15 @@ esmart_trans_x11_freshen(Evas_Object *o, int x, int y, int w, int h)
 {
   Esmart_Trans_X11 *data;
   Esmart_Trans_Object *eto;
-
-  Ecore_List_Node *n;
+  Eina_List *l;
+  void *tmp;
 
   static Ecore_X_Window old_vroot = 0;
 
   /* Search for requested object in list */
-  for (n = _objects->first; n; n = n->next)
+  EINA_LIST_FOREACH(_objects, l, tmp)
   {
-     eto = (Esmart_Trans_Object *) n->data;
+     eto = (Esmart_Trans_Object *) tmp;
      if (eto->obj == o)
      {
         /* Update geometry for callback function(s) */
@@ -346,6 +345,9 @@ esmart_trans_x11_freshen(Evas_Object *o, int x, int y, int w, int h)
      }
   }
 
+  tmp = NULL;
+  free(tmp);
+
   fprintf(stderr, "esmart_trans_x11_freshen: I know not this object you speak of.\n");
 }
 
@@ -360,7 +362,6 @@ esmart_trans_x11_new(Evas *e)
   /* Initialize objects, atoms and events if called for the first time */
   if (!_objects)
   {
-     _objects = ecore_list_new();
      x_pixmap = ecore_x_atom_get("PIXMAP");
      rootpmap = ecore_x_atom_get("_XROOTPMAP_ID");
      rootcolor = ecore_x_atom_get("_XROOTCOLOR_PIXEL");
@@ -379,7 +380,7 @@ esmart_trans_x11_new(Evas *e)
   eto = calloc(1, sizeof(Esmart_Trans_Object));
   eto->obj = x11_trans_object;
   eto->type = Esmart_Trans_X11_Type_Background;
-  ecore_list_append(_objects, eto);
+  _objects = eina_list_append(_objects, eto);
 
   return x11_trans_object;
 }
@@ -420,7 +421,8 @@ static int
 _esmart_trans_x11_property_cb(void *data, int type, void *event)
 {
    Ecore_X_Event_Window_Property *e;
-   Ecore_List_Node *n;
+   Eina_List *l;
+   void *tmp;
 
    if (!_objects)
       return 1;
@@ -432,10 +434,10 @@ _esmart_trans_x11_property_cb(void *data, int type, void *event)
        (e->win == vroot && (e->atom == rootpmap || e->atom == rootcolor)))
    {
       /* Background may have changed: freshen all trans objects */
-      for (n = _objects->first; n; n = n->next)
+      EINA_LIST_FOREACH(_objects, l, tmp)
       {
          Esmart_Trans_Object *o;
-         o = (Esmart_Trans_Object *) n->data;
+         o = (Esmart_Trans_Object *) tmp;
          /* For desktop changes, do not freshen non-sticky windows */
 #if 0
          if ((e->atom == x_current_desktop || e->atom == enlightenment_desktop)
@@ -450,6 +452,9 @@ _esmart_trans_x11_property_cb(void *data, int type, void *event)
             o->timer = ecore_timer_add(0.2, _esmart_trans_x11_timer_cb, o);
       }
    }
+
+   tmp = NULL;
+   free(tmp);
 
    return 1;
 }
