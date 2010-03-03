@@ -11,11 +11,11 @@ HOMEPAGE="http://trac.enlightenment.org/e/wiki/Elementary"
 
 LICENSE="LGPL-2.1"
 
-IUSE="directfb fbcon opengl sdl X dbus xdg weather"
+IUSE="fbcon opengl sdl X dbus xdg weather xcb"
 
 RDEPEND="
-	>=dev-libs/ecore-9999[evas]
-	>=media-libs/evas-9999[directfb?,fbcon?,opengl?,sdl?,X?,xcb?]
+	>=dev-libs/ecore-9999[evas,fbcon?,opengl?,sdl?,X?,xcb?]
+	>=media-libs/evas-9999[fbcon?,opengl?,sdl?,X?,xcb?]
 	>=media-libs/edje-9999
 	dbus? ( >=dev-libs/e_dbus-9999 )
 	xdg? ( >=dev-libs/efreet-9999 )
@@ -29,6 +29,9 @@ src_configure() {
 	  $(use_enable dbus edbus)
 	  $(use_enable xdg efreet)
 	  $(use_enable weather eweather)
+	  $(use_enable fbcon ecore-fb)
+	  $(use_enable sdl ecore-sdl)
+	  $(use_enable X ecore-x)
 	"
 	efl_src_configure
 }
