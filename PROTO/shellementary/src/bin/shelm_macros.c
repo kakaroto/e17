@@ -119,8 +119,7 @@ create_entry(Evas_Object *parent, Eina_Bool entry_has_one_line, const char *entr
   if (s)
     {
       elm_entry_entry_set(entry, s);
-      s = NULL;
-      free(s);
+      E_FREE(s);
     }
   elm_entry_password_set(entry, entry_hide_text);
 

@@ -64,10 +64,8 @@ shelm_textinfo_dialog(const char *window_title, const char *window_text, int win
               s = elm_entry_utf8_to_markup(buffer);
               elm_entry_entry_set(textinfo, s);
               // free everything
-              s = NULL;
-              free(s);
-              buffer = NULL;
-              free(buffer);
+              E_FREE(s);
+              E_FREE(buffer);
             }
         }
     }

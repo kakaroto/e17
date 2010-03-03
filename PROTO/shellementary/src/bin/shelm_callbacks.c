@@ -48,8 +48,7 @@ entry_callback(void *data, Evas_Object *obj, void *event_info)
       char *s;
       s = elm_entry_markup_to_utf8(elm_entry_entry_get(entry));
       printf(s);
-      s = NULL;
-      free(s);
+      E_FREE(s);
     }
   elm_exit();
 }
@@ -126,7 +125,7 @@ SH_API int _read_stdin_entry(void *data, Ecore_Fd_Handler *fd_handler)
    E_FREE(c);
 
    // as we already read stdin, we dont need it anymore
-   eina_list_free(in);
+   in = eina_list_free(in);
    ecore_main_fd_handler_del(fd_handler);
    return 0;
 }
@@ -165,7 +164,7 @@ SH_API int _read_stdin_list(void *data, Ecore_Fd_Handler *fd_handler)
    E_FREE(s);
    E_FREE(c);
 
-   eina_list_free(in);
+   in = eina_list_free(in);
    ecore_main_fd_handler_del(fd_handler);
    return 0;
 }
