@@ -2168,6 +2168,98 @@ _on_cmd_service_get_ethernet_netmask(char *cmd, char *args)
    return 1;
 }
 
+static int
+_on_cmd_technology_get_devices(char *cmd, char *args)
+{
+   E_Connman_Element **devices;
+   E_Connman_Element *e;
+   unsigned int count;
+   char *path;
+
+   if (!args)
+     {
+	fputs("ERROR: missing the technology path\n", stderr);
+	return 1;
+     }
+   _tok(args);
+   path = args;
+
+   e = e_connman_technology_get(path);
+   if (!e_connman_technology_devices_get(e, &count, &devices))
+     {
+	fputs("ERROR: can't get devices\n", stderr);
+	return 1;
+     }
+   printf("BEG: all technology devices count = %d\n", count);
+   _elements_print(devices, count);
+   return 1;
+}
+
+static int
+_on_cmd_technology_get_state(char *cmd, char *args)
+{
+   const char *state, *path;
+   E_Connman_Element *e;
+
+   if (!args)
+     {
+	fputs("ERROR: missing the technology path\n", stderr);
+	return 1;
+     }
+   _tok(args);
+   path = args;
+
+   e = e_connman_technology_get(path);
+   if (e_connman_technology_state_get(e, &state))
+     printf(":::Technology %s State = \"%s\"\n", path, state);
+   else
+     fputs("ERROR: can't get technology state\n", stderr);
+   return 1;
+}
+
+static int
+_on_cmd_technology_get_type(char *cmd, char *args)
+{
+   const char *type, *path;
+   E_Connman_Element *e;
+
+   if (!args)
+     {
+	fputs("ERROR: missing the technology path\n", stderr);
+	return 1;
+     }
+   _tok(args);
+   path = args;
+
+   e = e_connman_technology_get(path);
+   if (e_connman_technology_type_get(e, &type))
+     printf(":::Technology %s Type = \"%s\"\n", path, type);
+   else
+     fputs("ERROR: can't get technology type\n", stderr);
+   return 1;
+}
+
+static int
+_on_cmd_technology_get_name(char *cmd, char *args)
+{
+   const char *name, *path;
+   E_Connman_Element *e;
+
+   if (!args)
+     {
+	fputs("ERROR: missing the technology path\n", stderr);
+	return 1;
+     }
+   _tok(args);
+   path = args;
+
+   e = e_connman_technology_get(path);
+   if (e_connman_technology_name_get(e, &name))
+     printf(":::Technology %s Name = \"%s\"\n", path, name);
+   else
+     fputs("ERROR: can't get technology name\n", stderr);
+   return 1;
+}
 
 static int
 _on_input(void *data, Ecore_Fd_Handler *fd_handler)
@@ -2268,6 +2360,10 @@ _on_input(void *data, Ecore_Fd_Handler *fd_handler)
      {"service_get_ethernet_address", _on_cmd_service_get_ethernet_address},
      {"service_get_ethernet_mtu", _on_cmd_service_get_ethernet_mtu},
      {"service_get_ethernet_netmask", _on_cmd_service_get_ethernet_netmask},
+     {"technology_get_devices", _on_cmd_technology_get_devices},
+     {"technology_get_state", _on_cmd_technology_get_state},
+     {"technology_get_type", _on_cmd_technology_get_type},
+     {"technology_get_name", _on_cmd_technology_get_name},
      {NULL, NULL}
    };
 
