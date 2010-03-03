@@ -26,6 +26,7 @@ cdef class EdjeEdit(edje.c_edje.Edje): # [object PyEdjeEdit, type PyEdjeEdit_Typ
             r = s
             edje_edit_string_free(s)
             return r
+        return None
 
     def save(self):
         """@rtype: bool"""
@@ -94,7 +95,7 @@ cdef class EdjeEdit(edje.c_edje.Edje): # [object PyEdjeEdit, type PyEdjeEdit_Typ
         return r
 
     def data_set(self, char *name, char *value):
-        return edje_edit_data_value_set(self.obj, name, value)
+        return bool(edje_edit_data_value_set(self.obj, name, value))
 
     def data_add(self, char *name, char *value):
         cdef unsigned char r
@@ -127,7 +128,7 @@ cdef class EdjeEdit(edje.c_edje.Edje): # [object PyEdjeEdit, type PyEdjeEdit_Typ
         return r
 
     def group_data_set(self, char *name, char *value):
-        return edje_edit_group_data_value_set(self.obj, name, value)
+        return bool(edje_edit_group_data_value_set(self.obj, name, value))
 
     def group_data_add(self, char *name, char *value):
         cdef unsigned char r
@@ -229,7 +230,7 @@ cdef class EdjeEdit(edje.c_edje.Edje): # [object PyEdjeEdit, type PyEdjeEdit_Typ
         return bool(edje_edit_external_add(self.obj, name))
 
     def external_del(self, char *name):
-        edje_edit_external_del(self.obj, name)
+        return bool(edje_edit_external_del(self.obj, name))
 
     # Part
 
@@ -249,11 +250,13 @@ cdef class EdjeEdit(edje.c_edje.Edje): # [object PyEdjeEdit, type PyEdjeEdit_Typ
     def part_get(self, char *name):
         if self.part_exist(name):
             return Part(self, name)
+        return None
 
     def part_add(self, char *name, int type, char *source=""):
         cdef unsigned char r
         if type != edje.EDJE_PART_TYPE_EXTERNAL:
-            r = edje_edit_part_add(self.obj, name, <edje.c_edje.Edje_Part_Type>type)
+            r = edje_edit_part_add(
+                self.obj, name, <edje.c_edje.Edje_Part_Type>type)
         else:
             r = edje_edit_part_external_add(self.obj, name, source)
         if r == 0:
@@ -306,7 +309,7 @@ cdef class EdjeEdit(edje.c_edje.Edje): # [object PyEdjeEdit, type PyEdjeEdit_Typ
             return ret
 
     def image_id_get(self, char *image):
-        return edje_edit_image_id_get(self.obj, image)
+        return bool(edje_edit_image_id_get(self.obj, image))
 
     def image_add(self, char *image):
         cdef unsigned char r
@@ -357,6 +360,7 @@ cdef class EdjeEdit(edje.c_edje.Edje): # [object PyEdjeEdit, type PyEdjeEdit_Typ
     def program_get(self, char *name):
         if self.program_exist(name):
             return Program(self, name)
+        return None
 
     def program_add(self, char *name):
         return bool(edje_edit_program_add(self.obj, name))
