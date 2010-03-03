@@ -125,7 +125,7 @@ SH_API int _read_stdin_entry(void *data, Ecore_Fd_Handler *fd_handler)
    E_FREE(c);
 
    // as we already read stdin, we dont need it anymore
-   in = eina_list_free(in);
+   eina_list_free(in);
    ecore_main_fd_handler_del(fd_handler);
    return 0;
 }
@@ -164,7 +164,7 @@ SH_API int _read_stdin_list(void *data, Ecore_Fd_Handler *fd_handler)
    E_FREE(s);
    E_FREE(c);
 
-   in = eina_list_free(in);
+   eina_list_free(in);
    ecore_main_fd_handler_del(fd_handler);
    return 0;
 }
