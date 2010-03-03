@@ -107,7 +107,7 @@ e_connman_technology_state_get(const E_Connman_Element *technology, const char *
 
 /**
  * Get array of device elements.
- * 
+ *
  * If this property isn't found then 0 is returned.
  * If zero is returned, then this call failed and parameter-returned
  * values shall be considered invalid.
@@ -128,5 +128,5 @@ e_connman_technology_devices_get(const E_Connman_Element *technology, unsigned i
    EINA_SAFETY_ON_NULL_RETURN_VAL(count, 0);
    EINA_SAFETY_ON_NULL_RETURN_VAL(t_elements, 0);
    return e_connman_element_objects_array_get_stringshared
-     (technology, e_connman_prop_services, count, t_elements);
+     (technology, e_connman_prop_devices, count, t_elements);
 }
