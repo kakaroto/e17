@@ -101,7 +101,7 @@ _free_data (E_Config_Dialog * cfd, E_Config_Dialog_Data * cfdata)
   eina_stringshare_del(cfdata->device);
   if (cfdata->devs)
     {
-	  EINA_LIST_FREE(cfdata->devs, data) eina_stringshare_del(data);
+      EINA_LIST_FREE(cfdata->devs, data) eina_stringshare_del(data);
       eina_list_free(cfdata->devs);
     }
    
