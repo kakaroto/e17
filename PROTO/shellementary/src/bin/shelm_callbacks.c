@@ -106,7 +106,6 @@ SH_API int _read_stdin_entry(void *data, Ecore_Fd_Handler *fd_handler)
    } while (c != EOF);
 
    // free the variable for now
-   E_FREE(c);
    eina_list_remove_list(in, eina_list_last(in));
 
    // initialize buffer of size we need
@@ -141,8 +140,6 @@ SH_API int _read_stdin_list(void *data, Ecore_Fd_Handler *fd_handler)
      c = getc(stdin);
      in = eina_list_append(in, c);
    } while (c != EOF);
-
-   E_FREE(c);
 
    char buf[eina_list_count(in)];
 
