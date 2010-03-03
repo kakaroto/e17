@@ -65,7 +65,6 @@ _fill_data (Config_Item * ci, E_Config_Dialog_Data * cfdata)
    _wlan_config_get_devices(cfdata->devs);
    if (!cfdata->devs) return;
 
-   cfdata->devs = eina_list_nth_list(cfdata->devs, 0);
    EINA_LIST_FOREACH(cfdata->devs, l, tmp)
      {
 	if (!strcmp(cfdata->device, tmp)) 
@@ -93,12 +92,18 @@ _create_data (E_Config_Dialog * cfd)
 static void
 _free_data (E_Config_Dialog * cfd, E_Config_Dialog_Data * cfdata)
 {
+  const char *data;
+
   if (!wlan_config)
     return;
+
   wlan_config->config_dialog = NULL;
-   eina_stringshare_del(cfdata->device);
-   if (cfdata->devs)
-     eina_list_free(cfdata->devs);
+  eina_stringshare_del(cfdata->device);
+  if (cfdata->devs)
+    {
+	  EINA_LIST_FREE(cfdata->devs, data) eina_stringshare_del(data);
+      eina_list_free(cfdata->devs);
+    }
    
   E_FREE(cfdata);
 }
@@ -137,7 +142,7 @@ _basic_create_widgets (E_Config_Dialog * cfd, Evas * evas,
      {
 	of = e_widget_framelist_add (evas, D_ ("Device Settings"), 0);
 	rg = e_widget_radio_group_new(&(cfdata->dev_num));
-	cfdata->devs = eina_list_nth_list(cfdata->devs, 0);
+
 	EINA_LIST_FOREACH(cfdata->devs, l, tmp)
 	  {
 	     ob = e_widget_radio_add(evas, tmp, i, rg);
