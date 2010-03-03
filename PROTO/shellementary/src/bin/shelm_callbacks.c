@@ -122,9 +122,9 @@ SH_API int _read_stdin_entry(void *data, Ecore_Fd_Handler *fd_handler)
    s = elm_entry_utf8_to_markup(buf);
    elm_entry_entry_set(obj, s);
    E_FREE(s);
-   E_FREE(c);
 
    // as we already read stdin, we dont need it anymore
+   EINA_LIST_FREE(in, c) c = NULL;
    eina_list_free(in);
    ecore_main_fd_handler_del(fd_handler);
    return 0;
@@ -162,8 +162,8 @@ SH_API int _read_stdin_list(void *data, Ecore_Fd_Handler *fd_handler)
    elm_list_item_del(eina_list_data_get(eina_list_last(elm_list_items_get(obj))));
    elm_list_go(obj);
    E_FREE(s);
-   E_FREE(c);
 
+   EINA_LIST_FREE(in, c) c = NULL;
    eina_list_free(in);
    ecore_main_fd_handler_del(fd_handler);
    return 0;
