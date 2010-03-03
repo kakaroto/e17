@@ -161,7 +161,7 @@ job_load(void)
 {
    const char *home;
    char buf[4096];
-   Ecore_List *files;
+   Eina_List *files;
    
    home = getenv("HOME");
    if (!home) home = "/";
@@ -173,8 +173,7 @@ job_load(void)
      {
 	char *file;
 	
-	ecore_list_first_goto(files);
-	while ((file = ecore_list_current(files)))
+	EINA_LIST_FREE(files, file)
 	  {
 	     Job *j, *jj, *jp;
 	     char *newstr, *p;
@@ -224,9 +223,7 @@ job_load(void)
 		    }
 		  free(newstr);
 	       }
-             ecore_list_next(files);
 	  }
-        ecore_list_destroy(files);
      }
    timer_eval();
 }
