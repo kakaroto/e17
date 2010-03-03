@@ -390,7 +390,6 @@ class Editje(elementary.Window):
         if name == "Signals":
             self.desktop_block(True)
         else:
-            self.e.signal.name = None
             self.desktop_block(False)
 
         if name == "Animations":
@@ -400,10 +399,13 @@ class Editje(elementary.Window):
                 for p in self.e.parts:
                     part = self.e._edje.part_get(p)
                     self._prevstates.append((p, part.state_selected_get()))
-            self.anim_state_details._hide_all()
+            if hasattr(self, "_prevanim"):
+	        self.e.animation.name = self._prevanim
         else:
-            self.e.animation.name = None
             self.main_edje.signal_emit("mode,anim,off", "editje")
+            self._prevanim = self.e.animation.name
+            #This is a hack to force change the animation
+            self.e.animation.name = None
 
         if name == "Parts":
             if hasattr(self, "_prevstates"):
@@ -413,7 +415,6 @@ class Editje(elementary.Window):
                     if p == self.e.part.name:
                         self.e.part.state.name = s
                 del self._prevstates
-            self.part_state_details._hide_all()
 
         self._modes_selector.label_set("Mode: " + name)
 
