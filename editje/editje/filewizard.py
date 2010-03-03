@@ -207,16 +207,9 @@ class ImageSelectionWizard(FileSelectionWizard):
                       "Delete or select this image")
 
     def _fs_filter(self, file):
-        return file.endswith(".edb") or \
-                file.endswith(".eet") or \
-                file.endswith(".gif") or \
-                file.endswith(".jpg") or \
+        return file.endswith(".jpg") or \
                 file.endswith(".jpeg") or \
-                file.endswith(".pmaps") or \
-                file.endswith(".png") or \
-                file.endswith(".svg") or \
-                file.endswith(".tiff") or \
-                file.endswith(".xpm")
+                file.endswith(".png")
 
     def _get_title_text(self):
         self.title_text = "Image preview - \"%s\"" % self._selection

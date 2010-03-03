@@ -80,15 +80,17 @@ class PartsList(CList):
         CList._selected_cb(self, li, it)
         name = it.label_get()
         self._edit_grp.part.name = name
-        self._options_edje.signal_emit("up,enable", "")
-        self._options_edje.signal_emit("down,enable", "")
+        if (len(self._items) > 1):
+            self._options_edje.signal_emit("up,enable", "")
+            self._options_edje.signal_emit("down,enable", "")
         self._options_edje.signal_emit("remove,enable", "")
 
     def _unselected_cb(self, li, it):
         CList._unselected_cb(self, li, it)
         if not self._selected:
-            self._options_edje.signal_emit("up,disable", "")
-            self._options_edje.signal_emit("down,disable", "")
+            if (len(self._items) > 1):
+                self._options_edje.signal_emit("up,disable", "")
+                self._options_edje.signal_emit("down,disable", "")
             self._options_edje.signal_emit("remove,disable", "")
 
     # Options
