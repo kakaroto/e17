@@ -1,11 +1,10 @@
 #include <e.h>
-#include <Ecore_Data.h>
 #include "e_mod_main.h"
 
 struct _E_Config_Dialog_Data
 {
-   char *device;
-   Ecore_List *devs;
+   const char *device;
+   Eina_List *devs;
    int dev_num;
    
   double poll_time;
@@ -21,7 +20,7 @@ static Evas_Object *_basic_create_widgets (E_Config_Dialog * cfd, Evas * evas,
 static int _basic_apply_data (E_Config_Dialog * cfd,
 			      E_Config_Dialog_Data * cfdata);
 static void _fill_data (Config_Item * ci, E_Config_Dialog_Data * cfdata);
-static void _wlan_config_get_devices(Ecore_List *devs);
+static void _wlan_config_get_devices(Eina_List *devs);
 
 /* Config Calls */
 void
@@ -51,6 +50,7 @@ _fill_data (Config_Item * ci, E_Config_Dialog_Data * cfdata)
 {
    char *tmp;
    int i = 0;
+   Eina_List *l;
    
   cfdata->poll_time = ci->poll_time;
   cfdata->always_text = ci->always_text;
@@ -58,16 +58,15 @@ _fill_data (Config_Item * ci, E_Config_Dialog_Data * cfdata)
    
    cfdata->device = NULL;
    if (ci->device != NULL) 
-     cfdata->device = strdup(ci->device);
+     cfdata->device = eina_stringshare_add(ci->device);
    
    if (!cfdata->device) return;
-   
-   cfdata->devs = ecore_list_new();
+
    _wlan_config_get_devices(cfdata->devs);
    if (!cfdata->devs) return;
 
-   ecore_list_first_goto(cfdata->devs);
-   while ((tmp = ecore_list_next(cfdata->devs)) != NULL) 
+   cfdata->devs = eina_list_nth_list(cfdata->devs, 0);
+   EINA_LIST_FOREACH(cfdata->devs, l, tmp)
      {
 	if (!strcmp(cfdata->device, tmp)) 
 	  {
@@ -97,12 +96,11 @@ _free_data (E_Config_Dialog * cfd, E_Config_Dialog_Data * cfdata)
   if (!wlan_config)
     return;
   wlan_config->config_dialog = NULL;
-   E_FREE(cfdata->device);
+   eina_stringshare_del(cfdata->device);
    if (cfdata->devs)
-     ecore_list_destroy(cfdata->devs);
+     eina_list_free(cfdata->devs);
    
-  free (cfdata);
-  cfdata = NULL;
+  E_FREE(cfdata);
 }
 
 static Evas_Object *
@@ -111,8 +109,9 @@ _basic_create_widgets (E_Config_Dialog * cfd, Evas * evas,
 {
   Evas_Object *o, *of, *ob;
   E_Radio_Group *rg;
-   char *tmp;
-   int i = 0;
+  Eina_List *l;
+  char *tmp;
+  int i = 0;
    
   o = e_widget_list_add (evas, 0, 0);
   of = e_widget_framelist_add (evas, D_ ("General Settings"), 0);
@@ -138,8 +137,8 @@ _basic_create_widgets (E_Config_Dialog * cfd, Evas * evas,
      {
 	of = e_widget_framelist_add (evas, D_ ("Device Settings"), 0);
 	rg = e_widget_radio_group_new(&(cfdata->dev_num));
-	ecore_list_first_goto(cfdata->devs);
-	while ((tmp = ecore_list_next(cfdata->devs)) != NULL) 
+	cfdata->devs = eina_list_nth_list(cfdata->devs, 0);
+	EINA_LIST_FOREACH(cfdata->devs, l, tmp)
 	  {
 	     ob = e_widget_radio_add(evas, tmp, i, rg);
 	     e_widget_framelist_object_append (of, ob);
@@ -166,7 +165,8 @@ _basic_apply_data (E_Config_Dialog * cfd, E_Config_Dialog_Data * cfdata)
    
    if (cfdata->devs) 
      {
-	tmp = ecore_list_index_goto(cfdata->devs, cfdata->dev_num);
+    cfdata->devs = eina_list_nth_list(cfdata->devs, cfdata->dev_num);
+	tmp = eina_list_data_get(cfdata->devs);
 	if (tmp != NULL) 
 	  {
 	     if (ci->device) eina_stringshare_del(ci->device);
@@ -183,7 +183,7 @@ _basic_apply_data (E_Config_Dialog * cfd, E_Config_Dialog_Data * cfdata)
 }
 
 static void 
-_wlan_config_get_devices(Ecore_List *devs) 
+_wlan_config_get_devices(Eina_List *devs) 
 {
   FILE *stat;
   char dev[64];
@@ -209,7 +209,7 @@ _wlan_config_get_devices(Ecore_List *devs)
 		  &dummy, &dummy, &dummy, &dummy, &dummy, &dummy, &dummy,
 		  &dummy, &dummy, &dummy, &dummy, &dummy, &dummy) < 4)
 	continue;
-      ecore_list_append (devs, strdup (dev));
+      devs = eina_list_append(devs, eina_stringshare_add(dev));
     }
-  fclose (stat);   
+  fclose (stat);
 }
