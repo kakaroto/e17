@@ -970,12 +970,18 @@ EAPI int elm_main(int argc, char **argv)
 		icon = elm_icon_add(win);
 		elm_icon_standard_set(icon, "chat");
 		evas_object_show(icon);
-		bt = elm_button_add(win);
-			elm_button_label_set(bt, _("Timeline"));
-			elm_button_icon_set(bt, icon);
-			evas_object_smart_callback_add(bt, "clicked", on_reload, NULL);
+		bt = elm_hoversel_add(win);
 			evas_object_size_hint_weight_set(bt, 1, 1);
 			evas_object_size_hint_align_set(bt, -1, 0);
+			elm_hoversel_hover_begin(bt);
+			elm_hoversel_hover_parent_set(bt, win);
+			elm_hoversel_label_set(bt, _("Timeline"));
+			elm_hoversel_icon_set(bt, icon);
+			
+			elm_hoversel_item_add(bt, _("Friends"), NULL, ELM_ICON_NONE, on_reload, NULL);
+			
+			elm_hoversel_hover_end(bt);
+
 		elm_box_pack_end(toolbar, bt);
 		evas_object_show(bt);
 
@@ -992,7 +998,6 @@ EAPI int elm_main(int argc, char **argv)
 		evas_object_show(bt);
 
 		hoversel = elm_hoversel_add(win);
-		elm_object_scale_set(hoversel, 1); // FIXME: temp workaround to hoversel bug in shr-u
 			evas_object_size_hint_weight_set(hoversel, 1, 1);
 			evas_object_size_hint_align_set(hoversel, -1, 0);
 			elm_hoversel_hover_begin(hoversel);
