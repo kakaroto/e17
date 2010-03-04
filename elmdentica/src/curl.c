@@ -49,7 +49,8 @@ extern GConfClient *conf_client;
 
 void show_http_error(long response_code, char * method, char * url) {
 	Evas_Object *box=NULL, *frame1=NULL, *label=NULL, *button=NULL;
-	char buf[2100];
+	int res=0;
+	char *buf=calloc(2100, sizeof(char));
 
 	/* Error Window */
 	error_win = elm_win_inwin_add(win);
@@ -61,8 +62,13 @@ void show_http_error(long response_code, char * method, char * url) {
 	
 			/* First frame (with message) */
 			frame1 = elm_frame_add(win);
-				g_sprintf(buf, _("%s got a %ld HTTP Response..."), method, response_code);
-				elm_frame_label_set(frame1, buf);
+				if(buf) {
+					res = asprintf(&buf, _("%s got a %ld HTTP Response..."), method, response_code);
+					if(res != -1) {
+						elm_frame_label_set(frame1, buf);
+					}
+					free(buf);
+				}
 				label = elm_label_add(win);
 					elm_label_line_wrap_set(label, TRUE);
 					elm_label_label_set(label, url);
@@ -84,9 +90,10 @@ void show_http_error(long response_code, char * method, char * url) {
 	evas_object_show(error_win);
 }
 
-void show_curl_error(CURLcode res, MemoryStruct * chunk) {
+void show_curl_error(CURLcode curl_res, MemoryStruct * chunk) {
 	Evas_Object *box=NULL, *frame=NULL, *label=NULL, *button=NULL;
-	char buf[2100];
+	int res=0;
+	char *buf=calloc(2100, sizeof(char));
 
 	/* Error Window */
 	error_win = elm_win_inwin_add(win);
@@ -100,12 +107,15 @@ void show_curl_error(CURLcode res, MemoryStruct * chunk) {
 			/* Frame (with message) */
 			frame = elm_frame_add(win);
 				elm_frame_label_set(frame, chunk->memory);
-				label = elm_label_add(win);
-					elm_label_line_wrap_set(label, TRUE);
-					g_sprintf(buf, "%d: %s", res, error_buf);
-					elm_label_label_set(label, buf);
-					elm_frame_content_set(frame, label);
-				evas_object_show(label);
+				res = asprintf(&buf, "%d: %s", curl_res, error_buf);
+				if(res != -1) {
+					label = elm_label_add(win);
+						elm_label_line_wrap_set(label, TRUE);
+						elm_label_label_set(label, buf);
+						elm_frame_content_set(frame, label);
+					evas_object_show(label);
+				}
+				if(buf) free(buf);
 				elm_box_pack_end(box, frame);
 			evas_object_show(frame);
 
@@ -205,7 +215,9 @@ gint ed_curl_get(char *screen_name, char *password, http_request * request) {
 		curl_easy_setopt(ua, CURLOPT_HTTPGET,		1L				);
 		curl_easy_setopt(ua, CURLOPT_POST,		0L				);
 
+printf("BEFORE\n");
 		res = curl_easy_perform(ua);
+printf("AFTER\n");
 
 		free(userpwd);
 
