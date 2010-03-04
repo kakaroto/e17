@@ -91,75 +91,78 @@ static Eina_Bool _stdin_prepare(Ecore_Fd_Handler *fd_handler)
 
 SH_API int _read_stdin_entry(void *data, Ecore_Fd_Handler *fd_handler)
 {
-   char c;
+   char *buffer;
    char *s;
+   char c;
    int i = 0;
    Evas_Object *obj = data;
-   Eina_List *in = NULL;
 
    if (!_stdin_prepare(fd_handler)) return 0;
 
-   // get needed things
+   // allocate initial buffer
+   buffer = malloc(sizeof(char));
+
+   // get the buffer
    do {
      c = getc(stdin);
-     in = eina_list_append(in, c);
+     buffer[i] = c;
+     buffer = realloc(buffer, i + sizeof(buffer));
+     i++;
    } while (c != EOF);
 
-   // free the variable for now
-   eina_list_remove_list(in, eina_list_last(in));
+   // terminate the string.
+   buffer[i - 1] = '\0';
 
-   // initialize buffer of size we need
-   char buf[eina_list_count(in)];
-
-   // load from list.
-   EINA_LIST_FREE(in, c)
-     {
-        buf[i] = c;
-        i++;
-     }
-
-   s = elm_entry_utf8_to_markup(buf);
+   // add into entry, but before convert to html markup
+   s = elm_entry_utf8_to_markup(buffer);
    elm_entry_entry_set(obj, s);
-   E_FREE(s);
 
-   // as we already read stdin, we dont need it anymore
-   eina_list_free(in);
+   // free the the pointers, delete handler when we don't need it
+   E_FREE(buffer);
+   E_FREE(s);
    ecore_main_fd_handler_del(fd_handler);
    return 0;
 }
 
 SH_API int _read_stdin_list(void *data, Ecore_Fd_Handler *fd_handler)
 {
+   char **splitted;
+   char *buffer;
    char c;
-   char *s;
    int i = 0;
+   int len = 0;
    Evas_Object *obj = data;
-   Eina_List *in = NULL;
- 
+
+   if (!_stdin_prepare(fd_handler)) return 0;
+
+   // allocate initial buffer
+   buffer = malloc(sizeof(char));
+
+   // get the buffer
    do {
      c = getc(stdin);
-     in = eina_list_append(in, c);
+     buffer[i] = c;
+     buffer = realloc(buffer, i + sizeof(buffer));
+     i++;
    } while (c != EOF);
 
-   char buf[eina_list_count(in)];
+   // terminate the string.
+   buffer[i - 1] = '\0';
 
-   EINA_LIST_FREE(in, c)
-     {
-       buf[i] = c;
-       i++;
-     }
+   // split and append
+   splitted = eina_str_split_full(buffer, "\n", 0, &len);
 
-   s = strtok(buf, "\n");
-   while (s != NULL)
-     {
-       elm_list_item_append(obj, s, NULL, NULL, NULL, NULL);
-       s = strtok(NULL, "\n");
-     }
+   for (i = 0; i < len; i++)
+     elm_list_item_append(obj, splitted[i], NULL, NULL, NULL, NULL);
+
    elm_list_item_del(eina_list_data_get(eina_list_last(elm_list_items_get(obj))));
-   elm_list_go(obj);
-   E_FREE(s);
 
-   eina_list_free(in);
+   elm_list_go(obj);
+
+   // free the the pointers, delete handler when we don't need it
+   E_FREE(splitted);
+   E_FREE(buffer);
    ecore_main_fd_handler_del(fd_handler);
    return 0;
+
 }

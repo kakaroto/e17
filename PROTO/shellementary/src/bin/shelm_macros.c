@@ -169,7 +169,7 @@ create_clock(Evas_Object *parent, Eina_Bool show_seconds, Eina_Bool show_am_pm, 
   if (time)
     {
       char **timelist;
-      timelist = eina_str_split(time, ',', 3);
+      timelist = eina_str_split(time, ",", 3);
       elm_clock_time_set(clock, atoi(timelist[0]), atoi(timelist[1]), atoi(timelist[2]));
       timelist = NULL;
       free(timelist);
