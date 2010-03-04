@@ -229,8 +229,15 @@ create_iv_file(IV *iv, const char *path)
 }
 
 static void
-remove_iv_file(IV *iv, IV_File *file)
+remove_iv_file(IV *iv, IV_File *file, Eina_Bool set_current)
 {
+   if (iv->account->current == file && set_current)
+     {
+	if (IV_FILE_NEXT(file))
+	  iv->account->current = IV_FILE_NEXT(file);
+	else
+	  iv->account->current = IV_FILE(iv->files);
+     }
    iv->files = eina_inlist_remove(iv->files, EINA_INLIST_GET(file));
 #ifdef HAVE_ETHUMB
    iv->preview_files = eina_list_remove(iv->preview_files, file);
@@ -676,15 +683,12 @@ on_thumb_sel(void *data, Evas_Object *obj, void *event_info)
    IV *iv = file->iv;
 
    elm_genlist_item_show(file->gl_item);
-   if (file != iv->account->current)
-     {
-	iv->account->current = file;
-	iv->flags.current = EINA_TRUE;
-	if (iv->config->auto_hide_previews)
-	  iv->flags.hide_previews = EINA_TRUE;
-	if (!iv->idler)
-	  iv->idler = ecore_idler_add(on_idler, iv);
-     }
+   iv->account->current = file;
+   iv->flags.current = EINA_TRUE;
+   if (iv->config->auto_hide_previews)
+     iv->flags.hide_previews = EINA_TRUE;
+   if (!iv->idler)
+     iv->idler = ecore_idler_add(on_idler, iv);
 }
 
 static void
@@ -856,21 +860,11 @@ on_file_monitor_event(void *data, Ecore_File_Monitor *em, Ecore_File_Event event
 	   {
 	      if (!strcmp(path, file->file_path))
 		{
-		   if (file->file_path == cur_path)
-		     {
-			if (iv->account->current == file)
-			  {
-			     if (IV_FILE_NEXT(file))
-			       iv->account->current = IV_FILE_NEXT(file);
-			     else
-			       iv->account->current = IV_FILE(iv->files);
-			  }
-		     }
 #ifdef HAVE_ETHUMB
 		   if (file->thumb_path)
 		     thumb_remove(file);
 #endif
-		   remove_iv_file(iv, file);
+		   remove_iv_file(iv, file, EINA_TRUE);
 		   iv->flags.current = EINA_TRUE;
 		   break;
 		}
@@ -887,7 +881,7 @@ on_file_monitor_event(void *data, Ecore_File_Monitor *em, Ecore_File_Event event
 		   if (file->thumb_path)
 		     thumb_remove(file);
 #endif
-		   remove_iv_file(iv, file);
+		   remove_iv_file(iv, file, EINA_TRUE);
 		   iv->flags.current = EINA_TRUE;
 		}
 	   }
@@ -1050,7 +1044,7 @@ read_image(IV *iv, IV_Image_Dest dest)
 	     else if (dest == IMAGE_CURRENT)
 	       iv->account->current = f;
 
-	     remove_iv_file(iv, cur);
+	     remove_iv_file(iv, cur, EINA_FALSE);
 	     evas_object_del(img);
 
 	     if (same_file) break;
@@ -1072,6 +1066,9 @@ trash_image(IV *iv)
 
    if (uri)
      {
+	IV_File *cur = iv->account->current;
+	remove_iv_file(iv, cur, EINA_TRUE);
+	iv->flags.current = EINA_TRUE;
 	efreet_trash_delete_uri(uri, 0);
 	efreet_uri_free(uri);
      }
@@ -1752,7 +1749,7 @@ iv_free(IV *iv)
    const char *path;
 
    while(iv->files)
-     remove_iv_file(iv, IV_FILE(iv->files));
+     remove_iv_file(iv, IV_FILE(iv->files), EINA_FALSE);
    EINA_LIST_FREE(iv->dirs, path)
       eina_stringshare_del(path);
    EINA_LIST_FREE(iv->file_monitors, monitor)
@@ -1882,7 +1879,7 @@ elm_main(int argc, char **argv)
 
 	     iv->dirs = eina_list_append(iv->dirs, eina_stringshare_add(dir));
 	     iv->single_file = eina_stringshare_ref(path);
-	     remove_iv_file(iv, file);
+	     remove_iv_file(iv, file, EINA_FALSE);
 	     free(dir);
 	  }
 	else iv->account->current = IV_FILE(iv->files);
