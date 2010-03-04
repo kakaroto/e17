@@ -145,8 +145,10 @@ class Editje(elementary.Window):
         return self.e.group_del(grp_name)
 
     def _group_wizard_selection_set_cb(self, selection):
-        if selection:
-            self.group = selection
+        if not selection:
+            return False
+        self.group = selection
+        return True
 
     def _group_wizard_selection_get_cb(self):
         return self.group
