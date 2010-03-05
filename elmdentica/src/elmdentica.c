@@ -710,7 +710,7 @@ void fill_message_list() {
 
 
 /* ********** CALLBACKS *********** */
-static void on_reload(void *data, Evas_Object *obj, void *event_info)
+static void on_friends_reload(void *data, Evas_Object *obj, void *event_info)
 {
 	get_messages();
 	make_status_list();
@@ -978,7 +978,7 @@ EAPI int elm_main(int argc, char **argv)
 			elm_hoversel_label_set(bt, _("Timeline"));
 			elm_hoversel_icon_set(bt, icon);
 			
-			elm_hoversel_item_add(bt, _("Friends"), NULL, ELM_ICON_NONE, on_reload, NULL);
+			elm_hoversel_item_add(bt, _("Friends"), NULL, ELM_ICON_NONE, on_friends_reload, NULL);
 			
 			elm_hoversel_hover_end(bt);
 
