@@ -70,8 +70,6 @@ class Editje(elementary.Window):
         self._desktop_init()
         self._modes_init()
 
-        self.select_group()
-
     def _destroy_cb(self, obj):
         self.e.close()
 
@@ -123,8 +121,6 @@ class Editje(elementary.Window):
             self.main_edje.signal_emit("desktop,blocker,disable", "")
 
     def select_group(self):
-        # TODO: when setting file/group via command line is done, don't
-        # instantiate the wizard
         grp_wiz = GroupSelectionWizard(
             self, switch_only=True,
             selected_set_cb=self._group_wizard_selection_set_cb,
@@ -134,6 +130,11 @@ class Editje(elementary.Window):
             del_grp_cb=self._group_wizard_del_group_cb)
         grp_wiz.file_set(self.e.workfile)
         grp_wiz.open()
+
+    def show(self):
+        if not self.e.group:
+            self.select_group()
+        elementary.Window.show(self)
 
     def _group_wizard_check_group_cb(self, grp_name):
         return self.e.group_exists(grp_name)

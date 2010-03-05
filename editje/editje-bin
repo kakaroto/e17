@@ -20,49 +20,59 @@
 
 import os
 import sys
+import re
 
 import elementary
+import edje
 
 from editje.editje import Editje
 from editje.openfile import OpenFile
 import editje.swapfile as swapfile
 from editje.popup_win import PopupWindow
 
-if __name__ == "__main__":
-    def cancel(bt, pop):
-        pop.hide()
-        pop.delete()
-    def open_ignore_swap(bt, data):
-        pop, sf = data
-        sf.open(swapfile.REPLACE)
-        pop.hide()
-        editje = Editje(sf)
-        editje.show()
-        pop.delete()
-    def open_recovery_swap(bt, data):
-        pop, sf = data
-        sf.open(swapfile.RESTORE)
-        pop.hide()
-        editje = Editje(sf)
-        editje.show()
-        pop.delete()
+def cancel(bt, pop):
+    pop.hide()
+    pop.delete()
+def open_ignore_swap(bt, data):
+    pop, sf = data
+    sf.open(swapfile.REPLACE)
+    pop.hide()
+    editje = Editje(sf)
+    editje.show()
+    pop.delete()
+def open_recovery_swap(bt, data):
+    pop, sf = data
+    sf.open(swapfile.RESTORE)
+    pop.hide()
+    editje = Editje(sf)
+    editje.show()
+    pop.delete()
 
+if __name__ == "__main__":
     elementary.init()
     elementary.finger_size_set(15)
     elementary.policy_set(elementary.ELM_POLICY_QUIT,
                           elementary.ELM_POLICY_QUIT_LAST_WINDOW_CLOSED)
 
-    files = sys.argv[1:]
-    if files:
-        for file in files:
+    spliter = re.compile(r"(.*\.ed[cj])(?:\:(.*))?")
+
+    args = sys.argv[1:]
+    if args:
+        for arg in args:
             try:
+                r = spliter.match(arg)
+                if r:
+                    file, group = r.groups()
+                else:
+                    file = arg
+                    group = None
                 sf = swapfile.SwapFile()
                 sf.file = os.path.realpath(file)
                 sf.open()
             except swapfile.CacheAlreadyExists, e:
                 pop = PopupWindow()
                 pop.title = "Editje - Swap file already exists"
-                
+
                 lb = elementary.Label(pop)
                 lb.label_set("Swap file to " + file + " already exists<br>" +
                              "Another program may be editing the same file.<br>" +
@@ -104,6 +114,8 @@ if __name__ == "__main__":
                 continue
 
             editje = Editje(sf)
+            if group and group in edje.file_collection_list(file):
+                editje.group = group
             editje.show()
     else:
         OpenFile().show()
