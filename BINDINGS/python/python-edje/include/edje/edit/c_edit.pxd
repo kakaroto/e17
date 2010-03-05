@@ -95,7 +95,7 @@ cdef extern from "Edje_Edit.h":
     # EXTERNALS API
     evas.c_evas.Eina_List *edje_edit_externals_list_get(evas.c_evas.Evas_Object *obj)
     evas.c_evas.Eina_Bool edje_edit_external_add(evas.c_evas.Evas_Object *obj, char *name)
-    void edje_edit_external_del(evas.c_evas.Evas_Object *obj, char *name)
+    evas.c_evas.Eina_Bool edje_edit_external_del(evas.c_evas.Evas_Object *obj, char *name)
 
     # PARTS API
     evas.c_evas.Eina_List * edje_edit_parts_list_get(evas.c_evas.Evas_Object *obj)
