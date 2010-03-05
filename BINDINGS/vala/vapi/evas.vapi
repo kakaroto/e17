@@ -32,7 +32,7 @@ namespace Evas
     public int render_method_lookup( string name );
 
     //=======================================================================
-    [CCode (cprefix = "EVAS_FONT_HINTING_", cname = "Evas.h")]
+    [CCode (cprefix = "EVAS_FONT_HINTING_", cname = "Evas_Font_Hinting_Flags")]
     public enum FontHintingFlags
     {
         NONE,       /**< No font hinting */
@@ -41,7 +41,7 @@ namespace Evas
     }
 
     //=======================================================================
-    [CCode (cprefix = "EVAS_ASPECT_CONTROL_", cname = "Evas.h")]
+    [CCode (cprefix = "EVAS_ASPECT_CONTROL_", cname = "Evas_Aspect_Control")]
     public enum AspectControl
     {
         NONE,
@@ -52,7 +52,7 @@ namespace Evas
     }
 
     //=======================================================================
-    [CCode (cprefix = "EVAS_LOAD_ERROR_", cname = "Evas.h")]
+    [CCode (cprefix = "EVAS_LOAD_ERROR_", cname = "int")]
     public enum LoadError
     {
         NONE,
@@ -65,7 +65,7 @@ namespace Evas
     }
 
     //=======================================================================
-    [CCode (cprefix = "EVAS_TEXTURE_", cname = "Evas.h")]
+    [CCode (cprefix = "EVAS_TEXTURE_", cname = "int")]
     public enum TextureMode
     {
         REFLECT,
@@ -86,7 +86,7 @@ namespace Evas
     }
 
     //=======================================================================
-    [CCode (cprefix = "EVAS_BORDER_FILL_", cname = "Evas.h")]
+    [CCode (cprefix = "EVAS_BORDER_FILL_", cname = "Evas_Border_Fill_Mode")]
     public enum BorderFillMode
     {
         NONE,
@@ -95,12 +95,38 @@ namespace Evas
     }
 
     //=======================================================================
-    [CCode (cprefix = "EVAS_IMAGE_SCALE_HINT_", cname = "Evas.h")]
+    [CCode (cprefix = "EVAS_IMAGE_SCALE_HINT_", cname = "Evas_Image_Scale_Hint")]
     public enum ImageScaleHint
     {
         NONE,
         DYNAMIC,
         STATIC
+    }
+
+    //=======================================================================
+    [CCode (cprefix = "EVAS_CALLBACK_", cname = "Evas_Callback_Type")]
+    public enum CallbackType
+    {
+        MOUSE_IN,
+        MOUSE_OUT,
+        MOUSE_DOWN,
+        MOUSE_UP,
+        MOUSE_MOVE,
+        MOUSE_WHEEL,
+        FREE,
+        KEY_DOWN,
+        KEY_UP,
+        FOCUS_IN,
+        FOCUS_OUT,
+        SHOW,
+        HIDE,
+        MOVE,
+        RESIZE,
+        RESTACK,
+        DEL,
+        HOLD,
+        CHANGED_SIZE_HINTS,
+        IMAGE_PRELOADED
     }
 
     //=======================================================================
@@ -274,7 +300,12 @@ namespace Evas
         public void focus_set( bool focus );
         public bool focus_get();
 
+        public void repeat_events_set( bool repeat );
+        public bool repeat_events_get();
+
         public void smart_callback_add( string event, Callback func );
+        public void event_callback_add( CallbackType type, Callback func );
+
     }
 
     //=======================================================================
@@ -341,7 +372,7 @@ namespace Evas
     }
 
     //=======================================================================
-    [CCode (cprefix = "EVAS_TEXT_STYLE_", cname = "Evas.h")]
+    [CCode (cprefix = "EVAS_TEXT_STYLE_", cname = "Evas_Text_Style_Type")]
     public enum TextStyle
     {
         PLAIN,

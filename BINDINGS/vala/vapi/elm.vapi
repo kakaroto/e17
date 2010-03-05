@@ -165,8 +165,8 @@ public class Win : Elm.Object
     [CCode (cname = "elm_win_add")]
     public Win( Elm.Object? parent = null, string name = "Untitled", WinType t = WinType.BASIC );
 
-    public void resize_object_add( Elm.Object subobj );
-    public void resize_object_del( Elm.Object subobj );
+    public void resize_object_add( Evas.Object subobj );
+    public void resize_object_del( Evas.Object subobj );
     public void title_set( string title );
     public void autodel_set( bool autodel );
     public void activate();
@@ -421,7 +421,7 @@ public class Layout : Elm.Object
     public void file_set( string file, string group );
     public void theme_set( string clas, string group, string style );
     public void content_set( string swallow, Elm.Object content );
-    public weak Elm.Object edje_get();
+    public unowned Edje.Object edje_get();
     public void sizing_eval();
 }
 
