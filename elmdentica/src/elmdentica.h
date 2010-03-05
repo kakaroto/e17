@@ -66,10 +66,14 @@ typedef struct _StatusesList {
 #define ACCOUNT_TYPE_STATUSNET 1
 #define ACCOUNT_TYPE_TWITTER 2
 
+#define TIMELINE_FRIENDS 0
+#define TIMELINE_USER 1
+#define TIMELINE_PUBLIC 2
+
 void error_win_del(void *data, Evas_Object *zbr, void *event_info);
 
 void set_urls(void);
 
-void fill_message_list(void);
+void fill_message_list(int timeline);
 
 #endif

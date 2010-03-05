@@ -213,11 +213,9 @@ gint ed_curl_get(char *screen_name, char *password, http_request * request) {
 		curl_easy_setopt(ua, CURLOPT_HTTPGET,		1L				);
 		curl_easy_setopt(ua, CURLOPT_POST,		0L				);
 
-printf("BEFORE\n");
 		res = curl_easy_perform(ua);
-printf("AFTER\n");
 
-		free(userpwd);
+		if(userpwd) free(userpwd);
 
 		curl_easy_getinfo(ua, CURLINFO_CONTENT_LENGTH_DOWNLOAD, &content_length);
 		if((res == 18 && content_length != -1) || res != 0) {

@@ -84,14 +84,14 @@ void message_insert(void *list_item, void *user_data) {
 	}
 }
 
-void messages_insert(int account_id, GList *list) {
+void messages_insert(int account_id, GList *list, int timeline) {
 	int sqlite_res=0;
 	struct sqlite3_stmt *insert_stmt=NULL;
 	const char *missed=NULL;
 	char *db_err=NULL;
 	char *query=NULL;
 
-	sqlite_res = asprintf(&query, "SELECT max(status_id) FROM messages where account_id = %d;", account_id);
+	sqlite_res = asprintf(&query, "SELECT max(status_id) FROM messages where account_id = %d and timeline = %d;", account_id, timeline);
 	if(sqlite_res != -1) {
 		sqlite_res = sqlite3_exec(ed_DB, query, set_max_status_id, NULL, &db_err);
 		if(sqlite_res != 0) {
@@ -101,7 +101,7 @@ void messages_insert(int account_id, GList *list) {
 		free(query);
 	}
 
-	sqlite_res = asprintf(&query, "INSERT INTO messages (status_id, account_id, screen_name, name, message, date) VALUES (?, %d, ?, ?, ?, ?);", account_id);;
+	sqlite_res = asprintf(&query, "INSERT INTO messages (status_id, account_id, screen_name, name, message, date, timeline) VALUES (?, %d, ?, ?, ?, ?, %d);", account_id, timeline);;
 	if(sqlite_res != -1) {
 		sqlite_res = sqlite3_prepare_v2(ed_DB, query, 4096, &insert_stmt, &missed);
 		if(sqlite_res == 0) {
@@ -173,22 +173,29 @@ void ed_twitter_max_status_id(int account_id, long long int*since_id) {
 	}
 }
 
-void ed_twitter_timeline_friends_get(int account_id, char *screen_name, char *password, char *proto, char *domain, int port, char *base_url) {
+void ed_twitter_timeline_get(int account_id, char *screen_name, char *password, char *proto, char *domain, int port, char *base_url, int timeline) {
 	int xml_res=0;
 	long long int since_id=0;
+	char *timeline_str=NULL;
 	http_request * request=calloc(1, sizeof(http_request));
 	StatusesList *statuses=(StatusesList*)g_malloc(sizeof(StatusesList));
 	time_t now;
 
+	switch(timeline) {
+		case TIMELINE_USER:		{ timeline_str="user";    break; }
+		case TIMELINE_PUBLIC:	{ timeline_str="public";  break; }
+		case TIMELINE_FRIENDS:
+		default:				{ timeline_str="friends"; break; }
+	}
 
 	memset(statuses, 0, sizeof(StatusesList));
 	statuses->state = FT_NULL;
 
 	ed_twitter_max_status_id(account_id, &since_id);
 	if(since_id > 0)
-        	xml_res = asprintf(&request->url, "%s://%s:%d%s/statuses/friends_timeline.xml?since_id=%lld", proto, domain, port, base_url, since_id);
+        	xml_res = asprintf(&request->url, "%s://%s:%d%s/statuses/%s_timeline.xml?since_id=%lld", proto, domain, port, base_url, timeline_str, since_id);
 	else
-        	xml_res = asprintf(&request->url, "%s://%s:%d%s/statuses/friends_timeline.xml", proto, domain, port, base_url);
+        	xml_res = asprintf(&request->url, "%s://%s:%d%s/statuses/%s_timeline.xml", proto, domain, port, base_url, timeline_str);
 
 	if(xml_res != -1) {
 		if (debug) printf("gnome-open %s\n", request->url);
@@ -206,7 +213,7 @@ void ed_twitter_timeline_friends_get(int account_id, char *screen_name, char *pa
 		}
 		if(statuses->state != HASH) {
 			now = time(NULL);
-			messages_insert(account_id, statuses->list);
+			messages_insert(account_id, statuses->list, timeline);
 		} else {
 			//show_error(statuses);
 		}

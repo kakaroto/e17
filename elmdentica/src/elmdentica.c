@@ -126,12 +126,15 @@ void elmdentica_init(void) {
 		exit(sqlite_res);
 	}
 
-	query = "CREATE TABLE IF NOT EXISTS messages (id INTEGER PRIMARY KEY, status_id INTEGER, account_id INTEGER CONSTRAINT account_id_ref REFERENCES accounts (id), screen_name TEXT, name TEXT, message TEXT, date INTEGER);";
+	query = "CREATE TABLE IF NOT EXISTS messages (id INTEGER PRIMARY KEY, status_id INTEGER, account_id INTEGER CONSTRAINT account_id_ref REFERENCES accounts (id), screen_name TEXT, name TEXT, message TEXT, date INTEGER, timeline INTEGER);";
 	sqlite_res = sqlite3_exec(ed_DB, query, NULL, NULL, &db_err);
 	if(sqlite_res != 0) {
 		printf("Can't run %s: %d => %s\n", query, sqlite_res, db_err);
 		exit(sqlite_res);
 	}
+
+	query = "ALTER TABLE messages ADD COLUMN timeline INTEGER;";
+	sqlite_res = sqlite3_exec(ed_DB, query, NULL, NULL, &db_err);
 
 	query = "CREATE TABLE IF NOT EXISTS posts (account_id INTEGER CONSTRAINT account_id_ref REFERENCES accounts (id), dm_to TEXT, message TEXT);";
 	sqlite_res = sqlite3_exec(ed_DB, query, NULL, NULL, &db_err);
@@ -641,12 +644,13 @@ void del_status(gpointer data, gpointer user_data) {
 int ed_statusnet_post(int id, char *screen_name, char *password, char *proto, char *domain, int port, char *base_url, char *msg) {
 return(0);
 }
-void ed_statusnet_timeline_friends_get(int id, char *screen_name, char *password, char *proto, char *domain, int port, char *base_url) {
+void ed_statusnet_timeline_get(int id, char *screen_name, char *password, char *proto, char *domain, int port, char *base_url, int timeline) {
 }
 
-static int get_messages_for_account(void *notUsed, int argc, char **argv, char **azColName) {
+static int get_messages_for_account(void *pTimeline, int argc, char **argv, char **azColName) {
 	char *screen_name=NULL, *password=NULL, *proto=NULL, *domain=NULL, *base_url=NULL;
 	int port=0, id=0;
+	int timeline = *(int*)pTimeline;
 	/* In this query handler, these are the current fields:
 		argv[0] == name TEXT
 		argv[1] == password TEXT
@@ -667,26 +671,26 @@ static int get_messages_for_account(void *notUsed, int argc, char **argv, char *
 	id = atoi(argv[7]);
 
 	switch(atoi(argv[2])) {
-		case ACCOUNT_TYPE_TWITTER: { ed_twitter_timeline_friends_get(id, screen_name, password, proto, domain, port, base_url) ; break; }
+		case ACCOUNT_TYPE_TWITTER: { ed_twitter_timeline_get(id, screen_name, password, proto, domain, port, base_url, timeline) ; break; }
 		case ACCOUNT_TYPE_STATUSNET:
-		default: { ed_statusnet_timeline_friends_get(id, screen_name, password, proto, domain, port, base_url); break; }
+		default: { ed_statusnet_timeline_get(id, screen_name, password, proto, domain, port, base_url, timeline); break; }
 	}
 	return(0);
 }
 
-static void get_messages() {
+static void get_messages(int timeline) {
 	int sqlite_res=0;
 	char *db_err=NULL, *query=NULL;
 
 	query = "SELECT name,password,type,proto,domain,port,base_url,id FROM accounts WHERE enabled = 1 and receive = 1;";
-	sqlite3_exec(ed_DB, query, get_messages_for_account, NULL, &db_err);
+	sqlite3_exec(ed_DB, query, get_messages_for_account, &timeline, &db_err);
 	if(sqlite_res != 0) {
 		printf("Can't run %s: %d => %s\n", query, sqlite_res, db_err);
 	}
 	sqlite3_free(db_err);
 }
 
-void fill_message_list() {
+void fill_message_list(int timeline) {
 	int sqlite_res=0;
 	char *db_err=NULL, *query=NULL;
 
@@ -694,7 +698,7 @@ void fill_message_list() {
 	} else {
 		status2user = eina_hash_pointer_new(free);
 	}
-	sqlite_res = asprintf(&query, "SELECT * FROM messages ORDER BY date DESC LIMIT %d;", MAX_MESSAGES);
+	sqlite_res = asprintf(&query, "SELECT * FROM messages where timeline = %d ORDER BY date DESC LIMIT %d;", timeline, MAX_MESSAGES);
 	if(sqlite_res != -1) {
 		sqlite_res = 0;
 		sqlite3_exec(ed_DB, query, add_status, NULL, &db_err);
@@ -709,13 +713,25 @@ void fill_message_list() {
 
 
 /* ********** CALLBACKS *********** */
-static void on_friends_reload(void *data, Evas_Object *obj, void *event_info)
+static void on_timeline_friends_reload(void *data, Evas_Object *obj, void *event_info)
 {
-	get_messages();
+	get_messages(TIMELINE_FRIENDS);
 	make_status_list();
-	fill_message_list();
+	fill_message_list(TIMELINE_FRIENDS);
+}
 
-	// alarm(5); in the future, setup an alarm for auto reload? a seperate thread? for 1st release it'll depend on explicit user action...
+static void on_timeline_user_reload(void *data, Evas_Object *obj, void *event_info)
+{
+	get_messages(TIMELINE_USER);
+	make_status_list();
+	fill_message_list(TIMELINE_USER);
+}
+
+static void on_timeline_public_reload(void *data, Evas_Object *obj, void *event_info)
+{
+	get_messages(TIMELINE_PUBLIC);
+	make_status_list();
+	fill_message_list(TIMELINE_PUBLIC);
 }
 
 static void on_fs(void *data, Evas_Object *obj, void *event_info) {
@@ -981,7 +997,9 @@ EAPI int elm_main(int argc, char **argv)
 			elm_hoversel_label_set(bt, _("Timeline"));
 			elm_hoversel_icon_set(bt, icon);
 			
-			elm_hoversel_item_add(bt, _("Friends"), NULL, ELM_ICON_NONE, on_friends_reload, NULL);
+			elm_hoversel_item_add(bt, _("Friends"), NULL, ELM_ICON_NONE, on_timeline_friends_reload, NULL);
+			elm_hoversel_item_add(bt, _("Mine"), NULL, ELM_ICON_NONE, on_timeline_user_reload, NULL);
+			elm_hoversel_item_add(bt, _("Public"), NULL, ELM_ICON_NONE, on_timeline_public_reload, NULL);
 			
 			elm_hoversel_hover_end(bt);
 
@@ -1055,7 +1073,7 @@ EAPI int elm_main(int argc, char **argv)
 
 		// Statuses list
 		make_status_list();
-		fill_message_list();
+		fill_message_list(TIMELINE_FRIENDS);
 
 	evas_object_show(scroller);
 
