@@ -5,7 +5,6 @@ AM_CPPFLAGS = -DPKGDATADIR=\"$(pkgdatadir)\" \
 		@PTHREAD_CFLAGS@	\
 		@LIBXML_CFLAGS@		\
 		@GLIB_CFLAGS@		\
-		@GCONF_CFLAGS@		\
 		@SQLITE_CFLAGS@		\
 		`curl-config --cflags`	\
 		@ELEMENTARY_CFLAGS@	\
@@ -16,7 +15,6 @@ AM_CPPFLAGS = -DPKGDATADIR=\"$(pkgdatadir)\" \
 AM_LDFLAGS =	@PTHREAD_LIBS@		\
 		@LIBXML_LIBS@		\
 		@GLIB_LIBS@		\
-		@GCONF_LIBS@		\
 		@SQLITE_LIBS@		\
 		`curl-config --libs`	\
 		@ELEMENTARY_LIBS@

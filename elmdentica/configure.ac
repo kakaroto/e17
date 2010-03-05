@@ -17,10 +17,6 @@ PKG_CHECK_MODULES(GLIB, glib-2.0, [],
 		[AC_MSG_FAILURE([glib not found])]
 		)
 
-PKG_CHECK_MODULES(GCONF, gconf-2.0, [],
-		[AC_MSG_FAILURE([gconf not found])]
-		)
-
 PKG_CHECK_MODULES(SQLITE, sqlite3, [],
 		[AC_MSG_FAILURE([sqlite3 not found])]
 		)

@@ -25,10 +25,10 @@
 
 #include <glib.h>
 #include <glib/gprintf.h>
-#include <gconf/gconf-client.h>
 
 #include <Elementary.h>
 #include <Ecore_X.h>
+#include <Eet.h>
 
 #include <sqlite3.h>
 
@@ -53,7 +53,8 @@ Elm_List_Item * current_account_li=NULL, *current_domain_li=NULL;
 extern struct sqlite3 *ed_DB;
 extern int MAX_MESSAGES;
 
-extern GConfClient *conf_client;
+extern Eet_File *conf;
+
 int current_account_type = ACCOUNT_TYPE_NONE;
 int current_account = 0;
 extern char * url_post;
@@ -785,7 +786,11 @@ void cache_messages_max_set(Evas_Object *label) {
 	if(res != -1) {
 		elm_label_label_set(label, count);
 		free(count);
-		gconf_client_set_int(conf_client, "/apps/elmdentica/max_messages", MAX_MESSAGES, NULL);
+
+		res = asprintf(&count, "%d", MAX_MESSAGES);
+		if(res != -1)
+			eet_write(conf, "/options/max_messages", count, strlen(count), 0);
+		if(count) free(count);
 	}
 }
 

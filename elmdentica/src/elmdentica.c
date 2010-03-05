@@ -44,6 +44,7 @@
 
 #include <Elementary.h>
 #include <Ecore_X.h>
+#include <Eet.h>
 
 #include <sqlite3.h>
 
@@ -52,8 +53,6 @@
 #include <libxml/tree.h>
 #include <glib.h>
 #include <glib/gprintf.h>
-
-#include <gconf/gconf-client.h>
 
 #include <time.h>
 
@@ -91,8 +90,7 @@ double icon_zoom_init=0;
 
 struct sqlite3 *ed_DB=NULL;
 
-GConfClient *conf_client = NULL;
-GConfEngine *conf_engine = NULL;
+Eet_File *conf = NULL;
 
 static int count_accounts(void *notUsed, int argc, char **argv, char **azColName) {
 	int count = atoi(argv[0]);
@@ -151,14 +149,15 @@ void elmdentica_init(void) {
 }
 
 void toggle_fullscreen(Eina_Bool new_fullscreen) {
-	char * fs_icon;
-
-	if(new_fullscreen)
-		fs_icon="arrow_down";
-	else
-		fs_icon="arrow_up";
+	char * fs_value=NULL;
+	int res=0;
 
 	elm_win_fullscreen_set(win, new_fullscreen);
+
+	res = asprintf(&fs_value, "%d", new_fullscreen);
+	if(res != -1)
+		eet_write(conf, "/options/fullscreen", fs_value, strlen(fs_value), 0);
+	if(fs_value) free(fs_value);
 
 }
 
@@ -873,12 +872,10 @@ EAPI int elm_main(int argc, char **argv)
 {
 
 	static char options[] = "dhm:";
-	int option, res=0;
-	GConfValue *max_msgs;
+	int option, res=0, size=0;
+	long int mm=0;
 	Evas_Object *bg=NULL, *box=NULL, *toolbar=NULL, *bt=NULL, *icon=NULL, *label=NULL, *box2=NULL, *hoversel=NULL;
-	GError * err=NULL;
-	char * home=NULL;
-	char * path=NULL;
+	char *data=NULL, *home=NULL, *path=NULL;
 
 	LIBXML_TEST_VERSION
 
@@ -886,16 +883,21 @@ EAPI int elm_main(int argc, char **argv)
 	bindtextdomain(PACKAGE, LOCALEDIR);
 	textdomain(PACKAGE);
 
-	conf_engine = gconf_engine_get_default();
-	g_type_init();
-	gconf_init(argc, argv, NULL);
-	conf_client = gconf_client_get_default();
+	eet_init();
+
 
 	home=getenv("HOME");
 	res = asprintf(&path, "%s/.elmdentica", home);
 	if(res != -1) {
 		mkdir(path, S_IRWXU);
 		free(path);
+		path=NULL;
+
+		res = asprintf(&path, "%s/.elmdentica/conf.eet", home);
+		if(res != -1)
+			conf = eet_open(path, EET_FILE_MODE_READ_WRITE);
+		if(path) free(path);
+
 		res = asprintf(&path, "%s/.elmdentica/cache", home);
 		if(res != -1) {
 			mkdir(path, S_IRWXU);
@@ -908,15 +910,14 @@ EAPI int elm_main(int argc, char **argv)
 		}
 	}
 
-	max_msgs = gconf_client_get(conf_client, "/apps/elmdentica/max_messages", &err);
-	if(err) {
-		g_error_free(err);
-		err=NULL;
-		gconf_client_set_int(conf_client, "/apps/elmdentica/max_messages", MAX_MESSAGES, NULL);
-	} else if(max_msgs) {
-			MAX_MESSAGES = gconf_value_get_int(max_msgs);;
-			gconf_value_free(max_msgs);
-		}
+	data = eet_read(conf, "/options/max_messages", &size);
+	if(data) {
+		mm = strtol(data, NULL, 10);
+		if(mm > INT_MIN && mm < INT_MAX)
+			MAX_MESSAGES = (int)mm;
+		free(data);
+		data = NULL;
+	}
 
 	while((option = getopt(argc,argv,options)) != -1) {
 		switch(option) {
@@ -930,7 +931,9 @@ EAPI int elm_main(int argc, char **argv)
 				break;
 			}
 			case 'm': {
-				MAX_MESSAGES = atoi(optarg);
+				mm = strtol(optarg, NULL, 10);
+				if(mm > INT_MIN && mm < INT_MAX)
+					MAX_MESSAGES = (int)mm;
 				break;
 			}
 			default: {
@@ -1064,12 +1067,15 @@ EAPI int elm_main(int argc, char **argv)
 	evas_object_show(win);
 
 
-	fullscreen = gconf_client_get_bool(conf_client, "/apps/elmdentica/fullscreen", &err);
-	if(err) {
-		g_error_free(err);
-		err=NULL;
-		gconf_client_set_bool(conf_client, "/apps/elmdentica/fullscreen", 0, NULL);
-		fullscreen=0;
+	data = eet_read(conf, "/options/fullscreen", &size);
+	if(data) {
+		mm = strtol(data, NULL, 10);
+		if(mm)
+			fullscreen=1;
+		else
+			fullscreen=0;
+		free(data);
+		data=NULL;
 	}
 	toggle_fullscreen(fullscreen);
 
@@ -1077,7 +1083,8 @@ EAPI int elm_main(int argc, char **argv)
 	elm_run();
 	elm_shutdown();
 
-	gconf_engine_unref(conf_engine);
+	eet_close(conf);
+	eet_shutdown();
 	xmlCleanupParser();
 
 	return 0;

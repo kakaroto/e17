@@ -23,7 +23,6 @@
 
 #include <glib.h>
 #include <glib/gprintf.h>
-#include <gconf/gconf-client.h>
 
 #include <Elementary.h>
 #include <Ecore_X.h>
@@ -45,7 +44,6 @@ char * userpwd=NULL;
 extern char * url_post;
 extern char * url_friends;
 extern int debug;
-extern GConfClient *conf_client;
 
 void show_http_error(long response_code, char * method, char * url) {
 	Evas_Object *box=NULL, *frame1=NULL, *label=NULL, *button=NULL;
