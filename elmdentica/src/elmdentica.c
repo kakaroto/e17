@@ -295,7 +295,7 @@ static void on_message_anchor_clicked(void *data, Evas_Object *obj, void *event_
 
 	url = strndup((char*)info->name, 1024);
 	url_win = elm_win_inwin_add(win);
-		elm_win_inwin_style_set(url_win, "minimal_vertical");
+		elm_object_style_set(url_win, "minimal_vertical");
 
 		box = elm_box_add(win);
 			evas_object_size_hint_weight_set(box, 1, 1);
