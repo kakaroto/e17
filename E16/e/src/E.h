@@ -497,6 +497,7 @@ void                SignalsRestore(void);
 __NORETURN__ void   EExit(int exitcode);
 __EXPORT__ const char *EDirRoot(void);
 const char         *EDirBin(void);
+const char         *EDirLib(void);
 const char         *EDirUser(void);
 const char         *EDirUserCache(void);
 void                EDirMake(const char *base, const char *name);
