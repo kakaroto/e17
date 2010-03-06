@@ -65,7 +65,7 @@
 #include "twitter.h"
 #include "curl.h"
 
-Evas_Object *status_list=NULL, *scroller=NULL, *status=NULL, *win=NULL, *error_win=NULL, *entry=NULL, *fs=NULL, *count=NULL, *url_win=NULL, *zoom=NULL;
+Evas_Object *timeline_label=NULL, *status_list=NULL, *scroller=NULL, *status=NULL, *win=NULL, *error_win=NULL, *entry=NULL, *fs=NULL, *count=NULL, *url_win=NULL, *zoom=NULL;
 Eina_Bool fullscreen=FALSE;
 char * dm_to=NULL;
 
@@ -164,7 +164,18 @@ void toggle_fullscreen(Eina_Bool new_fullscreen) {
 
 }
 
-void make_status_list(void) {
+void make_status_list(int timeline) {
+	char *label;
+
+	switch(timeline) {
+		case TIMELINE_USER:		{	label = _(" <b>User timeline...</b>");		break; }
+		case TIMELINE_PUBLIC:	{	label = _(" <b>Public timeline...</b>");	break; }
+		case TIMELINE_FRIENDS:
+		default:				{	label = _(" <b>Friends timeline...</b>");	break; }
+	}
+
+    elm_label_label_set(timeline_label, label);
+
 	if(status_list != NULL)
 		evas_object_del(status_list);
 	status_list = elm_box_add(win);
@@ -716,21 +727,21 @@ void fill_message_list(int timeline) {
 static void on_timeline_friends_reload(void *data, Evas_Object *obj, void *event_info)
 {
 	get_messages(TIMELINE_FRIENDS);
-	make_status_list();
+	make_status_list(TIMELINE_FRIENDS);
 	fill_message_list(TIMELINE_FRIENDS);
 }
 
 static void on_timeline_user_reload(void *data, Evas_Object *obj, void *event_info)
 {
 	get_messages(TIMELINE_USER);
-	make_status_list();
+	make_status_list(TIMELINE_USER);
 	fill_message_list(TIMELINE_USER);
 }
 
 static void on_timeline_public_reload(void *data, Evas_Object *obj, void *event_info)
 {
 	get_messages(TIMELINE_PUBLIC);
-	make_status_list();
+	make_status_list(TIMELINE_PUBLIC);
 	fill_message_list(TIMELINE_PUBLIC);
 }
 
@@ -890,7 +901,7 @@ EAPI int elm_main(int argc, char **argv)
 	static char options[] = "dhm:";
 	int option, res=0, size=0;
 	long int mm=0;
-	Evas_Object *bg=NULL, *box=NULL, *toolbar=NULL, *bt=NULL, *icon=NULL, *label=NULL, *box2=NULL, *hoversel=NULL;
+	Evas_Object *bg=NULL, *box=NULL, *toolbar=NULL, *bt=NULL, *icon=NULL, *box2=NULL, *hoversel=NULL;
 	char *data=NULL, *home=NULL, *path=NULL;
 
 	LIBXML_TEST_VERSION
@@ -1061,18 +1072,17 @@ EAPI int elm_main(int argc, char **argv)
 	evas_object_show(box2);
 	elm_box_pack_end(box, box2);
 
-	label = elm_label_add(box);
-	elm_label_label_set(label, _(" <b>Friends timeline...</b>"));
-	evas_object_size_hint_align_set(label, 0, 0);
-	elm_box_pack_end(box, label);
-	evas_object_show(label);
+	timeline_label = elm_label_add(box);
+	evas_object_size_hint_align_set(timeline_label, 0, 0);
+	elm_box_pack_end(box, timeline_label);
+	evas_object_show(timeline_label);
 
 	scroller = elm_scroller_add(box);
 		evas_object_size_hint_weight_set(scroller, 1, 1);
 		evas_object_size_hint_align_set(scroller, -1, -1);
 
 		// Statuses list
-		make_status_list();
+		make_status_list(TIMELINE_FRIENDS);
 		fill_message_list(TIMELINE_FRIENDS);
 
 	evas_object_show(scroller);
