@@ -213,10 +213,6 @@ void ed_twitter_timeline_get(int account_id, char *screen_name, char *password, 
 			if (debug) fprintf(stderr,"%s\n",request->content.memory);
 		}
 
-		if(request->url) free(request->url);
-		if(request->content.memory) free(request->content.memory);
-		if(request) free(request);
-
 		if(statuses->state != HASH) {
 			now = time(NULL);
 			messages_insert(account_id, statuses->list, timeline);
@@ -226,7 +222,9 @@ void ed_twitter_timeline_get(int account_id, char *screen_name, char *password, 
 
 	}
 
-	free(request);
+	if(request->url) free(request->url);
+	if(request->content.memory) free(request->content.memory);
+	if(request) free(request);
 
 }
 
