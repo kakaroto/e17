@@ -48,7 +48,7 @@ extern int debug;
 void show_http_error(long response_code, char * method, char * url) {
 	Evas_Object *box=NULL, *frame1=NULL, *label=NULL, *button=NULL;
 	int res=0;
-	char *buf=calloc(2100, sizeof(char));
+	char *buf=NULL;
 
 	/* Error Window */
 	error_win = elm_win_inwin_add(win);
@@ -91,7 +91,7 @@ void show_http_error(long response_code, char * method, char * url) {
 void show_curl_error(CURLcode curl_res, MemoryStruct * chunk) {
 	Evas_Object *box=NULL, *frame=NULL, *label=NULL, *button=NULL;
 	int res=0;
-	char *buf=calloc(2100, sizeof(char));
+	char *buf=NULL;
 
 	/* Error Window */
 	error_win = elm_win_inwin_add(win);

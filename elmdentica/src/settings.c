@@ -605,6 +605,7 @@ static int accounts_list_insert(void *user_data, int argc, char **argv, char **a
 		evas_object_show(check);
 
 		item = elm_list_item_append(list, (char*)key, check, NULL, on_account_selected, id);
+		free(key);
 		return(0);
 	} else {
 		return(1);
@@ -788,9 +789,10 @@ void cache_messages_max_set(Evas_Object *label) {
 		free(count);
 
 		res = asprintf(&count, "%d", MAX_MESSAGES);
-		if(res != -1)
+		if(res != -1) {
 			eet_write(conf, "/options/max_messages", count, strlen(count), 0);
-		if(count) free(count);
+			free(count);
+		}
 	}
 }
 

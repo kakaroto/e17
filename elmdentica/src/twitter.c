@@ -194,9 +194,9 @@ void ed_twitter_timeline_get(int account_id, char *screen_name, char *password, 
 	ed_twitter_max_status_id(account_id, &since_id, timeline);
 
 	if(since_id > 0)
-        	xml_res = asprintf(&request->url, "%s://%s:%d%s/statuses/%s_timeline.xml?since_id=%lld", proto, domain, port, base_url, timeline_str, since_id);
+		xml_res = asprintf(&request->url, "%s://%s:%d%s/statuses/%s_timeline.xml?since_id=%lld", proto, domain, port, base_url, timeline_str, since_id);
 	else
-        	xml_res = asprintf(&request->url, "%s://%s:%d%s/statuses/%s_timeline.xml", proto, domain, port, base_url, timeline_str);
+		xml_res = asprintf(&request->url, "%s://%s:%d%s/statuses/%s_timeline.xml", proto, domain, port, base_url, timeline_str);
 
 	if(xml_res != -1) {
 		if (debug) printf("gnome-open %s\n", request->url);
@@ -212,6 +212,11 @@ void ed_twitter_timeline_get(int account_id, char *screen_name, char *password, 
 			fprintf(stderr,_("FAILED TO SAX FRIENDS: %d\n"),xml_res);
 			if (debug) fprintf(stderr,"%s\n",request->content.memory);
 		}
+
+		if(request->url) free(request->url);
+		if(request->content.memory) free(request->content.memory);
+		if(request) free(request);
+
 		if(statuses->state != HASH) {
 			now = time(NULL);
 			messages_insert(account_id, statuses->list, timeline);
