@@ -43,7 +43,7 @@
 #include "settings.h"
 #include "elmdentica.h"
 
-Evas_Object *settings_win=NULL, *settings_area=NULL, *account_editor=NULL, *cache_editor=NULL,
+Evas_Object *settings_win=NULL, *settings_area=NULL, *account_editor=NULL, *cache_editor=NULL, *options_editor=NULL,
 	    *user_data_dialog=NULL, *screen_name_entry=NULL, *password_entry=NULL,
 	    *domain_data_dialog=NULL, *apiroot_entry=NULL, *type_entry=NULL, *secure_entry=NULL,
 	    *domain_entry=NULL, *base_url_entry=NULL, *enabled_entry=NULL, *receive_entry=NULL, *send_entry=NULL;
@@ -59,6 +59,24 @@ int current_account_type = ACCOUNT_TYPE_NONE;
 int current_account = 0;
 extern char * url_post;
 extern char * url_friends;
+
+int browser=-1;
+const char * browserNames[] = {
+        "XDG Open",
+        "Ventura",
+        "Midori",
+        "Woosh",
+        "Dillo",
+	};
+const char * browsers[] = {
+        "/usr/bin/xdg-open %s &",
+        "/usr/bin/ventura -u %s &",
+        "/usr/bin/midori %s &",
+        "/usr/bin/woosh -u %s &",
+        "/usr/bin/dillo %s &",
+	};
+int browsersIndex=4;
+
 extern int debug;
 extern CURL * user_agent;
 
@@ -619,6 +637,7 @@ void on_settings_accounts(void *data, Evas_Object *toolbar, void *event_info) {
 
 	if(account_editor) evas_object_del(account_editor);
 	if(cache_editor) evas_object_del(cache_editor);
+	if(options_editor) evas_object_del(options_editor);
 	account_editor = elm_box_add(settings_area);
 		evas_object_size_hint_weight_set(account_editor, 1, 1);
 		evas_object_size_hint_align_set(account_editor, -1, -1);
@@ -821,6 +840,7 @@ void on_settings_cache(void *data, Evas_Object *toolbar, void *event_info) {
 
 	if(account_editor) evas_object_del(account_editor);
 	if(cache_editor) evas_object_del(cache_editor);
+	if(options_editor) evas_object_del(options_editor);
 
 	cache_editor = elm_table_add(settings_area);
 		evas_object_size_hint_weight_set(cache_editor, 1, 1);
@@ -913,6 +933,94 @@ void on_settings_cache(void *data, Evas_Object *toolbar, void *event_info) {
 	evas_object_show(cache_editor);
 }
 
+static void settings_choose_browser(void *data, Evas_Object *hoversel, void *event_info) {
+	int b = (int)(long)data, res=0;
+	char *tmp;
+
+	switch(b) {
+		case BROWSER_VENTURA:	{ browser=b;	break; }
+		case BROWSER_MIDORI:	{ browser=b;	break; }
+		case BROWSER_WOOSH:		{ browser=b;	break; }
+		case BROWSER_DILLO:		{ browser=b;	break; }
+		case BROWSER_XDG:
+		default:				{ browser=b;	break; }
+	}
+	elm_hoversel_label_set(hoversel, browserNames[browser]);
+	res = asprintf(&tmp, "%d", browser);
+	if(res != -1) {
+		eet_write(conf, "/options/browser", tmp, strlen(tmp), 0);
+		free(tmp);
+	}
+}
+
+Evas_Object *settings_browser_hoversel(void) {
+	Evas_Object *hoversel=NULL;
+	struct stat buf;
+	int have_browser=0;
+
+	hoversel=elm_hoversel_add(settings_area);
+		evas_object_size_hint_weight_set(hoversel, 1, 1);
+		evas_object_size_hint_align_set(hoversel, -1, 0);
+
+		elm_hoversel_hover_begin(hoversel);
+		if(stat("/usr/bin/xdg-open", &buf) == 0) {
+			elm_hoversel_item_add(hoversel, browserNames[BROWSER_XDG], NULL, ELM_ICON_NONE, settings_choose_browser, (void*)BROWSER_XDG);
+			have_browser=1;
+		}
+		if(stat("/usr/bin/ventura", &buf) == 0) {
+			elm_hoversel_item_add(hoversel, browserNames[BROWSER_VENTURA], NULL, ELM_ICON_NONE, settings_choose_browser, (void*)BROWSER_VENTURA);
+			have_browser=1;
+		}
+		if(stat("/usr/bin/woosh", &buf) == 0) {
+			elm_hoversel_item_add(hoversel, browserNames[BROWSER_WOOSH], NULL, ELM_ICON_NONE, settings_choose_browser, (void*)BROWSER_WOOSH);
+			have_browser=1;
+		}
+		if(stat("/usr/bin/midori", &buf) == 0) {
+			elm_hoversel_item_add(hoversel, browserNames[BROWSER_MIDORI], NULL, ELM_ICON_NONE, settings_choose_browser, (void*)BROWSER_MIDORI);
+			have_browser=1;
+		}
+		if(stat("/usr/bin/dillo", &buf) == 0) {
+			elm_hoversel_item_add(hoversel, browserNames[BROWSER_DILLO], NULL, ELM_ICON_NONE, settings_choose_browser, (void*)BROWSER_DILLO);
+			have_browser=1;
+		}
+		elm_hoversel_hover_end(hoversel);
+
+		if(have_browser) {
+			if(browser >= 0 && browser <= browsersIndex)
+				elm_hoversel_label_set(hoversel, browserNames[browser]);
+			else
+				elm_hoversel_label_set(hoversel, _("Please choose a browser"));
+		} else
+			elm_hoversel_label_set(hoversel, _("No supported browser available"));
+
+	evas_object_show(hoversel);
+
+	return(hoversel);
+}
+
+void on_settings_options(void *data, Evas_Object *toolbar, void *event_info) {
+	Evas_Object *frame=NULL, *hoversel=NULL;
+
+	if(account_editor) evas_object_del(account_editor);
+	if(cache_editor) evas_object_del(cache_editor);
+	if(options_editor) evas_object_del(options_editor);
+
+	options_editor = elm_table_add(settings_area);
+		evas_object_size_hint_weight_set(options_editor, 1, 1);
+		evas_object_size_hint_align_set(options_editor, -1, 0);
+
+		frame = elm_frame_add(settings_area);
+			elm_frame_label_set(frame, _("Preferred browser"));
+			hoversel = settings_browser_hoversel();
+			elm_hoversel_hover_parent_set(hoversel, frame);
+			elm_frame_content_set(frame, hoversel);
+			elm_table_pack(options_editor, frame, 0, 0, 1, 1);
+		evas_object_show(frame);
+		
+		elm_box_pack_start(settings_area, options_editor);
+	evas_object_show(options_editor);
+}
+
 void on_settings(void *data, Evas_Object *obj, void *event_info) {
 	Evas_Object *bg=NULL, *box=NULL, *toolbar=NULL, *icon=NULL;
 	Elm_Toolbar_Item *item=NULL;
@@ -955,6 +1063,11 @@ void on_settings(void *data, Evas_Object *obj, void *event_info) {
 				elm_icon_standard_set(icon, "folder");
 				evas_object_show(icon);
 			elm_toolbar_item_add(toolbar, icon, _("Cache"), on_settings_cache, NULL);
+
+			icon = elm_icon_add(settings_win);
+				elm_icon_standard_set(icon, "apps");
+				evas_object_show(icon);
+			elm_toolbar_item_add(toolbar, icon, _("Options"), on_settings_options, NULL);
 
 		elm_box_pack_start(box, toolbar);
 		evas_object_show(toolbar);

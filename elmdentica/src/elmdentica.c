@@ -76,10 +76,13 @@ int MAX_MESSAGES=20;
 time_t now;
 
 Eina_Hash * status2user=NULL;
-char * reply_id=NULL;
 
+char * reply_id=NULL;
 char * url_post = NULL;
 char * url_friends = NULL;
+extern int browser;
+extern char * browsers[];
+extern char * browserNames[];
 
 extern xmlSAXHandler friends_saxHandler;
 
@@ -91,6 +94,9 @@ double icon_zoom_init=0;
 struct sqlite3 *ed_DB=NULL;
 
 Eet_File *conf = NULL;
+
+GRegex *re_link=NULL, *re_link_content=NULL, *re_amp=NULL;
+GError *re_err=NULL;
 
 static int count_accounts(void *notUsed, int argc, char **argv, char **azColName) {
 	int count = atoi(argv[0]);
@@ -218,14 +224,13 @@ static void on_direct_message(void *data, Evas_Object *obj, void *event_info) {
 static void on_repeat(void *data, Evas_Object *obj, void *event_info) {
 	ub_Bubble * status = (ub_Bubble*)data;
 	char * entry_str=NULL, *tmp=NULL;
-	GRegex * re=NULL;
-	GError * err=NULL;
 	int res = 0;
 
 	if(status) {
-		re = g_regex_new("<a href='(.*?)('>\\[link\\]</a>)", 0, 0, &err);
-		tmp = g_regex_replace(re, status->message, -1, 0, "\\1", 0, &err);
-		g_regex_unref(re);
+		if(!re_link_content)
+			re_link_content = g_regex_new("<a href='(.*?)('>\\[link\\]</a>)", 0, 0, &re_err);
+
+		tmp = g_regex_replace(re_link_content, status->message, -1, 0, "\\1", 0, &re_err);
 
 		res = asprintf(&entry_str, "♺ @%s: %s", status->screen_name, tmp);
 		if(res != -1) {
@@ -265,26 +270,17 @@ static void url_win_del(void *data, Evas_Object *obj, void *event_info) {
 static void on_open_url(void *data, Evas_Object *obj, void *event_info) {
 	char * url = (char*)data;
 	char * cmd = NULL;
-	struct stat buf;
 	int sys_result = 0;
 
-	if(stat("/usr/bin/ventura", &buf) == 0) {
-		sys_result = asprintf(&cmd, "/usr/bin/ventura -u %s &", url);
-	} else if(stat("/usr/bin/woosh", &buf) == 0) {
-		sys_result = asprintf(&cmd, "/usr/bin/woosh -u %s &", url);
-	} else if(stat("/usr/bin/midori", &buf) == 0) {
-		sys_result = asprintf(&cmd, "/usr/bin/midori %s &", url);
-	} else if(stat("/usr/bin/dillo", &buf) == 0) {
-		sys_result = asprintf(&cmd, "/usr/bin/dillo %s &", url);
-	} else if(stat("/usr/bin/xdg-open", &buf) == 0) {
-		sys_result = asprintf(&cmd, "/usr/bin/xdg-open %s &", url);
-	} else {
-		url_win_del(NULL, NULL, NULL);
+
+	url_win_del(NULL, NULL, NULL);
+
+	if (browser < 0) {
 		if(data) free(data);
 		return;
 	}
 
-	url_win_del(NULL, NULL, NULL);
+	sys_result = asprintf(&cmd, browsers[browser], url);
 	if(sys_result != -1) {
 		sys_result = system(cmd);
 		if(sys_result == -1) {
@@ -477,8 +473,6 @@ static int add_status(void *notUsed, int argc, char **argv, char **azColName) {
 	time_t now,status_time,time_delta;
 	char *tmp;
 	char * file_path=NULL, *home=NULL, *timestr = NULL;
-	GRegex * re=NULL;
-	GError * err=NULL;
 
 	/* In this query handler, these are the current fields:
 		argv[0] == id INTEGER
@@ -556,14 +550,15 @@ static int add_status(void *notUsed, int argc, char **argv, char **azColName) {
 	message = elm_anchorblock_add(win);
 		evas_object_size_hint_align_set(message, -1, 1);
 
-		re = g_regex_new("&(?!amp;)", 0, 0, &err);
-		tmp = g_regex_replace(re, status_message, -1, 0, "&amp;", 0, &err);
-		g_regex_unref(re);
+		if(!re_amp)
+			re_amp = g_regex_new("&(?!amp;)", 0, 0, &re_err);
 
-		re = g_regex_new("([a-z]+://.*?)(\\s|$)", 0, 0, &err);
+		tmp = g_regex_replace(re_amp, status_message, -1, 0, "&amp;", 0, &re_err);
+
+		if(!re_link)
+			re_link = g_regex_new("([a-z]+://.*?)(\\s|$)", 0, 0, &re_err);
 		//status_message = g_regex_replace(re, tmp, -1, 0, "<a href='\\1'>\\1</a>\\2", 0, &err);
-		status_message = g_regex_replace(re, tmp, -1, 0, "<a href='\\1'>[link]</a>\\2", 0, &err);
-		g_regex_unref(re);
+		status_message = g_regex_replace(re_link, tmp, -1, 0, "<a href='\\1'>[link]</a>\\2", 0, &re_err);
 		free(tmp);
 
 		elm_anchorblock_text_set(message, status_message);
@@ -1103,9 +1098,16 @@ EAPI int elm_main(int argc, char **argv)
 		else
 			fullscreen=0;
 		free(data);
-		data=NULL;
 	}
 	toggle_fullscreen(fullscreen);
+
+	data = eet_read(conf, "/options/browser", &size);
+	if(data) {
+		mm = strtol(data, NULL, 10);
+		if(mm > INT_MIN && mm < INT_MAX)
+			browser = (int)mm;
+		free(data);
+	}
 
 
 	elm_run();
@@ -1113,6 +1115,11 @@ EAPI int elm_main(int argc, char **argv)
 
 	eet_close(conf);
 	eet_shutdown();
+
+	g_regex_unref(re_link);
+	g_regex_unref(re_link_content);
+	g_regex_unref(re_amp);
+
 	xmlCleanupParser();
 
 	return 0;

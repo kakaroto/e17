@@ -55,7 +55,7 @@ typedef struct _ub_bubble {
 } ub_Bubble;
 
 typedef struct _StatusesList {
-	GList 		*list;
+	Eina_List	*list;
 	ub_Status 	*current;
 	TimeLineStates	state;
 	char		*hash_error;
@@ -69,6 +69,12 @@ typedef struct _StatusesList {
 #define TIMELINE_FRIENDS 0
 #define TIMELINE_USER 1
 #define TIMELINE_PUBLIC 2
+
+#define BROWSER_XDG		0
+#define	BROWSER_VENTURA	1
+#define	BROWSER_MIDORI	2
+#define	BROWSER_WOOSH	3
+#define	BROWSER_DILLO	4
 
 void error_win_del(void *data, Evas_Object *zbr, void *event_info);
 

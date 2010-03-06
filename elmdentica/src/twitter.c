@@ -84,12 +84,14 @@ void message_insert(void *list_item, void *user_data) {
 	}
 }
 
-void messages_insert(int account_id, GList *list, int timeline) {
+void messages_insert(int account_id, Eina_List *list, int timeline) {
 	int sqlite_res=0;
 	struct sqlite3_stmt *insert_stmt=NULL;
 	const char *missed=NULL;
 	char *db_err=NULL;
 	char *query=NULL;
+	Eina_List *l;
+	void *data;
 
 	sqlite_res = asprintf(&query, "SELECT max(status_id) FROM messages where account_id = %d and timeline = %d;", account_id, timeline);
 	if(sqlite_res != -1) {
@@ -105,8 +107,8 @@ void messages_insert(int account_id, GList *list, int timeline) {
 	if(sqlite_res != -1) {
 		sqlite_res = sqlite3_prepare_v2(ed_DB, query, 4096, &insert_stmt, &missed);
 		if(sqlite_res == 0) {
-			list = g_list_reverse(list);
-			g_list_foreach(list, message_insert, &insert_stmt);
+			EINA_LIST_REVERSE_FOREACH(list, l, data)
+				message_insert(data, &insert_stmt);
 			sqlite3_finalize(insert_stmt);
 		} else {
 			fprintf(stderr, "Can't do %s: %d means '%s' was missed in the statement.\n", query, sqlite_res, missed);
@@ -330,7 +332,7 @@ void ed_twitter_friends_endElement(void *user_data, const xmlChar * name) {
 		free(statuses->current->id_str);
 		statuses->state = FT_STATUS;
 	} else if(strncmp((char*)name, "status", 6) == 0 && strlen((char*)name) == 6) {
-		statuses->list = g_list_append(statuses->list, (gpointer)statuses->current);
+		statuses->list = eina_list_append(statuses->list, (void*)statuses->current);
 		statuses->state = FT_NULL;
 	} else if(strncmp((char*)name, "name", 4) == 0)
 		statuses->state = FT_USER;
