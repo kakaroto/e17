@@ -158,11 +158,11 @@ static int ed_twitter_max_status_id_handler(void *data, int argc, char **argv, c
 
 	return(0);
 }
-void ed_twitter_max_status_id(int account_id, long long int*since_id) {
+void ed_twitter_max_status_id(int account_id, long long int*since_id, int timeline) {
 	char *query=NULL, *db_err=NULL;
 	int sqlite_res=0;
 	
-	sqlite_res = asprintf(&query, "SELECT MAX(status_id) FROM messages WHERE account_id = %d;", account_id);
+	sqlite_res = asprintf(&query, "SELECT MAX(status_id) FROM messages WHERE account_id = %d and timeline = %d;", account_id, timeline);
 	if(sqlite_res != -1) {
 		sqlite_res = sqlite3_exec(ed_DB, query, ed_twitter_max_status_id_handler, (void*)since_id, &db_err);
 		if(sqlite_res != 0) {
@@ -191,7 +191,8 @@ void ed_twitter_timeline_get(int account_id, char *screen_name, char *password, 
 	memset(statuses, 0, sizeof(StatusesList));
 	statuses->state = FT_NULL;
 
-	ed_twitter_max_status_id(account_id, &since_id);
+	ed_twitter_max_status_id(account_id, &since_id, timeline);
+
 	if(since_id > 0)
         	xml_res = asprintf(&request->url, "%s://%s:%d%s/statuses/%s_timeline.xml?since_id=%lld", proto, domain, port, base_url, timeline_str, since_id);
 	else

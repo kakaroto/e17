@@ -998,7 +998,7 @@ EAPI int elm_main(int argc, char **argv)
 			elm_hoversel_icon_set(bt, icon);
 			
 			elm_hoversel_item_add(bt, _("Friends"), NULL, ELM_ICON_NONE, on_timeline_friends_reload, NULL);
-			elm_hoversel_item_add(bt, _("Mine"), NULL, ELM_ICON_NONE, on_timeline_user_reload, NULL);
+			elm_hoversel_item_add(bt, _("User"), NULL, ELM_ICON_NONE, on_timeline_user_reload, NULL);
 			elm_hoversel_item_add(bt, _("Public"), NULL, ELM_ICON_NONE, on_timeline_public_reload, NULL);
 			
 			elm_hoversel_hover_end(bt);
