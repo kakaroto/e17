@@ -193,20 +193,10 @@ void error_win_del(void *data, Evas_Object *zbr, void *event_info) {
 	evas_object_del(error_win);
 }
 
-static void on_direct_message(void *data, Evas_Object *obj, void *event_info) {
+static void on_mark_favorite(void *data, Evas_Object *obj, void *event_info) {
 	ub_Bubble * status = (ub_Bubble*)data;
-	char * entry_str;
-	int res = 0;
 
-	if(status) {
-		res = asprintf(&entry_str, "@%s: ", status->screen_name);
-		if(res != -1) {
-			elm_entry_entry_set(entry, entry_str);
-			dm_to=status->screen_name;
-			free(entry_str);
-			elm_object_focus(entry);
-		}
-	}
+	if(!status) return;
 }
 
 static void on_repeat(void *data, Evas_Object *obj, void *event_info) {
@@ -435,8 +425,8 @@ static void on_bubble_mouse_up(void *data, Evas *e, Evas_Object *obj, void *even
 				button = elm_button_add(win);
 					evas_object_size_hint_weight_set(button, 1, 1);
 					evas_object_size_hint_align_set(button, -1, 0);
-					elm_button_label_set(button, _("Direct message"));
-					evas_object_smart_callback_add(button, "clicked", on_direct_message, ubBubble);
+					elm_button_label_set(button, _("Mark favorite"));
+					evas_object_smart_callback_add(button, "clicked", on_mark_favorite, ubBubble);
 					elm_table_pack(table, button, 0, 1, 2, 1);
 				evas_object_show(button);
 
@@ -454,7 +444,7 @@ static void on_bubble_mouse_up(void *data, Evas *e, Evas_Object *obj, void *even
 
 static int add_status(void *notUsed, int argc, char **argv, char **azColName) {
 	char *screen_name=NULL, *name=NULL, *status_message=NULL;
-	int id=0, account_id=0, status_id=0, res=0;
+	int id=0, account_id=0, res=0;
 	time_t date;
 
 	ub_Bubble * ubBubble = calloc(1, sizeof(ub_Bubble));
@@ -474,7 +464,7 @@ static int add_status(void *notUsed, int argc, char **argv, char **azColName) {
 	*/
 
 	id=atoi(argv[0]);
-	status_id=atoi(argv[0]);
+	ubBubble->status_id=atol(argv[1]);
 	account_id=atoi(argv[2]);
 	screen_name=argv[3];
 	name=argv[4];
@@ -873,8 +863,6 @@ static void on_entry_clicked(void *data, Evas_Object *entry, void *event_info) {
 EAPI int elm_main(int argc, char **argv)
 {
 	Evas_Object *bg=NULL, *box=NULL, *toolbar=NULL, *bt=NULL, *icon=NULL, *box2=NULL, *hoversel=NULL;
-	int sqlite_res=0;
-	char *home,*path=NULL;
 
 	LIBXML_TEST_VERSION
 
@@ -884,26 +872,7 @@ EAPI int elm_main(int argc, char **argv)
 
 	ed_settings_init(argc, argv);
 
-	home=getenv("HOME");
-	if(home)
-		sqlite_res = asprintf(&path, "%s/.elmdentica/db", home);
-	else
-		sqlite_res = asprintf(&path, ".elmdentica/db");
-
-	if(sqlite_res == -1) {
-		fprintf(stderr, "Can't create database path");
-		ed_settings_shutdown();
-		exit(2);
-	}
-
-	sqlite_res = sqlite3_open(path, &ed_DB);
-	if(sqlite_res) {
-		fprintf(stderr, "Can't open database %s: %s\n", path, sqlite3_errmsg(ed_DB));
-		sqlite3_close(ed_DB);
-		ed_settings_shutdown();
-		exit(2);
-	}
-	free(path);
+	elmdentica_init();
 
 	win = elm_win_add(NULL, "elmdentica", ELM_WIN_BASIC);
 	elm_win_title_set(win, _("ElmDentica: µ-blog at your fingertips"));

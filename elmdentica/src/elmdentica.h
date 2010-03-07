@@ -52,6 +52,7 @@ typedef struct _ub_bubble {
 	char *screen_name;
 	char *message;
 	int   account_id;
+	long int   status_id;
 } ub_Bubble;
 
 typedef struct _StatusesList {
