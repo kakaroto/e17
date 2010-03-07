@@ -824,7 +824,7 @@ ECompMgrWinSetExtents(EObj * eo)
    D1printf("extents %#lx %d %d %d %d\n", EobjGetXwin(eo), r.x, r.y, r.width,
 	    r.height);
 
-   if (EDebug(EDBUG_TYPE_COMPMGR))
+   if (EDebug(EDBUG_TYPE_COMPMGR2))
       ERegionShow("extents", cw->extents, NULL);
 }
 
@@ -861,7 +861,7 @@ ECompMgrWinSetShape(EObj * eo)
    cw->have_shape = 1;
 
    D1printf("shape %#lx: %d %d\n", EobjGetXwin(eo), cw->shape_x, cw->shape_y);
-   if (EDebug(EDBUG_TYPE_COMPMGR))
+   if (EDebug(EDBUG_TYPE_COMPMGR2))
       ERegionShow("shape", cw->shape, NULL);
 }
 
@@ -893,7 +893,7 @@ ECompMgrWinInvalidate(EObj * eo, int what)
    if (!cw)
       return;
 
-   D2printf("ECompMgrWinInvalidate %#lx: %#x\n", EobjGetXwin(eo), what);
+   D1printf("ECompMgrWinInvalidate %#lx: %#x\n", EobjGetXwin(eo), what);
 
    if ((what & (INV_SIZE | INV_PIXMAP)) && cw->pixmap != None)
      {
