@@ -162,10 +162,10 @@ void make_status_list(int timeline) {
 	char *label;
 
 	switch(timeline) {
-		case TIMELINE_USER:		{	label = _(" <b>User timeline...</b>");		break; }
-		case TIMELINE_PUBLIC:	{	label = _(" <b>Public timeline...</b>");	break; }
+		case TIMELINE_USER:		{	label = _(" <b>Last posted messages...</b>");		break; }
+		case TIMELINE_PUBLIC:	{	label = _(" <b>Everyone...</b>");	break; }
 		case TIMELINE_FRIENDS:
-		default:				{	label = _(" <b>Friends timeline...</b>");	break; }
+		default:				{	label = _(" <b>Me and my friends...</b>");	break; }
 	}
 
     elm_label_label_set(timeline_label, label);
@@ -941,9 +941,9 @@ EAPI int elm_main(int argc, char **argv)
 			elm_hoversel_label_set(bt, _("Timeline"));
 			elm_hoversel_icon_set(bt, icon);
 			
-			elm_hoversel_item_add(bt, _("Friends"), NULL, ELM_ICON_NONE, on_timeline_friends_reload, NULL);
-			elm_hoversel_item_add(bt, _("User"), NULL, ELM_ICON_NONE, on_timeline_user_reload, NULL);
-			elm_hoversel_item_add(bt, _("Public"), NULL, ELM_ICON_NONE, on_timeline_public_reload, NULL);
+			elm_hoversel_item_add(bt, _("Friends & I"), NULL, ELM_ICON_NONE, on_timeline_friends_reload, NULL);
+			elm_hoversel_item_add(bt, _("Just me"), NULL, ELM_ICON_NONE, on_timeline_user_reload, NULL);
+			elm_hoversel_item_add(bt, _("Everyone"), NULL, ELM_ICON_NONE, on_timeline_public_reload, NULL);
 			
 			elm_hoversel_hover_end(bt);
 
