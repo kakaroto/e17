@@ -252,7 +252,8 @@ gint ed_curl_post(char *screen_name, char *password, http_request * request, cha
 
 	curl_easy_setopt(ua, CURLOPT_HTTPGET,		0L				);
 	curl_easy_setopt(ua, CURLOPT_POST,		1L				);
-	curl_easy_setopt(ua, CURLOPT_POSTFIELDS,	post_fields			);
+	if(post_fields)
+		curl_easy_setopt(ua, CURLOPT_POSTFIELDS,	post_fields			);
 
 	res = curl_easy_perform(ua);
 

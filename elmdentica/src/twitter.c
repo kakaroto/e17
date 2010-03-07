@@ -230,6 +230,18 @@ void ed_twitter_timeline_get(int account_id, char *screen_name, char *password, 
 
 }
 
+void ed_twitter_favorite_create(int account_id, char *screen_name, char *password, char *proto, char *domain, int port, char *base_url, long int status_id) {
+	http_request * request=calloc(1, sizeof(http_request));
+	int res;
+
+	res = asprintf(&request->url, "%s://%s:%d%s/favorites/create/%ld.xml", proto, domain, port, base_url, status_id);
+	if(res != -1) {
+		ed_curl_post(screen_name, password, request, "");
+		free(request->url);
+	}
+	if(request) free(request);
+}
+
 void ed_twitter_init_friends(void) {
 	memset(&ed_twitter_friends_saxHandler, '\0', sizeof(xmlSAXHandler));
 

@@ -193,13 +193,67 @@ void error_win_del(void *data, Evas_Object *zbr, void *event_info) {
 	evas_object_del(error_win);
 }
 
-static void on_mark_favorite(void *data, Evas_Object *obj, void *event_info) {
+void ed_statusnet_favorite_create(int id, char *screen_name, char *password, char *proto, char *domain, int port, char *base_url, int timeline) {
+}
+
+static int ed_mark_favorite(void *data, int argc, char **argv, char **azColName) {
 	ub_Bubble * status = (ub_Bubble*)data;
+	char *screen_name=NULL, *password=NULL, *proto=NULL, *domain=NULL, *base_url=NULL;
+	int port=0, id=0;
+
+	/* In this query handler, these are the current fields:
+		argv[0] == name TEXT
+		argv[1] == password TEXT
+		argv[2] == type INTEGER
+		argv[3] == proto TEXT
+		argv[4] == domain TEXT
+		argv[5] == port INTEGER
+		argv[6] == base_url TEXT
+		argv[7] == id INTEGER
+	*/
+
+	screen_name = argv[0];
+	password = argv[1];
+	proto = argv[3];
+	domain = argv[4];
+	port = atoi(argv[5]);
+	base_url = argv[6];
+	id = atoi(argv[7]);
+
+	switch(atoi(argv[2])) {
+		case ACCOUNT_TYPE_TWITTER: { ed_twitter_favorite_create(id, screen_name, password, proto, domain, port, base_url, status->status_id); break; }
+		case ACCOUNT_TYPE_STATUSNET:
+		default: { ed_statusnet_favorite_create(id, screen_name, password, proto, domain, port, base_url, status->status_id); break; }
+	}
+	return(0);
+}
+
+static void on_mark_favorite(void *data, Evas_Object *obj, void *event_info) {
+	Evas *e;
+	Evas_Object *hover;
+	ub_Bubble * status = (ub_Bubble*)data;
+	int sqlite_res=0;
+	char *db_err=NULL, *query=NULL;
 
 	if(!status) return;
+
+	sqlite_res = asprintf(&query, "SELECT name,password,type,proto,domain,port,base_url,id FROM accounts WHERE enabled = 1 and id = %d;", status->account_id);
+	sqlite3_exec(ed_DB, query, ed_mark_favorite, data, &db_err);
+	if(sqlite_res != 0) {
+		printf("Can't run %s: %d => %s\n", query, sqlite_res, db_err);
+	}
+	sqlite3_free(db_err);
+
+	e = evas_object_evas_get(win);
+	if(e) {
+		hover = evas_object_name_find(e, "hover_actions");
+		evas_object_del(hover);
+	}
 }
 
 static void on_repeat(void *data, Evas_Object *obj, void *event_info) {
+	Evas *e;
+	Evas_Object *hover;
 	ub_Bubble * status = (ub_Bubble*)data;
 	char * entry_str=NULL, *tmp=NULL;
 	int res = 0;
@@ -219,9 +273,17 @@ static void on_repeat(void *data, Evas_Object *obj, void *event_info) {
 			elm_entry_cursor_end_set(entry);
 		}
 	}
+
+	e = evas_object_evas_get(win);
+	if(e) {
+		hover = evas_object_name_find(e, "hover_actions");
+		evas_object_del(hover);
+	}
 }
 
 static void on_reply(void *data, Evas_Object *obj, void *event_info) {
+	Evas *e;
+	Evas_Object *hover;
 	ub_Bubble * status = (ub_Bubble*)data;
 	char * entry_str=NULL;
 	int res = 0;
@@ -235,6 +297,12 @@ static void on_reply(void *data, Evas_Object *obj, void *event_info) {
 			reply_id=status->screen_name;
 			elm_entry_cursor_end_set(entry);
 		}
+	}
+
+	e = evas_object_evas_get(win);
+	if(e) {
+		hover = evas_object_name_find(e, "hover_actions");
+		evas_object_del(hover);
 	}
 }
 
@@ -403,6 +471,7 @@ static void on_bubble_mouse_up(void *data, Evas *e, Evas_Object *obj, void *even
 	else mouse_held_down=0;
 
 	hover = elm_hover_add(win);
+		evas_object_name_set(hover, "hover_actions");
 		box = elm_box_add(win);
 			table = elm_table_add(win);
 
