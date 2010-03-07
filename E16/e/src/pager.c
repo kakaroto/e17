@@ -2005,7 +2005,6 @@ PagersSighan(int sig, void *prm)
      {
      case ESIGNAL_INIT:
 	memset(&Mode_pagers, 0, sizeof(Mode_pagers));
-	EDirMake(EDirUserCache(), "cached/pager");
 	break;
      case ESIGNAL_CONFIGURE:
 	break;

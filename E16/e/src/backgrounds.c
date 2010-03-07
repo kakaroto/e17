@@ -1357,8 +1357,6 @@ BackgroundsSighan(int sig, void *prm __UNUSED__)
    switch (sig)
      {
      case ESIGNAL_INIT:
-	EDirMake(EDirUserCache(), "cached/bgsel");
-	EDirMake(EDirUserCache(), "cached/img");
 	/* create a fallback background in case no background is found */
 	BackgroundCreate(NULL, 0, NULL, 0, 0, 0, 0, 0, 0, NULL, 0, 0, 0, 0, 0);
 	break;

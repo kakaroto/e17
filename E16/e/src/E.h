@@ -323,6 +323,7 @@ typedef struct {
    } backgrounds;
    struct {
       char               *name;
+      char               *prefix;
       char               *dir;
       char               *cache_dir;
    } conf;
@@ -495,13 +496,14 @@ void                SignalsRestore(void);
 
 /* main.c */
 __NORETURN__ void   EExit(int exitcode);
-__EXPORT__ const char *EDirRoot(void);
-const char         *EDirBin(void);
-const char         *EDirLib(void);
-const char         *EDirUser(void);
-const char         *EDirUserCache(void);
-void                EDirMake(const char *base, const char *name);
-const char         *EGetSavePrefix(void);
+
+#define EDirRoot()       ENLIGHTENMENT_ROOT
+#define EDirBin()        ENLIGHTENMENT_BIN
+#define EDirLib()        ENLIGHTENMENT_LIB
+#define EDirUser()       Mode.conf.dir
+#define EDirUserCache()  Mode.conf.cache_dir
+#define EGetSavePrefix() Mode.conf.prefix
+
 void                Etmp(char *s);
 
 /* misc.c */

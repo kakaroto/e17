@@ -55,6 +55,7 @@ static void         EDirUserSet(const char *dir);
 static void         EConfNameSet(const char *dir);
 static void         EDirUserCacheSet(const char *dir);
 static void         EDirsSetup(void);
+static void         ESavePrefixSetup(void);
 static void         RunInitPrograms(void);
 
 static int          eoptind = 0;
@@ -220,18 +221,20 @@ main(int argc, char **argv)
 
    SignalsSetup();		/* Install signal handlers */
 
+   EDirsSetup();
+   ECheckEprog("epp");
+   ECheckEprog("eesh");
+
    SetupX(dstr);		/* This is where the we fork per screen */
    /* X is now running, and we have forked per screen */
+
+   ESavePrefixSetup();
 
    /* So far nothing should rely on a selected settings or theme. */
    ConfigurationLoad();		/* Load settings */
 
    /* Initialise internationalisation */
    LangInit();
-
-   ECheckEprog("epp");
-   ECheckEprog("eesh");
-   EDirsSetup();
 
    /* The theme path must now be available for config file loading. */
    ThemePathFind();
@@ -489,24 +492,6 @@ RunInitPrograms(void)
      }
 }
 
-const char         *
-EDirBin(void)
-{
-   return ENLIGHTENMENT_BIN;
-}
-
-const char         *
-EDirLib(void)
-{
-   return ENLIGHTENMENT_LIB;
-}
-
-const char         *
-EDirRoot(void)
-{
-   return ENLIGHTENMENT_ROOT;
-}
-
 static void
 EConfNameSet(const char *name)
 {
@@ -518,8 +503,6 @@ EConfNameSet(const char *name)
 static void
 EDirUserSet(const char *dir)
 {
-   if (!strcmp(dir, EDirUser()))
-      return;
    Efree(Mode.conf.dir);
    Mode.conf.dir = Estrdup(dir);
 }
@@ -527,50 +510,8 @@ EDirUserSet(const char *dir)
 static void
 EDirUserCacheSet(const char *dir)
 {
-   if (!strcmp(dir, EDirUser()))
-      return;
    Efree(Mode.conf.cache_dir);
    Mode.conf.cache_dir = Estrdup(dir);
-}
-
-static const char  *
-EConfNameDefault(void)
-{
-   return "e_config";
-}
-
-static const char  *
-EConfName(void)
-{
-   return (Mode.conf.name) ? Mode.conf.name : EConfNameDefault();
-}
-
-const char         *
-EDirUser(void)
-{
-   static char        *user_dir = NULL;
-   char               *home, buf[4096];
-
-   if (Mode.conf.dir)
-      return Mode.conf.dir;
-
-   if (user_dir)
-      return user_dir;
-
-   home = homedir(getuid());
-   Esnprintf(buf, sizeof(buf), "%s/.e16", home);
-   Efree(home);
-   user_dir = Estrdup(buf);
-
-   return user_dir;
-}
-
-const char         *
-EDirUserCache(void)
-{
-   if (Mode.conf.cache_dir)
-      return Mode.conf.cache_dir;
-   return EDirUser();
 }
 
 void
@@ -592,7 +533,7 @@ EDirCheck(const char *dir)
    EExit(1);
 }
 
-void
+static void
 EDirMake(const char *base, const char *name)
 {
    char                s[1024];
@@ -606,39 +547,49 @@ EDirMake(const char *base, const char *name)
 static void
 EDirsSetup(void)
 {
-   char                s[1024], ss[1024], *home;
+   char                s[1024], *home, *cfgdir;
 
    home = homedir(getuid());
-   if (home)
-     {
-	EDirCheck(home);
-	Efree(home);
-     }
+   EDirCheck(home);
 
-   Esnprintf(s, sizeof(s), "%s", EDirUser());
-   if (exists(s))
+   /* Set user config dir if not already set */
+   cfgdir = Mode.conf.dir;
+   if (!cfgdir)
      {
-	if (!isdir(s))
+	Esnprintf(s, sizeof(s), "%s/.e16", home);
+	Mode.conf.dir = cfgdir = Estrdup(s);
+     }
+   Efree(home);
+
+   if (exists(cfgdir))
+     {
+	if (!isdir(cfgdir))
 	  {
-	     Esnprintf(ss, sizeof(ss), "%s.old", EDirUser());
-	     E_mv(s, ss);
-	     E_md(s);
+	     Esnprintf(s, sizeof(s), "%s.old", cfgdir);
+	     E_mv(cfgdir, s);
+	     E_md(cfgdir);
 	  }
 	else
-	   EDirCheck(s);
+	   EDirCheck(cfgdir);
      }
    else
-      E_md(s);
+      E_md(cfgdir);
 
-   Esnprintf(s, sizeof(s), "%s/menus", EDirUser());
+   if (!Mode.conf.cache_dir)
+      Mode.conf.cache_dir = cfgdir;	/* Beware if ever freed */
+
+   Esnprintf(s, sizeof(s), "%s/menus", cfgdir);
    Mode.firsttime = !exists(s);
 
-   EDirMake(EDirUser(), "themes");
-   EDirMake(EDirUser(), "backgrounds");
-   EDirMake(EDirUser(), "menus");
+   EDirMake(Mode.conf.dir, "themes");
+   EDirMake(Mode.conf.dir, "backgrounds");
+   EDirMake(Mode.conf.dir, "menus");
 
-   EDirMake(EDirUserCache(), "cached");
-   EDirMake(EDirUserCache(), "cached/cfg");
+   EDirMake(Mode.conf.cache_dir, "cached");
+   EDirMake(Mode.conf.cache_dir, "cached/cfg");
+   EDirMake(Mode.conf.cache_dir, "cached/bgsel");
+   EDirMake(Mode.conf.cache_dir, "cached/img");
+   EDirMake(Mode.conf.cache_dir, "cached/pager");
 }
 
 /*
@@ -646,30 +597,25 @@ EDirsSetup(void)
  * The client data appends ".clients" onto this filename and the snapshot data
  * appends ".snapshots".
  */
-const char         *
-EGetSavePrefix(void)
+static void
+ESavePrefixSetup(void)
 {
-   static char        *def_prefix = NULL;
+#define ECFG_DEFAULT "e_config"
    char               *s, buf[1024];
 
-   if (def_prefix)
-      return def_prefix;
-
    if (Mode.conf.name)
-      Esnprintf(buf, sizeof(buf), "%s/%s-%d", EDirUser(), EConfName(),
-		Dpy.screen);
+      Esnprintf(buf, sizeof(buf), "%s/%s-%d",
+		Mode.conf.dir, Mode.conf.name, Dpy.screen);
    else if (Mode.wm.window)
-      Esnprintf(buf, sizeof(buf), "%s/%s-window", EDirUser(),
-		EConfNameDefault());
+      Esnprintf(buf, sizeof(buf), "%s/%s-window", Mode.conf.dir, ECFG_DEFAULT);
    else
-      Esnprintf(buf, sizeof(buf), "%s/%s-%s", EDirUser(), EConfNameDefault(),
-		Dpy.name);
-   def_prefix = Estrdup(buf);
+      Esnprintf(buf, sizeof(buf), "%s/%s-%s",
+		Mode.conf.dir, ECFG_DEFAULT, Dpy.name);
 
-   for (s = def_prefix; (s = strchr(s, ':')) != NULL; *s = '-')
+   Mode.conf.prefix = Estrdup(buf);
+
+   for (s = Mode.conf.prefix; (s = strchr(s, ':')) != NULL; *s = '-')
       ;
-
-   return def_prefix;
 }
 
 static void
