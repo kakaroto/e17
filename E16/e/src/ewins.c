@@ -354,6 +354,10 @@ EwinConfigure(EWin * ewin)
 
    EwinUpdateOpacity(ewin);
 
+   if ((ewin->border) && (!strcmp(ewin->border->name, "BORDERLESS")) &&
+       EoGetWin(ewin)->argb)
+      EoSetShadow(ewin, 0);
+
    HintsSetWindowState(ewin);
    HintsSetWindowOpacity(ewin);
 
