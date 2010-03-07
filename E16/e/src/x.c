@@ -186,6 +186,7 @@ EXidSet(Window xwin, Win parent, int x, int y, int w, int h, int depth,
    win->depth = depth;
    win->visual = visual;
    win->cmap = cmap;
+   win->argb = depth == 32;
 #if DEBUG_XWIN
    Eprintf("EXidSet: %#lx\n", win->xwin);
 #endif
@@ -404,11 +405,8 @@ ECreateObjectWindow(Win parent, int x, int y, int w, int h, int saveunder,
 	break;
 #if USE_GLX
      case WIN_TYPE_GLX:	/* Internal GL */
-	argb = 1;
 	win =
 	   ECreateWindowVD(parent, x, y, w, h, EGlGetVisual(), EGlGetDepth());
-	if (win)
-	   win->argb = 1;
 	return win;
 #endif
      }
@@ -417,7 +415,6 @@ ECreateObjectWindow(Win parent, int x, int y, int w, int h, int saveunder,
       win = ECreateArgbWindow(parent, x, y, w, h, cwin);
    else
       win = ECreateWindow(parent, x, y, w, h, saveunder);
-   win->argb = argb;
 #else
    win = ECreateWindow(parent, x, y, w, h, saveunder);
    type = 0;
