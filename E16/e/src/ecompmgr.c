@@ -837,6 +837,13 @@ ECompMgrWinSetShape(EObj * eo)
 
    if (cw->shape == None)
      {
+#if 0				/* FIXME - TBD */
+	/* If the window shape is changed on OR windows, cw->shape set below
+	 * may not reflect the shape change. Adding a sync fixes things in
+	 * some situations. */
+	if (eo->type == EOBJ_TYPE_EXT)
+	   ESync(0);
+#endif
 	cw->shape = ERegionCreateFromWindow(EobjGetWin(eo));
 
 	if (WinIsShaped(EobjGetWin(eo)))
@@ -1233,6 +1240,8 @@ ECompMgrWinNew(EObj * eo)
 	eo->fade = 0;
 	eo->shadow = 0;
      }
+   if (eo->type == EOBJ_TYPE_EXT)
+      XShapeSelectInput(disp, EobjGetXwin(eo), ShapeNotifyMask);
 
    if (eo->noredir)
      {
@@ -2375,6 +2384,11 @@ ECompMgrHandleWindowEvent(Win win __UNUSED__, XEvent * ev, void *prm)
 	ECompMgrDeskVisibility(eo, ev);
 	break;
 #endif
+
+     case EX_EVENT_SHAPE_NOTIFY:
+	/* Only EOBJ_TYPE_EXT window shape changes will go here */
+	ECompMgrWinChangeShape(eo);
+	break;
 
      case EX_EVENT_DAMAGE_NOTIFY:
 	ECompMgrWinDamage(eo, ev);
