@@ -246,6 +246,32 @@ e_connman_manager_services_get(unsigned int *count, E_Connman_Element ***p_eleme
 }
 
 /**
+ * Get array of technology elements.
+ *
+ * @param count return the number of elements in array.
+ * @param p_elements array with all elements, these are not referenced
+ *        and in no particular order, just set if return is 1.  The
+ *        array itself is allocated using malloc() and should be freed
+ *        after usage is done.
+ *
+ * @return 1 on success, 0 otherwise.
+ */
+bool
+e_connman_manager_technologies_get(unsigned int *count, E_Connman_Element ***p_elements)
+{
+   E_Connman_Element *element;
+
+   EINA_SAFETY_ON_NULL_RETURN_VAL(count, 0);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(p_elements, 0);
+
+   element = e_connman_manager_get();
+   if (!element)
+     return 0;
+   return e_connman_element_objects_array_get_stringshared
+     (element, e_connman_prop_technologies, count, p_elements);
+}
+
+/**
  * Request to trigger a scan for given technology.
  *
  * Call method RequestScan(type) on server in order to
