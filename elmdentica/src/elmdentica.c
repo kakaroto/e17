@@ -44,7 +44,6 @@
 
 #include <Elementary.h>
 #include <Ecore_X.h>
-#include <Eet.h>
 
 #include <sqlite3.h>
 
@@ -66,13 +65,11 @@
 #include "curl.h"
 
 Evas_Object *timeline_label=NULL, *status_list=NULL, *scroller=NULL, *status=NULL, *win=NULL, *error_win=NULL, *entry=NULL, *fs=NULL, *count=NULL, *url_win=NULL, *zoom=NULL;
-Eina_Bool fullscreen=FALSE;
 char * dm_to=NULL;
 
 StatusesList	*statuses=NULL;
 int debug=0;
 int first_message=1;
-int MAX_MESSAGES=20;
 time_t now;
 
 Eina_Hash * status2user=NULL;
@@ -80,9 +77,10 @@ Eina_Hash * status2user=NULL;
 char * reply_id=NULL;
 char * url_post = NULL;
 char * url_friends = NULL;
-extern int browser;
 extern char * browsers[];
 extern char * browserNames[];
+
+extern Settings *settings;
 
 extern xmlSAXHandler friends_saxHandler;
 
@@ -92,8 +90,6 @@ double mouse_held_down=0;
 double icon_zoom_init=0;
 
 struct sqlite3 *ed_DB=NULL;
-
-Eet_File *conf = NULL;
 
 GRegex *re_link=NULL, *re_link_content=NULL, *re_amp=NULL;
 GError *re_err=NULL;
@@ -158,16 +154,8 @@ void elmdentica_init(void) {
 }
 
 void toggle_fullscreen(Eina_Bool new_fullscreen) {
-	char * fs_value=NULL;
-	int res=0;
-
 	elm_win_fullscreen_set(win, new_fullscreen);
-
-	res = asprintf(&fs_value, "%d", new_fullscreen);
-	if(res != -1)
-		eet_write(conf, "/options/fullscreen", fs_value, strlen(fs_value), 0);
-	if(fs_value) free(fs_value);
-
+	settings->fullscreen=new_fullscreen;
 }
 
 void make_status_list(int timeline) {
@@ -275,12 +263,12 @@ static void on_open_url(void *data, Evas_Object *obj, void *event_info) {
 
 	url_win_del(NULL, NULL, NULL);
 
-	if (browser < 0) {
+	if (settings->browser < 0) {
 		if(data) free(data);
 		return;
 	}
 
-	sys_result = asprintf(&cmd, browsers[browser], url);
+	sys_result = asprintf(&cmd, settings->browser_cmd, url);
 	if(sys_result != -1) {
 		sys_result = system(cmd);
 		if(sys_result == -1) {
@@ -294,6 +282,7 @@ static void on_open_url(void *data, Evas_Object *obj, void *event_info) {
 		free(data);
 	}
 }
+
 static void on_message_anchor_clicked(void *data, Evas_Object *obj, void *event_info) {
 	Elm_Entry_Anchorblock_Info * info = (Elm_Entry_Anchorblock_Info*)event_info;
 	char * url=NULL, *frame_label=NULL, *url2=NULL;
@@ -471,7 +460,7 @@ static int add_status(void *notUsed, int argc, char **argv, char **azColName) {
 	ub_Bubble * ubBubble = calloc(1, sizeof(ub_Bubble));
 	Evas_Object *message=NULL, *bubble=NULL, *icon=NULL, *box=NULL;
 	time_t now,status_time,time_delta;
-	char *tmp;
+	char *tmp=NULL;
 	char * file_path=NULL, *home=NULL, *timestr = NULL;
 
 	/* In this query handler, these are the current fields:
@@ -553,13 +542,15 @@ static int add_status(void *notUsed, int argc, char **argv, char **azColName) {
 		if(!re_amp)
 			re_amp = g_regex_new("&(?!amp;)", 0, 0, &re_err);
 
-		tmp = g_regex_replace(re_amp, status_message, -1, 0, "&amp;", 0, &re_err);
+		if(status_message) tmp = g_regex_replace(re_amp, status_message, -1, 0, "&amp;", 0, &re_err);
 
 		if(!re_link)
 			re_link = g_regex_new("([a-z]+://.*?)(\\s|$)", 0, 0, &re_err);
 		//status_message = g_regex_replace(re, tmp, -1, 0, "<a href='\\1'>\\1</a>\\2", 0, &err);
-		status_message = g_regex_replace(re_link, tmp, -1, 0, "<a href='\\1'>[link]</a>\\2", 0, &re_err);
-		free(tmp);
+		if(tmp) {
+			status_message = g_regex_replace(re_link, tmp, -1, 0, "<a href='\\1'>[link]</a>\\2", 0, &re_err);
+			free(tmp);
+		}
 
 		elm_anchorblock_text_set(message, status_message);
 		evas_object_smart_callback_add(message, "anchor,clicked", on_message_anchor_clicked, bubble);
@@ -704,7 +695,7 @@ void fill_message_list(int timeline) {
 	} else {
 		status2user = eina_hash_pointer_new(free);
 	}
-	sqlite_res = asprintf(&query, "SELECT * FROM messages where timeline = %d ORDER BY date DESC LIMIT %d;", timeline, MAX_MESSAGES);
+	sqlite_res = asprintf(&query, "SELECT * FROM messages where timeline = %d ORDER BY date DESC LIMIT %d;", timeline, settings->max_messages);
 	if(sqlite_res != -1) {
 		sqlite_res = 0;
 		sqlite3_exec(ed_DB, query, add_status, NULL, &db_err);
@@ -719,34 +710,31 @@ void fill_message_list(int timeline) {
 
 
 /* ********** CALLBACKS *********** */
-static void on_timeline_friends_reload(void *data, Evas_Object *obj, void *event_info)
-{
-	get_messages(TIMELINE_FRIENDS);
+static void on_timeline_friends_reload(void *data, Evas_Object *obj, void *event_info) {
+	if(settings->online) get_messages(TIMELINE_FRIENDS);
 	make_status_list(TIMELINE_FRIENDS);
 	fill_message_list(TIMELINE_FRIENDS);
 }
 
-static void on_timeline_user_reload(void *data, Evas_Object *obj, void *event_info)
-{
-	get_messages(TIMELINE_USER);
+static void on_timeline_user_reload(void *data, Evas_Object *obj, void *event_info) {
+	if(settings->online) get_messages(TIMELINE_USER);
 	make_status_list(TIMELINE_USER);
 	fill_message_list(TIMELINE_USER);
 }
 
-static void on_timeline_public_reload(void *data, Evas_Object *obj, void *event_info)
-{
-	get_messages(TIMELINE_PUBLIC);
+static void on_timeline_public_reload(void *data, Evas_Object *obj, void *event_info) {
+	if(settings->online) get_messages(TIMELINE_PUBLIC);
 	make_status_list(TIMELINE_PUBLIC);
 	fill_message_list(TIMELINE_PUBLIC);
 }
 
 static void on_fs(void *data, Evas_Object *obj, void *event_info) {
-	if(fullscreen)
-		fullscreen=FALSE;
+	if(settings->fullscreen)
+		settings->fullscreen=FALSE;
 	else
-		fullscreen=TRUE;
+		settings->fullscreen=TRUE;
 
-	toggle_fullscreen(fullscreen);
+	toggle_fullscreen(settings->fullscreen);
 }
 
 static int do_post(void *notUsed, int argc, char **argv, char **azColName) {
@@ -882,22 +870,11 @@ static void on_entry_clicked(void *data, Evas_Object *entry, void *event_info) {
 	}
 }
 
-void display_help(void) {
-	printf(_("\nUsage:\n"\
-		"	-d	Debug mode (extra yummy output)\n"
-		"	-h	Help (what you're reading right now)\n"
-		"\n")
-	);
-}
-
 EAPI int elm_main(int argc, char **argv)
 {
-
-	static char options[] = "dhm:";
-	int option, res=0, size=0;
-	long int mm=0;
 	Evas_Object *bg=NULL, *box=NULL, *toolbar=NULL, *bt=NULL, *icon=NULL, *box2=NULL, *hoversel=NULL;
-	char *data=NULL, *home=NULL, *path=NULL;
+	int sqlite_res=0;
+	char *home,*path=NULL;
 
 	LIBXML_TEST_VERSION
 
@@ -905,67 +882,28 @@ EAPI int elm_main(int argc, char **argv)
 	bindtextdomain(PACKAGE, LOCALEDIR);
 	textdomain(PACKAGE);
 
-	eet_init();
-
+	ed_settings_init(argc, argv);
 
 	home=getenv("HOME");
-	res = asprintf(&path, "%s/.elmdentica", home);
-	if(res != -1) {
-		mkdir(path, S_IRWXU);
-		free(path);
-		path=NULL;
+	if(home)
+		sqlite_res = asprintf(&path, "%s/.elmdentica/db", home);
+	else
+		sqlite_res = asprintf(&path, ".elmdentica/db");
 
-		res = asprintf(&path, "%s/.elmdentica/conf.eet", home);
-		if(res != -1)
-			conf = eet_open(path, EET_FILE_MODE_READ_WRITE);
-		if(path) free(path);
-
-		res = asprintf(&path, "%s/.elmdentica/cache", home);
-		if(res != -1) {
-			mkdir(path, S_IRWXU);
-			free(path);
-			res = asprintf(&path, "%s/.elmdentica/cache/icons", home);
-			if(res != -1) {
-				mkdir(path, S_IRWXU);
-				free(path);
-			}
-		}
+	if(sqlite_res == -1) {
+		fprintf(stderr, "Can't create database path");
+		ed_settings_shutdown();
+		exit(2);
 	}
 
-	data = eet_read(conf, "/options/max_messages", &size);
-	if(data) {
-		mm = strtol(data, NULL, 10);
-		if(mm > INT_MIN && mm < INT_MAX)
-			MAX_MESSAGES = (int)mm;
-		free(data);
-		data = NULL;
+	sqlite_res = sqlite3_open(path, &ed_DB);
+	if(sqlite_res) {
+		fprintf(stderr, "Can't open database %s: %s\n", path, sqlite3_errmsg(ed_DB));
+		sqlite3_close(ed_DB);
+		ed_settings_shutdown();
+		exit(2);
 	}
-
-	while((option = getopt(argc,argv,options)) != -1) {
-		switch(option) {
-			case 'd': {
-				debug=1;
-				break;
-			}
-			case 'h': {
-				display_help();
-				exit(0);
-				break;
-			}
-			case 'm': {
-				mm = strtol(optarg, NULL, 10);
-				if(mm > INT_MIN && mm < INT_MAX)
-					MAX_MESSAGES = (int)mm;
-				break;
-			}
-			default: {
-				display_help();
-				exit(1);
-			}
-		}
-	}
-
-	elmdentica_init();
+	free(path);
 
 	win = elm_win_add(NULL, "elmdentica", ELM_WIN_BASIC);
 	elm_win_title_set(win, _("ElmDentica: µ-blog at your fingertips"));
@@ -1090,35 +1028,16 @@ EAPI int elm_main(int argc, char **argv)
 	evas_object_show(win);
 
 
-	data = eet_read(conf, "/options/fullscreen", &size);
-	if(data) {
-		mm = strtol(data, NULL, 10);
-		if(mm)
-			fullscreen=1;
-		else
-			fullscreen=0;
-		free(data);
-	}
-	toggle_fullscreen(fullscreen);
-
-	data = eet_read(conf, "/options/browser", &size);
-	if(data) {
-		mm = strtol(data, NULL, 10);
-		if(mm > INT_MIN && mm < INT_MAX)
-			browser = (int)mm;
-		free(data);
-	}
-
+	if(settings->fullscreen) toggle_fullscreen(settings->fullscreen);
 
 	elm_run();
 	elm_shutdown();
 
-	eet_close(conf);
-	eet_shutdown();
+	ed_settings_shutdown();
 
-	g_regex_unref(re_link);
-	g_regex_unref(re_link_content);
-	g_regex_unref(re_amp);
+	if(re_link) g_regex_unref(re_link);
+	if(re_link_content) g_regex_unref(re_link_content);
+	if(re_amp) g_regex_unref(re_amp);
 
 	xmlCleanupParser();
 

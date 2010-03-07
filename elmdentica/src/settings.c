@@ -27,6 +27,7 @@
 #include <glib/gprintf.h>
 
 #include <Elementary.h>
+#include <Ecore_File.h>
 #include <Ecore_X.h>
 #include <Eet.h>
 
@@ -51,16 +52,16 @@ Evas_Object *settings_win=NULL, *settings_area=NULL, *account_editor=NULL, *cach
 Elm_List_Item * current_account_li=NULL, *current_domain_li=NULL;
 
 extern struct sqlite3 *ed_DB;
-extern int MAX_MESSAGES;
+extern int debug;
 
-extern Eet_File *conf;
+Eet_File *conf_file=NULL;
+char *conf_file_path=NULL;
 
 int current_account_type = ACCOUNT_TYPE_NONE;
 int current_account = 0;
 extern char * url_post;
 extern char * url_friends;
 
-int browser=-1;
 const char * browserNames[] = {
         "XDG Open",
         "Ventura",
@@ -68,7 +69,7 @@ const char * browserNames[] = {
         "Woosh",
         "Dillo",
 	};
-const char * browsers[] = {
+const char * browser_cmnds[] = {
         "/usr/bin/xdg-open %s &",
         "/usr/bin/ventura -u %s &",
         "/usr/bin/midori %s &",
@@ -76,6 +77,38 @@ const char * browsers[] = {
         "/usr/bin/dillo %s &",
 	};
 int browsersIndex=4;
+
+Settings *settings=NULL;
+
+Eina_Hash *eet_eina_hash_add(Eina_Hash *hash, const char *key, const void *data) {
+	if (!hash) hash = eina_hash_string_superfast_new(NULL);
+	if (!hash) return NULL;
+
+	eina_hash_add(hash, key, data);
+	return hash;
+}
+
+static Eet_Data_Descriptor_Class settings_edd_class = {
+	EET_DATA_DESCRIPTOR_CLASS_VERSION,
+	"settings_edd_class",
+	sizeof(Settings), {
+		NULL,
+		NULL,
+		(char *(*)(const char *)) eina_stringshare_add,
+		(void (*)(const char *)) eina_stringshare_del,
+		(void *(*)(void *)) eina_list_next,
+		(void *(*)(void *l, void *d)) eina_list_append,
+		(void *(*)(void *)) eina_list_data_get,
+		(void *(*)(void *)) eina_list_free,
+		(void  (*) (void *, int (*) (void *, const char *, void *, void *), void *)) eina_hash_foreach,
+		(void * (*) (void *, const char *, void *)) eet_eina_hash_add,
+		(void  (*) (void *)) eina_hash_free,
+		NULL,
+		NULL
+	}
+};
+
+Eet_Data_Descriptor *settings_edd=NULL;
 
 extern int debug;
 extern CURL * user_agent;
@@ -802,33 +835,28 @@ void cache_messages_max_set(Evas_Object *label) {
 	char *count=NULL;
 	int res=0;
 
-	res = asprintf(&count, " %3d  ", MAX_MESSAGES);
+	res = asprintf(&count, " %3d  ", settings->max_messages);
 	if(res != -1) {
 		elm_label_label_set(label, count);
 		free(count);
 
-		res = asprintf(&count, "%d", MAX_MESSAGES);
-		if(res != -1) {
-			eet_write(conf, "/options/max_messages", count, strlen(count), 0);
-			free(count);
-		}
 	}
 }
 
 void cache_messages_max_decrease(void *label, Evas_Object *obj, void *event_info) {
-	if(MAX_MESSAGES <= 10)
-		MAX_MESSAGES=0;
+	if(settings->max_messages <= 10)
+		settings->max_messages=0;
 	else
-		MAX_MESSAGES-=10;
+		settings->max_messages-=10;
 
 	cache_messages_max_set((Evas_Object*)label);
 }
 
 void cache_messages_max_increase(void *label, Evas_Object *obj, void *event_info) {
-	if(MAX_MESSAGES >= 90)
-		MAX_MESSAGES=100;
+	if(settings->max_messages >= 90)
+		settings->max_messages=100;
 	else
-		MAX_MESSAGES+=10;
+		settings->max_messages+=10;
 
 	cache_messages_max_set((Evas_Object*)label);
 }
@@ -901,7 +929,7 @@ void on_settings_cache(void *data, Evas_Object *toolbar, void *event_info) {
 			label = elm_label_add(settings_win);
 				evas_object_size_hint_weight_set(label, 1, 1);
 				evas_object_size_hint_align_set(label, 0.5, 0.5);
-				sqlite_res = asprintf(&count, " %3d  ", MAX_MESSAGES);
+				sqlite_res = asprintf(&count, " %3d  ", settings->max_messages);
 				if(sqlite_res != -1) {
 					elm_label_label_set(label, count);
 					free(count);
@@ -934,23 +962,20 @@ void on_settings_cache(void *data, Evas_Object *toolbar, void *event_info) {
 }
 
 static void settings_choose_browser(void *data, Evas_Object *hoversel, void *event_info) {
-	int b = (int)(long)data, res=0;
-	char *tmp;
+	int b = (int)(long)data;
 
 	switch(b) {
-		case BROWSER_VENTURA:	{ browser=b;	break; }
-		case BROWSER_MIDORI:	{ browser=b;	break; }
-		case BROWSER_WOOSH:		{ browser=b;	break; }
-		case BROWSER_DILLO:		{ browser=b;	break; }
+		case BROWSER_VENTURA:	{ settings->browser=b;	break; }
+		case BROWSER_MIDORI:	{ settings->browser=b;	break; }
+		case BROWSER_WOOSH:		{ settings->browser=b;	break; }
+		case BROWSER_DILLO:		{ settings->browser=b;	break; }
 		case BROWSER_XDG:
-		default:				{ browser=b;	break; }
+		default:				{ settings->browser=b;	break; }
 	}
-	elm_hoversel_label_set(hoversel, browserNames[browser]);
-	res = asprintf(&tmp, "%d", browser);
-	if(res != -1) {
-		eet_write(conf, "/options/browser", tmp, strlen(tmp), 0);
-		free(tmp);
-	}
+
+	settings->browser_name = strdup(browserNames[b]);
+	settings->browser_cmd = strdup(browser_cmnds[b]);
+	elm_hoversel_label_set(hoversel, settings->browser_name);
 }
 
 Evas_Object *settings_browser_hoversel(void) {
@@ -986,8 +1011,8 @@ Evas_Object *settings_browser_hoversel(void) {
 		elm_hoversel_hover_end(hoversel);
 
 		if(have_browser) {
-			if(browser >= 0 && browser <= browsersIndex)
-				elm_hoversel_label_set(hoversel, browserNames[browser]);
+			if(settings->browser >= 0 && settings->browser <= browsersIndex)
+				elm_hoversel_label_set(hoversel, browserNames[settings->browser]);
 			else
 				elm_hoversel_label_set(hoversel, _("Please choose a browser"));
 		} else
@@ -998,8 +1023,15 @@ Evas_Object *settings_browser_hoversel(void) {
 	return(hoversel);
 }
 
+void on_toggle_online_changed(void *data, Evas_Object *toggle, void *event_info) {
+	if(elm_toggle_state_get(toggle))
+		settings->online=1;
+	else
+		settings->online=0;
+}
+
 void on_settings_options(void *data, Evas_Object *toolbar, void *event_info) {
-	Evas_Object *frame=NULL, *hoversel=NULL;
+	Evas_Object *frame=NULL, *hoversel=NULL, *toggle=NULL;
 
 	if(account_editor) evas_object_del(account_editor);
 	if(cache_editor) evas_object_del(cache_editor);
@@ -1010,11 +1042,21 @@ void on_settings_options(void *data, Evas_Object *toolbar, void *event_info) {
 		evas_object_size_hint_align_set(options_editor, -1, 0);
 
 		frame = elm_frame_add(settings_area);
-			elm_frame_label_set(frame, _("Preferred browser"));
+			elm_frame_label_set(frame, _("Preferred browser..."));
 			hoversel = settings_browser_hoversel();
 			elm_hoversel_hover_parent_set(hoversel, frame);
 			elm_frame_content_set(frame, hoversel);
 			elm_table_pack(options_editor, frame, 0, 0, 1, 1);
+		evas_object_show(frame);
+		
+		frame = elm_frame_add(settings_area);
+			elm_frame_label_set(frame, _("Online mode..."));
+			toggle = elm_toggle_add(settings_area);
+			elm_toggle_states_labels_set(toggle, _("Online"), _("Offline"));
+			elm_toggle_state_set(toggle, settings->online);
+			evas_object_smart_callback_add(toggle, "changed", on_toggle_online_changed, NULL);
+			elm_frame_content_set(frame, toggle);
+			elm_table_pack(options_editor, frame, 1, 0, 1, 1);
 		evas_object_show(frame);
 		
 		elm_box_pack_start(settings_area, options_editor);
@@ -1076,4 +1118,124 @@ void on_settings(void *data, Evas_Object *obj, void *event_info) {
 	evas_object_show(box);
 	evas_object_resize(settings_win, 300, 300);
 	evas_object_show(settings_win);
+}
+
+void display_help(void) {
+	printf(_("\nUsage:\n"\
+		"   -d   Debug mode (extra yummy output)\n"
+		"   -h   Help (what you're reading right now)\n"
+		"   -m N Show N messages at a time\n"
+		"\n")
+	);
+}
+
+void ed_settings_shutdown(void) {
+	if(settings && !eet_data_write(conf_file, settings_edd, "/settings", (void*)settings, 0))
+			fprintf(stderr, "Failed to save settings.");
+	eet_close(conf_file);
+	eet_data_descriptor_free(settings_edd);
+	eet_shutdown();
+}
+
+void ed_settings_init(int argc, char ** argv) {
+	static char options[] = "dhm:";
+	int option, res;
+	long int mm=0;
+	char *home,*path;
+
+	home = getenv("HOME");
+	if(!home) home="";
+
+	if(!ecore_file_init()) {
+			fprintf(stderr, _("Can't run ecore_file_init()\n"));
+			exit(1);
+	}
+
+	res = asprintf(&path, "%s/.elmdentica/cache/icons", home);
+	if( res == -1 || !ecore_file_mkpath(path)) {
+		fprintf(stderr, (res==-1)?_("Can't create preferences directories since asprintf failed\n"):_("Can't create preferences directories since ecore_file_mkpath failed\n"));
+		ecore_file_shutdown();
+		exit(1);
+	}
+	free(path);
+
+	res = asprintf(&conf_file_path, "%s/.elmdentica/conf.eet", home);
+	if( res==-1 ) {
+		fprintf(stderr, _("Not enough memory to define conf.eet path"));
+		ecore_file_shutdown();
+		exit(1);
+	}
+
+	if(!eet_init()) {
+		fprintf(stderr, _("Couldn't run eet_init()"));
+		ecore_file_shutdown();
+		exit(1);
+	}
+
+	conf_file = eet_open(conf_file_path, EET_FILE_MODE_READ_WRITE);
+	if(!conf_file) {
+		fprintf(stderr, _("Can't create %s"), path);
+		ecore_file_shutdown();
+		eet_shutdown();
+		exit(1);
+	}
+
+	settings_edd = eet_data_descriptor_file_new(&settings_edd_class);
+	if(!settings_edd) {
+		fprintf(stderr, _("Can't setup settings_edd."));
+		ecore_file_shutdown();
+		eet_shutdown();
+		exit(1);
+	}
+
+	EET_DATA_DESCRIPTOR_ADD_BASIC(settings_edd, Settings, "online",			online,			EET_T_INT);
+	EET_DATA_DESCRIPTOR_ADD_BASIC(settings_edd, Settings, "fullscreen",		fullscreen,		EET_T_INT);
+	EET_DATA_DESCRIPTOR_ADD_BASIC(settings_edd, Settings, "browser",		browser,		EET_T_INT);
+	EET_DATA_DESCRIPTOR_ADD_BASIC(settings_edd, Settings, "browser_name",	browser_name,	EET_T_STRING);
+	EET_DATA_DESCRIPTOR_ADD_BASIC(settings_edd, Settings, "browser_cmd",	browser_cmd,	EET_T_STRING);
+	EET_DATA_DESCRIPTOR_ADD_BASIC(settings_edd, Settings, "max_messages",	max_messages,	EET_T_INT);
+
+	settings = eet_data_read(conf_file, settings_edd, "/settings");
+	if(!settings) {
+		settings = calloc(1, sizeof(Settings));
+		if(!settings) {
+			fprintf(stderr, _("Not enough memory for settings, no doubt for anything else either, surely..."));
+			ecore_file_shutdown();
+			eet_shutdown();
+			exit(1);
+		}
+
+		settings->online=1;
+		settings->fullscreen=0;
+		settings->max_messages=20;
+	}
+
+	while((option = getopt(argc,argv,options)) != -1) {
+		switch(option) {
+			case 'd': {
+				debug=1;
+				break;
+			}
+			case 'h': {
+				display_help();
+				ecore_file_shutdown();
+				eet_shutdown();
+				exit(0);
+				break;
+			}
+			case 'm': {
+				mm = strtol(optarg, NULL, 10);
+				if(mm > INT_MIN && mm < INT_MAX)
+					settings->max_messages = (int)mm;
+				break;
+			}
+			default: {
+				display_help();
+				ecore_file_shutdown();
+				eet_shutdown();
+				exit(2);
+			}
+		}
+	}
+
 }
