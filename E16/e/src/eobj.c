@@ -331,13 +331,16 @@ EobjRegister(Window xwin, int type)
    if (type == EOBJ_TYPE_EXT)
      {
 	eo->shaped = 0;		/* FIXME - Assume unshaped for now */
+	if (win->argb)
+	   eo->shadow = 0;
 	EobjSetFloating(eo, 1);
 	EobjSetLayer(eo, 4);
      }
 #endif
 #if 0
-   Eprintf("EobjRegister: %#lx type=%d or=%d: %s\n", xwin, type,
-	   attr.override_redirect, EobjGetName(eo));
+   Eprintf("EobjRegister: %#lx type=%d or=%d: depth=%d argb=%d %s\n",
+	   xwin, type, attr.override_redirect, win->depth, win->argb,
+	   EobjGetName(eo));
 #endif
 
    return eo;
