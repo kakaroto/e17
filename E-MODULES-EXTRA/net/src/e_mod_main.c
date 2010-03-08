@@ -35,7 +35,7 @@ e_modapi_init(E_Module *m)
 	Config_Item *ci;
 
 	net_cfg = E_NEW(Config, 1);
-	ci = _config_item_get("0");
+	ci = _net_config_item_get("0");
      }
    net_cfg->mod = m;
    _gc_register();

@@ -4,8 +4,8 @@
 #include "e_mod_net.h"
 #include "e_mod_gadcon.h"
 
-EINTERN Config_Item *
-_config_item_get(const char *id) 
+Config_Item *
+_net_config_item_get(const char *id) 
 {
    Eina_List *l;
    Config_Item *ci;
@@ -46,8 +46,8 @@ _config_item_get(const char *id)
    return ci;
 }
 
-EINTERN Eina_List *
-_config_devices_get(void) 
+Eina_List *
+_net_config_devices_get(void) 
 {
    Eina_List *devs = NULL;
 #ifndef __FreeBSD__
@@ -92,8 +92,8 @@ _config_devices_get(void)
    return devs;
 }
 
-EINTERN void 
-_config_updated(Config_Item *ci)
+void 
+_net_config_updated(Config_Item *ci)
 {
    Eina_List *l;
    

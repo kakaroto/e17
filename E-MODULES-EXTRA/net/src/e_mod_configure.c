@@ -88,7 +88,7 @@ _fill_data(Config_Item *ci, E_Config_Dialog_Data *cfdata)
    cfdata->show_popup = ci->show_popup;
    cfdata->limit = ci->limit;
    
-   cfdata->devs = _config_devices_get();
+   cfdata->devs = _net_config_devices_get();
    if (!cfdata->devs) return;
    EINA_LIST_FOREACH(cfdata->devs, l, tmp)
      {

@@ -28,7 +28,7 @@ _gc_init(E_Gadcon *gc, const char *name, const char *id, const char *style)
    snprintf(buf, sizeof(buf), "%s/net.edj", e_module_dir_get(net_cfg->mod));
 
    inst = E_NEW(Instance, 1);
-   inst->ci = _config_item_get(id);
+   inst->ci = _net_config_item_get(id);
  
    inst->o_net = edje_object_add(gc->evas);
    if (!e_theme_edje_object_set(inst->o_net, "base/theme/modules/net",
@@ -109,7 +109,7 @@ _gc_id_new(E_Gadcon_Client_Class *client_class)
 {
    Config_Item *ci;
 
-   ci = _config_item_get(NULL);
+   ci = _net_config_item_get(NULL);
    return ci->id;
 }
 
