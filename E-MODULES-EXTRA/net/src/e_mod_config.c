@@ -23,7 +23,7 @@ _net_config_item_get(const char *id)
 	     p = strrchr(ci->id, '.');
 	     if (p) num = atoi(p + 1) + 1;
 	  }
-	snprintf(buf, sizeof(buf), "%s.%d", _gc_name(), num);
+	snprintf(buf, sizeof(buf), "%s.%d", _net_gc_name(), num);
 	id = buf;
      }
    else
