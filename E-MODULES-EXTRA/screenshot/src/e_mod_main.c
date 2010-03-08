@@ -515,7 +515,7 @@ _cb_send_msg(void *data)
    Edje_Message_Int_Set *msg = NULL;
 
    if (!(inst = data)) return;
-   if (ss_cfg->delay <= 0.0) return;
+//   if (ss_cfg->delay <= 0.0) return;
    msg = malloc(sizeof(Edje_Message_Int_Set) + 1 * sizeof(int));
    msg->count = 1;
    msg->val[0] = ss_cfg->delay;
@@ -700,17 +700,17 @@ _cb_timer(void *data)
 
    if (!(inst = data)) return 0;
 
-   if ((ss_cfg->delay - inst->counter) < 0) inst->counter = 0;
+   if ((ss_cfg->delay - inst->counter) <= 0) inst->counter = 0;
 
-   snprintf(buf, sizeof(buf), "%2.0f", (ss_cfg->delay - inst->counter));
-   edje_object_part_text_set(inst->o_base, "e.text.counter", buf);
-   if ((ss_cfg->delay - inst->counter) == 0) 
+   if ((ss_cfg->delay - inst->counter) <= 0) 
      {
         inst->timer = NULL;
         inst->counter = 0;
         _cb_send_msg(inst);
         return 0;
      }
+   snprintf(buf, sizeof(buf), "%2.0f", (ss_cfg->delay - inst->counter));
+   edje_object_part_text_set(inst->o_base, "e.text.counter", buf);
    inst->counter++;
    return 1;
 }

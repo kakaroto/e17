@@ -30,8 +30,7 @@ e_int_config_screenshot_module(E_Container *con, const char *params)
    E_Config_Dialog_View *v = NULL;
    char buf[PATH_MAX];
 
-   if (e_config_dialog_find("Screenshot", 
-                            "extensions/screenshot")) 
+   if (e_config_dialog_find("Screenshot", "extensions/screenshot")) 
      return NULL;
 
    v = E_NEW(E_Config_Dialog_View, 1);
