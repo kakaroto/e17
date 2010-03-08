@@ -531,7 +531,7 @@ static void on_bubble_mouse_up(void *data, Evas *e, Evas_Object *obj, void *even
 static int add_status(void *data, int argc, char **argv, char **azColName) {
 	char *screen_name=NULL, *name=NULL, *status_message=NULL;
 	int id=0, account_id=0, res=0;
-	Eina_Bool timeline=(int)(long)data;
+	Eina_Bool timeline=data?(int)(long)data:0;
 	time_t date;
 
 	ub_Bubble * ubBubble = calloc(1, sizeof(ub_Bubble));

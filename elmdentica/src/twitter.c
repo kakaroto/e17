@@ -178,7 +178,7 @@ void ed_twitter_max_status_id(int account_id, long long int*since_id, int timeli
 void ed_twitter_timeline_get(int account_id, char *screen_name, char *password, char *proto, char *domain, int port, char *base_url, int timeline) {
 	int xml_res=0;
 	long long int since_id=0;
-	char *timeline_str=NULL;
+	char *timeline_str;
 	http_request * request=calloc(1, sizeof(http_request));
 	StatusesList *statuses=(StatusesList*)g_malloc(sizeof(StatusesList));
 	time_t now;
@@ -200,9 +200,7 @@ void ed_twitter_timeline_get(int account_id, char *screen_name, char *password, 
 			xml_res = asprintf(&request->url, "%s://%s:%d%s/statuses/%s_timeline.xml?since_id=%lld", proto, domain, port, base_url, timeline_str, since_id);
 		else
 			xml_res = asprintf(&request->url, "%s://%s:%d%s/statuses/%s_timeline.xml", proto, domain, port, base_url, timeline_str);
-	}
-
-	if(timeline == TIMELINE_FAVORITES) {
+	} else if(timeline == TIMELINE_FAVORITES) {
 		if(since_id > 0)
 			xml_res = asprintf(&request->url, "%s://%s:%d%s/favorites.xml?since_id=%lld", proto, domain, port, base_url, since_id);
 		else
