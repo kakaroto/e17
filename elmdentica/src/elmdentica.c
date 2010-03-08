@@ -164,6 +164,7 @@ void make_status_list(int timeline) {
 	switch(timeline) {
 		case TIMELINE_USER:		{	label = _(" <b>Last posted messages...</b>");		break; }
 		case TIMELINE_PUBLIC:	{	label = _(" <b>Everyone...</b>");	break; }
+		case TIMELINE_FAVORITES: {	label = _(" <b>My favorites...</b>");	break; }
 		case TIMELINE_FRIENDS:
 		default:				{	label = _(" <b>Me and my friends...</b>");	break; }
 	}
@@ -196,6 +197,9 @@ void error_win_del(void *data, Evas_Object *zbr, void *event_info) {
 void ed_statusnet_favorite_create(int id, char *screen_name, char *password, char *proto, char *domain, int port, char *base_url, int timeline) {
 }
 
+void ed_statusnet_favorite_destroy(int id, char *screen_name, char *password, char *proto, char *domain, int port, char *base_url, int timeline) {
+}
+
 static int ed_mark_favorite(void *data, int argc, char **argv, char **azColName) {
 	ub_Bubble * status = (ub_Bubble*)data;
 	char *screen_name=NULL, *password=NULL, *proto=NULL, *domain=NULL, *base_url=NULL;
@@ -220,10 +224,18 @@ static int ed_mark_favorite(void *data, int argc, char **argv, char **azColName)
 	base_url = argv[6];
 	id = atoi(argv[7]);
 
-	switch(atoi(argv[2])) {
-		case ACCOUNT_TYPE_TWITTER: { ed_twitter_favorite_create(id, screen_name, password, proto, domain, port, base_url, status->status_id); break; }
-		case ACCOUNT_TYPE_STATUSNET:
-		default: { ed_statusnet_favorite_create(id, screen_name, password, proto, domain, port, base_url, status->status_id); break; }
+	if(status->favorite) {
+		switch(atoi(argv[2])) {
+			case ACCOUNT_TYPE_TWITTER: { ed_twitter_favorite_destroy(id, screen_name, password, proto, domain, port, base_url, status->status_id); break; }
+			case ACCOUNT_TYPE_STATUSNET:
+			default: { ed_statusnet_favorite_destroy(id, screen_name, password, proto, domain, port, base_url, status->status_id); break; }
+		}
+	} else {
+		switch(atoi(argv[2])) {
+			case ACCOUNT_TYPE_TWITTER: { ed_twitter_favorite_create(id, screen_name, password, proto, domain, port, base_url, status->status_id); break; }
+			case ACCOUNT_TYPE_STATUSNET:
+			default: { ed_statusnet_favorite_create(id, screen_name, password, proto, domain, port, base_url, status->status_id); break; }
+		}
 	}
 	return(0);
 }
@@ -238,16 +250,18 @@ static void on_mark_favorite(void *data, Evas_Object *obj, void *event_info) {
 	if(!status) return;
 
 	sqlite_res = asprintf(&query, "SELECT name,password,type,proto,domain,port,base_url,id FROM accounts WHERE enabled = 1 and id = %d;", status->account_id);
-	sqlite3_exec(ed_DB, query, ed_mark_favorite, data, &db_err);
-	if(sqlite_res != 0) {
-		printf("Can't run %s: %d => %s\n", query, sqlite_res, db_err);
-	}
-	sqlite3_free(db_err);
-
-	e = evas_object_evas_get(win);
-	if(e) {
-		hover = evas_object_name_find(e, "hover_actions");
-		evas_object_del(hover);
+	if(sqlite_res != -1) {
+		sqlite_res = sqlite3_exec(ed_DB, query, ed_mark_favorite, data, &db_err);
+		if(sqlite_res != 0) {
+			printf("Can't run %s: %d => %s\n", query, sqlite_res, db_err);
+		}
+		sqlite3_free(db_err);
+		free(query);
+		e = evas_object_evas_get(win);
+		if(e) {
+			hover = evas_object_name_find(e, "hover_actions");
+			evas_object_del(hover);
+		}
 	}
 }
 
@@ -494,7 +508,10 @@ static void on_bubble_mouse_up(void *data, Evas *e, Evas_Object *obj, void *even
 				button = elm_button_add(win);
 					evas_object_size_hint_weight_set(button, 1, 1);
 					evas_object_size_hint_align_set(button, -1, 0);
-					elm_button_label_set(button, _("Mark favorite"));
+					if(ubBubble->favorite)
+						elm_button_label_set(button, _("Unmark favorite"));
+					else
+						elm_button_label_set(button, _("Mark favorite"));
 					evas_object_smart_callback_add(button, "clicked", on_mark_favorite, ubBubble);
 					elm_table_pack(table, button, 0, 1, 2, 1);
 				evas_object_show(button);
@@ -511,9 +528,10 @@ static void on_bubble_mouse_up(void *data, Evas *e, Evas_Object *obj, void *even
 
 }
 
-static int add_status(void *notUsed, int argc, char **argv, char **azColName) {
+static int add_status(void *data, int argc, char **argv, char **azColName) {
 	char *screen_name=NULL, *name=NULL, *status_message=NULL;
 	int id=0, account_id=0, res=0;
+	Eina_Bool timeline=(int)(long)data;
 	time_t date;
 
 	ub_Bubble * ubBubble = calloc(1, sizeof(ub_Bubble));
@@ -637,6 +655,9 @@ static int add_status(void *notUsed, int argc, char **argv, char **azColName) {
 		ubBubble->screen_name = strdup("");
 	ubBubble->message = status_message;
 
+	if(timeline == TIMELINE_FAVORITES)
+		ubBubble->favorite = TRUE;
+
 	eina_hash_add(status2user, (void*)&bubble, (void*)ubBubble);
 
 	return(0);
@@ -754,10 +775,10 @@ void fill_message_list(int timeline) {
 	} else {
 		status2user = eina_hash_pointer_new(free);
 	}
-	sqlite_res = asprintf(&query, "SELECT * FROM messages where timeline = %d ORDER BY date DESC LIMIT %d;", timeline, settings->max_messages);
+	sqlite_res = asprintf(&query, "SELECT messages.*,accounts.id as accid,accounts.enabled FROM messages,accounts where messages.timeline = %d and messages.account_id=accid and accounts.enabled=1 ORDER BY messages.date DESC LIMIT %d;", timeline, settings->max_messages);
 	if(sqlite_res != -1) {
 		sqlite_res = 0;
-		sqlite3_exec(ed_DB, query, add_status, NULL, &db_err);
+		sqlite3_exec(ed_DB, query, add_status, (void*)(long)timeline, &db_err);
 		if(sqlite_res != 0) {
 			printf("Can't run %s: %d => %s\n", query, sqlite_res, db_err);
 		}
@@ -785,6 +806,12 @@ static void on_timeline_public_reload(void *data, Evas_Object *obj, void *event_
 	if(settings->online) get_messages(TIMELINE_PUBLIC);
 	make_status_list(TIMELINE_PUBLIC);
 	fill_message_list(TIMELINE_PUBLIC);
+}
+
+static void on_timeline_favorites_reload(void *data, Evas_Object *obj, void *event_info) {
+	if(settings->online) get_messages(TIMELINE_FAVORITES);
+	make_status_list(TIMELINE_FAVORITES);
+	fill_message_list(TIMELINE_FAVORITES);
 }
 
 static void on_fs(void *data, Evas_Object *obj, void *event_info) {
@@ -980,8 +1007,9 @@ EAPI int elm_main(int argc, char **argv)
 			elm_hoversel_icon_set(bt, icon);
 			
 			elm_hoversel_item_add(bt, _("Friends & I"), NULL, ELM_ICON_NONE, on_timeline_friends_reload, NULL);
-			elm_hoversel_item_add(bt, _("Just me"), NULL, ELM_ICON_NONE, on_timeline_user_reload, NULL);
+			elm_hoversel_item_add(bt, _("Favorites"), NULL, ELM_ICON_NONE, on_timeline_favorites_reload, NULL);
 			elm_hoversel_item_add(bt, _("Everyone"), NULL, ELM_ICON_NONE, on_timeline_public_reload, NULL);
+			elm_hoversel_item_add(bt, _("Just me"), NULL, ELM_ICON_NONE, on_timeline_user_reload, NULL);
 			
 			elm_hoversel_hover_end(bt);
 

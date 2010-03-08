@@ -195,10 +195,19 @@ void ed_twitter_timeline_get(int account_id, char *screen_name, char *password, 
 
 	ed_twitter_max_status_id(account_id, &since_id, timeline);
 
-	if(since_id > 0)
-		xml_res = asprintf(&request->url, "%s://%s:%d%s/statuses/%s_timeline.xml?since_id=%lld", proto, domain, port, base_url, timeline_str, since_id);
-	else
-		xml_res = asprintf(&request->url, "%s://%s:%d%s/statuses/%s_timeline.xml", proto, domain, port, base_url, timeline_str);
+	if(timeline < TIMELINE_FAVORITES) {
+		if(since_id > 0)
+			xml_res = asprintf(&request->url, "%s://%s:%d%s/statuses/%s_timeline.xml?since_id=%lld", proto, domain, port, base_url, timeline_str, since_id);
+		else
+			xml_res = asprintf(&request->url, "%s://%s:%d%s/statuses/%s_timeline.xml", proto, domain, port, base_url, timeline_str);
+	}
+
+	if(timeline == TIMELINE_FAVORITES) {
+		if(since_id > 0)
+			xml_res = asprintf(&request->url, "%s://%s:%d%s/favorites.xml?since_id=%lld", proto, domain, port, base_url, since_id);
+		else
+			xml_res = asprintf(&request->url, "%s://%s:%d%s/favorites.xml", proto, domain, port, base_url);
+	}
 
 	if(xml_res != -1) {
 		if (debug) printf("gnome-open %s\n", request->url);
@@ -235,6 +244,34 @@ void ed_twitter_favorite_create(int account_id, char *screen_name, char *passwor
 	int res;
 
 	res = asprintf(&request->url, "%s://%s:%d%s/favorites/create/%ld.xml", proto, domain, port, base_url, status_id);
+	if(res != -1) {
+		ed_curl_post(screen_name, password, request, "");
+		free(request->url);
+	}
+	if(request) free(request);
+}
+
+void ed_twitter_favorite_db_remove(int account_id, long int status_id) {
+	char *query=NULL, *db_err=NULL;;
+	int sqlite_res;
+
+	sqlite_res = asprintf(&query, "DELETE FROM messages WHERE account_id = %d and status_id = %ld and timeline = %d;", account_id, status_id, TIMELINE_FAVORITES);
+	if(sqlite_res != -1) {
+		sqlite_res = sqlite3_exec(ed_DB, query, NULL, NULL, &db_err);
+		if(sqlite_res != 0) {
+			fprintf(stderr, "Can't do %s: %d means '%s' was missed in the statement.\n", query, sqlite_res, db_err);
+			sqlite3_free(db_err);
+		}
+		free(query);
+	}
+}
+
+void ed_twitter_favorite_destroy(int account_id, char *screen_name, char *password, char *proto, char *domain, int port, char *base_url, long int status_id) {
+	http_request * request=calloc(1, sizeof(http_request));
+	int res;
+
+	ed_twitter_favorite_db_remove(account_id, status_id);
+	res = asprintf(&request->url, "%s://%s:%d%s/favorites/destroy/%ld.xml", proto, domain, port, base_url, status_id);
 	if(res != -1) {
 		ed_curl_post(screen_name, password, request, "");
 		free(request->url);

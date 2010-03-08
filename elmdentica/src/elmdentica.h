@@ -53,6 +53,7 @@ typedef struct _ub_bubble {
 	char *message;
 	int   account_id;
 	long int   status_id;
+	Eina_Bool	favorite;
 } ub_Bubble;
 
 typedef struct _StatusesList {
@@ -70,6 +71,7 @@ typedef struct _StatusesList {
 #define TIMELINE_FRIENDS 0
 #define TIMELINE_USER 1
 #define TIMELINE_PUBLIC 2
+#define TIMELINE_FAVORITES 3
 
 #define BROWSER_XDG		0
 #define	BROWSER_VENTURA	1
