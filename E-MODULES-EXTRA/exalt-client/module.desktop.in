@@ -4,12 +4,12 @@ Type=Link
 Name=Exalt
 Name[eo]=Exalt
 Icon=e-module-exalt
-Comment=<title>Exalt Module</title><br>A user-friendly tool to setup and manage network interfaces.
-Comment[cs]=<title>Exalt modul</title><br>Uživatelsky přívětivé rozhraní k nastavení a správě sítových zařízení.
-Comment[it]=<title>Modulo Exalt</title><br>Una utilità per configurare e gestire le interfacce di rete.
-Comment[el]=<hilight>Άρθρωμα exalt</hilight>
-Comment[eo]=<hilight>Modulo Exalt</hilight>
-Comment[fr]=<title>Module Exalt</title><br>Un outil pour configurer simplement vos interfaces réseau.
+Comment=A user-friendly tool to setup and manage network interfaces.
+Comment[cs]=Uživatelsky přívětivé rozhraní k nastavení a správě sítových zařízení.
+Comment[it]=Una utilità per configurare e gestire le interfacce di rete.
+Comment[el]=
+Comment[eo]=
+Comment[fr]=Un outil pour configurer simplement vos interfaces réseau.
 
 #Several different types available here. NEED TO DOC THESE.
 X-Enlightenment-ModuleType=system
