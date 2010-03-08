@@ -114,7 +114,7 @@ if __name__ == "__main__":
                 continue
 
             editje = Editje(sf)
-            if group and group in edje.file_collection_list(file):
+            if group and group in edje.file_collection_list(sf.workfile):
                 editje.group = group
             editje.show()
     else:
