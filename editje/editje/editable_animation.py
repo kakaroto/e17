@@ -15,11 +15,17 @@
 # You should have received a copy of the GNU Lesser General Public
 # License along with Editje.  If not, see
 # <http://www.gnu.org/licenses/>.
+import re
 
 import edje
 
 from event_manager import Manager
 from editable_program import EditableProgram
+
+program_stop = re.compile("@(.*)@stop$")
+program_end = re.compile("@(.*)@end$")
+program_time = re.compile("@(.*)@(\d+\.\d+)$")
+program = re.compile("@(.*)@((?:\d+\.\d+)|end|stop)$")
 
 class EditableAnimation(Manager, object):
     def __init__(self, editable):
@@ -67,6 +73,49 @@ class EditableAnimation(Manager, object):
         return self._name
 
     name = property(_name_get, _name_set)
+
+    def name_set(self, name):
+        if not name:
+            return
+
+        # stop program
+        stopname = "@%s@stop" % self._name
+        stopprog = self.e._edje.program_get(stopname)
+        if not stopprog or not stopprog.rename("@%s@stop" % name):
+            return
+        stopprog.source_set(name)
+
+        # others programs
+        for p in stopprog.targets_get():
+            prog = self.e._edje.program_get(p)
+            time = program.match(p).group(2)
+            p2 = "@%s@%s" % (name, time)
+            if time == "end":
+                prog.state2_set(name)
+            else:
+                for pp in prog.targets_get():
+                    part = self.e._edje.part_get(pp)
+                    if not part:
+                        #prog.target_del(pp) TODO: binding
+                        continue
+                    state = part.state_get(p + " 0.00")
+                    if not state:
+                        continue
+                    state.name_set(p2 + " 0.00")
+
+                if time == "0.00":
+                    prog.source_set(name)
+
+                prog.state_set(p2)
+
+            prog.rename(p2)
+        # Hack to force reload animation list
+        # self._name = name
+        state = self.state
+        self.e._programs_reload_cb(self, True)
+        self.name = name
+        self.state = state
+        return
 
     # Play
     def play(self):

@@ -180,10 +180,10 @@ class AnimationDetails(EditjeDetails):
                              'Decelerate']
 
         self._header_table = PropertyTable(parent)
+        self._header_table._value_changed = self.header_prop_value_changed
 
         prop = Property(parent, "name")
         wid = WidgetEntry(self)
-        wid.disabled_set(True)
         prop.widget_add("n", wid)
         self._header_table.property_add(prop)
 
@@ -305,6 +305,11 @@ class AnimationDetails(EditjeDetails):
         if self._last_timestamp != self.e.animation.state:
             self._parent.main_edje.signal_emit(sig, "editje")
         self._last_timestamp = self.e.animation.state
+
+    def header_prop_value_changed(self, prop, value, group):
+        if prop == "name":
+            if not self.e.animation.name_set(value):
+               self._header_table["name"].value = self.e.animation.name
 
     def prop_value_changed(self, prop, value, group):
         if prop == "transition":
