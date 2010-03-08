@@ -35,9 +35,9 @@ _gc_init(E_Gadcon *gc, const char *name, const char *id, const char *style)
 				"modules/net/main"))
      edje_object_file_set(inst->o_net, buf, "modules/net/main");
    edje_object_signal_callback_add(inst->o_net, "e,action,mouse,in", "",
-				   _cb_mouse_in, inst);
+				   _net_cb_mouse_in, inst);
    edje_object_signal_callback_add(inst->o_net, "e,action,mouse,out", "",
-				   _cb_mouse_out, inst);
+				   _net_cb_mouse_out, inst);
    evas_object_show(inst->o_net);
 
    if (!inst->ci->show_text)
@@ -48,10 +48,10 @@ _gc_init(E_Gadcon *gc, const char *name, const char *id, const char *style)
    gcc = e_gadcon_client_new(gc, name, id, style, inst->o_net);
    gcc->data = inst;
    inst->gcc = gcc;
-   inst->timer = ecore_timer_add(0.5, _cb_poll, inst);
+   inst->timer = ecore_timer_add(0.5, _net_cb_poll, inst);
 
    evas_object_event_callback_add(inst->o_net, EVAS_CALLBACK_MOUSE_DOWN, 
-				  _cb_mouse_down, inst);
+				  _net_cb_mouse_down, inst);
 
    net_cfg->instances = eina_list_append(net_cfg->instances, inst);
    return gcc;
@@ -68,11 +68,11 @@ _gc_shutdown(E_Gadcon_Client *gcc)
    if (inst->o_net) 
      {
 	evas_object_event_callback_del(inst->o_net, EVAS_CALLBACK_MOUSE_DOWN,
-				       _cb_mouse_down);
+				       _net_cb_mouse_down);
 	edje_object_signal_callback_del(inst->o_net, "e,action,mouse,in", "",
-					_cb_mouse_in);
+					_net_cb_mouse_in);
 	edje_object_signal_callback_del(inst->o_net, "e,action,mouse,out", "",
-					_cb_mouse_out);
+					_net_cb_mouse_out);
 	evas_object_del(inst->o_net);
      }
    E_FREE(inst);

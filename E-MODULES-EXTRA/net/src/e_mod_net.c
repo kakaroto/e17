@@ -39,8 +39,8 @@ get_ifmib_general(int row, struct ifmibdata *ifmd)
 }
 #endif
 
-EINTERN int 
-_cb_poll(void *data) 
+int 
+_net_cb_poll(void *data) 
 {
    Instance *inst;
    char buf[256], popbuf[256], tmp[100];
@@ -135,8 +135,8 @@ _cb_poll(void *data)
    return 1;
 }
 
-EINTERN void 
-_cb_mouse_down(void *data, Evas *evas, Evas_Object *obj, void *event) 
+void 
+_net_cb_mouse_down(void *data, Evas *evas, Evas_Object *obj, void *event) 
 {
    Instance *inst;
    Ecore_Exe *x;
@@ -182,8 +182,8 @@ _cb_mouse_down(void *data, Evas *evas, Evas_Object *obj, void *event)
      }
 }
 
-EINTERN void 
-_cb_mouse_in(void *data, Evas_Object *obj, const char *emission, const char *source)
+void 
+_net_cb_mouse_in(void *data, Evas_Object *obj, const char *emission, const char *source)
 {
    Instance *inst;
    Evas_Object *bg;
@@ -216,8 +216,8 @@ _cb_mouse_in(void *data, Evas_Object *obj, const char *emission, const char *sou
    e_gadcon_popup_show(inst->popup);
 }
 
-EINTERN void 
-_cb_mouse_out(void *data, Evas_Object *obj, const char *emission, const char *source)
+void 
+_net_cb_mouse_out(void *data, Evas_Object *obj, const char *emission, const char *source)
 {
    Instance *inst;
    

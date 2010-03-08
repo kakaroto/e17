@@ -105,7 +105,7 @@ _net_config_updated(Config_Item *ci)
 	inst = l->data;
 	if (inst->ci != ci) continue;
 	if (!inst->timer)
-	  inst->timer = ecore_timer_add(0.5, _cb_poll, inst);
+	  inst->timer = ecore_timer_add(0.5, _net_cb_poll, inst);
 	if (!ci->show_text)
 	  edje_object_signal_emit(inst->o_net, "e,state,text,hide", "e");
 	else
