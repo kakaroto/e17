@@ -100,9 +100,11 @@ drawer_plugin_init(Drawer_Plugin *p, const char *id)
 	e_config_save_queue();
      }
 
+#if 0
    inst->handlers = eina_list_append(inst->handlers,
 				     ecore_event_handler_add(EFREET_EVENT_DESKTOP_LIST_CHANGE,
 							     _history_efreet_desktop_list_change_cb, inst));
+#endif
    inst->handlers = eina_list_append(inst->handlers,
 				     ecore_event_handler_add(E_EVENT_EXEHIST_UPDATE,
 							     _history_efreet_desktop_list_change_cb, inst));
