@@ -21,8 +21,10 @@ cdef class State:
     cdef EdjeEdit edje
     cdef object part
     cdef object _name
+    cdef object _part_obj
 
     def __init__(self, Part part, char *name):
+        self._part_obj = part
         self.edje = part.edje
         self.part = part.name
         self._name = name
@@ -30,6 +32,9 @@ cdef class State:
     property name:
         def __get__(self):
             return self._name
+
+    def part_get(self):
+        return self._part_obj
 
     def name_set(self, new_name):
         return edje_edit_state_name_set(self.edje.obj, self.part, self._name,
