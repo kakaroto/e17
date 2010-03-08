@@ -171,6 +171,6 @@ _apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
      ci->app = eina_stringshare_add(cfdata->app);
    
    e_config_save_queue();
-   _config_updated(ci);
+   _net_config_updated(ci);
    return 1;
 }
