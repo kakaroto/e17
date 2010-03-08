@@ -360,6 +360,11 @@ cdef public class Edje(evas.c_evas.Object) [object PyEdje, type PyEdje_Type]:
         edje_object_size_min_calc(self.obj, &w, &h)
         return (w, h)
 
+    def parts_extends_calc(self):
+        cdef int x, y, w, h
+        edje_object_parts_extends_calc(self.obj, &x, &y, &w, &h)
+        return (x, y, w, h)
+
     def part_exists(self, char *part):
         "@rtype: bool"
         return bool(edje_object_part_exists(self.obj, part))

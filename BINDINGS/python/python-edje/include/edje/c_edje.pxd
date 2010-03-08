@@ -271,6 +271,7 @@ cdef extern from "Edje.h":
     void edje_object_size_max_get(evas.c_evas.Evas_Object *obj, evas.c_evas.Evas_Coord *maxw, evas.c_evas.Evas_Coord *maxh)
     void edje_object_calc_force(evas.c_evas.Evas_Object *obj)
     void edje_object_size_min_calc(evas.c_evas.Evas_Object *obj, evas.c_evas.Evas_Coord *minw, evas.c_evas.Evas_Coord *minh)
+    evas.c_evas.Eina_Bool edje_object_parts_extends_calc(evas.c_evas.Evas_Object *obj, evas.c_evas.Evas_Coord *x, evas.c_evas.Evas_Coord *y, evas.c_evas.Evas_Coord *w, evas.c_evas.Evas_Coord *h)
 
     int edje_object_part_exists(evas.c_evas.Evas_Object *obj, char *part)
     evas.c_evas.Evas_Object *edje_object_part_object_get(evas.c_evas.Evas_Object *obj, char *part)
