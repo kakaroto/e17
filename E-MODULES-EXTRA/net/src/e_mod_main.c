@@ -38,14 +38,14 @@ e_modapi_init(E_Module *m)
 	ci = _net_config_item_get("0");
      }
    net_cfg->mod = m;
-   _gc_register();
+   _net_gc_register();
    return m;
 }
 
 EAPI int
 e_modapi_shutdown(E_Module *m) 
 {
-   _gc_unregister();
+   _net_gc_unregister();
    net_cfg->mod = NULL;
    
    if (net_cfg->cfd) e_object_del(E_OBJECT(net_cfg->cfd));
