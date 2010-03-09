@@ -332,6 +332,8 @@ class GroupSelectionWizard(Wizard):
         current = self._select_get_cb()
         r = self._delete_cb(grp_name)
         if not r:
+            self._preview.group_set(self._groups_list.file,
+                                    self._groups_list.selection)
             self.notify("Error while deleting this group "
                         "(only group in the file?)")
             return
