@@ -12,7 +12,7 @@ DESCRIPTION="View PDF files using EFL applications."
 IUSE=""
 
 RDEPEND="
-	>=virtual/poppler-0.12
+	>=app-text/poppler-0.12
 	>=media-libs/evas-9999
 	>=dev-libs/ecore-9999[evas]"
 DEPEND="${RDEPEND}"
