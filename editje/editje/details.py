@@ -36,8 +36,6 @@ class EditjeDetails(edje.Edje):
         self._min_size_collapsed = self.size_min_calc()
         self._min_size = self._min_size_collapsed
 
-        self._opened = False
-
         self._box = elementary.Box(parent)
         self._box.pack_end(self._proptable)
         self._box.size_hint_weight_set(1.0, 0.0)
@@ -47,14 +45,14 @@ class EditjeDetails(edje.Edje):
         self.size_hint_weight_set(1.0, 0.0)
         self.size_hint_align_set(-1.0, -1.0)
         self.size_hint_min_set(*self._min_size_collapsed)
-        self.edje_get().signal_callback_add("cl,*", "editje/collapsable",
-                                            self._header_toggle_cb)
 
         self._subgroups = dict()
 
+        self._open_load()
+
     def _size_hint_changed_cb(self, obj):
         self._min_size = self.size_min_calc()
-        if self._opened:
+        if self._open:
             self.size_hint_min_set(*self._min_size)
 
     def content_set(self, part, obj):
@@ -64,15 +62,6 @@ class EditjeDetails(edje.Edje):
 
     def edje_get(self):
         return self
-
-    def open(self):
-        self.edje_get().signal_emit("mouse,clicked,1", "cl.header.open")
-
-    def close(self):
-        self.edje_get().signal_emit("mouse,clicked,1", "cl.header.close")
-
-    def title_set(self, title):
-        self.edje_get().part_text_set("cl.header.title", title)
 
     def group_add(self, name):
         if name in self._subgroups:
@@ -146,3 +135,64 @@ class EditjeDetails(edje.Edje):
         elif key in self._subgroups:
             return self._subgroups[key]["table"]
         raise KeyError(key)
+
+    # Title
+    def _title_set(self, value):
+        self.part_text_set("cl.header.title", value)
+
+    def _title_get(self):
+        return self.part_text_get("cl.header.title")
+
+    title = property(_title_get, _title_set)
+
+    #  Open / Close
+    def _open_load(self):
+        self.signal_callback_add("cl,opened", "editje/collapsable",
+                                 self._opened_cb)
+        self.signal_callback_add("cl,closed", "editje/collapsable",
+                                 self._closed_cb)
+
+        self._open = False
+        self._open_disable = True
+        self.open = False
+
+    def _open_set(self, value):
+        if self._open_disable:
+            return
+        self.open_set(value)
+
+    def open_set(self, value):
+        if value:
+            self.signal_emit("cl,open", "")
+        else:
+            self.signal_emit("cl,close", "")
+
+    def _opened_cb(self, obj, emission, source):
+        self._open = True
+        self.size_hint_weight_set(1.0, 1.0)
+        self.size_hint_min_set(*self._min_size)
+        self.calc_force()
+
+    def _closed_cb(self, obj, emission, source):
+        self._open = False
+        self.size_hint_weight_set(1.0, 0.0)
+        self.size_hint_min_set(*self._min_size_collapsed)
+        self.calc_force()
+
+    def _open_get(self):
+        return self._open
+
+    open = property(_open_get, _open_set)
+
+    def _open_disable_set(self, value):
+        if value:
+            self.edje_get().signal_emit("cl,disable", "")
+        else:
+            self.edje_get().signal_emit("cl,enable", "")
+        self._open_disable = value
+
+    def _open_disable_get(self, value):
+        return self._open_disable
+
+    open_disable = property(_open_disable_get, _open_disable_set)
+

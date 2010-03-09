@@ -174,7 +174,7 @@ class AnimationDetails(EditjeDetails):
         EditjeDetails.__init__(self, parent,
                                group="editje/collapsable/part_properties")
 
-        self.title_set("animation")
+        self.title = "animation"
 
         self._transitions = ['None', 'Linear', 'Sinusoidal', 'Accelerate',
                              'Decelerate']
@@ -238,20 +238,29 @@ class AnimationDetails(EditjeDetails):
         self.e.animation.callback_add("state.changed", self._update_states)
 
     def _removed(self, emissor, data):
-        self._header_table["name"].value = None
+        self.open_disable = True
+        self._header_table["name"].value = "Unselected"
+        self._header_table["name"].value_obj._values_dict["n"].disabled_set(True)
         self._header_table["length"].value = None
         self["main"]["current"].hide_value()
         self["main"]["previous"].hide_value()
         self["main"]["next"].hide_value()
         self["main"]["transition"].hide_value()
         self._timeline_clear()
+        self.open = False
+        self.open_disable = True
 
     def _update(self, emissor, data):
+        self.open_disable = False
         self._header_table["name"].value = data
+        self._header_table["name"].value_obj._values_dict["n"].disabled_set(False)
         self._header_table["length"].value = "%.1gs" % self.e.animation.length
         self._last_timestamp = 0.0
         self._timeline_update()
         self.e.animation.state = 0.0
+        self.open_disable = False
+        self.open = True
+        self.show()
 
     def _timeline_cb(self, obj, emission, source):
         t = float(source)

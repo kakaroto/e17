@@ -229,7 +229,7 @@ class SignalDetails(EditjeDetails):
         EditjeDetails.__init__(
             self, parent, group="editje/collapsable/part_state")
 
-        self.title_set("signal")
+        self.title = "signal"
 
         self._header_table = PropertyTable(parent)
 
@@ -287,9 +287,13 @@ class SignalDetails(EditjeDetails):
         self.e.signal.callback_add("program.changed", self._update)
         self.e.signal.callback_add("program.unselected", self._removed)
 
+        self.open = True
+        self.open_disable = True
+        self.show()
+
     def _removed(self, emissor, data):
-        self._header_table["name"].value = None
-        self._header_table["name"].hide_value()
+        self._header_table["name"].value = "Unselected"
+        self._header_table["name"].value_obj._values_dict["n"].disabled_set(True)
 
         self["main"]["signal"].value = ""
         self["main"]["signal"].hide_value()
@@ -311,10 +315,12 @@ class SignalDetails(EditjeDetails):
 
         self["out"]["source"].value = ""
         self["out"]["source"].hide_value()
+        self.open_set(False)
 
     def _update(self, emissor, data):
         self._header_table["name"].value = data
         self._header_table["name"].show_value()
+        self._header_table["name"].value_obj._values_dict["n"].disabled_set(False)
 
         signal = self.e.signal.signal
         self["main"]["signal"].show_value()
@@ -366,6 +372,9 @@ class SignalDetails(EditjeDetails):
                 self["out"]["source"].value = state
             else:
                 self["out"]["source"].value = ""
+
+        self.open_set(True)
+        self.show()
 
     def prop_value_changed(self, prop, value, group):
         if not group:

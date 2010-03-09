@@ -41,7 +41,7 @@ class Collapsable(Manager, elementary.Layout):
         self._edje.part_text_set("header.title", value)
 
     def _title_get(self):
-        self._edje.part_text_get("header.title")
+        return self._edje.part_text_get("header.title")
 
     title = property(_title_get, _title_set)
 

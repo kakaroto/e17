@@ -101,8 +101,11 @@ class PartStateDetails(EditjeDetails):
             "part.state.max.changed", self._update_max)
         self._hide_all()
 
+        self.open_disable = False
+        self.open = True
+
     def _header_init(self, parent):
-        self.title_set("part state")
+        self.title = "part state"
 
         self._header_table = PropertyTable(parent)
 
@@ -131,7 +134,7 @@ class PartStateDetails(EditjeDetails):
         self._header_table["state"].show_value()
         self.state = self.part.state_get(state)
         self._update()
-        self.open()
+        self.show()
 
     def _part_removed(self, emissor, data):
         if not self.e.part:
@@ -140,6 +143,7 @@ class PartStateDetails(EditjeDetails):
         self._header_table["state"].value = None
         self._header_table["state"].hide_value()
         self._hide_all()
+        self.hide()
 
     def _part_type_to_text(self, type):
         parttypes = ['NONE', 'RECTANGLE', 'TEXT', 'IMAGE', 'SWALLOW',
@@ -805,7 +809,7 @@ class PartAnimStateDetails(PartStateDetails):
         self.anim = None
 
     def _header_init(self, parent):
-        self.title_set("part properties")
+        self.title = "part properties"
 
         self._header_table = PropertyTable(parent)
 
@@ -842,7 +846,7 @@ class PartAnimStateDetails(PartStateDetails):
         self.edje_get().signal_emit("cl,option,enable", "editje")
         self.state = self.part.state_get(state)
         self._update()
-        self.open()
+        self.show()
 
     def _hide(self):
         self._header_table["name"].value = None
@@ -851,6 +855,7 @@ class PartAnimStateDetails(PartStateDetails):
         self._header_table["type"].hide_value()
         self.edje_get().signal_emit("cl,option,disable", "editje")
         self._hide_all()
+        self.hide()
 
     def _part_update(self, emissor, data):
         self.part = self.e.part._part

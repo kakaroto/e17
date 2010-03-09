@@ -88,6 +88,7 @@ class Editje(elementary.Window):
         self.main_layout.size_hint_weight_set(1.0, 1.0)
         self.resize_object_add(self.main_layout)
         self.main_edje = self.main_layout.edje_get()
+        self.main_edje.signal_emit("details,enable", "") #TODO: remove this
         self.main_layout.show()
 
     def save(self):
@@ -488,13 +489,10 @@ class Editje(elementary.Window):
         box.show()
 
         self.group_details = GroupDetails(self)
-        self.group_details.open()
         box.pack_end(self.group_details)
-        self.group_details.show()
 
         self.part_details = PartDetails(self)
         box.pack_end(self.part_details)
-        self.part_details.show()
 
         self.part_state_details = PartStateDetails(self, \
                 img_new_img_cb=self._image_wizard_new_image_cb, \
@@ -505,7 +503,6 @@ class Editje(elementary.Window):
                 fnt_id_get_cb=self._font_wizard_font_id_get_cb, \
                 workfile_name_get_cb=self._workfile_name_get_cb)
         box.pack_end(self.part_state_details)
-        self.part_state_details.show()
 
         return self._set_scrolled_contents(box)
 
@@ -563,7 +560,6 @@ class Editje(elementary.Window):
         box.show()
 
         self.anim_details = AnimationDetails(self)
-        self.anim_details.open()
         box.pack_end(self.anim_details)
         self.anim_details.show()
 
@@ -575,9 +571,9 @@ class Editje(elementary.Window):
                 fnt_list_get_cb=self._font_wizard_font_list_get_cb, \
                 fnt_id_get_cb=self._font_wizard_font_id_get_cb, \
                 workfile_name_get_cb=self._workfile_name_get_cb) # fix
-        self.anim_state_details.open()
+        self.anim_state_details.open = True
+        self.anim_state_details.open_disable = True
         box.pack_end(self.anim_state_details)
-        self.anim_state_details.show()
 
         return self._set_scrolled_contents(box)
 
@@ -622,7 +618,8 @@ class Editje(elementary.Window):
         box.show()
 
         signal_details = SignalDetails(self)
-        signal_details.open()
+        signal_details.open = False
+        signal_details.open_disable = True
         signal_details.show()
 
         box.pack_end(signal_details)

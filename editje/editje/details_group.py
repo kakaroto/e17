@@ -26,7 +26,8 @@ class GroupDetails(EditjeDetails):
     def __init__(self, parent):
         EditjeDetails.__init__(self, parent)
 
-        self.title_set("group")
+        self.title = "group"
+        self.open_disable = True
 
         prop = Property(parent, "min")
         wid = WidgetEntry(self)
@@ -66,6 +67,9 @@ class GroupDetails(EditjeDetails):
 
     def _group_update(self, emissor, data):
         self["main"]["current"].value = self.e.group_size
+        self.open_disable = False
+        self.open = True
+        self.show()
 
     def _min_update(self, emissor, data):
         self["main"]["min"].value = data

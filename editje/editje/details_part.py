@@ -34,7 +34,7 @@ class PartDetails(EditjeDetails):
         self.e.part.callback_add("name.changed", self._part_update)
         self.e.part.callback_add("part.unselected", self._part_removed)
 
-        self.title_set("part properties")
+        self.title = "part properties"
 
         self._effects = ['NONE', 'PLAIN', 'OUTLINE', 'SOFT OUTLINE', 'SHADOW',
                          'SOFT SHADOW', 'OUTLINE SHADOW', 'OUTLINE SOFT SHADOW',
@@ -87,6 +87,9 @@ class PartDetails(EditjeDetails):
         self.main_hide()
         self.group_hide("textblock")
 
+        self.open_disable = False
+        self.open = True
+
     def header_prop_value_changed(self, prop, value, group):
         if prop == "name":
             if not self.e.part.rename(value):
@@ -130,6 +133,8 @@ class PartDetails(EditjeDetails):
         if self.e.part._part.type == edje.EDJE_PART_TYPE_TEXT:
             self._update_text_props()
 
+        self.show()
+
     def _part_removed(self, emissor, data):
         self._header_table["name"].value = None
         self._header_table["name"].hide_value()
@@ -146,6 +151,8 @@ class PartDetails(EditjeDetails):
         self["main"]["repeat_events"].hide_value()
         if self.e.part._part.type == edje.EDJE_PART_TYPE_TEXT:
             self["textblock"]["effect"].hide_value()
+
+        self.hide()
 
     def _update_common_props(self):
         self.main_hide()
