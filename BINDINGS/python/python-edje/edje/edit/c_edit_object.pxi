@@ -309,7 +309,7 @@ cdef class EdjeEdit(edje.c_edje.Edje): # [object PyEdjeEdit, type PyEdjeEdit_Typ
             return ret
 
     def image_id_get(self, char *image):
-        return bool(edje_edit_image_id_get(self.obj, image))
+        return edje_edit_image_id_get(self.obj, image)
 
     def image_add(self, char *image):
         cdef unsigned char r
