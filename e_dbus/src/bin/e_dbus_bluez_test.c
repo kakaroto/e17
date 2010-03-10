@@ -60,13 +60,17 @@ static DBusMessage*
 _request_pincode_cb(E_DBus_Object *obj, DBusMessage *msg)
 {
 	DBusMessage *reply;
-	char *pin[16];
+	char pin[16];
+	char *p = pin;
+	int ret;
 
 	printf("Enter PIN Code:\n");
-	scanf("%s", *pin);
+	ret = scanf("%15s", p);
+	if (ret != 1)
+		return NULL;
 
 	reply = dbus_message_new_method_return(msg);
-	dbus_message_append_args(reply, DBUS_TYPE_STRING, &pin,
+	dbus_message_append_args(reply, DBUS_TYPE_STRING, &p,
 			         DBUS_TYPE_INVALID);
 
 	return reply;
