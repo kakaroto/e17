@@ -14,7 +14,7 @@
  *
  * @return 1 on success, 0 otherwise.
  */
-bool
+Eina_Bool
 e_bluez_device_name_get(E_Bluez_Element *element, const char **name)
 {
    EINA_SAFETY_ON_NULL_RETURN_VAL(name, 0);

@@ -167,7 +167,7 @@ _on_cmd_get_all(char *cmd, char *args)
    E_Bluez_Element **elements;
    char *type;
    unsigned int count;
-   bool ret;
+   Eina_Bool ret;
 
    if (!args)
      type = NULL;
@@ -455,7 +455,7 @@ static int
 _on_cmd_adapter_get_powered(char *cmd, char *args)
 {
    char *next_args;
-   bool powered;
+   Eina_Bool powered;
    E_Bluez_Element *element = _element_from_args(args, &next_args);
 
    if (!element)
@@ -472,7 +472,7 @@ static int
 _on_cmd_adapter_set_powered(char *cmd, char *args)
 {
    char *next_args;
-   bool powered;
+   Eina_Bool powered;
    E_Bluez_Element *element = _element_from_args(args, &next_args);
 
    if (!element)
@@ -498,7 +498,7 @@ static int
 _on_cmd_adapter_get_discoverable(char *cmd, char *args)
 {
    char *next_args;
-   bool discoverable;
+   Eina_Bool discoverable;
    E_Bluez_Element *element = _element_from_args(args, &next_args);
 
    if (!element)
@@ -515,7 +515,7 @@ static int
 _on_cmd_adapter_set_discoverable(char *cmd, char *args)
 {
    char *next_args;
-   bool discoverable;
+   Eina_Bool discoverable;
    E_Bluez_Element *element = _element_from_args(args, &next_args);
 
    if (!element)
@@ -589,7 +589,7 @@ static int
 _on_cmd_adapter_get_discovering(char *cmd, char *args)
 {
    char *next_args;
-   bool discovering;
+   Eina_Bool discovering;
    E_Bluez_Element *element = _element_from_args(args, &next_args);
 
    if (!element)

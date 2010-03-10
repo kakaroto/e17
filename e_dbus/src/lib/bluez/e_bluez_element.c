@@ -32,7 +32,7 @@ struct _E_Bluez_Element_Property
    const char *name;
    int type;
    union {
-      bool boolean;
+      Eina_Bool boolean;
       const char *str;
       unsigned short u16;
       unsigned int u32;
@@ -294,7 +294,7 @@ _e_bluez_element_dict_entry_new(DBusMessageIter *itr)
    switch (t)
      {
       case DBUS_TYPE_BOOLEAN:
-	 entry->value.boolean = (bool)(long)value;
+	 entry->value.boolean = (Eina_Bool)(long)value;
 	 break;
       case DBUS_TYPE_BYTE:
 	 entry->value.byte = (unsigned char)(long)value;
@@ -501,7 +501,7 @@ _e_bluez_element_array_match(E_Bluez_Array *old, E_Bluez_Array *new, const char 
 
    for(; i_new < eina_array_count_get(new->array); iter_new++, i_new++)
      {
-	bool found = 0;
+	Eina_Bool found = 0;
 	item_new = *iter_new;
 	if (!item_new)
 	  break;
@@ -548,7 +548,7 @@ out_remove_remaining:
      }
 }
 
-static bool
+static Eina_Bool
 _e_bluez_element_property_update(E_Bluez_Element_Property *property, int type, void *data)
 {
    int changed = 0;
@@ -570,9 +570,9 @@ _e_bluez_element_property_update(E_Bluez_Element_Property *property, int type, v
    switch (type)
      {
       case DBUS_TYPE_BOOLEAN:
-	 if (changed || property->value.boolean != (bool)(long)data)
+	 if (changed || property->value.boolean != (Eina_Bool)(long)data)
 	   {
-	      property->value.boolean = (bool)(long)data;
+	      property->value.boolean = (Eina_Bool)(long)data;
 	      changed = 1;
 	   }
 	 break;
@@ -711,7 +711,7 @@ e_bluez_element_bytes_array_get_stringshared(const E_Bluez_Element *element, con
    return ret;
 }
 
-bool
+Eina_Bool
 e_bluez_element_objects_array_get_stringshared(const E_Bluez_Element *element, const char *property, unsigned int *count, E_Bluez_Element ***elements)
 {
    E_Bluez_Element **ret, **p;
@@ -773,7 +773,7 @@ e_bluez_element_objects_array_get_stringshared(const E_Bluez_Element *element, c
 }
 
 /* strings are just pointers (references), no strdup or stringshare_add/ref */
-bool
+Eina_Bool
 e_bluez_element_strings_array_get_stringshared(const E_Bluez_Element *element, const char *property, unsigned int *count, const char ***strings)
 {
    const char **ret, **p;
@@ -1063,7 +1063,7 @@ e_bluez_element_unref(E_Bluez_Element *element)
  *
  * @return 1 on success, 0 on failure.
  */
-bool
+Eina_Bool
 e_bluez_element_message_send(E_Bluez_Element *element, const char *method_name, E_DBus_Method_Return_Cb cb, DBusMessage *msg, Eina_Inlist **pending, E_DBus_Method_Return_Cb user_cb, const void *user_data)
 {
    E_Bluez_Element_Call_Data *data;
@@ -1118,7 +1118,7 @@ e_bluez_element_message_send(E_Bluez_Element *element, const char *method_name, 
    return 0;
 }
 
-bool
+Eina_Bool
 e_bluez_element_call_full(E_Bluez_Element *element, const char *method_name, E_DBus_Method_Return_Cb cb, Eina_Inlist **pending, E_DBus_Method_Return_Cb user_cb, const void *user_data)
 {
    DBusMessage *msg;
@@ -1135,7 +1135,7 @@ e_bluez_element_call_full(E_Bluez_Element *element, const char *method_name, E_D
      (element, method_name, cb, msg, pending, user_cb, user_data);
 }
 
-static bool
+static Eina_Bool
 _e_bluez_element_property_value_add(E_Bluez_Element *element, const char *name, int type, void *value)
 {
    E_Bluez_Element_Property *p;
@@ -1320,7 +1320,7 @@ _e_bluez_element_get_properties_callback(void *user_data, DBusMessage *msg, DBus
  *
  * @return 1 on success, 0 otherwise.
  */
-bool
+Eina_Bool
 e_bluez_element_properties_sync_full(E_Bluez_Element *element, E_DBus_Method_Return_Cb cb, const void *data)
 {
    const char name[] = "GetProperties";
@@ -1342,7 +1342,7 @@ e_bluez_element_properties_sync_full(E_Bluez_Element *element, E_DBus_Method_Ret
  *
  * @return 1 on success, 0 otherwise.
  */
-bool
+Eina_Bool
 e_bluez_element_properties_sync(E_Bluez_Element *element)
 {
    EINA_SAFETY_ON_NULL_RETURN_VAL(element, 0);
@@ -1367,7 +1367,7 @@ e_bluez_element_properties_sync(E_Bluez_Element *element)
  *
  * @return 1 on success, 0 otherwise.
  */
-bool
+Eina_Bool
 e_bluez_element_property_dict_set_full(E_Bluez_Element *element, const char *prop, const char *key, int type, const void *value, E_DBus_Method_Return_Cb cb, const void *data)
 {
    const char name[] = "SetProperty";
@@ -1443,7 +1443,7 @@ e_bluez_element_property_dict_set_full(E_Bluez_Element *element, const char *pro
  *
  * @return 1 on success, 0 otherwise.
  */
-bool
+Eina_Bool
 e_bluez_element_property_set_full(E_Bluez_Element *element, const char *prop, int type, const void *value, E_DBus_Method_Return_Cb cb, const void *data)
 {
    const char name[] = "SetProperty";
@@ -1495,7 +1495,7 @@ e_bluez_element_property_set_full(E_Bluez_Element *element, const char *prop, in
  *
  * @return 1 on success, 0 otherwise.
  */
-bool
+Eina_Bool
 e_bluez_element_property_set(E_Bluez_Element *element, const char *prop, int type, const void *value)
 {
    EINA_SAFETY_ON_NULL_RETURN_VAL(element, 0);
@@ -1504,7 +1504,7 @@ e_bluez_element_property_set(E_Bluez_Element *element, const char *prop, int typ
      (element, prop, type, value, NULL, NULL);
 }
 
-bool
+Eina_Bool
 e_bluez_element_call_with_path(E_Bluez_Element *element, const char *method_name, const char *string, E_DBus_Method_Return_Cb cb, Eina_Inlist **pending, E_DBus_Method_Return_Cb user_cb, const void *user_data)
 {
    DBusMessageIter itr;
@@ -1529,7 +1529,7 @@ e_bluez_element_call_with_path(E_Bluez_Element *element, const char *method_name
      (element, method_name, cb, msg, pending, user_cb, user_data);
 }
 
-bool
+Eina_Bool
 e_bluez_element_call_with_string(E_Bluez_Element *element, const char *method_name, const char *string, E_DBus_Method_Return_Cb cb, Eina_Inlist **pending, E_DBus_Method_Return_Cb user_cb, const void *user_data)
 {
    DBusMessageIter itr;
@@ -1554,7 +1554,7 @@ e_bluez_element_call_with_string(E_Bluez_Element *element, const char *method_na
      (element, method_name, cb, msg, pending, user_cb, user_data);
 }
 
-bool
+Eina_Bool
 e_bluez_element_call_with_path_and_string(E_Bluez_Element *element, const char *method_name, const char *path, const char *string, E_DBus_Method_Return_Cb cb, Eina_Inlist **pending, E_DBus_Method_Return_Cb user_cb, const void *user_data)
 {
    DBusMessageIter itr;
@@ -1593,7 +1593,7 @@ e_bluez_element_call_with_path_and_string(E_Bluez_Element *element, const char *
  *
  * @return 1 on success, 0 otherwise.
  */
-bool
+Eina_Bool
 e_bluez_element_property_type_get_stringshared(const E_Bluez_Element *element, const char *name, int *type)
 {
    const E_Bluez_Element_Property *p;
@@ -1628,10 +1628,10 @@ e_bluez_element_property_type_get_stringshared(const E_Bluez_Element *element, c
  *
  * @return 1 on success, 0 otherwise.
  */
-bool
+Eina_Bool
 e_bluez_element_property_type_get(const E_Bluez_Element *element, const char *name, int *type)
 {
-   bool ret;
+   Eina_Bool ret;
    name = eina_stringshare_add(name);
    ret = e_bluez_element_property_type_get_stringshared(element, name, type);
    eina_stringshare_del(name);
@@ -1639,7 +1639,7 @@ e_bluez_element_property_type_get(const E_Bluez_Element *element, const char *na
 }
 
 void
-e_bluez_element_list_properties(const E_Bluez_Element *element, bool (*cb)(void *data, const E_Bluez_Element *element, const char *name, int type, const void *value), const void *data)
+e_bluez_element_list_properties(const E_Bluez_Element *element, Eina_Bool (*cb)(void *data, const E_Bluez_Element *element, const char *name, int type, const void *value), const void *data)
 {
    const E_Bluez_Element_Property *p;
 
@@ -1659,7 +1659,7 @@ e_bluez_element_list_properties(const E_Bluez_Element *element, bool (*cb)(void 
 	      value = &p->value.path;
 	      break;
 	   case DBUS_TYPE_BOOLEAN:
-	      value = (void *)p->value.boolean;
+	      value = (void *)(unsigned long)p->value.boolean;
 	      break;
 	   case DBUS_TYPE_UINT16:
 	      value = &p->value.u16;
@@ -1691,11 +1691,11 @@ e_bluez_element_list_properties(const E_Bluez_Element *element, bool (*cb)(void 
  * @param key key inside dict, must be previously stringshared
  * @param type if provided it will contain the value type.
  * @param value where to store the property value, must be a pointer to the
- *        exact type, (bool *) for booleans, (char **) for strings, and so on.
+ *        exact type, (Eina_Bool *) for booleans, (char **) for strings, and so on.
  *
  * @return 1 on success, 0 otherwise.
  */
-bool
+Eina_Bool
 e_bluez_element_property_dict_get_stringshared(const E_Bluez_Element *element, const char *dict_name, const char *key, int *type, void *value)
 {
    const E_Bluez_Element_Property *p;
@@ -1740,7 +1740,7 @@ e_bluez_element_property_dict_get_stringshared(const E_Bluez_Element *element, c
 	switch (entry->type)
 	  {
 	   case DBUS_TYPE_BOOLEAN:
-	      *(bool *)value = entry->value.boolean;
+	      *(Eina_Bool *)value = entry->value.boolean;
 	      return 1;
 	   case DBUS_TYPE_BYTE:
 	      *(unsigned char *)value = entry->value.byte;
@@ -1785,11 +1785,11 @@ e_bluez_element_property_dict_get_stringshared(const E_Bluez_Element *element, c
  * @param name property name, must be previously stringshared
  * @param type if provided it will contain the value type.
  * @param value where to store the property value, must be a pointer to the
- *        exact type, (bool *) for booleans, (char **) for strings, and so on.
+ *        exact type, (Eina_Bool *) for booleans, (char **) for strings, and so on.
  *
  * @return 1 on success, 0 otherwise.
  */
-bool
+Eina_Bool
 e_bluez_element_property_get_stringshared(const E_Bluez_Element *element, const char *name, int *type, void *value)
 {
    const E_Bluez_Element_Property *p;
@@ -1808,7 +1808,7 @@ e_bluez_element_property_get_stringshared(const E_Bluez_Element *element, const 
 	switch (p->type)
 	  {
 	   case DBUS_TYPE_BOOLEAN:
-	      *(bool *)value = p->value.boolean;
+	      *(Eina_Bool *)value = p->value.boolean;
 	      return 1;
 	   case DBUS_TYPE_BYTE:
 	      *(unsigned char *)value = p->value.byte;
@@ -1853,14 +1853,14 @@ e_bluez_element_property_get_stringshared(const E_Bluez_Element *element, const 
  * @param name property name
  * @param type if provided it will contain the value type.
  * @param value where to store the property value, must be a pointer to the
- *        exact type, (bool *) for booleans, (char **) for strings, and so on.
+ *        exact type, (Eina_Bool *) for booleans, (char **) for strings, and so on.
  *
  * @return 1 on success, 0 otherwise.
  */
-bool
+Eina_Bool
 e_bluez_element_property_get(const E_Bluez_Element *element, const char *name, int *type, void *value)
 {
-   bool ret;
+   Eina_Bool ret;
    name = eina_stringshare_add(name);
    ret = e_bluez_element_property_get_stringshared
      (element, name, type, value);
@@ -1902,7 +1902,7 @@ e_bluez_elements_for_each(Eina_Hash_Foreach cb, const void *user_data)
 		     &data);
 }
 
-static bool
+static Eina_Bool
 _e_bluez_elements_get_allocate(unsigned int *count, E_Bluez_Element ***p_elements)
 {
    *count = eina_hash_population(elements);
@@ -1949,7 +1949,7 @@ _e_bluez_elements_get_all(Eina_Hash *hash __UNUSED__, const char *key __UNUSED__
  *
  * @return 1 on success, 0 otherwise.
  */
-bool
+Eina_Bool
 e_bluez_elements_get_all(unsigned int *count, E_Bluez_Element ***p_elements)
 {
    E_Bluez_Element **p;
@@ -2004,7 +2004,7 @@ _e_bluez_elements_get_all_type(Eina_Hash *hash __UNUSED__, const char *key __UNU
  *
  * @see e_bluez_elements_get_all()
  */
-bool
+Eina_Bool
 e_bluez_elements_get_all_type(const char *type, unsigned int *count, E_Bluez_Element ***p_elements)
 {
    struct e_bluez_elements_get_all_str_data data;

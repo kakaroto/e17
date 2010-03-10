@@ -70,7 +70,7 @@ e_bluez_system_bus_name_get(void)
  *
  * @return 1 on success, 0 otherwise.
  */
-bool
+Eina_Bool
 e_bluez_manager_sync_elements(void)
 {
    E_Bluez_Element *manager;

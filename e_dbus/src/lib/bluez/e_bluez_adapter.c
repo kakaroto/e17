@@ -63,7 +63,7 @@ _device_found_callback(void *data, DBusMessage *msg)
  *
  * @return 1 on success, 0 otherwise.
  */
-bool
+Eina_Bool
 e_bluez_adapter_agent_register(E_Bluez_Element *element, const char *object_path, const char *capability, E_DBus_Method_Return_Cb cb, const void *data)
 {
    const char name[] = "RegisterAgent";
@@ -88,7 +88,7 @@ e_bluez_adapter_agent_register(E_Bluez_Element *element, const char *object_path
  *
  * @return 1 on success, 0 otherwise.
  */
-bool
+Eina_Bool
 e_bluez_adapter_agent_unregister(E_Bluez_Element *element, const char *object_path, E_DBus_Method_Return_Cb cb, const void *data)
 {
    const char name[] = "UnregisterAgent";
@@ -114,7 +114,7 @@ e_bluez_adapter_agent_unregister(E_Bluez_Element *element, const char *object_pa
  *
  * @return 1 on success, 0 otherwise.
  */
-bool
+Eina_Bool
 e_bluez_adapter_address_get(E_Bluez_Element *element, const char **address)
 {
    EINA_SAFETY_ON_NULL_RETURN_VAL(element, 0);
@@ -138,7 +138,7 @@ e_bluez_adapter_address_get(E_Bluez_Element *element, const char **address)
  *
  * @return 1 on success, 0 otherwise.
  */
-bool
+Eina_Bool
 e_bluez_adapter_name_get(E_Bluez_Element *element, const char **name)
 {
    EINA_SAFETY_ON_NULL_RETURN_VAL(element, 0);
@@ -162,7 +162,7 @@ e_bluez_adapter_name_get(E_Bluez_Element *element, const char **name)
  * @return 1 on success, 0 otherwise.
  * @see e_bluez_adapter_name_get()
  */
-bool
+Eina_Bool
 e_bluez_adapter_name_set(E_Bluez_Element *element, const char *name, E_DBus_Method_Return_Cb cb, const void *data)
 {
    EINA_SAFETY_ON_NULL_RETURN_VAL(element, 0);
@@ -178,13 +178,13 @@ e_bluez_adapter_name_set(E_Bluez_Element *element, const char *name, E_DBus_Meth
  * values shall be considered invalid.
  *
  * @param powered where to store the property value, must be a pointer
- *        to booleans (bool *).
+ *        to booleans (Eina_Bool *).
  *
  * @return 1 on success, 0 otherwise.
  * @see e_bluez_adapter_powered_set()
  */
-bool
-e_bluez_adapter_powered_get(E_Bluez_Element *element, bool *powered)
+Eina_Bool
+e_bluez_adapter_powered_get(E_Bluez_Element *element, Eina_Bool *powered)
 {
    EINA_SAFETY_ON_NULL_RETURN_VAL(element, 0);
    EINA_SAFETY_ON_NULL_RETURN_VAL(powered, 0);
@@ -203,8 +203,8 @@ e_bluez_adapter_powered_get(E_Bluez_Element *element, bool *powered)
  *
  * @return 1 on success, 0 otherwise.
  */
-bool
-e_bluez_adapter_powered_set(E_Bluez_Element *element, bool powered, E_DBus_Method_Return_Cb cb, const void *data)
+Eina_Bool
+e_bluez_adapter_powered_set(E_Bluez_Element *element, Eina_Bool powered, E_DBus_Method_Return_Cb cb, const void *data)
 {
    EINA_SAFETY_ON_NULL_RETURN_VAL(element, 0);
    return e_bluez_element_property_set_full
@@ -220,13 +220,13 @@ e_bluez_adapter_powered_set(E_Bluez_Element *element, bool powered, E_DBus_Metho
  * values shall be considered invalid.
  *
  * @param discoverable where to store the property value, must be a pointer
- *        to booleans (bool *).
+ *        to booleans (Eina_Bool *).
  *
  * @return 1 on success, 0 otherwise.
  * @see e_bluez_adapter_discoverable_set()
  */
-bool
-e_bluez_adapter_discoverable_get(E_Bluez_Element *element, bool *discoverable)
+Eina_Bool
+e_bluez_adapter_discoverable_get(E_Bluez_Element *element, Eina_Bool *discoverable)
 {
    EINA_SAFETY_ON_NULL_RETURN_VAL(element, 0);
    EINA_SAFETY_ON_NULL_RETURN_VAL(discoverable, 0);
@@ -245,8 +245,8 @@ e_bluez_adapter_discoverable_get(E_Bluez_Element *element, bool *discoverable)
  *
  * @return 1 on success, 0 otherwise.
  */
-bool
-e_bluez_adapter_discoverable_set(E_Bluez_Element *element, bool discoverable, E_DBus_Method_Return_Cb cb, const void *data)
+Eina_Bool
+e_bluez_adapter_discoverable_set(E_Bluez_Element *element, Eina_Bool discoverable, E_DBus_Method_Return_Cb cb, const void *data)
 {
    EINA_SAFETY_ON_NULL_RETURN_VAL(element, 0);
    return e_bluez_element_property_set_full
@@ -268,7 +268,7 @@ e_bluez_adapter_discoverable_set(E_Bluez_Element *element, bool discoverable, E_
  * @return 1 on success, 0 otherwise.
  * @see e_bluez_adapter_discoverable_timeout_set()
  */
-bool
+Eina_Bool
 e_bluez_adapter_discoverable_timeout_get(const E_Bluez_Element *element, unsigned int *timeout)
 {
    EINA_SAFETY_ON_NULL_RETURN_VAL(element, 0);
@@ -292,7 +292,7 @@ e_bluez_adapter_discoverable_timeout_get(const E_Bluez_Element *element, unsigne
  * @return 1 on success, 0 otherwise.
  * @see e_bluez_adapter_discoverable_timeout_get()
  */
-bool
+Eina_Bool
 e_bluez_adapter_discoverable_timeout_set(E_Bluez_Element *element, unsigned int timeout, E_DBus_Method_Return_Cb cb, const void *data)
 {
    EINA_SAFETY_ON_NULL_RETURN_VAL(element, 0);
@@ -308,13 +308,13 @@ e_bluez_adapter_discoverable_timeout_set(E_Bluez_Element *element, unsigned int 
  * values shall be considered invalid.
  *
  * @param discovering where to store the property value, must be a pointer
- *        to booleans (bool *).
+ *        to booleans (Eina_Bool *).
  *
  * @return 1 on success, 0 otherwise.
  * @see e_bluez_adapter_discovering_set()
  */
-bool
-e_bluez_adapter_discovering_get(E_Bluez_Element *element, bool *discovering)
+Eina_Bool
+e_bluez_adapter_discovering_get(E_Bluez_Element *element, Eina_Bool *discovering)
 {
    EINA_SAFETY_ON_NULL_RETURN_VAL(element, 0);
    EINA_SAFETY_ON_NULL_RETURN_VAL(discovering, 0);
@@ -334,7 +334,7 @@ e_bluez_adapter_discovering_get(E_Bluez_Element *element, bool *discovering)
  *
  * @return 1 on success, 0 otherwise.
  */
-bool
+Eina_Bool
 e_bluez_adapter_start_discovery(E_Bluez_Element *element, E_DBus_Method_Return_Cb cb, const void *data)
 {
    const char name[] = "StartDiscovery";
@@ -362,7 +362,7 @@ e_bluez_adapter_start_discovery(E_Bluez_Element *element, E_DBus_Method_Return_C
  *
  * @return 1 on success, 0 otherwise.
  */
-bool
+Eina_Bool
 e_bluez_adapter_stop_discovery(E_Bluez_Element *element, E_DBus_Method_Return_Cb cb, const void *data)
 {
    const char name[] = "StopDiscovery";
@@ -387,7 +387,7 @@ e_bluez_adapter_stop_discovery(E_Bluez_Element *element, E_DBus_Method_Return_Cb
  *
  * @return 1 on success, 0 otherwise.
  */
-bool
+Eina_Bool
 e_bluez_adapter_create_paired_device(E_Bluez_Element *element, const char *object_path, const char *capability, const char *device, E_DBus_Method_Return_Cb cb, const void *data)
 {
    DBusMessageIter itr;

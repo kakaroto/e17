@@ -21,7 +21,7 @@ e_bluez_manager_get(void)
  *
  * @return 1 on success, 0 otherwise.
  */
-bool
+Eina_Bool
 e_bluez_manager_default_adapter(E_DBus_Method_Return_Cb cb, void *data)
 {
    E_Bluez_Element *element = e_bluez_element_get(manager_path);
