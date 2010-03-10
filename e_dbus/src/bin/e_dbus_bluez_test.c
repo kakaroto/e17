@@ -53,6 +53,8 @@ static void
 _create_paired_device_cb(void *data, DBusMessage *msg, DBusError *err)
 {
 	e_dbus_object_interface_detach(_msgbus_data->obj, iface);
+	e_dbus_object_free(_msgbus_data->obj);
+	e_dbus_interface_unref(iface);
 	_method_success_check(data, msg, err);
 }
 
