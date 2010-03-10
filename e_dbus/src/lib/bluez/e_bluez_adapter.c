@@ -131,11 +131,11 @@ e_bluez_adapter_address_get(E_Bluez_Element *element, const char **address)
  * If zero is returned, then this call failed and parameter-returned
  * values shall be considered invalid.
  *
- * @param offline where to store the property value, must be a pointer
+ * @param powered where to store the property value, must be a pointer
  *        to booleans (bool *).
  *
  * @return 1 on success, 0 otherwise.
- * @see e_connman_manager_offline_mode_set()
+ * @see e_bluez_adapter_powered_set()
  */
 bool
 e_bluez_adapter_powered_get(E_Bluez_Element *element, bool *powered)
@@ -177,7 +177,7 @@ e_bluez_adapter_powered_set(E_Bluez_Element *element, bool powered, E_DBus_Metho
  *        to booleans (bool *).
  *
  * @return 1 on success, 0 otherwise.
- * @see e_bluez_manager_offline_mode_set()
+ * @see e_bluez_adapter_discovering_set()
  */
 bool
 e_bluez_adapter_discovering_get(E_Bluez_Element *element, bool *discovering)
