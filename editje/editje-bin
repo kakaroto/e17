@@ -33,20 +33,19 @@ from editje.popup_win import PopupWindow
 def cancel(bt, pop):
     pop.hide()
     pop.delete()
-def open_ignore_swap(bt, data):
-    pop, sf = data
-    sf.open(swapfile.REPLACE)
+
+def open_swap_error(bt, data):
+    pop, option, sf, group = data
+    sf.open(option)
     pop.hide()
-    editje = Editje(sf)
-    editje.show()
+    open_editje(sf, group)
     pop.delete()
-def open_recovery_swap(bt, data):
-    pop, sf = data
-    sf.open(swapfile.RESTORE)
-    pop.hide()
+
+def open_editje(sf, group):
     editje = Editje(sf)
+    if group and group in edje.file_collection_list(sf.workfile):
+        editje.group = group
     editje.show()
-    pop.delete()
 
 if __name__ == "__main__":
     elementary.init()
@@ -80,8 +79,10 @@ if __name__ == "__main__":
                 pop.pack_end(lb)
                 lb.show()
 
-                pop.action_add("Ignore Swap", open_ignore_swap, data=(pop, sf))
-                pop.action_add("Recovery", open_ignore_swap, data=(pop, sf))
+                pop.action_add("Ignore Swap", open_swap_error,
+                               data=(pop, swapfile.REPLACE, sf, group))
+                pop.action_add("Recovery", open_swap_error,
+                               data=(pop, swapfile.RESTORE, sf, group))
                 pop.action_add("Abort", cancel, data=pop)
 
                 pop.show()
@@ -113,10 +114,8 @@ if __name__ == "__main__":
                 pop.show()
                 continue
 
-            editje = Editje(sf)
-            if group and group in edje.file_collection_list(sf.workfile):
-                editje.group = group
-            editje.show()
+            open_editje(sf, group)
+
     else:
         OpenFile().show()
 
