@@ -259,9 +259,6 @@ class Editable(Manager, object):
     def fonts_get(self):
         return self.edje.fonts
 
-    def font_id_get(self, name):
-        return self.edje.font_id_get(name)
-
     def font_add(self, fnt):
         if os.path.basename(fnt) not in self.fonts_get():
             self.edje.font_add(fnt)

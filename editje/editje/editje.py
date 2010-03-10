@@ -168,9 +168,10 @@ class Editje(elementary.Window):
          self.e.font_add(fnt)
 
     def _font_wizard_font_list_get_cb(self):
-        font_list = self.e.fonts_get()
-        font_list += self.main_layout.edje_get().evas.font_available_list()
-        return font_list
+#        font_list = self.e.fonts_get()
+#        font_list += self.main_layout.edje_get().evas.font_available_list()
+#        return font_list
+        return self.main_layout.edje_get().evas.font_available_list()
 
     def _font_wizard_font_id_get_cb(self, name):
         return self.e.font_id_get(name)

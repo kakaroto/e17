@@ -283,3 +283,14 @@ class FontSelectionWizard(FileSelectionWizard):
         self._preview_file.size_hint_weight_set(1.0, 1.0)
         self._preview_file.size_hint_align_set(-1.0, -1.0)
         self._preview_file.show()
+
+    def _create_file_list_page(self):
+    #file list - page create and populate
+        self._file_list_page_created = True
+        self._add_file_list_header()
+
+        self.content_add("file_list", self._file_list)
+        self.action_add("file_list", "Close", self.close)
+
+        self._file_list.callback_selected_add(self._goto_preview)
+
