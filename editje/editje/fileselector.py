@@ -137,6 +137,7 @@ class FileSelector(Manager, elementary.Table):
                                          evas.EVAS_HINT_EXPAND)
         self._files.callback_selected_add(self._file_selected)
         self._files.callback_unselected_add(self._file_unselected)
+        self._files.callback_clicked_add(self._file_clicked)
         bx.pack_end(self._files)
         self._files.show()
 
@@ -246,6 +247,9 @@ class FileSelector(Manager, elementary.Table):
         self.event_emit("file.unselected", it.data_get()[0][0])
         if not self._files.selected_items_get():
             self.event_emit("file.selection_clear", None)
+
+    def _file_clicked(self, li, it):
+        self.event_emit("file.clicked", it.data_get()[0][0])
 
     # PATH
     def _path_set(self, path):

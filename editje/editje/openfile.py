@@ -65,12 +65,16 @@ class OpenFile(elementary.Window):
         self._fs.action_add("Cancel", self._cancel)
         self._fs.action_add("Ok", self._open)
         self._fs.action_disabled_set("Ok", True)
+        self._fs.callback_add("file.clicked", self._file_clicked)
         self._fs.callback_add("file.selected", self._file_selected)
         self._fs.callback_add("file.selection_clear", self._file_unselected)
         self._fs.show()
         self._pager.content_push(self._fs)
 
         self.resize(600, 480)
+
+    def _file_clicked(self, obj, data):
+        self._open(None)
 
     def _file_selected(self, obj, data):
         self._fs.action_disabled_set("Ok", False)
