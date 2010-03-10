@@ -313,7 +313,7 @@ _mail_cb_mouse_in (void *data, Evas * e, Evas_Object * obj, void *event_info)
        if ((!inst->ci->show_popup_empty) && (!cb->num_new)) continue;
        snprintf (buf, sizeof (buf), "%s: %d/%d", cb->name, cb->num_new,
 	         cb->num_total);
-       e_ilist_append (list, NULL, buf, 0, NULL, NULL, NULL, NULL);
+       e_ilist_append (list, NULL, NULL, buf, 0, NULL, NULL, NULL, NULL);
     }
   if (e_ilist_count (list))
     {
