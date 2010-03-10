@@ -125,6 +125,52 @@ e_bluez_adapter_address_get(E_Bluez_Element *element, const char **address)
 }
 
 /**
+ * Get property "Name" value.
+ *
+ * If this property isn't found then 0 is returned.
+ * If zero is returned, then this call failed and parameter-returned
+ * values shall be considered invalid.
+ *
+ * @param name where to store the property value, must be a pointer
+ *        to string (const char **), it will not be allocated or
+ *        copied and references will be valid until element changes,
+ *        so copy it if you want to use it later.
+ *
+ * @return 1 on success, 0 otherwise.
+ */
+bool
+e_bluez_adapter_name_get(E_Bluez_Element *element, const char **name)
+{
+   EINA_SAFETY_ON_NULL_RETURN_VAL(element, 0);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(name, 0);
+
+   return e_bluez_element_property_get_stringshared
+     (element, e_bluez_prop_name, NULL, name);
+}
+
+/**
+ * Call method SetProperty("Name", name) at the given element on server.
+ *
+ * This is a server call, not local, so it may fail and in that case
+ * no property is updated locally. If the value was set the event
+ * E_BLUEZ_EVENT_ELEMENT_UPDATED will be added to main loop.
+ *
+ * @param name value to set.
+ * @param cb function to call when server replies or some error happens.
+ * @param data data to give to cb when it is called.
+ *
+ * @return 1 on success, 0 otherwise.
+ * @see e_bluez_adapter_name_get()
+ */
+bool
+e_bluez_adapter_name_set(E_Bluez_Element *element, const char *name, E_DBus_Method_Return_Cb cb, const void *data)
+{
+   EINA_SAFETY_ON_NULL_RETURN_VAL(element, 0);
+   return e_bluez_element_property_set_full
+     (element, e_bluez_prop_name, DBUS_TYPE_STRING, name, cb, data);
+}
+
+/**
  * Get property "Powered" value.
  *
  * If this property isn't found then 0 is returned.
@@ -166,6 +212,94 @@ e_bluez_adapter_powered_set(E_Bluez_Element *element, bool powered, E_DBus_Metho
       &powered, cb, data);
 }
 
+/**
+ * Get property "Discoverable" value.
+ *
+ * If this property isn't found then 0 is returned.
+ * If zero is returned, then this call failed and parameter-returned
+ * values shall be considered invalid.
+ *
+ * @param discoverable where to store the property value, must be a pointer
+ *        to booleans (bool *).
+ *
+ * @return 1 on success, 0 otherwise.
+ * @see e_bluez_adapter_discoverable_set()
+ */
+bool
+e_bluez_adapter_discoverable_get(E_Bluez_Element *element, bool *discoverable)
+{
+   EINA_SAFETY_ON_NULL_RETURN_VAL(element, 0);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(discoverable, 0);
+
+   return e_bluez_element_property_get_stringshared
+     (element, e_bluez_prop_discoverable, NULL, discoverable);
+}
+
+/**
+ * Call method SetProperty("Discoverable", discoverable) at the given
+ * element on server.
+ *
+ * @param discoverable value to set.
+ * @param cb function to call when server replies or some error happens.
+ * @param data data to give to cb when it is called.
+ *
+ * @return 1 on success, 0 otherwise.
+ */
+bool
+e_bluez_adapter_discoverable_set(E_Bluez_Element *element, bool discoverable, E_DBus_Method_Return_Cb cb, const void *data)
+{
+   EINA_SAFETY_ON_NULL_RETURN_VAL(element, 0);
+   return e_bluez_element_property_set_full
+     (element, e_bluez_prop_discoverable, DBUS_TYPE_BOOLEAN,
+      &discoverable, cb, data);
+}
+
+/**
+ * Get property "DiscoverableTimeout" value.
+ *
+ * If this property isn't found then 0 is returned.
+ * If zero is returned, then this call failed and parameter-returned
+ * values shall be considered invalid.
+ *
+ * @param adapter path to get property.
+ * @param discoverable timeout where to store the property value, must be a pointer
+ *        to uint32 (unsigned int *).
+ *
+ * @return 1 on success, 0 otherwise.
+ * @see e_bluez_adapter_discoverable_timeout_set()
+ */
+bool
+e_bluez_adapter_discoverable_timeout_get(const E_Bluez_Element *element, unsigned int *timeout)
+{
+   EINA_SAFETY_ON_NULL_RETURN_VAL(element, 0);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(timeout, 0);
+   return e_bluez_element_property_get_stringshared
+     (element, e_bluez_prop_discoverabletimeout, NULL, timeout);
+}
+
+/**
+ * Call method SetProperty("DiscoverableTimeout", timeout) at the given element on server.
+ *
+ * This is a server call, not local, so it may fail and in that case
+ * no property is updated locally. If the value was set the event
+ * E_BLUEZ_EVENT_ELEMENT_UPDATED will be added to main loop.
+ *
+ * @param adapter path to set property.
+ * @param discoverable timeout value to set.
+ * @param cb function to call when server replies or some error happens.
+ * @param data data to give to cb when it is called.
+ *
+ * @return 1 on success, 0 otherwise.
+ * @see e_bluez_adapter_discoverable_timeout_get()
+ */
+bool
+e_bluez_adapter_discoverable_timeout_set(E_Bluez_Element *element, unsigned int timeout, E_DBus_Method_Return_Cb cb, const void *data)
+{
+   EINA_SAFETY_ON_NULL_RETURN_VAL(element, 0);
+   return e_bluez_element_property_set_full
+     (element, e_bluez_prop_discoverabletimeout, DBUS_TYPE_UINT32,
+      &timeout, cb, data);
+}
 /**
  * Get property "Discovering" value.
  *

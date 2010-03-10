@@ -414,6 +414,44 @@ _on_cmd_adapter_get_address(char *cmd, char *args)
 }
 
 static int
+_on_cmd_adapter_get_name(char *cmd, char *args)
+{
+   const char *name;
+   char *next_args;
+   E_Bluez_Element *element = _element_from_args(args, &next_args);
+
+   if (!element)
+	   return 1;
+
+   if (e_bluez_adapter_name_get(element, &name))
+     printf(":::Adapter name = \"%s\"\n", name);
+   else
+     fputs("ERROR: can't get adapter name\n", stderr);
+   return 1;
+}
+
+_on_cmd_adapter_set_name(char *cmd, char *args)
+{
+   char *path, *next_args;
+   E_Bluez_Element *element = _element_from_args(args, &next_args);
+
+   if (!element)
+	   return 1;
+
+   if (!next_args) {
+      fprintf(stderr, "ERROR: missing name value\n");
+      return 1;
+   }
+
+   if (e_bluez_adapter_name_set(element, next_args, _method_success_check,
+			   "adapter_set_name"))
+     printf(":::Adapter %s Name set to %s\n", element->path, next_args);
+   else
+     fputs("ERROR: can't set adapter name\n", stderr);
+   return 1;
+}
+
+static int
 _on_cmd_adapter_get_powered(char *cmd, char *args)
 {
    char *next_args;
@@ -453,6 +491,97 @@ _on_cmd_adapter_set_powered(char *cmd, char *args)
      printf(":::Adapter %s Powered set to %hhu\n", element->path, powered);
    else
      fputs("ERROR: can't set device powered\n", stderr);
+   return 1;
+}
+
+static int
+_on_cmd_adapter_get_discoverable(char *cmd, char *args)
+{
+   char *next_args;
+   bool discoverable;
+   E_Bluez_Element *element = _element_from_args(args, &next_args);
+
+   if (!element)
+	   return 1;
+
+   if (e_bluez_adapter_discoverable_get(element, &discoverable))
+     printf(":::Adapter discoverable = \"%hhu\"\n", discoverable);
+   else
+     fputs("ERROR: can't get adapter discoverable\n", stderr);
+   return 1;
+}
+
+static int
+_on_cmd_adapter_set_discoverable(char *cmd, char *args)
+{
+   char *next_args;
+   bool discoverable;
+   E_Bluez_Element *element = _element_from_args(args, &next_args);
+
+   if (!element)
+	   return 1;
+
+   if (!args)
+     {
+	fputs("ERROR: missing the discoverable value\n", stderr);
+	return 1;
+     }
+
+   discoverable = !!atol(next_args);
+
+   if (e_bluez_adapter_discoverable_set
+       (element, discoverable, _method_success_check, "adapter_set_discoverable"))
+     printf(":::Adapter %s discoverable set to %hhu\n", element->path, discoverable);
+   else
+     fputs("ERROR: can't set adapter discoverable\n", stderr);
+   return 1;
+}
+
+static int
+_on_cmd_adapter_get_discoverable_timeout(char *cmd, char *args)
+{
+   char *next_args;
+   unsigned int timeout;
+   E_Bluez_Element *element = _element_from_args(args, &next_args);
+
+   if (!element)
+	   return 1;
+
+   if (e_bluez_adapter_discoverable_timeout_get(element, &timeout))
+     printf(":::Adapter %s DiscovableTimeout = %hu\n", element->path, timeout);
+   else
+     fputs("ERROR: can't get adapter discoverable timeout\n", stderr);
+   return 1;
+}
+
+static int
+_on_cmd_adapter_set_discoverable_timeout(char *cmd, char *args)
+{
+   char *device_path, *next_args, *p;
+   unsigned int timeout;
+   E_Bluez_Element *element = _element_from_args(args, &next_args);
+
+   if (!element)
+	   return 1;
+
+   if (!next_args) {
+      fprintf(stderr, "ERROR: missing timeout value\n");
+      return 1;
+   }
+
+   timeout = strtol(next_args, &p, 0);
+   if (p == next_args)
+     {
+	fprintf(stderr, "ERROR: invalid number \"%s\".\n", next_args);
+	return 1;
+     }
+
+   if (e_bluez_adapter_discoverable_timeout_set(element, timeout,
+			_method_success_check,
+			"adapter_set_discoverable_timeout"))
+     printf(":::Adapter %s scan interval set to %hu\n", element->path, timeout);
+   else
+     fputs("ERROR: can't set adapter discoverable timeout\n", stderr);
    return 1;
 }
 
@@ -592,8 +721,14 @@ _on_input(void *data, Ecore_Fd_Handler *fd_handler)
      {"adapter_register_agent", _on_cmd_adapter_register_agent},
      {"adapter_unregister_agent", _on_cmd_adapter_unregister_agent},
      {"adapter_get_address", _on_cmd_adapter_get_address},
+     {"adapter_get_name", _on_cmd_adapter_get_name},
+     {"adapter_set_name", _on_cmd_adapter_set_name},
      {"adapter_get_powered", _on_cmd_adapter_get_powered},
      {"adapter_set_powered", _on_cmd_adapter_set_powered},
+     {"adapter_get_discoverable", _on_cmd_adapter_get_discoverable},
+     {"adapter_set_discoverable", _on_cmd_adapter_set_discoverable},
+     {"adapter_get_discoverable_timeout", _on_cmd_adapter_get_discoverable_timeout},
+     {"adapter_set_discoverable_timeout", _on_cmd_adapter_set_discoverable_timeout},
      {"adapter_get_discovering", _on_cmd_adapter_get_discovering},
      {"adapter_start_discovery", _on_cmd_adapter_start_discovery},
      {"adapter_stop_discovery", _on_cmd_adapter_stop_discovery},
