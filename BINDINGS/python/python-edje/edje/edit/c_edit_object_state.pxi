@@ -17,6 +17,7 @@
 
 # This file is included verbatim by edje.edit.pyx
 
+
 cdef class State:
     cdef EdjeEdit edje
     cdef object part
@@ -37,8 +38,8 @@ cdef class State:
         return self._part_obj
 
     def name_set(self, new_name):
-        return edje_edit_state_name_set(self.edje.obj, self.part, self._name,
-                                        new_name)
+        return bool(edje_edit_state_name_set(
+                self.edje.obj, self.part, self._name, new_name))
 
     def copy_from(self, from_state):
         return bool(edje_edit_state_copy(self.edje.obj, self.part,
@@ -112,6 +113,7 @@ cdef class State:
                                           NULL)
         # remove when fixed in edje_edit
         edje_edit_part_selected_state_set(self.edje.obj, self.part, self.name)
+
     def rel1_to_x_set(self, x):
         if x != "":
             edje_edit_state_rel1_to_x_set(self.edje.obj, self.part, self.name,
@@ -121,6 +123,7 @@ cdef class State:
                                           NULL)
         # remove when fixed in edje_edit
         edje_edit_part_selected_state_set(self.edje.obj, self.part, self.name)
+
     def rel1_to_y_set(self, y):
         if y != "":
             edje_edit_state_rel1_to_y_set(self.edje.obj, self.part, self.name,
@@ -231,17 +234,17 @@ cdef class State:
     def color2_get(self):
         cdef int r, g, b, a
         edje_edit_state_color2_get(self.edje.obj, self.part, self.name,
-                                  &r, &g, &b, &a)
+                                   &r, &g, &b, &a)
         return (r, g, b, a)
 
     def color2_set(self, int r, int g, int b, int a):
         edje_edit_state_color2_set(self.edje.obj, self.part, self.name,
-                                  r, g, b, a)
+                                   r, g, b, a)
 
     def color3_get(self):
         cdef int r, g, b, a
         edje_edit_state_color3_get(self.edje.obj, self.part, self.name,
-                                  &r, &g, &b, &a)
+                                   &r, &g, &b, &a)
         return (r, g, b, a)
 
     def color3_set(self, int r, int g, int b, int a):
@@ -385,7 +388,8 @@ cdef class State:
                 edje_edit_state_visible_set(self.edje.obj, self.part, self.name,
                                             1)
             else:
-                edje_edit_state_visible_set(self.edje.obj, self.part, self.name,                                            0)
+                edje_edit_state_visible_set(self.edje.obj, self.part, self.name,
+                                            0)
 
     def color_class_get(self):
         cdef char *cc
@@ -445,16 +449,16 @@ cdef class State:
     def external_param_double_get(self, param):
         cdef double value
 
-        if not edje_edit_state_external_param_double_get(self.edje.obj, self.part,
-                                                      self.name, param, &value):
+        if not edje_edit_state_external_param_double_get(
+            self.edje.obj, self.part, self.name, param, &value):
             return None
         return value
 
     def external_param_string_get(self, param):
         cdef char *value
 
-        if not edje_edit_state_external_param_string_get(self.edje.obj, self.part,
-                                                      self.name, param, &value):
+        if not edje_edit_state_external_param_string_get(
+            self.edje.obj, self.part, self.name, param, &value):
             return None
         r = value
         return r
@@ -471,19 +475,16 @@ cdef class State:
                             type(value).__name__)
 
     def external_param_int_set(self, param, value):
-        return bool(edje_edit_state_external_param_int_set(self.edje.obj,
-                                                           self.part, self.name,
-                                                           param, value))
+        return bool(edje_edit_state_external_param_int_set(
+                self.edje.obj, self.part, self.name, param, value))
 
     def external_param_double_set(self, param, value):
-        return bool(edje_edit_state_external_param_double_set(self.edje.obj,
-                                                           self.part, self.name,
-                                                           param, value))
+        return bool(edje_edit_state_external_param_double_set(
+                self.edje.obj, self.part, self.name, param, value))
 
     def external_param_string_set(self, param, value):
-        return bool(edje_edit_state_external_param_string_set(self.edje.obj,
-                                                           self.part, self.name,
-                                                           param, value))
+        return bool(edje_edit_state_external_param_string_set(
+                self.edje.obj, self.part, self.name, param, value))
 
     def text_get(self):
         cdef char *t
