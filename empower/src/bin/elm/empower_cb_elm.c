@@ -81,22 +81,25 @@ void destroy_cb(void *data, Evas_Object *w, void *event)
 }
 
 void check_pass_cb(void *data, Evas_Object *w, void *event)
-{	
+{
   char *pass = NULL;
-  char *markup = NULL;
+  char *prog = NULL;
 
   if(!auth_passed)
   {
     pass = elm_entry_markup_to_utf8(elm_entry_entry_get(entry));
+    prog = elm_entry_markup_to_utf8(elm_entry_entry_get(exec));
 
-    if((exec != NULL) && (entry != NULL) && (pass[0] == 0))
+    if((exec != NULL) && (entry != NULL) && (!pass || (pass[0] == 0)))
     {
-      elm_object_focus(entry);
-      free(pass);
+      if(prog && (prog[0] != 0))
+        elm_object_focus(entry);
+      if(pass) free(pass);
+      if(prog) free(prog);
       return;
     }
 
-    if(pass[0] != 0)
+    if(pass && (pass[0] != 0))
     {
       evas_object_hide(win);
       
@@ -106,7 +109,8 @@ void check_pass_cb(void *data, Evas_Object *w, void *event)
 
         // Clear password from memory and entry
         memset(pass, 0, strlen(pass));
-        elm_entry_entry_set(entry, "");
+        if(entry)
+          elm_entry_entry_set(entry, "");
       }
       else
       {
@@ -115,7 +119,12 @@ void check_pass_cb(void *data, Evas_Object *w, void *event)
       }
     }
 
-    free(pass);
+    if(pass)
+    {
+      // Clear password from memory
+      memset(pass,0,strlen(pass));
+      free(pass);
+    }
     pass = NULL;
   }
   else
@@ -139,7 +148,8 @@ int sudo_done_cb(void *data, int type, void *event)
   else if(mode == SUDOPROG)
   {
     e = elm_entry_markup_to_utf8(elm_entry_entry_get(exec));
-    if(exec && strlen(e))
+
+    if(exec && e && strlen(e))
     {
       elm_exit();
       strncat(cmd, " ", 1024);
@@ -150,7 +160,8 @@ int sudo_done_cb(void *data, int type, void *event)
       auth_passed = 1;
       display_window();
     }
-    free(e);
+    if(e) free(e);
+    e = NULL;
   }
   else
     elm_exit();

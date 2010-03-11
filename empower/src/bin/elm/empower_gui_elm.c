@@ -168,7 +168,8 @@ void display_window()
 
   if(win)
   {
-    elm_entry_entry_set(entry, "");
+    if(entry)
+      elm_entry_entry_set(entry, "");
     failure = 1;
   }
   else
