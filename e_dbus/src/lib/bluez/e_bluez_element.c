@@ -1286,9 +1286,12 @@ _e_bluez_element_get_properties_callback(void *user_data, DBusMessage *msg, DBus
 	t = dbus_message_iter_get_arg_type(&v_itr);
 	if (t == DBUS_TYPE_ARRAY)
 	  value = e_bluez_element_iter_get_array(&v_itr, key);
-	else if (t != DBUS_TYPE_INVALID) {
+	else if (t != DBUS_TYPE_INVALID)
+	  {
 	  dbus_message_iter_get_basic(&v_itr, &value);
-	} else {
+	}
+	else
+	  {
 	   ERR("property has invalid type %s", key);
 	   continue;
 	}

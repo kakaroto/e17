@@ -95,8 +95,8 @@ _e_ofono_system_name_owner_enter(const char *uid)
    DBG("enter ofono at %s (old was %s)", uid, unique_name);
    if (unique_name && strcmp(unique_name, uid) == 0)
      {
-	DBG("same unique_name for ofono, ignore.");
-	return;
+ 	DBG("same unique_name for ofono, ignore.");
+ 	return;
      }
 
    if (unique_name)
@@ -117,15 +117,15 @@ _e_ofono_system_name_owner_changed(void *data __UNUSED__, DBusMessage *msg)
 
    dbus_error_init(&err);
    if (!dbus_message_get_args(msg, &err,
-			      DBUS_TYPE_STRING, &name,
-			      DBUS_TYPE_STRING, &from,
-			      DBUS_TYPE_STRING, &to,
-			      DBUS_TYPE_INVALID))
+ 			      DBUS_TYPE_STRING, &name,
+ 			      DBUS_TYPE_STRING, &from,
+ 			      DBUS_TYPE_STRING, &to,
+ 			      DBUS_TYPE_INVALID))
      {
-	ERR("could not get NameOwnerChanged arguments: %s: %s",
-	    err.name, err.message);
-	dbus_error_free(&err);
-	return;
+ 	ERR("could not get NameOwnerChanged arguments: %s: %s",
+ 	    err.name, err.message);
+ 	dbus_error_free(&err);
+ 	return;
      }
 
    if (strcmp(name, bus_name) != 0)
@@ -137,11 +137,11 @@ _e_ofono_system_name_owner_changed(void *data __UNUSED__, DBusMessage *msg)
      _e_ofono_system_name_owner_enter(to);
    else if (from[0] != '\0' && to[0] == '\0')
      {
-	DBG("exit ofono at %s", from);
-	if (strcmp(unique_name, from) != 0)
-	  DBG("%s was not the known name %s, ignored.", from, unique_name);
-	else
-	  _e_ofono_system_name_owner_exit();
+ 	DBG("exit ofono at %s", from);
+ 	if (strcmp(unique_name, from) != 0)
+ 	  DBG("%s was not the known name %s, ignored.", from, unique_name);
+ 	else
+ 	  _e_ofono_system_name_owner_exit();
      }
    else
      DBG("unknow change from %s to %s", from, to);
@@ -166,8 +166,8 @@ _e_ofono_get_name_owner(void *data __UNUSED__, DBusMessage *msg, DBusError *err)
    dbus_message_iter_get_basic(&itr, &uid);
    if (!uid)
      {
-	ERR("no name owner!");
-	return;
+ 	ERR("no name owner!");
+ 	return;
      }
 
    _e_ofono_system_name_owner_enter(uid);
@@ -199,68 +199,69 @@ _e_ofono_get_name_owner(void *data __UNUSED__, DBusMessage *msg, DBusError *err)
 unsigned int
 e_ofono_system_init(E_DBus_Connection *edbus_conn)
 {
-	init_count++;
+   init_count++;
 
-	if (init_count > 1)
-		return init_count;
+   if (init_count > 1)
+     return init_count;
 
-	_e_dbus_ofono_log_dom = eina_log_domain_register
-		("e_dbus_ofono", EINA_LOG_DEFAULT_COLOR);
+   _e_dbus_ofono_log_dom = eina_log_domain_register
+     ("e_dbus_ofono", EINA_LOG_DEFAULT_COLOR);
 
-	if(_e_dbus_ofono_log_dom < 0) {
-		EINA_LOG_ERR
-			("impossible to create a log domain for edbus_ofono module");
-		return -1;
-	}
+   if(_e_dbus_ofono_log_dom < 0)
+     {
+	EINA_LOG_ERR
+	  ("impossible to create a log domain for edbus_ofono module");
+	return -1;
+     }
 
-	if (E_OFONO_EVENT_MANAGER_IN == 0)
-		E_OFONO_EVENT_MANAGER_IN = ecore_event_type_new();
-	if (E_OFONO_EVENT_MANAGER_OUT == 0)
-		E_OFONO_EVENT_MANAGER_OUT = ecore_event_type_new();
-	if (E_OFONO_EVENT_ELEMENT_ADD == 0)
-		E_OFONO_EVENT_ELEMENT_ADD = ecore_event_type_new();
-	if (E_OFONO_EVENT_ELEMENT_DEL == 0)
-		E_OFONO_EVENT_ELEMENT_DEL = ecore_event_type_new();
-	if (E_OFONO_EVENT_ELEMENT_UPDATED == 0)
-		E_OFONO_EVENT_ELEMENT_UPDATED = ecore_event_type_new();
+   if (E_OFONO_EVENT_MANAGER_IN == 0)
+     E_OFONO_EVENT_MANAGER_IN = ecore_event_type_new();
+   if (E_OFONO_EVENT_MANAGER_OUT == 0)
+     E_OFONO_EVENT_MANAGER_OUT = ecore_event_type_new();
+   if (E_OFONO_EVENT_ELEMENT_ADD == 0)
+     E_OFONO_EVENT_ELEMENT_ADD = ecore_event_type_new();
+   if (E_OFONO_EVENT_ELEMENT_DEL == 0)
+     E_OFONO_EVENT_ELEMENT_DEL = ecore_event_type_new();
+   if (E_OFONO_EVENT_ELEMENT_UPDATED == 0)
+     E_OFONO_EVENT_ELEMENT_UPDATED = ecore_event_type_new();
 
-	if (e_ofono_iface_manager == NULL)
-		e_ofono_iface_manager = eina_stringshare_add("org.ofono.Manager");
-	if (e_ofono_prop_modems == NULL)
-		e_ofono_prop_modems = eina_stringshare_add("Modems");
-	if (e_ofono_iface_modem == NULL)
-		e_ofono_iface_modem = eina_stringshare_add("org.ofono.Modem");
-	if (e_ofono_prop_name == NULL)
-		e_ofono_prop_name = eina_stringshare_add("Name");
-	if (e_ofono_prop_powered == NULL)
-		e_ofono_prop_powered = eina_stringshare_add("Powered");
-	if (e_ofono_prop_interfaces == NULL)
-		e_ofono_prop_interfaces = eina_stringshare_add("Interfaces");
-	if (e_ofono_iface_network_reg == NULL)
-		e_ofono_iface_network_reg = eina_stringshare_add("org.ofono.NetworkRegistration");
-	if (e_ofono_prop_mode == NULL)
-		e_ofono_prop_mode = eina_stringshare_add("Mode");
-	if (e_ofono_prop_status == NULL)
-		e_ofono_prop_status = eina_stringshare_add("Status");
-	if (e_ofono_prop_operator == NULL)
-		e_ofono_prop_operator = eina_stringshare_add("Operator");
-	if (e_ofono_prop_strength == NULL)
-		e_ofono_prop_strength = eina_stringshare_add("Strength");
+   if (e_ofono_iface_manager == NULL)
+     e_ofono_iface_manager = eina_stringshare_add("org.ofono.Manager");
+   if (e_ofono_prop_modems == NULL)
+     e_ofono_prop_modems = eina_stringshare_add("Modems");
+   if (e_ofono_iface_modem == NULL)
+     e_ofono_iface_modem = eina_stringshare_add("org.ofono.Modem");
+   if (e_ofono_prop_name == NULL)
+     e_ofono_prop_name = eina_stringshare_add("Name");
+   if (e_ofono_prop_powered == NULL)
+     e_ofono_prop_powered = eina_stringshare_add("Powered");
+   if (e_ofono_prop_interfaces == NULL)
+     e_ofono_prop_interfaces = eina_stringshare_add("Interfaces");
+   if (e_ofono_iface_network_reg == NULL)
+     e_ofono_iface_network_reg = eina_stringshare_add("org.ofono.NetworkRegistration");
+   if (e_ofono_prop_mode == NULL)
+     e_ofono_prop_mode = eina_stringshare_add("Mode");
+   if (e_ofono_prop_status == NULL)
+     e_ofono_prop_status = eina_stringshare_add("Status");
+   if (e_ofono_prop_operator == NULL)
+     e_ofono_prop_operator = eina_stringshare_add("Operator");
+   if (e_ofono_prop_strength == NULL)
+     e_ofono_prop_strength = eina_stringshare_add("Strength");
 
-	e_ofono_conn = edbus_conn;
-	cb_name_owner_changed = e_dbus_signal_handler_add
-		(e_ofono_conn, fdo_bus_name, fdo_path, fdo_interface, "NameOwnerChanged",
-		 _e_ofono_system_name_owner_changed, NULL);
+   e_ofono_conn = edbus_conn;
+   cb_name_owner_changed = e_dbus_signal_handler_add
+     (e_ofono_conn, fdo_bus_name, fdo_path, fdo_interface, "NameOwnerChanged",
+      _e_ofono_system_name_owner_changed, NULL);
 
-	if (pending_get_name_owner)
-		dbus_pending_call_cancel(pending_get_name_owner);
+   if (pending_get_name_owner)
+     dbus_pending_call_cancel(pending_get_name_owner);
 
-	pending_get_name_owner = e_dbus_get_name_owner
-		(e_ofono_conn, bus_name, _e_ofono_get_name_owner, NULL);
+   pending_get_name_owner = e_dbus_get_name_owner
+     (e_ofono_conn, bus_name, _e_ofono_get_name_owner, NULL);
 
-	e_ofono_elements_init();
+   e_ofono_elements_init();
 
-	return init_count;
+   return init_count;
 }
 
 
@@ -282,25 +283,25 @@ _stringshare_del(const char **str)
 unsigned int
 e_ofono_system_shutdown(void)
 {
-	if (init_count == 0)
-	{
-		ERR("ofono system already shut down.");
-		return 0;
-	}
-	init_count--;
-	if (init_count > 0)
-		return init_count;
+   if (init_count == 0)
+     {
+ 	ERR("ofono system already shut down.");
+ 	return 0;
+     }
+   init_count--;
+   if (init_count > 0)
+     return init_count;
 
-	_stringshare_del(&e_ofono_iface_manager);
-	_stringshare_del(&e_ofono_prop_modems);
-	_stringshare_del(&e_ofono_iface_modem);
-	_stringshare_del(&e_ofono_prop_name);
-	_stringshare_del(&e_ofono_prop_powered);
-	_stringshare_del(&e_ofono_prop_interfaces);
-	_stringshare_del(&e_ofono_iface_network_reg);
-	_stringshare_del(&e_ofono_prop_mode);
-	_stringshare_del(&e_ofono_prop_status);
-	_stringshare_del(&e_ofono_prop_operator);
-	_stringshare_del(&e_ofono_prop_strength);
-	return 0;
+   _stringshare_del(&e_ofono_iface_manager);
+   _stringshare_del(&e_ofono_prop_modems);
+   _stringshare_del(&e_ofono_iface_modem);
+   _stringshare_del(&e_ofono_prop_name);
+   _stringshare_del(&e_ofono_prop_powered);
+   _stringshare_del(&e_ofono_prop_interfaces);
+   _stringshare_del(&e_ofono_iface_network_reg);
+   _stringshare_del(&e_ofono_prop_mode);
+   _stringshare_del(&e_ofono_prop_status);
+   _stringshare_del(&e_ofono_prop_operator);
+   _stringshare_del(&e_ofono_prop_strength);
+   return 0;
 }

@@ -16,16 +16,17 @@ _device_found_callback(void *data, DBusMessage *msg)
      return;
 
    device = calloc(sizeof(E_Bluez_Device_Found), 1);
-   if (!device) {
-       ERR("No memory to alocate E_Bluez_Device_Found");
-       return;
-   }
+   if (!device)
+     {
+        ERR("No memory to alocate E_Bluez_Device_Found");
+        return;
+     }
 
    t = dbus_message_iter_get_arg_type(&itr);
    if (!_dbus_iter_type_check(t, DBUS_TYPE_STRING))
      {
-	ERR("missing device name in DeviceFound");
-	return;
+ 	ERR("missing device name in DeviceFound");
+ 	return;
      }
    dbus_message_iter_get_basic(&itr, &name);
 
@@ -33,14 +34,14 @@ _device_found_callback(void *data, DBusMessage *msg)
    t = dbus_message_iter_get_arg_type(&itr);
    if (!_dbus_iter_type_check(t, DBUS_TYPE_ARRAY))
      {
-	ERR("missing array in DeviceFound");
-	return;
+ 	ERR("missing array in DeviceFound");
+ 	return;
      }
 
    value = e_bluez_element_iter_get_array(&itr, name);
 
    if (!value)
-      return;
+     return;
 
    device->name = eina_stringshare_add(name);
    device->adapter = element;
@@ -278,7 +279,8 @@ e_bluez_adapter_discoverable_timeout_get(const E_Bluez_Element *element, unsigne
 }
 
 /**
- * Call method SetProperty("DiscoverableTimeout", timeout) at the given element on server.
+ * Call method SetProperty("DiscoverableTimeout", timeout) at the
+ * given element on server.
  *
  * This is a server call, not local, so it may fail and in that case
  * no property is updated locally. If the value was set the event
@@ -347,8 +349,8 @@ e_bluez_adapter_start_discovery(E_Bluez_Element *element, E_DBus_Method_Return_C
       element->path, element->interface, "DeviceFound",
       _device_found_callback, element);
 
-   return e_bluez_element_call_full(element, name, NULL,
-		   &element->_pending.start_discovery, cb, data);
+   return e_bluez_element_call_full
+     (element, name, NULL, &element->_pending.start_discovery, cb, data);
 }
 
 /**
@@ -369,8 +371,8 @@ e_bluez_adapter_stop_discovery(E_Bluez_Element *element, E_DBus_Method_Return_Cb
 
    EINA_SAFETY_ON_NULL_RETURN_VAL(element, 0);
 
-   return e_bluez_element_call_full(element, name, NULL,
-		   &element->_pending.stop_discovery, cb, data);
+   return e_bluez_element_call_full
+     (element, name, NULL, &element->_pending.stop_discovery, cb, data);
 }
 
 /**
@@ -411,6 +413,7 @@ e_bluez_adapter_create_paired_device(E_Bluez_Element *element, const char *objec
    dbus_message_iter_append_basic(&itr, DBUS_TYPE_OBJECT_PATH, &object_path);
    dbus_message_iter_append_basic(&itr, DBUS_TYPE_STRING, &capability);
 
-   return e_bluez_element_message_send(element, name, NULL, msg,
-			 &element->_pending.create_paired_device, cb, data);
+   return e_bluez_element_message_send
+     (element, name, NULL, msg,
+      &element->_pending.create_paired_device, cb, data);
 }

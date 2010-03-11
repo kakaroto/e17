@@ -104,8 +104,8 @@ _e_bluez_system_name_owner_enter(const char *uid)
    DBG("enter bluez at %s (old was %s)", uid, unique_name);
    if (unique_name && strcmp(unique_name, uid) == 0)
      {
-	DBG("same unique_name for bluez, ignore.");
-	return;
+ 	DBG("same unique_name for bluez, ignore.");
+ 	return;
      }
 
    if (unique_name)
@@ -126,15 +126,15 @@ _e_bluez_system_name_owner_changed(void *data __UNUSED__, DBusMessage *msg)
 
    dbus_error_init(&err);
    if (!dbus_message_get_args(msg, &err,
-			      DBUS_TYPE_STRING, &name,
-			      DBUS_TYPE_STRING, &from,
-			      DBUS_TYPE_STRING, &to,
-			      DBUS_TYPE_INVALID))
+ 			      DBUS_TYPE_STRING, &name,
+ 			      DBUS_TYPE_STRING, &from,
+ 			      DBUS_TYPE_STRING, &to,
+ 			      DBUS_TYPE_INVALID))
      {
-	ERR("could not get NameOwnerChanged arguments: %s: %s",
-	    err.name, err.message);
-	dbus_error_free(&err);
-	return;
+ 	ERR("could not get NameOwnerChanged arguments: %s: %s",
+ 	    err.name, err.message);
+ 	dbus_error_free(&err);
+ 	return;
      }
 
    if (strcmp(name, bus_name) != 0)
@@ -146,11 +146,11 @@ _e_bluez_system_name_owner_changed(void *data __UNUSED__, DBusMessage *msg)
      _e_bluez_system_name_owner_enter(to);
    else if (from[0] != '\0' && to[0] == '\0')
      {
-	DBG("exit bluez at %s", from);
-	if (strcmp(unique_name, from) != 0)
-	  DBG("%s was not the known name %s, ignored.", from, unique_name);
-	else
-	  _e_bluez_system_name_owner_exit();
+ 	DBG("exit bluez at %s", from);
+ 	if (strcmp(unique_name, from) != 0)
+ 	  DBG("%s was not the known name %s, ignored.", from, unique_name);
+ 	else
+ 	  _e_bluez_system_name_owner_exit();
      }
    else
      DBG("unknow change from %s to %s", from, to);
@@ -175,8 +175,8 @@ _e_bluez_get_name_owner(void *data __UNUSED__, DBusMessage *msg, DBusError *err)
    dbus_message_iter_get_basic(&itr, &uid);
    if (!uid)
      {
-	ERR("no name owner!");
-	return;
+ 	ERR("no name owner!");
+ 	return;
      }
 
    _e_bluez_system_name_owner_enter(uid);
@@ -210,86 +210,87 @@ _e_bluez_get_name_owner(void *data __UNUSED__, DBusMessage *msg, DBusError *err)
 unsigned int
 e_bluez_system_init(E_DBus_Connection *edbus_conn)
 {
-	init_count++;
+   init_count++;
 
-	if (init_count > 1)
-		return init_count;
+   if (init_count > 1)
+     return init_count;
 
-	_e_dbus_bluez_log_dom = eina_log_domain_register
-		("e_dbus_bluez", EINA_LOG_DEFAULT_COLOR);
+   _e_dbus_bluez_log_dom = eina_log_domain_register
+     ("e_dbus_bluez", EINA_LOG_DEFAULT_COLOR);
 
-	if(_e_dbus_bluez_log_dom < 0) {
-		EINA_LOG_ERR
-			("impossible to create a log domain for edbus_bluez module");
-		return -1;
-	}
+   if(_e_dbus_bluez_log_dom < 0)
+     {
+ 	EINA_LOG_ERR
+ 	  ("impossible to create a log domain for edbus_bluez module");
+ 	return -1;
+     }
 
-	if (E_BLUEZ_EVENT_MANAGER_IN == 0)
-		E_BLUEZ_EVENT_MANAGER_IN = ecore_event_type_new();
-	if (E_BLUEZ_EVENT_MANAGER_OUT == 0)
-		E_BLUEZ_EVENT_MANAGER_OUT = ecore_event_type_new();
-	if (E_BLUEZ_EVENT_ELEMENT_ADD == 0)
-		E_BLUEZ_EVENT_ELEMENT_ADD = ecore_event_type_new();
-	if (E_BLUEZ_EVENT_ELEMENT_DEL == 0)
-		E_BLUEZ_EVENT_ELEMENT_DEL = ecore_event_type_new();
-	if (E_BLUEZ_EVENT_ELEMENT_UPDATED == 0)
-		E_BLUEZ_EVENT_ELEMENT_UPDATED = ecore_event_type_new();
-	if (E_BLUEZ_EVENT_DEVICE_FOUND == 0)
-		E_BLUEZ_EVENT_DEVICE_FOUND = ecore_event_type_new();
+   if (E_BLUEZ_EVENT_MANAGER_IN == 0)
+     E_BLUEZ_EVENT_MANAGER_IN = ecore_event_type_new();
+   if (E_BLUEZ_EVENT_MANAGER_OUT == 0)
+     E_BLUEZ_EVENT_MANAGER_OUT = ecore_event_type_new();
+   if (E_BLUEZ_EVENT_ELEMENT_ADD == 0)
+     E_BLUEZ_EVENT_ELEMENT_ADD = ecore_event_type_new();
+   if (E_BLUEZ_EVENT_ELEMENT_DEL == 0)
+     E_BLUEZ_EVENT_ELEMENT_DEL = ecore_event_type_new();
+   if (E_BLUEZ_EVENT_ELEMENT_UPDATED == 0)
+     E_BLUEZ_EVENT_ELEMENT_UPDATED = ecore_event_type_new();
+   if (E_BLUEZ_EVENT_DEVICE_FOUND == 0)
+     E_BLUEZ_EVENT_DEVICE_FOUND = ecore_event_type_new();
 
-	if (e_bluez_iface_manager == NULL)
-		e_bluez_iface_manager = eina_stringshare_add("org.bluez.Manager");
-	if (e_bluez_iface_adapter == NULL)
-		e_bluez_iface_adapter = eina_stringshare_add("org.bluez.Adapter");
-	if (e_bluez_iface_device == NULL)
-		e_bluez_iface_device = eina_stringshare_add("org.bluez.Device");
-	if (e_bluez_prop_address == NULL)
-		e_bluez_prop_address = eina_stringshare_add("Address");
-	if (e_bluez_prop_name == NULL)
-		e_bluez_prop_name = eina_stringshare_add("Name");
-	if (e_bluez_prop_alias == NULL)
-		e_bluez_prop_alias = eina_stringshare_add("Alias");
-	if (e_bluez_prop_class == NULL)
-		e_bluez_prop_class = eina_stringshare_add("Class");
-	if (e_bluez_prop_icon == NULL)
-		e_bluez_prop_icon = eina_stringshare_add("Icon");
-	if (e_bluez_prop_paired == NULL)
-		e_bluez_prop_paired = eina_stringshare_add("Paired");
-	if (e_bluez_prop_trusted == NULL)
-		e_bluez_prop_trusted = eina_stringshare_add("Trusted");
-	if (e_bluez_prop_connected == NULL)
-		e_bluez_prop_connected = eina_stringshare_add("Connected");
-	if (e_bluez_prop_uuids == NULL)
-		e_bluez_prop_uuids = eina_stringshare_add("UUIDs");
-	if (e_bluez_prop_powered == NULL)
-		e_bluez_prop_powered = eina_stringshare_add("Powered");
-	if (e_bluez_prop_discoverable == NULL)
-		e_bluez_prop_discoverable = eina_stringshare_add("Discoverable");
-	if (e_bluez_prop_pairable == NULL)
-		e_bluez_prop_pairable = eina_stringshare_add("Pairable");
-	if (e_bluez_prop_discoverabletimeout == NULL)
-		e_bluez_prop_discoverabletimeout = eina_stringshare_add("DiscoverableTimeout");
-	if (e_bluez_prop_pairabletimeout == NULL)
-		e_bluez_prop_pairabletimeout = eina_stringshare_add("PairableTimeout");
-	if (e_bluez_prop_discovering == NULL)
-		e_bluez_prop_discovering = eina_stringshare_add("Discovering");
-	if (e_bluez_prop_devices == NULL)
-		e_bluez_prop_devices = eina_stringshare_add("Devices");
+   if (e_bluez_iface_manager == NULL)
+     e_bluez_iface_manager = eina_stringshare_add("org.bluez.Manager");
+   if (e_bluez_iface_adapter == NULL)
+     e_bluez_iface_adapter = eina_stringshare_add("org.bluez.Adapter");
+   if (e_bluez_iface_device == NULL)
+     e_bluez_iface_device = eina_stringshare_add("org.bluez.Device");
+   if (e_bluez_prop_address == NULL)
+     e_bluez_prop_address = eina_stringshare_add("Address");
+   if (e_bluez_prop_name == NULL)
+     e_bluez_prop_name = eina_stringshare_add("Name");
+   if (e_bluez_prop_alias == NULL)
+     e_bluez_prop_alias = eina_stringshare_add("Alias");
+   if (e_bluez_prop_class == NULL)
+     e_bluez_prop_class = eina_stringshare_add("Class");
+   if (e_bluez_prop_icon == NULL)
+     e_bluez_prop_icon = eina_stringshare_add("Icon");
+   if (e_bluez_prop_paired == NULL)
+     e_bluez_prop_paired = eina_stringshare_add("Paired");
+   if (e_bluez_prop_trusted == NULL)
+     e_bluez_prop_trusted = eina_stringshare_add("Trusted");
+   if (e_bluez_prop_connected == NULL)
+     e_bluez_prop_connected = eina_stringshare_add("Connected");
+   if (e_bluez_prop_uuids == NULL)
+     e_bluez_prop_uuids = eina_stringshare_add("UUIDs");
+   if (e_bluez_prop_powered == NULL)
+     e_bluez_prop_powered = eina_stringshare_add("Powered");
+   if (e_bluez_prop_discoverable == NULL)
+     e_bluez_prop_discoverable = eina_stringshare_add("Discoverable");
+   if (e_bluez_prop_pairable == NULL)
+     e_bluez_prop_pairable = eina_stringshare_add("Pairable");
+   if (e_bluez_prop_discoverabletimeout == NULL)
+     e_bluez_prop_discoverabletimeout = eina_stringshare_add("DiscoverableTimeout");
+   if (e_bluez_prop_pairabletimeout == NULL)
+     e_bluez_prop_pairabletimeout = eina_stringshare_add("PairableTimeout");
+   if (e_bluez_prop_discovering == NULL)
+     e_bluez_prop_discovering = eina_stringshare_add("Discovering");
+   if (e_bluez_prop_devices == NULL)
+     e_bluez_prop_devices = eina_stringshare_add("Devices");
 
-	e_bluez_conn = edbus_conn;
-	cb_name_owner_changed = e_dbus_signal_handler_add
-		(e_bluez_conn, fdo_bus_name, fdo_path, fdo_interface, "NameOwnerChanged",
-		 _e_bluez_system_name_owner_changed, NULL);
+   e_bluez_conn = edbus_conn;
+   cb_name_owner_changed = e_dbus_signal_handler_add
+     (e_bluez_conn, fdo_bus_name, fdo_path, fdo_interface, "NameOwnerChanged",
+      _e_bluez_system_name_owner_changed, NULL);
 
-	if (pending_get_name_owner)
-		dbus_pending_call_cancel(pending_get_name_owner);
+   if (pending_get_name_owner)
+     dbus_pending_call_cancel(pending_get_name_owner);
 
-	pending_get_name_owner = e_dbus_get_name_owner
-		(e_bluez_conn, bus_name, _e_bluez_get_name_owner, NULL);
+   pending_get_name_owner = e_dbus_get_name_owner
+     (e_bluez_conn, bus_name, _e_bluez_get_name_owner, NULL);
 
-	e_bluez_elements_init();
+   e_bluez_elements_init();
 
-	return init_count;
+   return init_count;
 }
 
 
@@ -311,53 +312,53 @@ _stringshare_del(const char **str)
 unsigned int
 e_bluez_system_shutdown(void)
 {
-	if (init_count == 0)
-	{
-		ERR("bluez system already shut down.");
-		return 0;
-	}
-	init_count--;
-	if (init_count > 0)
-		return init_count;
+   if (init_count == 0)
+     {
+ 	ERR("bluez system already shut down.");
+ 	return 0;
+     }
+   init_count--;
+   if (init_count > 0)
+     return init_count;
 
-	_stringshare_del(&e_bluez_iface_manager);
-	_stringshare_del(&e_bluez_iface_adapter);
-	_stringshare_del(&e_bluez_iface_device);
-	_stringshare_del(&e_bluez_prop_address);
-	_stringshare_del(&e_bluez_prop_name);
-	_stringshare_del(&e_bluez_prop_alias);
-	_stringshare_del(&e_bluez_prop_class);
-	_stringshare_del(&e_bluez_prop_icon);
-	_stringshare_del(&e_bluez_prop_paired);
-	_stringshare_del(&e_bluez_prop_trusted);
-	_stringshare_del(&e_bluez_prop_connected);
-	_stringshare_del(&e_bluez_prop_uuids);
-	_stringshare_del(&e_bluez_prop_powered);
-	_stringshare_del(&e_bluez_prop_discoverable);
-	_stringshare_del(&e_bluez_prop_pairable);
-	_stringshare_del(&e_bluez_prop_discoverabletimeout);
-	_stringshare_del(&e_bluez_prop_pairabletimeout);
-	_stringshare_del(&e_bluez_prop_discovering);
-	_stringshare_del(&e_bluez_prop_devices);
+   _stringshare_del(&e_bluez_iface_manager);
+   _stringshare_del(&e_bluez_iface_adapter);
+   _stringshare_del(&e_bluez_iface_device);
+   _stringshare_del(&e_bluez_prop_address);
+   _stringshare_del(&e_bluez_prop_name);
+   _stringshare_del(&e_bluez_prop_alias);
+   _stringshare_del(&e_bluez_prop_class);
+   _stringshare_del(&e_bluez_prop_icon);
+   _stringshare_del(&e_bluez_prop_paired);
+   _stringshare_del(&e_bluez_prop_trusted);
+   _stringshare_del(&e_bluez_prop_connected);
+   _stringshare_del(&e_bluez_prop_uuids);
+   _stringshare_del(&e_bluez_prop_powered);
+   _stringshare_del(&e_bluez_prop_discoverable);
+   _stringshare_del(&e_bluez_prop_pairable);
+   _stringshare_del(&e_bluez_prop_discoverabletimeout);
+   _stringshare_del(&e_bluez_prop_pairabletimeout);
+   _stringshare_del(&e_bluez_prop_discovering);
+   _stringshare_del(&e_bluez_prop_devices);
 
-	if (pending_get_name_owner)
-	{
-		dbus_pending_call_cancel(pending_get_name_owner);
-		pending_get_name_owner = NULL;
-	}
+   if (pending_get_name_owner)
+     {
+ 	dbus_pending_call_cancel(pending_get_name_owner);
+ 	pending_get_name_owner = NULL;
+     }
 
-	if (cb_name_owner_changed)
-	{
-		e_dbus_signal_handler_del(e_bluez_conn, cb_name_owner_changed);
-		cb_name_owner_changed = NULL;
-	}
+   if (cb_name_owner_changed)
+     {
+ 	e_dbus_signal_handler_del(e_bluez_conn, cb_name_owner_changed);
+ 	cb_name_owner_changed = NULL;
+     }
 
-	if (unique_name)
-		_e_bluez_system_name_owner_exit();
+   if (unique_name)
+     _e_bluez_system_name_owner_exit();
 
-	e_bluez_elements_shutdown();
-	eina_log_domain_unregister(_e_dbus_bluez_log_dom);
-	e_bluez_conn = NULL;
+   e_bluez_elements_shutdown();
+   eina_log_domain_unregister(_e_dbus_bluez_log_dom);
+   e_bluez_conn = NULL;
 
-	return init_count;
+   return init_count;
 }
