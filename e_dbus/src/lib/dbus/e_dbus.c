@@ -155,7 +155,7 @@ e_dbus_connection_new(DBusConnection *conn)
   else
     DBG("Not connected");
 
-  cd->shared_type = -1;
+  cd->shared_type = (unsigned int)-1;
   cd->fd_handlers = NULL;
   cd->timeouts = NULL;
 
@@ -176,7 +176,7 @@ e_dbus_connection_free(void *data)
   EINA_LIST_FREE(cd->timeouts, timer)
     ecore_timer_del(timer);
 
-  if (cd->shared_type != -1)
+  if (cd->shared_type != (unsigned int)-1)
     shared_connections[cd->shared_type] = NULL;
 
   e_dbus_signal_handlers_free_all(cd);

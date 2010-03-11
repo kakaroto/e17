@@ -554,7 +554,7 @@ _e_ofono_element_array_match(E_Ofono_Array *old, E_Ofono_Array *new, const char 
  	       e = _e_ofono_element_item_register(prop_name, item_new);
 
  	     if (e)
- 	       DBG("Add element %s\n", e->path, e->interface);
+ 	       DBG("Add element %s (%s)\n", e->path, e->interface);
  	  }
      }
 
