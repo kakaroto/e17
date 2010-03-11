@@ -150,6 +150,9 @@ extern "C" {
   EAPI Eina_Bool e_bluez_element_property_get_stringshared(const E_Bluez_Element *element, const char *name, int *type, void *value) EINA_ARG_NONNULL(1, 2, 4) EINA_WARN_UNUSED_RESULT;
   EAPI Eina_Bool e_bluez_element_property_get(const E_Bluez_Element *element, const char *name, int *type, void *value) EINA_ARG_NONNULL(1, 2, 4) EINA_WARN_UNUSED_RESULT;
 
+  EAPI Eina_Bool e_bluez_element_is_adapter(const E_Bluez_Element *element) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
+  EAPI Eina_Bool e_bluez_element_is_device(const E_Bluez_Element *element) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
+
 #ifdef __cplusplus
 }
 #endif

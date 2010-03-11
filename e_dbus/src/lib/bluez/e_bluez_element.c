@@ -2227,3 +2227,23 @@ e_bluez_elements_shutdown(void)
    eina_hash_free(elements);
    elements = NULL;
 }
+
+static inline Eina_Bool
+_e_bluez_element_is(const E_Bluez_Element *element, const char *interface)
+{
+   return element->interface == interface;
+}
+
+Eina_Bool
+e_bluez_element_is_adapter(const E_Bluez_Element *element)
+{
+   EINA_SAFETY_ON_NULL_RETURN_VAL(element, EINA_FALSE);
+   return _e_bluez_element_is(element, e_bluez_iface_adapter);
+}
+
+Eina_Bool
+e_bluez_element_is_device(const E_Bluez_Element *element)
+{
+   EINA_SAFETY_ON_NULL_RETURN_VAL(element, EINA_FALSE);
+   return _e_bluez_element_is(element, e_bluez_iface_device);
+}
