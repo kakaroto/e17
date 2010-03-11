@@ -70,19 +70,19 @@ class About(Wizard):
 
         copyright = elementary.Label(self)
         copyright.label_set(
-"""Editje is free software: you can redistribute it and/or modify it <br>
-under the terms of the GNU Lesser General Public License as       <br>
-published by the Free Software Foundation, either version 3 of the<br>
-License, or (at your option) any later version.                   <br>
-                                                                  <br>
-Editje is distributed in the hope that it will be useful,         <br>
-but WITHOUT ANY WARRANTY; without even the implied warranty of    <br>
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the      <br>
-GNU Lesser General Public License for more details.               <br>
-                                                                  <br>
-You should have received a copy of the GNU Lesser General Public  <br>
-License along with Editje. If not, see                            <br>
-http://www.gnu.org/licenses/                                      <br>""")
+"Editje is free software: you can redistribute it and/or modify it <br>"
+"under the terms of the GNU Lesser General Public License as       <br>"
+"published by the Free Software Foundation, either version 3 of the<br>"
+"License, or (at your option) any later version.                   <br>"
+"                                                                  <br>"
+"Editje is distributed in the hope that it will be useful,         <br>"
+"but WITHOUT ANY WARRANTY; without even the implied warranty of    <br>"
+"MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the      <br>"
+"GNU Lesser General Public License for more details.               <br>"
+"                                                                  <br>"
+"You should have received a copy of the GNU Lesser General Public  <br>"
+"License along with Editje. If not, see                            <br>"
+"http://www.gnu.org/licenses/                                      <br>")
         copyright.show()
         sc.content_set(copyright)
 
