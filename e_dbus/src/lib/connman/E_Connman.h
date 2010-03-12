@@ -90,9 +90,9 @@ extern "C" {
   EAPI bool e_connman_manager_offline_mode_get(bool *offline) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
   EAPI bool e_connman_manager_offline_mode_set(bool offline, E_DBus_Method_Return_Cb cb, const void *data) EINA_WARN_UNUSED_RESULT;
 
-  EAPI bool e_connman_manager_profiles_get(unsigned int *count, E_Connman_Element ***p_elements) EINA_WARN_UNUSED_RESULT;
-  EAPI bool e_connman_manager_services_get(unsigned int *count, E_Connman_Element ***p_elements) EINA_WARN_UNUSED_RESULT;
-  EAPI bool e_connman_manager_technologies_get(unsigned int *count, E_Connman_Element ***p_elements) EINA_WARN_UNUSED_RESULT;
+  EAPI bool e_connman_manager_profiles_get(unsigned int *count, E_Connman_Element ***p_elements) EINA_ARG_NONNULL(1, 2) EINA_WARN_UNUSED_RESULT;
+  EAPI bool e_connman_manager_services_get(unsigned int *count, E_Connman_Element ***p_elements) EINA_ARG_NONNULL(1, 2)  EINA_WARN_UNUSED_RESULT;
+  EAPI bool e_connman_manager_technologies_get(unsigned int *count, E_Connman_Element ***p_elements) EINA_ARG_NONNULL(1, 2)  EINA_WARN_UNUSED_RESULT;
 
   EAPI bool e_connman_manager_request_scan(const char *type, E_DBus_Method_Return_Cb cb, const void *data) EINA_WARN_UNUSED_RESULT;
 
