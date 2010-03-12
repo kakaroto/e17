@@ -112,7 +112,7 @@ cdef class Part:
             return r
 
         def __set__(self, clipper):
-            if clipper == "" or clipper is None:
+            if not clipper:
                 edje_edit_part_clip_to_set(self.edje.obj, self.name, NULL)
             else:
                 edje_edit_part_clip_to_set(self.edje.obj, self.name, clipper)
@@ -130,7 +130,7 @@ cdef class Part:
             return r
 
         def __set__(self, source):
-            if source == "" or source is None:
+            if not source:
                 edje_edit_part_source_set(self.edje.obj, self.name, NULL)
             else:
                 edje_edit_part_source_set(self.edje.obj, self.name, source)
