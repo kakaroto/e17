@@ -14,8 +14,13 @@ e_bluez_devicefound_free(E_Bluez_Device_Found *device)
    e_bluez_element_array_free(device->array, NULL);
 }
 
+/**
+ * Return the pointer to the stringshared alias for the given found device.
+ *
+ * @return stringshared pointer, or @c NULL if unknown.
+ */
 const char *
-e_bluez_devicefound_alias_get(E_Bluez_Device_Found *device)
+e_bluez_devicefound_alias_get(const E_Bluez_Device_Found *device)
 {
    E_Bluez_Element_Dict_Entry *entry;
 

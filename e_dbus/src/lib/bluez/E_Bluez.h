@@ -110,7 +110,7 @@ extern "C" {
 
   /* Device Found Methods */
   EAPI void e_bluez_devicefound_free(E_Bluez_Device_Found *device) EINA_ARG_NONNULL(1);
-  EAPI const char *e_bluez_devicefound_alias_get(E_Bluez_Device_Found *device) EINA_ARG_NONNULL(1);
+  EAPI const char *e_bluez_devicefound_alias_get(const E_Bluez_Device_Found *device) EINA_ARG_NONNULL(1);
 
   /* Devices Methods */
   EAPI Eina_Bool e_bluez_device_name_get(E_Bluez_Element *element, const char **name) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
