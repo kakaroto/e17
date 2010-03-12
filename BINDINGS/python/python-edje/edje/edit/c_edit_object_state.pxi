@@ -64,13 +64,13 @@ cdef class State:
         return (x, y)
 
     def rel1_to_set(self, x, y):
-        if x != "":
+        if x != "" and x != None:
             edje_edit_state_rel1_to_x_set(self.edje.obj, self.part, self.name,
                                           x)
         else:
             edje_edit_state_rel1_to_x_set(self.edje.obj, self.part, self.name,
                                           NULL)
-        if y != "":
+        if y != "" and y != None:
             edje_edit_state_rel1_to_y_set(self.edje.obj, self.part, self.name,
                                           y)
         else:
@@ -86,7 +86,7 @@ cdef class State:
             self.rel1_to_set(*rel1_to)
 
     def rel1_to_x_set(self, x):
-        if x != "":
+        if x != "" and x != None:
             edje_edit_state_rel1_to_x_set(self.edje.obj, self.part, self.name,
                                           x)
         else:
@@ -96,7 +96,7 @@ cdef class State:
         edje_edit_part_selected_state_set(self.edje.obj, self.part, self.name)
 
     def rel1_to_y_set(self, y):
-        if y != "":
+        if y != "" and y != None:
             edje_edit_state_rel1_to_y_set(self.edje.obj, self.part, self.name,
                                           y)
         else:
@@ -180,13 +180,13 @@ cdef class State:
         return (x, y)
 
     def rel2_to_set(self, x, y):
-        if x != "":
+        if x != "" and x != None:
             edje_edit_state_rel2_to_x_set(self.edje.obj, self.part, self.name,
                                           x)
         else:
             edje_edit_state_rel2_to_x_set(self.edje.obj, self.part, self.name,
                                           NULL)
-        if y != "":
+        if y != "" and y != None:
             edje_edit_state_rel2_to_y_set(self.edje.obj, self.part, self.name,
                                           y)
         else:
@@ -202,7 +202,7 @@ cdef class State:
             self.rel2_to_set(*rel2_to)
 
     def rel2_to_x_set(self, x):
-        if x != "":
+        if x != "" and x != None:
             edje_edit_state_rel2_to_x_set(self.edje.obj, self.part, self.name,
                                           x)
         else:
@@ -212,7 +212,7 @@ cdef class State:
         edje_edit_part_selected_state_set(self.edje.obj, self.part, self.name)
 
     def rel2_to_y_set(self, y):
-        if y != "":
+        if y != "" and y != None:
             edje_edit_state_rel2_to_y_set(self.edje.obj, self.part, self.name,
                                           y)
         else:
@@ -476,7 +476,7 @@ cdef class State:
         return rcc
 
     def color_class_set(self, cc):
-        if cc != "":
+        if cc != "" and cc != None:
             edje_edit_state_color_class_set(self.edje.obj, self.part,
                                             self.name, cc)
         else:
