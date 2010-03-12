@@ -45,8 +45,8 @@ _device_found_callback(void *data, DBusMessage *msg)
    t = dbus_message_iter_get_arg_type(&itr);
    if (!_dbus_iter_type_check(t, DBUS_TYPE_STRING))
      {
- 	ERR("missing device name in DeviceFound");
- 	return;
+	ERR("missing device name in DeviceFound");
+	return;
      }
    dbus_message_iter_get_basic(&itr, &name);
 
@@ -54,8 +54,8 @@ _device_found_callback(void *data, DBusMessage *msg)
    t = dbus_message_iter_get_arg_type(&itr);
    if (!_dbus_iter_type_check(t, DBUS_TYPE_ARRAY))
      {
- 	ERR("missing array in DeviceFound");
- 	return;
+	ERR("missing array in DeviceFound");
+	return;
      }
 
    value = e_bluez_element_iter_get_array(&itr, name);

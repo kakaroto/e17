@@ -95,8 +95,8 @@ _e_ofono_system_name_owner_enter(const char *uid)
    DBG("enter ofono at %s (old was %s)", uid, unique_name);
    if (unique_name && strcmp(unique_name, uid) == 0)
      {
- 	DBG("same unique_name for ofono, ignore.");
- 	return;
+	DBG("same unique_name for ofono, ignore.");
+	return;
      }
 
    if (unique_name)
@@ -117,15 +117,15 @@ _e_ofono_system_name_owner_changed(void *data __UNUSED__, DBusMessage *msg)
 
    dbus_error_init(&err);
    if (!dbus_message_get_args(msg, &err,
- 			      DBUS_TYPE_STRING, &name,
- 			      DBUS_TYPE_STRING, &from,
- 			      DBUS_TYPE_STRING, &to,
- 			      DBUS_TYPE_INVALID))
+			      DBUS_TYPE_STRING, &name,
+			      DBUS_TYPE_STRING, &from,
+			      DBUS_TYPE_STRING, &to,
+			      DBUS_TYPE_INVALID))
      {
- 	ERR("could not get NameOwnerChanged arguments: %s: %s",
- 	    err.name, err.message);
- 	dbus_error_free(&err);
- 	return;
+	ERR("could not get NameOwnerChanged arguments: %s: %s",
+	    err.name, err.message);
+	dbus_error_free(&err);
+	return;
      }
 
    if (strcmp(name, bus_name) != 0)
@@ -137,11 +137,11 @@ _e_ofono_system_name_owner_changed(void *data __UNUSED__, DBusMessage *msg)
      _e_ofono_system_name_owner_enter(to);
    else if (from[0] != '\0' && to[0] == '\0')
      {
- 	DBG("exit ofono at %s", from);
- 	if (strcmp(unique_name, from) != 0)
- 	  DBG("%s was not the known name %s, ignored.", from, unique_name);
- 	else
- 	  _e_ofono_system_name_owner_exit();
+	DBG("exit ofono at %s", from);
+	if (strcmp(unique_name, from) != 0)
+	  DBG("%s was not the known name %s, ignored.", from, unique_name);
+	else
+	  _e_ofono_system_name_owner_exit();
      }
    else
      DBG("unknow change from %s to %s", from, to);
@@ -166,8 +166,8 @@ _e_ofono_get_name_owner(void *data __UNUSED__, DBusMessage *msg, DBusError *err)
    dbus_message_iter_get_basic(&itr, &uid);
    if (!uid)
      {
- 	ERR("no name owner!");
- 	return;
+	ERR("no name owner!");
+	return;
      }
 
    _e_ofono_system_name_owner_enter(uid);
@@ -285,8 +285,8 @@ e_ofono_system_shutdown(void)
 {
    if (init_count == 0)
      {
- 	ERR("ofono system already shut down.");
- 	return 0;
+	ERR("ofono system already shut down.");
+	return 0;
      }
    init_count--;
    if (init_count > 0)
