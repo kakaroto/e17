@@ -40,6 +40,7 @@ extern "C" {
   extern int E_BLUEZ_EVENT_ELEMENT_DEL;
   extern int E_BLUEZ_EVENT_ELEMENT_UPDATED;
   extern int E_BLUEZ_EVENT_DEVICE_FOUND;
+  // TODO: extern int E_BLUEZ_EVENT_DEVICE_DISAPPEARED;
 
   typedef struct _E_Bluez_Element E_Bluez_Element;
   typedef struct _E_Bluez_Array E_Bluez_Array;
@@ -78,9 +79,9 @@ extern "C" {
 
   struct _E_Bluez_Device_Found
   {
-	  E_Bluez_Element *adapter;
-	  const char *name;
-	  E_Bluez_Array *array;
+     E_Bluez_Element *adapter;
+     const char *name;
+     E_Bluez_Array *array;
   };
 
   /* General Public API */
@@ -92,28 +93,33 @@ extern "C" {
   EAPI Eina_Bool e_bluez_manager_default_adapter(E_DBus_Method_Return_Cb cb, void *data) EINA_WARN_UNUSED_RESULT;
 
   /* Adapter Methods */
-  EAPI Eina_Bool e_bluez_adapter_agent_register(E_Bluez_Element *element, const char *object_path, const char *capability, E_DBus_Method_Return_Cb cb, const void *data) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
-  EAPI Eina_Bool e_bluez_adapter_agent_unregister(E_Bluez_Element *element, const char *object_path, E_DBus_Method_Return_Cb cb, const void *data) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
-  EAPI Eina_Bool e_bluez_adapter_address_get(E_Bluez_Element *element, const char **address) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
-  EAPI Eina_Bool e_bluez_adapter_name_get(E_Bluez_Element *element, const char **name) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
+  EAPI E_Bluez_Element *e_bluez_adapter_get(const char *path) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
+
+  EAPI Eina_Bool e_bluez_adapter_agent_register(E_Bluez_Element *element, const char *object_path, const char *capability, E_DBus_Method_Return_Cb cb, const void *data) EINA_ARG_NONNULL(1, 2) EINA_WARN_UNUSED_RESULT;
+  EAPI Eina_Bool e_bluez_adapter_agent_unregister(E_Bluez_Element *element, const char *object_path, E_DBus_Method_Return_Cb cb, const void *data) EINA_ARG_NONNULL(1, 2) EINA_WARN_UNUSED_RESULT;
+  EAPI Eina_Bool e_bluez_adapter_address_get(const E_Bluez_Element *element, const char **address) EINA_ARG_NONNULL(1, 2) EINA_WARN_UNUSED_RESULT;
+  EAPI Eina_Bool e_bluez_adapter_name_get(const E_Bluez_Element *element, const char **name) EINA_ARG_NONNULL(1, 2) EINA_WARN_UNUSED_RESULT;
   EAPI Eina_Bool e_bluez_adapter_name_set(E_Bluez_Element *element, const char *name, E_DBus_Method_Return_Cb cb, const void *data) EINA_ARG_NONNULL(1,2) EINA_WARN_UNUSED_RESULT;
-  EAPI Eina_Bool e_bluez_adapter_powered_get(E_Bluez_Element *element, Eina_Bool *powered) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
+  EAPI Eina_Bool e_bluez_adapter_powered_get(const E_Bluez_Element *element, Eina_Bool *powered) EINA_ARG_NONNULL(1, 2) EINA_WARN_UNUSED_RESULT;
   EAPI Eina_Bool e_bluez_adapter_powered_set(E_Bluez_Element *profile, Eina_Bool powered, E_DBus_Method_Return_Cb cb, const void *data) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
-  EAPI Eina_Bool e_bluez_adapter_discoverable_get(E_Bluez_Element *element, Eina_Bool *discoverable) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
-  EAPI Eina_Bool e_bluez_adapter_discoverable_set(E_Bluez_Element *profile, Eina_Bool discoverable, E_DBus_Method_Return_Cb cb, const void *data) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
+  EAPI Eina_Bool e_bluez_adapter_discoverable_get(const E_Bluez_Element *element, Eina_Bool *discoverable) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
+  EAPI Eina_Bool e_bluez_adapter_discoverable_set(E_Bluez_Element *profile, Eina_Bool discoverable, E_DBus_Method_Return_Cb cb, const void *data) EINA_ARG_NONNULL(1, 2) EINA_WARN_UNUSED_RESULT;
   EAPI Eina_Bool e_bluez_adapter_discoverable_timeout_get(const E_Bluez_Element *element, unsigned int *timeout) EINA_ARG_NONNULL(1,2) EINA_WARN_UNUSED_RESULT;
   EAPI Eina_Bool e_bluez_adapter_discoverable_timeout_set(E_Bluez_Element *element, unsigned int timeout, E_DBus_Method_Return_Cb cb, const void *data) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
-  EAPI Eina_Bool e_bluez_adapter_discovering_get(E_Bluez_Element *element, Eina_Bool *discovering) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
+  EAPI Eina_Bool e_bluez_adapter_discovering_get(const E_Bluez_Element *element, Eina_Bool *discovering) EINA_ARG_NONNULL(1, 2) EINA_WARN_UNUSED_RESULT;
   EAPI Eina_Bool e_bluez_adapter_start_discovery(E_Bluez_Element *element, E_DBus_Method_Return_Cb cb, const void *data) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
   EAPI Eina_Bool e_bluez_adapter_stop_discovery(E_Bluez_Element *element, E_DBus_Method_Return_Cb cb, const void *data) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
-  EAPI Eina_Bool e_bluez_adapter_create_paired_device(E_Bluez_Element *element, const char *object_path, const char *capability, const char *device, E_DBus_Method_Return_Cb cb, const void *data) EINA_ARG_NONNULL(1,2,4) EINA_WARN_UNUSED_RESULT;
+  EAPI Eina_Bool e_bluez_adapter_create_paired_device(E_Bluez_Element *element, const char *object_path, const char *capability, const char *device, E_DBus_Method_Return_Cb cb, const void *data) EINA_ARG_NONNULL(1, 2, 4) EINA_WARN_UNUSED_RESULT;
 
   /* Device Found Methods */
   EAPI void e_bluez_devicefound_free(E_Bluez_Device_Found *device) EINA_ARG_NONNULL(1);
   EAPI const char *e_bluez_devicefound_alias_get(const E_Bluez_Device_Found *device) EINA_ARG_NONNULL(1);
 
   /* Devices Methods */
-  EAPI Eina_Bool e_bluez_device_name_get(E_Bluez_Element *element, const char **name) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
+  EAPI E_Bluez_Element *e_bluez_device_get(const char *path) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
+  EAPI Eina_Bool e_bluez_device_name_get(const E_Bluez_Element *element, const char **name) EINA_ARG_NONNULL(1, 2) EINA_WARN_UNUSED_RESULT;
+  EAPI Eina_Bool e_bluez_device_alias_get(const E_Bluez_Element *element, const char **alias) EINA_ARG_NONNULL(1, 2) EINA_WARN_UNUSED_RESULT;
+  EAPI Eina_Bool e_bluez_device_paired_get(const E_Bluez_Element *element, Eina_Bool *paired) EINA_ARG_NONNULL(1, 2) EINA_WARN_UNUSED_RESULT;
 
   /* Low-Level API:
    *

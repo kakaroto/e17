@@ -1,5 +1,25 @@
 #include "e_bluez_private.h"
 
+E_Bluez_Element *
+e_bluez_adapter_get(const char *path)
+{
+   E_Bluez_Element *adapter;
+
+   EINA_SAFETY_ON_NULL_RETURN_VAL(path, NULL);
+
+   adapter = e_bluez_element_get(path);
+   if (!adapter)
+     return NULL;
+
+   if (!e_bluez_element_is_adapter(adapter))
+     {
+	WRN("path '%s' is not a adapter!", path);
+	return NULL;
+     }
+
+   return adapter;
+}
+
 static void
 _device_found_callback(void *data, DBusMessage *msg)
 {
@@ -69,6 +89,7 @@ e_bluez_adapter_agent_register(E_Bluez_Element *element, const char *object_path
 {
    const char name[] = "RegisterAgent";
 
+   EINA_SAFETY_ON_NULL_RETURN_VAL(element, 0);
    EINA_SAFETY_ON_NULL_RETURN_VAL(object_path, 0);
 
    return e_bluez_element_call_with_path_and_string
@@ -116,7 +137,7 @@ e_bluez_adapter_agent_unregister(E_Bluez_Element *element, const char *object_pa
  * @return 1 on success, 0 otherwise.
  */
 Eina_Bool
-e_bluez_adapter_address_get(E_Bluez_Element *element, const char **address)
+e_bluez_adapter_address_get(const E_Bluez_Element *element, const char **address)
 {
    EINA_SAFETY_ON_NULL_RETURN_VAL(element, 0);
    EINA_SAFETY_ON_NULL_RETURN_VAL(address, 0);
@@ -140,7 +161,7 @@ e_bluez_adapter_address_get(E_Bluez_Element *element, const char **address)
  * @return 1 on success, 0 otherwise.
  */
 Eina_Bool
-e_bluez_adapter_name_get(E_Bluez_Element *element, const char **name)
+e_bluez_adapter_name_get(const E_Bluez_Element *element, const char **name)
 {
    EINA_SAFETY_ON_NULL_RETURN_VAL(element, 0);
    EINA_SAFETY_ON_NULL_RETURN_VAL(name, 0);
@@ -185,7 +206,7 @@ e_bluez_adapter_name_set(E_Bluez_Element *element, const char *name, E_DBus_Meth
  * @see e_bluez_adapter_powered_set()
  */
 Eina_Bool
-e_bluez_adapter_powered_get(E_Bluez_Element *element, Eina_Bool *powered)
+e_bluez_adapter_powered_get(const E_Bluez_Element *element, Eina_Bool *powered)
 {
    EINA_SAFETY_ON_NULL_RETURN_VAL(element, 0);
    EINA_SAFETY_ON_NULL_RETURN_VAL(powered, 0);
@@ -227,7 +248,7 @@ e_bluez_adapter_powered_set(E_Bluez_Element *element, Eina_Bool powered, E_DBus_
  * @see e_bluez_adapter_discoverable_set()
  */
 Eina_Bool
-e_bluez_adapter_discoverable_get(E_Bluez_Element *element, Eina_Bool *discoverable)
+e_bluez_adapter_discoverable_get(const E_Bluez_Element *element, Eina_Bool *discoverable)
 {
    EINA_SAFETY_ON_NULL_RETURN_VAL(element, 0);
    EINA_SAFETY_ON_NULL_RETURN_VAL(discoverable, 0);
@@ -316,7 +337,7 @@ e_bluez_adapter_discoverable_timeout_set(E_Bluez_Element *element, unsigned int 
  * @see e_bluez_adapter_discovering_set()
  */
 Eina_Bool
-e_bluez_adapter_discovering_get(E_Bluez_Element *element, Eina_Bool *discovering)
+e_bluez_adapter_discovering_get(const E_Bluez_Element *element, Eina_Bool *discovering)
 {
    EINA_SAFETY_ON_NULL_RETURN_VAL(element, 0);
    EINA_SAFETY_ON_NULL_RETURN_VAL(discovering, 0);
