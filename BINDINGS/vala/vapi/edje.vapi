@@ -118,7 +118,7 @@ namespace Edje
         public int file_set( string file, string group );
         public void file_get( out string file, out string group );
         public int load_error_get();
-        public string edje_load_error_str( int error );
+        public unowned string edje_load_error_str( int error );
 
         public void signal_callback_add( string emission, string source, SignalCallback callback );
         public void* signal_callback_del( string emission, string source, SignalCallback callback );
@@ -151,11 +151,11 @@ namespace Edje
 
         public void text_change_cb_set( TextChangedCallback callback );
         public void part_text_set( string part, string text );
-        public string part_text_get( string part );
+        public unowned string part_text_get( string part );
         public void part_text_unescaped_set( string part, string text_to_escape );
         public string part_text_unescaped_get( string part );
 
-        public string part_text_selection_get( string part );
+        public unowned string part_text_selection_get( string part );
         public void part_text_select_none( string part );
         public void part_text_select_all( string part );
 
@@ -170,7 +170,7 @@ namespace Edje
         public void part_unswallow( Evas.Object obj_swallow );
         public Evas.Object part_swallow_get( string part);
 
-        public string part_state_get( string part, out double val_ret );
+        public unowned string part_state_get( string part, out double val_ret );
         public int part_drag_dir_get( string part );
         public void part_drag_value_set( string part, double dx, double dy );
         public void part_drag_value_get( string part, out double dx, out double dy );
