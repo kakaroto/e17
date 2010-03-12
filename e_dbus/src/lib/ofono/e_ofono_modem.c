@@ -13,7 +13,7 @@
  * @return 1 on success, 0 otherwise.
  */
 bool
-e_ofono_modem_powered_get(E_Ofono_Element *element, Eina_Bool *powered)
+e_ofono_modem_powered_get(const E_Ofono_Element *element, Eina_Bool *powered)
 {
    EINA_SAFETY_ON_NULL_RETURN_VAL(element, 0);
    EINA_SAFETY_ON_NULL_RETURN_VAL(powered, 0);
@@ -57,7 +57,7 @@ e_ofono_modem_powered_set(E_Ofono_Element *element, Eina_Bool powered, E_DBus_Me
  * @return 1 on success, 0 otherwise.
  */
 bool
-e_ofono_modem_name_get(E_Ofono_Element *element, const char **name)
+e_ofono_modem_name_get(const E_Ofono_Element *element, const char **name)
 {
    EINA_SAFETY_ON_NULL_RETURN_VAL(element, 0);
    EINA_SAFETY_ON_NULL_RETURN_VAL(name, 0);

@@ -72,15 +72,15 @@ extern "C" {
   EAPI E_Ofono_Element *e_ofono_manager_get(void) EINA_WARN_UNUSED_RESULT;
 
   /* Modem Methods */
-  EAPI bool e_ofono_modem_powered_get(E_Ofono_Element *element, Eina_Bool *powered);
-  EAPI bool e_ofono_modem_powered_set(E_Ofono_Element *element, Eina_Bool powered, E_DBus_Method_Return_Cb cb, const void *data);
-  EAPI bool e_ofono_modem_name_get(E_Ofono_Element *element, const char **name);
+  EAPI bool e_ofono_modem_powered_get(const E_Ofono_Element *element, Eina_Bool *powered) EINA_ARG_NONNULL(1, 2) EINA_WARN_UNUSED_RESULT;
+  EAPI bool e_ofono_modem_powered_set(E_Ofono_Element *element, Eina_Bool powered, E_DBus_Method_Return_Cb cb, const void *data) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
+  EAPI bool e_ofono_modem_name_get(const E_Ofono_Element *element, const char **name) EINA_ARG_NONNULL(1, 2) EINA_WARN_UNUSED_RESULT;
 
   /* NetworkRegistration Methods */
-  EAPI bool e_ofono_netreg_mode_get(E_Ofono_Element *element, const char **mode);
-  EAPI bool e_ofono_netreg_status_get(E_Ofono_Element *element, const char **status);
-  EAPI bool e_ofono_netreg_operator_get(E_Ofono_Element *element, const char **op);
-  EAPI bool e_ofono_netreg_strength_get(E_Ofono_Element *element, char *strength);
+  EAPI bool e_ofono_netreg_mode_get(const E_Ofono_Element *element, const char **mode) EINA_ARG_NONNULL(1, 2) EINA_WARN_UNUSED_RESULT;
+  EAPI bool e_ofono_netreg_status_get(const E_Ofono_Element *element, const char **status) EINA_ARG_NONNULL(1, 2) EINA_WARN_UNUSED_RESULT;
+  EAPI bool e_ofono_netreg_operator_get(const E_Ofono_Element *element, const char **op) EINA_ARG_NONNULL(1, 2) EINA_WARN_UNUSED_RESULT;
+  EAPI bool e_ofono_netreg_strength_get(const E_Ofono_Element *element, char *strength) EINA_ARG_NONNULL(1, 2) EINA_WARN_UNUSED_RESULT;
 
   /* Low-Level API:
    *
@@ -91,7 +91,7 @@ extern "C" {
 
   EAPI bool e_ofono_elements_get_all(unsigned int *count, E_Ofono_Element ***p_elements) EINA_ARG_NONNULL(1, 2) EINA_WARN_UNUSED_RESULT;
   EAPI bool e_ofono_elements_get_all_type(const char *type, unsigned int *count, E_Ofono_Element ***p_elements) EINA_ARG_NONNULL(1, 2, 3) EINA_WARN_UNUSED_RESULT;
-  EAPI E_Ofono_Element *e_ofono_element_get(const char *path, const char *interface);
+  EAPI E_Ofono_Element *e_ofono_element_get(const char *path, const char *interface) EINA_ARG_NONNULL(1, 2) EINA_WARN_UNUSED_RESULT;
 
   EAPI void e_ofono_element_listener_add(E_Ofono_Element *element, void (*cb)(void *data, const E_Ofono_Element *element), const void *data, void (*free_data)(void *data)) EINA_ARG_NONNULL(1, 2);
   EAPI void e_ofono_element_listener_del(E_Ofono_Element *element, void (*cb)(void *data, const E_Ofono_Element *element), const void *data) EINA_ARG_NONNULL(1, 2);

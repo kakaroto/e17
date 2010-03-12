@@ -15,7 +15,7 @@
  * @return 1 on success, 0 otherwise.
  */
 bool
-e_ofono_netreg_mode_get(E_Ofono_Element *element, const char **mode)
+e_ofono_netreg_mode_get(const E_Ofono_Element *element, const char **mode)
 {
    EINA_SAFETY_ON_NULL_RETURN_VAL(element, 0);
    EINA_SAFETY_ON_NULL_RETURN_VAL(mode, 0);
@@ -39,7 +39,7 @@ e_ofono_netreg_mode_get(E_Ofono_Element *element, const char **mode)
  * @return 1 on success, 0 otherwise.
  */
 bool
-e_ofono_netreg_status_get(E_Ofono_Element *element, const char **status)
+e_ofono_netreg_status_get(const E_Ofono_Element *element, const char **status)
 {
    EINA_SAFETY_ON_NULL_RETURN_VAL(element, 0);
    EINA_SAFETY_ON_NULL_RETURN_VAL(status, 0);
@@ -63,7 +63,7 @@ e_ofono_netreg_status_get(E_Ofono_Element *element, const char **status)
  * @return 1 on success, 0 otherwise.
  */
 bool
-e_ofono_netreg_operator_get(E_Ofono_Element *element, const char **op)
+e_ofono_netreg_operator_get(const E_Ofono_Element *element, const char **op)
 {
    EINA_SAFETY_ON_NULL_RETURN_VAL(element, 0);
    EINA_SAFETY_ON_NULL_RETURN_VAL(op, 0);
@@ -83,7 +83,7 @@ e_ofono_netreg_operator_get(E_Ofono_Element *element, const char **op)
  * @return 1 on success, 0 otherwise.
  */
 bool
-e_ofono_netreg_strength_get(E_Ofono_Element *element, char *strength)
+e_ofono_netreg_strength_get(const E_Ofono_Element *element, char *strength)
 {
    EINA_SAFETY_ON_NULL_RETURN_VAL(element, 0);
    EINA_SAFETY_ON_NULL_RETURN_VAL(strength, 0);
