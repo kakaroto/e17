@@ -163,6 +163,42 @@ namespace Ecore
         public static double precision_get();
         public static void precision_set(double precision);
     }
+
+    //=======================================================================
+    [CCode (cprefix = "Ecore_X_", lower_case_cprefix = "ecore_x_", cheader_filename = "Ecore_X.h")]
+    namespace X
+    {
+        public int init( string name = ":0" );
+        public int shutdown();
+
+        [SimpleType]
+        [CCode (cname = "Ecore_X_Screen_Size", cheader_filename = "Ecore_X.h")]
+        public struct ScreenSize
+        {
+            public int width;
+            public int height;
+        }
+
+        [Compact]
+        [CCode (cname = "Ecore_X_Window", cprefix = "ecore_x_window_", free_function = "ecore_x_window_free")]
+        public class Window
+        {
+            public static unowned Window root_first_get();
+            [CCode (cname = "ecore_x_randr_current_screen_size_get")]
+            public ScreenSize current_screen_size_get();
+        }
+    }
+    //=======================================================================
+    [CCode (cprefix = "Ecore_Fb_", lower_case_cprefix = "ecore_fb_", cheader_filename = "Ecore_Fb.h")]
+    namespace Framebuffer
+    {
+        public int init( string name = "/dev/fb0" );
+        public int shutdown();
+
+        public void size_get( out int w, out int h );
+        public void touch_screen_calibrate_set( int xscale, int xtrans, int yscale, int ytrans, int xyswap );
+        public void touch_screen_calibrate_get( out int xscale, out int xtrans, out int yscale, out int ytrans, out int xyswap );
+    }
 }
 
 //=======================================================================
