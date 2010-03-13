@@ -1177,7 +1177,7 @@ ECompMgrWinSetPicts(EObj * eo)
        (Mode_compmgr.use_pixmap || (eo->fade && Conf_compmgr.fading.enable)))
      {
 	cw->pixmap = EWindowGetPixmap(EobjGetWin(eo));
-	D2printf("ECompMgrWinSetPicts %#lx: Pmap=%#lx\n", EobjGetXwin(eo),
+	D1printf("ECompMgrWinSetPicts %#lx: Pmap=%#lx\n", EobjGetXwin(eo),
 		 cw->pixmap);
      }
 
@@ -1196,7 +1196,7 @@ ECompMgrWinSetPicts(EObj * eo)
 	pa.subwindow_mode = IncludeInferiors;
 	cw->picture = XRenderCreatePicture(disp, draw,
 					   pictfmt, CPSubwindowMode, &pa);
-	D2printf("ECompMgrWinSetPicts %#lx: Pict=%#lx (drawable=%#lx)\n",
+	D1printf("ECompMgrWinSetPicts %#lx: Pict=%#lx (drawable=%#lx)\n",
 		 EobjGetXwin(eo), cw->picture, draw);
 
 	/* Hmm.. What good does this actually do? */
