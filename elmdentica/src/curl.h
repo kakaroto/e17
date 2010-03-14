@@ -27,16 +27,16 @@ typedef struct _MemoryStruct {
 } MemoryStruct;
 
 typedef struct _http_request {
-	gchar		*url;
+	char		*url;
 	MemoryStruct	content;
-	gint		respose_code;
+	int		respose_code;
 } http_request;
 
-gint ed_curl_get(char *screen_name, char *password, http_request * request);
+int ed_curl_get(char *screen_name, char *password, http_request * request);
 
 char *ed_curl_escape(char *unescaped);
 
-gint ed_curl_post(char *screen_name, char *password, http_request * request, char * post_fields);
+int ed_curl_post(char *screen_name, char *password, http_request * request, char * post_fields);
 
 void ed_curl_cleanup(CURL * ua);
 

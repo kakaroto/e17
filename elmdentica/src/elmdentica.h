@@ -37,6 +37,23 @@ typedef enum _TimeLineStates {
 	FT_CREATED_AT
 } TimeLineStates;
 
+typedef enum _UsersShowStates {
+	US_HASH,
+	US_HASH_ERROR,
+	US_HASH_REQUEST,
+	US_ERROR,
+	US_NULL,
+	US_START,
+	US_NAME,
+	US_DESCRIPTION,
+	US_PROFILE_IMAGE,
+	US_PROTECTED,
+	US_FOLLOWERS_COUNT,
+	US_FRIENDS_COUNT,
+	US_FOLLOWING,
+	US_TEXT,
+} UsersShowStates;
+
 typedef struct _ub_Status {
 	char * screen_name;	// <screen_name>
 	char * name;		// <name>
@@ -52,6 +69,7 @@ typedef struct _ub_bubble {
 	char *screen_name;
 	char *message;
 	int   account_id;
+	int   account_type;
 	long int   status_id;
 	Eina_Bool	favorite;
 } ub_Bubble;
@@ -63,6 +81,21 @@ typedef struct _StatusesList {
 	char		*hash_error;
 	char		*hash_request;
 } StatusesList;
+
+typedef struct _User_Profile {
+	UsersShowStates	state;
+	char		*name;
+	char		*screen_name;
+	char		*description;
+	char		*profile_image_url;
+	char		*tmp;
+	Eina_Bool	protected;
+	int			followers_count;
+	int			friends_count;
+	Eina_Bool	following;
+	char		*hash_error;
+	char		*hash_request;
+} UserProfile;
 
 #define ACCOUNT_TYPE_NONE 0
 #define ACCOUNT_TYPE_STATUSNET 1

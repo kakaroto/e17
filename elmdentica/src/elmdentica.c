@@ -91,7 +91,7 @@ double icon_zoom_init=0;
 
 struct sqlite3 *ed_DB=NULL;
 
-GRegex *re_link=NULL, *re_link_content=NULL, *re_amp=NULL;
+GRegex *re_link=NULL, *re_link_content=NULL, *re_amp=NULL, *re_user=NULL, *re_group;
 GError *re_err=NULL;
 
 static int count_accounts(void *notUsed, int argc, char **argv, char **azColName) {
@@ -355,16 +355,143 @@ static void on_open_url(void *data, Evas_Object *obj, void *event_info) {
 	}
 }
 
-static void on_message_anchor_clicked(void *data, Evas_Object *obj, void *event_info) {
-	Elm_Entry_Anchorblock_Info * info = (Elm_Entry_Anchorblock_Info*)event_info;
-	char * url=NULL, *frame_label=NULL, *url2=NULL;
-	Evas_Object *box=NULL, *button=NULL, *buttons=NULL, *frame=NULL, *entry=NULL, *bubble=(Evas_Object*)data;
-	int res = 0;
 
-	if(info->name == NULL || strlen(info->name) <= 9)
-		return;
+static void ed_statusnet_user_get(int account_id, UserProfile *user) {
+}
 
-	url = strndup((char*)info->name, 1024);
+static void user_info_get(ub_Bubble *ubBubble, UserProfile *user) {
+	switch(ubBubble->account_type) {
+		case ACCOUNT_TYPE_TWITTER: { ed_twitter_user_get(ubBubble->account_id, user) ; break; }
+		case ACCOUNT_TYPE_STATUSNET:
+		default: { ed_statusnet_user_get(ubBubble->account_id, user); break; }
+	}
+}
+
+void ed_statusnet_user_follow(int id, char *screen_name, char *password, char *proto, char *domain, int port, char *base_url, char *user_screen_name) {
+}
+
+static int ed_user_follow(void *data, int argc, char **argv, char **azColName) {
+	ub_Bubble * bubble = (ub_Bubble*)data;
+	char *screen_name=NULL, *password=NULL, *proto=NULL, *domain=NULL, *base_url=NULL;
+	int port=0, id=0;
+
+	/* In this query handler, these are the current fields:
+		argv[0] == name TEXT
+		argv[1] == password TEXT
+		argv[2] == type INTEGER
+		argv[3] == proto TEXT
+		argv[4] == domain TEXT
+		argv[5] == port INTEGER
+		argv[6] == base_url TEXT
+		argv[7] == id INTEGER
+	*/
+
+	screen_name = argv[0];
+	password = argv[1];
+	proto = argv[3];
+	domain = argv[4];
+	port = atoi(argv[5]);
+	base_url = argv[6];
+	id = atoi(argv[7]);
+
+	switch(atoi(argv[2])) {
+		case ACCOUNT_TYPE_TWITTER: { ed_twitter_user_follow(id, screen_name, password, proto, domain, port, base_url, bubble->screen_name); break; }
+		case ACCOUNT_TYPE_STATUSNET:
+		default: { ed_statusnet_user_follow(id, screen_name, password, proto, domain, port, base_url, bubble->screen_name); break; }
+	}
+
+	return(0);
+}
+static void on_user_follow(void *data, Evas_Object *obj, void *event_info) {
+	ub_Bubble * bubble = (ub_Bubble*)data;
+	int sqlite_res=0;
+	char *db_err=NULL, *query=NULL;
+
+	if(!bubble) return;
+
+	sqlite_res = asprintf(&query, "SELECT name,password,type,proto,domain,port,base_url,id FROM accounts WHERE enabled = 1 and id = %d;", bubble->account_id);
+	if(sqlite_res != -1) {
+		sqlite_res = sqlite3_exec(ed_DB, query, ed_user_follow, data, &db_err);
+		if(sqlite_res != 0) {
+			printf("Can't run %s: %d => %s\n", query, sqlite_res, db_err);
+		}
+		sqlite3_free(db_err);
+		free(query);
+		evas_object_del(url_win);
+	}
+}
+void ed_statusnet_user_abandon(int id, char *screen_name, char *password, char *proto, char *domain, int port, char *base_url, char *user_screen_name) {
+}
+
+static int ed_user_abandon(void *data, int argc, char **argv, char **azColName) {
+	ub_Bubble * bubble = (ub_Bubble*)data;
+	char *screen_name=NULL, *password=NULL, *proto=NULL, *domain=NULL, *base_url=NULL;
+	int port=0, id=0;
+
+	/* In this query handler, these are the current fields:
+		argv[0] == name TEXT
+		argv[1] == password TEXT
+		argv[2] == type INTEGER
+		argv[3] == proto TEXT
+		argv[4] == domain TEXT
+		argv[5] == port INTEGER
+		argv[6] == base_url TEXT
+		argv[7] == id INTEGER
+	*/
+
+	screen_name = argv[0];
+	password = argv[1];
+	proto = argv[3];
+	domain = argv[4];
+	port = atoi(argv[5]);
+	base_url = argv[6];
+	id = atoi(argv[7]);
+
+	switch(atoi(argv[2])) {
+		case ACCOUNT_TYPE_TWITTER: { ed_twitter_user_abandon(id, screen_name, password, proto, domain, port, base_url, bubble->screen_name); break; }
+		case ACCOUNT_TYPE_STATUSNET:
+		default: { ed_statusnet_user_abandon(id, screen_name, password, proto, domain, port, base_url, bubble->screen_name); break; }
+	}
+
+	return(0);
+}
+static void on_user_abandon(void *data, Evas_Object *obj, void *event_info) {
+	ub_Bubble * bubble = (ub_Bubble*)data;
+	int sqlite_res=0;
+	char *db_err=NULL, *query=NULL;
+
+	if(!bubble) return;
+
+	sqlite_res = asprintf(&query, "SELECT name,password,type,proto,domain,port,base_url,id FROM accounts WHERE enabled = 1 and id = %d;", bubble->account_id);
+	if(sqlite_res != -1) {
+		sqlite_res = sqlite3_exec(ed_DB, query, ed_user_abandon, data, &db_err);
+		if(sqlite_res != 0) {
+			printf("Can't run %s: %d => %s\n", query, sqlite_res, db_err);
+		}
+		sqlite3_free(db_err);
+		free(query);
+		evas_object_del(url_win);
+	}
+}
+
+static void on_user_info_close(void *data, Evas_Object *obj, void *event_info) {
+	if(url_win) evas_object_del(url_win);
+}
+
+static void on_handle_user(void *data, Evas_Object *obj, void *event_info) {
+	Evas_Object *icon=NULL, *box=NULL, *table=NULL, *button=NULL, *buttons=NULL, *frame=NULL, *label=NULL, *bubble=(Evas_Object*)data;
+	UserProfile *user=calloc(1,sizeof(UserProfile));
+	ub_Bubble * ubBubble = eina_hash_find(status2user, &bubble);
+	char *description=NULL,*home, *path=NULL;
+	int res=0;
+	struct stat buf;
+
+	if(!user) return;
+
+	memset(user, 0, sizeof(UserProfile));
+
+	user->screen_name=(char*)event_info;
+
 	url_win = elm_win_inwin_add(win);
 		elm_object_style_set(url_win, "minimal_vertical");
 
@@ -375,52 +502,158 @@ static void on_message_anchor_clicked(void *data, Evas_Object *obj, void *event_
 			frame = elm_frame_add(win);
 				evas_object_size_hint_weight_set(frame, 1, 1);
 				evas_object_size_hint_align_set(frame, -1, -1);
+				elm_frame_label_set(frame, user->screen_name);
 
-				res = asprintf(&frame_label, _("%s posted this link..."), elm_bubble_label_get(bubble));
-				if(res != -1) {
-					elm_frame_label_set(frame, frame_label);
-					free(frame_label);
-				}
+				table=elm_table_add(win);
+					evas_object_size_hint_weight_set(table, 1, 1);
+					evas_object_size_hint_align_set(table, -1, 0);
 
-				entry = elm_entry_add(win);
-					elm_entry_line_char_wrap_set(entry, TRUE);
-					elm_entry_editable_set(entry, FALSE);
-					url2 = strndup(url+1,strlen(url)-2);
-					elm_entry_entry_set(entry, url2);
-					free(url2);
-				evas_object_show(entry);
-				elm_frame_content_set(frame, entry);
+					label = elm_label_add(win);
+						evas_object_size_hint_weight_set(label, 1, 1);
+						evas_object_size_hint_align_set(label, -1, 0);
+						elm_label_label_set(label, _("Fetching user info..."));
+						elm_table_pack(table, label, 1, 0, 1, 1);
+					evas_object_show(label);
+
+					elm_frame_content_set(frame, table);
+				evas_object_show(table);
+
 				elm_box_pack_end(box, frame);
 			evas_object_show(frame);
 
-			buttons = elm_box_add(win);
-				evas_object_size_hint_weight_set(buttons, 1, 1);
-				evas_object_size_hint_align_set(buttons, -1, -1);
-				elm_box_horizontal_set(buttons, TRUE);
-
-				button = elm_button_add(win);
-					evas_object_size_hint_weight_set(button, 1, 1);
-					evas_object_size_hint_align_set(button, -1, -1);
-					elm_button_label_set(button, _("Check it out!"));
-					evas_object_smart_callback_add(button, "clicked", on_open_url, url);
-					elm_box_pack_end(buttons, button);
-				evas_object_show(button);
-
-				button = elm_button_add(win);
-					evas_object_size_hint_weight_set(button, 1, 1);
-					evas_object_size_hint_align_set(button, -1, -1);
-					elm_button_label_set(button, _("Close"));
-					evas_object_smart_callback_add(button, "clicked", url_win_del, url);
-					elm_box_pack_end(buttons, button);
-				evas_object_show(button);
-
-				elm_box_pack_end(box, buttons);
-			evas_object_show(buttons);
+			elm_win_inwin_content_set(url_win, box);
 		evas_object_show(box);
-
-		elm_win_inwin_content_set(url_win, box);
 	evas_object_show(url_win);
-		
+
+	user_info_get(ubBubble, user);
+
+	if(user->state == US_NULL) {
+		res = asprintf(&description, "%s is following %d and has %d followers.", user->name, user->friends_count, user->followers_count);
+		elm_label_line_wrap_set(label, EINA_TRUE);
+		if(res!=-1)
+			elm_label_label_set(label, description);
+		else
+			elm_label_label_set(label, _("Couldn't parse user info message..."));
+
+		home=getenv("HOME");
+		if(home)
+			res = asprintf(&path, "%s/.elmdentica/cache/icons/%s", home, user->screen_name);
+		else
+			res = asprintf(&path, ".elmdentica/cache/icons/%s", user->screen_name);
+
+		if(res!=-1 && stat(path, &buf) == 0 ) {
+			icon = elm_icon_add(win);
+				evas_object_size_hint_weight_set(icon, 1, 1);
+				evas_object_size_hint_align_set(icon, -1, -1);
+				elm_icon_file_set(icon, path, "fubar?");
+				elm_table_pack(table, icon, 0, 0, 1, 1);
+			evas_object_show(icon);
+			free(path);
+		}
+
+		buttons = elm_box_add(win);
+			elm_box_horizontal_set(buttons, EINA_TRUE);
+
+			if(!user->following && !user->protected) {
+				button = elm_button_add(win);
+					elm_button_label_set(button, _("Follow"));
+					evas_object_smart_callback_add(button, "clicked", on_user_follow, ubBubble);
+					elm_box_pack_end(buttons, button);
+				evas_object_show(button);
+			} else {
+				button = elm_button_add(win);
+					elm_button_label_set(button, _("Stop following"));
+					evas_object_smart_callback_add(button, "clicked", on_user_abandon, ubBubble);
+					elm_box_pack_end(buttons, button);
+				evas_object_show(button);
+			}
+			button = elm_button_add(win);
+				elm_button_label_set(button, _("Close"));
+				evas_object_smart_callback_add(button, "clicked", on_user_info_close, NULL);
+				elm_box_pack_end(buttons, button);
+			evas_object_show(button);
+
+
+			elm_table_pack(table, buttons, 0, 1, 2, 1);
+		evas_object_show(buttons);
+	}
+}
+
+static void on_handle_group(void *data, Evas_Object *obj, void *event_info) {
+	char *group=(char*)event_info;
+	printf("Will do something about group '%s' in the near future!\n", group);
+}
+
+static void on_message_anchor_clicked(void *data, Evas_Object *obj, void *event_info) {
+	Elm_Entry_Anchorblock_Info * info = (Elm_Entry_Anchorblock_Info*)event_info;
+	char *url=NULL, *frame_label=NULL;
+	Evas_Object *box=NULL, *button=NULL, *buttons=NULL, *frame=NULL, *entry=NULL, *bubble=(Evas_Object*)data;
+	int res = 0;
+
+	if(info->name == NULL || strlen(info->name) <= 9)
+		return;
+
+	url = strndup(1+(char*)info->name,strlen((char*)info->name)-2);
+
+	if(url[0] == '@') {
+		on_handle_user(data, obj, 1+url);
+	} else if(url[0] == '!') {
+		on_handle_group(data, obj, 1+url);
+	} else {
+		url_win = elm_win_inwin_add(win);
+			elm_object_style_set(url_win, "minimal_vertical");
+
+			box = elm_box_add(win);
+				evas_object_size_hint_weight_set(box, 1, 1);
+				evas_object_size_hint_align_set(box, -1, 0);
+
+				frame = elm_frame_add(win);
+					evas_object_size_hint_weight_set(frame, 1, 1);
+					evas_object_size_hint_align_set(frame, -1, -1);
+
+					res = asprintf(&frame_label, _("%s posted this link..."), elm_bubble_label_get(bubble));
+					if(res != -1) {
+						elm_frame_label_set(frame, frame_label);
+						free(frame_label);
+					}
+
+					entry = elm_entry_add(win);
+						elm_entry_line_char_wrap_set(entry, TRUE);
+						elm_entry_editable_set(entry, FALSE);
+						elm_entry_entry_set(entry, url);
+					evas_object_show(entry);
+					elm_frame_content_set(frame, entry);
+					elm_box_pack_end(box, frame);
+				evas_object_show(frame);
+
+				buttons = elm_box_add(win);
+					evas_object_size_hint_weight_set(buttons, 1, 1);
+					evas_object_size_hint_align_set(buttons, -1, -1);
+					elm_box_horizontal_set(buttons, TRUE);
+
+					button = elm_button_add(win);
+						evas_object_size_hint_weight_set(button, 1, 1);
+						evas_object_size_hint_align_set(button, -1, -1);
+						elm_button_label_set(button, _("Check it out!"));
+						evas_object_smart_callback_add(button, "clicked", on_open_url, url);
+						elm_box_pack_end(buttons, button);
+					evas_object_show(button);
+
+					button = elm_button_add(win);
+						evas_object_size_hint_weight_set(button, 1, 1);
+						evas_object_size_hint_align_set(button, -1, -1);
+						elm_button_label_set(button, _("Close"));
+						evas_object_smart_callback_add(button, "clicked", url_win_del, url);
+						elm_box_pack_end(buttons, button);
+					evas_object_show(button);
+
+					elm_box_pack_end(box, buttons);
+				evas_object_show(buttons);
+			evas_object_show(box);
+
+			elm_win_inwin_content_set(url_win, box);
+		evas_object_show(url_win);
+	}
 }
 
 static void on_zoomed_icon_clicked(void *data, Evas_Object *obj, void *event_info) {
@@ -530,7 +763,7 @@ static void on_bubble_mouse_up(void *data, Evas *e, Evas_Object *obj, void *even
 
 static int add_status(void *data, int argc, char **argv, char **azColName) {
 	char *screen_name=NULL, *name=NULL, *status_message=NULL;
-	int id=0, account_id=0, res=0;
+	int id=0, account_id=0, res=0, type;
 	Eina_Bool timeline=data?(int)(long)data:0;
 	time_t date;
 
@@ -548,6 +781,7 @@ static int add_status(void *data, int argc, char **argv, char **azColName) {
 		argv[4] == name TEXT
 		argv[5] == message TEXT
 		argv[6] == date INTEGER
+		argv[7] == type INTEGER
 	*/
 
 	id=atoi(argv[0]);
@@ -555,8 +789,8 @@ static int add_status(void *data, int argc, char **argv, char **azColName) {
 	account_id=atoi(argv[2]);
 	screen_name=argv[3];
 	name=argv[4];
-	status_message=argv[5];
 	date=(time_t)atoi(argv[6]);
+	type=atoi(argv[7]);
 
 	box = elm_box_add(win);
 	evas_object_size_hint_weight_set(box, 1, 0);
@@ -616,23 +850,47 @@ static int add_status(void *data, int argc, char **argv, char **azColName) {
 	message = elm_anchorblock_add(win);
 		evas_object_size_hint_align_set(message, -1, 1);
 
-		if(!re_amp)
-			re_amp = g_regex_new("&(?!amp;)", 0, 0, &re_err);
+		res = asprintf(&status_message, "%s", argv[5]);
+		if(res == -1) {
+			elm_anchorblock_text_set(message, "");
+		} else {
+			if(!re_amp)
+				re_amp = g_regex_new("&(?!amp;)", 0, 0, &re_err);
+			tmp = g_regex_replace(re_amp, status_message, -1, 0, "&amp;", 0, &re_err);
+			if(tmp) {
+				free(status_message);
+				status_message = tmp;
+			}
 
-		if(status_message) tmp = g_regex_replace(re_amp, status_message, -1, 0, "&amp;", 0, &re_err);
+			if(!re_link)
+				re_link = g_regex_new("([a-z]+://.*?)(\\s|$)", 0, 0, &re_err);
+			tmp = g_regex_replace(re_link, status_message, -1, 0, "<a href='\\2'>[link]</a>\\3", 0, &re_err);
+			if(tmp) {
+				free(status_message);
+				status_message = tmp;
+			}
 
-		if(!re_link)
-			re_link = g_regex_new("([a-z]+://.*?)(\\s|$)", 0, 0, &re_err);
-		//status_message = g_regex_replace(re, tmp, -1, 0, "<a href='\\1'>\\1</a>\\2", 0, &err);
-		if(tmp) {
-			status_message = g_regex_replace(re_link, tmp, -1, 0, "<a href='\\1'>[link]</a>\\2", 0, &re_err);
-			free(tmp);
+			if(!re_user)
+				re_user = g_regex_new("(@[a-zA-Z0-9]+)", 0, 0, &re_err);
+			tmp = g_regex_replace(re_user, status_message, -1, 0, "<a href='\\1'>\\1</a>", 0, &re_err);
+			if(tmp) {
+				free(status_message);
+				status_message = tmp;
+			}
+
+			if(!re_group)
+				re_group = g_regex_new("(![a-zA-Z0-9]+)", 0, 0, &re_err);
+			tmp = g_regex_replace(re_group, status_message, -1, 0, "<a href='\\1'>\\1</a>", 0, &re_err);
+			if(tmp) {
+				free(status_message);
+				status_message = tmp;
+			}
+
+			elm_anchorblock_text_set(message, status_message);
+			evas_object_smart_callback_add(message, "anchor,clicked", on_message_anchor_clicked, bubble);
+ 			evas_object_event_callback_add(message, EVAS_CALLBACK_MOUSE_DOWN, on_bubble_mouse_down, bubble);
+ 			evas_object_event_callback_add(message, EVAS_CALLBACK_MOUSE_UP, on_bubble_mouse_up, bubble);
 		}
-
-		elm_anchorblock_text_set(message, status_message);
-		evas_object_smart_callback_add(message, "anchor,clicked", on_message_anchor_clicked, bubble);
- 		evas_object_event_callback_add(message, EVAS_CALLBACK_MOUSE_DOWN, on_bubble_mouse_down, bubble);
- 		evas_object_event_callback_add(message, EVAS_CALLBACK_MOUSE_UP, on_bubble_mouse_up, bubble);
 	evas_object_show(message);
 
 	elm_bubble_content_set(bubble, message);
@@ -649,6 +907,7 @@ static int add_status(void *data, int argc, char **argv, char **azColName) {
 
 	ubBubble->box=box;
 	ubBubble->account_id = account_id;
+	ubBubble->account_type = type;
 	if(screen_name)
 		ubBubble->screen_name = strndup(screen_name, 1024);
 	else
@@ -775,7 +1034,8 @@ void fill_message_list(int timeline) {
 	} else {
 		status2user = eina_hash_pointer_new(free);
 	}
-	sqlite_res = asprintf(&query, "SELECT messages.*,accounts.id as accid,accounts.enabled FROM messages,accounts where messages.timeline = %d and messages.account_id=accid and accounts.enabled=1 ORDER BY messages.date DESC LIMIT %d;", timeline, settings->max_messages);
+
+	sqlite_res = asprintf(&query, "SELECT messages.id,messages.status_id,messages.account_id,messages.screen_name,messages.name,messages.message,messages.date,accounts.type,accounts.id as accid,accounts.enabled FROM messages,accounts where messages.timeline = %d and messages.account_id=accid and accounts.enabled=1 ORDER BY messages.date DESC LIMIT %d;", timeline, settings->max_messages);
 	if(sqlite_res != -1) {
 		sqlite_res = 0;
 		sqlite3_exec(ed_DB, query, add_status, (void*)(long)timeline, &db_err);
@@ -1102,6 +1362,7 @@ EAPI int elm_main(int argc, char **argv)
 	ed_settings_shutdown();
 
 	if(re_link) g_regex_unref(re_link);
+	if(re_user) g_regex_unref(re_user);
 	if(re_link_content) g_regex_unref(re_link_content);
 	if(re_amp) g_regex_unref(re_amp);
 
