@@ -1,3 +1,5 @@
+AUTOMAKE_OPTIONS = foreign
+
 SUBDIRS = src
 
 MAINTAINERCLEANFILES = Makefile.in aclocal.m4 config.guess \
