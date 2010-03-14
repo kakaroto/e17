@@ -890,7 +890,7 @@ static int add_status(void *data, int argc, char **argv, char **azColName) {
 			}
 
 			if(!re_user)
-				re_user = g_regex_new("(@[a-zA-Z0-9]+)", 0, 0, &re_err);
+				re_user = g_regex_new("(@[a-zA-Z0-9_]+)", 0, 0, &re_err);
 			tmp = g_regex_replace(re_user, status_message, -1, 0, "<a href='\\1'>\\1</a>", 0, &re_err);
 			if(tmp) {
 				free(status_message);
@@ -898,7 +898,7 @@ static int add_status(void *data, int argc, char **argv, char **azColName) {
 			}
 
 			if(!re_group)
-				re_group = g_regex_new("(![a-zA-Z0-9]+)", 0, 0, &re_err);
+				re_group = g_regex_new("(![a-zA-Z0-9_]+)", 0, 0, &re_err);
 			tmp = g_regex_replace(re_group, status_message, -1, 0, "<a href='\\1'>\\1</a>", 0, &re_err);
 			if(tmp) {
 				free(status_message);
