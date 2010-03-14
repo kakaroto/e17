@@ -49,7 +49,7 @@
 #include "elmdentica.h"
 
 xmlSAXHandler saxHandler;
-gchar * avatar=NULL;
+char * avatar=NULL;
 extern struct sqlite3 *ed_DB;
 extern int debug;
 extern char *dm_to, *reply_id;
@@ -287,16 +287,20 @@ void ed_twitter_init_friends(void) {
 	saxHandler.characters			= ed_twitter_friends_characters;
 }
 
-void ed_twitter_statuses_insert_avatar(StatusesList *statuses) {
+void ed_twitter_statuses_get_avatar(char *screen_name) {
 	http_request *request = NULL;
 	int file, res=0;
 	char * file_path=NULL;
 	char * home=NULL;
 
 
-	// check wether it's already cached FIXME: this cache doesn't support updating
+	// properly check if it's already cached (FIXME: this cache doesn't support updating)
 	home = getenv("HOME");
-	res = asprintf(&file_path, "%s/.elmdentica/cache/icons/%s", home, statuses->current->screen_name);
+	if(home)
+		res = asprintf(&file_path, "%s/.elmdentica/cache/icons/%s", home, screen_name);
+	else
+		res = asprintf(&file_path, ".elmdentica/cache/icons/%s", screen_name);
+
 	if(res != 0) {
 		file = open(file_path, O_RDONLY);
 		// if not, then fetch the icon and write it to the cache
@@ -385,7 +389,7 @@ void ed_twitter_friends_endElement(void *user_data, const xmlChar * name) {
 		statuses->state = FT_USER;
 	else if(strncmp((char*)name, "profile_image_url", 17) == 0) {
 		statuses->state = FT_USER;
-		ed_twitter_statuses_insert_avatar(statuses);
+		ed_twitter_statuses_get_avatar(statuses->current->screen_name);
 	} else if(strncmp((char*)name, "user", 4) == 0)
 		statuses->state = FT_STATUS;
 	else if(strncmp((char*)name, "screen_name", 11) == 0)
@@ -533,6 +537,8 @@ void ed_twitter_users_show_endElement(void *user_data, const xmlChar * name) {
 	} else if(strlen((char*)name) == 11 && strncmp((char*)name, "description", 11) == 0) {
 		user->state = US_NULL;
 	} else if(strlen((char*)name) == 17 && strncmp((char*)name, "profile_image_url", 17) == 0) {
+		avatar=user->profile_image_url;
+		ed_twitter_statuses_get_avatar(user->screen_name);
 		user->state = US_NULL;
 	} else if(strlen((char*)name) == 9 && strncmp((char*)name, "protected", 9) == 0) {
 		user->state = US_NULL;
