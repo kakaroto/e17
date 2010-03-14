@@ -482,7 +482,6 @@ static void user_free(UserProfile *user) {
 	if(user) {
 		if(user->name) free(user->name);
 		if(user->description) free(user->description);
-		if(user->profile_image_url) free(user->profile_image_url);
 		if(user->tmp) free(user->tmp);
 		if(user->hash_error) free(user->hash_error);
 		if(user->hash_request) free(user->hash_request);
@@ -855,7 +854,10 @@ static int add_status(void *data, int argc, char **argv, char **azColName) {
 	icon = elm_icon_add(win);
 
 	home = getenv("HOME");
-	res = asprintf(&file_path, "%s/.elmdentica/cache/icons/%s", home, screen_name);
+	if(home)
+		res = asprintf(&file_path, "%s/.elmdentica/cache/icons/%s", home, screen_name);
+	else
+		res = asprintf(&file_path, ".elmdentica/cache/icons/%s", screen_name);
 	if(res != -1) {
 		elm_icon_file_set(icon, file_path, "fubar?");
 		evas_object_show(icon);
