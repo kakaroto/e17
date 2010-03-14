@@ -478,18 +478,33 @@ static void on_user_info_close(void *data, Evas_Object *obj, void *event_info) {
 	if(url_win) evas_object_del(url_win);
 }
 
+static void user_free(UserProfile *user) {
+	if(user) {
+		if(user->name) free(user->name);
+		if(user->description) free(user->description);
+		if(user->profile_image_url) free(user->profile_image_url);
+		if(user->tmp) free(user->tmp);
+		if(user->hash_error) free(user->hash_error);
+		if(user->hash_request) free(user->hash_request);
+
+		free(user);
+	}
+}
+
 static void on_handle_user(void *data, Evas_Object *obj, void *event_info) {
 	Evas_Object *icon=NULL, *box=NULL, *table=NULL, *button=NULL, *buttons=NULL, *frame=NULL, *label=NULL, *bubble=(Evas_Object*)data;
-	UserProfile *user=calloc(1,sizeof(UserProfile));
+	UserProfile *user;
 	ub_Bubble * ubBubble = eina_hash_find(status2user, &bubble);
 	char *description=NULL,*home, *path=NULL;
 	int res=0;
 	struct stat buf;
 
+	if(!settings->online) return;
+
+	user = calloc(1,sizeof(UserProfile));
 	if(!user) return;
 
 	memset(user, 0, sizeof(UserProfile));
-
 	user->screen_name=(char*)event_info;
 
 	url_win = elm_win_inwin_add(win);
@@ -576,6 +591,8 @@ static void on_handle_user(void *data, Evas_Object *obj, void *event_info) {
 
 			elm_table_pack(table, buttons, 0, 1, 2, 1);
 		evas_object_show(buttons);
+
+		user_free(user);
 	}
 }
 

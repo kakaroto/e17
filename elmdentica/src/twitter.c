@@ -738,6 +738,7 @@ static int ed_twitter_user_get_handler(void *data, int argc, char **argv, char *
 
 	if(request->url) free(request->url);
 	if(request->content.memory) free(request->content.memory);
+	if(request) free(request);
 
 	return(0);
 }
