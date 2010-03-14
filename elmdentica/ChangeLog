@@ -1,16 +1,20 @@
-2010-??-??  release 0.8.1
-	* zoom avatars when pressing them for about 1s
-	* better url handling via an inwin
+2010-??-??  release 0.9.0
+	* Zoom avatars when pressing avatar icon for about 1s
+	* Better url and browser handling
+	* Support for user, favorites and public timelines in addition to friends
+	* Favorites support (marking and unmarking)
+	* (Un)Subscribe users mentioned in statueses
+	* Replace most glib usage for EFL usage (needs good replacement for glib's excellent PCRE functions
 
 2009-12-27  release 0.8.0
-	* multiple accounts at the same time
-	* use an sqlite3 database for posts cache (in and out, although out still is incomplete)
-	* cache management
+	* Multiple accounts at the same time
+	* Use an sqlite3 database for posts cache (in and out, although out still is incomplete)
+	* Cache management
 
 2009-10-11  release 0.7.0
 	* Replacement of the side buttons by hover's fired up by pressing for about 1s over the bubble
 	* Usage of inwins for entering user and domain data in the settings window
-	* Usage of hoversel to gain a few more space on the toolbar, specially for future features.
+	* Usage of hoversel to gain a few more space on the toolbar, specially for future features
 
 2009-07-12  release 0.6.0
 
