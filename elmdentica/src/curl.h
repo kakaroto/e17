@@ -27,9 +27,9 @@ typedef struct _MemoryStruct {
 } MemoryStruct;
 
 typedef struct _http_request {
-	char		*url;
+	char			*url;
 	MemoryStruct	content;
-	int		respose_code;
+	long			response_code;
 } http_request;
 
 int ed_curl_get(char *screen_name, char *password, http_request * request);

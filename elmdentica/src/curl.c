@@ -45,49 +45,6 @@ extern char * url_post;
 extern char * url_friends;
 extern int debug;
 
-void show_http_error(long response_code, char * method, char * url) {
-	Evas_Object *box=NULL, *frame1=NULL, *label=NULL, *button=NULL;
-	int res=0;
-	char *buf=NULL;
-
-	/* Error Window */
-	error_win = elm_win_inwin_add(win);
-
-		/* Vertical Box */
-		box = elm_box_add(error_win);
-		evas_object_size_hint_weight_set(box, 1, 1);
-		evas_object_size_hint_align_set(box, -1, -1);
-	
-			/* First frame (with message) */
-			frame1 = elm_frame_add(win);
-				if(buf) {
-					res = asprintf(&buf, _("%s got a %ld HTTP Response..."), method, response_code);
-					if(res != -1) {
-						elm_frame_label_set(frame1, buf);
-					}
-					free(buf);
-				}
-				label = elm_label_add(win);
-					elm_label_line_wrap_set(label, TRUE);
-					elm_label_label_set(label, url);
-					elm_frame_content_set(frame1, label);
-				evas_object_show(label);
-				elm_box_pack_end(box, frame1);
-			evas_object_show(frame1);
-
-			/* close button */
-			button = elm_button_add(win);
-				evas_object_smart_callback_add(button, "clicked", error_win_del, NULL);
-				elm_button_label_set(button, _("Close"));
-				elm_box_pack_end(box, button);
-			evas_object_show(button);
-
-		evas_object_show(box);
-
-		elm_win_inwin_content_set(error_win, box);
-	evas_object_show(error_win);
-}
-
 void show_curl_error(CURLcode curl_res, MemoryStruct * chunk) {
 	Evas_Object *box=NULL, *frame=NULL, *label=NULL, *button=NULL;
 	int res=0;
@@ -197,7 +154,6 @@ gint ed_curl_get(char *screen_name, char *password, http_request * request) {
 	CURLcode res;
 	CURL *ua=NULL;
 	char *userpwd=NULL;
-	long	response_code;
 	double	content_length=0;
 
 	if(request ==NULL)
@@ -223,12 +179,8 @@ gint ed_curl_get(char *screen_name, char *password, http_request * request) {
 			curl_easy_cleanup(ua);
 			return(4);
 		} else {
-			res = curl_easy_getinfo(ua, CURLINFO_RESPONSE_CODE, &response_code);
+			res = curl_easy_getinfo(ua, CURLINFO_RESPONSE_CODE, &request->response_code);
 			curl_easy_cleanup(ua);
-			if(response_code != 200) {
-				show_http_error(response_code, "GET", request->url);
-				return(5);
-			}
 			return(0);
 		}
 	} else
@@ -239,7 +191,6 @@ gint ed_curl_post(char *screen_name, char *password, http_request * request, cha
 	CURLcode res;
 	CURL *ua=NULL;
 	char *userpwd=NULL;
-	long	response_code;
 	double content_length=0;
 
 	if(request ==NULL)
@@ -265,12 +216,8 @@ gint ed_curl_post(char *screen_name, char *password, http_request * request, cha
 		curl_easy_cleanup(ua);
 		return(4);
 	} else {
-		res = curl_easy_getinfo(ua, CURLINFO_RESPONSE_CODE, &response_code);
+		res = curl_easy_getinfo(ua, CURLINFO_RESPONSE_CODE, &request->response_code);
 		curl_easy_cleanup(ua);
-		if(response_code != 200) {
-			show_http_error(response_code, "POST", request->url);
-			return(5);
-		}
 		return(0);
 	}
 }
