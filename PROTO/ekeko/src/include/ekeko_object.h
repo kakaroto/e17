@@ -32,7 +32,7 @@ typedef struct _Ekeko_Object_Private Ekeko_Object_Private;
 
 struct _Ekeko_Object
 {
-	Ekeko_Object_Private *private;
+	Ekeko_Object_Private *prv;
 };
 /*============================================================================*
  *                                Functions                                   *
@@ -42,8 +42,10 @@ EAPI Ekeko_Type *ekeko_object_type_get(void);
 
 EAPI void ekeko_object_delete(Ekeko_Object *o);
 
-EAPI Eina_Bool ekeko_object_property_value_set(Ekeko_Object *o, char *prop_name, Ekeko_Value *value);
-EAPI Eina_Bool ekeko_object_property_value_get(Ekeko_Object *o, char *prop_name, Ekeko_Value *value);
+EAPI Eina_Bool ekeko_object_property_value_set(Ekeko_Object *o, char *name, Ekeko_Value *value);
+EAPI Eina_Bool ekeko_object_property_value_get(Ekeko_Object *o, char *name, Ekeko_Value *value);
+EAPI int ekeko_object_property_type_get(Ekeko_Object *o, const char *name);
+EAPI const char * ekeko_object_property_add(Ekeko_Object *o, const char *name, int type);
 
 EAPI Eina_Bool ekeko_object_child_append(Ekeko_Object *p, Ekeko_Object *o);
 EAPI void ekeko_object_child_remove(Ekeko_Object *p, Ekeko_Object *o);
@@ -57,7 +59,6 @@ EAPI Ekeko_Object * ekeko_object_prev(Ekeko_Object *o);
 EAPI void ekeko_object_event_dispatch(Ekeko_Object *object, Ekeko_Event *evt);
 EAPI const char * ekeko_object_type_name_get(const Ekeko_Object *obj);
 EAPI Ekeko_Object * ekeko_object_parent_get(const Ekeko_Object *o);
-EAPI Ekeko_Property * ekeko_object_property_get(Ekeko_Object *o, const char *prop_name);
 EAPI void ekeko_object_process(Ekeko_Object *o);
 
 typedef void (*Ekeko_Object_Dump)(Ekeko_Object *o, int level);

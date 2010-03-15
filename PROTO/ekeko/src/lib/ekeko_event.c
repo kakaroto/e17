@@ -23,21 +23,16 @@
 /*============================================================================*
  *                                 Global                                     *
  *============================================================================*/
-void event_mutation_init(Ekeko_Event_Mutation *em, const char *type,
+void ekeko_event_mutation_init(Ekeko_Event_Mutation *em, const char *type,
 		Ekeko_Object *o, Ekeko_Object *rel,
-		const Ekeko_Property *prop, Ekeko_Value *prev,
-		Ekeko_Value *curr, Ekeko_Event_Mutation_State state)
+		const char *prop_name, Ekeko_Value *prev,
+		Ekeko_Value *curr)
 {
 	ekeko_event_init((Ekeko_Event *)em, type, o, EINA_TRUE);
 	em->related = rel;
 	em->prev = prev;
 	em->curr = curr;
-	em->state = state;
-	if (prop)
-	{
-		em->prop = ekeko_property_name_get(prop);
-		em->prop_id = ekeko_property_id_get(prop);
-	}
+	em->prop = prop_name;
 }
 /*============================================================================*
  *                                   API                                      *
@@ -48,13 +43,13 @@ void event_mutation_init(Ekeko_Event_Mutation *em, const char *type,
 EAPI void ekeko_event_listener_add(Ekeko_Object *o, const char *type,
 		Event_Listener el, Eina_Bool bubble, void *data)
 {
-	object_event_listener_add(o, type, el, bubble, data);
+	ekeko_object_event_listener_add(o, type, el, bubble, data);
 }
 
 EAPI void ekeko_event_listener_remove(Ekeko_Object *o, const char *type,
 		Event_Listener el, Eina_Bool bubble, void *data)
 {
-	object_event_listener_remove(o, type, el, bubble, data);
+	ekeko_object_event_listener_remove(o, type, el, bubble, data);
 }
 
 EAPI void ekeko_event_dispatch(Ekeko_Event *e)

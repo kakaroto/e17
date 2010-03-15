@@ -18,28 +18,7 @@
 #ifndef EKEKO_VALUE_H_
 #define EKEKO_VALUE_H_
 
-/**
- * @brief Possible types of a property.
- */
-#define EKEKO_PROPERTY_UNDEFINED 0
-#define EKEKO_PROPERTY_INT 1 /**< The value of the property is an integer */          //!< PROPERTY_INT
-#define EKEKO_PROPERTY_BOOL 2 /**< The value of the property is a boolean (Bool) */    //!< PROPERTY_BOOL
-#define EKEKO_PROPERTY_CHAR 3 /**< The value of the property is a char */              //!< PROPERTY_CHAR
-#define EKEKO_PROPERTY_FLOAT 4 /**< The value of the property is a float */             //!< PROPERTY_FLOAT
-#define EKEKO_PROPERTY_DOUBLE 5 /**< The value of the property is a double */            //!< PROPERTY_DOUBLE
-#define EKEKO_PROPERTY_SHORT 6 /**< The value of the property is a short */             //!< PROPERTY_SHORT
-#define EKEKO_PROPERTY_LONG 7 /**< The value of the property is a long */              //!< PROPERTY_LONG
-#define EKEKO_PROPERTY_RECTANGLE 8 /**< The value of the property is a rectangle */         //!< PROPERTY_RECTANGLE
-#define EKEKO_PROPERTY_POINTER 9 /**< The value of the property is a pointer (void *) */  //!< PROPERTY_POINTER
-#define EKEKO_PROPERTY_VALUE 10 /**< The value of the property is value */  //!< PROPERTY_VALUE
-#define EKEKO_PROPERTY_STRING 11 /**< The value of the property is a string (char *) */ //!< PROPERTY_STRING
-#define EKEKO_PROPERTY_OBJECT 12 /**< The value of the property is an Object */ //!< PROPERTY_OBJECT
-#define EKEKO_PROPERTY_LAST EKEKO_PROPERTY_OBJECT
-
 typedef int Ekeko_Value_Type;
-/**
- * @brief
- */
 typedef struct _Ekeko_Value
 {
 	Ekeko_Value_Type type;
@@ -59,18 +38,34 @@ typedef struct _Ekeko_Value
 	} value;
 } Ekeko_Value;
 
-typedef void (*Ekeko_Value_String_To)(void *p);
-typedef Eina_Bool (*Ekeko_Value_Compare)(void *a, void *b);
-typedef void (*Ekeko_Value_Pointer_From)(Ekeko_Value *v, void *p);
-typedef void (*Ekeko_Value_Pointer_To)(Ekeko_Value *v, void *p);
+typedef Eina_Bool (*Ekeko_Value_Compare)(Ekeko_Value *v1, Ekeko_Value *v2);
+typedef Eina_Bool (*Ekeko_Value_String_From)(Ekeko_Value *v, const char *str);
+typedef char * (*Ekeko_Value_String_To)(Ekeko_Value *v);
 
 #define EKEKO_VALUE_CMP(f) ((Ekeko_Value_Compare)(f))
-#define EKEKO_VALUE_POINTER_FROM(f) ((Ekeko_Value_Pointer_From)(f))
-#define EKEKO_VALUE_POINTER_TO(f) ((Ekeko_Value_Pointer_To)(f))
+#define EKEKO_VALUE_STRING_FROM(f) ((Ekeko_Value_String_From)(f))
+#define EKEKO_VALUE_STRING_TO(f) ((Ekeko_Value_String_To)(f))
 
-EAPI int ekeko_value_register(const char *name, Ekeko_Value_Compare cmp,
-		Ekeko_Value_Pointer_From pointer_from,
-		Ekeko_Value_Pointer_To pointer_to);
+extern Ekeko_Value_Type EKEKO_PROPERTY_UNDEFINED; /**< The value of the property is underfined */
+extern Ekeko_Value_Type EKEKO_PROPERTY_INT; /**< The value of the property is an Ekeko_Value_Typeeger */
+extern Ekeko_Value_Type EKEKO_PROPERTY_BOOL; /**< The value of the property is a boolean (Bool) */
+extern Ekeko_Value_Type EKEKO_PROPERTY_CHAR; /**< The value of the property is a char */
+extern Ekeko_Value_Type EKEKO_PROPERTY_FLOAT; /**< The value of the property is a float */
+extern Ekeko_Value_Type EKEKO_PROPERTY_DOUBLE; /**< The value of the property is a double */
+extern Ekeko_Value_Type EKEKO_PROPERTY_SHORT; /**< The value of the property is a short */
+extern Ekeko_Value_Type EKEKO_PROPERTY_LONG; /**< The value of the property is a long */
+extern Ekeko_Value_Type EKEKO_PROPERTY_RECTANGLE; /**< The value of the property is a rectangle */
+extern Ekeko_Value_Type EKEKO_PROPERTY_POINTER; /**< The value of the property is a poEkeko_Value_Typeer (void *) */
+extern Ekeko_Value_Type EKEKO_PROPERTY_VALUE; /**< The value of the property is value */
+extern Ekeko_Value_Type EKEKO_PROPERTY_STRING; /**< The value of the property is a string (char *) */
+extern Ekeko_Value_Type EKEKO_PROPERTY_OBJECT; /**< The value of the property is an Object */
+
+EAPI Ekeko_Value_Type ekeko_value_register(const char *name, Ekeko_Value_Compare cmp,
+		Ekeko_Value_String_From string_from,
+		Ekeko_Value_String_To string_to);
+EAPI Eina_Bool ekeko_value_compare(Ekeko_Value *v1, Ekeko_Value *v2);
+EAPI char * ekeko_value_string_to(Ekeko_Value *v);
+EAPI Eina_Bool ekeko_value_string_from(Ekeko_Value *v, Ekeko_Value_Type type, const char *str);
 
 static inline void ekeko_value_int_from(Ekeko_Value *v, int i)
 {

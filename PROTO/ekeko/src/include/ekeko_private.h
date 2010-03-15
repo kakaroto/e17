@@ -29,6 +29,7 @@
 
 extern int ekeko_dom;
 
+#if 0
 #define OFFSET(type, mem) ((size_t) ((char *)&((type *) 0)->mem - (char *)((type *) 0)))
 
 /* object */
@@ -62,14 +63,18 @@ void ekeko_value_pointer_set(Ekeko_Value *v, Ekeko_Value_Type vtype, void *ptr);
 void ekeko_value_pointer_get(Ekeko_Value *v, Ekeko_Value_Type vtype, void *ptr);
 
 /* property */
+#if 0
 Ekeko_Property * property_new(Ekeko_Type *type, char *prop_name, Type_Property_Type prop_type,
 		Ekeko_Value_Type value_type, ssize_t curr_offset, ssize_t prev_offset,
 		ssize_t changed_offset);
+#endif
 Ekeko_Type * property_type_get(Ekeko_Property *p);
 ssize_t property_curr_offset_get(Ekeko_Property *p);
 ssize_t property_prev_offset_get(Ekeko_Property *p);
 ssize_t property_changed_offset_get(Ekeko_Property *p);
+#if 0
 Type_Property_Type property_ptype_get(Ekeko_Property *p);
+#endif
 
 /* event */
 void event_mutation_init(Ekeko_Event_Mutation *em, const char *type,
@@ -77,4 +82,5 @@ void event_mutation_init(Ekeko_Event_Mutation *em, const char *type,
 		const Ekeko_Property *prop, Ekeko_Value *prev,
 		Ekeko_Value *curr, Ekeko_Event_Mutation_State state);
 
+#endif
 #endif

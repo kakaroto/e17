@@ -17,266 +17,250 @@
  */
 #include "Ekeko.h"
 #include "ekeko_private.h"
-/* FIXME rename the callbacks, get/set isnt enough to describe what they do
- * FIXME check the PROPERTY_VALUE
- * pointer_from -> double: dont allocate just copy the vars, pointers or whatever
- *                 single: same
- * create -> double: dont called
- *           single: alloc the pointer malloc(ssize_t impl->size)
- * pointer_to -> strdup for string
- * free -> free the malloced area and free the char * or any other pointer
- */
 /*============================================================================*
  *                                  Local                                     *
  *============================================================================*/
-static Eina_Hash *_values = NULL;
-
 typedef struct _Ekeko_Value_Impl
 {
 	const char *name;
 	Ekeko_Value_Compare cmp;
-	Ekeko_Value_Pointer_From pointer_from;
-	Ekeko_Value_Pointer_From pointer_to;
+	Ekeko_Value_String_From string_from;
+	Ekeko_Value_String_To string_to;
 } Ekeko_Value_Impl;
 
-static inline Ekeko_Value_Impl * _implementation_get(int id)
-{
-	Ekeko_Value_Impl *impl;
+static Eina_Array *_implementations = NULL;
 
-	impl = eina_hash_find(_values, &id);
-	return impl;
+static char * _int_string_to(Ekeko_Value *v)
+{
+	char *str;
+
+	asprintf(&str, "%d", v->value.int_value);
+	return str;
+}
+
+static Eina_Bool _int_string_from(Ekeko_Value *v, const char *str)
+{
+	v->value.int_value = strtol(str, NULL, 10);
+	return EINA_TRUE;
+}
+
+static Eina_Bool _int_cmp(Ekeko_Value *v1, Ekeko_Value *v2)
+{
+	if (v1->value.int_value == v2->value.int_value)
+		return EINA_FALSE;
+	return EINA_TRUE;
+}
+
+static char * _bool_string_to(Ekeko_Value *v)
+{
+	char *str;
+
+	asprintf(&str, "%d", v->value.bool_value);
+	return str;
+}
+
+static Eina_Bool _bool_string_from(Ekeko_Value *v, const char *str)
+{
+	/* TODO check false/true strings */
+	v->value.bool_value = strtol(str, NULL, 10) > 1 ? EINA_TRUE : EINA_FALSE;
+	return EINA_TRUE;
+}
+
+static Eina_Bool _bool_cmp(Ekeko_Value *v1, Ekeko_Value *v2)
+{
+	if (v1->value.bool_value == v2->value.bool_value)
+		return EINA_FALSE;
+	return EINA_TRUE;
+}
+
+static char * _char_string_to(Ekeko_Value *v)
+{
+	char *str;
+
+	asprintf(&str, "%c", v->value.char_value);
+	return str;
+}
+
+static Eina_Bool _char_string_from(Ekeko_Value *v, const char *str)
+{
+	v->value.char_value = *str;
+	return EINA_TRUE;
+}
+
+static Eina_Bool _char_cmp(Ekeko_Value *v1, Ekeko_Value *v2)
+{
+	if (v1->value.char_value == v2->value.char_value)
+		return EINA_FALSE;
+	return EINA_TRUE;
+}
+
+static char * _float_string_to(Ekeko_Value *v)
+{
+	char *str;
+
+	asprintf(&str, "%f", v->value.float_value);
+	return str;
+}
+
+static Eina_Bool _float_string_from(Ekeko_Value *v, const char *str)
+{
+	v->value.float_value = strtof(str, NULL);
+	return EINA_TRUE;
+}
+
+static Eina_Bool _float_cmp(Ekeko_Value *v1, Ekeko_Value *v2)
+{
+	if (v1->value.float_value == v2->value.float_value)
+		return EINA_FALSE;
+	return EINA_TRUE;
+}
+
+static char * _double_string_to(Ekeko_Value *v)
+{
+	char *str;
+
+	asprintf(&str, "%f", v->value.double_value);
+	return str;
+}
+
+static Eina_Bool _double_string_from(Ekeko_Value *v, const char *str)
+{
+	v->value.double_value = strtod(str, NULL);
+	return EINA_TRUE;
+}
+
+static Eina_Bool _double_cmp(Ekeko_Value *v1, Ekeko_Value *v2)
+{
+	if (v1->value.double_value == v2->value.double_value)
+		return EINA_FALSE;
+	return EINA_TRUE;
+}
+
+static char * _rectangle_string_to(Ekeko_Value *v)
+{
+	char *str;
+
+	asprintf(&str, "%d %d %d %d",
+			v->value.rect.x,
+			v->value.rect.y,
+			v->value.rect.w,
+			v->value.rect.h);
+	return str;
+}
+
+static Eina_Bool _rectangle_string_from(Ekeko_Value *v, const char *str)
+{
+	if (sscanf(str, "%d %d %d %d",
+			&v->value.rect.x,
+			&v->value.rect.y,
+			&v->value.rect.w,
+			&v->value.rect.h) < 4)
+		return EINA_FALSE;
+	return EINA_TRUE;
+}
+
+static Eina_Bool _rectangle_cmp(Ekeko_Value *v1, Ekeko_Value *v2)
+{
+	if (v1->value.rect.x == v2->value.rect.x &&
+			v1->value.rect.y == v2->value.rect.y &&
+			v1->value.rect.w == v2->value.rect.w &&
+			v1->value.rect.h == v2->value.rect.h)
+		return EINA_FALSE;
+	return EINA_TRUE;
+}
+
+static char * _string_string_to(Ekeko_Value *v)
+{
+	return strdup(v->value.string_value);
+}
+
+static Eina_Bool _string_string_from(Ekeko_Value *v, const char *str)
+{
+	v->value.string_value = strdup(str);
+	return EINA_TRUE;
+}
+
+static Eina_Bool _string_cmp(Ekeko_Value *v1, Ekeko_Value *v2)
+{
+	if (!strcmp(v1->value.string_value, v2->value.string_value))
+		return EINA_TRUE;
+	return EINA_FALSE;
+
 }
 /*============================================================================*
  *                                 Global                                     *
  *============================================================================*/
-void ekeko_value_pointer_double_to(Ekeko_Value *value, Ekeko_Value_Type type, void *ptr,
-		void *prev, char *changed)
-{
-	*changed = EINA_FALSE;
-	switch (type)
-	{
-		case EKEKO_PROPERTY_INT:
-		*((int *)ptr) = value->value.int_value;
-		if (*((int *)ptr) != *((int *)prev))
-			*changed = EINA_TRUE;
-		break;
-
-		/* FIXME check the real difference < minimal float difference */
-		case EKEKO_PROPERTY_FLOAT:
-		*((float *)ptr) = value->value.float_value;
-		if (*((float *)ptr) != *((float *)prev))
-			*changed = EINA_TRUE;
-		break;
-
-		case EKEKO_PROPERTY_STRING:
-		/* FIXME fix this mess */
-		*((char **)ptr) = strdup(value->value.string_value);
-		if (!*((char **)prev))
-			*changed = EINA_TRUE;
-		else if (!strcmp(*((char **)ptr), *((char **)prev)))
-			*changed = EINA_TRUE;
-		break;
-
-		case EKEKO_PROPERTY_RECTANGLE:
-
-		{
-			Eina_Rectangle *c = (Eina_Rectangle *)ptr;
-			Eina_Rectangle *p;
-
-			*c = value->value.rect;
-			p = (Eina_Rectangle *)prev;
-			if ((c->x != p->x) || (c->y != p->y) || (c->w != p->w) || (c->h != p->h))
-				*changed = EINA_TRUE;
-		}
-		break;
-
-		case EKEKO_PROPERTY_BOOL:
-		*((Eina_Bool *)ptr) = value->value.bool_value;
-		if (*((Eina_Bool *)ptr) != *((Eina_Bool *)prev))
-			*changed = EINA_TRUE;
-		break;
-
-		case EKEKO_PROPERTY_VALUE:
-#ifndef EKEKO_DEBUG
-		printf("[Ekeko_Value] Pointer double property value set %d %d\n", type, value->type);
-#endif
-		ekeko_value_pointer_double_to(value, value->type, ptr,
-				prev, changed);
-		break;
-
-		default:
-#ifdef EKEKO_DEBUG
-		printf("[Ekeko_Value] Pointer double set %d\n", type);
-#endif
-		{
-			Ekeko_Value_Impl *impl;
-
-			impl = _implementation_get(type);
-			impl->pointer_to(value, ptr);
-			if (impl->cmp(ptr, prev))
-				*changed = EINA_TRUE;
-		}
-		break;
-	}
-}
-
-/*
- * ptr points to the memory area where the values are stored
- */
-void ekeko_value_pointer_set(Ekeko_Value *value, Ekeko_Value_Type vtype, void *ptr)
-{
-	switch (vtype)
-	{
-		case EKEKO_PROPERTY_UNDEFINED:
-		printf("[Ekeko_Value] pointer to undefined value?\n");
-		break;
-
-		case EKEKO_PROPERTY_INT:
-		*((int *)ptr) = value->value.int_value;
-		break;
-
-		case EKEKO_PROPERTY_FLOAT:
-		*((float *)ptr) = value->value.float_value;
-		break;
-
-		case EKEKO_PROPERTY_STRING:
-		*((char **)ptr) = strdup(value->value.string_value);
-		break;
-
-		case EKEKO_PROPERTY_RECTANGLE:
-		*((Eina_Rectangle *)ptr) = value->value.rect;
-		break;
-
-		case EKEKO_PROPERTY_BOOL:
-		*((Eina_Bool *)ptr) = value->value.bool_value;
-		break;
-
-		case EKEKO_PROPERTY_OBJECT:
-		*((Ekeko_Object **)ptr) = value->value.object;
-		break;
-
-		case EKEKO_PROPERTY_POINTER:
-		*((void **)ptr) = value->value.pointer_value;
-		break;
-
-		case EKEKO_PROPERTY_VALUE:
-		{
-			Ekeko_Value *v = ptr;
-
-			printf("[Ekeko_Value] value pointer to %p\n", v->value.pointer_value);
-			v->type = value->type;
-			ekeko_value_pointer_set(value, value->type, v->value.pointer_value ? v->value.pointer_value : &v->value);
-		}
-		break;
-
-		default:
-#ifdef EKEKO_DEBUG
-		printf("[Ekeko_Value] Pointer to %d\n", vtype);
-#endif
-		{
-			Ekeko_Value_Impl *impl;
-
-			impl = _implementation_get(vtype);
-			impl->pointer_to(value, ptr);
-		}
-		break;
-	}
-}
-
-void ekeko_value_pointer_get(Ekeko_Value *v, Ekeko_Value_Type vtype, void *ptr)
-{
-	switch (vtype)
-	{
-		case EKEKO_PROPERTY_UNDEFINED:
-		v->type = EKEKO_PROPERTY_UNDEFINED;
-		WRN("Pointer from undefined value?\n");
-		break;
-
-		case EKEKO_PROPERTY_STRING:
-		v->type = EKEKO_PROPERTY_STRING;
-		v->value.string_value = *(char **)ptr;
-		break;
-
-		case EKEKO_PROPERTY_INT:
-		v->type = EKEKO_PROPERTY_INT;
-		v->value.int_value = *(int *)ptr;
-		break;
-
-		case EKEKO_PROPERTY_FLOAT:
-		v->type = EKEKO_PROPERTY_FLOAT;
-		v->value.float_value = *(float *)ptr;
-		break;
-
-		case EKEKO_PROPERTY_RECTANGLE:
-		v->type = EKEKO_PROPERTY_RECTANGLE;
-		v->value.rect = *(Eina_Rectangle *)ptr;
-		break;
-
-		case EKEKO_PROPERTY_BOOL:
-		v->type = EKEKO_PROPERTY_BOOL;
-		v->value.bool_value = *(Eina_Bool *)ptr;
-		break;
-
-		case EKEKO_PROPERTY_OBJECT:
-		v->type = EKEKO_PROPERTY_OBJECT;
-		v->value.object = *(Ekeko_Object **)ptr;
-		break;
-
-		case EKEKO_PROPERTY_POINTER:
-		v->type = EKEKO_PROPERTY_POINTER;
-		v->value.pointer_value = *(void **)ptr;
-		break;
-
-		case EKEKO_PROPERTY_VALUE:
-		{
-			Ekeko_Value *val = ptr;
-#ifndef EKEKO_DEBUG
-			printf("[Ekeko_Value] value pointer from %p %p\n", ptr, ((Ekeko_Value *)ptr)->value.pointer_value);
-#endif
-			ekeko_value_pointer_get(v, val->type, &val->value);
-		}
-		break;
-
-		default:
-#ifdef EKEKO_DEBUG
-		printf("[Ekeko_Value] Pointer from %p %p\n", v, ptr);
-#endif
-		{
-			Ekeko_Value_Impl *impl;
-
-			v->type = vtype;
-			impl = _implementation_get(vtype);
-			impl->pointer_from(v, ptr);
-		}
-		break;
-	}
-}
 void ekeko_value_init(void)
 {
-	_values = eina_hash_int32_new(NULL);
+	_implementations = eina_array_new(5);
+	EKEKO_PROPERTY_INT = ekeko_value_register("int",
+		_int_cmp, _int_string_from, _int_string_to);
+	EKEKO_PROPERTY_BOOL = ekeko_value_register("bool",
+		_bool_cmp, _bool_string_from, _bool_string_to);
+	EKEKO_PROPERTY_CHAR = ekeko_value_register("char",
+		_char_cmp, _char_string_from, _char_string_to);
+	EKEKO_PROPERTY_STRING = ekeko_value_register("string",
+		_string_cmp, _string_string_from, _string_string_to);
 }
 
 void ekeko_value_shutdown(void)
 {
-	eina_hash_free(_values);
+	eina_array_free(_implementations);
 }
 /*============================================================================*
  *                                   API                                      *
  *============================================================================*/
-EAPI int ekeko_value_register(const char *name, Ekeko_Value_Compare cmp,
-		Ekeko_Value_Pointer_From pointer_from,
-		Ekeko_Value_Pointer_To pointer_to)
+Ekeko_Value_Type EKEKO_PROPERTY_UNDEFINED; 
+Ekeko_Value_Type EKEKO_PROPERTY_INT; 
+Ekeko_Value_Type EKEKO_PROPERTY_BOOL; 
+Ekeko_Value_Type EKEKO_PROPERTY_CHAR; 
+Ekeko_Value_Type EKEKO_PROPERTY_FLOAT;
+Ekeko_Value_Type EKEKO_PROPERTY_DOUBLE;
+Ekeko_Value_Type EKEKO_PROPERTY_SHORT;
+Ekeko_Value_Type EKEKO_PROPERTY_LONG;
+Ekeko_Value_Type EKEKO_PROPERTY_RECTANGLE; 
+Ekeko_Value_Type EKEKO_PROPERTY_POINTER;
+Ekeko_Value_Type EKEKO_PROPERTY_VALUE;
+Ekeko_Value_Type EKEKO_PROPERTY_STRING;
+Ekeko_Value_Type EKEKO_PROPERTY_OBJECT;
+
+EAPI Ekeko_Value_Type ekeko_value_register(const char *name, Ekeko_Value_Compare cmp,
+		Ekeko_Value_String_From string_from,
+		Ekeko_Value_String_To string_to)
 {
-	static int _curr = EKEKO_PROPERTY_LAST; // the last internal property
+	static Ekeko_Value_Type count = 0;
 	Ekeko_Value_Impl *impl;
 
 	impl = malloc(sizeof(Ekeko_Value_Impl));
 	impl->name = strdup(name);
 	impl->cmp = cmp;
-	impl->pointer_to = pointer_to;
-	impl->pointer_from = pointer_from;
+	impl->string_to = string_to;
+	impl->string_from = string_from;
 
-	++_curr;
-	eina_hash_add(_values, &_curr, impl);
-	return _curr;
+	eina_array_push(_implementations, impl);
+	return ++count;
+}
+
+EAPI Eina_Bool ekeko_value_compare(Ekeko_Value *v1, Ekeko_Value *v2)
+{
+	Ekeko_Value_Impl *impl;
+
+	impl = eina_array_data_get(_implementations, v1->type);
+	return impl->cmp(v1, v2);
+}
+
+EAPI char * ekeko_value_string_to(Ekeko_Value *v)
+{
+	Ekeko_Value_Impl *impl;
+
+	impl = eina_array_data_get(_implementations, v->type);
+	return impl->string_to(v);
+}
+
+EAPI Eina_Bool ekeko_value_string_from(Ekeko_Value *v, Ekeko_Value_Type type, const char *str)
+{
+	Ekeko_Value_Impl *impl;
+
+	impl = eina_array_data_get(_implementations, type);
+	return impl->string_from(v, str);
 }

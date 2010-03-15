@@ -71,22 +71,16 @@ typedef struct _Ekeko_Event
  * related: The object that has the property
  */
 
-typedef enum _Ekeko_Event_Mutation_State
-{
-	EVENT_MUTATION_STATE_PRE,
-	EVENT_MUTATION_STATE_CURR,
-	EVENT_MUTATION_STATE_POST,
-} Ekeko_Event_Mutation_State;
+#define EKEKO_EVENT_VALUE_SET "ObjectValueSet"
+#define EKEKO_EVENT_VALUE_GET "ObjectValueGet"
 
 typedef struct _Ekeko_Event_Mutation
 {
 	Ekeko_Event event;
-	Ekeko_Event_Mutation_State state; /* pre/post (async) curr (async/sync) */
 	Ekeko_Object *related; /* parent in case of child_append/remove */
 	Ekeko_Value *prev; /* previous value */
 	Ekeko_Value *curr; /* current value */
 	const char *prop; /* property name */
-	Ekeko_Property_Id prop_id; /* property id */
 } Ekeko_Event_Mutation;
 
 typedef void (*Event_Listener)(Ekeko_Object *, Ekeko_Event *, void * data);

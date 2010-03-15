@@ -48,7 +48,6 @@ typedef struct _Ekeko_Object Ekeko_Object;
 
 #include "ekeko_main.h"
 #include "ekeko_value.h"
-#include "ekeko_property.h"
 #include "ekeko_type.h"
 #include "ekeko_event.h"
 #include "ekeko_object.h"

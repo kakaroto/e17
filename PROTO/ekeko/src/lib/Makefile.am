@@ -11,7 +11,6 @@ libekeko_la_SOURCES = \
 ekeko_value.c \
 ekeko_main.c \
 ekeko_object.c \
-ekeko_property.c \
 ekeko_event.c \
 ekeko_type.c
 

@@ -18,15 +18,6 @@
 #ifndef EKEKO_TYPE_H
 #define EKEKO_TYPE_H
 
-/**
- * @brief A property can either have a single or dual state.
- */
-typedef enum
-{
-	EKEKO_PROPERTY_VALUE_SINGLE_STATE,/**< Single state property */ //!< PROPERTY_VALUE_SINGLE_STATE
-	EKEKO_PROPERTY_VALUE_DUAL_STATE   /**< Dual state property */   //!< PROPERTY_VALUE_DUAL_STATE
-} Type_Property_Type;
-
 typedef void (*Ekeko_Type_Constructor)(Ekeko_Object *);
 typedef void (*Ekeko_Type_Destructor)(Ekeko_Object *);
 typedef Eina_Bool (*Ekeko_Type_Appendable)(Ekeko_Object *parent, Ekeko_Object *child);
@@ -36,16 +27,7 @@ EAPI Ekeko_Type *ekeko_type_new(char *name, size_t size, size_t priv_size, Ekeko
 EAPI void *ekeko_type_instance_new(Ekeko_Type *type);
 EAPI void ekeko_type_instance_delete(void *instance);
 
-EAPI Ekeko_Property * ekeko_type_property_get(Ekeko_Type *type, const char *name);
-EAPI Ekeko_Property_Id ekeko_type_property_new(Ekeko_Type *type, char *prop_name,
-		Type_Property_Type prop_type, Ekeko_Value_Type value_type,
-		ssize_t curr_offset, ssize_t prev_offset, ssize_t changed_offset);
 EAPI void * ekeko_type_instance_private_get(Ekeko_Type *type, void *instance);
 EAPI Eina_Bool ekeko_type_instance_is_of(void *instance, const char *type);
 
-/* Some macros to make easier the addition of single and double properties */
-#define EKEKO_TYPE_PROP_SINGLE_ADD(t, name, vt, fo)  \
-	ekeko_type_property_new(t, name, EKEKO_PROPERTY_VALUE_SINGLE_STATE, vt, fo, 0, 0)
-#define EKEKO_TYPE_PROP_DOUBLE_ADD(t, name, vt, co, po, cho) \
-	ekeko_type_property_new(t, name, EKEKO_PROPERTY_VALUE_DUAL_STATE, vt, co, po, cho)
-#endif /* EKEKO_TYPE.H */
+#endif /* EKEKO_TYPE_H */
