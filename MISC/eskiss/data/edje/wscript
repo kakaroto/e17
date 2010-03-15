@@ -1,0 +1,20 @@
+#! /usr/bin/env python
+# -*- coding: utf-8 -*-
+# encoding: utf-8
+# Calaos, 2010
+
+import misc
+
+def build(bld):
+
+        #edje compilation
+        bld(features = 'command-output',
+            no_inputs = True,
+            no_outputs = True,
+            command = 'edje_cc',
+            argv = ['-id', '../data/edje/', '-fd', '../data/edje/', '../data/edje/default.edc', '../data/edje/default.edj'],
+            command_is_external = True)
+
+        bld.install_files('${PREFIX}/share/eskiss/theme',
+                        ['default.edj'])
+

@@ -1,0 +1,28 @@
+#! /usr/bin/env python
+# -*- coding: utf-8 -*-
+# encoding: utf-8
+# Calaos, 2010
+
+def build(bld):
+        bld(
+                features = 'cc cprogram',
+
+                source = '''
+                        draw_object.c
+                        physic_object.c
+                        level.c
+                        level_editor.c
+                        level_chooser.c
+                        game.c
+                        main.c
+                        ''',
+
+                includes = '''
+                        #
+                        .
+                        /usr/local/include/chipmunk
+                        /usr/include/chipmunk
+                        ''',
+
+                uselib = 'ECORE EVAS EDJE ECORE-EVAS ECORE-FILE CHIPMUNK',
+                target = 'eskiss')

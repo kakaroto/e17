@@ -1,0 +1,2566 @@
+/******************************************************************************
+**  Copyright (c) 2006-2010, Calaos. All Rights Reserved.
+**
+**  This is free software; you can redistribute it and/or modify
+**  it under the terms of the GNU General Public License as published by
+**  the Free Software Foundation; either version 3 of the License, or
+**  (at your option) any later version.
+**
+**  This is distributed in the hope that it will be useful,
+**  but WITHOUT ANY WARRANTY; without even the implied warranty of
+**  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**  GNU General Public License for more details.
+**
+**  You should have received a copy of the GNU General Public License
+**  along with this; if not, write to the Free Software
+**  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+**
+******************************************************************************/
+
+fonts
+{
+        font: "calaos_content.ttf" "CalaosContent";
+        font: "calaos_content-bold.ttf" "CalaosContentBold";
+        font: "calaos_content-oblique.ttf" "CalaosContentOblique";
+}
+
+images
+{
+        image: "editor_bg.png" COMP;
+        image: "menu_item.png" COMP;
+        image: "pin.png" COMP;
+        image: "editor_bt_color.png" COMP;
+        image: "editor_bt.png" COMP;
+        image: "editor_bt_background.png" COMP;
+        image: "editor_bt_stop.png" COMP;
+        image: "editor_bt_glow.png" COMP;
+        image: "editor_bt_menu.png" COMP;
+        image: "editor_bt_move.png" COMP;
+        image: "editor_bt_pencil.png" COMP;
+        image: "editor_bt_play.png" COMP;
+        image: "editor_bt_static.png" COMP;
+        image: "ball_01.png" COMP;
+        image: "ball_02.png" COMP;
+        image: "ball_03.png" COMP;
+        image: "goal_01.png" COMP;
+        image: "goal_02.png" COMP;
+        image: "goal_03.png" COMP;
+        image: "editor_bt_open.png" COMP;
+        image: "editor_bt_save.png" COMP;
+        image: "editor_bt_save_new.png" COMP;
+        image: "game_level_next.png" COMP;
+        image: "editor_bt_previous.png" COMP;
+        image: "load_anim_01.png" COMP;
+        image: "title.png" COMP;
+        image: "cloud1.png" COMP;
+        image: "cloud2.png" COMP;
+        image: "tree.png" COMP;
+        image: "background_02.png" COMP;
+        image: "background_02.jpg" COMP;
+        image: "bt_close.png" COMP;
+        image: "play_menu.png" COMP;
+}
+
+#define MENU_ITEM(id, _text, clipper, tempo, rel1x, rel1y, rel2x, rel2y, offset1x, offset1y, offset2x, offset2y) \
+part \
+{ \
+        name: "item_"id; \
+        clip_to: clipper; \
+        type: RECT; \
+        description \
+        { \
+                state: "default" 0.0; \
+                color: 255 255 255 0; \
+                visible: 0; \
+                rel1 { relative: rel1x rel1y; offset: offset1x (offset1y - 20); } \
+                rel2 { relative: rel2x rel2y; offset: offset2x (offset2y - 20); } \
+                rel1.to: clipper; \
+                rel2.to: clipper; \
+        } \
+        description \
+        { \
+                state: "visible" 0.0; \
+                inherit: "default" 0.0; \
+                color: 255 255 255 255; \
+                visible: 1; \
+                rel1 { relative: rel1x rel1y; offset: offset1x offset1y; } \
+                rel2 { relative: rel2x rel2y; offset: offset2x offset2y; } \
+                rel1.to: clipper; \
+                rel2.to: clipper; \
+        } \
+} \
+ \
+part \
+{ \
+        name: "bg"id; \
+        clip_to: "item_"id; \
+        mouse_events: 0; \
+        description \
+        { \
+                state: "default" 0.0; \
+                image.normal: "menu_item.png"; \
+                image.border: 51 58 43 62; \
+                rel1.to: "item_"id; \
+                rel2.to: "item_"id; \
+        } \
+} \
+ \
+part \
+{ \
+        name: "title"id; \
+        type: TEXT; \
+        clip_to: "item_"id; \
+        mouse_events: 0; \
+        description \
+        { \
+                state, "default" 0.0; \
+                color: 62 62 62 255; \
+                text { text: _text; font: "CalaosContentBold"; size: 28; align: 0.5 0.44; } \
+                rel1.to: "item_"id; \
+                rel2.to: "item_"id; \
+        } \
+} \
+ \
+part \
+{ \
+        name: "pin_clip"id; \
+        type: RECT; \
+        mouse_events: 0; \
+        clip_to: clipper; \
+        description \
+        { \
+                state: "default" 0.0; \
+                rel1.to: "item_"id; \
+                rel2.to: "item_"id; \
+                rel2 { relative: 0.0 0.0; offset: 110 83; } \
+                visible: 0; \
+                color: 255 255 255 0; \
+        } \
+        description \
+        { \
+                state: "visible" 0.0; \
+                inherit: "default" 0.0; \
+                visible: 1; \
+                color: 255 255 255 255; \
+        } \
+} \
+part \
+{ \
+        name: "pin"id; \
+        clip_to: "pin_clip"id; \
+        mouse_events: 0; \
+        description \
+        { \
+                state: "default" 0.0; \
+                image.normal: "pin.png"; \
+                rel1.to: "item_"id; \
+                rel2.to: "item_"id; \
+                rel2 { relative: 0.0 0.0; offset: 110 83; } \
+        } \
+} \
+ \
+part \
+{ \
+        name: "mouse_"id; \
+        type: RECT; \
+        clip_to: clipper; \
+        description \
+        { \
+                state: "default" 0.0; \
+                rel1.to: "item_"id; \
+                rel2.to: "item_"id; \
+                visible: 1; \
+                color: 255 255 255 0; \
+        } \
+} \
+ \
+program \
+{ \
+        name: "on_show"id; \
+        in: tempo 0.0; \
+        signal: "show"; \
+        source: "menu"; \
+        action: STATE_SET "visible" 0.0; \
+        transition: DECELERATE 0.6; \
+        target: "item_"id; \
+} \
+program \
+{ \
+        name: "on_hide"id; \
+        signal: "hide"; \
+        source: "menu"; \
+        action: STATE_SET "default" 0.0; \
+        transition: ACCELERATE 0.3; \
+        target: "item_"id; \
+        target: "pin_clip"id; \
+} \
+program \
+{ \
+        name: "on_select"id; \
+        signal: "pin,select,"id; \
+        source: "menu"; \
+        action: STATE_SET "visible" 0.0; \
+        transition: ACCELERATE 0.1; \
+        target: "pin_clip"id; \
+} \
+program \
+{ \
+        name: "on_unselect"id; \
+        signal: "pin,unselect,"id; \
+        source: "menu"; \
+        action: STATE_SET "default" 0.0; \
+        transition: DECELERATE 0.1; \
+        target: "pin_clip"id; \
+} \
+program \
+{ \
+        name: "on_click"id; \
+        signal: "mouse,down,1"; \
+        source: "mouse_"id; \
+        action: SIGNAL_EMIT "select,"id "menu"; \
+} \
+program \
+{ \
+        name: "on_clicked"id; \
+        signal: "mouse,up,1"; \
+        source: "mouse_"id; \
+        action: SIGNAL_EMIT "clicked,"id "menu"; \
+}
+
+
+#define EDITOR_ITEM(id, img, clipper, tempo, rel1x, rel1y, rel2x, rel2y, offset1x, offset1y, offset2x, offset2y) \
+part \
+{ \
+        name: "item_"id; \
+        clip_to: clipper; \
+        type: RECT; \
+        description \
+        { \
+                state: "default" 0.0; \
+                color: 255 255 255 0; \
+                visible: 0; \
+                rel1 { relative: rel1x rel1y; offset: offset1x (offset1y - 10); } \
+                rel2 { relative: rel2x rel2y; offset: offset2x (offset2y - 10); } \
+                rel1.to: clipper; \
+                rel2.to: clipper; \
+        } \
+        description \
+        { \
+                state: "visible" 0.0; \
+                inherit: "default" 0.0; \
+                color: 255 255 255 255; \
+                visible: 1; \
+                rel1 { relative: rel1x rel1y; offset: offset1x offset1y; } \
+                rel2 { relative: rel2x rel2y; offset: offset2x offset2y; } \
+                rel1.to: clipper; \
+                rel2.to: clipper; \
+        } \
+} \
+ \
+part \
+{ \
+        name: "glow_clip"id; \
+        type: RECT; \
+        mouse_events: 0; \
+        description \
+        { \
+                state: "default" 0.0; \
+                visible: 0; \
+                color: 255 255 255 0; \
+                rel1.to: "item_"id; \
+                rel2.to: "item_"id; \
+                rel1 { relative: 0.0 0.0; offset: -7 -7; } \
+                rel2 { relative: 1.0 1.0; offset:  6  6; } \
+        } \
+        description \
+        { \
+                state: "visible" 0.0; \
+                inherit: "default" 0.0; \
+                visible: 1; \
+                color: 255 255 255 255; \
+        } \
+} \
+part \
+{ \
+        name: "glow"id; \
+        clip_to: "glow_clip"id; \
+        mouse_events: 0; \
+        description \
+        { \
+                state: "default" 0.0; \
+                image.normal: "editor_bt_glow.png"; \
+                rel1.to: "item_"id; \
+                rel2.to: "item_"id; \
+                rel1 { relative: 0.0 0.0; offset: -7 -7; } \
+                rel2 { relative: 1.0 1.0; offset:  6  6; } \
+        } \
+} \
+ \
+part \
+{ \
+        name: "bg"id; \
+        clip_to: "item_"id; \
+        mouse_events: 0; \
+        description \
+        { \
+                state: "default" 0.0; \
+                image.normal: img; \
+                rel1.to: "item_"id; \
+                rel2.to: "item_"id; \
+        } \
+} \
+ \
+part \
+{ \
+        name: "mouse_"id; \
+        type: RECT; \
+        clip_to: clipper; \
+        description \
+        { \
+                state: "default" 0.0; \
+                rel1.to: "item_"id; \
+                rel2.to: "item_"id; \
+                visible: 1; \
+                color: 255 255 255 0; \
+        } \
+} \
+ \
+program \
+{ \
+        name: "on_show"id; \
+        in: tempo 0.0; \
+        signal: "show"; \
+        source: "item"; \
+        action: STATE_SET "visible" 0.0; \
+        transition: DECELERATE 0.3; \
+        target: "item_"id; \
+} \
+program \
+{ \
+        name: "on_hide"id; \
+        signal: "hide"; \
+        source: "menu"; \
+        after: "hide_glow"id; \
+        after: "on_hide_real"id; \
+} \
+program \
+{ \
+        name: "on_hide_real"id; \
+        action: STATE_SET "default" 0.0; \
+        transition: ACCELERATE 0.2; \
+        target: "item_"id; \
+} \
+program \
+{ \
+        name: "on_select"id; \
+        signal: "item,select,"id; \
+        source: "menu"; \
+        after: "anim_glow1"id; \
+} \
+program \
+{ \
+        name: "on_unselect"id; \
+        signal: "item,unselect,"id; \
+        source: "menu"; \
+        action: ACTION_STOP; \
+        target: "anim_glow1"id; \
+        target: "anim_glow2"id; \
+        after: "hide_glow"id; \
+} \
+program \
+{ \
+        name: "on_click"id; \
+        signal: "mouse,down,1"; \
+        source: "mouse_"id; \
+        action: SIGNAL_EMIT "select,"id "menu"; \
+} \
+program \
+{ \
+        name: "on_clicked"id; \
+        signal: "mouse,up,1"; \
+        source: "mouse_"id; \
+        action: SIGNAL_EMIT "clicked,"id "menu"; \
+} \
+program \
+{ \
+        name: "anim_glow1"id; \
+        action: STATE_SET "visible" 0.0; \
+        transition: ACCELERATE 0.2; \
+        target: "glow_clip"id; \
+        after: "anim_glow2"id; \
+} \
+program \
+{ \
+        name: "anim_glow2"id; \
+        action: STATE_SET "default" 0.0; \
+        transition: DECELERATE 0.45; \
+        target: "glow_clip"id; \
+        after: "anim_glow1"id; \
+} \
+program \
+{ \
+        name: "hide_glow"id; \
+        action: STATE_SET "default" 0.0; \
+        transition: ACCELERATE 0.45; \
+        target: "glow_clip"id; \
+}
+
+
+#define EDITOR_ITEM_SWALLOW(id, clipper, tempo, rel1x, rel1y, rel2x, rel2y, offset1x, offset1y, offset2x, offset2y) \
+part \
+{ \
+        name: "item_"id; \
+        clip_to: clipper; \
+        type: RECT; \
+        description \
+        { \
+                state: "default" 0.0; \
+                color: 255 255 255 0; \
+                visible: 0; \
+                rel1 { relative: rel1x rel1y; offset: offset1x (offset1y - 10); } \
+                rel2 { relative: rel2x rel2y; offset: offset2x (offset2y - 10); } \
+                rel1.to: clipper; \
+                rel2.to: clipper; \
+        } \
+        description \
+        { \
+                state: "visible" 0.0; \
+                inherit: "default" 0.0; \
+                color: 255 255 255 255; \
+                visible: 1; \
+                rel1 { relative: rel1x rel1y; offset: offset1x offset1y; } \
+                rel2 { relative: rel2x rel2y; offset: offset2x offset2y; } \
+                rel1.to: clipper; \
+                rel2.to: clipper; \
+        } \
+} \
+ \
+part \
+{ \
+        name: "glow_clip"id; \
+        type: RECT; \
+        mouse_events: 0; \
+        description \
+        { \
+                state: "default" 0.0; \
+                visible: 0; \
+                color: 255 255 255 0; \
+                rel1.to: "item_"id; \
+                rel2.to: "item_"id; \
+                rel1 { relative: 0.0 0.0; offset: -7 -7; } \
+                rel2 { relative: 1.0 1.0; offset:  6  6; } \
+        } \
+        description \
+        { \
+                state: "visible" 0.0; \
+                inherit: "default" 0.0; \
+                visible: 1; \
+                color: 255 255 255 255; \
+        } \
+} \
+part \
+{ \
+        name: "glow"id; \
+        clip_to: "glow_clip"id; \
+        mouse_events: 0; \
+        description \
+        { \
+                state: "default" 0.0; \
+                image.normal: "editor_bt_glow.png"; \
+                rel1.to: "item_"id; \
+                rel2.to: "item_"id; \
+                rel1 { relative: 0.0 0.0; offset: -7 -7; } \
+                rel2 { relative: 1.0 1.0; offset:  6  6; } \
+        } \
+} \
+ \
+part \
+{ \
+        name: "bg"id; \
+        clip_to: "item_"id; \
+        mouse_events: 0; \
+        description \
+        { \
+                state: "default" 0.0; \
+                image.normal: "editor_bt.png"; \
+                rel1.to: "item_"id; \
+                rel2.to: "item_"id; \
+        } \
+} \
+part \
+{ \
+        name: "item_swallow_"id; \
+        clip_to: "item_"id; \
+        type: SWALLOW; \
+        mouse_events: 0; \
+        description \
+        { \
+                state: "default" 0.0; \
+                rel1 { relative: 0.0 0.0; offset:  12  12; } \
+                rel2 { relative: 1.0 1.0; offset: -12 -12; } \
+                rel1.to: "item_"id; \
+                rel2.to: "item_"id; \
+        } \
+} \
+ \
+part \
+{ \
+        name: "mouse_"id; \
+        type: RECT; \
+        clip_to: clipper; \
+        description \
+        { \
+                state: "default" 0.0; \
+                rel1.to: "item_"id; \
+                rel2.to: "item_"id; \
+                visible: 1; \
+                color: 255 255 255 0; \
+        } \
+} \
+ \
+program \
+{ \
+        name: "on_show"id; \
+        in: tempo 0.0; \
+        signal: "show"; \
+        source: "item"; \
+        action: STATE_SET "visible" 0.0; \
+        transition: DECELERATE 0.3; \
+        target: "item_"id; \
+} \
+program \
+{ \
+        name: "on_hide"id; \
+        signal: "hide"; \
+        source: "menu"; \
+        after: "hide_glow"id; \
+        after: "on_hide_real"id; \
+} \
+program \
+{ \
+        name: "on_hide_real"id; \
+        action: STATE_SET "default" 0.0; \
+        transition: ACCELERATE 0.2; \
+        target: "item_"id; \
+} \
+program \
+{ \
+        name: "on_select"id; \
+        signal: "item,select,"id; \
+        source: "menu"; \
+        after: "anim_glow1"id; \
+} \
+program \
+{ \
+        name: "on_unselect"id; \
+        signal: "item,unselect,"id; \
+        source: "menu"; \
+        action: ACTION_STOP; \
+        target: "anim_glow1"id; \
+        target: "anim_glow2"id; \
+        after: "hide_glow"id; \
+} \
+program \
+{ \
+        name: "on_click"id; \
+        signal: "mouse,down,1"; \
+        source: "mouse_"id; \
+        action: SIGNAL_EMIT "select,"id "menu"; \
+} \
+program \
+{ \
+        name: "on_clicked"id; \
+        signal: "mouse,up,1"; \
+        source: "mouse_"id; \
+        action: SIGNAL_EMIT "clicked,"id "menu"; \
+} \
+program \
+{ \
+        name: "anim_glow1"id; \
+        action: STATE_SET "visible" 0.0; \
+        transition: ACCELERATE 0.2; \
+        target: "glow_clip"id; \
+        after: "anim_glow2"id; \
+} \
+program \
+{ \
+        name: "anim_glow2"id; \
+        action: STATE_SET "default" 0.0; \
+        transition: DECELERATE 0.45; \
+        target: "glow_clip"id; \
+        after: "anim_glow1"id; \
+} \
+program \
+{ \
+        name: "hide_glow"id; \
+        action: STATE_SET "default" 0.0; \
+        transition: ACCELERATE 0.45; \
+        target: "glow_clip"id; \
+}
+
+collections
+{
+        group
+        {
+                name: "main/game/menu_button";
+
+                parts
+                {
+                        part
+                        {
+                                name: "main_clip";
+                                type: RECT;
+                                description
+                                {
+                                        state: "default" 0.0;
+                                        color: 255 255 255 0;
+                                        visible: 0;
+                                }
+                                description
+                                {
+                                        state: "visible" 0.0;
+                                        inherit: "default" 0.0;
+                                        color: 255 255 255 255;
+                                        visible: 1;
+                                }
+                        }
+
+                        part
+                        {
+                                name: "button";
+                                clip_to: "main_clip";
+                                description
+                                {
+                                        state: "default" 0.0;
+                                        image.normal: "play_menu.png";
+                                        rel1 { relative: 0.0 0.0; offset: 0+5 0+5; }
+                                        rel2 { relative: 0.0 0.0; offset: 60+5 32+5; }
+                                }
+                        }
+                }
+
+                programs
+                {
+                        program
+                        {
+                                name: "on_show";
+                                signal: "show";
+                                source: "eskiss";
+                                action: STATE_SET "visible" 0.0;
+                                target: "main_clip";
+                                transition: ACCELERATE 0.5;
+                        }
+                        program
+                        {
+                                name: "on_hide";
+                                signal: "hide";
+                                source: "eskiss";
+                                action: STATE_SET "default" 0.0;
+                                target: "main_clip";
+                                transition: DECELERATE 0.5;
+                        }
+                        program
+                        {
+                                name: "mouse_click";
+                                signal: "mouse,down,1";
+                                source: "button";
+                                action: SIGNAL_EMIT "click" "menu";
+                        }
+                }
+        }
+
+        group
+        {
+                name: "main/menu";
+
+                parts
+                {
+                        part
+                        {
+                                name: "main_clip";
+                                type: RECT;
+                                description
+                                {
+                                        state: "default" 0.0;
+                                        color: 255 255 255 0;
+                                        visible: 0;
+                                }
+                                description
+                                {
+                                        state: "visible" 0.0;
+                                        inherit: "default" 0.0;
+                                        color: 255 255 255 255;
+                                        visible: 1;
+                                }
+                        }
+
+                        part
+                        {
+                                name: "title";
+                                clip_to: "main_clip";
+                                description
+                                {
+                                        state: "default" 0.0;
+                                        image.normal: "title.png";
+                                        rel1 { relative: 0.0 0.0; offset: 100 60; }
+                                        rel2 { relative: 0.0 0.0; offset: 100+498 60+189; }
+                                }
+                        }
+
+                        part
+                        {
+                                name: "tree";
+                                clip_to: "main_clip";
+                                description
+                                {
+                                        state: "default" 0.0;
+                                        image.normal: "tree.png";
+                                        rel1 { relative: 1.0 1.0; offset: -27-274 -16-474; }
+                                        rel2 { relative: 1.0 1.0; offset: -27 -16; }
+                                }
+                        }
+                        part
+                        {
+                                name: "cloud1";
+                                clip_to: "main_clip";
+                                description
+                                {
+                                        state: "default" 0.0;
+                                        image.normal: "cloud1.png";
+                                        rel1 { relative: 0.0 0.0; offset: 123 295; }
+                                        rel2 { relative: 0.0 0.0; offset: 123+268 295+172; }
+                                }
+                        }
+                        part
+                        {
+                                name: "cloud2";
+                                clip_to: "main_clip";
+                                description
+                                {
+                                        state: "default" 0.0;
+                                        image.normal: "cloud2.png";
+                                        rel1 { relative: 1.0 0.0; offset: -135-273 64; }
+                                        rel2 { relative: 1.0 0.0; offset: -135 64+197; }
+                                }
+                        }
+
+                        MENU_ITEM("play", "Play game", "main_clip", 0.0, 0.5, 0.6, 0.5, 0.6, -200, -212, 200, -106)
+                        MENU_ITEM("choose_level", "Choose level", "main_clip", 0.1, 0.5, 0.6, 0.5, 0.6, -200, -106, 200, 0)
+                        MENU_ITEM("editor", "Level editor", "main_clip", 0.2, 0.5, 0.6, 0.5, 0.6, -200, 0, 200, 106)
+                        MENU_ITEM("quit", "Quit", "main_clip", 0.3, 0.5, 0.6, 0.5, 0.6, -200, 106, 200, 212)
+
+                }
+
+                programs
+                {
+                        program
+                        {
+                                name: "on_show";
+                                signal: "show";
+                                action: STATE_SET "visible" 0.0;
+                                transition: DECELERATE 0.8;
+                                target: "main_clip";
+                                after: "show_menu";
+                        }
+                        program
+                        {
+                                name: "on_show2";
+                                signal: "show";
+                                source: "menu";
+                                action: STATE_SET "visible" 0.0;
+                                transition: DECELERATE 0.6;
+                                target: "main_clip";
+                        }
+                        program
+                        {
+                                name: "on_hide";
+                                signal: "hide";
+                                action: STATE_SET "default" 0.0;
+                                target: "main_clip";
+                                after: "on_hide_anim";
+                        }
+                        program
+                        {
+                                name: "on_hide_anim";
+                                signal: "hide";
+                                source: "menu";
+                                action: STATE_SET "default" 0.0;
+                                transition: DECELERATE 0.3;
+                                target: "main_clip";
+                                after: "hide_done";
+                        }
+
+                        program
+                        {
+                                name: "show_menu";
+                                action: SIGNAL_EMIT "show" "menu";
+                        }
+                        program
+                        {
+                                name: "hide_done";
+                                action: SIGNAL_EMIT "hidden" "menu";
+                        }
+                }
+        }
+
+
+        group
+        {
+                name: "editor/menu";
+
+                parts
+                {
+                        part
+                        {
+                                name: "main_clip";
+                                type: RECT;
+                                description
+                                {
+                                        state: "default" 0.0;
+                                        color: 255 255 255 0;
+                                        visible: 0;
+                                }
+                                description
+                                {
+                                        state: "visible" 0.0;
+                                        inherit: "default" 0.0;
+                                        color: 255 255 255 255;
+                                        visible: 1;
+                                }
+                        }
+
+                        part
+                        {
+                                name: "menu_bg";
+                                clip_to: "main_clip";
+                                description
+                                {
+                                        state: "default" 0.0;
+                                        image.normal: "editor_bg.png";
+                                        image.border: 73 60 60 67;
+                                        rel1 { relative: 0.5 0.0; offset: -463 -257; }
+                                        rel2 { relative: 0.5 0.0; offset:  463   -1; }
+                                }
+                                description
+                                {
+                                        state: "visible" 0.0;
+                                        inherit: "default" 0.0;
+                                        rel1 { relative: 0.5 0.0; offset: -463 -125; }
+                                        rel2 { relative: 0.5 0.0; offset:  463  132; }
+                                }
+                        }
+
+                        part
+                        {
+                                name: "button_clip";
+                                clip_to: "main_clip";
+                                description
+                                {
+                                        state: "default" 0.0;
+                                        rel1.to: "menu_bg";
+                                        rel2.to: "menu_bg";
+                                }
+                        }
+
+                        EDITOR_ITEM("draw", "editor_bt_pencil.png", "button_clip", 0.0, 0.0, 0.0, 0.0, 0.0, 48, 136, 127, 208)
+                        EDITOR_ITEM("draw_static", "editor_bt_static.png", "button_clip", 0.05, 0.0, 0.0, 0.0, 0.0, 142, 136, 221, 208)
+                        EDITOR_ITEM("draw_nophysic", "editor_bt_background.png", "button_clip", 0.1, 0.0, 0.0, 0.0, 0.0, 236, 136, 315, 208)
+                        EDITOR_ITEM("move", "editor_bt_move.png", "button_clip", 0.15, 0.0, 0.0, 0.0, 0.0, 330, 136, 409, 208)
+                        EDITOR_ITEM("color", "editor_bt_color.png", "button_clip", 0.20, 0.0, 0.0, 0.0, 0.0, 424, 136, 503, 208)
+                        EDITOR_ITEM("play", "editor_bt_play.png", "button_clip", 0.25, 0.0, 0.0, 0.0, 0.0, 518, 136, 597, 208)
+                        EDITOR_ITEM("open", "editor_bt_open.png", "button_clip", 0.30, 0.0, 0.0, 0.0, 0.0, 612, 136, 691, 208)
+                        EDITOR_ITEM("save", "editor_bt_save.png", "button_clip", 0.35, 0.0, 0.0, 0.0, 0.0, 706, 136, 785, 208)
+                        EDITOR_ITEM("menu", "editor_bt_menu.png", "button_clip", 0.40, 0.0, 0.0, 0.0, 0.0, 800, 136, 879, 208)
+
+                }
+
+                programs
+                {
+                        program
+                        {
+                                name: "on_show";
+                                signal: "show";
+                                after: "on_show2";
+                        }
+                        program
+                        {
+                                name: "on_show2";
+                                signal: "show";
+                                source: "menu";
+                                action: STATE_SET "visible" 0.0;
+                                transition: DECELERATE 0.8;
+                                target: "main_clip";
+                                target: "menu_bg";
+                                after: "show_items";
+                        }
+                        program
+                        {
+                                name: "on_hide";
+                                signal: "hide";
+                                action: STATE_SET "default" 0.0;
+                                target: "main_clip";
+                                target: "menu_bg";
+                                after: "on_hide_anim";
+                        }
+                        program
+                        {
+                                name: "on_hide_anim";
+                                signal: "hide";
+                                source: "menu";
+                                action: STATE_SET "default" 0.0;
+                                transition: DECELERATE 0.3;
+                                target: "main_clip";
+                                target: "menu_bg";
+                                after: "hide_done";
+                        }
+
+                        program
+                        {
+                                name: "show_items";
+                                action: SIGNAL_EMIT "show" "item";
+                        }
+                        program
+                        {
+                                name: "hide_done";
+                                action: SIGNAL_EMIT "hidden" "menu";
+                        }
+                }
+        }
+
+        group
+        {
+                name: "editor/menu/running";
+
+                parts
+                {
+                        part
+                        {
+                                name: "main_clip";
+                                type: RECT;
+                                description
+                                {
+                                        state: "default" 0.0;
+                                        color: 255 255 255 0;
+                                        visible: 0;
+                                }
+                                description
+                                {
+                                        state: "visible" 0.0;
+                                        inherit: "default" 0.0;
+                                        color: 255 255 255 255;
+                                        visible: 1;
+                                }
+                        }
+
+                        part
+                        {
+                                name: "menu_bg";
+                                clip_to: "main_clip";
+                                description
+                                {
+                                        state: "default" 0.0;
+                                        image.normal: "editor_bg.png";
+                                        image.border: 73 60 60 67;
+                                        rel1 { relative: 0.75 0.0; offset: -87 -257; }
+                                        rel2 { relative: 0.75 0.0; offset:  87   -1; }
+                                }
+                                description
+                                {
+                                        state: "visible" 0.0;
+                                        inherit: "default" 0.0;
+                                        rel1 { relative: 0.75 0.0; offset: -87 -125; }
+                                        rel2 { relative: 0.75 0.0; offset:  87  132; }
+                                }
+                        }
+
+                        part
+                        {
+                                name: "button_clip";
+                                clip_to: "main_clip";
+                                description
+                                {
+                                        state: "default" 0.0;
+                                        rel1.to: "menu_bg";
+                                        rel2.to: "menu_bg";
+                                }
+                        }
+
+                        EDITOR_ITEM("stop", "editor_bt_stop.png", "button_clip", 0.0, 0.0, 0.0, 0.0, 0.0, 48, 136, 127, 208)
+
+                }
+
+                programs
+                {
+                        program
+                        {
+                                name: "on_show";
+                                signal: "show";
+                                after: "on_show2";
+                        }
+                        program
+                        {
+                                name: "on_show2";
+                                signal: "show";
+                                source: "menu";
+                                action: STATE_SET "visible" 0.0;
+                                transition: DECELERATE 0.8;
+                                target: "main_clip";
+                                target: "menu_bg";
+                                after: "show_items";
+                        }
+                        program
+                        {
+                                name: "on_hide";
+                                signal: "hide";
+                                action: STATE_SET "default" 0.0;
+                                target: "main_clip";
+                                target: "menu_bg";
+                                after: "on_hide_anim";
+                        }
+                        program
+                        {
+                                name: "on_hide_anim";
+                                signal: "hide";
+                                source: "menu";
+                                action: STATE_SET "default" 0.0;
+                                transition: DECELERATE 0.3;
+                                target: "main_clip";
+                                target: "menu_bg";
+                                after: "hide_done";
+                        }
+
+                        program
+                        {
+                                name: "show_items";
+                                action: SIGNAL_EMIT "show" "item";
+                        }
+                        program
+                        {
+                                name: "hide_done";
+                                action: SIGNAL_EMIT "running,hidden" "menu";
+                        }
+                }
+        }
+
+        group
+        {
+                name: "editor/menu/color";
+
+                parts
+                {
+                        part
+                        {
+                                name: "main_clip";
+                                type: RECT;
+                                description
+                                {
+                                        state: "default" 0.0;
+                                        color: 255 255 255 0;
+                                        visible: 0;
+                                }
+                                description
+                                {
+                                        state: "visible" 0.0;
+                                        inherit: "default" 0.0;
+                                        color: 255 255 255 255;
+                                        visible: 1;
+                                }
+                        }
+
+                        part
+                        {
+                                name: "menu_bg";
+                                clip_to: "main_clip";
+                                description
+                                {
+                                        state: "default" 0.0;
+                                        image.normal: "editor_bg.png";
+                                        image.border: 73 60 60 67;
+                                        rel1 { relative: 0.5 0.0; offset: -416 -257; }
+                                        rel2 { relative: 0.5 0.0; offset:  416   -1; }
+                                }
+                                description
+                                {
+                                        state: "visible" 0.0;
+                                        inherit: "default" 0.0;
+                                        rel1 { relative: 0.5 0.0; offset: -416 -125; }
+                                        rel2 { relative: 0.5 0.0; offset:  416  132; }
+                                }
+                        }
+
+                        part
+                        {
+                                name: "button_clip";
+                                clip_to: "main_clip";
+                                description
+                                {
+                                        state: "default" 0.0;
+                                        rel1.to: "menu_bg";
+                                        rel2.to: "menu_bg";
+                                }
+                        }
+
+                        EDITOR_ITEM_SWALLOW("0", "button_clip", 0.0, 0.0, 0.0, 0.0, 0.0, 48, 136, 127, 208)
+                        EDITOR_ITEM_SWALLOW("1", "button_clip", 0.05, 0.0, 0.0, 0.0, 0.0, 142, 136, 221, 208)
+                        EDITOR_ITEM_SWALLOW("2", "button_clip", 0.1, 0.0, 0.0, 0.0, 0.0, 236, 136, 315, 208)
+                        EDITOR_ITEM_SWALLOW("3", "button_clip", 0.15, 0.0, 0.0, 0.0, 0.0, 330, 136, 409, 208)
+                        EDITOR_ITEM_SWALLOW("4", "button_clip", 0.20, 0.0, 0.0, 0.0, 0.0, 424, 136, 503, 208)
+                        EDITOR_ITEM_SWALLOW("5", "button_clip", 0.25, 0.0, 0.0, 0.0, 0.0, 518, 136, 597, 208)
+                        EDITOR_ITEM_SWALLOW("6", "button_clip", 0.30, 0.0, 0.0, 0.0, 0.0, 612, 136, 691, 208)
+                        EDITOR_ITEM_SWALLOW("7", "button_clip", 0.35, 0.0, 0.0, 0.0, 0.0, 706, 136, 785, 208)
+
+                }
+
+                programs
+                {
+                        program
+                        {
+                                name: "on_show";
+                                signal: "show";
+                                after: "on_show_2";
+                        }
+                        program
+                        {
+                                name: "on_show_2";
+                                signal: "show";
+                                source: "menu";
+                                action: STATE_SET "visible" 0.0;
+                                transition: DECELERATE 0.8;
+                                target: "main_clip";
+                                target: "menu_bg";
+                                after: "show_items";
+                        }
+                        program
+                        {
+                                name: "on_hide";
+                                signal: "hide";
+                                action: STATE_SET "default" 0.0;
+                                target: "main_clip";
+                                target: "menu_bg";
+                                after: "on_hide_anim";
+                        }
+                        program
+                        {
+                                name: "on_hide_anim";
+                                signal: "hide";
+                                source: "menu";
+                                action: STATE_SET "default" 0.0;
+                                transition: DECELERATE 0.3;
+                                target: "main_clip";
+                                target: "menu_bg";
+                                after: "hide_done";
+                        }
+
+                        program
+                        {
+                                name: "show_items";
+                                action: SIGNAL_EMIT "show" "item";
+                        }
+                        program
+                        {
+                                name: "hide_done";
+                                action: SIGNAL_EMIT "color,hidden" "menu";
+                        }
+                }
+        }
+
+
+        group
+        {
+                name: "main/ball";
+                min: 70 70;
+                max: 70 70;
+
+                data
+                {
+                        item: "radius" "28";
+                        item: "center" "35,35";
+                }
+
+                parts
+                {
+                        part
+                        {
+                                name: "main_clip";
+                                type: RECT;
+                                mouse_events: 0;
+                                description
+                                {
+                                        state: "default" 0.0;
+                                        color: 255 255 255 0;
+                                        visible: 0;
+                                }
+                                description
+                                {
+                                        state: "visible" 0.0;
+                                        inherit: "default" 0.0;
+                                        color: 255 255 255 255;
+                                        visible: 1;
+                                }
+                        }
+
+                        part
+                        {
+                                name: "ball01";
+                                clip_to: "main_clip";
+                                mouse_events: 0;
+                                description
+                                {
+                                        state: "default" 0.0;
+                                        image.normal: "ball_01.png";
+                                        visible: 0;
+                                        color: 255 255 255 0;
+                                }
+                                description
+                                {
+                                        state: "visible" 0.0;
+                                        inherit: "default" 0.0;
+                                        visible: 1;
+                                        color: 255 255 255 255;
+                                }
+                        }
+
+                        part
+                        {
+                                name: "ball02";
+                                clip_to: "main_clip";
+                                mouse_events: 0;
+                                description
+                                {
+                                        state: "default" 0.0;
+                                        image.normal: "ball_02.png";
+                                        visible: 0;
+                                        color: 255 255 255 0;
+                                }
+                                description
+                                {
+                                        state: "visible" 0.0;
+                                        inherit: "default" 0.0;
+                                        visible: 1;
+                                        color: 255 255 255 255;
+                                }
+                        }
+
+                        part
+                        {
+                                name: "ball03";
+                                clip_to: "main_clip";
+                                mouse_events: 0;
+                                description
+                                {
+                                        state: "default" 0.0;
+                                        image.normal: "ball_03.png";
+                                        visible: 0;
+                                        color: 255 255 255 0;
+                                }
+                                description
+                                {
+                                        state: "visible" 0.0;
+                                        inherit: "default" 0.0;
+                                        visible: 1;
+                                        color: 255 255 255 255;
+                                }
+                        }
+                        part
+                        {
+                                name: "mouse_catcher";
+                                type: RECT;
+                                mouse_events: 1;
+                                repeat_events: 1;
+                                description
+                                {
+                                        state: "default" 0.0;
+                                        color: 255 255 255 0;
+                                        visible: 1;
+                                }
+                        }
+                }
+
+                programs
+                {
+                        program
+                        {
+                                name: "on_show";
+                                signal: "show";
+                                after: "on_show_2";
+                        }
+                        program
+                        {
+                                name: "on_show_2";
+                                signal: "show";
+                                source: "ball";
+                                action: STATE_SET "visible" 0.0;
+                                transition: DECELERATE 0.15;
+                                target: "main_clip";
+                                after: "start_anim";
+                        }
+                        program
+                        {
+                                name: "on_hide";
+                                signal: "hide";
+                                action: STATE_SET "default" 0.0;
+                                target: "main_clip";
+                                after: "stop_anim";
+                        }
+                        program
+                        {
+                                name: "on_hide_anim";
+                                signal: "hide";
+                                source: "ball";
+                                action: STATE_SET "default" 0.0;
+                                transition: DECELERATE 0.3;
+                                target: "main_clip";
+                                after: "stop_anim";
+                                after: "hide_done";
+                        }
+
+                        program
+                        {
+                                name: "hide_done";
+                                action: SIGNAL_EMIT "hidden" "ball";
+                        }
+
+                        #define ANIM_SPEED 0.1
+                        #define PROG_WAIT_SPEED 0.05
+                        program
+                        {
+                                name: "show_ball01";
+                                action: STATE_SET "visible" 0.0;
+                                transition: DECELERATE ANIM_SPEED;
+                                target: "ball01";
+                        }
+                        program
+                        {
+                                name: "hide_ball01";
+                                action: STATE_SET "default" 0.0;
+                                transition: ACCELERATE ANIM_SPEED;
+                                target: "ball01";
+                        }
+                        program
+                        {
+                                name: "show_ball02";
+                                action: STATE_SET "visible" 0.0;
+                                transition: DECELERATE ANIM_SPEED;
+                                target: "ball02";
+                        }
+                        program
+                        {
+                                name: "hide_ball02";
+                                action: STATE_SET "default" 0.0;
+                                transition: ACCELERATE ANIM_SPEED;
+                                target: "ball02";
+                        }
+                        program
+                        {
+                                name: "show_ball03";
+                                action: STATE_SET "visible" 0.0;
+                                transition: DECELERATE ANIM_SPEED;
+                                target: "ball03";
+                        }
+                        program
+                        {
+                                name: "hide_ball03";
+                                action: STATE_SET "default" 0.0;
+                                transition: ACCELERATE ANIM_SPEED;
+                                target: "ball03";
+                        }
+
+                        program
+                        {
+                                name: "start_anim";
+                                after: "hide_ball02";
+                                after: "hide_ball03";
+                                after: "show_ball01";
+                                after: "anim_loop2";
+                        }
+
+                        program
+                        {
+                                name: "stop_anim";
+                                action: ACTION_STOP;
+                                target: "anim_loop2";
+                                target: "anim_loop3";
+                                target: "anim_loop4";
+                        }
+
+                        program
+                        {
+                                name: "anim_loop2";
+                                in: PROG_WAIT_SPEED 0.1;
+                                after: "hide_ball01";
+                                after: "hide_ball03";
+                                after: "show_ball02";
+                                after: "anim_loop3";
+                        }
+
+                        program
+                        {
+                                name: "anim_loop3";
+                                in: PROG_WAIT_SPEED 0.1;
+                                after: "hide_ball01";
+                                after: "hide_ball02";
+                                after: "show_ball03";
+                                after: "anim_loop4";
+                        }
+
+                        program
+                        {
+                                name: "anim_loop4";
+                                in: PROG_WAIT_SPEED 0.1;
+                                after: "hide_ball02";
+                                after: "hide_ball03";
+                                after: "show_ball01";
+                                after: "anim_loop2";
+                        }
+                }
+        }
+
+        group
+        {
+                name: "main/goal";
+                min: 87 81;
+                max: 87 81;
+
+                data
+                {
+                        //List of points for the physic object
+                        item: "thickness" "7";
+                        item: "points" "8,41 28,50 33,73 50,61 70,66 61,50 76,28 54,33 50,11 36,29";
+                }
+
+                parts
+                {
+                        part
+                        {
+                                name: "main_clip";
+                                type: RECT;
+                                mouse_events: 0;
+                                description
+                                {
+                                        state: "default" 0.0;
+                                        color: 255 255 255 0;
+                                        visible: 0;
+                                }
+                                description
+                                {
+                                        state: "visible" 0.0;
+                                        inherit: "default" 0.0;
+                                        color: 255 255 255 255;
+                                        visible: 1;
+                                }
+                        }
+
+                        part
+                        {
+                                name: "goal01";
+                                clip_to: "main_clip";
+                                mouse_events: 0;
+                                description
+                                {
+                                        state: "default" 0.0;
+                                        image.normal: "goal_01.png";
+                                        visible: 0;
+                                        color: 255 255 255 0;
+                                }
+                                description
+                                {
+                                        state: "visible" 0.0;
+                                        inherit: "default" 0.0;
+                                        visible: 1;
+                                        color: 255 255 255 255;
+                                }
+                        }
+
+                        part
+                        {
+                                name: "goal02";
+                                clip_to: "main_clip";
+                                mouse_events: 0;
+                                description
+                                {
+                                        state: "default" 0.0;
+                                        image.normal: "goal_02.png";
+                                        visible: 0;
+                                        color: 255 255 255 0;
+                                }
+                                description
+                                {
+                                        state: "visible" 0.0;
+                                        inherit: "default" 0.0;
+                                        visible: 1;
+                                        color: 255 255 255 255;
+                                }
+                        }
+
+                        part
+                        {
+                                name: "goal03";
+                                clip_to: "main_clip";
+                                mouse_events: 0;
+                                description
+                                {
+                                        state: "default" 0.0;
+                                        image.normal: "goal_03.png";
+                                        visible: 0;
+                                        color: 255 255 255 0;
+                                }
+                                description
+                                {
+                                        state: "visible" 0.0;
+                                        inherit: "default" 0.0;
+                                        visible: 1;
+                                        color: 255 255 255 255;
+                                }
+                        }
+                        part
+                        {
+                                name: "mouse_catcher";
+                                type: RECT;
+                                mouse_events: 1;
+                                repeat_events: 1;
+                                description
+                                {
+                                        state: "default" 0.0;
+                                        color: 255 255 255 0;
+                                        visible: 1;
+                                }
+                        }
+                }
+
+                programs
+                {
+                        program
+                        {
+                                name: "on_show";
+                                signal: "show";
+                                after: "on_show_2";
+                        }
+                        program
+                        {
+                                name: "on_show_2";
+                                signal: "show";
+                                source: "goal";
+                                action: STATE_SET "visible" 0.0;
+                                transition: DECELERATE 0.15;
+                                target: "main_clip";
+                                after: "start_anim";
+                        }
+                        program
+                        {
+                                name: "on_hide";
+                                signal: "hide";
+                                action: STATE_SET "default" 0.0;
+                                target: "main_clip";
+                                after: "stop_anim";
+                        }
+                        program
+                        {
+                                name: "on_hide_anim";
+                                signal: "hide";
+                                source: "goal";
+                                action: STATE_SET "default" 0.0;
+                                transition: DECELERATE 0.3;
+                                target: "main_clip";
+                                after: "stop_anim";
+                                after: "hide_done";
+                        }
+
+                        program
+                        {
+                                name: "hide_done";
+                                action: SIGNAL_EMIT "hidden" "goal";
+                        }
+
+                        #define ANIM_SPEED 0.1
+                        #define PROG_WAIT_SPEED 0.05
+                        program
+                        {
+                                name: "show_goal01";
+                                action: STATE_SET "visible" 0.0;
+                                transition: DECELERATE ANIM_SPEED;
+                                target: "goal01";
+                        }
+                        program
+                        {
+                                name: "hide_goal01";
+                                action: STATE_SET "default" 0.0;
+                                transition: ACCELERATE ANIM_SPEED;
+                                target: "goal01";
+                        }
+                        program
+                        {
+                                name: "show_goal02";
+                                action: STATE_SET "visible" 0.0;
+                                transition: DECELERATE ANIM_SPEED;
+                                target: "goal02";
+                        }
+                        program
+                        {
+                                name: "hide_goal02";
+                                action: STATE_SET "default" 0.0;
+                                transition: ACCELERATE ANIM_SPEED;
+                                target: "goal02";
+                        }
+                        program
+                        {
+                                name: "show_goal03";
+                                action: STATE_SET "visible" 0.0;
+                                transition: DECELERATE ANIM_SPEED;
+                                target: "goal03";
+                        }
+                        program
+                        {
+                                name: "hide_goal03";
+                                action: STATE_SET "default" 0.0;
+                                transition: ACCELERATE ANIM_SPEED;
+                                target: "goal03";
+                        }
+
+                        program
+                        {
+                                name: "start_anim";
+                                after: "hide_goal02";
+                                after: "hide_goal03";
+                                after: "show_goal01";
+                                after: "anim_loop2";
+                        }
+
+                        program
+                        {
+                                name: "stop_anim";
+                                action: ACTION_STOP;
+                                target: "anim_loop2";
+                                target: "anim_loop3";
+                                target: "anim_loop4";
+                        }
+
+                        program
+                        {
+                                name: "anim_loop2";
+                                in: PROG_WAIT_SPEED 0.1;
+                                after: "hide_goal01";
+                                after: "hide_goal03";
+                                after: "show_goal02";
+                                after: "anim_loop3";
+                        }
+
+                        program
+                        {
+                                name: "anim_loop3";
+                                in: PROG_WAIT_SPEED 0.1;
+                                after: "hide_goal01";
+                                after: "hide_goal02";
+                                after: "show_goal03";
+                                after: "anim_loop4";
+                        }
+
+                        program
+                        {
+                                name: "anim_loop4";
+                                in: PROG_WAIT_SPEED 0.1;
+                                after: "hide_goal02";
+                                after: "hide_goal03";
+                                after: "show_goal01";
+                                after: "anim_loop2";
+                        }
+                }
+        }
+
+        group
+        {
+                name: "dialog/win/rotated";
+
+                parts
+                {
+                        part
+                        {
+                                name: "bg";
+                                mouse_events: 0;
+                                description
+                                {
+                                        state: "default" 0.0;
+                                        image.normal: "editor_bg.png";
+                                }
+                        }
+
+                        part
+                        {
+                                name: "text";
+                                type: TEXT;
+                                mouse_events: 0;
+                                description
+                                {
+                                        state: "default" 0.0;
+                                        color: 162 119 0 255;
+                                        text { text: "Great, you WIN !"; font: "CalaosContentBold"; size: 35; align: 0.5 0.5; }
+                                }
+                        }
+
+                        part
+                        {
+                                name: "button_menu_clip";
+                                mouse_events: 0;
+                                type: RECT;
+                                description
+                                {
+                                        state: "default" 0.0;
+                                        rel1 { relative: 0.0 0.5; offset: 40 -36; }
+                                        rel2 { relative: 0.0 0.5; offset: 109  36; }
+                                }
+                        }
+                        part
+                        {
+                                name: "button_next_clip";
+                                mouse_events: 0;
+                                type: RECT;
+                                description
+                                {
+                                        state: "default" 0.0;
+                                        rel1 { relative: 1.0 0.5; offset: -109 -36; }
+                                        rel2 { relative: 1.0 0.5; offset: -40  36; }
+                                }
+                        }
+
+                        EDITOR_ITEM("menu", "editor_bt_menu.png", "button_menu_clip", 0.0, 0.0, 0.0, 1.0, 1.0, 0, 0, -1, -1)
+                        EDITOR_ITEM("next", "editor_bt_play.png", "button_next_clip", 0.0, 0.0, 0.0, 1.0, 1.0, 0, 0, -1, -1)
+                }
+
+                programs
+                {
+                        program
+                        {
+                                name: "on_show";
+                                signal: "show";
+                                action: SIGNAL_EMIT "show" "item";
+                        }
+                }
+        }
+
+        group
+        {
+                name: "dialog/win";
+
+                parts
+                {
+                        part
+                        {
+                                name: "main_clip";
+                                type: RECT;
+                                mouse_events: 0;
+                                description
+                                {
+                                        state: "default" 0.0;
+                                        color: 255 255 255 255;
+                                        visible: 1;
+                                        rel1 { relative: 0.5 0.0; offset: -584/2 -257-10; }
+                                        rel2 { relative: 0.5 0.0; offset:  584/2 -10; }
+                                        map.on: 1;
+                                        map.perspective_on: 1;
+                                }
+                                description
+                                {
+                                        state: "visible" 0.1;
+                                        inherit: "default" 0.0;
+                                        color: 255 255 255 255;
+                                        visible: 1;
+                                        rel1 { relative: 0.5 0.5; offset: -584/2 -257/2; }
+                                        rel2 { relative: 0.5 0.5; offset:  584/2  257/2; }
+                                        map.rotation.z: 5.0;
+                                }
+                                description
+                                {
+                                        state: "visible" 0.2;
+                                        inherit: "default" 0.0;
+                                        color: 255 255 255 255;
+                                        visible: 1;
+                                        rel1 { relative: 0.5 0.5; offset: -584/2 -257/2-15; }
+                                        rel2 { relative: 0.5 0.5; offset:  584/2  257/2-15; }
+                                        map.rotation.z: -1.0;
+                                }
+                                description
+                                {
+                                        state: "visible" 0.3;
+                                        inherit: "default" 0.0;
+                                        color: 255 255 255 255;
+                                        visible: 1;
+                                        rel1 { relative: 0.5 0.5; offset: -584/2 -257/2; }
+                                        rel2 { relative: 0.5 0.5; offset:  584/2  257/2; }
+                                        map.rotation.z: -5.0;
+                                }
+                                description
+                                {
+                                        state: "visible" 0.4;
+                                        inherit: "default" 0.0;
+                                        color: 255 255 255 255;
+                                        visible: 1;
+                                        rel1 { relative: 0.5 0.5; offset: -584/2 -257/2-7; }
+                                        rel2 { relative: 0.5 0.5; offset:  584/2  257/2-7; }
+                                        map.rotation.z: 1.0;
+                                }
+                                description
+                                {
+                                        state: "visible" 0.5;
+                                        inherit: "default" 0.0;
+                                        color: 255 255 255 255;
+                                        visible: 1;
+                                        rel1 { relative: 0.5 0.5; offset: -584/2 -257/2; }
+                                        rel2 { relative: 0.5 0.5; offset:  584/2  257/2; }
+                                        map.rotation.z: 0.0;
+                                }
+                                description
+                                {
+                                        state: "hide" 0.0;
+                                        inherit: "default" 0.0;
+                                        color: 255 255 255 0;
+                                        visible: 1;
+                                        rel1 { relative: 0.5 0.5; offset: -584/2 -257/2; }
+                                        rel2 { relative: 0.5 0.5; offset:  584/2  257/2; }
+                                        map.rotation.y: 180;
+                                }
+                        }
+
+                        part
+                        {
+                                name: "group";
+                                type: GROUP;
+                                source: "dialog/win/rotated";
+                                clip_to: "main_clip";
+                                description
+                                {
+                                        state: "default" 0.0;
+                                        rel1.to: "main_clip";
+                                        rel2.to: "main_clip";
+                                        map.on: 1;
+                                        map.perspective_on: 1;
+                                        map.backface_cull: 1;
+                                }
+                                description
+                                {
+                                        state: "visible" 0.1;
+                                        inherit: "default" 0.0;
+                                        map.rotation.z: 5.0;
+                                }
+                                description
+                                {
+                                        state: "visible" 0.2;
+                                        inherit: "default" 0.0;
+                                        map.rotation.z: -1.0;
+                                }
+                                description
+                                {
+                                        state: "visible" 0.3;
+                                        inherit: "default" 0.0;
+                                        map.rotation.z: -5.0;
+                                }
+                                description
+                                {
+                                        state: "visible" 0.4;
+                                        inherit: "default" 0.0;
+                                        map.rotation.z: 1.0;
+                                }
+                                description
+                                {
+                                        state: "visible" 0.5;
+                                        inherit: "default" 0.0;
+                                        map.rotation.z: 0.0;
+                                }
+                                description
+                                {
+                                        state: "hide" 0.0;
+                                        inherit: "default" 0.0;
+                                        map.rotation.y: 180;
+                                }
+                        }
+                }
+
+                programs
+                {
+                        program
+                        {
+                                name: "on_show";
+                                signal: "show";
+                                source: "dialog";
+                                action: STATE_SET "visible" 0.1;
+                                transition: ACCELERATE 0.75;
+                                target: "main_clip";
+                                target: "group";
+                                after: "on_show_anim_2";
+                        }
+                        program
+                        {
+                                name: "on_show_anim_2";
+                                action: STATE_SET "visible" 0.2;
+                                transition: DECELERATE 0.15;
+                                target: "main_clip";
+                                target: "group";
+                                after: "on_show_anim_3";
+                        }
+                        program
+                        {
+                                name: "on_show_anim_3";
+                                action: STATE_SET "visible" 0.3;
+                                transition: ACCELERATE 0.15;
+                                target: "main_clip";
+                                target: "group";
+                                after: "on_show_anim_4";
+                        }
+                        program
+                        {
+                                name: "on_show_anim_4";
+                                action: STATE_SET "visible" 0.4;
+                                transition: DECELERATE 0.15;
+                                target: "main_clip";
+                                target: "group";
+                                after: "on_show_anim_5";
+                        }
+                        program
+                        {
+                                name: "on_show_anim_5";
+                                action: STATE_SET "visible" 0.5;
+                                transition: ACCELERATE 0.15;
+                                target: "main_clip";
+                                target: "group";
+                        }
+
+                        program
+                        {
+                                name: "on_hide";
+                                signal: "hide";
+                                source: "dialog";
+                                action: STATE_SET "hide" 0.0;
+                                transition: ACCELERATE 0.7;
+                                target: "main_clip";
+                                target: "group";
+                                after: "on_hide_2";
+                        }
+                        program
+                        {
+                                name: "on_hide_2";
+                                action: STATE_SET "default" 0.0;
+                                target: "main_clip";
+                                target: "group";
+                                after: "on_hidden";
+                        }
+                        program
+                        {
+                                name: "on_hidden";
+                                action: SIGNAL_EMIT "hidden" "dialog";
+                        }
+                }
+
+        }
+
+#define ITEM_TABLE(num) \
+        group \
+        { \
+                name: "dialog/level_list/item/"num; \
+ \
+                parts \
+                { \
+                        part \
+                        { \
+                                name: "main_clip"; \
+                                type: RECT; \
+                                description \
+                                { \
+                                        state: "default" 0.0; \
+                                        color: 255 255 255 0; \
+                                        visible: 0; \
+                                } \
+                                description \
+                                { \
+                                        state: "visible" 0.0; \
+                                        inherit: "default" 0.0; \
+                                        color: 255 255 255 255; \
+                                        visible: 1; \
+                                } \
+                        } \
+ \
+                        part \
+                        { \
+                                name: "load_clip"; \
+                                clip_to: "main_clip"; \
+                                type: RECT; \
+                                description \
+                                { \
+                                        state: "default" 0.0; \
+                                        color: 255 255 255 0; \
+                                        visible: 0; \
+                                } \
+                                description \
+                                { \
+                                        state: "visible" 0.0; \
+                                        inherit: "default" 0.0; \
+                                        color: 255 255 255 255; \
+                                        visible: 1; \
+                                } \
+                        } \
+ \
+                        part \
+                        { \
+                                name: "loading"; \
+                                clip_to: "load_clip"; \
+                                description \
+                                { \
+                                        state: "default" 0.0; \
+                                        image.normal: "load_anim_01.png"; \
+                                        rel1 { relative: 0.5 0.5; offset: -15 -15; } \
+                                        rel2 { relative: 0.5 0.5; offset:  15  15; } \
+                                        map.on: 1; \
+                                } \
+                                description \
+                                { \
+                                        state: "rotate" 0.0; \
+                                        inherit: "default" 0.0; \
+                                        map.rotation.z: 360.0; \
+                                } \
+                        } \
+ \
+                        part \
+                        { \
+                                name: "thumb_clip"; \
+                                clip_to: "main_clip"; \
+                                type: RECT; \
+                                description \
+                                { \
+                                        state: "default" 0.0; \
+                                        color: 255 255 255 0; \
+                                        visible: 0; \
+                                } \
+                                description \
+                                { \
+                                        state: "visible" 0.0; \
+                                        inherit: "default" 0.0; \
+                                        color: 255 255 255 255; \
+                                        visible: 1; \
+                                } \
+                        } \
+                        part \
+                        { \
+                                name: "bg_thumb"; \
+                                clip_to: "main_clip"; \
+                                description \
+                                { \
+                                        state: "default" 0.0; \
+                                        image.normal: "background_02.png"; \
+                                } \
+                        } \
+ \
+                        part \
+                        { \
+                                name: "item.thumb"; \
+                                clip_to: "thumb_clip"; \
+                                type: SWALLOW; \
+                                description \
+                                { \
+                                        state: "default" 0.0; \
+                                        rel1 { relative: 0.0 0.0; offset:  16  16; } \
+                                        rel2 { relative: 1.0 1.0; offset: -16 -16; } \
+                                } \
+                        } \
+ \
+                        part \
+                        { \
+                                name: "mouse_mask"; \
+                                clip_to: "thumb_clip"; \
+                                type: RECT; \
+                                description \
+                                { \
+                                        state: "default" 0.0; \
+                                        color: 0 0 0 0; \
+                                } \
+                        } \
+                } \
+ \
+                programs \
+                { \
+ \
+                        program \
+                        { \
+                                name: "on_show"; \
+                                signal: "show"; \
+                        } \
+ \
+                        program \
+                        { \
+                                name: "item_enable"; \
+                                signal: "enable"; \
+                                source: "item"; \
+                                action: STATE_SET "visible" 0.0; \
+                                transition: DECELERATE 0.5; \
+                                target: "main_clip"; \
+                        } \
+ \
+                        program \
+                        { \
+                                name: "item_disable"; \
+                                signal: "disable"; \
+                                source: "item"; \
+                                action: STATE_SET "default" 0.0; \
+                                transition: DECELERATE 0.5; \
+                                target: "main_clip"; \
+                        } \
+ \
+                        program \
+                        { \
+                                name: "loading"; \
+                                signal: "load,start"; \
+                                source: "item"; \
+                                after: "hide_swallow"; \
+                                after: "start_load_anim"; \
+                                after: "show_loader"; \
+                        } \
+ \
+                        program \
+                        { \
+                                name: "loading_done"; \
+                                signal: "load,done"; \
+                                source: "item"; \
+                                after: "show_swallow"; \
+                                after: "stop_load_anim"; \
+                                after: "hide_loader"; \
+                        } \
+ \
+                        program \
+                        { \
+                                name: "hide_loader"; \
+                                action: STATE_SET "default" 0.0; \
+                                transition: DECELERATE 0.5; \
+                                target: "load_clip"; \
+                        } \
+                        program \
+                        { \
+                                name: "show_loader"; \
+                                action: STATE_SET "visible" 0.0; \
+                                transition: ACCELERATE 0.4; \
+                                target: "load_clip"; \
+                        } \
+ \
+                        program \
+                        { \
+                                name: "start_load_anim"; \
+                                action: STATE_SET "rotate" 0.0; \
+                                transition: LINEAR 1.0; \
+                                target: "loading"; \
+                                after: "load_anim_loop"; \
+                        } \
+                        program \
+                        { \
+                                name: "load_anim_loop"; \
+                                action: STATE_SET "default" 0.0; \
+                                target: "loading"; \
+                                after: "start_load_anim"; \
+                        } \
+ \
+                        program \
+                        { \
+                                name: "stop_load_anim"; \
+                                action: ACTION_STOP; \
+                                target: "start_load_anim"; \
+                                target: "load_anim_loop"; \
+                        } \
+ \
+                        program \
+                        { \
+                                name: "show_swallow"; \
+                                action: STATE_SET "visible" 0.0; \
+                                transition: DECELERATE 0.2; \
+                                target: "thumb_clip"; \
+                        } \
+ \
+                        program \
+                        { \
+                                name: "hide_swallow"; \
+                                action: STATE_SET "default" 0.0; \
+                                transition: DECELERATE 0.2; \
+                                target: "thumb_clip"; \
+                        } \
+ \
+                        program \
+                        { \
+                                name: "click"; \
+                                signal: "mouse,up,1"; \
+                                source: "mouse_mask"; \
+                                action: SIGNAL_EMIT "click,"num "item"; \
+                        } \
+                } \
+        }
+
+        ITEM_TABLE("0")
+        ITEM_TABLE("1")
+        ITEM_TABLE("2")
+        ITEM_TABLE("3")
+        ITEM_TABLE("4")
+        ITEM_TABLE("5")
+        ITEM_TABLE("6")
+        ITEM_TABLE("7")
+
+        #define ADD_ITEM(c,r,num) \
+                item \
+                { \
+                        type: GROUP; \
+                        source: "dialog/level_list/item/"num; \
+                        position: c r; \
+                        min: 176 158; \
+                        padding: 1 1 1 1; \
+                }
+
+        group
+        {
+                name: "dialog/level_list";
+
+                parts
+                {
+                        part
+                        {
+                                name: "mouse_catcher";
+                                type: RECT;
+                                description
+                                {
+                                        state: "default" 0.0;
+                                        color: 0 0 0 0;
+                                        visible: 0;
+                                }
+                                description
+                                {
+                                        state: "visible" 0.0;
+                                        color: 0 0 0 0;
+                                        visible: 1;
+                                }
+                        }
+
+                        part
+                        {
+                                name: "main_clip";
+                                type: RECT;
+                                description
+                                {
+                                        state: "default" 0.0;
+                                        color: 255 255 255 255;
+                                        visible: 1;
+                                }
+                                description
+                                {
+                                        state: "visible" 0.0;
+                                        inherit: "default" 0.0;
+                                        color: 255 255 255 255;
+                                        visible: 1;
+                                }
+                        }
+
+                        part
+                        {
+                                name: "menu_bg";
+                                clip_to: "main_clip";
+                                description
+                                {
+                                        state: "default" 0.0;
+                                        image.normal: "editor_bg.png";
+                                        image.border: 73 60 60 67;
+                                        rel1 { relative: 0.0 0.5; offset:  0 -335; }
+                                        rel2 { relative: 1.0 0.5; offset: -1  335; }
+                                }
+                                description
+                                {
+                                        state: "left" 0.0;
+                                        inherit: "default" 0.0;
+                                        rel1 { relative: 0.0 0.5; offset: -1024 -335; }
+                                        rel2 { relative: 0.0 0.5; offset:    -4  335; }
+                                }
+                                description
+                                {
+                                        state: "right" 0.0;
+                                        inherit: "default" 0.0;
+                                        rel1 { relative: 1.0 0.5; offset:    4 -335; }
+                                        rel2 { relative: 1.0 0.5; offset: 1024  335; }
+                                }
+
+                        }
+
+                        part
+                        {
+                                name: "close_button";
+                                clip_to: "main_clip";
+                                description
+                                {
+                                        state: "default" 0.0;
+                                        image.normal: "bt_close.png";
+                                        rel1 { relative: 1.0 0.0; offset: -76 3; to: "menu_bg"; }
+                                        rel2 { relative: 1.0 0.0; offset: -33 42; to: "menu_bg"; }
+                                }
+                        }
+
+                        part
+                        {
+                                name: "table";
+                                type: TABLE;
+                                clip_to: "main_clip";
+                                description
+                                {
+                                        state: "default" 0.0;
+                                        rel1 { relative: 0.0 0.0; offset:  54   49; to: "menu_bg"; }
+                                        rel2 { relative: 1.0 1.0; offset: -50 -182; to: "menu_bg"; }
+                                        table
+                                        {
+                                                homogeneous: TABLE;
+                                                padding: 7 10;
+                                                align: 0.5 0.5;
+                                        }
+                                }
+                                table.items
+                                {
+                                        ADD_ITEM(0, 0, "0")
+                                        ADD_ITEM(1, 0, "1")
+                                        ADD_ITEM(2, 0, "2")
+                                        ADD_ITEM(3, 0, "3")
+
+                                        ADD_ITEM(0, 1, "4")
+                                        ADD_ITEM(1, 1, "5")
+                                        ADD_ITEM(2, 1, "6")
+                                        ADD_ITEM(3, 1, "7")
+                                }
+                        }
+
+                        part
+                        {
+                                name: "button_previous_clip";
+                                mouse_events: 0;
+                                type: RECT;
+                                description
+                                {
+                                        state: "default" 0.0;
+                                        rel1 { relative: 0.0 1.0; offset: 40 -127; to: "menu_bg"; }
+                                        rel2 { relative: 0.0 1.0; offset: 109 -55; to: "menu_bg"; }
+                                        color: 255 255 255 0;
+                                        visible: 0;
+                                }
+                                description
+                                {
+                                        state: "visible" 0.0;
+                                        inherit: "default" 0.0;
+                                        color: 255 255 255 255;
+                                        visible: 1;
+                                }
+                        }
+                        part
+                        {
+                                name: "button_next_clip";
+                                mouse_events: 0;
+                                type: RECT;
+                                description
+                                {
+                                        state: "default" 0.0;
+                                        rel1 { relative: 1.0 1.0; offset: -109 -127; to: "menu_bg"; }
+                                        rel2 { relative: 1.0 1.0; offset: -40   -55; to: "menu_bg"; }
+                                        color: 255 255 255 0;
+                                        visible: 0;
+                                }
+                                description
+                                {
+                                        state: "visible" 0.0;
+                                        inherit: "default" 0.0;
+                                        color: 255 255 255 255;
+                                        visible: 1;
+                                }
+                        }
+                        part
+                        {
+                                name: "button_save_clip";
+                                mouse_events: 0;
+                                type: RECT;
+                                description
+                                {
+                                        state: "default" 0.0;
+                                        rel1 { relative: 0.5 1.0; offset: -40 -127; to: "menu_bg"; }
+                                        rel2 { relative: 0.5 1.0; offset:  39  -55; to: "menu_bg"; }
+                                        color: 255 255 255 0;
+                                        visible: 0;
+                                }
+                                description
+                                {
+                                        state: "visible" 0.0;
+                                        inherit: "default" 0.0;
+                                        color: 255 255 255 255;
+                                        visible: 1;
+                                }
+                        }
+
+                        EDITOR_ITEM("save", "editor_bt_save_new.png", "button_save_clip", 0.0, 0.0, 0.0, 1.0, 1.0, 0, 0, -1, -1)
+                        EDITOR_ITEM("next", "editor_bt_play.png", "button_next_clip", 0.0, 0.0, 0.0, 1.0, 1.0, 0, 0, -1, -1)
+                        EDITOR_ITEM("previous", "editor_bt_previous.png", "button_previous_clip", 0.0, 0.0, 0.0, 1.0, 1.0, 0, 0, -1, -1)
+                }
+
+                programs
+                {
+                        program
+                        {
+                                name: "on_show";
+                                signal: "show";
+                                action: STATE_SET "right" 0.0;
+                                target: "menu_bg";
+                        }
+                        program
+                        {
+                                name: "on_show2";
+                                signal: "show";
+                                action: SIGNAL_EMIT "show" "item";
+                        }
+
+                        program
+                        {
+                                name: "show_from_left";
+                                signal: "show,left";
+                                source: "dialog";
+                                action: STATE_SET "left" 0.0;
+                                target: "menu_bg";
+                                after: "show_from_left2";
+                                after: "show_catcher";
+                        }
+                        program
+                        {
+                                name: "show_from_left2";
+                                action: STATE_SET "default" 0.0;
+                                transition: ACCELERATE 0.45;
+                                target: "menu_bg";
+                        }
+
+                        program
+                        {
+                                name: "show_from_right";
+                                signal: "show,right";
+                                source: "dialog";
+                                action: STATE_SET "right" 0.0;
+                                target: "menu_bg";
+                                after: "show_from_right2";
+                                after: "show_catcher";
+                        }
+                        program
+                        {
+                                name: "show_from_right2";
+                                action: STATE_SET "default" 0.0;
+                                transition: ACCELERATE 0.45;
+                                target: "menu_bg";
+                        }
+
+                        program
+                        {
+                                name: "hide_to_left";
+                                signal: "hide,left";
+                                source: "dialog";
+                                action: STATE_SET "left" 0.0;
+                                transition: ACCELERATE 0.35;
+                                target: "menu_bg";
+                                after: "hide_to_left_end";
+                                after: "disable_items";
+                                after: "hide_catcher";
+                        }
+                        program
+                        {
+                                name: "hide_to_left_end";
+                                action: SIGNAL_EMIT "left,hidden" "dialog";
+                        }
+                        program
+                        {
+                                name: "hide_to_right";
+                                signal: "hide,right";
+                                source: "dialog";
+                                action: STATE_SET "right" 0.0;
+                                transition: ACCELERATE 0.35;
+                                target: "menu_bg";
+                                after: "hide_to_right_end";
+                                after: "disable_items";
+                                after: "hide_catcher";
+                        }
+                        program
+                        {
+                                name: "hide_to_right_end";
+                                action: SIGNAL_EMIT "right,hidden" "dialog";
+                        }
+
+                        program
+                        {
+                                name: "disable_items";
+                                action: SIGNAL_EMIT "disable" "table:item";
+                        }
+
+                        program
+                        {
+                                name: "close_signal";
+                                signal: "mouse,down,1";
+                                source: "close_button";
+                                action: SIGNAL_EMIT "close" "dialog";
+                        }
+
+                        program
+                        {
+                                name: "show_catcher";
+                                action: STATE_SET "visible" 0.0;
+                                target: "mouse_catcher";
+                        }
+                        program
+                        {
+                                name: "hide_catcher";
+                                action: STATE_SET "default" 0.0;
+                                target: "mouse_catcher";
+                        }
+
+                        program
+                        {
+                                name: "show_previous";
+                                signal: "show,previous";
+                                source: "dialog";
+                                action: STATE_SET "visible" 0.0;
+                                transition: DECELERATE 0.25;
+                                target: "button_previous_clip";
+                        }
+                        program
+                        {
+                                name: "hide_previous";
+                                signal: "hide,previous";
+                                source: "dialog";
+                                action: STATE_SET "default" 0.0;
+                                transition: ACCELERATE 0.15;
+                                target: "button_previous_clip";
+                        }
+
+                        program
+                        {
+                                name: "show_next";
+                                signal: "show,next";
+                                source: "dialog";
+                                action: STATE_SET "visible" 0.0;
+                                transition: DECELERATE 0.25;
+                                target: "button_next_clip";
+                        }
+                        program
+                        {
+                                name: "hide_next";
+                                signal: "hide,next";
+                                source: "dialog";
+                                action: STATE_SET "default" 0.0;
+                                transition: ACCELERATE 0.15;
+                                target: "button_next_clip";
+                        }
+
+                        program
+                        {
+                                name: "show_save";
+                                signal: "show,save";
+                                source: "dialog";
+                                action: STATE_SET "visible" 0.0;
+                                transition: DECELERATE 0.25;
+                                target: "button_save_clip";
+                        }
+                        program
+                        {
+                                name: "hide_save";
+                                signal: "hide,save";
+                                source: "dialog";
+                                action: STATE_SET "default" 0.0;
+                                transition: ACCELERATE 0.15;
+                                target: "button_save_clip";
+                        }
+                }
+        }
+
+}

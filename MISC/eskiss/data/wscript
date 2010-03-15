@@ -1,0 +1,20 @@
+#! /usr/bin/env python
+# -*- coding: utf-8 -*-
+# encoding: utf-8
+# Calaos, 2010
+
+def build(bld):
+
+        bld.install_files('${PREFIX}/share/eskiss/brushes',
+                        ['brush01.png',
+                         'brush02.png',
+                         'brush03.png',
+                         'brush04.png',
+                         'brush05.png',
+                         'ball_01.png',
+                         'goal_01.png'])
+
+        bld.install_files('${PREFIX}/share/eskiss/backgrounds',
+                        ['background_01.jpg',
+                         'background_02.jpg'])
+

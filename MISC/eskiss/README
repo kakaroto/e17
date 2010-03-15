@@ -1,0 +1,50 @@
+Eskiss
+======
+
+Eskiss is a physics game where you can draw some object on the screen,
+and using the physic you need to move a ball from one point to another.
+There is an in game editor where you can create your own levels.
+
+Features
+========
+
+- Awesome physics
+- In-game level editor
+- Fun !
+
+Dependencies
+============
+
+* Eina
+* Eet
+* Evas
+* Ecore
+* Embryo
+* Edje
+* Chipmunk >= 5.0.0
+
+Chipmunk is available here: http://code.google.com/p/chipmunk-physics/
+
+Installation Instructions
+=========================
+
+Eskiss is using waf to build everything. Here's how to use it:
+
+1. Go to the directory containing the sources
+
+2. Configuration
+
+        ./waf configure
+
+3. Build
+
+        ./waf
+
+4. Install
+
+        ./waf install
+
+Now just type "eskiss" in a terminal to start the game.
+
+
+Have fun !

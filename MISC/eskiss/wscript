@@ -1,0 +1,49 @@
+#! /usr/bin/env python
+# -*- coding: utf-8 -*-
+# encoding: utf-8
+# Calaos, 2010
+
+# Using waf 1.4.3
+
+VERSION='0.0.2'
+APPNAME='Eskiss'
+
+srcdir = '.'
+blddir = 'build'
+
+def set_options(opt):
+        opt.tool_options('g++')
+
+def configure(conf):
+        import os
+
+        conf.check_tool('gcc g++')
+
+        conf.check_cfg(atleast_pkgconfig_version='0.0.0')
+        conf.check_cfg(package='eina-0', atleast_version='0.9.9.063', args='--cflags --libs', mandatory=True)
+        conf.check_cfg(package='ecore', atleast_version='0.9.9.063', args='--cflags --libs', mandatory=True)
+        conf.check_cfg(package='evas', atleast_version='0.9.9.063', args='--cflags --libs', mandatory=True)
+        conf.check_cfg(package='edje', atleast_version='0.9.93.063', args='--cflags --libs', mandatory=True)
+        conf.check_cfg(package='ecore-evas', atleast_version='0.9.9.063', args='--cflags --libs', mandatory=True)
+        conf.check_cfg(package='ecore-file', atleast_version='0.9.9.063', args='--cflags --libs', mandatory=True)
+
+
+        conf.check(fragment='''#include <stdlib.h>
+#include <chipmunk/chipmunk.h>
+
+int main() { return 0; }
+
+''', define_name='HAVE_CHIPMUNK', msg='Checking for header chipmunk/chipmunk.h', mandatory=True)
+
+        conf.check(lib='chipmunk', mandatory=True)
+
+        conf.define('PACKAGE_DATA', conf.env['PREFIX'] + '/share/eskiss')
+
+        conf.write_config_header('config.h')
+
+def build(bld):
+        bld.add_subdirs('src/bin')
+        bld.add_subdirs('data')
+        bld.add_subdirs('data/edje')
+        bld.add_subdirs('data/levels')
+
