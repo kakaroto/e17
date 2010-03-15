@@ -118,6 +118,10 @@ extern "C" {
   EAPI bool e_ofono_element_property_get_stringshared(const E_Ofono_Element *element, const char *name, int *type, void *value) EINA_ARG_NONNULL(1, 2, 4) EINA_WARN_UNUSED_RESULT;
   EAPI bool e_ofono_element_property_get(const E_Ofono_Element *element, const char *name, int *type, void *value) EINA_ARG_NONNULL(1, 2, 4) EINA_WARN_UNUSED_RESULT;
 
+  EAPI bool e_ofono_element_is_manager(const E_Ofono_Element *element) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
+  EAPI bool e_ofono_element_is_modem(const E_Ofono_Element *element) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
+  EAPI bool e_ofono_element_is_netreg(const E_Ofono_Element *element) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
+
 #ifdef __cplusplus
 }
 #endif

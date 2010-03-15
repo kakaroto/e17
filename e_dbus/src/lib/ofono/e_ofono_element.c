@@ -2310,3 +2310,30 @@ e_ofono_elements_shutdown(void)
    eina_hash_free(elements);
    elements = NULL;
 }
+
+static inline bool
+_e_ofono_element_is(const E_Ofono_Element *element, const char *interface)
+{
+   return element->interface == interface;
+}
+
+bool
+e_ofono_element_is_manager(const E_Ofono_Element *element)
+{
+   EINA_SAFETY_ON_NULL_RETURN_VAL(element, 0);
+   return _e_ofono_element_is(element, e_ofono_iface_manager);
+}
+
+bool
+e_ofono_element_is_modem(const E_Ofono_Element *element)
+{
+   EINA_SAFETY_ON_NULL_RETURN_VAL(element, 0);
+   return _e_ofono_element_is(element, e_ofono_iface_modem);
+}
+
+bool
+e_ofono_element_is_netreg(const E_Ofono_Element *element)
+{
+   EINA_SAFETY_ON_NULL_RETURN_VAL(element, 0);
+   return _e_ofono_element_is(element, e_ofono_iface_netreg);
+}
