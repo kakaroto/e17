@@ -374,25 +374,19 @@ cdef class State:
             self.max_set(*max)
 
     def aspect_min_get(self):
-        cdef double a
-        a = edje_edit_state_aspect_min_get(self.edje.obj, self.part, self.name)
-        return a
+        return edje_edit_state_aspect_min_get(self.edje.obj, self.part, self.name)
 
     def aspect_min_set(self, double a):
         edje_edit_state_aspect_min_set(self.edje.obj, self.part, self.name, a)
 
     def aspect_max_get(self):
-        cdef double a
-        a = edje_edit_state_aspect_max_get(self.edje.obj, self.part, self.name)
-        return a
+        return edje_edit_state_aspect_max_get(self.edje.obj, self.part, self.name)
 
     def aspect_max_set(self, double a):
         edje_edit_state_aspect_max_set(self.edje.obj, self.part, self.name, a)
 
     def aspect_pref_get(self):
-        cdef char a
-        a = edje_edit_state_aspect_pref_get(self.edje.obj, self.part, self.name)
-        return a
+        return edje_edit_state_aspect_pref_get(self.edje.obj, self.part, self.name)
 
     def aspect_pref_set(self, char a):
         edje_edit_state_aspect_pref_set(self.edje.obj, self.part, self.name, a)
@@ -742,18 +736,10 @@ cdef class State:
             return ret
 
     def tween_add(self, char *img):
-        cdef unsigned char r
-        r = edje_edit_state_tween_add(self.edje.obj, self.part, self.name, img)
-        if r == 0:
-            return False
-        return True
+        return bool(edje_edit_state_tween_add(self.edje.obj, self.part, self.name, img))
 
     def tween_del(self, char *img):
-        cdef unsigned char r
-        r = edje_edit_state_tween_del(self.edje.obj, self.part, self.name, img)
-        if r == 0:
-            return False
-        return True
+        return bool(edje_edit_state_tween_del(self.edje.obj, self.part, self.name, img))
 
     def gradient_type_get(self):
         cdef char *t

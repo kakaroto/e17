@@ -53,9 +53,4 @@ cdef class Group:
             edje_edit_group_max_h_set(self.edje.obj, value)
 
     def rename(self, char *name):
-        cdef unsigned char r
-        r = edje_edit_group_name_set(self.edje.obj, name)
-        if r == 0:
-            return False
-        return True
-
+        return bool(edje_edit_group_name_set(self.edje.obj, name))

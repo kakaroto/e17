@@ -32,18 +32,10 @@ cdef class Part:
         self._name = name
 
     def restack_below(self):
-        cdef unsigned char r
-        r = edje_edit_part_restack_below(self.edje.obj, self.name)
-        if r == 0:
-            return False
-        return True
+        return bool(edje_edit_part_restack_below(self.edje.obj, self.name))
 
     def restack_above(self):
-        cdef unsigned char r
-        r = edje_edit_part_restack_above(self.edje.obj, self.name)
-        if r == 0:
-            return False
-        return True
+        return bool(edje_edit_part_restack_above(self.edje.obj, self.name))
 
     def rename(self, newname):
         cdef unsigned char r
@@ -81,11 +73,7 @@ cdef class Part:
         edje_edit_state_del(self.edje.obj, self.name, sname)
 
     def state_exist(self, char *sname):
-        cdef unsigned char r
-        r = edje_edit_state_exist(self.edje.obj, self.name, sname)
-        if r == 0:
-            return False
-        return True
+        return bool(edje_edit_state_exist(self.edje.obj, self.name, sname))
 
     def state_copy(self, char *sfrom, char *sto):
         return bool(edje_edit_state_copy(self.edje.obj, self.name,

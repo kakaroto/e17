@@ -42,11 +42,7 @@ cdef class Text_Style:
         return Text_Style_Tag(self, name)
 
     def tag_add(self, char *name):
-        cdef unsigned char r
-        r = edje_edit_style_tag_add(self.edje.obj, self.name, name)
-        if r == 0:
-            return False
-        return True
+        return bool(edje_edit_style_tag_add(self.edje.obj, self.name, name))
 
     def tag_del(self, char *name):
         edje_edit_style_tag_del(self.edje.obj, self.name, name)

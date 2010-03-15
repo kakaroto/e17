@@ -30,11 +30,7 @@ cdef class EdjeEdit(edje.c_edje.Edje): # [object PyEdjeEdit, type PyEdjeEdit_Typ
 
     def save(self):
         """@rtype: bool"""
-        cdef int r
-        r = edje_edit_save(self.obj)
-        if r == 0:
-            return False
-        return True
+        return bool(edje_edit_save(self.obj))
 
     def save_all(self):
         """@rtype: bool"""
@@ -52,11 +48,7 @@ cdef class EdjeEdit(edje.c_edje.Edje): # [object PyEdjeEdit, type PyEdjeEdit_Typ
 
     def group_add(self, char *name):
         """@rtype: bool"""
-        cdef unsigned char r
-        r = edje_edit_group_add(self.obj, name)
-        if r == 0:
-            return False
-        return True
+        return bool(edje_edit_group_add(self.obj, name))
 
     def group_del(self, char *name):
         """@rtype: bool"""
@@ -64,11 +56,7 @@ cdef class EdjeEdit(edje.c_edje.Edje): # [object PyEdjeEdit, type PyEdjeEdit_Typ
 
     def group_exist(self, char *name):
         """@rtype: bool"""
-        cdef unsigned char r
-        r = edje_edit_group_exist(self.obj, name)
-        if r == 0:
-            return False
-        return True
+        return bool(edje_edit_group_exist(self.obj, name))
 
     # Data
 
@@ -98,25 +86,13 @@ cdef class EdjeEdit(edje.c_edje.Edje): # [object PyEdjeEdit, type PyEdjeEdit_Typ
         return bool(edje_edit_data_value_set(self.obj, name, value))
 
     def data_add(self, char *name, char *value):
-        cdef unsigned char r
-        r = edje_edit_data_add(self.obj, name, value)
-        if r == 0:
-            return False
-        return True
+        return bool(edje_edit_data_add(self.obj, name, value))
 
     def data_rename(self, char *old, char *new):
-        cdef unsigned char r
-        r = edje_edit_data_name_set(self.obj, old, new)
-        if r == 0:
-            return False
-        return True
+        return bool(edje_edit_data_name_set(self.obj, old, new))
 
     def data_del(self, char *name):
-        cdef unsigned char r
-        r = edje_edit_data_del(self.obj, name)
-        if r == 0:
-            return False
-        return True
+        return bool(edje_edit_data_del(self.obj, name))
 
     def group_data_get(self, char *name):
         cdef char *val
@@ -131,25 +107,13 @@ cdef class EdjeEdit(edje.c_edje.Edje): # [object PyEdjeEdit, type PyEdjeEdit_Typ
         return bool(edje_edit_group_data_value_set(self.obj, name, value))
 
     def group_data_add(self, char *name, char *value):
-        cdef unsigned char r
-        r = edje_edit_group_data_add(self.obj, name, value)
-        if r == 0:
-            return False
-        return True
+        return bool(edje_edit_group_data_add(self.obj, name, value))
 
     def group_data_rename(self, char *old, char *new):
-        cdef unsigned char r
-        r = edje_edit_group_data_name_set(self.obj, old, new)
-        if r == 0:
-            return False
-        return True
+        return bool(edje_edit_group_data_name_set(self.obj, old, new))
 
     def group_data_del(self, char *name):
-        cdef unsigned char r
-        r = edje_edit_group_data_del(self.obj, name)
-        if r == 0:
-            return False
-        return True
+        return bool(edje_edit_group_data_del(self.obj, name))
 
     # Text Style
 
@@ -170,11 +134,7 @@ cdef class EdjeEdit(edje.c_edje.Edje): # [object PyEdjeEdit, type PyEdjeEdit_Typ
         return Text_Style(self, name)
 
     def text_style_add(self, char *name):
-        cdef unsigned char r
-        r = edje_edit_style_add(self.obj, name)
-        if r == 0:
-            return False
-        return True
+        return bool(edje_edit_style_add(self.obj, name))
 
     def text_style_del(self, char *name):
         edje_edit_style_del(self.obj, name)
@@ -199,18 +159,10 @@ cdef class EdjeEdit(edje.c_edje.Edje): # [object PyEdjeEdit, type PyEdjeEdit_Typ
         return Color_Class(self, name)
 
     def color_class_add(self, char *name):
-        cdef unsigned char r
-        r = edje_edit_color_class_add(self.obj, name)
-        if r == 0:
-            return False
-        return True
+        return bool(edje_edit_color_class_add(self.obj, name))
 
     def color_class_del(self, char *name):
-        cdef unsigned char r
-        r = edje_edit_color_class_del(self.obj, name)
-        if r == 0:
-            return False
-        return True
+        return bool(edje_edit_color_class_del(self.obj, name))
 
     # External
     property externals:
@@ -253,29 +205,17 @@ cdef class EdjeEdit(edje.c_edje.Edje): # [object PyEdjeEdit, type PyEdjeEdit_Typ
         return None
 
     def part_add(self, char *name, int type, char *source=""):
-        cdef unsigned char r
         if type != edje.EDJE_PART_TYPE_EXTERNAL:
-            r = edje_edit_part_add(
-                self.obj, name, <edje.c_edje.Edje_Part_Type>type)
+            return bool(edje_edit_part_add(
+                self.obj, name, <edje.c_edje.Edje_Part_Type>type))
         else:
-            r = edje_edit_part_external_add(self.obj, name, source)
-        if r == 0:
-            return False
-        return True
+            return bool(edje_edit_part_external_add(self.obj, name, source))
 
     def part_del(self, char *name):
-        cdef unsigned char r
-        r = edje_edit_part_del(self.obj, name)
-        if r == 0:
-            return False
-        return True
+        return bool(edje_edit_part_del(self.obj, name))
 
     def part_exist(self, char *name):
-        cdef unsigned char r
-        r = edje_edit_part_exist(self.obj, name)
-        if r == 0:
-            return False
-        return True
+        return bool(edje_edit_part_exist(self.obj, name))
 
     property fonts:
         def __get__(self):
@@ -312,11 +252,7 @@ cdef class EdjeEdit(edje.c_edje.Edje): # [object PyEdjeEdit, type PyEdjeEdit_Typ
         return edje_edit_image_id_get(self.obj, image)
 
     def image_add(self, char *image):
-        cdef unsigned char r
-        r = edje_edit_image_add(self.obj, image)
-        if r == 0:
-            return False
-        return True
+        return bool(edje_edit_image_add(self.obj, image))
 
     # Spectrum
 
