@@ -26,7 +26,7 @@ const char *e_ofono_iface_modem = NULL;
 const char *e_ofono_prop_name = NULL;
 const char *e_ofono_prop_powered = NULL;
 const char *e_ofono_prop_interfaces = NULL;
-const char *e_ofono_iface_network_reg = NULL;
+const char *e_ofono_iface_netreg = NULL;
 const char *e_ofono_prop_mode = NULL;
 const char *e_ofono_prop_status = NULL;
 const char *e_ofono_prop_operator = NULL;
@@ -237,8 +237,8 @@ e_ofono_system_init(E_DBus_Connection *edbus_conn)
      e_ofono_prop_powered = eina_stringshare_add("Powered");
    if (e_ofono_prop_interfaces == NULL)
      e_ofono_prop_interfaces = eina_stringshare_add("Interfaces");
-   if (e_ofono_iface_network_reg == NULL)
-     e_ofono_iface_network_reg = eina_stringshare_add("org.ofono.NetworkRegistration");
+   if (e_ofono_iface_netreg == NULL)
+     e_ofono_iface_netreg = eina_stringshare_add("org.ofono.NetworkRegistration");
    if (e_ofono_prop_mode == NULL)
      e_ofono_prop_mode = eina_stringshare_add("Mode");
    if (e_ofono_prop_status == NULL)
@@ -298,7 +298,7 @@ e_ofono_system_shutdown(void)
    _stringshare_del(&e_ofono_prop_name);
    _stringshare_del(&e_ofono_prop_powered);
    _stringshare_del(&e_ofono_prop_interfaces);
-   _stringshare_del(&e_ofono_iface_network_reg);
+   _stringshare_del(&e_ofono_iface_netreg);
    _stringshare_del(&e_ofono_prop_mode);
    _stringshare_del(&e_ofono_prop_status);
    _stringshare_del(&e_ofono_prop_operator);
