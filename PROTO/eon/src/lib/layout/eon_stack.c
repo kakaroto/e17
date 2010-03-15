@@ -79,7 +79,7 @@ static inline void _vmove(Eon_Stack *s, Eon_Paint *prev, Eon_Paint *curr, int *f
 static void _stack_paint_property_get(Ekeko_Object *o, Ekeko_Event *e, void *data)
 {
 	Ekeko_Event_Mutation *em = (Ekeko_Event_Mutation *)e;
-	Eon_Paint *p = (Ekeko_Object *o);
+	//Eon_Paint *p = (Ekeko_Object *o);
 
 	/* if property is margin */
 	/* if property is margin-top */

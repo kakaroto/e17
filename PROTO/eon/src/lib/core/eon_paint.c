@@ -145,7 +145,9 @@ static void _matrix_change(Ekeko_Object *o, Ekeko_Event *e, void *data)
 	m = em->curr->value.pointer_value;
 	enesim_matrix_inverse(m, &prv->inverse);
 }
-
+/*----------------------------------------------------------------------------*
+ *                                  Events                                    *
+ *----------------------------------------------------------------------------*/
 static void _parent_set_cb(Ekeko_Object *o, Ekeko_Event *e, void *data)
 {
 	Ekeko_Event_Mutation *em = (Ekeko_Event_Mutation *)e;
@@ -183,7 +185,17 @@ static void _parent_set_cb(Ekeko_Object *o, Ekeko_Event *e, void *data)
 	/* TODO propagate the change of zindex locally in case the object is not a canvas */
 	/* TODO propagate the change of zindex to the next sibling */
 }
+static void _property_get(const Ekeko_Object *o, Ekeko_Event *e, void *data)
+{
 
+}
+static void _property_set(const Ekeko_Object *o, Ekeko_Event *e, void *data)
+{
+
+}
+/*----------------------------------------------------------------------------*
+ *                           Base Type functions                              *
+ *----------------------------------------------------------------------------*/
 static void _ctor(Ekeko_Object *o)
 {
 	Eon_Paint *p;
@@ -191,19 +203,47 @@ static void _ctor(Ekeko_Object *o)
 
 	p = (Eon_Paint *)o;
 	p->prv = prv = ekeko_type_instance_private_get(eon_paint_type_get(), o);
+	/* add the properties */
+	EON_PAINT_COLOR = ekeko_object_property_add(o, "color",
+			EON_PROPERTY_COLOR);
+	EON_PAINT_ROP = ekeko_object_property_add(o, "rop",
+			EKEKO_PROPERTY_INT);
+	EON_PAINT_MATRIX = ekeko_object_property_add(o, "matrix",
+			EON_PROPERTY_MATRIX);
+	EON_PAINT_COORDSPACE = ekeko_object_property_add(o, "coordspace",
+			EKEKO_PROPERTY_INT);
+	EON_PAINT_MATRIXSPACE = ekeko_object_property_add(o, "matrixspace",
+			EKEKO_PROPERTY_INT);
+	EON_PAINT_STYLE = ekeko_object_property_add(o, "style",
+			EKEKO_PROPERTY_OBJECT);
+	EON_PAINT_VISIBILITY = ekeko_object_property_add(o, "visibility",
+			EKEKO_PROPERTY_BOOL);
 	/* default values */
 	prv->rop = ENESIM_BLEND;
 	prv->color = 0xffffffff;
 	enesim_matrix_identity(&prv->matrix);
 	enesim_matrix_inverse(&prv->matrix, &prv->inverse);
-	ekeko_event_listener_add(o, EKEKO_EVENT_PROP_MODIFY, _paint_change, EINA_FALSE, NULL);
-	ekeko_event_listener_add(o, EKEKO_EVENT_PARENT_SET, _parent_set_cb, EINA_FALSE, NULL);
-	ekeko_event_listener_add(o, EON_PAINT_MATRIX_CHANGED, _matrix_change, EINA_FALSE, NULL);
+	/* events */
+	ekeko_event_listener_add(o, EKEKO_EVENT_VALUE_GET,
+			_property_get, EINA_FALSE, NULL);
+	ekeko_event_listener_add(o, EKEKO_EVENT_VALUE_SET,
+			_property_set, EINA_FALSE, NULL);
+	ekeko_event_listener_add(o, EKEKO_EVENT_PROP_MODIFY,
+			_paint_change, EINA_FALSE, NULL);
+	ekeko_event_listener_add(o, EKEKO_EVENT_PARENT_SET,
+			_parent_set_cb, EINA_FALSE, NULL);
 }
 
-static void _dtor(void *paint)
+static void _dtor(Ekeko_Object *o)
 {
-
+	/* remove the properties */
+	ekeko_object_property_del(o, EON_PAINT_COLOR);
+	ekeko_object_property_del(o, EON_PAINT_ROP);
+	ekeko_object_property_del(o, EON_PAINT_MATRIX);
+	ekeko_object_property_del(o, EON_PAINT_COORDSPACE);
+	ekeko_object_property_del(o, EON_PAINT_MATRIXSPACE);
+	ekeko_object_property_del(o, EON_PAINT_STYLE);
+	ekeko_object_property_del(o, EON_PAINT_VISIBILITY);
 }
 /*============================================================================*
  *                                 Global                                     *
@@ -507,13 +547,13 @@ int eon_paint_changed(Eon_Paint *p)
 /*============================================================================*
  *                                   API                                      *
  *============================================================================*/
-Ekeko_Property_Id EON_PAINT_COLOR;
-Ekeko_Property_Id EON_PAINT_ROP;
-Ekeko_Property_Id EON_PAINT_MATRIX;
-Ekeko_Property_Id EON_PAINT_COORDSPACE;
-Ekeko_Property_Id EON_PAINT_MATRIXSPACE;
-Ekeko_Property_Id EON_PAINT_STYLE;
-Ekeko_Property_Id EON_PAINT_VISIBILITY;
+Ekeko_Property_Id EON_PAINT_COLOR = NULL;
+Ekeko_Property_Id EON_PAINT_ROP = NULL;
+Ekeko_Property_Id EON_PAINT_MATRIX = NULL;
+Ekeko_Property_Id EON_PAINT_COORDSPACE = NULL;
+Ekeko_Property_Id EON_PAINT_MATRIXSPACE = NULL;
+Ekeko_Property_Id EON_PAINT_STYLE = NULL;
+Ekeko_Property_Id EON_PAINT_VISIBILITY = NULL;
 
 /**
  * Gets the type of a paint object
@@ -531,27 +571,6 @@ EAPI Ekeko_Type *eon_paint_type_get(void)
 				sizeof(Eon_Paint_Private),
 				eon_object_type_get(),
 				_ctor, _dtor, NULL);
-		EON_PAINT_COLOR = EKEKO_TYPE_PROP_SINGLE_ADD(type, "color",
-				 EON_PROPERTY_COLOR,
-				OFFSET(Eon_Paint_Private, color));
-		EON_PAINT_ROP = EKEKO_TYPE_PROP_SINGLE_ADD(type, "rop",
-				EKEKO_PROPERTY_INT,
-				OFFSET(Eon_Paint_Private, rop));
-		EON_PAINT_MATRIX = EKEKO_TYPE_PROP_SINGLE_ADD(type, "matrix",
-				EON_PROPERTY_MATRIX,
-				OFFSET(Eon_Paint_Private, matrix));
-		EON_PAINT_COORDSPACE = EKEKO_TYPE_PROP_SINGLE_ADD(type,
-				"coordspace", EKEKO_PROPERTY_INT,
-				OFFSET(Eon_Paint_Private, coordspace));
-		EON_PAINT_MATRIXSPACE = EKEKO_TYPE_PROP_SINGLE_ADD(type,
-				"matrixspace", EKEKO_PROPERTY_INT,
-				OFFSET(Eon_Paint_Private, matrixspace));
-		EON_PAINT_STYLE = EKEKO_TYPE_PROP_SINGLE_ADD(type, "style",
-				EKEKO_PROPERTY_OBJECT,
-				OFFSET(Eon_Paint_Private, style));
-		EON_PAINT_VISIBILITY = EKEKO_TYPE_PROP_SINGLE_ADD(type,
-				"visibility", EKEKO_PROPERTY_BOOL,
-				OFFSET(Eon_Paint_Private, visibility.curr));
 	}
 
 	return type;

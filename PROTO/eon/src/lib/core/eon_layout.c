@@ -266,7 +266,7 @@ static void _document_size_changed(Ekeko_Object *o, Ekeko_Event *e, void *data)
 	Eon_Paint_Square *ps = (Eon_Paint_Square *)data;
 	Eon_Coord x, y, w, h;
 
-	eon_paint_square_coords_get(ps, &x, &y, &w, &h);
+	//eon_paint_square_coords_get(ps, &x, &y, &w, &h);
 	if (x.type == EON_COORD_RELATIVE)
 	{
 		eon_coord_relative_calculate(&x, 0, sz->geom.w, &x.final);
@@ -283,7 +283,7 @@ static void _document_size_changed(Ekeko_Object *o, Ekeko_Event *e, void *data)
 	{
 		eon_coord_length_relative_calculate(&h, sz->geom.h, &h.final);
 	}
-	eon_paint_square_geometry_set(ps, x.final, y.final, w.final, h.final);
+	//eon_paint_square_geometry_set(ps, x.final, y.final, w.final, h.final);
 }
 
 static void _layout_x_change(Ekeko_Object *o, Ekeko_Event *e, void *data)
@@ -400,7 +400,7 @@ static void _parent_set(Ekeko_Object *o, Ekeko_Event *e, void *data)
 	prv = PRIVATE(o);
 	doc = (Eon_Document *)em->related;
 	eon_document_size_get(doc, &w, &h);
-	eon_paint_square_coords_get(ps, &cx, &cy, &cw, &ch);
+	//eon_paint_square_coords_get(ps, &cx, &cy, &cw, &ch);
 	if (cx.type == EON_COORD_RELATIVE)
 	{
 		eon_coord_relative_calculate(&cx, 0, w, &cx.final);
@@ -427,8 +427,8 @@ static void _parent_set(Ekeko_Object *o, Ekeko_Event *e, void *data)
 				EON_DOCUMENT_SIZE_CHANGED,
 				_document_size_changed,
 				EINA_FALSE, o);
-		eon_paint_square_geometry_set(ps, cx.final, cy.final,
-				cw.final, ch.final);
+		//eon_paint_square_geometry_set(ps, cx.final, cy.final,
+		//		cw.final, ch.final);
 	}
 }
 
@@ -443,7 +443,7 @@ static void _parent_unset(Ekeko_Object *o, Ekeko_Event *e, void *data)
 		return;
 
 	prv = PRIVATE(o);
-	eon_paint_square_coords_get(ps, &cx, &cy, &cw, &ch);
+	//eon_paint_square_coords_get(ps, &cx, &cy, &cw, &ch);
 	/* remove any callback relative to the size of the document */
 	if (prv->relative)
 	{
@@ -636,7 +636,7 @@ Ekeko_Type * eon_layout_type_get(void)
 		_dom = eina_log_domain_register("eon_layout", NULL);
 		type = ekeko_type_new(EON_TYPE_LAYOUT, sizeof(Eon_Layout),
 				sizeof(Eon_Layout_Private),
-				eon_paint_square_type_get(),
+				eon_paint_type_get(),
 				_ctor, _dtor, NULL);
 	}
 

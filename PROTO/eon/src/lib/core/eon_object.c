@@ -29,19 +29,43 @@ struct _Eon_Object_Private
 	void *engine_data;
 	int changed;
 };
+/*----------------------------------------------------------------------------*
+ *                                  Events                                    *
+ *----------------------------------------------------------------------------*/
+static void _property_get(const Ekeko_Object *o, Ekeko_Event *e, void *data)
+{
 
-static void _object_ctor(Ekeko_Object *eo)
+}
+static void _property_set(const Ekeko_Object *o, Ekeko_Event *e, void *data)
+{
+
+}
+
+/*----------------------------------------------------------------------------*
+ *                           Base Type functions                              *
+ *----------------------------------------------------------------------------*/
+static void _ctor(Ekeko_Object *eo)
 {
 	Eon_Object *o = (Eon_Object *)eo;
 
 	o->prv = ekeko_type_instance_private_get(eon_object_type_get(), o);
+	/* add the properties */
+	EON_OBJECT_ID = ekeko_object_property_add(o, "id",
+			EKEKO_PROPERTY_STRING);
+	/* events */
+	ekeko_event_listener_add(o, EKEKO_EVENT_VALUE_GET,
+			_property_get, EINA_FALSE, NULL);
+	ekeko_event_listener_add(o, EKEKO_EVENT_VALUE_SET,
+			_property_set, EINA_FALSE, NULL);
 }
 
-static void _object_dtor(Ekeko_Object *eo)
+static void _dtor(Ekeko_Object *o)
 {
 	/* TODO whenever the object is destroyed shall we delete the
 	 * engine data here?
 	 */
+	/* remove the properties */
+	ekeko_object_property_del(o, EON_OBJECT_ID);
 }
 /*============================================================================*
  *                                 Global                                     *
@@ -116,7 +140,7 @@ Eina_Bool eon_object_appendable(Ekeko_Object *parent, Ekeko_Object *child)
 /*============================================================================*
  *                                   API                                      *
  *============================================================================*/
-Ekeko_Property_Id EON_OBJECT_ID;
+Ekeko_Property_Id EON_OBJECT_ID = NULL;
 
 /**
  * Gets the type definition of an object
@@ -130,11 +154,8 @@ EAPI Ekeko_Type * eon_object_type_get(void)
 	{
 		type = ekeko_type_new(EON_TYPE_OBJECT, sizeof(Eon_Object),
 				sizeof(Eon_Object_Private),
-				ekeko_object_type_get(), _object_ctor,
-				_object_dtor, NULL);
-		EON_OBJECT_ID = EKEKO_TYPE_PROP_SINGLE_ADD(type, "id",
-				EKEKO_PROPERTY_STRING,
-				OFFSET(Eon_Object_Private, id));
+				ekeko_object_type_get(), _ctor,
+				_dtor, NULL);
 	}
 	return type;
 }

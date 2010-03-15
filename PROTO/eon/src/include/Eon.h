@@ -75,9 +75,6 @@ EAPI int eon_init(void);
 EAPI void eon_loop(void);
 EAPI int eon_shutdown(void);
 
-/* ekeko compatibility for now */
-typedef const char * Ekeko_Property_Id;
-
 #include "eon_engine.h"
 #include "eon_input.h"
 #include "eon_object.h"

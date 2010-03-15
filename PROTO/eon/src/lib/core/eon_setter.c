@@ -51,6 +51,11 @@ static void _ctor(Ekeko_Object *o)
 
 	s = (Eon_Setter *)o;
 	s->private = prv = ekeko_type_instance_private_get(_type, o);
+	/* add the properties */
+	EON_SETTER_PROPERTY = ekeko_object_property_add(o, "name",
+			EKEKO_PROPERTY_STRING);
+	EON_SETTER_VALUE = ekeko_object_property_add(o, "value",
+			EKEKO_PROPERTY_VALUE);
 	/* default values */
 	s->parent.set = _set;
 	s->parent.unset = _unset;
@@ -58,7 +63,9 @@ static void _ctor(Ekeko_Object *o)
 
 static void _dtor(Ekeko_Object *o)
 {
-
+	/* remove the properties */
+	ekeko_object_property_del(o, EON_SETTER_PROPERTY);
+	ekeko_object_property_del(o, EON_SETTER_VALUE);
 }
 /*============================================================================*
  *                                 Global                                     *
@@ -69,12 +76,6 @@ void eon_setter_init(void)
 			sizeof(Eon_Setter_Private),
 			eon_style_applier_type_get(),
 			_ctor, _dtor, NULL);
-	EON_SETTER_PROPERTY = EKEKO_TYPE_PROP_SINGLE_ADD(_type, "name",
-			EKEKO_PROPERTY_STRING,
-			OFFSET(Eon_Setter_Private, name));
-	EON_SETTER_VALUE = EKEKO_TYPE_PROP_SINGLE_ADD(_type, "value",
-			EKEKO_PROPERTY_VALUE,
-			OFFSET(Eon_Setter_Private, value));
 
 	eon_type_register(_type, EON_TYPE_SETTER);
 }
@@ -86,8 +87,8 @@ void eon_setter_shutdown(void)
 /*============================================================================*
  *                                   API                                      *
  *============================================================================*/
-Ekeko_Property_Id EON_SETTER_PROPERTY;
-Ekeko_Property_Id EON_SETTER_VALUE;
+Ekeko_Property_Id EON_SETTER_PROPERTY = NULL;
+Ekeko_Property_Id EON_SETTER_VALUE = NULL;
 
 Eon_Setter * eon_setter_new(Eon_Document *d)
 {

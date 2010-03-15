@@ -73,31 +73,38 @@ static void _callback_set(Ekeko_Value_Type vtype, Etch_Data_Type *dtype, Eon_Ani
 		*cb = _animation_matrix_callback;
 	}
 }
-
-static void _ctor(void *instance)
+/*----------------------------------------------------------------------------*
+ *                                  Events                                    *
+ *----------------------------------------------------------------------------*/
+/*----------------------------------------------------------------------------*
+ *                           Base Type functions                              *
+ *----------------------------------------------------------------------------*/
+static void _ctor(Ekeko_Object *o)
 {
 	Eon_Animation_Basic *a;
 	Eon_Animation_Basic_Private *prv;
 
-	a = (Eon_Animation_Basic *) instance;
-	a->private = prv = ekeko_type_instance_private_get(eon_animation_matrix_type_get(), instance);
+	a = (Eon_Animation_Basic *)o;
+	a->private = prv = ekeko_type_instance_private_get(eon_animation_matrix_type_get(), o);
+	/* add the properties */
+	EON_ANIMATION_MATRIX_TYPE = ekeko_object_property_add(o, "type", EKEKO_PROPERTY_INT);
 	/* default values */
 	a->parent.callback_set = _callback_set;
 	a->parent.value_set = _value_set;
 }
 
-static void _dtor(void *rect)
+static void _dtor(Ekeko_Object *o)
 {
-
+	/* remove the properties */
+	ekeko_object_property_del(o, EON_ANIMATION_MATRIX_TYPE);
 }
-
 /*============================================================================*
  *                                 Global                                     *
  *============================================================================*/
 /*============================================================================*
  *                                   API                                      *
  *============================================================================*/
-Ekeko_Property_Id EON_ANIMATION_MATRIX_TYPE;
+Ekeko_Property_Id EON_ANIMATION_MATRIX_TYPE = NULL;
 
 EAPI Ekeko_Type *eon_animation_matrix_type_get(void)
 {
@@ -108,7 +115,6 @@ EAPI Ekeko_Type *eon_animation_matrix_type_get(void)
 		type = ekeko_type_new(EON_TYPE_ANIMATION_MATRIX, sizeof(Eon_Animation_Matrix),
 				sizeof(Eon_Animation_Matrix_Private), eon_animation_type_get(),
 				_ctor, _dtor, NULL);
-		EON_ANIMATION_MATRIX_TYPE = EKEKO_TYPE_PROP_SINGLE_ADD(type, "type", EKEKO_PROPERTY_INT, OFFSET(Eon_Animation_Matrix_Private, type));
 	}
 	return type;
 }

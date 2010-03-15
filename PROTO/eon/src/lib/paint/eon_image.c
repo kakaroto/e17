@@ -165,6 +165,11 @@ void eon_image_shutdown(void)
 Ekeko_Property_Id EON_IMAGE_FILE;
 Ekeko_Property_Id EON_IMAGE_LOADED;
 
+/**
+ * Creates a new image
+ * @param[in] d The document to create this image on
+ * @return The newly created image object
+ */
 EAPI Eon_Image * eon_image_new(Eon_Document *d)
 {
 	Eon_Image *i;
@@ -173,7 +178,10 @@ EAPI Eon_Image * eon_image_new(Eon_Document *d)
 
 	return i;
 }
-
+/**
+ * Sets the file path
+ * @param[in] i The image to set the file path on
+ */
 EAPI void eon_image_file_set(Eon_Image *i, const char *file)
 {
 	Ekeko_Value v;
@@ -181,7 +189,11 @@ EAPI void eon_image_file_set(Eon_Image *i, const char *file)
 	ekeko_value_str_from(&v, file);
 	ekeko_object_property_value_set((Ekeko_Object *)i, "file", &v);
 }
-
+/**
+ * Gets the file path of an image
+ * @param[in] i The image to get the file path from
+ * @return The file path of an image
+ */
 EAPI const char * eon_image_file_get(Eon_Image *i)
 {
 	Eon_Image_Private *prv;

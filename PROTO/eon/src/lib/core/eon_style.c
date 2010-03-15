@@ -159,11 +159,11 @@ void eon_style_init(void)
 			sizeof(Eon_Style_Private),
 			ekeko_object_type_get(), _ctor, _dtor,
 			_appendable);
-
+#if 0
 	EON_STYLE_TYPE = EKEKO_TYPE_PROP_SINGLE_ADD(_type, "type",
 			EKEKO_PROPERTY_STRING,
 			OFFSET(Eon_Style_Private, type));
-
+#endif
 	eon_type_register(_type, EON_TYPE_STYLE);
 }
 

@@ -239,8 +239,10 @@ static void _repeat_change(const Ekeko_Object *o, Ekeko_Event *e, void *data)
 	if (prv->anim)
 		etch_animation_repeat_set(prv->anim, em->curr->value.int_value);
 }
-
-static void _child_append_cb(const Ekeko_Object *o, Ekeko_Event *e, void *data)
+/*----------------------------------------------------------------------------*
+ *                                  Events                                    *
+ *----------------------------------------------------------------------------*/
+static void _child_append(Ekeko_Object *o, Ekeko_Event *e, void *data)
 {
 	Ekeko_Event_Mutation *em = (Ekeko_Event_Mutation *)e;
 	Eon_Animation *a = (Eon_Animation *)o;
@@ -250,26 +252,51 @@ static void _child_append_cb(const Ekeko_Object *o, Ekeko_Event *e, void *data)
 		return;
 	_property_animate(a, em->related);
 }
+static void _property_get(Ekeko_Object *o, Ekeko_Event *e, void *data)
+{
 
-static void _ctor(void *instance)
+}
+static void _property_set(Ekeko_Object *o, Ekeko_Event *e, void *data)
+{
+
+}
+/*----------------------------------------------------------------------------*
+ *                           Base Type functions                              *
+ *----------------------------------------------------------------------------*/
+static void _ctor(Ekeko_Object *o)
 {
 	Eon_Animation *a;
 	Eon_Animation_Private *prv;
 
-	a = (Eon_Animation*) instance;
-	a->private = prv = ekeko_type_instance_private_get(eon_animation_type_get(), instance);
+	a = (Eon_Animation *)o;
+	a->private = prv = ekeko_type_instance_private_get(eon_animation_type_get(), o);
+	/* add the properties */
+	EON_ANIMATION_PROPERTY = ekeko_object_property_add(o, "name",
+			EKEKO_PROPERTY_STRING);
+	EON_ANIMATION_REPEAT = ekeko_object_property_add(o, "repeat",
+			EKEKO_PROPERTY_INT);
+	EON_ANIMATION_BEGIN = ekeko_object_property_add(o, "begin",
+			EON_PROPERTY_TRIGGER);
+	EON_ANIMATION_END = ekeko_object_property_add(o, "end",
+			EON_PROPERTY_TRIGGER);
 	/* default values */
 	prv->repeat = 1;
-	ekeko_event_listener_add((Ekeko_Object *)a, EKEKO_EVENT_OBJECT_APPEND, _child_append_cb, EINA_FALSE, NULL);
-	ekeko_event_listener_add((Ekeko_Object *)a, EON_ANIMATION_END_CHANGED, _end_change, EINA_FALSE, NULL);
-	ekeko_event_listener_add((Ekeko_Object *)a, EON_ANIMATION_BEGIN_CHANGED, _begin_change, EINA_FALSE, NULL);
-	ekeko_event_listener_add((Ekeko_Object *)a, EON_ANIMATION_PROPERTY_CHANGED, _prop_change, EINA_FALSE, NULL);
-	ekeko_event_listener_add((Ekeko_Object *)a, EON_ANIMATION_REPEAT_CHANGED, _repeat_change, EINA_FALSE, NULL);
+	/* events */
+	ekeko_event_listener_add(o, EKEKO_EVENT_OBJECT_APPEND,
+			_child_append, EINA_FALSE, NULL);
+	ekeko_event_listener_add(o, EKEKO_EVENT_VALUE_GET,
+			_property_get, EINA_FALSE, NULL);
+	ekeko_event_listener_add(o, EKEKO_EVENT_VALUE_SET,
+			_property_set, EINA_FALSE, NULL);
 }
 
-static void _dtor(void *rect)
+static void _dtor(Ekeko_Object *o)
 {
-
+	/* remove the properties */
+	ekeko_object_property_del(o, EON_ANIMATION_PROPERTY);
+	ekeko_object_property_del(o, EON_ANIMATION_REPEAT);
+	ekeko_object_property_del(o, EON_ANIMATION_BEGIN);
+	ekeko_object_property_del(o, EON_ANIMATION_END);
 }
 
 /*============================================================================*
@@ -302,10 +329,10 @@ Ekeko_Value_Type eon_animation_prop_type_get(Eon_Animation *a)
 /*============================================================================*
  *                                   API                                      *
  *============================================================================*/
-Ekeko_Property_Id EON_ANIMATION_END;
-Ekeko_Property_Id EON_ANIMATION_BEGIN;
-Ekeko_Property_Id EON_ANIMATION_PROPERTY;
-Ekeko_Property_Id EON_ANIMATION_REPEAT;
+Ekeko_Property_Id EON_ANIMATION_END = NULL;
+Ekeko_Property_Id EON_ANIMATION_BEGIN = NULL;
+Ekeko_Property_Id EON_ANIMATION_PROPERTY = NULL;
+Ekeko_Property_Id EON_ANIMATION_REPEAT = NULL;
 
 EAPI Ekeko_Type *eon_animation_type_get(void)
 {
@@ -316,27 +343,32 @@ EAPI Ekeko_Type *eon_animation_type_get(void)
 		type = ekeko_type_new(EON_TYPE_ANIMATION, sizeof(Eon_Animation),
 				sizeof(Eon_Animation_Private), ekeko_object_type_get(),
 				_ctor, _dtor, NULL);
-		EON_ANIMATION_PROPERTY = EKEKO_TYPE_PROP_SINGLE_ADD(type, "name", EKEKO_PROPERTY_STRING, OFFSET(Eon_Animation_Private, name));
-		EON_ANIMATION_REPEAT = EKEKO_TYPE_PROP_SINGLE_ADD(type, "repeat", EKEKO_PROPERTY_INT, OFFSET(Eon_Animation_Private, repeat));
-		EON_ANIMATION_BEGIN = EKEKO_TYPE_PROP_SINGLE_ADD(type, "begin", EON_PROPERTY_TRIGGER, OFFSET(Eon_Animation_Private, begin));
 	}
 
 	return type;
 }
-
+/**
+ * Sets the property the animation will animate
+ * @param[in] a The animation to set the property to
+ * @param[in] prop The property to animate
+ */
 EAPI void eon_animation_property_set(Eon_Animation *a, const char *prop)
 {
 	Ekeko_Value val;
 
 	ekeko_value_str_from(&val, prop);
-	ekeko_object_property_value_set((Ekeko_Object *)a, "name", &val);
+	ekeko_object_property_value_set((Ekeko_Object *)a,
+		EON_ANIMATION_PROPERTY, &val);
 }
 
-/*
- * Whenever the event is triggered the animation should start relative to the begin
- * attribute
+/**
+ * Sets the begin attribute of an animation
+ * @param[in] a The animation to set the begin attribute
+ * @param[in] o The object that will trigger the event
+ * @param[in] event The name of the event that will trigger the start of the animation
  */
-EAPI void eon_animation_begin_set(Eon_Animation *a, Ekeko_Object *o, char *event)
+EAPI void eon_animation_begin_set(Eon_Animation *a, Ekeko_Object *o,
+		char *event)
 {
 	Ekeko_Value val;
 	Eon_Trigger trigger;
@@ -344,9 +376,15 @@ EAPI void eon_animation_begin_set(Eon_Animation *a, Ekeko_Object *o, char *event
 	trigger.event = event;
 	trigger.obj = o;
 	eon_value_trigger_from(&val, &trigger);
-	ekeko_object_property_value_set((Ekeko_Object *)a, "begin", &val);
+	ekeko_object_property_value_set((Ekeko_Object *)a,
+		EON_ANIMATION_BEGIN, &val);
 }
-
+/**
+ * Sets the end attribute of an animation
+ * @param[in] a The animation to set the end attribute
+ * @param[in] o The object that will trigger the event
+ * @param[in] event The name of the event that will trigger the end of the animation
+ */
 EAPI void eon_animation_end_set(Eon_Animation *a, Ekeko_Object *o, const char *event)
 {
 	Ekeko_Value val;
@@ -355,13 +393,20 @@ EAPI void eon_animation_end_set(Eon_Animation *a, Ekeko_Object *o, const char *e
 	trigger.event = (char *)event;
 	trigger.obj = o;
 	eon_value_trigger_from(&val, &trigger);
-	ekeko_object_property_value_set((Ekeko_Object *)a, "end", &val);
+	ekeko_object_property_value_set((Ekeko_Object *)a,
+		EON_ANIMATION_END, &val);
 }
 
+/**
+ * Sets the repeat attribute of an animation
+ * @param[in] a The animation to set the repeat attribute on
+ * @param[in] repeat The number of times the animation will repeat
+ */
 EAPI void eon_animation_repeat_set(Eon_Animation *a, int repeat)
 {
 	Ekeko_Value val;
 
 	ekeko_value_int_from(&val, repeat);
-	ekeko_object_property_value_set((Ekeko_Object *)a, "repeat", &val);
+	ekeko_object_property_value_set((Ekeko_Object *)a,
+		EON_ANIMATION_REPEAT, &val);
 }

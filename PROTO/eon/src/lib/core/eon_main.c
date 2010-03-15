@@ -33,6 +33,7 @@ static int _emage_idler_cb(void *data)
 /* register the common objects */
 static void _objects_init(void)
 {
+#if 0
 	/* layouts */
 	eon_canvas_init();
 	eon_stack_init();
@@ -51,11 +52,13 @@ static void _objects_init(void)
 	/* core */
 	eon_style_init();
 	eon_setter_init();
+#endif
 }
 
 /* unregister the common objects */
 static void _objects_shutdown(void)
 {
+#if 0
 	/* layout */
 	eon_canvas_shutdown();
 	eon_stack_shutdown();
@@ -74,6 +77,7 @@ static void _objects_shutdown(void)
 	/* core */
 	eon_setter_shutdown();
 	eon_style_shutdown();
+#endif
 }
 /*============================================================================*
  *                                 Global                                     *

@@ -109,7 +109,9 @@ static void _calc_change(const Ekeko_Object *o, Ekeko_Event *e, void *data)
 	atype = _calc_to_etch(em->curr->value.int_value);
 	etch_animation_keyframe_type_set(prv->k, atype);
 }
-
+/*----------------------------------------------------------------------------*
+ *                                  Events                                    *
+ *----------------------------------------------------------------------------*/
 static void _child_append_cb(const Ekeko_Object *o, Ekeko_Event *e, void *data)
 {
 	Ekeko_Event_Mutation *em = (Ekeko_Event_Mutation *)e;
@@ -120,35 +122,57 @@ static void _child_append_cb(const Ekeko_Object *o, Ekeko_Event *e, void *data)
 	a = (Eon_Animation *)em->related;
 	prv->anim = eon_animation_etch_animation_get(a);
 }
+static void _property_get(const Ekeko_Object *o, Ekeko_Event *e, void *data)
+{
 
-static void _ctor(void *instance)
+}
+static void _property_set(const Ekeko_Object *o, Ekeko_Event *e, void *data)
+{
+
+}
+/*----------------------------------------------------------------------------*
+ *                           Base Type functions                              *
+ *----------------------------------------------------------------------------*/
+static void _ctor(Ekeko_Object *o)
 {
 	Eon_Animation_Key *k;
 	Eon_Animation_Key_Private *prv;
 
-	k = (Eon_Animation*) instance;
-	k->private = prv = ekeko_type_instance_private_get(eon_animation_key_type_get(), instance);
-	ekeko_event_listener_add((Ekeko_Object *)k, EKEKO_EVENT_OBJECT_APPEND, _child_append_cb, EINA_FALSE, NULL);
-	ekeko_event_listener_add((Ekeko_Object *)k, EON_ANIMATION_KEY_START_CHANGED, _start_change, EINA_FALSE, NULL);
-	ekeko_event_listener_add((Ekeko_Object *)k, EON_ANIMATION_KEY_VALUE_CHANGED, _value_change, EINA_FALSE, NULL);
-	ekeko_event_listener_add((Ekeko_Object *)k, EON_ANIMATION_KEY_CALC_CHANGED, _calc_change, EINA_FALSE, NULL);
+	k = (Eon_Animation *)o;
+	k->private = prv = ekeko_type_instance_private_get(eon_animation_key_type_get(), o);
+	/* add the properties */
+	EON_ANIMATION_KEY_START = ekeko_object_property_add(o, "start", EON_PROPERTY_CLOCK);
+	EON_ANIMATION_KEY_CALC = ekeko_object_property_add(o, "calc", EKEKO_PROPERTY_INT);
+	EON_ANIMATION_KEY_VALUE = ekeko_object_property_add(o, "value", EKEKO_PROPERTY_VALUE);
+	/* events */
+	ekeko_event_listener_add(o, EKEKO_EVENT_OBJECT_APPEND,
+			_child_append_cb, EINA_FALSE, NULL);
+	ekeko_event_listener_add(o, EKEKO_EVENT_VALUE_GET,
+			_property_get, EINA_FALSE, NULL);
+	ekeko_event_listener_add(o, EKEKO_EVENT_VALUE_SET,
+			_property_set, EINA_FALSE, NULL);
 }
 
-static void _dtor(void *rect)
+static void _dtor(Ekeko_Object *o)
 {
-
+	/* remove the properties */
+	ekeko_object_property_del(o, EON_ANIMATION_KEY_START);
+	ekeko_object_property_del(o, EON_ANIMATION_KEY_CALC);
+	ekeko_object_property_del(o, EON_ANIMATION_KEY_VALUE);
 }
-
 /*============================================================================*
  *                                 Global                                     *
  *============================================================================*/
 /*============================================================================*
  *                                   API                                      *
  *============================================================================*/
-Ekeko_Property_Id EON_ANIMATION_KEY_START;
-Ekeko_Property_Id EON_ANIMATION_KEY_VALUE;
-Ekeko_Property_Id EON_ANIMATION_KEY_CALC;
+Ekeko_Property_Id EON_ANIMATION_KEY_START = NULL;
+Ekeko_Property_Id EON_ANIMATION_KEY_VALUE = NULL;
+Ekeko_Property_Id EON_ANIMATION_KEY_CALC = NULL;
 
+/**
+ *
+ */
 EAPI Ekeko_Type *eon_animation_key_type_get(void)
 {
 	static Ekeko_Type *type = NULL;
@@ -158,14 +182,13 @@ EAPI Ekeko_Type *eon_animation_key_type_get(void)
 		type = ekeko_type_new(EON_TYPE_ANIMATION_KEY, sizeof(Eon_Animation_Key),
 				sizeof(Eon_Animation_Key_Private), ekeko_object_type_get(),
 				_ctor, _dtor, NULL);
-		EON_ANIMATION_KEY_START = EKEKO_TYPE_PROP_SINGLE_ADD(type, "start", EON_PROPERTY_CLOCK, OFFSET(Eon_Animation_Key_Private, start));
-		EON_ANIMATION_KEY_CALC = EKEKO_TYPE_PROP_SINGLE_ADD(type, "calc", EKEKO_PROPERTY_INT, OFFSET(Eon_Animation_Key_Private, calc));
-		EON_ANIMATION_KEY_VALUE = EKEKO_TYPE_PROP_SINGLE_ADD(type, "value", EKEKO_PROPERTY_VALUE, OFFSET(Eon_Animation_Key_Private, value));
 	}
 
 	return type;
 }
-
+/**
+ *
+ */
 EAPI Eon_Animation_Key * eon_animation_key_new(Eon_Animation *a)
 {
 	Eon_Animation_Key *k;
@@ -174,13 +197,16 @@ EAPI Eon_Animation_Key * eon_animation_key_new(Eon_Animation *a)
 	ekeko_object_child_append((Ekeko_Object *)a, (Ekeko_Object *)k);
 	return k;
 }
-
-
+/**
+ *
+ */
 EAPI void eon_animation_key_value_set(Eon_Animation_Key *a, Ekeko_Value *from)
 {
 	ekeko_object_property_value_set((Ekeko_Object *)a, "value", from);
 }
-
+/**
+ *
+ */
 EAPI void eon_animation_key_start_set(Eon_Animation_Key *a, Eon_Clock *dur)
 {
 	Ekeko_Value val;
@@ -188,7 +214,9 @@ EAPI void eon_animation_key_start_set(Eon_Animation_Key *a, Eon_Clock *dur)
 	eon_value_clock_from(&val, dur);
 	ekeko_object_property_value_set((Ekeko_Object *)a, "start", &val);
 }
-
+/**
+ *
+ */
 EAPI void eon_animation_key_calc_set(Eon_Animation_Key *a, Eon_Calc calc)
 {
 	Ekeko_Value val;

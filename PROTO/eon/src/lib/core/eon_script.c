@@ -54,18 +54,38 @@ static void _file_change(const Ekeko_Object *o, Ekeko_Event *e, void *data)
 	}
 	eon_document_script_load(p, em->curr->value.string_value);
 }
+/*----------------------------------------------------------------------------*
+ *                                  Events                                    *
+ *----------------------------------------------------------------------------*/
+static void _property_get(Ekeko_Object *o, Ekeko_Event *e, void *data)
+{
 
-static void _ctor(void *instance)
+}
+static void _property_set(Ekeko_Object *o, Ekeko_Event *e, void *data)
+{
+
+}
+/*----------------------------------------------------------------------------*
+ *                           Base Type functions                              *
+ *----------------------------------------------------------------------------*/
+static void _ctor(Ekeko_Object *o)
 {
 	Eon_Script *e;
 	Eon_Script_Private *prv;
 
-	e = (Eon_Script *) instance;
-	e->prv = prv = ekeko_type_instance_private_get(eon_script_type_get(), instance);
-	ekeko_event_listener_add((Ekeko_Object *)e, EON_SCRIPT_FILE_CHANGED, _file_change, EINA_FALSE, NULL);
+	e = (Eon_Script *)o;
+	e->prv = prv = ekeko_type_instance_private_get(eon_script_type_get(), o);
+	/* add the properties */
+	EON_SCRIPT_FILE = ekeko_object_property_add(o, "file",
+			EKEKO_PROPERTY_STRING);
+	/* events */
+	ekeko_event_listener_add(o, EKEKO_EVENT_VALUE_GET,
+			_property_get, EINA_FALSE, NULL);
+	ekeko_event_listener_add(o, EKEKO_EVENT_VALUE_SET,
+			_property_set, EINA_FALSE, NULL);
 }
 
-static void _dtor(void *instance)
+static void _dtor(Ekeko_Object *o)
 {
 
 }
@@ -98,7 +118,7 @@ Eon_Script_Module * eon_script_get(const char *type)
 /*============================================================================*
  *                                   API                                      *
  *============================================================================*/
-Ekeko_Property_Id EON_SCRIPT_FILE;
+Ekeko_Property_Id EON_SCRIPT_FILE = NULL;
 
 EAPI Ekeko_Type *eon_script_type_get(void)
 {
@@ -109,7 +129,6 @@ EAPI Ekeko_Type *eon_script_type_get(void)
 		type = ekeko_type_new(EON_TYPE_SCRIPT, sizeof(Eon_Script),
 				sizeof(Eon_Script_Private), ekeko_object_type_get(),
 				_ctor, _dtor, NULL);
-		EON_SCRIPT_FILE = EKEKO_TYPE_PROP_SINGLE_ADD(type, "file", EKEKO_PROPERTY_STRING, OFFSET(Eon_Script_Private, file));
 	}
 	return type;
 }
