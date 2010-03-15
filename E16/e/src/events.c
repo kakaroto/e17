@@ -384,6 +384,12 @@ ModeGetXY(int rx, int ry)
    /* Mode.wm.win_x/y should always be 0 if not in window mode */
    Mode.events.cx = rx - Mode.wm.win_x;
    Mode.events.cy = ry - Mode.wm.win_y;
+   if (Mode.wm.window)
+     {
+	if (rx < Mode.wm.win_x || rx >= Mode.wm.win_x + Mode.wm.win_w ||
+	    ry < Mode.wm.win_y || ry >= Mode.wm.win_y + Mode.wm.win_h)
+	   Mode.events.on_screen = 0;
+     }
 }
 
 static void
