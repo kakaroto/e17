@@ -676,8 +676,12 @@ cdef class State:
         edje_edit_string_free(img)
         return r
 
-    def image_set(self, char *image):
-        edje_edit_state_image_set(self.edje.obj, self.part, self.name, image)
+    def image_set(self, image):
+        if not image:
+            return
+
+        edje_edit_state_image_set(
+                self.edje.obj, self.part, self.name, image)
 
     property image:
         def __get__(self):
