@@ -35,8 +35,8 @@ extern "C" {
 #endif
 
   /* Ecore Events */
-  extern int E_OFONO_EVENT_ELEMENT_IN;
-  extern int E_OFONO_EVENT_ELEMENT_OUT;
+  extern int E_OFONO_EVENT_MANAGER_IN;
+  extern int E_OFONO_EVENT_MANAGER_OUT;
   extern int E_OFONO_EVENT_ELEMENT_ADD;
   extern int E_OFONO_EVENT_ELEMENT_DEL;
   extern int E_OFONO_EVENT_ELEMENT_UPDATED;
