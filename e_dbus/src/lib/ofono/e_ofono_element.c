@@ -43,7 +43,7 @@ struct _E_Ofono_Element_Property
    const char *name;
    int type;
    union {
-      bool boolean;
+      Eina_Bool boolean;
       const char *str;
       unsigned short u16;
       unsigned int u32;
@@ -59,7 +59,7 @@ struct _E_Ofono_Element_Dict_Entry
    const char *name;
    int type;
    union {
-      bool boolean;
+      Eina_Bool boolean;
       const char *str;
       unsigned short u16;
       unsigned int u32;
@@ -318,7 +318,7 @@ _e_ofono_element_dict_entry_new(DBusMessageIter *itr)
    switch (t)
      {
       case DBUS_TYPE_BOOLEAN:
-	 entry->value.boolean = (bool)(long)value;
+	 entry->value.boolean = (Eina_Bool)(long)value;
 	 break;
       case DBUS_TYPE_BYTE:
 	 entry->value.byte = (unsigned char)(long)value;
@@ -479,7 +479,7 @@ _e_ofono_element_array_match(E_Ofono_Array *old, E_Ofono_Array *new, const char 
    void *item_old, *item_new;
    Eina_List *l;
    void *data;
-   bool interfaces = 0;
+   Eina_Bool interfaces = 0;
 
    if (!old)
      return;
@@ -523,7 +523,7 @@ _e_ofono_element_array_match(E_Ofono_Array *old, E_Ofono_Array *new, const char 
 
    for(; i_new < eina_array_count_get(new->array); iter_new++, i_new++)
      {
-	bool found = 0;
+	Eina_Bool found = 0;
 	item_new = *iter_new;
 	if (!item_new)
 	  break;
@@ -592,7 +592,7 @@ _e_ofono_element_array_match(E_Ofono_Array *old, E_Ofono_Array *new, const char 
      }
 }
 
-static bool
+static Eina_Bool
 _e_ofono_element_property_update(E_Ofono_Element_Property *property, int type, void *data, E_Ofono_Element *element)
 {
    int changed = 0;
@@ -614,9 +614,9 @@ _e_ofono_element_property_update(E_Ofono_Element_Property *property, int type, v
    switch (type)
      {
       case DBUS_TYPE_BOOLEAN:
-	 if (changed || property->value.boolean != (bool)(long)data)
+	 if (changed || property->value.boolean != (Eina_Bool)(long)data)
 	   {
-	      property->value.boolean = (bool)(long)data;
+	      property->value.boolean = (Eina_Bool)(long)data;
 	      changed = 1;
 	   }
 	 break;
@@ -756,7 +756,7 @@ e_ofono_element_bytes_array_get_stringshared(const E_Ofono_Element *element, con
    return ret;
 }
 
-bool
+Eina_Bool
 e_ofono_element_objects_array_get_stringshared(const E_Ofono_Element *element, const char *property, unsigned int *count, E_Ofono_Element ***elements)
 {
    E_Ofono_Element **ret, **p;
@@ -818,7 +818,7 @@ e_ofono_element_objects_array_get_stringshared(const E_Ofono_Element *element, c
 }
 
 /* strings are just pointers (references), no strdup or stringshare_add/ref */
-bool
+Eina_Bool
 e_ofono_element_strings_array_get_stringshared(const E_Ofono_Element *element, const char *property, unsigned int *count, const char ***strings)
 {
    const char **ret, **p;
@@ -1098,9 +1098,9 @@ e_ofono_element_unref(E_Ofono_Element *element)
  * If this call fails (returns 0), pending callbacks will not be called,
  * not even with error messages.
  *
- * @return 1 on success, 0 on failure.
+ * @return @c EINA_TRUE on success, @c EINA_FALSE otherwise.
  */
-bool
+Eina_Bool
 e_ofono_element_message_send(E_Ofono_Element *element, const char *method_name, const char *interface, E_DBus_Method_Return_Cb cb, DBusMessage *msg, Eina_Inlist **pending, E_DBus_Method_Return_Cb user_cb, const void *user_data)
 {
    E_Ofono_Element_Call_Data *data;
@@ -1159,7 +1159,7 @@ e_ofono_element_message_send(E_Ofono_Element *element, const char *method_name, 
      }
 }
 
-bool
+Eina_Bool
 e_ofono_element_call_full(E_Ofono_Element *element, const char *method_name, const char *interface, E_DBus_Method_Return_Cb cb, Eina_Inlist **pending, E_DBus_Method_Return_Cb user_cb, const void *user_data)
 {
    DBusMessage *msg;
@@ -1178,7 +1178,7 @@ e_ofono_element_call_full(E_Ofono_Element *element, const char *method_name, con
      (element, method_name, interface, cb, msg, pending, user_cb, user_data);
 }
 
-static bool
+static Eina_Bool
 _e_ofono_element_property_value_add(E_Ofono_Element *element, const char *name, int type, void *value)
 {
    E_Ofono_Element_Property *p;
@@ -1377,9 +1377,9 @@ _e_ofono_element_get_properties_callback(void *user_data, DBusMessage *msg, DBus
  * @param cb function to call when server replies or some error happens.
  * @param data data to give to cb when it is called.
  *
- * @return 1 on success, 0 otherwise.
+ * @return @c EINA_TRUE on success, @c EINA_FALSE otherwise.
  */
-bool
+Eina_Bool
 e_ofono_element_sync_properties_full(E_Ofono_Element *element, E_DBus_Method_Return_Cb cb, const void *data)
 {
    const char name[] = "GetProperties";
@@ -1400,9 +1400,9 @@ e_ofono_element_sync_properties_full(E_Ofono_Element *element, E_DBus_Method_Ret
  *
  * @param element to call method on server.
  *
- * @return 1 on success, 0 otherwise.
+ * @return @c EINA_TRUE on success, @c EINA_FALSE otherwise.
  */
-bool
+Eina_Bool
 e_ofono_element_properties_sync(E_Ofono_Element *element)
 {
    EINA_SAFETY_ON_NULL_RETURN_VAL(element, 0);
@@ -1425,9 +1425,9 @@ e_ofono_element_properties_sync(E_Ofono_Element *element)
  * @param cb function to call when server replies or some error happens.
  * @param data data to give to cb when it is called.
  *
- * @return 1 on success, 0 otherwise.
+ * @return @c EINA_TRUE on success, @c EINA_FALSE otherwise.
  */
-bool
+Eina_Bool
 e_ofono_element_property_dict_set_full(E_Ofono_Element *element, const char *prop, const char *key, int type, const void *value, E_DBus_Method_Return_Cb cb, const void *data)
 {
    const char name[] = "SetProperty";
@@ -1502,9 +1502,9 @@ e_ofono_element_property_dict_set_full(E_Ofono_Element *element, const char *pro
  * @param cb function to call when server replies or some error happens.
  * @param data data to give to cb when it is called.
  *
- * @return 1 on success, 0 otherwise.
+ * @return @c EINA_TRUE on success, @c EINA_FALSE otherwise.
  */
-bool
+Eina_Bool
 e_ofono_element_property_set_full(E_Ofono_Element *element, const char *prop, int type, const void *value, E_DBus_Method_Return_Cb cb, const void *data)
 {
    const char name[] = "SetProperty";
@@ -1531,7 +1531,7 @@ e_ofono_element_property_set_full(E_Ofono_Element *element, const char *prop, in
      dbus_message_iter_append_basic(&v, type, &value);
    else if (type == DBUS_TYPE_BOOLEAN)
      {
-	unsigned int b = *(char *)value;
+	unsigned int b = *(Eina_Bool *)value;
 	dbus_message_iter_append_basic(&v, type, &b);
      }
    else
@@ -1555,9 +1555,9 @@ e_ofono_element_property_set_full(E_Ofono_Element *element, const char *prop, in
  * @param value pointer to value, just like regular DBus, see
  *        dbus_message_iter_append_basic().
  *
- * @return 1 on success, 0 otherwise.
+ * @return @c EINA_TRUE on success, @c EINA_FALSE otherwise.
  */
-bool
+Eina_Bool
 e_ofono_element_property_set(E_Ofono_Element *element, const char *prop, int type, const void *value)
 {
    EINA_SAFETY_ON_NULL_RETURN_VAL(element, 0);
@@ -1566,7 +1566,7 @@ e_ofono_element_property_set(E_Ofono_Element *element, const char *prop, int typ
      (element, prop, type, value, NULL, NULL);
 }
 
-bool
+Eina_Bool
 e_ofono_element_call_with_path(E_Ofono_Element *element, const char *method_name, const char *string, E_DBus_Method_Return_Cb cb, Eina_Inlist **pending, E_DBus_Method_Return_Cb user_cb, const void *user_data)
 {
    DBusMessageIter itr;
@@ -1591,7 +1591,7 @@ e_ofono_element_call_with_path(E_Ofono_Element *element, const char *method_name
      (element, method_name, NULL, cb, msg, pending, user_cb, user_data);
 }
 
-bool
+Eina_Bool
 e_ofono_element_call_with_string(E_Ofono_Element *element, const char *method_name, const char *string, E_DBus_Method_Return_Cb cb, Eina_Inlist **pending, E_DBus_Method_Return_Cb user_cb, const void *user_data)
 {
    DBusMessageIter itr;
@@ -1616,7 +1616,7 @@ e_ofono_element_call_with_string(E_Ofono_Element *element, const char *method_na
      (element, method_name, NULL, cb, msg, pending, user_cb, user_data);
 }
 
-bool
+Eina_Bool
 e_ofono_element_call_with_path_and_string(E_Ofono_Element *element, const char *method_name, const char *path, const char *string, E_DBus_Method_Return_Cb cb, Eina_Inlist **pending, E_DBus_Method_Return_Cb user_cb, const void *user_data)
 {
    DBusMessageIter itr;
@@ -1653,9 +1653,9 @@ e_ofono_element_call_with_path_and_string(E_Ofono_Element *element, const char *
  * @param name property name, must be previously stringshared
  * @param type will contain the value type.
  *
- * @return 1 on success, 0 otherwise.
+ * @return @c EINA_TRUE on success, @c EINA_FALSE otherwise.
  */
-bool
+Eina_Bool
 e_ofono_element_property_type_get_stringshared(const E_Ofono_Element *element, const char *name, int *type)
 {
    const E_Ofono_Element_Property *p;
@@ -1688,12 +1688,12 @@ e_ofono_element_property_type_get_stringshared(const E_Ofono_Element *element, c
  * @param name property name
  * @param type will contain the value type.
  *
- * @return 1 on success, 0 otherwise.
+ * @return @c EINA_TRUE on success, @c EINA_FALSE otherwise.
  */
-bool
+Eina_Bool
 e_ofono_element_property_type_get(const E_Ofono_Element *element, const char *name, int *type)
 {
-   bool ret;
+   Eina_Bool ret;
    name = eina_stringshare_add(name);
    ret = e_ofono_element_property_type_get_stringshared(element, name, type);
    eina_stringshare_del(name);
@@ -1701,7 +1701,7 @@ e_ofono_element_property_type_get(const E_Ofono_Element *element, const char *na
 }
 
 void
-e_ofono_element_list_properties(const E_Ofono_Element *element, bool (*cb)(void *data, const E_Ofono_Element *element, const char *name, int type, const void *value), const void *data)
+e_ofono_element_list_properties(const E_Ofono_Element *element, Eina_Bool (*cb)(void *data, const E_Ofono_Element *element, const char *name, int type, const void *value), const void *data)
 {
    const E_Ofono_Element_Property *p;
 
@@ -1721,7 +1721,7 @@ e_ofono_element_list_properties(const E_Ofono_Element *element, bool (*cb)(void 
 	      value = &p->value.path;
 	      break;
 	   case DBUS_TYPE_BOOLEAN:
-	      value = (void *)p->value.boolean;
+	      value = (void *)(unsigned long)p->value.boolean;
 	      break;
 	   case DBUS_TYPE_UINT16:
 	      value = &p->value.u16;
@@ -1753,11 +1753,11 @@ e_ofono_element_list_properties(const E_Ofono_Element *element, bool (*cb)(void 
  * @param key key inside dict, must be previously stringshared
  * @param type if provided it will contain the value type.
  * @param value where to store the property value, must be a pointer to the
- *        exact type, (bool *) for booleans, (char **) for strings, and so on.
+ *        exact type, (Eina_Bool *) for booleans, (char **) for strings, and so on.
  *
- * @return 1 on success, 0 otherwise.
+ * @return @c EINA_TRUE on success, @c EINA_FALSE otherwise.
  */
-bool
+Eina_Bool
 e_ofono_element_property_dict_get_stringshared(const E_Ofono_Element *element, const char *dict_name, const char *key, int *type, void *value)
 {
    const E_Ofono_Element_Property *p;
@@ -1802,7 +1802,7 @@ e_ofono_element_property_dict_get_stringshared(const E_Ofono_Element *element, c
 	switch (entry->type)
 	  {
 	   case DBUS_TYPE_BOOLEAN:
-	      *(bool *)value = entry->value.boolean;
+	      *(Eina_Bool *)value = entry->value.boolean;
 	      return 1;
 	   case DBUS_TYPE_BYTE:
 	      *(unsigned char *)value = entry->value.byte;
@@ -1844,11 +1844,11 @@ e_ofono_element_property_dict_get_stringshared(const E_Ofono_Element *element, c
  * @param name property name, must be previously stringshared
  * @param type if provided it will contain the value type.
  * @param value where to store the property value, must be a pointer to the
- *        exact type, (bool *) for booleans, (char **) for strings, and so on.
+ *        exact type, (Eina_Bool *) for booleans, (char **) for strings, and so on.
  *
- * @return 1 on success, 0 otherwise.
+ * @return @c EINA_TRUE on success, @c EINA_FALSE otherwise.
  */
-bool
+Eina_Bool
 e_ofono_element_property_get_stringshared(const E_Ofono_Element *element, const char *name, int *type, void *value)
 {
    const E_Ofono_Element_Property *p;
@@ -1867,7 +1867,7 @@ e_ofono_element_property_get_stringshared(const E_Ofono_Element *element, const 
 	switch (p->type)
 	  {
 	   case DBUS_TYPE_BOOLEAN:
-	      *(bool *)value = p->value.boolean;
+	      *(Eina_Bool *)value = p->value.boolean;
 	      return 1;
 	   case DBUS_TYPE_BYTE:
 	      *(unsigned char *)value = p->value.byte;
@@ -1912,14 +1912,14 @@ e_ofono_element_property_get_stringshared(const E_Ofono_Element *element, const 
  * @param name property name
  * @param type if provided it will contain the value type.
  * @param value where to store the property value, must be a pointer to the
- *        exact type, (bool *) for booleans, (char **) for strings, and so on.
+ *        exact type, (Eina_Bool *) for booleans, (char **) for strings, and so on.
  *
- * @return 1 on success, 0 otherwise.
+ * @return @c EINA_TRUE on success, @c EINA_FALSE otherwise.
  */
-bool
+Eina_Bool
 e_ofono_element_property_get(const E_Ofono_Element *element, const char *name, int *type, void *value)
 {
-   bool ret;
+   Eina_Bool ret;
    name = eina_stringshare_add(name);
    ret = e_ofono_element_property_get_stringshared
      (element, name, type, value);
@@ -1961,7 +1961,7 @@ e_ofono_elements_for_each(Eina_Hash_Foreach cb, const void *user_data)
      (elements, (Eina_Hash_Foreach) _e_ofono_elements_for_each, &data);
 }
 
-static bool
+static Eina_Bool
 _e_ofono_elements_get_allocate(unsigned int *count, E_Ofono_Element ***p_elements)
 {
    *count = eina_hash_population(elements);
@@ -2006,9 +2006,9 @@ _e_ofono_elements_get_all(Eina_Hash *hash __UNUSED__, const char *key __UNUSED__
  * @param p_elements array with all elements, these are not referenced
  *        and in no particular order, just set if return is 1.
  *
- * @return 1 on success, 0 otherwise.
+ * @return @c EINA_TRUE on success, @c EINA_FALSE otherwise.
  */
-bool
+Eina_Bool
 e_ofono_elements_get_all(unsigned int *count, E_Ofono_Element ***p_elements)
 {
    E_Ofono_Element **p;
@@ -2059,11 +2059,11 @@ _e_ofono_elements_get_all_type(Eina_Hash *hash __UNUSED__, const char *key __UNU
  * @param p_elements array with all elements, these are not referenced
  *        and in no particular order, just set if return is 1.
  *
- * @return 1 on success, 0 otherwise.
+ * @return @c EINA_TRUE on success, @c EINA_FALSE otherwise.
  *
  * @see e_ofono_elements_get_all()
  */
-bool
+Eina_Bool
 e_ofono_elements_get_all_type(const char *type, unsigned int *count, E_Ofono_Element ***p_elements)
 {
    struct e_ofono_elements_get_all_str_data data;
@@ -2311,27 +2311,27 @@ e_ofono_elements_shutdown(void)
    elements = NULL;
 }
 
-static inline bool
+static inline Eina_Bool
 _e_ofono_element_is(const E_Ofono_Element *element, const char *interface)
 {
    return element->interface == interface;
 }
 
-bool
+Eina_Bool
 e_ofono_element_is_manager(const E_Ofono_Element *element)
 {
    EINA_SAFETY_ON_NULL_RETURN_VAL(element, 0);
    return _e_ofono_element_is(element, e_ofono_iface_manager);
 }
 
-bool
+Eina_Bool
 e_ofono_element_is_modem(const E_Ofono_Element *element)
 {
    EINA_SAFETY_ON_NULL_RETURN_VAL(element, 0);
    return _e_ofono_element_is(element, e_ofono_iface_modem);
 }
 
-bool
+Eina_Bool
 e_ofono_element_is_netreg(const E_Ofono_Element *element)
 {
    EINA_SAFETY_ON_NULL_RETURN_VAL(element, 0);

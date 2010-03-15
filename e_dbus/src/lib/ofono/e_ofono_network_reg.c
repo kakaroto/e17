@@ -12,9 +12,9 @@
  *        copied and references will be valid until element changes,
  *        so copy it if you want to use it later.
  *
- * @return 1 on success, 0 otherwise.
+ * @return @c EINA_TRUE on success, @c EINA_FALSE otherwise.
  */
-bool
+Eina_Bool
 e_ofono_netreg_mode_get(const E_Ofono_Element *element, const char **mode)
 {
    EINA_SAFETY_ON_NULL_RETURN_VAL(element, 0);
@@ -36,9 +36,9 @@ e_ofono_netreg_mode_get(const E_Ofono_Element *element, const char **mode)
  *        copied and references will be valid until element changes,
  *        so copy it if you want to use it later.
  *
- * @return 1 on success, 0 otherwise.
+ * @return @c EINA_TRUE on success, @c EINA_FALSE otherwise.
  */
-bool
+Eina_Bool
 e_ofono_netreg_status_get(const E_Ofono_Element *element, const char **status)
 {
    EINA_SAFETY_ON_NULL_RETURN_VAL(element, 0);
@@ -60,9 +60,9 @@ e_ofono_netreg_status_get(const E_Ofono_Element *element, const char **status)
  *        copied and references will be valid until element changes,
  *        so copy it if you want to use it later.
  *
- * @return 1 on success, 0 otherwise.
+ * @return @c EINA_TRUE on success, @c EINA_FALSE otherwise.
  */
-bool
+Eina_Bool
 e_ofono_netreg_operator_get(const E_Ofono_Element *element, const char **op)
 {
    EINA_SAFETY_ON_NULL_RETURN_VAL(element, 0);
@@ -80,9 +80,9 @@ e_ofono_netreg_operator_get(const E_Ofono_Element *element, const char **op)
  *        copied and references will be valid until element changes,
  *        so copy it if you want to use it later.
  *
- * @return 1 on success, 0 otherwise.
+ * @return @c EINA_TRUE on success, @c EINA_FALSE otherwise.
  */
-bool
+Eina_Bool
 e_ofono_netreg_strength_get(const E_Ofono_Element *element, char *strength)
 {
    EINA_SAFETY_ON_NULL_RETURN_VAL(element, 0);

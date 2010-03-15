@@ -95,7 +95,7 @@ _on_cmd_get_all(char *cmd, char *args)
    E_Ofono_Element **elements;
    char *type;
    unsigned int count;
-   bool ret;
+   Eina_Bool ret;
 
    if (!args)
      type = NULL;

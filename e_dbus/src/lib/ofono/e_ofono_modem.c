@@ -6,13 +6,13 @@
  * Get property "Powered" value.
  *
  * @param powered where to store the property value, must be a pointer
- *        to bool (bool *), it will not be allocated or
+ *        to Eina_Bool (Eina_Bool *), it will not be allocated or
  *        copied and references will be valid until element changes,
  *        so copy it if you want to use it later.
  *
- * @return 1 on success, 0 otherwise.
+ * @return @c EINA_TRUE on success, @c EINA_FALSE otherwise.
  */
-bool
+Eina_Bool
 e_ofono_modem_powered_get(const E_Ofono_Element *element, Eina_Bool *powered)
 {
    EINA_SAFETY_ON_NULL_RETURN_VAL(element, 0);
@@ -30,9 +30,9 @@ e_ofono_modem_powered_get(const E_Ofono_Element *element, Eina_Bool *powered)
  * @param cb function to call when server replies or some error happens.
  * @param data data to give to cb when it is called.
  *
- * @return 1 on success, 0 otherwise.
+ * @return @c EINA_TRUE on success, @c EINA_FALSE otherwise.
  */
-bool
+Eina_Bool
 e_ofono_modem_powered_set(E_Ofono_Element *element, Eina_Bool powered, E_DBus_Method_Return_Cb cb, const void *data)
 {
    EINA_SAFETY_ON_NULL_RETURN_VAL(element, 0);
@@ -54,9 +54,9 @@ e_ofono_modem_powered_set(E_Ofono_Element *element, Eina_Bool powered, E_DBus_Me
  *        copied and references will be valid until element changes,
  *        so copy it if you want to use it later.
  *
- * @return 1 on success, 0 otherwise.
+ * @return @c EINA_TRUE on success, @c EINA_FALSE otherwise.
  */
-bool
+Eina_Bool
 e_ofono_modem_name_get(const E_Ofono_Element *element, const char **name)
 {
    EINA_SAFETY_ON_NULL_RETURN_VAL(element, 0);

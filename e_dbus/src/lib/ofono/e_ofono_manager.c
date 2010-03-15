@@ -23,14 +23,14 @@ e_ofono_manager_get(void)
  *        copied and references will be valid until element changes,
  *        so copy it if you want to use it later.
  *
- * @return 1 on success, 0 otherwise.
+ * @return @c EINA_TRUE on success, @c EINA_FALSE otherwise.
  */
-bool
+Eina_Bool
 e_ofono_manager_modems_get(Eina_Array **array)
 {
    E_Ofono_Element *element;
    E_Ofono_Array *a;
-   bool r;
+   Eina_Bool r;
 
    EINA_SAFETY_ON_NULL_RETURN_VAL(array, 0);
 
