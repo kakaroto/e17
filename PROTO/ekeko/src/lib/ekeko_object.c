@@ -492,6 +492,26 @@ EAPI Ekeko_Object * ekeko_object_parent_get(const Ekeko_Object *o)
 	return prv->parent;
 }
 /**
+ * Gets the unique identifier for a name based property of an object
+ * @param[in] o The object to get the property from
+ * @param[in] name The name of the property
+ * @return The unique identifier for this property
+ */
+EAPI Ekeko_Property_Id ekeko_object_property_get(const Ekeko_Object *o, char *name)
+{
+	Ekeko_Object_Private *prv;
+	Object_Property *prop;
+
+	prv = PRIVATE(o);
+	prop = eina_hash_find(prv->properties, name);
+	if (!prop)
+	{
+		WRN("Property %s does not exist", name);
+		return NULL;
+	}
+	return prop->name;
+}
+/**
  * Sets a value for a property of an object
  * @param o The object to set the property to
  * @param name The property name
