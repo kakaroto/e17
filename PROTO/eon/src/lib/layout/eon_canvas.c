@@ -29,6 +29,125 @@ struct _Eon_Canvas_Private
 {
 
 };
+/*----------------------------------------------------------------------------*
+ *                         Canvas paint functions                             *
+ *----------------------------------------------------------------------------*/
+static void _canvas_paint_x_changed(Eon_Canvas *c, Eon_Paint *p, Eon_Coord x)
+{
+	/* Update the paint object geoemtry */
+}
+
+static void _canvas_paint_y_changed(Eon_Canvas *c, Eon_Paint *p, Eon_Coord y)
+{
+	/* Update the paint object geoemtry */
+
+}
+/*----------------------------------------------------------------------------*
+ *                                  Events                                    *
+ *----------------------------------------------------------------------------*/
+static void _canvas_paint_property_get(Ekeko_Object *o, Ekeko_Event *e, void *data)
+{
+	Ekeko_Event_Mutation *em = (Ekeko_Event_Mutation *)e;
+	//Eon_Paint *p = (Ekeko_Object *o);
+
+	/* if property is x */
+	/* if property is y */
+}
+
+static void _child_appended(Ekeko_Object *o, Ekeko_Event *e, void *data)
+{
+	Ekeko_Event_Mutation *em = (Ekeko_Event_Mutation *)e;
+
+	ekeko_event_listener_add(o, EKEKO_EVENT_VALUE_GET,
+			_canvas_paint_property_get, EINA_FALSE, NULL);
+}
+
+static void _child_removed(Ekeko_Object *o, Ekeko_Event *e, void *data)
+{
+	Ekeko_Event_Mutation *em = (Ekeko_Event_Mutation *)e;
+
+	ekeko_event_listener_remove(o, EKEKO_EVENT_VALUE_GET,
+			_canvas_paint_property_get, EINA_FALSE, NULL);
+}
+/*----------------------------------------------------------------------------*
+ *                           Paint Type functions                             *
+ *----------------------------------------------------------------------------*/
+static Eina_Bool _flush(Eon_Layout *l, Eina_Rectangle *r)
+{
+
+}
+
+static void _subcanvas_render(Eon_Paint *p, Eina_Rectangle *rect)
+{
+
+}
+
+static Eina_Bool _subcanvas_is_inside(Eon_Canvas *c, int x, int y)
+{
+	return EINA_TRUE;
+}
+/*----------------------------------------------------------------------------*
+ *                           Base Type functions                              *
+ *----------------------------------------------------------------------------*/
+static Eina_Bool _appendable(void *instance, void *child)
+{
+	if ((!ekeko_type_instance_is_of(child, EON_TYPE_CANVAS)) &&
+			(!ekeko_type_instance_is_of(child, EON_TYPE_PAINT)) &&
+			(!ekeko_type_instance_is_of(child, EON_TYPE_EXTERNAL)) &&
+			(!ekeko_type_instance_is_of(child, EON_TYPE_ANIMATION)))
+		return EINA_FALSE;
+	return EINA_TRUE;
+}
+
+static void _ctor(Ekeko_Object *o)
+{
+	Eon_Canvas *c;
+	Eon_Canvas_Private *prv;
+
+	c = (Eon_Canvas *)o;
+	c->prv = prv = ekeko_type_instance_private_get(_type, o);
+	c->base.flush = _flush;
+	c->base.base.parent.render = _subcanvas_render;
+	c->base.base.parent.is_inside = _subcanvas_is_inside;
+	ekeko_event_listener_add(o, EKEKO_EVENT_OBJECT_APPEND, _child_appended, EINA_FALSE, NULL);
+}
+
+static void _dtor(void *canvas)
+{
+
+}
+/*============================================================================*
+ *                                 Global                                     *
+ *============================================================================*/
+void eon_canvas_init(void)
+{
+	_type = ekeko_type_new(EON_TYPE_CANVAS, sizeof(Eon_Canvas),
+			sizeof(Eon_Canvas_Private), eon_layout_type_get(),
+			_ctor, _dtor, _appendable);
+
+	eon_type_register(_type, EON_TYPE_CANVAS);
+}
+
+void eon_canvas_shutdown(void)
+{
+	eon_type_unregister(_type);
+}
+/*============================================================================*
+ *                                   API                                      *
+ *============================================================================*/
+/**
+ * Creates a new canvas layout
+ * @param d The document this canvas will be created on
+ * @return The newly created canvas
+ */
+EAPI Eon_Canvas * eon_canvas_new(Eon_Document *d)
+{
+	Eon_Canvas *c;
+
+	c = eon_document_object_new(d, EON_TYPE_CANVAS);
+
+	return c;
+}
 
 #if 0
 /* in case the subcanvas has another canvas as parent it will blt to the
@@ -148,20 +267,7 @@ static void _geometry_change(const Ekeko_Object *o, Ekeko_Event *e, void *data)
 	prv->engine_data = eon_engine_canvas_create(eng, doc_data, (Eon_Canvas *)o, prv->root, w, h);
 }
 #endif
-static Eina_Bool _flush(Eon_Layout *l, Eina_Rectangle *r)
-{
 
-}
-
-static void _subcanvas_render(Eon_Paint *p, Eina_Rectangle *rect)
-{
-
-}
-
-static Eina_Bool _subcanvas_is_inside(Eon_Canvas *c, int x, int y)
-{
-	return EINA_TRUE;
-}
 #if 0
 static void _child_appended(Ekeko_Object *o, Ekeko_Event *e, void *data)
 {
@@ -221,63 +327,4 @@ static void _child_append_cb(const Ekeko_Object *o, Ekeko_Event *e, void *data)
 	}
 }
 #endif
-static Eina_Bool _appendable(void *instance, void *child)
-{
-	if ((!ekeko_type_instance_is_of(child, EON_TYPE_CANVAS)) &&
-			(!ekeko_type_instance_is_of(child, EON_TYPE_PAINT)) &&
-			(!ekeko_type_instance_is_of(child, EON_TYPE_EXTERNAL)) &&
-			(!ekeko_type_instance_is_of(child, EON_TYPE_ANIMATION)))
-		return EINA_FALSE;
-	return EINA_TRUE;
-}
 
-static void _ctor(Ekeko_Object *o)
-{
-	Eon_Canvas *c;
-	Eon_Canvas_Private *prv;
-
-	c = (Eon_Canvas *)o;
-	c->prv = prv = ekeko_type_instance_private_get(_type, o);
-	c->base.flush = _flush;
-	c->base.base.parent.render = _subcanvas_render;
-	c->base.base.parent.is_inside = _subcanvas_is_inside;
-	//ekeko_event_listener_add(o, EON_PAINT_GEOMETRY_CHANGED, _geometry_change, EINA_FALSE, NULL);
-	//ekeko_event_listener_add(o, EKEKO_EVENT_OBJECT_APPEND, _child_append_cb, EINA_FALSE, NULL);
-}
-
-static void _dtor(void *canvas)
-{
-
-}
-/*============================================================================*
- *                                 Global                                     *
- *============================================================================*/
-void eon_canvas_init(void)
-{
-	_type = ekeko_type_new(EON_TYPE_CANVAS, sizeof(Eon_Canvas),
-			sizeof(Eon_Canvas_Private), eon_layout_type_get(),
-			_ctor, _dtor, _appendable);
-
-	eon_type_register(_type, EON_TYPE_CANVAS);
-}
-
-void eon_canvas_shutdown(void)
-{
-	eon_type_unregister(_type);
-}
-/*============================================================================*
- *                                   API                                      *
- *============================================================================*/
-/**
- * Creates a new canvas layout
- * @param d The document this canvas will be created on
- * @return The newly created canvas
- */
-EAPI Eon_Canvas * eon_canvas_new(Eon_Document *d)
-{
-	Eon_Canvas *c;
-
-	c = eon_document_object_new(d, EON_TYPE_CANVAS);
-
-	return c;
-}

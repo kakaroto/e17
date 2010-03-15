@@ -35,6 +35,9 @@ struct _Eon_Stack_Private
 	Eon_Stack_Orientation orientation;
 };
 
+/*----------------------------------------------------------------------------*
+ *                          Stack paint functions                             *
+ *----------------------------------------------------------------------------*/
 static inline void _hmove(Eon_Stack *s, Eon_Paint *prev, Eon_Paint *curr, int *final)
 {
 	Eon_Stack_Private *prv;
@@ -69,6 +72,20 @@ static inline void _vmove(Eon_Stack *s, Eon_Paint *prev, Eon_Paint *curr, int *f
 		eon_paint_geometry_get(prev, &geom);
 
 	*final = geom.y + geom.h;
+}
+/*----------------------------------------------------------------------------*
+ *                                  Events                                    *
+ *----------------------------------------------------------------------------*/
+static void _stack_paint_property_get(Ekeko_Object *o, Ekeko_Event *e, void *data)
+{
+	Ekeko_Event_Mutation *em = (Ekeko_Event_Mutation *)e;
+	Eon_Paint *p = (Ekeko_Object *o);
+
+	/* if property is margin */
+	/* if property is margin-top */
+	/* if property is margin-left */
+	/* if property is margin-bottom */
+	/* if property is margin-right */
 }
 
 static void _child_x_change(Ekeko_Object *o, Ekeko_Event *e, void *data)
@@ -151,15 +168,6 @@ static void _child_h_change(Ekeko_Object *o, Ekeko_Event *e, void *data)
 	}
 }
 
-static Eina_Bool _appendable(Ekeko_Object *o, Ekeko_Object *child)
-{
-	if ((!ekeko_type_instance_is_of(child, EON_TYPE_PAINT_SQUARE)) &&
-			(!ekeko_type_instance_is_of(child, EON_TYPE_SHAPE_SQUARE)) &&
-			(!ekeko_type_instance_is_of(child, EON_TYPE_ANIMATION)))
-		return EINA_FALSE;
-	return EINA_TRUE;
-}
-
 static void _orientation_cb(Ekeko_Object *o, Ekeko_Event *e, void *data)
 {
 	Eina_List *l;
@@ -236,6 +244,18 @@ static void _child_remove_cb(Ekeko_Object *o, Ekeko_Event *e, void *data)
 			_child_w_change, EINA_FALSE, o);
 	ekeko_event_listener_remove(em->related, EON_PAINT_SQUARE_H_CHANGED,
 			_child_h_change, EINA_FALSE, o);
+}
+
+/*----------------------------------------------------------------------------*
+ *                           Base Type functions                              *
+ *----------------------------------------------------------------------------*/
+static Eina_Bool _appendable(Ekeko_Object *o, Ekeko_Object *child)
+{
+	if ((!ekeko_type_instance_is_of(child, EON_TYPE_PAINT_SQUARE)) &&
+			(!ekeko_type_instance_is_of(child, EON_TYPE_SHAPE_SQUARE)) &&
+			(!ekeko_type_instance_is_of(child, EON_TYPE_ANIMATION)))
+		return EINA_FALSE;
+	return EINA_TRUE;
 }
 
 static void _ctor(Ekeko_Object *o)

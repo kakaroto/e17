@@ -73,7 +73,7 @@ static void _animation_color_callback(Eon_Animation *a, const char *prop,
 static void _value_set(Ekeko_Value *v, Etch_Animation_Keyframe *k)
 {
 	Etch_Data ed;
-
+#if 0
 	switch (v->type)
 	{
 		/* basic types */
@@ -113,10 +113,12 @@ static void _value_set(Ekeko_Value *v, Etch_Animation_Keyframe *k)
 			printf("[Eon_Animation] Unsupported type on the animation %d\n", v->type);
 		}
 	}
+#endif
 }
 
 static void _callback_set(Ekeko_Value_Type vtype, Etch_Data_Type *dtype, Eon_Animation_Callback *cb)
 {
+#if 0
 	switch (vtype)
 	{
 		/* basic types */
@@ -148,8 +150,8 @@ static void _callback_set(Ekeko_Value_Type vtype, Etch_Data_Type *dtype, Eon_Ani
 		}
 		break;
 	}
+#endif
 }
-
 
 static void _ctor(void *instance)
 {

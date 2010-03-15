@@ -1,3 +1,3 @@
 MAINTAINERCLEANFILES = Makefile Makefile.in
 
-SUBDIRS = enesim sdl remote
+SUBDIRS = sdl # enesim remote

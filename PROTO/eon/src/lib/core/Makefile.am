@@ -17,12 +17,13 @@ eon_document.c \
 eon_cache.c \
 eon_clock.c \
 eon_coord.c \
-eon_external.c \
 eon_engine.c \
 eon_input.c \
 eon_font.c \
+eon_layout.c \
 eon_main.c \
 eon_object.c \
+eon_paint.c \
 eon_parser.c \
 eon_setter.c \
 eon_script.c \

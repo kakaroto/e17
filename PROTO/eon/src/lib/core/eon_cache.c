@@ -37,7 +37,7 @@
 
 typedef struct _Eon_Cache_Image_Load
 {
-	Emage_Load_Callback cb;
+	Emage_Callback cb;
 	void *data;
 	char key[1024];
 } Eon_Cache_Image_Load;
@@ -164,7 +164,7 @@ void eon_cache_shutdown(void)
  * this creates two entries on the cache which is wrong!
  */
 void eon_cache_image_load(const char *file, Enesim_Surface **s,
-		Enesim_Format f, Emage_Load_Callback cb, void *data,
+		Enesim_Format f, Emage_Callback cb, void *data,
 		const char *options)
 {
 	Eon_Cache *c;

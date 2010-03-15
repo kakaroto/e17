@@ -175,6 +175,7 @@ void eon_style_shutdown(void)
 /* Get the property a style applier will set */
 Ekeko_Value_Type eon_style_property_type_get(Eon_Style *s, char *property)
 {
+#if 0
 	Eon_Style_Private *prv = PRIVATE(s);
 	Ekeko_Type *t;
 	Ekeko_Property *prop;
@@ -183,7 +184,7 @@ Ekeko_Value_Type eon_style_property_type_get(Eon_Style *s, char *property)
 		return EKEKO_PROPERTY_UNDEFINED;
 	/* FIXME we might want to define styles for not instantiable objects
 	 * like shapes, filters, etc
-	 */ 
+	 */
 	t = eon_type_get(prv->type);
 	if (!t)
 		return EKEKO_PROPERTY_UNDEFINED;
@@ -195,6 +196,7 @@ Ekeko_Value_Type eon_style_property_type_get(Eon_Style *s, char *property)
 		return EKEKO_PROPERTY_UNDEFINED;
 
 	return ekeko_property_value_type_get(prop);
+#endif
 }
 /*============================================================================*
  *                                   API                                      *

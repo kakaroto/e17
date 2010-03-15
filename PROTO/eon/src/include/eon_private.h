@@ -162,7 +162,7 @@ Eina_Bool eon_parser_clock_str_from(Eon_Clock *c, char *v);
 
 /* Cache */
 void eon_cache_image_load(const char *file, Enesim_Surface **s,
-		Enesim_Format f, Emage_Load_Callback cb, void *data,
+		Enesim_Format f, Emage_Callback cb, void *data,
 		const char *options);
 
 /* Style */

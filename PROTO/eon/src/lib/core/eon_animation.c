@@ -90,6 +90,7 @@ static void _etch_stop_cb(Etch_Animation *ea, void *data)
 
 static inline void _property_animate(Eon_Animation *a, Ekeko_Object *parent)
 {
+#if 0
 	Ekeko_Property *p;
 	Eon_Document *doc;
 	Eon_Animation_Private *prv = PRIVATE(a);
@@ -137,6 +138,7 @@ static inline void _property_animate(Eon_Animation *a, Ekeko_Object *parent)
 		etch_animation_disable(prv->anim);
 	else
 		etch_animation_enable(prv->anim);
+#endif
 }
 
 static void _trigger_cb(const Ekeko_Object *o, Ekeko_Event *e, void *data)
@@ -283,8 +285,9 @@ Etch_Animation * eon_animation_etch_animation_get(Eon_Animation *a)
 Ekeko_Value_Type eon_animation_prop_type_get(Eon_Animation *a)
 {
 	Eon_Animation_Private *prv = PRIVATE(a);
-	Ekeko_Property *p;
 	Ekeko_Object *parent;
+#if 0
+	Ekeko_Property *p;
 
 	parent = ekeko_object_parent_get((Ekeko_Object *)a);
 	if (!parent)
@@ -294,6 +297,7 @@ Ekeko_Value_Type eon_animation_prop_type_get(Eon_Animation *a)
 		return 0;
 
 	return ekeko_property_value_type_get(p);
+#endif
 }
 /*============================================================================*
  *                                   API                                      *

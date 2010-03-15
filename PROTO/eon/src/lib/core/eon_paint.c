@@ -41,7 +41,7 @@ struct _Eon_Paint_Private
 	int zindex;
 	/* transformed geometry */
 	/* untransformed geometry */
-	struct 
+	struct
 	{
 		Eina_Rectangle curr;
 		Eina_Rectangle prev;
@@ -64,6 +64,7 @@ struct _Eon_Paint_Private
 		Eina_Bool prev;
 		Eina_Bool changed;
 	} visibility;
+	/* Enesim_Renderer *renderer; */
 };
 
 static Eon_Paint * _prev_renderable_get(Ekeko_Object *o)

@@ -43,6 +43,7 @@ struct _Eon_Layout_Private
 	Eon_Paint *focused;
 	/* number of renderable object that have changed */
 	int changed;
+	/* Enesim_Surface *surface */
 };
 
 void _sublayout_in(Ekeko_Object *o, Ekeko_Event *e, void *data)

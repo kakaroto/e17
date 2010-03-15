@@ -10,5 +10,4 @@ noinst_LTLIBRARIES = libeon_layout.la
 
 libeon_layout_la_SOURCES = \
 eon_canvas.c \
-eon_layout.c \
 eon_stack.c
