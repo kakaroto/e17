@@ -316,6 +316,9 @@ class Editable(Manager, object):
     def part_get(self, part_name):
         return self._edje.part_get(part_name)
 
+    def part_object_get(self, part_name):
+        return self._edje.part_object_get(part_name)
+
     def part_del(self, name):
         if self._edje.part_del(name):
             self._modified = True

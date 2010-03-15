@@ -179,6 +179,9 @@ class Editje(elementary.Window):
     def _workfile_name_get_cb(self):
         return self.e.workfile
 
+    def _part_object_get_cb(self, name):
+        return self.e.part_object_get(name)
+
     ###########
     # DESKTOP
     ###########
@@ -502,7 +505,8 @@ class Editje(elementary.Window):
                 fnt_new_fnt_cb=self._font_wizard_new_font_cb, \
                 fnt_list_get_cb=self._font_wizard_font_list_get_cb, \
                 fnt_id_get_cb=self._font_wizard_font_id_get_cb, \
-                workfile_name_get_cb=self._workfile_name_get_cb)
+                workfile_name_get_cb=self._workfile_name_get_cb, \
+                part_object_get_cb=self._part_object_get_cb)
         box.pack_end(self.part_state_details)
 
         return self._set_scrolled_contents(box)
@@ -571,7 +575,8 @@ class Editje(elementary.Window):
                 fnt_new_fnt_cb=self._font_wizard_new_font_cb, \
                 fnt_list_get_cb=self._font_wizard_font_list_get_cb, \
                 fnt_id_get_cb=self._font_wizard_font_id_get_cb, \
-                workfile_name_get_cb=self._workfile_name_get_cb) # fix
+                workfile_name_get_cb=self._workfile_name_get_cb, \
+                part_object_get_cb=self._part_object_get_cb) # fix
         self.anim_state_details.open = True
         self.anim_state_details.open_disable = True
         box.pack_end(self.anim_state_details)

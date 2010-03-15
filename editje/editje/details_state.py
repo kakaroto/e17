@@ -57,6 +57,7 @@ class PartStateDetails(EditjeDetails):
                  img_list_get_cb=None, img_id_get_cb=None,
                  fnt_new_fnt_cb=None, fnt_list_get_cb=None,
                  fnt_id_get_cb=None, workfile_name_get_cb=None,
+                 part_object_get_cb=None,
                  group="editje/collapsable/part_state"):
         EditjeDetails.__init__(self, parent, group)
 
@@ -69,6 +70,7 @@ class PartStateDetails(EditjeDetails):
         self._fnt_list_get_cb = fnt_list_get_cb
         self._fnt_id_get_cb = fnt_id_get_cb
         self._workfile_name_get_cb = workfile_name_get_cb
+        self._part_object_get_cb = part_object_get_cb
 
         self._update_schedule = None
         self.on_del_add(self._del_handler)
@@ -494,6 +496,9 @@ class PartStateDetails(EditjeDetails):
             return
         self.part.state_selected_set(data)
         self.state = self.e.part.state._state
+        part = self._part_object_get_cb(self.part.name)
+        part.on_resize_add(self._size_changed)
+        self._size_changed(part)
         prop = self._header_table.get("state")
         if prop:
             prop.value = data
@@ -567,9 +572,6 @@ class PartStateDetails(EditjeDetails):
     def _update_common(self):
         self._update_min(self, self.e.part.state.min)
         self._update_max(self, self.e.part.state.max)
-
-        (x, y, w, h) = self.editable.part_geometry_get(self.part.name)
-        self["main"]["current"].value = w, h
 
         self["main"]["align"].value = self.state.align_get()
         self["main"]["color"].value = self.state.color_get()
@@ -801,11 +803,12 @@ class PartAnimStateDetails(PartStateDetails):
                  img_list_get_cb=None, img_id_get_cb=None,
                  fnt_new_fnt_cb=None, fnt_list_get_cb=None,
                  fnt_id_get_cb=None, workfile_name_get_cb=None,
+                 part_object_get_cb=None,
                  group="editje/collapsable/part_properties"):
         PartStateDetails.__init__(self, parent, img_new_img_cb,
                  img_list_get_cb, img_id_get_cb, fnt_new_fnt_cb,
                  fnt_list_get_cb, fnt_id_get_cb, workfile_name_get_cb,
-                 group)
+                 part_object_get_cb, group)
         self.anim = None
 
     def _header_init(self, parent):
@@ -882,5 +885,8 @@ class PartAnimStateDetails(PartStateDetails):
             return
         self.part.state_selected_set(data)
         self.state = self.e.part.state._state
+        part = self._part_object_get_cb(self.part.name)
+        part.on_resize_add(self._size_changed)
+        self._size_changed(part)
         if self.anim:
             self._update()
