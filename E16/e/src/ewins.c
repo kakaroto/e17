@@ -154,7 +154,6 @@ EwinGetAttributes(EWin * ewin, Win win, Window xwin)
    ewin->client.w = ewin->save_max.w = ewin->save_fs.w = xwa.width;
    ewin->client.h = ewin->save_max.h = ewin->save_fs.h = xwa.height;
    ewin->client.bw = xwa.border_width;
-   ewin->client.cmap = xwa.colormap;
 
    if (EDebug(EDBUG_TYPE_SNAPS))
       Eprintf("Snap get attr  %#lx: %4d+%4d %4dx%4d: %s\n",

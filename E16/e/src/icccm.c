@@ -43,6 +43,8 @@ ICCCM_Init(void)
    ecore_x_icccm_init();
 #endif
 
+   Mode.current_cmap = WinGetCmap(VROOT);
+
    ICCCM_SetIconSizes();
 
    if (Mode.wm.window)
@@ -93,17 +95,6 @@ ICCCM_GetTitle(EWin * ewin)
    EwinGetIcccmName(ewin) = ecore_x_icccm_title_get(EwinGetClientXwin(ewin));
 
    EwinChange(ewin, EWIN_CHANGE_NAME);
-}
-
-static void
-ICCCM_GetColormap(EWin * ewin)
-{
-   XWindowAttributes   xwa;
-
-   ewin->client.cmap = None;
-   if (XGetWindowAttributes(disp, EwinGetClientXwin(ewin), &xwa)
-       && xwa.colormap)
-      ewin->client.cmap = xwa.colormap;
 }
 
 void
@@ -328,49 +319,57 @@ ICCCM_Adopt(const EWin * ewin)
 void
 ICCCM_Cmap(EWin * ewin)
 {
+   Colormap            ecmap, dcmap, ccmap;
+   XWindowAttributes   xwa;
+   int                 i, num;
+   Ecore_X_Window     *wlist;
+
+   ecmap = Mode.current_cmap;
+   dcmap = WinGetCmap(VROOT);
+
    if (!ewin)
      {
-	if (Mode.current_cmap)
+	if (ecmap == dcmap)
+	   return;
+	ccmap = dcmap;
+	goto set_cmap;
+     }
+
+   ccmap = EwinGetClientWin(ewin)->cmap;
+
+   if (ccmap == ecmap || EoGetWin(ewin)->argb)
+      return;
+
+   /* Hack - assume that if client cmap is default cmap it doesn't have
+    * WM_COLORMAP_WINDOWS */
+   if (ccmap == dcmap)
+      goto set_cmap;
+
+   num = ecore_x_window_prop_window_list_get(EwinGetClientXwin(ewin),
+					     ECORE_X_ATOM_WM_COLORMAP_WINDOWS,
+					     &wlist);
+   if (num > 0)
+     {
+	for (i = 0; i < num; i++)
 	  {
-	     XUninstallColormap(disp, Mode.current_cmap);
-	     Mode.current_cmap = 0;
+	     if (XGetWindowAttributes(disp, wlist[i], &xwa))
+	       {
+		  if (xwa.colormap != dcmap)
+		    {
+		       XInstallColormap(disp, xwa.colormap);
+		       Mode.current_cmap = xwa.colormap;
+		    }
+	       }
 	  }
+	Efree(wlist);
 	return;
      }
 
-   if (EwinIsInternal(ewin))
-      return;
-
-   ICCCM_GetColormap(ewin);
-
-   if ((ewin->client.cmap) && (Mode.current_cmap != ewin->client.cmap))
-     {
-	XWindowAttributes   xwa;
-	int                 i, num;
-	Ecore_X_Window     *wlist;
-
-	num = ecore_x_window_prop_window_list_get(EwinGetClientXwin(ewin),
-						  ECORE_X_ATOM_WM_COLORMAP_WINDOWS,
-						  &wlist);
-	if (num > 0)
-	  {
-	     for (i = 0; i < num; i++)
-	       {
-		  if (XGetWindowAttributes(disp, wlist[i], &xwa))
-		    {
-		       if (xwa.colormap != WinGetCmap(VROOT))
-			 {
-			    XInstallColormap(disp, xwa.colormap);
-			    Mode.current_cmap = xwa.colormap;
-			 }
-		    }
-	       }
-	     Efree(wlist);
-	     return;
-	  }
-	XInstallColormap(disp, ewin->client.cmap);
-	Mode.current_cmap = ewin->client.cmap;
-     }
+ set_cmap:
+   if (EDebug(EDBUG_TYPE_FOCUS))
+      Eprintf("ICCCM_Cmap %#lx\n", ccmap);
+   XInstallColormap(disp, ccmap);
+   Mode.current_cmap = ccmap;
 }
 
 void
