@@ -14,18 +14,11 @@
 #define MAX_KEY_SIZE 4096
 static Eina_Hash *elements = NULL;
 
-typedef struct _E_Ofono_Array E_Ofono_Array;
 typedef struct _E_Ofono_Element_Pending E_Ofono_Element_Pending;
 typedef struct _E_Ofono_Element_Call_Data E_Ofono_Element_Call_Data;
 typedef struct _E_Ofono_Element_Property E_Ofono_Element_Property;
 typedef struct _E_Ofono_Element_Listener E_Ofono_Element_Listener;
 typedef struct _E_Ofono_Element_Dict_Entry E_Ofono_Element_Dict_Entry;
-
-struct _E_Ofono_Array
-{
-   int type;
-   Eina_Array *array;
-};
 
 struct _E_Ofono_Element_Pending
 {

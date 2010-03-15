@@ -56,6 +56,14 @@
     #define WRN(...) EINA_LOG_DOM_WARN(_e_dbus_ofono_log_dom , __VA_ARGS__)
     #define ERR(...) EINA_LOG_DOM_ERR(_e_dbus_ofono_log_dom , __VA_ARGS__)
 
+    typedef struct _E_Ofono_Array E_Ofono_Array;
+
+    struct _E_Ofono_Array
+    {
+       int type;
+       Eina_Array *array;
+    };
+
     static inline bool
     __dbus_callback_check_and_init(const char *file, int line, const char *function, DBusMessage *msg, DBusMessageIter *itr, DBusError *err)
     {

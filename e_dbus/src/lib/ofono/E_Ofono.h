@@ -70,6 +70,7 @@ extern "C" {
 
   /* Manager Methods */
   EAPI E_Ofono_Element *e_ofono_manager_get(void) EINA_WARN_UNUSED_RESULT;
+  EAPI bool e_ofono_manager_modems_get(Eina_Array **array);
 
   /* Modem Methods */
   EAPI bool e_ofono_modem_powered_get(const E_Ofono_Element *element, Eina_Bool *powered) EINA_ARG_NONNULL(1, 2) EINA_WARN_UNUSED_RESULT;

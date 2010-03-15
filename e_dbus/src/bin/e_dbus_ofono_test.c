@@ -268,6 +268,25 @@ _on_cmd_manager_get(char *cmd, char *args)
    return 1;
 }
 
+static int
+_on_cmd_manager_modems_get(char *cmd, char *args)
+{
+   char *path;
+   Eina_Array_Iterator iterator;
+   unsigned int i;
+   Eina_Array *modems = eina_array_new(1);
+
+   if(e_ofono_manager_modems_get(&modems))
+     {
+	printf("[");
+	EINA_ARRAY_ITER_NEXT(modems, i, path, iterator)
+	   printf(" %s", path);
+	printf(" ]\n");
+     }
+
+   return 1;
+}
+
 /* Modem Commands */
 
 static int
@@ -312,6 +331,7 @@ _on_input(void *data, Ecore_Fd_Handler *fd_handler)
      {"get_properties", _on_cmd_get_properties},
      {"set_property", _on_cmd_property_set},
      {"manager_get", _on_cmd_manager_get},
+     {"manager_modems_get", _on_cmd_manager_modems_get},
      {"modem_set_powered", _on_cmd_modem_set_powered},
      {NULL, NULL}
    };
