@@ -44,6 +44,7 @@ static EWin        *focus_pending_ewin = NULL;
 static EWin        *focus_pending_new = NULL;
 static EWin        *focus_pending_raise = NULL;
 static Timer       *focus_timer_autoraise = NULL;
+static int          focus_request = 0;
 
 void
 FocusEnable(int on)
@@ -442,6 +443,7 @@ doFocusToEwin(EWin * ewin, int why)
    if (why == FOCUS_DESK_LEAVE)
       return;
 
+   focus_request = (int)NextRequest(disp);
    ICCCM_Focus(ewin);
    focus_is_set = 1;
 }
@@ -571,6 +573,15 @@ FocusHandleEnter(EWin * ewin, XEvent * ev)
    if (ev->xcrossing.mode == NotifyUngrab &&
        ev->xcrossing.detail == NotifyNonlinearVirtual)
       return;
+
+   if ((int)ev->xcrossing.serial - focus_request < 0)
+     {
+	/* This event was caused by a request older than the latest
+	 * focus assignment request - ignore */
+	if (EDebug(EDBUG_TYPE_FOCUS))
+	   Eprintf("FocusHandleEnter: Ignore serial < %#x\n", focus_request);
+	return;
+     }
 
    switch (Conf.focus.mode)
      {

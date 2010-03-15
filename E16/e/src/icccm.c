@@ -378,10 +378,12 @@ ICCCM_Focus(const EWin * ewin)
    if (EDebug(EDBUG_TYPE_FOCUS))
      {
 	if (ewin)
-	   Eprintf("ICCCM_Focus T=%#lx %#lx %s\n", Mode.events.time,
-		   EwinGetClientXwin(ewin), EwinGetTitle(ewin));
+	   Eprintf("ICCCM_Focus T=%#lx R=%#lx %#lx %s\n", Mode.events.time,
+		   NextRequest(disp), EwinGetClientXwin(ewin),
+		   EwinGetTitle(ewin));
 	else
-	   Eprintf("ICCCM_Focus None T=%#lx\n", Mode.events.time);
+	   Eprintf("ICCCM_Focus T=%#lx R=%#lx None\n", Mode.events.time,
+		   NextRequest(disp));
      }
 
    if (!ewin)
