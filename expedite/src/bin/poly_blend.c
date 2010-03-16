@@ -103,7 +103,7 @@ static void _loop(double t, int f)
 	x += sin((double)(f + (i * 13)) / (36.7 * SLOW)) * (win_w / 4);
 	y = (win_h / 2) - (h / 2);
 	y += cos((double)(f + (i * 28)) / (43.8 * SLOW)) * (win_h / 4);
-	poly(o, i, x, y);
+	evas_object_move(o, x, y);
      }
    FPS_STD(NAME);
 }
