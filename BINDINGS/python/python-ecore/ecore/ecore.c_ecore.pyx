@@ -24,7 +24,8 @@ __extra_epydoc_fields__ = (
 cdef int _ecore_events_registered = 0
 
 cdef int PY_REFCOUNT(object o):
-    return o.ob_refcnt
+    cdef python.PyObject *obj = <python.PyObject *>o
+    return obj.ob_refcnt
 
 def init():
     r = ecore_init()

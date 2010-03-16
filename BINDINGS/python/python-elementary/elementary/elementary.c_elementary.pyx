@@ -23,7 +23,8 @@ cimport python
 import traceback
 
 cdef int PY_REFCOUNT(object o):
-    return o.ob_refcnt
+    cdef python.PyObject *obj = <python.PyObject *>o
+    return obj.ob_refcnt
 
 def init():
     cdef int argc, i, arg_len
