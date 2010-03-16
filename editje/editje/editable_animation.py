@@ -247,19 +247,18 @@ class EditableAnimation(Manager, object):
         self.event_emit("state.removed", time)
 
     def _part_state_create(self, part):
-        time_idx = self._current_idx
-        time_idx -= 1
         statename = self.program.name
         orig_state = "default 0.00"
-        while time_idx >= 0:
+        time_idx = 0
+        while time_idx <= self._current_idx:
             time = self.timestops[time_idx]
             name = "@%s@%.2f 0.00" % (self._name, time)
             if part.state_exist(name):
                 orig_state = name
-                break
-            time_idx -= 1
-        part.state_copy(orig_state, statename)
-        part.state_selected_set(statename)
+            else:
+                part.state_copy(orig_state, statename)
+            time_idx += 1
+
         self.program.target_add(part.name)
 
     def _state_set(self, time):
@@ -276,6 +275,8 @@ class EditableAnimation(Manager, object):
                 part.state_selected_set(statename)
             else:
                 self._part_state_create(part)
+                part.state_selected_set(statename)
+                self.e.part.state.name = statename
         self.event_emit("state.changed", self.e.part.state.name)
 
     def _state_get(self):
