@@ -843,12 +843,12 @@ void cache_messages_max_set(Evas_Object *label) {
 	}
 }
 
-void cache_messages_max_change(void *data, Evas_Object *spinner, void *event_info) {
-	settings->max_messages=elm_spinner_value_get(spinner);
+void cache_messages_max_change(void *data, Evas_Object *slider, void *event_info) {
+	settings->max_messages=elm_slider_value_get(slider);
 }
 
 void on_settings_cache(void *data, Evas_Object *toolbar, void *event_info) {
-	Evas_Object *label=NULL, *button=NULL, *spinner=NULL;
+	Evas_Object *label=NULL, *button=NULL, *slider=NULL;
 	int sqlite_res = 0;
 	char *query = NULL, *db_err = NULL;
 
@@ -900,17 +900,20 @@ void on_settings_cache(void *data, Evas_Object *toolbar, void *event_info) {
 			evas_object_show(button);
 		elm_table_pack(cache_editor, button, 1, 1, 1, 1);
 
-		spinner = elm_spinner_add(settings_win);
-			evas_object_size_hint_weight_set(spinner, 1, 1);
-			evas_object_size_hint_align_set(spinner, -1, 0.5);
-			elm_spinner_label_format_set(spinner, _("Display %0.f messages"));
-			elm_spinner_min_max_set(spinner, 0.0, 200.0);
-			elm_spinner_step_set(spinner, 10.0);
-			elm_spinner_wrap_set(spinner, 1.0);
-			elm_spinner_value_set(spinner, settings->max_messages);
-			evas_object_smart_callback_add(spinner, "changed", cache_messages_max_change, NULL);
-			elm_table_pack(cache_editor, spinner, 0, 2, 2, 1);
-		evas_object_show(spinner);
+		slider = elm_slider_add(settings_win);
+			evas_object_size_hint_weight_set(slider, 1, 1);
+			evas_object_size_hint_align_set(slider, -1, 0.5);
+			elm_slider_horizontal_set(slider, EINA_TRUE);
+
+			elm_slider_label_set(slider, _("Displayed messages"));
+
+			elm_slider_unit_format_set(slider, "%0.f");
+			elm_slider_min_max_set(slider, 0.0, 100.0);
+			elm_slider_value_set(slider, settings->max_messages);
+			evas_object_smart_callback_add(slider, "changed", cache_messages_max_change, NULL);
+
+			elm_table_pack(cache_editor, slider, 0, 2, 2, 1);
+		evas_object_show(slider);
 
 		elm_box_pack_start(settings_area, cache_editor);
 	evas_object_show(cache_editor);
