@@ -541,7 +541,18 @@ static void on_handle_user(void *data, Evas_Object *obj, void *event_info) {
 
 	user_info_get(ubBubble, user);
 
-	if(user->state == US_NULL) {
+	buttons = elm_box_add(win);
+		elm_box_horizontal_set(buttons, EINA_TRUE);
+
+	if(user->state == US_ERROR) {
+		elm_label_line_wrap_set(label, EINA_TRUE);
+		res = asprintf(&description, _("Error fetching user info: %s"), user->hash_error);
+		if(res != -1) {
+			elm_label_label_set(label, description);
+			free(description);
+		} else
+			elm_label_label_set(label, _("Unknown error fetching user info."));
+	} else if(user->state == US_NULL) {
 		res = asprintf(&description, "%s is following %d and has %d followers.", user->name, user->friends_count, user->followers_count);
 		elm_label_line_wrap_set(label, EINA_TRUE);
 		if(res!=-1)
@@ -565,8 +576,6 @@ static void on_handle_user(void *data, Evas_Object *obj, void *event_info) {
 			free(path);
 		}
 
-		buttons = elm_box_add(win);
-			elm_box_horizontal_set(buttons, EINA_TRUE);
 
 			if(!user->following && !user->protected) {
 				button = elm_button_add(win);
@@ -581,18 +590,19 @@ static void on_handle_user(void *data, Evas_Object *obj, void *event_info) {
 					elm_box_pack_end(buttons, button);
 				evas_object_show(button);
 			}
-			button = elm_button_add(win);
-				elm_button_label_set(button, _("Close"));
-				evas_object_smart_callback_add(button, "clicked", on_user_info_close, NULL);
-				elm_box_pack_end(buttons, button);
-			evas_object_show(button);
-
-
-			elm_table_pack(table, buttons, 0, 1, 2, 1);
-		evas_object_show(buttons);
 
 		user_free(user);
 	}
+
+		button = elm_button_add(win);
+			elm_button_label_set(button, _("Close"));
+			evas_object_smart_callback_add(button, "clicked", on_user_info_close, NULL);
+			elm_box_pack_end(buttons, button);
+		evas_object_show(button);
+
+
+		elm_table_pack(table, buttons, 0, 1, 2, 1);
+	evas_object_show(buttons);
 }
 
 static void on_handle_group(void *data, Evas_Object *obj, void *event_info) {
