@@ -205,9 +205,9 @@ class WidgetStates(WidgetEntryButton):
         self._pop.hide()
         self._pop = None
 
-    def _entry_changed_cb(self, obj, *args, **kwargs):
-        WidgetEntryButton._entry_changed_cb(self, obj, *args, **kwargs)
-        if self._is_default(self.entry.entry_get()):
+    def _internal_value_set(self, val):
+        WidgetEntryButton._internal_value_set(self, val)
+        if self._is_default(val):
             self.entry.disabled_set(True)
         else:
             self.entry.disabled_set(False)
