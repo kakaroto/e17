@@ -22,6 +22,7 @@ from c_elementary import Object, Window, Background, Icon, \
     Photo, Hoversel, Toolbar, ToolbarItem, List, ListItem, Slider, \
     Radio, Check, Pager, InnerWindow, Image, Spinner, Fileselector, Notify, \
     Separator, Progressbar, Menu, MenuItem, MenuItemSeparator, Panel, \
+    Genlist, GenlistItem, GenlistItemClass, \
     init, shutdown, run, exit, scale_get, scale_set, \
     finger_size_get, finger_size_set, coords_finger_size_adjust, \
     theme_overlay_add, theme_extension_add, policy_set, policy_get
@@ -82,5 +83,8 @@ ELM_PANEL_ORIENT_TOP = 0
 ELM_PANEL_ORIENT_BOTTOM = 1
 ELM_PANEL_ORIENT_LEFT = 2
 ELM_PANEL_ORIENT_RIGHT = 3
+
+ELM_GENLIST_ITEM_NONE = 0
+ELM_GENLIST_ITEM_SUBITEMS = 1
 
 c_elementary.init()

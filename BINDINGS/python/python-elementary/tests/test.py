@@ -2759,6 +2759,53 @@ def panel_clicked(obj, it):
     win.show()
 # }}}
 
+#----- Genlist -{{{-
+def genlist_clicked(obj, it):
+    win = elementary.Window("Genlist", elementary.ELM_WIN_BASIC)
+    win.title_set("Genlist test")
+    win.autodel_set(True)
+
+    bg = elementary.Background(win)
+    win.resize_object_add(bg)
+    bg.size_hint_weight_set(evas.EVAS_HINT_EXPAND, evas.EVAS_HINT_EXPAND)
+    bg.show()
+
+    bx = elementary.Box(win)
+    win.resize_object_add(bx)
+    bx.size_hint_weight_set(evas.EVAS_HINT_EXPAND, evas.EVAS_HINT_EXPAND)
+    bx.show()
+
+    gl = elementary.Genlist(win)
+    gl.size_hint_weight_set(evas.EVAS_HINT_EXPAND, evas.EVAS_HINT_EXPAND)
+    gl.size_hint_align_set(evas.EVAS_HINT_FILL, evas.EVAS_HINT_FILL)
+
+    def label_get(obj, part, item_data):
+        return item_data
+    itc = elementary.GenlistItemClass(label_get_func=label_get)
+
+    def item_clicked(item, gl, item_data):
+        print "clicked:", repr(item), gl, item_data
+        print "\tselected:", item.selected
+        print "\tdisabled:", item.disabled
+        print "\texpanded:", item.expanded
+        print "\tdisplay_only:", item.display_only
+        print "\tgenlist is the same:", item.genlist == gl
+        print "\tparent:", item.parent
+        print "\tobject:", item.object
+
+    for i in xrange(0, 10):
+        it = gl.item_append(itc, "item %d" % i, func=item_clicked)
+
+    gl.item_insert_before(itc, "BEFORE", it)
+    gl.item_insert_after(itc, "AFTER", it)
+
+    bx.pack_end(gl)
+    gl.show()
+
+    win.resize(300, 300)
+    win.show()
+# }}}
+
 #----- Main -{{{-
 def destroy(obj, str1, str2, str3, str4):
     print "DEBUG: window destroy callback called!"
@@ -2828,7 +2875,8 @@ if __name__ == "__main__":
                ("Spinner", spinner_clicked),
                ("Notify", notify_clicked),
                ("Menu", menu_clicked),
-               ("Panel", panel_clicked)]
+               ("Panel", panel_clicked),
+               ("Genlist", genlist_clicked)]
 
 
 

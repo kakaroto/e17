@@ -22,6 +22,7 @@ import evas.c_evas
 
 cdef extern from "string.h":
     void *memcpy(void *dst, void *src, int n)
+    char *strdup(char *str)
 
 cdef enum Elm_Win_Type:
     ELM_WIN_BASIC
@@ -125,15 +126,8 @@ ctypedef struct Elm_Win:
     Elm_Win_Type type
     Elm_Win_Keyboard_Mode kbdmode
     evas.c_evas.Eina_Bool autodel = 1
-
-ctypedef struct Elm_Genlist_Item_Class:
-    char *item_style
-    char *(*GenlistItemLabelGetFunc)(void *data, c_evas.Evas_Object *obj, char *part)
-    c_evas.Evas_Object *(*GenlistItemIconGetFunc)(void *data, c_evas.Evas_Object *obj, char *part)
-    c_evas.Eina_Bool (*GenlistItemStateGetFunc(void *data, c_evas.Evas_Object *obj, char *part)
-    void (*GenListItemDelFunc)(void *data, c_evas.Evas_Object *obj)
-
 """
+
 cdef extern from "Elementary.h":
     cdef struct Elm_Entry_Anchor_Info
     ctypedef struct Elm_Entry_Anchorview_Info:
@@ -156,13 +150,28 @@ cdef extern from "Elementary.h":
         evas.c_evas.Eina_Bool hover_top
         evas.c_evas.Eina_Bool hover_bottom
 
+    ctypedef char *(*GenlistItemLabelGetFunc)(void *data, evas.c_evas.Evas_Object *obj, char *part)
+    ctypedef evas.c_evas.Evas_Object *(*GenlistItemIconGetFunc)(void *data, evas.c_evas.Evas_Object *obj, char *part)
+    ctypedef evas.c_evas.Eina_Bool (*GenlistItemStateGetFunc)(void *data, evas.c_evas.Evas_Object *obj, char *part)
+    ctypedef void (*GenlistItemDelFunc)(void *data, evas.c_evas.Evas_Object *obj)
+
+    ctypedef struct Elm_Genlist_Item_Class_Func:
+        GenlistItemLabelGetFunc label_get
+        GenlistItemIconGetFunc icon_get
+        GenlistItemStateGetFunc state_get
+        GenlistItemDelFunc del_ "del"
+
+    ctypedef struct Elm_Genlist_Item_Class:
+        char *item_style
+        Elm_Genlist_Item_Class_Func func
+
+
     cdef struct Elm_Hoversel_Item
     cdef struct Elm_Menu_Item
     cdef struct Elm_Toolbar_Item
     cdef struct Elm_List_Item
     cdef struct Elm_Carousel_Item
     cdef struct Elm_Genlist_Item
-    cdef struct Elm_Genlist_Item_Class
 
     # Basic elementary functions
     void elm_init(int argc,char** argv)
@@ -505,27 +514,52 @@ cdef extern from "Elementary.h":
     double elm_slider_value_get(evas.c_evas.Evas_Object *obj)
     void elm_slider_inverted_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool inverted)
 
-    # Geneirc List
-    evas.c_evas.Evas_Object      *elm_genlist_add(evas.c_evas.Evas_Object *parent)
-    Elm_Genlist_Item *elm_genlist_item_append(evas.c_evas.Evas_Object *obj,  Elm_Genlist_Item_Class *itc,  void *data, Elm_Genlist_Item *parent, Elm_Genlist_Item_Flags flags, void (*func) (void *data, evas.c_evas.Evas_Object *obj, void *event_info),  void *func_data)
-    Elm_Genlist_Item *elm_genlist_item_prepend(evas.c_evas.Evas_Object *obj,  Elm_Genlist_Item_Class *itc,  void *data, Elm_Genlist_Item *parent, Elm_Genlist_Item_Flags flags, void (*func) (void *data, evas.c_evas.Evas_Object *obj, void *event_info),  void *func_data)
-    Elm_Genlist_Item *elm_genlist_item_insert_before(evas.c_evas.Evas_Object *obj,  Elm_Genlist_Item_Class *itc,  void *data, Elm_Genlist_Item *before, Elm_Genlist_Item_Flags flags, void (*func) (void *data, evas.c_evas.Evas_Object *obj, void *event_info),  void *func_data)
-    Elm_Genlist_Item *elm_genlist_item_insert_after(evas.c_evas.Evas_Object *obj,  Elm_Genlist_Item_Class *itc,  void *data, Elm_Genlist_Item *after, Elm_Genlist_Item_Flags flags, void (*func) (void *data, evas.c_evas.Evas_Object *obj, void *event_info),  void *func_data)
-    void              elm_genlist_clear(evas.c_evas.Evas_Object *obj)
-    Elm_Genlist_Item *elm_genlist_selected_item_get( evas.c_evas.Evas_Object *obj)
-    evas.c_evas.Eina_List  *elm_genlist_selected_items_get( evas.c_evas.Evas_Object *obj)
-    Elm_Genlist_Item *elm_genlist_first_item_get( evas.c_evas.Evas_Object *obj)
-    Elm_Genlist_Item *elm_genlist_last_item_get( evas.c_evas.Evas_Object *obj)
-    Elm_Genlist_Item *elm_genlist_item_next_get( Elm_Genlist_Item *item)
-    Elm_Genlist_Item *elm_genlist_item_prev_get( Elm_Genlist_Item *item)
-    void              elm_genlist_item_selected_set(Elm_Genlist_Item *item, evas.c_evas.Eina_Bool selected)
-    evas.c_evas.Eina_Bool         elm_genlist_item_selected_get( Elm_Genlist_Item *item)
-    void              elm_genlist_item_disabled_set(Elm_Genlist_Item *item, evas.c_evas.Eina_Bool disabled)
-    evas.c_evas.Eina_Bool         elm_genlist_item_disabled_get( Elm_Genlist_Item *item)
-    void              elm_genlist_item_show(Elm_Genlist_Item *item)
-    void              elm_genlist_item_del(Elm_Genlist_Item *item)
-    void       *elm_genlist_item_data_get( Elm_Genlist_Item *item)
-    void              elm_genlist_item_update(Elm_Genlist_Item *item)
+    # Generic List
+    evas.c_evas.Evas_Object *elm_genlist_add(evas.c_evas.Evas_Object *parent)
+    void elm_genlist_clear(evas.c_evas.Evas_Object *obj)
+    void elm_genlist_multi_select_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool multi)
+    void elm_genlist_horizontal_mode_set(evas.c_evas.Evas_Object *obj, Elementary_List_Mode mode)
+    void elm_genlist_always_select_mode_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool always_select)
+    void elm_genlist_no_select_mode_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool no_select)
+    void elm_genlist_compress_mode_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool compress)
+    void elm_genlist_bounce_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool h_bounce, evas.c_evas.Eina_Bool v_bounce)
+    void elm_genlist_homogeneous_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool homogeneous)
+    void elm_genlist_block_count_set(evas.c_evas.Evas_Object *obj, int n)
+    Elm_Genlist_Item *elm_genlist_item_append(evas.c_evas.Evas_Object *obj, Elm_Genlist_Item_Class *itc, void *data, Elm_Genlist_Item *parent, Elm_Genlist_Item_Flags flags, evas.c_evas.Evas_Smart_Cb func, void *func_data)
+    Elm_Genlist_Item *elm_genlist_item_prepend(evas.c_evas.Evas_Object *obj, Elm_Genlist_Item_Class *itc, void *data, Elm_Genlist_Item *parent, Elm_Genlist_Item_Flags flags, evas.c_evas.Evas_Smart_Cb func, void *func_data)
+    Elm_Genlist_Item *elm_genlist_item_insert_before(evas.c_evas.Evas_Object *obj, Elm_Genlist_Item_Class *itc, void *data, Elm_Genlist_Item *before, Elm_Genlist_Item_Flags flags, evas.c_evas.Evas_Smart_Cb func, void *func_data)
+    Elm_Genlist_Item *elm_genlist_item_insert_after(evas.c_evas.Evas_Object *obj, Elm_Genlist_Item_Class *itc, void *data, Elm_Genlist_Item *after, Elm_Genlist_Item_Flags flags, evas.c_evas.Evas_Smart_Cb func, void *func_data)
+    Elm_Genlist_Item *elm_genlist_selected_item_get(evas.c_evas.Evas_Object *obj)
+    evas.c_evas.Eina_List *elm_genlist_selected_items_get(evas.c_evas.Evas_Object *obj)
+    evas.c_evas.Eina_List *elm_genlist_realized_items_get(evas.c_evas.Evas_Object *obj)
+    Elm_Genlist_Item *elm_genlist_at_xy_item_get(evas.c_evas.Evas_Object *obj, evas.c_evas.Evas_Coord x, evas.c_evas.Evas_Coord y, int *posret)
+    Elm_Genlist_Item *elm_genlist_first_item_get(evas.c_evas.Evas_Object *obj)
+    Elm_Genlist_Item *elm_genlist_last_item_get(evas.c_evas.Evas_Object *obj)
+
+    Elm_Genlist_Item *elm_genlist_item_next_get(Elm_Genlist_Item *item)
+    Elm_Genlist_Item *elm_genlist_item_prev_get(Elm_Genlist_Item *item)
+    evas.c_evas.Evas_Object *elm_genlist_item_genlist_get(Elm_Genlist_Item *item)
+    Elm_Genlist_Item *elm_genlist_item_parent_get(Elm_Genlist_Item *it)
+    void elm_genlist_item_subitems_clear(Elm_Genlist_Item *item)
+    void elm_genlist_item_selected_set(Elm_Genlist_Item *item, evas.c_evas.Eina_Bool selected)
+    evas.c_evas.Eina_Bool elm_genlist_item_selected_get(Elm_Genlist_Item *item)
+    void elm_genlist_item_expanded_set(Elm_Genlist_Item *item, evas.c_evas.Eina_Bool expanded)
+    evas.c_evas.Eina_Bool elm_genlist_item_expanded_get(Elm_Genlist_Item *item)
+    void elm_genlist_item_disabled_set(Elm_Genlist_Item *item, evas.c_evas.Eina_Bool disabled)
+    evas.c_evas.Eina_Bool elm_genlist_item_disabled_get(Elm_Genlist_Item *item)
+    void elm_genlist_item_display_only_set(Elm_Genlist_Item *it, evas.c_evas.Eina_Bool display_only)
+    evas.c_evas.Eina_Bool elm_genlist_item_display_only_get(Elm_Genlist_Item *it)
+    void elm_genlist_item_show(Elm_Genlist_Item *item)
+    void elm_genlist_item_bring_in(Elm_Genlist_Item *item)
+    void elm_genlist_item_top_show(Elm_Genlist_Item *item)
+    void elm_genlist_item_top_bring_in(Elm_Genlist_Item *item)
+    void elm_genlist_item_middle_show(Elm_Genlist_Item *it)
+    void elm_genlist_item_middle_bring_in(Elm_Genlist_Item *it)
+    void elm_genlist_item_del(Elm_Genlist_Item *item)
+    void *elm_genlist_item_data_get(Elm_Genlist_Item *item)
+    void elm_genlist_item_data_set(Elm_Genlist_Item *it, void *data)
+    evas.c_evas.Evas_Object *elm_genlist_item_object_get(Elm_Genlist_Item *it)
+    void elm_genlist_item_update(Elm_Genlist_Item *item)
 
     # Check widget
     evas.c_evas.Evas_Object *elm_check_add(evas.c_evas.Evas_Object *parent)
