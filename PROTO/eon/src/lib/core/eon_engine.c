@@ -32,10 +32,8 @@ void eon_engine_init(void)
 	engine_sdl_init();
 #endif
 #ifdef BUILD_ENGINE_IPC
-	engine_remote_init();
 #endif
 #ifdef BUILD_ENGINE_BUFFER
-	engine_buffer_init();
 #endif
 }
 
@@ -51,21 +49,35 @@ void eon_engine_register(const char *name, Eon_Engine *e)
 
 Eon_Engine * eon_engine_get(const char *name)
 {
-	Ekeko_Object *o;
-	Ekeko_Type *t;
-	Eon_Type_Constructor n;
-
 	return eina_hash_find(_engines, name);
 }
+
+void * eon_engine_setup(Eon_Engine *e, Eon_Document *doc, int w, int h, const char *options)
+{
+	return e->setup(doc, w, h, options);
+}
+
+void eon_engine_cleanup(Eon_Engine *e, void *data)
+{
+	e->cleanup(data);
+}
+
+/* Flushes the enesim surface into the engine's native surface */
+Eina_Bool eon_engine_flush(Eon_Engine *e, void *data, Enesim_Surface *s,
+		Eina_Rectangle *rect)
+{
+	return e->flush(data, s, rect);
+}
+
 /*============================================================================*
  *                                   API                                      *
  *============================================================================*/
+#if 0
 EAPI void * eon_engine_document_create(Eon_Engine *e, Eon_Document *d,
 		int w, int h, const char *options)
 {
 	return e->document_create(d, w, h, options);
 }
-
 EAPI void * eon_engine_layout_create(Eon_Engine *e, Eon_Layout *l, void *dd, uint32_t w, uint32_t h)
 {
 	return e->layout_create(l, dd, w, h);
@@ -264,4 +276,4 @@ EAPI void eon_engine_debug_rect(Eon_Engine *e, void *c, uint32_t color, int x,  
 {
 	e->debug_rect(c, color, x, y, w, h);
 }
-
+#endif

@@ -181,7 +181,7 @@ static Eon_Document * _document_new(const char *engine, int w, int h, const char
 	prv = PRIVATE(d);
 	/* the gfx engine */
 	prv->engine.backend = eon_engine_get(engine);
-	prv->engine.data = eon_engine_document_create(prv->engine.backend, d, w, h, options);
+	prv->engine.data = eon_engine_setup(prv->engine.backend, d, w, h, options);
 	eon_document_resize(d, w, h);
 #if 0
 	/* the script engine */

@@ -185,11 +185,11 @@ static void _parent_set_cb(Ekeko_Object *o, Ekeko_Event *e, void *data)
 	/* TODO propagate the change of zindex locally in case the object is not a canvas */
 	/* TODO propagate the change of zindex to the next sibling */
 }
-static void _property_get(const Ekeko_Object *o, Ekeko_Event *e, void *data)
+static void _property_get(Ekeko_Object *o, Ekeko_Event *e, void *data)
 {
 
 }
-static void _property_set(const Ekeko_Object *o, Ekeko_Event *e, void *data)
+static void _property_set(Ekeko_Object *o, Ekeko_Event *e, void *data)
 {
 
 }
@@ -218,6 +218,10 @@ static void _ctor(Ekeko_Object *o)
 			EKEKO_PROPERTY_OBJECT);
 	EON_PAINT_VISIBILITY = ekeko_object_property_add(o, "visibility",
 			EKEKO_PROPERTY_BOOL);
+	EON_PAINT_WIDTH = ekeko_object_property_add(o, "width",
+			EON_PROPERTY_COORD);
+	EON_PAINT_HEIGHT = ekeko_object_property_add(o, "height",
+			EON_PROPERTY_COORD);
 	/* default values */
 	prv->rop = ENESIM_BLEND;
 	prv->color = 0xffffffff;
@@ -243,7 +247,8 @@ static void _dtor(Ekeko_Object *o)
 	ekeko_object_property_del(o, EON_PAINT_COORDSPACE);
 	ekeko_object_property_del(o, EON_PAINT_MATRIXSPACE);
 	ekeko_object_property_del(o, EON_PAINT_STYLE);
-	ekeko_object_property_del(o, EON_PAINT_VISIBILITY);
+	ekeko_object_property_del(o, EON_PAINT_WIDTH);
+	ekeko_object_property_del(o, EON_PAINT_HEIGHT);
 }
 /*============================================================================*
  *                                 Global                                     *
@@ -554,6 +559,8 @@ Ekeko_Property_Id EON_PAINT_COORDSPACE = NULL;
 Ekeko_Property_Id EON_PAINT_MATRIXSPACE = NULL;
 Ekeko_Property_Id EON_PAINT_STYLE = NULL;
 Ekeko_Property_Id EON_PAINT_VISIBILITY = NULL;
+Ekeko_Property_Id EON_PAINT_WIDTH = NULL;
+Ekeko_Property_Id EON_PAINT_HEIGHT = NULL;
 
 /**
  * Gets the type of a paint object

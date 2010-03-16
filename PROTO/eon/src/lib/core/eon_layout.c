@@ -514,9 +514,13 @@ void eon_layout_process(Eon_Layout *l)
 		/* first create the new tiler */
 		_tiler_update(l, &geom);
 		/* create the surface that holds this layout */
+#if 0
 		if (ld) eon_engine_layout_delete(e, ld);
+#endif
 
+#if 0
 		ld = eon_engine_layout_create(e, l, dd, geom.w, geom.h);
+#endif
 		eon_object_engine_data_set((Eon_Object *)l, ld);
 		goto renderables;
 	}
@@ -570,8 +574,10 @@ tiles:
 			if (!eina_rectangle_intersection(&geom, &rect))
 				continue;
 			DBG("%p rendering renderable %s:%p (%d %d %d %d)", l, ekeko_object_type_name_get(r), r, geom.x, geom.y, geom.w, geom.h);
+#if 0
 #if BOUNDING_DEBUG
 			eon_engine_debug_rect(e, surface, 0xffaaaaaa, rect.x, rect.y, rect.w, rect.h);
+#endif
 #endif
 			/* FIXME */
 			pdata = eon_object_engine_data_get((Eon_Object *)r);
@@ -592,8 +598,10 @@ tiles:
 	while (eina_iterator_next(it, (void **)&rect))
 	{
 		DBG("%p flushing %d %d %d %d", l, rect.x, rect.y, rect.w, rect.h);
+#if 0
 		if (eon_engine_layout_flush(e, ld, &rect))
 			break;
+#endif
 #if 0
 		if (l->flush(l, &rect))
 			break;

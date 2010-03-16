@@ -28,7 +28,8 @@
  *============================================================================*/
 #define SINGLE_BUFFER
 
-typedef struct _Engine_SDL_Document
+
+typedef struct _Eon_SDL
 {
 	Eon_Document *doc;
 	SDL_Surface *s; /* main surface */
@@ -38,16 +39,11 @@ typedef struct _Engine_SDL_Document
 	char resizable:1;
 	char dbuffer:1;
 	Ecore_Event_Handler *handler_rz;
-} Engine_SDL_Document;
-
-typedef struct _Engine_SDL_Layout
-{
-	Engine_SDL_Document *sdoc;
 	/* mouse, key, etc handlers */
 	Ecore_Event_Handler *handlers[7];
-} Engine_SDL_Layout;
+} Eon_SDL;
 
-static void _sdl_surface_new(Engine_SDL_Document *sdoc, int w, int h)
+static void _sdl_surface_new(Eon_SDL *sdoc, int w, int h)
 {
 	Uint32 flags = SDL_SRCALPHA;
 
@@ -71,13 +67,14 @@ static int _sdl_event(void *data)
 static int _resize_cb(void *data, int type, void *event)
 {
 	Ecore_Sdl_Event_Video_Resize *e = event;
-	Engine_SDL_Document *sdoc = data;
+	Eon_SDL *sdoc = data;
 
 	eon_document_resize(sdoc->doc, e->w, e->h);
 	_sdl_surface_new(sdoc, e->w, e->h);
 
 	return 1;
 }
+
 static int _mouse_down_cb(void *data, int type, void *event)
 {
 	Eon_Input *input = (Eon_Input *)data;
@@ -128,88 +125,6 @@ static int _out_cb(void *data, int type, void *event)
 	return 1;
 }
 
-static void * document_create(Eon_Document *d, int w, int h, const char *options)
-{
-	Engine_SDL_Document *sdoc;
-	Uint32 flags = SDL_SRCALPHA;
-
-	printf("[SDL] Initializing SDL\n");
-	sdoc = calloc(1, sizeof(Engine_SDL_Document));
-	if (options)
-	{
-		if (!strcmp(options, "resizable"))
-			sdoc->resizable = 1;
-	}
-	sdoc->doc = d;
-	ecore_sdl_init(NULL);
-	SDL_Init(SDL_INIT_VIDEO);
-	_sdl_surface_new(sdoc, w, h);
-	/* the event feeder evas/ecore has a very weird way to feed sdl events! */
-	ecore_timer_add(0.008, _sdl_event, NULL);
-	/* called whenever the wm changes the window */
-	ecore_event_handler_add(ECORE_SDL_EVENT_RESIZE, _resize_cb, sdoc);
-
-	return sdoc;
-}
-
-static void document_delete(void *data)
-{
-	ecore_sdl_shutdown();
-}
-
-static void _lock(void *s)
-{
-	SDL_Surface *src = s;
-
-	SDL_LockSurface(src);
-}
-
-static void _unlock(void *s)
-{
-	SDL_Surface *src = s;
-
-	SDL_UnlockSurface(src);
-}
-
-static void _blit(void *src, Eina_Rectangle *srect, void *context, void *dst, Eina_Rectangle *drect)
-{
-	SDL_Rect ssrect, sdrect;
-
-	ssrect.x = srect->x;
-	ssrect.y = srect->y;
-	ssrect.w = srect->w;
-	ssrect.h = srect->h;
-
-	sdrect.x = drect->x;
-	sdrect.y = drect->y;
-	sdrect.w = drect->w;
-	sdrect.h = drect->h;
-
-#ifdef EON_DEBUG
-	printf("[SDL] rendering into %p from %p (%d %d %d %d to %d %d %d %d)\n",
-			dst, src, srect->x, srect->y, srect->w, srect->h,
-			drect->x, drect->y, drect->w, drect->h);
-#endif
-	SDL_BlitSurface(src, &ssrect, dst, &sdrect);
-}
-
-static Eina_Bool _flush(void *src, Eina_Rectangle *srect)
-{
-	SDL_Surface *s = src;
-
-#ifdef EON_DEBUG
-	printf("[SDL] Flushing surface %p\n", s);
-#endif
-#ifdef SINGLE_BUFFER
-	SDL_UpdateRect(s, srect->x, srect->y, srect->w, srect->h);
-	return EINA_FALSE;
-#else
-	SDL_Flip(s);
-	return EINA_TRUE;
-#endif
-
-}
-
 static void _root_canvas_create(Eon_Layout *c)
 {
 	Eon_Input *input;
@@ -230,38 +145,17 @@ static void _root_canvas_create(Eon_Layout *c)
 	eon_input_feed_mouse_in(input);
 }
 
-static void layout_delete(void *data)
+Eina_Bool _sdl_flush(void *data, Enesim_Surface *src, Eina_Rectangle *rect)
 {
-	Eon_Enesim_Layout *l = data;
-	Engine_SDL_Layout *sdl_layout = l->data;
+	Eon_SDL *sdl = (Eon_SDL *)data;
+	SDL_Surface *dst;
 
-	eon_engine_enesim_layout_delete(l);
-	free(sdl_layout);
-}
-
-static void * layout_create(Eon_Layout *l, void *dd, int w, int h)
-{
-	Engine_SDL_Layout *sdl_layout;
-
-	sdl_layout = malloc(sizeof(Engine_SDL_Layout));
-	sdl_layout->sdoc = dd;
-
-	return eon_engine_enesim_layout_create(l, w, h, sdl_layout);
-}
-
-static Eina_Bool layout_flush(void *src, Eina_Rectangle *srect)
-{
-	Eon_Enesim_Layout *l = (Eon_Enesim_Layout *)src;
-	Engine_SDL_Layout *sdl_layout = l->data;
-	Enesim_Surface *es = l->s;
 	Enesim_Converter_1D conv;
 	Enesim_Converter_Data cdata;
-	uint32_t *sdata;
-	uint8_t *sdldata;
+	uint32_t *src_data;
+	uint8_t *dst_data;
 
-	SDL_Surface *s;
-
-	int h = srect->h;
+	int h = rect->h;
 	int stride;
 	int inc;
 	int numcpus;
@@ -269,17 +163,17 @@ static Eina_Bool layout_flush(void *src, Eina_Rectangle *srect)
 	int coffset;
 
 #if 1
-	printf("Flushing the canvas %p %d %d %d %d\n", es, srect->x, srect->y, srect->w, srect->h);
+	printf("Flushing the surface %p %d %d %d %d\n", src, rect->x, rect->y, rect->w, rect->h);
 #endif
+#if 0
 	/* setup the pointers */
-	s = sdl_layout->sdoc->s;
-	stride = enesim_surface_stride_get(es);
+	stride = enesim_surface_stride_get(src);
+	soffset = (stride * rect->y) + rect->x;
 
 	sdata = enesim_surface_data_get(es);
-	sdldata = s->pixels;
+	sdldata = ss->pixels;
 
-	soffset = (stride * srect->y) + srect->x;
-	coffset = (s->pitch * srect->y) + (srect->x * 4);
+	coffset = (ss->pitch * rect->y) + (rect->x * 4);
 
 	sdldata += coffset;
 	sdata += soffset;
@@ -287,30 +181,64 @@ static Eina_Bool layout_flush(void *src, Eina_Rectangle *srect)
 	cdata.argb8888.plane0_stride = s->pitch / 4;
 	/* convert */
 	conv = enesim_converter_span_get(ENESIM_CONVERTER_ARGB8888, ENESIM_ANGLE_0, ENESIM_FORMAT_ARGB8888);
-	_lock(s);
+	SDL_LockSurface(ss);
 	while (h--)
 	{
-		conv(&cdata, srect->w, sdata);
+		conv(&cdata, rect->w, sdata);
 		sdata += stride;
 		cdata.argb8888.plane0 += cdata.argb8888.plane0_stride;
 	}
-	_unlock(s);
-	return _flush(s, srect);
+	SDL_UnlockSurface(ss);
+
+#ifdef SINGLE_BUFFER
+	SDL_UpdateRect(s, rect->x, rect->y, rect->w, rect->h);
+	return EINA_FALSE;
+#else
+	SDL_Flip(s);
+	return EINA_TRUE;
+#endif
+#endif
+}
+
+void * _sdl_setup(Eon_Document *doc, int w, int h, const char *options)
+{
+	Eon_SDL *sdl;
+	Uint32 flags = SDL_SRCALPHA;
+
+	printf("[SDL] Initializing SDL\n");
+	sdl = calloc(1, sizeof(Eon_SDL));
+	if (options)
+	{
+		if (!strcmp(options, "resizable"))
+			sdl->resizable = 1;
+	}
+	sdl->doc = doc;
+	ecore_sdl_init(NULL);
+	SDL_Init(SDL_INIT_VIDEO);
+	_sdl_surface_new(sdl, w, h);
+	/* the event feeder evas/ecore has a very weird way to feed sdl events! */
+	ecore_timer_add(0.008, _sdl_event, NULL);
+	/* called whenever the wm changes the window */
+	ecore_event_handler_add(ECORE_SDL_EVENT_RESIZE, _resize_cb, sdl);
+
+	return sdl;
+}
+
+void _sdl_cleanup(void *data)
+{
+	ecore_sdl_shutdown();
 }
 
 static Eon_Engine _sdl_engine = {
-	.document_create = document_create,
-	.document_delete = document_delete,
-	.layout_flush = layout_flush,
-	.layout_create = layout_create,
-	.layout_delete = layout_delete,
+	.setup = _sdl_setup,
+	.cleanup = _sdl_cleanup,
+	.flush = _sdl_flush,
 };
 /*============================================================================*
  *                                 Global                                     *
  *============================================================================*/
 void engine_sdl_init(void)
 {
-	eon_engine_enesim_setup(&_sdl_engine);
 	eon_engine_register("sdl", &_sdl_engine);
 }
 

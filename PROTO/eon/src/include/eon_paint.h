@@ -46,6 +46,8 @@ extern Ekeko_Property_Id EON_PAINT_COORDSPACE;
 extern Ekeko_Property_Id EON_PAINT_MATRIXSPACE;
 extern Ekeko_Property_Id EON_PAINT_STYLE;
 extern Ekeko_Property_Id EON_PAINT_VISIBILITY;
+extern Ekeko_Property_Id EON_PAINT_WIDTH;
+extern Ekeko_Property_Id EON_PAINT_HEIGHT;
 /*============================================================================*
  *                                 Class                                      *
  *============================================================================*/
