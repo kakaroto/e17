@@ -25,7 +25,6 @@
 
 #include <Evas.h>
 #include <Ecore.h>
-#include <Ecore_Data.h>
 #include <Ecore_Getopt.h>
 #include <Ecore_Evas.h>
 #include <Eina.h>
