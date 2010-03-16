@@ -843,28 +843,14 @@ void cache_messages_max_set(Evas_Object *label) {
 	}
 }
 
-void cache_messages_max_decrease(void *label, Evas_Object *obj, void *event_info) {
-	if(settings->max_messages <= 10)
-		settings->max_messages=0;
-	else
-		settings->max_messages-=10;
-
-	cache_messages_max_set((Evas_Object*)label);
-}
-
-void cache_messages_max_increase(void *label, Evas_Object *obj, void *event_info) {
-	if(settings->max_messages >= 90)
-		settings->max_messages=100;
-	else
-		settings->max_messages+=10;
-
-	cache_messages_max_set((Evas_Object*)label);
+void cache_messages_max_change(void *data, Evas_Object *spinner, void *event_info) {
+	settings->max_messages=elm_spinner_value_get(spinner);
 }
 
 void on_settings_cache(void *data, Evas_Object *toolbar, void *event_info) {
-	Evas_Object *label=NULL, *button=NULL, *box=NULL;
+	Evas_Object *label=NULL, *button=NULL, *spinner=NULL;
 	int sqlite_res = 0;
-	char *query = NULL, *db_err = NULL, *count=NULL;
+	char *query = NULL, *db_err = NULL;
 
 	if(account_editor) evas_object_del(account_editor);
 	if(cache_editor) evas_object_del(cache_editor);
@@ -914,48 +900,17 @@ void on_settings_cache(void *data, Evas_Object *toolbar, void *event_info) {
 			evas_object_show(button);
 		elm_table_pack(cache_editor, button, 1, 1, 1, 1);
 
-		label = elm_label_add(settings_win);
-			evas_object_size_hint_weight_set(label, 1, 1);
-			evas_object_size_hint_align_set(label, 0.5, 0.5);
-			elm_label_label_set(label, _("Displayed messages:"));
-			evas_object_show(label);
-		elm_table_pack(cache_editor, label, 0, 2, 1, 1);
-
-		box = elm_box_add(settings_win);
-			evas_object_size_hint_weight_set(box, 1, 1);
-			evas_object_size_hint_align_set(box, -1, 0.5);
-			elm_box_horizontal_set(box, TRUE);
-
-			label = elm_label_add(settings_win);
-				evas_object_size_hint_weight_set(label, 1, 1);
-				evas_object_size_hint_align_set(label, 0.5, 0.5);
-				sqlite_res = asprintf(&count, " %3d  ", settings->max_messages);
-				if(sqlite_res != -1) {
-					elm_label_label_set(label, count);
-					free(count);
-					evas_object_show(label);
-				}
-				sqlite_res = 0;
-			elm_box_pack_end(box, label);
-
-			button = elm_button_add(settings_win);
-				evas_object_size_hint_weight_set(button, 1, 1);
-				evas_object_size_hint_align_set(button, -1, -1);
-				elm_button_label_set(button, "-10");
-				evas_object_smart_callback_add(button, "clicked", cache_messages_max_decrease, label);
-				evas_object_show(button);
-			elm_box_pack_start(box, button);
-
-			button = elm_button_add(settings_win);
-				evas_object_size_hint_weight_set(button, 1, 1);
-				evas_object_size_hint_align_set(button, -1, -1);
-				elm_button_label_set(button, "+10");
-				evas_object_smart_callback_add(button, "clicked", cache_messages_max_increase, label);
-				evas_object_show(button);
-			elm_box_pack_end(box, button);
-
-			evas_object_show(box);
-		elm_table_pack(cache_editor, box, 1, 2, 1, 1);
+		spinner = elm_spinner_add(settings_win);
+			evas_object_size_hint_weight_set(spinner, 1, 1);
+			evas_object_size_hint_align_set(spinner, -1, 0.5);
+			elm_spinner_label_format_set(spinner, _("Display %0.f messages"));
+			elm_spinner_min_max_set(spinner, 0.0, 200.0);
+			elm_spinner_step_set(spinner, 10.0);
+			elm_spinner_wrap_set(spinner, 1.0);
+			elm_spinner_value_set(spinner, settings->max_messages);
+			evas_object_smart_callback_add(spinner, "changed", cache_messages_max_change, NULL);
+			elm_table_pack(cache_editor, spinner, 0, 2, 2, 1);
+		evas_object_show(spinner);
 
 		elm_box_pack_start(settings_area, cache_editor);
 	evas_object_show(cache_editor);
@@ -970,7 +925,7 @@ static void settings_choose_browser(void *data, Evas_Object *hoversel, void *eve
 		case BROWSER_WOOSH:		{ settings->browser=b;	break; }
 		case BROWSER_DILLO:		{ settings->browser=b;	break; }
 		case BROWSER_XDG:
-		default:				{ settings->browser=b;	break; }
+		default:				{ settings->browser=BROWSER_XDG;	break; }
 	}
 
 	settings->browser_name = strdup(browserNames[b]);
