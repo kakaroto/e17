@@ -406,6 +406,7 @@ cdef extern from "Evas.h":
     #
     ctypedef void (*Evas_Event_Cb)(void *data, Evas *e, void *event_info)
     ctypedef void (*Evas_Object_Event_Cb)(void *data, Evas *e, Evas_Object *obj, void *event_info)
+    ctypedef void (*Evas_Smart_Cb)(void *data, Evas_Object *obj, void *event_info)
 
     ####################################################################
     # Engine
@@ -625,8 +626,8 @@ cdef extern from "Evas.h":
     Evas_Smart *evas_object_smart_smart_get(Evas_Object *obj)
     void *evas_object_smart_data_get(Evas_Object *obj)
     void evas_object_smart_data_set(Evas_Object *obj, void *data)
-    void evas_object_smart_callback_add(Evas_Object *obj, char *event, void (*func) (void *data, Evas_Object *obj, void *event_info), void *data)
-    void *evas_object_smart_callback_del(Evas_Object *obj, char *event, void (*func) (void *data, Evas_Object *obj, void *event_info))
+    void evas_object_smart_callback_add(Evas_Object *obj, char *event, Evas_Smart_Cb func, void *data)
+    void *evas_object_smart_callback_del(Evas_Object *obj, char *event, Evas_Smart_Cb func)
     void evas_object_smart_callback_call(Evas_Object *obj, char *event, void *event_info)
     void evas_object_smart_changed(Evas_Object *obj)
     void evas_object_smart_need_recalculate_set(Evas_Object *obj, int value)
