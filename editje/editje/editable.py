@@ -169,45 +169,82 @@ class Editable(Manager, object):
 
         self.group_size = (w, h)
 
+    def _verify_max_w(self, w, group_w, group_h, min_w, group):
+        if w < 0:
+            w = 0
+        if w < min_w and w != 0:
+            w = min_w
+        if w < group_w:
+            group.resize(w, group_h)
+
+        return w
+
+    def _verify_max_h(self, h, group_w, group_h, min_h, group):
+        if h < 0:
+            h = 0
+        if h < min_h and h != 0:
+            h = min_h
+        if h < group_h:
+            group.resize(group_w, h)
+
+        return h
+
     def _max_get(self):
         return self._max
 
     def _max_set(self, value):
-        if self._max != value:
-            w, h = value
-            if w < 0:
-                w = 0
-            elif self._min[0] and w < self._min[0]:
-                w = self._min[0]
-            if h < 0:
-                h = 0
-            elif self._min[1] and h < self._min[1]:
-                h = self._min[1]
-            self._max = (w, h)
-            self._edje_group.w_max = w
-            self._edje_group.h_max = h
-            self.event_emit("group.max.changed", self._max)
+        if self._max == value:
+            return
+
+        w, h = value
+        group_w, group_h = self.group_size
+        min_w, min_h = self._min
+
+        w = self._verify_max_w(w, group_w, group_h, min_w, self._edje)
+        h = self._verify_max_h(h, group_w, group_h, min_h, self._edje)
+        self._edje_group.h_max = h
+        self._max = (w, h)
+        self.event_emit("group.max.changed", self._max)
 
     group_max = property(_max_get, _max_set)
+
+    def _verify_min_w(self, w, group_w, group_h, max_w, group):
+        if w < 0:
+            w = 0
+        if w > max_w and max_w != 0:
+            w = max_w
+        if w > group_w:
+            group.resize(w, group_h)
+
+        return w
+
+    def _verify_min_h(self, h, group_w, group_h, max_h, group):
+        if h < 0:
+            h = 0
+        if h > max_h and max_h != 0:
+            h = max_h
+        if h > group_h:
+            group.resize(group_w, h)
+
+        return h
 
     def _min_get(self):
         return self._min
 
     def _min_set(self, value):
-        if self._min != value:
-            w, h = value
-            if w < 0:
-                w = 0
-            elif self._max[0] and w > self._max[0]:
-                w = self._max[0]
-            if h < 0:
-                h = 0
-            elif self._max[1] and h > self._max[1]:
-                h = self._max[1]
-            self._min = (w, h)
-            self._edje_group.w_min = w
-            self._edje_group.h_min = h
-            self.event_emit("group.min.changed", self._min)
+        if self._min == value:
+            return
+
+        w, h = value
+        group_w, group_h = self.group_size
+        max_w, max_h = self._max
+
+        w = self._verify_min_w(w, group_w, group_h, max_w, self._edje)
+        h = self._verify_min_h(h, group_w, group_h, max_h, self._edje)
+        self._edje_group.w_min = w
+        self._edje_group.h_min = h
+        self._min = (w, h)
+        self.event_emit("group.min.changed", self._min)
 
     group_min = property(_min_get, _min_set)
 
