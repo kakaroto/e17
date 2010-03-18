@@ -40,6 +40,9 @@ cdef class Program:
         self._name = newname
         return True
 
+    def edje_get(self):
+        return self.edje
+
     def run(self):
         return bool(edje_edit_program_run(self.edje.obj, self.name))
 
