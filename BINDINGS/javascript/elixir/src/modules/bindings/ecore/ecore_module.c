@@ -146,7 +146,30 @@ elixir_ecore_event_current_event_get(JSContext *cx, uintN argc, jsval *vp)
    return JS_TRUE;
 }
 
-FAST_CALL_PARAMS(ecore_init, elixir_int_params_void);
+static int
+_elixir_ecore_maybe_gc(void *data)
+{
+   JSContext *cx = data;
+
+   JS_MaybeGC(cx);
+}
+
+static JSBool
+elixir_ecore_init(JSContext *cx, uintN argc, jsval *vp)
+{
+   int r;
+
+   if (!elixir_params_check(cx, void_params, NULL, argc, JS_ARGV(cx, vp)))
+     return JS_FALSE;
+
+   r = ecore_init();
+
+   ecore_idle_enterer_add(_elixir_ecore_maybe_gc, cx);
+
+   JS_SET_RVAL(cx, vp, INT_TO_JSVAL(r));
+   return JS_TRUE;
+}
+
 FAST_CALL_PARAMS(ecore_shutdown, elixir_int_params_void);
 FAST_CALL_PARAMS(ecore_event_type_new, elixir_int_params_void);
 FAST_CALL_PARAMS(ecore_event_current_type_get, elixir_int_params_void);

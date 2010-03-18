@@ -497,6 +497,8 @@ elixir_function_run(JSContext *cx, JSFunction *callback, JSObject *parent, int a
 	JS_ClearPendingException(cx);
      }
 
+   JS_MaybeGC(cx);
+
    elixir_object_unregister(cx, &obj);
 
    for (i = 0; i < argc; ++i)
