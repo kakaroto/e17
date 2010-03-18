@@ -58,7 +58,7 @@ cdef void obj_free_cb(void *data, Evas *e,
                 traceback.print_exc()
 
     _object_free_wrapper_resources(self)
-    python.Py_DECREF(self)
+    Py_DECREF(self)
 
 
 cdef _object_register_decorated_callbacks(obj):
@@ -262,7 +262,7 @@ cdef public class Object [object PyEvasObject, type PyEvasObject_Type]:
                "Evas_Object has incorrect python-evas data"
         self.obj = NULL
         self.evas = <Canvas>None
-        python.Py_DECREF(self)
+        Py_DECREF(self)
         return 1
 
     cdef int _set_obj(self, Evas_Object *obj) except 0:
@@ -270,7 +270,7 @@ cdef public class Object [object PyEvasObject, type PyEvasObject_Type]:
         assert evas_object_data_get(obj, "python-evas") == NULL, \
                "Evas_Object must not wrapped by something else!"
         self.obj = obj
-        python.Py_INCREF(self)
+        Py_INCREF(self)
         evas_object_data_set(obj, "python-evas", <void *>self)
         evas_object_event_callback_add(obj, EVAS_CALLBACK_FREE, obj_free_cb,
                                        <void *>self)

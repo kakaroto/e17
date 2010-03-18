@@ -230,7 +230,7 @@ cdef long _smart_object_class_new(char *name) except 0:
     cdef Evas_Smart_Class *cls_def
     cdef Evas_Smart *cls
 
-    cls_def = <Evas_Smart_Class*>python.PyMem_Malloc(sizeof(Evas_Smart_Class))
+    cls_def = <Evas_Smart_Class*>PyMem_Malloc(sizeof(Evas_Smart_Class))
     if cls_def == NULL:
         return 0
 
@@ -364,42 +364,42 @@ cdef public class SmartObject(Object) [object PyEvasSmartObject,
         cls = self.__class__
         self._m_delete = _smart_class_get_impl_method(cls, "delete")
         if self._m_delete is not None:
-            self.delete = python.PyMethod_New(Object.delete, self, cls)
+            self.delete = PyMethod_New(Object.delete, self, cls)
         self._m_move = _smart_class_get_impl_method(cls, "move")
         if self._m_move is not None:
-            self.move = python.PyMethod_New(Object.move, self, cls)
+            self.move = PyMethod_New(Object.move, self, cls)
         self._m_resize = _smart_class_get_impl_method(cls, "resize")
         if self._m_resize is not None:
-            self.resize = python.PyMethod_New(Object.resize, self, cls)
+            self.resize = PyMethod_New(Object.resize, self, cls)
         self._m_show = _smart_class_get_impl_method(cls, "show")
         if self._m_show is not None:
-            self.show = python.PyMethod_New(Object.show, self, cls)
+            self.show = PyMethod_New(Object.show, self, cls)
         self._m_hide = _smart_class_get_impl_method(cls, "hide")
         if self._m_hide is not None:
-            self.hide = python.PyMethod_New(Object.hide, self, cls)
+            self.hide = PyMethod_New(Object.hide, self, cls)
         self._m_color_set = _smart_class_get_impl_method(cls, "color_set")
         if self._m_color_set is not None:
-            self.color_set = python.PyMethod_New(Object.color_set, self, cls)
+            self.color_set = PyMethod_New(Object.color_set, self, cls)
         self._m_clip_set = _smart_class_get_impl_method(cls, "clip_set")
         if self._m_clip_set is not None:
-            self.clip_set = python.PyMethod_New(Object.clip_set, self, cls)
+            self.clip_set = PyMethod_New(Object.clip_set, self, cls)
         self._m_clip_unset = _smart_class_get_impl_method(cls, "clip_unset")
         if self._m_clip_unset is not None:
-            self.clip_unset = python.PyMethod_New(Object.clip_unset, self, cls)
+            self.clip_unset = PyMethod_New(Object.clip_unset, self, cls)
         self._m_calculate = _smart_class_get_impl_method_cls(
             cls, SmartObject, "calculate")
         if self._m_calculate is not None:
-            self.calculate = python.PyMethod_New(
+            self.calculate = PyMethod_New(
                 SmartObject.calculate, self, cls)
         self._m_member_add = _smart_class_get_impl_method_cls(
             cls, SmartObject, "member_add")
         if self._m_member_add is not None:
-            self.member_add = python.PyMethod_New(
+            self.member_add = PyMethod_New(
                 SmartObject.member_add, self, cls)
         self._m_member_del = _smart_class_get_impl_method_cls(
             cls, SmartObject, "member_del")
         if self._m_member_del is not None:
-            self.member_del = python.PyMethod_New(
+            self.member_del = PyMethod_New(
                 SmartObject.member_del, self, cls)
 
     def __dealloc__(self):
