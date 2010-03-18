@@ -60,6 +60,8 @@ static const Ecore_Getopt options =
                         ('h', "help"),
                 ECORE_GETOPT_STORE_STR
                         ('l', "level", "level file to play."),
+                ECORE_GETOPT_STORE_DEF_BOOL
+                        ('c', "cursor", "show/hide cursor. Usefull for touchscreens", 1),
                 ECORE_GETOPT_SENTINEL
         }
 };
@@ -247,7 +249,7 @@ int main(int argc, char **argv)
         int args;
         unsigned char quit_option = 0;
         Eina_Rectangle geometry = {0, 0, 0, 0};
-        unsigned char is_fullscreen = 0;
+        unsigned char is_fullscreen = 0, has_cursor = 1;
 
         Ecore_Getopt_Value values[] = 
         {
@@ -260,6 +262,7 @@ int main(int argc, char **argv)
                 ECORE_GETOPT_VALUE_BOOL(quit_option),
                 ECORE_GETOPT_VALUE_BOOL(quit_option),
                 ECORE_GETOPT_VALUE_STR(level_to_play),
+                ECORE_GETOPT_VALUE_BOOL(has_cursor),
                 ECORE_GETOPT_VALUE_NONE
         };
 
@@ -306,6 +309,12 @@ int main(int argc, char **argv)
 
         if (is_fullscreen)
                 ecore_evas_fullscreen_set(application->ee, EINA_TRUE);
+
+        if (!has_cursor && !strcmp(ecore_evas_engine_name_get(application->ee), "software_x11"))
+        {
+                Ecore_X_Window ewin = ecore_evas_software_x11_window_get(application->ee);
+                ecore_x_window_cursor_show(ewin, 0);
+        }
 
         ecore_evas_show(application->ee);
 
