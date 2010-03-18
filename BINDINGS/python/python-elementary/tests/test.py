@@ -1434,7 +1434,10 @@ def list_clicked(obj, it):
     ic = elementary.Icon(win)
     ic.standard_set("edit")
     ic.scale_set(0, 0)
-    li.item_append(".", ic)
+    ic2 = elementary.Icon(win)
+    ic2.standard_set("clock")
+    ic2.scale_set(0, 0)
+    li.item_append(".", ic, ic2)
 
     ic = elementary.Icon(win)
     ic.standard_set("delete")
