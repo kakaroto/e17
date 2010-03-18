@@ -1233,8 +1233,7 @@ _help(void)
 	   "  -p PROFILE\n"
 	   "  -f use netwm fullscreen request (requires x11 + wm)\n"
 	   "\n"
-	   "Where ENGINE can be one of:\n"
-	   " ");
+	   "Where ENGINE can be one of:\n");
    for (i = 0; engines[i].name != NULL; ++i)
      fprintf(stderr, " %s", engines[i].name);
 
