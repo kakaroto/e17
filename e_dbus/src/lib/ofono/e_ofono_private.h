@@ -39,6 +39,9 @@
     extern const char *e_ofono_prop_status;
     extern const char *e_ofono_prop_operator;
     extern const char *e_ofono_prop_strength;
+    extern const char *e_ofono_iface_sms;
+    extern const char *e_ofono_prop_sca;
+    extern const char *e_ofono_method_send_sms;
 
     extern int _e_dbus_ofono_log_dom;
 

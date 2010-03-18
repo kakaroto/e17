@@ -16,7 +16,8 @@ e_ofono.c \
 e_ofono_element.c \
 e_ofono_manager.c \
 e_ofono_modem.c \
-e_ofono_network_reg.c
+e_ofono_network_reg.c \
+e_ofono_sms.c
 
 libeofono_la_LIBADD = \
 @EDBUS_LIBS@ @EVAS_LIBS@ \

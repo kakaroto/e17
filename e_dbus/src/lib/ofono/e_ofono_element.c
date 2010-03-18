@@ -1054,8 +1054,7 @@ e_ofono_element_free(E_Ofono_Element *element)
 
    e_ofono_element_pending_cancel_and_free(&element->_pending.properties_get);
    e_ofono_element_pending_cancel_and_free(&element->_pending.property_set);
-   e_ofono_element_pending_cancel_and_free(&element->_pending.agent_register);
-   e_ofono_element_pending_cancel_and_free(&element->_pending.agent_unregister);
+   e_ofono_element_pending_cancel_and_free(&element->_pending.send_sms);
 
    e_ofono_element_extra_properties_free(element);
    eina_stringshare_del(element->interface);

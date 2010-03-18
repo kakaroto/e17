@@ -31,6 +31,9 @@ const char *e_ofono_prop_mode = NULL;
 const char *e_ofono_prop_status = NULL;
 const char *e_ofono_prop_operator = NULL;
 const char *e_ofono_prop_strength = NULL;
+const char *e_ofono_iface_sms = NULL;
+const char *e_ofono_prop_sca = NULL;
+const char *e_ofono_method_send_sms = NULL;
 
 int _e_dbus_ofono_log_dom = -1;
 
@@ -247,6 +250,12 @@ e_ofono_system_init(E_DBus_Connection *edbus_conn)
      e_ofono_prop_operator = eina_stringshare_add("Operator");
    if (e_ofono_prop_strength == NULL)
      e_ofono_prop_strength = eina_stringshare_add("Strength");
+   if (e_ofono_iface_sms == NULL)
+   e_ofono_iface_sms = eina_stringshare_add("org.ofono.SmsManager");
+   if (e_ofono_prop_sca == NULL)
+   e_ofono_prop_sca = eina_stringshare_add("ServiceCenterAddress");
+   if (e_ofono_method_send_sms == NULL)
+     e_ofono_method_send_sms = eina_stringshare_add("SendMessage");
 
    e_ofono_conn = edbus_conn;
    cb_name_owner_changed = e_dbus_signal_handler_add
@@ -303,5 +312,8 @@ e_ofono_system_shutdown(void)
    _stringshare_del(&e_ofono_prop_status);
    _stringshare_del(&e_ofono_prop_operator);
    _stringshare_del(&e_ofono_prop_strength);
+   _stringshare_del(&e_ofono_iface_sms);
+   _stringshare_del(&e_ofono_prop_sca);
+   _stringshare_del(&e_ofono_method_send_sms);
    return 0;
 }

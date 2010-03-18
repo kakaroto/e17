@@ -53,8 +53,7 @@ extern "C" {
      struct {
 	Eina_Inlist *properties_get;
 	Eina_Inlist *property_set;
-	Eina_Inlist *agent_register;
-	Eina_Inlist *agent_unregister;
+	Eina_Inlist *send_sms;
      } _pending;
      struct {
 	Ecore_Idler *changed;
@@ -81,6 +80,11 @@ extern "C" {
   EAPI Eina_Bool e_ofono_netreg_status_get(const E_Ofono_Element *element, const char **status) EINA_ARG_NONNULL(1, 2) EINA_WARN_UNUSED_RESULT;
   EAPI Eina_Bool e_ofono_netreg_operator_get(const E_Ofono_Element *element, const char **op) EINA_ARG_NONNULL(1, 2) EINA_WARN_UNUSED_RESULT;
   EAPI Eina_Bool e_ofono_netreg_strength_get(const E_Ofono_Element *element, uint8_t *strength) EINA_ARG_NONNULL(1, 2) EINA_WARN_UNUSED_RESULT;
+
+  /* SMS Methods */
+  EAPI Eina_Bool e_ofono_sms_sca_get(const E_Ofono_Element *element, const char **sca) EINA_ARG_NONNULL(1, 2) EINA_WARN_UNUSED_RESULT;
+  EAPI Eina_Bool e_ofono_sms_sca_set(E_Ofono_Element *element, const char *sca, E_DBus_Method_Return_Cb cb, const void *data) EINA_ARG_NONNULL(1, 2) EINA_WARN_UNUSED_RESULT;
+  EAPI Eina_Bool e_ofono_sms_send_message(const E_Ofono_Element *element, const char *number, const char *message, E_DBus_Method_Return_Cb cb, const void *data) EINA_ARG_NONNULL(1, 2, 3) EINA_WARN_UNUSED_RESULT;
 
   /* Low-Level API:
    *

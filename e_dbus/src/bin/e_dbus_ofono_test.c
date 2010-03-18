@@ -315,6 +315,66 @@ _on_cmd_modem_set_powered(char *cmd, char *args)
    return 1;
 }
 
+/* SMS Commands */
+
+static int
+_on_cmd_sms_sca_set(char *cmd, char *args)
+{
+   char *next_args, *sca;
+   E_Ofono_Element *element = _element_from_args("org.ofono.SmsManager", args,
+						 &next_args);
+
+   if (!element)
+     return 1;
+
+   if (!args)
+     {
+	fputs("ERROR: missing service center address\n", stderr);
+	return 1;
+     }
+
+   sca = next_args;
+   if (e_ofono_sms_sca_set(element, sca, _method_success_check,
+			   "sms_sca_set"))
+     printf(":::Service Center Address on modem %s set to %s\n",
+	    element->path, sca);
+   else
+     fputs("ERROR: couldn't change Service Center Address\n", stderr);
+
+   return 1;
+}
+
+static int
+_on_cmd_sms_send_message(char *cmd, char *args)
+{
+   char *next_args, *number, *message;
+   E_Ofono_Element *element = _element_from_args("org.ofono.SmsManager", args,
+						 &next_args);
+
+   if (!element)
+     return 1;
+
+   number = next_args;
+   if (!number)
+     {
+	fputs("ERROR: missing recipient number and message text.\n", stderr);
+	return 1;
+     }
+
+   message = _tok(number);
+   if (!message)
+     {
+	fputs("ERROR: missing message text.\n", stderr);
+	return 1;
+     }
+
+   if (!e_ofono_sms_send_message(element, number, message,
+				 _method_success_check, "sms_send_message"))
+	fputs("ERROR: error setting property.\n", stderr);
+
+   return 1;
+}
+
 static int
 _on_input(void *data, Ecore_Fd_Handler *fd_handler)
 {
@@ -333,6 +393,8 @@ _on_input(void *data, Ecore_Fd_Handler *fd_handler)
      {"manager_get", _on_cmd_manager_get},
      {"manager_modems_get", _on_cmd_manager_modems_get},
      {"modem_set_powered", _on_cmd_modem_set_powered},
+     {"sms_sca_set", _on_cmd_sms_sca_set},
+     {"sms_send_message", _on_cmd_sms_send_message},
      {NULL, NULL}
    };
 
