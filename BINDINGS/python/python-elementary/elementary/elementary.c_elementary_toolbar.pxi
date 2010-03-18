@@ -37,7 +37,7 @@ cdef class ToolbarItem:
     def __del_cb(self):
         self.obj = NULL
         self.cbt = None
-        python.Py_DECREF(self)
+        Py_DECREF(self)
 
 
     def __init__(self, c_evas.Object toolbar, c_evas.Object icon, label,
@@ -59,7 +59,7 @@ cdef class ToolbarItem:
         cbdata = <void*>self.cbt
         self.obj = elm_toolbar_item_add(toolbar.obj, ic, label, cb, cbdata)
 
-        python.Py_INCREF(self)
+        Py_INCREF(self)
         elm_toolbar_item_del_cb_set(self.obj, _toolbar_item_del_cb)
 
     def delete(self):

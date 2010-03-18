@@ -55,7 +55,7 @@ cdef class ListItem:
     def __del_cb(self):
         self.item = NULL
         self.cbt = None
-        python.Py_DECREF(self)
+        Py_DECREF(self)
 
     def __init__(self, kind, c_evas.Object list, label, c_evas.Object icon = None,
                  c_evas.Object end = None, ListItem before_after = None,
@@ -100,7 +100,7 @@ cdef class ListItem:
                                                         icon_obj, end_obj,
                                                         cb, cbdata)
 
-        python.Py_INCREF(self)
+        Py_INCREF(self)
         elm_list_item_del_cb_set(self.item, _list_item_del_cb)
 
     def __str__(self):

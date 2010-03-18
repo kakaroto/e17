@@ -294,14 +294,14 @@ cdef class GenlistItem:
         assert self.obj == NULL, "Object must be clean"
         self.obj = obj
         self.params = params
-        python.Py_INCREF(self)
+        Py_INCREF(self)
         return 1
 
     cdef int _unset_obj(self) except 0:
         assert self.obj != NULL, "Object must wrap something"
         self.obj = NULL
         self.params = None
-        python.Py_DECREF(self)
+        Py_DECREF(self)
         return 1
 
     def __str__(self):

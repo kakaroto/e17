@@ -36,7 +36,7 @@ cdef class HoverselItem:
     def __del_cb(self):
         self.item = NULL
         self.cbt = None
-        python.Py_DECREF(self)
+        Py_DECREF(self)
 
     def __init__(self, c_evas.Object hoversel, label, icon_file, icon_type,
                  callback, *args, **kargs):
@@ -58,7 +58,7 @@ cdef class HoverselItem:
         self.item = elm_hoversel_item_add(hoversel.obj, label, i_f, icon_type,
                                           cb, cbdata)
 
-        python.Py_INCREF(self)
+        Py_INCREF(self)
         elm_hoversel_item_del_cb_set(self.item, _hoversel_item_del_cb)
 
     def delete(self):

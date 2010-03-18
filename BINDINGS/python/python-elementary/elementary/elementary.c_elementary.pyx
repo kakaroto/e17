@@ -19,22 +19,23 @@
 import sys
 import evas.c_evas
 cimport evas.c_evas as c_evas
-cimport python
+from python_ref cimport PyObject, Py_INCREF, Py_DECREF
+from python_mem cimport PyMem_Malloc, PyMem_Free
 import traceback
 
 cdef int PY_REFCOUNT(object o):
-    cdef python.PyObject *obj = <python.PyObject *>o
+    cdef PyObject *obj = <PyObject *>o
     return obj.ob_refcnt
 
 def init():
     cdef int argc, i, arg_len
     cdef char **argv, *arg
     argc_orig = argc = len(sys.argv)
-    argv = <char **>python.PyMem_Malloc(argc * sizeof(char *))
+    argv = <char **>PyMem_Malloc(argc * sizeof(char *))
     for i from 0 <= i < argc:
         arg = sys.argv[i]
         arg_len = len(sys.argv[i])
-        argv[i] = <char *>python.PyMem_Malloc(arg_len + 1)
+        argv[i] = <char *>PyMem_Malloc(arg_len + 1)
         memcpy(argv[i], arg, arg_len + 1)
 
     elm_init(argc, argv)
