@@ -91,7 +91,7 @@ double icon_zoom_init=0;
 
 struct sqlite3 *ed_DB=NULL;
 
-GRegex *re_link=NULL, *re_link_content=NULL, *re_amp=NULL, *re_user=NULL, *re_group;
+GRegex *re_link=NULL, *re_link_content=NULL, *re_amp=NULL, *re_user=NULL, *re_nouser=NULL, *re_group=NULL, *re_nogroup=NULL;
 GError *re_err=NULL;
 
 static int count_accounts(void *notUsed, int argc, char **argv, char **azColName) {
@@ -269,14 +269,23 @@ static void on_repeat(void *data, Evas_Object *obj, void *event_info) {
 	Evas *e;
 	Evas_Object *hover;
 	ub_Bubble * status = (ub_Bubble*)data;
-	char * entry_str=NULL, *tmp=NULL;
+	char * entry_str=NULL, *tmp=NULL, *tmp2=NULL;
 	int res = 0;
 
 	if(status) {
 		if(!re_link_content)
 			re_link_content = g_regex_new("<a href='(.*?)('>\\[link\\]</a>)", 0, 0, &re_err);
-
 		tmp = g_regex_replace(re_link_content, status->message, -1, 0, "\\1", 0, &re_err);
+
+		if(!re_nouser)
+			re_nouser = g_regex_new("<a href='@.*?'>(@[a-zA-Z0-9_]+)</a>", 0, 0, &re_err);
+		tmp2 = g_regex_replace(re_nouser, tmp, -1, 0, "\\1", 0, &re_err);
+		free(tmp); tmp=NULL;
+
+		if(!re_nogroup)
+			re_nogroup = g_regex_new("<a href='.*?'>(![a-zA-Z0-9_]+)</a>", 0, 0, &re_err);
+		tmp = g_regex_replace(re_nogroup, tmp2, -1, 0, "\\1", 0, &re_err);
+		free(tmp2); tmp2=NULL;
 
 		res = asprintf(&entry_str, "♺ @%s: %s", status->screen_name, tmp);
 		if(res != -1) {
