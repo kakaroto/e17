@@ -325,7 +325,7 @@ cdef class Exe:
             raise SystemError("could not run subprocess %r, flags=%#x" %
                               (exe_cmd, flags))
 
-        python.Py_INCREF(self)
+        Py_INCREF(self)
         self.exe = exe
         ecore_exe_callback_pre_free_set(exe, _ecore_exe_pre_free_cb)
         _ecore_exe_event_mapping[<long><void *>exe] = self
@@ -339,7 +339,7 @@ cdef class Exe:
 
         _ecore_exe_event_mapping.pop(<long><void *>self.exe)
         self.exe = NULL
-        python.Py_DECREF(self)
+        Py_DECREF(self)
         return 1
 
     def __str__(self):
@@ -842,7 +842,7 @@ cdef class EventExeData(Event):
         self.exe = _ecore_exe_event_mapping.get(<long>obj.exe)
         if self.exe is None:
             return -1
-        self.data = python.PyString_FromStringAndSize(<char*>obj.data, obj.size)
+        self.data = PyString_FromStringAndSize(<char*>obj.data, obj.size)
         self.size = obj.size
         self.lines = []
 
@@ -850,7 +850,7 @@ cdef class EventExeData(Event):
         if obj.lines:
             i = 0
             while obj.lines[i].line != NULL:
-                line_append(python.PyString_FromStringAndSize(
+                line_append(PyString_FromStringAndSize(
                         obj.lines[i].line, obj.lines[i].size))
                 i += 1
 

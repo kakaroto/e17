@@ -125,7 +125,7 @@ cdef class EventHandler:
         assert self.obj == NULL, "Object must be clean"
         assert obj != NULL, "Cannot set NULL as object"
         self.obj = obj
-        python.Py_INCREF(self)
+        Py_INCREF(self)
         return 1
 
     cdef int _unset_obj(self) except 0:
@@ -136,7 +136,7 @@ cdef class EventHandler:
             self.func = None
             self.args = None
             self.kargs = None
-            python.Py_DECREF(self)
+            Py_DECREF(self)
         return 1
 
     cdef int _exec(self, void *event) except 2:

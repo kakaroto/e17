@@ -71,7 +71,7 @@ cdef class Timer:
         if self.obj == NULL:
             self.obj = ecore_timer_add(interval, timer_cb, <void *>self)
             if self.obj != NULL:
-                python.Py_INCREF(self)
+                Py_INCREF(self)
 
     def __str__(self):
         return "%s(interval=%f, func=%s, args=%s, kargs=%s)" % \
@@ -101,7 +101,7 @@ cdef class Timer:
         if self.obj != NULL:
             ecore_timer_del(self.obj)
             self.obj = NULL
-            python.Py_DECREF(self)
+            Py_DECREF(self)
 
     def stop(self):
         "Alias for L{delete()}."

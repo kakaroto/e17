@@ -15,7 +15,9 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with this Python-Ecore.  If not, see <http://www.gnu.org/licenses/>.
 
-cimport python
+from python_ref cimport PyObject, Py_INCREF, Py_DECREF
+from python_mem cimport PyMem_Malloc, PyMem_Free
+from python_oldbuffer cimport PyBuffer_FromObject
 import evas.c_evas
 
 __extra_epydoc_fields__ = (
@@ -24,7 +26,7 @@ __extra_epydoc_fields__ = (
 
 
 cdef int PY_REFCOUNT(object o):
-    cdef python.PyObject *obj = <python.PyObject *>o
+    cdef PyObject *obj = <PyObject *>o
     return obj.ob_refcnt
 
 

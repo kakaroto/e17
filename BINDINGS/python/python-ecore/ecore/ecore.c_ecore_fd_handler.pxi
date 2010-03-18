@@ -106,7 +106,7 @@ cdef class FdHandler:
                                                  fd_handler_cb, <void *>self,
                                                  NULL, NULL)
             if self.obj != NULL:
-                python.Py_INCREF(self)
+                Py_INCREF(self)
 
     def __str__(self):
         if self.obj == NULL:
@@ -148,7 +148,7 @@ cdef class FdHandler:
         if self.obj != NULL:
             ecore_main_fd_handler_del(self.obj)
             self.obj = NULL
-            python.Py_DECREF(self)
+            Py_DECREF(self)
 
     def stop(self):
         "Alias for L{delete()}."

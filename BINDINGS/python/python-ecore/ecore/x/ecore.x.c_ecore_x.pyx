@@ -15,7 +15,8 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with this Python-Ecore.  If not, see <http://www.gnu.org/licenses/>.
 
-cimport python
+from python_ref cimport PyObject, Py_INCREF, Py_DECREF
+from python_mem cimport PyMem_Malloc, PyMem_Free
 
 __extra_epydoc_fields__ = (
     ("parm", "Parameter", "Parameters"), # epydoc don't support pyrex properly
@@ -136,7 +137,7 @@ cdef int _skip_list_build(skip_list, Ecore_X_Window **pskips, int *pskip_num) ex
         pskips[0] = NULL
         return 1
     else:
-        pskips[0] = <Ecore_X_Window *>python.PyMem_Malloc(pskip_num[0] * sizeof(Ecore_X_Window))
+        pskips[0] = <Ecore_X_Window *>PyMem_Malloc(pskip_num[0] * sizeof(Ecore_X_Window))
         i = 0
         try:
             for w in skip_list:
@@ -145,7 +146,7 @@ cdef int _skip_list_build(skip_list, Ecore_X_Window **pskips, int *pskip_num) ex
                 i += 1
         except:
             pskip_num[0] = 0
-            python.PyMem_Free(<void*>pskips[0])
+            PyMem_Free(<void*>pskips[0])
             raise
     return 1
 
@@ -173,7 +174,7 @@ def window_shadow_tree_at_xy_with_skip_get(Window base, int x, int y, skip_list=
     ret_xid = ecore_x_window_shadow_tree_at_xy_with_skip_get(base_xid, x, y,
                                                              skips, skip_num)
     if skips != NULL:
-        python.PyMem_Free(<void*>skips)
+        PyMem_Free(<void*>skips)
 
     return Window_from_xid(ret_xid)
 
@@ -209,7 +210,7 @@ def window_at_xy_with_skip_get(int x, int y, skip_list=None):
     xid = ecore_x_window_at_xy_with_skip_get(x, y, skips, skip_num)
 
     if skips != NULL:
-        python.PyMem_Free(<void*>skips)
+        PyMem_Free(<void*>skips)
 
     return Window_from_xid(xid)
 

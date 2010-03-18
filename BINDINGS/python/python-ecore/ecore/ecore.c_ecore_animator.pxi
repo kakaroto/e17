@@ -71,7 +71,7 @@ cdef class Animator:
         if self.obj == NULL:
             self.obj = ecore_animator_add(animator_cb, <void *>self)
             if self.obj != NULL:
-                python.Py_INCREF(self)
+                Py_INCREF(self)
 
     def __str__(self):
         return "%s(func=%s, args=%s, kargs=%s)" % \
@@ -100,7 +100,7 @@ cdef class Animator:
         if self.obj != NULL:
             ecore_animator_del(self.obj)
             self.obj = NULL
-            python.Py_DECREF(self)
+            Py_DECREF(self)
 
     def stop(self):
         "Alias for L{delete()}."

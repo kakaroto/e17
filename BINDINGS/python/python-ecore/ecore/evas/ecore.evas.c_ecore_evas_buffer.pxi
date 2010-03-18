@@ -85,4 +85,4 @@ cdef class Buffer(EcoreEvas):
         if i >= j:
             return []
 
-        return python.PyBuffer_FromObject(self, i, j - i)
+        return PyBuffer_FromObject(self, i, j - i)
