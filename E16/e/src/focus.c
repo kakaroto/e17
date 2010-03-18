@@ -443,7 +443,6 @@ doFocusToEwin(EWin * ewin, int why)
    if (why == FOCUS_DESK_LEAVE)
       return;
 
-   focus_request = (int)NextRequest(disp);
    ICCCM_Focus(ewin);
    focus_is_set = 1;
 }
@@ -487,6 +486,7 @@ FocusToEWin(EWin * ewin, int why)
 	   focus_pending_new = NULL;
 	break;
      }
+   focus_request = (int)NextRequest(disp);
 }
 
 static void
