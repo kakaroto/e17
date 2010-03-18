@@ -675,7 +675,7 @@ cdef public class Edje(evas.c_evas.Object) [object PyEdje, type PyEdje_Type]:
         cdef Edje_Message_String_Set *m
 
         count = len(data)
-        m = <Edje_Message_String_Set*>python.PyMem_Malloc(
+        m = <Edje_Message_String_Set*>PyMem_Malloc(
             sizeof(Edje_Message_String_Set) + (count - 1) * sizeof(char *))
 
         m.count = count
@@ -686,7 +686,7 @@ cdef public class Edje(evas.c_evas.Object) [object PyEdje, type PyEdje_Type]:
 
         edje_object_message_send(self.obj, EDJE_MESSAGE_STRING_SET, id,
                                  <void*>m)
-        python.PyMem_Free(m)
+        PyMem_Free(m)
 
     cdef void message_send_str_int(self, int id, char *s, int i):
         cdef Edje_Message_String_Int m
@@ -707,7 +707,7 @@ cdef public class Edje(evas.c_evas.Object) [object PyEdje, type PyEdje_Type]:
         cdef Edje_Message_String_Int_Set *m
 
         count = len(data)
-        m = <Edje_Message_String_Int_Set*>python.PyMem_Malloc(
+        m = <Edje_Message_String_Int_Set*>PyMem_Malloc(
             sizeof(Edje_Message_String_Int_Set) + (count - 1) * sizeof(int))
 
         m.str = s
@@ -719,14 +719,14 @@ cdef public class Edje(evas.c_evas.Object) [object PyEdje, type PyEdje_Type]:
 
         edje_object_message_send(self.obj, EDJE_MESSAGE_STRING_INT_SET, id,
                                  <void*>m)
-        python.PyMem_Free(m)
+        PyMem_Free(m)
 
     cdef void message_send_str_float_set(self, int id, char *s, data):
         cdef int count, i
         cdef Edje_Message_String_Float_Set *m
 
         count = len(data)
-        m = <Edje_Message_String_Float_Set*>python.PyMem_Malloc(
+        m = <Edje_Message_String_Float_Set*>PyMem_Malloc(
             sizeof(Edje_Message_String_Float_Set) +
             (count - 1) * sizeof(double))
 
@@ -739,14 +739,14 @@ cdef public class Edje(evas.c_evas.Object) [object PyEdje, type PyEdje_Type]:
 
         edje_object_message_send(self.obj, EDJE_MESSAGE_STRING_FLOAT_SET, id,
                                  <void*>m)
-        python.PyMem_Free(m)
+        PyMem_Free(m)
 
     cdef void message_send_int_set(self, int id, data):
         cdef int count, i
         cdef Edje_Message_Int_Set *m
 
         count = len(data)
-        m = <Edje_Message_Int_Set*>python.PyMem_Malloc(
+        m = <Edje_Message_Int_Set*>PyMem_Malloc(
             sizeof(Edje_Message_Int_Set) + (count - 1) * sizeof(int))
 
         m.count = count
@@ -757,14 +757,14 @@ cdef public class Edje(evas.c_evas.Object) [object PyEdje, type PyEdje_Type]:
 
         edje_object_message_send(self.obj, EDJE_MESSAGE_INT_SET, id,
                                  <void*>m)
-        python.PyMem_Free(m)
+        PyMem_Free(m)
 
     cdef void message_send_float_set(self, int id, data):
         cdef int count, i
         cdef Edje_Message_Float_Set *m
 
         count = len(data)
-        m = <Edje_Message_Float_Set*>python.PyMem_Malloc(
+        m = <Edje_Message_Float_Set*>PyMem_Malloc(
             sizeof(Edje_Message_Float_Set) + (count - 1) * sizeof(double))
 
         m.count = count
@@ -775,7 +775,7 @@ cdef public class Edje(evas.c_evas.Object) [object PyEdje, type PyEdje_Type]:
 
         edje_object_message_send(self.obj, EDJE_MESSAGE_FLOAT_SET, id,
                                  <void*>m)
-        python.PyMem_Free(m)
+        PyMem_Free(m)
 
     cdef message_send_set(self, int id, data):
         second_item = data[1]

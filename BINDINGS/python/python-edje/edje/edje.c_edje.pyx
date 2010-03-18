@@ -15,7 +15,8 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with this Python-Edje.  If not, see <http://www.gnu.org/licenses/>.
 
-cimport python
+from python_ref cimport PyObject, Py_INCREF, Py_DECREF
+from python_mem cimport PyMem_Malloc, PyMem_Free
 cimport stdlib
 cimport evas.c_evas
 import evas.c_evas
@@ -25,7 +26,7 @@ __extra_epydoc_fields__ = (
     )
 
 cdef int PY_REFCOUNT(object o):
-    cdef python.PyObject *obj = <python.PyObject *>o
+    cdef PyObject *obj = <PyObject *>o
     return obj.ob_refcnt
 
 def init():
@@ -272,7 +273,7 @@ cdef extern from "Python.h":
         PyTypeObject *ob_type
 
 cdef void _install_metaclass(PyTypeObject *ctype, object metaclass):
-    python.Py_INCREF(metaclass)
+    Py_INCREF(metaclass)
     ctype.ob_type = <PyTypeObject*>metaclass
 
 
