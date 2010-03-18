@@ -283,7 +283,7 @@ static void on_repeat(void *data, Evas_Object *obj, void *event_info) {
 		free(tmp); tmp=NULL;
 
 		if(!re_nogroup)
-			re_nogroup = g_regex_new("<a href='.*?'>(![a-zA-Z0-9_]+)</a>", 0, 0, &re_err);
+			re_nogroup = g_regex_new("<a href='!.*?'>(![a-zA-Z0-9_]+)</a>", 0, 0, &re_err);
 		tmp = g_regex_replace(re_nogroup, tmp2, -1, 0, "\\1", 0, &re_err);
 		free(tmp2); tmp2=NULL;
 
