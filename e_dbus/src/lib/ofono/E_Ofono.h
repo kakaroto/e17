@@ -80,7 +80,7 @@ extern "C" {
   EAPI Eina_Bool e_ofono_netreg_mode_get(const E_Ofono_Element *element, const char **mode) EINA_ARG_NONNULL(1, 2) EINA_WARN_UNUSED_RESULT;
   EAPI Eina_Bool e_ofono_netreg_status_get(const E_Ofono_Element *element, const char **status) EINA_ARG_NONNULL(1, 2) EINA_WARN_UNUSED_RESULT;
   EAPI Eina_Bool e_ofono_netreg_operator_get(const E_Ofono_Element *element, const char **op) EINA_ARG_NONNULL(1, 2) EINA_WARN_UNUSED_RESULT;
-  EAPI Eina_Bool e_ofono_netreg_strength_get(const E_Ofono_Element *element, char *strength) EINA_ARG_NONNULL(1, 2) EINA_WARN_UNUSED_RESULT;
+  EAPI Eina_Bool e_ofono_netreg_strength_get(const E_Ofono_Element *element, uint8_t *strength) EINA_ARG_NONNULL(1, 2) EINA_WARN_UNUSED_RESULT;
 
   /* Low-Level API:
    *

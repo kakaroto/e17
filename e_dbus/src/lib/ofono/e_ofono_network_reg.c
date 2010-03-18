@@ -83,7 +83,7 @@ e_ofono_netreg_operator_get(const E_Ofono_Element *element, const char **op)
  * @return @c EINA_TRUE on success, @c EINA_FALSE otherwise.
  */
 Eina_Bool
-e_ofono_netreg_strength_get(const E_Ofono_Element *element, char *strength)
+e_ofono_netreg_strength_get(const E_Ofono_Element *element, uint8_t *strength)
 {
    EINA_SAFETY_ON_NULL_RETURN_VAL(element, 0);
    EINA_SAFETY_ON_NULL_RETURN_VAL(strength, 0);
