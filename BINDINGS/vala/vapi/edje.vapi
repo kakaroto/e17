@@ -55,22 +55,90 @@ namespace Edje
 
     public void message_signal_process();
 
-    //=======================================================================
-    [CCode (cprefix = "EDJE_MESSAGE_")]
-    public enum MessageType
+    [CCode (cprefix = "Edje_Message_", lower_case_cprefix = "edje_message_")]
+    namespace Message
     {
-        NONE,
-        SIGNAL, /* DONT USE THIS */
-        STRING,
-        INT,
-        FLOAT,
-        STRING_SET,
-        INT_SET,
-        FLOAT_SET,
-        STRING_INT,
-        STRING_FLOAT,
-        STRING_INT_SET,
-        STRING_FLOAT_SET
+        [CCode (cprefix = "EDJE_MESSAGE_")]
+        public enum Type
+        {
+            NONE,
+            SIGNAL, /* DONT USE THIS */
+            STRING,
+            INT,
+            FLOAT,
+            STRING_SET,
+            INT_SET,
+            FLOAT_SET,
+            STRING_INT,
+            STRING_FLOAT,
+            STRING_INT_SET,
+            STRING_FLOAT_SET
+        }
+
+        public struct AbstractMessage
+        {
+            [CCode (cname = "edje_message_send", instance_pos = -1)]
+            public void send( Type type, int id );
+        }
+
+        public struct String : AbstractMessage
+        {
+            string str;
+        }
+
+        public struct Int : AbstractMessage
+        {
+            int val;
+        }
+
+        public struct Float : AbstractMessage
+        {
+            double val;
+        }
+
+        public struct String_Set
+        {
+            int count;
+            char* str[1];
+        }
+
+        public struct Int_Set
+        {
+            int count;
+            int val[1];
+        }
+
+        public struct Float_Set
+        {
+            int count;
+            double val[1];
+        }
+
+        public struct String_Int
+        {
+            string str;
+            int val;
+        }
+
+        public struct String_Float
+        {
+            string str;
+            double val;
+        }
+
+        public struct String_Int_Set
+        {
+            string str;
+            int count;
+            int val[1];
+        }
+
+        public struct String_Float_Set
+        {
+            string str;
+            int count;
+            double val[1];
+        }
     }
 
     //=======================================================================
@@ -100,7 +168,7 @@ namespace Edje
     public delegate void TextChangedCallback( Object obj, string part );
 
     [CCode (cname = "Edje_Message_Handler_Cb", instance_pos = 0)]
-    public delegate void MessageHandlerCallback( Object obj, MessageType type, int id, void* msg );
+    public delegate void MessageHandlerCallback( Object obj, Message.Type type, int id, void* msg );
 
     //=======================================================================
     [Compact]
@@ -195,7 +263,7 @@ namespace Edje
         public bool part_table_col_row_size_get( string part, out int cols, out int rows );
         public bool part_table_clear( string part, bool clear );
 
-        public void message_send( MessageType type, int id, void* msg );
+        public void message_send( Message.Type type, int id, Message.AbstractMessage msg );
         public void message_handler_set( MessageHandlerCallback callback );
 
         public void message_signal_process();
