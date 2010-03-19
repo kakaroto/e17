@@ -166,7 +166,7 @@ class NameEntry(elementary.Box):
         self._name.entry_set(value)
 
     def _entry_get(self):
-        entry = self._name.entry_get().replace("<br>", "")
+        entry = self._name.entry_get()
         return entry
 
     entry = property(fset=_entry_set, fget=_entry_get)

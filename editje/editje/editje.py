@@ -228,7 +228,7 @@ class Editje(elementary.Window):
                               self._options_cb)
 
     def _group_name_changed(self, obj, *args, **kwargs):
-        new_name = obj.entry_get().replace("<br>", "")
+        new_name = obj.entry_get()
         if not self.e.group_rename(new_name):
             obj.entry_set(self.e.group)
 

@@ -98,7 +98,7 @@ class WidgetColor(Widget):
         self.rect.hide()
 
     def _entry_changed_cb(self, obj, *args, **kwargs):
-        val = self.entry.entry_get().replace("<br>", "")
+        val = self.entry.entry_get()
         if len(val) == 0:
             return
         if val[0] == "#":

@@ -58,13 +58,13 @@ class WidgetEntry(Widget):
         self.entry.entry_set(val)
 
     def _internal_value_get(self):
-        return self.entry.entry_get().replace("<br>", "")
+        return self.entry.entry_get()
 
     def _entry_activate_cb(self, obj, *args, **kwargs):
         self._callback_call("changed")
 
     def _entry_changed_cb(self, obj, *args, **kwargs):
-        if self.validate(self.entry.entry_get().replace("<br>", "")):
+        if self.validate(self.entry.entry_get()):
             # set entry in valid mode
             pass
         else:

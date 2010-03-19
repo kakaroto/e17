@@ -80,7 +80,7 @@ class WidgetEntryButton(Widget):
     value = property(_value_get, _value_set)
 
     def _entry_changed_cb(self, obj, *args, **kwargs):
-        val = self.entry.entry_get().replace("<br>", "")
+        val = self.entry.entry_get()
         if len(val) == 0:
             return
         self.entry_value = val
@@ -95,7 +95,7 @@ class WidgetEntryButton(Widget):
         self.entry.select_all()
 
     def _internal_value_get(self):
-        return self.entry.entry_get().replace("<br>", "")
+        return self.entry.entry_get()
 
     def _internal_value_set(self, val):
         if val is None:
