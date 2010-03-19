@@ -303,15 +303,16 @@ class Editje(elementary.Window):
         return
 
     def _play_cb(self, obj, emission, source):
-#        part = self.e.part.name
 #        def play_end(emissor, data):
-#            self.e.part.name = part
+#               TODO: emit signals here to enable play, next, previous and disable stop button
 #        self.e.animation.callback_add("animation.play.end", play_end)
         self.e.part.name = ""
         self.e.animation.play()
+#       TODO: emit signals here to disable play, next, previous and enable stop button
 
     def _stop_cb(self, obj, emission, source):
         self.e.animation.stop()
+#       TODO: emit signals here to enable play, next, previous and disable stop button
 
     def _previous_cb(self, obj, emission, source):
         self.e.animation.state_prev_goto()
@@ -395,9 +396,11 @@ class Editje(elementary.Window):
         self._mainbar_pager.content_promote(mainbar)
         self._sidebar_pager.content_promote(sidebar)
 
+        self.mode = name
+
         if name == "Signals":
             self.desktop_block(True)
-        else:
+        elif name == "Parts":
             self.desktop_block(False)
 
         if name == "Animations":
@@ -524,6 +527,19 @@ class Editje(elementary.Window):
         self._toolbar_bt_init(edj, "play.bt", "Play", self._play_cb)
         self._toolbar_bt_init(edj, "next.bt", "Next", self._next_cb)
         self._toolbar_bt_init(edj, "stop.bt", "Stop", self._stop_cb)
+
+        def _animation_changed(it, ti):
+            #TODO: emit signals to enable animations buttons here
+            if self.mode == "Animations":
+                self.desktop_block(False)
+
+        def _animation_unselected(it, ti):
+            #TODO: emit signals to disable animations buttons here
+            if self.mode == "Animations":
+                self.desktop_block(True)
+
+        self.e.animation.callback_add("animation.changed", _animation_changed)
+        self.e.animation.callback_add("animation.unselected", _animation_unselected)
 
         # Mainbar
         mainbar = CollapsablesBox(self)

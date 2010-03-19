@@ -49,6 +49,9 @@ class EditableAnimation(Manager, object):
     def _animation_removed_cb(self, emissor, data):
         if self._name == data:
             self.name = None
+        for p in self.e.parts:
+            part = self.e.part_get(p)
+            part.state_selected_set("default 0.00")
 
     # Name
     def _name_set(self, value):
