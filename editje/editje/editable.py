@@ -170,9 +170,9 @@ class Editable(Manager, object):
         self.group_size = (w, h)
 
     def _verify_max_w(self, w, group_w, group_h, min_w, group):
-        if w < 0:
-            w = 0
-        if w < min_w and w != 0:
+        if w <= 0:
+            return 0
+        if w and w < min_w:
             w = min_w
         if w < group_w:
             group.resize(w, group_h)
@@ -180,9 +180,9 @@ class Editable(Manager, object):
         return w
 
     def _verify_max_h(self, h, group_w, group_h, min_h, group):
-        if h < 0:
-            h = 0
-        if h < min_h and h != 0:
+        if h <= 0:
+            return 0
+        if h and h < min_h:
             h = min_h
         if h < group_h:
             group.resize(group_w, h)
@@ -211,7 +211,7 @@ class Editable(Manager, object):
     def _verify_min_w(self, w, group_w, group_h, max_w, group):
         if w < 0:
             w = 0
-        if w > max_w and max_w != 0:
+        if max_w and w > max_w:
             w = max_w
         if w > group_w:
             group.resize(w, group_h)
@@ -221,7 +221,7 @@ class Editable(Manager, object):
     def _verify_min_h(self, h, group_w, group_h, max_h, group):
         if h < 0:
             h = 0
-        if h > max_h and max_h != 0:
+        if max_h and h > max_h:
             h = max_h
         if h > group_h:
             group.resize(group_w, h)
