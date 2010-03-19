@@ -57,8 +57,6 @@ class PartsList(CList):
 
     def _part_removed(self, emissor, data):
         self.remove(data)
-        if not self._selected and self._first:
-            self._first.selected = True
 
     def _part_changed(self, emissor, data):
         self.selection_clear()
@@ -142,6 +140,22 @@ class PartsList(CList):
     def _remove_cb(self, obj, emission, source):
         for i in self.selected:
             self._edit_grp.part_del(i[0])
+
+    def remove(self, item):
+        i = self._items.get(item)
+        if i:
+            next = i.next
+            prev = i.prev
+            if not prev:
+                self._first = next
+            i.delete()
+            self._list.go()
+            del self._items[item]
+            self.event_emit("item.removed", item)
+            if next:
+                next.selected_set(True)
+            elif prev:
+                prev.selected_set(True)
 
 
 class ExternalSelector(elementary.Box):
