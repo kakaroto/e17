@@ -194,9 +194,4 @@ class EditjeDetails(edje.Edje):
     def _open_disable_get(self, value):
         return self._open_disable
 
-    def _size_changed(self, obj):
-        self["main"]["current"].value = obj.size
-        if self.part.type == edje.EDJE_PART_TYPE_IMAGE:
-            obj.fill_set(0, 0, *obj.size)
-
     open_disable = property(_open_disable_get, _open_disable_set)

@@ -85,9 +85,11 @@ class PartStateDetails(EditjeDetails):
         self._external_props_create()
 
         self.e.callback_add("group.changed", self._edje_load)
+
+        self.e.callback_add("part.removed", self._part_removed)
         self.e.part.callback_add("part.changed", self._part_update)
         self.e.part.callback_add("name.changed", self._part_update)
-        self.e.part.callback_add("part.unselected", self._part_removed)
+        self.e.part.callback_add("part.unselected", self._part_unselected)
         self.e.part.state.callback_add("state.changed", self._state_changed_cb)
         self.e.part.state.callback_add(
             "rel1x.changed", self._state_rels_changed_cb)
@@ -105,6 +107,8 @@ class PartStateDetails(EditjeDetails):
 
         self.open_disable = False
         self.open = True
+        self.part_edje = None
+        self.part_evas = None
 
     def _header_init(self, parent):
         self.title = "part state"
@@ -128,24 +132,37 @@ class PartStateDetails(EditjeDetails):
         self.editable = self.e.edje
 
     def _part_update(self, emissor, data):
-        self.part = self.e.part._part
-        state = self.part.state_selected_get()
+        if self.part_evas:
+            self.part_evas.on_resize_del(self._size_changed)
+        self.part_edje = self.e.part._part
+        self.part_evas = self._part_object_get_cb(self.part_edje.name)
+        self.part_evas.on_resize_add(self._size_changed)
+        self._size_changed(self.part_evas)
+        state = self.part_edje.state_selected_get()
         if state == "(null) 0.00":
             state = "default 0.00"
         self._header_table["state"].value = state
         self._header_table["state"].show_value()
-        self.state = self.part.state_get(state)
+        self.state = self.part_edje.state_get(state)
         self._update()
         self.show()
 
-    def _part_removed(self, emissor, data):
+    def _part_unselected(self, emissor, data):
         if not self.e.part:
             return
+
+        if self.part_evas:
+            self.part_evas.on_resize_del(self._size_changed)
+            self.part_evas = None
 
         self._header_table["state"].value = None
         self._header_table["state"].hide_value()
         self._hide_all()
         self.hide()
+
+    def _part_removed(self, emissor, data):
+        self.part_edje = None
+        self.part_evas = None
 
     def _part_type_to_text(self, type):
         parttypes = ['NONE', 'RECTANGLE', 'TEXT', 'IMAGE', 'SWALLOW',
@@ -494,11 +511,8 @@ class PartStateDetails(EditjeDetails):
     def _state_changed_cb(self, emissor, data):
         if not data:
             return
-        self.part.state_selected_set(data)
+        self.part_edje.state_selected_set(data)
         self.state = self.e.part.state._state
-        part = self._part_object_get_cb(self.part.name)
-        part.on_resize_add(self._size_changed)
-        self._size_changed(part)
         prop = self._header_table.get("state")
         if prop:
             prop.value = data
@@ -516,7 +530,7 @@ class PartStateDetails(EditjeDetails):
         else:
             st = " ".join(state)
 
-        if (not self.part.state_exist(st)) and \
+        if (not self.part_edje.state_exist(st)) and \
                 old.split(None, 1)[0] != "default":
             self.e.part.state.name_set(st)
         else:
@@ -546,18 +560,18 @@ class PartStateDetails(EditjeDetails):
         self.main_show()
         self.group_show("rel1")
         self.group_show("rel2")
-        if self.part.type == edje.EDJE_PART_TYPE_TEXT:
+        if self.part_edje.type == edje.EDJE_PART_TYPE_TEXT:
             self._update_text()
             self.group_show("text")
-        elif self.part.type == edje.EDJE_PART_TYPE_IMAGE:
+        elif self.part_edje.type == edje.EDJE_PART_TYPE_IMAGE:
             self._update_image()
             self.group_show("image")
-        elif self.part.type == edje.EDJE_PART_TYPE_GRADIENT:
+        elif self.part_edje.type == edje.EDJE_PART_TYPE_GRADIENT:
             self._update_gradient()
             self.group_show("gradient")
             self.group_show("g_rel1")
             self.group_show("g_rel2")
-        elif self.part.type == edje.EDJE_PART_TYPE_EXTERNAL:
+        elif self.part_edje.type == edje.EDJE_PART_TYPE_EXTERNAL:
             self._update_external()
             self.group_show("external")
         self.edje_get().signal_emit("cl,option,enable", "editje")
@@ -654,7 +668,7 @@ class PartStateDetails(EditjeDetails):
             self["external"].property_add(prop)
 
     def _update_external(self):
-        t = self.part.source
+        t = self.part_edje.source
         if t != self._external_type:
             self._external_type = t
             self["external"].clear()
@@ -797,6 +811,11 @@ class PartStateDetails(EditjeDetails):
                     return
         self.state.external_param_set(prop, value)
 
+    def _size_changed(self, obj):
+        self["main"]["current"].value = obj.size
+        if self.part_edje.type == edje.EDJE_PART_TYPE_IMAGE:
+            obj.fill_set(0, 0, *obj.size)
+
 
 class PartAnimStateDetails(PartStateDetails):
     def __init__(self, parent, img_new_img_cb=None,
@@ -840,14 +859,14 @@ class PartAnimStateDetails(PartStateDetails):
                                             self._state_copy_button._floater_open)
 
     def _show(self):
-        state = self.part.state_selected_get()
-        self._header_table["name"].value = self.part.name
+        state = self.part_edje.state_selected_get()
+        self._header_table["name"].value = self.part_edje.name
         self._header_table["name"].show_value()
         self._header_table["type"].value = \
-            self._part_type_to_text(self.part.type)
+            self._part_type_to_text(self.part_edje.type)
         self._header_table["type"].show_value()
         self.edje_get().signal_emit("cl,option,enable", "editje")
-        self.state = self.part.state_get(state)
+        self.state = self.part_edje.state_get(state)
         self._update()
         self.show()
 
@@ -861,19 +880,27 @@ class PartAnimStateDetails(PartStateDetails):
         self.hide()
 
     def _part_update(self, emissor, data):
-        self.part = self.e.part._part
+        if self.part_evas:
+            self.part_evas.on_resize_del(self._size_changed)
+        self.part_edje = self.e.part._part
+        self.part_evas = self._part_object_get_cb(self.part_edje.name)
+        self.part_evas.on_resize_add(self._size_changed)
+        self._size_changed(self.part_evas)
 
         if self.anim:
             self._show()
 
-    def _part_removed(self, emissor, data):
-        self.part = None
+    def _part_unselected(self, emissor, data):
+        if self.part_evas:
+            self.part_evas.on_resize_del(self._size_changed)
+
+        self.part_evas = None
         self._hide()
 
     def _anim_selected(self, emissor, data):
         self.anim = True
 
-        if self.part:
+        if self.part_edje:
             self._show()
 
     def _anim_unselected(self, emissor, data):
@@ -883,10 +910,7 @@ class PartAnimStateDetails(PartStateDetails):
     def _state_changed_cb(self, emissor, data):
         if not data:
             return
-        self.part.state_selected_set(data)
+        self.part_edje.state_selected_set(data)
         self.state = self.e.part.state._state
-        part = self._part_object_get_cb(self.part.name)
-        part.on_resize_add(self._size_changed)
-        self._size_changed(part)
         if self.anim:
             self._update()
