@@ -394,8 +394,8 @@ eesh/Makefile
 epp/Makefile
 lib/Makefile
 config/Makefile
-config/pix/Makefile
 icons/Makefile
+pix/Makefile
 themes/Makefile
 fonts/Makefile
 scripts/Makefile

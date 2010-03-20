@@ -1,11 +1,12 @@
-SUBDIRS = pix
-
 configdir = $(pkgdatadir)/config
 config_DATA = \
-	definitions \
-	actionclasses.cfg bindings.cfg matches.cfg \
-	e16keyedit.db \
-	fonts.xft.cfg fonts.pango.cfg
+	bindings.cfg matches.cfg \
+	fonts.xft.cfg fonts.pango.cfg \
+	e16keyedit.db
+
+tconfdir = $(pkgdatadir)/config
+tconf_DATA = \
+	definitions actionclasses.cfg
 
 menudir = $(pkgdatadir)/config/menus
 menu_DATA = \
@@ -13,4 +14,4 @@ menu_DATA = \
 	winops.menu winops_groups.menu winops_layer.menu \
 	winops_misc.menu winops_opacity.menu winops_size.menu
 
-EXTRA_DIST = $(config_DATA) $(menu_DATA) strings.c
+EXTRA_DIST = $(config_DATA) $(tconf_DATA) $(menu_DATA) strings.c
