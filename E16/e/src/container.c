@@ -30,6 +30,7 @@
 #include "ewins.h"
 #include "hints.h"
 #include "iclass.h"
+#include "icons.h"
 #include "menus.h"
 
 extern const ContainerOps IconboxOps;
@@ -1714,19 +1715,19 @@ _DlgFillContainer(Dialog * d, DItem * table, void *data)
 			  _
 			  ("Snapshot Windows, Use application icon, Use Enlightenment Icon"));
 	DialogItemRadioButtonSetFirst(di, radio);
-	DialogItemRadioButtonGroupSetVal(di, 0);
+	DialogItemRadioButtonGroupSetVal(di, EWIN_ICON_MODE_SNAP);
 
 	di = DialogAddItem(table, DITEM_RADIOBUTTON);
 	DialogItemSetText(di,
 			  _
 			  ("Use application icon, Use Enlightenment Icon, Snapshot Window"));
 	DialogItemRadioButtonSetFirst(di, radio);
-	DialogItemRadioButtonGroupSetVal(di, 1);
+	DialogItemRadioButtonGroupSetVal(di, EWIN_ICON_MODE_APP_IMG_SNAP);
 
 	di = DialogAddItem(table, DITEM_RADIOBUTTON);
 	DialogItemSetText(di, _("Use Enlightenment Icon, Snapshot Window"));
 	DialogItemRadioButtonSetFirst(di, radio);
-	DialogItemRadioButtonGroupSetVal(di, 2);
+	DialogItemRadioButtonGroupSetVal(di, EWIN_ICON_MODE_IMG_APP_SNAP);
 	DialogItemRadioButtonGroupSetValPtr(radio, &dd->icon_mode);
      }
 }

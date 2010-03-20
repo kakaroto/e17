@@ -158,7 +158,12 @@ WarpFocusWinShow(WarpFocusWin * fw)
    w += pad->left + pad->right;
    h += pad->top + pad->bottom;
    if (Conf.warplist.icon_mode != 0)
-      w += h;
+     {
+	if (Conf.warplist.icon_mode != EWIN_ICON_MODE_APP_IMG &&
+	    Conf.warplist.icon_mode != EWIN_ICON_MODE_IMG_APP)
+	   Conf.warplist.icon_mode = EWIN_ICON_MODE_APP_IMG;
+	w += h;
+     }
    fw->mw = w;			/* Focus list item size */
    fw->mh = h;
 
@@ -486,7 +491,7 @@ static const CfgItem WarplistCfgItems[] = {
    CFG_ITEM_BOOL(Conf.warplist, warpfocused, 1),
    CFG_ITEM_BOOL(Conf.warplist, raise_on_select, 1),
    CFG_ITEM_BOOL(Conf.warplist, warp_on_select, 0),
-   CFG_ITEM_INT(Conf.warplist, icon_mode, 3),
+   CFG_ITEM_INT(Conf.warplist, icon_mode, EWIN_ICON_MODE_APP_IMG),
 };
 #define N_CFG_ITEMS (sizeof(WarplistCfgItems)/sizeof(CfgItem))
 

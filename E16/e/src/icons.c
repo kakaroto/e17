@@ -29,6 +29,12 @@
 #include "windowmatch.h"
 #include "xwin.h"
 
+#define EWIN_ICON_TYPE_NONE     0
+#define EWIN_ICON_TYPE_APP      1
+#define EWIN_ICON_TYPE_IMG      2
+#define EWIN_ICON_TYPE_SNAP     3
+#define EWIN_ICON_TYPE_FB       4
+
 static int
 NetwmIconFindBestSize(unsigned int *val, unsigned int len, int size)
 {

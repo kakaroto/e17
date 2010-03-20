@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2000-2007 Carsten Haitzler, Geoff Harrison and various contributors
- * Copyright (C) 2004-2007 Kim Woelders
+ * Copyright (C) 2004-2010 Kim Woelders
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -27,11 +27,12 @@
 #include "eimage.h"
 #include "ewins.h"
 
-#define EWIN_ICON_TYPE_NONE     0
-#define EWIN_ICON_TYPE_APP      1
-#define EWIN_ICON_TYPE_IMG      2
-#define EWIN_ICON_TYPE_SNAP     3
-#define EWIN_ICON_TYPE_FB       4
+#define EWIN_ICON_MODE_SNAP         0	/* Iconbox    */
+#define EWIN_ICON_MODE_NONE         0	/* Focus list */
+#define EWIN_ICON_MODE_APP_IMG_SNAP 1
+#define EWIN_ICON_MODE_IMG_APP_SNAP 2
+#define EWIN_ICON_MODE_APP_IMG      3
+#define EWIN_ICON_MODE_IMG_APP      4
 
 EImage             *EwinIconImageGet(EWin * ewin, int size, int mode);
 

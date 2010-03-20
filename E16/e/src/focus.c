@@ -30,6 +30,7 @@
 #include "focus.h"
 #include "grabs.h"
 #include "hints.h"
+#include "icons.h"
 #include "settings.h"
 #include "timers.h"
 #include "xwin.h"
@@ -888,19 +889,19 @@ _DlgFillFocus(Dialog * d, DItem * table, void *data __UNUSED__)
    DialogItemSetColSpan(di, 2);
    DialogItemSetText(di, _("First E Icon, then App Icon"));
    DialogItemRadioButtonSetFirst(di, radio2);
-   DialogItemRadioButtonGroupSetVal(di, 4);
+   DialogItemRadioButtonGroupSetVal(di, EWIN_ICON_MODE_IMG_APP);
 
    di = DialogAddItem(table, DITEM_RADIOBUTTON);
    DialogItemSetColSpan(di, 2);
    DialogItemSetText(di, _("First App Icon, then E Icon"));
    DialogItemRadioButtonSetFirst(di, radio2);
-   DialogItemRadioButtonGroupSetVal(di, 3);
+   DialogItemRadioButtonGroupSetVal(di, EWIN_ICON_MODE_APP_IMG);
 
    di = DialogAddItem(table, DITEM_RADIOBUTTON);
    DialogItemSetColSpan(di, 2);
    DialogItemSetText(di, _("None"));
    DialogItemRadioButtonSetFirst(di, radio2);
-   DialogItemRadioButtonGroupSetVal(di, 0);
+   DialogItemRadioButtonGroupSetVal(di, EWIN_ICON_MODE_NONE);
    DialogItemRadioButtonGroupSetValPtr(radio2, &dd->focuslist.icon_mode);
 }
 
