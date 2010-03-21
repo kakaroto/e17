@@ -80,6 +80,8 @@ typedef Ekeko_Type * (*Eon_Type_Constructor)(void);
 void eon_parser_init(void);
 void eon_parser_shutdown(void);
 void eon_parser_register(const char *name, Eon_Parser *p);
+extern Eina_Array *eon_parser_stack;
+extern Eon_Document *eon_parser_doc;
 
 /* Engine */
 typedef void * Eon_Engine_Surface;

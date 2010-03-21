@@ -266,10 +266,11 @@ EAPI Eon_Document * eon_document_new(const char *engine, int w, int h, const cha
 	Eon_Style *s;
 
 	d = _document_new(engine, w, h, options);
+#if 0
 	/* the main style */
 	s = eon_style_new(d);
 	ekeko_object_child_append((Ekeko_Object *)d, (Ekeko_Object *)s);
-
+#endif
 	return d;
 }
 

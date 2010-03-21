@@ -18,6 +18,14 @@ AC_HEADER_STDC
 AC_C_CONST
 AM_ENABLE_SHARED
 AM_PROG_LIBTOOL
+AM_PROG_LEX
+if test "x$ac_cv_prog_LEX" = "x"; then
+  AC_MSG_ERROR(Cannot find flex)
+fi
+AC_PROG_YACC
+if test "x$ac_cv_prog_YACC" = "x"; then
+  AC_MSG_ERROR(Cannot find bison)
+fi
 
 dnl Add the languages which your application supports here.
 

@@ -6,9 +6,15 @@ AM_CPPFLAGS = \
 -I$(top_srcdir)/src/include \
 @EON_CFLAGS@
 
+CLEANFILES = \
+libeon_core_la-eon_grammar.c \
+libeon_core_la-eon_grammar.h
+
 noinst_LTLIBRARIES = libeon_core.la
 
 libeon_core_la_SOURCES = \
+eon_grammar.y \
+eon_lexer.l \
 eon_animation.c \
 eon_anim_key.c \
 eon_anim_basic.c \
@@ -31,3 +37,6 @@ eon_style.c \
 eon_style_applier.c \
 eon_trigger.c \
 eon_value.c
+
+libeon_core_la_YFLAGS = -d
+libeon_core_la_LIBADD = @LEXLIB@
