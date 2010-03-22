@@ -10,7 +10,7 @@ DESCRIPTION="Enlightenment DR17 window manager"
 HOMEPAGE="http://www.enlightenment.org/"
 
 SLOT="0.17"
-IUSE="exchange pam alsa tracker pm-utils debug xinerama xscreensaver opengl connman"
+IUSE="exchange pam alsa tracker pm-utils debug xinerama xscreensaver opengl connman bluetooth ofono"
 
 # TODO: pm-utils changes /etc/enlightenment/sysactions.conf
 # TODO: patch to not require -i-really-know-what-i-am-doing-and-accept-full-responsibility-for-it
@@ -40,6 +40,8 @@ src_configure() {
 	  $(use_enable alsa mixer)
 	  $(use_enable connman)
 	  $(use_enable exchange)
+	  $(use_enable bluetooth bluez)
+	  $(use_enable ofono)
 	"
 	efl_src_configure
 }

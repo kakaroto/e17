@@ -12,5 +12,7 @@
  <flag name="pm-utils">Integrate with <pkg>sys-power/pm-utils</pkg> to provide hibernate and suspend.</flag>
  <flag name="xinerama">Enable multiple screen setup (xinerama and xrandr).</flag>
  <flag name="connman">Enable <pkg>net-misc/connman</pkg> support to manage network connections.</flag>
+ <flag name="bluetooth">Enable <pkg>net-wireless/bluez</pkg> support to manage bluetooth devices.</flag>
+ <flag name="ofono">Enable <pkg>net-misc/ofono</pkg> support to manage telephony (GSM/UMTS).</flag>
 </use>
 </pkgmetadata>
