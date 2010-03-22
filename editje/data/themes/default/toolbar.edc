@@ -149,6 +149,69 @@ collections {
             }
 	      }
 
+         part {
+            name: "cut.bt";
+            type: RECT;
+            mouse_events: 1;
+            description {
+               state: "default" 0.0;
+               color: 255 0 0 0;
+               align: 1.0 0.5;
+               aspect: 1.5 1.0;
+               rel1 {
+                  relative: 0.25 0.0;
+                  offset: -5 5;
+               }
+               rel2 {
+                  relative: 0.25 1.0;
+                  offset: -5 -11;
+               }
+            }
+         }
+         TOOLBAR_BT_MAIN("cut.bt", "ico_cut.png")
+
+         part {
+            name: "copy.bt";
+            type: RECT;
+            mouse_events: 1;
+            description {
+               state: "default" 0.0;
+               color: 255 0 0 0;
+               align: 1.0 0.5;
+               aspect: 1.5 1.0;
+               rel1 {
+                  relative: 0.5 0.0;
+                  offset: -5 5;
+               }
+               rel2 {
+                  relative: 0.5 1.0;
+                  offset: -5 -11;
+               }
+            }
+         }
+         TOOLBAR_BT_MAIN("copy.bt", "ico_copy.png")
+
+         part {
+            name: "paste.bt";
+            type: RECT;
+            mouse_events: 1;
+            description {
+               state: "default" 0.0;
+               color: 255 0 0 0;
+               align: 1.0 0.5;
+               aspect: 1.5 1.0;
+               rel1 {
+                  relative: 0.75 0.0;
+                  offset: -5 5;
+               }
+               rel2 {
+                  relative: 0.75 1.0;
+                  offset: -5 -11;
+               }
+            }
+         }
+         TOOLBAR_BT_MAIN("paste.bt", "ico_paste.png")
+
 #if 0
          part {
             name: "image_list.bt";

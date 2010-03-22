@@ -36,6 +36,9 @@ images {
    image: "ico_next.png" COMP;
    image: "ico_stop.png" COMP;
    image: "ico_run.png" COMP;
+   image: "ico_cut.png" COMP;
+   image: "ico_copy.png" COMP;
+   image: "ico_paste.png" COMP;
    image: "new_bg.png" COMP;
    image: "timeline_bg.png" COMP;
    image: "timeline_line.png" COMP;

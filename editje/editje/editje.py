@@ -25,6 +25,7 @@ import elementary
 import sysconfig
 from about import About
 from editable import Editable
+import objects_data
 
 from desktop import Desktop
 from collapsable import CollapsablesBox
@@ -39,6 +40,8 @@ from signals import SignalsList, SignalDetails
 
 from widgets_list import WidgetsList
 from groupselector import GroupSelectionWizard
+
+from misc import name_generate
 
 
 def debug_cb(obj, emission, source):
@@ -69,6 +72,8 @@ class Editje(elementary.Window):
         self._toolbar_static_init()
         self._desktop_init()
         self._modes_init()
+
+        self._clipboard = None
 
     def _destroy_cb(self, obj):
         self.e.close()
@@ -302,6 +307,36 @@ class Editje(elementary.Window):
         About(self).open()
         return
 
+    def _cut_cb(self, obj, emission, source):
+        if not self.e.part.name:
+            return
+
+        self._clipboard = objects_data.Part(self.e.part._part)
+        self.e.part_del(self.e.part.name)
+
+    def _copy_cb(self, obj, emission, source):
+        if not self.e.part.name:
+            return
+
+        self._clipboard = objects_data.Part(self.e.part._part)
+
+    def _paste_cb(self, obj, emission, source):
+        if not self._clipboard:
+            return
+
+        name = name_generate(self._clipboard.name, self.e.parts)
+
+        type = self._clipboard.type
+
+        source = self._clipboard["source"]
+        if source is None:
+            source = ''
+
+        if self.e.part_add(name, type, source=source, signal=False):
+            part = self.e._edje.part_get(name)
+            self._clipboard.apply_to(part)
+            self.e.event_emit("part.added", name)
+
     def _play_cb(self, obj, emission, source):
 #        def play_end(emissor, data):
 #               TODO: emit signals here to enable play, next, previous and disable stop button
@@ -459,6 +494,12 @@ class Editje(elementary.Window):
         self._toolbar_bt_init(
             edj, "image_list.bt", "Images", self._image_list_cb)
         self._toolbar_bt_init(edj, "font_list.bt", "Fonts", self._font_list_cb)
+
+        self._toolbar_bt_init(edj, "cut.bt", "Cut", self._cut_cb)
+
+        self._toolbar_bt_init(edj, "copy.bt", "Copy", self._copy_cb)
+
+        self._toolbar_bt_init(edj, "paste.bt", "Paste", self._paste_cb)
 
         self._toolbar_bt_init(edj, "about.bt", "About", self._about_cb)
 

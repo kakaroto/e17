@@ -47,6 +47,8 @@ floater.py \
 floater_opener.py \
 groupselector.py \
 openfile.py \
+objects_data.py \
+misc.py \
 parts.py \
 popup_win.py \
 popups.py \

@@ -14,6 +14,8 @@ ico_cancel.png \
 ico_cancel_disabled.png \
 ico_closed.png \
 ico_confirm.png \
+ico_copy.png \
+ico_cut.png \
 ico_down.png \
 ico_editje.png \
 ico_fonts.png \
@@ -26,6 +28,7 @@ ico_opened.png \
 ico_options.png \
 ico_part.png \
 ico_part_disabled.png \
+ico_paste.png \
 ico_play.png \
 ico_previous.png \
 ico_remove.png \

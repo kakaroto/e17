@@ -22,10 +22,10 @@ import edje
 from event_manager import Manager
 from editable_program import EditableProgram
 
-program_stop = re.compile("@(.*)@stop$")
-program_end = re.compile("@(.*)@end$")
-program_time = re.compile("@(.*)@(\d+\.\d+)$")
-program = re.compile("@(.*)@((?:\d+\.\d+)|end|stop)$")
+re_anim_program_stop = re.compile("@(.*)@stop$")
+re_anim_program_end = re.compile("@(.*)@end$")
+re_anim_program_time = re.compile("@(.*)@(\d+\.\d+)$")
+re_anim_program = re.compile("@(.*)@((?:\d+\.\d+)|end|stop)$")
 
 class EditableAnimation(Manager, object):
     def __init__(self, editable):
@@ -91,7 +91,7 @@ class EditableAnimation(Manager, object):
         # others programs
         for p in stopprog.targets_get():
             prog = self.e._edje.program_get(p)
-            time = program.match(p).group(2)
+            time = re_program.match(p).group(2)
             p2 = "@%s@%s" % (name, time)
             if time == "end":
                 prog.state2_set(name)
