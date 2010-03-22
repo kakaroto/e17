@@ -132,6 +132,24 @@ engine_software_xcb_args(const char *engine, int width, int height)
 	printf("Evas can not setup the informations of the Software XCB Engine\n");
 	goto destroy_window;
      }
+   
+   if (fullscreen)
+     {
+        xcb_intern_atom_cookie_t       cookie1;
+        xcb_intern_atom_cookie_t       cookie2;
+        xcb_intern_atom_reply_t       *reply;
+        xcb_atom_t prop;
+        xcb_atom_t type;
+        xcb_atom_t state;
+
+        cookie1 = xcb_intern_atom_unchecked(conn, 0, strlen("_NET_WM_STATE"), "_NET_WM_STATE");
+        cookie2 = xcb_intern_atom_unchecked(conn, 0, strlen("_NET_WM_STATE_FULLSCREEN"), "_NET_WM_STATE_FULLSCREEN");
+        reply = xcb_intern_atom_reply(conn, cookie1, NULL);
+        prop = reply->atom;
+        reply = xcb_intern_atom_reply(conn, cookie2, NULL);
+        state = reply->atom;
+        xcb_change_property(conn, XCB_PROP_MODE_REPLACE, win, prop, XCB_ATOM_ATOM, 32, 1, (const void *)&state); 
+     }
 
    str = "expedite\0Expedite";
 
@@ -174,9 +192,9 @@ engine_software_xcb_args(const char *engine, int width, int height)
                        wm_normal_hint, wm_size_hint, 32,
                        sizeof(hints) / 4, &hints);
 
-   free(xcb_get_input_focus_reply(conn, xcb_get_input_focus_unchecked(conn), NULL));
-
    xcb_map_window(conn, win);
+
+   free(xcb_get_input_focus_reply(conn, xcb_get_input_focus_unchecked(conn), NULL));
    
    while (!first_expose)
      engine_software_xcb_loop();
