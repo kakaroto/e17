@@ -146,8 +146,10 @@ engine_software_xcb_args(const char *engine, int width, int height)
         cookie2 = xcb_intern_atom_unchecked(conn, 0, strlen("_NET_WM_STATE_FULLSCREEN"), "_NET_WM_STATE_FULLSCREEN");
         reply = xcb_intern_atom_reply(conn, cookie1, NULL);
         prop = reply->atom;
+        free(reply);
         reply = xcb_intern_atom_reply(conn, cookie2, NULL);
         state = reply->atom;
+        free(reply);
         xcb_change_property(conn, XCB_PROP_MODE_REPLACE, win, prop, XCB_ATOM_ATOM, 32, 1, (const void *)&state); 
      }
 
