@@ -52,7 +52,7 @@ void setup_window()
 
   inwin = elm_win_inwin_add(win);
   evas_object_size_hint_weight_set(inwin, 0.1, 0.1);
-  elm_win_inwin_style_set(inwin, "minimal_vertical");
+  elm_object_style_set(inwin, "minimal_vertical");
   elm_win_inwin_content_set(inwin, vbox);
   evas_object_show(inwin);
 
@@ -68,7 +68,7 @@ void setup_window()
     scrollerframe2 = elm_frame_add(win);
     evas_object_size_hint_weight_set(scrollerframe2, 1.0, 0.0);
     evas_object_size_hint_align_set(scrollerframe2, -1.0, 0.0);
-    elm_frame_style_set(scrollerframe2, "pad_small");
+    elm_object_style_set(scrollerframe2, "pad_small");
     elm_frame_content_set(scrollerframe2, exec);
     
     execscroller = elm_scroller_add(win);
@@ -81,7 +81,7 @@ void setup_window()
     scrollerframe = elm_frame_add(win);
     evas_object_size_hint_weight_set(scrollerframe, 1.0, 0.0);
     evas_object_size_hint_align_set(scrollerframe, -1.0, 0.0);
-    elm_frame_style_set(scrollerframe, "pad_medium");
+    elm_object_style_set(scrollerframe, "pad_medium");
     elm_frame_content_set(scrollerframe, execscroller);
 
     // Add callbacks
@@ -96,7 +96,7 @@ void setup_window()
     exec_frame = elm_frame_add(win);
     evas_object_size_hint_weight_set(exec_frame, 1.0, 0.0);
     evas_object_size_hint_align_set(exec_frame, -1.0, 0.0);
-    elm_frame_style_set(exec_frame, "pad_small");
+    elm_object_style_set(exec_frame, "pad_small");
     elm_frame_content_set(exec_frame, exec_frame2);
     elm_box_pack_end(vbox, exec_frame);
 
@@ -119,7 +119,7 @@ void setup_window()
     scrollerframe2 = elm_frame_add(win);
     evas_object_size_hint_weight_set(scrollerframe2, 1.0, 0.0);
     evas_object_size_hint_align_set(scrollerframe2, -1.0, 0.0);
-    elm_frame_style_set(scrollerframe2, "pad_small");
+    elm_object_style_set(scrollerframe2, "pad_small");
     elm_frame_content_set(scrollerframe2, entry);
     
     passscroller = elm_scroller_add(win);
@@ -131,7 +131,7 @@ void setup_window()
     scrollerframe = elm_frame_add(win);
     evas_object_size_hint_weight_set(scrollerframe, 1.0, 0.0);
     evas_object_size_hint_align_set(scrollerframe, -1.0, 0.0);
-    elm_frame_style_set(scrollerframe, "pad_medium");
+    elm_object_style_set(scrollerframe, "pad_medium");
     elm_frame_content_set(scrollerframe, passscroller);
     
     // Add callbacks
@@ -146,7 +146,7 @@ void setup_window()
     pass_frame = elm_frame_add(win);
     evas_object_size_hint_weight_set(pass_frame, 1.0, 0.0);
     evas_object_size_hint_align_set(pass_frame, -1.0, 0.0);
-    elm_frame_style_set(pass_frame, "pad_small");
+    elm_object_style_set(pass_frame, "pad_small");
     elm_frame_content_set(pass_frame, pass_frame2);
     elm_box_pack_end(vbox, pass_frame);
   }
