@@ -188,3 +188,6 @@ class WidgetsList(Collapsable):
         state.text = "YOUR TEXT HERE"
         state.font = "Sans"
         state.text_size = 16
+
+    def _part_init_external(self, part, state):
+        pass
