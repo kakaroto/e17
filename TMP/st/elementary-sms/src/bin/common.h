@@ -2,6 +2,8 @@
 #include "config.h"
 #ifdef HAVE_EFSO
 # include <efso.h>
+#else
+# include <E_Ofono.h>
 #endif
 
 //////////////////////////////////////////////////////////////////////////////

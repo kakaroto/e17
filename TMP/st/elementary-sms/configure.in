@@ -30,6 +30,13 @@ PKG_CHECK_MODULES([EFSO], [
 ], [
    have_efso=false
 ])
+PKG_CHECK_MODULES([EOFONO], [
+   edbus, eofono
+],[
+   AC_DEFINE(HAVE_EOFONO, 1, [have eofono])
+], [
+   have_eofono=false
+])
 
 AC_OUTPUT([
 Makefile

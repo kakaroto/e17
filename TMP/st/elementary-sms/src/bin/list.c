@@ -458,6 +458,61 @@ on_send(void *data, Evas_Object *obj, void *event_info)
      {
 #ifdef HAVE_EFSO
         efso_gsm_sms_send_message(number, text2, NULL, NULL);
+#elif HAVE_EOFONO
+	E_Ofono_Element *element;
+	Eina_Array *modems = NULL;
+	const char *path;
+	Eina_Bool powered = 0;
+	if (e_ofono_manager_get())
+	  {
+	     fputs("DBG: Trying to get modem from oFono\n", stderr);
+	     if (e_ofono_manager_modems_get(&modems) && (modems) &&
+		 (modems->count > 0))
+	       {
+		  path = eina_array_data_get(modems, 0);
+		  fprintf(stderr, "DBG: Using oFono modem %s\n", path);
+
+		  element = e_ofono_element_get(path, "org.ofono.Modem");
+		  if (e_ofono_modem_powered_get(element, &powered))
+		    {
+		       if (powered)
+			 {
+			    element = e_ofono_element_get
+			       (path, "org.ofono.SmsManager");
+			    if (!e_ofono_sms_send_message
+				(element, number, text2, NULL, NULL))
+			      {
+				 alert("oFono error!<br>"
+				       "Check log for more info.<br>"
+				       "(message not sent)");
+				 fputs
+				    ("ERROR: sms_send failed\n", stderr);
+				 return;
+			      }
+			 }
+		       else
+			 {
+			    alert("Modem powered off<br>"
+				  "(message not sent)");
+			    return;
+			 }
+		    }
+		  else
+		    {
+		       alert("oFono error!<br>"
+			     "Check log for more info.<br>"
+			     "(message not sent)");
+		       fputs("ERROR: modem_powered_get failed\n", stderr);
+		       return;
+		    }
+	       }
+	  }
+	else
+	  {
+	     alert("ofonod is not running!<br>"
+		   "(message not sent)");
+	     return;
+	  }
 #endif   
      }
    else
