@@ -125,7 +125,6 @@ _theme_group_connect(void)
    xmlInitParser();
    snprintf(url, sizeof(url), "http://exchange.enlightenment.org/api/list?object=theme_group");
    ret = xmlSAXUserParseFile(&ThemeGroupParser, &state, url);
-   xmlCleanupParser();
    return ret;
 }
 

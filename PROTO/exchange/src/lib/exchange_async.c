@@ -235,7 +235,6 @@ _download_complete_cb(void *data, const char *file, int status)
 
    xmlInitParser();
    ret = xmlSAXUserParseFile(&AsyncListParser, state, state->tmp);
-   xmlCleanupParser();
 
    //EINA_ERROR_PDBG("END %d\n", eina_list_count(state->l));
    state->complete_cb(state->l, state->cb_data);

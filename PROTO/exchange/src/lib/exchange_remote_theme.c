@@ -350,7 +350,6 @@ _theme_connect(const char *theme)
    tdata->name = (char *)theme;
    snprintf(url, sizeof(url), "http://exchange.enlightenment.org/api/read?object=theme&name=%s", theme);
    ret = xmlSAXUserParseFile(&ThemeParser, &state, url);
-   xmlCleanupParser();
    return ret;
 }
 

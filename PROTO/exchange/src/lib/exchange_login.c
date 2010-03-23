@@ -170,7 +170,6 @@ _login_connect(const char *username, const char *password)
    xmlInitParser();
    snprintf(url, sizeof(url), "http://exchange.enlightenment.org/api/login?name=%s&password=%s", username, password);
    ret = xmlSAXUserParseFile(&LoginParser, &state, url);
-   xmlCleanupParser();
    return ret;
 }
 
