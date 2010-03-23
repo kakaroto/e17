@@ -252,7 +252,7 @@ cdef class EventMouseIn:
 
     def modifier_is_set(self, modifier):
         self._check_validity()
-        return evas_key_modifier_is_set(self.obj.modifiers, modifier)
+        return bool(evas_key_modifier_is_set(self.obj.modifiers, modifier))
 
 cdef class EventMouseOut:
     cdef void _set_obj(self, void *ptr):
@@ -298,7 +298,7 @@ cdef class EventMouseOut:
 
     def modifier_is_set(self, modifier):
         self._check_validity()
-        return evas_key_modifier_is_set(self.obj.modifiers, modifier)
+        return bool(evas_key_modifier_is_set(self.obj.modifiers, modifier))
 
 cdef class EventMouseDown:
     cdef void _set_obj(self, void *ptr):
@@ -353,7 +353,7 @@ cdef class EventMouseDown:
 
     def modifier_is_set(self, modifier):
         self._check_validity()
-        return evas_key_modifier_is_set(self.obj.modifiers, modifier)
+        return bool(evas_key_modifier_is_set(self.obj.modifiers, modifier))
 
 cdef class EventMouseUp:
     cdef void _set_obj(self, void *ptr):
@@ -408,7 +408,7 @@ cdef class EventMouseUp:
 
     def modifier_is_set(self, modifier):
         self._check_validity()
-        return evas_key_modifier_is_set(self.obj.modifiers, modifier)
+        return bool(evas_key_modifier_is_set(self.obj.modifiers, modifier))
 
 cdef class EventMouseMove:
     cdef void _set_obj(self, void *ptr):
@@ -461,7 +461,7 @@ cdef class EventMouseMove:
 
     def modifier_is_set(self, modifier):
         self._check_validity()
-        return evas_key_modifier_is_set(self.obj.modifiers, modifier)
+        return bool(evas_key_modifier_is_set(self.obj.modifiers, modifier))
 
 cdef class EventMultiDown:
     cdef void _set_obj(self, void *ptr):
@@ -545,7 +545,7 @@ cdef class EventMultiDown:
 
     def modifier_is_set(self, modifier):
         self._check_validity()
-        return evas_key_modifier_is_set(self.obj.modifiers, modifier)
+        return bool(evas_key_modifier_is_set(self.obj.modifiers, modifier))
 
 cdef class EventMultiUp:
     cdef void _set_obj(self, void *ptr):
@@ -629,7 +629,7 @@ cdef class EventMultiUp:
 
     def modifier_is_set(self, modifier):
         self._check_validity()
-        return evas_key_modifier_is_set(self.obj.modifiers, modifier)
+        return bool(evas_key_modifier_is_set(self.obj.modifiers, modifier))
 
 cdef class EventMultiMove:
     cdef void _set_obj(self, void *ptr):
@@ -699,7 +699,7 @@ cdef class EventMultiMove:
 
     def modifier_is_set(self, modifier):
         self._check_validity()
-        return evas_key_modifier_is_set(self.obj.modifiers, modifier)
+        return bool(evas_key_modifier_is_set(self.obj.modifiers, modifier))
 
 cdef class EventMouseWheel:
     cdef void _set_obj(self, void *ptr):
@@ -750,7 +750,7 @@ cdef class EventMouseWheel:
 
     def modifier_is_set(self, modifier):
         self._check_validity()
-        return evas_key_modifier_is_set(self.obj.modifiers, modifier)
+        return bool(evas_key_modifier_is_set(self.obj.modifiers, modifier))
 
 cdef class EventKeyDown:
     cdef void _set_obj(self, void *ptr):
@@ -819,7 +819,7 @@ cdef class EventKeyDown:
 
     def modifier_is_set(self, modifier):
         self._check_validity()
-        return evas_key_modifier_is_set(self.obj.modifiers, modifier)
+        return bool(evas_key_modifier_is_set(self.obj.modifiers, modifier))
 
 
 cdef class EventKeyUp:
@@ -889,7 +889,7 @@ cdef class EventKeyUp:
 
     def modifier_is_set(self, modifier):
         self._check_validity()
-        return evas_key_modifier_is_set(self.obj.modifiers, modifier)
+        return bool(evas_key_modifier_is_set(self.obj.modifiers, modifier))
 
 cdef class EventHold:
     cdef void _set_obj(self, void *ptr):
