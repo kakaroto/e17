@@ -9,12 +9,11 @@
 #
 # Editje is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 # GNU Lesser General Public License for more details.
 #
 # You should have received a copy of the GNU Lesser General Public
-# License along with Editje.  If not, see
-# <http://www.gnu.org/licenses/>.
+# License along with Editje. If not, see <http://www.gnu.org/licenses/>.
 
 import edje
 import elementary
@@ -23,14 +22,22 @@ from prop import PropertyTable
 
 
 class EditjeDetails(edje.Edje):
-    def __init__(self, parent, group="editje/collapsable/default"):
+    def __init__(self, parent, operation_stack_cb,
+                 group="editje/collapsable/default"):
+        if not operation_stack_cb:
+            raise TypeError("You must set a callback for operation stacking on"
+                            " EditjeDetails objects.")
+
         edje.Edje.__init__(self, parent.evas_get())
 
-        self.file_set(parent.theme, group)
         self._parent = parent
-        self._proptable = PropertyTable(parent)
+        self._operation_stack_cb = operation_stack_cb
+
+        self.file_set(parent.theme, group)
+
+        self._proptable = PropertyTable(
+            parent, "main", self.prop_value_changed)
         self._proptable.show()
-        self._proptable._value_changed = self.prop_value_changed
         self.e = parent.e
 
         self._min_size_collapsed = self.size_min_calc()
@@ -67,10 +74,8 @@ class EditjeDetails(edje.Edje):
         if name in self._subgroups:
             raise KeyError(name)
 
-        tbl = PropertyTable(self._parent)
+        tbl = PropertyTable(self._parent, name, self.prop_value_changed)
         tbl.show()
-        tbl._value_changed = self.prop_value_changed
-        tbl._value_data = name
         frm = elementary.Layout(self._parent)
 
         frm.file_set(self._parent.theme, "subgroup")

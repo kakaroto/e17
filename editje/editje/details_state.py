@@ -29,6 +29,7 @@ from details_widget_states import WidgetStates
 from prop import Property, PropertyTable
 from filewizard import ImageSelectionWizard
 from floater_opener import FloaterListOpener
+from operation import Operation
 
 
 class StateCopyButton(FloaterListOpener):
@@ -53,13 +54,13 @@ class PartStateDetails(EditjeDetails):
     state_pop_min_w = 200
     state_pop_min_h = 300
 
-    def __init__(self, parent, img_new_img_cb=None,
+    def __init__(self, parent, operation_stack_cb, img_new_img_cb=None,
                  img_list_get_cb=None, img_id_get_cb=None,
                  fnt_new_fnt_cb=None, fnt_list_get_cb=None,
                  fnt_id_get_cb=None, workfile_name_get_cb=None,
                  part_object_get_cb=None,
                  group="editje/collapsable/part_state"):
-        EditjeDetails.__init__(self, parent, group)
+        EditjeDetails.__init__(self, parent, operation_stack_cb, group)
 
         self._header_init(parent)
 
@@ -81,7 +82,6 @@ class PartStateDetails(EditjeDetails):
         self._rel_props_create()
         self._image_props_create()
         self._text_props_create()
-        self._gradient_props_create()
         self._external_props_create()
 
         self.e.callback_add("group.changed", self._edje_load)
@@ -91,14 +91,13 @@ class PartStateDetails(EditjeDetails):
         self.e.part.callback_add("name.changed", self._part_update)
         self.e.part.callback_add("part.unselected", self._part_unselected)
         self.e.part.state.callback_add("state.changed", self._state_changed_cb)
-        self.e.part.state.callback_add(
-            "rel1x.changed", self._state_rels_changed_cb)
-        self.e.part.state.callback_add(
-            "rel1y.changed", self._state_rels_changed_cb)
-        self.e.part.state.callback_add(
-            "rel2x.changed", self._state_rels_changed_cb)
-        self.e.part.state.callback_add(
-            "rel2y.changed", self._state_rels_changed_cb)
+
+        for event in ["state.rel1.changed", "state.rel2.changed",
+                      "state.color.changed", "state.text.changed",
+                      "state.font.changed", "state.text_size.changed"]:
+            self.e.part.state.callback_add(
+                event, self._state_common_props_changed_cb)
+
         self.e.part.state.callback_add(
             "part.state.min.changed", self._update_min)
         self.e.part.state.callback_add(
@@ -113,12 +112,14 @@ class PartStateDetails(EditjeDetails):
     def _header_init(self, parent):
         self.title = "part state"
 
-        self._header_table = PropertyTable(parent)
+        self._header_table = PropertyTable(parent, "state name")
 
         prop = Property(parent, "state")
-        wid = WidgetStates(self, self.e)
+        wid = WidgetStates(self, self.e, self._operation_stack_cb)
         prop.widget_add("s", wid)
         self._header_table.property_add(prop)
+        # FIXME: ugly and dangerous: overriding property_add's behavior on
+        # widget's changed callback
         wid.changed = self._state_entry_changed_cb
 
         self.content_set("part_state.swallow", self._header_table)
@@ -294,82 +295,6 @@ class PartStateDetails(EditjeDetails):
         prop.widget_add("c", WidgetColor(self))
         self["text"].property_add(prop)
 
-    def _gradient_props_create(self):
-        self.group_add("gradient")
-
-        prop = Property(self._parent, "type")
-        prop.widget_add("t", WidgetEntry(self))
-        self["gradient"].property_add(prop)
-
-        prop = Property(self._parent, "spectrum")
-        prop.widget_add("s", WidgetEntry(self))
-        self["gradient"].property_add(prop)
-
-        prop = Property(self._parent, "angle")
-        wid = WidgetEntry(self)
-        wid.type_int()
-        #wid.parser_out = lambda x: int(x)
-        prop.widget_add("a", wid)
-        self["gradient"].property_add(prop)
-
-        self.group_add("g_rel1")
-        self.group_title_set("g_rel1", "gradient top-left")
-
-        prop = Property(self._parent, "relative")
-        wid = WidgetEntry(self)
-        wid.type_float()
-        #wid.parser_in = lambda x: str(x)
-        #wid.parser_out = lambda x: float(x)
-        prop.widget_add("x", wid)
-        wid = WidgetEntry(self)
-        wid.type_float()
-        #wid.parser_in = lambda x: str(x)
-        #wid.parser_out = lambda x: float(x)
-        prop.widget_add("y", wid)
-        self["g_rel1"].property_add(prop)
-
-        prop = Property(self._parent, "offset")
-        wid = WidgetEntry(self)
-        wid.type_int()
-        #wid.parser_in = lambda x: str(x)
-        #wid.parser_out = lambda x: int(x)
-        prop.widget_add("x", wid)
-        wid = WidgetEntry(self)
-        wid.type_int()
-        #wid.parser_in = lambda x: str(x)
-        #wid.parser_out = lambda x: int(x)
-        prop.widget_add("y", wid)
-        self["g_rel1"].property_add(prop)
-
-        self.group_add("g_rel2")
-        self.group_title_set("g_rel2", "gradient bottom-right")
-
-        prop = Property(self._parent, "relative")
-        wid = WidgetEntry(self)
-        wid.type_float()
-        #wid.parser_in = lambda x: str(x)
-        #wid.parser_out = lambda x: float(x)
-        prop.widget_add("x", wid)
-        wid = WidgetEntry(self)
-        wid.type_float()
-        #wid.parser_in = lambda x: str(x)
-        #wid.parser_out = lambda x: float(x)
-        prop.widget_add("y", wid)
-        self["g_rel2"].property_add(prop)
-
-        prop = Property(self._parent, "offset")
-        wid = WidgetEntry(self)
-        wid.type_int()
-        #wid.parser_in = lambda x: str(x)
-        #wid.parser_out = lambda x: int(x)
-        prop.widget_add("x", wid)
-        wid = WidgetEntry(self)
-        wid.type_int()
-        #wid.parser_in = lambda x: str(x)
-        #wid.parser_out = lambda x: int(x)
-        prop.widget_add("y", wid)
-        self["g_rel2"].property_add(prop)
-
     def _image_props_create(self):
         self.group_add("image")
 
@@ -504,9 +429,7 @@ class PartStateDetails(EditjeDetails):
                 workfile_get_cb=self._workfile_name_get_cb).show()
 
     def _image_selected_cb(self, image):
-        self["image"]["normal"].value = image
-        # HACK until the image properly emits a change
-        self.state.image_set(image)
+        self.prop_value_changed("normal", image, "image")
 
     def _state_changed_cb(self, emissor, data):
         if not data:
@@ -518,23 +441,43 @@ class PartStateDetails(EditjeDetails):
             prop.value = data
         self._update()
 
-    def _state_rels_changed_cb(self, emissor, data):
+    def _state_common_props_changed_cb(self, emissor, data):
         self._update_common()
 
-    def _state_entry_changed_cb(self, obj, *args, **kwargs):
-        state = obj.value.split(None, 1)
-        old = self.e.part.state.name
+    def _state_entry_changed_cb(self, st_widget, *args, **kwargs):
 
-        if len(state) == 1:
-            st = state[0] + " 0.00"
-        else:
-            st = " ".join(state)
+        def state_rename(part_name, old_name, new_name):
+            # select 1st
+            if self.e.part.name != part_name:
+                self.e.part.name = part_name
+            self.e.part.state.name = old_name
 
-        if (not self.part_edje.state_exist(st)) and \
-                old.split(None, 1)[0] != "default":
-            self.e.part.state.name_set(st)
+            part = self.e.part_get(part_name)
+
+            if (part.state_exist(new_name)) or old_name == "default 0.00":
+                return False
+
+            # rename later
+            return self.e.part.state.rename(new_name)
+
+        part = self.e.part.name
+        old_name = self.e.part.state.name
+
+        entry_val = st_widget.value.split(None, 1)
+        if len(entry_val) == 1:
+            new_name = entry_val[0] + " 0.00"
         else:
-            obj.value = old
+            new_name = " ".join(entry_val)
+
+        if state_rename(part, old_name, new_name):
+            op = Operation("state renaming")
+
+            op.redo_callback_add(state_rename, part, old_name, new_name)
+            op.undo_callback_add(state_rename, part, new_name, old_name)
+            self._operation_stack_cb(op)
+        else:
+            # TODO: notify the user of renaming failure
+            st_widget.value = old_name
 
     def _hide_all(self):
         self.main_hide()
@@ -542,9 +485,6 @@ class PartStateDetails(EditjeDetails):
         self.group_hide("rel2")
         self.group_hide("text")
         self.group_hide("image")
-        self.group_hide("gradient")
-        self.group_hide("g_rel1")
-        self.group_hide("g_rel2")
         self.group_hide("external")
         self.edje_get().signal_emit("cl,option,disable", "editje")
 
@@ -566,11 +506,6 @@ class PartStateDetails(EditjeDetails):
         elif self.part_edje.type == edje.EDJE_PART_TYPE_IMAGE:
             self._update_image()
             self.group_show("image")
-        elif self.part_edje.type == edje.EDJE_PART_TYPE_GRADIENT:
-            self._update_gradient()
-            self.group_show("gradient")
-            self.group_show("g_rel1")
-            self.group_show("g_rel2")
         elif self.part_edje.type == edje.EDJE_PART_TYPE_EXTERNAL:
             self._update_external()
             self.group_show("external")
@@ -628,28 +563,9 @@ class PartStateDetails(EditjeDetails):
 
     def _update_image(self):
         img = self.state.image_get()
-        if img is None:
-            img = ""
         self["image"]["normal"].value = img
         self["image"]["border"].value = self.state.image_border_get()
         self["image"]["middle"].value = self.state.image_border_fill_get()
-
-    def _update_gradient(self):
-        t = self.state.gradient_type_get()
-        if t is None:
-            t = ""
-        self["gradient"]["type"].value = t
-        s = self.state.gradient_spectra_get()
-        if s is None:
-            s = ""
-        self["gradient"]["spectrum"].value = s
-        self["gradient"]["angle"].value = str(self.state.gradient_angle_get())
-
-        self["g_rel1"]["relative"].value = self.state.gradient_rel1_relative_get()
-        self["g_rel1"]["offset"].value = self.state.gradient_rel1_offset_get()
-
-        self["g_rel2"]["relative"].value = self.state.gradient_rel2_relative_get()
-        self["g_rel2"]["offset"].value = self.state.gradient_rel2_offset_get()
 
     def _create_props_by_type(self, type):
         self._params_info = edje.external_param_info_get(type)
@@ -676,131 +592,150 @@ class PartStateDetails(EditjeDetails):
         for p in self.state.external_params_get():
             self["external"][p.name].value = p.value
 
-    def prop_value_changed(self, prop, value, group):
-        if not group:
-            self._prop_common_value_changed(prop, value)
-        elif group == "rel1":
-            self._prop_rel1_value_changed(prop, value)
-        elif group == "rel2":
-            self._prop_rel2_value_changed(prop, value)
-        elif group == "text":
-            self._prop_text_value_changed(prop, value)
-        elif group == "image":
-            self._prop_image_value_changed(prop, value)
-        elif group == "gradient" or \
-             group == "g_rel1" or \
-             group == "g_rel2":
-            self._prop_gradient_value_changed(prop, value, group)
-        elif group == "external":
-            self._prop_external_value_changed(prop, value)
+    def prop_value_changed(self, prop_name, prop_value, group_name):
+        if group_name == "main":
+            self._prop_common_value_changed(prop_name, prop_value)
+        elif group_name == "rel1":
+            self._prop_rel1_value_changed(prop_name, prop_value)
+        elif group_name == "rel2":
+            self._prop_rel2_value_changed(prop_name, prop_value)
+        elif group_name == "text":
+            self._prop_text_value_changed(prop_name, prop_value)
+        elif group_name == "image":
+            self._prop_image_value_changed(prop_name, prop_value)
+        elif group_name == "external":
+            self._prop_external_value_changed(prop_name, prop_value)
 
         self.editable.calc_force()
 
+    def _part_and_state_select(self, part_name, state_name):
+        if self.e.part.name != part_name:
+            self.e.part.name = part_name
+        if self.e.part.state.name != state_name:
+            self.e.part.state.name = state_name
+
+    def _prop_change_do(self, op_name, prop_group, prop_name, prop_value,
+                        prop_attr=None, pval_filter=None):
+
+        def set_property(part_name, state_name, prop_attr,
+                         prop_name, prop_value, filter_):
+            self._part_and_state_select(part_name, state_name)
+            setattr(self.e.part.state, prop_attr, prop_value)
+
+            if filter_:
+                label_value = filter_(prop_value)
+            else:
+                label_value = prop_value
+            if self[prop_group][prop_name].value != label_value:
+                self[prop_group][prop_name].value = label_value
+
+        part_name = self.e.part.name
+        state_name = self.e.part.state.name
+        state = self.e.part.state
+
+        if not prop_attr:
+            prop_attr = prop_name
+        old_value = getattr(state, prop_attr)
+
+        set_property(part_name, state_name, prop_attr, prop_name, prop_value,
+                     pval_filter)
+
+        op = Operation(op_name)
+        op.redo_callback_add(set_property, part_name, state_name, prop_attr,
+                             prop_name, prop_value, pval_filter)
+        op.undo_callback_add(set_property, part_name, state_name, prop_attr,
+                             prop_name, old_value, pval_filter)
+
+        self._operation_stack_cb(op)
+
     def _prop_common_value_changed(self, prop, value):
-        tbl = self["main"]
         if prop == "min":
-            if value is not None:
-                self.e.part.state.min = value
+            self._prop_change_do(
+                "part state mininum size setting", "main", prop, value)
         elif prop == "max":
-            if value is not None:
-                self.e.part.state.max = value
+            self._prop_change_do(
+                "part state maximum size setting", "main", prop, value)
         elif prop == "color":
-            self.state.color_set(*value)
+            self._prop_change_do(
+                "part state color setting", "main", prop, value)
         elif prop == "visible":
-            self.state.visible = value
+            self._prop_change_do(
+                "part state visibility setting", "main", prop, value)
         elif prop == "align":
-            if value is not None:
-                self.state.align_set(*value)
-            tbl["align"].value = self.state.align_get()
+            self._prop_change_do(
+                "part state alignment setting", "main", prop, value)
 
     def _prop_rel1_value_changed(self, prop, value):
-        tbl = self["rel1"]
         if prop == "to":
-            self.state.rel1_to_set(*value)
-            (x, y) = self.state.rel1_to_get()
-            if x is None:
-                x = ""
-            if y is None:
-                y = ""
-            tbl["to"].value = x, y
-        elif prop == "offset":
-            if value is not None:
-                self.state.rel1_offset_set(*value)
-            tbl["offset"].value = self.state.rel1_offset_get()
+            self._prop_change_do(
+                "part state relative positioning setting (top-left corner's"
+                " origin part)", "rel1", prop, value, "rel1_to")
         elif prop == "relative":
-            if value is not None:
-                self.state.rel1_relative_set(*value)
-            tbl["relative"].value = self.state.rel1_relative_get()
+            self._prop_change_do(
+                "part state relative positioning setting (top-left corner's"
+                " relative position WRT origin's dimensions)",
+                "rel1", prop, value, "rel1_relative")
+        elif prop == "offset":
+            self._prop_change_do(
+                "part state relative positioning setting (top-left corner's"
+                " additional offset)", "rel1", prop, value, "rel1_offset")
 
     def _prop_rel2_value_changed(self, prop, value):
-        tbl = self["rel2"]
         if prop == "to":
-            self.state.rel2_to_set(*value)
-            (x, y) = self.state.rel2_to_get()
-            if x is None:
-                x = ""
-            if y is None:
-                y = ""
-            tbl["to"].value = x, y
-        elif prop == "offset":
-            if value is not None:
-                self.state.rel2_offset_set(*value)
-            tbl["offset"].value = self.state.rel2_offset_get()
+            self._prop_change_do(
+                "part state relative positioning setting (bottom-right"
+                " corner's origin part)", "rel2", prop, value, "rel2_to")
         elif prop == "relative":
-            if value is not None:
-                self.state.rel2_relative_set(*value)
-            tbl["relative"].value = self.state.rel2_relative_get()
+            self._prop_change_do(
+                "part state relative positioning setting (bottom-right"
+                " corner's relative position WRT origin's dimensions)",
+                "rel2", prop, value, "rel2_relative")
+        elif prop == "offset":
+            self._prop_change_do(
+                "part state relative positioning setting (bottom-right"
+                " corner's additional offset)", "rel2", prop, value,
+                "rel2_offset")
 
     def _prop_text_value_changed(self, prop, value):
-        tbl = self["text"]
         if prop == "text":
-            self.state.text_set(value)
+            self._prop_change_do(
+                "part state text string setting", "text", prop, value)
         elif prop == "font":
-            self.state.font_set(value)
+            self._prop_change_do(
+                "part state text font setting", "text", prop, value)
         elif prop == "size":
-            if value is not None:
-                self.state.text_size_set(value)
-            tbl["size"].value = str(self.state.text_size_get())
+            self._prop_change_do("part state text size setting", "text", prop,
+                                 value, "text_size")
         elif prop == "fit":
-            self.state.text_fit_set(*value)
+            self._prop_change_do("part state text fit to given axis setting",
+                                 "text", prop, value, "text_fit")
         elif prop == "align":
-            if value is not None:
-                self.state.text_align_set(*value)
-            tbl["align"].value = self.state.text_align_get()
+            self._prop_change_do("part state text alignment setting", "text",
+                                 prop, value, "text_align")
         elif prop == "color2":
-            self.state.color2_set(*value)
+            self._prop_change_do("part state text shadow color setting",
+                                 "text", prop, value)
         elif prop == "color3":
-            self.state.color3_set(*value)
+            self._prop_change_do("part state text outline color setting",
+                                 "text", prop, value)
         elif prop == "elipsis":
-            if value is not None:
-                self.state.text_elipsis_set(value)
-            tbl["elipsis"].value = str(self.state.text_elipsis_get())
+            self._prop_change_do("part state text elipsis (balancing) setting",
+                                 "text", prop, value, "text_elipsis")
 
     def _prop_image_value_changed(self, prop, value):
         if prop == "normal":
-            self.state.image_set(value)
+            # FIXME: note that undoing an image set from <nothing> to some img
+            # won't reset the img part at all: edje was not really meant to
+            # have "void" img parts. img part addition should raise the img
+            # wizard dialog to choose an initial img from.
+            self._prop_change_do("part state image setting",
+                                 "image", prop, value, "image")
         elif prop == "border":
-            self.state.image_border_set(*value)
+            self._prop_change_do("part state image border setting",
+                                 "image", prop, value, "image_border")
         elif prop == "middle":
-            self.state.image_border_fill_set(value)
-
-    def _prop_gradient_value_changed(self, prop, value, group):
-        if prop == "type":
-            self.state.gradient_type_set(value)
-        elif prop == "spectrum":
-            self.state.gradient_spectra_set(value)
-        elif prop == "angle":
-            self.state.gradient_angle_set(value)
-        elif prop == "relative":
-            if group == "g_rel1":
-                self.state.gradient_rel1_relative_set(*value)
-            else:
-                self.state.gradient_rel2_relative_set(*value)
-        elif prop == "offset":
-            if group == "g_rel1":
-                self.state.gradient_rel1_offset_set(*value)
-            else:
-                self.state.gradient_rel2_offset_set(*value)
+            self._prop_change_do("part state \"middle\" setting",
+                                 "image", prop, value, "image_border_fill")
 
     def _prop_external_value_changed(self, prop, value):
         for p in self._params_info:
@@ -818,22 +753,21 @@ class PartStateDetails(EditjeDetails):
 
 
 class PartAnimStateDetails(PartStateDetails):
-    def __init__(self, parent, img_new_img_cb=None,
-                 img_list_get_cb=None, img_id_get_cb=None,
-                 fnt_new_fnt_cb=None, fnt_list_get_cb=None,
-                 fnt_id_get_cb=None, workfile_name_get_cb=None,
-                 part_object_get_cb=None,
-                 group="editje/collapsable/part_properties"):
-        PartStateDetails.__init__(self, parent, img_new_img_cb,
-                 img_list_get_cb, img_id_get_cb, fnt_new_fnt_cb,
-                 fnt_list_get_cb, fnt_id_get_cb, workfile_name_get_cb,
-                 part_object_get_cb, group)
+    def __init__(
+        self, parent, operation_stack_cb, img_new_img_cb=None,
+        img_list_get_cb=None, img_id_get_cb=None, fnt_new_fnt_cb=None,
+        fnt_list_get_cb=None, fnt_id_get_cb=None, workfile_name_get_cb=None,
+        part_object_get_cb=None, group="editje/collapsable/part_properties"):
+        PartStateDetails.__init__(
+            self, parent, operation_stack_cb, img_new_img_cb, img_list_get_cb,
+            img_id_get_cb, fnt_new_fnt_cb, fnt_list_get_cb, fnt_id_get_cb,
+            workfile_name_get_cb, part_object_get_cb, group)
         self.anim = None
 
     def _header_init(self, parent):
         self.title = "part properties"
 
-        self._header_table = PropertyTable(parent)
+        self._header_table = PropertyTable(parent, "part name/type")
 
         prop = Property(parent, "name")
         wid = WidgetEntry(self)
@@ -854,9 +788,9 @@ class PartAnimStateDetails(PartStateDetails):
 
         self._state_copy_button = StateCopyButton(self.e)
 
-        self.edje_get().signal_callback_add("cl,option,clicked",
-                                            "editje/collapsable",
-                                            self._state_copy_button._floater_open)
+        self.edje_get().signal_callback_add(
+            "cl,option,clicked", "editje/collapsable",
+            self._state_copy_button._floater_open)
 
     def _show(self):
         state = self.part_edje.state_selected_get()

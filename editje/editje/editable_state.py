@@ -1,4 +1,3 @@
-#
 # Copyright (C) 2009 Samsung Electronics.
 #
 # This file is part of Editje.
@@ -10,239 +9,457 @@
 #
 # Editje is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 # GNU Lesser General Public License for more details.
 #
 # You should have received a copy of the GNU Lesser General Public
-# License along with Editje.  If not, see
-# <http://www.gnu.org/licenses/>.
+# License along with Editje. If not, see <http://www.gnu.org/licenses/>.
+
 from event_manager import Manager
 
-class EditableState(Manager, object):
 
+class EditableState(Manager):
     def __init__(self, editable_part):
         Manager.__init__(self)
 
-        self.e = editable_part.e
-        self._name = None
+        self._edit_grp = editable_part.e
+        self.name = None
 
-        self.name = ""
-        self.callback_add("state.unselected", self._rel1_reset)
-        self.callback_add("state.unselected", self._rel2_reset)
-        self.callback_add("state.changed", self._rel1_load)
-        self.callback_add("state.changed", self._rel2_load)
-
+        self.callback_add("state.changed", self._rel1_inform)
+        self.callback_add("state.changed", self._rel2_inform)
 
         editable_part.callback_add("part.unselected", self._reset_cb)
-        editable_part.callback_add("part.changed", self._load_cb)
+        editable_part.callback_add("part.changed", self._reload_cb)
 
     def _reset_cb(self, emissor, data):
-        self.name = ""
+        self.name = None
 
-    def _load_cb(self, emissor, data):
-        if self.e.part._part:
-            name = self.e.part._part.state_selected_get()
-            if name == "(null) 0.00":
-                name = "default 0.00"
-            self._name = ""
-            self.name = name
-        else:
-            self.name = ""
+    def _reload_cb(self, emissor, data):
+        part_name = self._edit_grp.part.name
+
+        if not part_name:
+            self.name = None
+            return
+
+        part = self._edit_grp.part_get(part_name)
+        st_name = part.state_selected_get()
+        if st_name == "(null) 0.00":
+            st_name = "default 0.00"
+
+        # forcing last condition at name setter
+        self._name = None
+        self.name = st_name
 
     # Name
     def _name_set(self, value):
-        if not self.e._edje or not self.e.part._part:
-            self._state = None
-            self.event_emit("state.unselected")
-        elif self._name != value:
-            self._state = self.e.part._part.state_get(value)
-            if self._state:
-                self._name = value
-                self.event_emit("state.changed", self._name)
-            else:
-                self.event_emit("state.unselected")
 
-    def name_set(self, new_name):
-        self._state.name_set(new_name)
-        self.event_emit("state.renamed", self._name)
-        self._name_set(new_name)
+        def null():
+            self._state = None
+            self._name = None
+
+        if not self._edit_grp.edje:
+            null()
+            return
+
+        part_name = self._edit_grp.part.name
+        if not part_name:
+            null()
+            return
+
+        if not value:
+            null()
+            # not sure if useful, but leaving for now
+            self.event_emit("state.unselected")
+            return
+
+        if self._name == value:
+            return
+
+        part = self._edit_grp.part_get(part_name)
+        self._state = part.state_get(value)
+        if self._state:
+            self._name = value
+            self.event_emit("state.changed", self._name)
 
     def _name_get(self):
         return self._name
 
     name = property(_name_get, _name_set)
 
+    def rename(self, new_name):
+        if not self.name or not new_name:
+            return False
+
+        r = self._state.name_set(new_name)
+        if r:
+            self.event_emit("state.renamed", self._name)
+            self._name_set(new_name)
+
+        return r
+
     def copy_from(self, state):
-        if self._state.copy_from(state):
-            self.event_emit("state.changed", self._name)
+        if not self.name:
+            return False
 
-    def _rel1_reset(self, emissor, data):
-        self._rel1x_to = ""
-        self._rel1x_rel = 0.0
-        self._rel1x_ofs = 0
+        r = self._state.copy_from(state)
+        if not r:
+            return False
 
-        self._rel1y_to = ""
-        self._rel1y_rel = 0.0
-        self._rel1y_ofs = 0
+        self.event_emit("state.changed", self._name)
+        return True
 
-    def _rel2_reset(self, emissor, data):
-        self._rel2x_to = ""
-        self._rel2x_rel = 1.0
-        self._rel2x_ofs = -1
+    def _rel1_inform(self, emissor, data):
+        rel1_to = self._state.rel1_to_get()
+        rel1_rel = self._state.rel1_relative_get()
+        rel1_ofs = self._state.rel1_offset_get()
 
-        self._rel2y_to = ""
-        self._rel2y_rel = 1.0
-        self._rel2y_ofs = -1
+        self.event_emit("state.rel1.changed", (rel1_to, rel1_rel, rel1_ofs))
 
-    def _rel1_load(self, emissor, data):
-        self._rel1x_to, self._rel1y_to = self._state.rel1_to_get()
-        if not self._rel1x_to:
-            self._rel1x_to = ""
-        if not self._rel1y_to:
-            self._rel1y_to = ""
-        self._rel1x_rel, self._rel1y_rel = self._state.rel1_relative_get()
-        self._rel1x_ofs, self._rel1y_ofs = self._state.rel1_offset_get()
-        self.event_emit("rel1x.changed",self.rel1x)
-        self.event_emit("rel1y.changed",self.rel1y)
-#        self._rel1_print()
+    def _rel2_inform(self, emissor, data):
+        rel2_to = self._state.rel2_to_get()
+        rel2_rel = self._state.rel2_relative_get()
+        rel2_ofs = self._state.rel2_offset_get()
 
-    def _rel2_load(self, emissor, data):
-        self._rel2x_to, self._rel2y_to = self._state.rel2_to_get()
-        if not self._rel2x_to:
-            self._rel2x_to = ""
-        if not self._rel2y_to:
-            self._rel2y_to = ""
-        self._rel2x_rel, self._rel2y_rel = self._state.rel2_relative_get()
-        self._rel2x_ofs, self._rel2y_ofs = self._state.rel2_offset_get()
-        self.event_emit("rel2x.changed",self.rel2x)
-        self.event_emit("rel2y.changed",self.rel2y)
-#        self._rel2_print()
+        self.event_emit("state.rel2.changed", (rel2_to, rel2_rel, rel2_ofs))
 
-    def _rel1_print(self):
-        print "REL1 to", self._rel1x_to, self._rel1y_to
-        print "REL1 relative", self._rel1x_rel, self._rel1y_rel
-        print "REL1 offset", self._rel1x_ofs, self._rel1y_ofs
+    def _rel1_to_get(self):
+        if not self.name:
+            return None
 
-    def _rel2_print(self):
-        print "REL2 to", self._rel2x_to, self._rel2y_to
-        print "REL2 relative", self._rel2x_rel, self._rel2y_rel
-        print "REL2 offset", self._rel2x_ofs, self._rel2y_ofs
+        return self._state.rel1_to
 
-    def _rel1_to_write(self):
-        self._state.rel1_to_set(self._rel1x_to, self._rel1y_to)
+    def _rel1_to_set(self, value):
+        if not self.name:
+            return
 
-    def _rel1_rel_write(self):
-        self._state.rel1_relative_set(self._rel1x_rel, self._rel1y_rel)
+        self._state.rel1_to = value
+        self._rel1_inform(None, None)
 
-    def _rel1_ofs_write(self):
-        self._state.rel1_offset_set(self._rel1x_ofs, self._rel1y_ofs)
+    rel1_to = property(fget=_rel1_to_get, fset=_rel1_to_set)
 
-    def _rel2_to_write(self):
-        self._state.rel2_to_set(self._rel2x_to, self._rel2y_to)
+    def _rel1_relative_get(self):
+        if not self.name:
+            return None
 
-    def _rel2_rel_write(self):
-        self._state.rel2_relative_set(self._rel2x_rel, self._rel2y_rel)
+        return self._state.rel1_relative
 
-    def _rel2_ofs_write(self):
-        self._state.rel2_offset_set(self._rel2x_ofs, self._rel2y_ofs)
+    def _rel1_relative_set(self, value):
+        if not self.name:
+            return
 
-    def _rel1x_set(self, value):
-#        print "->REL1X", value
-        self._rel1x_to = value[0]
-        self._rel1_to_write()
-        self._rel1x_rel = value[1]
-        self._rel1_rel_write()
-        self._rel1x_ofs = value[2]
-        self._rel1_ofs_write()
-#        self._rel1_print()
-        self.event_emit("rel1x.changed",self.rel1x)
+        self._state.rel1_relative = value
+        self._rel1_inform(None, None)
 
-    def _rel1y_set(self, value):
-#        print "->REL1Y", value
-        self._rel1y_to = value[0]
-        self._rel1_to_write()
-        self._rel1y_rel = value[1]
-        self._rel1_rel_write()
-        self._rel1y_ofs = value[2]
-        self._rel1_ofs_write()
-#        self._rel1_print()
-        self.event_emit("rel1y.changed",self.rel1y)
+    rel1_relative = property(fget=_rel1_relative_get, fset=_rel1_relative_set)
 
-    def _rel2x_set(self, value):
-#        print "->REL2X", value
-        self._rel2x_to = value[0]
-        self._rel2_to_write()
-        self._rel2x_rel = value[1]
-        self._rel2_rel_write()
-        self._rel2x_ofs = value[2]
-        self._rel2_ofs_write()
-#        self._rel2_print()
-        self.event_emit("rel2x.changed",self.rel2x)
+    def _rel1_offset_get(self):
+        if not self.name:
+            return None
 
-    def _rel2y_set(self, value):
-#        print "->REL2Y", value
-        self._rel2y_to = value[0]
-        self._rel2_to_write()
-        self._rel2y_rel = value[1]
-        self._rel2_rel_write()
-        self._rel2y_ofs = value[2]
-        self._rel2_ofs_write()
-#        self._rel2_print()
-        self.event_emit("rel2y.changed",self.rel2y)
+        return self._state.rel1_offset
 
-    def _rel1x_get(self):
-        return (self._rel1x_to, self._rel1x_rel, self._rel1x_ofs)
+    def _rel1_offset_set(self, value):
+        if not self.name:
+            return
 
-    def _rel1y_get(self):
-        return (self._rel1y_to, self._rel1y_rel, self._rel1y_ofs)
+        self._state.rel1_offset = value
+        self._rel1_inform(None, None)
 
-    def _rel2x_get(self):
-        return (self._rel2x_to, self._rel2x_rel, self._rel2x_ofs)
+    rel1_offset = property(fget=_rel1_offset_get, fset=_rel1_offset_set)
 
-    def _rel2y_get(self):
-        return (self._rel2y_to, self._rel2y_rel, self._rel2y_ofs)
+    def _rel2_to_get(self):
+        if not self.name:
+            return None
 
-    rel1x = property(_rel1x_get, _rel1x_set)
-    rel1y = property(_rel1y_get, _rel1y_set)
-    rel2x = property(_rel2x_get, _rel2x_set)
-    rel2y = property(_rel2y_get, _rel2y_set)
+        return self._state.rel2_to
+
+    def _rel2_to_set(self, value):
+        if not self.name:
+            return
+
+        self._state.rel2_to = value
+        self._rel2_inform(None, None)
+
+    rel2_to = property(fget=_rel2_to_get, fset=_rel2_to_set)
+
+    def _rel2_relative_get(self):
+        if not self.name:
+            return None
+
+        return self._state.rel2_relative
+
+    def _rel2_relative_set(self, value):
+        if not self.name:
+            return
+
+        self._state.rel2_relative = value
+        self._rel2_inform(None, None)
+
+    rel2_relative = property(fget=_rel2_relative_get, fset=_rel2_relative_set)
+
+    def _rel2_offset_get(self):
+        if not self.name:
+            return None
+
+        return self._state.rel2_offset
+
+    def _rel2_offset_set(self, value):
+        if not self.name:
+            return
+
+        self._state.rel2_offset = value
+        self._rel2_inform(None, None)
+
+    rel2_offset = property(fget=_rel2_offset_get, fset=_rel2_offset_set)
 
     def _max_get(self):
+        if not self.name:
+            return None
+
         return self._state.max
 
     def _max_set(self, value):
-        if self._state.max != value:
-            min = self.min
-            w, h = value
-            if w < 0:
-                w = -1
-            elif min[0] and w < min[0]:
-                w = min[0]
-            if h < 0:
-                h = -1
-            elif min[1] and h < min[1]:
-                h = min[1]
-            self._state.max = (w, h)
-            self.event_emit("part.state.max.changed", (w, h))
+        if not self.name:
+            return
+
+        if self._state.max == value:
+            return
+
+        min_ = self.min
+        w, h = value
+        if w < 0:
+            w = -1
+        elif min_[0] and w < min_[0]:
+            w = min_[0]
+        if h < 0:
+            h = -1
+        elif min_[1] and h < min_[1]:
+            h = min_[1]
+        self._state.max = (w, h)
+        self.event_emit("part.state.max.changed", (w, h))
 
     max = property(_max_get, _max_set)
 
     def _min_get(self):
+        if not self.name:
+            return None
+
         return self._state.min
 
     def _min_set(self, value):
-        if self._state.min != value:
-            max = self._state.max
-            w, h = value
-            if w < 0:
-                w = 0
-            elif max[0] >= 0 and w > max[0]:
-                w = max[0]
-            if h < 0:
-                h = 0
-            elif max[1] >= 0 and h > max[1]:
-                h = max[1]
-            self._state.min = (w, h)
-            self.event_emit("part.state.min.changed", (w, h))
+        if not self.name:
+            return
+
+        if self._state.min == value:
+            return
+
+        max_ = self._state.max
+        w, h = value
+        if w < 0:
+            w = 0
+        elif max_[0] >= 0 and w > max_[0]:
+            w = max_[0]
+        if h < 0:
+            h = 0
+        elif max_[1] >= 0 and h > max_[1]:
+            h = max_[1]
+        self._state.min = (w, h)
+        self.event_emit("part.state.min.changed", (w, h))
 
     min = property(_min_get, _min_set)
+
+    def _color_get(self):
+        if not self.name:
+            return None
+
+        return self._state.color
+
+    def _color_set(self, value):
+        if not self.name:
+            return
+
+        self._state.color = value
+        self.event_emit("state.color.changed")
+
+    color = property(fget=_color_get, fset=_color_set)
+
+    def _color2_get(self):
+        if not self.name:
+            return None
+
+        return self._state.color2
+
+    def _color2_set(self, value):
+        if not self.name:
+            return
+
+        self._state.color2 = value
+        self.event_emit("state.color2.changed")
+
+    color2 = property(fget=_color2_get, fset=_color2_set)
+
+    def _color3_get(self):
+        if not self.name:
+            return None
+
+        return self._state.color3
+
+    def _color3_set(self, value):
+        if not self.name:
+            return
+
+        self._state.color3 = value
+        self.event_emit("state.color3.changed")
+
+    color3 = property(fget=_color3_get, fset=_color3_set)
+
+    def _visible_get(self):
+        if not self.name:
+            return None
+
+        return self._state.visible
+
+    def _visible_set(self, value):
+        if not self.name:
+            return
+
+        self._state.visible = value
+        self.event_emit("state.visible.changed")
+
+    visible = property(fget=_visible_get, fset=_visible_set)
+
+    def _align_get(self):
+        if not self.name:
+            return None
+
+        return self._state.align
+
+    def _align_set(self, value):
+        if not self.name:
+            return
+
+        self._state.align = value
+        self.event_emit("state.align.changed")
+
+    align = property(fget=_align_get, fset=_align_set)
+
+    def _text_get(self):
+        if not self.name:
+            return None
+
+        return self._state.text
+
+    def _text_set(self, value):
+        if not self.name:
+            return
+
+        self._state.text = value
+        self.event_emit("state.text.changed")
+
+    text = property(fget=_text_get, fset=_text_set)
+
+    def _font_get(self):
+        if not self.name:
+            return None
+
+        return self._state.font
+
+    def _font_set(self, value):
+        if not self.name:
+            return
+
+        self._state.font = value
+        self.event_emit("state.font.changed")
+
+    font = property(fget=_font_get, fset=_font_set)
+
+    def _text_size_get(self):
+        if not self.name:
+            return None
+
+        return self._state.text_size
+
+    def _text_size_set(self, value):
+        if not self.name:
+            return
+
+        self._state.text_size = value
+        self.event_emit("state.text_size.changed")
+
+    text_size = property(fget=_text_size_get, fset=_text_size_set)
+
+    def _text_align_get(self):
+        if not self.name:
+            return None
+
+        return self._state.text_align
+
+    def _text_align_set(self, value):
+        if not self.name:
+            return
+
+        self._state.text_align = value
+        self.event_emit("state.text_align.changed")
+
+    text_align = property(fget=_text_align_get, fset=_text_align_set)
+
+    def _text_elipsis_get(self):
+        if not self.name:
+            return None
+
+        return self._state.text_elipsis
+
+    def _text_elipsis_set(self, value):
+        if not self.name:
+            return
+
+        self._state.text_elipsis = value
+        self.event_emit("state.text_elipsis.changed")
+
+    text_elipsis = property(fget=_text_elipsis_get, fset=_text_elipsis_set)
+
+    def _image_get(self):
+        if not self.name:
+            return None
+
+        return self._state.image
+
+    def _image_set(self, value):
+        if not self.name:
+            return
+
+        self._state.image = value
+        self.event_emit("state.image.changed")
+
+    image = property(fget=_image_get, fset=_image_set)
+
+    def _image_border_get(self):
+        if not self.name:
+            return None
+
+        return self._state.image_border
+
+    def _image_border_set(self, value):
+        if not self.name:
+            return
+
+        self._state.image_border = value
+        self.event_emit("state.image_border.changed")
+
+    image_border = property(fget=_image_border_get, fset=_image_border_set)
+
+    def _image_border_fill_get(self):
+        if not self.name:
+            return None
+
+        return self._state.image_border_fill
+
+    def _image_border_fill_set(self, value):
+        if not self.name:
+            return
+
+        self._state.image_border_fill = value
+        self.event_emit("state.image_border_fill.changed")
+
+    image_border_fill = property(fget=_image_border_fill_get,
+                                 fset=_image_border_fill_set)

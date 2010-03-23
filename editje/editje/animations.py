@@ -9,12 +9,11 @@
 #
 # Editje is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 # GNU Lesser General Public License for more details.
 #
 # You should have received a copy of the GNU Lesser General Public
-# License along with Editje.  If not, see
-# <http://www.gnu.org/licenses/>.
+# License along with Editje. If not, see <http://www.gnu.org/licenses/>.
 
 import edje
 import evas
@@ -26,6 +25,7 @@ from prop import Property, PropertyTable
 from floater import Wizard
 from clist import CList
 from groupselector import NameEntry
+from operation import Operation
 
 
 class AnimationsList(CList):
@@ -43,8 +43,10 @@ class AnimationsList(CList):
         self.e.callback_add("animation.added", self._animation_added)
         self.e.callback_add("animation.removed", self._animation_removed)
 
-        self.e.animation.callback_add("animation.changed", self._animation_changed)
-        self.e.animation.callback_add("animation.unselected", self._animation_changed)
+        self.e.animation.callback_add(
+            "animation.changed", self._animation_changed)
+        self.e.animation.callback_add(
+            "animation.unselected", self._animation_changed)
 
     def _animations_update(self, emissor, data):
         self.clear()
@@ -170,17 +172,18 @@ class NewAnimationWizard(Wizard):
 
 
 class AnimationDetails(EditjeDetails):
-    def __init__(self, parent):
-        EditjeDetails.__init__(self, parent,
-                               group="editje/collapsable/part_properties")
+    def __init__(self, parent, operation_stack_cb):
+        EditjeDetails.__init__(
+            self, parent, operation_stack_cb,
+            group="editje/collapsable/part_properties")
 
         self.title = "animation"
 
         self._transitions = ['None', 'Linear', 'Sinusoidal', 'Accelerate',
                              'Decelerate']
 
-        self._header_table = PropertyTable(parent)
-        self._header_table._value_changed = self.header_prop_value_changed
+        self._header_table = PropertyTable(
+            parent, "animation name", self.header_prop_value_changed)
 
         prop = Property(parent, "name")
         wid = WidgetEntry(self)
@@ -270,7 +273,7 @@ class AnimationDetails(EditjeDetails):
 
     def _timeline_clear(self):
         for i in range(0, 11):
-            sig = "ts,%.1g," % (i/10.0)
+            sig = "ts,%.1g," % (i / 10.0)
             self._parent.main_edje.signal_emit(sig + "disable", "editje")
             self._parent.main_edje.signal_emit(sig + "unselected", "editje")
 
@@ -322,5 +325,23 @@ class AnimationDetails(EditjeDetails):
 
     def prop_value_changed(self, prop, value, group):
         if prop == "transition":
+            def transition_set(animation, state, transition):
+                self.e.animation.name = animation
+                self.e.animation.state = state
+                self.e.animation.program.transition = transition
+                value = self["main"]["transition"].value
+                value = (self._transitions[transition], value[1])
+                self["main"]["transition"].value = value
+
+            op = Operation("animation state transition")
+            op.undo_callback_add(transition_set,
+                                 self.e.animation.name,
+                                 self.e.animation.state,
+                                 self.e.animation.program.transition)
             t = self["main"]["transition"]["type"]
             self.e.animation.program.transition = self._transitions.index(t)
+            op.redo_callback_add(transition_set,
+                                 self.e.animation.name,
+                                 self.e.animation.state,
+                                 self.e.animation.program.transition)
+            self._operation_stack_cb(op)

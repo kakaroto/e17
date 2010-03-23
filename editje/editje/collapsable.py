@@ -1,4 +1,3 @@
-#
 # Copyright (C) 2009 Samsung Electronics.
 #
 # This file is part of Editje.
@@ -10,20 +9,20 @@
 #
 # Editje is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 # GNU Lesser General Public License for more details.
 #
 # You should have received a copy of the GNU Lesser General Public
-# License along with Editje.  If not, see
-# <http://www.gnu.org/licenses/>.
+# License along with Editje. If not, see <http://www.gnu.org/licenses/>.
+
 import evas
 import elementary
 
 import sysconfig
 from event_manager import Manager
 
-class Collapsable(Manager, elementary.Layout):
 
+class Collapsable(Manager, elementary.Layout):
     def __init__(self, parent):
         Manager.__init__(self)
         self._parent = parent
@@ -131,7 +130,7 @@ class CollapsablesBox(elementary.Box):
             return
         self._spacer.size_hint_weight_set(evas.EVAS_HINT_EXPAND, 0.0)
 
-
+# FIXME: this test is unmantained and currently is barfing
 if __name__ == "__main__":
     elementary.init()
     elementary.policy_set(elementary.ELM_POLICY_QUIT,
@@ -168,7 +167,7 @@ if __name__ == "__main__":
     i.title = "Item2"
     bx.pack_end(i)
     i.show()
-    
+
     win.show()
 
     elementary.run()

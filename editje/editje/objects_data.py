@@ -51,13 +51,12 @@ class Part(Object):
         self["source"] = obj.source
         self["effect"] = obj.effect
 
-        dragable = dict()
-        self["dragable"] = dragable
+        self["dragable"] = dict()
         x, y = obj.drag
-        dragable["x"] = x
-        dragable["y"] = y
-        dragable["confine"] = obj.drag_confine
-        dragable["events"] = obj.drag_event
+        self["dragable"]["x"] = x
+        self["dragable"]["y"] = y
+        self["dragable"]["confine"] = obj.drag_confine
+        self["dragable"]["events"] = obj.drag_event
 
         self._class = State
         if self._type == edje.EDJE_PART_TYPE_IMAGE:
@@ -69,11 +68,10 @@ class Part(Object):
         elif self._type == edje.EDJE_PART_TYPE_EXTERNAL:
             self._class = StateExternal
 
-        states = dict()
-        self["states"] = states
+        self["states"] = dict()
         for state_name in obj.states:
             state = obj.state_get(state_name)
-            states[state_name] = self._class(state)
+            self["states"][state_name] = self._class(state)
 
     def _type_get(self):
         return self._type
@@ -95,8 +93,8 @@ class Part(Object):
 
         for state in self["states"].values():
             name = state.name
-            obj.state_add(name.split()[0]) #TODO: Remove this hack
-            state_obj = obj.state_get(name)
+            half_name = name.split(None, 1)[0]
+            obj.state_add(half_name)
             state.apply_to(obj.state_get(name))
 
         return True
@@ -128,43 +126,40 @@ class State(Object):
         self["align"] = obj.align
         self["min"] = obj.min
         self["max"] = obj.max
-        self["aspect"] = (obj.aspect_min_get(),
-                                 obj.aspect_max_get())
+        self["aspect"] = (obj.aspect_min_get(), obj.aspect_max_get())
         self["aspect_preference"] = obj.aspect_pref_get()
         self["color"] = obj.color_get()
         self["color2"] = obj.color2_get()
         self["color3"] = obj.color3_get()
 
-        rel = dict()
-        self["rel1"] = rel
-        rel["relative"] = obj.rel1_relative_get()
-        rel["offset"] = obj.rel1_offset_get()
+        self["rel1"] = dict()
+        self["rel1"]["relative"] = obj.rel1_relative_get()
+        self["rel1"]["offset"] = obj.rel1_offset_get()
         x, y = obj.rel1_to_get()
         if not x:
             x = ""
         if not y:
             y = ""
-        rel["to"] = (x, y)
+        self["rel1"]["to"] = (x, y)
 
-        rel = dict()
-        self["rel2"] = rel
-        rel["relative"] = obj.rel2_relative_get()
-        rel["offset"] = obj.rel2_offset_get()
+        self["rel2"] = dict()
+        self["rel2"]["relative"] = obj.rel2_relative_get()
+        self["rel2"]["offset"] = obj.rel2_offset_get()
         x, y = obj.rel2_to_get()
         if not x:
             x = ""
         if not y:
             y = ""
-        rel["to"] = (x, y)
+        self["rel2"]["to"] = (x, y)
 
     def apply_to(self, obj):
         obj.visible = self["visible"]
         obj.align = self["align"]
         obj.min = self["min"]
         obj.max = self["max"]
-        min, max = self["aspect"]
-        obj.aspect_min_set(min)
-        obj.aspect_max_set(max)
+        min_, max_ = self["aspect"]
+        obj.aspect_min_set(min_)
+        obj.aspect_max_set(max_)
         obj.aspect_pref_set(self["aspect_preference"])
         obj.color_set(*self["color"])
         obj.color2_set(*self["color2"])
@@ -191,7 +186,7 @@ class State(Object):
         ret += indent + '   aspect: %f %f;\n' % self["aspect"]
         prefs = ["NONE", "VERTICAL", "HORIZONTAL", "BOTH"]
         ret += indent + '   aspect_preference: %s;\n' % \
-               prefs[self["aspect_preference"]]
+            prefs[self["aspect_preference"]]
         ret += indent + '   color: %d %d %d %d;\n' % self["color"]
         ret += indent + '   color2: %d %d %d %d;\n' % self["color2"]
         ret += indent + '   color3: %d %d %d %d;\n' % self["color3"]
@@ -226,15 +221,14 @@ class StateText(State):
     def __init__(self, obj):
         State.__init__(self, obj)
 
-        text = dict()
-        self["text"] = text
-        text["text"] = obj.text_get()
-        text["font"] = obj.font_get()
-        text["size"] = obj.text_size_get()
-        #TODO: text["text_class"] =
-        text["fit"] = obj.text_fit_get()
-        text["align"] = obj.text_align_get()
-        text["elipsis"] = obj.text_elipsis_get()
+        self["text"] = dict()
+        self["text"]["text"] = obj.text_get()
+        self["text"]["font"] = obj.font_get()
+        self["text"]["size"] = obj.text_size_get()
+        #TODO: self["text"]["text_class"] =
+        self["text"]["fit"] = obj.text_fit_get()
+        self["text"]["align"] = obj.text_align_get()
+        self["text"]["elipsis"] = obj.text_elipsis_get()
 
     def apply_to(self, obj):
         if obj.part_get().type != edje.EDJE_PART_TYPE_TEXT:
@@ -270,29 +264,25 @@ class StateImage(State):
     def __init__(self, obj):
         State.__init__(self, obj)
 
-        image = dict()
-        self["image"] = image
-        image["normal"] = obj.image_get()
-        image["tweens"] = obj.tweens
-        image["border"] = obj.image_border_get()
-        image["middle"] = obj.image_border_fill_get()
+        self["image"] = dict()
+        self["image"]["normal"] = obj.image_get()
+        self["image"]["tweens"] = obj.tweens
+        self["image"]["border"] = obj.image_border_get()
+        self["image"]["middle"] = obj.image_border_fill_get()
 
         #TODO: Bindings
         """
-        fill = dict()
-        self["fill"] = fill
-        fill["smooth"] =
-        fill["angle"] =
+        self["fill"] = dict()
+        self["fill"]["smooth"] =
+        self["fill"]["angle"] =
 
-        origin = dict()
-        fill["origin"] = origin
-        origin["relative"] =
-        origin["offset"] =
+        self["fill"]["origin"] = dict()
+        self["fill"]["origin"]["relative"] =
+        self["fill"]["origin"]["offset"] =
 
-        size = dict()
-        fill["size"] = object()
-        size["relative"] =
-        size["offset"] =
+        self["fill"]["size"] = dict()
+        self["fill"]["size"]["relative"] =
+        self["fill"]["size"]["offset"] =
         """
 
     def apply_to(self, obj):
@@ -334,32 +324,29 @@ class StateGradient(State):
 
         #TODO: Bindings
         """
-        fill = dict()
-        self["fill"] = fill
-        fill["smooth"] =
-        fill["angle"] =
+        self["fill"] = dict()
+        self["fill"]["smooth"] =
+        self["fill"]["angle"] =
 
-        origin = dict()
-        fill["origin"] = origin
-        origin["relative"] =
-        origin["offset"] =
+        self["fill"]["origin"] = dict()
+        self["fill"]["origin"]["relative"] =
+        self["fill"]["origin"]["offset"] =
 
-        size = dict()
-        fill["size"] = object()
-        size["relative"] =
-        size["offset"] =
+        self["fill"]["size"] = dict()
+        self["fill"]["size"]["relative"] =
+        self["fill"]["size"]["offset"] =
         """
 
-        gradient = dict()
-        self["gradient"] = gradient
-        type = obj.gradient_type_get()
-        if type is None:
-            type = ""
-        gradient["type"] = type
+        self["gradient"] = dict()
+        type_ = obj.gradient_type_get()
+        if type_ is None:
+            type_ = ""
+        self["gradient"]["type"] = type_
+
         spec = obj.gradient_spectra_get()
         if spec is None:
             spec = ""
-        gradient["spectrum"] = spec
+        self["gradient"]["spectrum"] = spec
 
     def apply_to(self, obj):
         if obj.part_get().type != edje.EDJE_PART_TYPE_GRADIENT:
@@ -386,10 +373,9 @@ class StateExternal(State):
     def __init__(self, obj):
         State.__init__(self, obj)
 
-        params = dict()
-        self["params"] = params
+        self["params"] = dict()
         for param in obj.external_params_get():
-            params[param.name] = param.value
+            self["params"][param.name] = param.value
 
     def apply_to(self, obj):
         if obj.part_get().type != edje.EDJE_PART_TYPE_EXTERNAL:
@@ -473,12 +459,15 @@ class Program(Object):
         if action == edje.EDJE_ACTION_TYPE_ACTION_STOP:
             ret += indent + '   action: ACTION_STOP;\n'
         elif action == edje.EDJE_ACTION_TYPE_STATE_SET:
-            ret += indent + '   action: STATE_SET "%s" %.2f;\n' % (self["state"], self["value"])
+            ret += indent + '   action: STATE_SET "%s" %.2f;\n' % \
+                (self["state"], self["value"])
         elif action == edje.EDJE_ACTION_TYPE_SIGNAL_EMIT:
-            ret += indent + '   action: SIGNAL_EMIT "%s" "%s";\n' % (self["state"], self["state2"])
+            ret += indent + '   action: SIGNAL_EMIT "%s" "%s";\n' % \
+                (self["state"], self["state2"])
 
         trans["NONE", "LINEAR", "SINUSOIDAL", "ACCELERATE", "DECELERATE"]
-        ret += indent + '   transition: %s %.5f;\n' % (trans[self["transition"]], self["transition_time"])
+        ret += indent + '   transition: %s %.5f;\n' % \
+            (trans[self["transition"]], self["transition_time"])
         ret += indent + '   in: %.5f %.5f;\n' % self["in"]
 
         for target in self["targets"]:
@@ -500,6 +489,7 @@ class Spectra(Object):
 
 class Style(Object):
     pass
+
 
 class Animation(Object):
     def __init__(self, obj):

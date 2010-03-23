@@ -225,13 +225,16 @@ class NewSignalWizard(Wizard):
 
 
 class SignalDetails(EditjeDetails):
-    def __init__(self, parent):
+    def __init__(self, parent, operation_stack_cb):
         EditjeDetails.__init__(
-            self, parent, group="editje/collapsable/part_state")
+            self, parent, operation_stack_cb,
+            group="editje/collapsable/part_state")
 
         self.title = "signal"
 
-        self._header_table = PropertyTable(parent)
+        # FIXME: no signal renaming yet (thus, no prop_value_changed_cb and
+        # wid.disable_set(True), for now
+        self._header_table = PropertyTable(parent, "signal name")
 
         prop = Property(parent, "name")
         wid = WidgetEntry(self)
@@ -376,29 +379,28 @@ class SignalDetails(EditjeDetails):
         self.open_set(True)
         self.show()
 
-    def prop_value_changed(self, prop, value, group):
-        if not group:
+    def prop_value_changed(self, prop_name, prop_value, group_name):
+        if group_name == "main":
             tbl = self["main"]
-            if prop == "signal":
-                self.e.signal.signal = value
-                tbl["signal"].value = value
-            elif prop == "source":
-                self.e.signal.source = value
-                tbl["source"].value = value
-            elif prop == "action":
+            if prop_name == "signal":
+                self.e.signal.signal = prop_value
+                tbl["signal"].value = prop_value
+            elif prop_name == "source":
+                self.e.signal.source = prop_value
+                tbl["source"].value = prop_value
+            elif prop_name == "action":
                 self.e.signal.afters_clear()
-                self.e.signal.after_add(value)
-                fixedname = value[1:value.rindex("@")]
+                self.e.signal.after_add(prop_value)
+                fixedname = prop_value[1:prop_value.rindex("@")]
                 tbl["action"].value = fixedname
-            elif prop == "delay":
-                self.e.signal.in_time = value
-                tbl["delay"].value = value
-        elif group == "out":
+            elif prop_name == "delay":
+                self.e.signal.in_time = prop_value
+                tbl["delay"].value = prop_value
+        elif group_name == "out":
             tbl = self["out"]
-            if prop == "signal":
-                self.e.signal._program.state_set(value)
-                tbl["signal"].value = value
-            elif prop == "source":
-                self.e.signal._program.state2_set(value)
-                tbl["source"].value = value
-
+            if prop_name == "signal":
+                self.e.signal._program.state_set(prop_value)
+                tbl["signal"].value = prop_value
+            elif prop_name == "source":
+                self.e.signal._program.state2_set(prop_value)
+                tbl["source"].value = prop_value

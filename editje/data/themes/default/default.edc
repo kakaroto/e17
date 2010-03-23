@@ -14,9 +14,9 @@
  * GNU Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with Editje.  If not, see
- * <http://www.gnu.org/licenses/>.
+ * License along with Editje. If not, see <http://www.gnu.org/licenses/>.
  */
+
 #include "images.edc"
 #include "colors.edc"
 #include "styles.edc"
@@ -180,11 +180,13 @@ collections {
          }
          TOOLBAR_BT_MAIN("save.bt", "ico_save.png")
 
-         part { name: "group.bt";
+         part {
+            name: "undo.bt";
             type: RECT;
             mouse_events: 1;
-            description { state: "default" 0.0;
-               color: 255 0 0 0;
+            description {
+               state: "default" 0.0;
+               color: 0 0 0 0;
                align: 0.0 0.5;
                aspect: 1.5 1.0;
                rel1 {
@@ -195,6 +197,56 @@ collections {
                }
                rel2 {
                   to_x: "save.bt";
+                  to_y: "toolbar";
+                  relative: 1.0 1.0;
+	          offset: 5 -11;
+               }
+            }
+         }
+         TOOLBAR_BT_MAIN("undo.bt", "ico_undo.png")
+
+         part {
+            name: "redo.bt";
+            type: RECT;
+            mouse_events: 1;
+            description {
+               state: "default" 0.0;
+               color: 0 0 0 0;
+               align: 0.0 0.5;
+               aspect: 1.5 1.0;
+               rel1 {
+                  to_x: "undo.bt";
+                  to_y: "toolbar";
+                  relative: 1.0 0.0;
+	          offset: 5 5;
+               }
+               rel2 {
+                  to_x: "undo.bt";
+                  to_y: "toolbar";
+                  relative: 1.0 1.0;
+	          offset: 5 -11;
+               }
+            }
+         }
+         TOOLBAR_BT_MAIN("redo.bt", "ico_redo.png")
+
+         part {
+            name: "group.bt";
+            type: RECT;
+            mouse_events: 1;
+            description {
+               state: "default" 0.0;
+               color: 255 0 0 0;
+               align: 0.0 0.5;
+               aspect: 1.5 1.0;
+               rel1 {
+                  to_x: "redo.bt";
+                  to_y: "toolbar";
+                  relative: 1.0 0.0;
+	          offset: 5 5;
+               }
+               rel2 {
+                  to_x: "redo.bt";
                   to_y: "toolbar";
                   relative: 1.0 1.0;
 	          offset: 5 -11;

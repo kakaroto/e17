@@ -40,6 +40,7 @@ from signals import SignalsList, SignalDetails
 
 from widgets_list import WidgetsList
 from groupselector import GroupSelectionWizard
+from operation import Operation
 
 from misc import name_generate
 
@@ -65,6 +66,10 @@ class Editje(elementary.Window):
 
         # Load Edje Theme File
         self._load_theme()
+
+        # using None as sentinel
+        self._op_stack = [None]
+        self._op_stack_ptr = 0
 
         self.e = Editable(self.evas, swapfile)
 
@@ -168,14 +173,18 @@ class Editje(elementary.Window):
     def _group_wizard_selection_set_cb(self, selection):
         if not selection:
             return False
-        self.group = selection
+
+        if self.group != selection:
+            self._operation_stack_clean()
+            self.group = selection
+
         return True
 
     def _group_wizard_selection_get_cb(self):
         return self.group
 
     def _image_wizard_new_image_cb(self, img):
-         self.e.image_add(img)
+        self.e.image_add(img)
 
     def _image_wizard_image_list_get_cb(self):
         return self.e.images_get()
@@ -184,7 +193,7 @@ class Editje(elementary.Window):
         return self.e.image_id_get(name)
 
     def _font_wizard_new_font_cb(self, fnt):
-         self.e.font_add(fnt)
+        self.e.font_add(fnt)
 
     def _font_wizard_font_list_get_cb(self):
 #        font_list = self.e.fonts_get()
@@ -204,13 +213,13 @@ class Editje(elementary.Window):
     ###########
     # DESKTOP
     ###########
-    def _get_view(self):   #HACK
+    def _get_view(self):  # HACK
         return self
 
     view = property(_get_view)
 
     def _desktop_init(self):
-        self.desktop = Desktop(self)
+        self.desktop = Desktop(self, self._operation_stack)
         self.main_layout.content_set("desktop", self.desktop.view)
         self.desktop.view.show()
 
@@ -239,7 +248,13 @@ class Editje(elementary.Window):
 
         self._toolbar_bt_init(self.main_edje, "open.bt", "Open", self._open_cb)
         self._toolbar_bt_init(self.main_edje, "save.bt", "Save", self._save_cb)
-        self._toolbar_bt_init(self.main_edje, "group.bt", "Groups", self._group_cb)
+        self._toolbar_bt_init(self.main_edje, "undo.bt", "Undo", self._undo_cb)
+        self._toolbar_bt_init(self.main_edje, "redo.bt", "Redo", self._redo_cb)
+        self._toolbar_bt_init(
+            self.main_edje, "group.bt", "Groups", self._group_cb)
+
+        self.main_edje.signal_emit("undo.bt,disable", "")
+        self.main_edje.signal_emit("redo.bt,disable", "")
 
         self._toolbar_bt_init(self.main_edje, "run.bt", "Run", self._run_cb)
 
@@ -247,9 +262,25 @@ class Editje(elementary.Window):
                               self._options_cb)
 
     def _group_name_changed(self, obj, *args, **kwargs):
-        new_name = obj.entry_get()
-        if not self.e.group_rename(new_name):
-            obj.entry_set(self.e.group)
+
+        def group_rename(new_name):
+            return self.e.group_rename(new_name)
+
+        old_name = self.e.group
+        new_name = obj.entry_get().replace("<br>", "")
+        if group_rename(new_name):
+            op = Operation("group renaming")
+
+            op.redo_callback_add(group_rename, new_name)
+            op.redo_callback_add(obj.entry_set, new_name)
+
+            op.undo_callback_add(group_rename, old_name)
+            op.undo_callback_add(obj.entry_set, old_name)
+
+            self._operation_stack(op)
+        else:
+            # TODO: notify the user of renaming failure
+            obj.entry_set(old_name)
 
     def _toolbar_filename_cb(self, emissor, data):
         self.main_edje.part_text_set("details_filename", data)
@@ -271,7 +302,7 @@ class Editje(elementary.Window):
 
     def _toolbar_bt_init(self, edje, part, name, callback):
         edje.part_text_set(part + ".label", name)
-        edje.signal_callback_add("mouse,clicked,1", part, callback)
+        edje.signal_callback_add("%s,selected" % part, part, callback)
 
     def _open_cb(self, obj, emission, source):
         from openfile import OpenFile
@@ -321,6 +352,54 @@ class Editje(elementary.Window):
         About(self).open()
         return
 
+    def _operation_stack_clean(self):
+        self._op_stack_ptr = 0
+        del self._op_stack[1:]
+        self.main_edje.signal_emit("undo.bt,disable", "")
+        self.main_edje.signal_emit("redo.bt,disable", "")
+
+    def _operation_stack(self, op):
+        # just for safeness
+        if not isinstance(op, Operation):
+            raise TypeError("Only Operation objects may enter the undo list.")
+
+        sz = len(self._op_stack) - 1
+        if self._op_stack_ptr != sz:
+            del self._op_stack[self._op_stack_ptr + 1:]
+
+        self._op_stack.append(op)
+        self._op_stack_ptr += 1
+        self.main_edje.signal_emit("undo.bt,enable", "")
+
+    def _undo_cb(self, obj, emission, source):
+        if self._op_stack_ptr == 0:  # can't go back
+            return
+
+        op = self._op_stack[self._op_stack_ptr]
+        op.undo()
+        self._op_stack_ptr -= 1
+        self.main_edje.signal_emit("redo.bt,enable", "")
+
+        if self._op_stack_ptr == 0:
+            self.main_edje.signal_emit("undo.bt,disable", "")
+        else:
+            self.main_edje.signal_emit("undo.bt,enable", "")
+
+    def _redo_cb(self, obj, emission, source):
+        sz = len(self._op_stack) - 1
+        if self._op_stack_ptr == sz:  # can't advance
+            return
+
+        self._op_stack_ptr += 1
+        op = self._op_stack[self._op_stack_ptr]
+        op.redo()
+        self.main_edje.signal_emit("undo.bt,enable", "")
+
+        if self._op_stack_ptr == sz:
+            self.main_edje.signal_emit("redo.bt,disable", "")
+        else:
+            self.main_edje.signal_emit("redo.bt,enable", "")
+
     def _cut_cb(self, obj, emission, source):
         if not self.e.part.name:
             return
@@ -340,28 +419,32 @@ class Editje(elementary.Window):
 
         name = name_generate(self._clipboard.name, self.e.parts)
 
-        type = self._clipboard.type
+        type_ = self._clipboard.type
 
         source = self._clipboard["source"]
         if source is None:
             source = ''
 
-        if self.e.part_add(name, type, source=source, signal=False):
+        if self.e.part_add(name, type_, source=source):
             part = self.e._edje.part_get(name)
             self._clipboard.apply_to(part)
+            # FIXME: remove event emitions for others
             self.e.event_emit("part.added", name)
 
     def _play_cb(self, obj, emission, source):
-#        def play_end(emissor, data):
-#               TODO: emit signals here to enable play, next, previous and disable stop button
-#        self.e.animation.callback_add("animation.play.end", play_end)
+        # def play_end(emissor, data):
+        #     # TODO: emit signals here to enable play, next, previous and
+        #     # disable stop button
+        #     self.e.animation.callback_add("animation.play.end", play_end)
         self.e.part.name = ""
         self.e.animation.play()
-#       TODO: emit signals here to disable play, next, previous and enable stop button
+        # TODO: emit signals here to disable play, next, previous and enable
+        # stop button
 
     def _stop_cb(self, obj, emission, source):
         self.e.animation.stop()
-#       TODO: emit signals here to enable play, next, previous and disable stop button
+        # TODO: emit signals here to enable play, next, previous and
+        # disable stop button
 
     def _previous_cb(self, obj, emission, source):
         self.e.animation.state_prev_goto()
@@ -382,6 +465,20 @@ class Editje(elementary.Window):
         self._animations_init()
         self._signals_init()
 
+        def states_drop(emissor, data):
+            part_name = data
+
+            if not hasattr(self, "_prevstates"):
+                return
+
+            l = len(self._prevstates)
+            while l != 0:
+                l = l - 1
+                p_name, s_name = self._prevstates[l]
+                if p_name == part_name:
+                    self._prevstates.pop(l)
+
+        self.e.callback_add("part.removed", states_drop)
         self._mode_set_cb(self._modes_selector, None, "Parts")
 
     def _toolbar_init(self):
@@ -398,7 +495,7 @@ class Editje(elementary.Window):
     def _mainbar_init(self):
         bx = elementary.Box(self)
         bx.size_hint_weight_set(evas.EVAS_HINT_EXPAND, evas.EVAS_HINT_EXPAND)
-        bx.size_hint_align_set(evas.EVAS_HINT_FILL,evas.EVAS_HINT_FILL)
+        bx.size_hint_align_set(evas.EVAS_HINT_FILL, evas.EVAS_HINT_FILL)
         self.main_layout.content_set("objects", bx)
         bx.show()
 
@@ -447,34 +544,53 @@ class Editje(elementary.Window):
 
         self.mode = name
 
+        def states_save():
+            if hasattr(self, "_prevstates"):
+                return
+
+            self._prevstates = []
+            for p_name in self.e.parts:
+                real_part = self.e._edje.part_get(p_name)
+                s_name = real_part.state_selected_get()
+                self._prevstates.append((p_name, s_name))
+
+        def states_restore():
+            if not hasattr(self, "_prevstates"):
+                return
+
+            for p_name, s_name in self._prevstates:
+                real_part = self.e._edje.part_get(p_name)
+                real_part.state_selected_set(s_name)
+                if p_name == self.e.part.name:
+                    self.e.part.state.name = s_name
+            del self._prevstates
+
+        def anim_save(anim):
+            if hasattr(self, "_prevanim"):
+                return
+
+            self._prevanim = anim
+
+        def anim_restore():
+            if not hasattr(self, "_prevanim"):
+                return None
+
+            return self._prevanim
+
         if name == "Signals":
             self.desktop_block(True)
-        elif name == "Parts":
-            self.desktop_block(False)
-
-        if name == "Animations":
+        elif name == "Animations":
             self.main_edje.signal_emit("mode,anim,on", "editje")
-            if not hasattr(self, "_prevstates"):
-                self._prevstates = []
-                for p in self.e.parts:
-                    part = self.e._edje.part_get(p)
-                    self._prevstates.append((p, part.state_selected_get()))
-            if hasattr(self, "_prevanim"):
-	        self.e.animation.name = self._prevanim
+            states_save()
+            self.e.animation.name = anim_restore()
         else:
             self.main_edje.signal_emit("mode,anim,off", "editje")
-            self._prevanim = self.e.animation.name
-            #This is a hack to force change the animation
+            anim_save(self.e.animation.name)
             self.e.animation.name = None
 
-        if name == "Parts":
-            if hasattr(self, "_prevstates"):
-                for p, s in self._prevstates:
-                    part = self.e._edje.part_get(p)
-                    part.state_selected_set(s)
-                    if p == self.e.part.name:
-                        self.e.part.state.name = s
-                del self._prevstates
+            # part mode specific
+            self.desktop_block(False)
+            states_restore()
 
         self._modes_selector.label_set("Mode: " + name)
 
@@ -525,14 +641,14 @@ class Editje(elementary.Window):
                                     evas.EVAS_HINT_FILL)
         mainbar.show()
 
-        list = PartsList(self, self.evas, self.e)
+        list = PartsList(self, self.e, self._operation_stack)
         list.title = "Parts"
         list.options = True
         list.open = True
         mainbar.pack_end(list)
         list.show()
 
-        list = WidgetsList(self)
+        list = WidgetsList(self, self.e, self._operation_stack)
         list.title = "Widgets"
         list.open = True
         mainbar.pack_end(list)
@@ -550,21 +666,23 @@ class Editje(elementary.Window):
         box.size_hint_align_set(-1.0, 0.0)
         box.show()
 
-        self.group_details = GroupDetails(self)
+        self.group_details = GroupDetails(self, self._operation_stack)
         box.pack_end(self.group_details)
 
-        self.part_details = PartDetails(self)
+        self.part_details = PartDetails(self, self._operation_stack)
         box.pack_end(self.part_details)
 
-        self.part_state_details = PartStateDetails(self, \
-                img_new_img_cb=self._image_wizard_new_image_cb, \
-                img_list_get_cb=self._image_wizard_image_list_get_cb, \
-                img_id_get_cb=self._image_wizard_image_id_get_cb, \
-                fnt_new_fnt_cb=self._font_wizard_new_font_cb, \
-                fnt_list_get_cb=self._font_wizard_font_list_get_cb, \
-                fnt_id_get_cb=self._font_wizard_font_id_get_cb, \
-                workfile_name_get_cb=self._workfile_name_get_cb, \
-                part_object_get_cb=self._part_object_get_cb)
+        self.part_state_details = PartStateDetails(
+            self, self._operation_stack,
+            img_new_img_cb=self._image_wizard_new_image_cb,
+            img_list_get_cb=self._image_wizard_image_list_get_cb,
+            img_id_get_cb=self._image_wizard_image_id_get_cb,
+            fnt_new_fnt_cb=self._font_wizard_new_font_cb,
+            fnt_list_get_cb=self._font_wizard_font_list_get_cb,
+            fnt_id_get_cb=self._font_wizard_font_id_get_cb,
+            workfile_name_get_cb=self._workfile_name_get_cb,
+            part_object_get_cb=self._part_object_get_cb)
+
         box.pack_end(self.part_state_details)
 
         return self._set_scrolled_contents(box)
@@ -578,7 +696,8 @@ class Editje(elementary.Window):
         toolbar.show()
 
         edj = toolbar.edje_get()
-        self._toolbar_bt_init(edj, "previous.bt", "Previous", self._previous_cb)
+        self._toolbar_bt_init(
+            edj, "previous.bt", "Previous", self._previous_cb)
         self._toolbar_bt_init(edj, "play.bt", "Play", self._play_cb)
         self._toolbar_bt_init(edj, "next.bt", "Next", self._next_cb)
         self._toolbar_bt_init(edj, "stop.bt", "Stop", self._stop_cb)
@@ -594,7 +713,8 @@ class Editje(elementary.Window):
                 self.desktop_block(True)
 
         self.e.animation.callback_add("animation.changed", _animation_changed)
-        self.e.animation.callback_add("animation.unselected", _animation_unselected)
+        self.e.animation.callback_add(
+            "animation.unselected", _animation_unselected)
 
         # Mainbar
         mainbar = CollapsablesBox(self)
@@ -617,7 +737,7 @@ class Editje(elementary.Window):
         mainbar.pack_end(list)
         list.show()
 
-        list = PartsList(self, self.evas, self.e)
+        list = PartsList(self, self.e, self._operation_stack)
         list.title = "Parts"
         list.open = True
         mainbar.pack_end(list)
@@ -635,19 +755,21 @@ class Editje(elementary.Window):
         box.size_hint_align_set(-1.0, 0.0)
         box.show()
 
-        self.anim_details = AnimationDetails(self)
+        self.anim_details = AnimationDetails(self, self._operation_stack)
         box.pack_end(self.anim_details)
         self.anim_details.show()
 
-        self.anim_state_details = PartAnimStateDetails(self, \
-                img_new_img_cb=self._image_wizard_new_image_cb, \
-                img_list_get_cb=self._image_wizard_image_list_get_cb, \
-                img_id_get_cb=self._image_wizard_image_id_get_cb, \
-                fnt_new_fnt_cb=self._font_wizard_new_font_cb, \
-                fnt_list_get_cb=self._font_wizard_font_list_get_cb, \
-                fnt_id_get_cb=self._font_wizard_font_id_get_cb, \
-                workfile_name_get_cb=self._workfile_name_get_cb, \
-                part_object_get_cb=self._part_object_get_cb) # fix
+        self.anim_state_details = PartAnimStateDetails(
+            self, self._operation_stack,
+            img_new_img_cb=self._image_wizard_new_image_cb,
+            img_list_get_cb=self._image_wizard_image_list_get_cb,
+            img_id_get_cb=self._image_wizard_image_id_get_cb,
+            fnt_new_fnt_cb=self._font_wizard_new_font_cb,
+            fnt_list_get_cb=self._font_wizard_font_list_get_cb,
+            fnt_id_get_cb=self._font_wizard_font_id_get_cb,
+            workfile_name_get_cb=self._workfile_name_get_cb,
+            part_object_get_cb=self._part_object_get_cb)  # fix
+
         self.anim_state_details.open = True
         self.anim_state_details.open_disable = True
         box.pack_end(self.anim_state_details)
@@ -694,7 +816,7 @@ class Editje(elementary.Window):
         box.size_hint_align_set(-1.0, 0.0)
         box.show()
 
-        signal_details = SignalDetails(self)
+        signal_details = SignalDetails(self, self._operation_stack)
         signal_details.open = False
         signal_details.open_disable = True
         signal_details.show()

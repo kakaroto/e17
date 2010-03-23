@@ -23,25 +23,30 @@ from details_widget_boolean import WidgetBoolean
 from details_widget_combo import WidgetCombo
 from details_widget_partlist import WidgetPartList
 from prop import Property, PropertyTable
+from operation import Operation
 
 
 class PartDetails(EditjeDetails):
-    def __init__(self, parent):
-        EditjeDetails.__init__(self, parent,
-                               group="editje/collapsable/part_properties")
+    def __init__(self, parent, operation_stack_cb):
+        EditjeDetails.__init__(
+            self, parent, operation_stack_cb,
+            group="editje/collapsable/part_properties")
 
         self.e.part.callback_add("part.changed", self._part_update)
         self.e.part.callback_add("name.changed", self._part_update)
         self.e.part.callback_add("part.unselected", self._part_removed)
+        self.e.part.callback_add(
+            "part.mouse_events.changed", self._part_common_props_changed_cb)
 
         self.title = "part properties"
 
         self._effects = ['NONE', 'PLAIN', 'OUTLINE', 'SOFT OUTLINE', 'SHADOW',
-                         'SOFT SHADOW', 'OUTLINE SHADOW', 'OUTLINE SOFT SHADOW',
-                         'FAR SHADOW', 'FAR SOFT SHADOW', 'GLOW']
+                         'SOFT SHADOW', 'OUTLINE SHADOW',
+                         'OUTLINE SOFT SHADOW', 'FAR SHADOW',
+                         'FAR SOFT SHADOW', 'GLOW']
 
-        self._header_table = PropertyTable(parent)
-        self._header_table._value_changed = self.header_prop_value_changed
+        self._header_table = PropertyTable(
+            parent, "part name/type", self.header_prop_value_changed)
 
         prop = Property(parent, "name")
         wid = WidgetEntry(self)
@@ -72,7 +77,8 @@ class PartDetails(EditjeDetails):
         prop = Property(parent, "repeat_events")
         prop.widget_add("re", WidgetBoolean(self))
         self["main"].property_add(prop)
-        # Missing properties: ignore_flags, scale, pointer_mode, precise_is_inside
+        # Missing properties: ignore_flags, scale, pointer_mode,
+        # precise_is_inside
 
         # textblock only (source is for group too, but later)
         self.group_add("textblock")
@@ -90,33 +96,86 @@ class PartDetails(EditjeDetails):
         self.open_disable = False
         self.open = True
 
-    def header_prop_value_changed(self, prop, value, group):
-        if prop == "name":
-            if not self.e.part.rename(value):
-                self._header_table["name"].value = self.e.part.name
+    def _part_select(self, part_name):
+        if self.e.part.name != part_name:
+            self.e.part.name = part_name
 
-    def prop_value_changed(self, prop, value, group):
-        if not group:
-            self._prop_value_common_changed(prop, value)
-        elif group == "textblock":
-            self._prop_value_text_changed(prop, value)
+    def header_prop_value_changed(self, prop_name, prop_value, group_name):
+
+        def part_rename(old_name, new_name):
+            # select 1st
+            self._part_select(old_name)
+
+            # rename later
+            return self.e.part.rename(new_name)
+
+        if prop_name != "name":
+            return
+
+        old_name = self.e.part.name
+        if part_rename(old_name, prop_value):
+            op = Operation("part renaming")
+
+            op.redo_callback_add(part_rename, old_name, prop_value)
+            op.undo_callback_add(part_rename, prop_value, old_name)
+            self._operation_stack_cb(op)
+        else:
+            # TODO: notify the user of renaming failure
+            self._header_table["name"].value = old_name
+
+    def prop_value_changed(self, prop_name, prop_value, group_name):
+        if group_name == "main":
+            self._prop_value_common_changed(prop_name, prop_value)
+        elif group_name == "textblock":
+            self._prop_value_text_changed(prop_name, prop_value)
+
+    def _prop_change_do(self, op_name, prop_group, prop_name, prop_value,
+                        pval_filter=None):
+
+        def set_property(part_name, prop_name, prop_value, filter_):
+            self._part_select(part_name)
+            part = self.e.part_get(part_name)
+            setattr(part, prop_name, prop_value)
+
+            if filter_:
+                label_value = filter_(prop_value)
+            else:
+                label_value = prop_value
+            if self[prop_group][prop_name].value != label_value:
+                self[prop_group][prop_name].value = label_value
+
+        part_name = self.e.part.name
+        part = self.e.part_get(part_name)
+        old_value = getattr(part, prop_name)
+
+        set_property(part_name, prop_name, prop_value, pval_filter)
+
+        op = Operation(op_name)
+        op.redo_callback_add(
+            set_property, part_name, prop_name, prop_value, pval_filter)
+        op.undo_callback_add(
+            set_property, part_name, prop_name, old_value, pval_filter)
+
+        self._operation_stack_cb(op)
 
     def _prop_value_common_changed(self, prop, value):
         if prop == "mouse_events":
-            self.e.part._part.mouse_events = value
+            self._prop_change_do(
+                "part reaction to mouse events setting", "main", prop, value)
         elif prop == "repeat_events":
-            self.e.part._part.repeat_events = value
+            self._prop_change_do(
+                "part events repeating property setting", "main", prop, value)
         elif prop == "clip_to":
-            self.e.part._part.clip_to = value
-            clipper = self.e.part._part.clip_to
-            if clipper:
-                self["main"]["clip_to"].value = self.e.part._part.clip_to
-            else:
-                self["main"]["clip_to"].value = ""
+            self._prop_change_do(
+                "part clipper setting", "main", prop, value)
 
     def _prop_value_text_changed(self, prop, value):
-        if prop == "effect":
-            self.e.part._part.effect = self._effects.index(value)
+        if prop != "effect":
+            return
+
+        self._prop_change_do(
+            "text part effects setting", "textblock", prop,
+            self._effects.index(value), lambda x: self._effects[x])
 
     def _part_update(self, emissor, data):
         if not self.e.part._part:
@@ -154,6 +213,9 @@ class PartDetails(EditjeDetails):
 
         self.hide()
 
+    def _part_common_props_changed_cb(self, emissor, data):
+        self._update_common_props()
+
     def _update_common_props(self):
         self.main_hide()
 
@@ -164,17 +226,18 @@ class PartDetails(EditjeDetails):
         else:
             self["main"]["clip_to"].value = ""
 
-        self["main"]["mouse_events"].show_value()
         self["main"]["mouse_events"].value = self.e.part._part.mouse_events
+        self["main"]["mouse_events"].show_value()
 
-        self["main"]["repeat_events"].show_value()
         self["main"]["repeat_events"].value = self.e.part._part.repeat_events
+        self["main"]["repeat_events"].show_value()
+
         self.main_show()
 
     def _update_text_props(self):
-        self["textblock"]["effect"].show_value()
         self["textblock"]["effect"].value = \
             self._effects[self.e.part._part.effect]
+        self["textblock"]["effect"].show_value()
         self.group_show("textblock")
 
     def _part_type_to_text(self, type):
@@ -182,4 +245,3 @@ class PartDetails(EditjeDetails):
                      'TEXTBLOCK', 'GRADIENT', 'GROUP', 'BOX', 'TABLE',
                      'EXTERNAL']
         return parttypes[type]
-

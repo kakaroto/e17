@@ -1,4 +1,3 @@
-#
 # Copyright (C) 2009 Samsung Electronics.
 #
 # This file is part of Editje.
@@ -10,17 +9,16 @@
 #
 # Editje is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 # GNU Lesser General Public License for more details.
 #
 # You should have received a copy of the GNU Lesser General Public
-# License along with Editje.  If not, see
-# <http://www.gnu.org/licenses/>.
+# License along with Editje. If not, see <http://www.gnu.org/licenses/>.
+
 from details_widget_button import WidgetButton
 
 
 class WidgetBoolean(WidgetButton):
-
     def __init__(self, parent):
         WidgetButton.__init__(self, parent)
         self._label_true = "True"
@@ -42,11 +40,10 @@ class WidgetBoolean(WidgetButton):
 
     def _change(self, *args):
         self.value = not self._value
+        self._callback_call("changed")
 
     def _update(self):
         if self.value:
             self.obj.label_set(self._label_true)
         else:
             self.obj.label_set(self._label_false)
-
-        self._callback_call("changed")

@@ -324,7 +324,6 @@ class GroupSelectionWizard(Wizard):
         ecore.idler_add(self.close)
 
     def _delete_group(self):
-        self._preview.group_release()
         grp_name = self._groups_list.selection
 
         # We have to call it *before* deletion, as it may change the active
@@ -338,8 +337,11 @@ class GroupSelectionWizard(Wizard):
                         "(only group in the file?)")
             return
 
+        self._preview.group_release()
+
         if grp_name == current:
             self.action_disabled_set("group_list", "Cancel", True)
+
         self._groups_list.update()
         self.goto("group_list")
 

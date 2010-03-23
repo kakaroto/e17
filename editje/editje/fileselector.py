@@ -1,4 +1,3 @@
-#
 # Copyright (C) 2009 Samsung Electronics.
 #
 # This file is part of Editje.
@@ -10,12 +9,11 @@
 #
 # Editje is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 # GNU Lesser General Public License for more details.
 #
 # You should have received a copy of the GNU Lesser General Public
-# License along with Editje.  If not, see
-# <http://www.gnu.org/licenses/>.
+# License along with Editje. If not, see <http://www.gnu.org/licenses/>.
 
 import os
 
@@ -24,8 +22,8 @@ import elementary
 
 from event_manager import Manager
 
-class FileSelector(Manager, elementary.Table):
 
+class FileSelector(Manager, elementary.Table):
     def __init__(self, parent):
         Manager.__init__(self)
         self._parent = parent
@@ -211,7 +209,7 @@ class FileSelector(Manager, elementary.Table):
         filter = self._filter.state_get()
 
         path = self.path
-        list =os.listdir(path)
+        list = os.listdir(path)
         list.sort(key=str.lower)
         for file in list:
             if hidden or not file.startswith("."):
@@ -278,7 +276,7 @@ class FileSelector(Manager, elementary.Table):
             self._file = ""
 
     def _file_get(self):
-        item =self._files.selected_item_get()
+        item = self._files.selected_item_get()
         if item:
             return item.data_get()[0][0]
         return ""
@@ -348,8 +346,10 @@ if __name__ == "__main__":
 
     fs = FileSelector(win)
     win.resize_object_add(fs)
+
     def filter(file):
         return file.endswith(".edj")
+
     fs.filter = filter
     fs.action_add("Ok", None)
     fs.action_add("Cancel", None)

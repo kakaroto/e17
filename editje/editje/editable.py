@@ -20,12 +20,14 @@ import os
 import edje
 from edje.edit import EdjeEdit
 
-from event_manager import Manager
+from editable_animation import EditableAnimation
 from editable_part import EditablePart
 from editable_program import EditableProgram
-from editable_animation import EditableAnimation
+from event_manager import Manager
+from operation import Operation
 
-class Editable(Manager, object):
+
+class Editable(Manager):
     default_display_size = (500, 500)
     pref_size_key = "pref_size"
 
@@ -33,7 +35,6 @@ class Editable(Manager, object):
         Manager.__init__(self)
 
         self._canvas = canvas
-
         self._swapfile = swapfile
 
         self._group = ""
@@ -342,13 +343,20 @@ class Editable(Manager, object):
         self.parts = self._edje.parts
         self.event_emit("parts.changed", self.parts)
 
-    def part_add(self, name, type, source="", signal=True):
-        if self._edje.part_add(name, type, source):
-            self._modified = True
-            if signal:
-                self.event_emit("part.added", name)
-            return True
-        return False
+    # TODO: externals API may change in near future
+    # besides being totally annoying this use (part_add + external_add, when
+    # when type is external), there is no external_del (not even indirectly
+    # called
+    def external_add(self, module):
+        return self._edje.external_add(module)
+
+    def part_add(self, name, type_, source=""):
+        if not self._edje.part_add(name, type_, source):
+            return False
+
+        self._modified = True
+        self.event_emit("part.added", name)
+        return True
 
     def part_get(self, part_name):
         return self._edje.part_get(part_name)
@@ -436,7 +444,7 @@ class Editable(Manager, object):
         prog.source = name
         prog.after_add("@%s@end" % name)
 
-        prevstatename =  "default 0.00"
+        prevstatename = "default 0.00"
         statename = startname + " 0.00"
         for p in self.parts:
             prog.target_add(p)

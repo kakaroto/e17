@@ -1,4 +1,3 @@
-#
 # Copyright (C) 2009 Samsung Electronics.
 #
 # This file is part of Editje.
@@ -10,12 +9,12 @@
 #
 # Editje is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 # GNU Lesser General Public License for more details.
 #
 # You should have received a copy of the GNU Lesser General Public
-# License along with Editje.  If not, see
-# <http://www.gnu.org/licenses/>.
+# License along with Editje. If not, see <http://www.gnu.org/licenses/>.
+
 import evas
 import elementary
 
@@ -23,7 +22,6 @@ from collapsable import Collapsable
 
 
 class CList(Collapsable):
-
     def __init__(self, parent):
         Collapsable.__init__(self, parent)
         self._content_load()
@@ -86,7 +84,7 @@ class CList(Collapsable):
 
     def _selected_cb(self, li, it):
         data = (it.label_get(),) + it.data_get()[0]
-        if not self._selected.has_key(data[0]):
+        if not data[0] in self._selected:
             self._selected[data[0]] = True
             self.event_emit("item.selected", data)
 
@@ -97,7 +95,7 @@ class CList(Collapsable):
 
     def _unselected_cb(self, li, it):
         data = (it.label_get(),) + it.data_get()[0]
-        if self._selected.has_key(data[0]):
+        if data[0] in self._selected:
             self._selected.pop(data[0], None)
             self.event_emit("item.unselected", data)
 
@@ -122,6 +120,7 @@ class CList(Collapsable):
 
     multi = property(_multi_get, _multi_set)
 
+# FIXME: this test is unmantained and currently is barfing
 if __name__ == "__main__":
     from collapsable import CollapsablesBox
 
@@ -153,13 +152,13 @@ if __name__ == "__main__":
     i.show()
 
     i.add("One", None)
-    i.add("Two", (1,1))
-    i.add("Three", (1,1))
-    i.add("Four", (1,1))
-    i.add("XXX", (1,1))
-    i.add("YYY", (1,1))
-    i.add("KKK", (1,1))
-    i.add("ZZZ", (1,1))
+    i.add("Two", (1, 1))
+    i.add("Three", (1, 1))
+    i.add("Four", (1, 1))
+    i.add("XXX", (1, 1))
+    i.add("YYY", (1, 1))
+    i.add("KKK", (1, 1))
+    i.add("ZZZ", (1, 1))
     i.go()
 
     i = CList(bx)
@@ -170,13 +169,13 @@ if __name__ == "__main__":
     i.show()
 
     i.add("One", None)
-    i.add("Two", (1,1))
-    i.add("Three", (1,1))
-    i.add("Four", (1,1))
-    i.add("XXX", (1,1))
+    i.add("Two", (1, 1))
+    i.add("Three", (1, 1))
+    i.add("Four", (1, 1))
+    i.add("XXX", (1, 1))
     i.add("YYY", )
-    i.add("KKK", (1,1))
-    i.add("ZZZ", (1,1))
+    i.add("KKK", (1, 1))
+    i.add("ZZZ", (1, 1))
     i.go()
 
     win.show()

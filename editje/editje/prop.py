@@ -9,12 +9,11 @@
 #
 # Editje is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 # GNU Lesser General Public License for more details.
 #
 # You should have received a copy of the GNU Lesser General Public
-# License along with Editje.  If not, see
-# <http://www.gnu.org/licenses/>.
+# License along with Editje. If not, see <http://www.gnu.org/licenses/>.
 
 import elementary
 
@@ -52,8 +51,8 @@ class ValueBox(elementary.Box):
                             "cardinality (%d)" % \
                                 (type(value), len(self._values_list)))
         if len(value) != len(self._values_list):
-            raise IndexError("Cardinality of values to be set (%d) mismatch the"
-                             "cardinality of widgets in the box (%d)" % \
+            raise IndexError("Cardinality of values to be set (%d) mismatch"
+                             " the cardinality of widgets in the box (%d)" % \
                                  (len(value), len(self._values_list)))
         for i, w in enumerate(self._values_list):
             w.value = value[i]
@@ -181,13 +180,11 @@ class Property(object):
 
 
 class PropertyTable(elementary.Table):
-    def __init__(self, parent):
+    def __init__(self, parent, group_name="", value_changed_cb=None):
         elementary.Table.__init__(self, parent)
 
-        self._parent = parent
-
-        self._value_changed = None
-        self._value_data = None
+        self._value_changed_cb = value_changed_cb
+        self._group_name = group_name
 
         #self.homogenous_set(True)
         self.size_hint_weight_set(1.0, 0.0)
@@ -219,6 +216,6 @@ class PropertyTable(elementary.Table):
             return self._props[key]
         raise KeyError(key)
 
-    def _prop_changed_cb(self, prop, data):
-        if self._value_changed:
-            self._value_changed(prop.name, prop.value, self._value_data)
+    def _prop_changed_cb(self, prop, group_name):
+        if self._value_changed_cb:
+            self._value_changed_cb(prop.name, prop.value, self._group_name)

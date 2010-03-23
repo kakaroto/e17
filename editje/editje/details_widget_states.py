@@ -18,21 +18,26 @@
 import re
 
 import evas
+import edje
 from elementary import Label, Box, Pager, Button, Icon, List
 
 import sysconfig
 from details_widget_entry_button import WidgetEntryButton
 from floater import Floater
 from groupselector import NameEntry
+from operation import Operation
+import objects_data
 
 
 class WidgetStates(WidgetEntryButton):
     pop_min_w = 200
     pop_min_h = 300
 
-    def __init__(self, parent, editable):
+    def __init__(self, parent, editable, operation_stack_cb):
         WidgetEntryButton.__init__(self, parent)
-        self.editable = editable
+
+        self._operation_stack_cb = operation_stack_cb
+        self._edit_grp = editable
         self._selstate = None
         self.theme_file = sysconfig.theme_file_get("default")
 
@@ -50,10 +55,9 @@ class WidgetStates(WidgetEntryButton):
 
     def _list_populate(self, *args):
         self.states.clear()
-        old = self.parent.state.name
-        for s in self.editable.part.states:
+        for s in self._edit_grp.part.states:
             ico = None
-            if s == self.editable.part.state.name:
+            if s == self._edit_grp.part.state.name:
                 ico = Icon(self.states)
                 ico.file_set(self.theme_file, "editje/icon/confirm")
                 ico.scale_set(0, 0)
@@ -71,48 +75,149 @@ class WidgetStates(WidgetEntryButton):
 
     def _state_newname(self):
         max = 0
-        cur_state = self.editable.part.state.name.split(None, 1)
+        cur_state = self._edit_grp.part.state.name.split(None, 1)
         if re.match("[a-zA-Z]*\d{2,}", cur_state[0]):
             cur = cur_state[0][:-2]
         else:
             cur = cur_state[0]
 
-        for p in self.editable.part.states:
-             state = p.split(None, 1)
-             if re.match("%s\d{2,}" % cur, state[0]):
-                 num = int(state[0][len(cur):])
-                 if num > max:
-                       max = num
+        for p in self._edit_grp.part.states:
+            state = p.split(None, 1)
+            if re.match("%s\d{2,}" % cur, state[0]):
+                num = int(state[0][len(cur):])
+                if num > max:
+                    max = num
         nst = cur + "%.2d" % (max + 1) + " 0.00"
         return nst
 
-    def _states_added_cb(self, it, ti):
-        st = self.newstate_entry._entry_get()
-        nst = st.split(None, 1)[0]
-        if not self.parent.part.state_exist(st):
-            self.parent.part.state_copy(self.parent.state.name, nst)
-            self.editable.part.event_emit("state.added", st)
-            self.editable.part.state.name = nst + " 0.00"
-            self.close()
+    # if st_to state does not exist for the part, it is created
+    def _part_state_copy_from(self, part_name, st_from, st_to):
+        self._edit_grp.part.name = part_name
+
+        # FIXME: one can't add states with only value (float #)
+        # differing, right now. this is the reason for this fscking "half"
+        # thing
+        to_half_name = st_to.split(None, 1)[0]
+        pt = self._edit_grp.part_get(part_name)
+        existed = pt.state_exist(st_to)
+
+        # FIXME: totally don't know why state_copy was not working for the
+        # latter case, return here when things change underneath. also fix
+        # the ugly event emitions
+        if not existed:
+            r = pt.state_copy(st_from, to_half_name)
+            self._edit_grp.part.event_emit("state.added", st_to)
+            self._edit_grp.part.state.name = to_half_name + " 0.00"
+        else:
+            st = pt.state_get(st_to)
+            r = st.copy_from(st_from)
+            self._edit_grp.part.state.event_emit("state.changed", st_to)
+
+    def _remove_state_internal(self, state):
+        if self._is_default(state):
+            # FIXME: notify the user of it somehow
+            return False
+
+        if state == self._edit_grp.part.state.name:
+            self._edit_grp.part.state.name = "default 0.00"
+        self._edit_grp.part.state_del(state)
+        return True
+
+    def _states_added_cb(self, popup, data):
+        new_state = self.newstate_entry.entry
+
+        part_name = self._edit_grp.part.name
+        part = self._edit_grp.part_get(part_name)
+        curr_state = self._edit_grp.part.state.name
+
+        if part.state_exist(new_state):
+            # FIXME: notify the user of it somehow
+            return
+
+        self._part_state_copy_from(part_name, curr_state, new_state)
+
+        op = Operation("state addition")
+        op.redo_callback_add(
+            self._part_state_copy_from, part_name, curr_state, new_state)
+        op.undo_callback_add(self._remove_state_internal, new_state)
+        self._operation_stack_cb(op)
+
+        self.close()
 
     def _is_default(self, state):
         return state == "default 0.00"
 
-    def _remove_state_cb(self, it, state):
-        if not self._is_default(state):
-            if state == self.editable.part.state.name:
-                self.editable.part.state.name = "default 0.00"
-            self.editable.part.state_del(state)
+    def _state_restore(self, part_name, state_save, readd=False):
+        self._edit_grp.part.name = part_name
+        st_name = state_save.name
+        half_name = st_name.split(None, 1)[0]
+
+        if readd:
+            self._edit_grp.part.state_add(half_name)
+
+        state = self._edit_grp.part_get(part_name).state_get(st_name)
+        state_save.apply_to(state)
+
+        # FIXME: ugly hacks
+        if readd:
+            # 2nd time for this sig
+            self._edit_grp.part.event_emit("state.added", st_name)
+        else:
+            self._edit_grp.part.state.event_emit("state.changed", st_name)
+
+        self._edit_grp.part.state.name = st_name
+
+    def _state_class_from_part_type_get(self, part):
+        # FIXME: find a way of not replicating this check
+        st_class = objects_data.State
+        if part.type == edje.EDJE_PART_TYPE_IMAGE:
+            st_class = objects_data.StateImage
+        elif part.type == edje.EDJE_PART_TYPE_GRADIENT:
+            st_class = objects_data.StateGradient
+        elif part.type == edje.EDJE_PART_TYPE_TEXT:
+            st_class = objects_data.StateText
+        elif part.type == edje.EDJE_PART_TYPE_EXTERNAL:
+            st_class = objects_data.StateExternal
+
+        return st_class
+
+    def _remove_state_cb(self, btn, state_name):
+        part_name = self._edit_grp.part.name
+        part = self._edit_grp.part_get(part_name)
+        st_obj = part.state_get(state_name)
+        st_class = self._state_class_from_part_type_get(part)
+        state_save = st_class(st_obj)
+
+        if self._remove_state_internal(state_name):
+            op = Operation("state deletion")
+            op.redo_callback_add(self._remove_state_internal, state_name)
+            op.undo_callback_add(
+                self._state_restore, part_name, state_save, readd=True)
+            self._operation_stack_cb(op)
+        else:
+            del state_save
 
         self._pop.actions_clear()
         self._pop.action_add("New", self._state_add_new_cb)
         self._pop.action_add("Close", self._cancel_clicked)
         self.pager.content_pop()
 
-    def _reset_state_to_cb(self, it, state):
-        self.parent.state.copy_from(state)
-        self.editable.part.state.event_emit(
-            "state.changed", self.parent.state.name)
+    def _reset_state_to_cb(self, it, st_from):
+        part_name = self._edit_grp.part.name
+        curr_state = self._edit_grp.part.state.name
+        part = self._edit_grp.part_get(part_name)
+        st_obj = part.state_get(curr_state)
+        st_class = self._state_class_from_part_type_get(part)
+        state_save = st_class(st_obj)
+
+        self._part_state_copy_from(part_name, st_from, curr_state)
+
+        op = Operation("state copying (%s into %s)" % (st_from, curr_state))
+        op.redo_callback_add(
+            self._part_state_copy_from, part_name, st_from, curr_state)
+        op.undo_callback_add(self._state_restore, part_name, state_save)
+        self._operation_stack_cb(op)
+
         self.close()
 
     def _cancel_clicked(self, popup, data):
@@ -120,7 +225,7 @@ class WidgetStates(WidgetEntryButton):
 
     def _states_select_cb(self, it, state):
         self._selstate = state
-        self.editable.part.state.name = state
+        self._edit_grp.part.state.name = state
         self.close()
 
     def _action_button_add(self, label, callback, state):
@@ -133,7 +238,7 @@ class WidgetStates(WidgetEntryButton):
         btn.show()
         return btn
 
-    def _show_actions(self, it , ti, state):
+    def _show_actions(self, it, ti, state):
         self.actions_box = Box(self._pop)
         name_box = Box(self._pop)
         lb_state = Label(self._pop)
@@ -192,8 +297,11 @@ class WidgetStates(WidgetEntryButton):
             self._pop.title_set("States selection")
             self._pop.action_add("New", self._state_add_new_cb)
             self._pop.action_add("Close", self._cancel_clicked)
-            self.editable.part.callback_add(
+
+            self._edit_grp.part.callback_add(
                 "states.changed", self._list_populate)
+            self._edit_grp.part.state.callback_add(
+                "state.changed", self._list_populate)
 
         self._list_populate()
         self._pop.show()
@@ -201,7 +309,7 @@ class WidgetStates(WidgetEntryButton):
     def close(self):
         if not self._pop:
             return
-        self.editable.part.callback_del("states.changed",  self._list_populate)
+        self._edit_grp.part.callback_del("states.changed", self._list_populate)
         self._pop.hide()
         self._pop = None
 

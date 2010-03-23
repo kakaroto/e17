@@ -1,4 +1,3 @@
-#
 # Copyright (C) 2009 Samsung Electronics.
 #
 # This file is part of Editje.
@@ -10,17 +9,17 @@
 #
 # Editje is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 # GNU Lesser General Public License for more details.
 #
 # You should have received a copy of the GNU Lesser General Public
-# License along with Editje.  If not, see
-# <http://www.gnu.org/licenses/>.
+# License along with Editje. If not, see <http://www.gnu.org/licenses/>.
+
 from event_manager import Manager
 from editable_state import EditableState
 
-class EditablePart(Manager, object):
 
+class EditablePart(Manager):
     def __init__(self, editable):
         Manager.__init__(self)
 
@@ -38,7 +37,7 @@ class EditablePart(Manager, object):
         self.e.callback_add("part.removed", self._part_removed_cb)
 
     def _part_unselect_cb(self, emissor, data):
-        self.name = ""
+        self.name = None
 
     def _part_removed_cb(self, emissor, data):
         if self._name == data:
@@ -46,18 +45,28 @@ class EditablePart(Manager, object):
 
     # Name
     def _name_set(self, value):
-        if not self.e._edje or not value:
+        def null():
             self._part = None
-            self._name = ""
+            self._name = None
+
+        if not self.e.edje:
+            null()
+            return
+
+        if not value:
+            null()
             self.event_emit("part.unselected")
-        elif self._name != value:
-            self._part = self.e._edje.part_get(value)
-            if self._part:
-                self._name = self._part.name
-                self.event_emit("part.changed", self._name)
-            else:
-                self._name = None
-                self.event_emit("part.unselected")
+
+        if self._name == value:
+            return
+
+        self._part = self.e.part_get(value)
+        if self._part:
+            self._name = self._part.name
+            self.event_emit("part.changed", self._name)
+        else:
+            self._name = None
+            self.event_emit("part.unselected")
 
     def _name_get(self):
         return self._name
@@ -65,7 +74,7 @@ class EditablePart(Manager, object):
     name = property(_name_get, _name_set)
 
     def rename(self, name):
-        if not name:
+        if not self.name or not name:
             return False
         if self._name != name:
             old_name = self._part.name
@@ -78,6 +87,9 @@ class EditablePart(Manager, object):
 
     # Type
     def _type_get(self):
+        if not self.name:
+            return None
+
         return self._part.type
 
     type = property(_type_get)
@@ -99,11 +111,33 @@ class EditablePart(Manager, object):
             self.states = []
         self.event_emit("states.changed")
 
-    def state_add(self, name, type):
+    def state_add(self, name):
+        if not self.name:
+            return False
+
         self._part.state_add(name)
         self.event_emit("state.added", name)
+        return True
 
     def state_del(self, name):
+        if not self.name:
+            return False
+
         self._part.state_del(name)
         self.event_emit("state.removed", name)
+        return True
 
+    def _mouse_events_set(self, value):
+        if not self.name:
+            return
+
+        self._part.mouse_events = value
+        self.event_emit("part.mouse_events.changed")
+
+    def _mouse_events_get(self):
+        if not self.name:
+            return None
+
+        return self._part.mouse_events
+
+    mouse_events = property(fget=_mouse_events_get, fset=_mouse_events_set)

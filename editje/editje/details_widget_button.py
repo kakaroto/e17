@@ -1,4 +1,3 @@
-#
 # Copyright (C) 2009 Samsung Electronics.
 #
 # This file is part of Editje.
@@ -10,19 +9,18 @@
 #
 # Editje is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 # GNU Lesser General Public License for more details.
 #
 # You should have received a copy of the GNU Lesser General Public
-# License along with Editje.  If not, see
-# <http://www.gnu.org/licenses/>.
+# License along with Editje. If not, see <http://www.gnu.org/licenses/>.
+
 import elementary
 
 from details_widget import Widget
 
 
 class WidgetButton(Widget):
-
     def __init__(self, parent):
         Widget.__init__(self)
         self.parent = parent
@@ -35,8 +33,8 @@ class WidgetButton(Widget):
         self.obj.show()
 
     def _internal_value_set(self, value):
-        self._value = value
-        self.obj.label_set(value)
+        self._value = value or ""
+        self.obj.label_set(self._value)
 
     def _internal_value_get(self):
         return self._value

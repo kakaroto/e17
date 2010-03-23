@@ -80,7 +80,7 @@ class WidgetPartList(FloaterListOpener, WidgetButton):
         FloaterListOpener._floater_actions_init(self)
 
     def _none_selected(self, *args):
-        self.value_set("")
+        self.value_set(None)
         self._floater_cancel()
 
     def value_set(self, value):
