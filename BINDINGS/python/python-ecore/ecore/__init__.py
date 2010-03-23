@@ -21,7 +21,7 @@ import c_ecore
 
 from c_ecore import shutdown, time_get, loop_time_get, timer_add, \
      main_loop_begin, main_loop_quit, main_loop_iterate, \
-     main_loop_glib_integrate, event_handler_add, \
+     main_loop_glib_integrate, event_handler_add, event_type_new, \
      animator_add, animator_frametime_set, animator_frametime_get, \
      idler_add, idle_enterer_add, idle_exiter_add, fd_handler_add, \
      Animator, Timer, Idler, IdleExiter, IdleEnterer, FdHandler, \
@@ -30,7 +30,7 @@ from c_ecore import shutdown, time_get, loop_time_get, timer_add, \
      on_signal_exit, EventSignalExit, EventSignalQuit, EventSignalTerminate, \
      EventSignalInterrupt, on_signal_hup, EventSignalHup, \
      on_signal_power, EventSignalPower, on_signal_realtime, \
-     EventSignalRealtime, \
+     EventSignalRealtime, CustomEvent, QueuedEvent, \
      Exe, exe_run, exe_pipe_run, \
      exe_run_priority_set, exe_run_priority_get, \
      EventExeAdd, EventExeDel, EventExeData, \

@@ -91,6 +91,7 @@ cdef extern from "Ecore.h":
     cdef struct Ecore_Idle_Exiter
     ctypedef struct Ecore_Fd_Handler
     ctypedef void Ecore_Event_Handler
+    ctypedef struct Ecore_Event
 
     ctypedef struct Eina_List:
         void      *data
@@ -139,6 +140,9 @@ cdef extern from "Ecore.h":
 
     Ecore_Event_Handler *ecore_event_handler_add(int type, int (*func) (void *data, int type, void *event), void *data)
     void *ecore_event_handler_del(Ecore_Event_Handler *event_handler)
+    int ecore_event_type_new()
+    Ecore_Event *ecore_event_add(int type, void *ev, void (*free_func)(void *data, void *ev), void *data)
+    void *ecore_event_del(Ecore_Event *ev)
 
     void ecore_exe_run_priority_set(int pri)
     int ecore_exe_run_priority_get()
@@ -312,3 +316,13 @@ cdef class EventHandlerSignalExit(EventHandler):
 
 cdef class EventHandlerExe(EventHandler):
     pass
+
+cdef class CustomEvent(Event):
+    cdef readonly object obj
+
+cdef class QueuedEvent:
+    cdef Ecore_Event *obj
+    cdef readonly object args
+
+    cdef int _set_obj(self, Ecore_Event *ev) except 0
+    cdef int _unset_obj(self) except 0

@@ -382,3 +382,54 @@ def on_signal_realtime(func, *args, **kargs):
        @see: L{EventHandler}
     """
     return EventHandler(ECORE_EVENT_SIGNAL_REALTIME, func, *args, **kargs)
+
+
+cdef class CustomEvent(Event):
+    cdef int _set_obj(self, void *obj):
+        self.obj = <object>obj
+        return 1
+
+def event_type_new(cls):
+    cdef int type
+
+    type = ecore_event_type_new()
+
+    _event_mapping_register(type, cls)
+
+    return type
+
+
+cdef void _event_free_cb(void *data, void *event) with gil:
+    cdef QueuedEvent ev
+
+    ev = <QueuedEvent>data
+    ev._free()
+
+cdef class QueuedEvent:
+    def __init__(self, int type, *args):
+        self.args = args
+        self._set_obj(ecore_event_add(type, <void *>self.args, _event_free_cb,
+                      <void*>self))
+
+    cdef int _set_obj(self, Ecore_Event *ev):
+        assert self.obj == NULL, "Object must be clean"
+        assert ev != NULL, "Cannot set NULL as object"
+        self.obj = ev
+        Py_INCREF(self)
+        return 1
+
+    cdef int _unset_obj(self):
+        if self.obj != NULL:
+            self.obj = NULL
+            self.args = None
+            Py_DECREF(self)
+        return 1
+
+    def _free(self):
+        self._unset_obj()
+
+    def delete(self):
+        ecore_event_del(self.obj)
+
+def event_add(int type, *args):
+    return QueuedEvent(type, args)
