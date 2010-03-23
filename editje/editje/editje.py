@@ -75,6 +75,19 @@ class Editje(elementary.Window):
 
         self._clipboard = None
 
+        self.on_key_down_add(self.key_down)
+
+    def key_down(self, win, event):
+        key = event.keyname
+        alt = event.modifier_is_set("Alt")
+        control = event.modifier_is_set("Control")
+        shift = event.modifier_is_set("Shift")
+        super = event.modifier_is_set("Super")
+
+        if key == "Delete":
+            if self.e.part.name:
+                self.e.part_del(self.e.part.name)
+
     def _destroy_cb(self, obj):
         self.e.close()
 
@@ -141,6 +154,7 @@ class Editje(elementary.Window):
         if not self.e.group:
             self.select_group()
         elementary.Window.show(self)
+        self.focus_set(True)
 
     def _group_wizard_check_group_cb(self, grp_name):
         return self.e.group_exists(grp_name)
