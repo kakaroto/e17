@@ -15,6 +15,8 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with this Python-Emotion.  If not, see <http://www.gnu.org/licenses/>.
 
+from python_ref cimport PyObject
+
 cimport evas.c_evas as c_evas
 import evas.c_evas
 
@@ -24,7 +26,7 @@ __extra_epydoc_fields__ = (
 
 
 cdef int PY_REFCOUNT(object o):
-    cdef python.PyObject *obj = <python.PyObject *>o
+    cdef PyObject *obj = <PyObject *>o
     return obj.ob_refcnt
 
 
