@@ -121,7 +121,7 @@ if [[ -z "${E_NO_DOC}" ]]; then
 fi
 
 if [[ ! -z "${E_CYTHON}" ]]; then
-	DEPEND="${DEPEND} >=dev-python/cython-0.12"
+	DEPEND="${DEPEND} >=dev-python/cython-0.12.1"
 fi
 
 if [[ ! -z "${E_PYTHON}" ]]; then
