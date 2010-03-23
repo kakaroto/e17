@@ -48,6 +48,87 @@ static int run_test = 0;
 static int list_test = 0;
 static int exit_after_test = 0;
 
+static double weights[] =
+{
+   0.0, // no test 0
+     
+     50.4851, // test 1
+     37.3703, // test 2
+     10.6493, // ...
+     38.4818,
+     40.7314,
+     32.0866,
+     21.3337,
+     21.2167,
+     71.6141,
+     64.8893,
+     95.0880,
+     121.0438,
+     41.2646,
+     162.7149,
+     89.1650,
+     105.3571,
+     40.9657,
+     98.4671,
+     28.4322,
+     60.000,
+     75.5507,
+     51.6601,
+     135.4753,
+     38.2705,
+     35.9915,
+     31.9500,
+     22.6752,
+     38.2702,
+     37.4459,
+     37.2009,
+     34.5459,
+     38.5043,
+     50.0000,
+     37.0282,
+     55.8886,
+     17.2535,
+     23.1457,
+     36.9874,
+     37.9336,
+     17.1830,
+     20.7521,
+     29.0141,
+     131.6784,
+     13.6851,
+     23.4462,
+     14.7573,
+     36.5261,
+     24.3482,
+     10.4611,
+     86.0290,
+     82.0735,
+     18.6459,
+     37.4608,
+     32.4417,
+     11.5449,
+     11.4172,
+     13.3682,
+     10.0324,
+     10.0584,
+     10.0170,
+     5.4029,
+     10.6349,
+     21.7728,
+     12.7933,
+     19.4177,
+     34.4192,
+     23.9110,
+     22.8287,
+     41.2399,
+     30.1383,
+     22.0342,
+     38.2952,
+     5.5560,
+     
+     0.0 // no final test - add a 0 at the end anyway to pad
+};
+
 static void
 _ui_exit(void)
 {
@@ -67,7 +148,10 @@ _ui_all(void)
 {
    Eina_List *l;
    double fps = 0.0;
+   double wfps = 0.0;
    int t_count = 0;
+   int i;
+   double avgw = 0.0;
 
    evas_object_hide(o_menu_logo);
    evas_object_hide(o_menu_title);
@@ -99,9 +183,17 @@ _ui_all(void)
 	evas_render(evas);
 	t_count++;
 	fps += p_fps;
+        wfps += (p_fps * weights[t_count]);
 	key_func("Escape");
      }
-   if (t_count > 0) printf("%4.2f , EVAS SPEED\n", fps / t_count);
+   for (i = 1; i < ((sizeof(weights) / sizeof(double)) - 1); i++)
+     avgw += weights[i];
+   avgw /= (i - 1);   
+   if (t_count > 0)
+     {
+//        printf("%4.2f , EVAS SPEED\n", fps / t_count);
+        printf("%4.2f , EVAS SPEED (WEIGHTED)\n", wfps / (t_count * avgw));
+     }
 }
 
 
@@ -110,8 +202,11 @@ _ui_num(int n)
 {
    Eina_List *l;
    double fps = 0.0;
+   double wfps = 0.0;
    int t_count = 0;
    Menu_Item *mi;
+   int i;
+   double avgw = 0.0;
 
    evas_object_hide(o_menu_logo);
    evas_object_hide(o_menu_title);
@@ -139,10 +234,18 @@ _ui_num(int n)
 	evas_render(evas);
 	t_count++;
 	fps += p_fps;
+        wfps += (p_fps * weights[n]);
 	key_func("Escape");
      }
    done:
-   if (t_count > 0) printf("%4.2f , EVAS SPEED\n", fps / t_count);
+   for (i = 1; i < ((sizeof(weights) / sizeof(double)) - 1); i++)
+     avgw += weights[i];
+   avgw /= (i - 1);   
+   if (t_count > 0)
+     {
+//        printf("%4.2f , EVAS SPEED\n", fps / t_count);
+        printf("%4.2f , EVAS SPEED (WEIGHTED)\n", wfps / (t_count * avgw));
+     }
 }
 
 static void
