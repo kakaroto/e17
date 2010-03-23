@@ -151,7 +151,11 @@ _elixir_ecore_maybe_gc(void *data)
 {
    JSContext *cx = data;
 
+   JS_SetContextThread(cx);
    JS_MaybeGC(cx);
+   JS_ClearContextThread(cx);
+
+   return 1;
 }
 
 static JSBool
