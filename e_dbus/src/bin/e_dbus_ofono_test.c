@@ -274,13 +274,14 @@ _on_cmd_manager_modems_get(char *cmd, char *args)
    char *path;
    Eina_Array_Iterator iterator;
    unsigned int i;
-   Eina_Array *modems = eina_array_new(1);
+   Eina_Array *modems = NULL;
 
    if(e_ofono_manager_modems_get(&modems))
      {
 	printf("[");
-	EINA_ARRAY_ITER_NEXT(modems, i, path, iterator)
-	   printf(" %s", path);
+	if (modems)
+	  EINA_ARRAY_ITER_NEXT(modems, i, path, iterator)
+	     printf(" %s", path);
 	printf(" ]\n");
      }
 
