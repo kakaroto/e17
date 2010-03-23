@@ -15,7 +15,7 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with this Python-Ethumb.  If not, see <http://www.gnu.org/licenses/>.
 
-cimport python
+from python_ref cimport PyObject, Py_INCREF, Py_DECREF
 import traceback
 
 __extra_epydoc_fields__ = (
@@ -73,7 +73,7 @@ cdef void _generated_cb(void *data, Ethumb_Client *client, int id, char *file, c
 
 cdef void _generated_cb_free_data(void *data) with gil:
     obj = <object>data
-    python.Py_DECREF(obj)
+    Py_DECREF(obj)
 
 cdef char *str_to_c(object s):
     cdef char *mystr
@@ -587,7 +587,7 @@ cdef class Client:
         r = ethumb_client_generate(self.obj, _generated_cb, <void*>targs,
                                    _generated_cb_free_data)
         if r >= 0:
-            python.Py_INCREF(targs)
+            Py_INCREF(targs)
             return r
         else:
             raise SystemError("could not generate thumbnail. "
