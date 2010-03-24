@@ -98,6 +98,17 @@ class Editje(elementary.Window):
                 op.redo_callback_add(self.e.part_del, name)
                 self._operation_stack(op)
                 op.redo()
+        elif control:
+            if key == "x":
+                self._cut_cb(self, None, None)
+            elif key == "c":
+                self._copy_cb(self, None, None)
+            elif key == "v":
+                self._paste_cb(self, None, None)
+            elif not shift and key == "z":
+                self._undo_cb(self, None, None)
+            elif shift and key == "z":
+                self._redo_cb(self, None, None)
 
     def _destroy_cb(self, obj):
         self.e.close()
