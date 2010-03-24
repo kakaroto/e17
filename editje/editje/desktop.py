@@ -40,6 +40,7 @@ class Desktop(Controller):
         self.e.callback_add("part.added", self._part_added)
         self.e.part.callback_add("part.changed", self._part_load)
         self.e.part.callback_add("part.unselected", self._part_load)
+        self.e.part.callback_add("name.changed", self._part_rename)
         self.e.part.state.callback_add("state.rel1.changed", self._rel1_load)
         self.e.part.state.callback_add("state.rel2.changed", self._rel2_load)
 
@@ -70,6 +71,9 @@ class Desktop(Controller):
 
     def _part_added(self, emissor, data):
         self._view.manager.parts_manager.part_load(data)
+
+    def _part_rename(self, emissor, data):
+        self._view.manager.parts_manager.part_rename(*data)
 
     def _rel1_load(self, emissor, data):
         self._view.part_rel1_set(data)
