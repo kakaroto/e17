@@ -1,5 +1,13 @@
 #!/bin/sh
 
+# Allow invocation from a separate build directory; in that case, we change
+# to the source directory to run the auto*, then change back before running configure
+srcdir=`dirname $0`
+test -z "$srcdir" && srcdir=.
+
+ORIGDIR=`pwd`
+cd $srcdir
+
 DIRNAME=`basename $PWD`
 if test "x$DIRNAME" = "xelementary-skel"; then
     echo "Do not run autogen.sh from inside elementary-skel"
@@ -11,6 +19,8 @@ find . -name Makefile.in -delete
 
 autoreconf -f -i
 
+cd $ORIGDIR || exit 1
+
 if [ -z "$NOCONFIGURE" ]; then
-	./configure "$@"
+    $srcdir/configure $AUTOGEN_CONFIGURE_ARGS "$@" || exit $?
 fi
