@@ -103,6 +103,8 @@ cdef extern from "Edje_Edit.h":
     evas.c_evas.Eina_Bool edje_edit_part_external_add(evas.c_evas.Evas_Object *obj, char *name, char *source)
     evas.c_evas.Eina_Bool edje_edit_part_del(evas.c_evas.Evas_Object *obj, char *part)
     evas.c_evas.Eina_Bool edje_edit_part_exist(evas.c_evas.Evas_Object *obj, char *part)
+    char * edje_edit_part_above_get(evas.c_evas.Evas_Object *obj, char *part)
+    char * edje_edit_part_below_get(evas.c_evas.Evas_Object *obj, char *part)
     evas.c_evas.Eina_Bool edje_edit_part_restack_below(evas.c_evas.Evas_Object *obj, char *part)
     evas.c_evas.Eina_Bool edje_edit_part_restack_above(evas.c_evas.Evas_Object *obj, char *part)
     evas.c_evas.Eina_Bool edje_edit_part_name_set(evas.c_evas.Evas_Object *obj, char  *part, char  *new_name)

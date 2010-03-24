@@ -31,6 +31,22 @@ cdef class Part:
         self.edje = edje
         self._name = name
 
+    def above_get(self):
+        cdef char *part
+        part = edje_edit_part_above_get(self.edje.obj, self.name)
+        if part == NULL: return None
+        r = part
+        edje_edit_string_free(part)
+        return r
+
+    def below_get(self):
+        cdef char *part
+        part = edje_edit_part_below_get(self.edje.obj, self.name)
+        if part == NULL: return None
+        r = part
+        edje_edit_string_free(part)
+        return r
+
     def restack_below(self):
         return bool(edje_edit_part_restack_below(self.edje.obj, self.name))
 

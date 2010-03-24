@@ -27,6 +27,19 @@ class Basics(unittest.TestCase):
         for part in self.edj.parts:
             self.assertEqual(self.edj.part_get(part).name, part)
 
+    def test_above_get(self):
+        self.assertEqual(self.edj.part_get(self.parts[0]).above_get(), None)
+        self.assertEqual(self.edj.part_get(self.parts[1]).above_get(), "main_rect")
+        self.assertEqual(self.edj.part_get(self.parts[2]).above_get(), "main_text")
+        self.assertEqual(self.edj.part_get(self.parts[3]).above_get(), "main_image")
+        self.assertEqual(self.edj.part_get(self.parts[4]).above_get(), "main_swallow")
+
+    def test_below_get(self):
+        self.assertEqual(self.edj.part_get(self.parts[-1]).below_get(), None)
+        self.assertEqual(self.edj.part_get(self.parts[0]).below_get(), "main_text")
+        self.assertEqual(self.edj.part_get(self.parts[1]).below_get(), "main_image")
+        self.assertEqual(self.edj.part_get(self.parts[2]).below_get(), "main_swallow")
+
     def test_restack_below(self):
         # You can't pre-load parts
         self.assertFalse(self.edj.part_get(self.parts[0]).restack_below())
