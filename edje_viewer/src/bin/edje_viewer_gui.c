@@ -485,6 +485,7 @@ typebuf_match(Viewer *v, int next)
 		  break;
 	       }
 	  }
+        grp_match = NULL;
      }
    else
      grp_match = group_next_find(v, next, tb);
@@ -494,8 +495,11 @@ typebuf_match(Viewer *v, int next)
 	Elm_Genlist_Item *it = elm_genlist_selected_item_get(v->gui.tree);
 	if (it)
 	  elm_genlist_item_selected_set(it, 0);
-	elm_genlist_item_selected_set(grp_match->item, 1);
-	elm_genlist_item_show(grp_match->item);
+        if (grp_match->item)
+          {
+             elm_genlist_item_selected_set(grp_match->item, 1);
+             elm_genlist_item_show(grp_match->item);
+          }
      }
 
    free(tb);
