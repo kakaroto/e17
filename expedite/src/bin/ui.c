@@ -171,6 +171,8 @@ _ui_all(void)
 	    (mi->func == _ui_all))
 	  continue;
 	if (mi->func) mi->func();
+        evas_object_hide(o_title);
+        evas_object_hide(o_byline);
 	while (p_fps == 0.0)
 	  {
 	     engine_loop();
@@ -191,8 +193,8 @@ _ui_all(void)
    avgw /= (i - 1);   
    if (t_count > 0)
      {
-//        printf("%4.2f , EVAS SPEED\n", fps / t_count);
-        printf("%4.2f , EVAS SPEED (WEIGHTED)\n", wfps / (t_count * avgw));
+//        printf("%5.2f , EVAS SPEED\n", fps / t_count);
+        printf("%5.2f , EVAS SPEED (WEIGHTED)\n", wfps / (t_count * avgw));
      }
 }
 
@@ -214,6 +216,8 @@ _ui_num(int n)
    evas_object_hide(o_menu_icon_sel);
    evas_object_hide(o_menu_icon_sel2);
    evas_object_hide(o_menu_text_sel);
+   evas_object_hide(o_title);
+   evas_object_hide(o_byline);
    mi = eina_list_nth(menu, n);
    if (mi)
      {
@@ -222,6 +226,8 @@ _ui_num(int n)
 	    (mi->func == _ui_all))
 	  goto done;
 	if (mi->func) mi->func();
+        evas_object_hide(o_title);
+        evas_object_hide(o_byline);
 	while (p_fps == 0.0)
 	  {
 	     ui_loop();
@@ -243,8 +249,8 @@ _ui_num(int n)
    avgw /= (i - 1);   
    if (t_count > 0)
      {
-//        printf("%4.2f , EVAS SPEED\n", fps / t_count);
-        printf("%4.2f , EVAS SPEED (WEIGHTED)\n", wfps / (t_count * avgw));
+//        printf("%5.2f , EVAS SPEED\n", fps / t_count);
+        printf("%5.2f , EVAS SPEED (WEIGHTED)\n", wfps / (t_count * avgw));
      }
 }
 
@@ -274,6 +280,8 @@ _ui_select(void)
      }
    menu_active = 0;
    if (func) func();
+   evas_object_hide(o_title);
+   evas_object_hide(o_byline);
 }
 
 static void
