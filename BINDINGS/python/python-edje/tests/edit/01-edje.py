@@ -24,7 +24,19 @@ class Basics(unittest.TestCase):
         self.assertEqual(self.edj.compiler_get(), "edje_cc")
 
     def test_save(self):
-        pass #self.assertTrue(self.edj.save())
+        self.assertTrue(self.edj.save())
+        self.assertTrue(self.edj.part_del("main_rect"))
+        self.assertTrue(self.edj.part_del("main_text"))
+        self.assertTrue(self.edj.part_del("main_image"))
+        self.assertTrue(self.edj.part_del("main_swallow"))
+        self.assertTrue(self.edj.part_del("main_textblock"))
+        self.assertTrue(self.edj.part_del("main_gradient"))
+        self.assertTrue(self.edj.part_del("main_group"))
+        self.assertTrue(self.edj.part_del("main_box"))
+        self.assertTrue(self.edj.part_del("main_table"))
+        for count in xrange(1000):
+            self.assertTrue(self.edj.part_add(str(count), edje.EDJE_PART_TYPE_RECTANGLE))
+        self.assertTrue(self.edj.save())
 
     # Group
 
