@@ -91,27 +91,13 @@ class Editje(elementary.Window):
 
         if key == "Delete":
             if self.e.part.name:
-                def part_add(part_data):
-                    source = part_data["source"]
-                    if source is None:
-                        source = ''
-
-                    if self.e.part_add(part_data.name, part_data.type, source=source):
-                        part = self.e._edje.part_get(part_data.name)
-                        part_data.apply_to(part)
-                        # FIXME: remove event emitions for others
-                        self.e.event_emit("part.added", part_data.name)
-
-                def part_del(part_data):
-                    self.e.part_del(part_data.name)
-
-                part_data = objects_data.Part(self.e.part._part)
-
-                op = Operation("part cut")
-                op.undo_callback_add(part_add, part_data)
-                op.redo_callback_add(part_del, part_data)
-                part_del(part_data)
+                name = self.e.part.name
+                op = Operation("del part: " + name)
+                op.undo_callback_add(self.e.part_add_bydata, name,
+                        objects_data.Part(self.e.part._part))
+                op.redo_callback_add(self.e.part_del, name)
                 self._operation_stack(op)
+                op.redo()
 
     def _destroy_cb(self, obj):
         self.e.close()
@@ -421,36 +407,23 @@ class Editje(elementary.Window):
             self.main_edje.signal_emit("redo.bt,enable", "")
 
     def _cut_cb(self, obj, emission, source):
-        if not self.e.part.name:
+        if not self._copy_cb(obj, emission, source):
             return
 
-        def part_add(part_data):
-            source = part_data["source"]
-            if source is None:
-                source = ''
+        name = self._clipboard.name
 
-            if self.e.part_add(part_data.name, part_data.type, source=source):
-                part = self.e._edje.part_get(part_data.name)
-                part_data.apply_to(part)
-                # FIXME: remove event emitions for others
-                self.e.event_emit("part.added", part_data.name)
-
-        def part_del(part_data):
-            self.e.part_del(part_data.name)
-
-        self._clipboard = objects_data.Part(self.e.part._part)
-
-        op = Operation("part cut")
-        op.undo_callback_add(part_add, self._clipboard)
-        op.redo_callback_add(part_del, self._clipboard)
-        part_del(self._clipboard)
+        op = Operation("cut part: " + name)
+        op.undo_callback_add(self.e.part_add_bydata, name, self._clipboard)
+        op.redo_callback_add(self.e.part_del, name)
         self._operation_stack(op)
+        op.redo()
 
     def _copy_cb(self, obj, emission, source):
         if not self.e.part.name:
-            return
+            return False
 
         self._clipboard = objects_data.Part(self.e.part._part)
+        return True
 
     def _paste_cb(self, obj, emission, source):
         if not self._clipboard:
@@ -458,17 +431,11 @@ class Editje(elementary.Window):
 
         name = name_generate(self._clipboard.name, self.e.parts)
 
-        type_ = self._clipboard.type
-
-        source = self._clipboard["source"]
-        if source is None:
-            source = ''
-
-        if self.e.part_add(name, type_, source=source):
-            part = self.e._edje.part_get(name)
-            self._clipboard.apply_to(part)
-            # FIXME: remove event emitions for others
-            self.e.event_emit("part.added", name)
+        op = Operation("paste part: " + name)
+        op.undo_callback_add(self.e.part_del, name)
+        op.redo_callback_add(self.e.part_add_bydata, name, self._clipboard)
+        self._operation_stack(op)
+        op.redo()
 
     def _play_cb(self, obj, emission, source):
         # def play_end(emissor, data):

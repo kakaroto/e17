@@ -358,6 +358,17 @@ class Editable(Manager):
         self.event_emit("part.added", name)
         return True
 
+    def part_add_bydata(self, name, part_data):
+        source = part_data["source"]
+        if source is None:
+            source = ''
+
+        if self._edje.part_add(name, part_data.type, source=source):
+            part = self._edje.part_get(name)
+            part_data.apply_to(part)
+            # FIXME: remove event emitions for others
+            self.event_emit("part.added", name)
+
     def part_get(self, part_name):
         return self._edje.part_get(part_name)
 
