@@ -11,12 +11,11 @@
 #
 # Editje is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 # GNU Lesser General Public License for more details.
 #
 # You should have received a copy of the GNU Lesser General Public
-# License along with Editje.  If not, see
-# <http://www.gnu.org/licenses/>.
+# License along with Editje. If not, see <http://www.gnu.org/licenses/>.
 
 import os
 import sys
@@ -30,9 +29,11 @@ from editje.openfile import OpenFile
 import editje.swapfile as swapfile
 from editje.popup_win import PopupWindow
 
+
 def cancel(bt, pop):
     pop.hide()
     pop.delete()
+
 
 def open_swap_error(bt, data):
     pop, option, sf, group = data
@@ -40,6 +41,7 @@ def open_swap_error(bt, data):
     pop.hide()
     open_editje(sf, group)
     pop.delete()
+
 
 def open_editje(sf, group):
     editje = Editje(sf)
@@ -73,9 +75,10 @@ if __name__ == "__main__":
                 pop.title = "Editje - Swap file already exists"
 
                 lb = elementary.Label(pop)
-                lb.label_set("Swap file to " + file + " already exists<br>" +
-                             "Another program may be editing the same file.<br>" +
-                             "Or an edit session for this file crashed.")
+                lb.label_set(
+                    "Swap file to " + file + " already exists.<br>" +
+                    "Another program may be editing the same file<br>" +
+                    "or an edition session for this file crashed.")
                 pop.pack_end(lb)
                 lb.show()
 

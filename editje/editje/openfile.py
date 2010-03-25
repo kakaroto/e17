@@ -1,4 +1,3 @@
-#
 # Copyright (C) 2009 Samsung Electronics.
 #
 # This file is part of Editje.
@@ -10,12 +9,11 @@
 #
 # Editje is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 # GNU Lesser General Public License for more details.
 #
 # You should have received a copy of the GNU Lesser General Public
-# License along with Editje.  If not, see
-# <http://www.gnu.org/licenses/>.
+# License along with Editje. If not, see <http://www.gnu.org/licenses/>.
 
 import os
 import shutil
@@ -30,9 +28,9 @@ import swapfile
 import sysconfig
 from error_notify import ErrorNotify
 
+
 class OpenFile(elementary.Window):
     def __init__(self, theme="default"):
-
         self.theme = sysconfig.theme_file_get(theme)
         elementary.theme_extension_add(self.theme)
 
@@ -121,7 +119,6 @@ class OpenFile(elementary.Window):
                         files.append(file)
         return files
 
-
     def _new(self, bt):
         self._new_popup()
         return
@@ -146,7 +143,8 @@ class OpenFile(elementary.Window):
             self._notification = None
         self._notification = elementary.Notify(self)
         self._notification.timeout_set(2)
-        self._notification.orient_set(elementary.ELM_NOTIFY_ORIENT_BOTTOM_RIGHT)
+        self._notification.orient_set(
+            elementary.ELM_NOTIFY_ORIENT_BOTTOM_RIGHT)
 
         bx = elementary.Box(self)
         bx.size_hint_weight_set(evas.EVAS_HINT_EXPAND,
@@ -173,12 +171,13 @@ class OpenFile(elementary.Window):
         if isinstance(err, swapfile.CacheAlreadyExists):
             self._notification.title = "Swap file already exists"
             lb = elementary.Label(self._notification)
-            lb.label_set("Another program may be editing the same file.<br>" +
-                         "Or an edit session for this file crashed.")
+            lb.label_set(
+                "Another program may be editing the same file<br>" +
+                "or a previous edition session for this file crashed.")
             self._notification.pack_end(lb)
             lb.show()
             self._notification.action_add("Ignore Swap", self._open_forced)
-            self._notification.action_add("Recovery", self._open_recovery)
+            self._notification.action_add("Recover", self._open_recovery)
             self._notification.action_add("Abort", self._notify_abort)
         elif isinstance(err, swapfile.CompileError):
             self._notification.title = "Compiler Error"
@@ -207,14 +206,11 @@ class OpenFile(elementary.Window):
         tb.show()
         self._pager.content_push(tb)
 
-
     def _templates_cancel(self):
         self._pager.content_pop()
 
     def _templates_ok(self):
         pass
-
-
 
     # HACK
     def _new_popup(self):
@@ -284,7 +280,8 @@ class OpenFile(elementary.Window):
                 self._notification.title = "File already exists and opened"
             else:
                 self._notification.title = "File already exists"
-                self._notification.action_add("Overwrite", self._new_forced, None, file)
+                self._notification.action_add(
+                    "Overwrite", self._new_forced, None, file)
             self._notification.action_add("Abort", self._notify_abort)
             self._notification.show()
             return
