@@ -519,7 +519,7 @@ _ui_setup(void)
 
              mi = l->data;
              if (i > 0)
-               printf("%3i - %s\n", i, mi->text);
+               printf("%3i - %s (Weight %0.2lf)\n", i, mi->text, weights[i]);
           }
      }
    else
