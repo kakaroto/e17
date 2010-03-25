@@ -31,6 +31,10 @@ class EditableState(Manager):
         editable_part.callback_add("part.unselected", self._reset_cb)
         editable_part.callback_add("part.changed", self._reload_cb)
 
+        # FIXME: temporary hack to fix the state references at details_state.py
+        # refactor that baby ASAP
+        editable_part.callback_add("name.changed", self._reload_cb)
+
     def _reset_cb(self, emissor, data):
         self.name = None
 

@@ -310,6 +310,8 @@ class WidgetStates(WidgetEntryButton):
         if not self._pop:
             return
         self._edit_grp.part.callback_del("states.changed", self._list_populate)
+        self._edit_grp.part.state.callback_del(
+            "state.changed", self._list_populate)
         self._pop.hide()
         self._pop = None
 

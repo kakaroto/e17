@@ -88,7 +88,7 @@ class PartStateDetails(EditjeDetails):
 
         self.e.callback_add("part.removed", self._part_removed)
         self.e.part.callback_add("part.changed", self._part_update)
-        self.e.part.callback_add("name.changed", self._part_update)
+        # self.e.part.callback_add("name.changed", self._part_update)
         self.e.part.callback_add("part.unselected", self._part_unselected)
         self.e.part.state.callback_add("state.changed", self._state_changed_cb)
 
