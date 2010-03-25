@@ -44,6 +44,9 @@ class Part(Object):
     def __init__(self, obj):
         Object.__init__(self, obj.name)
 
+        self["above"] = obj.above_get()
+        self["below"] = obj.below_get()
+
         self._type = obj.type
         self["mouse_events"] = obj.mouse_events
         self["repeat_events"] = obj.repeat_events
@@ -79,6 +82,19 @@ class Part(Object):
     type = property(_type_get)
 
     def apply_to(self, obj):
+
+        # Simple Restack. TODO: relative restack in edje_edit
+        above = obj.above_get()
+        while above:
+            obj.restack_above()
+            above = obj.above_get()
+
+        below = obj.below_get()
+        while below != self["above"]:
+            obj.restack_below()
+            below = obj.below_get()
+        obj.restack_below()
+
         # type is imutable
         obj.mouse_events = self["mouse_events"]
         obj.repeat_events = self["repeat_events"]
