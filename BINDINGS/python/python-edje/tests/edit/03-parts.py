@@ -28,17 +28,20 @@ class Basics(unittest.TestCase):
             self.assertEqual(self.edj.part_get(part).name, part)
 
     def test_above_get(self):
-        self.assertEqual(self.edj.part_get(self.parts[0]).above_get(), None)
-        self.assertEqual(self.edj.part_get(self.parts[1]).above_get(), "main_rect")
-        self.assertEqual(self.edj.part_get(self.parts[2]).above_get(), "main_text")
-        self.assertEqual(self.edj.part_get(self.parts[3]).above_get(), "main_image")
-        self.assertEqual(self.edj.part_get(self.parts[4]).above_get(), "main_swallow")
+        # ['main_rect', 'main_text', 'main_image', 'main_swallow',
+        # 'main_textblock', 'main_gradient', 'main_group', 'main_box', 'main_table']
+        self.assertEqual(self.edj.part_get(self.parts[0]).above_get(), "main_text")
+        self.assertEqual(self.edj.part_get(self.parts[-1]).above_get(), None)
+        self.assertEqual(self.edj.part_get(self.parts[-2]).above_get(), "main_table")
+        self.assertEqual(self.edj.part_get(self.parts[-3]).above_get(), "main_box")
+        self.assertEqual(self.edj.part_get(self.parts[-4]).above_get(), "main_group")
 
     def test_below_get(self):
-        self.assertEqual(self.edj.part_get(self.parts[-1]).below_get(), None)
-        self.assertEqual(self.edj.part_get(self.parts[0]).below_get(), "main_text")
-        self.assertEqual(self.edj.part_get(self.parts[1]).below_get(), "main_image")
-        self.assertEqual(self.edj.part_get(self.parts[2]).below_get(), "main_swallow")
+        self.assertEqual(self.edj.part_get(self.parts[0]).below_get(), None)
+        self.assertEqual(self.edj.part_get(self.parts[1]).below_get(), "main_rect")
+        self.assertEqual(self.edj.part_get(self.parts[2]).below_get(), "main_text")
+        self.assertEqual(self.edj.part_get(self.parts[3]).below_get(), "main_image")
+        self.assertEqual(self.edj.part_get(self.parts[-1]).below_get(), "main_box")
 
     def test_restack_below(self):
         # You can't pre-load parts
