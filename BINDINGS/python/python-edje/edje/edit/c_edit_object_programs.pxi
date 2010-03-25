@@ -103,6 +103,9 @@ cdef class Program:
     def target_add(self, char *t):
         return bool(edje_edit_program_target_add(self.edje.obj, self.name, t))
 
+    def target_del(self, char *t):
+        return bool(edje_edit_program_target_del(self.edje.obj, self.name, t))
+
     def targets_clear(self):
         return bool(edje_edit_program_targets_clear(self.edje.obj, self.name))
 
