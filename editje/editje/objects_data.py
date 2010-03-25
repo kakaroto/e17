@@ -94,7 +94,8 @@ class Part(Object):
         for state in self["states"].values():
             name = state.name
             half_name = name.split(None, 1)[0]
-            obj.state_add(half_name)
+            if half_name != "default":
+                obj.state_add(half_name)
             state.apply_to(obj.state_get(name))
 
         return True
