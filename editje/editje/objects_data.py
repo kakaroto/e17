@@ -54,12 +54,13 @@ class Part(Object):
         self["source"] = obj.source
         self["effect"] = obj.effect
 
-        self["dragable"] = dict()
+        dragable = dict()
+        self["dragable"] = dragable
         x, y = obj.drag
-        self["dragable"]["x"] = x
-        self["dragable"]["y"] = y
-        self["dragable"]["confine"] = obj.drag_confine
-        self["dragable"]["events"] = obj.drag_event
+        dragable["x"] = x
+        dragable["y"] = y
+        dragable["confine"] = obj.drag_confine
+        dragable["events"] = obj.drag_event
 
         self._class = State
         if self._type == edje.EDJE_PART_TYPE_IMAGE:
@@ -71,10 +72,11 @@ class Part(Object):
         elif self._type == edje.EDJE_PART_TYPE_EXTERNAL:
             self._class = StateExternal
 
-        self["states"] = dict()
+        states = dict()
+        self["states"] = states
         for state_name in obj.states:
             state = obj.state_get(state_name)
-            self["states"][state_name] = self._class(state)
+            states[state_name] = self._class(state)
 
     def _type_get(self):
         return self._type
@@ -149,34 +151,36 @@ class State(Object):
         self["color2"] = obj.color2_get()
         self["color3"] = obj.color3_get()
 
-        self["rel1"] = dict()
-        self["rel1"]["relative"] = obj.rel1_relative_get()
-        self["rel1"]["offset"] = obj.rel1_offset_get()
+        rel = dict()
+        self["rel1"] = rel
+        rel["relative"] = obj.rel1_relative_get()
+        rel["offset"] = obj.rel1_offset_get()
         x, y = obj.rel1_to_get()
         if not x:
             x = ""
         if not y:
             y = ""
-        self["rel1"]["to"] = (x, y)
+        rel["to"] = (x, y)
 
-        self["rel2"] = dict()
-        self["rel2"]["relative"] = obj.rel2_relative_get()
-        self["rel2"]["offset"] = obj.rel2_offset_get()
+        rel = dict()
+        self["rel2"] = rel
+        rel["relative"] = obj.rel2_relative_get()
+        rel["offset"] = obj.rel2_offset_get()
         x, y = obj.rel2_to_get()
         if not x:
             x = ""
         if not y:
             y = ""
-        self["rel2"]["to"] = (x, y)
+        rel["to"] = (x, y)
 
     def apply_to(self, obj):
         obj.visible = self["visible"]
         obj.align = self["align"]
         obj.min = self["min"]
         obj.max = self["max"]
-        min_, max_ = self["aspect"]
-        obj.aspect_min_set(min_)
-        obj.aspect_max_set(max_)
+        min, max = self["aspect"]
+        obj.aspect_min_set(min)
+        obj.aspect_max_set(max)
         obj.aspect_pref_set(self["aspect_preference"])
         obj.color_set(*self["color"])
         obj.color2_set(*self["color2"])
@@ -238,14 +242,15 @@ class StateText(State):
     def __init__(self, obj):
         State.__init__(self, obj)
 
-        self["text"] = dict()
-        self["text"]["text"] = obj.text_get()
-        self["text"]["font"] = obj.font_get()
-        self["text"]["size"] = obj.text_size_get()
-        #TODO: self["text"]["text_class"] =
-        self["text"]["fit"] = obj.text_fit_get()
-        self["text"]["align"] = obj.text_align_get()
-        self["text"]["elipsis"] = obj.text_elipsis_get()
+        text = dict()
+        self["text"] = text
+        text["text"] = obj.text_get()
+        text["font"] = obj.font_get()
+        text["size"] = obj.text_size_get()
+        #TODO: text["text_class"] =
+        text["fit"] = obj.text_fit_get()
+        text["align"] = obj.text_align_get()
+        text["elipsis"] = obj.text_elipsis_get()
 
     def apply_to(self, obj):
         if obj.part_get().type != edje.EDJE_PART_TYPE_TEXT:
@@ -281,25 +286,29 @@ class StateImage(State):
     def __init__(self, obj):
         State.__init__(self, obj)
 
-        self["image"] = dict()
-        self["image"]["normal"] = obj.image_get()
-        self["image"]["tweens"] = obj.tweens
-        self["image"]["border"] = obj.image_border_get()
-        self["image"]["middle"] = obj.image_border_fill_get()
+        image = dict()
+        self["image"] = image
+        image["normal"] = obj.image_get()
+        image["tweens"] = obj.tweens
+        image["border"] = obj.image_border_get()
+        image["middle"] = obj.image_border_fill_get()
 
         #TODO: Bindings
         """
-        self["fill"] = dict()
-        self["fill"]["smooth"] =
-        self["fill"]["angle"] =
+        fill = dict()
+        self["fill"] = fill
+        fill["smooth"] =
+        fill["angle"] =
 
-        self["fill"]["origin"] = dict()
-        self["fill"]["origin"]["relative"] =
-        self["fill"]["origin"]["offset"] =
+        origin = dict()
+        fill["origin"] = origin
+        origin["relative"] =
+        origin["offset"] =
 
-        self["fill"]["size"] = dict()
-        self["fill"]["size"]["relative"] =
-        self["fill"]["size"]["offset"] =
+        size = dict()
+        fill["size"] = object()
+        size["relative"] =
+        size["offset"] =
         """
 
     def apply_to(self, obj):
@@ -341,29 +350,32 @@ class StateGradient(State):
 
         #TODO: Bindings
         """
-        self["fill"] = dict()
-        self["fill"]["smooth"] =
-        self["fill"]["angle"] =
+        fill = dict()
+        self["fill"] = fill
+        fill["smooth"] =
+        fill["angle"] =
 
-        self["fill"]["origin"] = dict()
-        self["fill"]["origin"]["relative"] =
-        self["fill"]["origin"]["offset"] =
+        origin = dict()
+        fill["origin"] = origin
+        origin["relative"] =
+        origin["offset"] =
 
-        self["fill"]["size"] = dict()
-        self["fill"]["size"]["relative"] =
-        self["fill"]["size"]["offset"] =
+        size = dict()
+        fill["size"] = object()
+        size["relative"] =
+        size["offset"] =
         """
 
-        self["gradient"] = dict()
-        type_ = obj.gradient_type_get()
-        if type_ is None:
-            type_ = ""
-        self["gradient"]["type"] = type_
-
+        gradient = dict()
+        self["gradient"] = gradient
+        type = obj.gradient_type_get()
+        if type is None:
+            type = ""
+        gradient["type"] = type
         spec = obj.gradient_spectra_get()
         if spec is None:
             spec = ""
-        self["gradient"]["spectrum"] = spec
+        gradient["spectrum"] = spec
 
     def apply_to(self, obj):
         if obj.part_get().type != edje.EDJE_PART_TYPE_GRADIENT:
@@ -390,9 +402,10 @@ class StateExternal(State):
     def __init__(self, obj):
         State.__init__(self, obj)
 
-        self["params"] = dict()
+        params = dict()
+        self["params"] = params
         for param in obj.external_params_get():
-            self["params"][param.name] = param.value
+            params[param.name] = param.value
 
     def apply_to(self, obj):
         if obj.part_get().type != edje.EDJE_PART_TYPE_EXTERNAL:
