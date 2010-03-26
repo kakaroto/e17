@@ -108,6 +108,18 @@ cdef class Entry(Object):
     def callback_double_clicked_del(self, func):
         self._callback_del("clicked,double", func)
 
+    def callback_focused_add(self, func, *args, **kwargs):
+        self._callback_add("focused", func, *args, **kwargs)
+
+    def callback_focused_del(self, func):
+        self._callback_del("focused", func)
+
+    def callback_unfocused_add(self, func, *args, **kwargs):
+        self._callback_add("unfocused", func, *args, **kwargs)
+
+    def callback_unfocused_del(self, func):
+        self._callback_del("unfocused", func)
+
     def single_line_set(self, single_line):
         elm_entry_single_line_set(self.obj, single_line)
 
