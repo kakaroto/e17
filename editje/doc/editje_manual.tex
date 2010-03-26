@@ -188,7 +188,7 @@ them:
   working on (see region 4, which follows). For the initial
   (``Parts'') mode, this region presents three actions one may take
   for parts in the group: \GUIIcon{``Cut''}, \GUIIcon{``Copy''} and,
-  naturally, `\GUIIcon{``Paste''}. Both cut and copy actions will take
+  naturally, \GUIIcon{``Paste''}. Both cut and copy actions will take
   a snapshot of the selected part, if any (the former one will also
   delete that part). The copy action will insert a \emph{copy} of the
   last cut/copied part into the group. Note that this copy will have
@@ -774,6 +774,9 @@ text parts, called \GUILabel{``text''} (region 2 in figure
 \begin{description}
 \item[\GUIEditable{``text''}:] The actual text to display.
 \item[\GUIEditable{``font''}:] The font to render the text from.
+
+%TODO: introduce the fonts wizard, when it's complete
+
 \item[\GUIEditable{``size''}:] The text size.
 \item[\GUIEditable{``fit''}:] When any of these entries is set to
   ``True'', Editje will resize the text, so that it to fits in it's
@@ -798,8 +801,6 @@ them are display in figure \ref{fig:text_misc}.
 %TODO: check it!
 Textblock parts support inside Editje is still being worked on. It
 should be completed soon.
-
-%TODO: introduce the fonts wizard, when it's bug free
 
 \begin{figure}[h!]
   \centering
@@ -827,65 +828,35 @@ is the \GUILabel{``image''} tab, indicated in region 2.
 \end{figure}
 
 The \GUIEditable{``normal''} property receives a reference to an image
-already inserted in the group. Clicking on that box will raise a
-dialog very similar to the one seen in figure
-\ref{fig:select_an_image}, shown here in figure
-\ref{fig:select_an_image_to_part}.
+already inserted in the file. If there's still no image on it,
+clicking on that box will raise the dialog seen on figure
+\ref{fig:new_img_dialog}.
+
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=1.0\textwidth]{images/new_img_dialog.png}
+  \caption{Image management wizard: adding new image files}
+  \label{fig:new_img_dialog}
+\end{figure}
+
+It's an ordinary file selector which, as you see, can filter for
+image-only extensions. After you navigate through your file system and
+select the desired image file, the \GUIButton{``Add''} button will
+become clickable. Click on it and you'll be taken to a \emph{preview}
+page, like shown in figure \ref{fig:img_preview_dialog}. The preview
+area, marked in red in that figure, is \emph{scrollable} (by clicking
+and dragging over it), because images are displayed there with their
+real sizes.
+
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=1.0\textwidth]{images/img_preview_dialog.png}
+  \caption{Image management wizard: image preview}
+  \label{fig:img_preview_dialog}
+\end{figure}
 
 % TODO: re-use it somehow when describing the new dialog form, *when it's
-% complete
-
-% presents an icon that will lead the
-% user to an \emph{image management} context: it will open a box
-% listing all the images used in the current group. By selecting an
-% image entry on the list on the left, you get a thumbnail preview of
-% it on the right (see figure \ref{fig:select_an_image}). If you click
-% on the \GUIButton{``Add new''} button, a file navigation list takes
-% the place of the previous one. Whenever you select, on the new list,
-% a file of an image, its thumbnail preview will be shown as well (see
-% figure \ref{fig:select_an_image_fs}). Click on the
-% \GUIButton{``Ok''} button, below the file navigation list, and this
-% file will now integrate the list of images of the group (it will be
-% possible to set that image to any image part). If you wish to return
-% to the images on the group list, just hit
-% \GUIButton{``Cancel''}. \GUIButton{``Close''}, naturally, is the
-% button which closes the image management dialog entirely.  Editje's
-% main screen for other modes of operation will appear in their
-% specific sessions.
-
-% \begin{figure}[h!]
-%   \centering
-%   \includegraphics[width=1.0\textwidth]{images/select_an_image.png}
-%   \caption{Image management dialog box}
-%   \label{fig:select_an_image}
-% \end{figure}
-
-% \begin{figure}[h!]
-%   \centering
-%   \includegraphics[width=1.0\textwidth]{images/select_an_image_fs.png}
-%   \caption{Image management dialog box: adding a new image to the
-%     group}
-%   \label{fig:select_an_image_fs}
-% \end{figure}
-
-% \begin{figure}[h!]
-%   \centering
-%   \includegraphics[width=0.95\textwidth]{images/select_an_image_to_part.png}
-%   \caption{Image management dialog box: selecting images to image parts}
-%   \label{fig:select_an_image_to_part}
-% \end{figure}
-
-% Note that, in this new ``Select an image'' dialog, there's an
-% exclusive button: \GUIButton{``Select''}. Clicking on it will bind
-% that image to the part under selection, what we show in figure
-% \ref{fig:image_part}.
-
-% \begin{figure}[h!]
-%   \centering
-%   \includegraphics[width=0.95\textwidth]{images/image_part.png}
-%   \caption{Image part, now bound to image file}
-%   \label{fig:image_part}
-% \end{figure}
+% complete -> deletion is borked, not documenting it completely yet
 
 % TODO: describe them! but when the upper TODO is gone
 We won't describe the other two properties in the new tab, for
@@ -899,8 +870,12 @@ into which other edje objects (other groups) can be inserted (or
 ``swallowed'') \emph{at run time}. Inside Editje, their management is
 practically the same as of rectangle parts.
 
-% TODO: finish, then!
-Group parts support by Editje is being finished, yet.
+Group parts also aggregate child edje objects, but in a ``hardcoded''
+manner: one does it while declaring an interface and that ``hole'''s
+contents \emph{can't} be swapped at run time. Editje, currently,
+displays nicely group parts it finds inside the files it was opened
+with, but its management capabilities on group parts is minimal (just
+moving, resizing, etc) and it won't create \emph{new} group parts.
 
 \subsection{External Widgets: Elementary}
 %FIXME: explain briefly what each kind of widget is/does!
