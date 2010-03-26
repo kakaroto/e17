@@ -181,7 +181,6 @@ echo "  Edje ............: $have_edje"
 echo "  Efreet_Mime .....: $have_efreet_mime"
 echo "  Eina.............: $have_eina"
 echo "  Ethumb...........: $have_ethumb"
-echo "  Libexif .........: $have_exif"
 echo
 echo "Installation Path.........: $prefix"
 echo
