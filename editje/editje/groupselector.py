@@ -157,10 +157,13 @@ class NameEntry(elementary.Box):
 
         scroller.content_set(self._name)
         self._name.show()
-        self._name.focus()
+        #self._name.focus()
 
         self.pack_end(self._entry_bx)
         self.pack_end(self._status_lb)
+
+    def focus(self):
+        self._name.focus()
 
     def _entry_set(self, value):
         self._name.entry_set(value)
@@ -304,6 +307,7 @@ class GroupSelectionWizard(Wizard):
 
     def _goto_new_group(self):
         self.goto("new_group", alt_bg_style=True)
+        self._grp_name_entry.focus()
 
     def _goto_preview(self):
         self._preview.group_set(self._groups_list.file,
