@@ -34,11 +34,7 @@ elm_home_init(void)
 
    handlers = 
      eina_list_append(handlers, 
-                      ecore_event_handler_add(EFREET_EVENT_DESKTOP_LIST_CHANGE, 
-                                              _desktops_list_change, NULL));
-   handlers = 
-     eina_list_append(handlers, 
-                      ecore_event_handler_add(EFREET_EVENT_DESKTOP_CHANGE, 
+                      ecore_event_handler_add(EFREET_EVENT_CACHE_UPDATE, 
                                               _desktops_list_change, NULL));
    handlers = 
      eina_list_append(handlers, 
@@ -146,7 +142,9 @@ static void
 _apps_unpopulate(void) 
 {
 #ifdef ELM_EFREET
-   eina_list_free(desktops);
+   Efreet_Desktop *desktop;
+   EINA_LIST_FREE(desktops, desktop)
+     efreet_desktop_free(desktop);
    desktops = NULL;
 #endif
 }
