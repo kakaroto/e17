@@ -6,7 +6,6 @@
 #endif
 
 #include <Ecore.h>
-#include <Ecore_Data.h>
 #include <Ecore_Evas.h>
 #include <Ecore_File.h>
 #include <Ecore_Getopt.h>

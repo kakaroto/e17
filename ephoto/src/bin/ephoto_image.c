@@ -44,7 +44,7 @@ void ephoto_image_file_set(Evas_Object *obj, const char *file, int w, int h)
 	sd = evas_object_smart_data_get(obj);
 	evas_object_image_load_size_set(sd->image, w, h);
 	evas_object_image_file_set(sd->image, file, NULL);
-	evas_object_image_preload(sd->image, TRUE);
+	evas_object_image_preload(sd->image, EINA_TRUE);
 	ephoto_image_smart_reconfigure(sd);
 }
 
@@ -146,7 +146,7 @@ ephoto_image_smart_add(Evas_Object *obj)
 		return;
 
 	sd->image = evas_object_image_add(em->e);
-	evas_object_image_smooth_scale_set(sd->image, TRUE);
+	evas_object_image_smooth_scale_set(sd->image, EINA_TRUE);
 	sd->x = 0;
 	sd->y = 0;
 	sd->w = 0;
