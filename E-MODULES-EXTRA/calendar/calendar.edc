@@ -79,6 +79,30 @@ collections {
    group {
       name: "modules/calendar/today";
       parts {
+	 part {
+	    name: "e.rect.background";
+	    type: RECT;
+	    mouse_events: 0;
+	    description {
+	       rel1.to: "e.text.label";
+	       rel1.offset: -1 -1;
+	       rel2.to: "e.text.label";
+	       rel2.offset: 1 1;
+	       color: 255 128 128 255;
+	    }
+	 }
+	 part {
+	    name: "e.rect.light";
+	    type: RECT;
+	    mouse_events: 0;
+	    description {
+	       rel1.to: "e.text.label";
+	       rel1.offset: 0 0;
+	       rel2.to: "e.text.label";
+	       rel2.offset: 0 0;
+	       color: 255 195 195 255;
+	    }
+	 }
          part {
             name: "e.text.label";
             type: TEXT;
