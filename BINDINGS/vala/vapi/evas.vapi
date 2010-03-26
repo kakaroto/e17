@@ -280,7 +280,7 @@ namespace Evas
         public void clip_set( Object clip );
         public Object clip_get();
         public void clip_unset( Object clip );
-        public weak Eina.List<Object> clipees_get();
+        public unowned Eina.List<Object> clipees_get();
 
         public void data_set( string key, void* data );
         public void* data_get( string key );
@@ -292,10 +292,10 @@ namespace Evas
         public Map map_get();
 
         public void name_set( string name );
-        public weak string name_get();
+        public unowned string name_get();
         public Object? name_find( string name );
 
-        public weak Canvas evas_get();
+        public unowned Canvas evas_get();
 
         public void focus_set( bool focus );
         public bool focus_get();
@@ -396,7 +396,7 @@ namespace Evas
         public Text( Canvas e );
 
         public void text_set( string text );
-        public weak string text_get();
+        public unowned string text_get();
     }
 
 }

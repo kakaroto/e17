@@ -258,7 +258,7 @@ namespace EcoreEvas
         public Evas.Canvas evas_get();
 
         public void title_set( string t );
-        public weak string title_get();
+        public unowned string title_get();
 
         public void show();
         public void hide();

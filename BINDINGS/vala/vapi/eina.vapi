@@ -60,15 +60,15 @@ namespace Eina
 
         public uint count();
 
-        public weak G data_find(owned G data);
+        public unowned G data_find(owned G data);
         // ???
         public List<G> data_find_list(owned G data);
 
-        public weak G nth(uint n);
+        public unowned G nth(uint n);
         public List<G> nth_list(int n);
 
         [CCode (cname = "eina_list_nth")]
-        public weak G @get(uint n);
+        public unowned G @get(uint n);
 
         public bool contains (G item)
         {
@@ -178,7 +178,7 @@ namespace Eina
 
         public void foreach(Each callback, void* fdata);
         [CCode (cname = "eina_iterator_container_get")]
-        public weak G get();
+        public unowned G get();
         [CCode (cname="eina_iterator_next")]
         public bool get_next(ref G next);
         [CCode (cname="eflvala_eina_iterator_next")]

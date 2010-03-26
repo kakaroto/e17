@@ -773,9 +773,9 @@ public class List : Elm.Object
     public void horizontal_mode_set( ListMode mode );
     public ListMode horizontal_mode_get();
     public void always_select_mode_set( bool always_select );
-    public weak Eina.List<ListItem> items_get();
-    public weak ListItem selected_item_get();
-    public weak Eina.List<ListItem> selected_items_get();
+    public unowned Eina.List<ListItem> items_get();
+    public unowned ListItem selected_item_get();
+    public unowned Eina.List<ListItem> selected_items_get();
 }
 
 
