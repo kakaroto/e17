@@ -1,0 +1,806 @@
+#define KEYFRAME_ADD(_anim, _kf, ...)                             \
+description {                                                     \
+   state: "@"_anim"@"_kf"0" 0.0;                                  \
+   inherit: "default" 0.0;                                        \
+   __VA_ARGS__                                                    \
+}
+#define KEYFRAME_PROG_ADD(_anim, _kf, _after, _time, ...)         \
+program {                                                         \
+   name: "@"_anim"@"_kf;                                          \
+   __VA_ARGS__                                                    \
+   action: STATE_SET "@"_anim"@"_kf 0.0;                          \
+   transition: LINEAR _time;                                      \
+   target: "bg";                                                  \
+   target: "btn.on";                                              \
+   target: "btn.off";                                             \
+   target: "scr.bg";                                              \
+   target: "scr.border";                                          \
+   target: "scr.content";                                         \
+   target: "marker1";                                             \
+   target: "marker2";                                             \
+   target: "marker3";                                             \
+   target: "marker4";                                             \
+   target: "marker5";                                             \
+   target: "marker6";                                             \
+   target: "label.on";                                            \
+   target: "label.off";                                           \
+   target: "hot.clipper";                                         \
+   target: "hot";                                                 \
+   after: "@"_anim"@"_after;                                      \
+}
+
+collections {
+   group {
+      name: "main";
+
+      parts {
+         part {
+            name: "bg";
+            type: RECT;
+            mouse_events: 0;
+            description {
+               state: "default" 0.0;
+               color: 255 255 255 255;
+               rel1.relative: 0.0 0.0;
+               rel2.relative: 1.0 1.0;
+            }
+            KEYFRAME_ADD("level1.on", "0.0")
+            KEYFRAME_ADD("level1.on", "0.1")
+            KEYFRAME_ADD("level1.on", "0.2")
+            KEYFRAME_ADD("level1.on", "0.3")
+            KEYFRAME_ADD("level1.on", "0.4")
+            KEYFRAME_ADD("level1.on", "0.5")
+            KEYFRAME_ADD("level2.on", "0.0")
+            KEYFRAME_ADD("level2.on", "0.2")
+            KEYFRAME_ADD("level2.on", "0.4")
+            KEYFRAME_ADD("level2.on", "0.6")
+            KEYFRAME_ADD("level2.on", "0.8")
+            KEYFRAME_ADD("level3.on", "0.0")
+            KEYFRAME_ADD("level3.on", "0.4")
+            KEYFRAME_ADD("level3.on", "0.8")
+            KEYFRAME_ADD("level3.on", "1.0")
+         }
+         part {
+            name: "btn.on";
+            type: RECT;
+            mouse_events: 1;
+            description {
+               state: "default" 0.0;
+               color: 70 200 70 255;
+               rel1 {
+                  to: "bg";
+                  relative: 0.1 0.95;
+                  offset: 0 -25;
+               }
+               rel2 {
+                  to: "bg";
+                  relative: 0.4 0.95;
+                  offset: -1 -1;
+               }
+            }
+            KEYFRAME_ADD("level1.on", "0.0")
+            KEYFRAME_ADD("level1.on", "0.1")
+            KEYFRAME_ADD("level1.on", "0.2")
+            KEYFRAME_ADD("level1.on", "0.3")
+            KEYFRAME_ADD("level1.on", "0.4")
+            KEYFRAME_ADD("level1.on", "0.5")
+            KEYFRAME_ADD("level2.on", "0.0")
+            KEYFRAME_ADD("level2.on", "0.2")
+            KEYFRAME_ADD("level2.on", "0.4")
+            KEYFRAME_ADD("level2.on", "0.6")
+            KEYFRAME_ADD("level2.on", "0.8")
+            KEYFRAME_ADD("level3.on", "0.0")
+            KEYFRAME_ADD("level3.on", "0.4")
+            KEYFRAME_ADD("level3.on", "0.8")
+            KEYFRAME_ADD("level3.on", "1.0")
+         }
+         part {
+            name: "btn.off";
+            type: RECT;
+            mouse_events: 1;
+            description {
+               state: "default" 0.0;
+               color: 200 70 70 255;
+               rel1 {
+                  to: "bg";
+                  relative: 0.6 0.95;
+                  offset: 0 -25;
+               }
+               rel2 {
+                  to: "bg";
+                  relative: 0.9 0.95;
+                  offset: -1 -1;
+               }
+            }
+            KEYFRAME_ADD("level1.on", "0.0")
+            KEYFRAME_ADD("level1.on", "0.1")
+            KEYFRAME_ADD("level1.on", "0.2")
+            KEYFRAME_ADD("level1.on", "0.3")
+            KEYFRAME_ADD("level1.on", "0.4")
+            KEYFRAME_ADD("level1.on", "0.5")
+            KEYFRAME_ADD("level2.on", "0.0")
+            KEYFRAME_ADD("level2.on", "0.2")
+            KEYFRAME_ADD("level2.on", "0.4")
+            KEYFRAME_ADD("level2.on", "0.6")
+            KEYFRAME_ADD("level2.on", "0.8")
+            KEYFRAME_ADD("level3.on", "0.0")
+            KEYFRAME_ADD("level3.on", "0.4")
+            KEYFRAME_ADD("level3.on", "0.8")
+            KEYFRAME_ADD("level3.on", "1.0")
+         }
+         part {
+            name: "scr.bg";
+            type: RECT;
+            mouse_events: 0;
+            description {
+               state: "default" 0.0;
+               color: 0 0 0 255;
+               rel1 {
+                  to: "bg";
+                  relative: 0.0 0.0;
+                  offset: 1 1;
+               }
+               rel2 {
+                  to: "bg";
+                  relative: 1.0 0.9;
+                  offset: -2 -25;
+               }
+            }
+            KEYFRAME_ADD("level1.on", "0.0")
+            KEYFRAME_ADD("level1.on", "0.1")
+            KEYFRAME_ADD("level1.on", "0.2")
+            KEYFRAME_ADD("level1.on", "0.3")
+            KEYFRAME_ADD("level1.on", "0.4")
+            KEYFRAME_ADD("level1.on", "0.5")
+            KEYFRAME_ADD("level2.on", "0.0")
+            KEYFRAME_ADD("level2.on", "0.2")
+            KEYFRAME_ADD("level2.on", "0.4")
+            KEYFRAME_ADD("level2.on", "0.6")
+            KEYFRAME_ADD("level2.on", "0.8")
+            KEYFRAME_ADD("level3.on", "0.0")
+            KEYFRAME_ADD("level3.on", "0.4")
+            KEYFRAME_ADD("level3.on", "0.8")
+            KEYFRAME_ADD("level3.on", "1.0")
+         }
+         part {
+            name: "scr.border";
+            type: RECT;
+            mouse_events: 0;
+            description {
+               state: "default" 0.0;
+               color: 240 240 240 255;
+               rel1 {
+                  to: "scr.bg";
+                  relative: 0.0 0.0;
+                  offset: 1 1;
+               }
+               rel2 {
+                  to: "scr.bg";
+                  relative: 1.0 1.0;
+                  offset: -2 -2;
+               }
+            }
+            KEYFRAME_ADD("level1.on", "0.0")
+            KEYFRAME_ADD("level1.on", "0.1")
+            KEYFRAME_ADD("level1.on", "0.2")
+            KEYFRAME_ADD("level1.on", "0.3")
+            KEYFRAME_ADD("level1.on", "0.4")
+            KEYFRAME_ADD("level1.on", "0.5")
+            KEYFRAME_ADD("level2.on", "0.0")
+            KEYFRAME_ADD("level2.on", "0.2")
+            KEYFRAME_ADD("level2.on", "0.4")
+            KEYFRAME_ADD("level2.on", "0.6")
+            KEYFRAME_ADD("level2.on", "0.8")
+            KEYFRAME_ADD("level3.on", "0.0")
+            KEYFRAME_ADD("level3.on", "0.4")
+            KEYFRAME_ADD("level3.on", "0.8")
+            KEYFRAME_ADD("level3.on", "1.0")
+         }
+         part {
+            name: "scr.content";
+            type: RECT;
+            mouse_events: 0;
+            description {
+               state: "default" 0.0;
+               color: 0 0 0 255;
+               rel1 {
+                  to: "scr.border";
+                  relative: 0.0 0.0;
+                  offset: 2 2;
+               }
+               rel2 {
+                  to: "scr.border";
+                  relative: 1.0 1.0;
+                  offset: -3 -3;
+               }
+            }
+            KEYFRAME_ADD("level1.on", "0.0")
+            KEYFRAME_ADD("level1.on", "0.1")
+            KEYFRAME_ADD("level1.on", "0.2")
+            KEYFRAME_ADD("level1.on", "0.3")
+            KEYFRAME_ADD("level1.on", "0.4")
+            KEYFRAME_ADD("level1.on", "0.5")
+            KEYFRAME_ADD("level2.on", "0.0")
+            KEYFRAME_ADD("level2.on", "0.2")
+            KEYFRAME_ADD("level2.on", "0.4")
+            KEYFRAME_ADD("level2.on", "0.6")
+            KEYFRAME_ADD("level2.on", "0.8")
+            KEYFRAME_ADD("level3.on", "0.0")
+            KEYFRAME_ADD("level3.on", "0.4")
+            KEYFRAME_ADD("level3.on", "0.8")
+            KEYFRAME_ADD("level3.on", "1.0")
+         }
+         part {
+            name: "marker1";
+            type: RECT;
+            mouse_events: 0;
+            description {
+               state: "default" 0.0;
+               color: 10 10 10 255;
+               rel1 {
+                  to: "scr.content";
+                  relative: 0.1 0.7;
+                  offset: 0 0;
+               }
+               rel2 {
+                  to: "scr.content";
+                  relative: 0.3 0.9;
+                  offset: -1 -1;
+               }
+            }
+            KEYFRAME_ADD("level1.on", "0.0")
+            KEYFRAME_ADD("level1.on", "0.1",
+            color: 0 100 0 255;
+            )
+            KEYFRAME_ADD("level1.on", "0.2",
+            color: 0 200 0 255;
+            )
+            KEYFRAME_ADD("level1.on", "0.3",
+            color: 0 255 0 255;
+            )
+            KEYFRAME_ADD("level1.on", "0.4",
+            color: 0 255 0 255;
+            )
+            KEYFRAME_ADD("level1.on", "0.5",
+            color: 0 255 0 255;
+            )
+            KEYFRAME_ADD("level2.on", "0.0",
+            color: 0 255 0 255;
+            )
+            KEYFRAME_ADD("level2.on", "0.2",
+            color: 0 255 0 255;
+            )
+            KEYFRAME_ADD("level2.on", "0.4",
+            color: 0 255 0 255;
+            )
+            KEYFRAME_ADD("level2.on", "0.6",
+            color: 0 255 0 255;
+            )
+            KEYFRAME_ADD("level2.on", "0.8",
+            color: 0 255 0 255;
+            )
+            KEYFRAME_ADD("level3.on", "0.0",
+            color: 0 255 0 255;
+            )
+            KEYFRAME_ADD("level3.on", "0.4",
+            color: 0 255 0 255;
+            )
+            KEYFRAME_ADD("level3.on", "0.8",
+            color: 0 255 0 255;
+            )
+            KEYFRAME_ADD("level3.on", "1.0",
+            color: 0 255 0 255;
+            )
+         }
+         part {
+            name: "marker2";
+            type: RECT;
+            mouse_events: 0;
+            description {
+               state: "default" 0.0;
+               color: 10 10 10 255;
+               rel1 {
+                  to: "scr.content";
+                  relative: 0.4 0.7;
+                  offset: 0 0;
+               }
+               rel2 {
+                  to: "scr.content";
+                  relative: 0.6 0.9;
+                  offset: -1 -1;
+               }
+            }
+            KEYFRAME_ADD("level1.on", "0.0")
+            KEYFRAME_ADD("level1.on", "0.1")
+            KEYFRAME_ADD("level1.on", "0.2",
+            color: 0 100 0 255;
+            )
+            KEYFRAME_ADD("level1.on", "0.3",
+            color: 0 200 0 255;
+            )
+            KEYFRAME_ADD("level1.on", "0.4",
+            color: 0 255 0 255;
+            )
+            KEYFRAME_ADD("level1.on", "0.5",
+            color: 0 255 0 255;
+            )
+            KEYFRAME_ADD("level2.on", "0.0",
+            color: 0 255 0 255;
+            )
+            KEYFRAME_ADD("level2.on", "0.2",
+            color: 0 255 0 255;
+            )
+            KEYFRAME_ADD("level2.on", "0.4",
+            color: 0 255 0 255;
+            )
+            KEYFRAME_ADD("level2.on", "0.6",
+            color: 0 255 0 255;
+            )
+            KEYFRAME_ADD("level2.on", "0.8",
+            color: 0 255 0 255;
+            )
+            KEYFRAME_ADD("level3.on", "0.0",
+            color: 0 255 0 255;
+            )
+            KEYFRAME_ADD("level3.on", "0.4",
+            color: 0 255 0 255;
+            )
+            KEYFRAME_ADD("level3.on", "0.8",
+            color: 0 255 0 255;
+            )
+            KEYFRAME_ADD("level3.on", "1.0",
+            color: 0 255 0 255;
+            )
+         }
+         part {
+            name: "marker3";
+            type: RECT;
+            mouse_events: 0;
+            description {
+               state: "default" 0.0;
+               color: 10 10 10 255;
+               rel1 {
+                  to: "scr.content";
+                  relative: 0.7 0.7;
+                  offset: 0 0;
+               }
+               rel2 {
+                  to: "scr.content";
+                  relative: 0.9 0.9;
+                  offset: -1 -1;
+               }
+            }
+            KEYFRAME_ADD("level1.on", "0.0")
+            KEYFRAME_ADD("level1.on", "0.1")
+            KEYFRAME_ADD("level1.on", "0.2")
+            KEYFRAME_ADD("level1.on", "0.3",
+            color: 0 100 0 255;
+            )
+            KEYFRAME_ADD("level1.on", "0.4",
+            color: 0 200 0 255;
+            )
+            KEYFRAME_ADD("level1.on", "0.5",
+            color: 0 255 0 255;
+            )
+            KEYFRAME_ADD("level2.on", "0.0",
+            color: 0 255 0 255;
+            )
+            KEYFRAME_ADD("level2.on", "0.2",
+            color: 0 255 0 255;
+            )
+            KEYFRAME_ADD("level2.on", "0.4",
+            color: 0 255 0 255;
+            )
+            KEYFRAME_ADD("level2.on", "0.6",
+            color: 0 255 0 255;
+            )
+            KEYFRAME_ADD("level2.on", "0.8",
+            color: 0 255 0 255;
+            )
+            KEYFRAME_ADD("level3.on", "0.0",
+            color: 0 255 0 255;
+            )
+            KEYFRAME_ADD("level3.on", "0.4",
+            color: 0 255 0 255;
+            )
+            KEYFRAME_ADD("level3.on", "0.8",
+            color: 0 255 0 255;
+            )
+            KEYFRAME_ADD("level3.on", "1.0",
+            color: 0 255 0 255;
+            )
+         }
+         part {
+            name: "marker4";
+            type: RECT;
+            mouse_events: 0;
+            description {
+               state: "default" 0.0;
+               color: 10 10 10 255;
+               rel1 {
+                  to: "scr.content";
+                  relative: 0.4 0.4;
+                  offset: 0 0;
+               }
+               rel2 {
+                  to: "scr.content";
+                  relative: 0.6 0.6;
+                  offset: -1 -1;
+               }
+            }
+            KEYFRAME_ADD("level1.on", "0.0")
+            KEYFRAME_ADD("level1.on", "0.1")
+            KEYFRAME_ADD("level1.on", "0.2")
+            KEYFRAME_ADD("level1.on", "0.3")
+            KEYFRAME_ADD("level1.on", "0.4")
+            KEYFRAME_ADD("level1.on", "0.5")
+            KEYFRAME_ADD("level2.on", "0.0")
+            KEYFRAME_ADD("level2.on", "0.2",
+            color: 100 100 0 255;
+            )
+            KEYFRAME_ADD("level2.on", "0.4",
+            color: 200 200 0 255;
+            )
+            KEYFRAME_ADD("level2.on", "0.6",
+            color: 255 255 0 255;
+            )
+            KEYFRAME_ADD("level2.on", "0.8",
+            color: 255 255 0 255;
+            )
+            KEYFRAME_ADD("level3.on", "0.0",
+            color: 255 255 0 255;
+            )
+            KEYFRAME_ADD("level3.on", "0.4",
+            color: 255 255 0 255;
+            )
+            KEYFRAME_ADD("level3.on", "0.8",
+            color: 255 255 0 255;
+            )
+            KEYFRAME_ADD("level3.on", "1.0",
+            color: 255 255 0 255;
+            )
+         }
+         part {
+            name: "marker5";
+            type: RECT;
+            mouse_events: 0;
+            description {
+               state: "default" 0.0;
+               color: 10 10 10 255;
+               rel1 {
+                  to: "scr.content";
+                  relative: 0.7 0.4;
+                  offset: 0 0;
+               }
+               rel2 {
+                  to: "scr.content";
+                  relative: 0.9 0.6;
+                  offset: -1 -1;
+               }
+            }
+            KEYFRAME_ADD("level1.on", "0.0")
+            KEYFRAME_ADD("level1.on", "0.1")
+            KEYFRAME_ADD("level1.on", "0.2")
+            KEYFRAME_ADD("level1.on", "0.3")
+            KEYFRAME_ADD("level1.on", "0.4")
+            KEYFRAME_ADD("level1.on", "0.5")
+            KEYFRAME_ADD("level2.on", "0.0")
+            KEYFRAME_ADD("level2.on", "0.2")
+            KEYFRAME_ADD("level2.on", "0.4",
+            color: 100 100 0 255;
+            )
+            KEYFRAME_ADD("level2.on", "0.6",
+            color: 200 200 0 255;
+            )
+            KEYFRAME_ADD("level2.on", "0.8",
+            color: 255 255 0 255;
+            )
+            KEYFRAME_ADD("level3.on", "0.0",
+            color: 255 255 0 255;
+            )
+            KEYFRAME_ADD("level3.on", "0.4",
+            color: 255 255 0 255;
+            )
+            KEYFRAME_ADD("level3.on", "0.8",
+            color: 255 255 0 255;
+            )
+            KEYFRAME_ADD("level3.on", "1.0",
+            color: 255 255 0 255;
+            )
+         }
+         part {
+            name: "marker6";
+            type: RECT;
+            mouse_events: 0;
+            description {
+               state: "default" 0.0;
+               color: 10 10 10 255;
+               rel1 {
+                  to: "scr.content";
+                  relative: 0.7 0.1;
+                  offset: 0 0;
+               }
+               rel2 {
+                  to: "scr.content";
+                  relative: 0.9 0.3;
+                  offset: -1 -1;
+               }
+            }
+            KEYFRAME_ADD("level1.on", "0.0")
+            KEYFRAME_ADD("level1.on", "0.1")
+            KEYFRAME_ADD("level1.on", "0.2")
+            KEYFRAME_ADD("level1.on", "0.3")
+            KEYFRAME_ADD("level1.on", "0.4")
+            KEYFRAME_ADD("level1.on", "0.5")
+            KEYFRAME_ADD("level2.on", "0.0")
+            KEYFRAME_ADD("level2.on", "0.2")
+            KEYFRAME_ADD("level2.on", "0.4")
+            KEYFRAME_ADD("level2.on", "0.6")
+            KEYFRAME_ADD("level2.on", "0.8")
+            KEYFRAME_ADD("level3.on", "0.0")
+            KEYFRAME_ADD("level3.on", "0.4",
+            color: 100 0 0 255;
+            )
+            KEYFRAME_ADD("level3.on", "0.8",
+            color: 200 0 0 255;
+            )
+            KEYFRAME_ADD("level3.on", "1.0",
+            color: 255 0 0 255;
+            )
+         }
+         part {
+            name: "label.on";
+            type: TEXT;
+            mouse_events: 0;
+            repeat_events: 1;
+            description {
+               state: "default" 0.0;
+               color: 0 0 0 255;
+               rel1 {
+                  to: "btn.on";
+                  relative: 0.0 0.0;
+                  offset: 0 0;
+               }
+               rel2 {
+                  to: "btn.on";
+                  relative: 1.0 1.0;
+                  offset: -1 -1;
+               }
+               text {
+                  text: "Turn on";
+                  font: "Sans:style=Bold";
+                  size: 12;
+               }
+            }
+            KEYFRAME_ADD("level1.on", "0.0")
+            KEYFRAME_ADD("level1.on", "0.1")
+            KEYFRAME_ADD("level1.on", "0.2")
+            KEYFRAME_ADD("level1.on", "0.3")
+            KEYFRAME_ADD("level1.on", "0.4")
+            KEYFRAME_ADD("level1.on", "0.5")
+            KEYFRAME_ADD("level2.on", "0.0")
+            KEYFRAME_ADD("level2.on", "0.2")
+            KEYFRAME_ADD("level2.on", "0.4")
+            KEYFRAME_ADD("level2.on", "0.6")
+            KEYFRAME_ADD("level2.on", "0.8")
+            KEYFRAME_ADD("level3.on", "0.0")
+            KEYFRAME_ADD("level3.on", "0.4")
+            KEYFRAME_ADD("level3.on", "0.8")
+            KEYFRAME_ADD("level3.on", "1.0")
+         }
+         part {
+            name: "label.off";
+            type: TEXT;
+            mouse_events: 0;
+            repeat_events: 1;
+            description {
+               state: "default" 0.0;
+               color: 0 0 0 255;
+               rel1 {
+                  to: "btn.off";
+                  relative: 0.0 0.0;
+                  offset: 0 0;
+               }
+               rel2 {
+                  to: "btn.off";
+                  relative: 1.0 1.0;
+                  offset: -1 -1;
+               }
+               text {
+                  text: "Turn off";
+                  font: "Sans:style=Bold";
+                  size: 12;
+               }
+            }
+            KEYFRAME_ADD("level1.on", "0.0")
+            KEYFRAME_ADD("level1.on", "0.1")
+            KEYFRAME_ADD("level1.on", "0.2")
+            KEYFRAME_ADD("level1.on", "0.3")
+            KEYFRAME_ADD("level1.on", "0.4")
+            KEYFRAME_ADD("level1.on", "0.5")
+            KEYFRAME_ADD("level2.on", "0.0")
+            KEYFRAME_ADD("level2.on", "0.2")
+            KEYFRAME_ADD("level2.on", "0.4")
+            KEYFRAME_ADD("level2.on", "0.6")
+            KEYFRAME_ADD("level2.on", "0.8")
+            KEYFRAME_ADD("level3.on", "0.0")
+            KEYFRAME_ADD("level3.on", "0.4")
+            KEYFRAME_ADD("level3.on", "0.8")
+            KEYFRAME_ADD("level3.on", "1.0")
+         }
+         part {
+            name: "hot.clipper";
+            type: RECT;
+            mouse_events: 0;
+            description {
+               state: "default" 0.0;
+               color: 255 255 255 255;
+               rel1 {
+                  to: "scr.content";
+                  relative: 0.1 0.3;
+                  offset: 0 0;
+               }
+               rel2 {
+                  to: "scr.content";
+                  relative: 0.6 0.3;
+                  offset: -1 -1;
+               }
+            }
+            KEYFRAME_ADD("level1.on", "0.0")
+            KEYFRAME_ADD("level1.on", "0.1")
+            KEYFRAME_ADD("level1.on", "0.2")
+            KEYFRAME_ADD("level1.on", "0.3")
+            KEYFRAME_ADD("level1.on", "0.4")
+            KEYFRAME_ADD("level1.on", "0.5")
+            KEYFRAME_ADD("level2.on", "0.0")
+            KEYFRAME_ADD("level2.on", "0.2")
+            KEYFRAME_ADD("level2.on", "0.4")
+            KEYFRAME_ADD("level2.on", "0.6")
+            KEYFRAME_ADD("level2.on", "0.8")
+            KEYFRAME_ADD("level3.on", "0.0")
+            KEYFRAME_ADD("level3.on", "0.4",
+            rel1.relative: 0.1 0.2;
+            )
+            KEYFRAME_ADD("level3.on", "0.8",
+            rel1.relative: 0.1 0.1;
+            )
+            KEYFRAME_ADD("level3.on", "1.0",
+            rel1.relative: 0.1 0.1;
+            )
+         }
+         part {
+            name: "hot";
+            type: TEXT;
+            mouse_events: 0;
+            clip_to: "hot.clipper";
+            effect: GLOW;
+            description {
+               state: "default" 0.0;
+               color: 255 0 0 255;
+               color2: 200 0 0 255;
+               color3: 0 0 0 128;
+               rel1 {
+                  to: "scr.content";
+                  relative: 0.1 0.1;
+                  offset: 0 0;
+               }
+               rel2 {
+                  to: "scr.content";
+                  relative: 0.6. 0.3;
+                  offset: -1 -1;
+               }
+               text {
+                  text: "HOT!";
+                  font: "Sans";
+                  size: 16;
+                  fit: 1 0;
+               }
+            }
+            KEYFRAME_ADD("level1.on", "0.0")
+            KEYFRAME_ADD("level1.on", "0.1")
+            KEYFRAME_ADD("level1.on", "0.2")
+            KEYFRAME_ADD("level1.on", "0.3")
+            KEYFRAME_ADD("level1.on", "0.4")
+            KEYFRAME_ADD("level1.on", "0.5")
+            KEYFRAME_ADD("level2.on", "0.0")
+            KEYFRAME_ADD("level2.on", "0.2")
+            KEYFRAME_ADD("level2.on", "0.4")
+            KEYFRAME_ADD("level2.on", "0.6")
+            KEYFRAME_ADD("level2.on", "0.8")
+            KEYFRAME_ADD("level3.on", "0.0")
+            KEYFRAME_ADD("level3.on", "0.4")
+            KEYFRAME_ADD("level3.on", "0.8")
+            KEYFRAME_ADD("level3.on", "1.0")
+         }
+      }
+      programs {
+         program {
+            name: "@level1.on@end";
+            action: SIGNAL_EMIT "animation,end" "level1.on";
+         }
+         program {
+            name: "@level1.on@stop";
+            action: ACTION_STOP;
+            signal: "animation,stop";
+            source: "level1.on";
+            target: "@level1.on@0.00";
+            target: "@level1.on@0.10";
+            target: "@level1.on@0.20";
+            target: "@level1.on@0.30";
+            target: "@level1.on@0.40";
+            target: "@level1.on@0.50";
+            target: "@level1.on@end";
+         }
+         KEYFRAME_PROG_ADD("level1.on", "0.00", "0.10", 0.0,
+         signal: "animation,play";
+         source: "level1.on";)
+         KEYFRAME_PROG_ADD("level1.on", "0.10", "0.20", 0.1)
+         KEYFRAME_PROG_ADD("level1.on", "0.20", "0.30", 0.1)
+         KEYFRAME_PROG_ADD("level1.on", "0.30", "0.40", 0.1)
+         KEYFRAME_PROG_ADD("level1.on", "0.40", "0.50", 0.1)
+         KEYFRAME_PROG_ADD("level1.on", "0.50", "end", 0.1)
+         program {
+            name: "@level2.on@end";
+            action: SIGNAL_EMIT "animation,end" "level2.on";
+         }
+         program {
+            name: "@level2.on@stop";
+            action: ACTION_STOP;
+            signal: "animation,stop";
+            source: "level2.on";
+            target: "@level2.on@0.00";
+            target: "@level2.on@0.20";
+            target: "@level2.on@0.40";
+            target: "@level2.on@0.60";
+            target: "@level2.on@0.80";
+            target: "@level2.on@end";
+         }
+         KEYFRAME_PROG_ADD("level2.on", "0.00", "0.20", 0.0,
+         signal: "animation,play";
+         source: "level2.on";)
+         KEYFRAME_PROG_ADD("level2.on", "0.20", "0.40", 0.2)
+         KEYFRAME_PROG_ADD("level2.on", "0.40", "0.60", 0.2)
+         KEYFRAME_PROG_ADD("level2.on", "0.60", "0.80", 0.2)
+         KEYFRAME_PROG_ADD("level2.on", "0.80", "end", 0.2)
+         program {
+            name: "@level3.on@end";
+            action: SIGNAL_EMIT "animation,end" "level3.on";
+         }
+         program {
+            name: "@level3.on@stop";
+            action: ACTION_STOP;
+            signal: "animation,stop";
+            source: "level3.on";
+            target: "@level3.on@0.00";
+            target: "@level3.on@0.40";
+            target: "@level3.on@0.80";
+            target: "@level3.on@1.00";
+            target: "@level3.on@end";
+         }
+         KEYFRAME_PROG_ADD("level3.on", "0.00", "0.40", 0.0,
+         signal: "animation,play";
+         source: "level3.on";)
+         KEYFRAME_PROG_ADD("level3.on", "0.40", "0.80", 0.4)
+         KEYFRAME_PROG_ADD("level3.on", "0.80", "1.00", 0.4)
+         KEYFRAME_PROG_ADD("level3.on", "1.00", "end", 0.2)
+         program {
+            name: "turn.on";
+            signal: "mouse,clicked,1";
+            source: "btn.on";
+            after: "@level1.on@0.00";
+         }
+         program {
+            name: "turn.on.2";
+            signal: "animation,end";
+            source: "level1.on";
+            action: SIGNAL_EMIT "animation,play" "level2.on";
+         }
+         program {
+            name: "turn.on.3";
+            signal: "animation,end";
+            source: "level2.on";
+            action: SIGNAL_EMIT "animation,play" "level3.on";
+         }
+      }
+   }
+}
