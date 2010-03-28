@@ -621,7 +621,7 @@ static void on_handle_group(void *data, Evas_Object *obj, void *event_info) {
 
 static void on_message_anchor_clicked(void *data, Evas_Object *obj, void *event_info) {
 	Elm_Entry_Anchorblock_Info * info = (Elm_Entry_Anchorblock_Info*)event_info;
-	char *url=NULL, *frame_label=NULL;
+	char *url=NULL, *frame_label=NULL, screen_name[16];
 	Evas_Object *box=NULL, *button=NULL, *buttons=NULL, *frame=NULL, *entry=NULL, *bubble=(Evas_Object*)data;
 	int res = 0;
 
@@ -646,7 +646,9 @@ static void on_message_anchor_clicked(void *data, Evas_Object *obj, void *event_
 					evas_object_size_hint_weight_set(frame, 1, 1);
 					evas_object_size_hint_align_set(frame, -1, -1);
 
-					res = asprintf(&frame_label, _("%s posted this link..."), elm_bubble_label_get(bubble));
+					snprintf(screen_name, 16, "%s", elm_bubble_label_get(bubble));
+					
+					res = asprintf(&frame_label, _("%s posted this link..."), screen_name);
 					if(res != -1) {
 						elm_frame_label_set(frame, frame_label);
 						free(frame_label);
@@ -902,7 +904,7 @@ static int add_status(void *data, int argc, char **argv, char **azColName) {
 
 			if(!re_link)
 				re_link = g_regex_new("([a-z]+://.*?)(\\s|$)", 0, 0, &re_err);
-			tmp = g_regex_replace(re_link, status_message, -1, 0, "<a href='\\2'>[link]</a>\\3", 0, &re_err);
+			tmp = g_regex_replace(re_link, status_message, -1, 0, "<a href='\\1'>[link]</a>\\2", 0, &re_err);
 			if(tmp) {
 				free(status_message);
 				status_message = tmp;
