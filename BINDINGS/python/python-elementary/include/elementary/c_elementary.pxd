@@ -328,7 +328,10 @@ cdef extern from "Elementary.h":
     # Table object
     evas.c_evas.Evas_Object *elm_table_add(evas.c_evas.Evas_Object *parent)
     void elm_table_homogenous_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool homogenous)
+    void elm_table_padding_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Evas_Coord horizontal, evas.c_evas.Evas_Coord vertical)
     void elm_table_pack(evas.c_evas.Evas_Object *obj, evas.c_evas.Evas_Object *subobj, int x, int y, int w, int h)
+    void elm_table_unpack(evas.c_evas.Evas_Object *obj, evas.c_evas.Evas_Object *subobj)
+    void elm_table_clear(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool clear)
 
     # Clock object
     evas.c_evas.Evas_Object *elm_clock_add(evas.c_evas.Evas_Object *parent)

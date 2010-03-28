@@ -24,6 +24,15 @@ cdef class Table(Object):
     def homogenous_set(self, homogenous):
         elm_table_homogenous_set(self.obj, homogenous)
 
+    def padding_set(self, horizontal, vertical):
+        elm_table_padding_set(self.obj, horizontal, vertical)
+
     def pack(self, c_evas.Object subobj, x, y, w, h):
         elm_table_pack(self.obj, subobj.obj, x, y, w, h)
+
+    def unpack(self, c_evas.Object subobj):
+        elm_table_unpack(self.obj, subobj.obj)
+
+    def clear(self, clear):
+        elm_table_clear(self.obj, clear)
 
