@@ -79,6 +79,7 @@ char * url_post = NULL;
 char * url_friends = NULL;
 extern char * browsers[];
 extern char * browserNames[];
+char * follow_user=NULL;
 
 extern Settings *settings;
 
@@ -380,7 +381,6 @@ void ed_statusnet_user_follow(int id, char *screen_name, char *password, char *p
 }
 
 static int ed_user_follow(void *data, int argc, char **argv, char **azColName) {
-	ub_Bubble * bubble = (ub_Bubble*)data;
 	char *screen_name=NULL, *password=NULL, *proto=NULL, *domain=NULL, *base_url=NULL;
 	int port=0, id=0;
 
@@ -404,10 +404,12 @@ static int ed_user_follow(void *data, int argc, char **argv, char **azColName) {
 	id = atoi(argv[7]);
 
 	switch(atoi(argv[2])) {
-		case ACCOUNT_TYPE_TWITTER: { ed_twitter_user_follow(id, screen_name, password, proto, domain, port, base_url, bubble->screen_name); break; }
+		case ACCOUNT_TYPE_TWITTER: { ed_twitter_user_follow(id, screen_name, password, proto, domain, port, base_url, follow_user); break; }
 		case ACCOUNT_TYPE_STATUSNET:
-		default: { ed_statusnet_user_follow(id, screen_name, password, proto, domain, port, base_url, bubble->screen_name); break; }
+		default: { ed_statusnet_user_follow(id, screen_name, password, proto, domain, port, base_url, follow_user); break; }
 	}
+
+	follow_user=NULL;
 
 	return(0);
 }
@@ -420,7 +422,7 @@ static void on_user_follow(void *data, Evas_Object *obj, void *event_info) {
 
 	sqlite_res = asprintf(&query, "SELECT name,password,type,proto,domain,port,base_url,id FROM accounts WHERE enabled = 1 and id = %d;", bubble->account_id);
 	if(sqlite_res != -1) {
-		sqlite_res = sqlite3_exec(ed_DB, query, ed_user_follow, data, &db_err);
+		sqlite_res = sqlite3_exec(ed_DB, query, ed_user_follow, NULL, &db_err);
 		if(sqlite_res != 0) {
 			printf("Can't run %s: %d => %s\n", query, sqlite_res, db_err);
 		}
@@ -433,7 +435,6 @@ void ed_statusnet_user_abandon(int id, char *screen_name, char *password, char *
 }
 
 static int ed_user_abandon(void *data, int argc, char **argv, char **azColName) {
-	ub_Bubble * bubble = (ub_Bubble*)data;
 	char *screen_name=NULL, *password=NULL, *proto=NULL, *domain=NULL, *base_url=NULL;
 	int port=0, id=0;
 
@@ -457,10 +458,12 @@ static int ed_user_abandon(void *data, int argc, char **argv, char **azColName) 
 	id = atoi(argv[7]);
 
 	switch(atoi(argv[2])) {
-		case ACCOUNT_TYPE_TWITTER: { ed_twitter_user_abandon(id, screen_name, password, proto, domain, port, base_url, bubble->screen_name); break; }
+		case ACCOUNT_TYPE_TWITTER: { ed_twitter_user_abandon(id, screen_name, password, proto, domain, port, base_url, follow_user); break; }
 		case ACCOUNT_TYPE_STATUSNET:
-		default: { ed_statusnet_user_abandon(id, screen_name, password, proto, domain, port, base_url, bubble->screen_name); break; }
+		default: { ed_statusnet_user_abandon(id, screen_name, password, proto, domain, port, base_url, follow_user); break; }
 	}
+
+	follow_user=NULL;
 
 	return(0);
 }
@@ -473,7 +476,7 @@ static void on_user_abandon(void *data, Evas_Object *obj, void *event_info) {
 
 	sqlite_res = asprintf(&query, "SELECT name,password,type,proto,domain,port,base_url,id FROM accounts WHERE enabled = 1 and id = %d;", bubble->account_id);
 	if(sqlite_res != -1) {
-		sqlite_res = sqlite3_exec(ed_DB, query, ed_user_abandon, data, &db_err);
+		sqlite_res = sqlite3_exec(ed_DB, query, ed_user_abandon, NULL, &db_err);
 		if(sqlite_res != 0) {
 			printf("Can't run %s: %d => %s\n", query, sqlite_res, db_err);
 		}
@@ -585,6 +588,7 @@ static void on_handle_user(void *data, Evas_Object *obj, void *event_info) {
 			free(path);
 		}
 
+		follow_user=user->screen_name;
 
 			if(!user->following && !user->protected) {
 				button = elm_button_add(win);
