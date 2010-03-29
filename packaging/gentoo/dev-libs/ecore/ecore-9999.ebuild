@@ -150,13 +150,13 @@ src_configure() {
 	fi
 
 	if [[ ! -z "$x_or_xcb" ]]; then
-		X_FLAGS="
+		X_FLAGS+="
 		  $(use_enable xinerama ecore-x-xinerama)
 		  $(use_enable xprint ecore-x-xprint)
 		  $(use_enable xscreensaver ecore-x-screensaver)
 		"
 	else
-		X_FLAGS="
+		X_FLAGS+="
 		  --disable-ecore-x-xinerama
 		  --disable-ecore-x-xprint
 		  --disable-ecore-x-screensaver
