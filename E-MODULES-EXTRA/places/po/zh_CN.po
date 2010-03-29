@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
 "POT-Creation-Date: 2010-02-28 12:14+0100\n"
-"PO-Revision-Date: 2010-02-10 11:05+0000\n"
+"PO-Revision-Date: 2010-03-29 16:47+0800\n"
 "Last-Translator: 冯超 <rainofchaos@gmail.com>\n"
 "Language-Team: Chinese (simplified)\n"
 "MIME-Version: 1.0\n"
@@ -87,7 +87,7 @@ msgstr "无名称"
 
 #: src/e_mod_places.c:692
 msgid "free of"
-msgstr "免于"
+msgstr "空闲，总计"
 
 #: src/e_mod_places.c:698
 #, c-format
