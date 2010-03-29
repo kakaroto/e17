@@ -17,6 +17,8 @@
 
 # This file is included verbatim by edje.c_edje.pyx
 
+import warnings
+
 cdef class ExternalParam:
     property name:
         def __get__(self):
@@ -84,7 +86,21 @@ def _ExternalParam_from_ptr(long ptr):
 cdef class ExternalParamInfo:
     property name:
         def __get__(self):
-            return self.obj.name
+            if self.obj.name:
+                return self.obj.name
+            return "(unknown)"
+
+    property translated_name:
+        def __get__(self):
+            cdef char *t
+            if self._external_type_obj == NULL or \
+               self._external_type_obj.translate == NULL:
+                return self.name
+            t = self._external_type_obj.translate(self._external_type_obj.data,
+                                                  self.obj.name)
+            if t == NULL:
+                return self.name
+            return t
 
     property type:
         def __get__(self):
@@ -93,12 +109,21 @@ cdef class ExternalParamInfo:
     def validate(self, value):
         return True
 
+    cdef _set_external_type(self, t):
+        cdef ExternalType ext_type
+        self.external_type = t
+        if isinstance(t, ExternalType):
+            ext_type = t
+            self._external_type_obj = ext_type._obj
+
+
 cdef class ExternalParamInfoInt(ExternalParamInfo):
     property default:
         def __get__(self):
             if self.obj.info.i.default == EDJE_EXTERNAL_INT_UNSET:
                 return None
             return self.obj.info.i.default
+
     property min:
         def __get__(self):
             if self.obj.info.i.min == EDJE_EXTERNAL_INT_UNSET:
@@ -132,6 +157,7 @@ cdef class ExternalParamInfoDouble(ExternalParamInfo):
             if self.obj.info.d.default == EDJE_EXTERNAL_DOUBLE_UNSET:
                 return None
             return self.obj.info.d.default
+
     property min:
         def __get__(self):
             if self.obj.info.d.min == EDJE_EXTERNAL_DOUBLE_UNSET:
@@ -165,6 +191,19 @@ cdef class ExternalParamInfoString(ExternalParamInfo):
             if self.obj.info.s.default == NULL:
                 return None
             return self.obj.info.s.default
+
+    property translated_default:
+        def __get__(self):
+            cdef char *t
+            if self._external_type_obj == NULL or \
+               self._external_type_obj.translate == NULL:
+                return self.default
+            t = self._external_type_obj.translate(self._external_type_obj.data,
+                                                  self.obj.info.s.default)
+            if t == NULL:
+                return self.default
+            return t
+
     property accept_format:
         def __get__(self):
             if self.obj.info.s.accept_fmt == NULL:
@@ -180,9 +219,7 @@ cdef class ExternalParamInfoString(ExternalParamInfo):
 cdef class ExternalParamInfoBool(ExternalParamInfo):
     property default:
         def __get__(self):
-            if self.obj.info.b.default == NULL:
-                return None
-            return self.obj.info.b.default
+            return bool(self.obj.info.b.default)
 
     property false_string:
         def __get__(self):
@@ -190,13 +227,38 @@ cdef class ExternalParamInfoBool(ExternalParamInfo):
                 return None
             return self.obj.info.b.false_str
 
+    property translated_false_string:
+        def __get__(self):
+            cdef char *t
+            if self._external_type_obj == NULL or \
+               self._external_type_obj.translate == NULL:
+                return self.false_string
+            t = self._external_type_obj.translate(self._external_type_obj.data,
+                                                  self.obj.info.b.false_str)
+            if t == NULL:
+                return self.false_string
+            return t
+
     property true_string:
         def __get__(self):
             if self.obj.info.b.true_str == NULL:
                 return None
             return self.obj.info.b.true_str
 
-cdef ExternalParamInfo ExternalParamInfo_from_ptr(Edje_External_Param_Info *ptr):
+    property translated_true_string:
+        def __get__(self):
+            cdef char *t
+            if self._external_type_obj == NULL or \
+               self._external_type_obj.translate == NULL:
+                return self.true_string
+            t = self._external_type_obj.translate(self._external_type_obj.data,
+                                                  self.obj.info.b.true_str)
+            if t == NULL:
+                return self.true_string
+            return t
+
+
+cdef ExternalParamInfo ExternalParamInfo_from_ptr(type, Edje_External_Param_Info *ptr):
     cdef ExternalParamInfo p
     if ptr.type == EDJE_EXTERNAL_PARAM_TYPE_INT:
         p = ExternalParamInfoInt()
@@ -209,23 +271,25 @@ cdef ExternalParamInfo ExternalParamInfo_from_ptr(Edje_External_Param_Info *ptr)
     else:
         return None
     p.obj = ptr
+    p._set_external_type(type)
     return p
 
 def external_param_info_get(char *type_name):
-    cdef Edje_External_Param_Info *params
-    cdef int i
+    cdef Edje_External_Type *ext_type
+    cdef ExternalType t
 
-    ret = []
-    params = edje_external_param_info_get(type_name)
-    if params == NULL:
-        return ret
+    warnings.warn("Use ExternalType.parameters_info_get() instead!",
+                  DeprecationWarning)
 
-    i = 0
-    while params[i].name != NULL:
-        ret.append(ExternalParamInfo_from_ptr(&params[i]))
-        i += 1
+    ext_type = edje_external_type_get(type_name)
+    if ext_type == NULL:
+        return tuple()
 
-    return ret
+    t = ExternalType()
+    t._name = type_name
+    t._obj = ext_type
+    return t.parameters_info_get()
+
 
 cdef class ExternalType:
     property name:
@@ -264,6 +328,25 @@ cdef class ExternalType:
         ret = l
         return ret
 
+    def translate(self, char *text):
+        """Used to translate text originated from this module.
+
+        Usually this is only required for static text, like the
+        parameters. label_get() and description_get() may not require
+        it. Note that ExternalParamInfo provides translated_* versions
+        of its worth translating strings!
+
+        It will always return a string, on errors the parameter text
+        is returned untranslated.
+        """
+        cdef char *l
+        if self._obj.translate == NULL:
+            return text
+        l = self._obj.translate(self._obj.data, text)
+        if l == NULL:
+            return text
+        return l
+
     def icon_add(self, evas.c_evas.Canvas canvas not None):
         cdef evas.c_evas.Evas_Object *icon
         if self._obj.icon_add == NULL:
@@ -281,6 +364,30 @@ cdef class ExternalType:
         if preview == NULL:
             return None
         return evas.c_evas._Object_from_instance(<long>preview)
+
+    def parameters_info_get(self):
+        cdef Edje_External_Param_Info *params
+        cdef int i
+
+        if self._parameters_info:
+            return self._parameters_info
+
+        lst = []
+        params = self._obj.parameters_info
+        if params == NULL:
+            self._parameters_info = tuple()
+
+        i = 0
+        while params[i].name != NULL:
+            lst.append(ExternalParamInfo_from_ptr(self, &params[i]))
+            i += 1
+        self._parameters_info = tuple(lst)
+        return self._parameters_info
+
+    property parameters_info:
+        def __get__(self):
+            return self.parameters_info_get()
+
 
 cdef class ExternalIterator:
     cdef evas.c_evas.Eina_Iterator *obj
@@ -310,4 +417,15 @@ cdef class ExternalIterator:
     def __del__(self):
         if self.obj:
             evas.c_evas.eina_iterator_free(self.obj)
+
+def external_type_get(char *type_name):
+    "Gets the instance that represents an ExternalType of the given name."
+    cdef Edje_External_Type *obj = edje_external_type_get(type_name)
+    cdef ExternalType ret
+    if obj == NULL:
+        return None
+    ret = ExternalType()
+    ret._name = type_name
+    ret._obj = obj
+    return ret
 

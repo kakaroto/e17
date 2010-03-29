@@ -483,6 +483,73 @@ cdef public class Edje(evas.c_evas.Object) [object PyEdje, type PyEdje_Type]:
         o = edje_object_part_swallow_get(self.obj, part)
         return evas.c_evas._Object_from_instance(<long>o)
 
+
+    def part_external_object_get(self, char *part):
+        "@rtype: L{evas.c_evas.Object}"
+        cdef evas.c_evas.Evas_Object *o
+        o = edje_object_part_external_object_get(self.obj, part)
+        return evas.c_evas._Object_from_instance(<long>o)
+
+    def part_external_param_set(self, char *part, char *param, value):
+        """Set a parameter of the external part.
+
+        @parm: B{part} EXTERNAL part to set parameter.
+        @parm: B{param} EXTERNAL parameter name.
+        @parm: B{value} value to set, type is guessed from it, so must
+               be of types bool, int, float or str.
+
+        @rtype: bool
+        """
+        cdef Edje_External_Param p
+        p.name = param
+        if isinstance(value, bool): # bool is int, so keep it before!
+            p.type = EDJE_EXTERNAL_PARAM_TYPE_BOOL
+            p.i = value
+        elif isinstance(value, int):
+            p.type = EDJE_EXTERNAL_PARAM_TYPE_INT
+            p.i = value
+        elif isinstance(value, float):
+            p.type = EDJE_EXTERNAL_PARAM_TYPE_DOUBLE
+            p.d = value
+        elif isinstance(value, (str, unicode)):
+            p.type = EDJE_EXTERNAL_PARAM_TYPE_STRING
+            if isinstance(value, unicode):
+                value = value.encode("utf-8")
+            p.s = value
+        else:
+            raise TypeError("unsupported type %s" % type(value).__name__)
+        return bool(edje_object_part_external_param_set(self.obj, part, &p))
+
+    def part_external_param_get(self, char *part, char *param):
+        """Get a parameter of the external part.
+
+        @parm: B{part} EXTERNAL part to set parameter.
+        @parm: B{param} EXTERNAL parameter name.
+
+        @return: None for errors, other values depending on the parameter type.
+        """
+        cdef Edje_External_Param p
+        cdef Edje_External_Param_Type t
+
+        t = edje_object_part_external_param_type_get(self.obj, part, param)
+        if t == EDJE_EXTERNAL_PARAM_TYPE_MAX:
+            return None
+
+        p.name = param
+        p.type = t
+        if not edje_object_part_external_param_get(self.obj, part, &p):
+            return None
+        if t == EDJE_EXTERNAL_PARAM_TYPE_BOOL:
+            return bool(p.i)
+        elif t == EDJE_EXTERNAL_PARAM_TYPE_INT:
+            return p.i
+        elif t == EDJE_EXTERNAL_PARAM_TYPE_DOUBLE:
+            return p.d
+        elif t == EDJE_EXTERNAL_PARAM_TYPE_STRING:
+            if p.s == NULL:
+                return ""
+            return p.s
+
     def part_box_append(self, char *part, c_evas.Object obj):
         """Adds an item to a BOX part.
 

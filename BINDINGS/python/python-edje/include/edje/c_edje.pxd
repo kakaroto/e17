@@ -196,16 +196,19 @@ cdef extern from "Edje.h":
         unsigned int abi_version
         char *module
         char *module_name
-        evas.c_evas.Evas_Object *(*add)(void *data, evas.c_evas.Evas *evas, evas.c_evas.Evas_Object *parent, evas.c_evas.Eina_List *params)
+        evas.c_evas.Evas_Object *(*add)(void *data, evas.c_evas.Evas *evas, evas.c_evas.Evas_Object *parent, evas.c_evas.Eina_List *params,  char *part_name)
         void (*state_set)(void *data, evas.c_evas.Evas_Object *obj, void *from_params, void *to_params, float pos)
         void (*signal_emit)(void *data, evas.c_evas.Evas_Object *obj, char *emission, char *source)
+        evas.c_evas.Eina_Bool (*param_set)(void *data, evas.c_evas.Evas_Object *obj, Edje_External_Param *param)
+        evas.c_evas.Eina_Bool (*param_get)(void *data, evas.c_evas.Evas_Object *obj, Edje_External_Param *param)
         void *(*params_parse)(void *data, evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_List *params)
         void (*params_free)(void *params)
         evas.c_evas.Evas_Object *(*icon_add)(void *data, evas.c_evas.Evas *e)
         evas.c_evas.Evas_Object *(*preview_add)(void *data, evas.c_evas.Evas *e)
         char *(*label_get)(void *data)
         char *(*description_get)(void *data)
-        Edje_External_Param_Info *paramters_info
+        char *(*translate)(void *data, char *orig)
+        Edje_External_Param_Info *parameters_info
         void *data
 
     ####################################################################
@@ -319,6 +322,11 @@ cdef extern from "Edje.h":
     void edje_object_part_drag_step(evas.c_evas.Evas_Object *obj, char *part, double dx, double dy)
     void edje_object_part_drag_page(evas.c_evas.Evas_Object *obj, char *part, double dx, double dy)
 
+    evas.c_evas.Evas_Object *edje_object_part_external_object_get(evas.c_evas.Evas_Object *obj, char *part)
+    evas.c_evas.Eina_Bool edje_object_part_external_param_set(evas.c_evas.Evas_Object *obj, char *part, Edje_External_Param *param)
+    evas.c_evas.Eina_Bool edje_object_part_external_param_get(evas.c_evas.Evas_Object *obj, char *part, Edje_External_Param *param)
+    Edje_External_Param_Type edje_object_part_external_param_type_get(evas.c_evas.Evas_Object *obj, char *part, char *param)
+
     void edje_object_message_send(evas.c_evas.Evas_Object *obj, Edje_Message_Type type, int id, void *msg)
     void edje_object_message_handler_set(evas.c_evas.Evas_Object *obj, void(*func)(void *data, evas.c_evas.Evas_Object *obj, Edje_Message_Type type, int id, void *msg), void *data)
     void edje_object_message_signal_process(evas.c_evas.Evas_Object *obj)
@@ -329,6 +337,7 @@ cdef extern from "Edje.h":
 
     evas.c_evas.Eina_Iterator *edje_external_iterator_get()
     Edje_External_Param_Info *edje_external_param_info_get(char *type_name)
+    Edje_External_Type *edje_external_type_get(char *type_name)
 
     evas.c_evas.Eina_Bool edje_module_load(char *name)
     evas.c_evas.Eina_List *edje_available_modules_get()
@@ -386,6 +395,9 @@ cdef class ExternalParam:
 
 cdef class ExternalParamInfo:
     cdef Edje_External_Param_Info *obj
+    cdef readonly object external_type
+    cdef Edje_External_Type *_external_type_obj
+    cdef _set_external_type(self, t)
 
 cdef class ExternalParamInfoInt(ExternalParamInfo):
     pass
@@ -401,6 +413,7 @@ cdef class ExternalParamInfoBool(ExternalParamInfo):
 
 cdef class ExternalType:
     cdef object _name
+    cdef object _parameters_info
     cdef Edje_External_Type *_obj
 
 
