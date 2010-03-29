@@ -49,7 +49,7 @@ engine_id_mapping = {
     "software_ddraw": ECORE_EVAS_ENGINE_SOFTWARE_DDRAW,
     "direct3d": ECORE_EVAS_ENGINE_DIRECT3D,
     "opengl_glew": ECORE_EVAS_ENGINE_OPENGL_GLEW,
-    "quartz": ECORE_EVAS_ENGINE_QUARTZ,
+    "cocoa": ECORE_EVAS_ENGINE_COCOA,
     "sdl": ECORE_EVAS_ENGINE_SOFTWARE_SDL,
     "directfb": ECORE_EVAS_ENGINE_DIRECTFB,
     "fb": ECORE_EVAS_ENGINE_SOFTWARE_FB,
@@ -78,7 +78,7 @@ engine_mapping = {
 #  "software_16_wince_gapi": ,
 #  "sdl": ,
 #  "software_16_sdl": ,
-#  "quartz": ,
+#  "cocoa": ,
   "buffer": Buffer,
   }
 
