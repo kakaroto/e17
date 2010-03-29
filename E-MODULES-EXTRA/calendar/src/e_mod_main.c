@@ -1,6 +1,10 @@
 /*
  * vim:ts=8:sw=3:sts=8:noexpandtab:cino=>5n-3f0^-2{2
  */
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
+
 #include <e.h>
 #include "e_mod_main.h"
 
@@ -9,16 +13,25 @@
 typedef struct _Instance Instance;
 typedef struct _Calendar Calendar;
 
-struct _Instance 
+struct _Instance
 {
    E_Gadcon_Client *gcc;
    Calendar        *calendar;
    Config_Item     *ci;
 
    E_Gadcon_Popup  *popup;
+   Evas_Object     *list;
+   Evas_Object     *label;
+   Evas_Object     *table;
+   Eina_List       *notes;
+
+   char            *edje_module;
+
+   struct tm        displayed_time;
+   struct tm        current_time;
 };
 
-struct _Calendar 
+struct _Calendar
 {
    Instance *inst;
    Evas_Object *o_icon, *o_today;
@@ -34,7 +47,10 @@ static Config_Item *_config_item_get(const char *id);
 static int _update_date(void *data);
 static void _update_calendar_sheet(Instance *inst);
 static void _calendar_popup_content_create(Instance *inst);
+static void _calendar_popup_content_populate(Instance *inst, struct tm *time);
+static void _calendar_popup_content_update(Instance *inst);
 static void _calendar_popup_destroy(Instance *inst);
+static void _calendar_popup_cleanup(Instance *inst);
 static void _cb_action(E_Object *obj, const char *params);
 static void _cb_mouse_in(void *data, Evas *e, Evas_Object *obj, void *event_info);
 static void _cb_mouse_out(void *data, Evas *e, Evas_Object *obj, void *event_info);
@@ -55,36 +71,39 @@ static E_Action *act = NULL;
 
 Config *calendar_conf = NULL;
 
-static const E_Gadcon_Client_Class _gc_class = 
+static const E_Gadcon_Client_Class _gc_class =
 {
-   GADCON_CLIENT_CLASS_VERSION, "calendar", 
+   GADCON_CLIENT_CLASS_VERSION, "calendar",
      {_gc_init, _gc_shutdown, _gc_orient, _gc_label, _gc_icon, _gc_id_new, NULL, NULL},
    E_GADCON_CLIENT_STYLE_PLAIN
 };
 
 static E_Gadcon_Client *
-_gc_init(E_Gadcon *gc, const char *name, const char *id, const char *style) 
+_gc_init(E_Gadcon *gc, const char *name, const char *id, const char *style)
 {
    Calendar        *calendar;
    Instance        *inst;
    E_Gadcon_Client *gcc;
-   char             buf[4096];
+   int              length;
 
-   inst = E_NEW(Instance, 1);   
+   inst = E_NEW(Instance, 1);
    inst->ci = _config_item_get(id);
 
    calendar = E_NEW(Calendar, 1);
    calendar->inst = inst;
 
-   snprintf(buf, sizeof(buf), "%s/calendar.edj", 
+   /* Find module specific edje file */
+   length = strlen(e_module_dir_get(calendar_conf->module));
+   inst->edje_module = malloc(length + 14);
+   snprintf(inst->edje_module, length + 14, "%s/calendar.edj",
 	    e_module_dir_get(calendar_conf->module));
-   
+
    calendar->o_icon = edje_object_add(gc->evas);
-   if (!e_theme_edje_object_set(calendar->o_icon, 
+   if (!e_theme_edje_object_set(calendar->o_icon,
 				"base/theme/modules/calendar", "modules/calendar/main"))
-     edje_object_file_set(calendar->o_icon, buf, "modules/calendar/main");
+     edje_object_file_set(calendar->o_icon, inst->edje_module, "modules/calendar/main");
    evas_object_show(calendar->o_icon);
-   
+
    gcc = e_gadcon_client_new(gc, name, id, style, calendar->o_icon);
    gcc->data = inst;
    inst->gcc = gcc;
@@ -152,7 +171,6 @@ static const char *
 _gc_id_new(E_Gadcon_Client_Class *client_class)
 {
    Config_Item *ci;
-   Eina_List   *l;
    const char *id;
    char buf[128];
    int num = 0;
@@ -161,7 +179,7 @@ _gc_id_new(E_Gadcon_Client_Class *client_class)
    if (calendar_conf->items)
      {
 	const char *p;
-	ci = eina_list_last(calendar_conf->items)->data;
+	ci = eina_list_data_get(eina_list_last(calendar_conf->items));
 	p = strrchr(ci->id, '.');
 	if (p) num = atoi(p + 1) + 1;
      }
@@ -214,6 +232,7 @@ _config_item_get(const char *id)
 static int
 _update_date(void *data)
 {
+   Instance *inst;
    Eina_List *l;
    time_t current_time;
    struct tm *local_time;
@@ -228,13 +247,10 @@ _update_date(void *data)
    else
      prev_day = local_time->tm_mday;
 
-   for (l = calendar_conf->instances; l; l = l->next) 
+   EINA_LIST_FOREACH(calendar_conf->instances, l, inst)
      {
-	Instance *inst;
-
-	inst = l->data;
 	if (!inst) continue;
-	_update_calendar_sheet (inst);
+	_update_calendar_sheet(inst);
      }
 
    return 1;
@@ -247,7 +263,6 @@ _update_calendar_sheet(Instance *inst)
    char buf[5];
    time_t current_time;
    struct tm *local_time;
-   int old_popup_state=0, old_popup_pinned_state=0;
 
    if (!inst) return;
    calendar = inst->calendar;
@@ -262,70 +277,120 @@ _update_calendar_sheet(Instance *inst)
    edje_object_part_text_set (calendar->o_icon, "weekday", buf);
 
    if (inst->popup)
-     {
-	old_popup_state = inst->popup->win->visible;
-	old_popup_pinned_state = inst->popup->pinned;
-     }
-   _calendar_popup_content_create(inst);
-   if (inst->popup && old_popup_state)
-     {
-	e_gadcon_popup_show(inst->popup);
-	if (old_popup_pinned_state) e_gadcon_popup_toggle_pinned(inst->popup);
-     }
+     _calendar_popup_content_update(inst);
+   else
+     _calendar_popup_content_create(inst);
+}
+
+static const char *days[] = {
+  "Su",
+  "Mo",
+  "Tu",
+  "We",
+  "Th",
+  "Fr",
+  "Sa"
+};
+
+static void
+_calendar_popup_content_update(Instance *inst)
+{
+   char buf[32];
+
+   evas_object_del(inst->table);
+   inst->table = NULL;
+
+   _calendar_popup_content_populate(inst, &inst->displayed_time);
 }
 
 static void
-_calendar_popup_content_create(Instance *inst)
+_year_minus(void *data, __UNUSED__ Evas_Object *obj, __UNUSED__ const char *emission, __UNUSED__ const char *source)
 {
-   Evas_Object *o, *of, *ob;
+   Instance *inst = data;
+
+   inst->displayed_time.tm_year--;
+   inst->displayed_time.tm_mday = 1;
+   _calendar_popup_content_update(inst);
+}
+
+static void
+_year_plus(void *data, __UNUSED__ Evas_Object *obj, __UNUSED__ const char *emission, __UNUSED__ const char *source)
+{
+   Instance *inst = data;
+
+   inst->displayed_time.tm_year++;
+   inst->displayed_time.tm_mday = 1;
+   _calendar_popup_content_update(inst);
+}
+
+static void
+_month_minus(void *data, __UNUSED__ Evas_Object *obj, __UNUSED__ const char *emission, __UNUSED__ const char *source)
+{
+   Instance *inst = data;
+
+   inst->displayed_time.tm_mon--;
+   inst->displayed_time.tm_mday = 1;
+   if (inst->displayed_time.tm_mon < 0)
+     inst->displayed_time.tm_mon = 11;
+   _calendar_popup_content_update(inst);
+}
+
+static void
+_month_plus(void *data, __UNUSED__ Evas_Object *obj, __UNUSED__ const char *emission, __UNUSED__ const char *source)
+{
+   Instance *inst = data;
+
+   inst->displayed_time.tm_mon++;
+   inst->displayed_time.tm_mday = 1;
+   if (inst->displayed_time.tm_mon > 11)
+     inst->displayed_time.tm_mon = 0;
+   _calendar_popup_content_update(inst);
+}
+
+static void
+_calendar_popup_content_populate(Instance *inst, struct tm *time)
+{
    Evas *evas;
+   Evas_Object *table;
+   Evas_Object *o;
+   struct tm *month_start;
+   time_t current_time, start_time;
+   int today, month, year, maxdays;
+   int startwd, day;
+   int col, row;
    Evas_Coord mw, mh;
    char buf[32];
-   time_t current_time, start_time;
-   struct tm *local_time, *local_time2;
-   int row, col, day;
-   int startwd, today, month, year, maxdays;
 
-   if (inst->popup) _calendar_popup_destroy(inst);
-   inst->popup = e_gadcon_popup_new(inst->gcc);
+   today = time->tm_mday;
+   month = time->tm_mon;
+   year = time->tm_year + 1900;
 
-   current_time = time (NULL);
-   local_time = localtime (&current_time);
-   today = local_time->tm_mday;
-   month = local_time->tm_mon;
-   year = local_time->tm_year + 1900;
    if (!(year % 4))
      maxdays = days_in_month[(!(year % 4) && (year % 100))][month];
    else
      maxdays = days_in_month[(!(year % 400))][month];
 
+   current_time = mktime(time);
    start_time = current_time - ((today-1) * 86400);
-   local_time2 = localtime (&start_time);
-   strftime (buf, sizeof(buf), "%w", local_time2);
+   month_start = localtime (&start_time);
+   strftime (buf, sizeof (buf), "%w", month_start);
    startwd = atoi (buf) - inst->ci->firstweekday;
    if (startwd < 0) startwd = 6;
 
-   evas = inst->popup->win->evas;
-   o = e_widget_list_add(evas, 0, 0);
-   strftime (buf, sizeof(buf), "%B %Y", local_time);
-   of = e_widget_frametable_add(evas, buf, 0);
+   /* Set current month */
+   strftime(buf, sizeof (buf), "%B %Y", time);
+   e_widget_label_text_set(inst->label, buf);
 
-   /* column titles */
+   evas = inst->popup->win->evas;
+
+   table = e_widget_table_add(evas, 0);
+
+   /* Column titles */
    day = inst->ci->firstweekday;
-   for (col = 0; col <= 6; col++)
+   for (col = 0; col < sizeof (days) / sizeof (char *); ++col)
      {
-	switch (day)
-	  {
-	     case 0: ob = e_widget_label_add(evas, "Su"); break;
-	     case 1: ob = e_widget_label_add(evas, "Mo"); break;
-	     case 2: ob = e_widget_label_add(evas, "Tu"); break;
-	     case 3: ob = e_widget_label_add(evas, "We"); break;
-	     case 4: ob = e_widget_label_add(evas, "Th"); break;
-	     case 5: ob = e_widget_label_add(evas, "Fr"); break;
-	     case 6: ob = e_widget_label_add(evas, "Sa"); break;
-	  } 
-	e_widget_frametable_object_append(of, ob, col, 0, 1, 1, 1, 0, 0, 0);
-	if (day++ >= 6) day = 0;
+	o = e_widget_label_add(evas, days[(col + inst->ci->firstweekday) % (sizeof (days) / sizeof (char *))]);
+	e_widget_table_object_append(table, o, col, 0, 1, 1, 1, 0, 0, 0);
      }
 
    /* output days */
@@ -343,36 +408,87 @@ _calendar_popup_content_create(Instance *inst)
 	       snprintf(buf, sizeof(buf), "%02d", day++);
 	     else
 	       buf[0] = 0;
-	     
-	     if (cday == today)
-	       {
-		  char buf2[4096];
 
-		  ob = inst->calendar->o_today = edje_object_add(evas);
-		  snprintf(buf2, sizeof(buf2), "%s/calendar.edj", 
-			   e_module_dir_get(calendar_conf->module));
-		  
-		  if (!e_theme_edje_object_set(ob, 
-			   "base/theme/modules/calendar", "modules/calendar/today"))
-		    edje_object_file_set(ob, buf2, "modules/calendar/today");
-		  edje_object_part_text_set(ob, "e.text.label", buf);
-		  evas_object_show(ob);
+	     if (cday == inst->current_time.tm_mday
+		 && month == inst->current_time.tm_mon
+		 && time->tm_year == inst->current_time.tm_year)
+	       {
+		  o = inst->calendar->o_today = edje_object_add(evas);
+
+		  if (!e_theme_edje_object_set(o,
+			  "base/theme/modules/calendar", "modules/calendar/today"))
+		    edje_object_file_set(o, inst->edje_module, "modules/calendar/today");
+		  edje_object_part_text_set(o, "e.text.label", buf);
+		  evas_object_show(o);
+
+		  e_widget_sub_object_add(table, o);
 	       }
 	     else
-	       ob = e_widget_label_add(evas, buf);
-	     e_widget_frametable_object_append(of, ob, col, row, 1, 1, 1, 0, 0, 0);
+	       o = e_widget_label_add(evas, buf);
+	     e_widget_table_object_append(table, o, col, row, 1, 1, 1, 0, 0, 0);
 	}
 	if (day > maxdays) break;
      }
 
-   e_widget_list_object_append(o, of, 1, 1, 0.5);
-   e_widget_size_min_get(o, &mw, &mh);
+   e_widget_list_object_append(inst->list, table, 1, 1, 0.5);
+   e_widget_size_min_get(inst->list, &mw, &mh);
    if ((double) mw / mh > GOLDEN_RATIO)
      mh = mw / GOLDEN_RATIO;
    else if ((double) mw / mh < GOLDEN_RATIO - (double) 1)
      mw = mh * (GOLDEN_RATIO - (double) 1);
+   evas_object_size_hint_min_set(inst->list, mw, mh);
 
-   e_gadcon_popup_content_set(inst->popup, o);
+   inst->table = table;
+}
+
+static void
+_calendar_popup_content_create(Instance *inst)
+{
+   Evas_Object *list, *label, *oe, *ow;
+   Evas *evas;
+   Evas_Coord mw, mh;
+   time_t current_time;
+   struct tm *local_time;
+
+   if (inst->popup) _calendar_popup_destroy(inst);
+   inst->popup = e_gadcon_popup_new(inst->gcc);
+
+   current_time = time (NULL);
+   local_time = localtime_r(&current_time, &inst->displayed_time);
+   inst->current_time = inst->displayed_time;
+
+   evas = inst->popup->win->evas;
+   list = e_widget_list_add(evas, 0, 0);
+
+   label = e_widget_label_add(evas, NULL);
+
+   oe = edje_object_add(evas);
+   if (!e_theme_edje_object_set(oe,
+				"base/theme/modules/calendar", "modules/calendar/header"))
+     edje_object_file_set(oe, inst->edje_module, "modules/calendar/header");
+   edje_object_part_swallow(oe, "content", label);
+   edje_object_signal_callback_add(oe, "year", "minus", _year_minus, inst);
+   edje_object_signal_callback_add(oe, "year", "plus", _year_plus, inst);
+   edje_object_signal_callback_add(oe, "month", "minus", _month_minus, inst);
+   edje_object_signal_callback_add(oe, "month", "plus", _month_plus, inst);
+   evas_object_show(oe);
+
+   ow = e_widget_add(evas);
+   e_widget_data_set(ow, NULL);
+   edje_object_size_min_get(oe, &mw, &mh);
+   e_widget_size_min_set(ow, mw, mh);
+   e_widget_sub_object_add(ow, oe);
+   e_widget_resize_object_set(ow, oe);
+   evas_object_show(ow);
+
+   e_widget_list_object_append(list, ow, 1, 1, 0.5);
+
+   inst->list = list;
+   inst->label = label;
+
+   _calendar_popup_content_populate(inst, local_time);
+
+   e_gadcon_popup_content_set(inst->popup, inst->list);
 }
 
 static void
@@ -383,15 +499,20 @@ _calendar_popup_destroy(Instance *inst)
 }
 
 static void
+_calendar_popup_cleanup(Instance *inst)
+{
+   if (!inst->table) return;
+   e_object_del(E_OBJECT(inst->table));
+}
+
+static void
 _cb_action(E_Object *obj, const char *params)
 {
    Eina_List *l;
+   Instance *inst;
 
-   for (l = calendar_conf->instances; l; l = l->next) 
+   EINA_LIST_FOREACH(calendar_conf->instances, l, inst)
      {
-	Instance *inst;
-
-	inst = l->data;
 	if (!inst) continue;
 	if (!inst->popup) continue;
 	if (inst->popup->win->visible)
@@ -416,11 +537,11 @@ _cb_mouse_in(void *data, Evas *e, Evas_Object *obj, void *event_info)
    e_gadcon_popup_show(inst->popup);
 }
 
-static void 
+static void
 _cb_mouse_out(void *data, Evas *e, Evas_Object *obj, void *event_info)
 {
    Instance *inst;
-   
+
    if (!(inst = data)) return;
    e_gadcon_popup_hide(inst->popup);
 }
@@ -445,7 +566,7 @@ _cb_mouse_down(void *data, Evas *e, Evas_Object *obj, void *event_info)
 
 	mn = e_menu_new();
 	calendar_conf->menu_firstweekday = mn;
-	
+
 	mi = e_menu_item_new(mn);
 	e_menu_item_label_set(mi, D_("Sunday"));
 	e_menu_item_radio_set(mi, 1);
@@ -478,7 +599,7 @@ _cb_mouse_down(void *data, Evas *e, Evas_Object *obj, void *event_info)
 			      E_MENU_POP_DIRECTION_DOWN, ev->timestamp);
         evas_event_feed_mouse_up(inst->gcc->gadcon->evas, ev->button,
 				 EVAS_BUTTON_NONE, ev->timestamp, NULL);
-     }	
+     }
 }
 
 static void
