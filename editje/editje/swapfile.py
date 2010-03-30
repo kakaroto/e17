@@ -101,16 +101,15 @@ class SwapFile(object):
             return
 
         if filepath:
-            opened = self.__opened_files.get(self.__filepath)
-            if opened != self:
+            opened = self.__opened_files.get(filepath)
+            if opened and opened != self:
                 raise FileOpened(self)
-            if path.exists(self.__swapfile) and mode != REPLACE:
+            if self.__opened_files.has_key(self.__filepath):
+                del self.__opened_files[self.__filepath]
+            if path.exists(filepath) and mode != REPLACE:
                 raise FileAlreadyExists(self)
             self.__filepath = filepath
             self.__file_check()
-            swap = self.__swapfile
-            self.__swap_update()
-            move(swap, self.__swapfile)
         elif self.__new:
             raise FileNotSet(self)
 
@@ -129,13 +128,15 @@ class SwapFile(object):
             chdir(orig_dir)
             rmtree(temp_dir)
 
+        self.__new = False
         self.__opened_files[self.__filepath] = self
 
     def close(self):
         if not self.__opened:
             return
 
-        del self.__opened_files[self.__filepath]
+        if self.__filepath:
+            del self.__opened_files[self.__filepath]
         remove(self.__swapfile)
         self.__swapfile = None
         self.__new = True

@@ -323,6 +323,16 @@ class Editable(Manager):
 #        else:
 #            print "No changes after last save"
 
+    def save_as(self, path, mode=None):
+        if self._edje.save_all():
+            self._swapfile.save(path, mode)
+            self.event_emit("filename.changed", path)
+            self.event_emit("saved")
+            return True
+        else:
+            self.event_emit("saved.error")
+            return False
+
     # Parts
     def _parts_init(self):
         self.parts = []

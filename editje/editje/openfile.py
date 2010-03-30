@@ -120,14 +120,12 @@ class OpenFile(elementary.Window):
         return files
 
     def _new(self, bt):
-        self._new_popup()
-        return
-
         self._swapfile.file = ""
         self._swapfile.new = True
         self._swapfile.open()
 
         editje = Editje(self._swapfile)
+        editje.group = "main"
         editje.show()
         self._cancel(bt)
 #        self._templates_load()
@@ -211,112 +209,3 @@ class OpenFile(elementary.Window):
 
     def _templates_ok(self):
         pass
-
-    # HACK
-    def _new_popup(self):
-        if self._notification:
-            self._notification.hide()
-            self._notification.delete()
-            self._notification = None
-
-        self._notification = ErrorNotify(self)
-
-        self._notification.title = "        New Edje File       "
-
-        bx = elementary.Box(self._notification)
-        bx.horizontal_set(True)
-        bx.size_hint_weight_set(evas.EVAS_HINT_EXPAND,
-                                evas.EVAS_HINT_EXPAND)
-        bx.size_hint_align_set(evas.EVAS_HINT_FILL, evas.EVAS_HINT_FILL)
-        self._notification.pack_end(bx)
-        bx.show()
-
-        lb = elementary.Label(bx)
-        lb.label_set("Filename:")
-        bx.pack_start(lb)
-        lb.show()
-
-        sc = elementary.Scroller(bx)
-        sc.content_min_limit(0, 1)
-        sc.policy_set(elementary.ELM_SCROLLER_POLICY_OFF,
-                      elementary.ELM_SCROLLER_POLICY_OFF)
-        sc.bounce_set(False, False)
-        sc.size_hint_weight_set(evas.EVAS_HINT_EXPAND, 0.0)
-        sc.size_hint_align_set(evas.EVAS_HINT_FILL, evas.EVAS_HINT_FILL)
-        bx.pack_end(sc)
-        sc.show()
-
-        self._new_entry = elementary.Entry(bx)
-        self._new_entry.entry_set("filename")
-        self._new_entry.single_line_set(True)
-        self._new_entry.size_hint_weight_set(evas.EVAS_HINT_EXPAND,
-                                            evas.EVAS_HINT_EXPAND)
-        self._new_entry.size_hint_align_set(evas.EVAS_HINT_FILL, 0.5)
-        sc.content_set(self._new_entry)
-        self._new_entry.callback_changed_add(self._name_changed_cb)
-        self._new_entry.show()
-
-        self._notification.action_add("Cancel", self._notify_abort)
-        self._notification.action_add("Create", self._new_popup_create)
-
-        self._notification.show()
-
-    def _new_popup_create(self, bt, mode=None):
-        name = self._new_entry.entry_get()
-
-        if not name.endswith(".edj"):
-            name += ".edj"
-        file = os.path.join(self._fs.path, name)
-        self._notify_abort(bt, None)
-
-        if os.path.isfile(file):
-            if self._notification:
-                self._notification.hide()
-                self._notification.delete()
-                self._notification = None
-            self._notification = ErrorNotify(self)
-            self._notification.action_add("Rename", self._new_rename)
-            if self._swapfile.is_opened(file):
-                self._notification.title = "File already exists and opened"
-            else:
-                self._notification.title = "File already exists"
-                self._notification.action_add(
-                    "Overwrite", self._new_forced, None, file)
-            self._notification.action_add("Abort", self._notify_abort)
-            self._notification.show()
-            return
-
-        shutil.copyfile(sysconfig.template_file_get("default"), file)
-        self._new_open(file)
-
-    def _new_forced(self, bt, file):
-        self._notify_abort(bt, None)
-        shutil.copyfile(sysconfig.template_file_get("default"), file)
-        self._new_open(file)
-
-    def _new_rename(self, bt, data):
-        self._notify_abort(bt, None)
-        self._new_popup()
-
-    def _new_open(self, file):
-        try:
-            self._swapfile.file = file
-            self._swapfile.open(swapfile.REPLACE)
-        except Exception, e:
-            self._notify_err(e)
-            return
-
-        editje = Editje(self._swapfile)
-        editje.show()
-        self._cancel(None)
-
-    def _name_changed_cb(self, obj):
-        self._name_chaged = True
-        self._check_name()
-
-    def _check_name(self):
-        name = self._new_entry.entry_get()
-        if name:
-            self._notification.action_disabled_set("Create", False)
-        else:
-            self._notification.action_disabled_set("Create", True)

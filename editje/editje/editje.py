@@ -29,6 +29,7 @@ import objects_data
 
 from desktop import Desktop
 from collapsable import CollapsablesBox
+from fileselector import FileSelector
 
 from details_group import GroupDetails
 from details_part import PartDetails
@@ -37,12 +38,14 @@ from details_state import PartStateDetails, PartAnimStateDetails
 from parts import PartsList
 from animations import AnimationDetails, AnimationsList, AnimationsPartsList
 from signals import SignalsList, SignalDetails
+from error_notify import ErrorNotify
+import swapfile
 
 from widgets_list import WidgetsList
 from groupselector import GroupSelectionWizard
 from operation import Operation
 
-from misc import name_generate
+from misc import name_generate, accepted_filetype
 
 
 def debug_cb(obj, emission, source):
@@ -132,9 +135,68 @@ class Editje(elementary.Window):
         self.main_layout.show()
 
     def save(self):
+        if not self.e.filename:
+            return self.save_as()
+
         self.block(True)
         self.e.save()
         self.block(False)
+
+    def save_as(self):
+        self.block(True)
+        win = elementary.Window("fileselector", elementary.ELM_WIN_BASIC)
+        win.title_set("Save as")
+        win.autodel_set(True)
+        win.resize(600, 480)
+        win.maximized_set(True)
+
+        bg = elementary.Background(win)
+        win.resize_object_add(bg)
+        bg.size_hint_weight_set(evas.EVAS_HINT_EXPAND, evas.EVAS_HINT_EXPAND)
+        bg.show()
+
+        def cancel(bt):
+            win.hide()
+            win.delete()
+            self.block(False)
+
+        def save(bt, mode=None):
+            file = fs.file
+            if not accepted_filetype(file):
+                file = file + ".edj"
+            try:
+                self.e.save_as(file, mode)
+                cancel(bt)
+            except swapfile.FileAlreadyExists, e:
+                notification = ErrorNotify(win)
+                notification.title = str(e).replace(':', '<br>')
+                notification.action_add("Abort", notify_close, None, notification)
+                notification.action_add("Overwrite", notify_overwrite, None, notification)
+                notification.show()
+            except Exception, e:
+                notification = ErrorNotify(win)
+                notification.title = str(e).replace(':', '<br>')
+                notification.action_add("Ok", notify_close, None, notification)
+                notification.show()
+
+        def notify_close(bt, notification):
+            notification.hide()
+            notification.delete()
+            notification = None
+
+        def notify_overwrite(bt, notification):
+            notify_close(bt, notification)
+            save(bt, swapfile.REPLACE)
+
+        fs = FileSelector(win)
+        fs.filter = accepted_filetype
+        fs.save = True
+        fs.action_add("Cancel", cancel)
+        fs.action_add("Save", save)
+        win.resize_object_add(fs)
+        fs.show()
+
+        win.show()
 
     def _file_get(self):
         return self.e.filename

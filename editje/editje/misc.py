@@ -54,3 +54,6 @@ def name_generate(suggest, list=[]):
         name = suggest
 
     return name
+
+accepted_filetype = re.compile("(.*\.(?:edc|edj))").match
+
