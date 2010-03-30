@@ -47,14 +47,18 @@ class CList(Collapsable):
         self._list.clear()
 
     def add(self, item, data=None):
-        if not self._items.get(item):
-            i = self._list.item_append(item, None, None, None, data)
-            self._items[item] = i
-            self.event_emit("item.added", item)
-            if self._selected.get(item):
-                i.selected = True
-            if not self._first:
-                self._first = i
+        self.add_full(item, data=data)
+
+    def add_full(self, item, icon=None, end=None, data=None):
+        if self._items.get(item):
+            return
+        i = self._list.item_append(item, icon, end, None, data)
+        self._items[item] = i
+        self.event_emit("item.added", item)
+        if self._selected.get(item):
+            i.selected = True
+        if not self._first:
+            self._first = i
 
     def remove(self, item):
         i = self._items.get(item)

@@ -40,8 +40,8 @@ class Editable(Manager):
         self._group = ""
         self._edje = None
 
-        self.animation = EditableAnimation(self)
         self.part = EditablePart(self)
+        self.animation = EditableAnimation(self)
         self.signal = EditableProgram(self)
 
         self._size = None
@@ -434,7 +434,7 @@ class Editable(Manager):
                                self.programs))
         self.event_emit("animations.changed", self.animations)
 
-    def animation_add(self, name):
+    def animation_add(self, name, parts=None):
         if name in self._animations:
             return False
 
@@ -457,7 +457,9 @@ class Editable(Manager):
 
         prevstatename = "default 0.00"
         statename = startname + " 0.00"
-        for p in self.parts:
+        if not parts:
+            parts = self.parts
+        for p in parts:
             prog.target_add(p)
             part = self._edje.part_get(p)
             part.state_add(startname)

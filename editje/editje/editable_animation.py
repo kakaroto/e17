@@ -35,6 +35,7 @@ class EditableAnimation(Manager, object):
         self._name = ""
         self.timestops = None
 
+        self._parts_init()
         self._states_init()
 
         self.program = EditableProgram(self.e)
@@ -134,6 +135,67 @@ class EditableAnimation(Manager, object):
     def stop(self):
         self.e._edje.signal_emit("animation,stop", self._name)
 
+    # Parts
+    def _parts_init(self):
+        self.parts = {}
+        self.e.part.callback_add("name.changed", self._part_rename_cb)
+        self.callback_add("animation.changed", self._parts_reload_cb)
+        self.callback_add("animation.unselected", self._parts_reload_cb)
+
+    def _parts_reload_cb(self, emissor, data):
+        self.parts = {}
+        if not data:
+            return
+
+        prog = self.e.program_get("@%s@0.00" % self._name)
+        for t in prog.targets:
+            self.parts[t] = True
+
+    def _part_rename_cb(self, emissor, data):
+        old_name, new_name = data
+        p = self.parts.get(old_name)
+        if not p:
+            return
+        self.parts[new_name] = True
+        del self.parts[old_name]
+
+    def part_add(self, part):
+        if part in self.parts:
+            return
+
+        progname = "@%s@0.00" % self._name
+        prog = self.e.program_get(progname)
+        prog.target_add(part)
+        p = self.e._edje.part_get(part)
+        p.state_copy("default 0.00", progname)
+        self.parts[part] = True
+
+        # Re-set current state to make sure everything is consistent
+        self._state_set(self._current)
+
+        self.event_emit("part.added", part)
+
+    def part_remove(self, part):
+        if part not in self.parts:
+            return
+
+        p = self.e._edje.part_get(part)
+        p.state_selected_set("default 0.00")
+        if p.name == self.e.part.name:
+            self.e.part.state.name = ""
+        for t in self.timestops:
+            progname = "@%s@%.2f" % (self._name, t)
+            st = progname + " 0.00"
+            prog = self.e.program_get(progname)
+            prog.target_del(part)
+            p.state_del(st)
+
+        del self.parts[part]
+        self.event_emit("part.removed", part)
+
+    def part_belongs(self, part):
+        return part in self.parts
+
     # States
     def _states_init(self):
         self.timestops = []
@@ -187,7 +249,7 @@ class EditableAnimation(Manager, object):
         prog.state_set(name)
         prog.transition = edje.EDJE_TWEEN_MODE_LINEAR
         prog.transition_time = time - prev
-        for p in self.e.parts:
+        for p in self.parts.iterkeys():
             prog.target_add(p)
             part = self.e._edje.part_get(p)
             part.state_add(name)
@@ -246,6 +308,12 @@ class EditableAnimation(Manager, object):
             nextprog = self.e.program_get(nextname)
             nextprog.transition_time = next - prev
 
+        # Delete states from parts
+        statename = progname + " 0.00"
+        for p in self.parts.iterkeys():
+            part = self.e._edje.part_get(p)
+            part.state_del(statename)
+
         self.timestops.pop(idx)
         self.event_emit("state.removed", time)
 
@@ -271,15 +339,16 @@ class EditableAnimation(Manager, object):
         self._current = time
         self.program.name = "@%s@%.2f" % (self._name, time)
         statename = self.program.name + " 0.00"
-        self.e.part.state.name = statename
-        for p in self.e.parts:
+        for p in self.parts.iterkeys():
             part = self.e._edje.part_get(p)
             if part.state_exist(statename):
                 part.state_selected_set(statename)
             else:
                 self._part_state_create(part)
                 part.state_selected_set(statename)
-                self.e.part.state.name = statename
+                #self.e.part.state.name = statename # Why is this here?
+        if self.e.part.name in self.parts:
+            self.e.part.state.name = statename
         self.event_emit("state.changed", self.e.part.state.name)
 
     def _state_get(self):

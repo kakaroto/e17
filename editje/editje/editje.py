@@ -35,7 +35,7 @@ from details_part import PartDetails
 from details_state import PartStateDetails, PartAnimStateDetails
 
 from parts import PartsList
-from animations import AnimationDetails, AnimationsList
+from animations import AnimationDetails, AnimationsList, AnimationsPartsList
 from signals import SignalsList, SignalDetails
 
 from widgets_list import WidgetsList
@@ -741,20 +741,23 @@ class Editje(elementary.Window):
                                     evas.EVAS_HINT_FILL)
         mainbar.show()
 
-        def new_anim_cb(name):
-            return self.e.animation_add(name)
+        def new_anim_cb(name, parts):
+            return self.e.animation_add(name, parts)
 
         def anims_list_cb():
             return self.e.animations
 
-        list = AnimationsList(self, new_anim_cb, anims_list_cb)
+        def parts_list_cb():
+            return self.e.parts
+
+        list = AnimationsList(self, new_anim_cb, anims_list_cb, parts_list_cb)
         list.options = True
         list.title = "Animations"
         list.open = True
         mainbar.pack_end(list)
         list.show()
 
-        list = PartsList(self, self.e, self._operation_stack)
+        list = AnimationsPartsList(self, self.e, self._operation_stack)
         list.title = "Parts"
         list.open = True
         mainbar.pack_end(list)

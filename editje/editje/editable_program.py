@@ -98,6 +98,9 @@ class EditableProgram(Manager, object):
     def target_add(self, target):
         return self._program.target_add(target)
 
+    def target_del(self, target):
+        return self._program.target_del(target)
+
     def targets_clear(self):
         self._program.targets_clear()
 

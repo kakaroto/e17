@@ -496,6 +496,8 @@ class PartStateDetails(EditjeDetails):
     def _update_do(self):
         self._update_schedule = None
         self._hide_all()
+        if not self.e.part.state.name:
+            return
         self._update_common()
         self.main_show()
         self.group_show("rel1")
@@ -762,7 +764,6 @@ class PartAnimStateDetails(PartStateDetails):
             self, parent, operation_stack_cb, img_new_img_cb, img_list_get_cb,
             img_id_get_cb, fnt_new_fnt_cb, fnt_list_get_cb, fnt_id_get_cb,
             workfile_name_get_cb, part_object_get_cb, group)
-        self.anim = None
 
     def _header_init(self, parent):
         self.title = "part properties"
@@ -785,6 +786,8 @@ class PartAnimStateDetails(PartStateDetails):
         self.e.animation.callback_add("animation.changed", self._anim_selected)
         self.e.animation.callback_add("animation.unselected",
                                       self._anim_unselected)
+        self.e.animation.callback_add("part.added", self._anim_parts_changed)
+        self.e.animation.callback_add("part.removed", self._anim_parts_changed)
 
         self._state_copy_button = StateCopyButton(self.e)
 
@@ -813,6 +816,16 @@ class PartAnimStateDetails(PartStateDetails):
         self._hide_all()
         self.hide()
 
+    def _check_and_show(self):
+        anim = self.e.animation
+        part = self.e.part
+        ret = anim.name and anim.part_belongs(part.name)
+        if ret:
+            self._show()
+        else:
+            self._hide()
+        return ret
+
     def _part_update(self, emissor, data):
         if self.part_evas:
             self.part_evas.on_resize_del(self._size_changed)
@@ -821,30 +834,29 @@ class PartAnimStateDetails(PartStateDetails):
         self.part_evas.on_resize_add(self._size_changed)
         self._size_changed(self.part_evas)
 
-        if self.anim:
-            self._show()
+        self._check_and_show()
 
     def _part_unselected(self, emissor, data):
         if self.part_evas:
             self.part_evas.on_resize_del(self._size_changed)
 
         self.part_evas = None
+        self.part_edje = None
         self._hide()
 
     def _anim_selected(self, emissor, data):
-        self.anim = True
-
-        if self.part_edje:
-            self._show()
+        self._check_and_show()
 
     def _anim_unselected(self, emissor, data):
-        self.anim = None
         self._hide()
+
+    def _anim_parts_changed(self, emissor, data):
+        self._check_and_show()
 
     def _state_changed_cb(self, emissor, data):
         if not data:
             return
         self.part_edje.state_selected_set(data)
         self.state = self.e.part.state._state
-        if self.anim:
+        if self._check_and_show():
             self._update()

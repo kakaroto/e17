@@ -17,6 +17,7 @@
 
 import edje
 import evas
+import elementary
 
 from details import EditjeDetails
 from details_widget_entry import WidgetEntry
@@ -24,17 +25,20 @@ from details_widget_combo import WidgetCombo
 from prop import Property, PropertyTable
 from floater import Wizard
 from clist import CList
+from parts import PartsList
 from groupselector import NameEntry
 from operation import Operation
+from error_notify import ErrorNotify
 
 
 class AnimationsList(CList):
-    def __init__(self, parent, new_anim_cb, anims_list_cb):
+    def __init__(self, parent, new_anim_cb, anims_list_cb, parts_list_cb):
         CList.__init__(self, parent)
         self.e = parent.e
 
         self._new_anim_cb = new_anim_cb
         self._anims_list_cb = anims_list_cb
+        self._parts_list_cb = parts_list_cb
 
         self._options_load()
         self.options = True
@@ -97,7 +101,8 @@ class AnimationsList(CList):
     def _new_cb(self, obj, emission, source):
         anim_wiz = NewAnimationWizard(
             self._parent, new_anim_cb=self._new_anim_cb,
-            anims_list_cb=self._anims_list_cb)
+            anims_list_cb=self._anims_list_cb,
+            parts_list_cb=self._parts_list_cb)
         anim_wiz.open()
 
     def _remove_cb(self, obj, emission, source):
@@ -105,8 +110,82 @@ class AnimationsList(CList):
             self.e.animation_del(i[0])
 
 
+class AnimationsPartsList(PartsList):
+    def __init__(self, parent, editable_grp, operation_stack_cb):
+        PartsList.__init__(self, parent, editable_grp, operation_stack_cb)
+
+        self._remove_confirmation = None
+
+        self._edit_grp.animation.callback_add("animation.changed",
+                                              self._animation_changed_cb)
+        self._edit_grp.animation.callback_add("animation.unselected",
+                                              self._animation_changed_cb)
+
+    def _animation_changed_cb(self, emissor, data):
+        # Nasty hack
+        self._parts_update_cb(None, self._edit_grp.parts)
+
+    def _parts_update_cb(self, emissor, data):
+        if not self._edit_grp.animation.name:
+            PartsList._parts_update_cb(self, emissor, data)
+            return
+
+        parts = data
+        self.clear()
+        for p in parts[::-1]:
+            chk = elementary.Check(self._parent)
+            chk.state_set(self._edit_grp.animation.parts.get(p))
+            chk.callback_changed_add(self._check_changed_cb, p)
+            chk.show()
+            self.add_full(p, end=chk)
+        self.go()
+
+    def _part_added_cb(self, emissor, data):
+        if not self._edit_grp.animation.name:
+            PartsList._part_added_cb(self, emissor, data)
+            return
+
+        chk = elementary.Check(self._parent)
+        chk.state_set(False)
+        chk.callback_changed_add(self._check_changed_cb, data)
+        chk.show()
+        self.add_full(data, end=chk)
+        self.go()
+
+    def _check_changed_cb(self, obj, part):
+        if obj.state:
+            self._edit_grp.animation.part_add(part)
+        else:
+            # FIXME: Take the confirmation out of this function
+            self._notification = ErrorNotify(self,
+                                            elementary.ELM_NOTIFY_ORIENT_CENTER)
+            self._notification.title = "Part Removal"
+            lb = elementary.Label(self._notification)
+            lb.label_set("Are you sure you want to remove<br>"
+                         "this part from the animation?")
+            lb.show()
+            self._notification.pack_end(lb)
+            self._notification.action_add("Remove",
+                                          self._confirm_remove_cb, data=part)
+            self._notification.action_add("Cancel",
+                                          self._cancel_remove_cb, data=obj)
+            self._notification.show()
+
+    def _confirm_remove_cb(self, btn, part):
+        self._edit_grp.animation.part_remove(part)
+        self._notification_delete()
+
+    def _cancel_remove_cb(self, btn, chk):
+        self._notification_delete()
+        chk.state = True
+
+    def _notification_delete(self):
+        self._notification.delete()
+        self._notification = None
+
+
 class NewAnimationWizard(Wizard):
-    def __init__(self, parent, new_anim_cb=None, anims_list_cb=None):
+    def __init__(self, parent, new_anim_cb=None, anims_list_cb=None, parts_list_cb=None):
         if not new_anim_cb or not anims_list_cb:
             raise TypeError("You must set callbacks for animations retrieval"
                             " and creation on NewAnimationWizard objects.")
@@ -123,6 +202,24 @@ class NewAnimationWizard(Wizard):
             align_hints=(evas.EVAS_HINT_FILL, 0.5))
         self.content_add("default", self._anim_name_entry)
         self._anim_name_entry.show()
+
+        lbl = elementary.Label(self)
+        lbl.label_set("Select the parts to use in the animation. An empty selection will use all parts.")
+        self.content_add("default", lbl)
+        lbl.show()
+
+        self._parts_list = elementary.List(self)
+        self._parts_list.size_hint_weight_set(evas.EVAS_HINT_EXPAND,
+                                              evas.EVAS_HINT_EXPAND)
+        self._parts_list.size_hint_align_set(evas.EVAS_HINT_FILL,
+                                             evas.EVAS_HINT_FILL)
+        if parts_list_cb:
+            for p in parts_list_cb():
+                self._parts_list.item_append(p)
+        self._parts_list.multi_select = True
+        self._parts_list.go()
+        self.content_add("default", self._parts_list)
+        self._parts_list.show()
 
         self.alternate_background_set(True)
 
@@ -161,7 +258,14 @@ class NewAnimationWizard(Wizard):
 
     def _add(self):
         name = self._anim_name_entry.entry
-        success = self._new_anim_cb(name)
+        its = self._parts_list.selected_items_get()
+        if not its:
+            parts = None
+        else:
+            parts = []
+            for it in its:
+                parts.append(it.label_get())
+        success = self._new_anim_cb(name, parts)
         if success:
             self.close()
         else:
