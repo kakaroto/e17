@@ -69,9 +69,6 @@ Object::~Object()
 {
   //FIXME: Remove callbacks?
   evas_object_del( o );
-  
-  // Shut down the Edje library (if internal count is zero)
-  Base::shutdown ();
 }
 
 void Object::setFile( const std::string &filename, const std::string &groupname )
