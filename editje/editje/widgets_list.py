@@ -93,7 +93,11 @@ class WidgetsList(Collapsable):
         list = elementary.List(self._pager)
         list.bounce_set(False, False)
         list.callback_selected_add(self._widget_selected_cb)
-        for widget in self._loaded_types[group]:
+
+        types = self._loaded_types[group]
+        types.sort(key=lambda x: (str.lower(x[0])))
+
+        for widget in types:
             ico = None
             if widget[1] == edje.EDJE_PART_TYPE_EXTERNAL:
                 ico = widget[2].icon_add(self.evas)
