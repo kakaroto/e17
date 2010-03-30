@@ -36,6 +36,7 @@ class FileSelector(Manager, elementary.Table):
 
         self._filter_call = None
         self._home = os.getenv("HOME")
+        self._ls_dir = dict()
 
         self._navigator_init()
         self._files_init()
@@ -44,8 +45,9 @@ class FileSelector(Manager, elementary.Table):
 
         self._path = ""
         self._file = ""
-        self.path = os.getenv("PWD")
+        self.save = False
         self.multi = False
+        self.path = os.getenv("PWD")
         self.__actions_list = {}
 
     def _navigator_init(self):
@@ -98,13 +100,13 @@ class FileSelector(Manager, elementary.Table):
         self._directories.show()
 
     def _files_init(self):
-        bx = elementary.Box(self)
-        bx.size_hint_weight_set(evas.EVAS_HINT_EXPAND,
-                                evas.EVAS_HINT_EXPAND)
-        bx.size_hint_align_set(evas.EVAS_HINT_FILL,
-                               evas.EVAS_HINT_FILL)
-        self.pack(bx, 1, 0, 3, 4)
-        bx.show()
+        self._right_bx = elementary.Box(self)
+        self._right_bx.size_hint_weight_set(evas.EVAS_HINT_EXPAND,
+                                            evas.EVAS_HINT_EXPAND)
+        self._right_bx.size_hint_align_set(evas.EVAS_HINT_FILL,
+                                           evas.EVAS_HINT_FILL)
+        self.pack(self._right_bx, 1, 0, 3, 4)
+        self._right_bx.show()
 
         sc = elementary.Scroller(self)
         sc.content_min_limit(0, 1)
@@ -113,7 +115,7 @@ class FileSelector(Manager, elementary.Table):
         sc.bounce_set(False, False)
         sc.size_hint_weight_set(evas.EVAS_HINT_EXPAND, 0.0)
         sc.size_hint_align_set(evas.EVAS_HINT_FILL, evas.EVAS_HINT_FILL)
-        bx.pack_end(sc)
+        self._right_bx.pack_end(sc)
         sc.show()
 
         self._nav_path = elementary.Entry(self)
@@ -136,17 +138,58 @@ class FileSelector(Manager, elementary.Table):
         self._files.callback_selected_add(self._file_selected)
         self._files.callback_unselected_add(self._file_unselected)
         self._files.callback_clicked_add(self._file_clicked)
-        bx.pack_end(self._files)
+        self._right_bx.pack_end(self._files)
         self._files.show()
 
+        self._file_sc = elementary.Scroller(self)
+        self._file_sc.content_min_limit(0, 1)
+        self._file_sc.policy_set(elementary.ELM_SCROLLER_POLICY_OFF,
+                      elementary.ELM_SCROLLER_POLICY_OFF)
+        self._file_sc.bounce_set(False, False)
+        self._file_sc.size_hint_weight_set(evas.EVAS_HINT_EXPAND, 0.0)
+        self._file_sc.size_hint_align_set(evas.EVAS_HINT_FILL, evas.EVAS_HINT_FILL)
+
+        self._file_entry = elementary.Entry(self)
+        self._file_entry.single_line_set(True)
+        self._file_entry.size_hint_weight_set(evas.EVAS_HINT_EXPAND,
+                                            evas.EVAS_HINT_EXPAND)
+        self._file_entry.size_hint_align_set(evas.EVAS_HINT_FILL, 0.5)
+        self._file_entry.editable_set(True)
+        self._file_entry.entry_set("")
+        self._file_entry.callback_changed_add(self._file_entry_change)
+        self._file_sc.content_set(self._file_entry)
+        self._file_entry.show()
+
     def _multi_set(self, value):
+        if self.save and value:
+            value = False
         self._files.multi_select_set(value)
         self._multi = value
+
+        if not value:
+            selected = self._files.selected_items_get()
+            for i in selected[:-1]:
+                i.selected_set(False)
 
     def _multi_get(self):
         return self._multi
 
     multi = property(_multi_get, _multi_set)
+
+    def _save_set(self, value):
+        self._save = value
+        if self._save:
+            self._right_bx.pack_end(self._file_sc)
+            self._file_sc.show()
+            self.multi = False
+        else:
+            self._file_sc.hide()
+            self._right_bx.unpack(self._file_sc)
+
+    def _save_get(self):
+        return self._save
+
+    save = property(_save_get, _save_set)
 
     def _actions_init(self):
         sp = elementary.Separator(self)
@@ -198,9 +241,11 @@ class FileSelector(Manager, elementary.Table):
         self.path = head
 
     def _path_go(self, obj, en):
+        print en.entry_get()
         return
 
     def _update(self, obj):
+        self._ls_dir.clear()
         self._files.clear()
         self.event_emit("file.selection_clear", None)
         self._directories.clear()
@@ -218,16 +263,16 @@ class FileSelector(Manager, elementary.Table):
                     ic = elementary.Icon(self)
                     ic.standard_set("folder")
                     ic.scale_set(0, 0)
-                    self._directories.item_append(file, ic, None, None, full)
+                    it = self._directories.item_append(file, ic, None, None, full)
+                    self._ls_dir[file] = it
                 elif os.path.isfile(full):
                     if not filter or self._filter_call(full):
                         ic = elementary.Icon(self)
                         ic.standard_set("file")
                         ic.scale_set(0, 0)
-                        item = self._files.item_append(file, ic, None, None,
+                        it = self._files.item_append(file, ic, None, None,
                                                        full)
-                        if full == self.file:
-                            item.selected_set(True)
+                        self._ls_dir[file] = it
 
         self._files.go()
         self._directories.go()
@@ -239,6 +284,7 @@ class FileSelector(Manager, elementary.Table):
         self.path = self._nav_path.entry_get()
 
     def _file_selected(self, li, it):
+        self._file_entry.entry_set(it.label_get())
         self.event_emit("file.selected", it.data_get()[0][0])
 
     def _file_unselected(self, li, it):
@@ -248,6 +294,18 @@ class FileSelector(Manager, elementary.Table):
 
     def _file_clicked(self, li, it):
         self.event_emit("file.clicked", it.data_get()[0][0])
+
+    def _file_entry_change(self, en):
+        if not self.save:
+            return
+
+        it = self._ls_dir.get(en.entry_get())
+        if it:
+            it.selected_set(True)
+        else:
+            it = self._files.selected_item_get()
+            if it:
+                it.selected_set(False)
 
     # PATH
     def _path_set(self, path):
@@ -272,10 +330,14 @@ class FileSelector(Manager, elementary.Table):
         if os.path.isfile(file):
             self._file = file
             self.path = os.path.dirname(file)
+            self._file_entry.entry_set(os.path.basename(file))
         else:
             self._file = ""
 
     def _file_get(self):
+        if self.save:
+            return os.path.join(self.path, self._file_entry.entry_get())
+
         item = self._files.selected_item_get()
         if item:
             return item.data_get()[0][0]
@@ -284,6 +346,9 @@ class FileSelector(Manager, elementary.Table):
     file = property(_file_get, _file_set)
 
     def _files_get(self):
+        if self.save:
+            return [os.path.join(self.path, self._file_entry.entry_get())]
+
         ret = []
         for i in self._files.selected_items_get():
             ret.append(i.data_get()[0][0])
@@ -350,9 +415,21 @@ if __name__ == "__main__":
     def filter(file):
         return file.endswith(".edj")
 
+    def ok(*args):
+        print "Save:", fs.save
+        print "File:", fs.file
+        print "Files:", fs.files
+
+    def save(*args):
+        fs.save = not fs.save
+
+    def multi(*args):
+        fs.multi = not fs.multi
+
     fs.filter = filter
-    fs.action_add("Ok", None)
-    fs.action_add("Cancel", None)
+    fs.action_add("Ok", ok)
+    fs.action_add("Save", save)
+    fs.action_add("Multi", multi)
     fs.show()
 
     win.show()
