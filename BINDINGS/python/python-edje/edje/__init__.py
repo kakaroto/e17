@@ -28,13 +28,14 @@ from c_edje import Edje, shutdown, frametime_set, frametime_get, \
      text_class_set, text_class_del, text_class_list, \
      extern_object_min_size_set, extern_object_max_size_set, \
      extern_object_aspect_set, available_modules_get, message_signal_process, \
-     module_load, external_param_info_get, EdjeLoadError, Message, \
-     MessageSignal, MessageString, MessageInt, MessageFloat, MessageStringSet, \
-     MessageIntSet, MessageFloatSet, MessageStringInt, MessageStringFloat, \
-     MessageStringIntSet, MessageStringFloatSet, ExternalParam, \
-     ExternalParamInfo, ExternalParamInfoInt, ExternalParamInfoInt, \
-     ExternalParamInfoDouble, ExternalParamInfoString, ExternalParamInfoBool, \
-     ExternalType, ExternalIterator
+     module_load, external_param_info_get, external_type_get, \
+     EdjeLoadError, Message, MessageSignal, MessageString, MessageInt, \
+     MessageFloat, MessageStringSet, MessageIntSet, MessageFloatSet, \
+     MessageStringInt, MessageStringFloat, MessageStringIntSet, \
+     MessageStringFloatSet, ExternalParam, ExternalParamInfo, \
+     ExternalParamInfoInt, ExternalParamInfoInt, ExternalParamInfoDouble, \
+     ExternalParamInfoString, ExternalParamInfoBool, ExternalType, \
+     ExternalIterator
 
 EDJE_MESSAGE_NONE = 0
 EDJE_MESSAGE_SIGNAL = 1
