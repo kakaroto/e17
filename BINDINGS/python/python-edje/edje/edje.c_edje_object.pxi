@@ -501,6 +501,8 @@ cdef public class Edje(evas.c_evas.Object) [object PyEdje, type PyEdje_Type]:
         @rtype: bool
         """
         cdef Edje_External_Param p
+        cdef Edje_External_Param_Type t
+
         p.name = param
         if isinstance(value, bool): # bool is int, so keep it before!
             p.type = EDJE_EXTERNAL_PARAM_TYPE_BOOL
@@ -512,7 +514,10 @@ cdef public class Edje(evas.c_evas.Object) [object PyEdje, type PyEdje_Type]:
             p.type = EDJE_EXTERNAL_PARAM_TYPE_DOUBLE
             p.d = value
         elif isinstance(value, (str, unicode)):
-            p.type = EDJE_EXTERNAL_PARAM_TYPE_STRING
+            # may be STRING or CHOICE
+            p.type = edje_object_part_external_param_type_get(
+                self.obj, part, param)
+
             if isinstance(value, unicode):
                 value = value.encode("utf-8")
             p.s = value
@@ -546,6 +551,10 @@ cdef public class Edje(evas.c_evas.Object) [object PyEdje, type PyEdje_Type]:
         elif t == EDJE_EXTERNAL_PARAM_TYPE_DOUBLE:
             return p.d
         elif t == EDJE_EXTERNAL_PARAM_TYPE_STRING:
+            if p.s == NULL:
+                return ""
+            return p.s
+        elif t == EDJE_EXTERNAL_PARAM_TYPE_CHOICE:
             if p.s == NULL:
                 return ""
             return p.s

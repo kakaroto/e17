@@ -110,11 +110,12 @@ cdef extern from "Edje.h":
        EDJE_TWEEN_MODE_LAST       = 5
 
     ctypedef enum Edje_External_Param_Type:
-        EDJE_EXTERNAL_PARAM_TYPE_INT    = 0
-        EDJE_EXTERNAL_PARAM_TYPE_DOUBLE = 1
-        EDJE_EXTERNAL_PARAM_TYPE_STRING = 2
-        EDJE_EXTERNAL_PARAM_TYPE_BOOL   = 3
-        EDJE_EXTERNAL_PARAM_TYPE_MAX    = 4
+       EDJE_EXTERNAL_PARAM_TYPE_INT    = 0
+       EDJE_EXTERNAL_PARAM_TYPE_DOUBLE = 1
+       EDJE_EXTERNAL_PARAM_TYPE_STRING = 2
+       EDJE_EXTERNAL_PARAM_TYPE_BOOL   = 3
+       EDJE_EXTERNAL_PARAM_TYPE_CHOICE = 4
+       EDJE_EXTERNAL_PARAM_TYPE_MAX    = 5
 
     cdef int EDJE_EXTERNAL_INT_UNSET
     cdef double EDJE_EXTERNAL_DOUBLE_UNSET
@@ -181,11 +182,15 @@ cdef extern from "Edje.h":
     ctypedef struct aux_external_param_info_bool:
         char *default "def", *false_str, *true_str
 
+    ctypedef struct aux_external_param_info_choice:
+        char *default "def", **choices
+
     ctypedef union aux_external_param_info:
         aux_external_param_info_int i
         aux_external_param_info_double d
         aux_external_param_info_string s
         aux_external_param_info_bool b
+        aux_external_param_info_choice c
 
     ctypedef struct Edje_External_Param_Info:
         char *name
@@ -342,6 +347,7 @@ cdef extern from "Edje.h":
     evas.c_evas.Eina_Bool edje_module_load(char *name)
     evas.c_evas.Eina_List *edje_available_modules_get()
 
+
 cdef class Message:
     cdef int _type
     cdef int _id
@@ -390,8 +396,10 @@ cdef class MessageStringIntSet(Message):
 cdef class MessageStringFloatSet(Message):
     cdef Edje_Message_String_Float_Set *obj
 
+
 cdef class ExternalParam:
     cdef Edje_External_Param *obj
+
 
 cdef class ExternalParamInfo:
     cdef Edje_External_Param_Info *obj
@@ -399,17 +407,26 @@ cdef class ExternalParamInfo:
     cdef Edje_External_Type *_external_type_obj
     cdef _set_external_type(self, t)
 
+
 cdef class ExternalParamInfoInt(ExternalParamInfo):
     pass
+
 
 cdef class ExternalParamInfoDouble(ExternalParamInfo):
     pass
 
+
 cdef class ExternalParamInfoString(ExternalParamInfo):
     pass
 
+
 cdef class ExternalParamInfoBool(ExternalParamInfo):
     pass
+
+
+cdef class ExternalParamInfoChoice(ExternalParamInfo):
+    pass
+
 
 cdef class ExternalType:
     cdef object _name

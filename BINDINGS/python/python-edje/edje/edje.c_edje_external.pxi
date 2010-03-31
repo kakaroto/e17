@@ -1,4 +1,5 @@
-# Copyright (C) 2007-2009 Gustavo Sverzut Barbieri, Ulisses Furquim, Ivan Briano
+# Copyright (C) 2007-2009 Gustavo Sverzut Barbieri, Ulisses Furquim,
+# Ivan Briano
 #
 # This file is part of Python-Edje.
 #
@@ -18,6 +19,7 @@
 # This file is included verbatim by edje.c_edje.pyx
 
 import warnings
+
 
 cdef class ExternalParam:
     property name:
@@ -65,11 +67,13 @@ cdef class ExternalParam:
                 return self.obj.i
             elif self.obj.type == EDJE_EXTERNAL_PARAM_TYPE_DOUBLE:
                 return self.obj.d
-            elif self.obj.type == EDJE_EXTERNAL_PARAM_TYPE_STRING:
+            elif self.obj.type == EDJE_EXTERNAL_PARAM_TYPE_STRING or \
+                    self.obj.type == EDJE_EXTERNAL_PARAM_TYPE_CHOICE:
                 if self.obj.s != NULL:
                     return self.obj.s
             elif self.obj.type == EDJE_EXTERNAL_PARAM_TYPE_BOOL:
                 return self.obj.i
+
 
 cdef ExternalParam ExternalParam_from_ptr(Edje_External_Param *param):
     cdef ExternalParam p
@@ -151,6 +155,7 @@ cdef class ExternalParamInfoInt(ExternalParamInfo):
             return False
         return True
 
+
 cdef class ExternalParamInfoDouble(ExternalParamInfo):
     property default:
         def __get__(self):
@@ -185,6 +190,7 @@ cdef class ExternalParamInfoDouble(ExternalParamInfo):
             return False
         return True
 
+
 cdef class ExternalParamInfoString(ExternalParamInfo):
     property default:
         def __get__(self):
@@ -215,6 +221,7 @@ cdef class ExternalParamInfoString(ExternalParamInfo):
             if self.obj.info.s.deny_fmt == NULL:
                 return None
             return self.obj.info.s.deny_fmt
+
 
 cdef class ExternalParamInfoBool(ExternalParamInfo):
     property default:
@@ -258,6 +265,55 @@ cdef class ExternalParamInfoBool(ExternalParamInfo):
             return t
 
 
+cdef class ExternalParamInfoChoice(ExternalParamInfo):
+    property default:
+        def __get__(self):
+            if self.obj.info.c.default == NULL:
+                return None
+            return self.obj.info.c.default
+
+    property translated_default:
+        def __get__(self):
+            cdef char *t
+            if self._external_type_obj == NULL or \
+               self._external_type_obj.translate == NULL:
+                return self.default
+            t = self._external_type_obj.translate(self._external_type_obj.data,
+                                                  self.obj.info.c.default)
+            if t == NULL:
+                return self.default
+            return t
+
+    property choices:
+        def __get__(self):
+            cdef int i
+
+            if self.obj.info.c.choices == NULL:
+                return None
+
+            i = 0
+            lst = []
+            while self.obj.info.c.choices[i] != NULL:
+                lst.append(self.obj.info.c.choices[i])
+                i += 1
+            return lst
+
+    property translated_choices:
+        def __get__(self):
+            cdef char *t
+            if self._external_type_obj == NULL or \
+               self._external_type_obj.translate == NULL:
+                return self.choices
+
+            orig = self.choices
+            ret = []
+            for choice in orig:
+                ret.append(
+                self._external_type_obj.translate(
+                        self._external_type_obj.data, choice) or choice)
+            return ret
+
+
 cdef ExternalParamInfo ExternalParamInfo_from_ptr(type, Edje_External_Param_Info *ptr):
     cdef ExternalParamInfo p
     if ptr.type == EDJE_EXTERNAL_PARAM_TYPE_INT:
@@ -268,6 +324,8 @@ cdef ExternalParamInfo ExternalParamInfo_from_ptr(type, Edje_External_Param_Info
         p = ExternalParamInfoString()
     elif ptr.type == EDJE_EXTERNAL_PARAM_TYPE_BOOL:
         p = ExternalParamInfoBool()
+    elif ptr.type == EDJE_EXTERNAL_PARAM_TYPE_CHOICE:
+        p = ExternalParamInfoChoice()
     else:
         return None
     p.obj = ptr
