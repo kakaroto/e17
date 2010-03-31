@@ -84,7 +84,7 @@ if __name__ == "__main__":
 
                 pop.action_add("Ignore Swap", open_swap_error,
                                data=(pop, swapfile.REPLACE, sf, group))
-                pop.action_add("Recovery", open_swap_error,
+                pop.action_add("Recover", open_swap_error,
                                data=(pop, swapfile.RESTORE, sf, group))
                 pop.action_add("Abort", cancel, data=pop)
 
