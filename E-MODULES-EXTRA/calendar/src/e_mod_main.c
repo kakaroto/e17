@@ -341,7 +341,10 @@ _month_minus(void *data, __UNUSED__ Evas_Object *obj, __UNUSED__ const char *emi
    inst->displayed_time.tm_mon--;
    inst->displayed_time.tm_mday = 1;
    if (inst->displayed_time.tm_mon < 0)
-     inst->displayed_time.tm_mon = 11;
+     {
+	inst->displayed_time.tm_mon = 11;
+	inst->displayed_time.tm_year--;
+     }
    _calendar_popup_content_update(inst);
 }
 
@@ -353,7 +356,10 @@ _month_plus(void *data, __UNUSED__ Evas_Object *obj, __UNUSED__ const char *emis
    inst->displayed_time.tm_mon++;
    inst->displayed_time.tm_mday = 1;
    if (inst->displayed_time.tm_mon > 11)
-     inst->displayed_time.tm_mon = 0;
+     {
+	inst->displayed_time.tm_mon = 0;
+	inst->displayed_time.tm_year++;
+     }
    _calendar_popup_content_update(inst);
 }
 
