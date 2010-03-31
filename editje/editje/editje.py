@@ -64,7 +64,6 @@ class Editje(elementary.Window):
         elementary.Window.__init__(self, "editje", elementary.ELM_WIN_BASIC)
         self.title_set("Editje - Edje Editor")
         self.callback_destroy_add(self._destroy_cb)
-        self.autodel_set(True)
         self.resize(800, 600)
 
         # Load Edje Theme File
@@ -114,7 +113,26 @@ class Editje(elementary.Window):
                 self._redo_cb(self, None, None)
 
     def _destroy_cb(self, obj):
+        if self.e.filename:
+            self._close()
+            return
+
+        def save_as(bt, notification):
+            notification.hide()
+            notification.delete()
+            self.save_as()
+
+        notification = ErrorNotify(self,
+                                   orient=elementary.ELM_NOTIFY_ORIENT_CENTER)
+        notification.title = "Not saved"
+        notification.action_add("Close", self._close)
+        notification.action_add("Save", save_as, None, notification)
+        notification.show()
+
+    def _close(self, *args):
         self.e.close()
+        self.hide()
+        self.delete()
 
     def _cmd_write(self, cls, *args):
         cmd = "CMD,%s" % (cls,)
@@ -162,8 +180,17 @@ class Editje(elementary.Window):
 
         def save(bt, mode=None):
             file = fs.file
+
+            if not file:
+                notification = ErrorNotify(win)
+                notification.title = "Please set the filename"
+                notification.action_add("Ok", notify_close, None, notification)
+                notification.show()
+                return
+
             if not accepted_filetype(file):
                 file = file + ".edj"
+
             try:
                 self.e.save_as(file, mode)
                 cancel(bt)

@@ -336,6 +336,9 @@ class FileSelector(Manager, elementary.Table):
 
     def _file_get(self):
         if self.save:
+            file = self._file_entry.entry_get()
+            if not file:
+                return file
             return os.path.join(self.path, self._file_entry.entry_get())
 
         item = self._files.selected_item_get()
@@ -347,7 +350,7 @@ class FileSelector(Manager, elementary.Table):
 
     def _files_get(self):
         if self.save:
-            return [os.path.join(self.path, self._file_entry.entry_get())]
+            return [self.file]
 
         ret = []
         for i in self._files.selected_items_get():
