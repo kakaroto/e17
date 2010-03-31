@@ -570,7 +570,8 @@ class PartStateDetails(EditjeDetails):
         self["image"]["middle"].value = self.state.image_border_fill_get()
 
     def _create_props_by_type(self, type):
-        self._params_info = edje.external_param_info_get(type)
+        type = edje.external_type_get(type)
+        self._params_info = type.parameters_info_get()
         for p in self._params_info:
             prop = Property(self._parent, p.name)
             if p.type == edje.EDJE_EXTERNAL_PARAM_TYPE_BOOL:
