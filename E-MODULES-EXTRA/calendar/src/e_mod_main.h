@@ -6,7 +6,7 @@
 typedef struct _Config Config;
 typedef struct _Config_Item Config_Item;
 
-struct _Config 
+struct _Config
 {
    E_Module        *module;
    E_Menu          *menu, *menu_firstweekday;
@@ -15,7 +15,7 @@ struct _Config
    Eina_List       *items;
 };
 
-struct _Config_Item 
+struct _Config_Item
 {
    const char *id;
    int firstweekday;

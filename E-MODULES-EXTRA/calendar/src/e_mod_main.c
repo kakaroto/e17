@@ -50,7 +50,6 @@ static void _calendar_popup_content_create(Instance *inst);
 static void _calendar_popup_content_populate(Instance *inst, struct tm *time);
 static void _calendar_popup_content_update(Instance *inst);
 static void _calendar_popup_destroy(Instance *inst);
-static void _calendar_popup_cleanup(Instance *inst);
 static void _cb_action(E_Object *obj, const char *params);
 static void _cb_mouse_in(void *data, Evas *e, Evas_Object *obj, void *event_info);
 static void _cb_mouse_out(void *data, Evas *e, Evas_Object *obj, void *event_info);
@@ -73,9 +72,11 @@ Config *calendar_conf = NULL;
 
 static const E_Gadcon_Client_Class _gc_class =
 {
-   GADCON_CLIENT_CLASS_VERSION, "calendar",
-     {_gc_init, _gc_shutdown, _gc_orient, _gc_label, _gc_icon, _gc_id_new, NULL, NULL},
-   E_GADCON_CLIENT_STYLE_PLAIN
+  GADCON_CLIENT_CLASS_VERSION, "calendar",
+  {
+    _gc_init, _gc_shutdown, _gc_orient, _gc_label, _gc_icon, _gc_id_new,
+    NULL, e_gadcon_site_is_not_toolbar
+  },  E_GADCON_CLIENT_STYLE_PLAIN
 };
 
 static E_Gadcon_Client *
@@ -139,29 +140,38 @@ _gc_shutdown(E_Gadcon_Client *gcc)
 }
 
 static void
-_gc_orient(E_Gadcon_Client *gcc, E_Gadcon_Orient orient) 
+_gc_orient(E_Gadcon_Client *gcc, E_Gadcon_Orient orient)
 {
-   e_gadcon_client_aspect_set(gcc, 16, 16);
-   e_gadcon_client_min_size_set(gcc, 16, 16);
+   Instance *inst;
+   Evas_Coord mw, mh;
+
+   inst = gcc->data;
+   mw = 0, mh = 0;
+   edje_object_size_min_get(inst->calendar->o_icon, &mw, &mh);
+   if ((mw < 1) || (mh < 1))
+     edje_object_size_min_calc(inst->calendar->o_icon, &mw, &mh);
+   if (mw < 4) mw = 4;
+   if (mh < 4) mh = 4;
+   e_gadcon_client_aspect_set(gcc, mw, mh);
+   e_gadcon_client_min_size_set(gcc, mw, mh);
 }
 
 static char *
-_gc_label(E_Gadcon_Client_Class *client_class) 
+_gc_label(E_Gadcon_Client_Class *client_class)
 {
    return "Calendar";
 }
 
 static Evas_Object *
-_gc_icon(E_Gadcon_Client_Class *client_class, Evas *evas) 
+_gc_icon(E_Gadcon_Client_Class *client_class, Evas *evas)
 {
    Evas_Object *o;
    char buf[4096];
 
    if (!calendar_conf->module) return NULL;
-   
-   snprintf(buf, sizeof(buf), "%s/e-module-calendar.edj", 
+   snprintf(buf, sizeof(buf), "%s/e-module-calendar.edj",
 	    e_module_dir_get(calendar_conf->module));
-   
+
    o = edje_object_add(evas);
    edje_object_file_set(o, buf, "icon");
    return o;
@@ -464,7 +474,8 @@ _calendar_popup_content_create(Instance *inst)
 
    oe = edje_object_add(evas);
    if (!e_theme_edje_object_set(oe,
-				"base/theme/modules/calendar", "modules/calendar/header"))
+				"base/theme/modules/calendar",
+				"modules/calendar/header"))
      edje_object_file_set(oe, inst->edje_module, "modules/calendar/header");
    edje_object_part_swallow(oe, "content", label);
    edje_object_signal_callback_add(oe, "year", "minus", _year_minus, inst);
@@ -499,22 +510,20 @@ _calendar_popup_destroy(Instance *inst)
 }
 
 static void
-_calendar_popup_cleanup(Instance *inst)
-{
-   if (!inst->table) return;
-   e_object_del(E_OBJECT(inst->table));
-}
-
-static void
 _cb_action(E_Object *obj, const char *params)
 {
    Eina_List *l;
    Instance *inst;
+   Evas_Coord w, h;
 
    EINA_LIST_FOREACH(calendar_conf->instances, l, inst)
      {
 	if (!inst) continue;
 	if (!inst->popup) continue;
+
+	evas_object_geometry_get(inst->calendar->o_icon, NULL, NULL, &w, &h);
+	if (w == 0 || h == 0) continue ;
+
 	if (inst->popup->win->visible)
 	  {
 	     e_gadcon_popup_toggle_pinned(inst->popup);
@@ -654,33 +663,15 @@ e_modapi_init(E_Module *m)
 
    conf_item_edd = E_CONFIG_DD_NEW("Calendar_Config_Item", Config_Item);
    conf_edd = E_CONFIG_DD_NEW("Calendar_Config", Config);
-   
-   #undef T
-   #define T Config_Item
-   #undef D
-   #define D conf_item_edd
-   E_CONFIG_VAL(D, T, id, STR);
-   E_CONFIG_VAL(D, T, firstweekday, INT);
-   
-   #undef T
-   #define T Config
-   #undef D
-   #define D conf_edd
-   E_CONFIG_LIST(D, T, items, conf_item_edd);
-   
+
+   E_CONFIG_VAL(conf_item_edd, Config_Item, id, STR);
+   E_CONFIG_VAL(conf_item_edd, Config_Item, firstweekday, INT);
+   E_CONFIG_LIST(conf_edd, Config, items, conf_item_edd);
+
    calendar_conf = e_config_domain_load("module.calendar", conf_edd);
-   if (!calendar_conf) 
-     {
-	Config_Item *ci;
-	
-	calendar_conf = E_NEW(Config, 1);
-	ci = E_NEW(Config_Item, 1);
-	ci->id = eina_stringshare_add("0");
-	ci->firstweekday = 0;
-	
-	calendar_conf->items = eina_list_append(calendar_conf->items, ci);
-     }
-   
+   if (!calendar_conf)
+     calendar_conf = E_NEW(Config, 1);
+
    calendar_conf->module = m;
    e_gadcon_provider_register(&_gc_class);
    /* add module supplied action */
@@ -688,15 +679,16 @@ e_modapi_init(E_Module *m)
    if (act)
      {
 	act->func.go = _cb_action;
-	e_action_predef_name_set(D_("Calendar"), D_("Monthview Popup (Show/Hide)"), "calendar",
-				 "<none>", NULL, 0);
+	e_action_predef_name_set(D_("Calendar"),
+				 D_("Monthview Popup (Show/Hide)"),
+				 "calendar", "<none>", NULL, 0);
      }
    calendar_conf->timer = ecore_timer_add(1, _update_date, calendar_conf);
    return m;
 }
 
 EAPI int
-e_modapi_shutdown(E_Module *m) 
+e_modapi_shutdown(E_Module *m)
 {
    if (calendar_conf->timer) ecore_timer_del(calendar_conf->timer);
    calendar_conf->module = NULL;
@@ -709,10 +701,10 @@ e_modapi_shutdown(E_Module *m)
 	act = NULL;
      }
 
-   while (calendar_conf->items) 
+   while (calendar_conf->items)
      {
 	Config_Item *ci;
-	
+
 	ci = calendar_conf->items->data;
 	if (ci->id)
 	  eina_stringshare_del(ci->id);
@@ -727,7 +719,7 @@ e_modapi_shutdown(E_Module *m)
 }
 
 EAPI int
-e_modapi_save(E_Module *m) 
+e_modapi_save(E_Module *m)
 {
    e_config_domain_save("module.calendar", conf_edd, calendar_conf);
    return 1;
