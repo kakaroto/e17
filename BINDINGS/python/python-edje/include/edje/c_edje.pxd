@@ -332,6 +332,8 @@ cdef extern from "Edje.h":
     evas.c_evas.Eina_Bool edje_object_part_external_param_get(evas.c_evas.Evas_Object *obj, char *part, Edje_External_Param *param)
     Edje_External_Param_Type edje_object_part_external_param_type_get(evas.c_evas.Evas_Object *obj, char *part, char *param)
 
+    char *edje_external_param_type_str(Edje_External_Param_Type type)
+
     void edje_object_message_send(evas.c_evas.Evas_Object *obj, Edje_Message_Type type, int id, void *msg)
     void edje_object_message_handler_set(evas.c_evas.Evas_Object *obj, void(*func)(void *data, evas.c_evas.Evas_Object *obj, Edje_Message_Type type, int id, void *msg), void *data)
     void edje_object_message_signal_process(evas.c_evas.Evas_Object *obj)

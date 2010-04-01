@@ -57,7 +57,7 @@ cdef class ExternalParam:
         def __get__(self):
             if self.obj == NULL:
                 raise ValueError("Object uninitialized")
-            return self.obj.i
+            return bool(self.obj.i)
 
     property value:
         def __get__(self):
@@ -72,7 +72,7 @@ cdef class ExternalParam:
                 if self.obj.s != NULL:
                     return self.obj.s
             elif self.obj.type == EDJE_EXTERNAL_PARAM_TYPE_BOOL:
-                return self.obj.i
+                return bool(self.obj.i)
 
 
 cdef ExternalParam ExternalParam_from_ptr(Edje_External_Param *param):
@@ -327,6 +327,9 @@ cdef ExternalParamInfo ExternalParamInfo_from_ptr(type, Edje_External_Param_Info
     elif ptr.type == EDJE_EXTERNAL_PARAM_TYPE_CHOICE:
         p = ExternalParamInfoChoice()
     else:
+        msg = "Don't know how to convert parameter %s of type %s" % \
+              (ptr.name, edje_external_param_type_str(ptr.type))
+        warnings.warn(msg, Warning)
         return None
     p.obj = ptr
     p._set_external_type(type)

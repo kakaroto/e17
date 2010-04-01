@@ -218,12 +218,18 @@ cdef extern from "Edje_Edit.h":
     evas.c_evas.Eina_List * edje_edit_state_external_params_list_get(evas.c_evas.Evas_Object *obj, char *part, char *state)
     evas.c_evas.Eina_Bool edje_edit_state_external_param_get(evas.c_evas.Evas_Object *obj, char *part, char *state, char *param, edje.c_edje.Edje_External_Param_Type *type, void **value)
     evas.c_evas.Eina_Bool edje_edit_state_external_param_int_get(evas.c_evas.Evas_Object *obj, char *part, char *state, char *param, int *value)
+    evas.c_evas.Eina_Bool edje_edit_state_external_param_bool_get(evas.c_evas.Evas_Object *obj, char *part, char *state, char *param, evas.c_evas.Eina_Bool *value)
     evas.c_evas.Eina_Bool edje_edit_state_external_param_double_get(evas.c_evas.Evas_Object *obj, char *part, char *state, char *param, double *value)
     evas.c_evas.Eina_Bool edje_edit_state_external_param_string_get(evas.c_evas.Evas_Object *obj, char *part, char *state, char *param, char **value)
+    evas.c_evas.Eina_Bool edje_edit_state_external_param_choice_get(evas.c_evas.Evas_Object *obj, char *part, char *state, char *param, char **value)
     evas.c_evas.Eina_Bool edje_edit_state_external_param_set(evas.c_evas.Evas_Object *obj, char *part, char *state, char *param, edje.c_edje.Edje_External_Param_Type type, ...)
     evas.c_evas.Eina_Bool edje_edit_state_external_param_int_set(evas.c_evas.Evas_Object *obj, char *part, char *state, char *param, int value)
+    evas.c_evas.Eina_Bool edje_edit_state_external_param_bool_set(evas.c_evas.Evas_Object *obj, char *part, char *state, char *param, evas.c_evas.Eina_Bool value)
     evas.c_evas.Eina_Bool edje_edit_state_external_param_double_set(evas.c_evas.Evas_Object *obj, char *part, char *state, char *param, double value)
     evas.c_evas.Eina_Bool edje_edit_state_external_param_string_set(evas.c_evas.Evas_Object *obj, char *part, char *state, char *param, char *value)
+    evas.c_evas.Eina_Bool edje_edit_state_external_param_choice_set(evas.c_evas.Evas_Object *obj, char *part, char *state, char *param, char *value)
+    edje.c_edje.Edje_External_Param_Type edje_object_part_external_param_type_get(evas.c_evas.Evas_Object *obj, char *part, char *param)
+    char *edje_external_param_type_str(edje.c_edje.Edje_External_Param_Type type)
 
     # TEXT API
     char * edje_edit_state_text_get(evas.c_evas.Evas_Object *obj, char *part, char *state)

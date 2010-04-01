@@ -483,19 +483,25 @@ cdef class State:
         lst = edje_edit_state_external_params_list_get(self.edje.obj, self.part,
                                                        self.name)
         while lst:
-            ret.append(edje.c_edje._ExternalParam_from_ptr(<long>lst.data))
+            p = edje.c_edje._ExternalParam_from_ptr(<long>lst.data)
+            if p is not None:
+                ret.append(p)
             lst = lst.next
         return ret
 
     def external_param_get(self, param):
         cdef edje.c_edje.Edje_External_Param_Type type
         cdef void *value
+        cdef char *s
 
         if not edje_edit_state_external_param_get(self.edje.obj, self.part,
                                                   self.name, param, &type,
                                                   &value):
             return None
-        if type == edje.EDJE_EXTERNAL_PARAM_TYPE_INT:
+        if type == edje.EDJE_EXTERNAL_PARAM_TYPE_BOOL:
+            b = (<evas.c_evas.Eina_Bool *>value)[0]
+            return (type, bool(b))
+        elif type == edje.EDJE_EXTERNAL_PARAM_TYPE_INT:
             i = (<int *>value)[0]
             return (type, i)
         elif type == edje.EDJE_EXTERNAL_PARAM_TYPE_DOUBLE:
@@ -503,19 +509,42 @@ cdef class State:
             return (type, d)
         elif type == edje.EDJE_EXTERNAL_PARAM_TYPE_STRING:
             s = <char *>value
-            return (type, s)
+            if s == NULL:
+                return (type, None)
+            else:
+                return (type, s)
+        elif type == edje.EDJE_EXTERNAL_PARAM_TYPE_CHOICE:
+            s = <char *>value
+            if s == NULL:
+                return (type, None)
+            else:
+                return (type, s)
         return None
 
     def external_param_set(self, param, value):
-        if isinstance(value, (long, int)):
+        if isinstance(value, bool):
+            return self.external_param_bool_set(param, value)
+        elif isinstance(value, (long, int)):
             return self.external_param_int_set(param, value)
         elif isinstance(value, float):
             return self.external_param_double_set(param, value)
         elif isinstance(value, basestring):
-            return self.external_param_string_set(param, value)
+            t = edje_object_part_external_param_type_get(
+                self.edje.obj, self.part, param)
+            if t == edje.EDJE_EXTERNAL_PARAM_TYPE_STRING:
+                return self.external_param_string_set(param, value)
+            elif t == edje.EDJE_EXTERNAL_PARAM_TYPE_CHOICE:
+                return self.external_param_choice_set(param, value)
+
+        t = edje_object_part_external_param_type_get(
+            self.edje.obj, self.part, param)
+        if t >= edje.EDJE_EXTERNAL_PARAM_TYPE_MAX:
+            raise TypeError("no external parameter %s" % (param,))
         else:
-            raise TypeError("invalid external parameter type '%s'" %
-                            type(value).__name__)
+            expected = edje_external_param_type_str(t)
+            raise TypeError(
+                "invalid external parameter %s of (%s), expected %s" %
+                (param, type(value).__name__, expected))
 
     def external_param_int_get(self, param):
         cdef int value
@@ -524,6 +553,14 @@ cdef class State:
                                                       self.name, param, &value):
             return None
         return value
+
+    def external_param_bool_get(self, param):
+        cdef evas.c_evas.Eina_Bool value
+
+        if not edje_edit_state_external_param_bool_get(
+            self.edje.obj, self.part, self.name, param, &value):
+            return None
+        return bool(value)
 
     def external_param_double_get(self, param):
         cdef double value
@@ -539,11 +576,24 @@ cdef class State:
         if not edje_edit_state_external_param_string_get(
             self.edje.obj, self.part, self.name, param, &value):
             return None
-        r = value
-        return r
+        if value != NULL:
+            return value
+
+    def external_param_choice_get(self, param):
+        cdef char *value
+
+        if not edje_edit_state_external_param_choice_get(
+            self.edje.obj, self.part, self.name, param, &value):
+            return None
+        if value != NULL:
+            return value
 
     def external_param_int_set(self, param, value):
         return bool(edje_edit_state_external_param_int_set(
+                self.edje.obj, self.part, self.name, param, value))
+
+    def external_param_bool_set(self, param, value):
+        return bool(edje_edit_state_external_param_bool_set(
                 self.edje.obj, self.part, self.name, param, value))
 
     def external_param_double_set(self, param, value):
@@ -552,6 +602,10 @@ cdef class State:
 
     def external_param_string_set(self, param, value):
         return bool(edje_edit_state_external_param_string_set(
+                self.edje.obj, self.part, self.name, param, value))
+
+    def external_param_choice_set(self, param, value):
+        return bool(edje_edit_state_external_param_choice_set(
                 self.edje.obj, self.part, self.name, param, value))
 
     def text_get(self):
