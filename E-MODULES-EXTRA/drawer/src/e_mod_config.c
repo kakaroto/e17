@@ -115,7 +115,7 @@ _basic_create(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cfdata)
    e_widget_list_object_append(o, of, 1, 0, 0.5);
 
    cfdata->main_list = of = e_widget_list_add(evas, 0, 0);
-   e_widget_size_min_set(of, 400, 260);
+   e_widget_size_min_set(of, 360, 240);
    e_widget_list_object_append(o, of, 1, 1, 0.5);
 
    e_widget_focus_set(cfdata->toolbar, 1);
@@ -168,9 +168,9 @@ _conf_plugin_sel(void *data1, void *data2)
    of = e_widget_list_add(evas, 0, 0);
    cfdata->s_ilist = oi = e_widget_ilist_add(evas, 32, 32, &(cfdata->source));
    e_widget_ilist_header_append(oi, NULL, D_("Source plugins"));
-   e_widget_list_object_append(of, oi, 1, 1, 0.5);
+   e_widget_list_object_append(of, oi, 1, 1, 0.0);
    cfdata->sources_comment = otx = e_widget_textblock_add(evas);
-   e_widget_list_object_append(of, otx, 1, 1, 0.5);
+   e_widget_list_object_append(of, otx, 1, 0, 1.0);
    cfdata->sources = drawer_plugins_list(DRAWER_SOURCES);
    e_widget_ilist_freeze(oi);
    EINA_LIST_FOREACH(cfdata->sources, l, pi)
@@ -193,9 +193,9 @@ _conf_plugin_sel(void *data1, void *data2)
    of = e_widget_list_add(evas, 0, 0);
    cfdata->v_ilist = oi = e_widget_ilist_add(evas, 32, 32, &(cfdata->view));
    e_widget_ilist_header_append(oi, NULL, D_("View plugins"));
-   e_widget_list_object_append(of, oi, 1, 1, 0.5);
+   e_widget_list_object_append(of, oi, 1, 1, 0.0);
    cfdata->views_comment = otx = e_widget_textblock_add(evas);
-   e_widget_list_object_append(of, otx, 1, 1, 0.5);
+   e_widget_list_object_append(of, otx, 1, 0, 1.0);
    cfdata->views = drawer_plugins_list(DRAWER_VIEWS);
    e_widget_ilist_freeze(oi);
    for (l = cfdata->views, i = 0, selnum = -1; l; l = l->next)
@@ -289,12 +289,12 @@ _conf_plugin_set(void *data1, void *data2)
    of = e_widget_framelist_add(evas, D_("Source settings"), 1);
    e_widget_framelist_object_append(of, drawer_plugin_config_button_get(cfdata->ci, evas, DRAWER_SOURCES));
    e_widget_framelist_content_align_set(of, 0.5, 0.5);
-   e_widget_list_object_append(ol, of, 1, 1, 0.5);
+   e_widget_list_object_append(ol, of, 0, 0, 0.5);
 
    of = e_widget_framelist_add(evas, D_("View settings"), 1);
    e_widget_framelist_object_append(of, drawer_plugin_config_button_get(cfdata->ci, evas, DRAWER_VIEWS));
    e_widget_framelist_content_align_set(of, 0.5, 0.5);
-   e_widget_list_object_append(ol, of, 1, 1, 0.5);
+   e_widget_list_object_append(ol, of, 0, 0, 0.5);
 
    edje_thaw();
    evas_event_thaw(evas);

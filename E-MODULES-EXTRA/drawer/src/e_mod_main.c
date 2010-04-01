@@ -83,6 +83,7 @@ static void _drawer_popup_create(Instance *inst);
 static void _drawer_popup_show(Instance *inst);
 static void _drawer_popup_hide(Instance *inst);
 static void _drawer_popup_update(Instance *inst);
+static int  _drawer_container_init_timer(void *data);
 static void _drawer_container_update(Instance *inst);
 static Evas_Object * _drawer_content_generate(Instance *inst, Evas *evas);
 static void _drawer_container_setup(Instance *inst, E_Gadcon_Orient orient);
@@ -1241,7 +1242,7 @@ _drawer_gc_init(E_Gadcon *gc, const char *name, const char *id, const char *styl
      }
 
    if ((inst->composite || (inst->source && inst->view)) && inst->flags.is_floating)
-     _drawer_container_update(inst);
+     ecore_timer_add(0.5, _drawer_container_init_timer, inst);
 
    /* return the Gadget_Container Client */
    return inst->gcc;
@@ -1405,6 +1406,13 @@ _drawer_conf_item_free(Config_Item *ci)
    eina_stringshare_del(ci->view);
    eina_stringshare_del(ci->composite);
    E_FREE(ci);
+}
+
+static int
+_drawer_container_init_timer(void *data)
+{
+   _drawer_container_update((Instance *) data);
+   return 0;
 }
 
 /* timer for the config oops dialog */
