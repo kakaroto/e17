@@ -623,12 +623,16 @@ class PartStateDetails(EditjeDetails):
             self.e.part.state.name = state_name
 
     def _prop_change_do(self, op_name, prop_group, prop_name, prop_value,
-                        prop_attr=None, pval_filter=None):
+                        prop_attr=None, is_external=False, pval_filter=None):
 
         def set_property(part_name, state_name, prop_attr,
-                         prop_name, prop_value, filter_):
+                         prop_name, prop_value, is_external, filter_):
             self._part_and_state_select(part_name, state_name)
-            setattr(self.e.part.state, prop_attr, prop_value)
+
+            if is_external:
+                self.e.part.state.external_param_set(prop_attr, prop_value)
+            else:
+                setattr(self.e.part.state, prop_attr, prop_value)
 
             if filter_:
                 label_value = filter_(prop_value)
@@ -643,16 +647,24 @@ class PartStateDetails(EditjeDetails):
 
         if not prop_attr:
             prop_attr = prop_name
-        old_value = getattr(state, prop_attr)
+
+        if is_external:
+            type_, old_value = state.external_param_get(prop_attr)
+            if (type_ == edje.EDJE_EXTERNAL_PARAM_TYPE_STRING or type_ == \
+                    edje.EDJE_EXTERNAL_PARAM_TYPE_CHOICE) and old_value is \
+                    None:
+                old_value = ""
+        else:
+            old_value = getattr(state, prop_attr)
 
         set_property(part_name, state_name, prop_attr, prop_name, prop_value,
-                     pval_filter)
+                     is_external, pval_filter)
 
         op = Operation(op_name)
         op.redo_callback_add(set_property, part_name, state_name, prop_attr,
-                             prop_name, prop_value, pval_filter)
+                             prop_name, prop_value, is_external, pval_filter)
         op.undo_callback_add(set_property, part_name, state_name, prop_attr,
-                             prop_name, old_value, pval_filter)
+                             prop_name, old_value, is_external, pval_filter)
 
         self._operation_stack_cb(op)
 
@@ -752,7 +764,9 @@ class PartStateDetails(EditjeDetails):
                     nil, value = self.state.external_param_get(prop)
                     self["external"][prop].value = value
                     return
-        self.state.external_param_set(prop, value)
+
+        self._prop_change_do("(external) part state \"%s\" setting" % prop,
+                             "external", prop, value, None, True)
 
     def _size_changed(self, obj):
         self["main"]["current"].value = obj.size

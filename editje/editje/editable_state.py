@@ -467,3 +467,15 @@ class EditableState(Manager):
 
     image_border_fill = property(fget=_image_border_fill_get,
                                  fset=_image_border_fill_set)
+
+    def external_param_set(self, pname, value):
+        if not self.name:
+            return False
+
+        return self._state.external_param_set(pname, value)
+
+    def external_param_get(self, pname):
+        if not self.name:
+            return None
+
+        return self._state.external_param_get(pname)
