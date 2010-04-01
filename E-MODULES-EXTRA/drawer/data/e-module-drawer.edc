@@ -12,6 +12,7 @@ images {
    image: "env_bg_left.png" COMP;
    image: "env_fg_left.png" COMP;
    image: "logo_white_128.png" COMP;
+   image: "base_bg.png" COMP;
    image: "popup_bg.png" COMP;
    image: "popup_overlay.png" COMP;
    image: "bt_glow.png" COMP;
@@ -780,8 +781,8 @@ target: "bg";
 	       rel1.relative: 0 0;
 	       rel2.relative: 1 1;
 	       image {
-		  normal: "popup_bg.png";
-		  border: 10 10 15 10;
+		  normal: "base_bg.png";
+		  border: 2 2 2 2;
 	       }
 	    }
 	    description {
