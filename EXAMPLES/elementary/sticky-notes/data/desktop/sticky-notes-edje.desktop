@@ -1,0 +1,9 @@
+[Desktop Entry]
+Encoding=UTF-8
+Name=sticky-notes-edje
+Comment=A sample sticky notes application using Edje and Elementary.
+Exec=sticky-notes-edje
+Icon=sticky-notes-edje
+Terminal=false
+Type=Application
+Categories=Application;Utility;

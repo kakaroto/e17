@@ -1,0 +1,9 @@
+[Desktop Entry]
+Encoding=UTF-8
+Name=converter-sample
+Comment=converter sample made by editje
+Exec=converter-sample
+Icon=converter-sample
+Terminal=false
+Type=Application
+Categories=Application;Utility;

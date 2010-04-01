@@ -1,0 +1,9 @@
+[Desktop Entry]
+Encoding=UTF-8
+Name=calculator-edje
+Comment=A sample, basic calculator application using Edje and Elementary.
+Exec=calculator-edje
+Icon=calculator-edje
+Terminal=false
+Type=Application
+Categories=Application;Utility;

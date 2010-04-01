@@ -1,0 +1,9 @@
+[Desktop Entry]
+Encoding=UTF-8
+Name=Phone_Book_Sample
+Comment=Simple Phone Book designed using Editje and C Language Programing
+Exec=Phone_Book_Sample
+Icon=Phone_Book_Sample
+Terminal=false
+Type=Application
+Categories=Application;Utility;
