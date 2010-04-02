@@ -3,12 +3,11 @@ DESKTOPS_SES = e16.desktop e16-gnome.desktop e16-kde.desktop
 DESKTOPS_IN = e16.desktop-app.in e16.desktop.in e16-gnome.desktop.in e16-kde.desktop.in
 XCLIENTS = Xclients.e16.sh Xclients.e16-gnome.sh Xclients.e16-kde.sh
 STARTUPS = starte16-gnome starte16-kde
-ICONS = e16.png
 
 DESKTOPS = $(DESKTOPS_APP:.desktop=.desktop-app) $(DESKTOPS_SES)
 
 miscdir = $(pkgdatadir)/misc
-misc_DATA = $(ICONS) $(DESKTOPS)
+misc_DATA = $(DESKTOPS)
 misc_SCRIPTS = $(XCLIENTS) starte16 e16-dbus-cmd
 
 applicationdir = $(datadir)/applications
@@ -18,7 +17,7 @@ xsessiondir = $(datadir)/xsessions
 #xclientsdir = $(sysconfdir)/X11/xinit/Xclients.d
 #xclients_SCRIPTS = $(XCLIENTS)
 
-EXTRA_DIST = $(DESKTOPS_IN) $(XCLIENTS) $(SCRIPTS) $(ICONS) starte16.in
+EXTRA_DIST = $(DESKTOPS_IN) $(XCLIENTS) $(SCRIPTS) starte16.in
 
 CLEANFILES = $(DESKTOPS) starte16
 

@@ -5,4 +5,4 @@ Name=E16-GNOME
 Comment=This session starts GNOME using enlightenment (e16) as window manager
 Comment[it]=Questo avvia GNOME usando Enlightenment (e16) come window manager
 Exec=@pkgdatadir@/misc/starte16-gnome
-Icon=@pkgdatadir@/misc/e16.png
+Icon=@pkgdatadir@/icons/e16.png

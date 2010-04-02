@@ -1657,7 +1657,7 @@ $ gnome-sesssion
 	Name=E16
 	Comment=The Enlightenment (E16) window manager
 	Exec=e16
-	Icon=/usr/share/e16/misc/e16.png
+	Icon=/usr/share/e16/icons/e16.png
       </programlisting></para>
 
       <para>The section below seems to be obsolete as of

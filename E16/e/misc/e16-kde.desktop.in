@@ -5,4 +5,4 @@ Name=E16-KDE
 Comment=This session starts KDE using enlightenment (e16) as window manager
 Comment[it]=Questo avvia KDE usando Enlightenment (e16) come window manager
 Exec=@pkgdatadir@/misc/starte16-kde
-Icon=@pkgdatadir@/misc/e16.png
+Icon=@pkgdatadir@/icons/e16.png
