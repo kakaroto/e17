@@ -3,8 +3,8 @@
 typedef struct _Plugin Plugin;
 typedef struct _Track Track;
 
-/* #undef DBG
- * #define DBG(...) ERR(__VA_ARGS__) */
+#undef DBG
+#define DBG(...) ERR(__VA_ARGS__)
 
 struct _Plugin
 {
@@ -448,7 +448,8 @@ _mpris_play_track(Evry_Action *act)
    ITEM_TRACK(t, act->item1);
 
    /* XXX FIX the spec. or call next/prev to skip to the track...*/
-   if (!strcmp(bus_name, "org.mpris.amarok"))
+   if (!strcmp(bus_name, "org.mpris.amarok") ||
+       !strcmp(bus_name, "org.mpris.xmms2"))
      {
 	msg = dbus_message_new_method_call(bus_name, "/TrackList",
 					   mpris_interface,
