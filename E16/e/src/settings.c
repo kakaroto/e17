@@ -118,6 +118,7 @@ _DlgFillMoveResize(Dialog * d __UNUSED__, DItem * table, void *data __UNUSED__)
    DialogItemRadioButtonSetFirst(di, radio2);
    DialogItemRadioButtonGroupSetVal(di, 2);
 
+#if ENABLE_OLDMOVRES
    di = DialogAddItem(table, DITEM_RADIOBUTTON);
    DialogItemSetText(di, _("Shaded"));
    DialogItemRadioButtonSetFirst(di, radio1);
@@ -146,6 +147,7 @@ _DlgFillMoveResize(Dialog * d __UNUSED__, DItem * table, void *data __UNUSED__)
    DialogItemRadioButtonGroupSetValPtr(radio1, &dd->move);
 
    DialogAddItem(table, DITEM_NONE);
+#endif /* ENABLE_OLDMOVRES */
 
    di = DialogAddItem(table, DITEM_CHECKBUTTON);
    DialogItemSetColSpan(di, 2);

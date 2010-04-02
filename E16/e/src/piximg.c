@@ -21,8 +21,10 @@
  * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-#include "E.h"
+#include "config.h"
+#if ENABLE_OLDMOVRES
 #include "piximg.h"
+#include "util.h"
 #include "xwin.h"
 #if USE_XRENDER
 #include <X11/extensions/Xrender.h>
@@ -626,3 +628,5 @@ PixImgBlend(PixImg * s1, PixImg * s2, PixImg * dst, Drawable draw,
 }
 
 #endif /* USE_XRENDER */
+
+#endif /* ENABLE_OLDMOVRES */

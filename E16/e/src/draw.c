@@ -28,8 +28,10 @@
 #include "piximg.h"
 #include "xwin.h"
 
+#if ENABLE_OLDMOVRES
 #define ENABLE_MODE_34	1	/* Enable shaded/semi-solid modes */
 #define ENABLE_MODE_5	1	/* Enable translucent mode */
+#endif
 
 #if ENABLE_MODE_34
 #if 0

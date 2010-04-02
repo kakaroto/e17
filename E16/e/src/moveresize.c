@@ -35,6 +35,14 @@
 #include "xwin.h"
 #include <X11/keysym.h>
 
+#if ENABLE_OLDMOVRES
+#define MODE_MOVE_MAX	5
+#define MOVE_SIZE_MAX	4
+#else
+#define MODE_MOVE_MAX	2
+#define MOVE_SIZE_MAX	2
+#endif
+
 static struct {
    Win                 events;
    EWin               *ewin;
@@ -115,11 +123,13 @@ MoveResizeMoveStart(EWin * ewin, int kbd, int constrained, int nogroup)
    gwins = ListWinGroupMembersForEwin(ewin, GROUP_ACTION_MOVE, nogroup
 				      || Mode.move.swap, &num);
 
-   if (Conf.movres.mode_move < 0 || Conf.movres.mode_move > 5)
+   if (Conf.movres.mode_move < 0 || Conf.movres.mode_move > MODE_MOVE_MAX)
       Conf.movres.mode_move = 0;
    Mode_mr.mode = Conf.movres.mode_move;
+#if ENABLE_OLDMOVRES
    if (num > 1 && Conf.movres.mode_move == 5)
       Mode_mr.mode = 0;
+#endif
    Mode_mr.grab_server = _NeedServerGrab(Mode_mr.mode);
 
    for (i = 0; i < num; i++)
@@ -255,7 +265,11 @@ _MoveResizeMoveResume(void)
 
    GrabPointerSet(Mode_mr.events, ECSR_ACT_MOVE, 1);
 
+#if ENABLE_OLDMOVRES
    fl = (Mode_mr.mode == 5) ? 4 : 0;
+#else
+   fl = 0;
+#endif
    if (Mode.mode == MODE_MOVE_PENDING)
      {
 	Mode.mode = MODE_MOVE;
@@ -310,7 +324,7 @@ MoveResizeResizeStart(EWin * ewin, int kbd, int hv)
 
    SoundPlay(SOUND_RESIZE_START);
 
-   if (Conf.movres.mode_resize < 0 || Conf.movres.mode_resize > 4)
+   if (Conf.movres.mode_resize < 0 || Conf.movres.mode_resize > MOVE_SIZE_MAX)
       Conf.movres.mode_resize = 0;
    Mode_mr.mode = Conf.movres.mode_resize;
    Mode_mr.using_kbd = kbd;
