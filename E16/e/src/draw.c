@@ -28,6 +28,10 @@
 #include "piximg.h"
 #include "xwin.h"
 
+#define ENABLE_MODE_34	1	/* Enable shaded/semi-solid modes */
+#define ENABLE_MODE_5	1	/* Enable translucent mode */
+
+#if ENABLE_MODE_34
 #if 0
 #include <X11/bitmaps/gray>
 #include <X11/bitmaps/gray3>
@@ -44,6 +48,10 @@ static const char   gray_bits[] = { 0x01, 0x02 };
 static const char   gray3_bits[] = { 0x01, 0x00, 0x04, 0x00 };
 #endif
 
+static Pixmap       b2 = None;	/* Used in modes 3,4 */
+static Pixmap       b3 = None;	/* Used in mode 3 */
+#endif /* ENABLE_MODE_34 */
+
 typedef struct {
    EObj                o;
    Pixmap              mask;
@@ -52,86 +60,118 @@ typedef struct {
 
 static Font         font = None;	/* Used in mode 1 (technical) */
 
-#define DRAW_H_ARROW(_dr, _gc, x1, x2, y1) \
-    if (((x2) - (x1)) >= 12) \
-      { \
-        XDrawLine(disp, _dr, _gc, (x1), (y1), (x1) + 6, (y1) - 3); \
-        XDrawLine(disp, _dr, _gc, (x1), (y1), (x1) + 6, (y1) + 3); \
-        XDrawLine(disp, _dr, _gc, (x2), (y1), (x2) - 6, (y1) - 3); \
-        XDrawLine(disp, _dr, _gc, (x2), (y1), (x2) - 6, (y1) + 3); \
-      } \
-    if ((x2) >= (x1)) \
-      { \
-        XDrawLine(disp, _dr, _gc, (x1), (y1), (x2), (y1)); \
-        Esnprintf(str, sizeof(str), "%i", (x2) - (x1) + 1); \
-        XDrawString(disp, _dr, _gc, ((x1) + (x2)) / 2, (y1) - 10, str, strlen(str)); \
-      }
-#define DRAW_V_ARROW(_dr, _gc, y1, y2, x1) \
-    if (((y2) - (y1)) >= 12) \
-      { \
-        XDrawLine(disp, _dr, _gc, (x1), (y1), (x1) + 3, (y1) + 6); \
-        XDrawLine(disp, _dr, _gc, (x1), (y1), (x1) - 3, (y1) + 6); \
-        XDrawLine(disp, _dr, _gc, (x1), (y2), (x1) + 3, (y2) - 6); \
-        XDrawLine(disp, _dr, _gc, (x1), (y2), (x1) - 3, (y2) - 6); \
-      } \
-    if ((y2) >= (y1)) \
-      { \
-        XDrawLine(disp, _dr, _gc, (x1), (y1), (x1), (y2)); \
-        Esnprintf(str, sizeof(str), "%i", (y2) - (y1) + 1); \
-        XDrawString(disp, _dr, _gc, (x1) + 10, ((y1) + (y2)) / 2, str, strlen(str)); \
-      }
+static void
+draw_h_arrow(Drawable dr, GC gc, int x1, int x2, int y1)
+{
+   char                str[32];
 
-#define DO_DRAW_MODE_1(_dr, _gc, _a, _b, _c, _d) \
-  do { \
-    if (!font) \
-      font = XLoadFont(disp, "-*-helvetica-medium-r-*-*-10-*-*-*-*-*-*-*"); \
-    XSetFont(disp, _gc, font); \
-    if (_c < 3) _c = 3; \
-    if (_d < 3) _d = 3; \
-    DRAW_H_ARROW(_dr, _gc, _a + bl, _a + bl + _c - 1, _b + bt + _d - 16); \
-    DRAW_H_ARROW(_dr, _gc, 0, _a - 1, _b + bt + (_d / 2)); \
-    DRAW_H_ARROW(_dr, _gc, _a + _c + bl + br, WinGetW(VROOT) - 1, _b + bt + (_d / 2)); \
-    DRAW_V_ARROW(_dr, _gc, _b + bt, _b + bt + _d - 1, _a + bl + 16); \
-    DRAW_V_ARROW(_dr, _gc, 0, _b - 1, _a + bl + (_c / 2)); \
-    DRAW_V_ARROW(_dr, _gc, _b + _d + bt + bb, WinGetH(VROOT) - 1, _a + bl + (_c / 2)); \
-    XDrawLine(disp, _dr, _gc, _a, 0, _a, WinGetH(VROOT)); \
-    XDrawLine(disp, _dr, _gc, _a + _c + bl + br - 1, 0, _a + _c + bl + br - 1, WinGetH(VROOT)); \
-    XDrawLine(disp, _dr, _gc, 0, _b, WinGetW(VROOT), _b); \
-    XDrawLine(disp, _dr, _gc, 0, _b + _d + bt + bb - 1, WinGetW(VROOT), _b + _d + bt + bb - 1); \
-    XDrawRectangle(disp, _dr, _gc, _a + bl + 1, _b + bt + 1, _c - 3, _d - 3); \
-  } while(0)
+   if (x2 - x1 >= 12)
+     {
+	XDrawLine(disp, dr, gc, x1, y1, x1 + 6, y1 - 3);
+	XDrawLine(disp, dr, gc, x1, y1, x1 + 6, y1 + 3);
+	XDrawLine(disp, dr, gc, x2, y1, x2 - 6, y1 - 3);
+	XDrawLine(disp, dr, gc, x2, y1, x2 - 6, y1 + 3);
+     }
+   if (x2 >= x1)
+     {
+	XDrawLine(disp, dr, gc, x1, y1, x2, y1);
+	Esnprintf(str, sizeof(str), "%i", x2 - x1 + 1);
+	XDrawString(disp, dr, gc, (x1 + x2) / 2, y1 - 10, str, strlen(str));
+     }
+}
 
-#define DO_DRAW_MODE_2(_dr, _gc, _a, _b, _c, _d) \
-  do { \
-    if (_c < 3) _c = 3; \
-    if (_d < 3) _d = 3; \
-    XDrawRectangle(disp, _dr, _gc, _a, _b, _c + bl + br - 1, _d + bt + bb - 1); \
-    XDrawRectangle(disp, _dr, _gc, _a + bl + 1, _b + bt + 1, _c - 3, _d - 3); \
-  } while(0)
+static void
+draw_v_arrow(Drawable dr, GC gc, int y1, int y2, int x1)
+{
+   char                str[32];
 
-#define DO_DRAW_MODE_3(_dr, _gc, _a, _b, _c, _d) \
-  do { \
-    XSetFillStyle(disp, _gc, FillStippled); \
-    XSetStipple(disp, _gc, b2); \
-    if ((_c + bl + br > 0) && (bt > 0)) \
-      XFillRectangle(disp, _dr, _gc, _a, _b, _c + bl + br, bt); \
-    if ((_c + bl + br > 0) && (bb > 0)) \
-      XFillRectangle(disp, _dr, _gc, _a, _b + _d + bt, _c + bl + br, bb); \
-    if ((_d > 0) && (bl > 0)) \
-      XFillRectangle(disp, _dr, _gc, _a, _b + bt, bl, _d); \
-    if ((_d > 0) && (br > 0)) \
-      XFillRectangle(disp, _dr, _gc, _a + _c + bl, _b + bt, br, _d); \
-    XSetStipple(disp, _gc, b3); \
-    if ((_c > 0) && (_d > 0)) \
-      XFillRectangle(disp, _dr, _gc, _a + bl + 1, _b + bt + 1, _c - 3, _d - 3); \
-  } while(0)
+   if (y2 - y1 >= 12)
+     {
+	XDrawLine(disp, dr, gc, x1, y1, x1 + 3, y1 + 6);
+	XDrawLine(disp, dr, gc, x1, y1, x1 - 3, y1 + 6);
+	XDrawLine(disp, dr, gc, x1, y2, x1 + 3, y2 - 6);
+	XDrawLine(disp, dr, gc, x1, y2, x1 - 3, y2 - 6);
+     }
+   if (y2 >= y1)
+     {
+	XDrawLine(disp, dr, gc, x1, y1, x1, y2);
+	Esnprintf(str, sizeof(str), "%i", y2 - y1 + 1);
+	XDrawString(disp, dr, gc, x1 + 10, (y1 + y2) / 2, str, strlen(str));
+     }
+}
 
-#define DO_DRAW_MODE_4(_dr, _gc, _a, _b, _c, _d) \
-  do { \
-    XSetFillStyle(disp, _gc, FillStippled); \
-    XSetStipple(disp, _gc, b2); \
-    XFillRectangle(disp, _dr, _gc, _a, _b, _c + bl + br, _d + bt + bb); \
-  } while(0)
+static void
+do_draw_mode_1(Drawable dr, GC gc,
+	       int a, int b, int c, int d, int bl, int br, int bt, int bb)
+{
+   if (!font)
+      font = XLoadFont(disp, "-*-helvetica-medium-r-*-*-10-*-*-*-*-*-*-*");
+   XSetFont(disp, gc, font);
+
+   if (c < 3)
+      c = 3;
+   if (d < 3)
+      d = 3;
+
+   draw_h_arrow(dr, gc, a + bl, a + bl + c - 1, b + bt + d - 16);
+   draw_h_arrow(dr, gc, 0, a - 1, b + bt + (d / 2));
+   draw_h_arrow(dr, gc, a + c + bl + br, WinGetW(VROOT) - 1, b + bt + (d / 2));
+   draw_v_arrow(dr, gc, b + bt, b + bt + d - 1, a + bl + 16);
+   draw_v_arrow(dr, gc, 0, b - 1, a + bl + (c / 2));
+   draw_v_arrow(dr, gc, b + d + bt + bb, WinGetH(VROOT) - 1, a + bl + (c / 2));
+
+   XDrawLine(disp, dr, gc, a, 0, a, WinGetH(VROOT));
+   XDrawLine(disp, dr, gc, a + c + bl + br - 1, 0,
+	     a + c + bl + br - 1, WinGetH(VROOT));
+   XDrawLine(disp, dr, gc, 0, b, WinGetW(VROOT), b);
+   XDrawLine(disp, dr, gc, 0, b + d + bt + bb - 1,
+	     WinGetW(VROOT), b + d + bt + bb - 1);
+
+   XDrawRectangle(disp, dr, gc, a + bl + 1, b + bt + 1, c - 3, d - 3);
+}
+
+static void
+do_draw_mode_2(Drawable dr, GC gc,
+	       int a, int b, int c, int d, int bl, int br, int bt, int bb)
+{
+   if (c < 3)
+      c = 3;
+   if (d < 3)
+      d = 3;
+   XDrawRectangle(disp, dr, gc, a, b, c + bl + br - 1, d + bt + bb - 1);
+   XDrawRectangle(disp, dr, gc, a + bl + 1, b + bt + 1, c - 3, d - 3);
+}
+
+#if ENABLE_MODE_34
+static void
+do_draw_mode_3(Drawable dr, GC gc,
+	       int a, int b, int c, int d, int bl, int br, int bt, int bb)
+{
+   XSetFillStyle(disp, gc, FillStippled);
+   XSetStipple(disp, gc, b2);
+
+   if ((c + bl + br > 0) && (bt > 0))
+      XFillRectangle(disp, dr, gc, a, b, c + bl + br, bt);
+   if ((c + bl + br > 0) && (bb > 0))
+      XFillRectangle(disp, dr, gc, a, b + d + bt, c + bl + br, bb);
+   if ((d > 0) && (bl > 0))
+      XFillRectangle(disp, dr, gc, a, b + bt, bl, d);
+   if ((d > 0) && (br > 0))
+      XFillRectangle(disp, dr, gc, a + c + bl, b + bt, br, d);
+   XSetStipple(disp, gc, b3);
+   if ((c > 0) && (d > 0))
+      XFillRectangle(disp, dr, gc, a + bl + 1, b + bt + 1, c - 3, d - 3);
+}
+
+static void
+do_draw_mode_4(Drawable dr, GC gc,
+	       int a, int b, int c, int d, int bl, int br, int bt, int bb)
+{
+   XSetFillStyle(disp, gc, FillStippled);
+   XSetStipple(disp, gc, b2);
+   XFillRectangle(disp, dr, gc, a, b, c + bl + br, d + bt + bb);
+}
+#endif /* ENABLE_MODE_34 */
 
 #define _SHAPE_SET_RECT(rl, _x, _y, _w, _h) \
   do { \
@@ -219,13 +259,11 @@ _ShapeSet(ShapeWin * sw, int md, int x, int y, int w, int h,
 
    if (md == 1)
      {
-	char                str[32];
-
 	XSetForeground(disp, sw->gc, 0);
 	XFillRectangle(disp, sw->mask, sw->gc,
 		       0, 0, WinGetW(VROOT), WinGetH(VROOT));
 	XSetForeground(disp, sw->gc, 1);
-	DO_DRAW_MODE_1(sw->mask, sw->gc, x, y, w, h);
+	do_draw_mode_1(sw->mask, sw->gc, x, y, w, h, bl, br, bt, bb);
 	if (seqno == 0)
 	   EShapeSetMask(EoGetWin(sw), 0, 0, sw->mask);
 	else
@@ -248,39 +286,229 @@ _ShapeSet(ShapeWin * sw, int md, int x, int y, int w, int h,
    EoShapeUpdate(sw, 0);
 }
 
-static PixImg      *root_pi = NULL;
-static PixImg      *ewin_pi = NULL;
-static PixImg      *draw_pi = NULL;
+typedef struct {
+   EWin               *ewin;
+   Window              root;
+   GC                  gc;
+   int                 xo, yo, wo, ho;
+   int                 bl, br, bt, bb;
+#if ENABLE_MODE_5
+   PixImg             *root_pi;
+   PixImg             *ewin_pi;
+   PixImg             *draw_pi;
+#endif
+} ShapeData;
 
 static void
-_PixImgsCreate(const EWin * ewin)
+_ShapeDrawNograb1_2(ShapeData * psd, int md, int firstlast,
+		    int xn, int yn, int wn, int hn, int seqno)
 {
-   root_pi = PixImgCreate(WinGetW(VROOT), WinGetH(VROOT));
-   ewin_pi = PixImgCreate(EoGetW(ewin), EoGetH(ewin));
-   draw_pi = PixImgCreate(EoGetW(ewin), EoGetH(ewin));
+   static ShapeWin    *shape_win = NULL;
+
+   if (firstlast == 0 && !shape_win)
+      shape_win = _ShapeWinCreate(md);
+   if (!shape_win)
+      return;
+
+   _ShapeSet(shape_win, md, xn, yn, wn, hn, psd->bl, psd->br, psd->bt, psd->bb,
+	     seqno);
+   EoMap(shape_win, 0);
+
+   CoordsShow(psd->ewin);
+
+   if (firstlast == 2)
+     {
+	_ShapeWinDestroy(shape_win);
+	shape_win = NULL;
+     }
 }
 
+typedef void        (DrawFunc) (Drawable dr, GC gc, int a, int b, int c, int d,
+				int bl, int br, int bt, int bb);
+
+static DrawFunc    *const drf1_4[] = {
+   do_draw_mode_1, do_draw_mode_2,
+#if ENABLE_MODE_34
+   do_draw_mode_3, do_draw_mode_4
+#endif /* ENABLE_MODE_34 */
+};
+
 static void
-_PixImgsDestroy(void)
+_ShapeDraw1_4(ShapeData * psd, int md, int firstlast,
+	      int xn, int yn, int wn, int hn)
 {
-   PixImgDestroy(root_pi);
-   PixImgDestroy(ewin_pi);
-   PixImgDestroy(draw_pi);
-   root_pi = NULL;
-   ewin_pi = NULL;
-   draw_pi = NULL;
+   DrawFunc           *drf;
+
+   if (firstlast == 0)
+     {
+	XGCValues           gcv;
+
+	gcv.function = GXxor;
+	gcv.foreground = Dpy.pixel_white;
+	if (gcv.foreground == 0)
+	   gcv.foreground = Dpy.pixel_black;
+	gcv.subwindow_mode = IncludeInferiors;
+	psd->gc = EXCreateGC(psd->root,
+			     GCFunction | GCForeground | GCSubwindowMode, &gcv);
+#if ENABLE_MODE_34
+	if (md == 3 || md == 4)
+	  {
+	     if (!b2)
+		b2 = XCreateBitmapFromData(disp, psd->root, gray_bits,
+					   gray_width, gray_height);
+	     if (!b3)
+		b3 = XCreateBitmapFromData(disp, psd->root, gray3_bits,
+					   gray3_width, gray3_height);
+	  }
+#endif /* ENABLE_MODE_34 */
+     }
+
+   drf = drf1_4[md - 1];
+
+   if (firstlast > 0)
+      drf(psd->root, psd->gc, psd->xo, psd->yo, psd->wo, psd->ho,
+	  psd->bl, psd->br, psd->bt, psd->bb);
+
+   CoordsShow(psd->ewin);
+
+   if (firstlast < 2)
+      drf(psd->root, psd->gc, xn, yn, wn, hn,
+	  psd->bl, psd->br, psd->bt, psd->bb);
+
+   if (firstlast == 2)
+     {
+	EXFreeGC(psd->gc);
+	psd->gc = NULL;
+     }
 }
+
+#if ENABLE_MODE_5
+static void
+_ShapeDraw5(ShapeData * psd, int md __UNUSED__, int firstlast,
+	    int xn, int yn, int wn, int hn)
+{
+   XGCValues           gcv;
+   int                 dx, dy, adx, ady;
+   int                 xo, yo;
+
+   xo = psd->xo;
+   yo = psd->yo;
+
+   /* Using frame window size here */
+   wn = EoGetW(psd->ewin);
+   hn = EoGetH(psd->ewin);
+
+   switch (firstlast)
+     {
+     default:
+	break;
+     case 0:
+	gcv.subwindow_mode = IncludeInferiors;
+	psd->gc = EXCreateGC(psd->root, GCSubwindowMode, &gcv);
+
+	psd->root_pi =
+	   PixImgCreate(NULL, psd->gc, WinGetW(VROOT), WinGetH(VROOT));
+	psd->ewin_pi = PixImgCreate(NULL, psd->gc, wn, hn);
+	psd->draw_pi = PixImgCreate(VROOT, psd->gc, wn, hn);
+	if ((!psd->root_pi) || (!psd->ewin_pi) || (!psd->draw_pi))
+	  {
+	     /* Trouble - Fall back to opaque mode */
+	     Conf.movres.mode_move = 0;
+	     goto do_cleanup;
+	  }
+
+	if (EoGetWin(psd->ewin)->num_rect > 0)
+	  {
+	     Pixmap              mask;
+
+	     mask = EWindowGetShapePixmapInverted(EoGetWin(psd->ewin));
+	     PixImgSetMask(psd->draw_pi, mask, 0, 0);
+	  }
+
+	PixImgFill(psd->root_pi, psd->root, 0, 0);
+	PixImgFill(psd->ewin_pi, psd->root, xn, yn);
+
+	PixImgBlend(psd->root_pi, psd->ewin_pi, psd->draw_pi, psd->root,
+		    xn, yn, wn, hn);
+	break;
+
+     case 1:
+	dx = xn - xo;
+	dy = yn - yo;
+	if (dx < 0)
+	   adx = -dx;
+	else
+	   adx = dx;
+	if (dy < 0)
+	   ady = -dy;
+	else
+	   ady = dy;
+	if ((adx <= wn) && (ady <= hn))
+	  {
+	     PixImgBlend(psd->root_pi, psd->ewin_pi, psd->draw_pi, psd->root,
+			 xn, yn, wn, hn);
+	     if (dx > 0)
+		PixImgPaste11(psd->root_pi, psd->draw_pi, xo, yo, dx, hn);
+	     else if (dx < 0)
+		PixImgPaste11(psd->root_pi, psd->draw_pi, xo + wn + dx,
+			      yo, -dx, hn);
+	     if (dy > 0)
+		PixImgPaste11(psd->root_pi, psd->draw_pi, xo, yo, wn, dy);
+	     else if (dy < 0)
+		PixImgPaste11(psd->root_pi, psd->draw_pi, xo,
+			      yo + hn + dy, wn, -dy);
+	  }
+	else
+	  {
+	     PixImgPaste11(psd->root_pi, psd->draw_pi, xo, yo, wn, hn);
+	     PixImgBlend(psd->root_pi, psd->ewin_pi, psd->draw_pi, psd->root,
+			 xn, yn, wn, hn);
+	  }
+	if (EoGetWin(psd->ewin)->num_rect > 0)
+	  {
+	     PixImgSetMask(psd->draw_pi, 1, xn, yn);
+	     PixImgPaste11(psd->root_pi, psd->draw_pi, xn, yn, wn, hn);
+	     PixImgSetMask(psd->draw_pi, 0, 0, 0);
+	  }
+	break;
+
+     case 2:
+	PixImgPaste11(psd->root_pi, psd->draw_pi, xo, yo, wn, hn);
+      do_cleanup:
+	PixImgDestroy(psd->root_pi);
+	PixImgDestroy(psd->ewin_pi);
+	PixImgDestroy(psd->draw_pi);
+	psd->root_pi = NULL;
+	psd->ewin_pi = NULL;
+	psd->draw_pi = NULL;
+	EXFreeGC(psd->gc);
+	psd->gc = NULL;
+	break;
+
+     case 3:
+	PixImgPaste11(psd->root_pi, psd->draw_pi, xo, yo, wn, hn);
+	PixImgDestroy(psd->root_pi);
+	psd->root_pi = NULL;
+	break;
+
+     case 4:
+	psd->root_pi =
+	   PixImgCreate(NULL, psd->gc, WinGetW(VROOT), WinGetH(VROOT));
+	PixImgFill(psd->root_pi, psd->root, 0, 0);
+	PixImgBlend(psd->root_pi, psd->ewin_pi, psd->draw_pi, psd->root,
+		    xn, yn, wn, hn);
+	break;
+     }
+}
+#endif /* ENABLE_MODE_5 */
 
 void
 DrawEwinShape(EWin * ewin, int md, int x, int y, int w, int h,
 	      int firstlast, int seqno)
 {
-   static GC           gc = NULL, gc2 = NULL;
-   static Pixmap       b2 = 0, b3 = 0;
+   static ShapeData    sd, *psd = &sd;
    Window              root = WinGetXwin(VROOT);
-   int                 x1, y1, w1, h1, dx, dy;
-   int                 bl, br, bt, bb;
-   char                str[32];
+   int                 dx, dy;
 
    /* Quit if no change */
    if (firstlast == 1 &&
@@ -288,40 +516,24 @@ DrawEwinShape(EWin * ewin, int md, int x, int y, int w, int h,
 	(ewin->state.shaded || (w == ewin->shape_w && h == ewin->shape_h))))
       return;
 
-   switch (md)
+   if (md == 0)
      {
-     case 0:
 	EwinOpMoveResize(ewin, OPSRC_USER, x, y, w, h);
 	EwinShapeSet(ewin);
 	CoordsShow(ewin);
 	goto done;
-     case 1:
-     case 2:
-	break;
-     case 3:
-     case 4:
-	if (!b2)
-	   b2 = XCreateBitmapFromData(disp, root, gray_bits, gray_width,
-				      gray_height);
-	if (!b3)
-	   b3 = XCreateBitmapFromData(disp, root, gray3_bits, gray3_width,
-				      gray3_height);
-	break;
-     case 5:
-	break;
      }
 
    if (firstlast == 0)
-      EwinShapeSet(ewin);
+     {
+	EwinShapeSet(ewin);
+
+	psd->ewin = ewin;
+	psd->root = root;
+     }
 
    dx = EoGetX(EoGetDesk(ewin));
    dy = EoGetY(EoGetDesk(ewin));
-   x1 = ewin->shape_x + dx;
-   y1 = ewin->shape_y + dy;
-
-   w1 = ewin->shape_w;
-   h1 = ewin->shape_h;
-
    ewin->shape_x = x;
    ewin->shape_y = y;
    x += dx;
@@ -338,187 +550,40 @@ DrawEwinShape(EWin * ewin, int md, int x, int y, int w, int h,
 	h = ewin->shape_h;
      }
 
-   EwinBorderGetSize(ewin, &bl, &br, &bt, &bb);
+   EwinBorderGetSize(ewin, &psd->bl, &psd->br, &psd->bt, &psd->bb);
 
    if (md <= 2 && Conf.movres.avoid_server_grab)
      {
-	static ShapeWin    *shape_win = NULL;
-
-	if (firstlast == 0 && !shape_win)
-	   shape_win = _ShapeWinCreate(md);
-	if (!shape_win)
-	   return;
-
-	_ShapeSet(shape_win, md, x, y, w, h, bl, br, bt, bb, seqno);
-	EoMap(shape_win, 0);
-
-	CoordsShow(ewin);
-
-	if (firstlast == 2)
-	  {
-	     _ShapeWinDestroy(shape_win);
-	     shape_win = NULL;
-	  }
+	_ShapeDrawNograb1_2(psd, md, firstlast, x, y, w, h, seqno);
 	goto done;
-     }
-
-   if (!gc && md < 5)
-     {
-	XGCValues           gcv;
-
-	gcv.function = GXxor;
-	gcv.foreground = Dpy.pixel_white;
-	if (gcv.foreground == 0)
-	   gcv.foreground = Dpy.pixel_black;
-	gcv.subwindow_mode = IncludeInferiors;
-	gc = EXCreateGC(root,
-			GCFunction | GCForeground | GCSubwindowMode, &gcv);
      }
 
    switch (md)
      {
      case 1:
-	if (firstlast > 0)
-	   DO_DRAW_MODE_1(root, gc, x1, y1, w1, h1);
-	CoordsShow(ewin);
-	if (firstlast < 2)
-	   DO_DRAW_MODE_1(root, gc, x, y, w, h);
-	break;
      case 2:
-	if (firstlast > 0)
-	   DO_DRAW_MODE_2(root, gc, x1, y1, w1, h1);
-	CoordsShow(ewin);
-	if (firstlast < 2)
-	   DO_DRAW_MODE_2(root, gc, x, y, w, h);
-	break;
+#if ENABLE_MODE_34
      case 3:
-	if (firstlast > 0)
-	   DO_DRAW_MODE_3(root, gc, x1, y1, w1, h1);
-	CoordsShow(ewin);
-	if (firstlast < 2)
-	   DO_DRAW_MODE_3(root, gc, x, y, w, h);
-	break;
      case 4:
-	if (firstlast > 0)
-	   DO_DRAW_MODE_4(root, gc, x1, y1, w1, h1);
-	CoordsShow(ewin);
-	if (firstlast < 2)
-	   DO_DRAW_MODE_4(root, gc, x, y, w, h);
+#endif
+	_ShapeDraw1_4(psd, md, firstlast, x, y, w, h);
 	break;
+#if ENABLE_MODE_5
      case 5:
-	{
-	   int                 wt, ht;
-
-	   wt = EoGetW(ewin);
-	   ht = EoGetH(ewin);
-
-	   if (firstlast == 0)
-	     {
-		XGCValues           gcv;
-		Pixmap              pmap, mask;
-
-		_PixImgsDestroy();
-		_PixImgsCreate(ewin);
-		if ((!root_pi) || (!ewin_pi) || (!draw_pi))
-		  {
-		     _PixImgsDestroy();
-		     Conf.movres.mode_move = 0;
-		     EUngrabServer();
-		     DrawEwinShape(ewin, Conf.movres.mode_move, x, y, w, h,
-				   firstlast, seqno);
-		     return;
-		  }
-
-		gcv.subwindow_mode = IncludeInferiors;
-		gc = EXCreateGC(root, GCSubwindowMode, &gcv);
-		if (EoGetWin(ewin)->num_rect > 0)
-		  {
-		     gc2 = EXCreateGC(root, GCSubwindowMode, &gcv);
-		     mask = EWindowGetShapePixmapInverted(EoGetWin(ewin));
-		     XSetClipMask(disp, gc2, mask);
-		     XFreePixmap(disp, mask);
-		  }
-
-		PixImgFill(root_pi, root, 0, 0);
-
-		pmap = ECreatePixmap(VROOT, WinGetW(VROOT), WinGetH(VROOT), 0);
-		XCopyArea(disp, root, pmap, gc, x1, y1,
-			  EoGetW(ewin), EoGetH(ewin), 0, 0);
-		PixImgFill(ewin_pi, pmap, 0, 0);
-		EFreePixmap(pmap);
-
-		PixImgBlend(root_pi, ewin_pi, draw_pi, root, gc, x, y, wt, ht);
-	     }
-	   else if (firstlast == 1)
-	     {
-		int                 adx, ady;
-
-		dx = x - x1;
-		dy = y - y1;
-		if (dx < 0)
-		   adx = -dx;
-		else
-		   adx = dx;
-		if (dy < 0)
-		   ady = -dy;
-		else
-		   ady = dy;
-		if ((adx <= wt) && (ady <= ht))
-		  {
-		     PixImgBlend(root_pi, ewin_pi, draw_pi, root, gc,
-				 x, y, wt, ht);
-		     if (dx > 0)
-			PixImgPaste11(root_pi, root, gc, x1, y1, dx, ht);
-		     else if (dx < 0)
-			PixImgPaste11(root_pi, root, gc,
-				      x1 + wt + dx, y1, -dx, ht);
-		     if (dy > 0)
-			PixImgPaste11(root_pi, root, gc, x1, y1, wt, dy);
-		     else if (dy < 0)
-			PixImgPaste11(root_pi, root, gc,
-				      x1, y1 + ht + dy, wt, -dy);
-		  }
-		else
-		  {
-		     PixImgPaste11(root_pi, root, gc, x1, y1, wt, ht);
-		     PixImgBlend(root_pi, ewin_pi, draw_pi, root, gc,
-				 x, y, wt, ht);
-		  }
-		if (gc2)
-		  {
-		     XSetClipOrigin(disp, gc2, x, y);
-		     PixImgPaste11(root_pi, root, gc2, x, y, wt, ht);
-		  }
-	     }
-	   else if (firstlast == 2)
-	     {
-		PixImgPaste11(root_pi, root, gc, x1, y1, wt, ht);
-		_PixImgsDestroy();
-		EXFreeGC(gc2);
-		gc2 = NULL;
-	     }
-	   else if (firstlast == 3)
-	     {
-		PixImgPaste11(root_pi, root, gc, x1, y1, wt, ht);
-		PixImgDestroy(root_pi);
-		root_pi = NULL;
-	     }
-	   else if (firstlast == 4)
-	     {
-		root_pi = PixImgCreate(WinGetW(VROOT), WinGetH(VROOT));
-		PixImgFill(root_pi, root, 0, 0);
-		PixImgBlend(root_pi, ewin_pi, draw_pi, root, gc, x, y, wt, ht);
-	     }
-	   CoordsShow(ewin);
-	}
+	_ShapeDraw5(psd, md, firstlast, x, y, w, h);
+	CoordsShow(ewin);
+	break;
+#endif
+     default:
+	/* Fall back to opaque mode */
+	Conf.movres.mode_move = 0;
 	break;
      }
 
-   if (firstlast == 2 && gc)
-     {
-	EXFreeGC(gc);
-	gc = NULL;
-     }
+   psd->xo = x;
+   psd->yo = y;
+   psd->wo = w;
+   psd->ho = h;
 
  done:
    if (firstlast == 0 || firstlast == 2 || firstlast == 4)

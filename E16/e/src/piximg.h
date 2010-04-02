@@ -25,23 +25,20 @@
 #define _PIXIMG_H_
 
 #include <X11/Xlib.h>
-#include <X11/extensions/XShm.h>
+#include "xwin.h"
 
-typedef struct _PixImg {
-   XImage             *xim;
-   XShmSegmentInfo    *shminfo;
-} PixImg;
+typedef struct _PixImg PixImg;
 
-PixImg             *PixImgCreate(int w, int h);
+PixImg             *PixImgCreate(Win win, GC gc, int w, int h);
 void                PixImgDestroy(PixImg * pi);
 void                PixImgFill(PixImg * pi, Drawable draw, int x, int y);
-void                PixImgPaste(PixImg * pi, Drawable draw, GC gc,
+void                PixImgSetMask(PixImg * pi, Pixmap mask, int x, int y);
+void                PixImgPaste(PixImg * src, PixImg * dst,
 				int xs, int ys, int w, int h, int xt, int yt);
 void                PixImgBlend(PixImg * s1, PixImg * s2, PixImg * dst,
-				Drawable draw, GC gc, int x, int y, int w,
-				int h);
+				Drawable draw, int x, int y, int w, int h);
 
-#define PixImgPaste11(pi, draw, gc, x, y, w, h) \
-    PixImgPaste(pi, draw, gc, x, y, w, h, x, y)
+#define PixImgPaste11(src, dst, x, y, w, h) \
+    PixImgPaste(src, dst, x, y, w, h, x, y)
 
 #endif /* _PIXIMG_H_ */

@@ -29,14 +29,26 @@
 #include <X11/Xutil.h>
 #include <X11/extensions/XShm.h>
 
+struct _PixImg {
+   XImage             *xim;
+   XShmSegmentInfo    *shminfo;
+   Drawable            draw;
+   Pixmap              mask;
+   GC                  gc;
+};
+
 PixImg             *
-PixImgCreate(int w, int h)
+PixImgCreate(Win win, GC gc, int w, int h)
 {
    PixImg             *pi;
 
-   pi = EMALLOC(PixImg, 1);
+   pi = ECALLOC(PixImg, 1);
    if (!pi)
       return NULL;
+
+   if (win)
+      pi->draw = WinGetXwin(win);
+   pi->gc = gc;
 
    pi->shminfo = EMALLOC(XShmSegmentInfo, 1);
    if (pi->shminfo)
@@ -85,7 +97,27 @@ PixImgDestroy(PixImg * pi)
    shmctl(pi->shminfo->shmid, IPC_RMID, 0);
    XDestroyImage(pi->xim);
    Efree(pi->shminfo);
+   if (pi->mask)
+      XFreePixmap(disp, pi->mask);
    Efree(pi);
+}
+
+void
+PixImgSetMask(PixImg * pi, Pixmap mask, int x, int y)
+{
+   switch (mask)
+     {
+     case 0:
+	XSetClipMask(disp, pi->gc, None);
+	break;
+     case 1:
+	XSetClipMask(disp, pi->gc, pi->mask);
+	XSetClipOrigin(disp, pi->gc, x, y);
+	break;
+     default:
+	pi->mask = mask;
+	break;
+     }
 }
 
 static int
@@ -144,7 +176,7 @@ PixImgFill(PixImg * pi, Drawable draw, int x, int y)
 }
 
 void
-PixImgPaste(PixImg * pi, Drawable draw, GC gc, int xs, int ys,
+PixImgPaste(PixImg * src, PixImg * dst, int xs, int ys,
 	    int w, int h, int xt, int yt)
 {
    /* FIXME - No bounds checking if (xs,ys) != (xt,yt) */
@@ -156,11 +188,12 @@ PixImgPaste(PixImg * pi, Drawable draw, GC gc, int xs, int ys,
 	yt = ys;
      }
 
-   XShmPutImage(disp, draw, gc, pi->xim, xs, ys, xt, yt, w, h, False);
+   XShmPutImage(disp, dst->draw, dst->gc, src->xim, xs, ys, xt, yt, w, h,
+		False);
 }
 
 void
-PixImgBlend(PixImg * s1, PixImg * s2, PixImg * dst, Drawable draw, GC gc,
+PixImgBlend(PixImg * s1, PixImg * s2, PixImg * dst, Drawable draw,
 	    int x, int y, int w, int h)
 {
    int                 i, j, ox, oy;
@@ -471,5 +504,5 @@ PixImgBlend(PixImg * s1, PixImg * s2, PixImg * dst, Drawable draw, GC gc,
 	  }
 	break;
      }
-   XShmPutImage(disp, draw, gc, dst->xim, ox, oy, x, y, w, h, False);
+   XShmPutImage(disp, draw, dst->gc, dst->xim, ox, oy, x, y, w, h, False);
 }
