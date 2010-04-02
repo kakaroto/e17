@@ -26,6 +26,7 @@
 #include "ewins.h"
 #include "iclass.h"
 #include "icons.h"
+#include "timers.h"
 #include "windowmatch.h"
 #include "xwin.h"
 
@@ -105,20 +106,24 @@ IB_SnapEWin(EWin * ewin, int size)
 {
    /* Make snapshot of window */
    int                 w, h, ww, hh;
+   int                 was_shaded;
    EImage             *im;
    Drawable            draw;
 
    if (!EoIsShown(ewin))
       return NULL;
 
-   ww = EoGetW(ewin);
-   hh = EoGetH(ewin);
-   if (ww <= 0 || hh <= 0)
-      return NULL;
+   was_shaded = ewin->state.shaded;
 
    if (ewin->state.shaded)
       EwinInstantUnShade(ewin);
    EwinRaise(ewin);
+   IdlersRun();
+
+   ww = EoGetW(ewin);
+   hh = EoGetH(ewin);
+   if (ww <= 0 || hh <= 0)
+      return NULL;
 
    /* Oversample for nicer snapshots */
    IB_IconGetSize(ww, hh, size, 4, &w, &h);
@@ -141,6 +146,9 @@ IB_SnapEWin(EWin * ewin, int size)
 				      w, h, !EServerIsGrabbed(), 1);
      }
    EImageSetHasAlpha(im, 1);
+
+   if (was_shaded != ewin->state.shaded)
+      EwinInstantShade(ewin, 0);
 
    return im;
 }

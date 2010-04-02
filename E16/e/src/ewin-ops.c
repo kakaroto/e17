@@ -530,7 +530,6 @@ EwinIconify(EWin * ewin)
    static int          call_depth = 0;
    EWin              **lst, *e;
    int                 i, num;
-   char                was_shaded;
 
    if (!ewin)
       return;
@@ -548,19 +547,14 @@ EwinIconify(EWin * ewin)
       return;
    call_depth++;
 
-   was_shaded = ewin->state.shaded;
+   /* Save position at which the window was iconified */
+   EwinRememberPositionSet(ewin);
 
    if (!EwinIsTransient(ewin))
       ModulesSignal(ESIGNAL_EWIN_ICONIFY, ewin);
 
    ewin->state.iconified = 1;
    EwinHide(ewin);
-
-   /* Save position at which the window was iconified */
-   EwinRememberPositionSet(ewin);
-
-   if (was_shaded != ewin->state.shaded)
-      EwinInstantShade(ewin, 0);
 
    ICCCM_Iconify(ewin);
 
@@ -778,7 +772,7 @@ EwinInstantShade(EWin * ewin, int force)
 	break;
      case 1:
 	att.win_gravity = WestGravity;
-	if (!Mode.wm.startup)
+	if (!force)
 	   x = x + w - minw;
 	w = minw;
 	break;
@@ -788,7 +782,7 @@ EwinInstantShade(EWin * ewin, int force)
 	break;
      case 3:
 	att.win_gravity = SouthGravity;
-	if (!Mode.wm.startup)
+	if (!force)
 	   y = y + h - minh;
 	h = minh;
 	break;
@@ -798,7 +792,7 @@ EwinInstantShade(EWin * ewin, int force)
    ewin->state.shaded = 2;
    EoMoveResize(ewin, x, y, w, h);
    EMoveResizeWindow(ewin->win_container, -30, -30, 1, 1);
-   EwinBorderCalcSizes(ewin, 1);
+   EwinMoveResize(ewin, x, y, ewin->client.w, ewin->client.h);
 }
 
 void
@@ -834,6 +828,9 @@ EwinInstantUnShade(EWin * ewin)
    /* Reset gravity */
    att.win_gravity = NorthWestGravity;
    EChangeWindowAttributes(EwinGetClientWin(ewin), CWWinGravity, &att);
+   /* Force move after gravity change */
+   EWindowSetGeometry(EwinGetClientWin(ewin), -1, -1,
+		      ewin->client.w, ewin->client.h, 0);
 
    ewin->state.shaded = 0;
    EwinMoveResize(ewin, x, y, ewin->client.w, ewin->client.h);
