@@ -80,6 +80,28 @@ _item_free(Evry_Item *it)
 }
 
 static void
+_dbus_cb_current_track(void *data, DBusMessage *reply, DBusError *error)
+{
+   DBusMessage *msg;
+   
+   if (!_dbus_check_msg(reply, error)) return;
+
+   dbus_message_get_args(reply, error,
+			 DBUS_TYPE_INT32, (dbus_int32_t*) &(plug->current_track),
+			 DBUS_TYPE_INVALID);
+
+   if (data)
+     evry_plugin_async_update(EVRY_PLUGIN(plug), EVRY_ASYNC_UPDATE_REFRESH);
+   /* else
+    *   {
+    * 	Evry_Item *it;
+    * 	it = eina_list_nth(plug->base.items, plug->current_track);
+    * 	
+    * 	evry_item_select(NULL, it);
+    *   } */
+}
+
+static void
 _dbus_cb_tracklist_metadata(void *data, DBusMessage *reply, DBusError *error)
 {
    DBusMessageIter array, iter, item, iter_val;
@@ -169,11 +191,18 @@ _dbus_cb_tracklist_metadata(void *data, DBusMessage *reply, DBusError *error)
    EVRY_PLUGIN_ITEM_APPEND(plug, EVRY_ITEM(t));
 
    if (!plug->fetch_tracks)
-     evry_plugin_async_update(EVRY_PLUGIN(plug), EVRY_ASYNC_UPDATE_ADD);
+     {
+	DBusMessage *msg;
+	
+	evry_plugin_async_update(EVRY_PLUGIN(plug), EVRY_ASYNC_UPDATE_ADD);
 
-   if (plug->current_track == t->id)
-     evry_item_select(NULL, EVRY_ITEM(t));
-
+	msg = dbus_message_new_method_call(bus_name, "/TrackList",
+					   mpris_interface,
+					   "GetCurrentTrack");
+	e_dbus_message_send(conn, msg, _dbus_cb_current_track, -1, NULL);
+	dbus_message_unref(msg);
+     }
+   
    return;
 
  error:
@@ -227,21 +256,6 @@ _dbus_cb_tracklist_length(void *data, DBusMessage *reply, DBusError *error)
 			 DBUS_TYPE_INVALID);
 
    _mpris_get_metadata(plug->tracklist_cnt);
-}
-
-static void
-_dbus_cb_current_track(void *data, DBusMessage *reply, DBusError *error)
-{
-   DBusMessage *msg;
-
-   if (!_dbus_check_msg(reply, error)) return;
-
-   dbus_message_get_args(reply, error,
-			 DBUS_TYPE_INT32, (dbus_int32_t*) &(plug->current_track),
-			 DBUS_TYPE_INVALID);
-
-   if (data)
-     evry_plugin_async_update(EVRY_PLUGIN(plug), EVRY_ASYNC_UPDATE_REFRESH);
 }
 
 static void
@@ -358,12 +372,6 @@ _begin(Evry_Plugin *p, const Evry_Item *item __UNUSED__)
    e_dbus_message_send(conn, msg, _dbus_cb_tracklist_length, -1, p);
    dbus_message_unref(msg);
 
-   msg = dbus_message_new_method_call(bus_name, "/TrackList",
-				      mpris_interface,
-				      "GetCurrentTrack");
-   e_dbus_message_send(conn, msg, _dbus_cb_current_track, -1, NULL);
-   dbus_message_unref(msg);
-
    msg = dbus_message_new_method_call(bus_name, "/Player",
 				      mpris_interface,
 				      "GetStatus");
@@ -420,7 +428,13 @@ _icon_get(Evry_Plugin *p __UNUSED__, const Evry_Item *it, Evas *e)
 
    if (t->id == plug->current_track)
      {
-	return evry_icon_theme_get("media-playback-start", e);
+	if (plug->status.playing == 0)
+	  return evry_icon_theme_get("media-playback-start", e);
+	else if (plug->status.playing == 1)
+	  return evry_icon_theme_get("media-playback-pause", e);
+	else if (plug->status.playing == 2)
+	  return evry_icon_theme_get("media-playback-stop", e);
+
      }
 
    return NULL;
