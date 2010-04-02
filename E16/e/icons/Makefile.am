@@ -1,4 +1,4 @@
-iconsdir = $(pkgdatadir)/config/pix
+iconsdir = $(pkgdatadir)/icons
 
 icons_DATA = \
 	default.png \

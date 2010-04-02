@@ -445,13 +445,20 @@ void                EspawnCmd(const char *cmd);
 int                 Esystem(const char *cmd);
 
 /* config.c */
+#define FILE_TYPE_CONFIG     0
+#define FILE_TYPE_BACKGROUND 1
+#define FILE_TYPE_IMAGE      1
+#define FILE_TYPE_CURSOR     1
+#define FILE_TYPE_SOUND      1
+#define FILE_TYPE_MENU       2
+#define FILE_TYPE_ICON       3
 void                SkipTillEnd(FILE * ConfigFile);
 char               *GetLine(char *s, int size, FILE * f);
 int                 ConfigParseline1(char *str, char *s2, char **p2, char **p3);
 void                ConfigParseError(const char *where, const char *line);
 void                ConfigAlertLoad(const char *txt);
-char               *FindFile(const char *file, const char *themepath);
-char               *ThemeFileFind(const char *file);
+char               *FindFile(const char *file, const char *themepath, int type);
+char               *ThemeFileFind(const char *file, int type);
 char               *ConfigFileFind(const char *name, const char *themepath,
 				   int pp);
 int                 ConfigFileLoad(const char *name, const char *themepath,

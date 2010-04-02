@@ -8,7 +8,7 @@ tconfdir = $(pkgdatadir)/config
 tconf_DATA = \
 	definitions actionclasses.cfg
 
-menudir = $(pkgdatadir)/config/menus
+menudir = $(pkgdatadir)/menus
 menu_DATA = \
 	desktop.menu enlightenment.menu maintenance.menu settings.menu \
 	winops.menu winops_groups.menu winops_layer.menu \

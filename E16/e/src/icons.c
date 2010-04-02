@@ -208,7 +208,7 @@ IB_GetFallbackIcon(EWin * ewin, int size)
    ImageClass         *ic;
    EImage             *im;
 
-   im = ThemeImageLoad("pix/default.png");
+   im = ThemeImageLoad("icons/default.png");
    if (im)
       return im;
 

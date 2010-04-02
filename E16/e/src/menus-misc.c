@@ -256,16 +256,6 @@ ScanBackgroundMenu(void)
    menu_scan_recursive = 0;
 }
 
-static char        *
-find_icon(const char *file)
-{
-   char                s[FILEPATH_LEN_MAX];
-
-   Esnprintf(s, sizeof(s), "%s/icons", EDirUser());
-
-   return FindFile(file, s);
-}
-
 static void
 FillFlatFileMenu(Menu * m, const char *file)
 {
@@ -324,7 +314,7 @@ FillFlatFileMenu(Menu * m, const char *file)
 	     parse(s, "%S%T%S%S", &txt, &icon, &act, &params);
 
 	     if (icon)
-		icon = find_icon(icon);
+		icon = FindFile(icon, NULL, FILE_TYPE_ICON);
 	     if (icon)
 	       {
 		  Esnprintf(wd, sizeof(wd), "__FM.%s", icon);
@@ -385,7 +375,7 @@ MenuCreateFromFlatFile(const char *name, Menu * parent, MenuStyle * ms,
 		       const char *file)
 {
    Menu               *m = NULL;
-   char               *ff, buf[4096];
+   char               *ff;
    static int          calls = 0;
 
    if (calls > 32)
@@ -395,18 +385,7 @@ MenuCreateFromFlatFile(const char *name, Menu * parent, MenuStyle * ms,
    if (!file)
       file = name;
 
-   if (isabspath(file))
-     {
-	ff = FindFile(file, NULL);
-     }
-   else
-     {
-	/* Check menus subdir first */
-	Esnprintf(buf, sizeof(buf), "menus/%s", file);
-	ff = FindFile(buf, NULL);
-	if (!ff)
-	   ff = FindFile(file, NULL);
-     }
+   ff = FindFile(file, NULL, FILE_TYPE_MENU);
    if (!ff)
       goto done;
 

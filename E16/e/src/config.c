@@ -419,6 +419,9 @@ FindFilePath(const char *name, const char *path)
    char                s[FILEPATH_LEN_MAX];
    int                 len;
 
+#if 0
+   Eprintf("%s: %s (%s)\n", __func__, name, path);
+#endif
    if (path)
      {
 	len = Esnprintf(s, sizeof(s), "%s/%s", path, name);
@@ -437,9 +440,21 @@ FindFilePath(const char *name, const char *path)
       return NULL;
 }
 
+/* *INDENT-OFF* */
+static const struct {
+   const char         *where, *subdir;
+} fprm[] = {
+   { "utE",  "config" },
+   { "ute",   NULL    },
+   { "UuE",  "menus"  },
+   { "UE",   "icons"  }
+};
+/* *INDENT-ON* */
+
 char               *
-FindFile(const char *file, const char *themepath)
+FindFile(const char *file, const char *themepath, int type)
 {
+   const char         *w, *f, *path;
    char                s[FILEPATH_LEN_MAX];
    char               *p;
 
@@ -451,34 +466,49 @@ FindFile(const char *file, const char *themepath)
 	goto done;
      }
 
-   /* look in ~/.e16 first */
-   p = FindFilePath(file, EDirUser());
-   if (p)
-      goto done;
-
-   if (themepath)
+   p = NULL;
+   for (w = fprm[type].where; *w; w++)
      {
-	/* look in theme dir */
-	p = FindFilePath(file, themepath);
-	if (p)
-	   goto done;
-     }
+	f = file;
+	if (*w <= 'Z')
+	  {
+	     /* Look in subdir */
+	     Esnprintf(s, sizeof(s), "%s/%s", fprm[type].subdir, file);
+	     f = s;
+	  }
 
-   /* look in system config dir */
-   Esnprintf(s, sizeof(s), "%s/config", EDirRoot());
-   p = FindFilePath(file, s);
+	switch (*w & 0xdf)
+	  {
+	  default:
+	     continue;
+	  case 'U':		/* User config */
+	     path = EDirUser();
+	     break;
+	  case 'E':		/* e16 config */
+	     path = EDirRoot();
+	     break;
+	  case 'T':		/* Theme */
+	     path = themepath;
+	     if (!path)
+		continue;
+	     break;
+	  }
+	p = FindFilePath(f, path);
+	if (p)
+	   break;
+     }
 
  done:
 #if 0
-   Eprintf("%s %d: %s (%s): %s\n", __func__, 0, file, themepath, p);
+   Eprintf("%s %d: %s (%s): %s\n", __func__, type, file, themepath, p);
 #endif
    return p;
 }
 
 char               *
-ThemeFileFind(const char *file)
+ThemeFileFind(const char *file, int type)
 {
-   return FindFile(file, Mode.theme.path);
+   return FindFile(file, Mode.theme.path, type);
 }
 
 char               *
@@ -488,7 +518,7 @@ ConfigFileFind(const char *name, const char *themepath, int pp)
    char               *fullname, *file, *ppfile;
    int                 i, err;
 
-   fullname = FindFile(name, themepath);
+   fullname = FindFile(name, themepath, FILE_TYPE_CONFIG);
    if (!fullname)
       return NULL;
 

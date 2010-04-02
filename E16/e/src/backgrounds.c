@@ -74,7 +74,7 @@ _BackgroundGetFile(char **ptr)
    if (isabspath(path))
       goto done;
 
-   path = ThemeFileFind(path);
+   path = ThemeFileFind(path, FILE_TYPE_BACKGROUND);
    if (!path)
       goto done;
    Efree(*ptr);

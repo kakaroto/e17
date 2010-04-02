@@ -160,7 +160,7 @@ ThemeImageLoad(const char *file)
 	return im;
      }
 
-   f = ThemeFileFind(file);
+   f = ThemeFileFind(file, FILE_TYPE_IMAGE);
    if (f)
      {
 	im = EImageLoad(f);
@@ -259,7 +259,7 @@ ImagestateRealize(ImageState * is)
 	if (!is->im_file)
 	   return;		/* No file - quit */
 	/* not loaded, load and setup */
-	is->real_file = ThemeFileFind(is->im_file);
+	is->real_file = ThemeFileFind(is->im_file, FILE_TYPE_IMAGE);
      }
    if (is->real_file)
      {

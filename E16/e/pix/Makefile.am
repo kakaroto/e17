@@ -1,4 +1,4 @@
-pixdir = $(pkgdatadir)/config/pix
+pixdir = $(pkgdatadir)/pix
 
 pix_DATA = \
 	about.png elogo48.png \
