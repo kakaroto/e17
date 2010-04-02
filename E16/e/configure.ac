@@ -314,15 +314,22 @@ LDFLAGS="$SAVE_LDFLAGS"
 
 AC_ARG_ENABLE(roothacklib,
   [  --enable-roothacklib    build window mode helper library @<:@default=yes@:>@],,
-  enable_roothacklib=yes)
-if test "x$enable_roothacklib" = "xyes"; then
-  AC_CHECK_LIB(dl, dlopen, DLOPEN_LIBS=-ldl, enable_roothacklib=no)
+  enable_libhack=yes)
+if test "x$enable_libhack" = "xyes"; then
+  AC_CHECK_LIB(dl, dlopen, DLOPEN_LIBS=-ldl, enable_libhack=no)
   AC_SUBST(DLOPEN_LIBS)
 fi
-if test "x$enable_roothacklib" = "xyes"; then
-  AC_DEFINE(USE_ROOTHACKLIB, 1, [Use window mode helper library])
+if test "x$enable_libhack" = "xyes"; then
+  AC_DEFINE(USE_LIBHACK, 1, [Use window mode helper library])
 fi
-AM_CONDITIONAL(BUILD_ROOTHACKLIB, test "x$enable_roothacklib" = "xyes")
+AM_CONDITIONAL(BUILD_LIBHACK, test "x$enable_libhack" = "xyes")
+
+AC_ARG_ENABLE(libtrip,
+  [  --enable-libtrip        build debug library @<:@default=no@:>@],,
+  enable_libtrip=no)
+AC_CHECK_HEADERS(execinfo.h,, enable_libtrip=no)
+AC_CHECK_FUNCS(backtrace backtrace_symbols,, enable_libtrip=no)
+AM_CONDITIONAL(BUILD_LIBTRIP, test "x$enable_libtrip" = "xyes")
 
 AC_ARG_ENABLE(modules,
   [  --enable-modules        enable support for loadable modules @<:@default=no@:>@],,
@@ -435,7 +442,7 @@ echo "  Sync ......................... $enable_xsync"
 echo "  Composite .................... $enable_composite"
 echo "  Modules ...................... $enable_modules"
 echo "  Visibility hiding ............ $enable_visibility_hiding (only useful with modules)"
-echo "  Window mode helper library ... $enable_roothacklib"
+echo "  Window mode helper library ... $enable_libhack"
 echo "  Dialogs ...................... $enable_dialogs"
 echo
 echo "Experimental options - DO NOT USE unless you know what you are doing"

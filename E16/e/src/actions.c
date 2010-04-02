@@ -58,7 +58,7 @@ ExecSetupEnv(int flags)
    if (flags & EXEC_SET_STARTUP_ID)
       StartupIdExport();
 
-#if USE_ROOTHACKLIB
+#if USE_LIBHACK
    if (Mode.wm.window)
      {
 	char                buf[1024];
