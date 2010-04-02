@@ -99,7 +99,6 @@ $DoIconv = `which iconv`;
 	"x:XTerm:xterm",
 	"x:rxvt:rxvt",
 	"x:urxvt:urxvt",
-	"x:Mozilla:mozilla",
 	"x:Seamonkey:seamonkey",
 	"x:Firefox:firefox",
 	"x:Galeon:galeon",
@@ -111,10 +110,9 @@ $DoIconv = `which iconv`;
 	"x:XV:xv",
 	"x:Gaim:gaim",
 	"x:Xchat:xchat",
-	"x:Xchat2:xchat2",
-	"x:Xchat2:xchat-2",
 	"x:XMag:xmag",
 	"x:Grip:grip",
+	"x:Audacious:audacious"
 	"x:XMMS:xmms"
 );
 
