@@ -279,7 +279,7 @@ _update_calendar_sheet(Instance *inst)
    if (!calendar) return;
 
    current_time = time (NULL);
-   local_time = localtime (&current_time);
+   local_time = localtime_r(&current_time, &inst->current_time);
 
    strftime (buf, sizeof(buf), "%d", local_time);
    edje_object_part_text_set (calendar->o_icon, "monthday", buf);
