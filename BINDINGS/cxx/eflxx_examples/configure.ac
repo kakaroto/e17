@@ -97,9 +97,9 @@ AC_DEFINE_UNQUOTED(SYSTEM_PIXMAPS_DIR, "${packageprefix}/${systempixmapsdir}",""
 AC_DEFINE_UNQUOTED(PACKAGE_SOURCE_DIR, "${packagesrcdir}","")
 
 
-PKG_CHECK_MODULES(ESMARTXX_CONTAINER, esmartxx_container)
-PKG_CHECK_MODULES(ESMARTXX_GROUP, esmartxx_group)
-PKG_CHECK_MODULES(ESMARTXX_TEXTENTRY, esmartxx_textentry)
+#PKG_CHECK_MODULES(ESMARTXX_CONTAINER, esmartxx_container)
+#PKG_CHECK_MODULES(ESMARTXX_GROUP, esmartxx_group)
+#PKG_CHECK_MODULES(ESMARTXX_TEXTENTRY, esmartxx_textentry)
 PKG_CHECK_MODULES(EDJEXX, edjexx)
 PKG_CHECK_MODULES(EFL, eflxx)
 PKG_CHECK_MODULES(ECOREXX, ecorexx)
@@ -119,7 +119,6 @@ src/ecorexx/Makefile
 src/ecorexx/3dstars/Makefile
 src/ecorexx/calibrate/Makefile
 src/ecorexx/callbacks/Makefile
-src/ecorexx/config/Makefile
 src/ecorexx/list/Makefile
 src/ecorexx/paint/Makefile
 src/ecorexx/simple/Makefile
@@ -128,10 +127,6 @@ src/ecorexx/timers/Makefile
 src/ecorexx/x/Makefile
 src/edjexx/Makefile
 src/edjexx/simple/Makefile
-src/esmartxx/Makefile
-src/esmartxx/container/Makefile
-src/esmartxx/group/Makefile
-src/esmartxx/textentry/Makefile
 src/eetxx/Makefile
 src/eetxx/simple_write_read/Makefile
 src/emotionxx/Makefile

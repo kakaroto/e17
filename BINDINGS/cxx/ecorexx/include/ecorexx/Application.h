@@ -6,8 +6,6 @@
 
 /* EFL */
 #include <Evas.h>
-#include <Ecore_Config.h>
-#include <Ecore_Data.h>
 #include <Ecore_Ipc.h>
 #include <Ecore_Con.h>
 #include <Ecore_Evas.h>
@@ -31,7 +29,6 @@ namespace Ecorexx {
 class EvasWindow;
 class Application;
 class Callback;
-class Config;
 class Timer;
 
 class Callback
@@ -76,9 +73,6 @@ public:
   void setFont( const EvasFont& );
   void setFixedFont( const EvasFont& );*/
 
-  /* Configuration */
-  Config* getConfig();
-
 private:
   const std::string _binary;
   std::string _name;
@@ -86,7 +80,6 @@ private:
   EvasWindow* _mainWindow;
   //EvasFont* _font;
   //EvasFont* _fixedFont;
-  Config* _config;
 
 private:
   Application();

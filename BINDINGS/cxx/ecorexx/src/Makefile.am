@@ -17,7 +17,6 @@ lib_LTLIBRARIES = \
 
 libecorexx_la_SOURCES = \
 	Application.cpp\
-	Config.cpp \
 	EvasWindow.cpp \
 	XWindow.cpp \
 	Animator.cpp \

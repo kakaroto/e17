@@ -14,7 +14,6 @@ AM_CFLAGS =\
 SUBDIRS = \
 	common\
 	edjexx \
-	esmartxx \
 	ecorexx \
 	eetxx \
 	emotionxx \

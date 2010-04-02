@@ -7,7 +7,6 @@
 #include <eflxx/System.h>
 #include <eflxx/DebugInternal.h>
 #include "../include/ecorexx/Application.h"
-#include "../include/ecorexx/Config.h"
 #include "../include/ecorexx/Timer.h"
 
 /* STD */
@@ -36,7 +35,7 @@ Application* Application::_instance = 0;
 //===============================================================================================
 
 Application::Application( int argc, const char **argv, const string& name )
-    : Eflxx::Trackable( "Application" ), _binary( argv[0] ), _name( name ), _config( 0 )
+    : Eflxx::Trackable( "Application" ), _binary( argv[0] ), _name( name )
 {
   if ( Application::_instance )
   {
@@ -134,11 +133,5 @@ void Application::setFixedFont( const EvasFont& font )
     delete _fixedFont;
     _fixedFont = new EvasFont( font );
 }*/
-
-Config* Application::getConfig()
-{
-  if ( !_config ) _config = new Config( _binary );
-  return _config;
-}
 
 } // end namespace Ecorexx

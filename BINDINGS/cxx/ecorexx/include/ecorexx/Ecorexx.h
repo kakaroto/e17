@@ -9,7 +9,6 @@
 
 #include "Animator.h"
 #include "Application.h"
-#include "Config.h"
 #include "EvasWindow.h"
 #include "Timer.h"
 #include "XWindow.h"
