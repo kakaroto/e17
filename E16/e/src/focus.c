@@ -487,7 +487,7 @@ FocusToEWin(EWin * ewin, int why)
 	   focus_pending_new = NULL;
 	break;
      }
-   focus_request = (int)NextRequest(disp);
+   focus_request = (int)NextRequest(disp) - 1;
 }
 
 static void
