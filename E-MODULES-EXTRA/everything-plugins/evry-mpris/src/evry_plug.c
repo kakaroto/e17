@@ -281,18 +281,33 @@ static void
 _dbus_cb_status_change(void *data, DBusMessage *msg)
 {
    DBusMessageIter iter, array;
-   int value;
-   int cnt;
 
-   dbus_message_iter_init(msg, &array);
-   dbus_message_iter_recurse(&array, &iter);
-   dbus_message_iter_get_basic(&iter, &(plug->status.playing));
-   dbus_message_iter_next(&iter);
-   dbus_message_iter_get_basic(&iter, &(plug->status.random));
-   dbus_message_iter_next(&iter);
-   dbus_message_iter_get_basic(&iter, &(plug->status.repeat));
-   dbus_message_iter_next(&iter);
-   dbus_message_iter_get_basic(&iter, &(plug->status.loop));
+   dbus_message_iter_init(msg, &iter);
+
+   if (dbus_message_iter_get_arg_type(&iter) == DBUS_TYPE_ARRAY)
+     {
+       dbus_message_iter_recurse(&iter, &array);
+       dbus_message_iter_get_basic(&array, &(plug->status.playing));
+       dbus_message_iter_next(&array);
+       dbus_message_iter_get_basic(&array, &(plug->status.random));
+       dbus_message_iter_next(&array);
+       dbus_message_iter_get_basic(&array, &(plug->status.repeat));
+       dbus_message_iter_next(&array);
+       dbus_message_iter_get_basic(&array, &(plug->status.loop));
+     }
+   else if (dbus_message_iter_get_arg_type(&iter) == DBUS_TYPE_INT32)
+     {
+       /* audacious.... */
+       int hmm;
+       dbus_message_iter_get_basic(&iter, &hmm);
+       printf("status: %d\n", hmm);
+       return;
+     }
+   else
+     {
+       ERR("no array!");
+       return;
+     }
 
    DBG("status %d", plug->status.playing);
 }
