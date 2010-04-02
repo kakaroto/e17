@@ -121,9 +121,15 @@ PagersGetMode(void)
 {
    int                 mode = Conf_pagers.mode;
 
-   if (mode == PAGER_MODE_LIVE && !ECompMgrIsActive())
+   if (mode == PAGER_MODE_SIMPLE)
+      goto done;
+
+   if (ECompMgrIsActive())
+      mode = PAGER_MODE_LIVE;
+   else
       mode = PAGER_MODE_SNAP;
 
+ done:
    return mode;
 }
 
