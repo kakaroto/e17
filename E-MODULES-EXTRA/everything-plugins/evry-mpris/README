@@ -1,0 +1,10 @@
+evry-mpris plugin is a frontend for mediaplayers that support mpris.
+
+supports:
+- Amarok
+- Audacious 
+- corn, simple sound server. try it :) http://incise.org/corn.html
+
+the mpris 'standard' currently does not have 'play selected track' 
+so this wont work with other players.
+
