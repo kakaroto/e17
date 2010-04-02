@@ -266,6 +266,8 @@ _set_status(DBusMessage *msg)
    dbus_message_iter_next(&array);
    dbus_message_iter_get_basic(&array, &(plug->status.loop));
    DBG("status %d", plug->status.playing);
+
+   evry_plugin_async_update(EVRY_PLUGIN(plug), EVRY_ASYNC_UPDATE_ADD);
 }
 
 static void
