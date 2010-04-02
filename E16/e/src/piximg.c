@@ -24,6 +24,124 @@
 #include "E.h"
 #include "piximg.h"
 #include "xwin.h"
+#if USE_XRENDER
+#include <X11/extensions/Xrender.h>
+
+struct _PixImg {
+   int                 w, h;
+   Picture             pict;
+   Picture             alpha;
+   Picture             buf;
+   Pixmap              pmap;
+   Pixmap              mask;
+   GC                  gc;
+};
+
+PixImg             *
+PixImgCreate(Win win, GC gc, int w, int h)
+{
+   PixImg             *pi;
+   XRenderPictFormat  *pictfmt;
+   XRenderPictureAttributes pa;
+
+   pi = ECALLOC(PixImg, 1);
+   if (!pi)
+      return NULL;
+
+   pi->w = w;
+   pi->h = h;
+   pi->gc = gc;
+
+   if (win)
+     {
+	pa.subwindow_mode = IncludeInferiors;
+	pictfmt = XRenderFindVisualFormat(disp, WinGetVisual(win));
+	pi->pict = XRenderCreatePicture(disp, WinGetXwin(win), pictfmt,
+					CPSubwindowMode, &pa);
+     }
+   else
+     {
+	pi->pict = EPictureCreateBuffer(VROOT, w, h, &pi->pmap);
+     }
+
+   return pi;
+}
+
+void
+PixImgDestroy(PixImg * pi)
+{
+   if (!pi)
+      return;
+
+   XRenderFreePicture(disp, pi->pict);
+   if (pi->pmap != None)
+      XFreePixmap(disp, pi->pmap);
+   if (pi->mask != None)
+      XFreePixmap(disp, pi->mask);
+
+   Efree(pi);
+}
+
+void
+PixImgSetMask(PixImg * pi, Pixmap mask, int x, int y)
+{
+   XRenderPictureAttributes pa;
+
+   switch (mask)
+     {
+     case 0:
+	pa.clip_mask = None;
+	XRenderChangePicture(disp, pi->pict, CPClipMask, &pa);
+	break;
+     case 1:
+	pa.clip_x_origin = x;
+	pa.clip_y_origin = y;
+	pa.clip_mask = pi->mask;
+	XRenderChangePicture(disp, pi->pict,
+			     CPClipXOrigin | CPClipYOrigin | CPClipMask, &pa);
+	break;
+     default:
+	pi->mask = mask;
+	break;
+     }
+}
+
+void
+PixImgFill(PixImg * pi, Drawable draw, int x, int y)
+{
+   XCopyArea(disp, draw, pi->pmap, pi->gc, x, y, pi->w, pi->h, 0, 0);
+}
+
+#include "eimage.h"
+void
+PixImgPaste(PixImg * src, PixImg * dst, int xs, int ys,
+	    int w, int h, int xt, int yt)
+{
+   XRenderComposite(disp, PictOpSrc, src->pict, None, dst->pict,
+		    xs, ys, 0, 0, xt, yt, w, h);
+}
+
+void
+PixImgBlend(PixImg * src, PixImg * xxx, PixImg * dst, Drawable draw,
+	    int x, int y, int w, int h)
+{
+   if (dst->alpha == None)
+     {
+	dst->alpha = EPictureCreateSolid(WinGetXwin(VROOT), 1, 0x80, 0);
+	dst->buf =
+	   EPictureCreateBuffer(VROOT, WinGetW(VROOT), WinGetH(VROOT), NULL);
+     }
+   XRenderComposite(disp, PictOpSrc, src->pict, None, dst->buf,
+		    x, y, 0, 0, x, y, w, h);
+   XRenderComposite(disp, PictOpOver, xxx->pict, dst->alpha, dst->buf,
+		    0, 0, 0, 0, x, y, w, h);
+   XRenderComposite(disp, PictOpSrc, dst->buf, None, dst->pict,
+		    x, y, 0, 0, x, y, w, h);
+   src = NULL;
+   draw = None;
+}
+
+#else
 #include <sys/ipc.h>
 #include <sys/shm.h>
 #include <X11/Xutil.h>
@@ -506,3 +624,5 @@ PixImgBlend(PixImg * s1, PixImg * s2, PixImg * dst, Drawable draw,
      }
    XShmPutImage(disp, draw, dst->gc, dst->xim, ox, oy, x, y, w, h, False);
 }
+
+#endif /* USE_XRENDER */
