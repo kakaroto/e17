@@ -537,19 +537,13 @@ GroupsSave(void)
    fclose(f);
 }
 
-void
-GroupsLoad(void)
+static int
+_GroupsLoad(FILE * fs)
 {
-   FILE               *f;
    char                s[1024];
    Group              *g = NULL;
 
-   Esnprintf(s, sizeof(s), "%s.groups", EGetSavePrefix());
-   f = fopen(s, "r");
-   if (!f)
-      return;
-
-   while (fgets(s, sizeof(s), f))
+   while (fgets(s, sizeof(s), fs))
      {
 	char                ss[128];
 	int                 ii;
@@ -596,7 +590,18 @@ GroupsLoad(void)
 	     g->cfg.shade = ii;
 	  }
      }
-   fclose(f);
+
+   return 0;
+}
+
+void
+GroupsLoad(void)
+{
+   char                s[4096];
+
+   Esnprintf(s, sizeof(s), "%s.groups", EGetSavePrefix());
+
+   ConfigFileLoad(s, NULL, _GroupsLoad, 0);
 }
 
 #if ENABLE_DIALOGS

@@ -1184,24 +1184,16 @@ SnapshotsSpawn(void)
 }
 
 /* load all snapped info */
-void
-SnapshotsLoad(void)
+static int
+_SnapshotsLoad(FILE * fs)
 {
    Snapshot           *sn = NULL;
    char                buf[4096], *s;
-   FILE               *f;
    int                 res_w, res_h, a, b, c, d;
-
-   GroupsLoad();
-
-   Esnprintf(buf, sizeof(buf), "%s.snapshots", EGetSavePrefix());
-   f = fopen(buf, "r");
-   if (!f)
-      return;
 
    res_w = WinGetW(VROOT);
    res_h = WinGetH(VROOT);
-   while (fgets(buf, sizeof(buf), f))
+   while (fgets(buf, sizeof(buf), fs))
      {
 	s = strchr(buf, ':');
 	if (!s)
@@ -1390,7 +1382,20 @@ SnapshotsLoad(void)
 #endif
 	  }
      }
-   fclose(f);
+
+   return 0;
+}
+
+void
+SnapshotsLoad(void)
+{
+   char                s[4096];
+
+   GroupsLoad();
+
+   Esnprintf(s, sizeof(s), "%s.snapshots", EGetSavePrefix());
+
+   ConfigFileLoad(s, NULL, _SnapshotsLoad, 0);
 }
 
 /* make a client window conform to snapshot info */

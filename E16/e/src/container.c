@@ -1749,20 +1749,14 @@ static const DialogDef DlgContainer = {
  */
 #include "conf.h"
 
-static void
-ContainersConfigLoad(void)
+static int
+_ContainersConfigLoad(FILE * fs)
 {
    int                 err = 0;
-   FILE               *fs;
    char                s[FILEPATH_LEN_MAX];
    char                s2[FILEPATH_LEN_MAX];
    int                 i1, i2;
    Container          *ct, ct_dummy;
-
-   Esnprintf(s, sizeof(s), "%s.ibox", EGetSavePrefix());
-   fs = fopen(s, "r");
-   if (!fs)
-      return;
 
    ct = &ct_dummy;
    while (fgets(s, sizeof(s), fs))
@@ -1831,11 +1825,22 @@ ContainersConfigLoad(void)
 	     break;
 	  }
      }
+
+ done:
    if (err)
       Eprintf("Error: Iconbox configuration file load problem.\n");
 
- done:
-   fclose(fs);
+   return err;
+}
+
+static void
+ContainersConfigLoad(void)
+{
+   char                s[4096];
+
+   Esnprintf(s, sizeof(s), "%s.ibox", EGetSavePrefix());
+
+   ConfigFileLoad(s, NULL, _ContainersConfigLoad, 0);
 }
 
 static void
