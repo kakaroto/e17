@@ -164,22 +164,22 @@ _dbus_cb_tracklist_metadata(void *data, DBusMessage *reply, DBusError *error)
 	else goto error;
      }
 
-   if (t->base.label)
-     {
-	DBG("add %s, %d - %d\n", t->base.label, t->id, plug->current_track);
+   DBG("add %s, %d", t->base.label, t->id);
 
-	EVRY_PLUGIN_ITEM_APPEND(plug, EVRY_ITEM(t));
-	evry_plugin_async_update(EVRY_PLUGIN(plug), EVRY_ASYNC_UPDATE_ADD);
+   EVRY_PLUGIN_ITEM_APPEND(plug, EVRY_ITEM(t));
 
-	if (plug->current_track == t->id)
-	  {
-	     evry_item_select(NULL, EVRY_ITEM(t));
-	  }
+   if (!plug->fetch_tracks)
+     evry_plugin_async_update(EVRY_PLUGIN(plug), EVRY_ASYNC_UPDATE_ADD);
 
-	return;
-     }
+   if (plug->current_track == t->id)
+     evry_item_select(NULL, EVRY_ITEM(t));
+
+   return;
 
  error:
+   if (!plug->fetch_tracks)
+     evry_plugin_async_update(EVRY_PLUGIN(plug), EVRY_ASYNC_UPDATE_ADD);
+
    E_FREE(t);
    return;
 }
@@ -245,6 +245,38 @@ _dbus_cb_current_track(void *data, DBusMessage *reply, DBusError *error)
 }
 
 static void
+_set_status(DBusMessage *msg)
+{
+   DBusMessageIter iter, array;
+
+   dbus_message_iter_init(msg, &iter);
+
+   if (dbus_message_iter_get_arg_type(&iter) != DBUS_TYPE_STRUCT)
+     {
+	ERR("no dbus struct");
+	return;
+     }
+
+   dbus_message_iter_recurse(&iter, &array);
+   dbus_message_iter_get_basic(&array, &(plug->status.playing));
+   dbus_message_iter_next(&array);
+   dbus_message_iter_get_basic(&array, &(plug->status.random));
+   dbus_message_iter_next(&array);
+   dbus_message_iter_get_basic(&array, &(plug->status.repeat));
+   dbus_message_iter_next(&array);
+   dbus_message_iter_get_basic(&array, &(plug->status.loop));
+   DBG("status %d", plug->status.playing);
+}
+
+static void
+_dbus_cb_get_status(void *data, DBusMessage *reply, DBusError *error)
+{
+   if (!_dbus_check_msg(reply, error)) return;
+
+   _set_status(reply);
+}
+
+static void
 _dbus_cb_tracklist_change(void *data, DBusMessage *msg)
 {
    DBG("tracklist change");
@@ -254,7 +286,7 @@ _dbus_cb_tracklist_change(void *data, DBusMessage *msg)
 			 DBUS_TYPE_INT32, (dbus_int32_t*) &(plug->tracklist_cnt),
 			 DBUS_TYPE_INVALID);
 
-   /* XXX race - there could still come metadata from previous
+   /* XXX workaround race - there could still come metadata from previous
       tracklist */
    if (!plug->fetch_tracks)
      _mpris_get_metadata(plug->tracklist_cnt);
@@ -284,32 +316,31 @@ _dbus_cb_status_change(void *data, DBusMessage *msg)
 
    dbus_message_iter_init(msg, &iter);
 
-   if (dbus_message_iter_get_arg_type(&iter) == DBUS_TYPE_ARRAY)
+   if (dbus_message_iter_get_arg_type(&iter) == DBUS_TYPE_STRUCT)
      {
-       dbus_message_iter_recurse(&iter, &array);
-       dbus_message_iter_get_basic(&array, &(plug->status.playing));
-       dbus_message_iter_next(&array);
-       dbus_message_iter_get_basic(&array, &(plug->status.random));
-       dbus_message_iter_next(&array);
-       dbus_message_iter_get_basic(&array, &(plug->status.repeat));
-       dbus_message_iter_next(&array);
-       dbus_message_iter_get_basic(&array, &(plug->status.loop));
+	_set_status(msg);
      }
    else if (dbus_message_iter_get_arg_type(&iter) == DBUS_TYPE_INT32)
      {
-       /* audacious.... */
-       int hmm;
-       dbus_message_iter_get_basic(&iter, &hmm);
-       printf("status: %d\n", hmm);
-       return;
+	/* audacious.... */
+	DBusMessage *msg;
+	int hmm;
+
+	dbus_message_iter_get_basic(&iter, &hmm);
+	printf("status: %d\n", hmm);
+
+	msg = dbus_message_new_method_call(bus_name, "/Player",
+					   mpris_interface,
+					   "GetStatus");
+	e_dbus_message_send(conn, msg, _dbus_cb_get_status, -1, NULL);
+	dbus_message_unref(msg);
+	return;
      }
    else
      {
-       ERR("no array!");
-       return;
+	ERR("hooray!");
+	return;
      }
-
-   DBG("status %d", plug->status.playing);
 }
 
 static Evry_Plugin *
@@ -322,17 +353,20 @@ _begin(Evry_Plugin *p, const Evry_Item *item __UNUSED__)
    msg = dbus_message_new_method_call(bus_name, "/TrackList",
 				      mpris_interface,
 				      "GetLength");
-
    e_dbus_message_send(conn, msg, _dbus_cb_tracklist_length, -1, p);
    dbus_message_unref(msg);
 
    msg = dbus_message_new_method_call(bus_name, "/TrackList",
 				      mpris_interface,
 				      "GetCurrentTrack");
-
    e_dbus_message_send(conn, msg, _dbus_cb_current_track, -1, NULL);
    dbus_message_unref(msg);
 
+   msg = dbus_message_new_method_call(bus_name, "/Player",
+				      mpris_interface,
+				      "GetStatus");
+   e_dbus_message_send(conn, msg, _dbus_cb_get_status, -1, NULL);
+   dbus_message_unref(msg);
 
    cb_tracklist_change = e_dbus_signal_handler_add
      (conn, bus_name, "/TrackList", mpris_interface, "TrackListChange",
@@ -509,6 +543,25 @@ _mpris_check_file(Evry_Action *act __UNUSED__, const Evry_Item *it)
    return (!strncmp(file->mime, "audio/", 6));
 }
 
+static int
+_mpris_check_item(Evry_Action *act, const Evry_Item *it)
+{
+   if (!strcmp((char *)act->data, "Stop"))
+     {
+	if (plug->status.playing == 2) return 0;
+     }
+   else if (!strcmp((char *)act->data, "Play"))
+     {
+	if (plug->status.playing == 0) return 0;
+     }
+   else if (!strcmp((char *)act->data, "Pause"))
+     {
+	if (plug->status.playing == 1) return 0;
+     }
+
+   return 1;
+}
+
 static void
 _dbus_cb_name_owner_changed(void *data __UNUSED__, DBusMessage *msg)
 {
@@ -651,19 +704,19 @@ _init(void)
    actions = eina_list_append(actions, act);
 
    act = evry_action_new("Play", "MPRIS_TRACK", NULL, NULL, "media-playback-start",
-			 _mpris_player_action, NULL, NULL, NULL,NULL);
+			 _mpris_player_action, _mpris_check_item, NULL, NULL,NULL);
    act->data = "Play";
    evry_action_register(act,  0);
    actions = eina_list_append(actions, act);
 
    act = evry_action_new("Pause", "MPRIS_TRACK", NULL, NULL, "media-playback-pause",
-			 _mpris_player_action, NULL, NULL, NULL,NULL);
+			 _mpris_player_action, _mpris_check_item, NULL, NULL,NULL);
    act->data = "Pause";
    evry_action_register(act,  0);
    actions = eina_list_append(actions, act);
 
    act = evry_action_new("Stop", "MPRIS_TRACK", NULL, NULL, "media-playback-stop",
-			 _mpris_player_action, NULL, NULL, NULL,NULL);
+			 _mpris_player_action, _mpris_check_item, NULL, NULL,NULL);
    act->data = "Stop";
    evry_action_register(act,  0);
    actions = eina_list_append(actions, act);
