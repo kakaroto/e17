@@ -1203,14 +1203,11 @@ static void
 PagerHandleMotion(Pager * p, int x, int y)
 {
    EWin               *ewin;
-   int                 on_screen;
 
    if (!Conf_pagers.enable)
       return;
 
-   on_screen = EQueryPointer(p->win, &x, &y, NULL, NULL);
-
-   if (on_screen && x >= 0 && x < p->w && y >= 0 && y < p->h)
+   if (Mode.events.on_screen && x >= 0 && x < p->w && y >= 0 && y < p->h)
       ewin = EwinInPagerAt(p, x, y);
    else
       ewin = NULL;
@@ -1641,7 +1638,11 @@ PagerHiwinEvent(Win win __UNUSED__, XEvent * ev, void *prm)
 	switch (Mode.mode)
 	  {
 	  case MODE_NONE:
-	     PagerHandleMotion(p, ev->xmotion.x, ev->xmotion.y);
+	     /* Translate x,y to pager window coordinates */
+	     ETranslateCoordinates(RROOT, p->win,
+				   ev->xbutton.x_root, ev->xbutton.y_root,
+				   &px, &py, NULL);
+	     PagerHandleMotion(p, px, py);
 	     break;
 
 	  case MODE_PAGER_DRAG_PENDING:
