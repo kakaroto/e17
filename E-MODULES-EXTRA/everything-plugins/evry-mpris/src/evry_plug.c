@@ -3,8 +3,8 @@
 typedef struct _Plugin Plugin;
 typedef struct _Track Track;
 
-#undef DBG
-#define DBG(...) ERR(__VA_ARGS__)
+/* #undef DBG
+ * #define DBG(...) ERR(__VA_ARGS__) */
 
 struct _Plugin
 {
@@ -514,14 +514,70 @@ _mpris_player_action(Evry_Action *act)
    return 1;
 }
 
+static void
+_dbus_cb_position_get(void *data, DBusMessage *reply, DBusError *error)
+{
+   DBusMessage *msg;
+   Evry_Action *act = data;
+   int pos;
+   
+   if (!_dbus_check_msg(reply, error)) return;
+   
+   dbus_message_get_args(reply, NULL,
+			 DBUS_TYPE_INT32, (dbus_int32_t*) &(pos),
+			 DBUS_TYPE_INVALID);
+
+   msg = dbus_message_new_method_call(bus_name, "/Player",
+				      mpris_interface,
+				      "PositionSet");
+
+   if (!strcmp(act->data, "Forward"))
+     pos += 60000;
+   else
+     pos -= 60000;
+   
+   dbus_message_append_args(msg,
+			    DBUS_TYPE_INT32, &(pos),
+			    DBUS_TYPE_INVALID);
+
+   e_dbus_message_send(conn, msg, NULL, -1, NULL);
+   dbus_message_unref(msg);
+}
+
+static int
+_mpris_player_position(Evry_Action *act)
+{
+   DBusMessage *msg;
+
+   msg = dbus_message_new_method_call(bus_name, "/Player",
+				      mpris_interface,
+				      "PositionGet");
+
+   e_dbus_message_send(conn, msg, _dbus_cb_position_get, -1, act);
+   dbus_message_unref(msg);
+
+   return 1;
+}
+
 static int
 _mpris_play_file(Evry_Action *act)
 {
-   ITEM_FILE(file, act->item1);
-
+   Evry_Item_File *file;
    DBusMessage *msg;
    int play = (strcmp((char *) act->data, "e"));
    char *buf;
+
+   if (!strcmp(act->type_in1, "MPRIS_TRACK"))
+     {
+	
+	file = (Evry_Item_File *)act->item2;
+	if (strncmp(file->mime, "audio/", 6) != 0)
+	  return 0;
+     }
+   else
+     {
+	file = (Evry_Item_File *)act->item1;
+     }
 
    if (strncmp(file->uri, "file://", 7))
      {
@@ -563,7 +619,12 @@ _mpris_check_file(Evry_Action *act __UNUSED__, const Evry_Item *it)
 static int
 _mpris_check_item(Evry_Action *act, const Evry_Item *it)
 {
-   if (!strcmp((char *)act->data, "Stop"))
+   if (!strcmp((char *)act->data, "PlayTrack"))
+     {
+	if (plug->current_track == ((Track *)it)->id)
+	  return 0;
+     }
+   else if (!strcmp((char *)act->data, "Stop"))
      {
 	if (plug->status.playing == 2) return 0;
      }
@@ -573,7 +634,17 @@ _mpris_check_item(Evry_Action *act, const Evry_Item *it)
      }
    else if (!strcmp((char *)act->data, "Pause"))
      {
-	if (plug->status.playing == 1) return 0;
+	if (plug->status.playing != 0) return 0;
+     }
+   else if (!strcmp((char *)act->data, "Forward"))
+     {
+	if (plug->current_track != ((Track *)it)->id ||
+	    plug->status.playing != 0) return 0;
+     }
+   else if (!strcmp((char *)act->data, "Rewind"))
+     {
+	if (plug->current_track != ((Track *)it)->id ||
+	    plug->status.playing != 0) return 0;
      }
 
    return 1;
@@ -711,7 +782,8 @@ _init(void)
    evry_plugin_register(EVRY_PLUGIN(plug), 0);
 
    act = evry_action_new("Play Track", "MPRIS_TRACK", NULL, NULL, "media-playback-start",
-			 _mpris_play_track, NULL, NULL, NULL,NULL);
+			 _mpris_play_track, _mpris_check_item, NULL, NULL,NULL);
+   act->data = "PlayTrack";
    evry_action_register(act,  0);
    actions = eina_list_append(actions, act);
 
@@ -738,6 +810,18 @@ _init(void)
    evry_action_register(act,  0);
    actions = eina_list_append(actions, act);
 
+   act = evry_action_new("Forward", "MPRIS_TRACK", NULL, NULL, "media-seek-forward",
+			 _mpris_player_position, _mpris_check_item, NULL, NULL,NULL);
+   act->data = "Forward";
+   evry_action_register(act,  0);
+   actions = eina_list_append(actions, act);
+
+   act = evry_action_new("Rewind", "MPRIS_TRACK", NULL, NULL, "media-seek-backward",
+			 _mpris_player_position, _mpris_check_item, NULL, NULL,NULL);
+   act->data = "Rewind";
+   evry_action_register(act,  0);
+   actions = eina_list_append(actions, act);
+
    act = evry_action_new("Enqueue File", "FILE", NULL, NULL, "list-add",
 			 _mpris_play_file, _mpris_check_file, NULL, NULL,NULL);
    act->data = "e";
@@ -750,8 +834,8 @@ _init(void)
    evry_action_register(act,  1);
    actions = eina_list_append(actions, act);
 
-   /* act = evry_action_new("Enqueue Files", "MPRIS_TRACK", "FILE", NULL, "list-add",
-    * 			 _mpris_enqueue_files, _mpris_check_files, NULL, NULL,NULL);
+   /* act = evry_action_new("Enqueue Files", NULL, "FILE", NULL, "list-add",
+    * 			 _mpris_play_file, NULL, NULL, NULL,NULL);
     * act->data = "e";
     * evry_action_register(act,  0);
     * actions = eina_list_append(actions, act); */
