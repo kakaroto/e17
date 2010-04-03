@@ -193,6 +193,8 @@ _MenuEwinInit(EWin * ewin)
 {
    Menu               *m = (Menu *) ewin->data;
 
+   m->ewin = ewin;
+
    EwinSetTitle(ewin, _(m->title));
    EwinSetClass(ewin, m->name, "Enlightenment_Menu");
 
@@ -335,7 +337,6 @@ MenuShow(Menu * m, char noshow)
 
    ewin = AddInternalToFamily(m->win, m->style->border_name, EWIN_TYPE_MENU,
 			      &_MenuEwinOps, m);
-   m->ewin = ewin;
    if (ewin)
      {
 	ewin->client.event_mask |= KeyPressMask;

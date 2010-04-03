@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2007-2009 Kim Woelders
+ * Copyright (C) 2007-2010 Kim Woelders
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -373,6 +373,8 @@ static void
 _MagEwinInit(EWin * ewin)
 {
    MagWindow          *mw = (MagWindow *) ewin->data;
+
+   mw->ewin = ewin;
 
    EwinSetTitle(ewin, mw->title);
    EwinSetClass(ewin, "Magnifier", "Enlightenment_Magnifier");

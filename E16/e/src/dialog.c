@@ -357,6 +357,8 @@ _DialogEwinInit(EWin * ewin)
 {
    Dialog             *d = (Dialog *) ewin->data;
 
+   d->ewin = ewin;
+
    EwinSetTitle(ewin, d->title);
    EwinSetClass(ewin, d->name, "Enlightenment_Dialog");
    d->set_title = 0;
@@ -439,7 +441,6 @@ DialogShowArranged(Dialog * d, int center)
 
    ewin = AddInternalToFamily(d->win, "DIALOG", EWIN_TYPE_DIALOG,
 			      &_DialogEwinOps, d);
-   d->ewin = ewin;
    if (!ewin)
       return;
 

@@ -216,6 +216,8 @@ _ContainerEwinInit(EWin * ewin)
 {
    Container          *ct = (Container *) ewin->data;
 
+   ct->ewin = ewin;
+
    EwinSetTitle(ewin, ct->wm_name);
    EwinSetClass(ewin, ct->name, "Enlightenment_IconBox");
 
@@ -284,7 +286,6 @@ ContainerShow(Container * ct)
 
    ewin = AddInternalToFamily(ct->win, "ICONBOX", EWIN_TYPE_ICONBOX,
 			      &_ContainerEwinOps, ct);
-   ct->ewin = ewin;
    if (!ewin)
       return;
 

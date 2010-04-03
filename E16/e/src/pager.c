@@ -625,6 +625,8 @@ _PagerEwinInit(EWin * ewin)
    Pager              *p = (Pager *) ewin->data;
    char                s[128];
 
+   p->ewin = ewin;
+
    Esnprintf(s, sizeof(s), "Pager-%i", p->dsk->num);
    EwinSetTitle(ewin, s);
    Esnprintf(s, sizeof(s), "%i", p->dsk->num);
@@ -709,7 +711,6 @@ PagerShow(Pager * p)
 
    ewin = AddInternalToFamily(p->win, "PAGER", EWIN_TYPE_PAGER,
 			      &_PagerEwinOps, p);
-   p->ewin = ewin;
    if (!ewin)
       return;
 
