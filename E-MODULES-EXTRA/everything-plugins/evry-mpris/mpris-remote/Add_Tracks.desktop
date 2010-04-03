@@ -1,0 +1,11 @@
+[Desktop Entry]
+Hidden=false
+Exec=mpris-remote addtrack %f false
+Type=Application
+NoDisplay=false
+Version=1.0
+StartupNotify=false
+Terminal=false
+Name=Add Tracks
+Name[en_US]=Add Tracks
+MimeType=application/x-ogg;application/ogg;audio/x-vorbis+ogg;audio/x-scpls;audio/x-mp3;audio/x-mpeg;audio/mpeg;audio/x-mpegurl;audio/x-flac;x-directory/gnome-default-handler;x-directory/normal;inode/directory;

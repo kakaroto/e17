@@ -1,9 +1,7 @@
 evry-mpris plugin is a frontend for mediaplayers that support mpris.
 
-supports:
-- Amarok
-
-- Audacious 
+supported players/daemons:
+- Amarok, Audacious
 
 - xmms2, via xmms2-mpris-bridge
    install python bindings for xmmsclient, dbus and gobject, then
@@ -12,6 +10,11 @@ supports:
 - corn, simple sound server. 
   try it :) http://incise.org/corn.html
 
-the mpris 'standard' currently does not have 'play selected track' 
+The mpris 'standard' currently does not have 'play selected track' 
 so this wont work with other players.
 
+
+A cli remote can be found in mpris-remote. To easily add tracks or 
+directories from a file manager (or everything) do:
+cp mpris-remote/mpris-remote /usr/local/bin
+cp mpris-remote/Add_Tracks.desktop ~/.local/share/applications/
