@@ -82,9 +82,7 @@ _item_free(Evry_Item *it)
    if (t->title) eina_stringshare_del(t->title);
 
    if (!t->ready)
-     {
-	dbus_pending_call_cancel(t->pnd);
-     }
+     dbus_pending_call_cancel(t->pnd);
    
    E_FREE(t);
 }
@@ -116,7 +114,6 @@ _dbus_cb_tracklist_metadata(void *data, DBusMessage *reply, DBusError *error)
 {
    DBusMessageIter array, iter, item, iter_val;
    Track *t = data;
-
    int type;
    char *key = NULL, *artist = NULL, *title = NULL, *location = NULL;
 
@@ -213,7 +210,9 @@ _dbus_cb_tracklist_metadata(void *data, DBusMessage *reply, DBusError *error)
    if (!plug->fetch_tracks)
      evry_plugin_async_update(EVRY_PLUGIN(plug), EVRY_ASYNC_UPDATE_ADD);
 
-   E_FREE(t);
+   plug->tracks = eina_list_remove(plug->tracks, t);
+   evry_item_free(EVRY_ITEM(t));
+   
    return;
 }
 
