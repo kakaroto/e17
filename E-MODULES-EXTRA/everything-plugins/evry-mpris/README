@@ -6,9 +6,7 @@ supports:
 - Audacious 
 
 - xmms2, via xmms2-mpris-bridge
-   install python bindings for xmmsclient, dbus and gobject
-   
-   git clone git://github.com/jeffdameth/xmms2-mpris-bridge.git
+   install python bindings for xmmsclient, dbus and gobject, then
    cp xmms2-mpris-bridge/xmms2-mpris-bridge ~/.config/xmms2/startup.d
 
 - corn, simple sound server. 
