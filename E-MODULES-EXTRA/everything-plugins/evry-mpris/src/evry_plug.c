@@ -72,6 +72,45 @@ _dbus_check_msg(DBusMessage *reply, DBusError *error)
    return (dbus_message_get_type(reply) == DBUS_MESSAGE_TYPE_METHOD_RETURN);
 }
 
+static DBusPendingCall *
+_dbus_send_msg(const char *path, const char *method,
+	       E_DBus_Method_Return_Cb _cb, void *data)
+{
+   DBusMessage *msg;
+   DBusPendingCall *pnd;
+   
+   msg = dbus_message_new_method_call(bus_name, path,
+				      mpris_interface,
+				      method);
+
+   pnd = e_dbus_message_send(conn, msg, _cb, -1, data);
+   dbus_message_unref(msg);
+
+   return pnd;
+}
+
+static DBusPendingCall *
+_dbus_send_msg_int(const char *path, const char *method,
+		   E_DBus_Method_Return_Cb _cb, void *data, int num)
+{
+   DBusMessage *msg;
+   DBusPendingCall *pnd;
+   
+   msg = dbus_message_new_method_call(bus_name, path,
+				      mpris_interface,
+				      method);
+
+   dbus_message_append_args(msg,
+			    DBUS_TYPE_INT32, &num,
+			    DBUS_TYPE_INVALID);
+
+   pnd = e_dbus_message_send(conn, msg, _cb, -1, data);
+   dbus_message_unref(msg);
+
+   return pnd;
+}
+
+
 static void
 _item_free(Evry_Item *it)
 {
@@ -192,16 +231,10 @@ _dbus_cb_tracklist_metadata(void *data, DBusMessage *reply, DBusError *error)
 
    if (!plug->fetch_tracks)
      {
-   	DBusMessage *msg;
+	_dbus_send_msg("/TrackList", "GetCurrentTrack",
+		       _dbus_cb_current_track, NULL); 
    	
    	evry_plugin_async_update(EVRY_PLUGIN(plug), EVRY_ASYNC_UPDATE_ADD);
-   
-   	msg = dbus_message_new_method_call(bus_name, "/TrackList",
-   					   mpris_interface,
-   					   "GetCurrentTrack");
-
-   	e_dbus_message_send(conn, msg, _dbus_cb_current_track, -1, NULL);
-   	dbus_message_unref(msg);
      }
    
    return;
@@ -219,7 +252,6 @@ _dbus_cb_tracklist_metadata(void *data, DBusMessage *reply, DBusError *error)
 static void
 _mpris_get_metadata(int tracks)
 {
-   DBusMessage *msg;
    int cnt;
    Track *t;
 
@@ -239,15 +271,8 @@ _mpris_get_metadata(int tracks)
 
 	evry_item_new(EVRY_ITEM(t), EVRY_PLUGIN(plug), NULL, _item_free);
 
-	msg = dbus_message_new_method_call(bus_name, "/TrackList",
-					   mpris_interface,
-					   "GetMetadata");
-	dbus_message_append_args(msg,
-				 DBUS_TYPE_INT32, &cnt,
-				 DBUS_TYPE_INVALID);
-
-	t->pnd = e_dbus_message_send(conn, msg, _dbus_cb_tracklist_metadata, -1, t);
-	dbus_message_unref(msg);
+	t->pnd = _dbus_send_msg_int("/TrackList", "GetMetadata",
+				    _dbus_cb_tracklist_metadata, t, cnt); 
 
 	plug->tracks = eina_list_append(plug->tracks, t);
      }
@@ -323,16 +348,7 @@ _dbus_cb_track_change(void *data, DBusMessage *msg)
 {
    /* XXX just fsckin give the track nr. if I want metadata I would ask for it!*/
 
-   /* dbus_message_get_args(msg, NULL,
-    * 			 DBUS_TYPE_INT32, (dbus_int32_t*) &current_track,
-    * 			 DBUS_TYPE_INVALID); */
-
-   msg = dbus_message_new_method_call(bus_name, "/TrackList",
-				      mpris_interface,
-				      "GetCurrentTrack");
-
-   e_dbus_message_send(conn, msg, _dbus_cb_current_track, -1, plug);
-   dbus_message_unref(msg);
+   _dbus_send_msg("/TrackList", "GetCurrentTrack", _dbus_cb_current_track, plug); 
 }
 
 static void
@@ -348,46 +364,24 @@ _dbus_cb_status_change(void *data, DBusMessage *msg)
      }
    else if (dbus_message_iter_get_arg_type(&iter) == DBUS_TYPE_INT32)
      {
-	/* audacious.... */
-	DBusMessage *msg;
-	int hmm;
-
-	dbus_message_iter_get_basic(&iter, &hmm);
-	DBG("status: %d\n", hmm);
-
-	msg = dbus_message_new_method_call(bus_name, "/Player",
-					   mpris_interface,
-					   "GetStatus");
-	e_dbus_message_send(conn, msg, _dbus_cb_get_status, -1, NULL);
-	dbus_message_unref(msg);
-	return;
+	/* XXX audacious.. */
+	_dbus_send_msg("/Player", "GetStatus", _dbus_cb_get_status, NULL); 
      }
    else
      {
 	ERR("hooray!");
-	return;
      }
 }
 
 static Evry_Plugin *
 _begin(Evry_Plugin *p, const Evry_Item *item __UNUSED__)
 {
-   DBusMessage *msg;
-
    if (!conn || !active) return 0;
 
-   msg = dbus_message_new_method_call(bus_name, "/TrackList",
-				      mpris_interface,
-				      "GetLength");
-   e_dbus_message_send(conn, msg, _dbus_cb_tracklist_length, -1, p);
-   dbus_message_unref(msg);
-
-   msg = dbus_message_new_method_call(bus_name, "/Player",
-				      mpris_interface,
-				      "GetStatus");
-   e_dbus_message_send(conn, msg, _dbus_cb_get_status, -1, NULL);
-   dbus_message_unref(msg);
-
+   _dbus_send_msg("/TrackList", "GetLength", _dbus_cb_tracklist_length, p); 
+   
+   _dbus_send_msg("/Player", "GetStatus", _dbus_cb_get_status, NULL);
+   
    cb_tracklist_change = e_dbus_signal_handler_add
      (conn, bus_name, "/TrackList", mpris_interface, "TrackListChange",
       _dbus_cb_tracklist_change, NULL);
@@ -482,21 +476,22 @@ static int
 _mpris_play_track(Evry_Action *act)
 {
    DBusMessage *msg;
+   
    ITEM_TRACK(t, act->item1);
 
    /* XXX FIX the spec. or call next/prev to skip to the track...*/
    if (!strcmp(bus_name, "org.mpris.amarok") ||
        !strcmp(bus_name, "org.mpris.xmms2"))
      {
-	msg = dbus_message_new_method_call(bus_name, "/TrackList",
-					   mpris_interface,
-					   "PlayTrack");
+	_dbus_send_msg_int("/TrackList", "PlayTrack", NULL, NULL, t->id); 
+	return;
      }
    else if (!strcmp(bus_name, "org.mpris.corn"))
      {
 	msg = dbus_message_new_method_call(bus_name, "/Corn",
 					   "org.corn.CornPlayer",
 					   "PlayTrack");
+
      }
    else if (!strcmp(bus_name, "org.mpris.audacious"))
      {
@@ -519,34 +514,19 @@ _mpris_play_track(Evry_Action *act)
 static int
 _mpris_tracklist_remove_track(Evry_Action *act)
 {
-   DBusMessage *msg;
    ITEM_TRACK(t, act->item1);
 
-   msg = dbus_message_new_method_call(bus_name, "/TrackList",
-				      mpris_interface,
-				      "DelTrack");
-
-   dbus_message_append_args(msg,
-			    DBUS_TYPE_INT32, &(t->id),
-			    DBUS_TYPE_INVALID);
-
-   e_dbus_message_send(conn, msg, NULL, -1, NULL);
-   dbus_message_unref(msg);
-
+   _dbus_send_msg_int("/TrackList", "DelTrack", NULL, NULL, t->id); 
+   
    return 1;
 }
 
 static int
 _mpris_player_action(Evry_Action *act)
 {
-   DBusMessage *msg;
-
-   msg = dbus_message_new_method_call(bus_name, "/Player",
-				      mpris_interface,
-				      (char *)act->data);
-
-   e_dbus_message_send(conn, msg, NULL, -1, NULL);
-   dbus_message_unref(msg);
+   char *method = (char *)act->data;
+   
+   _dbus_send_msg("/Player", method, NULL, NULL); 
 
    return 1;
 }
@@ -554,7 +534,6 @@ _mpris_player_action(Evry_Action *act)
 static void
 _dbus_cb_position_get(void *data, DBusMessage *reply, DBusError *error)
 {
-   DBusMessage *msg;
    Evry_Action *act = data;
    int pos;
    
@@ -564,35 +543,19 @@ _dbus_cb_position_get(void *data, DBusMessage *reply, DBusError *error)
 			 DBUS_TYPE_INT32, (dbus_int32_t*) &(pos),
 			 DBUS_TYPE_INVALID);
 
-   msg = dbus_message_new_method_call(bus_name, "/Player",
-				      mpris_interface,
-				      "PositionSet");
-
    if (!strcmp(act->data, "Forward"))
      pos += 60000;
    else
      pos -= 60000;
    
-   dbus_message_append_args(msg,
-			    DBUS_TYPE_INT32, &(pos),
-			    DBUS_TYPE_INVALID);
-
-   e_dbus_message_send(conn, msg, NULL, -1, NULL);
-   dbus_message_unref(msg);
+   _dbus_send_msg_int("/Player", "PositionSet", NULL, NULL, pos); 
 }
 
 static int
 _mpris_player_position(Evry_Action *act)
 {
-   DBusMessage *msg;
-
-   msg = dbus_message_new_method_call(bus_name, "/Player",
-				      mpris_interface,
-				      "PositionGet");
-
-   e_dbus_message_send(conn, msg, _dbus_cb_position_get, -1, act);
-   dbus_message_unref(msg);
-
+   _dbus_send_msg("/Player", "PositionGet", _dbus_cb_position_get, act); 
+   
    return 1;
 }
 

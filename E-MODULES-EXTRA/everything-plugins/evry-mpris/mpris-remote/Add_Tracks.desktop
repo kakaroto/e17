@@ -8,4 +8,5 @@ StartupNotify=false
 Terminal=false
 Name=Add Tracks
 Name[en_US]=Add Tracks
+Icon=emblem-sound
 MimeType=application/x-ogg;application/ogg;audio/x-vorbis+ogg;audio/x-scpls;audio/x-mp3;audio/x-mpeg;audio/mpeg;audio/x-mpegurl;audio/x-flac;x-directory/gnome-default-handler;x-directory/normal;inode/directory;

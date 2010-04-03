@@ -355,12 +355,9 @@ class Commander(object):
             reobj = re.compile(regex)
             files = sorted(files)
             for f in files:
-                print "check: " + f
                 if reobj.match(f):  
-                    print "add: " + uri +"/" + f
                     tracklist.AddTrack("file://" + uri + "/"+ f, False)
         else:
-            print "play: " + uri
             tracklist.AddTrack("file://" + uri, bool(playnow))
 
     @explain_numargs(0)
