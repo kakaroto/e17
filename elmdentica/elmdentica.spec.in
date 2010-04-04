@@ -1,0 +1,42 @@
+%define _missing_doc_files_terminate_build 0
+
+Summary: StatusNet and Twitter µ-blogging tool
+Name: @PACKAGE@
+Version: @VERSION@
+Release: 0.%(date '+%Y%m%d%H%M')
+License: GPLv3+
+Group: Applications/Internet
+Source: %{name}-%{version}.tar.gz
+Packager: %{?_packager:%{_packager}}%{!?_packager:Rui Miguel Seabra <rms@1407.org>}
+Vendor: %{?_vendorinfo:%{_vendorinfo}}%{!?_vendorinfo:The Enlightenment Project (http://www.enlightenment.org/)}
+Distribution: %{?_distribution:%{_distribution}}%{!?_distribution:%{_vendor}}
+URL: http://www.enlightenment.org/
+BuildRoot: %{_tmppath}/%{name}-%{version}-root
+Requires: elementary, sqlite > 3.0, libxml2, libcurl, glib2
+BuildRequires: elementary-devel, sqlite-devel > 3.0, libxml2-devel, libcurl-devel, glib2-devel
+
+%description
+Simple Status.Net and Twitter µ-blogging tool
+
+%prep
+%setup -q
+
+%build
+%{configure} --prefix=%{_prefix}
+%{__make} %{?_smp_mflags} %{?mflags}
+
+%install
+%{__make} %{?mflags_install} DESTDIR=$RPM_BUILD_ROOT install
+
+%clean
+test "x$RPM_BUILD_ROOT" != "x/" && rm -rf $RPM_BUILD_ROOT
+
+%files
+%defattr(-, root, root)
+%doc AUTHORS COPYING README
+%{_bindir}/elmdentica
+%{_datadir}/applications/elmdentica.desktop
+%{_datadir}/pixmaps/elmdentica.png
+%{_datadir}/locale/*
+
+%changelog

@@ -83,6 +83,7 @@ AC_SUBST(DBUS_GLIB_BIN)
 AC_OUTPUT([
 po/Makefile.in
 Makefile
+elmdentica.spec
 data/Makefile
 data/elmdentica.desktop
 data/elmdentica.conf
