@@ -2,3 +2,4 @@ stamp-po
 Makefile
 Makefile.in
 POTFILES
+*.gmo
