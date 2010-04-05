@@ -13,8 +13,6 @@
 #include <pwd.h>
 #include "file.h"
 
-static void         __imlib_FileFieldWord(char *s, int num, char *wd);
-
 char               *
 __imlib_FileKey(const char *file)
 {
@@ -399,108 +397,4 @@ __imlib_FileHomeDir(int uid)
       return strdup(s);
 #endif
    return NULL;
-}
-
-/* gets word number [num] in the string [s] and copies it into [wd] */
-/* wd is NULL terminated. If word [num] does not exist wd = "" */
-/* NB: this function now handles quotes so for a line: */
-/* Hello to "Welcome sir - may I Help" Shub Foo */
-/* Word 1 = Hello */
-/* Word 2 = to */
-/* Word 3 = Welcome sir - may I Help */
-/* Word 4 = Shub */
-/* word 5 = Foo */
-
-char               *
-__imlib_FileField(char *s, int field)
-{
-   char                buf[4096];
-
-   buf[0] = 0;
-   __imlib_FileFieldWord(s, field + 1, buf);
-   if (buf[0])
-     {
-        if ((!strcmp(buf, "NULL")) || (!strcmp(buf, "(null)")))
-           return (NULL);
-        return (strdup(buf));
-     }
-   return (NULL);
-}
-
-static void
-__imlib_FileFieldWord(char *s, int num, char *wd)
-{
-   char               *cur, *start, *end;
-   int                 count, inword, inquote, len;
-
-   if (!s)
-      return;
-   if (!wd)
-      return;
-   *wd = 0;
-   if (num <= 0)
-      return;
-   cur = s;
-   count = 0;
-   inword = 0;
-   inquote = 0;
-   start = NULL;
-   end = NULL;
-   while ((*cur) && (count < num))
-     {
-        if (inword)
-          {
-             if (inquote)
-               {
-                  if (*cur == '"')
-                    {
-                       inquote = 0;
-                       inword = 0;
-                       end = cur;
-                       count++;
-                    }
-               }
-             else
-               {
-                  if (isspace(*cur))
-                    {
-                       end = cur;
-                       inword = 0;
-                       count++;
-                    }
-               }
-          }
-        else
-          {
-             if (!isspace(*cur))
-               {
-                  if (*cur == '"')
-                    {
-                       inquote = 1;
-                       start = cur + 1;
-                    }
-                  else
-                     start = cur;
-                  inword = 1;
-               }
-          }
-        if (count == num)
-           break;
-        cur++;
-     }
-   if (!start)
-      return;
-   if (!end)
-      end = cur;
-   if (end <= start)
-      return;
-   len = (int)(end - start);
-   if (len > 4000)
-      len = 4000;
-   if (len > 0)
-     {
-        strncpy(wd, start, len);
-        wd[len] = 0;
-     }
-   return;
 }

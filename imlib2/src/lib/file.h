@@ -12,7 +12,6 @@ __hidden void                __imlib_FileFreeDirList(char **l, int num);
 __hidden void                __imlib_FileDel(char *s);
 __hidden time_t              __imlib_FileModDate(const char *s);
 __hidden char               *__imlib_FileHomeDir(int uid);
-__hidden char               *__imlib_FileField(char *s, int field);
 __hidden int                 __imlib_FilePermissions(const char *s);
 __hidden int                 __imlib_FileCanRead(const char *s);
 __hidden int                 __imlib_IsRealFile(const char *s);
