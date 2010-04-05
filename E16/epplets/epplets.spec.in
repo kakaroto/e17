@@ -1,7 +1,7 @@
 Summary: Enlightenment Epplets
 Name: @PACKAGE@
 Version: @VERSION@
-Release: @E_RPM_REVISION@%{?_rpm_add_date:.%(date '+%y%m%d')}%{?_vendorsuffix:.%{_vendorsuffix}}
+Release: @E_RPM_REVISION@%{?_vendorsuffix:.%{_vendorsuffix}}
 License: BSD
 Group: User Interface/Desktops
 URL: http://www.enlightenment.org/
@@ -12,10 +12,9 @@ Distribution: %{?_distribution:%{_distribution}}%{!?_distribution:%{_vendor}}
 Prefix: %{_prefix}
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root
 BuildRequires: imlib2-devel
-#Requires: enlightenment >= 0.16.0
-Provides: enlightenment-epplets = %{version}
 Provides: e16-epplets = %{version}
 Obsoletes: enlightenment-epplets
+Obsoletes: e16-epplets
 
 %description
 Epplets are small, handy Enlightenment applets, similar to "dockapps"

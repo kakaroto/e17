@@ -1,9 +1,9 @@
 m4_define([pkg_version],  [0.12])
-dnl m4_define([pkg_revision], [0.00])
-m4_define([pkg_version],  m4_ifdef([pkg_revision], [pkg_version-pkg_revision], [pkg_version]))
-m4_define([rpm_revision], m4_ifdef([pkg_revision], [pkg_revision], [1]))
+m4_define([pkg_revision], [000])
+m4_define([pkg_version],  m4_ifdef([pkg_revision], [pkg_version.pkg_revision], [pkg_version]))
+m4_define([rpm_revision], m4_ifdef([pkg_revision], ["0.%(date '+%y%m%d')"], [1]))
 
-AC_INIT(epplets, [pkg_version], [enlightenment-devel@lists.sourceforge.net])
+AC_INIT([epplets], [pkg_version], [enlightenment-devel@lists.sourceforge.net])
 AM_INIT_AUTOMAKE([foreign])
 
 AC_SUBST(E_RPM_REVISION, [rpm_revision])
@@ -201,15 +201,15 @@ if test -n "$EJECT"; then
     AC_DEFINE(HAVE_EJECT, 1, [Have eject])
 fi
 
-AM_CONFIG_HEADER(config.h)
-
-AC_OUTPUT([
+AC_CONFIG_HEADERS([config.h])
+AC_CONFIG_FILES([
 Makefile
 api/Makefile
 epplets/Makefile
 api/epplet.h
 epplets.spec
 ])
+AC_OUTPUT
 
 echo
 echo "Now type 'make' to build $PACKAGE $VERSION."
