@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: elmdentica 0.8.0\n"
 "Report-Msgid-Bugs-To: http://code.google.com/p/elmdentica/\n"
 "POT-Creation-Date: 2010-04-04 18:02+0100\n"
-"PO-Revision-Date: 2010-02-24 18:46+0100\n"
+"PO-Revision-Date: 2010-04-05 10:24+0200\n"
 "Last-Translator: Massimo Maiurana <maiurana@gmail.com>\n"
 "Language-Team: none\n"
 "MIME-Version: 1.0\n"
@@ -22,22 +22,19 @@ msgstr "Chiudi"
 
 #: src/elmdentica.c:166
 msgid " <b>Last posted messages...</b>"
-msgstr ""
+msgstr " <b>Ultimo messaggio inviato...</b>"
 
 #: src/elmdentica.c:167
-#, fuzzy
 msgid " <b>Everyone...</b>"
-msgstr " <b>Cronologia degli amici...</b>"
+msgstr " <b>Tutti...</b>"
 
 #: src/elmdentica.c:168
-#, fuzzy
 msgid " <b>My favorites...</b>"
-msgstr " <b>Cronologia degli amici...</b>"
+msgstr " <b>Preferiti...</b>"
 
 #: src/elmdentica.c:170
-#, fuzzy
 msgid " <b>Me and my friends...</b>"
-msgstr " <b>Cronologia degli amici...</b>"
+msgstr " <b>Io e i miei amici...</b>"
 
 #: src/elmdentica.c:357
 #, c-format
@@ -51,39 +48,37 @@ msgstr "Il sistema ha fallito, il figlio esce con stato %d\n"
 
 #: src/elmdentica.c:540
 msgid "Fetching user info..."
-msgstr ""
+msgstr "Scarico informazioni sull'utente..."
 
 #: src/elmdentica.c:561
-#, fuzzy, c-format
+#, c-format
 msgid "Error fetching user info: %s"
-msgstr ""
-"Errore nell'impostazione della chiave %s = %s: %s\n"
-")"
+msgstr "Errore scaricamento informazioni utente: %s"
 
 #: src/elmdentica.c:566
 msgid "Unknown error fetching user info."
-msgstr ""
+msgstr "Errore sconosciuto nello scaricamento informazioni utente."
 
 #: src/elmdentica.c:573
 msgid "Couldn't parse user info message..."
-msgstr ""
+msgstr "Impossibile interpretare messaggio informazioni utente...."
 
 #: src/elmdentica.c:595
 msgid "Follow"
-msgstr ""
+msgstr "Segui"
 
 #: src/elmdentica.c:601
 msgid "Stop following"
-msgstr ""
+msgstr "Smetti di seguire"
 
 #: src/elmdentica.c:655
 #, c-format
 msgid "%s posted this link..."
-msgstr ""
+msgstr "%s ha inviato questo link..."
 
 #: src/elmdentica.c:678
 msgid "Check it out!"
-msgstr ""
+msgstr "Controllare!"
 
 #: src/elmdentica.c:769
 msgid "Reply"
@@ -95,11 +90,11 @@ msgstr "Ripeti"
 
 #: src/elmdentica.c:786
 msgid "Unmark favorite"
-msgstr ""
+msgstr "Rimuovi da preferiti"
 
 #: src/elmdentica.c:788
 msgid "Mark favorite"
-msgstr ""
+msgstr "Aggiungi ai preferiti"
 
 #: src/elmdentica.c:851
 #, c-format
@@ -155,19 +150,19 @@ msgstr "Cronologia"
 
 #: src/elmdentica.c:1313
 msgid "Friends & I"
-msgstr ""
+msgstr "Io e gli amici"
 
 #: src/elmdentica.c:1314
 msgid "Favorites"
-msgstr ""
+msgstr "Preferiti"
 
 #: src/elmdentica.c:1315
 msgid "Everyone"
-msgstr ""
+msgstr "Tutti"
 
 #: src/elmdentica.c:1316
 msgid "Just me"
-msgstr ""
+msgstr "Solo io"
 
 #: src/elmdentica.c:1327
 msgid "Post"
@@ -196,9 +191,9 @@ msgid "Can't open %s for writing: %s\n"
 msgstr "Impossibile aprire %s in scrittura: %s\n"
 
 #: src/twitter.c:732
-#, fuzzy, c-format
+#, c-format
 msgid "FAILED TO SAX USERS SHOW: %d\n"
-msgstr "SAX FALLITO PER GLI AMICI: %d\n"
+msgstr "SAX FALLITO PER SHOW UTENTI: %d\n"
 
 #: src/settings.c:359
 msgid "Screen name"
@@ -279,33 +274,32 @@ msgid "Currently remembering<br>%d messages."
 msgstr "Sto ricordando<br>%d messaggi"
 
 #: src/settings.c:908
-#, fuzzy
 msgid "Displayed messages"
-msgstr "Messaggi visualizzati:"
+msgstr "Messaggi visualizzati"
 
 #: src/settings.c:975
 msgid "Please choose a browser"
-msgstr ""
+msgstr "Scegliere un browser"
 
 #: src/settings.c:977
 msgid "No supported browser available"
-msgstr ""
+msgstr "Nessun browser supportato disponibile"
 
 #: src/settings.c:1003
 msgid "Preferred browser..."
-msgstr ""
+msgstr "Browser preferito..."
 
 #: src/settings.c:1011
 msgid "Online mode..."
-msgstr ""
+msgstr "Modo connesso"
 
 #: src/settings.c:1013
 msgid "Online"
-msgstr ""
+msgstr "Connesso"
 
 #: src/settings.c:1013
 msgid "Offline"
-msgstr ""
+msgstr "Disconnesso"
 
 #: src/settings.c:1032
 msgid "ElmDentica settings..."
@@ -321,10 +315,10 @@ msgstr "Cache"
 
 #: src/settings.c:1070
 msgid "Options"
-msgstr ""
+msgstr "Opzioni"
 
 #: src/settings.c:1082
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "\n"
 "Usage:\n"
@@ -335,62 +329,48 @@ msgid ""
 msgstr ""
 "\n"
 "Uso:\n"
-"\t-d\tModalità debug (output extra)\n"
-"\t-h\tAiuto (ciò che leggete adesso)\n"
+"   -d   Modalità debug (output extra)\n"
+"   -h   Aiuto (ciò che leggete adesso)\n"
+"   -m N Mostra N messaggi per volta\n"
 "\n"
 
 #: src/settings.c:1106
 #, c-format
 msgid "Can't run ecore_file_init()\n"
-msgstr ""
+msgstr "Impossibile eseguire ecore_file_init()\n"
 
 #: src/settings.c:1115
 #, c-format
 msgid "Can't create preferences directories since asprintf failed\n"
-msgstr ""
+msgstr "Impossibile creare albero preferenze per fallimento asprintf\n"
 
 #: src/settings.c:1115
 #, c-format
 msgid "Can't create preferences directories since ecore_file_mkpath failed\n"
-msgstr ""
+msgstr "Impossibile creare albero preferenze per fallimento ecore_file_mkpath\n"
 
 #: src/settings.c:1126
 #, c-format
 msgid "Not enough memory to define conf.eet path"
-msgstr ""
+msgstr "Memoria insufficiente per definire percorso conf.eet"
 
 #: src/settings.c:1132
 #, c-format
 msgid "Couldn't run eet_init()"
-msgstr ""
+msgstr "Impossibile eseguire eet_init()"
 
 #: src/settings.c:1139
 #, c-format
 msgid "Can't create %s"
-msgstr ""
+msgstr "Impossibile creare %s"
 
 #: src/settings.c:1147
 #, c-format
 msgid "Can't setup settings_edd."
-msgstr ""
+msgstr "Impossibile impostare settings_edd."
 
 #: src/settings.c:1164
 #, c-format
 msgid ""
 "Not enough memory for settings, no doubt for anything else either, surely..."
-msgstr ""
-
-#~ msgid "HTTP Error"
-#~ msgstr "Errore HTTP"
-
-#~ msgid "%s failed with HTTP Response %ld"
-#~ msgstr "%s ha fallito con risposta HTTP %ld"
-
-#~ msgid "Open this url"
-#~ msgstr "Apri questa URL"
-
-#~ msgid "Direct message"
-#~ msgstr "Messaggio diretto"
-
-#~ msgid "Enabled?"
-#~ msgstr "Abilitare?"
+msgstr "Memoria insufficiente per impostazioni, e sicuramente anche per nient'altro..."
