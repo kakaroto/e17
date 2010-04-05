@@ -4,23 +4,23 @@ Version: @VERSION@
 Release: @E_RPM_REVISION@%{?_vendorsuffix:.%{_vendorsuffix}}
 License: BSD-like
 Group: User Interface/Desktops
-Source: %{name}-%{version}.tar.gz
+URL: http://www.enlightenment.org/
+Source: http://prdownloads.sourceforge.net/enlightenment/%{name}-%{version}.tar.gz
 Packager: %{?_packager:%{_packager}}%{!?_packager:Michael Jennings <mej@eterm.org>}
-Vendor: %{?_vendorinfo:%{_vendorinfo}}%{!?_vendorinfo:Enlightenment (http://www.enlightenment/org/)}
-Distribution: %{?_distribution:%{_distribution}}%{!?_distribution:any}
-#BuildRequires: /usr/bin/gtk-config
-#BuildSuggests: gtk-devel
+Vendor: %{?_vendorinfo:%{_vendorinfo}}%{!?_vendorinfo:The Enlightenment Project (http://www.enlightenment.org/)}
+Distribution: %{?_distribution:%{_distribution}}%{!?_distribution:%{_vendor}}
 Prefix: %{_prefix}
-BuildRoot: /var/tmp/%{name}-%{version}-%{release}-root
-Obsoletes: e16-keyedit
+BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root
 Requires: e16 >= 1.0.1
+Provides: e16-keyedit = %{version}
+Obsoletes: e16-keyedit
 
 %description
 e16keyedit provides a graphical interface for managing keybindings in
 Enlightenment e16.
 
 %prep
-%setup -q 
+%setup -n %{name}-%{version}
 
 %build
 CFLAGS="%{?cflags:%{cflags}}%{!?cflags:$RPM_OPT_FLAGS}"
