@@ -32,6 +32,8 @@ int yyparse(void);
  *                                 Global                                     *
  *============================================================================*/
 Eina_Array *eon_parser_stack = NULL;
+Ekeko_Property_Id eon_parser_property_id = NULL;
+int eon_parser_property_type = 0;
 Eon_Document *eon_parser_doc = NULL;
 /*============================================================================*
  *                                   API                                      *

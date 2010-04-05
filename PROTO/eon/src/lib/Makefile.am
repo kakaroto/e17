@@ -1,5 +1,5 @@
-SUBDIRS = core 
-#layout paint shape parser script filter
+SUBDIRS = core layout paint 
+#shape parser script filter
 
 MAINTAINERCLEANFILES = Makefile.in
 
@@ -16,12 +16,12 @@ EXTRA_DIST =
 libeon_la_SOURCES =
 
 libeon_la_LIBADD = @EON_LIBS@ \
-core/libeon_core.la
+core/libeon_core.la \
+layout/libeon_layout.la \
+paint/libeon_paint.la
 
-#paint/libeon_paint.la \
 #filter/libeon_filter.la \
 #shape/libeon_shape.la \
-#layout/libeon_layout.la \
 #parser/libeon_parser.la \
 #script/libeon_script.la \
 #$(top_builddir)/src/engines/enesim/libeon_engine_enesim.la
@@ -35,11 +35,11 @@ libeon_la_LIBADD += $(top_builddir)/src/engines/remote/libeon_engine_remote.la
 endif
 
 libeon_la_DEPENDENCIES = \
-core/libeon_core.la
+core/libeon_core.la \
+paint/libeon_paint.la \
+layout/libeon_layout.la
 
-#paint/libeon_paint.la \
 #filter/libeon_filter.la \
-#layout/libeon_layout.la \
 #shape/libeon_shape.la \
 #parser/libeon_parser.la \
 #script/libeon_script.la \

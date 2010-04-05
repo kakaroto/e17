@@ -36,10 +36,27 @@ command:
 property:
 	WORD EQUAL
 	{
-		/* TODO check for the property */
-		/* TODO get the type */
-		/* how to store the type and pass it to the value grammar?? */ 
-		printf("Property %s\n", $1);
+		Ekeko_Object *o;
+
+		o = eina_array_last_get(eon_parser_stack);
+		if (o)
+		{
+			eon_parser_property_id = ekeko_object_property_get(o, $1);
+			if (eon_parser_property_id)
+			{
+				eon_parser_property_type = ekeko_object_property_type_get(o,
+						eon_parser_property_id);
+				printf("property %s found\n", eon_parser_property_id);
+			}
+			else
+			{
+				printf("Object %p does not have the property '%s'\n", o, $1);
+			}
+		}
+		else 
+		{
+			printf("Not an object!\n");
+		}
 	}
 	;
 value:
@@ -47,28 +64,51 @@ value:
 	|
 	STRING
 	{
-		printf("Value %s\n", $1);
+		Ekeko_Object *o;
+		Ekeko_Value value;
+
+		printf("=> Value %s\n", $1);
+		o = eina_array_last_get(eon_parser_stack);
+		ekeko_value_string_from(&value, eon_parser_property_type, $1);
+		ekeko_object_property_value_set(o, eon_parser_property_id,
+				&value);
+		eon_parser_property_id = NULL;
 	}
 	;
 
 object_start:
 	WORD OBRACE
 	{
+		Ekeko_Object *parent;
 		Ekeko_Object *o;
 
-		/* check if the object is part of a property if so
-		 * set the property and check the type of object
-		 */
-
-		/* check if there's already another object, if so
-		 * append as child
-		 */
-		/* any other case is the root case, just create the object */
-		printf("Object start %s\n", $1);
+		parent = eina_array_last_get(eon_parser_stack);
 		o = eon_document_object_new(eon_parser_doc, $1);
 		if (o)
+		{
+			printf("Object created? %p\n", o);
 			eina_array_push(eon_parser_stack, o);
-		printf("Object created? %p\n", o);
+			/* check if the object is part of a property if so
+			 * set the property and check the type of object
+			 */
+			if (eon_parser_property_id)
+			{
+				Ekeko_Value value;
+
+				printf("=> Object %s\n", $1);
+				ekeko_value_object_from(&value, o);
+				ekeko_object_property_value_set(parent, eon_parser_property_id,
+						&value);
+				eon_parser_property_id = NULL;
+			}
+			/* check if there's already another object, if so
+			 * append as child
+			 */
+			else if (parent)
+			{
+				ekeko_object_child_append(parent, o);
+			}
+		}
 	}
 	;
 

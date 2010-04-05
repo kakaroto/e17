@@ -454,7 +454,20 @@ static void _parent_unset(Ekeko_Object *o, Ekeko_Event *e, void *data)
 		prv->relative = 0;
 	}
 }
+/*----------------------------------------------------------------------------*
+ *                                  Events                                    *
+ *----------------------------------------------------------------------------*/
+static void _property_get(Ekeko_Object *o, Ekeko_Event *e, void *data)
+{
 
+}
+static void _property_set(Ekeko_Object *o, Ekeko_Event *e, void *data)
+{
+	printf("property set\n");
+}
+/*----------------------------------------------------------------------------*
+ *                           Base Type functions                              *
+ *----------------------------------------------------------------------------*/
 static void _ctor(Ekeko_Object *o)
 {
 	Eon_Layout *layout;
@@ -464,14 +477,17 @@ static void _ctor(Ekeko_Object *o)
 	layout->prv = prv = ekeko_type_instance_private_get(eon_layout_type_get(), o);
 	prv->renderables = NULL;
 	prv->tiler = eina_tiler_new(0, 0);
-
-	ekeko_event_listener_add(o, EON_PAINT_SQUARE_X_CHANGED, _layout_x_change, EINA_FALSE, NULL);
-	ekeko_event_listener_add(o, EON_PAINT_SQUARE_Y_CHANGED, _layout_y_change, EINA_FALSE, NULL);
-	ekeko_event_listener_add(o, EON_PAINT_SQUARE_W_CHANGED, _layout_w_change, EINA_FALSE, NULL);
-	ekeko_event_listener_add(o, EON_PAINT_SQUARE_H_CHANGED, _layout_h_change, EINA_FALSE, NULL);
-	ekeko_event_listener_add(o, EKEKO_EVENT_OBJECT_APPEND, _child_append_cb, EINA_FALSE, NULL);
-	ekeko_event_listener_add(o, EKEKO_EVENT_PARENT_SET, _parent_set, EINA_FALSE, NULL);
-	ekeko_event_listener_add(o, EKEKO_EVENT_PARENT_UNSET, _parent_unset, EINA_FALSE, NULL);
+	/* events */
+	ekeko_event_listener_add(o, EKEKO_EVENT_VALUE_GET,
+			_property_get, EINA_FALSE, NULL);
+	ekeko_event_listener_add(o, EKEKO_EVENT_VALUE_SET,
+			_property_set, EINA_FALSE, NULL);
+	ekeko_event_listener_add(o, EKEKO_EVENT_OBJECT_APPEND,
+			_child_append_cb, EINA_FALSE, NULL);
+	ekeko_event_listener_add(o, EKEKO_EVENT_PARENT_SET,
+			_parent_set, EINA_FALSE, NULL);
+	ekeko_event_listener_add(o, EKEKO_EVENT_PARENT_UNSET,
+			_parent_unset, EINA_FALSE, NULL);
 }
 
 static void _dtor(Ekeko_Object *o)

@@ -89,7 +89,7 @@ static Eina_Bool _subcanvas_is_inside(Eon_Canvas *c, int x, int y)
 /*----------------------------------------------------------------------------*
  *                           Base Type functions                              *
  *----------------------------------------------------------------------------*/
-static Eina_Bool _appendable(void *instance, void *child)
+static Eina_Bool _appendable(Ekeko_Object *parent, Ekeko_Object *child)
 {
 	if ((!ekeko_type_instance_is_of(child, EON_TYPE_CANVAS)) &&
 			(!ekeko_type_instance_is_of(child, EON_TYPE_PAINT)) &&
@@ -112,7 +112,7 @@ static void _ctor(Ekeko_Object *o)
 	ekeko_event_listener_add(o, EKEKO_EVENT_OBJECT_APPEND, _child_appended, EINA_FALSE, NULL);
 }
 
-static void _dtor(void *canvas)
+static void _dtor(Ekeko_Object *o)
 {
 
 }

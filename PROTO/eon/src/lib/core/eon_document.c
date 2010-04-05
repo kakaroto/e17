@@ -67,7 +67,9 @@ static void _id_change(Ekeko_Object *o, Ekeko_Event *e, void *data)
 
 	eina_hash_add(prv->ids, em->curr->value.string_value, o);
 }
-
+/* Called whenever the CPU is idle. Here we process the main layout
+ * object
+ */
 static int _idler_cb(void *data)
 {
 	Eon_Document *d = data;
@@ -77,6 +79,7 @@ static int _idler_cb(void *data)
 	
 	return 1;
 }
+/* Timer callback to tick the etch animation system */
 static int _animation_cb(void *data)
 {
 	Eon_Document *d = data;
@@ -107,6 +110,9 @@ static void _event_object_new(Eon_Document_Object_New *ev, char *name, Ekeko_Obj
 	ekeko_event_init(ee, EON_DOCUMENT_OBJECT_NEW, o, EINA_FALSE);
 }
 
+/*----------------------------------------------------------------------------*
+ *                           Base Type functions                              *
+ *----------------------------------------------------------------------------*/
 static void _ctor(Ekeko_Object *o)
 {
 	Eon_Document *d;

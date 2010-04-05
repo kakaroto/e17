@@ -25,6 +25,7 @@
 static Ekeko_Type * _type;
 struct _Eon_Checker_Private
 {
+	Enesim_Renderer *renderer;
 	int relative;
 	/* properties */
 	Eon_Coord sw, sh;
@@ -83,9 +84,34 @@ static void _sh_change(Ekeko_Object *o, Ekeko_Event *e, void *data)
 
 static void _render(Eon_Paint *p, Eon_Engine *eng, void *engine_data, void *canvas_data, Eina_Rectangle *clip)
 {
-	eon_engine_checker_render(eng, engine_data, canvas_data, clip);
+	//eon_engine_checker_render(eng, engine_data, canvas_data, clip);
+}
+/*----------------------------------------------------------------------------*
+ *                                Properties                                  *
+ *----------------------------------------------------------------------------*/
+static void _color1_set(Eon_Checker *ch, Eon_Color color)
+{
+
 }
 
+static void _color2_set(Eon_Checker *ch, Eon_Color color)
+{
+
+}
+/*----------------------------------------------------------------------------*
+ *                                  Events                                    *
+ *----------------------------------------------------------------------------*/
+static void _property_get(Ekeko_Object *o, Ekeko_Event *e, void *data)
+{
+
+}
+static void _property_set(Ekeko_Object *o, Ekeko_Event *e, void *data)
+{
+
+}
+/*----------------------------------------------------------------------------*
+ *                           Base Type functions                              *
+ *----------------------------------------------------------------------------*/
 static void _ctor(Ekeko_Object *o)
 {
 	Eon_Checker *ch;
@@ -94,18 +120,26 @@ static void _ctor(Ekeko_Object *o)
 	ch = (Eon_Checker *)o;
 	ch->prv = prv = ekeko_type_instance_private_get(_type, o);
 	ch->parent.parent.process = eon_paint_process;
-	ch->parent.parent.create = eon_engine_checker_create;
-	ch->parent.parent.free = eon_engine_checker_delete;
-	ch->parent.parent.render = _render;
-	ekeko_event_listener_add(o, EON_CHECKER_SW_CHANGED,
-			_sw_change, EINA_FALSE, NULL);
-	ekeko_event_listener_add(o, EON_CHECKER_SH_CHANGED,
-			_sh_change, EINA_FALSE, NULL);
+	//ch->parent.parent.render = _render;
+	/* add the properties */
+	EON_CHECKER_COLOR1 = ekeko_object_property_add(o, "color1",
+			EON_PROPERTY_COLOR);
+	EON_CHECKER_COLOR2 = ekeko_object_property_add(o, "color2",
+			EON_PROPERTY_COLOR);
+	EON_CHECKER_SW = ekeko_object_property_add(o, "sw",
+			EON_PROPERTY_COORD);
+	EON_CHECKER_SH = ekeko_object_property_add(o, "sh",
+			EON_PROPERTY_COORD);
+	/* events */
+	ekeko_event_listener_add(o, EKEKO_EVENT_VALUE_GET,
+			_property_get, EINA_FALSE, NULL);
+	ekeko_event_listener_add(o, EKEKO_EVENT_VALUE_SET,
+			_property_set, EINA_FALSE, NULL);
 }
 
 static void _dtor(Ekeko_Object *o)
 {
-
+	/* remove the properties */
 }
 /*============================================================================*
  *                                 Global                                     *
@@ -113,20 +147,8 @@ static void _dtor(Ekeko_Object *o)
 void eon_checker_init(void)
 {
 	_type = ekeko_type_new(EON_TYPE_CHECKER, sizeof(Eon_Checker),
-			sizeof(Eon_Checker_Private), eon_paint_square_type_get(),
+			sizeof(Eon_Checker_Private), eon_paint_type_get(),
 			_ctor, _dtor, eon_paint_appendable);
-	EON_CHECKER_COLOR1 = EKEKO_TYPE_PROP_SINGLE_ADD(_type, "color1",
-			EON_PROPERTY_COLOR,
-			OFFSET(Eon_Checker_Private, color1));
-	EON_CHECKER_COLOR2 = EKEKO_TYPE_PROP_SINGLE_ADD(_type, "color2",
-			EON_PROPERTY_COLOR,
-			OFFSET(Eon_Checker_Private, color2));
-	EON_CHECKER_SW = EKEKO_TYPE_PROP_SINGLE_ADD(_type, "sw",
-			EON_PROPERTY_COORD,
-			OFFSET(Eon_Checker_Private, sw));
-	EON_CHECKER_SH = EKEKO_TYPE_PROP_SINGLE_ADD(_type, "sh",
-			EON_PROPERTY_COORD,
-			OFFSET(Eon_Checker_Private, sh));
 
 	eon_type_register(_type, EON_TYPE_CHECKER);
 }
@@ -138,11 +160,14 @@ void eon_checker_shutdown(void)
 /*============================================================================*
  *                                   API                                      *
  *============================================================================*/
-Ekeko_Property_Id EON_CHECKER_SW;
-Ekeko_Property_Id EON_CHECKER_SH;
-Ekeko_Property_Id EON_CHECKER_COLOR1;
-Ekeko_Property_Id EON_CHECKER_COLOR2;
+Ekeko_Property_Id EON_CHECKER_SW = NULL;
+Ekeko_Property_Id EON_CHECKER_SH = NULL;
+Ekeko_Property_Id EON_CHECKER_COLOR1 = NULL;
+Ekeko_Property_Id EON_CHECKER_COLOR2 = NULL;
 
+/**
+ *
+ */
 EAPI Eon_Checker * eon_checker_new(Eon_Document *d)
 {
 	Eon_Checker *ch;
@@ -151,7 +176,9 @@ EAPI Eon_Checker * eon_checker_new(Eon_Document *d)
 
 	return ch;
 }
-
+/**
+ *
+ */
 EAPI void eon_checker_sw_get(Eon_Checker *ch, Eon_Coord *sw)
 {
 	Eon_Checker_Private *prv;
@@ -159,7 +186,9 @@ EAPI void eon_checker_sw_get(Eon_Checker *ch, Eon_Coord *sw)
 	prv = PRIVATE(ch);
 	if (sw) *sw = prv->sw;
 }
-
+/**
+ *
+ */
 EAPI void eon_checker_sw_rel_set(Eon_Checker *ch, int sw)
 {
 	Eon_Coord coord;
@@ -169,7 +198,9 @@ EAPI void eon_checker_sw_rel_set(Eon_Checker *ch, int sw)
 	eon_value_coord_from(&v, &coord);
 	ekeko_object_property_value_set((Ekeko_Object *)ch, "sw", &v);
 }
-
+/**
+ *
+ */
 EAPI void eon_checker_sw_set(Eon_Checker *ch, int sw)
 {
 	Eon_Coord coord;
@@ -179,7 +210,9 @@ EAPI void eon_checker_sw_set(Eon_Checker *ch, int sw)
 	eon_value_coord_from(&v, &coord);
 	ekeko_object_property_value_set((Ekeko_Object *)ch, "sw", &v);
 }
-
+/**
+ *
+ */
 EAPI void eon_checker_sh_get(Eon_Checker *ch, Eon_Coord *sh)
 {
 	Eon_Checker_Private *prv;
@@ -187,7 +220,9 @@ EAPI void eon_checker_sh_get(Eon_Checker *ch, Eon_Coord *sh)
 	prv = PRIVATE(ch);
 	if (sh) *sh = prv->sh;
 }
-
+/**
+ *
+ */
 EAPI void eon_checker_sh_set(Eon_Checker *ch, int sh)
 {
 	Eon_Coord coord;
@@ -197,7 +232,9 @@ EAPI void eon_checker_sh_set(Eon_Checker *ch, int sh)
 	eon_value_coord_from(&v, &coord);
 	ekeko_object_property_value_set((Ekeko_Object *)ch, "sh", &v);
 }
-
+/**
+ *
+ */
 EAPI void eon_checker_sh_rel_set(Eon_Checker *ch, int sh)
 {
 	Eon_Coord coord;
@@ -207,21 +244,27 @@ EAPI void eon_checker_sh_rel_set(Eon_Checker *ch, int sh)
 	eon_value_coord_from(&v, &coord);
 	ekeko_object_property_value_set((Ekeko_Object *)ch, "sh", &v);
 }
-
+/**
+ *
+ */
 EAPI Eon_Color eon_checker_color1_get(Eon_Checker *sq)
 {
 	Eon_Checker_Private *prv = PRIVATE(sq);
 
 	return prv->color1;
 }
-
+/**
+ *
+ */
 EAPI Eon_Color eon_checker_color2_get(Eon_Checker *sq)
 {
 	Eon_Checker_Private *prv = PRIVATE(sq);
 
 	return prv->color2;
 }
-
+/**
+ *
+ */
 EAPI void eon_checker_color1_set(Eon_Checker *sq, Eon_Color color)
 {
 	Ekeko_Value v;
@@ -229,7 +272,9 @@ EAPI void eon_checker_color1_set(Eon_Checker *sq, Eon_Color color)
 	eon_value_color_from(&v, color);
 	ekeko_object_property_value_set((Ekeko_Object *)sq, "color1", &v);
 }
-
+/**
+ *
+ */
 EAPI void eon_checker_color2_set(Eon_Checker *sq, Eon_Color color)
 {
 	Ekeko_Value v;

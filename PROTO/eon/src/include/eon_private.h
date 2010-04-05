@@ -82,6 +82,8 @@ void eon_parser_shutdown(void);
 void eon_parser_register(const char *name, Eon_Parser *p);
 extern Eina_Array *eon_parser_stack;
 extern Eon_Document *eon_parser_doc;
+extern Ekeko_Property_Id eon_parser_property_id;
+extern int eon_parser_property_type;
 
 /* Engine */
 typedef void * Eon_Engine_Surface;
@@ -216,6 +218,12 @@ static inline Eina_Bool eina_rectangle_equals(Eina_Rectangle *r1,
 		return EINA_TRUE;
 	else
 		return EINA_FALSE;
+}
+
+static inline void * eina_array_last_get(Eina_Array *array)
+{
+	if (!array->count) return NULL;
+	return array->data[array->count - 1];
 }
 
 #endif

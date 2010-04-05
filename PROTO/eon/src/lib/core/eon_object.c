@@ -32,15 +32,14 @@ struct _Eon_Object_Private
 /*----------------------------------------------------------------------------*
  *                                  Events                                    *
  *----------------------------------------------------------------------------*/
-static void _property_get(const Ekeko_Object *o, Ekeko_Event *e, void *data)
+static void _property_get(Ekeko_Object *o, Ekeko_Event *e, void *data)
 {
 
 }
-static void _property_set(const Ekeko_Object *o, Ekeko_Event *e, void *data)
+static void _property_set(Ekeko_Object *o, Ekeko_Event *e, void *data)
 {
 
 }
-
 /*----------------------------------------------------------------------------*
  *                           Base Type functions                              *
  *----------------------------------------------------------------------------*/

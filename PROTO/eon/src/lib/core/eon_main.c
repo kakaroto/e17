@@ -33,23 +33,29 @@ static int _emage_idler_cb(void *data)
 /* register the common objects */
 static void _objects_init(void)
 {
-#if 0
 	/* layouts */
 	eon_canvas_init();
+#if 0
 	eon_stack_init();
+#endif
 	/* shapes */
+#if 0
 	eon_circle_init();
 	eon_rect_init();
+#endif
 	/* paints */
-	eon_buffer_init();
 	eon_checker_init();
+#if 0
+	eon_buffer_init();
 	eon_compound_init();
 	eon_compound_layer_init();
 	eon_fade_init();
 	eon_grid_init();
 	eon_image_init();
 	eon_stripes_init();
+#endif
 	/* core */
+#if 0
 	eon_style_init();
 	eon_setter_init();
 #endif
