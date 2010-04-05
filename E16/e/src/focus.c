@@ -555,20 +555,13 @@ FocusExit(void)
 void
 FocusHandleEnter(EWin * ewin, XEvent * ev)
 {
-   Window              win = ev->xcrossing.window;
-
    Mode.mouse_over_ewin = ewin;
 
    if (!ewin)
      {
 	/* Entering root may mean entering this screen */
-	if (win == WinGetXwin(VROOT) &&
-	    (ev->xcrossing.mode == NotifyNormal &&
-	     ev->xcrossing.detail != NotifyInferior))
-	  {
-	     FocusToEWin(NULL, FOCUS_DESK_ENTER);
-	     return;
-	  }
+	FocusToEWin(NULL, FOCUS_DESK_ENTER);
+	return;
      }
 
    if (ev->xcrossing.mode == NotifyUngrab &&
@@ -594,24 +587,23 @@ FocusHandleEnter(EWin * ewin, XEvent * ev)
 	   FocusToEWin(ewin, FOCUS_ENTER);
 	break;
      case MODE_FOCUS_POINTER:
-	if (!ewin || FocusEwinValid(ewin, 1, 0, 0))
+	if (FocusEwinValid(ewin, 1, 0, 0))
 	   FocusToEWin(ewin, FOCUS_ENTER);
+	else
+	   FocusToEWin(NULL, FOCUS_NONE);
 	break;
      }
 }
 
 void
-FocusHandleLeave(EWin * ewin __UNUSED__, XEvent * ev)
+FocusHandleLeave(EWin * ewin, XEvent * ev)
 {
-   Window              win = ev->xcrossing.window;
-
    /* Leaving root may mean entering other screen */
-   if (win == WinGetXwin(VROOT) && ev->xcrossing.mode == NotifyNormal)
+   if (!ewin)
      {
-	if (ev->xcrossing.detail != NotifyInferior)
+	if (ev->xcrossing.mode == NotifyNormal &&
+	    ev->xcrossing.detail != NotifyInferior)
 	   FocusToEWin(NULL, FOCUS_DESK_LEAVE);
-	else if (Mode.focuswin == NULL)
-	   FocusToEWin(NULL, FOCUS_DESK_ENTER);
      }
 }
 
