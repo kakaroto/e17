@@ -492,26 +492,6 @@ EAPI Ekeko_Object * ekeko_object_parent_get(const Ekeko_Object *o)
 	return prv->parent;
 }
 /**
- * Gets the unique identifier for a name based property of an object
- * @param[in] o The object to get the property from
- * @param[in] name The name of the property
- * @return The unique identifier for this property
- */
-EAPI Ekeko_Property_Id ekeko_object_property_get(const Ekeko_Object *o, char *name)
-{
-	Ekeko_Object_Private *prv;
-	Object_Property *prop;
-
-	prv = PRIVATE(o);
-	prop = eina_hash_find(prv->properties, name);
-	if (!prop)
-	{
-		WRN("Property %s does not exist", name);
-		return NULL;
-	}
-	return prop->name;
-}
-/**
  * Sets a value for a property of an object
  * @param o The object to set the property to
  * @param name The property name
@@ -628,6 +608,26 @@ EAPI int ekeko_object_property_type_get(Ekeko_Object *o, const char *name)
 	return prop->type;
 }
 /**
+ * Gets the unique identifier for a name based property of an object
+ * @param[in] o The object to get the property from
+ * @param[in] name The name of the property
+ * @return The unique identifier for this property
+ */
+EAPI Ekeko_Property_Id ekeko_object_property_get(const Ekeko_Object *o, char *name)
+{
+	Ekeko_Object_Private *prv;
+	Object_Property *prop;
+
+	prv = PRIVATE(o);
+	prop = eina_hash_find(prv->properties, name);
+	if (!prop)
+	{
+		WRN("Property %s does not exist", name);
+		return NULL;
+	}
+	return prop->name;
+}
+/**
  * Add a property to an object
  * @param o The object the add the property to
  * @param name The name of the property
@@ -638,7 +638,6 @@ EAPI const char * ekeko_object_property_add(Ekeko_Object *o, const char *name, i
 {
 	Ekeko_Object_Private *prv;
 	Object_Property *prop;
-	const char *strname;
 
 	if (!name || !o) return NULL;
 
@@ -647,15 +646,16 @@ EAPI const char * ekeko_object_property_add(Ekeko_Object *o, const char *name, i
 	if (prop)
 	{
 		WRN("Property %s already exists", name);
-		return name;
+		return prop->name;
 	}
 	/* create a new property */
 	prop = calloc(1, sizeof(Object_Property));
 	prop->name = eina_stringshare_add(name);
 	prop->type = type;
-	return strname;
-}
+	eina_hash_add(prv->properties, name, prop);
 
+	return prop->name;
+}
 /**
  * Deletes a prooperty from an object
  * @param o The object the delete the property from
@@ -665,7 +665,6 @@ EAPI void ekeko_object_property_del(Ekeko_Object *o, const char *name)
 {
 	Ekeko_Object_Private *prv;
 	Object_Property *prop;
-	const char *strname;
 
 	if (!name) return;
 	prv = PRIVATE(o);
@@ -675,7 +674,7 @@ EAPI void ekeko_object_property_del(Ekeko_Object *o, const char *name)
 		WRN("Property %s does not exist", name);
 		return;
 	}
-	eina_hash_del(prv->properties, strname, prop);
+	eina_hash_del(prv->properties, name, prop);
 	eina_stringshare_del(prop->name);
 	free(prop);
 }
