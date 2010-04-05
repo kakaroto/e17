@@ -1266,16 +1266,7 @@ IPC_Warp(const char *params)
      {
 	x = (Dpy.screen + 1) % ScreenCount(disp);
 	sscanf(params, "%*s %i", &x);
-	if (x >= 0 && x < ScreenCount(disp))
-	  {
-	     EXWarpPointer(RootWindow(disp, x), DisplayWidth(disp, x) / 2,
-			   DisplayHeight(disp, x) / 2);
-	     /* IIRC warping to a different screen once did cause
-	      * LeaveNotify's on the current root window. This does not
-	      * happen in xorg 1.5.3 (and probably other versions).
-	      * So, check and focus out if left. */
-	     FocusCheckScreen();
-	  }
+	FocusScreen(x);
      }
    else
      {

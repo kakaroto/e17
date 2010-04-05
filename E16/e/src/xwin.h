@@ -221,6 +221,8 @@ Pixmap              EWindowGetShapePixmapInverted(Win win);
 
 Bool                EQueryPointer(Win win, int *px, int *py,
 				  Window * pchild, unsigned int *pmask);
+Bool                EXQueryPointer(Window xwin, int *px, int *py,
+				   Window * pchild, unsigned int *pmask);
 
 unsigned int        EAllocColor(Colormap cmap, unsigned int argb);
 

@@ -1135,7 +1135,7 @@ EXWarpPointer(Window xwin, int x, int y)
    XWarpPointer(disp, None, xwin, 0, 0, 0, 0, x, y);
 }
 
-static              Bool
+Bool
 EXQueryPointer(Window xwin, int *px, int *py, Window * pchild,
 	       unsigned int *pmask)
 {

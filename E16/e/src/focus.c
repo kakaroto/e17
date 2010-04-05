@@ -521,13 +521,56 @@ FocusNewDesk(void)
    XUngrabKeyboard(disp, CurrentTime);
 }
 
-void
-FocusCheckScreen(void)
+static void
+_FocusScreenSendEvent(Window xwin, int x, int y, Time t, int enter)
 {
-   if (EQueryPointer(NULL, NULL, NULL, NULL, NULL))
-      return;			/* On screen */
+   XEvent              xe;
 
-   FocusToEWin(NULL, FOCUS_DESK_LEAVE);
+   xe.type = (enter) ? EnterNotify : LeaveNotify;
+   xe.xcrossing.window = xwin;
+   xe.xcrossing.root = xwin;
+   xe.xcrossing.subwindow = 0;
+   xe.xcrossing.time = t;
+   xe.xcrossing.x = xe.xcrossing.x_root = x;
+   xe.xcrossing.y = xe.xcrossing.y_root = y;
+   xe.xcrossing.mode = NotifyNormal;
+   xe.xcrossing.detail = NotifyNonlinear;
+   xe.xcrossing.same_screen = (enter) ? True : False;
+   xe.xcrossing.focus = (enter) ? False : True;
+   xe.xcrossing.state = 0;
+
+   XSendEvent(disp, xwin, False, EnterWindowMask | LeaveWindowMask, &xe);
+}
+
+void
+FocusScreen(int scr)
+{
+   Window              xwin;
+   Time                t;
+   int                 x, y;
+
+   if (scr < 0 || scr >= ScreenCount(disp))
+      return;
+
+   /* IIRC warping to a different screen once did cause
+    * LeaveNotify's on the current root window. This does not
+    * happen in xorg 1.5.3 (and probably other versions).
+    * So, send LeaveNotify to current root and EnterNotify
+    * to new root. */
+
+   t = EGetTimestamp();
+
+   /* Report LeaveNotify on current root window */
+   xwin = WinGetXwin(VROOT);
+   EXQueryPointer(xwin, &x, &y, NULL, NULL);
+   _FocusScreenSendEvent(xwin, x, y, t, 0);
+
+   /* Do warp and report EnterNotify on new root window */
+   xwin = RootWindow(disp, scr);
+   x = DisplayWidth(disp, scr) / 2;
+   y = DisplayHeight(disp, scr) / 2;
+   EXWarpPointer(xwin, x, y);
+   _FocusScreenSendEvent(xwin, x, y, t, 1);
 }
 
 static void
