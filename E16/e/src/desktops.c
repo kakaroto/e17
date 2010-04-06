@@ -639,7 +639,7 @@ DeskBackgroundRefresh(Desk * dsk, int why)
      }
 
    if (bg && dsk->viewable)
-      if (Conf.hints.set_xroot_info_on_root_window && dsk->num > 0)
+      if (Conf.hints.set_xroot_info_on_root_window)
 	 HintsSetRootInfo(VROOT, pmap, pixel);
 
    if (changed)
