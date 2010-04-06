@@ -4,5 +4,5 @@ Name:     Andreas Volz
 Location: Adelsdorf, Germany
 E-Mail:   linux@brachttal.net
 WWW:      ?
-Managing: e16menuedit2
+Managing: e16menuedit2, eflxx
 GeoData:  49.682002 10.878665
