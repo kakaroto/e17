@@ -55,8 +55,7 @@ _XReply(Display * dpy, void *rep, int extra, Bool discard)
 {
    static RF          *func = NULL;
 
-   char                s[1024], *p;
-   const char         *name;
+   char                s[1024], *p, *name;
    void               *bt[128];
    int                 i, n, l;
    char              **sym;
@@ -88,7 +87,7 @@ _XReply(Display * dpy, void *rep, int extra, Bool discard)
 		*p = '\0';
 	  }
 	if (!name || *name == '\0')
-	   name = "?";
+	   name = (char *)"?";
 	l += snprintf(s + l, sizeof(s) - l, name);
 #else
 	l += snprintf(s + l, sizeof(s) - l, sym[i]);
