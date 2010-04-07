@@ -82,7 +82,7 @@ static void
 _item_free(Evry_Item *it)
 {
    ITEM_FILE(file, it);
-   if (file->uri) eina_stringshare_del(file->uri);
+   if (file->path) eina_stringshare_del(file->path);
    if (file->mime) eina_stringshare_del(file->mime);
 
    E_FREE(file);
@@ -90,10 +90,10 @@ _item_free(Evry_Item *it)
 
 
 static const char *
-_item_id(const char *uri)
+_item_id(const char *path)
 {
    const char *s1, *s2, *s3;
-   s1 = s2 = s3 = uri;
+   s1 = s2 = s3 = path;
 
    while (s1 && ++s1 && (s1 = strchr(s1, '/')))
      {
@@ -126,7 +126,7 @@ _item_add(Plugin *p, char *path, char *mime, int prio)
 
    evry_item_new(EVRY_ITEM(file), EVRY_PLUGIN(p), filename, _item_free);
    EVRY_ITEM(file)->id = eina_stringshare_add(_item_id(path));
-   file->uri = eina_stringshare_add(path);
+   file->path = eina_stringshare_add(path);
 
    if (folder)
      {
@@ -180,7 +180,7 @@ static void
 _dbus_cb_reply(void *data, DBusMessage *msg, DBusError *error)
 {
    DBusMessageIter array, iter, item;
-   char *uri, *mime, *date;
+   char *path, *mime, *date;
    Evry_Item_File *file;
    Eina_List *files = NULL;
    Plugin *p = data;
@@ -207,7 +207,7 @@ _dbus_cb_reply(void *data, DBusMessage *msg, DBusError *error)
 
 	     if (dbus_message_iter_get_arg_type(&iter) == DBUS_TYPE_STRING)
 	       {
-		  dbus_message_iter_get_basic(&iter, &uri);
+		  dbus_message_iter_get_basic(&iter, &path);
 		  dbus_message_iter_next(&iter);
 		  /* dbus_message_iter_get_basic(&iter, &service); */
 		  dbus_message_iter_next(&iter);
@@ -216,9 +216,9 @@ _dbus_cb_reply(void *data, DBusMessage *msg, DBusError *error)
 		  dbus_message_iter_next(&iter);
 		  dbus_message_iter_get_basic(&iter, &date);
 
-		  if (uri && mime && date)
+		  if (path && mime && date)
 		    {
-		       file = _item_add(p, uri, mime, atoi(date));
+		       file = _item_add(p, path, mime, atoi(date));
 		       if (file) files = eina_list_append(files, file);
 		    }
 	       }
