@@ -175,6 +175,12 @@ class mpris_TrackList (dbus.service.Object):
 	def GetLength (self):
 		return len (self.playlist)
 
+	@dbus.service.method (MEDIAPLAYER, out_signature="i")
+	def Clear (self):
+		if self.xmms2.playlist_clear(self.active_name):
+			return 1
+		return 0
+
 	#FIXME: function lies, xmms2 doesn't tell us if adding failed
 	@dbus.service.method (MEDIAPLAYER, in_signature='sb', out_signature="i", \
 	                      async_callbacks=('cb_val', 'cb_err'))
