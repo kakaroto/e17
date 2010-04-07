@@ -1,12 +1,13 @@
 #include <Evry.h>
-
+#include "md5.h"
 
 typedef struct _Plugin Plugin;
 
 struct _Plugin
 {
   Evry_Plugin base;
-
+  const char *input;
+  
   char *condition;
   char *service;
   Eina_List *files;
@@ -28,7 +29,6 @@ static const char fdo_path[] = "/org/freedesktop/DBus";
 static const char query_files[] =  "SELECT ?s nie:url(?s) nie:mimeType(?s) WHERE { ?s fts:match \"%s\". ?s a nfo:FileDataObject } limit 100";
 static const char *mime_dir = NULL;
 
-  
 static Evry_Plugin *
 _begin(Evry_Plugin *plugin, const Evry_Item *it)
 {
@@ -41,7 +41,8 @@ static void
 _item_free(Evry_Item *it)
 {
    ITEM_FILE(file, it);
-   if (file->uri) eina_stringshare_del(file->uri);
+   if (file->path) eina_stringshare_del(file->path);
+   if (file->url) eina_stringshare_del(file->url);
    if (file->mime) eina_stringshare_del(file->mime);
 
    E_FREE(file);
@@ -53,13 +54,13 @@ _item_add(Plugin *p, char *id, char *url, char *mime, int prio)
    Evry_Item_File *file;
 
    char *path;
-   const char *label;
+   const char *label, *tmp;
 
    if (!strncmp(url, "file://", 7))
-     url += 7;
+     tmp = url + 7;
    else return NULL;
    
-   if (!(path = evry_util_unescape(url, 0)))
+   if (!(path = evry_util_unescape(tmp, 0)))
      return NULL;
 
    if (!(label = ecore_file_file_get(path)))
@@ -73,8 +74,15 @@ _item_add(Plugin *p, char *id, char *url, char *mime, int prio)
 
    evry_item_new(EVRY_ITEM(file), EVRY_PLUGIN(p), label, _item_free);
    EVRY_ITEM(file)->id = eina_stringshare_add(id);
-   file->uri = eina_stringshare_add(path);
+   int match = evry_fuzzy_match(label, p->input);
+   if (match)
+     EVRY_ITEM(file)->fuzzy_match = match;
+   else
+     EVRY_ITEM(file)->fuzzy_match = 100;
+   
+   file->path = eina_stringshare_add(path);
    file->mime = eina_stringshare_add(mime);
+   file->url = eina_stringshare_add(url);
    
    if (file->mime == mime_dir)
      {
@@ -95,6 +103,14 @@ _cleanup(Evry_Plugin *plugin)
 
    EINA_LIST_FREE(p->files, file)
      evry_item_free(EVRY_ITEM(file));
+
+   if (p->input)
+     eina_stringshare_del(p->input);
+   p->input = NULL;
+
+   if (p->pnd)
+     dbus_pending_call_cancel(p->pnd);
+   p->pnd = NULL;
 
    EVRY_PLUGIN_ITEMS_CLEAR(p);
 }
@@ -117,7 +133,7 @@ static void
 _dbus_cb_reply(void *data, DBusMessage *msg, DBusError *error)
 {
    DBusMessageIter array, iter, item;
-   char *uri, *mime, *id;
+   char *path, *mime, *id;
    Evry_Item_File *file;
    Eina_List *files = NULL;
    Plugin *p = data;
@@ -144,16 +160,16 @@ _dbus_cb_reply(void *data, DBusMessage *msg, DBusError *error)
 		  /* printf("id %s\n", id); */
 
 		  dbus_message_iter_next(&iter);
-		  dbus_message_iter_get_basic(&iter, &uri);
-		  /* printf("uri %s\n", uri); */
+		  dbus_message_iter_get_basic(&iter, &path);
+		  /* printf("path %s\n", path); */
 
 		  dbus_message_iter_next(&iter);
 		  dbus_message_iter_get_basic(&iter, &mime);
 		  /* printf("mime %s\n", mime); */
 		  
-		  if (id && uri && mime)
+		  if (id && path && mime)
 		    {
-		       file = _item_add(p, id, uri, mime, 0);
+		       file = _item_add(p, id, path, mime, 0);
 		       if (file) files = eina_list_append(files, file);
 		    }
 	       }
@@ -198,6 +214,11 @@ _fetch(Evry_Plugin *plugin, const char *input)
 	  {
 	     query = malloc(sizeof(char) * (strlen(input) + strlen(query_files)));
 	     sprintf(query, query_files, input);
+
+	     if (p->input)
+	       eina_stringshare_del(p->input);
+   
+	     p->input = eina_stringshare_add(input); 
 	  }
 	else
 	  {
@@ -228,6 +249,33 @@ static Evas_Object *
 _icon_get(Evry_Plugin *p __UNUSED__, const Evry_Item *it, Evas *e)
 {
    ITEM_FILE(file, it);
+   char buf[4096];
+   MD5_CTX ctx;
+   char md5out[(2 * MD5_HASHBYTES) + 1];
+   unsigned char hash[MD5_HASHBYTES];
+   int n;
+   static const char hex[] = "0123456789abcdef";
+   
+   MD5Init (&ctx);
+   MD5Update (&ctx, (unsigned char const*)file->url, (unsigned)strlen (file->url));
+   MD5Final (hash, &ctx);
+
+   for (n = 0; n < MD5_HASHBYTES; n++)
+     {
+	md5out[2 * n] = hex[hash[n] >> 4];
+	md5out[2 * n + 1] = hex[hash[n] & 0x0f];
+     }
+   md5out[2 * n] = '\0';
+
+   snprintf(buf, sizeof(buf), "%s/.thumbnails/normal/%s.png", e_user_homedir_get(), md5out);
+   
+   DBG("load thumb: %s - %s\n", buf, file->path);
+   if (ecore_file_exists(buf))
+     {
+	Evas_Object *o = e_icon_add(e);
+	e_icon_file_set(o, buf);
+	if (o) return o;
+     }
 
    if (it->browseable)
      return evry_icon_theme_get("folder", e);
@@ -365,3 +413,5 @@ _shutdown(void)
 
 EINA_MODULE_INIT(_init);
 EINA_MODULE_SHUTDOWN(_shutdown);
+
+
