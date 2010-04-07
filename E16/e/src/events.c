@@ -62,14 +62,13 @@ static const char  *EventName(unsigned int type);
  */
 
 typedef struct {
-   int                 event_base, error_base;
    int                 major, minor;
+   int                 req_base, event_base, error_base;
 } EServerExtData;
 
 typedef struct {
    const char         *name;
    unsigned int        ix;
-   int                 (*query_ext) (Display * dpy, int *event, int *error);
    int                 (*query_ver) (Display * dpy, int *major, int *minor);
    void                (*init) (int avaliable);
 } EServerExt;
@@ -257,30 +256,27 @@ ExtInitInput(int available)
 #endif
 
 static const EServerExt Extensions[] = {
-   {"Shape", XEXT_SHAPE, XShapeQueryExtension, XShapeQueryVersion,
-    ExtInitShape},
+   {SHAPENAME, XEXT_SHAPE, XShapeQueryVersion, ExtInitShape},
 #if USE_XSYNC
-   {"Sync", XEXT_SYNC, XSyncQueryExtension, XSyncInitialize, ExtInitSync},
+   {SYNC_NAME, XEXT_SYNC, XSyncInitialize, ExtInitSync},
 #endif
 #if USE_XSCREENSAVER
-   {"ScrSaver", XEXT_SCRSAVER, XScreenSaverQueryExtension,
-    XScreenSaverQueryVersion, ExtInitSS},
+   {ScreenSaverName, XEXT_SCRSAVER, XScreenSaverQueryVersion, ExtInitSS},
 #endif
 #if USE_XRANDR
-   {"RandR", XEXT_RANDR, XRRQueryExtension, XRRQueryVersion, ExtInitRR},
+   {RANDR_NAME, XEXT_RANDR, XRRQueryVersion, ExtInitRR},
 #endif
 #if USE_COMPOSITE
-   {"Composite", XEXT_COMPOSITE, XCompositeQueryExtension,
-    XCompositeQueryVersion, NULL},
-   {"Damage", XEXT_DAMAGE, XDamageQueryExtension, XDamageQueryVersion, NULL},
-   {"Fixes", XEXT_FIXES, XFixesQueryExtension, XFixesQueryVersion, NULL},
-   {"Render", XEXT_RENDER, XRenderQueryExtension, XRenderQueryVersion, NULL},
+   {COMPOSITE_NAME, XEXT_COMPOSITE, XCompositeQueryVersion, NULL},
+   {DAMAGE_NAME, XEXT_DAMAGE, XDamageQueryVersion, NULL},
+   {XFIXES_NAME, XEXT_FIXES, XFixesQueryVersion, NULL},
+   {RENDER_NAME, XEXT_RENDER, XRenderQueryVersion, NULL},
 #endif
 #if USE_GLX
-   {"GLX", XEXT_GLX, glXQueryExtension, glXQueryVersion, NULL},
+   {GLX_EXTENSION_NAME, XEXT_GLX, glXQueryVersion, NULL},
 #endif
 #if USE_XI2
-   {"Input", XEXT_XI, EInputQueryExtension, EInputQueryVersion, ExtInitInput},
+   {INAME, XEXT_XI, EInputQueryVersion, ExtInitInput},
 #endif
 };
 
@@ -290,7 +286,8 @@ ExtQuery(const EServerExt * ext)
    int                 available;
    EServerExtData     *exd = ExtData + ext->ix;
 
-   available = ext->query_ext(disp, &(exd->event_base), &(exd->error_base));
+   available = XQueryExtension(disp, ext->name, &(exd->req_base),
+			       &(exd->event_base), &(exd->error_base));
 
    if (available)
      {
@@ -299,9 +296,10 @@ ExtQuery(const EServerExt * ext)
 	ext->query_ver(disp, &(exd->major), &(exd->minor));
 
 	if (EDebug(EDBUG_TYPE_VERBOSE))
-	   Eprintf("Found extension %-10s version %d.%d -"
-		   " Event/error base = %d/%d\n", ext->name,
-		   exd->major, exd->minor, exd->event_base, exd->error_base);
+	   Eprintf("Extension %-15s version %d.%d -"
+		   " req/evt/err base = %3d/%3d/%3d\n", ext->name,
+		   exd->major, exd->minor,
+		   exd->req_base, exd->event_base, exd->error_base);
      }
 
    if (ext->init)
