@@ -78,33 +78,36 @@ cdef class Part:
             edje_edit_string_list_free(lst)
             return ret
 
-    def state_get(self, char *sname):
-        if self.state_exist(sname):
-            return State(self, sname)
+    def state_get(self, char *sname, double value=0.0):
+        if self.state_exist(sname, value):
+            return State(self, sname, value)
 
-    def state_add(self, char *sname):
-        edje_edit_state_add(self.edje.obj, self.name, sname)
+    def state_add(self, char *sname, double value=0.0):
+        edje_edit_state_add(self.edje.obj, self.name, sname, value)
 
-    def state_del(self, char *sname):
-        edje_edit_state_del(self.edje.obj, self.name, sname)
+    def state_del(self, char *sname, double value=0.0):
+        edje_edit_state_del(self.edje.obj, self.name, sname, value)
 
-    def state_exist(self, char *sname):
-        return bool(edje_edit_state_exist(self.edje.obj, self.name, sname))
+    def state_exist(self, char *sname, double value=0.0):
+        return bool(edje_edit_state_exist(self.edje.obj, self.name, sname,
+                                          value))
 
-    def state_copy(self, char *sfrom, char *sto):
+    def state_copy(self, char *sfrom, double vfrom, char *sto, double vto):
         return bool(edje_edit_state_copy(self.edje.obj, self.name,
-                    sfrom, sto))
+                    sfrom, vfrom, sto, vto))
 
     def state_selected_get(self):
         cdef char *sel
-        sel = edje_edit_part_selected_state_get(self.edje.obj, self.name)
+        cdef double val
+        sel = edje_edit_part_selected_state_get(self.edje.obj, self.name, &val)
         if sel == NULL: return None
         r = sel
+        v = val
         edje_edit_string_free(sel)
-        return r
+        return (r, v)
 
-    def state_selected_set(self, char *state):
-        edje_edit_part_selected_state_set(self.edje.obj, self.name, state)
+    def state_selected_set(self, char *state, double value=0.0):
+        edje_edit_part_selected_state_set(self.edje.obj, self.name, state, value)
 
     property clip_to:
         def __get__(self):
