@@ -666,9 +666,9 @@ class Editje(elementary.Window):
 
             for p_name, s_name in self._prevstates:
                 real_part = self.e._edje.part_get(p_name)
-                real_part.state_selected_set(s_name)
+                real_part.state_selected_set(*s_name)
                 if p_name == self.e.part.name:
-                    self.e.part.state.name = s_name
+                    self.e.part.state.name = s_name[0]
             del self._prevstates
 
         def anim_save(anim):

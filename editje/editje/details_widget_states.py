@@ -61,7 +61,8 @@ class WidgetStates(WidgetEntryButton):
                 ico = Icon(self.states)
                 ico.file_set(self.theme_file, "editje/icon/confirm")
                 ico.scale_set(0, 0)
-            it = self.states.item_append(s, None, ico, self._show_actions, s)
+            lbl = "%s %.2f" % s
+            it = self.states.item_append(lbl, None, ico, self._show_actions, s)
         self.states.go()
 
     def _state_add_new_cb(self, popup, data):
@@ -75,42 +76,37 @@ class WidgetStates(WidgetEntryButton):
 
     def _state_newname(self):
         max = 0
-        cur_state = self._edit_grp.part.state.name.split(None, 1)
+        cur_state = self._edit_grp.part.state.name
         if re.match("[a-zA-Z]*\d{2,}", cur_state[0]):
             cur = cur_state[0][:-2]
         else:
             cur = cur_state[0]
 
-        for p in self._edit_grp.part.states:
-            state = p.split(None, 1)
+        for state in self._edit_grp.part.states:
             if re.match("%s\d{2,}" % cur, state[0]):
                 num = int(state[0][len(cur):])
                 if num > max:
                     max = num
-        nst = cur + "%.2d" % (max + 1) + " 0.00"
+        nst = cur + "%.2d" % (max + 1)
         return nst
 
     # if st_to state does not exist for the part, it is created
     def _part_state_copy_from(self, part_name, st_from, st_to):
         self._edit_grp.part.name = part_name
 
-        # FIXME: one can't add states with only value (float #)
-        # differing, right now. this is the reason for this fscking "half"
-        # thing
-        to_half_name = st_to.split(None, 1)[0]
         pt = self._edit_grp.part_get(part_name)
-        existed = pt.state_exist(st_to)
+        existed = pt.state_exist(*st_to)
 
         # FIXME: totally don't know why state_copy was not working for the
         # latter case, return here when things change underneath. also fix
         # the ugly event emitions
         if not existed:
-            r = pt.state_copy(st_from, to_half_name)
+            r = pt.state_copy(st_from[0], st_from[1], st_to[0], st_to[1])
             self._edit_grp.part.event_emit("state.added", st_to)
-            self._edit_grp.part.state.name = to_half_name + " 0.00"
+            self._edit_grp.part.state.name = st_to
         else:
-            st = pt.state_get(st_to)
-            r = st.copy_from(st_from)
+            st = pt.state_get(*st_to)
+            r = st.copy_from(*st_from)
             self._edit_grp.part.state.event_emit("state.changed", st_to)
 
     def _remove_state_internal(self, state):
@@ -119,18 +115,24 @@ class WidgetStates(WidgetEntryButton):
             return False
 
         if state == self._edit_grp.part.state.name:
-            self._edit_grp.part.state.name = "default 0.00"
-        self._edit_grp.part.state_del(state)
+            self._edit_grp.part.state.name = ("default", 0.00)
+        self._edit_grp.part.state_del(*state)
         return True
 
     def _states_added_cb(self, popup, data):
         new_state = self.newstate_entry.entry
 
+        tmp = new_state.split(None, 1)
+        if len(tmp) == 1:
+            new_state = (tmp[0], 0.0)
+        else:
+            new_state = (tmp[0], float(tmp[1]))
+
         part_name = self._edit_grp.part.name
         part = self._edit_grp.part_get(part_name)
         curr_state = self._edit_grp.part.state.name
 
-        if part.state_exist(new_state):
+        if part.state_exist(*new_state):
             # FIXME: notify the user of it somehow
             return
 
@@ -145,17 +147,18 @@ class WidgetStates(WidgetEntryButton):
         self.close()
 
     def _is_default(self, state):
-        return state == "default 0.00"
+        if type(state) == str:
+            return state == "default 0.00"
+        return state == ("default", 0.00)
 
     def _state_restore(self, part_name, state_save, readd=False):
         self._edit_grp.part.name = part_name
         st_name = state_save.name
-        half_name = st_name.split(None, 1)[0]
 
         if readd:
-            self._edit_grp.part.state_add(half_name)
+            self._edit_grp.part.state_add(*st_name)
 
-        state = self._edit_grp.part_get(part_name).state_get(st_name)
+        state = self._edit_grp.part_get(part_name).state_get(*st_name)
         state_save.apply_to(state)
 
         # FIXME: ugly hacks
@@ -184,7 +187,7 @@ class WidgetStates(WidgetEntryButton):
     def _remove_state_cb(self, btn, state_name):
         part_name = self._edit_grp.part.name
         part = self._edit_grp.part_get(part_name)
-        st_obj = part.state_get(state_name)
+        st_obj = part.state_get(*state_name)
         st_class = self._state_class_from_part_type_get(part)
         state_save = st_class(st_obj)
 
@@ -206,13 +209,13 @@ class WidgetStates(WidgetEntryButton):
         part_name = self._edit_grp.part.name
         curr_state = self._edit_grp.part.state.name
         part = self._edit_grp.part_get(part_name)
-        st_obj = part.state_get(curr_state)
+        st_obj = part.state_get(*curr_state)
         st_class = self._state_class_from_part_type_get(part)
         state_save = st_class(st_obj)
 
         self._part_state_copy_from(part_name, st_from, curr_state)
 
-        op = Operation("state copying (%s into %s)" % (st_from, curr_state))
+        op = Operation("state copying (%s into %s)" % (st_from[0], curr_state[0]))
         op.redo_callback_add(
             self._part_state_copy_from, part_name, st_from, curr_state)
         op.undo_callback_add(self._state_restore, part_name, state_save)
@@ -239,12 +242,13 @@ class WidgetStates(WidgetEntryButton):
         return btn
 
     def _show_actions(self, it, ti, state):
+        strstate = "%s %.2f" % state
         self.actions_box = Box(self._pop)
         name_box = Box(self._pop)
         lb_state = Label(self._pop)
         lb_state.label_set("<b>State: ")
         lb_name = Label(self._pop)
-        lb_name.label_set(state)
+        lb_name.label_set(strstate)
         name_box.horizontal_set(True)
         name_box.pack_end(lb_state)
         lb_state.show()

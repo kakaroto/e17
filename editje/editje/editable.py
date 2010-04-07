@@ -465,8 +465,8 @@ class Editable(Manager):
         prog.source = name
         prog.after_add("@%s@end" % name)
 
-        prevstatename = "default 0.00"
-        statename = startname + " 0.00"
+        prevstatename =  "default"
+        statename = startname
         if not parts:
             parts = self.parts
         for p in parts:

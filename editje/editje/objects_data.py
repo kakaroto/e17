@@ -72,11 +72,13 @@ class Part(Object):
         elif self._type == edje.EDJE_PART_TYPE_EXTERNAL:
             self._class = StateExternal
 
-        states = dict()
+        states = []
         self["states"] = states
-        for state_name in obj.states:
-            state = obj.state_get(state_name)
-            states[state_name] = self._class(state)
+        for st in obj.states:
+            state_name, state_val = st.split(None, 1)
+            state_val = float(state_val)
+            state = obj.state_get(state_name, state_val)
+            states.append(self._class(state))
 
     def _type_get(self):
         return self._type
@@ -111,12 +113,11 @@ class Part(Object):
         #obj.drag_confine = dragable["confine"]
         #obj.drag_event = dragable["events"]
 
-        for state in self["states"].values():
-            name = state.name
-            half_name = name.split(None, 1)[0]
-            if half_name != "default":
-                obj.state_add(half_name)
-            state.apply_to(obj.state_get(name))
+        for state in self["states"]:
+            name, val = state.name, state.value
+            if not obj.state_exist(name, val):
+                obj.state_add(name, val)
+            state.apply_to(obj.state_get(name, val))
 
         return True
 
@@ -142,6 +143,8 @@ class Part(Object):
 class State(Object):
     def __init__(self, obj):
         Object.__init__(self, obj.name)
+
+        self.value = obj.value
 
         self["visible"] = obj.visible
         self["align"] = obj.align
@@ -201,7 +204,7 @@ class State(Object):
         return True
 
     def source_get(self, indent=""):
-        ret = indent + 'description { state: "%s";\n' % self.name
+        ret = indent + 'description { state: "%s" %.2f;\n' % self.name
         ret += indent + '   visible: %d;\n' % int(self["visible"])
         ret += indent + '   align: %f %f;\n' % self["align"]
         ret += indent + '   min: %d %d;\n' % self["min"]
@@ -595,7 +598,7 @@ class AnimatioKeyFrame(Object):
             part = edj.part_get(target)
             if not part:
                 continue
-            state_name = name + " 0.00"
+            state_name = name
             part.state_add(state_name)
             state = part.state_get(state_name)
             if not state:

@@ -24,6 +24,7 @@ class EditableState(Manager):
 
         self._edit_grp = editable_part.e
         self.name = None
+        self.value = 0.0
 
         self.callback_add("state.changed", self._rel1_inform)
         self.callback_add("state.changed", self._rel2_inform)
@@ -43,23 +44,40 @@ class EditableState(Manager):
 
         if not part_name:
             self.name = None
+            self.value = 0.0
             return
 
         part = self._edit_grp.part_get(part_name)
-        st_name = part.state_selected_get()
-        if st_name == "(null) 0.00":
-            st_name = "default 0.00"
+        st_name, st_val = part.state_selected_get()
+        if st_name == "(null)":
+            st_name = "default"
 
         # forcing last condition at name setter
         self._name = None
-        self.name = st_name
+        self.name = st_name, st_val
 
     # Name
-    def _name_set(self, value):
+    def _name_set(self, st):
+        name = None
+        value = None
+        if type(st) == list or type(st) == tuple:
+            if len(st) == 2:
+                name, value = st
+            else:
+                name = st[0]
+                value = 0.0
+        elif type(st) == str:
+            tmp = st.split(None, 1)
+            name = tmp[0]
+            if len(tmp) == 2:
+                value = float(tmp[1])
+            else:
+                value = 0.0
 
         def null():
             self._state = None
             self._name = None
+            self.value = 0.0
 
         if not self._edit_grp.edje:
             null()
@@ -70,46 +88,50 @@ class EditableState(Manager):
             null()
             return
 
-        if not value:
+        if not name:
             null()
             # not sure if useful, but leaving for now
             self.event_emit("state.unselected")
             return
 
-        if self._name == value:
+        if self._name == name and self.value == value:
             return
 
         part = self._edit_grp.part_get(part_name)
-        self._state = part.state_get(value)
+        self._state = part.state_get(name, value)
         if self._state:
-            self._name = value
-            self.event_emit("state.changed", self._name)
+            self._name = name
+            self.value = value
+            self.event_emit("state.changed", (self._name, self.value))
 
     def _name_get(self):
-        return self._name
+        return self._name, self.value
 
     name = property(_name_get, _name_set)
 
-    def rename(self, new_name):
+    def rename(self, new_name, new_value=None):
         if not self.name or not new_name:
             return False
 
-        r = self._state.name_set(new_name)
+        if new_value is None:
+            new_value = self.value
+
+        r = self._state.name_set(new_name, new_value)
         if r:
-            self.event_emit("state.renamed", self._name)
-            self._name_set(new_name)
+            self.event_emit("state.renamed", (self._name, self.value))
+            self._name_set((new_name, new_value))
 
         return r
 
-    def copy_from(self, state):
+    def copy_from(self, state, value=0.0):
         if not self.name:
             return False
 
-        r = self._state.copy_from(state)
+        r = self._state.copy_from(state, value)
         if not r:
             return False
 
-        self.event_emit("state.changed", self._name)
+        self.event_emit("state.changed", (self._name, self.value))
         return True
 
     def _rel1_inform(self, emissor, data):

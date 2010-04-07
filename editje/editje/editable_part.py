@@ -105,26 +105,28 @@ class EditablePart(Manager):
 
     def _states_reload_cb(self, emissor, data):
         if data and self._part:
-            self.states = filter(lambda x: not x.startswith("@"),
-                                 self._part.states)
+            self.states = []
+            for s in filter(lambda x: not x.startswith("@"), self._part.states):
+                n, v = s.split(None)
+                self.states.append((n, float(v)))
         else:
             self.states = []
         self.event_emit("states.changed")
 
-    def state_add(self, name):
+    def state_add(self, name, value=0.0):
         if not self.name:
             return False
 
-        self._part.state_add(name)
-        self.event_emit("state.added", name)
+        self._part.state_add(name, value)
+        self.event_emit("state.added", (name, value))
         return True
 
-    def state_del(self, name):
+    def state_del(self, name, value=0.0):
         if not self.name:
             return False
 
-        self._part.state_del(name)
-        self.event_emit("state.removed", name)
+        self._part.state_del(name, value)
+        self.event_emit("state.removed", (name, value))
         return True
 
     def _mouse_events_set(self, value):

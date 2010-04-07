@@ -41,14 +41,15 @@ class StateCopyButton(FloaterListOpener):
     def _floater_list_items_update(self):
         list = []
         for s in self.e.part.states:
-            list.append((s, s))
+            lbl = "%s %.2f" % s
+            list.append((lbl, s))
         return list
 
     def _floater_title_init(self):
         self._floater.title_set("State Selection")
 
     def value_set(self, value):
-        self.e.part.state.copy_from(value)
+        self.e.part.state.copy_from(*value)
 
 
 class PartStateDetails(EditjeDetails):
@@ -140,12 +141,12 @@ class PartStateDetails(EditjeDetails):
         self.part_evas = self._part_object_get_cb(self.part_edje.name)
         self.part_evas.on_resize_add(self._size_changed)
         self._size_changed(self.part_evas)
-        state = self.part_edje.state_selected_get()
-        if state == "(null) 0.00":
-            state = "default 0.00"
-        self._header_table["state"].value = state
+        state, val = self.part_edje.state_selected_get()
+        if state == "(null)":
+            state = "default"
+        self._header_table["state"].value = "%s %.2f" % (state, val)
         self._header_table["state"].show_value()
-        self.state = self.part_edje.state_get(state)
+        self.state = self.part_edje.state_get(state, val)
         self._update()
         self.show()
 
@@ -435,11 +436,11 @@ class PartStateDetails(EditjeDetails):
     def _state_changed_cb(self, emissor, data):
         if not data:
             return
-        self.part_edje.state_selected_set(data)
+        self.part_edje.state_selected_set(*data)
         self.state = self.e.part.state._state
         prop = self._header_table.get("state")
         if prop:
-            prop.value = data
+            prop.value = "%s %.2f" % data
         self._update()
 
     def _state_common_props_changed_cb(self, emissor, data):
@@ -451,24 +452,24 @@ class PartStateDetails(EditjeDetails):
             # select 1st
             if self.e.part.name != part_name:
                 self.e.part.name = part_name
-            self.e.part.state.name = old_name
+            self.e.part.state.name = old_name[0]
 
             part = self.e.part_get(part_name)
 
-            if (part.state_exist(new_name)) or old_name == "default 0.00":
+            if (part.state_exist(*new_name)) or old_name == ["default", 0.0]:
                 return False
 
             # rename later
-            return self.e.part.state.rename(new_name)
+            return self.e.part.state.rename(*new_name)
 
         part = self.e.part.name
         old_name = self.e.part.state.name
 
-        entry_val = st_widget.value.split(None, 1)
-        if len(entry_val) == 1:
-            new_name = entry_val[0] + " 0.00"
+        new_name = st_widget.value.split(None, 1)
+        if len(new_name) == 1:
+            new_name[1] = 0.0
         else:
-            new_name = " ".join(entry_val)
+            new_name[1] = float(new_name[1])
 
         if state_rename(part, old_name, new_name):
             op = Operation("state renaming")
@@ -478,7 +479,7 @@ class PartStateDetails(EditjeDetails):
             self._operation_stack_cb(op)
         else:
             # TODO: notify the user of renaming failure
-            st_widget.value = old_name
+            st_widget.value = "%s %.2f" % old_name
 
     def _hide_all(self):
         self.main_hide()
@@ -823,7 +824,7 @@ class PartAnimStateDetails(PartStateDetails):
             self._part_type_to_text(self.part_edje.type)
         self._header_table["type"].show_value()
         self.edje_get().signal_emit("cl,option,enable", "editje")
-        self.state = self.part_edje.state_get(state)
+        self.state = self.part_edje.state_get(*state)
         self._update()
         self.show()
 
@@ -876,7 +877,7 @@ class PartAnimStateDetails(PartStateDetails):
     def _state_changed_cb(self, emissor, data):
         if not data:
             return
-        self.part_edje.state_selected_set(data)
+        self.part_edje.state_selected_set(*data)
         self.state = self.e.part.state._state
         if self._check_and_show():
             self._update()

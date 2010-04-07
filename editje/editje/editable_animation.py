@@ -70,7 +70,7 @@ class EditableAnimation(Manager, object):
                 self._name = ""
                 for p in self.e.parts:
                     part = self.e._edje.part_get(p)
-                    part.state_selected_set("default 0.00")
+                    part.state_selected_set("default")
                 self.event_emit("animation.unselected")
 
     def _name_get(self):
@@ -102,10 +102,10 @@ class EditableAnimation(Manager, object):
                     if not part:
                         #prog.target_del(pp) TODO: binding
                         continue
-                    state = part.state_get(p + " 0.00")
+                    state = part.state_get(p)
                     if not state:
                         continue
-                    state.name_set(p2 + " 0.00")
+                    state.name_set(p2)
 
                 if time == "0.00":
                     prog.source_set(name)
@@ -167,7 +167,7 @@ class EditableAnimation(Manager, object):
         prog = self.e.program_get(progname)
         prog.target_add(part)
         p = self.e._edje.part_get(part)
-        p.state_copy("default 0.00", progname)
+        p.state_copy("default", 0.0, progname, 0.0)
         self.parts[part] = True
 
         # Re-set current state to make sure everything is consistent
@@ -182,7 +182,7 @@ class EditableAnimation(Manager, object):
         p = self.e._edje.part_get(part)
         p.state_selected_set("default 0.00")
         if p.name == self.e.part.name:
-            self.e.part.state.name = ""
+            self.e.part.state.name = None
         for t in self.timestops:
             progname = "@%s@%.2f" % (self._name, t)
             st = progname + " 0.00"
@@ -240,8 +240,8 @@ class EditableAnimation(Manager, object):
         name = "@%s@%.2f" % (self._name, time)
 
         # States
-        prevstatename = prevname + " 0.00"
-        statename = name + " 0.00"
+        prevstatename = prevname
+        statename = name
 
         # Create
         self.e.program_add(name)
@@ -309,25 +309,25 @@ class EditableAnimation(Manager, object):
             nextprog.transition_time = next - prev
 
         # Delete states from parts
-        statename = progname + " 0.00"
+        statename = progname
         for p in self.parts.iterkeys():
             part = self.e._edje.part_get(p)
-            part.state_del(statename)
+            part.state_del(statename, 0.0)
 
         self.timestops.pop(idx)
         self.event_emit("state.removed", time)
 
     def _part_state_create(self, part):
         statename = self.program.name
-        orig_state = "default 0.00"
+        orig_state = "default"
         time_idx = 0
         while time_idx <= self._current_idx:
             time = self.timestops[time_idx]
-            name = "@%s@%.2f 0.00" % (self._name, time)
+            name = "@%s@%.2f" % (self._name, time)
             if part.state_exist(name):
                 orig_state = name
             else:
-                part.state_copy(orig_state, statename)
+                part.state_copy(orig_state, 0.0, statename, 0.0)
             time_idx += 1
 
         self.program.target_add(part.name)
@@ -338,7 +338,7 @@ class EditableAnimation(Manager, object):
         self._current_idx = self.timestops.index(time)
         self._current = time
         self.program.name = "@%s@%.2f" % (self._name, time)
-        statename = self.program.name + " 0.00"
+        statename = self.program.name
         for p in self.parts.iterkeys():
             part = self.e._edje.part_get(p)
             if part.state_exist(statename):
