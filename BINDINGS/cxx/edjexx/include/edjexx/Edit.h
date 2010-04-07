@@ -4,16 +4,18 @@
 /* STL */
 #include <string>
 
+/* EFL */
+#include <Edje.h>
+#include <Edje_Edit.h>
+
 /* EFL++ */
 #include <eflxx/Common.h>
 #include <eflxx/CountedPtr.h>
+#include <einaxx/Einaxx.h>
 
-#include <evasxx/Canvas.h>
+/* Project */
 #include "Part.h"
 #include "Object.h"
-
-/* EFL */
-#include <Edje.h>
 
 namespace Edjexx {
   
@@ -442,6 +444,9 @@ edje_edit_style_tag_del(
 );
 
 //@}
+  
+  #endif
+
 /******************************************************************************/
 /**************************   PARTS API   *************************************/
 /******************************************************************************/
@@ -449,24 +454,22 @@ edje_edit_style_tag_del(
  *  Functions to deal with part objects (see @ref edcref).
  */ //@{
 
-/**Get the list of all the parts in the given edje object.
- * Use edje_edit_string_list_free() when you don't need it anymore.
- */
-EAPI Eina_List *           ///@return An Eina_List* of string (char *)containing all the part names.
-edje_edit_parts_list_get(
-   Evas_Object *obj        ///< The edje object
-);
 
-/**Create a new part in the given edje
- * If another part with the same name just exists nothing is created and FALSE is returned.
- * Note that this function also create a default description for the part.
- */
-EAPI Eina_Bool         ///@return TRUE on success, FALSE if the part can't be created
-edje_edit_part_add(
-   Evas_Object *obj,       ///< The edje object
-   const char *name,       ///< The name for the new part
-   Edje_Part_Type type      ///< The type of the part to create (One of: EDJE_PART_TYPE_NONE, EDJE_PART_TYPE_RECTANGLE, EDJE_PART_TYPE_TEXT,EDJE_PART_TYPE_IMAGE, EDJE_PART_TYPE_SWALLOW, EDJE_PART_TYPE_TEXTBLOCK,EDJE_PART_TYPE_GRADIENT or EDJE_PART_TYPE_GROUP)
-);
+  /*! Get the list of all the parts in the given edje object.
+   *  Use edje_edit_string_list_free() when you don't need it anymore.
+   *  TODO: how to handle free of string?
+   */
+  Eflxx::CountedPtr <Einaxx::List <char*>::Iterator> getPartsList ();
+  
+  /*! Create a new part in the given edje
+   *  If another part with the same name just exists nothing is created and FALSE is returned.
+   *  Note that this function also create a default description for the part.
+   */  
+  bool                                ///@return true on success, false on failure
+  addPart (const std::string &name,   ///< The name for the new part
+           Edje_Part_Type type);      ///< The type of the part to create (One of: EDJE_PART_TYPE_NONE, EDJE_PART_TYPE_RECTANGLE, EDJE_PART_TYPE_TEXT,EDJE_PART_TYPE_IMAGE, EDJE_PART_TYPE_SWALLOW, EDJE_PART_TYPE_TEXTBLOCK,EDJE_PART_TYPE_GRADIENT or EDJE_PART_TYPE_GROUP)
+  
+#if 0
 
 /**Delete the given part from the edje
  * All the reference to this part will be zeroed.
@@ -501,23 +504,21 @@ edje_edit_part_restack_above(
    const char *part        ///< The name of the part to restack
 );
 
-/**Set a new name for part.
- * Note that the relative getter function don't exist as it don't make sense ;)
- */
-EAPI Eina_Bool         ///@return 1 on success, 0 on failure
-edje_edit_part_name_set(
-   Evas_Object *obj,       ///< The edje object
-   const char  *part,      ///< The name of the part to rename
-   const char  *new_name   ///< The new name for the part
-);
+#endif
+  
+  /*! Set a new name for part.
+   *  Note that the relative getter function don't exist as it don't make sense ;)
+   */
+  bool ///@return true on success, false on failure
+  setName (const std::string &part,     ///< The name of the part to rename
+           const std::string &newName); ///< The new name for the part
 
-/**Get the type of a part */
-EAPI Edje_Part_Type         ///@return One of: EDJE_PART_TYPE_NONE, EDJE_PART_TYPE_RECTANGLE, EDJE_PART_TYPE_TEXT,EDJE_PART_TYPE_IMAGE, EDJE_PART_TYPE_SWALLOW, EDJE_PART_TYPE_TEXTBLOCK,EDJE_PART_TYPE_GRADIENT or EDJE_PART_TYPE_GROUP
-edje_edit_part_type_get(
-   Evas_Object *obj,       ///< The edje object
-   const char *part        ///< The name of the part
-);
-
+  /*! Get the type of a part */
+  Edje_Part_Type                     ///@return One of: EDJE_PART_TYPE_NONE, EDJE_PART_TYPE_RECTANGLE, EDJE_PART_TYPE_TEXT,EDJE_PART_TYPE_IMAGE, EDJE_PART_TYPE_SWALLOW, EDJE_PART_TYPE_TEXTBLOCK,EDJE_PART_TYPE_GRADIENT or EDJE_PART_TYPE_GROUP
+  getType (const std::string &part); ///< The name of the part
+    
+#if 0
+  
 /**Get the clip_to part.
  * NULL is returned on errors and if the part don't have a clip.
  */
@@ -755,6 +756,8 @@ edje_edit_part_drag_event_set(
    const char *part,       ///< The name of the drag part
    const char *event       ///< The name of the part that will receive events, or NULL to unset.
 );
+  
+#endif
 
 //@}
 /******************************************************************************/
@@ -764,14 +767,14 @@ edje_edit_part_drag_event_set(
  *  Functions to deal with part states (see @ref edcref).
  */ //@{
 
-/**Get the list of all the states in the given part.*/
-EAPI Eina_List *           /**@return An Eina_List* of string (char *)containing all the states names found
-                            * in part, including the float value (ex: "default 0.00").
-                            * Use edje_edit_string_list_free() when you don't need it anymore. */
-edje_edit_part_states_list_get(
-   Evas_Object *obj,       ///< The edje object
-   const char *part        ///< The name of the part
-);
+
+  Eflxx::CountedPtr <Einaxx::List <char*>::Iterator> /*! @return An Einaxx::List<char*> containing all the states names found
+                                                       * in part, including the float value (ex: "default 0.00").
+                                                       * Use edje_edit_string_list_free() when you don't need it anymore. 
+                                                       *  TODO: how to handle free of string? */
+    getPartStatesList (const std::string &part); ///< The name of the part
+    
+#if 0
 
 /**Set a new name for the given state in the given part.
  * Note that state and new_name must include the floating value inside the string (ex. "default 0.00")

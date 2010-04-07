@@ -23,7 +23,7 @@ AM_PROG_LIBTOOL
 
 
 
-PKG_CHECK_MODULES(EFL, eflxx evasxx edje)
+PKG_CHECK_MODULES(EFL, eflxx evasxx edje einaxx)
 AC_OUTPUT([
 Makefile
 include/Makefile

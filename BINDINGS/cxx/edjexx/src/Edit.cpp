@@ -7,10 +7,6 @@
 #include "../include/edjexx/Base.h"
 #include "../include/edjexx/Exceptions.h"
 
-/* EFL */
-#include <Edje.h>
-#include <Edje_Edit.h>
-
 using namespace std;
 
 namespace Edjexx {
@@ -99,6 +95,43 @@ int Edit::getGroupMaxHeight ()
 void Edit::setGroupMaxHeight (int height)
 {
   edje_edit_group_max_h_set(o, height);
+}
+
+/******************************************************************************/
+/**************************   PARTS API   *************************************/
+/******************************************************************************/
+
+Eflxx::CountedPtr <Einaxx::List <char*>::Iterator> Edit::getPartsList ()
+{
+  Einaxx::List <char*>::Iterator *lst = new Einaxx::List <char*>::Iterator (edje_edit_parts_list_get (o));
+  
+  return Eflxx::CountedPtr <Einaxx::List <char*>::Iterator> (lst);
+}
+
+bool Edit::addPart (const std::string &name, Edje_Part_Type type)
+{
+  return edje_edit_part_add (o, name.c_str (), type);
+}
+
+bool Edit::setName (const std::string &part, const std::string &newName)
+{
+  return edje_edit_part_name_set (o, part.c_str (), newName.c_str ());
+}
+
+Edje_Part_Type Edit::getType (const std::string &part)
+{
+  return edje_edit_part_type_get (o, part.c_str ());
+}
+
+/******************************************************************************/
+/**************************   STATES API   ************************************/
+/******************************************************************************/
+
+Eflxx::CountedPtr <Einaxx::List <char*>::Iterator>  Edit::getPartStatesList (const std::string &part)
+{
+  Einaxx::List <char*>::Iterator *lst = new Einaxx::List <char*>::Iterator (edje_edit_part_states_list_get (o, part.c_str ()));
+  
+  return Eflxx::CountedPtr <Einaxx::List <char*>::Iterator> (lst);
 }
 
 } // end namespace Edjexx
