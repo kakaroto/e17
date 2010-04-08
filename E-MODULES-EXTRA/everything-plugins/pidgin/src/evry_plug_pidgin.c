@@ -435,7 +435,7 @@ cb_sendFile(void *data, DBusMessage *reply, DBusError *error)
    dbus_message_append_args(msg,
 			    DBUS_TYPE_INT32, &(connection),
 			    DBUS_TYPE_STRING, &(info->networkID),
-			    DBUS_TYPE_STRING, &(file->uri),			    
+			    DBUS_TYPE_STRING, &(file->path),			    
 			    DBUS_TYPE_INVALID);
 
    e_dbus_message_send(conn, msg, NULL, -1, NULL);
@@ -584,7 +584,10 @@ _action_chat(Evry_Action *act)
 static Eina_Bool
 _init(void)
 {
-   if (!(conn = e_dbus_bus_get(DBUS_BUS_SESSION)))
+  if (!evry_api_version_check(EVRY_API_VERSION))
+    return EINA_FALSE;
+
+  if (!(conn = e_dbus_bus_get(DBUS_BUS_SESSION)))
      {
 	EINA_LOG_CRIT("could not connect to dbus' session bus");
 	return EINA_FALSE;

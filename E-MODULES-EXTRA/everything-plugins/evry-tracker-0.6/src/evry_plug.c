@@ -512,6 +512,9 @@ _get_name_owner(void *data __UNUSED__, DBusMessage *msg, DBusError *err)
 static Eina_Bool
 _init(void)
 {
+   if (!evry_api_version_check(EVRY_API_VERSION))
+     return EINA_FALSE;
+
    conn = e_dbus_bus_get(DBUS_BUS_SESSION);
 
    if (!conn) return EINA_FALSE;
