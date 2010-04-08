@@ -360,9 +360,21 @@ class Editable(Manager):
     def external_add(self, module):
         return self._edje.external_add(module)
 
-    def part_add(self, name, type_, source=""):
-        if not self._edje.part_add(name, type_, source):
+    def _part_add(self, name, type, source):
+        if type == edje.EDJE_PART_TYPE_EXTERNAL:
+            external = edje.external_type_get(source)
+            if not (external and self._edje.external_add(external.module)):
+                return False
+        return self._edje.part_add(name, type, source)
+
+    def part_add(self, name, type, source="", init=None):
+        if not self._part_add(name, type, source):
             return False
+
+        part = self._part_init(name)
+
+        if init:
+            init(part)
 
         self._modified = True
         self.event_emit("part.added", name)
@@ -373,11 +385,43 @@ class Editable(Manager):
         if source is None:
             source = ''
 
-        if self._edje.part_add(name, part_data.type, source=source):
+        if self._part_add(name, part_data.type, source):
             part = self._edje.part_get(name)
             part_data.apply_to(part)
             # FIXME: remove event emitions for others
             self.event_emit("part.added", name)
+
+    def _part_init(self, name):
+        part = self._edje.part_get(name)
+        type = part.type
+        state = part.state_get(*part.state_selected_get())
+
+        w, h = self._edje.size
+
+        state.rel1_to = (None, None)
+        state.rel1_relative = (0.0, 0.0)
+        state.rel1_offset = (w / 4, h / 4)
+
+        state.rel2_to = (None, None)
+        state.rel2_relative = (0.0, 0.0)
+        state.rel2_offset = (w * 3 / 4, h * 3 / 4)
+
+        if type == edje.EDJE_PART_TYPE_RECTANGLE:
+            part.mouse_events = False
+
+        elif type == edje.EDJE_PART_TYPE_IMAGE:
+           images = self._edje.images
+           if images:
+               state.image = images[0]
+
+        elif type == edje.EDJE_PART_TYPE_TEXT:
+            part.mouse_events = False
+            state.color = (0, 0, 0, 255)
+            state.text = "YOUR TEXT HERE"
+            state.font = "Sans"
+            state.text_size = 16
+
+        return part
 
     def part_get(self, part_name):
         return self._edje.part_get(part_name)

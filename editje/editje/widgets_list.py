@@ -144,12 +144,7 @@ class WidgetsList(Collapsable):
             external_module = None
 
         def part_add(name, edje_type, external_name="", external_module=None):
-            success = self._edit_grp.part_add(name, edje_type, external_name)
-            if success:
-                if edje_type == edje.EDJE_PART_TYPE_EXTERNAL:
-                    self._edit_grp.external_add(external_module)
-                self._part_init(name, edje_type)
-            return success
+            return self._edit_grp.part_add(name, edje_type, external_name)
 
         if part_add(name, edje_type, external_name, external_module):
             op = Operation("part addition")
@@ -159,39 +154,3 @@ class WidgetsList(Collapsable):
             self._operation_stack_cb(op)
 
         it.selected = False
-
-    def _part_init(self, name, type_):
-        # part and state should be selected after self._edit_grp.part_add()
-        part = self._edit_grp.part
-        state = part.state
-
-        w, h = self._edit_grp.group_size
-
-        state.rel1_to = (None, None)
-        state.rel1_relative = (0.0, 0.0)
-        state.rel1_offset = (w / 4, h / 4)
-
-        state.rel2_to = (None, None)
-        state.rel2_relative = (0.0, 0.0)
-        state.rel2_offset = (w * 3 / 4, h * 3 / 4)
-
-        if type_ == edje.EDJE_PART_TYPE_RECTANGLE:
-            self._part_init_rectangle(part, state)
-        elif type_ == edje.EDJE_PART_TYPE_TEXT:
-            self._part_init_text(part, state)
-        elif type_ == edje.EDJE_PART_TYPE_EXTERNAL:
-            self._part_init_external(part, state)
-
-    def _part_init_rectangle(self, part, state):
-        part.mouse_events = False
-        state.color = (0, 255, 0, 128)
-
-    def _part_init_text(self, part, state):
-        part.mouse_events = False
-        state.color = (0, 0, 0, 255)
-        state.text = "YOUR TEXT HERE"
-        state.font = "Sans"
-        state.text_size = 16
-
-    def _part_init_external(self, part, state):
-        pass

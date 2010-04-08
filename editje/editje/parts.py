@@ -451,14 +451,10 @@ class NewPartWizard(Wizard):
             ext_module = None
 
         def add_internal(name, edje_type, ext_name="", ext_module=None):
-            success = self._edit_grp.part_add(name, edje_type, ext_name)
-            if success:
-                if self._type == edje.EDJE_PART_TYPE_EXTERNAL:
-                    self._edit_grp.external_add(ext_module)
-                self._part_init(name, edje_type)
-            else:
+            if not self._edit_grp.part_add(name, edje_type, ext_name):
                 self.notify("Error adding new part.")
-            return success
+                return False
+            return True
 
         if add_internal(name, self._type, ext_name, ext_module):
             op = Operation("part addition")
@@ -468,42 +464,6 @@ class NewPartWizard(Wizard):
             self._operation_stack_cb(op)
 
         self.close()
-
-    def _part_init(self, name, type_):
-        # part and state should be selected after self._edit_grp.part_add()
-        part = self._edit_grp.part
-        state = part.state
-
-        w, h = self._edit_grp.group_size
-
-        state.rel1_to = (None, None)
-        state.rel1_relative = (0.0, 0.0)
-        state.rel1_offset = (w / 4, h / 4)
-
-        state.rel2_to = (None, None)
-        state.rel2_relative = (0.0, 0.0)
-        state.rel2_offset = (w * 3 / 4, h * 3 / 4)
-
-        if type_ == edje.EDJE_PART_TYPE_RECTANGLE:
-            self._part_init_rectangle(part, state)
-        elif type_ == edje.EDJE_PART_TYPE_TEXT:
-            self._part_init_text(part, state)
-        elif type_ == edje.EDJE_PART_TYPE_EXTERNAL:
-            self._part_init_external(part, state)
-
-    def _part_init_rectangle(self, part, state):
-        part.mouse_events = False
-        state.color = (0, 255, 0, 128)
-
-    def _part_init_text(self, part, state):
-        part.mouse_events = False
-        state.color = (0, 0, 0, 255)
-        state.text = "YOUR TEXT HERE"
-        state.font = "Sans"
-        state.text_size = 16
-
-    def _part_init_external(self, part, state):
-        pass
 
     def _external_selector_toggle(self, show):
         if show:
