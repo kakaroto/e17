@@ -718,10 +718,11 @@ text_entry_toggle(Viewer *v, Eina_Bool show)
    if (show == v->entry_visible) return;
    if (show)
      {
+        double val;
         const char *state, *text;
 
-        state = edje_edit_part_selected_state_get(prt->grp->obj, prt->name);
-        text = edje_edit_state_text_get(prt->grp->obj, prt->name, state);
+        state = edje_edit_part_selected_state_get(prt->grp->obj, prt->name, &val);
+        text = edje_edit_state_text_get(prt->grp->obj, prt->name, state, val);
         elm_entry_entry_set(v->gui.entry, text);
         edje_object_signal_emit(elm_layout_edje_get(v->gui.ly), "v,state,entry,show", "v");
         evas_object_focus_set(v->gui.entry, 1);
@@ -844,12 +845,13 @@ on_entry_changed(void *data, Evas_Object *obj, void *event_info)
    Viewer *v = data;
    Part *prt = v->visible_part;
    const char *state, *txt;
+   double val;
 
    if (!prt) return;
 
-   state = edje_edit_part_selected_state_get(prt->grp->obj, prt->name);
+   state = edje_edit_part_selected_state_get(prt->grp->obj, prt->name, &val);
    txt = elm_entry_entry_get(v->gui.entry);
-   edje_edit_state_text_set(prt->grp->obj, prt->name, state, txt);
+   edje_edit_state_text_set(prt->grp->obj, prt->name, state, val, txt);
 
    edje_edit_string_free(state);
 }
