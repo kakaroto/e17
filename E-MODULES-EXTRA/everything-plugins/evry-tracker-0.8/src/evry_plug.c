@@ -398,7 +398,11 @@ _shutdown(void)
 {
    Plugin *p;
 
-   if (conn) e_dbus_connection_close(conn);
+   if (conn)
+     {
+       e_dbus_signal_handler_del(conn, cb_name_owner_changed);
+       e_dbus_connection_close(conn);
+     }
 
    EINA_LIST_FREE(plugins, p)
      {
