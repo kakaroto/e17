@@ -81,59 +81,69 @@ namespace Edje
             public void send( Type type, int id );
         }
 
+        [CCode (destroy_function = "")]
         public struct String : AbstractMessage
         {
             string str;
         }
 
+        [CCode (destroy_function = "")]
         public struct Int : AbstractMessage
         {
             int val;
         }
 
+        [CCode (destroy_function = "")]
         public struct Float : AbstractMessage
         {
             double val;
         }
 
-        public struct String_Set
+        [CCode (destroy_function = "")]
+        public struct String_Set : AbstractMessage
         {
             int count;
             char* str[1];
         }
 
-        public struct Int_Set
+        [CCode (destroy_function = "")]
+        public struct Int_Set : AbstractMessage
         {
             int count;
             int val[1];
         }
 
-        public struct Float_Set
+        [CCode (destroy_function = "")]
+        public struct Float_Set : AbstractMessage
         {
             int count;
             double val[1];
         }
 
-        public struct String_Int
+        [CCode (destroy_function = "")]
+        public struct String_Int : AbstractMessage
         {
             string str;
             int val;
         }
 
-        public struct String_Float
+        [CCode (destroy_function = "")]
+        public struct String_Float : AbstractMessage
         {
             string str;
             double val;
         }
 
-        public struct String_Int_Set
+        [CCode (destroy_function = "")]
+        public struct String_Int_Set : AbstractMessage
         {
             string str;
             int count;
             int val[1];
         }
 
-        public struct String_Float_Set
+        [CCode (destroy_function = "")]
+        public struct String_Float_Set : AbstractMessage
         {
             string str;
             int count;
