@@ -363,8 +363,8 @@ class Editable(Manager):
     def _part_add(self, name, type, source):
         if type == edje.EDJE_PART_TYPE_EXTERNAL:
             external = edje.external_type_get(source)
-            if not (external and self._edje.external_add(external.module)):
-                return False
+            if external:
+                self._edje.external_add(external.module))
         return self._edje.part_add(name, type, source)
 
     def part_add(self, name, type, source="", init=None):
