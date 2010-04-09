@@ -310,7 +310,7 @@ _mpris_get_metadata(Plugin *p)
      {
 	t = E_NEW(Track, 1);
 	t->id = cnt;
-
+	EVRY_ITEM(t)->transient = EINA_TRUE;
 	evry_item_new(EVRY_ITEM(t), EVRY_PLUGIN(p), NULL, _item_free);
 
 	t->pnd = _dbus_send_msg_int("/TrackList", "GetMetadata",
