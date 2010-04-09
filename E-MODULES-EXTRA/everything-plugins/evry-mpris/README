@@ -1,17 +1,19 @@
 evry-mpris plugin is a frontend for mediaplayers that support mpris.
 
 supported players/daemons:
-- Amarok, Audacious
+- Amarok, Audacious, Exaile, Totem...
+- corn, simple sound server. 
+  http://incise.org/corn.html
+- vlc works not so good (slow track change)
 
-- xmms2, via xmms2-mpris-bridge
+
+- xmms2, via xmms2-mpris-bridge (RECOMMENDED)
+
    install python bindings for xmmsclient, dbus and gobject, then
    cp xmms2-mpris-bridge/xmms2-mpris-bridge ~/.config/xmms2/startup.d
 
-- corn, simple sound server. 
-  try it :) http://incise.org/corn.html
-
-The mpris 'standard' currently does not have 'play selected track' 
-so this wont work with other players.
+   any xmms2 client that starts the server also loads the bridge 
+   automatically with this.
 
 
 A cli remote can be found in mpris-remote. To easily add tracks or 
