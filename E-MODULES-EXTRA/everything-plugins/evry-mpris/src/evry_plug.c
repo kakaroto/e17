@@ -67,7 +67,6 @@ static Eina_Bool active = EINA_FALSE;
 #define ITEM_TRACK(_t, _it) Track *_t = (Track*) (_it);
 
 static void _mpris_get_metadata(Plugin *p);
-static void _mpris_tracklist_remove_track_hack(Plugin *p);
 
 
 static int
@@ -408,8 +407,6 @@ _dbus_cb_track_change(void *data, DBusMessage *msg)
    /* XXX just fsckin give the track nr. if I want metadata I would ask for it!*/
 
    _dbus_send_msg("/TrackList", "GetCurrentTrack", _dbus_cb_current_track, p); 
-
-   _mpris_tracklist_remove_track_hack(p);
 }
 
 static void
@@ -418,7 +415,7 @@ _dbus_cb_status_change(void *data, DBusMessage *msg)
    PLUGIN(p, data);
    
    DBusMessageIter iter, array;
-
+   
    dbus_message_iter_init(msg, &iter);
 
    if (dbus_message_iter_get_arg_type(&iter) == DBUS_TYPE_STRUCT)
@@ -543,34 +540,42 @@ _icon_get(Evry_Plugin *plugin, const Evry_Item *it, Evas *e)
    return NULL;
 }
 
-static void
-_mpris_tracklist_remove_track_hack(Plugin *p)
-{
-   DBusMessage *msg;
-  
-   if (!p->next_track) return;
-
-   DBG("next %d", p->next_track);
-   
-   if (p->next_track > 0)
-     {
-	msg = dbus_message_new_method_call(bus_name, "/Player",
-					   mpris_interface,
-					   "Next");
-	p->next_track--;
-     }
-   else
-     {	   
-	msg = dbus_message_new_method_call(bus_name, "/Player",
-					   mpris_interface,
-					   "Prev");
-	p->next_track++;
-     }
-
-   e_dbus_message_send(conn, msg, NULL, -1, NULL);
-       
-   dbus_message_unref(msg);
-}
+/* static void
+ * _mpris_play_track_hack(void *data, DBusMessage *reply, DBusError *error)
+ * {
+ *    DBusMessage *msg;
+ *    PLUGIN(p, data);
+ * 
+ *    if (!p->next_track)
+ *      {
+ * 	DBG("PLAY");
+ * 	_dbus_send_msg("/Player", "Play", NULL, NULL);
+ * 	return;
+ *      }
+ *    
+ *    DBG("next %d", p->next_track);
+ *    
+ *    if (p->next_track > 0)
+ *      {
+ * 	DBG("NEXT");
+ * 	msg = dbus_message_new_method_call(bus_name, "/Player",
+ * 					   mpris_interface,
+ * 					   "Next");
+ * 	p->next_track--;
+ *      }
+ *    else
+ *      {
+ * 	DBG("PREV");
+ * 	msg = dbus_message_new_method_call(bus_name, "/Player",
+ * 					   mpris_interface,
+ * 					   "Prev");
+ * 	p->next_track++;
+ *      }
+ * 
+ *    e_dbus_message_send(conn, msg, _mpris_play_track_hack, -1, p);
+ *        
+ *    dbus_message_unref(msg);
+ * } */
 
 
 /** ACTIONS **/
@@ -617,12 +622,13 @@ _mpris_play_track(Evry_Action *act)
    else if (!strcmp(bus_name, "org.mpris.vlc"))
      {
    	/* the ones that want extra ugly treatment */
-   	p->next_track = t->id - p->current_track;
-   	_mpris_tracklist_remove_track_hack(p);
+   	/* p->next_track = t->id - p->current_track;
+	 * 
+	 * _dbus_send_msg("/Player", "Stop", _mpris_play_track_hack, p);  */
      }
    else
      {
-	_dbus_send_msg("/Player", "Stop", NULL, NULL); 
+	_dbus_send_msg("/Player", "Stop", NULL, NULL);
 	p->next_track = t->id - p->current_track;
 	while (p->next_track)
 	  {

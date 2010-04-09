@@ -4,8 +4,7 @@ supported players/daemons:
 - Amarok, Audacious, Exaile, Totem...
 - corn, simple sound server. 
   http://incise.org/corn.html
-- vlc works not so good (slow track change)
-
+- I wont make it work with vlc!
 
 - xmms2, via xmms2-mpris-bridge (RECOMMENDED)
 
