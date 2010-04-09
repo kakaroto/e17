@@ -534,6 +534,8 @@ _icon_get(Evry_Plugin *plugin, const Evry_Item *it, Evas *e)
    return NULL;
 }
 
+
+
 /** ACTIONS **/
 static int
 _mpris_play_track(Evry_Action *act)
@@ -541,36 +543,66 @@ _mpris_play_track(Evry_Action *act)
    DBusMessage *msg;
    
    ITEM_TRACK(t, act->item1);
-
-   /* XXX FIX the spec. or call next/prev to skip to the track...*/
+   PLUGIN(p, t->base.plugin);
+   
    if (!strcmp(bus_name, "org.mpris.amarok") ||
        !strcmp(bus_name, "org.mpris.xmms2"))
      {
-	_dbus_send_msg_int("/TrackList", "PlayTrack", NULL, NULL, t->id); 
-	return 1;
+   	_dbus_send_msg_int("/TrackList", "PlayTrack", NULL, NULL, t->id); 
+   	return 1;
      }
    else if (!strcmp(bus_name, "org.mpris.corn"))
      {
-	msg = dbus_message_new_method_call(bus_name, "/Corn",
-					   "org.corn.CornPlayer",
-					   "PlayTrack");
-
+   	msg = dbus_message_new_method_call(bus_name, "/Corn",
+   					   "org.corn.CornPlayer",
+   					   "PlayTrack");
+   
+   	dbus_message_append_args(msg,
+   				 DBUS_TYPE_INT32, &(t->id),
+   				 DBUS_TYPE_INVALID);
+   
+   	e_dbus_message_send(conn, msg, NULL, -1, NULL);
+   	dbus_message_unref(msg);
+   
      }
    else if (!strcmp(bus_name, "org.mpris.audacious"))
      {
-	msg = dbus_message_new_method_call(bus_name, "/org/atheme/audacious",
-					   "org.atheme.audacious",
-					   "Jump");
+   	msg = dbus_message_new_method_call(bus_name, "/org/atheme/audacious",
+   					   "org.atheme.audacious",
+   					   "Jump");
+   	dbus_message_append_args(msg,
+   				 DBUS_TYPE_INT32, &(t->id),
+   				 DBUS_TYPE_INVALID);
+   
+   	e_dbus_message_send(conn, msg, NULL, -1, NULL);
+   	dbus_message_unref(msg);
+   
      }
-   else return 1;
+   else
+     {
+       int i = abs(p->current_track - t->id);
 
-   dbus_message_append_args(msg,
-			    DBUS_TYPE_INT32, &(t->id),
-			    DBUS_TYPE_INVALID);
+       for (;i > 0; i--)
+	 {
+	   if (p->current_track < t->id)
+	     {
+	       msg = dbus_message_new_method_call(bus_name, "/Player",
+						  mpris_interface,
+						  "Next");
+	     }
+	   else
+	     {	   
+	       msg = dbus_message_new_method_call(bus_name, "/Player",
+						  mpris_interface,
+						  "Prev");
+	     }
 
-   e_dbus_message_send(conn, msg, NULL, -1, NULL);
-   dbus_message_unref(msg);
-
+	   e_dbus_message_send(conn, msg, NULL, -1, NULL);
+       
+	   dbus_message_unref(msg);
+	 }
+     }
+   
    return 1;
 }
 
@@ -727,30 +759,13 @@ _mpris_check_file(Evry_Action *act __UNUSED__, const Evry_Item *it)
 }
 
 static int
-_check_support_play_track(Plugin *p)
-{
-   if (!bus_name) return;
-   
-   if (strcmp(bus_name, "org.mpris.amarok") &&
-       strcmp(bus_name, "org.mpris.xmms2") &&
-       strcmp(bus_name, "org.mpris.audacious") &&
-       strcmp(bus_name, "org.mpris.corn"))
-     p->support.play_track = EINA_FALSE;
-
-   p->support.play_track = EINA_TRUE;
-
-   return p->support.play_track;
-}
-
-static int
 _mpris_check_item(Evry_Action *act, const Evry_Item *it)
 {
    PLUGIN(p, it->plugin);
    
    if (!strcmp((char *)act->data, "PlayTrack"))
      {
-	if (!_check_support_play_track(p) ||
-	    p->current_track == ((Track *)it)->id)
+	if (p->current_track == ((Track *)it)->id)
 	  return 0;
      }
    else if (!strcmp((char *)act->data, "Stop"))
@@ -941,7 +956,7 @@ _init(void)
    evry_plugin_new(EVRY_PLUGIN(_plug), "Playlist", type_subject, NULL, "MPRIS_TRACK",
 		   1, "emblem-sound", NULL,
 		   _begin, _cleanup, _fetch, _action, _icon_get, NULL, NULL);
-   EVRY_PLUGIN(_plug)->cb_key_down = &_cb_key_down;
+   /* EVRY_PLUGIN(_plug)->cb_key_down = &_cb_key_down; */
    EVRY_PLUGIN(_plug)->aggregate = EINA_FALSE;
    evry_plugin_register(EVRY_PLUGIN(_plug), 0);
 
