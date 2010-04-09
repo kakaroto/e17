@@ -354,6 +354,7 @@ class Wizard(InnerWindow):
         self.show()
 
     def close(self):
+        self._parent.focus_set(True)
         self.hide()
         self.delete()
 

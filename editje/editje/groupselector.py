@@ -157,7 +157,6 @@ class NameEntry(elementary.Box):
 
         scroller.content_set(self._name)
         self._name.show()
-        #self._name.focus()
 
         self.pack_end(self._entry_bx)
         self.pack_end(self._status_lb)

@@ -388,7 +388,7 @@ class Editable(Manager):
         if self._part_add(name, part_data.type, source):
             part = self._edje.part_get(name)
             part_data.apply_to(part)
-            # FIXME: remove event emitions for others
+            # FIXME: remove double emissions
             self.event_emit("part.added", name)
 
     def _part_init(self, name):
