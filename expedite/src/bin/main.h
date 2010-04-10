@@ -9,8 +9,11 @@
 #include <stdlib.h>
 #include <string.h>
 #include <math.h>
-#include <sys/time.h>
 #include <time.h>
+
+#ifndef _MSC_VER
+# include <sys/time.h>
+#endif
 
 #ifdef _WIN32
 # include <windows.h>
