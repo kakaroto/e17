@@ -1,0 +1,7 @@
+[Desktop Entry]
+Type=Link
+Name=Everything Tracker
+Icon=e-module
+Comment=Find Files with Tracker (requires version 0.8)
+#Several different types available here. NEED TO DOC THESE.
+X-Enlightenment-ModuleType=system

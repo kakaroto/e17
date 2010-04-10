@@ -1,0 +1,27 @@
+images 
+{
+   image: "module_icon.png" COMP;
+}
+
+collections 
+{
+   group 
+     {
+	name: "icon";
+	max: 24 24;
+	parts 
+	  {
+	     part 
+	       {
+		  name: "image";
+		  mouse_events: 0;
+		  type: IMAGE;
+		  description 
+		    {
+		       state: "default" 0.0;
+		       image.normal: "module_icon.png";
+		    }
+	       }
+	  }
+     }
+}
