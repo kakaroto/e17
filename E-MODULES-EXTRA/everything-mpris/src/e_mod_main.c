@@ -476,6 +476,9 @@ _cleanup(Evry_Plugin *plugin)
       e_dbus_signal_handler_del(conn, cb_tracklist_change);
       e_dbus_signal_handler_del(conn, cb_player_track_change);
       e_dbus_signal_handler_del(conn, cb_player_status_change);
+      cb_tracklist_change = NULL;
+      cb_player_track_change = NULL;
+      cb_player_status_change = NULL;
     }
 
   if (p->input)
@@ -998,9 +1001,12 @@ _plugin_free(Evry_Plugin *plugin)
   
   if (active)
     {
-      e_dbus_signal_handler_del(conn, cb_tracklist_change);
-      e_dbus_signal_handler_del(conn, cb_player_track_change);
-      e_dbus_signal_handler_del(conn, cb_player_status_change);
+      if (cb_tracklist_change)
+	e_dbus_signal_handler_del(conn, cb_tracklist_change);
+      if (cb_player_track_change)
+	e_dbus_signal_handler_del(conn, cb_player_track_change);
+      if (cb_player_status_change)
+	e_dbus_signal_handler_del(conn, cb_player_status_change);
     }
 
   if (p->input)
@@ -1157,7 +1163,7 @@ e_modapi_shutdown(E_Module *m)
 
   if (conn)
     {
-      e_dbus_signal_handler_del(conn, cb_name_owner_changed);
+      if (cb_name_owner_changed) e_dbus_signal_handler_del(conn, cb_name_owner_changed);
       e_dbus_connection_close(conn);
     }
 
