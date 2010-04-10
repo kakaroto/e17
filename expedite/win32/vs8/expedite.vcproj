@@ -41,7 +41,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				AdditionalIncludeDirectories="$(INCLUDE)"
-				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE;HAVE_EVIL;__CRT_INLINE=__inline;snprintf=_snprintf_c;PACKAGE_DATA_DIR=;HAVE_EVAS_DIRECT3D;HAVE_EVAS_OPENGL_GLEW"
+				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE;HAVE_EVIL;__CRT_INLINE=__inline;inline=__inline;snprintf=_snprintf_c;PACKAGE_DATA_DIR=;HAVE_EVAS_DIRECT3D;HAVE_EVAS_SOFTWARE_GDI;_CRT_SECURE_NO_DEPRECATE"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
@@ -61,7 +61,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="eina.lib libevas.lib d3d9.lib d3dx9.lib ddraw.lib opengl32.lib glew32.lib"
+				AdditionalDependencies="eina.lib libevas.lib d3d9.lib d3dx9.lib ddraw.lib gdi32.lib user32.lib"
 				OutputFile="$(OutDir)\expedite.exe"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="$(LIB); $(DebugLibraryDirectory)"
@@ -120,7 +120,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				AdditionalIncludeDirectories="$(INCLUDE)"
-				PreprocessorDefinitions="WIN32;NDEBUG;_CONSOLE;HAVE_EVIL;__CRT_INLINE=__inline;snprintf=_snprintf_c;PACKAGE_DATA_DIR=;HAVE_EVAS_DIRECT3D;HAVE_EVAS_OPENGL_GLEW"
+				PreprocessorDefinitions="WIN32;NDEBUG;_CONSOLE;HAVE_EVIL;__CRT_INLINE=__inline;inline=__inline;snprintf=_snprintf_c;PACKAGE_DATA_DIR=;HAVE_EVAS_DIRECT3D;HAVE_EVAS_SOFTWARE_GDI;_CRT_SECURE_NO_DEPRECATE"
 				RuntimeLibrary="2"
 				UsePrecompiledHeader="0"
 				WarningLevel="3"
@@ -138,7 +138,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="eina.lib libevas.lib d3d9.lib d3dx9.lib ddraw.lib opengl32.lib glew32.lib"
+				AdditionalDependencies="eina.lib libevas.lib d3d9.lib d3dx9.lib ddraw.lib gdi32.lib user32.lib"
 				OutputFile="$(OutDir)\expedite.exe"
 				LinkIncremental="1"
 				AdditionalLibraryDirectories="$(LIB); $(ReleaseLibraryDirectory)"
@@ -233,6 +233,42 @@
 			<File
 				RelativePath="..\..\src\bin\engine_gl_glew.c"
 				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\src\bin\engine_gl_sdl.c"
+				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+					/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\..\src\bin\engine_gl_x11.c"
@@ -335,6 +371,10 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath="..\..\src\bin\engine_software_gdi.c"
+				>
+			</File>
+			<File
 				RelativePath="..\..\src\bin\engine_software_sdl.c"
 				>
 				<FileConfiguration
@@ -400,6 +440,14 @@
 			</File>
 			<File
 				RelativePath="..\..\src\bin\image_blend_border_recolor.c"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\bin\image_blend_fade_pow2_unscaled.c"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\bin\image_blend_fade_unscaled.c"
 				>
 			</File>
 			<File
@@ -487,6 +535,22 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\src\bin\image_blend_solid_fade_pow2_unscaled.c"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\bin\image_blend_solid_fade_unscaled.c"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\bin\image_blend_solid_middle_border.c"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\bin\image_blend_solid_middle_unscaled.c"
+				>
+			</File>
+			<File
 				RelativePath="..\..\src\bin\image_blend_solid_unscaled.c"
 				>
 			</File>
@@ -515,6 +579,82 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\src\bin\image_map_3d_1.c"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\bin\image_map_3d_2.c"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\bin\image_map_3d_3.c"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\bin\image_map_3d_4.c"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\bin\image_map_3d_5.c"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\bin\image_map_3d_6.c"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\bin\image_map_3d_flow.c"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\bin\image_map_color_alpha_nearest_rotate.c"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\bin\image_map_color_alpha_nearest_solid_rotate.c"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\bin\image_map_color_alpha_rotate.c"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\bin\image_map_color_alpha_solid_rotate.c"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\bin\image_map_color_nearest_rotate.c"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\bin\image_map_color_nearest_solid_rotate.c"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\bin\image_map_color_rotate.c"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\bin\image_map_color_solid_rotate.c"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\bin\image_map_nearest_rotate.c"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\bin\image_map_nearest_solid_rotate.c"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\bin\image_map_rotate.c"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\bin\image_map_solid_rotate.c"
+				>
+			</File>
+			<File
 				RelativePath="..\..\src\bin\image_quality_scale.c"
 				>
 			</File>
@@ -532,6 +672,14 @@
 			</File>
 			<File
 				RelativePath="..\..\src\bin\rect_blend_few.c"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\bin\rect_blend_pow2.c"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\bin\rect_blend_pow2_few.c"
 				>
 			</File>
 			<File
@@ -568,6 +716,22 @@
 			</File>
 			<File
 				RelativePath="..\..\src\bin\ui.c"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\bin\widgets_file_icons.c"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\bin\widgets_file_icons_2.c"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\bin\widgets_file_icons_3.c"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\bin\widgets_file_icons_4.c"
 				>
 			</File>
 		</Filter>
@@ -614,6 +778,10 @@
 			</File>
 			<File
 				RelativePath="..\..\src\bin\engine_software_ddraw.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\bin\engine_software_gdi.h"
 				>
 			</File>
 			<File
