@@ -1,7 +1,0 @@
-This program needs the python bindings for:
-	- xmms2
-	- dbus
-	- gobject
-
-To get the MPRIS bridge on xmms2 startup, add this script to the startup.d
-directory.
