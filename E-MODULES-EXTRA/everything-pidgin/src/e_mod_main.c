@@ -598,31 +598,19 @@ module_init(void)
       return EINA_FALSE;
     }
 
-  if (_evry_plugin_source_pidgin_log_dom < 0)
-    {
-      _evry_plugin_source_pidgin_log_dom =
-	eina_log_domain_register("evry plugin source pidgin", NULL);
-
-      if (_evry_plugin_source_pidgin_log_dom < 0)
-	{
-	  EINA_LOG_CRIT( "could not register log domain 'evry plugin source pidgin'");
-	  return EINA_FALSE;
-	}
-    }
-
   plug = evry_plugin_new(NULL, "Pidgin", type_subject, NULL, "PIDGINCONTACT",
-			 1, NULL, NULL, _begin, _cleanup, _fetch, NULL, _icon_get, NULL, NULL);
+			 1, NULL, NULL, _begin, _cleanup, _fetch, NULL, _icon_get, NULL);
 
   evry_plugin_register(plug, 1);
   
   act = evry_action_new("Chat", "PIDGINCONTACT", NULL, NULL, "go-next", //icon
-			_action_chat, NULL, NULL, NULL, NULL);
+			_action_chat, NULL, NULL, NULL, NULL, NULL);
   
   act2 = evry_action_new("Send File", "PIDGINCONTACT", "FILE", NULL, NULL, //icon
-			 _action_send, NULL, NULL, NULL, NULL);
+			 _action_send, NULL, NULL, NULL, NULL, NULL);
 
   act3 = evry_action_new("Write Message", "PIDGINCONTACT", "TEXT", NULL, "go-next", //icon
-			 _action_chat, NULL, NULL, NULL, NULL);
+			 _action_chat, NULL, NULL, NULL, NULL, NULL);
 
   evry_action_register(act, 0);
   evry_action_register(act2, 1);
@@ -634,9 +622,6 @@ module_init(void)
 static void
 module_shutdown(void)
 {
-  eina_log_domain_unregister(_evry_plugin_source_pidgin_log_dom);
-  _evry_plugin_source_pidgin_log_dom = -1;
-
   EVRY_PLUGIN_FREE(plug);
 
   evry_action_free(act);
@@ -667,7 +652,19 @@ e_modapi_init(E_Module *m)
 
   if (e_datastore_get("everything_loaded"))
     _active = module_init();
-   
+
+  if (_evry_plugin_source_pidgin_log_dom < 0)
+    {
+      _evry_plugin_source_pidgin_log_dom =
+	eina_log_domain_register("evry plugin source pidgin", NULL);
+
+      if (_evry_plugin_source_pidgin_log_dom < 0)
+	{
+	  EINA_LOG_CRIT( "could not register log domain 'evry plugin source pidgin'");
+	  return NULL;
+	}
+    }
+  
   e_module_delayed_set(m, 1); 
 
   return m;
@@ -678,6 +675,9 @@ e_modapi_shutdown(E_Module *m)
 {
   if (_active && e_datastore_get("everything_loaded"))
     module_shutdown();
+
+  eina_log_domain_unregister(_evry_plugin_source_pidgin_log_dom);
+  _evry_plugin_source_pidgin_log_dom = -1;
 
   _module = NULL;
    

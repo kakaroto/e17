@@ -292,22 +292,34 @@ _icon_get(Evry_Plugin *p __UNUSED__, const Evry_Item *it, Evas *e)
 }
 
 static void
+_plugin_free(Evry_Plugin *plugin)
+{
+  PLUGIN(p, plugin);
+
+  if (p->pnd)
+    dbus_pending_call_cancel(p->pnd);
+
+  E_FREE(p);
+}
+
+
+static void
 _plugin_new(const char *name, int type, char *service, int begin)
 {
   Plugin *p;
 
   p = E_NEW(Plugin, 1);
-  p->condition = "";
+
   p->service = service;
 
   if (!begin)
     evry_plugin_new(EVRY_PLUGIN(p), name, type, "", "FILE", 1, NULL, NULL,
 		    NULL, _cleanup, _fetch,
-		    NULL, _icon_get, NULL, NULL);
+		    NULL, _icon_get, _plugin_free);
   else if (type == type_object)
     evry_plugin_new(EVRY_PLUGIN(p), name, type, "APPLICATION", "FILE", 1, NULL, NULL,
 		    _begin, _cleanup, _fetch,
-		    NULL, _icon_get, NULL, NULL);
+		    NULL, _icon_get, _plugin_free);
 
   plugins = eina_list_append(plugins, p);
 
@@ -404,20 +416,8 @@ module_shutdown(void)
 {
   Plugin *p;
 
-  if (conn)
-    {
-      e_dbus_signal_handler_del(conn, cb_name_owner_changed);
-      e_dbus_connection_close(conn);
-    }
-
   EINA_LIST_FREE(plugins, p)
-    {
-      if (p->condition[0]) free(p->condition);
-
-      EVRY_PLUGIN_FREE(p);
-    }
-
-  eina_stringshare_del(mime_dir); 
+    EVRY_PLUGIN_FREE(p);
 }
 
 /***************************************************************************/
@@ -452,6 +452,16 @@ e_modapi_init(E_Module *m)
 EAPI int
 e_modapi_shutdown(E_Module *m)
 {
+  Plugin *p;
+
+  if (conn)
+    {
+      e_dbus_signal_handler_del(conn, cb_name_owner_changed);
+      e_dbus_connection_close(conn);
+    }
+
+  eina_stringshare_del(mime_dir); 
+
   if (_active && e_datastore_get("everything_loaded"))
     module_shutdown();
 

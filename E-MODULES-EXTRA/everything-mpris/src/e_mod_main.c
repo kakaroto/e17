@@ -989,6 +989,29 @@ _cb_key_down(Evry_Plugin *plugin, const Ecore_Event_Key *ev)
   return 0;
 }
 
+static void
+_plugin_free(Evry_Plugin *plugin)
+{
+  PLUGIN(p, plugin);
+
+  Evry_Item *it;
+  
+  if (active)
+    {
+      e_dbus_signal_handler_del(conn, cb_tracklist_change);
+      e_dbus_signal_handler_del(conn, cb_player_track_change);
+      e_dbus_signal_handler_del(conn, cb_player_status_change);
+    }
+
+  if (p->input)
+    eina_stringshare_del(p->input); 
+
+  EINA_LIST_FREE(p->tracks, it)
+    evry_item_free(it); 
+
+  E_FREE(p);
+}
+
 static Eina_Bool
 module_init(void)
 {
@@ -1010,66 +1033,66 @@ module_init(void)
   _plug = E_NEW(Plugin, 1);
   evry_plugin_new(EVRY_PLUGIN(_plug), "Playlist", type_subject, NULL, "MPRIS_TRACK",
 		  1, "emblem-sound", NULL,
-		  _begin, _cleanup, _fetch, _action, _icon_get, NULL, NULL);
+		  _begin, _cleanup, _fetch, _action, _icon_get, _plugin_free);
   /* EVRY_PLUGIN(_plug)->cb_key_down = &_cb_key_down; */
   EVRY_PLUGIN(_plug)->aggregate = EINA_FALSE;
   evry_plugin_register(EVRY_PLUGIN(_plug), 0);
 
   act = evry_action_new("Play Track", "MPRIS_TRACK", NULL, NULL, "media-playback-start",
-			_mpris_play_track, _mpris_check_item, NULL, NULL,NULL);
+			_mpris_play_track, _mpris_check_item, NULL, NULL,NULL, NULL);
   act->data = "PlayTrack";
   evry_action_register(act,  0);
   actions = eina_list_append(actions, act);
 
   act = evry_action_new("Remove Track", "MPRIS_TRACK", NULL, NULL, "list-remove",
-			_mpris_tracklist_remove_track, NULL, NULL, NULL,NULL);
+			_mpris_tracklist_remove_track, NULL, NULL, NULL,NULL, NULL);
   evry_action_register(act,  0);
   actions = eina_list_append(actions, act);
 
   act = evry_action_new("Play", "MPRIS_TRACK", NULL, NULL, "media-playback-start",
-			_mpris_player_action, _mpris_check_item, NULL, NULL,NULL);
+			_mpris_player_action, _mpris_check_item, NULL, NULL,NULL, NULL);
   act->data = "Play";
   evry_action_register(act,  0);
   actions = eina_list_append(actions, act);
 
   act = evry_action_new("Pause", "MPRIS_TRACK", NULL, NULL, "media-playback-pause",
-			_mpris_player_action, _mpris_check_item, NULL, NULL,NULL);
+			_mpris_player_action, _mpris_check_item, NULL, NULL,NULL, NULL);
   act->data = "Pause";
   evry_action_register(act,  0);
   actions = eina_list_append(actions, act);
 
   act = evry_action_new("Stop", "MPRIS_TRACK", NULL, NULL, "media-playback-stop",
-			_mpris_player_action, _mpris_check_item, NULL, NULL,NULL);
+			_mpris_player_action, _mpris_check_item, NULL, NULL,NULL, NULL);
   act->data = "Stop";
   evry_action_register(act,  0);
   actions = eina_list_append(actions, act);
 
   act = evry_action_new("Forward", "MPRIS_TRACK", NULL, NULL, "media-seek-forward",
-			_mpris_player_position, _mpris_check_item, NULL, NULL,NULL);
+			_mpris_player_position, _mpris_check_item, NULL, NULL,NULL, NULL);
   act->data = "Forward";
   evry_action_register(act,  0);
   actions = eina_list_append(actions, act);
 
   act = evry_action_new("Rewind", "MPRIS_TRACK", NULL, NULL, "media-seek-backward",
-			_mpris_player_position, _mpris_check_item, NULL, NULL,NULL);
+			_mpris_player_position, _mpris_check_item, NULL, NULL,NULL, NULL);
   act->data = "Rewind";
   evry_action_register(act,  0);
   actions = eina_list_append(actions, act);
 
   act = evry_action_new("Clear Playlist", "MPRIS_TRACK", NULL, NULL, "media-playlist-clear",
-			_mpris_tracklist_action_clear , _mpris_check_item, NULL, NULL,NULL);
+			_mpris_tracklist_action_clear , _mpris_check_item, NULL, NULL,NULL, NULL);
   act->data = "Clear";
   evry_action_register(act,  0);
   actions = eina_list_append(actions, act);
 
   act = evry_action_new("Enqueue File", "FILE", NULL, NULL, "list-add",
-			_mpris_play_file, _mpris_check_file, NULL, NULL,NULL);
+			_mpris_play_file, _mpris_check_file, NULL, NULL,NULL, NULL);
   act->data = "e";
   evry_action_register(act,  0);
   actions = eina_list_append(actions, act);
 
   act = evry_action_new("Play File", "FILE", NULL, NULL, "media-playback-start",
-			_mpris_play_file, _mpris_check_file, NULL, NULL,NULL);
+			_mpris_play_file, _mpris_check_file, NULL, NULL,NULL, NULL);
   act->data = "p";
   evry_action_register(act,  1);
   actions = eina_list_append(actions, act);
@@ -1087,21 +1110,11 @@ static void
 module_shutdown(void)
 {
   Evry_Action *act;
-  char *player;
 
   EVRY_PLUGIN_FREE(_plug);
 
   EINA_LIST_FREE(actions, act)
     evry_action_free(act);
-
-  if (conn)
-    {
-      e_dbus_signal_handler_del(conn, cb_name_owner_changed);
-      e_dbus_connection_close(conn);
-    }
-
-  EINA_LIST_FREE(players, player)
-    eina_stringshare_del(player);
 }
 
 
@@ -1137,8 +1150,19 @@ e_modapi_init(E_Module *m)
 EAPI int
 e_modapi_shutdown(E_Module *m)
 {
+  char *player;
+
   if (_active && e_datastore_get("everything_loaded"))
     module_shutdown();
+
+  if (conn)
+    {
+      e_dbus_signal_handler_del(conn, cb_name_owner_changed);
+      e_dbus_connection_close(conn);
+    }
+
+  EINA_LIST_FREE(players, player)
+    eina_stringshare_del(player);
 
   _module = NULL;
    
