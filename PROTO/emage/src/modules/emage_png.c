@@ -15,6 +15,10 @@ static Eina_Bool _png_format_get(int color_type, Enesim_Converter_Format *fmt)
 {
 	switch (color_type)
 	{
+		case PNG_COLOR_TYPE_RGB:
+		*fmt = ENESIM_CONVERTER_RGB888;
+		break;
+
 		case PNG_COLOR_TYPE_RGB_ALPHA:
 		*fmt = ENESIM_CONVERTER_ARGB8888;
 		break;
@@ -64,7 +68,7 @@ Eina_Bool _png_saveable(const char *file)
 	return EINA_FALSE;
 }
 
-Eina_Bool _png_info_load(const char *file, int *w, int *h, Enesim_Converter_Format *sfmt)
+Eina_Error _png_info_load(const char *file, int *w, int *h, Enesim_Converter_Format *sfmt)
 {
 	Enesim_Surface *s;
 	FILE *f;
@@ -76,15 +80,12 @@ Eina_Bool _png_info_load(const char *file, int *w, int *h, Enesim_Converter_Form
 	png_structp png_ptr = NULL;
 	png_infop info_ptr = NULL;
 
-	Eina_Bool ret = EINA_TRUE;
-
 	hasa = 0;
 	hasg = 0;
 	f = fopen(file, "rb");
 	if (!f)
 	{
-		eina_error_set(EMAGE_ERROR_EXIST);
-		return EINA_FALSE;
+		return EMAGE_ERROR_EXIST;
 	}
 
 	rewind(f);
@@ -93,20 +94,20 @@ Eina_Bool _png_info_load(const char *file, int *w, int *h, Enesim_Converter_Form
 	if (!png_ptr)
 	{
 		fclose(f);
-		return EINA_FALSE;
+		return EMAGE_ERROR_LOADING;
 	}
 	info_ptr = png_create_info_struct(png_ptr);
 	if (!info_ptr)
 	{
 		png_destroy_read_struct(&png_ptr, NULL, NULL);
 		fclose(f);
-		return EINA_FALSE;
+		return EMAGE_ERROR_LOADING;
 	}
 	if (setjmp(png_ptr->jmpbuf))
 	{
 		png_destroy_read_struct(&png_ptr, &info_ptr, NULL);
 		fclose(f);
-		return EINA_FALSE;
+		return EMAGE_ERROR_LOADING;
 	}
 	png_init_io(png_ptr, f);
 	png_read_info(png_ptr, info_ptr);
@@ -116,12 +117,17 @@ Eina_Bool _png_info_load(const char *file, int *w, int *h, Enesim_Converter_Form
 	if (w) *w = w32;
 	if (h) *h = h32;
 	if (!sfmt)
-		return EINA_TRUE;
+		return EMAGE_ERROR_LOADING;
 
-	return _png_format_get(color_type, sfmt);
+	if (!_png_format_get(color_type, sfmt))
+	{
+		return EMAGE_ERROR_LOADING;
+	}
+
+	return 0;
 }
 
-Eina_Bool _png_load(const char *file, Enesim_Converter_Data *data)
+Eina_Error _png_load(const char *file, Enesim_Converter_Data *data)
 {
 	FILE *f;
 	int bit_depth, color_type, interlace_type;
@@ -136,23 +142,21 @@ Eina_Bool _png_load(const char *file, Enesim_Converter_Data *data)
 	png_structp png_ptr = NULL;
 	png_infop info_ptr = NULL;
 
-	uint32_t *sdata = data->argb8888.plane0;
-	Eina_Bool ret = EINA_TRUE;
+	uint32_t *sdata = data->pixels.argb8888.plane0;
 
 	hasa = 0;
 	hasg = 0;
 	f = fopen(file, "rb");
 	if (!f)
 	{
-		eina_error_set(EMAGE_ERROR_EXIST);
-		return EINA_FALSE;
+		return EMAGE_ERROR_EXIST;
 	}
 	/* if we havent read the header before, set the header data */
 	fread(buf, 1, PNG_BYTES_TO_CHECK, f);
 	if (!png_check_sig(buf, PNG_BYTES_TO_CHECK))
 	{
 		fclose(f);
-		return EINA_FALSE;
+		return EMAGE_ERROR_LOADING;
 	}
 	rewind(f);
 	png_ptr = png_create_read_struct(PNG_LIBPNG_VER_STRING, NULL, NULL,
@@ -160,20 +164,20 @@ Eina_Bool _png_load(const char *file, Enesim_Converter_Data *data)
 	if (!png_ptr)
 	{
 		fclose(f);
-		return EINA_FALSE;
+		return EMAGE_ERROR_LOADING;
 	}
 	info_ptr = png_create_info_struct(png_ptr);
 	if (!info_ptr)
 	{
 		png_destroy_read_struct(&png_ptr, NULL, NULL);
 		fclose(f);
-		return EINA_FALSE;
+		return EMAGE_ERROR_LOADING;
 	}
 	if (setjmp(png_ptr->jmpbuf))
 	{
 		png_destroy_read_struct(&png_ptr, &info_ptr, NULL);
 		fclose(f);
-		return EINA_FALSE;
+		return EMAGE_ERROR_LOADING;
 	}
 	png_init_io(png_ptr, f);
 	png_read_info(png_ptr, info_ptr);
@@ -185,7 +189,7 @@ Eina_Bool _png_load(const char *file, Enesim_Converter_Data *data)
 	{
 		png_destroy_read_struct(&png_ptr, &info_ptr, NULL);
 		fclose(f);
-		return EINA_FALSE;
+		return EMAGE_ERROR_LOADING;
 	}
 
 	if (color_type == PNG_COLOR_TYPE_PALETTE)
@@ -201,14 +205,6 @@ Eina_Bool _png_load(const char *file, Enesim_Converter_Data *data)
 		hasg = 1;
 	if (hasa)
 		png_set_expand(png_ptr);
-	/* TODO check surface format, ARGB8888 for now */
-#ifdef WORDS_BIGENDIAN
-	png_set_swap_alpha(png_ptr);
-	png_set_filler(png_ptr, 0xff, PNG_FILLER_BEFORE);
-#else
-	png_set_bgr(png_ptr);
-	png_set_filler(png_ptr, 0xff, PNG_FILLER_AFTER);
-#endif
 	/* 16bit color -> 8bit color */
 	png_set_strip_16(png_ptr);
 	/* pack all pixels to byte boundaires */
@@ -219,8 +215,9 @@ Eina_Bool _png_load(const char *file, Enesim_Converter_Data *data)
 	pixel_inc = enesim_converter_format_depth_get(fmt) / 8;
 	if (!pixel_inc)
 	{
-		ret = EINA_FALSE;
-		goto err_setup;
+		png_destroy_read_struct(&png_ptr, &info_ptr, (png_infopp) NULL);
+		fclose(f);
+		return EMAGE_ERROR_LOADING;
 	}
 
 	lines = (unsigned char **) alloca(h32 * sizeof(unsigned char *));
@@ -240,11 +237,8 @@ Eina_Bool _png_load(const char *file, Enesim_Converter_Data *data)
 	png_read_image(png_ptr, lines);
 	png_read_end(png_ptr, info_ptr);
 
-err_setup:
-	png_destroy_read_struct(&png_ptr, &info_ptr, (png_infopp) NULL);
-	fclose(f);
 
-	return ret;
+	return 0;
 }
 
 Eina_Bool _png_save(const char *file, Enesim_Surface *s)
@@ -315,7 +309,7 @@ Eina_Bool _png_save(const char *file, Enesim_Surface *s)
 		printf("Error calling the converter\n");
 		return EINA_FALSE;
 	}
-	cdata.argb8888.plane0 = data;
+	cdata.pixels.argb8888.plane0 = data;
 	row_ptr = (png_bytep) data;
 
 	for (y = 0; y < h; y++)

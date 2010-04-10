@@ -58,13 +58,18 @@ static void _provider_data_create(Enesim_Converter_Data *cdata, Enesim_Converter
 	{
 		case ENESIM_CONVERTER_ARGB8888:
 		case ENESIM_CONVERTER_ARGB8888_PRE:
-		cdata->argb8888.plane0 = malloc(w * h * sizeof(uint32_t));
-		cdata->argb8888.plane0_stride = w;
+		cdata->pixels.argb8888.plane0 = malloc(w * h * sizeof(uint32_t));
+		cdata->pixels.argb8888.plane0_stride = w;
 		break;
 
 		case ENESIM_CONVERTER_RGB565:
-		cdata->rgb565.plane0 = malloc(w * h * sizeof(uint16_t));
-		cdata->rgb565.plane0_stride = w;
+		cdata->pixels.rgb565.plane0 = malloc(w * h * sizeof(uint16_t));
+		cdata->pixels.rgb565.plane0_stride = w;
+		break;
+
+		case ENESIM_CONVERTER_RGB888:
+		cdata->pixels.rgb565.plane0 = malloc(w * h * sizeof(uint8_t) * 3);
+		cdata->pixels.rgb565.plane0_stride = w;
 		break;
 
 		default:
@@ -129,12 +134,16 @@ static Eina_Bool _provider_data_load(Emage_Provider *p, const char *file,
 	int w, h;
 	Enesim_Converter_Format cfmt;
 	Enesim_Converter_Data cdata;
+	Eina_Error error;
+	Eina_Bool ret = EINA_TRUE;
 
-	if (!_provider_info_load(p, file, &w, &h, &cfmt))
+	error = _provider_info_load(p, file, &w, &h, &cfmt);
+	if (error)
 	{
-		*err = EMAGE_ERROR_LOADING;
-		return EINA_FALSE;
+		ret = EINA_FALSE;
+		goto info;
 	}
+	printf("cformat = %d\n", cfmt);
 	/* create a buffer of format cfmt where the provider will fill */
 	_provider_data_create(&cdata, cfmt, w, h);
 	if (!*s)
@@ -142,21 +151,27 @@ static Eina_Bool _provider_data_load(Emage_Provider *p, const char *file,
 		*s = enesim_surface_new_allocator_from(f, w, h, mpool);
 		if (!*s)
 		{
-			*err = EMAGE_ERROR_ALLOCATOR;
-			return EINA_FALSE;
+			error = EMAGE_ERROR_ALLOCATOR;
+			ret = EINA_FALSE;
+			goto info;
 		}
 	}
 	/* load the file */
-	if (p->load(file, &cdata) == EINA_FALSE)
+	error = p->load(file, &cdata);
+	if (error)
 	{
-		*err = EMAGE_ERROR_LOADING;
-		return EINA_FALSE;
+		ret = EINA_FALSE;
+		goto load;
 	}
 	/* convert */
 	_provider_data_convert(&cdata, cfmt, w, h, *s);
+load:
 	/* free the allocated data */
-	free(cdata.argb8888.plane0);
-	return EINA_TRUE;
+	/* FIXME free the correct one */
+	free(cdata.pixels.argb8888.plane0);
+info:
+	*err = error;
+	return ret;
 }
 
 static Emage_Provider * _load_provider_get(const char *file)

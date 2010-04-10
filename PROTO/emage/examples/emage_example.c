@@ -74,9 +74,10 @@ int main(int argc, char **argv)
 		/* generate a simple pattern with enesim */
 		s = enesim_surface_new(ENESIM_FORMAT_ARGB8888, 256, 256);
 		r = enesim_renderer_checker_new();
-		enesim_renderer_checker_color1_set(r, 0xffffff00);
-		enesim_renderer_checker_color2_set(r, 0xff000000);
-		enesim_renderer_checker_size_set(r, 20, 20);
+		enesim_renderer_checker_even_color_set(r, 0xffffff00);
+		enesim_renderer_checker_odd_color_set(r, 0xff000000);
+		enesim_renderer_checker_width_set(r, 20);
+		enesim_renderer_checker_height_set(r, 20);
 		enesim_renderer_state_setup(r);
 		enesim_renderer_surface_draw(r, s, ENESIM_FILL, ENESIM_COLOR_FULL, NULL);
 		enesim_renderer_state_cleanup(r);
