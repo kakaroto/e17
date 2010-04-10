@@ -112,7 +112,7 @@ EAPI void enesim_renderer_raddist_scale_set(Enesim_Renderer *r, float scale)
 	Raddist *rd = (Raddist *)r;
 
 	if (scale > 1.0)
-			scale = 1.0;
+		scale = 1.0;
 	rd->scale = scale;
 }
 

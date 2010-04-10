@@ -126,6 +126,9 @@ EAPI uint8_t enesim_converter_format_depth_get(Enesim_Converter_Format fmt)
 		case ENESIM_CONVERTER_GRAY:
 		return 8;
 
+		case ENESIM_CONVERTER_RGB888:
+		return 24;
+
 		default:
 		return 0;
 	}

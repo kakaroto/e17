@@ -6,7 +6,7 @@
 static void _1d_a8_none_argb8888(Enesim_Converter_Data *data,
 		uint32_t len, uint32_t *native)
 {
-	uint8_t *dst = data->a8.plane0;
+	uint8_t *dst = data->pixels.a8.plane0;
 
 	while (len--)
 	{

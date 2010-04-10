@@ -1,5 +1,5 @@
 /* ENESIM - Direct Rendering Library
- * Copyright (C) 2007-2008 Jorge Luis Zapata
+ * Copyright (C) 2007-2010 Jorge Luis Zapata
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -17,9 +17,10 @@
  */
 #include "Enesim.h"
 #include "enesim_private.h"
-/* TODO
- * + add support for sw and sh
- * + add support for qualities (good scaler, interpolate between the four neighbours)
+/**
+ * @todo
+ * - add support for sw and sh
+ * - add support for qualities (good scaler, interpolate between the four neighbours)
  */
 /*============================================================================*
  *                                  Local                                     *

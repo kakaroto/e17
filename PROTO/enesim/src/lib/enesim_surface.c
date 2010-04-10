@@ -125,7 +125,11 @@ enesim_surface_new(Enesim_Format f, int w, int h)
 	if (!pthrough)
 	{
 		pthrough = eina_mempool_add("pass_through", NULL, NULL);
-		if (!pthrough) return NULL;
+		if (!pthrough)
+		{
+			printf("Error %s\n", eina_error_msg_get(eina_error_get()));	
+			return NULL;
+		}
 	}
 
 	return enesim_surface_new_allocator_from(f, w, h, pthrough);

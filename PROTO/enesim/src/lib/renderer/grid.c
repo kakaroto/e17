@@ -254,19 +254,50 @@ EAPI Enesim_Renderer * enesim_renderer_grid_new(void)
 	return r;
 }
 /**
- * Sets the width and height of the inner box of a grid renderer
+ * Sets the width of the inner box of a grid renderer
  * @param[in] r The grid renderer
- * @param[in] w The width
- * @param[in] h The height
+ * @param[in] width The width
  */
-EAPI void enesim_renderer_grid_inside_size_set(Enesim_Renderer *r, unsigned int w, unsigned int h)
+EAPI void enesim_renderer_grid_inside_width_set(Enesim_Renderer *r, unsigned int width)
 {
 	Grid *g = (Grid *)r;
 
-	g->inside.w = w;
-	g->inside.h = h;
-	g->wi = eina_f16p16_int_from(w);
-	g->hi = eina_f16p16_int_from(h);
+	g->inside.w = width;
+	g->wi = eina_f16p16_int_from(width);
+}
+/**
+ * Gets the width of the inner box of a grid renderer
+ * @param[in] r The grid renderer
+ * @return The width
+ */
+EAPI unsigned int enesim_renderer_grid_inside_width_get(Enesim_Renderer *r)
+{
+	Grid *g = (Grid *)r;
+
+	return g->inside.w;
+}
+/**
+ * Sets the height of the inner box of a grid renderer
+ * @param[in] r The grid renderer
+ * @param[in] height The height
+ */
+EAPI void enesim_renderer_grid_inside_height_set(Enesim_Renderer *r, unsigned int height)
+{
+	Grid *g = (Grid *)r;
+
+	g->inside.h = height;
+	g->hi = eina_f16p16_int_from(height);
+}
+/**
+ * Gets the height of the inner box of a grid renderer
+ * @param[in] r The grid renderer
+ * @return The height
+ */
+EAPI unsigned int enesim_renderer_grid_inside_height_get(Enesim_Renderer *r)
+{
+	Grid *g = (Grid *)r;
+
+	return g->inside.h;
 }
 /**
  * Sers the color of the inner box of a grid renderer
@@ -280,27 +311,80 @@ EAPI void enesim_renderer_grid_inside_color_set(Enesim_Renderer *r, Enesim_Color
 	g->inside.color = color;
 }
 /**
- * Sets the width and height of the outline of a grid renderer
+ * Gets the color of the inner box of a grid renderer
  * @param[in] r The grid renderer
- * @param[in] w The width
- * @param[in] h The height
+ * @return The color
  */
-EAPI void enesim_renderer_grid_outside_size_set(Enesim_Renderer *r, unsigned int w, unsigned int h)
+EAPI Enesim_Color enesim_renderer_grid_inside_color_get(Enesim_Renderer *r)
 {
 	Grid *g = (Grid *)r;
 
-	g->outside.w = w;
-	g->outside.h = h;
+	return g->inside.color;
 }
 /**
- * Sers the color of the outline of a grid renderer
+ * Sets the horizontal thickness of the border of a grid renderer
+ * @param[in] r The grid renderer
+ * @param[in] hthickness The horizontal thickness
+ */
+EAPI void enesim_renderer_grid_border_hthickness_set(Enesim_Renderer *r, unsigned int hthickness)
+{
+	Grid *g = (Grid *)r;
+
+	g->outside.h = hthickness;
+}
+/**
+ * Gets the horizontal thickness of the border of a grid renderer
+ * @param[in] r The grid renderer
+ * @return The horizontal thickness
+ */
+EAPI unsigned int enesim_renderer_grid_border_hthickness_get(Enesim_Renderer *r)
+{
+	Grid *g = (Grid *)r;
+
+	return g->outside.h;
+}
+/**
+ * Sets the vertical thickness of the border of a grid renderer
+ * @param[in] r The grid renderer
+ * @param[in] vthickness The vertical thickness
+ */
+EAPI void enesim_renderer_grid_border_vthickness_set(Enesim_Renderer *r, unsigned int vthickness)
+{
+	Grid *g = (Grid *)r;
+
+	g->outside.w = vthickness;
+}
+/**
+ * Gets the vertical thickness of the border of a grid renderer
+ * @param[in] r The grid renderer
+ * @return The vertical thickness
+ */
+EAPI unsigned int enesim_renderer_grid_border_vthickness_get(Enesim_Renderer *r)
+{
+	Grid *g = (Grid *)r;
+
+	return g->outside.w;
+}
+/**
+ * Sets the color of the border of a grid renderer
  * @param[in] r The grid renderer
  * @param[in] color The color
  */
-EAPI void enesim_renderer_grid_outside_color_set(Enesim_Renderer *r, Enesim_Color color)
+EAPI void enesim_renderer_grid_border_color_set(Enesim_Renderer *r, Enesim_Color color)
 {
 	Grid *g = (Grid *)r;
 
 	g->outside.color = color;
+}
+/**
+ * Gets the color of the border of a grid renderer
+ * @param[in] r The grid renderer
+ * @return The color
+ */
+EAPI Enesim_Color enesim_renderer_grid_border_color_get(Enesim_Renderer *r)
+{
+	Grid *g = (Grid *)r;
+
+	return g->outside.color;
 }
 

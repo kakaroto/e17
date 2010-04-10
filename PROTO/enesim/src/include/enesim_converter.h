@@ -44,6 +44,7 @@ typedef enum _Enesim_Converter_Format
 	ENESIM_CONVERTER_RGB565,
 	ENESIM_CONVERTER_ARGB8888,
 	ENESIM_CONVERTER_ARGB8888_PRE,
+	ENESIM_CONVERTER_RGB888,
 	ENESIM_CONVERTER_A8,
 	ENESIM_CONVERTER_GRAY,
 	ENESIM_CONVERTER_FORMATS
@@ -67,11 +68,20 @@ typedef struct _Enesim_Converter_A8
 	int plane0_stride;
 } Enesim_Converter_A8;
 
-typedef union _Enesim_Converter_Data
+typedef struct _Enesim_Converter_Rgb888
 {
-	Enesim_Converter_Argb8888 argb8888;
-	Enesim_Converter_Rgb565 rgb565;
-	Enesim_Converter_A8 a8;
+	uint8_t *plane0;
+	int plane0_stride;
+} Enesim_Converter_Rgb888;
+
+typedef struct _Enesim_Converter_Data
+{
+	union {
+		Enesim_Converter_Argb8888 argb8888;
+		Enesim_Converter_Rgb565 rgb565;
+		Enesim_Converter_A8 a8;
+		Enesim_Converter_Rgb888 rgb888;
+	} pixels;
 	unsigned int w;
 	unsigned int h;
 } Enesim_Converter_Data;

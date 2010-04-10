@@ -130,9 +130,14 @@ EAPI void enesim_renderer_surface_src_set(Enesim_Renderer *r, Enesim_Surface *sr
  * @{
  */
 EAPI Enesim_Renderer * enesim_renderer_checker_new(void);
-EAPI void enesim_renderer_checker_color1_set(Enesim_Renderer *r, uint32_t color);
-EAPI void enesim_renderer_checker_color2_set(Enesim_Renderer *r, uint32_t color);
-EAPI void enesim_renderer_checker_size_set(Enesim_Renderer *r, int w, int h);
+EAPI void enesim_renderer_checker_even_color_set(Enesim_Renderer *r, Enesim_Color color);
+EAPI Enesim_Color enesim_renderer_checker_even_color_get(Enesim_Renderer *r);
+EAPI void enesim_renderer_checker_odd_color_set(Enesim_Renderer *r, Enesim_Color color);
+EAPI Enesim_Color enesim_renderer_checker_odd_color_get(Enesim_Renderer *r);
+EAPI void enesim_renderer_checker_width_set(Enesim_Renderer *r, int width);
+EAPI int enesim_renderer_checker_width_get(Enesim_Renderer *r);
+EAPI void enesim_renderer_checker_height_set(Enesim_Renderer *r, int height);
+EAPI int enesim_renderer_checker_height_get(Enesim_Renderer *r);
 /**
  * @}
  * @defgroup Enesim_Renderer_Transition_Group Transition
@@ -149,15 +154,29 @@ EAPI void enesim_renderer_transition_offset_set(Enesim_Renderer *r, int x, int y
  * @{
  */
 EAPI Enesim_Renderer * enesim_renderer_stripes_new(void);
-EAPI void enesim_renderer_stripes_color_set(Enesim_Renderer *p,
-		Enesim_Color c0, Enesim_Color c1);
-EAPI void enesim_renderer_stripes_thickness_set(Enesim_Renderer *p,
-		float thickness_0, float thickness_1);
+EAPI void enesim_renderer_stripes_even_color_set(Enesim_Renderer *r, Enesim_Color color);
+EAPI Enesim_Color enesim_renderer_stripes_even_color_get(Enesim_Renderer *r);
+EAPI void enesim_renderer_stripes_even_thickness_set(Enesim_Renderer *r, float thickness);
+EAPI float enesim_renderer_stripes_even_thickness_get(Enesim_Renderer *r);
+EAPI void enesim_renderer_stripes_odd_color_set(Enesim_Renderer *r, Enesim_Color color);
+EAPI Enesim_Color enesim_renderer_stripes_odd_color_get(Enesim_Renderer *r);
+EAPI void enesim_renderer_stripes_odd_thickness_set(Enesim_Renderer *r,	float thickness);
+EAPI float enesim_renderer_stripes_odd_thickness_get(Enesim_Renderer *r);
 /**
  * @}
  * @defgroup Enesim_Renderer_Dispmap_Group Displacement Map
  * @{
  */
+
+typedef enum _Enesim_Channel
+{
+	ENESIM_CHANNEL_RED,
+	ENESIM_CHANNEL_GREEN,
+	ENESIM_CHANNEL_BLUE,
+	ENESIM_CHANNEL_ALPHA,
+	ENESIM_CHANNELS,
+} Enesim_Channel;
+
 EAPI Enesim_Renderer * enesim_renderer_dispmap_new(void);
 EAPI void enesim_renderer_dispmap_map_set(Enesim_Renderer *r, Enesim_Surface *map);
 EAPI void enesim_renderer_dispmap_src_set(Enesim_Renderer *r, Enesim_Surface *src);
@@ -215,10 +234,19 @@ EAPI void enesim_renderer_compound_clear(Enesim_Renderer *r);
  * @{
  */
 EAPI Enesim_Renderer * enesim_renderer_grid_new(void);
-EAPI void enesim_renderer_grid_inside_size_set(Enesim_Renderer *r, unsigned int w, unsigned int h);
+EAPI void enesim_renderer_grid_inside_width_set(Enesim_Renderer *r, unsigned int width);
+EAPI unsigned int enesim_renderer_grid_inside_width_get(Enesim_Renderer *r);
+EAPI void enesim_renderer_grid_inside_height_set(Enesim_Renderer *r, unsigned int height);
+EAPI unsigned int enesim_renderer_grid_inside_height_get(Enesim_Renderer *r);
 EAPI void enesim_renderer_grid_inside_color_set(Enesim_Renderer *r, Enesim_Color color);
-EAPI void enesim_renderer_grid_outside_size_set(Enesim_Renderer *r, unsigned int w, unsigned int h);
-EAPI void enesim_renderer_grid_outside_color_set(Enesim_Renderer *r, Enesim_Color color);
+EAPI Enesim_Color enesim_renderer_grid_inside_color_get(Enesim_Renderer *r);
+EAPI void enesim_renderer_grid_border_hthickness_set(Enesim_Renderer *r, unsigned int hthickness);
+EAPI unsigned int enesim_renderer_grid_border_hthickness_get(Enesim_Renderer *r);
+EAPI void enesim_renderer_grid_border_vthickness_set(Enesim_Renderer *r, unsigned int vthickness);
+EAPI unsigned int enesim_renderer_grid_border_vthickness_get(Enesim_Renderer *r);
+EAPI void enesim_renderer_grid_border_color_set(Enesim_Renderer *r, Enesim_Color color);
+EAPI Enesim_Color enesim_renderer_grid_border_color_get(Enesim_Renderer *r);
+
 /**
  * @}
  * @}

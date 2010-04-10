@@ -19,6 +19,11 @@ else
 RGB565_B1A3_REQ=
 endif
 
+if BUILD_SURFACE_RGB888
+RGB888_REQ=rgb888.c
+else
+RGB888_REQ=
+endif
 
 AM_CPPFLAGS = \
 -I. \
@@ -30,7 +35,8 @@ noinst_LTLIBRARIES = libenesim_converter.la
 libenesim_converter_la_SOURCES = \
 rgb565.c \
 argb8888.c \
-a8.c
+a8.c \
+rgb888.c
 #$(ARGB8888_UNPRE_REQ) \
 #$(RGB565_XA5_REQ) \
 #$(RGB565_B1A3_REQ)

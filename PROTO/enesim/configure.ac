@@ -158,6 +158,7 @@ ENESIM_SURFACE_FORMAT(argb8888_unpre, [yes])
 ENESIM_SURFACE_FORMAT(rgb888_a8, [no])
 ENESIM_SURFACE_FORMAT(rgb565_xa5, [no])
 ENESIM_SURFACE_FORMAT(rgb565_b1a3, [yes])
+ENESIM_SURFACE_FORMAT(rgb888, [yes])
 
 # Unit tests, coverage and benchmarking
 
@@ -169,8 +170,8 @@ EFL_CHECK_BENCHMARK([enable_benchmark="yes"], [enable_benchmark="no"])
 
 ### Substitutions
 
-EXAMPLE_CFLAGS="$SDL_CFLAGS $PNG_CFLAGS"
-EXAMPLE_LIBS="$SDL_LIBS $PNG_LIBS"
+EXAMPLE_CFLAGS="$PNG_CFLAGS"
+EXAMPLE_LIBS="$PNG_LIBS"
 AC_SUBST(EXAMPLE_CFLAGS)
 AC_SUBST(EXAMPLE_LIBS)
 
@@ -197,7 +198,6 @@ src/lib/renderer/gradient/Makefile
 src/lib/renderer/shape/Makefile
 src/lib/renderer/filter/Makefile
 src/lib/util/Makefile
-examples/Makefile
 data/Makefile
 ],[
 ])

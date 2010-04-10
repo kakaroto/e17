@@ -41,7 +41,6 @@ typedef struct _Rectangle {
 	unsigned char do_inner :1;
 } Rectangle;
 
-
 #define EVAL_ROUND_OUTER_CORNERS(c0,c1,c2,c3) \
 		if (lxx < 0) \
 		{ \
@@ -289,6 +288,12 @@ typedef struct _Rectangle {
 			} \
 		}
 
+static void _span_norounded_nooutlined_paint_filled_identity(Enesim_Renderer *r, int x,
+		int y, unsigned int len, uint32_t *dst)
+{
+	Rectangle *rect = (Rectangle *)r;
+
+}
 
 static void _span_rounded_color_outlined_paint_filled_affine(Enesim_Renderer *p, int x, int y,
 		unsigned int len, uint32_t *dst)

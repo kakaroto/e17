@@ -28,9 +28,48 @@ typedef struct _Dispamp
 	Enesim_Renderer base;
 	Enesim_Surface *map;
 	Enesim_Surface *src;
+	Enesim_Channel x_channel;
+	Enesim_Channel y_channel;
 	float scale;
+	/* The state variables */
+	Eina_F16p16 s_scale;
 } Dispmap;
 
+/* TODO Move this to a common header */
+static inline uint8_t _argb8888_alpha(uint32_t argb8888)
+{
+	return (argb8888 >> 24);
+}
+
+static inline uint8_t _argb8888_red(uint32_t argb8888)
+{
+	return (argb8888 >> 16) & 0xff;
+}
+
+static inline uint8_t _argb8888_green(uint32_t argb8888)
+{
+	return (argb8888 >> 8) & 0xff;
+}
+
+static inline uint8_t _argb8888_blue(uint32_t argb8888)
+{
+	return argb8888 & 0xff;
+}
+
+static inline Eina_F16p16 _displace(Eina_F16p16 coord, uint8_t distance, Eina_F16p16 scale)
+{
+	Eina_F16p16 vx;
+
+	/* FIXME define fixed(255) as a constant */
+	vx = eina_f16p16_int_from(distance - 127);
+	vx = eina_f16p16_mul((((int64_t)(vx) << 16) / eina_f16p16_int_from(255)), scale);
+
+	return vx + coord;
+}
+
+/*----------------------------------------------------------------------------*
+ *          X alpha channel, Y blue channel, Identity transformation          *
+ *----------------------------------------------------------------------------*/
 static void _argb8888_a_b_span_identity(Enesim_Renderer *r, int x, int y,
 		unsigned int len, uint32_t *dst)
 {
@@ -40,7 +79,7 @@ static void _argb8888_a_b_span_identity(Enesim_Renderer *r, int x, int y,
 	int mstride;
 	int sstride;
 	int sw, sh, mw, mh;
-	Eina_F16p16 scale, xx, yy;
+	Eina_F16p16 xx, yy;
 
 	/* setup the parameters */
 	enesim_surface_size_get(d->src, &sw, &sh);
@@ -51,13 +90,11 @@ static void _argb8888_a_b_span_identity(Enesim_Renderer *r, int x, int y,
 	src = enesim_surface_data_get(d->src);
 
 	map = map + (mstride * y) + x;
-	/* FIXME put this on the setup */
 	yy = eina_f16p16_int_from(y);
-	scale = eina_f16p16_float_from(d->scale);
 
 	while (dst < end)
 	{
-		Eina_F16p16 sxx, syy, vx, vy;
+		Eina_F16p16 sxx, syy;
 		int sx, sy;
 		uint32_t p0 = 0;
 		uint16_t m0;
@@ -70,15 +107,8 @@ static void _argb8888_a_b_span_identity(Enesim_Renderer *r, int x, int y,
 
 		m0 = *map >> 24;
 		m1 = *map & 0xff;
-		/* FIXME define fixed(255) as a constant */
-		vx = eina_f16p16_int_from(m0 - 127);
-		vx = eina_f16p16_mul((((int64_t)(vx) << 16) / eina_f16p16_int_from(255)), scale);
-
-		vy = eina_f16p16_int_from(m1 - 127);
-		vy = eina_f16p16_mul((((int64_t)(vy) << 16) / eina_f16p16_int_from(255)), scale);
-
-		sxx = xx + vx;
-		syy = yy + vy;
+		sxx = _displace(xx, m0, d->s_scale);
+		syy = _displace(yy, m1, d->s_scale);
 
 		sx = eina_f16p16_int_to(sxx);
 		sy = eina_f16p16_int_to(syy);
@@ -91,7 +121,7 @@ next:
 	}
 }
 
-static void _argb8888_a_b_span_affine(Enesim_Renderer *r, int x, int y,
+static void _argb8888_r_g_span_identity(Enesim_Renderer *r, int x, int y,
 		unsigned int len, uint32_t *dst)
 {
 	Dispmap *d = (Dispmap *)r;
@@ -100,7 +130,7 @@ static void _argb8888_a_b_span_affine(Enesim_Renderer *r, int x, int y,
 	int mstride;
 	int sstride;
 	int sw, sh, mw, mh;
-	Eina_F16p16 scale, xx, yy;
+	Eina_F16p16 xx, yy;
 
 	/* setup the parameters */
 	enesim_surface_size_get(d->src, &sw, &sh);
@@ -110,37 +140,26 @@ static void _argb8888_a_b_span_affine(Enesim_Renderer *r, int x, int y,
 	map = enesim_surface_data_get(d->map);
 	src = enesim_surface_data_get(d->src);
 
-	/* TODO move by the origin */
-	renderer_affine_setup(r, x, y, &xx, &yy);
-	scale = eina_f16p16_float_from(d->scale);
+	map = map + (mstride * y) + x;
+	yy = eina_f16p16_int_from(y);
 
 	while (dst < end)
 	{
-		Eina_F16p16 sxx, syy, vx, vy;
+		Eina_F16p16 sxx, syy;
 		int sx, sy;
 		uint32_t p0 = 0;
 		uint16_t m0;
 		uint16_t m1;
 
-		x = eina_f16p16_int_to(xx);
-		y = eina_f16p16_int_to(yy);
-
 		if (x < 0 || x >= mw || y < 0 || y >= mh)
 			goto next;
 
-		m0 = *(map + (mstride * y) + x);
-		m1 = m0 & 0xff;
-		m0 = m0 >> 24;
+		xx = eina_f16p16_int_from(x);
 
-		/* FIXME define fixed(255) as a constant */
-		vx = eina_f16p16_int_from(m0 - 127);
-		vx = eina_f16p16_mul((((int64_t)(vx) << 16) / eina_f16p16_int_from(255)), scale);
-
-		vy = eina_f16p16_int_from(m1 - 127);
-		vy = eina_f16p16_mul((((int64_t)(vy) << 16) / eina_f16p16_int_from(255)), scale);
-
-		sxx = xx + vx;
-		syy = yy + vy;
+		m0 = (*map >> 16) & 0xff;
+		m1 = (*map >> 8) & 0xff;
+		sxx = _displace(xx, m0, d->s_scale);
+		syy = _displace(yy, m1, d->s_scale);
 
 		sx = eina_f16p16_int_to(sxx);
 		sy = eina_f16p16_int_to(syy);
@@ -149,12 +168,76 @@ static void _argb8888_a_b_span_affine(Enesim_Renderer *r, int x, int y,
 next:
 		*dst++ = p0;
 		map++;
-		yy += r->matrix.values.yx;
-		xx += r->matrix.values.xx;
+		x++;
 	}
 }
 
+#define DISPMAP_AFFINE(xch, ych, xfunction, yfunction) \
+static void _argb8888_##xch##_##ych##_span_affine(Enesim_Renderer *r, int x,	\
+		int y, unsigned int len, uint32_t *dst)				\
+{										\
+	Dispmap *d = (Dispmap *)r;						\
+	uint32_t *end = dst + len;						\
+	uint32_t *map, *src;							\
+	int mstride;								\
+	int sstride;								\
+	int sw, sh, mw, mh;							\
+	Eina_F16p16 xx, yy;							\
+										\
+	/* setup the parameters */						\
+	enesim_surface_size_get(d->src, &sw, &sh);				\
+	enesim_surface_size_get(d->map, &mw, &mh);				\
+	mstride = enesim_surface_stride_get(d->map);				\
+	sstride = enesim_surface_stride_get(d->src);				\
+	map = enesim_surface_data_get(d->map);					\
+	src = enesim_surface_data_get(d->src);					\
+										\
+	/* TODO move by the origin */						\
+	renderer_affine_setup(r, x, y, &xx, &yy);				\
+										\
+	while (dst < end)							\
+	{									\
+		Eina_F16p16 sxx, syy;						\
+		int sx, sy;							\
+		uint32_t p0 = 0;						\
+		uint16_t m0;							\
+		uint16_t m1;							\
+										\
+		x = eina_f16p16_int_to(xx);					\
+		y = eina_f16p16_int_to(yy);					\
+										\
+		if (x < 0 || x >= mw || y < 0 || y >= mh)			\
+			goto next;						\
+										\
+		m0 = *(map + (mstride * y) + x);				\
+		m0 = xfunction(m0);						\
+		m1 = yfunction(m1);						\
+										\
+		sxx = _displace(xx, m0, d->s_scale);				\
+		syy = _displace(yy, m1, d->s_scale);				\
+										\
+		sx = eina_f16p16_int_to(sxx);					\
+		sy = eina_f16p16_int_to(syy);					\
+		p0 = argb8888_sample_good(src, sstride, sw, sh, sxx, syy, sx,	\
+				sy);						\
+										\
+next:										\
+		*dst++ = p0;							\
+		map++;								\
+		yy += r->matrix.values.yx;					\
+		xx += r->matrix.values.xx;					\
+	}									\
+}
 
+DISPMAP_AFFINE(r, g, _argb8888_red, _argb8888_green);
+DISPMAP_AFFINE(a, b, _argb8888_alpha, _argb8888_blue);
+
+static Enesim_Renderer_Span_Draw _spans[ENESIM_CHANNELS][ENESIM_CHANNELS][ENESIM_MATRIX_TYPES] = {
+	[ENESIM_CHANNEL_ALPHA][ENESIM_CHANNEL_BLUE][ENESIM_MATRIX_IDENTITY] = _argb8888_a_b_span_identity,
+	[ENESIM_CHANNEL_ALPHA][ENESIM_CHANNEL_BLUE][ENESIM_MATRIX_AFFINE] = _argb8888_a_b_span_affine,
+	[ENESIM_CHANNEL_RED][ENESIM_CHANNEL_GREEN][ENESIM_MATRIX_IDENTITY] = _argb8888_r_g_span_identity,
+	[ENESIM_CHANNEL_RED][ENESIM_CHANNEL_GREEN][ENESIM_MATRIX_AFFINE] = _argb8888_r_g_span_affine,
+};
 
 static void _state_cleanup(Enesim_Renderer *r)
 {
@@ -163,15 +246,22 @@ static void _state_cleanup(Enesim_Renderer *r)
 
 static Eina_Bool _state_setup(Enesim_Renderer *r)
 {
-	if (r->matrix.type == ENESIM_MATRIX_IDENTITY)
-		r->span = ENESIM_RENDERER_SPAN_DRAW(_argb8888_a_b_span_identity);
-	else if (r->matrix.type == ENESIM_MATRIX_AFFINE)
-		r->span = ENESIM_RENDERER_SPAN_DRAW(_argb8888_a_b_span_affine);
+	Dispmap *d = (Dispmap *)r;
+
+	d->s_scale = eina_f16p16_float_from(d->scale);
+	r->span = _spans[d->x_channel][d->y_channel][r->matrix.type];
+	if (!r->span)
+		return EINA_FALSE;
 	return EINA_TRUE;
 }
 /*============================================================================*
  *                                   API                                      *
  *============================================================================*/
+/**
+ * Creates a new displacement map renderer
+ *
+ * @return The renderer
+ */
 EAPI Enesim_Renderer * enesim_renderer_dispmap_new(void)
 {
 	Dispmap *d;
@@ -185,25 +275,82 @@ EAPI Enesim_Renderer * enesim_renderer_dispmap_new(void)
 
 	return r;
 }
+/**
+ * Sets the channel to use as the x coordinate displacement
+ * @param[in] r The displacement map renderer 
+ * @param[in] channel The channel to use
+ */
+EAPI void enesim_renderer_dispmap_x_channel_set(Enesim_Renderer *r,
+	Enesim_Channel channel)
+{
+	Dispmap *d = (Dispmap *)r;
 
+	d->x_channel = channel;
+}
+/**
+ * Sets the channel to use as the y coordinate displacement
+ * @param[in] r The displacement map renderer 
+ * @param[in] channel The channel to use
+ */
+EAPI void enesim_renderer_dispmap_y_channel_set(Enesim_Renderer *r,
+	Enesim_Channel channel)
+{
+	Dispmap *d = (Dispmap *)r;
+
+	d->y_channel = channel;
+}
+/**
+ *
+ */
 EAPI void enesim_renderer_dispmap_map_set(Enesim_Renderer *r, Enesim_Surface *map)
 {
 	Dispmap *d = (Dispmap *)r;
 
 	d->map = map;
 }
+/**
+ *
+ */
+EAPI Enesim_Surface * enesim_renderer_dispmap_map_get(Enesim_Renderer *r)
+{
+	Dispmap *d = (Dispmap *)r;
 
-
+	return d->map;
+}
+/**
+ *
+ */
 EAPI void enesim_renderer_dispmap_src_set(Enesim_Renderer *r, Enesim_Surface *src)
 {
 	Dispmap *d = (Dispmap *)r;
 
 	d->src = src;
 }
+/**
+ *
+ */
+EAPI Enesim_Surface * enesim_renderer_dispmap_src_get(Enesim_Renderer *r)
+{
+	Dispmap *d = (Dispmap *)r;
 
+	return d->src;
+}
+/**
+ *
+ */
 EAPI void enesim_renderer_dispmap_scale_set(Enesim_Renderer *r, float scale)
 {
 	Dispmap *d = (Dispmap *)r;
 
 	d->scale = scale;
 }
+/**
+ *
+ */
+EAPI float enesim_renderer_dispmap_scale_get(Enesim_Renderer *r)
+{
+	Dispmap *d = (Dispmap *)r;
+
+	return d->scale;
+}
+

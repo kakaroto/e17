@@ -123,5 +123,14 @@ EAPI void enesim_renderer_compound_layer_add(Enesim_Renderer *r,
  */
 EAPI void enesim_renderer_compound_clear(Enesim_Renderer *r)
 {
+	Layer *layer;
+	Eina_List *list;
+	Eina_List *l;
+	Eina_List *l_next;
 
+	EINA_LIST_FOREACH_SAFE(list, l, l_next, layer)
+	{
+		free(layer);
+		list = eina_list_remove_list(list, l);
+	}
 }

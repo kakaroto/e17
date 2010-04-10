@@ -31,9 +31,9 @@ typedef struct _Importer
 static void _span_argb8888_none_argb8888(Enesim_Renderer *r, int x, int y, unsigned int len, uint32_t *dst)
 {
 	Importer *i = (Importer *)r;
-	uint32_t *ssrc = i->cdata.argb8888.plane0;
+	uint32_t *ssrc = i->cdata.pixels.argb8888.plane0;
 
-	ssrc = ssrc + (i->cdata.argb8888.plane0_stride * y) + x;
+	ssrc = ssrc + (i->cdata.pixels.argb8888.plane0_stride * y) + x;
 	while (len--)
 	{
 		uint16_t a = (*ssrc >> 24) + 1;
@@ -54,15 +54,34 @@ static void _span_argb8888_none_argb8888(Enesim_Renderer *r, int x, int y, unsig
 static void _span_a8_none_argb8888(Enesim_Renderer *r, int x, int y, unsigned int len, uint32_t *dst)
 {
 	Importer *i = (Importer *)r;
-	uint8_t *ssrc = i->cdata.a8.plane0;
+	uint8_t *ssrc = i->cdata.pixels.a8.plane0;
 
-	ssrc = ssrc + (i->cdata.a8.plane0_stride * y) + x;
+	ssrc = ssrc + (i->cdata.pixels.a8.plane0_stride * y) + x;
 	while (len--)
 	{
 		*dst = *ssrc << 24;;
 
 		dst++;
 		ssrc++;
+	}
+}
+
+static void _span_rgb888_none_argb8888(Enesim_Renderer *r, int x, int y, unsigned int len, uint32_t *dst)
+{
+	Importer *i = (Importer *)r;
+	uint8_t *ssrc = i->cdata.pixels.rgb888.plane0;
+
+	ssrc = ssrc + (i->cdata.pixels.rgb888.plane0_stride * y * 3) + (x * 3);
+	while (len--)
+	{
+		uint8_t r, g, b;
+
+		r = *ssrc++;
+		g = *ssrc++;
+		b = *ssrc++;
+		*dst = 0xff000000 | r << 16 | g << 8 | b;
+
+		dst++;
 	}
 }
 
@@ -79,6 +98,10 @@ static Eina_Bool _state_setup(Enesim_Renderer *r)
 
 		case ENESIM_CONVERTER_A8:
 		r->span = ENESIM_RENDERER_SPAN_DRAW(_span_a8_none_argb8888);
+		break;
+
+		case ENESIM_CONVERTER_RGB888:
+		r->span = ENESIM_RENDERER_SPAN_DRAW(_span_rgb888_none_argb8888);
 		break;
 
 		default:
