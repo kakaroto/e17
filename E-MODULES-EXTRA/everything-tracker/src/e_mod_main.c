@@ -70,6 +70,9 @@ _item_add(Plugin *p, char *id, char *url, char *mime, int prio)
   if (!(path = evry_util_unescape(tmp, 0)))
     return NULL;
 
+  if (!ecore_file_exists(path))
+    return NULL;
+
   if (!(label = ecore_file_file_get(path)))
     return NULL;
    
