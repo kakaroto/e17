@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2010-03-15 23:32+0100\n"
+"POT-Creation-Date: 2010-04-11 13:54+0200\n"
 "PO-Revision-Date: 2008-10-09 10:43+0200\n"
 "Last-Translator: Kjartan Maraas <kmaraas@gnome.org>\n"
 "Language-Team: Norwegian <no@li.org>\n"
@@ -161,7 +161,7 @@ msgstr "Avslutt Enlightenment"
 msgid "Attention !!!"
 msgstr "Merk!"
 
-#: src/alert.c:581 src/dialog.c:692 src/dialog.c:1897 src/events.c:90
+#: src/alert.c:581 src/dialog.c:693 src/dialog.c:1898 src/events.c:90
 #: src/setup.c:159 src/sound.c:310
 msgid "OK"
 msgstr "Ok"
@@ -395,138 +395,138 @@ msgstr ""
 "stund og dette temaet bruker ting som ikke var tilgjengelig i\n"
 "en tidligere versjon av Enlightenment.\n"
 
-#: src/config.c:591
+#: src/config.c:621
 msgid "Enlightenment Starting..."
 msgstr "Enlightenment starter opp..."
 
-#: src/container.c:1185
+#: src/container.c:1187
 msgid "Settings..."
 msgstr "Innstillinger..."
 
-#: src/container.c:1189 src/dialog.c:703 src/pager.c:1009 config/strings.c:30
+#: src/container.c:1191 src/dialog.c:704 src/pager.c:1016 config/strings.c:30
 #: config/strings.c:122
 msgid "Close"
 msgstr "Avbryt"
 
-#: src/container.c:1194 config/strings.c:83
+#: src/container.c:1196 config/strings.c:83
 msgid "Create New Iconbox"
 msgstr "Lag en ny ikonboks"
 
-#: src/container.c:1505 src/container.c:1581 src/menus.c:2115
+#: src/container.c:1507 src/container.c:1583 src/menus.c:2116
 #, c-format
 msgid "Icon size: %2d"
 msgstr "Ikonstørrelse: %2d"
 
-#: src/container.c:1545
+#: src/container.c:1547
 msgid "Transparent background"
 msgstr "Gjennomsiktig bakgrunn"
 
-#: src/container.c:1549
+#: src/container.c:1551
 msgid "Hide inner border"
 msgstr "Skjul indre kant"
 
-#: src/container.c:1553
+#: src/container.c:1555
 msgid "Draw base image behind Icons"
 msgstr "Bruk bakgrunnsbilde under ikonene"
 
-#: src/container.c:1557
+#: src/container.c:1559
 msgid "Hide scrollbar when not needed"
 msgstr "Skjul scrollbar når den ikke trengs"
 
-#: src/container.c:1561
+#: src/container.c:1563
 msgid "Automatically resize to fit Icons"
 msgstr "Tilpass størrelse automatisk til ikonene"
 
-#: src/container.c:1568
+#: src/container.c:1570
 msgid "Alignment of anchoring when automatically resizing:"
 msgstr "Justering av anker ved automatisk tilpasning av størrelse:"
 
-#: src/container.c:1599
+#: src/container.c:1601
 msgid "Orientation:"
 msgstr "Orientering"
 
-#: src/container.c:1602
+#: src/container.c:1604
 msgid "Horizontal"
 msgstr "Horisontalt"
 
-#: src/container.c:1607
+#: src/container.c:1609
 msgid "Vertical"
 msgstr "Vertikalt"
 
-#: src/container.c:1618
+#: src/container.c:1620
 msgid "Scrollbar side:"
 msgstr "Scrollbar-side:"
 
-#: src/container.c:1621
+#: src/container.c:1623
 msgid "Left / Top"
 msgstr "Venstre / Topp"
 
-#: src/container.c:1626
+#: src/container.c:1628
 msgid "Right / Bottom"
 msgstr "Høyre / Bunn"
 
-#: src/container.c:1637
+#: src/container.c:1639
 msgid "Scrollbar arrows:"
 msgstr "Scrollbar-piler:"
 
-#: src/container.c:1640
+#: src/container.c:1642
 msgid "Start"
 msgstr "Start"
 
-#: src/container.c:1645
+#: src/container.c:1647
 msgid "Both ends"
 msgstr "Begge sider"
 
-#: src/container.c:1650
+#: src/container.c:1652
 msgid "End"
 msgstr "På siden"
 
-#: src/container.c:1655 src/focus.c:901
+#: src/container.c:1657 src/focus.c:937
 msgid "None"
 msgstr "Ingen"
 
-#: src/container.c:1665
+#: src/container.c:1667
 msgid "Show icon names"
 msgstr "Vis ikontitler"
 
-#: src/container.c:1674
+#: src/container.c:1676
 msgid "Animation mode:"
 msgstr ""
 
-#: src/container.c:1677 src/desktops.c:2577
+#: src/container.c:1679 src/desktops.c:2577
 msgid "Off"
 msgstr ""
 
-#: src/container.c:1682
+#: src/container.c:1684
 msgid "Whirl"
 msgstr ""
 
-#: src/container.c:1687 src/settings.c:112 src/settings.c:117
-#: src/settings.c:383
+#: src/container.c:1689 src/settings.c:112 src/settings.c:117
+#: src/settings.c:385
 msgid "Box"
 msgstr "Boks"
 
-#: src/container.c:1695
+#: src/container.c:1697
 msgid "Animation speed:"
 msgstr ""
 
-#: src/container.c:1710
+#: src/container.c:1712
 msgid "Icon image display policy (if one operation fails, try the next):"
 msgstr "Ikonbilde regler (dersom den første feiler, prøv neste etc):"
 
-#: src/container.c:1715
+#: src/container.c:1717
 msgid "Snapshot Windows, Use application icon, Use Enlightenment Icon"
 msgstr "Miniatyr av vindu, programmets ikon, Enlightenments ikon"
 
-#: src/container.c:1722
+#: src/container.c:1724
 msgid "Use application icon, Use Enlightenment Icon, Snapshot Window"
 msgstr "Programmets ikon, Enlightenments ikon, miniatyr av vindu"
 
-#: src/container.c:1727
+#: src/container.c:1729
 msgid "Use Enlightenment Icon, Snapshot Window"
 msgstr "Enlightenments ikon, miniatyr av vindu"
 
-#: src/container.c:1740
+#: src/container.c:1742
 msgid ""
 "Enlightenment Iconbox\n"
 "Settings Dialog\n"
@@ -621,15 +621,15 @@ msgstr "Topp"
 msgid "Bottom"
 msgstr "Bunn"
 
-#: src/desktops.c:2413 src/pager.c:1917 src/pager.c:1942 src/pager.c:1967
+#: src/desktops.c:2413 src/pager.c:1925 src/pager.c:1950 src/pager.c:1975
 msgid "Left"
 msgstr "Venstre"
 
-#: src/desktops.c:2419 src/pager.c:1929 src/pager.c:1954 src/pager.c:1979
+#: src/desktops.c:2419 src/pager.c:1937 src/pager.c:1962 src/pager.c:1987
 msgid "Right"
 msgstr "Høyre"
 
-#: src/desktops.c:2427 src/menus-misc.c:606
+#: src/desktops.c:2427 src/menus-misc.c:585
 msgid "Desks"
 msgstr "Skrivebord"
 
@@ -685,11 +685,11 @@ msgstr ""
 "Dialog for innstilling\n"
 "av virtuelle skrivebord i Enlightenment\n"
 
-#: src/dialog.c:697
+#: src/dialog.c:698
 msgid "Apply"
 msgstr "Bruk"
 
-#: src/ecompmgr.c:2306
+#: src/ecompmgr.c:2309
 msgid ""
 "Cannot enable Composite Manager.\n"
 "Use xdpyinfo to check that\n"
@@ -721,112 +721,112 @@ msgstr ""
 "\n"
 "Avslutter.\n"
 
-#: src/focus.c:754
+#: src/focus.c:790
 msgid "Focus follows pointer"
 msgstr "Fokus følger mus"
 
-#: src/focus.c:760
+#: src/focus.c:796
 msgid "Focus follows pointer sloppily"
 msgstr "Fokus følger mus løst"
 
-#: src/focus.c:766
+#: src/focus.c:802
 msgid "Focus follows mouse clicks"
 msgstr "Fokus følger musklikk"
 
-#: src/focus.c:776
+#: src/focus.c:812
 msgid "Clicking in a window always raises it"
 msgstr "Musklikk i et vindu vil alltid heve det"
 
-#: src/focus.c:784
+#: src/focus.c:820
 msgid "All new windows first get the focus"
 msgstr "Alle nye vinduer får fokus"
 
-#: src/focus.c:789
+#: src/focus.c:825
 msgid "Only new dialog windows get the focus"
 msgstr "Bare nye dialogvinduer får fokus"
 
-#: src/focus.c:796
+#: src/focus.c:832
 msgid "Only new dialogs whose owner is focused get the focus"
 msgstr "Bare nye dialoger som tilhører fokusert vindu får fokus"
 
-#: src/focus.c:801
+#: src/focus.c:837
 #, fuzzy
 msgid "Raise windows while switching focus"
 msgstr "La vinduer få fokus ved skifte"
 
-#: src/focus.c:807
+#: src/focus.c:843
 #, fuzzy
 msgid "Send mouse pointer to window while switching focus"
 msgstr "Send muspeker til vindu ved fokusskifte"
 
-#: src/focus.c:813
+#: src/focus.c:849
 #, fuzzy
 msgid "Always send mouse pointer to window on focus switch"
 msgstr "Send muspeker til vindu ved fokusskifte"
 
-#: src/focus.c:821
+#: src/focus.c:857
 msgid "Raise windows automatically"
 msgstr "Hev vinduer automatisk"
 
-#: src/focus.c:827
+#: src/focus.c:863
 msgid "Autoraise delay:"
 msgstr "Forsinkelse ved automatisk heving:"
 
-#: src/focus.c:840
+#: src/focus.c:876
 msgid "Display and use focus list"
 msgstr "Vis og bruk fokusliste"
 
-#: src/focus.c:845
+#: src/focus.c:881
 msgid "Include sticky windows in focus list"
 msgstr "Inkluder stødige vinduer i fokuslista"
 
-#: src/focus.c:850
+#: src/focus.c:886
 msgid "Include shaded windows in focus list"
 msgstr "Inkluder skyggelagte vinduer i fokuslista"
 
-#: src/focus.c:855
+#: src/focus.c:891
 msgid "Include iconified windows in focus list"
 msgstr "Inkluder vinduer i ikonboksen i fokuslista"
 
-#: src/focus.c:860
+#: src/focus.c:896
 #, fuzzy
 msgid "Include windows on other desks in focus list"
 msgstr "Inkluder skyggelagte vinduer i fokuslista"
 
-#: src/focus.c:865
+#: src/focus.c:901
 msgid "Focus windows while switching"
 msgstr "La vinduer få fokus ved skifte"
 
-#: src/focus.c:870
+#: src/focus.c:906
 msgid "Raise windows after focus switch"
 msgstr "Hev vinduer etter fokusskifte"
 
-#: src/focus.c:875
+#: src/focus.c:911
 msgid "Send mouse pointer to window after focus switch"
 msgstr "Send mus til vindu etter fokusskifte"
 
-#: src/focus.c:885
+#: src/focus.c:921
 #, fuzzy
 msgid "Focuslist image display policy (if one operation fails, try the next):"
 msgstr "Ikonbilde regler (dersom den første feiler, prøv neste etc):"
 
-#: src/focus.c:889
+#: src/focus.c:925
 msgid "First E Icon, then App Icon"
 msgstr ""
 
-#: src/focus.c:895
+#: src/focus.c:931
 msgid "First App Icon, then E Icon"
 msgstr ""
 
-#: src/focus.c:909
+#: src/focus.c:945
 msgid "Focus"
 msgstr "Fokus"
 
-#: src/focus.c:910
+#: src/focus.c:946
 msgid "Focus Settings"
 msgstr "Innstillinger for fokus"
 
-#: src/focus.c:913
+#: src/focus.c:949
 msgid ""
 "Enlightenment Focus\n"
 "Settings Dialog\n"
@@ -867,11 +867,11 @@ msgstr ""
 "Dialog for innstilling av\n"
 "spesielle effekter i Enlightenment\n"
 
-#: src/groups.c:701
+#: src/groups.c:706
 msgid "Window Group Selection"
 msgstr "Velg vindusgruppe"
 
-#: src/groups.c:704
+#: src/groups.c:709
 msgid ""
 "Enlightenment Window Group\n"
 "Selection Dialog\n"
@@ -879,11 +879,11 @@ msgstr ""
 "Vindusgrupper for Enlightenment\n"
 "Dialog for utvelgelse\n"
 
-#: src/groups.c:727 src/groups.c:736 src/groups.c:744 src/groups.c:919
+#: src/groups.c:732 src/groups.c:741 src/groups.c:749 src/groups.c:924
 msgid "Window Group Error"
 msgstr "Feil ved vindusgruppe"
 
-#: src/groups.c:729
+#: src/groups.c:734
 msgid ""
 "\n"
 "  This window currently does not belong to any groups.  \n"
@@ -897,7 +897,7 @@ msgstr ""
 "  via ett vindu som tilhører (minst) en gruppe.\n"
 "\n"
 
-#: src/groups.c:737
+#: src/groups.c:742
 msgid ""
 "\n"
 "  Currently, no groups exist or this window  \n"
@@ -911,7 +911,7 @@ msgstr ""
 "   Du må starte en gruppe til først.\n"
 "\n"
 
-#: src/groups.c:746
+#: src/groups.c:751
 msgid ""
 "\n"
 "  Currently, no groups exist. You have to start a group first.\n"
@@ -921,50 +921,50 @@ msgstr ""
 "  For øyeblikket eksister ingen grupper. Du må starte en gruppe først.\n"
 "\n"
 
-#: src/groups.c:830
+#: src/groups.c:835
 msgid "   Pick the group to configure:   "
 msgstr "  Velg gruppa som skal konfigures: "
 
-#: src/groups.c:861
+#: src/groups.c:866
 msgid ""
 "  The following actions are  \n"
 "  applied to all group members:  "
 msgstr ""
 "  Følgende handlinger vi vil bli   utført på alle medlemmene i grupppa: "
 
-#: src/groups.c:866 src/groups.c:963
+#: src/groups.c:871 src/groups.c:968
 msgid "Changing Border Style"
 msgstr "Endring av rammestil"
 
-#: src/groups.c:871 src/groups.c:968
+#: src/groups.c:876 src/groups.c:973
 msgid "Iconifying"
 msgstr "Ikonifisering"
 
-#: src/groups.c:876 src/groups.c:973
+#: src/groups.c:881 src/groups.c:978
 msgid "Killing"
 msgstr "Avslutning"
 
-#: src/groups.c:881 src/groups.c:978
+#: src/groups.c:886 src/groups.c:983
 msgid "Moving"
 msgstr "Flytting"
 
-#: src/groups.c:886 src/groups.c:983
+#: src/groups.c:891 src/groups.c:988
 msgid "Raising/Lowering"
 msgstr "Senking/Heving"
 
-#: src/groups.c:891 src/groups.c:988
+#: src/groups.c:896 src/groups.c:993
 msgid "Sticking"
 msgstr "Stødighet"
 
-#: src/groups.c:896 src/groups.c:993
+#: src/groups.c:901 src/groups.c:998
 msgid "Shading"
 msgstr "Skyggelegging"
 
-#: src/groups.c:903
+#: src/groups.c:908
 msgid "Window Group Settings"
 msgstr "Vindusgrupper"
 
-#: src/groups.c:906
+#: src/groups.c:911
 msgid ""
 "Enlightenment Window Group\n"
 "Settings Dialog\n"
@@ -972,7 +972,7 @@ msgstr ""
 "Dialog for innstilling av\n"
 "vindusgrupper i Enlightenment\n"
 
-#: src/groups.c:921
+#: src/groups.c:926
 msgid ""
 "\n"
 "  This window currently does not belong to any groups.  \n"
@@ -982,27 +982,27 @@ msgstr ""
 "  Dette vinduet tilhører ingen grupper for øyeblikket.  \n"
 "\n"
 
-#: src/groups.c:956
+#: src/groups.c:961
 msgid " Per-group settings: "
 msgstr "Innstillinger for enkelt grupper"
 
-#: src/groups.c:1002
+#: src/groups.c:1007
 msgid " Global settings: "
 msgstr " Globale innstillinger: "
 
-#: src/groups.c:1006
+#: src/groups.c:1011
 msgid "Swap Window Locations"
 msgstr "La vinduer bytte plass"
 
-#: src/groups.c:1012 src/menus-misc.c:666 config/strings.c:138
+#: src/groups.c:1017 src/menus-misc.c:645 config/strings.c:138
 msgid "Groups"
 msgstr "Grupper"
 
-#: src/groups.c:1013
+#: src/groups.c:1018
 msgid "Default Group Control Settings"
 msgstr "Innstilling av standardverdier for vindusgrupper"
 
-#: src/groups.c:1016
+#: src/groups.c:1021
 msgid ""
 "Enlightenment Default\n"
 "Group Control Settings Dialog\n"
@@ -1011,17 +1011,17 @@ msgstr ""
 "verdier for vindusgrupper i Enlightenment\n"
 "\n"
 
-#: src/groups.c:1043
+#: src/groups.c:1048
 #, fuzzy
 msgid "Pick the group the window will belong to:"
 msgstr " Velg den gruppa som vinduet skal tilhøre: \n"
 
-#: src/groups.c:1049
+#: src/groups.c:1054
 #, fuzzy
 msgid "Select the group to remove the window from:"
 msgstr "  Velg gruppa som vinduet skal fjernes fra.  "
 
-#: src/groups.c:1054
+#: src/groups.c:1059
 #, fuzzy
 msgid "Select the group to break:"
 msgstr " Velg gruppa som skal brytes opp "
@@ -1127,28 +1127,28 @@ msgstr "Meny for ikonboksen"
 msgid "Iconbox Settings"
 msgstr "Ikonboks"
 
-#: src/ipc.c:195 src/ipc.c:1471 src/ipc.c:1478 src/theme.c:379
+#: src/ipc.c:195 src/ipc.c:1462 src/ipc.c:1469 src/theme.c:379
 msgid "Message"
 msgstr "Beskjed"
 
-#: src/ipc.c:1471 src/ipc.c:1478
+#: src/ipc.c:1462 src/ipc.c:1469
 #, c-format
 msgid "e16 was built without %s support"
 msgstr ""
 
-#: src/ipc.c:1472
+#: src/ipc.c:1463
 msgid "composite"
 msgstr ""
 
-#: src/ipc.c:1479
+#: src/ipc.c:1470
 msgid "sound"
 msgstr "lyd"
 
-#: src/ipc.c:1823
+#: src/ipc.c:1814
 msgid "Enlightenment IPC Commands Help\n"
 msgstr "Enlightenment IPC Kommando Hjelp\n"
 
-#: src/ipc.c:1827
+#: src/ipc.c:1818
 #, fuzzy
 msgid ""
 "Use \"help all\" for descriptions of each command\n"
@@ -1158,23 +1158,23 @@ msgstr ""
 "bruk \"help all\" for beskrivelse av ha alle kommandoene\n"
 "bruk \"help <kommando>\" for beskrivelse av hver enkelt kommando\n"
 
-#: src/ipc.c:1829 src/ipc.c:1849 src/ipc.c:1861
+#: src/ipc.c:1820 src/ipc.c:1840 src/ipc.c:1852
 #, fuzzy
 msgid "Commands currently available:\n"
 msgstr ""
 "\n"
 "kommandoer som er tilgjengelig for øyeblikket:\n"
 
-#: src/ipc.c:1847
+#: src/ipc.c:1838
 msgid "Use \"help full\" for full descriptions of each command\n"
 msgstr ""
 
-#: src/ipc.c:1848
+#: src/ipc.c:1839
 #, fuzzy
 msgid "Use \"help <command>\" for an individual description\n"
 msgstr "bruk \"help <kommando>\" for individuell beskrivelse\n"
 
-#: src/ipc.c:1850 src/ipc.c:1862
+#: src/ipc.c:1841 src/ipc.c:1853
 #, fuzzy
 msgid "         <command>     : <description>\n"
 msgstr "<kommando> : <beskrivelse>\n"
@@ -1234,69 +1234,69 @@ msgstr ""
 "Dette er en fatal feil og Enlightenment vil nekte og starte opp.\n"
 "Vær vennlig og sjekk at dox er til stede og på rett plass.\n"
 
-#: src/magwin.c:459
+#: src/magwin.c:461
 msgid "Magnifier"
 msgstr ""
 
-#: src/menus-misc.c:437 config/strings.c:79
+#: src/menus-misc.c:416 config/strings.c:79
 msgid "Backgrounds"
 msgstr "Bakgrunner"
 
-#: src/menus-misc.c:476 config/strings.c:91 config/strings.c:113
+#: src/menus-misc.c:455 config/strings.c:91 config/strings.c:113
 msgid "Themes"
 msgstr "Tema"
 
-#: src/menus-misc.c:502
+#: src/menus-misc.c:481
 msgid "Border"
 msgstr "Kant"
 
-#: src/menus-misc.c:566
+#: src/menus-misc.c:545
 msgid "Window List"
 msgstr "Vinduliste"
 
-#: src/menus-misc.c:588
+#: src/menus-misc.c:567
 msgid "Go to this Desktop"
 msgstr "Gå til dette skrivebordet"
 
-#: src/menus-misc.c:592 src/menus-misc.c:688
+#: src/menus-misc.c:571 src/menus-misc.c:667
 #, c-format
 msgid "Desktop %i"
 msgstr "Skriverbord nr. %i"
 
-#: src/menus-misc.c:635
+#: src/menus-misc.c:614
 msgid "Show/Hide this group"
 msgstr "Vis/Skjul denne gruppa"
 
-#: src/menus-misc.c:640
+#: src/menus-misc.c:619
 msgid "Iconify this group"
 msgstr "Ikonifiser denne gruppa"
 
-#: src/menus-misc.c:651
+#: src/menus-misc.c:630
 #, c-format
 msgid "Group %i"
 msgstr "Gruppe %i"
 
-#: src/menus.c:2138
+#: src/menus.c:2139
 msgid "Animated display of menus"
 msgstr "La menyer være animerte"
 
-#: src/menus.c:2143
+#: src/menus.c:2144
 msgid "Always pop up menus on screen"
 msgstr "La menyer alltid opptre innenfor skjermen"
 
-#: src/menus.c:2148
+#: src/menus.c:2149
 msgid "Warp pointer after moving menus"
 msgstr "Send muspeker tilbake etter flytting av meny"
 
-#: src/menus.c:2165
+#: src/menus.c:2166
 msgid "Menus"
 msgstr "Menyer"
 
-#: src/menus.c:2166
+#: src/menus.c:2167
 msgid "Menu Settings"
 msgstr "Innstillinger for menyer"
 
-#: src/menus.c:2169
+#: src/menus.c:2170
 #, fuzzy
 msgid ""
 "Enlightenment Menu\n"
@@ -1338,7 +1338,7 @@ msgstr ""
 msgid "Tooltips:"
 msgstr "Verktøytips:"
 
-#: src/mod-trans.c:172 src/settings.c:92 src/settings.c:97 src/settings.c:373
+#: src/mod-trans.c:172 src/settings.c:92 src/settings.c:97 src/settings.c:375
 msgid "Opaque"
 msgstr "Med ramme"
 
@@ -1366,124 +1366,124 @@ msgstr ""
 "Dialog for innstilling av\n"
 "Enlightenments verktøytips\n"
 
-#: src/pager.c:998 config/strings.c:49 config/strings.c:121
+#: src/pager.c:1005 config/strings.c:49 config/strings.c:121
 msgid "Window Options"
 msgstr "Valg for vinduer"
 
-#: src/pager.c:1005 config/strings.c:51 config/strings.c:124
+#: src/pager.c:1012 config/strings.c:51 config/strings.c:124
 msgid "Iconify"
 msgstr "Ikonifiser"
 
-#: src/pager.c:1013 config/strings.c:123
+#: src/pager.c:1020 config/strings.c:123
 msgid "Annihilate"
 msgstr "Fjern"
 
-#: src/pager.c:1017
+#: src/pager.c:1024
 msgid "Stick / Unstick"
 msgstr "Stødig / ustødig"
 
-#: src/pager.c:1024
+#: src/pager.c:1031
 msgid "Desktop Options"
 msgstr "Valg for skrivebordet"
 
-#: src/pager.c:1030
+#: src/pager.c:1037
 msgid "Pager Settings..."
 msgstr "Innstillinger for skrivebordsoversikt"
 
-#: src/pager.c:1035
+#: src/pager.c:1042
 msgid "Snapshotting Off"
 msgstr "Ikke ta bilder av skjerm"
 
-#: src/pager.c:1039
+#: src/pager.c:1046
 msgid "High Quality Off"
 msgstr "Høy kvalitet av"
 
-#: src/pager.c:1041
+#: src/pager.c:1048
 msgid "High Quality On"
 msgstr "Høy kvalitet på"
 
-#: src/pager.c:1046
+#: src/pager.c:1053
 msgid "Snapshotting On"
 msgstr "Ta bilder av skjerm"
 
-#: src/pager.c:1050
+#: src/pager.c:1057
 msgid "Zoom Off"
 msgstr ""
 
-#: src/pager.c:1052
+#: src/pager.c:1059
 msgid "Zoom On"
 msgstr ""
 
-#: src/pager.c:1802 src/pager.c:1897
+#: src/pager.c:1810 src/pager.c:1905
 msgid "Pager scanning speed:"
 msgstr "Oppfriskningshastighet for skrivebordsoversikt:"
 
-#: src/pager.c:1803 src/pager.c:1898
+#: src/pager.c:1811 src/pager.c:1906
 msgid "lines per second"
 msgstr "linjer pr. sekund"
 
-#: src/pager.c:1836
+#: src/pager.c:1844
 msgid "Enable pager display"
 msgstr "Bruk skrivebordsoversikt"
 
-#: src/pager.c:1846
+#: src/pager.c:1854
 msgid "Pager Mode:"
 msgstr ""
 
-#: src/pager.c:1850
+#: src/pager.c:1858
 msgid "Simple"
 msgstr "Enkel"
 
-#: src/pager.c:1856
+#: src/pager.c:1864
 msgid "Make miniature snapshots of the screen"
 msgstr "Lag miniatyrbilder av skjermen"
 
-#: src/pager.c:1863
+#: src/pager.c:1871
 msgid "Live Update"
 msgstr ""
 
-#: src/pager.c:1874
+#: src/pager.c:1882
 msgid "Smooth high quality snapshots in snapshot mode"
 msgstr "Lag miniatyrbilder av skjerm med høy kvalitet"
 
-#: src/pager.c:1879
+#: src/pager.c:1887
 msgid "Zoom in on pager windows when mouse is over them"
 msgstr "Zoom inn vinduer på skrivebordsoversikt når musa er over dem"
 
-#: src/pager.c:1885
+#: src/pager.c:1893
 msgid "Pop up window title when mouse is over the window"
 msgstr "Framhev vindustittel når musa er over vinudet"
 
-#: src/pager.c:1890
+#: src/pager.c:1898
 msgid "Continuously scan screen to update pager"
 msgstr "Oppdater skrivebordsoversikt kontinurlig "
 
-#: src/pager.c:1913
+#: src/pager.c:1921
 msgid "Mouse button to select and drag windows:"
 msgstr "Musknapp som velger og drar vinduer:"
 
-#: src/pager.c:1923 src/pager.c:1948 src/pager.c:1973
+#: src/pager.c:1931 src/pager.c:1956 src/pager.c:1981
 msgid "Middle"
 msgstr "Midtre"
 
-#: src/pager.c:1938
+#: src/pager.c:1946
 msgid "Mouse button to select desktops:"
 msgstr "Musknapp som velger skrivebord:"
 
-#: src/pager.c:1963
+#: src/pager.c:1971
 msgid "Mouse button to display pager menu:"
 msgstr "Musknapp som bringer opp menyen til skrivebordsoversikten:"
 
-#: src/pager.c:1987
+#: src/pager.c:1995
 #, fuzzy
 msgid "Pagers"
 msgstr "Skrivebordsoversikt"
 
-#: src/pager.c:1988
+#: src/pager.c:1996
 msgid "Pager Settings"
 msgstr "Skrivebordsoversikt"
 
-#: src/pager.c:1991
+#: src/pager.c:1999
 msgid ""
 "Enlightenment Desktop & Area\n"
 "Pager Settings Dialog\n"
@@ -1585,80 +1585,80 @@ msgstr "Flytte metoder"
 msgid "Resize Methods:"
 msgstr "Størrelse metoder"
 
-#: src/settings.c:102 src/settings.c:107 src/settings.c:378
+#: src/settings.c:102 src/settings.c:107 src/settings.c:380
 msgid "Technical"
 msgstr "Teknisk"
 
-#: src/settings.c:122 src/settings.c:127 src/settings.c:388
+#: src/settings.c:123 src/settings.c:128 src/settings.c:390
 msgid "Shaded"
 msgstr "Skyggelagt"
 
-#: src/settings.c:132 src/settings.c:137 src/settings.c:393
+#: src/settings.c:133 src/settings.c:138 src/settings.c:395
 msgid "Semi-Solid"
 msgstr "Hel"
 
-#: src/settings.c:143
+#: src/settings.c:144
 msgid "Translucent"
 msgstr "Gjennomsiktig"
 
-#: src/settings.c:152
+#: src/settings.c:154
 msgid "Avoid server grab"
 msgstr ""
 
-#: src/settings.c:162
+#: src/settings.c:164
 msgid "Move/Resize Geometry Info Postion:"
 msgstr "Info ved flytting og endring av geometri:"
 
-#: src/settings.c:166
+#: src/settings.c:168
 msgid "Window Center (O/T/B Methods)"
 msgstr "I midten av vinduet"
 
-#: src/settings.c:172
+#: src/settings.c:174
 msgid "Always Screen corner"
 msgstr "Alltid i hjørne av skjermen"
 
-#: src/settings.c:178
+#: src/settings.c:180
 msgid "Don't show"
 msgstr "Ikke vis"
 
-#: src/settings.c:190
+#: src/settings.c:192
 msgid "Default Resize Policy:"
 msgstr ""
 
-#: src/settings.c:194
+#: src/settings.c:196
 msgid "Conservative"
 msgstr "Konservativ"
 
-#: src/settings.c:200
+#: src/settings.c:202
 msgid "Available"
 msgstr "Tilgjengelig"
 
-#: src/settings.c:206
+#: src/settings.c:208
 msgid "Absolute"
 msgstr "Absolutt"
 
-#: src/settings.c:216
+#: src/settings.c:218
 #, fuzzy
 msgid "Update window while moving"
 msgstr "La vinduer få fokus ved skifte"
 
-#: src/settings.c:221
+#: src/settings.c:223
 msgid "Synchronize move/resize with application"
 msgstr ""
 
-#: src/settings.c:226
+#: src/settings.c:228
 msgid "Do not cover dragbar"
 msgstr ""
 
-#: src/settings.c:232
+#: src/settings.c:234
 msgid "Move/Resize"
 msgstr "Flytt/Endre størrelse"
 
-#: src/settings.c:233
+#: src/settings.c:235
 msgid "Move & Resize Settings"
 msgstr "Flytting & størrelse"
 
-#: src/settings.c:236
+#: src/settings.c:238
 msgid ""
 "Enlightenment Move & Resize\n"
 "Method Settings Dialog\n"
@@ -1666,81 +1666,81 @@ msgstr ""
 "Dialog for innstilling av\n"
 "flytting & størrelse i Enlightenment\n"
 
-#: src/settings.c:332
+#: src/settings.c:334
 msgid "Dialog windows appear together with their owner"
 msgstr "Dialogvinduer opptrer sammen med sitt opphav"
 
-#: src/settings.c:337
+#: src/settings.c:339
 msgid "Switch to desktop where dialog appears"
 msgstr "Skift til det skrivebordet hvor dialogen opptrer "
 
-#: src/settings.c:345
+#: src/settings.c:347
 msgid "Place windows manually"
 msgstr "Plasser vinduer manuelt"
 
-#: src/settings.c:350
+#: src/settings.c:352
 msgid "Place windows under mouse"
 msgstr "Plasser vinduer under muspeker"
 
-#: src/settings.c:355
+#: src/settings.c:357
 #, fuzzy
 msgid "Center windows when desk is full"
 msgstr "Inkluder skyggelagte vinduer i fokuslista"
 
-#: src/settings.c:360
+#: src/settings.c:362
 msgid "Slide windows in when they appear"
 msgstr "La vinduer gli inn når de kommer"
 
-#: src/settings.c:365
+#: src/settings.c:367
 msgid "Slide windows around when cleaning up"
 msgstr "La vinduer gli omkring ved rydding"
 
-#: src/settings.c:370
+#: src/settings.c:372
 msgid "Slide Method:"
 msgstr "Glidmetoder:"
 
-#: src/settings.c:403
+#: src/settings.c:405
 #, fuzzy
 msgid "Appear Slide speed:"
 msgstr "Hastighet ved gliding av nye vinduer: (treg)\n"
 
-#: src/settings.c:414
+#: src/settings.c:416
 #, fuzzy
 msgid "Cleanup Slide speed:"
 msgstr "Hastighet ved oppryddningsgliding: (treg)\n"
 
-#: src/settings.c:427
+#: src/settings.c:429
 msgid "Animate shading and unshading of windows"
 msgstr "Animasjon ved skyggelegging av vinduer"
 
-#: src/settings.c:433
+#: src/settings.c:435
 #, fuzzy
 msgid "Window Shading speed:"
 msgstr "Hastighet ved skyggeleggingsgliding: (treg)\n"
 
-#: src/settings.c:446
+#: src/settings.c:448
 #, fuzzy
 msgid "Ignore struts"
 msgstr "Overse dette"
 
-#: src/settings.c:451
+#: src/settings.c:453
 msgid "Raise fullscreen windows"
 msgstr ""
 
-#: src/settings.c:459
+#: src/settings.c:461
 #, fuzzy
 msgid "Place windows on another head when full"
 msgstr "Plasser vinduer manuelt"
 
-#: src/settings.c:467
+#: src/settings.c:469
 msgid "Placement"
 msgstr "Plassering"
 
-#: src/settings.c:468
+#: src/settings.c:470
 msgid "Window Placement Settings"
 msgstr "Plassering av vinduer"
 
-#: src/settings.c:471
+#: src/settings.c:473
 msgid ""
 "Enlightenment Window Placement\n"
 "Settings Dialog\n"
@@ -1748,32 +1748,32 @@ msgstr ""
 "Dialog for innstilling\n"
 "av vindusplassering i Enlightenment\n"
 
-#: src/settings.c:518
+#: src/settings.c:520
 msgid "Enable Dialog Headers"
 msgstr "Bruk dialogoverskrifter"
 
-#: src/settings.c:524
+#: src/settings.c:526
 #, fuzzy
 msgid "Enable Button Images"
 msgstr "Skru på støtte for lyd"
 
-#: src/settings.c:533
+#: src/settings.c:535
 msgid "Enable sliding startup windows"
 msgstr ""
 
-#: src/settings.c:541
+#: src/settings.c:543
 msgid "Use saveunders to reduce window exposures"
 msgstr "Bruk underlagret for å redusere vindusutbredelse"
 
-#: src/settings.c:547 config/strings.c:136 config/strings.c:152
+#: src/settings.c:549 config/strings.c:136 config/strings.c:152
 msgid "Miscellaneous"
 msgstr "Forskjellig"
 
-#: src/settings.c:548
+#: src/settings.c:550
 msgid "Miscellaneous Settings"
 msgstr "Forskjellige innstillinger"
 
-#: src/settings.c:551
+#: src/settings.c:553
 msgid ""
 "Enlightenment Miscellaneous\n"
 "Settings Dialog\n"
@@ -1781,59 +1781,59 @@ msgstr ""
 "Dialog for ulike innstillinger\n"
 "i Enlightenment\n"
 
-#: src/settings.c:595
+#: src/settings.c:597
 #, fuzzy
 msgid "Enable Composite"
 msgstr "Skru på støtte for lyd"
 
-#: src/settings.c:603
+#: src/settings.c:605
 #, fuzzy
 msgid "Enable Fading"
 msgstr "Bruk kantflipping"
 
-#: src/settings.c:609
+#: src/settings.c:611
 msgid "Fading Speed:"
 msgstr ""
 
-#: src/settings.c:622
+#: src/settings.c:624
 msgid "Shadows Off"
 msgstr ""
 
-#: src/settings.c:628
+#: src/settings.c:630
 msgid "Shadows Sharp"
 msgstr ""
 
-#: src/settings.c:634
+#: src/settings.c:636
 msgid "Shadows Sharp2"
 msgstr ""
 
-#: src/settings.c:640
+#: src/settings.c:642
 msgid "Shadows Blurred"
 msgstr ""
 
-#: src/settings.c:651
+#: src/settings.c:653
 msgid "Default focused window opacity:"
 msgstr ""
 
-#: src/settings.c:662
+#: src/settings.c:664
 msgid "Default unfocused window opacity:"
 msgstr ""
 
-#: src/settings.c:673
+#: src/settings.c:675
 msgid "Default pop-up window opacity:"
 msgstr ""
 
-#: src/settings.c:684
+#: src/settings.c:686
 #, fuzzy
 msgid "Composite"
 msgstr "Skru på støtte for lyd"
 
-#: src/settings.c:685
+#: src/settings.c:687
 #, fuzzy
 msgid "Composite Settings"
 msgstr "Verktøytips"
 
-#: src/settings.c:688
+#: src/settings.c:690
 #, fuzzy
 msgid ""
 "Enlightenment Composite\n"
@@ -1842,7 +1842,7 @@ msgstr ""
 "Dialog for innstilling av\n"
 "Enlightenments verktøytips\n"
 
-#: src/settings.c:773
+#: src/settings.c:775
 msgid "Enlightenment Settings"
 msgstr "Innstillinger for Enlightenment"
 
