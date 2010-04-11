@@ -247,27 +247,27 @@ ExtInitInput(int available)
 #endif
 
 static const EServerExt Extensions[] = {
-   {SHAPENAME, XEXT_SHAPE, XShapeQueryVersion, ExtInitShape},
+   {"SHAPE", XEXT_SHAPE, XShapeQueryVersion, ExtInitShape},
 #if USE_XSYNC
-   {SYNC_NAME, XEXT_SYNC, XSyncInitialize, ExtInitSync},
+   {"SYNC", XEXT_SYNC, XSyncInitialize, ExtInitSync},
 #endif
 #if USE_XSCREENSAVER
-   {ScreenSaverName, XEXT_SCRSAVER, XScreenSaverQueryVersion, ExtInitSS},
+   {"MIT-SCREEN-SAVER", XEXT_SCRSAVER, XScreenSaverQueryVersion, ExtInitSS},
 #endif
 #if USE_XRANDR
-   {RANDR_NAME, XEXT_RANDR, XRRQueryVersion, ExtInitRR},
+   {"RANDR", XEXT_RANDR, XRRQueryVersion, ExtInitRR},
 #endif
 #if USE_COMPOSITE
-   {COMPOSITE_NAME, XEXT_COMPOSITE, XCompositeQueryVersion, NULL},
-   {DAMAGE_NAME, XEXT_DAMAGE, XDamageQueryVersion, NULL},
-   {XFIXES_NAME, XEXT_FIXES, XFixesQueryVersion, NULL},
-   {RENDER_NAME, XEXT_RENDER, XRenderQueryVersion, NULL},
+   {"Composite", XEXT_COMPOSITE, XCompositeQueryVersion, NULL},
+   {"DAMAGE", XEXT_DAMAGE, XDamageQueryVersion, NULL},
+   {"XFIXES", XEXT_FIXES, XFixesQueryVersion, NULL},
+   {"RENDER", XEXT_RENDER, XRenderQueryVersion, NULL},
 #endif
 #if USE_GLX
-   {GLX_EXTENSION_NAME, XEXT_GLX, glXQueryVersion, NULL},
+   {"GLX", XEXT_GLX, glXQueryVersion, NULL},
 #endif
 #if USE_XI2
-   {INAME, XEXT_XI, EInputQueryVersion, ExtInitInput},
+   {"XInputExtension", XEXT_XI, EInputQueryVersion, ExtInitInput},
 #endif
 };
 
