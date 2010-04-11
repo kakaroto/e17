@@ -1118,7 +1118,7 @@ EwinEventDestroy(EWin * ewin)
 }
 
 static void
-EwinEventReparent(EWin * ewin)
+EwinEventReparent(EWin * ewin, XEvent * ev)
 {
    Window              parent;
 
@@ -1128,7 +1128,7 @@ EwinEventReparent(EWin * ewin)
    if (EoIsGone(ewin))
       parent = None;
    else
-      parent = EXWindowGetParent(EwinGetClientXwin(ewin));
+      parent = ev->xreparent.parent;
    if (EDebug(EDBUG_TYPE_EWINS))
       Eprintf("EwinEventReparent %#lx st=%d parent=%#lx: %s\n",
 	      EwinGetClientXwin(ewin), ewin->state.state, parent,
@@ -2350,7 +2350,7 @@ EwinHandleEventsContainer(Win win __UNUSED__, XEvent * ev, void *prm)
 	if (ev->xreparent.window != EwinGetClientXwin(ewin))
 	   break;
       do_reparent:
-	EwinEventReparent(ewin);
+	EwinEventReparent(ewin, ev);
 	break;
 
      case EX_EVENT_MAP_GONE:
@@ -2468,7 +2468,7 @@ EwinHandleEventsRoot(Win win __UNUSED__, XEvent * ev, void *prm __UNUSED__)
 	   break;
 	if (ev->type == EX_EVENT_REPARENT_GONE)
 	   EoSetGone(ewin);
-	EwinEventReparent(ewin);
+	EwinEventReparent(ewin, ev);
 	break;
 
      case ClientMessage:
