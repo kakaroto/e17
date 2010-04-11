@@ -5,4 +5,4 @@ Icon=e-module
 Comment=Control MPRIS compatible media player from Everything.
 Comment[de]=Steuert MPRIS kompatible Mediaplayer mit Everything.
 #Several different types available here. NEED TO DOC THESE.
-X-Enlightenment-ModuleType=system
+X-Enlightenment-ModuleType=everything

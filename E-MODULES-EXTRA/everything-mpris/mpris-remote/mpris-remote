@@ -351,7 +351,7 @@ class Commander(object):
                     tracklist.AddTrack(path, False)
         elif os.path.isdir(uri):
             files = os.listdir(uri) 
-            regex = ".*\\.(mp3|ogg|flac|m4a)$"
+            regex = ".*\\.(mp3|ogg|flac|m4a|wma)$"
             reobj = re.compile(regex)
             files = sorted(files)
             for f in files:

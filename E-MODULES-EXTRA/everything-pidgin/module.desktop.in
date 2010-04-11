@@ -4,4 +4,4 @@ Name=Everything Pidgin
 Icon=e-module
 Comment=Open chat windows and send files to buddies.
 #Several different types available here. NEED TO DOC THESE.
-X-Enlightenment-ModuleType=system
+X-Enlightenment-ModuleType=everything

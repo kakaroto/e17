@@ -4,4 +4,4 @@ Name=Everything Tracker (0.6)
 Icon=e-module
 Comment=Find Files with Tracker (requires version 0.6)
 #Several different types available here. NEED TO DOC THESE.
-X-Enlightenment-ModuleType=system
+X-Enlightenment-ModuleType=everything
