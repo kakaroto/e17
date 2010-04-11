@@ -9,7 +9,7 @@ elm_main(int argc, char **argv)
 
    for (i = 0; i < 3; i++) 
      {
-        Evas_Object *win, *bg, *lbl;
+        Evas_Object *win, *bg, *lbl, *box;
         Ecore_X_Window xwin;
         Ecore_X_Window_State states[2];
         char buff[PATH_MAX];
@@ -38,6 +38,11 @@ elm_main(int argc, char **argv)
         elm_win_resize_object_add(win, bg);
         evas_object_show(bg);
 
+        box = elm_box_add(win);
+        evas_object_size_hint_weight_set(box, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+        elm_win_resize_object_add(win, box);
+        evas_object_show(box);
+
         if (i == 1) 
           {
              snprintf(buff, sizeof(buff), 
@@ -51,10 +56,9 @@ elm_main(int argc, char **argv)
                       i, i, i);
           }
 
-        lbl = elm_label_add(win);
-        elm_label_label_set(lbl, buff);
-        evas_object_size_hint_weight_set(lbl, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-        elm_win_resize_object_add(win, lbl);
+        lbl = elm_button_add(win);
+        elm_button_label_set(lbl, buff);
+        elm_box_pack_end(box, lbl);
         evas_object_show(lbl);
 
         evas_object_size_hint_min_set(win, 100, 32);
