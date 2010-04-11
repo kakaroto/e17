@@ -2,8 +2,9 @@
 rm -f config.cache
 
 AC_INIT(emage, 0.0.2, enlightenment-devel@lists.sourceforge.net)
-AC_PREREQ(2.52)
+AC_PREREQ(2.60)
 AC_CONFIG_SRCDIR(configure.ac)
+AC_CONFIG_MACRO_DIR([m4])
 AC_CANONICAL_BUILD
 AC_CANONICAL_HOST
 AC_ISC_POSIX
@@ -49,10 +50,11 @@ AC_SUBST(EMAGE_LIBS)
 ## PNG
 PKG_CHECK_MODULES(PNG, [libpng >= 0.22], [enable_png="yes"], [enable_png="no"])
 AM_CONDITIONAL(EMAGE_ENABLE_PNG, test "x${enable_png}" = "xyes")
+EMAGE_MODULE([Png], [${enable_png}], [yes])
 ## JPG
 AC_CHECK_HEADER(jpeglib.h, [enable_jpg="yes"], [enable_jpg="no"])
 AM_CONDITIONAL(EMAGE_ENABLE_JPG, test "x${enable_jpg}" = "xyes")
-
+EMAGE_MODULE([Jpg], [${enable_jpg}], [no])
 ## Make the debug preprocessor configurable
 
 AC_OUTPUT([
@@ -80,8 +82,8 @@ echo
 echo "Configuration Options Summary:"
 echo
 echo "Providers"
-echo "PNG.......................: ${enable_png}"
-echo "JPG.......................: ${enable_jpg}"
+echo "PNG.......................: ${have_module_png}"
+echo "JPG.......................: ${have_module_jpg}"
 echo "Installation Path.........: $prefix"
 echo
 echo "Now type 'make' ('gmake' on some systems) to compile $PACKAGE,"

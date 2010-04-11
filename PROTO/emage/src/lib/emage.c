@@ -143,7 +143,6 @@ static Eina_Bool _provider_data_load(Emage_Provider *p, const char *file,
 		ret = EINA_FALSE;
 		goto info;
 	}
-	printf("cformat = %d\n", cfmt);
 	/* create a buffer of format cfmt where the provider will fill */
 	_provider_data_create(&cdata, cfmt, w, h);
 	if (!*s)
@@ -307,10 +306,9 @@ EAPI int emage_init(void)
 		EMAGE_ERROR_SAVING = eina_error_msg_register("Error saving the image");
 
 		/* the modules */
-#if 1
 		_modules = eina_module_list_get(_modules, PACKAGE_LIB_DIR"/emage/", 1, NULL, NULL);
 		eina_module_list_load(_modules);
-#else
+#if BUILD_STATIC_MODULE_PNG
 		png_provider_init();
 #endif
 		/* TODO the pool of threads */
@@ -326,9 +324,8 @@ EAPI void emage_shutdown(void)
 	if (!_init_count)
 	{
 		/* unload every module */
-#if 1
 		eina_module_list_free(_modules);
-#else
+#if BUILD_STATIC_MODULE_PNG
 		png_provider_exit();
 #endif
 		/* shutdown every provider */

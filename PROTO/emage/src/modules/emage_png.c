@@ -350,6 +350,9 @@ static Emage_Provider _provider = {
  *============================================================================*/
 Eina_Bool png_provider_init(void)
 {
+	/* @todo
+	 * - Register png spepcific errors
+	 */
 	return emage_provider_register(&_provider);
 }
 
