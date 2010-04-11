@@ -18,6 +18,8 @@ struct _Plugin
   Eina_List *files;
 
   DBusPendingCall *pnd;
+
+  Eina_Bool fetching;
 };
 
 static E_DBus_Connection *conn = NULL;
@@ -119,6 +121,8 @@ _cleanup(Evry_Plugin *plugin)
   p->pnd = NULL;
 
   EVRY_PLUGIN_ITEMS_CLEAR(p);
+
+  p->fetching = EINA_FALSE;
 }
 
 static int
@@ -143,15 +147,22 @@ _dbus_cb_reply(void *data, DBusMessage *msg, DBusError *error)
   Evry_Item_File *file;
   Eina_List *files = NULL;
   Plugin *p = data;
-
+  Eina_List *l;
+  
   p->pnd = NULL;
-   
+
+  if (!p->fetching)
+    {
+      ERR("cb after cleanup!\n");
+      return;
+    }
+
   if (dbus_error_is_set(error))
     {
       ERR("%s - %s\n", error->name, error->message);
       return;
     }
-
+  
   dbus_message_iter_init(msg, &array);
   if (dbus_message_iter_get_arg_type(&array) == DBUS_TYPE_ARRAY)
     {
@@ -187,8 +198,6 @@ _dbus_cb_reply(void *data, DBusMessage *msg, DBusError *error)
 
   if (files)
     {
-      Eina_List *l;
-
       EINA_LIST_FREE(p->files, file)
 	evry_item_free(EVRY_ITEM(file));
 
@@ -197,6 +206,12 @@ _dbus_cb_reply(void *data, DBusMessage *msg, DBusError *error)
 
       EINA_LIST_FOREACH(p->files, l, file)
 	EVRY_PLUGIN_ITEM_APPEND(p, file);
+    }
+  else if (p->files)
+    {
+      EINA_LIST_FOREACH(p->files, l, file)
+	if (evry_fuzzy_match(((Evry_Item *)file)->label, p->input))
+	  EVRY_PLUGIN_ITEM_APPEND(p, file);
     }
 
   evry_plugin_async_update(EVRY_PLUGIN(p), EVRY_ASYNC_UPDATE_ADD);
@@ -232,6 +247,8 @@ _fetch(Evry_Plugin *plugin, const char *input)
 	  return 0;
 	}
 
+      p->fetching = EINA_TRUE;
+      
       msg = dbus_message_new_method_call(bus_name,
 					 "/org/freedesktop/Tracker1/Resources",
 					 "org.freedesktop.Tracker1.Resources",
