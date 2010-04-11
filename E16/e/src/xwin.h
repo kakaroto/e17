@@ -129,6 +129,7 @@ Win                 ELookupXwin(Window xwin);
 #define             WinGetDepth(win)		((win)->depth)
 #define             WinGetVisual(win)		((win)->visual)
 #define             WinGetCmap(win)		((win)->cmap)
+#define             WinGetNumRect(win)		((win)->num_rect)
 #define             WinIsMapped(win)		((win)->mapped != 0)
 #define             WinIsShaped(win)		((win)->num_rect != 0)
 

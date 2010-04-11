@@ -1627,6 +1627,9 @@ ECompMgrDetermineOrder(EObj * const *lst, int num, EObj ** first,
 	if ((!eo->shown && !eo->fading) || eo->desk != dsk)
 	   continue;
 
+	if (EobjHasEmptyShape(eo))
+	   continue;
+
 	/* Region of shaped window in screen coordinates */
 	if (!cw->have_shape)
 	   ECompMgrWinSetShape(eo);

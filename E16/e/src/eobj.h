@@ -79,6 +79,8 @@ struct _eobj {
 #define EobjGetW(eo)            WinGetW(EobjGetWin(eo))
 #define EobjGetH(eo)            WinGetH(EobjGetWin(eo))
 #define EobjGetBW(eo)           WinGetBorderWidth(EobjGetWin(eo))
+#define EobjHasEmptyShape(eo)   (WinGetNumRect(EobjGetWin(eo)) < 0)
+
 #define EobjGetType(eo)         ((eo)->type)
 #define EobjGetDesk(eo)         ((eo)->desk)
 #define EobjGetName(eo)         ((eo)->icccm.wm_name)
