@@ -519,6 +519,7 @@ _MoveResizeMoveHandleMotion(void)
 
    if (Mode.mode == MODE_MOVE_PENDING)
      {
+	Mode.mode = MODE_MOVE;
 	if (Mode_mr.grab_server)
 	  {
 	     EGrabServer();
@@ -537,7 +538,6 @@ _MoveResizeMoveHandleMotion(void)
 	     if (Conf.movres.mode_move == 0)
 		Mode_mr.mode = 0;
 	  }
-	Mode.mode = MODE_MOVE;
 	dx = Mode.events.mx - Mode_mr.start_x;
 	dy = Mode.events.my - Mode_mr.start_y;
      }
