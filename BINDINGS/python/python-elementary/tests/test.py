@@ -2779,34 +2779,79 @@ def genlist_clicked(obj, it):
     bx.show()
 
     gl = elementary.Genlist(win)
+    def _gl_selected(item, gl, item_data):
+        print "selected"
+    gl._callback_add("selected", _gl_selected, gl)
+    def _gl_clicked(item, gl, item_data):
+        print "clicked"
+    gl._callback_add("clicked", _gl_clicked, gl)
+    def _gl_longpressed(item, gl, item_data):
+        print "longpressed"
+    gl._callback_add("longpressed", _gl_longpressed, gl)
     gl.size_hint_weight_set(evas.EVAS_HINT_EXPAND, evas.EVAS_HINT_EXPAND)
     gl.size_hint_align_set(evas.EVAS_HINT_FILL, evas.EVAS_HINT_FILL)
-
-    def label_get(obj, part, item_data):
-        return item_data
-    itc = elementary.GenlistItemClass(label_get_func=label_get)
-
-    def item_clicked(item, gl, item_data):
-        print "clicked:", repr(item), gl, item_data
-        print "\tselected:", item.selected
-        print "\tdisabled:", item.disabled
-        print "\texpanded:", item.expanded
-        print "\tdisplay_only:", item.display_only
-        print "\tgenlist is the same:", item.genlist == gl
-        print "\tparent:", item.parent
-        print "\tobject:", item.object
-
-    for i in xrange(0, 10):
-        it = gl.item_append(itc, "item %d" % i, func=item_clicked)
-
-    gl.item_insert_before(itc, "BEFORE", it)
-    gl.item_insert_after(itc, "AFTER", it)
-
     bx.pack_end(gl)
     gl.show()
 
-    win.resize(300, 300)
+    over = evas.Rectangle(win.evas_get())
+    over.color_set(0, 0, 0, 0)
+
+    def _gl_move(evas, evt, gl):
+        gli = gl.at_xy_item_get(evt.position.canvas.x, evt.position.canvas.y)
+        if gli:
+            print "over %s", gli
+        else:
+            print "over none"
+
+    over.event_callback_add(evas.EVAS_CALLBACK_MOUSE_DOWN, _gl_move, gl)
+    over.repeat_events_set(True)
+    over.show()
+    over.size_hint_weight_set(evas.EVAS_HINT_EXPAND, evas.EVAS_HINT_EXPAND)
+    win.resize_object_add(over)
+
+    def gl_label_get(obj, part, item_data):
+        return "Item # %i" % (item_data,)
+
+    def gl_icon_get(obj, part, data):
+        ic = elementary.Icon(obj)
+        ic.file_set("images/logo_small.png")
+        ic.size_hint_aspect_set(evas.EVAS_ASPECT_CONTROL_VERTICAL, 1, 1)
+        return ic
+
+    def gl_state_get(obj, part, item_data):
+        return False
+
+    itc1 = elementary.GenlistItemClass(item_style="default",
+                                       label_get_func=gl_label_get,
+                                       icon_get_func=gl_icon_get,
+                                       state_get_func=gl_state_get)
+
+    bt_50 = elementary.Button(win)
+    bt_50.label_set("Go to 50")
+    bt_50.show()
+    bx.pack_end(bt_50)
+
+    bt_1500 = elementary.Button(win)
+    bt_1500.label_set("Go to 1500")
+    bt_1500.show()
+    bx.pack_end(bt_1500)
+
+    for i in xrange(0, 2000):
+        def gl_sel(gli, gl):
+            print "sel item %s on genlist %s" % (gli, gl)
+        gli = gl.item_append(itc1, i, func=gl_sel)
+        if i == 50:
+            def _bt50_cb(button, gli):
+                gli.bring_in()
+            bt_50._callback_add("clicked", _bt50_cb, gli)
+        elif i == 1500:
+            def _bt1500_cb(button, gli):
+                gli.middle_bring_in()
+            bt_1500._callback_add("clicked", _bt1500_cb, gli)
+
+    win.resize(480, 800)
     win.show()
+
 # }}}
 
 #----- Main -{{{-
@@ -2868,6 +2913,7 @@ if __name__ == "__main__":
                ("List 2", list2_clicked),
                ("List 3", list3_clicked),
                ("InnerWindow", inner_window_clicked),
+               ("Genlist", genlist_clicked),
                ("Checks", check_clicked),
                ("Radios", radio_clicked),
                ("Pager", pager_clicked),
@@ -2878,8 +2924,7 @@ if __name__ == "__main__":
                ("Spinner", spinner_clicked),
                ("Notify", notify_clicked),
                ("Menu", menu_clicked),
-               ("Panel", panel_clicked),
-               ("Genlist", genlist_clicked)]
+               ("Panel", panel_clicked)]
 
 
 
