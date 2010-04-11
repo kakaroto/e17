@@ -40,6 +40,7 @@
 void                EventsInit(void);
 void                EventsMain(void);
 void                EventShow(const XEvent * ev);
+void                EventShowError(const XErrorEvent * ev);
 
 typedef struct _EventFdDesc EventFdDesc;
 typedef void        (EventFdHandler) (void);

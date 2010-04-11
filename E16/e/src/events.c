@@ -355,6 +355,40 @@ EventsInit(void)
    EventFdRegister(ConnectionNumber(disp), NULL);
 }
 
+static const char  *
+EventsGetExtensionName(int req)
+{
+   unsigned int        i;
+   EServerExtData     *exd;
+
+   for (i = 0; i < sizeof(Extensions) / sizeof(EServerExt); i++)
+     {
+	exd = ExtData + Extensions[i].ix;
+	if (req == exd->major_op)
+	   return Extensions[i].name;
+     }
+
+   return "?";
+}
+
+void
+EventShowError(const XErrorEvent * ev)
+{
+   Display            *dpy = disp;
+   char                buf[64], buf1[64];
+
+   if (ev->request_code < 128)
+      Esnprintf(buf, sizeof(buf), "%d", ev->request_code);
+   else
+      Esnprintf(buf, sizeof(buf), "%s.%d",
+		EventsGetExtensionName(ev->request_code), ev->minor_code);
+   XGetErrorDatabaseText(dpy, "XRequest", buf, "", buf1, sizeof(buf1));
+   XGetErrorText(dpy, ev->error_code, buf, sizeof(buf));
+   Eprintf("*** ERROR: xid=%#lx req=%i/%i err=%i: %s: %s\n",
+	   ev->resourceid, ev->request_code, ev->minor_code,
+	   ev->error_code, buf1, buf);
+}
+
 int
 EventsUpdateXY(int *px, int *py)
 {

@@ -125,7 +125,7 @@ SetupX(const char *dstr)
    Dpy.pixel_black = BlackPixel(disp, Dpy.screen);
    Dpy.pixel_white = WhitePixel(disp, Dpy.screen);
 
-   EDisplaySetErrorHandlers(HandleXIOError);
+   EDisplaySetErrorHandlers(EventShowError, HandleXIOError);
 
    /* Root defaults */
    RROOT = ERegisterWindow(DefaultRootWindow(disp), NULL);

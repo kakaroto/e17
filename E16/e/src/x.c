@@ -1754,18 +1754,13 @@ EDisplayDisconnect(void)
    disp = NULL;
 }
 
-static int
-HandleXError(Display * dpy, XErrorEvent * ev)
-{
-   char                buf[64];
+static void         (*EXErrorFunc) (const XErrorEvent * ev) = NULL;
 
-   if (EDebug(1))
-     {
-	XGetErrorText(dpy, ev->error_code, buf, 63);
-	Eprintf("*** ERROR: xid=%#lx error=%i req=%i/%i: %s\n",
-		ev->resourceid, ev->error_code,
-		ev->request_code, ev->minor_code, buf);
-     }
+static int
+HandleXError(Display * dpy __UNUSED__, XErrorEvent * ev)
+{
+   if (EDebug(1) && EXErrorFunc)
+      EXErrorFunc(ev);
 
    Dpy.last_error_code = ev->error_code;
 
@@ -1786,9 +1781,11 @@ HandleXIOError(Display * dpy __UNUSED__)
 }
 
 void
-EDisplaySetErrorHandlers(void (*fatal) (void))
+EDisplaySetErrorHandlers(void (*error) (const XErrorEvent *),
+			 void (*fatal) (void))
 {
    /* set up an error handler for then E would normally have fatal X errors */
+   EXErrorFunc = error;
    XSetErrorHandler(HandleXError);
 
    /* set up a handler for when the X Connection goes down */

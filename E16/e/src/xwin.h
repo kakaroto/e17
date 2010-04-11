@@ -54,7 +54,9 @@ void                EXInit(void);
 int                 EDisplayOpen(const char *dstr, int scr);
 void                EDisplayClose(void);
 void                EDisplayDisconnect(void);
-void                EDisplaySetErrorHandlers(void (*fatal) (void));
+void
+                    EDisplaySetErrorHandlers(void (*error) (const XErrorEvent *),
+					     void (*fatal) (void));
 
 void                EGrabServer(void);
 void                EUngrabServer(void);
