@@ -63,7 +63,7 @@ static const char  *EventName(unsigned int type);
 
 typedef struct {
    int                 major, minor;
-   int                 req_base, event_base, error_base;
+   int                 major_op, event_base, error_base;
 } EServerExtData;
 
 typedef struct {
@@ -73,12 +73,13 @@ typedef struct {
    void                (*init) (int avaliable);
 } EServerExt;
 
-static EServerExtData ExtData[8];
+static EServerExtData ExtData[10];
 
 #define event_base_shape ExtData[XEXT_SHAPE].event_base
 #define event_base_randr ExtData[XEXT_RANDR].event_base
 #define event_base_damage ExtData[XEXT_DAMAGE].event_base
 #define event_base_saver  ExtData[XEXT_SCRSAVER].event_base
+#define major_op_xi       ExtData[XEXT_XI].major_op
 
 static void
 ExtInitShape(int available)
@@ -198,16 +199,6 @@ ExtInitRR(int available)
 #endif
 
 #if USE_XI2
-static int          xi_major_op = 0;
-
-static              Bool
-EInputQueryExtension(Display * dpy,
-		     int *event_base_return, int *error_base_return)
-{
-   return XQueryExtension(dpy, "XInputExtension", &xi_major_op,
-			  event_base_return, error_base_return);
-}
-
 static              Status
 EInputQueryVersion(Display * dpy,
 		   int *major_version_return, int *minor_version_return)
@@ -286,7 +277,7 @@ ExtQuery(const EServerExt * ext)
    int                 available;
    EServerExtData     *exd = ExtData + ext->ix;
 
-   available = XQueryExtension(disp, ext->name, &(exd->req_base),
+   available = XQueryExtension(disp, ext->name, &(exd->major_op),
 			       &(exd->event_base), &(exd->error_base));
 
    if (available)
@@ -299,7 +290,7 @@ ExtQuery(const EServerExt * ext)
 	   Eprintf("Extension %-15s version %d.%d -"
 		   " req/evt/err base = %3d/%3d/%3d\n", ext->name,
 		   exd->major, exd->minor,
-		   exd->req_base, exd->event_base, exd->error_base);
+		   exd->major_op, exd->event_base, exd->error_base);
      }
 
    if (ext->init)
@@ -800,7 +791,7 @@ EventsFetch(XEvent ** evq_p, int *evq_n)
 #if USE_XI2
 	     if (ev->type == GenericEvent)
 	       {
-		  if (ev->xcookie.extension == xi_major_op)
+		  if (ev->xcookie.extension == major_op_xi)
 		     EventFetchXI2(ev);
 		  continue;
 	       }
