@@ -203,6 +203,18 @@ class PropertyTable(elementary.Table):
         prop.show()
         prop._change_notifier_cb = self._prop_changed_cb
 
+    def property_del(self, key):
+        if not key in self._props:
+            raise KeyError(prop.name)
+
+        prop = self._props[key]
+        self.unpack(prop.label_obj)
+        self.unpack(prop.value_obj)
+        del self._props[prop.name]
+        prop.hide()
+        prop._change_notifier_cb = None
+        return prop
+
     def clear(self):
         for o in self._props.itervalues():
             o.destroy()
@@ -210,6 +222,9 @@ class PropertyTable(elementary.Table):
 
     def get(self, key):
         return self._props.get(key)
+
+    def has_key(self, key):
+        return self._props.has_key(key)
 
     def __getitem__(self, key):
         if key in self._props:

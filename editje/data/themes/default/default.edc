@@ -600,200 +600,219 @@ collections {
 // Collaspable list
 ////////////////////////////////////////////////////////////////////////////
 
-#define HEADER_BASE(full_offset, event_offset, open_clip_rel) \
-   part { \
-      name: "cl.header.bg"; \
-      type: GRADIENT; \
-      description { state: "default" 0.0; \
-         gradient.spectrum: "bg"; \
-         rel2 { \
-            relative: 1.0 0.0; \
-            offset: -1 full_offset; \
-         } \
-      } \
-   } \
-   part { \
-      name: "cl.header.open"; \
-      type: RECT; \
-      description { state: "default" 0.0; \
-         color: 0 0 0 0; \
-         visible: 1; \
-         rel1.to: "cl.header.bg"; \
-         rel2 { \
-            relative: 1.0 0.0; \
-            offset: -1 event_offset; \
-            to: "cl.header.bg"; \
-         } \
-      } \
-      description { state: "open" 0.0; \
-         inherit: "default" 0.0; \
-         visible: 0; \
-      } \
-   } \
-   part { \
-      name: "cl.header.close"; \
-      type: RECT; \
-      description { state: "default" 0.0; \
-         color: 0 0 0 0; \
-         visible: 0; \
-         rel1.to: "cl.header.bg"; \
-         rel2 { \
-            relative: 1.0 0.0; \
-            offset: -1 event_offset; \
-            to: "cl.header.bg"; \
-         } \
-      } \
-      description { state: "open" 0.0; \
-         inherit: "default" 0.0; \
-         visible: 1; \
-      } \
-   } \
-   part { \
-      name: "cl.header.enable"; \
-      type: RECT; \
-      description { state: "default" 0.0; \
-         color: 0 0 0 0; \
-         visible: 0; \
-         rel1.to: "cl.header.bg"; \
-         rel2 { \
-            relative: 1.0 0.0; \
-            offset: -1 event_offset; \
-            to: "cl.header.bg"; \
-         } \
-      } \
-      description { state: "disable" 0.0; \
-         inherit: "default" 0.0; \
-         visible: 1; \
-      } \
-   } \
-   part { \
-      name: "cl.header.title"; \
-      type: TEXT; \
-      mouse_events: 0; \
-      description { state: "default" 0.0; \
-         align: 0.5 0.5; \
-         color_class: "default_label"; \
-         text { \
-            text: "title"; \
-            font: "Sans:style=Bold"; \
-            size: 10; \
-            align: 0.5 0.5; \
-         } \
-         rel1.to: "cl.header.close"; \
-         rel2.to: "cl.header.close"; \
-      } \
-   } \
-   part { \
-      name: "cl.clipper"; \
-      mouse_events: 0; \
-      type: RECT; \
-      description { state: "default" 0.0; \
-         visible: 0; \
-         rel1 { \
-            to: "cl.header.bg"; \
-            relative: 0.0 1.0; \
-         } \
-         rel2 { \
-            to: "cl.header.bg"; \
-            relative: 1.0 1.0; \
-            offset: -1 -1; \
-         } \
-      } \
-      description { state: "open" 0.0; \
-         inherit: "default" 0.0; \
-         color: 255 255 255 255; \
-         visible: 1; \
-         rel2 { \
-            to_x: "cl.header.bg"; \
-            to_y: open_clip_rel; \
-            relative: 1.0 1.0; \
-            offset: -1 -1; \
-         } \
-      } \
-   } \
-   part { \
-      name: "cl.header.dropshadow"; \
-      clip_to: "cl.clipper"; \
-      mouse_events: 0; \
-      type: GRADIENT; \
-      description { state: "default" 0.0; \
-         gradient.spectrum: "shadow"; \
-         rel1 { \
-            to: "cl.clipper"; \
-            relative: 0.0 0.0; \
-         } \
-         rel2 { \
-            to: "cl.clipper"; \
-            relative: 1.0 0.0; \
-            offset: -1 10; \
-         } \
-      } \
-   } \
-   program { \
-      name: "cl.header,open"; \
-      signal: "mouse,clicked,1"; \
-      source: "cl.header.open"; \
-      after: "cl,open"; \
-   } \
-   program { \
-      name: "cl.header,close"; \
-      signal: "mouse,clicked,1"; \
-      source: "cl.header.close"; \
-      after: "cl,close"; \
-   } \
-   program { \
-      name: "cl,open"; \
-      signal: "cl,open"; \
-      after: "cl.close,show"; \
-   } \
-   program { \
-      name: "cl,close"; \
-      signal: "cl,close"; \
-      after: "cl.close,hide"; \
-   } \
-   program { \
-      name: "cl,disable"; \
-      signal: "cl,disable"; \
-      action: STATE_SET "disable" 0.0; \
-      target: "cl.header.enable"; \
-   } \
-   program { \
-      name: "cl,enable"; \
-      signal: "cl,enable"; \
-      action: STATE_SET "default" 0.0; \
-      target: "cl.header.enable"; \
-   } \
-   program { \
-      name: "cl.close,show"; \
-      action: STATE_SET "open" 0.0; \
-      transition: LINEAR 0.0; \
-      target: "cl.header.open"; \
-      target: "cl.header.close"; \
-      target: "cl.clipper"; \
-      after: "cl.opened_emit"; \
-   } \
-   program { \
-      name: "cl.close,hide"; \
-      action: STATE_SET "default" 0.0; \
-      transition: LINEAR 0.0; \
-      target: "cl.header.open"; \
-      target: "cl.header.close"; \
-      target: "cl.clipper"; \
-      after: "cl.closed_emit"; \
-   } \
-   program { \
-      name: "cl.opened_emit"; \
-      action: SIGNAL_EMIT "cl,opened" "editje/collapsable"; \
-   } \
-   program { \
-      name: "cl.closed_emit"; \
-      action: SIGNAL_EMIT "cl,closed" "editje/collapsable"; \
-   } \
+#define HEADER_BASE(normal_offset, extra_offset, event_offset, open_clip_rel) \
+   part {                                                               \
+      name: "cl.header.bg";                                             \
+      type: GRADIENT;                                                   \
+      description { state: "default" 0.0;                               \
+         gradient.spectrum: "bg";                                       \
+         rel2 {                                                         \
+            relative: 1.0 0.0;                                          \
+            offset: -1 normal_offset;                                   \
+         }                                                              \
+      }                                                                 \
+      description { state: "extra" 0.0;                                 \
+         inherit: "default" 0.0;                                        \
+         rel2 {                                                         \
+            relative: 1.0 0.0;                                          \
+            offset: -1 extra_offset;                                    \
+         }                                                              \
+      }                                                                 \
+   }                                                                    \
+   part {                                                               \
+      name: "cl.header.open";                                           \
+      type: RECT;                                                       \
+      description { state: "default" 0.0;                               \
+         color: 0 0 0 0;                                                \
+         visible: 1;                                                    \
+         rel1.to: "cl.header.bg";                                       \
+         rel2 {                                                         \
+            relative: 1.0 0.0;                                          \
+            offset: -1 event_offset;                                    \
+            to: "cl.header.bg";                                         \
+         }                                                              \
+      }                                                                 \
+      description { state: "open" 0.0;                                  \
+         inherit: "default" 0.0;                                        \
+         visible: 0;                                                    \
+      }                                                                 \
+   }                                                                    \
+   part {                                                               \
+      name: "cl.header.close";                                          \
+      type: RECT;                                                       \
+      description { state: "default" 0.0;                               \
+         color: 0 0 0 0;                                                \
+         visible: 0;                                                    \
+         rel1.to: "cl.header.bg";                                       \
+         rel2 {                                                         \
+            relative: 1.0 0.0;                                          \
+            offset: -1 event_offset;                                    \
+            to: "cl.header.bg";                                         \
+         }                                                              \
+      }                                                                 \
+      description { state: "open" 0.0;                                  \
+         inherit: "default" 0.0;                                        \
+         visible: 1;                                                    \
+      }                                                                 \
+   }                                                                    \
+   part {                                                               \
+      name: "cl.header.enable";                                         \
+      type: RECT;                                                       \
+      description { state: "default" 0.0;                               \
+         color: 0 0 0 0;                                                \
+         visible: 0;                                                    \
+         rel1.to: "cl.header.bg";                                       \
+         rel2 {                                                         \
+            relative: 1.0 0.0;                                          \
+            offset: -1 event_offset;                                    \
+            to: "cl.header.bg";                                         \
+         }                                                              \
+      }                                                                 \
+      description { state: "disable" 0.0;                               \
+         inherit: "default" 0.0;                                        \
+         visible: 1;                                                    \
+      }                                                                 \
+   }                                                                    \
+   part {                                                               \
+      name: "cl.header.title";                                          \
+      type: TEXT;                                                       \
+      mouse_events: 0;                                                  \
+      description { state: "default" 0.0;                               \
+         align: 0.5 0.5;                                                \
+         color_class: "default_label";                                  \
+         text {                                                         \
+            text: "title";                                              \
+            font: "Sans:style=Bold";                                    \
+            size: 10;                                                   \
+            align: 0.5 0.5;                                             \
+         }                                                              \
+         rel1.to: "cl.header.close";                                    \
+         rel2.to: "cl.header.close";                                    \
+      }                                                                 \
+   }                                                                    \
+   part {                                                               \
+      name: "cl.clipper";                                               \
+      mouse_events: 0;                                                  \
+      type: RECT;                                                       \
+      description { state: "default" 0.0;                               \
+         visible: 0;                                                    \
+         rel1 {                                                         \
+            to: "cl.header.bg";                                         \
+            relative: 0.0 1.0;                                          \
+         }                                                              \
+         rel2 {                                                         \
+            to: "cl.header.bg";                                         \
+            relative: 1.0 1.0;                                          \
+            offset: -1 -1;                                              \
+         }                                                              \
+      }                                                                 \
+      description { state: "open" 0.0;                                  \
+         inherit: "default" 0.0;                                        \
+         color: 255 255 255 255;                                        \
+         visible: 1;                                                    \
+         rel2 {                                                         \
+            to_x: "cl.header.bg";                                       \
+            to_y: open_clip_rel;                                        \
+            relative: 1.0 1.0;                                          \
+            offset: -1 -1;                                              \
+         }                                                              \
+      }                                                                 \
+   }                                                                    \
+   part {                                                               \
+      name: "cl.header.dropshadow";                                     \
+      clip_to: "cl.clipper";                                            \
+      mouse_events: 0;                                                  \
+      type: GRADIENT;                                                   \
+      description { state: "default" 0.0;                               \
+         gradient.spectrum: "shadow";                                   \
+         rel1 {                                                         \
+            to: "cl.clipper";                                           \
+            relative: 0.0 0.0;                                          \
+         }                                                              \
+         rel2 {                                                         \
+            to: "cl.clipper";                                           \
+            relative: 1.0 0.0;                                          \
+            offset: -1 10;                                              \
+         }                                                              \
+      }                                                                 \
+   }                                                                    \
+   program {                                                            \
+      name: "cl.header,open";                                           \
+      signal: "mouse,clicked,1";                                        \
+      source: "cl.header.open";                                         \
+      after: "cl,open";                                                 \
+   }                                                                    \
+   program {                                                            \
+      name: "cl.header,close";                                          \
+      signal: "mouse,clicked,1";                                        \
+      source: "cl.header.close";                                        \
+      after: "cl,close";                                                \
+   }                                                                    \
+   program {                                                            \
+      name: "cl,open";                                                  \
+      signal: "cl,open";                                                \
+      after: "cl.close,show";                                           \
+   }                                                                    \
+   program {                                                            \
+      name: "cl,close";                                                 \
+      signal: "cl,close";                                               \
+      after: "cl.close,hide";                                           \
+   }                                                                    \
+   program {                                                            \
+      name: "cl,extra,activate";                                        \
+      signal: "cl,extra,activate";                                      \
+      action: STATE_SET "extra" 0.0;                                    \
+      target: "cl.header.bg";                                           \
+   }                                                                    \
+   program {                                                            \
+      name: "cl,extra,deactivate";                                      \
+      signal: "cl,extra,deactivate";                                    \
+      action: STATE_SET "default" 0.0;                                  \
+      target: "cl.header.bg";                                           \
+   }                                                                    \
+   program {                                                            \
+      name: "cl,disable";                                               \
+      signal: "cl,disable";                                             \
+      action: STATE_SET "disable" 0.0;                                  \
+      target: "cl.header.enable";                                       \
+   }                                                                    \
+   program {                                                            \
+      name: "cl,enable";                                                \
+      signal: "cl,enable";                                              \
+      action: STATE_SET "default" 0.0;                                  \
+      target: "cl.header.enable";                                       \
+   }                                                                    \
+   program {                                                            \
+      name: "cl.close,show";                                            \
+      action: STATE_SET "open" 0.0;                                     \
+      transition: LINEAR 0.0;                                           \
+      target: "cl.header.open";                                         \
+      target: "cl.header.close";                                        \
+      target: "cl.clipper";                                             \
+      after: "cl.opened_emit";                                          \
+   }                                                                    \
+   program {                                                            \
+      name: "cl.close,hide";                                            \
+      action: STATE_SET "default" 0.0;                                  \
+      transition: LINEAR 0.0;                                           \
+      target: "cl.header.open";                                         \
+      target: "cl.header.close";                                        \
+      target: "cl.clipper";                                             \
+      after: "cl.closed_emit";                                          \
+   }                                                                    \
+   program {                                                            \
+      name: "cl.opened_emit";                                           \
+      action: SIGNAL_EMIT "cl,opened" "editje/collapsable";             \
+   }                                                                    \
+   program {                                                            \
+      name: "cl.closed_emit";                                           \
+      action: SIGNAL_EMIT "cl,closed" "editje/collapsable";             \
+   }                                                                    \
 
    group {
       name: "editje/collapsable/default";
       parts {
-         HEADER_BASE(20, 20, "cl.content")
+         HEADER_BASE(20, 20, 20, "cl.content")
          part { name: "cl.content.bg";
             type: "RECT";
             clip_to: "cl.clipper";
@@ -820,7 +839,7 @@ collections {
    group {
       name: "editje/collapsable/part_properties";
       parts {
-         HEADER_BASE(65, 20, "cl.content")
+         HEADER_BASE(65, 100, 20, "cl.content")
          part { name: "cl.options";
             type: IMAGE;
             description { state: "default" 0.0;
@@ -905,7 +924,7 @@ collections {
    group {
       name: "editje/collapsable/part_state";
       parts {
-         HEADER_BASE(40, 15, "cl.content")
+         HEADER_BASE(40, 40, 20, "cl.content")
          part { name: "part_state.swallow";
             type: SWALLOW;
             description { state: "default" 0.0;

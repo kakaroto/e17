@@ -94,6 +94,14 @@ class EditablePart(Manager):
 
     type = property(_type_get)
 
+    def _source_get(self):
+        if not self.name:
+            return None
+
+        return self._part.source
+
+    source = property(fget=_source_get)
+
     # States
     def _states_init(self):
         self.states = None

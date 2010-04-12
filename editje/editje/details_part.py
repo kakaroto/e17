@@ -59,6 +59,18 @@ class PartDetails(EditjeDetails):
         prop.widget_add("t", wid)
         self._header_table.property_add(prop)
 
+        self._source_prop = Property(parent, "source widget")
+        wid = WidgetEntry(self)
+        wid.disabled_set(True)
+        self._source_prop.widget_add("s", wid)
+        self._source_prop.hide()
+
+        self._module_prop = Property(parent, "module")
+        wid = WidgetEntry(self)
+        wid.disabled_set(True)
+        self._module_prop.widget_add("m", wid)
+        self._module_prop.hide()
+
         self.content_set("part_name.swallow", self._header_table)
 
         def parts_get():
@@ -178,21 +190,49 @@ class PartDetails(EditjeDetails):
             self._effects.index(value), lambda x: self._effects[x])
 
     def _part_update(self, emissor, data):
-        if not self.e.part._part:
+        if not self.e.part.name:
             return
 
         self._header_table["name"].value = self.e.part.name
         self._header_table["name"].show_value()
-        type = self._part_type_to_text(self.e.part._part.type)
+        type = self._part_type_to_text(self.e.part.type)
         self._header_table["type"].value = type
         self._header_table["type"].show_value()
         self._update_common_props()
 
         self.group_hide("textblock")
-        if self.e.part._part.type == edje.EDJE_PART_TYPE_TEXT:
+
+        if self.e.part.type == edje.EDJE_PART_TYPE_EXTERNAL:
+            source = self.e.part.source
+            if source.startswith("elm/"):
+                source = source[4:]
+                module = "Elementary"
+            else:
+                module = "Emotion"
+
+            self.edje_get().signal_emit("cl,extra,activate", "")
+            if not self._header_table.has_key("source widget"):
+                self._header_table.property_add(self._source_prop)
+            if not self._header_table.has_key("module"):
+                self._header_table.property_add(self._module_prop)
+
+            self._header_table["source widget"].value = source
+            self._header_table["source widget"].show_value()
+            self._header_table["module"].value = module
+            self._header_table["module"].show_value()
+        else:
+            self._header_extra_hide()
+
+        if self.e.part.type == edje.EDJE_PART_TYPE_TEXT:
             self._update_text_props()
 
         self.show()
+
+    def _header_extra_hide(self):
+        self.edje_get().signal_emit("cl,extra,deactivate", "")
+        for p in ["source widget", "module"]:
+            if self._header_table.has_key(p):
+                self._header_table.property_del(p)
 
     def _part_removed(self, emissor, data):
         self._header_table["name"].value = None
@@ -200,15 +240,14 @@ class PartDetails(EditjeDetails):
         self._header_table["type"].value = None
         self._header_table["type"].hide_value()
 
+        self._header_extra_hide()
         self.main_hide()
         self.group_hide("textblock")
-        if not self.e.part._part:
-            return
 
         self["main"]["clip_to"].hide_value()
         self["main"]["mouse_events"].hide_value()
         self["main"]["repeat_events"].hide_value()
-        if self.e.part._part.type == edje.EDJE_PART_TYPE_TEXT:
+        if self.e.part.type == edje.EDJE_PART_TYPE_TEXT:
             self["textblock"]["effect"].hide_value()
 
         self.hide()
