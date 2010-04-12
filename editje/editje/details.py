@@ -123,17 +123,6 @@ class EditjeDetails(edje.Edje):
     def prop_value_changed(self, prop, value, group):
         pass
 
-    def _header_toggle_cb(self, obj, emission, source):
-        if emission == "cl,opened":
-            self.size_hint_weight_set(1.0, 1.0)
-            self.size_hint_min_set(*self._min_size)
-            self._opened = True
-        elif emission == "cl,closed":
-            self.size_hint_weight_set(1.0, 0.0)
-            self.size_hint_min_set(*self._min_size_collapsed)
-            self._opened = False
-        self.calc_force()
-
     def __getitem__(self, key):
         if key == "main":
             return self._proptable
@@ -174,13 +163,13 @@ class EditjeDetails(edje.Edje):
 
     def _opened_cb(self, obj, emission, source):
         self._open = True
-        self.size_hint_weight_set(1.0, 1.0)
+        self.size_hint_weight_set(EVAS_HINT_EXPAND, EVAS_HINT_EXPAND)
         self.size_hint_min_set(*self._min_size)
         self.calc_force()
 
     def _closed_cb(self, obj, emission, source):
         self._open = False
-        self.size_hint_weight_set(1.0, 0.0)
+        self.size_hint_weight_set(EVAS_HINT_EXPAND, 0.0)
         self.size_hint_min_set(*self._min_size_collapsed)
         self.calc_force()
 
