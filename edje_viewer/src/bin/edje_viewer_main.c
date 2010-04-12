@@ -61,6 +61,14 @@ elm_main(int argc, char **argv)
 	return 1;
      }
 
+   if (!ecore_file_can_read(v->config->edje_file))
+     {
+	ERR("Could not read Edje file\n");
+	viewer_free(v);
+	elm_exit();
+	return 1;
+     }
+
    create_main_win(v);
    open_edje_file(v);
 
