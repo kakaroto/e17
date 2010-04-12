@@ -108,6 +108,14 @@ class PartDetails(EditjeDetails):
         self.open_disable = False
         self.open = True
 
+    def _closed_cb(self, obj, emission, source):
+        if not self.e.part.name:
+            return
+
+        expanded = self.e.part.type == edje.EDJE_PART_TYPE_EXTERNAL
+        self.min_size_expanded_toggle(expanded)
+        EditjeDetails._closed_cb(self, obj, emission, source)
+
     def _part_select(self, part_name):
         if self.e.part.name != part_name:
             self.e.part.name = part_name

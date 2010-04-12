@@ -803,6 +803,18 @@ class PartAnimStateDetails(PartStateDetails):
         prop.widget_add("t", wid)
         self._header_table.property_add(prop)
 
+        self._source_prop = Property(parent, "source widget")
+        wid = WidgetEntry(self)
+        wid.disabled_set(True)
+        self._source_prop.widget_add("s", wid)
+        self._source_prop.hide()
+
+        self._module_prop = Property(parent, "module")
+        wid = WidgetEntry(self)
+        wid.disabled_set(True)
+        self._module_prop.widget_add("m", wid)
+        self._module_prop.hide()
+
         self.content_set("part_name.swallow", self._header_table)
         self.e.animation.callback_add("animation.changed", self._anim_selected)
         self.e.animation.callback_add("animation.unselected",
@@ -823,16 +835,46 @@ class PartAnimStateDetails(PartStateDetails):
         self._header_table["type"].value = \
             self._part_type_to_text(self.part_edje.type)
         self._header_table["type"].show_value()
+
+        if self.e.part.type == edje.EDJE_PART_TYPE_EXTERNAL:
+            source = self.e.part.source
+            if source.startswith("elm/"):
+                source = source[4:]
+                module = "Elementary"
+            else:
+                module = "Emotion"
+
+            self.edje_get().signal_emit("cl,extra,activate", "")
+            if not self._header_table.has_key("source widget"):
+                self._header_table.property_add(self._source_prop)
+            if not self._header_table.has_key("module"):
+                self._header_table.property_add(self._module_prop)
+
+            self._header_table["source widget"].value = source
+            self._header_table["source widget"].show_value()
+            self._header_table["module"].value = module
+            self._header_table["module"].show_value()
+        else:
+            self._header_extra_hide()
+
         self.edje_get().signal_emit("cl,option,enable", "editje")
         self.state = self.part_edje.state_get(*state)
         self._update()
         self.show()
+
+    def _header_extra_hide(self):
+        self.edje_get().signal_emit("cl,extra,deactivate", "")
+        for p in ["source widget", "module"]:
+            if self._header_table.has_key(p):
+                self._header_table.property_del(p)
 
     def _hide(self):
         self._header_table["name"].value = None
         self._header_table["name"].hide_value()
         self._header_table["type"].value = None
         self._header_table["type"].hide_value()
+        self._header_extra_hide()
+
         self.edje_get().signal_emit("cl,option,disable", "editje")
         self._hide_all()
         self.hide()

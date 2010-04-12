@@ -16,6 +16,7 @@
 # License along with Editje. If not, see <http://www.gnu.org/licenses/>.
 
 import edje
+import evas
 import elementary
 
 from prop import PropertyTable
@@ -29,7 +30,6 @@ class EditjeDetails(edje.Edje):
                             " EditjeDetails objects.")
 
         edje.Edje.__init__(self, parent.evas_get())
-
         self._parent = parent
         self._operation_stack_cb = operation_stack_cb
 
@@ -40,22 +40,36 @@ class EditjeDetails(edje.Edje):
         self._proptable.show()
         self.e = parent.e
 
-        self._min_size_collapsed = self.size_min_calc()
-        self._min_size = self._min_size_collapsed
+        self._min_sizes_init(group)
 
         self._box = elementary.Box(parent)
         self._box.pack_end(self._proptable)
-        self._box.size_hint_weight_set(1.0, 0.0)
-        self._box.size_hint_align_set(-1.0, 0.0)
+        self._box.size_hint_weight_set(evas.EVAS_HINT_EXPAND, 0.0)
+        self._box.size_hint_align_set(evas.EVAS_HINT_FILL, 0.0)
         self._box.show()
         self.content_set("cl.content", self._box)
-        self.size_hint_weight_set(1.0, 0.0)
-        self.size_hint_align_set(-1.0, -1.0)
+        self.size_hint_weight_set(evas.EVAS_HINT_EXPAND, 0.0)
+        self.size_hint_align_set(evas.EVAS_HINT_FILL, evas.EVAS_HINT_FILL)
         self.size_hint_min_set(*self._min_size_collapsed)
 
         self._subgroups = dict()
 
         self._open_load()
+
+    def _min_sizes_init(self, group):
+        self._m_save = self.size_min_calc()
+        self._min_size_collapsed = self._m_save
+        self.edje_get().signal_emit("cl,extra,activate", "")
+        edje.message_signal_process()
+        self._m_save_extra = self.size_min_calc()
+        self.edje_get().signal_emit("cl,extra,deactivate", "")
+        self._min_size = self._min_size_collapsed
+
+    def min_size_expanded_toggle(self, value):
+        if value:
+            self._min_size_collapsed = self._m_save_extra
+        else:
+            self._min_size_collapsed = self._m_save
 
     def _size_hint_changed_cb(self, obj):
         self._min_size = self.size_min_calc()
@@ -80,8 +94,8 @@ class EditjeDetails(edje.Edje):
 
         frm.file_set(self._parent.theme, "subgroup")
         frm.edje_get().part_text_set("title.label", name)
-        frm.size_hint_weight_set(1.0, 0.0)
-        frm.size_hint_align_set(-1.0, 0.0)
+        frm.size_hint_weight_set(evas.EVAS_HINT_EXPAND, 0.0)
+        frm.size_hint_align_set(evas.EVAS_HINT_FILL, 0.0)
         frm.content_set("content", tbl)
         frm.show()
         self._box.pack_end(frm)
@@ -163,13 +177,13 @@ class EditjeDetails(edje.Edje):
 
     def _opened_cb(self, obj, emission, source):
         self._open = True
-        self.size_hint_weight_set(EVAS_HINT_EXPAND, EVAS_HINT_EXPAND)
+        self.size_hint_weight_set(evas.EVAS_HINT_EXPAND, evas.EVAS_HINT_EXPAND)
         self.size_hint_min_set(*self._min_size)
         self.calc_force()
 
     def _closed_cb(self, obj, emission, source):
         self._open = False
-        self.size_hint_weight_set(EVAS_HINT_EXPAND, 0.0)
+        self.size_hint_weight_set(evas.EVAS_HINT_EXPAND, 0.0)
         self.size_hint_min_set(*self._min_size_collapsed)
         self.calc_force()
 
