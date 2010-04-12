@@ -680,7 +680,8 @@ group_toggle(Group *grp, Eina_Bool skip_config)
    else
      {
 	edje_object_part_unswallow(elm_layout_edje_get(grp->v->gui.ly), grp->obj);
-	evas_object_hide(grp->obj);
+	evas_object_del(grp->obj);
+        grp->obj = NULL;
         if (!skip_config)
           config_group_change(grp->v, grp->name, 0, 1);
      }
