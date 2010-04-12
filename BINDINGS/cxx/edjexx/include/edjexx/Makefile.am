@@ -5,7 +5,8 @@ libedjexx_HEADERS = \
 	Object.h \
 	Exceptions.h \
 	Edjexx.h \
-	Edit.h
+	Edit.h \
+	PartEdit.h
 
 libedjexxdir = \
 	$(pkgincludedir)

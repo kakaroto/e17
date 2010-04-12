@@ -44,7 +44,7 @@ public:
   EAPI void         edje_message_signal_process        (void);
   */
 
-  void setFile( const std::string &filename, const std::string &partname );
+  void setFile( const std::string &filename, const std::string &groupname );
 
   void setPlaying( bool b );
   bool isPlaying() const;

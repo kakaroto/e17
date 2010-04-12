@@ -12,6 +12,7 @@
 #include "Part.h"
 #include "Object.h"
 #include "Edit.h"
+#include "PartEdit.h"
 
 #endif // EDJEXX_H
 

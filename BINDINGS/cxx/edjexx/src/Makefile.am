@@ -20,7 +20,8 @@ libedjexx_la_SOURCES = \
 	Part.cpp  \
 	Object.cpp  \
 	Exceptions.cpp  \
-	Edit.cpp
+	Edit.cpp  \
+	PartEdit.cpp
 
 libedjexx_la_LIBADD = \
 	$(EFL_LIBS)

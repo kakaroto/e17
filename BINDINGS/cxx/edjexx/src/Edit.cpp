@@ -101,11 +101,21 @@ void Edit::setGroupMaxHeight (int height)
 /**************************   PARTS API   *************************************/
 /******************************************************************************/
 
-Eflxx::CountedPtr <Einaxx::List <char*>::Iterator> Edit::getPartsList ()
+Eflxx::CountedPtr <Einaxx::List <char*>::Iterator> Edit::getPartsNameList ()
 {
   Einaxx::List <char*>::Iterator *lst = new Einaxx::List <char*>::Iterator (edje_edit_parts_list_get (o));
   
   return Eflxx::CountedPtr <Einaxx::List <char*>::Iterator> (lst);
+}
+
+Eflxx::CountedPtr <PartEdit> Edit::getPart (const std::string &part)
+{
+  if (hasPart (part))
+  {
+    PartEdit* ep = new PartEdit (*this, part);
+    return Eflxx::CountedPtr <PartEdit> (ep);
+  }
+  throw PartNotExistingException (part);
 }
 
 bool Edit::addPart (const std::string &name, Edje_Part_Type type)
@@ -113,14 +123,9 @@ bool Edit::addPart (const std::string &name, Edje_Part_Type type)
   return edje_edit_part_add (o, name.c_str (), type);
 }
 
-bool Edit::setName (const std::string &part, const std::string &newName)
+bool Edit::hasPart (const std::string &part)
 {
-  return edje_edit_part_name_set (o, part.c_str (), newName.c_str ());
-}
-
-Edje_Part_Type Edit::getType (const std::string &part)
-{
-  return edje_edit_part_type_get (o, part.c_str ());
+  return edje_edit_part_exist (o, part.c_str ());
 }
 
 /******************************************************************************/
@@ -132,6 +137,80 @@ Eflxx::CountedPtr <Einaxx::List <char*>::Iterator>  Edit::getPartStatesList (con
   Einaxx::List <char*>::Iterator *lst = new Einaxx::List <char*>::Iterator (edje_edit_part_states_list_get (o, part.c_str ()));
   
   return Eflxx::CountedPtr <Einaxx::List <char*>::Iterator> (lst);
+}
+
+bool Edit::setStateName (const std::string &part, const std::string &state, const std::string &newName)
+{
+  return edje_edit_state_name_set (o, part.c_str (), state.c_str (), newName.c_str ());
+}
+
+bool Edit::copyState (const std::string &part, const std::string &from, const std::string &to)
+{
+  return edje_edit_state_copy (o, part.c_str (), from.c_str (), to.c_str ());
+}
+
+double Edit::getXRelativeRel1State (const std::string &part, const std::string &state)
+{
+  return edje_edit_state_rel1_relative_x_get (o, part.c_str (), state.c_str ());
+}
+
+double Edit::getYRelativeRel1State (const std::string &part, const std::string &state)
+{
+  return edje_edit_state_rel1_relative_y_get (o, part.c_str (), state.c_str ());
+}
+
+double Edit::getXRelativeRel2State (const std::string &part, const std::string &state)
+{
+  return edje_edit_state_rel2_relative_x_get (o, part.c_str (), state.c_str ());
+}
+
+double Edit::getYRelativeRel2State (const std::string &part, const std::string &state)
+{
+  return edje_edit_state_rel2_relative_y_get (o, part.c_str (), state.c_str ());
+}
+
+void Edit::setXRelativeRel1State (const std::string &part, const std::string &state, double x)
+{
+  edje_edit_state_rel1_relative_x_set (o, part.c_str (), state.c_str (), x);
+}
+
+void Edit::setYRelativeRel1State (const std::string &part, const std::string &state, double y)
+{
+  edje_edit_state_rel1_relative_y_set (o, part.c_str (), state.c_str (), y);
+}
+
+void Edit::setXRelativeRel2State (const std::string &part, const std::string &state, double x)
+{
+  edje_edit_state_rel2_relative_x_set (o, part.c_str (), state.c_str (), x);
+}
+
+void Edit::setYRelativeRel2State (const std::string &part, const std::string &state, double y)
+{
+  edje_edit_state_rel2_relative_y_set (o, part.c_str (), state.c_str (), y);
+}
+
+/******************************************************************************/
+/**************************   IMAGES API   ************************************/
+/******************************************************************************/
+
+Eflxx::CountedPtr <Einaxx::List <char*>::Iterator> Edit::getImagesList ()
+{
+  Einaxx::List <char*>::Iterator *lst = new Einaxx::List <char*>::Iterator (edje_edit_images_list_get (o));
+  
+  return Eflxx::CountedPtr <Einaxx::List <char*>::Iterator> (lst); 
+}
+
+std::string Edit::getImage (const std::string &part, const std::string &state)
+{
+  const char *cimage = edje_edit_state_image_get (o, part.c_str (), state.c_str ());  
+  string image (cimage);
+  edje_edit_string_free(cimage);
+  return image;
+}
+
+void Edit::setImage (const std::string &part, const std::string &state, const std::string &image)
+{
+  edje_edit_state_image_set (o, part.c_str (), state.c_str (), image.c_str ());
 }
 
 } // end namespace Edjexx

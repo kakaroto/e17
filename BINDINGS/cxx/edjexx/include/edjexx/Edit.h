@@ -16,10 +16,11 @@
 /* Project */
 #include "Part.h"
 #include "Object.h"
+#include "PartEdit.h"
 
 namespace Edjexx {
   
-/**
+/*!
  * @todo port to EFLxx!
  * @todo return error states with Exceptions?
  * @file
@@ -107,8 +108,7 @@ edje_edit_string_free(
    *  Use this function when you are done with your editing, all the change made
    *  to the current loaded group will be saved back to the original file.
    *
-   *  NOTE: for now this as 2 limitations
-   *     -the saved edje file cannot be decompiled anymore -> @todo: is this still valid?
+   *  NOTE: for now this as limitations
    *     -you will lost your #define in the edc source
    */
   bool save ();
@@ -455,41 +455,52 @@ edje_edit_style_tag_del(
  */ //@{
 
 
-  /*! Get the list of all the parts in the given edje object.
-   *  Use edje_edit_string_list_free() when you don't need it anymore.
-   *  TODO: how to handle free of string?
+  /*!
+   * Get the list of all the parts in the given edje object.
+   * Use edje_edit_string_list_free() when you don't need it anymore.
+   * TODO: how to handle free of string?
    */
-  Eflxx::CountedPtr <Einaxx::List <char*>::Iterator> getPartsList ();
+  Eflxx::CountedPtr <Einaxx::List <char*>::Iterator> getPartsNameList ();
   
-  /*! Create a new part in the given edje
-   *  If another part with the same name just exists nothing is created and FALSE is returned.
-   *  Note that this function also create a default description for the part.
+  //Eflxx::CountedPtr <Einaxx::List <Eflxx::CountedPtr <PartEdit> >::Iterator> getPartsList ();
+  
+  Eflxx::CountedPtr <PartEdit> getPart (const std::string &part);
+  
+  /*! 
+   * Create a new part in the given edje
+   * If another part with the same name just exists nothing is created and FALSE is returned.
+   * Note that this function also create a default description for the part.
+   *
+   * @return true on success, false on failure
+   * @param name The name for the new part
+   * @param type The type of the part to create (One of: EDJE_PART_TYPE_NONE, 
+   *             EDJE_PART_TYPE_RECTANGLE, EDJE_PART_TYPE_TEXT,EDJE_PART_TYPE_IMAGE, 
+   *             EDJE_PART_TYPE_SWALLOW, EDJE_PART_TYPE_TEXTBLOCK,EDJE_PART_TYPE_GRADIENT 
+   *             or EDJE_PART_TYPE_GROUP)
    */  
-  bool                                ///@return true on success, false on failure
-  addPart (const std::string &name,   ///< The name for the new part
-           Edje_Part_Type type);      ///< The type of the part to create (One of: EDJE_PART_TYPE_NONE, EDJE_PART_TYPE_RECTANGLE, EDJE_PART_TYPE_TEXT,EDJE_PART_TYPE_IMAGE, EDJE_PART_TYPE_SWALLOW, EDJE_PART_TYPE_TEXTBLOCK,EDJE_PART_TYPE_GRADIENT or EDJE_PART_TYPE_GROUP)
+  bool addPart (const std::string &name, Edje_Part_Type type);
   
+  /**Delete the given part from the edje
+   * All the reference to this part will be zeroed.
+   * A group must have at least one part, so it's not possible to
+   * remove the last remaining part.
+   */
+  /*EAPI Eina_Bool         ///@return 1 on success, 0 if the part can't be removed
+  edje_edit_part_del(
+     Evas_Object *obj,       ///< The edje object
+     const char *part        ///< The name of the part to remove
+  );*/
+
+  /*!
+   * Check if a part with the given name exist in the edje object.
+   *
+   * @param part The name of the part
+   *
+   * @return true if the part exist, false otherwise.
+   */
+  bool hasPart (const std::string &part);
+
 #if 0
-
-/**Delete the given part from the edje
- * All the reference to this part will be zeroed.
- * A group must have at least one part, so it's not possible to
- * remove the last remaining part.
- */
-EAPI Eina_Bool         ///@return 1 on success, 0 if the part can't be removed
-edje_edit_part_del(
-   Evas_Object *obj,       ///< The edje object
-   const char *part        ///< The name of the part to remove
-);
-
-/**Check if a part with the given name exist in the edje object.
- */
-EAPI Eina_Bool         ///< 1 if the part exist, 0 otherwise.
-edje_edit_part_exist(
-   Evas_Object *obj,       ///< The edje object
-   const char *part        ///< The name of the part
-);
-
 /**Move the given part below the previous one.*/
 EAPI Eina_Bool         ///@return 1 on success, 0 on failure
 edje_edit_part_restack_below(
@@ -506,17 +517,6 @@ edje_edit_part_restack_above(
 
 #endif
   
-  /*! Set a new name for part.
-   *  Note that the relative getter function don't exist as it don't make sense ;)
-   */
-  bool ///@return true on success, false on failure
-  setName (const std::string &part,     ///< The name of the part to rename
-           const std::string &newName); ///< The new name for the part
-
-  /*! Get the type of a part */
-  Edje_Part_Type                     ///@return One of: EDJE_PART_TYPE_NONE, EDJE_PART_TYPE_RECTANGLE, EDJE_PART_TYPE_TEXT,EDJE_PART_TYPE_IMAGE, EDJE_PART_TYPE_SWALLOW, EDJE_PART_TYPE_TEXTBLOCK,EDJE_PART_TYPE_GRADIENT or EDJE_PART_TYPE_GROUP
-  getType (const std::string &part); ///< The name of the part
-    
 #if 0
   
 /**Get the clip_to part.
@@ -767,249 +767,237 @@ edje_edit_part_drag_event_set(
  *  Functions to deal with part states (see @ref edcref).
  */ //@{
 
+ /*!
+  * TODO: how to handle free of string?
+  *
+  * @param part The name of the part
+  *
+  * @return An Einaxx::List<char*> containing all the states names found
+  *         in part, including the float value (ex: "default 0.00").
+  *         Use edje_edit_string_list_free() when you don't need it anymore.
+  */
+  Eflxx::CountedPtr <Einaxx::List <char*>::Iterator> getPartStatesList (const std::string &part);
 
-  Eflxx::CountedPtr <Einaxx::List <char*>::Iterator> /*! @return An Einaxx::List<char*> containing all the states names found
-                                                       * in part, including the float value (ex: "default 0.00").
-                                                       * Use edje_edit_string_list_free() when you don't need it anymore. 
-                                                       *  TODO: how to handle free of string? */
-    getPartStatesList (const std::string &part); ///< The name of the part
-    
+  /*!
+   * Set a new name for the given state in the given part.
+   * Note that state and new_name must include the floating value inside the string (ex. "default 0.00")
+   *
+   * @param part The name of the part that contain state
+   * @param state The current name of the state
+   * @param newName The new name to assign (including the value)
+   *
+   * @return true on success, false on failure
+   */
+  bool setStateName (const std::string &part, const std::string &state, const std::string &newName);
+
+  /*!
+   * Copies the state @p from into @p to. If @p to doesn't exist it will be created.
+   *
+   * @param part The name of the part
+   * @param from State to copy from (including state value)
+   * @param to State to copy into (not including state value if new)
+   *
+   * @return true if it could be copied, false if something went wrong.
+   */
+  bool copyState (const std::string &part, const std::string &from, const std::string &to);
+  
+  /*!
+   * Get the rel1 relative x value of state
+   *
+   * @param part The name of the part
+   * @param state The name of the part state (ex. "default 0.00")
+   *
+   * @return The 'rel1 relative X' value of the part state
+   */
+  double getXRelativeRel1State (const std::string &part, const std::string &state);
+  
+  /*!
+   * Get the rel1 relative y value of state
+   *
+   * @param part The name of the part
+   * @param state The name of the part state (ex. "default 0.00")
+   *
+   * @return The 'rel1 relative Y' value of the part state
+   */
+  double getYRelativeRel1State (const std::string &part, const std::string &state);
+
+  /*!
+   * Get the rel2 relative x value of state
+   *
+   * @param part The name of the part
+   * @param state The name of the part state (ex. "default 0.00")
+   *
+   * @return The 'rel2 relative X' value of the part state
+   */
+  double getXRelativeRel2State (const std::string &part, const std::string &state);
+  
+  /*!
+   * Get the rel2 relative y value of state
+   *
+   * @param part The name of the part
+   * @param state The name of the part state (ex. "default 0.00")
+   *
+   * @return The 'rel2 relative Y' value of the part state
+   */
+  double getYRelativeRel2State (const std::string &part, const std::string &state);
+
+  /*!
+   * Set the rel1 relative x value of state
+   *
+   * @param part The name of the part
+   * @param state The name of the 'part state' (ex. "default 0.00")
+   * @param x The new 'rel1 relative X' value to set
+   */
+  void setXRelativeRel1State (const std::string &part, const std::string &state, double x);
+
+  /*!
+   * Set the rel1 relative y value of state
+   *
+   * @param part The name of the part
+   * @param state The name of the 'part state' (ex. "default 0.00")
+   * @param y The new 'rel1 relative Y' value to set
+   */
+  void setYRelativeRel1State (const std::string &part, const std::string &state, double y);
+
+  /*!
+   * Set the rel2 relative x value of state
+   *
+   * @param part The name of the part
+   * @param state The name of the 'part state' (ex. "default 0.00")
+   * @param x The new 'rel2 relative X' value to set
+   */
+  void setXRelativeRel2State (const std::string &part, const std::string &state, double x);
+
+  /*!
+   * Set the rel2 relative y value of state
+   *
+   * @param part The name of the part
+   * @param state The name of the 'part state' (ex. "default 0.00")
+   * @param y The new 'rel2 relative Y' value to set
+   */
+  void setYRelativeRel2State (const std::string &part, const std::string &state, double y);
+  
 #if 0
+  
+  /**Get the rel1 offset y value of state*/
+  EAPI int                   /// @return The 'rel1 offset Y' value of the part state
+  edje_edit_state_rel1_offset_y_get(
+     Evas_Object *obj,       ///< The edje object
+     const char *part,       ///< The name of the part
+     const char *state       ///< The name of the 'part state' (ex. "default 0.00")
+  );
+  /**Get the rel2 offset x value of state*/
+  EAPI int                   /// @return The 'rel2 offset X' value of the part state
+  edje_edit_state_rel2_offset_x_get(
+     Evas_Object *obj,       ///< The edje object
+     const char *part,       ///< The name of the part
+     const char *state       ///< The name of the 'part state' (ex. "default 0.00")
+  );
+  /**Get the rel2 offset y value of state*/
+  EAPI int                   /// @return The 'rel2 offset Y' value of the part state
+  edje_edit_state_rel2_offset_y_get(
+     Evas_Object *obj,       ///< The edje object
+     const char *part,       ///< The name of the part
+     const char *state       ///< The name of the 'part state' (ex. "default 0.00")
+  );
 
-/**Set a new name for the given state in the given part.
- * Note that state and new_name must include the floating value inside the string (ex. "default 0.00")
- */
-EAPI int
-edje_edit_state_name_set(
-   Evas_Object *obj,       ///< The edje object
-   const char *part,       ///< The name of the part that contain state
-   const char *state,      ///< The current name of the state
-   const char *new_name    ///< The new name to assign (including the value)
-);
+  /**Set the rel1 offset x value of state*/
+  EAPI void
+  edje_edit_state_rel1_offset_x_set(
+     Evas_Object *obj,       ///< The edje object
+     const char *part,       ///< The name of the part
+     const char *state,      ///< The name of the 'part state' (ex. "default 0.00")
+     double x                ///< The new 'rel1 offset X' value to set
+  );
+  /**Get the rel1 offset y value of state*/
+  EAPI void
+  edje_edit_state_rel1_offset_y_set(
+     Evas_Object *obj,       ///< The edje object
+     const char *part,       ///< The name of the part
+     const char *state,      ///< The name of the 'part state' (ex. "default 0.00")
+     double y                ///< The new 'rel1 offset Y' value to set
+  );
+  /**Get the rel2 offset x value of state*/
+  EAPI void
+  edje_edit_state_rel2_offset_x_set(
+     Evas_Object *obj,       ///< The edje object
+     const char *part,       ///< The name of the part
+     const char *state,      ///< The name of the 'part state' (ex. "default 0.00")
+     double x                ///< The new 'rel2 offset X' value to set
+  );
+  /**Get the rel2 offset y value of state*/
+  EAPI void
+  edje_edit_state_rel2_offset_y_set(
+     Evas_Object *obj,       ///< The edje object
+     const char *part,       ///< The name of the part
+     const char *state,      ///< The name of the 'part state' (ex. "default 0.00")
+     double y                ///< The new 'rel2 offset Y' value to set
+  );
 
-/**Create a new state to the give part
- */
-EAPI void
-edje_edit_state_add(
-   Evas_Object *obj,       ///< The edje object
-   const char *part,       ///< The name of the part
-   const char *name        ///< The name for the new state (not including the state value)
-);
+  /**Get the part name rel1x is relative to. The function return NULL if the part is relative to the whole interface.*/
+  EAPI const char *          ///@return The name of the part to apply the relativity
+  edje_edit_state_rel1_to_x_get(
+     Evas_Object *obj,       ///< The edje object
+     const char *part,       ///< The name of the part
+     const char *state       ///< The name of the 'part state' (ex. "default 0.00")
+  );
+  /**Get the part name rel1y is relative to. The function return NULL if the part is relative to the whole interface.*/
+  EAPI const char *          ///@return The name of the part to apply the relativity
+  edje_edit_state_rel1_to_y_get(
+     Evas_Object *obj,       ///< The edje object
+     const char *part,       ///< The name of the part
+     const char *state       ///< The name of the 'part state' (ex. "default 0.00")
+  );
+  /**Get the part name rel2x is relative to. The function return NULL if the part is relative to the whole interface.*/
+  EAPI const char *         ///@return The name of the part to apply the relativity
+  edje_edit_state_rel2_to_x_get(
+     Evas_Object *obj,       ///< The edje object
+     const char *part,       ///< The name of the part
+     const char *state       ///< The name of the 'part state' (ex. "default 0.00")
+  );
+  /**Get the part name rel2y is relative to. The function return NULL if the part is relative to the whole interface.*/
+  EAPI const char *         ///@return The name of the part to apply the relativity
+  edje_edit_state_rel2_to_y_get(
+     Evas_Object *obj,       ///< The edje object
+     const char *part,       ///< The name of the part
+     const char *state       ///< The name of the 'part state' (ex. "default 0.00")
+  );
 
-/**Delete the given part state from the edje
- */
-EAPI void
-edje_edit_state_del(
-   Evas_Object *obj,       ///< The edje object
-   const char *part,       ///< The name of the part that contain state
-   const char *state       ///< The current name of the state (including the state value)
-);
+  /**Set the part rel1x is relative to. Set rel_to to NULL make the part relative to the whole interface.*/
+  EAPI void
+  edje_edit_state_rel1_to_x_set(
+     Evas_Object *obj,       ///< The edje object
+     const char *part,       ///< The name of the part
+     const char *state,      ///< The name of the 'part state' (ex. "default 0.00")
+     const char *rel_to      ///< The name of the part that is used as container/parent
+  );
+  /**Set the part rel1y is relative to. Set rel_to to NULL make the part relative to the whole interface.*/
+  EAPI void
+  edje_edit_state_rel1_to_y_set(
+     Evas_Object *obj,       ///< The edje object
+     const char *part,       ///< The name of the part
+     const char *state,      ///< The name of the 'part state' (ex. "default 0.00")
+     const char *rel_to      ///< The name of the part that is used as container/parent
+  );
+  /**Set the part rel2x is relative to. Set rel_to to NULL make the part relative to the whole interface.*/
+  EAPI void
+  edje_edit_state_rel2_to_x_set(
+     Evas_Object *obj,       ///< The edje object
+     const char *part,       ///< The name of the part
+     const char *state,      ///< The name of the 'part state' (ex. "default 0.00")
+     const char *rel_to      ///< The name of the part that is used as container/parent
+  );
+  /**Set the part rel2y is relative to. Set rel_to to NULL make the part relative to the whole interface.*/
+  EAPI void
+  edje_edit_state_rel2_to_y_set(
+     Evas_Object *obj,       ///< The edje object
+     const char *part,       ///< The name of the part
+     const char *state,      ///< The name of the 'part state' (ex. "default 0.00")
+     const char *rel_to      ///< The name of the part that is used as container/parent
+  );
 
-/**Check if a part state with the given name exist.
- */
-EAPI Eina_Bool         ///< 1 if the part state exist, 0 otherwise.
-edje_edit_state_exist(
-   Evas_Object *obj,       ///< The edje object
-   const char *part,       ///< The name of the part
-   const char *state       ///< The name of the state to check (including the state value)
-);
 
-/**Copies the state @p from into @p to. If @p to doesn't exist it will be created.
- */
-EAPI Eina_Bool        ///< 1 if it could be copied, 0 if something went wrong.
-edje_edit_state_copy(
-   Evas_Object *obj,      ///< The edje object
-   const char *part,      ///< The name of the part
-   const char *from,      ///< State to copy from (including state value)
-   const char *to         ///< State to copy into (not including state value if new)
-);
-
-/**Get the rel1 relative x value of state*/
-EAPI double                ///@return The 'rel1 relative X' value of the part state
-edje_edit_state_rel1_relative_x_get(
-   Evas_Object *obj,       ///< The edje object
-   const char *part,       ///< The name of the part
-   const char *state       ///< The name of the part state (ex. "default 0.00")
-);
-/**Get the rel1 relative y value of state*/
-EAPI double                ///@return The 'rel1 relative Y' value of the part state
-edje_edit_state_rel1_relative_y_get(
-   Evas_Object *obj,       ///< The edje object
-   const char *part,       ///< The name of the part
-   const char *state       ///< The name of the 'part state' (ex. "default 0.00")
-);
-/**Get the rel2 relative x value of state*/
-EAPI double                ///@return The 'rel2 relative X' value of the part state
-edje_edit_state_rel2_relative_x_get(
-   Evas_Object *obj,       ///< The edje object
-   const char *part,       ///< The name of the part
-   const char *state       ///< The name of the 'part state' (ex. "default 0.00")
-);
-/**Get the rel2 relative y value of state*/
-EAPI double                ///@return The 'rel2 relative Y' value of the part state
-edje_edit_state_rel2_relative_y_get(
-   Evas_Object *obj,       ///< The edje object
-   const char *part,       ///< The name of the part
-   const char *state       ///< The name of the 'part state' (ex. "default 0.00")
-);
-
-/**Set the rel1 relative x value of state*/
-EAPI void
-edje_edit_state_rel1_relative_x_set(
-   Evas_Object *obj,       ///< The edje object
-   const char *part,       ///< The name of the part
-   const char *state,      ///< The name of the 'part state' (ex. "default 0.00")
-   double x                ///< The new 'rel1 relative X' value to set
-);
-/**Set the rel1 relative y value of state*/
-EAPI void
-edje_edit_state_rel1_relative_y_set(
-   Evas_Object *obj,       ///< The edje object
-   const char *part,       ///< The name of the part
-   const char *state,      ///< The name of the 'part state' (ex. "default 0.00")
-   double y                ///< The new 'rel1 relative Y' value to set
-);
-/**Set the rel2 relative x value of state*/
-EAPI void
-edje_edit_state_rel2_relative_x_set(
-   Evas_Object *obj,       ///< The edje object
-   const char *part,       ///< The name of the part
-   const char *state,      ///< The name of the 'part state' (ex. "default 0.00")
-   double x                ///< The new 'rel2 relative X' value to set
-);
-/**Set the rel2 relative y value of state*/
-EAPI void
-edje_edit_state_rel2_relative_y_set(
-   Evas_Object *obj,       ///< The edje object
-   const char *part,       ///< The name of the part
-   const char *state,      ///< The name of the 'part state' (ex. "default 0.00")
-   double y                ///< The new 'rel2 relative Y' value to set
-);
-
-/**Get the rel1 offset x value of state*/
-EAPI int                   /// @return The 'rel1 offset X' value of the part state
-edje_edit_state_rel1_offset_x_get(
-   Evas_Object *obj,       ///< The edje object
-   const char *part,       ///< The name of the part
-   const char *state       ///< The name of the 'part state' (ex. "default 0.00")
-);
-/**Get the rel1 offset y value of state*/
-EAPI int                   /// @return The 'rel1 offset Y' value of the part state
-edje_edit_state_rel1_offset_y_get(
-   Evas_Object *obj,       ///< The edje object
-   const char *part,       ///< The name of the part
-   const char *state       ///< The name of the 'part state' (ex. "default 0.00")
-);
-/**Get the rel2 offset x value of state*/
-EAPI int                   /// @return The 'rel2 offset X' value of the part state
-edje_edit_state_rel2_offset_x_get(
-   Evas_Object *obj,       ///< The edje object
-   const char *part,       ///< The name of the part
-   const char *state       ///< The name of the 'part state' (ex. "default 0.00")
-);
-/**Get the rel2 offset y value of state*/
-EAPI int                   /// @return The 'rel2 offset Y' value of the part state
-edje_edit_state_rel2_offset_y_get(
-   Evas_Object *obj,       ///< The edje object
-   const char *part,       ///< The name of the part
-   const char *state       ///< The name of the 'part state' (ex. "default 0.00")
-);
-
-/**Set the rel1 offset x value of state*/
-EAPI void
-edje_edit_state_rel1_offset_x_set(
-   Evas_Object *obj,       ///< The edje object
-   const char *part,       ///< The name of the part
-   const char *state,      ///< The name of the 'part state' (ex. "default 0.00")
-   double x                ///< The new 'rel1 offset X' value to set
-);
-/**Get the rel1 offset y value of state*/
-EAPI void
-edje_edit_state_rel1_offset_y_set(
-   Evas_Object *obj,       ///< The edje object
-   const char *part,       ///< The name of the part
-   const char *state,      ///< The name of the 'part state' (ex. "default 0.00")
-   double y                ///< The new 'rel1 offset Y' value to set
-);
-/**Get the rel2 offset x value of state*/
-EAPI void
-edje_edit_state_rel2_offset_x_set(
-   Evas_Object *obj,       ///< The edje object
-   const char *part,       ///< The name of the part
-   const char *state,      ///< The name of the 'part state' (ex. "default 0.00")
-   double x                ///< The new 'rel2 offset X' value to set
-);
-/**Get the rel2 offset y value of state*/
-EAPI void
-edje_edit_state_rel2_offset_y_set(
-   Evas_Object *obj,       ///< The edje object
-   const char *part,       ///< The name of the part
-   const char *state,      ///< The name of the 'part state' (ex. "default 0.00")
-   double y                ///< The new 'rel2 offset Y' value to set
-);
-
-/**Get the part name rel1x is relative to. The function return NULL if the part is relative to the whole interface.*/
-EAPI const char *          ///@return The name of the part to apply the relativity
-edje_edit_state_rel1_to_x_get(
-   Evas_Object *obj,       ///< The edje object
-   const char *part,       ///< The name of the part
-   const char *state       ///< The name of the 'part state' (ex. "default 0.00")
-);
-/**Get the part name rel1y is relative to. The function return NULL if the part is relative to the whole interface.*/
-EAPI const char *          ///@return The name of the part to apply the relativity
-edje_edit_state_rel1_to_y_get(
-   Evas_Object *obj,       ///< The edje object
-   const char *part,       ///< The name of the part
-   const char *state       ///< The name of the 'part state' (ex. "default 0.00")
-);
-/**Get the part name rel2x is relative to. The function return NULL if the part is relative to the whole interface.*/
-EAPI const char *         ///@return The name of the part to apply the relativity
-edje_edit_state_rel2_to_x_get(
-   Evas_Object *obj,       ///< The edje object
-   const char *part,       ///< The name of the part
-   const char *state       ///< The name of the 'part state' (ex. "default 0.00")
-);
-/**Get the part name rel2y is relative to. The function return NULL if the part is relative to the whole interface.*/
-EAPI const char *         ///@return The name of the part to apply the relativity
-edje_edit_state_rel2_to_y_get(
-   Evas_Object *obj,       ///< The edje object
-   const char *part,       ///< The name of the part
-   const char *state       ///< The name of the 'part state' (ex. "default 0.00")
-);
-
-/**Set the part rel1x is relative to. Set rel_to to NULL make the part relative to the whole interface.*/
-EAPI void
-edje_edit_state_rel1_to_x_set(
-   Evas_Object *obj,       ///< The edje object
-   const char *part,       ///< The name of the part
-   const char *state,      ///< The name of the 'part state' (ex. "default 0.00")
-   const char *rel_to      ///< The name of the part that is used as container/parent
-);
-/**Set the part rel1y is relative to. Set rel_to to NULL make the part relative to the whole interface.*/
-EAPI void
-edje_edit_state_rel1_to_y_set(
-   Evas_Object *obj,       ///< The edje object
-   const char *part,       ///< The name of the part
-   const char *state,      ///< The name of the 'part state' (ex. "default 0.00")
-   const char *rel_to      ///< The name of the part that is used as container/parent
-);
-/**Set the part rel2x is relative to. Set rel_to to NULL make the part relative to the whole interface.*/
-EAPI void
-edje_edit_state_rel2_to_x_set(
-   Evas_Object *obj,       ///< The edje object
-   const char *part,       ///< The name of the part
-   const char *state,      ///< The name of the 'part state' (ex. "default 0.00")
-   const char *rel_to      ///< The name of the part that is used as container/parent
-);
-/**Set the part rel2y is relative to. Set rel_to to NULL make the part relative to the whole interface.*/
-EAPI void
-edje_edit_state_rel2_to_y_set(
-   Evas_Object *obj,       ///< The edje object
-   const char *part,       ///< The name of the part
-   const char *state,      ///< The name of the 'part state' (ex. "default 0.00")
-   const char *rel_to      ///< The name of the part that is used as container/parent
-);
-
+  
 /**Get the color of a part state. Pass NULL to any of [r,g,b,a] to get only the others.*/
 EAPI void
 edje_edit_state_color_get(
@@ -1548,7 +1536,7 @@ edje_edit_state_font_set(
    const char *state,      ///< The name of the 'part state' (ex. "default 0.00")
    const char *font        ///< The name of the font to use in the given part state
 );
-
+#endif
 //@}
 /******************************************************************************/
 /**************************   IMAGES API   ************************************/
@@ -1557,14 +1545,15 @@ edje_edit_state_font_set(
  *  Functions to deal with image objects (see @ref edcref).
  */ //@{
 
-/**Get the list of all the images in the given edje.
+/*! 
+ * Get the list of all the images in the given edje.
  * Use edje_edit_string_list_free() when you don't need the list anymore.
+ *
+ * @return An Eina_List* of string (char *)containing all the images names found in the edje file.
  */
-EAPI Eina_List *          ///@return An Eina_List* of string (char *)containing all the images names found in the edje file.
-edje_edit_images_list_get(
-   Evas_Object *obj       ///< The edje object
-);
+ Eflxx::CountedPtr <Einaxx::List <char*>::Iterator> getImagesList ();
 
+#if 0
 /**Add an new image to the image collection
  *
  * This function add the given image inside the edje. Don't add a new image part
@@ -1596,24 +1585,26 @@ edje_edit_image_data_add(
    const char *name,      ///< The image entry name
    int id                 ///< The image id
 );
+#endif
+  
+/*! 
+ * Get normal image name for a given part state.
+ *
+ * @param part The name of the part
+ * @param state The name of the 'part state' (ex. "default 0.00")
+ */
+std::string getImage (const std::string &part, const std::string &state);
 
-/**Get normal image name for a given part state. Remember to free the returned string using edje_edit_string_free().*/
-EAPI const char *          ///@return The name of the image used by state
-edje_edit_state_image_get(
-   Evas_Object *obj,       ///< The edje object
-   const char *part,       ///< The name of the part
-   const char *state       ///< The name of the 'part state' (ex. "default 0.00")
-);
+/*!
+ * Set normal image for a given part state.
+ * 
+ * @param part The name of the part
+ * @param state The name of the 'part state' (ex. "default 0.00")
+ * @param image The name of the image for the given state (must be an image contained in the edje file)
+ */
+void setImage (const std::string &part, const std::string &state, const std::string &image);
 
-/**Set normal image for a given part state.*/
-EAPI void
-edje_edit_state_image_set(
-   Evas_Object *obj,       ///< The edje object
-   const char *part,       ///< The name of the part
-   const char *state,      ///< The name of the 'part state' (ex. "default 0.00")
-   const char *image       ///< The name of the image for the given state (must be an image contained in the edje file)
-);
-
+#if 0
 /**Get image id for a given image name. Could be usefull to directly load the image from the eet file.*/
 EAPI int                   ///< The ID of the givan image name
 edje_edit_image_id_get(
