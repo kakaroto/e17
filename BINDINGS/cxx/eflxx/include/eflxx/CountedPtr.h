@@ -21,6 +21,8 @@ class CountedPtr {
     long* count;   // shared number of owners
 
   public:
+    template <typename S> friend class CountedPtr;
+    
     // initialize pointer with existing pointer
     // - requires that the pointer p is a return value of new
     explicit CountedPtr (T* p=0)
@@ -29,20 +31,43 @@ class CountedPtr {
     }
 
     // copy pointer (one more owner)
-    CountedPtr (const CountedPtr<T>& p) throw()
+    CountedPtr (const CountedPtr<T>& p)
      : ptr(p.ptr), count(p.count) 
     {
         ++*count;
     }
-
+    
+    template <class S>
+    CountedPtr (const CountedPtr<S>& p)
+      : ptr(p.ptr), count(p.count) 
+    {
+        ++*count;
+    }
+    
+    template <class S>
+    static CountedPtr<T> cast_static (const CountedPtr<S>& p)
+    {
+        T *obj = static_cast <T*> (&(*p));
+        
+        return CountedPtr<T> (obj);
+    }
+    
+    template <class S>
+    static CountedPtr<T> cast_dynamic (const CountedPtr<S>& p)
+    {
+        T *obj = dynamic_cast <T*> (&(*p));
+        
+        return CountedPtr<T> (obj);
+    }
+    
     // destructor (delete value if this was the last owner)
-    ~CountedPtr () throw() 
+    ~CountedPtr ()
     {
         dispose();
     }
 
     // assignment (unshare old and share new value)
-    CountedPtr<T>& operator= (const CountedPtr<T>& p) throw() 
+    CountedPtr<T>& operator= (const CountedPtr<T>& p) 
     {
         if (this != &p) {
             dispose();
@@ -54,11 +79,11 @@ class CountedPtr {
     }
 
     // access the value to which the pointer refers
-    T& operator*() const throw() 
+    T& operator*() const
     {
         return *ptr;
     }
-    T* operator->() const throw() 
+    T* operator->() const 
     {
         return ptr;
     }
