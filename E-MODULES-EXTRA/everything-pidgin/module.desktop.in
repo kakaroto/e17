@@ -1,7 +1,11 @@
 [Desktop Entry]
 Type=Link
 Name=Everything Pidgin
+Name[fr]=Omni - Pidgin
+Name[it]=Pannello di esecuzione - Pidgin
 Icon=e-module
 Comment=Open chat windows and send files to buddies.
+Comment[fr]=Pour chatter avec les potes et leur envoyer des fichiers.
+Comment[it]=Apre finestre di chat e invia file ai contatti.
 #Several different types available here. NEED TO DOC THESE.
 X-Enlightenment-ModuleType=everything

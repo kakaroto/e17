@@ -1,7 +1,11 @@
 [Desktop Entry]
 Type=Link
 Name=Everything Tracker
+Name[fr]=Omni - Tracker
+Name[it]=Pannello di esecuzione - Tracker
 Icon=e-module
 Comment=Find Files with Tracker (requires version 0.8)
+Comment[fr]=Trouver des fichiers avec Tracker (version 0.8 requise).
+Comment[it]=Trova i file con Tracker (versione richiesta 0.8).
 #Several different types available here. NEED TO DOC THESE.
 X-Enlightenment-ModuleType=everything
