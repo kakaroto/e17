@@ -441,25 +441,22 @@ class NewPartWizard(Wizard):
         self._name_changed = False
 
     def _add(self):
-        name = self._part_name_entry.entry
 
-        if (self._type == edje.EDJE_PART_TYPE_EXTERNAL):
-            ext_name = self._ext_list.type
-            ext_module = self._ext_list.module
-        else:
-            ext_name = ""
-            ext_module = None
-
-        def add_internal(name, edje_type, ext_name="", ext_module=None):
+        def add_internal(name, edje_type, ext_name=""):
             if not self._edit_grp.part_add(name, edje_type, ext_name):
                 self.notify("Error adding new part.")
                 return False
             return True
 
-        if add_internal(name, self._type, ext_name, ext_module):
+        name = self._part_name_entry.entry
+        if (self._type == edje.EDJE_PART_TYPE_EXTERNAL):
+            ext_name = self._ext_list.type
+        else:
+            ext_name = ""
+
+        if add_internal(name, self._type, ext_name):
             op = Operation("part addition")
-            op.redo_callback_add(
-                add_internal, name, self._type, ext_name, ext_module)
+            op.redo_callback_add(add_internal, name, self._type, ext_name)
             op.undo_callback_add(self._edit_grp.part_del, name)
             self._operation_stack_cb(op)
 
