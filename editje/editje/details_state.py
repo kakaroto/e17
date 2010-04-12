@@ -46,7 +46,7 @@ class StateCopyButton(FloaterListOpener):
         return list
 
     def _floater_title_init(self):
-        self._floater.title_set("State Selection")
+        self._floater.title_set("Copy from state")
 
     def value_set(self, value):
         self.e.part.state.copy_from(*value)
@@ -787,7 +787,7 @@ class PartAnimStateDetails(PartStateDetails):
             workfile_name_get_cb, part_object_get_cb, group)
 
     def _header_init(self, parent):
-        self.title = "part properties"
+        self.title = "part frame properties"
 
         self._header_table = PropertyTable(parent, "part name/type")
 
