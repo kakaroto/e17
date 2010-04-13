@@ -834,8 +834,9 @@ class PartStateDetails(EditjeDetails):
                     self["external"][prop].value = value
                     return
         args = [["external"], [prop], [value], [None], [True], [None]]
-        self._prop_change_do("(external) part state \"%s\" setting" % prop,
-                             "external", *args)
+        self._prop_change_do(
+            "(external) part state \"%s\" setting" % prop, *args)
+
 
     def _size_changed(self, obj):
         self["main"]["current"].value = obj.size
