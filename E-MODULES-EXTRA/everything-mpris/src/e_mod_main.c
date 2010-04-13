@@ -44,6 +44,7 @@ struct _Track
   int id;
   const char *title;
   const char *artist;
+  const char *album;
   const char *location;
   int length;
   
@@ -66,6 +67,8 @@ static const char mpris_interface[] = "org.freedesktop.MediaPlayer";
 static const char fdo_bus_name[] = "org.freedesktop.DBus";
 static const char fdo_interface[] = "org.freedesktop.DBus";
 static const char fdo_path[] = "/org/freedesktop/DBus";
+static const char mpris_track[] = "MPRIS_TRACK";
+
 static Eina_Bool active = EINA_FALSE;
 
 #define ITEM_TRACK(_t, _it) Track *_t = (Track*) (_it);
@@ -130,6 +133,7 @@ _item_free(Evry_Item *it)
 
   if (t->location) eina_stringshare_del(t->location);
   if (t->artist) eina_stringshare_del(t->artist);
+  if (t->album) eina_stringshare_del(t->album);
   if (t->title) eina_stringshare_del(t->title);
 
   if (!t->ready)
@@ -240,6 +244,13 @@ _dbus_cb_tracklist_metadata(void *data, DBusMessage *reply, DBusError *error)
 	      if (tmp && tmp[0])
 		t->location = eina_stringshare_add(tmp); 
 	    }
+	  else if (!strcmp(key, "album"))
+	    {
+	      dbus_message_iter_recurse (&iter, &iter_val);
+	      dbus_message_iter_get_basic (&iter_val, &tmp);
+	      if (tmp && tmp[0])
+		t->album = eina_stringshare_add(tmp); 
+	    }
 	  else if (!strcmp(key, "mtime"))
 	    {
 	      dbus_message_iter_recurse (&iter, &iter_val);
@@ -270,6 +281,9 @@ _dbus_cb_tracklist_metadata(void *data, DBusMessage *reply, DBusError *error)
 	  else goto error;
 	}
       else goto error;
+      
+      if (t->album)
+	t->base.detail = eina_stringshare_ref(t->album);
     }
 
   DBG("add %s, %d", t->base.label, t->id);
@@ -317,7 +331,7 @@ _mpris_get_metadata(Plugin *p)
     {
       t = E_NEW(Track, 1);
       t->id = cnt;
-      EVRY_ITEM(t)->transient = EINA_TRUE;
+      EVRY_ITEM(t)->no_history = EINA_TRUE;
       evry_item_new(EVRY_ITEM(t), EVRY_PLUGIN(p), NULL, _item_free);
 
       t->pnd = _dbus_send_msg_int("/TrackList", "GetMetadata",
@@ -509,8 +523,7 @@ _fetch(Evry_Plugin *plugin, const char *input)
   if (p->input)
     eina_stringshare_del(p->input); 
 
-  /* cant filter item is play_track is not supported... */
-  if (p->support.play_track && input)
+  if (input)
     p->input = eina_stringshare_add(input); 
   else
     p->input = NULL;
@@ -767,7 +780,7 @@ _mpris_play_file(Evry_Action *act)
   int play = (strcmp((char *) act->data, "e"));
   char *buf;
 
-  if (!strcmp(act->type_in1, "MPRIS_TRACK"))
+  if (!strcmp(act->type_in1, mpris_track))
     {
 	
       file = (Evry_Item_File *)act->item2;
@@ -1037,55 +1050,55 @@ module_init(void)
   e_dbus_list_names(conn, _dbus_cb_list_names, NULL);
 
   _plug = E_NEW(Plugin, 1);
-  evry_plugin_new(EVRY_PLUGIN(_plug), "Playlist", type_subject, NULL, "MPRIS_TRACK",
+  evry_plugin_new(EVRY_PLUGIN(_plug), "Playlist", type_subject, NULL, mpris_track,
 		  1, "emblem-sound", NULL,
 		  _begin, _cleanup, _fetch, _action, _icon_get, _plugin_free);
   /* EVRY_PLUGIN(_plug)->cb_key_down = &_cb_key_down; */
   EVRY_PLUGIN(_plug)->aggregate = EINA_FALSE;
   evry_plugin_register(EVRY_PLUGIN(_plug), 0);
 
-  act = evry_action_new("Play Track", "MPRIS_TRACK", NULL, NULL, "media-playback-start",
+  act = evry_action_new("Play Track", mpris_track, NULL, NULL, "media-playback-start",
 			_mpris_play_track, _mpris_check_item, NULL, NULL,NULL, NULL);
   act->data = "PlayTrack";
   evry_action_register(act,  0);
   actions = eina_list_append(actions, act);
 
-  act = evry_action_new("Remove Track", "MPRIS_TRACK", NULL, NULL, "list-remove",
+  act = evry_action_new("Remove Track", mpris_track, NULL, NULL, "list-remove",
 			_mpris_tracklist_remove_track, NULL, NULL, NULL,NULL, NULL);
   evry_action_register(act,  0);
   actions = eina_list_append(actions, act);
 
-  act = evry_action_new("Play", "MPRIS_TRACK", NULL, NULL, "media-playback-start",
+  act = evry_action_new("Play", mpris_track, NULL, NULL, "media-playback-start",
 			_mpris_player_action, _mpris_check_item, NULL, NULL,NULL, NULL);
   act->data = "Play";
   evry_action_register(act,  0);
   actions = eina_list_append(actions, act);
 
-  act = evry_action_new("Pause", "MPRIS_TRACK", NULL, NULL, "media-playback-pause",
+  act = evry_action_new("Pause", mpris_track, NULL, NULL, "media-playback-pause",
 			_mpris_player_action, _mpris_check_item, NULL, NULL,NULL, NULL);
   act->data = "Pause";
   evry_action_register(act,  0);
   actions = eina_list_append(actions, act);
 
-  act = evry_action_new("Stop", "MPRIS_TRACK", NULL, NULL, "media-playback-stop",
+  act = evry_action_new("Stop", mpris_track, NULL, NULL, "media-playback-stop",
 			_mpris_player_action, _mpris_check_item, NULL, NULL,NULL, NULL);
   act->data = "Stop";
   evry_action_register(act,  0);
   actions = eina_list_append(actions, act);
 
-  act = evry_action_new("Forward", "MPRIS_TRACK", NULL, NULL, "media-seek-forward",
+  act = evry_action_new("Forward", mpris_track, NULL, NULL, "media-seek-forward",
 			_mpris_player_position, _mpris_check_item, NULL, NULL,NULL, NULL);
   act->data = "Forward";
   evry_action_register(act,  0);
   actions = eina_list_append(actions, act);
 
-  act = evry_action_new("Rewind", "MPRIS_TRACK", NULL, NULL, "media-seek-backward",
+  act = evry_action_new("Rewind", mpris_track, NULL, NULL, "media-seek-backward",
 			_mpris_player_position, _mpris_check_item, NULL, NULL,NULL, NULL);
   act->data = "Rewind";
   evry_action_register(act,  0);
   actions = eina_list_append(actions, act);
 
-  act = evry_action_new("Clear Playlist", "MPRIS_TRACK", NULL, NULL, "media-playlist-clear",
+  act = evry_action_new("Clear Playlist", mpris_track, NULL, NULL, "media-playlist-clear",
 			_mpris_tracklist_action_clear , _mpris_check_item, NULL, NULL,NULL, NULL);
   act->data = "Clear";
   evry_action_register(act,  0);
