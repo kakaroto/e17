@@ -200,6 +200,7 @@ EAPI void      elixir_increase_count(JSContext *cx);
 EAPI void      elixir_decrease_count(JSContext *cx);
 EAPI void      elixir_lock_cx(JSContext *cx);
 EAPI void      elixir_unlock_cx(JSContext *cx);
+EAPI Eina_List *elixir_suspended_cx(void);
 EAPI Eina_Bool elixir_string_register(JSContext *cx, JSString **string);
 EAPI Eina_Bool elixir_string_unregister(JSContext *cx, JSString **string);
 EAPI Eina_Bool elixir_object_register(JSContext *cx, JSObject **obj, void *data);

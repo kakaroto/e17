@@ -149,11 +149,24 @@ elixir_ecore_event_current_event_get(JSContext *cx, uintN argc, jsval *vp)
 static int
 _elixir_ecore_maybe_gc(void *data)
 {
-   JSContext *cx = data;
+   Eina_List *scx;
+   JSContext *cx;
+   Eina_Bool suspended;
 
-   JS_SetContextThread(cx);
-   JS_MaybeGC(cx);
-   JS_ClearContextThread(cx);
+   scx = elixir_suspended_cx();
+   EINA_LIST_FREE(scx, cx)
+     {
+	suspended = elixir_function_suspended(cx);
+
+	if (suspended)
+	  {
+	     JS_SetContextThread(cx);
+	     JS_MaybeGC(cx);
+	     JS_ClearContextThread(cx);
+	  }
+	else
+	  fprintf(stderr, "NOT SUSPENDED %p\n", cx);
+     }
 
    return 1;
 }
@@ -168,7 +181,7 @@ elixir_ecore_init(JSContext *cx, uintN argc, jsval *vp)
 
    r = ecore_init();
 
-   ecore_idle_enterer_add(_elixir_ecore_maybe_gc, cx);
+   ecore_idle_enterer_add(_elixir_ecore_maybe_gc, NULL);
 
    JS_SET_RVAL(cx, vp, INT_TO_JSVAL(r));
    return JS_TRUE;

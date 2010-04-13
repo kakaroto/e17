@@ -2,6 +2,7 @@
 #include <string.h>
 #include <assert.h>
 #include <libgen.h>
+#include <pthread.h>
 
 #include <jsxdrapi.h>
 
@@ -35,6 +36,8 @@ struct gc_cx_s
 };
 
 static elixir_virtual_chroot_t  _evct = ELIXIR_VCHROOT_ALL;
+static Eina_List *suspended_cx = NULL;
+static pthread_mutex_t suspended_lock = PTHREAD_MUTEX_INITIALIZER;
 
 EAPI FILE *tracker = NULL;
 
@@ -233,6 +236,9 @@ elixir_function_start(JSContext *cx)
 	JS_SetContextThread(cx);
 	JS_ResumeRequest(cx, gccx->save);
 	gccx->save = -1;
+	pthread_mutex_lock(&suspended_lock);
+	suspended_cx = eina_list_remove(suspended_cx, cx);
+	pthread_mutex_unlock(&suspended_lock);
      }
    elixir_lock_cx(cx);
 }
@@ -248,7 +254,25 @@ elixir_function_stop(JSContext *cx)
    if (gccx) {
       JS_SetContextThread(cx);
       gccx->save = JS_SuspendRequest(cx);
+      pthread_mutex_lock(&suspended_lock);
+      suspended_cx = eina_list_append(suspended_cx, cx);
+      pthread_mutex_unlock(&suspended_lock);
    }
+}
+
+Eina_List *
+elixir_suspended_cx(void)
+{
+   Eina_List *copy = NULL;
+   Eina_List *l;
+   JSContext *cx;
+
+   pthread_mutex_lock(&suspended_lock);
+   EINA_LIST_FOREACH(suspended_cx, l, cx)
+     copy = eina_list_append(copy, cx);
+   pthread_mutex_unlock(&suspended_lock);
+
+   return copy;
 }
 
 void
