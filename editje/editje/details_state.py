@@ -15,6 +15,7 @@
 # You should have received a copy of the GNU Lesser General Public
 # License along with Editje. If not, see <http://www.gnu.org/licenses/>.
 
+from itertools import izip
 import ecore
 import edje
 
@@ -623,125 +624,189 @@ class PartStateDetails(EditjeDetails):
         if self.e.part.state.name != state_name:
             self.e.part.state.name = state_name
 
-    def _prop_change_do(self, op_name, prop_group, prop_name, prop_value,
-                        prop_attr=None, is_external=False, pval_filter=None):
+    def _prop_change_do(self, op_name, prop_groups, prop_names, prop_values,
+                        prop_attrs, is_external, filters):
 
-        def set_property(part_name, state_name, prop_attr,
-                         prop_name, prop_value, is_external, filter_):
+        def set_property(part_name, state_name, prop_attrs, prop_names,
+                         prop_values, is_external, filter_, reverse=False):
+
+            if reverse:
+                efunc = lambda l: izip(xrange(len(l) - 1, -1, -1), reversed(l))
+            else:
+                efunc = enumerate
+
             self._part_and_state_select(part_name, state_name)
 
-            if is_external:
-                self.e.part.state.external_param_set(prop_attr, prop_value)
-            else:
-                setattr(self.e.part.state, prop_attr, prop_value)
+            for i, p in efunc(prop_attrs):
+                if is_external[i]:
+                    self.e.part.state.external_param_set(prop_attrs[i],
+                                                         prop_values[i])
+                else:
+                    setattr(self.e.part.state, prop_attrs[i], prop_values[i])
 
-            if filter_:
-                label_value = filter_(prop_value)
-            else:
-                label_value = prop_value
-            if self[prop_group][prop_name].value != label_value:
-                self[prop_group][prop_name].value = label_value
+                if filter_[i]:
+                    label_value = filter_[i](prop_values[i])
+                else:
+                    label_value = prop_values[i]
+                if self[prop_groups[i]][prop_names[i]].value != label_value:
+                    self[prop_groups[i]][prop_names[i]].value = label_value
+
+        l = len(prop_groups)
+        for arg in (prop_names, prop_values, prop_attrs,
+                    is_external, filters):
+            if len(arg) != l:
+                raise TypeError("Cardinality of property fields differ.")
 
         part_name = self.e.part.name
         state_name = self.e.part.state.name
         state = self.e.part.state
 
-        if not prop_attr:
-            prop_attr = prop_name
+        old_values = []
+        for i, p in enumerate(prop_attrs):
+            if not p:
+                prop_attrs[i] = prop_names[i]
 
-        if is_external:
-            type_, old_value = state.external_param_get(prop_attr)
-            if (type_ == edje.EDJE_EXTERNAL_PARAM_TYPE_STRING or type_ == \
-                    edje.EDJE_EXTERNAL_PARAM_TYPE_CHOICE) and old_value is \
-                    None:
-                old_value = ""
-        else:
-            old_value = getattr(state, prop_attr)
+            if is_external[i]:
+                type_, old_value = state.external_param_get(prop_attrs[i])
+                if (type_ == edje.EDJE_EXTERNAL_PARAM_TYPE_STRING or type_ == \
+                        edje.EDJE_EXTERNAL_PARAM_TYPE_CHOICE) and \
+                        old_value is None:
+                    old_values.append("")
+            else:
+                old_values.append(getattr(state, prop_attrs[i]))
 
-        set_property(part_name, state_name, prop_attr, prop_name, prop_value,
-                     is_external, pval_filter)
+        set_property(part_name, state_name, prop_attrs, prop_names,
+                     prop_values, is_external, filters)
 
         op = Operation(op_name)
-        op.redo_callback_add(set_property, part_name, state_name, prop_attr,
-                             prop_name, prop_value, is_external, pval_filter)
-        op.undo_callback_add(set_property, part_name, state_name, prop_attr,
-                             prop_name, old_value, is_external, pval_filter)
+        op.redo_callback_add(
+            set_property, part_name, state_name, prop_attrs,
+            prop_names, prop_values, is_external, filters)
+        op.undo_callback_add(
+            set_property, part_name, state_name, prop_attrs,
+            prop_names, old_values, is_external, filters, True)
 
         self._operation_stack_cb(op)
 
     def _prop_common_value_changed(self, prop, value):
+        args = [["main"], [prop], [value], [None], [False], [None]]
         if prop == "min":
             self._prop_change_do(
-                "part state mininum size setting", "main", prop, value)
+                "part state mininum size setting", *args)
         elif prop == "max":
             self._prop_change_do(
-                "part state maximum size setting", "main", prop, value)
+                "part state maximum size setting", *args)
         elif prop == "color":
             self._prop_change_do(
-                "part state color setting", "main", prop, value)
+                "part state color setting", *args)
         elif prop == "visible":
             self._prop_change_do(
-                "part state visibility setting", "main", prop, value)
+                "part state visibility setting", *args)
         elif prop == "align":
             self._prop_change_do(
-                "part state alignment setting", "main", prop, value)
+                "part state alignment setting", *args)
+
+    def _check_state_relto_void(self):
+        state = self.e.part.state
+        rel1_to, rel2_to = state.rel1_to, state.rel2_to
+        if (rel1_to == (None, None) and rel2_to == (None, None)):
+            return True
+        return False
+
+    def _relto_fill_args(self, relto):
+        return [["rel1", "rel2", "rel1", "rel2", "rel1", "rel2"],
+                ["to", "to", "relative", "relative", "offset", "offset"],
+                [relto, relto, [0.0, 0.0], [1.0, 1.0], [0, 0], [-1, -1]],
+                ["rel1_to", "rel2_to", "rel1_relative", "rel2_relative",
+                 "rel1_offset", "rel2_offset"],
+                [False, False, False, False, False, False],
+                [None, None, None, None, None, None]]
 
     def _prop_rel1_value_changed(self, prop, value):
         if prop == "to":
+            if self._check_state_relto_void():
+                if value[0]:
+                    value = [value[0], value[0]]
+                else:
+                    value = [value[1], value[1]]
+                args = self._relto_fill_args(value)
+            else:
+                args = [["rel1"], [prop], [value], ["rel1_to"], [False],
+                        [None]]
             self._prop_change_do(
                 "part state relative positioning setting (top-left corner's"
-                " origin part)", "rel1", prop, value, "rel1_to")
+                " origin part)", *args)
         elif prop == "relative":
+            args = [["rel1"], [prop], [value], ["rel1_relative"], [False],
+                    [None]]
             self._prop_change_do(
                 "part state relative positioning setting (top-left corner's"
-                " relative position WRT origin's dimensions)",
-                "rel1", prop, value, "rel1_relative")
+                " relative position WRT origin's dimensions)", *args)
         elif prop == "offset":
+            args = [["rel1"], [prop], [value], ["rel1_offset"], [False],
+                    [None]]
             self._prop_change_do(
                 "part state relative positioning setting (top-left corner's"
-                " additional offset)", "rel1", prop, value, "rel1_offset")
+                " additional offset)", *args)
 
     def _prop_rel2_value_changed(self, prop, value):
         if prop == "to":
+            if self._check_state_relto_void():
+                if value[0]:
+                    value = [value[0], value[0]]
+                else:
+                    value = [value[1], value[1]]
+                args = self._relto_fill_args(value)
+            else:
+                args = [["rel2"], [prop], [value], ["rel2_to"], [False],
+                        [None]]
             self._prop_change_do(
                 "part state relative positioning setting (bottom-right"
-                " corner's origin part)", "rel2", prop, value, "rel2_to")
+                " corner's origin part)", *args)
         elif prop == "relative":
+            args = [["rel2"], [prop], [value], ["rel2_relative"], [False],
+                    [None]]
             self._prop_change_do(
                 "part state relative positioning setting (bottom-right"
-                " corner's relative position WRT origin's dimensions)",
-                "rel2", prop, value, "rel2_relative")
+                " corner's relative position WRT origin's dimensions)", *args)
         elif prop == "offset":
+            args = [["rel2"], [prop], [value], ["rel2_offset"], [False],
+                    [None]]
             self._prop_change_do(
                 "part state relative positioning setting (bottom-right"
-                " corner's additional offset)", "rel2", prop, value,
-                "rel2_offset")
+                " corner's additional offset)", *args)
 
     def _prop_text_value_changed(self, prop, value):
         if prop == "text":
+            args = [["text"], [prop], [value], [None], [False], [None]]
             self._prop_change_do(
-                "part state text string setting", "text", prop, value)
+                "part state text string setting", *args)
         elif prop == "font":
+            args = [["text"], [prop], [value], [None], [False], [None]]
             self._prop_change_do(
-                "part state text font setting", "text", prop, value)
+                "part state text font setting", *args)
         elif prop == "size":
-            self._prop_change_do("part state text size setting", "text", prop,
-                                 value, "text_size")
+            args = [["text"], [prop], [value], ["text_size"], [False], [None]]
+            self._prop_change_do("part state text size setting", *args)
         elif prop == "fit":
+            args = [["text"], [prop], [value], ["text_fit"], [False], [None]]
             self._prop_change_do("part state text fit to given axis setting",
-                                 "text", prop, value, "text_fit")
+                                 *args)
         elif prop == "align":
-            self._prop_change_do("part state text alignment setting", "text",
-                                 prop, value, "text_align")
+            args = [["text"], [prop], [value], ["text_align"], [False], [None]]
+            self._prop_change_do("part state text alignment setting", *args)
         elif prop == "color2":
-            self._prop_change_do("part state text shadow color setting",
-                                 "text", prop, value)
+            args = [["text"], [prop], [value], [None], [False], [None]]
+            self._prop_change_do("part state text shadow color setting", *args)
         elif prop == "color3":
+            args = [["text"], [prop], [value], [None], [False], [None]]
             self._prop_change_do("part state text outline color setting",
-                                 "text", prop, value)
+                                 *args)
         elif prop == "elipsis":
+            args = [["text"], [prop], [value], ["text_elipsis"], [False],
+                    [None]]
             self._prop_change_do("part state text elipsis (balancing) setting",
-                                 "text", prop, value, "text_elipsis")
+                                 *args)
 
     def _prop_image_value_changed(self, prop, value):
         if prop == "normal":
@@ -749,14 +814,17 @@ class PartStateDetails(EditjeDetails):
             # won't reset the img part at all: edje was not really meant to
             # have "void" img parts. img part addition should raise the img
             # wizard dialog to choose an initial img from.
-            self._prop_change_do("part state image setting",
-                                 "image", prop, value, "image")
+            args = [["image"], [prop], [value], ["image"], [False],
+                    [None]]
+            self._prop_change_do("part state image setting", *args)
         elif prop == "border":
-            self._prop_change_do("part state image border setting",
-                                 "image", prop, value, "image_border")
+            args = [["image"], [prop], [value], ["image_border"], [False],
+                    [None]]
+            self._prop_change_do("part state image border setting", *args)
         elif prop == "middle":
-            self._prop_change_do("part state \"middle\" setting",
-                                 "image", prop, value, "image_border_fill")
+            args = [["image"], [prop], [value], ["image_border_fill"], [False],
+                    [None]]
+            self._prop_change_do("part state \"middle\" setting", *args)
 
     def _prop_external_value_changed(self, prop, value):
         for p in self._params_info:
@@ -765,9 +833,9 @@ class PartStateDetails(EditjeDetails):
                     nil, value = self.state.external_param_get(prop)
                     self["external"][prop].value = value
                     return
-
+        args = [["external"], [prop], [value], [None], [True], [None]]
         self._prop_change_do("(external) part state \"%s\" setting" % prop,
-                             "external", prop, value, None, True)
+                             "external", *args)
 
     def _size_changed(self, obj):
         self["main"]["current"].value = obj.size
