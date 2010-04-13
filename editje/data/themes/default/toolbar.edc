@@ -18,166 +18,175 @@
  */
 
 #define TOOLBAR_BT_FULL(bt_name, image_ico, colorclass, font_name, font_size) \
-         part {                                                      \
-            name: bt_name".base";                                    \
-            type: RECT;                                              \
-            mouse_events: 0;                                         \
-            description {                                            \
-               state: "default" 0.0;                                 \
-               color: 0 0 0 0;                                       \
-               align: 0.5 0.0;                                       \
-               aspect: 1.0 1.0;                                      \
-               min: 24 24;                                           \
-               rel1 {                                                \
-                  to: bt_name;                                       \
-                  relative: 0.0 0.0;                                 \
-	          offset: 5 0;					     \
-               }                                                     \
-               rel2 {                                                \
-                  to_x: bt_name;                                     \
-	          relative: 1.0 0.0;				     \
-	          offset: -6 0;					     \
-               }                                                     \
-            }                                                        \
-         }                                                           \
-         part {                                                      \
-            name: bt_name".icon";                                    \
-            type: IMAGE;                                             \
-            mouse_events: 0;                                         \
-            description {                                            \
-               state: "default" 0.0;                                 \
-               image.normal: image_ico;                              \
-               rel1.to: bt_name".base";                              \
-               rel2.to: bt_name".base";                              \
-            }                                                        \
-            description {                                            \
-               state: "over" 0.0;                                    \
-               inherit: "default" 0.0;                               \
-               rel1.offset: 0 -5;                                    \
-               rel2.offset: -1 -6;                                   \
-            }                                                        \
-            description {                                            \
-               state: "clicked" 0.0;                                 \
-               inherit: "default" 0.0;                               \
-               color: 127 127 127 255;                               \
-            }                                                        \
-            description {                                            \
-               state: "disabled" 0.0;                                \
-               inherit: "default" 0.0;                               \
-               color: 127 127 127 100;                               \
-            }                                                        \
-         }                                                           \
-         part {                                                      \
-            name: bt_name".label";                                   \
-            type: TEXT;                                              \
-            mouse_events: 0;                                         \
-            description {                                            \
-               state: "default" 0.0;                                 \
-               color_class: colorclass;                              \
-               align: 0.5 0.0;                                       \
-	       fixed: 1 1;					     \
-               text {                                                \
-                  text: "TITLE";                                     \
-                  font: font_name;                                   \
-                  size: font_size;                                   \
-                  align: 0.5 0.5;                                    \
-	          min: 1 1;					     \
-               }                                                     \
-               rel1 {                                                \
-                  to_x: bt_name;                                     \
-                  to_y: bt_name".base";                              \
-                  relative: 0.0 1.0;                                 \
-                  offset: 0 2;                                       \
-               }                                                     \
-	       rel2.to: bt_name;				     \
-            }                                                        \
-         }                                                           \
-         part {                                                      \
-            name: bt_name".clipper";                                 \
-            type: RECT;                                              \
-            mouse_events: 1;                                         \
-            description {                                            \
-               state: "default" 0.0;                                 \
-               color: 0 0 0 0;                                       \
-               visible: 0;                                           \
-               rel1.to: bt_name;                                     \
-               rel2.to: bt_name;                                     \
-            }                                                        \
-            description {                                            \
-               state: "disabled" 0.0;                                \
-               inherit: "default" 0.0;                               \
-               visible: 1;                                           \
-            }                                                        \
-         }                                                           \
-                                                                     \
-         programs {                                                  \
-            program {                                                \
-               name: bt_name".mouse.in";                             \
-               signal: "mouse,in";                                   \
-               source: bt_name;                                      \
-               action: STATE_SET "over" 0.0;                         \
-               transition: ACCELERATE 0.15;                          \
-               target: bt_name".icon";                               \
-            }                                                        \
-            program {                                                \
-               name: bt_name".mouse.out";                            \
-               signal: "mouse,out";                                  \
-               source: bt_name;                                      \
-               action: STATE_SET "default" 0.0;                      \
-               transition: DECELERATE 0.15;                          \
-               target: bt_name".icon";                               \
-            }                                                        \
-            program {                                                \
-               name: bt_name".mouse.down";                           \
-               signal: "mouse,down,1";                               \
-               source: bt_name;                                      \
-               action: STATE_SET "clicked" 0.0;                      \
-               transition: LINEAR 0.2;                               \
-               target: bt_name".icon";                               \
-            }                                                        \
-            program {                                                \
-               name: bt_name".mouse.up";                             \
-               signal: "mouse,up,1";                                 \
-               source: bt_name;                                      \
-               action: ACTION_STOP;                                  \
-               target: bt_name".mouse.down";                         \
-               after: bt_name".default";                             \
-            }                                                        \
-            program {                                                \
-               name: bt_name".default";                              \
-               action: STATE_SET "default" 0.0;                      \
-               target: bt_name."icon";                               \
-            }                                                        \
-            program {                                                \
-               name: bt_name".mouse.clicked";                        \
-               signal: "mouse,clicked,1";                            \
-               source: bt_name;                                      \
-               action: SIGNAL_EMIT bt_name",selected" bt_name;       \
-            }                                                        \
-            program {                                                \
-               name: bt_name".disable";                              \
-               signal: bt_name",disable";                            \
-               action: STATE_SET "disabled" 0.0;                     \
-               target: bt_name".clipper";                            \
-               after: bt_name".disable.finish";                      \
-            }                                                        \
-            /* ugly hack, but tired of thinking of a confortable     \
-               solution for this sh*t */                             \
-            program {                                                \
-               name: bt_name".disable.finish";                       \
-               action: STATE_SET "disabled" 0.0;                     \
-               in: 0.2 0.0;                                          \
-               transition: DECELERATE 0.1;                           \
-               target: bt_name".icon";                               \
-            }                                                        \
-            program {                                                \
-               name: bt_name".enable";                               \
-               signal: bt_name",enable";                             \
-               action: STATE_SET "default" 0.0;                      \
-               target: bt_name".clipper";                            \
-               target: bt_name".icon";                               \
-            }                                                        \
-         }
+   part {                                                               \
+      name: bt_name".base";                                             \
+      type: RECT;                                                       \
+      mouse_events: 1;                                                  \
+      description {                                                     \
+         state: "default" 0.0;                                          \
+         color: 0 0 0 0;                                                \
+         rel1.to: bt_name;                                              \
+         rel2.to: bt_name;                                              \
+      }                                                                 \
+      description {                                                     \
+         state: "disabled" 0.0;                                         \
+         inherit: "default" 0.0;                                        \
+         visible: 0;                                                    \
+      }                                                                 \
+   }                                                                    \
+   part {                                                               \
+      name: bt_name".icon_frame";                                       \
+      type: RECT;                                                       \
+      mouse_events: 0;                                                  \
+      description {                                                     \
+         state: "default" 0.0;                                          \
+         color: 0 0 0 0;                                                \
+         align: 0.5 0.0;                                                \
+         aspect: 1.0 1.0;                                               \
+         min: 24 24;                                                    \
+         rel1 {                                                         \
+            to: bt_name;                                                \
+            relative: 0.0 0.0;                                          \
+            offset: 5 0;                                                \
+         }                                                              \
+         rel2 {                                                         \
+            to_x: bt_name;                                              \
+            relative: 1.0 0.0;                                          \
+            offset: -6 0;                                               \
+         }                                                              \
+      }                                                                 \
+   }                                                                    \
+   part {                                                               \
+      name: bt_name".clipper";                                          \
+      type: RECT;                                                       \
+      mouse_events: 0;                                                  \
+      description {                                                     \
+         state: "default" 0.0;                                          \
+         color: 255 255 255 255;                                        \
+         visible: 1;                                                    \
+         rel1 {                                                         \
+            to: bt_name;                                                \
+            offset: 0 -5;                                               \
+         }                                                              \
+         rel2 {                                                         \
+            to: bt_name;                                                \
+         }                                                              \
+      }                                                                 \
+      description {                                                     \
+         state: "disabled" 0.0;                                         \
+         inherit: "default" 0.0;                                        \
+         color: 127 127 127 100;                                        \
+      }                                                                 \
+   }                                                                    \
+   part {                                                               \
+      name: bt_name".icon";                                             \
+      type: IMAGE;                                                      \
+      clip_to: bt_name".clipper";                                       \
+      mouse_events: 0;                                                  \
+      description {                                                     \
+         state: "default" 0.0;                                          \
+         image.normal: image_ico;                                       \
+         rel1.to: bt_name".icon_frame";                                 \
+         rel2.to: bt_name".icon_frame";                                 \
+      }                                                                 \
+      description {                                                     \
+         state: "over" 0.0;                                             \
+         inherit: "default" 0.0;                                        \
+         rel1.offset: 0 -5;                                             \
+         rel2.offset: -1 -6;                                            \
+      }                                                                 \
+      description {                                                     \
+         state: "clicked" 0.0;                                          \
+         inherit: "default" 0.0;                                        \
+         color: 127 127 127 255;                                        \
+      }                                                                 \
+   }                                                                    \
+   part {                                                               \
+      name: bt_name".label";                                            \
+      type: TEXT;                                                       \
+      mouse_events: 0;                                                  \
+      description {                                                     \
+         state: "default" 0.0;                                          \
+         color_class: colorclass;                                       \
+         align: 0.5 0.0;                                                \
+         fixed: 1 1;                                                    \
+         text {                                                         \
+            text: "TITLE";                                              \
+            font: font_name;                                            \
+            size: font_size;                                            \
+            align: 0.5 0.5;                                             \
+            min: 1 1;                                                   \
+         }                                                              \
+         rel1 {                                                         \
+            to_x: bt_name;                                              \
+            to_y: bt_name".icon_frame";                                 \
+            relative: 0.0 1.0;                                          \
+            offset: 0 2;                                                \
+         }                                                              \
+         rel2.to: bt_name;                                              \
+      }                                                                 \
+   }                                                                    \
+                                                                        \
+   programs {                                                           \
+      program {                                                         \
+         name: bt_name".mouse.in";                                      \
+         signal: "mouse,in";                                            \
+         source: bt_name."base";                                        \
+         action: STATE_SET "over" 0.0;                                  \
+         transition: ACCELERATE 0.15;                                   \
+         target: bt_name".icon";                                        \
+      }                                                                 \
+      program {                                                         \
+         name: bt_name".mouse.out";                                     \
+         signal: "mouse,out";                                           \
+         source: bt_name."base";                                        \
+         action: STATE_SET "default" 0.0;                               \
+         transition: DECELERATE 0.15;                                   \
+         target: bt_name".icon";                                        \
+      }                                                                 \
+      program {                                                         \
+         name: bt_name".mouse.down";                                    \
+         signal: "mouse,down,1";                                        \
+         source: bt_name."base";                                        \
+         action: STATE_SET "clicked" 0.0;                               \
+         transition: LINEAR 0.2;                                        \
+         target: bt_name".icon";                                        \
+      }                                                                 \
+      program {                                                         \
+         name: bt_name".mouse.up";                                      \
+         signal: "mouse,up,1";                                          \
+         source: bt_name."base";                                        \
+         action: ACTION_STOP;                                           \
+         target: bt_name".mouse.down";                                  \
+         after: bt_name".default";                                      \
+      }                                                                 \
+      program {                                                         \
+         name: bt_name".default";                                       \
+         action: STATE_SET "default" 0.0;                               \
+         target: bt_name."icon";                                        \
+      }                                                                 \
+      program {                                                         \
+         name: bt_name".mouse.clicked";                                 \
+         signal: "mouse,clicked,1";                                     \
+         source: bt_name."base";                                        \
+         action: SIGNAL_EMIT bt_name",selected" bt_name;                \
+      }                                                                 \
+      program {                                                         \
+         name: bt_name".disable";                                       \
+         signal: bt_name",disable";                                     \
+         action: STATE_SET "disabled" 0.0;                              \
+         target: bt_name".clipper";                                     \
+         target: bt_name".base";                                        \
+      }                                                                 \
+      program {                                                         \
+         name: bt_name".enable";                                        \
+         signal: bt_name",enable";                                      \
+         action: STATE_SET "default" 0.0;                               \
+         target: bt_name".clipper";                                     \
+         target: bt_name".base";                                        \
+         target: bt_name".icon";                                        \
+      }                                                                 \
+   }
 
 #define TOOLBAR_BT(bt_name, image_ico, colorclass)                   \
    TOOLBAR_BT_FULL(bt_name, image_ico, colorclass, "Sans:style=Bold", 10)
