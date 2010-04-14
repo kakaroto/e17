@@ -112,6 +112,25 @@ class PartStateDetails(EditjeDetails):
         self.part_edje = None
         self.part_evas = None
 
+    def _prop_object_get(self):
+        return self.e.part.state
+
+    def _prop_old_values_get(self, prop_attrs, is_external):
+        old_values = []
+        state = self._prop_object_get()
+
+        for i, p in enumerate(prop_attrs):
+            if is_external[i]:
+                type_, old_value = state.external_param_get(p)
+                if (type_ == edje.EDJE_EXTERNAL_PARAM_TYPE_STRING or type_ == \
+                        edje.EDJE_EXTERNAL_PARAM_TYPE_CHOICE) and \
+                        old_value is None:
+                    old_values.append("")
+            else:
+                old_values.append(getattr(state, p))
+
+        return old_values
+
     def _header_init(self, parent):
         self.title = "part state"
 
@@ -617,76 +636,6 @@ class PartStateDetails(EditjeDetails):
             self._prop_external_value_changed(prop_name, prop_value)
 
         self.editable.calc_force()
-
-    def _part_and_state_select(self, part_name, state_name):
-        if self.e.part.name != part_name:
-            self.e.part.name = part_name
-        if self.e.part.state.name != state_name:
-            self.e.part.state.name = state_name
-
-    def _prop_change_do(self, op_name, prop_groups, prop_names, prop_values,
-                        prop_attrs, is_external, filters):
-
-        def set_property(part_name, state_name, prop_attrs, prop_names,
-                         prop_values, is_external, filter_, reverse=False):
-
-            if reverse:
-                efunc = lambda l: izip(xrange(len(l) - 1, -1, -1), reversed(l))
-            else:
-                efunc = enumerate
-
-            self._part_and_state_select(part_name, state_name)
-
-            for i, p in efunc(prop_attrs):
-                if is_external[i]:
-                    self.e.part.state.external_param_set(prop_attrs[i],
-                                                         prop_values[i])
-                else:
-                    setattr(self.e.part.state, prop_attrs[i], prop_values[i])
-
-                if filter_[i]:
-                    label_value = filter_[i](prop_values[i])
-                else:
-                    label_value = prop_values[i]
-                if self[prop_groups[i]][prop_names[i]].value != label_value:
-                    self[prop_groups[i]][prop_names[i]].value = label_value
-
-        l = len(prop_groups)
-        for arg in (prop_names, prop_values, prop_attrs,
-                    is_external, filters):
-            if len(arg) != l:
-                raise TypeError("Cardinality of property fields differ.")
-
-        part_name = self.e.part.name
-        state_name = self.e.part.state.name
-        state = self.e.part.state
-
-        old_values = []
-        for i, p in enumerate(prop_attrs):
-            if not p:
-                prop_attrs[i] = prop_names[i]
-
-            if is_external[i]:
-                type_, old_value = state.external_param_get(prop_attrs[i])
-                if (type_ == edje.EDJE_EXTERNAL_PARAM_TYPE_STRING or type_ == \
-                        edje.EDJE_EXTERNAL_PARAM_TYPE_CHOICE) and \
-                        old_value is None:
-                    old_values.append("")
-            else:
-                old_values.append(getattr(state, prop_attrs[i]))
-
-        set_property(part_name, state_name, prop_attrs, prop_names,
-                     prop_values, is_external, filters)
-
-        op = Operation(op_name)
-        op.redo_callback_add(
-            set_property, part_name, state_name, prop_attrs,
-            prop_names, prop_values, is_external, filters)
-        op.undo_callback_add(
-            set_property, part_name, state_name, prop_attrs,
-            prop_names, old_values, is_external, filters, True)
-
-        self._operation_stack_cb(op)
 
     def _prop_common_value_changed(self, prop, value):
         args = [["main"], [prop], [value], [None], [False], [None]]

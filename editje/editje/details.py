@@ -18,8 +18,10 @@
 import edje
 import evas
 import elementary
+from itertools import izip
 
 from prop import PropertyTable
+from operation import Operation
 
 
 class EditjeDetails(edje.Edje):
@@ -203,3 +205,75 @@ class EditjeDetails(edje.Edje):
         return self._open_disable
 
     open_disable = property(_open_disable_get, _open_disable_set)
+
+    def _part_and_state_select(self, part_name, state_name):
+        self.e.part.name = part_name
+        self.e.part.state.name = state_name
+
+    def _prop_change_do(self, op_name, prop_groups, prop_names, prop_values,
+                        prop_attrs, is_external, filters):
+
+        def set_property(part_name, state_name, prop_attrs, prop_names,
+                         prop_values, is_external, filter_, reverse=False):
+
+            if reverse:
+                efunc = lambda l: izip(xrange(len(l) - 1, -1, -1), reversed(l))
+            else:
+                efunc = enumerate
+
+            self._part_and_state_select(part_name, state_name)
+
+            for i, p in efunc(prop_attrs):
+                if is_external[i]:
+                    self.e.part.state.external_param_set(prop_attrs[i],
+                                                         prop_values[i])
+                else:
+                    obj = self._prop_object_get()
+                    setattr(obj, prop_attrs[i], prop_values[i])
+
+                if filter_[i]:
+                    label_value = filter_[i](prop_values[i])
+                else:
+                    label_value = prop_values[i]
+                if self[prop_groups[i]][prop_names[i]].value != label_value:
+                    self[prop_groups[i]][prop_names[i]].value = label_value
+
+        if not self._prop_object_get:
+            raise NotImplementedError(
+                "One must implement self._prop_object_get for"
+                " EditjeDetails children classes.")
+
+        if not self._prop_old_values_get:
+            raise NotImplementedError(
+                "One must implement self._prop_old_values_get() for"
+                " EditjeDetails children classes.")
+
+        l = len(prop_groups)
+        for arg in (prop_names, prop_values, prop_attrs,
+                    is_external, filters):
+            if len(arg) != l:
+                raise TypeError("Cardinality of property fields differ.")
+
+        part_name = self.e.part.name
+        state_name = self.e.part.state.name
+        state = self.e.part.state
+
+        old_values = []
+        for i, p in enumerate(prop_attrs):
+            if not p:
+                prop_attrs[i] = prop_names[i]
+
+        old_values = self._prop_old_values_get(prop_attrs, is_external)
+
+        set_property(part_name, state_name, prop_attrs, prop_names,
+                     prop_values, is_external, filters)
+
+        op = Operation(op_name)
+        op.redo_callback_add(
+            set_property, part_name, state_name, prop_attrs,
+            prop_names, prop_values, is_external, filters)
+        op.undo_callback_add(
+            set_property, part_name, state_name, prop_attrs,
+            prop_names, old_values, is_external, filters, True)
+
+        self._operation_stack_cb(op)

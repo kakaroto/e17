@@ -108,6 +108,22 @@ class PartDetails(EditjeDetails):
         self.open_disable = False
         self.open = True
 
+    # no sense in switching states to part properties
+    def _part_and_state_select(self, part_name, state_name=None):
+        self.e.part.name = part_name
+
+    def _prop_object_get(self):
+        return self.e.part_get(self.e.part.name)
+
+    def _prop_old_values_get(self, prop_attrs, is_external):
+        old_values = []
+        part = self._prop_object_get()
+
+        for i, p in enumerate(prop_attrs):
+            old_values.append(getattr(part, p))
+
+        return old_values
+
     def _closed_cb(self, obj, emission, source):
         if not self.e.part.name:
             return
@@ -116,15 +132,11 @@ class PartDetails(EditjeDetails):
         self.min_size_expanded_toggle(expanded)
         EditjeDetails._closed_cb(self, obj, emission, source)
 
-    def _part_select(self, part_name):
-        if self.e.part.name != part_name:
-            self.e.part.name = part_name
-
     def header_prop_value_changed(self, prop_name, prop_value, group_name):
 
         def part_rename(old_name, new_name):
             # select 1st
-            self._part_select(old_name)
+            self._part_and_state_select(old_name)
 
             # rename later
             return self.e.part.rename(new_name)
@@ -133,7 +145,7 @@ class PartDetails(EditjeDetails):
             return
 
         old_name = self.e.part.name
-        if part_rename(old_name, prop_value):
+        if part_rename(old_name, None, prop_value):
             op = Operation("part renaming")
 
             op.redo_callback_add(part_rename, old_name, prop_value)
@@ -149,53 +161,24 @@ class PartDetails(EditjeDetails):
         elif group_name == "textblock":
             self._prop_value_text_changed(prop_name, prop_value)
 
-    def _prop_change_do(self, op_name, prop_group, prop_name, prop_value,
-                        pval_filter=None):
-
-        def set_property(part_name, prop_name, prop_value, filter_):
-            self._part_select(part_name)
-            part = self.e.part_get(part_name)
-            setattr(part, prop_name, prop_value)
-
-            if filter_:
-                label_value = filter_(prop_value)
-            else:
-                label_value = prop_value
-            if self[prop_group][prop_name].value != label_value:
-                self[prop_group][prop_name].value = label_value
-
-        part_name = self.e.part.name
-        part = self.e.part_get(part_name)
-        old_value = getattr(part, prop_name)
-
-        set_property(part_name, prop_name, prop_value, pval_filter)
-
-        op = Operation(op_name)
-        op.redo_callback_add(
-            set_property, part_name, prop_name, prop_value, pval_filter)
-        op.undo_callback_add(
-            set_property, part_name, prop_name, old_value, pval_filter)
-
-        self._operation_stack_cb(op)
-
     def _prop_value_common_changed(self, prop, value):
+        args = [["main"], [prop], [value], [None], [False], [None]]
         if prop == "mouse_events":
             self._prop_change_do(
-                "part reaction to mouse events setting", "main", prop, value)
+                "part reaction to mouse events setting", *args)
         elif prop == "repeat_events":
             self._prop_change_do(
-                "part events repeating property setting", "main", prop, value)
+                "part events repeating property setting", *args)
         elif prop == "clip_to":
-            self._prop_change_do(
-                "part clipper setting", "main", prop, value)
+            self._prop_change_do("part clipper setting", *args)
 
     def _prop_value_text_changed(self, prop, value):
         if prop != "effect":
             return
 
-        self._prop_change_do(
-            "text part effects setting", "textblock", prop,
-            self._effects.index(value), lambda x: self._effects[x])
+        args = [["textblock"], [prop], [self._effects.index(value)],
+                [None], [False], [lambda x: self._effects[x]]]
+        self._prop_change_do("text part effects setting", *args)
 
     def _part_update(self, emissor, data):
         if not self.e.part.name:
