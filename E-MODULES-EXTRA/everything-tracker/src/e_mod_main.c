@@ -233,8 +233,6 @@ _dbus_cb_reply(void *data, DBusMessage *msg, DBusError *error)
 	      
 	      if (!urn)	goto next;
 
-	      printf("recv: %s\n", urn);
-
 	      if (!strncmp(urn, "urn:uuid:", 9))
 		{
 		  dbus_message_iter_next(&iter);
@@ -248,7 +246,11 @@ _dbus_cb_reply(void *data, DBusMessage *msg, DBusError *error)
 		  if (path && mime)
 		    file = _item_add(p, urn, path, mime, 0);
 
-		  if (file) items = eina_list_append(items, file);
+		  if (file)
+		    {
+		      evry_util_file_detail_set(file); 
+		      items = eina_list_append(items, file);
+		    }
 		}
 	      else if (!strncmp(urn, "urn:artist:", 11))
 		{
