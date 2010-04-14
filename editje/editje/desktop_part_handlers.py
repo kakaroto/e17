@@ -37,9 +37,9 @@ class PartHandler(Handler, PartListener):
             self._geometry = self._part.geometry
 
     # one time only calls to move() (undo/redo) will call this
-    def _part_select(self, name):
-        if self._edit_grp.part.name != name:
-            self._edit_grp.part.name = name
+    def _part_and_state_select(self, part, state):
+        self._edit_grp.part.name = part
+        self._edit_grp.part.state.name = state
 
 
 class PartHandler_Move(PartHandler):
@@ -57,9 +57,9 @@ class PartHandler_Move(PartHandler):
         self.center = obj.center
         self.show()
 
-    def move(self, dw, dh, part_name=None):
-        if part_name:
-            self._part_select(part_name)
+    def move(self, dw, dh, part_name=None, state_name=None):
+        if part_name and state_name:
+            self._part_and_state_select(part_name, state_name)
 
         if self._part:
             x, y, w, h = self._geometry
@@ -72,12 +72,14 @@ class PartHandler_Move(PartHandler):
         if (dw, dh) != (0, 0):
             op = Operation("part moving")
 
-            op.redo_callback_add(self.move, dw, dh, self._edit_grp.part.name)
+            args = self._edit_grp.part.name, self._edit_grp.part.state.name
+
+            op.redo_callback_add(self.move, dw, dh, *args)
             op.redo_callback_add(self.part_move, self._part)
             op.redo_callback_add(self._rel1_move_offset_inform_cb, dw, dh)
             op.redo_callback_add(self._rel2_move_offset_inform_cb, dw, dh)
 
-            op.undo_callback_add(self.move, -dw, -dh, self._edit_grp.part.name)
+            op.undo_callback_add(self.move, -dw, -dh, *args)
             op.undo_callback_add(self.part_move, self._part)
             op.undo_callback_add(self._rel1_move_offset_inform_cb, -dw, -dh)
             op.undo_callback_add(self._rel2_move_offset_inform_cb, -dw, -dh)
@@ -95,9 +97,9 @@ class PartHandler_T(PartHandler):
         else:
             self.show()
 
-    def move(self, dw, dh, part_name=None):
+    def move(self, dw, dh, part_name=None, state_name=None):
         if part_name:
-            self._part_select(part_name)
+            self._part_and_state_select(part_name, state_name)
 
         if self._part:
             x, y, w, h = self._geometry
@@ -110,11 +112,13 @@ class PartHandler_T(PartHandler):
         if dh != 0:
             op = Operation("part resing (from top)")
 
-            op.redo_callback_add(self.move, 0, dh, self._edit_grp.part.name)
+            args = self._edit_grp.part.name, self._edit_grp.part.state.name
+
+            op.redo_callback_add(self.move, 0, dh, *args)
             op.redo_callback_add(self.part_move, self._part)
             op.redo_callback_add(self._rel1_move_offset_inform_cb, 0, dh)
 
-            op.undo_callback_add(self.move, 0, -dh, self._edit_grp.part.name)
+            op.undo_callback_add(self.move, 0, -dh, *args)
             op.undo_callback_add(self.part_move, self._part)
             op.undo_callback_add(self._rel1_move_offset_inform_cb, 0, -dh)
             self._operation_stack_cb(op)
@@ -127,9 +131,9 @@ class PartHandler_TL(PartHandler):
         self.show()
         self.bottom_right = obj.top_left
 
-    def move(self, dw, dh, part_name=None):
+    def move(self, dw, dh, part_name=None, state_name=None):
         if part_name:
-            self._part_select(part_name)
+            self._part_and_state_select(part_name, state_name)
 
         if self._part:
             x, y, w, h = self._geometry
@@ -142,11 +146,13 @@ class PartHandler_TL(PartHandler):
         if (dw, dh) != (0, 0):
             op = Operation("part resing (from top-left)")
 
-            op.redo_callback_add(self.move, dw, dh, self._edit_grp.part.name)
+            args = self._edit_grp.part.name, self._edit_grp.part.state.name
+
+            op.redo_callback_add(self.move, dw, dh, *args)
             op.redo_callback_add(self.part_move, self._part)
             op.redo_callback_add(self._rel1_move_offset_inform_cb, dw, dh)
 
-            op.undo_callback_add(self.move, -dw, -dh, self._edit_grp.part.name)
+            op.undo_callback_add(self.move, -dw, -dh, *args)
             op.undo_callback_add(self.part_move, self._part)
             op.undo_callback_add(self._rel1_move_offset_inform_cb, -dw, -dh)
             self._operation_stack_cb(op)
@@ -159,9 +165,9 @@ class PartHandler_TR(PartHandler):
         self.show()
         self.bottom_left = obj.top_right
 
-    def move(self, dw, dh, part_name=None):
+    def move(self, dw, dh, part_name=None, state_name=None):
         if part_name:
-            self._part_select(part_name)
+            self._part_and_state_select(part_name, state_name)
 
         if self._part:
             x, y, w, h = self._geometry
@@ -174,12 +180,14 @@ class PartHandler_TR(PartHandler):
         if (dw, dh) != (0, 0):
             op = Operation("part resing (from top-left)")
 
-            op.redo_callback_add(self.move, dw, dh, self._edit_grp.part.name)
+            args = self._edit_grp.part.name, self._edit_grp.part.state.name
+
+            op.redo_callback_add(self.move, dw, dh, *args)
             op.redo_callback_add(self.part_move, self._part)
             op.redo_callback_add(self._rel1_move_offset_inform_cb, 0, dh)
             op.redo_callback_add(self._rel2_move_offset_inform_cb, dw, 0)
 
-            op.undo_callback_add(self.move, -dw, -dh, self._edit_grp.part.name)
+            op.undo_callback_add(self.move, -dw, -dh, *args)
             op.undo_callback_add(self.part_move, self._part)
             op.undo_callback_add(self._rel1_move_offset_inform_cb, 0, -dh)
             op.undo_callback_add(self._rel2_move_offset_inform_cb, -dw, 0)
@@ -197,9 +205,9 @@ class PartHandler_B(PartHandler):
         else:
             self.show()
 
-    def move(self, dw, dh, part_name=None):
+    def move(self, dw, dh, part_name=None, state_name=None):
         if part_name:
-            self._part_select(part_name)
+            self._part_and_state_select(part_name, state_name)
 
         if self._part:
             x, y, w, h = self._geometry
@@ -212,11 +220,13 @@ class PartHandler_B(PartHandler):
         if dh != 0:
             op = Operation("part resing (from bottom)")
 
-            op.redo_callback_add(self.move, 0, dh, self._edit_grp.part.name)
+            args = self._edit_grp.part.name, self._edit_grp.part.state.name
+
+            op.redo_callback_add(self.move, 0, dh, *args)
             op.redo_callback_add(self.part_move, self._part)
             op.redo_callback_add(self._rel2_move_offset_inform_cb, 0, dh)
 
-            op.undo_callback_add(self.move, 0, -dh, self._edit_grp.part.name)
+            op.undo_callback_add(self.move, 0, -dh, *args)
             op.undo_callback_add(self.part_move, self._part)
             op.undo_callback_add(self._rel2_move_offset_inform_cb, 0, -dh)
             self._operation_stack_cb(op)
@@ -229,9 +239,9 @@ class PartHandler_BR(PartHandler):
         self.show()
         self.top_left = obj.bottom_right
 
-    def move(self, dw, dh, part_name=None):
+    def move(self, dw, dh, part_name=None, state_name=None):
         if part_name:
-            self._part_select(part_name)
+            self._part_and_state_select(part_name, state_name)
 
         if self._part:
             x, y, w, h = self._geometry
@@ -244,11 +254,13 @@ class PartHandler_BR(PartHandler):
         if (dw, dh) != (0, 0):
             op = Operation("part resing (from bottom-right)")
 
-            op.redo_callback_add(self.move, dw, dh, self._edit_grp.part.name)
+            args = self._edit_grp.part.name, self._edit_grp.part.state.name
+
+            op.redo_callback_add(self.move, dw, dh, *args)
             op.redo_callback_add(self.part_move, self._part)
             op.redo_callback_add(self._rel2_move_offset_inform_cb, dw, dh)
 
-            op.undo_callback_add(self.move, -dw, -dh, self._edit_grp.part.name)
+            op.undo_callback_add(self.move, -dw, -dh, *args)
             op.undo_callback_add(self.part_move, self._part)
             op.undo_callback_add(self._rel2_move_offset_inform_cb, -dw, -dh)
             self._operation_stack_cb(op)
@@ -261,9 +273,9 @@ class PartHandler_BL(PartHandler):
         self.show()
         self.top_right = obj.bottom_left
 
-    def move(self, dw, dh, part_name=None):
+    def move(self, dw, dh, part_name=None, state_name=None):
         if part_name:
-            self._part_select(part_name)
+            self._part_and_state_select(part_name, state_name)
 
         if self._part:
             x, y, w, h = self._geometry
@@ -276,12 +288,14 @@ class PartHandler_BL(PartHandler):
         if (dw, dh) != (0, 0):
             op = Operation("part resing (from bottom-left)")
 
-            op.redo_callback_add(self.move, dw, dh, self._edit_grp.part.name)
+            args = self._edit_grp.part.name, self._edit_grp.part.state.name
+
+            op.redo_callback_add(self.move, dw, dh, *args)
             op.redo_callback_add(self.part_move, self._part)
             op.redo_callback_add(self._rel1_move_offset_inform_cb, dw, 0)
             op.redo_callback_add(self._rel2_move_offset_inform_cb, 0, dh)
 
-            op.undo_callback_add(self.move, -dw, -dh, self._edit_grp.part.name)
+            op.undo_callback_add(self.move, -dw, -dh, *args)
             op.undo_callback_add(self.part_move, self._part)
             op.undo_callback_add(self._rel1_move_offset_inform_cb, -dw, 0)
             op.undo_callback_add(self._rel2_move_offset_inform_cb, 0, -dh)
@@ -299,9 +313,9 @@ class PartHandler_L(PartHandler):
         else:
             self.show()
 
-    def move(self, dw, dh, part_name=None):
+    def move(self, dw, dh, part_name=None, state_name=None):
         if part_name:
-            self._part_select(part_name)
+            self._part_and_state_select(part_name, state_name)
 
         if self._part:
             x, y, w, h = self._geometry
@@ -314,11 +328,13 @@ class PartHandler_L(PartHandler):
         if dw != 0:
             op = Operation("part resing (from left)")
 
-            op.redo_callback_add(self.move, dw, 0, self._edit_grp.part.name)
+            args = self._edit_grp.part.name, self._edit_grp.part.state.name
+
+            op.redo_callback_add(self.move, dw, 0, *args)
             op.redo_callback_add(self.part_move, self._part)
             op.redo_callback_add(self._rel1_move_offset_inform_cb, dw, 0)
 
-            op.undo_callback_add(self.move, -dw, 0, self._edit_grp.part.name)
+            op.undo_callback_add(self.move, -dw, 0, *args)
             op.undo_callback_add(self.part_move, self._part)
             op.undo_callback_add(self._rel1_move_offset_inform_cb, -dw, 0)
             self._operation_stack_cb(op)
@@ -334,9 +350,9 @@ class PartHandler_R(PartHandler):
         else:
             self.show()
 
-    def move(self, dw, dh, part_name=None):
+    def move(self, dw, dh, part_name=None, state_name=None):
         if part_name:
-            self._part_select(part_name)
+            self._part_and_state_select(part_name, state_name)
 
         if self._part:
             x, y, w, h = self._geometry
@@ -349,11 +365,13 @@ class PartHandler_R(PartHandler):
         if dw != 0:
             op = Operation("part resing (from right)")
 
-            op.redo_callback_add(self.move, dw, 0, self._edit_grp.part.name)
+            args = self._edit_grp.part.name, self._edit_grp.part.state.name
+
+            op.redo_callback_add(self.move, dw, 0, *args)
             op.redo_callback_add(self.part_move, self._part)
             op.redo_callback_add(self._rel2_move_offset_inform_cb, dw, 0)
 
-            op.undo_callback_add(self.move, -dw, 0, self._edit_grp.part.name)
+            op.undo_callback_add(self.move, -dw, 0, *args)
             op.undo_callback_add(self.part_move, self._part)
             op.undo_callback_add(self._rel2_move_offset_inform_cb, -dw, 0)
             self._operation_stack_cb(op)
