@@ -149,7 +149,7 @@ class Editje(elementary.Window):
         self.main_layout.size_hint_weight_set(1.0, 1.0)
         self.resize_object_add(self.main_layout)
         self.main_edje = self.main_layout.edje_get()
-        self.main_edje.signal_emit("details,enable", "") #TODO: remove this
+        self.main_edje.signal_emit("details,enable", "")  # TODO: remove this
         self.main_layout.show()
 
     def save(self):
@@ -197,8 +197,10 @@ class Editje(elementary.Window):
             except swapfile.FileAlreadyExists, e:
                 notification = ErrorNotify(win)
                 notification.title = str(e).replace(':', '<br>')
-                notification.action_add("Abort", notify_close, None, notification)
-                notification.action_add("Overwrite", notify_overwrite, None, notification)
+                notification.action_add("Abort", notify_close,
+                                        None, notification)
+                notification.action_add("Overwrite", notify_overwrite,
+                                        None, notification)
                 notification.show()
             except Exception, e:
                 notification = ErrorNotify(win)
@@ -656,7 +658,7 @@ class Editje(elementary.Window):
 
             self._prevstates = []
             for p_name in self.e.parts:
-                real_part = self.e._edje.part_get(p_name)
+                real_part = self.e.part_get(p_name)
                 s_name = real_part.state_selected_get()
                 self._prevstates.append((p_name, s_name))
 
@@ -665,7 +667,7 @@ class Editje(elementary.Window):
                 return
 
             for p_name, s_name in self._prevstates:
-                real_part = self.e._edje.part_get(p_name)
+                real_part = self.e.part_get(p_name)
                 real_part.state_selected_set(*s_name)
                 if p_name == self.e.part.name:
                     self.e.part.state.name = s_name[0]

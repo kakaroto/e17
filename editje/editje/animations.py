@@ -157,8 +157,8 @@ class AnimationsPartsList(PartsList):
             self._edit_grp.animation.part_add(part)
         else:
             # FIXME: Take the confirmation out of this function
-            self._notification = ErrorNotify(self,
-                                            elementary.ELM_NOTIFY_ORIENT_CENTER)
+            self._notification = ErrorNotify(
+                self, elementary.ELM_NOTIFY_ORIENT_CENTER)
             self._notification.title = "Part Removal"
             lb = elementary.Label(self._notification)
             lb.label_set("Are you sure you want to remove<br>"
@@ -185,7 +185,8 @@ class AnimationsPartsList(PartsList):
 
 
 class NewAnimationWizard(Wizard):
-    def __init__(self, parent, new_anim_cb=None, anims_list_cb=None, parts_list_cb=None):
+    def __init__(self, parent, new_anim_cb=None, anims_list_cb=None,
+                 parts_list_cb=None):
         if not new_anim_cb or not anims_list_cb:
             raise TypeError("You must set callbacks for animations retrieval"
                             " and creation on NewAnimationWizard objects.")
@@ -204,7 +205,8 @@ class NewAnimationWizard(Wizard):
         self._anim_name_entry.show()
 
         lbl = elementary.Label(self)
-        lbl.label_set("Select the parts to use in the animation. An empty selection will use all parts.")
+        lbl.label_set("Select the parts to use in the animation."
+                      " An empty selection will use all parts.")
         self.content_add("default", lbl)
         lbl.show()
 
@@ -342,7 +344,7 @@ class AnimationDetails(EditjeDetails):
         self.e.animation.callback_add("animation.changed", self._update)
         self.e.animation.callback_add("animation.unselected", self._removed)
         self.e.animation.callback_add("state.added", self._timestop_add)
-        self.e.animation.callback_add("state.changed", self._update_states)
+        self.e.animation.callback_add("frame.changed", self._update_states)
 
     def _removed(self, emissor, data):
         self.open_disable = True
@@ -425,10 +427,11 @@ class AnimationDetails(EditjeDetails):
     def header_prop_value_changed(self, prop, value, group):
         if prop == "name":
             if not self.e.animation.name_set(value):
-               self._header_table["name"].value = self.e.animation.name
+                self._header_table["name"].value = self.e.animation.name
 
     def prop_value_changed(self, prop, value, group):
         if prop == "transition":
+
             def transition_set(animation, state, transition):
                 self.e.animation.name = animation
                 self.e.animation.state = state

@@ -9,14 +9,13 @@
 #
 # Editje is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 # GNU Lesser General Public License for more details.
 #
 # You should have received a copy of the GNU Lesser General Public
-# License along with Editje.  If not, see
-# <http://www.gnu.org/licenses/>.
-import re
+# License along with Editje. If not, see <http://www.gnu.org/licenses/>.
 
+import re
 import edje
 
 from event_manager import Manager
@@ -27,22 +26,24 @@ re_anim_program_end = re.compile("@(.*)@end$")
 re_anim_program_time = re.compile("@(.*)@(\d+\.\d+)$")
 re_anim_program = re.compile("@(.*)@((?:\d+\.\d+)|end|stop)$")
 
+
 class EditableAnimation(Manager, object):
     def __init__(self, editable):
         Manager.__init__(self)
 
-        self.e = editable
-        self._name = ""
-        self.timestops = None
+        self._edit_grp = editable
 
+        self._name = None
         self._parts_init()
         self._states_init()
 
-        self.program = EditableProgram(self.e)
+        self.program = EditableProgram(self._edit_grp)
 
-        self._name = None
-        self.e.callback_add("group.changed", self._group_changed_cb)
-        self.e.callback_add("animation.removed", self._animation_removed_cb)
+        self._edit_grp.callback_add("group.changed", self._group_changed_cb)
+        self._edit_grp.callback_add(
+            "animation.removed", self._animation_removed_cb)
+        self._edit_grp.part.state.callback_add(
+            "state.changed", self._state_from_signal)
 
     def _group_changed_cb(self, emissor, data):
         self.name = None
@@ -50,26 +51,27 @@ class EditableAnimation(Manager, object):
     def _animation_removed_cb(self, emissor, data):
         if self._name == data:
             self.name = None
-        for p in self.e.parts:
-            part = self.e.part_get(p)
+        for p in self._edit_grp.parts:
+            part = self._edit_grp.part_get(p)
             part.state_selected_set("default 0.00")
 
     # Name
     def _name_set(self, value):
-        if not self.e._edje:
+        if not self._edit_grp.edje:
             return
 
         if not value:
-            self._name = ""
+            self._name = None
             self.event_emit("animation.unselected")
         elif self._name != value:
-            if value in self.e.animations:
+            if value in self._edit_grp.animations:
                 self._name = value
                 self.event_emit("animation.changed", self._name)
             else:
-                self._name = ""
-                for p in self.e.parts:
-                    part = self.e._edje.part_get(p)
+                self._name = None
+                for p in self._edit_grp.parts:
+                    part = self._edit_grp.part_get(p)
+                    #FIXME: is this really desired?
                     part.state_selected_set("default")
                 self.event_emit("animation.unselected")
 
@@ -84,21 +86,21 @@ class EditableAnimation(Manager, object):
 
         # stop program
         stopname = "@%s@stop" % self._name
-        stopprog = self.e._edje.program_get(stopname)
+        stopprog = self._edit_grp.edje.program_get(stopname)
         if not stopprog or not stopprog.rename("@%s@stop" % name):
             return
         stopprog.source_set(name)
 
         # others programs
         for p in stopprog.targets_get():
-            prog = self.e._edje.program_get(p)
-            time = re_program.match(p).group(2)
+            prog = self._edit_grp.edje.program_get(p)
+            time = re_anim_program.match(p).group(2)
             p2 = "@%s@%s" % (name, time)
             if time == "end":
                 prog.state2_set(name)
             else:
                 for pp in prog.targets_get():
-                    part = self.e._edje.part_get(pp)
+                    part = self._edit_grp.part_get(pp)
                     if not part:
                         #prog.target_del(pp) TODO: binding
                         continue
@@ -116,7 +118,7 @@ class EditableAnimation(Manager, object):
         # Hack to force reload animation list
         # self._name = name
         state = self.state
-        self.e._programs_reload_cb(self, True)
+        self._edit_grp._programs_reload_cb(self, True)
         self.name = name
         self.state = state
         return
@@ -124,21 +126,24 @@ class EditableAnimation(Manager, object):
     # Play
     def play(self):
         if self.name:
-            self.e._edje.signal_callback_add("animation,end", self._name, self._play_end)
-            self.e._edje.program_get(self.program._program.afters_get()[0]).run()
+            self._edit_grp.edje.signal_callback_add(
+                "animation,end", self._name, self._play_end)
+            self._edit_grp.edje.program_get(
+                self.program._program.afters_get()[0]).run()
 
     def _play_end(self, obj, emission, source):
-        self.e._edje.signal_callback_del("animation,end", self._name, self._play_end)
+        self._edit_grp.edje.signal_callback_del(
+            "animation,end", self._name, self._play_end)
         self.state = self.state
         self.event_emit("animation.play.end")
 
     def stop(self):
-        self.e._edje.signal_emit("animation,stop", self._name)
+        self._edit_grp.edje.signal_emit("animation,stop", self._name)
 
     # Parts
     def _parts_init(self):
         self.parts = {}
-        self.e.part.callback_add("name.changed", self._part_rename_cb)
+        self._edit_grp.part.callback_add("name.changed", self._part_rename_cb)
         self.callback_add("animation.changed", self._parts_reload_cb)
         self.callback_add("animation.unselected", self._parts_reload_cb)
 
@@ -147,7 +152,7 @@ class EditableAnimation(Manager, object):
         if not data:
             return
 
-        prog = self.e.program_get("@%s@0.00" % self._name)
+        prog = self._edit_grp.program_get("@%s@0.00" % self._name)
         for t in prog.targets:
             self.parts[t] = True
 
@@ -164,9 +169,9 @@ class EditableAnimation(Manager, object):
             return
 
         progname = "@%s@0.00" % self._name
-        prog = self.e.program_get(progname)
+        prog = self._edit_grp.program_get(progname)
         prog.target_add(part)
-        p = self.e._edje.part_get(part)
+        p = self._edit_grp.part_get(part)
         p.state_copy("default", 0.0, progname, 0.0)
         self.parts[part] = True
 
@@ -179,14 +184,14 @@ class EditableAnimation(Manager, object):
         if part not in self.parts:
             return
 
-        p = self.e._edje.part_get(part)
+        p = self._edit_grp.part_get(part)
         p.state_selected_set("default 0.00")
-        if p.name == self.e.part.name:
-            self.e.part.state.name = None
+        if p.name == self._edit_grp.part.name:
+            self._edit_grp.part.state.name = None
         for t in self.timestops:
             progname = "@%s@%.2f" % (self._name, t)
             st = progname + " 0.00"
-            prog = self.e.program_get(progname)
+            prog = self._edit_grp.program_get(progname)
             prog.target_del(part)
             p.state_del(st)
 
@@ -210,11 +215,11 @@ class EditableAnimation(Manager, object):
         if not data:
             return
 
-        p = self.e.program_get("@%s@0.00" % self._name)
+        p = self._edit_grp.program_get("@%s@0.00" % self._name)
         t = p.name[-4:]
         while t != "@end":
             self.timestops.append(float(t))
-            p = self.e.program_get(p.afters[0])
+            p = self._edit_grp.program_get(p.afters[0])
             t = p.name[-4:]
 
         self.event_emit("states.changed", self.timestops)
@@ -244,20 +249,20 @@ class EditableAnimation(Manager, object):
         statename = name
 
         # Create
-        self.e.program_add(name)
-        prog = self.e.program_get(name)
+        self._edit_grp.program_add(name)
+        prog = self._edit_grp.program_get(name)
         prog.state_set(name)
         prog.transition = edje.EDJE_TWEEN_MODE_LINEAR
         prog.transition_time = time - prev
         for p in self.parts.iterkeys():
             prog.target_add(p)
-            part = self.e._edje.part_get(p)
+            part = self._edit_grp.part_get(p)
             part.state_add(name)
             state = part.state_get(statename)
             state.copy_from(prevstatename)
 
         # Link Prev
-        prevprog = self.e.program_get(prevname)
+        prevprog = self._edit_grp.program_get(prevname)
         nextname = prevprog.afters[0]
         prog.after_add(nextname)
         prevprog.afters_clear()
@@ -267,13 +272,13 @@ class EditableAnimation(Manager, object):
         next = nextname[-4:]
         if not next == "@end":
             next = float(next)
-            nextprog = self.e.program_get(nextname)
+            nextprog = self._edit_grp.program_get(nextname)
             nextprog.transition_time = next - time
 
         # Stop
         stopname = "@%s@stop" % self._name
-        self.e.program_add(stopname)
-        prog = self.e.program_get(stopname)
+        self._edit_grp.program_add(stopname)
+        prog = self._edit_grp.program_get(stopname)
         prog.action = edje.EDJE_ACTION_TYPE_ACTION_STOP
         prog.signal = "animation,stop"
         prog.target_add(name)
@@ -291,12 +296,12 @@ class EditableAnimation(Manager, object):
         idx = self.timestops.index(time)
 
         progname = "@%s@%.2f" % (self._name, time)
-        prog = self.e.program_get(progname)
+        prog = self._edit_grp.program_get(progname)
 
         # Unlink
         prev = self.timestops[idx - 1]
         prevname = "@%s@%.2f" % (self._name, prev)
-        prevprog = self.e.program_get(prevname)
+        prevprog = self._edit_grp.program_get(prevname)
         nextname = prog.afters[0]
         prevprog.afters_clear()
         prevprog.after_add(nextname)
@@ -305,13 +310,13 @@ class EditableAnimation(Manager, object):
         next = nextname[-4:]
         if not next == "@end":
             next = float(next)
-            nextprog = self.e.program_get(nextname)
+            nextprog = self._edit_grp.program_get(nextname)
             nextprog.transition_time = next - prev
 
         # Delete states from parts
         statename = progname
         for p in self.parts.iterkeys():
-            part = self.e._edje.part_get(p)
+            part = self._edit_grp.part_get(p)
             part.state_del(statename, 0.0)
 
         self.timestops.pop(idx)
@@ -332,24 +337,43 @@ class EditableAnimation(Manager, object):
 
         self.program.target_add(part.name)
 
-    def _state_set(self, time):
-        if not self._name:
+    def _state_set(self, time, is_callback=False):
+        if not self._name or time == self._current:
             return
+
         self._current_idx = self.timestops.index(time)
         self._current = time
         self.program.name = "@%s@%.2f" % (self._name, time)
         statename = self.program.name
         for p in self.parts.iterkeys():
-            part = self.e._edje.part_get(p)
+            part = self._edit_grp.part_get(p)
             if part.state_exist(statename):
                 part.state_selected_set(statename)
             else:
                 self._part_state_create(part)
                 part.state_selected_set(statename)
-                #self.e.part.state.name = statename # Why is this here?
-        if self.e.part.name in self.parts:
-            self.e.part.state.name = statename
-        self.event_emit("state.changed", self.e.part.state.name)
+
+        if not is_callback:
+            if self._edit_grp.part.name in self.parts:
+                self._edit_grp.part.state.name = statename
+
+        self.event_emit("frame.changed", self._edit_grp.part.state.name)
+
+    def _state_from_signal(self, emissor, data):
+        name, time = data
+        m = re_anim_program.match(name)
+        if not m:
+            return  # not an animation program, skip
+        anim_name = m.group(1)
+        frame_time = float(m.group(2))
+
+        if self.program.name == name and frame_time == self._current:
+            return
+
+        if self._name != anim_name:
+            return
+
+        self._state_set(frame_time, is_callback=True)
 
     def _state_get(self):
         return self._current

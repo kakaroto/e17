@@ -15,7 +15,6 @@
 # You should have received a copy of the GNU Lesser General Public
 # License along with Editje. If not, see <http://www.gnu.org/licenses/>.
 
-from itertools import izip
 import ecore
 import edje
 
@@ -785,7 +784,6 @@ class PartStateDetails(EditjeDetails):
         args = [["external"], [prop], [value], [None], [True], [None]]
         self._prop_change_do(
             "(external) part state \"%s\" setting" % prop, *args)
-
 
     def _size_changed(self, obj):
         self["main"]["current"].value = obj.size
