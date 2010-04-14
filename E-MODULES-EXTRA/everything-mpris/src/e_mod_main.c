@@ -331,7 +331,6 @@ _mpris_get_metadata(Plugin *p)
     {
       t = E_NEW(Track, 1);
       t->id = cnt;
-      EVRY_ITEM(t)->no_history = EINA_TRUE;
       evry_item_new(EVRY_ITEM(t), EVRY_PLUGIN(p), NULL, _item_free);
 
       t->pnd = _dbus_send_msg_int("/TrackList", "GetMetadata",
@@ -1054,7 +1053,10 @@ module_init(void)
 		  1, "emblem-sound", NULL,
 		  _begin, _cleanup, _fetch, _action, _icon_get, _plugin_free);
   /* EVRY_PLUGIN(_plug)->cb_key_down = &_cb_key_down; */
+  /* TODO make this an option */
   EVRY_PLUGIN(_plug)->aggregate = EINA_FALSE;
+  EVRY_PLUGIN(_plug)->history = EINA_FALSE;
+
   evry_plugin_register(EVRY_PLUGIN(_plug), 0);
 
   act = evry_action_new("Play Track", mpris_track, NULL, NULL, "media-playback-start",
