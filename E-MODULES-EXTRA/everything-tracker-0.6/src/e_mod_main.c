@@ -401,13 +401,13 @@ _plugin_new(const char *name, int type, char *service, int max_hits, int begin)
   p->active = 0;
 
   if (!begin)
-    evry_plugin_new(EVRY_PLUGIN(p), name, type, "", "FILE", 1, NULL, NULL,
+    EVRY_PLUGIN_NEW(p, name, type, "", "FILE",
 		    NULL, _cleanup, _fetch,
-		    NULL, _icon_get, _plugin_free);
+		    _icon_get, _plugin_free);
   else if (type == type_object)
-    evry_plugin_new(EVRY_PLUGIN(p), name, type, "APPLICATION", "FILE", 1, NULL, NULL,
+    EVRY_PLUGIN_NEW(p, name, type, "APPLICATION", "FILE",
 		    _begin, _cleanup, _fetch,
-		    NULL, _icon_get, _plugin_free);
+		    _icon_get, _plugin_free);
 
   plugins = eina_list_append(plugins, p);
 
@@ -581,6 +581,13 @@ EAPI E_Module_Api e_modapi =
 EAPI void *
 e_modapi_init(E_Module *m)
 {
+  char buf[4096];
+
+  /* Location of message catalogs for localization */
+  snprintf(buf, sizeof(buf), "%s/locale", e_module_dir_get(m));
+  bindtextdomain(PACKAGE, buf);
+  bind_textdomain_codeset(PACKAGE, "UTF-8");
+
   module = m;
 
   if (e_datastore_get("everything_loaded"))

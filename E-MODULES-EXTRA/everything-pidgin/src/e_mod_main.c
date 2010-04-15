@@ -598,19 +598,19 @@ module_init(void)
       return EINA_FALSE;
     }
 
-  plug = evry_plugin_new(NULL, "Pidgin", type_subject, NULL, "PIDGINCONTACT",
-			 1, NULL, NULL, _begin, _cleanup, _fetch, NULL, _icon_get, NULL);
+  plug = EVRY_PLUGIN_NEW(NULL, "Pidgin", type_subject, NULL, "PIDGINCONTACT",
+			 _begin, _cleanup, _fetch, _icon_get, NULL);
 
   evry_plugin_register(plug, 1);
   
-  act = evry_action_new("Chat", "PIDGINCONTACT", NULL, NULL, "go-next", //icon
-			_action_chat, NULL, NULL, NULL, NULL, NULL);
+  act = EVRY_ACTION_NEW("Chat", "PIDGINCONTACT", NULL, "go-next",
+			_action_chat, NULL);
   
-  act2 = evry_action_new("Send File", "PIDGINCONTACT", "FILE", NULL, NULL, //icon
-			 _action_send, NULL, NULL, NULL, NULL, NULL);
+  act2 = EVRY_ACTION_NEW("Send File", "PIDGINCONTACT", "FILE", NULL,
+			 _action_send, NULL);
 
-  act3 = evry_action_new("Write Message", "PIDGINCONTACT", "TEXT", NULL, "go-next", //icon
-			 _action_chat, NULL, NULL, NULL, NULL, NULL);
+  act3 = EVRY_ACTION_NEW("Write Message", "PIDGINCONTACT", "TEXT", "go-next",
+			 _action_chat, NULL);
 
   evry_action_register(act, 0);
   evry_action_register(act2, 1);
@@ -629,16 +629,14 @@ module_shutdown(void)
   evry_action_free(act3);
 }
 
-/***************************************************************************/
-/**/
-/* actual module specifics */
-
-static E_Module *_module = NULL;
-static Eina_Bool _active = EINA_FALSE;
 
 /***************************************************************************/
 /**/
 /* module setup */
+
+static E_Module *_module = NULL;
+static Eina_Bool _active = EINA_FALSE;
+
 EAPI E_Module_Api e_modapi = 
   {
     E_MODULE_API_VERSION,
@@ -648,6 +646,13 @@ EAPI E_Module_Api e_modapi =
 EAPI void *
 e_modapi_init(E_Module *m)
 {
+  char buf[4096];
+
+  /* Location of message catalogs for localization */
+  snprintf(buf, sizeof(buf), "%s/locale", e_module_dir_get(m));
+  bindtextdomain(PACKAGE, buf);
+  bind_textdomain_codeset(PACKAGE, "UTF-8");
+
   _module = m;
 
   if (e_datastore_get("everything_loaded"))

@@ -4,6 +4,7 @@
 
 #include <Evry.h>
 #include "md5.h"
+#include "e_mod_main.h"
 
 #define QUERY_ITEM(_q, _it) Query_Item *_q = (Query_Item *) _it;
 
@@ -728,28 +729,25 @@ module_init(void)
     (conn, bus_name, _get_name_owner, NULL);
 
   p = E_NEW(Plugin, 1);
-  evry_plugin_new(EVRY_PLUGIN(p), "Tracker", type_subject, "TRACKER_QUERY", "FILE", 1, NULL, NULL,
-		  _begin, _cleanup, _fetch,
-		  NULL, _icon_get, _plugin_free);
+  EVRY_PLUGIN_NEW(p, "Tracker", type_subject, "TRACKER_QUERY", "FILE",
+		  _begin, _cleanup, _fetch, _icon_get, _plugin_free);
   p->query = query_files;
   
   plugins = eina_list_append(plugins, p);
   evry_plugin_register(EVRY_PLUGIN(p), _prio++);
 
   p = E_NEW(Plugin, 1);
-  evry_plugin_new(EVRY_PLUGIN(p), "Tracker Queries", type_subject,
-		  "", "TRACKER_QUERY",
-		  1, NULL, "#",
-		  NULL, _cleanup_query, _fetch_query, NULL, NULL, NULL);
-
+  EVRY_PLUGIN_NEW(p, "Tracker Queries", type_subject, NULL, "TRACKER_QUERY",
+		  NULL, _cleanup_query, _fetch_query, NULL, NULL);
+  EVRY_PLUGIN(p)->trigger = "#";
+  
   plugins = eina_list_append(plugins, p);
   evry_plugin_register(EVRY_PLUGIN(p), _prio++);
 
   p = E_NEW(Plugin, 1);
-  evry_plugin_new(EVRY_PLUGIN(p), "Tracker Categories", type_subject,
+  EVRY_PLUGIN_NEW(p, "Tracker Categories", type_subject,
 		  "TRACKER_QUERY", "TRACKER_QUERY",
-		  1, NULL, NULL,
-		  _begin_cat, _cleanup_cat, _fetch_cat, NULL, NULL, NULL);
+		  _begin_cat, _cleanup_cat, _fetch_cat, NULL, NULL);
 
   plugins = eina_list_append(plugins, p);
   evry_plugin_register(EVRY_PLUGIN(p), _prio++);
@@ -788,6 +786,13 @@ EAPI E_Module_Api e_modapi =
 EAPI void *
 e_modapi_init(E_Module *m)
 {
+  char buf[4096];
+
+  /* Location of message catalogs for localization */
+  snprintf(buf, sizeof(buf), "%s/locale", e_module_dir_get(m));
+  bindtextdomain(PACKAGE, buf);
+  bind_textdomain_codeset(PACKAGE, "UTF-8");
+
   module = m;
 
   if (e_datastore_get("everything_loaded"))
