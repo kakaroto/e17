@@ -34,7 +34,7 @@ elm_home_init(void)
 
    handlers = 
      eina_list_append(handlers, 
-                      ecore_event_handler_add(EFREET_EVENT_CACHE_UPDATE, 
+                      ecore_event_handler_add(EFREET_EVENT_DESKTOP_CACHE_UPDATE, 
                                               _desktops_list_change, NULL));
    handlers = 
      eina_list_append(handlers, 
