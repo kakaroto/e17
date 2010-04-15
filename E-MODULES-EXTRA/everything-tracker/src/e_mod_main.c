@@ -48,9 +48,11 @@ static const char fdo_interface[] = "org.freedesktop.DBus";
 static const char fdo_path[] = "/org/freedesktop/DBus";
 
 static const char query_files[] =
-  "SELECT ?s nie:url(?s) nfo:fileName(?s) nie:mimeType(?s) WHERE "
-  "{ ?s fts:match \"%s\". ?s a nfo:FileDataObject "
-  "} limit 100";
+  "SELECT ?s nie:url(?s) nfo:fileName(?s) ?m WHERE"
+  "{ ?s fts:match \"%s\". ?s a nfo:FileDataObject;"
+  "     tracker:available true;"
+  "     nie:mimeType ?m"
+  "}  order by desc (fn:starts-with(?m, 'inode/directory')) limit 100";
 
 static const char query_artists[] =
   "SELECT ?a WHERE { ?a fts:match \"%s\"."
@@ -63,13 +65,9 @@ static const char query_albums[] =
   "        nmm:musicAlbum ?a;"
   "        nmm:performer ?p }}} LIMIT 50";
 
-  /* "SELECT ?a WHERE { ?a fts:match \"%s\"."
-   * "?a a nmm:MusicAlbum } LIMIT 50"; */
-
 static const char query_genres[] =
   "SELECT DISTINCT ?g WHERE { ?s a nmm:MusicPiece; nfo:genre ?g } LIMIT 200"
 
-  
   "SELECT ?a WHERE { ?a fts:match \"%s\"."
   "?a a nmm:Artist } LIMIT 50";
 
@@ -170,14 +168,12 @@ _item_add(Plugin *p, char *id, char *url, char *label, char *mime, int prio)
   char *path;
   const char *tmp;
 
+  /* XXX use evry_file_url/path_get to do the conversion only when needed */
   if (!strncmp(url, "file://", 7))
     tmp = url + 7;
   else return NULL;
    
   if (!(path = evry_util_unescape(tmp, 0)))
-    return NULL;
-
-  if (!ecore_file_exists(path))
     return NULL;
 
   if (!(file = E_NEW(Evry_Item_File, 1)))
@@ -202,9 +198,10 @@ _item_add(Plugin *p, char *id, char *url, char *label, char *mime, int prio)
   if (file->mime == mime_dir)
     {
       EVRY_ITEM(file)->browseable = EINA_TRUE;
-      EVRY_ITEM(file)->priority = 1;
     }
-
+  else
+    EVRY_ITEM(file)->priority = 1;
+  
   free(path);
    
   return file;
@@ -319,7 +316,7 @@ _dbus_cb_reply(void *data, DBusMessage *msg, DBusError *error)
     }
   else if (p->files)
     {
-      EINA_LIST_FOREACH(p->files, l, it)
+      EINA_LIST_REVERSE_FOREACH(p->files, l, it)
   	if (evry_fuzzy_match(it->base.label, p->input))
   	  EVRY_PLUGIN_ITEM_APPEND(p, it);
     }
