@@ -24,7 +24,6 @@ class EditableState(Manager):
 
         self._edit_grp = editable_part.e
         self.name = None
-        self.value = 0.0
 
         self.callback_add("state.changed", self._rel1_inform)
         self.callback_add("state.changed", self._rel2_inform)
@@ -44,7 +43,6 @@ class EditableState(Manager):
 
         if not part_name:
             self.name = None
-            self.value = 0.0
             return
 
         part = self._edit_grp.part_get(part_name)
@@ -58,26 +56,27 @@ class EditableState(Manager):
 
     # Name
     def _name_set(self, st):
+
+        def null():
+            self._state = None
+            self._name = None
+            self._value = 0.0
+
         name = None
         value = None
-        if type(st) == list or type(st) == tuple:
+        if type(st) is list or type(st) is tuple:
             if len(st) == 2:
                 name, value = st
             else:
                 name = st[0]
                 value = 0.0
-        elif type(st) == str:
+        elif type(st) is str:
             tmp = st.split(None, 1)
             name = tmp[0]
             if len(tmp) == 2:
                 value = float(tmp[1])
             else:
                 value = 0.0
-
-        def null():
-            self._state = None
-            self._name = None
-            self.value = 0.0
 
         if not self._edit_grp.edje:
             null()
@@ -94,18 +93,19 @@ class EditableState(Manager):
             self.event_emit("state.unselected")
             return
 
-        if self._name == name and self.value == value:
+        if self._name == name and self._value == value:
             return
 
         part = self._edit_grp.part_get(part_name)
         self._state = part.state_get(name, value)
         if self._state:
             self._name = name
-            self.value = value
-            self.event_emit("state.changed", (self._name, self.value))
+            self._value = value
+
+            self.event_emit("state.changed", (self._name, self._value))
 
     def _name_get(self):
-        return self._name, self.value
+        return self._name, self._value
 
     name = property(_name_get, _name_set)
 
@@ -114,11 +114,11 @@ class EditableState(Manager):
             return False
 
         if new_value is None:
-            new_value = self.value
+            new_value = self._value
 
         r = self._state.name_set(new_name, new_value)
         if r:
-            self.event_emit("state.renamed", (self._name, self.value))
+            self.event_emit("state.renamed", (self._name, self._value))
             self._name_set((new_name, new_value))
 
         return r
@@ -131,7 +131,7 @@ class EditableState(Manager):
         if not r:
             return False
 
-        self.event_emit("state.changed", (self._name, self.value))
+        self.event_emit("state.changed", (self._name, self._value))
         return True
 
     def _rel1_inform(self, emissor, data):
