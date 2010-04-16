@@ -27,6 +27,8 @@ images {
    image: "ico_confirm.png" COMP;
    image: "ico_copy.png" COMP;
    image: "ico_cut.png" COMP;
+   image: "ico_del.png" COMP;
+   image: "ico_del_disabled.png" COMP;
    image: "ico_fonts.png" COMP;
    image: "ico_images.png" COMP;
    image: "ico_new.png" COMP;
@@ -51,4 +53,5 @@ images {
    image: "timeline_endarrow.png" COMP;
    image: "timeline_lightdot.png" COMP;
    image: "timeline_line.png" COMP;
+   image: "timeline_selected.png" COMP;
 }

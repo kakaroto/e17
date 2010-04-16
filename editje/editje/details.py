@@ -206,22 +206,24 @@ class EditjeDetails(edje.Edje):
 
     open_disable = property(_open_disable_get, _open_disable_set)
 
-    def _part_and_state_select(self, part_name, state_name):
-        self.e.part.name = part_name
-        self.e.part.state.name = state_name
+    def _context_recall(self, **kargs):
+        self.e.part.name = kargs["part"]
+        self.e.part.state.name = kargs["state"]
 
     def _prop_change_do(self, op_name, prop_groups, prop_names, prop_values,
                         prop_attrs, is_external, filters):
 
-        def set_property(part_name, state_name, prop_attrs, prop_names,
-                         prop_values, is_external, filter_, reverse=False):
+        def set_property(part_name, state_name, anim_name, frame, prop_attrs,
+                         prop_names, prop_values, is_external, filter_,
+                         reverse=False):
 
             if reverse:
                 efunc = lambda l: izip(xrange(len(l) - 1, -1, -1), reversed(l))
             else:
                 efunc = enumerate
 
-            self._part_and_state_select(part_name, state_name)
+            self._context_recall(part=part_name, state=state_name,
+                                 animation=anim_name, time=frame)
 
             for i, p in efunc(prop_attrs):
                 if is_external[i]:
@@ -256,7 +258,10 @@ class EditjeDetails(edje.Edje):
 
         part_name = self.e.part.name
         state_name = self.e.part.state.name
-        state = self.e.part.state
+
+        # animations' only
+        anim_name = self.e.animation.name
+        frame = self.e.animation.state
 
         old_values = []
         for i, p in enumerate(prop_attrs):
@@ -265,15 +270,16 @@ class EditjeDetails(edje.Edje):
 
         old_values = self._prop_old_values_get(prop_attrs, is_external)
 
-        set_property(part_name, state_name, prop_attrs, prop_names,
-                     prop_values, is_external, filters)
+        set_property(part_name, state_name, anim_name, frame,
+                     prop_attrs, prop_names, prop_values,
+                     is_external, filters)
 
         op = Operation(op_name)
         op.redo_callback_add(
-            set_property, part_name, state_name, prop_attrs,
+            set_property, part_name, state_name, anim_name, frame, prop_attrs,
             prop_names, prop_values, is_external, filters)
         op.undo_callback_add(
-            set_property, part_name, state_name, prop_attrs,
+            set_property, part_name, state_name, anim_name, frame, prop_attrs,
             prop_names, old_values, is_external, filters, True)
 
         self._operation_stack_cb(op)

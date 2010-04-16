@@ -73,11 +73,13 @@ class Editje(elementary.Window):
         self._op_stack = [None]
         self._op_stack_ptr = 0
 
-        self.e = Editable(self.evas, swapfile)
+        self.e = Editable(self.evas, swapfile, self._mode_get)
 
         # Setup Windows Parts
         self._toolbar_static_init()
         self._desktop_init()
+
+        self._mode = None
         self._modes_init()
 
         self._clipboard = None
@@ -385,7 +387,8 @@ class Editje(elementary.Window):
             op.undo_callback_add(group_rename, old_name)
             op.undo_callback_add(obj.entry_set, old_name)
 
-            self._operation_stack(op)
+            # no need to switch back to working mode
+            self._operation_stack(op, False)
         else:
             # TODO: notify the user of renaming failure
             obj.entry_set(old_name)
@@ -466,28 +469,40 @@ class Editje(elementary.Window):
         self.main_edje.signal_emit("undo.bt,disable", "")
         self.main_edje.signal_emit("redo.bt,disable", "")
 
-    def _operation_stack(self, op):
+    def _operation_stack(self, op, keep_mode=True):
         # just for safeness
         if not isinstance(op, Operation):
             raise TypeError("Only Operation objects may enter the undo list.")
+
+        mode = None
+        if keep_mode:
+            mode = self.mode
 
         sz = len(self._op_stack) - 1
         if self._op_stack_ptr != sz:
             del self._op_stack[self._op_stack_ptr + 1:]
 
-        self._op_stack.append(op)
+        self._op_stack.append([op, mode])
+
         self._op_stack_ptr += 1
         self.main_edje.signal_emit("undo.bt,enable", "")
+
+    def _unstack_pre_hooks_do(self):
+        op, mode = self._op_stack[self._op_stack_ptr]
+        if mode:
+            self._mode_set_cb(self._modes_selector, None, mode)
+
+        return op
 
     def _undo_cb(self, obj, emission, source):
         if self._op_stack_ptr == 0:  # can't go back
             return
 
-        op = self._op_stack[self._op_stack_ptr]
+        op = self._unstack_pre_hooks_do()
         op.undo()
         self._op_stack_ptr -= 1
-        self.main_edje.signal_emit("redo.bt,enable", "")
 
+        self.main_edje.signal_emit("redo.bt,enable", "")
         if self._op_stack_ptr == 0:
             self.main_edje.signal_emit("undo.bt,disable", "")
         else:
@@ -499,10 +514,10 @@ class Editje(elementary.Window):
             return
 
         self._op_stack_ptr += 1
-        op = self._op_stack[self._op_stack_ptr]
+        op = self._unstack_pre_hooks_do()
         op.redo()
-        self.main_edje.signal_emit("undo.bt,enable", "")
 
+        self.main_edje.signal_emit("undo.bt,enable", "")
         if self._op_stack_ptr == sz:
             self.main_edje.signal_emit("redo.bt,disable", "")
         else:
@@ -644,13 +659,22 @@ class Editje(elementary.Window):
         self._mainbar_pager.content_push(mainbar)
         self._sidebar_pager.content_push(sidebar)
 
+
+    def _mode_get(self):
+        return self._mode
+
+    mode = property(fget=_mode_get)
+
     def _mode_set_cb(self, obj, it, name, *args, **kwargs):
+        if self.mode == name:
+            return
+
         item, toolbar, mainbar, sidebar = self._modes[name]
         self._toolbar_pager.content_promote(toolbar)
         self._mainbar_pager.content_promote(mainbar)
         self._sidebar_pager.content_promote(sidebar)
 
-        self.mode = name
+        self._mode = name
 
         def states_save():
             if hasattr(self, "_prevstates"):

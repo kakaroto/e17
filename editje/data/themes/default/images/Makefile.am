@@ -16,6 +16,8 @@ ico_closed.png \
 ico_confirm.png \
 ico_copy.png \
 ico_cut.png \
+ico_del.png \
+ico_del_disabled.png \
 ico_down.png \
 ico_editje.png \
 ico_fonts.png \
@@ -52,6 +54,7 @@ timeline_darkdot.png \
 timeline_endarrow.png \
 timeline_lightdot.png \
 timeline_line.png \
+timeline_selected.png \
 trans_accelerate.png \
 trans_desaccelerate.png \
 trans_linear.png \

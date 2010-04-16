@@ -42,8 +42,6 @@ class EditableAnimation(Manager, object):
         self._edit_grp.callback_add("group.changed", self._group_changed_cb)
         self._edit_grp.callback_add(
             "animation.removed", self._animation_removed_cb)
-        self._edit_grp.part.state.callback_add(
-            "state.changed", self._state_from_signal)
 
     def _group_changed_cb(self, emissor, data):
         self.name = None
@@ -358,22 +356,6 @@ class EditableAnimation(Manager, object):
                 self._edit_grp.part.state.name = statename
 
         self.event_emit("frame.changed", self._edit_grp.part.state.name)
-
-    def _state_from_signal(self, emissor, data):
-        name, time = data
-        m = re_anim_program.match(name)
-        if not m:
-            return  # not an animation program, skip
-        anim_name = m.group(1)
-        frame_time = float(m.group(2))
-
-        if self.program.name == name and frame_time == self._current:
-            return
-
-        if self._name != anim_name:
-            return
-
-        self._state_set(frame_time, is_callback=True)
 
     def _state_get(self):
         return self._current

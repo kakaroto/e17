@@ -29,6 +29,7 @@ from parts import PartsList
 from groupselector import NameEntry
 from operation import Operation
 from error_notify import ErrorNotify
+import objects_data
 
 
 class AnimationsList(CList):
@@ -340,6 +341,8 @@ class AnimationDetails(EditjeDetails):
 
         self._parent.main_edje.signal_callback_add("timestop", "*",
                                                    self._timeline_cb)
+        self._parent.main_edje.signal_callback_add("timeremove", "*",
+                                                   self._timeremove_cb)
         self.e.callback_add("animation.removed", self._removed)
         self.e.animation.callback_add("animation.changed", self._update)
         self.e.animation.callback_add("animation.unselected", self._removed)
@@ -366,6 +369,7 @@ class AnimationDetails(EditjeDetails):
         self._header_table["length"].value = "%.1gs" % self.e.animation.length
         self._last_timestamp = 0.0
         self._timeline_update()
+
         self.e.animation.state = 0.0
         self.open_disable = False
         self.open = True
@@ -375,7 +379,92 @@ class AnimationDetails(EditjeDetails):
         t = float(source)
         if not t in self.e.animation.timestops:
             self.e.animation.state_add(t)
+            op = Operation("animation (%s) frame (%s) creation" % \
+                               (self.e.animation.name, t))
+            op.redo_callback_add(self.e.animation.state_add, t)
+            op.redo_callback_add(setattr, self.e.animation.state, t)
+            op.undo_callback_add(self._remove_time_point, t)
+            self._operation_stack_cb(op)
+
         self.e.animation.state = t
+
+    def _state_class_from_part_type_get(self, part):
+        st_class = objects_data.State
+        if part.type == edje.EDJE_PART_TYPE_IMAGE:
+            st_class = objects_data.StateImage
+        elif part.type == edje.EDJE_PART_TYPE_GRADIENT:
+            st_class = objects_data.StateGradient
+        elif part.type == edje.EDJE_PART_TYPE_TEXT:
+            st_class = objects_data.StateText
+        elif part.type == edje.EDJE_PART_TYPE_EXTERNAL:
+            st_class = objects_data.StateExternal
+        return st_class
+
+    def _remove_time_point(self, t):
+        prog = "@%s@%.2f" % (self.e.animation.name, t)
+        self.e.animation.state_prev_goto()
+        self.e.animation.state_del(t)
+        self.e.program_del(prog)
+        self._parent.main_edje.signal_emit("ts,%.1g,disable" % t, "editje")
+        self._parent.main_edje.signal_emit("ts,%.1g,unselected" % t, "editje")
+
+    def _frame_readd(self, t, anim_name, saved_states, trans):
+        self.e.animation.name = anim_name
+        self.e.animation.state_add(t)
+        for pname, state in saved_states:
+            self.e.part.name = pname
+            st = self.e.part_get(pname).state_get(state.name)
+            state.apply_to(st)
+        self.e.animation.state = t
+        self.e.animation.program.transition = trans
+        self.e.animation.event_emit("frame.changed")
+
+    def _anim_and_state_select(self, anim, state):
+        self.e.animation.name = anim
+        self.e.animation.state = state
+
+    def _timeremove_cb(self, obj, emission, source):
+        t = float(source)
+        anim_name = self.e.animation.name
+        anim_frame = self.e.animation.state
+        prog = "@%s@%.2f" % (anim_name, t)
+
+        saved_states = []
+        for part_name in self.e.animation.parts:
+            part = self.e.part_get(part_name)
+            st_obj = part.state_get(prog)
+            st_class = self._state_class_from_part_type_get(part)
+            state_save = st_class(st_obj)
+            saved_states.append([part.name, state_save])
+
+        trans = self.e.animation.program.transition
+        op = Operation("animation (%s) frame (%s) deletion" % \
+                           (anim_name, t))
+        op.redo_callback_add(
+            self._anim_and_state_select, anim_name, anim_frame)
+        op.redo_callback_add(self._remove_time_point, t)
+
+        op.undo_callback_add(
+            self._frame_readd, t, anim_name, saved_states, trans)
+        self._operation_stack_cb(op)
+
+        def agree(bt, notification):
+            self._remove_time_point(t)
+            notification.hide()
+            notification.delete()
+
+        def disagree(bt, notification):
+            notification.hide()
+            notification.delete()
+
+        if t in self.e.animation.timestops:
+            notification = ErrorNotify(
+                self._parent, orient=elementary.ELM_NOTIFY_ORIENT_CENTER)
+            notification.title = "Do you really want to delete this " \
+                "animation frame?"
+            notification.action_add("Yes", agree, None, notification)
+            notification.action_add("No", disagree, None,  notification)
+            notification.show()
 
     def _timeline_clear(self):
         for i in range(0, 11):

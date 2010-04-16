@@ -31,11 +31,14 @@ class Editable(Manager):
     default_display_size = (500, 500)
     pref_size_key = "pref_size"
 
-    def __init__(self, canvas, swapfile):
+    def __init__(self, canvas, swapfile, mode_get_cb=None):
         Manager.__init__(self)
 
         self._canvas = canvas
         self._swapfile = swapfile
+        # FIXME: this is a temporary hack to let deeper objects know the
+        # state we're at. Find a better place for it
+        self._mode_get_cb = mode_get_cb
 
         self._group = ""
         self._edje = None
@@ -51,6 +54,11 @@ class Editable(Manager):
         self._programs_init()
         self._animations_init()
         self._signals_init()
+
+    def _mode_get(self):
+        return self._mode_get_cb()
+
+    mode = property(fget=_mode_get)
 
     # Edje
     def _edje_get(self):

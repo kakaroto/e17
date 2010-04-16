@@ -802,6 +802,12 @@ class PartAnimStateDetails(PartStateDetails):
             img_id_get_cb, fnt_new_fnt_cb, fnt_list_get_cb, fnt_id_get_cb,
             workfile_name_get_cb, part_object_get_cb, group)
 
+    def _context_recall(self, **kargs):
+        self.e.animation.name = kargs["animation"]
+        self.e.animation.state = kargs["time"]
+        self.e.part.name = kargs["part"]
+        self.e.part.state.name = kargs["state"]
+
     def _header_init(self, parent):
         self.title = "part frame properties"
 

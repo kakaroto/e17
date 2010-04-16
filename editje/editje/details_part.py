@@ -109,8 +109,8 @@ class PartDetails(EditjeDetails):
         self.open = True
 
     # no sense in switching states to part properties
-    def _part_and_state_select(self, part_name, state_name=None):
-        self.e.part.name = part_name
+    def _context_recall(self, **kargs):
+        self.e.part.name = kargs["part"]
 
     def _prop_object_get(self):
         return self.e.part_get(self.e.part.name)
