@@ -112,7 +112,7 @@ $DoIconv = `which iconv`;
 	"x:Xchat:xchat",
 	"x:XMag:xmag",
 	"x:Grip:grip",
-	"x:Audacious:audacious"
+	"x:Audacious:audacious",
 	"x:XMMS:xmms"
 );
 
