@@ -208,6 +208,8 @@ _item_add(Plugin *p, char *id, char *url, char *label, char *mime, int prio)
   return file;
 }
 
+
+
 static void
 _dbus_cb_reply(void *data, DBusMessage *msg, DBusError *error)
 {
@@ -464,20 +466,19 @@ _fetch(Evry_Plugin *plugin, const char *input)
   return 0;
 }
 
-static Evas_Object *
-_icon_get(Evry_Plugin *p __UNUSED__, const Evry_Item *it, Evas *e)
+static char thumb_buf[4096];
+static const char hex[] = "0123456789abcdef";
+
+static char *
+_md5_sum(const char *str)
 {
-  ITEM_FILE(file, it);
-  char buf[4096];
-  MD5_CTX ctx;
-  char md5out[(2 * MD5_HASHBYTES) + 1];
+   MD5_CTX ctx;
   unsigned char hash[MD5_HASHBYTES];
   int n;
-  static const char hex[] = "0123456789abcdef";
-   
-  MD5Init (&ctx);
-  MD5Update (&ctx, (unsigned char const*)file->url,
-	     (unsigned)strlen (file->url));
+  char md5out[(2 * MD5_HASHBYTES) + 1];
+  MD5Init (&ctx);      
+  MD5Update (&ctx, (unsigned char const*)str,
+	       (unsigned)strlen (str));
   MD5Final (hash, &ctx);
 
   for (n = 0; n < MD5_HASHBYTES; n++)
@@ -487,22 +488,82 @@ _icon_get(Evry_Plugin *p __UNUSED__, const Evry_Item *it, Evas *e)
     }
   md5out[2 * n] = '\0';
 
-  snprintf(buf, sizeof(buf), "%s/.thumbnails/normal/%s.png",
-	   e_user_homedir_get(), md5out);
-   
-  DBG("load thumb: %s - %s\n", buf, file->path);
-  if (ecore_file_exists(buf))
+  return strdup(md5out);
+}
+
+static Evas_Object *
+
+_icon_get(Evry_Plugin *p __UNUSED__, const Evry_Item *item, Evas *e)
+{
+  ITEM_FILE(it, item);
+
+  char *sum = _md5_sum(it->url);
+  
+  snprintf(thumb_buf, sizeof(thumb_buf), "%s/.thumbnails/normal/%s.png",
+	   e_user_homedir_get(), sum);
+  free(sum);
+  
+  if (ecore_file_exists(thumb_buf))
     {
       Evas_Object *o = e_icon_add(e);
-      e_icon_file_set(o, buf);
+      e_icon_file_set(o, thumb_buf);
       if (o) return o;
     }
 
-  if (it->browseable)
+  if (item->browseable)
     return evry_icon_theme_get("folder", e);
   else
-    return evry_icon_mime_get(file->mime, e);
+    return evry_icon_mime_get(it->mime, e);
 
+  DBG("load thumb: %s - %s\n", thumb_buf, it->path);
+  return NULL;
+}
+
+static Evas_Object *
+
+_icon_get_cat(Evry_Plugin *p __UNUSED__, const Evry_Item *item, Evas *e)
+{
+  QUERY_ITEM(it, item);
+      
+  if ((((Plugin *)item->plugin)->query == query_albums) ||
+      (((Plugin *)item->plugin)->query == query_albums_for_artist))
+    {
+      if (!it->match || !item->detail) return NULL;
+
+      char *suma, *sumb, *a;
+      int i;
+
+      a = strdup(item->detail);
+
+      for(i = 0; a[i] != '\0'; i++)
+      	a[i] = tolower(a[i]);
+
+      suma = _md5_sum(a); 
+      free(a);
+
+      a = strdup(it->match);
+
+      for(i = 0; a[i] != '\0'; i++)
+      	a[i] = tolower(a[i]);
+
+      sumb = _md5_sum(a); 
+      free(a);
+      
+      snprintf(thumb_buf, sizeof(thumb_buf), "%s/.cache/media-art/album-%s-%s.jpeg",
+      	       e_user_homedir_get(), suma, sumb );
+      
+      free(suma);
+      free(sumb);
+      
+      if (ecore_file_exists(thumb_buf))
+	{
+	  Evas_Object *o = e_icon_add(e);
+	  e_icon_file_set(o, thumb_buf);
+	  if (o) return o;
+	}
+
+    }
+  
   return NULL;
 }
 
@@ -747,7 +808,7 @@ module_init(void)
   p = E_NEW(Plugin, 1);
   EVRY_PLUGIN_NEW(p, "Tracker Categories", type_subject,
 		  "TRACKER_QUERY", "TRACKER_QUERY",
-		  _begin_cat, _cleanup_cat, _fetch_cat, NULL, NULL);
+		  _begin_cat, _cleanup_cat, _fetch_cat, _icon_get_cat, NULL);
 
   plugins = eina_list_append(plugins, p);
   evry_plugin_register(EVRY_PLUGIN(p), _prio++);
