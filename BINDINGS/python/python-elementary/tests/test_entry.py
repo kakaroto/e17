@@ -5,7 +5,7 @@ import edje
 import ecore
 import evas
 
-#----- Entry -{{{-
+#----- common -{{{-
 def my_entry_bt_1(bt, en):
     en.entry_set("")
 
@@ -22,7 +22,9 @@ def my_entry_bt_4(bt, en):
 
 def my_entry_anchor_test(obj, en, *args, **kwargs):
     en.entry_insert("ANCHOR CLICKED")
+# -}}}-
 
+#----- Entry -{{{-
 def entry_clicked(obj, it):
     win = elementary.Window("entry", elementary.ELM_WIN_BASIC)
     win.title_set("Entry")
@@ -292,31 +294,6 @@ def entry_scrolled_clicked(obj, it):
     win.show()
 # }}}
 
-#----- Notepad -{{{-
-def notepad_clicked(obj, it):
-    win = elementary.Window("notepad", elementary.ELM_WIN_BASIC)
-    win.title_set("Notepad")
-    win.autodel_set(True)
-
-    bg = elementary.Background(win)
-    win.resize_object_add(bg)
-    bg.size_hint_weight_set(evas.EVAS_HINT_EXPAND, evas.EVAS_HINT_EXPAND)
-    bg.show()
-
-    bx = elementary.Box(win)
-    win.resize_object_add(bx)
-    bx.size_hint_weight_set(evas.EVAS_HINT_EXPAND, evas.EVAS_HINT_EXPAND)
-    bx.show()
-
-    l = elementary.Label(win)
-    l.label_set("TODO")
-    bx.pack_end(l)
-    l.show()
-
-    win.resize(320, 300)
-    win.show()
-# }}}
-
 #----- Main -{{{-
 if __name__ == "__main__":
     def destroy(obj):
@@ -350,8 +327,7 @@ if __name__ == "__main__":
     lb.show()
 
     items = [("Entry", entry_clicked),
-             ("Entry Scrolled", entry_scrolled_clicked),
-             ("Notepad", notepad_clicked)]
+             ("Entry Scrolled", entry_scrolled_clicked)]
 
     li = elementary.List(win)
     li.size_hint_weight_set(evas.EVAS_HINT_EXPAND, evas.EVAS_HINT_EXPAND)
