@@ -6,7 +6,11 @@ libedjexx_HEADERS = \
 	Exceptions.h \
 	Edjexx.h \
 	Edit.h \
-	PartEdit.h
+	PartEdit.h \
+	StateEdit.h \
+	ImageStateEdit.h \
+	TextStateEdit.h \
+	GradientStateEdit.h
 
 libedjexxdir = \
 	$(pkgincludedir)

@@ -13,6 +13,10 @@
 #include "Object.h"
 #include "Edit.h"
 #include "PartEdit.h"
+#include "StateEdit.h"
+#include "ImageStateEdit.h"
+#include "TextStateEdit.h"
+#include "GradientStateEdit.h"
 
 #endif // EDJEXX_H
 

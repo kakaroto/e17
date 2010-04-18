@@ -123,6 +123,11 @@ bool Edit::addPart (const std::string &name, Edje_Part_Type type)
   return edje_edit_part_add (o, name.c_str (), type);
 }
 
+bool Edit::delPart (const std::string &part)
+{
+  return edje_edit_part_del (o, part.c_str ());
+}
+
 bool Edit::hasPart (const std::string &part)
 {
   return edje_edit_part_exist (o, part.c_str ());
@@ -139,55 +144,11 @@ Eflxx::CountedPtr <Einaxx::List <char*>::Iterator>  Edit::getPartStatesList (con
   return Eflxx::CountedPtr <Einaxx::List <char*>::Iterator> (lst);
 }
 
-bool Edit::setStateName (const std::string &part, const std::string &state, const std::string &newName)
+bool Edit::copyState (const std::string &part, const std::string &from, double valFrom, const std::string &to, double valTo)
 {
-  return edje_edit_state_name_set (o, part.c_str (), state.c_str (), newName.c_str ());
+  return edje_edit_state_copy (o, part.c_str (), from.c_str (), valFrom, to.c_str (), valTo);
 }
 
-bool Edit::copyState (const std::string &part, const std::string &from, const std::string &to)
-{
-  return edje_edit_state_copy (o, part.c_str (), from.c_str (), to.c_str ());
-}
-
-double Edit::getXRelativeRel1State (const std::string &part, const std::string &state)
-{
-  return edje_edit_state_rel1_relative_x_get (o, part.c_str (), state.c_str ());
-}
-
-double Edit::getYRelativeRel1State (const std::string &part, const std::string &state)
-{
-  return edje_edit_state_rel1_relative_y_get (o, part.c_str (), state.c_str ());
-}
-
-double Edit::getXRelativeRel2State (const std::string &part, const std::string &state)
-{
-  return edje_edit_state_rel2_relative_x_get (o, part.c_str (), state.c_str ());
-}
-
-double Edit::getYRelativeRel2State (const std::string &part, const std::string &state)
-{
-  return edje_edit_state_rel2_relative_y_get (o, part.c_str (), state.c_str ());
-}
-
-void Edit::setXRelativeRel1State (const std::string &part, const std::string &state, double x)
-{
-  edje_edit_state_rel1_relative_x_set (o, part.c_str (), state.c_str (), x);
-}
-
-void Edit::setYRelativeRel1State (const std::string &part, const std::string &state, double y)
-{
-  edje_edit_state_rel1_relative_y_set (o, part.c_str (), state.c_str (), y);
-}
-
-void Edit::setXRelativeRel2State (const std::string &part, const std::string &state, double x)
-{
-  edje_edit_state_rel2_relative_x_set (o, part.c_str (), state.c_str (), x);
-}
-
-void Edit::setYRelativeRel2State (const std::string &part, const std::string &state, double y)
-{
-  edje_edit_state_rel2_relative_y_set (o, part.c_str (), state.c_str (), y);
-}
 
 /******************************************************************************/
 /**************************   IMAGES API   ************************************/
@@ -200,17 +161,6 @@ Eflxx::CountedPtr <Einaxx::List <char*>::Iterator> Edit::getImagesList ()
   return Eflxx::CountedPtr <Einaxx::List <char*>::Iterator> (lst); 
 }
 
-std::string Edit::getImage (const std::string &part, const std::string &state)
-{
-  const char *cimage = edje_edit_state_image_get (o, part.c_str (), state.c_str ());  
-  string image (cimage);
-  edje_edit_string_free(cimage);
-  return image;
-}
 
-void Edit::setImage (const std::string &part, const std::string &state, const std::string &image)
-{
-  edje_edit_state_image_set (o, part.c_str (), state.c_str (), image.c_str ());
-}
 
 } // end namespace Edjexx

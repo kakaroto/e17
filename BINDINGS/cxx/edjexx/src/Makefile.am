@@ -21,7 +21,11 @@ libedjexx_la_SOURCES = \
 	Object.cpp  \
 	Exceptions.cpp  \
 	Edit.cpp  \
-	PartEdit.cpp
+	PartEdit.cpp  \
+	StateEdit.cpp  \
+	ImageStateEdit.cpp  \
+	TextStateEdit.cpp  \
+	GradientStateEdit.cpp
 
 libedjexx_la_LIBADD = \
 	$(EFL_LIBS)
