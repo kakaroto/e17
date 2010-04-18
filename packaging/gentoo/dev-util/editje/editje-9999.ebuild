@@ -22,3 +22,10 @@ RDEPEND="
 
 DEPEND="
 	>=media-libs/edje-9999"
+
+src_install() {
+	emake DESTDIR="${D}" install || die "Install failed"
+	mv ${D}/usr/bin/editje-bin ${D}/usr/bin/editje || die
+	sed -i -e 's/editje-bin/editje/' \
+		${D}/usr/share/applications/editje.desktop || die
+}
