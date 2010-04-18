@@ -53,7 +53,7 @@ e_ofono_sms_sca_set(E_Ofono_Element *element, const char *sca, E_DBus_Method_Ret
  * @return @c EINA_TRUE on success, @c EINA_FALSE otherwise.
  */
 Eina_Bool
-e_ofono_sms_send_message(const E_Ofono_Element *element, const char *number, const char *message, E_DBus_Method_Return_Cb cb, const void *data)
+e_ofono_sms_send_message(E_Ofono_Element *element, const char *number, const char *message, E_DBus_Method_Return_Cb cb, const void *data)
 {
    EINA_SAFETY_ON_NULL_RETURN_VAL(element, 0);
    EINA_SAFETY_ON_NULL_RETURN_VAL(number, 0);

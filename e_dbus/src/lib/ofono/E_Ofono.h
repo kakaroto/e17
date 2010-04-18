@@ -84,7 +84,7 @@ extern "C" {
   /* SMS Methods */
   EAPI Eina_Bool e_ofono_sms_sca_get(const E_Ofono_Element *element, const char **sca) EINA_ARG_NONNULL(1, 2) EINA_WARN_UNUSED_RESULT;
   EAPI Eina_Bool e_ofono_sms_sca_set(E_Ofono_Element *element, const char *sca, E_DBus_Method_Return_Cb cb, const void *data) EINA_ARG_NONNULL(1, 2) EINA_WARN_UNUSED_RESULT;
-  EAPI Eina_Bool e_ofono_sms_send_message(const E_Ofono_Element *element, const char *number, const char *message, E_DBus_Method_Return_Cb cb, const void *data) EINA_ARG_NONNULL(1, 2, 3) EINA_WARN_UNUSED_RESULT;
+  EAPI Eina_Bool e_ofono_sms_send_message(E_Ofono_Element *element, const char *number, const char *message, E_DBus_Method_Return_Cb cb, const void *data) EINA_ARG_NONNULL(1, 2, 3) EINA_WARN_UNUSED_RESULT;
 
   /* Low-Level API:
    *
