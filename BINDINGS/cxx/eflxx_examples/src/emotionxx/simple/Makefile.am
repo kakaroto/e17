@@ -10,7 +10,8 @@ emotionxx_example_simple_LDADD = \
 	$(ECOREXX_LIBS) \
 	$(EFL_LIBS) \
 	$(EMOTIONXX_LIBS) \
-	$(PACKAGE_SOURCE_DIR)/src/common/libeflxx_example_common.la
+	$(PACKAGE_SOURCE_DIR)/src/common/libeflxx_example_common.la \
+	$(EINAXX_LIBS)
 
 emotionxx_example_simple_DEPENDENCIES = \
 	$(PACKAGE_SOURCE_DIR)/src/common/libeflxx_example_common.la
@@ -19,7 +20,8 @@ AM_CPPFLAGS = \
 	$(EDJEXX_CFLAGS) \
 	$(ECOREXX_CFLAGS) \
 	$(EFL_CFLAGS) \
-	$(EMOTIONXX_CFLAGS)
+	$(EMOTIONXX_CFLAGS) \
+	$(EINAXX_CFLAGS)
 
 ## File created by the gnome-build tools
 
