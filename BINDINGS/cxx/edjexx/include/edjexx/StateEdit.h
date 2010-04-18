@@ -22,6 +22,10 @@ public:
    */
   bool setName (const std::string &newName, double newValue);
   
+  const std::string getName () const;
+  
+  double getValue () const;
+  
   /*!
    * Get the rel1 relative x value of state
    *

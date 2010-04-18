@@ -23,6 +23,16 @@ bool StateEdit::setName (const std::string &newName, double newValue)
   return ret;
 }
 
+const std::string StateEdit::getName () const
+{
+  return mState;
+}
+
+double StateEdit:: getValue () const
+{
+  return mValue;
+}
+
 double StateEdit::getXRelativeRel1 () const
 {
   return edje_edit_state_rel1_relative_x_get (mEdit->obj (), mPart.c_str (), mState.c_str (), mValue);
