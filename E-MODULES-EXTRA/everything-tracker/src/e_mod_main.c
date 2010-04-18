@@ -134,6 +134,7 @@ _item_free(Evry_Item *it)
   if (file->path) eina_stringshare_del(file->path);
   if (file->url) eina_stringshare_del(file->url);
   if (file->mime) eina_stringshare_del(file->mime);
+  if (EVRY_ITEM(file)->data) eina_stringshare_del((const char *)EVRY_ITEM(file)->data);
 
   E_FREE(file);
 }
@@ -168,13 +169,27 @@ _query_item_new(Plugin *p, const char *urn, const char *label, const char *detai
 }
 
 static Evry_Item_File *
-_item_add(Plugin *p, char *id, char *url, char *label, char *mime, int prio)
+_item_add(Plugin *p, char *urn, char *url, char *label, char *mime, int prio)
 {
   Evry_Item_File *file;
-
+  Evry_Item *it;
+  Eina_List *l;
   char *path;
   const char *tmp;
 
+  /* one could jus check the ref counts (= */
+  const char *id = eina_stringshare_add(urn);
+
+  EINA_LIST_FOREACH(p->files, l, file)
+    {
+      if (id == EVRY_ITEM(file)->data)
+	{
+	  eina_stringshare_del(id);
+	  evry_item_ref(EVRY_ITEM(file)); 
+	  return file;
+	}
+    }
+  
   /* XXX use evry_file_url/path_get to do the conversion only when needed */
   if (!strncmp(url, "file://", 7))
     tmp = url + 7;
@@ -190,7 +205,7 @@ _item_add(Plugin *p, char *id, char *url, char *label, char *mime, int prio)
     }
 
   evry_item_new(EVRY_ITEM(file), EVRY_PLUGIN(p), label, _item_free);
-  EVRY_ITEM(file)->id = eina_stringshare_add(id);
+  EVRY_ITEM(file)->data = (void *)id;
   int match = evry_fuzzy_match(label, p->input);
   if (match)
     EVRY_ITEM(file)->fuzzy_match = match;
@@ -254,7 +269,7 @@ _dbus_cb_reply(void *data, DBusMessage *msg, DBusError *error)
 	      if (!urn)	goto next;
 
 	      if (!strncmp(urn, "urn:uuid:", 9))
-		{
+		{		    
 		  dbus_message_iter_next(&iter);
 		  if (dbus_message_iter_get_arg_type(&iter) != DBUS_TYPE_STRING) goto next;
 		  dbus_message_iter_get_basic(&iter, &path);
@@ -279,7 +294,7 @@ _dbus_cb_reply(void *data, DBusMessage *msg, DBusError *error)
 	      else if (!strncmp(urn, "urn:artist:", 11))
 		{
 		  label = evry_util_unescape(urn + 11, 0);
-		  it = _query_item_new(p, NULL, label, NULL, query_albums_for_artist, label, EINA_TRUE); 
+		  it = _query_item_new(p, urn, label, NULL, query_albums_for_artist, label, EINA_TRUE); 
 		  if (it) items = eina_list_append(items, it);
 		}
 	      else if (!strncmp(urn, "urn:album:", 10))
