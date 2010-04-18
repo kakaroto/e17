@@ -625,8 +625,9 @@ static void on_handle_group(void *data, Evas_Object *obj, void *event_info) {
 
 static void on_message_anchor_clicked(void *data, Evas_Object *obj, void *event_info) {
 	Elm_Entry_Anchorblock_Info * info = (Elm_Entry_Anchorblock_Info*)event_info;
-	char *url=NULL, *frame_label=NULL, screen_name[16];
-	Evas_Object *box=NULL, *button=NULL, *buttons=NULL, *frame=NULL, *entry=NULL, *bubble=(Evas_Object*)data;
+	char *url=NULL, *frame_label=NULL;
+	const char *screen_name=NULL;
+	Evas_Object *box=NULL, *box2=NULL, *button=NULL, *buttons=NULL, *frame=NULL, *entry=NULL, *bubble=(Evas_Object*)data;
 	int res = 0;
 
 	if(info->name == NULL || strlen(info->name) <= 9)
@@ -650,20 +651,37 @@ static void on_message_anchor_clicked(void *data, Evas_Object *obj, void *event_
 					evas_object_size_hint_weight_set(frame, 1, 1);
 					evas_object_size_hint_align_set(frame, -1, -1);
 
-					snprintf(screen_name, 16, "%s", elm_bubble_label_get(bubble));
-					
-					res = asprintf(&frame_label, _("%s posted this link..."), screen_name);
-					if(res != -1) {
-						elm_frame_label_set(frame, frame_label);
-						free(frame_label);
-					}
+					elm_frame_label_set(frame, _("Visit website?"));
 
-					entry = elm_entry_add(win);
-						elm_entry_line_char_wrap_set(entry, TRUE);
-						elm_entry_editable_set(entry, FALSE);
-						elm_entry_entry_set(entry, url);
-					evas_object_show(entry);
-					elm_frame_content_set(frame, entry);
+					box2 = elm_box_add(win);
+						evas_object_size_hint_weight_set(box2, 1, 1);
+						evas_object_size_hint_align_set(box2, -1, -1);
+						entry = elm_entry_add(win);
+							evas_object_size_hint_weight_set(entry, 1, 1);
+							evas_object_size_hint_align_set(entry, -1, 0);
+							elm_entry_editable_set(entry, FALSE);
+	
+							screen_name = elm_bubble_label_get(bubble);
+							res = asprintf(&frame_label, _("%s posted the following URL...<br>"), screen_name);
+							if(res != -1) {
+								elm_entry_entry_set(entry, frame_label);
+								elm_box_pack_end(box2, entry);
+								evas_object_show(entry);
+								free(frame_label);
+							} else {
+								evas_object_del(box2);
+							}
+						entry = elm_entry_add(win);
+							elm_entry_editable_set(entry, FALSE);
+							evas_object_size_hint_weight_set(entry, 1, 1);
+							evas_object_size_hint_align_set(entry, -1, 0);
+							elm_entry_line_char_wrap_set(entry, TRUE);
+							elm_entry_entry_set(entry, url);
+							elm_box_pack_end(box2, entry);
+						evas_object_show(entry);
+					evas_object_show(box2);
+
+					elm_frame_content_set(frame, box2);
 					elm_box_pack_end(box, frame);
 				evas_object_show(frame);
 
