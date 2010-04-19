@@ -293,7 +293,10 @@ class StateImage(State):
 
         image = dict()
         self["image"] = image
-        image["normal"] = obj.image_get()
+        normal = obj.image_get()
+        if not normal:
+            normal = ""
+        image["normal"] = normal
         image["tweens"] = obj.tweens
         image["border"] = obj.image_border_get()
         image["middle"] = obj.image_border_fill_get()
