@@ -791,8 +791,7 @@ _add_file(const char *path, int play_now)
     }
   else
     {
-      buf = malloc(sizeof(char) * (strlen(path) + 1));
-      sprintf(buf, "%s", path);
+      buf = evry_util_unescape(path, 0);
     }
 
   DBG("play %s", buf);
@@ -859,12 +858,26 @@ _mpris_play_file(Evry_Action *act)
 static int
 _mpris_add_files(Evry_Action *act)
 {
+  const Evry_Item *it = act->item2;
+  
   if (!evry_item_type_check(act->item1, mpris_track))
     return 0;
 
-  if ((!evry_item_type_check(act->item2, "FILE")) &&
-      (!evry_item_type_check(act->item2, "TRACKER_MUSIC")))
+  if ((!evry_item_type_check(it, "FILE")) &&
+      (!evry_item_type_check(it, "TRACKER_MUSIC")))
     return 0;
+
+  if (evry_item_type_check(it, "TRACKER_MUSIC") &&
+      (it->subtype && !strcmp(it->subtype, "FILE_LIST")) &&
+      (act->item2->data))
+    {
+      char *file;
+      Eina_List *l;
+      
+      EINA_LIST_REVERSE_FOREACH(act->item2->data, l, file)
+      _add_file(file, 0);
+      return 1;
+    }
 
   ITEM_FILE(file, act->item2);
 
