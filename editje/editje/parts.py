@@ -198,7 +198,7 @@ class PartsList(CList):
             r = self._edit_grp.part_del(part_name)
             if not r:
                 del part_save
-                return
+                continue
 
             op = Operation("part deletion")
             op.redo_callback_add(self._edit_grp.part_del, part_name)
