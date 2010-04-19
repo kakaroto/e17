@@ -275,7 +275,11 @@ class Editje(elementary.Window):
         return self.e.group_exists(grp_name)
 
     def _group_wizard_new_group_cb(self, grp_name):
-        return self.e.group_add(grp_name)
+        r = self.e.group_add(grp_name)
+        if r:
+            self._operation_stack_clean()
+
+        return r
 
     def _group_wizard_del_group_cb(self, grp_name):
         return self.e.group_del(grp_name)
