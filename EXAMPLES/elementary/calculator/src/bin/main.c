@@ -1,9 +1,11 @@
 /*
  * calculator-edje
  *
- * Copyright (C) 2010, Raphael Kubo da Costa <kubo@profusion.mobi>
+ * Copyright (C) 2010, ProFUSION Embedded Systems
  *
  * License BSD, see COPYING file at project folder.
+ *
+ * @author Raphael Kubo da Costa <kubo@profusion.mobi>
  */
 #include <Elementary.h>
 #include <elementary/elementary_config.h>
