@@ -9,12 +9,11 @@
 #
 # Editje is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 # GNU Lesser General Public License for more details.
 #
 # You should have received a copy of the GNU Lesser General Public
-# License along with Editje.  If not, see
-# <http://www.gnu.org/licenses/>.
+# License along with Editje. If not, see <http://www.gnu.org/licenses/>.
 
 import edje
 
@@ -25,26 +24,28 @@ class EditableProgram(Manager, object):
     def __init__(self, editable):
         Manager.__init__(self)
 
-        self.e = editable
+        self._edit_grp = editable
+        self._null()
+
+    def _null(self):
         self._name = None
         self._program = None
 
     # Name
     def _name_set(self, value):
-        if not self.e._edje:
+        if not self._edit_grp.edje:
             return
 
         if not value:
-            self._name = None
+            self._null()
             self.event_emit("program.unselected")
         elif self._name != value:
-            if value in self.e.programs:
+            if value in self._edit_grp.programs:
                 self._name = value
                 self._program_fetch()
                 self.event_emit("program.changed", self.name)
             else:
-                self._name = None
-                self._program = None
+                self._null()
                 self.event_emit("program.unselected")
 
     def _name_get(self):
@@ -53,7 +54,7 @@ class EditableProgram(Manager, object):
     name = property(_name_get, _name_set)
 
     def _program_fetch(self):
-        self._program = self.e._edje.program_get(self._name)
+        self._program = self._edit_grp.edje.program_get(self._name)
 
     def _signal_get(self):
         return self._program.signal_get()
