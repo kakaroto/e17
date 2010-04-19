@@ -545,8 +545,9 @@ class Editable(Manager):
     def animation_del(self, name):
         stopname = "@%s@stop" % name
         stopprog = self.program_get(stopname)
+
         if not stopprog:
-            return
+            return False
         for p in stopprog.targets:
             prog = self.program_get(p)
             for pp in prog.targets:
@@ -558,6 +559,8 @@ class Editable(Manager):
         self.event_emit("animation.removed", name)
         self._animations.pop(self._animations.index(name))
         self._modified = True
+
+        return True
 
     # Signals
     def _signal_get(self):

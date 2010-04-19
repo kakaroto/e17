@@ -861,7 +861,17 @@ class Editje(elementary.Window):
         mainbar.show()
 
         def new_anim_cb(name, parts):
-            return self.e.animation_add(name, parts)
+            r = self.e.animation_add(name, parts)
+            if not r:
+                return r
+
+            op = Operation("new animation: %s " % name)
+
+            op.undo_callback_add(self.e.animation_del, name)
+            op.redo_callback_add(self.e.animation_add, name, parts)
+            self._operation_stack(op)
+
+            return r
 
         def anims_list_cb():
             return self.e.animations
@@ -869,7 +879,8 @@ class Editje(elementary.Window):
         def parts_list_cb():
             return self.e.parts
 
-        list = AnimationsList(self, new_anim_cb, anims_list_cb, parts_list_cb)
+        list = AnimationsList(self, new_anim_cb, anims_list_cb, parts_list_cb,
+                              self._operation_stack)
         list.options = True
         list.title = "Animations"
         list.open = True

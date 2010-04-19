@@ -335,7 +335,7 @@ class EditableAnimation(Manager, object):
 
         self.program.target_add(part.name)
 
-    def _state_set(self, time, is_callback=False):
+    def _state_set(self, time):
         if not self._name or time == self._current:
             return
 
@@ -351,9 +351,8 @@ class EditableAnimation(Manager, object):
                 self._part_state_create(part)
                 part.state_selected_set(statename)
 
-        if not is_callback:
-            if self._edit_grp.part.name in self.parts:
-                self._edit_grp.part.state.name = statename
+        if self._edit_grp.part.name in self.parts:
+            self._edit_grp.part.state.name = statename
 
         self.event_emit("frame.changed", self._edit_grp.part.state.name)
 

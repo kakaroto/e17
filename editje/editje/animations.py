@@ -33,24 +33,29 @@ import objects_data
 
 
 class AnimationsList(CList):
-    def __init__(self, parent, new_anim_cb, anims_list_cb, parts_list_cb):
+    def __init__(self, parent, new_anim_cb, anims_list_cb, parts_list_cb,
+                 op_stack_cb):
         CList.__init__(self, parent)
-        self.e = parent.e
+        self._edit_grp = parent.e
 
         self._new_anim_cb = new_anim_cb
         self._anims_list_cb = anims_list_cb
         self._parts_list_cb = parts_list_cb
+        self._operation_stack_cb = op_stack_cb
 
         self._options_load()
         self.options = True
 
-        self.e.callback_add("animations.changed", self._animations_update)
-        self.e.callback_add("animation.added", self._animation_added)
-        self.e.callback_add("animation.removed", self._animation_removed)
+        self._edit_grp.callback_add(
+            "animations.changed", self._animations_update)
+        self._edit_grp.callback_add(
+            "animation.added", self._animation_added)
+        self._edit_grp.callback_add(
+            "animation.removed", self._animation_removed)
 
-        self.e.animation.callback_add(
+        self._edit_grp.animation.callback_add(
             "animation.changed", self._animation_changed)
-        self.e.animation.callback_add(
+        self._edit_grp.animation.callback_add(
             "animation.unselected", self._animation_changed)
 
     def _animations_update(self, emissor, data):
@@ -76,7 +81,7 @@ class AnimationsList(CList):
     def _selected_cb(self, li, it):
         CList._selected_cb(self, li, it)
         name = it.label_get()
-        self.e.animation.name = name
+        self._edit_grp.animation.name = name
         self._options_edje.signal_emit("remove,enable", "")
 
     def _unselected_cb(self, li, it):
@@ -107,8 +112,28 @@ class AnimationsList(CList):
         anim_wiz.open()
 
     def _remove_cb(self, obj, emission, source):
-        for i in self.selected:
-            self.e.animation_del(i[0])
+
+        def anim_restore(anim_save):
+            name = anim_save.name
+            if self._edit_grp.animation_add(name):
+                anim_save.apply_to(self._edit_grp)
+
+        for s in self.selected:
+            anim_name = s[0]
+            pname = "@%s@stop" % anim_name
+            stop_prog = self._edit_grp.edje.program_get(pname)
+            anim_data = objects_data.Animation(stop_prog)
+
+            r = self._edit_grp.animation_del(anim_name)
+            if not r:
+                del anim_data
+                continue
+
+            op = Operation("animation deletion: %s" % anim_name)
+            op.redo_callback_add(self._edit_grp.animation_del, anim_name)
+            op.undo_callback_add(anim_restore, anim_data)
+            self._operation_stack_cb(op)
+
 
 
 class AnimationsPartsList(PartsList):

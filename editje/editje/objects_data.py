@@ -456,7 +456,6 @@ class Program(Object):
         self["transition_time"] = obj.transition_time_get()
         self["in"] = (obj.in_from_get(), obj.in_range_get())
 
-
         targets = []
         self["targets"] = targets
         for target in obj.targets_get():
@@ -530,17 +529,26 @@ class Style(Object):
 
 
 class Animation(Object):
+    """Animations data serializer.
+
+    Objects must be instantiated with an animation's stop program reference.
+
+    """
+
     def __init__(self, obj):
         prog = re_anim_program_stop.match(obj.name)
         if not prog:
-           raise TypeError("not animation end program")
-        name = prog.group(0)
+           raise TypeError("Not an animation's stop program")
 
+        name = re_anim_program.match(obj.name).group(1)
         Object.__init__(self, name)
 
         edj = obj.edje_get()
-        keyframes = {}
-        self["keyframes"] = keyframes
+
+        self["parts"] = None
+
+        frames = {}
+        self["frames"] = frames
         for target in obj.targets_get():
             program = edj.program_get(target)
             if not program:
@@ -551,13 +559,31 @@ class Animation(Object):
                 continue
             time = float(time)
 
-            keyframes[time] = AnimatioKeyFrame(program)
+            frames[time] = AnimationFrame(program)
+            if not self["parts"]:
+                self["parts"] = frames[time]["targets"].keys()
 
     def apply_to(self, obj):
-        pass
+        anim = obj.animation
+        # select it, so we to act on it by this ptr
+        anim.name = self.name
+
+        # in pristine order we were getting wrong state selected at the end
+        for time, frame_data in reversed(self["frames"].items()):
+            if time != 0.0:  # we have it, already
+                r = anim.state_add(time)
+                if not r:
+                    obj.animation_del(self.name)
+                    return False
+
+            pname = "@%s@%.2f" % (self.name, time)
+            prog = obj.edje.program_get(pname)
+            frame_data.apply_to(prog)
+
+        return True
 
 
-class AnimatioKeyFrame(Object):
+class AnimationFrame(Object):
     def __init__(self, obj):
         Object.__init__(self, obj.name)
 
@@ -570,7 +596,8 @@ class AnimatioKeyFrame(Object):
             part = edj.part_get(target)
             if not part:
                 continue
-            state = part.state_get(self._name+" 0.00")
+
+            state = part.state_get(self.name)
             if not state:
                 continue
 
@@ -588,22 +615,26 @@ class AnimatioKeyFrame(Object):
             targets[target] = stateclass(state)
 
     def apply_to(self, obj):
-        name = obj.name
+        state_name = obj.name
         edj = obj.edje_get()
-        animation, time = program_time.match(name)
+
+        animation = re_anim_program.match(state_name).group(1)
+        time = re_anim_program.match(state_name).group(2)
 
         obj.transition_set(self["transition"])
 
         obj.targets_clear()
-        for target, data in self["targets"].values():
+        for target, data in self["targets"].items():
             obj.target_add(target)
 
             part = edj.part_get(target)
             if not part:
                 continue
-            state_name = name
+
             part.state_add(state_name)
+
             state = part.state_get(state_name)
             if not state:
                 continue
+
             data.apply_to(state)
