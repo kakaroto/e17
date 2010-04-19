@@ -60,7 +60,8 @@ class WidgetEntry(Widget):
         self.entry.entry_set(val)
 
     def _internal_value_get(self):
-        return self.entry.entry_get()
+        text = self.entry.entry_get()
+        return self.entry.markup_to_utf8(text)
 
     def _entry_activate_cb(self, obj, *args, **kwargs):
         self._callback_call("changed")
