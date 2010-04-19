@@ -136,7 +136,7 @@ class PartDetails(EditjeDetails):
 
         def part_rename(old_name, new_name):
             # select 1st
-            self._part_and_state_select(old_name)
+            self._context_recall(part=old_name)
 
             # rename later
             return self.e.part.rename(new_name)
@@ -145,7 +145,7 @@ class PartDetails(EditjeDetails):
             return
 
         old_name = self.e.part.name
-        if part_rename(old_name, None, prop_value):
+        if part_rename(old_name, prop_value):
             op = Operation("part renaming")
 
             op.redo_callback_add(part_rename, old_name, prop_value)
