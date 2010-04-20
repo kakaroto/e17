@@ -395,7 +395,6 @@ class AnimationDetails(EditjeDetails):
         self._last_timestamp = 0.0
         self._timeline_update()
 
-        self.e.animation.state = 0.0
         self.open_disable = False
         self.open = True
         self.show()

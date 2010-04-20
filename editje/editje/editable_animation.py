@@ -386,12 +386,9 @@ class EditableAnimation(Manager, object):
             self.state = state
 
     def _state_reload_cb(self, emissor, data):
+        self._current = None
         if data and self.timestops:
             self.state = 0.0
-        else:
-            self._current = None
-            self._idx = 0
-            self._prog = None
 
     # Info
     def _length_get(self):
