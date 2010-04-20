@@ -36,6 +36,7 @@ struct _Query_Item
 
   const char *query;
   const char *match;
+  /* const char *urn; */
 };
 
 static E_DBus_Connection *conn = NULL;
@@ -75,8 +76,9 @@ static const char query_albums[] =
   "          ?match a nmm:MusicAlbum"
   "          %s" // property
   "          %s" // match
-  " } LIMIT 100} . "
+  " } LIMIT 20} . "
   " ?s a nmm:MusicPiece;"
+  "      tracker:available true;"
   "      nmm:musicAlbum ?match;"
   "      nmm:performer[nmm:artistName ?artist]"
   "} ORDER BY (?match)";
@@ -88,33 +90,47 @@ static const char query_artists[] =
   "          %s" // property
   "          %s" // match
   " } LIMIT 20} . "
-  " ?s a nmm:MusicPiece; nmm:performer ?match"
+  " ?s a nmm:MusicPiece;"
+  "      nmm:performer ?match;"
+  "      tracker:available true"
   "} ORDER BY (?match) LIMIT 10";
 
 static const char query_tracks[] =
   "SELECT ?match nie:url(?match) nfo:fileName(?match) nie:mimeType(?match) WHERE {"
-  "  ?match a nmm:MusicPiece"
-  "  %s" // property
-  "  %s" // match
+  "  ?match a nmm:MusicPiece;"
+  "   tracker:available true"
+  "   %s" // property
+  "   %s" // match
   "} ORDER BY DESC nfo:fileLastModified(?match) LIMIT 30";
 
 static const char query_tracks_for_album[] =
   "SELECT ?match nie:url(?match) nfo:fileName(?match) nie:mimeType(?match) WHERE{"
   "  ?match a nmm:MusicPiece;  "
-  "       nmm:musicAlbum '%s'" // property
-  " %s"                        // match
+  "   tracker:available true;"
+  "   nmm:musicAlbum '%s'" // property
+  "    %s"                 // match
   " OPTIONAL { ?match nmm:trackNumber ?nr}"
   "} ORDER BY ASC(?nr) LIMIT 100";
 
+static const char query_tracks_no_album[] =
+  "SELECT ?match nie:url(?match) nfo:fileName(?match) nie:mimeType(?match) WHERE{"
+  "  ?match a nmm:MusicPiece;  "
+  "   tracker:available true;"
+  "   nmm:performer[nmm:artistName '%s']" // property
+  "    %s "              // match
+  "  . OPTIONAL { ?match nmm:musicAlbum ?b}"
+  "  . FILTER(bound(?b) = false) "
+  "} LIMIT 100";
+
 static const char query_albums_for_artist[] =
-  "SELECT tracker:coalesce(?match, 'urn:album:Album%20Unknown')"
+  "SELECT tracker:coalesce(?match, 'urn:album:UnknownAlbum')"
   "       nmm:artistName(nmm:performer(?s)) nie:url(?s) WHERE {"
   " ?s a nmm:MusicPiece;"
+  "      tracker:available true;"
   "      nmm:performer '%s'."// property
-  "      OPTIONAL { ?s nmm:musicAlbum ?match}"
-  "  %s" // match
-  "} GROUP BY (?match) LIMIT 50";
-
+  "  OPTIONAL { ?s nmm:musicAlbum ?match}"
+  "  %s"
+  "} ORDER BY (?match) LIMIT 500";
   
 static const char fts_match[] = ". ?match fts:match \"%s*\"";
 
@@ -122,7 +138,7 @@ static int
 _cb_sort(const void *data1, const void *data2)
 {
   const Evry_Item *it1, *it2;
-
+  
   it1 = data1;
   it2 = data2;
 
@@ -151,25 +167,46 @@ _query_item_free(Evry_Item *item)
 }
 
 static Query_Item *
-_query_item_get(Plugin *p, const char *urn, const char *label, const char *detail, const char *query)
+_query_item_get(Plugin *p, const char *id,
+		const char *label, const char *detail,
+		const char *query, const char *match)
 {
   Query_Item *it;
+  Eina_List *l;
+  const char *tmp;
   
+  if (id)
+    {
+      tmp = eina_stringshare_add(id);
+
+      EINA_LIST_FOREACH(p->files, l, it)
+	{
+	  if (tmp == EVRY_ITEM(it)->id)
+	    {
+	      eina_stringshare_del(tmp);
+	      evry_item_ref(EVRY_ITEM(it)); 
+
+	      return it;
+	    }
+	}
+    }
+
   it = E_NEW(Query_Item, 1);
   evry_item_new(EVRY_ITEM(it), EVRY_PLUGIN(p), label, _query_item_free);
-  it->query = query;
-
-  if (urn)
-    it->match = eina_stringshare_add(urn);
-  
   EVRY_ITEM(it)->browseable = EINA_TRUE;
-  if (detail)
-    EVRY_ITEM(it)->detail = eina_stringshare_add(detail);;
-  if (urn)
-    EVRY_ITEM(it)->id = eina_stringshare_add(urn);
-
   EVRY_ITEM(it)->subtype = _file_list;
   
+  it->query = query;
+
+  if (match)
+    it->match = eina_stringshare_add(match);
+  
+  if (detail)
+    EVRY_ITEM(it)->detail = eina_stringshare_add(detail);;
+
+  if (id)
+    EVRY_ITEM(it)->id = eina_stringshare_ref(tmp);
+
   return it;
 }
 
@@ -298,6 +335,10 @@ _dbus_cb_reply(void *data, DBusMessage *msg, DBusError *error)
   if (dbus_error_is_set(error))
     {
       ERR("%s - %s\n", error->name, error->message);
+
+      
+      items = eina_list_append(items, (evry_item_new(NULL, EVRY_PLUGIN(p), error->message,NULL)));
+      
       return;
     }
 
@@ -320,6 +361,8 @@ _dbus_cb_reply(void *data, DBusMessage *msg, DBusError *error)
 	      
       if (!urn)	goto next;
 
+      /* printf("got %s\n", urn); */
+
       if (!strncmp(urn, "urn:uuid:", 9))
 	{		    
 	  file = _add_file(p, urn, &iter); 
@@ -335,12 +378,16 @@ _dbus_cb_reply(void *data, DBusMessage *msg, DBusError *error)
 	      dbus_message_iter_next(&iter);
 	      if (dbus_message_iter_get_arg_type(&iter) == DBUS_TYPE_STRING)
 		dbus_message_iter_get_basic(&iter, &detail);
-		      
-	      it = _query_item_get(p, urn, label, detail,
-				   /* "TRACKER_ALBUM", */
-				   query_tracks_for_album);
 
-	      if (it) items = eina_list_append(items, it);
+	      if (!strcmp(urn, "urn:album:UnknownAlbum"))
+		it = _query_item_get(p, urn, label, detail,
+				     query_tracks_no_album, detail);
+	      else
+		it = _query_item_get(p, urn, label, detail,
+				     query_tracks_for_album, urn);
+
+	      if (it && (!EVRY_ITEM(it)->data))
+		items = eina_list_append(items, it);
 	    }
 	  else
 	    {
@@ -368,7 +415,7 @@ _dbus_cb_reply(void *data, DBusMessage *msg, DBusError *error)
 	    {
 	      label = evry_util_unescape(urn + 11, 0);
 
-	      it = _query_item_get(p, urn, label, NULL, query_albums_for_artist);
+	      it = _query_item_get(p, urn, label, NULL, query_albums_for_artist, urn);
 		      
 	      if (it) items = eina_list_append(items, it);
 	    }
@@ -478,7 +525,7 @@ _begin(Evry_Plugin *plugin, const Evry_Item *item)
       item && evry_item_type_check(item, "TRACKER_MUSIC"))
     {
       QUERY_ITEM(it, item);
-  
+      
       p = E_NEW(Plugin, 1);
       p->base = *plugin;
       p->base.items = NULL;
