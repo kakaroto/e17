@@ -50,8 +50,8 @@ class FileSelectionWizard(Wizard):
         self._add_file_list_header()
 
         self.content_add("file_list", self._file_list)
-        self.action_add("file_list", "Close", self.close)
-        self.action_add("file_list", "New", self._goto_add_new_file)
+        self.action_add("file_list", "Close", self.close, key="Escape")
+        self.action_add("file_list", "New", self._goto_add_new_file, key="n")
 
         self._file_list.callback_selected_add(self._goto_preview)
 
@@ -60,8 +60,9 @@ class FileSelectionWizard(Wizard):
         self._add_new_file_page_created = True
         self._add_add_new_file_header()
 
-        self.action_add("add_new_file", "Go To List", self._back)
-        self.action_add("add_new_file", "Add", self._new_file_added)
+        self.action_add("add_new_file", "Go To List", self._back, key="Escape")
+        self.action_add("add_new_file", "Add", self._new_file_added,
+                        key="Return")
 
         self._file_selector_add()
         self.content_add("add_new_file", self._fs)
@@ -73,9 +74,11 @@ class FileSelectionWizard(Wizard):
 
         self._add_files_to_preview()
 
-        self.action_add("file_preview", "Go To List", self._back)
-        self.action_add("file_preview", "Delete", self._delete_file)
-        self.action_add("file_preview", "Select", self._file_selected)
+        self.action_add("file_preview", "Go To List", self._back, key="Escape")
+        self.action_add("file_preview", "Delete", self._delete_file,
+                        key="Delete")
+        self.action_add("file_preview", "Select", self._file_selected,
+                        key="Return")
 
     def goto(self, page, alt_bg_style=None):
         Wizard.goto(self, page)

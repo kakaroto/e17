@@ -380,8 +380,8 @@ class NewPartWizard(Wizard):
         self.content_add("default", self._ext_list)
         self._ext_list.show()
 
-        self.action_add("default", "Cancel", self._cancel)
-        self.action_add("default", "Add", self._add)
+        self.action_add("default", "Cancel", self._cancel, key="Escape")
+        self.action_add("default", "Add", self._add, key="Return")
         self.action_disabled_set("default", "Add", True)
 
         edje.message_signal_process()

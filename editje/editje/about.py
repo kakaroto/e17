@@ -85,4 +85,4 @@ class About(Wizard):
         copyright.show()
         sc.content_set(copyright)
 
-        self.action_add("default", "Close", self.close)
+        self.action_add("default", "Close", self.close, key="Escape")

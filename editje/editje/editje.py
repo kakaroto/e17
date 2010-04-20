@@ -84,7 +84,7 @@ class Editje(elementary.Window):
 
         self._clipboard = None
 
-        self.on_key_down_add(self.key_down)
+        self.main_layout.on_key_down_add(self.key_down)
 
     def key_down(self, win, event):
         key = event.keyname

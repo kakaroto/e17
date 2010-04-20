@@ -263,8 +263,8 @@ class GroupSelectionWizard(Wizard):
         self.content_add("group_list", self._groups_list)
         self._groups_list.show()
         if not switch_only:
-            self.action_add("group_list", "Cancel", self.close)
-        self.action_add("group_list", "New", self._goto_new_group)
+            self.action_add("group_list", "Cancel", self.close, key="Escape")
+        self.action_add("group_list", "New", self._goto_new_group, key="n")
 
         def group_added(cb_func):
             name = self._grp_name_entry.entry
@@ -283,17 +283,22 @@ class GroupSelectionWizard(Wizard):
                 changed_cb=self._name_changed_cb)
         self.content_add("new_group", self._grp_name_entry)
         self._grp_name_entry.show()
-        self.action_add("new_group", "Cancel", self.goto, "group_list")
-        self.action_add("new_group", "Create", group_added, new_grp_cb)
+        self.action_add("new_group", "Cancel", self.goto, "group_list",
+                        key="Escape")
+        self.action_add("new_group", "Create", group_added, new_grp_cb,
+                        key="Return")
 
         self.page_add("group_preview", "Group preview",
                       "Delete or start editing this group.")
         self._preview = PreviewFrame(self)
         self.content_add("group_preview", self._preview)
         self._preview.show()
-        self.action_add("group_preview", "Cancel", self._goto_group_list)
-        self.action_add("group_preview", "Delete", self._delete_group)
-        self.action_add("group_preview", "Open", self._group_selected)
+        self.action_add("group_preview", "Cancel", self._goto_group_list,
+                        key="Escape")
+        self.action_add("group_preview", "Delete", self._delete_group,
+                        key="Delete")
+        self.action_add("group_preview", "Open", self._group_selected,
+                        key="Return")
 
         self.goto("group_list")
 

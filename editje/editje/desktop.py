@@ -203,6 +203,11 @@ class EditManager(View, evas.ClippedSmartObject):
 
         self.parent_view.on_resize_add(self._padding_init)
 
+        self.on_key_down_add(self._key_down_cb)
+
+    def _key_down_cb(self, obj, event):
+        print event.keyname
+
     def _handlers_init(self):
         #Hilight
         self.highlight = PartHighlight(self)

@@ -73,6 +73,7 @@ class PartViewport(evas.Rectangle):
         self.hide()
 
     def _select(self, part, event):
+        self.focus_set(True)
         self._manager.select(self._manager.parts_name[self])
 
 

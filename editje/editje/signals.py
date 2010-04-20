@@ -113,6 +113,8 @@ class SignalTypesButtons(edje.Edje):
         self._file_set(theme_file, "editje/list/signal_type_buttons")
         self._labels_set()
 
+        self.on_mouse_down_add(self._mouse_down_cb)
+
     def _file_set(self, file_, group):
         edje.Edje.file_set(self, file_, group)
 
@@ -142,6 +144,9 @@ class SignalTypesButtons(edje.Edje):
         elif emission == "general_sig,selected":
             self._type_select_cb(edje.EDJE_ACTION_TYPE_SIGNAL_EMIT)
 
+    def _mouse_down_cb(self, obj, event):
+        self.focus_set(True)
+
 
 class NewSignalWizard(Wizard):
     def __init__(self, parent, new_sig_cb=None, sigs_list_cb=None):
@@ -170,8 +175,8 @@ class NewSignalWizard(Wizard):
         self.content_add("default", self._types_btns)
         self._types_btns.show()
 
-        self.action_add("default", "Cancel", self._cancel)
-        self.action_add("default", "Create", self._add)
+        self.action_add("default", "Cancel", self._cancel, key="Escape")
+        self.action_add("default", "Create", self._add, key="Return")
         self.action_disabled_set("default", "Create", True)
 
         self._new_sig_cb = new_sig_cb

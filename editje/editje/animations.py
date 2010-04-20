@@ -250,8 +250,8 @@ class NewAnimationWizard(Wizard):
 
         self.alternate_background_set(True)
 
-        self.action_add("default", "Cancel", self._cancel)
-        self.action_add("default", "Add", self._add)
+        self.action_add("default", "Cancel", self._cancel, key="Escape")
+        self.action_add("default", "Add", self._add, key="Return")
         self.action_disabled_set("default", "Add", True)
 
         self._new_anim_cb = new_anim_cb

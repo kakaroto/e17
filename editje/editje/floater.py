@@ -182,6 +182,37 @@ class Floater(Layout):
         func(self, udata)
 
 
+class WizardAction(Button):
+    def __init__(self, parent, label, func, key=None, data=None):
+        Button.__init__(self, parent)
+        self.label_set(label)
+        self.callback_clicked_add(self.__action_btn_clicked)
+        self.size_hint_weight_set(evas.EVAS_HINT_EXPAND,
+                                  evas.EVAS_HINT_EXPAND)
+        self.size_hint_align_set(evas.EVAS_HINT_FILL,
+                                 evas.EVAS_HINT_FILL)
+
+        self._func = func
+        self._data = data
+        self._key = key
+
+    def _key_get(self):
+        return self._key
+
+    key = property(_key_get)
+
+    def __action_btn_clicked(self, obj):
+        self()
+
+    def __call__(self):
+        if self.disabled_get():
+            return
+        if self._data:
+            self._func(self._data)
+        else:
+            self._func()
+
+
 # TODO: move this class elsewhere
 class Wizard(InnerWindow):
     default_width = 500
@@ -203,6 +234,8 @@ class Wizard(InnerWindow):
         self.__layout.size_hint_min_set(self.__width, self.__height)
         self.__layout.size_hint_max_set(self.__width, self.__height)
 
+        self.on_key_down_add(self.__key_down_cb)
+
         self.__layout.show()
         InnerWindow.content_set(self, self.__layout)
 
@@ -212,6 +245,7 @@ class Wizard(InnerWindow):
         self.__pager.show()
 
         self.__pages = {}
+        self.__current_page = None
         self.__notification = None
 
     def _subtitle_text_set(self, value):
@@ -265,6 +299,7 @@ class Wizard(InnerWindow):
         self.title_text = title
         self.subtitle_text = subtitle
         self.__pager.content_push(box)
+        self.__current_page = name
 
     def content_add(self, pg_name, c):
         page = self.__pages.get(pg_name)
@@ -273,19 +308,13 @@ class Wizard(InnerWindow):
             content.pack_end(c)
 
     # TODO: add support for equal-named actions on a page, if needed
-    def action_add(self, pg_name, label, func_cb, data=None, icon=None):
+    def action_add(self, pg_name, label, func_cb, data=None, icon=None,
+                   key=None):
         page = self.__pages.get(pg_name)
         if page:
             title, subtitle, box, content, actions, action_btns = page
 
-            btn = Button(self._parent)
-            btn.label_set(label)
-            btn.callback_clicked_add(self.__action_btn_clicked)
-            btn.size_hint_weight_set(evas.EVAS_HINT_EXPAND,
-                                     evas.EVAS_HINT_EXPAND)
-            btn.size_hint_align_set(evas.EVAS_HINT_FILL,
-                                    evas.EVAS_HINT_FILL)
-            btn.data["clicked"] = (func_cb, data)
+            btn = WizardAction(self._parent, label, func_cb, key, data)
 
             if icon:
                 ico = Icon(self._parent)
@@ -304,13 +333,14 @@ class Wizard(InnerWindow):
             title, subtitle, box, content, actions, action_btns = page
             action_btns[label].disabled_set(disabled)
 
-    def goto(self, page):
-        page = self.__pages.get(page)
+    def goto(self, page_name):
+        page = self.__pages.get(page_name)
         if page:
             title, subtitle, box, content, actions, action_btns = page
             self.title_text = title
             self.subtitle_text = subtitle
             self.__pager.content_promote(box)
+            self.__current_page = page_name
 
     def notify(self, message):
         if self.__notification:
@@ -341,6 +371,7 @@ class Wizard(InnerWindow):
         _instance = self
         self._parent.block(True)
         InnerWindow.show(self)
+        self.focus_set(True)
 
     def hide(self):
         global _instance
@@ -357,9 +388,12 @@ class Wizard(InnerWindow):
         self.hide()
         self.delete()
 
-    def __action_btn_clicked(self, obj, *args, **kwargs):
-        func, data = obj.data["clicked"]
-        if data:
-            func(data)
-        else:
-            func()
+    def __key_down_cb(self, obj, event):
+        page = self.__pages.get(self.__current_page)
+        if not page:
+            return
+        acts = page[-1]
+        for a in acts.itervalues():
+            if a.key == event.keyname:
+                a()
+                return
