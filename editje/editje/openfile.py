@@ -30,6 +30,12 @@ from error_notify import ErrorNotify
 
 
 class OpenFile(elementary.Window):
+    _inst = None
+    def __new__(cls, *args, **kargs):
+        if not cls._inst:
+            cls._inst = elementary.Window.__new__(cls, *args, **kargs)
+        return cls._inst
+
     def __init__(self, theme="default"):
         self.theme = sysconfig.theme_file_get(theme)
         elementary.theme_extension_add(self.theme)
