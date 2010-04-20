@@ -533,8 +533,13 @@ class AnimationDetails(EditjeDetails):
 
         sig = "ts,%.1g,selected" % self.e.animation.state
         self._parent.main_edje.signal_emit(sig, "editje")
+        if self.e.animation.state != 0.0:
+            sig = "ts,rm,%.1g,selected" % self.e.animation.state
+            self._parent.main_edje.signal_emit(sig, "editje")
         sig = "ts,%.1g,unselected" % self._last_timestamp
         if self._last_timestamp != self.e.animation.state:
+            self._parent.main_edje.signal_emit(sig, "editje")
+            sig = "ts,rm,%.1g,unselected" % self._last_timestamp
             self._parent.main_edje.signal_emit(sig, "editje")
         self._last_timestamp = self.e.animation.state
 

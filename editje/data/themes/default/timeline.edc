@@ -211,7 +211,6 @@
             source: "editje";                          \
             action: STATE_SET "default" 0.0;           \
             target: "timeline_sel_point_"label_;       \
-            target: "remove_button_"label_;            \
          }                                             \
          program {                                     \
             name: "timestop_"label_"_selected";        \
@@ -219,6 +218,19 @@
             source: "editje";                          \
             action: STATE_SET "visible" 0.0;           \
             target: "timeline_sel_point_"label_;       \
+         }                                             \
+         program {                                     \
+            name: "rm_timestop_"label_"_unselected";   \
+            signal: "ts,rm,"label_",unselected";       \
+            source: "editje";                          \
+            action: STATE_SET "default" 0.0;           \
+            target: "remove_button_"label_;            \
+         }                                             \
+         program {                                     \
+            name: "rm_timestop_"label_"_selected";     \
+            signal: "ts,rm,"label_",selected";         \
+            source: "editje";                          \
+            action: STATE_SET "visible" 0.0;           \
             target: "remove_button_"label_;            \
          }                                             \
          program {                                     \
