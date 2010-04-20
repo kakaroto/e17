@@ -24,7 +24,6 @@ from editable_animation import EditableAnimation
 from editable_part import EditablePart
 from editable_program import EditableProgram
 from event_manager import Manager
-from operation import Operation
 
 
 class Editable(Manager):
@@ -388,7 +387,7 @@ class Editable(Manager):
         self.event_emit("part.added", name)
         return True
 
-    def part_add_bydata(self, name, part_data, relatives = None):
+    def part_add_bydata(self, name, part_data, relatives=None):
         source = part_data["source"]
         if source is None:
             source = ''
@@ -413,7 +412,6 @@ class Editable(Manager):
                         if rels[3]:
                             state.rel2_to_y_set(name)
 
-
     def _part_init(self, name):
         part = self._edje.part_get(name)
         type = part.type
@@ -433,9 +431,9 @@ class Editable(Manager):
             part.mouse_events = False
 
         elif type == edje.EDJE_PART_TYPE_IMAGE:
-           images = self._edje.images
-           if images:
-               state.image = images[0]
+            images = self._edje.images
+            if images:
+                state.image = images[0]
 
         elif type == edje.EDJE_PART_TYPE_TEXT:
             part.mouse_events = False
@@ -532,7 +530,7 @@ class Editable(Manager):
         prog.source = name
         prog.after_add("@%s@end" % name)
 
-        prevstatename =  "default"
+        prevstatename = "default"
         statename = startname
         if not parts:
             parts = self.parts
@@ -633,4 +631,3 @@ class Editable(Manager):
             if saved_states:
                 relatives[p] = saved_states
         return relatives
-

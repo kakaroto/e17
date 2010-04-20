@@ -1,4 +1,3 @@
-#
 # Copyright (C) 2009 Samsung Electronics.
 #
 # This file is part of Editje.
@@ -10,12 +9,12 @@
 #
 # Editje is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 # GNU Lesser General Public License for more details.
 #
 # You should have received a copy of the GNU Lesser General Public
-# License along with Editje.  If not, see
-# <http://www.gnu.org/licenses/>.
+# License along with Editje. If not, see <http://www.gnu.org/licenses/>.
+
 import elementary
 
 from details_widget import Widget
@@ -56,7 +55,7 @@ class WidgetEntryButton(Widget):
         self.rect = elementary.Button(parent)
         self.rect.label_set("...")
         self.rect.size_hint_align_set(-1.0, -1.0)
-        self.rect.size_hint_min_set(30,16)
+        self.rect.size_hint_min_set(30, 16)
         self.rect.callback_clicked_add(self._open)
         self.rect.style_set("editje.details")
         self.rect.show()

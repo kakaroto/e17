@@ -94,7 +94,7 @@ class FileSelectionWizard(Wizard):
         if not self._file_preview_page_created:
             self._create_file_preview_page()
         else:
-           self._get_preview_file(self._selection)
+            self._get_preview_file(self._selection)
 
         self.goto("file_preview", alt_bg_style=False)
         self._get_title_text()
@@ -150,7 +150,7 @@ class FileSelectionWizard(Wizard):
 
         for i in self._files:
             self._file_list.item_append(
-                i.split(',',1)[0], None, None, None, None)
+                i.split(',', 1)[0], None, None, None, None)
         self._file_list.go()
 
     def _fs_file_selected_cb(self, obj, data):
@@ -293,4 +293,3 @@ class FontSelectionWizard(FileSelectionWizard):
         self.action_add("file_list", "Close", self.close)
 
         self._file_list.callback_selected_add(self._goto_preview)
-

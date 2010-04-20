@@ -205,7 +205,7 @@ class PropertyTable(elementary.Table):
 
     def property_del(self, key):
         if not key in self._props:
-            raise KeyError(prop.name)
+            raise KeyError(key)
 
         prop = self._props[key]
         self.unpack(prop.label_obj)
@@ -224,7 +224,7 @@ class PropertyTable(elementary.Table):
         return self._props.get(key)
 
     def has_key(self, key):
-        return self._props.has_key(key)
+        return key in self._props
 
     def __getitem__(self, key):
         if key in self._props:

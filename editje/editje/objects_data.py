@@ -502,7 +502,7 @@ class Program(Object):
             ret += indent + '   action: SIGNAL_EMIT "%s" "%s";\n' % \
                 (self["state"], self["state2"])
 
-        trans["NONE", "LINEAR", "SINUSOIDAL", "ACCELERATE", "DECELERATE"]
+        trans = ["NONE", "LINEAR", "SINUSOIDAL", "ACCELERATE", "DECELERATE"]
         ret += indent + '   transition: %s %.5f;\n' % \
             (trans[self["transition"]], self["transition_time"])
         ret += indent + '   in: %.5f %.5f;\n' % self["in"]
@@ -538,7 +538,7 @@ class Animation(Object):
     def __init__(self, obj):
         prog = re_anim_program_stop.match(obj.name)
         if not prog:
-           raise TypeError("Not an animation's stop program")
+            raise TypeError("Not an animation's stop program")
 
         name = re_anim_program.match(obj.name).group(1)
         Object.__init__(self, name)

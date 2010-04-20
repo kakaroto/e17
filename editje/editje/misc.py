@@ -17,6 +17,7 @@
 
 import re
 
+
 def name_generate(suggest, list=[]):
     # Split the name and the number in end
     spliter = re.compile("((?:(?:\d+\D)*|\D)*)(\d*$)")
@@ -30,7 +31,7 @@ def name_generate(suggest, list=[]):
 
     has = False
     for item in list:
-        iname, inumber =  spliter.match(item).groups()
+        iname, inumber = spliter.match(item).groups()
         if iname != name:
             continue
 
@@ -56,4 +57,3 @@ def name_generate(suggest, list=[]):
     return name
 
 accepted_filetype = re.compile("(.*\.(?:edc|edj))").match
-

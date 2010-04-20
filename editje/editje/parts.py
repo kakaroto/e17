@@ -188,7 +188,6 @@ class PartsList(CList):
 
             self._edit_grp.part_add_bydata(name, part_save, saved_relatives)
 
-
         for to_del in self.selected:
             part_name = to_del[0]
             part_save = objects_data.Part(self._edit_grp.part_get(part_name))
@@ -204,7 +203,6 @@ class PartsList(CList):
             op.redo_callback_add(self._edit_grp.part_del, part_name)
             op.undo_callback_add(part_restore, part_save, relatives)
             self._operation_stack_cb(op)
-
 
     def remove(self, item):
         i = self._items.get(item)

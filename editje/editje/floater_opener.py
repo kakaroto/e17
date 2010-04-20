@@ -40,7 +40,8 @@ class FloaterOpener(object):
     def _floater_open(self, parent, *args):
         if not self._floater:
             self._floater = Floater(parent, parent)
-            self._floater.size_min_set(self._floater_min_w, self._floater_min_h)
+            self._floater.size_min_set(
+                self._floater_min_w, self._floater_min_h)
 
             self._floater_title_init()
             self._floater_actions_init()

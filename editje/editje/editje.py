@@ -664,7 +664,6 @@ class Editje(elementary.Window):
         self._mainbar_pager.content_push(mainbar)
         self._sidebar_pager.content_push(sidebar)
 
-
     def _mode_get(self):
         return self._mode
 

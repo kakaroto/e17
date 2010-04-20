@@ -147,7 +147,8 @@ class FileSelector(Manager, elementary.Table):
                       elementary.ELM_SCROLLER_POLICY_OFF)
         self._file_sc.bounce_set(False, False)
         self._file_sc.size_hint_weight_set(evas.EVAS_HINT_EXPAND, 0.0)
-        self._file_sc.size_hint_align_set(evas.EVAS_HINT_FILL, evas.EVAS_HINT_FILL)
+        self._file_sc.size_hint_align_set(evas.EVAS_HINT_FILL,
+                                          evas.EVAS_HINT_FILL)
 
         self._file_entry = elementary.Entry(self)
         self._file_entry.single_line_set(True)
@@ -263,7 +264,8 @@ class FileSelector(Manager, elementary.Table):
                     ic = elementary.Icon(self)
                     ic.standard_set("folder")
                     ic.scale_set(0, 0)
-                    it = self._directories.item_append(file, ic, None, None, full)
+                    it = self._directories.item_append(
+                        file, ic, None, None, full)
                     self._ls_dir[file] = it
                 elif os.path.isfile(full):
                     if not filter or self._filter_call(full):

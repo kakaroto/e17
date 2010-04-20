@@ -9,12 +9,11 @@
 #
 # Editje is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 # GNU Lesser General Public License for more details.
 #
 # You should have received a copy of the GNU Lesser General Public
-# License along with Editje.  If not, see
-# <http://www.gnu.org/licenses/>.
+# License along with Editje. If not, see <http://www.gnu.org/licenses/>.
 
 import evas
 from elementary import InnerWindow, Layout, Button, Box
@@ -66,8 +65,8 @@ class ConfirmPopUp(PopUp):
 
         self._set_controls()
 
-    def set_message(self,message):
-        self.label_set("filename",message)
+    def set_message(self, message):
+        self.label_set("filename", message)
 
     def action_add(self, label, func_cb, data=None):
         btn = Button(self)

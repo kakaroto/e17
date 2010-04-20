@@ -1,4 +1,3 @@
-#
 # Copyright (C) 2009 Samsung Electronics.
 #
 # This file is part of Editje.
@@ -10,18 +9,18 @@
 #
 # Editje is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 # GNU Lesser General Public License for more details.
 #
 # You should have received a copy of the GNU Lesser General Public
-# License along with Editje.  If not, see
-# <http://www.gnu.org/licenses/>.
+# License along with Editje. If not, see <http://www.gnu.org/licenses/>.
+
 import evas
 
 
 class PartViewport(evas.Rectangle):
     def __init__(self, canvas, manager, part):
-        evas.Rectangle.__init__(self, canvas, color=(0,0,0,0))
+        evas.Rectangle.__init__(self, canvas, color=(0, 0, 0, 0))
         self._manager = manager
         self._part = part
         self._part.on_resize_add(self._resize)

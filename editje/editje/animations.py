@@ -135,7 +135,6 @@ class AnimationsList(CList):
             self._operation_stack_cb(op)
 
 
-
 class AnimationsPartsList(PartsList):
     def __init__(self, parent, editable_grp, operation_stack_cb):
         PartsList.__init__(self, parent, editable_grp, operation_stack_cb)
@@ -377,7 +376,8 @@ class AnimationDetails(EditjeDetails):
     def _removed(self, emissor, data):
         self.open_disable = True
         self._header_table["name"].value = "Unselected"
-        self._header_table["name"].value_obj._values_dict["n"].disabled_set(True)
+        self._header_table["name"].value_obj._values_dict["n"].disabled_set(
+            True)
         self._header_table["length"].value = None
         self["main"]["current"].hide_value()
         self["main"]["previous"].hide_value()
@@ -390,7 +390,8 @@ class AnimationDetails(EditjeDetails):
     def _update(self, emissor, data):
         self.open_disable = False
         self._header_table["name"].value = data
-        self._header_table["name"].value_obj._values_dict["n"].disabled_set(False)
+        self._header_table["name"].value_obj._values_dict["n"].disabled_set(
+            False)
         self._header_table["length"].value = "%.1gs" % self.e.animation.length
         self._last_timestamp = 0.0
         self._timeline_update()

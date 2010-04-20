@@ -31,4 +31,3 @@ class WidgetEntryButtonList(FloaterListOpener, WidgetEntryButton):
 
     def _open(self, obj):
         self._floater_open(obj)
-

@@ -112,7 +112,7 @@ class EditableProgram(Manager, object):
         self._program.action_set(edje.EDJE_ACTION_TYPE_STATE_SET)
         self._program.state_set(state)
 
-    def signal_emit(self, signal, source = ""):
+    def signal_emit(self, signal, source=""):
         self._program.action_set(edje.EDJE_ACTION_TYPE_SIGNAL_EMIT)
         self._program.state_set(signal)
         self._program.state2_set(source)

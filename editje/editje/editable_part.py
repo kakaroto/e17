@@ -114,7 +114,8 @@ class EditablePart(Manager):
     def _states_reload_cb(self, emissor, data):
         if data and self._part:
             self.states = []
-            for s in filter(lambda x: not x.startswith("@"), self._part.states):
+            for s in filter(lambda x: not x.startswith("@"),
+                            self._part.states):
                 n, v = s.split(None)
                 self.states.append((n, float(v)))
         else:

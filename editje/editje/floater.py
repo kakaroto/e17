@@ -32,8 +32,8 @@ class Floater(Layout):
 
     def __init__(self, parent, rel_to_obj=None):
         if not rel_to_obj:
-            raise TypeError("You must pass an object whose geometry the Floater"
-                            " will use to move itself in the canvas.")
+            raise TypeError("You must pass an object whose geometry the"
+                            " Floater will use to move itself in the canvas.")
         Layout.__init__(self, parent)
         self.on_changed_size_hints_add(self._move_and_resize)
 
@@ -93,7 +93,7 @@ class Floater(Layout):
 
         if oy < py:
             oy = py
-        elif oy + oh + py>= ch:
+        elif oy + oh + py >= ch:
             oy = ch - oh - py
 
         self.resize(ow, oh)
@@ -124,7 +124,7 @@ class Floater(Layout):
         content.size_hint_align_set(-1.0, -1.0)
         Layout.content_set(self, "content", content)
 
-    def action_add(self, label, func_cb, data = None):
+    def action_add(self, label, func_cb, data=None):
         btn = Button(self._parent)
         self._action_btns.append(btn)
         btn.label_set(label)
@@ -147,7 +147,6 @@ class Floater(Layout):
             self.edje_get().part_box_remove("actions", action)
             action.delete()
         del self._action_btns[:]
-
 
     def show(self):
         self._move_and_resize(self)
@@ -193,7 +192,7 @@ class Wizard(InnerWindow):
         InnerWindow.__init__(self, parent)
 
         self._parent = parent
-        self.style_set("minimal") # size fallbacks to __layout's min/max
+        self.style_set("minimal")  # size fallbacks to __layout's min/max
 
         self.__layout = edje.Edje(self.evas)
         self.__theme_file = sysconfig.theme_file_get("default")

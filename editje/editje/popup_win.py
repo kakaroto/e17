@@ -1,4 +1,3 @@
-#
 # Copyright (C) 2010 Samsung Electronics.
 #
 # This file is part of Editje.
@@ -10,16 +9,17 @@
 #
 # Editje is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 # GNU Lesser General Public License for more details.
 #
 # You should have received a copy of the GNU Lesser General Public
-# License along with Editje.  If not, see
-# <http://www.gnu.org/licenses/>.
+# License along with Editje. If not, see <http://www.gnu.org/licenses/>.
+
 import evas
 import elementary
 
 from actions_box import ActionsBox
+
 
 class PopupWindow(elementary.Window):
     def __init__(self, name="popup", type=elementary.ELM_WIN_BASIC):

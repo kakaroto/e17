@@ -1,4 +1,3 @@
-#
 # Copyright (C) 2009 Samsung Electronics.
 #
 # This file is part of Editje.
@@ -10,14 +9,14 @@
 #
 # Editje is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 # GNU Lesser General Public License for more details.
 #
 # You should have received a copy of the GNU Lesser General Public
-# License along with Editje.  If not, see
-# <http://www.gnu.org/licenses/>.
+# License along with Editje. If not, see <http://www.gnu.org/licenses/>.
+
 from os import system, remove, path, getcwd, chdir, listdir
-from shutil import copyfile, move, rmtree
+from shutil import copyfile, rmtree
 from tempfile import mkstemp, mkdtemp
 from subprocess import Popen, PIPE
 import re
@@ -27,13 +26,14 @@ import sysconfig
 RESTORE = 1
 REPLACE = 2
 
+
 class SwapFile(object):
     __opened_files = {}
 
     def is_opened(self, filename=None):
         if not filename:
             filename = self.__filepath
-        return self.__opened_files.has_key(filename)
+        return filename in self.__opened_files
 
     def __init__(self):
         self.__new = False
@@ -53,14 +53,14 @@ class SwapFile(object):
             self.__opened = True
             return
 
-        if self.__opened_files.has_key(self.__filepath):
+        if self.__filepath in self.__opened_files:
             raise FileOpened(self)
 
         if not self.__filepath:
             raise FileNotSet(self)
 
         if path.exists(self.__swapfile):
-            if mode == RESTORE: # or filecmp.cmp(self.__filepath, self.__swapfile):
+            if mode == RESTORE:
                 self.__opened = True
                 self.__opened_files[self.__filepath] = self
                 return
@@ -104,7 +104,7 @@ class SwapFile(object):
             opened = self.__opened_files.get(filepath)
             if opened and opened != self:
                 raise FileOpened(self)
-            if self.__opened_files.has_key(self.__filepath):
+            if self.__filepath in self.__opened_files:
                 del self.__opened_files[self.__filepath]
             if path.exists(filepath) and mode != REPLACE:
                 raise FileAlreadyExists(self)
@@ -119,7 +119,8 @@ class SwapFile(object):
             orig_dir = getcwd()
             temp_dir = mkdtemp(prefix="editje_")
             chdir(temp_dir)
-            system('edje_decc ' + self.__swapfile + ' -no-build-sh -current-dir')
+            system('edje_decc ' + self.__swapfile +
+                   ' -no-build-sh -current-dir')
             copyfile("./generated_source.edc", self.__filepath)
             remove("./generated_source.edc")
             dir, file = path.split(self.__filepath)
@@ -186,32 +187,41 @@ class SwapFileError(Exception):
     def __init__(self, swapfile):
         self.swapfile = swapfile
 
+
 class FileNotSet(SwapFileError):
     def __str__(self):
         return "File not set."
+
 
 class UnknownFileType(SwapFileError):
     def __str__(self):
         return "Unknown File type."
 
+
 class CacheAlreadyExists(SwapFileError):
     def __str__(self):
-        return self.swapfile.file + " : Swap file (" + self.swapfile.workfile + ") exists."
+        return self.swapfile.file + " : Swap file (" + \
+            self.swapfile.workfile + ") exists."
+
 
 class CompileError(SwapFileError):
     def __init__(self, swapfile, message):
         SwapFileError.__init__(self, swapfile)
         self.message = message
+
     def __str__(self):
         return self.swapfile.file + " : Compile Error\n" + self.message
+
 
 class FileAlreadyExists(SwapFileError):
     def __str__(self):
         return self.swapfile.file + " : File exists."
 
+
 class FileNotFound(SwapFileError):
     def __str__(self):
         return self.swapfile.file + " : File not found."
+
 
 class FileOpened(SwapFileError):
     def __str__(self):

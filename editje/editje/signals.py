@@ -9,12 +9,11 @@
 #
 # Editje is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 # GNU Lesser General Public License for more details.
 #
 # You should have received a copy of the GNU Lesser General Public
-# License along with Editje.  If not, see
-# <http://www.gnu.org/licenses/>.
+# License along with Editje. If not, see <http://www.gnu.org/licenses/>.
 
 import evas
 import ecore
@@ -296,7 +295,8 @@ class SignalDetails(EditjeDetails):
 
     def _removed(self, emissor, data):
         self._header_table["name"].value = "Unselected"
-        self._header_table["name"].value_obj._values_dict["n"].disabled_set(True)
+        self._header_table["name"].value_obj._values_dict["n"].disabled_set(
+            True)
 
         self["main"]["signal"].value = ""
         self["main"]["signal"].hide_value()
@@ -323,7 +323,8 @@ class SignalDetails(EditjeDetails):
     def _update(self, emissor, data):
         self._header_table["name"].value = data
         self._header_table["name"].show_value()
-        self._header_table["name"].value_obj._values_dict["n"].disabled_set(False)
+        self._header_table["name"].value_obj._values_dict["n"].disabled_set(
+            False)
 
         signal = self.e.signal.signal
         self["main"]["signal"].show_value()

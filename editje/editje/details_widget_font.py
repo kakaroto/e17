@@ -1,4 +1,3 @@
-#
 # Copyright (C) 2010 Samsung Electronics.
 #
 # This file is part of Editje.
@@ -10,17 +9,17 @@
 #
 # Editje is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 # GNU Lesser General Public License for more details.
 #
 # You should have received a copy of the GNU Lesser General Public
-# License along with Editje.  If not, see
-# <http://www.gnu.org/licenses/>.
+# License along with Editje. If not, see <http://www.gnu.org/licenses/>.
+
 from details_widget_entry_button import WidgetEntryButton
 from filewizard import FontSelectionWizard
 
-class WidgetFont(WidgetEntryButton):
 
+class WidgetFont(WidgetEntryButton):
     def __init__(self, parent, fnt_new_fnt_cb=None, fnt_list_get_cb=None,
                  fnt_id_get_cb=None, workfile_name_get_cb=None):
         WidgetEntryButton.__init__(self, parent)

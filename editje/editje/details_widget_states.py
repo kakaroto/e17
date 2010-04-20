@@ -215,7 +215,8 @@ class WidgetStates(WidgetEntryButton):
 
         self._part_state_copy_from(part_name, st_from, curr_state)
 
-        op = Operation("state copying (%s into %s)" % (st_from[0], curr_state[0]))
+        op = Operation(
+            "state copying (%s into %s)" % (st_from[0], curr_state[0]))
         op.redo_callback_add(
             self._part_state_copy_from, part_name, st_from, curr_state)
         op.undo_callback_add(self._state_restore, part_name, state_save)

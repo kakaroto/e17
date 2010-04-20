@@ -87,4 +87,3 @@ class WidgetPartList(FloaterListOpener, WidgetButton):
         self._value = value
         self._update()
         self._callback_call("changed")
-

@@ -13,14 +13,14 @@
 # GNU Lesser General Public License for more details.
 #
 # You should have received a copy of the GNU Lesser General Public
-# License along with Editje. If not, see
-# <http://www.gnu.org/licenses/>.
+# License along with Editje. If not, see <http://www.gnu.org/licenses/>.
 
 import evas
 import elementary
 
 import sysconfig
 from floater import Wizard
+
 
 class About(Wizard):
     def __init__(self, parent):
@@ -38,7 +38,7 @@ class About(Wizard):
         self.content_add("default", ico)
 
         name = elementary.Label(self)
-        name.label_set("<b>Editje " + str(sysconfig.VERSION)+"</b>")
+        name.label_set("<b>Editje " + str(sysconfig.VERSION) + "</b>")
         name.show()
         self.content_add("default", name)
 
@@ -66,7 +66,6 @@ class About(Wizard):
         sc.bounce_set(False, False)
         sc.show()
         self.content_add("default", sc)
-        
 
         copyright = elementary.Label(self)
         copyright.label_set(
@@ -86,6 +85,4 @@ class About(Wizard):
         copyright.show()
         sc.content_set(copyright)
 
-
         self.action_add("default", "Close", self.close)
-
