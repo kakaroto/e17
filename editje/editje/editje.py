@@ -96,9 +96,10 @@ class Editje(elementary.Window):
         if key == "Delete":
             if self.e.part.name:
                 name = self.e.part.name
+                relatives = self.e.relative_parts_get(name)
                 op = Operation("del part: " + name)
                 op.undo_callback_add(self.e.part_add_bydata, name,
-                        objects_data.Part(self.e.part._part))
+                        objects_data.Part(self.e.part._part), relatives)
                 op.redo_callback_add(self.e.part_del, name)
                 self._operation_stack(op)
                 op.redo()

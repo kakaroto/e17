@@ -388,7 +388,7 @@ class Editable(Manager):
         self.event_emit("part.added", name)
         return True
 
-    def part_add_bydata(self, name, part_data):
+    def part_add_bydata(self, name, part_data, relatives = None):
         source = part_data["source"]
         if source is None:
             source = ''
@@ -398,6 +398,21 @@ class Editable(Manager):
             part_data.apply_to(part)
             # FIXME: remove double emissions
             self.event_emit("part.added", name)
+
+            if relatives:
+                for p, st in relatives.iteritems():
+                    part = self.part_get(p)
+                    for (st_name, st_value), rels in st.iteritems():
+                        state = part.state_get(st_name, st_value)
+                        if rels[0]:
+                            state.rel1_to_x_set(name)
+                        if rels[1]:
+                            state.rel1_to_y_set(name)
+                        if rels[2]:
+                            state.rel2_to_x_set(name)
+                        if rels[3]:
+                            state.rel2_to_y_set(name)
+
 
     def _part_init(self, name):
         part = self._edje.part_get(name)
@@ -595,3 +610,27 @@ class Editable(Manager):
                 self.event_emit("signals.changed", self._signals)
                 return True
         return False
+
+    def relative_parts_get(self, part_name):
+        relatives = dict()
+        for p in self.parts:
+            saved_states = dict()
+            part = self._edje.part_get(p)
+            for st in part.states:
+                st_name, value = st.split()
+                st_value = float(value)
+                state = part.state_get(st_name, st_value)
+                if part_name in (state.rel1_to_get()[0],
+                                 state.rel1_to_get()[1],
+                                 state.rel2_to_get()[0],
+                                 state.rel2_to_get()[1]):
+                    saved_states[st_name, st_value] = (
+                        part_name == state.rel1_to_get()[0],
+                        part_name == state.rel1_to_get()[1],
+                        part_name == state.rel2_to_get()[0],
+                        part_name == state.rel2_to_get()[1])
+
+            if saved_states:
+                relatives[p] = saved_states
+        return relatives
+

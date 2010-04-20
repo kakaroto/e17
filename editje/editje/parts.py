@@ -182,18 +182,18 @@ class PartsList(CList):
 
     def _remove_cb(self, obj, emission, source):
 
-        def part_restore(part_save):
+        def part_restore(part_save, saved_relatives):
             name = part_save.name
             source = part_save["source"] or ""
 
-            if self._edit_grp.part_add(name, part_save.type, source):
-                part_save.apply_to(self._edit_grp.part_get(name))
-                # ugly hack: second "part.added" emitted
-                self._edit_grp.event_emit("part.added", name)
+            self._edit_grp.part_add_bydata(name, part_save, saved_relatives)
+
 
         for to_del in self.selected:
             part_name = to_del[0]
             part_save = objects_data.Part(self._edit_grp.part_get(part_name))
+
+            relatives = self._edit_grp.relative_parts_get(part_name)
 
             r = self._edit_grp.part_del(part_name)
             if not r:
@@ -202,8 +202,9 @@ class PartsList(CList):
 
             op = Operation("part deletion")
             op.redo_callback_add(self._edit_grp.part_del, part_name)
-            op.undo_callback_add(part_restore, part_save)
+            op.undo_callback_add(part_restore, part_save, relatives)
             self._operation_stack_cb(op)
+
 
     def remove(self, item):
         i = self._items.get(item)
