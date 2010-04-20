@@ -87,7 +87,7 @@ class Editable(Manager):
             self._edje and self._edje.delete()
             self._edje = None
             self._edje_group = None
-        elif value != self._group:
+        else:
             self._edje = EdjeEdit(
                 self._canvas, file=self._swapfile.workfile, group=value)
             self._edje_group = self._edje.current_group

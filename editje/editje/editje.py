@@ -291,7 +291,7 @@ class Editje(elementary.Window):
 
         if self.group != selection:
             self._operation_stack_clean()
-            self.group = selection
+        self.group = selection
 
         return True
 
