@@ -123,6 +123,9 @@ cdef class Program:
     def after_add(self, char *a):
         return bool(edje_edit_program_after_add(self.edje.obj, self.name, a))
 
+    def after_del(self, char *a):
+        return bool(edje_edit_program_after_del(self.edje.obj, self.name, a))
+
     def afters_clear(self):
         return bool(edje_edit_program_afters_clear(self.edje.obj, self.name))
 

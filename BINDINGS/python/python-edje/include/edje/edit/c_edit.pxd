@@ -326,6 +326,7 @@ cdef extern from "Edje_Edit.h":
     evas.c_evas.Eina_Bool edje_edit_program_targets_clear(evas.c_evas.Evas_Object *obj, char *prog)
     evas.c_evas.Eina_List* edje_edit_program_afters_get(evas.c_evas.Evas_Object *obj, char *prog)
     evas.c_evas.Eina_Bool edje_edit_program_after_add(evas.c_evas.Evas_Object *obj, char *prog, char *after)
+    evas.c_evas.Eina_Bool edje_edit_program_after_del(evas.c_evas.Evas_Object *obj, char *prog, char *after)
     evas.c_evas.Eina_Bool edje_edit_program_afters_clear(evas.c_evas.Evas_Object *obj, char *prog)
     char* edje_edit_program_state_get(evas.c_evas.Evas_Object *obj, char *prog)
     evas.c_evas.Eina_Bool edje_edit_program_state_set(evas.c_evas.Evas_Object *obj, char *prog, char *state)
