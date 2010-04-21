@@ -164,8 +164,6 @@ _elixir_ecore_maybe_gc(void *data)
 	     JS_MaybeGC(cx);
 	     JS_ClearContextThread(cx);
 	  }
-	else
-	  fprintf(stderr, "NOT SUSPENDED %p\n", cx);
      }
 
    return 1;

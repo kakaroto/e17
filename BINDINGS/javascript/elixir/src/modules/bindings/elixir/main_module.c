@@ -306,10 +306,25 @@ elixir_version(JSContext *cx, uintN argc, jsval *vp)
 static JSBool
 elixir_gc(JSContext *cx, uintN argc, jsval *vp)
 {
+   Eina_List *scx;
+   JSContext *cx;
+   Eina_Bool suspended;
+
    if (!elixir_params_check(cx, void_params, NULL, argc, JS_ARGV(cx, vp)))
      return JS_FALSE;
 
-   JS_GC(cx);
+   scx = elixir_suspended_cx();
+   EINA_LIST_FREE(scx, cx)
+     {
+	suspended = elixir_function_suspended(cx);
+
+	if (suspended)
+	  {
+	     JS_SetContextThread(cx);
+	     JS_MaybeGC(cx);
+	     JS_ClearContextThread(cx);
+	  }
+     }
 
    return JS_TRUE;
 }
