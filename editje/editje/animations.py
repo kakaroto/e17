@@ -407,7 +407,7 @@ class AnimationDetails(EditjeDetails):
             op = Operation("animation (%s) frame (%s) creation" % \
                                (self.e.animation.name, t))
             op.redo_callback_add(self.e.animation.state_add, t)
-            op.redo_callback_add(setattr, self.e.animation.state, t)
+            op.redo_callback_add(setattr, self.e.animation, "state", t)
             op.undo_callback_add(self._remove_time_point, t)
             self._operation_stack_cb(op)
 
@@ -536,26 +536,28 @@ class AnimationDetails(EditjeDetails):
             if not self.e.animation.name_set(value):
                 self._header_table["name"].value = self.e.animation.name
 
+    def _context_recall(self, **kargs):
+        self.e.animation.name = kargs["animation"]
+        self.e.animation.state = kargs["time"]
+        self.e.part.name = kargs["part"]
+        self.e.part.state.name = kargs["state"]
+
+    def _prop_object_get(self):
+        return self.e.animation.program
+
+    def _prop_old_values_get(self, prop_attrs, is_external):
+        old_values = []
+        prog = self._prop_object_get()
+
+        for i, p in enumerate(prop_attrs):
+            old_values.append(getattr(prog, p))
+
+        return old_values
+
     def prop_value_changed(self, prop, value, group):
         if prop == "transition":
+            args = [["main"], [prop], [self._transitions.index(value[0])],
+                    [None], [False],
+                    [lambda x: (self._transitions[x], value[1])]]
 
-            def transition_set(animation, state, transition):
-                self.e.animation.name = animation
-                self.e.animation.state = state
-                self.e.animation.program.transition = transition
-                value = self["main"]["transition"].value
-                value = (self._transitions[transition], value[1])
-                self["main"]["transition"].value = value
-
-            op = Operation("animation state transition")
-            op.undo_callback_add(transition_set,
-                                 self.e.animation.name,
-                                 self.e.animation.state,
-                                 self.e.animation.program.transition)
-            t = self["main"]["transition"]["type"]
-            self.e.animation.program.transition = self._transitions.index(t)
-            op.redo_callback_add(transition_set,
-                                 self.e.animation.name,
-                                 self.e.animation.state,
-                                 self.e.animation.program.transition)
-            self._operation_stack_cb(op)
+            self._prop_change_do("animation state transition", *args)
