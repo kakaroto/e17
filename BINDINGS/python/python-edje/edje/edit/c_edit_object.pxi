@@ -16,8 +16,15 @@
 # along with this Python-Edje. If not, see <http://www.gnu.org/licenses/>.
 
 # This file is included verbatim by edje.edit.pyx
+cimport evas.c_evas as c_evas
 
 cdef class EdjeEdit(edje.c_edje.Edje): # [object PyEdjeEdit, type PyEdjeEdit_Type]:
+    def __init__(self, c_evas.Canvas canvas not None, **kargs):
+        evas.c_evas.Object.__init__(self, canvas)
+        if self.obj == NULL:
+            self._set_obj(edje_edit_object_add(self.evas.obj))
+        self._set_common_params(**kargs)
+
     def compiler_get(self):
         """@rtype: str"""
         cdef char *s

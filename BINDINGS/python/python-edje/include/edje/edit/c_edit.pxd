@@ -58,6 +58,8 @@ cdef extern from "Edje_Edit.h":
     int edje_edit_group_max_h_get(evas.c_evas.Evas_Object *obj)
     void edje_edit_group_max_h_set(evas.c_evas.Evas_Object *obj, int h)
 
+    evas.c_evas.Evas_Object * edje_edit_object_add(evas.c_evas.Evas *evas)
+
     # DATA API
     evas.c_evas.Eina_List * edje_edit_data_list_get(evas.c_evas.Evas_Object *obj)
     evas.c_evas.Eina_Bool edje_edit_data_add(evas.c_evas.Evas_Object *obj, char *itemname, char *value)
