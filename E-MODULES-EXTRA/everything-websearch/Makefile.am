@@ -14,7 +14,9 @@ files_DATA = module.desktop e-module.edj
 EXTRA_DIST = module.desktop.in \
 	     e_modules.spec.in \
 	     e-module.edc \
-	     images/module_icon.png
+	     images/module_icon.png \
+	     images/google.png \
+	     images/wikipedia.png
 
 %.edj:  %.edc
 	$(EDJE_CC) $(EDJE_FLAGS) $< $@

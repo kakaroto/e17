@@ -34,6 +34,7 @@ struct _Module_Config
   
   E_Config_Dialog *cfd;
   E_Module *module;
+  char *theme;
 };
 
 static Module_Config *_conf;
@@ -185,12 +186,6 @@ _fetch(Evry_Plugin *plugin, const char *input)
   return 0;
 }
 
-static Evas_Object *
-_icon_get(Evry_Plugin *p __UNUSED__, const Evry_Item *it, Evas *e)
-{
-  return NULL;
-}
-
 static int
 _action(Evry_Action *act)
 {
@@ -237,6 +232,19 @@ _action(Evry_Action *act)
   free(file);
 }
 
+Evas_Object *
+_act_icon_get(Evry_Action *act, Evas *e)
+{
+  Evas_Object *o = e_icon_add(e);
+  if (e_icon_file_edje_set(o, _conf->theme, act->data))
+    return o;
+  
+  evas_object_del(o);
+
+  return NULL;
+}
+
+
 static Eina_Bool
 module_init(void)
 {
@@ -253,8 +261,9 @@ module_init(void)
   EVRY_PLUGIN_NEW(_plug1, "GSuggest", type_subject, "", "TEXT",
 		  _begin, _cleanup, _fetch, NULL, NULL);
 
-  evry_plugin_register(EVRY_PLUGIN(_plug1), 10);
   EVRY_PLUGIN(_plug1)->trigger = _conf->trigger;
+  EVRY_PLUGIN(_plug1)->icon = "text-html";
+  evry_plugin_register(EVRY_PLUGIN(_plug1), 10);
 
   _plug2 = E_NEW(Plugin, 1);
   _plug2->server_address = "www.wikipedia.org";
@@ -262,17 +271,20 @@ module_init(void)
     "GET http://%s.wikipedia.org/w/api.php?action=opensearch&search=%s HTTP/1.0\n%s";
   EVRY_PLUGIN_NEW(_plug2, "Wikipedia", type_subject, "", "TEXT",
 		  _begin, _cleanup, _fetch, NULL, NULL);
-
-  evry_plugin_register(EVRY_PLUGIN(_plug2), 9);
   EVRY_PLUGIN(_plug2)->trigger = _conf->trigger;
+  EVRY_PLUGIN(_plug2)->icon = "text-html";
+  evry_plugin_register(EVRY_PLUGIN(_plug2), 9);
+
   
-  _act1 = EVRY_ACTION_NEW("Google for it", "TEXT", NULL, NULL, _action, NULL);
+  _act1 = EVRY_ACTION_NEW("Google for it", "TEXT", NULL, "go-next", _action, NULL);
   evry_action_register(_act1, 1);
   _act1->data = "google";
+  _act1->icon_get = &_act_icon_get;
   
-  _act2 = EVRY_ACTION_NEW("Wikipedia Page", "TEXT", NULL, NULL, _action, NULL);
+  _act2 = EVRY_ACTION_NEW("Wikipedia Page", "TEXT", NULL, "go-next", _action, NULL);
   evry_action_register(_act2, 1);
   _act2->data = "wikipedia";
+  _act2->icon_get = &_act_icon_get;
   
   return EINA_TRUE;
 }
@@ -396,7 +408,6 @@ _fill_data(E_Config_Dialog_Data *cfdata)
 static int
 _basic_apply(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
 {
-
 #define CP(_name)						\
   if (_conf->_name)						\
     eina_stringshare_del(_conf->_name);				\
@@ -442,6 +453,9 @@ _conf_free(void)
       eina_stringshare_del(_conf->trigger); 
       eina_stringshare_del(_conf->browser); 
       eina_stringshare_del(_conf->lang); 
+
+      free(_conf->theme);
+
       E_FREE(_conf);
     }
 }
@@ -481,6 +495,7 @@ _conf_init(E_Module *m)
   if (!_conf) _conf_new();
 
   _conf->module = m;
+  _conf->theme = strdup(buf);
 }
 
 static void
@@ -506,6 +521,12 @@ EAPI E_Module_Api e_modapi =
 EAPI void *
 e_modapi_init(E_Module *m)
 {
+  char buf[4096];
+
+  snprintf(buf, sizeof(buf), "%s/locale", e_module_dir_get(m));
+  bindtextdomain(PACKAGE, buf);
+  bind_textdomain_codeset(PACKAGE, "UTF-8");
+  
   if (e_datastore_get("everything_loaded"))
     {
       _conf_init(m);      

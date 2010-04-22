@@ -1,27 +1,70 @@
 images 
 {
-   image: "module_icon.png" COMP;
+ image: "module_icon.png" COMP;
+ image: "google.png" COMP;
+ image: "wikipedia.png" COMP;
 }
 
 collections 
 {
-   group 
-     {
-	name: "icon";
-	max: 24 24;
-	parts 
-	  {
-	     part 
-	       {
-		  name: "image";
-		  mouse_events: 0;
-		  type: IMAGE;
-		  description 
-		    {
-		       state: "default" 0.0;
-		       image.normal: "module_icon.png";
-		    }
-	       }
-	  }
-     }
+  group 
+    {
+    name: "icon";
+    max: 24 24;
+      parts 
+	{
+	  part 
+	    {
+	    name: "image";
+	    mouse_events: 0;
+	    type: IMAGE;
+	      description 
+		{
+		state: "default" 0.0;
+		image.normal: "module_icon.png";
+		}
+	    }
+	}
+    }
+  group 
+    {
+    name: "wikipedia";
+    max: 128 128;
+      parts 
+	{
+	  part 
+	    {
+	    name: "image";
+	    mouse_events: 0;
+	    type: IMAGE;
+	      description 
+		{
+		aspect: 1.0 1.0;
+		state: "default" 0.0;
+		image.normal: "wikipedia.png";
+		}
+	    }
+	}
+    }
+  group 
+    {
+    name: "google";
+    max: 128 128;
+      parts 
+	{
+	  part 
+	    {
+	    name: "image";
+	    mouse_events: 0;
+	    type: IMAGE;
+	      description 
+		{
+		aspect: 1.0 1.0;
+		state: "default" 0.0;
+		image.normal: "google.png";
+		}
+	    }
+	}
+    }
+
 }
