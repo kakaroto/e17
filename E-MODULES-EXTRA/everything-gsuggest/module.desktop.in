@@ -1,0 +1,7 @@
+[Desktop Entry]
+Type=Link
+Name=Everything GSuggest
+Icon=e-module
+Comment=Google suggestions and 'Google for it'(tm) action. Trigger with 'go '.
+#Several different types available here. NEED TO DOC THESE.
+X-Enlightenment-ModuleType=everything
