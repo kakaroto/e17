@@ -117,7 +117,12 @@ elixir_unregister_cx(JSContext *cx, Eina_Bool force)
 	if (!(gccx->count == 0 && gccx->nested == 0))
 	  elixir_debug_print("%i with still %i living objects and nested %i times in %p.", force, gccx->count, gccx->nested);
 	if (gccx->save >= 0)
-	  JS_ResumeRequest(cx, gccx->save);
+	  {
+	     JS_ResumeRequest(cx, gccx->save);
+	     pthread_mutex_lock(&suspended_lock);
+	     suspended_cx = eina_list_remove(suspended_cx, cx);
+	     pthread_mutex_unlock(&suspended_lock);
+	  }
 	while (gccx->nested-- > 0)
 	  JS_EndRequest(cx);
 
