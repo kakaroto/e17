@@ -3,7 +3,7 @@ dnl Process this file with autoconf to produce a configure script.
 # get rid of that stupid cache mechanism
 rm -f config.cache
 
-AC_INIT(evry-gsuggest, 0.0.1, hannes.janetzek@gmail.com)
+AC_INIT(evry-websearch, 0.0.1, hannes.janetzek@gmail.com)
 AC_PREREQ(2.52)
 AC_CONFIG_SRCDIR(configure.ac)
 AC_CANONICAL_BUILD

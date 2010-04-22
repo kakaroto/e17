@@ -51,7 +51,7 @@ _server_data(void *data, int ev_type, Ecore_Con_Event_Server_Data *ev)
 
   if (ev->server != p->svr) return 1;
 
-  /* printf("%s\n", result); */
+  EVRY_PLUGIN_ITEMS_FREE(p);
 
   if ((list = strstr(result, "[[\""))) 
     {
@@ -195,8 +195,6 @@ static int
 _fetch(Evry_Plugin *plugin, const char *input)
 {
   PLUGIN(p, plugin);
-
-  EVRY_PLUGIN_ITEMS_FREE(p);
   
   if (p->input)
     eina_stringshare_del(p->input);
