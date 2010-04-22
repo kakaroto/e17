@@ -17,7 +17,9 @@ struct _Plugin
   Ecore_Timer *timer;
   
   const char *input;  
-
+  const char *server_address;
+  const char *request;
+  
   int (*fetch) (void *data);
   
 };
@@ -40,6 +42,10 @@ static Plugin *_plug1 = NULL;
 static Plugin *_plug2 = NULL;
 static Evry_Action *_act1 = NULL;
 static Evry_Action *_act2 = NULL;
+static char _header[] =
+  "User-Agent: Wget/1.12 (linux-gnu)\n"
+  "Accept: */*\n"
+  "Connection: Keep-Alive\n\n";
 
 int
 _server_data(void *data, int ev_type, Ecore_Con_Event_Server_Data *ev)
@@ -49,6 +55,8 @@ _server_data(void *data, int ev_type, Ecore_Con_Event_Server_Data *ev)
   Evry_Item *it;
   char *list;
 
+  /* printf("- %s\n", result); */
+  
   if (ev->server != p->svr) return 1;
 
   EVRY_PLUGIN_ITEMS_FREE(p);
@@ -63,10 +71,8 @@ _server_data(void *data, int ev_type, Ecore_Con_Event_Server_Data *ev)
       for(i = items; *i; i++)
 	{
 	  char **item= eina_str_split(*i, "\",\"", 2);	      
-	  /* printf("%s %s\n", *item, *(item + 1)); */
 	  it = evry_item_new(NULL, EVRY_PLUGIN(p), *item, NULL);
 	  it->detail = eina_stringshare_add(*(item + 1));
-	  it->fuzzy_match = -1;
 	  EVRY_PLUGIN_ITEM_APPEND(p, it);
 	  free(*item);
 	  free(item);
@@ -88,7 +94,6 @@ _server_data(void *data, int ev_type, Ecore_Con_Event_Server_Data *ev)
 	  if (**i == ',' || **i == ']') continue;
 	  it = evry_item_new(NULL, EVRY_PLUGIN(p), *i, NULL);
 	  it->detail = eina_stringshare_add("Wikipedia");
-	  it->fuzzy_match = -1;
 	  EVRY_PLUGIN_ITEM_APPEND(p, it);
 	}
 	  
@@ -106,7 +111,7 @@ static Evry_Plugin *
 _begin(Evry_Plugin *plugin, const Evry_Item *it)
 {
   PLUGIN(p, plugin);
-  
+
   p->handler = ecore_event_handler_add(ECORE_CON_EVENT_SERVER_DATA,
 				       (Handler_Func)_server_data, p);
   return plugin;
@@ -127,7 +132,7 @@ _cleanup(Evry_Plugin *plugin)
 }
 
 static int
-_fetch_google(void *data)
+_send_request(void *data)
 {
   Plugin *p = data;
   char buf[1024];
@@ -136,50 +141,17 @@ _fetch_google(void *data)
   query = evry_util_url_escape(p->input, 0);
 
   if (p->svr) ecore_con_server_del(p->svr);
+  p->svr = ecore_con_server_connect(ECORE_CON_REMOTE_SYSTEM,
+				    p->server_address, 80, NULL);
 
-  p->svr = ecore_con_server_connect(ECORE_CON_REMOTE_SYSTEM,"www.google.com", 80, NULL);
-  
   if (p->svr)
     {
       query = evry_util_url_escape(p->input, 0); 
   
-      snprintf(buf, sizeof(buf),
-  	       "GET http://www.google.com/complete/search?hl=%s&output=text&q=\"%s\n",
-  	       _conf->lang, query);
+      snprintf(buf, sizeof(buf), p->request,
+  	       _conf->lang, query, _header);
 
-      printf("send: %s\n", buf);
-  
-      ecore_con_server_send(p->svr, buf, strlen(buf));
-    }
-
-  free(query);
-  
-  p->timer = NULL;
-  
-  return 0;
-}
-
-static int
-_fetch_wiki(void *data)
-{
-  Plugin *p = data;
-  char buf[1024];
-  char *query;
-
-  query = evry_util_url_escape(p->input, 0);
-
-  if (p->svr) ecore_con_server_del(p->svr);
-  p->svr = NULL;
-
-  p->svr = ecore_con_server_connect(ECORE_CON_REMOTE_SYSTEM,"www.wikipedia.org", 80, NULL);
-  
-  if (p->svr)
-    {      
-      snprintf(buf, sizeof(buf),
-	       "GET http://%s.wikipedia.org/w/api.php?action=opensearch&search=%s\n",
-	       _conf->lang, query);
-
-      printf("send: %s\n", buf);
+      /* printf("send: %s\n", buf); */
   
       ecore_con_server_send(p->svr, buf, strlen(buf));
     }
@@ -207,7 +179,7 @@ _fetch(Evry_Plugin *plugin, const char *input)
   if (input && strlen(input) > 2)
     {        
       p->input = eina_stringshare_add(input);  
-      p->timer = ecore_timer_add(0.2, p->fetch, p);
+      p->timer = ecore_timer_add(0.3, _send_request, p);
     }
   
   return 0;
@@ -275,7 +247,9 @@ module_init(void)
     return EINA_FALSE;
 
   _plug1 = E_NEW(Plugin, 1);
-  _plug1->fetch = &_fetch_google;
+  _plug1->server_address = "www.google.com";
+  _plug1->request =
+    "GET http://www.google.com/complete/search?hl=%s&output=text&q=\"%s\n%s";
   EVRY_PLUGIN_NEW(_plug1, "GSuggest", type_subject, "", "TEXT",
 		  _begin, _cleanup, _fetch, NULL, NULL);
 
@@ -283,14 +257,14 @@ module_init(void)
   EVRY_PLUGIN(_plug1)->trigger = _conf->trigger;
 
   _plug2 = E_NEW(Plugin, 1);
-  _plug2->fetch = &_fetch_wiki;
+  _plug2->server_address = "www.wikipedia.org";
+  _plug2->request =
+    "GET http://%s.wikipedia.org/w/api.php?action=opensearch&search=%s HTTP/1.0\n%s";
   EVRY_PLUGIN_NEW(_plug2, "Wikipedia", type_subject, "", "TEXT",
 		  _begin, _cleanup, _fetch, NULL, NULL);
 
-  evry_plugin_register(EVRY_PLUGIN(_plug2), 10);
+  evry_plugin_register(EVRY_PLUGIN(_plug2), 9);
   EVRY_PLUGIN(_plug2)->trigger = _conf->trigger;
-
-  
   
   _act1 = EVRY_ACTION_NEW("Google for it", "TEXT", NULL, NULL, _action, NULL);
   evry_action_register(_act1, 1);
@@ -339,7 +313,8 @@ _conf_dialog(E_Container *con, const char *params)
   E_Config_Dialog_View *v = NULL;
   char buf[4096];
 
-  if (e_config_dialog_find("everything-gsuggest", "extensions/everything-gsuggest")) return NULL;
+  if (e_config_dialog_find("everything-websearch", "extensions/everything-websearch"))
+    return NULL;
 
   v = E_NEW(E_Config_Dialog_View, 1);
   if (!v) return NULL;
@@ -351,8 +326,8 @@ _conf_dialog(E_Container *con, const char *params)
 
   snprintf(buf, sizeof(buf), "%s/e-module.edj", _conf->module->dir);
 
-  cfd = e_config_dialog_new(con, _("Everything Files"), "everything-gsuggest",
-			    "extensions/everything-gsuggest", buf, 0, v, NULL);
+  cfd = e_config_dialog_new(con, _("Everything Websearch"), "everything-websearch",
+			    "extensions/everything-websearch", buf, 0, v, NULL);
 
   /* e_dialog_resizable_set(cfd->dia, 1); */
   _conf->cfd = cfd;
@@ -432,7 +407,7 @@ _basic_apply(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
   CP(trigger);
 #undef CP
 
-  e_config_domain_save("module.everything-gsuggest", conf_edd, _conf);
+  e_config_domain_save("module.everything-websearch", conf_edd, _conf);
   e_config_save_queue();
   return 1;
 }
@@ -455,7 +430,7 @@ _conf_new(void)
 
   _conf->version = MOD_CONFIG_FILE_VERSION;
 
-  e_config_domain_save("module.everything-gsuggest", conf_edd, _conf);
+  e_config_domain_save("module.everything-websearch", conf_edd, _conf);
   e_config_save_queue();
 }
 
@@ -481,7 +456,7 @@ _conf_init(E_Module *m)
   e_configure_registry_category_add("extensions", 80, _("Extensions"),
 				    NULL, "preferences-extensions");
 
-  e_configure_registry_item_add("extensions/everything-gsuggest", 110, _("Everything GSuggest"),
+  e_configure_registry_item_add("extensions/everything-websearch", 110, _("Everything Websearch"),
 				NULL, buf, _conf_dialog);
 
   conf_edd = E_CONFIG_DD_NEW("Module_Config", Module_Config);
@@ -497,9 +472,9 @@ _conf_init(E_Module *m)
 #undef T
 #undef D
 
-  _conf = e_config_domain_load("module.everything-gsuggest", conf_edd);
+  _conf = e_config_domain_load("module.everything-websearch", conf_edd);
 
-  if (_conf && !evry_util_module_config_check(_("Everything GSuggest"), _conf->version,
+  if (_conf && !evry_util_module_config_check(_("Everything Websearch"), _conf->version,
 					      MOD_CONFIG_FILE_EPOCH, MOD_CONFIG_FILE_VERSION))
     _conf_free();
 
