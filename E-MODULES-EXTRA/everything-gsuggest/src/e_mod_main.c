@@ -7,7 +7,7 @@
 
 typedef struct _Plugin Plugin;
 typedef int (*Handler_Func) (void *data, int type, void *event);
-
+typedef struct _Module_Config Module_Config;
 struct _Plugin
 {
   Evry_Plugin base;
@@ -18,6 +18,20 @@ struct _Plugin
   
   const char *input;  
 };
+
+struct _Module_Config
+{
+  int version;
+
+  const char *lang;
+  const char *browser;
+  const char *trigger;
+  
+  E_Config_Dialog *cfd;
+  E_Module *module;
+};
+
+static Module_Config *_conf;
 
 static Plugin *_plug = NULL;
 static Evry_Action *_act = NULL;
@@ -107,8 +121,8 @@ _timer_cb(void *data)
       query = evry_util_url_escape(p->input, 0); 
 
       snprintf(buf, sizeof(buf),
-	       "GET http://www.google.com/complete/search?output=text&q=\"%s\n",
-	       query);
+	       "GET http://www.google%s/complete/search?output=text&q=\"%s\n",
+	       _conf->lang, query);
       /* printf("send: %s\n", buf); */
       free(query);
   
@@ -153,33 +167,34 @@ _action(Evry_Action *act)
 {
   Evry_Item_App *app = E_NEW(Evry_Item_App, 1);
   Evry_Item_File *file = E_NEW(Evry_Item_File, 1);
-
-  app->desktop = efreet_util_desktop_exec_find("chromium-browser");
+  char buf[1024];
+  Eina_List *l;
+  E_Border *bd;
   
+  app->desktop = efreet_util_desktop_exec_find(_conf->browser);
+  if (!app->desktop)
+    app->file = "xdg-open";
+      
+  snprintf(buf, sizeof(buf), "http://www.google%s/search?q=%s",
+	   _conf->lang, act->item1->label);
+  file->path = buf;
+  
+  evry_util_exec_app(EVRY_ITEM(app), EVRY_ITEM(file));
+
   if (app->desktop)
     {
-      char buf[1024];
-      Eina_List *l;
-      E_Border *bd;
-      
-      snprintf(buf, sizeof(buf),
-	       "http://www.google.de/search?q=%s",
-	       act->item1->label);
-      file->path = buf;
-      evry_util_exec_app(EVRY_ITEM(app), EVRY_ITEM(file));
-
       EINA_LIST_FOREACH(e_border_client_list(), l, bd)
 	{
-	if (bd->desktop && bd->desktop == app->desktop)
-	  {
-	    e_desk_show(bd->desk);
-	    e_border_raise(bd);
-	    break;
-	  }
+	  if (bd->desktop && bd->desktop == app->desktop)
+	    {
+	      e_desk_show(bd->desk);
+	      e_border_raise(bd);
+	      break;
+	    }
 	}
-      
       efreet_desktop_free(app->desktop);
     }
+
   free(app);
   free(file);
 }
@@ -198,7 +213,7 @@ module_init(void)
 		  _begin, _cleanup, _fetch, NULL, NULL);
 
   evry_plugin_register(EVRY_PLUGIN(_plug), 10);
-  EVRY_PLUGIN(_plug)->trigger = _trigger;
+  EVRY_PLUGIN(_plug)->trigger = _conf->trigger;
   
   _act = EVRY_ACTION_NEW("Google for it", "TEXT", NULL, NULL, _action, NULL);
   evry_action_register(_act, 1);
@@ -215,8 +230,206 @@ module_shutdown(void)
 }
 
 /***************************************************************************/
-/**/
-/* actual module specifics */
+
+
+static E_Config_DD *conf_edd = NULL;
+
+struct _E_Config_Dialog_Data
+{
+  char *browser;
+  char *lang;
+  char *trigger;
+};
+
+static void *_create_data(E_Config_Dialog *cfd);
+static void _free_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata);
+static void _fill_data(E_Config_Dialog_Data *cfdata);
+static Evas_Object *_basic_create(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cfdata);
+static int _basic_apply(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata);
+
+static E_Config_Dialog *
+_conf_dialog(E_Container *con, const char *params)
+{
+  E_Config_Dialog *cfd = NULL;
+  E_Config_Dialog_View *v = NULL;
+  char buf[4096];
+
+  if (e_config_dialog_find("everything-gsuggest", "extensions/everything-gsuggest")) return NULL;
+
+  v = E_NEW(E_Config_Dialog_View, 1);
+  if (!v) return NULL;
+
+  v->create_cfdata = _create_data;
+  v->free_cfdata = _free_data;
+  v->basic.create_widgets = _basic_create;
+  v->basic.apply_cfdata = _basic_apply;
+
+  snprintf(buf, sizeof(buf), "%s/e-module.edj", _conf->module->dir);
+
+  cfd = e_config_dialog_new(con, _("Everything Files"), "everything-gsuggest",
+			    "extensions/everything-gsuggest", buf, 0, v, NULL);
+
+  /* e_dialog_resizable_set(cfd->dia, 1); */
+  _conf->cfd = cfd;
+  return cfd;
+}
+
+static Evas_Object *
+_basic_create(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cfdata)
+{
+  Evas_Object *o = NULL, *of = NULL, *ow = NULL;
+
+  o = e_widget_list_add(evas, 0, 0);
+
+  of = e_widget_framelist_add(evas, _("General"), 0);
+  e_widget_framelist_content_align_set(of, 0.0, 0.0);
+
+  ow = e_widget_label_add(evas, _("Browser"));
+  e_widget_framelist_object_append(of, ow);
+  ow = e_widget_entry_add(evas, &cfdata->browser, NULL, NULL, NULL); 
+  e_widget_framelist_object_append(of, ow);
+
+  ow = e_widget_label_add(evas, _("Domain"));
+  e_widget_framelist_object_append(of, ow);
+  ow = e_widget_entry_add(evas, &cfdata->lang, NULL, NULL, NULL); 
+  e_widget_framelist_object_append(of, ow);
+
+  ow = e_widget_label_add(evas, _("Trigger"));
+  e_widget_framelist_object_append(of, ow);
+  ow = e_widget_entry_add(evas, &cfdata->trigger, NULL, NULL, NULL); 
+  e_widget_framelist_object_append(of, ow);
+
+  e_widget_list_object_append(o, of, 1, 1, 0.5);
+  return o;
+}
+
+static void *
+_create_data(E_Config_Dialog *cfd)
+{
+  E_Config_Dialog_Data *cfdata = NULL;
+
+  cfdata = E_NEW(E_Config_Dialog_Data, 1);
+  _fill_data(cfdata);
+  return cfdata;
+}
+
+static void
+_free_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
+{
+  free(cfdata->browser);
+  free(cfdata->lang);
+  free(cfdata->trigger);
+  _conf->cfd = NULL;
+  E_FREE(cfdata);
+}
+
+static void
+_fill_data(E_Config_Dialog_Data *cfdata)
+{
+#define CP(_name) cfdata->_name = strdup(_conf->_name);
+  CP(browser);
+  CP(lang);
+  CP(trigger);
+#undef CP
+}
+
+static int
+_basic_apply(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
+{
+
+#define CP(_name)						\
+  if (_conf->_name)						\
+    eina_stringshare_del(_conf->_name);				\
+  _conf->_name = eina_stringshare_add(cfdata->_name);
+  
+  CP(browser);
+  CP(lang);
+  CP(trigger);
+#undef CP
+
+  e_config_domain_save("module.everything-gsuggest", conf_edd, _conf);
+  e_config_save_queue();
+  return 1;
+}
+
+static void
+_conf_new(void)
+{
+  _conf = E_NEW(Module_Config, 1);
+  _conf->version = (MOD_CONFIG_FILE_EPOCH << 16);
+
+#define IFMODCFG(v) if ((_conf->version & 0xffff) < v) {
+#define IFMODCFGEND }
+
+  /* setup defaults */
+  IFMODCFG(0x008d);
+  _conf->browser = eina_stringshare_add("firefox");
+  _conf->lang = eina_stringshare_add(".com");
+  _conf->trigger = eina_stringshare_add("go ");
+  IFMODCFGEND;
+
+  _conf->version = MOD_CONFIG_FILE_VERSION;
+
+  e_config_domain_save("module.everything-gsuggest", conf_edd, _conf);
+  e_config_save_queue();
+}
+
+static void
+_conf_free(void)
+{
+  if (_conf)
+    {
+      eina_stringshare_del(_conf->trigger); 
+      eina_stringshare_del(_conf->browser); 
+      eina_stringshare_del(_conf->lang); 
+      E_FREE(_conf);
+    }
+}
+
+static void
+_conf_init(E_Module *m)
+{
+  char buf[4096];
+
+  snprintf(buf, sizeof(buf), "%s/e-module.edj", m->dir);
+
+  e_configure_registry_category_add("extensions", 80, _("Extensions"),
+				    NULL, "preferences-extensions");
+
+  e_configure_registry_item_add("extensions/everything-gsuggest", 110, _("Everything GSuggest"),
+				NULL, buf, _conf_dialog);
+
+  conf_edd = E_CONFIG_DD_NEW("Module_Config", Module_Config);
+   
+#undef T
+#undef D
+#define T Module_Config
+#define D conf_edd
+  E_CONFIG_VAL(D, T, version, INT);
+  E_CONFIG_VAL(D, T, browser, STR);
+  E_CONFIG_VAL(D, T, lang, STR);
+  E_CONFIG_VAL(D, T, trigger, STR);
+#undef T
+#undef D
+
+  _conf = e_config_domain_load("module.everything-gsuggest", conf_edd);
+
+  if (_conf && !evry_util_module_config_check(_("Everything GSuggest"), _conf->version,
+					      MOD_CONFIG_FILE_EPOCH, MOD_CONFIG_FILE_VERSION))
+    _conf_free();
+
+  if (!_conf) _conf_new();
+
+  _conf->module = m;
+}
+
+static void
+_conf_shutdown(void)
+{
+  _conf_free();
+
+  E_CONFIG_DD_FREE(conf_edd);
+}
 
 static E_Module *module = NULL;
 static Eina_Bool _active = EINA_FALSE;
@@ -233,11 +446,12 @@ EAPI E_Module_Api e_modapi =
 EAPI void *
 e_modapi_init(E_Module *m)
 {
-  module = m;
-
   if (e_datastore_get("everything_loaded"))
-    _active = module_init();
-   
+    {
+      _conf_init(m);      
+      _active = module_init();
+    }
+  
   e_module_delayed_set(m, 1); 
 
   return m;
@@ -249,8 +463,8 @@ e_modapi_shutdown(E_Module *m)
   if (_active && e_datastore_get("everything_loaded"))
     module_shutdown();
 
-  module = NULL;
-   
+  _conf_shutdown();
+  
   return 1;
 }
 
