@@ -486,6 +486,7 @@ class Editje(elementary.Window):
         sz = len(self._op_stack) - 1
         if self._op_stack_ptr != sz:
             del self._op_stack[self._op_stack_ptr + 1:]
+            self.main_edje.signal_emit("redo.bt,disable", "")
 
         self._op_stack.append([op, mode])
 
