@@ -320,17 +320,28 @@ class Editable(Manager):
     def close(self):
         self._swapfile.close()
 
+    def _empty_animations_clear(self):
+        anim_del_lst = []
+        for anim in self.animations:
+            prog = self.program_get("@%s@0.00" % anim)
+            if not prog.targets:
+                anim_del_lst.append(anim)
+
+        for a in anim_del_lst:
+            self.animation_del(a)
+
     def save(self):
-#        if self._modified:
+        self._empty_animations_clear()
+
         if self._edje.save_all():
             self._swapfile.save()
             self.event_emit("saved")
         else:
             self.event_emit("saved.error")
-#        else:
-#            print "No changes after last save"
 
     def save_as(self, path, mode=None):
+        self._empty_animations_clear()
+
         if self._edje.save_all():
             self._swapfile.save(path, mode)
             self.event_emit("filename.changed", path)
@@ -503,10 +514,10 @@ class Editable(Manager):
         self.callback_add("programs.changed", self._animations_reload_cb)
 
     def _animations_reload_cb(self, emissor, data):
-        self._animations = map(lambda x: x[1:x.rindex("@")],
-                               filter(lambda x: x.startswith("@") and
-                                                x.endswith("@end"),
-                               self.programs))
+        self._animations = \
+            map(lambda x: x[1:x.rindex("@")],
+                filter(lambda x: x.startswith("@") and x.endswith("@end"),
+                       self.programs))
         self.event_emit("animations.changed", self.animations)
 
     def animation_add(self, name, parts=None):

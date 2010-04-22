@@ -174,7 +174,9 @@ class EditableAnimation(Manager, object):
         self.parts[part] = True
 
         # Re-set current state to make sure everything is consistent
-        self._state_set(self._current)
+        curr = self._current
+        self._current = None
+        self._state_set(curr)
 
         self.event_emit("part.added", part)
 

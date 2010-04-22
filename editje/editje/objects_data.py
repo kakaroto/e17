@@ -43,6 +43,7 @@ class Group(Object):
 class Part(Object):
     def __init__(self, obj):
         Object.__init__(self, obj.name)
+        st_class = state_class_from_part_type_get(obj)
 
         self["above"] = obj.above_get()
         self["below"] = obj.below_get()
@@ -62,23 +63,13 @@ class Part(Object):
         dragable["confine"] = obj.drag_confine
         dragable["events"] = obj.drag_event
 
-        self._class = State
-        if self._type == edje.EDJE_PART_TYPE_IMAGE:
-            self._class = StateImage
-        elif self._type == edje.EDJE_PART_TYPE_GRADIENT:
-            self._class = StateGradient
-        elif self._type == edje.EDJE_PART_TYPE_TEXT:
-            self._class = StateText
-        elif self._type == edje.EDJE_PART_TYPE_EXTERNAL:
-            self._class = StateExternal
-
         states = []
         self["states"] = states
         for st in obj.states:
             state_name, state_val = st.split(None, 1)
             state_val = float(state_val)
             state = obj.state_get(state_name, state_val)
-            states.append(self._class(state))
+            states.append(st_class(state))
 
     def _type_get(self):
         return self._type
@@ -601,17 +592,7 @@ class AnimationFrame(Object):
             if not state:
                 continue
 
-            type = part.type
-            stateclass = State
-            if type == edje.EDJE_PART_TYPE_IMAGE:
-                stateclass = StateImage
-            elif type == edje.EDJE_PART_TYPE_GRADIENT:
-                stateclass = StateGradient
-            elif type == edje.EDJE_PART_TYPE_TEXT:
-                stateclass = StateText
-            elif type == edje.EDJE_PART_TYPE_EXTERNAL:
-                stateclass = StateExternal
-
+            stateclass = state_class_from_part_type_get(part)
             targets[target] = stateclass(state)
 
     def apply_to(self, obj):
@@ -638,3 +619,16 @@ class AnimationFrame(Object):
                 continue
 
             data.apply_to(state)
+
+
+def state_class_from_part_type_get(part):
+    st_class = State
+    if part.type == edje.EDJE_PART_TYPE_IMAGE:
+        st_class = StateImage
+    elif part.type == edje.EDJE_PART_TYPE_GRADIENT:
+        st_class = StateGradient
+    elif part.type == edje.EDJE_PART_TYPE_TEXT:
+        st_class = StateText
+    elif part.type == edje.EDJE_PART_TYPE_EXTERNAL:
+        st_class = StateExternal
+    return st_class

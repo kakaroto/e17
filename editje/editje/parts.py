@@ -188,11 +188,64 @@ class PartsList(CList):
 
             self._edit_grp.part_add_bydata(name, part_save, saved_relatives)
 
+        def anims_restore(part_name, anims_save):
+            curr_anim = self._edit_grp.animation.name
+            self._edit_grp.animation.name = None
+
+            part_obj = self._edit_grp.part_get(part_name)
+
+            for name, contents in anims_save.iteritems():
+                for time, st_save in contents:
+                    p_name = "@%s@%.2f" % (name, time)
+
+                    # state should exist by objects_data.Part.apply_to
+                    state = part_obj.state_get(p_name, 0.0)
+                    st_save.apply_to(state)
+
+                    prog = self._edit_grp.program_get(p_name)
+                    prog.target_add(part_name)
+
+            self._edit_grp.animation.name = curr_anim
+            if self._edit_grp.mode == "Parts":
+                self._edit_grp.part.state.name = "default 0.0"
+
+        def relative_animations_part_clear(part_name):
+            anims = {}
+
+            curr_anim = self._edit_grp.animation.name
+            part_obj = self._edit_grp.part_get(part_name)
+
+            for anim in self._edit_grp.animations:
+                prog = self._edit_grp.program_get("@%s@0.00" % anim)
+                if not part_name in prog.targets:
+                    continue
+
+                anims[anim] = []
+
+                time = prog.name[-4:]
+                while time != "@end":
+                    st_cls = objects_data.state_class_from_part_type_get(
+                        part_obj)
+                    st_save = st_cls(part_obj.state_get(prog.name, 0.0))
+
+                    # we gotta clean editable_animation's data for curr_anim
+                    if anim != curr_anim:
+                        prog.target_del(part_name)
+
+                    anims[anim].append((float(time), st_save))
+                    prog = self._edit_grp.program_get(prog.afters[0])
+                    time = prog.name[-4:]
+
+            if curr_anim:
+                self._edit_grp.animation.part_remove(part_name)
+
+            return anims
+
         for to_del in self.selected:
             part_name = to_del[0]
             part_save = objects_data.Part(self._edit_grp.part_get(part_name))
-
             relatives = self._edit_grp.relative_parts_get(part_name)
+            anims_save = relative_animations_part_clear(part_name)
 
             r = self._edit_grp.part_del(part_name)
             if not r:
@@ -200,8 +253,10 @@ class PartsList(CList):
                 continue
 
             op = Operation("part deletion")
+            op.redo_callback_add(relative_animations_part_clear, part_name)
             op.redo_callback_add(self._edit_grp.part_del, part_name)
             op.undo_callback_add(part_restore, part_save, relatives)
+            op.undo_callback_add(anims_restore, part_name, anims_save)
             self._operation_stack_cb(op)
 
     def remove(self, item):

@@ -170,25 +170,11 @@ class WidgetStates(WidgetEntryButton):
 
         self._edit_grp.part.state.name = st_name
 
-    def _state_class_from_part_type_get(self, part):
-        # FIXME: find a way of not replicating this check
-        st_class = objects_data.State
-        if part.type == edje.EDJE_PART_TYPE_IMAGE:
-            st_class = objects_data.StateImage
-        elif part.type == edje.EDJE_PART_TYPE_GRADIENT:
-            st_class = objects_data.StateGradient
-        elif part.type == edje.EDJE_PART_TYPE_TEXT:
-            st_class = objects_data.StateText
-        elif part.type == edje.EDJE_PART_TYPE_EXTERNAL:
-            st_class = objects_data.StateExternal
-
-        return st_class
-
     def _remove_state_cb(self, btn, state_name):
         part_name = self._edit_grp.part.name
         part = self._edit_grp.part_get(part_name)
         st_obj = part.state_get(*state_name)
-        st_class = self._state_class_from_part_type_get(part)
+        st_class = objects_data.state_class_from_part_type_get(part)
         state_save = st_class(st_obj)
 
         if self._remove_state_internal(state_name):
@@ -210,7 +196,7 @@ class WidgetStates(WidgetEntryButton):
         curr_state = self._edit_grp.part.state.name
         part = self._edit_grp.part_get(part_name)
         st_obj = part.state_get(*curr_state)
-        st_class = self._state_class_from_part_type_get(part)
+        st_class = objects_data.state_class_from_part_type_get(part)
         state_save = st_class(st_obj)
 
         self._part_state_copy_from(part_name, st_from, curr_state)

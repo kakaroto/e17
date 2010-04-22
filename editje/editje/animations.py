@@ -413,18 +413,6 @@ class AnimationDetails(EditjeDetails):
 
         self.e.animation.state = t
 
-    def _state_class_from_part_type_get(self, part):
-        st_class = objects_data.State
-        if part.type == edje.EDJE_PART_TYPE_IMAGE:
-            st_class = objects_data.StateImage
-        elif part.type == edje.EDJE_PART_TYPE_GRADIENT:
-            st_class = objects_data.StateGradient
-        elif part.type == edje.EDJE_PART_TYPE_TEXT:
-            st_class = objects_data.StateText
-        elif part.type == edje.EDJE_PART_TYPE_EXTERNAL:
-            st_class = objects_data.StateExternal
-        return st_class
-
     def _remove_time_point(self, t):
         prog = "@%s@%.2f" % (self.e.animation.name, t)
         self.e.animation.state_prev_goto()
@@ -458,7 +446,7 @@ class AnimationDetails(EditjeDetails):
         for part_name in self.e.animation.parts:
             part = self.e.part_get(part_name)
             st_obj = part.state_get(prog)
-            st_class = self._state_class_from_part_type_get(part)
+            st_class = objects_data.state_class_from_part_type_get(part)
             state_save = st_class(st_obj)
             saved_states.append([part.name, state_save])
 
