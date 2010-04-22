@@ -17,6 +17,9 @@ struct _Plugin
   Ecore_Timer *timer;
   
   const char *input;  
+
+  int (*fetch) (void *data);
+  
 };
 
 struct _Module_Config
@@ -33,51 +36,68 @@ struct _Module_Config
 
 static Module_Config *_conf;
 
-static Plugin *_plug = NULL;
-static Evry_Action *_act = NULL;
-static const char _trigger[] = "go ";
+static Plugin *_plug1 = NULL;
+static Plugin *_plug2 = NULL;
+static Evry_Action *_act1 = NULL;
+static Evry_Action *_act2 = NULL;
 
 int
-_server_data (void *data, int ev_type, Ecore_Con_Event_Server_Data *ev)
+_server_data(void *data, int ev_type, Ecore_Con_Event_Server_Data *ev)
 {
   Plugin *p = data;
   char *result = (char *)ev->data;
   Evry_Item *it;
+  char *list;
 
-  EVRY_PLUGIN_ITEMS_FREE(p);
-  
-  if (!strncmp(result, "HTTP/1.0 200 OK", 15))
+  if (ev->server != p->svr) return 1;
+
+  /* printf("%s\n", result); */
+
+  if ((list = strstr(result, "[[\""))) 
     {
-      result += 2;
-      result = strstr(result, "[[\"");
-      if (result) 
+      list += 3;
+
+      char **items = eina_str_split(list, "\"],[\"", 0);
+      char **i;
+	  
+      for(i = items; *i; i++)
 	{
-	  result +=3;
-
-	  char **items = eina_str_split(result, "\"],[\"", 0);
-	  char **i;
-	  
-	  for(i = items; *i; i++)
-	    {
-	      char **item= eina_str_split(*i, "\",\"", 2);	      
-	      /* printf("%s %s\n", *item, *(item + 1)); */
-	      it = evry_item_new(NULL, EVRY_PLUGIN(p), *item, NULL);
-	      it->detail = eina_stringshare_add(*(item + 1));
-	      it->fuzzy_match = -1;
-	      EVRY_PLUGIN_ITEM_APPEND(p, it);
-	      free(*item);
-	      free(item);
-	    }
-	  
-	  free(*items);
-	  free(items);
-
-	  evry_plugin_async_update (EVRY_PLUGIN(p), EVRY_ASYNC_UPDATE_ADD);
+	  char **item= eina_str_split(*i, "\",\"", 2);	      
+	  /* printf("%s %s\n", *item, *(item + 1)); */
+	  it = evry_item_new(NULL, EVRY_PLUGIN(p), *item, NULL);
+	  it->detail = eina_stringshare_add(*(item + 1));
+	  it->fuzzy_match = -1;
+	  EVRY_PLUGIN_ITEM_APPEND(p, it);
+	  free(*item);
+	  free(item);
 	}
-    }
+	  
+      free(*items);
+      free(items);
 
-  if (p->svr) ecore_con_server_del(p->svr);
-  p->svr = NULL;
+      evry_plugin_async_update (EVRY_PLUGIN(p), EVRY_ASYNC_UPDATE_ADD);
+    }
+  else if ((list = strstr(result, ",[\""))) 
+    {
+      list += 3;
+
+      char **items = eina_str_split(list, "\"", 0);
+      char **i;
+      for(i = items; *i; i++)
+	{
+	  if (**i == ',' || **i == ']') continue;
+	  it = evry_item_new(NULL, EVRY_PLUGIN(p), *i, NULL);
+	  it->detail = eina_stringshare_add("Wikipedia");
+	  it->fuzzy_match = -1;
+	  EVRY_PLUGIN_ITEM_APPEND(p, it);
+	}
+	  
+      free(*items);
+      free(items);
+
+    }
+  if (EVRY_PLUGIN(p)->items)
+    evry_plugin_async_update (EVRY_PLUGIN(p), EVRY_ASYNC_UPDATE_ADD);
   
   return 1;
 }
@@ -107,28 +127,65 @@ _cleanup(Evry_Plugin *plugin)
 }
 
 static int
-_timer_cb(void *data)
+_fetch_google(void *data)
 {
   Plugin *p = data;
-  
+  char buf[1024];
+  char *query;
+
+  query = evry_util_url_escape(p->input, 0);
+
+  if (p->svr) ecore_con_server_del(p->svr);
+
   p->svr = ecore_con_server_connect(ECORE_CON_REMOTE_SYSTEM,"www.google.com", 80, NULL);
   
   if (p->svr)
     {
-      char buf[1024];
-      char *query;
-      
       query = evry_util_url_escape(p->input, 0); 
-
+  
       snprintf(buf, sizeof(buf),
-	       "GET http://www.google%s/complete/search?output=text&q=\"%s\n",
-	       _conf->lang, query);
-      /* printf("send: %s\n", buf); */
-      free(query);
+  	       "GET http://www.google.com/complete/search?hl=%s&output=text&q=\"%s\n",
+  	       _conf->lang, query);
+
+      printf("send: %s\n", buf);
   
       ecore_con_server_send(p->svr, buf, strlen(buf));
     }
 
+  free(query);
+  
+  p->timer = NULL;
+  
+  return 0;
+}
+
+static int
+_fetch_wiki(void *data)
+{
+  Plugin *p = data;
+  char buf[1024];
+  char *query;
+
+  query = evry_util_url_escape(p->input, 0);
+
+  if (p->svr) ecore_con_server_del(p->svr);
+  p->svr = NULL;
+
+  p->svr = ecore_con_server_connect(ECORE_CON_REMOTE_SYSTEM,"www.wikipedia.org", 80, NULL);
+  
+  if (p->svr)
+    {      
+      snprintf(buf, sizeof(buf),
+	       "GET http://%s.wikipedia.org/w/api.php?action=opensearch&search=%s\n",
+	       _conf->lang, query);
+
+      printf("send: %s\n", buf);
+  
+      ecore_con_server_send(p->svr, buf, strlen(buf));
+    }
+
+  free(query);
+  
   p->timer = NULL;
   
   return 0;
@@ -139,6 +196,8 @@ _fetch(Evry_Plugin *plugin, const char *input)
 {
   PLUGIN(p, plugin);
 
+  EVRY_PLUGIN_ITEMS_FREE(p);
+  
   if (p->input)
     eina_stringshare_del(p->input);
   p->input = NULL;
@@ -150,7 +209,7 @@ _fetch(Evry_Plugin *plugin, const char *input)
   if (input && strlen(input) > 2)
     {        
       p->input = eina_stringshare_add(input);  
-      p->timer = ecore_timer_add(0.2, _timer_cb, p);
+      p->timer = ecore_timer_add(0.2, p->fetch, p);
     }
   
   return 0;
@@ -174,9 +233,18 @@ _action(Evry_Action *act)
   app->desktop = efreet_util_desktop_exec_find(_conf->browser);
   if (!app->desktop)
     app->file = "xdg-open";
-      
-  snprintf(buf, sizeof(buf), "http://www.google%s/search?q=%s",
-	   _conf->lang, act->item1->label);
+
+  if (!strncmp((char *)act->data, "g", 1))
+    {
+      snprintf(buf, sizeof(buf), "http://www.google.com/search?hl=%s&q=%s",
+	       _conf->lang, act->item1->label);
+    }
+  else if (!strncmp((char *)act->data, "w", 1))
+    {
+      snprintf(buf, sizeof(buf), "http://%s.wikipedia.org/wiki/%s",
+	       _conf->lang, act->item1->label);
+    }
+  
   file->path = buf;
   
   evry_util_exec_app(EVRY_ITEM(app), EVRY_ITEM(file));
@@ -208,15 +276,31 @@ module_init(void)
   if (!ecore_con_init())
     return EINA_FALSE;
 
-  _plug = E_NEW(Plugin, 1);
-  EVRY_PLUGIN_NEW(_plug, "GSuggest", type_subject, "", "TEXT",
+  _plug1 = E_NEW(Plugin, 1);
+  _plug1->fetch = &_fetch_google;
+  EVRY_PLUGIN_NEW(_plug1, "GSuggest", type_subject, "", "TEXT",
 		  _begin, _cleanup, _fetch, NULL, NULL);
 
-  evry_plugin_register(EVRY_PLUGIN(_plug), 10);
-  EVRY_PLUGIN(_plug)->trigger = _conf->trigger;
+  evry_plugin_register(EVRY_PLUGIN(_plug1), 10);
+  EVRY_PLUGIN(_plug1)->trigger = _conf->trigger;
+
+  _plug2 = E_NEW(Plugin, 1);
+  _plug2->fetch = &_fetch_wiki;
+  EVRY_PLUGIN_NEW(_plug2, "Wikipedia", type_subject, "", "TEXT",
+		  _begin, _cleanup, _fetch, NULL, NULL);
+
+  evry_plugin_register(EVRY_PLUGIN(_plug2), 10);
+  EVRY_PLUGIN(_plug2)->trigger = _conf->trigger;
+
   
-  _act = EVRY_ACTION_NEW("Google for it", "TEXT", NULL, NULL, _action, NULL);
-  evry_action_register(_act, 1);
+  
+  _act1 = EVRY_ACTION_NEW("Google for it", "TEXT", NULL, NULL, _action, NULL);
+  evry_action_register(_act1, 1);
+  _act1->data = "google";
+  
+  _act2 = EVRY_ACTION_NEW("Wikipedia Page", "TEXT", NULL, NULL, _action, NULL);
+  evry_action_register(_act2, 1);
+  _act2->data = "wikipedia";
   
   return EINA_TRUE;
 }
@@ -224,8 +308,11 @@ module_init(void)
 static void
 module_shutdown(void)
 {
-  EVRY_PLUGIN_FREE(_plug);
-  
+  EVRY_PLUGIN_FREE(_plug1);
+  EVRY_PLUGIN_FREE(_plug2);
+
+  evry_action_free(_act1); 
+  evry_action_free(_act2); 
   ecore_con_shutdown();
 }
 
@@ -289,7 +376,7 @@ _basic_create(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cfdata)
   ow = e_widget_entry_add(evas, &cfdata->browser, NULL, NULL, NULL); 
   e_widget_framelist_object_append(of, ow);
 
-  ow = e_widget_label_add(evas, _("Domain"));
+  ow = e_widget_label_add(evas, _("Language"));
   e_widget_framelist_object_append(of, ow);
   ow = e_widget_entry_add(evas, &cfdata->lang, NULL, NULL, NULL); 
   e_widget_framelist_object_append(of, ow);
@@ -364,7 +451,7 @@ _conf_new(void)
   /* setup defaults */
   IFMODCFG(0x008d);
   _conf->browser = eina_stringshare_add("firefox");
-  _conf->lang = eina_stringshare_add(".com");
+  _conf->lang = eina_stringshare_add("en");
   _conf->trigger = eina_stringshare_add("go ");
   IFMODCFGEND;
 

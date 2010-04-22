@@ -498,20 +498,19 @@ _begin(Evry_Plugin *plugin, const Evry_Item *item __UNUSED__)
 static void
 _cleanup(Evry_Plugin *plugin)
 {
-  PLUGIN(p, plugin);
-   
+  PLUGIN(p, plugin);   
   Evry_Item *it;
-   
-  /* free instances */
-  if (active)
-    {
-      e_dbus_signal_handler_del(conn, cb_tracklist_change);
-      e_dbus_signal_handler_del(conn, cb_player_track_change);
-      e_dbus_signal_handler_del(conn, cb_player_status_change);
-      cb_tracklist_change = NULL;
-      cb_player_track_change = NULL;
-      cb_player_status_change = NULL;
-    }
+
+  if (cb_tracklist_change)
+    e_dbus_signal_handler_del(conn, cb_tracklist_change);
+  if (cb_player_track_change)
+    e_dbus_signal_handler_del(conn, cb_player_track_change);
+  if (cb_player_status_change)
+    e_dbus_signal_handler_del(conn, cb_player_status_change);
+
+  cb_tracklist_change = NULL;
+  cb_player_track_change = NULL;
+  cb_player_status_change = NULL;
 
   if (p->input)
     eina_stringshare_del(p->input); 
@@ -520,7 +519,7 @@ _cleanup(Evry_Plugin *plugin)
   EINA_LIST_FREE(p->tracks, it)
     {
       if (it != EVRY_ITEM(p->empty))
-	evry_item_free(it); 
+	evry_item_free(it);
     }
 
   evry_item_free(EVRY_ITEM(p->empty));
@@ -917,6 +916,10 @@ _mpris_check_item(Evry_Action *act, const Evry_Item *it)
       if (p->current_track == ((Track *)it)->id)
 	return 0;
     }
+  if (!strcmp((char *)act->data, "RemoveTrack"))
+    {
+      return 1;
+    }
   else if (!strcmp((char *)act->data, "Stop"))
     {
       if (p->status.playing == 2) return 0;
@@ -1086,23 +1089,12 @@ _plugin_free(Evry_Plugin *plugin)
 {
   PLUGIN(p, plugin);
 
-  Evry_Item *it;
-  
-  if (active)
-    {
-      if (cb_tracklist_change)
-	e_dbus_signal_handler_del(conn, cb_tracklist_change);
-      if (cb_player_track_change)
-	e_dbus_signal_handler_del(conn, cb_player_track_change);
-      if (cb_player_status_change)
-	e_dbus_signal_handler_del(conn, cb_player_status_change);
-    }
-
-  if (p->input)
-    eina_stringshare_del(p->input); 
-
-  EINA_LIST_FREE(p->tracks, it)
-    evry_item_free(it); 
+  if (cb_tracklist_change)
+    e_dbus_signal_handler_del(conn, cb_tracklist_change);
+  if (cb_player_track_change)
+    e_dbus_signal_handler_del(conn, cb_player_track_change);
+  if (cb_player_status_change)
+    e_dbus_signal_handler_del(conn, cb_player_status_change);
 
   E_FREE(p);
 }
@@ -1111,7 +1103,8 @@ static Eina_Bool
 module_init(void)
 {
   Evry_Action *act;
-
+  int prio = 15;
+  
   if (!evry_api_version_check(EVRY_API_VERSION))
     return EINA_FALSE;
 
@@ -1139,65 +1132,64 @@ module_init(void)
   
   evry_plugin_register(EVRY_PLUGIN(_plug), 0);
 
-  
   act = EVRY_ACTION_NEW("Play Track", mpris_track, NULL, "media-playback-start",
 			_mpris_play_track, _mpris_check_item);
-  evry_action_register(act,  0);
+  evry_action_register(act,  prio--);
   actions = eina_list_append(actions, act);
   act->data = "PlayTrack";
   
   
   act = EVRY_ACTION_NEW("Remove Track", mpris_track, NULL, "list-remove",
 			_mpris_tracklist_remove_track, _mpris_check_item);
-  evry_action_register(act,  0);
+  evry_action_register(act,  prio--);
   actions = eina_list_append(actions, act);
-
+  act->data = "RemoveTrack";
   
   act = EVRY_ACTION_NEW("Play", mpris_track, NULL, "media-playback-start",
 			_mpris_player_action, _mpris_check_item);
-  evry_action_register(act,  0);
+  evry_action_register(act,  prio--);
   actions = eina_list_append(actions, act);
   act->data = "Play";
   
   
   act = EVRY_ACTION_NEW("Pause", mpris_track, NULL, "media-playback-pause",
 			_mpris_player_action, _mpris_check_item);
-  evry_action_register(act,  0);
+  evry_action_register(act,  prio--);
   actions = eina_list_append(actions, act);
   act->data = "Pause";
 
   
   act = EVRY_ACTION_NEW("Stop", mpris_track, NULL, "media-playback-stop",
 			_mpris_player_action, _mpris_check_item);
-  evry_action_register(act,  0);
+  evry_action_register(act,  prio--);
   actions = eina_list_append(actions, act);
   act->data = "Stop";
 
   
   act = EVRY_ACTION_NEW("Forward", mpris_track, NULL, "media-seek-forward",
 			_mpris_player_position, _mpris_check_item);
-  evry_action_register(act,  0);
+  evry_action_register(act,  prio--);
   actions = eina_list_append(actions, act);
   act->data = "Forward";
 
   
   act = EVRY_ACTION_NEW("Rewind", mpris_track, NULL, "media-seek-backward",
 			_mpris_player_position, _mpris_check_item);
-  evry_action_register(act,  0);
+  evry_action_register(act,  prio--);
   actions = eina_list_append(actions, act);
   act->data = "Rewind";
 
   
   act = EVRY_ACTION_NEW("Clear Playlist", mpris_track, NULL, "media-playlist-clear",
 			_mpris_tracklist_action_clear , _mpris_check_item);
-  evry_action_register(act,  0);
+  evry_action_register(act,  prio--);
   actions = eina_list_append(actions, act);
   act->data = "Clear";
 
   
   act = EVRY_ACTION_NEW("Enqueue File", "FILE", NULL, "list-add",
 			_mpris_play_file, _mpris_check_file);
-  evry_action_register(act,  0);
+  evry_action_register(act,  prio--);
   actions = eina_list_append(actions, act);
   act->data = "e";
 
@@ -1212,20 +1204,20 @@ module_init(void)
   act = EVRY_ACTION_NEW("Add Files...", mpris_track, "FILE", "list-add",
   			_mpris_add_files, NULL);
   act->data = "e";
-  evry_action_register(act,  0);
+  evry_action_register(act,  prio--);
   actions = eina_list_append(actions, act);
 
-  act = EVRY_ACTION_NEW("Add Album...", mpris_track, "TRACKER_MUSIC", "list-add",
+  act = EVRY_ACTION_NEW("Add Music...", mpris_track, "TRACKER_MUSIC", "list-add",
   			_mpris_add_files, NULL);
   act->data = "e";
-  evry_action_register(act,  0);
+  evry_action_register(act,  prio--);
   actions = eina_list_append(actions, act);
 
 
   /* act = EVRY_ACTION_NEW("Enqueue Files", NULL, "FILE", NULL, "list-add",
    * 			 _mpris_play_file, NULL, NULL, NULL,NULL);
    * act->data = "e";
-   * evry_action_register(act,  0);
+   * evry_action_register(act,  prio--);
    * actions = eina_list_append(actions, act); */
 
   return EINA_TRUE;
@@ -1236,10 +1228,13 @@ module_shutdown(void)
 {
   Evry_Action *act;
 
-  EVRY_PLUGIN_FREE(_plug);
+  evry_plugin_free(EVRY_PLUGIN(_plug), 0);
 
   EINA_LIST_FREE(actions, act)
-    evry_action_free(act);
+    {
+      if (act)
+	evry_action_free(act);
+    }
 }
 
 /***************************************************************************/
