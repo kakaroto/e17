@@ -313,18 +313,7 @@ elixir_gc(JSContext *cx, uintN argc, jsval *vp)
    if (!elixir_params_check(cx, void_params, NULL, argc, JS_ARGV(cx, vp)))
      return JS_FALSE;
 
-   scx = elixir_suspended_cx();
-   EINA_LIST_FREE(scx, lcx)
-     {
-	suspended = elixir_function_suspended(lcx);
-
-	if (suspended)
-	  {
-	     JS_SetContextThread(lcx);
-	     JS_MaybeGC(lcx);
-	     JS_ClearContextThread(lcx);
-	  }
-     }
+   elixir_suspended_gc();
 
    return JS_TRUE;
 }

@@ -149,22 +149,7 @@ elixir_ecore_event_current_event_get(JSContext *cx, uintN argc, jsval *vp)
 static int
 _elixir_ecore_maybe_gc(void *data)
 {
-   Eina_List *scx;
-   JSContext *cx;
-   Eina_Bool suspended;
-
-   scx = elixir_suspended_cx();
-   EINA_LIST_FREE(scx, cx)
-     {
-	suspended = elixir_function_suspended(cx);
-
-	if (suspended)
-	  {
-	     JS_SetContextThread(cx);
-	     JS_MaybeGC(cx);
-	     JS_ClearContextThread(cx);
-	  }
-     }
+   elixir_suspended_gc();
 
    return 1;
 }

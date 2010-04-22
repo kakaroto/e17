@@ -260,19 +260,20 @@ elixir_function_stop(JSContext *cx)
    }
 }
 
-Eina_List *
-elixir_suspended_cx(void)
+void
+elixir_suspended_gc(void)
 {
-   Eina_List *copy = NULL;
    Eina_List *l;
    JSContext *cx;
 
    pthread_mutex_lock(&suspended_lock);
    EINA_LIST_FOREACH(suspended_cx, l, cx)
-     copy = eina_list_append(copy, cx);
+     {
+	JS_SetContextThread(cx);
+	JS_MaybeGC(cx);
+	JS_ClearContextThread(cx);
+     }
    pthread_mutex_unlock(&suspended_lock);
-
-   return copy;
 }
 
 void
