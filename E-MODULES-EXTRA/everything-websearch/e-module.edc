@@ -5,6 +5,25 @@ images
  image: "wikipedia.png" COMP;
 }
 
+#define ICON(NAME, FILE, SIZE)			\
+  group {					\
+  name: NAME ;			 		\
+  max: SIZE SIZE;				\
+    parts {					\
+      part {					\
+      name: "icon";                             \
+      repeat_events: 1;				\
+	description {				\
+	state: "default" 0.0;			\
+	aspect: 1.0 1.0;			\
+	aspect_preference: BOTH;		\
+	image.image: FILE COMP;			\
+	image.normal: FILE ;			\
+	}					\
+      }						\
+    }						\
+  }
+
 collections 
 {
   group 
@@ -26,45 +45,8 @@ collections
 	    }
 	}
     }
-  group 
-    {
-    name: "wikipedia";
-    max: 128 128;
-      parts 
-	{
-	  part 
-	    {
-	    name: "image";
-	    mouse_events: 0;
-	    type: IMAGE;
-	      description 
-		{
-		aspect: 1.0 1.0;
-		state: "default" 0.0;
-		image.normal: "wikipedia.png";
-		}
-	    }
-	}
-    }
-  group 
-    {
-    name: "google";
-    max: 128 128;
-      parts 
-	{
-	  part 
-	    {
-	    name: "image";
-	    mouse_events: 0;
-	    type: IMAGE;
-	      description 
-		{
-		aspect: 1.0 1.0;
-		state: "default" 0.0;
-		image.normal: "google.png";
-		}
-	    }
-	}
-    }
+
+  ICON("wikipedia", "wikipedia.png", 128)
+  ICON("google", "google.png", 128)
 
 }
