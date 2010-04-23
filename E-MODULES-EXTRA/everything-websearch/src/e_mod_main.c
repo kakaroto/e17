@@ -256,6 +256,18 @@ _act_icon_get(Evry_Action *act, Evas *e)
   return NULL;
 }
 
+static int
+_complete(Evry_Plugin *p, const Evry_Item *item, char **input)
+{
+  char buf[128];
+  snprintf(buf, sizeof(buf), "%s ", item->label);
+  
+  *input = strdup(buf);
+     
+  return EVRY_COMPLETE_INPUT;
+}
+
+
 
 static Eina_Bool
 module_init(void)
@@ -275,6 +287,7 @@ module_init(void)
 
   EVRY_PLUGIN(_plug1)->trigger = _conf->trigger_google;
   EVRY_PLUGIN(_plug1)->icon = "text-html";
+  EVRY_PLUGIN(_plug1)->complete = &_complete;
   evry_plugin_register(EVRY_PLUGIN(_plug1), 10);
 
   _plug2 = E_NEW(Plugin, 1);
@@ -284,6 +297,7 @@ module_init(void)
   EVRY_PLUGIN_NEW(_plug2, "Wikipedia", type_subject, "", "TEXT",
 		  _begin, _cleanup, _fetch, NULL, NULL);
   EVRY_PLUGIN(_plug2)->trigger = _conf->trigger_wiki;
+  EVRY_PLUGIN(_plug2)->complete = &_complete;
   EVRY_PLUGIN(_plug2)->icon = "text-html";
   evry_plugin_register(EVRY_PLUGIN(_plug2), 9);
 
