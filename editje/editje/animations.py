@@ -545,15 +545,6 @@ class AnimationDetails(EditjeDetails):
     def _prop_object_get(self):
         return self.e.animation.program
 
-    def _prop_old_values_get(self, prop_attrs, is_external):
-        old_values = []
-        prog = self._prop_object_get()
-
-        for i, p in enumerate(prop_attrs):
-            old_values.append(getattr(prog, p))
-
-        return old_values
-
     def prop_value_changed(self, prop, value, group):
         if prop == "transition":
             args = [["main"], [prop], [self._transitions.index(value[0])],

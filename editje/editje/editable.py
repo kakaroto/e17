@@ -536,13 +536,13 @@ class Editable(Manager):
         endname = "@%s@end" % name
         self.program_add(endname)
         prog = self.program_get(endname)
-        prog.signal_emit("animation,end", name)
+        prog.signal_emit_action_set(("animation,end", name))
 
         # START
         startname = "@%s@0.00" % name
         self.program_add(startname)
         prog = self.program_get(startname)
-        prog.state_set(startname)
+        prog.state_set_action_set(startname)
         prog.signal = "animation,play"
         prog.source = name
         prog.after_add("@%s@end" % name)

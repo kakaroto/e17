@@ -943,7 +943,17 @@ class Editje(elementary.Window):
         mainbar.show()
 
         def new_sig_cb(name, type_):
-            return self.e.signal_add(name, type_)
+            r = self.e.signal_add(name, type_)
+            if not r:
+                return r
+
+            op = Operation("new signal: %s (type %s)" % (name, type_))
+
+            op.undo_callback_add(self.e.signal_del, name)
+            op.redo_callback_add(self.e.signal_add, name, type_)
+            self._operation_stack(op)
+
+            return r
 
         def sigs_list_cb():
             return self.e.signals

@@ -29,6 +29,7 @@ from floater import Wizard
 from clist import CList
 from prop import Property, PropertyTable
 from groupselector import NameEntry
+from operation import Operation
 
 
 class SignalsList(CList):
@@ -350,7 +351,7 @@ class SignalDetails(EditjeDetails):
         self["main"]["delay"].show_value()
         self["main"]["delay"].value = self.e.signal.in_time
 
-        action = self.e.signal._program.action_get()
+        action = self.e.signal.action
 
         self["main"]["action"].show_value()
         if action == edje.EDJE_ACTION_TYPE_NONE:
@@ -368,7 +369,7 @@ class SignalDetails(EditjeDetails):
             self.group_hide("out")
             self.group_show("out")
 
-            state = self.e.signal._program.state_get()
+            state = self.e.signal.state_get()
             self["out"]["signal"].show_value()
             if state:
                 self["out"]["signal"].value = state
@@ -385,28 +386,77 @@ class SignalDetails(EditjeDetails):
         self.open_set(True)
         self.show()
 
-    def prop_value_changed(self, prop_name, prop_value, group_name):
-        if group_name == "main":
+    def _context_recall(self, **kargs):
+        self.e.signal.name = kargs["signal"]
+
+    def _prop_object_get(self):
+        return self.e.signal
+
+    def prop_value_changed(self, prop, value, group):
+        if group == "main":
             tbl = self["main"]
-            if prop_name == "signal":
-                self.e.signal.signal = prop_value
-                tbl["signal"].value = prop_value
-            elif prop_name == "source":
-                self.e.signal.source = prop_value
-                tbl["source"].value = prop_value
-            elif prop_name == "action":
-                self.e.signal.afters_clear()
-                self.e.signal.after_add(prop_value)
-                fixedname = prop_value[1:prop_value.rindex("@")]
-                tbl["action"].value = fixedname
-            elif prop_name == "delay":
-                self.e.signal.in_time = prop_value
-                tbl["delay"].value = prop_value
-        elif group_name == "out":
-            tbl = self["out"]
-            if prop_name == "signal":
-                self.e.signal._program.state_set(prop_value)
-                tbl["signal"].value = prop_value
-            elif prop_name == "source":
-                self.e.signal._program.state2_set(prop_value)
-                tbl["source"].value = prop_value
+
+            if prop == "signal":
+                args = [["main"], [prop], [value], [None], [False], [None]]
+                self._prop_change_do(
+                    "signal's triggering action change", *args)
+
+            elif prop == "source":
+                args = [["main"], [prop], [value], [None], [False], [None]]
+                self._prop_change_do(
+                    "signal's source part change", *args)
+
+            elif prop == "action":
+
+                def afters_change(value):
+                    self.e.signal.afters_clear()
+                    self.e.signal.after_add(value or "")
+                    if value:
+                        value = value[1:value.rindex("@")]
+                    self["main"]["action"].value = value
+
+                afters = self.e.signal.afters
+                old_val = None
+                if afters:
+                    old_val = afters[0]
+
+                op = Operation("signal's \"after\" action change")
+                op.redo_callback_add(afters_change, value)
+                op.undo_callback_add(afters_change, old_val)
+                self._operation_stack_cb(op)
+                op.redo()
+
+            elif prop == "delay":
+                args = [["main"], [prop], [value], ["in_time"], [False], [None]]
+                self._prop_change_do(
+                    "signal's source delay time change", *args)
+
+        elif group == "out":
+            if prop == "signal":
+                def signal_change(value):
+                    self.e.signal.signal_emit_action_set(val)
+                    self["out"]["signal"].value = value[0]
+
+                val = [value, self["out"]["source"].value]
+                old_val = [self["out"]["signal"].value, val[1]]
+
+                op = Operation("signal's \"out\" emission change")
+                op.redo_callback_add(signal_change, val)
+                op.undo_callback_add(signal_change, old_val)
+                self._operation_stack_cb(op)
+                op.redo()
+
+            elif prop == "source":
+                def source_change(value):
+                    self.e.signal.signal_emit_action_set(val)
+                    self["out"]["source"].value = value[1]
+
+                val = [self["out"]["signal"].value, value]
+                old_val = [val[0], self["out"]["signal"].value]
+
+                op = Operation("signal's \"out\" emission change")
+                op.redo_callback_add(source_change, val)
+                op.undo_callback_add(source_change, old_val)
+                self._operation_stack_cb(op)
+                op.redo()
+

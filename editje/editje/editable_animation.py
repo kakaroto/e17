@@ -251,7 +251,7 @@ class EditableAnimation(Manager, object):
         # Create
         self._edit_grp.program_add(name)
         prog = self._edit_grp.program_get(name)
-        prog.state_set(name)
+        prog.state_set_action_set(name)
         prog.transition = edje.EDJE_TWEEN_MODE_LINEAR
         prog.transition_time = time - prev
         for p in self.parts.iterkeys():

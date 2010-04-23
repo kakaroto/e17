@@ -115,15 +115,6 @@ class PartDetails(EditjeDetails):
     def _prop_object_get(self):
         return self.e.part_get(self.e.part.name)
 
-    def _prop_old_values_get(self, prop_attrs, is_external):
-        old_values = []
-        part = self._prop_object_get()
-
-        for i, p in enumerate(prop_attrs):
-            old_values.append(getattr(part, p))
-
-        return old_values
-
     def _closed_cb(self, obj, emission, source):
         if not self.e.part.name:
             return

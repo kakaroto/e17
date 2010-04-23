@@ -206,24 +206,36 @@ class EditjeDetails(edje.Edje):
 
     open_disable = property(_open_disable_get, _open_disable_set)
 
+    # most general form, specialise if needed
     def _context_recall(self, **kargs):
         self.e.part.name = kargs["part"]
         self.e.part.state.name = kargs["state"]
 
+    # most general form, specialise if needed
+    def _prop_old_values_get(self, prop_attrs, is_external):
+        old_values = []
+        obj = self._prop_object_get()
+
+        for i, p in enumerate(prop_attrs):
+            old_values.append(getattr(obj, p))
+
+        return old_values
+
     def _prop_change_do(self, op_name, prop_groups, prop_names, prop_values,
                         prop_attrs, is_external, filters):
 
-        def set_property(part_name, state_name, anim_name, frame, prop_attrs,
-                         prop_names, prop_values, is_external, filter_,
-                         reverse=False):
+        def set_property(part_name, state_name, anim_name, frame, sig_name,
+                         prop_attrs, prop_names, prop_values, is_external,
+                         filter_, reverse=False):
 
             if reverse:
                 efunc = lambda l: izip(xrange(len(l) - 1, -1, -1), reversed(l))
             else:
                 efunc = enumerate
 
-            self._context_recall(part=part_name, state=state_name,
-                                 animation=anim_name, time=frame)
+            self._context_recall(
+                part=part_name, state=state_name, animation=anim_name,
+                time=frame, signal=sig_name)
 
             for i, p in efunc(prop_attrs):
                 if is_external[i]:
@@ -245,11 +257,6 @@ class EditjeDetails(edje.Edje):
                 "One must implement self._prop_object_get for"
                 " EditjeDetails children classes.")
 
-        if not self._prop_old_values_get:
-            raise NotImplementedError(
-                "One must implement self._prop_old_values_get() for"
-                " EditjeDetails children classes.")
-
         l = len(prop_groups)
         for arg in (prop_names, prop_values, prop_attrs,
                     is_external, filters):
@@ -263,6 +270,9 @@ class EditjeDetails(edje.Edje):
         anim_name = self.e.animation.name
         frame = self.e.animation.state
 
+        # signals' only
+        sig_name = self.e.signal.name
+
         old_values = []
         for i, p in enumerate(prop_attrs):
             if not p:
@@ -270,16 +280,16 @@ class EditjeDetails(edje.Edje):
 
         old_values = self._prop_old_values_get(prop_attrs, is_external)
 
-        set_property(part_name, state_name, anim_name, frame,
-                     prop_attrs, prop_names, prop_values,
-                     is_external, filters)
+        set_property(part_name, state_name, anim_name, frame, sig_name,
+                     prop_attrs, prop_names, prop_values, is_external, filters)
 
         op = Operation(op_name)
         op.redo_callback_add(
-            set_property, part_name, state_name, anim_name, frame, prop_attrs,
-            prop_names, prop_values, is_external, filters)
+            set_property, part_name, state_name, anim_name, frame, sig_name,
+            prop_attrs, prop_names, prop_values, is_external, filters)
         op.undo_callback_add(
-            set_property, part_name, state_name, anim_name, frame, prop_attrs,
-            prop_names, old_values, is_external, filters, True)
-
+            set_property, part_name, state_name, anim_name, frame, sig_name,
+            prop_attrs, prop_names, old_values, is_external, filters, True)
         self._operation_stack_cb(op)
+
+        return op

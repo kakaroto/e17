@@ -106,15 +106,45 @@ class EditableProgram(Manager, object):
         self._program.targets_clear()
 
     def state_get(self):
+        """
+        Retrieve the program's target part, if it's action is STATE_SET,
+        or the program's emission string, if it is of SIGNAL_EMIT type. The
+        method's name confusion is an inheritance of the EdjeEdit API itself,
+        what should be fixed in near future.
+
+        """
         return self._program.state_get()
 
-    def state_set(self, state):
-        self._program.action_set(edje.EDJE_ACTION_TYPE_STATE_SET)
-        self._program.state_set(state)
+    def state_set_action_set(self, target):
+        """ Set the program's action to "STATE_SET".
 
-    def signal_emit(self, signal, source=""):
+        "target" argument is the target part. This method will
+        override what whas set by signal_emit_action_self().
+
+        """
+        self._program.action_set(edje.EDJE_ACTION_TYPE_STATE_SET)
+        self._program.state_set(target)
+
+    def signal_emit_action_set(self, signal):
+        """ Set the program's action to "SIGNAL_EMIT".
+
+        "signal" argument is the emission string (in case source will
+        fallback to the empty string) or a 2-tuple containing emission
+        and source strings. This method will override what whas set by
+        state_set_action_set().
+
+        """
+        t = type(signal)
+        if t is list or t is tuple:
+            if len(signal) != 2:
+                raise TypeError("signal must either be an emission string"
+                                " or a (emission, source) tuple/list")
+            emission, source = signal
+        else:
+            emission, source = signal, ""
+
         self._program.action_set(edje.EDJE_ACTION_TYPE_SIGNAL_EMIT)
-        self._program.state_set(signal)
+        self._program.state_set(emission)
         self._program.state2_set(source)
 
     def _transition_get(self):

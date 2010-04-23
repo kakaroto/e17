@@ -76,46 +76,22 @@ class GroupDetails(EditjeDetails):
     def _max_update(self, emissor, data):
         self["main"]["max"].value = data
 
-    def prop_value_changed(self, prop_name, prop_value, group_name):
-        if not prop_value:
+    def _context_recall(self, **kargs):
+        pass
+
+    def _prop_object_get(self):
+        return self.e
+
+    def prop_value_changed(self, prop, value, group):
+        if not value:
             return
 
-        if prop_name == "min":
-
-            def min_set(values):
-                self.e.group_min = values
-
-            old_values = self.e.group_min
-            min_set(prop_value)
-
-            op = Operation("group minimum size hints setting")
-            op.redo_callback_add(min_set, prop_value)
-            op.undo_callback_add(min_set, old_values)
-            self._operation_stack_cb(op)
-
-        elif prop_name == "max":
-
-            def max_set(values):
-                self.e.group_max = values
-
-            old_values = self.e.group_max
-            max_set(prop_value)
-
-            op = Operation("group maximum size hints setting")
-            op.redo_callback_add(max_set, prop_value)
-            op.undo_callback_add(max_set, old_values)
-            self._operation_stack_cb(op)
-
-        elif prop_name == "current":
-
-            def current_set(values):
-                self.e.group_size = values
-                self["main"]["current"].value = values
-
-            old_values = self.e.group_size
-            current_set(prop_value)
-
-            op = Operation("group current size setting")
-            op.redo_callback_add(current_set, prop_value)
-            op.undo_callback_add(current_set, old_values)
-            self._operation_stack_cb(op)
+        if prop == "min":
+            args = [["main"], [prop], [value], ["group_min"], [False], [None]]
+            self._prop_change_do("group minimum size hints setting", *args)
+        elif prop == "max":
+            args = [["main"], [prop], [value], ["group_max"], [False], [None]]
+            self._prop_change_do("group maximum size hints setting", *args)
+        elif prop == "current":
+            args = [["main"], [prop], [value], ["group_size"], [False], [None]]
+            self._prop_change_do("group current size setting", *args)
