@@ -141,8 +141,8 @@ edit_note_window_new(Evas_Object *list, Elm_List_Item *selection, Db *db)
 
    evas_object_show(note_window);
 
-   gui->entry = edje_object_part_swallow_get(ed, "ContentsEntry");
-   gui->title = edje_object_part_swallow_get(ed, "TitleEntry");
+   gui->entry = edje_object_part_external_object_get(ed, "ContentsEntry");
+   gui->title = edje_object_part_external_object_get(ed, "TitleEntry");
    gui->window = note_window;
    gui->db = db;
    gui->list = list;

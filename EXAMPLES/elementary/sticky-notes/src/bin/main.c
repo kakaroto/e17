@@ -66,7 +66,8 @@ _subsystems_init(void)
 	_log_dom = eina_log_domain_register("sticky-notes-edje", NULL);
 	if (_log_dom < 0)
 	  {
-	     EINA_LOG_CRIT("Could not register log domain for sticky-notes-edje");
+	     EINA_LOG_CRIT("Could not register log domain for"
+			   " sticky-notes-edje");
 	     return EINA_FALSE;
 	  }
      }
@@ -114,7 +115,8 @@ _note_add_button_clicked(void *data, Evas_Object *obj, const char *emission, con
    if (!entry)
      return;
 
-   list_item = elm_list_item_append(list_widget, entry->title, NULL, NULL, NULL, entry);
+   list_item = elm_list_item_append(list_widget, entry->title, NULL, NULL,
+				    NULL, entry);
    elm_list_go(list_widget);
 
    edit_note_window_new(list_widget, list_item, _db);
@@ -170,7 +172,8 @@ elm_main(int argc, char **argv)
    background = elm_bg_add(main_window);
    elm_win_resize_object_add(main_window, background);
    evas_object_size_hint_weight_set(background, 1.0, 1.0);
-   evas_object_smart_callback_add(main_window, "delete-request", _main_window_delete_request, NULL);
+   evas_object_smart_callback_add(main_window, "delete-request",
+				  _main_window_delete_request, NULL);
    evas_object_show(background);
 
    layout = elm_layout_add(main_window);
@@ -179,13 +182,14 @@ elm_main(int argc, char **argv)
    evas_object_size_hint_weight_set(layout, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_show(layout);
 
-   notes_list = elm_list_add(layout);
-   _load_list_from_db(notes_list, _db);
-   elm_layout_content_set(layout, "NoteListSwallow", notes_list);
-   evas_object_smart_callback_add(notes_list, "clicked", _notes_list_clicked, notes_list);
-
    ed = elm_layout_edje_get(layout);
-   edje_object_signal_callback_add(ed, "mouse,clicked,1", "AddNoteButton", _note_add_button_clicked, notes_list);
+   notes_list = edje_object_part_external_object_get(ed, "NoteList");
+   _load_list_from_db(notes_list, _db);
+   evas_object_smart_callback_add(notes_list, "clicked", _notes_list_clicked,
+				  notes_list);
+
+   edje_object_signal_callback_add(ed, "mouse,clicked,1", "AddNoteButton",
+				   _note_add_button_clicked, notes_list);
 
    evas_object_show(main_window);
 
