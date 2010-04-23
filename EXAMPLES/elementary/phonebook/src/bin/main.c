@@ -369,7 +369,7 @@ create_win(){
    /* Set callback functions */
    edje_object_signal_callback_add(ed, "new,signal", "BtnRegister", new_clicked,
 				   &App.info);
-   entrysearch = edje_object_part_swallow_get(ed, "EntrySearch");
+   entrysearch = edje_object_part_external_object_get(ed, "EntrySearch");
    evas_object_smart_callback_add(entrysearch, "changed", entry_type, ed);
    evas_object_smart_callback_add(entrysearch, "unfocused", entry_unfocused,
 				  ed);
@@ -377,7 +377,7 @@ create_win(){
    elm_pager_content_push(pg, layout);
    App.info.pgMain = layout;
 
-   App.contactlist = elm_list_add(layout);
+   App.contactlist = edje_object_part_external_object_get(ed, "ContactList");
 
    evas_object_smart_callback_add(App.contactlist, "selected", list_selected_cb,
 				  NULL);
@@ -385,7 +385,6 @@ create_win(){
 				  NULL);
    list_load();
    evas_object_show(App.contactlist);
-   elm_layout_content_set(layout, "SwContactList", App.contactlist);
 
    /* Register - Page */
 

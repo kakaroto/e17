@@ -26,7 +26,7 @@ const char *
 entry_value_get(Evas_Object *obj, char *part_name)
 {
    Evas_Object *entry_text;
-   entry_text = edje_object_part_swallow_get(obj, part_name);
+   entry_text = edje_object_part_external_object_get(obj, part_name);
    return elm_scrolled_entry_entry_get(entry_text);
 }
 
@@ -34,7 +34,7 @@ void
 entry_value_set(Evas_Object *obj, char *part_name, const char *value)
 {
    Evas_Object *entry_text;
-   entry_text = edje_object_part_swallow_get(obj, part_name);
+   entry_text = edje_object_part_external_object_get(obj, part_name);
    elm_scrolled_entry_entry_set(entry_text, value);
 }
 
@@ -42,7 +42,7 @@ int
 radio_value_get(Evas_Object *obj, char *part_name)
 {
    Evas_Object *radio_value;
-   radio_value = edje_object_part_swallow_get(obj, part_name);
+   radio_value = edje_object_part_external_object_get(obj, part_name);
    return elm_radio_value_get(radio_value);
 }
 
@@ -50,7 +50,7 @@ void
 radio_value_set(Evas_Object *obj, char *part_name, int value)
 {
    Evas_Object *radio_value;
-   radio_value = edje_object_part_swallow_get(obj, part_name);
+   radio_value = edje_object_part_external_object_get(obj, part_name);
    elm_radio_value_set(radio_value, value);
 }
 
@@ -71,7 +71,7 @@ void
 button_hide(Evas_Object *obj, char *part_name)
 {
    Evas_Object *button;
-   button = edje_object_part_swallow_get(obj, part_name);
+   button = edje_object_part_external_object_get(obj, part_name);
    evas_object_hide(button);
 }
 
@@ -79,6 +79,6 @@ void
 button_show(Evas_Object *obj, char *part_name)
 {
    Evas_Object *button;
-   button = edje_object_part_swallow_get(obj, part_name);
+   button = edje_object_part_external_object_get(obj, part_name);
    evas_object_show(button);
 }
