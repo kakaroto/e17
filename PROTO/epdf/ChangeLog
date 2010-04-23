@@ -1,3 +1,37 @@
+2010-04-23  Vincent Torri  <doursse at users dot sf dot net>
+
+	* configure.ac:
+	* src/lib/Makefile.am:
+	* src/lib/poppler/Makefile.am:
+	* src/lib/poppler/epdf_poppler_document.cpp:
+	* src/lib/poppler/epdf_poppler_fontinfo.cpp:
+	* src/lib/poppler/epdf_poppler_index.cpp:
+	* src/lib/poppler/epdf_poppler_main.cpp:
+	* src/lib/poppler/epdf_poppler_page.cpp:
+	* src/lib/poppler/epdf_poppler_page_transition.cpp:
+	* src/lib/poppler/epdf_poppler_postscript.cpp:
+	* src/lib/poppler/epdf_poppler_private.h:
+	* src/lib/poppler (added):
+	* src/lib/poppler/epdf_poppler_private.h (added):
+	* src/lib/poppler/epdf_poppler_fontinfo.cpp (added):
+	* src/lib/poppler/epdf_poppler_main.cpp (added):
+	* src/lib/poppler/epdf_poppler_page_transition.cpp (added):
+	* src/lib/poppler/epdf_poppler_index.cpp (added):
+	* src/lib/poppler/Makefile.am (added):
+	* src/lib/poppler/epdf_poppler_postscript.cpp (added):
+	* src/lib/poppler/epdf_poppler_page.cpp (added):
+	* src/lib/poppler/epdf_poppler_document.cpp (added):
+	* src/lib/epdf_index.cpp (deleted):
+	* src/lib/epdf_postscript.cpp (deleted):
+	* src/lib/epdf_page.cpp (deleted):
+	* src/lib/epdf_document.cpp (deleted):
+	* src/lib/epdf_private.h (deleted):
+	* src/lib/epdf_fontinfo.cpp (deleted):
+	* src/lib/epdf_main.cpp (deleted):
+	* src/lib/epdf_page_transition.cpp (deleted):
+	Move poppler code to src/lib/poppler. First step before
+	the addition of the mupdf backend.
+
 2010-04-21  Vincent Torri  <doursse at users dot sf dot net>
 
 	* configure.ac:
