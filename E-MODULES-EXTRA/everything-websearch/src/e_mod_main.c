@@ -46,6 +46,7 @@ static Plugin *_plug1 = NULL;
 static Plugin *_plug2 = NULL;
 static Evry_Action *_act1 = NULL;
 static Evry_Action *_act2 = NULL;
+static Evry_Action *_act3 = NULL;
 static char _header[] =
   "User-Agent: Wget/1.12 (linux-gnu)\n"
   "Accept: */*\n"
@@ -215,6 +216,11 @@ _action(Evry_Action *act)
       snprintf(buf, sizeof(buf), "http://%s.wikipedia.org/wiki/%s",
 	       _conf->lang, act->item1->label);
     }
+  else if (!strncmp((char *)act->data, "f", 1))
+    {
+      snprintf(buf, sizeof(buf), "http://www.google.com/search?hl=%s&q=%s&btnI=745",
+	       _conf->lang, act->item1->label);
+    }
   
   file->path = buf;
   
@@ -291,7 +297,12 @@ module_init(void)
   evry_action_register(_act2, 1);
   _act2->data = "wikipedia";
   _act2->icon_get = &_act_icon_get;
-  
+
+  _act3 = EVRY_ACTION_NEW("Feeling Lucky", "TEXT", NULL, "go-next", _action, NULL);
+  evry_action_register(_act3, 1);
+  _act3->data = "feeling-lucky";
+  _act3->icon_get = &_act_icon_get;
+
   return EINA_TRUE;
 }
 
@@ -303,6 +314,7 @@ module_shutdown(void)
 
   evry_action_free(_act1); 
   evry_action_free(_act2); 
+  evry_action_free(_act3); 
   ecore_con_shutdown();
 }
 

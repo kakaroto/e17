@@ -48,5 +48,6 @@ collections
 
   ICON("wikipedia", "wikipedia.png", 128)
   ICON("google", "google.png", 128)
+  ICON("feeling-lucky", "google.png", 128)
 
 }
