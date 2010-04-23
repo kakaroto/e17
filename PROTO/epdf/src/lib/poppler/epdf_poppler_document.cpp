@@ -17,13 +17,6 @@
 #include "epdf_poppler_private.h"
 
 
-#if HAVE___ATTRIBUTE__
-# define __UNUSED__ __attribute__((unused))
-#else
-# define __UNUSED__
-#endif
-
-
 Epdf_Document *
 epdf_document_new (const char *filename)
 {
