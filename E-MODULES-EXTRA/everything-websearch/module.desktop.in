@@ -2,6 +2,6 @@
 Type=Link
 Name=Everything WebSearch
 Icon=e-module
-Comment=Wikipedia, Google suggestions and 'Google for it'(tm) action. <br>Trigger can be configured, default is 'go '.
+Comment=Find stuff on Wikipedia, use Google suggestions and 'Google for it'(tm) action. <br>Triggers can be configured, defaults are 'g ' and 'w '.
 #Several different types available here. NEED TO DOC THESE.
 X-Enlightenment-ModuleType=everything
