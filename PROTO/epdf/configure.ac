@@ -1,5 +1,18 @@
 
-AC_INIT([epdf], [0.1], [enlightenment-devel@lists.sourceforge.net])
+### Version
+
+m4_define([epdf_version_major], [0])
+m4_define([epdf_version_minor], [0])
+m4_define([epdf_version_micro], [1])
+
+m4_define([epdf_version],
+   [epdf_version_major.epdf_version_minor.epdf_version_micro])
+
+m4_define([lt_rev], m4_eval(epdf_version_major + epdf_version_minor))
+m4_define([lt_cur], epdf_version_micro)
+m4_define([lt_age], epdf_version_minor)
+
+AC_INIT([epdf], [epdf_version], [enlightenment-devel@lists.sourceforge.net])
 AC_PREREQ([2.54])
 AC_CONFIG_SRCDIR([configure.ac])
 AC_CONFIG_HEADERS([config.h])
@@ -11,10 +24,7 @@ AC_LIBTOOL_WIN32_DLL
 define([AC_LIBTOOL_LANG_F77_CONFIG], [:])dnl
 AC_PROG_LIBTOOL
 
-INTERFACE_CURRENT="0"
-INTERFACE_REVISION="0"
-INTERFACE_AGE="0"
-version_info=${INTERFACE_CURRENT}:${INTERFACE_REVISION}:${INTERFACE_AGE}
+version_info="lt_rev:lt_cur:lt_age"
 AC_SUBST(version_info)
 
 
@@ -103,6 +113,20 @@ AC_LANG_POP(C++)
 
 ### Checks for compiler characteristics
 AC_C___ATTRIBUTE__
+
+
+### Checks for linker characteristics
+
+# use --enable-auto-import on Windows
+
+lt_enable_auto_import=""
+case "$host_os" in
+   mingw*)
+      lt_enable_auto_import="-Wl,--enable-auto-import"
+      ;;
+esac
+AC_SUBST(lt_enable_auto_import)
+
 
 AC_SUBST(requirements_epdf)
 

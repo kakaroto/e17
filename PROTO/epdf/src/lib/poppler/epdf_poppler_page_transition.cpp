@@ -9,7 +9,7 @@
 #include <Dict.h>
 
 #include "Epdf.h"
-#include "epdf_private.h"
+#include "epdf_poppler_private.h"
 
 
 Epdf_Page_Transition *

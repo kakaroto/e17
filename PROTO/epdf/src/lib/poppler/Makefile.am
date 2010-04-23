@@ -4,13 +4,13 @@ MAINTAINERCLEANFILES = Makefile.in
 noinst_LTLIBRARIES = libepdf_poppler.la
 
 libepdf_poppler_la_SOURCES = \
-epdf_main.cpp \
-epdf_document.cpp \
-epdf_fontinfo.cpp \
-epdf_index.cpp \
-epdf_page.cpp \
-epdf_page_transition.cpp \
-epdf_postscript.cpp
+epdf_poppler_document.cpp \
+epdf_poppler_fontinfo.cpp \
+epdf_poppler_index.cpp \
+epdf_poppler_main.cpp \
+epdf_poppler_page.cpp \
+epdf_poppler_page_transition.cpp \
+epdf_poppler_postscript.cpp
 
 libepdf_poppler_la_CPPFLAGS = \
 -I$(top_srcdir)/src/lib \
@@ -20,5 +20,6 @@ libepdf_poppler_la_CPPFLAGS = \
 @EPDF_CFLAGS@
 
 libepdf_poppler_la_LIBADD = @EPDF_LIBS@
+libepdf_poppler_la_LDFLAGS = -no-undefined @lt_enable_auto_import@
 
-EXTRA_DIST = epdf_private.h
+EXTRA_DIST = epdf_poppler_private.h

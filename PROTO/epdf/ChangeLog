@@ -2,6 +2,23 @@
 
 	* configure.ac:
 	* src/lib/Makefile.am:
+	auto import symbols on Windows, used m4 defined version
+	numbers.
+
+	* src/lib/poppler/Makefile.am:
+	* src/lib/poppler/epdf_poppler_document.cpp:
+	* src/lib/poppler/epdf_poppler_fontinfo.cpp:
+	* src/lib/poppler/epdf_poppler_index.cpp:
+	* src/lib/poppler/epdf_poppler_page.cpp:
+	* src/lib/poppler/epdf_poppler_page_transition.cpp:
+	* src/lib/poppler/epdf_poppler_postscript.cpp:
+	Forgot to rename the files...
+	
+
+2010-04-23  Vincent Torri  <doursse at users dot sf dot net>
+
+	* configure.ac:
+	* src/lib/Makefile.am:
 	* src/lib/poppler/Makefile.am:
 	* src/lib/poppler/epdf_poppler_document.cpp:
 	* src/lib/poppler/epdf_poppler_fontinfo.cpp:

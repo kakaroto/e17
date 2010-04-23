@@ -38,7 +38,7 @@ libepdf_la_CPPFLAGS = \
 @EPDF_CFLAGS@
 
 libepdf_la_LIBADD = poppler/libepdf_poppler.la
-libepdf_la_LDFLAGS = -no-undefined -version-info @version_info@
+libepdf_la_LDFLAGS = -no-undefined @lt_enable_auto_import@ -version-info @version_info@
 
 if BUILD_EPDF_EWL
 
