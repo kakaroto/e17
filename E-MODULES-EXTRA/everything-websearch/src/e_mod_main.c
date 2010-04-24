@@ -201,27 +201,30 @@ _action(Evry_Action *act)
   char buf[1024];
   Eina_List *l;
   E_Border *bd;
-
+  
   app->desktop = efreet_util_desktop_exec_find(_conf->browser);
   if (!app->desktop)
     app->file = "xdg-open";
 
+  char *tmp = evry_util_url_escape(act->item1->label, 0);
+
   if (!strncmp((char *)act->data, "g", 1))
     {
       snprintf(buf, sizeof(buf), "http://www.google.com/search?hl=%s&q=%s",
-	       _conf->lang, act->item1->label);
+	       _conf->lang, tmp);
     }
   else if (!strncmp((char *)act->data, "w", 1))
     {
       snprintf(buf, sizeof(buf), "http://%s.wikipedia.org/wiki/%s",
-	       _conf->lang, act->item1->label);
+	       _conf->lang, tmp);
     }
   else if (!strncmp((char *)act->data, "f", 1))
     {
       snprintf(buf, sizeof(buf), "http://www.google.com/search?hl=%s&q=%s&btnI=745",
-	       _conf->lang, act->item1->label);
+	       _conf->lang, tmp);
     }
-
+  E_FREE(tmp);
+  
   file->path = buf;
 
   evry_util_exec_app(EVRY_ITEM(app), EVRY_ITEM(file));
@@ -240,8 +243,8 @@ _action(Evry_Action *act)
       efreet_desktop_free(app->desktop);
     }
 
-  free(app);
-  free(file);
+  E_FREE(file);
+  E_FREE(app);
 }
 
 Evas_Object *
