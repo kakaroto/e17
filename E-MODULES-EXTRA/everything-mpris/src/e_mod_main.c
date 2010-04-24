@@ -1064,19 +1064,37 @@ static int
 _cb_key_down(Evry_Plugin *plugin, const Ecore_Event_Key *ev)
 {
   PLUGIN(p, plugin);
-
-  if (p->support.play_track)
-    return 0;
-
-  if (!strcmp(ev->key, "Down"))
+  Track *t;  
+  
+  if ((ev->modifiers & ECORE_EVENT_MODIFIER_SHIFT) &&
+      ((!strcmp(ev->key, "Up")) ||
+       (!strcmp(ev->key, "Down"))))
     {
-      printf("play next\n");
+      if ((t = eina_list_nth(p->tracks, p->current_track)))
+	{
+	  if (!EVRY_ITEM(t)->selected)
+	    {
+	      Evry_Event_Item_Changed *ev = E_NEW(Evry_Event_Item_Changed, 1);
+	      ev->item = EVRY_ITEM(t);
+	      evry_item_ref(EVRY_ITEM(t));
+	      ecore_event_add(EVRY_EVENT_ITEM_CHANGED, ev, _cb_free_item_changed, NULL); 
+
+	      /* FIXME send with event ? */
+	      evry_item_select(NULL, EVRY_ITEM(t));
+	  
+	      return 1;
+	    }
+	}
+    }
+  else if ((ev->modifiers & ECORE_EVENT_MODIFIER_ALT) &&
+	   (!strcmp(ev->key, "Down")))
+    {
       _dbus_send_msg("/Player", "Next", NULL, NULL); 
       return 1;
     }
-  else if (!strcmp(ev->key, "Up"))
+  else if ((ev->modifiers & ECORE_EVENT_MODIFIER_ALT) &&
+	   (!strcmp(ev->key, "Up")))
     {
-      printf("play prev\n");
       _dbus_send_msg("/Player", "Prev", NULL, NULL); 
       return 1;
     }
@@ -1084,23 +1102,8 @@ _cb_key_down(Evry_Plugin *plugin, const Ecore_Event_Key *ev)
   return 0;
 }
 
-static void
-_plugin_free(Evry_Plugin *plugin)
-{
-  PLUGIN(p, plugin);
-
-  if (cb_tracklist_change)
-    e_dbus_signal_handler_del(conn, cb_tracklist_change);
-  if (cb_player_track_change)
-    e_dbus_signal_handler_del(conn, cb_player_track_change);
-  if (cb_player_status_change)
-    e_dbus_signal_handler_del(conn, cb_player_status_change);
-
-  E_FREE(p);
-}
-
 static Eina_Bool
-module_init(void)
+_plugins_init(void)
 {
   Evry_Action *act;
   int prio = 15;
@@ -1108,27 +1111,17 @@ module_init(void)
   if (!evry_api_version_check(EVRY_API_VERSION))
     return EINA_FALSE;
 
-  conn = e_dbus_bus_get(DBUS_BUS_SESSION);
-
-  if (!conn) return EINA_FALSE;
-
-  cb_name_owner_changed = e_dbus_signal_handler_add
-    (conn, fdo_bus_name, fdo_path, fdo_interface, "NameOwnerChanged",
-     _dbus_cb_name_owner_changed, NULL);
-
-  e_dbus_list_names(conn, _dbus_cb_list_names, NULL);
-
   _plug = E_NEW(Plugin, 1);
   EVRY_PLUGIN_NEW(_plug, "Playlist", type_subject, NULL, mpris_track,
-		  _begin, _cleanup, _fetch, _icon_get, _plugin_free);
+		  _begin, _cleanup, _fetch, _icon_get, NULL);
 
-  /* EVRY_PLUGIN(_plug)->cb_key_down = &_cb_key_down; */
   /* TODO make this an option */
   EVRY_PLUGIN(_plug)->aggregate   = EINA_FALSE;
   EVRY_PLUGIN(_plug)->history     = EINA_FALSE;
   EVRY_PLUGIN(_plug)->async_fetch = EINA_TRUE;
   EVRY_PLUGIN(_plug)->view_mode   = VIEW_MODE_LIST;
   EVRY_PLUGIN(_plug)->icon        = "emblem-sound";
+  EVRY_PLUGIN(_plug)->cb_key_down = &_cb_key_down;
   
   evry_plugin_register(EVRY_PLUGIN(_plug), 0);
 
@@ -1137,7 +1130,6 @@ module_init(void)
   evry_action_register(act,  prio--);
   actions = eina_list_append(actions, act);
   act->data = "PlayTrack";
-  
   
   act = EVRY_ACTION_NEW("Remove Track", mpris_track, NULL, "list-remove",
 			_mpris_tracklist_remove_track, _mpris_check_item);
@@ -1151,55 +1143,47 @@ module_init(void)
   actions = eina_list_append(actions, act);
   act->data = "Play";
   
-  
   act = EVRY_ACTION_NEW("Pause", mpris_track, NULL, "media-playback-pause",
 			_mpris_player_action, _mpris_check_item);
   evry_action_register(act,  prio--);
   actions = eina_list_append(actions, act);
   act->data = "Pause";
-
   
   act = EVRY_ACTION_NEW("Stop", mpris_track, NULL, "media-playback-stop",
 			_mpris_player_action, _mpris_check_item);
   evry_action_register(act,  prio--);
   actions = eina_list_append(actions, act);
   act->data = "Stop";
-
   
   act = EVRY_ACTION_NEW("Forward", mpris_track, NULL, "media-seek-forward",
 			_mpris_player_position, _mpris_check_item);
   evry_action_register(act,  prio--);
   actions = eina_list_append(actions, act);
   act->data = "Forward";
-
   
   act = EVRY_ACTION_NEW("Rewind", mpris_track, NULL, "media-seek-backward",
 			_mpris_player_position, _mpris_check_item);
   evry_action_register(act,  prio--);
   actions = eina_list_append(actions, act);
   act->data = "Rewind";
-
   
   act = EVRY_ACTION_NEW("Clear Playlist", mpris_track, NULL, "media-playlist-clear",
 			_mpris_tracklist_action_clear , _mpris_check_item);
   evry_action_register(act,  prio--);
   actions = eina_list_append(actions, act);
   act->data = "Clear";
-
   
   act = EVRY_ACTION_NEW("Enqueue File", "FILE", NULL, "list-add",
 			_mpris_play_file, _mpris_check_file);
   evry_action_register(act,  prio--);
   actions = eina_list_append(actions, act);
   act->data = "e";
-
   
   act = EVRY_ACTION_NEW("Play File", "FILE", NULL, "media-playback-start",
 			_mpris_play_file, _mpris_check_file);
   evry_action_register(act,  1);
   actions = eina_list_append(actions, act);
   act->data = "p";
-
   
   act = EVRY_ACTION_NEW("Add Files...", mpris_track, "FILE", "list-add",
   			_mpris_add_files, NULL);
@@ -1214,17 +1198,11 @@ module_init(void)
   actions = eina_list_append(actions, act);
 
 
-  /* act = EVRY_ACTION_NEW("Enqueue Files", NULL, "FILE", NULL, "list-add",
-   * 			 _mpris_play_file, NULL, NULL, NULL,NULL);
-   * act->data = "e";
-   * evry_action_register(act,  prio--);
-   * actions = eina_list_append(actions, act); */
-
   return EINA_TRUE;
 }
 
 static void
-module_shutdown(void)
+_plugins_shutdown(void)
 {
   Evry_Action *act;
 
@@ -1238,7 +1216,6 @@ module_shutdown(void)
 }
 
 /***************************************************************************/
-/**/
 
 static E_Module *_module = NULL;
 static Eina_Bool _active = EINA_FALSE;
@@ -1262,8 +1239,18 @@ e_modapi_init(E_Module *m)
 
   _module = m;
 
+  conn = e_dbus_bus_get(DBUS_BUS_SESSION);
+
+  if (!conn) return NULL;
+
+  cb_name_owner_changed = e_dbus_signal_handler_add
+    (conn, fdo_bus_name, fdo_path, fdo_interface, "NameOwnerChanged",
+     _dbus_cb_name_owner_changed, NULL);
+
+  e_dbus_list_names(conn, _dbus_cb_list_names, NULL);
+  
   if (e_datastore_get("everything_loaded"))
-    _active = module_init();
+    _active = _plugins_init();
    
   e_module_delayed_set(m, 1); 
 
@@ -1276,7 +1263,7 @@ e_modapi_shutdown(E_Module *m)
   char *player;
 
   if (_active && e_datastore_get("everything_loaded"))
-    module_shutdown();
+    _plugins_shutdown();
 
   if (conn)
     {
@@ -1298,6 +1285,5 @@ e_modapi_save(E_Module *m)
   return 1;
 }
 
-/**/
 /***************************************************************************/
 
