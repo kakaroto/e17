@@ -138,7 +138,7 @@ int ed_twitter_post(int account_id, char *screen_name, char *password, char *pro
 		if(res != -1) {
 			res  = asprintf(&request->url,"%s://%s:%d%s/statuses/update.xml", proto, domain, port, base_url);
 			if(res != -1) {
-				res = ed_curl_post(screen_name, password, request, ub_status);
+				res = ed_curl_post(screen_name, password, request, ub_status, account_id);
 
 				free(ub_status);
 				free(request->url);
@@ -210,7 +210,7 @@ void ed_twitter_timeline_get(int account_id, char *screen_name, char *password, 
 	if(xml_res != -1) {
 		if (debug) printf("gnome-open %s\n", request->url);
 
-		ed_curl_get(screen_name, password, request);
+		ed_curl_get(screen_name, password, request, account_id);
 
 		ed_twitter_init_friends();
 		xmlSubstituteEntitiesDefault(1);
@@ -243,7 +243,7 @@ void ed_twitter_favorite_create(int account_id, char *screen_name, char *passwor
 
 	res = asprintf(&request->url, "%s://%s:%d%s/favorites/create/%ld.xml", proto, domain, port, base_url, status_id);
 	if(res != -1) {
-		ed_curl_post(screen_name, password, request, "");
+		ed_curl_post(screen_name, password, request, "", account_id);
 		free(request->url);
 	}
 	if(request) free(request);
@@ -271,7 +271,7 @@ void ed_twitter_favorite_destroy(int account_id, char *screen_name, char *passwo
 	ed_twitter_favorite_db_remove(account_id, status_id);
 	res = asprintf(&request->url, "%s://%s:%d%s/favorites/destroy/%ld.xml", proto, domain, port, base_url, status_id);
 	if(res != -1) {
-		ed_curl_post(screen_name, password, request, "");
+		ed_curl_post(screen_name, password, request, "", account_id);
 		free(request->url);
 	}
 	if(request) free(request);
@@ -309,7 +309,7 @@ void ed_twitter_statuses_get_avatar(char *screen_name) {
 			if(file != -1) {
 				request = calloc(1, sizeof(http_request));
 				request->url=avatar;
-				res = ed_curl_get(NULL, NULL, request);
+				res = ed_curl_get(NULL, NULL, request, -1);
 				if(res == 0)
 					res=write(file, request->content.memory, request->content.size);
 				close(file);
@@ -596,21 +596,23 @@ void ed_twitter_users_show_characters(void *user_data, const xmlChar * ch, int l
 			user->hash_error = tmp2;
 		}
 	} else if(user->state == US_HASH_REQUEST && ch && len>0) {
-		tmp = user->hash_request;
+		//tmp = user->hash_request;
 		tmp2 = strndup((char*)ch, len);
-		if(tmp) {
-			res = asprintf(&user->hash_request, "%s%s",tmp,tmp2);
-			free(tmp);
+		if(user->hash_request) {
+			res = asprintf(&tmp, "%s%s",user->hash_request,tmp2);
+			free(user->hash_request);
+			user->hash_request = tmp;
 			free(tmp2);
 		} else {
 			user->hash_request = tmp2;
 		}
 	} else if(user->state == US_NAME && ch && len>0) {
-		tmp = user->name;
+		//tmp = user->name;
 		tmp2 = strndup((char*)ch, len);
-		if(tmp) {
-			res = asprintf(&user->name, "%s%s",tmp,tmp2);
-			free(tmp);
+		if(user->name) {
+			res = asprintf(&tmp, "%s%s",user->name,tmp2);
+			free(user->name);
+			user->name = tmp;
 			free(tmp2);
 		} else {
 			user->name = tmp2;
@@ -666,11 +668,12 @@ void ed_twitter_users_show_characters(void *user_data, const xmlChar * ch, int l
 			user->tmp = tmp2;
 		}
 	} else if(user->state == US_FOLLOWING && ch && len>0) {
-		tmp = user->tmp;
+		//tmp = user->tmp;
 		tmp2 = strndup((char*)ch, len);
-		if(tmp) {
-			res = asprintf(&user->tmp, "%s%s",tmp,tmp2);
-			free(tmp);
+		if(user->tmp) {
+			res = asprintf(&tmp, "%s%s",user->tmp,tmp2);
+			free(user->tmp);
+			user->tmp = tmp;
 			free(tmp2);
 		} else {
 			user->tmp = tmp2;
@@ -690,7 +693,8 @@ void ed_twitter_init_users_show(UserProfile *user) {
 }
 
 static int ed_twitter_user_get_handler(void *data, int argc, char **argv, char **azColName) {
-	UserProfile *user = (UserProfile*)data;
+	UserGet *ug=(UserGet*)data;
+	UserProfile *user = ug->user;
     char *screen_name=NULL, *password=NULL, *proto=NULL, *domain=NULL, *base_url=NULL;
     int port=0, id=0, xml_res;
 	http_request * request=calloc(1, sizeof(http_request));
@@ -721,12 +725,12 @@ static int ed_twitter_user_get_handler(void *data, int argc, char **argv, char *
 	if(xml_res != -1) {
 		if (debug) printf("gnome-open %s\n", request->url);
 
-		ed_curl_get(screen_name, password, request);
+		ed_curl_get(screen_name, password, request, ug->account_id);
 
 		ed_twitter_init_users_show(user);
 		xmlSubstituteEntitiesDefault(1);
 
-		xml_res = xmlSAXUserParseMemory(&saxHandler, data, request->content.memory, request->content.size);
+		xml_res = xmlSAXUserParseMemory(&saxHandler, (void*)user, request->content.memory, request->content.size);
 
 		if(xml_res != 0) {
 			fprintf(stderr,_("FAILED TO SAX USERS SHOW: %d\n"),xml_res);
@@ -751,10 +755,13 @@ static int ed_twitter_user_get_handler(void *data, int argc, char **argv, char *
 void ed_twitter_user_get(int account_id, UserProfile *user) {
 	char *query=NULL, *db_err=NULL;
 	int sqlite_res;
+	UserGet ug;
 	
+	ug.user=user;
+	ug.account_id=account_id;
 	sqlite_res = asprintf(&query, "SELECT name,password,type,proto,domain,port,base_url,id FROM accounts WHERE id = %d and type = %d and enabled = 1;", account_id, ACCOUNT_TYPE_TWITTER);
 	if(sqlite_res != -1) {
-		sqlite_res = sqlite3_exec(ed_DB, query, ed_twitter_user_get_handler, (void*)user, &db_err);
+		sqlite_res = sqlite3_exec(ed_DB, query, ed_twitter_user_get_handler, (void*)&ug, &db_err);
 		if(sqlite_res != 0) {
 			fprintf(stderr, "Can't run %s: %d = %s\n", query, sqlite_res, db_err);
 			sqlite3_free(db_err);
@@ -769,7 +776,9 @@ void ed_twitter_user_follow(int account_id, char *screen_name, char *password, c
 
 	res = asprintf(&request->url, "%s://%s:%d%s/friendships/create.xml?screen_name=%s", proto, domain, port, base_url, user_screen_name);
 	if(res != -1) {
-		ed_curl_post(screen_name, password, request, "");
+		ed_curl_post(screen_name, password, request, "", account_id);
+		if(debug && request->response_code != 200)
+			printf("User follow failed with response code %ld\n", request->response_code);
 		free(request->url);
 	}
 	if(request) free(request);
@@ -780,7 +789,9 @@ void ed_twitter_user_abandon(int account_id, char *screen_name, char *password, 
 
 	res = asprintf(&request->url, "%s://%s:%d%s/friendships/destroy.xml?screen_name=%s", proto, domain, port, base_url, user_screen_name);
 	if(res != -1) {
-		ed_curl_post(screen_name, password, request, "");
+		ed_curl_post(screen_name, password, request, "", account_id);
+		if(debug && request->response_code != 200)
+			printf("User abandon failed with response code %ld\n", request->response_code);
 		free(request->url);
 	}
 	if(request) free(request);

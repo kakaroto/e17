@@ -45,6 +45,13 @@ extern char * url_post;
 extern char * url_friends;
 extern int debug;
 
+Eina_Hash *user_agents=NULL;
+
+
+void user_agent_free(void *data) {
+	curl_easy_cleanup((CURL*)data);
+}
+
 void show_curl_error(CURLcode curl_res, MemoryStruct * chunk) {
 	Evas_Object *box=NULL, *frame=NULL, *label=NULL, *button=NULL;
 	int res=0;
@@ -87,26 +94,27 @@ void show_curl_error(CURLcode curl_res, MemoryStruct * chunk) {
 	evas_object_show(error_win);
 }
 
-static void *my_realloc(void *ptr, size_t size) {
-        if(ptr)
-                return realloc(ptr, size);
-        else
-                return malloc(size);
-}
-
 size_t write_data(void *ptr, size_t size, size_t nmemb, void *userp) {
 	MemoryStruct *mem = (MemoryStruct *)userp;
+	char *newMem = NULL;
 	size_t realsize = size*nmemb;
 
-	mem->memory = my_realloc(mem->memory, mem->size + realsize + 1);
+	newMem = malloc(mem->size + realsize + 1);
 
-	if (mem->memory) {
-		memcpy(&(mem->memory[mem->size]), ptr, realsize);
+	//mem->memory = my_realloc(mem->memory, mem->size + realsize + 1);
+
+	//if (mem->memory) {
+	if (newMem) {
+		memcpy(newMem, mem->memory, mem->size);
+		memcpy(&(newMem[mem->size]), ptr, realsize);
+		//memcpy(&(mem->memory[mem->size]), ptr, realsize);
+		free(mem->memory);
+		mem->memory=newMem;
 		mem->size += realsize;
 		mem->memory[mem->size] = 0;
+		return(realsize);
 	}
-
-	return(realsize);
+	return(0);
 }
 
 
@@ -123,9 +131,10 @@ char *ed_curl_escape(char *unescaped) {
 	return escaped;
 }
 
-CURL * ed_curl_init(char *screen_name, char *password, http_request * request) {
+CURL * ed_curl_init(char *screen_name, char *password, http_request * request, int account_id) {
 	CURL *ua=NULL;
 	int res = 0;
+	char *key=NULL;
 
 	ua = curl_easy_init();
 
@@ -135,26 +144,28 @@ CURL * ed_curl_init(char *screen_name, char *password, http_request * request) {
 		else
 			curl_easy_setopt(ua, CURLOPT_VERBOSE,		0				);
 
-		curl_easy_setopt(ua, CURLOPT_URL,		request->url			);
+		curl_easy_setopt(ua, CURLOPT_WRITEFUNCTION,     write_data      );
 
-		curl_easy_setopt(ua, CURLOPT_WRITEDATA, 	(void *)&(request->content)	);
-		curl_easy_setopt(ua, CURLOPT_WRITEFUNCTION,     write_data      		);
-
-
-		if(screen_name != NULL && password != NULL) {
+		if(account_id >= 0 && screen_name != NULL && password != NULL) {
 			res = asprintf(&userpwd, "%s:%s", screen_name, password);
 			if(res != -1)
-				curl_easy_setopt(ua, CURLOPT_USERPWD,   userpwd         		);
+				curl_easy_setopt(ua, CURLOPT_USERPWD,   userpwd         );
 		}
 	}
+
+	res = asprintf(&key, "%d", account_id);
+	if(res!=-1) {
+		eina_hash_add(user_agents, key, (void*)ua);
+	}
+
 	return(ua);
 }
 
-gint ed_curl_get(char *screen_name, char *password, http_request * request) {
+gint ed_curl_get(char *screen_name, char *password, http_request * request, int account_id) {
 	CURLcode res;
 	CURL *ua=NULL;
-	char *userpwd=NULL;
 	double	content_length=0;
+	char *key=NULL;
 
 	if(request ==NULL)
 		return 2;
@@ -162,36 +173,49 @@ gint ed_curl_get(char *screen_name, char *password, http_request * request) {
 	if(request->url == NULL || strlen(request->url) <= 0)
 		return 3;
 
-	ua = ed_curl_init(screen_name, password, request);
+	if(!user_agents) user_agents = eina_hash_string_superfast_new(user_agent_free);
 
-	if(ua) {
+	res = asprintf(&key, "%d", account_id);
+	if(res!=-1) {
+		ua = (CURL*)eina_hash_find(user_agents, key);
+		free(key);
+	} else return(6);
 
-		curl_easy_setopt(ua, CURLOPT_HTTPGET,		1L				);
+	if(!ua) {
+		if(debug) printf("No handler, baking a new one\n");
+		ua = ed_curl_init(screen_name, password, request, account_id);
+		if(!ua) return(6);
+
+		curl_easy_setopt(ua, CURLOPT_HTTPGET,	1L				);
 		curl_easy_setopt(ua, CURLOPT_POST,		0L				);
-
-		res = curl_easy_perform(ua);
-
-		if(userpwd) free(userpwd);
-
-		curl_easy_getinfo(ua, CURLINFO_CONTENT_LENGTH_DOWNLOAD, &content_length);
-		if((res == 18 && content_length != -1) || res != 0) {
-			show_curl_error(res, &(request->content));
-			curl_easy_cleanup(ua);
-			return(4);
-		} else {
-			res = curl_easy_getinfo(ua, CURLINFO_RESPONSE_CODE, &request->response_code);
-			curl_easy_cleanup(ua);
-			return(0);
-		}
 	} else
-		return(6);
+		if(debug) printf("Already have a handler\n");
+
+	if(debug) printf("Prepping URL\n");
+	curl_easy_setopt(ua, CURLOPT_URL,		request->url	);
+	curl_easy_setopt(ua, CURLOPT_WRITEDATA, (void *)&(request->content)	);
+
+	if(debug) printf("Fetching URL\n");
+	res = curl_easy_perform(ua);
+
+	if(debug) printf("Get length:");
+	curl_easy_getinfo(ua, CURLINFO_CONTENT_LENGTH_DOWNLOAD, &content_length);
+	if(debug) printf("%lf\n", content_length);
+	if((res == 18 && content_length != -1) || res != 0) {
+		show_curl_error(res, &(request->content));
+		return(4);
+	} else {
+		res = curl_easy_getinfo(ua, CURLINFO_RESPONSE_CODE, &request->response_code);
+		if(debug) printf("Response code: %ld\n", request->response_code);
+		return(0);
+	}
 }
 
-gint ed_curl_post(char *screen_name, char *password, http_request * request, char * post_fields) {
+gint ed_curl_post(char *screen_name, char *password, http_request * request, char * post_fields, int account_id) {
 	CURLcode res;
 	CURL *ua=NULL;
-	char *userpwd=NULL;
 	double content_length=0;
+	char *key=NULL;
 
 	if(request ==NULL)
 		return 2;
@@ -199,25 +223,36 @@ gint ed_curl_post(char *screen_name, char *password, http_request * request, cha
 	if(request->url == NULL || strlen(request->url) <= 0)
 		return 3;
 
-	ua = ed_curl_init(screen_name, password, request);
+	if(!user_agents) user_agents = eina_hash_int32_new(user_agent_free);
 
-	curl_easy_setopt(ua, CURLOPT_HTTPGET,		0L				);
-	curl_easy_setopt(ua, CURLOPT_POST,		1L				);
+	res = asprintf(&key, "%d", account_id);
+	if(res!=-1) {
+		ua = (CURL*)eina_hash_find(user_agents, key);
+		free(key);
+	} else return(6);
+
+	if(!ua) {
+		ua = ed_curl_init(screen_name, password, request, account_id);
+		if(!ua) return(6);
+
+		curl_easy_setopt(ua, CURLOPT_HTTPGET,	0L				);
+		curl_easy_setopt(ua, CURLOPT_POST,		1L				);
+	}
+
+	curl_easy_setopt(ua, CURLOPT_URL,		request->url	);
+	curl_easy_setopt(ua, CURLOPT_WRITEDATA, (void *)&(request->content)	);
+
 	if(post_fields)
 		curl_easy_setopt(ua, CURLOPT_POSTFIELDS,	post_fields			);
 
 	res = curl_easy_perform(ua);
 
-	free(userpwd);
-
 	curl_easy_getinfo(ua, CURLINFO_CONTENT_LENGTH_DOWNLOAD, &content_length);
 	if((res == 18 && content_length != -1) || res != 0) {
 		show_curl_error(res, &(request->content));
-		curl_easy_cleanup(ua);
 		return(4);
 	} else {
 		res = curl_easy_getinfo(ua, CURLINFO_RESPONSE_CODE, &request->response_code);
-		curl_easy_cleanup(ua);
 		return(0);
 	}
 }
@@ -226,3 +261,19 @@ void ed_curl_cleanup(CURL * ua) {
 	curl_easy_cleanup(ua);
 }
 
+void ed_curl_ua_cleanup(int account_id) {
+	char *key = NULL;
+	int res = 0;
+	CURL *ua;
+
+	if(!user_agents) return;
+
+	res = asprintf(&key, "%d", account_id);
+	if(res != -1) {
+		ua = (CURL*)eina_hash_find(user_agents, key);
+		if(ua) {
+			eina_hash_del(user_agents, key, ed_curl_cleanup);
+		}
+		free(key);
+	}
+}

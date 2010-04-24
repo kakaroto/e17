@@ -141,6 +141,7 @@ void on_account_enabled_toggle(void *data, Evas_Object *check, void *event_info)
 		sqlite_res = asprintf(&query, "UPDATE accounts set enabled='%d' where id='%d';", 1, *id);
 	} else {
 		sqlite_res = asprintf(&query, "UPDATE accounts set enabled='%d' where id='%d';", 0, *id);
+		ed_curl_ua_cleanup(*id);
 	}
 
 	if(sqlite_res != -1) {

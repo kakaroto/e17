@@ -32,12 +32,14 @@ typedef struct _http_request {
 	long			response_code;
 } http_request;
 
-int ed_curl_get(char *screen_name, char *password, http_request * request);
+int ed_curl_get(char *screen_name, char *password, http_request * request, int account_id);
 
 char *ed_curl_escape(char *unescaped);
 
-int ed_curl_post(char *screen_name, char *password, http_request * request, char * post_fields);
+int ed_curl_post(char *screen_name, char *password, http_request * request, char * post_fields, int account_id);
 
 void ed_curl_cleanup(CURL * ua);
+
+void ed_curl_ua_cleanup(int account_id);
 
 #endif

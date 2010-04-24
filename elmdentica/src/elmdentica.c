@@ -517,6 +517,12 @@ static void on_handle_user(void *data, Evas_Object *obj, void *event_info) {
 
 	memset(user, 0, sizeof(UserProfile));
 	user->screen_name=(char*)event_info;
+    user->name=NULL;
+    user->description=NULL;
+    user->profile_image_url=NULL;
+    user->tmp=NULL;
+    user->hash_error=NULL;
+    user->hash_request=NULL;
 
 	url_win = elm_win_inwin_add(win);
 		elm_object_style_set(url_win, "minimal_vertical");
@@ -1417,6 +1423,8 @@ EAPI int elm_main(int argc, char **argv)
 
 
 	if(settings->fullscreen) toggle_fullscreen(settings->fullscreen);
+
+	curl_global_init(CURL_GLOBAL_ALL);
 
 	elm_run();
 	elm_shutdown();
