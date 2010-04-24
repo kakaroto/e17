@@ -139,8 +139,7 @@ _item_free(Evry_Item *it)
   if (t->album) eina_stringshare_del(t->album);
   if (t->title) eina_stringshare_del(t->title);
 
-  if (!t->ready)
-    dbus_pending_call_cancel(t->pnd);
+  if (t->pnd) dbus_pending_call_cancel(t->pnd);
    
   E_FREE(t);
 }
@@ -205,7 +204,9 @@ _dbus_cb_tracklist_metadata(void *data, DBusMessage *reply, DBusError *error)
   p->fetch_tracks--;
 
   DBG("add %i", t->id);
-   
+
+  t->pnd = NULL;
+  
   if (!_dbus_check_msg(reply, error)) goto error;
 
   dbus_message_iter_init(reply, &array);
