@@ -30,10 +30,6 @@ struct _Module_Config
 
   const char *lang;
   const char *browser;
-  const char *trigger_google;
-  const char *trigger_wiki;
-  unsigned char search_google;
-  unsigned char search_wiki;
   
   E_Config_Dialog *cfd;
   E_Module *module;
@@ -51,6 +47,9 @@ static char _header[] =
   "User-Agent: Wget/1.12 (linux-gnu)\n"
   "Accept: */*\n"
   "Connection: Keep-Alive\n\n";
+
+static char _trigger_google[] = "g ";
+static char _trigger_wiki[] = "w ";
 
 int
 _server_data(void *data, int ev_type, Ecore_Con_Event_Server_Data *ev)
@@ -117,9 +116,6 @@ _begin(Evry_Plugin *plugin, const Evry_Item *it)
 {
   PLUGIN(p, plugin);
 
-  if (!_conf->search_google && (p == _plug1)) return NULL;
-  if (!_conf->search_wiki   && (p == _plug2)) return NULL;
-  
   p->handler = ecore_event_handler_add(ECORE_CON_EVENT_SERVER_DATA,
 				       (Handler_Func)_server_data, p);
   return plugin;
@@ -285,7 +281,7 @@ module_init(void)
   EVRY_PLUGIN_NEW(_plug1, "GSuggest", type_subject, "", "TEXT",
 		  _begin, _cleanup, _fetch, NULL, NULL);
 
-  EVRY_PLUGIN(_plug1)->trigger = _conf->trigger_google;
+  EVRY_PLUGIN(_plug1)->trigger = _trigger_google;
   EVRY_PLUGIN(_plug1)->icon = "text-html";
   EVRY_PLUGIN(_plug1)->complete = &_complete;
   evry_plugin_register(EVRY_PLUGIN(_plug1), 10);
@@ -296,7 +292,7 @@ module_init(void)
     "GET http://%s.wikipedia.org/w/api.php?action=opensearch&search=%s HTTP/1.0\n%s";
   EVRY_PLUGIN_NEW(_plug2, "Wikipedia", type_subject, "", "TEXT",
 		  _begin, _cleanup, _fetch, NULL, NULL);
-  EVRY_PLUGIN(_plug2)->trigger = _conf->trigger_wiki;
+  EVRY_PLUGIN(_plug2)->trigger = _trigger_wiki;
   EVRY_PLUGIN(_plug2)->complete = &_complete;
   EVRY_PLUGIN(_plug2)->icon = "text-html";
   evry_plugin_register(EVRY_PLUGIN(_plug2), 9);
@@ -341,10 +337,6 @@ struct _E_Config_Dialog_Data
 {
   char *browser;
   char *lang;
-  char *trigger_google;
-  char *trigger_wiki;
-  int search_wiki;
-  int search_google;  
 };
 
 static void *_create_data(E_Config_Dialog *cfd);
@@ -401,24 +393,6 @@ _basic_create(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cfdata)
   ow = e_widget_entry_add(evas, &cfdata->lang, NULL, NULL, NULL); 
   e_widget_framelist_object_append(of, ow);
 
-  ow = e_widget_check_add(evas, _("Search Google"),
-			  &(cfdata->search_google));
-  e_widget_framelist_object_append(of, ow);
-
-  ow = e_widget_label_add(evas, _("Trigger for Google"));
-  e_widget_framelist_object_append(of, ow);
-  ow = e_widget_entry_add(evas, &cfdata->trigger_google, NULL, NULL, NULL); 
-  e_widget_framelist_object_append(of, ow);
-
-  ow = e_widget_check_add(evas, _("Search Wikipedia"),
-			  &(cfdata->search_wiki));
-  e_widget_framelist_object_append(of, ow);
-  
-  ow = e_widget_label_add(evas, _("Trigger for Wikipedia"));
-  e_widget_framelist_object_append(of, ow);
-  ow = e_widget_entry_add(evas, &cfdata->trigger_wiki, NULL, NULL, NULL); 
-  e_widget_framelist_object_append(of, ow);
-
   e_widget_list_object_append(o, of, 1, 1, 0.5);
   return o;
 }
@@ -438,8 +412,6 @@ _free_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
 {
   E_FREE(cfdata->browser);
   E_FREE(cfdata->lang);
-  E_FREE(cfdata->trigger_google);
-  E_FREE(cfdata->trigger_wiki);
   _conf->cfd = NULL;
   E_FREE(cfdata);
 }
@@ -451,10 +423,6 @@ _fill_data(E_Config_Dialog_Data *cfdata)
 #define C(_name) cfdata->_name = _conf->_name;
   CP(browser);
   CP(lang);
-  CP(trigger_google);
-  CP(trigger_wiki);
-  C(search_google);
-  C(search_wiki);  
 #undef CP
 #undef C
 }
@@ -469,10 +437,6 @@ _basic_apply(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
 #define C(_name) _conf->_name = cfdata->_name;  
   CP(browser);
   CP(lang);
-  CP(trigger_google);
-  CP(trigger_wiki);
-  C(search_google);
-  C(search_wiki);  
 #undef CP
 #undef C
 
@@ -494,10 +458,6 @@ _conf_new(void)
   IFMODCFG(0x008d);
   _conf->browser = eina_stringshare_add("firefox");
   _conf->lang = eina_stringshare_add("en");
-  _conf->trigger_google = eina_stringshare_add("g ");
-  _conf->trigger_wiki = eina_stringshare_add("w ");
-  _conf->search_wiki = 1;
-  _conf->search_google = 1;
   IFMODCFGEND;
 
   _conf->version = MOD_CONFIG_FILE_VERSION;
@@ -511,8 +471,6 @@ _conf_free(void)
 {
   if (_conf)
     {
-      eina_stringshare_del(_conf->trigger_google); 
-      eina_stringshare_del(_conf->trigger_wiki); 
       eina_stringshare_del(_conf->browser); 
       eina_stringshare_del(_conf->lang); 
 
@@ -544,10 +502,6 @@ _conf_init(E_Module *m)
   E_CONFIG_VAL(D, T, version, INT);
   E_CONFIG_VAL(D, T, browser, STR);
   E_CONFIG_VAL(D, T, lang, STR);
-  E_CONFIG_VAL(D, T, search_google, UCHAR);
-  E_CONFIG_VAL(D, T, trigger_google, STR);
-  E_CONFIG_VAL(D, T, search_wiki, UCHAR);
-  E_CONFIG_VAL(D, T, trigger_wiki, STR);
 #undef T
 #undef D
 
