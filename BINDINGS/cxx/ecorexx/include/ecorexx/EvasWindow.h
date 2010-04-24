@@ -45,24 +45,12 @@ public:
 
   /* Events */
   void setEventEnabled( Event, bool );
-  virtual void resizeEvent();
-  virtual void moveEvent();
-  virtual void showEvent();
-  virtual void hideEvent();
-  virtual void deleteRequestEvent();
-  virtual void destroyEvent();
-  virtual void focusInEvent();
-  virtual void focusOutEvent();
-  virtual void mouseInEvent();
-  virtual void mouseOutEvent();
-  virtual void preRenderEvent();
-  virtual void postRenderEvent();
 
   /*!
-   * \return A boolean specifying whether the window should be closed upon a delete request or not.
-   *         The default implementation returns true.
+   * \param quit A boolean specifying whether the app should be quit upon a delete request or not.
+   *             default is false
    */
-  virtual bool canClose() const;
+  bool quitOnDelete (bool quit);
 
   static bool isEngineTypeSupported (EngineType et);
 
@@ -102,7 +90,7 @@ public:
 
   void setCursor( const char* file, int layer, int hot_x, int hot_y );
   // void        ecore_evas_cursor_get(Ecore_Evas *ee, char **file, int *layer, int *hot_x, int *hot_y);
-
+  
   void setLayer( int layer );
   int getLayer() const;
 
@@ -132,7 +120,34 @@ public:
 
   void setSticky( int on );
   int isSticky() const;
+  
+  // event callbacks
+  void resizeEvent();
+  void moveEvent();
+  void showEvent();
+  void hideEvent();
+  void deleteRequestEvent();
+  void destroyEvent();
+  void focusInEvent();
+  void focusOutEvent();
+  void mouseInEvent();
+  void mouseOutEvent();
+  void preRenderEvent();
+  void postRenderEvent();
 
+  sigc::signal <void, const EvasWindow&> resizeSignal;
+  sigc::signal <void, const EvasWindow&> moveSignal;
+  sigc::signal <void, const EvasWindow&> showSignal;
+  sigc::signal <void, const EvasWindow&> hideSignal;
+  sigc::signal <void, const EvasWindow&> deleteRequestSignal;
+  sigc::signal <void, const EvasWindow&> destroySignal;
+  sigc::signal <void, const EvasWindow&> focusInSignal;
+  sigc::signal <void, const EvasWindow&> focusOutSignal;
+  sigc::signal <void, const EvasWindow&> mouseInSignal;
+  sigc::signal <void, const EvasWindow&> mouseOutSignal;
+  sigc::signal <void, const EvasWindow&> preRenderSignal;
+  sigc::signal <void, const EvasWindow&> postRenderSignal;
+  
 protected:
   Evasxx::Canvas *_canvas;
   Ecore_Evas *_ee;
@@ -143,6 +158,8 @@ protected:
 private:
   bool operator=( const EvasWindow& );
   bool operator==( const EvasWindow& );
+  
+  bool mQuit;
 };
 
 class EvasWindowSoftwareX11 : public EvasWindow

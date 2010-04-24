@@ -40,8 +40,9 @@ ECORE_EVAS_CALLBACK( callback_mouse_out_dispatcher, mouseOutEvent )
 ECORE_EVAS_CALLBACK( callback_pre_render_dispatcher, preRenderEvent )
 ECORE_EVAS_CALLBACK( callback_post_render_dispatcher, postRenderEvent )
 
-EvasWindow::EvasWindow()
-    :Trackable( "EvasWindow" )
+EvasWindow::EvasWindow() :
+  Trackable ("EvasWindow"),
+  mQuit (false)
 {
   // initialize the Evas backend
   ecore_evas_init ();
@@ -120,64 +121,76 @@ void EvasWindow::resizeEvent()
   Dout( dc::notice, " - evas viewport size = " << _canvas->viewport() );
   Dout( dc::notice, " - evas output   size = " << _canvas->size() );
   //FIXME: Resize manually if not fullscreen
+  
+  resizeSignal.emit (*this);
 }
 
 void EvasWindow::moveEvent()
 {
   Dout( dc::notice, "EvasWindow::moveEvent()" );
+  moveSignal.emit (*this);
 }
 
 void EvasWindow::showEvent()
 {
   Dout( dc::notice, "EvasWindow::showEvent()" );
+  showSignal.emit (*this);
 }
 
 void EvasWindow::hideEvent()
 {
   Dout( dc::notice, "EvasWindow::hideEvent()" );
+  hideSignal.emit (*this);
 }
 
 
 void EvasWindow::deleteRequestEvent()
 {
   Dout( dc::notice, "EvasWindow::deleteRequestEvent()" );
-  if ( canClose() ) Application::quit();
+  if (mQuit) Application::quit();
+  deleteRequestSignal.emit (*this);
 }
 
 void EvasWindow::destroyEvent()
 {
   Dout( dc::notice, "EvasWindow::destroyEvent()" );
+  destroySignal.emit (*this);
 }
-
 
 void EvasWindow::focusInEvent()
 {
   Dout( dc::notice, "EvasWindow::focusInEvent()" );
+  focusInSignal.emit (*this);
 }
 
 void EvasWindow::focusOutEvent()
 {
   Dout( dc::notice, "EvasWindow::focusOutEvent()" );
+  focusOutSignal.emit (*this);
 }
 
 void EvasWindow::mouseInEvent()
 {
   Dout( dc::notice, "EvasWindow::mouseInEvent()" );
+  mouseInSignal.emit (*this);
 }
 
 void EvasWindow::mouseOutEvent()
 {
   Dout( dc::notice, "EvasWindow::mouseOutEvent()" );
+  mouseOutSignal.emit (*this);
 }
 
 void EvasWindow::preRenderEvent()
 {
   Dout( dc::notice, "EvasWindow::preRenderEvent()" );
+  preRenderSignal.emit (*this);
 }
 
 void EvasWindow::postRenderEvent()
 {
   Dout( dc::notice, "EvasWindow::postRenderEvent()" );
+  postRenderSignal.emit (*this);
 }
 
 bool EvasWindow::isEngineTypeSupported (EngineType et)
@@ -185,9 +198,9 @@ bool EvasWindow::isEngineTypeSupported (EngineType et)
   return ecore_evas_engine_type_supported_get (static_cast <Ecore_Evas_Engine_Type> (et));
 }
 
-bool EvasWindow::canClose() const
+bool EvasWindow::quitOnDelete (bool quit)
 {
-  return true;
+  mQuit = quit;
 }
 
 void EvasWindow::move( const Eflxx::Point& point )
