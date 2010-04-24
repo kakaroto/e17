@@ -15,13 +15,13 @@ struct _Plugin
   Ecore_Con_Server *svr;
   Ecore_Event_Handler *handler;
   Ecore_Timer *timer;
-  
-  const char *input;  
+
+  const char *input;
   const char *server_address;
   const char *request;
-  
+
   int (*fetch) (void *data);
-  
+
 };
 
 struct _Module_Config
@@ -30,7 +30,7 @@ struct _Module_Config
 
   const char *lang;
   const char *browser;
-  
+
   E_Config_Dialog *cfd;
   E_Module *module;
   char *theme;
@@ -50,6 +50,8 @@ static char _header[] =
 
 static char _trigger_google[] = "g ";
 static char _trigger_wiki[] = "w ";
+static char _config_path[] =  "extensions/everything-websearch";
+static char _config_domain[] =  "module.everything-websearch";
 
 int
 _server_data(void *data, int ev_type, Ecore_Con_Event_Server_Data *ev)
@@ -60,34 +62,34 @@ _server_data(void *data, int ev_type, Ecore_Con_Event_Server_Data *ev)
   char *list;
 
   /* printf("- %s\n", result); */
-  
+
   if (ev->server != p->svr) return 1;
 
   EVRY_PLUGIN_ITEMS_FREE(p);
 
-  if ((list = strstr(result, "[[\""))) 
+  if ((list = strstr(result, "[[\"")))
     {
       list += 3;
 
       char **items = eina_str_split(list, "\"],[\"", 0);
       char **i;
-	  
+
       for(i = items; *i; i++)
 	{
-	  char **item= eina_str_split(*i, "\",\"", 2);	      
+	  char **item= eina_str_split(*i, "\",\"", 2);
 	  it = evry_item_new(NULL, EVRY_PLUGIN(p), *item, NULL);
 	  it->detail = eina_stringshare_add(*(item + 1));
 	  EVRY_PLUGIN_ITEM_APPEND(p, it);
 	  free(*item);
 	  free(item);
 	}
-	  
+
       free(*items);
       free(items);
 
       evry_plugin_async_update (EVRY_PLUGIN(p), EVRY_ASYNC_UPDATE_ADD);
     }
-  else if ((list = strstr(result, ",[\""))) 
+  else if ((list = strstr(result, ",[\"")))
     {
       list += 3;
 
@@ -100,14 +102,14 @@ _server_data(void *data, int ev_type, Ecore_Con_Event_Server_Data *ev)
 	  it->detail = eina_stringshare_add("Wikipedia");
 	  EVRY_PLUGIN_ITEM_APPEND(p, it);
 	}
-	  
+
       free(*items);
       free(items);
 
     }
   if (EVRY_PLUGIN(p)->items)
     evry_plugin_async_update (EVRY_PLUGIN(p), EVRY_ASYNC_UPDATE_ADD);
-  
+
   return 1;
 }
 
@@ -128,10 +130,10 @@ _cleanup(Evry_Plugin *plugin)
 
   if (p->svr) ecore_con_server_del(p->svr);
   p->svr = NULL;
-  
+
   ecore_event_handler_del(p->handler);
   p->handler = NULL;
-  
+
   EVRY_PLUGIN_ITEMS_FREE(p);
 }
 
@@ -150,20 +152,20 @@ _send_request(void *data)
 
   if (p->svr)
     {
-      query = evry_util_url_escape(p->input, 0); 
-  
+      query = evry_util_url_escape(p->input, 0);
+
       snprintf(buf, sizeof(buf), p->request,
   	       _conf->lang, query, _header);
 
       /* printf("send: %s\n", buf); */
-  
+
       ecore_con_server_send(p->svr, buf, strlen(buf));
     }
 
   free(query);
-  
+
   p->timer = NULL;
-  
+
   return 0;
 }
 
@@ -171,7 +173,7 @@ static int
 _fetch(Evry_Plugin *plugin, const char *input)
 {
   PLUGIN(p, plugin);
-  
+
   if (p->input)
     eina_stringshare_del(p->input);
   p->input = NULL;
@@ -179,13 +181,13 @@ _fetch(Evry_Plugin *plugin, const char *input)
   if (p->timer)
     ecore_timer_del(p->timer);
   p->timer = NULL;
-  
+
   if (input && strlen(input) > 2)
-    {        
-      p->input = eina_stringshare_add(input);  
+    {
+      p->input = eina_stringshare_add(input);
       p->timer = ecore_timer_add(0.3, _send_request, p);
     }
-  
+
   return 0;
 }
 
@@ -197,7 +199,7 @@ _action(Evry_Action *act)
   char buf[1024];
   Eina_List *l;
   E_Border *bd;
-  
+
   app->desktop = efreet_util_desktop_exec_find(_conf->browser);
   if (!app->desktop)
     app->file = "xdg-open";
@@ -217,9 +219,9 @@ _action(Evry_Action *act)
       snprintf(buf, sizeof(buf), "http://www.google.com/search?hl=%s&q=%s&btnI=745",
 	       _conf->lang, act->item1->label);
     }
-  
+
   file->path = buf;
-  
+
   evry_util_exec_app(EVRY_ITEM(app), EVRY_ITEM(file));
 
   if (app->desktop)
@@ -246,7 +248,7 @@ _act_icon_get(Evry_Action *act, Evas *e)
   Evas_Object *o = e_icon_add(e);
   if (e_icon_file_edje_set(o, _conf->theme, act->data))
     return o;
-  
+
   evas_object_del(o);
 
   return NULL;
@@ -257,20 +259,18 @@ _complete(Evry_Plugin *p, const Evry_Item *item, char **input)
 {
   char buf[128];
   snprintf(buf, sizeof(buf), "%s ", item->label);
-  
+
   *input = strdup(buf);
-     
+
   return EVRY_COMPLETE_INPUT;
 }
 
-
-
 static Eina_Bool
-module_init(void)
+_module_init(void)
 {
   if (!evry_api_version_check(EVRY_API_VERSION))
     return EINA_FALSE;
-  
+
   if (!ecore_con_init())
     return EINA_FALSE;
 
@@ -284,6 +284,7 @@ module_init(void)
   EVRY_PLUGIN(_plug1)->trigger = _trigger_google;
   EVRY_PLUGIN(_plug1)->icon = "text-html";
   EVRY_PLUGIN(_plug1)->complete = &_complete;
+  EVRY_PLUGIN(_plug1)->config_path = _config_path;
   evry_plugin_register(EVRY_PLUGIN(_plug1), 10);
 
   _plug2 = E_NEW(Plugin, 1);
@@ -293,16 +294,17 @@ module_init(void)
   EVRY_PLUGIN_NEW(_plug2, "Wikipedia", type_subject, "", "TEXT",
 		  _begin, _cleanup, _fetch, NULL, NULL);
   EVRY_PLUGIN(_plug2)->trigger = _trigger_wiki;
-  EVRY_PLUGIN(_plug2)->complete = &_complete;
   EVRY_PLUGIN(_plug2)->icon = "text-html";
+  EVRY_PLUGIN(_plug2)->complete = &_complete;
+  EVRY_PLUGIN(_plug2)->config_path = _config_path;
   evry_plugin_register(EVRY_PLUGIN(_plug2), 9);
 
-  
+
   _act1 = EVRY_ACTION_NEW("Google for it", "TEXT", NULL, "go-next", _action, NULL);
   evry_action_register(_act1, 1);
   _act1->data = "google";
   _act1->icon_get = &_act_icon_get;
-  
+
   _act2 = EVRY_ACTION_NEW("Wikipedia Page", "TEXT", NULL, "go-next", _action, NULL);
   evry_action_register(_act2, 1);
   _act2->data = "wikipedia";
@@ -317,21 +319,21 @@ module_init(void)
 }
 
 static void
-module_shutdown(void)
+_module_shutdown(void)
 {
   EVRY_PLUGIN_FREE(_plug1);
   EVRY_PLUGIN_FREE(_plug2);
 
-  evry_action_free(_act1); 
-  evry_action_free(_act2); 
-  evry_action_free(_act3); 
+  evry_action_free(_act1);
+  evry_action_free(_act2);
+  evry_action_free(_act3);
   ecore_con_shutdown();
 }
 
 /***************************************************************************/
 
 
-static E_Config_DD *conf_edd = NULL;
+static E_Config_DD *_conf_edd = NULL;
 
 struct _E_Config_Dialog_Data
 {
@@ -352,7 +354,7 @@ _conf_dialog(E_Container *con, const char *params)
   E_Config_Dialog_View *v = NULL;
   char buf[4096];
 
-  if (e_config_dialog_find("everything-websearch", "extensions/everything-websearch"))
+  if (e_config_dialog_find(_config_path, _config_path))
     return NULL;
 
   v = E_NEW(E_Config_Dialog_View, 1);
@@ -365,10 +367,9 @@ _conf_dialog(E_Container *con, const char *params)
 
   snprintf(buf, sizeof(buf), "%s/e-module.edj", _conf->module->dir);
 
-  cfd = e_config_dialog_new(con, _("Everything Websearch"), "everything-websearch",
-			    "extensions/everything-websearch", buf, 0, v, NULL);
+  cfd = e_config_dialog_new(con, _("Everything Websearch"),
+			    _config_path, _config_path, buf, 0, v, NULL);
 
-  /* e_dialog_resizable_set(cfd->dia, 1); */
   _conf->cfd = cfd;
   return cfd;
 }
@@ -385,12 +386,12 @@ _basic_create(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cfdata)
 
   ow = e_widget_label_add(evas, _("Browser"));
   e_widget_framelist_object_append(of, ow);
-  ow = e_widget_entry_add(evas, &cfdata->browser, NULL, NULL, NULL); 
+  ow = e_widget_entry_add(evas, &cfdata->browser, NULL, NULL, NULL);
   e_widget_framelist_object_append(of, ow);
 
   ow = e_widget_label_add(evas, _("Language"));
   e_widget_framelist_object_append(of, ow);
-  ow = e_widget_entry_add(evas, &cfdata->lang, NULL, NULL, NULL); 
+  ow = e_widget_entry_add(evas, &cfdata->lang, NULL, NULL, NULL);
   e_widget_framelist_object_append(of, ow);
 
   e_widget_list_object_append(o, of, 1, 1, 0.5);
@@ -434,13 +435,13 @@ _basic_apply(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
   if (_conf->_name)						\
     eina_stringshare_del(_conf->_name);				\
   _conf->_name = eina_stringshare_add(cfdata->_name);
-#define C(_name) _conf->_name = cfdata->_name;  
+#define C(_name) _conf->_name = cfdata->_name;
   CP(browser);
   CP(lang);
 #undef CP
 #undef C
 
-  e_config_domain_save("module.everything-websearch", conf_edd, _conf);
+  e_config_domain_save(_config_domain, _conf_edd, _conf);
   e_config_save_queue();
   return 1;
 }
@@ -462,7 +463,6 @@ _conf_new(void)
 
   _conf->version = MOD_CONFIG_FILE_VERSION;
 
-  e_config_domain_save("module.everything-websearch", conf_edd, _conf);
   e_config_save_queue();
 }
 
@@ -471,8 +471,8 @@ _conf_free(void)
 {
   if (_conf)
     {
-      eina_stringshare_del(_conf->browser); 
-      eina_stringshare_del(_conf->lang); 
+      eina_stringshare_del(_conf->browser);
+      eina_stringshare_del(_conf->lang);
 
       free(_conf->theme);
 
@@ -490,22 +490,22 @@ _conf_init(E_Module *m)
   e_configure_registry_category_add("extensions", 80, _("Extensions"),
 				    NULL, "preferences-extensions");
 
-  e_configure_registry_item_add("extensions/everything-websearch", 110, _("Everything Websearch"),
+  e_configure_registry_item_add(_config_path, 110, _("Everything Websearch"),
 				NULL, buf, _conf_dialog);
 
-  conf_edd = E_CONFIG_DD_NEW("Module_Config", Module_Config);
-   
+  _conf_edd = E_CONFIG_DD_NEW("Module_Config", Module_Config);
+
 #undef T
 #undef D
 #define T Module_Config
-#define D conf_edd
+#define D _conf_edd
   E_CONFIG_VAL(D, T, version, INT);
   E_CONFIG_VAL(D, T, browser, STR);
   E_CONFIG_VAL(D, T, lang, STR);
 #undef T
 #undef D
 
-  _conf = e_config_domain_load("module.everything-websearch", conf_edd);
+  _conf = e_config_domain_load(_config_domain, _conf_edd);
 
   if (_conf && !evry_util_module_config_check(_("Everything Websearch"), _conf->version,
 					      MOD_CONFIG_FILE_EPOCH, MOD_CONFIG_FILE_VERSION))
@@ -522,16 +522,15 @@ _conf_shutdown(void)
 {
   _conf_free();
 
-  E_CONFIG_DD_FREE(conf_edd);
+  E_CONFIG_DD_FREE(_conf_edd);
 }
 
-static E_Module *module = NULL;
 static Eina_Bool _active = EINA_FALSE;
 
 /***************************************************************************/
 /**/
 /* module setup */
-EAPI E_Module_Api e_modapi = 
+EAPI E_Module_Api e_modapi =
   {
     E_MODULE_API_VERSION,
     PACKAGE
@@ -545,14 +544,15 @@ e_modapi_init(E_Module *m)
   snprintf(buf, sizeof(buf), "%s/locale", e_module_dir_get(m));
   bindtextdomain(PACKAGE, buf);
   bind_textdomain_codeset(PACKAGE, "UTF-8");
-  
-  if (e_datastore_get("everything_loaded"))
+
+  _conf_init(m);
+  if (!_module_init())
     {
-      _conf_init(m);      
-      _active = module_init();
+      _conf_shutdown();
+      return 0;
     }
-  
-  e_module_delayed_set(m, 1); 
+
+  e_module_delayed_set(m, 1);
 
   return m;
 }
@@ -560,20 +560,18 @@ e_modapi_init(E_Module *m)
 EAPI int
 e_modapi_shutdown(E_Module *m)
 {
-  if (_active && e_datastore_get("everything_loaded"))
-    module_shutdown();
-
+  _module_shutdown();
   _conf_shutdown();
-  
+
   return 1;
 }
 
 EAPI int
 e_modapi_save(E_Module *m)
 {
+  e_config_domain_save(_config_domain, _conf_edd, _conf);
   return 1;
 }
 
 /**/
 /***************************************************************************/
-
