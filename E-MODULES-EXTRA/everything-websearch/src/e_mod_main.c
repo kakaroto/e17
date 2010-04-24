@@ -37,21 +37,23 @@ struct _Module_Config
 };
 
 static Module_Config *_conf;
+static char _config_path[] =  "extensions/" PACKAGE;
+static char _config_domain[] = "module." PACKAGE;
+static E_Config_DD *_conf_edd = NULL;
 
 static Plugin *_plug1 = NULL;
 static Plugin *_plug2 = NULL;
 static Evry_Action *_act1 = NULL;
 static Evry_Action *_act2 = NULL;
 static Evry_Action *_act3 = NULL;
+
+static char _trigger_google[] = "g ";
+static char _trigger_wiki[] = "w ";
+
 static char _header[] =
   "User-Agent: Wget/1.12 (linux-gnu)\n"
   "Accept: */*\n"
   "Connection: Keep-Alive\n\n";
-
-static char _trigger_google[] = "g ";
-static char _trigger_wiki[] = "w ";
-static char _config_path[] =  "extensions/everything-websearch";
-static char _config_domain[] =  "module.everything-websearch";
 
 int
 _server_data(void *data, int ev_type, Ecore_Con_Event_Server_Data *ev)
@@ -266,12 +268,9 @@ _complete(Evry_Plugin *p, const Evry_Item *item, char **input)
 }
 
 static Eina_Bool
-_module_init(void)
+_plugins_init(void)
 {
   if (!evry_api_version_check(EVRY_API_VERSION))
-    return EINA_FALSE;
-
-  if (!ecore_con_init())
     return EINA_FALSE;
 
   _plug1 = E_NEW(Plugin, 1);
@@ -319,7 +318,7 @@ _module_init(void)
 }
 
 static void
-_module_shutdown(void)
+_plugins_shutdown(void)
 {
   EVRY_PLUGIN_FREE(_plug1);
   EVRY_PLUGIN_FREE(_plug2);
@@ -327,13 +326,9 @@ _module_shutdown(void)
   evry_action_free(_act1);
   evry_action_free(_act2);
   evry_action_free(_act3);
-  ecore_con_shutdown();
 }
 
 /***************************************************************************/
-
-
-static E_Config_DD *_conf_edd = NULL;
 
 struct _E_Config_Dialog_Data
 {
@@ -525,11 +520,8 @@ _conf_shutdown(void)
   E_CONFIG_DD_FREE(_conf_edd);
 }
 
-static Eina_Bool _active = EINA_FALSE;
-
 /***************************************************************************/
-/**/
-/* module setup */
+
 EAPI E_Module_Api e_modapi =
   {
     E_MODULE_API_VERSION,
@@ -545,11 +537,15 @@ e_modapi_init(E_Module *m)
   bindtextdomain(PACKAGE, buf);
   bind_textdomain_codeset(PACKAGE, "UTF-8");
 
+  if (!ecore_con_init())
+    return NULL;
+  
   _conf_init(m);
-  if (!_module_init())
+  
+  if (!_plugins_init())
     {
       _conf_shutdown();
-      return 0;
+      return NULL;
     }
 
   e_module_delayed_set(m, 1);
@@ -560,9 +556,13 @@ e_modapi_init(E_Module *m)
 EAPI int
 e_modapi_shutdown(E_Module *m)
 {
-  _module_shutdown();
+  if (e_datastore_get("everything_loaded"))
+    _plugins_shutdown();
+
   _conf_shutdown();
 
+  ecore_con_shutdown();
+  
   return 1;
 }
 
