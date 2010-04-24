@@ -124,11 +124,11 @@ getBuddyInfo(Evry_Item* item, const char *method,
 					   DBUS_PIDGIN_INTERFACE,
 					   method)))
     return;
-      
+
   dbus_message_append_args(msg,
 			   DBUS_TYPE_INT32, &(info->buddyListNumber),
 			   DBUS_TYPE_INVALID);
-  
+
   e_dbus_message_send(conn, msg, cb, -1, item);
   dbus_message_unref(msg);
 }
@@ -145,7 +145,7 @@ getBuddyIconReference(Evry_Item* item)
 					   DBUS_PIDGIN_INTERFACE,
 					   PURPLE_GET_BUDDYICONREF)))
     return;
-	
+
   dbus_message_append_args(msg,
 			   DBUS_TYPE_INT32, &(info->accountNr),
 			   DBUS_TYPE_STRING,&(info->networkID),
@@ -159,14 +159,14 @@ getBuddyIconPath(Evry_Item* item)
 {
   //get associated icon's entire path in order to display it
   buddyInfo* info = item->data;
-  DBusMessage *msg;  
+  DBusMessage *msg;
 
   if (!(msg = dbus_message_new_method_call(DBUS_PIDGIN_BUS_NAME,
 					   DBUS_PIDGIN_PATH,
 					   DBUS_PIDGIN_INTERFACE,
 					   PURPLE_GET_BUDDYICONPATH)))
     return;
-	
+
   dbus_message_append_args(msg,
 			   DBUS_TYPE_INT32, &(info->iconReference),
 			   DBUS_TYPE_INVALID);
@@ -176,7 +176,7 @@ getBuddyIconPath(Evry_Item* item)
 
 static int
 check_msg(void *data, DBusMessage *reply, DBusError *error)
-{  
+{
   if (dbus_error_is_set(error))
     {
       DBG("Error: %s - %s\n", error->name, error->message);
@@ -193,7 +193,7 @@ cb_buddyList(void *data, DBusMessage *reply, DBusError *error)
   buddyInfo *bi;
 
   if (!active || !check_msg(data, reply, error)) return;
-  
+
   dbus_message_iter_init(reply, &itr);
   dbus_message_iter_recurse(&itr, &arr);
 
@@ -203,7 +203,7 @@ cb_buddyList(void *data, DBusMessage *reply, DBusError *error)
       if (!(item = evry_item_new(NULL, plug, NULL, cb_itemFree)) ||
 	  !(bi = E_NEW(buddyInfo, 1)))
 	break;
-      
+
       dbus_message_iter_get_basic(&arr, (dbus_int32_t*) &(bi->buddyListNumber));
       item->data = bi;
       bi->iconReference = -1;
@@ -216,7 +216,7 @@ cb_buddyList(void *data, DBusMessage *reply, DBusError *error)
       getBuddyInfo(item, PURPLE_GET_BUDDYALIAS, cb_buddyAlias);
 
       buddyEveryItems = eina_list_append(buddyEveryItems, item);
-	  
+
       dbus_message_iter_next(&arr);
 
     }
@@ -227,7 +227,7 @@ static void
 cb_buddyAccount(void *data, DBusMessage *reply, DBusError *error)
 {
   if (!active || !check_msg(data, reply, error)) return;
-  
+
   buddyInfo* info = EVRY_ITEM(data)->data;
 
   dbus_message_get_args(reply, error,
@@ -274,9 +274,9 @@ static void
 cb_buddyIconReference(void *data, DBusMessage *reply, DBusError *error)
 {
   if (!active || !check_msg(data, reply, error)) return;
-  
+
   buddyInfo* info = EVRY_ITEM(data)->data;
-  
+
   if (dbus_message_get_args(reply, error,
 			    DBUS_TYPE_INT32, &(info->iconReference),
 			    DBUS_TYPE_INVALID))
@@ -301,7 +301,7 @@ cb_buddyIconPath(void *data, DBusMessage *reply, DBusError *error)
 			DBUS_TYPE_INVALID);
 
   info->iconPath = eina_stringshare_add(tmpString);
-  
+
   _item_add(data);
 }
 
@@ -338,11 +338,11 @@ _cleanup(Evry_Plugin *p)
   /* free instances */
   active = 0;
   Evry_Item *it;
-  
+
   EINA_LIST_FREE(buddyEveryItems, it)
     evry_item_free(it);
 
-  EVRY_PLUGIN_ITEMS_CLEAR(p);  
+  EVRY_PLUGIN_ITEMS_CLEAR(p);
 }
 
 Evas_Object *
@@ -371,7 +371,7 @@ cb_itemFree(Evry_Item *item)
   E_FREE(info);
   E_FREE(item);
 }
-  
+
 static void
 _update_list()
 {
@@ -379,7 +379,7 @@ _update_list()
   Eina_List *l;
 
   EVRY_PLUGIN_ITEMS_CLEAR(plug);
-  
+
   EINA_LIST_FOREACH(buddyEveryItems, l, it)
     {
       buddyInfo* info;
@@ -393,7 +393,7 @@ _update_list()
 
       EVRY_PLUGIN_ITEM_APPEND(plug, it);
     }
-  
+
   plug->items = evry_fuzzy_match_sort(plug->items);
 }
 
@@ -425,7 +425,7 @@ cb_sendFile(void *data, DBusMessage *reply, DBusError *error)
   ITEM_FILE(file, act->item2);
 
   if (!check_msg(data, reply, error)) goto end;
-      
+
   dbus_message_get_args(reply, error,
 			DBUS_TYPE_INT32, (dbus_int32_t*) &(connection),
 			DBUS_TYPE_INVALID);
@@ -440,7 +440,7 @@ cb_sendFile(void *data, DBusMessage *reply, DBusError *error)
   dbus_message_append_args(msg,
 			   DBUS_TYPE_INT32, &(connection),
 			   DBUS_TYPE_STRING, &(info->networkID),
-			   DBUS_TYPE_STRING, &(file->path),			    
+			   DBUS_TYPE_STRING, &(file->path),
 			   DBUS_TYPE_INVALID);
 
   e_dbus_message_send(conn, msg, NULL, -1, NULL);
@@ -462,11 +462,11 @@ _action_send(Evry_Action *act)
 					   DBUS_PIDGIN_INTERFACE,
 					   "PurpleAccountGetConnection")))
     return 0;
-      
+
   dbus_message_append_args(msg,
 			   DBUS_TYPE_INT32, &(info->accountNr),
 			   DBUS_TYPE_INVALID);
-  
+
   e_dbus_message_send(conn, msg, cb_sendFile, -1, act);
   dbus_message_unref(msg);
 
@@ -474,7 +474,7 @@ _action_send(Evry_Action *act)
      but we need to wait for the connection.. */
   evry_item_ref((Evry_Item *)act->item1);
   evry_item_ref((Evry_Item *)act->item2);
-   
+
   return EVRY_ACTION_FINISHED;
 }
 
@@ -488,7 +488,7 @@ cb_sendMessage(void *data, DBusMessage *reply, DBusError *error)
   buddyInfo* info = act->item1->data;
 
   if (!check_msg(data, reply, error)) goto end;
-   
+
   dbus_message_get_args(reply, error,
 			DBUS_TYPE_INT32, (dbus_int32_t*) &(imData),
 			DBUS_TYPE_INVALID);
@@ -499,7 +499,7 @@ cb_sendMessage(void *data, DBusMessage *reply, DBusError *error)
 					   DBUS_PIDGIN_INTERFACE,
 					   "PurpleConvImSend")))
     goto end;
-   
+
   dbus_message_append_args(msg,
 			   DBUS_TYPE_INT32,  &(imData),
 			   DBUS_TYPE_STRING, &(act->item2->label),
@@ -524,7 +524,7 @@ cb_getImData(void *data, DBusMessage *reply, DBusError *error)
 
   if (!act->item2)
     goto end;
-   
+
   dbus_message_get_args(reply, error,
 			DBUS_TYPE_INT32, (dbus_int32_t*) &(conversation),
 			DBUS_TYPE_INVALID);
@@ -544,7 +544,7 @@ cb_getImData(void *data, DBusMessage *reply, DBusError *error)
   dbus_message_unref(msg);
 
   return;
-   
+
  end:
   evry_item_free((Evry_Item *)act->item1);
   if (act->item2)
@@ -573,7 +573,7 @@ _action_chat(Evry_Action *act)
 			   DBUS_TYPE_INVALID);
 
   e_dbus_message_send(conn, msg, cb_getImData, -1, act);
-   
+
   dbus_message_unref(msg);
 
   /* when action returns and everything hides items will be freed,
@@ -587,25 +587,19 @@ _action_chat(Evry_Action *act)
 
 
 static Eina_Bool
-module_init(void)
+_plugins_init(void)
 {
   if (!evry_api_version_check(EVRY_API_VERSION))
     return EINA_FALSE;
-
-  if (!(conn = e_dbus_bus_get(DBUS_BUS_SESSION)))
-    {
-      EINA_LOG_CRIT("could not connect to dbus' session bus");
-      return EINA_FALSE;
-    }
 
   plug = EVRY_PLUGIN_NEW(NULL, "Pidgin", type_subject, NULL, "PIDGINCONTACT",
 			 _begin, _cleanup, _fetch, _icon_get, NULL);
 
   evry_plugin_register(plug, 1);
-  
+
   act = EVRY_ACTION_NEW("Chat", "PIDGINCONTACT", NULL, "go-next",
 			_action_chat, NULL);
-  
+
   act2 = EVRY_ACTION_NEW("Send File", "PIDGINCONTACT", "FILE", NULL,
 			 _action_send, NULL);
 
@@ -620,7 +614,7 @@ module_init(void)
 }
 
 static void
-module_shutdown(void)
+_plugins_shutdown(void)
 {
   EVRY_PLUGIN_FREE(plug);
 
@@ -629,15 +623,12 @@ module_shutdown(void)
   evry_action_free(act3);
 }
 
-
 /***************************************************************************/
-/**/
-/* module setup */
 
 static E_Module *_module = NULL;
 static Eina_Bool _active = EINA_FALSE;
 
-EAPI E_Module_Api e_modapi = 
+EAPI E_Module_Api e_modapi =
   {
     E_MODULE_API_VERSION,
     PACKAGE
@@ -655,9 +646,6 @@ e_modapi_init(E_Module *m)
 
   _module = m;
 
-  if (e_datastore_get("everything_loaded"))
-    _active = module_init();
-
   if (_evry_plugin_source_pidgin_log_dom < 0)
     {
       _evry_plugin_source_pidgin_log_dom =
@@ -669,8 +657,18 @@ e_modapi_init(E_Module *m)
 	  return NULL;
 	}
     }
-  
-  e_module_delayed_set(m, 1); 
+
+  if (!(conn = e_dbus_bus_get(DBUS_BUS_SESSION)))
+    {
+      EINA_LOG_CRIT("could not connect to dbus' session bus");
+      eina_log_domain_unregister(_evry_plugin_source_pidgin_log_dom);
+      return NULL;
+    }
+
+  if (e_datastore_get("everything_loaded"))
+    _active = _plugins_init();
+
+  e_module_delayed_set(m, 1);
 
   return m;
 }
@@ -679,13 +677,18 @@ EAPI int
 e_modapi_shutdown(E_Module *m)
 {
   if (_active && e_datastore_get("everything_loaded"))
-    module_shutdown();
+    _plugins_shutdown();
 
   eina_log_domain_unregister(_evry_plugin_source_pidgin_log_dom);
   _evry_plugin_source_pidgin_log_dom = -1;
 
+  if (conn)
+    {
+      e_dbus_connection_close(conn);
+    }
+
   _module = NULL;
-   
+
   return 1;
 }
 
@@ -695,6 +698,4 @@ e_modapi_save(E_Module *m)
   return 1;
 }
 
-/**/
 /***************************************************************************/
-
