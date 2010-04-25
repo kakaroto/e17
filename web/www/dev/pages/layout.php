@@ -18,15 +18,15 @@
 
     <script type="text/javascript">
         var gOverride = {
-//             urlBase: 'http://gridder.andreehansson.se/releases/latest/',
-            gColor: '#00f',
-            gColumns: 12,
-            gOpacity: 0.10,
-            gWidth: 9,
-            pColor: '#00f',
-            pHeight: 18,
-            pOffset: 0,
-            pOpacity: 0.15,
+            urlBase: 'http://gridder.andreehansson.se/releases/latest/',
+            gColor: '#00F',
+            gColumns: 4,
+            gOpacity: 0.2,
+            gWidth: 8,
+            pColor: '#00F',
+            pHeight: 16,
+            pOffset: 16,
+            pOpacity: 0.2,
             center: true,
             gEnabled: true,
             pEnabled: true,
@@ -39,6 +39,7 @@
 </head>
 
 <body class="<?php echo $page ?>">
+<div id="grid"></div>
 <div id="everything">
 
     <div id="header">

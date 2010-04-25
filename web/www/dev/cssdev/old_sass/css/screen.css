@@ -53,14 +53,14 @@ html {
 
 body {
   font-size: 75%;
-  color: #222;
-  background: #fff;
+  color: #222222;
+  background: white;
   font-family: "Helvetica Neue", Arial, Helvetica, sans-serif;
 }
 
 h1, h2, h3, h4, h5, h6 {
   font-weight: normal;
-  color: #111;
+  color: #111111;
 }
 
 h1 {
@@ -115,16 +115,16 @@ p img.right {
 }
 
 a {
-  color: #009;
+  color: #000099;
   text-decoration: underline;
 }
 a:focus, a:hover {
-  color: #000;
+  color: black;
 }
 
 blockquote {
   margin: 1.5em;
-  color: #666;
+  color: #666666;
   font-style: italic;
 }
 
@@ -146,7 +146,7 @@ sup, sub {
 }
 
 abbr, acronym {
-  border-bottom: 1px dotted #666;
+  border-bottom: 1px dotted #666666;
 }
 
 address {
@@ -155,7 +155,7 @@ address {
 }
 
 del {
-  color: #666;
+  color: #666666;
 }
 
 pre {
@@ -224,7 +224,7 @@ tfoot {
 }
 
 caption {
-  background: #eee;
+  background: #eeeeee;
 }
 
 label {
@@ -234,7 +234,7 @@ label {
 fieldset {
   padding: 1.4em;
   margin: 0 0 1.5em 0;
-  border: 1px solid #ccc;
+  border: 1px solid #cccccc;
 }
 
 legend {
@@ -243,21 +243,21 @@ legend {
 }
 
 input[type=text], input[type=password], input.text, input.title {
-  background-color: #fff;
-  border: 1px solid #bbb;
+  background-color: white;
+  border: 1px solid #bbbbbb;
 }
 
 textarea, select {
-  background-color: #fff;
-  border: 1px solid #bbb;
+  background-color: white;
+  border: 1px solid #bbbbbb;
 }
 
 input[type=text]:focus, input[type=password]:focus, input.text:focus, input.title:focus {
-  border-color: #666;
+  border-color: #666666;
 }
 
 textarea:focus, select:focus {
-  border-color: #666;
+  border-color: #666666;
 }
 
 input[type=text], input[type=password], input.text, input.title {
@@ -299,7 +299,7 @@ form.inline p {
 .error, .notice, .success {
   padding: 0.8em;
   margin-bottom: 1em;
-  border: 2px solid #ddd;
+  border: 2px solid #dddddd;
 }
 
 .error {

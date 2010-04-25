@@ -9,40 +9,14 @@
         Enlightenment Desktop Shell (E17) they outgrew that scope to become a
         portable and efficient foundation for embedded and desktop
         applications: The Enlightenment Foundation Libraries.</p>
+        <p class="button learn-more"><a href="<?php url_page('desktop') ?>"><span>The Desktop Shell</span></a> | <a href="<?php url_page('libraires') ?>"><span>The Development Libraries</span></a></p>
     </div>
 
     <div class="ad">
-        <p style="color: red">The library stack graphic with something that
-        relates it to e17.</p>
+        <p style="color: red">A pretty image about the diversity of deployment
+        of the Enlightenment proyect that includes E17 and some other
+        (preferably embedded) apps</p>
     </div>
-</div>
-
-<div class="introduction" id="desktop-shell">
-    <h3>The Desktop Shell</h3>
-
-    <p>Flagship of the enlightenment project features a lightweight yet
-    visually stunning window manager with a subset of the best amenities
-    provided in a full blown desktop enviroment like desktop icons, file
-    manager, configuration dialogs, panels and widgets, crash managent,
-    freedesktop.org compilant menus, etc. Hence it is called a desktop
-    shell.</p>
-
-    <p class="button learn-more"><a href="<?php url_page('desktop') ?>"><span>learn
-    more</span></a></p>
-</div>
-
-<div class="introduction" id="foundation-libraries">
-    <h3>The Foundation Libraries</h3>
-
-    <p>Initially focused on graphical interface development by sporting
-    different libraries, from window and framebuffer management to canvas
-    widgets. Now the libraries include compiletely independent members for
-    DBUS, advanced data structures, various freedesktop.org specifications,
-    etc. All suitable for any piece of software, even if it doesn't use the
-    other foundation libraries.</p>
-
-    <p class="button learn-more"><a href="<?php url_page('development') ?>"><span>learn
-    more</span></a></p>
 </div>
 
 <div id="project-history">
@@ -338,6 +312,13 @@
         this middle point between window manager and the desktop environment
         is the reason DR0.17 is referred to as a "desktop shell".</p>
     </div>
+</div>
+
+
+<div class="sponsors">
+    <h3>Sponsors</h3>
+    <p style="color: red">TODO: Add a dynamic sponsor listing along with link
+    to a list of all sponsors of all time.</p>
 </div>
 
 <div id="people">

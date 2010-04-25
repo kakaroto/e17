@@ -48,17 +48,17 @@ textarea {
 }
 
 input.text, input.title {
-  background-color: #fff;
-  border: 1px solid #bbb;
+  background-color: white;
+  border: 1px solid #bbbbbb;
 }
 
 textarea {
-  background-color: #fff;
-  border: 1px solid #bbb;
+  background-color: white;
+  border: 1px solid #bbbbbb;
 }
 
 input.text:focus, input.title:focus {
-  border-color: #666;
+  border-color: #666666;
 }
 input.text, input.title {
   margin: 0.5em 0;
