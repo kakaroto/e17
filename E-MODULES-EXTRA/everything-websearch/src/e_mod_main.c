@@ -68,12 +68,14 @@ _server_data(void *data, int ev_type, Ecore_Con_Event_Server_Data *ev)
   Evry_Item *it;
   char *list;
 
-  /* printf("- %s\n", result); */
-
   if (ev->server != p->svr) return 1;
 
   EVRY_PLUGIN_ITEMS_FREE(p);
 
+  it = evry_item_new(NULL, EVRY_PLUGIN(p), p->input, NULL);
+  it->context = eina_stringshare_ref(EVRY_PLUGIN(p)->name); 
+  EVRY_PLUGIN_ITEM_APPEND(p, it);      
+  
   if ((list = strstr(result, "[[\"")))
     {
       list += 3;
@@ -86,6 +88,7 @@ _server_data(void *data, int ev_type, Ecore_Con_Event_Server_Data *ev)
 	  char **item= eina_str_split(*i, "\",\"", 2);
 	  it = evry_item_new(NULL, EVRY_PLUGIN(p), *item, NULL);
 	  it->detail = eina_stringshare_add(*(item + 1));
+	  it->context = eina_stringshare_ref(EVRY_PLUGIN(p)->name); 
 	  EVRY_PLUGIN_ITEM_APPEND(p, it);
 	  free(*item);
 	  free(item);
@@ -107,6 +110,7 @@ _server_data(void *data, int ev_type, Ecore_Con_Event_Server_Data *ev)
 	  if (**i == ',' || **i == ']') continue;
 	  it = evry_item_new(NULL, EVRY_PLUGIN(p), *i, NULL);
 	  it->detail = eina_stringshare_add("Wikipedia");
+	  it->context = eina_stringshare_ref(EVRY_PLUGIN(p)->name); 
 	  EVRY_PLUGIN_ITEM_APPEND(p, it);
 	}
 
@@ -114,8 +118,8 @@ _server_data(void *data, int ev_type, Ecore_Con_Event_Server_Data *ev)
       free(items);
 
     }
-  if (EVRY_PLUGIN(p)->items)
-    evry_plugin_async_update (EVRY_PLUGIN(p), EVRY_ASYNC_UPDATE_ADD);
+
+  evry_plugin_async_update (EVRY_PLUGIN(p), EVRY_ASYNC_UPDATE_ADD);
 
   return 1;
 }
@@ -163,8 +167,6 @@ _send_request(void *data)
 
       snprintf(buf, sizeof(buf), p->request,
   	       _conf->lang, query, _header);
-
-      /* printf("send: %s\n", buf); */
 
       ecore_con_server_send(p->svr, buf, strlen(buf));
     }
