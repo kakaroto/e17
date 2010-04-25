@@ -19,6 +19,7 @@ struct _Plugin
   int tracklist_cnt;
   int fetch_tracks;
   Eina_List *tracks;
+  Eina_List *fetch;
 
   int next_track;
   
@@ -52,7 +53,6 @@ struct _Track
   int length;
   
   DBusPendingCall *pnd;
-  Eina_Bool ready;
 };
 
 static Plugin *_plug;
@@ -197,7 +197,7 @@ _dbus_cb_tracklist_metadata(void *data, DBusMessage *reply, DBusError *error)
 {
   DBusMessageIter array, item, iter, iter_val;
   Track *t = data;
-  int type;
+  int type, cnt = 0;
   char *key, *tmp;
   PLUGIN(p, EVRY_ITEM(t)->plugin);
    
@@ -292,19 +292,54 @@ _dbus_cb_tracklist_metadata(void *data, DBusMessage *reply, DBusError *error)
 
   DBG("add %s, %d", t->base.label, t->id);
 
-  t->ready = EINA_TRUE;
-   
   if (!p->input || evry_fuzzy_match(t->base.label, p->input))
     EVRY_PLUGIN_ITEM_APPEND(p, EVRY_ITEM(t));
 
   if (!p->fetch_tracks)
     {
+      Eina_List *l;
+      Track *t2;
+
+      EVRY_PLUGIN_ITEMS_CLEAR(p);
+
+      /* remove 'empty' item */
       if (p->tracks && p->tracks->next && p->tracks->data == p->empty)
-	p->tracks = eina_list_remove(p->tracks, p->empty);
-	
+      	p->tracks = eina_list_remove(p->tracks, p->empty);
+
+      l = p->tracks;
+      p->tracks = NULL;
+
+      /* merge old and new list, keep old when possible */
+      EINA_LIST_FREE(p->fetch, t)
+	{
+	  t2 = (l ? l->data : NULL);
+	  
+	  if (t2 && (t->id == t2->id) && (t->location == t2->location))
+	    {
+	      evry_item_free(EVRY_ITEM(t));
+	      p->tracks = eina_list_append(p->tracks, t2);
+	    }
+	  else
+	    {
+	      if (t2) evry_item_free(EVRY_ITEM(t2));    
+	      p->tracks = eina_list_append(p->tracks, t);
+	    }
+
+	  if (l) l = eina_list_remove_list(l, l);
+	}
+
+      EINA_LIST_FREE(l, t)
+	evry_item_free(EVRY_ITEM(t));
+      
+      EINA_LIST_FOREACH(p->tracks, l, t)
+	{
+	  if ((!p->input || evry_fuzzy_match(t->base.label, p->input)))
+	    EVRY_PLUGIN_ITEM_APPEND(p, t);
+	}
+
       _dbus_send_msg("/TrackList", "GetCurrentTrack",
 		     _dbus_cb_current_track, p); 
-   	
+
       evry_plugin_async_update(EVRY_PLUGIN(p), EVRY_ASYNC_UPDATE_ADD);
     }
    
@@ -312,8 +347,16 @@ _dbus_cb_tracklist_metadata(void *data, DBusMessage *reply, DBusError *error)
 
  error:
   if (!p->fetch_tracks)
-    evry_plugin_async_update(EVRY_PLUGIN(p), EVRY_ASYNC_UPDATE_ADD);
+    {
+      EVRY_PLUGIN_ITEMS_CLEAR(p);
+      
+      EINA_LIST_FREE(p->tracks, t)
+        evry_item_free(EVRY_ITEM(t));
 
+      p->tracks = p->fetch;
+      evry_plugin_async_update(EVRY_PLUGIN(p), EVRY_ASYNC_UPDATE_ADD);
+    }
+        
   p->tracks = eina_list_remove(p->tracks, t);
   evry_item_free(EVRY_ITEM(t));
    
@@ -328,11 +371,10 @@ _mpris_get_metadata(Plugin *p)
 
   DBG("tracklist changed %d, %d", p->tracklist_cnt, p->fetch_tracks);
   p->fetch_tracks = p->tracklist_cnt;
-   
-  EVRY_PLUGIN_ITEMS_CLEAR(p);
-   
-  EINA_LIST_FREE(p->tracks, t)
-    evry_item_free(EVRY_ITEM(t)); 
+  p->fetch = NULL;
+  
+  /* EINA_LIST_FREE(p->tracks, t)
+   *   evry_item_free(EVRY_ITEM(t));  */
    
   for (cnt = 0; cnt < p->fetch_tracks; cnt++)
     {
@@ -343,7 +385,7 @@ _mpris_get_metadata(Plugin *p)
       t->pnd = _dbus_send_msg_int("/TrackList", "GetMetadata",
 				  _dbus_cb_tracklist_metadata, t, cnt); 
 
-      p->tracks = eina_list_append(p->tracks, t);
+      p->fetch = eina_list_append(p->fetch, t);
     }
 
   if (!p->tracks)
@@ -458,10 +500,6 @@ _dbus_cb_status_change(void *data, DBusMessage *msg)
       /* XXX audacious.. */
       _dbus_send_msg("/Player", "GetStatus", _dbus_cb_get_status, p); 
     }
-  else
-    {
-      ERR("hooray!");
-    }
 }
 
 static Evry_Plugin *
@@ -548,7 +586,7 @@ _fetch(Evry_Plugin *plugin, const char *input)
    
   EINA_LIST_FOREACH(p->tracks, l, t)
     {
-      if (t->ready && (!input || evry_fuzzy_match(t->base.label, input)))
+      if (!input || evry_fuzzy_match(t->base.label, input))
 	EVRY_PLUGIN_ITEM_APPEND(p, t);
     }
   
@@ -575,44 +613,6 @@ _icon_get(Evry_Plugin *plugin, const Evry_Item *it, Evas *e)
 
   return NULL;
 }
-
-/* static void
- * _mpris_play_track_hack(void *data, DBusMessage *reply, DBusError *error)
- * {
- *    DBusMessage *msg;
- *    PLUGIN(p, data);
- * 
- *    if (!p->next_track)
- *      {
- * 	DBG("PLAY");
- * 	_dbus_send_msg("/Player", "Play", NULL, NULL);
- * 	return;
- *      }
- *    
- *    DBG("next %d", p->next_track);
- *    
- *    if (p->next_track > 0)
- *      {
- * 	DBG("NEXT");
- * 	msg = dbus_message_new_method_call(bus_name, "/Player",
- * 					   mpris_interface,
- * 					   "Next");
- * 	p->next_track--;
- *      }
- *    else
- *      {
- * 	DBG("PREV");
- * 	msg = dbus_message_new_method_call(bus_name, "/Player",
- * 					   mpris_interface,
- * 					   "Prev");
- * 	p->next_track++;
- *      }
- * 
- *    e_dbus_message_send(conn, msg, _mpris_play_track_hack, -1, p);
- *        
- *    dbus_message_unref(msg);
- * } */
-
 
 /** ACTIONS **/
 static int
