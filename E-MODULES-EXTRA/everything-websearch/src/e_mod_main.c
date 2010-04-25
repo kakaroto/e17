@@ -55,6 +55,11 @@ static char _header[] =
   "Accept: */*\n"
   "Connection: Keep-Alive\n\n";
 
+static char _request_goolge[] = "GET http://www.google.com/complete/search?hl=%s&output=text&q=\"%s\n%s";
+static char _request_wiki[]   = "GET http://%s.wikipedia.org/w/api.php?action=opensearch&search=%s HTTP/1.0\n%s";
+static char _address_google[] = "www.google.com";
+static char _address_wiki[]   = "www.wikipedia.org";
+
 int
 _server_data(void *data, int ev_type, Ecore_Con_Event_Server_Data *ev)
 {
@@ -273,35 +278,34 @@ _complete(Evry_Plugin *p, const Evry_Item *item, char **input)
 static Eina_Bool
 _plugins_init(void)
 {
+  Evry_Plugin *p;
+  
   if (!evry_api_version_check(EVRY_API_VERSION))
     return EINA_FALSE;
 
-  _plug1 = E_NEW(Plugin, 1);
-  _plug1->server_address = "www.google.com";
-  _plug1->request =
-    "GET http://www.google.com/complete/search?hl=%s&output=text&q=\"%s\n%s";
-  EVRY_PLUGIN_NEW(_plug1, "GSuggest", type_subject, "", "TEXT",
+  p = EVRY_PLUGIN_NEW(Plugin, "GSuggest", type_subject, "", "TEXT",
+		      _begin, _cleanup, _fetch, NULL, NULL);
+
+  p->trigger = _trigger_google;
+  p->icon = "text-html";
+  p->complete = &_complete;
+  p->config_path = _config_path;
+  _plug1 = (Plugin *) p;
+  _plug1->server_address = _address_google;
+  _plug1->request = _request_goolge;
+  evry_plugin_register(p, 10);
+  
+  p = EVRY_PLUGIN_NEW(Plugin, "Wikipedia", type_subject, "", "TEXT",
 		  _begin, _cleanup, _fetch, NULL, NULL);
-
-  EVRY_PLUGIN(_plug1)->trigger = _trigger_google;
-  EVRY_PLUGIN(_plug1)->icon = "text-html";
-  EVRY_PLUGIN(_plug1)->complete = &_complete;
-  EVRY_PLUGIN(_plug1)->config_path = _config_path;
-  evry_plugin_register(EVRY_PLUGIN(_plug1), 10);
-
-  _plug2 = E_NEW(Plugin, 1);
-  _plug2->server_address = "www.wikipedia.org";
-  _plug2->request =
-    "GET http://%s.wikipedia.org/w/api.php?action=opensearch&search=%s HTTP/1.0\n%s";
-  EVRY_PLUGIN_NEW(_plug2, "Wikipedia", type_subject, "", "TEXT",
-		  _begin, _cleanup, _fetch, NULL, NULL);
-  EVRY_PLUGIN(_plug2)->trigger = _trigger_wiki;
-  EVRY_PLUGIN(_plug2)->icon = "text-html";
-  EVRY_PLUGIN(_plug2)->complete = &_complete;
-  EVRY_PLUGIN(_plug2)->config_path = _config_path;
-  evry_plugin_register(EVRY_PLUGIN(_plug2), 9);
-
-
+  p->trigger = _trigger_wiki;
+  p->icon = "text-html";
+  p->complete = &_complete;
+  p->config_path = _config_path;
+  _plug2 = (Plugin *) p;
+  _plug2->server_address = _address_wiki;
+  _plug2->request = _request_wiki;
+  evry_plugin_register(p, 9);
+  
   _act1 = EVRY_ACTION_NEW("Google for it", "TEXT", NULL, "go-next", _action, NULL);
   evry_action_register(_act1, 1);
   _act1->data = "google";

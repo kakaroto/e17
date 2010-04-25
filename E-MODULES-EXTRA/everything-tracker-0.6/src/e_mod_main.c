@@ -392,22 +392,21 @@ _plugin_free(Evry_Plugin *plugin)
 static void
 _plugin_new(const char *name, int type, char *service, int max_hits, int begin)
 {
-  Plugin *p;
+  Evry_Plugin *pp;
 
-  p = E_NEW(Plugin, 1);
+  if (!begin)
+    pp = EVRY_PLUGIN_NEW(Plugin, name, type, "", "FILE",
+			 NULL, _cleanup, _fetch,
+			 _icon_get, _plugin_free);
+  else if (type == type_object)
+    pp = EVRY_PLUGIN_NEW(Plugin, name, type, "APPLICATION", "FILE",
+			 _begin, _cleanup, _fetch,
+			 _icon_get, _plugin_free);
+  PLUGIN(p, pp);
   p->condition = "";
   p->service = service;
   p->max_hits = max_hits;
   p->active = 0;
-
-  if (!begin)
-    EVRY_PLUGIN_NEW(p, name, type, "", "FILE",
-		    NULL, _cleanup, _fetch,
-		    _icon_get, _plugin_free);
-  else if (type == type_object)
-    EVRY_PLUGIN_NEW(p, name, type, "APPLICATION", "FILE",
-		    _begin, _cleanup, _fetch,
-		    _icon_get, _plugin_free);
 
   plugins = eina_list_append(plugins, p);
 
@@ -523,21 +522,10 @@ _get_name_owner(void *data __UNUSED__, DBusMessage *msg, DBusError *err)
 }
 
 static Eina_Bool
-module_init(void)
+_plugins_init(void)
 {
   if (!evry_api_version_check(EVRY_API_VERSION))
     return EINA_FALSE;
-
-  conn = e_dbus_bus_get(DBUS_BUS_SESSION);
-
-  if (!conn) return EINA_FALSE;
-
-  cb_name_owner_changed = e_dbus_signal_handler_add
-    (conn, fdo_bus_name, fdo_path, fdo_interface, "NameOwnerChanged",
-     _name_owner_changed, NULL);
-
-  pending_get_name_owner = e_dbus_get_name_owner
-    (conn, bus_name, _get_name_owner, NULL);
 
   _plugin_new("Folders",    type_subject, "Folders", 20, 0);
   _plugin_new("Images",     type_subject, "Images", 20, 0);
@@ -552,7 +540,7 @@ module_init(void)
 }
 
 static void
-module_shutdown(void)
+_plugins_shutdown(void)
 {
   Plugin *p;
   
@@ -590,8 +578,19 @@ e_modapi_init(E_Module *m)
 
   module = m;
 
+  conn = e_dbus_bus_get(DBUS_BUS_SESSION);
+
+  if (!conn) return NULL;
+
+  cb_name_owner_changed = e_dbus_signal_handler_add
+    (conn, fdo_bus_name, fdo_path, fdo_interface, "NameOwnerChanged",
+     _name_owner_changed, NULL);
+
+  pending_get_name_owner = e_dbus_get_name_owner
+    (conn, bus_name, _get_name_owner, NULL);
+
   if (e_datastore_get("everything_loaded"))
-    _active = module_init();
+    _active = _plugins_init();
    
   e_module_delayed_set(m, 1); 
 
@@ -602,7 +601,7 @@ EAPI int
 e_modapi_shutdown(E_Module *m)
 {
   if (_active && e_datastore_get("everything_loaded"))
-    module_shutdown();
+    _plugins_shutdown();
 
   if (conn)
     {

@@ -816,67 +816,50 @@ _icon_get(Evry_Plugin *p __UNUSED__, const Evry_Item *item, Evas *e)
 }
 
 static Eina_Bool
-module_init(void)
+_plugins_init(void)
 {
-  Plugin *p;
+  Evry_Plugin *p; 
   
   if (!evry_api_version_check(EVRY_API_VERSION))
     return EINA_FALSE;
-
-  conn = e_dbus_bus_get(DBUS_BUS_SESSION);
-
-  if (!conn) return EINA_FALSE;
-
-  cb_name_owner_changed = e_dbus_signal_handler_add
-    (conn, fdo_bus_name, fdo_path, fdo_interface, "NameOwnerChanged",
-     _name_owner_changed, NULL);
-
-  pending_get_name_owner = e_dbus_get_name_owner
-    (conn, bus_name, _get_name_owner, NULL);
-
   
-  p = E_NEW(Plugin, 1);
-  EVRY_PLUGIN_NEW(p, "Tracker", type_subject, "TRACKER_QUERY", "FILE",
+  p = EVRY_PLUGIN_NEW(Plugin, "Tracker", type_subject, "TRACKER_QUERY", "FILE",
   		  _begin, _cleanup, _fetch, _icon_get, NULL);
-  p->query = query_files;
+  PLUGIN(p1, p);
+  p1->query = query_files;
   plugins = eina_list_append(plugins, p);
-  evry_plugin_register(EVRY_PLUGIN(p), _prio++);
+  evry_plugin_register(p, _prio++);
   
-  
-  p = E_NEW(Plugin, 1);
-  EVRY_PLUGIN_NEW(p, "Tracker", type_object, "NONE", "FILE",
+  p = EVRY_PLUGIN_NEW(Plugin, "Tracker", type_object, "NONE", "FILE",
   		  _begin, _cleanup, _fetch, _icon_get, NULL);
-  p->query = query_files;
+  PLUGIN(p2, p);
+  p2->query = query_files;
   plugins = eina_list_append(plugins, p);
-  evry_plugin_register(EVRY_PLUGIN(p), _prio++);
+  evry_plugin_register(p, _prio++);
   
+  p = EVRY_PLUGIN_NEW(Plugin, "Albums", type_object, "TRACKER_MUSIC", "TRACKER_MUSIC",
+  		  _begin, _cleanup, _fetch, _icon_get, NULL);
+  p->history = EINA_FALSE;
+  PLUGIN(p3, p);
+  p3->query = query_albums;
+  p3->filter_result = EINA_TRUE;
+  plugins = eina_list_append(plugins, p);
+  evry_plugin_register(p, _prio++);
 
-  p = E_NEW(Plugin, 1);
-  EVRY_PLUGIN_NEW(p, "Albums", type_object, "TRACKER_MUSIC", "TRACKER_MUSIC",
-  		  _begin, _cleanup, _fetch, _icon_get, NULL);
-  p->query = query_albums;
-  p->filter_result = EINA_TRUE;
+  p = EVRY_PLUGIN_NEW(Plugin, "Artists", type_object, "TRACKER_MUSIC", "TRACKER_MUSIC",
+		      _begin, _cleanup, _fetch, _icon_get, NULL);
+  p->history = EINA_FALSE;
+  PLUGIN(p4, p);
+  p4->query = query_artists;
+  p4->filter_result = EINA_TRUE;
   plugins = eina_list_append(plugins, p);
-  evry_plugin_register(EVRY_PLUGIN(p), _prio++);
-  EVRY_PLUGIN(p)->history = EINA_FALSE;
-
-  p = E_NEW(Plugin, 1);
-  EVRY_PLUGIN_NEW(p, "Artists", type_object, "TRACKER_MUSIC", "TRACKER_MUSIC",
-  		  _begin, _cleanup, _fetch, _icon_get, NULL);
-  p->query = query_artists;
-  p->filter_result = EINA_TRUE;
-  plugins = eina_list_append(plugins, p);
-  evry_plugin_register(EVRY_PLUGIN(p), _prio++);
-  EVRY_PLUGIN(p)->history = EINA_FALSE;
-    
-  mime_dir = eina_stringshare_add("inode/directory");
-  _file_list = eina_stringshare_add("FILE_LIST");
+  evry_plugin_register(p, _prio++);
    
   return EINA_TRUE;
 }
 
 static void
-module_shutdown(void)
+_plugins_shutdown(void)
 {
   Plugin *p;
 
@@ -885,15 +868,10 @@ module_shutdown(void)
 }
 
 /***************************************************************************/
-/**/
-/* actual module specifics */
 
 static E_Module *module = NULL;
 static Eina_Bool _active = EINA_FALSE;
 
-/***************************************************************************/
-/**/
-/* module setup */
 EAPI E_Module_Api e_modapi = 
   {
     E_MODULE_API_VERSION,
@@ -912,8 +890,23 @@ e_modapi_init(E_Module *m)
 
   module = m;
 
+  conn = e_dbus_bus_get(DBUS_BUS_SESSION);
+
+  if (!conn)
+    return NULL;
+
+  cb_name_owner_changed = e_dbus_signal_handler_add
+    (conn, fdo_bus_name, fdo_path, fdo_interface, "NameOwnerChanged",
+     _name_owner_changed, NULL);
+
+  pending_get_name_owner = e_dbus_get_name_owner
+    (conn, bus_name, _get_name_owner, NULL);
+
+  mime_dir = eina_stringshare_add("inode/directory");
+  _file_list = eina_stringshare_add("FILE_LIST");
+
   if (e_datastore_get("everything_loaded"))
-    _active = module_init();
+    _active = _plugins_init();
    
   e_module_delayed_set(m, 1); 
 
@@ -937,7 +930,7 @@ e_modapi_shutdown(E_Module *m)
     eina_stringshare_del(_file_list); 
 
   if (_active && e_datastore_get("everything_loaded"))
-    module_shutdown();
+    _plugins_shutdown();
 
   module = NULL;
    
@@ -950,7 +943,6 @@ e_modapi_save(E_Module *m)
   return 1;
 }
 
-/**/
 /***************************************************************************/
 
 

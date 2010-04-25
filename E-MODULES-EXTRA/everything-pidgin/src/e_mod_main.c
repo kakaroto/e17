@@ -592,7 +592,7 @@ _plugins_init(void)
   if (!evry_api_version_check(EVRY_API_VERSION))
     return EINA_FALSE;
 
-  plug = EVRY_PLUGIN_NEW(NULL, "Pidgin", type_subject, NULL, "PIDGINCONTACT",
+  plug = EVRY_PLUGIN_NEW(Evry_Plugin, "Pidgin", type_subject, NULL, "PIDGINCONTACT",
 			 _begin, _cleanup, _fetch, _icon_get, NULL);
 
   evry_plugin_register(plug, 1);

@@ -1103,28 +1103,37 @@ _cb_key_down(Evry_Plugin *plugin, const Ecore_Event_Key *ev)
   return 0;
 }
 
+/* static Evas_Object *
+ * _info_get(Evry_Plugin *p, Evas *e)
+ * {
+ *   Evas_Object *o;
+ *   o = evas_object_rectangle_add(e); 
+ *   evas_object_color_set(o, 100, 100, 120, 255); 
+ * 
+ *   return o;
+ * } */
+
 static Eina_Bool
 _plugins_init(void)
 {
   Evry_Action *act;
+  Evry_Plugin *p;
   int prio = 15;
   
   if (!evry_api_version_check(EVRY_API_VERSION))
     return EINA_FALSE;
 
-  _plug = E_NEW(Plugin, 1);
-  EVRY_PLUGIN_NEW(_plug, "Playlist", type_subject, NULL, mpris_track,
+  p = EVRY_PLUGIN_NEW(Plugin, "Playlist", type_subject, NULL, mpris_track,
 		  _begin, _cleanup, _fetch, _icon_get, NULL);
 
-  /* TODO make this an option */
-  EVRY_PLUGIN(_plug)->aggregate   = EINA_FALSE;
-  EVRY_PLUGIN(_plug)->history     = EINA_FALSE;
-  EVRY_PLUGIN(_plug)->async_fetch = EINA_TRUE;
-  EVRY_PLUGIN(_plug)->view_mode   = VIEW_MODE_LIST;
-  EVRY_PLUGIN(_plug)->icon        = "emblem-sound";
-  EVRY_PLUGIN(_plug)->cb_key_down = &_cb_key_down;
-  
-  evry_plugin_register(EVRY_PLUGIN(_plug), 0);
+  p->aggregate   = EINA_FALSE;
+  p->history     = EINA_FALSE;
+  p->async_fetch = EINA_TRUE;
+  p->view_mode   = VIEW_MODE_LIST;
+  p->icon        = "emblem-sound";
+  p->cb_key_down = &_cb_key_down;
+  evry_plugin_register(p, 0);
+  _plug = (Plugin *) p;
 
   act = EVRY_ACTION_NEW("Play Track", mpris_track, NULL, "media-playback-start",
 			_mpris_play_track, _mpris_check_item);
