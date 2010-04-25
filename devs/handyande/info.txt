@@ -1,8 +1,0 @@
-Login:    handyande
-IRC Nick: HandyAndE
-Name:     Andrew Williams
-Location: Edinburgh, UK
-E-Mail:   andy@handyande.co.uk
-WWW:      http://www.handyande.co.uk
-Managing: engage, equate, examine, enotes, ecore_config, some e_modules,
-          e_utils, get-e CMS

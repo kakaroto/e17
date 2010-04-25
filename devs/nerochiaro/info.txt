@@ -1,8 +1,0 @@
-Login:    nerochiaro
-IRC Nick: nerochiaro
-Name:     Ugo Riboni
-Location: Milan, Italy
-E-Mail:   nerochiaro@gmail.com
-WWW:      http://nerochiaro.net
-Managing: Ruby bindings for ETK, Enhance and EWL
-

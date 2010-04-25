@@ -1,7 +1,0 @@
-Login:    nasa01
-IRC Nick: nasa
-Name:     Nathan Smith
-Location: NM, USA
-E-Mail:   nasa01@comcast.net
-WWW:      http://home.comcast.net/~nasa01/
-Managing: calendar module

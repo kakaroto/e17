@@ -1,9 +1,0 @@
-Login:    metrics
-IRC Nick: metrics
-Name:     Byron Hillis
-Location: Sydney, Australia
-E-Mail:   metrics@score5.org
-WWW:      http://www.score5.org
-Managing: Nothing in particular.
-
-

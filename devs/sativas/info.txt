@@ -1,7 +1,0 @@
-Login:    sativas
-IRC Nick: sativas
-Name:     Mathieu Lamar
-Location: Oxford, UK
-E-Mail:   mathieu.lamar@gmail.com
-WWW:      ?
-Managing: exige, emblem/entangle theming

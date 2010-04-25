@@ -1,8 +1,0 @@
-Login:    balony
-IRC Nick: balony
-Name:     Martin Sarajervi
-Location: Bergen, Norway
-E-Mail:   balony@gmail.com
-WWW:      http://www.student.uib.no/~msa067
-Managing: Exhibit
-

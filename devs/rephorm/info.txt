@@ -1,7 +1,0 @@
-Login:    rephorm
-IRC Nick: rephorm
-Name:     Brian Mattern
-Location: Austin, TX, USA
-E-Mail:   <ircnick> AT <ircnick> DOT com
-WWW:      http://rephorm.com
-Managing: E_DBus, Efreet, Elicit, Iconbar, Express, Esmart_Container

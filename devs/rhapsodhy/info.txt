@@ -1,8 +1,0 @@
-Login:    rhapsodhy
-IRC Nick: rhapsodhy
-Name:     Peter Parkanyi
-Location: Hungary
-E-Mail:   rhapsodhy@gmail.com
-WWW:      ?
-Managing: entrance configuration
-

@@ -1,7 +1,0 @@
-Login:    glassy
-IRC Nick: glassy_ape
-Name:     Yuri Hudobin
-Location: Bishkek, Kyrgyzstan, Central Asia
-E-Mail:   0x3f00@gmail.com
-WWW:      http://0x3f00.blogspot.com/
-Managing: EngyCAD, code contributions

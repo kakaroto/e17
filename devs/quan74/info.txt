@@ -1,8 +1,0 @@
-Login:    quan74
-IRC Nick: quan
-Name:     Ryan Little
-Location: Augusta, GA, USA
-E-Mail:   rlittle@gmail.com
-WWW:      http://www.phoenixbox.org
-Managing: e17, EFL, and e_modules package management (RPMs) and autofoo
-          scripts.

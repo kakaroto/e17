@@ -1,7 +1,0 @@
-Login:    lofwyrm
-IRC Nick: lofwyrm
-Name:     Adam Kisiel
-Location: Warsaw, Poland (usually)
-E-Mail:   kisiel@if.pw.edu.pl
-WWW:      http://www.if.pw.edu.pl/~kisiel
-Managing: Polish translation of E17, E17 utils and E17 modules

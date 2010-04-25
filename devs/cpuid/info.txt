@@ -1,7 +1,0 @@
-Login:    cpuid
-IRC Nick: CpuID
-Name:     Nathan Sullivan
-Location: Gold Coast, Queensland, Australia
-E-Mail:   nathan@nightsys.net
-WWW:      http://www.nightsys.net
-Managing: nothing to start with...

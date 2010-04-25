@@ -1,7 +1,0 @@
-Login:    troback
-IRC Nick: troback
-Name:     Anders Troback
-Location: Ängelholm, Sweden
-E-Mail:   enlightenment@troback.com
-WWW:      http://www.troback.com/
-Managing: Swedish translation of all but E16.

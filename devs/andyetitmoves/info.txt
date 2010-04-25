@@ -1,7 +1,0 @@
-Login:    andyetitmoves
-IRC Nick: andyetitmoves
-Name:     R.Ramkumar
-Location: Chennai, India
-E-Mail:   andyetitmoves@gmail.com
-WWW:      http://www.cs.iitm.ernet.in/~ramk
-Managing: imlib2 loader

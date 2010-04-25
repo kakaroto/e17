@@ -1,7 +1,0 @@
-Login:    xenith
-IRC Nick: Xenith
-Name:     Justin Rocha
-Location: Chico, CA, USA
-E-Mail:   xenith@xenith.org
-WWW:      http://xenith.org
-Managing: Envision

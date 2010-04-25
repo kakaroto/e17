@@ -1,7 +1,0 @@
-Login:    cobra
-IRC Nick: Cobra
-Name:     Kevin Brosius
-Location: Lansdale, PA, USA (outside Philadelphia)
-E-Mail:   cobra@compuserve.com
-WWW:      http://www.kevb.net
-Managing: Misc e17, little cvs and web

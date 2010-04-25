@@ -1,7 +1,0 @@
-Login:    pithlit
-IRC Nick: Pithlit
-Name:     Perat Tomaz
-Location: Kobarid, Slovenia
-E-Mail:   Pithlit@gmail.com
-WWW:      http://www.netsphere.ws
-Managing: Slovenian localisation of E17 - sl.po mantainer

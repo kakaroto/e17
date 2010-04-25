@@ -1,7 +1,0 @@
-Login:        belisarivs
-Jabber:       belisarivs@njs.netlab.cz
-Name:         Vit Pelcak
-Location:     Prague, Czech Republic
-E-Mail:       vit@pelcak.org
-Contributing: Debian/Ubuntu packaging
-Platform:     Ubuntu(Linux)

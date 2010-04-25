@@ -1,7 +1,0 @@
-Login:    xprodigy
-IRC Nick: Pr0digy
-Name:     Didier F. B. Casse
-Location: Singapore
-E-Mail:   didierbe@sps.nus.edu.sg
-WWW:      http://web.microtronyx.com
-Managing: Packaging of E17 and EFLs for Fedora Core

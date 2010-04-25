@@ -1,8 +1,0 @@
-Login:    benr
-IRC Nick: benr
-Name:     Ben Rockwood
-Location: Fremont, CA, USA
-E-Mail:   benr@cuddletech.com
-WWW:      http://www.cuddletech.com
-Managing: Non-Inline Documentation, Web, Solaris Testing and Ports
-

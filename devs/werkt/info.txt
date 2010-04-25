@@ -1,9 +1,0 @@
-Login:    werkt
-IRC Nick: werkt
-Name:     George Gensure
-Location: Connecticut, US 
-
-E-Mail:   werkt0@gmail.com
-WWW:       http://www.csh.rit.edu/~werkt
-
-Managing: Ewl

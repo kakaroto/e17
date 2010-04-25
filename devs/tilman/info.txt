@@ -1,8 +1,0 @@
-Login:    tilman
-IRC Nick: tilman
-Name:     Tilman Sauerbeck
-Location: Kassel, Germany
-E-Mail:   tilman@code-monkey.de
-WWW:      http://code-monkey.de
-Managing: embrace, enthrall and euphoria
-

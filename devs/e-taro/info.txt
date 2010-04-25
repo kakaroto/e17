@@ -1,8 +1,0 @@
-Login:    e-taro
-IRC Nick: e-taro
-Name:     David Stevenson
-Location: Tokyo, Japan
-E-Mail:   david.35472@gmail.com
-WWW:      http://www.geocities.jp/david_at_tokyo/e17/moon/
-Managing: moon module, occasional bug fixes elsewhere
-

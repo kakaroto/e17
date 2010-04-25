@@ -1,8 +1,0 @@
-Login:    shadoi
-IRC Nick: shadoi
-Name:     Blake Barnett
-Location: Seattle, USA
-E-Mail:   shadoi@soulmachine.net
-WWW:      http://soulmachine.net
-Managing: Debian packaging, web and a bug hunting
-	  

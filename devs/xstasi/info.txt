@@ -1,7 +1,0 @@
-Login:    xstasi
-IRC Nick: xstasi
-Name:     Alessandro Grassi
-Location: Prato, Italy
-E-Mail:   xstasi@gmail.com
-WWW:      http://edevelop.org/~xstasi/
-Managing: debian/ directories in projects

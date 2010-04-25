@@ -1,7 +1,0 @@
-Login:     sndev
-IRC Nick : sndev
-Name :     Aleksej Struk
-Location : Bolzano, Italy  or Vilnius, Lithuania
-E-Mail :   astruk@gmail.com
-WWW:       http://astruk.googlepages.com
-Managing : enlightenment e17 and beyond, e modules.
