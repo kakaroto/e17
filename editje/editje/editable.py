@@ -583,7 +583,7 @@ class Editable(Manager):
             for pp in prog.targets:
                 part = self._edje.part_get(pp)
                 if part:
-                    part.state_del(p + " 0.00")
+                    part.state_del(p)
             self.program_del(p)
         self.program_del(stopname)
         self.event_emit("animation.removed", name)
