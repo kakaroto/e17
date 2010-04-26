@@ -240,6 +240,9 @@ cdef class EdjeEdit(edje.c_edje.Edje): # [object PyEdjeEdit, type PyEdjeEdit_Typ
     def font_add(self, char *font, char *alias=NULL):
         return bool(edje_edit_font_add(self.obj, font, alias))
 
+    def font_del(self, char *alias):
+        return bool(edje_edit_font_del(self.obj, alias))
+
     # Image
 
     property images:
