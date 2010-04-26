@@ -338,7 +338,7 @@ static void _find_bouding_box(Eina_List *point_list, int brush_size, int *box_x,
 static void _add_point(int x, int y)
 {
         //Only draw add a brush if the last one was far enough
-        if (last_draw_pointx != -999 && last_draw_pointx != -999 &&
+        if (last_draw_pointx != -999 && last_draw_pointy != -999 &&
             abs(x - last_draw_pointx) <= 3 &&
             abs(y - last_draw_pointy) <= 3)
         {
