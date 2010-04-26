@@ -264,6 +264,9 @@ cdef class EdjeEdit(edje.c_edje.Edje): # [object PyEdjeEdit, type PyEdjeEdit_Typ
     def image_add(self, char *image):
         return bool(edje_edit_image_add(self.obj, image))
 
+    def image_del(self, char *name):
+        return bool(edje_edit_image_del(self.obj, name))
+
     # Spectrum
 
     property spectrum:

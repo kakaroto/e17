@@ -257,6 +257,7 @@ cdef extern from "Edje_Edit.h":
     # IMAGES API
     evas.c_evas.Eina_List * edje_edit_images_list_get(evas.c_evas.Evas_Object *obj)
     evas.c_evas.Eina_Bool edje_edit_image_add(evas.c_evas.Evas_Object *obj, char* path)
+    evas.c_evas.Eina_Bool edje_edit_image_del(evas.c_evas.Evas_Object *obj, char* name)
     evas.c_evas.Eina_Bool edje_edit_image_data_add(evas.c_evas.Evas_Object *obj, char *name, int id)
     char * edje_edit_state_image_get(evas.c_evas.Evas_Object *obj, char *part, char *state, double value)
     void edje_edit_state_image_set(evas.c_evas.Evas_Object *obj, char *part, char *state, double value, char *image)
