@@ -249,7 +249,7 @@ cdef extern from "Edje_Edit.h":
     evas.c_evas.Eina_Bool edje_edit_state_text_fit_y_get(evas.c_evas.Evas_Object *obj, char *part, char *state, double value)
     void edje_edit_state_text_fit_y_set(evas.c_evas.Evas_Object *obj, char *part, char *state, double value, evas.c_evas.Eina_Bool fit)
     evas.c_evas.Eina_List * edje_edit_fonts_list_get(evas.c_evas.Evas_Object *obj)
-    evas.c_evas.Eina_Bool edje_edit_font_add(evas.c_evas.Evas_Object *obj, char* path)
+    evas.c_evas.Eina_Bool edje_edit_font_add(evas.c_evas.Evas_Object *obj, char* path, char* alias)
     char * edje_edit_state_font_get(evas.c_evas.Evas_Object *obj, char *part, char *state, double value)
     void edje_edit_state_font_set(evas.c_evas.Evas_Object *obj, char *part, char *state, double value, char *font)
 

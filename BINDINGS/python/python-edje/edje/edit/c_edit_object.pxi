@@ -237,8 +237,8 @@ cdef class EdjeEdit(edje.c_edje.Edje): # [object PyEdjeEdit, type PyEdjeEdit_Typ
             edje_edit_string_list_free(lst)
             return ret
 
-    def font_add(self, char *font):
-        return bool(edje_edit_font_add(self.obj, font))
+    def font_add(self, char *font, char *alias=NULL):
+        return bool(edje_edit_font_add(self.obj, font, alias))
 
     # Image
 
