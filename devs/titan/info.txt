@@ -3,8 +3,8 @@ IRC Nick:	okra
 Cloak:		developer/okra
 Name:		Stephen Houston
 Location:	Mississippi, USA
-E-Mail:		-unixtitan@gmail.com
-WWW:		http://www.ecoding.org
+E-Mail:		-smhouston88@gmail.com
+WWW:		http://www.three68.com
 Managing:	Ephoto
 Contributing:	E, Ephoto, Ewl
 Group: 		Core, Applications, Libraries
