@@ -583,6 +583,7 @@ class Editable(Manager):
             for pp in prog.targets:
                 part = self._edje.part_get(pp)
                 if part:
+                    part.state_selected_set("default")
                     part.state_del(p)
             self.program_del(p)
         self.program_del(stopname)
