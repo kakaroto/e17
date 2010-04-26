@@ -715,6 +715,7 @@ class Editje(elementary.Window):
             return self._prevanim
 
         if name == "Signals":
+            self.main_edje.signal_emit("mode,anim,off", "editje")
             self.desktop_block(True)
         elif name == "Animations":
             self.main_edje.signal_emit("mode,anim,on", "editje")
