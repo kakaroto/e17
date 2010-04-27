@@ -285,7 +285,7 @@ _plugins_init(void)
   if (!evry_api_version_check(EVRY_API_VERSION))
     return EINA_FALSE;
 
-  p = EVRY_PLUGIN_NEW(Plugin, "GSuggest", type_subject, "", "TEXT",
+  p = EVRY_PLUGIN_NEW(Plugin, N_("GSuggest"), type_subject, "", "TEXT",
 		      _begin, _cleanup, _fetch, NULL, NULL);
 
   p->trigger = _trigger_google;
@@ -297,7 +297,7 @@ _plugins_init(void)
   _plug1->request = _request_goolge;
   evry_plugin_register(p, 10);
   
-  p = EVRY_PLUGIN_NEW(Plugin, "Wikipedia", type_subject, "", "TEXT",
+  p = EVRY_PLUGIN_NEW(Plugin, N_("Wikipedia"), type_subject, "", "TEXT",
 		  _begin, _cleanup, _fetch, NULL, NULL);
   p->trigger = _trigger_wiki;
   p->icon = "text-html";
@@ -308,17 +308,17 @@ _plugins_init(void)
   _plug2->request = _request_wiki;
   evry_plugin_register(p, 9);
   
-  _act1 = EVRY_ACTION_NEW("Google for it", "TEXT", NULL, "go-next", _action, NULL);
+  _act1 = EVRY_ACTION_NEW(N_("Google for it"), "TEXT", NULL, "go-next", _action, NULL);
   evry_action_register(_act1, 1);
   _act1->data = "google";
   _act1->icon_get = &_act_icon_get;
 
-  _act2 = EVRY_ACTION_NEW("Wikipedia Page", "TEXT", NULL, "go-next", _action, NULL);
+  _act2 = EVRY_ACTION_NEW(N_("Wikipedia Page"), "TEXT", NULL, "go-next", _action, NULL);
   evry_action_register(_act2, 1);
   _act2->data = "wikipedia";
   _act2->icon_get = &_act_icon_get;
 
-  _act3 = EVRY_ACTION_NEW("Feeling Lucky", "TEXT", NULL, "go-next", _action, NULL);
+  _act3 = EVRY_ACTION_NEW(N_("Feeling Lucky"), "TEXT", NULL, "go-next", _action, NULL);
   evry_action_register(_act3, 1);
   _act3->data = "feeling-lucky";
   _act3->icon_get = &_act_icon_get;

@@ -527,14 +527,14 @@ _plugins_init(void)
   if (!evry_api_version_check(EVRY_API_VERSION))
     return EINA_FALSE;
 
-  _plugin_new("Folders",    type_subject, "Folders", 20, 0);
-  _plugin_new("Images",     type_subject, "Images", 20, 0);
-  _plugin_new("Music",      type_subject, "Music", 20, 0);
-  _plugin_new("Videos",     type_subject, "Videos", 20, 0);
-  _plugin_new("Documents",  type_subject, "Documents", 20, 0);
+  _plugin_new(_("Folders"),    type_subject, "Folders", 20, 0);
+  _plugin_new(_("Images"),     type_subject, "Images", 20, 0);
+  _plugin_new(_("Music"),      type_subject, "Music", 20, 0);
+  _plugin_new(_("Videos"),     type_subject, "Videos", 20, 0);
+  _plugin_new(_("Documents"),  type_subject, "Documents", 20, 0);
 
-  _plugin_new("Find Files", type_object,  "Files", 20, 1);
-  _plugin_new("Folders",    type_object,  "Folders", 20, 0);
+  _plugin_new(_("Find Files"), type_object,  "Files", 20, 1);
+  _plugin_new(_("Folders"),    type_object,  "Folders", 20, 0);
 
   return EINA_TRUE;
 }

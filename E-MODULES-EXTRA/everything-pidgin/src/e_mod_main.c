@@ -592,18 +592,18 @@ _plugins_init(void)
   if (!evry_api_version_check(EVRY_API_VERSION))
     return EINA_FALSE;
 
-  plug = EVRY_PLUGIN_NEW(Evry_Plugin, "Pidgin", type_subject, NULL, "PIDGINCONTACT",
+  plug = EVRY_PLUGIN_NEW(Evry_Plugin, N_("Pidgin"), type_subject, NULL, "PIDGINCONTACT",
 			 _begin, _cleanup, _fetch, _icon_get, NULL);
 
   evry_plugin_register(plug, 1);
 
-  act = EVRY_ACTION_NEW("Chat", "PIDGINCONTACT", NULL, "go-next",
+  act = EVRY_ACTION_NEW(N_("Chat"), "PIDGINCONTACT", NULL, "go-next",
 			_action_chat, NULL);
 
-  act2 = EVRY_ACTION_NEW("Send File", "PIDGINCONTACT", "FILE", NULL,
+  act2 = EVRY_ACTION_NEW(N_("Send File"), "PIDGINCONTACT", "FILE", NULL,
 			 _action_send, NULL);
 
-  act3 = EVRY_ACTION_NEW("Write Message", "PIDGINCONTACT", "TEXT", "go-next",
+  act3 = EVRY_ACTION_NEW(N_("Write Message"), "PIDGINCONTACT", "TEXT", "go-next",
 			 _action_chat, NULL);
 
   evry_action_register(act, 0);

@@ -1123,7 +1123,7 @@ _plugins_init(void)
   if (!evry_api_version_check(EVRY_API_VERSION))
     return EINA_FALSE;
 
-  p = EVRY_PLUGIN_NEW(Plugin, "Playlist", type_subject, NULL, mpris_track,
+  p = EVRY_PLUGIN_NEW(Plugin, N_("Playlist"), type_subject, NULL, mpris_track,
 		  _begin, _cleanup, _fetch, _icon_get, NULL);
 
   p->aggregate   = EINA_FALSE;
@@ -1135,73 +1135,73 @@ _plugins_init(void)
   evry_plugin_register(p, 0);
   _plug = (Plugin *) p;
 
-  act = EVRY_ACTION_NEW("Play Track", mpris_track, NULL, "media-playback-start",
+  act = EVRY_ACTION_NEW(N_("Play Track"), mpris_track, NULL, "media-playback-start",
 			_mpris_play_track, _mpris_check_item);
   evry_action_register(act,  prio--);
   actions = eina_list_append(actions, act);
   act->data = "PlayTrack";
   
-  act = EVRY_ACTION_NEW("Remove Track", mpris_track, NULL, "list-remove",
+  act = EVRY_ACTION_NEW(N_("Remove Track"), mpris_track, NULL, "list-remove",
 			_mpris_tracklist_remove_track, _mpris_check_item);
   evry_action_register(act,  prio--);
   actions = eina_list_append(actions, act);
   act->data = "RemoveTrack";
   
-  act = EVRY_ACTION_NEW("Play", mpris_track, NULL, "media-playback-start",
+  act = EVRY_ACTION_NEW(N_("Play"), mpris_track, NULL, "media-playback-start",
 			_mpris_player_action, _mpris_check_item);
   evry_action_register(act,  prio--);
   actions = eina_list_append(actions, act);
   act->data = "Play";
   
-  act = EVRY_ACTION_NEW("Pause", mpris_track, NULL, "media-playback-pause",
+  act = EVRY_ACTION_NEW(N_("Pause"), mpris_track, NULL, "media-playback-pause",
 			_mpris_player_action, _mpris_check_item);
   evry_action_register(act,  prio--);
   actions = eina_list_append(actions, act);
   act->data = "Pause";
   
-  act = EVRY_ACTION_NEW("Stop", mpris_track, NULL, "media-playback-stop",
+  act = EVRY_ACTION_NEW(N_("Stop"), mpris_track, NULL, "media-playback-stop",
 			_mpris_player_action, _mpris_check_item);
   evry_action_register(act,  prio--);
   actions = eina_list_append(actions, act);
   act->data = "Stop";
   
-  act = EVRY_ACTION_NEW("Forward", mpris_track, NULL, "media-seek-forward",
+  act = EVRY_ACTION_NEW(N_("Forward"), mpris_track, NULL, "media-seek-forward",
 			_mpris_player_position, _mpris_check_item);
   evry_action_register(act,  prio--);
   actions = eina_list_append(actions, act);
   act->data = "Forward";
   
-  act = EVRY_ACTION_NEW("Rewind", mpris_track, NULL, "media-seek-backward",
+  act = EVRY_ACTION_NEW(N_("Rewind"), mpris_track, NULL, "media-seek-backward",
 			_mpris_player_position, _mpris_check_item);
   evry_action_register(act,  prio--);
   actions = eina_list_append(actions, act);
   act->data = "Rewind";
   
-  act = EVRY_ACTION_NEW("Clear Playlist", mpris_track, NULL, "media-playlist-clear",
+  act = EVRY_ACTION_NEW(N_("Clear Playlist"), mpris_track, NULL, "media-playlist-clear",
 			_mpris_tracklist_action_clear , _mpris_check_item);
   evry_action_register(act,  prio--);
   actions = eina_list_append(actions, act);
   act->data = "Clear";
   
-  act = EVRY_ACTION_NEW("Enqueue File", "FILE", NULL, "list-add",
+  act = EVRY_ACTION_NEW(N_("Enqueue File"), "FILE", NULL, "list-add",
 			_mpris_play_file, _mpris_check_file);
   evry_action_register(act,  prio--);
   actions = eina_list_append(actions, act);
   act->data = "e";
   
-  act = EVRY_ACTION_NEW("Play File", "FILE", NULL, "media-playback-start",
+  act = EVRY_ACTION_NEW(N_("Play File"), "FILE", NULL, "media-playback-start",
 			_mpris_play_file, _mpris_check_file);
   evry_action_register(act,  1);
   actions = eina_list_append(actions, act);
   act->data = "p";
   
-  act = EVRY_ACTION_NEW("Add Files...", mpris_track, "FILE", "list-add",
+  act = EVRY_ACTION_NEW(N_("Add Files..."), mpris_track, "FILE", "list-add",
   			_mpris_add_files, NULL);
   act->data = "e";
   evry_action_register(act,  prio--);
   actions = eina_list_append(actions, act);
 
-  act = EVRY_ACTION_NEW("Add Music...", mpris_track, "TRACKER_MUSIC", "list-add",
+  act = EVRY_ACTION_NEW(N_("Add Music..."), mpris_track, "TRACKER_MUSIC", "list-add",
   			_mpris_add_files, NULL);
   act->data = "e";
   evry_action_register(act,  prio--);
