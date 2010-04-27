@@ -94,15 +94,19 @@ class Editje(elementary.Window):
         super = event.modifier_is_set("Super")
 
         if key == "Delete":
-            if self.e.part.name:
-                name = self.e.part.name
-                relatives = self.e.relative_parts_get(name)
-                op = Operation("del part: " + name)
-                op.undo_callback_add(self.e.part_add_bydata, name,
-                        objects_data.Part(self.e.part._part), relatives)
-                op.redo_callback_add(self.e.part_del, name)
-                self._operation_stack(op)
-                op.redo()
+            name = self.e.part.name
+            if not name:
+                return
+
+            relatives = self.e.relative_parts_get(name)
+            op = Operation("part deletion: " + name)
+            op.undo_callback_add(
+                self.e.part_add_bydata,
+                objects_data.Part(self.e.part_get(name)), relatives)
+            op.redo_callback_add(self.e.part_del, name)
+            self._operation_stack(op)
+            op.redo()
+
         elif control:
             if key == "x":
                 self._cut_cb(self, None, None)
@@ -536,7 +540,7 @@ class Editje(elementary.Window):
         name = self._clipboard.name
 
         op = Operation("cut part: " + name)
-        op.undo_callback_add(self.e.part_add_bydata, name, self._clipboard)
+        op.undo_callback_add(self.e.part_add_bydata, self._clipboard)
         op.redo_callback_add(self.e.part_del, name)
         self._operation_stack(op)
         op.redo()
@@ -545,18 +549,19 @@ class Editje(elementary.Window):
         if not self.e.part.name:
             return False
 
-        self._clipboard = objects_data.Part(self.e.part._part)
+        self._clipboard = objects_data.Part(self.e.part_get(self.e.part.name))
         return True
 
     def _paste_cb(self, obj, emission, source):
         if not self._clipboard:
             return
 
-        name = name_generate(self._clipboard.name, self.e.parts)
+        self._clipboard.name = \
+            name_generate(self._clipboard.name, self.e.parts)
 
-        op = Operation("paste part: " + name)
-        op.undo_callback_add(self.e.part_del, name)
-        op.redo_callback_add(self.e.part_add_bydata, name, self._clipboard)
+        op = Operation("paste part: " + self._clipboard.name)
+        op.undo_callback_add(self.e.part_del, self._clipboard.name)
+        op.redo_callback_add(self.e.part_add_bydata, self._clipboard)
         self._operation_stack(op)
         op.redo()
 
@@ -959,7 +964,8 @@ class Editje(elementary.Window):
         def sigs_list_cb():
             return self.e.signals
 
-        list = SignalsList(self, new_sig_cb, sigs_list_cb)
+        list = SignalsList(
+            self, new_sig_cb, sigs_list_cb, self._operation_stack)
         list.title = "Signals"
         list.open = True
         list.options = True

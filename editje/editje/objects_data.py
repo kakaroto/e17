@@ -27,7 +27,12 @@ class Object(dict):
     def _name_get(self):
         return self._name
 
-    name = property(_name_get)
+    def _name_set(self, value):
+        self._name = value
+
+    # name setting only useful for object copying et al, where different names
+    # got to be used
+    name = property(fget=_name_get, fset=_name_set)
 
     def apply_to(self, obj):
         return False
@@ -437,11 +442,11 @@ class Program(Object):
     def __init__(self, obj):
         Object.__init__(self, obj.name)
 
-        self["signal"] = obj.signal_get()
-        self["source"] = obj.source_get()
+        self["signal"] = obj.signal_get() or ""
+        self["source"] = obj.source_get() or ""
         self["action"] = obj.action_get()
-        self["state"] = obj.state_get()
-        self["state2"] = obj.state2_get()
+        self["state"] = obj.state_get() or ""
+        self["state2"] = obj.state2_get() or ""
         self["value"] = obj.value_get()
         self["transition"] = obj.transition_get()
         self["transition_time"] = obj.transition_time_get()

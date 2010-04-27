@@ -182,12 +182,6 @@ class PartsList(CList):
 
     def _remove_cb(self, obj, emission, source):
 
-        def part_restore(part_save, saved_relatives):
-            name = part_save.name
-            source = part_save["source"] or ""
-
-            self._edit_grp.part_add_bydata(name, part_save, saved_relatives)
-
         def anims_restore(part_name, anims_save):
             curr_anim = self._edit_grp.animation.name
             self._edit_grp.animation.name = None
@@ -255,7 +249,8 @@ class PartsList(CList):
             op = Operation("part deletion")
             op.redo_callback_add(relative_animations_part_clear, part_name)
             op.redo_callback_add(self._edit_grp.part_del, part_name)
-            op.undo_callback_add(part_restore, part_save, relatives)
+            op.undo_callback_add(
+                self._edit_grp.part_add_bydata, part_save, relatives)
             op.undo_callback_add(anims_restore, part_name, anims_save)
             self._operation_stack_cb(op)
 

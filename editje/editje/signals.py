@@ -30,15 +30,18 @@ from clist import CList
 from prop import Property, PropertyTable
 from groupselector import NameEntry
 from operation import Operation
+import objects_data
 
 
 class SignalsList(CList):
-    def __init__(self, parent, new_sig_cb, sigs_list_cb):
+    def __init__(self, parent, new_sig_cb, sigs_list_cb, operation_stack_cb):
         CList.__init__(self, parent)
         self.e = parent.e
 
         self._new_sig_cb = new_sig_cb
         self._sigs_list_cb = sigs_list_cb
+        self._operation_stack_cb = operation_stack_cb
+
         self._options_load()
         self.options = True
 
@@ -100,8 +103,19 @@ class SignalsList(CList):
         sig_wiz.open()
 
     def _remove_cb(self, obj, emission, source):
-        for i in self.selected:
-            self.e.signal_del(i[0])
+        for to_del in self.selected:
+            sig_name = to_del[0]
+            sig_save = objects_data.Program(self.e.edje.program_get(sig_name))
+
+            r = self.e.signal_del(sig_name)
+            if not r:
+                del sig_save
+                continue
+
+            op = Operation("signal deletion")
+            op.redo_callback_add(self.e.signal_del, sig_name)
+            op.undo_callback_add(self.e.signal_add_bydata, sig_save)
+            self._operation_stack_cb(op)
 
 
 class SignalTypesButtons(edje.Edje):
@@ -329,8 +343,8 @@ class SignalDetails(EditjeDetails):
     def _update(self, emissor, data):
         self._header_table["name"].value = data
         self._header_table["name"].show_value()
-        self._header_table["name"].value_obj._values_dict["n"].disabled_set(
-            False)
+        # self._header_table["name"].value_obj._values_dict["n"].disabled_set(
+        #     False)
 
         signal = self.e.signal.signal
         self["main"]["signal"].show_value()
@@ -427,12 +441,14 @@ class SignalDetails(EditjeDetails):
                 op.redo()
 
             elif prop == "delay":
-                args = [["main"], [prop], [value], ["in_time"], [False], [None]]
+                args = [["main"], [prop], [value], ["in_time"], [False],
+                        [None]]
                 self._prop_change_do(
                     "signal's source delay time change", *args)
 
         elif group == "out":
             if prop == "signal":
+
                 def signal_change(value):
                     self.e.signal.signal_emit_action_set(val)
                     self["out"]["signal"].value = value[0]
@@ -447,6 +463,7 @@ class SignalDetails(EditjeDetails):
                 op.redo()
 
             elif prop == "source":
+
                 def source_change(value):
                     self.e.signal.signal_emit_action_set(val)
                     self["out"]["source"].value = value[1]
@@ -454,9 +471,8 @@ class SignalDetails(EditjeDetails):
                 val = [self["out"]["signal"].value, value]
                 old_val = [val[0], self["out"]["signal"].value]
 
-                op = Operation("signal's \"out\" emission change")
+                op = Operation("signal's \"out\" source change")
                 op.redo_callback_add(source_change, val)
                 op.undo_callback_add(source_change, old_val)
                 self._operation_stack_cb(op)
                 op.redo()
-

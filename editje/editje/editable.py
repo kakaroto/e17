@@ -404,30 +404,36 @@ class Editable(Manager):
         self.event_emit("part.added", name)
         return True
 
-    def part_add_bydata(self, name, part_data, relatives=None):
+    def part_add_bydata(self, part_data, relatives=None):
         source = part_data["source"]
         if source is None:
             source = ''
 
-        if self._part_add(name, part_data.type, source):
-            part = self._edje.part_get(name)
-            part_data.apply_to(part)
-            # FIXME: remove double emissions
-            self.event_emit("part.added", name)
+        name = part_data.name
 
-            if relatives:
-                for p, st in relatives.iteritems():
-                    part = self.part_get(p)
-                    for (st_name, st_value), rels in st.iteritems():
-                        state = part.state_get(st_name, st_value)
-                        if rels[0]:
-                            state.rel1_to_x_set(name)
-                        if rels[1]:
-                            state.rel1_to_y_set(name)
-                        if rels[2]:
-                            state.rel2_to_x_set(name)
-                        if rels[3]:
-                            state.rel2_to_y_set(name)
+        if not self._part_add(name, part_data.type, source):
+            return False
+
+        part = self._edje.part_get(name)
+        part_data.apply_to(part)
+
+        if relatives:
+            for p, st in relatives.iteritems():
+                part = self.part_get(p)
+                for (st_name, st_value), rels in st.iteritems():
+                    state = part.state_get(st_name, st_value)
+                    if rels[0]:
+                        state.rel1_to_x_set(name)
+                    if rels[1]:
+                        state.rel1_to_y_set(name)
+                    if rels[2]:
+                        state.rel2_to_x_set(name)
+                    if rels[3]:
+                        state.rel2_to_y_set(name)
+
+        self.event_emit("part.added", name)
+
+        return True
 
     def _part_init(self, name):
         part = self._edje.part_get(name)
@@ -488,26 +494,33 @@ class Editable(Manager):
         self.event_emit("programs.changed", self.programs)
 
     def program_add(self, name):
-        if self._edje.program_add(name):
-            self._modified = True
-            self.programs.append(name)
-            self.event_emit("program.added", name)
-            return True
-        return False
+        if not self._edje.program_add(name):
+            return False
+
+        self._modified = True
+        self.programs.append(name)
+        self.event_emit("program.added", name)
+
+        return True
 
     def program_del(self, name):
-        if self._edje.program_del(name):
-            self._modified = True
-            self.programs.remove(name)
-            self.event_emit("program.removed", name)
-            return True
-        return False
+        if not self._edje.program_del(name):
+            return False
+
+        self._modified = True
+        self.programs.remove(name)
+        self.event_emit("program.removed", name)
+
+        return True
 
     def program_get(self, program):
-        if program in self.programs:
-            prg = EditableProgram(self)
-            prg.name = program
-            return prg
+        if not program in self.programs:
+            return None
+
+        prg = EditableProgram(self)
+        prg.name = program
+
+        return prg
 
     # Animations
     def _animation_get(self):
@@ -607,25 +620,54 @@ class Editable(Manager):
         self._signals = [e for e in self.programs if not e.startswith("@")]
         self.event_emit("signals.changed", self._signals)
 
-    def signal_add(self, name, type):
-        if name and not name.startswith("@"):
-            if self.program_add(name):
-                program = self.program_get(name)
-                program._program.action_set(type)
-                self._signals.append(name)
-                self.event_emit("signal.added", name)
-                self.event_emit("signals.changed", self._signals)
-                return True
-        return False
+    def _signal_add(self, name):
+        if not name or name.startswith("@"):
+            return False
+
+        if not self.program_add(name):
+            return False
+
+        self._signals.append(name)
+
+        return True
+
+    def signal_add(self, name, action_type):
+        if not self._signal_add(name):
+            return False
+
+        program = self._edje.program_get(name)
+        program.action_set(action_type)
+
+        self.event_emit("signal.added", name)
+        self.event_emit("signals.changed", self._signals)
+
+        return True
+
+    def signal_add_bydata(self, sig_data):
+        name = sig_data.name
+        if not self._signal_add(name):
+            return False
+
+        program = self._edje.program_get(name)
+        sig_data.apply_to(program)
+
+        self.event_emit("signal.added", name)
+        self.event_emit("signals.changed", self._signals)
+
+        return True
 
     def signal_del(self, name):
-        if name in self._signals:
-            if self.program_del(name):
-                self._signals.remove(name)
-                self.event_emit("signal.removed", name)
-                self.event_emit("signals.changed", self._signals)
-                return True
-        return False
+        if not name in self._signals:
+            return False
+
+        if not self.program_del(name):
+            return False
+
+        self._signals.remove(name)
+        self.event_emit("signal.removed", name)
+        self.event_emit("signals.changed", self._signals)
+
+        return True
 
     def relative_parts_get(self, part_name):
         relatives = dict()
