@@ -44,11 +44,9 @@ static void
 free_string_list(void *data)
 {
   E_Hal_String_List_Return *ret = data;
-  const char *x;
 
   if (!ret) return;
-  EINA_LIST_FREE(ret->strings, x)
-    eina_stringshare_del(x);
+  eina_list_free(ret->strings);
   free(ret);
 }
 
