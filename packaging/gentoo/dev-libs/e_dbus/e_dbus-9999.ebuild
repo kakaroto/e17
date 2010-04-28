@@ -9,13 +9,16 @@ inherit efl
 DESCRIPTION="Enlightenment's (Ecore) integration to DBus"
 HOMEPAGE="http://trac.enlightenment.org/e/wiki/E_Dbus"
 
-IUSE="hal connman libnotify bluetooth ofono"
+IUSE="hal connman libnotify bluetooth ofono ukit"
 
 RDEPEND="
 	>=dev-libs/eina-9999
 	>=dev-libs/ecore-9999
 	sys-apps/dbus
-	libnotify? ( >=media-libs/evas-9999 )"
+	libnotify? ( >=media-libs/evas-9999 )
+	hal? ( sys-apps/hal )
+	ukit? ( sys-power/upower sys-fs/udisks )
+"
 DEPEND="${RDEPEND}"
 
 src_configure() {
@@ -26,6 +29,7 @@ src_configure() {
 	  $(use_enable libnotify enotify)
 	  $(use_enable bluetooth ebluez)
 	  $(use_enable ofono eofono)
+	  $(use_enable ukit eukit)
 	"
 	efl_src_configure
 }
