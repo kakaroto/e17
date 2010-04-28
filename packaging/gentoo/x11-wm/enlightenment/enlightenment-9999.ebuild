@@ -10,7 +10,13 @@ DESCRIPTION="Enlightenment DR17 window manager"
 HOMEPAGE="http://www.enlightenment.org/"
 
 SLOT="0.17"
-IUSE="exchange pam alsa tracker pm-utils debug xinerama xscreensaver opengl connman bluetooth ofono"
+IUSE="exchange pam alsa tracker pm-utils debug xinerama xscreensaver opengl bluetooth \
+	+battery +clock +comp +conf-borders +conf-colors +conf-desklock +conf-desk +conf-desks \
+	+conf-dialogs +conf-display +conf-dpms +conf-engine +conf-fonts +conf-imc +conf-intl \
+	+conf-menus +conf-mime +conf-mouse +conf +conf-paths +conf-profiles +conf-scale +conf-shelves \
+	+conf-startup +conf-theme +conf-winlist connman +cpufreq +dropshadow +everything +fileman \
+	+ibar +ibox +illume2 +illume ofono +pager +start +syscon +systray \
+	+temperature +winlist +wizard"
 
 # TODO: pm-utils changes /etc/enlightenment/sysactions.conf
 # TODO: patch to not require -i-really-know-what-i-am-doing-and-accept-full-responsibility-for-it
@@ -38,10 +44,52 @@ src_configure() {
 	  --disable-install-sysactions
 	  $(use_enable pam)
 	  $(use_enable alsa mixer)
-	  $(use_enable connman)
 	  $(use_enable exchange)
 	  $(use_enable bluetooth bluez)
+	  $(use_enable battery)
+	  $(use_enable clock)
+	  $(use_enable comp)
+	  $(use_enable conf-borders)
+	  $(use_enable conf-colors)
+	  $(use_enable conf-desklock)
+	  $(use_enable conf-desk)
+	  $(use_enable conf-desks)
+	  $(use_enable conf-dialogs)
+	  $(use_enable conf-display)
+	  $(use_enable conf-dpms)
+	  $(use_enable conf-engine)
+	  $(use_enable conf-fonts)
+	  $(use_enable conf-imc)
+	  $(use_enable conf-intl)
+	  $(use_enable conf-menus)
+	  $(use_enable conf-mime)
+	  $(use_enable conf-mouse)
+	  $(use_enable conf)
+	  $(use_enable conf-paths)
+	  $(use_enable conf-profiles)
+	  $(use_enable conf-scale)
+	  $(use_enable conf-shelves)
+	  $(use_enable conf-startup)
+	  $(use_enable conf-theme)
+	  $(use_enable conf-winlist)
+	  $(use_enable connman)
+	  $(use_enable cpufreq)
+	  $(use_enable dropshadow)
+	  $(use_enable everything)
+	  $(use_enable fileman)
+	  $(use_enable ibar)
+	  $(use_enable ibox)
+	  $(use_enable illume2)
+	  $(use_enable illume)
 	  $(use_enable ofono)
+	  $(use_enable pager)
+	  $(use_enable start)
+	  $(use_enable syscon)
+	  $(use_enable systray)
+	  $(use_enable temperature)
+	  $(use_enable winlist)
+	  $(use_enable wizard)
+
 	"
 	efl_src_configure
 }

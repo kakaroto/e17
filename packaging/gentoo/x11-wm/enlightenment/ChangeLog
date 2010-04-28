@@ -1,0 +1,4 @@
+# ChangeLog for x11-wm/enlightenment
+
+  28 Apr 2010; discomfitor <mike@zentific.com> enlightenment-9999.ebuild:
+  Added use flags for modules.
