@@ -203,6 +203,16 @@ class PartsList(CList):
             if self._edit_grp.mode == "Parts":
                 self._edit_grp.part.state.name = "default 0.0"
 
+        def sigs_restore(part_name, sigs_save):
+            curr_sig = self._edit_grp.signal.name
+            self._edit_grp.signal.name = None
+
+            for sig in sigs_save:
+                prog = self._edit_grp.program_get(sig)
+                prog.source = part_name
+
+            self._edit_grp.signal.name = curr_sig
+
         def relative_animations_part_clear(part_name):
             anims = {}
 
@@ -235,23 +245,49 @@ class PartsList(CList):
 
             return anims
 
+        # FIXME/TODO: when the "source" property's floater box of general
+        # purpose signals get properly populated with the group's parts,
+        # also save the participation of the part being deleted on that signal
+        def relative_signals_part_clear(part_name):
+            sigs = []
+
+            curr_sig = self._edit_grp.signal.name
+            self._edit_grp.signal.name = None
+
+            for sig in self._edit_grp.signals:
+                prog = self._edit_grp.program_get(sig)
+                if part_name != prog.source:
+                    continue
+
+                prog.source = ""
+                sigs.append(sig)
+
+            self._edit_grp.signal.name = curr_sig
+
+            return sigs
+
         for to_del in self.selected:
             part_name = to_del[0]
             part_save = objects_data.Part(self._edit_grp.part_get(part_name))
             relatives = self._edit_grp.relative_parts_get(part_name)
-            anims_save = relative_animations_part_clear(part_name)
 
             r = self._edit_grp.part_del(part_name)
             if not r:
                 del part_save
                 continue
 
+            anims_save = relative_animations_part_clear(part_name)
+            sigs_save = relative_signals_part_clear(part_name)
+
             op = Operation("part deletion")
             op.redo_callback_add(relative_animations_part_clear, part_name)
+            op.redo_callback_add(relative_signals_part_clear, part_name)
             op.redo_callback_add(self._edit_grp.part_del, part_name)
             op.undo_callback_add(
                 self._edit_grp.part_add_bydata, part_save, relatives)
             op.undo_callback_add(anims_restore, part_name, anims_save)
+            op.undo_callback_add(sigs_restore, part_name, sigs_save)
+
             self._operation_stack_cb(op)
 
     def remove(self, item):

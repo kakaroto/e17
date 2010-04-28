@@ -118,6 +118,40 @@ class AnimationsList(CList):
             if self._edit_grp.animation_add(name):
                 anim_save.apply_to(self._edit_grp)
 
+        def sigs_restore(anim_name, sigs_save):
+            curr_sig = self._edit_grp.signal.name
+            self._edit_grp.signal.name = None
+
+            pname = "@%s@0.00" % anim_name
+
+            for sig in sigs_save:
+                prog = self._edit_grp.program_get(sig)
+                prog.afters_clear()
+                prog.after_add(pname)
+
+            self._edit_grp.signal.name = curr_sig
+
+        def relative_signals_anim_clear(anim_name):
+            sigs = []
+
+            curr_sig = self._edit_grp.signal.name
+            self._edit_grp.signal.name = None
+
+            pname = "@%s@0.00" % anim_name
+
+            for sig in self._edit_grp.signals:
+                prog = self._edit_grp.program_get(sig)
+                afters = prog.afters
+                if afters and pname != afters[0]:
+                    continue
+
+                prog.afters_clear()
+                sigs.append(sig)
+
+            self._edit_grp.signal.name = curr_sig
+
+            return sigs
+
         for s in self.selected:
             anim_name = s[0]
             pname = "@%s@stop" % anim_name
@@ -129,9 +163,14 @@ class AnimationsList(CList):
                 del anim_data
                 continue
 
+            sigs_save = relative_signals_anim_clear(anim_name)
+
             op = Operation("animation deletion: %s" % anim_name)
+            op.redo_callback_add(relative_signals_anim_clear, anim_name)
             op.redo_callback_add(self._edit_grp.animation_del, anim_name)
             op.undo_callback_add(anim_restore, anim_data)
+            op.undo_callback_add(sigs_restore, anim_name, sigs_save)
+
             self._operation_stack_cb(op)
 
 
