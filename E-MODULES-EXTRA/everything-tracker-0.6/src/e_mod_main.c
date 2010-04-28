@@ -39,7 +39,7 @@ _begin(Evry_Plugin *plugin, const Evry_Item *it)
   p->active = 0;
 
   /* is APPLICATION ? */
-  if (evry_item_type_check(it, "ACTION", "APPLICATION"))
+  if (CHECK_TYPE(it, EVRY_TYPE_APP))
     {
       GET_APP(app, it);
       Eina_List *l;
@@ -395,10 +395,10 @@ _plugin_new(const char *name, int type, char *service, int max_hits, int begin)
   Evry_Plugin *pp;
 
   if (!begin)
-    pp = EVRY_PLUGIN_NEW(Plugin, name, NULL, "FILE",
+    pp = EVRY_PLUGIN_NEW(Plugin, name, NULL, EVRY_TYPE_FILE,
 			 NULL, _cleanup, _fetch, _plugin_free);
   else if (type == EVRY_PLUGIN_OBJECT)
-    pp = EVRY_PLUGIN_NEW(Plugin, name, NULL, "FILE",
+    pp = EVRY_PLUGIN_NEW(Plugin, name, NULL, EVRY_TYPE_FILE,
 			 _begin, _cleanup, _fetch, _plugin_free);
   GET_PLUGIN(p, pp);
   p->condition = "";

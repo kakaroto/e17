@@ -92,6 +92,8 @@ static Evry_Action *act = NULL;
 static Evry_Action *act2 = NULL;
 static Evry_Action *act3 = NULL;
 
+static Evry_Type PIDGIN_CONTACT;
+
 static void
 getBuddyList()
 {
@@ -214,11 +216,15 @@ cb_buddyList(void *data, DBusMessage *reply, DBusError *error)
 
   do
     {
-      //get and initialize new memory
-      if (!(item = evry_item_new(NULL, plug, NULL, _icon_get, cb_itemFree)) ||
-	  !(bi = E_NEW(buddyInfo, 1)))
-	break;
-
+      item = EVRY_ITEM_NEW(Evry_Item, plug, NULL, _icon_get, cb_itemFree);
+      if (!item) break;
+      bi = E_NEW(buddyInfo, 1);
+      if (!bi)
+	{
+	  E_FREE(item);
+	  break;
+	}
+      
       dbus_message_iter_get_basic(&arr, (dbus_int32_t*) &(bi->buddyListNumber));
       item->data = bi;
       bi->iconReference = -1;
@@ -592,18 +598,18 @@ _plugins_init(void)
   if (!evry_api_version_check(EVRY_API_VERSION))
     return EINA_FALSE;
 
-  plug = EVRY_PLUGIN_NEW(Evry_Plugin, N_("Pidgin"), NULL, "PIDGINCONTACT",
+  plug = EVRY_PLUGIN_NEW(Evry_Plugin, N_("Pidgin"), NULL,
+			 PIDGIN_CONTACT,
 			 _begin, _cleanup, _fetch, NULL);
-
   evry_plugin_register(plug, EVRY_PLUGIN_SUBJECT, 1);
 
-  act = EVRY_ACTION_NEW(N_("Chat"), "PIDGINCONTACT", NULL, "go-next",
+  act = EVRY_ACTION_NEW(N_("Chat"), PIDGIN_CONTACT, 0, "go-next",
 			_action_chat, NULL);
 
-  act2 = EVRY_ACTION_NEW(N_("Send File"), "PIDGINCONTACT", "FILE", NULL,
+  act2 = EVRY_ACTION_NEW(N_("Send File"), PIDGIN_CONTACT, EVRY_TYPE_FILE, NULL,
 			 _action_send, NULL);
 
-  act3 = EVRY_ACTION_NEW(N_("Write Message"), "PIDGINCONTACT", "TEXT", "go-next",
+  act3 = EVRY_ACTION_NEW(N_("Write Message"), PIDGIN_CONTACT, EVRY_TYPE_TEXT, "go-next",
 			 _action_chat, NULL);
 
   evry_action_register(act, 0);
@@ -666,8 +672,12 @@ e_modapi_init(E_Module *m)
     }
 
   if (e_datastore_get("everything_loaded"))
-    _active = _plugins_init();
+    {
+      PIDGIN_CONTACT = evry_type_register("PIDGIN_CONTACT");
 
+      _active = _plugins_init();
+    }
+  
   e_module_delayed_set(m, 1);
 
   return m;

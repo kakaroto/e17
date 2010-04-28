@@ -43,7 +43,6 @@ static Eina_List *plugins = NULL;
 static int _prio = 5;
 static int active = 0;
 static const char *mime_dir = NULL;
-static const char *_file_list = NULL;
 static DBusPendingCall *pending_get_name_owner = NULL;
 static E_DBus_Signal_Handler *cb_name_owner_changed = NULL;
 static const char bus_name[] = "org.freedesktop.Tracker1";
@@ -53,6 +52,9 @@ static const char fdo_path[] = "/org/freedesktop/DBus";
 
 static Evas_Object *_icon_get(Evry_Item *item, Evas *e);
 
+static Evry_Type TRACKER_MUSIC;
+static Evry_Type TRACKER_QUERY;
+static Evry_Type FILE_LIST;
 
 static const char query_files[] =
   "SELECT ?match  nie:url(?match) nfo:fileName(?match) ?m WHERE {"
@@ -196,7 +198,7 @@ _query_item_get(Plugin *p, const char *id,
 
    it = EVRY_ITEM_NEW(Query_Item, p, label, _icon_get, _query_item_free);
    EVRY_ITEM(it)->browseable = EINA_TRUE;
-   EVRY_ITEM(it)->subtype = _file_list;
+   EVRY_ITEM(it)->subtype = FILE_LIST;
   
    it->query = query;
 
@@ -533,8 +535,8 @@ _begin(Evry_Plugin *plugin, const Evry_Item *item)
    p->base = *plugin;
    p->base.items = NULL;
 
-   if (item && evry_item_type_check(item, "TRACKER_QUERY", NULL) ||
-       item && evry_item_type_check(item, "TRACKER_MUSIC", NULL))
+   if (item && CHECK_TYPE(item, TRACKER_QUERY) ||
+       item && CHECK_TYPE(item, TRACKER_MUSIC))
      {
 	QUERY_ITEM(it, item);
 	p->parent = EINA_TRUE;      
@@ -542,7 +544,7 @@ _begin(Evry_Plugin *plugin, const Evry_Item *item)
 	if (it->match)
 	  p->match = eina_stringshare_add(it->match);
      }
-   else if (item && evry_item_type_check(item, "FILE", NULL))
+   else if (item && CHECK_TYPE(item, EVRY_TYPE_FILE))
      {
 	GET_FILE(it, item);
 	p->parent = EINA_TRUE;
@@ -591,52 +593,51 @@ _cleanup(Evry_Plugin *plugin)
 static int
 _fetch(Evry_Plugin *plugin, const char *input)
 {
-   if (active)
+   if (!active) return 0;
+
+   char buf[128];
+
+   GET_PLUGIN(p, plugin);
+      
+   if (p->filter_result && p->files)
      {
-	char buf[128];
-
-	GET_PLUGIN(p, plugin);
-      
-	if (p->filter_result && p->files)
-	  {
-	     Evry_Item *it;
-	     Eina_List *l;
+	Evry_Item *it;
+	Eina_List *l;
 	  
-	     EVRY_PLUGIN_ITEMS_CLEAR(p);
+	EVRY_PLUGIN_ITEMS_CLEAR(p);
 
-	     EINA_LIST_FOREACH(p->files, l, it)
-	       if (!input || evry_fuzzy_match(it->label, input))
-		 EVRY_PLUGIN_ITEM_APPEND(p, it);
+	EINA_LIST_FOREACH(p->files, l, it)
+	  if (!input || evry_fuzzy_match(it->label, input))
+	    EVRY_PLUGIN_ITEM_APPEND(p, it);
 
-	     if (p->parent && p->base.items) return 1;
-	  }
-
-	if (p->pnd)
-	  dbus_pending_call_cancel(p->pnd);
-	p->pnd = NULL;
-
-	if (input && (strlen(input) > 2) && isalnum(input[0]))
-	  {
-	     if (p->input) eina_stringshare_del(p->input);
-	     p->input = eina_stringshare_add(input); 
-
-	     snprintf(buf, sizeof(buf), fts_match, input);
-	  
-	     p->fetching = EINA_TRUE;
-
-	     p->pnd = _send_query(p->query, (p->match ? p->match : ""), buf, p);
-	  }
-	else
-	  {
-	     if (/*evry_item_type_check(p, ) ||*/ p->match)
-	       {
-		  p->fetching = EINA_TRUE;
-		  p->pnd = _send_query(p->query, (p->match ? p->match : ""), "", p);
-	       }
-	  }
-      
-	if (p->files) return 1;
+	if (p->parent && p->base.items) return 1;
      }
+
+   if (p->pnd)
+     dbus_pending_call_cancel(p->pnd);
+   p->pnd = NULL;
+
+   if (input && (strlen(input) > 2) && isalnum(input[0]))
+     {
+	if (p->input) eina_stringshare_del(p->input);
+	p->input = eina_stringshare_add(input); 
+
+	snprintf(buf, sizeof(buf), fts_match, input);
+	  
+	p->fetching = EINA_TRUE;
+
+	p->pnd = _send_query(p->query, (p->match ? p->match : ""), buf, p);
+     }
+   else
+     {
+	if (/*evry_item_type_check(p, ) ||*/ p->match)
+	  {
+	     p->fetching = EINA_TRUE;
+	     p->pnd = _send_query(p->query, (p->match ? p->match : ""), "", p);
+	  }
+     }
+      
+   if (p->files) return 1;
 
    return 0;
 }
@@ -730,9 +731,9 @@ _md5_sum(const char *str)
 static Evas_Object *
 _icon_get(Evry_Item *item, Evas *e)
 {
-   if (evry_item_type_check(item, "TRACKER_MUSIC", NULL))
+   if (CHECK_TYPE(item, TRACKER_MUSIC))
      {
-	if (item->subtype && item->subtype == _file_list)
+	if (item->subtype && item->subtype == FILE_LIST)
 	  {
 	     QUERY_ITEM(it, item);
 
@@ -760,7 +761,8 @@ _icon_get(Evry_Item *item, Evas *e)
 	     sumb = _md5_sum(a); 
 	     free(a);
       
-	     snprintf(thumb_buf, sizeof(thumb_buf), "%s/.cache/media-art/album-%s-%s.jpeg",
+	     snprintf(thumb_buf, sizeof(thumb_buf),
+		      "%s/.cache/media-art/album-%s-%s.jpeg",
 		      e_user_homedir_get(), suma, sumb );
       
 	     free(suma);
@@ -785,13 +787,14 @@ _icon_get(Evry_Item *item, Evas *e)
 	       return evry_icon_mime_get(it->mime, e);
 	  }
      }
-   else if (evry_item_type_check(item, "FILE", NULL))
+   else if (CHECK_TYPE(item, EVRY_TYPE_FILE))
      {
 	GET_FILE(it, item);
 
 	char *sum = _md5_sum(it->url);
   
-	snprintf(thumb_buf, sizeof(thumb_buf), "%s/.thumbnails/normal/%s.png",
+	snprintf(thumb_buf, sizeof(thumb_buf),
+		 "%s/.thumbnails/normal/%s.png",
 		 e_user_homedir_get(), sum);
 	free(sum);
   
@@ -808,7 +811,6 @@ _icon_get(Evry_Item *item, Evas *e)
 	  return evry_icon_mime_get(it->mime, e);
      }
   
-   /* DBG("load thumb: %s - %s\n", thumb_buf, it->path); */
    return NULL;
 }
 
@@ -820,19 +822,25 @@ _plugins_init(void)
    if (!evry_api_version_check(EVRY_API_VERSION))
      return EINA_FALSE;
   
-   p = EVRY_PLUGIN_NEW(Plugin, N_("Tracker"), NULL, "FILE", _begin, _cleanup, _fetch, NULL);
+   p = EVRY_PLUGIN_NEW(Plugin, N_("Tracker"), NULL,
+		       EVRY_TYPE_FILE,
+		       _begin, _cleanup, _fetch, NULL);
    GET_PLUGIN(p1, p);
    p1->query = query_files;
    evry_plugin_register(p, EVRY_PLUGIN_SUBJECT,_prio++);
    plugins = eina_list_append(plugins, p);
 
-   p = EVRY_PLUGIN_NEW(Plugin, N_("Tracker"), NULL, "FILE", _begin, _cleanup, _fetch, NULL);
+   p = EVRY_PLUGIN_NEW(Plugin, N_("Tracker"), NULL,
+		       EVRY_TYPE_FILE,
+		       _begin, _cleanup, _fetch, NULL);
    GET_PLUGIN(p2, p);
    p2->query = query_files;
    evry_plugin_register(p, EVRY_PLUGIN_OBJECT, _prio++);
    plugins = eina_list_append(plugins, p);
    
-   p = EVRY_PLUGIN_NEW(Plugin, N_("Albums"), NULL, "TRACKER_MUSIC", _begin, _cleanup, _fetch, NULL);
+   p = EVRY_PLUGIN_NEW(Plugin, N_("Albums"), NULL,
+		       TRACKER_MUSIC,
+		       _begin, _cleanup, _fetch, NULL);
    p->history = EINA_FALSE;
    GET_PLUGIN(p3, p);
    p3->query = query_albums;
@@ -840,7 +848,9 @@ _plugins_init(void)
    evry_plugin_register(p, EVRY_PLUGIN_OBJECT,_prio++);
    plugins = eina_list_append(plugins, p);
 
-   p = EVRY_PLUGIN_NEW(Plugin, N_("Artists"), NULL, "TRACKER_MUSIC", _begin, _cleanup, _fetch, NULL);
+   p = EVRY_PLUGIN_NEW(Plugin, N_("Artists"), NULL,
+		       TRACKER_MUSIC,
+		       _begin, _cleanup, _fetch, NULL);
    p->history = EINA_FALSE;
    GET_PLUGIN(p4, p);
    p4->query = query_artists;
@@ -875,7 +885,7 @@ EAPI void *
 e_modapi_init(E_Module *m)
 {
    char buf[4096];
-
+   
    /* Location of message catalogs for localization */
    snprintf(buf, sizeof(buf), "%s/locale", e_module_dir_get(m));
    bindtextdomain(PACKAGE, buf);
@@ -896,10 +906,15 @@ e_modapi_init(E_Module *m)
      (conn, bus_name, _get_name_owner, NULL);
 
    mime_dir = eina_stringshare_add("inode/directory");
-   _file_list = eina_stringshare_add("FILE_LIST");
 
    if (e_datastore_get("everything_loaded"))
-     _active = _plugins_init();
+     {
+	TRACKER_QUERY = evry_type_register("TRACKER_QUERY");
+	TRACKER_MUSIC = evry_type_register("TRACKER_MUSIC");
+	FILE_LIST     = evry_type_register("FILE_LIST");
+
+	_active = _plugins_init();
+     }
    
    e_module_delayed_set(m, 1); 
 
@@ -919,8 +934,6 @@ e_modapi_shutdown(E_Module *m)
 
    if (mime_dir)
      eina_stringshare_del(mime_dir); 
-   if (_file_list)
-     eina_stringshare_del(_file_list); 
 
    if (_active && e_datastore_get("everything_loaded"))
      _plugins_shutdown();
