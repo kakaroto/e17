@@ -6,6 +6,7 @@ EDBUS_CPPFLAGS = \
 -I$(top_srcdir)/src/lib/connman \
 -I$(top_srcdir)/src/lib/bluez \
 -I$(top_srcdir)/src/lib/ofono \
+-I$(top_srcdir)/src/lib/ukit \
 @EDBUS_CFLAGS@ \
 @EINA_CFLAGS@
 
@@ -27,13 +28,17 @@ endif
 if BUILD_EOFONO
 EOFONO_PROG = e_dbus_ofono_test
 endif
+if BUILD_EUKIT
+EUKIT_PROG = e_dbus_ukit_test
+endif
 
 bin_PROGRAMS = \
 $(EDBUS_PROG) \
 $(ENOTIFY_PROG) \
 $(ECONNMAN_PROG) \
 $(EBLUEZ_PROG) \
-$(EOFONO_PROG)
+$(EOFONO_PROG) \
+$(EUKIT_PROG)
 
 noinst_PROGRAMS = \
 $(ECONNMAN_PROG_NOINST)
@@ -90,4 +95,10 @@ if BUILD_EOFONO
 e_dbus_ofono_test_SOURCES = e_dbus_ofono_test.c
 e_dbus_ofono_test_CPPFLAGS = $(EDBUS_CPPFLAGS)
 e_dbus_ofono_test_LDADD = $(top_builddir)/src/lib/ofono/libeofono.la
+endif
+
+if BUILD_EUKIT
+e_dbus_ukit_test_SOURCES = e_dbus_ukit_test.c
+e_dbus_ukit_test_CPPFLAGS = $(EDBUS_CPPFLAGS)
+e_dbus_ukit_test_LDADD = $(top_builddir)/src/lib/ukit/libeukit.la
 endif

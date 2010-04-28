@@ -33,6 +33,8 @@ ebluez_release_info="-release $release"
 eofono_release_info="-release $release"
 edbus_release_info="-release $release"
 ehal_release_info="-release $release"
+##eudev_release_info="-release $release"
+eukit_release_info="-release $release"
 enotify_release_info="-release $release"
 AC_SUBST(version_info)
 AC_SUBST(econnman_release_info)
@@ -40,43 +42,70 @@ AC_SUBST(ebluez_release_info)
 AC_SUBST(eofono_release_info)
 AC_SUBST(edbus_release_info)
 AC_SUBST(ehal_release_info)
+##AC_SUBST(eudev_release_info)
+AC_SUBST(eukit_release_info)
 AC_SUBST(enotify_release_info)
 
 dnl Check enabled modules to build
-AC_ARG_ENABLE([ehal],
-   [AC_HELP_STRING([--disable-ehal], [Disable ehal build])],
-   [enable_ehal=$enableval],
-   [enable_ehal="yes"])
+AC_ARG_ENABLE([ehal],[AC_HELP_STRING([--disable-ehal], [Disable ehal build])])
+AS_IF(
+   [test "x$enableval" != "xno"],
+      AC_CHECK_PROG([enable_ehal],lshal,yes,no)
+   [enable_ehal=no],
+)
 
-AC_ARG_ENABLE([econnman],
-   [AC_HELP_STRING([--enable-econnman], [Enable econnman build])],
-   [enable_econnman=$enableval],
-   [enable_econnman="yes"])
+#AC_ARG_ENABLE([eudev],[AC_HELP_STRING([--disable-eudev], [Disable eudev build])])
+#AS_IF(
+#   [test "x$enableval" != "xno"],
+#      [enable_eudev="yes"],
+#   [enable_eudev=no],
+#)
 
-AC_ARG_ENABLE([ebluez],
-   [AC_HELP_STRING([--enable-ebluez], [Enable ebluez build])],
-   [enable_ebluez=$enableval],
-   [enable_ebluez="yes"])
+AC_ARG_ENABLE([eukit],[AC_HELP_STRING([--disable-eukit], [Disable eukit build])])
+AS_IF(
+   [test "x$enableval" != "xno"],
+     AC_CHECK_PROG([enable_eukit],udisks,yes,no)
+     AC_CHECK_PROG([enable_eukit],upower,yes,no),
+   [enable_eukit=no],
+)
 
-AC_ARG_ENABLE([eofono],
-   [AC_HELP_STRING([--enable-eofono], [Enable eofono build])],
-   [enable_eofono=$enableval],
-   [enable_eofono="yes"])
+AC_ARG_ENABLE([econnman],[AC_HELP_STRING([--enable-econnman], [Enable econnman build])])
+AS_IF(
+   [test "x$enableval" != "xno"],
+      [enable_econnman="yes"],
+   [enable_econnman=no],
+)
 
-AC_ARG_ENABLE([enotify],
-   [AC_HELP_STRING([--disable-enotify], [Disable enotify build])],
-   [enable_enotify=$enableval],
-   [enable_enotify="yes"])
+AC_ARG_ENABLE([ebluez],[AC_HELP_STRING([--enable-ebluez], [Enable ebluez build])])
+AS_IF(
+   [test "x$enableval" != "xno"],
+      [enable_ebluez="yes"],
+   [enable_ebluez=no],
+)
+
+AC_ARG_ENABLE([eofono],[AC_HELP_STRING([--enable-eofono], [Enable eofono build])])
+AS_IF(
+   [test "x$enableval" != "xno"],
+      [enable_eofono="yes"],
+   [enable_eofono=no],
+)
+
+AC_ARG_ENABLE([enotify],[AC_HELP_STRING([--disable-enotify], [Disable enotify build])])
+AS_IF(
+   [test "x$enableval" != "xno"],
+      [enable_enotify="yes"],
+   [enable_enotify=no],
+)
 
 # pkg-config
 PKG_PROG_PKG_CONFIG
 
 # Check whether pkg-config supports Requires.private
-if $PKG_CONFIG --atleast-pkgconfig-version 0.22; then
-   pkgconfig_requires_private="Requires.private"
-else
-   pkgconfig_requires_private="Requires"
-fi
+AS_IF(
+   [$PKG_CONFIG --atleast-pkgconfig-version 0.22],
+      [pkgconfig_requires_private="Requires.private"],
+   [pkgconfig_requires_private="Requires"]
+)
 AC_SUBST(pkgconfig_requires_private)
 
 PKG_CHECK_MODULES([EINA], [eina-0])
@@ -91,15 +120,18 @@ dbus_version=`pkg-config --modversion dbus-1`
 DBUS_VERSION_MAJOR=`echo $dbus_version | awk -F. '{print $1}'`
 DBUS_VERSION_MINOR=`echo $dbus_version | awk -F. '{print $2}'`
 DBUS_VERSION_MICRO=`echo $dbus_version | awk -F. '{print $3}'`
-if test "z$DBUS_VERSION_MAJOR" = "z"; then
-  DBUS_VERSION_MAJOR="0"
-fi
-if test "z$DBUS_VERSION_MINOR" = "z"; then
-  DBUS_VERSION_MINOR="0"
-fi
-if test "z$DBUS_VERSION_MICRO" = "z"; then
-  DBUS_VERSION_MICRO="0"
-fi
+AS_IF(
+   [test "z$DBUS_VERSION_MAJOR" = "z"],
+      [DBUS_VERSION_MAJOR="0"]
+)
+AS_IF(
+   [test "z$DBUS_VERSION_MINOR" = "z"],
+      [DBUS_VERSION_MINOR="0"]
+)
+AS_IF(
+   [test "z$DBUS_VERSION_MICRO" = "z"],
+      [DBUS_VERSION_MICRO="0"]
+)
 DBUS_VERSION_CFLAGS="$DBUS_VERSION_CFLAGS -DDBUS_VERSION_MAJOR=$DBUS_VERSION_MAJOR"
 DBUS_VERSION_CFLAGS="$DBUS_VERSION_CFLAGS -DDBUS_VERSION_MINOR=$DBUS_VERSION_MINOR"
 DBUS_VERSION_CFLAGS="$DBUS_VERSION_CFLAGS -DDBUS_VERSION_MICRO=$DBUS_VERSION_MICRO"
@@ -108,11 +140,19 @@ AC_SUBST(DBUS_VERSION_CFLAGS)
 AC_FUNC_ALLOCA
 
 dnl evas
-if test "x${enable_enotify}" = "xyes" ; then
-   PKG_CHECK_MODULES(EVAS, [evas >= 0.9.9], [], [enable_enotify="no"])
-fi
+AS_IF(
+   [test "x${enable_enotify}" = "xyes"],
+      [PKG_CHECK_MODULES(EVAS, [evas >= 0.9.9], [], [enable_enotify="no"])]
+)
+
+#AS_IF(
+#   [test "x${enable_eudev}" = "xyes"],
+#     [PKG_CHECK_MODULES(EUDEV, udev, [], [enable_eudev="no"])]
+#)
 
 AM_CONDITIONAL([BUILD_EHAL],     [test "x${enable_ehal}"     = "xyes"])
+#AM_CONDITIONAL([BUILD_EUDEV],     [test "x${enable_eudev}"     = "xyes"])
+AM_CONDITIONAL([BUILD_EUKIT],     [test "x${enable_eukit}"     = "xyes"])
 AM_CONDITIONAL([BUILD_ENOTIFY],  [test "x${enable_enotify}"  = "xyes"])
 AM_CONDITIONAL([BUILD_ECONNMAN], [test "x${enable_econnman}" = "xyes"])
 AM_CONDITIONAL([BUILD_EBLUEZ], [test "x${enable_ebluez}" = "xyes"])
@@ -120,12 +160,14 @@ AM_CONDITIONAL([BUILD_EOFONO], [test "x${enable_eofono}" = "xyes"])
 
 EFL_EDBUS_BUILD=""
 lt_enable_auto_import=""
-case "$host_os" in
-   mingw* | cegcc*)
-      EFL_EDBUS_BUILD="-DEFL_EDBUS_BUILD"
-      lt_enable_auto_import="-Wl,--enable-auto-import"
-   ;;
-esac
+AS_CASE(
+   ["$host_os"],
+      [mingw* | cegcc*],
+        [
+           EFL_EDBUS_BUILD="-DEFL_EDBUS_BUILD"
+           lt_enable_auto_import="-Wl,--enable-auto-import"
+        ]
+)
 AC_SUBST(EFL_EDBUS_BUILD)
 AC_SUBST(lt_enable_auto_import)
 
@@ -136,6 +178,7 @@ src/Makefile
 src/lib/Makefile
 src/lib/dbus/Makefile
 src/lib/hal/Makefile
+src/lib/ukit/Makefile
 src/lib/notification/Makefile
 src/lib/connman/Makefile
 src/lib/bluez/Makefile
@@ -143,6 +186,7 @@ src/lib/ofono/Makefile
 src/bin/Makefile
 edbus.pc
 ehal.pc
+eukit.pc
 enotify.pc
 econnman.pc
 ebluez.pc
@@ -165,6 +209,8 @@ echo
 echo "  Modules:"
 echo
 echo "    EHal...............: $enable_ehal"
+echo "    EUdev..............: $enable_eudev"
+echo "    EUkit..............: $enable_eukit"
 echo "    EConnman...........: $enable_econnman"
 echo "    EBluez.............: $enable_ebluez"
 echo "    EOfono.............: $enable_eofono"

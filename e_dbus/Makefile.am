@@ -23,6 +23,13 @@ endif
 if BUILD_EOFONO
 EOFONO_PC = eofono.pc
 endif
-pkgconfig_DATA = edbus.pc $(EHAL_PC) $(ENOTIFY_PC) $(ECONNMAN_PC) $(EBLUEZ_PC) $(EOFONO_PC)
+#if BUILD_EUDEV
+#EUDEV_PC = eudev.pc
+#endif
+if BUILD_EUKIT
+EUKIT_PC = eukit.pc
+endif
+pkgconfig_DATA = edbus.pc $(EHAL_PC) $(ENOTIFY_PC) $(ECONNMAN_PC) $(EBLUEZ_PC) $(EOFONO_PC) $(EUKIT_PC)
+#pkgconfig_DATA = edbus.pc $(EHAL_PC) $(ENOTIFY_PC) $(ECONNMAN_PC) $(EBLUEZ_PC) $(EOFONO_PC) $(EUDEV_PC) $(EUKIT_PC)
 
 EXTRA_DIST = e_dbus.spec
