@@ -40,7 +40,7 @@ class Editable(Manager):
         self._mode_get_cb = mode_get_cb
 
         self._group = ""
-        self._edje = None
+        self.__edje = None
 
         self.part = EditablePart(self)
         self.animation = EditableAnimation(self)
@@ -61,7 +61,7 @@ class Editable(Manager):
 
     # Edje
     def _edje_get(self):
-        return self._edje
+        return self.__edje
 
     edje = property(_edje_get)
 
@@ -84,13 +84,13 @@ class Editable(Manager):
         if not value:
             value = ""
             self.event_emit("group.changed", value)
-            self._edje and self._edje.delete()
-            self._edje = None
+            self.__edje and self.__edje.delete()
+            self.__edje = None
             self._edje_group = None
         else:
-            self._edje = EdjeEdit(
+            self.__edje = EdjeEdit(
                 self._canvas, file=self._swapfile.workfile, group=value)
-            self._edje_group = self._edje.current_group
+            self._edje_group = self.__edje.current_group
             self.event_emit("group.changed", value)
 
         self._group = value
@@ -98,20 +98,22 @@ class Editable(Manager):
     group = property(_group_get, _group_set)
 
     def group_add(self, grp_name):
-        if not self._edje:
-            self._edje = EdjeEdit(
+        if not self.__edje:
+            self.__edje = EdjeEdit(
                 self._canvas, file=self._swapfile.workfile,
                 group=edje.file_collection_list(self._swapfile.workfile)[0])
+            self.event_emit("group.changed", self.group)
 
-        return self._edje.group_add(grp_name)
+        return self.__edje.group_add(grp_name)
 
     def group_exists(self, grp_name):
-        if not self._edje:
-            self._edje = EdjeEdit(
+        if not self.__edje:
+            self.__edje = EdjeEdit(
                 self._canvas, file=self._swapfile.workfile,
                 group=edje.file_collection_list(self._swapfile.workfile)[0])
+            self.event_emit("group.changed", self.group)
 
-        return self._edje.group_exist(grp_name)
+        return self.__edje.group_exist(grp_name)
 
     def group_del(self, grp_name):
         dummy_grp = None
@@ -124,7 +126,7 @@ class Editable(Manager):
         if not dummy_grp:
             return False
 
-        if not self._edje or self._group == grp_name:
+        if not self.__edje or self._group == grp_name:
             self.group = ""
 
             dummy_edje = EdjeEdit(
@@ -133,14 +135,14 @@ class Editable(Manager):
             dummy_edje.delete()
             return r
 
-        return self._edje.group_del(grp_name)
+        return self.__edje.group_del(grp_name)
 
     def group_rename(self, name):
         if not self._group:
             return False
         if not name:
             return False
-        if self._edje.group_exist(name):
+        if self.__edje.group_exist(name):
             return False
 
         self._edje_group.rename(name)
@@ -166,7 +168,7 @@ class Editable(Manager):
         self._min = (self._edje_group.w_min, self._edje_group.h_min)
         self.event_emit("group.min.changed", self._min)
 
-        data = self._edje.group_data_get(self.pref_size_key)
+        data = self.__edje.group_data_get(self.pref_size_key)
 
         if not data:
             w, h = self.default_display_size
@@ -208,8 +210,8 @@ class Editable(Manager):
         group_w, group_h = self.group_size
         min_w, min_h = self._min
 
-        w = self._verify_max_w(w, group_w, group_h, min_w, self._edje)
-        h = self._verify_max_h(h, group_w, group_h, min_h, self._edje)
+        w = self._verify_max_w(w, group_w, group_h, min_w, self.__edje)
+        h = self._verify_max_h(h, group_w, group_h, min_h, self.__edje)
         self._edje_group.h_max = h
         self._max = (w, h)
         self.event_emit("group.max.changed", self._max)
@@ -247,8 +249,8 @@ class Editable(Manager):
         group_w, group_h = self.group_size
         max_w, max_h = self._max
 
-        w = self._verify_min_w(w, group_w, group_h, max_w, self._edje)
-        h = self._verify_min_h(h, group_w, group_h, max_h, self._edje)
+        w = self._verify_min_w(w, group_w, group_h, max_w, self.__edje)
+        h = self._verify_min_h(h, group_w, group_h, max_h, self.__edje)
         self._edje_group.w_min = w
         self._edje_group.h_min = h
         self._min = (w, h)
@@ -278,12 +280,12 @@ class Editable(Manager):
             h = max_h
 
         self._size = (w, h)
-        self._edje.size = (w, h)
+        self.__edje.size = (w, h)
 
-        value = self._edje.group_data_get(self.pref_size_key)
+        value = self.__edje.group_data_get(self.pref_size_key)
         if not value:
-            self._edje.group_data_add(self.pref_size_key, "0x0")
-        self._edje.group_data_set(self.pref_size_key, "%dx%d" % self._size)
+            self.__edje.group_data_add(self.pref_size_key, "0x0")
+        self.__edje.group_data_set(self.pref_size_key, "%dx%d" % self._size)
 
         self.event_emit("group.size.changed", self._size)
 
@@ -333,22 +335,24 @@ class Editable(Manager):
     def save(self):
         self._empty_animations_clear()
 
-        if self._edje.save_all():
+        if self.__edje.save_all():
             self._swapfile.save()
             self.event_emit("saved")
             # FIXME: Workaround that solves a probably bug on
             # swapfile class that don't allow to add a new group after saving
             # the file being edited
-            self._edje = EdjeEdit(
+            self.__edje = EdjeEdit(
                 self._canvas, file=self._swapfile.workfile,
                 group=self._group)
+            self.event_emit("group.changed", self.group)
+
         else:
             self.event_emit("saved.error")
 
     def save_as(self, path, mode=None):
         self._empty_animations_clear()
 
-        if self._edje.save_all():
+        if self.__edje.save_all():
             self._swapfile.save(path, mode)
             self.event_emit("filename.changed", path)
             self.event_emit("saved")
@@ -368,13 +372,13 @@ class Editable(Manager):
 
     def _parts_load_cb(self, emissor, data):
         if data:
-            self.parts = self._edje.parts
+            self.parts = self.__edje.parts
         else:
             self.parts = []
         self.event_emit("parts.changed", self.parts)
 
     def _parts_reload_cb(self, emissor, data):
-        self.parts = self._edje.parts
+        self.parts = self.__edje.parts
         self.event_emit("parts.changed", self.parts)
 
     # TODO: externals API may change in near future
@@ -382,14 +386,14 @@ class Editable(Manager):
     # when type is external), there is no external_del (not even indirectly
     # called
     def external_add(self, module):
-        return self._edje.external_add(module)
+        return self.__edje.external_add(module)
 
     def _part_add(self, name, type, source):
         if type == edje.EDJE_PART_TYPE_EXTERNAL:
             external = edje.external_type_get(source)
             if external:
-                self._edje.external_add(external.module)
-        return self._edje.part_add(name, type, source)
+                self.__edje.external_add(external.module)
+        return self.__edje.part_add(name, type, source)
 
     def part_add(self, name, type, source="", init=None):
         if not self._part_add(name, type, source):
@@ -414,7 +418,7 @@ class Editable(Manager):
         if not self._part_add(name, part_data.type, source):
             return False
 
-        part = self._edje.part_get(name)
+        part = self.__edje.part_get(name)
         part_data.apply_to(part)
 
         if relatives:
@@ -436,11 +440,11 @@ class Editable(Manager):
         return True
 
     def _part_init(self, name):
-        part = self._edje.part_get(name)
+        part = self.__edje.part_get(name)
         type = part.type
         state = part.state_get(*part.state_selected_get())
 
-        w, h = self._edje.size
+        w, h = self.__edje.size
 
         state.rel1_to = (None, None)
         state.rel1_relative = (0.0, 0.0)
@@ -454,7 +458,7 @@ class Editable(Manager):
             part.mouse_events = False
 
         elif type == edje.EDJE_PART_TYPE_IMAGE:
-            images = self._edje.images
+            images = self.__edje.images
             if images:
                 state.image = images[0]
 
@@ -468,13 +472,13 @@ class Editable(Manager):
         return part
 
     def part_get(self, part_name):
-        return self._edje.part_get(part_name)
+        return self.__edje.part_get(part_name)
 
     def part_object_get(self, part_name):
-        return self._edje.part_object_get(part_name)
+        return self.__edje.part_object_get(part_name)
 
     def part_del(self, name):
-        if self._edje.part_del(name):
+        if self.__edje.part_del(name):
             self._modified = True
             self.event_emit("part.removed", name)
             return True
@@ -487,14 +491,14 @@ class Editable(Manager):
 
     def _programs_reload_cb(self, emissor, data):
         if data:
-            self.programs = self._edje.programs
+            self.programs = self.__edje.programs
         else:
             self.programs = []
 
         self.event_emit("programs.changed", self.programs)
 
     def program_add(self, name):
-        if not self._edje.program_add(name):
+        if not self.__edje.program_add(name):
             return False
 
         self._modified = True
@@ -504,7 +508,7 @@ class Editable(Manager):
         return True
 
     def program_del(self, name):
-        if not self._edje.program_del(name):
+        if not self.__edje.program_del(name):
             return False
 
         self._modified = True
@@ -566,7 +570,7 @@ class Editable(Manager):
             parts = self.parts
         for p in parts:
             prog.target_add(p)
-            part = self._edje.part_get(p)
+            part = self.__edje.part_get(p)
             part.state_add(startname)
             state = part.state_get(statename)
             state.copy_from(prevstatename)
@@ -594,7 +598,7 @@ class Editable(Manager):
         for p in stopprog.targets:
             prog = self.program_get(p)
             for pp in prog.targets:
-                part = self._edje.part_get(pp)
+                part = self.__edje.part_get(pp)
                 if part:
                     part.state_selected_set("default")
                     part.state_del(p)
@@ -635,7 +639,7 @@ class Editable(Manager):
         if not self._signal_add(name):
             return False
 
-        program = self._edje.program_get(name)
+        program = self.__edje.program_get(name)
         program.action_set(action_type)
 
         self.event_emit("signal.added", name)
@@ -648,7 +652,7 @@ class Editable(Manager):
         if not self._signal_add(name):
             return False
 
-        program = self._edje.program_get(name)
+        program = self.__edje.program_get(name)
         sig_data.apply_to(program)
 
         self.event_emit("signal.added", name)
@@ -673,7 +677,7 @@ class Editable(Manager):
         relatives = dict()
         for p in self.parts:
             saved_states = dict()
-            part = self._edje.part_get(p)
+            part = self.__edje.part_get(p)
             for st in part.states:
                 st_name, value = st.split()
                 st_value = float(value)

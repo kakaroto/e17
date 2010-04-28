@@ -50,7 +50,7 @@ class Desktop(Controller):
 
     def _group_load(self, emissor, data):
         if data:
-            self._view.group = self.e._edje
+            self._view.group = self.e.edje
         else:
             self._view.group = None
 
