@@ -1,0 +1,8 @@
+Login:		discomfitor
+IRC Nick:	discomfitor/zmike
+Name:		Mike Blumenkrantz
+Location:	CT, USA
+E-Mail:		mike@zentific.com
+Managing:	eek
+Contributing:	elementary, e, gentoo ebuilds
+Platform:	Gentoo (Linux)
