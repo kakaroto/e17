@@ -629,7 +629,7 @@ _mpris_play_track(Evry_Action *act)
 {
   DBusMessage *msg;
 
-  ITEM_TRACK(t, act->item1);
+  ITEM_TRACK(t, act->it1.item);
   GET_PLUGIN(p, t->base.plugin);
 
   if (!strcmp(bus_name, "org.mpris.amarok") ||
@@ -705,7 +705,7 @@ _mpris_play_track(Evry_Action *act)
 static int
 _mpris_tracklist_remove_track(Evry_Action *act)
 {
-  ITEM_TRACK(t, act->item1);
+  ITEM_TRACK(t, act->it1.item);
 
   _dbus_send_msg_int("/TrackList", "DelTrack", NULL, NULL, t->id);
 
@@ -768,7 +768,7 @@ _dbus_cb_position_get(void *data, DBusMessage *reply, DBusError *error)
   Evry_Action *act = data;
   int pos;
 
-  ITEM_TRACK(t, act->item1);
+  ITEM_TRACK(t, act->it1.item);
 
   if (!_dbus_check_msg(reply, error)) return;
 
@@ -857,16 +857,16 @@ _mpris_play_file(Evry_Action *act)
   Evry_Item_File *file;
   int play = EVRY_ITEM_DATA_INT_GET(act) == ACT_PLAY;
 
-  if (!strcmp(act->type_in1, mpris_track))
+  if (!strcmp(act->it1.type, mpris_track))
     {
 
-      file = (Evry_Item_File *)act->item2;
+      file = (Evry_Item_File *)act->it2.item;
       if (strncmp(file->mime, "audio/", 6) != 0)
 	return 0;
     }
   else
     {
-      file = (Evry_Item_File *)act->item1;
+      file = (Evry_Item_File *)act->it1.item;
     }
 
   _add_file(file->path, play);
@@ -877,9 +877,9 @@ _mpris_play_file(Evry_Action *act)
 static int
 _mpris_add_files(Evry_Action *act)
 {
-  const Evry_Item *it = act->item2;
+  const Evry_Item *it = act->it2.item;
 
-  if (!evry_item_type_check(act->item1, mpris_track, NULL))
+  if (!evry_item_type_check(act->it1.item, mpris_track, NULL))
     return 0;
 
   if ((!evry_item_type_check(it, "FILE", NULL)) &&
@@ -887,17 +887,17 @@ _mpris_add_files(Evry_Action *act)
     return 0;
 
   if (evry_item_type_check(it, "TRACKER_MUSIC", "FILE_LIST") &&
-      (act->item2->data))
+      (act->it2.item->data))
     {
       char *file;
       Eina_List *l;
 
-      EINA_LIST_REVERSE_FOREACH(act->item2->data, l, file)
+      EINA_LIST_REVERSE_FOREACH(act->it2.item->data, l, file)
       _add_file(file, 0);
       return 1;
     }
 
-  GET_FILE(file, act->item2);
+  GET_FILE(file, act->it2.item);
 
   if (file->mime && strncmp(file->mime, "audio/", 6) == 0)
     {

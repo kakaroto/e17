@@ -222,7 +222,7 @@ _action(Evry_Action *act)
   if (!app->desktop)
     app->file = "xdg-open";
 
-  char *tmp = evry_util_url_escape(act->item1->label, 0);
+  char *tmp = evry_util_url_escape(act->it1.item->label, 0);
 
   if (EVRY_ITEM_DATA_INT_GET(act) == ACT_GOOGLE)
     {

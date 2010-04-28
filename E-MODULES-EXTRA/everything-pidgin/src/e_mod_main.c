@@ -421,8 +421,8 @@ cb_sendFile(void *data, DBusMessage *reply, DBusError *error)
   DBusMessage *msg;
   int connection;
   Evry_Action *act = data;
-  buddyInfo* info = act->item1->data;
-  GET_FILE(file, act->item2);
+  buddyInfo* info = act->it1.item->data;
+  GET_FILE(file, act->it2.item);
 
   if (!check_msg(data, reply, error)) goto end;
 
@@ -447,14 +447,14 @@ cb_sendFile(void *data, DBusMessage *reply, DBusError *error)
   dbus_message_unref(msg);
 
  end:
-  evry_item_free((Evry_Item *)act->item1);
-  evry_item_free((Evry_Item *)act->item2);
+  evry_item_free((Evry_Item *)act->it1.item);
+  evry_item_free((Evry_Item *)act->it2.item);
 }
 
 static int
 _action_send(Evry_Action *act)
 {
-  buddyInfo* info = act->item1->data;
+  buddyInfo* info = act->it1.item->data;
   DBusMessage *msg;
 
   if (!(msg = dbus_message_new_method_call(DBUS_PIDGIN_BUS_NAME,
@@ -472,8 +472,8 @@ _action_send(Evry_Action *act)
 
   /* when action returns and everything hides items will be freed,
      but we need to wait for the connection.. */
-  evry_item_ref((Evry_Item *)act->item1);
-  evry_item_ref((Evry_Item *)act->item2);
+  evry_item_ref((Evry_Item *)act->it1.item);
+  evry_item_ref((Evry_Item *)act->it2.item);
 
   return EVRY_ACTION_FINISHED;
 }
@@ -485,7 +485,7 @@ cb_sendMessage(void *data, DBusMessage *reply, DBusError *error)
   DBusMessage *msg;
   int imData;
   Evry_Action *act = data;
-  buddyInfo* info = act->item1->data;
+  buddyInfo* info = act->it1.item->data;
 
   if (!check_msg(data, reply, error)) goto end;
 
@@ -502,15 +502,15 @@ cb_sendMessage(void *data, DBusMessage *reply, DBusError *error)
 
   dbus_message_append_args(msg,
 			   DBUS_TYPE_INT32,  &(imData),
-			   DBUS_TYPE_STRING, &(act->item2->label),
+			   DBUS_TYPE_STRING, &(act->it2.item->label),
 			   DBUS_TYPE_INVALID);
 
   e_dbus_message_send(conn, msg, NULL, -1, NULL);
   dbus_message_unref(msg);
 
  end:
-  evry_item_free((Evry_Item *)act->item1);
-  evry_item_free((Evry_Item *)act->item2);
+  evry_item_free((Evry_Item *)act->it1.item);
+  evry_item_free((Evry_Item *)act->it2.item);
 }
 
 static void
@@ -522,7 +522,7 @@ cb_getImData(void *data, DBusMessage *reply, DBusError *error)
 
   if (!check_msg(data, reply, error)) goto end;
 
-  if (!act->item2)
+  if (!act->it2.item)
     goto end;
 
   dbus_message_get_args(reply, error,
@@ -546,16 +546,16 @@ cb_getImData(void *data, DBusMessage *reply, DBusError *error)
   return;
 
  end:
-  evry_item_free((Evry_Item *)act->item1);
-  if (act->item2)
-    evry_item_ref((Evry_Item *)act->item2);
+  evry_item_free((Evry_Item *)act->it1.item);
+  if (act->it2.item)
+    evry_item_ref((Evry_Item *)act->it2.item);
 }
 
 static int
 _action_chat(Evry_Action *act)
 {
   DBusMessage *msg;
-  buddyInfo* info = act->item1->data;
+  buddyInfo* info = act->it1.item->data;
 
   if (!(msg = dbus_message_new_method_call(DBUS_PIDGIN_BUS_NAME,
 					   DBUS_PIDGIN_PATH,
@@ -578,9 +578,9 @@ _action_chat(Evry_Action *act)
 
   /* when action returns and everything hides items will be freed,
      but we need to wait for the connection.. */
-  evry_item_ref((Evry_Item *)act->item1);
-  if (act->item2)
-    evry_item_ref((Evry_Item *)act->item2);
+  evry_item_ref((Evry_Item *)act->it1.item);
+  if (act->it2.item)
+    evry_item_ref((Evry_Item *)act->it2.item);
 
   return EVRY_ACTION_FINISHED;
 }
