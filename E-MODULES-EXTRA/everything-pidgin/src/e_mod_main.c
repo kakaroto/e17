@@ -185,6 +185,21 @@ check_msg(void *data, DBusMessage *reply, DBusError *error)
   return (dbus_message_get_type(reply) == DBUS_MESSAGE_TYPE_METHOD_RETURN);
 }
 
+Evas_Object *
+_icon_get(Evry_Item *it, Evas *e)
+{
+  if (((buddyInfo*) it->data)->iconPath != NULL)
+    {
+      Evas_Object* obj = evas_object_image_filled_add(e);
+      evas_object_image_file_set(obj, ((buddyInfo*) it->data)->iconPath, NULL);
+      return obj;
+    }
+  else
+    {
+      return NULL;
+    }
+}
+
 static void
 cb_buddyList(void *data, DBusMessage *reply, DBusError *error)
 {
@@ -200,7 +215,7 @@ cb_buddyList(void *data, DBusMessage *reply, DBusError *error)
   do
     {
       //get and initialize new memory
-      if (!(item = evry_item_new(NULL, plug, NULL, cb_itemFree)) ||
+      if (!(item = evry_item_new(NULL, plug, NULL, _icon_get, cb_itemFree)) ||
 	  !(bi = E_NEW(buddyInfo, 1)))
 	break;
 
@@ -345,21 +360,6 @@ _cleanup(Evry_Plugin *p)
   EVRY_PLUGIN_ITEMS_CLEAR(p);
 }
 
-Evas_Object *
-_icon_get(Evry_Plugin *p, const Evry_Item *it, Evas *e)
-{
-  if (((buddyInfo*) it->data)->iconPath != NULL)
-    {
-      Evas_Object* obj = evas_object_image_filled_add(e);
-      evas_object_image_file_set(obj, ((buddyInfo*) it->data)->iconPath, NULL);
-      return obj;
-    }
-  else
-    {
-      return NULL;
-    }
-}
-
 static void
 cb_itemFree(Evry_Item *item)
 {
@@ -422,7 +422,7 @@ cb_sendFile(void *data, DBusMessage *reply, DBusError *error)
   int connection;
   Evry_Action *act = data;
   buddyInfo* info = act->item1->data;
-  ITEM_FILE(file, act->item2);
+  GET_FILE(file, act->item2);
 
   if (!check_msg(data, reply, error)) goto end;
 
@@ -592,10 +592,10 @@ _plugins_init(void)
   if (!evry_api_version_check(EVRY_API_VERSION))
     return EINA_FALSE;
 
-  plug = EVRY_PLUGIN_NEW(Evry_Plugin, N_("Pidgin"), type_subject, NULL, "PIDGINCONTACT",
-			 _begin, _cleanup, _fetch, _icon_get, NULL);
+  plug = EVRY_PLUGIN_NEW(Evry_Plugin, N_()"Pidgin"), NULL, "PIDGINCONTACT",
+			 _begin, _cleanup, _fetch, NULL);
 
-  evry_plugin_register(plug, 1);
+  evry_plugin_register(plug, EVRY_PLUGIN_SUBJECT, 1);
 
   act = EVRY_ACTION_NEW(N_("Chat"), "PIDGINCONTACT", NULL, "go-next",
 			_action_chat, NULL);
