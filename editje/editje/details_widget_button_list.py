@@ -21,13 +21,13 @@ from floater_opener import FloaterListOpener
 
 # Populates a list with the parts of the group under edition, except for
 # the one marked as selected, if any.
-class WidgetPartList(FloaterListOpener, WidgetButton):
+class WidgetButtonList(FloaterListOpener, WidgetButton):
     def __init__(self, parent, title=None, list_get_cb=None,
-                 sel_part_get_cb=None):
+                 sel_object_get_cb=None):
         def null_sel():
             return None
 
-        self._sel_part_get_cb = sel_part_get_cb or null_sel
+        self._sel_object_get_cb = sel_object_get_cb or null_sel
         FloaterListOpener.__init__(self, list_get_cb)
         WidgetButton.__init__(self, parent)
 
@@ -64,10 +64,10 @@ class WidgetPartList(FloaterListOpener, WidgetButton):
 
     def _floater_list_items_update(self):
         list = []
-        sel_part = self._sel_part_get_cb()
+        sel_object = self._sel_object_get_cb()
 
         for item in self._list_get_cb():
-            if item == sel_part:
+            if item == sel_object:
                 continue
             list.append((item, item))
         return list

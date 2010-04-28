@@ -15,11 +15,11 @@
 # You should have received a copy of the GNU Lesser General Public
 # License along with Editje. If not, see <http://www.gnu.org/licenses/>.
 
-from details_widget_partlist import WidgetPartList
+from details_widget_button_list import WidgetButtonList
 from floater_opener import FloaterListOpener
 
 
-class WidgetActionsList(WidgetPartList):
+class WidgetActionsList(WidgetButtonList):
     def _floater_list_items_update(self):
         list = []
         for item in self._list_get_cb():

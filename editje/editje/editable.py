@@ -695,3 +695,8 @@ class Editable(Manager):
             if saved_states:
                 relatives[p] = saved_states
         return relatives
+
+    def _groups_get(self):
+        return edje.file_collection_list(self._swapfile.workfile)
+
+    groups = property(_groups_get)

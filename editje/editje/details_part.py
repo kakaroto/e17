@@ -21,7 +21,7 @@ from details import EditjeDetails
 from details_widget_entry import WidgetEntry
 from details_widget_boolean import WidgetBoolean
 from details_widget_combo import WidgetCombo
-from details_widget_partlist import WidgetPartList
+from details_widget_button_list import WidgetButtonList
 from prop import Property, PropertyTable
 from operation import Operation
 
@@ -80,7 +80,7 @@ class PartDetails(EditjeDetails):
             return self.e.part.name
 
         prop = Property(parent, "clip_to")
-        prop.widget_add("to", WidgetPartList(
+        prop.widget_add("to", WidgetButtonList(
                 self, "Clipper selection", parts_get, sel_part_get))
         self["main"].property_add(prop)
         prop = Property(parent, "mouse_events")
@@ -100,10 +100,24 @@ class PartDetails(EditjeDetails):
             wid.item_add(self._effects[i])
         prop.widget_add("e", wid)
         self["textblock"].property_add(prop)
-        # Missing properties: source*, entry_mode, select_mode, multiline
+        # Missing properties: sources of text block, entry_mode,
+        # select_mode, multiline
+        self.group_add("group")
+        def groups_get():
+            return self.e.groups
+
+        def sel_group_get():
+            return self.e.group
+
+        prop = Property(parent, "source")
+        prop.widget_add("src", WidgetButtonList(
+                self, "group source selection", groups_get, sel_group_get))
+        self["group"].property_add(prop)
+
 
         self.main_hide()
         self.group_hide("textblock")
+        self.group_hide("group")
 
         self.open_disable = False
         self.open = True
@@ -151,6 +165,8 @@ class PartDetails(EditjeDetails):
             self._prop_value_common_changed(prop_name, prop_value)
         elif group_name == "textblock":
             self._prop_value_text_changed(prop_name, prop_value)
+        elif group_name == "group":
+            self._prop_value_group_changed(prop_name, prop_value)
 
     def _prop_value_common_changed(self, prop, value):
         args = [["main"], [prop], [value], [None], [False], [None]]
@@ -171,6 +187,12 @@ class PartDetails(EditjeDetails):
                 [None], [False], [lambda x: self._effects[x]]]
         self._prop_change_do("text part effects setting", *args)
 
+    def _prop_value_group_changed(self, prop, value):
+        if prop !="source":
+            return
+        args = [["group"], [prop], [value], [None], [False], [None]]
+        self._prop_change_do("part group source setting", *args)
+
     def _part_update(self, emissor, data):
         if not self.e.part.name:
             return
@@ -183,6 +205,7 @@ class PartDetails(EditjeDetails):
         self._update_common_props()
 
         self.group_hide("textblock")
+        self.group_hide("group")
 
         if self.e.part.type == edje.EDJE_PART_TYPE_EXTERNAL:
             source = self.e.part.source
@@ -208,6 +231,9 @@ class PartDetails(EditjeDetails):
         if self.e.part.type == edje.EDJE_PART_TYPE_TEXT:
             self._update_text_props()
 
+        if self.e.part.type == edje.EDJE_PART_TYPE_GROUP:
+            self._update_group_props()
+
         self.show()
 
     def _header_extra_hide(self):
@@ -225,12 +251,15 @@ class PartDetails(EditjeDetails):
         self._header_extra_hide()
         self.main_hide()
         self.group_hide("textblock")
+        self.group_hide("group")
 
         self["main"]["clip_to"].hide_value()
         self["main"]["mouse_events"].hide_value()
         self["main"]["repeat_events"].hide_value()
         if self.e.part.type == edje.EDJE_PART_TYPE_TEXT:
             self["textblock"]["effect"].hide_value()
+        elif self.e.part.type == edje.EDJE_PART_TYPE_GROUP:
+            self["group"]["source"].hide_value()
 
         self.hide()
 
@@ -261,8 +290,18 @@ class PartDetails(EditjeDetails):
         self["textblock"]["effect"].show_value()
         self.group_show("textblock")
 
+    def _update_group_props(self):
+        source = self.e.part._part.source
+        if source:
+            self["group"]["source"].value = source
+        else:
+            self["group"]["source"].value = ""
+            self["group"]["source"].show_value()
+        self.group_show("group")
+
     def _part_type_to_text(self, type):
         parttypes = ['NONE', 'RECTANGLE', 'TEXT', 'IMAGE', 'SWALLOW',
                      'TEXTBLOCK', 'GRADIENT', 'GROUP', 'BOX', 'TABLE',
                      'EXTERNAL']
         return parttypes[type]
+

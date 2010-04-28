@@ -29,7 +29,7 @@ details_widget_entry.py \
 details_widget_entry_button.py \
 details_widget_entry_button_list.py \
 details_widget_font.py \
-details_widget_partlist.py \
+details_widget_button_list.py \
 details_widget_signals.py \
 details_widget_source.py \
 details_widget_states.py \
