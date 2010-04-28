@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Everything-tracker\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2010-04-25 13:04+0200\n"
+"POT-Creation-Date: 2010-04-28 05:22+0200\n"
 "PO-Revision-Date: 2010-04-19 20:01+0200\n"
 "Last-Translator: Massimo Maiurana <maiurana@gmail.com>\n"
 "Language-Team: none\n"
@@ -14,15 +14,15 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: src/e_mod_main.c:826 src/e_mod_main.c:833
+#: src/e_mod_main.c:821 src/e_mod_main.c:828
 msgid "Tracker"
 msgstr "Tracker"
 
-#: src/e_mod_main.c:840
+#: src/e_mod_main.c:835
 msgid "Albums"
 msgstr "Album"
 
-#: src/e_mod_main.c:849
+#: src/e_mod_main.c:844
 msgid "Artists"
 msgstr "Artisti"
 
