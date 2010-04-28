@@ -34,14 +34,14 @@ static const char fdo_path[] = "/org/freedesktop/DBus";
 static Evry_Plugin *
 _begin(Evry_Plugin *plugin, const Evry_Item *it)
 {
-  PLUGIN(p, plugin);
+  GET_PLUGIN(p, plugin);
 
   p->active = 0;
 
   /* is APPLICATION ? */
-  if (it && it->plugin->type_out == plugin->type_in)
+  if (evry_item_type_check(it, "ACTION", "APPLICATION"))
     {
-      ITEM_APP(app, it);
+      GET_APP(app, it);
       Eina_List *l;
       const char *mime;
       char mime_entry[256];
@@ -84,7 +84,7 @@ _begin(Evry_Plugin *plugin, const Evry_Item *it)
 static void
 _item_free(Evry_Item *it)
 {
-  ITEM_FILE(file, it);
+  GET_FILE(file, it);
   if (file->path) eina_stringshare_del(file->path);
   if (file->mime) eina_stringshare_del(file->mime);
 
@@ -127,7 +127,7 @@ _item_add(Plugin *p, char *path, char *mime, int prio)
   file = E_NEW(Evry_Item_File, 1);
   if (!file) return NULL;
 
-  evry_item_new(EVRY_ITEM(file), EVRY_PLUGIN(p), filename, _item_free);
+  evry_item_new(EVRY_ITEM(file), EVRY_PLUGIN(p), filename, NULL, _item_free);
   EVRY_ITEM(file)->id = eina_stringshare_add(_item_id(path));
   file->path = eina_stringshare_add(path);
 
@@ -146,7 +146,7 @@ _item_add(Plugin *p, char *path, char *mime, int prio)
 static void
 _cleanup(Evry_Plugin *plugin)
 {
-  PLUGIN(p, plugin);
+  GET_PLUGIN(p, plugin);
   Evry_Item_File *file;
 
   p->active = 0;
@@ -282,7 +282,7 @@ _fetch(Evry_Plugin *plugin, const char *input)
 {
   if (active)
     {
-      PLUGIN(p, plugin);
+      GET_PLUGIN(p, plugin);
 
       DBusMessage *msg;
       int live_query_id = 0;
@@ -320,11 +320,11 @@ _fetch(Evry_Plugin *plugin, const char *input)
 	  sprintf(search_text, "%s", input);
 	  max_hits = 100;
 	}
-      else if (!input && !plugin->begin && plugin->type == type_object)
-	{
-	  sort_by_access = 1;
-	  search_text = "";
-	}
+      /* else if (!input && !plugin->begin && plugin->type == type_object)
+       * 	{
+       * 	  sort_by_access = 1;
+       * 	  search_text = "";
+       * 	} */
       else
 	{
 	  _cleanup(plugin);
@@ -369,7 +369,7 @@ _fetch(Evry_Plugin *plugin, const char *input)
 static Evas_Object *
 _icon_get(Evry_Plugin *p __UNUSED__, const Evry_Item *it, Evas *e)
 {
-  ITEM_FILE(file, it);
+  GET_FILE(file, it);
 
   if (it->browseable)
     return evry_icon_theme_get("folder", e);
@@ -382,7 +382,7 @@ _icon_get(Evry_Plugin *p __UNUSED__, const Evry_Item *it, Evas *e)
 static void
 _plugin_free(Evry_Plugin *plugin)
 {
-  PLUGIN(p, plugin);
+  GET_PLUGIN(p, plugin);
 
   if (p->condition[0]) free(p->condition);
 
@@ -395,14 +395,12 @@ _plugin_new(const char *name, int type, char *service, int max_hits, int begin)
   Evry_Plugin *pp;
 
   if (!begin)
-    pp = EVRY_PLUGIN_NEW(Plugin, name, type, "", "FILE",
-			 NULL, _cleanup, _fetch,
-			 _icon_get, _plugin_free);
-  else if (type == type_object)
-    pp = EVRY_PLUGIN_NEW(Plugin, name, type, "APPLICATION", "FILE",
-			 _begin, _cleanup, _fetch,
-			 _icon_get, _plugin_free);
-  PLUGIN(p, pp);
+    pp = EVRY_PLUGIN_NEW(Plugin, name, NULL, "FILE",
+			 NULL, _cleanup, _fetch, _plugin_free);
+  else if (type == EVRY_PLUGIN_OBJECT)
+    pp = EVRY_PLUGIN_NEW(Plugin, name, NULL, "FILE",
+			 _begin, _cleanup, _fetch, _plugin_free);
+  GET_PLUGIN(p, pp);
   p->condition = "";
   p->service = service;
   p->max_hits = max_hits;
@@ -410,7 +408,7 @@ _plugin_new(const char *name, int type, char *service, int max_hits, int begin)
 
   plugins = eina_list_append(plugins, p);
 
-  evry_plugin_register(EVRY_PLUGIN(p), _prio++);
+  evry_plugin_register(EVRY_PLUGIN(p), type, _prio++);
 }
 
 
@@ -527,14 +525,14 @@ _plugins_init(void)
   if (!evry_api_version_check(EVRY_API_VERSION))
     return EINA_FALSE;
 
-  _plugin_new(_("Folders"),    type_subject, "Folders", 20, 0);
-  _plugin_new(_("Images"),     type_subject, "Images", 20, 0);
-  _plugin_new(_("Music"),      type_subject, "Music", 20, 0);
-  _plugin_new(_("Videos"),     type_subject, "Videos", 20, 0);
-  _plugin_new(_("Documents"),  type_subject, "Documents", 20, 0);
+  _plugin_new(_("Folders"),    EVRY_PLUGIN_SUBJECT, "Folders", 20, 0);
+  _plugin_new(_("Images"),     EVRY_PLUGIN_SUBJECT, "Images", 20, 0);
+  _plugin_new(_("Music"),      EVRY_PLUGIN_SUBJECT, "Music", 20, 0);
+  _plugin_new(_("Videos"),     EVRY_PLUGIN_SUBJECT, "Videos", 20, 0);
+  _plugin_new(_("Documents"),  EVRY_PLUGIN_SUBJECT, "Documents", 20, 0);
 
-  _plugin_new(_("Find Files"), type_object,  "Files", 20, 1);
-  _plugin_new(_("Folders"),    type_object,  "Folders", 20, 0);
+  _plugin_new(_("Find Files"), EVRY_PLUGIN_OBJECT,  "Files", 20, 1);
+  _plugin_new(_("Folders"),    EVRY_PLUGIN_OBJECT,  "Folders", 20, 0);
 
   return EINA_TRUE;
 }
