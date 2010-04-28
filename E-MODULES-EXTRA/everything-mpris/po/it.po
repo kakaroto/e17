@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Everything-mpris\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2010-04-25 12:53+0200\n"
+"POT-Creation-Date: 2010-04-28 04:00+0200\n"
 "PO-Revision-Date: 2010-04-25 13:07+0200\n"
 "Last-Translator: Massimo Maiurana <maiurana@gmail.com>\n"
 "Language-Team: none\n"
@@ -14,58 +14,58 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: src/e_mod_main.c:492
+#: src/e_mod_main.c:559
 msgid "Empty Playlist"
 msgstr "Playlist vuota"
 
-#: src/e_mod_main.c:1126
+#: src/e_mod_main.c:1135
 msgid "Playlist"
 msgstr "Playlist"
 
-#: src/e_mod_main.c:1138
+#: src/e_mod_main.c:1146
 msgid "Play Track"
 msgstr "Esegui traccia"
 
-#: src/e_mod_main.c:1144
+#: src/e_mod_main.c:1152
 msgid "Remove Track"
 msgstr "Rimuovi traccia"
 
-#: src/e_mod_main.c:1150
+#: src/e_mod_main.c:1158
 msgid "Play"
 msgstr "Esegui"
 
-#: src/e_mod_main.c:1156
+#: src/e_mod_main.c:1164
 msgid "Pause"
 msgstr "Pausa"
 
-#: src/e_mod_main.c:1162
+#: src/e_mod_main.c:1170
 msgid "Stop"
 msgstr "Ferma"
 
-#: src/e_mod_main.c:1168
+#: src/e_mod_main.c:1176
 msgid "Forward"
 msgstr "Avanti"
 
-#: src/e_mod_main.c:1174
+#: src/e_mod_main.c:1182
 msgid "Rewind"
 msgstr "Indietro"
 
-#: src/e_mod_main.c:1180
+#: src/e_mod_main.c:1188
 msgid "Clear Playlist"
 msgstr "Svuota playlist"
 
-#: src/e_mod_main.c:1186
+#: src/e_mod_main.c:1194
 msgid "Enqueue File"
 msgstr "Accoda file"
 
-#: src/e_mod_main.c:1192
+#: src/e_mod_main.c:1200
 msgid "Play File"
 msgstr "Esegui file"
 
-#: src/e_mod_main.c:1198
+#: src/e_mod_main.c:1206
 msgid "Add Files..."
 msgstr "Aggiungi file..."
 
-#: src/e_mod_main.c:1204
+#: src/e_mod_main.c:1212
 msgid "Add Music..."
 msgstr "Aggiungi musica..."
