@@ -29,4 +29,9 @@ class WidgetActionsList(WidgetButtonList):
         return list
 
     def _floater_actions_init(self):
+        self._floater.action_add("None", self._none_selected)
         FloaterListOpener._floater_actions_init(self)
+
+    def _none_selected(self, *args):
+        self.value_set("")
+        self._floater_cancel()
