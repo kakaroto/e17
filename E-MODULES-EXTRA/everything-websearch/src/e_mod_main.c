@@ -5,6 +5,10 @@
 #include <Evry.h>
 #include "e_mod_main.h"
 
+#define ACT_GOOGLE		1
+#define ACT_FEELING_LUCKY	2
+#define ACT_WIKIPEDIA		3
+
 typedef struct _Plugin Plugin;
 typedef int (*Handler_Func) (void *data, int type, void *event);
 typedef struct _Module_Config Module_Config;
@@ -59,6 +63,7 @@ static char _request_goolge[] = "GET http://www.google.com/complete/search?hl=%s
 static char _request_wiki[]   = "GET http://%s.wikipedia.org/w/api.php?action=opensearch&search=%s HTTP/1.0\n%s";
 static char _address_google[] = "www.google.com";
 static char _address_wiki[]   = "www.wikipedia.org";
+static const char *_id_none;
 
 int
 _server_data(void *data, int ev_type, Ecore_Con_Event_Server_Data *ev)
@@ -72,10 +77,11 @@ _server_data(void *data, int ev_type, Ecore_Con_Event_Server_Data *ev)
 
   EVRY_PLUGIN_ITEMS_FREE(p);
 
-  it = evry_item_new(NULL, EVRY_PLUGIN(p), p->input, NULL);
-  it->context = eina_stringshare_ref(EVRY_PLUGIN(p)->name); 
-  EVRY_PLUGIN_ITEM_APPEND(p, it);      
-  
+  it = EVRY_ITEM_NEW(Evry_Item, p, p->input, NULL, NULL);
+  it->context = eina_stringshare_ref(EVRY_PLUGIN(p)->name);
+  it->id = eina_stringshare_ref(_id_none);
+  EVRY_PLUGIN_ITEM_APPEND(p, it);
+
   if ((list = strstr(result, "[[\"")))
     {
       list += 3;
@@ -86,9 +92,10 @@ _server_data(void *data, int ev_type, Ecore_Con_Event_Server_Data *ev)
       for(i = items; *i; i++)
 	{
 	  char **item= eina_str_split(*i, "\",\"", 2);
-	  it = evry_item_new(NULL, EVRY_PLUGIN(p), *item, NULL);
+	  it = EVRY_ITEM_NEW(Evry_Item, p, *item, NULL, NULL);
 	  it->detail = eina_stringshare_add(*(item + 1));
-	  it->context = eina_stringshare_ref(EVRY_PLUGIN(p)->name); 
+	  it->context = eina_stringshare_ref(EVRY_PLUGIN(p)->name);
+	  it->fuzzy_match = -1;
 	  EVRY_PLUGIN_ITEM_APPEND(p, it);
 	  free(*item);
 	  free(item);
@@ -108,9 +115,10 @@ _server_data(void *data, int ev_type, Ecore_Con_Event_Server_Data *ev)
       for(i = items; *i; i++)
 	{
 	  if (**i == ',' || **i == ']') continue;
-	  it = evry_item_new(NULL, EVRY_PLUGIN(p), *i, NULL);
+	  it = EVRY_ITEM_NEW(Evry_Item, p, *i, NULL, NULL);
 	  it->detail = eina_stringshare_add("Wikipedia");
-	  it->context = eina_stringshare_ref(EVRY_PLUGIN(p)->name); 
+	  it->context = eina_stringshare_ref(EVRY_PLUGIN(p)->name);
+	  it->fuzzy_match = -1;
 	  EVRY_PLUGIN_ITEM_APPEND(p, it);
 	}
 
@@ -127,7 +135,7 @@ _server_data(void *data, int ev_type, Ecore_Con_Event_Server_Data *ev)
 static Evry_Plugin *
 _begin(Evry_Plugin *plugin, const Evry_Item *it)
 {
-  PLUGIN(p, plugin);
+  GET_PLUGIN(p, plugin);
 
   p->handler = ecore_event_handler_add(ECORE_CON_EVENT_SERVER_DATA,
 				       (Handler_Func)_server_data, p);
@@ -137,7 +145,7 @@ _begin(Evry_Plugin *plugin, const Evry_Item *it)
 static void
 _cleanup(Evry_Plugin *plugin)
 {
-  PLUGIN(p, plugin);
+  GET_PLUGIN(p, plugin);
 
   if (p->svr) ecore_con_server_del(p->svr);
   p->svr = NULL;
@@ -181,7 +189,7 @@ _send_request(void *data)
 static int
 _fetch(Evry_Plugin *plugin, const char *input)
 {
-  PLUGIN(p, plugin);
+  GET_PLUGIN(p, plugin);
 
   if (p->input)
     eina_stringshare_del(p->input);
@@ -208,30 +216,31 @@ _action(Evry_Action *act)
   char buf[1024];
   Eina_List *l;
   E_Border *bd;
-  
+
   app->desktop = efreet_util_desktop_exec_find(_conf->browser);
+
   if (!app->desktop)
     app->file = "xdg-open";
 
   char *tmp = evry_util_url_escape(act->item1->label, 0);
 
-  if (!strncmp((char *)act->data, "g", 1))
+  if (EVRY_ITEM_DATA_INT_GET(act) == ACT_GOOGLE)
     {
       snprintf(buf, sizeof(buf), "http://www.google.com/search?hl=%s&q=%s",
 	       _conf->lang, tmp);
     }
-  else if (!strncmp((char *)act->data, "w", 1))
+  else if (EVRY_ITEM_DATA_INT_GET(act) == ACT_WIKIPEDIA)
     {
       snprintf(buf, sizeof(buf), "http://%s.wikipedia.org/wiki/%s",
 	       _conf->lang, tmp);
     }
-  else if (!strncmp((char *)act->data, "f", 1))
+  else if (EVRY_ITEM_DATA_INT_GET(act) == ACT_FEELING_LUCKY)
     {
       snprintf(buf, sizeof(buf), "http://www.google.com/search?hl=%s&q=%s&btnI=745",
 	       _conf->lang, tmp);
     }
   E_FREE(tmp);
-  
+
   file->path = buf;
 
   evry_util_exec_app(EVRY_ITEM(app), EVRY_ITEM(file));
@@ -255,10 +264,10 @@ _action(Evry_Action *act)
 }
 
 Evas_Object *
-_act_icon_get(Evry_Action *act, Evas *e)
+_icon_get(Evry_Item *it, Evas *e)
 {
   Evas_Object *o = e_icon_add(e);
-  if (e_icon_file_edje_set(o, _conf->theme, act->data))
+  if (e_icon_file_edje_set(o, _conf->theme, it->icon))
     return o;
 
   evas_object_del(o);
@@ -281,47 +290,48 @@ static Eina_Bool
 _plugins_init(void)
 {
   Evry_Plugin *p;
-  
+
   if (!evry_api_version_check(EVRY_API_VERSION))
     return EINA_FALSE;
 
-  p = EVRY_PLUGIN_NEW(Plugin, N_("GSuggest"), type_subject, "", "TEXT",
-		      _begin, _cleanup, _fetch, NULL, NULL);
+  p = EVRY_PLUGIN_NEW(Plugin, N_("Google"), "text-html", "TEXT",
+		      _begin, _cleanup, _fetch, NULL);
 
   p->trigger = _trigger_google;
-  p->icon = "text-html";
   p->complete = &_complete;
   p->config_path = _config_path;
   _plug1 = (Plugin *) p;
   _plug1->server_address = _address_google;
   _plug1->request = _request_goolge;
-  evry_plugin_register(p, 10);
-  
-  p = EVRY_PLUGIN_NEW(Plugin, N_("Wikipedia"), type_subject, "", "TEXT",
-		  _begin, _cleanup, _fetch, NULL, NULL);
+  evry_plugin_register(p, EVRY_PLUGIN_SUBJECT, 10);
+
+  p = EVRY_PLUGIN_NEW(Plugin, N_("Wikipedia"), "text-html", "TEXT",
+		  _begin, _cleanup, _fetch, NULL);
   p->trigger = _trigger_wiki;
-  p->icon = "text-html";
   p->complete = &_complete;
   p->config_path = _config_path;
   _plug2 = (Plugin *) p;
   _plug2->server_address = _address_wiki;
   _plug2->request = _request_wiki;
-  evry_plugin_register(p, 9);
-  
+  evry_plugin_register(p, EVRY_PLUGIN_SUBJECT, 9);
+
   _act1 = EVRY_ACTION_NEW(N_("Google for it"), "TEXT", NULL, "go-next", _action, NULL);
+  EVRY_ITEM_DATA_INT_SET(_act1, ACT_GOOGLE);
+  EVRY_ITEM_ICON_SET(_act1, "google");
+  EVRY_ITEM(_act1)->icon_get = &_icon_get;
   evry_action_register(_act1, 1);
-  _act1->data = "google";
-  _act1->icon_get = &_act_icon_get;
 
   _act2 = EVRY_ACTION_NEW(N_("Wikipedia Page"), "TEXT", NULL, "go-next", _action, NULL);
+  EVRY_ITEM_DATA_INT_SET(_act2, ACT_WIKIPEDIA);
+  EVRY_ITEM_ICON_SET(_act2, "google");
+  EVRY_ITEM(_act2)->icon_get = &_icon_get;
   evry_action_register(_act2, 1);
-  _act2->data = "wikipedia";
-  _act2->icon_get = &_act_icon_get;
 
   _act3 = EVRY_ACTION_NEW(N_("Feeling Lucky"), "TEXT", NULL, "go-next", _action, NULL);
+  EVRY_ITEM_DATA_INT_SET(_act3, ACT_FEELING_LUCKY);
+  EVRY_ITEM_ICON_SET(_act3, "feeling-lucky");
+  EVRY_ITEM(_act3)->icon_get = &_icon_get;
   evry_action_register(_act3, 1);
-  _act3->data = "feeling-lucky";
-  _act3->icon_get = &_act_icon_get;
 
   return EINA_TRUE;
 }
@@ -548,14 +558,16 @@ e_modapi_init(E_Module *m)
 
   if (!ecore_con_init())
     return NULL;
-  
+
   _conf_init(m);
-  
+
   if (!_plugins_init())
     {
       _conf_shutdown();
       return NULL;
     }
+
+  _id_none = eina_stringshare_add("");
 
   e_module_delayed_set(m, 1);
 
@@ -571,7 +583,9 @@ e_modapi_shutdown(E_Module *m)
   _conf_shutdown();
 
   ecore_con_shutdown();
-  
+
+  eina_stringshare_del(_id_none);
+
   return 1;
 }
 
@@ -582,5 +596,4 @@ e_modapi_save(E_Module *m)
   return 1;
 }
 
-/**/
 /***************************************************************************/
