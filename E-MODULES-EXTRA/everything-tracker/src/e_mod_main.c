@@ -248,14 +248,6 @@ _file_item_get(Plugin *p, const char *urn, char *url, char *label, char *mime, i
 	  }
      }
   
-   /* XXX use evry_file_url/path_get to do the conversion only when needed */
-   if (!strncmp(url, "file://", 7))
-     tmp = url + 7;
-   else return NULL;
-   
-   if (!(path = evry_util_unescape(tmp, 0)))
-     return NULL;
-
    file = EVRY_ITEM_NEW(Evry_Item_File, p, label, _icon_get, _file_item_free);
    EVRY_ITEM(file)->data = (void *)id;
    int match = evry_fuzzy_match(label, p->input);
@@ -264,7 +256,6 @@ _file_item_get(Plugin *p, const char *urn, char *url, char *label, char *mime, i
    else
      EVRY_ITEM(file)->fuzzy_match = 100;
    
-   file->path = eina_stringshare_add(path);
    file->mime = eina_stringshare_add(mime);
    file->url = eina_stringshare_add(url);
    EVRY_ITEM(file)->context = eina_stringshare_ref(file->mime);
@@ -420,7 +411,8 @@ _dbus_cb_reply(void *data, DBusMessage *msg, DBusError *error)
 	ERR("got trash!\n");
 	goto end;
      }
-  
+   printf("reply\n");
+
    dbus_message_iter_recurse(&array, &item);
    while (dbus_message_iter_get_arg_type(&item) == DBUS_TYPE_ARRAY)
      {
@@ -431,7 +423,8 @@ _dbus_cb_reply(void *data, DBusMessage *msg, DBusError *error)
 	  
 	dbus_message_iter_get_basic(&iter, &urn);
 	      
-	if (!urn)	goto next;
+	if (!urn)
+	  goto next;
 
 	if (!strncmp(urn, "urn:uuid:", 9))
 	  {		    
@@ -506,7 +499,7 @@ _send_query(const char *query, const char *match, const char *match2, void *cb_d
 	_query = strdup(query);
      }
   
-   /* printf("send: %s\n", _query); */
+   printf("send: %s\n", _query);
 
    msg = dbus_message_new_method_call(bus_name,
 				      "/org/freedesktop/Tracker1/Resources",
