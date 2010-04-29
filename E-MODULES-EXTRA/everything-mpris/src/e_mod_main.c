@@ -52,6 +52,8 @@ struct _Plugin
   } support;
 
   Track *empty;
+
+  Ecore_Timer *update_timer;
 };
 
 
@@ -211,6 +213,90 @@ _dbus_cb_current_track(void *data, DBusMessage *reply, DBusError *error)
     }
 }
 
+#define GET_ITEM(_it, _any) Evry_Item *_it = (Evry_Item *) _any
+
+static void
+_update_list(Plugin *p)
+{
+  Eina_List *l;
+  Track *t, *t2;
+
+  EVRY_PLUGIN_ITEMS_CLEAR(p);
+
+  /* remove 'empty' item */
+  if ((p->tracks && p->tracks->next) &&
+      (p->tracks->data == p->empty))
+    p->tracks = eina_list_remove(p->tracks, p->empty);
+
+  l = p->tracks;
+  p->tracks = NULL;
+
+  /* merge old and new list, keep old when possible */
+  EINA_LIST_FREE(p->fetch, t)
+    {
+      t2 = (l ? l->data : NULL);
+
+      if (t2 && (t->id == t2->id) && (EVRY_FILE(t)->url == EVRY_FILE(t2)->url))
+	{
+	  evry_item_free(EVRY_ITEM(t));
+	  p->tracks = eina_list_append(p->tracks, t2);
+	}
+      else /* new track */
+	{
+	  if (t2) evry_item_free(EVRY_ITEM(t2));
+	  p->tracks = eina_list_append(p->tracks, t);
+
+	  GET_ITEM(it, t);
+	  
+	  /* set label */
+	  if (t->artist && t->title)
+	    {
+	      char buf[128];
+	      snprintf(buf, sizeof(buf), "%s - %s", t->artist, t->title);
+	      it->label = eina_stringshare_add(buf);
+	    }
+	  else if (t->title)
+	    {
+	      it->label = eina_stringshare_add(t->title);
+	    }
+	  else if (EVRY_FILE(t)->url)
+	    {
+	      const char *file = ecore_file_file_get(EVRY_FILE(t)->url);
+	      char *tmp = evry_util_unescape(file, 0);
+	      if (tmp)
+		{
+		  it->label = eina_stringshare_add(tmp);
+		  free(tmp);
+		}	      
+	    }
+	  else
+	    {
+	      it->label = eina_stringshare_add(N_("No Title"));
+	    }
+	    
+	  if (t->album)
+	    EVRY_ITEM(t)->detail = eina_stringshare_ref(t->album);
+	}
+
+      if (l) l = eina_list_remove_list(l, l);
+    }
+
+  EINA_LIST_FREE(l, t)
+    evry_item_free(EVRY_ITEM(t));
+
+  EINA_LIST_FOREACH(p->tracks, l, t)
+    {
+      if ((!p->input || evry_fuzzy_match(EVRY_ITEM(t)->label, p->input)))
+	EVRY_PLUGIN_ITEM_APPEND(p, t);
+    }
+
+  _dbus_send_msg("/TrackList", "GetCurrentTrack",
+		 _dbus_cb_current_track, p);
+
+  evry_plugin_async_update(EVRY_PLUGIN(p), EVRY_ASYNC_UPDATE_ADD);
+}
+
+
 static void
 _dbus_cb_tracklist_metadata(void *data, DBusMessage *reply, DBusError *error)
 {
@@ -220,14 +306,22 @@ _dbus_cb_tracklist_metadata(void *data, DBusMessage *reply, DBusError *error)
   char *key, *tmp;
   GET_PLUGIN(p, EVRY_ITEM(t)->plugin);
 
-  p->fetch_tracks--;
-
-  DBG("add %i", t->id);
-
   t->pnd = NULL;
 
-  if (!_dbus_check_msg(reply, error)) goto error;
+  if (!p->fetch_tracks)
+    {
+      ERR("should be nothing to fetch!");
+      goto error;
+    }
+  
+  p->fetch_tracks--;
 
+  if (!_dbus_check_msg(reply, error))
+    {
+      ERR("dbus garbage!");
+      goto error;
+    }
+  
   dbus_message_iter_init(reply, &array);
   if(dbus_message_iter_get_arg_type(&array) == DBUS_TYPE_ARRAY)
     {
@@ -240,12 +334,19 @@ _dbus_cb_tracklist_metadata(void *data, DBusMessage *reply, DBusError *error)
 	    {
 	      dbus_message_iter_get_basic(&iter, &key);
 	    }
-	  else goto error;
-
+	  else
+	    {
+	      ERR("not string");
+	      goto error;
+	    }
+	  
 	  dbus_message_iter_next(&iter);
 	  if (dbus_message_iter_get_arg_type(&iter) != DBUS_TYPE_VARIANT)
-	    goto error;
-
+	    {
+      	      ERR("not variant");
+	      goto error;
+	    }
+	  
 	  if (!strcmp(key, "artist"))
 	    {
 	      dbus_message_iter_recurse (&iter, &iter_val);
@@ -281,85 +382,12 @@ _dbus_cb_tracklist_metadata(void *data, DBusMessage *reply, DBusError *error)
 	    }
 	  dbus_message_iter_next(&item);
 	}
-
-      if (t->album)
-	EVRY_ITEM(t)->detail = eina_stringshare_ref(t->album);
     }
 
-  DBG("add %s, %d", EVRY_ITEM(t)->label, t->id);
-
-  /* if (!p->input || evry_fuzzy_match(t->base.label, p->input))
-   *   EVRY_PLUGIN_ITEM_APPEND(p, EVRY_ITEM(t)); */
-
+  /* printf("%d, %s\n", p->fetch_tracks, EVRY_FILE(t)->url); */
+  
   if (!p->fetch_tracks)
-    {
-      Eina_List *l;
-      Track *t2;
-
-      EVRY_PLUGIN_ITEMS_CLEAR(p);
-
-      /* remove 'empty' item */
-      if (p->tracks && p->tracks->next && p->tracks->data == p->empty)
-      	p->tracks = eina_list_remove(p->tracks, p->empty);
-
-      l = p->tracks;
-      p->tracks = NULL;
-
-      /* merge old and new list, keep old when possible */
-      EINA_LIST_FREE(p->fetch, t)
-	{
-	  t2 = (l ? l->data : NULL);
-
-	  if (t2 && (t->id == t2->id) && (EVRY_FILE(t)->url == EVRY_FILE(t2)->url))
-	    {
-	      evry_item_free(EVRY_ITEM(t));
-	      p->tracks = eina_list_append(p->tracks, t2);
-	    }
-	  else /* new track */
-	    {
-	      if (t2) evry_item_free(EVRY_ITEM(t2));
-	      p->tracks = eina_list_append(p->tracks, t);
-
-	      /* set label */
-	      if (t->artist && t->title)
-		{
-		  char buf[128];
-		  snprintf(buf, sizeof(buf), "%s - %s", t->artist, t->title);
-		  EVRY_ITEM(t)->label = eina_stringshare_add(buf);
-		}
-	      else if (t->title)
-		{
-		  EVRY_ITEM(t)->label = eina_stringshare_add(t->title);
-		}
-	      else
-		{
-		  const char *file = ecore_file_file_get(EVRY_FILE(t)->url);
-		  char *tmp = evry_util_unescape(file, 0);
-		  if (tmp)
-		    {
-		      EVRY_ITEM(t)->label = eina_stringshare_add(tmp);
-		      free(tmp);
-		    }
-		}
-	    }
-
-	  if (l) l = eina_list_remove_list(l, l);
-	}
-
-      EINA_LIST_FREE(l, t)
-	evry_item_free(EVRY_ITEM(t));
-
-      EINA_LIST_FOREACH(p->tracks, l, t)
-	{
-	  if ((!p->input || evry_fuzzy_match(EVRY_ITEM(t)->label, p->input)))
-	    EVRY_PLUGIN_ITEM_APPEND(p, t);
-	}
-
-      _dbus_send_msg("/TrackList", "GetCurrentTrack",
-		     _dbus_cb_current_track, p);
-
-      evry_plugin_async_update(EVRY_PLUGIN(p), EVRY_ASYNC_UPDATE_ADD);
-    }
+    _update_list(p);
 
   return;
 
@@ -400,19 +428,13 @@ _icon_get(Evry_Item *it, Evas *e)
   return NULL;
 }
 
-static void
-_mpris_get_metadata(Plugin *p)
+static int
+_update_timer(void *data)
 {
+  Plugin *p = data;
   int cnt;
   Track *t;
-
-  DBG("tracklist changed %d, %d", p->tracklist_cnt, p->fetch_tracks);
-  p->fetch_tracks = p->tracklist_cnt;
-  p->fetch = NULL;
-
-  /* EINA_LIST_FREE(p->tracks, t)
-   *   evry_item_free(EVRY_ITEM(t));  */
-
+  
   for (cnt = 0; cnt < p->fetch_tracks; cnt++)
     {
       t = EVRY_ITEM_NEW(Track, p, NULL, _icon_get, _item_free);
@@ -423,6 +445,38 @@ _mpris_get_metadata(Plugin *p)
 				  _dbus_cb_tracklist_metadata, t, cnt);
 
       p->fetch = eina_list_append(p->fetch, t);
+    }
+
+  p->update_timer = NULL;
+  return 0;
+}
+
+static void
+_mpris_get_metadata(Plugin *p)
+{
+
+  Track *t;
+  Eina_List *l, *ll;
+  
+  DBG("tracklist changed %d, %d", p->tracklist_cnt, p->fetch_tracks);
+  p->fetch_tracks = p->tracklist_cnt;
+  p->fetch = NULL;
+
+  EINA_LIST_FOREACH_SAFE(p->tracks, l, ll, t)
+    {
+      if (t->pnd)
+	{
+	  p->tracks = eina_list_remove_list(p->tracks, l);
+	  evry_item_free(EVRY_ITEM(t));
+	}      
+    }
+  
+  if (p->fetch_tracks)
+    {
+      if (p->update_timer)
+	ecore_timer_del(p->update_timer);
+      
+      p->update_timer = ecore_timer_add(0.3, _update_timer, p);
     }
 
   if (!p->tracks)
@@ -598,6 +652,10 @@ _cleanup(Evry_Plugin *plugin)
 
   evry_item_free(EVRY_ITEM(p->empty));
 
+  if (p->update_timer)
+    ecore_timer_del(p->update_timer);
+  p->update_timer = NULL;
+  
   EVRY_PLUGIN_ITEMS_CLEAR(p);
 }
 
