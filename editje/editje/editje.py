@@ -565,20 +565,34 @@ class Editje(elementary.Window):
         self._operation_stack(op)
         op.redo()
 
+    def _animation_toolbar_set(self, state="disabled"):
+        stop_sig = "disable"
+        other_sig = "disable"
+
+        if state == "playing":
+            stop_sig = "enable"
+        elif state == "stopped":
+            other_sig = "enable"
+
+        self._anim_toolbar_edje.signal_emit("stop.bt,%s" % stop_sig, "")
+
+        self._anim_toolbar_edje.signal_emit("play.bt,%s" % other_sig, "")
+        self._anim_toolbar_edje.signal_emit("previous.bt,%s" % other_sig, "")
+        self._anim_toolbar_edje.signal_emit("next.bt,%s" % other_sig, "")
+
     def _play_cb(self, obj, emission, source):
-        # def play_end(emissor, data):
-        #     # TODO: emit signals here to enable play, next, previous and
-        #     # disable stop button
-        #     self.e.animation.callback_add("animation.play.end", play_end)
+
+        def play_end(emissor, data):
+            self._animation_toolbar_set("stopped")
+
+        self.e.animation.callback_add("animation.play.end", play_end)
         self.e.part.name = ""
         self.e.animation.play()
-        # TODO: emit signals here to disable play, next, previous and enable
-        # stop button
+        self._animation_toolbar_set("playing")
 
     def _stop_cb(self, obj, emission, source):
         self.e.animation.stop()
-        # TODO: emit signals here to enable play, next, previous and
-        # disable stop button
+        self._animation_toolbar_set("stopped")
 
     def _previous_cb(self, obj, emission, source):
         self.e.animation.state_prev_goto()
@@ -769,11 +783,8 @@ class Editje(elementary.Window):
         self._toolbar_bt_init(edj, "font_list.bt", "Fonts", self._font_list_cb)
 
         self._toolbar_bt_init(edj, "cut.bt", "Cut", self._cut_cb)
-
         self._toolbar_bt_init(edj, "copy.bt", "Copy", self._copy_cb)
-
         self._toolbar_bt_init(edj, "paste.bt", "Paste", self._paste_cb)
-
         self._toolbar_bt_init(edj, "about.bt", "About", self._about_cb)
 
         # Mainbar
@@ -838,20 +849,23 @@ class Editje(elementary.Window):
         toolbar.file_set(self.theme, "toolbar.anim")
         toolbar.show()
 
-        edj = toolbar.edje_get()
-        self._toolbar_bt_init(
-            edj, "previous.bt", "Previous", self._previous_cb)
-        self._toolbar_bt_init(edj, "play.bt", "Play", self._play_cb)
-        self._toolbar_bt_init(edj, "next.bt", "Next", self._next_cb)
-        self._toolbar_bt_init(edj, "stop.bt", "Stop", self._stop_cb)
+        self._anim_toolbar_edje = toolbar.edje_get()
+        self._toolbar_bt_init(self._anim_toolbar_edje, "previous.bt",
+                              "Previous", self._previous_cb)
+        self._toolbar_bt_init(self._anim_toolbar_edje, "play.bt",
+                              "Play", self._play_cb)
+        self._toolbar_bt_init(self._anim_toolbar_edje, "next.bt",
+                              "Next", self._next_cb)
+        self._toolbar_bt_init(self._anim_toolbar_edje, "stop.bt",
+                              "Stop", self._stop_cb)
 
         def _animation_changed(it, ti):
-            #TODO: emit signals to enable animations buttons here
+            self._animation_toolbar_set("stopped")
             if self.mode == "Animations":
                 self.desktop_block(False)
 
         def _animation_unselected(it, ti):
-            #TODO: emit signals to disable animations buttons here
+            self._animation_toolbar_set("disabled")
             if self.mode == "Animations":
                 self.desktop_block(True)
 
