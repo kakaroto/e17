@@ -338,14 +338,6 @@ class Editable(Manager):
         if self.__edje.save_all():
             self._swapfile.save()
             self.event_emit("saved")
-            # FIXME: Workaround that solves a probably bug on
-            # swapfile class that don't allow to add a new group after saving
-            # the file being edited
-            self.__edje = EdjeEdit(
-                self._canvas, file=self._swapfile.workfile,
-                group=self._group)
-            self.event_emit("group.changed", self.group)
-
         else:
             self.event_emit("saved.error")
 
