@@ -40,6 +40,7 @@ try:
 	import dbus.service
 	from dbus.mainloop.glib import DBusGMainLoop
 	import gobject
+	import urllib
 except ImportError:
 	print "Could not start the XMMS2 MPRIS bridge."
 	print "Please install python bindings for xmms2, dbus and gobject"
@@ -83,7 +84,7 @@ def program_error (cb_func, Exception):
 #TODO: Add additional fields as soon as xmms2 provides them
 def convert_dict (dict):
 	# location is mandatory, so no trying and catching
-	ret_dict = {'location':dict['url']}
+	ret_dict = {'location':urllib.unquote_plus(dict['url'])}
 
 	key_list = ['title', 'artist', 'album', 'genre', 'comment' ]
 	for key in key_list:

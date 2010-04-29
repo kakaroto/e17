@@ -57,12 +57,12 @@ struct _Plugin
 
 struct _Track
 {
-  Evry_Item base;
+  Evry_Item_File base;
   int id;
   const char *title;
   const char *artist;
   const char *album;
-  const char *location;
+  /* const char *location; */
   int length;
 
   DBusPendingCall *pnd;
@@ -90,7 +90,7 @@ static Evry_Type FILE_LIST;
 
 static Eina_Bool active = EINA_FALSE;
 
-#define ITEM_TRACK(_t, _it) Track *_t = (Track*) (_it);
+#define GET_TRACK(_t, _it) Track *_t = (Track*) (_it);
 
 static void _mpris_get_metadata(Plugin *p);
 
@@ -148,9 +148,12 @@ _dbus_send_msg_int(const char *path, const char *method,
 static void
 _item_free(Evry_Item *it)
 {
-  Track *t = (Track *)it;
-
-  if (t->location) eina_stringshare_del(t->location);
+  GET_TRACK(t, it);
+  GET_FILE(f, it);
+  
+  if (f->path) eina_stringshare_del(f->path);
+  if (f->url)  eina_stringshare_del(f->url);
+  
   if (t->artist) eina_stringshare_del(t->artist);
   if (t->album) eina_stringshare_del(t->album);
   if (t->title) eina_stringshare_del(t->title);
@@ -195,16 +198,16 @@ _dbus_cb_current_track(void *data, DBusMessage *reply, DBusError *error)
 	}
 
       p->current_track = num;
-    }
 
-  it = eina_list_nth(p->tracks, p->current_track);
+      it = eina_list_nth(p->tracks, p->current_track);
 
-  if (it)
-    {
-      ev = E_NEW(Evry_Event_Item_Changed, 1);
-      ev->item = it;
-      evry_item_ref(it);
-      ecore_event_add(EVRY_EVENT_ITEM_CHANGED, ev, _cb_free_item_changed, NULL);
+      if (it)
+	{
+	  ev = E_NEW(Evry_Event_Item_Changed, 1);
+	  ev->item = it;
+	  evry_item_ref(it);
+	  ecore_event_add(EVRY_EVENT_ITEM_CHANGED, ev, _cb_free_item_changed, NULL);
+	}
     }
 }
 
@@ -262,7 +265,7 @@ _dbus_cb_tracklist_metadata(void *data, DBusMessage *reply, DBusError *error)
 	      dbus_message_iter_recurse (&iter, &iter_val);
 	      dbus_message_iter_get_basic (&iter_val, &tmp);
 	      if (tmp && tmp[0])
-		t->location = eina_stringshare_add(tmp);
+		EVRY_FILE(t)->url = eina_stringshare_add(tmp);
 	    }
 	  else if (!strcmp(key, "album"))
 	    {
@@ -279,37 +282,14 @@ _dbus_cb_tracklist_metadata(void *data, DBusMessage *reply, DBusError *error)
 	  dbus_message_iter_next(&item);
 	}
 
-      if (t->artist && t->title)
-	{
-	  char buf[128];
-	  snprintf(buf, sizeof(buf), "%s - %s", t->artist, t->title);
-	  t->base.label = eina_stringshare_add(buf);
-	}
-      else if (t->title)
-	{
-	  t->base.label = eina_stringshare_add(t->title);
-	}
-      else if (t->location)
-	{
-	  const char *file = ecore_file_file_get(t->location);
-	  char *tmp = evry_util_unescape(file, 0);
-	  if (tmp)
-	    {
-	      t->base.label = eina_stringshare_add(tmp);
-	      free(tmp);
-	    }
-	  else goto error;
-	}
-      else goto error;
-
       if (t->album)
-	t->base.detail = eina_stringshare_ref(t->album);
+	EVRY_ITEM(t)->detail = eina_stringshare_ref(t->album);
     }
 
-  DBG("add %s, %d", t->base.label, t->id);
+  DBG("add %s, %d", EVRY_ITEM(t)->label, t->id);
 
-  if (!p->input || evry_fuzzy_match(t->base.label, p->input))
-    EVRY_PLUGIN_ITEM_APPEND(p, EVRY_ITEM(t));
+  /* if (!p->input || evry_fuzzy_match(t->base.label, p->input))
+   *   EVRY_PLUGIN_ITEM_APPEND(p, EVRY_ITEM(t)); */
 
   if (!p->fetch_tracks)
     {
@@ -330,15 +310,39 @@ _dbus_cb_tracklist_metadata(void *data, DBusMessage *reply, DBusError *error)
 	{
 	  t2 = (l ? l->data : NULL);
 
-	  if (t2 && (t->id == t2->id) && (t->location == t2->location))
+	  if (t2 && (t->id == t2->id) && (EVRY_FILE(t)->url == EVRY_FILE(t2)->url))
 	    {
 	      evry_item_free(EVRY_ITEM(t));
 	      p->tracks = eina_list_append(p->tracks, t2);
 	    }
-	  else
+	  else /* new track */
 	    {
 	      if (t2) evry_item_free(EVRY_ITEM(t2));
 	      p->tracks = eina_list_append(p->tracks, t);
+
+	      evry_file_path_get(EVRY_ITEM(t)); 
+	      
+	      /* set label */
+	      if (t->artist && t->title)
+		{
+		  char buf[128];
+		  snprintf(buf, sizeof(buf), "%s - %s", t->artist, t->title);
+		  EVRY_ITEM(t)->label = eina_stringshare_add(buf);
+		}
+	      else if (t->title)
+		{
+		  EVRY_ITEM(t)->label = eina_stringshare_add(t->title);
+		}
+	      else
+		{
+		  const char *file = ecore_file_file_get(EVRY_FILE(t)->url);
+		  char *tmp = evry_util_unescape(file, 0);
+		  if (tmp)
+		    {
+		      EVRY_ITEM(t)->label = eina_stringshare_add(tmp);
+		      free(tmp);
+		    }
+		}
 	    }
 
 	  if (l) l = eina_list_remove_list(l, l);
@@ -349,7 +353,7 @@ _dbus_cb_tracklist_metadata(void *data, DBusMessage *reply, DBusError *error)
 
       EINA_LIST_FOREACH(p->tracks, l, t)
 	{
-	  if ((!p->input || evry_fuzzy_match(t->base.label, p->input)))
+	  if ((!p->input || evry_fuzzy_match(EVRY_ITEM(t)->label, p->input)))
 	    EVRY_PLUGIN_ITEM_APPEND(p, t);
 	}
 
@@ -382,7 +386,7 @@ _dbus_cb_tracklist_metadata(void *data, DBusMessage *reply, DBusError *error)
 static Evas_Object *
 _icon_get(Evry_Item *it, Evas *e)
 {
-  ITEM_TRACK(t, it);
+  GET_TRACK(t, it);
   GET_PLUGIN(p, it->plugin);
 
   if (t->id == p->current_track)
@@ -415,7 +419,8 @@ _mpris_get_metadata(Plugin *p)
     {
       t = EVRY_ITEM_NEW(Track, p, NULL, _icon_get, _item_free);
       t->id = cnt;
-
+      EVRY_ITEM(t)->subtype = EVRY_TYPE_FILE;
+      
       t->pnd = _dbus_send_msg_int("/TrackList", "GetMetadata",
 				  _dbus_cb_tracklist_metadata, t, cnt);
 
@@ -426,7 +431,6 @@ _mpris_get_metadata(Plugin *p)
     {
       EVRY_PLUGIN_ITEM_APPEND(p, p->empty);
       evry_plugin_async_update(EVRY_PLUGIN(p), EVRY_ASYNC_UPDATE_ADD);
-
     }
 }
 
@@ -619,7 +623,7 @@ _fetch(Evry_Plugin *plugin, const char *input)
 
   EINA_LIST_FOREACH(p->tracks, l, t)
     {
-      if (!input || evry_fuzzy_match(t->base.label, input))
+      if (!input || evry_fuzzy_match(EVRY_ITEM(t)->label, input))
 	EVRY_PLUGIN_ITEM_APPEND(p, t);
     }
 
@@ -632,8 +636,8 @@ _mpris_play_track(Evry_Action *act)
 {
   DBusMessage *msg;
 
-  ITEM_TRACK(t, act->it1.item);
-  GET_PLUGIN(p, t->base.plugin);
+  GET_TRACK(t, act->it1.item);
+  GET_PLUGIN(p, EVRY_ITEM(t)->plugin);
 
   if (!strcmp(bus_name, "org.mpris.amarok") ||
       !strcmp(bus_name, "org.mpris.xmms2"))
@@ -708,7 +712,7 @@ _mpris_play_track(Evry_Action *act)
 static int
 _mpris_tracklist_remove_track(Evry_Action *act)
 {
-  ITEM_TRACK(t, act->it1.item);
+  GET_TRACK(t, act->it1.item);
 
   _dbus_send_msg_int("/TrackList", "DelTrack", NULL, NULL, t->id);
 
@@ -771,7 +775,7 @@ _dbus_cb_position_get(void *data, DBusMessage *reply, DBusError *error)
   Evry_Action *act = data;
   int pos;
 
-  ITEM_TRACK(t, act->it1.item);
+  GET_TRACK(t, act->it1.item);
 
   if (!_dbus_check_msg(reply, error)) return;
 
