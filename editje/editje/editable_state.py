@@ -444,6 +444,21 @@ class EditableState(Manager):
 
     text_elipsis = property(fget=_text_elipsis_get, fset=_text_elipsis_set)
 
+    def _text_fit_get(self):
+        if not self.name:
+            return None
+
+        return self._state.text_fit
+
+    def _text_fit_set(self, value):
+        if not self.name:
+            return
+
+        self._state.text_fit = value
+        self.event_emit("state.text_fit.changed")
+
+    text_fit = property(fget=_text_fit_get, fset=_text_fit_set)
+
     def _image_get(self):
         if not self.name:
             return None
