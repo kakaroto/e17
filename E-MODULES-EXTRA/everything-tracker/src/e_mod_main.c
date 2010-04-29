@@ -499,7 +499,7 @@ _send_query(const char *query, const char *match, const char *match2, void *cb_d
 	_query = strdup(query);
      }
   
-   printf("send: %s\n", _query);
+   /* printf("send: %s\n", _query); */
 
    msg = dbus_message_new_method_call(bus_name,
 				      "/org/freedesktop/Tracker1/Resources",
@@ -527,7 +527,8 @@ _begin(Evry_Plugin *plugin, const Evry_Item *item)
    p = E_NEW(Plugin, 1);
    p->base = *plugin;
    p->base.items = NULL;
-
+   p->filter_result = parent->filter_result;
+   
    if (item && CHECK_TYPE(item, TRACKER_QUERY) ||
        item && CHECK_TYPE(item, TRACKER_MUSIC))
      {
@@ -591,19 +592,19 @@ _fetch(Evry_Plugin *plugin, const char *input)
    char buf[128];
 
    GET_PLUGIN(p, plugin);
-      
-   if (p->filter_result && p->files)
+
+   if (input && p->filter_result && p->files)
      {
 	Evry_Item *it;
 	Eina_List *l;
-	  
+	
 	EVRY_PLUGIN_ITEMS_CLEAR(p);
 
 	EINA_LIST_FOREACH(p->files, l, it)
 	  if (!input || evry_fuzzy_match(it->label, input))
 	    EVRY_PLUGIN_ITEM_APPEND(p, it);
 
-	if (p->parent && p->base.items) return 1;
+	if (p->parent && EVRY_PLUGIN(p)->items) return 1;
      }
 
    if (p->pnd)
@@ -623,11 +624,11 @@ _fetch(Evry_Plugin *plugin, const char *input)
      }
    else
      {
-	if (/*evry_item_type_check(p, ) ||*/ p->match)
-	  {
-	     p->fetching = EINA_TRUE;
-	     p->pnd = _send_query(p->query, (p->match ? p->match : ""), "", p);
-	  }
+   	if (/*evry_item_type_check(p, ) ||*/ p->match)
+   	  {
+   	     p->fetching = EINA_TRUE;
+   	     p->pnd = _send_query(p->query, (p->match ? p->match : ""), "", p);
+   	  }
      }
       
    if (p->files) return 1;
