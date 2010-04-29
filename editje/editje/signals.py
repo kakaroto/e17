@@ -18,8 +18,10 @@
 import evas
 import ecore
 import edje
+import re
 
 import sysconfig
+from editable_animation import re_anim_program
 from details import EditjeDetails
 from details_widget_entry import WidgetEntry
 from details_widget_signals import WidgetSignal
@@ -251,6 +253,9 @@ class SignalDetails(EditjeDetails):
 
         self.title = "signal"
 
+        self._parent = parent
+        self._actions_added = 0
+
         # FIXME: no signal renaming yet (thus, no prop_value_changed_cb and
         # wid.disable_set(True), for now
         self._header_table = PropertyTable(parent, "signal name")
@@ -285,13 +290,7 @@ class SignalDetails(EditjeDetails):
         prop.widget_add("range", wid)
         self["main"].property_add(prop)
 
-        def programs_get():
-            return self.e.programs
-
-        prop = Property(parent, "action")
-        prop.widget_add(
-            "a", WidgetActionsList(self, "Animations", programs_get))
-        self["main"].property_add(prop)
+        self.group_add("actions")
 
         self.group_add("out")
 
@@ -313,6 +312,15 @@ class SignalDetails(EditjeDetails):
         self.open_disable = True
         self.show()
 
+    def _new_action(self, number):
+        def programs_get():
+            return self.e.programs
+
+        prop = Property(self._parent, "action " + str(number))
+        prop.widget_add(
+            "a", WidgetActionsList(self, "Animations", programs_get))
+        self["actions"].property_add(prop)
+
     def _removed(self, emissor, data):
         self._header_table["name"].value = "Unselected"
         self._header_table["name"].value_obj._values_dict["n"].disabled_set(
@@ -327,8 +335,12 @@ class SignalDetails(EditjeDetails):
         self["main"]["delay"].value = (None, None)
         self["main"]["delay"].hide_value()
 
-        self["main"]["action"].value = ""
-        self["main"]["action"].hide_value()
+        self.group_hide("actions")
+        self.group_show("actions")
+
+        for i in range(self._actions_added):
+            self["actions"]["action " + str(i + 1)].value = ""
+            self["actions"]["action " + str(i + 1)].hide_value()
 
         self.group_hide("out")
         self.group_show("out")
@@ -341,6 +353,9 @@ class SignalDetails(EditjeDetails):
         self.open_set(False)
 
     def _update(self, emissor, data):
+        self._emissor = emissor
+        self._data = data
+
         self._header_table["name"].value = data
         self._header_table["name"].show_value()
         # self._header_table["name"].value_obj._values_dict["n"].disabled_set(
@@ -367,19 +382,32 @@ class SignalDetails(EditjeDetails):
 
         action = self.e.signal.action
 
-        self["main"]["action"].show_value()
         if action == edje.EDJE_ACTION_TYPE_NONE:
-            self["main"]["action"].show()
-            self.group_hide("out")
-
             afters = self.e.signal.afters
-            if afters:
-                fixedname = afters[0][1:afters[0].rindex("@")]
-                self["main"]["action"].value = fixedname
-            else:
-                self["main"]["action"].value = ""
+
+            while (self._actions_added < len(afters) + 1):
+                self._actions_added = self._actions_added + 1
+                self._new_action(self._actions_added)
+
+            for i in range(self._actions_added):
+                self["actions"]["action " + str(i + 1)].hide()
+
+            for i in range( len(afters) ):
+                self["actions"]["action " + str(i + 1)].show_value()
+                self["actions"]["action " + str(i + 1)].show()
+                fixedname = re_anim_program.match(afters[i]).groups()[0]
+                self["actions"]["action " + str(i + 1)].value = fixedname
+            # The last action with none value
+            self["actions"]["action " + str(len(afters) + 1)].show_value()
+            self["actions"]["action " + str(len(afters) + 1)].show()
+            self["actions"]["action " + str(len(afters) + 1)].value = ""
+
+            self.group_hide("out")
+            self.group_hide("actions")
+            self.group_show("actions")
+
         elif action == edje.EDJE_ACTION_TYPE_SIGNAL_EMIT:
-            self["main"]["action"].hide()
+            self.group_hide("actions")
             self.group_hide("out")
             self.group_show("out")
 
@@ -408,8 +436,6 @@ class SignalDetails(EditjeDetails):
 
     def prop_value_changed(self, prop, value, group):
         if group == "main":
-            tbl = self["main"]
-
             if prop == "signal":
                 args = [["main"], [prop], [value], [None], [False], [None]]
                 self._prop_change_do(
@@ -420,31 +446,38 @@ class SignalDetails(EditjeDetails):
                 self._prop_change_do(
                     "signal's source part change", *args)
 
-            elif prop == "action":
-
-                def afters_change(value):
-                    self.e.signal.afters_clear()
-                    self.e.signal.after_add(value or "")
-                    if value:
-                        value = value[1:value.rindex("@")]
-                    self["main"]["action"].value = value
-
-                afters = self.e.signal.afters
-                old_val = None
-                if afters:
-                    old_val = afters[0]
-
-                op = Operation("signal's \"after\" action change")
-                op.redo_callback_add(afters_change, value)
-                op.undo_callback_add(afters_change, old_val)
-                self._operation_stack_cb(op)
-                op.redo()
-
             elif prop == "delay":
                 args = [["main"], [prop], [value], ["in_time"], [False],
                         [None]]
                 self._prop_change_do(
                     "signal's source delay time change", *args)
+
+        elif group == "actions":
+
+            def afters_change(afters):
+                self.e.signal.afters_clear()
+                for i in range(len(afters)):
+                    self.e.signal.after_add(afters[i])
+                self._update(self._emissor, self._data)
+
+            old_afters = self.e.signal._afters_get()
+            new_afters = self.e.signal._afters_get()
+
+            action_number = int(re.match("action (\d+)", prop).group(1))
+
+            if value:
+                if action_number <= len(new_afters):
+                    new_afters[action_number - 1] = value
+                else:
+                    new_afters.append(value)
+            elif action_number <= len(new_afters):
+                new_afters.pop(action_number - 1)
+
+            op = Operation("signal's \"after\" action change")
+            op.redo_callback_add(afters_change, new_afters)
+            op.undo_callback_add(afters_change, old_afters)
+            self._operation_stack_cb(op)
+            op.redo()
 
         elif group == "out":
             if prop == "signal":
