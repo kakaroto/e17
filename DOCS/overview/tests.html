@@ -1,0 +1,106 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+
+<HTML>
+<HEAD>
+   <TITLE>Why EFL? - Tests</TITLE>
+   <META http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+   <LINK rel="stylesheet" href="styles.css">
+</HEAD>
+<BODY>
+
+<!-- Menu -->
+
+<UL>
+   <LI><A href="index.html" title="Home">Home</A></LI>
+   <LI><A href="tests.html" title="Tests" id="active">Tests</A></LI>
+   <LI><A href="usage.html" title="Usage">Usage</A></LI>
+   <LI><A href="get.html" title="Get">Get</A></LI>
+</UL>
+
+<!-- Content -->
+
+<DIV id="content">
+
+   <H3>Tests and Benchmarks</H3>
+   
+      <P>There are many developers working on improving EFL
+      as a commercial set of libraries. To ensure that
+      EFL is a leader in performance, a number of benchmarks
+      are conducted to ensure each version is as fast or 
+      faster than the last.</P><BR>
+
+
+   <H4>Memory & Start Time</H4>
+
+      <P>A series of tests were performed to attain who is the 
+      the leader in base memory usage and boot time. The tests
+      were conducted on an Ubuntu 9.10 64-bit system, with 
+      GDM set to auto-login, xsplash disabled and all 
+      environments customised to a user acceptable comfort
+      level. This was a very important point, as a lot of 
+      tests are conducted with default installs which in some
+      instances are quite tedious to use.</P><BR>
+      <strong>Click the charts for more detailed results.</strong>
+      <BR><BR><BR>
+      <A href="tests-results.html" title="Details">
+      <IMG src="media/graph-mem-use.png" alt="Memory" style="padding-bottom: 50px; border-style: none;">
+      <IMG src="media/graph-time.png" alt="Time" style="padding-bottom: 50px; border-style: none;"></A>
+      <P>As evidenced, E17 is on the same level of memory usage and 
+      start time as the ultra slim fluxbox window manager. While fluxbox has
+      a minor advantage over E17 in base memory usage, it is
+      no where near as functional or visually appealing as E17.</P><BR>
+
+
+   <H4>EET vs SQLite</H4>
+
+     <P>While making a photo manager, <A href="http://watchwolf.fr/blog/index.php?post/2009/09/27/Sqlite-versus-Eet">Watchwolf</A>
+     needed a backend to sort the photos into a library. 
+     The application must load a list of albums and photos
+     from a database, and also syncronize the database
+     with new photos and deleted albums and photos. As
+     a test, he went on to write a small application that
+     directly compares SQLite (a minimalist SQL implimentation)
+     to Eet (a tiny database library).
+     </P>
+     <P>The tests consist of creating a database from 1231 albums
+     and 27657 photos. <em>Syncs</em> is the time taken to 
+     create the database, <em>Loading</em> is the time taken 
+     to load all the data to memory and <em>ReSyncs</em> is 
+     the time taken to compare the database to the 
+     harddrive contents.</P>
+
+   <TABLE class="testresults">
+      <THEAD>
+         <TR>
+            <TH colspan="4"><H4>Test Results</H4></TH>
+         </TR> 
+         <TR>
+            <TH>Backend</TH>
+            <TH>Syncs</TH>
+            <TH>Loading</TH>
+            <TH>Re-Syncs</TH>
+         </TR>
+      </THEAD>
+      <TBODY>
+         <TR>
+            <TD>SQLite</TD>
+            <TD>13.55 secs</TD>
+            <TD>7.57 secs</TD>
+            <TD>10.67 secs</TD>
+         </TR>
+         <TR>
+            <TD>Eet</TD>
+            <TD>3.38 secs</TD>
+            <TD>0.91 secs</TD>
+            <TD>2.53 secs</TD>
+         </TR>
+      </TBODY>
+   </TABLE>
+
+</DIV>
+
+<H6>Copyleft 2010<BR><BR></H6>
+
+</BODY>
+</HTML>
+
