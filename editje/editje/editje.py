@@ -580,26 +580,6 @@ class Editje(elementary.Window):
         self._anim_toolbar_edje.signal_emit("previous.bt,%s" % other_sig, "")
         self._anim_toolbar_edje.signal_emit("next.bt,%s" % other_sig, "")
 
-    def _play_cb(self, obj, emission, source):
-
-        def play_end(emissor, data):
-            self._animation_toolbar_set("stopped")
-
-        self.e.animation.callback_add("animation.play.end", play_end)
-        self.e.part.name = ""
-        self.e.animation.play()
-        self._animation_toolbar_set("playing")
-
-    def _stop_cb(self, obj, emission, source):
-        self.e.animation.stop()
-        self._animation_toolbar_set("stopped")
-
-    def _previous_cb(self, obj, emission, source):
-        self.e.animation.state_prev_goto()
-
-    def _next_cb(self, obj, emission, source):
-        self.e.animation.state_next_goto()
-
     ###########
     # Modes
     ###########
@@ -849,15 +829,35 @@ class Editje(elementary.Window):
         toolbar.file_set(self.theme, "toolbar.anim")
         toolbar.show()
 
+        def play_end(emissor, data):
+            self._animation_toolbar_set("stopped")
+
+        self.e.animation.callback_add("animation.play.end", play_end)
+
+        def play_cb(obj, emission, source):
+            self.e.part.name = ""
+            self.e.animation.play()
+            self._animation_toolbar_set("playing")
+
+        def stop_cb(obj, emission, source):
+            self.e.animation.stop()
+            self._animation_toolbar_set("stopped")
+
+        def previous_cb(obj, emission, source):
+            self.e.animation.state_prev_goto()
+
+        def next_cb(obj, emission, source):
+            self.e.animation.state_next_goto()
+
         self._anim_toolbar_edje = toolbar.edje_get()
         self._toolbar_bt_init(self._anim_toolbar_edje, "previous.bt",
-                              "Previous", self._previous_cb)
+                              "Previous", previous_cb)
         self._toolbar_bt_init(self._anim_toolbar_edje, "play.bt",
-                              "Play", self._play_cb)
+                              "Play", play_cb)
         self._toolbar_bt_init(self._anim_toolbar_edje, "next.bt",
-                              "Next", self._next_cb)
+                              "Next", next_cb)
         self._toolbar_bt_init(self._anim_toolbar_edje, "stop.bt",
-                              "Stop", self._stop_cb)
+                              "Stop", stop_cb)
 
         def _animation_changed(it, ti):
             self._animation_toolbar_set("stopped")

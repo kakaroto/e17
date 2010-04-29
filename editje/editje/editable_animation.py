@@ -126,17 +126,31 @@ class EditableAnimation(Manager, object):
         if self.name:
             self._edit_grp.edje.signal_callback_add(
                 "animation,end", self._name, self._play_end)
-            self._edit_grp.edje.program_get(
-                self.program._program.afters_get()[0]).run()
+            self._edit_grp.edje.program_get(self.program.afters[0]).run()
 
     def _play_end(self, obj, emission, source):
         self._edit_grp.edje.signal_callback_del(
             "animation,end", self._name, self._play_end)
-        self.state = self.state
+        self._playback_state_update()
         self.event_emit("animation.play.end")
 
     def stop(self):
         self._edit_grp.edje.signal_emit("animation,stop", self._name)
+        self._playback_state_update()
+
+    def _playback_state_update(self):
+        if not self.parts:
+            return
+
+        # got to fetch the exact state we're at
+        edje.message_signal_process()
+
+        p = self.parts.keys()[0]
+        st = self._edit_grp.part_get(p).state_selected_get()[0]
+        time = re_anim_program_time.match(st).group(2)
+        if time:
+            self.state = float(time)
+
 
     # Parts
     def _parts_init(self):
