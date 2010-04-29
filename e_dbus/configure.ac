@@ -47,7 +47,7 @@ AC_SUBST(eukit_release_info)
 AC_SUBST(enotify_release_info)
 
 dnl Check enabled modules to build
-AC_ARG_ENABLE([ehal],[AC_HELP_STRING([--disable-ehal], [Disable ehal build])],[enable_ehal=yes],[enable_ehal=no])
+AC_ARG_ENABLE([ehal],[AC_HELP_STRING([--disable-ehal], [Disable ehal build])],[enable_ehal=$enableval],[enable_ehal="yes"])
 #AS_IF(
 #   [test "x$enableval" != "xno"],
 #      AC_CHECK_LIB([hal],[libhal_get_all_devices],[enable_ehal=yes],[enable_ehal=no])
