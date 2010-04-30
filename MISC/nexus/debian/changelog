@@ -12,8 +12,10 @@ xfonts-nexus (0.0.2-15) unstable; urgency=low
   * Run commands in binary-indep rather than binary-arch
     as package is architecture independent
     http://lintian.debian.org/tags/binary-arch-rules-but-pkg-is-arch-indep.html
+  * Update debhelper compatibility level from 4 to 6
+    http://lintian.debian.org/tags/package-uses-deprecated-debhelper-compat-version.html
 
- -- Simon Horman <horms@debian.org>  Fri, 30 Apr 2010 14:15:03 +0900
+ -- Simon Horman <horms@debian.org>  Fri, 30 Apr 2010 14:18:09 +0900
 
 xfonts-nexus (0.0.2-14) unstable; urgency=low
 
