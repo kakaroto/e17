@@ -281,7 +281,7 @@ static void
 config_cb(void *data)
 {
    char                buff[128];
-   unsigned long       h, y, i;
+   unsigned int        h, y, i;
 
    if (config_win)
      {

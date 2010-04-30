@@ -831,7 +831,7 @@ static void
 set_col_pixel(int x, int y, unsigned char c, unsigned char rrr,
 	      unsigned char ggg, unsigned char bbb)
 {
-   char               *ptr;
+   unsigned char      *ptr;
 
    if ((((int)c) == 0) || (x < 0) || (y < 0) || (x > 39) || (y > 39))
       return;

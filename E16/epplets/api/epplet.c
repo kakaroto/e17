@@ -5748,11 +5748,10 @@ Epplet_load_config_file(const char *file)
 
    if ((f = fopen(file, "r")) == NULL)
       return;
-   *s2 = 0;
    for (; fgets(s, sizeof(s), f);)
      {
-	*((int *)s2) = *((int *)s3) = 0;	/* Set first 4 bytes to nil */
-	sscanf(s, "%s %[^\n]\n", (char *)&s2, (char *)&s3);
+	s2[0] = s3[0] = '\0';
+	sscanf(s, "%s %[^\n]\n", s2, s3);
 	if (!(*s2) || (!*s3) || (*s2 == '\n') || (*s2 == '#'))
 	  {
 	     continue;
