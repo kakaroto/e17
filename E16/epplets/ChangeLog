@@ -1,3 +1,10 @@
+--- 0.13 ---
+Fix linking with --no-add-needed.
+Fix some warnings on 64 bit platforms.
+E-NetGraph: Add option to ignore error for missing device (Melvin Meadlin II).
+Autofoo cleanups.
+Fix some warnings.
+
 --- 0.12 ---
 Remove obsolete debian stuff.
 Remove RCS tags.
