@@ -11,7 +11,7 @@
 <p>
 <form method="get" action="http://www.google.com/search">
 <table border=0 cellpadding=0 cellspacing=8>
-<tr><td> align=center <input type="text" name="q" maxlength="255" value="" style="width:80px"></td></tr>
+<tr><td align=center><input type="text" name="q" maxlength="255" value="" style="width:80px"></td></tr>
 <tr><td align=center><input type="submit" value="Search" style="width:80px"></td></tr>
 </table>
 <input type=hidden name="sitesearch" value="enlightenment.org">
