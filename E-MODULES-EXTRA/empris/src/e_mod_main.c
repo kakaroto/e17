@@ -25,6 +25,8 @@ struct _Instance
   Config_Item *ci;
   E_Gadcon_Popup *popup;
 
+  int cur_track;
+  
   /* E_DBus_Signal_Handler *cb_tracklist_change = NULL; */
   E_DBus_Signal_Handler *cb_player_track_change;
   E_DBus_Signal_Handler *cb_player_status_change;
@@ -649,7 +651,6 @@ _dbus_send_msg_int(const char *path, const char *method,
    dbus_message_append_args(msg,
 			    DBUS_TYPE_INT32, &num,
 			    DBUS_TYPE_INVALID);
-
    pnd = e_dbus_message_send(conn, msg, _cb, -1, data);
    dbus_message_unref(msg);
 
@@ -685,7 +686,7 @@ _dbus_cb_status_change(void *data, DBusMessage *msg)
    DBusMessageIter iter, array;
 
    dbus_message_iter_init(msg, &iter);
-
+   
    if (dbus_message_iter_get_arg_type(&iter) == DBUS_TYPE_STRUCT)
      {
 	_set_status(data, msg);
@@ -695,6 +696,8 @@ _dbus_cb_status_change(void *data, DBusMessage *msg)
 	/* XXX audacious.. */
 	_dbus_send_msg("/Player", "GetStatus", _dbus_cb_get_status, data);
      }
+
+   _dbus_send_msg("/TrackList", "GetCurrentTrack", _dbus_cb_current_track, data);
 }
 
 static void
