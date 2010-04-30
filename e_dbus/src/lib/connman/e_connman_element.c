@@ -131,17 +131,8 @@ void
 e_connman_element_listener_add(E_Connman_Element *element, void (*cb)(void *data, const E_Connman_Element *element), const void *data, void (*free_data)(void *data))
 {
    E_Connman_Element_Listener *l;
-
-   if (!element)
-     {
-	ERR("safety check failed: element == NULL");
-	goto error;
-     }
-   if (!cb)
-     {
-	ERR("safety check failed: cb == NULL");
-	goto error;
-     }
+   EINA_SAFETY_ON_FALSE_GOTO(element, error);
+   EINA_SAFETY_ON_FALSE_GOTO(cb, error);
 
    l = malloc(sizeof(*l));
    if (!l)
