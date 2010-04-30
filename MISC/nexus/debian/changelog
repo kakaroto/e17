@@ -2,8 +2,9 @@ xfonts-nexus (0.0.2-15) unstable; urgency=low
 
   * Replace build-indep dependency on obsolte xutils package with
     a build-indep dependency on xfonts-utils: (closes: #579029)
+  * Update standards version from 3.7.3 to 3.8.4
 
- -- Simon Horman <horms@debian.org>  Fri, 30 Apr 2010 13:56:53 +0900
+ -- Simon Horman <horms@debian.org>  Fri, 30 Apr 2010 13:58:13 +0900
 
 xfonts-nexus (0.0.2-14) unstable; urgency=low
 

@@ -3,7 +3,7 @@ Build-Depends-Indep: xfonts-utils, debhelper (>= 5.0.29)
 Section: x11
 Priority: optional
 Maintainer: Simon Horman <horms@debian.org>
-Standards-Version: 3.8.1
+Standards-Version: 3.8.4
 
 Package: xfonts-nexus
 Architecture: all
