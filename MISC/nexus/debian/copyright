@@ -1,6 +1,7 @@
 nexus
 Font for X
 
+Copyright 1995-2001
 Raster: <raster@rasterman.com>
        aka. Carsten Haitzler
 Jonathan Perkin: <sketch@rd.bbc.co.uk>
@@ -14,6 +15,6 @@ This font is released under the terms of the BSD licence.
 The full text of this licence can be found in the file
 /usr/share/common-licenses/BSD
 
-This package is available by FTP from:
-ftp://ftp.vergenet.net/pub/nexus/
+This package is available by SVN:
+svn co http://svn.enlightenment.org/svn/e/trunk/MISC/nexus
 
