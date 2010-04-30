@@ -28,8 +28,6 @@ install: build
 	dh_movefiles --source=debian/tmp
 
 binary-indep: build install
-
-binary-arch: build install
 	dh_testdir
 	dh_testroot
 	dh_installdocs
@@ -45,6 +43,8 @@ binary-arch: build install
 	dh_gencontrol
 	dh_md5sums
 	dh_builddeb
+
+binary-arch: build install
 
 binary: binary-indep binary-arch
 .PHONY: build clean binary-indep binary-arch binary install

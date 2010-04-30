@@ -9,8 +9,11 @@ xfonts-nexus (0.0.2-15) unstable; urgency=low
   * Include copyright notice in copyright file
     http://lintian.debian.org/tags/copyright-without-copyright-notice.html
   * Update download information in copyright file
+  * Run commands in binary-indep rather than binary-arch
+    as package is architecture independent
+    http://lintian.debian.org/tags/binary-arch-rules-but-pkg-is-arch-indep.html
 
- -- Simon Horman <horms@debian.org>  Fri, 30 Apr 2010 14:13:09 +0900
+ -- Simon Horman <horms@debian.org>  Fri, 30 Apr 2010 14:15:03 +0900
 
 xfonts-nexus (0.0.2-14) unstable; urgency=low
 
