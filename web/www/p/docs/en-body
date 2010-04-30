@@ -8,15 +8,15 @@
 <div class="left-border">
 <div class="right-border">
 <h3>Search Docs</h3>
-<p>
+<center><p>
 <form method="get" action="http://www.google.com/search">
 <table border=0 cellpadding=0 cellspacing=8>
-<tr><td align=center><input type="text" name="q" maxlength="255" value="" style="width:80px"></td></tr>
-<tr><td align=center><input type="submit" value="Search" style="width:80px"></td></tr>
+<tr><td align=center><input type="text" name="q" maxlength="255" value="" style="width:120px"></td></tr>
+<tr><td align=center><input type="submit" value="Search" style="width:120px"></td></tr>
 </table>
 <input type=hidden name="sitesearch" value="enlightenment.org">
 </form>
-</p>
+</p></center>
 </div>
 </div>
 </div>
