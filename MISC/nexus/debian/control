@@ -1,10 +1,9 @@
 Source: xfonts-nexus
-Build-Depends-Indep: xfonts-utils
-Build-Depends: debhelper (>= 6)
+Build-Depends-Indep: xutils (>> 4.0.3), debhelper (>= 5.0.29)
 Section: x11
 Priority: optional
 Maintainer: Simon Horman <horms@debian.org>
-Standards-Version: 3.8.4
+Standards-Version: 3.8.1
 
 Package: xfonts-nexus
 Architecture: all
