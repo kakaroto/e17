@@ -34,24 +34,43 @@ class EditableProgram(Manager, object):
     # Name
     def _name_set(self, value):
         if not self._edit_grp.edje:
+            self._null()
             return
 
         if not value:
             self._null()
             self.event_emit("program.unselected")
-        elif self._name != value:
-            if value in self._edit_grp.programs:
-                self._name = value
-                self._program_fetch()
-                self.event_emit("program.changed", self.name)
-            else:
-                self._null()
-                self.event_emit("program.unselected")
+
+        if self._name == value:
+            return
+
+        if value in self._edit_grp.programs:
+            self._name = value
+            self._program_fetch()
+            self.event_emit("program.changed", self.name)
+        else:
+            self._null()
+            self.event_emit("program.unselected")
 
     def _name_get(self):
         return self._name
 
     name = property(_name_get, _name_set)
+
+    def rename(self, name):
+        if not self.name or not name:
+            return False
+
+        if self._name == name:
+            return False
+
+        old_name = self._program.name
+        self._program.name = name
+        if self._program.name == name:
+            self._name = self._program.name
+            self.event_emit("program.name.changed", (old_name, self._name))
+            return True
+        return False
 
     def _program_fetch(self):
         self._program = self._edit_grp.edje.program_get(self._name)

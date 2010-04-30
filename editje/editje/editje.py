@@ -979,7 +979,7 @@ class Editje(elementary.Window):
             return self.e.signals
 
         list = SignalsList(
-            self, new_sig_cb, sigs_list_cb, self._operation_stack)
+            self, self.e, new_sig_cb, sigs_list_cb, self._operation_stack)
         list.title = "Signals"
         list.open = True
         list.options = True

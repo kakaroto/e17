@@ -36,9 +36,10 @@ import objects_data
 
 
 class SignalsList(CList):
-    def __init__(self, parent, new_sig_cb, sigs_list_cb, operation_stack_cb):
+    def __init__(self, parent, editable_grp, new_sig_cb, sigs_list_cb,
+                 operation_stack_cb):
         CList.__init__(self, parent)
-        self.e = parent.e
+        self._edit_grp = editable_grp
 
         self._new_sig_cb = new_sig_cb
         self._sigs_list_cb = sigs_list_cb
@@ -47,12 +48,16 @@ class SignalsList(CList):
         self._options_load()
         self.options = True
 
-        self.e.callback_add("signals.changed", self._signals_update)
-        self.e.callback_add("signal.added", self._signal_added)
-        self.e.callback_add("signal.removed", self._signal_removed)
+        self._edit_grp.callback_add("signals.changed", self._signals_update)
+        self._edit_grp.callback_add("signal.added", self._signal_added)
+        self._edit_grp.callback_add("signal.removed", self._signal_removed)
 
-        self.e.signal.callback_add("program.changed", self._signal_changed)
-        self.e.signal.callback_add("program.unselected", self._signal_changed)
+        self._edit_grp.signal.callback_add(
+            "program.changed", self._signal_changed)
+        self._edit_grp.signal.callback_add(
+            "program.unselected", self._signal_changed)
+        self._edit_grp.signal.callback_add(
+            "program.name.changed", self._name_changed_cb)
 
     def _signals_update(self, emissor, data):
         self.clear()
@@ -77,7 +82,7 @@ class SignalsList(CList):
     def _selected_cb(self, li, it):
         CList._selected_cb(self, li, it)
         name = it.label_get()
-        self.e.signal.name = name
+        self._edit_grp.signal.name = name
         self._options_edje.signal_emit("remove,enable", "")
 
     def _unselected_cb(self, li, it):
@@ -98,6 +103,19 @@ class SignalsList(CList):
         self.content_set("options", self._options_edje)
         self._options = False
 
+    def _name_changed_cb(self, emissor, data):
+        old_name, new_name = data
+
+        for s in self._selected.iterkeys():
+            item = self._items[s]
+            if item.label_get() == old_name:
+                item.label_set(new_name)
+                self._selected[new_name] = self._selected[old_name]
+                self._items[new_name] = self._items[old_name]
+                del self._selected[old_name]
+                del self._items[old_name]
+                return
+
     def _new_cb(self, obj, emission, source):
         sig_wiz = NewSignalWizard(
             self._parent, new_sig_cb=self._new_sig_cb,
@@ -107,16 +125,17 @@ class SignalsList(CList):
     def _remove_cb(self, obj, emission, source):
         for to_del in self.selected:
             sig_name = to_del[0]
-            sig_save = objects_data.Program(self.e.edje.program_get(sig_name))
+            sig_save = objects_data.Program(
+                self._edit_grp.edje.program_get(sig_name))
 
-            r = self.e.signal_del(sig_name)
+            r = self._edit_grp.signal_del(sig_name)
             if not r:
                 del sig_save
                 continue
 
             op = Operation("signal deletion")
-            op.redo_callback_add(self.e.signal_del, sig_name)
-            op.undo_callback_add(self.e.signal_add_bydata, sig_save)
+            op.redo_callback_add(self._edit_grp.signal_del, sig_name)
+            op.undo_callback_add(self._edit_grp.signal_add_bydata, sig_save)
             self._operation_stack_cb(op)
 
 
@@ -256,13 +275,11 @@ class SignalDetails(EditjeDetails):
         self._parent = parent
         self._actions_added = 0
 
-        # FIXME: no signal renaming yet (thus, no prop_value_changed_cb and
-        # wid.disable_set(True), for now
-        self._header_table = PropertyTable(parent, "signal name")
+        self._header_table = PropertyTable(
+            parent, "signal name", self._header_prop_value_changed)
 
         prop = Property(parent, "name")
         wid = WidgetEntry(self)
-        wid.disabled_set(True)
         prop.widget_add("n", wid)
         self._header_table.property_add(prop)
 
@@ -306,11 +323,35 @@ class SignalDetails(EditjeDetails):
         self.e.callback_add("signal.removed", self._removed)
         self.e.callback_add("group.changed", self._removed)
         self.e.signal.callback_add("program.changed", self._update)
+        self.e.signal.callback_add("program.name.changed", self._update)
         self.e.signal.callback_add("program.unselected", self._removed)
 
         self.open = True
         self.open_disable = True
         self.show()
+
+    def _header_prop_value_changed(self, prop_name, prop_value, group_name):
+
+        def signal_rename(old_name, new_name):
+            # select 1st
+            self._context_recall(signal=old_name)
+
+            # rename later
+            return self.e.signal.rename(new_name)
+
+        if prop_name != "name":
+            return
+
+        old_name = self.e.signal.name
+        if signal_rename(old_name, prop_value):
+            op = Operation("signal renaming")
+
+            op.redo_callback_add(signal_rename, old_name, prop_value)
+            op.undo_callback_add(signal_rename, prop_value, old_name)
+            self._operation_stack_cb(op)
+        else:
+            # TODO: notify the user of renaming failure
+            self._header_table["name"].value = old_name
 
     def _new_action(self, number):
         def programs_get():
@@ -356,10 +397,10 @@ class SignalDetails(EditjeDetails):
         self._emissor = emissor
         self._data = data
 
-        self._header_table["name"].value = data
+        self._header_table["name"].value = self.e.signal.name
         self._header_table["name"].show_value()
-        # self._header_table["name"].value_obj._values_dict["n"].disabled_set(
-        #     False)
+        self._header_table["name"].value_obj._values_dict["n"].disabled_set(
+            False)
 
         signal = self.e.signal.signal
         self["main"]["signal"].show_value()

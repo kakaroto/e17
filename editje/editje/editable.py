@@ -480,6 +480,8 @@ class Editable(Manager):
     def _programs_init(self):
         self.programs = []
         self.callback_add("group.changed", self._programs_reload_cb)
+        self.signal.callback_add(
+            "program.name.changed", self._programs_reload_cb)
 
     def _programs_reload_cb(self, emissor, data):
         if data:
