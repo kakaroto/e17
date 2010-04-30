@@ -1,5 +1,5 @@
 Source: xfonts-nexus
-Build-Depends-Indep: xutils (>> 4.0.3), debhelper (>= 5.0.29)
+Build-Depends-Indep: xfonts-utils, debhelper (>= 5.0.29)
 Section: x11
 Priority: optional
 Maintainer: Simon Horman <horms@debian.org>
