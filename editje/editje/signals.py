@@ -299,7 +299,7 @@ class SignalDetails(EditjeDetails):
         self["out"].property_add(prop)
 
         prop = Property(parent, "source")
-        prop.widget_add("s", WidgetSource(self))
+        prop.widget_add("s", WidgetSource(self, parts_get))
         self["out"].property_add(prop)
 
         self.e.callback_add("signal.added", self._update)
