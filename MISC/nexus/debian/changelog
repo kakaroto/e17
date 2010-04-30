@@ -14,8 +14,13 @@ xfonts-nexus (0.0.2-15) unstable; urgency=low
     http://lintian.debian.org/tags/binary-arch-rules-but-pkg-is-arch-indep.html
   * Update debhelper compatibility level from 4 to 6
     http://lintian.debian.org/tags/package-uses-deprecated-debhelper-compat-version.html
+  * Install fonts into /usr/share/fonts/X11
+    instead of /usr/X11R6/lib/X11/fonts/
+    http://lintian.debian.org/tags/package-installs-file-to-usr-x11r6.html
+  * Don't ignore errors in postrm and postinst scripts
+    http://lintian.debian.org/maintainer-script-ignores-errors.html
 
- -- Simon Horman <horms@debian.org>  Fri, 30 Apr 2010 14:18:09 +0900
+ -- Simon Horman <horms@debian.org>  Fri, 30 Apr 2010 15:33:40 +0900
 
 xfonts-nexus (0.0.2-14) unstable; urgency=low
 

@@ -2,8 +2,10 @@
 
 #DEBHELPER#
 
-if test -d /usr/X11R6/lib/X11/fonts/misc; then
-	( cd /usr/X11R6/lib/X11/fonts/misc ; /usr/X11R6/bin/mkfontdir )
+set -e
+
+if test -d /usr/share/fonts/X11/misc; then
+	( cd /usr/share/fonts/X11/misc && /usr/bin/mkfontdir )
 	update-fonts-alias misc
 fi
 
