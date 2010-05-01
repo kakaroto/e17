@@ -329,11 +329,26 @@ _basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cf
 static int
 _basic_apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata) 
 {
-   int need_rearrangement = memcmp(cfdata, tiling_config, sizeof(Config) - (sizeof(char*) * 2) - sizeof(Eina_List*)) ||
-                            strcmp(cfdata->tiling_border, tiling_config->tiling_border) ||
-			    strcmp(cfdata->floating_border, tiling_config->floating_border);
+  int need_rearrangement =
+    memcmp(cfdata, tiling_config, sizeof(Config) - (sizeof(char*) * 2) - sizeof(Eina_List*));
 
-   if (!need_rearrangement)
+  if (!need_rearrangement)
+    {
+      if (cfdata->tiling_border && tiling_config->tiling_border)
+	need_rearrangement = strcmp(cfdata->tiling_border, tiling_config->tiling_border);
+      else if (cfdata->tiling_border || tiling_config->tiling_border)
+	need_rearrangement = 1;
+    }
+
+  if (!need_rearrangement)
+    {
+      if (cfdata->floating_border && tiling_config->floating_border)
+	need_rearrangement = strcmp(cfdata->floating_border, tiling_config->floating_border);
+      else if (cfdata->floating_border || tiling_config->floating_border)
+	need_rearrangement = 1;
+    }
+
+  if (!need_rearrangement)
      {
 	/* Check if the layout for one of the vdesks has changed */
 	Eina_List *l;
