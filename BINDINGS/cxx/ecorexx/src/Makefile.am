@@ -20,7 +20,8 @@ libecorexx_la_SOURCES = \
 	EvasWindow.cpp \
 	XWindow.cpp \
 	Animator.cpp \
-	Timer.cpp
+	Timer.cpp \
+	Job.cpp
 
 libecorexx_la_LIBADD = \
 	$(EFL_LIBS)

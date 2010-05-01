@@ -5,7 +5,8 @@ libecorexx_HEADERS = \
 	XWindow.h \
 	Animator.h \
 	Timer.h \
-	Ecorexx.h
+	Ecorexx.h \
+	Job.h
 
 libecorexxdir = \
 	$(pkgincludedir)

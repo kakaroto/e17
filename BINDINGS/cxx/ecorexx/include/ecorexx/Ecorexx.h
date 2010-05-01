@@ -12,6 +12,7 @@
 #include "EvasWindow.h"
 #include "Timer.h"
 #include "XWindow.h"
+#include "Job.h"
 
 #endif // ECOREXX_H
 
