@@ -3,7 +3,6 @@
 
 static E_DBus_Connection *client_conn;
 static int init_count = 0;
-int _e_dbus_notification_log_dom = -1;
 
 EAPI int
 e_notification_init(void)
@@ -17,15 +16,6 @@ e_notification_init(void)
     e_dbus_shutdown();
     return 0;
   }
-  
-  _e_dbus_notification_log_dom = eina_log_domain_register("e_dbus_notification",E_DBUS_COLOR_DEFAULT);
-  
-  if(_e_dbus_notification_log_dom < 0)
-    {
-      ERR("E-Dbus-notification Error: Impossible to create e_dbus_motification domain");
-      e_dbus_shutdown();
-      return 0;
-    }
 
   return ++init_count;
 }
@@ -34,7 +24,6 @@ EAPI int
 e_notification_shutdown(void)
 {
   if (--init_count) return init_count;
-  eina_log_domain_unregister(_e_dbus_notification_log_dom);
   e_dbus_connection_close(client_conn);
   client_conn = NULL;
   e_dbus_shutdown();

@@ -59,6 +59,9 @@ struct E_Notification_Daemon
 extern "C" {
 #endif
 
+  EAPI int e_notification_daemon_init(void);
+  EAPI int e_notification_daemon_shutdown(void);
+
 /* daemon */
    EAPI E_Notification_Daemon *e_notification_daemon_add(const char *name, const char *vendor);
    EAPI void e_notification_daemon_free(E_Notification_Daemon *d);

@@ -385,6 +385,7 @@ e_modapi_init(E_Module *m)
      }
 
    /* set up the notification daemon */
+   e_notification_daemon_init();
    d = e_notification_daemon_add("e_notification_module", "Enlightenment");
    if (!d)
      {
@@ -460,6 +461,7 @@ e_modapi_shutdown(E_Module *m __UNUSED__)
    notification_popup_shutdown();
 
    e_notification_daemon_free(notification_cfg->daemon);
+   e_notification_daemon_shutdown();
    _notification_cfg_free(notification_cfg);
    E_CONFIG_DD_FREE(conf_item_edd);
    E_CONFIG_DD_FREE(conf_edd);
