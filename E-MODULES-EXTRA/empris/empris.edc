@@ -556,7 +556,7 @@ collections
 		{
 		  state:"default" 0.00;
 		  visible:1;
-		  min:200 35;
+		  min:200 45;
 		    rel1
 		    {
 		      relative:0.00 0.00;
@@ -753,45 +753,45 @@ collections
 		    }
 		}
 	    }
-	    part
-	    {
-	      name:"empris.genre_label";
-	      type:TEXT;
-	      mouse_events:0;
-	      effect:SHADOW;
-	      clip_to:"base";
-		description
-		{
-		  state:"default" 0.00;
-		  visible:1;
-		  align:0.00 0.50;
-		    rel1
-		    {
-		      relative:0.00 1.00;
-		      offset:0 0;
-		      to_x:"labels";
-		      to_y:"empris.album_label";
-		    }
-		    rel2
-		    {
-		      relative:1.00 1.00;
-		      offset:0 12;
-		      to_x:"labels";
-		      to_y:"empris.album_label";
-		    }
-		  color:0 0 0 255;
-		  color3:255 255 255 128;
-		    text
-		    {
-		      text:"Genre:";
-		      text_class:"empris";
-		      font:"Sans:style=Mono";
-		      size:10;
-		      min:1 1;
-		      align:1.0 0.50;
-		    }
-		}
-	    }
+	    /* part
+	     * {
+	     *   name:"empris.genre_label";
+	     *   type:TEXT;
+	     *   mouse_events:0;
+	     *   effect:SHADOW;
+	     *   clip_to:"base";
+	     * 	description
+	     * 	{
+	     * 	  state:"default" 0.00;
+	     * 	  visible:1;
+	     * 	  align:0.00 0.50;
+	     * 	    rel1
+	     * 	    {
+	     * 	      relative:0.00 1.00;
+	     * 	      offset:0 0;
+	     * 	      to_x:"labels";
+	     * 	      to_y:"empris.album_label";
+	     * 	    }
+	     * 	    rel2
+	     * 	    {
+	     * 	      relative:1.00 1.00;
+	     * 	      offset:0 12;
+	     * 	      to_x:"labels";
+	     * 	      to_y:"empris.album_label";
+	     * 	    }
+	     * 	  color:0 0 0 255;
+	     * 	  color3:255 255 255 128;
+	     * 	    text
+	     * 	    {
+	     * 	      text:"Genre:";
+	     * 	      text_class:"empris";
+	     * 	      font:"Sans:style=Mono";
+	     * 	      size:10;
+	     * 	      min:1 1;
+	     * 	      align:1.0 0.50;
+	     * 	    }
+	     * 	}
+	     * } */
 	    part
 	    {
 	      name:"empris.artist";
@@ -822,7 +822,7 @@ collections
 		      text:"";
 		      text_class:"empris";
 		      font:"Sans:style=Bold";
-		      size:10;
+		      size:8;
 		      min:1 1;
 		      align:0.0 0.50;
 		    }
@@ -858,7 +858,7 @@ collections
 		      text:"";
 		      text_class:"empris";
 		      font:"Sans:style=Bold";
-		      size:10;
+		      size:8;
 		      min:1 1;
 		      align:0.0 0.50;
 		    }
@@ -894,48 +894,48 @@ collections
 		      text:"";
 		      text_class:"empris";
 		      font:"Sans:style=Bold";
-		      size:10;
+		      size:8;
 		      min:1 1;
 		      align:0.0 0.50;
 		    }
 		}
 	    }
-	    part
-	    {
-	      name:"empris.genre";
-	      type:TEXT;
-	      effect:NONE;
-	      clip_to:"base";
-		description
-		{
-		  state:"default" 0.00;
-		  visible:1;
-		  align:0.00 0.50;
-		    rel1
-		    {
-		      relative:0.00 0.00;
-		      offset:0 0;
-		      to_x:"values";
-		      to_y:"empris.genre_label";
-		    }
-		    rel2
-		    {
-		      relative:1.00 1.00;
-		      to_x:"values";
-		      to_y:"empris.genre_label";
-		    }
-		  color:0 0 0 255;
-		    text
-		    {
-		      text:"";
-		      text_class:"empris";
-		      font:"Sans:style=Bold";
-		      size:10;
-		      min:1 1;
-		      align:0.0 0.50;
-		    }
-		}
-	    }
+	    /* part
+	     * {
+	     *   name:"empris.genre";
+	     *   type:TEXT;
+	     *   effect:NONE;
+	     *   clip_to:"base";
+	     * 	description
+	     * 	{
+	     * 	  state:"default" 0.00;
+	     * 	  visible:1;
+	     * 	  align:0.00 0.50;
+	     * 	    rel1
+	     * 	    {
+	     * 	      relative:0.00 0.00;
+	     * 	      offset:0 0;
+	     * 	      to_x:"values";
+	     * 	      to_y:"empris.genre_label";
+	     * 	    }
+	     * 	    rel2
+	     * 	    {
+	     * 	      relative:1.00 1.00;
+	     * 	      to_x:"values";
+	     * 	      to_y:"empris.genre_label";
+	     * 	    }
+	     * 	  color:0 0 0 255;
+	     * 	    text
+	     * 	    {
+	     * 	      text:"";
+	     * 	      text_class:"empris";
+	     * 	      font:"Sans:style=Bold";
+	     * 	      size:10;
+	     * 	      min:1 1;
+	     * 	      align:0.0 0.50;
+	     * 	    }
+	     * 	}
+	     * } */
 	}
 	programs
 	{
