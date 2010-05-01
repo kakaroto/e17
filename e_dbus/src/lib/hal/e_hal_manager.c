@@ -33,7 +33,8 @@ unmarshal_string_list(DBusMessage *msg, DBusError *err)
     char *dev = NULL;
 
     dbus_message_iter_get_basic(&sub, &dev);
-    if (dev) ret->strings = eina_list_append(ret->strings, dev);
+    if (dev)
+      ret->strings = eina_list_append(ret->strings, eina_stringshare_add(dev));
     dbus_message_iter_next(&sub);
   }
 
