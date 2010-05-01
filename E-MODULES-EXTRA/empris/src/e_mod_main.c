@@ -274,11 +274,10 @@ _empris_cb_mouse_in (void *data, Evas * e, Evas_Object * obj,
 		     void *event_info)
 {
    Instance *inst;
-   E_Gadcon_Popup *popup;
 
-   if ((!(inst = data)) || (!inst->ci->show_popup))
+   if ((!(inst = data)) || (!inst->ci->show_popup) || (!inst->popup))
      return;
-   popup = inst->popup;
+
    e_gadcon_popup_show (inst->popup);
 }
 
@@ -287,11 +286,10 @@ _empris_cb_mouse_out (void *data, Evas * e, Evas_Object * obj,
 		      void *event_info)
 {
    Instance *inst;
-   E_Gadcon_Popup *popup;
 
    if ((!(inst = data)) || ((!inst->ci->show_popup) && (inst->popup)))
      return;
-   popup = inst->popup;
+
    e_gadcon_popup_hide (inst->popup);
 }
 
@@ -342,10 +340,6 @@ _empris_config_updated (Config_Item * ci)
 	     if (inst->popup)
 	       {
 		  _empris_popup_destroy(inst);
-	       }
-	     if (inst->o_popup)
-	       {
-		  evas_object_del(inst->o_popup);
 	       }
 	  }
 	break;
@@ -551,9 +545,13 @@ e_modapi_save (E_Module * m)
 static void
 _empris_popup_destroy (Instance * inst)
 {
-   if (!inst->popup)
-     return;
-   e_object_del (E_OBJECT (inst->popup));
+   if (inst->popup)
+     e_object_del (E_OBJECT (inst->popup));
+   inst->popup = NULL;
+
+   if (inst->o_popup)
+     evas_object_del(inst->o_popup);
+   inst->o_popup = NULL;
 }
 
 static void
