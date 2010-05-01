@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: Everything-mpris\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
 "POT-Creation-Date: 2010-04-28 05:12+0200\n"
-"PO-Revision-Date: 2010-04-24 17:23+0200\n"
+"PO-Revision-Date: 2010-05-01 17:23+0200\n"
 "Last-Translator: Massimo Maiurana <maiurana@gmail.com>\n"
 "Language-Team: none\n"
 "MIME-Version: 1.0\n"
@@ -15,9 +15,8 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 #: src/e_mod_main.c:297
-#, fuzzy
 msgid "Google"
-msgstr "Cerca con Google"
+msgstr "Google"
 
 #: src/e_mod_main.c:308
 msgid "Wikipedia"
@@ -54,6 +53,3 @@ msgstr "Lingua"
 #: src/e_mod_main.c:504
 msgid "Extensions"
 msgstr "Estensioni"
-
-#~ msgid "GSuggest"
-#~ msgstr "Google"

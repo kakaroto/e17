@@ -2,7 +2,7 @@
 Type=Link
 Name=Everything Tracker (0.6)
 Name[fr]=Omni - Tracker (0.6)
-Name[it]=Pannello di esecuzione - Tracker (0.6)
+Name[it]=Everything - Tracker (0.6)
 Icon=e-module
 Comment=Find Files with Tracker (requires version 0.6)
 Comment[fr]=Trouver des fichiers avec Tracker (version 0.6 requise).
