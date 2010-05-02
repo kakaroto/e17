@@ -188,6 +188,7 @@ typedef struct {
       char                transientsfollowleader;
       char                switchfortransientmap;
       char                all_new_windows_get_focus;
+      char                new_windows_get_focus_if_group_focused;
       char                new_transients_get_focus;
       char                new_transients_get_focus_if_group_focused;
       char                raise_on_next;

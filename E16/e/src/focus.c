@@ -347,6 +347,12 @@ doFocusToEwin(EWin * ewin, int why)
 	if (ewin->props.focus_when_mapped)
 	   goto check_focus_new;
 
+	if (Conf.focus.new_windows_get_focus_if_group_focused && Mode.focuswin)
+	  {
+	     if (EwinGetWindowGroup(ewin) == EwinGetWindowGroup(Mode.focuswin))
+		goto check_focus_new;
+	  }
+
 	if (EwinIsTransient(ewin))
 	  {
 	     if (Conf.focus.new_transients_get_focus)
@@ -694,8 +700,9 @@ typedef struct {
       int                 mode;
       char                clickalways;
       char                new_focus;
+      char                new_focus_if_group;
       char                popup_focus;
-      char                owner_popup_focus;
+      char                popup_focus_if_group;
       char                raise_focus;
       char                warp_focus;
       char                warp_always;
@@ -730,9 +737,11 @@ CB_ConfigureFocus(Dialog * d, int val, void *data __UNUSED__)
    Conf.focus.mode = dd->focus.mode;
    Conf.focus.clickraises = dd->focus.clickalways;
    Conf.focus.all_new_windows_get_focus = dd->focus.new_focus;
+   Conf.focus.new_windows_get_focus_if_group_focused =
+      dd->focus.new_focus_if_group;
    Conf.focus.new_transients_get_focus = dd->focus.popup_focus;
    Conf.focus.new_transients_get_focus_if_group_focused =
-      dd->focus.owner_popup_focus;
+      dd->focus.popup_focus_if_group;
    Conf.focus.raise_on_next = dd->focus.raise_focus;
    Conf.focus.warp_on_next = dd->focus.warp_focus;
    Conf.focus.warp_always = dd->focus.warp_always;
@@ -768,8 +777,10 @@ _DlgFillFocus(Dialog * d, DItem * table, void *data __UNUSED__)
    dd->focus.mode = Conf.focus.mode;
    dd->focus.clickalways = Conf.focus.clickraises;
    dd->focus.new_focus = Conf.focus.all_new_windows_get_focus;
+   dd->focus.new_focus_if_group =
+      Conf.focus.new_windows_get_focus_if_group_focused;
    dd->focus.popup_focus = Conf.focus.new_transients_get_focus;
-   dd->focus.owner_popup_focus =
+   dd->focus.popup_focus_if_group =
       Conf.focus.new_transients_get_focus_if_group_focused;
    dd->focus.raise_focus = Conf.focus.raise_on_next;
    dd->focus.warp_focus = Conf.focus.warp_on_next;
@@ -827,6 +838,13 @@ _DlgFillFocus(Dialog * d, DItem * table, void *data __UNUSED__)
 
    di = DialogAddItem(table, DITEM_CHECKBUTTON);
    DialogItemSetColSpan(di, 2);
+   DialogItemSetText(di,
+		     _
+		     ("New windows get the focus if their window group is focused"));
+   DialogItemCheckButtonSetPtr(di, &dd->focus.new_focus_if_group);
+
+   di = DialogAddItem(table, DITEM_CHECKBUTTON);
+   DialogItemSetColSpan(di, 2);
    DialogItemSetText(di, _("Only new dialog windows get the focus"));
    DialogItemCheckButtonSetPtr(di, &dd->focus.popup_focus);
 
@@ -835,7 +853,7 @@ _DlgFillFocus(Dialog * d, DItem * table, void *data __UNUSED__)
    DialogItemSetText(di,
 		     _
 		     ("Only new dialogs whose owner is focused get the focus"));
-   DialogItemCheckButtonSetPtr(di, &dd->focus.owner_popup_focus);
+   DialogItemCheckButtonSetPtr(di, &dd->focus.popup_focus_if_group);
 
    di = DialogAddItem(table, DITEM_CHECKBUTTON);
    DialogItemSetColSpan(di, 2);
@@ -1115,6 +1133,7 @@ static const CfgItem FocusCfgItems[] = {
    CFG_ITEM_BOOL(Conf.focus, transientsfollowleader, 1),
    CFG_ITEM_BOOL(Conf.focus, switchfortransientmap, 1),
    CFG_ITEM_BOOL(Conf.focus, all_new_windows_get_focus, 0),
+   CFG_ITEM_BOOL(Conf.focus, new_windows_get_focus_if_group_focused, 1),
    CFG_ITEM_BOOL(Conf.focus, new_transients_get_focus, 0),
    CFG_ITEM_BOOL(Conf.focus, new_transients_get_focus_if_group_focused, 1),
    CFG_ITEM_BOOL(Conf.focus, raise_on_next, 1),
