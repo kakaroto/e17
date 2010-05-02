@@ -353,14 +353,14 @@ doFocusToEwin(EWin * ewin, int why)
 	       {
 		  do_focus = 1;
 	       }
-	     else if (Conf.focus.new_transients_get_focus_if_group_focused)
+	     else if (Conf.focus.new_transients_get_focus_if_group_focused &&
+		      Mode.focuswin)
 	       {
-		  EWin               *ewin2;
-
-		  ewin2 = EwinFindByClient(EwinGetTransientFor(ewin));
-		  if ((ewin2) && (Mode.focuswin == ewin2))
+		  if ((EwinGetTransientFor(ewin) ==
+		       EwinGetClientXwin(Mode.focuswin)) ||
+		      (EwinGetWindowGroup(ewin) ==
+		       EwinGetWindowGroup(Mode.focuswin)))
 		     do_focus = 1;
-
 	       }
 
 	     if (!do_focus)
