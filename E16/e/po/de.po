@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 16\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2010-04-11 13:54+0200\n"
+"POT-Creation-Date: 2010-05-02 19:59+0200\n"
 "PO-Revision-Date: 2009-05-31 15:13+0100\n"
 "Last-Translator: Peter Wehrfritz <peter.wehrfritz@web.de>\n"
 "Language-Team: Enlightenment l10n <enlightenment-intl@lists.sourceforge."
@@ -598,7 +598,7 @@ msgid "End"
 msgstr "Ende"
 
 # src/settings.c:3740
-#: src/container.c:1657 src/focus.c:937
+#: src/container.c:1657 src/focus.c:960
 msgid "None"
 msgstr "-/-"
 
@@ -881,130 +881,134 @@ msgstr ""
 "Breche ab.\n"
 
 # src/settings.c:417
-#: src/focus.c:790
+#: src/focus.c:806
 msgid "Focus follows pointer"
 msgstr "Fokus folgt Zeiger"
 
 # src/settings.c:425
-#: src/focus.c:796
+#: src/focus.c:812
 msgid "Focus follows pointer sloppily"
 msgstr "Fokus folgt Zeiger in Fenster"
 
 # src/settings.c:433
-#: src/focus.c:802
+#: src/focus.c:818
 msgid "Focus follows mouse clicks"
 msgstr "Fokus folgt Mausklicks"
 
 # src/settings.c:448
-#: src/focus.c:812
+#: src/focus.c:828
 msgid "Clicking in a window always raises it"
 msgstr "Klicken in ein Fenster hebt es immer an"
 
 # src/settings.c:462
-#: src/focus.c:820
+#: src/focus.c:836
 msgid "All new windows first get the focus"
 msgstr "Alle neuen Fenster erhalten sofort den Fokus"
 
+#: src/focus.c:843
+msgid "New windows get the focus if their window group is focused"
+msgstr ""
+
 # src/settings.c:470
-#: src/focus.c:825
+#: src/focus.c:848
 msgid "Only new dialog windows get the focus"
 msgstr "Nur neue Dialogfenster erhalten den Fokus"
 
 # src/settings.c:480
-#: src/focus.c:832
+#: src/focus.c:855
 msgid "Only new dialogs whose owner is focused get the focus"
 msgstr "Nur neue Dialogfenster mit fokussiertem Eigner erhalten den Fokus"
 
 # src/settings.c:546
-#: src/focus.c:837
+#: src/focus.c:860
 msgid "Raise windows while switching focus"
 msgstr "Fenster beim Durchblättern anheben"
 
 # src/settings.c:498
-#: src/focus.c:843
+#: src/focus.c:866
 msgid "Send mouse pointer to window while switching focus"
 msgstr "Mauszeiger bei Fokuserhalt ins Fenster schicken"
 
 # src/settings.c:498
-#: src/focus.c:849
+#: src/focus.c:872
 msgid "Always send mouse pointer to window on focus switch"
 msgstr "Immer Mauszeiger bei Fokuserhalt ins Fenster schicken"
 
 # src/settings.c:1330
-#: src/focus.c:857
+#: src/focus.c:880
 msgid "Raise windows automatically"
 msgstr "Fenster automatisch anheben"
 
 # src/settings.c:1338
-#: src/focus.c:863
+#: src/focus.c:886
 msgid "Autoraise delay:"
 msgstr "Verzögerung vor Anheben:"
 
 # src/settings.c:513
-#: src/focus.c:876
+#: src/focus.c:899
 msgid "Display and use focus list"
 msgstr "Fokusliste anzeigen und benutzen"
 
 # src/settings.c:521
-#: src/focus.c:881
+#: src/focus.c:904
 msgid "Include sticky windows in focus list"
 msgstr "Klebrige Fenster in Fokusliste erwähnen"
 
 # src/settings.c:529
-#: src/focus.c:886
+#: src/focus.c:909
 msgid "Include shaded windows in focus list"
 msgstr "Aufgerollte Fenster in Fokusliste erwähnen"
 
 # src/settings.c:538
-#: src/focus.c:891
+#: src/focus.c:914
 msgid "Include iconified windows in focus list"
 msgstr "Minimierte Fenster in Fokusliste erwähnen"
 
 # src/settings.c:529
-#: src/focus.c:896
+#: src/focus.c:919
 msgid "Include windows on other desks in focus list"
 msgstr "Fenster auf anderen Desktops in Fokusliste erwähnen"
 
 # src/settings.c:546
-#: src/focus.c:901
+#: src/focus.c:924
 msgid "Focus windows while switching"
 msgstr "Fenster beim Umschalten fokussieren"
 
 # src/settings.c:554
-#: src/focus.c:906
+#: src/focus.c:929
 msgid "Raise windows after focus switch"
 msgstr "Fenster nach Fokuserhalt anheben"
 
 # src/settings.c:564
-#: src/focus.c:911
+#: src/focus.c:934
 msgid "Send mouse pointer to window after focus switch"
 msgstr "Mauszeiger nach Fokuserhalt in Fenster schicken"
 
 # src/settings.c:3605
-#: src/focus.c:921
+#: src/focus.c:944
 msgid "Focuslist image display policy (if one operation fails, try the next):"
 msgstr "Anzeigemethode für Icons (wenn eine Aktion fehlschlägt, die nächste):"
 
-#: src/focus.c:925
+#: src/focus.c:948
 msgid "First E Icon, then App Icon"
 msgstr "Zuerst das E-Icon, dann das Anwendungsicon"
 
-#: src/focus.c:931
+#: src/focus.c:954
 msgid "First App Icon, then E Icon"
 msgstr "Zuerst das Anwendungsicon, dann das E-Icon"
 
 # src/snaps.c:494
-#: src/focus.c:945
+#: src/focus.c:968
 msgid "Focus"
 msgstr "Fokus"
 
 # src/settings.c:393
-#: src/focus.c:946
+#: src/focus.c:969
 msgid "Focus Settings"
 msgstr "Fokus-Einstellungen"
 
 # src/main.c:89
-#: src/focus.c:949
+#: src/focus.c:972
 msgid ""
 "Enlightenment Focus\n"
 "Settings Dialog\n"

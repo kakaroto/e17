@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2010-04-11 13:54+0200\n"
+"POT-Creation-Date: 2010-05-02 19:59+0200\n"
 "PO-Revision-Date: 2000-01-14 20:43-0300\n"
 "Last-Translator: sda <sda00@himki.net>\n"
 "Language-Team: Russian <ru@li.org>\n"
@@ -497,7 +497,7 @@ msgstr "С обеих сторон"
 msgid "End"
 msgstr "В конце"
 
-#: src/container.c:1657 src/focus.c:937
+#: src/container.c:1657 src/focus.c:960
 msgid "None"
 msgstr "Не использовать"
 
@@ -748,108 +748,112 @@ msgstr ""
 "\n"
 "Выходим.\n"
 
-#: src/focus.c:790
+#: src/focus.c:806
 msgid "Focus follows pointer"
 msgstr "Фокус следует за мышью"
 
-#: src/focus.c:796
+#: src/focus.c:812
 msgid "Focus follows pointer sloppily"
 msgstr "Фокус следует за мышью свободно"
 
-#: src/focus.c:802
+#: src/focus.c:818
 msgid "Focus follows mouse clicks"
 msgstr "Фокус по нажатию кнопки мыши"
 
-#: src/focus.c:812
+#: src/focus.c:828
 msgid "Clicking in a window always raises it"
 msgstr "Нажатие кнопки мыши всегда поднимает окно наверх"
 
-#: src/focus.c:820
+#: src/focus.c:836
 msgid "All new windows first get the focus"
 msgstr "Все новые окна получают фокус"
 
-#: src/focus.c:825
+#: src/focus.c:843
+msgid "New windows get the focus if their window group is focused"
+msgstr ""
+
+#: src/focus.c:848
 msgid "Only new dialog windows get the focus"
 msgstr "Только новые диалоги получают фокус"
 
-#: src/focus.c:832
+#: src/focus.c:855
 msgid "Only new dialogs whose owner is focused get the focus"
 msgstr "Только новые диалоги окон в фокусе получают фокус"
 
-#: src/focus.c:837
+#: src/focus.c:860
 msgid "Raise windows while switching focus"
 msgstr "Поднимать окна наверх после переключения фокуса"
 
-#: src/focus.c:843
+#: src/focus.c:866
 msgid "Send mouse pointer to window while switching focus"
 msgstr "Посылать курсор в окно при получении фокуса"
 
-#: src/focus.c:849
+#: src/focus.c:872
 msgid "Always send mouse pointer to window on focus switch"
 msgstr "Посылать курсор в окно при получении фокуса"
 
-#: src/focus.c:857
+#: src/focus.c:880
 msgid "Raise windows automatically"
 msgstr "Поднимать окна на передний план вручную"
 
-#: src/focus.c:863
+#: src/focus.c:886
 msgid "Autoraise delay:"
 msgstr "Задержка подъема:"
 
-#: src/focus.c:876
+#: src/focus.c:899
 msgid "Display and use focus list"
 msgstr "Отображать и использовать список окон для передачи фокуса"
 
-#: src/focus.c:881
+#: src/focus.c:904
 msgid "Include sticky windows in focus list"
 msgstr "Включать зафиксированные окна в список передачи фокуса"
 
-#: src/focus.c:886
+#: src/focus.c:909
 msgid "Include shaded windows in focus list"
 msgstr "Включать скрытые окна в список передачи фокуса"
 
-#: src/focus.c:891
+#: src/focus.c:914
 msgid "Include iconified windows in focus list"
 msgstr "Включать свёрнутые окна в список передачи фокуса"
 
-#: src/focus.c:896
+#: src/focus.c:919
 msgid "Include windows on other desks in focus list"
 msgstr "Располагать окна вручную"
 
-#: src/focus.c:901
+#: src/focus.c:924
 msgid "Focus windows while switching"
 msgstr "При переключении в другое окно передавать ему фокус"
 
-#: src/focus.c:906
+#: src/focus.c:929
 msgid "Raise windows after focus switch"
 msgstr "Поднимать окна наверх после переключения фокуса"
 
-#: src/focus.c:911
+#: src/focus.c:934
 msgid "Send mouse pointer to window after focus switch"
 msgstr "Посылать курсор в окно после получении фокуса"
 
-#: src/focus.c:921
+#: src/focus.c:944
 msgid "Focuslist image display policy (if one operation fails, try the next):"
 msgstr ""
 "Способ отображения пиктограмм (если один не работает, пробовать следующий):"
 
-#: src/focus.c:925
+#: src/focus.c:948
 msgid "First E Icon, then App Icon"
 msgstr "Сперва - иконку E, потом - иконку приложения"
 
-#: src/focus.c:931
+#: src/focus.c:954
 msgid "First App Icon, then E Icon"
 msgstr "Сперва - иконку приложения, потоиииииконку E"
 
-#: src/focus.c:945
+#: src/focus.c:968
 msgid "Focus"
 msgstr "Фокус"
 
-#: src/focus.c:946
+#: src/focus.c:969
 msgid "Focus Settings"
 msgstr "Настройки фокуса"
 
-#: src/focus.c:949
+#: src/focus.c:972
 msgid ""
 "Enlightenment Focus\n"
 "Settings Dialog\n"

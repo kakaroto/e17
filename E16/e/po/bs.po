@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: bosnian\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2010-04-11 13:54+0200\n"
+"POT-Creation-Date: 2010-05-02 19:59+0200\n"
 "PO-Revision-Date: 2004-08-26 00:52+0200\n"
 "Last-Translator: Kemal Šanjta <gomez@lugzdk.ba>\n"
 "Language-Team: Bosnian <lokal@linux.org.ba>\n"
@@ -505,7 +505,7 @@ msgstr "Oba kraja"
 msgid "End"
 msgstr "Kraj"
 
-#: src/container.c:1657 src/focus.c:937
+#: src/container.c:1657 src/focus.c:960
 msgid "None"
 msgstr "Ništa"
 
@@ -747,113 +747,117 @@ msgstr ""
 "\n"
 "Izlazim.\n"
 
-#: src/focus.c:790
+#: src/focus.c:806
 msgid "Focus follows pointer"
 msgstr "Usmjeravanje prati usmjeriva?"
 
-#: src/focus.c:796
+#: src/focus.c:812
 msgid "Focus follows pointer sloppily"
 msgstr "Usmjerenje prati usmjerivać"
 
-#: src/focus.c:802
+#: src/focus.c:818
 msgid "Focus follows mouse clicks"
 msgstr "Usmjeravanje prati klikanje miša"
 
-#: src/focus.c:812
+#: src/focus.c:828
 msgid "Clicking in a window always raises it"
 msgstr "Klikanje na prozor uvijek ga podstakinje"
 
-#: src/focus.c:820
+#: src/focus.c:836
 msgid "All new windows first get the focus"
 msgstr "Svi novi prozori prvo dobijaju usmjeravanje"
 
-#: src/focus.c:825
+#: src/focus.c:843
+msgid "New windows get the focus if their window group is focused"
+msgstr ""
+
+#: src/focus.c:848
 msgid "Only new dialog windows get the focus"
 msgstr "Sam novi dijalog prozori dobivaju usjeravanje"
 
-#: src/focus.c:832
+#: src/focus.c:855
 msgid "Only new dialogs whose owner is focused get the focus"
 msgstr "Samo novi dijalozi čiji je vlasnik usmjeren dobivaju usmjeravanje"
 
-#: src/focus.c:837
+#: src/focus.c:860
 #, fuzzy
 msgid "Raise windows while switching focus"
 msgstr "Usmjeravanje prozora prilikom prebacivanja"
 
-#: src/focus.c:843
+#: src/focus.c:866
 #, fuzzy
 msgid "Send mouse pointer to window while switching focus"
 msgstr "Pošalji miš pokazivać na prozor na prekidaću sumjerivanja"
 
-#: src/focus.c:849
+#: src/focus.c:872
 #, fuzzy
 msgid "Always send mouse pointer to window on focus switch"
 msgstr "Pošalji miš pokazivać na prozor na prekidaću sumjerivanja"
 
-#: src/focus.c:857
+#: src/focus.c:880
 msgid "Raise windows automatically"
 msgstr "Povećaj prozore automatski"
 
-#: src/focus.c:863
+#: src/focus.c:886
 msgid "Autoraise delay:"
 msgstr "Kašnjenje automatskog povećanja:"
 
-#: src/focus.c:876
+#: src/focus.c:899
 msgid "Display and use focus list"
 msgstr "Prikaži i koristi listu usmjeravanja"
 
-#: src/focus.c:881
+#: src/focus.c:904
 msgid "Include sticky windows in focus list"
 msgstr "Uključi listu ljepljivih prozora u listi usmjeravanja"
 
-#: src/focus.c:886
+#: src/focus.c:909
 msgid "Include shaded windows in focus list"
 msgstr "Uključi osjenčene prozore u listi usmjeravanja"
 
-#: src/focus.c:891
+#: src/focus.c:914
 msgid "Include iconified windows in focus list"
 msgstr "Uključi ikonificirane prozore u listi usmjeravanja"
 
-#: src/focus.c:896
+#: src/focus.c:919
 #, fuzzy
 msgid "Include windows on other desks in focus list"
 msgstr "Uključi osjenčene prozore u listi usmjeravanja"
 
-#: src/focus.c:901
+#: src/focus.c:924
 msgid "Focus windows while switching"
 msgstr "Usmjeravanje prozora prilikom prebacivanja"
 
-#: src/focus.c:906
+#: src/focus.c:929
 msgid "Raise windows after focus switch"
 msgstr "Povećan je prozora nakon paljenja/gašenja usjerivaća"
 
-#: src/focus.c:911
+#: src/focus.c:934
 msgid "Send mouse pointer to window after focus switch"
 msgstr "Pošalji miš pokazivać na prozor nakon što se usjerivać ugasi/upali"
 
-#: src/focus.c:921
+#: src/focus.c:944
 #, fuzzy
 msgid "Focuslist image display policy (if one operation fails, try the next):"
 msgstr "Pravila prikaza slike ikone (ako jedna ne uspije, probajte sljedeću):"
 
-#: src/focus.c:925
+#: src/focus.c:948
 msgid "First E Icon, then App Icon"
 msgstr ""
 
-#: src/focus.c:931
+#: src/focus.c:954
 msgid "First App Icon, then E Icon"
 msgstr ""
 
-#: src/focus.c:945
+#: src/focus.c:968
 #, fuzzy
 msgid "Focus"
 msgstr "Nikad ne usmjeravaj"
 
-#: src/focus.c:946
+#: src/focus.c:969
 msgid "Focus Settings"
 msgstr "Osobine usmjeravanja"
 
-#: src/focus.c:949
+#: src/focus.c:972
 msgid ""
 "Enlightenment Focus\n"
 "Settings Dialog\n"

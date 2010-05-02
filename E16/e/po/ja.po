@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.8.15-0.01\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2010-04-11 13:54+0200\n"
+"POT-Creation-Date: 2010-05-02 19:59+0200\n"
 "PO-Revision-Date: 2009-12-20 19:53+0900\n"
 "Last-Translator: Yasufumi Haga <yasufumi.haga@nifty.com>\n"
 "Language-Team: Japanese <ja@li.org>\n"
@@ -499,7 +499,7 @@ msgstr "両端"
 msgid "End"
 msgstr "終了"
 
-#: src/container.c:1657 src/focus.c:937
+#: src/container.c:1657 src/focus.c:960
 msgid "None"
 msgstr "なし"
 
@@ -748,113 +748,117 @@ msgstr ""
 "\n"
 "終了します。\n"
 
-#: src/focus.c:790
+#: src/focus.c:806
 msgid "Focus follows pointer"
 msgstr "マウスのあるウィンドウがフォーカスを得る"
 
-#: src/focus.c:796
+#: src/focus.c:812
 msgid "Focus follows pointer sloppily"
 msgstr ""
 "マウスのあるウィンドウがフォーカスを得る(ウィンドウを離れてもフォーカスは保"
 "持)"
 
-#: src/focus.c:802
+#: src/focus.c:818
 msgid "Focus follows mouse clicks"
 msgstr "クリックしたウィンドウがフォーカスを得る"
 
-#: src/focus.c:812
+#: src/focus.c:828
 msgid "Clicking in a window always raises it"
 msgstr "クリックしたウィンドウを常に上へ出す"
 
-#: src/focus.c:820
+#: src/focus.c:836
 msgid "All new windows first get the focus"
 msgstr "新しいウィンドウはすべて出現時にフォーカスを得る"
 
-#: src/focus.c:825
+#: src/focus.c:843
+msgid "New windows get the focus if their window group is focused"
+msgstr ""
+
+#: src/focus.c:848
 msgid "Only new dialog windows get the focus"
 msgstr "新しいダイアログウィンドウだけがフォーカスを得る"
 
-#: src/focus.c:832
+#: src/focus.c:855
 msgid "Only new dialogs whose owner is focused get the focus"
 msgstr "フォーカスがある親から生まれたダイアログだけがフォーカスを得る"
 
 #
-#: src/focus.c:837
+#: src/focus.c:860
 msgid "Raise windows while switching focus"
 msgstr "フォーカスの切替中フォーカスを得たウィンドウを上に出す"
 
 #
-#: src/focus.c:843
+#: src/focus.c:866
 msgid "Send mouse pointer to window while switching focus"
 msgstr "フォーカスの切替中フォーカスを得たウィンドウにマウスポインタを移す"
 
 #
-#: src/focus.c:849
+#: src/focus.c:872
 msgid "Always send mouse pointer to window on focus switch"
 msgstr "フォーカスが移ると必ずマウスポインタも移す"
 
-#: src/focus.c:857
+#: src/focus.c:880
 msgid "Raise windows automatically"
 msgstr "ウィンドウを自動的に上に出す(オートレイズ)"
 
-#: src/focus.c:863
+#: src/focus.c:886
 msgid "Autoraise delay:"
 msgstr "オートレイズするまでの遅延時間"
 
-#: src/focus.c:876
+#: src/focus.c:899
 msgid "Display and use focus list"
 msgstr "フォーカスリストを表示し、使用する"
 
-#: src/focus.c:881
+#: src/focus.c:904
 msgid "Include sticky windows in focus list"
 msgstr "常時表示ウィンドウをフォーカスリストに含める"
 
-#: src/focus.c:886
+#: src/focus.c:909
 msgid "Include shaded windows in focus list"
 msgstr "シェードされているウィンドウをフォーカスリストに含める"
 
-#: src/focus.c:891
+#: src/focus.c:914
 msgid "Include iconified windows in focus list"
 msgstr "アイコン化されているウィンドウをフォーカスリストに含める"
 
-#: src/focus.c:896
+#: src/focus.c:919
 msgid "Include windows on other desks in focus list"
 msgstr "他のデスクトップのウィンドウもフォーカスリストに含める"
 
-#: src/focus.c:901
+#: src/focus.c:924
 msgid "Focus windows while switching"
 msgstr "切り替わったらウィンドウにフォーカスを移す"
 
-#: src/focus.c:906
+#: src/focus.c:929
 msgid "Raise windows after focus switch"
 msgstr "フォーカスを切り替えたらウィンドウを上に出す"
 
-#: src/focus.c:911
+#: src/focus.c:934
 msgid "Send mouse pointer to window after focus switch"
 msgstr "フォーカスを切り替えたらウィンドウにマウスポインタを移す"
 
 #
-#: src/focus.c:921
+#: src/focus.c:944
 msgid "Focuslist image display policy (if one operation fails, try the next):"
 msgstr "アイコン画像表示ポリシー (失敗したら次を試す)"
 
-#: src/focus.c:925
+#: src/focus.c:948
 msgid "First E Icon, then App Icon"
 msgstr "まず E アイコン、それからアプリケーションアイコン"
 
-#: src/focus.c:931
+#: src/focus.c:954
 msgid "First App Icon, then E Icon"
 msgstr "まずアプリケーションアイコン、それから E アイコン"
 
-#: src/focus.c:945
+#: src/focus.c:968
 msgid "Focus"
 msgstr "フォーカス"
 
-#: src/focus.c:946
+#: src/focus.c:969
 msgid "Focus Settings"
 msgstr "フォーカスの設定"
 
-#: src/focus.c:949
+#: src/focus.c:972
 msgid ""
 "Enlightenment Focus\n"
 "Settings Dialog\n"
