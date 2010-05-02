@@ -24,6 +24,7 @@
 #include "E.h"
 #include "eobj.h"
 #include "xwin.h"
+#include "timers.h"
 #include <sys/time.h>
 #include <time.h>
 
@@ -100,24 +101,9 @@ Quicksort(void **a, int l, int r, int (*CompareFunc) (void *d1, void *d2))
 /*
  * Stuff to make loops for animated effects.
  */
-struct timeval      etl_tv_start;
+static double       etl_t_start;
 static int          etl_k1, etl_k2;
 static double       etl_k, etl_fac;
-
-/*
- * Return elapsed time in seconds since t0
- */
-static double
-ETimeElapsed(struct timeval *t0)
-{
-   struct timeval      tv;
-   int                 sec, usec;
-
-   gettimeofday(&tv, NULL);
-   sec = tv.tv_sec - t0->tv_sec;
-   usec = tv.tv_usec - t0->tv_usec;
-   return (double)sec + (((double)usec) / 1000000);
-}
 
 #include <math.h>
 
@@ -157,7 +143,8 @@ ETimedLoopInit(int k1, int k2, int speed)
    /* When speed is 1000 the loop will take one sec. */
    etl_fac = (k2 - k1) * (double)speed / 1000.;
 
-   gettimeofday(&etl_tv_start, NULL);
+   etl_t_start = GetTime();
+
    ESync(ESYNC_TLOOP);
 }
 
@@ -170,7 +157,7 @@ ETimedLoopNext(void)
    usleep(5000);
 
    /* Find elapsed time since loop start */
-   tm = ETimeElapsed(&etl_tv_start);
+   tm = GetTime() - etl_t_start;
    etl_k = etl_k1 + tm * etl_fac;
 #if 0
    Eprintf("ETimedLoopNext k=%4f tm=%.3f\n", etl_k, tm);
