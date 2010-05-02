@@ -768,10 +768,26 @@ _mpris_play_track(Evry_Action *act)
 static int
 _mpris_tracklist_remove_track(Evry_Action *act)
 {
-  GET_TRACK(t, act->it1.item);
+  if (!act->it1.items)
+    {
+      GET_TRACK(t, act->it1.item);
+      _dbus_send_msg_int("/TrackList", "DelTrack", NULL, NULL, t->id);
+    }
+  else
+    {
+      Evry_Item *it;
+      Eina_List *l;
 
-  _dbus_send_msg_int("/TrackList", "DelTrack", NULL, NULL, t->id);
-
+      EINA_LIST_REVERSE_FOREACH(act->it1.items, l, it)
+	{
+	  if (it->type == MPRIS_TRACK)
+	    {
+	      GET_TRACK(t, it);
+	      _dbus_send_msg_int("/TrackList", "DelTrack", NULL, NULL, t->id);
+	    }
+	}
+    }
+  
   return 1;
 }
 
@@ -918,7 +934,7 @@ static int
 _mpris_play_file(Evry_Action *act)
 {
   Evry_Item_File *file;
-  int play = EVRY_ITEM_DATA_INT_GET(act) == ACT_PLAY;
+  int play = EVRY_ITEM_DATA_INT_GET(act) == ACT_PLAY_FILE;
 
   if (CHECK_TYPE(act->it1.item, MPRIS_TRACK))
     {
@@ -992,39 +1008,42 @@ _mpris_check_item(Evry_Action *act, const Evry_Item *it)
   if (it == EVRY_ITEM(p->empty))
     return 0;
 
-  if (EVRY_ITEM_DATA_INT_GET(act) == ACT_PLAY_TRACK)
+  int action = EVRY_ITEM_DATA_INT_GET(act);
+  
+    
+  if (action == ACT_PLAY_TRACK)
     {
       if (p->current_track == ((Track *)it)->id)
 	return 0;
     }
-  else if (EVRY_ITEM_DATA_INT_GET(act) == ACT_REMOVE_TRACK)
+  else if (action == ACT_REMOVE_TRACK)
     {
       return 1;
     }
-  else if (EVRY_ITEM_DATA_INT_GET(act) == ACT_STOP)
+  else if (action == ACT_STOP)
     {
       if (p->status.playing == 2) return 0;
     }
-  else if (EVRY_ITEM_DATA_INT_GET(act) == ACT_PLAY)
+  else if (action == ACT_PLAY)
     {
       return 1;
       /* if (p->status.playing == 0) return 0; */
     }
-  else if (EVRY_ITEM_DATA_INT_GET(act) == ACT_PAUSE)
+  else if (action == ACT_PAUSE)
     {
       if (p->status.playing != 0) return 0;
     }
-  else if (EVRY_ITEM_DATA_INT_GET(act) == ACT_FORWARD)
+  else if (action == ACT_FORWARD)
     {
       if ((p->current_track != ((Track *)it)->id) ||
 	  (p->status.playing != 0)) return 0;
     }
-  else if (EVRY_ITEM_DATA_INT_GET(act) == ACT_REWIND)
+  else if (action == ACT_REWIND)
     {
       if ((p->current_track != ((Track *)it)->id) ||
 	  (p->status.playing != 0)) return 0;
     }
-  else if (EVRY_ITEM_DATA_INT_GET(act) == ACT_CLEAR)
+  else if (action == ACT_CLEAR)
     {
       if (strcmp(bus_name, "org.mpris.xmms2") &&
 	  strcmp(bus_name, "org.mpris.audacious") &&
@@ -1219,9 +1238,10 @@ _plugins_init(void)
 
   ACTION_NEW(N_("Remove Track"),
 	     MPRIS_TRACK, 0, "list-remove",
-	     _mpris_tracklist_remove_track, _mpris_check_file,
+	     _mpris_tracklist_remove_track, _mpris_check_item,
 	     ACT_REMOVE_TRACK);
-
+  act->it1.accept_list = EINA_TRUE;
+  
   ACTION_NEW(N_("Play"),
 	     MPRIS_TRACK, 0, "media-playback-start",
 	     _mpris_player_action, _mpris_check_item,
@@ -1266,7 +1286,12 @@ _plugins_init(void)
 	     MPRIS_TRACK, EVRY_TYPE_FILE, "list-add",
 	     _mpris_add_files, NULL,
 	     ACT_ADD_FILE);
-  
+
+  ACTION_NEW(N_("Enqueue in Playlist"),
+	     EVRY_TYPE_FILE, 0, "list-add",
+	     _mpris_add_files, NULL,
+	     ACT_ADD_FILE);
+
   ACTION_NEW(N_("Add Music..."),
 	     MPRIS_TRACK, TRACKER_MUSIC, "list-add",
 	     _mpris_add_files, NULL,
