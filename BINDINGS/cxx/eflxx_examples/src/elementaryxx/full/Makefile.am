@@ -21,7 +21,8 @@ elementaryxx_example_full_SOURCES = \
 	test_radio.cpp                   \
 	test_spinner.cpp                   \
 	test_panel.cpp                   \
-	test_progressbar.cpp
+	test_progressbar.cpp                   \
+	test_genlist.cpp
 
 elementaryxx_example_full_LDADD = \
 	$(ELEMENTARYXX_LIBS) \

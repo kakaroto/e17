@@ -1,7 +1,5 @@
 #include "test.h"
 
-
-
 void test_toggle (void *data, Evas_Object *obj, void *event_info)
 {
   Window *win = Window::factory ("toggles", ELM_WIN_BASIC);
