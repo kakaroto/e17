@@ -46,5 +46,6 @@ libelementaryxx_la_SOURCES = \
 	Spinner.cpp  \
 	Progressbar.cpp  \
 	Panel.cpp  \
-	Separator.cpp
+	Separator.cpp  \
+	GenList.cpp
 

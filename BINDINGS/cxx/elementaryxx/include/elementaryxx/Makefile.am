@@ -30,7 +30,8 @@ libelementaryxx_HEADERS = \
 	Spinner.h \
 	Progressbar.h \
 	Panel.h \
-	Separator.h
+	Separator.h \
+	GenList.h
 
 libelementaryxxdir = \
 	$(pkgincludedir)
