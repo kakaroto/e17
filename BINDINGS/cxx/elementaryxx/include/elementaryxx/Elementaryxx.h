@@ -36,6 +36,7 @@
 #include "Spinner.h"
 #include "Progressbar.h"
 #include "Panel.h"
+#include "GenList.h"
 
 #endif // ELEMENTARYXX_H
 
