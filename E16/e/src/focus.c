@@ -339,18 +339,19 @@ doFocusToEwin(EWin * ewin, int why)
 
      case FOCUS_EWIN_NEW:
 	if (Conf.focus.all_new_windows_get_focus)
-	   do_focus = 1;
-	else if (Mode.place.doing_manual)
-	   do_focus = 1;
+	   goto check_focus_new;
+
+	if (Mode.place.doing_manual)
+	   goto check_focus_new;
 
 	if (ewin->props.focus_when_mapped)
-	   do_focus = 2;
+	   goto check_focus_new;
 
 	if (EwinIsTransient(ewin))
 	  {
 	     if (Conf.focus.new_transients_get_focus)
 	       {
-		  do_focus = 2;
+		  do_focus = 1;
 	       }
 	     else if (Conf.focus.new_transients_get_focus_if_group_focused)
 	       {
@@ -358,15 +359,19 @@ doFocusToEwin(EWin * ewin, int why)
 
 		  ewin2 = EwinFindByClient(EwinGetTransientFor(ewin));
 		  if ((ewin2) && (Mode.focuswin == ewin2))
-		     do_focus = 2;
+		     do_focus = 1;
+
 	       }
 
-	     if (do_focus == 2)
-		DeskGotoByEwin(ewin);
+	     if (!do_focus)
+		return;
+	     DeskGotoByEwin(ewin);
+	     goto check_focus_new;
 	  }
 
-	if (!do_focus)
-	   return;
+	return;
+
+      check_focus_new:
 	if (!FocusEwinValid(ewin, 1, 0, 0))
 	   return;
 	break;
