@@ -432,7 +432,7 @@ BackgroundModify(Background * bg, unsigned int solid, const char *bgn,
    else
       updated = 1;
    Efree(bg->bg.file);
-   bg->bg.file = (bgn[0]) ? Estrdup(bgn) : NULL;
+   bg->bg.file = (bgn && bgn[0]) ? Estrdup(bgn) : NULL;
    if ((int)tile != bg->bg_tile)
       updated = 1;
    if ((int)keep_aspect != bg->bg.keep_aspect)
@@ -460,7 +460,7 @@ BackgroundModify(Background * bg, unsigned int solid, const char *bgn,
    else
       updated = 1;
    Efree(bg->top.file);
-   bg->top.file = (top[0]) ? Estrdup(top) : NULL;
+   bg->top.file = (top && top[0]) ? Estrdup(top) : NULL;
    if ((int)tkeep_aspect != bg->top.keep_aspect)
       updated = 1;
    if (txjust != bg->top.xjust)
