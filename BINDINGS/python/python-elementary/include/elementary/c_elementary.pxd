@@ -654,4 +654,8 @@ cdef extern from "Elementary.h":
     # Panel
     evas.c_evas.Evas_Object *elm_panel_add(evas.c_evas.Evas_Object *parent)
     void elm_panel_orient_set(evas.c_evas.Evas_Object *obj, Elm_Panel_Orient orient)
+    Elm_Panel_Orient elm_panel_orient_get(evas.c_evas.Evas_Object *obj)
     void elm_panel_content_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Evas_Object *content)
+    void elm_panel_hidden_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool hidden)
+    evas.c_evas.Eina_Bool elm_panel_hidden_get(evas.c_evas.Evas_Object *obj)
+    void elm_panel_toggle(evas.c_evas.Evas_Object *obj)
