@@ -15,7 +15,7 @@ struct _Plugin
 {
   Evry_Plugin base;
   const char *input;
-  
+
   char *condition;
   char *service;
   Eina_List *files;
@@ -25,8 +25,8 @@ struct _Plugin
   Eina_Bool fetching;
   const char *match;
   const char *query;
-  Eina_Bool category;  
-  Eina_Bool filter_result;  
+  Eina_Bool category;
+  Eina_Bool filter_result;
   Eina_Bool parent;
 };
 
@@ -135,14 +135,14 @@ static const char query_albums_for_artist[] =
   "  OPTIONAL { ?s nmm:musicAlbum ?match}"
   "  %s"
   "} ORDER BY (?match) LIMIT 500";
-  
+
 static const char fts_match[] = ". ?match fts:match \"%s*\"";
 
 static int
 _cb_sort(const void *data1, const void *data2)
 {
    const Evry_Item *it1, *it2;
-  
+
    it1 = data1;
    it2 = data2;
 
@@ -158,15 +158,15 @@ _query_item_free(Evry_Item *item)
 {
    QUERY_ITEM(it, item);
    const char *data;
-  
+
    if (it->match) eina_stringshare_del(it->match);
 
    if (EVRY_ITEM(it)->data)
      {
 	EINA_LIST_FREE(EVRY_ITEM(it)->data, data)
-	  eina_stringshare_del(data); 
+	  eina_stringshare_del(data);
      }
-  
+
    E_FREE(it);
 }
 
@@ -178,7 +178,7 @@ _query_item_get(Plugin *p, const char *id,
    Query_Item *it;
    Eina_List *l;
    const char *tmp;
-  
+
    if (id)
      {
 	tmp = eina_stringshare_add(id);
@@ -188,7 +188,7 @@ _query_item_get(Plugin *p, const char *id,
 	     if (tmp == EVRY_ITEM(it)->id)
 	       {
 		  eina_stringshare_del(tmp);
-		  evry_item_ref(EVRY_ITEM(it)); 
+		  evry_item_ref(EVRY_ITEM(it));
 
 		  return it;
 	       }
@@ -199,12 +199,12 @@ _query_item_get(Plugin *p, const char *id,
    it = EVRY_ITEM_NEW(Query_Item, p, label, _icon_get, _query_item_free);
    EVRY_ITEM(it)->browseable = EINA_TRUE;
    EVRY_ITEM(it)->subtype = FILE_LIST;
-  
+
    it->query = query;
 
    if (match)
      it->match = eina_stringshare_add(match);
-  
+
    if (detail)
      EVRY_ITEM(it)->detail = eina_stringshare_add(detail);;
 
@@ -243,11 +243,11 @@ _file_item_get(Plugin *p, const char *urn, char *url, char *label, char *mime, i
 	if (id == EVRY_ITEM(file)->data)
 	  {
 	     eina_stringshare_del(id);
-	     evry_item_ref(EVRY_ITEM(file)); 
+	     evry_item_ref(EVRY_ITEM(file));
 	     return file;
 	  }
      }
-  
+
    file = EVRY_ITEM_NEW(Evry_Item_File, p, label, _icon_get, _file_item_free);
    EVRY_ITEM(file)->data = (void *)id;
    int match = evry_fuzzy_match(label, p->input);
@@ -255,19 +255,21 @@ _file_item_get(Plugin *p, const char *urn, char *url, char *label, char *mime, i
      EVRY_ITEM(file)->fuzzy_match = match;
    else
      EVRY_ITEM(file)->fuzzy_match = 100;
-   
+
    file->mime = eina_stringshare_add(mime);
    file->url = eina_stringshare_add(url);
    EVRY_ITEM(file)->context = eina_stringshare_ref(file->mime);
-   EVRY_ITEM(file)->id = eina_stringshare_ref(file->path);
-    
+
+   if (evry_file_path_get(file))
+     EVRY_ITEM(file)->id = eina_stringshare_ref(file->path);
+
    if (file->mime == mime_dir)
      EVRY_ITEM(file)->browseable = EINA_TRUE;
    else
      EVRY_ITEM(file)->priority = 1;
-  
+
    free(path);
-   
+
    return file;
 }
 
@@ -297,7 +299,7 @@ _add_file(Plugin *p, const char *urn, DBusMessageIter *iter, Eina_List **items)
 
    if (file)
      {
-	evry_util_file_detail_set(file); 
+	evry_util_file_detail_set(file);
 	*items = eina_list_append(*items, file);
      }
 }
@@ -307,7 +309,7 @@ _add_album(Plugin *p, const char *urn, DBusMessageIter *iter, Query_Item *it, Ei
 {
    char *label, *path, *detail;
    Eina_List *l;
-  
+
    if (!it || strcmp(urn, EVRY_ITEM(it)->id))
      {
 	label = evry_util_unescape(urn + 10, 0);
@@ -331,13 +333,13 @@ _add_album(Plugin *p, const char *urn, DBusMessageIter *iter, Query_Item *it, Ei
 	/* skip artist... */
 	dbus_message_iter_next(iter);
      }
-		  
+
    if (it)
      {
 	dbus_message_iter_next(iter);
 	if (dbus_message_iter_get_arg_type(iter) == DBUS_TYPE_STRING)
 	  dbus_message_iter_get_basic(iter, &path);
-		      
+
 	if (path)
 	  {
 	     l = EVRY_ITEM(it)->data;
@@ -360,7 +362,7 @@ _add_artist(Plugin *p, const char *urn, DBusMessageIter *iter, Query_Item *it, E
 	label = evry_util_unescape(urn + 11, 0);
 
 	it = _query_item_get(p, urn, label, NULL, query_albums_for_artist, urn);
-		      
+
 	if (it) *items = eina_list_append(*items, it);
      }
 
@@ -369,7 +371,7 @@ _add_artist(Plugin *p, const char *urn, DBusMessageIter *iter, Query_Item *it, E
 	dbus_message_iter_next(iter);
 	if (dbus_message_iter_get_arg_type(iter) == DBUS_TYPE_STRING)
 	  dbus_message_iter_get_basic(iter, &path);
-		      
+
 	if (path)
 	  {
 	     l = EVRY_ITEM(it)->data;
@@ -377,7 +379,7 @@ _add_artist(Plugin *p, const char *urn, DBusMessageIter *iter, Query_Item *it, E
 	     EVRY_ITEM(it)->data = l;
 	  }
      }
-   
+
    return it;
 }
 
@@ -411,40 +413,39 @@ _dbus_cb_reply(void *data, DBusMessage *msg, DBusError *error)
 	ERR("got trash!\n");
 	goto end;
      }
-   printf("reply\n");
 
    dbus_message_iter_recurse(&array, &item);
    while (dbus_message_iter_get_arg_type(&item) == DBUS_TYPE_ARRAY)
      {
 	dbus_message_iter_recurse(&item, &iter);
-	  
+
 	if (dbus_message_iter_get_arg_type(&iter) != DBUS_TYPE_STRING)
 	  goto next;
-	  
+
 	dbus_message_iter_get_basic(&iter, &urn);
-	      
+
 	if (!urn)
 	  goto next;
 
 	if (!strncmp(urn, "urn:uuid:", 9))
-	  {		    
-	     _add_file(p, urn, &iter, &items); 
+	  {
+	     _add_file(p, urn, &iter, &items);
 	  }
 	else if (!strncmp(urn, "urn:album:", 10))
 	  {
-	     it = _add_album(p, urn, &iter, it, &items); 
+	     it = _add_album(p, urn, &iter, it, &items);
 	  }
 	else if (!strncmp(urn, "urn:artist:", 11))
 	  {
-	     it = _add_artist(p, urn, &iter, it, &items); 
+	     it = _add_artist(p, urn, &iter, it, &items);
 	  }
      next:
 	dbus_message_iter_next(&item);
      }
 
- end:     
+ end:
    EVRY_PLUGIN_ITEMS_CLEAR(p);
-  
+
    if (items)
      {
 	int prio = 0;
@@ -453,13 +454,13 @@ _dbus_cb_reply(void *data, DBusMessage *msg, DBusError *error)
 	  evry_item_free(it);
 
 	p->files = items;
-  
+
 	EINA_LIST_FOREACH(p->files, l, it)
 	  {
 	     EVRY_PLUGIN_ITEM_APPEND(p, it);
 	     it->priority  = prio++;
-	  
-	  }      
+
+	  }
      }
    else if (p->files)
      {
@@ -483,7 +484,7 @@ _send_query(const char *query, const char *match, const char *match2, void *cb_d
 	ERR("no query");
 	return NULL;
      }
-  
+
    if (match && match2)
      {
 	_query = malloc(sizeof(char) * (strlen(match) + strlen(match2) + strlen(query)));
@@ -498,8 +499,6 @@ _send_query(const char *query, const char *match, const char *match2, void *cb_d
      {
 	_query = strdup(query);
      }
-  
-   /* printf("send: %s\n", _query); */
 
    msg = dbus_message_new_method_call(bus_name,
 				      "/org/freedesktop/Tracker1/Resources",
@@ -517,42 +516,50 @@ _send_query(const char *query, const char *match, const char *match2, void *cb_d
    return pnd;
 }
 
-/* item provides a query to find files */
+
 static Evry_Plugin *
-_begin(Evry_Plugin *plugin, const Evry_Item *item)
+_browse(Evry_Plugin *plugin, const Evry_Item *item)
 {
-   GET_PLUGIN(parent, plugin);
    Plugin *p;
+
+   if (!CHECK_TYPE(item, TRACKER_QUERY) &&
+       !CHECK_TYPE(item, TRACKER_MUSIC))
+     return NULL;
+
+   GET_PLUGIN(parent, plugin);
 
    p = E_NEW(Plugin, 1);
    p->base = *plugin;
    p->base.items = NULL;
    p->filter_result = parent->filter_result;
-   
-   if (item && CHECK_TYPE(item, TRACKER_QUERY) ||
-       item && CHECK_TYPE(item, TRACKER_MUSIC))
-     {
-	QUERY_ITEM(it, item);
-	p->parent = EINA_TRUE;      
-	p->query = it->query;
-	if (it->match)
-	  p->match = eina_stringshare_add(it->match);
-     }
-   else if (item && CHECK_TYPE(item, EVRY_TYPE_FILE))
-     {
-	GET_FILE(it, item);
-	p->parent = EINA_TRUE;
-	p->query = query_directory;
-	p->match = eina_stringshare_ref(it->url);
-     }
-   else
-     {
-	p->parent = EINA_TRUE;
-	p->query = parent->query;
-	if (parent->match)
-	  p->match = eina_stringshare_ref(parent->match);
-     }
-  
+
+   QUERY_ITEM(it, item);
+   p->parent = EINA_TRUE;
+   p->query = it->query;
+   if (it->match)
+     p->match = eina_stringshare_add(it->match);
+
+   return EVRY_PLUGIN(p);
+}
+
+static Evry_Plugin *
+_begin(Evry_Plugin *plugin, const Evry_Item *item)
+{
+   Plugin *p;
+
+   GET_PLUGIN(parent, plugin);
+
+   p = E_NEW(Plugin, 1);
+   p->base = *plugin;
+   p->base.items = NULL;
+   p->filter_result = parent->filter_result;
+
+   p->parent = EINA_TRUE;
+   p->query = parent->query;
+
+   if (parent->match)
+     p->match = eina_stringshare_ref(parent->match);
+
    return EVRY_PLUGIN(p);
 }
 
@@ -579,7 +586,7 @@ _cleanup(Evry_Plugin *plugin)
 
    if (p->match)
      eina_stringshare_del(p->match);
-  
+
    E_FREE(p);
 }
 
@@ -597,7 +604,7 @@ _fetch(Evry_Plugin *plugin, const char *input)
      {
 	Evry_Item *it;
 	Eina_List *l;
-	
+
 	EVRY_PLUGIN_ITEMS_CLEAR(p);
 
 	EINA_LIST_FOREACH(p->files, l, it)
@@ -611,18 +618,18 @@ _fetch(Evry_Plugin *plugin, const char *input)
      dbus_pending_call_cancel(p->pnd);
    p->pnd = NULL;
 
-   if (input && (strlen(input) > 2) && isalnum(input[0]))
+   if (input && (strlen(input) > 3) && isalnum(input[0]))
      {
 	if (p->input) eina_stringshare_del(p->input);
-	p->input = eina_stringshare_add(input); 
+	p->input = eina_stringshare_add(input);
 
 	snprintf(buf, sizeof(buf), fts_match, input);
-	  
+
 	p->fetching = EINA_TRUE;
 
 	p->pnd = _send_query(p->query, (p->match ? p->match : ""), buf, p);
      }
-   else
+   else if (p->match)
      {
    	if (/*evry_item_type_check(p, ) ||*/ p->match)
    	  {
@@ -630,7 +637,16 @@ _fetch(Evry_Plugin *plugin, const char *input)
    	     p->pnd = _send_query(p->query, (p->match ? p->match : ""), "", p);
    	  }
      }
-      
+   else if (!input || strlen(input) < 4)
+     {
+       Evry_Item *it;
+
+       EINA_LIST_FREE(p->files, it)
+	 evry_item_free(it);
+
+       p->files = NULL;
+     }
+
    if (p->files) return 1;
 
    return 0;
@@ -707,7 +723,7 @@ _md5_sum(const char *str)
    unsigned char hash[MD5_HASHBYTES];
    int n;
    char md5out[(2 * MD5_HASHBYTES) + 1];
-   MD5Init (&ctx);      
+   MD5Init (&ctx);
    MD5Update (&ctx, (unsigned char const*)str,
 	      (unsigned)strlen (str));
    MD5Final (hash, &ctx);
@@ -743,7 +759,7 @@ _icon_get(Evry_Item *item, Evas *e)
 	     for(i = 0; a[i] != '\0'; i++)
 	       a[i] = tolower(a[i]);
 
-	     suma = _md5_sum(a); 
+	     suma = _md5_sum(a);
 	     free(a);
 
 	     /* Album */
@@ -752,16 +768,16 @@ _icon_get(Evry_Item *item, Evas *e)
 	     for(i = 0; a[i] != '\0'; i++)
 	       a[i] = tolower(a[i]);
 
-	     sumb = _md5_sum(a); 
+	     sumb = _md5_sum(a);
 	     free(a);
-      
+
 	     snprintf(thumb_buf, sizeof(thumb_buf),
 		      "%s/.cache/media-art/album-%s-%s.jpeg",
 		      e_user_homedir_get(), suma, sumb );
-      
+
 	     free(suma);
 	     free(sumb);
-      
+
 	     if (ecore_file_exists(thumb_buf))
 	       {
 		  Evas_Object *o = e_icon_add(e);
@@ -774,7 +790,7 @@ _icon_get(Evry_Item *item, Evas *e)
 	else
 	  {
 	     GET_FILE(it, item);
-	  
+
 	     if (item->browseable)
 	       return evry_icon_theme_get("folder", e);
 	     else
@@ -786,36 +802,36 @@ _icon_get(Evry_Item *item, Evas *e)
 	GET_FILE(it, item);
 
 	char *sum = _md5_sum(it->url);
-  
+
 	snprintf(thumb_buf, sizeof(thumb_buf),
 		 "%s/.thumbnails/normal/%s.png",
 		 e_user_homedir_get(), sum);
 	free(sum);
-  
+
 	if (ecore_file_exists(thumb_buf))
 	  {
 	     Evas_Object *o = e_icon_add(e);
 	     e_icon_file_set(o, thumb_buf);
 	     if (o) return o;
 	  }
-      
+
 	if (item->browseable)
 	  return evry_icon_theme_get("folder", e);
 	else
 	  return evry_icon_mime_get(it->mime, e);
      }
-  
+
    return NULL;
 }
 
 static Eina_Bool
 _plugins_init(void)
 {
-   Evry_Plugin *p; 
-  
+   Evry_Plugin *p;
+
    if (!evry_api_version_check(EVRY_API_VERSION))
      return EINA_FALSE;
-  
+
    p = EVRY_PLUGIN_NEW(Plugin, N_("Tracker"), NULL,
 		       EVRY_TYPE_FILE,
 		       _begin, _cleanup, _fetch, NULL);
@@ -831,10 +847,11 @@ _plugins_init(void)
    p2->query = query_files;
    evry_plugin_register(p, EVRY_PLUGIN_OBJECT, _prio++);
    plugins = eina_list_append(plugins, p);
-   
+
    p = EVRY_PLUGIN_NEW(Plugin, N_("Albums"), NULL,
 		       TRACKER_MUSIC,
 		       _begin, _cleanup, _fetch, NULL);
+   p->browse = &_browse;
    p->history = EINA_FALSE;
    GET_PLUGIN(p3, p);
    p3->query = query_albums;
@@ -845,13 +862,14 @@ _plugins_init(void)
    p = EVRY_PLUGIN_NEW(Plugin, N_("Artists"), NULL,
 		       TRACKER_MUSIC,
 		       _begin, _cleanup, _fetch, NULL);
+   p->browse = &_browse;
    p->history = EINA_FALSE;
    GET_PLUGIN(p4, p);
    p4->query = query_artists;
    p4->filter_result = EINA_TRUE;
    evry_plugin_register(p, EVRY_PLUGIN_OBJECT, _prio++);
    plugins = eina_list_append(plugins, p);
-   
+
    return EINA_TRUE;
 }
 
@@ -869,7 +887,7 @@ _plugins_shutdown(void)
 static E_Module *module = NULL;
 static Eina_Bool _active = EINA_FALSE;
 
-EAPI E_Module_Api e_modapi = 
+EAPI E_Module_Api e_modapi =
   {
     E_MODULE_API_VERSION,
     PACKAGE
@@ -879,7 +897,7 @@ EAPI void *
 e_modapi_init(E_Module *m)
 {
    char buf[4096];
-   
+
    /* Location of message catalogs for localization */
    snprintf(buf, sizeof(buf), "%s/locale", e_module_dir_get(m));
    bindtextdomain(PACKAGE, buf);
@@ -909,8 +927,10 @@ e_modapi_init(E_Module *m)
 
 	_active = _plugins_init();
      }
-   
-   e_module_delayed_set(m, 1); 
+
+   e_datastore_set("everything_tracker", "");
+
+   e_module_delayed_set(m, 1);
 
    return m;
 }
@@ -927,13 +947,13 @@ e_modapi_shutdown(E_Module *m)
      }
 
    if (mime_dir)
-     eina_stringshare_del(mime_dir); 
+     eina_stringshare_del(mime_dir);
 
    if (_active && e_datastore_get("everything_loaded"))
      _plugins_shutdown();
 
    module = NULL;
-   
+
    return 1;
 }
 
@@ -944,6 +964,3 @@ e_modapi_save(E_Module *m)
 }
 
 /***************************************************************************/
-
-
-
