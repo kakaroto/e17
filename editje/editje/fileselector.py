@@ -301,9 +301,14 @@ class FileSelector(Manager, elementary.Table):
         if not self.save:
             return
 
-        it = self._ls_dir.get(en.entry_get())
+        path = en.entry_get()
+        if not path.endswith("/"):
+            return
+
+        it = self._ls_dir.get(path[:-1])
         if it:
             it.selected_set(True)
+            en.entry_set("")
         else:
             it = self._files.selected_item_get()
             if it:
