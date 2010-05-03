@@ -25,7 +25,7 @@
 #include "e_mod_places.h"
 
 #define FREE_STR(str) \
-   if (str) free(str); \
+   if (str) eina_stringshare_free(str); \
    str = NULL;
 
 /* Local Function Prototypes */
