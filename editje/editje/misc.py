@@ -57,3 +57,11 @@ def name_generate(suggest, list=[]):
     return name
 
 accepted_filetype = re.compile("(.*\.(?:edc|edj))").match
+
+validator_str = re.compile("^(.*)$").match
+validator_int = re.compile("^\s*(-?\d+)\s*$").match
+validator_int_pos = re.compile("^\s*(\d+)\s*$").match
+validator_float = re.compile("^\s*(-?(?:\d+\.?)|(?:\d*\.\d+))\s*$").match
+validator_float_pos = re.compile("^\s*((?:\d+\.?)|(?:\d*\.\d+))\s*$").match
+validator_geometry = re.compile("^\s*(\d+)\s*\D\s*(\d+)\s*$").match
+validator_rgba = re.compile("^\s*(?:(?:(\d+)\s+(\d+)\s+(\d+)(?:\s+(\d+))?)|(?:#(?:[a-f]|[A-F]|[0-9]){6}(?:(?:[a-f]||[A-F]|[0-9]){2})?))\s*$").match
