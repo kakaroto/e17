@@ -147,7 +147,7 @@ elixir_ecore_event_current_event_get(JSContext *cx, uintN argc, jsval *vp)
 }
 
 static int
-_elixir_ecore_maybe_gc(void *data)
+_elixir_ecore_maybe_gc(__UNUSED__ void *data)
 {
    elixir_suspended_gc();
 
@@ -192,6 +192,25 @@ elixir_double_params_void(double (*func)(void),
 FAST_CALL_PARAMS(ecore_animator_frametime_get, elixir_double_params_void);
 FAST_CALL_PARAMS(ecore_time_get, elixir_double_params_void);
 FAST_CALL_PARAMS(ecore_loop_time_get, elixir_double_params_void);
+
+static JSBool
+elixir_void_params_animator(void (*func)(Ecore_Animator *anim),
+			    JSContext *cx, uintN argc, jsval *vp)
+{
+   Ecore_Animator *anim;
+   elixir_value_t val[1];
+
+   if (!elixir_params_check(cx, _ecore_animator_params, val, argc, JS_ARGV(cx, vp)))
+     return JS_FALSE;
+
+   GET_PRIVATE(cx, val[0].v.obj, anim);
+   func(anim);
+
+   return EINA_TRUE;
+}
+
+FAST_CALL_PARAMS(ecore_animator_freeze, elixir_void_params_animator);
+FAST_CALL_PARAMS(ecore_animator_thaw, elixir_void_params_animator);
 
 static JSBool
 elixir_ecore_animator_frametime_set(JSContext *cx, uintN argc, jsval *vp)
@@ -1111,6 +1130,8 @@ static JSFunctionSpec        ecore_functions[] = {
   ELIXIR_FN(ecore_event_current_event_get, 0, JSPROP_ENUMERATE, 0 ),
   ELIXIR_FN(ecore_thread_run, 3, JSPROP_ENUMERATE, 0 ),
   ELIXIR_FN(ecore_thread_cancel, 1, JSPROP_ENUMERATE, 0 ),
+  ELIXIR_FN(ecore_animator_freeze, 1, JSPROP_ENUMERATE, 0 ),
+  ELIXIR_FN(ecore_animator_thaw, 1, JSPROP_ENUMERATE, 0 ),
 #if 0
   ELIXIR_FN(ecore_job_add, 2, JSPROP_READONLY, 0 ),
   ELIXIR_FN(ecore_job_del, 1, JSPROP_READONLY, 0 ),
