@@ -31,9 +31,9 @@ images {
 styles {
    style {
       name: "notification_style";
-      base: "font=Sans font_size=11 align=left color=#3c3c3c wrap=word text_class=module_normal";
-      tag:  "subject"  "+ text_class=module_large font_size=16";
-      tag:  "body"  "+ text_class=module_normal font_size=13";
+      base: "font=Sans font_size=10 align=left color=#3c3c3c wrap=word text_class=module_normal";
+      tag:  "subject"  "+ text_class=module_large font_size=9";
+      tag:  "body"  "+ text_class=module_normal font_size=10";
       tag:  "br" "\n";
       tag:  "b" "+ font=Sans:style=Bold text_class=module_bold";
       tag:  "i" "+ font=Sans:style=Oblique text_class=module_bold";
@@ -44,9 +44,9 @@ styles {
 
    style {
       name: "notification_style_alpha";
-      base: "font=Sans font_size=11 align=left color=#fcfcfc outline_color=#000 wrap=word text_class=module_normal";
-      tag:  "subject"  "+ text_class=module_large font_size=16";
-      tag:  "body"  "+ text_class=module_normal font_size=13";
+      base: "font=Sans font_size=10 align=left color=#fcfcfc outline_color=#000 wrap=word text_class=module_normal";
+      tag:  "subject"  "+ text_class=module_large font_size=9";
+      tag:  "body"  "+ text_class=module_normal font_size=10";
       tag:  "br" "\n";
       tag:  "b" "+ font=Sans:style=Bold text_class=module_bold";
       tag:  "i" "+ font=Sans:style=Oblique text_class=module_bold";
@@ -114,7 +114,8 @@ collections {
          part { name: "top_hilight";
             mouse_events: 0;
             description { state: "default" 0.0;
-               rel1 {
+	    visible: 0;
+	      rel1 {
                   relative: 0.0 0.0;
                   offset: 0 0;
                }
@@ -494,10 +495,10 @@ collections {
             clip_to: "clipper";
             description {
                state: "default" 0.0;
-               color: 255 255 255 255;
+               color: 255 255 255 155;
                image {
                   normal: "base_bg_alpha.png";
-                  border: 11 11 11 11;
+                  border: 4 4 4 4;
                }
             }
          }
@@ -518,7 +519,7 @@ collections {
                align: 0.5 0.0;
                rel1 {
                   relative: 0.0 0.0;
-                  offset: 5 0;
+                  offset: 5 5;
                }
                rel2 {
                   relative: 1.0 0.0;
@@ -530,7 +531,7 @@ collections {
                text {
                   text_source: "notification.text.title";
                   font: "Sans:style=Bold";
-                  size: 10;
+                  size: 9;
                   align: 0.5 0.0;
                   min: 0 1;
                   text_class: "menu_title";
@@ -612,14 +613,14 @@ collections {
                aspect: 1 1;
                aspect_preference: BOTH;
                rel1 {
-                  to_y: "notification.text.title";
-                  relative: 0.0 1.0;
-                  offset: 5 5;
+                  /* to_y: "notification.text.title"; */
+                  relative: 0.0 0.0;
+                  offset: 5 10;
                }
                rel2 {
-                  to_y: "notification.text.title";
+                  /* to_y: "notification.text.title"; */
                   relative: 0.0 1.0;
-                  offset: 52 52;
+                  offset: 52 -9;
                }
             }
          }
@@ -633,13 +634,13 @@ collections {
             description {
                state: "default" 0.0;
                align: 0.0 0.5;
-               min: 300 0;
-               max: 300 9999;
+               min: 250 0;
+               max: 250 9999;
                rel1 {
                   to_x: "notification.swallow.app_icon";
                   to_y: "notification.text.title";
                   relative: 1.0 1.0;
-                  offset: 10 5;
+                  offset: 10 2;
                }
                rel2 {
                   relative: 1.0 1.0;
