@@ -23,14 +23,18 @@ import elementary
 from details_widget import Widget
 from floater import Floater
 import colorpicker
+from details_widget_entry import WidgetEntryValidator 
+from misc import validator_rgba
 
 
-class WidgetColor(Widget):
+class WidgetColor(Widget, WidgetEntryValidator):
     padding_x = 20
     padding_y = 20
 
     def __init__(self, parent):
         Widget.__init__(self)
+        WidgetEntryValidator.__init__(self)
+        self.validator_set(validator_rgba)
         self.color = (255, 255, 255, 255)
         self.parent = parent
         self.entry = elementary.Entry(parent)
@@ -100,9 +104,13 @@ class WidgetColor(Widget):
         self.rect.hide()
 
     def _entry_changed_cb(self, obj, *args, **kwargs):
-        val = self.entry.entry_get()
-        if len(val) == 0:
+        entry = self.entry.entry_get()
+        val = self.entry.markup_to_utf8(entry)
+        if not self._validator_call(self.obj, val):
+            self.rect.color_class_set("colorpicker.sample", 0, 0, 0, 0,
+                                  0, 0, 0, 0, 0, 0, 0, 0)
             return
+
         if val[0] == "#":
             try:
                 r, g, b, a = evas.color_parse(val)
@@ -136,6 +144,10 @@ class WidgetColor(Widget):
             self.delayed_callback = 0
 
     def _entry_activate_cb(self, obj, *args, **kwargs):
+        if not self._validated:
+            self._value_set(self.color)
+            return
+
         self._callback_call("changed")
 
     def _dblclick_cb(self, obj):

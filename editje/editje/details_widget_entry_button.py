@@ -18,16 +18,18 @@
 import elementary
 
 from details_widget import Widget
+from details_widget_entry import WidgetEntryValidator
 
 
-class WidgetEntryButton(Widget):
+class WidgetEntryButton(Widget, WidgetEntryValidator):
     pop_min_w = 200
     pop_min_h = 300
 
     def __init__(self, parent):
         Widget.__init__(self)
+        WidgetEntryValidator.__init__(self)
 
-        self.entry_value = ""
+        self._value = ""
         self.selection_list = []
 
         self.parent = parent
@@ -79,16 +81,19 @@ class WidgetEntryButton(Widget):
     value = property(_value_get, _value_set)
 
     def _entry_changed_cb(self, obj, *args, **kwargs):
-        val = self.entry.entry_get()
-        if len(val) == 0:
-            return
-        self.entry_value = val
+        entry = self.entry.entry_get()
+        text = self.entry.markup_to_utf8(entry)
+        self._validator_call(self.obj, text)
         if self.delayed_callback:
             self._callback_call("changed")
             self.delayed_callback = 0
 
     def _entry_activate_cb(self, obj, *args, **kwargs):
-        self._callback_call("changed")
+        if self._validated:
+            self._value = self._validated_value
+            self._callback_call("changed")
+        else:
+            self.entry.entry_set(self._value)
 
     def _dblclick_cb(self, obj):
         self.entry.select_all()
@@ -99,6 +104,6 @@ class WidgetEntryButton(Widget):
     def _internal_value_set(self, val):
         if val is None:
             val = ""
+        self._value = val
         self.entry.entry_set(val)
-        self.entry_value = val
         self.entry.select_all()
