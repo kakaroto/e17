@@ -13,7 +13,8 @@ from test_toggle import toggles_clicked
 from test_table import table_clicked
 from test_clock import clock_clicked
 from test_hover import hover_clicked, hover2_clicked
-from test_entry import entry_clicked, entry_scrolled_clicked, notepad_clicked
+from test_entry import entry_clicked, entry_scrolled_clicked
+from test_notepad import notepad_clicked
 from test_anchorview import anchorview_clicked
 from test_anchorblock import anchorblock_clicked
 from test_toolbar import toolbar_clicked
