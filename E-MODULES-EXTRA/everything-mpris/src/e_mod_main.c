@@ -152,10 +152,10 @@ _item_free(Evry_Item *it)
 {
   GET_TRACK(t, it);
   GET_FILE(f, it);
-  
+
   if (f->path) eina_stringshare_del(f->path);
   if (f->url)  eina_stringshare_del(f->url);
-  
+
   if (t->artist) eina_stringshare_del(t->artist);
   if (t->album) eina_stringshare_del(t->album);
   if (t->title) eina_stringshare_del(t->title);
@@ -247,7 +247,7 @@ _update_list(Plugin *p)
 	  p->tracks = eina_list_append(p->tracks, t);
 
 	  GET_ITEM(it, t);
-	  
+
 	  /* set label */
 	  if (t->artist && t->title)
 	    {
@@ -267,13 +267,13 @@ _update_list(Plugin *p)
 		{
 		  it->label = eina_stringshare_add(tmp);
 		  free(tmp);
-		}	      
+		}
 	    }
 	  else
 	    {
 	      it->label = eina_stringshare_add(N_("No Title"));
 	    }
-	    
+
 	  if (t->album)
 	    EVRY_ITEM(t)->detail = eina_stringshare_ref(t->album);
 	}
@@ -313,7 +313,7 @@ _dbus_cb_tracklist_metadata(void *data, DBusMessage *reply, DBusError *error)
       ERR("should be nothing to fetch!");
       goto error;
     }
-  
+
   p->fetch_tracks--;
 
   if (!_dbus_check_msg(reply, error))
@@ -321,7 +321,7 @@ _dbus_cb_tracklist_metadata(void *data, DBusMessage *reply, DBusError *error)
       ERR("dbus garbage!");
       goto error;
     }
-  
+
   dbus_message_iter_init(reply, &array);
   if(dbus_message_iter_get_arg_type(&array) == DBUS_TYPE_ARRAY)
     {
@@ -339,14 +339,14 @@ _dbus_cb_tracklist_metadata(void *data, DBusMessage *reply, DBusError *error)
 	      ERR("not string");
 	      goto error;
 	    }
-	  
+
 	  dbus_message_iter_next(&iter);
 	  if (dbus_message_iter_get_arg_type(&iter) != DBUS_TYPE_VARIANT)
 	    {
       	      ERR("not variant");
 	      goto error;
 	    }
-	  
+
 	  if (!strcmp(key, "artist"))
 	    {
 	      dbus_message_iter_recurse (&iter, &iter_val);
@@ -385,7 +385,7 @@ _dbus_cb_tracklist_metadata(void *data, DBusMessage *reply, DBusError *error)
     }
 
   /* printf("%d, %s\n", p->fetch_tracks, EVRY_FILE(t)->url); */
-  
+
   if (!p->fetch_tracks)
     _update_list(p);
 
@@ -434,13 +434,13 @@ _update_timer(void *data)
   Plugin *p = data;
   int cnt;
   Track *t;
-  
+
   for (cnt = 0; cnt < p->fetch_tracks; cnt++)
     {
       t = EVRY_ITEM_NEW(Track, p, NULL, _icon_get, _item_free);
       t->id = cnt;
       EVRY_ITEM(t)->subtype = EVRY_TYPE_FILE;
-      
+
       t->pnd = _dbus_send_msg_int("/TrackList", "GetMetadata",
 				  _dbus_cb_tracklist_metadata, t, cnt);
 
@@ -457,7 +457,7 @@ _mpris_get_metadata(Plugin *p)
 
   Track *t;
   Eina_List *l, *ll;
-  
+
   DBG("tracklist changed %d, %d", p->tracklist_cnt, p->fetch_tracks);
   p->fetch_tracks = p->tracklist_cnt;
   p->fetch = NULL;
@@ -468,14 +468,14 @@ _mpris_get_metadata(Plugin *p)
 	{
 	  p->tracks = eina_list_remove_list(p->tracks, l);
 	  evry_item_free(EVRY_ITEM(t));
-	}      
+	}
     }
-  
+
   if (p->fetch_tracks)
     {
       if (p->update_timer)
 	ecore_timer_del(p->update_timer);
-      
+
       p->update_timer = ecore_timer_add(0.3, _update_timer, p);
     }
 
@@ -655,7 +655,7 @@ _cleanup(Evry_Plugin *plugin)
   if (p->update_timer)
     ecore_timer_del(p->update_timer);
   p->update_timer = NULL;
-  
+
   EVRY_PLUGIN_ITEMS_CLEAR(p);
 }
 
@@ -787,7 +787,7 @@ _mpris_tracklist_remove_track(Evry_Action *act)
 	    }
 	}
     }
-  
+
   return 1;
 }
 
@@ -1001,6 +1001,15 @@ _mpris_check_file(Evry_Action *act __UNUSED__, const Evry_Item *it)
 }
 
 static int
+_mpris_check_add_music(Evry_Action *act __UNUSED__, const Evry_Item *it __UNUSED__)
+{
+  if (e_datastore_get("everything_tracker"))
+    return 1;
+
+  return 0;
+}
+
+static int
 _mpris_check_item(Evry_Action *act, const Evry_Item *it)
 {
   GET_PLUGIN(p, it->plugin);
@@ -1009,8 +1018,8 @@ _mpris_check_item(Evry_Action *act, const Evry_Item *it)
     return 0;
 
   int action = EVRY_ITEM_DATA_INT_GET(act);
-  
-    
+
+
   if (action == ACT_PLAY_TRACK)
     {
       if (p->current_track == ((Track *)it)->id)
@@ -1026,8 +1035,7 @@ _mpris_check_item(Evry_Action *act, const Evry_Item *it)
     }
   else if (action == ACT_PLAY)
     {
-      return 1;
-      /* if (p->status.playing == 0) return 0; */
+      if (p->status.playing == 0) return 0;
     }
   else if (action == ACT_PAUSE)
     {
@@ -1241,7 +1249,7 @@ _plugins_init(void)
 	     _mpris_tracklist_remove_track, _mpris_check_item,
 	     ACT_REMOVE_TRACK);
   act->it1.accept_list = EINA_TRUE;
-  
+
   ACTION_NEW(N_("Play"),
 	     MPRIS_TRACK, 0, "media-playback-start",
 	     _mpris_player_action, _mpris_check_item,
@@ -1251,7 +1259,7 @@ _plugins_init(void)
 	     MPRIS_TRACK, 0, "media-playback-pause",
 	     _mpris_player_action, _mpris_check_item,
 	     ACT_PAUSE);
-  
+
   ACTION_NEW(N_("Stop"),
 	     MPRIS_TRACK, 0, "media-playback-stop",
 	     _mpris_player_action, _mpris_check_item,
@@ -1271,7 +1279,7 @@ _plugins_init(void)
 	     MPRIS_TRACK, 0, "media-playlist-clear",
 	     _mpris_tracklist_action_clear, _mpris_check_item,
 	     ACT_CLEAR);
-  
+
   ACTION_NEW(N_("Enqueue File"),
 	     EVRY_TYPE_FILE, 0, "list-add",
 	     _mpris_play_file, _mpris_check_file,
@@ -1294,10 +1302,10 @@ _plugins_init(void)
 
   ACTION_NEW(N_("Add Music..."),
 	     MPRIS_TRACK, TRACKER_MUSIC, "list-add",
-	     _mpris_add_files, NULL,
+	     _mpris_add_files, _mpris_check_add_music,
 	     ACT_ADD_FILE);
-  
-#undef ACTION_NEW  
+
+#undef ACTION_NEW
 
   return EINA_TRUE;
 }
@@ -1358,7 +1366,7 @@ e_modapi_init(E_Module *m)
 
       _active = _plugins_init();
     }
-  
+
   e_module_delayed_set(m, 1);
 
   return m;
