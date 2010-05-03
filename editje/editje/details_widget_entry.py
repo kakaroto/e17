@@ -16,14 +16,44 @@
 # License along with Editje.  If not, see
 # <http://www.gnu.org/licenses/>.
 
+import evas
 import elementary
 
 from details_widget import Widget
+from misc import validator_str, validator_int, validator_int_pos, validator_float, validator_float_pos
 
 
-class WidgetEntry(Widget):
+class WidgetEntryValidator(object):
+    def __init__(self):
+        self._validated = True
+        self._validator_rect = None
+        self.validator_set(self._validator_default)
+
+    # Validator
+
+    def _validator_default(self, value):
+        return value
+
+    def validator_set(self, validator, *args, **kargs):
+        if not callable(validator):
+            raise TypeError("validator are not callable")
+        self._validator = (validator, args, kargs)
+
+    def _validator_call(self, obj, value):
+        validator, args, kargs = self._validator
+        self._validated = validator(value, *args, **kargs)
+        if self._validated:
+            self._validated_value = value
+        else:
+            self._validated_value = None
+        return self._validated
+
+
+class WidgetEntry(Widget, WidgetEntryValidator):
     def __init__(self, parent):
         Widget.__init__(self)
+        WidgetEntryValidator.__init__(self)
+        self._value = ""
 
         self.entry = elementary.Entry(parent)
         self.entry.single_line_set(1)
@@ -51,28 +81,26 @@ class WidgetEntry(Widget):
     def disabled_set(self, val):
         self.entry.disabled_set(val)
 
-    def validate(self, value):
-        return True
-
     def _internal_value_set(self, val):
         if val is None:
             val = ""
+        self._value = val
         self.entry.entry_set(val)
 
     def _internal_value_get(self):
-        text = self.entry.entry_get()
-        return self.entry.markup_to_utf8(text)
+        return self._value
 
     def _entry_activate_cb(self, obj, *args, **kwargs):
-        self._callback_call("changed")
+        if self._validated:
+            self._value = self._validated_value
+            self._callback_call("changed")
+        else:
+            self.entry.entry_set(self._value)
 
     def _entry_changed_cb(self, obj, *args, **kwargs):
-        if self.validate(self.entry.entry_get()):
-            # set entry in valid mode
-            pass
-        else:
-            # set entry in invalid mode
-            pass
+        entry = self.entry.entry_get()
+        text = self.entry.markup_to_utf8(entry)
+        self._validator_call(self.obj, text)
 
     def _focused_cb(self, obj):
         self.entry.select_all()
@@ -84,10 +112,12 @@ class WidgetEntry(Widget):
         self.entry.select_all()
 
     def type_float(self):
+        self.validator_set(validator_float)
         self.parser_in = self._in_parser_number
         self.parser_out = self._out_parser_float
 
     def type_int(self):
+        self.validator_set(validator_int)
         self.parser_in = self._in_parser_number
         self.parser_out = self._out_parser_int
 
