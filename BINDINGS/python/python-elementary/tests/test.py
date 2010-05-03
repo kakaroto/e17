@@ -31,6 +31,8 @@ from test_scroller import scroller_clicked
 from test_notify import notify_clicked
 from test_menu import menu_clicked
 from test_panel import panel_clicked
+from test_layout import layout_clicked
+from test_spinner import spinner_clicked
 from test_genlist import genlist_clicked
 
 #----- Main -{{{-
