@@ -1312,33 +1312,33 @@ void _exalt_cb_net_properties(void *data, void *reply_data, DBusError *error)
           (!strcmp(str, "net.80211"))
           ))
       {
-         EXALT_FREE(str);
+//         EXALT_FREE(str);
          return;
       }
     str = e_hal_property_string_get(ret, "net.interface", &err);
     str2 = e_hal_property_string_get(ret, "net.originating_device", &err);
     eth = exalt_eth_new(str, str2);
-    EXALT_FREE(str);
-    EXALT_FREE(str2);
+//    EXALT_FREE(str);
+//    EXALT_FREE(str2);
     if (!eth) return;
 
     str = e_hal_property_string_get(ret,"info.udi", &err);
     _exalt_eth_udi_set(eth,str);
-    EXALT_FREE(str);
+//    EXALT_FREE(str);
 
     _exalt_eth_ifindex_set(eth,e_hal_property_int_get(ret,"net.linux.ifindex", &err));
 
     str = exalt_eth_ip_get(eth);
     _exalt_eth_save_ip_set(eth, str);
-    EXALT_FREE(str);
+//    EXALT_FREE(str);
 
     str = exalt_eth_netmask_get(eth);
     _exalt_eth_save_netmask_set(eth, str);
-    EXALT_FREE(str);
+//    EXALT_FREE(str);
 
     str = exalt_eth_gateway_get(eth);
     _exalt_eth_save_gateway_set(eth, str);
-    EXALT_FREE(str);
+//    EXALT_FREE(str);
 
     _exalt_eth_save_link_set(eth, exalt_eth_link_is(eth));
     _exalt_eth_save_up_set(eth, exalt_eth_up_is(eth));
