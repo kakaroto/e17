@@ -84,6 +84,8 @@ class Editje(elementary.Window):
 
         self._clipboard = None
 
+        self._child_to_close = []
+
         self.main_layout.on_key_down_add(self.key_down)
 
     def key_down(self, win, event):
@@ -137,6 +139,8 @@ class Editje(elementary.Window):
         notification.show()
 
     def _close(self, *args):
+        for i in self._child_to_close:
+            i.delete()
         self.e.close()
         self.hide()
         self.delete()
@@ -171,10 +175,18 @@ class Editje(elementary.Window):
         self.block(False)
 
     def save_as(self):
+        self.callback_destroy_del(self._destroy_cb)
         self.block(True)
+
+        def cancel(bt):
+            win.hide()
+            win.delete()
+            self.block(False)
+            self.callback_destroy_add(self._destroy_cb)
+
         win = elementary.Window("fileselector", elementary.ELM_WIN_BASIC)
         win.title_set("Save as")
-        win.autodel_set(True)
+        win.callback_destroy_add(cancel)
         win.resize(600, 480)
         win.maximized_set(True)
 
@@ -182,11 +194,6 @@ class Editje(elementary.Window):
         win.resize_object_add(bg)
         bg.size_hint_weight_set(evas.EVAS_HINT_EXPAND, evas.EVAS_HINT_EXPAND)
         bg.show()
-
-        def cancel(bt):
-            win.hide()
-            win.delete()
-            self.block(False)
 
         def save(bt, mode=None):
             file = fs.file
@@ -461,7 +468,7 @@ class Editje(elementary.Window):
             self.e.group_size = w.size
             #obj.delete()
             self.block(False)
-
+            self._child_to_close.remove(w)
         w = elementary.Window("edje-test", elementary.ELM_WIN_BASIC)
         w.callback_destroy_add(test_window_closed)
         w.autodel_set(True)
@@ -477,6 +484,7 @@ class Editje(elementary.Window):
         l.show()
         w.resize_object_add(l)
         w.show()
+        self._child_to_close.append(w)
         self.block(True)
 
     def _options_cb(self, obj, emission, source):
