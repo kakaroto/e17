@@ -35,13 +35,14 @@ class Floater(Layout):
             raise TypeError("You must pass an object whose geometry the"
                             " Floater will use to move itself in the canvas.")
         Layout.__init__(self, parent)
-        self.on_changed_size_hints_add(self._move_and_resize)
 
         theme_file = sysconfig.theme_file_get("default")
         self.file_set(theme_file, "editje/floater")
 
         self._parent = parent
         self._rel_to_obj = rel_to_obj
+        self._rel_to_obj.on_move_add(self._move_and_resize)
+        self.on_changed_size_hints_add(self._move_and_resize)
 
         self._padding_x = self.default_padding_x
         self._padding_y = self.default_padding_y
@@ -91,7 +92,7 @@ class Floater(Layout):
         elif ox + ow + px >= cw:
             ox = cw - ow - px
 
-        if oy < py:
+        if oy - py < 0:
             oy = py
         elif oy + oh + py >= ch:
             oy = ch - oh - py
