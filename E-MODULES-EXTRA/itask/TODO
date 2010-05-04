@@ -1,0 +1,8 @@
+Features:
+
+* When a large number of tasks are open we need to resize better 
+  and perhaps add grouping
+
+Bugs:
+
+* Setting inset and autoscroll causes odd behavior
