@@ -18,7 +18,6 @@
 import re
 
 import evas
-import edje
 from elementary import Label, Box, Pager, Button, Icon, List
 
 import sysconfig
@@ -49,6 +48,8 @@ class WidgetStates(WidgetEntryButton):
         self.rect.size_hint_min_set(24, 24)
 
         self._pop = None
+        self._edit_grp.part.callback_add("part.unselected", self._close_cb)
+        self._edit_grp.part.callback_add("part.changed", self._close_cb)
 
     def _open(self, bt, *args):
         self.open()
@@ -62,7 +63,7 @@ class WidgetStates(WidgetEntryButton):
                 ico.file_set(self.theme_file, "editje/icon/confirm")
                 ico.scale_set(0, 0)
             lbl = "%s %.2f" % s
-            it = self.states.item_append(lbl, None, ico, self._show_actions, s)
+            self.states.item_append(lbl, None, ico, self._show_actions, s)
         self.states.go()
 
     def _state_add_new_cb(self, popup, data):
@@ -101,12 +102,12 @@ class WidgetStates(WidgetEntryButton):
         # latter case, return here when things change underneath. also fix
         # the ugly event emitions
         if not existed:
-            r = pt.state_copy(st_from[0], st_from[1], st_to[0], st_to[1])
+            pt.state_copy(st_from[0], st_from[1], st_to[0], st_to[1])
             self._edit_grp.part.event_emit("state.added", st_to)
             self._edit_grp.part.state.name = st_to
         else:
             st = pt.state_get(*st_to)
-            r = st.copy_from(*st_from)
+            st.copy_from(*st_from)
             self._edit_grp.part.state.event_emit("state.changed", st_to)
 
     def _remove_state_internal(self, state):
@@ -247,10 +248,8 @@ class WidgetStates(WidgetEntryButton):
         space.label_set(" ")
         self.actions_box.pack_end(space)
         space.show()
-        btn_changeto = self._action_button_add(
-            "Change to", self._states_select_cb, state)
-        btn_resetto = self._action_button_add(
-            "Reset to", self._reset_state_to_cb, state)
+        self._action_button_add("Change to", self._states_select_cb, state)
+        self._action_button_add("Reset to", self._reset_state_to_cb, state)
         btn_delete = self._action_button_add(
             "Delete", self._remove_state_cb, state)
 
@@ -296,6 +295,9 @@ class WidgetStates(WidgetEntryButton):
 
         self._list_populate()
         self._pop.show()
+
+    def _close_cb(self, *args):
+        self.close()
 
     def close(self):
         if not self._pop:

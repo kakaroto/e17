@@ -162,15 +162,6 @@ class Floater(Layout):
             _instance = None
         Layout.hide(self)
 
-    def open(self):
-        self._parent.block(True)
-        self.show()
-
-    def close(self):
-        self.hide()
-        self._parent.block(False)
-        self.delete()
-
     def move(self, *args):
         Layout.move(self, *args)
 
