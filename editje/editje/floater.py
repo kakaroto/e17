@@ -369,7 +369,9 @@ class Wizard(InnerWindow):
         if _instance:
             _instance.hide()
         _instance = self
-        self._parent.block(True)
+
+        # only Wizard InnerWindows are to be on top of the window blocker
+        self._parent.block(True, self)
         InnerWindow.show(self)
         self.focus_set(True)
 

@@ -19,29 +19,28 @@ from details_widget_button import WidgetButton
 from floater_opener import FloaterListOpener
 
 
-# Populates a list with the parts of the group under edition, except for
-# the one marked as selected, if any.
 class WidgetButtonList(FloaterListOpener, WidgetButton):
+
+    """
+    Populates a list with group objects under edition (be they parts,
+    part states, etc -- you set it by the list_get_cb/sel_object_get_cb
+    callbacks), except for the one marked as selected, if any.
+    """
+
     def __init__(self, parent, title=None, list_get_cb=None,
-                 sel_object_get_cb=None):
+                 sel_object_get_cb=None, popup_hide_object_signal_list=[]):
+
         def null_sel():
             return None
 
         self._sel_object_get_cb = sel_object_get_cb or null_sel
-        FloaterListOpener.__init__(self, list_get_cb)
+        FloaterListOpener.__init__(
+            self, list_get_cb, popup_hide_object_signal_list)
         WidgetButton.__init__(self, parent)
 
         self._value = None
         self._title = title or ""
         self.clicked = self._open
-
-    def show(self):
-        for o in self.objs:
-            o.show()
-
-    def hide(self):
-        for o in self.objs:
-            o.hide()
 
     def _open(self, widget, bt, *args):
         self._floater_open(bt)

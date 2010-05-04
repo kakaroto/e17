@@ -257,7 +257,7 @@ class PartStateDetails(EditjeDetails):
         # 'aspect' and 'aspect_preference' missing
 
         prop = Property(self._parent, "color")
-        prop.widget_add("c", WidgetColor(self))
+        prop.widget_add("c", WidgetColor(self, self.e))
         self["main"].property_add(prop)
 
     def _text_props_create(self):
@@ -309,11 +309,11 @@ class PartStateDetails(EditjeDetails):
         self["text"].property_add(prop)
 
         prop = Property(self._parent, "color2")
-        prop.widget_add("c", WidgetColor(self))
+        prop.widget_add("c", WidgetColor(self, self.e))
         self["text"].property_add(prop)
 
         prop = Property(self._parent, "color3")
-        prop.widget_add("c", WidgetColor(self))
+        prop.widget_add("c", WidgetColor(self, self.e))
         self["text"].property_add(prop)
 
     def _image_props_create(self):
@@ -369,11 +369,16 @@ class PartStateDetails(EditjeDetails):
         def sel_part_get():
             return self.e.part.name
 
+        popup_hide_cb_list = [(self.e.part, "part.unselected"),
+                              (self.e.part, "part.changed")]
+
         prop = Property(self._parent, "to")
-        prop.widget_add("x", WidgetButtonList(self, rel_to_box_title,
-                                              parts_get, sel_part_get))
-        prop.widget_add("y", WidgetButtonList(self, rel_to_box_title,
-                                              parts_get, sel_part_get))
+        prop.widget_add("x", WidgetButtonList(
+                self, rel_to_box_title, parts_get, sel_part_get,
+                popup_hide_cb_list))
+        prop.widget_add("y", WidgetButtonList(
+                self, rel_to_box_title, parts_get, sel_part_get,
+                popup_hide_cb_list))
         self["rel1"].property_add(prop)
 
         prop = Property(self._parent, "relative")
@@ -406,10 +411,12 @@ class PartStateDetails(EditjeDetails):
         self.group_title_set("rel2", "bottom-right")
 
         prop = Property(self._parent, "to")
-        prop.widget_add("x", WidgetButtonList(self, rel_to_box_title,
-                                              parts_get, sel_part_get))
-        prop.widget_add("y", WidgetButtonList(self, rel_to_box_title,
-                                              parts_get, sel_part_get))
+        prop.widget_add("x", WidgetButtonList(
+                self, rel_to_box_title, parts_get, sel_part_get,
+                popup_hide_cb_list))
+        prop.widget_add("y", WidgetButtonList(
+                self, rel_to_box_title, parts_get, sel_part_get,
+                popup_hide_cb_list))
         self["rel2"].property_add(prop)
 
         prop = Property(self._parent, "relative")

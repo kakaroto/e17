@@ -79,13 +79,19 @@ class PartDetails(EditjeDetails):
         def sel_part_get():
             return self.e.part.name
 
+        popup_hide_cb_list = [(self.e.part, "part.unselected"),
+                              (self.e.part, "part.changed")]
+
         prop = Property(parent, "clip_to")
         prop.widget_add("to", WidgetButtonList(
-                self, "Clipper selection", parts_get, sel_part_get))
+                self, "Clipper selection", parts_get, sel_part_get,
+                popup_hide_cb_list))
         self["main"].property_add(prop)
+
         prop = Property(parent, "mouse_events")
         prop.widget_add("me", WidgetBoolean(self))
         self["main"].property_add(prop)
+
         prop = Property(parent, "repeat_events")
         prop.widget_add("re", WidgetBoolean(self))
         self["main"].property_add(prop)
@@ -103,6 +109,7 @@ class PartDetails(EditjeDetails):
         # Missing properties: sources of text block, entry_mode,
         # select_mode, multiline
         self.group_add("group")
+
         def groups_get():
             return self.e.groups
 
@@ -111,9 +118,9 @@ class PartDetails(EditjeDetails):
 
         prop = Property(parent, "source")
         prop.widget_add("src", WidgetButtonList(
-                self, "group source selection", groups_get, sel_group_get))
+                self, "Source group selection", groups_get, sel_group_get,
+                popup_hide_cb_list))
         self["group"].property_add(prop)
-
 
         self.main_hide()
         self.group_hide("textblock")
@@ -188,8 +195,9 @@ class PartDetails(EditjeDetails):
         self._prop_change_do("text part effects setting", *args)
 
     def _prop_value_group_changed(self, prop, value):
-        if prop !="source":
+        if prop != "source":
             return
+
         args = [["group"], [prop], [value], [None], [False], [None]]
         self._prop_change_do("part group source setting", *args)
 
@@ -304,4 +312,3 @@ class PartDetails(EditjeDetails):
                      'TEXTBLOCK', 'GRADIENT', 'GROUP', 'BOX', 'TABLE',
                      'EXTERNAL']
         return parttypes[type]
-

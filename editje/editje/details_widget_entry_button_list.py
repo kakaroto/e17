@@ -21,8 +21,10 @@ from floater_opener import FloaterListOpener
 
 
 class WidgetEntryButtonList(FloaterListOpener, WidgetEntryButton):
-    def __init__(self, parent, list_get_cb=None):
-        FloaterListOpener.__init__(self, list_get_cb)
+    def __init__(
+        self, parent, list_get_cb=None, popup_hide_object_signal_list=[]):
+        FloaterListOpener.__init__(
+            self, list_get_cb, popup_hide_object_signal_list)
         WidgetEntryButton.__init__(self, parent)
 
     def value_set(self, value):

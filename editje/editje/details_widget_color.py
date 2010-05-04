@@ -1,4 +1,3 @@
-#
 # Copyright (C) 2009 Samsung Electronics.
 #
 # This file is part of Editje.
@@ -10,12 +9,12 @@
 #
 # Editje is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 # GNU Lesser General Public License for more details.
 #
 # You should have received a copy of the GNU Lesser General Public
-# License along with Editje.  If not, see
-# <http://www.gnu.org/licenses/>.
+# License along with Editje. If not, see <http://www.gnu.org/licenses/>.
+
 import evas
 import edje
 import elementary
@@ -23,7 +22,7 @@ import elementary
 from details_widget import Widget
 from floater import Floater
 import colorpicker
-from details_widget_entry import WidgetEntryValidator 
+from details_widget_entry import WidgetEntryValidator
 from misc import validator_rgba
 
 
@@ -31,10 +30,11 @@ class WidgetColor(Widget, WidgetEntryValidator):
     padding_x = 20
     padding_y = 20
 
-    def __init__(self, parent):
+    def __init__(self, parent, editable):
         Widget.__init__(self)
         WidgetEntryValidator.__init__(self)
         self.validator_set(validator_rgba)
+        self._edit_grp = editable
         self.color = (255, 255, 255, 255)
         self.parent = parent
         self.entry = elementary.Entry(parent)
@@ -74,7 +74,11 @@ class WidgetColor(Widget, WidgetEntryValidator):
         self.pop.content_set(self.picker)
         self.pop.title_set("Color")
         self.pop.action_add("Set", self._set_clicked)
-        self.pop.action_add("Cancel", self._cancel_clicked)
+        self.pop.action_add("Cancel", self._popup_hide)
+        self._edit_grp.part.callback_add(
+            "part.unselected", self._popup_hide)
+        self._edit_grp.part.callback_add(
+            "part.changed", self._popup_hide)
 
         self.obj = elementary.Box(parent)
         self.obj.horizontal_set(True)
@@ -134,8 +138,11 @@ class WidgetColor(Widget, WidgetEntryValidator):
             g = int(g)
             b = int(b)
             a = int(a)
+
         except Exception, e:
+            print "Error parsing integer values for color: ", str(e)
             return
+
         self.color = (r, g, b, a)
         self.rect.color_class_set("colorpicker.sample", r, g, b, a,
                                   0, 0, 0, 0, 0, 0, 0, 0)
@@ -168,5 +175,5 @@ class WidgetColor(Widget, WidgetEntryValidator):
         self.delayed_callback = 1
         self.pop.hide()
 
-    def _cancel_clicked(self, popup, data):
+    def _popup_hide(self, *args):
         self.pop.hide()

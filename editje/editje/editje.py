@@ -153,11 +153,14 @@ class Editje(elementary.Window):
     def _load_theme(self, group="main"):
         self.main_layout = elementary.Layout(self)
         self.main_layout.file_set(self.theme, group)
-        self.main_layout.size_hint_weight_set(1.0, 1.0)
+        self.main_layout.size_hint_weight_set(
+            evas.EVAS_HINT_EXPAND, evas.EVAS_HINT_EXPAND)
         self.resize_object_add(self.main_layout)
         self.main_edje = self.main_layout.edje_get()
         self.main_edje.signal_emit("details,enable", "")  # TODO: remove this
         self.main_layout.show()
+
+        self._window_blocker = None
 
     def save(self):
         if not self.e.filename:
@@ -247,11 +250,30 @@ class Editje(elementary.Window):
 
     group = property(_group_get, _group_set)
 
-    def block(self, bool):
-        if bool:
-            self.main_edje.signal_emit("blocker,enable", "")
+    def block(self, value=True, object_over=None):
+
+        def create_window_blocker():
+            self._window_blocker = elementary.Layout(self)
+            self._window_blocker.file_set(self.theme, "blocker")
+            self._window_blocker.size_hint_weight_set(
+                evas.EVAS_HINT_EXPAND, evas.EVAS_HINT_EXPAND)
+            self.resize_object_add(self._window_blocker)
+            if object_over:
+                self._window_blocker.stack_below(object_over)
+            self._window_blocker.show()
+
+        def delete_window_blocker():
+            if not self._window_blocker:
+                return
+
+            self._window_blocker.hide()
+            del self._window_blocker
+            self._window_blocker = None
+
+        if value:
+            create_window_blocker()
         else:
-            self.main_edje.signal_emit("blocker,disable", "")
+            delete_window_blocker()
 
     def desktop_block(self, bool):
         if bool:
@@ -318,7 +340,7 @@ class Editje(elementary.Window):
 #        font_list = self.e.fonts_get()
 #        font_list += self.main_layout.edje_get().evas.font_available_list()
 #        return font_list
-        return self.main_layout.edje_get().evas.font_available_list()
+        return self.main_edje.evas.font_available_list()
 
     def _font_wizard_font_id_get_cb(self, name):
         return self.e.font_id_get(name)
@@ -434,12 +456,14 @@ class Editje(elementary.Window):
         self.save()
 
     def _run_cb(self, obj, emission, source):
-        def _test_window_closed(obj):
+
+        def test_window_closed(obj):
             self.e.group_size = w.size
             #obj.delete()
             self.block(False)
+
         w = elementary.Window("edje-test", elementary.ELM_WIN_BASIC)
-        w.callback_destroy_add(_test_window_closed)
+        w.callback_destroy_add(test_window_closed)
         w.autodel_set(True)
         w.resize(*self.e.group_size)
         w.title_set("Edje Test")

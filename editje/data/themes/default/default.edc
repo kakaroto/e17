@@ -31,6 +31,22 @@
 
 collections {
    group {
+      name: "blocker";
+
+      parts {
+         part {
+            name: "blocker";
+            mouse_events: 1;
+            type: RECT;
+            description { state: "default" 0.0;
+               color: 0 0 0 200;
+               rel2.relative: 1.0 1.0;
+            }
+         }
+      }
+   }
+
+   group {
       name: "main";
 
       parts {
@@ -550,32 +566,7 @@ collections {
             }
          }
 
-         part { name: "blocker";
-            mouse_events: 1;
-            type: RECT;
-            description { state: "default" 0.0;
-               color: 0 0 0 200;
-               rel2.relative: 1.0 0.0;
-            }
-            description { state: "enable" 0.0;
-               inherit: "default" 0.0;
-               rel2.relative: 1.0 1.0;
-            }
-         }
-
          programs {
-            program {
-               name: "blocker,enable";
-               signal: "blocker,enable";
-               action: STATE_SET "enable" 0.0;
-               target: "blocker";
-            }
-            program {
-               name: "blocker,disable";
-               signal: "blocker,disable";
-               action: STATE_SET "default" 0.0;
-               target: "blocker";
-            }
             program {
                 name: "anim_on";
                 signal: "mode,anim,on";

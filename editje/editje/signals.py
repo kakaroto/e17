@@ -285,15 +285,19 @@ class SignalDetails(EditjeDetails):
 
         self.content_set("part_state.swallow", self._header_table)
 
+        popup_hide_cb_list = [(self.e.signal, "program.unselected"),
+                              (self.e.signal, "program.changed")]
+
         prop = Property(parent, "signal")
-        prop.widget_add("s", WidgetSignal(self))
+        prop.widget_add("s", WidgetSignal(
+                self, popup_hide_object_signal_list=popup_hide_cb_list))
         self["main"].property_add(prop)
 
         def parts_get():
             return self.e.parts
 
         prop = Property(parent, "source")
-        prop.widget_add("s", WidgetSource(self, parts_get))
+        prop.widget_add("s", WidgetSource(self, parts_get, popup_hide_cb_list))
         self["main"].property_add(prop)
 
         prop = Property(parent, "delay")
@@ -312,11 +316,12 @@ class SignalDetails(EditjeDetails):
         self.group_add("out")
 
         prop = Property(parent, "signal")
-        prop.widget_add("s", WidgetSignal(self))
+        prop.widget_add("s", WidgetSignal(
+                self, popup_hide_object_signal_list=popup_hide_cb_list))
         self["out"].property_add(prop)
 
         prop = Property(parent, "source")
-        prop.widget_add("s", WidgetSource(self, parts_get))
+        prop.widget_add("s", WidgetSource(self, parts_get, popup_hide_cb_list))
         self["out"].property_add(prop)
 
         self.e.callback_add("signal.added", self._update)
@@ -354,12 +359,16 @@ class SignalDetails(EditjeDetails):
             self._header_table["name"].value = old_name
 
     def _new_action(self, number):
+
         def programs_get():
             return self.e.programs
 
+        popup_hide_cb_list = [(self.e.signal, "program.unselected"),
+                              (self.e.signal, "program.changed")]
+
         prop = Property(self._parent, "action " + str(number))
-        prop.widget_add(
-            "a", WidgetActionsList(self, "Animations", programs_get))
+        prop.widget_add("a", WidgetActionsList(
+                self, "Animations", programs_get, None, popup_hide_cb_list))
         self["actions"].property_add(prop)
 
     def _removed(self, emissor, data):
@@ -433,7 +442,7 @@ class SignalDetails(EditjeDetails):
             for i in range(self._actions_added):
                 self["actions"]["action " + str(i + 1)].hide()
 
-            for i in range( len(afters) ):
+            for i in range(len(afters)):
                 self["actions"]["action " + str(i + 1)].show_value()
                 self["actions"]["action " + str(i + 1)].show()
                 fixedname = re_anim_program.match(afters[i]).groups()[0]

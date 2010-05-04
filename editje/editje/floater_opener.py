@@ -24,9 +24,14 @@ class FloaterOpener(object):
     _floater_min_w = 200
     _floater_min_h = 300
 
-    def __init__(self):
+    def __init__(self, popup_hide_object_signal_list=[]):
         self._floater = None
-        #self._floater_parent = parent
+
+        if not popup_hide_object_signal_list:
+            return
+
+        for obj, sig in popup_hide_object_signal_list:
+            obj.callback_add(sig, self._floater_cancel)
 
     def _floater_title_init(self):
         self._floater.title_set("")
@@ -55,15 +60,19 @@ class FloaterOpener(object):
         return
 
     def _floater_cancel(self, *args):
+        if not self._floater:
+            return
+
         self._floater.hide()
 
 
 class FloaterListOpener(FloaterOpener):
-    def __init__(self, list_get_cb=None):
+    def __init__(self, list_get_cb=None, popup_hide_object_signal_list=[]):
+
         def null_list():
             return []
 
-        FloaterOpener.__init__(self)
+        FloaterOpener.__init__(self, popup_hide_object_signal_list)
         self._list_get_cb = list_get_cb or null_list
 
     def _floater_content_init(self):
@@ -79,7 +88,7 @@ class FloaterListOpener(FloaterOpener):
     def _floater_update(self):
         self._floater_list.clear()
         for label, value in self._floater_list_items_update():
-            it = self._floater_list.item_append(label, None, None, None, value)
+            self._floater_list.item_append(label, None, None, None, value)
         self._floater_list.go()
 
     def _floater_list_items_update(self):
