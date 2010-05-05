@@ -76,7 +76,7 @@ class WidgetEntryButton(Widget, WidgetEntryValidator):
         self._internal_value_set(val)
 
     def _value_get(self):
-        return self.entry_value
+        return self._value
 
     value = property(_value_get, _value_set)
 
