@@ -424,6 +424,7 @@ class AnimationDetails(EditjeDetails):
         self["main"]["transition"].hide_value()
         self["main"]["transition"].value_obj._values_dict["type"].hover_end()
         self._timeline_clear()
+        self._parent.main_edje.signal_emit("timeline,block", "")
         self.open = False
         self.open_disable = True
 
@@ -435,6 +436,7 @@ class AnimationDetails(EditjeDetails):
         self._header_table["length"].value = "%.1gs" % self.e.animation.length
         self._last_timestamp = 0.0
         self._timeline_update()
+        self._parent.main_edje.signal_emit("timeline,unblock", "")
 
         self.open_disable = False
         self.open = True
