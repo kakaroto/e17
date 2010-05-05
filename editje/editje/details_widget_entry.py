@@ -32,7 +32,7 @@ class WidgetEntryValidator(object):
     # Validator
 
     def _validator_default(self, value):
-        return value
+        return True
 
     def validator_set(self, validator, *args, **kargs):
         if not callable(validator):
