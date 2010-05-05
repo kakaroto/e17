@@ -1,0 +1,85 @@
+# Arabic translation for enlightenment
+# Copyright (c) 2009 Rosetta Contributors and Canonical Ltd 2009
+# This file is distributed under the same license as the enlightenment package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2009.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: enlightenment\n"
+"Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
+"POT-Creation-Date: 2009-11-05 16:07+0800\n"
+"PO-Revision-Date: 2009-10-27 04:28+0000\n"
+"Last-Translator: mohamed 3atef <therock_624@hotmail.com>\n"
+"Language-Team: Arabic <ar@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Launchpad-Export-Date: 2009-11-12 04:51+0000\n"
+"X-Generator: Launchpad (build Unknown)\n"
+
+#: ../src/e_mod_main.c:83 ../src/e_mod_main.c:88 ../src/e_mod_main.c:1007
+msgid "Tiling"
+msgstr "التبليط"
+
+#: ../src/e_mod_main.c:1006
+msgid "Windows"
+msgstr "النوافذ"
+
+#: ../src/e_mod_config.c:70
+msgid "Tiling Configuration"
+msgstr "إعدادات التبليط"
+
+#. General settings
+#: ../src/e_mod_config.c:217
+msgid "General"
+msgstr "عامّ"
+
+#: ../src/e_mod_config.c:227
+msgid "Horizontal:"
+msgstr "أفقي:"
+
+#: ../src/e_mod_config.c:228 ../src/e_mod_config.c:232
+#, c-format
+msgid "%1.0f px"
+msgstr "%1.0f بكسل"
+
+#: ../src/e_mod_config.c:231
+msgid "Vertical:"
+msgstr "عمودي:"
+
+#. Virtual desktop settings
+#: ../src/e_mod_config.c:241
+msgid "Virtual Desktops"
+msgstr "أسطح المكتب الإفتراضية"
+
+#. Grid mode settings
+#: ../src/e_mod_config.c:279
+msgid "Grid mode settings"
+msgstr "إعدادات وضع الشبكة"
+
+#: ../src/e_mod_config.c:283
+#, c-format
+msgid "%1.0f"
+msgstr "%1.0f"
+
+#. Bigmain settings
+#: ../src/e_mod_config.c:288
+msgid "Bigmain settings"
+msgstr "اﻹعدادات الرئيسية"
+
+#: ../src/e_mod_config.c:289
+msgid "Big win takes percent of screen:"
+msgstr "Big win يأخذ النسبة المئوية من الشاشة"
+
+#: ../src/e_mod_config.c:290
+#, c-format
+msgid "%.2f"
+msgstr "%.2f"
+
+#: ../src/e_mod_config.c:296
+msgid "Tiling border"
+msgstr "حدود التبليط"
+
+#: ../src/e_mod_config.c:310
+msgid "Floating border"
+msgstr "الحدود العائمة"
