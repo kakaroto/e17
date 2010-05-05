@@ -1,3 +1,15 @@
+2010-05-05 18:23  kwo
+
+	* configure.ac: 1.4.4.
+
+2010-05-05 18:23  kwo
+
+	* ChangeLog: New ChangeLog.
+
+2010-05-05 18:23  kwo
+
+	* Makefile.am: Add rule to generate ChangeLog.
+
 2010-04-08 01:29  raster
 
 	* src/lib/image.h: minor buglet - w * w - duh!
