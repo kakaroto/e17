@@ -710,58 +710,75 @@ class Editje(elementary.Window):
         self._mainbar_pager.content_promote(mainbar)
         self._sidebar_pager.content_promote(sidebar)
 
+        def context_save(mode):
+
+            def parts_save():
+                if hasattr(self, "_prevparts"):
+                    return
+
+                self._prevparts = []
+                for p_name in self.e.parts:
+                    real_part = self.e.part_get(p_name)
+                    s_name = real_part.state_selected_get()
+                    self._prevparts.append((p_name, s_name))
+
+            def animations_save():
+                pass
+
+            def signals_save():
+                pass
+
+            save_contexts = \
+                {"Parts": parts_save, "Animations": animations_save,
+                 "Signals": signals_save}
+
+            save_contexts[mode]()
+
+        def context_restore(mode):
+            def parts_restore():
+                if not hasattr(self, "_prevparts"):
+                    return
+
+                for p_name, s_name in self._prevparts:
+                    real_part = self.e.part_get(p_name)
+                    real_part.state_selected_set(*s_name)
+                    if p_name == self.e.part.name:
+                        self.e.part.state.name = s_name[0]
+                del self._prevparts
+
+                self.e.animation.name = None
+                self.e.signal.name = None
+
+            def animations_restore():
+                self.e.part.name = None
+                self.e.signal.name = None
+
+            def signals_restore():
+                self.e.part.name = None
+                self.e.animation.name = None
+
+            restore_contexts = \
+                {"Parts": parts_restore, "Animations": animations_restore,
+                 "Signals": signals_restore}
+
+            restore_contexts[mode]()
+
+        if self.mode:
+            context_save(self.mode)
         self._mode = name
-
-        def states_save():
-            if hasattr(self, "_prevstates"):
-                return
-
-            self._prevstates = []
-            for p_name in self.e.parts:
-                real_part = self.e.part_get(p_name)
-                s_name = real_part.state_selected_get()
-                self._prevstates.append((p_name, s_name))
-
-        def states_restore():
-            if not hasattr(self, "_prevstates"):
-                return
-
-            for p_name, s_name in self._prevstates:
-                real_part = self.e.part_get(p_name)
-                real_part.state_selected_set(*s_name)
-                if p_name == self.e.part.name:
-                    self.e.part.state.name = s_name[0]
-            del self._prevstates
-
-        def anim_save(anim):
-            if hasattr(self, "_prevanim"):
-                return
-
-            self._prevanim = anim
-
-        def anim_restore():
-            if not hasattr(self, "_prevanim"):
-                return None
-
-            return self._prevanim
 
         if name == "Signals":
             self.main_edje.signal_emit("mode,anim,off", "editje")
             self.desktop_block(True)
         elif name == "Animations":
             self.main_edje.signal_emit("mode,anim,on", "editje")
-            states_save()
-            self.e.animation.name = anim_restore()
         else:
             self.main_edje.signal_emit("mode,anim,off", "editje")
-            anim_save(self.e.animation.name)
-            self.e.animation.name = None
-
-            # part mode specific
             self.desktop_block(False)
-            states_restore()
 
-        self._modes_selector.label_set("Mode: " + name)
+        context_restore(self.mode)
+
+        self._modes_selector.label_set("Mode: " + self.mode)
 
         file, group, type = item.icon_get()
         ico = elementary.Icon(self)

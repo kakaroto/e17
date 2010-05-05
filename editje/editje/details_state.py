@@ -606,7 +606,7 @@ class PartStateDetails(EditjeDetails):
                 wid = WidgetBoolean(self)
                 wid.states_set(p.true_string, p.false_string)
             elif p.type == edje.EDJE_EXTERNAL_PARAM_TYPE_CHOICE:
-                wid = WidgetCombo(self)
+                wid = WidgetCombo(self._parent)
                 for choice in p.choices:
                     wid.item_add(choice)
             else:

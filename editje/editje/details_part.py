@@ -101,7 +101,7 @@ class PartDetails(EditjeDetails):
         # textblock only (source is for group too, but later)
         self.group_add("textblock")
         prop = Property(parent, "effect")
-        wid = WidgetCombo(self)
+        wid = WidgetCombo(parent)
         for i in range(len(self._effects)):
             wid.item_add(self._effects[i])
         prop.widget_add("e", wid)
@@ -266,6 +266,7 @@ class PartDetails(EditjeDetails):
         self["main"]["repeat_events"].hide_value()
         if self.e.part.type == edje.EDJE_PART_TYPE_TEXT:
             self["textblock"]["effect"].hide_value()
+            self["textblock"]["effect"].value_obj._values_dict["e"].hover_end()
         elif self.e.part.type == edje.EDJE_PART_TYPE_GROUP:
             self["group"]["source"].hide_value()
 

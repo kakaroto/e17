@@ -390,7 +390,7 @@ class AnimationDetails(EditjeDetails):
         self["main"].property_add(prop)
 
         prop = Property(parent, "transition")
-        wid = WidgetCombo(self)
+        wid = WidgetCombo(parent)
         for null, i in enumerate(self._transitions):
             wid.item_add(i)
         prop.widget_add("type", wid)
@@ -422,6 +422,7 @@ class AnimationDetails(EditjeDetails):
         self["main"]["previous"].hide_value()
         self["main"]["next"].hide_value()
         self["main"]["transition"].hide_value()
+        self["main"]["transition"].value_obj._values_dict["type"].hover_end()
         self._timeline_clear()
         self.open = False
         self.open_disable = True
