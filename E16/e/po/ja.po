@@ -12,7 +12,7 @@ msgstr ""
 "Project-Id-Version: enlightenment 0.16.8.15-0.01\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
 "POT-Creation-Date: 2010-05-02 19:59+0200\n"
-"PO-Revision-Date: 2009-12-20 19:53+0900\n"
+"PO-Revision-Date: 2010-05-05 20:07+0900\n"
 "Last-Translator: Yasufumi Haga <yasufumi.haga@nifty.com>\n"
 "Language-Team: Japanese <ja@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -772,7 +772,7 @@ msgstr "新しいウィンドウはすべて出現時にフォーカスを得る
 
 #: src/focus.c:843
 msgid "New windows get the focus if their window group is focused"
-msgstr ""
+msgstr "フォーカスがあるウィンドウグループの新しいウィンドウはフォーカスを得る"
 
 #: src/focus.c:848
 msgid "Only new dialog windows get the focus"
