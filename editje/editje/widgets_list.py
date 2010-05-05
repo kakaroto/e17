@@ -23,13 +23,25 @@ import elementary
 
 from collapsable import Collapsable
 from operation import Operation
+from filewizard import ImageSelectionWizard
 
 
 class WidgetsList(Collapsable):
-    def __init__(self, parent, editable_grp, operation_stack_cb):
+    def __init__(self, parent, editable_grp, operation_stack_cb,
+            img_new_img_cb=None, img_list_get_cb=None,
+            img_id_get_cb=None, workfile_name_get_cb=None):
         Collapsable.__init__(self, parent)
+
+        self._parent = parent
         self._edit_grp = editable_grp
         self._operation_stack_cb = operation_stack_cb
+        self._new_img_cb = img_new_img_cb
+        self._img_list_get_cb = img_list_get_cb
+        self._img_id_get_cb = img_id_get_cb
+        self._workfile_name_get_cb = workfile_name_get_cb
+
+        self._part_name = None
+        self._part_type = None
 
         self._types_load()
         self._content_load()
@@ -126,7 +138,7 @@ class WidgetsList(Collapsable):
 
     # Widgets
     def _widget_selected_cb(self, li, it):
-        label, edje_type, external_type = it.data_get()[0][0]
+        label, self._part_type, external_type = it.data_get()[0][0]
 
         max = 0
         for p in self._edit_grp.parts:
@@ -134,9 +146,9 @@ class WidgetsList(Collapsable):
                 num = int(p[len(label):])
                 if num > max:
                     max = num
-        name = label + "%.2d" % (max + 1)
+        self._part_name = label + "%.2d" % (max + 1)
 
-        if (edje_type == edje.EDJE_PART_TYPE_EXTERNAL):
+        if self._part_type == edje.EDJE_PART_TYPE_EXTERNAL:
             external_name = external_type.name
             external_module = external_type.module
         else:
@@ -146,11 +158,32 @@ class WidgetsList(Collapsable):
         def part_add(name, edje_type, external_name="", external_module=None):
             return self._edit_grp.part_add(name, edje_type, external_name)
 
-        if part_add(name, edje_type, external_name, external_module):
-            op = Operation("part addition")
-            op.redo_callback_add(
-                part_add, name, edje_type, external_name, external_module)
-            op.undo_callback_add(self._edit_grp.part_del, name)
-            self._operation_stack_cb(op)
+        if self._part_type == edje.EDJE_PART_TYPE_IMAGE:
+            ImageSelectionWizard(
+                self._parent, self._image_set, self._new_img_cb,
+                self._img_list_get_cb, self._img_id_get_cb,
+                self._workfile_name_get_cb).show()
+        else:
+            if part_add(self._part_name, self._part_type, external_name,
+                        external_module):
+                op = Operation("part addition")
+                op.redo_callback_add(part_add, self._part_name,
+                        self._part_type, external_name, external_module)
+                op.undo_callback_add(self._edit_grp.part_del, self._part_name)
+                self._operation_stack_cb(op)
 
         it.selected = False
+
+    def _image_set(self, selection):
+        def part_add(name, edje_type, selection):
+            if not self._edit_grp.part_add(name, edje_type, ""):
+                return False
+            self._edit_grp.part.state.image = selection
+            return True
+
+        if part_add(self._part_name, self._part_type, selection):
+            op = Operation("part addition")
+            op.redo_callback_add(part_add, self._part_name, self._part_type,
+                    selection)
+            op.undo_callback_add(self._edit_grp.part_del, self._part_name)
+            self._operation_stack_cb(op)

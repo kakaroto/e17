@@ -31,6 +31,7 @@ class FileSelectionWizard(Wizard):
         self._selected_cb = selected_cb
         self._file_add_cb = file_add_cb
         self._file_list_cb = file_list_cb
+
         self._selection = ""
 
         self._file_list_page_created = False
@@ -50,8 +51,9 @@ class FileSelectionWizard(Wizard):
         self._add_file_list_header()
 
         self.content_add("file_list", self._file_list)
-        self.action_add("file_list", "Close", self.close, key="Escape")
-        self.action_add("file_list", "New", self._goto_add_new_file, key="n")
+        self.action_add("file_list", "Cancel", self.close, key="Escape")
+        self.action_add(
+            "file_list", "Add New", self._goto_add_new_file, key="n")
 
         self._file_list.callback_selected_add(self._goto_preview)
 
@@ -61,7 +63,7 @@ class FileSelectionWizard(Wizard):
         self._add_add_new_file_header()
 
         self.action_add("add_new_file", "Go To List", self._back, key="Escape")
-        self.action_add("add_new_file", "Add", self._new_file_added,
+        self.action_add("add_new_file", "Select", self._new_file_added,
                         key="Return")
 
         self._file_selector_add()
@@ -77,7 +79,7 @@ class FileSelectionWizard(Wizard):
         self.action_add("file_preview", "Go To List", self._back, key="Escape")
         self.action_add("file_preview", "Delete", self._delete_file,
                         key="Delete")
-        self.action_add("file_preview", "Select", self._file_selected,
+        self.action_add("file_preview", "Use", self._file_selected,
                         key="Return")
 
     def goto(self, page, alt_bg_style=None):
@@ -121,7 +123,7 @@ class FileSelectionWizard(Wizard):
         self._fs = FileSelector(self)
         self._fs.filter = self._fs_filter
         self._fs.multi = False
-        self.action_disabled_set("add_new_file", "Add", True)
+        self.action_disabled_set("add_new_file", "Select", True)
         self._fs.callback_add("file.selected", self._fs_file_selected_cb)
         self._fs.callback_add("file.unselected", self._fs_file_unselected_cb)
         self._fs.show()
@@ -159,13 +161,13 @@ class FileSelectionWizard(Wizard):
     def _fs_file_selected_cb(self, obj, data):
         if data:
             self._fs_filecounter += 1
-        self.action_disabled_set("add_new_file", "Add", False)
+        self.action_disabled_set("add_new_file", "Select", False)
 
     def _fs_file_unselected_cb(self, obj, data):
         if data:
             self._fs_filecounter -= 1
         if self._fs_filecounter == 0:
-            self.action_disabled_set("add_new_file", "Add", True)
+            self.action_disabled_set("add_new_file", "Select", True)
 
     def _back(self):
         if not self._file_list_page_created:
@@ -187,14 +189,14 @@ class FileSelectionWizard(Wizard):
 
 
 class ImageSelectionWizard(FileSelectionWizard):
-    def __init__(self, parent, selected_cb, file_add_cb,
-                 file_list_cb, img_id_get_cb, workfile_get_cb):
+    def __init__(self, parent, selected_cb, file_add_cb, file_list_cb,
+                 img_id_get_cb, workfile_name_get_cb):
 
         FileSelectionWizard.__init__(
             self, parent, selected_cb, file_add_cb, file_list_cb)
 
         self._img_id_get_cb = img_id_get_cb
-        self._workfile_get_cb = workfile_get_cb
+        self._workfile_name_get_cb = workfile_name_get_cb
 
     def _add_file_list_header(self):
         self.page_add("file_list", "Select an image",
@@ -228,7 +230,7 @@ class ImageSelectionWizard(FileSelectionWizard):
     def _get_preview_file(self, selection):
         if not selection:
             return
-        filename = self._workfile_get_cb()
+        filename = self._workfile_name_get_cb()
         id = self._img_id_get_cb(selection)
         key = "images/" + str(id)
         self._preview_file.file_set(filename, key)
@@ -243,13 +245,13 @@ class ImageSelectionWizard(FileSelectionWizard):
 
 class FontSelectionWizard(FileSelectionWizard):
     def __init__(self, parent, selected_cb, file_add_cb,\
-                 file_list_cb, fnt_id_get_cb, workfile_get_cb):
+                 file_list_cb, fnt_id_get_cb, workfile_name_get_cb):
 
         FileSelectionWizard.__init__(self, parent, selected_cb,\
                 file_add_cb, file_list_cb)
 
         self._fnt_id_get_cb = fnt_id_get_cb
-        self._workfile_get_cb = workfile_get_cb
+        self._workfile_name_get_cb = workfile_name_get_cb
 
     def _add_file_list_header(self):
         self.page_add("file_list", "Select an font",
@@ -293,6 +295,6 @@ class FontSelectionWizard(FileSelectionWizard):
         self._add_file_list_header()
 
         self.content_add("file_list", self._file_list)
-        self.action_add("file_list", "Close", self.close)
+        self.action_add("file_list", "Cancel", self.close)
 
         self._file_list.callback_selected_add(self._goto_preview)

@@ -25,15 +25,23 @@ from clist import CList
 from floater import Wizard
 from groupselector import NameEntry
 from operation import Operation
+from filewizard import ImageSelectionWizard
 import objects_data
 
 
 class PartsList(CList):
-    def __init__(self, parent, editable_grp, operation_stack_cb):
+    def __init__(self, parent, editable_grp, operation_stack_cb,
+            img_new_img_cb=None, img_list_get_cb=None,
+            img_id_get_cb=None, workfile_name_get_cb=None):
+
         CList.__init__(self, parent)
 
         self._edit_grp = editable_grp
         self._operation_stack_cb = operation_stack_cb
+        self._new_img_cb = img_new_img_cb
+        self._img_list_get_cb = img_list_get_cb
+        self._img_id_get_cb = img_id_get_cb
+        self._workfile_name_get_cb = workfile_name_get_cb
 
         self._options_load()
 
@@ -118,7 +126,11 @@ class PartsList(CList):
 
     def _new_cb(self, obj, emission, source):
         new_part_wiz = NewPartWizard(
-            self._parent, self._edit_grp, self._operation_stack_cb)
+            self._parent, self._edit_grp, self._operation_stack_cb,
+            img_new_img_cb=self._new_img_cb,
+            img_list_get_cb=self._img_list_get_cb,
+            img_id_get_cb=self._img_id_get_cb,
+            workfile_name_get_cb=self._workfile_name_get_cb)
         new_part_wiz.open()
 
     def _part_restack_above(self, part_name):
@@ -440,11 +452,19 @@ class TypesList(elementary.List):
 
 
 class NewPartWizard(Wizard):
-    def __init__(self, parent, editable_grp, operation_stack_cb):
+    def __init__(self, parent, editable_grp, operation_stack_cb,
+                 img_new_img_cb=None, img_list_get_cb=None,
+                 img_id_get_cb=None, workfile_name_get_cb=None):
+
         Wizard.__init__(self, parent)
         self._parent = parent
         self._edit_grp = editable_grp
         self._operation_stack_cb = operation_stack_cb
+        self._new_img_cb = img_new_img_cb
+        self._img_list_get_cb = img_list_get_cb
+        self._img_id_get_cb = img_id_get_cb
+        self._workfile_name_get_cb = workfile_name_get_cb
+        self._part_name = None
         self._type = None
 
         self.page_add("default", "New Part",
@@ -526,26 +546,45 @@ class NewPartWizard(Wizard):
         self._name_changed = False
 
     def _add(self):
-
         def add_internal(name, edje_type, ext_name=""):
             if not self._edit_grp.part_add(name, edje_type, ext_name):
                 self.notify("Error adding new part.")
                 return False
             return True
 
-        name = self._part_name_entry.entry
-        if (self._type == edje.EDJE_PART_TYPE_EXTERNAL):
+        self._part_name = self._part_name_entry.entry
+        if self._type == edje.EDJE_PART_TYPE_EXTERNAL:
             ext_name = self._ext_list.type
         else:
             ext_name = ""
 
-        if add_internal(name, self._type, ext_name):
-            op = Operation("part addition")
-            op.redo_callback_add(add_internal, name, self._type, ext_name)
-            op.undo_callback_add(self._edit_grp.part_del, name)
-            self._operation_stack_cb(op)
+        if self._type == edje.EDJE_PART_TYPE_IMAGE:
+            ImageSelectionWizard(self._parent, self._image_set,
+                    self._new_img_cb, self._img_list_get_cb,
+                    self._img_id_get_cb, self._workfile_name_get_cb).show()
+        else:
+            if add_internal(self._part_name, self._type, ext_name):
+                op = Operation("part addition")
+                op.redo_callback_add(
+                    add_internal, self._part_name, self._type, ext_name)
+                op.undo_callback_add(self._edit_grp.part_del, self._part_name)
+                self._operation_stack_cb(op)
 
-        self.close()
+            self.close()
+
+    def _image_set(self, selection):
+        def part_add(name, edje_type, selection):
+            if not self._edit_grp.part_add(name, edje_type, ""):
+                return False
+            self._edit_grp.part.state.image = selection
+            return True
+
+        if part_add(self._part_name, self._type, selection):
+            op = Operation("part addition")
+            op.redo_callback_add(part_add, self._part_name,
+                    self._type, selection)
+            op.undo_callback_add(self._edit_grp.part_del, self._part_name)
+            self._operation_stack_cb(op)
 
     def _external_selector_toggle(self, show):
         if show:

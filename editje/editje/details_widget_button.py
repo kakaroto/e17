@@ -31,6 +31,7 @@ class WidgetButton(Widget):
         self.obj.style_set("editje.details")
         self.obj.callback_clicked_add(self._clicked)
         self.obj.show()
+        self._value = ""
 
     def _internal_value_set(self, value):
         self._value = value or ""

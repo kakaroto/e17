@@ -87,7 +87,6 @@ class PartStateDetails(EditjeDetails):
         self._external_props_create()
 
         self.e.callback_add("group.changed", self._edje_load)
-
         self.e.callback_add("part.removed", self._part_removed)
         self.e.part.callback_add("part.changed", self._part_update)
         # self.e.part.callback_add("name.changed", self._part_update)
@@ -449,12 +448,9 @@ class PartStateDetails(EditjeDetails):
         self.group_add("external")
 
     def _image_btn_clicked(self, *args):
-        ImageSelectionWizard(self._parent,
-                selected_cb=self._image_selected_cb,
-                file_add_cb=self._img_new_img_cb,
-                file_list_cb=self._img_list_get_cb,
-                img_id_get_cb=self._img_id_get_cb,
-                workfile_get_cb=self._workfile_name_get_cb).show()
+        ImageSelectionWizard(self._parent, self._image_selected_cb,
+               self._img_new_img_cb, self._img_list_get_cb,
+               self._img_id_get_cb, self._workfile_name_get_cb,).show()
 
     def _image_selected_cb(self, image):
         self.prop_value_changed("normal", image, "image")

@@ -449,11 +449,6 @@ class Editable(Manager):
         if type == edje.EDJE_PART_TYPE_RECTANGLE:
             part.mouse_events = False
 
-        elif type == edje.EDJE_PART_TYPE_IMAGE:
-            images = self.__edje.images
-            if images:
-                state.image = images[0]
-
         elif type == edje.EDJE_PART_TYPE_TEXT:
             part.mouse_events = False
             state.color = (0, 0, 0, 255)

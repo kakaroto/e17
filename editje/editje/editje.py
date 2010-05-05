@@ -824,14 +824,22 @@ class Editje(elementary.Window):
                                     evas.EVAS_HINT_FILL)
         mainbar.show()
 
-        list = PartsList(self, self.e, self._operation_stack)
+        list = PartsList(self, self.e, self._operation_stack,
+                img_new_img_cb=self._image_wizard_new_image_cb,
+                img_list_get_cb=self._image_wizard_image_list_get_cb,
+                img_id_get_cb=self._image_wizard_image_id_get_cb,
+                workfile_name_get_cb=self._workfile_name_get_cb)
         list.title = "Parts"
         list.options = True
         list.open = True
         mainbar.pack_end(list)
         list.show()
 
-        list = WidgetsList(self, self.e, self._operation_stack)
+        list = WidgetsList(self, self.e, self._operation_stack,
+                img_new_img_cb=self._image_wizard_new_image_cb,
+                img_list_get_cb=self._image_wizard_image_list_get_cb,
+                img_id_get_cb=self._image_wizard_image_id_get_cb,
+                workfile_name_get_cb=self._workfile_name_get_cb)
         list.title = "Widgets"
         list.open = True
         mainbar.pack_end(list)
