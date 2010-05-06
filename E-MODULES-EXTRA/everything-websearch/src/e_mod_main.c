@@ -4,8 +4,10 @@
 
 #include <Evry.h>
 #include <curl/curl.h>
+#include <E_Notify.h>
 
 #include "e_mod_main.h"
+#include "json.h"
 
 #define ACT_GOOGLE		1
 #define ACT_FEELING_LUCKY	2
@@ -70,6 +72,118 @@ static char _address_wiki[]   = "www.wikipedia.org";
 static const char *_id_none;
 
 static const char _imgur_key[] = "1606e11f5c2ccd9b7440f1ffd80b17de";
+
+typedef struct _Json_Data Json_Data;
+
+struct _Json_Data
+{
+  int flat;
+
+  Json_Data *parent;
+  Json_Data *cur;
+
+  int type;
+
+  const char *key;
+  const char *value;
+
+  Eina_List *list;
+};
+
+static
+int _parse_callback(void *userdata, int type, const char *data, uint32_t length)
+{
+  Json_Data *d = userdata;
+  Json_Data *d2;
+
+  switch (type)
+    {
+    case JSON_OBJECT_BEGIN:
+    case JSON_ARRAY_BEGIN:
+      if (d->cur)
+	d->cur->type = type;
+      if (d->flat)
+	d->cur = d->parent;
+      break;
+
+    case JSON_OBJECT_END:
+    case JSON_ARRAY_END:
+      d->cur = d->parent;
+      break;
+
+    case JSON_KEY:
+      d2 = E_NEW(Json_Data, 1);
+      if (d2->key) eina_stringshare_del(d->key);
+      d2->key = eina_stringshare_add_length(data, length);
+      d->cur = d2;
+      d2->parent = d;
+      d->list =  eina_list_append(d->list, d2);
+      break;
+
+    case JSON_STRING:
+    case JSON_INT:
+    case JSON_FLOAT:
+      d->cur->type = type;
+      if (d->cur->value) eina_stringshare_del(d->cur->value);
+      d->cur->value = eina_stringshare_add_length(data, length);
+      d->cur = d->parent;
+      break;
+
+    case JSON_NULL:
+    case JSON_TRUE:
+    case JSON_FALSE:
+      d->cur = d->parent;
+      d->cur = d->parent;
+      d->cur = d->parent;
+    }
+
+  return 0;
+}
+
+static Json_Data *
+_parse_json(char *string, Eina_Bool flat, int len)
+{
+  Eina_Hash *h;
+  struct json_parser parser;
+  int i, ret;
+
+  if (!len)
+    len = strlen(string);
+
+  if (!string)
+    return NULL;
+
+  Json_Data *d = E_NEW(Json_Data, 1);
+  d->flat = flat;
+
+  if (json_parser_init(&parser, NULL, _parse_callback, d))
+    {
+      fprintf(stderr, "something wrong happened during init\n");
+      E_FREE(d);
+      return NULL;
+    }
+
+  for (i = 0; i < len; i += 1)
+    {
+      ret = json_parser_string(&parser, string + i, 1, NULL);
+      if (ret)
+	{
+	  printf("error %d\n", ret);
+	  break;
+	}
+    }
+
+  json_parser_free(&parser);
+
+  if (ret)
+    {
+      E_FREE(d);
+      return NULL;
+    }
+
+  return d;
+}
+
 int
 _server_data(void *data, int ev_type, Ecore_Con_Event_Server_Data *ev)
 {
@@ -211,7 +325,7 @@ _fetch(Evry_Plugin *plugin, const char *input)
     {
       EVRY_PLUGIN_ITEMS_FREE(p);
     }
-  
+
   return 0;
 }
 
@@ -270,107 +384,178 @@ _action(Evry_Action *act)
   E_FREE(app);
 }
 
-/* static Ecore_Event_Handler *con_complete;
- * static Ecore_Event_Handler *con_data;
- * static Ecore_Event_Handler *con_progress;
- *
- * static int
- * _con_complete(void *data, int ev_type, void *event)
- * {
- *   Ecore_Con_Event_Url_Complete *ev = event;
- *   const Eina_List *l, *ll;
- *
- *   if (data != _act4)
- *     return;
- *
- *   printf("completed\n");
- *
- *   char *reply = ecore_con_url_data_get(ev->url_con);
- *   char *header;
- *
- *   l = ecore_con_url_response_headers_get(ev->url_con);
- *
- *   EINA_LIST_FOREACH(l, ll, header)
- *     printf("%s", header);
- *
- *   ecore_event_handler_del(con_complete);
- *   ecore_event_handler_del(con_data);
- *
- *   ecore_con_url_destroy(ev->url_con);
- *
- *   return 0;
- * }
- *
- * static int
- * _con_data(void *data, int ev_type, void *event)
- * {
- *   Ecore_Con_Event_Url_Data *ev = event;
- *
- *   if (data != _act4)
- *     return;
- *
- *   printf("reply %s %d\n",
- * 	 ev->data,
- * 	 ecore_con_url_received_bytes_get(ev->url_con));
- *
- *   return 0;
- * } */
+static Ecore_Event_Handler *con_complete;
+static Ecore_Event_Handler *con_data;
+static Ecore_Event_Handler *con_progress;
 
-/* static int
- * _con_url_progress(void *data, int ev_type, void *event)
- * {
- *   Ecore_Con_Event_Url_Progress *ev = event;
- *
- *   return 1;
- * } */
+static int
+_con_complete(void *data, int ev_type, void *event)
+{
+  Ecore_Con_Event_Url_Complete *ev = event;
+  const Eina_List *l, *ll;
 
-/* static int
- * _action_upload_check(Evry_Action *act, const Evry_Item *item)
- * {
- *   GET_FILE(file, item);
- *
- *   if (!file->mime || strncmp(file->mime, "image/", 6))
- *     return 0;
- *
- *   return 1;
- * }
- *
- * static int
- * _action_upload(Evry_Action *act)
- * {
- *   struct stat info;
- *   struct curl_httppost* post = NULL;
- *   struct curl_httppost* last = NULL;
- *   int ret;
- *
- *   GET_FILE(file, act->it1.item);
- *   if (!evry_file_path_get(file))
- *     return 0;
- *
- *   Ecore_Con_Url *con_url = ecore_con_url_new("http://imgur.com/api/upload.json");
- *   con_complete = ecore_event_handler_add
- *     (ECORE_CON_EVENT_URL_COMPLETE, _con_complete, act);
- *
- *   con_data = ecore_event_handler_add
- *     (ECORE_CON_EVENT_URL_DATA, _con_data, act);
- *
- *   /\* con_url_progress = ecore_event_handler_add
- *    *   (ECORE_CON_EVENT_URL_PROGRESS, _con_url_progress, act); *\/
- *
- *   ret = curl_formadd(&post, &last,
- * 		     CURLFORM_COPYNAME, "key",
- * 		     CURLFORM_COPYCONTENTS, _imgur_key,
- * 		     CURLFORM_END);
- *
- *   ret = curl_formadd(&post, &last,
- *   		     CURLFORM_COPYNAME, "image",
- *   		     CURLFORM_FILE, file->path,
- *   		     CURLFORM_END);
- *
- *   ecore_con_url_http_post_send(con_url, post);
- *
- *   return 0;
- * } */
+  if (data != _act4)
+    return;
+
+  printf("completed\n");
+
+  char *reply = ecore_con_url_data_get(ev->url_con);
+  char *header;
+
+  l = ecore_con_url_response_headers_get(ev->url_con);
+
+  EINA_LIST_FOREACH(l, ll, header)
+    printf("%s", header);
+
+  ecore_event_handler_del(con_complete);
+  ecore_event_handler_del(con_data);
+
+  ecore_con_url_destroy(ev->url_con);
+
+  return 0;
+}
+
+static Json_Data *
+_json_data_find(const Json_Data *jd, const char *key)
+{
+  Json_Data *d = NULL;
+  Eina_List *l;
+  const char *k;
+
+  if (!jd) return NULL;
+
+  k = eina_stringshare_add(key);
+
+  EINA_LIST_FOREACH(jd->list, l, d)
+    if (d->key == k)
+      break;
+
+  eina_stringshare_del(k);
+
+  return d;
+}
+
+static void
+_json_data_free(Json_Data *jd)
+{
+  Json_Data *d;
+
+  if (!d) return;
+
+  EINA_LIST_FREE(jd->list, d)
+    {
+      printf("'%s':'%s'\n", d->key, d->value);
+
+      if (d->key) eina_stringshare_del(d->key);
+      if (d->value) eina_stringshare_del(d->value);
+      E_FREE(d);
+    }
+  E_FREE(jd);
+}
+
+
+static int
+_con_data(void *data, int ev_type, void *event)
+{
+  Ecore_Con_Event_Url_Data *ev = event;
+  Json_Data *d, *rsp;
+  Evry_Item_File *file;
+  int len, cb = 0;
+
+  if (data != _act4)
+    return;
+
+  len = ecore_con_url_received_bytes_get(ev->url_con);
+  file = ecore_con_url_data_get(ev->url_con);
+
+  rsp = _parse_json((char *)ev->data, 1, len);
+
+  d = _json_data_find(rsp, "imgur_page");
+  if (d)
+    {
+      len = strlen(d->value);
+      ecore_x_selection_primary_set(ecore_x_window_root_first_get(), d->value, len);
+      ecore_x_selection_clipboard_set(ecore_x_window_root_first_get(), d->value, len);
+      cb = 1;
+    }
+  _json_data_free(rsp);
+
+  E_Notification *n;
+  if (cb)
+    n = e_notification_full_new("Everything", 0, "image", "Image Sent", "Link copied to clipboard", -1);
+  else
+    n = e_notification_full_new("Everything", 0, "image", "Image Sent", file->path, -1);
+
+  e_notification_send(n, NULL, NULL);
+  e_notification_unref(n);
+
+  EVRY_ITEM_FREE(file);
+
+  return 0;
+}
+
+static int
+_con_url_progress(void *data, int ev_type, void *event)
+{
+  Ecore_Con_Event_Url_Progress *ev = event;
+
+  return 1;
+}
+
+static int
+_action_upload_check(Evry_Action *act, const Evry_Item *item)
+{
+  GET_FILE(file, item);
+
+  if (!file->mime || strncmp(file->mime, "image/", 6))
+    return 0;
+
+  return 1;
+}
+
+static int
+_action_upload(Evry_Action *act)
+{
+  struct stat info;
+  struct curl_httppost* post = NULL;
+  struct curl_httppost* last = NULL;
+  E_Notification *n;
+  int ret;
+
+  GET_FILE(file, act->it1.item);
+  if (!evry_file_path_get(file))
+    return 0;
+
+  Ecore_Con_Url *con_url = ecore_con_url_new("http://imgur.com/api/upload.json");
+  con_complete = ecore_event_handler_add
+    (ECORE_CON_EVENT_URL_COMPLETE, _con_complete, act);
+
+  con_data = ecore_event_handler_add
+    (ECORE_CON_EVENT_URL_DATA, _con_data, act);
+
+  evry_item_ref(EVRY_ITEM(file));
+  ecore_con_url_data_set(con_url, file);
+
+  /* con_url_progress = ecore_event_handler_add
+   *   (ECORE_CON_EVENT_URL_PROGRESS, _con_url_progress, act); */
+
+  ret = curl_formadd(&post, &last,
+		     CURLFORM_COPYNAME, "key",
+		     CURLFORM_COPYCONTENTS, _imgur_key,
+		     CURLFORM_END);
+
+  ret = curl_formadd(&post, &last,
+  		     CURLFORM_COPYNAME, "image",
+  		     CURLFORM_FILE, file->path,
+  		     CURLFORM_END);
+
+  ecore_con_url_http_post_send(con_url, post);
+
+  n = e_notification_full_new("Everything", 0, "image", "Send Image", file->path, -1);
+  e_notification_send(n, NULL, NULL);
+  e_notification_unref(n);
+  return 0;
+}
 
 Evas_Object *
 _icon_get(Evry_Item *it, Evas *e)
@@ -467,11 +652,11 @@ _plugins_init(void)
   EVRY_ITEM(_act3)->icon_get = &_icon_get;
   evry_action_register(_act3, 1);
 
-  /* _act4 = EVRY_ACTION_NEW(N_("Upload Image"), EVRY_TYPE_FILE, 0, "go-next",
-   * 			  _action_upload, _action_upload_check);
-   * _act4->remember_context = EINA_TRUE;
-   * EVRY_ITEM_DATA_INT_SET(_act4, ACT_UPLOAD_IMGUR);
-   * evry_action_register(_act4, 1); */
+  _act4 = EVRY_ACTION_NEW(N_("Upload Image"), EVRY_TYPE_FILE, 0, "go-next",
+  			  _action_upload, _action_upload_check);
+  _act4->remember_context = EINA_TRUE;
+  EVRY_ITEM_DATA_INT_SET(_act4, ACT_UPLOAD_IMGUR);
+  evry_action_register(_act4, 1);
 
   return EINA_TRUE;
 }
@@ -485,7 +670,7 @@ _plugins_shutdown(void)
   evry_action_free(_act1);
   evry_action_free(_act2);
   evry_action_free(_act3);
-  /* evry_action_free(_act4); */
+  evry_action_free(_act4);
 }
 
 /***************************************************************************/
@@ -697,6 +882,8 @@ e_modapi_init(E_Module *m)
   bindtextdomain(PACKAGE, buf);
   bind_textdomain_codeset(PACKAGE, "UTF-8");
 
+  e_notification_init();
+
   if (!ecore_con_init())
     return NULL;
 
@@ -727,6 +914,8 @@ e_modapi_shutdown(E_Module *m)
   _conf_shutdown();
 
   ecore_con_shutdown();
+
+  e_notification_shutdown();
 
   eina_stringshare_del(_id_none);
 
