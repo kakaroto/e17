@@ -76,6 +76,25 @@ class PartDetails(EditjeDetails):
         def parts_get():
             return self.e.parts
 
+        # Assuming that we are not opening files that already
+        # has cycle this might finish
+        def has_cycle(source, destination):
+            next = self.e.part_get(destination)
+            while next:
+                if not next.clip_to:
+                    return False
+                elif next.clip_to == source:
+                    return True
+                next = self.e.part_get(next.clip_to)
+            return False
+
+        def clippers_get():
+            clippers = []
+            for p in self.e.parts:
+                if not has_cycle(self.e.part.name, p):
+                    clippers.append(p)
+            return clippers
+
         def sel_part_get():
             return self.e.part.name
 
@@ -84,7 +103,7 @@ class PartDetails(EditjeDetails):
 
         prop = Property(parent, "clip_to")
         prop.widget_add("to", WidgetButtonList(
-                self, "Clipper selection", parts_get, sel_part_get,
+                self, "Clipper selection", clippers_get, sel_part_get,
                 popup_hide_cb_list))
         self["main"].property_add(prop)
 
