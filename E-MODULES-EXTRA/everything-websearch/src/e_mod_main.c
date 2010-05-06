@@ -65,8 +65,10 @@ static char _header[] =
   "Accept: */*\n"
   "Connection: Keep-Alive\n\n";
 
-static char _request_goolge[] = "GET http://www.google.com/complete/search?hl=%s&output=text&q=\"%s\n%s";
-static char _request_wiki[]   = "GET http://%s.wikipedia.org/w/api.php?action=opensearch&search=%s HTTP/1.0\n%s";
+static char _request_goolge[] =
+  "GET http://www.google.com/complete/search?hl=%s&output=text&q=\"%s\n%s";
+static char _request_wiki[]   =
+  "GET http://%s.wikipedia.org/w/api.php?action=opensearch&search=%s HTTP/1.0\n%s";
 static char _address_google[] = "www.google.com";
 static char _address_wiki[]   = "www.wikipedia.org";
 static const char *_id_none;
@@ -86,12 +88,13 @@ struct _Json_Data
 
   const char *key;
   const char *value;
-
+  Eina_List *values;
+  
   Eina_List *list;
 };
 
-static
-int _parse_callback(void *userdata, int type, const char *data, uint32_t length)
+static int
+_parse_callback(void *userdata, int type, const char *data, uint32_t length)
 {
   Json_Data *d = userdata;
   Json_Data *d2;
@@ -99,42 +102,76 @@ int _parse_callback(void *userdata, int type, const char *data, uint32_t length)
   switch (type)
     {
     case JSON_OBJECT_BEGIN:
-    case JSON_ARRAY_BEGIN:
-      if (d->cur)
-	d->cur->type = type;
-      if (d->flat)
-	d->cur = d->parent;
-      break;
-
-    case JSON_OBJECT_END:
-    case JSON_ARRAY_END:
-      d->cur = d->parent;
-      break;
-
-    case JSON_KEY:
-      d2 = E_NEW(Json_Data, 1);
-      if (d2->key) eina_stringshare_del(d->key);
-      d2->key = eina_stringshare_add_length(data, length);
+      DBG("object beg %p\n", d->cur);
+      if (d->flat && d->cur->parent)
+	{
+	  d->cur = d->cur->parent;
+	  break;
+	}
+      
+      d2 = calloc(1, sizeof(Json_Data));
+      d2->parent = d->cur;
+      d2->type = type;
+      d->cur->list =  eina_list_append(d->cur->list, d2);
       d->cur = d2;
-      d2->parent = d;
-      d->list =  eina_list_append(d->list, d2);
+      break;
+      
+    case JSON_ARRAY_BEGIN:
+      DBG("array beg %p\n", d->cur);
+      d2 = calloc(1, sizeof(Json_Data));
+      d2->parent = d->cur;
+      d2->type = type;
+      d->cur->list =  eina_list_append(d->cur->list, d2);
+      d->cur = d2;
+      break;
+    
+    case JSON_OBJECT_END:
+      DBG("object end %p\n", d->cur);
+      if (d->flat) break;
+      d->cur = d->cur->parent;
+      break;
+      
+    case JSON_ARRAY_END:
+      DBG("array end %p\n", d->cur);
+      d->cur = d->cur->parent;
+      break;
+      
+    case JSON_KEY:
+      DBG("key %*s\n", length, data);
+      d2 = calloc(1, sizeof(Json_Data));
+      if (d2->key) eina_stringshare_del(d2->key);
+      d2->key = eina_stringshare_add_length(data, length);
+      d2->parent = d->cur;
+      d->cur->list =  eina_list_append(d->cur->list, d2);
+      d->cur = d2;
       break;
 
     case JSON_STRING:
     case JSON_INT:
     case JSON_FLOAT:
-      d->cur->type = type;
-      if (d->cur->value) eina_stringshare_del(d->cur->value);
-      d->cur->value = eina_stringshare_add_length(data, length);
-      d->cur = d->parent;
+      if (d->cur->type == JSON_ARRAY_BEGIN)
+	{
+	  DBG("- %*s\n", length, data);
+	  d->cur->values = eina_list_append
+	    (d->cur->values, eina_stringshare_add_length(data, length));
+	}
+      else
+	{
+	  DBG("val  %s: %*s\n", d->cur->key, length, data);
+	  d->cur->type = type;
+	  if (d->cur->value) eina_stringshare_del(d->cur->value);
+	  d->cur->value = eina_stringshare_add_length(data, length);
+	  d->cur = d->cur->parent;
+	}
+  
       break;
-
+    
     case JSON_NULL:
     case JSON_TRUE:
     case JSON_FALSE:
-      d->cur = d->parent;
-      d->cur = d->parent;
-      d->cur = d->parent;
+      DBG("constant\n");
+      d->cur = d->cur->parent;
+      break;
     }
 
   return 0;
@@ -155,10 +192,11 @@ _parse_json(char *string, Eina_Bool flat, int len)
 
   Json_Data *d = E_NEW(Json_Data, 1);
   d->flat = flat;
-
+  d->cur = d;
+  
   if (json_parser_init(&parser, NULL, _parse_callback, d))
     {
-      fprintf(stderr, "something wrong happened during init\n");
+      ERR("something wrong happened during init");
       E_FREE(d);
       return NULL;
     }
@@ -168,7 +206,7 @@ _parse_json(char *string, Eina_Bool flat, int len)
       ret = json_parser_string(&parser, string + i, 1, NULL);
       if (ret)
 	{
-	  printf("error %d\n", ret);
+	  ERR("%d\n", ret);
 	  break;
 	}
     }
@@ -181,7 +219,7 @@ _parse_json(char *string, Eina_Bool flat, int len)
       return NULL;
     }
 
-  return d;
+  return d->cur;
 }
 
 int
@@ -439,13 +477,11 @@ static void
 _json_data_free(Json_Data *jd)
 {
   Json_Data *d;
-
-  if (!d) return;
+  if (!jd) return;
 
   EINA_LIST_FREE(jd->list, d)
     {
       printf("'%s':'%s'\n", d->key, d->value);
-
       if (d->key) eina_stringshare_del(d->key);
       if (d->value) eina_stringshare_del(d->value);
       E_FREE(d);
@@ -473,6 +509,8 @@ _con_data(void *data, int ev_type, void *event)
   d = _json_data_find(rsp, "imgur_page");
   if (d)
     {
+      printf("copied to clipboard\n");
+
       len = strlen(d->value);
       ecore_x_selection_primary_set(ecore_x_window_root_first_get(), d->value, len);
       ecore_x_selection_clipboard_set(ecore_x_window_root_first_get(), d->value, len);
