@@ -49,6 +49,7 @@ static const char bus_name[] = "org.freedesktop.Tracker1";
 static const char fdo_bus_name[] = "org.freedesktop.DBus";
 static const char fdo_interface[] = "org.freedesktop.DBus";
 static const char fdo_path[] = "/org/freedesktop/DBus";
+static const char _module_icon[] = "find";
 
 static Evas_Object *_icon_get(Evry_Item *item, Evas *e);
 
@@ -564,7 +565,7 @@ _begin(Evry_Plugin *plugin, const Evry_Item *item)
 }
 
 static void
-_cleanup(Evry_Plugin *plugin)
+_finish(Evry_Plugin *plugin)
 {
    GET_PLUGIN(p, plugin);
    Evry_Item_File *file;
@@ -594,17 +595,25 @@ _cleanup(Evry_Plugin *plugin)
 static int
 _fetch(Evry_Plugin *plugin, const char *input)
 {
-   if (!active) return 0;
+   GET_PLUGIN(p, plugin);
 
    char buf[128];
+   int len = (input ? strlen(input) : 0);
+   Evry_Item *it;
 
-   GET_PLUGIN(p, plugin);
+   if (!active)
+     {
+	EVRY_PLUGIN_ITEMS_CLEAR(p);
+
+	EINA_LIST_FREE(p->files, it)
+	  evry_item_free(it);
+
+	return 0;
+     }
 
    if (input && p->filter_result && p->files)
      {
-	Evry_Item *it;
 	Eina_List *l;
-
 	EVRY_PLUGIN_ITEMS_CLEAR(p);
 
 	EINA_LIST_FOREACH(p->files, l, it)
@@ -618,7 +627,7 @@ _fetch(Evry_Plugin *plugin, const char *input)
      dbus_pending_call_cancel(p->pnd);
    p->pnd = NULL;
 
-   if (input && (strlen(input) > 3) && isalnum(input[0]))
+   if (len >= plugin->config->min_query)
      {
 	if (p->input) eina_stringshare_del(p->input);
 	p->input = eina_stringshare_add(input);
@@ -637,19 +646,16 @@ _fetch(Evry_Plugin *plugin, const char *input)
    	     p->pnd = _send_query(p->query, (p->match ? p->match : ""), "", p);
    	  }
      }
-   else if (!input || strlen(input) < 4)
+   else if (len < plugin->config->min_query)
      {
-       Evry_Item *it;
+       EVRY_PLUGIN_ITEMS_CLEAR(p);
 
        EINA_LIST_FREE(p->files, it)
 	 evry_item_free(it);
 
-       p->files = NULL;
      }
 
-   if (p->files) return 1;
-
-   return 0;
+   return !!(p->base.items);
 }
 
 static void
@@ -832,43 +838,43 @@ _plugins_init(void)
    if (!evry_api_version_check(EVRY_API_VERSION))
      return EINA_FALSE;
 
-   p = EVRY_PLUGIN_NEW(Plugin, N_("Tracker"), NULL,
-		       EVRY_TYPE_FILE,
-		       _begin, _cleanup, _fetch, NULL);
-   GET_PLUGIN(p1, p);
-   p1->query = query_files;
-   evry_plugin_register(p, EVRY_PLUGIN_SUBJECT,_prio++);
-   plugins = eina_list_append(plugins, p);
+#define FILE_PLUGIN_NEW(_name, _plug_type, _icon, _type, _begin, _finish, _fetch, _query) { \
+     p = EVRY_PLUGIN_NEW(Plugin, _name, _icon, _type, _begin, _finish, _fetch, NULL); \
+     GET_PLUGIN(p1, p);							\
+     p1->query = _query;						\
+     plugins = eina_list_append(plugins, p);				\
+     if (evry_plugin_register(p, _plug_type, _prio++)) {		\
+	p->config->min_query = 4;					\
+	p->config->top_level = 0; }					\
+     plugins = eina_list_append(plugins, p); }
 
-   p = EVRY_PLUGIN_NEW(Plugin, N_("Tracker"), NULL,
-		       EVRY_TYPE_FILE,
-		       _begin, _cleanup, _fetch, NULL);
-   GET_PLUGIN(p2, p);
-   p2->query = query_files;
-   evry_plugin_register(p, EVRY_PLUGIN_OBJECT, _prio++);
-   plugins = eina_list_append(plugins, p);
 
-   p = EVRY_PLUGIN_NEW(Plugin, N_("Albums"), NULL,
-		       TRACKER_MUSIC,
-		       _begin, _cleanup, _fetch, NULL);
-   p->browse = &_browse;
-   p->history = EINA_FALSE;
-   GET_PLUGIN(p3, p);
-   p3->query = query_albums;
-   p3->filter_result = EINA_TRUE;
-   evry_plugin_register(p, EVRY_PLUGIN_OBJECT,_prio++);
-   plugins = eina_list_append(plugins, p);
+   FILE_PLUGIN_NEW(N_("Tracker"), EVRY_PLUGIN_SUBJECT, "find", EVRY_TYPE_FILE,
+		   _begin, _finish, _fetch, query_files);
 
-   p = EVRY_PLUGIN_NEW(Plugin, N_("Artists"), NULL,
-		       TRACKER_MUSIC,
-		       _begin, _cleanup, _fetch, NULL);
-   p->browse = &_browse;
-   p->history = EINA_FALSE;
-   GET_PLUGIN(p4, p);
-   p4->query = query_artists;
-   p4->filter_result = EINA_TRUE;
-   evry_plugin_register(p, EVRY_PLUGIN_OBJECT, _prio++);
-   plugins = eina_list_append(plugins, p);
+   FILE_PLUGIN_NEW(N_("Tracker"), EVRY_PLUGIN_OBJECT, "find", EVRY_TYPE_FILE,
+		   _begin, _finish, _fetch, query_files);
+
+
+#define QUERY_PLUGIN_NEW(_name, _plug_type, _icon, _type, _begin, _finish, _fetch, _query) { \
+      p = EVRY_PLUGIN_NEW(Plugin, _name, _icon, _type, _begin, _finish, _fetch, NULL); \
+      p->browse = &_browse;						\
+      p->history = EINA_FALSE;						\
+      GET_PLUGIN(p1, p);						\
+      p1->query = _query;						\
+      p1->filter_result = EINA_TRUE;					\
+      plugins = eina_list_append(plugins, p);				\
+      if (evry_plugin_register(p, _plug_type, _prio++)) {		\
+	 p->config->top_level = 0; }					\
+      plugins = eina_list_append(plugins, p); }
+
+
+   QUERY_PLUGIN_NEW(N_("Albums"), EVRY_PLUGIN_OBJECT, "emblem-sound", TRACKER_MUSIC,
+		    _begin, _finish, _fetch, query_albums);
+
+   QUERY_PLUGIN_NEW(N_("Artist"), EVRY_PLUGIN_OBJECT, "emblem-sound", TRACKER_MUSIC,
+		    _begin, _finish, _fetch, query_artists);
+
 
    return EINA_TRUE;
 }

@@ -3,11 +3,14 @@
  */
 
 #include <Evry.h>
+#include <curl/curl.h>
+
 #include "e_mod_main.h"
 
 #define ACT_GOOGLE		1
 #define ACT_FEELING_LUCKY	2
 #define ACT_WIKIPEDIA		3
+#define ACT_UPLOAD_IMGUR	4
 
 typedef struct _Plugin Plugin;
 typedef int (*Handler_Func) (void *data, int type, void *event);
@@ -50,6 +53,7 @@ static Plugin *_plug2 = NULL;
 static Evry_Action *_act1 = NULL;
 static Evry_Action *_act2 = NULL;
 static Evry_Action *_act3 = NULL;
+static Evry_Action *_act4 = NULL;
 
 static char _trigger_google[] = "g ";
 static char _trigger_wiki[] = "w ";
@@ -65,6 +69,7 @@ static char _address_google[] = "www.google.com";
 static char _address_wiki[]   = "www.wikipedia.org";
 static const char *_id_none;
 
+static const char _imgur_key[] = "1606e11f5c2ccd9b7440f1ffd80b17de";
 int
 _server_data(void *data, int ev_type, Ecore_Con_Event_Server_Data *ev)
 {
@@ -171,8 +176,6 @@ _send_request(void *data)
 
   if (p->svr)
     {
-      query = evry_util_url_escape(p->input, 0);
-
       snprintf(buf, sizeof(buf), p->request,
   	       _conf->lang, query, _header);
 
@@ -199,12 +202,16 @@ _fetch(Evry_Plugin *plugin, const char *input)
     ecore_timer_del(p->timer);
   p->timer = NULL;
 
-  if (input && strlen(input) > 2)
+  if (input && strlen(input) >= plugin->config->min_query)
     {
       p->input = eina_stringshare_add(input);
-      p->timer = ecore_timer_add(0.3, _send_request, p);
+      p->timer = ecore_timer_add(0.1, _send_request, p);
     }
-
+  else
+    {
+      EVRY_PLUGIN_ITEMS_FREE(p);
+    }
+  
   return 0;
 }
 
@@ -263,6 +270,108 @@ _action(Evry_Action *act)
   E_FREE(app);
 }
 
+/* static Ecore_Event_Handler *con_complete;
+ * static Ecore_Event_Handler *con_data;
+ * static Ecore_Event_Handler *con_progress;
+ *
+ * static int
+ * _con_complete(void *data, int ev_type, void *event)
+ * {
+ *   Ecore_Con_Event_Url_Complete *ev = event;
+ *   const Eina_List *l, *ll;
+ *
+ *   if (data != _act4)
+ *     return;
+ *
+ *   printf("completed\n");
+ *
+ *   char *reply = ecore_con_url_data_get(ev->url_con);
+ *   char *header;
+ *
+ *   l = ecore_con_url_response_headers_get(ev->url_con);
+ *
+ *   EINA_LIST_FOREACH(l, ll, header)
+ *     printf("%s", header);
+ *
+ *   ecore_event_handler_del(con_complete);
+ *   ecore_event_handler_del(con_data);
+ *
+ *   ecore_con_url_destroy(ev->url_con);
+ *
+ *   return 0;
+ * }
+ *
+ * static int
+ * _con_data(void *data, int ev_type, void *event)
+ * {
+ *   Ecore_Con_Event_Url_Data *ev = event;
+ *
+ *   if (data != _act4)
+ *     return;
+ *
+ *   printf("reply %s %d\n",
+ * 	 ev->data,
+ * 	 ecore_con_url_received_bytes_get(ev->url_con));
+ *
+ *   return 0;
+ * } */
+
+/* static int
+ * _con_url_progress(void *data, int ev_type, void *event)
+ * {
+ *   Ecore_Con_Event_Url_Progress *ev = event;
+ *
+ *   return 1;
+ * } */
+
+/* static int
+ * _action_upload_check(Evry_Action *act, const Evry_Item *item)
+ * {
+ *   GET_FILE(file, item);
+ *
+ *   if (!file->mime || strncmp(file->mime, "image/", 6))
+ *     return 0;
+ *
+ *   return 1;
+ * }
+ *
+ * static int
+ * _action_upload(Evry_Action *act)
+ * {
+ *   struct stat info;
+ *   struct curl_httppost* post = NULL;
+ *   struct curl_httppost* last = NULL;
+ *   int ret;
+ *
+ *   GET_FILE(file, act->it1.item);
+ *   if (!evry_file_path_get(file))
+ *     return 0;
+ *
+ *   Ecore_Con_Url *con_url = ecore_con_url_new("http://imgur.com/api/upload.json");
+ *   con_complete = ecore_event_handler_add
+ *     (ECORE_CON_EVENT_URL_COMPLETE, _con_complete, act);
+ *
+ *   con_data = ecore_event_handler_add
+ *     (ECORE_CON_EVENT_URL_DATA, _con_data, act);
+ *
+ *   /\* con_url_progress = ecore_event_handler_add
+ *    *   (ECORE_CON_EVENT_URL_PROGRESS, _con_url_progress, act); *\/
+ *
+ *   ret = curl_formadd(&post, &last,
+ * 		     CURLFORM_COPYNAME, "key",
+ * 		     CURLFORM_COPYCONTENTS, _imgur_key,
+ * 		     CURLFORM_END);
+ *
+ *   ret = curl_formadd(&post, &last,
+ *   		     CURLFORM_COPYNAME, "image",
+ *   		     CURLFORM_FILE, file->path,
+ *   		     CURLFORM_END);
+ *
+ *   ecore_con_url_http_post_send(con_url, post);
+ *
+ *   return 0;
+ * } */
+
 Evas_Object *
 _icon_get(Evry_Item *it, Evas *e)
 {
@@ -294,44 +403,75 @@ _plugins_init(void)
   if (!evry_api_version_check(EVRY_API_VERSION))
     return EINA_FALSE;
 
-  p = EVRY_PLUGIN_NEW(Plugin, N_("Google"), "text-html", EVRY_TYPE_TEXT,
+  p = EVRY_PLUGIN_NEW(Plugin, N_("Google"),
+		      "text-html", EVRY_TYPE_TEXT,
 		      _begin, _cleanup, _fetch, NULL);
 
-  p->trigger = _trigger_google;
   p->complete = &_complete;
   p->config_path = _config_path;
   _plug1 = (Plugin *) p;
   _plug1->server_address = _address_google;
   _plug1->request = _request_goolge;
-  evry_plugin_register(p, EVRY_PLUGIN_SUBJECT, 10);
 
-  p = EVRY_PLUGIN_NEW(Plugin, N_("Wikipedia"), "text-html", EVRY_TYPE_TEXT,
-		  _begin, _cleanup, _fetch, NULL);
-  p->trigger = _trigger_wiki;
+  if (evry_plugin_register(p, EVRY_PLUGIN_SUBJECT, 10))
+    {
+      Plugin_Config *pc = p->config;
+      pc->view_mode = VIEW_MODE_LIST;
+      pc->aggregate = EINA_FALSE;
+      pc->top_level = EINA_FALSE;
+      pc->view_mode = VIEW_MODE_DETAIL;
+      pc->min_query = 3;
+      pc->trigger = eina_stringshare_add(_trigger_google);
+    }
+
+  p = EVRY_PLUGIN_NEW(Plugin, N_("Wikipedia"),
+		      "text-html", EVRY_TYPE_TEXT,
+		      _begin, _cleanup, _fetch, NULL);
   p->complete = &_complete;
   p->config_path = _config_path;
   _plug2 = (Plugin *) p;
   _plug2->server_address = _address_wiki;
   _plug2->request = _request_wiki;
-  evry_plugin_register(p, EVRY_PLUGIN_SUBJECT, 9);
+  if (evry_plugin_register(p, EVRY_PLUGIN_SUBJECT, 9))
+    {
+      Plugin_Config *pc = p->config;
+      pc->view_mode = VIEW_MODE_LIST;
+      pc->aggregate = EINA_FALSE;
+      pc->top_level = EINA_FALSE;
+      pc->view_mode = VIEW_MODE_DETAIL;
+      pc->min_query = 3;
+      pc->trigger = eina_stringshare_add(_trigger_wiki);
+    }
 
-  _act1 = EVRY_ACTION_NEW(N_("Google for it"), EVRY_TYPE_TEXT,0, "go-next", _action, NULL);
+  _act1 = EVRY_ACTION_NEW(N_("Google for it"),
+			  EVRY_TYPE_TEXT, 0,
+			  NULL, _action, NULL);
   EVRY_ITEM_DATA_INT_SET(_act1, ACT_GOOGLE);
   EVRY_ITEM_ICON_SET(_act1, "google");
   EVRY_ITEM(_act1)->icon_get = &_icon_get;
   evry_action_register(_act1, 1);
 
-  _act2 = EVRY_ACTION_NEW(N_("Wikipedia Page"), EVRY_TYPE_TEXT, 0, "go-next", _action, NULL);
+  _act2 = EVRY_ACTION_NEW(N_("Wikipedia Page"),
+			  EVRY_TYPE_TEXT, 0,
+			  NULL, _action, NULL);
   EVRY_ITEM_DATA_INT_SET(_act2, ACT_WIKIPEDIA);
   EVRY_ITEM_ICON_SET(_act2, "google");
   EVRY_ITEM(_act2)->icon_get = &_icon_get;
   evry_action_register(_act2, 1);
 
-  _act3 = EVRY_ACTION_NEW(N_("Feeling Lucky"), EVRY_TYPE_TEXT, 0, "go-next", _action, NULL);
+  _act3 = EVRY_ACTION_NEW(N_("Feeling Lucky"),
+			  EVRY_TYPE_TEXT, 0,
+			  NULL, _action, NULL);
   EVRY_ITEM_DATA_INT_SET(_act3, ACT_FEELING_LUCKY);
   EVRY_ITEM_ICON_SET(_act3, "feeling-lucky");
   EVRY_ITEM(_act3)->icon_get = &_icon_get;
   evry_action_register(_act3, 1);
+
+  /* _act4 = EVRY_ACTION_NEW(N_("Upload Image"), EVRY_TYPE_FILE, 0, "go-next",
+   * 			  _action_upload, _action_upload_check);
+   * _act4->remember_context = EINA_TRUE;
+   * EVRY_ITEM_DATA_INT_SET(_act4, ACT_UPLOAD_IMGUR);
+   * evry_action_register(_act4, 1); */
 
   return EINA_TRUE;
 }
@@ -345,6 +485,7 @@ _plugins_shutdown(void)
   evry_action_free(_act1);
   evry_action_free(_act2);
   evry_action_free(_act3);
+  /* evry_action_free(_act4); */
 }
 
 /***************************************************************************/
@@ -571,12 +712,15 @@ e_modapi_init(E_Module *m)
 
   e_module_delayed_set(m, 1);
 
+  ecore_con_url_init();
+
   return m;
 }
 
 EAPI int
 e_modapi_shutdown(E_Module *m)
 {
+
   if (e_datastore_get("everything_loaded"))
     _plugins_shutdown();
 
@@ -586,6 +730,7 @@ e_modapi_shutdown(E_Module *m)
 
   eina_stringshare_del(_id_none);
 
+  ecore_con_url_shutdown();
   return 1;
 }
 
