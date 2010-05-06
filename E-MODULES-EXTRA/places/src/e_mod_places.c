@@ -24,10 +24,6 @@
 #include "e_mod_main.h"
 #include "e_mod_places.h"
 
-#define FREE_STR(str) \
-   if (str) eina_stringshare_del(str); \
-   str = NULL;
-
 /* Local Function Prototypes */
 static int _places_poller(void *data);
 static void _places_print_volume(Volume *v);
@@ -930,7 +926,7 @@ _places_volume_properties_cb(void *data, void *reply_data, DBusError *error)
    Volume *v = data;
    E_Hal_Device_Get_All_Properties_Return *reply = reply_data;
    int err = 0;
-   char *str = NULL;
+   const char *str = NULL;
 
    /* skip volumes with volume.ignore set */
    if (e_hal_property_bool_get(reply, "volume.ignore", &err) || err)
@@ -939,26 +935,20 @@ _places_volume_properties_cb(void *data, void *reply_data, DBusError *error)
    /* skip volumes that aren't filesystems */
    str = e_hal_property_string_get(reply, "volume.fsusage", &err);
    if (err || !str || strcmp(str, "filesystem"))
-   {
-      FREE_STR(str);
       return;
-   }
    //~ v->uuid = e_hal_property_string_get(ret, "volume.uuid", &err);
   //~ if (err) goto error;
 
    str = e_hal_property_string_get(reply, "volume.label", &err);
    if (!err) v->label = eina_stringshare_add(str);
-   FREE_STR(str);
 
    v->mounted = e_hal_property_bool_get(reply, "volume.is_mounted", &err);
 
    str = e_hal_property_string_get(reply, "volume.mount_point", &err);
    if (!err) v->mount_point = eina_stringshare_add(str);
-   FREE_STR(str);
 
    str = e_hal_property_string_get(reply, "volume.fstype", &err);
    if (!err) v->fstype = eina_stringshare_add(str);
-   FREE_STR(str);
 
    v->size = e_hal_property_uint64_get(reply, "volume.size", &err);
    
@@ -975,7 +965,6 @@ _places_volume_properties_cb(void *data, void *reply_data, DBusError *error)
    if (!err && str)
    {
       e_hal_device_get_all_properties(conn, str, _places_storage_properties_cb, v);
-      FREE_STR(str);
    }
 
    return;
@@ -988,7 +977,7 @@ _places_storage_properties_cb(void *data, void *reply_data, DBusError *error)
    Volume *v = data;
    E_Hal_Properties *ret = reply_data;
    int err = 0;
-   char *str;
+   const char *str;
 
    if (!v) return;
    if (dbus_error_is_set(error)) 
@@ -999,25 +988,19 @@ _places_storage_properties_cb(void *data, void *reply_data, DBusError *error)
    
    str = e_hal_property_string_get(ret, "storage.bus", &err);
    if (!err) v->bus = eina_stringshare_add(str);
-   FREE_STR(str);
-   
    
    str = e_hal_property_string_get(ret, "storage.drive_type", &err);
    if (!err) v->drive_type = eina_stringshare_add(str);
-   FREE_STR(str);
-   
+
    str = e_hal_property_string_get(ret, "storage.model", &err);
    if (!err) v->model = eina_stringshare_add(str);
-   FREE_STR(str);
-   
+
    str = e_hal_property_string_get(ret, "storage.vendor", &err);
    if (!err) v->vendor = eina_stringshare_add(str);
-   FREE_STR(str);
-   
+
    str = e_hal_property_string_get(ret, "storage.serial", &err);
    if (!err) v->serial = eina_stringshare_add(str);
-   FREE_STR(str);
-   
+
    v->removable = e_hal_property_bool_get(ret, "storage.removable", &err);
    v->requires_eject = e_hal_property_bool_get(ret, "storage.requires_eject", &err);
 
