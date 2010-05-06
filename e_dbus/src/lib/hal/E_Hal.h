@@ -1,7 +1,6 @@
 #ifndef E_HAL_H
 #define E_HAL_H
 #include <E_DBus.h>
-#include <eina_stringshare.h>
 
 #ifdef EAPI
 #undef EAPI
@@ -73,9 +72,9 @@ struct E_Hal_Property
   {
     const char *s;
     int i;
-    Eina_Bool b;
+    dbus_bool_t b;
     double d;
-    uint64_t u64;
+    dbus_uint64_t u64;
     Eina_List *strlist;
   } val;
 };
