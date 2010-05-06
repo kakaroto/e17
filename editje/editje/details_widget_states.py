@@ -154,7 +154,7 @@ class WidgetStates(WidgetEntryButton):
 
     def _state_restore(self, part_name, state_save, readd=False):
         self._edit_grp.part.name = part_name
-        st_name = state_save.name
+        st_name = (state_save.name, state_save.value)
 
         if readd:
             self._edit_grp.part.state_add(*st_name)
