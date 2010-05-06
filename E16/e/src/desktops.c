@@ -730,11 +730,13 @@ DeskGetValid(unsigned int desk)
 Desk               *
 DeskGetRelative(Desk * dsk, int inc)
 {
-   unsigned int        desk;
+   unsigned int        desk, num;
 
+   num = Conf.desks.num;
    desk = (dsk) ? dsk->num : 0;
-   desk += inc;
-   desk %= Conf.desks.num;
+   inc %= (int)num;
+   desk += num + inc;
+   desk %= num;
 
    return _DeskGet(desk);
 }
