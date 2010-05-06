@@ -25,6 +25,7 @@ from desktop_handler import Handler
 from desktop_part_listener import PartListener
 import desktop_part_handlers as part_handlers
 from desktop_parts_manager import PartsManager
+from operation import Operation
 
 
 class Desktop(Controller):
@@ -493,7 +494,7 @@ class GroupResizeHandler(Handler, GroupListener):
                          theme_file, group, op_stack_cb)
         GroupListener.__init__(self)
         self._group_resize_cb, self._padding_update_cb = \
-            group_resize_cb, padding_update_cb,
+            group_resize_cb, padding_update_cb
 
     def group_move(self, obj):
         self.show()
@@ -503,15 +504,30 @@ class GroupResizeHandler(Handler, GroupListener):
         if self._group:
             self._size = self._group.size
 
-    def move(self, w, h):
-        if self._group:
-            self._group_resize_cb(
-                self._size[0] + w, self._size[1] + h, grow=True)
+    def move(self, dw, dh, size=None):
+        if not self._group:
+            return
 
-    def up(self, w, h):
-        if self._group:
-            self._padding_update_cb()
-            del self._size
+        sz = size or self._size
+        self._group_resize_cb(sz[0] + dw, sz[1] + dh, grow=True)
+
+    def up(self, dw, dh):
+        if (dw, dh) == (0, 0) or not self._group:
+            return
+
+        curr_sz = self._size[:]
+
+        op = Operation("group resizing")
+
+        op.redo_callback_add(self.move, dw, dh, curr_sz)
+        op.redo_callback_add(self._padding_update_cb)
+
+        op.undo_callback_add(self.move, -dw, -dh, self._group.size)
+        op.undo_callback_add(self._padding_update_cb)
+        self._operation_stack_cb(op)
+
+        self._padding_update_cb()
+        del self._size
 
 
 class PartHighlight(PartListener, edje.Edje):
