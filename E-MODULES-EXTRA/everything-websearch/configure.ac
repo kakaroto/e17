@@ -28,7 +28,7 @@ AM_GNU_GETTEXT([external])
 AM_GNU_GETTEXT_VERSION(0.14)
 
 PKG_CHECK_MODULES(E, [enlightenment])
-PKG_CHECK_MODULES(EVRY, [everything])
+PKG_CHECK_MODULES(EVRY, [everything, enotify])
 
 release=$(pkg-config --variable=release enlightenment)
 MODULE_ARCH="$host_os-$host_cpu-$release"
