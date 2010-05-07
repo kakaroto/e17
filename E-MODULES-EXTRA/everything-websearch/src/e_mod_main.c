@@ -14,6 +14,9 @@
 #define ACT_WIKIPEDIA		3
 #define ACT_UPLOAD_IMGUR	4
 
+/* #undef DBG
+ * #define DBG(...) ERR(__VA_ARGS__) */
+
 typedef struct _Plugin Plugin;
 typedef int (*Handler_Func) (void *data, int type, void *event);
 typedef struct _Module_Config Module_Config;
@@ -144,10 +147,10 @@ _google_data_cb(void *data, int ev_type, void *event)
   Ecore_Con_Event_Url_Data *ev = event;
   Plugin *p = data;
   Json_Data *d, *d2, *rsp = NULL;
-  int len;
   const char *val;
   Eina_List *l, *ll;
   Evry_Item *it;
+  int len;
 
   if (data != ecore_con_url_data_get(ev->url_con))
     return 1;
@@ -340,14 +343,10 @@ _con_complete(void *data, int ev_type, void *event)
 {
   Ecore_Con_Event_Url_Complete *ev = event;
   const Eina_List *l, *ll;
+  char *header;
 
   if (data != _act4)
     return;
-
-  printf("completed\n");
-
-  char *reply = ecore_con_url_data_get(ev->url_con);
-  char *header;
 
   l = ecore_con_url_response_headers_get(ev->url_con);
 
@@ -367,39 +366,44 @@ _con_data(void *data, int ev_type, void *event)
 {
   Ecore_Con_Event_Url_Data *ev = event;
   Json_Data *d, *rsp;
-  Evry_Item_File *file;
-  int len, cb = 0;
+  Evry_Action *act;
+  E_Notification *n;
+  int len;
 
-  if (data != _act4)
+  act = ecore_con_url_data_get(ev->url_con);
+
+  if (data != act)
     return;
 
+  GET_FILE(file, act->it1.item);
+
   len = ecore_con_url_received_bytes_get(ev->url_con);
-  file = ecore_con_url_data_get(ev->url_con);
+  fprintf(stdout, "parse %*s\n", len, (char *)ev->data);
 
   rsp = _json_parse((char *)ev->data, 1, len);
-
   d = _json_data_find(rsp, "imgur_page");
+
   if (d)
     {
-      printf("copied to clipboard\n");
-
       len = strlen(d->value);
       ecore_x_selection_primary_set(ecore_x_window_root_first_get(), d->value, len);
       ecore_x_selection_clipboard_set(ecore_x_window_root_first_get(), d->value, len);
-      cb = 1;
+      n = e_notification_full_new("Everything", 0, "image", "Image Sent",
+				  "Link copied to clipboard", -1);
     }
-  _json_data_free(rsp);
-
-  E_Notification *n;
-  if (cb)
-    n = e_notification_full_new("Everything", 0, "image", "Image Sent", "Link copied to clipboard", -1);
   else
-    n = e_notification_full_new("Everything", 0, "image", "Image Sent", file->path, -1);
+    {
+      n = e_notification_full_new("Everything", 0, "image", "Something went wrong :(",
+				  file->path, -1);
+    }
 
   e_notification_send(n, NULL, NULL);
   e_notification_unref(n);
 
+  _json_data_free(rsp);
+
   EVRY_ITEM_FREE(file);
+  EVRY_ITEM_FREE(act);
 
   return 0;
 }
@@ -413,14 +417,9 @@ _con_url_progress(void *data, int ev_type, void *event)
 }
 
 static int
-_action_upload_check(Evry_Action *act, const Evry_Item *item)
+_action_upload_check(Evry_Action *act, const Evry_Item *it)
 {
-  GET_FILE(file, item);
-
-  if (!file->mime || strncmp(file->mime, "image/", 6))
-    return 0;
-
-  return 1;
+  return (EVRY_FILE(it)->mime && !(strncmp(EVRY_FILE(it)->mime, "image/", 6)));
 }
 
 static int
@@ -430,21 +429,24 @@ _action_upload(Evry_Action *act)
   struct curl_httppost* post = NULL;
   struct curl_httppost* last = NULL;
   E_Notification *n;
+  Ecore_Con_Url *con_url;
   int ret;
 
   GET_FILE(file, act->it1.item);
   if (!evry_file_path_get(file))
     return 0;
 
-  Ecore_Con_Url *con_url = ecore_con_url_new("http://imgur.com/api/upload.json");
+  con_url = ecore_con_url_new("http://imgur.com/api/upload.json");
+
   con_complete = ecore_event_handler_add
     (ECORE_CON_EVENT_URL_COMPLETE, _con_complete, act);
 
   con_data = ecore_event_handler_add
     (ECORE_CON_EVENT_URL_DATA, _con_data, act);
 
+  evry_item_ref(EVRY_ITEM(act));
   evry_item_ref(EVRY_ITEM(file));
-  ecore_con_url_data_set(con_url, file);
+  ecore_con_url_data_set(con_url, act);
 
   /* con_url_progress = ecore_event_handler_add
    *   (ECORE_CON_EVENT_URL_PROGRESS, _con_url_progress, act); */
@@ -855,9 +857,9 @@ _parse_callback(void *userdata, int type, const char *data, uint32_t length)
     {
     case JSON_OBJECT_BEGIN:
       DBG("object beg %p\n", d->cur);
-      if (d->flat && d->cur->parent)
+      if (d->flat)
 	{
-	  d->cur = d->cur->parent;
+	  if (d->cur->parent) d->cur = d->cur->parent;
 	  break;
 	}
       d2 = calloc(1, sizeof(Json_Data));
@@ -943,6 +945,8 @@ _json_data_find(const Json_Data *jd, const char *key)
     if (d->key == k)
       break;
 
+  printf("found %p\n", d);
+
   eina_stringshare_del(k);
 
   return d;
@@ -953,7 +957,6 @@ _json_data_free(Json_Data *jd)
 {
   Json_Data *d;
   const char *val;
-
   if (!jd) return;
 
   EINA_LIST_FREE(jd->list, d)
@@ -967,6 +970,7 @@ _json_data_free(Json_Data *jd)
 
       _json_data_free(d);
     }
+
   E_FREE(jd);
 }
 
