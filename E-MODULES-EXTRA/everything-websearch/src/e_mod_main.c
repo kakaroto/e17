@@ -110,10 +110,9 @@ _data_cb(void *data, int ev_type, void *event)
   if (p->data_cb(p, (const char *) ev->data, len))
     {
       evry_plugin_async_update (EVRY_PLUGIN(p), EVRY_ASYNC_UPDATE_ADD);
-      return 1;
     }
 
-  return 0;
+  return 1;
 }
 
 static int
@@ -140,10 +139,7 @@ _wikipedia_data_cb(Plugin *p, const char *msg, int len)
 	  EVRY_PLUGIN_ITEM_APPEND(p, it);
 	}
     }
-
   _json_data_free(rsp);
-
-  evry_plugin_async_update (EVRY_PLUGIN(p), EVRY_ASYNC_UPDATE_ADD);
 
   return 1;
 }
@@ -153,8 +149,6 @@ _gtranslate_data_cb(Plugin *p, const char *msg, int len)
 {
   Json_Data *d, *rsp;
   Evry_Item *it;
-
-  fprintf(stdout, "parse %*s\n", len, msg);
 
   rsp = _json_parse(msg, 1, len);
 
@@ -166,7 +160,6 @@ _gtranslate_data_cb(Plugin *p, const char *msg, int len)
       it->fuzzy_match = -1;
       EVRY_PLUGIN_ITEM_APPEND(p, it);
     }
-
   _json_data_free(rsp);
 
   return 1;
@@ -182,7 +175,7 @@ _google_data_cb(Plugin *p, const char *msg, int len)
   char *beg;
 
   /* FUCK, cant google give this as json instead of some weird
-     javascript shit ?! - strip parentheses */
+     javascript array shit ?! - strip parentheses */
   beg = (char *) msg;
   msg = strchr(msg, '(');
   if (msg) msg++;
@@ -215,7 +208,6 @@ _google_data_cb(Plugin *p, const char *msg, int len)
 	  EVRY_PLUGIN_ITEM_APPEND(p, it);
 	}
     }
-
   _json_data_free(rsp);
 
   return 1;
@@ -241,9 +233,8 @@ _begin_gtranslate(Evry_Plugin *plugin, const Evry_Item *it)
   GET_PLUGIN(p, plugin);
 
   _begin(plugin, it);
-
   ecore_con_url_additional_header_add(p->con_url, "Host", "ajax.googleapis.com");
-  /* ecore_con_url_additional_header_add(p->con_url, "Accept", "application/json"); */
+
   return plugin;
 }
 
@@ -371,21 +362,34 @@ _action(Evry_Action *act)
 
 /***************************************************************************/
 
-static Ecore_Event_Handler *con_complete;
-static Ecore_Event_Handler *con_data;
-static Ecore_Event_Handler *con_progress;
+typedef struct _Upload_Data Upload_Data;
+
+struct _Upload_Data
+{
+  Evry_Action *act;
+  int id;
+  int progress;
+  const char *file;
+
+  Ecore_Con_Url *con_url;
+  Ecore_Event_Handler *con_complete;
+  Ecore_Event_Handler *con_data;
+  Ecore_Event_Handler *con_progress;
+
+  E_Notification *n;
+};
 
 static int
 _con_complete(void *data, int ev_type, void *event)
 {
   Ecore_Con_Event_Url_Complete *ev = event;
   const Eina_List *l, *ll;
-  Evry_Action *act;
+  Upload_Data *ud;
   char *header;
 
-  act = ecore_con_url_data_get(ev->url_con);
+  ud = ecore_con_url_data_get(ev->url_con);
 
-  if (data != act)
+  if (data != ud)
     return;
 
   l = ecore_con_url_response_headers_get(ev->url_con);
@@ -393,9 +397,13 @@ _con_complete(void *data, int ev_type, void *event)
   EINA_LIST_FOREACH(l, ll, header)
     printf("%s", header);
 
-  ecore_event_handler_del(con_complete);
-  ecore_event_handler_del(con_data);
-  ecore_con_url_destroy(ev->url_con);
+  ecore_event_handler_del(ud->con_complete);
+  ecore_event_handler_del(ud->con_data);
+  ecore_event_handler_del(ud->con_progress);
+  ecore_con_url_destroy(ud->con_url);
+  eina_stringshare_del(ud->file);
+
+  E_FREE(ud);
 
   return 0;
 }
@@ -405,16 +413,14 @@ _con_data(void *data, int ev_type, void *event)
 {
   Ecore_Con_Event_Url_Data *ev = event;
   Json_Data *d, *rsp;
-  Evry_Action *act;
+  Upload_Data *ud;
   E_Notification *n;
   int len;
 
-  act = ecore_con_url_data_get(ev->url_con);
+  ud = ecore_con_url_data_get(ev->url_con);
 
-  if (data != act)
-    return;
-
-  GET_FILE(file, act->it1.item);
+  if (data != ud)
+    return 1;
 
   len = ecore_con_url_received_bytes_get(ev->url_con);
   fprintf(stdout, "parse %*s\n", len, (char *)ev->data);
@@ -427,13 +433,13 @@ _con_data(void *data, int ev_type, void *event)
       len = strlen(d->value);
       ecore_x_selection_primary_set(ecore_x_window_root_first_get(), d->value, len);
       ecore_x_selection_clipboard_set(ecore_x_window_root_first_get(), d->value, len);
-      n = e_notification_full_new("Everything", 0, "image", "Image Sent",
+      n = e_notification_full_new("Everything", ud->id, "image", "Image Sent",
 				  "Link copied to clipboard", -1);
     }
   else
     {
-      n = e_notification_full_new("Everything", 0, "image", "Something went wrong :(",
-				  file->path, -1);
+      n = e_notification_full_new("Everything", ud->id, "image", "Something went wrong :(",
+				  ud->file, -1);
     }
 
   e_notification_send(n, NULL, NULL);
@@ -441,70 +447,95 @@ _con_data(void *data, int ev_type, void *event)
 
   _json_data_free(rsp);
 
-  EVRY_ITEM_FREE(file);
-  EVRY_ITEM_FREE(act);
-
-  return 0;
-}
-
-static int
-_con_url_progress(void *data, int ev_type, void *event)
-{
-  Ecore_Con_Event_Url_Progress *ev = event;
-
   return 1;
 }
 
 static int
-_action_upload_check(Evry_Action *act, const Evry_Item *it)
+_con_progress(void *data, int ev_type, void *event)
 {
-  return (EVRY_FILE(it)->mime && !(strncmp(EVRY_FILE(it)->mime, "image/", 6)));
+  Ecore_Con_Event_Url_Progress *ev = event;
+  Upload_Data *ud;
+  E_Notification *n;
+  double up;
+
+  ud = ecore_con_url_data_get(ev->url_con);
+
+  if (data != ud)
+    return 1;
+
+  up = (ev->up.now / ev->up.total) * 20.0;
+
+  if ((int) up > ud->progress)
+    {
+      char buf[128];
+
+      ud->progress = up;
+      snprintf(buf, sizeof(buf), "%1.1f%% sent of", up * 5.0);
+      printf("sent %s\n", buf);
+
+      n = e_notification_full_new("Everything", ud->id,
+				  "image", buf, ud->file, -1);
+
+      e_notification_send(n, NULL, NULL);
+      e_notification_unref(n);
+    }
+
+  return 1;
+}
+
+static void
+_notification_id_cb(void *user_data, void *method_return, DBusError *error)
+{
+  Upload_Data *ud = user_data;
+  E_Notification_Return_Notify *r = method_return;
+
+  if(r) ud->id = r->notification_id;
 }
 
 static int
 _action_upload(Evry_Action *act)
 {
-  struct stat info;
   struct curl_httppost* post = NULL;
   struct curl_httppost* last = NULL;
-  E_Notification *n;
-  Ecore_Con_Url *con_url;
-  int ret;
+  Upload_Data *ud;
 
   GET_FILE(file, act->it1.item);
   if (!evry_file_path_get(file))
     return 0;
 
-  con_url = ecore_con_url_new("http://imgur.com/api/upload.json");
+  ud = E_NEW(Upload_Data, 1);
 
-  con_complete = ecore_event_handler_add
-    (ECORE_CON_EVENT_URL_COMPLETE, _con_complete, act);
+  ud->con_url = ecore_con_url_new("http://imgur.com/api/upload.json");
 
-  con_data = ecore_event_handler_add
-    (ECORE_CON_EVENT_URL_DATA, _con_data, act);
+  ud->con_complete = ecore_event_handler_add
+    (ECORE_CON_EVENT_URL_COMPLETE, _con_complete, ud);
 
-  evry_item_ref(EVRY_ITEM(act));
-  evry_item_ref(EVRY_ITEM(file));
-  ecore_con_url_data_set(con_url, act);
+  ud->con_data = ecore_event_handler_add
+    (ECORE_CON_EVENT_URL_DATA, _con_data, ud);
 
-  /* con_url_progress = ecore_event_handler_add
-   *   (ECORE_CON_EVENT_URL_PROGRESS, _con_url_progress, act); */
+  ud->con_progress = ecore_event_handler_add
+    (ECORE_CON_EVENT_URL_PROGRESS, _con_progress, ud);
 
-  ret = curl_formadd(&post, &last,
-		     CURLFORM_COPYNAME, "key",
-		     CURLFORM_COPYCONTENTS, _imgur_key,
-		     CURLFORM_END);
+  ud->act = act;
+  ud->file = eina_stringshare_ref(act->it1.item->label);
+  ecore_con_url_data_set(ud->con_url, ud);
 
-  ret = curl_formadd(&post, &last,
-  		     CURLFORM_COPYNAME, "image",
-  		     CURLFORM_FILE, file->path,
-  		     CURLFORM_END);
 
-  ecore_con_url_http_post_send(con_url, post);
+  curl_formadd(&post, &last,
+	       CURLFORM_COPYNAME, "key",
+	       CURLFORM_COPYCONTENTS, _imgur_key,
+	       CURLFORM_END);
 
-  n = e_notification_full_new("Everything", 0, "image", "Send Image", file->path, -1);
-  e_notification_send(n, NULL, NULL);
-  e_notification_unref(n);
+  curl_formadd(&post, &last,
+	       CURLFORM_COPYNAME, "image",
+	       CURLFORM_FILE, file->path,
+	       CURLFORM_END);
+
+  ecore_con_url_http_post_send(ud->con_url, post);
+
+  ud->n = e_notification_full_new("Everything", 0, "image", "Send Image", ud->file, -1);
+  e_notification_send(ud->n, _notification_id_cb, ud);
+  e_notification_unref(ud->n);
   return 0;
 }
 
@@ -518,6 +549,12 @@ _icon_get(Evry_Item *it, Evas *e)
   evas_object_del(o);
 
   return NULL;
+}
+
+static int
+_action_upload_check(Evry_Action *act, const Evry_Item *it)
+{
+  return (EVRY_FILE(it)->mime && !(strncmp(EVRY_FILE(it)->mime, "image/", 6)));
 }
 
 /***************************************************************************/
