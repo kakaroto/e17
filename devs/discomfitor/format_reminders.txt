@@ -1,0 +1,10 @@
+sed -i 's/^\([a-zA-Z].*\)\([a-zA-Z0-9_]*(\)/\1\n\2(/'
+#for changing something like 
+const inline stupid attribute variable defined function_has_a_long_name_off_thescreen_oh_my_god_its_solong(aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa)
+#to
+const inline stupid attribute variable defined 
+function_has_a_long_name_off_thescreen_oh_my_god_its_solong(aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa)
+
+#for formatting to near-efl style
+# http://astyle.sourceforge.net/astyle.html
+astyle -A7 -s3 -p -U -n
