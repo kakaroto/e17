@@ -31,11 +31,10 @@ struct _Plugin
   Ecore_Event_Handler *handler;
 
   const char *input;
-  const char *server_address;
   const char *request;
 
   int (*fetch) (void *data);
-  int (*data_cb) (void *data, int ev_type, void *event);
+  int (*data_cb) (Plugin *p, const char *msg, int len);
 };
 
 struct _Module_Config
@@ -93,15 +92,12 @@ static void        _json_data_free(Json_Data *d);
 
 /***************************************************************************/
 
+
 static int
-_wikipedia_data_cb(void *data, int ev_type, void *event)
+_data_cb(void *data, int ev_type, void *event)
 {
   Ecore_Con_Event_Url_Data *ev = event;
   Plugin *p = data;
-  Json_Data *d, *rsp;
-  const char *val;
-  Eina_List *l;
-  Evry_Item *it;
   int len;
 
   if (data != ecore_con_url_data_get(ev->url_con))
@@ -110,7 +106,25 @@ _wikipedia_data_cb(void *data, int ev_type, void *event)
   EVRY_PLUGIN_ITEMS_FREE(p);
 
   len = ecore_con_url_received_bytes_get(ev->url_con);
-  rsp = _json_parse((char *)ev->data, 0, len);
+
+  if (p->data_cb(p, (const char *) ev->data, len))
+    {
+      evry_plugin_async_update (EVRY_PLUGIN(p), EVRY_ASYNC_UPDATE_ADD);
+      return 1;
+    }
+
+  return 0;
+}
+
+static int
+_wikipedia_data_cb(Plugin *p, const char *msg, int len)
+{
+  Json_Data *d, *rsp;
+  const char *val;
+  Eina_List *l;
+  Evry_Item *it;
+
+  rsp = _json_parse(msg, 0, len);
 
   if (rsp && rsp->list &&
       (d = rsp->list->data) &&
@@ -135,23 +149,10 @@ _wikipedia_data_cb(void *data, int ev_type, void *event)
 }
 
 static int
-_gtranslate_data_cb(void *data, int ev_type, void *event)
+_gtranslate_data_cb(Plugin *p, const char *msg, int len)
 {
-  Ecore_Con_Event_Url_Data *ev = event;
-  Plugin *p = data;
   Json_Data *d, *rsp;
-  const char *val, *msg;
-  Eina_List *l;
   Evry_Item *it;
-  int len;
-
-  if (data != ecore_con_url_data_get(ev->url_con))
-    return 1;
-
-  EVRY_PLUGIN_ITEMS_FREE(p);
-
-  msg = (const char *) ev->data;
-  len = ecore_con_url_received_bytes_get(ev->url_con);
 
   fprintf(stdout, "parse %*s\n", len, msg);
 
@@ -160,7 +161,6 @@ _gtranslate_data_cb(void *data, int ev_type, void *event)
   d = _json_data_find(rsp, "translatedText");
   if (d)
     {
-      printf("string %s\n", d->value);
       it = EVRY_ITEM_NEW(Evry_Item, p, d->value, NULL, NULL);
       it->context = eina_stringshare_ref(EVRY_PLUGIN(p)->name);
       it->fuzzy_match = -1;
@@ -169,39 +169,27 @@ _gtranslate_data_cb(void *data, int ev_type, void *event)
 
   _json_data_free(rsp);
 
-  evry_plugin_async_update (EVRY_PLUGIN(p), EVRY_ASYNC_UPDATE_ADD);
-
   return 1;
 }
 
 static int
-_google_data_cb(void *data, int ev_type, void *event)
+_google_data_cb(Plugin *p, const char *msg, int len)
 {
-  Ecore_Con_Event_Url_Data *ev = event;
-  Plugin *p = data;
   Json_Data *d, *d2, *rsp = NULL;
   const char *val;
   Eina_List *l, *ll;
   Evry_Item *it;
-  int len;
+  char *beg;
 
-  if (data != ecore_con_url_data_get(ev->url_con))
-    return 1;
-
-  EVRY_PLUGIN_ITEMS_FREE(p);
-
-  len = ecore_con_url_received_bytes_get(ev->url_con);
   /* FUCK, cant google give this as json instead of some weird
      javascript shit ?! - strip parentheses */
-  char *beg, *msg;
-  beg = msg = ev->data;
+  beg = (char *) msg;
   msg = strchr(msg, '(');
   if (msg) msg++;
   len = len - (msg - beg) - 1;
 
   /* fprintf(stdout, "parse %*s\n", len, msg); */
-  if (!msg)
-    return 1;
+  if (!msg) return 0;
 
   rsp = _json_parse(msg, 0, len);
 
@@ -230,8 +218,6 @@ _google_data_cb(void *data, int ev_type, void *event)
 
   _json_data_free(rsp);
 
-  evry_plugin_async_update (EVRY_PLUGIN(p), EVRY_ASYNC_UPDATE_ADD);
-
   return 1;
 }
 
@@ -243,7 +229,7 @@ _begin(Evry_Plugin *plugin, const Evry_Item *it)
   p->con_url = ecore_con_url_new(NULL);
 
   p->handler = ecore_event_handler_add
-    (ECORE_CON_EVENT_URL_DATA, p->data_cb, p);
+    (ECORE_CON_EVENT_URL_DATA, _data_cb, p);
 
   ecore_con_url_data_set(p->con_url, p);
   return plugin;
