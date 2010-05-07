@@ -21,16 +21,16 @@ struct _Plugin
 {
   Evry_Plugin base;
 
-  Ecore_Con_Server *svr;
-  Ecore_Event_Handler *handler;
+  Ecore_Con_Url *con_url;
   Ecore_Timer *timer;
+  Ecore_Event_Handler *handler;
 
   const char *input;
   const char *server_address;
   const char *request;
 
   int (*fetch) (void *data);
-
+  int (*data_cb) (void *data, int ev_type, void *event);
 };
 
 struct _Module_Config
@@ -66,9 +66,9 @@ static char _header[] =
   "Connection: Keep-Alive\n\n";
 
 static char _request_goolge[] =
-  "GET http://www.google.com/complete/search?hl=%s&output=text&q=\"%s\n%s";
+  "http://www.google.com/complete/search?hl=%s&output=text&q=%s";
 static char _request_wiki[]   =
-  "GET http://%s.wikipedia.org/w/api.php?action=opensearch&search=%s HTTP/1.0\n%s";
+  "http://%s.wikipedia.org/w/api.php?action=opensearch&search=%s";
 static char _address_google[] = "www.google.com";
 static char _address_wiki[]   = "www.wikipedia.org";
 static const char *_id_none;
@@ -89,202 +89,108 @@ struct _Json_Data
   const char *key;
   const char *value;
   Eina_List *values;
-  
+
   Eina_List *list;
 };
+static Json_Data  *_json_parse(char *string, Eina_Bool flat, int len);
+static Json_Data  *_json_data_find(const Json_Data *d, const char *key);
+static void        _json_data_free(Json_Data *d);
+
+
+/***************************************************************************/
 
 static int
-_parse_callback(void *userdata, int type, const char *data, uint32_t length)
+_wikipedia_data_cb(void *data, int ev_type, void *event)
 {
-  Json_Data *d = userdata;
-  Json_Data *d2;
-
-  switch (type)
-    {
-    case JSON_OBJECT_BEGIN:
-      DBG("object beg %p\n", d->cur);
-      if (d->flat && d->cur->parent)
-	{
-	  d->cur = d->cur->parent;
-	  break;
-	}
-      
-      d2 = calloc(1, sizeof(Json_Data));
-      d2->parent = d->cur;
-      d2->type = type;
-      d->cur->list =  eina_list_append(d->cur->list, d2);
-      d->cur = d2;
-      break;
-      
-    case JSON_ARRAY_BEGIN:
-      DBG("array beg %p\n", d->cur);
-      d2 = calloc(1, sizeof(Json_Data));
-      d2->parent = d->cur;
-      d2->type = type;
-      d->cur->list =  eina_list_append(d->cur->list, d2);
-      d->cur = d2;
-      break;
-    
-    case JSON_OBJECT_END:
-      DBG("object end %p\n", d->cur);
-      if (d->flat) break;
-      d->cur = d->cur->parent;
-      break;
-      
-    case JSON_ARRAY_END:
-      DBG("array end %p\n", d->cur);
-      d->cur = d->cur->parent;
-      break;
-      
-    case JSON_KEY:
-      DBG("key %*s\n", length, data);
-      d2 = calloc(1, sizeof(Json_Data));
-      if (d2->key) eina_stringshare_del(d2->key);
-      d2->key = eina_stringshare_add_length(data, length);
-      d2->parent = d->cur;
-      d->cur->list =  eina_list_append(d->cur->list, d2);
-      d->cur = d2;
-      break;
-
-    case JSON_STRING:
-    case JSON_INT:
-    case JSON_FLOAT:
-      if (d->cur->type == JSON_ARRAY_BEGIN)
-	{
-	  DBG("- %*s\n", length, data);
-	  d->cur->values = eina_list_append
-	    (d->cur->values, eina_stringshare_add_length(data, length));
-	}
-      else
-	{
-	  DBG("val  %s: %*s\n", d->cur->key, length, data);
-	  d->cur->type = type;
-	  if (d->cur->value) eina_stringshare_del(d->cur->value);
-	  d->cur->value = eina_stringshare_add_length(data, length);
-	  d->cur = d->cur->parent;
-	}
-  
-      break;
-    
-    case JSON_NULL:
-    case JSON_TRUE:
-    case JSON_FALSE:
-      DBG("constant\n");
-      d->cur = d->cur->parent;
-      break;
-    }
-
-  return 0;
-}
-
-static Json_Data *
-_parse_json(char *string, Eina_Bool flat, int len)
-{
-  Eina_Hash *h;
-  struct json_parser parser;
-  int i, ret;
-
-  if (!len)
-    len = strlen(string);
-
-  if (!string)
-    return NULL;
-
-  Json_Data *d = E_NEW(Json_Data, 1);
-  d->flat = flat;
-  d->cur = d;
-  
-  if (json_parser_init(&parser, NULL, _parse_callback, d))
-    {
-      ERR("something wrong happened during init");
-      E_FREE(d);
-      return NULL;
-    }
-
-  for (i = 0; i < len; i += 1)
-    {
-      ret = json_parser_string(&parser, string + i, 1, NULL);
-      if (ret)
-	{
-	  ERR("%d\n", ret);
-	  break;
-	}
-    }
-
-  json_parser_free(&parser);
-
-  if (ret)
-    {
-      E_FREE(d);
-      return NULL;
-    }
-
-  return d->cur;
-}
-
-int
-_server_data(void *data, int ev_type, Ecore_Con_Event_Server_Data *ev)
-{
+  Ecore_Con_Event_Url_Data *ev = event;
   Plugin *p = data;
-  char *result = (char *)ev->data;
+  Json_Data *d, *rsp;
+  const char *val;
+  Eina_List *l;
   Evry_Item *it;
-  char *list;
+  int len;
 
-  if (ev->server != p->svr) return 1;
+  if (data != ecore_con_url_data_get(ev->url_con))
+    return 1;
 
-  EVRY_PLUGIN_ITEMS_FREE(p);
+  len = ecore_con_url_received_bytes_get(ev->url_con);
+  rsp = _json_parse((char *)ev->data, 0, len);
 
-  it = EVRY_ITEM_NEW(Evry_Item, p, p->input, NULL, NULL);
-  it->context = eina_stringshare_ref(EVRY_PLUGIN(p)->name);
-  it->id = eina_stringshare_ref(_id_none);
-  EVRY_PLUGIN_ITEM_APPEND(p, it);
-
-  if ((list = strstr(result, "[[\"")))
+  if (rsp && rsp->list &&
+      (d = rsp->list->data) &&
+      (d->type == JSON_ARRAY_BEGIN) &&
+      (d = d->list->data) &&
+      (d->type == JSON_ARRAY_BEGIN))
     {
-      list += 3;
-
-      char **items = eina_str_split(list, "\"],[\"", 0);
-      char **i;
-
-      for(i = items; *i; i++)
+      EINA_LIST_FOREACH(d->values, l, val)
 	{
-	  char **item= eina_str_split(*i, "\",\"", 2);
-	  it = EVRY_ITEM_NEW(Evry_Item, p, *item, NULL, NULL);
-	  it->detail = eina_stringshare_add(*(item + 1));
-	  it->context = eina_stringshare_ref(EVRY_PLUGIN(p)->name);
-	  it->fuzzy_match = -1;
-	  EVRY_PLUGIN_ITEM_APPEND(p, it);
-	  free(*item);
-	  free(item);
-	}
-
-      free(*items);
-      free(items);
-
-      evry_plugin_async_update (EVRY_PLUGIN(p), EVRY_ASYNC_UPDATE_ADD);
-    }
-  else if ((list = strstr(result, ",[\"")))
-    {
-      list += 3;
-
-      char **items = eina_str_split(list, "\"", 0);
-      char **i;
-      for(i = items; *i; i++)
-	{
-	  if (**i == ',' || **i == ']') continue;
-	  it = EVRY_ITEM_NEW(Evry_Item, p, *i, NULL, NULL);
-	  it->detail = eina_stringshare_add("Wikipedia");
+	  it = EVRY_ITEM_NEW(Evry_Item, p, val, NULL, NULL);
 	  it->context = eina_stringshare_ref(EVRY_PLUGIN(p)->name);
 	  it->fuzzy_match = -1;
 	  EVRY_PLUGIN_ITEM_APPEND(p, it);
 	}
-
-      free(*items);
-      free(items);
-
     }
+
+  _json_data_free(rsp);
 
   evry_plugin_async_update (EVRY_PLUGIN(p), EVRY_ASYNC_UPDATE_ADD);
+
+  return 1;
+}
+
+static int
+_google_data_cb(void *data, int ev_type, void *event)
+{
+  Ecore_Con_Event_Url_Data *ev = event;
+  Plugin *p = data;
+  Json_Data *d, *d2, *rsp = NULL;
+  int len;
+  const char *val;
+  Eina_List *l, *ll;
+  Evry_Item *it;
+
+  if (data != ecore_con_url_data_get(ev->url_con))
+    return 1;
+
+  len = ecore_con_url_received_bytes_get(ev->url_con);
+  /* FUCK, cant google give this as json instead of some weird
+     javascript shit ?! - strip parentheses */
+  char *beg, *msg;
+  beg = msg = ev->data;
+  msg = strchr(msg, '(');
+  if (msg) msg++;
+  len = len - (msg - beg) - 1;
+
+  /* fprintf(stdout, "parse %*s\n", len, msg); */
+  if (!msg)
+    return 1;
+
+  rsp = _json_parse(msg, 0, len);
+
+  if (rsp && rsp->list &&
+      (d = rsp->list->data) &&
+      (d->type == JSON_ARRAY_BEGIN) &&
+      (d = d->list->data) &&
+      (d->type == JSON_ARRAY_BEGIN))
+    {
+      EINA_LIST_FOREACH(d->list, l, d2)
+	{
+	  ll = d2->values;
+
+	  if (!ll->data || !ll->next->data)
+	    continue;
+
+	  val = ll->data;
+	  it = EVRY_ITEM_NEW(Evry_Item, p, val, NULL, NULL);
+	  it->context = eina_stringshare_ref(EVRY_PLUGIN(p)->name);
+	  val = ll->next->data;
+	  EVRY_ITEM_DETAIL_SET(it, val);
+	  it->fuzzy_match = -1;
+	  EVRY_PLUGIN_ITEM_APPEND(p, it);
+	}
+    }
+
+  _json_data_free(rsp);
 
   return 1;
 }
@@ -294,8 +200,12 @@ _begin(Evry_Plugin *plugin, const Evry_Item *it)
 {
   GET_PLUGIN(p, plugin);
 
-  p->handler = ecore_event_handler_add(ECORE_CON_EVENT_SERVER_DATA,
-				       (Handler_Func)_server_data, p);
+  p->con_url = ecore_con_url_new(NULL);
+
+  p->handler = ecore_event_handler_add
+    (ECORE_CON_EVENT_URL_DATA, p->data_cb, p);
+
+  ecore_con_url_data_set(p->con_url, p);
   return plugin;
 }
 
@@ -304,8 +214,8 @@ _cleanup(Evry_Plugin *plugin)
 {
   GET_PLUGIN(p, plugin);
 
-  if (p->svr) ecore_con_server_del(p->svr);
-  p->svr = NULL;
+  ecore_con_url_destroy(p->con_url);
+  p->con_url = NULL;
 
   ecore_event_handler_del(p->handler);
   p->handler = NULL;
@@ -322,17 +232,12 @@ _send_request(void *data)
 
   query = evry_util_url_escape(p->input, 0);
 
-  if (p->svr) ecore_con_server_del(p->svr);
-  p->svr = ecore_con_server_connect(ECORE_CON_REMOTE_SYSTEM,
-				    p->server_address, 80, NULL);
+  snprintf(buf, sizeof(buf), p->request, _conf->lang, query);
 
-  if (p->svr)
-    {
-      snprintf(buf, sizeof(buf), p->request,
-  	       _conf->lang, query, _header);
+  printf("send request\n", buf);
 
-      ecore_con_server_send(p->svr, buf, strlen(buf));
-    }
+  ecore_con_url_url_set(p->con_url, buf);
+  ecore_con_url_send(p->con_url, NULL, 0, NULL);
 
   free(query);
 
@@ -366,6 +271,8 @@ _fetch(Evry_Plugin *plugin, const char *input)
 
   return 0;
 }
+
+/***************************************************************************/
 
 static int
 _action(Evry_Action *act)
@@ -422,6 +329,8 @@ _action(Evry_Action *act)
   E_FREE(app);
 }
 
+/***************************************************************************/
+
 static Ecore_Event_Handler *con_complete;
 static Ecore_Event_Handler *con_data;
 static Ecore_Event_Handler *con_progress;
@@ -453,43 +362,6 @@ _con_complete(void *data, int ev_type, void *event)
   return 0;
 }
 
-static Json_Data *
-_json_data_find(const Json_Data *jd, const char *key)
-{
-  Json_Data *d = NULL;
-  Eina_List *l;
-  const char *k;
-
-  if (!jd) return NULL;
-
-  k = eina_stringshare_add(key);
-
-  EINA_LIST_FOREACH(jd->list, l, d)
-    if (d->key == k)
-      break;
-
-  eina_stringshare_del(k);
-
-  return d;
-}
-
-static void
-_json_data_free(Json_Data *jd)
-{
-  Json_Data *d;
-  if (!jd) return;
-
-  EINA_LIST_FREE(jd->list, d)
-    {
-      printf("'%s':'%s'\n", d->key, d->value);
-      if (d->key) eina_stringshare_del(d->key);
-      if (d->value) eina_stringshare_del(d->value);
-      E_FREE(d);
-    }
-  E_FREE(jd);
-}
-
-
 static int
 _con_data(void *data, int ev_type, void *event)
 {
@@ -504,7 +376,7 @@ _con_data(void *data, int ev_type, void *event)
   len = ecore_con_url_received_bytes_get(ev->url_con);
   file = ecore_con_url_data_get(ev->url_con);
 
-  rsp = _parse_json((char *)ev->data, 1, len);
+  rsp = _json_parse((char *)ev->data, 1, len);
 
   d = _json_data_find(rsp, "imgur_page");
   if (d)
@@ -607,6 +479,8 @@ _icon_get(Evry_Item *it, Evas *e)
   return NULL;
 }
 
+/***************************************************************************/
+
 static int
 _complete(Evry_Plugin *p, const Evry_Item *item, char **input)
 {
@@ -635,7 +509,7 @@ _plugins_init(void)
   _plug1 = (Plugin *) p;
   _plug1->server_address = _address_google;
   _plug1->request = _request_goolge;
-
+  _plug1->data_cb = &_google_data_cb;
   if (evry_plugin_register(p, EVRY_PLUGIN_SUBJECT, 10))
     {
       Plugin_Config *pc = p->config;
@@ -655,6 +529,7 @@ _plugins_init(void)
   _plug2 = (Plugin *) p;
   _plug2->server_address = _address_wiki;
   _plug2->request = _request_wiki;
+  _plug2->data_cb = &_wikipedia_data_cb;
   if (evry_plugin_register(p, EVRY_PLUGIN_SUBJECT, 9))
     {
       Plugin_Config *pc = p->config;
@@ -969,3 +844,172 @@ e_modapi_save(E_Module *m)
 }
 
 /***************************************************************************/
+
+static int
+_parse_callback(void *userdata, int type, const char *data, uint32_t length)
+{
+  Json_Data *d = userdata;
+  Json_Data *d2;
+
+  switch (type)
+    {
+    case JSON_OBJECT_BEGIN:
+      DBG("object beg %p\n", d->cur);
+      if (d->flat && d->cur->parent)
+	{
+	  d->cur = d->cur->parent;
+	  break;
+	}
+      d2 = calloc(1, sizeof(Json_Data));
+      d2->parent = d->cur;
+      d2->type = type;
+      d->cur->list =  eina_list_append(d->cur->list, d2);
+      d->cur = d2;
+      break;
+
+    case JSON_ARRAY_BEGIN:
+      DBG("array beg %p\n", d->cur);
+      d2 = calloc(1, sizeof(Json_Data));
+      d2->parent = d->cur;
+      d2->type = type;
+      d->cur->list =  eina_list_append(d->cur->list, d2);
+      d->cur = d2;
+      break;
+
+    case JSON_OBJECT_END:
+      DBG("object end %p\n", d->cur);
+      if (d->flat) break;
+      d->cur = d->cur->parent;
+      break;
+
+    case JSON_ARRAY_END:
+      DBG("array end %p\n", d->cur);
+      d->cur = d->cur->parent;
+      break;
+
+    case JSON_KEY:
+      DBG("key %*s\n", length, data);
+      d2 = calloc(1, sizeof(Json_Data));
+      if (d2->key) eina_stringshare_del(d2->key);
+      d2->key = eina_stringshare_add_length(data, length);
+      d2->parent = d->cur;
+      d->cur->list =  eina_list_append(d->cur->list, d2);
+      d->cur = d2;
+      break;
+
+    case JSON_STRING:
+    case JSON_INT:
+    case JSON_FLOAT:
+      if (d->cur->type == JSON_ARRAY_BEGIN)
+	{
+	  DBG("- %*s\n", length, data);
+	  d->cur->values = eina_list_append
+	    (d->cur->values, eina_stringshare_add_length(data, length));
+	}
+      else
+	{
+	  DBG("val  %s: %*s\n", d->cur->key, length, data);
+	  d->cur->type = type;
+	  if (d->cur->value) eina_stringshare_del(d->cur->value);
+	  d->cur->value = eina_stringshare_add_length(data, length);
+	  d->cur = d->cur->parent;
+	}
+
+      break;
+
+    case JSON_NULL:
+    case JSON_TRUE:
+    case JSON_FALSE:
+      DBG("constant\n");
+      d->cur = d->cur->parent;
+      break;
+    }
+
+  return 0;
+}
+
+static Json_Data *
+_json_data_find(const Json_Data *jd, const char *key)
+{
+  Json_Data *d = NULL;
+  Eina_List *l;
+  const char *k;
+
+  if (!jd) return NULL;
+
+  k = eina_stringshare_add(key);
+
+  EINA_LIST_FOREACH(jd->list, l, d)
+    if (d->key == k)
+      break;
+
+  eina_stringshare_del(k);
+
+  return d;
+}
+
+static void
+_json_data_free(Json_Data *jd)
+{
+  Json_Data *d;
+  const char *val;
+
+  if (!jd) return;
+
+  EINA_LIST_FREE(jd->list, d)
+    {
+      if (d->key) eina_stringshare_del(d->key);
+      if (d->value) eina_stringshare_del(d->value);
+      EINA_LIST_FREE(d->values, val)
+	{
+	  eina_stringshare_del(val);
+	}
+
+      _json_data_free(d);
+    }
+  E_FREE(jd);
+}
+
+static Json_Data *
+_json_parse(char *string, Eina_Bool flat, int len)
+{
+  Eina_Hash *h;
+  struct json_parser parser;
+  int i, ret;
+
+  if (!len)
+    len = strlen(string);
+
+  if (!string)
+    return NULL;
+
+  Json_Data *d = E_NEW(Json_Data, 1);
+  d->flat = flat;
+  d->cur = d;
+
+  if (json_parser_init(&parser, NULL, _parse_callback, d))
+    {
+      ERR("something wrong happened during init");
+      E_FREE(d);
+      return NULL;
+    }
+
+  for (i = 0; i < len; i += 1)
+    {
+      if ((ret = json_parser_string(&parser, string + i, 1, NULL)))
+	{
+	  ERR("%d\n", ret);
+	  break;
+	}
+    }
+
+  json_parser_free(&parser);
+  if (ret)
+    {
+      _json_data_free(d);
+
+      return NULL;
+    }
+
+  return d;
+}
