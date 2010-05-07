@@ -20,6 +20,8 @@
 typedef struct _Plugin Plugin;
 typedef int (*Handler_Func) (void *data, int type, void *event);
 typedef struct _Module_Config Module_Config;
+typedef struct _Json_Data Json_Data;
+
 struct _Plugin
 {
   Evry_Plugin base;
@@ -42,10 +44,25 @@ struct _Module_Config
 
   const char *lang;
   const char *browser;
+  const char *translate;
 
   E_Config_Dialog *cfd;
   E_Module *module;
   char *theme;
+};
+
+struct _Json_Data
+{
+  Json_Data *parent;
+  Json_Data *cur;
+
+  int type;
+  const char *key;
+  const char *value;
+  Eina_List *values;
+  Eina_List *list;
+
+  int flat;
 };
 
 static Module_Config *_conf;
@@ -53,49 +70,23 @@ static char _config_path[] =  "extensions/" PACKAGE;
 static char _config_domain[] = "module." PACKAGE;
 static E_Config_DD *_conf_edd = NULL;
 
-static Plugin *_plug1 = NULL;
-static Plugin *_plug2 = NULL;
-static Evry_Action *_act1 = NULL;
-static Evry_Action *_act2 = NULL;
-static Evry_Action *_act3 = NULL;
-static Evry_Action *_act4 = NULL;
+static Eina_List *plugins = NULL;
+static Eina_List *actions = NULL;
 
 static char _trigger_google[] = "g ";
 static char _trigger_wiki[] = "w ";
-
-static char _header[] =
-  "User-Agent: Wget/1.12 (linux-gnu)\n"
-  "Accept: */*\n"
-  "Connection: Keep-Alive\n\n";
+static char _trigger_gtranslate[] = "t ";
 
 static char _request_goolge[] =
   "http://www.google.com/complete/search?hl=%s&output=text&q=%s";
 static char _request_wiki[]   =
   "http://%s.wikipedia.org/w/api.php?action=opensearch&search=%s";
-static char _address_google[] = "www.google.com";
-static char _address_wiki[]   = "www.wikipedia.org";
-static const char *_id_none;
+static char _request_gtranslate[] =
+  "http://ajax.googleapis.com/ajax/services/language/translate?v=1.0&langpair=%s&q=%s";
+static const char _imgur_key[] =
+  "1606e11f5c2ccd9b7440f1ffd80b17de";
 
-static const char _imgur_key[] = "1606e11f5c2ccd9b7440f1ffd80b17de";
-
-typedef struct _Json_Data Json_Data;
-
-struct _Json_Data
-{
-  int flat;
-
-  Json_Data *parent;
-  Json_Data *cur;
-
-  int type;
-
-  const char *key;
-  const char *value;
-  Eina_List *values;
-
-  Eina_List *list;
-};
-static Json_Data  *_json_parse(char *string, Eina_Bool flat, int len);
+static Json_Data  *_json_parse(const char *string, Eina_Bool flat, int len);
 static Json_Data  *_json_data_find(const Json_Data *d, const char *key);
 static void        _json_data_free(Json_Data *d);
 
@@ -115,6 +106,8 @@ _wikipedia_data_cb(void *data, int ev_type, void *event)
 
   if (data != ecore_con_url_data_get(ev->url_con))
     return 1;
+
+  EVRY_PLUGIN_ITEMS_FREE(p);
 
   len = ecore_con_url_received_bytes_get(ev->url_con);
   rsp = _json_parse((char *)ev->data, 0, len);
@@ -142,6 +135,46 @@ _wikipedia_data_cb(void *data, int ev_type, void *event)
 }
 
 static int
+_gtranslate_data_cb(void *data, int ev_type, void *event)
+{
+  Ecore_Con_Event_Url_Data *ev = event;
+  Plugin *p = data;
+  Json_Data *d, *rsp;
+  const char *val, *msg;
+  Eina_List *l;
+  Evry_Item *it;
+  int len;
+
+  if (data != ecore_con_url_data_get(ev->url_con))
+    return 1;
+
+  EVRY_PLUGIN_ITEMS_FREE(p);
+
+  msg = (const char *) ev->data;
+  len = ecore_con_url_received_bytes_get(ev->url_con);
+
+  fprintf(stdout, "parse %*s\n", len, msg);
+
+  rsp = _json_parse(msg, 1, len);
+
+  d = _json_data_find(rsp, "translatedText");
+  if (d)
+    {
+      printf("string %s\n", d->value);
+      it = EVRY_ITEM_NEW(Evry_Item, p, d->value, NULL, NULL);
+      it->context = eina_stringshare_ref(EVRY_PLUGIN(p)->name);
+      it->fuzzy_match = -1;
+      EVRY_PLUGIN_ITEM_APPEND(p, it);
+    }
+
+  _json_data_free(rsp);
+
+  evry_plugin_async_update (EVRY_PLUGIN(p), EVRY_ASYNC_UPDATE_ADD);
+
+  return 1;
+}
+
+static int
 _google_data_cb(void *data, int ev_type, void *event)
 {
   Ecore_Con_Event_Url_Data *ev = event;
@@ -154,6 +187,8 @@ _google_data_cb(void *data, int ev_type, void *event)
 
   if (data != ecore_con_url_data_get(ev->url_con))
     return 1;
+
+  EVRY_PLUGIN_ITEMS_FREE(p);
 
   len = ecore_con_url_received_bytes_get(ev->url_con);
   /* FUCK, cant google give this as json instead of some weird
@@ -195,6 +230,8 @@ _google_data_cb(void *data, int ev_type, void *event)
 
   _json_data_free(rsp);
 
+  evry_plugin_async_update (EVRY_PLUGIN(p), EVRY_ASYNC_UPDATE_ADD);
+
   return 1;
 }
 
@@ -209,6 +246,18 @@ _begin(Evry_Plugin *plugin, const Evry_Item *it)
     (ECORE_CON_EVENT_URL_DATA, p->data_cb, p);
 
   ecore_con_url_data_set(p->con_url, p);
+  return plugin;
+}
+
+static Evry_Plugin *
+_begin_gtranslate(Evry_Plugin *plugin, const Evry_Item *it)
+{
+  GET_PLUGIN(p, plugin);
+
+  _begin(plugin, it);
+
+  ecore_con_url_additional_header_add(p->con_url, "Host", "ajax.googleapis.com");
+  /* ecore_con_url_additional_header_add(p->con_url, "Accept", "application/json"); */
   return plugin;
 }
 
@@ -235,9 +284,11 @@ _send_request(void *data)
 
   query = evry_util_url_escape(p->input, 0);
 
-  snprintf(buf, sizeof(buf), p->request, _conf->lang, query);
-
-  printf("send request\n", buf);
+  if (!strcmp(p->base.name, N_("Translate")))
+    snprintf(buf, sizeof(buf), p->request, _conf->translate, query);
+  else
+    snprintf(buf, sizeof(buf), p->request, _conf->lang, query);
+  /* printf("send request %s\n", buf); */
 
   ecore_con_url_url_set(p->con_url, buf);
   ecore_con_url_send(p->con_url, NULL, 0, NULL);
@@ -272,7 +323,7 @@ _fetch(Evry_Plugin *plugin, const char *input)
       EVRY_PLUGIN_ITEMS_FREE(p);
     }
 
-  return 0;
+  return 1;
 }
 
 /***************************************************************************/
@@ -343,9 +394,12 @@ _con_complete(void *data, int ev_type, void *event)
 {
   Ecore_Con_Event_Url_Complete *ev = event;
   const Eina_List *l, *ll;
+  Evry_Action *act;
   char *header;
 
-  if (data != _act4)
+  act = ecore_con_url_data_get(ev->url_con);
+
+  if (data != act)
     return;
 
   l = ecore_con_url_response_headers_get(ev->url_con);
@@ -355,7 +409,6 @@ _con_complete(void *data, int ev_type, void *event)
 
   ecore_event_handler_del(con_complete);
   ecore_event_handler_del(con_data);
-
   ecore_con_url_destroy(ev->url_con);
 
   return 0;
@@ -498,80 +551,65 @@ static Eina_Bool
 _plugins_init(void)
 {
   Evry_Plugin *p;
+  Evry_Action *act;
+  Plugin *plug;
 
   if (!evry_api_version_check(EVRY_API_VERSION))
     return EINA_FALSE;
 
-  p = EVRY_PLUGIN_NEW(Plugin, N_("Google"),
-		      "text-html", EVRY_TYPE_TEXT,
-		      _begin, _cleanup, _fetch, NULL);
+#define PLUGIN_NEW(_name, _icon, _begin, _cleaup, _fetch, _complete, _request, _data_cb, _trigger) { \
+    p = EVRY_PLUGIN_NEW(Plugin, _name, _icon, EVRY_TYPE_TEXT, _begin, _cleanup, _fetch, NULL); \
+    p->config_path = _config_path;				\
+    plugins = eina_list_append(plugins, p);			\
+    p->complete = _complete;					\
+    GET_PLUGIN(plug, p);					\
+    plug->request = _request;					\
+    plug->data_cb = _data_cb;					\
+    if (evry_plugin_register(p, EVRY_PLUGIN_SUBJECT, 10)) {	\
+      Plugin_Config *pc = p->config;				\
+      pc->view_mode = VIEW_MODE_LIST;				\
+      pc->aggregate = EINA_FALSE;				\
+      pc->top_level = EINA_FALSE;				\
+      pc->view_mode = VIEW_MODE_DETAIL;				\
+      pc->min_query = 3;					\
+      pc->trigger_only = EINA_TRUE;				\
+      pc->trigger = eina_stringshare_add(_trigger); }}		\
 
-  p->complete = &_complete;
-  p->config_path = _config_path;
-  _plug1 = (Plugin *) p;
-  _plug1->server_address = _address_google;
-  _plug1->request = _request_goolge;
-  _plug1->data_cb = &_google_data_cb;
-  if (evry_plugin_register(p, EVRY_PLUGIN_SUBJECT, 10))
-    {
-      Plugin_Config *pc = p->config;
-      pc->view_mode = VIEW_MODE_LIST;
-      pc->aggregate = EINA_FALSE;
-      pc->top_level = EINA_FALSE;
-      pc->view_mode = VIEW_MODE_DETAIL;
-      pc->min_query = 3;
-      pc->trigger = eina_stringshare_add(_trigger_google);
-    }
+  PLUGIN_NEW(N_("Google"), "text-html",
+	     _begin, _cleanup, _fetch, &_complete,
+	     _request_goolge, _google_data_cb,
+	     _trigger_google);
 
-  p = EVRY_PLUGIN_NEW(Plugin, N_("Wikipedia"),
-		      "text-html", EVRY_TYPE_TEXT,
-		      _begin, _cleanup, _fetch, NULL);
-  p->complete = &_complete;
-  p->config_path = _config_path;
-  _plug2 = (Plugin *) p;
-  _plug2->server_address = _address_wiki;
-  _plug2->request = _request_wiki;
-  _plug2->data_cb = &_wikipedia_data_cb;
-  if (evry_plugin_register(p, EVRY_PLUGIN_SUBJECT, 9))
-    {
-      Plugin_Config *pc = p->config;
-      pc->view_mode = VIEW_MODE_LIST;
-      pc->aggregate = EINA_FALSE;
-      pc->top_level = EINA_FALSE;
-      pc->view_mode = VIEW_MODE_DETAIL;
-      pc->min_query = 3;
-      pc->trigger = eina_stringshare_add(_trigger_wiki);
-    }
+  PLUGIN_NEW(N_("Wikipedia"), "text-html",
+	     _begin, _cleanup, _fetch, &_complete,
+	     _request_wiki, _wikipedia_data_cb,
+	     _trigger_wiki);
 
-  _act1 = EVRY_ACTION_NEW(N_("Google for it"),
-			  EVRY_TYPE_TEXT, 0,
-			  NULL, _action, NULL);
-  EVRY_ITEM_DATA_INT_SET(_act1, ACT_GOOGLE);
-  EVRY_ITEM_ICON_SET(_act1, "google");
-  EVRY_ITEM(_act1)->icon_get = &_icon_get;
-  evry_action_register(_act1, 1);
+  PLUGIN_NEW(N_("Translate"), "text-html",
+	     _begin_gtranslate, _cleanup, _fetch, NULL,
+	     _request_gtranslate, _gtranslate_data_cb,
+	     _trigger_gtranslate);
 
-  _act2 = EVRY_ACTION_NEW(N_("Wikipedia Page"),
-			  EVRY_TYPE_TEXT, 0,
-			  NULL, _action, NULL);
-  EVRY_ITEM_DATA_INT_SET(_act2, ACT_WIKIPEDIA);
-  EVRY_ITEM_ICON_SET(_act2, "google");
-  EVRY_ITEM(_act2)->icon_get = &_icon_get;
-  evry_action_register(_act2, 1);
 
-  _act3 = EVRY_ACTION_NEW(N_("Feeling Lucky"),
-			  EVRY_TYPE_TEXT, 0,
-			  NULL, _action, NULL);
-  EVRY_ITEM_DATA_INT_SET(_act3, ACT_FEELING_LUCKY);
-  EVRY_ITEM_ICON_SET(_act3, "feeling-lucky");
-  EVRY_ITEM(_act3)->icon_get = &_icon_get;
-  evry_action_register(_act3, 1);
+#define ACTION_NEW(_name, _type, _icon, _action, _check, _method)	\
+  act = EVRY_ACTION_NEW(_name, _type, 0, _icon, _action, _check);	\
+  EVRY_ITEM_DATA_INT_SET(act, _method);					\
+  EVRY_ITEM(act)->icon_get = &_icon_get;				\
+  evry_action_register(act, 1);						\
+  actions = eina_list_append(actions, act);				\
 
-  _act4 = EVRY_ACTION_NEW(N_("Upload Image"), EVRY_TYPE_FILE, 0, "go-next",
-  			  _action_upload, _action_upload_check);
-  _act4->remember_context = EINA_TRUE;
-  EVRY_ITEM_DATA_INT_SET(_act4, ACT_UPLOAD_IMGUR);
-  evry_action_register(_act4, 1);
+  ACTION_NEW(N_("Google for it"), EVRY_TYPE_TEXT, "google",
+	     _action, NULL, ACT_GOOGLE);
+
+  ACTION_NEW(N_("Wikipedia Page"), EVRY_TYPE_TEXT, "wikipedia",
+	     _action, NULL, ACT_WIKIPEDIA);
+
+  ACTION_NEW(N_("Feeling Lucky"), EVRY_TYPE_TEXT, "feeling-lucky",
+	     _action, NULL, ACT_FEELING_LUCKY);
+
+  ACTION_NEW(N_("Upload Image"), EVRY_TYPE_FILE, "go-next",
+	     _action_upload, _action_upload_check, ACT_UPLOAD_IMGUR);
+  act->remember_context = EINA_TRUE;
 
   return EINA_TRUE;
 }
@@ -579,13 +617,14 @@ _plugins_init(void)
 static void
 _plugins_shutdown(void)
 {
-  EVRY_PLUGIN_FREE(_plug1);
-  EVRY_PLUGIN_FREE(_plug2);
+  Evry_Plugin *p;
+  Evry_Action *act;
 
-  evry_action_free(_act1);
-  evry_action_free(_act2);
-  evry_action_free(_act3);
-  evry_action_free(_act4);
+  EINA_LIST_FREE(plugins, p)
+    EVRY_PLUGIN_FREE(p);
+
+  EINA_LIST_FREE(actions, act)
+    evry_action_free(act);
 }
 
 /***************************************************************************/
@@ -594,11 +633,11 @@ struct _E_Config_Dialog_Data
 {
   char *browser;
   char *lang;
+  char *translate;
 };
 
 static void *_create_data(E_Config_Dialog *cfd);
 static void _free_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata);
-static void _fill_data(E_Config_Dialog_Data *cfdata);
 static Evas_Object *_basic_create(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cfdata);
 static int _basic_apply(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata);
 
@@ -649,6 +688,11 @@ _basic_create(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cfdata)
   ow = e_widget_entry_add(evas, &cfdata->lang, NULL, NULL, NULL);
   e_widget_framelist_object_append(of, ow);
 
+  ow = e_widget_label_add(evas, _("Translate"));
+  e_widget_framelist_object_append(of, ow);
+  ow = e_widget_entry_add(evas, &cfdata->translate, NULL, NULL, NULL);
+  e_widget_framelist_object_append(of, ow);
+
   e_widget_list_object_append(o, of, 1, 1, 0.5);
   return o;
 }
@@ -657,9 +701,15 @@ static void *
 _create_data(E_Config_Dialog *cfd)
 {
   E_Config_Dialog_Data *cfdata = NULL;
-
   cfdata = E_NEW(E_Config_Dialog_Data, 1);
-  _fill_data(cfdata);
+
+#define CP(_name) cfdata->_name = strdup(_conf->_name);
+#define C(_name) cfdata->_name = _conf->_name;
+  CP(browser);
+  CP(lang);
+  CP(translate);
+#undef CP
+#undef C
   return cfdata;
 }
 
@@ -668,19 +718,9 @@ _free_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
 {
   E_FREE(cfdata->browser);
   E_FREE(cfdata->lang);
+  E_FREE(cfdata->translate);
   _conf->cfd = NULL;
   E_FREE(cfdata);
-}
-
-static void
-_fill_data(E_Config_Dialog_Data *cfdata)
-{
-#define CP(_name) cfdata->_name = strdup(_conf->_name);
-#define C(_name) cfdata->_name = _conf->_name;
-  CP(browser);
-  CP(lang);
-#undef CP
-#undef C
 }
 
 static int
@@ -693,6 +733,7 @@ _basic_apply(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
 #define C(_name) _conf->_name = cfdata->_name;
   CP(browser);
   CP(lang);
+  CP(translate);
 #undef CP
 #undef C
 
@@ -704,8 +745,11 @@ _basic_apply(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
 static void
 _conf_new(void)
 {
-  _conf = E_NEW(Module_Config, 1);
-  _conf->version = (MOD_CONFIG_FILE_EPOCH << 16);
+  if (!_conf)
+    {
+      _conf = E_NEW(Module_Config, 1);
+      _conf->version = (MOD_CONFIG_FILE_EPOCH << 16);
+    }
 
 #define IFMODCFG(v) if ((_conf->version & 0xffff) < v) {
 #define IFMODCFGEND }
@@ -716,6 +760,10 @@ _conf_new(void)
   _conf->lang = eina_stringshare_add("en");
   IFMODCFGEND;
 
+  IFMODCFG(0x009d);
+  _conf->translate = eina_stringshare_add("en|de");
+  IFMODCFGEND;
+
   _conf->version = MOD_CONFIG_FILE_VERSION;
 
   e_config_save_queue();
@@ -724,15 +772,12 @@ _conf_new(void)
 static void
 _conf_free(void)
 {
-  if (_conf)
-    {
-      eina_stringshare_del(_conf->browser);
-      eina_stringshare_del(_conf->lang);
-
-      free(_conf->theme);
-
-      E_FREE(_conf);
-    }
+  if (!_conf) return;
+  eina_stringshare_del(_conf->browser);
+  eina_stringshare_del(_conf->lang);
+  eina_stringshare_del(_conf->translate);
+  free(_conf->theme);
+  E_FREE(_conf);
 }
 
 static void
@@ -757,16 +802,18 @@ _conf_init(E_Module *m)
   E_CONFIG_VAL(D, T, version, INT);
   E_CONFIG_VAL(D, T, browser, STR);
   E_CONFIG_VAL(D, T, lang, STR);
+  E_CONFIG_VAL(D, T, translate, STR);
 #undef T
 #undef D
-
   _conf = e_config_domain_load(_config_domain, _conf_edd);
 
-  if (_conf && !evry_util_module_config_check(_("Everything Websearch"), _conf->version,
-					      MOD_CONFIG_FILE_EPOCH, MOD_CONFIG_FILE_VERSION))
-    _conf_free();
+  if (_conf && !evry_util_module_config_check
+      (_("Everything Websearch"), _conf->version, MOD_CONFIG_FILE_EPOCH, MOD_CONFIG_FILE_VERSION))
+    {
+      _conf_free();
+    }
 
-  if (!_conf) _conf_new();
+  _conf_new();
 
   _conf->module = m;
   _conf->theme = strdup(buf);
@@ -798,10 +845,7 @@ e_modapi_init(E_Module *m)
   bind_textdomain_codeset(PACKAGE, "UTF-8");
 
   e_notification_init();
-
-  if (!ecore_con_init())
-    return NULL;
-
+  ecore_con_url_init();
   _conf_init(m);
 
   if (!_plugins_init())
@@ -810,11 +854,7 @@ e_modapi_init(E_Module *m)
       return NULL;
     }
 
-  _id_none = eina_stringshare_add("");
-
   e_module_delayed_set(m, 1);
-
-  ecore_con_url_init();
 
   return m;
 }
@@ -827,13 +867,7 @@ e_modapi_shutdown(E_Module *m)
     _plugins_shutdown();
 
   _conf_shutdown();
-
-  ecore_con_shutdown();
-
   e_notification_shutdown();
-
-  eina_stringshare_del(_id_none);
-
   ecore_con_url_shutdown();
   return 1;
 }
@@ -959,8 +993,11 @@ _json_data_free(Json_Data *jd)
   const char *val;
   if (!jd) return;
 
+  if (jd->list) DBG("-------------------");
+
   EINA_LIST_FREE(jd->list, d)
     {
+      DBG("%s : %s", d->key, d->value);
       if (d->key) eina_stringshare_del(d->key);
       if (d->value) eina_stringshare_del(d->value);
       EINA_LIST_FREE(d->values, val)
@@ -975,7 +1012,7 @@ _json_data_free(Json_Data *jd)
 }
 
 static Json_Data *
-_json_parse(char *string, Eina_Bool flat, int len)
+_json_parse(const char *string, Eina_Bool flat, int len)
 {
   Eina_Hash *h;
   struct json_parser parser;
