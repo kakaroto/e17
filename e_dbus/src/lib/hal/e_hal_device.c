@@ -17,7 +17,6 @@ unmarshal_device_get_property(DBusMessage *msg, DBusError *err)
   E_Hal_Device_Get_Property_Return *ret = NULL;
   DBusMessageIter iter;
   int type;
-  char *tmp;
 
   ret = calloc(1, sizeof(E_Hal_Device_Get_Property_Return));
   if (!ret) 
@@ -31,8 +30,7 @@ unmarshal_device_get_property(DBusMessage *msg, DBusError *err)
   switch(type)
   {
     case DBUS_TYPE_STRING:
-      dbus_message_iter_get_basic(&iter, &tmp);
-      ret->val.s = eina_stringshare_add(tmp);
+      dbus_message_iter_get_basic(&iter, &(ret->val.s));
       break;
     case DBUS_TYPE_INT32:
       dbus_message_iter_get_basic(&iter, &(ret->val.i));
@@ -54,14 +52,6 @@ free_device_get_property(void *data)
   E_Hal_Device_Get_Property_Return *ret = data;
 
   if (!ret) return;
-  if (ret->type == E_HAL_PROPERTY_TYPE_STRLIST)
-    {
-       const char *s;
-       EINA_LIST_FREE(ret->val.strlist, s)
-         eina_stringshare_del(s);
-    }
-  else if (ret->type == E_HAL_PROPERTY_TYPE_STRING)
-    eina_stringshare_del(ret->val.s);
   free(ret);
 }
 
@@ -85,7 +75,6 @@ unmarshal_device_get_all_properties(DBusMessage *msg, DBusError *err)
 {
   E_Hal_Device_Get_All_Properties_Return *ret = NULL;
   DBusMessageIter iter, a_iter, s_iter, v_iter;
-  const char *tmp;
 
   /* a{sv} = array of string+variant */
   if (!dbus_message_has_signature(msg, "a{sv}")) 
@@ -118,8 +107,7 @@ unmarshal_device_get_all_properties(DBusMessage *msg, DBusError *err)
     {
       case DBUS_TYPE_STRING:
         prop->type = E_HAL_PROPERTY_TYPE_STRING;
-        dbus_message_iter_get_basic(&v_iter, &tmp);
-        prop->val.s = eina_stringshare_add(tmp);
+        dbus_message_iter_get_basic(&v_iter, &(prop->val.s));
         break;
       case DBUS_TYPE_INT32:
         prop->type = E_HAL_PROPERTY_TYPE_INT;
@@ -147,8 +135,7 @@ unmarshal_device_get_all_properties(DBusMessage *msg, DBusError *err)
           {
             char *str;
             dbus_message_iter_get_basic(&list_iter, &str);
-            tmp = eina_stringshare_add(str);
-            prop->val.strlist = eina_list_append(prop->val.strlist, tmp);
+            prop->val.strlist = eina_list_append(prop->val.strlist, str);
             dbus_message_iter_next(&list_iter);
           }
         }
