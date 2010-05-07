@@ -11,7 +11,13 @@ EAPI void
 e_hal_property_free(E_Hal_Property *prop)
 {
   if (prop->type == E_HAL_PROPERTY_TYPE_STRLIST)
-    eina_list_free(prop->val.strlist);
+  {
+    const char *str;
+    EINA_LIST_FREE(prop->val.strlist, str)
+      eina_stringshare_del(str);
+  }
+  else if (prop->type == E_HAL_PROPERTY_TYPE_STRING)
+    eina_stringshare_del(prop->val.s);
   free(prop);
 }
 

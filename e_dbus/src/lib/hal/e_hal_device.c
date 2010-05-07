@@ -17,6 +17,7 @@ unmarshal_device_get_property(DBusMessage *msg, DBusError *err)
   E_Hal_Device_Get_Property_Return *ret = NULL;
   DBusMessageIter iter;
   int type;
+  const char *str;
 
   ret = calloc(1, sizeof(E_Hal_Device_Get_Property_Return));
   if (!ret) 
@@ -30,15 +31,20 @@ unmarshal_device_get_property(DBusMessage *msg, DBusError *err)
   switch(type)
   {
     case DBUS_TYPE_STRING:
-      dbus_message_iter_get_basic(&iter, &(ret->val.s));
+      ret->type = E_HAL_PROPERTY_TYPE_STRING;
+      dbus_message_iter_get_basic(&iter, &str);
+      ret->val.s = eina_stringshare_add(str);
       break;
     case DBUS_TYPE_INT32:
+      ret->type = E_HAL_PROPERTY_TYPE_INT;
       dbus_message_iter_get_basic(&iter, &(ret->val.i));
       break;
     case DBUS_TYPE_BOOLEAN:
+      ret->type = E_HAL_PROPERTY_TYPE_BOOL;
       dbus_message_iter_get_basic(&iter, &(ret->val.b));
       break;
     case DBUS_TYPE_DOUBLE:
+      ret->type = E_HAL_PROPERTY_TYPE_DOUBLE;
       dbus_message_iter_get_basic(&iter, &(ret->val.d));
       break;
   }
@@ -52,6 +58,14 @@ free_device_get_property(void *data)
   E_Hal_Device_Get_Property_Return *ret = data;
 
   if (!ret) return;
+  if (ret->type == E_HAL_PROPERTY_TYPE_STRLIST)
+  {
+    const char *str;
+    EINA_LIST_FREE(ret->val.strlist, str)
+      eina_stringshare_del(str);
+  }
+  else if (ret->type == E_HAL_PROPERTY_TYPE_STRING)
+    eina_stringshare_del(ret->val.s);
   free(ret);
 }
 
@@ -97,6 +111,7 @@ unmarshal_device_get_all_properties(DBusMessage *msg, DBusError *err)
   while (dbus_message_iter_get_arg_type(&a_iter) != DBUS_TYPE_INVALID)
   {
     const char *name;
+    const char *str;
     E_Hal_Property *prop = calloc(1, sizeof(E_Hal_Property));
     dbus_message_iter_recurse(&a_iter, &s_iter);
     dbus_message_iter_get_basic(&s_iter, &name);
@@ -107,7 +122,8 @@ unmarshal_device_get_all_properties(DBusMessage *msg, DBusError *err)
     {
       case DBUS_TYPE_STRING:
         prop->type = E_HAL_PROPERTY_TYPE_STRING;
-        dbus_message_iter_get_basic(&v_iter, &(prop->val.s));
+        dbus_message_iter_get_basic(&v_iter, &str);
+        prop->val.s = eina_stringshare_add(str);
         break;
       case DBUS_TYPE_INT32:
         prop->type = E_HAL_PROPERTY_TYPE_INT;
@@ -133,9 +149,8 @@ unmarshal_device_get_all_properties(DBusMessage *msg, DBusError *err)
           dbus_message_iter_recurse(&v_iter, &list_iter);
           while (dbus_message_iter_get_arg_type(&list_iter) != DBUS_TYPE_INVALID)
           {
-            char *str;
             dbus_message_iter_get_basic(&list_iter, &str);
-            prop->val.strlist = eina_list_append(prop->val.strlist, str);
+            prop->val.strlist = eina_list_append(prop->val.strlist, eina_stringshare_add(str));
             dbus_message_iter_next(&list_iter);
           }
         }
