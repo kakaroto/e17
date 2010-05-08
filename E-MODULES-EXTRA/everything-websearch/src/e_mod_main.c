@@ -118,7 +118,7 @@ static char _request_gtranslate[] =
 static char _request_youtube[] =
   "http://gdata.youtube.com/feeds/videos?hl=%s"
   "&fields=entry(title,link,media:group(media:thumbnail))"
-  "&alt=json&max-results=20&q=%s";
+  "&alt=json&max-results=30&q=%s";
 static const char _imgur_key[] =
   "1606e11f5c2ccd9b7440f1ffd80b17de";
 
@@ -596,6 +596,9 @@ _action_download_timer(void *d)
 	      n = e_notification_full_new
 		("Everything", 0, "enblem-music", N_("Enqueue"),
 		 ecore_file_file_get(dd->file), -1);
+	      e_notification_send(n, NULL, NULL);
+	      e_notification_unref(n);
+
   	    }
   	}
       else if (dd->method == 2)
@@ -607,6 +610,8 @@ _action_download_timer(void *d)
 	      n = e_notification_full_new
 		("Everything", 0, "enblem-music", N_("Play"),
 		 ecore_file_file_get(dd->file), -1);
+	      e_notification_send(n, NULL, NULL);
+	      e_notification_unref(n);
   	    }
   	}
 
@@ -628,16 +633,12 @@ _action_download_timer(void *d)
       n = e_notification_full_new
 	("Everything", 0, "enblem-music", N_("Abort download"),
 	 ecore_file_file_get(dd->file), -1);
+      e_notification_send(n, NULL, NULL);
+      e_notification_unref(n);
 
       if (dd->exe) ecore_exe_terminate(dd->exe);
       ecore_file_remove(dd->file);
       ERR("abort download\n");
-    }
-
-  if (n)
-    {
-      e_notification_send(n, NULL, NULL);
-      e_notification_unref(n);
     }
 
   download_handlers = eina_list_remove(download_handlers, dd);
@@ -670,7 +671,7 @@ _action_download(Evry_Action *act)
 	     NULL, buf, NULL, NULL);
     }
 
-  if (method)
+  if (method == 1 || method == 2)
     {
       Download_Data *dd = E_NEW(Download_Data, 1);
 
@@ -978,8 +979,11 @@ _plugins_init(void)
   ACTION_NEW(N_("Watch on Youtube"), WEBLINK, "feeling-lucky",
 	     _action, NULL, ACT_YOUTUBE);
 
-  ACTION_NEW(N_("Download as mp3"), WEBLINK, "feeling-lucky",
+  ACTION_NEW(N_("Download as Audio"), WEBLINK, "feeling-lucky",
 	     _action_download, NULL, 0);
+
+  /* ACTION_NEW(N_("Download as Video"), WEBLINK, "feeling-lucky",
+   * 	     _action_download, NULL, 3); */
 
   ACTION_NEW(N_("Download and enqueue"), WEBLINK, "feeling-lucky",
   	     _action_download, NULL, 1);
