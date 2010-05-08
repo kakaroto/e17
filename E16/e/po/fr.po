@@ -6,10 +6,10 @@
 # Tristan D. <trinine@free.fr>, 2007-2010
 msgid ""
 msgstr ""
-"Project-Id-Version: e16 svn-rev48575\n"
+"Project-Id-Version: e16 svn-rev48679\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
 "POT-Creation-Date: 2010-05-02 19:59+0200\n"
-"PO-Revision-Date: 2010-05-03 15:53+0100\n"
+"PO-Revision-Date: 2010-05-08 17:17+0100\n"
 "Last-Translator: Tristan D. <trinine@free.fr>\n"
 "Language-Team: français <fr@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -530,12 +530,12 @@ msgstr "Afficher les noms des icônes"
 
 #: src/container.c:1676
 msgid "Animation mode:"
-msgstr "Mode d'animation:"
+msgstr "Type d'animation:"
 
 #: src/container.c:1679
 #: src/desktops.c:2577
 msgid "Off"
-msgstr "Pas d'animation"
+msgstr "Aucune"
 
 #: src/container.c:1684
 msgid "Whirl"
