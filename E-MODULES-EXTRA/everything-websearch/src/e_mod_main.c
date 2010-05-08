@@ -658,7 +658,7 @@ _action_download(Evry_Action *act)
   int method = EVRY_ITEM_DATA_INT_GET(act);
   GET_WEBLINK(wl, act->it1.item);
   E_Exec_Instance *exe = NULL;
-
+  E_Notification *n;
   char *filename = ecore_file_escape_name(act->it1.item->label);
   snprintf(file, sizeof(file),
 	   "%s/Download/%s",
@@ -691,6 +691,11 @@ _action_download(Evry_Action *act)
       download_handlers = eina_list_append(download_handlers, dd);
     }
 
+  n = e_notification_full_new
+    ("Everything", 0, "enblem-music", N_("Start download"),
+     ecore_file_file_get(act->it1.item->label), -1);
+  e_notification_send(n, NULL, NULL);
+  e_notification_unref(n);
   return 0;
 }
 
@@ -1163,7 +1168,7 @@ _conf_new(void)
   _conf->convert_cmd = eina_stringshare_add
     ( "ffmpeg -vn -v 0 -y -i $(youtube-dl -g -b \"%s\") "
       "-acodec libmp3lame -ac 2 -ab 128k "
-      "%s.mp3");
+      "%s.mp3 > /dev/null 2>&1");
   IFMODCFGEND;
 
   _conf->version = MOD_CONFIG_FILE_VERSION;
