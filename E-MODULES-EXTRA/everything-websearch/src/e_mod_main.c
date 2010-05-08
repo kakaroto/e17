@@ -586,6 +586,7 @@ _action_download_timer(void *d)
       Evry_Action *act;
 
       f->path = eina_stringshare_add(dd->file);
+      f->mime = eina_stringshare_add("audio/");
 
       if (dd->method == 1)
   	{
@@ -616,6 +617,7 @@ _action_download_timer(void *d)
   	}
 
       IF_RELEASE(f->path);
+      IF_RELEASE(f->mime);
       E_FREE(f);
 
       dd->ready = 1;
@@ -636,7 +638,7 @@ _action_download_timer(void *d)
       e_notification_send(n, NULL, NULL);
       e_notification_unref(n);
 
-      if (dd->exe) ecore_exe_terminate(dd->exe);
+      if (dd->exe) ecore_exe_kill(dd->exe);
       ecore_file_remove(dd->file);
       ERR("abort download\n");
     }
@@ -1273,13 +1275,23 @@ e_modapi_init(E_Module *m)
 EAPI int
 e_modapi_shutdown(E_Module *m)
 {
-
+  Download_Data *dd;
+  
   if (e_datastore_get("everything_loaded"))
     _plugins_shutdown();
 
   _conf_shutdown();
   e_notification_shutdown();
   ecore_con_url_shutdown();
+
+  EINA_LIST_FREE(download_handlers, dd)
+    {
+      if (dd->exe) ecore_exe_kill(dd->exe);
+      ecore_file_remove(dd->file);
+      E_FREE(dd->file);
+      E_FREE(dd);
+    }
+  
   return 1;
 }
 
