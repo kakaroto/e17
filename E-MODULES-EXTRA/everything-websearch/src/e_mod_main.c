@@ -269,6 +269,7 @@ _web_link_icon_get(Evry_Item *it, Evas *e)
 	       e_user_homedir_get(), sum);
 
       wl->thumb_file = eina_stringshare_add(thumb_buf);
+      E_FREE(sum);
     }
 
   if (ecore_file_exists(wl->thumb_file))
@@ -325,7 +326,6 @@ _youtube_data_cb(Plugin *p, const char *msg, int len)
 	      EVRY_ITEM_CONTEXT_SET(it, EVRY_PLUGIN(p)->name);
 	      it->url = eina_stringshare_ref(url);
 	      it->thumb = eina_stringshare_ref(thumb);
-	      /* printf("thumb %s\n", it->thumb); */
 
 	      EVRY_PLUGIN_ITEM_APPEND(p, it);
 	    }
@@ -509,6 +509,7 @@ _action(Evry_Action *act)
       GET_WEBLINK(wl, act->it1.item);
       snprintf(buf, sizeof(buf), "%s", wl->url);
     }
+
   E_FREE(tmp);
 
   file->path = buf;
@@ -531,6 +532,152 @@ _action(Evry_Action *act)
 
   E_FREE(file);
   E_FREE(app);
+}
+
+static Eina_List *timers = NULL;
+
+typedef struct _Download_Data Download_Data;
+
+struct _Download_Data
+{
+  Ecore_Exe *exe;
+  Ecore_Timer *timer;
+  int method;
+  int tries;
+  char *file;
+};
+
+static int
+_action_download_timer(void *d)
+{
+  Download_Data *dd = d;
+  struct stat s;
+  E_Notification *n = NULL;
+
+  if (dd->tries++ > 30)
+    {
+      n = e_notification_full_new("Everything", 0,
+				  "enblem-music", "Abort download",
+				  ecore_file_file_get(dd->file), -1);
+
+      if (dd->exe) ecore_exe_terminate(dd->exe);
+      ecore_file_remove(dd->file);
+
+      goto finish;
+    }
+
+  printf("try playing\n");
+
+  if (stat(dd->file, &s) == 0)
+    {
+      if (s.st_size < 524288)
+	{
+	  char buf[128];
+	  snprintf(buf, sizeof(buf), "Got %d kbytes",
+		   ((unsigned int)s.st_size / 1024));
+
+	  printf("size %d\n", (unsigned int)s.st_size);
+	  n = e_notification_full_new("Everything", 0,
+				      "enblem-music", buf,
+				      ecore_file_file_get(dd->file), -1);
+	  e_notification_send(n, NULL, NULL);
+	  e_notification_unref(n);
+	  return 1;
+	}
+
+      Evry_Item_File *f = E_NEW(Evry_Item_File, 1);
+      Evry_Action *act;
+
+      f->path = eina_stringshare_add(dd->file);
+
+      if (dd->method == 1)
+  	{
+  	  if ((act = evry_action_find(N_("Enqueue in Playlist"))))
+  	    {
+  	      act->it1.item = EVRY_ITEM(f);
+  	      act->action(act);
+	      n = e_notification_full_new
+		("Everything", 0, "enblem-music", "Enqueue",
+		 ecore_file_file_get(dd->file), -1);
+  	    }
+  	}
+      else if (dd->method == 2)
+  	{
+  	  if ((act = evry_action_find(N_("Play File"))))
+  	    {
+  	      act->it1.item = EVRY_ITEM(f);
+  	      act->action(act);
+	      n = e_notification_full_new
+		("Everything", 0, "enblem-music", "Play",
+		 ecore_file_file_get(dd->file), -1);
+  	    }
+  	}
+
+      IF_RELEASE(f->path);
+      E_FREE(f);
+
+      goto finish;
+    }
+
+  return 1;
+
+ finish:
+  if (n)
+    {
+      e_notification_send(n, NULL, NULL);
+      e_notification_unref(n);
+    }
+
+  E_FREE(dd->file);
+  E_FREE(dd);
+  return 0;
+}
+
+static int
+_action_download(Evry_Action *act)
+{
+  char buf[1024];
+  char file[1024];
+  int method = EVRY_ITEM_DATA_INT_GET(act);
+  GET_WEBLINK(wl, act->it1.item);
+  E_Exec_Instance *exe = NULL;
+
+  char *filename = ecore_file_escape_name(act->it1.item->label);
+  snprintf(file, sizeof(file),
+	   "%s/Download/%s.mp3",
+	   e_user_homedir_get(),
+	   filename);
+
+  if (!ecore_file_exists(file))
+    {
+      snprintf(buf, sizeof(buf),
+	       "ffmpeg -v 0 -y -i $(youtube-dl -g -b \"%s\") "
+	       "-acodec libmp3lame -ac 2 -ab 128 "
+	       "%s",
+	       wl->url, file);
+
+      exe = e_exec(e_util_zone_current_get(e_manager_current_get()),
+	     NULL, buf, NULL, NULL);
+    }
+
+  if (method)
+    {
+      Download_Data *dd = E_NEW(Download_Data, 1);
+
+      snprintf(buf, sizeof(buf),
+	       "%s/Download/%s.mp3",
+	       e_user_homedir_get(),
+	       act->it1.item->label);
+
+      dd->file = strdup(buf);
+      dd->method = method;
+      dd->tries = 0;
+      if (exe)
+	dd->exe = exe->exe;
+      dd->timer = ecore_timer_add(3.0, _action_download_timer, dd);
+    }
+
+  return 0;
 }
 
 static int
@@ -560,8 +707,6 @@ struct _Upload_Data
   Ecore_Event_Handler *con_complete;
   Ecore_Event_Handler *con_data;
   Ecore_Event_Handler *con_progress;
-
-  E_Notification *n;
 };
 
 static int
@@ -682,6 +827,7 @@ _action_upload(Evry_Action *act)
   struct curl_httppost* post = NULL;
   struct curl_httppost* last = NULL;
   Upload_Data *ud;
+  E_Notification *n;
 
   GET_FILE(file, act->it1.item);
   if (!evry_file_path_get(file))
@@ -716,9 +862,9 @@ _action_upload(Evry_Action *act)
 
   ecore_con_url_http_post_send(ud->con_url, post);
 
-  ud->n = e_notification_full_new("Everything", 0, "image", "Send Image", ud->file, -1);
-  e_notification_send(ud->n, _notification_id_cb, ud);
-  e_notification_unref(ud->n);
+  n = e_notification_full_new("Everything", 0, "image", "Send Image", ud->file, -1);
+  e_notification_send(n, _notification_id_cb, ud);
+  e_notification_unref(n);
   return 0;
 }
 
@@ -820,6 +966,15 @@ _plugins_init(void)
 
   ACTION_NEW(N_("Watch on Youtube"), WEBLINK, "feeling-lucky",
 	     _action, NULL, ACT_YOUTUBE);
+
+  ACTION_NEW(N_("Download as mp3"), WEBLINK, "feeling-lucky",
+	     _action_download, NULL, 0);
+
+  ACTION_NEW(N_("Download and enqueue"), WEBLINK, "feeling-lucky",
+  	     _action_download, NULL, 1);
+
+  ACTION_NEW(N_("Download and play"), WEBLINK, "feeling-lucky",
+  	     _action_download, NULL, 2);
 
   ACTION_NEW(N_("Upload Image"), EVRY_TYPE_FILE, "go-next",
 	     _action_upload, _action_upload_check, ACT_UPLOAD_IMGUR);
@@ -1065,6 +1220,9 @@ e_modapi_init(E_Module *m)
 
   WEBLINK = evry_type_register("WEBLINK");
   snprintf(buf, sizeof(buf), "%s/.cache/youtube", e_user_homedir_get());
+  if (!ecore_file_exists(buf))
+    ecore_file_mkdir(buf);
+  snprintf(buf, sizeof(buf), "%s/Download", e_user_homedir_get());
   if (!ecore_file_exists(buf))
     ecore_file_mkdir(buf);
 
