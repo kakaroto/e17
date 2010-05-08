@@ -22,6 +22,7 @@ typedef struct _Plugin Plugin;
 typedef int (*Handler_Func) (void *data, int type, void *event);
 typedef struct _Module_Config Module_Config;
 typedef struct _Json_Data Json_Data;
+typedef struct _Web_Link Web_Link;
 
 struct _Plugin
 {
@@ -69,6 +70,20 @@ struct _Json_Data
   int is_val;
 };
 
+struct _Web_Link
+{
+  Evry_Item base;
+
+  const char *url;
+  const char *thumb;
+
+  char *thumb_data;
+  int thumb_size;
+
+  const char *thumb_file;
+  Ecore_Con_Url *thumb_url;
+};
+
 static Module_Config *_conf;
 static char _config_path[] =  "extensions/" PACKAGE;
 static char _config_domain[] = "module." PACKAGE;
@@ -95,6 +110,9 @@ static char _request_youtube[] =
 static const char _imgur_key[] =
   "1606e11f5c2ccd9b7440f1ffd80b17de";
 
+static Evry_Type WEBLINK;
+#define GET_WEBLINK(_weblink, _item) Web_Link *_weblink = (Web_Link *) _item
+
 static Json_Data  *_json_parse(const char *string, int len);
 static Json_Data  *_json_data_find(const Json_Data *d, const char *key, int level);
 static void        _json_data_free(Json_Data *d);
@@ -105,15 +123,25 @@ static int
 _data_cb(void *data, int ev_type, void *event)
 {
   Ecore_Con_Event_Url_Data *ev = event;
-  Plugin *p = data;
+  Evry_Item *it = ecore_con_url_data_get(ev->url_con);
   int len;
 
-  if (data != ecore_con_url_data_get(ev->url_con))
-    return 1;
-
-  p->data = realloc(p->data, sizeof(char) * (p->cur_size + ev->size));
-  memcpy(p->data + p->cur_size, ev->data, ev->size);
-  p->cur_size += ev->size;
+  if (it->type == EVRY_TYPE_PLUGIN)
+    {
+      if (data != it) return 1;
+      GET_PLUGIN(p, it);
+      p->data = realloc(p->data, sizeof(char) * (p->cur_size + ev->size));
+      memcpy(p->data + p->cur_size, ev->data, ev->size);
+      p->cur_size += ev->size;
+    }
+  else if (it->type == WEBLINK)
+    {
+      if (data != it->plugin) return 1;
+      GET_WEBLINK(wl, it);
+      wl->thumb_data = realloc(wl->thumb_data, sizeof(char) * (wl->thumb_size + ev->size));
+      memcpy(wl->thumb_data + wl->thumb_size, ev->data, ev->size);
+      wl->thumb_size += ev->size;
+    }
 
   return 1;
 }
@@ -122,20 +150,38 @@ static int
 _complete_cb(void *data, int ev_type, void *event)
 {
   Ecore_Con_Event_Url_Data *ev = event;
-  Plugin *p = data;
+  Evry_Item *it = ecore_con_url_data_get(ev->url_con);
   int len;
 
-  if (data != ecore_con_url_data_get(ev->url_con))
-    return 1;
-
-  EVRY_PLUGIN_ITEMS_FREE(p);
-
-  if (p->data_cb(p, p->data, p->cur_size))
+  if (it->type == EVRY_TYPE_PLUGIN)
     {
-      evry_plugin_async_update (EVRY_PLUGIN(p), EVRY_ASYNC_UPDATE_ADD);
-    }
+      if (data != it) return 1;
+      GET_PLUGIN(p, it);
 
-  E_FREE(p->data);
+      EVRY_PLUGIN_ITEMS_FREE(p);
+
+      if (p->data_cb(p, p->data, p->cur_size))
+	{
+	  evry_plugin_async_update (EVRY_PLUGIN(p), EVRY_ASYNC_UPDATE_ADD);
+	}
+
+      E_FREE(p->data);
+    }
+  else if (it->type == WEBLINK)
+    {
+      if (data != it->plugin) return 1;
+      GET_WEBLINK(wl, it);
+
+      FILE *f = fopen(wl->thumb_file, "w");
+      if (f)
+	{
+	  fwrite(wl->thumb_data, wl->thumb_size, sizeof(char), f);
+	  fclose(f);
+	  evry_event_item_changed(it, 1, 0);
+	  E_FREE(wl->thumb_data);
+	}
+      E_FREE(wl->thumb_data);
+    }
 
   return 1;
 }
@@ -190,12 +236,65 @@ _gtranslate_data_cb(Plugin *p, const char *msg, int len)
   return 1;
 }
 
+static void
+_web_link_free(Evry_Item *it)
+{
+  GET_WEBLINK(wl, it);
+
+  if (wl->thumb_url)
+    ecore_con_url_destroy(wl->thumb_url);
+
+  IF_RELEASE(wl->url);
+  IF_RELEASE(wl->thumb);
+  IF_RELEASE(wl->thumb_file);
+
+  E_FREE(wl->thumb_data);
+  E_FREE(wl);
+}
+
+static char thumb_buf[4096];
+
+static Evas_Object *
+_web_link_icon_get(Evry_Item *it, Evas *e)
+{
+  Web_Link *wl = (Web_Link *) it;
+  Evas_Object *o;
+
+  if (!wl->thumb_file)
+    {
+      char *sum = evry_util_md5_sum(wl->thumb);
+
+      snprintf(thumb_buf, sizeof(thumb_buf),
+	       "%s/.cache/youtube/%s.jpeg",
+	       e_user_homedir_get(), sum);
+
+      wl->thumb_file = eina_stringshare_add(thumb_buf);
+    }
+
+  if (ecore_file_exists(wl->thumb_file))
+    {
+      o = e_icon_add(e);
+      e_icon_file_set(o, wl->thumb_file);
+      if (o) return o;
+    }
+  else if (!wl->thumb_url)
+    {
+      wl->thumb_url = ecore_con_url_new(NULL);
+      ecore_con_url_url_set(wl->thumb_url, wl->thumb);
+      ecore_con_url_data_set(wl->thumb_url, wl);
+      ecore_con_url_additional_header_add(wl->thumb_url, "Host", "i.ytimg.com");
+      ecore_con_url_send(wl->thumb_url, NULL, 0, NULL);
+    }
+
+  return NULL;
+}
+
 static int
 _youtube_data_cb(Plugin *p, const char *msg, int len)
 {
   Json_Data *d, *d2, *rsp;
   Eina_List *l;
-  Evry_Item *it;
+  Web_Link *it;
 
   rsp = _json_parse(msg, len);
   const char *title, *url, *thumb;
@@ -221,10 +320,13 @@ _youtube_data_cb(Plugin *p, const char *msg, int len)
 
 	  if (title && url && thumb)
 	    {
-	      it = EVRY_ITEM_NEW(Evry_Item, p, NULL, NULL, NULL);
-	      it->label = eina_stringshare_ref(title);
-	      it->detail = eina_stringshare_ref(url);
-	      it->context = eina_stringshare_ref(EVRY_PLUGIN(p)->name);
+	      it = EVRY_ITEM_NEW(Web_Link, p, NULL, _web_link_icon_get, _web_link_free);
+	      EVRY_ITEM_LABEL_SET(it, title);
+	      EVRY_ITEM_CONTEXT_SET(it, EVRY_PLUGIN(p)->name);
+	      it->url = eina_stringshare_ref(url);
+	      it->thumb = eina_stringshare_ref(thumb);
+	      /* printf("thumb %s\n", it->thumb); */
+
 	      EVRY_PLUGIN_ITEM_APPEND(p, it);
 	    }
   	}
@@ -404,7 +506,8 @@ _action(Evry_Action *act)
     }
   else if (EVRY_ITEM_DATA_INT_GET(act) == ACT_YOUTUBE)
     {
-      snprintf(buf, sizeof(buf), "%s", act->it1.item->detail);
+      GET_WEBLINK(wl, act->it1.item);
+      snprintf(buf, sizeof(buf), "%s", wl->url);
     }
   E_FREE(tmp);
 
@@ -475,8 +578,8 @@ _con_complete(void *data, int ev_type, void *event)
     return;
 
   l = ecore_con_url_response_headers_get(ev->url_con);
-  EINA_LIST_FOREACH(l, ll, header)
-    printf("%s", header);
+  /* EINA_LIST_FOREACH(l, ll, header)
+   *   printf("%s", header); */
 
   ecore_event_handler_del(ud->con_complete);
   ecore_event_handler_del(ud->con_data);
@@ -504,7 +607,7 @@ _con_data(void *data, int ev_type, void *event)
     return 1;
 
   len = ecore_con_url_received_bytes_get(ev->url_con);
-  fprintf(stdout, "parse %*s\n", len, (char *)ev->data);
+  /* fprintf(stdout, "parse %*s\n", len, (char *)ev->data); */
 
   rsp = _json_parse((char *)ev->data, len);
   d = _json_data_find(rsp, "imgur_page", 5);
@@ -552,7 +655,7 @@ _con_progress(void *data, int ev_type, void *event)
 
       ud->progress = up;
       snprintf(buf, sizeof(buf), "Sent %1.1f%% of", up * 5.0);
-      printf("sent %s\n", buf);
+      /* printf("sent %s\n", buf); */
 
       n = e_notification_full_new("Everything", ud->id,
 				  "image", buf, ud->file, -1);
@@ -660,8 +763,8 @@ _plugins_init(void)
   if (!evry_api_version_check(EVRY_API_VERSION))
     return EINA_FALSE;
 
-#define PLUGIN_NEW(_name, _icon, _begin, _cleaup, _fetch, _complete, _request, _data_cb, _host, _trigger) { \
-    p = EVRY_PLUGIN_NEW(Plugin, _name, _icon, EVRY_TYPE_TEXT, _begin, _cleanup, _fetch, NULL); \
+#define PLUGIN_NEW(_name, _type, _icon, _begin, _cleaup, _fetch, _complete, _request, _data_cb, _host, _trigger) { \
+    p = EVRY_PLUGIN_NEW(Plugin, _name, _icon, _type, _begin, _cleanup, _fetch, NULL); \
     p->config_path = _config_path;				\
     plugins = eina_list_append(plugins, p);			\
     p->complete = _complete;					\
@@ -678,22 +781,22 @@ _plugins_init(void)
       pc->trigger_only = EINA_TRUE;				\
       pc->trigger = eina_stringshare_add(_trigger); }}		\
 
-  PLUGIN_NEW(N_("Google"), "text-html",
+  PLUGIN_NEW(N_("Google"), EVRY_TYPE_TEXT, "text-html",
 	     _begin, _cleanup, _fetch, &_complete,
 	     _request_goolge, _google_data_cb,
 	     NULL, _trigger_google);
 
-  PLUGIN_NEW(N_("Wikipedia"), "text-html",
+  PLUGIN_NEW(N_("Wikipedia"), EVRY_TYPE_TEXT, "text-html",
 	     _begin, _cleanup, _fetch, &_complete,
 	     _request_wiki, _wikipedia_data_cb,
 	     NULL, _trigger_wiki);
 
-  PLUGIN_NEW(N_("Youtube"), "text-html",
+  PLUGIN_NEW(N_("Youtube"), WEBLINK, "text-html",
 	     _begin, _cleanup, _fetch, &_complete,
 	     _request_youtube, _youtube_data_cb,
 	     "gdata.youtube.com", _trigger_youtube);
 
-  PLUGIN_NEW(N_("Translate"), "text-html",
+  PLUGIN_NEW(N_("Translate"), EVRY_TYPE_TEXT, "text-html",
 	     _begin, _cleanup, _fetch, NULL,
 	     _request_gtranslate, _gtranslate_data_cb,
 	     "ajax.googleapis.com", _trigger_gtranslate);
@@ -715,7 +818,7 @@ _plugins_init(void)
   ACTION_NEW(N_("Feeling Lucky"), EVRY_TYPE_TEXT, "feeling-lucky",
 	     _action, NULL, ACT_FEELING_LUCKY);
 
-  ACTION_NEW(N_("Watch on Youtube"), EVRY_TYPE_TEXT, "feeling-lucky",
+  ACTION_NEW(N_("Watch on Youtube"), WEBLINK, "feeling-lucky",
 	     _action, NULL, ACT_YOUTUBE);
 
   ACTION_NEW(N_("Upload Image"), EVRY_TYPE_FILE, "go-next",
@@ -959,6 +1062,11 @@ e_modapi_init(E_Module *m)
   e_notification_init();
   ecore_con_url_init();
   _conf_init(m);
+
+  WEBLINK = evry_type_register("WEBLINK");
+  snprintf(buf, sizeof(buf), "%s/.cache/youtube", e_user_homedir_get());
+  if (!ecore_file_exists(buf))
+    ecore_file_mkdir(buf);
 
   if (!_plugins_init())
     {
