@@ -31,7 +31,9 @@ libelementaryxx_HEADERS = \
 	Progressbar.h \
 	Panel.h \
 	Separator.h \
-	GenList.h
+	GenList.h \
+	GenListItem.h \
+	GenListDataModel.h
 
 libelementaryxxdir = \
 	$(pkgincludedir)

@@ -2,7 +2,11 @@
   #include <config.h>
 #endif
 
+/* Project */
 #include "../include/elementaryxx/GenList.h"
+
+/* STD */
+#include <cassert>
 
 using namespace std;
 
@@ -108,6 +112,36 @@ void GenList::setBlockCount  (int n)
 int GenList::getBlockCound ()
 {
   return elm_genlist_block_count_get (o);
+}
+
+void GenList::setDataModel (GenListDataModel &model)
+{
+  mModel = &model;
+}
+
+void GenList::gl_sel (void *data, Evas_Object *obj, void *event_info)
+{
+  // TODO: sigc
+  printf("sel item data [%p] on genlist obj [%p], item pointer [%p]\n", data, obj, event_info);
+}
+
+/* operations to add items */
+
+void GenList::append ()
+{
+  assert (mModel);
+  
+  Elm_Genlist_Item *gli;
+    
+  int i = 99;
+
+  gli = elm_genlist_item_append (o, &mModel->mGLIC,
+                                 mModel /* item data */,
+                                 NULL/* parent */,
+                                 ELM_GENLIST_ITEM_NONE,
+                                 GenList::gl_sel/* func */,
+                                 (void *)(i * 10)/* func data */);
+
 }
 
 } // end namespace Elmxx

@@ -37,6 +37,7 @@
 #include "Progressbar.h"
 #include "Panel.h"
 #include "GenList.h"
+#include "GenListDataModel.h"
 
 #endif // ELEMENTARYXX_H
 

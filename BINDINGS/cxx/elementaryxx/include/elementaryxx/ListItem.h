@@ -1,5 +1,5 @@
-#ifndef ELMXX_LISTITEM_H
-#define ELMXX_LISTITEM_H
+#ifndef ELMXX_LIST_ITEM_H
+#define ELMXX_LIST_ITEM_H
 
 /* STL */
 #include <string>
@@ -64,4 +64,4 @@ private:
 
 } // end namespace Elmxx
 
-#endif // ELMXX_LISTITEM_H
+#endif // ELMXX_LIST_ITEM_H

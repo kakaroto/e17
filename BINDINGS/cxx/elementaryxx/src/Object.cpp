@@ -40,7 +40,7 @@ void Object::freeSignalHandler ()
   delete (this);
   // !!!ATTENTION!!!
   // suicide for a C++ object is dangerous, but allowed
-  // the simple rule is that no member functions or member variables are allowed to access
+  // the simple rule is that no member functions or member variables are allowed to access after this point!
 }
 
 void Object::setScale (double scale)

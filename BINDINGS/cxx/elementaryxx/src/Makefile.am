@@ -47,5 +47,7 @@ libelementaryxx_la_SOURCES = \
 	Progressbar.cpp  \
 	Panel.cpp  \
 	Separator.cpp  \
-	GenList.cpp
+	GenList.cpp  \
+	GenListItem.cpp  \
+	GenListDataModel.cpp
 

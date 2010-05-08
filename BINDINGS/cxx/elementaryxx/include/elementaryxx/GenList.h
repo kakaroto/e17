@@ -9,6 +9,7 @@
 
 /* ELFxx */
 #include "Object.h"
+#include "GenListDataModel.h"
 
 namespace Elmxx {
 
@@ -16,6 +17,7 @@ namespace Elmxx {
  * smart callbacks called:
 
  */
+  
 class GenList : public Object
 {
 public:  
@@ -55,19 +57,49 @@ public:
   
   int getBlockCound ();
 
+  void setDataModel (GenListDataModel &model);
+  
+  /* operations to add items */
+  
+  /*!
+   * Append item to the end of the genlist
+   *
+   * This appends the given item to the end of the list or the end of the
+   * children if the parent is given.
+   *
+   * @param obj The genlist object
+   * @param itc The item class for the item
+   * @param data The item data
+   * @param parent The parent item, or NULL if none
+   * @param flags Item flags
+   * @param func Convenience function called when item selected
+   * @param func_data Data passed to @p func above.
+   * @return A handle to the item added or NULL if not possible
+   *
+   * @ingroup Genlist
+   */
+
+  void append ();
 
 private:
   GenList (); // forbid standard constructor
   GenList (const GenList&); // forbid copy constructor
   GenList (Evasxx::Object &parent); // private construction -> use factory ()
   ~GenList (); // forbid direct delete -> use Object::destroy()
+  
+  static void gl_sel (void *data, Evas_Object *obj, void *event_info);
+  
+  GenListDataModel *mModel;
 };
 
 #if 0
 
 
    /* operations to add items */
-   EAPI Elm_Genlist_Item *elm_genlist_item_append(Evas_Object *obj, const Elm_Genlist_Item_Class *itc, const void *data, Elm_Genlist_Item *parent, Elm_Genlist_Item_Flags flags, Evas_Smart_Cb func, const void *func_data);
+   EAPI Elm_Genlist_Item *elm_genlist_item_append(Evas_Object *obj, const Elm_Genlist_Item_Class *itc,
+                                                  const void *data, Elm_Genlist_Item *parent, 
+                                                  Elm_Genlist_Item_Flags flags, Evas_Smart_Cb func, 
+                                                  const void *func_data);
    EAPI Elm_Genlist_Item *elm_genlist_item_prepend(Evas_Object *obj, const Elm_Genlist_Item_Class *itc, const void *data, Elm_Genlist_Item *parent, Elm_Genlist_Item_Flags flags, Evas_Smart_Cb func, const void *func_data);
    EAPI Elm_Genlist_Item *elm_genlist_item_insert_before(Evas_Object *obj, const Elm_Genlist_Item_Class *itc, const void *data, Elm_Genlist_Item *before, Elm_Genlist_Item_Flags flags, Evas_Smart_Cb func, const void *func_data);
    EAPI Elm_Genlist_Item *elm_genlist_item_insert_after(Evas_Object *obj, const Elm_Genlist_Item_Class *itc, const void *data, Elm_Genlist_Item *after, Elm_Genlist_Item_Flags flags, Evas_Smart_Cb func, const void *func_data);
