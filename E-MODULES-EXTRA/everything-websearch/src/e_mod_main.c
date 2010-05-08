@@ -22,6 +22,7 @@ typedef struct _Plugin Plugin;
 typedef int (*Handler_Func) (void *data, int type, void *event);
 typedef struct _Module_Config Module_Config;
 typedef struct _Json_Data Json_Data;
+typedef struct _Download_Data Download_Data;
 typedef struct _Web_Link Web_Link;
 
 struct _Plugin
@@ -50,6 +51,7 @@ struct _Module_Config
   const char *lang;
   const char *browser;
   const char *translate;
+  const char *convert_cmd;
 
   E_Config_Dialog *cfd;
   E_Module *module;
@@ -68,6 +70,16 @@ struct _Json_Data
   Eina_List *list;
 
   int is_val;
+};
+
+struct _Download_Data
+{
+  Ecore_Exe *exe;
+  Ecore_Timer *timer;
+  int method;
+  int tries;
+  char *file;
+  int ready;
 };
 
 struct _Web_Link
@@ -91,7 +103,7 @@ static E_Config_DD *_conf_edd = NULL;
 
 static Eina_List *plugins = NULL;
 static Eina_List *actions = NULL;
-
+static Eina_List *download_handlers = NULL;
 static char _trigger_google[] = "g ";
 static char _trigger_wiki[] = "w ";
 static char _trigger_gtranslate[] = "t ";
@@ -534,52 +546,37 @@ _action(Evry_Action *act)
   E_FREE(app);
 }
 
-static Eina_List *timers = NULL;
-
-typedef struct _Download_Data Download_Data;
-
-struct _Download_Data
-{
-  Ecore_Exe *exe;
-  Ecore_Timer *timer;
-  int method;
-  int tries;
-  char *file;
-};
-
 static int
 _action_download_timer(void *d)
 {
   Download_Data *dd = d;
   struct stat s;
   E_Notification *n = NULL;
+  int abort = 0;
 
-  if (dd->tries++ > 30)
+  if (dd->ready || dd->tries++ > 15)
     {
-      n = e_notification_full_new("Everything", 0,
-				  "enblem-music", "Abort download",
-				  ecore_file_file_get(dd->file), -1);
-
-      if (dd->exe) ecore_exe_terminate(dd->exe);
-      ecore_file_remove(dd->file);
-
+      abort = 1;
       goto finish;
     }
-
-  printf("try playing\n");
 
   if (stat(dd->file, &s) == 0)
     {
       if (s.st_size < 524288)
 	{
+	  if (dd->tries > 5 && s.st_size < 1024)
+	    {
+	      abort = 1;
+	      goto finish;
+	    }
+
 	  char buf[128];
-	  snprintf(buf, sizeof(buf), "Got %d kbytes",
+	  snprintf(buf, sizeof(buf), N_("Got %d kbytes"),
 		   ((unsigned int)s.st_size / 1024));
 
-	  printf("size %d\n", (unsigned int)s.st_size);
 	  n = e_notification_full_new("Everything", 0,
 				      "enblem-music", buf,
-				      ecore_file_file_get(dd->file), -1);
+				      ecore_file_file_get(dd->file), 3000);
 	  e_notification_send(n, NULL, NULL);
 	  e_notification_unref(n);
 	  return 1;
@@ -597,7 +594,7 @@ _action_download_timer(void *d)
   	      act->it1.item = EVRY_ITEM(f);
   	      act->action(act);
 	      n = e_notification_full_new
-		("Everything", 0, "enblem-music", "Enqueue",
+		("Everything", 0, "enblem-music", N_("Enqueue"),
 		 ecore_file_file_get(dd->file), -1);
   	    }
   	}
@@ -608,7 +605,7 @@ _action_download_timer(void *d)
   	      act->it1.item = EVRY_ITEM(f);
   	      act->action(act);
 	      n = e_notification_full_new
-		("Everything", 0, "enblem-music", "Play",
+		("Everything", 0, "enblem-music", N_("Play"),
 		 ecore_file_file_get(dd->file), -1);
   	    }
   	}
@@ -616,20 +613,37 @@ _action_download_timer(void *d)
       IF_RELEASE(f->path);
       E_FREE(f);
 
-      goto finish;
+      dd->ready = 1;
+
+      /* after five minutes it should be finished */
+      dd->timer = ecore_timer_add(5 * 60.0, _action_download_timer, dd);
+      return 0;
     }
 
   return 1;
 
  finish:
+  if (abort)
+    {
+      n = e_notification_full_new
+	("Everything", 0, "enblem-music", N_("Abort download"),
+	 ecore_file_file_get(dd->file), -1);
+
+      if (dd->exe) ecore_exe_terminate(dd->exe);
+      ecore_file_remove(dd->file);
+      ERR("abort download\n");
+    }
+
   if (n)
     {
       e_notification_send(n, NULL, NULL);
       e_notification_unref(n);
     }
 
+  download_handlers = eina_list_remove(download_handlers, dd);
   E_FREE(dd->file);
   E_FREE(dd);
+
   return 0;
 }
 
@@ -644,17 +658,13 @@ _action_download(Evry_Action *act)
 
   char *filename = ecore_file_escape_name(act->it1.item->label);
   snprintf(file, sizeof(file),
-	   "%s/Download/%s.mp3",
+	   "%s/Download/%s",
 	   e_user_homedir_get(),
 	   filename);
 
   if (!ecore_file_exists(file))
     {
-      snprintf(buf, sizeof(buf),
-	       "ffmpeg -v 0 -y -i $(youtube-dl -g -b \"%s\") "
-	       "-acodec libmp3lame -ac 2 -ab 128 "
-	       "%s",
-	       wl->url, file);
+      snprintf(buf, sizeof(buf), _conf->convert_cmd, wl->url, file);
 
       exe = e_exec(e_util_zone_current_get(e_manager_current_get()),
 	     NULL, buf, NULL, NULL);
@@ -675,6 +685,7 @@ _action_download(Evry_Action *act)
       if (exe)
 	dd->exe = exe->exe;
       dd->timer = ecore_timer_add(3.0, _action_download_timer, dd);
+      download_handlers = eina_list_append(download_handlers, dd);
     }
 
   return 0;
@@ -762,12 +773,12 @@ _con_data(void *data, int ev_type, void *event)
       len = strlen(d->value);
       ecore_x_selection_primary_set(ecore_x_window_root_first_get(), d->value, len);
       ecore_x_selection_clipboard_set(ecore_x_window_root_first_get(), d->value, len);
-      n = e_notification_full_new("Everything", ud->id, "image", "Image Sent",
-				  "Link copied to clipboard", -1);
+      n = e_notification_full_new("Everything", ud->id, "image", N_("Image Sent"),
+				  N_("Link copied to clipboard"), -1);
     }
   else
     {
-      n = e_notification_full_new("Everything", ud->id, "image", "Something went wrong :(",
+      n = e_notification_full_new("Everything", ud->id, "image", N_("Something went wrong :("),
 				  ud->file, -1);
     }
 
@@ -799,7 +810,7 @@ _con_progress(void *data, int ev_type, void *event)
       char buf[128];
 
       ud->progress = up;
-      snprintf(buf, sizeof(buf), "Sent %1.1f%% of", up * 5.0);
+      snprintf(buf, sizeof(buf), N_("Sent %1.1f%% of"), up * 5.0);
       /* printf("sent %s\n", buf); */
 
       n = e_notification_full_new("Everything", ud->id,
@@ -1003,6 +1014,7 @@ struct _E_Config_Dialog_Data
   char *browser;
   char *lang;
   char *translate;
+  char *convert_cmd;
 };
 
 static void *_create_data(E_Config_Dialog *cfd);
@@ -1062,6 +1074,11 @@ _basic_create(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cfdata)
   ow = e_widget_entry_add(evas, &cfdata->translate, NULL, NULL, NULL);
   e_widget_framelist_object_append(of, ow);
 
+  ow = e_widget_label_add(evas, _("Youtube converter"));
+  e_widget_framelist_object_append(of, ow);
+  ow = e_widget_entry_add(evas, &cfdata->convert_cmd, NULL, NULL, NULL);
+  e_widget_framelist_object_append(of, ow);
+
   e_widget_list_object_append(o, of, 1, 1, 0.5);
   return o;
 }
@@ -1077,6 +1094,7 @@ _create_data(E_Config_Dialog *cfd)
   CP(browser);
   CP(lang);
   CP(translate);
+  CP(convert_cmd);
 #undef CP
 #undef C
   return cfdata;
@@ -1088,6 +1106,7 @@ _free_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
   E_FREE(cfdata->browser);
   E_FREE(cfdata->lang);
   E_FREE(cfdata->translate);
+  E_FREE(cfdata->convert_cmd);
   _conf->cfd = NULL;
   E_FREE(cfdata);
 }
@@ -1103,6 +1122,7 @@ _basic_apply(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
   CP(browser);
   CP(lang);
   CP(translate);
+  CP(convert_cmd);
 #undef CP
 #undef C
 
@@ -1133,6 +1153,13 @@ _conf_new(void)
   _conf->translate = eina_stringshare_add("en|de");
   IFMODCFGEND;
 
+  IFMODCFG(0x00ad);
+  _conf->convert_cmd = eina_stringshare_add
+    ( "ffmpeg -vn -v 0 -y -i $(youtube-dl -g -b \"%s\") "
+      "-acodec libmp3lame -ac 2 -ab 128k "
+      "%s.mp3");
+  IFMODCFGEND;
+
   _conf->version = MOD_CONFIG_FILE_VERSION;
 
   e_config_save_queue();
@@ -1145,6 +1172,7 @@ _conf_free(void)
   eina_stringshare_del(_conf->browser);
   eina_stringshare_del(_conf->lang);
   eina_stringshare_del(_conf->translate);
+  eina_stringshare_del(_conf->convert_cmd);
   free(_conf->theme);
   E_FREE(_conf);
 }
@@ -1172,6 +1200,7 @@ _conf_init(E_Module *m)
   E_CONFIG_VAL(D, T, browser, STR);
   E_CONFIG_VAL(D, T, lang, STR);
   E_CONFIG_VAL(D, T, translate, STR);
+  E_CONFIG_VAL(D, T, convert_cmd, STR);
 #undef T
 #undef D
   _conf = e_config_domain_load(_config_domain, _conf_edd);
