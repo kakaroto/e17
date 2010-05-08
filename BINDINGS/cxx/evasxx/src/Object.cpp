@@ -50,11 +50,6 @@ void Object::init ()
 Object::~Object()
 {
   Dout( dc::notice, *this << " Object::~Object" );
-
-  /*if ( mFree )
-  {
-    evas_object_del( o );
-  }*/
 }
 
 const std::string Object::getName() const

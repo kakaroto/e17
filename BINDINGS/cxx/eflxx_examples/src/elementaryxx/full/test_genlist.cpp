@@ -1,6 +1,6 @@
 #include "test.h"
 
-#if 0
+
 
 typedef struct _Testitem
 {
@@ -10,7 +10,9 @@ typedef struct _Testitem
 } Testitem;
 
 
-static Elm_Genlist_Item_Class itc1;
+//static Elm_Genlist_Item_Class itc1;
+static GenListDataModel model;
+
 char *gl_label_get(const void *data, Evas_Object *obj, const char *part)
 {
    char buf[256];
@@ -28,7 +30,7 @@ Evas_Object *gl_icon_get(const void *data, Evas_Object *obj, const char *part)
    return ic;
 }
 Eina_Bool gl_state_get(const void *data, Evas_Object *obj, const char *part)
-{
+{ 
    return EINA_FALSE;
 }
 void gl_del(const void *data, Evas_Object *obj)
@@ -40,7 +42,7 @@ gl_sel(void *data, Evas_Object *obj, void *event_info)
 {
    printf("sel item data [%p] on genlist obj [%p], item pointer [%p]\n", data, obj, event_info);
 }
-
+#if 0
 static void
 _move(void *data, Evas *evas, Evas_Object *obj, void *event_info)
 {
@@ -91,7 +93,7 @@ test_genlist (void *data, Evas_Object *obj, void *event_info)
   /*Evas_Object *win, *bg, *gl, *bt_50, *bt_1500, *bx;
   Evas_Object *over;
   Elm_Genlist_Item *gli;
-  int i;*/
+  */
   
   Window *win = Window::factory ("genlist", ELM_WIN_BASIC);
   win->setTitle ("GenList");
@@ -128,12 +130,6 @@ test_genlist (void *data, Evas_Object *obj, void *event_info)
    evas_object_size_hint_weight_set(over, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    elm_win_resize_object_add(win, over);
 
-   itc1.item_style     = "default";
-   itc1.func.label_get = gl_label_get;
-   itc1.func.icon_get  = gl_icon_get;
-   itc1.func.state_get = gl_state_get;
-   itc1.func.del       = gl_del;
-
    bt_50 = elm_button_add(win);
    elm_button_label_set(bt_50, "Go to 50");
    evas_object_show(bt_50);
@@ -143,9 +139,14 @@ test_genlist (void *data, Evas_Object *obj, void *event_info)
    elm_button_label_set(bt_1500, "Go to 1500");
    evas_object_show(bt_1500);
    elm_box_pack_end(bx, bt_1500);
-
-   for (i = 0; i < 2000; i++)
-     {
+#endif
+  
+  gl->setDataModel (model);
+  
+  for (int i = 0; i < 2000; i++)
+  {
+    gl->append ();
+#if 0
         gli = elm_genlist_item_append(gl, &itc1,
                                       (void *)i/* item data */,
                                       NULL/* parent */,
@@ -156,9 +157,10 @@ test_genlist (void *data, Evas_Object *obj, void *event_info)
           evas_object_smart_callback_add(bt_50, "clicked", _bt50_cb, gli);
         else if (i == 1500)
           evas_object_smart_callback_add(bt_1500, "clicked", _bt1500_cb, gli);
-     }
-  
 #endif
+  }
+  
+
   
   win->resize (Size (480, 800));
   win->show ();
