@@ -13,6 +13,7 @@
 #define ACT_FEELING_LUCKY	2
 #define ACT_WIKIPEDIA		3
 #define ACT_UPLOAD_IMGUR	4
+#define ACT_YOUTUBE		5
 
 /* #undef DBG
  * #define DBG(...) ERR(__VA_ARGS__) */
@@ -28,10 +29,14 @@ struct _Plugin
 
   Ecore_Con_Url *con_url;
   Ecore_Timer *timer;
-  Ecore_Event_Handler *handler;
+  Eina_List *handlers;
 
   const char *input;
   const char *request;
+  const char *host;
+
+  char *data;
+  int cur_size;
 
   int (*fetch) (void *data);
   int (*data_cb) (Plugin *p, const char *msg, int len);
@@ -61,7 +66,7 @@ struct _Json_Data
   Eina_List *values;
   Eina_List *list;
 
-  int flat;
+  int is_val;
 };
 
 static Module_Config *_conf;
@@ -75,6 +80,7 @@ static Eina_List *actions = NULL;
 static char _trigger_google[] = "g ";
 static char _trigger_wiki[] = "w ";
 static char _trigger_gtranslate[] = "t ";
+static char _trigger_youtube[] = "y ";
 
 static char _request_goolge[] =
   "http://www.google.com/complete/search?hl=%s&output=text&q=%s";
@@ -82,16 +88,18 @@ static char _request_wiki[]   =
   "http://%s.wikipedia.org/w/api.php?action=opensearch&search=%s";
 static char _request_gtranslate[] =
   "http://ajax.googleapis.com/ajax/services/language/translate?v=1.0&langpair=%s&q=%s";
+static char _request_youtube[] =
+  "http://gdata.youtube.com/feeds/videos?hl=%s"
+  "&fields=entry(title,link,media:group(media:thumbnail))"
+  "&alt=json&max-results=20&q=%s";
 static const char _imgur_key[] =
   "1606e11f5c2ccd9b7440f1ffd80b17de";
 
-static Json_Data  *_json_parse(const char *string, Eina_Bool flat, int len);
-static Json_Data  *_json_data_find(const Json_Data *d, const char *key);
+static Json_Data  *_json_parse(const char *string, int len);
+static Json_Data  *_json_data_find(const Json_Data *d, const char *key, int level);
 static void        _json_data_free(Json_Data *d);
 
-
 /***************************************************************************/
-
 
 static int
 _data_cb(void *data, int ev_type, void *event)
@@ -103,14 +111,31 @@ _data_cb(void *data, int ev_type, void *event)
   if (data != ecore_con_url_data_get(ev->url_con))
     return 1;
 
+  p->data = realloc(p->data, sizeof(char) * (p->cur_size + ev->size));
+  memcpy(p->data + p->cur_size, ev->data, ev->size);
+  p->cur_size += ev->size;
+
+  return 1;
+}
+
+static int
+_complete_cb(void *data, int ev_type, void *event)
+{
+  Ecore_Con_Event_Url_Data *ev = event;
+  Plugin *p = data;
+  int len;
+
+  if (data != ecore_con_url_data_get(ev->url_con))
+    return 1;
+
   EVRY_PLUGIN_ITEMS_FREE(p);
 
-  len = ecore_con_url_received_bytes_get(ev->url_con);
-
-  if (p->data_cb(p, (const char *) ev->data, len))
+  if (p->data_cb(p, p->data, p->cur_size))
     {
       evry_plugin_async_update (EVRY_PLUGIN(p), EVRY_ASYNC_UPDATE_ADD);
     }
+
+  E_FREE(p->data);
 
   return 1;
 }
@@ -123,7 +148,7 @@ _wikipedia_data_cb(Plugin *p, const char *msg, int len)
   Eina_List *l;
   Evry_Item *it;
 
-  rsp = _json_parse(msg, 0, len);
+  rsp = _json_parse(msg, len);
 
   if (rsp && rsp->list &&
       (d = rsp->list->data) &&
@@ -149,10 +174,11 @@ _gtranslate_data_cb(Plugin *p, const char *msg, int len)
 {
   Json_Data *d, *rsp;
   Evry_Item *it;
+  const char *key;
 
-  rsp = _json_parse(msg, 1, len);
+  rsp = _json_parse(msg, len);
 
-  d = _json_data_find(rsp, "translatedText");
+  d = _json_data_find(rsp, "translatedText", 3);
   if (d)
     {
       it = EVRY_ITEM_NEW(Evry_Item, p, d->value, NULL, NULL);
@@ -161,7 +187,49 @@ _gtranslate_data_cb(Plugin *p, const char *msg, int len)
       EVRY_PLUGIN_ITEM_APPEND(p, it);
     }
   _json_data_free(rsp);
+  return 1;
+}
 
+static int
+_youtube_data_cb(Plugin *p, const char *msg, int len)
+{
+  Json_Data *d, *d2, *rsp;
+  Eina_List *l;
+  Evry_Item *it;
+
+  rsp = _json_parse(msg, len);
+  const char *title, *url, *thumb;
+
+  d = _json_data_find(rsp, "entry", 3);
+  if (d && d->list)
+    {
+      d = d->list->data;
+
+      EINA_LIST_FOREACH(d->list, l, d)
+  	{
+	  url = thumb = title = NULL;
+
+  	  if ((d2 = _json_data_find(d, "$t", 2)))
+	    title = d2->value;
+
+  	  if ((d2 = _json_data_find(d, "href", 3)))
+	    url = d2->value;
+
+	  if ((d2 = _json_data_find(d, "media$thumbnail", 2)) &&
+	      (d2 = _json_data_find(d2, "url", 2)))
+	    thumb = d2->value;
+
+	  if (title && url && thumb)
+	    {
+	      it = EVRY_ITEM_NEW(Evry_Item, p, NULL, NULL, NULL);
+	      it->label = eina_stringshare_ref(title);
+	      it->detail = eina_stringshare_ref(url);
+	      it->context = eina_stringshare_ref(EVRY_PLUGIN(p)->name);
+	      EVRY_PLUGIN_ITEM_APPEND(p, it);
+	    }
+  	}
+    }
+  _json_data_free(rsp);
   return 1;
 }
 
@@ -184,7 +252,7 @@ _google_data_cb(Plugin *p, const char *msg, int len)
   /* fprintf(stdout, "parse %*s\n", len, msg); */
   if (!msg) return 0;
 
-  rsp = _json_parse(msg, 0, len);
+  rsp = _json_parse(msg, len);
 
   if (rsp && rsp->list &&
       (d = rsp->list->data) &&
@@ -219,35 +287,33 @@ _begin(Evry_Plugin *plugin, const Evry_Item *it)
   GET_PLUGIN(p, plugin);
 
   p->con_url = ecore_con_url_new(NULL);
+  if (p->host)
+    ecore_con_url_additional_header_add(p->con_url, "Host", p->host);
 
-  p->handler = ecore_event_handler_add
-    (ECORE_CON_EVENT_URL_DATA, _data_cb, p);
+  p->handlers = eina_list_append
+    (p->handlers, ecore_event_handler_add
+     (ECORE_CON_EVENT_URL_DATA, _data_cb, p));
+
+  p->handlers = eina_list_append
+    (p->handlers, ecore_event_handler_add
+     (ECORE_CON_EVENT_URL_COMPLETE, _complete_cb, p));
 
   ecore_con_url_data_set(p->con_url, p);
-  return plugin;
-}
-
-static Evry_Plugin *
-_begin_gtranslate(Evry_Plugin *plugin, const Evry_Item *it)
-{
-  GET_PLUGIN(p, plugin);
-
-  _begin(plugin, it);
-  ecore_con_url_additional_header_add(p->con_url, "Host", "ajax.googleapis.com");
-
   return plugin;
 }
 
 static void
 _cleanup(Evry_Plugin *plugin)
 {
+  Ecore_Event_Handler *h;
+
   GET_PLUGIN(p, plugin);
 
   ecore_con_url_destroy(p->con_url);
   p->con_url = NULL;
 
-  ecore_event_handler_del(p->handler);
-  p->handler = NULL;
+  EINA_LIST_FREE(p->handlers, h)
+    ecore_event_handler_del(h);
 
   EVRY_PLUGIN_ITEMS_FREE(p);
 }
@@ -269,7 +335,7 @@ _send_request(void *data)
 
   ecore_con_url_url_set(p->con_url, buf);
   ecore_con_url_send(p->con_url, NULL, 0, NULL);
-
+  p->cur_size = 0;
   free(query);
 
   p->timer = NULL;
@@ -336,6 +402,10 @@ _action(Evry_Action *act)
       snprintf(buf, sizeof(buf), "http://www.google.com/search?hl=%s&q=%s&btnI=745",
 	       _conf->lang, tmp);
     }
+  else if (EVRY_ITEM_DATA_INT_GET(act) == ACT_YOUTUBE)
+    {
+      snprintf(buf, sizeof(buf), "%s", act->it1.item->detail);
+    }
   E_FREE(tmp);
 
   file->path = buf;
@@ -360,13 +430,25 @@ _action(Evry_Action *act)
   E_FREE(app);
 }
 
+static int
+_action_check(Evry_Action *act, const Evry_Item *it)
+{
+  if (EVRY_ITEM_DATA_INT_GET(act) == ACT_YOUTUBE)
+    {
+      if (strcmp(it->plugin->name, N_("Youtube")))
+	return 0;
+    }
+
+  return 1;
+}
+
+
 /***************************************************************************/
 
 typedef struct _Upload_Data Upload_Data;
 
 struct _Upload_Data
 {
-  Evry_Action *act;
   int id;
   int progress;
   const char *file;
@@ -393,7 +475,6 @@ _con_complete(void *data, int ev_type, void *event)
     return;
 
   l = ecore_con_url_response_headers_get(ev->url_con);
-
   EINA_LIST_FOREACH(l, ll, header)
     printf("%s", header);
 
@@ -425,8 +506,8 @@ _con_data(void *data, int ev_type, void *event)
   len = ecore_con_url_received_bytes_get(ev->url_con);
   fprintf(stdout, "parse %*s\n", len, (char *)ev->data);
 
-  rsp = _json_parse((char *)ev->data, 1, len);
-  d = _json_data_find(rsp, "imgur_page");
+  rsp = _json_parse((char *)ev->data, len);
+  d = _json_data_find(rsp, "imgur_page", 5);
 
   if (d)
     {
@@ -470,7 +551,7 @@ _con_progress(void *data, int ev_type, void *event)
       char buf[128];
 
       ud->progress = up;
-      snprintf(buf, sizeof(buf), "%1.1f%% sent of", up * 5.0);
+      snprintf(buf, sizeof(buf), "Sent %1.1f%% of", up * 5.0);
       printf("sent %s\n", buf);
 
       n = e_notification_full_new("Everything", ud->id,
@@ -516,7 +597,6 @@ _action_upload(Evry_Action *act)
   ud->con_progress = ecore_event_handler_add
     (ECORE_CON_EVENT_URL_PROGRESS, _con_progress, ud);
 
-  ud->act = act;
   ud->file = eina_stringshare_ref(act->it1.item->label);
   ecore_con_url_data_set(ud->con_url, ud);
 
@@ -580,7 +660,7 @@ _plugins_init(void)
   if (!evry_api_version_check(EVRY_API_VERSION))
     return EINA_FALSE;
 
-#define PLUGIN_NEW(_name, _icon, _begin, _cleaup, _fetch, _complete, _request, _data_cb, _trigger) { \
+#define PLUGIN_NEW(_name, _icon, _begin, _cleaup, _fetch, _complete, _request, _data_cb, _host, _trigger) { \
     p = EVRY_PLUGIN_NEW(Plugin, _name, _icon, EVRY_TYPE_TEXT, _begin, _cleanup, _fetch, NULL); \
     p->config_path = _config_path;				\
     plugins = eina_list_append(plugins, p);			\
@@ -592,7 +672,7 @@ _plugins_init(void)
       Plugin_Config *pc = p->config;				\
       pc->view_mode = VIEW_MODE_LIST;				\
       pc->aggregate = EINA_FALSE;				\
-      pc->top_level = EINA_FALSE;				\
+      pc->top_level = EINA_TRUE;				\
       pc->view_mode = VIEW_MODE_DETAIL;				\
       pc->min_query = 3;					\
       pc->trigger_only = EINA_TRUE;				\
@@ -601,17 +681,22 @@ _plugins_init(void)
   PLUGIN_NEW(N_("Google"), "text-html",
 	     _begin, _cleanup, _fetch, &_complete,
 	     _request_goolge, _google_data_cb,
-	     _trigger_google);
+	     NULL, _trigger_google);
 
   PLUGIN_NEW(N_("Wikipedia"), "text-html",
 	     _begin, _cleanup, _fetch, &_complete,
 	     _request_wiki, _wikipedia_data_cb,
-	     _trigger_wiki);
+	     NULL, _trigger_wiki);
+
+  PLUGIN_NEW(N_("Youtube"), "text-html",
+	     _begin, _cleanup, _fetch, &_complete,
+	     _request_youtube, _youtube_data_cb,
+	     "gdata.youtube.com", _trigger_youtube);
 
   PLUGIN_NEW(N_("Translate"), "text-html",
-	     _begin_gtranslate, _cleanup, _fetch, NULL,
+	     _begin, _cleanup, _fetch, NULL,
 	     _request_gtranslate, _gtranslate_data_cb,
-	     _trigger_gtranslate);
+	     "ajax.googleapis.com", _trigger_gtranslate);
 
 
 #define ACTION_NEW(_name, _type, _icon, _action, _check, _method)	\
@@ -629,6 +714,9 @@ _plugins_init(void)
 
   ACTION_NEW(N_("Feeling Lucky"), EVRY_TYPE_TEXT, "feeling-lucky",
 	     _action, NULL, ACT_FEELING_LUCKY);
+
+  ACTION_NEW(N_("Watch on Youtube"), EVRY_TYPE_TEXT, "feeling-lucky",
+	     _action, NULL, ACT_YOUTUBE);
 
   ACTION_NEW(N_("Upload Image"), EVRY_TYPE_FILE, "go-next",
 	     _action_upload, _action_upload_check, ACT_UPLOAD_IMGUR);
@@ -810,11 +898,11 @@ _conf_init(E_Module *m)
 
   snprintf(buf, sizeof(buf), "%s/e-module.edj", m->dir);
 
-  e_configure_registry_category_add("extensions", 80, _("Extensions"),
-				    NULL, "preferences-extensions");
+  e_configure_registry_category_add
+    ("extensions", 80, _("Extensions"), NULL, "preferences-extensions");
 
-  e_configure_registry_item_add(_config_path, 110, _("Everything Websearch"),
-				NULL, buf, _conf_dialog);
+  e_configure_registry_item_add
+    (_config_path, 110, _("Everything Websearch"), NULL, buf, _conf_dialog);
 
   _conf_edd = E_CONFIG_DD_NEW("Module_Config", Module_Config);
 
@@ -831,7 +919,8 @@ _conf_init(E_Module *m)
   _conf = e_config_domain_load(_config_domain, _conf_edd);
 
   if (_conf && !evry_util_module_config_check
-      (_("Everything Websearch"), _conf->version, MOD_CONFIG_FILE_EPOCH, MOD_CONFIG_FILE_VERSION))
+      (_("Everything Websearch"), _conf->version,
+       MOD_CONFIG_FILE_EPOCH, MOD_CONFIG_FILE_VERSION))
     {
       _conf_free();
     }
@@ -913,43 +1002,41 @@ _parse_callback(void *userdata, int type, const char *data, uint32_t length)
   switch (type)
     {
     case JSON_OBJECT_BEGIN:
-      DBG("object beg %p\n", d->cur);
-      if (d->flat)
-	{
-	  if (d->cur->parent) d->cur = d->cur->parent;
-	  break;
-	}
       d2 = calloc(1, sizeof(Json_Data));
+      if (d->cur->key)
+	d2->is_val = 1;
       d2->parent = d->cur;
       d2->type = type;
-      d->cur->list =  eina_list_append(d->cur->list, d2);
+      d->cur->list = eina_list_append(d->cur->list, d2);
       d->cur = d2;
       break;
 
     case JSON_ARRAY_BEGIN:
-      DBG("array beg %p\n", d->cur);
       d2 = calloc(1, sizeof(Json_Data));
+      if (d->cur->key)
+	d2->is_val = 1;
       d2->parent = d->cur;
       d2->type = type;
-      d->cur->list =  eina_list_append(d->cur->list, d2);
+      d->cur->list = eina_list_append(d->cur->list, d2);
       d->cur = d2;
       break;
 
     case JSON_OBJECT_END:
-      DBG("object end %p\n", d->cur);
-      if (d->flat) break;
+      if (d->cur->is_val)
+	d->cur = d->cur->parent;
+
       d->cur = d->cur->parent;
       break;
 
     case JSON_ARRAY_END:
-      DBG("array end %p\n", d->cur);
+      if (d->cur->is_val)
+	d->cur = d->cur->parent;
+
       d->cur = d->cur->parent;
       break;
 
     case JSON_KEY:
-      DBG("key %*s\n", length, data);
       d2 = calloc(1, sizeof(Json_Data));
-      if (d2->key) eina_stringshare_del(d2->key);
       d2->key = eina_stringshare_add_length(data, length);
       d2->parent = d->cur;
       d->cur->list =  eina_list_append(d->cur->list, d2);
@@ -961,49 +1048,61 @@ _parse_callback(void *userdata, int type, const char *data, uint32_t length)
     case JSON_FLOAT:
       if (d->cur->type == JSON_ARRAY_BEGIN)
 	{
-	  DBG("- %*s\n", length, data);
 	  d->cur->values = eina_list_append
 	    (d->cur->values, eina_stringshare_add_length(data, length));
 	}
       else
 	{
-	  DBG("val  %s: %*s\n", d->cur->key, length, data);
 	  d->cur->type = type;
 	  if (d->cur->value) eina_stringshare_del(d->cur->value);
 	  d->cur->value = eina_stringshare_add_length(data, length);
 	  d->cur = d->cur->parent;
 	}
-
       break;
 
     case JSON_NULL:
     case JSON_TRUE:
     case JSON_FALSE:
-      DBG("constant\n");
       d->cur = d->cur->parent;
-      break;
     }
 
   return 0;
 }
 
 static Json_Data *
-_json_data_find(const Json_Data *jd, const char *key)
+_json_data_find2(const Json_Data *jd, const char *key, int level)
 {
   Json_Data *d = NULL;
   Eina_List *l;
-  const char *k;
 
   if (!jd) return NULL;
 
-  k = eina_stringshare_add(key);
-
   EINA_LIST_FOREACH(jd->list, l, d)
-    if (d->key == k)
-      break;
+    {
+      if (d && d->key == key)
+	{
+	  DBG("found %d %s",level, key);
+	  break;
+	}
 
-  printf("found %p\n", d);
+      if (level)
+	{
+	  if ((d = _json_data_find2(d, key, level - 1)))
+	    break;
+	}
+    }
 
+  return d;
+}
+
+static Json_Data *
+_json_data_find(const Json_Data *jd, const char *key, int level)
+{
+  Json_Data *d;
+  const char *k;
+
+  k = eina_stringshare_add(key);
+  d = _json_data_find2(jd, k, level);
   eina_stringshare_del(k);
 
   return d;
@@ -1035,7 +1134,7 @@ _json_data_free(Json_Data *jd)
 }
 
 static Json_Data *
-_json_parse(const char *string, Eina_Bool flat, int len)
+_json_parse(const char *string, int len)
 {
   Eina_Hash *h;
   struct json_parser parser;
@@ -1048,7 +1147,6 @@ _json_parse(const char *string, Eina_Bool flat, int len)
     return NULL;
 
   Json_Data *d = E_NEW(Json_Data, 1);
-  d->flat = flat;
   d->cur = d;
 
   if (json_parser_init(&parser, NULL, _parse_callback, d))
