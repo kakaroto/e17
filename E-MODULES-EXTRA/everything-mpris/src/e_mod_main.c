@@ -164,14 +164,6 @@ _item_free(Evry_Item *it)
 
   E_FREE(t);
 }
-static void
-_cb_free_item_changed(void *data, void *event)
-{
-  Evry_Event_Item_Changed *ev = event;
-
-  evry_item_free(ev->item);
-  E_FREE(ev);
-}
 
 static void
 _dbus_cb_current_track(void *data, DBusMessage *reply, DBusError *error)
@@ -180,7 +172,6 @@ _dbus_cb_current_track(void *data, DBusMessage *reply, DBusError *error)
   DBusMessage *msg;
   Evry_Item *it;
   int num;
-  Evry_Event_Item_Changed *ev;
 
   if (!_dbus_check_msg(reply, error)) return;
 
@@ -191,25 +182,12 @@ _dbus_cb_current_track(void *data, DBusMessage *reply, DBusError *error)
   if (num != p->current_track)
     {
       it = eina_list_nth(p->tracks, p->current_track);
-      if (it)
-	{
-	  ev = E_NEW(Evry_Event_Item_Changed, 1);
-	  ev->item = it;
-	  evry_item_ref(it);
-	  ecore_event_add(EVRY_EVENT_ITEM_CHANGED, ev, _cb_free_item_changed, NULL);
-	}
+      if (it) evry_event_item_changed(it, 1, 0);
 
       p->current_track = num;
 
       it = eina_list_nth(p->tracks, p->current_track);
-
-      if (it)
-	{
-	  ev = E_NEW(Evry_Event_Item_Changed, 1);
-	  ev->item = it;
-	  evry_item_ref(it);
-	  ecore_event_add(EVRY_EVENT_ITEM_CHANGED, ev, _cb_free_item_changed, NULL);
-	}
+      if (it) evry_event_item_changed(it, 1, 0);
     }
 }
 
@@ -504,7 +482,6 @@ static void
 _set_status(Plugin *p, DBusMessage *msg)
 {
   DBusMessageIter iter, array;
-  Evry_Event_Item_Changed *ev;
   Evry_Item *it;
 
   dbus_message_iter_init(msg, &iter);
@@ -526,13 +503,7 @@ _set_status(Plugin *p, DBusMessage *msg)
   DBG("status %d", p->status.playing);
 
   it = eina_list_nth(p->tracks, p->current_track);
-  if (it)
-    {
-      ev = E_NEW(Evry_Event_Item_Changed, 1);
-      ev->item = it;
-      evry_item_ref(it);
-      ecore_event_add(EVRY_EVENT_ITEM_CHANGED, ev, _cb_free_item_changed, NULL);
-    }
+  if (it) evry_event_item_changed(it, 1, 0);
 }
 
 static void
@@ -929,6 +900,24 @@ _add_dir(const char *path)
 }
 
 static int
+_add_files(Evry_Item_File *file)
+{
+  if (file->mime && strncmp(file->mime, "audio/", 6) == 0)
+    {
+      _add_file(file->path, 0);
+      return 1;
+    }
+  else if (ecore_file_is_dir(file->path))
+    {
+      _add_dir(file->path);
+      return 1;
+    }
+
+  return 0;
+}
+
+
+static int
 _mpris_play_file(Evry_Action *act)
 {
   Evry_Item_File *file;
@@ -977,17 +966,15 @@ _mpris_add_files(Evry_Action *act)
 
   GET_FILE(file, act->it2.item);
 
-  if (file->mime && strncmp(file->mime, "audio/", 6) == 0)
-    {
-      _add_file(file->path, 0);
-    }
-  else if (ecore_file_is_dir(file->path))
-    {
-      _add_dir(file->path);
-    }
-  else return 0;
+  return _add_files(file);
+}
 
-  return 1;
+static int
+_mpris_enqueue_files(Evry_Action *act)
+{
+  GET_FILE(file, act->it1.item);
+
+  return _add_files(file);
 }
 
 static int
@@ -1189,14 +1176,9 @@ _cb_key_down(Evry_Plugin *plugin, const Ecore_Event_Key *ev)
 	{
 	  if (!EVRY_ITEM(t)->selected)
 	    {
-	      Evry_Event_Item_Changed *ev = E_NEW(Evry_Event_Item_Changed, 1);
-	      ev->item = EVRY_ITEM(t);
-	      evry_item_ref(EVRY_ITEM(t));
-	      ecore_event_add(EVRY_EVENT_ITEM_CHANGED, ev, _cb_free_item_changed, NULL);
-
 	      /* FIXME send with event ? */
 	      evry_item_select(NULL, EVRY_ITEM(t));
-
+	      evry_event_item_changed(EVRY_ITEM(t), 1, 1);
 	      return 1;
 	    }
 	}
@@ -1243,7 +1225,7 @@ _plugins_init(void)
       pc->top_level = EINA_FALSE;
       pc->trigger = eina_stringshare_add("l ");
     }
-  
+
   _plug = (Plugin *) p;
 
 #define ACTION_NEW(_label, _meth, _type1, _type2, _icon, _act, _check) \
@@ -1295,16 +1277,16 @@ _plugins_init(void)
 	     EVRY_TYPE_FILE, 0, "media-playback-start",
 	     _mpris_play_file, _mpris_check_file);
   act->remember_context = EINA_TRUE;
-  
+
   ACTION_NEW(N_("Add Files..."), ACT_ADD_FILE,
 	     MPRIS_TRACK, EVRY_TYPE_FILE, "list-add",
 	     _mpris_add_files, NULL);
 
   ACTION_NEW(N_("Enqueue in Playlist"), ACT_ADD_FILE,
 	     EVRY_TYPE_FILE, 0, "list-add",
-	     _mpris_add_files, _mpris_check_files);
+	     _mpris_enqueue_files, _mpris_check_files);
   act->remember_context = EINA_TRUE;
-  
+
   ACTION_NEW(N_("Add Music..."), ACT_ADD_FILE,
 	     MPRIS_TRACK, TRACKER_MUSIC, "list-add",
 	     _mpris_add_files, _mpris_check_add_music);
