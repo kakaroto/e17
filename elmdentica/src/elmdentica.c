@@ -258,10 +258,11 @@ static void on_mark_favorite(void *data, Evas_Object *obj, void *event_info) {
 		}
 		sqlite3_free(db_err);
 		free(query);
+
 		e = evas_object_evas_get(win);
 		if(e) {
 			hover = evas_object_name_find(e, "hover_actions");
-			evas_object_del(hover);
+			if(hover) evas_object_del(hover);
 		}
 	}
 }
@@ -301,7 +302,7 @@ static void on_repeat(void *data, Evas_Object *obj, void *event_info) {
 	e = evas_object_evas_get(win);
 	if(e) {
 		hover = evas_object_name_find(e, "hover_actions");
-		evas_object_del(hover);
+		if(hover) evas_object_del(hover);
 	}
 }
 
@@ -326,7 +327,7 @@ static void on_reply(void *data, Evas_Object *obj, void *event_info) {
 	e = evas_object_evas_get(win);
 	if(e) {
 		hover = evas_object_name_find(e, "hover_actions");
-		evas_object_del(hover);
+		if(hover) evas_object_del(hover);
 	}
 }
 
@@ -543,7 +544,6 @@ static void on_handle_user(void *data, Evas_Object *obj, void *event_info) {
 					label = elm_label_add(win);
 						evas_object_size_hint_weight_set(label, 1, 1);
 						evas_object_size_hint_align_set(label, -1, 0);
-						elm_label_label_set(label, _("Fetching user info..."));
 						elm_table_pack(table, label, 1, 0, 1, 1);
 					evas_object_show(label);
 
@@ -820,7 +820,7 @@ static void on_bubble_mouse_up(void *data, Evas *e, Evas_Object *obj, void *even
 		evas_object_show(box);
 
 		elm_hover_parent_set(hover, win);
-		elm_hover_target_set(hover, bubble);
+		elm_hover_target_set(hover, scroller);
 		elm_hover_content_set(hover, "middle", box);
 	evas_object_show(hover);
 
