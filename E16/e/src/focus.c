@@ -652,6 +652,15 @@ FocusHandleEnter(EWin * ewin, XEvent * ev)
 void
 FocusHandleLeave(EWin * ewin, XEvent * ev)
 {
+   if ((int)ev->xcrossing.serial - focus_request < 0)
+     {
+	/* This event was caused by a request older than the latest
+	 * focus assignment request - ignore */
+	if (EDebug(EDBUG_TYPE_FOCUS))
+	   Eprintf("FocusHandleLeave: Ignore serial < %#x\n", focus_request);
+	return;
+     }
+
    /* Leaving root may mean entering other screen */
    if (!ewin)
      {
