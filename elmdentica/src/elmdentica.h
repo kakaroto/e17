@@ -65,7 +65,6 @@ typedef struct _ub_Status {
 } ub_Status;
 
 typedef struct _ub_bubble {
-	Evas_Object *box;
 	char *screen_name;
 	char *message;
 	int   account_id;

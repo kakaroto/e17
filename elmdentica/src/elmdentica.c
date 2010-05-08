@@ -176,7 +176,7 @@ void make_status_list(int timeline) {
 		evas_object_del(status_list);
 	status_list = elm_box_add(win);
 	evas_object_size_hint_weight_set(status_list, 1.0, 1.0);
-	evas_object_size_hint_align_set(status_list, -1, 1.0);
+	evas_object_size_hint_align_set(status_list, -1, -1);
 
 	elm_scroller_content_set(scroller, status_list);
 	evas_object_show(status_list);
@@ -833,7 +833,7 @@ static int add_status(void *data, int argc, char **argv, char **azColName) {
 	time_t date;
 
 	ub_Bubble * ubBubble = calloc(1, sizeof(ub_Bubble));
-	Evas_Object *message=NULL, *bubble=NULL, *icon=NULL, *box=NULL;
+	Evas_Object *message=NULL, *bubble=NULL, *icon=NULL;
 	time_t now,status_time,time_delta;
 	char *tmp=NULL;
 	char * file_path=NULL, *home=NULL, *timestr = NULL;
@@ -857,13 +857,9 @@ static int add_status(void *data, int argc, char **argv, char **azColName) {
 	date=(time_t)atoi(argv[6]);
 	type=atoi(argv[7]);
 
-	box = elm_box_add(win);
-	evas_object_size_hint_weight_set(box, 1, 0);
-	evas_object_size_hint_align_set(box, -1, 0);
-
 	bubble = elm_bubble_add(win);
 	evas_object_size_hint_weight_set(bubble, 1, 0);
-	evas_object_size_hint_align_set(bubble, -1, 0);
+	evas_object_size_hint_align_set(bubble, -1, -1);
 
 	// make a simplified time display
 	now = time(NULL);
@@ -916,7 +912,8 @@ static int add_status(void *data, int argc, char **argv, char **azColName) {
 	}
 
 	message = elm_anchorblock_add(win);
-		evas_object_size_hint_align_set(message, -1, 1);
+		evas_object_size_hint_weight_set(message, 1, 1);
+		evas_object_size_hint_align_set(message, -1, -1);
 
 		res = asprintf(&status_message, "%s", argv[5]);
 		if(res == -1) {
@@ -966,14 +963,10 @@ static int add_status(void *data, int argc, char **argv, char **azColName) {
  	//evas_object_event_callback_add(bubble, EVAS_CALLBACK_MOUSE_DOWN, on_bubble_mouse_down, bubble);
  	//evas_object_event_callback_add(bubble, EVAS_CALLBACK_MOUSE_UP, on_bubble_mouse_up, bubble);
 
-	elm_box_pack_end(box, bubble);
-
 	evas_object_show(bubble);
 
-	evas_object_show(box);
-	elm_box_pack_end(status_list, box);
+	elm_box_pack_end(status_list, bubble);
 
-	ubBubble->box=box;
 	ubBubble->account_id = account_id;
 	ubBubble->account_type = type;
 	if(screen_name)
@@ -1271,7 +1264,7 @@ static void on_entry_changed(void *data, Evas_Object *entry, void *event_info) {
 
 static void on_entry_clicked(void *data, Evas_Object *entry, void *event_info) {
 	int len;
-	const char *first = _("Press here to start typing your message..."), *msg=elm_entry_entry_get(entry);
+	const char *first = _("Type your status here..."), *msg=elm_entry_entry_get(entry);
 
 	if(g_utf8_validate(first, -1, NULL))
 		len = g_utf8_strlen(first, -1);
@@ -1299,7 +1292,7 @@ EAPI int elm_main(int argc, char **argv)
 	elmdentica_init();
 
 	win = elm_win_add(NULL, "elmdentica", ELM_WIN_BASIC);
-	elm_win_title_set(win, _("ElmDentica: µ-blog at your fingertips"));
+	elm_win_title_set(win, _("ElmDentica µ-bloggin'"));
 	evas_object_smart_callback_add(win, "delete-request", win_del, NULL);
 	evas_object_size_hint_min_set(win, 480, 480);
 	evas_object_size_hint_max_set(win, 640, 640);
@@ -1407,6 +1400,8 @@ EAPI int elm_main(int argc, char **argv)
 	scroller = elm_scroller_add(box);
 		evas_object_size_hint_weight_set(scroller, 1, 1);
 		evas_object_size_hint_align_set(scroller, -1, -1);
+		elm_scroller_bounce_set(scroller, ELM_SCROLLER_POLICY_OFF, ELM_SCROLLER_POLICY_OFF);
+		elm_scroller_policy_set(scroller, ELM_SCROLLER_POLICY_OFF, ELM_SCROLLER_POLICY_ON);
 
 		// Statuses list
 		make_status_list(TIMELINE_FRIENDS);
