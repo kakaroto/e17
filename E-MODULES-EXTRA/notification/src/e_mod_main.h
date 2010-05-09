@@ -2,11 +2,12 @@
 #define E_MOD_MAIN_H
 
 #define HAVE_EDBUS 1
-#include <E_Notification_Daemon.h>
 #include <e.h>
-#include <Evas.h>
-#include <string.h>
-#include <E_Notify.h>
+#include <E_Notification_Daemon.h>
+
+/* #include <Evas.h> */
+/* #include <string.h> */
+/* #include <E_Notify.h> */
 
 #include "e_mod_macro.h"
 #include "e_mod_types.h"

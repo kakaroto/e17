@@ -15,7 +15,7 @@ struct _Popup_Data
 int   notification_popup_notify    (E_Notification *n, 
                                     unsigned int replaces_id, 
                                     unsigned int id,
-                                    char *appname);
+                                    const char *appname);
 void  notification_popup_shutdown  (void);
 void  notification_popup_close     (unsigned int id);
 

@@ -31,14 +31,14 @@ static E_Config_DD  *conf_item_edd = NULL;
 
 /* Gadcon Api Functions */
 const E_Gadcon_Client_Class _gc_class = 
-{
-   GADCON_CLIENT_CLASS_VERSION, "notification", 
-   {
+  {
+    GADCON_CLIENT_CLASS_VERSION, "notification", 
+    {
       _gc_init, _gc_shutdown, _gc_orient, _gc_label, _gc_icon, _gc_id_new, _gc_id_del,
       e_gadcon_site_is_not_toolbar
-   },
-   E_GADCON_CLIENT_STYLE_PLAIN
-};
+    },
+    E_GADCON_CLIENT_STYLE_PLAIN
+  };
 
 static E_Gadcon_Client *
 _gc_init(E_Gadcon *gc, const char *name, const char *id, const char *style)
@@ -61,9 +61,9 @@ _gc_init(E_Gadcon *gc, const char *name, const char *id, const char *style)
    inst->gcc = gcc;
    
    evas_object_event_callback_add(b->o_box, EVAS_CALLBACK_MOVE,
-                                  notification_box_cb_obj_moveresize, inst);
+				  notification_box_cb_obj_moveresize, inst);
    evas_object_event_callback_add(b->o_box, EVAS_CALLBACK_RESIZE,
-                                  notification_box_cb_obj_moveresize, inst);
+				  notification_box_cb_obj_moveresize, inst);
    notification_cfg->instances = eina_list_append(notification_cfg->instances, inst);
    _gc_orient(gcc, gc->orient);
    return gcc;
@@ -96,9 +96,9 @@ _gc_orient(E_Gadcon_Client *gcc, E_Gadcon_Orient orient)
       case E_GADCON_ORIENT_CORNER_TR:
       case E_GADCON_ORIENT_CORNER_BL:
       case E_GADCON_ORIENT_CORNER_BR:
-	notification_box_orient_set(inst->n_box, 1);
-	e_gadcon_client_aspect_set(gcc, MAX(eina_list_count(inst->n_box->icons), 1) * 16, 16);
-	break;
+	 notification_box_orient_set(inst->n_box, 1);
+	 e_gadcon_client_aspect_set(gcc, MAX(eina_list_count(inst->n_box->icons), 1) * 16, 16);
+	 break;
       case E_GADCON_ORIENT_VERT:
       case E_GADCON_ORIENT_LEFT:
       case E_GADCON_ORIENT_RIGHT:
@@ -106,11 +106,11 @@ _gc_orient(E_Gadcon_Client *gcc, E_Gadcon_Orient orient)
       case E_GADCON_ORIENT_CORNER_RT:
       case E_GADCON_ORIENT_CORNER_LB:
       case E_GADCON_ORIENT_CORNER_RB:
-	notification_box_orient_set(inst->n_box, 0);
-	e_gadcon_client_aspect_set(gcc, 16, MAX(eina_list_count(inst->n_box->icons), 1) * 16);
-	break;
+	 notification_box_orient_set(inst->n_box, 0);
+	 e_gadcon_client_aspect_set(gcc, 16, MAX(eina_list_count(inst->n_box->icons), 1) * 16);
+	 break;
       default:
-	break;
+	 break;
      }
    e_gadcon_client_min_size_set(gcc, 16, 16);
 }
@@ -131,7 +131,7 @@ _gc_icon(E_Gadcon_Client_Class *client_class, Evas *evas)
    snprintf(buf, sizeof(buf), "%s/e-module-notification.edj",
 	    e_module_dir_get(notification_mod));
    if (!e_theme_edje_object_set(o, "base/theme/modules/notification",
-                                "icon"))
+				"icon"))
      edje_object_file_set(o, buf, "icon");
    return o;
 }
@@ -156,7 +156,7 @@ _gc_id_del(E_Gadcon_Client_Class *client_class, const char *id)
      {
 	if (ci->id) eina_stringshare_del(ci->id);
 	notification_cfg->items = eina_list_remove(notification_cfg->items, ci);
-        free(ci);
+	free(ci);
      }
 }
 
@@ -168,16 +168,23 @@ _notification_notify(E_Notification *n)
    unsigned int new_id;
    int stacked, popuped;
 
-   new_id = notification_cfg->next_id++;
-   e_notification_id_set(n, new_id);
-
+   if (!replaces_id)
+     {
+	new_id = notification_cfg->next_id++;
+	e_notification_id_set(n, new_id);
+     }
+   else
+     {
+	e_notification_id_set(n, replaces_id);
+     }
+   
    popuped = notification_popup_notify(n, replaces_id, new_id, appname);
    stacked = notification_box_notify(n, replaces_id, new_id);
 
    if (!popuped && !stacked)
      {
-       e_notification_hint_urgency_set(n, 4);
-       notification_popup_notify(n, replaces_id, new_id, appname);
+	e_notification_hint_urgency_set(n, 4);
+	notification_popup_notify(n, replaces_id, new_id, appname);
      }
 
    return new_id;
@@ -292,15 +299,15 @@ e_modapi_init(E_Module *m)
    snprintf(buf, sizeof(buf), "%s/e-module-notification.edj", m->dir);
    /* register config panel entry */
    e_configure_registry_category_add("extensions", 90, D_("Extensions"), NULL, 
-                                     "preferences-extensions");
+				     "preferences-extensions");
    e_configure_registry_item_add("extensions/notification", 30, D_("Notification"), NULL, 
-                                 buf, e_int_config_notification_module);
+				 buf, e_int_config_notification_module);
 
    conf_item_edd = E_CONFIG_DD_NEW("Notification_Config_Item", Config_Item);
-   #undef T
-   #undef D
-   #define T Config_Item
-   #define D conf_item_edd
+#undef T
+#undef D
+#define T Config_Item
+#define D conf_item_edd
    E_CONFIG_VAL(D, T, id, STR);
    E_CONFIG_VAL(D, T, show_label, INT);
    E_CONFIG_VAL(D, T, show_popup, INT);
@@ -310,10 +317,10 @@ e_modapi_init(E_Module *m)
    E_CONFIG_VAL(D, T, store_critical, INT);
 
    conf_edd = E_CONFIG_DD_NEW("Notification_Config", Config);
-   #undef T
-   #undef D
-   #define T Config
-   #define D conf_edd
+#undef T
+#undef D
+#define T Config
+#define D conf_edd
    E_CONFIG_VAL(D, T, version, INT);
    E_CONFIG_VAL(D, T, show_low, INT);
    E_CONFIG_VAL(D, T, show_normal, INT);
@@ -328,57 +335,57 @@ e_modapi_init(E_Module *m)
    notification_cfg = e_config_domain_load("module.notification", conf_edd);
    if (notification_cfg)
      {
-        if (notification_cfg->version == 0)
-          {
-             _notification_cfg_free(notification_cfg);
-             notification_cfg = NULL;
-          }
-        if ((notification_cfg->version >> 16) < MOD_CFG_FILE_EPOCH) 
-          {
-             _notification_cfg_free(notification_cfg);
-             notification_cfg = NULL;
+	if (notification_cfg->version == 0)
+	  {
+	     _notification_cfg_free(notification_cfg);
+	     notification_cfg = NULL;
+	  }
+	if ((notification_cfg->version >> 16) < MOD_CFG_FILE_EPOCH) 
+	  {
+	     _notification_cfg_free(notification_cfg);
+	     notification_cfg = NULL;
 	     e_util_dialog_show(D_("Notification Configuration Updated"),
-                                D_("Notification Module Configuration data needed "
-                                   "upgrading. Your old configuration<br> has been"
-                                   " wiped and a new set of defaults initialized. "
-                                   "This<br>will happen regularly during "
-                                   "development, so don't report a<br>bug. "
-                                   "This simply means the Notification module needs "
-                                   "new configuration<br>data by default for "
-                                   "usable functionality that your old<br>"
-                                   "configuration simply lacks. This new set of "
-                                   "defaults will fix<br>that by adding it in. "
-                                   "You can re-configure things now to your<br>"
-                                   "liking. Sorry for the inconvenience.<br>"));
-          }
-        else if (notification_cfg->version > MOD_CFG_FILE_VERSION) 
-          {
-             _notification_cfg_free(notification_cfg);
-             notification_cfg = NULL;
+				D_("Notification Module Configuration data needed "
+				   "upgrading. Your old configuration<br> has been"
+				   " wiped and a new set of defaults initialized. "
+				   "This<br>will happen regularly during "
+				   "development, so don't report a<br>bug. "
+				   "This simply means the Notification module needs "
+				   "new configuration<br>data by default for "
+				   "usable functionality that your old<br>"
+				   "configuration simply lacks. This new set of "
+				   "defaults will fix<br>that by adding it in. "
+				   "You can re-configure things now to your<br>"
+				   "liking. Sorry for the inconvenience.<br>"));
+	  }
+	else if (notification_cfg->version > MOD_CFG_FILE_VERSION) 
+	  {
+	     _notification_cfg_free(notification_cfg);
+	     notification_cfg = NULL;
 	     e_util_dialog_show(D_("Notification Configuration Updated"),
-                                D_("Your Notification Module Configuration is NEWER "
-                                   "than the Notification Module version. This is "
-                                   "very<br>strange. This should not happen unless"
-                                   " you downgraded<br>the Notification Module or "
-                                   "copied the configuration from a place where"
-                                   "<br>a newer version of the Notification Module "
-                                   "was running. This is bad and<br>as a "
-                                   "precaution your configuration has been now "
-                                   "restored to<br>defaults. Sorry for the "
-                                   "inconvenience.<br>"));
-          }
+				D_("Your Notification Module Configuration is NEWER "
+				   "than the Notification Module version. This is "
+				   "very<br>strange. This should not happen unless"
+				   " you downgraded<br>the Notification Module or "
+				   "copied the configuration from a place where"
+				   "<br>a newer version of the Notification Module "
+				   "was running. This is bad and<br>as a "
+				   "precaution your configuration has been now "
+				   "restored to<br>defaults. Sorry for the "
+				   "inconvenience.<br>"));
+	  }
      }
 
    if (!notification_cfg) 
      {
-       notification_cfg = _notification_cfg_new();
+	notification_cfg = _notification_cfg_new();
      }
    else if (eina_list_count(notification_cfg->items) > 0)
      {
-       Config_Item *ci;
-       const char *p;
+	Config_Item *ci;
+	const char *p;
 
-       /* Init uuid */
+	/* Init uuid */
 	ci = eina_list_last(notification_cfg->items)->data;
 	p = strrchr(ci->id, '.');
 	if (p) uuid = atoi(p + 1);
@@ -430,9 +437,9 @@ e_modapi_shutdown(E_Module *m __UNUSED__)
 
    while (notification_cfg->handlers)
      {
-       ecore_event_handler_del(notification_cfg->handlers->data);
-       notification_cfg->handlers = eina_list_remove_list(notification_cfg->handlers,
-                                                          notification_cfg->handlers);
+	ecore_event_handler_del(notification_cfg->handlers->data);
+	notification_cfg->handlers = eina_list_remove_list(notification_cfg->handlers,
+							   notification_cfg->handlers);
      }
 
    if (notification_cfg->cfd) e_object_del(E_OBJECT(notification_cfg->cfd));
@@ -441,20 +448,20 @@ e_modapi_shutdown(E_Module *m __UNUSED__)
 
    if (notification_cfg->menu)
      {
-       e_menu_post_deactivate_callback_set(notification_cfg->menu, NULL, NULL);
-       e_object_del(E_OBJECT(notification_cfg->menu));
-       notification_cfg->menu = NULL;
+	e_menu_post_deactivate_callback_set(notification_cfg->menu, NULL, NULL);
+	e_object_del(E_OBJECT(notification_cfg->menu));
+	notification_cfg->menu = NULL;
      }
 
    while (notification_cfg->items)
      {
-       Config_Item *ci;
+	Config_Item *ci;
 
-       ci = notification_cfg->items->data;
-       notification_cfg->items = eina_list_remove_list(notification_cfg->items,
-                                                       notification_cfg->items);
-       if (ci->id) eina_stringshare_del(ci->id);
-       free(ci);
+	ci = notification_cfg->items->data;
+	notification_cfg->items = eina_list_remove_list(notification_cfg->items,
+							notification_cfg->items);
+	if (ci->id) eina_stringshare_del(ci->id);
+	free(ci);
      }
 
    notification_box_shutdown();
@@ -495,25 +502,25 @@ _notification_cb_close_notification(E_Notification_Daemon *daemon __UNUSED__,
 static Config *
 _notification_cfg_new(void)
 {
-  Config *cfg;
+   Config *cfg;
 
-  cfg = E_NEW(Config, 1);
-  cfg->cfd           = NULL;
-  cfg->version       = MOD_CFG_FILE_VERSION;
-  cfg->show_low      = 0;
-  cfg->show_normal   = 1;
-  cfg->show_critical = 1;
-  cfg->timeout       = 5.0;
-  cfg->direction     = DIRECTION_DOWN;
-  cfg->gap           = 10;
-  cfg->placement.x   = 10;
-  cfg->placement.y   = 10;
+   cfg = E_NEW(Config, 1);
+   cfg->cfd           = NULL;
+   cfg->version       = MOD_CFG_FILE_VERSION;
+   cfg->show_low      = 0;
+   cfg->show_normal   = 1;
+   cfg->show_critical = 1;
+   cfg->timeout       = 5.0;
+   cfg->direction     = DIRECTION_DOWN;
+   cfg->gap           = 10;
+   cfg->placement.x   = 10;
+   cfg->placement.y   = 10;
 
-  return cfg;
+   return cfg;
 }
 
 static void
 _notification_cfg_free(Config *cfg)
 {
-  E_FREE(cfg);
+   E_FREE(cfg);
 }
