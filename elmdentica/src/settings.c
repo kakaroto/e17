@@ -71,7 +71,7 @@ const char * browserNames[] = {
 	};
 const char * browser_cmnds[] = {
         "/usr/bin/xdg-open %s &",
-        "/usr/bin/ventura -u %s &",
+        "/usr/bin/ventura %s &",
         "/usr/bin/midori %s &",
         "/usr/bin/woosh -u %s &",
         "/usr/bin/dillo %s &",
@@ -944,7 +944,7 @@ Evas_Object *settings_browser_hoversel(void) {
 
 	hoversel=elm_hoversel_add(settings_area);
 		evas_object_size_hint_weight_set(hoversel, 1, 1);
-		evas_object_size_hint_align_set(hoversel, -1, 0);
+		evas_object_size_hint_align_set(hoversel, -1, -1);
 
 		elm_hoversel_hover_begin(hoversel);
 		if(stat("/usr/bin/xdg-open", &buf) == 0) {
@@ -1003,7 +1003,7 @@ void on_settings_options(void *data, Evas_Object *toolbar, void *event_info) {
 		frame = elm_frame_add(settings_area);
 			elm_frame_label_set(frame, _("Preferred browser..."));
 			hoversel = settings_browser_hoversel();
-			elm_hoversel_hover_parent_set(hoversel, frame);
+			elm_hoversel_hover_parent_set(hoversel, settings_area);
 			elm_frame_content_set(frame, hoversel);
 			elm_table_pack(options_editor, frame, 0, 0, 1, 1);
 		evas_object_show(frame);
