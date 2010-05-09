@@ -77,6 +77,7 @@ struct _Download_Data
 {
   Ecore_Exe *exe;
   Ecore_Timer *timer;
+  Ecore_Event_Handler *del_handler;
   int method;
   int tries;
   char *file;
@@ -572,8 +573,7 @@ _action_download_timer(void *d)
     {
       if (s.st_size < 262144)
 	{
-	  if (dd->tries == 3 && s.st_size == 0 ||
-	      dd->tries > 10 && s.st_size < 1024)
+	  if (!dd->ready && dd->tries > 10 && s.st_size < 1024)
 	    {
 	      abort = 1;
 	      goto finish;
@@ -656,14 +656,41 @@ _action_download_timer(void *d)
     }
 
   download_handlers = eina_list_remove(download_handlers, dd);
+  ecore_event_handler_del(dd->del_handler);
   E_FREE(dd->file);
   E_FREE(dd);
 
   return 0;
 }
 
+static int
+_download_cb_del(void *data, int type __UNUSED__, void *event)
+{
+  Download_Data *dd = data;
+  Ecore_Exe_Event_Del *e = event;
+  E_Notification *n;
+  
+  if (e->exe != dd->exe)
+    return 1;
+
+  n = e_notification_full_new
+    ("Everything", dd->id, "emblem-music", N_("Finished download"),
+     ecore_file_file_get(dd->file), -1);
+  e_notification_send(n, NULL, NULL);
+  e_notification_unref(n);
+  
+  dd->exe = NULL;
+  download_handlers = eina_list_remove(download_handlers, dd);
+  ecore_event_handler_del(dd->del_handler);
+  ecore_timer_del(dd->timer);
+  E_FREE(dd->file);
+  E_FREE(dd);
+  
+  return 0;
+}
+
 static void
-_notification_id_cb2(void *user_data, void *method_return, DBusError *error)
+_download_cb_id(void *user_data, void *method_return, DBusError *error)
 {
   Download_Data *dd = user_data;
   E_Notification_Return_Notify *r = method_return;
@@ -683,6 +710,7 @@ _action_download(Evry_Action *act)
   GET_WEBLINK(wl, act->it1.item);
   Ecore_Exe *exe = NULL;
   char *filename = ecore_file_escape_name(act->it1.item->label);
+
   snprintf(file, sizeof(file),
 	   "%s/Download/%s",
 	   e_user_homedir_get(),
@@ -691,16 +719,18 @@ _action_download(Evry_Action *act)
   if (!ecore_file_exists(file))
     {
       snprintf(buf, sizeof(buf), _conf->convert_cmd, wl->url, file);
-
-      exe = ecore_exe_run(buf, NULL);
-      /* exe = e_exec(e_util_zone_current_get(e_manager_current_get()),
-       * 	     NULL, buf, NULL, NULL); */
+      if (!method)
+	exe = ecore_exe_run(buf, NULL);
     }
 
   if (method == 1 || method == 2)
     {
       E_Notification *n;
       Download_Data *dd = E_NEW(Download_Data, 1);
+      
+      exe = ecore_exe_run(buf, dd);
+      dd->del_handler = ecore_event_handler_add
+	(ECORE_EXE_EVENT_DEL, _download_cb_del, dd);
 
       snprintf(buf, sizeof(buf),
 	       "%s/Download/%s.mp3",
@@ -721,7 +751,7 @@ _action_download(Evry_Action *act)
       n = e_notification_full_new
 	("Everything", 0, "emblem-music", N_("Start download"),
 	 ecore_file_file_get(act->it1.item->label), -1);
-      e_notification_send(n, _notification_id_cb2, dd);
+      e_notification_send(n, _download_cb_id, dd);
       e_notification_unref(n);
 
     }
@@ -1203,9 +1233,9 @@ _conf_new(void)
    *     "%s.mp3 > /dev/null 2>&1");
    * IFMODCFGEND; */
 
-  IFMODCFG(0x00bd);
+  IFMODCFG(0x00cd);
   _conf->convert_cmd = eina_stringshare_add
-    ("mencoder -ovc frameno -oac mp3lame -lameopts cbr:br=128 -of rawaudio "
+    ("mencoder -msglevel all=1 -ovc frameno -oac mp3lame -lameopts cbr:br=128 -of rawaudio "
      "$(youtube-dl -g -b \"%s\") -o %s.mp3");
   IFMODCFGEND;
 
