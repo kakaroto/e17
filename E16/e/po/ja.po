@@ -11,15 +11,13 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.8.15-0.01\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2010-05-09 08:50+0800\n"
-"PO-Revision-Date: 2010-05-09 01:22+0000\n"
-"Last-Translator: Yasufumi Haga <Unknown>\n"
+"POT-Creation-Date: 2010-05-09 08:31+0200\n"
+"PO-Revision-Date: 2010-05-05 20:07+0900\n"
+"Last-Translator: Yasufumi Haga <yasufumi.haga@nifty.com>\n"
 "Language-Team: Japanese <ja@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2010-05-09 01:32+0000\n"
-"X-Generator: Launchpad (build Unknown)\n"
 
 #: ../src/about.c:35
 #, c-format
@@ -875,9 +873,10 @@ msgstr "さざなみ"
 msgid "Waves"
 msgstr "ウェーブ"
 
-#: ../src/fx.c:834
+#: src/fx.c:834
+#, fuzzy
 msgid "Raindrops"
-msgstr ""
+msgstr "ウィンドウグループ"
 
 #: ../src/fx.c:841
 msgid "FX"
@@ -937,7 +936,7 @@ msgstr ""
 "\n"
 "  現在、グループが存在しないか、このウィンドウは\n"
 "  すでに既存のすべてのグループに属しています。\n"
-"  まず他のグループを作成してください。  \n"
+"  まず他のグループを作成してください。\n"
 "\n"
 
 #: ../src/groups.c:751
@@ -948,11 +947,10 @@ msgid ""
 msgstr ""
 "\n"
 "  現在、グループはありません。まずグループを作成してください。\n"
-"\n"
 
 #: ../src/groups.c:835
 msgid "   Pick the group to configure:   "
-msgstr "   設定するグループを選択してください:   "
+msgstr "  設定するグループを選択してください:   "
 
 #: ../src/groups.c:866
 msgid ""
@@ -1009,7 +1007,7 @@ msgid ""
 "\n"
 msgstr ""
 "\n"
-"  このウィンドウは現在どのグループにも属していません。  \n"
+"  このウィンドウは現在どのグループにも属していません。\n"
 "\n"
 
 #: ../src/groups.c:961
@@ -1018,7 +1016,7 @@ msgstr " グループごとの設定: "
 
 #: ../src/groups.c:1007
 msgid " Global settings: "
-msgstr " 全般の設定: "
+msgstr " 全般の設定:  "
 
 #: ../src/groups.c:1011
 msgid "Swap Window Locations"
@@ -1052,7 +1050,7 @@ msgstr "削除するウィンドウが属しているグループを選択して
 
 #: ../src/groups.c:1059
 msgid "Select the group to break:"
-msgstr "破棄するグループを選択してください。"
+msgstr "破棄するグループを選択してください。 "
 
 #: ../src/handlers.c:61
 #, c-format
@@ -1204,7 +1202,7 @@ msgstr "\"help <コマンド>\" で指定されたコマンドの説明が表示
 #
 #: ../src/ipc.c:1841 ../src/ipc.c:1853
 msgid "         <command>     : <description>\n"
-msgstr "         <コマンド> : <説明>\n"
+msgstr "<コマンド> : <説明>\n"
 
 #: ../src/main.c:531
 #, c-format
@@ -1455,7 +1453,7 @@ msgstr "ズーム On"
 
 #: ../src/pager.c:1810 ../src/pager.c:1905
 msgid "Pager scanning speed:"
-msgstr "ページャのスキャン速度:"
+msgstr "ページャのスキャン速度: "
 
 #: ../src/pager.c:1811 ../src/pager.c:1906
 msgid "lines per second"
@@ -1570,27 +1568,27 @@ msgid ""
 msgstr ""
 "\n"
 "\n"
-"    本当にログアウトしますか ?    \n"
+"    本当にログアウトしますか ?            \n"
 "\n"
 "\n"
 
 #
 #: ../src/session.c:657
 msgid "  Yes, Shut Down  "
-msgstr "  シャットダウンします  "
+msgstr " シャットダウンします"
 
 #
 #: ../src/session.c:659
 msgid "  Yes, Reboot  "
-msgstr "  再起動します  "
+msgstr " 再起動します"
 
 #: ../src/session.c:662
 msgid "  Yes, Log Out  "
-msgstr "  ログアウトします  "
+msgstr " ログアウトします"
 
 #: ../src/session.c:664
 msgid "  No  "
-msgstr "  いいえ、ログアウトしません  "
+msgstr " いいえ、ログアウトしません "
 
 #: ../src/session.c:799
 msgid "Enable Session Script"
@@ -2631,7 +2629,7 @@ msgstr "このウィンドウを現在のグループに追加する"
 #
 #: ../config/strings.c:142
 msgid "Select group to add this window to"
-msgstr "このウィンドウを追加するグループを選択する"
+msgstr " このウィンドウを追加するグループを選択する"
 
 #
 #: ../config/strings.c:143
@@ -2641,7 +2639,7 @@ msgstr "このウィンドウをグループから削除する"
 #
 #: ../config/strings.c:144
 msgid "Destroy a group this window belongs to"
-msgstr "このウィンドウが属するグループを破棄する"
+msgstr " このウィンドウが属するグループを破棄する"
 
 #. winops_layer.menu
 #: ../config/strings.c:146
@@ -2799,12 +2797,16 @@ msgstr "その他"
 msgid "Epplets"
 msgstr ""
 
-#~ msgid "Animate when iconifying to this Iconbox"
-#~ msgstr "アニメーション表示しながらアイコン化する"
-
 #
 #~ msgid "Enable Effect: Raindrops"
 #~ msgstr "有効にする効果: 雨滴"
+
+#~ msgid "Animate when iconifying to this Iconbox"
+#~ msgstr "アニメーション表示しながらアイコン化する"
+
+#, fuzzy
+#~ msgid "Icon size: %2i"
+#~ msgstr "アイコンサイズ: %2d"
 
 #~ msgid "Autoraise"
 #~ msgstr "オートレイズ"

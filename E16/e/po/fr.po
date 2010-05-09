@@ -8,15 +8,13 @@ msgid ""
 msgstr ""
 "Project-Id-Version: e16 svn-rev48679\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2010-05-09 08:50+0800\n"
-"PO-Revision-Date: 2010-05-09 01:21+0000\n"
-"Last-Translator: Tristan D. <Unknown>\n"
+"POT-Creation-Date: 2010-05-09 08:31+0200\n"
+"PO-Revision-Date: 2010-05-08 17:17+0100\n"
+"Last-Translator: Tristan D. <trinine@free.fr>\n"
 "Language-Team: français <fr@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2010-05-09 01:32+0000\n"
-"X-Generator: Launchpad (build Unknown)\n"
 
 #: ../src/about.c:35
 #, c-format
@@ -919,7 +917,7 @@ msgstr ""
 "\n"
 "  Cette fenêtre n'appartient actuellement à aucun groupe.  \n"
 "  Vous ne pouvez détruire un groupe ou retirer une fenêtre d'un groupe  \n"
-"  seulement si la fenêtre courante appartient au moins à un groupe.\n"
+"  seulement si la fenêtre courante appartient au moins à un groupe.  \n"
 "\n"
 
 #: ../src/groups.c:742
@@ -1191,7 +1189,7 @@ msgstr "Tapez \"help <commande>\" pour une description individuelle\n"
 
 #: ../src/ipc.c:1841 ../src/ipc.c:1853
 msgid "         <command>     : <description>\n"
-msgstr "         <commande>   : <description>\n"
+msgstr "      <commande>   : <description>\n"
 
 #: ../src/main.c:531
 #, c-format
@@ -1547,7 +1545,7 @@ msgid ""
 msgstr ""
 "\n"
 "\n"
-"    Êtes-vous sûr de vouloir quitter la session ?    \n"
+"    Êtes-vous sûr de vouloir quitter la session ?\n"
 "\n"
 "\n"
 
@@ -1750,7 +1748,7 @@ msgstr "Placer les fenêtres manuellement quand tout est plein"
 
 #: ../src/settings.c:469
 msgid "Placement"
-msgstr "Placement"
+msgstr "Placement "
 
 #: ../src/settings.c:470
 msgid "Window Placement Settings"
@@ -2725,11 +2723,15 @@ msgstr "Autres"
 msgid "Epplets"
 msgstr "Epplets"
 
+#~ msgid "Enable Effect: Raindrops"
+#~ msgstr "Activer l'effet: Gouttes de pluie"
+
 #~ msgid "Animate when iconifying to this Iconbox"
 #~ msgstr "Animer les icônifications vers cette Boîte à icônes"
 
-#~ msgid "Enable Effect: Raindrops"
-#~ msgstr "Activer l'effet: Gouttes de pluie"
+#, fuzzy
+#~ msgid "Icon size: %2i"
+#~ msgstr "Taille des icônes: %2d"
 
 #~ msgid "Autoraise"
 #~ msgstr "Auto-élévation"
