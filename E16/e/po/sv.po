@@ -6,20 +6,22 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2010-05-02 19:59+0200\n"
-"PO-Revision-Date: 2000-04-10 17:30+0200\n"
-"Last-Translator: Bernt Holmberg <bernt@grub01.physto.se>\n"
+"POT-Creation-Date: 2010-05-09 08:50+0800\n"
+"PO-Revision-Date: 2009-11-09 14:47+0000\n"
+"Last-Translator: Bernt Holmberg <Unknown>\n"
 "Language-Team: Swedish <sv@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=iso-8859-1\n"
 "Content-Transfer-Encoding: 8bit\n"
+"X-Launchpad-Export-Date: 2010-05-09 01:32+0000\n"
+"X-Generator: Launchpad (build Unknown)\n"
 
-#: src/about.c:35
-#, fuzzy, c-format
+#: ../src/about.c:35
+#, c-format
 msgid "About Enlightenment e16 version %s"
-msgstr "Om Enlightenment %s"
+msgstr ""
 
-#: src/about.c:46
+#: ../src/about.c:46
 #, c-format
 msgid ""
 "Welcome to Enlightenment e16\n"
@@ -33,13 +35,14 @@ msgid ""
 "Kim Woelders - kim@woelders.dk\n"
 msgstr ""
 
-#: src/aclass.c:212 src/backgrounds.c:254 src/borders.c:692 src/buttons.c:183
-#: src/cursors.c:131 src/iclass.c:337 src/tclass.c:125 src/tooltips.c:135
+#: ../src/aclass.c:212 ../src/backgrounds.c:254 ../src/borders.c:692
+#: ../src/buttons.c:183 ../src/cursors.c:131 ../src/iclass.c:337
+#: ../src/tclass.c:125 ../src/tooltips.c:135
 #, c-format
 msgid "%u references remain\n"
 msgstr "%u referenser återstår\n"
 
-#: src/actions.c:114
+#: ../src/actions.c:114
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -52,7 +55,7 @@ msgstr ""
 "Programmet kunde inte exekveras.\n"
 "Orsaken är att filen inte existerar\n"
 
-#: src/actions.c:120
+#: ../src/actions.c:120
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -71,7 +74,7 @@ msgstr ""
 "för skalet, och kollar upp hur man lägger till eller ändrar\n"
 "sin sökväg.\n"
 
-#: src/actions.c:139
+#: ../src/actions.c:139
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -88,7 +91,7 @@ msgstr ""
 "det är en fil, och du har rättigheter att\n"
 "köra den. Jag föreslår att du undersöker saken.\n"
 
-#: src/actions.c:149
+#: ../src/actions.c:149
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -103,7 +106,7 @@ msgstr ""
 "Filen existerar och det är en fil, men du har inte\n"
 "rättigheter som räcker för att köra den.\n"
 
-#: src/actions.c:162
+#: ../src/actions.c:162
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -116,7 +119,7 @@ msgstr ""
 "Programmet kunde inte exekveras.\n"
 "Detta beror på att filen i verkligheten är en katalog.\n"
 
-#: src/actions.c:169
+#: ../src/actions.c:169
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -129,43 +132,43 @@ msgstr ""
 "Programmet kunde inte exekveras.\n"
 "Orsaken är att filen inte är en vanlig fil.\n"
 
-#: src/actions.c:194
+#: ../src/actions.c:194
 #, c-format
 msgid ""
 "There was an error running the program:\n"
 "%s\n"
 msgstr ""
 
-#: src/alert.c:210
+#: ../src/alert.c:210
 msgid "Enlightenment Error"
 msgstr "Enlightenment Fel"
 
-#: src/alert.c:567
+#: ../src/alert.c:567
 msgid "Enlightenment Message Dialog"
 msgstr "Enlightenment meddelandedialog"
 
-#: src/alert.c:567
+#: ../src/alert.c:567
 msgid "Ignore this"
 msgstr "Ignorera detta"
 
-#: src/alert.c:568
+#: ../src/alert.c:568
 msgid "Restart Enlightenment"
 msgstr "Starta om Enlightenment"
 
-#: src/alert.c:568 src/setup.c:170
+#: ../src/alert.c:568 ../src/setup.c:170
 msgid "Quit Enlightenment"
 msgstr "Avsluta Enlightenment"
 
-#: src/alert.c:581
+#: ../src/alert.c:581
 msgid "Attention !!!"
 msgstr "Uppmärksamhet!!!"
 
-#: src/alert.c:581 src/dialog.c:693 src/dialog.c:1898 src/events.c:90
-#: src/setup.c:159 src/sound.c:310
+#: ../src/alert.c:581 ../src/dialog.c:693 ../src/dialog.c:1898
+#: ../src/events.c:90 ../src/setup.c:159 ../src/sound.c:310
 msgid "OK"
 msgstr "Ok"
 
-#: src/backgrounds.c:1510
+#: ../src/backgrounds.c:1510
 #, c-format
 msgid ""
 "Background definition information:\n"
@@ -176,11 +179,11 @@ msgstr ""
 "Namn: %s\n"
 " Fil: %s\n"
 
-#: src/backgrounds.c:1511
+#: ../src/backgrounds.c:1511
 msgid "-NONE-"
 msgstr "-INGEN-"
 
-#: src/backgrounds.c:1678 src/backgrounds.c:1680
+#: ../src/backgrounds.c:1678 ../src/backgrounds.c:1680
 msgid ""
 "No\n"
 "Background"
@@ -188,40 +191,40 @@ msgstr ""
 "Ingen\n"
 "Bakgrund"
 
-#: src/backgrounds.c:1772 src/backgrounds.c:2198
+#: ../src/backgrounds.c:1772 ../src/backgrounds.c:2198
 #, c-format
 msgid "Unused backgrounds freed after %2i:%02i:%02i"
 msgstr "Oanvända bakgrunder frigörs efter %2i:%02i:%02i"
 
-#: src/backgrounds.c:1984
+#: ../src/backgrounds.c:1984
 msgid "Use background image"
 msgstr "Använd bakgrundsbild"
 
-#: src/backgrounds.c:1988
+#: ../src/backgrounds.c:1988
 msgid "Keep aspect on scale"
 msgstr "Ta hänsyn till skalan"
 
-#: src/backgrounds.c:1992
+#: ../src/backgrounds.c:1992
 msgid "Tile image across background"
 msgstr "Bildmosaik för bakgrunden"
 
-#: src/backgrounds.c:2001
+#: ../src/backgrounds.c:2001
 msgid "Move to Front\n"
 msgstr "Flytta upp\n"
 
-#: src/backgrounds.c:2006
+#: ../src/backgrounds.c:2006
 msgid "Duplicate\n"
 msgstr "Duplicera\n"
 
-#: src/backgrounds.c:2010
+#: ../src/backgrounds.c:2010
 msgid "Unlist\n"
 msgstr "Lista inte\n"
 
-#: src/backgrounds.c:2015
+#: ../src/backgrounds.c:2015
 msgid "Delete File\n"
 msgstr "Radera fil\n"
 
-#: src/backgrounds.c:2026
+#: ../src/backgrounds.c:2026
 msgid ""
 "Background\n"
 "Image\n"
@@ -234,62 +237,59 @@ msgstr ""
 "och\n"
 "placering\n"
 
-#: src/backgrounds.c:2083
+#: ../src/backgrounds.c:2083
 msgid "BG Colour\n"
 msgstr "Bakgrundsfärg\n"
 
-#: src/backgrounds.c:2088
+#: ../src/backgrounds.c:2088
 msgid "Red:\n"
 msgstr "Röd:\n"
 
-#: src/backgrounds.c:2099
+#: ../src/backgrounds.c:2099
 msgid "Green:\n"
 msgstr "Grön:\n"
 
-#: src/backgrounds.c:2110
+#: ../src/backgrounds.c:2110
 msgid "Blue:\n"
 msgstr "Blå:\n"
 
-#: src/backgrounds.c:2143
+#: ../src/backgrounds.c:2143
 msgid "Pre-scan BG's"
 msgstr "Förscanna bg(er)"
 
-#: src/backgrounds.c:2151
+#: ../src/backgrounds.c:2151
 msgid "Sort by File"
 msgstr "Sortera efter fil"
 
-#: src/backgrounds.c:2156
+#: ../src/backgrounds.c:2156
 msgid "Sort by Attr."
 msgstr "Sortera efter attr."
 
-#: src/backgrounds.c:2162
+#: ../src/backgrounds.c:2162
 msgid "Sort by Image"
 msgstr "Sortera efter bild"
 
-#: src/backgrounds.c:2182
+#: ../src/backgrounds.c:2182
 msgid "Use dithering in Hi-Colour"
 msgstr "Använd dithering vid fullfärg"
 
-#: src/backgrounds.c:2186
+#: ../src/backgrounds.c:2186
 msgid "Background overrides theme"
 msgstr "Bakgrunden går före temat"
 
-#: src/backgrounds.c:2191
+#: ../src/backgrounds.c:2191
 msgid "Enable background transparency compatibility mode"
 msgstr ""
 
-#: src/backgrounds.c:2215 src/mod-trans.c:200
-#, fuzzy
+#: ../src/backgrounds.c:2215 ../src/mod-trans.c:200
 msgid "Background"
 msgstr ""
-"Ingen\n"
-"Bakgrund"
 
-#: src/backgrounds.c:2216
+#: ../src/backgrounds.c:2216
 msgid "Desktop Background Settings"
 msgstr "Skrivbordsbakgrundsinställningar"
 
-#: src/backgrounds.c:2219
+#: ../src/backgrounds.c:2219
 msgid ""
 "Enlightenment Desktop\n"
 "Background Settings Dialog\n"
@@ -297,11 +297,11 @@ msgstr ""
 "Dialog för Enlightenments\n"
 "bakgrundsinställningar\n"
 
-#: src/comms.c:240
+#: ../src/comms.c:240
 msgid "E IPC Error"
 msgstr "E IPC Fel"
 
-#: src/comms.c:241
+#: ../src/comms.c:241
 #, c-format
 msgid ""
 "Received Unknown Client Message.\n"
@@ -318,52 +318,46 @@ msgstr ""
 "\n"
 "%s\n"
 
-#: src/config.c:198 src/config.c:300
+#: ../src/config.c:198 ../src/config.c:300
 #, c-format
 msgid "CONFIG: ignoring extra data in \"%s\"\n"
 msgstr "KONFIG: ignorerar extra data i \"%s\"\n"
 
-#: src/config.c:206 src/config.c:307
+#: ../src/config.c:206 ../src/config.c:307
 #, c-format
 msgid "CONFIG: missing required data in \"%s\"\n"
 msgstr "KONFIG: det saknas data i \"%s\"\n"
 
-#: src/config.c:216
-#, fuzzy, c-format
+#: ../src/config.c:216
+#, c-format
 msgid ""
 "Warning: unable to determine what to do with\n"
 "the following text in the middle of current %s definition:\n"
 "%s\n"
 "Will ignore and continue...\n"
 msgstr ""
-"Varning: Det går ej att bestämma vad som skall göras med följande\n"
-"text i mitten på nuvarande extras-definition:\n"
-"%s\n"
-"Ignorerar och fortsätter...\n"
 
-#: src/config.c:224
-#, fuzzy, c-format
+#: ../src/config.c:224
+#, c-format
 msgid ""
 "Warning:  Configuration error in %s block.\n"
 "Outcome is likely not good.\n"
 msgstr ""
-"Varning: Konfigureringen verkar ha avbrutits innan menydelen\n"
-"hade laddats färdigt. Resultatet blir troligen felaktigt.\n"
 
-#: src/config.c:316
+#: ../src/config.c:316
 msgid "Theme versioning ERROR"
 msgstr "Fel version av temat"
 
-#: src/config.c:317
+#: ../src/config.c:317
 msgid "Restart with Defaults"
 msgstr "Starta om med grundinställningar"
 
-#: src/config.c:318
+#: ../src/config.c:318
 msgid "Abort and Exit"
 msgstr "Avbryt och avsluta"
 
-#: src/config.c:319
-#, fuzzy, c-format
+#: ../src/config.c:319
+#, c-format
 msgid ""
 "ERROR:\n"
 "\n"
@@ -382,156 +376,139 @@ msgid ""
 "a while and this theme takes advantages of new\n"
 "features in Enlightenment in new versions.\n"
 msgstr ""
-"FEL:\n"
-"\n"
-"Konfigureringen för det valda temat är ej kompatibelt.\n"
-"Konfigurationsrevisionen är %i. Den måste vara\n"
-"märkt som revision %i.\n"
-"\n"
-"Vänligen kontakta författaren och informera om att\n"
-"för att temat skall fungera med denna version\n"
-"av Enlightenment, måste de uppdatera till\n"
-"nuvarande standard, och sedan matcha versionsnummret.\n"
-"\n"
-"Om temats versionsnummer är högre än Enlightenments\n"
-"har inte Enlightenment uppgraderats på ett tag och\n"
-"detta tema utnyttjar finesser som bara finns i senare\n"
-"versioner av Enlightenment.\n"
 
-#: src/config.c:621
+#: ../src/config.c:621
 msgid "Enlightenment Starting..."
 msgstr "Enlightenment Startar..."
 
-#: src/container.c:1187
-#, fuzzy
+#: ../src/container.c:1187
 msgid "Settings..."
-msgstr "Fokusinställningar"
+msgstr ""
 
-#: src/container.c:1191 src/dialog.c:704 src/pager.c:1016 config/strings.c:30
-#: config/strings.c:122
+#: ../src/container.c:1191 ../src/dialog.c:704 ../src/pager.c:1016
+#: ../config/strings.c:30 ../config/strings.c:122
 msgid "Close"
 msgstr "Stäng"
 
-#: src/container.c:1196 config/strings.c:83
+#: ../src/container.c:1196 ../config/strings.c:83
 msgid "Create New Iconbox"
 msgstr "Skapa ny ikonlåda"
 
-#: src/container.c:1507 src/container.c:1583 src/menus.c:2116
-#, fuzzy, c-format
+#: ../src/container.c:1507 ../src/container.c:1583 ../src/menus.c:2116
+#, c-format
 msgid "Icon size: %2d"
-msgstr "Ikon storlek"
+msgstr ""
 
-#: src/container.c:1547
+#: ../src/container.c:1547
 msgid "Transparent background"
 msgstr "Transparent bakgrund"
 
-#: src/container.c:1551
-#, fuzzy
+#: ../src/container.c:1551
 msgid "Hide inner border"
-msgstr "Visa/gömma denna grupp"
+msgstr ""
 
-#: src/container.c:1555
+#: ../src/container.c:1555
 msgid "Draw base image behind Icons"
 msgstr "Visa bakgrundsbild bakom ikoner"
 
-#: src/container.c:1559
+#: ../src/container.c:1559
 msgid "Hide scrollbar when not needed"
 msgstr "Dölj rullningslist när den ej behövs"
 
-#: src/container.c:1563
+#: ../src/container.c:1563
 msgid "Automatically resize to fit Icons"
 msgstr "Auto storleksförändra för att passa ikoner"
 
-#: src/container.c:1570
+#: ../src/container.c:1570
 msgid "Alignment of anchoring when automatically resizing:"
 msgstr "Placering av förankring vid auto storleksförändring:"
 
-#: src/container.c:1601
+#: ../src/container.c:1601
 msgid "Orientation:"
 msgstr "Placering:"
 
-#: src/container.c:1604
+#: ../src/container.c:1604
 msgid "Horizontal"
 msgstr "Horisontal"
 
-#: src/container.c:1609
+#: ../src/container.c:1609
 msgid "Vertical"
 msgstr "Vertikal"
 
-#: src/container.c:1620
+#: ../src/container.c:1620
 msgid "Scrollbar side:"
 msgstr "Rullningslist sida:"
 
-#: src/container.c:1623
+#: ../src/container.c:1623
 msgid "Left / Top"
 msgstr "Vänster / Upp"
 
-#: src/container.c:1628
+#: ../src/container.c:1628
 msgid "Right / Bottom"
 msgstr "Höger / Ner"
 
-#: src/container.c:1639
+#: ../src/container.c:1639
 msgid "Scrollbar arrows:"
 msgstr "Rullningslist pilar:"
 
-#: src/container.c:1642
+#: ../src/container.c:1642
 msgid "Start"
 msgstr "Start"
 
-#: src/container.c:1647
+#: ../src/container.c:1647
 msgid "Both ends"
 msgstr "Båda sidor"
 
-#: src/container.c:1652
+#: ../src/container.c:1652
 msgid "End"
 msgstr "Slut"
 
-#: src/container.c:1657 src/focus.c:960
+#: ../src/container.c:1657 ../src/focus.c:969
 msgid "None"
 msgstr "Ingen"
 
-#: src/container.c:1667
+#: ../src/container.c:1667
 msgid "Show icon names"
 msgstr "Visa ikonnamn"
 
-#: src/container.c:1676
+#: ../src/container.c:1676
 msgid "Animation mode:"
 msgstr ""
 
-#: src/container.c:1679 src/desktops.c:2577
+#: ../src/container.c:1679 ../src/desktops.c:2579
 msgid "Off"
 msgstr ""
 
-#: src/container.c:1684
+#: ../src/container.c:1684
 msgid "Whirl"
 msgstr ""
 
-#: src/container.c:1689 src/settings.c:112 src/settings.c:117
-#: src/settings.c:385
+#: ../src/container.c:1689 ../src/settings.c:112 ../src/settings.c:117
+#: ../src/settings.c:385
 msgid "Box"
 msgstr "Låda"
 
-#: src/container.c:1697
+#: ../src/container.c:1697
 msgid "Animation speed:"
 msgstr ""
 
-#: src/container.c:1712
+#: ../src/container.c:1712
 msgid "Icon image display policy (if one operation fails, try the next):"
 msgstr "Ikonbilds visningpolicy (om ett försök misslyckas, försök nästa):"
 
-#: src/container.c:1717
+#: ../src/container.c:1717
 msgid "Snapshot Windows, Use application icon, Use Enlightenment Icon"
 msgstr "Snapshot av fönster, Anv applikation ikon, Anv Enlightenment ikon"
 
-#: src/container.c:1724
+#: ../src/container.c:1724
 msgid "Use application icon, Use Enlightenment Icon, Snapshot Window"
 msgstr "Anv applikation ikon, Anv Enlightenment ikon, Snapshot av fönster"
 
-#: src/container.c:1729
+#: ../src/container.c:1729
 msgid "Use Enlightenment Icon, Snapshot Window"
 msgstr "Anv Enlightenment ikon, Snapshot av fönster"
 
-#: src/container.c:1742
+#: ../src/container.c:1742
 msgid ""
 "Enlightenment Iconbox\n"
 "Settings Dialog\n"
@@ -539,12 +516,12 @@ msgstr ""
 "Dialog för Enlightenments\n"
 "ikonlådeinställningar\n"
 
-#: src/coords.c:75
+#: ../src/coords.c:75
 #, c-format
 msgid "Focused/unfocused opacity: %d/%d %%"
 msgstr ""
 
-#: src/desktops.c:124
+#: ../src/desktops.c:124
 msgid ""
 "Hold down the mouse button and drag\n"
 "the mouse to be able to drag the desktop\n"
@@ -561,7 +538,7 @@ msgstr ""
 "Klicka mellersta musknappen för en lista på alla\n"
 "applikationer som körs nu.\n"
 
-#: src/desktops.c:135
+#: ../src/desktops.c:135
 msgid ""
 "This is the Root desktop.\n"
 "You cannot drag the root desktop around.\n"
@@ -577,7 +554,7 @@ msgstr ""
 "Klicka mellersta musknappen för en lista på alla\n"
 "applikationer som körs nu.\n"
 
-#: src/desktops.c:153
+#: ../src/desktops.c:153
 msgid ""
 "Click here to raise this desktop\n"
 "to the top.\n"
@@ -585,7 +562,7 @@ msgstr ""
 "Klicka här för att lägga detta\n"
 "skrivbord överst.\n"
 
-#: src/desktops.c:165
+#: ../src/desktops.c:165
 msgid ""
 "Click here to lower this desktop\n"
 "to the bottom.\n"
@@ -593,58 +570,57 @@ msgstr ""
 "Klicka här för att lägga detta\n"
 "skribord underst.\n"
 
-#: src/desktops.c:2338
+#: ../src/desktops.c:2340
 msgid "Number of virtual desktops:\n"
 msgstr "Antal virtuella skrivbord:\n"
 
-#: src/desktops.c:2363
+#: ../src/desktops.c:2365
 msgid "Slide desktops around when changing"
 msgstr "Låt skrivborden glida omkring vid växling"
 
-#: src/desktops.c:2369
-#, fuzzy
+#: ../src/desktops.c:2371
 msgid "Desktop Slide speed:\n"
-msgstr "Skrivbordets glid fart: (sakta)\n"
+msgstr ""
 
-#: src/desktops.c:2383
-#, fuzzy
+#: ../src/desktops.c:2385
 msgid "Wrap desktops around"
-msgstr "Svep omkring virtuella skrivbord"
+msgstr ""
 
-#: src/desktops.c:2391
+#: ../src/desktops.c:2393
 msgid "Display desktop dragbar"
 msgstr "Visa skrivbordens draglist"
 
-#: src/desktops.c:2397
+#: ../src/desktops.c:2399
 msgid "Drag bar position:"
 msgstr "Draglistens läge:"
 
-#: src/desktops.c:2401
+#: ../src/desktops.c:2403
 msgid "Top"
 msgstr "Upptill"
 
-#: src/desktops.c:2407
+#: ../src/desktops.c:2409
 msgid "Bottom"
 msgstr "Nertill"
 
-#: src/desktops.c:2413 src/pager.c:1925 src/pager.c:1950 src/pager.c:1975
+#: ../src/desktops.c:2415 ../src/pager.c:1925 ../src/pager.c:1950
+#: ../src/pager.c:1975
 msgid "Left"
 msgstr "Vänster"
 
-#: src/desktops.c:2419 src/pager.c:1937 src/pager.c:1962 src/pager.c:1987
+#: ../src/desktops.c:2421 ../src/pager.c:1937 ../src/pager.c:1962
+#: ../src/pager.c:1987
 msgid "Right"
 msgstr "Höger"
 
-#: src/desktops.c:2427 src/menus-misc.c:585
-#, fuzzy
+#: ../src/desktops.c:2429 ../src/menus-misc.c:585
 msgid "Desks"
-msgstr "Skrivbord"
+msgstr ""
 
-#: src/desktops.c:2428
+#: ../src/desktops.c:2430
 msgid "Multiple Desktop Settings"
 msgstr "Multipla skrivbordsinställningar"
 
-#: src/desktops.c:2431
+#: ../src/desktops.c:2433
 msgid ""
 "Enlightenment Multiple Desktop\n"
 "Settings Dialog\n"
@@ -652,39 +628,39 @@ msgstr ""
 "Dialog för Enlightenments\n"
 "multipla skrivbordsinställningar\n"
 
-#: src/desktops.c:2531
+#: ../src/desktops.c:2533
 msgid "Virtual Desktop size:\n"
 msgstr "Storlek för virtuella skribord:\n"
 
-#: src/desktops.c:2567
+#: ../src/desktops.c:2569
 msgid "Wrap virtual desktops around"
 msgstr "Svep omkring virtuella skrivbord"
 
-#: src/desktops.c:2574
+#: ../src/desktops.c:2576
 msgid "Edge Flip Mode:"
 msgstr ""
 
-#: src/desktops.c:2582
+#: ../src/desktops.c:2584
 msgid "On"
 msgstr ""
 
-#: src/desktops.c:2587
+#: ../src/desktops.c:2589
 msgid "Only when moving window"
 msgstr ""
 
-#: src/desktops.c:2593
+#: ../src/desktops.c:2595
 msgid "Resistance at edge of screen:\n"
 msgstr "Motstånd vid bildskärmskanten:\n"
 
-#: src/desktops.c:2605
+#: ../src/desktops.c:2607
 msgid "Areas"
 msgstr ""
 
-#: src/desktops.c:2606
+#: ../src/desktops.c:2608
 msgid "Virtual Desktop Settings"
 msgstr "Virtuella skrivbordsinställningar"
 
-#: src/desktops.c:2609
+#: ../src/desktops.c:2611
 msgid ""
 "Enlightenment Virtual Desktop\n"
 "Settings Dialog\n"
@@ -692,11 +668,11 @@ msgstr ""
 "Dialog för Enlightenments\n"
 "virtuella skrivbordsinställningar\n"
 
-#: src/dialog.c:698
+#: ../src/dialog.c:698
 msgid "Apply"
 msgstr "Använd"
 
-#: src/ecompmgr.c:2309
+#: ../src/ecompmgr.c:2309
 msgid ""
 "Cannot enable Composite Manager.\n"
 "Use xdpyinfo to check that\n"
@@ -704,11 +680,11 @@ msgid ""
 "extensions are loaded."
 msgstr ""
 
-#: src/events.c:90
+#: ../src/events.c:90
 msgid "X server setup error"
 msgstr "X server installationsfel"
 
-#: src/events.c:91
+#: ../src/events.c:91
 msgid ""
 "FATAL ERROR:\n"
 "\n"
@@ -727,117 +703,112 @@ msgstr ""
 "Din Xserver är troligen för gammal eller felkonfigurerad.\n"
 "Avslutar.\n"
 
-#: src/focus.c:806
+#: ../src/focus.c:815
 msgid "Focus follows pointer"
 msgstr "Fokus följer pekaren"
 
-#: src/focus.c:812
+#: ../src/focus.c:821
 msgid "Focus follows pointer sloppily"
 msgstr "Fokus följer pekaren slafsigt"
 
-#: src/focus.c:818
+#: ../src/focus.c:827
 msgid "Focus follows mouse clicks"
 msgstr "Fokus följer musklick"
 
-#: src/focus.c:828
+#: ../src/focus.c:837
 msgid "Clicking in a window always raises it"
 msgstr "Musklick i fönster lägger alltid överst"
 
-#: src/focus.c:836
+#: ../src/focus.c:845
 msgid "All new windows first get the focus"
 msgstr "Alla nya fönster får fokus först"
 
-#: src/focus.c:843
+#: ../src/focus.c:852
 msgid "New windows get the focus if their window group is focused"
 msgstr ""
 
-#: src/focus.c:848
+#: ../src/focus.c:857
 msgid "Only new dialog windows get the focus"
 msgstr "Bara nya dialogfönster får fokus"
 
-#: src/focus.c:855
+#: ../src/focus.c:864
 msgid "Only new dialogs whose owner is focused get the focus"
 msgstr "Bara nya dialoger vars ägare är fokuserade får fokus"
 
-#: src/focus.c:860
-#, fuzzy
+#: ../src/focus.c:869
 msgid "Raise windows while switching focus"
-msgstr "Fokusera fönster vid växling"
+msgstr ""
 
-#: src/focus.c:866
-#, fuzzy
+#: ../src/focus.c:875
 msgid "Send mouse pointer to window while switching focus"
-msgstr "Muspekaren till fönster vid fokusväxling"
+msgstr ""
 
-#: src/focus.c:872
-#, fuzzy
+#: ../src/focus.c:881
 msgid "Always send mouse pointer to window on focus switch"
-msgstr "Muspekaren till fönster vid fokusväxling"
+msgstr ""
 
-#: src/focus.c:880
+#: ../src/focus.c:889
 msgid "Raise windows automatically"
 msgstr "Lägg fönster överst automatiskt"
 
-#: src/focus.c:886
+#: ../src/focus.c:895
 msgid "Autoraise delay:"
 msgstr "Lägga fönster överst fördröjning:"
 
-#: src/focus.c:899
+#: ../src/focus.c:908
 msgid "Display and use focus list"
 msgstr "Visa och använd fokuslista"
 
-#: src/focus.c:904
+#: ../src/focus.c:913
 msgid "Include sticky windows in focus list"
 msgstr "Ta med klibbiga fönster i fokuslistan"
 
-#: src/focus.c:909
+#: ../src/focus.c:918
 msgid "Include shaded windows in focus list"
 msgstr "Ta med skymda fönster i fokuslistan"
 
-#: src/focus.c:914
+#: ../src/focus.c:923
 msgid "Include iconified windows in focus list"
 msgstr "Ta med ikonifierade fönster i fokuslistan"
 
-#: src/focus.c:919
-#, fuzzy
+#: ../src/focus.c:928
 msgid "Include windows on other desks in focus list"
-msgstr "Ta med skymda fönster i fokuslistan"
+msgstr ""
 
-#: src/focus.c:924
+#: ../src/focus.c:933
 msgid "Focus windows while switching"
 msgstr "Fokusera fönster vid växling"
 
-#: src/focus.c:929
+#: ../src/focus.c:938
 msgid "Raise windows after focus switch"
 msgstr "Fönster överst efter fokusväxling"
 
-#: src/focus.c:934
+#: ../src/focus.c:943
 msgid "Send mouse pointer to window after focus switch"
 msgstr "Muspekaren flyttas till fönster efter fokusväxling"
 
-#: src/focus.c:944
-#, fuzzy
-msgid "Focuslist image display policy (if one operation fails, try the next):"
-msgstr "Ikonbilds visningpolicy (om ett försök misslyckas, försök nästa):"
+#: ../src/focus.c:953
+msgid ""
+"Focuslist image display policy (if one operation fails, try the next):"
+msgstr ""
 
-#: src/focus.c:948
+#: ../src/focus.c:957
 msgid "First E Icon, then App Icon"
 msgstr ""
 
-#: src/focus.c:954
+#: ../src/focus.c:963
 msgid "First App Icon, then E Icon"
 msgstr ""
 
-#: src/focus.c:968
-#, fuzzy
+#: ../src/focus.c:977
 msgid "Focus"
-msgstr "Fokusera aldrig"
+msgstr ""
 
-#: src/focus.c:969
+#: ../src/focus.c:978
 msgid "Focus Settings"
 msgstr "Fokusinställningar"
 
-#: src/focus.c:972
+#: ../src/focus.c:981
 msgid ""
 "Enlightenment Focus\n"
 "Settings Dialog\n"
@@ -845,32 +816,31 @@ msgstr ""
 "Dialog för Enlightenments\n"
 "fokusinställningar\n"
 
-#: src/fx.c:824
+#: ../src/fx.c:824
 msgid "Effects"
 msgstr ""
 
-#: src/fx.c:826
+#: ../src/fx.c:826
 msgid "Ripples"
 msgstr ""
 
-#: src/fx.c:829
+#: ../src/fx.c:829
 msgid "Waves"
 msgstr ""
 
-#: src/fx.c:834
-#, fuzzy
+#: ../src/fx.c:834
 msgid "Raindrops"
-msgstr "Fönstergruppsfel"
+msgstr ""
 
-#: src/fx.c:841
+#: ../src/fx.c:841
 msgid "FX"
 msgstr ""
 
-#: src/fx.c:842
+#: ../src/fx.c:842
 msgid "Special FX Settings"
 msgstr "Specialeffektsinställningar"
 
-#: src/fx.c:845
+#: ../src/fx.c:845
 msgid ""
 "Enlightenment Special Effects\n"
 "Settings Dialog\n"
@@ -878,11 +848,11 @@ msgstr ""
 "Dialog för Enlightenments\n"
 "specialeffektsinställningar\n"
 
-#: src/groups.c:706
+#: ../src/groups.c:706
 msgid "Window Group Selection"
 msgstr "Fönstergruppsval"
 
-#: src/groups.c:709
+#: ../src/groups.c:709
 msgid ""
 "Enlightenment Window Group\n"
 "Selection Dialog\n"
@@ -890,11 +860,12 @@ msgstr ""
 "Dialog för Enlightenments\n"
 "fönstergruppsinställningar\n"
 
-#: src/groups.c:732 src/groups.c:741 src/groups.c:749 src/groups.c:924
+#: ../src/groups.c:732 ../src/groups.c:741 ../src/groups.c:749
+#: ../src/groups.c:924
 msgid "Window Group Error"
 msgstr "Fönstergruppsfel"
 
-#: src/groups.c:734
+#: ../src/groups.c:734
 msgid ""
 "\n"
 "  This window currently does not belong to any groups.  \n"
@@ -908,7 +879,7 @@ msgstr ""
 "  grupper med ett fönster som tillhör minst en grupp .\n"
 "\n"
 
-#: src/groups.c:742
+#: ../src/groups.c:742
 msgid ""
 "\n"
 "  Currently, no groups exist or this window  \n"
@@ -922,7 +893,7 @@ msgstr ""
 "  Du måste skapa andra grupper först..  \n"
 "\n"
 
-#: src/groups.c:751
+#: ../src/groups.c:751
 msgid ""
 "\n"
 "  Currently, no groups exist. You have to start a group first.\n"
@@ -932,11 +903,11 @@ msgstr ""
 "  Just nu finns inga grupper. Du måste skapa en grupp först..\n"
 "\n"
 
-#: src/groups.c:835
+#: ../src/groups.c:835
 msgid "   Pick the group to configure:   "
 msgstr "   Välj grupp att konfigurera:   "
 
-#: src/groups.c:866
+#: ../src/groups.c:866
 msgid ""
 "  The following actions are  \n"
 "  applied to all group members:  "
@@ -944,39 +915,39 @@ msgstr ""
 "  Följande egenskaper appliceras  \n"
 "  på alla gruppmedlemmar:  "
 
-#: src/groups.c:871 src/groups.c:968
+#: ../src/groups.c:871 ../src/groups.c:968
 msgid "Changing Border Style"
 msgstr "Ändra ramstil"
 
-#: src/groups.c:876 src/groups.c:973
+#: ../src/groups.c:876 ../src/groups.c:973
 msgid "Iconifying"
 msgstr "Ikonifiera"
 
-#: src/groups.c:881 src/groups.c:978
+#: ../src/groups.c:881 ../src/groups.c:978
 msgid "Killing"
 msgstr "Döda"
 
-#: src/groups.c:886 src/groups.c:983
+#: ../src/groups.c:886 ../src/groups.c:983
 msgid "Moving"
 msgstr "Flytta"
 
-#: src/groups.c:891 src/groups.c:988
+#: ../src/groups.c:891 ../src/groups.c:988
 msgid "Raising/Lowering"
 msgstr "Lägga överst/underst"
 
-#: src/groups.c:896 src/groups.c:993
+#: ../src/groups.c:896 ../src/groups.c:993
 msgid "Sticking"
 msgstr "Klibba"
 
-#: src/groups.c:901 src/groups.c:998
+#: ../src/groups.c:901 ../src/groups.c:998
 msgid "Shading"
 msgstr "Skymma"
 
-#: src/groups.c:908
+#: ../src/groups.c:908
 msgid "Window Group Settings"
 msgstr "Fönstergruppsinställningar"
 
-#: src/groups.c:911
+#: ../src/groups.c:911
 msgid ""
 "Enlightenment Window Group\n"
 "Settings Dialog\n"
@@ -984,7 +955,7 @@ msgstr ""
 "Dialog för Enlightenments\n"
 "fönstergruppsinställningar\n"
 
-#: src/groups.c:926
+#: ../src/groups.c:926
 msgid ""
 "\n"
 "  This window currently does not belong to any groups.  \n"
@@ -994,30 +965,28 @@ msgstr ""
 "  Detta fönster hör just nu inte till några grupper  \n"
 "\n"
 
-#: src/groups.c:961
-#, fuzzy
+#: ../src/groups.c:961
 msgid " Per-group settings: "
-msgstr "Sidväxlarinställningar"
+msgstr ""
 
-#: src/groups.c:1007
+#: ../src/groups.c:1007
 msgid " Global settings: "
 msgstr ""
 
-#: src/groups.c:1011
-#, fuzzy
+#: ../src/groups.c:1011
 msgid "Swap Window Locations"
-msgstr "Fönsterval"
+msgstr ""
 
-#: src/groups.c:1017 src/menus-misc.c:645 config/strings.c:138
-#, fuzzy
+#. winops_groups.menu
+#: ../src/groups.c:1017 ../src/menus-misc.c:645 ../config/strings.c:138
 msgid "Groups"
-msgstr "Grupp %i"
+msgstr ""
 
-#: src/groups.c:1018
+#: ../src/groups.c:1018
 msgid "Default Group Control Settings"
 msgstr "Förvalda gruppkontrollsinställningar"
 
-#: src/groups.c:1021
+#: ../src/groups.c:1021
 msgid ""
 "Enlightenment Default\n"
 "Group Control Settings Dialog\n"
@@ -1025,22 +994,19 @@ msgstr ""
 "Dialog för Enlightenments\n"
 "förvalda gruppkontrollsinställningar\n"
 
-#: src/groups.c:1048
-#, fuzzy
+#: ../src/groups.c:1048
 msgid "Pick the group the window will belong to:"
-msgstr "  Välj den grupp som fönstret skall tillhöra:  \n"
+msgstr ""
 
-#: src/groups.c:1054
-#, fuzzy
+#: ../src/groups.c:1054
 msgid "Select the group to remove the window from:"
-msgstr "  Välj den grupp som fönstret skall tas bort ifrån.  "
+msgstr ""
 
-#: src/groups.c:1059
-#, fuzzy
+#: ../src/groups.c:1059
 msgid "Select the group to break:"
-msgstr "  Välj den grupp som skall brytas upp  "
+msgstr ""
 
-#: src/handlers.c:61
+#: ../src/handlers.c:61
 #, c-format
 msgid ""
 "Enlightenment performed an Illegal Instruction.\n"
@@ -1060,7 +1026,7 @@ msgstr ""
 "för ditt system, eller kompilera om Enlightenment och\n"
 "eventuella bibliotek som Enlightenment är beroende av.\n"
 
-#: src/handlers.c:71
+#: ../src/handlers.c:71
 msgid ""
 "Enlightenment caused a Floating Point Exception.\n"
 "\n"
@@ -1085,7 +1051,7 @@ msgstr ""
 "buggrapport som möjligt med info om bakåtspårnings data och variabel\n"
 "dumpar etc.\n"
 
-#: src/handlers.c:83
+#: ../src/handlers.c:83
 msgid ""
 "Enlightenment caused Segment Violation (Segfault)\n"
 "\n"
@@ -1110,7 +1076,7 @@ msgstr ""
 "buggrapport som möjligt med info om bakåtspårnings data och variabel\n"
 "dumpar etc.\n"
 
-#: src/handlers.c:95
+#: ../src/handlers.c:95
 msgid ""
 "Enlightenment caused Bus Error.\n"
 "\n"
@@ -1124,87 +1090,75 @@ msgstr ""
 "och OS installation. Det är mycket ovanligt med bussfel på\n"
 "fungerande hårdvara.\n"
 
-#: src/hints.c:600
-#, fuzzy
+#: ../src/hints.c:600
 msgid "Selection Error!"
-msgstr "Textklass fel!"
+msgstr ""
 
-#: src/hints.c:600
+#: ../src/hints.c:600
 #, c-format
 msgid "Could not acquire selection: %s"
 msgstr ""
 
-#: src/iconify.c:469
+#: ../src/iconify.c:469
 msgid "Iconbox Options"
 msgstr "Ikonlådeval"
 
-#: src/iconify.c:470
+#: ../src/iconify.c:470
 msgid "Iconbox Settings"
 msgstr "Ikonlådeinställningar"
 
-#: src/ipc.c:195 src/ipc.c:1462 src/ipc.c:1469 src/theme.c:379
+#: ../src/ipc.c:195 ../src/ipc.c:1462 ../src/ipc.c:1469 ../src/theme.c:379
 msgid "Message"
 msgstr "Meddelande"
 
-#: src/ipc.c:1462 src/ipc.c:1469
+#: ../src/ipc.c:1462 ../src/ipc.c:1469
 #, c-format
 msgid "e16 was built without %s support"
 msgstr ""
 
-#: src/ipc.c:1463
-#, fuzzy
+#: ../src/ipc.c:1463
 msgid "composite"
-msgstr "Möjliggör ljud"
+msgstr ""
 
-#: src/ipc.c:1470
+#: ../src/ipc.c:1470
 msgid "sound"
 msgstr ""
 
-#: src/ipc.c:1814
-#, fuzzy
+#: ../src/ipc.c:1814
 msgid "Enlightenment IPC Commands Help\n"
-msgstr "Enlightenment IPC kommando hjälp"
+msgstr ""
 
-#: src/ipc.c:1818
-#, fuzzy
+#: ../src/ipc.c:1818
 msgid ""
 "Use \"help all\" for descriptions of each command\n"
 "Use \"help <command>\" for an individual description\n"
 "\n"
 msgstr ""
-"använd \"help all\" för beskrivningar av varje kommando\n"
-"använd \"help <kommando>\" för en individuell beskrivning\n"
-"\n"
 
-#: src/ipc.c:1820 src/ipc.c:1840 src/ipc.c:1852
-#, fuzzy
+#: ../src/ipc.c:1820 ../src/ipc.c:1840 ../src/ipc.c:1852
 msgid "Commands currently available:\n"
 msgstr ""
-"\n"
-"kommandon som nu är tillgängliga:\n"
 
-#: src/ipc.c:1838
+#: ../src/ipc.c:1838
 msgid "Use \"help full\" for full descriptions of each command\n"
 msgstr ""
 
-#: src/ipc.c:1839
-#, fuzzy
+#: ../src/ipc.c:1839
 msgid "Use \"help <command>\" for an individual description\n"
-msgstr "använd \"help <kommando>\" för en individuell beskrivning\n"
+msgstr ""
 
-#: src/ipc.c:1841 src/ipc.c:1853
-#, fuzzy
+#: ../src/ipc.c:1841 ../src/ipc.c:1853
 msgid "         <command>     : <description>\n"
-msgstr "<kommando> : <beskrivning>\n"
+msgstr ""
 
-#: src/main.c:531
+#: ../src/main.c:531
 #, c-format
 msgid ""
 "%s must be a directory in which you have\n"
 "read, write, and execute permission.\n"
 msgstr ""
 
-#: src/main.c:630
+#: ../src/main.c:630
 #, c-format
 msgid ""
 "!!!!!!!! ERROR ERROR ERROR ERROR !!!!!!!!\n"
@@ -1233,8 +1187,8 @@ msgstr ""
 "byggt paket, eller någon som manuellt har raderat\n"
 "programmet, eller fel vid Enlightenments installation .\n"
 
-#: src/main.c:644
-#, fuzzy, c-format
+#: ../src/main.c:644
+#, c-format
 msgid ""
 "!!!!!!!! ERROR ERROR ERROR ERROR !!!!!!!!\n"
 "\n"
@@ -1245,280 +1199,250 @@ msgid ""
 "Please rectify this situation and ensure it is installed\n"
 "correctly.\n"
 msgstr ""
-"!!!!!!!! FEL FEL FEL FEL !!!!!!!!\n"
-"\n"
-"Enlightenments dox exekverbara fil kan inte köras:\n"
-"\n"
-"%s\n"
-"Detta är ett grundfel och Enlightenment kan inte köras.\n"
-"Var vänlig att korrigera detta, och kontrollera \n"
-"att dox är korrekt installerad.\n"
 
-#: src/magwin.c:461
+#: ../src/magwin.c:461
 msgid "Magnifier"
 msgstr ""
 
-#: src/menus-misc.c:416 config/strings.c:79
-#, fuzzy
+#: ../src/menus-misc.c:416 ../config/strings.c:79
 msgid "Backgrounds"
 msgstr ""
-"Ingen\n"
-"Bakgrund"
 
-#: src/menus-misc.c:455 config/strings.c:91 config/strings.c:113
-#, fuzzy
+#: ../src/menus-misc.c:455 ../config/strings.c:91 ../config/strings.c:113
 msgid "Themes"
-msgstr "Felaktigt tema"
+msgstr ""
 
-#: src/menus-misc.c:481
-#, fuzzy
+#: ../src/menus-misc.c:481
 msgid "Border"
-msgstr "Ramstil"
+msgstr ""
 
-#: src/menus-misc.c:545
-#, fuzzy
+#: ../src/menus-misc.c:545
 msgid "Window List"
-msgstr "Fönsterlistignorering"
+msgstr ""
 
-#: src/menus-misc.c:567
-#, fuzzy
+#: ../src/menus-misc.c:567
 msgid "Go to this Desktop"
-msgstr "Gå till detta skrivbord"
+msgstr ""
 
-#: src/menus-misc.c:571 src/menus-misc.c:667
+#: ../src/menus-misc.c:571 ../src/menus-misc.c:667
 #, c-format
 msgid "Desktop %i"
 msgstr "Skrivbord %i"
 
-#: src/menus-misc.c:614
+#: ../src/menus-misc.c:614
 msgid "Show/Hide this group"
 msgstr "Visa/gömma denna grupp"
 
-#: src/menus-misc.c:619
+#: ../src/menus-misc.c:619
 msgid "Iconify this group"
 msgstr "Ikonifiera denna grupp"
 
-#: src/menus-misc.c:630
+#: ../src/menus-misc.c:630
 #, c-format
 msgid "Group %i"
 msgstr "Grupp %i"
 
-#: src/menus.c:2139
+#: ../src/menus.c:2139
 msgid "Animated display of menus"
 msgstr "Animerad visning av menyer"
 
-#: src/menus.c:2144
+#: ../src/menus.c:2144
 msgid "Always pop up menus on screen"
 msgstr "Låt alltid menyer poppa upp på skärm"
 
-#: src/menus.c:2149
+#: ../src/menus.c:2149
 msgid "Warp pointer after moving menus"
 msgstr "Flytta muspekaren efter att menyer flyttats"
 
-#: src/menus.c:2166
-#, fuzzy
+#: ../src/menus.c:2166
 msgid "Menus"
-msgstr "Ramstil"
+msgstr ""
 
-#: src/menus.c:2167
-#, fuzzy
+#: ../src/menus.c:2167
 msgid "Menu Settings"
-msgstr "Diverse inställningar"
+msgstr ""
 
-#: src/menus.c:2170
-#, fuzzy
+#: ../src/menus.c:2170
 msgid ""
 "Enlightenment Menu\n"
 "Settings Dialog\n"
 msgstr ""
-"Dialog för Enlightenments\n"
-"fokusinställningar\n"
 
-#: src/mod-trans.c:98
+#: ../src/mod-trans.c:98
 #, c-format
 msgid "Theme transparency: %2d"
 msgstr ""
 
-#: src/mod-trans.c:139
+#: ../src/mod-trans.c:139
 msgid "Changes Might Require Restart:"
 msgstr ""
 
-#: src/mod-trans.c:148
-#, fuzzy
+#: ../src/mod-trans.c:148
 msgid "Borders:"
-msgstr "Ramstil"
+msgstr ""
 
-#: src/mod-trans.c:152
-#, fuzzy
+#: ../src/mod-trans.c:152
 msgid "Menus:"
-msgstr "Ramstil"
+msgstr ""
 
-#: src/mod-trans.c:156
+#: ../src/mod-trans.c:156
 msgid "Hilights:"
 msgstr ""
 
-#: src/mod-trans.c:160
+#: ../src/mod-trans.c:160
 msgid "E Widgets:"
 msgstr ""
 
-#: src/mod-trans.c:164
+#: ../src/mod-trans.c:164
 msgid "E Dialogs:"
 msgstr ""
 
-#: src/mod-trans.c:168
-#, fuzzy
+#: ../src/mod-trans.c:168
 msgid "Tooltips:"
-msgstr "Fördröjning av verktygstips:\n"
+msgstr ""
 
-#: src/mod-trans.c:172 src/settings.c:92 src/settings.c:97 src/settings.c:375
+#: ../src/mod-trans.c:172 ../src/settings.c:92 ../src/settings.c:97
+#: ../src/settings.c:375
 msgid "Opaque"
 msgstr "Ogenomskinlig"
 
-#: src/mod-trans.c:233
-#, fuzzy
+#: ../src/mod-trans.c:233
 msgid "Glass"
-msgstr "Klass:"
+msgstr ""
 
-#: src/mod-trans.c:263
-#, fuzzy
+#: ../src/mod-trans.c:263
 msgid "Transparency"
-msgstr "Transparent bakgrund"
+msgstr ""
 
-#: src/mod-trans.c:264
-#, fuzzy
+#: ../src/mod-trans.c:264
 msgid "Selective Transparency Settings"
 msgstr ""
-"Dialog för Enlightenments\n"
-"verktygstipsinställningar\n"
 
-#: src/mod-trans.c:267
-#, fuzzy
+#: ../src/mod-trans.c:267
 msgid ""
 "Enlightenment Selective Transparency\n"
 "Settings Dialog\n"
 msgstr ""
-"Dialog för Enlightenments\n"
-"verktygstipsinställningar\n"
 
-#: src/pager.c:1005 config/strings.c:49 config/strings.c:121
+#. winops.menu
+#: ../src/pager.c:1005 ../config/strings.c:49 ../config/strings.c:121
 msgid "Window Options"
 msgstr "Fönsterval"
 
-#: src/pager.c:1012 config/strings.c:51 config/strings.c:124
+#: ../src/pager.c:1012 ../config/strings.c:51 ../config/strings.c:124
 msgid "Iconify"
 msgstr "Ikonifiera"
 
-#: src/pager.c:1020 config/strings.c:123
+#: ../src/pager.c:1020 ../config/strings.c:123
 msgid "Annihilate"
 msgstr "Förinta"
 
-#: src/pager.c:1024
+#: ../src/pager.c:1024
 msgid "Stick / Unstick"
 msgstr "Klibbigt / Ej klibbigt"
 
-#: src/pager.c:1031
+#: ../src/pager.c:1031
 msgid "Desktop Options"
 msgstr "Skrivbordsval"
 
-#: src/pager.c:1037
+#. Destroy when hidden
+#: ../src/pager.c:1037
 msgid "Pager Settings..."
 msgstr "Sidväxlarinställningar..."
 
-#: src/pager.c:1042
+#: ../src/pager.c:1042
 msgid "Snapshotting Off"
 msgstr "Snapshots av"
 
-#: src/pager.c:1046
+#: ../src/pager.c:1046
 msgid "High Quality Off"
 msgstr "Hög kvalitet av"
 
-#: src/pager.c:1048
+#: ../src/pager.c:1048
 msgid "High Quality On"
 msgstr "Hög kvalitet på"
 
-#: src/pager.c:1053
+#: ../src/pager.c:1053
 msgid "Snapshotting On"
 msgstr "Snapshots på"
 
-#: src/pager.c:1057
+#: ../src/pager.c:1057
 msgid "Zoom Off"
 msgstr ""
 
-#: src/pager.c:1059
+#: ../src/pager.c:1059
 msgid "Zoom On"
 msgstr ""
 
-#: src/pager.c:1810 src/pager.c:1905
+#: ../src/pager.c:1810 ../src/pager.c:1905
 msgid "Pager scanning speed:"
 msgstr "Sidväxlares scanningshastighet:"
 
-#: src/pager.c:1811 src/pager.c:1906
+#: ../src/pager.c:1811 ../src/pager.c:1906
 msgid "lines per second"
 msgstr "linjer per sekund"
 
-#: src/pager.c:1844
+#: ../src/pager.c:1844
 msgid "Enable pager display"
 msgstr "Möjliggör sidväxlare"
 
-#: src/pager.c:1854
+#: ../src/pager.c:1854
 msgid "Pager Mode:"
 msgstr ""
 
-#: src/pager.c:1858
-#, fuzzy
+#: ../src/pager.c:1858
 msgid "Simple"
-msgstr "Storlek"
+msgstr ""
 
-#: src/pager.c:1864
+#: ../src/pager.c:1864
 msgid "Make miniature snapshots of the screen"
 msgstr "Gör mini snapshots av skärmen"
 
-#: src/pager.c:1871
+#: ../src/pager.c:1871
 msgid "Live Update"
 msgstr ""
 
-#: src/pager.c:1882
+#: ../src/pager.c:1882
 msgid "Smooth high quality snapshots in snapshot mode"
 msgstr "Mjuka högkvalitetssnapshots i snapshot läget"
 
-#: src/pager.c:1887
+#: ../src/pager.c:1887
 msgid "Zoom in on pager windows when mouse is over them"
 msgstr "Zooma in fönster i sidväxlare, när musen är över dem"
 
-#: src/pager.c:1893
+#: ../src/pager.c:1893
 msgid "Pop up window title when mouse is over the window"
 msgstr "Poppa upp fönstertitel när musen är över fönster"
 
-#: src/pager.c:1898
+#: ../src/pager.c:1898
 msgid "Continuously scan screen to update pager"
 msgstr "Scanna skärm kontinuerligt för att uppdatera sidväxlaen"
 
-#: src/pager.c:1921
+#: ../src/pager.c:1921
 msgid "Mouse button to select and drag windows:"
 msgstr "Musknapp för att välja och dra fönster:"
 
-#: src/pager.c:1931 src/pager.c:1956 src/pager.c:1981
+#: ../src/pager.c:1931 ../src/pager.c:1956 ../src/pager.c:1981
 msgid "Middle"
 msgstr "Mitten"
 
-#: src/pager.c:1946
+#: ../src/pager.c:1946
 msgid "Mouse button to select desktops:"
 msgstr "Musknapp för att välja skrivbord"
 
-#: src/pager.c:1971
+#: ../src/pager.c:1971
 msgid "Mouse button to display pager menu:"
 msgstr "Musknapp för att visa sidväxlarmenyn"
 
-#: src/pager.c:1995
-#, fuzzy
+#: ../src/pager.c:1995
 msgid "Pagers"
-msgstr "Sidväxlarinställningar"
+msgstr ""
 
-#: src/pager.c:1996
+#: ../src/pager.c:1996
 msgid "Pager Settings"
 msgstr "Sidväxlarinställningar"
 
-#: src/pager.c:1999
+#: ../src/pager.c:1999
 msgid ""
 "Enlightenment Desktop & Area\n"
 "Pager Settings Dialog\n"
@@ -1526,7 +1450,8 @@ msgstr ""
 "Dialog för Enlightenments\n"
 "skrivbords- & sidväxlarinställningar\n"
 
-#: src/session.c:345
+#. Less of the hope.... E survives
+#: ../src/session.c:345
 msgid ""
 "ERROR!\n"
 "\n"
@@ -1552,11 +1477,11 @@ msgstr ""
 "\n"
 "... hoppas jag.\n"
 
-#: src/session.c:645
+#: ../src/session.c:645
 msgid "Are you sure?"
 msgstr "Är du säker?"
 
-#: src/session.c:647
+#: ../src/session.c:647
 msgid ""
 "\n"
 "\n"
@@ -1570,139 +1495,129 @@ msgstr ""
 "\n"
 "\n"
 
-#: src/session.c:657
-#, fuzzy
+#: ../src/session.c:657
 msgid "  Yes, Shut Down  "
-msgstr "  Ja, logga ut  "
+msgstr ""
 
-#: src/session.c:659
-#, fuzzy
+#: ../src/session.c:659
 msgid "  Yes, Reboot  "
-msgstr "  Ja, logga ut  "
+msgstr ""
 
-#: src/session.c:662
+#: ../src/session.c:662
 msgid "  Yes, Log Out  "
 msgstr "  Ja, logga ut  "
 
-#: src/session.c:664
+#: ../src/session.c:664
 msgid "  No  "
 msgstr "  Nej  "
 
-#: src/session.c:799
+#: ../src/session.c:799
 msgid "Enable Session Script"
 msgstr ""
 
-#: src/session.c:804
-#, fuzzy
+#: ../src/session.c:804
 msgid "Enable Logout Dialog"
-msgstr "Möjliggör dialoghuvuden"
+msgstr ""
 
-#: src/session.c:809
+#: ../src/session.c:809
 msgid "Enable Reboot/Halt on Logout"
 msgstr ""
 
-#: src/session.c:815
-#, fuzzy
+#: ../src/session.c:815
 msgid "Session"
-msgstr "Diverse inställningar"
+msgstr ""
 
-#: src/session.c:816
-#, fuzzy
+#: ../src/session.c:816
 msgid "Session Settings"
-msgstr "Diverse inställningar"
+msgstr ""
 
-#: src/session.c:819
-#, fuzzy
+#: ../src/session.c:819
 msgid ""
 "Enlightenment Session\n"
 "Settings Dialog\n"
 msgstr ""
-"Dialog för Enlightenments\n"
-"fokusinställningar\n"
 
-#: src/settings.c:84
+#: ../src/settings.c:84
 msgid "Move Methods:"
 msgstr "Flyttningssätt:"
 
-#: src/settings.c:89
+#: ../src/settings.c:89
 msgid "Resize Methods:"
 msgstr "Storleksändringssätt:"
 
-#: src/settings.c:102 src/settings.c:107 src/settings.c:380
+#: ../src/settings.c:102 ../src/settings.c:107 ../src/settings.c:380
 msgid "Technical"
 msgstr "Teknisk"
 
-#: src/settings.c:123 src/settings.c:128 src/settings.c:390
+#: ../src/settings.c:123 ../src/settings.c:128 ../src/settings.c:390
 msgid "Shaded"
 msgstr "Skuggad"
 
-#: src/settings.c:133 src/settings.c:138 src/settings.c:395
+#: ../src/settings.c:133 ../src/settings.c:138 ../src/settings.c:395
 msgid "Semi-Solid"
 msgstr "Delvis täckande"
 
-#: src/settings.c:144
+#: ../src/settings.c:144
 msgid "Translucent"
 msgstr "Genomlysande"
 
-#: src/settings.c:154
+#: ../src/settings.c:154
 msgid "Avoid server grab"
 msgstr ""
 
-#: src/settings.c:164
+#: ../src/settings.c:164
 msgid "Move/Resize Geometry Info Postion:"
 msgstr ""
 
-#: src/settings.c:168
+#: ../src/settings.c:168
 msgid "Window Center (O/T/B Methods)"
 msgstr ""
 
-#: src/settings.c:174
+#: ../src/settings.c:174
 msgid "Always Screen corner"
 msgstr ""
 
-#: src/settings.c:180
+#: ../src/settings.c:180
 msgid "Don't show"
 msgstr ""
 
-#: src/settings.c:192
+#: ../src/settings.c:192
 msgid "Default Resize Policy:"
 msgstr ""
 
-#: src/settings.c:196
+#: ../src/settings.c:196
 msgid "Conservative"
 msgstr ""
 
-#: src/settings.c:202
+#: ../src/settings.c:202
 msgid "Available"
 msgstr ""
 
-#: src/settings.c:208
+#: ../src/settings.c:208
 msgid "Absolute"
 msgstr ""
 
-#: src/settings.c:218
-#, fuzzy
+#: ../src/settings.c:218
 msgid "Update window while moving"
-msgstr "Fokusera fönster vid växling"
+msgstr ""
 
-#: src/settings.c:223
+#: ../src/settings.c:223
 msgid "Synchronize move/resize with application"
 msgstr ""
 
-#: src/settings.c:228
+#: ../src/settings.c:228
 msgid "Do not cover dragbar"
 msgstr ""
 
-#: src/settings.c:234
-#, fuzzy
+#: ../src/settings.c:234
 msgid "Move/Resize"
-msgstr "Storlek"
+msgstr ""
 
-#: src/settings.c:235
+#: ../src/settings.c:235
 msgid "Move & Resize Settings"
 msgstr "Flytt & storleksändringsinställningar"
 
-#: src/settings.c:238
+#: ../src/settings.c:238
 msgid ""
 "Enlightenment Move & Resize\n"
 "Method Settings Dialog\n"
@@ -1710,82 +1625,75 @@ msgstr ""
 "Dialog för Enlightenments flytt- &\n"
 "storleksändringsinställningar\n"
 
-#: src/settings.c:334
+#: ../src/settings.c:334
 msgid "Dialog windows appear together with their owner"
 msgstr "Dialogfönster uppträder tillsammans med sin ägare"
 
-#: src/settings.c:339
+#: ../src/settings.c:339
 msgid "Switch to desktop where dialog appears"
 msgstr "Växla till skrivbord där dialoger uppträder"
 
-#: src/settings.c:347
+#: ../src/settings.c:347
 msgid "Place windows manually"
 msgstr "Manuell fönsterplacering"
 
-#: src/settings.c:352
-#, fuzzy
+#: ../src/settings.c:352
 msgid "Place windows under mouse"
-msgstr "Manuell fönsterplacering"
+msgstr ""
 
-#: src/settings.c:357
-#, fuzzy
+#: ../src/settings.c:357
 msgid "Center windows when desk is full"
-msgstr "Ta med skymda fönster i fokuslistan"
+msgstr ""
 
-#: src/settings.c:362
+#: ../src/settings.c:362
 msgid "Slide windows in when they appear"
 msgstr "Låt fönstren glida in när de dyker upp"
 
-#: src/settings.c:367
+#: ../src/settings.c:367
 msgid "Slide windows around when cleaning up"
 msgstr "Låt fönstren glida omkring vid uppstädning"
 
-#: src/settings.c:372
+#: ../src/settings.c:372
 msgid "Slide Method:"
 msgstr "Glidningssätt:"
 
-#: src/settings.c:405
-#, fuzzy
+#: ../src/settings.c:405
 msgid "Appear Slide speed:"
-msgstr "Dyka upp glid fart: (sakta)\n"
+msgstr ""
 
-#: src/settings.c:416
-#, fuzzy
+#: ../src/settings.c:416
 msgid "Cleanup Slide speed:"
-msgstr "Uppstädnings glid fart: (sakta)\n"
+msgstr ""
 
-#: src/settings.c:429
+#: ../src/settings.c:429
 msgid "Animate shading and unshading of windows"
 msgstr "Animera fönsters skymundan/ej skymundan"
 
-#: src/settings.c:435
-#, fuzzy
+#: ../src/settings.c:435
 msgid "Window Shading speed:"
-msgstr "Fönsters skymnings fart: (sakta)\n"
+msgstr ""
 
-#: src/settings.c:448
-#, fuzzy
+#: ../src/settings.c:448
 msgid "Ignore struts"
-msgstr "Ignorera detta"
+msgstr ""
 
-#: src/settings.c:453
+#: ../src/settings.c:453
 msgid "Raise fullscreen windows"
 msgstr ""
 
-#: src/settings.c:461
-#, fuzzy
+#: ../src/settings.c:461
 msgid "Place windows on another head when full"
-msgstr "Manuell fönsterplacering"
+msgstr ""
 
-#: src/settings.c:469
+#: ../src/settings.c:469
 msgid "Placement"
 msgstr ""
 
-#: src/settings.c:470
+#: ../src/settings.c:470
 msgid "Window Placement Settings"
 msgstr "Fönsterplaceringsinställningar"
 
-#: src/settings.c:473
+#: ../src/settings.c:473
 msgid ""
 "Enlightenment Window Placement\n"
 "Settings Dialog\n"
@@ -1793,33 +1701,32 @@ msgstr ""
 "Dialog för Enlightenments\n"
 "fönsterplaceringsinställningar\n"
 
-#: src/settings.c:520
+#: ../src/settings.c:520
 msgid "Enable Dialog Headers"
 msgstr "Möjliggör dialoghuvuden"
 
-#: src/settings.c:526
-#, fuzzy
+#: ../src/settings.c:526
 msgid "Enable Button Images"
-msgstr "Möjliggör ljud"
+msgstr ""
 
-#: src/settings.c:535
+#: ../src/settings.c:535
 msgid "Enable sliding startup windows"
 msgstr ""
 
-#: src/settings.c:543
+#: ../src/settings.c:543
 msgid "Use saveunders to reduce window exposures"
 msgstr "Anv spara-under för att minska fönsterexponering"
 
-#: src/settings.c:549 config/strings.c:136 config/strings.c:152
-#, fuzzy
+#. winops_misc.menu
+#: ../src/settings.c:549 ../config/strings.c:136 ../config/strings.c:152
 msgid "Miscellaneous"
-msgstr "Diverse inställningar"
+msgstr ""
 
-#: src/settings.c:550
+#: ../src/settings.c:550
 msgid "Miscellaneous Settings"
 msgstr "Diverse inställningar"
 
-#: src/settings.c:553
+#: ../src/settings.c:553
 msgid ""
 "Enlightenment Miscellaneous\n"
 "Settings Dialog\n"
@@ -1827,73 +1734,65 @@ msgstr ""
 "Dialog för Enlightenments\n"
 "diverse inställningar\n"
 
-#: src/settings.c:597
-#, fuzzy
+#: ../src/settings.c:597
 msgid "Enable Composite"
-msgstr "Möjliggör ljud"
+msgstr ""
 
-#: src/settings.c:605
-#, fuzzy
+#: ../src/settings.c:605
 msgid "Enable Fading"
-msgstr "Möjliggör kant flip"
+msgstr ""
 
-#: src/settings.c:611
+#: ../src/settings.c:611
 msgid "Fading Speed:"
 msgstr ""
 
-#: src/settings.c:624
+#: ../src/settings.c:624
 msgid "Shadows Off"
 msgstr ""
 
-#: src/settings.c:630
+#: ../src/settings.c:630
 msgid "Shadows Sharp"
 msgstr ""
 
-#: src/settings.c:636
+#: ../src/settings.c:636
 msgid "Shadows Sharp2"
 msgstr ""
 
-#: src/settings.c:642
+#: ../src/settings.c:642
 msgid "Shadows Blurred"
 msgstr ""
 
-#: src/settings.c:653
+#: ../src/settings.c:653
 msgid "Default focused window opacity:"
 msgstr ""
 
-#: src/settings.c:664
+#: ../src/settings.c:664
 msgid "Default unfocused window opacity:"
 msgstr ""
 
-#: src/settings.c:675
+#: ../src/settings.c:675
 msgid "Default pop-up window opacity:"
 msgstr ""
 
-#: src/settings.c:686
-#, fuzzy
+#: ../src/settings.c:686
 msgid "Composite"
-msgstr "Möjliggör ljud"
+msgstr ""
 
-#: src/settings.c:687
-#, fuzzy
+#: ../src/settings.c:687
 msgid "Composite Settings"
-msgstr "Verktygstipsinställningar"
+msgstr ""
 
-#: src/settings.c:690
-#, fuzzy
+#: ../src/settings.c:690
 msgid ""
 "Enlightenment Composite\n"
 "Settings Dialog\n"
 msgstr ""
-"Dialog för Enlightenments\n"
-"verktygstipsinställningar\n"
 
-#: src/settings.c:775
-#, fuzzy
+#: ../src/settings.c:775
 msgid "Enlightenment Settings"
-msgstr "Enlightenment Startar..."
+msgstr ""
 
-#: src/setup.c:60
+#: ../src/setup.c:60
 msgid ""
 "Enlightenment cannot connect to the display nominated by\n"
 "your shell's DISPLAY environment variable. You may set this\n"
@@ -1917,11 +1816,11 @@ msgstr ""
 "Xserver leverantör, eller läs manualsidorna för X, xdm och\n"
 "startx innan du fortsätter.\n"
 
-#: src/setup.c:158
+#: ../src/setup.c:158
 msgid "Another Window Manager is already running"
 msgstr "En annan fönsterhanterare körs redan"
 
-#: src/setup.c:160
+#: ../src/setup.c:160
 msgid ""
 "Another Window Manager is already running.\n"
 "\n"
@@ -1929,15 +1828,15 @@ msgid ""
 "you can successfully run Enlightenment.\n"
 msgstr ""
 
-#: src/setup.c:169
+#: ../src/setup.c:169
 msgid "X server version error"
 msgstr "X server av fel version"
 
-#: src/setup.c:169
+#: ../src/setup.c:169
 msgid "Ignore this error"
 msgstr "Ignorera detta fel"
 
-#: src/setup.c:171
+#: ../src/setup.c:171
 #, c-format
 msgid ""
 "WARNING:\n"
@@ -1954,90 +1853,89 @@ msgstr ""
 "Enlightenments upphovsman inte tillgång till eller kännedom\n"
 "om denna.\n"
 
-#: src/snaps.c:723
+#: ../src/snaps.c:723
 msgid "Title:"
 msgstr "Titel:"
 
-#: src/snaps.c:735
+#: ../src/snaps.c:735
 msgid "Name:"
 msgstr "Namn:"
 
-#: src/snaps.c:748
+#: ../src/snaps.c:748
 msgid "Class:"
 msgstr "Klass:"
 
-#: src/snaps.c:761
-#, fuzzy
+#: ../src/snaps.c:761
 msgid "Role:"
-msgstr "Röd:\n"
+msgstr ""
 
-#: src/snaps.c:774
+#: ../src/snaps.c:774
 msgid "Command:"
 msgstr "Kommando:"
 
-#: src/snaps.c:813
+#: ../src/snaps.c:813
 msgid "Track Changes"
 msgstr ""
 
-#: src/snaps.c:818
+#: ../src/snaps.c:818
 msgid "Location"
 msgstr "Placering"
 
-#: src/snaps.c:823
+#: ../src/snaps.c:823
 msgid "Border style"
 msgstr "Ramstil"
 
-#: src/snaps.c:828 config/strings.c:174
+#. winops_size.menu
+#: ../src/snaps.c:828 ../config/strings.c:174
 msgid "Size"
 msgstr "Storlek"
 
-#: src/snaps.c:833 config/strings.c:90 config/strings.c:112
+#: ../src/snaps.c:833 ../config/strings.c:90 ../config/strings.c:112
 msgid "Desktop"
 msgstr "Skrivbord"
 
-#: src/snaps.c:838
+#: ../src/snaps.c:838
 msgid "Shaded state"
 msgstr "Skymt läge"
 
-#: src/snaps.c:843
+#: ../src/snaps.c:843
 msgid "Sticky state"
 msgstr "Klibbigt läge"
 
-#: src/snaps.c:848
+#: ../src/snaps.c:848
 msgid "Stacking layer"
 msgstr "Stapellager"
 
-#: src/snaps.c:853
+#: ../src/snaps.c:853
 msgid "Window List Skip"
 msgstr "Fönsterlistignorering"
 
-#: src/snaps.c:859 config/strings.c:135 config/strings.c:162
+#. winops_opacity.menu
+#: ../src/snaps.c:859 ../config/strings.c:135 ../config/strings.c:162
 msgid "Opacity"
 msgstr ""
 
-#: src/snaps.c:864
-#, fuzzy
+#: ../src/snaps.c:864
 msgid "Shadowing"
-msgstr "Skymma"
+msgstr ""
 
-#: src/snaps.c:870
-#, fuzzy
+#: ../src/snaps.c:870
 msgid "Flags"
-msgstr "Klass:"
+msgstr ""
 
-#: src/snaps.c:889
+#: ../src/snaps.c:889
 msgid "Restart application on login"
 msgstr "Starta om applikation vid inloggning"
 
-#: src/snaps.c:908
+#: ../src/snaps.c:908
 msgid "Remember this window's group(s)"
 msgstr "Kom ihåg detta fönsters grupp(er)"
 
-#: src/snaps.c:916
+#: ../src/snaps.c:916
 msgid "Remembered Application Attributes"
 msgstr "Ihågkommna applikationsattribut"
 
-#: src/snaps.c:919
+#: ../src/snaps.c:919
 msgid ""
 "Select the attributes of this\n"
 "window you wish to Remember\n"
@@ -2047,33 +1945,31 @@ msgstr ""
 "fönster som du vill komma\n"
 "ihåg framöver\n"
 
-#: src/snaps.c:1009
-#, fuzzy
+#: ../src/snaps.c:1009
 msgid "Delete"
-msgstr "Radera fil\n"
+msgstr ""
 
-#: src/snaps.c:1037
+#: ../src/snaps.c:1037
 msgid "Remembered Settings..."
 msgstr "Ihågkommna tillval..."
 
-#: src/snaps.c:1044
+#: ../src/snaps.c:1044
 msgid "Unused"
 msgstr ""
 
-#: src/snaps.c:1057
+#: ../src/snaps.c:1057
 msgid "There are no active windows with remembered attributes."
 msgstr "Det finns inga aktiva fönster med ihågkommna attribut."
 
-#: src/snaps.c:1063
-#, fuzzy
+#: ../src/snaps.c:1063
 msgid "Remember"
-msgstr "Ihågkommna tillval..."
+msgstr ""
 
-#: src/snaps.c:1064
+#: ../src/snaps.c:1064
 msgid "Remembered Windows Settings"
 msgstr "Ihågkommna fönsterinställningar"
 
-#: src/snaps.c:1067
+#: ../src/snaps.c:1067
 msgid ""
 "Enlightenment Remembered\n"
 "Windows Settings Dialog\n"
@@ -2081,15 +1977,15 @@ msgstr ""
 "Dialog för Enlightenments\n"
 "ihågkommna fönsterinställningar\n"
 
-#: src/snaps.c:1161
+#: ../src/snaps.c:1161
 msgid "Error saving snaps file\n"
 msgstr "Fel vid sparande av snaps fil\n"
 
-#: src/sound.c:213
+#: ../src/sound.c:213
 msgid "Error finding sound file"
 msgstr "Fel vid sökning efter ljudfil"
 
-#: src/sound.c:214
+#: ../src/sound.c:214
 #, c-format
 msgid ""
 "Warning!  Enlightenment was unable to load the\n"
@@ -2104,34 +2000,31 @@ msgstr ""
 "Enlightenment kommer att fortsätta fungera, men du kanske\n"
 "vill kontrollera dina konfigureringsinställningar.\n"
 
-#: src/sound.c:310
+#: ../src/sound.c:310
 msgid "Error initialising sound"
 msgstr "Fel vid initiering av ljud"
 
-#: src/sound.c:311
-#, fuzzy, c-format
+#: ../src/sound.c:311
+#, c-format
 msgid ""
 "Audio was enabled for Enlightenment but there was an error\n"
 "communicating with the audio server (%s).\n"
 "Audio will now be disabled.\n"
 msgstr ""
-"Ljud är aktiverat för Enlightenment, men ett fel uppstod\n"
-"vid kommunikation med ljudservern (Esound). Ljud kommer\n"
-"nu att deaktiveras.\n"
 
-#: src/sound.c:459
+#: ../src/sound.c:459
 msgid "Enable sounds"
 msgstr "Möjliggör ljud"
 
-#: src/sound.c:465
+#: ../src/sound.c:465
 msgid "Sound"
 msgstr ""
 
-#: src/sound.c:466
+#: ../src/sound.c:466
 msgid "Audio Settings"
 msgstr "Ljudinställningar"
 
-#: src/sound.c:469
+#: ../src/sound.c:469
 msgid ""
 "Enlightenment Audio\n"
 "Settings Dialog\n"
@@ -2139,34 +2032,31 @@ msgstr ""
 "Dialog för Enlightenments\n"
 "ljudinställningar\n"
 
-#: src/systray.c:331 src/systray.c:431 src/systray.c:439
-#, fuzzy
+#: ../src/systray.c:331 ../src/systray.c:431 ../src/systray.c:439
 msgid "Systray Error!"
-msgstr "EPekar fel!"
+msgstr ""
 
-#: src/systray.c:331
+#: ../src/systray.c:331
 msgid "Systray went elsewhere?!?"
 msgstr ""
 
-#: src/systray.c:431
+#: ../src/systray.c:431
 msgid "Only one systray is allowed"
 msgstr ""
 
-#: src/systray.c:439
+#: ../src/systray.c:439
 msgid "Could not activate systray"
 msgstr ""
 
-#: src/systray.c:449
-#, fuzzy
+#: ../src/systray.c:449
 msgid "Systray Options"
-msgstr "Skrivbordsval"
+msgstr ""
 
-#: src/systray.c:450
-#, fuzzy
+#: ../src/systray.c:450
 msgid "Systray Settings"
-msgstr "Lägga överst inställningar"
+msgstr ""
 
-#: src/theme.c:348
+#: ../src/theme.c:348
 #, c-format
 msgid ""
 "No themes were found in the default directories:\n"
@@ -2174,64 +2064,58 @@ msgid ""
 "Proceeding from here is mostly pointless.\n"
 msgstr ""
 
-#: src/theme.c:379
+#: ../src/theme.c:379
 msgid "Changes will take effect after restart"
 msgstr ""
 
-#: src/theme.c:399
+#: ../src/theme.c:399
 msgid "Use theme font configuration"
 msgstr ""
 
-#: src/theme.c:404
+#: ../src/theme.c:404
 #, c-format
 msgid "Use alternate font configuration (%s)"
 msgstr ""
 
-#: src/theme.c:405
+#: ../src/theme.c:405
 msgid "Not set"
 msgstr ""
 
-#: src/theme.c:412
-#, fuzzy
+#: ../src/theme.c:412
 msgid "Theme"
-msgstr "Felaktigt tema"
+msgstr ""
 
-#: src/theme.c:413
-#, fuzzy
+#: ../src/theme.c:413
 msgid "Theme Settings"
-msgstr "Diverse inställningar"
+msgstr ""
 
-#: src/theme.c:416
-#, fuzzy
+#: ../src/theme.c:416
 msgid ""
 "Enlightenment Theme\n"
 "Settings Dialog\n"
 msgstr ""
-"Dialog för Enlightenments\n"
-"fokusinställningar\n"
 
-#: src/tooltips.c:853
+#: ../src/tooltips.c:853
 msgid "Display Tooltips"
 msgstr "Visa verktygstips"
 
-#: src/tooltips.c:858
+#: ../src/tooltips.c:858
 msgid "Display Root Window Tips"
 msgstr "Visa rotfönstertips"
 
-#: src/tooltips.c:863
+#: ../src/tooltips.c:863
 msgid "Tooltip Delay:\n"
 msgstr "Fördröjning av verktygstips:\n"
 
-#: src/tooltips.c:874
-#, fuzzy
+#: ../src/tooltips.c:874
 msgid "Tooltips"
-msgstr "Fördröjning av verktygstips:\n"
+msgstr ""
 
-#: src/tooltips.c:875
+#: ../src/tooltips.c:875
 msgid "Tooltip Settings"
 msgstr "Verktygstipsinställningar"
 
-#: src/tooltips.c:878
+#: ../src/tooltips.c:878
 msgid ""
 "Enlightenment Tooltip\n"
 "Settings Dialog\n"
@@ -2239,583 +2123,528 @@ msgstr ""
 "Dialog för Enlightenments\n"
 "verktygstipsinställningar\n"
 
-#: config/strings.c:5
+#. actionclasses.cfg
+#: ../config/strings.c:5
 msgid ""
 "Click and drag to move desktop\n"
 "(on any desktop but desktop 0)"
 msgstr ""
 
-#: config/strings.c:6 config/strings.c:8
-#, fuzzy
+#: ../config/strings.c:6 ../config/strings.c:8
 msgid "Switch Desktops"
-msgstr "%i skrivbord"
+msgstr ""
 
-#: config/strings.c:7
-#, fuzzy
+#: ../config/strings.c:7
 msgid "Go to the next desktop."
-msgstr "Gå till detta skrivbord"
+msgstr ""
 
-#: config/strings.c:9
-#, fuzzy
+#: ../config/strings.c:9
 msgid "Go to the previous desktop."
-msgstr "Gå till detta skrivbord"
+msgstr ""
 
-#: config/strings.c:10
-#, fuzzy
+#: ../config/strings.c:10
 msgid "Move"
-msgstr "Flytta"
+msgstr ""
 
-#: config/strings.c:11 config/strings.c:23 config/strings.c:26
-#: config/strings.c:29
+#: ../config/strings.c:11 ../config/strings.c:23 ../config/strings.c:26
+#: ../config/strings.c:29
 msgid "Move this window."
 msgstr ""
 
-#: config/strings.c:12 config/strings.c:14 config/strings.c:48
+#: ../config/strings.c:12 ../config/strings.c:14 ../config/strings.c:48
 msgid "Shade/Unshade this window."
 msgstr ""
 
-#: config/strings.c:13 config/strings.c:50 config/strings.c:53
-#, fuzzy
+#: ../config/strings.c:13 ../config/strings.c:50 ../config/strings.c:53
 msgid "Show the Window Options menu."
-msgstr "Fönsterval"
+msgstr ""
 
-#: config/strings.c:15
-#, fuzzy
+#: ../config/strings.c:15
 msgid "Show/Hide group borders."
-msgstr "Visa/gömma denna grupp"
+msgstr ""
 
-#: config/strings.c:16
+#: ../config/strings.c:16
 msgid "Start a group."
 msgstr ""
 
-#: config/strings.c:17
+#: ../config/strings.c:17
 msgid "Add to current group."
 msgstr ""
 
-#: config/strings.c:18
-#, fuzzy
+#: ../config/strings.c:18
 msgid "Break this window's group."
-msgstr "Kom ihåg detta fönsters grupp(er)"
+msgstr ""
 
-#: config/strings.c:19
-#, fuzzy
+#: ../config/strings.c:19
 msgid "Shade."
-msgstr "Skuggad"
+msgstr ""
 
-#: config/strings.c:20
+#: ../config/strings.c:20
 msgid "Unshade."
 msgstr ""
 
-#: config/strings.c:21
-#, fuzzy
+#: ../config/strings.c:21
 msgid "Resize"
-msgstr "Storlek"
+msgstr ""
 
-#: config/strings.c:22
-#, fuzzy
+#: ../config/strings.c:22
 msgid "Resize this window."
-msgstr "Kom ihåg detta fönsters grupp(er)"
+msgstr ""
 
-#: config/strings.c:24
-#, fuzzy
+#: ../config/strings.c:24
 msgid "Resize Horizontally"
-msgstr "Horisontal"
+msgstr ""
 
-#: config/strings.c:25
+#: ../config/strings.c:25
 msgid "Resize this window horizontally."
 msgstr ""
 
-#: config/strings.c:27
-#, fuzzy
+#: ../config/strings.c:27
 msgid "Resize Vertically"
-msgstr "Vertikal"
+msgstr ""
 
-#: config/strings.c:28
+#: ../config/strings.c:28
 msgid "Resize this window vertically."
 msgstr ""
 
-#: config/strings.c:31
+#: ../config/strings.c:31
 msgid "Close this window."
 msgstr ""
 
-#: config/strings.c:32
+#: ../config/strings.c:32
 msgid "Forcibly destroy this window."
 msgstr ""
 
-#: config/strings.c:33
+#: ../config/strings.c:33
 msgid "Maximize Height"
 msgstr ""
 
-#: config/strings.c:34 config/strings.c:40
+#: ../config/strings.c:34 ../config/strings.c:40
 msgid "Toggle between maximum screen height and normal height."
 msgstr ""
 
-#: config/strings.c:35
+#: ../config/strings.c:35
 msgid "Maximize Width"
 msgstr ""
 
-#: config/strings.c:36 config/strings.c:39
+#: ../config/strings.c:36 ../config/strings.c:39
 msgid "Toggle between maximum screen width and normal width."
 msgstr ""
 
-#: config/strings.c:37
+#: ../config/strings.c:37
 msgid "Maximize"
 msgstr ""
 
-#: config/strings.c:38
+#: ../config/strings.c:38
 msgid "Toggle between maximum screen size and normal size."
 msgstr ""
 
-#: config/strings.c:41 config/strings.c:43
-#, fuzzy
+#: ../config/strings.c:41 ../config/strings.c:43
 msgid "Send To Another Desktop"
-msgstr "Gå till detta skrivbord"
+msgstr ""
 
-#: config/strings.c:42
+#: ../config/strings.c:42
 msgid "Send this Window to the next desktop."
 msgstr ""
 
-#: config/strings.c:44
+#: ../config/strings.c:44
 msgid "Send this Window to the previous desktop."
 msgstr ""
 
-#: config/strings.c:45
-#, fuzzy
+#: ../config/strings.c:45
 msgid "Snapshot"
-msgstr "Snapshots på"
+msgstr ""
 
-#: config/strings.c:46
+#: ../config/strings.c:46
 msgid "This button does nothing interesting."
 msgstr ""
 
-#: config/strings.c:47 config/strings.c:128
-#, fuzzy
+#: ../config/strings.c:47 ../config/strings.c:128
 msgid "Shade/Unshade"
-msgstr "Skymt läge"
+msgstr ""
 
-#: config/strings.c:52
+#: ../config/strings.c:52
 msgid "Iconify (Minimize) this window."
 msgstr ""
 
-#: config/strings.c:54
-#, fuzzy
+#: ../config/strings.c:54
 msgid "More Buttons"
-msgstr "Nertill"
+msgstr ""
 
-#: config/strings.c:55
+#: ../config/strings.c:55
 msgid "Show more buttons."
 msgstr ""
 
-#: config/strings.c:56 config/strings.c:126
+#: ../config/strings.c:56 ../config/strings.c:126
 msgid "Raise"
 msgstr ""
 
-#: config/strings.c:57
-#, fuzzy
+#: ../config/strings.c:57
 msgid "Raise this window to the top."
 msgstr ""
-"Klicka här för att lägga detta\n"
-"skrivbord överst.\n"
 
-#: config/strings.c:58 config/strings.c:127
+#: ../config/strings.c:58 ../config/strings.c:127
 msgid "Lower"
 msgstr ""
 
-#: config/strings.c:59
+#: ../config/strings.c:59
 msgid "Lower this window."
 msgstr ""
 
-#: config/strings.c:60 config/strings.c:129
-#, fuzzy
+#: ../config/strings.c:60 ../config/strings.c:129
 msgid "Stick/Unstick"
-msgstr "Klibbigt / Ej klibbigt"
-
-#: config/strings.c:61
-msgid "Toggle the Omnipresent (visible on all Desktops) state of this window."
 msgstr ""
 
-#: config/strings.c:63
+#: ../config/strings.c:61
+msgid ""
+"Toggle the Omnipresent (visible on all Desktops) state of this window."
+msgstr ""
+
+#. bindings.cfg
+#: ../config/strings.c:63
 msgid ""
 "Clicking your mouse on the desktop will perform\n"
 "the following actions"
 msgstr ""
 
-#: config/strings.c:64
+#: ../config/strings.c:64
 msgid "Display User Menus"
 msgstr ""
 
-#: config/strings.c:65 config/strings.c:67
-#, fuzzy
+#: ../config/strings.c:65 ../config/strings.c:67
 msgid "Display Enlightenment Menu"
-msgstr "Avsluta Enlightenment"
+msgstr ""
 
-#: config/strings.c:66 config/strings.c:71
-#, fuzzy
+#: ../config/strings.c:66 ../config/strings.c:71
 msgid "Display Settings Menu"
-msgstr "KDE inställningar"
+msgstr ""
 
-#: config/strings.c:68
+#: ../config/strings.c:68
 msgid "Display Task List Menu"
 msgstr ""
 
-#: config/strings.c:69
-#, fuzzy
+#: ../config/strings.c:69
 msgid "Display Desktop Menu"
-msgstr "Visa skrivbordens draglist"
+msgstr ""
 
-#: config/strings.c:70
+#: ../config/strings.c:70
 msgid "Display Group Menu"
 msgstr ""
 
-#: config/strings.c:72
-#, fuzzy
+#: ../config/strings.c:72
 msgid "Go Back a Desktop"
-msgstr "Gå till detta skrivbord"
+msgstr ""
 
-#: config/strings.c:73
-#, fuzzy
+#: ../config/strings.c:73
 msgid "Go Forward a Desktop"
-msgstr "Gå till detta skrivbord"
+msgstr ""
 
-#: config/strings.c:78
-#, fuzzy
+#. fonts.pango.cfg
+#. fonts.xft.cfg
+#. matches.cfg
+#. desktop.menu
+#: ../config/strings.c:78
 msgid "Desktop Operations"
-msgstr "Skrivbordsval"
+msgstr ""
 
-#: config/strings.c:80
-#, fuzzy
+#: ../config/strings.c:80
 msgid "Cleanup Desktop"
-msgstr "%i skrivbord"
+msgstr ""
 
-#: config/strings.c:81
-#, fuzzy
+#: ../config/strings.c:81
 msgid "Goto Next Desktop"
-msgstr "Gå till detta skrivbord"
+msgstr ""
 
-#: config/strings.c:82
-#, fuzzy
+#: ../config/strings.c:82
 msgid "Goto Previous Desktop"
-msgstr "Gå till detta skrivbord"
+msgstr ""
 
-#: config/strings.c:84
+#: ../config/strings.c:84
 msgid "Create Systray"
 msgstr ""
 
-#: config/strings.c:85
+#: ../config/strings.c:85
 msgid "Show Magnifier"
 msgstr ""
 
-#: config/strings.c:87
-#, fuzzy
+#. enlightenment.menu
+#: ../config/strings.c:87
 msgid "Enlightenment"
-msgstr "Avsluta Enlightenment"
+msgstr ""
 
-#: config/strings.c:88 config/strings.c:188
-#, fuzzy
+#: ../config/strings.c:88 ../config/strings.c:188
 msgid "User Menus"
-msgstr "Ramstil"
+msgstr ""
 
-#: config/strings.c:89 config/strings.c:110 config/strings.c:111
-#, fuzzy
+#. settings.menu
+#: ../config/strings.c:89 ../config/strings.c:110 ../config/strings.c:111
 msgid "Settings"
-msgstr "Fokusinställningar"
+msgstr ""
 
-#: config/strings.c:92 config/strings.c:99 config/strings.c:114
+#. maintenance.menu
+#: ../config/strings.c:92 ../config/strings.c:99 ../config/strings.c:114
 msgid "Maintenance"
 msgstr ""
 
-#: config/strings.c:93 config/strings.c:115
+#: ../config/strings.c:93 ../config/strings.c:115
 msgid "Help"
 msgstr ""
 
-#: config/strings.c:94 config/strings.c:116
-#, fuzzy
+#: ../config/strings.c:94 ../config/strings.c:116
 msgid "About Enlightenment"
-msgstr "Om Enlightenment %s"
+msgstr ""
 
-#: config/strings.c:95 config/strings.c:117
+#: ../config/strings.c:95 ../config/strings.c:117
 msgid "About this theme"
 msgstr ""
 
-#: config/strings.c:96 config/strings.c:118 config/strings.c:192
+#: ../config/strings.c:96 ../config/strings.c:118 ../config/strings.c:192
 msgid "Restart"
 msgstr "Starta om"
 
-#: config/strings.c:97 config/strings.c:119 config/strings.c:193
-#, fuzzy
+#: ../config/strings.c:97 ../config/strings.c:119 ../config/strings.c:193
 msgid "Log Out"
-msgstr "  Ja, logga ut  "
+msgstr ""
 
-#: config/strings.c:100
+#: ../config/strings.c:100
 msgid "Purge config file cache"
 msgstr ""
 
-#: config/strings.c:101
-#, fuzzy
+#: ../config/strings.c:101
 msgid "Purge pager background cache"
-msgstr "Använd bakgrundsbild"
+msgstr ""
 
-#: config/strings.c:102
+#: ../config/strings.c:102
 msgid "Purge background selector cache"
 msgstr ""
 
-#: config/strings.c:103
+#: ../config/strings.c:103
 msgid "Purge all caches"
 msgstr ""
 
-#: config/strings.c:104
+#: ../config/strings.c:104
 msgid "Query config file cache usage"
 msgstr ""
 
-#: config/strings.c:105
+#: ../config/strings.c:105
 msgid "Query pager background cache usage"
 msgstr ""
 
-#: config/strings.c:106
+#: ../config/strings.c:106
 msgid "Query background selector cache usage"
 msgstr ""
 
-#: config/strings.c:107
+#: ../config/strings.c:107
 msgid "Query all cache usage"
 msgstr ""
 
-#: config/strings.c:108
+#: ../config/strings.c:108
 msgid "Regenerate Menus"
 msgstr ""
 
-#: config/strings.c:125
+#: ../config/strings.c:125
 msgid "Leave Alone"
 msgstr ""
 
-#: config/strings.c:130
-#, fuzzy
+#: ../config/strings.c:130
 msgid "Remember..."
-msgstr "Ihågkommna tillval..."
+msgstr ""
 
-#: config/strings.c:131
-#, fuzzy
+#: ../config/strings.c:131
 msgid "Window Size"
-msgstr "Fönsterlistignorering"
+msgstr ""
 
-#: config/strings.c:132
-#, fuzzy
+#: ../config/strings.c:132
 msgid "Set Stacking"
-msgstr "Fokusinställningar"
+msgstr ""
 
-#: config/strings.c:133
-#, fuzzy
+#: ../config/strings.c:133
 msgid "Set Border Style"
-msgstr "Ramstil"
+msgstr ""
 
-#: config/strings.c:134
-#, fuzzy
+#: ../config/strings.c:134
 msgid "Window Groups"
-msgstr "Fönstergruppsfel"
+msgstr ""
 
-#: config/strings.c:139
-#, fuzzy
+#: ../config/strings.c:139
 msgid "Configure this window's group(s)"
-msgstr "Kom ihåg detta fönsters grupp(er)"
+msgstr ""
 
-#: config/strings.c:140
+#: ../config/strings.c:140
 msgid "Start a new group"
 msgstr ""
 
-#: config/strings.c:141
+#: ../config/strings.c:141
 msgid "Add this window to the current group"
 msgstr ""
 
-#: config/strings.c:142
-#, fuzzy
+#: ../config/strings.c:142
 msgid "Select group to add this window to"
-msgstr "  Välj den grupp som fönstret skall tas bort ifrån.  "
+msgstr ""
 
-#: config/strings.c:143
-#, fuzzy
+#: ../config/strings.c:143
 msgid "Remove this window from a group"
-msgstr "Kom ihåg detta fönsters grupp(er)"
+msgstr ""
 
-#: config/strings.c:144
-#, fuzzy
+#: ../config/strings.c:144
 msgid "Destroy a group this window belongs to"
-msgstr "  Välj den grupp som fönstret skall tillhöra:  \n"
+msgstr ""
 
-#: config/strings.c:146
-#, fuzzy
+#. winops_layer.menu
+#: ../config/strings.c:146
 msgid "Stacking"
-msgstr "Klibba"
+msgstr ""
 
-#: config/strings.c:147
+#: ../config/strings.c:147
 msgid "Below"
 msgstr ""
 
-#: config/strings.c:148
+#: ../config/strings.c:148
 msgid "Normal"
 msgstr ""
 
-#: config/strings.c:149
+#: ../config/strings.c:149
 msgid "Above"
 msgstr ""
 
-#: config/strings.c:150
-#, fuzzy
+#: ../config/strings.c:150
 msgid "On Top"
-msgstr "Upptill"
+msgstr ""
 
-#: config/strings.c:153
+#: ../config/strings.c:153
 msgid "Toggle Skip Window Lists"
 msgstr ""
 
-#: config/strings.c:154
+#: ../config/strings.c:154
 msgid "Toggle Fixed Position"
 msgstr ""
 
-#: config/strings.c:155
+#: ../config/strings.c:155
 msgid "Toggle Fixed Size"
 msgstr ""
 
-#: config/strings.c:156
-#, fuzzy
+#: ../config/strings.c:156
 msgid "Toggle Never Focus"
-msgstr "Fokusera aldrig"
+msgstr ""
 
-#: config/strings.c:157
+#: ../config/strings.c:157
 msgid "Toggle Click to Focus"
 msgstr ""
 
-#: config/strings.c:158
-#, fuzzy
+#: ../config/strings.c:158
 msgid "Toggle Never Use Area"
-msgstr "Fokusera aldrig"
+msgstr ""
 
-#: config/strings.c:159
-#, fuzzy
+#: ../config/strings.c:159
 msgid "Toggle Button Grabs"
-msgstr "Nertill"
+msgstr ""
 
-#: config/strings.c:160
-#, fuzzy
+#: ../config/strings.c:160
 msgid "Toggle Autoshade"
-msgstr "Nertill"
+msgstr ""
 
-#: config/strings.c:163
-#, fuzzy
+#: ../config/strings.c:163
 msgid "Default"
-msgstr "Radera fil\n"
+msgstr ""
 
-#: config/strings.c:164
+#: ../config/strings.c:164
 msgid "20%"
 msgstr ""
 
-#: config/strings.c:165
+#: ../config/strings.c:165
 msgid "40%"
 msgstr ""
 
-#: config/strings.c:166
+#: ../config/strings.c:166
 msgid "60%"
 msgstr ""
 
-#: config/strings.c:167
+#: ../config/strings.c:167
 msgid "80%"
 msgstr ""
 
-#: config/strings.c:168
+#: ../config/strings.c:168
 msgid "100%"
 msgstr ""
 
-#: config/strings.c:169
+#: ../config/strings.c:169
 msgid "Focused opacity 100%"
 msgstr ""
 
-#: config/strings.c:170
-#, fuzzy
+#: ../config/strings.c:170
 msgid "Focused opacity follows unfocused"
-msgstr "Fokus följer musklick"
+msgstr ""
 
-#: config/strings.c:171
-#, fuzzy
+#: ../config/strings.c:171
 msgid "Toggle Fading"
-msgstr "Möjliggör kant flip"
+msgstr ""
 
-#: config/strings.c:172
+#: ../config/strings.c:172
 msgid "Toggle Shadows"
 msgstr ""
 
-#: config/strings.c:175
+#: ../config/strings.c:175
 msgid "Max Size Toggle"
 msgstr ""
 
-#: config/strings.c:176
+#: ../config/strings.c:176
 msgid "Available Max Size Toggle"
 msgstr ""
 
-#: config/strings.c:177
+#: ../config/strings.c:177
 msgid "Absolute Max Size Toggle"
 msgstr ""
 
-#: config/strings.c:178
+#: ../config/strings.c:178
 msgid "Span Xinerama Screens"
 msgstr ""
 
-#: config/strings.c:179
+#: ../config/strings.c:179
 msgid "Max Height Toggle"
 msgstr ""
 
-#: config/strings.c:180
+#: ../config/strings.c:180
 msgid "Available Max Height Toggle"
 msgstr ""
 
-#: config/strings.c:181
+#: ../config/strings.c:181
 msgid "Absolute Max Height Toggle"
 msgstr ""
 
-#: config/strings.c:182
+#: ../config/strings.c:182
 msgid "Max Width Toggle"
 msgstr ""
 
-#: config/strings.c:183
+#: ../config/strings.c:183
 msgid "Available Max Width Toggle"
 msgstr ""
 
-#: config/strings.c:184
+#: ../config/strings.c:184
 msgid "Absolute Max Width Toggle"
 msgstr ""
 
-#: config/strings.c:185
+#: ../config/strings.c:185
 msgid "Fullscreen/Normal"
 msgstr ""
 
-#: config/strings.c:186
+#: ../config/strings.c:186
 msgid "Zoom/Unzoom"
 msgstr ""
 
-#: config/strings.c:189
-#, fuzzy
+#: ../config/strings.c:189
 msgid "User Application List"
-msgstr "Ihågkommna applikationsattribut"
+msgstr ""
 
-#: config/strings.c:190
+#: ../config/strings.c:190
 msgid "Other"
 msgstr ""
 
-#: config/strings.c:191
+#: ../config/strings.c:191
 msgid "Epplets"
 msgstr ""
 
-#, fuzzy
-#~ msgid "Enable Effect: Raindrops"
-#~ msgstr "Kan inte visa regndroppar"
-
 #~ msgid "Animate when iconifying to this Iconbox"
 #~ msgstr "Animera vid ikonifiering till denna ikonlåda"
-
-#, fuzzy
-#~ msgid "Icon size: %2i"
-#~ msgstr "Ikon storlek"
-
-#, fuzzy
-#~ msgid "Autoraise"
-#~ msgstr "Lägga fönster överst fördröjning:"
 
 #~ msgid "Autoraise Settings"
 #~ msgstr "Lägga överst inställningar"
@@ -2826,84 +2655,6 @@ msgstr ""
 #~ msgstr ""
 #~ "Dialog för Enlightenments\n"
 #~ "lägga överst inställningar\n"
-
-#, fuzzy
-#~ msgid "Enlightenment Settings ..."
-#~ msgstr "Enlightenment Startar..."
-
-#, fuzzy
-#~ msgid "Focus Settings ..."
-#~ msgstr "Fokusinställningar"
-
-#, fuzzy
-#~ msgid "Move & Resize Settings ..."
-#~ msgstr "Flytt & storleksändringsinställningar"
-
-#, fuzzy
-#~ msgid "Window Placement Settings ..."
-#~ msgstr "Fönsterplaceringsinställningar"
-
-#, fuzzy
-#~ msgid "Multiple Desktop Settings ..."
-#~ msgstr "Multipla skrivbordsinställningar"
-
-#, fuzzy
-#~ msgid "Virtual Desktop Settings ..."
-#~ msgstr "Virtuella skrivbordsinställningar"
-
-#, fuzzy
-#~ msgid "Pager Settings ..."
-#~ msgstr "Sidväxlarinställningar..."
-
-#, fuzzy
-#~ msgid "Menu Settings ..."
-#~ msgstr "Diverse inställningar"
-
-#, fuzzy
-#~ msgid "Autoraise Settings ..."
-#~ msgstr "Lägga överst inställningar"
-
-#, fuzzy
-#~ msgid "Tooltip Settings ..."
-#~ msgstr "Verktygstipsinställningar"
-
-#, fuzzy
-#~ msgid "Audio Settings ..."
-#~ msgstr "Ljudinställningar"
-
-#, fuzzy
-#~ msgid "Group Settings ..."
-#~ msgstr "Sidväxlarinställningar..."
-
-#, fuzzy
-#~ msgid "Remember Settings ..."
-#~ msgstr "Ihågkommna tillval..."
-
-#, fuzzy
-#~ msgid "Special FX Settings ..."
-#~ msgstr "Specialeffektsinställningar"
-
-#, fuzzy
-#~ msgid "Desktop Background Settings ..."
-#~ msgstr "Skrivbordsbakgrundsinställningar"
-
-#, fuzzy
-#~ msgid "Theme Transparency Settings ..."
-#~ msgstr ""
-#~ "Dialog för Enlightenments\n"
-#~ "verktygstipsinställningar\n"
-
-#, fuzzy
-#~ msgid "Composite Settings ..."
-#~ msgstr "Verktygstipsinställningar"
-
-#, fuzzy
-#~ msgid "Session Settings ..."
-#~ msgstr "Ljudinställningar"
-
-#, fuzzy
-#~ msgid "Miscellaneous Settings ..."
-#~ msgstr "Diverse inställningar"
 
 #~ msgid "Mirror Shade/Iconify/Stick"
 #~ msgstr "Spegla skymma/ikonifiera/klibba"

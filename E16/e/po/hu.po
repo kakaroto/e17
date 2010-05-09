@@ -1,27 +1,29 @@
 # This is the Hungarian locale definition for Enlightenment.
 # Copyright (C) 1999-2000 Free Software Foundation, Inc.
-# Gergely Egerv·ry <mauzi@poli.hu>, 1999-2000.
-# Gyˆrgy Hor·k <dyuri@horak.hu>, 2005
+# Gergely Egerv√°ry <mauzi@poli.hu>, 1999-2000.
+# Gy√∂rgy Hor√°k <dyuri@horak.hu>, 2005
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2010-05-02 19:59+0200\n"
-"PO-Revision-Date: 2000-01-04 23:15+0100\n"
-"Last-Translator: Gyˆrgy Hor·k <dyuri@horak.hu>\n"
+"POT-Creation-Date: 2010-05-09 08:50+0800\n"
+"PO-Revision-Date: 2010-02-19 03:04+0000\n"
+"Last-Translator: Roth R√≥bert <Unknown>\n"
 "Language-Team: Hungarian <hu@li.org>\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=iso-8859-2\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"X-Launchpad-Export-Date: 2010-05-09 01:32+0000\n"
+"X-Generator: Launchpad (build Unknown)\n"
 
-#: src/about.c:35
-#, fuzzy, c-format
+#: ../src/about.c:35
+#, c-format
 msgid "About Enlightenment e16 version %s"
-msgstr "Az Enlightenment %s nÈvjegye"
+msgstr "Az Enlightenment e16 %s verzi√≥j√°r√≥l"
 
-#: src/about.c:46
-#, fuzzy, c-format
+#: ../src/about.c:46
+#, c-format
 msgid ""
 "Welcome to Enlightenment e16\n"
 "version %s.\n"
@@ -33,29 +35,24 @@ msgid ""
 "Mandrake - mandrake@mandrake.net\n"
 "Kim Woelders - kim@woelders.dk\n"
 msgstr ""
-"‹dvˆzli az Enlightenment ablakkezelı %s verziÛja.\n"
-"Az Enlightenment folyamatosan fejlesztÈs alatt ·ll,\n"
-"minden hib·t megprÛb·lunk kijavÌtani benne, amit tal·lunk.\n"
-"Ha egy hib·t tal·l a szoftverben, kÈrj¸k jelezze felÈnk!\n"
-"A \"SegÌtsÈg\" men¸pontban tov·bbi inform·ciÛkat tal·l\n"
-"a levelezÈsi list·inkhoz valÛ csatlakoz·srÛl.\n"
-"\n"
-"A kÛd utolj·ra friss¸lt:\n"
-"%s\n"
-"\n"
-"BÌzunk benne, hogy ˆrˆmÈt leli majd a szoftverben.\n"
+"√údv√∂z√∂lj√ºk az Enlightenment e16\n"
+"%s verzi√≥j√°ban.\n"
+"Ha hib√°t tal√°l, k√©rj√ºk, ne\n"
+"habozzon hibajelent√©st k√ºldeni r√≥la.\n"
+"Rem√©lj√ºk, kedv√©t leli a programban.\n"
 "\n"
 "The Rasterman - raster@rasterman.com\n"
 "Mandrake - mandrake@mandrake.net\n"
 "Kim Woelders - kim@woelders.dk\n"
 
-#: src/aclass.c:212 src/backgrounds.c:254 src/borders.c:692 src/buttons.c:183
-#: src/cursors.c:131 src/iclass.c:337 src/tclass.c:125 src/tooltips.c:135
+#: ../src/aclass.c:212 ../src/backgrounds.c:254 ../src/borders.c:692
+#: ../src/buttons.c:183 ../src/cursors.c:131 ../src/iclass.c:337
+#: ../src/tclass.c:125 ../src/tooltips.c:135
 #, c-format
 msgid "%u references remain\n"
 msgstr "%u referencia maradt\n"
 
-#: src/actions.c:114
+#: ../src/actions.c:114
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -63,12 +60,12 @@ msgid ""
 "This program could not be executed.\n"
 "This is because the file does not exist.\n"
 msgstr ""
-"Hiba tˆrtÈnt a program futtat·sakor:\n"
+"Hiba t√∂rt√©nt a program futtat√°sakor:\n"
 "%s\n"
 "A programot nem lehet futtatni.\n"
-"A megadott f·jl nem lÈtezik.\n"
+"A megadott f√°jl nem l√©tezik.\n"
 
-#: src/actions.c:120
+#: ../src/actions.c:120
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -79,12 +76,12 @@ msgid ""
 "page for that shell and read up how to change or add to your\n"
 "execution path.\n"
 msgstr ""
-"Hiba tˆrtÈnt a program futtat·sakor:\n"
+"Hiba t√∂rt√©nt a program futtat√°sakor:\n"
 "%s\n"
 "A programot nem lehet futtatni.\n"
-"A program valÛszÌn˚leg nincs a %s shell elÈrÈsi ˙tvonal·ban.\n"
+"A program val√≥sz√≠n≈±leg nincs a %s shell el√©r√©si √∫tvonal√°ban.\n"
 
-#: src/actions.c:139
+#: ../src/actions.c:139
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -94,14 +91,14 @@ msgid ""
 "is a file, and you are allowed to execute it. I suggest you look\n"
 "into this.\n"
 msgstr ""
-"Hiba tˆrtÈnt a program futtat·sakor:\n"
+"Hiba t√∂rt√©nt a program futtat√°sakor:\n"
 "%s\n"
 "A programot nem lehet futtatni.\n"
-"A hiba ok·t nem lehet meg·llapÌtani. A f·jl lÈtezik,\n"
-"Ès van futtat·si joga r·. Javasolt, hogy nÈzzen\n"
-"ut·na a problÈm·nak.\n"
+"A hiba ok√°t nem lehet meg√°llap√≠tani. A f√°jl l√©tezik,\n"
+"√©s van futtat√°si joga r√°. Javasolt, hogy n√©zzen\n"
+"ut√°na a probl√©m√°nak.\n"
 
-#: src/actions.c:149
+#: ../src/actions.c:149
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -110,12 +107,12 @@ msgid ""
 "This is because the file exists, is a file, but you are unable\n"
 "to execute it because you do not have execute access to this file.\n"
 msgstr ""
-"Hiba tˆrtÈnt a program futtat·sakor:\n"
+"Hiba t√∂rt√©nt a program futtat√°sakor:\n"
 "%s\n"
 "A programot nem lehet futtatni.\n"
-"A f·jl lÈtezik, de nem futtathatÛ, mert nincs r· futtat·si joga.\n"
+"A f√°jl l√©tezik, de nem futtathat√≥, mert nincs r√° futtat√°si joga.\n"
 
-#: src/actions.c:162
+#: ../src/actions.c:162
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -123,12 +120,12 @@ msgid ""
 "This program could not be executed.\n"
 "This is because the file is in fact a directory.\n"
 msgstr ""
-"Hiba tˆrtÈnt a program futtat·sakor:\n"
+"Hiba t√∂rt√©nt a program futtat√°sakor:\n"
 "%s\n"
 "A programot nem lehet futtatni.\n"
-"A megadott f·jl valÛj·ban egy kˆnyvt·r.\n"
+"A megadott f√°jl val√≥j√°ban egy k√∂nyvt√°r.\n"
 
-#: src/actions.c:169
+#: ../src/actions.c:169
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -136,104 +133,106 @@ msgid ""
 "This program could not be executed.\n"
 "This is because the file is not a regular file.\n"
 msgstr ""
-"Hiba tˆrtÈnt a program futtat·sakor:\n"
+"Hiba t√∂rt√©nt a program futtat√°sakor:\n"
 "%s\n"
 "A programot nem lehet futtatni.\n"
-"A megadott f·jl nem hagyom·nyos f·jl.\n"
+"A megadott f√°jl nem hagyom√°nyos f√°jl.\n"
 
-#: src/actions.c:194
+#: ../src/actions.c:194
 #, c-format
 msgid ""
 "There was an error running the program:\n"
 "%s\n"
 msgstr ""
+"Hiba t√∂rt√©nt a k√∂vetkez≈ë program futtat√°sakor:\n"
+"%s\n"
 
-#: src/alert.c:210
+#: ../src/alert.c:210
 msgid "Enlightenment Error"
 msgstr "Enlightenment hiba"
 
-#: src/alert.c:567
+#: ../src/alert.c:567
 msgid "Enlightenment Message Dialog"
-msgstr "Enlightenment ¸zenetablak"
+msgstr "Enlightenment √ºzenetablak"
 
-#: src/alert.c:567
+#: ../src/alert.c:567
 msgid "Ignore this"
-msgstr "Hiba ·tlÈpÈse"
+msgstr "Hiba √°tl√©p√©se"
 
-#: src/alert.c:568
+#: ../src/alert.c:568
 msgid "Restart Enlightenment"
-msgstr "Enlightenment ˙jraindÌt·sa"
+msgstr "Enlightenment √∫jraind√≠t√°sa"
 
-#: src/alert.c:568 src/setup.c:170
+#: ../src/alert.c:568 ../src/setup.c:170
 msgid "Quit Enlightenment"
-msgstr "KilÈpÈs"
+msgstr "Kil√©p√©s"
 
-#: src/alert.c:581
+#: ../src/alert.c:581
 msgid "Attention !!!"
 msgstr "Figyelem !!!"
 
-#: src/alert.c:581 src/dialog.c:693 src/dialog.c:1898 src/events.c:90
-#: src/setup.c:159 src/sound.c:310
+#: ../src/alert.c:581 ../src/dialog.c:693 ../src/dialog.c:1898
+#: ../src/events.c:90 ../src/setup.c:159 ../src/sound.c:310
 msgid "OK"
 msgstr "OK"
 
-#: src/backgrounds.c:1510
+#: ../src/backgrounds.c:1510
 #, c-format
 msgid ""
 "Background definition information:\n"
 "Name: %s\n"
 "File: %s\n"
 msgstr ""
-"H·ttÈrkÈp inform·ciÛ:\n"
-"NÈv: %s\n"
-"F·jl: %s\n"
+"H√°tt√©rk√©p inform√°ci√≥:\n"
+"N√©v: %s\n"
+"F√°jl: %s\n"
 
-#: src/backgrounds.c:1511
+#: ../src/backgrounds.c:1511
 msgid "-NONE-"
 msgstr "-NINCS-"
 
-#: src/backgrounds.c:1678 src/backgrounds.c:1680
+#: ../src/backgrounds.c:1678 ../src/backgrounds.c:1680
 msgid ""
 "No\n"
 "Background"
 msgstr ""
 "Nincs\n"
-"H·ttÈr"
+"H√°tt√©r"
 
-#: src/backgrounds.c:1772 src/backgrounds.c:2198
+#: ../src/backgrounds.c:1772 ../src/backgrounds.c:2198
 #, c-format
 msgid "Unused backgrounds freed after %2i:%02i:%02i"
-msgstr "A haszn·laton kÌv¸li h·tterek felszabadÌt·sa %2i:%02i:%02i ut·n"
+msgstr "A haszn√°laton k√≠v√ºli h√°tterek felszabad√≠t√°sa %2i:%02i:%02i ut√°n"
 
-#: src/backgrounds.c:1984
+#: ../src/backgrounds.c:1984
 msgid "Use background image"
-msgstr "H·ttÈrkÈp haszn·lata"
+msgstr "H√°tt√©rk√©p haszn√°lata"
 
-#: src/backgrounds.c:1988
+#: ../src/backgrounds.c:1988
 msgid "Keep aspect on scale"
-msgstr "Ar·nyok megtart·sa ·tmÈretezÈsnÈl"
+msgstr "Ar√°nyok megtart√°sa √°tm√©retez√©sn√©l"
 
-#: src/backgrounds.c:1992
+#: ../src/backgrounds.c:1992
 msgid "Tile image across background"
-msgstr "Mozaikszer˚ elrendezÈs"
+msgstr "Mozaikszer≈± elrendez√©s"
 
-#: src/backgrounds.c:2001
+#: ../src/backgrounds.c:2001
 msgid "Move to Front\n"
-msgstr "Elıre mozgat·s\n"
+msgstr "El≈ëre mozgat√°s\n"
 
-#: src/backgrounds.c:2006
+#: ../src/backgrounds.c:2006
 msgid "Duplicate\n"
-msgstr "M·sol·s\n"
+msgstr "M√°sol√°s\n"
 
-#: src/backgrounds.c:2010
+#: ../src/backgrounds.c:2010
 msgid "Unlist\n"
-msgstr "ElrejtÈs\n"
+msgstr "Elrejt√©s\n"
 
-#: src/backgrounds.c:2015
+#: ../src/backgrounds.c:2015
 msgid "Delete File\n"
-msgstr "F·jl tˆrlÈse\n"
+msgstr "F√°jl t√∂rl√©se\n"
 
-#: src/backgrounds.c:2026
+#: ../src/backgrounds.c:2026
 msgid ""
 "Background\n"
 "Image\n"
@@ -241,77 +240,76 @@ msgid ""
 "and\n"
 "Alignment\n"
 msgstr ""
-"H·ttÈrkÈp\n"
-"mÈrete\n"
-"Ès\n"
-"elhelyezkedÈse\n"
+"H√°tt√©rk√©p\n"
+"m√©rete\n"
+"√©s\n"
+"elhelyezked√©se\n"
 
-#: src/backgrounds.c:2083
+#: ../src/backgrounds.c:2083
 msgid "BG Colour\n"
-msgstr "H·ttÈrszÌn\n"
+msgstr "H√°tt√©rsz√≠n\n"
 
-#: src/backgrounds.c:2088
+#: ../src/backgrounds.c:2088
 msgid "Red:\n"
 msgstr "Piros:\n"
 
-#: src/backgrounds.c:2099
+#: ../src/backgrounds.c:2099
 msgid "Green:\n"
-msgstr "Zˆld:\n"
+msgstr "Z√∂ld:\n"
 
-#: src/backgrounds.c:2110
+#: ../src/backgrounds.c:2110
 msgid "Blue:\n"
-msgstr "KÈk:\n"
+msgstr "K√©k:\n"
 
-#: src/backgrounds.c:2143
+#: ../src/backgrounds.c:2143
 msgid "Pre-scan BG's"
-msgstr "FrissÌtÈs"
+msgstr "Friss√≠t√©s"
 
-#: src/backgrounds.c:2151
+#: ../src/backgrounds.c:2151
 msgid "Sort by File"
-msgstr "F·jlnÈv szerint rendez"
+msgstr "F√°jln√©v szerint rendez"
 
-#: src/backgrounds.c:2156
+#: ../src/backgrounds.c:2156
 msgid "Sort by Attr."
-msgstr "Attrib˙tum szerint rendez"
+msgstr "Attrib√∫tum szerint rendez"
 
-#: src/backgrounds.c:2162
+#: ../src/backgrounds.c:2162
 msgid "Sort by Image"
-msgstr "KÈp szerint rendez"
+msgstr "K√©p szerint rendez"
 
-#: src/backgrounds.c:2182
+#: ../src/backgrounds.c:2182
 msgid "Use dithering in Hi-Colour"
-msgstr "SzÌnek elmos·sa Hi-Color mÛdban"
+msgstr "Sz√≠nek elmos√°sa Hi-Color m√≥dban"
 
-#: src/backgrounds.c:2186
+#: ../src/backgrounds.c:2186
 msgid "Background overrides theme"
-msgstr "A h·ttÈr fel¸lÌrja a tÈma be·llÌt·sait"
+msgstr "A h√°tt√©r fel√ºl√≠rja a t√©ma be√°ll√≠t√°sait"
 
-#: src/backgrounds.c:2191
+#: ../src/backgrounds.c:2191
 msgid "Enable background transparency compatibility mode"
 msgstr ""
 
-#: src/backgrounds.c:2215 src/mod-trans.c:200
-#, fuzzy
+#: ../src/backgrounds.c:2215 ../src/mod-trans.c:200
 msgid "Background"
-msgstr "H·ttÈr"
+msgstr "H√°tt√©r"
 
-#: src/backgrounds.c:2216
+#: ../src/backgrounds.c:2216
 msgid "Desktop Background Settings"
-msgstr "Asztalh·ttÈr be·llÌt·sai"
+msgstr "Asztalh√°tt√©r be√°ll√≠t√°sai"
 
-#: src/backgrounds.c:2219
+#: ../src/backgrounds.c:2219
 msgid ""
 "Enlightenment Desktop\n"
 "Background Settings Dialog\n"
 msgstr ""
 "Enlightenment Desktop\n"
-"H·ttÈr be·llÌt·s\n"
+"H√°tt√©r be√°ll√≠t√°s\n"
 
-#: src/comms.c:240
+#: ../src/comms.c:240
 msgid "E IPC Error"
 msgstr "E IPC hiba"
 
-#: src/comms.c:241
+#: ../src/comms.c:241
 #, c-format
 msgid ""
 "Received Unknown Client Message.\n"
@@ -321,59 +319,55 @@ msgid ""
 "\n"
 "%s\n"
 msgstr ""
-"Ismeretlen ¸zenet Èrkezett.\n"
+"Ismeretlen √ºzenet √©rkezett.\n"
 "Kliens neve:     %s\n"
-"Kliens verziÛja: %s\n"
-"‹zenet tartalma:\n"
+"Kliens verzi√≥ja: %s\n"
+"√úzenet tartalma:\n"
 "\n"
 "%s\n"
 
-#: src/config.c:198 src/config.c:300
+#: ../src/config.c:198 ../src/config.c:300
 #, c-format
 msgid "CONFIG: ignoring extra data in \"%s\"\n"
-msgstr "CONFIG: felesleges adatok ·tlÈpÈse: \"%s\"\n"
+msgstr "CONFIG: felesleges adatok √°tl√©p√©se: \"%s\"\n"
 
-#: src/config.c:206 src/config.c:307
+#: ../src/config.c:206 ../src/config.c:307
 #, c-format
 msgid "CONFIG: missing required data in \"%s\"\n"
-msgstr "CONFIG: hi·nyzÛ adatok: \"%s\"\n"
+msgstr "CONFIG: hi√°nyz√≥ adatok: \"%s\"\n"
 
-#: src/config.c:216
-#, fuzzy, c-format
+#: ../src/config.c:216
+#, c-format
 msgid ""
 "Warning: unable to determine what to do with\n"
 "the following text in the middle of current %s definition:\n"
 "%s\n"
 "Will ignore and continue...\n"
 msgstr ""
-"Figyelem: nem tudom eldˆnteni, mit tegyek\n"
-"az aktu·lis ActionClass definÌciÛ kˆzepÈn tal·lhatÛ szˆveggel:\n"
-"%s\n"
-"Figyelmen kÌv¸l hagyom...\n"
 
-#: src/config.c:224
+#: ../src/config.c:224
 #, c-format
 msgid ""
 "Warning:  Configuration error in %s block.\n"
 "Outcome is likely not good.\n"
 msgstr ""
-"Figyelem: Konfigur·ciÛs hiba az al·bbi blokkban: %s\n"
-"Az eredmÈny valÛszÌn˚leg nem jÛ.\n"
+"Figyelem: Konfigur√°ci√≥s hiba az al√°bbi blokkban: %s\n"
+"Az eredm√©ny val√≥sz√≠n≈±leg nem j√≥.\n"
 
-#: src/config.c:316
+#: ../src/config.c:316
 msgid "Theme versioning ERROR"
-msgstr "TÈma verziÛ HIBA"
+msgstr "T√©ma verzi√≥ HIBA"
 
-#: src/config.c:317
+#: ../src/config.c:317
 msgid "Restart with Defaults"
-msgstr "⁄jraindÌt·s alapÈrtÈkekkel"
+msgstr "√öjraind√≠t√°s alap√©rt√©kekkel"
 
-#: src/config.c:318
+#: ../src/config.c:318
 msgid "Abort and Exit"
-msgstr "MegszakÌt Ès kilÈp"
+msgstr "Megszak√≠t √©s kil√©p"
 
-#: src/config.c:319
-#, fuzzy, c-format
+#: ../src/config.c:319
+#, c-format
 msgid ""
 "ERROR:\n"
 "\n"
@@ -392,170 +386,153 @@ msgid ""
 "a while and this theme takes advantages of new\n"
 "features in Enlightenment in new versions.\n"
 msgstr ""
-"HIBA:\n"
-"\n"
-"Az ÷n ·ltal haszn·lt tÈma konfigur·ciÛja nem\n"
-"kompatibilis a jelenlegivel. A verziÛ %i helyett\n"
-"%i kellene, hogy legyen.\n"
-"\n"
-"Vegye fel a kapcsolatot a tÈma karbantartÛj·val,\n"
-"Ès tudassa vele, hogy ahhoz hogy a tÈm·ja m˚kˆdjˆn\n"
-"az Enlightenment jelen verziÛj·val, frissÌtenie\n"
-"kell a konfigur·ciÛn.\n"
-"\n"
-"Ha a tÈma verziÛja nagyobb, mint az EnlightenmentÈ,\n"
-"lehet, hogy egy ideje nem frissÌtette, a tÈma pedig\n"
-"kihaszn·ln· az ˙j verziÛ adta lehetısÈgeke.\n"
 
-#: src/config.c:621
+#: ../src/config.c:621
 msgid "Enlightenment Starting..."
-msgstr "Az Enlightenment indÌt·sa..."
+msgstr "Az Enlightenment ind√≠t√°sa..."
 
-#: src/container.c:1187
-#, fuzzy
+#: ../src/container.c:1187
 msgid "Settings..."
-msgstr "FÛkusz be·llÌt·sai"
+msgstr "Be√°ll√≠t√°sok..."
 
-#: src/container.c:1191 src/dialog.c:704 src/pager.c:1016 config/strings.c:30
-#: config/strings.c:122
+#: ../src/container.c:1191 ../src/dialog.c:704 ../src/pager.c:1016
+#: ../config/strings.c:30 ../config/strings.c:122
 msgid "Close"
-msgstr "Bez·r"
+msgstr "Bez√°r"
 
-#: src/container.c:1196 config/strings.c:83
+#: ../src/container.c:1196 ../config/strings.c:83
 msgid "Create New Iconbox"
-msgstr "⁄j ikondoboz lÈtrehoz·sa"
+msgstr "√öj ikondoboz l√©trehoz√°sa"
 
-#: src/container.c:1507 src/container.c:1583 src/menus.c:2116
-#, fuzzy, c-format
+#: ../src/container.c:1507 ../src/container.c:1583 ../src/menus.c:2116
+#, c-format
 msgid "Icon size: %2d"
-msgstr "Ikonok mÈrete"
+msgstr "Ikon m√©ret: %2d"
 
-#: src/container.c:1547
+#: ../src/container.c:1547
 msgid "Transparent background"
-msgstr "¡tl·tszÛ h·ttÈr"
+msgstr "√Åtl√°tsz√≥ h√°tt√©r"
 
-#: src/container.c:1551
-#, fuzzy
+#: ../src/container.c:1551
 msgid "Hide inner border"
-msgstr "Csoport mutat·sa/elrejtÈse"
+msgstr "Bels≈ë keret elrejtse"
 
-#: src/container.c:1555
+#: ../src/container.c:1555
 msgid "Draw base image behind Icons"
-msgstr "H·ttÈr kirajzol·sa az ikonok mˆgÈ"
+msgstr "H√°tt√©r kirajzol√°sa az ikonok m√∂g√©"
 
-#: src/container.c:1559
+#: ../src/container.c:1559
 msgid "Hide scrollbar when not needed"
-msgstr "GˆrdÌtıs·v elrejtÈse, amikor nem sz¸ksÈges"
+msgstr "G√∂rd√≠t≈ës√°v elrejt√©se, amikor nem sz√ºks√©ges"
 
-#: src/container.c:1563
+#: ../src/container.c:1563
 msgid "Automatically resize to fit Icons"
-msgstr "Automatikus ·tmÈretezÈs, hogy az ikonok elfÈrjenek"
+msgstr "Automatikus √°tm√©retez√©s, hogy az ikonok elf√©rjenek"
 
-#: src/container.c:1570
+#: ../src/container.c:1570
 msgid "Alignment of anchoring when automatically resizing:"
-msgstr "⁄jrarendezıdÈs automatikus ·tmÈretezÈsnÈl:"
+msgstr "√öjrarendez≈ëd√©s automatikus √°tm√©retez√©sn√©l:"
 
-#: src/container.c:1601
+#: ../src/container.c:1601
 msgid "Orientation:"
-msgstr "Ir·ny:"
+msgstr "Ir√°ny:"
 
-#: src/container.c:1604
+#: ../src/container.c:1604
 msgid "Horizontal"
-msgstr "VÌzszintes"
+msgstr "V√≠zszintes"
 
-#: src/container.c:1609
+#: ../src/container.c:1609
 msgid "Vertical"
-msgstr "F¸ggıleges"
+msgstr "F√ºgg≈ëleges"
 
-#: src/container.c:1620
+#: ../src/container.c:1620
 msgid "Scrollbar side:"
-msgstr "GˆrdÌtıs·v helye:"
+msgstr "G√∂rd√≠t≈ës√°v helye:"
 
-#: src/container.c:1623
+#: ../src/container.c:1623
 msgid "Left / Top"
 msgstr "Bal / Fent"
 
-#: src/container.c:1628
+#: ../src/container.c:1628
 msgid "Right / Bottom"
 msgstr "Jobb / Lent"
 
-#: src/container.c:1639
+#: ../src/container.c:1639
 msgid "Scrollbar arrows:"
-msgstr "NyÌl a gˆrdÌtıs·von:"
+msgstr "Ny√≠l a g√∂rd√≠t≈ës√°von:"
 
-#: src/container.c:1642
+#: ../src/container.c:1642
 msgid "Start"
-msgstr "ElejÈn"
+msgstr "Elej√©n"
 
-#: src/container.c:1647
+#: ../src/container.c:1647
 msgid "Both ends"
-msgstr "MindkÈt vÈgÈn"
+msgstr "Mindk√©t v√©g√©n"
 
-#: src/container.c:1652
+#: ../src/container.c:1652
 msgid "End"
-msgstr "VÈgÈn"
+msgstr "V√©g√©n"
 
-#: src/container.c:1657 src/focus.c:960
+#: ../src/container.c:1657 ../src/focus.c:969
 msgid "None"
 msgstr "Nincs"
 
-#: src/container.c:1667
+#: ../src/container.c:1667
 msgid "Show icon names"
-msgstr "Ikonnevek megjelenÌtÈse"
+msgstr "Ikonnevek megjelen√≠t√©se"
 
-#: src/container.c:1676
+#: ../src/container.c:1676
 msgid "Animation mode:"
 msgstr ""
 
-#: src/container.c:1679 src/desktops.c:2577
+#: ../src/container.c:1679 ../src/desktops.c:2579
 msgid "Off"
-msgstr ""
+msgstr "Kikapcsolva"
 
-#: src/container.c:1684
+#: ../src/container.c:1684
 msgid "Whirl"
 msgstr ""
 
-#: src/container.c:1689 src/settings.c:112 src/settings.c:117
-#: src/settings.c:385
+#: ../src/container.c:1689 ../src/settings.c:112 ../src/settings.c:117
+#: ../src/settings.c:385
 msgid "Box"
 msgstr "Keretes"
 
-#: src/container.c:1697
-#, fuzzy
+#: ../src/container.c:1697
 msgid "Animation speed:"
-msgstr "Halv·nyod·si sebessÈg\n"
+msgstr ""
 
-#: src/container.c:1712
+#: ../src/container.c:1712
 msgid "Icon image display policy (if one operation fails, try the next):"
 msgstr ""
-"IkonmegjelenÌtÈs rendje (ha az egyik nem siker¸l, megprÛb·lja a kˆvetkezıt):"
+"Ikonmegjelen√≠t√©s rendje (ha az egyik nem siker√ºl, megpr√≥b√°lja a k√∂vetkez≈ët):"
 
-#: src/container.c:1717
+#: ../src/container.c:1717
 msgid "Snapshot Windows, Use application icon, Use Enlightenment Icon"
-msgstr "Miniat˙ra, Program ikon, Enlightenment ikon"
+msgstr "Miniat√∫ra, Program ikon, Enlightenment ikon"
 
-#: src/container.c:1724
+#: ../src/container.c:1724
 msgid "Use application icon, Use Enlightenment Icon, Snapshot Window"
-msgstr "Program ikon, Enlightenment ikon, Miniat˙ra"
+msgstr "Program ikon, Enlightenment ikon, Miniat√∫ra"
 
-#: src/container.c:1729
+#: ../src/container.c:1729
 msgid "Use Enlightenment Icon, Snapshot Window"
-msgstr "Enlightenment ikon, Miniat˙ra"
+msgstr "Enlightenment ikon, Miniat√∫ra"
 
-#: src/container.c:1742
+#: ../src/container.c:1742
 msgid ""
 "Enlightenment Iconbox\n"
 "Settings Dialog\n"
 msgstr ""
 "Enlightenment ikondoboz\n"
-"be·llÌt·sai\n"
+"be√°ll√≠t√°sai\n"
 
-#: src/coords.c:75
+#: ../src/coords.c:75
 #, c-format
 msgid "Focused/unfocused opacity: %d/%d %%"
 msgstr ""
 
-#: src/desktops.c:124
+#: ../src/desktops.c:124
 msgid ""
 "Hold down the mouse button and drag\n"
 "the mouse to be able to drag the desktop\n"
@@ -565,14 +542,14 @@ msgid ""
 "Click middle mouse button for a list of all\n"
 "applications currently running.\n"
 msgstr ""
-"Az egÈrgombot lenyomva, az egeret mozgatva\n"
-"az asztalt elırÈbb, illetve h·trÈbb mozgathatja.\n"
-"A jobb egÈrgomb lenyom·s·val megjelenÌtheti az\n"
-"ˆsszes asztalt Ès a rajtuk futÛ alkalmaz·sokat.\n"
-"A kˆzÈpsı gomb lenyom·s·val egy list·t kaphat\n"
-"az ˆsszes futÛ alkalmaz·srÛl.\n"
+"Az eg√©rgombot lenyomva, az egeret mozgatva\n"
+"az asztalt el≈ër√©bb, illetve h√°tr√©bb mozgathatja.\n"
+"A jobb eg√©rgomb lenyom√°s√°val megjelen√≠theti az\n"
+"√∂sszes asztalt √©s a rajtuk fut√≥ alkalmaz√°sokat.\n"
+"A k√∂z√©ps≈ë gomb lenyom√°s√°val egy list√°t kaphat\n"
+"az √∂sszes fut√≥ alkalmaz√°sr√≥l.\n"
 
-#: src/desktops.c:135
+#: ../src/desktops.c:135
 msgid ""
 "This is the Root desktop.\n"
 "You cannot drag the root desktop around.\n"
@@ -582,142 +559,146 @@ msgid ""
 "applications currently running.\n"
 msgstr ""
 "Ez itt az asztal.\n"
-"A jobb egÈrgomb lenyom·s·val megjelenÌtheti az\n"
-"ˆsszes asztalt Ès a rajtuk futÛ alkalmaz·sokat.\n"
-"A kˆzÈpsı gomb lenyom·s·val egy list·t kaphat\n"
-"az ˆsszes futÛ alkalmaz·srÛl.\n"
+"A jobb eg√©rgomb lenyom√°s√°val megjelen√≠theti az\n"
+"√∂sszes asztalt √©s a rajtuk fut√≥ alkalmaz√°sokat.\n"
+"A k√∂z√©ps≈ë gomb lenyom√°s√°val egy list√°t kaphat\n"
+"az √∂sszes fut√≥ alkalmaz√°sr√≥l.\n"
 
-#: src/desktops.c:153
+#: ../src/desktops.c:153
 msgid ""
 "Click here to raise this desktop\n"
 "to the top.\n"
 msgstr ""
 "Klikkeljen ide, hogy ez az asztal\n"
-"legfel¸lre ker¸ljˆn.\n"
+"legfel√ºlre ker√ºlj√∂n.\n"
 
-#: src/desktops.c:165
+#: ../src/desktops.c:165
 msgid ""
 "Click here to lower this desktop\n"
 "to the bottom.\n"
 msgstr ""
 "Klikkeljen ide, hogy ez az asztal\n"
-"legalulra ker¸ljˆn.\n"
+"legalulra ker√ºlj√∂n.\n"
 
-#: src/desktops.c:2338
+#: ../src/desktops.c:2340
 msgid "Number of virtual desktops:\n"
-msgstr "Virtu·lis asztalok sz·ma:\n"
+msgstr "Virtu√°lis asztalok sz√°ma:\n"
 
-#: src/desktops.c:2363
+#: ../src/desktops.c:2365
 msgid "Slide desktops around when changing"
-msgstr "Anim·ciÛ az asztalok v·lt·s·n·l"
+msgstr "Anim√°ci√≥ az asztalok v√°lt√°s√°n√°l"
 
-#: src/desktops.c:2369
-#, fuzzy
+#: ../src/desktops.c:2371
 msgid "Desktop Slide speed:\n"
-msgstr "Asztal anim·ciÛ sebessÈge: (lass˙)\n"
+msgstr "Asztal cs√∫sz√°si sebess√©ge:\n"
 
-#: src/desktops.c:2383
+#: ../src/desktops.c:2385
 msgid "Wrap desktops around"
-msgstr "Asztalok \"kˆrbecs˙sz·sa\""
+msgstr "Asztalok \"k√∂rbecs√∫sz√°sa\""
 
-#: src/desktops.c:2391
+#: ../src/desktops.c:2393
 msgid "Display desktop dragbar"
-msgstr "Dragbar megjelenÌtÈse"
+msgstr "Dragbar megjelen√≠t√©se"
 
-#: src/desktops.c:2397
+#: ../src/desktops.c:2399
 msgid "Drag bar position:"
-msgstr "Dragbar elhelyezkedÈse:"
+msgstr "Dragbar elhelyezked√©se:"
 
-#: src/desktops.c:2401
+#: ../src/desktops.c:2403
 msgid "Top"
 msgstr "Fent"
 
-#: src/desktops.c:2407
+#: ../src/desktops.c:2409
 msgid "Bottom"
 msgstr "Lent"
 
-#: src/desktops.c:2413 src/pager.c:1925 src/pager.c:1950 src/pager.c:1975
+#: ../src/desktops.c:2415 ../src/pager.c:1925 ../src/pager.c:1950
+#: ../src/pager.c:1975
 msgid "Left"
 msgstr "Bal"
 
-#: src/desktops.c:2419 src/pager.c:1937 src/pager.c:1962 src/pager.c:1987
+#: ../src/desktops.c:2421 ../src/pager.c:1937 ../src/pager.c:1962
+#: ../src/pager.c:1987
 msgid "Right"
 msgstr "Jobb"
 
-#: src/desktops.c:2427 src/menus-misc.c:585
-#, fuzzy
+#: ../src/desktops.c:2429 ../src/menus-misc.c:585
 msgid "Desks"
-msgstr "Asztal"
+msgstr ""
 
-#: src/desktops.c:2428
+#: ../src/desktops.c:2430
 msgid "Multiple Desktop Settings"
-msgstr "Tˆbbasztalos ¸zemmÛd be·llÌt·sai"
+msgstr "T√∂bbasztalos √ºzemm√≥d be√°ll√≠t√°sai"
 
-#: src/desktops.c:2431
+#: ../src/desktops.c:2433
 msgid ""
 "Enlightenment Multiple Desktop\n"
 "Settings Dialog\n"
 msgstr ""
-"Enlightenment tˆbbasztalos ¸zemmÛd\n"
-"be·llÌt·sai\n"
+"Enlightenment t√∂bbasztalos √ºzemm√≥d\n"
+"be√°ll√≠t√°sai\n"
 
-#: src/desktops.c:2531
+#: ../src/desktops.c:2533
 msgid "Virtual Desktop size:\n"
-msgstr "Virtu·lis asztal mÈrete:\n"
+msgstr "Virtu√°lis asztal m√©rete:\n"
 
-#: src/desktops.c:2567
+#: ../src/desktops.c:2569
 msgid "Wrap virtual desktops around"
-msgstr "Virtu·lis asztalok \"kˆrbecs˙sz·sa\""
+msgstr "Virtu√°lis asztalok \"k√∂rbecs√∫sz√°sa\""
 
-#: src/desktops.c:2574
+#: ../src/desktops.c:2576
 msgid "Edge Flip Mode:"
 msgstr ""
 
-#: src/desktops.c:2582
+#: ../src/desktops.c:2584
 msgid "On"
-msgstr ""
+msgstr "Bekapcsolva"
 
-#: src/desktops.c:2587
+#: ../src/desktops.c:2589
 msgid "Only when moving window"
 msgstr ""
 
-#: src/desktops.c:2593
+#: ../src/desktops.c:2595
 msgid "Resistance at edge of screen:\n"
-msgstr "…rzÈkenysÈg a kÈp szÈlÈn:\n"
+msgstr "√ârz√©kenys√©g a k√©p sz√©l√©n:\n"
 
-#: src/desktops.c:2605
+#: ../src/desktops.c:2607
 msgid "Areas"
-msgstr ""
+msgstr "Ter√ºletek"
 
-#: src/desktops.c:2606
+#: ../src/desktops.c:2608
 msgid "Virtual Desktop Settings"
-msgstr "Virtu·lis asztalok be·llÌt·sai"
+msgstr "Virtu√°lis asztalok be√°ll√≠t√°sai"
 
-#: src/desktops.c:2609
+#: ../src/desktops.c:2611
 msgid ""
 "Enlightenment Virtual Desktop\n"
 "Settings Dialog\n"
 msgstr ""
-"Enlightenment virtu·lis asztalok\n"
-"be·llÌt·sai\n"
+"Enlightenment virtu√°lis asztalok\n"
+"be√°ll√≠t√°sai\n"
 
-#: src/dialog.c:698
+#: ../src/dialog.c:698
 msgid "Apply"
 msgstr "Alkalmaz"
 
-#: src/ecompmgr.c:2309
+#: ../src/ecompmgr.c:2309
 msgid ""
 "Cannot enable Composite Manager.\n"
 "Use xdpyinfo to check that\n"
 "Composite, Damage, Fixes, and Render\n"
 "extensions are loaded."
 msgstr ""
+"Nem lehet bekapcsolni a Composite Managert.\n"
+"Haszn√°ld az xdpyinfo parancsot annak ellen≈ërz√©s√©re,\n"
+"hogy a Composite, Damage, Fixes √©s Render\n"
+"kiterjeszt√©sek bet√∂lt≈ëdtek."
 
-#: src/events.c:90
+#: ../src/events.c:90
 msgid "X server setup error"
-msgstr "X-szerver be·llÌt·si hiba"
+msgstr "X-szerver be√°ll√≠t√°si hiba"
 
-#: src/events.c:91
+#: ../src/events.c:91
 msgid ""
 "FATAL ERROR:\n"
 "\n"
@@ -728,184 +709,178 @@ msgid ""
 "\n"
 "Exiting.\n"
 msgstr ""
-"FAT¡LIS HIBA:\n"
+"FAT√ÅLIS HIBA:\n"
 "\n"
-"Az X-szerver nem t·mogatja a Shape kiterjesztÈst.\n"
-"Az Enlightenmentnek sz¸ksÈge van erre.\n"
+"Az X-szerver nem t√°mogatja a Shape kiterjeszt√©st.\n"
+"Az Enlightenmentnek sz√ºks√©ge van erre.\n"
 "\n"
-"Az ÷n X-szervere t˙l ˆreg, vagy rosszul van konfigur·lva.\n"
+"Az √ñn X-szervere t√∫l √∂reg, vagy rosszul van konfigur√°lva.\n"
 "\n"
-"KilÈpek.\n"
+"Kil√©pek.\n"
 
-#: src/focus.c:806
+#: ../src/focus.c:815
 msgid "Focus follows pointer"
-msgstr "A fÛkusz kˆveti az egÈrmutatÛt"
+msgstr "A f√≥kusz k√∂veti az eg√©rmutat√≥t"
 
-#: src/focus.c:812
+#: ../src/focus.c:821
 msgid "Focus follows pointer sloppily"
-msgstr "A fÛkusz laz·n kˆveti az egÈrmutatÛt"
+msgstr "A f√≥kusz laz√°n k√∂veti az eg√©rmutat√≥t"
 
-#: src/focus.c:818
+#: ../src/focus.c:827
 msgid "Focus follows mouse clicks"
-msgstr "A fÛkusz kˆveti az egÈrkattint·st"
+msgstr "A f√≥kusz k√∂veti az eg√©rkattint√°st"
 
-#: src/focus.c:828
+#: ../src/focus.c:837
 msgid "Clicking in a window always raises it"
-msgstr "Az ablakok mindig fel¸lre ker¸lnek egÈrkattint·sn·l"
+msgstr "Az ablakok mindig fel√ºlre ker√ºlnek eg√©rkattint√°sn√°l"
 
-#: src/focus.c:836
+#: ../src/focus.c:845
 msgid "All new windows first get the focus"
-msgstr "Az ˙j ablakok fÛkuszt kapnak"
+msgstr "Az √∫j ablakok f√≥kuszt kapnak"
 
-#: src/focus.c:843
+#: ../src/focus.c:852
 msgid "New windows get the focus if their window group is focused"
 msgstr ""
 
-#: src/focus.c:848
+#: ../src/focus.c:857
 msgid "Only new dialog windows get the focus"
-msgstr "Csak az ˙j ablakok kapnak fÛkuszt"
+msgstr "Csak az √∫j ablakok kapnak f√≥kuszt"
 
-#: src/focus.c:855
+#: ../src/focus.c:864
 msgid "Only new dialogs whose owner is focused get the focus"
 msgstr ""
 
-#: src/focus.c:860
-#, fuzzy
+#: ../src/focus.c:869
 msgid "Raise windows while switching focus"
-msgstr "Ablakv·lt·s kˆzben fÛkusz"
-
-#: src/focus.c:866
-#, fuzzy
-msgid "Send mouse pointer to window while switching focus"
-msgstr "Az egÈrmutatÛ az ablak fˆlÈ ker¸l fÛkuszv·lt·sn·l"
-
-#: src/focus.c:872
-#, fuzzy
-msgid "Always send mouse pointer to window on focus switch"
-msgstr "Az egÈrmutatÛ az ablak fˆlÈ ker¸l fÛkuszv·lt·sn·l"
-
-#: src/focus.c:880
-msgid "Raise windows automatically"
-msgstr "Ablakok automatikus felemelkedÈse"
-
-#: src/focus.c:886
-msgid "Autoraise delay:"
-msgstr "FelemelkedÈssel v·r:"
-
-#: src/focus.c:899
-msgid "Display and use focus list"
-msgstr "FÛkuszlista megjelenÌtÈse Ès haszn·lata"
-
-#: src/focus.c:904
-msgid "Include sticky windows in focus list"
-msgstr "RagadÛs ablakok bevÈtele a fÛkusz list·ba"
-
-#: src/focus.c:909
-msgid "Include shaded windows in focus list"
-msgstr "¡rnyÈkolt ablakok bevÈtele a fÛkusz list·ba"
-
-#: src/focus.c:914
-msgid "Include iconified windows in focus list"
-msgstr "Ikoniz·lt ablakok bevÈtele a fÛkusz list·ba"
-
-#: src/focus.c:919
-#, fuzzy
-msgid "Include windows on other desks in focus list"
-msgstr "¡rnyÈkolt ablakok bevÈtele a fÛkusz list·ba"
-
-#: src/focus.c:924
-msgid "Focus windows while switching"
-msgstr "Ablakv·lt·s kˆzben fÛkusz"
-
-#: src/focus.c:929
-msgid "Raise windows after focus switch"
-msgstr "Az ablak fel¸lre ker¸l fÛkuszv·lt·s ut·n"
-
-#: src/focus.c:934
-msgid "Send mouse pointer to window after focus switch"
-msgstr "Az egÈrmutatÛ az ablak fˆlÈ ker¸l fÛkuszv·lt·s ut·n"
-
-#: src/focus.c:944
-#, fuzzy
-msgid "Focuslist image display policy (if one operation fails, try the next):"
 msgstr ""
-"IkonmegjelenÌtÈs rendje (ha az egyik nem siker¸l, megprÛb·lja a kˆvetkezıt):"
 
-#: src/focus.c:948
+#: ../src/focus.c:875
+msgid "Send mouse pointer to window while switching focus"
+msgstr ""
+
+#: ../src/focus.c:881
+msgid "Always send mouse pointer to window on focus switch"
+msgstr ""
+
+#: ../src/focus.c:889
+msgid "Raise windows automatically"
+msgstr "Ablakok automatikus felemelked√©se"
+
+#: ../src/focus.c:895
+msgid "Autoraise delay:"
+msgstr "Felemelked√©ssel v√°r:"
+
+#: ../src/focus.c:908
+msgid "Display and use focus list"
+msgstr "F√≥kuszlista megjelen√≠t√©se √©s haszn√°lata"
+
+#: ../src/focus.c:913
+msgid "Include sticky windows in focus list"
+msgstr "Ragad√≥s ablakok bev√©tele a f√≥kusz list√°ba"
+
+#: ../src/focus.c:918
+msgid "Include shaded windows in focus list"
+msgstr "√Årny√©kolt ablakok bev√©tele a f√≥kusz list√°ba"
+
+#: ../src/focus.c:923
+msgid "Include iconified windows in focus list"
+msgstr "Ikoniz√°lt ablakok bev√©tele a f√≥kusz list√°ba"
+
+#: ../src/focus.c:928
+msgid "Include windows on other desks in focus list"
+msgstr ""
+
+#: ../src/focus.c:933
+msgid "Focus windows while switching"
+msgstr "Ablakv√°lt√°s k√∂zben f√≥kusz"
+
+#: ../src/focus.c:938
+msgid "Raise windows after focus switch"
+msgstr "Az ablak fel√ºlre ker√ºl f√≥kuszv√°lt√°s ut√°n"
+
+#: ../src/focus.c:943
+msgid "Send mouse pointer to window after focus switch"
+msgstr "Az eg√©rmutat√≥ az ablak f√∂l√© ker√ºl f√≥kuszv√°lt√°s ut√°n"
+
+#: ../src/focus.c:953
+msgid ""
+"Focuslist image display policy (if one operation fails, try the next):"
+msgstr ""
+
+#: ../src/focus.c:957
 msgid "First E Icon, then App Icon"
 msgstr ""
 
-#: src/focus.c:954
+#: ../src/focus.c:963
 msgid "First App Icon, then E Icon"
 msgstr ""
 
-#: src/focus.c:968
-#, fuzzy
+#: ../src/focus.c:977
 msgid "Focus"
-msgstr "Nem kap fÛkuszt"
+msgstr "F√≥kusz"
 
-#: src/focus.c:969
+#: ../src/focus.c:978
 msgid "Focus Settings"
-msgstr "FÛkusz be·llÌt·sai"
+msgstr "F√≥kusz be√°ll√≠t√°sai"
 
-#: src/focus.c:972
+#: ../src/focus.c:981
 msgid ""
 "Enlightenment Focus\n"
 "Settings Dialog\n"
 msgstr ""
-"Enlightenment fÛkusz\n"
-"be·llÌt·sai\n"
+"Enlightenment f√≥kusz\n"
+"be√°ll√≠t√°sai\n"
 
-#: src/fx.c:824
+#: ../src/fx.c:824
 msgid "Effects"
 msgstr "Effektek"
 
-#: src/fx.c:826
+#: ../src/fx.c:826
 msgid "Ripples"
-msgstr "Kˆrhull·mok"
+msgstr "K√∂rhull√°mok"
 
-#: src/fx.c:829
+#: ../src/fx.c:829
 msgid "Waves"
-msgstr "Hull·mok"
+msgstr "Hull√°mok"
 
-#: src/fx.c:834
-#, fuzzy
+#: ../src/fx.c:834
 msgid "Raindrops"
-msgstr "Ablakcsoport hiba"
-
-#: src/fx.c:841
-msgid "FX"
 msgstr ""
 
-#: src/fx.c:842
-msgid "Special FX Settings"
-msgstr "Speci·lis effektek be·llÌt·sai"
+#: ../src/fx.c:841
+msgid "FX"
+msgstr "FX"
 
-#: src/fx.c:845
+#: ../src/fx.c:842
+msgid "Special FX Settings"
+msgstr "Speci√°lis effektek be√°ll√≠t√°sai"
+
+#: ../src/fx.c:845
 msgid ""
 "Enlightenment Special Effects\n"
 "Settings Dialog\n"
 msgstr ""
-"Enlightenment speci·lis effektek\n"
-"be·llÌt·sai\n"
+"Enlightenment speci√°lis effektek\n"
+"be√°ll√≠t√°sai\n"
 
-#: src/groups.c:706
+#: ../src/groups.c:706
 msgid "Window Group Selection"
-msgstr "Ablakcsoport kiv·laszt·sa"
+msgstr "Ablakcsoport kiv√°laszt√°sa"
 
-#: src/groups.c:709
+#: ../src/groups.c:709
 msgid ""
 "Enlightenment Window Group\n"
 "Selection Dialog\n"
 msgstr ""
 "Enlightenment Ablakcsoport\n"
-"kiv·laszt·sa\n"
+"kiv√°laszt√°sa\n"
 
-#: src/groups.c:732 src/groups.c:741 src/groups.c:749 src/groups.c:924
+#: ../src/groups.c:732 ../src/groups.c:741 ../src/groups.c:749
+#: ../src/groups.c:924
 msgid "Window Group Error"
 msgstr "Ablakcsoport hiba"
 
-#: src/groups.c:734
+#: ../src/groups.c:734
 msgid ""
 "\n"
 "  This window currently does not belong to any groups.  \n"
@@ -915,11 +890,11 @@ msgid ""
 msgstr ""
 "\n"
 "  Ez az ablak jelenleg egy csoporthoz sem tartozik.\n"
-"  Csak egy olyan ablakkal lehet csoportokat megsemmisÌteni vagy\n"
-"  ablakot egy csoportbÛl kivenni, ami maga is egy csoport tagja.\n"
+"  Csak egy olyan ablakkal lehet csoportokat megsemmis√≠teni vagy\n"
+"  ablakot egy csoportb√≥l kivenni, ami maga is egy csoport tagja.\n"
 "\n"
 
-#: src/groups.c:742
+#: ../src/groups.c:742
 msgid ""
 "\n"
 "  Currently, no groups exist or this window  \n"
@@ -928,75 +903,74 @@ msgid ""
 "\n"
 msgstr ""
 "\n"
-"  Nincs lÈtrehozva egy csoport sem, vagy ez az\n"
-"  ablak m·r minden lÈtezı csoportnak a tagja.\n"
-"  Hozzon lÈtre egy ˙j csoportot elıszˆr.\n"
+"  Nincs l√©trehozva egy csoport sem, vagy ez az\n"
+"  ablak m√°r minden l√©tez≈ë csoportnak a tagja.\n"
+"  Hozzon l√©tre egy √∫j csoportot el≈ësz√∂r.  \n"
 "\n"
 
-#: src/groups.c:751
+#: ../src/groups.c:751
 msgid ""
 "\n"
 "  Currently, no groups exist. You have to start a group first.\n"
 "\n"
 msgstr ""
 "\n"
-"  Jelenleg nincsenek csoportok. Elıszˆr lÈtre kell hoznia egy csoportot.\n"
+"  Jelenleg nincsenek csoportok. El≈ësz√∂r l√©tre kell hoznia egy csoportot.\n"
 "\n"
 
-#: src/groups.c:835
+#: ../src/groups.c:835
 msgid "   Pick the group to configure:   "
-msgstr "   V·lasszon ki egy csoportot a be·llÌt·shoz:   "
+msgstr "   V√°lasszon ki egy csoportot a be√°ll√≠t√°shoz:   "
 
-#: src/groups.c:866
-#, fuzzy
+#: ../src/groups.c:866
 msgid ""
 "  The following actions are  \n"
 "  applied to all group members:  "
 msgstr ""
-"  Az al·bbi tevÈkenysÈg a csoport \n"
-"  minden tagj·n vÈgrehajtÛdik:  "
+"  A k√∂vetkez≈ë be√°ll√≠t√°sok  \n"
+"  a csoport √∂sszes tagj√°ra √©rv√©nyesek:  "
 
-#: src/groups.c:871 src/groups.c:968
+#: ../src/groups.c:871 ../src/groups.c:968
 msgid "Changing Border Style"
-msgstr "KerettÌpus v·lt·s"
+msgstr "Kerett√≠pus v√°lt√°s"
 
-#: src/groups.c:876 src/groups.c:973
+#: ../src/groups.c:876 ../src/groups.c:973
 msgid "Iconifying"
-msgstr "KicsinyÌtÈs"
+msgstr "Kicsiny√≠t√©s"
 
-#: src/groups.c:881 src/groups.c:978
+#: ../src/groups.c:881 ../src/groups.c:978
 msgid "Killing"
-msgstr "MegsemmisÌtÈs"
+msgstr "Megsemmis√≠t√©s"
 
-#: src/groups.c:886 src/groups.c:983
+#: ../src/groups.c:886 ../src/groups.c:983
 msgid "Moving"
-msgstr "Mozgat·s"
+msgstr "Mozgat√°s"
 
-#: src/groups.c:891 src/groups.c:988
+#: ../src/groups.c:891 ../src/groups.c:988
 msgid "Raising/Lowering"
-msgstr "Fˆljebb/Lejjebb"
+msgstr "F√∂ljebb/Lejjebb"
 
-#: src/groups.c:896 src/groups.c:993
+#: ../src/groups.c:896 ../src/groups.c:993
 msgid "Sticking"
-msgstr "RˆgzÌtÈs"
+msgstr "R√∂gz√≠t√©s"
 
-#: src/groups.c:901 src/groups.c:998
+#: ../src/groups.c:901 ../src/groups.c:998
 msgid "Shading"
-msgstr "¡rnyÈkol·s"
+msgstr "√Årny√©kol√°s"
 
-#: src/groups.c:908
+#: ../src/groups.c:908
 msgid "Window Group Settings"
-msgstr "Ablakcsoportok be·llÌt·sai"
+msgstr "Ablakcsoportok be√°ll√≠t√°sai"
 
-#: src/groups.c:911
+#: ../src/groups.c:911
 msgid ""
 "Enlightenment Window Group\n"
 "Settings Dialog\n"
 msgstr ""
 "Enlightenment Ablakcsoportok\n"
-"be·llÌt·sai\n"
+"be√°ll√≠t√°sai\n"
 
-#: src/groups.c:926
+#: ../src/groups.c:926
 msgid ""
 "\n"
 "  This window currently does not belong to any groups.  \n"
@@ -1006,53 +980,48 @@ msgstr ""
 "  Ez az ablak nem tartozik egy csoporthoz sem.  \n"
 "\n"
 
-#: src/groups.c:961
-#, fuzzy
+#: ../src/groups.c:961
 msgid " Per-group settings: "
-msgstr " LapozÛ be·llÌt·sai: "
+msgstr " Csoportbe√°ll√≠t√°sok: "
 
-#: src/groups.c:1007
+#: ../src/groups.c:1007
 msgid " Global settings: "
-msgstr " Glob·lis be·llÌt·sok: "
+msgstr " Glob√°lis be√°ll√≠t√°sok: "
 
-#: src/groups.c:1011
-#, fuzzy
+#: ../src/groups.c:1011
 msgid "Swap Window Locations"
-msgstr "Ablak helyÈnek cserÈje"
+msgstr "Ablakok hely√©nek felcser√©l√©se"
 
-#: src/groups.c:1017 src/menus-misc.c:645 config/strings.c:138
-#, fuzzy
+#. winops_groups.menu
+#: ../src/groups.c:1017 ../src/menus-misc.c:645 ../config/strings.c:138
 msgid "Groups"
-msgstr "%i. csoport"
+msgstr "Csoportok"
 
-#: src/groups.c:1018
+#: ../src/groups.c:1018
 msgid "Default Group Control Settings"
-msgstr "Csoportok alapbe·llÌt·sai"
+msgstr "Csoportok alapbe√°ll√≠t√°sai"
 
-#: src/groups.c:1021
+#: ../src/groups.c:1021
 msgid ""
 "Enlightenment Default\n"
 "Group Control Settings Dialog\n"
 msgstr ""
 "Enlightenment Csoportok\n"
-"alapbe·llÌt·sai\n"
+"alapbe√°ll√≠t√°sai\n"
 
-#: src/groups.c:1048
-#, fuzzy
+#: ../src/groups.c:1048
 msgid "Pick the group the window will belong to:"
-msgstr "  V·lassza ki a csoportot ahova az ablak tartozni fog:  \n"
+msgstr "V√°lassza ki a csoportot, amelybe az ablak tartozni fog:"
 
-#: src/groups.c:1054
-#, fuzzy
+#: ../src/groups.c:1054
 msgid "Select the group to remove the window from:"
-msgstr "   V·lassza ki a csoportot ahonnan az ablak el lesz t·volÌtva.  "
+msgstr "V√°lassza ki a csoportot, amelyb≈ël az ablakot elt√°vol√≠tja:"
 
-#: src/groups.c:1059
-#, fuzzy
+#: ../src/groups.c:1059
 msgid "Select the group to break:"
-msgstr "  V·lassza ki a csoportot a megszakÌt·shoz  "
+msgstr ""
 
-#: src/handlers.c:61
+#: ../src/handlers.c:61
 #, c-format
 msgid ""
 "Enlightenment performed an Illegal Instruction.\n"
@@ -1065,7 +1034,7 @@ msgid ""
 "that you got in binary format to run Enlightenment.\n"
 msgstr ""
 
-#: src/handlers.c:71
+#: ../src/handlers.c:71
 msgid ""
 "Enlightenment caused a Floating Point Exception.\n"
 "\n"
@@ -1079,7 +1048,7 @@ msgid ""
 "dumps etc.\n"
 msgstr ""
 
-#: src/handlers.c:83
+#: ../src/handlers.c:83
 msgid ""
 "Enlightenment caused Segment Violation (Segfault)\n"
 "\n"
@@ -1093,7 +1062,7 @@ msgid ""
 "dumps etc.\n"
 msgstr ""
 
-#: src/handlers.c:95
+#: ../src/handlers.c:95
 msgid ""
 "Enlightenment caused Bus Error.\n"
 "\n"
@@ -1102,88 +1071,76 @@ msgid ""
 "hardware.\n"
 msgstr ""
 
-#: src/hints.c:600
-#, fuzzy
+#: ../src/hints.c:600
 msgid "Selection Error!"
-msgstr "ActionClass hiba!"
+msgstr "Hib√°s kiv√°laszt√°s!"
 
-#: src/hints.c:600
+#: ../src/hints.c:600
 #, c-format
 msgid "Could not acquire selection: %s"
 msgstr ""
 
-#: src/iconify.c:469
+#: ../src/iconify.c:469
 msgid "Iconbox Options"
-msgstr "Ikondoboz be·llÌt·sai"
+msgstr "Ikondoboz be√°ll√≠t√°sai"
 
-#: src/iconify.c:470
+#: ../src/iconify.c:470
 msgid "Iconbox Settings"
-msgstr "Ikondoboz be·llÌt·sai"
+msgstr "Ikondoboz be√°ll√≠t√°sai"
 
-#: src/ipc.c:195 src/ipc.c:1462 src/ipc.c:1469 src/theme.c:379
+#: ../src/ipc.c:195 ../src/ipc.c:1462 ../src/ipc.c:1469 ../src/theme.c:379
 msgid "Message"
-msgstr "‹zenet"
+msgstr "√úzenet"
 
-#: src/ipc.c:1462 src/ipc.c:1469
+#: ../src/ipc.c:1462 ../src/ipc.c:1469
 #, c-format
 msgid "e16 was built without %s support"
 msgstr ""
 
-#: src/ipc.c:1463
-#, fuzzy
+#: ../src/ipc.c:1463
 msgid "composite"
-msgstr "Composite engedÈlyezÈse"
+msgstr "kompozit"
 
-#: src/ipc.c:1470
-#, fuzzy
+#: ../src/ipc.c:1470
 msgid "sound"
-msgstr "Hang"
+msgstr "hang"
 
-#: src/ipc.c:1814
-#, fuzzy
+#: ../src/ipc.c:1814
 msgid "Enlightenment IPC Commands Help\n"
-msgstr "Enlightenment IPC parancsok s˙gÛja"
+msgstr ""
 
-#: src/ipc.c:1818
-#, fuzzy
+#: ../src/ipc.c:1818
 msgid ""
 "Use \"help all\" for descriptions of each command\n"
 "Use \"help <command>\" for an individual description\n"
 "\n"
 msgstr ""
-"Ìrja be: \"help all\" az ˆsszes parancs leÌr·s·nak megjelenÌtÈsÈhez\n"
-"Ìrja be: \"help <parancs>\" az egyes parancsok leÌr·s·nak megjelenÌtÈsÈhez\n"
 
-#: src/ipc.c:1820 src/ipc.c:1840 src/ipc.c:1852
-#, fuzzy
+#: ../src/ipc.c:1820 ../src/ipc.c:1840 ../src/ipc.c:1852
 msgid "Commands currently available:\n"
-msgstr ""
-"\n"
-"elÈrhetı parancsok:\n"
+msgstr "Jelenleg el√©rhet≈ë parancsok:\n"
 
-#: src/ipc.c:1838
+#: ../src/ipc.c:1838
 msgid "Use \"help full\" for full descriptions of each command\n"
 msgstr ""
 
-#: src/ipc.c:1839
-#, fuzzy
+#: ../src/ipc.c:1839
 msgid "Use \"help <command>\" for an individual description\n"
 msgstr ""
-"Õrja be: \"help <parancs>\" az egyes parancsok leÌr·s·nak megjelenÌtÈsÈhez\n"
+"Haszn√°lja a \"help <parancs>\" parancsot egy adott parancs le√≠r√°s√°hoz\n"
 
-#: src/ipc.c:1841 src/ipc.c:1853
-#, fuzzy
+#: ../src/ipc.c:1841 ../src/ipc.c:1853
 msgid "         <command>     : <description>\n"
-msgstr "         <parancs> : <leÌr·s>\n"
+msgstr "         <parancs>     : <le√≠r√°s>\n"
 
-#: src/main.c:531
+#: ../src/main.c:531
 #, c-format
 msgid ""
 "%s must be a directory in which you have\n"
 "read, write, and execute permission.\n"
 msgstr ""
 
-#: src/main.c:630
+#: ../src/main.c:630
 #, c-format
 msgid ""
 "!!!!!!!! ERROR ERROR ERROR ERROR !!!!!!!!\n"
@@ -1200,7 +1157,7 @@ msgid ""
 "an error in installing Enlightenment.\n"
 msgstr ""
 
-#: src/main.c:644
+#: ../src/main.c:644
 #, c-format
 msgid ""
 "!!!!!!!! ERROR ERROR ERROR ERROR !!!!!!!!\n"
@@ -1213,273 +1170,260 @@ msgid ""
 "correctly.\n"
 msgstr ""
 
-#: src/magwin.c:461
+#: ../src/magwin.c:461
 msgid "Magnifier"
-msgstr ""
+msgstr "Nagy√≠t√≥"
 
-#: src/menus-misc.c:416 config/strings.c:79
-#, fuzzy
+#: ../src/menus-misc.c:416 ../config/strings.c:79
 msgid "Backgrounds"
-msgstr "H·ttÈr"
+msgstr "H√°tterek"
 
-#: src/menus-misc.c:455 config/strings.c:91 config/strings.c:113
-#, fuzzy
+#: ../src/menus-misc.c:455 ../config/strings.c:91 ../config/strings.c:113
 msgid "Themes"
-msgstr "Rossz tÈma"
+msgstr "T√©m√°k"
 
-#: src/menus-misc.c:481
-#, fuzzy
+#: ../src/menus-misc.c:481
 msgid "Border"
-msgstr "KerettÌpus"
+msgstr "Keret"
 
-#: src/menus-misc.c:545
-#, fuzzy
+#: ../src/menus-misc.c:545
 msgid "Window List"
-msgstr "Ablaklista-kihagy·s"
+msgstr "Ablaklista"
 
-#: src/menus-misc.c:567
-#, fuzzy
+#: ../src/menus-misc.c:567
 msgid "Go to this Desktop"
-msgstr "Ugr·s erre az asztalra"
+msgstr "Ugorjon erre az asztalra"
 
-#: src/menus-misc.c:571 src/menus-misc.c:667
+#: ../src/menus-misc.c:571 ../src/menus-misc.c:667
 #, c-format
 msgid "Desktop %i"
 msgstr "%i. asztal"
 
-#: src/menus-misc.c:614
+#: ../src/menus-misc.c:614
 msgid "Show/Hide this group"
-msgstr "Csoport mutat·sa/elrejtÈse"
+msgstr "Csoport mutat√°sa/elrejt√©se"
 
-#: src/menus-misc.c:619
+#: ../src/menus-misc.c:619
 msgid "Iconify this group"
-msgstr "Csoport kicsinyÌtÈse"
+msgstr "Csoport kicsiny√≠t√©se"
 
-#: src/menus-misc.c:630
+#: ../src/menus-misc.c:630
 #, c-format
 msgid "Group %i"
 msgstr "%i. csoport"
 
-#: src/menus.c:2139
+#: ../src/menus.c:2139
 msgid "Animated display of menus"
-msgstr "Men¸k anim·l·sa"
+msgstr "Men√ºk anim√°l√°sa"
 
-#: src/menus.c:2144
+#: ../src/menus.c:2144
 msgid "Always pop up menus on screen"
-msgstr "A men¸k mindig a kÈpben jelennek meg"
+msgstr "A men√ºk mindig a k√©pben jelennek meg"
 
-#: src/menus.c:2149
+#: ../src/menus.c:2149
 msgid "Warp pointer after moving menus"
-msgstr "Men¸k mozg·s·val egy¸tt az egÈrmutatÛ is mozog"
+msgstr "Men√ºk mozg√°s√°val egy√ºtt az eg√©rmutat√≥ is mozog"
 
-#: src/menus.c:2166
-#, fuzzy
+#: ../src/menus.c:2166
 msgid "Menus"
-msgstr "Men¸k:"
+msgstr "Men√ºk"
 
-#: src/menus.c:2167
-#, fuzzy
+#: ../src/menus.c:2167
 msgid "Menu Settings"
-msgstr "Vegyes be·llÌt·sok"
+msgstr "Men√º be√°ll√≠t√°sok"
 
-#: src/menus.c:2170
-#, fuzzy
+#: ../src/menus.c:2170
 msgid ""
 "Enlightenment Menu\n"
 "Settings Dialog\n"
 msgstr ""
-"Enlightenment fÛkusz\n"
-"be·llÌt·sai\n"
+"Enlightenment Men√º\n"
+"be√°ll√≠t√°sok p√°rbesz√©dablak\n"
 
-#: src/mod-trans.c:98
+#: ../src/mod-trans.c:98
 #, c-format
 msgid "Theme transparency: %2d"
-msgstr "TÈma ·tl·tszÛs·g: %2d"
+msgstr "T√©ma √°tl√°tsz√≥s√°g: %2d"
 
-#: src/mod-trans.c:139
+#: ../src/mod-trans.c:139
 msgid "Changes Might Require Restart:"
-msgstr "A v·ltoz·sok ÈletbelÈpÈsÈhez ˙jraindÌt·s kellhet"
+msgstr "A v√°ltoz√°sok √©letbel√©p√©s√©hez √∫jraind√≠t√°s kellhet"
 
-#: src/mod-trans.c:148
-#, fuzzy
+#: ../src/mod-trans.c:148
 msgid "Borders:"
-msgstr "KerettÌpus:"
+msgstr "Szeg√©ly:"
 
-#: src/mod-trans.c:152
-#, fuzzy
+#: ../src/mod-trans.c:152
 msgid "Menus:"
-msgstr "Men¸k:"
+msgstr "Men√ºk:"
 
-#: src/mod-trans.c:156
+#: ../src/mod-trans.c:156
 msgid "Hilights:"
-msgstr "KiemelÈsek:"
+msgstr "Kiemel√©sek:"
 
-#: src/mod-trans.c:160
+#: ../src/mod-trans.c:160
 msgid "E Widgets:"
 msgstr "E widgetek:"
 
-#: src/mod-trans.c:164
+#: ../src/mod-trans.c:164
 msgid "E Dialogs:"
-msgstr "E p·rbeszÈdablakok:"
+msgstr "E p√°rbesz√©dablakok:"
 
-#: src/mod-trans.c:168
-#, fuzzy
+#: ../src/mod-trans.c:168
 msgid "Tooltips:"
-msgstr "Tippek:\n"
+msgstr "Bubor√©ks√∫g√≥k:"
 
-#: src/mod-trans.c:172 src/settings.c:92 src/settings.c:97 src/settings.c:375
+#: ../src/mod-trans.c:172 ../src/settings.c:92 ../src/settings.c:97
+#: ../src/settings.c:375
 msgid "Opaque"
-msgstr "¡tl·tszatlan"
+msgstr "√Åtl√°tszatlan"
 
-#: src/mod-trans.c:233
+#: ../src/mod-trans.c:233
 msgid "Glass"
-msgstr "‹veg"
+msgstr "√úveg"
 
-#: src/mod-trans.c:263
-#, fuzzy
+#: ../src/mod-trans.c:263
 msgid "Transparency"
-msgstr "TÈma ·tl·tszÛs·g: %2d"
+msgstr "√Åtl√°tsz√≥s√°g"
 
-#: src/mod-trans.c:264
+#: ../src/mod-trans.c:264
 msgid "Selective Transparency Settings"
-msgstr "RÈszletes ·tl·tszÛs·g be·llÌt·sok"
+msgstr "R√©szletes √°tl√°tsz√≥s√°g be√°ll√≠t√°sok"
 
-#: src/mod-trans.c:267
-#, fuzzy
+#: ../src/mod-trans.c:267
 msgid ""
 "Enlightenment Selective Transparency\n"
 "Settings Dialog\n"
 msgstr ""
-"Enlightenment rÈszletes ·tl·tszÛs·g\n"
-"be·llÌt·sok\n"
 
-#: src/pager.c:1005 config/strings.c:49 config/strings.c:121
+#. winops.menu
+#: ../src/pager.c:1005 ../config/strings.c:49 ../config/strings.c:121
 msgid "Window Options"
-msgstr "Ablak be·llÌt·sai"
+msgstr "Ablak be√°ll√≠t√°sai"
 
-#: src/pager.c:1012 config/strings.c:51 config/strings.c:124
+#: ../src/pager.c:1012 ../config/strings.c:51 ../config/strings.c:124
 msgid "Iconify"
-msgstr "KicsinyÌt"
+msgstr "Kicsiny√≠t"
 
-#: src/pager.c:1020 config/strings.c:123
+#: ../src/pager.c:1020 ../config/strings.c:123
 msgid "Annihilate"
-msgstr "MegsemmisÌt"
+msgstr "Megsemmis√≠t"
 
-#: src/pager.c:1024
+#: ../src/pager.c:1024
 msgid "Stick / Unstick"
-msgstr "RˆgzÌt"
+msgstr "R√∂gz√≠t"
 
-#: src/pager.c:1031
+#: ../src/pager.c:1031
 msgid "Desktop Options"
-msgstr "Asztal be·llÌt·sai"
+msgstr "Asztal be√°ll√≠t√°sai"
 
-#: src/pager.c:1037
+#. Destroy when hidden
+#: ../src/pager.c:1037
 msgid "Pager Settings..."
-msgstr "Pager be·llÌt·sai..."
+msgstr "Pager be√°ll√≠t√°sai..."
 
-#: src/pager.c:1042
+#: ../src/pager.c:1042
 msgid "Snapshotting Off"
-msgstr "Miniat˙ra ki"
+msgstr "Miniat√∫ra ki"
 
-#: src/pager.c:1046
+#: ../src/pager.c:1046
 msgid "High Quality Off"
-msgstr "JÛ minısÈg ki"
+msgstr "J√≥ min≈ës√©g ki"
 
-#: src/pager.c:1048
+#: ../src/pager.c:1048
 msgid "High Quality On"
-msgstr "JÛ minısÈg be"
+msgstr "J√≥ min≈ës√©g be"
 
-#: src/pager.c:1053
+#: ../src/pager.c:1053
 msgid "Snapshotting On"
-msgstr "Miniat˙ra be"
+msgstr "Miniat√∫ra be"
 
-#: src/pager.c:1057
+#: ../src/pager.c:1057
 msgid "Zoom Off"
 msgstr ""
 
-#: src/pager.c:1059
+#: ../src/pager.c:1059
 msgid "Zoom On"
 msgstr ""
 
-#: src/pager.c:1810 src/pager.c:1905
+#: ../src/pager.c:1810 ../src/pager.c:1905
 msgid "Pager scanning speed:"
-msgstr "Pager frissÌtÈsi sebessÈge:"
+msgstr "Pager friss√≠t√©si sebess√©ge:"
 
-#: src/pager.c:1811 src/pager.c:1906
+#: ../src/pager.c:1811 ../src/pager.c:1906
 msgid "lines per second"
-msgstr "sor m·sodpercenkÈnt"
+msgstr "sor m√°sodpercenk√©nt"
 
-#: src/pager.c:1844
+#: ../src/pager.c:1844
 msgid "Enable pager display"
-msgstr "LapozÛ megjelenÌtÈse"
+msgstr "Lapoz√≥ megjelen√≠t√©se"
 
-#: src/pager.c:1854
+#: ../src/pager.c:1854
 msgid "Pager Mode:"
 msgstr ""
 
-#: src/pager.c:1858
-#, fuzzy
+#: ../src/pager.c:1858
 msgid "Simple"
-msgstr "Kˆrhull·mok"
+msgstr "Egyszer≈±"
 
-#: src/pager.c:1864
+#: ../src/pager.c:1864
 msgid "Make miniature snapshots of the screen"
-msgstr "Miniat˙r·k haszn·lata"
+msgstr "Miniat√∫r√°k haszn√°lata"
 
-#: src/pager.c:1871
+#: ../src/pager.c:1871
 msgid "Live Update"
+msgstr "Friss√≠t√©s"
+
+#: ../src/pager.c:1882
+msgid "Smooth high quality snapshots in snapshot mode"
+msgstr "J√≥ min≈ës√©g≈± miniat√∫r√°k haszn√°lata"
+
+#: ../src/pager.c:1887
+msgid "Zoom in on pager windows when mouse is over them"
+msgstr "Ablak kinagy√≠t√°sa, amikor az eg√©rmutat√≥ f√∂l√∂tte van"
+
+#: ../src/pager.c:1893
+msgid "Pop up window title when mouse is over the window"
+msgstr "Ablak nev√©nek megjelen√≠t√©se, amikor az eg√©rmutat√≥ f√∂l√∂tte van"
+
+#: ../src/pager.c:1898
+msgid "Continuously scan screen to update pager"
+msgstr "Pager √°lland√≥ friss√≠t√©se"
+
+#: ../src/pager.c:1921
+msgid "Mouse button to select and drag windows:"
+msgstr "Eg√©rgomb az ablakok kiv√°laszt√°s√°hoz:"
+
+#: ../src/pager.c:1931 ../src/pager.c:1956 ../src/pager.c:1981
+msgid "Middle"
+msgstr "K√∂z√©ps≈ë"
+
+#: ../src/pager.c:1946
+msgid "Mouse button to select desktops:"
+msgstr "Eg√©rgomb az asztalok kiv√°laszt√°s√°hoz:"
+
+#: ../src/pager.c:1971
+msgid "Mouse button to display pager menu:"
+msgstr "Eg√©rgomb a pager men√º megjelen√≠t√©s√©hez"
+
+#: ../src/pager.c:1995
+msgid "Pagers"
 msgstr ""
 
-#: src/pager.c:1882
-msgid "Smooth high quality snapshots in snapshot mode"
-msgstr "JÛ minısÈg˚ miniat˙r·k haszn·lata"
-
-#: src/pager.c:1887
-msgid "Zoom in on pager windows when mouse is over them"
-msgstr "Ablak kinagyÌt·sa, amikor az egÈrmutatÛ fˆlˆtte van"
-
-#: src/pager.c:1893
-msgid "Pop up window title when mouse is over the window"
-msgstr "Ablak nevÈnek megjelenÌtÈse, amikor az egÈrmutatÛ fˆlˆtte van"
-
-#: src/pager.c:1898
-msgid "Continuously scan screen to update pager"
-msgstr "Pager ·llandÛ frissÌtÈse"
-
-#: src/pager.c:1921
-msgid "Mouse button to select and drag windows:"
-msgstr "EgÈrgomb az ablakok kiv·laszt·s·hoz:"
-
-#: src/pager.c:1931 src/pager.c:1956 src/pager.c:1981
-msgid "Middle"
-msgstr "KˆzÈpsı"
-
-#: src/pager.c:1946
-msgid "Mouse button to select desktops:"
-msgstr "EgÈrgomb az asztalok kiv·laszt·s·hoz:"
-
-#: src/pager.c:1971
-msgid "Mouse button to display pager menu:"
-msgstr "EgÈrgomb a pager men¸ megjelenÌtÈsÈhez"
-
-#: src/pager.c:1995
-#, fuzzy
-msgid "Pagers"
-msgstr "LapozÛ be·llÌt·sai"
-
-#: src/pager.c:1996
+#: ../src/pager.c:1996
 msgid "Pager Settings"
-msgstr "LapozÛ be·llÌt·sai"
+msgstr "Lapoz√≥ be√°ll√≠t√°sai"
 
-#: src/pager.c:1999
+#: ../src/pager.c:1999
 msgid ""
 "Enlightenment Desktop & Area\n"
 "Pager Settings Dialog\n"
 msgstr ""
 "Enlightenment Asztal\n"
-"LapozÛ be·llÌt·sai\n"
+"Lapoz√≥ be√°ll√≠t√°sai\n"
 
-#: src/session.c:345
+#. Less of the hope.... E survives
+#: ../src/session.c:345
 msgid ""
 "ERROR!\n"
 "\n"
@@ -1494,11 +1438,11 @@ msgid ""
 "... I hope.\n"
 msgstr ""
 
-#: src/session.c:645
+#: ../src/session.c:645
 msgid "Are you sure?"
 msgstr "Biztos benne?"
 
-#: src/session.c:647
+#: ../src/session.c:647
 msgid ""
 "\n"
 "\n"
@@ -1508,336 +1452,312 @@ msgid ""
 msgstr ""
 "\n"
 "\n"
-"    Biztos benne, hogy ki akar lÈpni ?    \n"
+"    Biztos benne, hogy ki akar l√©pni ?    \n"
 "\n"
 "\n"
 
-#: src/session.c:657
-#, fuzzy
+#: ../src/session.c:657
 msgid "  Yes, Shut Down  "
-msgstr "  Igen, kilÈpek  "
+msgstr "  Igen, kikapcsolom  "
 
-#: src/session.c:659
-#, fuzzy
+#: ../src/session.c:659
 msgid "  Yes, Reboot  "
-msgstr "  Igen, kilÈpek  "
+msgstr "  Igen, √∫jraind√≠tom  "
 
-#: src/session.c:662
+#: ../src/session.c:662
 msgid "  Yes, Log Out  "
-msgstr "  Igen, kilÈpek  "
+msgstr "  Igen, kil√©pek  "
 
-#: src/session.c:664
+#: ../src/session.c:664
 msgid "  No  "
 msgstr "  Nem  "
 
-#: src/session.c:799
+#: ../src/session.c:799
 msgid "Enable Session Script"
 msgstr ""
 
-#: src/session.c:804
-#, fuzzy
+#: ../src/session.c:804
 msgid "Enable Logout Dialog"
-msgstr "FejlÈc p·rbeszÈdablakoknak"
+msgstr ""
 
-#: src/session.c:809
+#: ../src/session.c:809
 msgid "Enable Reboot/Halt on Logout"
 msgstr ""
 
-#: src/session.c:815
-#, fuzzy
+#: ../src/session.c:815
 msgid "Session"
-msgstr "Vegyes be·llÌt·sok"
+msgstr "Munkamenet"
 
-#: src/session.c:816
-#, fuzzy
+#: ../src/session.c:816
 msgid "Session Settings"
-msgstr "Vegyes be·llÌt·sok"
+msgstr "Munkamenet be√°ll√≠t√°sok"
 
-#: src/session.c:819
-#, fuzzy
+#: ../src/session.c:819
 msgid ""
 "Enlightenment Session\n"
 "Settings Dialog\n"
 msgstr ""
-"Enlightenment fÛkusz\n"
-"be·llÌt·sai\n"
+"Enlightenment Munkamenet\n"
+"be√°ll√≠t√°sok p√°rbesz√©dablak\n"
 
-#: src/settings.c:84
+#: ../src/settings.c:84
 msgid "Move Methods:"
-msgstr "Mozgat·s mÛdja:"
+msgstr "Mozgat√°s m√≥dja:"
 
-#: src/settings.c:89
+#: ../src/settings.c:89
 msgid "Resize Methods:"
-msgstr "¡tmÈretezÈs mÛdja:"
+msgstr "√Åtm√©retez√©s m√≥dja:"
 
-#: src/settings.c:102 src/settings.c:107 src/settings.c:380
+#: ../src/settings.c:102 ../src/settings.c:107 ../src/settings.c:380
 msgid "Technical"
-msgstr "M˚szaki"
+msgstr "M≈±szaki"
 
-#: src/settings.c:123 src/settings.c:128 src/settings.c:390
+#: ../src/settings.c:123 ../src/settings.c:128 ../src/settings.c:390
 msgid "Shaded"
-msgstr "¡rnyÈkolt"
+msgstr "√Årny√©kolt"
 
-#: src/settings.c:133 src/settings.c:138 src/settings.c:395
+#: ../src/settings.c:133 ../src/settings.c:138 ../src/settings.c:395
 msgid "Semi-Solid"
-msgstr "FÈlig-teli"
+msgstr "F√©lig-teli"
 
-#: src/settings.c:144
+#: ../src/settings.c:144
 msgid "Translucent"
-msgstr "¡ttetszı"
+msgstr "√Åttetsz≈ë"
 
-#: src/settings.c:154
+#: ../src/settings.c:154
 msgid "Avoid server grab"
 msgstr ""
 
-#: src/settings.c:164
+#: ../src/settings.c:164
 msgid "Move/Resize Geometry Info Postion:"
-msgstr "Mozgat·s/·tmÈretezÈs infÛ helyzete:"
+msgstr "Mozgat√°s/√°tm√©retez√©s inf√≥ helyzete:"
 
-#: src/settings.c:168
+#: ../src/settings.c:168
 msgid "Window Center (O/T/B Methods)"
-msgstr "Ablak kˆzepe"
+msgstr "Ablak k√∂zepe"
 
-#: src/settings.c:174
+#: ../src/settings.c:174
 msgid "Always Screen corner"
-msgstr "Mindig a kÈpernyı sark·ban"
+msgstr "Mindig a k√©perny≈ë sark√°ban"
 
-#: src/settings.c:180
+#: ../src/settings.c:180
 msgid "Don't show"
-msgstr "Nem l·tszik"
+msgstr "Nem l√°tszik"
 
-#: src/settings.c:192
+#: ../src/settings.c:192
 msgid "Default Resize Policy:"
-msgstr ""
+msgstr "Alap√©rtelmezett √°tm√©retez√©si h√°zirend:"
 
-#: src/settings.c:196
+#: ../src/settings.c:196
 msgid "Conservative"
-msgstr ""
+msgstr "Hagyom√°nyos"
 
-#: src/settings.c:202
+#: ../src/settings.c:202
 msgid "Available"
-msgstr ""
+msgstr "El√©rhet≈ë"
 
-#: src/settings.c:208
+#: ../src/settings.c:208
 msgid "Absolute"
-msgstr ""
+msgstr "Abszol√∫t"
 
-#: src/settings.c:218
-#, fuzzy
+#: ../src/settings.c:218
 msgid "Update window while moving"
-msgstr "Ablakv·lt·s kˆzben fÛkusz"
+msgstr "Ablak friss√≠t√©se mozgat√°s k√∂zben"
 
-#: src/settings.c:223
+#: ../src/settings.c:223
 msgid "Synchronize move/resize with application"
 msgstr ""
 
-#: src/settings.c:228
+#: ../src/settings.c:228
 msgid "Do not cover dragbar"
 msgstr ""
 
-#: src/settings.c:234
-#, fuzzy
+#: ../src/settings.c:234
 msgid "Move/Resize"
-msgstr "MÈret"
+msgstr "Mozgat√°s/√°tm√©retez√©s"
 
-#: src/settings.c:235
+#: ../src/settings.c:235
 msgid "Move & Resize Settings"
-msgstr "Mozgat·s Ès ·tmÈretezÈs be·llÌt·sai"
+msgstr "Mozgat√°s √©s √°tm√©retez√©s be√°ll√≠t√°sai"
 
-#: src/settings.c:238
+#: ../src/settings.c:238
 msgid ""
 "Enlightenment Move & Resize\n"
 "Method Settings Dialog\n"
 msgstr ""
-"Enlightenment mozgat·s Ès\n"
-"·tmÈretezÈs be·llÌt·sai\n"
+"Enlightenment mozgat√°s √©s\n"
+"√°tm√©retez√©s be√°ll√≠t√°sai\n"
 
-#: src/settings.c:334
+#: ../src/settings.c:334
 msgid "Dialog windows appear together with their owner"
-msgstr "P·rbeszÈdablak a tulajdonos·val egy¸tt jelenik meg"
+msgstr "P√°rbesz√©dablak a tulajdonos√°val egy√ºtt jelenik meg"
 
-#: src/settings.c:339
+#: ../src/settings.c:339
 msgid "Switch to desktop where dialog appears"
-msgstr "¡tv·lt·s arra az asztalra, ahol az ablak megjelenik"
+msgstr "√Åtv√°lt√°s arra az asztalra, ahol az ablak megjelenik"
 
-#: src/settings.c:347
+#: ../src/settings.c:347
 msgid "Place windows manually"
-msgstr "Ablakok kÈzi elhelyezÈse"
+msgstr "Ablakok k√©zi elhelyez√©se"
 
-#: src/settings.c:352
-#, fuzzy
+#: ../src/settings.c:352
 msgid "Place windows under mouse"
-msgstr "Ablakok kÈzi elhelyezÈse"
+msgstr ""
 
-#: src/settings.c:357
-#, fuzzy
+#: ../src/settings.c:357
 msgid "Center windows when desk is full"
-msgstr "¡rnyÈkolt ablakok bevÈtele a fÛkusz list·ba"
+msgstr ""
 
-#: src/settings.c:362
+#: ../src/settings.c:362
 msgid "Slide windows in when they appear"
-msgstr "Anim·ciÛ az ablakok megjelenÈsÈnÈl"
+msgstr "Anim√°ci√≥ az ablakok megjelen√©s√©n√©l"
 
-#: src/settings.c:367
+#: ../src/settings.c:367
 msgid "Slide windows around when cleaning up"
 msgstr ""
 
-#: src/settings.c:372
+#: ../src/settings.c:372
 msgid "Slide Method:"
-msgstr "Cs˙sztat·s mÛdja:"
+msgstr "Cs√∫sztat√°s m√≥dja:"
 
-#: src/settings.c:405
-#, fuzzy
+#: ../src/settings.c:405
 msgid "Appear Slide speed:"
-msgstr "MegjelenÌtÈsi anim·ciÛ sebessÈge: (lass˙)\n"
-
-#: src/settings.c:416
-#, fuzzy
-msgid "Cleanup Slide speed:"
-msgstr "Cleanup anim·ciÛ sebessÈge: (lass˙)\n"
-
-#: src/settings.c:429
-msgid "Animate shading and unshading of windows"
-msgstr "Ablakok ·rnyÈkol·s·nak anim·l·sa"
-
-#: src/settings.c:435
-#, fuzzy
-msgid "Window Shading speed:"
-msgstr "Ablakok ·rnyÈkol·s·nak sebessÈge: (lass˙)\n"
-
-#: src/settings.c:448
-#, fuzzy
-msgid "Ignore struts"
-msgstr "Hiba ·tlÈpÈse"
-
-#: src/settings.c:453
-msgid "Raise fullscreen windows"
-msgstr "Teljes kÈpernyıs ablakok felemelÈse"
-
-#: src/settings.c:461
-#, fuzzy
-msgid "Place windows on another head when full"
-msgstr "Ablakok kÈzi elhelyezÈse"
-
-#: src/settings.c:469
-msgid "Placement"
 msgstr ""
 
-#: src/settings.c:470
-msgid "Window Placement Settings"
-msgstr "AblakelhelyezÈs be·llÌt·sai"
+#: ../src/settings.c:416
+msgid "Cleanup Slide speed:"
+msgstr ""
 
-#: src/settings.c:473
+#: ../src/settings.c:429
+msgid "Animate shading and unshading of windows"
+msgstr "Ablakok √°rny√©kol√°s√°nak anim√°l√°sa"
+
+#: ../src/settings.c:435
+msgid "Window Shading speed:"
+msgstr ""
+
+#: ../src/settings.c:448
+msgid "Ignore struts"
+msgstr ""
+
+#: ../src/settings.c:453
+msgid "Raise fullscreen windows"
+msgstr "Teljes k√©perny≈ës ablakok felemel√©se"
+
+#: ../src/settings.c:461
+msgid "Place windows on another head when full"
+msgstr ""
+
+#: ../src/settings.c:469
+msgid "Placement"
+msgstr "Elhelyez√©s"
+
+#: ../src/settings.c:470
+msgid "Window Placement Settings"
+msgstr "Ablakelhelyez√©s be√°ll√≠t√°sai"
+
+#: ../src/settings.c:473
 msgid ""
 "Enlightenment Window Placement\n"
 "Settings Dialog\n"
 msgstr ""
-"Enlightenment ablakelhelyezÈs\n"
-"be·llÌt·sai\n"
+"Enlightenment ablakelhelyez√©s\n"
+"be√°ll√≠t√°sai\n"
 
-#: src/settings.c:520
+#: ../src/settings.c:520
 msgid "Enable Dialog Headers"
-msgstr "FejlÈc p·rbeszÈdablakoknak"
+msgstr "Fejl√©c p√°rbesz√©dablakoknak"
 
-#: src/settings.c:526
-#, fuzzy
+#: ../src/settings.c:526
 msgid "Enable Button Images"
-msgstr "Hangok engedÈlyezÈse"
+msgstr ""
 
-#: src/settings.c:535
+#: ../src/settings.c:535
 msgid "Enable sliding startup windows"
 msgstr ""
 
-#: src/settings.c:543
+#: ../src/settings.c:543
 msgid "Use saveunders to reduce window exposures"
-msgstr "Al·mentÈsek haszn·lata ablak felfedÈs gyorsÌt·s·hoz"
+msgstr "Al√°ment√©sek haszn√°lata ablak felfed√©s gyors√≠t√°s√°hoz"
 
-#: src/settings.c:549 config/strings.c:136 config/strings.c:152
-#, fuzzy
+#. winops_misc.menu
+#: ../src/settings.c:549 ../config/strings.c:136 ../config/strings.c:152
 msgid "Miscellaneous"
-msgstr "Vegyes be·llÌt·sok"
+msgstr "Egy√©b"
 
-#: src/settings.c:550
+#: ../src/settings.c:550
 msgid "Miscellaneous Settings"
-msgstr "Vegyes be·llÌt·sok"
+msgstr "Vegyes be√°ll√≠t√°sok"
 
-#: src/settings.c:553
+#: ../src/settings.c:553
 msgid ""
 "Enlightenment Miscellaneous\n"
 "Settings Dialog\n"
 msgstr ""
 "Enlightenment vegyes\n"
-"be·llÌt·sok\n"
+"be√°ll√≠t√°sok\n"
 
-#: src/settings.c:597
-#, fuzzy
+#: ../src/settings.c:597
 msgid "Enable Composite"
-msgstr "Composite engedÈlyezÈse"
+msgstr "Kompozit enged√©lyez√©se"
 
-#: src/settings.c:605
-#, fuzzy
+#: ../src/settings.c:605
 msgid "Enable Fading"
-msgstr "Asztal Èl-ÈrzÈkenysÈg"
+msgstr "Elhalv√°nyod√°s enged√©lyez√©se"
 
-#: src/settings.c:611
-#, fuzzy
+#: ../src/settings.c:611
 msgid "Fading Speed:"
-msgstr "Halv·nyod·si sebessÈg\n"
+msgstr "Elhalv√°nyod√°s sebess√©ge:"
 
-#: src/settings.c:624
+#: ../src/settings.c:624
 msgid "Shadows Off"
-msgstr "¡rnyÈkok ki"
+msgstr "√Årny√©kok ki"
 
-#: src/settings.c:630
+#: ../src/settings.c:630
 msgid "Shadows Sharp"
-msgstr "…les ·rnyÈkok"
+msgstr "√âles √°rny√©kok"
 
-#: src/settings.c:636
-#, fuzzy
+#: ../src/settings.c:636
 msgid "Shadows Sharp2"
-msgstr "…les ·rnyÈkok"
+msgstr ""
 
-#: src/settings.c:642
+#: ../src/settings.c:642
 msgid "Shadows Blurred"
-msgstr "Elmosott ·rnyÈkok"
+msgstr "Elmosott √°rny√©kok"
 
-#: src/settings.c:653
+#: ../src/settings.c:653
 msgid "Default focused window opacity:"
-msgstr ""
+msgstr "Akt√≠v ablak alap√©rtelmezett √°ttetsz≈ës√©ge:"
 
-#: src/settings.c:664
+#: ../src/settings.c:664
 msgid "Default unfocused window opacity:"
-msgstr ""
+msgstr "Inakt√≠v ablak alap√©rtelmezett √°ttetsz≈ës√©ge:"
 
-#: src/settings.c:675
+#: ../src/settings.c:675
 msgid "Default pop-up window opacity:"
-msgstr ""
+msgstr "Felugr√≥ ablak alap√©rtelmezett √°ttetsz≈ës√©ge:"
 
-#: src/settings.c:686
-#, fuzzy
+#: ../src/settings.c:686
 msgid "Composite"
-msgstr "Composite engedÈlyezÈse"
+msgstr "Kompozit"
 
-#: src/settings.c:687
-#, fuzzy
+#: ../src/settings.c:687
 msgid "Composite Settings"
-msgstr "Composite be·llÌt·sai"
+msgstr "Kompozit be√°ll√≠t√°sok"
 
-#: src/settings.c:690
-#, fuzzy
+#: ../src/settings.c:690
 msgid ""
 "Enlightenment Composite\n"
 "Settings Dialog\n"
 msgstr ""
-"Enlightenment ¸zenetablak\n"
-"be·llÌt·sai\n"
+"Enlightenment kompozit\n"
+"be√°ll√≠t√°sok p√°rbesz√©dablak\n"
 
-#: src/settings.c:775
-#, fuzzy
+#: ../src/settings.c:775
 msgid "Enlightenment Settings"
-msgstr "Az Enlightenment indÌt·sa..."
+msgstr "Enlightenment be√°ll√≠t√°sok"
 
-#: src/setup.c:60
+#: ../src/setup.c:60
 msgid ""
 "Enlightenment cannot connect to the display nominated by\n"
 "your shell's DISPLAY environment variable. You may set this\n"
@@ -1850,34 +1770,34 @@ msgid ""
 "administrator, or Xserver vendor, or read the X, xdm and\n"
 "startx manual pages before proceeding.\n"
 msgstr ""
-"Az Enlightenment nem tud csatlakozni a DISPLAY v·ltozÛban\n"
+"Az Enlightenment nem tud csatlakozni a DISPLAY v√°ltoz√≥ban\n"
 "megadott szerverhez.\n"
 
-#: src/setup.c:158
+#: ../src/setup.c:158
 msgid "Another Window Manager is already running"
-msgstr "M·r fut egy ablakkezelı"
+msgstr "M√°r fut egy ablakkezel≈ë"
 
-#: src/setup.c:160
+#: ../src/setup.c:160
 msgid ""
 "Another Window Manager is already running.\n"
 "\n"
 "You will have to quit your current Window Manager first before\n"
 "you can successfully run Enlightenment.\n"
 msgstr ""
-"M·r fut egy ablakkezelı\n"
+"M√°r fut egy ablakkezel≈ë\n"
 "\n"
-"Ki kell lÈpnie a jelenlegi ablakkezelıbıl, majd azut·n\n"
-"indÌthatja az Enlightenmentet.\n"
+"Ki kell l√©pnie a jelenlegi ablakkezel≈ëb≈ël, majd azut√°n\n"
+"ind√≠thatja az Enlightenmentet.\n"
 
-#: src/setup.c:169
+#: ../src/setup.c:169
 msgid "X server version error"
-msgstr "X-szerver verziÛ hiba"
+msgstr "X-szerver verzi√≥ hiba"
 
-#: src/setup.c:169
+#: ../src/setup.c:169
 msgid "Ignore this error"
-msgstr "Hiba ·tlÈpÈse"
+msgstr "Hiba √°tl√©p√©se"
 
-#: src/setup.c:171
+#: ../src/setup.c:171
 #, c-format
 msgid ""
 "WARNING:\n"
@@ -1888,144 +1808,141 @@ msgid ""
 "access to, nor have heard of.\n"
 msgstr ""
 "FIGYELEM:\n"
-"Ez nem egy X11 X-szerver, hab·r az X%i protokollt ismeri.\n"
-"Ez azt jelenti, hogy az Enlightenment fog m˚kˆdni,\n"
-"de legal·bbis nem lesz teljes ÈrtÈk˚.\n"
+"Ez nem egy X11 X-szerver, hab√°r az X%i protokollt ismeri.\n"
+"Ez azt jelenti, hogy az Enlightenment fog m≈±k√∂dni,\n"
+"de legal√°bbis nem lesz teljes √©rt√©k≈±.\n"
 
-#: src/snaps.c:723
+#: ../src/snaps.c:723
 msgid "Title:"
-msgstr "CÌm:"
+msgstr "C√≠m:"
 
-#: src/snaps.c:735
+#: ../src/snaps.c:735
 msgid "Name:"
-msgstr "NÈv:"
+msgstr "N√©v:"
 
-#: src/snaps.c:748
+#: ../src/snaps.c:748
 msgid "Class:"
-msgstr "Oszt·ly:"
+msgstr "Oszt√°ly:"
 
-#: src/snaps.c:761
-#, fuzzy
+#: ../src/snaps.c:761
 msgid "Role:"
-msgstr "Piros:\n"
+msgstr ""
 
-#: src/snaps.c:774
+#: ../src/snaps.c:774
 msgid "Command:"
 msgstr "Parancs:"
 
-#: src/snaps.c:813
+#: ../src/snaps.c:813
 msgid "Track Changes"
-msgstr ""
+msgstr "V√°ltoz√°sok k√∂vet√©se"
 
-#: src/snaps.c:818
+#: ../src/snaps.c:818
 msgid "Location"
 msgstr "Hely"
 
-#: src/snaps.c:823
+#: ../src/snaps.c:823
 msgid "Border style"
-msgstr "KerettÌpus"
+msgstr "Kerett√≠pus"
 
-#: src/snaps.c:828 config/strings.c:174
+#. winops_size.menu
+#: ../src/snaps.c:828 ../config/strings.c:174
 msgid "Size"
-msgstr "MÈret"
+msgstr "M√©ret"
 
-#: src/snaps.c:833 config/strings.c:90 config/strings.c:112
+#: ../src/snaps.c:833 ../config/strings.c:90 ../config/strings.c:112
 msgid "Desktop"
 msgstr "Asztal"
 
-#: src/snaps.c:838
+#: ../src/snaps.c:838
 msgid "Shaded state"
-msgstr "¡rnyÈkol·s"
+msgstr "√Årny√©kol√°s"
 
-#: src/snaps.c:843
+#: ../src/snaps.c:843
 msgid "Sticky state"
-msgstr "RˆgzÌtÈs"
+msgstr "R√∂gz√≠t√©s"
 
-#: src/snaps.c:848
+#: ../src/snaps.c:848
 msgid "Stacking layer"
-msgstr "Ragad·si szint"
+msgstr "Ragad√°si szint"
 
-#: src/snaps.c:853
+#: ../src/snaps.c:853
 msgid "Window List Skip"
-msgstr "Ablaklista-kihagy·s"
+msgstr "Ablaklista-kihagy√°s"
 
-#: src/snaps.c:859 config/strings.c:135 config/strings.c:162
+#. winops_opacity.menu
+#: ../src/snaps.c:859 ../config/strings.c:135 ../config/strings.c:162
 msgid "Opacity"
-msgstr ""
+msgstr "√Åttetsz≈ës√©g"
 
-#: src/snaps.c:864
-#, fuzzy
+#: ../src/snaps.c:864
 msgid "Shadowing"
-msgstr "¡rnyÈkol·s"
+msgstr "√Årny√©kol√°s"
 
-#: src/snaps.c:870
-#, fuzzy
+#: ../src/snaps.c:870
 msgid "Flags"
-msgstr "‹veg"
+msgstr "Jelz≈ëk"
 
-#: src/snaps.c:889
+#: ../src/snaps.c:889
 msgid "Restart application on login"
-msgstr "Alkalmaz·s ˙jraindÌt·sa belÈpÈsnÈl"
+msgstr "Alkalmaz√°s √∫jraind√≠t√°sa bel√©p√©sn√©l"
 
-#: src/snaps.c:908
+#: ../src/snaps.c:908
 msgid "Remember this window's group(s)"
-msgstr "EmlÈkezzen az ablak csoportjaira"
+msgstr "Eml√©kezzen az ablak csoportjaira"
 
-#: src/snaps.c:916
+#: ../src/snaps.c:916
 msgid "Remembered Application Attributes"
-msgstr "Alkalmaz·s maradandÛ paramÈterei"
+msgstr "Alkalmaz√°s maradand√≥ param√©terei"
 
-#: src/snaps.c:919
+#: ../src/snaps.c:919
 msgid ""
 "Select the attributes of this\n"
 "window you wish to Remember\n"
 "from now on\n"
 msgstr ""
-"V·lassza ki a paramÈtereket,\n"
+"V√°lassza ki a param√©tereket,\n"
 "amelyek megmaradjanak ezen ablak\n"
-"kˆvetkezı indÌt·sain·l is\n"
+"k√∂vetkez≈ë ind√≠t√°sain√°l is\n"
 
-#: src/snaps.c:1009
-#, fuzzy
+#: ../src/snaps.c:1009
 msgid "Delete"
-msgstr "F·jl tˆrlÈse\n"
+msgstr "T√∂rl√©s"
 
-#: src/snaps.c:1037
+#: ../src/snaps.c:1037
 msgid "Remembered Settings..."
-msgstr "MaradandÛ be·llÌt·sok..."
+msgstr "Maradand√≥ be√°ll√≠t√°sok..."
 
-#: src/snaps.c:1044
+#: ../src/snaps.c:1044
 msgid "Unused"
-msgstr ""
+msgstr "Nem haszn√°lt"
 
-#: src/snaps.c:1057
+#: ../src/snaps.c:1057
 msgid "There are no active windows with remembered attributes."
-msgstr "Nincs aktÌv ablak maradandÛ be·llÌt·sokkal."
+msgstr "Nincs akt√≠v ablak maradand√≥ be√°ll√≠t√°sokkal."
 
-#: src/snaps.c:1063
-#, fuzzy
+#: ../src/snaps.c:1063
 msgid "Remember"
-msgstr "MaradandÛ be·llÌt·sok..."
+msgstr "Megjegyz√©s"
 
-#: src/snaps.c:1064
+#: ../src/snaps.c:1064
 msgid "Remembered Windows Settings"
-msgstr "MaradandÛ ablak be·llÌt·sok"
+msgstr "Maradand√≥ ablak be√°ll√≠t√°sok"
 
-#: src/snaps.c:1067
+#: ../src/snaps.c:1067
 msgid ""
 "Enlightenment Remembered\n"
 "Windows Settings Dialog\n"
-msgstr "Enlightenment maradandÛ ablakbe·llÌt·sok\n"
+msgstr "Enlightenment maradand√≥ ablakbe√°ll√≠t√°sok\n"
 
-#: src/snaps.c:1161
+#: ../src/snaps.c:1161
 msgid "Error saving snaps file\n"
-msgstr "Hiba a snap f·jl mentÈsekor\n"
+msgstr "Hiba a snap f√°jl ment√©sekor\n"
 
-#: src/sound.c:213
+#: ../src/sound.c:213
 msgid "Error finding sound file"
-msgstr "Hiba a hangf·jl keresÈsekor"
+msgstr "Hiba a hangf√°jl keres√©sekor"
 
-#: src/sound.c:214
+#: ../src/sound.c:214
 #, c-format
 msgid ""
 "Warning!  Enlightenment was unable to load the\n"
@@ -2034,75 +1951,69 @@ msgid ""
 "Enlightenment will continue to operate, but you\n"
 "may wish to check your configuration settings.\n"
 msgstr ""
-"Vigy·zat!  Az Enlightenment nem tudta betˆlteni\n"
-"az al·bbi hangf·jlt:\n"
+"Vigy√°zat!  Az Enlightenment nem tudta bet√∂lteni\n"
+"az al√°bbi hangf√°jlt:\n"
 "%s\n"
-"Az Enlightenment folytatja m˚kˆdÈsÈt, de aj·nlott\n"
-"ellenırizni a konfigur·ciÛs be·llÌt·sokat.\n"
+"Az Enlightenment folytatja m≈±k√∂d√©s√©t, de aj√°nlott\n"
+"ellen≈ërizni a konfigur√°ci√≥s be√°ll√≠t√°sokat.\n"
 
-#: src/sound.c:310
+#: ../src/sound.c:310
 msgid "Error initialising sound"
-msgstr "Hiba a hang inicializ·l·sakor"
+msgstr "Hiba a hang inicializ√°l√°sakor"
 
-#: src/sound.c:311
-#, fuzzy, c-format
+#: ../src/sound.c:311
+#, c-format
 msgid ""
 "Audio was enabled for Enlightenment but there was an error\n"
 "communicating with the audio server (%s).\n"
 "Audio will now be disabled.\n"
 msgstr ""
-"A hang be van kapcsolva az Enlightenment konfigur·ciÛj·ban,\n"
-"de nem siker¸lt kommunik·lni a hangszerverrel (Esound).\n"
-"Nem lesznek hangok.\n"
 
-#: src/sound.c:459
+#: ../src/sound.c:459
 msgid "Enable sounds"
-msgstr "Hangok engedÈlyezÈse"
+msgstr "Hangok enged√©lyez√©se"
 
-#: src/sound.c:465
+#: ../src/sound.c:465
 msgid "Sound"
 msgstr "Hang"
 
-#: src/sound.c:466
+#: ../src/sound.c:466
 msgid "Audio Settings"
-msgstr "Hang be·llÌt·sai"
+msgstr "Hang be√°ll√≠t√°sai"
 
-#: src/sound.c:469
+#: ../src/sound.c:469
 msgid ""
 "Enlightenment Audio\n"
 "Settings Dialog\n"
 msgstr ""
 "Enlightenment hangok\n"
-"be·llÌt·sai\n"
+"be√°ll√≠t√°sai\n"
 
-#: src/systray.c:331 src/systray.c:431 src/systray.c:439
-#, fuzzy
+#: ../src/systray.c:331 ../src/systray.c:431 ../src/systray.c:439
 msgid "Systray Error!"
-msgstr "ECursor hiba!"
+msgstr "Rendszert√°lca hiba!"
 
-#: src/systray.c:331
+#: ../src/systray.c:331
 msgid "Systray went elsewhere?!?"
-msgstr ""
+msgstr "A rendszert√°lc√°t √°thelyezt√©k?!?"
 
-#: src/systray.c:431
+#: ../src/systray.c:431
 msgid "Only one systray is allowed"
-msgstr ""
+msgstr "Csak egy rendszert√°lca enged√©lyezett"
 
-#: src/systray.c:439
+#: ../src/systray.c:439
 msgid "Could not activate systray"
 msgstr ""
 
-#: src/systray.c:449
-#, fuzzy
+#: ../src/systray.c:449
 msgid "Systray Options"
-msgstr "Asztal be·llÌt·sai"
+msgstr ""
 
-#: src/systray.c:450
-#, fuzzy
+#: ../src/systray.c:450
 msgid "Systray Settings"
-msgstr "Auto-felemelkedÈsi be·llÌt·sok"
+msgstr "Rendszert√°lca be√°ll√≠t√°sok"
 
-#: src/theme.c:348
+#: ../src/theme.c:348
 #, c-format
 msgid ""
 "No themes were found in the default directories:\n"
@@ -2110,737 +2021,603 @@ msgid ""
 "Proceeding from here is mostly pointless.\n"
 msgstr ""
 
-#: src/theme.c:379
+#: ../src/theme.c:379
 msgid "Changes will take effect after restart"
-msgstr ""
+msgstr "A v√°ltoztat√°sok csak √∫jraind√≠t√°s ut√°n l√©pnek √©letbe."
 
-#: src/theme.c:399
+#: ../src/theme.c:399
 msgid "Use theme font configuration"
 msgstr ""
 
-#: src/theme.c:404
+#: ../src/theme.c:404
 #, c-format
 msgid "Use alternate font configuration (%s)"
 msgstr ""
 
-#: src/theme.c:405
+#: ../src/theme.c:405
 msgid "Not set"
-msgstr ""
+msgstr "Nincs be√°ll√≠tva"
 
-#: src/theme.c:412
-#, fuzzy
+#: ../src/theme.c:412
 msgid "Theme"
-msgstr "Rossz tÈma"
+msgstr "T√©ma"
 
-#: src/theme.c:413
-#, fuzzy
+#: ../src/theme.c:413
 msgid "Theme Settings"
-msgstr "Vegyes be·llÌt·sok"
+msgstr "T√©ma be√°ll√≠t√°sai"
 
-#: src/theme.c:416
-#, fuzzy
+#: ../src/theme.c:416
 msgid ""
 "Enlightenment Theme\n"
 "Settings Dialog\n"
 msgstr ""
-"Enlightenment fÛkusz\n"
-"be·llÌt·sai\n"
 
-#: src/tooltips.c:853
+#: ../src/tooltips.c:853
 msgid "Display Tooltips"
-msgstr "Tippek megjelenÌtÈse"
+msgstr "Tippek megjelen√≠t√©se"
 
-#: src/tooltips.c:858
+#: ../src/tooltips.c:858
 msgid "Display Root Window Tips"
-msgstr "Tippek megjelenÌtÈse az asztalon"
+msgstr "Tippek megjelen√≠t√©se az asztalon"
 
-#: src/tooltips.c:863
+#: ../src/tooltips.c:863
 msgid "Tooltip Delay:\n"
-msgstr "Tippek kÈsleltetÈse:\n"
+msgstr "Tippek k√©sleltet√©se:\n"
 
-#: src/tooltips.c:874
-#, fuzzy
+#: ../src/tooltips.c:874
 msgid "Tooltips"
-msgstr "Tippek:\n"
+msgstr "Eszk√∂ztippek"
 
-#: src/tooltips.c:875
+#: ../src/tooltips.c:875
 msgid "Tooltip Settings"
-msgstr "Tippek be·llÌt·sai"
+msgstr "Tippek be√°ll√≠t√°sai"
 
-#: src/tooltips.c:878
+#: ../src/tooltips.c:878
 msgid ""
 "Enlightenment Tooltip\n"
 "Settings Dialog\n"
 msgstr ""
 "Enlightenment tooltip\n"
-"be·llÌt·sok\n"
+"be√°ll√≠t√°sok\n"
 
-#: config/strings.c:5
+#. actionclasses.cfg
+#: ../config/strings.c:5
 msgid ""
 "Click and drag to move desktop\n"
 "(on any desktop but desktop 0)"
 msgstr ""
 
-#: config/strings.c:6 config/strings.c:8
-#, fuzzy
+#: ../config/strings.c:6 ../config/strings.c:8
 msgid "Switch Desktops"
-msgstr "%i asztal"
+msgstr "Asztalv√°lt√°s"
 
-#: config/strings.c:7
-#, fuzzy
+#: ../config/strings.c:7
 msgid "Go to the next desktop."
-msgstr "Ugr·s erre az asztalra"
+msgstr "Ugr√°s a k√∂vetkez≈ë asztalra."
 
-#: config/strings.c:9
-#, fuzzy
+#: ../config/strings.c:9
 msgid "Go to the previous desktop."
-msgstr "Ugr·s erre az asztalra"
+msgstr "Ugr√°s az el≈ëz≈ë asztalra"
 
-#: config/strings.c:10
-#, fuzzy
+#: ../config/strings.c:10
 msgid "Move"
-msgstr "Mozgat·s"
+msgstr "√Åthelyez√©s"
 
-#: config/strings.c:11 config/strings.c:23 config/strings.c:26
-#: config/strings.c:29
+#: ../config/strings.c:11 ../config/strings.c:23 ../config/strings.c:26
+#: ../config/strings.c:29
 msgid "Move this window."
-msgstr ""
+msgstr "Ezen ablak mozgat√°sa."
 
-#: config/strings.c:12 config/strings.c:14 config/strings.c:48
+#: ../config/strings.c:12 ../config/strings.c:14 ../config/strings.c:48
 msgid "Shade/Unshade this window."
 msgstr ""
 
-#: config/strings.c:13 config/strings.c:50 config/strings.c:53
-#, fuzzy
+#: ../config/strings.c:13 ../config/strings.c:50 ../config/strings.c:53
 msgid "Show the Window Options menu."
-msgstr "Ablak be·llÌt·sai"
+msgstr "Mutassa az Ablak opci√≥k men√ºt."
 
-#: config/strings.c:15
-#, fuzzy
+#: ../config/strings.c:15
 msgid "Show/Hide group borders."
-msgstr "Csoport mutat·sa/elrejtÈse"
+msgstr ""
 
-#: config/strings.c:16
+#: ../config/strings.c:16
 msgid "Start a group."
-msgstr ""
+msgstr "Csoport ind√≠t√°sa."
 
-#: config/strings.c:17
+#: ../config/strings.c:17
 msgid "Add to current group."
+msgstr "Hozz√°ad√°s a jelenlegi csoporthoz."
+
+#: ../config/strings.c:18
+msgid "Break this window's group."
 msgstr ""
 
-#: config/strings.c:18
-#, fuzzy
-msgid "Break this window's group."
-msgstr "EmlÈkezzen az ablak csoportjaira"
-
-#: config/strings.c:19
-#, fuzzy
+#: ../config/strings.c:19
 msgid "Shade."
-msgstr "¡rnyÈkolt"
+msgstr ""
 
-#: config/strings.c:20
+#: ../config/strings.c:20
 msgid "Unshade."
 msgstr ""
 
-#: config/strings.c:21
-#, fuzzy
+#: ../config/strings.c:21
 msgid "Resize"
-msgstr "MÈret"
+msgstr "√Åtm√©retez√©s"
 
-#: config/strings.c:22
-#, fuzzy
+#: ../config/strings.c:22
 msgid "Resize this window."
-msgstr "EmlÈkezzen az ablak csoportjaira"
+msgstr "Ablak √°tm√©retez√©se."
 
-#: config/strings.c:24
-#, fuzzy
+#: ../config/strings.c:24
 msgid "Resize Horizontally"
-msgstr "VÌzszintes"
+msgstr "V√≠zszintes √°tm√©retez√©s"
 
-#: config/strings.c:25
+#: ../config/strings.c:25
 msgid "Resize this window horizontally."
-msgstr ""
+msgstr "Ezen ablak v√≠zszintes √°tm√©retez√©se."
 
-#: config/strings.c:27
-#, fuzzy
+#: ../config/strings.c:27
 msgid "Resize Vertically"
-msgstr "F¸ggıleges"
+msgstr "F√ºgg≈ëleges √°tm√©retez√©s"
 
-#: config/strings.c:28
+#: ../config/strings.c:28
 msgid "Resize this window vertically."
-msgstr ""
+msgstr "Ezen ablak f√ºgg≈ëleges √°tm√©retez√©se."
 
-#: config/strings.c:31
+#: ../config/strings.c:31
 msgid "Close this window."
-msgstr ""
+msgstr "Ezen ablak bez√°r√°sa."
 
-#: config/strings.c:32
+#: ../config/strings.c:32
 msgid "Forcibly destroy this window."
-msgstr ""
+msgstr "Ezen ablak er≈ëltetett bez√°r√°sa."
 
-#: config/strings.c:33
+#: ../config/strings.c:33
 msgid "Maximize Height"
-msgstr ""
+msgstr "Magass√°g maximaliz√°l√°sa"
 
-#: config/strings.c:34 config/strings.c:40
+#: ../config/strings.c:34 ../config/strings.c:40
 msgid "Toggle between maximum screen height and normal height."
-msgstr ""
+msgstr "Maximum √©s norm√°l magass√°g k√∂zti v√°lt√°s."
 
-#: config/strings.c:35
+#: ../config/strings.c:35
 msgid "Maximize Width"
-msgstr ""
+msgstr "Sz√©less√©g maximaliz√°l√°sa"
 
-#: config/strings.c:36 config/strings.c:39
+#: ../config/strings.c:36 ../config/strings.c:39
 msgid "Toggle between maximum screen width and normal width."
-msgstr ""
+msgstr "Maximum √©s norm√°l sz√©less√©g k√∂zti v√°lt√°s."
 
-#: config/strings.c:37
+#: ../config/strings.c:37
 msgid "Maximize"
-msgstr ""
+msgstr "Maximaliz√°l√°s"
 
-#: config/strings.c:38
+#: ../config/strings.c:38
 msgid "Toggle between maximum screen size and normal size."
-msgstr ""
+msgstr "Maximum √©s norm√°l k√©perny≈ëm√©ret k√∂zti v√°lt√°s."
 
-#: config/strings.c:41 config/strings.c:43
-#, fuzzy
+#: ../config/strings.c:41 ../config/strings.c:43
 msgid "Send To Another Desktop"
-msgstr "Ugr·s erre az asztalra"
+msgstr "K√ºld√©s m√°sik munkater√ºletre"
 
-#: config/strings.c:42
+#: ../config/strings.c:42
 msgid "Send this Window to the next desktop."
-msgstr ""
+msgstr "K√ºld√©s a k√∂vetkez≈ë munkater√ºletre."
 
-#: config/strings.c:44
+#: ../config/strings.c:44
 msgid "Send this Window to the previous desktop."
-msgstr ""
+msgstr "K√ºld√©s az el≈ëz≈ë munkater√ºletre."
 
-#: config/strings.c:45
-#, fuzzy
+#: ../config/strings.c:45
 msgid "Snapshot"
-msgstr "Miniat˙ra be"
+msgstr "Pillanatfelv√©tel"
 
-#: config/strings.c:46
+#: ../config/strings.c:46
 msgid "This button does nothing interesting."
-msgstr ""
+msgstr "Ez a gomb nem csin√°l semmi k√ºl√∂n√∂set."
 
-#: config/strings.c:47 config/strings.c:128
-#, fuzzy
+#: ../config/strings.c:47 ../config/strings.c:128
 msgid "Shade/Unshade"
-msgstr "¡rnyÈkol·s"
+msgstr ""
 
-#: config/strings.c:52
+#: ../config/strings.c:52
 msgid "Iconify (Minimize) this window."
-msgstr ""
+msgstr "Ezen ablak minimaliz√°l√°sa."
 
-#: config/strings.c:54
-#, fuzzy
+#: ../config/strings.c:54
 msgid "More Buttons"
-msgstr "Gomb"
+msgstr "T√∂bb gomb"
 
-#: config/strings.c:55
+#: ../config/strings.c:55
 msgid "Show more buttons."
-msgstr ""
+msgstr "Mutasson t√∂bb gombot."
 
-#: config/strings.c:56 config/strings.c:126
+#: ../config/strings.c:56 ../config/strings.c:126
 msgid "Raise"
 msgstr ""
 
-#: config/strings.c:57
-#, fuzzy
+#: ../config/strings.c:57
 msgid "Raise this window to the top."
 msgstr ""
-"Klikkeljen ide, hogy ez az asztal\n"
-"legfel¸lre ker¸ljˆn.\n"
 
-#: config/strings.c:58 config/strings.c:127
+#: ../config/strings.c:58 ../config/strings.c:127
 msgid "Lower"
 msgstr ""
 
-#: config/strings.c:59
+#: ../config/strings.c:59
 msgid "Lower this window."
 msgstr ""
 
-#: config/strings.c:60 config/strings.c:129
-#, fuzzy
+#: ../config/strings.c:60 ../config/strings.c:129
 msgid "Stick/Unstick"
-msgstr "RˆgzÌt"
+msgstr "Ragaszt√°s/lev√°laszt√°s"
 
-#: config/strings.c:61
-msgid "Toggle the Omnipresent (visible on all Desktops) state of this window."
+#: ../config/strings.c:61
+msgid ""
+"Toggle the Omnipresent (visible on all Desktops) state of this window."
 msgstr ""
 
-#: config/strings.c:63
+#. bindings.cfg
+#: ../config/strings.c:63
 msgid ""
 "Clicking your mouse on the desktop will perform\n"
 "the following actions"
-msgstr "Az asztalra klikkelve az al·bbi esemÈny tˆrtÈnik"
+msgstr "Az asztalra klikkelve az al√°bbi esem√©ny t√∂rt√©nik"
 
-#: config/strings.c:64
+#: ../config/strings.c:64
 msgid "Display User Menus"
-msgstr "Felhaszn·lÛi men¸ megjelenÌtÈse"
+msgstr "Felhaszn√°l√≥i men√º megjelen√≠t√©se"
 
-#: config/strings.c:65 config/strings.c:67
-#, fuzzy
+#: ../config/strings.c:65 ../config/strings.c:67
 msgid "Display Enlightenment Menu"
-msgstr "Enlightenment men¸ megjelenÌtÈse"
+msgstr "Enlightenment men√º megjelen√≠t√©se"
 
-#: config/strings.c:66 config/strings.c:71
-#, fuzzy
+#: ../config/strings.c:66 ../config/strings.c:71
 msgid "Display Settings Menu"
-msgstr "Be·llÌt·sok men¸ megjelenÌtÈse"
+msgstr "Be√°ll√≠t√°sok men√º megjelen√≠t√©se"
 
-#: config/strings.c:68
+#: ../config/strings.c:68
 msgid "Display Task List Menu"
-msgstr "FutÛ alkalmaz·sok men¸ megjelenÌtÈse"
+msgstr "Fut√≥ alkalmaz√°sok men√º megjelen√≠t√©se"
 
-#: config/strings.c:69
-#, fuzzy
+#: ../config/strings.c:69
 msgid "Display Desktop Menu"
-msgstr "Asztal men¸ megjelenÌtÈse"
+msgstr "Asztal men√º megjeln√≠t√©se"
 
-#: config/strings.c:70
+#: ../config/strings.c:70
 msgid "Display Group Menu"
-msgstr "Csoportok men¸ megjelenÌtÈse"
+msgstr "Csoportok men√º megjelen√≠t√©se"
 
-#: config/strings.c:72
-#, fuzzy
+#: ../config/strings.c:72
 msgid "Go Back a Desktop"
-msgstr "Ugr·s vissza egy asztallal"
+msgstr ""
 
-#: config/strings.c:73
-#, fuzzy
+#: ../config/strings.c:73
 msgid "Go Forward a Desktop"
-msgstr "Ugr·s elıre egy asztallal"
+msgstr ""
 
-#: config/strings.c:78
-#, fuzzy
+#. fonts.pango.cfg
+#. fonts.xft.cfg
+#. matches.cfg
+#. desktop.menu
+#: ../config/strings.c:78
 msgid "Desktop Operations"
-msgstr "Asztal be·llÌt·sai"
+msgstr ""
 
-#: config/strings.c:80
-#, fuzzy
+#: ../config/strings.c:80
 msgid "Cleanup Desktop"
-msgstr "%i asztal"
+msgstr ""
 
-#: config/strings.c:81
-#, fuzzy
+#: ../config/strings.c:81
 msgid "Goto Next Desktop"
-msgstr "Ugr·s erre az asztalra"
+msgstr "Ugr√°s a k√∂vetkez≈ë munkater√ºletre"
 
-#: config/strings.c:82
-#, fuzzy
+#: ../config/strings.c:82
 msgid "Goto Previous Desktop"
-msgstr "Ugr·s erre az asztalra"
+msgstr "Ugr√°s az el≈ëz≈ë munkater√ºletre"
 
-#: config/strings.c:84
+#: ../config/strings.c:84
 msgid "Create Systray"
-msgstr ""
+msgstr "Rendszert√°lca l√©trehoz√°sa"
 
-#: config/strings.c:85
+#: ../config/strings.c:85
 msgid "Show Magnifier"
-msgstr ""
+msgstr "Nagy√≠t√≥ mutat√°sa"
 
-#: config/strings.c:87
-#, fuzzy
+#. enlightenment.menu
+#: ../config/strings.c:87
 msgid "Enlightenment"
-msgstr "KilÈpÈs"
+msgstr "Enlightenment"
 
-#: config/strings.c:88 config/strings.c:188
-#, fuzzy
+#: ../config/strings.c:88 ../config/strings.c:188
 msgid "User Menus"
-msgstr "Felhaszn·lÛi men¸ megjelenÌtÈse"
+msgstr "Felhaszn√°l√≥i men√ºk"
 
-#: config/strings.c:89 config/strings.c:110 config/strings.c:111
-#, fuzzy
+#. settings.menu
+#: ../config/strings.c:89 ../config/strings.c:110 ../config/strings.c:111
 msgid "Settings"
-msgstr "FÛkusz be·llÌt·sai"
+msgstr "Be√°ll√≠t√°sok"
 
-#: config/strings.c:92 config/strings.c:99 config/strings.c:114
+#. maintenance.menu
+#: ../config/strings.c:92 ../config/strings.c:99 ../config/strings.c:114
 msgid "Maintenance"
-msgstr ""
+msgstr "Karbantart√°s"
 
-#: config/strings.c:93 config/strings.c:115
+#: ../config/strings.c:93 ../config/strings.c:115
 msgid "Help"
-msgstr ""
+msgstr "S√∫g√≥"
 
-#: config/strings.c:94 config/strings.c:116
-#, fuzzy
+#: ../config/strings.c:94 ../config/strings.c:116
 msgid "About Enlightenment"
-msgstr "Az Enlightenment %s nÈvjegye"
+msgstr "Az Enlightenmentr√µl"
 
-#: config/strings.c:95 config/strings.c:117
+#: ../config/strings.c:95 ../config/strings.c:117
 msgid "About this theme"
-msgstr ""
+msgstr "A t√©m√°r√≥l"
 
-#: config/strings.c:96 config/strings.c:118 config/strings.c:192
+#: ../config/strings.c:96 ../config/strings.c:118 ../config/strings.c:192
 msgid "Restart"
-msgstr "⁄jraindÌt·s"
+msgstr "√öjraind√≠t√°s"
 
-#: config/strings.c:97 config/strings.c:119 config/strings.c:193
-#, fuzzy
+#: ../config/strings.c:97 ../config/strings.c:119 ../config/strings.c:193
 msgid "Log Out"
-msgstr "  Igen, kilÈpek  "
+msgstr "Kijelentkez√©s"
 
-#: config/strings.c:100
+#: ../config/strings.c:100
 msgid "Purge config file cache"
 msgstr ""
 
-#: config/strings.c:101
-#, fuzzy
+#: ../config/strings.c:101
 msgid "Purge pager background cache"
-msgstr "H·ttÈrkÈp haszn·lata"
+msgstr ""
 
-#: config/strings.c:102
+#: ../config/strings.c:102
 msgid "Purge background selector cache"
 msgstr ""
 
-#: config/strings.c:103
+#: ../config/strings.c:103
 msgid "Purge all caches"
-msgstr ""
+msgstr "Minden gyors√≠t√≥t√°r √ºr√≠t√©se"
 
-#: config/strings.c:104
+#: ../config/strings.c:104
 msgid "Query config file cache usage"
 msgstr ""
 
-#: config/strings.c:105
+#: ../config/strings.c:105
 msgid "Query pager background cache usage"
 msgstr ""
 
-#: config/strings.c:106
+#: ../config/strings.c:106
 msgid "Query background selector cache usage"
 msgstr ""
 
-#: config/strings.c:107
+#: ../config/strings.c:107
 msgid "Query all cache usage"
 msgstr ""
 
-#: config/strings.c:108
+#: ../config/strings.c:108
 msgid "Regenerate Menus"
 msgstr ""
 
-#: config/strings.c:125
+#: ../config/strings.c:125
 msgid "Leave Alone"
 msgstr ""
 
-#: config/strings.c:130
-#, fuzzy
+#: ../config/strings.c:130
 msgid "Remember..."
-msgstr "MaradandÛ be·llÌt·sok..."
+msgstr ""
 
-#: config/strings.c:131
-#, fuzzy
+#: ../config/strings.c:131
 msgid "Window Size"
-msgstr "Ablaklista-kihagy·s"
+msgstr ""
 
-#: config/strings.c:132
-#, fuzzy
+#: ../config/strings.c:132
 msgid "Set Stacking"
-msgstr "FÛkusz be·llÌt·sai"
+msgstr ""
 
-#: config/strings.c:133
-#, fuzzy
+#: ../config/strings.c:133
 msgid "Set Border Style"
-msgstr "KerettÌpus"
+msgstr ""
 
-#: config/strings.c:134
-#, fuzzy
+#: ../config/strings.c:134
 msgid "Window Groups"
-msgstr "Ablakcsoport hiba"
+msgstr ""
 
-#: config/strings.c:139
-#, fuzzy
+#: ../config/strings.c:139
 msgid "Configure this window's group(s)"
-msgstr "EmlÈkezzen az ablak csoportjaira"
+msgstr ""
 
-#: config/strings.c:140
+#: ../config/strings.c:140
 msgid "Start a new group"
 msgstr ""
 
-#: config/strings.c:141
+#: ../config/strings.c:141
 msgid "Add this window to the current group"
 msgstr ""
 
-#: config/strings.c:142
-#, fuzzy
+#: ../config/strings.c:142
 msgid "Select group to add this window to"
-msgstr "   V·lassza ki a csoportot ahonnan az ablak el lesz t·volÌtva.  "
+msgstr ""
 
-#: config/strings.c:143
-#, fuzzy
+#: ../config/strings.c:143
 msgid "Remove this window from a group"
-msgstr "EmlÈkezzen az ablak csoportjaira"
+msgstr ""
 
-#: config/strings.c:144
-#, fuzzy
+#: ../config/strings.c:144
 msgid "Destroy a group this window belongs to"
-msgstr "  V·lassza ki a csoportot ahova az ablak tartozni fog:  \n"
+msgstr ""
 
-#: config/strings.c:146
-#, fuzzy
+#. winops_layer.menu
+#: ../config/strings.c:146
 msgid "Stacking"
-msgstr "RˆgzÌtÈs"
+msgstr ""
 
-#: config/strings.c:147
+#: ../config/strings.c:147
 msgid "Below"
 msgstr ""
 
-#: config/strings.c:148
+#: ../config/strings.c:148
 msgid "Normal"
 msgstr ""
 
-#: config/strings.c:149
+#: ../config/strings.c:149
 msgid "Above"
 msgstr ""
 
-#: config/strings.c:150
-#, fuzzy
+#: ../config/strings.c:150
 msgid "On Top"
-msgstr "Fent"
+msgstr ""
 
-#: config/strings.c:153
+#: ../config/strings.c:153
 msgid "Toggle Skip Window Lists"
 msgstr ""
 
-#: config/strings.c:154
+#: ../config/strings.c:154
 msgid "Toggle Fixed Position"
 msgstr ""
 
-#: config/strings.c:155
+#: ../config/strings.c:155
 msgid "Toggle Fixed Size"
 msgstr ""
 
-#: config/strings.c:156
-#, fuzzy
+#: ../config/strings.c:156
 msgid "Toggle Never Focus"
-msgstr "Nem kap fÛkuszt"
+msgstr ""
 
-#: config/strings.c:157
+#: ../config/strings.c:157
 msgid "Toggle Click to Focus"
 msgstr ""
 
-#: config/strings.c:158
-#, fuzzy
+#: ../config/strings.c:158
 msgid "Toggle Never Use Area"
-msgstr "Nem kap fÛkuszt"
+msgstr ""
 
-#: config/strings.c:159
-#, fuzzy
+#: ../config/strings.c:159
 msgid "Toggle Button Grabs"
-msgstr "Gomb"
+msgstr ""
 
-#: config/strings.c:160
-#, fuzzy
+#: ../config/strings.c:160
 msgid "Toggle Autoshade"
-msgstr "Gomb"
+msgstr ""
 
-#: config/strings.c:163
-#, fuzzy
+#: ../config/strings.c:163
 msgid "Default"
-msgstr "F·jl tˆrlÈse\n"
+msgstr ""
 
-#: config/strings.c:164
+#: ../config/strings.c:164
 msgid "20%"
 msgstr ""
 
-#: config/strings.c:165
+#: ../config/strings.c:165
 msgid "40%"
 msgstr ""
 
-#: config/strings.c:166
+#: ../config/strings.c:166
 msgid "60%"
 msgstr ""
 
-#: config/strings.c:167
+#: ../config/strings.c:167
 msgid "80%"
 msgstr ""
 
-#: config/strings.c:168
+#: ../config/strings.c:168
 msgid "100%"
 msgstr ""
 
-#: config/strings.c:169
+#: ../config/strings.c:169
 msgid "Focused opacity 100%"
 msgstr ""
 
-#: config/strings.c:170
-#, fuzzy
+#: ../config/strings.c:170
 msgid "Focused opacity follows unfocused"
-msgstr "A fÛkusz kˆveti az egÈrkattint·st"
+msgstr ""
 
-#: config/strings.c:171
-#, fuzzy
+#: ../config/strings.c:171
 msgid "Toggle Fading"
-msgstr "Asztal Èl-ÈrzÈkenysÈg"
+msgstr ""
 
-#: config/strings.c:172
+#: ../config/strings.c:172
 msgid "Toggle Shadows"
 msgstr ""
 
-#: config/strings.c:175
+#: ../config/strings.c:175
 msgid "Max Size Toggle"
 msgstr ""
 
-#: config/strings.c:176
+#: ../config/strings.c:176
 msgid "Available Max Size Toggle"
 msgstr ""
 
-#: config/strings.c:177
+#: ../config/strings.c:177
 msgid "Absolute Max Size Toggle"
 msgstr ""
 
-#: config/strings.c:178
+#: ../config/strings.c:178
 msgid "Span Xinerama Screens"
 msgstr ""
 
-#: config/strings.c:179
+#: ../config/strings.c:179
 msgid "Max Height Toggle"
 msgstr ""
 
-#: config/strings.c:180
+#: ../config/strings.c:180
 msgid "Available Max Height Toggle"
 msgstr ""
 
-#: config/strings.c:181
+#: ../config/strings.c:181
 msgid "Absolute Max Height Toggle"
 msgstr ""
 
-#: config/strings.c:182
+#: ../config/strings.c:182
 msgid "Max Width Toggle"
 msgstr ""
 
-#: config/strings.c:183
+#: ../config/strings.c:183
 msgid "Available Max Width Toggle"
 msgstr ""
 
-#: config/strings.c:184
+#: ../config/strings.c:184
 msgid "Absolute Max Width Toggle"
 msgstr ""
 
-#: config/strings.c:185
+#: ../config/strings.c:185
 msgid "Fullscreen/Normal"
 msgstr ""
 
-#: config/strings.c:186
+#: ../config/strings.c:186
 msgid "Zoom/Unzoom"
 msgstr ""
 
-#: config/strings.c:189
-#, fuzzy
+#: ../config/strings.c:189
 msgid "User Application List"
-msgstr "Alkalmaz·s maradandÛ paramÈterei"
+msgstr ""
 
-#: config/strings.c:190
+#: ../config/strings.c:190
 msgid "Other"
 msgstr ""
 
-#: config/strings.c:191
-#, fuzzy
+#: ../config/strings.c:191
 msgid "Epplets"
-msgstr "Kˆrhull·mok"
-
-#~ msgid "Enable Effect: Raindrops"
-#~ msgstr "Effekt bekapcsol·sa: Esıcseppek"
+msgstr ""
 
 #~ msgid "Animate when iconifying to this Iconbox"
-#~ msgstr "Anim·l·s kicsinyÌtÈsnÈl"
+#~ msgstr "Anim√°l√°s kicsiny√≠t√©sn√©l"
 
-#, fuzzy
-#~ msgid "Icon size: %2i"
-#~ msgstr "Ikonok mÈrete"
-
-#, fuzzy
-#~ msgid "Autoraise"
-#~ msgstr "FelemelkedÈssel v·r:"
+#~ msgid "Enable Effect: Raindrops"
+#~ msgstr "Effekt bekapcsol√°sa: Es≈ëcseppek"
 
 #~ msgid "Autoraise Settings"
-#~ msgstr "Auto-felemelkedÈsi be·llÌt·sok"
+#~ msgstr "Auto-felemelked√©si be√°ll√≠t√°sok"
 
 #~ msgid ""
 #~ "Enlightenment Automatic Raising\n"
 #~ "of Windows Settings Dialog\n"
 #~ msgstr ""
 #~ "Enlightenment Automatikus ablak\n"
-#~ "felemelkedÈsi be·llÌt·sok\n"
-
-#, fuzzy
-#~ msgid "Enlightenment Settings ..."
-#~ msgstr "Az Enlightenment indÌt·sa..."
-
-#, fuzzy
-#~ msgid "Focus Settings ..."
-#~ msgstr "FÛkusz be·llÌt·sai"
-
-#, fuzzy
-#~ msgid "Move & Resize Settings ..."
-#~ msgstr "Mozgat·s Ès ·tmÈretezÈs be·llÌt·sai"
-
-#, fuzzy
-#~ msgid "Window Placement Settings ..."
-#~ msgstr "AblakelhelyezÈs be·llÌt·sai"
-
-#, fuzzy
-#~ msgid "Multiple Desktop Settings ..."
-#~ msgstr "Tˆbbasztalos ¸zemmÛd be·llÌt·sai"
-
-#, fuzzy
-#~ msgid "Virtual Desktop Settings ..."
-#~ msgstr "Virtu·lis asztalok be·llÌt·sai"
-
-#, fuzzy
-#~ msgid "Pager Settings ..."
-#~ msgstr "LapozÛ be·llÌt·sai..."
-
-#, fuzzy
-#~ msgid "Menu Settings ..."
-#~ msgstr "Vegyes be·llÌt·sok"
-
-#, fuzzy
-#~ msgid "Autoraise Settings ..."
-#~ msgstr "Auto-felemelkedÈs be·llÌt·sai..."
-
-#, fuzzy
-#~ msgid "Tooltip Settings ..."
-#~ msgstr "Tippek be·llÌt·sai"
-
-#, fuzzy
-#~ msgid "Audio Settings ..."
-#~ msgstr "Hang be·llÌt·sai"
-
-#, fuzzy
-#~ msgid "Group Settings ..."
-#~ msgstr "Csoport be·llÌt·sok..."
-
-#, fuzzy
-#~ msgid "Remember Settings ..."
-#~ msgstr "MaradandÛ be·llÌt·sok..."
-
-#, fuzzy
-#~ msgid "Special FX Settings ..."
-#~ msgstr "Speci·lis effektek be·llÌt·sai"
-
-#, fuzzy
-#~ msgid "Desktop Background Settings ..."
-#~ msgstr "Asztalh·ttÈr be·llÌt·sai"
-
-#, fuzzy
-#~ msgid "Theme Transparency Settings ..."
-#~ msgstr "RÈszletes ·tl·tszÛs·g be·llÌt·sok"
-
-#, fuzzy
-#~ msgid "Composite Settings ..."
-#~ msgstr "Composite be·llÌt·sai"
-
-#, fuzzy
-#~ msgid "Session Settings ..."
-#~ msgstr "Hang be·llÌt·sai"
-
-#, fuzzy
-#~ msgid "Miscellaneous Settings ..."
-#~ msgstr "Ikondoboz be·llÌt·sai..."
+#~ "felemelked√©si be√°ll√≠t√°sok\n"
 
 #~ msgid "Mirror Shade/Iconify/Stick"
-#~ msgstr "FordÌtott ¡rnyÈk/Kicsi/RˆgzÌt"
+#~ msgstr "Ford√≠tott √Årny√©k/Kicsi/R√∂gz√≠t"
 
 #~ msgid "%i Desktops"
 #~ msgstr "%i asztal"
@@ -2853,11 +2630,11 @@ msgstr "Kˆrhull·mok"
 #~ "Screens in size"
 #~ msgstr ""
 #~ "%i x %i\n"
-#~ "kÈpernyımÈret"
+#~ "k√©perny≈ëm√©ret"
 
 #~ msgid ""
 #~ "1\n"
 #~ "Screen in size"
 #~ msgstr ""
 #~ "1\n"
-#~ "kÈpernyımÈret"
+#~ "k√©perny≈ëm√©ret"
