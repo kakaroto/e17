@@ -52,6 +52,7 @@ struct _Module_Config
   const char *browser;
   const char *translate;
   const char *convert_cmd;
+  const char *download_cmd;
 
   E_Config_Dialog *cfd;
   E_Module *module;
@@ -80,6 +81,8 @@ struct _Download_Data
   int tries;
   char *file;
   int ready;
+  int id;
+  int size;
 };
 
 struct _Web_Link
@@ -161,9 +164,14 @@ _data_cb(void *data, int ev_type, void *event)
 static int
 _complete_cb(void *data, int ev_type, void *event)
 {
-  Ecore_Con_Event_Url_Data *ev = event;
-  Evry_Item *it = ecore_con_url_data_get(ev->url_con);
+  Ecore_Con_Event_Url_Complete *ev = event;
+  Evry_Item *it;
   int len;
+
+  if (!ev || !data)
+    return 1;
+
+  it  = ecore_con_url_data_get(ev->url_con);
 
   if (it->type == EVRY_TYPE_PLUGIN)
     {
@@ -554,7 +562,7 @@ _action_download_timer(void *d)
   E_Notification *n = NULL;
   int abort = 0;
 
-  if (dd->ready || dd->tries++ > 15)
+  if (dd->ready || dd->tries++ > 20)
     {
       abort = 1;
       goto finish;
@@ -562,9 +570,10 @@ _action_download_timer(void *d)
 
   if (stat(dd->file, &s) == 0)
     {
-      if (s.st_size < 524288)
+      if (s.st_size < 262144)
 	{
-	  if (dd->tries > 5 && s.st_size < 1024)
+	  if (dd->tries == 3 && s.st_size == 0 ||
+	      dd->tries > 10 && s.st_size < 1024)
 	    {
 	      abort = 1;
 	      goto finish;
@@ -574,9 +583,9 @@ _action_download_timer(void *d)
 	  snprintf(buf, sizeof(buf), N_("Got %d kbytes"),
 		   ((unsigned int)s.st_size / 1024));
 
-	  n = e_notification_full_new("Everything", 0,
-				      "enblem-music", buf,
-				      ecore_file_file_get(dd->file), 3000);
+	  n = e_notification_full_new("Everything", dd->id,
+				      "emblem-music", buf,
+				      ecore_file_file_get(dd->file), 5000);
 	  e_notification_send(n, NULL, NULL);
 	  e_notification_unref(n);
 	  return 1;
@@ -595,7 +604,7 @@ _action_download_timer(void *d)
   	      act->it1.item = EVRY_ITEM(f);
   	      act->action(act);
 	      n = e_notification_full_new
-		("Everything", 0, "enblem-music", N_("Enqueue"),
+		("Everything", dd->id, "emblem-music", N_("Enqueue"),
 		 ecore_file_file_get(dd->file), -1);
 	      e_notification_send(n, NULL, NULL);
 	      e_notification_unref(n);
@@ -609,7 +618,7 @@ _action_download_timer(void *d)
   	      act->it1.item = EVRY_ITEM(f);
   	      act->action(act);
 	      n = e_notification_full_new
-		("Everything", 0, "enblem-music", N_("Play"),
+		("Everything", dd->id, "emblem-music", N_("Play"),
 		 ecore_file_file_get(dd->file), -1);
 	      e_notification_send(n, NULL, NULL);
 	      e_notification_unref(n);
@@ -623,7 +632,7 @@ _action_download_timer(void *d)
       dd->ready = 1;
 
       /* after five minutes it should be finished */
-      dd->timer = ecore_timer_add(5 * 60.0, _action_download_timer, dd);
+      dd->timer = ecore_timer_add(15 * 60.0, _action_download_timer, dd);
       return 0;
     }
 
@@ -633,11 +642,14 @@ _action_download_timer(void *d)
   if (abort)
     {
       n = e_notification_full_new
-	("Everything", 0, "enblem-music", N_("Abort download"),
+	("Everything", dd->id, "emblem-music", N_("Abort download"),
 	 ecore_file_file_get(dd->file), -1);
       e_notification_send(n, NULL, NULL);
       e_notification_unref(n);
-
+      if(dd->exe)
+	printf("kill %d\n", ecore_exe_pid_get(dd->exe));
+      else
+	printf("kill nothing\n");
       if (dd->exe) ecore_exe_kill(dd->exe);
       ecore_file_remove(dd->file);
       ERR("abort download\n");
@@ -650,6 +662,18 @@ _action_download_timer(void *d)
   return 0;
 }
 
+static void
+_notification_id_cb2(void *user_data, void *method_return, DBusError *error)
+{
+  Download_Data *dd = user_data;
+  E_Notification_Return_Notify *r = method_return;
+
+  if (r) dd->id = r->notification_id;
+
+  if (r) printf("got id %d\n", r->notification_id);
+}
+
+
 static int
 _action_download(Evry_Action *act)
 {
@@ -657,8 +681,7 @@ _action_download(Evry_Action *act)
   char file[1024];
   int method = EVRY_ITEM_DATA_INT_GET(act);
   GET_WEBLINK(wl, act->it1.item);
-  E_Exec_Instance *exe = NULL;
-  E_Notification *n;
+  Ecore_Exe *exe = NULL;
   char *filename = ecore_file_escape_name(act->it1.item->label);
   snprintf(file, sizeof(file),
 	   "%s/Download/%s",
@@ -669,12 +692,14 @@ _action_download(Evry_Action *act)
     {
       snprintf(buf, sizeof(buf), _conf->convert_cmd, wl->url, file);
 
-      exe = e_exec(e_util_zone_current_get(e_manager_current_get()),
-	     NULL, buf, NULL, NULL);
+      exe = ecore_exe_run(buf, NULL);
+      /* exe = e_exec(e_util_zone_current_get(e_manager_current_get()),
+       * 	     NULL, buf, NULL, NULL); */
     }
 
   if (method == 1 || method == 2)
     {
+      E_Notification *n;
       Download_Data *dd = E_NEW(Download_Data, 1);
 
       snprintf(buf, sizeof(buf),
@@ -685,17 +710,22 @@ _action_download(Evry_Action *act)
       dd->file = strdup(buf);
       dd->method = method;
       dd->tries = 0;
+      dd->id = rand();
+      if (!dd->id)
+	dd->id = 1;
       if (exe)
-	dd->exe = exe->exe;
+	dd->exe = exe;
       dd->timer = ecore_timer_add(3.0, _action_download_timer, dd);
       download_handlers = eina_list_append(download_handlers, dd);
+
+      n = e_notification_full_new
+	("Everything", 0, "emblem-music", N_("Start download"),
+	 ecore_file_file_get(act->it1.item->label), -1);
+      e_notification_send(n, _notification_id_cb2, dd);
+      e_notification_unref(n);
+
     }
 
-  n = e_notification_full_new
-    ("Everything", 0, "enblem-music", N_("Start download"),
-     ecore_file_file_get(act->it1.item->label), -1);
-  e_notification_send(n, NULL, NULL);
-  e_notification_unref(n);
   return 0;
 }
 
@@ -1087,6 +1117,8 @@ _basic_create(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cfdata)
 
   ow = e_widget_label_add(evas, _("Youtube converter"));
   e_widget_framelist_object_append(of, ow);
+  ow = e_widget_label_add(evas, _("requires mencoder and youtube-dl"));
+  e_widget_framelist_object_append(of, ow);
   ow = e_widget_entry_add(evas, &cfdata->convert_cmd, NULL, NULL, NULL);
   e_widget_framelist_object_append(of, ow);
 
@@ -1164,11 +1196,17 @@ _conf_new(void)
   _conf->translate = eina_stringshare_add("en|de");
   IFMODCFGEND;
 
-  IFMODCFG(0x00ad);
+  /* IFMODCFG(0x00ad);
+   * _conf->convert_cmd = eina_stringshare_add
+   *   ( "ffmpeg -vn -v 0 -y -i $(youtube-dl -g -b \"%s\") "
+   *     "-acodec libmp3lame -ac 2 -ab 128k "
+   *     "%s.mp3 > /dev/null 2>&1");
+   * IFMODCFGEND; */
+
+  IFMODCFG(0x00bd);
   _conf->convert_cmd = eina_stringshare_add
-    ( "ffmpeg -vn -v 0 -y -i $(youtube-dl -g -b \"%s\") "
-      "-acodec libmp3lame -ac 2 -ab 128k "
-      "%s.mp3 > /dev/null 2>&1");
+    ("mencoder -ovc frameno -oac mp3lame -lameopts cbr:br=128 -of rawaudio "
+     "$(youtube-dl -g -b \"%s\") -o %s.mp3");
   IFMODCFGEND;
 
   _conf->version = MOD_CONFIG_FILE_VERSION;
@@ -1281,7 +1319,7 @@ EAPI int
 e_modapi_shutdown(E_Module *m)
 {
   Download_Data *dd;
-  
+
   if (e_datastore_get("everything_loaded"))
     _plugins_shutdown();
 
@@ -1292,11 +1330,10 @@ e_modapi_shutdown(E_Module *m)
   EINA_LIST_FREE(download_handlers, dd)
     {
       if (dd->exe) ecore_exe_kill(dd->exe);
-      ecore_file_remove(dd->file);
       E_FREE(dd->file);
       E_FREE(dd);
     }
-  
+
   return 1;
 }
 
