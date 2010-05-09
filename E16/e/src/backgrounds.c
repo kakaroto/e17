@@ -977,15 +977,15 @@ BackgroundGetInfoString1(const Background * bg, char *buf, int len)
    COLOR32_TO_RGB(bg->bg_solid, r, g, b);
    Esnprintf(buf, len,
 	     "%s ref_count %u keepim %u\n"
-	     " bg.solid\t %i %i %i \n"
+	     " bg.solid\t %i %i %i\n"
 	     " bg.file\t %s\n"
-	     " top.file\t %s \n"
-	     " bg.tile\t %i \n"
-	     " bg.keep_aspect\t %i \ttop.keep_aspect\t %i \n"
-	     " bg.xjust\t %i \ttop.xjust\t %i \n"
-	     " bg.yjust\t %i \ttop.yjust\t %i \n"
-	     " bg.xperc\t %i \ttop.xperc\t %i \n"
-	     " bg.yperc\t %i \ttop.yperc\t %i \n", bg->name,
+	     " top.file\t %s\n"
+	     " bg.tile\t %i\n"
+	     " bg.keep_aspect\t %i \ttop.keep_aspect\t %i\n"
+	     " bg.xjust\t %i \ttop.xjust\t %i\n"
+	     " bg.yjust\t %i \ttop.yjust\t %i\n"
+	     " bg.xperc\t %i \ttop.xperc\t %i\n"
+	     " bg.yperc\t %i \ttop.yperc\t %i\n", bg->name,
 	     bg->ref_count, bg->keepim, r, g, b,
 	     bg->bg.file, bg->top.file, bg->bg_tile,
 	     bg->bg.keep_aspect, bg->top.keep_aspect,
