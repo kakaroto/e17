@@ -6,50 +6,136 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Everything-mpris\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2010-04-28 05:12+0200\n"
-"PO-Revision-Date: 2010-05-01 17:23+0200\n"
+"POT-Creation-Date: 2010-05-09 17:57+0200\n"
+"PO-Revision-Date: 2010-05-09 18:02+0200\n"
 "Last-Translator: Massimo Maiurana <maiurana@gmail.com>\n"
 "Language-Team: none\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: src/e_mod_main.c:297
+#: src/e_mod_main.c:453 src/e_mod_main.c:1024 src/e_mod_main.c:1143
+msgid "Translate"
+msgstr "Traduci"
+
+#: src/e_mod_main.c:583
+#, c-format
+msgid "Got %d kbytes"
+msgstr "Ottenuti %d kbytes"
+
+#: src/e_mod_main.c:602
+msgid "Enqueue in Playlist"
+msgstr "Accoda alla playlist"
+
+#: src/e_mod_main.c:607
+msgid "Enqueue"
+msgstr "Accoda"
+
+#: src/e_mod_main.c:616
+msgid "Play File"
+msgstr "Esegui file"
+
+#: src/e_mod_main.c:621
+msgid "Play"
+msgstr "Esegui"
+
+#: src/e_mod_main.c:645
+msgid "Abort download"
+msgstr "Termina download"
+
+#: src/e_mod_main.c:677
+msgid "Finished download"
+msgstr "Download completato"
+
+#: src/e_mod_main.c:752
+msgid "Start download"
+msgstr "Inizia download"
+
+#: src/e_mod_main.c:767 src/e_mod_main.c:1019
+msgid "Youtube"
+msgstr "Youtube"
+
+#: src/e_mod_main.c:844
+msgid "Image Sent"
+msgstr "Immagine inviata"
+
+#: src/e_mod_main.c:845
+msgid "Link copied to clipboard"
+msgstr "Link copiato negli appunti"
+
+#: src/e_mod_main.c:849
+msgid "Something went wrong :("
+msgstr "Qualcosa è andato storto :("
+
+#: src/e_mod_main.c:881
+#, c-format
+msgid "Sent %1.1f%% of"
+msgstr "Inviati %1.1f%% di"
+
+#: src/e_mod_main.c:1009
 msgid "Google"
 msgstr "Google"
 
-#: src/e_mod_main.c:308
+#: src/e_mod_main.c:1014
 msgid "Wikipedia"
 msgstr "Wikipedia"
 
-#: src/e_mod_main.c:318
+#: src/e_mod_main.c:1037
 msgid "Google for it"
 msgstr "Cerca con Google"
 
-#: src/e_mod_main.c:324
+#: src/e_mod_main.c:1040
 msgid "Wikipedia Page"
 msgstr "Pagina su Wikipedia"
 
-#: src/e_mod_main.c:330
+#: src/e_mod_main.c:1043
 msgid "Feeling Lucky"
 msgstr "Mi sento fortunato"
 
-#: src/e_mod_main.c:384 src/e_mod_main.c:507 src/e_mod_main.c:524
+#: src/e_mod_main.c:1046
+msgid "Watch on Youtube"
+msgstr "Guarda su Youtube"
+
+#: src/e_mod_main.c:1049
+msgid "Download as Audio"
+msgstr "Scarica come audio"
+
+#: src/e_mod_main.c:1055
+msgid "Download and enqueue"
+msgstr "Scarica e accoda"
+
+#: src/e_mod_main.c:1058
+msgid "Download and play"
+msgstr "Scarica ed esegui"
+
+#: src/e_mod_main.c:1061
+msgid "Upload Image"
+msgstr "Invia immagine"
+
+#: src/e_mod_main.c:1116 src/e_mod_main.c:1270 src/e_mod_main.c:1288
 msgid "Everything Websearch"
 msgstr "Websearch di Everything"
 
-#: src/e_mod_main.c:398
+#: src/e_mod_main.c:1130
 msgid "General"
 msgstr "Generale"
 
-#: src/e_mod_main.c:401
+#: src/e_mod_main.c:1133
 msgid "Browser"
 msgstr "Browser"
 
-#: src/e_mod_main.c:406
+#: src/e_mod_main.c:1138
 msgid "Language"
 msgstr "Lingua"
 
-#: src/e_mod_main.c:504
+#: src/e_mod_main.c:1148
+msgid "Youtube converter"
+msgstr "Convertitore di Youtube"
+
+#: src/e_mod_main.c:1150
+msgid "requires mencoder and youtube-dl"
+msgstr "richiede mencoder e youtube-dl"
+
+#: src/e_mod_main.c:1267
 msgid "Extensions"
 msgstr "Estensioni"
