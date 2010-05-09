@@ -89,7 +89,6 @@ PKG_CHECK_MODULES([ECORE], [
    ecore-con
    ecore-evas
    ecore-ipc
-   ecore-txt
    ecore-file])
 PKG_CHECK_MODULES([EMOTION], emotion)
 
