@@ -6,19 +6,19 @@ msgid ""
 msgstr ""
 "Project-Id-Version: e16menuedit\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-08-27 21:09+0800\n"
-"PO-Revision-Date: 2009-05-16 10:43+0000\n"
-"Last-Translator: Olivier <eliovir@nospam.gmail.com>\n"
+"POT-Creation-Date: 2010-05-09 08:51+0800\n"
+"PO-Revision-Date: 2010-01-26 16:26+0000\n"
+"Last-Translator: Kristjan <Unknown>\n"
 "Language-Team: Esperanto <translation-team-eo@lists.sourceforge.net>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Lokalize 0.3\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Launchpad-Export-Date: 2010-05-09 01:48+0000\n"
+"X-Generator: Launchpad (build Unknown)\n"
 
 #: ../src/callbacks.c:53
 msgid "Save"
-msgstr ""
+msgstr "Konservi"
 
 #: ../src/callbacks.c:60 ../src/treeview.c:149 ../e16menuedit2.glade.h:11
 msgid "New Entry"
@@ -34,52 +34,51 @@ msgstr "Forigi eron"
 
 #: ../src/callbacks.c:81
 msgid "Quit"
-msgstr ""
+msgstr "Fermi"
 
 #: ../src/callbacks.c:310
 msgid "No help file found!"
-msgstr ""
+msgstr "Neniu dosiero pri helpo trovita"
 
 #: ../src/callbacks.c:314
 msgid "No help application found"
-msgstr ""
+msgstr "Neniu aplikaĵo pri helpo trovita"
 
-#: ../src/e16menuedit2.c:118
+#: ../src/e16menuedit2.c:119
 msgid "Menu successfully loaded!"
-msgstr ""
+msgstr "Menuo sukcese ŝargita!"
 
 #: ../src/icon_chooser.c:66
 msgid "Select Icon..."
-msgstr ""
+msgstr "Elekti piktogramon..."
 
 #: ../src/icon_chooser.c:102
 msgid "Icon size:"
-msgstr ""
+msgstr "Grandeco de piktogramoj:"
 
 #: ../src/treeview.c:57
 msgid "Description"
-msgstr ""
+msgstr "Priskribo"
 
 #: ../src/treeview.c:64
 msgid "Icon"
-msgstr ""
+msgstr "Piktogramo"
 
 #: ../src/treeview.c:86
-#, fuzzy
 msgid "Parameters"
-msgstr "Ecoj"
+msgstr "Parametroj"
 
 #: ../src/treeview.c:203
 msgid "Menu saved!"
-msgstr ""
+msgstr "Menuo konservita!"
 
 #: ../src/treeview.c:222
 msgid "Submenu must have a name! -> menu not saved!"
-msgstr ""
+msgstr "Submenuo devas havi nomon! → menuo ne konservita!"
 
 #: ../src/treeview.c:226
 msgid "Unknown error occurred while checking menu -> menu not saved!"
-msgstr ""
+msgstr "Nekonata eraro okazis dum kontrolanta menuon → menuo ne konservita!"
 
 #: ../e16menuedit2.glade.h:1
 msgid "<b>Properties:</b>"
@@ -107,7 +106,7 @@ msgstr "Retropaŝa helpo-foliumilo:"
 
 #: ../e16menuedit2.glade.h:9
 msgid "Info"
-msgstr "Informo"
+msgstr "Informoj"
 
 #: ../e16menuedit2.glade.h:10
 msgid "Info about E16 Menu Editor"
@@ -119,11 +118,11 @@ msgstr "Ecoj"
 
 #: ../e16menuedit2.glade.h:13
 msgid "_Contents"
-msgstr "Enhavo (_C)"
+msgstr "Enhavo"
 
 #: ../e16menuedit2.glade.h:14
 msgid "_Delete Entry"
-msgstr "Forigi eron (_D)"
+msgstr "Forigi eron"
 
 #: ../e16menuedit2.glade.h:15
 msgid "_Edit"

@@ -7,13 +7,15 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-08-27 21:09+0800\n"
-"PO-Revision-Date: 2009-06-10 07:25+0000\n"
-"Last-Translator: milboy <Unknown>\n"
+"POT-Creation-Date: 2010-05-09 08:51+0800\n"
+"PO-Revision-Date: 2009-07-08 16:13+0000\n"
+"Last-Translator: Aron Xu <Unknown>\n"
 "Language-Team: Slovak <sk@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"X-Launchpad-Export-Date: 2010-05-09 01:48+0000\n"
+"X-Generator: Launchpad (build Unknown)\n"
 
 #: ../src/callbacks.c:53
 msgid "Save"
@@ -43,7 +45,7 @@ msgstr "Nenájdený súbor pomocníka"
 msgid "No help application found"
 msgstr "Nenájdená aplikácia pomocníka"
 
-#: ../src/e16menuedit2.c:118
+#: ../src/e16menuedit2.c:119
 msgid "Menu successfully loaded!"
 msgstr "Zoznam úspešne načítaný!"
 

@@ -3,18 +3,19 @@
 # This file is distributed under the same license as the e16menuedit2 package.
 # Onur Küçük <onur@delipenguen.net>, 2004.
 #
-#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: e16menuedit2\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-08-27 21:09+0800\n"
-"PO-Revision-Date: 2004-10-27 20:51+0200\n"
-"Last-Translator: Onur Küçük <onur@delipenguen.net>\n"
+"POT-Creation-Date: 2010-05-09 08:51+0800\n"
+"PO-Revision-Date: 2009-11-13 06:55+0000\n"
+"Last-Translator: Mustafa Yýlmaz <apshalasha@gmail.com>\n"
 "Language-Team: Turkish <onur@delipenguen.net>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=iso-8859-9\n"
 "Content-Transfer-Encoding: 8bit\n"
+"X-Launchpad-Export-Date: 2010-05-09 01:48+0000\n"
+"X-Generator: Launchpad (build Unknown)\n"
 
 #: ../src/callbacks.c:53
 msgid "Save"
@@ -38,13 +39,13 @@ msgstr "Çýkýþ"
 
 #: ../src/callbacks.c:310
 msgid "No help file found!"
-msgstr ""
+msgstr "Yardým dosyasý bulunamadý!"
 
 #: ../src/callbacks.c:314
 msgid "No help application found"
-msgstr ""
+msgstr "Yardým uygulamasý bulunamadý"
 
-#: ../src/e16menuedit2.c:118
+#: ../src/e16menuedit2.c:119
 msgid "Menu successfully loaded!"
 msgstr "Menü baþarýyla yüklendi!"
 
@@ -85,13 +86,12 @@ msgid "<b>Properties:</b>"
 msgstr "<b>Özellikler:</b>"
 
 #: ../e16menuedit2.glade.h:2
-#, fuzzy
 msgid ""
 "<span font_desc=\"Sans 22\">E16 Menu Editor II</span>\n"
 "e16menuedit2 v0.0.3"
 msgstr ""
-"<span font_desc=\"Sans 22\">E16 Menü Düzenleyici II</span>\n"
-"e16menuedit2 v0.0.1"
+"<span font_desc=\"Sans 22\">E16 Menu Editor II</span>\n"
+"e16menuedit2 v0.0.3"
 
 #: ../e16menuedit2.glade.h:5
 msgid "Choose _Icon"
