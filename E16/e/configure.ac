@@ -262,7 +262,7 @@ if test "x$enable_xrandr" = "xyes"; then
 fi
 
 AC_ARG_ENABLE(xrender,
-  [  --enable-render         compile with Render support @<:@default=yes@:>@],,
+  [  --enable-xrender        compile with Render support @<:@default=yes@:>@],,
   enable_xrender=yes)
 if test "x$enable_xrender" = "xyes"; then
   AC_CHECK_LIB(Xrender, XRenderQueryExtension,
