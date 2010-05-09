@@ -834,9 +834,9 @@ static int add_status(void *data, int argc, char **argv, char **azColName) {
 
 	ub_Bubble * ubBubble = calloc(1, sizeof(ub_Bubble));
 	Evas_Object *message=NULL, *bubble=NULL, *icon=NULL;
-	time_t now,status_time,time_delta;
-	char *tmp=NULL;
-	char * file_path=NULL, *home=NULL, *timestr = NULL;
+	struct tm *date_tm;
+	char *tmp=NULL, datestr[19];
+	char * file_path=NULL, *home=NULL;
 
 	/* In this query handler, these are the current fields:
 		argv[0] == id INTEGER
@@ -861,40 +861,13 @@ static int add_status(void *data, int argc, char **argv, char **azColName) {
 	evas_object_size_hint_weight_set(bubble, 1, 0);
 	evas_object_size_hint_align_set(bubble, -1, -1);
 
-	// make a simplified time display
-	now = time(NULL);
-	status_time=date;
-	time_delta=now-status_time;
-	if(time_delta < 0) time_delta=0;
 	elm_bubble_label_set(bubble, name);
-	if(time_delta < 60) {
-		res = asprintf(&timestr, _("%d s ago..."), (int)time_delta);
-		if(res != -1)
-			elm_bubble_info_set(bubble, timestr);
-	} else if(time_delta < 3600) {
-		res = asprintf(&timestr, _("± %d min ago..."), (int)time_delta/60);
-		if(res != -1)
-			elm_bubble_info_set(bubble, timestr);
-	} else if(time_delta < 86400) {
-		if(time_delta < 7200)
-			elm_bubble_info_set(bubble, _("> 1 h ago..."));
-		else {
-			res = asprintf(&timestr, _("± %d hs ago..."), (int)time_delta/3600);
-			if(res != -1)
-				elm_bubble_info_set(bubble, timestr);
-		}
-	} else if(time_delta < 604800) {
-		if(time_delta < 172800)
-			elm_bubble_info_set(bubble, _("> a day ago..."));
-		else {
-			res = asprintf(&timestr, _("± %d days ago..."), (int)time_delta/86400);
-			if(res != -1)
-				elm_bubble_info_set(bubble, timestr);
-		}
-	} else
-		elm_bubble_info_set(bubble, _("a long ago..."));
 
-	if(res != -1 && timestr) free(timestr);
+	date_tm = gmtime((time_t*)&date);
+	if(date_tm != NULL) {
+		strftime(datestr, sizeof(datestr), "%F %R", date_tm);
+		elm_bubble_info_set(bubble, datestr);
+	}
 
 	icon = elm_icon_add(win);
 
@@ -912,8 +885,6 @@ static int add_status(void *data, int argc, char **argv, char **azColName) {
 	}
 
 	message = elm_anchorblock_add(win);
-		evas_object_size_hint_weight_set(message, 1, 1);
-		evas_object_size_hint_align_set(message, -1, -1);
 
 		res = asprintf(&status_message, "%s", argv[5]);
 		if(res == -1) {
@@ -956,12 +927,8 @@ static int add_status(void *data, int argc, char **argv, char **azColName) {
  			evas_object_event_callback_add(message, EVAS_CALLBACK_MOUSE_DOWN, on_bubble_mouse_down, bubble);
  			evas_object_event_callback_add(message, EVAS_CALLBACK_MOUSE_UP, on_bubble_mouse_up, bubble);
 		}
-	evas_object_show(message);
 
 	elm_bubble_content_set(bubble, message);
-
- 	//evas_object_event_callback_add(bubble, EVAS_CALLBACK_MOUSE_DOWN, on_bubble_mouse_down, bubble);
- 	//evas_object_event_callback_add(bubble, EVAS_CALLBACK_MOUSE_UP, on_bubble_mouse_up, bubble);
 
 	evas_object_show(bubble);
 
