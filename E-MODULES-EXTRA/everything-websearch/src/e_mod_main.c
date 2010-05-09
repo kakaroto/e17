@@ -1214,7 +1214,7 @@ _basic_create(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cfdata)
 
   ow = e_widget_label_add(evas, _("Youtube converter"));
   e_widget_framelist_object_append(of, ow);
-  ow = e_widget_label_add(evas, _("requires mencoder and youtube-dl"));
+  ow = e_widget_label_add(evas, _("requires mencoder and mp3lame"));
   e_widget_framelist_object_append(of, ow);
   ow = e_widget_entry_add(evas, &cfdata->convert_cmd, NULL, NULL, NULL);
   e_widget_framelist_object_append(of, ow);
