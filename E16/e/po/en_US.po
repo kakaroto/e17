@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2010-05-02 19:59+0200\n"
+"POT-Creation-Date: 2010-05-09 10:53+0200\n"
 "PO-Revision-Date: 2000-01-04 23:15+0100\n"
 "Last-Translator: Peter Kjellerstedt <pkj@axis.com>\n"
 "Language-Team: American English <en@li.org>\n"
@@ -413,7 +413,7 @@ msgstr ""
 msgid "End"
 msgstr ""
 
-#: src/container.c:1657 src/focus.c:960
+#: src/container.c:1657 src/focus.c:969
 msgid "None"
 msgstr ""
 
@@ -425,7 +425,7 @@ msgstr ""
 msgid "Animation mode:"
 msgstr ""
 
-#: src/container.c:1679 src/desktops.c:2577
+#: src/container.c:1679 src/desktops.c:2579
 msgid "Off"
 msgstr ""
 
@@ -502,93 +502,93 @@ msgid ""
 "to the bottom.\n"
 msgstr ""
 
-#: src/desktops.c:2338
+#: src/desktops.c:2340
 msgid "Number of virtual desktops:\n"
 msgstr ""
 
-#: src/desktops.c:2363
+#: src/desktops.c:2365
 msgid "Slide desktops around when changing"
 msgstr ""
 
-#: src/desktops.c:2369
+#: src/desktops.c:2371
 msgid "Desktop Slide speed:\n"
 msgstr ""
 
-#: src/desktops.c:2383
+#: src/desktops.c:2385
 msgid "Wrap desktops around"
 msgstr ""
 
-#: src/desktops.c:2391
+#: src/desktops.c:2393
 msgid "Display desktop dragbar"
 msgstr ""
 
-#: src/desktops.c:2397
+#: src/desktops.c:2399
 msgid "Drag bar position:"
 msgstr ""
 
-#: src/desktops.c:2401
+#: src/desktops.c:2403
 msgid "Top"
 msgstr ""
 
-#: src/desktops.c:2407
+#: src/desktops.c:2409
 msgid "Bottom"
 msgstr ""
 
-#: src/desktops.c:2413 src/pager.c:1925 src/pager.c:1950 src/pager.c:1975
+#: src/desktops.c:2415 src/pager.c:1925 src/pager.c:1950 src/pager.c:1975
 msgid "Left"
 msgstr ""
 
-#: src/desktops.c:2419 src/pager.c:1937 src/pager.c:1962 src/pager.c:1987
+#: src/desktops.c:2421 src/pager.c:1937 src/pager.c:1962 src/pager.c:1987
 msgid "Right"
 msgstr ""
 
-#: src/desktops.c:2427 src/menus-misc.c:585
+#: src/desktops.c:2429 src/menus-misc.c:585
 msgid "Desks"
 msgstr ""
 
-#: src/desktops.c:2428
+#: src/desktops.c:2430
 msgid "Multiple Desktop Settings"
 msgstr ""
 
-#: src/desktops.c:2431
+#: src/desktops.c:2433
 msgid ""
 "Enlightenment Multiple Desktop\n"
 "Settings Dialog\n"
 msgstr ""
 
-#: src/desktops.c:2531
+#: src/desktops.c:2533
 msgid "Virtual Desktop size:\n"
 msgstr ""
 
-#: src/desktops.c:2567
+#: src/desktops.c:2569
 msgid "Wrap virtual desktops around"
 msgstr ""
 
-#: src/desktops.c:2574
+#: src/desktops.c:2576
 msgid "Edge Flip Mode:"
 msgstr ""
 
-#: src/desktops.c:2582
+#: src/desktops.c:2584
 msgid "On"
 msgstr ""
 
-#: src/desktops.c:2587
+#: src/desktops.c:2589
 msgid "Only when moving window"
 msgstr ""
 
-#: src/desktops.c:2593
+#: src/desktops.c:2595
 msgid "Resistance at edge of screen:\n"
 msgstr ""
 
-#: src/desktops.c:2605
+#: src/desktops.c:2607
 msgid "Areas"
 msgstr ""
 
-#: src/desktops.c:2606
+#: src/desktops.c:2608
 msgid "Virtual Desktop Settings"
 msgstr ""
 
-#: src/desktops.c:2609
+#: src/desktops.c:2611
 msgid ""
 "Enlightenment Virtual Desktop\n"
 "Settings Dialog\n"
@@ -622,111 +622,111 @@ msgid ""
 "Exiting.\n"
 msgstr ""
 
-#: src/focus.c:806
+#: src/focus.c:815
 msgid "Focus follows pointer"
 msgstr ""
 
-#: src/focus.c:812
+#: src/focus.c:821
 msgid "Focus follows pointer sloppily"
 msgstr ""
 
-#: src/focus.c:818
+#: src/focus.c:827
 msgid "Focus follows mouse clicks"
 msgstr ""
 
-#: src/focus.c:828
+#: src/focus.c:837
 msgid "Clicking in a window always raises it"
 msgstr ""
 
-#: src/focus.c:836
+#: src/focus.c:845
 msgid "All new windows first get the focus"
 msgstr ""
 
-#: src/focus.c:843
+#: src/focus.c:852
 msgid "New windows get the focus if their window group is focused"
 msgstr ""
 
-#: src/focus.c:848
+#: src/focus.c:857
 msgid "Only new dialog windows get the focus"
 msgstr ""
 
-#: src/focus.c:855
+#: src/focus.c:864
 msgid "Only new dialogs whose owner is focused get the focus"
 msgstr ""
 
-#: src/focus.c:860
+#: src/focus.c:869
 msgid "Raise windows while switching focus"
 msgstr ""
 
-#: src/focus.c:866
+#: src/focus.c:875
 msgid "Send mouse pointer to window while switching focus"
 msgstr ""
 
-#: src/focus.c:872
+#: src/focus.c:881
 msgid "Always send mouse pointer to window on focus switch"
 msgstr ""
 
-#: src/focus.c:880
+#: src/focus.c:889
 msgid "Raise windows automatically"
 msgstr ""
 
-#: src/focus.c:886
+#: src/focus.c:895
 msgid "Autoraise delay:"
 msgstr ""
 
-#: src/focus.c:899
+#: src/focus.c:908
 msgid "Display and use focus list"
 msgstr ""
 
-#: src/focus.c:904
+#: src/focus.c:913
 msgid "Include sticky windows in focus list"
 msgstr ""
 
-#: src/focus.c:909
+#: src/focus.c:918
 msgid "Include shaded windows in focus list"
 msgstr ""
 
-#: src/focus.c:914
+#: src/focus.c:923
 msgid "Include iconified windows in focus list"
 msgstr ""
 
-#: src/focus.c:919
+#: src/focus.c:928
 msgid "Include windows on other desks in focus list"
 msgstr ""
 
-#: src/focus.c:924
+#: src/focus.c:933
 msgid "Focus windows while switching"
 msgstr ""
 
-#: src/focus.c:929
+#: src/focus.c:938
 msgid "Raise windows after focus switch"
 msgstr ""
 
-#: src/focus.c:934
+#: src/focus.c:943
 msgid "Send mouse pointer to window after focus switch"
 msgstr ""
 
-#: src/focus.c:944
+#: src/focus.c:953
 msgid "Focuslist image display policy (if one operation fails, try the next):"
 msgstr ""
 
-#: src/focus.c:948
+#: src/focus.c:957
 msgid "First E Icon, then App Icon"
 msgstr ""
 
-#: src/focus.c:954
+#: src/focus.c:963
 msgid "First App Icon, then E Icon"
 msgstr ""
 
-#: src/focus.c:968
+#: src/focus.c:977
 msgid "Focus"
 msgstr ""
 
-#: src/focus.c:969
+#: src/focus.c:978
 msgid "Focus Settings"
 msgstr ""
 
-#: src/focus.c:972
+#: src/focus.c:981
 msgid ""
 "Enlightenment Focus\n"
 "Settings Dialog\n"
