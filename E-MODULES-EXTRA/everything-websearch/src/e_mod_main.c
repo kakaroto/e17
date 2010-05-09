@@ -22,26 +22,68 @@ typedef struct _Plugin Plugin;
 typedef int (*Handler_Func) (void *data, int type, void *event);
 typedef struct _Module_Config Module_Config;
 typedef struct _Json_Data Json_Data;
-typedef struct _Download_Data Download_Data;
+typedef struct _Url_Data Url_Data;
+typedef struct _Youtube_Data Youtube_Data;
 typedef struct _Web_Link Web_Link;
+
+static Eina_List *handlers;
 
 struct _Plugin
 {
   Evry_Plugin base;
-
-  Ecore_Con_Url *con_url;
   Ecore_Timer *timer;
-  Eina_List *handlers;
 
   const char *input;
   const char *request;
   const char *host;
 
-  char *data;
-  int cur_size;
-
   int (*fetch) (void *data);
   int (*data_cb) (Plugin *p, const char *msg, int len);
+
+  Url_Data *dd;
+};
+
+struct _Url_Data
+{
+  Ecore_Con_Url *con_url;
+
+  int (*data_cb)(Url_Data *data);
+  int (*progress_cb)(Url_Data *data, Ecore_Con_Event_Url_Progress *ev);
+
+  char *data;
+  unsigned int size;
+
+  void *user_data;
+};
+
+struct _Youtube_Data
+{
+  Ecore_Exe *exe;
+  Ecore_Timer *timer;
+  Ecore_Event_Handler *del_handler;
+  const char *label;
+  const char *filepath;
+  int num;
+
+  int method;
+  int tries;
+  int ready;
+  int id;
+  int size;
+
+  Url_Data *dd;
+};
+
+struct _Web_Link
+{
+  Evry_Item base;
+
+  const char *url;
+  const char *thumb;
+
+  const char *thumb_file;
+
+  Url_Data *dd;
 };
 
 struct _Module_Config
@@ -73,33 +115,6 @@ struct _Json_Data
   int is_val;
 };
 
-struct _Download_Data
-{
-  Ecore_Exe *exe;
-  Ecore_Timer *timer;
-  Ecore_Event_Handler *del_handler;
-  int method;
-  int tries;
-  char *file;
-  int ready;
-  int id;
-  int size;
-};
-
-struct _Web_Link
-{
-  Evry_Item base;
-
-  const char *url;
-  const char *thumb;
-
-  char *thumb_data;
-  int thumb_size;
-
-  const char *thumb_file;
-  Ecore_Con_Url *thumb_url;
-};
-
 static Module_Config *_conf;
 static char _config_path[] =  "extensions/" PACKAGE;
 static char _config_domain[] = "module." PACKAGE;
@@ -122,12 +137,15 @@ static char _request_gtranslate[] =
 static char _request_youtube[] =
   "http://gdata.youtube.com/feeds/videos?hl=%s"
   "&fields=entry(title,link,media:group(media:thumbnail))"
-  "&alt=json&max-results=30&q=%s";
+  "&alt=json&max-results=50&q=%s";
 static const char _imgur_key[] =
   "1606e11f5c2ccd9b7440f1ffd80b17de";
 
 static Evry_Type WEBLINK;
 #define GET_WEBLINK(_weblink, _item) Web_Link *_weblink = (Web_Link *) _item
+
+static Evry_Type WEBPAGE;
+#define GET_WEBPAGE(_webpage, _item) Web_Page *_webpage = (Web_Page *) _item
 
 static Json_Data  *_json_parse(const char *string, int len);
 static Json_Data  *_json_data_find(const Json_Data *d, const char *key, int level);
@@ -135,76 +153,126 @@ static void        _json_data_free(Json_Data *d);
 
 /***************************************************************************/
 
+
+static Url_Data *
+_url_data_new(void *user_data,
+		   int (*data_cb)(Url_Data *dd),
+		   int (*progress_cb)(Url_Data *dd, Ecore_Con_Event_Url_Progress *ev),
+		   const char *host)
+{
+   Url_Data *dd = E_NEW(Url_Data, 1);
+
+   dd->con_url = ecore_con_url_new(NULL);
+   dd->user_data = user_data;
+   dd->data_cb = data_cb;
+   dd->progress_cb = progress_cb;
+
+   ecore_con_url_data_set(dd->con_url, dd);
+
+   if (host)
+     ecore_con_url_additional_header_add(dd->con_url, "Host", host);
+
+   return dd;
+}
+
+static void
+_url_data_free(Url_Data *dd)
+{
+   ecore_con_url_destroy(dd->con_url);
+   E_FREE(dd->data);
+   E_FREE(dd);
+}
+
+static void
+_url_data_send(Url_Data *dd, const char *url)
+{
+   E_FREE(dd->data);
+   dd->size = 0;
+
+   ecore_con_url_url_set(dd->con_url, url);
+   ecore_con_url_send(dd->con_url, NULL, 0, NULL);
+}
+
 static int
-_data_cb(void *data, int ev_type, void *event)
+_common_data_cb(void *data, int ev_type, void *event)
 {
   Ecore_Con_Event_Url_Data *ev = event;
-  Evry_Item *it = ecore_con_url_data_get(ev->url_con);
-  int len;
+  Url_Data *dd = ecore_con_url_data_get(ev->url_con);
 
-  if (it->type == EVRY_TYPE_PLUGIN)
+  if (!ev || !data || !(data == _conf))
+      return 1;
+
+  dd->data = realloc(dd->data, sizeof(char) * (dd->size + ev->size));
+  memcpy(dd->data + dd->size, ev->data, ev->size);
+  dd->size += ev->size;
+
+  return 1;
+}
+
+static int
+_common_progress_cb(void *data, int ev_type, void *event)
+{
+   Ecore_Con_Event_Url_Progress *ev = event;
+   Url_Data *dd = ecore_con_url_data_get(ev->url_con);
+
+   if (!ev || !data || !(data == _conf))
+       return 1;
+
+   if (dd->progress_cb)
+     dd->progress_cb(dd, ev);
+
+   return 1;
+}
+
+static int
+_common_complete_cb(void *data, int ev_type, void *event)
+{
+  Ecore_Con_Event_Url_Complete *ev = event;
+  Url_Data *dd = ecore_con_url_data_get(ev->url_con);
+
+  if (!ev || !data || !(data == _conf))
+      return 1;
+
+  if (!dd->data_cb(dd))
     {
-      if (data != it) return 1;
-      GET_PLUGIN(p, it);
-      p->data = realloc(p->data, sizeof(char) * (p->cur_size + ev->size));
-      memcpy(p->data + p->cur_size, ev->data, ev->size);
-      p->cur_size += ev->size;
-    }
-  else if (it->type == WEBLINK)
-    {
-      if (data != it->plugin) return 1;
-      GET_WEBLINK(wl, it);
-      wl->thumb_data = realloc(wl->thumb_data, sizeof(char) * (wl->thumb_size + ev->size));
-      memcpy(wl->thumb_data + wl->thumb_size, ev->data, ev->size);
-      wl->thumb_size += ev->size;
+       ERR("\n %*s\n", dd->size, (char *)dd->data);
     }
 
   return 1;
 }
 
 static int
-_complete_cb(void *data, int ev_type, void *event)
+_plugin_data_cb(Url_Data *dd)
 {
-  Ecore_Con_Event_Url_Complete *ev = event;
-  Evry_Item *it;
-  int len;
+   GET_PLUGIN(p, dd->user_data);
 
-  if (!ev || !data)
-    return 1;
+   EVRY_PLUGIN_ITEMS_FREE(p);
 
-  it  = ecore_con_url_data_get(ev->url_con);
+   if (p->data_cb(p, dd->data, dd->size))
+     {
+	evry_plugin_async_update (EVRY_PLUGIN(p), EVRY_ASYNC_UPDATE_ADD);
+     }
 
-  if (it->type == EVRY_TYPE_PLUGIN)
-    {
-      if (data != it) return 1;
-      GET_PLUGIN(p, it);
+   return 1;
+}
 
-      EVRY_PLUGIN_ITEMS_FREE(p);
+static int
+_icon_data_cb(Url_Data *dd)
+{
+   GET_WEBLINK(wl, dd->user_data);
 
-      if (p->data_cb(p, p->data, p->cur_size))
-	{
-	  evry_plugin_async_update (EVRY_PLUGIN(p), EVRY_ASYNC_UPDATE_ADD);
-	}
+   FILE *f = fopen(wl->thumb_file, "w");
+   if (f)
+     {
+	fwrite(dd->data, dd->size, sizeof(char), f);
+	fclose(f);
+	evry_event_item_changed(EVRY_ITEM(wl), 1, 0);
+     }
 
-      E_FREE(p->data);
-    }
-  else if (it->type == WEBLINK)
-    {
-      if (data != it->plugin) return 1;
-      GET_WEBLINK(wl, it);
+   _url_data_free(dd);
+   wl->dd = NULL;
 
-      FILE *f = fopen(wl->thumb_file, "w");
-      if (f)
-	{
-	  fwrite(wl->thumb_data, wl->thumb_size, sizeof(char), f);
-	  fclose(f);
-	  evry_event_item_changed(it, 1, 0);
-	  E_FREE(wl->thumb_data);
-	}
-      E_FREE(wl->thumb_data);
-    }
-
-  return 1;
+   return 1;
 }
 
 static int
@@ -214,6 +282,7 @@ _wikipedia_data_cb(Plugin *p, const char *msg, int len)
   const char *val;
   Eina_List *l;
   Evry_Item *it;
+  int ret = 0;
 
   rsp = _json_parse(msg, len);
 
@@ -223,17 +292,18 @@ _wikipedia_data_cb(Plugin *p, const char *msg, int len)
       (d = d->list->data) &&
       (d->type == JSON_ARRAY_BEGIN))
     {
-      EINA_LIST_FOREACH(d->values, l, val)
+       EINA_LIST_FOREACH(d->values, l, val)
 	{
 	  it = EVRY_ITEM_NEW(Evry_Item, p, val, NULL, NULL);
 	  it->context = eina_stringshare_ref(EVRY_PLUGIN(p)->name);
 	  it->fuzzy_match = -1;
 	  EVRY_PLUGIN_ITEM_APPEND(p, it);
 	}
+       ret = 1;
     }
   _json_data_free(rsp);
 
-  return 1;
+  return ret;
 }
 
 static int
@@ -242,19 +312,21 @@ _gtranslate_data_cb(Plugin *p, const char *msg, int len)
   Json_Data *d, *rsp;
   Evry_Item *it;
   const char *key;
+  int ret = 0;
 
   rsp = _json_parse(msg, len);
 
-  d = _json_data_find(rsp, "translatedText", 3);
-  if (d)
+  if ((d = _json_data_find(rsp, "translatedText", 3)))
     {
       it = EVRY_ITEM_NEW(Evry_Item, p, d->value, NULL, NULL);
       it->context = eina_stringshare_ref(EVRY_PLUGIN(p)->name);
       it->fuzzy_match = -1;
       EVRY_PLUGIN_ITEM_APPEND(p, it);
+      ret = 1;
     }
   _json_data_free(rsp);
-  return 1;
+
+  return ret;
 }
 
 static void
@@ -262,24 +334,26 @@ _web_link_free(Evry_Item *it)
 {
   GET_WEBLINK(wl, it);
 
-  if (wl->thumb_url)
-    ecore_con_url_destroy(wl->thumb_url);
-
   IF_RELEASE(wl->url);
   IF_RELEASE(wl->thumb);
   IF_RELEASE(wl->thumb_file);
 
-  E_FREE(wl->thumb_data);
+  if (wl->dd)
+    _url_data_free(wl->dd);
+
   E_FREE(wl);
 }
 
 static char thumb_buf[4096];
+
 
 static Evas_Object *
 _web_link_icon_get(Evry_Item *it, Evas *e)
 {
   Web_Link *wl = (Web_Link *) it;
   Evas_Object *o;
+
+
 
   if (!wl->thumb_file)
     {
@@ -299,13 +373,10 @@ _web_link_icon_get(Evry_Item *it, Evas *e)
       e_icon_file_set(o, wl->thumb_file);
       if (o) return o;
     }
-  else if (!wl->thumb_url)
+  else if (!wl->dd)
     {
-      wl->thumb_url = ecore_con_url_new(NULL);
-      ecore_con_url_url_set(wl->thumb_url, wl->thumb);
-      ecore_con_url_data_set(wl->thumb_url, wl);
-      ecore_con_url_additional_header_add(wl->thumb_url, "Host", "i.ytimg.com");
-      ecore_con_url_send(wl->thumb_url, NULL, 0, NULL);
+       wl->dd = _url_data_new(wl, _icon_data_cb, NULL, "i.ytimg.com");
+       _url_data_send(wl->dd, wl->thumb);
     }
 
   return NULL;
@@ -365,6 +436,7 @@ _google_data_cb(Plugin *p, const char *msg, int len)
   Evry_Item *it;
   char *beg;
 
+  if (!msg) return 1;
   /* FUCK, cant google give this as json instead of some weird
      javascript array shit ?! - strip parentheses */
   beg = (char *) msg;
@@ -409,34 +481,21 @@ _begin(Evry_Plugin *plugin, const Evry_Item *it)
 {
   GET_PLUGIN(p, plugin);
 
-  p->con_url = ecore_con_url_new(NULL);
-  if (p->host)
-    ecore_con_url_additional_header_add(p->con_url, "Host", p->host);
+  p->dd = _url_data_new(p, _plugin_data_cb, NULL, p->host);
 
-  p->handlers = eina_list_append
-    (p->handlers, ecore_event_handler_add
-     (ECORE_CON_EVENT_URL_DATA, _data_cb, p));
-
-  p->handlers = eina_list_append
-    (p->handlers, ecore_event_handler_add
-     (ECORE_CON_EVENT_URL_COMPLETE, _complete_cb, p));
-
-  ecore_con_url_data_set(p->con_url, p);
   return plugin;
 }
 
 static void
 _cleanup(Evry_Plugin *plugin)
 {
-  Ecore_Event_Handler *h;
-
   GET_PLUGIN(p, plugin);
 
-  ecore_con_url_destroy(p->con_url);
-  p->con_url = NULL;
-
-  EINA_LIST_FREE(p->handlers, h)
-    ecore_event_handler_del(h);
+  if (p->dd)
+    {
+       _url_data_free(p->dd);
+       p->dd = NULL;
+    }
 
   EVRY_PLUGIN_ITEMS_FREE(p);
 }
@@ -454,13 +513,12 @@ _send_request(void *data)
     snprintf(buf, sizeof(buf), p->request, _conf->translate, query);
   else
     snprintf(buf, sizeof(buf), p->request, _conf->lang, query);
-  /* printf("send request %s\n", buf); */
 
-  ecore_con_url_url_set(p->con_url, buf);
-  ecore_con_url_send(p->con_url, NULL, 0, NULL);
-  p->cur_size = 0;
+  printf("send request %s\n", buf);
+
+  _url_data_send(p->dd, buf);
+
   free(query);
-
   p->timer = NULL;
 
   return 0;
@@ -555,25 +613,27 @@ _action(Evry_Action *act)
   E_FREE(app);
 }
 
+/***************************************************************************/
+
 static int
-_action_download_timer(void *d)
+_youtube_dl_timer(void *d)
 {
-  Download_Data *dd = d;
+  Youtube_Data *yd = d;
   struct stat s;
   E_Notification *n = NULL;
   int abort = 0;
 
-  if (dd->ready || dd->tries++ > 20)
+  if (yd->ready || yd->tries++ > 20)
     {
       abort = 1;
       goto finish;
     }
 
-  if (stat(dd->file, &s) == 0)
+  if (stat(yd->filepath, &s) == 0)
     {
-      if (s.st_size < 262144)
+       if (s.st_size < 262144)
 	{
-	  if (!dd->ready && dd->tries > 10 && s.st_size < 1024)
+	  if (!yd->ready && yd->tries > 10 && s.st_size < 1024)
 	    {
 	      abort = 1;
 	      goto finish;
@@ -583,9 +643,9 @@ _action_download_timer(void *d)
 	  snprintf(buf, sizeof(buf), N_("Got %d kbytes"),
 		   ((unsigned int)s.st_size / 1024));
 
-	  n = e_notification_full_new("Everything", dd->id,
+	  n = e_notification_full_new("Everything", yd->id,
 				      "emblem-music", buf,
-				      ecore_file_file_get(dd->file), 5000);
+				      ecore_file_file_get(yd->filepath), 5000);
 	  e_notification_send(n, NULL, NULL);
 	  e_notification_unref(n);
 	  return 1;
@@ -594,32 +654,32 @@ _action_download_timer(void *d)
       Evry_Item_File *f = E_NEW(Evry_Item_File, 1);
       Evry_Action *act;
 
-      f->path = eina_stringshare_add(dd->file);
+      f->path = eina_stringshare_ref(yd->filepath);
       f->mime = eina_stringshare_add("audio/");
 
-      if (dd->method == 1)
+      if (yd->method == 1)
   	{
   	  if ((act = evry_action_find(N_("Enqueue in Playlist"))))
   	    {
   	      act->it1.item = EVRY_ITEM(f);
   	      act->action(act);
 	      n = e_notification_full_new
-		("Everything", dd->id, "emblem-music", N_("Enqueue"),
-		 ecore_file_file_get(dd->file), -1);
+		("Everything", yd->id, "emblem-music", N_("Enqueue"),
+		 ecore_file_file_get(yd->filepath), -1);
 	      e_notification_send(n, NULL, NULL);
 	      e_notification_unref(n);
 
   	    }
   	}
-      else if (dd->method == 2)
+      else if (yd->method == 2)
   	{
   	  if ((act = evry_action_find(N_("Play File"))))
   	    {
   	      act->it1.item = EVRY_ITEM(f);
   	      act->action(act);
 	      n = e_notification_full_new
-		("Everything", dd->id, "emblem-music", N_("Play"),
-		 ecore_file_file_get(dd->file), -1);
+		("Everything", yd->id, "emblem-music", N_("Play"),
+		 ecore_file_file_get(yd->filepath), -1);
 	      e_notification_send(n, NULL, NULL);
 	      e_notification_unref(n);
   	    }
@@ -629,10 +689,10 @@ _action_download_timer(void *d)
       IF_RELEASE(f->mime);
       E_FREE(f);
 
-      dd->ready = 1;
+      yd->ready = 1;
 
       /* after five minutes it should be finished */
-      dd->timer = ecore_timer_add(15 * 60.0, _action_download_timer, dd);
+      yd->timer = ecore_timer_add(15 * 60.0, _youtube_dl_timer, yd);
       return 0;
     }
 
@@ -642,125 +702,195 @@ _action_download_timer(void *d)
   if (abort)
     {
       n = e_notification_full_new
-	("Everything", dd->id, "emblem-music", N_("Abort download"),
-	 ecore_file_file_get(dd->file), -1);
+	("Everything", yd->id, "emblem-music", N_("Abort download"),
+	 ecore_file_file_get(yd->filepath), -1);
       e_notification_send(n, NULL, NULL);
       e_notification_unref(n);
-      if(dd->exe)
-	printf("kill %d\n", ecore_exe_pid_get(dd->exe));
+      if(yd->exe)
+	printf("kill %d\n", ecore_exe_pid_get(yd->exe));
       else
 	printf("kill nothing\n");
-      if (dd->exe) ecore_exe_kill(dd->exe);
-      ecore_file_remove(dd->file);
+      if (yd->exe) ecore_exe_kill(yd->exe);
+      ecore_file_remove(yd->filepath);
       ERR("abort download\n");
     }
 
-  download_handlers = eina_list_remove(download_handlers, dd);
-  ecore_event_handler_del(dd->del_handler);
-  E_FREE(dd->file);
-  E_FREE(dd);
+  download_handlers = eina_list_remove(download_handlers, yd);
+  ecore_event_handler_del(yd->del_handler);
+
+  IF_RELEASE(yd->label);
+  IF_RELEASE(yd->filepath);
+  E_FREE(yd);
 
   return 0;
 }
 
 static int
-_download_cb_del(void *data, int type __UNUSED__, void *event)
+_youtube_dl_cb_del(void *data, int type __UNUSED__, void *event)
 {
-  Download_Data *dd = data;
+  Youtube_Data *yd = data;
   Ecore_Exe_Event_Del *e = event;
   E_Notification *n;
-  
-  if (e->exe != dd->exe)
+
+  if (e->exe != yd->exe)
     return 1;
 
   n = e_notification_full_new
-    ("Everything", dd->id, "emblem-music", N_("Finished download"),
-     ecore_file_file_get(dd->file), -1);
+    ("Everything", yd->id, "emblem-music", N_("Finished download"),
+     ecore_file_file_get(yd->filepath), -1);
   e_notification_send(n, NULL, NULL);
   e_notification_unref(n);
-  
-  dd->exe = NULL;
-  download_handlers = eina_list_remove(download_handlers, dd);
-  ecore_event_handler_del(dd->del_handler);
-  ecore_timer_del(dd->timer);
-  E_FREE(dd->file);
-  E_FREE(dd);
-  
+
+  yd->exe = NULL;
+  download_handlers = eina_list_remove(download_handlers, yd);
+  ecore_event_handler_del(yd->del_handler);
+  ecore_timer_del(yd->timer);
+
+  IF_RELEASE(yd->label);
+  IF_RELEASE(yd->filepath);
+  E_FREE(yd);
+
   return 0;
 }
 
-static void
-_download_cb_id(void *user_data, void *method_return, DBusError *error)
-{
-  Download_Data *dd = user_data;
-  E_Notification_Return_Notify *r = method_return;
-
-  if (r) dd->id = r->notification_id;
-
-  if (r) printf("got id %d\n", r->notification_id);
-}
-
-
 static int
-_action_download(Evry_Action *act)
+_youtube_dl_data_cb(Url_Data *dd)
 {
-  char buf[1024];
-  char file[1024];
-  int method = EVRY_ITEM_DATA_INT_GET(act);
-  GET_WEBLINK(wl, act->it1.item);
-  Ecore_Exe *exe = NULL;
-  char *filename = ecore_file_escape_name(act->it1.item->label);
+   Youtube_Data *yd = dd->user_data;
 
-  snprintf(file, sizeof(file),
-	   "%s/Download/%s",
-	   e_user_homedir_get(),
-	   filename);
+   Json_Data *rsp = NULL, *d, *d2;
+   E_Notification *n;
+   char *msg, *filename;
+   const char *video_id, *t;
+   Ecore_Exe *exe = NULL;
+   char url[1024];
+   char path[1024];
+   char buf[1024];
 
-  if (!ecore_file_exists(file))
-    {
-      snprintf(buf, sizeof(buf), _conf->convert_cmd, wl->url, file);
-      if (!method)
+   if (!dd->data)
+     goto finish;
+
+   msg = dd->data;
+   msg = strstr(msg, "var swfConfig = ");
+   if ((!msg) || !(msg += 16))
+     return;
+
+   rsp = _json_parse(msg, dd->size - (msg - dd->data));
+
+   if ((d = _json_data_find(rsp, "args", 1)))
+     {
+	d2 = _json_data_find(rsp, "video_id", 3);
+	if (d2) video_id = d2->value;
+
+	d2 = _json_data_find(rsp, "t", 3);
+	if (d2) t = d2->value;
+     }
+
+   if (!t || !video_id)
+     {
+	printf("parse failed\n");
+	goto finish;
+     }
+
+   snprintf(url, sizeof(url),
+	    "http://www.youtube.com/get_video?"
+	    "video_id=%s&t=%s"
+	    "&eurl=&el=detailpage&ps=default&gl=US&hl=en&"
+	    "fmt=18", video_id, t);
+
+   if (yd->method == 3)
+     {
+	printf("play %s\n", url);
+	snprintf(buf, sizeof(buf), "mplayer '%s'", url);
 	exe = ecore_exe_run(buf, NULL);
-    }
+	goto finish;
+     }
 
-  if (method == 1 || method == 2)
-    {
-      E_Notification *n;
-      Download_Data *dd = E_NEW(Download_Data, 1);
-      
-      exe = ecore_exe_run(buf, dd);
-      dd->del_handler = ecore_event_handler_add
-	(ECORE_EXE_EVENT_DEL, _download_cb_del, dd);
+   printf("download %s\n", url);
 
-      snprintf(buf, sizeof(buf),
-	       "%s/Download/%s.mp3",
-	       e_user_homedir_get(),
-	       act->it1.item->label);
+   char *tmp = ecore_file_escape_name(yd->label);
+   if (yd->num)
+     snprintf(path, sizeof(path), "%s/Download/%s-%d.mp3",
+	      e_user_homedir_get(), tmp, yd->num);
+   else
+     snprintf(path, sizeof(path), "%s/Download/%s.mp3",
+	      e_user_homedir_get(), tmp);
+   E_FREE(tmp);
 
-      dd->file = strdup(buf);
-      dd->method = method;
-      dd->tries = 0;
-      dd->id = rand();
-      if (!dd->id)
-	dd->id = 1;
-      if (exe)
-	dd->exe = exe;
-      dd->timer = ecore_timer_add(3.0, _action_download_timer, dd);
-      download_handlers = eina_list_append(download_handlers, dd);
+   snprintf(buf, sizeof(buf), _conf->convert_cmd, url, path);
+   exe = ecore_exe_run(buf, yd);
 
-      n = e_notification_full_new
-	("Everything", 0, "emblem-music", N_("Start download"),
-	 ecore_file_file_get(act->it1.item->label), -1);
-      e_notification_send(n, _download_cb_id, dd);
-      e_notification_unref(n);
+   yd->tries = 0;
+   yd->id = rand();
+   if (!yd->id) yd->id = 1;
+   if (exe)
+     {
+	yd->exe = exe;
 
-    }
+	yd->del_handler = ecore_event_handler_add
+	  (ECORE_EXE_EVENT_DEL, _youtube_dl_cb_del, yd);
+     }
+
+   yd->timer = ecore_timer_add(3.0, _youtube_dl_timer, yd);
+
+   download_handlers = eina_list_append(download_handlers, yd);
+
+   n = e_notification_full_new
+     ("Everything", 0, "emblem-music", N_("Start download"),
+      ecore_file_file_get(yd->label), -1);
+   e_notification_send(n, NULL, NULL);
+   e_notification_unref(n);
+
+ finish:
+   _json_data_free(rsp);
+   _url_data_free(dd);
+   yd->dd = NULL;
+
+   return 1;
+}
+
+static int
+_youtube_dl_action(Evry_Action *act)
+{
+   GET_WEBLINK(wl, act->it1.item);
+   const char *file;
+   char path[PATH_MAX];
+   int i;
+
+   file = act->it1.item->label;
+
+   printf("file %s\n", file);
+
+   snprintf(path, sizeof(path), "%s/Download/%s.mp3",
+	    e_user_homedir_get(), file);
+
+   for (i = 0; i < 10;)
+     {
+	printf("try %s\n", path);
+	if (!ecore_file_exists(path))
+	  break;
+
+	snprintf(path, sizeof(path), "%s/Download/%s-%d.mp3",
+		 e_user_homedir_get(), file, ++i);
+     }
+
+   if (i == 10) return 0;
+
+   Youtube_Data *yd = E_NEW(Youtube_Data, 1);
+   yd->label = eina_stringshare_ref(act->it1.item->label);
+   yd->filepath = eina_stringshare_add(path);
+   yd->method = EVRY_ITEM_DATA_INT_GET(act);
+   yd->num = i;
+   yd->dd = _url_data_new(yd, _youtube_dl_data_cb, NULL, NULL);
+   _url_data_send(yd->dd, wl->url);
+
+   printf("send %s\n", wl->url);
 
   return 0;
 }
 
 static int
-_action_check(Evry_Action *act, const Evry_Item *it)
+_youtube_dl_check(Evry_Action *act, const Evry_Item *it)
 {
   if (EVRY_ITEM_DATA_INT_GET(act) == ACT_YOUTUBE)
     {
@@ -779,61 +909,21 @@ typedef struct _Upload_Data Upload_Data;
 struct _Upload_Data
 {
   int id;
-  int progress;
   const char *file;
+  int progress;
 
-  Ecore_Con_Url *con_url;
-  Ecore_Event_Handler *con_complete;
-  Ecore_Event_Handler *con_data;
-  Ecore_Event_Handler *con_progress;
+  Url_Data *dd;
 };
 
 static int
-_con_complete(void *data, int ev_type, void *event)
+_upload_data(Url_Data *dd)
 {
-  Ecore_Con_Event_Url_Complete *ev = event;
-  const Eina_List *l, *ll;
-  Upload_Data *ud;
-  char *header;
-
-  ud = ecore_con_url_data_get(ev->url_con);
-
-  if (data != ud)
-    return;
-
-  l = ecore_con_url_response_headers_get(ev->url_con);
-  /* EINA_LIST_FOREACH(l, ll, header)
-   *   printf("%s", header); */
-
-  ecore_event_handler_del(ud->con_complete);
-  ecore_event_handler_del(ud->con_data);
-  ecore_event_handler_del(ud->con_progress);
-  ecore_con_url_destroy(ud->con_url);
-  eina_stringshare_del(ud->file);
-
-  E_FREE(ud);
-
-  return 0;
-}
-
-static int
-_con_data(void *data, int ev_type, void *event)
-{
-  Ecore_Con_Event_Url_Data *ev = event;
   Json_Data *d, *rsp;
-  Upload_Data *ud;
+  Upload_Data *ud = dd->user_data;
   E_Notification *n;
   int len;
 
-  ud = ecore_con_url_data_get(ev->url_con);
-
-  if (data != ud)
-    return 1;
-
-  len = ecore_con_url_received_bytes_get(ev->url_con);
-  /* fprintf(stdout, "parse %*s\n", len, (char *)ev->data); */
-
-  rsp = _json_parse((char *)ev->data, len);
+  rsp = _json_parse(dd->data, dd->size);
   d = _json_data_find(rsp, "imgur_page", 5);
 
   if (d)
@@ -841,13 +931,13 @@ _con_data(void *data, int ev_type, void *event)
       len = strlen(d->value);
       ecore_x_selection_primary_set(ecore_x_window_root_first_get(), d->value, len);
       ecore_x_selection_clipboard_set(ecore_x_window_root_first_get(), d->value, len);
-      n = e_notification_full_new("Everything", ud->id, "image", N_("Image Sent"),
+      n = e_notification_full_new("Everything", ud->id, "image", N_("Upload Image"),
 				  N_("Link copied to clipboard"), -1);
     }
   else
     {
-      n = e_notification_full_new("Everything", ud->id, "image", N_("Something went wrong :("),
-				  ud->file, -1);
+      n = e_notification_full_new("Everything", ud->id, "image", N_("Upload Image"),
+				  N_("Something went wrong :("), -1);
     }
 
   e_notification_send(n, NULL, NULL);
@@ -855,49 +945,37 @@ _con_data(void *data, int ev_type, void *event)
 
   _json_data_free(rsp);
 
+  _url_data_free(dd);
+  eina_stringshare_del(ud->file);
+  E_FREE(ud);
+
   return 1;
 }
 
 static int
-_con_progress(void *data, int ev_type, void *event)
+_upload_progress(Url_Data *dd, Ecore_Con_Event_Url_Progress *ev)
 {
-  Ecore_Con_Event_Url_Progress *ev = event;
-  Upload_Data *ud;
-  E_Notification *n;
-  double up;
+   Upload_Data *ud = dd->user_data;
+   E_Notification *n;
+   double up;
 
-  ud = ecore_con_url_data_get(ev->url_con);
+   up = (ev->up.now / ev->up.total) * 20.0;
 
-  if (data != ud)
-    return 1;
+   if ((int) up > ud->progress)
+     {
+	char buf[128];
 
-  up = (ev->up.now / ev->up.total) * 20.0;
+	ud->progress = up;
+	snprintf(buf, sizeof(buf), N_("%1.1f%% of %s"), up * 5.0, ud->file);
 
-  if ((int) up > ud->progress)
-    {
-      char buf[128];
+	n = e_notification_full_new("Everything", ud->id,
+				    "image", N_("Upload Image"), buf, -1);
 
-      ud->progress = up;
-      snprintf(buf, sizeof(buf), N_("Sent %1.1f%% of"), up * 5.0);
-      /* printf("sent %s\n", buf); */
+	e_notification_send(n, NULL, NULL);
+	e_notification_unref(n);
+     }
 
-      n = e_notification_full_new("Everything", ud->id,
-				  "image", buf, ud->file, -1);
-
-      e_notification_send(n, NULL, NULL);
-      e_notification_unref(n);
-    }
-
-  return 1;
-}
-
-static void
-_notification_id_cb(void *user_data, void *method_return, DBusError *error)
-{
-  Upload_Data *ud = user_data;
-  E_Notification_Return_Notify *r = method_return;
-
-  if(r) ud->id = r->notification_id;
+   return 1;
 }
 
 static int
@@ -913,21 +991,10 @@ _action_upload(Evry_Action *act)
     return 0;
 
   ud = E_NEW(Upload_Data, 1);
-
-  ud->con_url = ecore_con_url_new("http://imgur.com/api/upload.json");
-
-  ud->con_complete = ecore_event_handler_add
-    (ECORE_CON_EVENT_URL_COMPLETE, _con_complete, ud);
-
-  ud->con_data = ecore_event_handler_add
-    (ECORE_CON_EVENT_URL_DATA, _con_data, ud);
-
-  ud->con_progress = ecore_event_handler_add
-    (ECORE_CON_EVENT_URL_PROGRESS, _con_progress, ud);
-
+  ud->dd = _url_data_new(ud, _upload_data, _upload_progress, NULL);
+  ecore_con_url_url_set(ud->dd->con_url, "http://imgur.com/api/upload.json");
+  ud->id = rand() + 1;
   ud->file = eina_stringshare_ref(act->it1.item->label);
-  ecore_con_url_data_set(ud->con_url, ud);
-
 
   curl_formadd(&post, &last,
 	       CURLFORM_COPYNAME, "key",
@@ -939,10 +1006,10 @@ _action_upload(Evry_Action *act)
 	       CURLFORM_FILE, file->path,
 	       CURLFORM_END);
 
-  ecore_con_url_http_post_send(ud->con_url, post);
+  ecore_con_url_http_post_send(ud->dd->con_url, post);
 
-  n = e_notification_full_new("Everything", 0, "image", "Send Image", ud->file, -1);
-  e_notification_send(n, _notification_id_cb, ud);
+  n = e_notification_full_new("Everything", ud->id, "image", N_("Upload Image"), ud->file, -1);
+  e_notification_send(n, NULL, NULL);
   e_notification_unref(n);
   return 0;
 }
@@ -1044,19 +1111,19 @@ _plugins_init(void)
 	     _action, NULL, ACT_FEELING_LUCKY);
 
   ACTION_NEW(N_("Watch on Youtube"), WEBLINK, "feeling-lucky",
-	     _action, NULL, ACT_YOUTUBE);
+  	     _action, NULL, ACT_YOUTUBE);
 
   ACTION_NEW(N_("Download as Audio"), WEBLINK, "feeling-lucky",
-	     _action_download, NULL, 0);
+  	     _youtube_dl_action, NULL, 0);
 
-  /* ACTION_NEW(N_("Download as Video"), WEBLINK, "feeling-lucky",
-   * 	     _action_download, NULL, 3); */
+  ACTION_NEW(N_("Play Video"), WEBLINK, "feeling-lucky",
+  	     _youtube_dl_action, NULL, 3);
 
   ACTION_NEW(N_("Download and enqueue"), WEBLINK, "feeling-lucky",
-  	     _action_download, NULL, 1);
+  	     _youtube_dl_action, NULL, 1);
 
   ACTION_NEW(N_("Download and play"), WEBLINK, "feeling-lucky",
-  	     _action_download, NULL, 2);
+  	     _youtube_dl_action, NULL, 2);
 
   ACTION_NEW(N_("Upload Image"), EVRY_TYPE_FILE, "go-next",
 	     _action_upload, _action_upload_check, ACT_UPLOAD_IMGUR);
@@ -1233,10 +1300,16 @@ _conf_new(void)
    *     "%s.mp3 > /dev/null 2>&1");
    * IFMODCFGEND; */
 
-  IFMODCFG(0x00cd);
+  /* IFMODCFG(0x00cd);
+   * _conf->convert_cmd = eina_stringshare_add
+   *   ("mencoder -msglevel all=1 -ovc frameno -oac mp3lame -lameopts cbr:br=128 -of rawaudio "
+   *    "$(youtube-dl -g -b \"%s\") -o %s.mp3");
+   * IFMODCFGEND; */
+
+  IFMODCFG(0x00dd);
   _conf->convert_cmd = eina_stringshare_add
-    ("mencoder -msglevel all=1 -ovc frameno -oac mp3lame -lameopts cbr:br=128 -of rawaudio "
-     "$(youtube-dl -g -b \"%s\") -o %s.mp3");
+    ("mencoder -msglevel all=1 -ovc frameno -oac mp3lame -lameopts cbr:br=128 "
+     "-audio-preload 2.0 -of rawaudio \"%s\" -o %s");
   IFMODCFGEND;
 
   _conf->version = MOD_CONFIG_FILE_VERSION;
@@ -1327,6 +1400,8 @@ e_modapi_init(E_Module *m)
   _conf_init(m);
 
   WEBLINK = evry_type_register("WEBLINK");
+  WEBPAGE = evry_type_register("WEBPAGE");
+
   snprintf(buf, sizeof(buf), "%s/.cache/youtube", e_user_homedir_get());
   if (!ecore_file_exists(buf))
     ecore_file_mkdir(buf);
@@ -1340,6 +1415,18 @@ e_modapi_init(E_Module *m)
       return NULL;
     }
 
+  handlers = eina_list_append
+    (handlers, ecore_event_handler_add
+     (ECORE_CON_EVENT_URL_DATA, _common_data_cb, _conf));
+
+  handlers = eina_list_append
+    (handlers, ecore_event_handler_add
+     (ECORE_CON_EVENT_URL_PROGRESS, _common_progress_cb, _conf));
+
+  handlers = eina_list_append
+    (handlers, ecore_event_handler_add
+     (ECORE_CON_EVENT_URL_COMPLETE, _common_complete_cb, _conf));
+
   e_module_delayed_set(m, 1);
 
   return m;
@@ -1348,21 +1435,24 @@ e_modapi_init(E_Module *m)
 EAPI int
 e_modapi_shutdown(E_Module *m)
 {
-  Download_Data *dd;
+  Ecore_Event_Handler *h;
 
   if (e_datastore_get("everything_loaded"))
     _plugins_shutdown();
+
+  EINA_LIST_FREE(handlers, h)
+    ecore_event_handler_del(h);
 
   _conf_shutdown();
   e_notification_shutdown();
   ecore_con_url_shutdown();
 
-  EINA_LIST_FREE(download_handlers, dd)
-    {
-      if (dd->exe) ecore_exe_kill(dd->exe);
-      E_FREE(dd->file);
-      E_FREE(dd);
-    }
+  /* EINA_LIST_FREE(download_handlers, dd)
+   *   {
+   *     if (dd->exe) ecore_exe_kill(dd->exe);
+   *     E_FREE(dd->file);
+   *     E_FREE(dd);
+   *   } */
 
   return 1;
 }
@@ -1523,11 +1613,11 @@ _json_parse(const char *string, int len)
   struct json_parser parser;
   int i, ret;
 
-  if (!len)
-    len = strlen(string);
-
   if (!string)
     return NULL;
+
+  if (!len)
+    len = strlen(string);
 
   Json_Data *d = E_NEW(Json_Data, 1);
   d->cur = d;
@@ -1543,8 +1633,17 @@ _json_parse(const char *string, int len)
     {
       if ((ret = json_parser_string(&parser, string + i, 1, NULL)))
 	{
-	  ERR("%d\n", ret);
-	  break;
+	  if (d->cur == d)
+	    {
+	      ret = 0;
+	      break;
+
+	    }
+	  else
+	    {
+	      ERR("%d\n", ret);
+	      break;
+	    }
 	}
     }
 
