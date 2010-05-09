@@ -15,6 +15,11 @@
 #define ACT_UPLOAD_IMGUR	4
 #define ACT_YOUTUBE		5
 
+#define YOUTUBE_DL		0
+#define YOUTUBE_DL_PLAY		1
+#define YOUTUBE_DL_ENQ		2
+#define YOUTUBE_PLAY		3
+
 /* #undef DBG
  * #define DBG(...) ERR(__VA_ARGS__) */
 
@@ -446,17 +451,10 @@ _google_data_cb(Plugin *p, const char *msg, int len)
   char *beg;
 
   if (!msg) return 1;
-  /* FUCK, cant google give this as json instead of some weird
-     javascript array shit ?! - strip parentheses */
-  beg = (char *) msg;
-  msg = strchr(msg, '(');
-  if (msg) msg++;
-  len = len - (msg - beg) - 1;
+  beg = strchr(msg, '(');
+  if (beg) beg++;
 
-  /* fprintf(stdout, "parse %*s\n", len, msg); */
-  if (!msg) return 0;
-
-  rsp = _json_parse(msg, len);
+  rsp = _json_parse(beg, len);
 
   if (rsp && rsp->list &&
       (d = rsp->list->data) &&
@@ -644,6 +642,7 @@ _youtube_dl_finish(Youtube_Data *yd, int abort)
 
    download_handlers = eina_list_remove(download_handlers, yd);
    ecore_event_handler_del(yd->del_handler);
+   ecore_timer_del(yd->timer);
    ecore_file_remove(yd->fifo);
    IF_RELEASE(yd->label);
    IF_RELEASE(yd->filepath);
@@ -687,27 +686,20 @@ _youtube_dl_timer(void *d)
       f->path = eina_stringshare_ref(yd->filepath);
       f->mime = eina_stringshare_add("audio/");
 
-      if (yd->method == 1)
-  	{
-  	  if ((act = evry_action_find(N_("Enqueue in Playlist"))))
-  	    {
-  	      act->it1.item = EVRY_ITEM(f);
-  	      act->action(act);
-	      _send_notification(yd->id, "music", N_("Enqueue"),
-				 yd->label, -1);
-  	    }
-  	}
-      else if (yd->method == 2)
-  	{
-  	  if ((act = evry_action_find(N_("Play File"))))
-  	    {
-  	      act->it1.item = EVRY_ITEM(f);
-  	      act->action(act);
-	      _send_notification(yd->id, "music", N_("Play"),
-				 yd->label, -1);
-  	    }
-  	}
-
+      if ((yd->method == YOUTUBE_DL_ENQ) &&
+  	  (act = evry_action_find(N_("Enqueue in Playlist"))))
+	{
+	   act->it1.item = EVRY_ITEM(f);
+	   act->action(act);
+	   _send_notification(yd->id, "music", N_("Enqueue"), yd->label, -1);
+	}
+      if ((yd->method == YOUTUBE_DL_PLAY) &&
+  	  (act = evry_action_find(N_("Play File"))))
+	{
+	   act->it1.item = EVRY_ITEM(f);
+	   act->action(act);
+	   _send_notification(yd->id, "music", N_("Play"), yd->label, -1);
+	}
       IF_RELEASE(f->path);
       IF_RELEASE(f->mime);
       E_FREE(f);
@@ -795,7 +787,7 @@ _youtube_dl_data_cb(Url_Data *dd)
 	    "&eurl=&el=detailpage&ps=default&gl=US&hl=en&"
 	    "fmt=18\"", video_id, t);
 
-   if (yd->method == 3)
+   if (yd->method == YOUTUBE_PLAY)
      {
 	snprintf(buf, sizeof(buf), "mplayer %s", url);
 	exe = ecore_exe_run(buf, NULL);
@@ -811,7 +803,9 @@ _youtube_dl_data_cb(Url_Data *dd)
 		 url, fifo);
 	yd->exe1 = ecore_exe_run(buf, yd);
 
-	snprintf(buf, sizeof(buf), "lame --quiet -V2 %s \"%s\"", fifo, yd->filepath);
+	snprintf(buf, sizeof(buf),
+		 "lame --quiet --tt \"%s\" --id3v2-only -V2 %s \"%s\"",
+		 yd->label, fifo, yd->filepath);
 	yd->exe2 = ecore_exe_run(buf, yd);
 
 	yd->fifo = eina_stringshare_add(fifo);
@@ -828,7 +822,6 @@ _youtube_dl_data_cb(Url_Data *dd)
 
 	_send_notification(yd->id, "music", N_("Start download"),
 			   yd->label, -1);
-
      }
 
  finish:
@@ -1086,16 +1079,16 @@ _plugins_init(void)
   	     _action, _youtube_dl_check, ACT_YOUTUBE);
 
   ACTION_NEW(N_("Download as Audio"), WEBLINK, "feeling-lucky",
-  	     _youtube_dl_action, _youtube_dl_check, 0);
+  	     _youtube_dl_action, _youtube_dl_check, YOUTUBE_DL);
 
   ACTION_NEW(N_("Play Video"), WEBLINK, "feeling-lucky",
-  	     _youtube_dl_action, _youtube_dl_check, 3);
+  	     _youtube_dl_action, _youtube_dl_check, YOUTUBE_PLAY);
 
   ACTION_NEW(N_("Download and enqueue"), WEBLINK, "feeling-lucky",
-  	     _youtube_dl_action, _youtube_dl_check, 1);
+  	     _youtube_dl_action, _youtube_dl_check, YOUTUBE_DL_ENQ);
 
   ACTION_NEW(N_("Download and play"), WEBLINK, "feeling-lucky",
-  	     _youtube_dl_action, _youtube_dl_check, 2);
+  	     _youtube_dl_action, _youtube_dl_check, YOUTUBE_DL_PLAY);
 
   ACTION_NEW(N_("Upload Image"), EVRY_TYPE_FILE, "go-next",
 	     _action_upload, _action_upload_check, ACT_UPLOAD_IMGUR);
