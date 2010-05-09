@@ -192,14 +192,15 @@ _url_data_free(Url_Data *dd)
    E_FREE(dd);
 }
 
-static void
+static int
 _url_data_send(Url_Data *dd, const char *url)
 {
    E_FREE(dd->data);
    dd->size = 0;
 
    ecore_con_url_url_set(dd->con_url, url);
-   ecore_con_url_send(dd->con_url, NULL, 0, NULL);
+
+   return ecore_con_url_send(dd->con_url, NULL, 0, NULL);
 }
 
 static int
@@ -514,6 +515,7 @@ _send_request(void *data)
   Plugin *p = data;
   char buf[1024];
   char *query;
+  int active;
 
   query = evry_util_url_escape(p->input, 0);
 
@@ -522,14 +524,14 @@ _send_request(void *data)
   else
     snprintf(buf, sizeof(buf), p->request, _conf->lang, query);
 
-  printf("send request %s\n", buf);
+  /* printf("send request %s\n", buf); */
 
-  _url_data_send(p->dd, buf);
+  active = _url_data_send(p->dd, buf);
 
   free(query);
   p->timer = NULL;
 
-  return 0;
+  return !active;
 }
 
 static int
@@ -777,7 +779,7 @@ _youtube_dl_data_cb(Url_Data *dd)
 
    if (!t || !video_id)
      {
-	printf("parse failed\n");
+	ERR("parse failed\n");
 	_json_data_free(rsp);
 	_url_data_free(dd);
 
@@ -795,14 +797,11 @@ _youtube_dl_data_cb(Url_Data *dd)
 
    if (yd->method == 3)
      {
-	printf("play %s\n", url);
 	snprintf(buf, sizeof(buf), "mplayer %s", url);
 	exe = ecore_exe_run(buf, NULL);
      }
    else
      {
-	printf("download %s\n", url);
-
 	snprintf(fifo, sizeof(fifo), "/tmp/convert-%f", ecore_time_get());
 	mkfifo(fifo, 0666);
 
@@ -850,8 +849,6 @@ _youtube_dl_action(Evry_Action *act)
 
    file = act->it1.item->label;
 
-   printf("file %s\n", file);
-
    snprintf(path, sizeof(path), "%s/Download/%s.mp3",
 	    e_user_homedir_get(), file);
 
@@ -874,8 +871,6 @@ _youtube_dl_action(Evry_Action *act)
    yd->num = i;
    yd->dd = _url_data_new(yd, _youtube_dl_data_cb, NULL, NULL);
    _url_data_send(yd->dd, wl->url);
-
-   printf("send %s\n", wl->url);
 
   return 0;
 }
