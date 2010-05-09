@@ -40,7 +40,6 @@ CURL * user_agent = NULL;
 CURL * user_agent_images = NULL;
 char error_buf[2048];
 
-char * userpwd=NULL;
 extern char * url_post;
 extern char * url_friends;
 extern int debug;
@@ -147,9 +146,9 @@ CURL * ed_curl_init(char *screen_name, char *password, http_request * request, i
 		curl_easy_setopt(ua, CURLOPT_WRITEFUNCTION,     write_data      );
 
 		if(account_id >= 0 && screen_name != NULL && password != NULL) {
-			res = asprintf(&userpwd, "%s:%s", screen_name, password);
-			if(res != -1)
-				curl_easy_setopt(ua, CURLOPT_USERPWD,   userpwd         );
+			curl_easy_setopt(ua, CURLOPT_HTTPAUTH,   CURLAUTH_ANY        );
+			curl_easy_setopt(ua, CURLOPT_USERNAME,   screen_name         );
+			curl_easy_setopt(ua, CURLOPT_PASSWORD,   password            );
 		}
 	}
 
