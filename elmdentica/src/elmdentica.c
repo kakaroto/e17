@@ -1346,7 +1346,7 @@ EAPI int elm_main(int argc, char **argv)
 		elm_box_pack_end(box2, count);
 
 		entry = elm_entry_add(win);
-			elm_entry_entry_set(entry, _("Press here to start typing your message..."));
+			elm_entry_entry_set(entry, _("Type your status here..."));
 			elm_entry_single_line_set(entry, 0);
 			elm_entry_line_wrap_set(entry, 1);
 			evas_object_size_hint_weight_set(entry, 1, 0);

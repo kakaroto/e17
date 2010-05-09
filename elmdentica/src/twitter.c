@@ -212,21 +212,25 @@ void ed_twitter_timeline_get(int account_id, char *screen_name, char *password, 
 
 		ed_curl_get(screen_name, password, request, account_id);
 
-		ed_twitter_init_friends();
-		xmlSubstituteEntitiesDefault(1);
+		if(request->response_code == 200) {
+			ed_twitter_init_friends();
+			xmlSubstituteEntitiesDefault(1);
 
-		xml_res = xmlSAXUserParseMemory(&saxHandler, (void*)statuses, request->content.memory, request->content.size);
+			xml_res = xmlSAXUserParseMemory(&saxHandler, (void*)statuses, request->content.memory, request->content.size);
 
-		if(xml_res != 0) {
-			fprintf(stderr,_("FAILED TO SAX FRIENDS: %d\n"),xml_res);
-			if (debug) fprintf(stderr,"%s\n",request->content.memory);
-		}
+			if(xml_res != 0) {
+				fprintf(stderr,_("FAILED TO SAX FRIENDS: %d\n"),xml_res);
+				if (debug) fprintf(stderr,"%s\n",request->content.memory);
+			}
 
-		if(statuses->state != HASH) {
-			now = time(NULL);
-			messages_insert(account_id, statuses->list, timeline);
+			if(statuses->state != HASH) {
+				now = time(NULL);
+				messages_insert(account_id, statuses->list, timeline);
+			} else {
+				//show_error(statuses);
+			}
 		} else {
-			//show_error(statuses);
+			printf("http response code was %ld\n", request->response_code);
 		}
 
 	}
