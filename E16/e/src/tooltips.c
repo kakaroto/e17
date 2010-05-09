@@ -132,7 +132,7 @@ TooltipDestroy(ToolTip * tt)
 
    if (tt->ref_count > 0)
      {
-	DialogOK("ToolTip Error!", _("%u references remain\n"), tt->ref_count);
+	DialogOK("ToolTip Error!", _("%u references remain"), tt->ref_count);
      }
 }
 #endif
@@ -860,7 +860,7 @@ _DlgFillTooltips(Dialog * d __UNUSED__, DItem * table, void *data __UNUSED__)
 
    di = DialogAddItem(table, DITEM_TEXT);
    DialogItemSetAlign(di, 0, 512);
-   DialogItemSetText(di, _("Tooltip Delay:\n"));
+   DialogItemSetText(di, _("Tooltip Delay:"));
 
    di = DialogAddItem(table, DITEM_SLIDER);
    DialogItemSliderSetBounds(di, 0, 300);
@@ -875,7 +875,7 @@ const DialogDef     DlgTooltips = {
    N_("Tooltip Settings"),
    SOUND_SETTINGS_TOOLTIPS,
    "pix/tips.png",
-   N_("Enlightenment Tooltip\n" "Settings Dialog\n"),
+   N_("Enlightenment Tooltip\n" "Settings Dialog"),
    _DlgFillTooltips,
    DLG_OAC, CB_ConfigureTooltips,
 };

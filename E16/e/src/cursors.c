@@ -128,7 +128,7 @@ ECursorDestroy(ECursor * ec)
 
    if (ec->ref_count > 0)
      {
-	DialogOK("ECursor Error!", _("%u references remain\n"), ec->ref_count);
+	DialogOK("ECursor Error!", _("%u references remain"), ec->ref_count);
 	return;
      }
 

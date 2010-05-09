@@ -334,8 +334,7 @@ ImageclassDestroy(ImageClass * ic)
 
    if (ic->ref_count > 0)
      {
-	DialogOK("ImageClass Error!", _("%u references remain\n"),
-		 ic->ref_count);
+	DialogOK("ImageClass Error!", _("%u references remain"), ic->ref_count);
 	return;
      }
 

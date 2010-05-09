@@ -2167,7 +2167,7 @@ const DialogDef     DlgMenus = {
    N_("Menu Settings"),
    SOUND_SETTINGS_MENUS,
    "pix/place.png",
-   N_("Enlightenment Menu\n" "Settings Dialog\n"),
+   N_("Enlightenment Menu\n" "Settings Dialog"),
    _DlgFillMenus,
    DLG_OAC, CB_ConfigureMenus,
 };

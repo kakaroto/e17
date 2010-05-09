@@ -180,7 +180,7 @@ ButtonDestroy(Button * b)
 
    if (b->ref_count > 0)
      {
-	DialogOK("Button Error!", _("%u references remain\n"), b->ref_count);
+	DialogOK("Button Error!", _("%u references remain"), b->ref_count);
 	return;
      }
 

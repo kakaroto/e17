@@ -122,8 +122,7 @@ TextclassDestroy(TextClass * tc)
 {
    if (tc->ref_count > 0)
      {
-	DialogOK("TextClass Error!", _("%u references remain\n"),
-		 tc->ref_count);
+	DialogOK("TextClass Error!", _("%u references remain"), tc->ref_count);
 	return;
      }
    Efree(tc->name);

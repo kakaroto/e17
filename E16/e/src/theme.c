@@ -413,7 +413,7 @@ const DialogDef     DlgTheme = {
    N_("Theme Settings"),
    SOUND_SETTINGS_MISCELLANEOUS,
    "pix/miscellaneous.png",
-   N_("Enlightenment Theme\n" "Settings Dialog\n"),
+   N_("Enlightenment Theme\n" "Settings Dialog"),
    _DlgThemeFill,
    DLG_OAC, _DlgThemeConfigure,
 };

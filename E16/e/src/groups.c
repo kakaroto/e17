@@ -706,7 +706,7 @@ static const DialogDef DlgGroupChoose = {
    N_("Window Group Selection"),
    SOUND_SETTINGS_GROUP,
    "pix/group.png",
-   N_("Enlightenment Window Group\n" "Selection Dialog\n"),
+   N_("Enlightenment Window Group\n" "Selection Dialog"),
    _DlgFillGroupChoose,
    DLG_OC, ChooseGroup,
 };
@@ -731,24 +731,24 @@ ChooseGroupDialog(EWin * ewin, const char *message, char group_select,
      {
 	DialogOK(_("Window Group Error"),
 		 _
-		 ("\n  This window currently does not belong to any groups.  \n"
-		  "  You can only destroy groups or remove windows from groups  \n"
-		  "  through a window that actually belongs to at least one group.\n\n"));
+		 ("This window currently does not belong to any groups.\n"
+		  "You can only destroy groups or remove windows from groups\n"
+		  "through a window that actually belongs to at least one group."));
 	return;
      }
    if ((num_groups == 0) && (group_select == GROUP_SELECT_ALL_EXCEPT_EWIN))
      {
 	DialogOK(_("Window Group Error"),
-		 _("\n  Currently, no groups exist or this window  \n"
-		   "  already belongs to all existing groups.  \n"
-		   "  You have to start other groups first.  \n\n"));
+		 _("Currently, no groups exist or this window\n"
+		   "already belongs to all existing groups.\n"
+		   "You have to start other groups first."));
 	return;
      }
    if (!tmp_groups)
      {
 	DialogOK(_("Window Group Error"),
 		 _
-		 ("\n  Currently, no groups exist. You have to start a group first.\n\n"));
+		 ("Currently, no groups exist. You have to start a group first."));
 	return;
      }
 
@@ -832,7 +832,7 @@ _DlgFillGroups(Dialog * d, DItem * table, void *data)
    di = DialogAddItem(table, DITEM_TEXT);
    DialogItemSetColSpan(di, 2);
    DialogItemSetAlign(di, 0, 512);
-   DialogItemSetText(di, _("   Pick the group to configure:   "));
+   DialogItemSetText(di, _("Pick the group to configure:"));
 
    group_member_strings =
       GetWinGroupMemberNames(ewin->groups, ewin->num_groups);
@@ -863,8 +863,8 @@ _DlgFillGroups(Dialog * d, DItem * table, void *data)
    di = DialogAddItem(table, DITEM_TEXT);
    DialogItemSetColSpan(di, 2);
    DialogItemSetAlign(di, 0, 512);
-   DialogItemSetText(di, _("  The following actions are  \n"
-			   "  applied to all group members:  "));
+   DialogItemSetText(di, _("The following actions are\n"
+			   "applied to all group members:"));
 
    di = DialogAddItem(table, DITEM_CHECKBUTTON);
    DialogItemSetColSpan(di, 2);
@@ -908,7 +908,7 @@ static const DialogDef DlgGroups = {
    N_("Window Group Settings"),
    SOUND_SETTINGS_GROUP,
    "pix/group.png",
-   N_("Enlightenment Window Group\n" "Settings Dialog\n"),
+   N_("Enlightenment Window Group\n" "Settings Dialog"),
    _DlgFillGroups,
    DLG_OAC, CB_ConfigureGroup,
 };
@@ -922,8 +922,7 @@ SettingsGroups(EWin * ewin)
    if (ewin->num_groups == 0)
      {
 	DialogOK(_("Window Group Error"),
-		 _
-		 ("\n  This window currently does not belong to any groups.  \n\n"));
+		 _("This window currently does not belong to any groups."));
 	return;
      }
 
@@ -958,7 +957,7 @@ _DlgFillGroupDefaults(Dialog * d __UNUSED__, DItem * table,
    di = DialogAddItem(table, DITEM_TEXT);
    DialogItemSetColSpan(di, 2);
    DialogItemSetAlign(di, 0, 512);
-   DialogItemSetText(di, _(" Per-group settings: "));
+   DialogItemSetText(di, _("Per-group settings:"));
 
    di = DialogAddItem(table, DITEM_SEPARATOR);
    DialogItemSetColSpan(di, 2);
@@ -1004,7 +1003,7 @@ _DlgFillGroupDefaults(Dialog * d __UNUSED__, DItem * table,
    di = DialogAddItem(table, DITEM_TEXT);
    DialogItemSetColSpan(di, 2);
    DialogItemSetAlign(di, 0, 512);
-   DialogItemSetText(di, _(" Global settings: "));
+   DialogItemSetText(di, _("Global settings:"));
 
    di = DialogAddItem(table, DITEM_CHECKBUTTON);
    DialogItemSetColSpan(di, 2);
@@ -1018,7 +1017,7 @@ const DialogDef     DlgGroupDefaults = {
    N_("Default Group Control Settings"),
    SOUND_SETTINGS_GROUP,
    "pix/group.png",
-   N_("Enlightenment Default\n" "Group Control Settings Dialog\n"),
+   N_("Enlightenment Default\n" "Group Control Settings Dialog"),
    _DlgFillGroupDefaults,
    DLG_OAC, CB_ConfigureDefaultGroupSettings,
 };

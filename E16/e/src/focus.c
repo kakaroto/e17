@@ -978,7 +978,7 @@ const DialogDef     DlgFocus = {
    N_("Focus Settings"),
    SOUND_SETTINGS_FOCUS,
    "pix/focus.png",
-   N_("Enlightenment Focus\n" "Settings Dialog\n"),
+   N_("Enlightenment Focus\n" "Settings Dialog"),
    _DlgFillFocus,
    DLG_OAC, CB_ConfigureFocus,
 };

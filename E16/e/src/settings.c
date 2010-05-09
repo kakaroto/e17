@@ -235,7 +235,7 @@ const DialogDef     DlgMoveResize = {
    N_("Move & Resize Settings"),
    SOUND_SETTINGS_MOVERESIZE,
    "pix/moveres.png",
-   N_("Enlightenment Move & Resize\n" "Method Settings Dialog\n"),
+   N_("Enlightenment Move & Resize\n" "Method Settings Dialog"),
    _DlgFillMoveResize,
    DLG_OAC, CB_ConfigureMoveResize,
 };
@@ -470,7 +470,7 @@ const DialogDef     DlgPlacement = {
    N_("Window Placement Settings"),
    SOUND_SETTINGS_PLACEMENT,
    "pix/place.png",
-   N_("Enlightenment Window Placement\n" "Settings Dialog\n"),
+   N_("Enlightenment Window Placement\n" "Settings Dialog"),
    _DlgFillPlacement,
    DLG_OAC, CB_ConfigurePlacement,
 };
@@ -550,7 +550,7 @@ const DialogDef     DlgMisc = {
    N_("Miscellaneous Settings"),
    SOUND_SETTINGS_MISCELLANEOUS,
    "pix/miscellaneous.png",
-   N_("Enlightenment Miscellaneous\n" "Settings Dialog\n"),
+   N_("Enlightenment Miscellaneous\n" "Settings Dialog"),
    _DlgFillMisc,
    DLG_OAC, CB_ConfigureMiscellaneous,
 };
@@ -687,7 +687,7 @@ const DialogDef     DlgComposite = {
    N_("Composite Settings"),
    SOUND_SETTINGS_COMPOSITE,
    "pix/pager.png",
-   N_("Enlightenment Composite\n" "Settings Dialog\n"),
+   N_("Enlightenment Composite\n" "Settings Dialog"),
    _DlgFillComposite,
    DLG_OAC, CB_ConfigureComposite,
 };

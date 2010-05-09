@@ -150,7 +150,7 @@ DeskControlsCreate(Desk * dsk)
 	ActionclassAddAction(ac, a);
 
 	ActionAddTo(a, "desk next");
-	t = _("Click here to raise this desktop\nto the top.\n");
+	t = _("Click here to raise this desktop\nto the top.");
 	ActionclassSetTooltipString(ac, t);
      }
 
@@ -162,7 +162,7 @@ DeskControlsCreate(Desk * dsk)
 	ActionclassAddAction(ac, a);
 
 	ActionAddTo(a, "desk prev");
-	t = _("Click here to lower this desktop\nto the bottom.\n");
+	t = _("Click here to lower this desktop\nto the bottom.");
 	ActionclassSetTooltipString(ac, t);
      }
 
@@ -2337,7 +2337,7 @@ _DlgFillDesks(Dialog * d, DItem * table, void *data __UNUSED__)
 
    di = DialogAddItem(table, DITEM_TEXT);
    DialogItemSetColSpan(di, 2);
-   DialogItemSetText(di, _("Number of virtual desktops:\n"));
+   DialogItemSetText(di, _("Number of virtual desktops:"));
 
    di = dd->desk_text = DialogAddItem(table, DITEM_TEXT);
    DialogItemSetColSpan(di, 2);
@@ -2368,7 +2368,7 @@ _DlgFillDesks(Dialog * d, DItem * table, void *data __UNUSED__)
    di = DialogAddItem(table, DITEM_TEXT);
    DialogItemSetColSpan(di, 2);
    DialogItemSetAlign(di, 1024, 512);
-   DialogItemSetText(di, _("Desktop Slide speed:\n"));
+   DialogItemSetText(di, _("Desktop Slide speed:"));
 
    di = DialogAddItem(table, DITEM_SLIDER);
    DialogItemSetColSpan(di, 2);
@@ -2430,7 +2430,7 @@ const DialogDef     DlgDesks = {
    N_("Multiple Desktop Settings"),
    SOUND_SETTINGS_DESKTOPS,
    "pix/desktops.png",
-   N_("Enlightenment Multiple Desktop\n" "Settings Dialog\n"),
+   N_("Enlightenment Multiple Desktop\n" "Settings Dialog"),
    _DlgFillDesks,
    DLG_OAC, CB_ConfigureDesktops,
 };
@@ -2530,7 +2530,7 @@ _DlgFillAreas(Dialog * d, DItem * table, void *data __UNUSED__)
    DialogItemTableSetOptions(table, 1, 0, 0, 0);
 
    di = DialogAddItem(table, DITEM_TEXT);
-   DialogItemSetText(di, _("Virtual Desktop size:\n"));
+   DialogItemSetText(di, _("Virtual Desktop size:"));
 
    di = dd->area_text = DialogAddItem(table, DITEM_TEXT);
    DialogItemSetText(di, "X");
@@ -2592,7 +2592,7 @@ _DlgFillAreas(Dialog * d, DItem * table, void *data __UNUSED__)
    DialogItemRadioButtonGroupSetValPtr(radio, &dd->edge_flip);
 
    di = DialogAddItem(table, DITEM_TEXT);
-   DialogItemSetText(di, _("Resistance at edge of screen:\n"));
+   DialogItemSetText(di, _("Resistance at edge of screen:"));
 
    di = DialogAddItem(table, DITEM_SLIDER);
    DialogItemSliderSetMinLength(di, 10);
@@ -2608,7 +2608,7 @@ const DialogDef     DlgAreas = {
    N_("Virtual Desktop Settings"),
    SOUND_SETTINGS_AREA,
    "pix/areas.png",
-   N_("Enlightenment Virtual Desktop\n" "Settings Dialog\n"),
+   N_("Enlightenment Virtual Desktop\n" "Settings Dialog"),
    _DlgFillAreas,
    DLG_OAC, CB_ConfigureAreas,
 };

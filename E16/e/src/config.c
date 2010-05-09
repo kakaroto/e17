@@ -195,7 +195,7 @@ ConfigParseline1(char *str, char *s2, char **p2, char **p3)
      {
 	if (fields != 1)
 	  {
-	     Alert(_("CONFIG: ignoring extra data in \"%s\"\n"), str);
+	     Alert(_("CONFIG: ignoring extra data in \"%s\""), str);
 	  }
      }
    else if (i1 != CONFIG_INVALID)
@@ -203,7 +203,7 @@ ConfigParseline1(char *str, char *s2, char **p2, char **p3)
 	if (fields != 2)
 	  {
 	     i1 = CONFIG_INVALID;
-	     Alert(_("CONFIG: missing required data in \"%s\"\n"), str);
+	     Alert(_("CONFIG: missing required data in \"%s\""), str);
 	  }
      }
 
@@ -297,14 +297,14 @@ ConfigFileRead(FILE * fs)
 	  {
 	     if (fields != 1)
 	       {
-		  Alert(_("CONFIG: ignoring extra data in \"%s\"\n"), s);
+		  Alert(_("CONFIG: ignoring extra data in \"%s\""), s);
 	       }
 	  }
 	else if (i1 != CONFIG_INVALID)
 	  {
 	     if (fields != 2)
 	       {
-		  Alert(_("CONFIG: missing required data in \"%s\"\n"), s);
+		  Alert(_("CONFIG: missing required data in \"%s\""), s);
 		  i1 = CONFIG_INVALID;
 	       }
 	  }

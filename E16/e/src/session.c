@@ -644,9 +644,7 @@ SessionLogoutConfirm(void)
 	table = DialogInitItem(d);
 	DialogSetTitle(d, _("Are you sure?"));
 	di = DialogAddItem(table, DITEM_TEXT);
-	DialogItemSetText(di, _("\n\n"
-				"    Are you sure you wish to log out ?    \n"
-				"\n\n"));
+	DialogItemSetText(di, _("Are you sure you wish to log out ?"));
 	table = DialogAddItem(table, DITEM_TABLE);
 	DialogItemSetAlign(table, 512, 0);
 	DialogItemSetFill(table, 0, 0);
@@ -654,14 +652,14 @@ SessionLogoutConfirm(void)
 	if (Conf.session.enable_reboot_halt)
 	  {
 	     DialogItemTableSetOptions(table, 4, 0, 1, 0);
-	     DialogItemAddButton(table, _("  Yes, Shut Down  "), LogoutCB, 3,
+	     DialogItemAddButton(table, _("Yes, Shut Down"), LogoutCB, 3,
 				 1, DLG_BUTTON_OK);
-	     DialogItemAddButton(table, _("  Yes, Reboot  "), LogoutCB, 2,
+	     DialogItemAddButton(table, _("Yes, Reboot"), LogoutCB, 2,
 				 1, DLG_BUTTON_OK);
 	  }
-	DialogItemAddButton(table, _("  Yes, Log Out  "), LogoutCB, 1,
+	DialogItemAddButton(table, _("Yes, Log Out"), LogoutCB, 1,
 			    1, DLG_BUTTON_OK);
-	DialogItemAddButton(table, _("  No  "), NULL, 0, 1, DLG_BUTTON_CANCEL);
+	DialogItemAddButton(table, _("No"), NULL, 0, 1, DLG_BUTTON_CANCEL);
 	DialogBindKey(d, "Escape", DialogCallbackClose, 0, NULL);
 	DialogBindKey(d, "Return", LogoutCB, 1, NULL);
      }
@@ -816,7 +814,7 @@ const DialogDef     DlgSession = {
    N_("Session Settings"),
    SOUND_SETTINGS_SESSION,
    "pix/miscellaneous.png",
-   N_("Enlightenment Session\n" "Settings Dialog\n"),
+   N_("Enlightenment Session\n" "Settings Dialog"),
    _DlgFillSession,
    DLG_OAC, CB_ConfigureSession,
 };

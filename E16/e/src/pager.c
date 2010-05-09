@@ -1996,7 +1996,7 @@ const DialogDef     DlgPagers = {
    N_("Pager Settings"),
    SOUND_SETTINGS_PAGER,
    "pix/pager.png",
-   N_("Enlightenment Desktop & Area\n" "Pager Settings Dialog\n"),
+   N_("Enlightenment Desktop & Area\n" "Pager Settings Dialog"),
    _DlgFillPagers,
    DLG_OAC, CB_ConfigurePager,
 };

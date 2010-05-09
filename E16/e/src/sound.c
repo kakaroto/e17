@@ -466,7 +466,7 @@ const DialogDef     DlgSound = {
    N_("Audio Settings"),
    SOUND_SETTINGS_AUDIO,
    "pix/sound.png",
-   N_("Enlightenment Audio\n" "Settings Dialog\n"),
+   N_("Enlightenment Audio\n" "Settings Dialog"),
    _DlgFillSound,
    DLG_OAC, CB_ConfigureAudio,
 };

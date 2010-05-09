@@ -191,7 +191,7 @@ Espawn(int argc __UNUSED__, char **argv)
 
    execvp(argv[0], argv);
 
-   AlertOK(_("There was an error running the program:\n%s\n"), argv[0]);
+   AlertOK(_("There was an error running the program:\n%s"), argv[0]);
    exit(100);
 }
 

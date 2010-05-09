@@ -1739,7 +1739,7 @@ static const DialogDef DlgContainer = {
    NULL,
    SOUND_SETTINGS_ICONBOX,
    "pix/iconbox.png",
-   N_("Enlightenment Iconbox\n" "Settings Dialog\n"),
+   N_("Enlightenment Iconbox\n" "Settings Dialog"),
    _DlgFillContainer,
    DLG_OAC, CB_ConfigureContainer,
 };

@@ -251,8 +251,7 @@ BackgroundDestroy(Background * bg)
 #endif
    if (bg->ref_count > 0)
      {
-	DialogOK("Background Error!", _("%u references remain\n"),
-		 bg->ref_count);
+	DialogOK("Background Error!", _("%u references remain"), bg->ref_count);
 	return -1;
      }
 
@@ -1507,7 +1506,7 @@ BG_DialogSetFileName(DItem * di)
 
    stmp = fullfileof(BackgroundGetBgFile(tmp_bg));
    Esnprintf(s, sizeof(s),
-	     _("Background definition information:\nName: %s\nFile: %s\n"),
+	     _("Background definition information:\nName: %s\nFile: %s"),
 	     BackgroundGetName(tmp_bg), (stmp) ? stmp : _("-NONE-"));
    DialogItemSetText(di, s);
 }
@@ -1998,21 +1997,21 @@ _DlgFillBackground(Dialog * d, DItem * table, void *data)
    DialogItemSetAlign(table2, 512, 0);
 
    di = DialogAddItem(table2, DITEM_BUTTON);
-   DialogItemSetText(di, _("Move to Front\n"));
+   DialogItemSetText(di, _("Move to Front"));
    DialogItemSetCallback(di, CB_ConfigureFrontBG, 0, NULL);
    DialogBindKey(d, "F", CB_ConfigureFrontBG, 0, NULL);
 
    di = DialogAddItem(table2, DITEM_BUTTON);
-   DialogItemSetText(di, _("Duplicate\n"));
+   DialogItemSetText(di, _("Duplicate"));
    DialogItemSetCallback(di, CB_ConfigureNewBG, 0, NULL);
 
    di = DialogAddItem(table2, DITEM_BUTTON);
-   DialogItemSetText(di, _("Unlist\n"));
+   DialogItemSetText(di, _("Unlist"));
    DialogItemSetCallback(di, CB_ConfigureDelBG, 0, NULL);
    DialogBindKey(d, "D", CB_ConfigureDelBG, 0, NULL);
 
    di = DialogAddItem(table2, DITEM_BUTTON);
-   DialogItemSetText(di, _("Delete File\n"));
+   DialogItemSetText(di, _("Delete File"));
    DialogItemSetCallback(di, CB_ConfigureDelBG, 1, NULL);
    DialogBindKey(d, "Delete", CB_ConfigureDelBG, 1, NULL);
 
@@ -2080,12 +2079,12 @@ _DlgFillBackground(Dialog * d, DItem * table, void *data)
    DialogItemSetColSpan(di, 2);
    DialogItemSetFill(di, 0, 0);
    DialogItemSetAlign(di, 512, 512);
-   DialogItemSetText(di, _("BG Colour\n"));
+   DialogItemSetText(di, _("BG Colour"));
 
    di = DialogAddItem(table3, DITEM_TEXT);
    DialogItemSetFill(di, 0, 0);
    DialogItemSetAlign(di, 1024, 512);
-   DialogItemSetText(di, _("Red:\n"));
+   DialogItemSetText(di, _("Red:"));
 
    di = tmp_w[3] = DialogAddItem(table3, DITEM_SLIDER);
    DialogItemSliderSetBounds(di, 0, 255);
@@ -2096,7 +2095,7 @@ _DlgFillBackground(Dialog * d, DItem * table, void *data)
    di = DialogAddItem(table3, DITEM_TEXT);
    DialogItemSetFill(di, 0, 0);
    DialogItemSetAlign(di, 1024, 512);
-   DialogItemSetText(di, _("Green:\n"));
+   DialogItemSetText(di, _("Green:"));
 
    di = tmp_w[4] = DialogAddItem(table3, DITEM_SLIDER);
    DialogItemSliderSetBounds(di, 0, 255);
@@ -2107,7 +2106,7 @@ _DlgFillBackground(Dialog * d, DItem * table, void *data)
    di = DialogAddItem(table3, DITEM_TEXT);
    DialogItemSetFill(di, 0, 0);
    DialogItemSetAlign(di, 1024, 512);
-   DialogItemSetText(di, _("Blue:\n"));
+   DialogItemSetText(di, _("Blue:"));
 
    di = tmp_w[5] = DialogAddItem(table3, DITEM_SLIDER);
    DialogItemSliderSetBounds(di, 0, 255);
@@ -2216,7 +2215,7 @@ const DialogDef     DlgBackground = {
    N_("Desktop Background Settings"),
    SOUND_SETTINGS_BG,
    "pix/bg.png",
-   N_("Enlightenment Desktop\n" "Background Settings Dialog\n"),
+   N_("Enlightenment Desktop\n" "Background Settings Dialog"),
    _DlgFillBackground,
    DLG_OAC, CB_ConfigureBG,
 };

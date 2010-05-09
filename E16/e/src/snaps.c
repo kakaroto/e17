@@ -1064,7 +1064,7 @@ const DialogDef     DlgRemember = {
    N_("Remembered Windows Settings"),
    SOUND_SETTINGS_PAGER,
    "pix/snapshots.png",
-   N_("Enlightenment Remembered\n" "Windows Settings Dialog\n"),
+   N_("Enlightenment Remembered\n" "Windows Settings Dialog"),
    _DlgFillRemember,
    DLG_OC, CB_ApplyRemember,
 };
@@ -1158,7 +1158,7 @@ SnapshotsSaveReal(void *data __UNUSED__)
       Eprintf("SnapshotsSaveReal: %s\n", buf);
    E_mv(s, buf);
    if (!isfile(buf))
-      Alert(_("Error saving snaps file\n"));
+      Alert(_("Error saving snaps file"));
 
    GroupsSave();
 

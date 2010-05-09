@@ -689,7 +689,7 @@ BorderDestroy(const Border * b)
 
    if (b->ref_count > 0)
      {
-	DialogOK("Border Error!", _("%u references remain\n"), b->ref_count);
+	DialogOK("Border Error!", _("%u references remain"), b->ref_count);
 	return;
      }
 
