@@ -738,8 +738,7 @@ _youtube_dl_cb_del(void *data, int type __UNUSED__, void *event)
   Youtube_Data *yd = data;
   Ecore_Exe_Event_Del *e = event;
 
-  if (e->exe != yd->exe1 &&
-      e->exe != yd->exe2)
+  if (e->exe != yd->exe1 && e->exe != yd->exe2)
     return 1;
 
   if (e->exe == yd->exe1) ecore_exe_kill(yd->exe2);
@@ -795,7 +794,11 @@ _youtube_dl_data_cb(Url_Data *dd)
 
 	IF_RELEASE(yd->label);
 	IF_RELEASE(yd->filepath);
+	IF_RELEASE(yd->url);
 	E_FREE(yd);
+
+	youtube_dl_active--;
+	_youtube_dl_dequeue();
 	return 0;
      }
 
@@ -859,8 +862,8 @@ _youtube_dl_dequeue(void)
    if (youtube_dl_queue)
      {
 	yd = youtube_dl_queue->data;
-	youtube_dl_queue = eina_list_remove(youtube_dl_queue, youtube_dl_queue);
-	
+	youtube_dl_queue = eina_list_remove_list(youtube_dl_queue, youtube_dl_queue);
+
 	yd->dd = _url_data_new(yd, _youtube_dl_data_cb, NULL, NULL);
 	_url_data_send(yd->dd, yd->url);
 	youtube_dl_active++;
