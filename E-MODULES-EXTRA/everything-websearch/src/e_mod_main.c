@@ -69,6 +69,7 @@ struct _Youtube_Data
   Ecore_Event_Handler *del_handler;
   const char *label;
   const char *filepath;
+  const char *url;
   const char *fifo;
   int num;
 
@@ -212,10 +213,13 @@ static int
 _common_data_cb(void *data, int ev_type, void *event)
 {
   Ecore_Con_Event_Url_Data *ev = event;
-  Url_Data *dd = ecore_con_url_data_get(ev->url_con);
+  Url_Data *dd;
 
   if (!ev || !data || !(data == _conf))
-      return 1;
+    return 1;
+
+  if (!(dd = ecore_con_url_data_get(ev->url_con)))
+    return 1;
 
   dd->data = realloc(dd->data, sizeof(char) * (dd->size + ev->size));
   memcpy(dd->data + dd->size, ev->data, ev->size);
@@ -228,10 +232,13 @@ static int
 _common_progress_cb(void *data, int ev_type, void *event)
 {
    Ecore_Con_Event_Url_Progress *ev = event;
-   Url_Data *dd = ecore_con_url_data_get(ev->url_con);
+   Url_Data *dd;
 
    if (!ev || !data || !(data == _conf))
        return 1;
+
+   if (!(dd = ecore_con_url_data_get(ev->url_con)))
+     return 1;
 
    if (dd->progress_cb)
      dd->progress_cb(dd, ev);
@@ -243,10 +250,13 @@ static int
 _common_complete_cb(void *data, int ev_type, void *event)
 {
   Ecore_Con_Event_Url_Complete *ev = event;
-  Url_Data *dd = ecore_con_url_data_get(ev->url_con);
+  Url_Data *dd;
 
   if (!ev || !data || !(data == _conf))
       return 1;
+
+  if (!(dd = ecore_con_url_data_get(ev->url_con)))
+    return 1;
 
   if (!dd->data_cb(dd))
     {
@@ -625,10 +635,15 @@ _action(Evry_Action *act)
 
 /***************************************************************************/
 
+static void _youtube_dl_dequeue(void);
+static Eina_List *youtube_dl_queue = NULL;
+static unsigned int youtube_dl_active = 0;
 
 static void
 _youtube_dl_finish(Youtube_Data *yd, int abort)
 {
+   youtube_dl_active--;
+
    if (abort)
      {
 	_send_notification(yd->id, "music", N_("Abort download"),
@@ -647,7 +662,10 @@ _youtube_dl_finish(Youtube_Data *yd, int abort)
    IF_RELEASE(yd->label);
    IF_RELEASE(yd->filepath);
    IF_RELEASE(yd->fifo);
+   IF_RELEASE(yd->url);
    E_FREE(yd);
+
+   _youtube_dl_dequeue();
 }
 
 static int
@@ -820,8 +838,7 @@ _youtube_dl_data_cb(Url_Data *dd)
 
 	download_handlers = eina_list_append(download_handlers, yd);
 
-	_send_notification(yd->id, "music", N_("Start download"),
-			   yd->label, -1);
+	_send_notification(yd->id, "music", N_("Start download"), yd->label, -1);
      }
 
  finish:
@@ -832,40 +849,65 @@ _youtube_dl_data_cb(Url_Data *dd)
    return 1;
 }
 
+static void
+_youtube_dl_dequeue(void)
+{
+   Youtube_Data *yd;
+
+   EINA_LIST_FREE (youtube_dl_queue, yd)
+     {
+	yd->dd = _url_data_new(yd, _youtube_dl_data_cb, NULL, NULL);
+	_url_data_send(yd->dd, yd->url);
+	youtube_dl_active++;
+	break;
+     }
+}
+
 static int
 _youtube_dl_action(Evry_Action *act)
 {
-   GET_WEBLINK(wl, act->it1.item);
-   const char *file;
+   GET_ITEM(it, act->it1.item);
+   GET_WEBLINK(wl, it);
+
+   int method = EVRY_ITEM_DATA_INT_GET(act);
    char path[PATH_MAX];
+   Youtube_Data *yd;
    int i;
 
-   file = act->it1.item->label;
-
    snprintf(path, sizeof(path), "%s/Download/%s.mp3",
-	    e_user_homedir_get(), file);
+	    e_user_homedir_get(), it->label);
 
    for (i = 0; i < 10;)
      {
-	printf("try %s\n", path);
-	if (!ecore_file_exists(path))
-	  break;
+	if (!ecore_file_exists(path)) break;
 
 	snprintf(path, sizeof(path), "%s/Download/%s-%d.mp3",
-		 e_user_homedir_get(), file, ++i);
+		 e_user_homedir_get(), it->label, ++i);
      }
 
    if (i == 10) return 0;
 
-   Youtube_Data *yd = E_NEW(Youtube_Data, 1);
-   yd->label = eina_stringshare_ref(act->it1.item->label);
+   yd = E_NEW(Youtube_Data, 1);
+   yd->label = eina_stringshare_ref(it->label);
    yd->filepath = eina_stringshare_add(path);
-   yd->method = EVRY_ITEM_DATA_INT_GET(act);
+   yd->url = eina_stringshare_ref(wl->url);
+   yd->method = method;
    yd->num = i;
-   yd->dd = _url_data_new(yd, _youtube_dl_data_cb, NULL, NULL);
-   _url_data_send(yd->dd, wl->url);
 
-  return 0;
+   if (((method == YOUTUBE_DL) ||
+	(method == YOUTUBE_DL_ENQ)) &&
+       (youtube_dl_active > 1))
+     {
+	_send_notification(1337, "music", N_("Enqueue files for download"), "", -1);
+	youtube_dl_queue = eina_list_append(youtube_dl_queue, yd);
+     }
+   else
+     {
+	yd->dd = _url_data_new(yd, _youtube_dl_data_cb, NULL, NULL);
+	_url_data_send(yd->dd, yd->url);
+	youtube_dl_active++;
+     }
+   return 0;
 }
 
 static int
