@@ -3,7 +3,6 @@
  */
 
 #include <Evry.h>
-#include "md5.h"
 #include "e_mod_main.h"
 
 #define QUERY_ITEM(_q, _it) Query_Item *_q = (Query_Item *) _it;
@@ -139,20 +138,6 @@ static const char query_albums_for_artist[] =
 
 static const char fts_match[] = ". ?match fts:match \"%s*\"";
 
-static int
-_cb_sort(const void *data1, const void *data2)
-{
-   const Evry_Item *it1, *it2;
-
-   it1 = data1;
-   it2 = data2;
-
-   if (it1->priority - it2->priority)
-     return (it1->priority - it2->priority);
-
-   return !strcasecmp(it1->label, it2->label);
-}
-
 
 static void
 _query_item_free(Evry_Item *item)
@@ -231,10 +216,7 @@ static Evry_Item_File *
 _file_item_get(Plugin *p, const char *urn, char *url, char *label, char *mime, int prio)
 {
    Evry_Item_File *file;
-   Evry_Item *it;
    Eina_List *l;
-   char *path;
-   const char *tmp;
 
    /* one could jus check the ref counts (= */
    const char *id = eina_stringshare_add(urn);
@@ -268,8 +250,6 @@ _file_item_get(Plugin *p, const char *urn, char *url, char *label, char *mime, i
      EVRY_ITEM(file)->browseable = EINA_TRUE;
    else
      EVRY_ITEM(file)->priority = 1;
-
-   free(path);
 
    return file;
 }
@@ -388,11 +368,10 @@ static void
 _dbus_cb_reply(void *data, DBusMessage *msg, DBusError *error)
 {
    DBusMessageIter array, iter, item;
-   char *urn, *path, *name, *mime, *label, *detail;
+   char *urn;
    Eina_List *items = NULL, *l;
    Plugin *p = data;
    Query_Item *it = NULL;
-   Evry_Item_File *file;
 
    p->pnd = NULL;
 
@@ -627,7 +606,7 @@ _fetch(Evry_Plugin *plugin, const char *input)
      dbus_pending_call_cancel(p->pnd);
    p->pnd = NULL;
 
-   if (len >= plugin->config->min_query)
+   if (len > 0 && len >= plugin->config->min_query && !isalnum(input[0]))
      {
 	if (p->input) eina_stringshare_del(p->input);
 	p->input = eina_stringshare_add(input);
@@ -718,31 +697,7 @@ _get_name_owner(void *data __UNUSED__, DBusMessage *msg, DBusError *err)
    return;
 }
 
-
 static char thumb_buf[4096];
-static const char hex[] = "0123456789abcdef";
-
-static char *
-_md5_sum(const char *str)
-{
-   MD5_CTX ctx;
-   unsigned char hash[MD5_HASHBYTES];
-   int n;
-   char md5out[(2 * MD5_HASHBYTES) + 1];
-   MD5Init (&ctx);
-   MD5Update (&ctx, (unsigned char const*)str,
-	      (unsigned)strlen (str));
-   MD5Final (hash, &ctx);
-
-   for (n = 0; n < MD5_HASHBYTES; n++)
-     {
-	md5out[2 * n] = hex[hash[n] >> 4];
-	md5out[2 * n + 1] = hex[hash[n] & 0x0f];
-     }
-   md5out[2 * n] = '\0';
-
-   return strdup(md5out);
-}
 
 static Evas_Object *
 _icon_get(Evry_Item *item, Evas *e)
@@ -751,8 +706,6 @@ _icon_get(Evry_Item *item, Evas *e)
      {
 	if (item->subtype && item->subtype == FILE_LIST)
 	  {
-	     QUERY_ITEM(it, item);
-
 	     if (!item->label || !item->detail)
 	       return evry_icon_theme_get("folder", e);
 
@@ -765,7 +718,7 @@ _icon_get(Evry_Item *item, Evas *e)
 	     for(i = 0; a[i] != '\0'; i++)
 	       a[i] = tolower(a[i]);
 
-	     suma = _md5_sum(a);
+	     suma = evry_util_md5_sum(a);
 	     free(a);
 
 	     /* Album */
@@ -774,7 +727,7 @@ _icon_get(Evry_Item *item, Evas *e)
 	     for(i = 0; a[i] != '\0'; i++)
 	       a[i] = tolower(a[i]);
 
-	     sumb = _md5_sum(a);
+	     sumb = evry_util_md5_sum(a);
 	     free(a);
 
 	     snprintf(thumb_buf, sizeof(thumb_buf),
@@ -807,7 +760,7 @@ _icon_get(Evry_Item *item, Evas *e)
      {
 	GET_FILE(it, item);
 
-	char *sum = _md5_sum(it->url);
+	char *sum = evry_util_md5_sum(it->url);
 
 	snprintf(thumb_buf, sizeof(thumb_buf),
 		 "%s/.thumbnails/normal/%s.png",
@@ -885,7 +838,9 @@ _plugins_shutdown(void)
    Plugin *p;
 
    EINA_LIST_FREE(plugins, p)
-     EVRY_PLUGIN_FREE(p);
+     {
+       EVRY_PLUGIN_FREE(p);
+     }
 }
 
 /***************************************************************************/
@@ -944,8 +899,6 @@ e_modapi_init(E_Module *m)
 EAPI int
 e_modapi_shutdown(E_Module *m)
 {
-   Plugin *p;
-
    if (conn)
      {
 	e_dbus_signal_handler_del(conn, cb_name_owner_changed);
