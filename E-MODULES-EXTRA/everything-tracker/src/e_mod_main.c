@@ -293,7 +293,7 @@ _add_album(Plugin *p, const char *urn, DBusMessageIter *iter, Query_Item *it, Ei
 
    if (!it || strcmp(urn, EVRY_ITEM(it)->id))
      {
-	label = evry_util_unescape(urn + 10, 0);
+	label = evry_util_url_unescape(urn + 10, 0);
 
 	dbus_message_iter_next(iter);
 	if (dbus_message_iter_get_arg_type(iter) == DBUS_TYPE_STRING)
@@ -340,7 +340,7 @@ _add_artist(Plugin *p, const char *urn, DBusMessageIter *iter, Query_Item *it, E
 
    if (!it || strcmp(urn, EVRY_ITEM(it)->id))
      {
-	label = evry_util_unescape(urn + 11, 0);
+	label = evry_util_url_unescape(urn + 11, 0);
 
 	it = _query_item_get(p, urn, label, NULL, query_albums_for_artist, urn);
 
@@ -449,7 +449,7 @@ _dbus_cb_reply(void *data, DBusMessage *msg, DBusError *error)
 	    EVRY_PLUGIN_ITEM_APPEND(p, it);
      }
 
-   evry_plugin_async_update(EVRY_PLUGIN(p), EVRY_ASYNC_UPDATE_ADD);
+   EVRY_PLUGIN_UPDATE(p, EVRY_UPDATE_ADD);
 }
 
 static DBusPendingCall *

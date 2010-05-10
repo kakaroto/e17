@@ -261,6 +261,7 @@ _common_complete_cb(void *data, int ev_type, void *event)
   if (!dd->data_cb(dd))
     {
        ERR("\n %*s\n", dd->size, (char *)dd->data);
+       /* XXX free here ?*/
     }
 
   return 1;
@@ -275,7 +276,7 @@ _plugin_data_cb(Url_Data *dd)
 
    if (p->data_cb(p, dd->data, dd->size))
      {
-	evry_plugin_async_update (EVRY_PLUGIN(p), EVRY_ASYNC_UPDATE_ADD);
+	EVRY_PLUGIN_UPDATE(p, EVRY_UPDATE_ADD);
      }
 
    return 1;

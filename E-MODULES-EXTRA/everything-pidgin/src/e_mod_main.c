@@ -343,7 +343,7 @@ _item_add(Evry_Item* item)
   else
     {
       _update_list();
-      evry_plugin_async_update(plug, EVRY_ASYNC_UPDATE_ADD);
+      EVRY_PLUGIN_UPDATE(plug, EVRY_UPDATE_ADD);
     }
 }
 

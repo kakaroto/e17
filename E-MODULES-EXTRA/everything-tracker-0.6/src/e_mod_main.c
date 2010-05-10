@@ -275,7 +275,7 @@ _dbus_cb_reply(void *data, DBusMessage *msg, DBusError *error)
       p->matched = NULL;
     }
 
-  evry_plugin_async_update(EVRY_PLUGIN(p), EVRY_ASYNC_UPDATE_ADD);
+  EVRY_PLUGIN_UPDATE(p, EVRY_UPDATE_ADD);
 }
 
 static int

@@ -238,7 +238,7 @@ _update_list(Plugin *p)
 	  else if (EVRY_FILE(t)->url)
 	    {
 	      const char *file = ecore_file_file_get(EVRY_FILE(t)->url);
-	      char *tmp = evry_util_unescape(file, 0);
+	      char *tmp = evry_util_url_unescape(file, 0);
 	      if (tmp)
 		{
 		  it->label = eina_stringshare_add(tmp);
@@ -269,7 +269,7 @@ _update_list(Plugin *p)
   _dbus_send_msg("/TrackList", "GetCurrentTrack",
 		 _dbus_cb_current_track, p);
 
-  evry_plugin_async_update(EVRY_PLUGIN(p), EVRY_ASYNC_UPDATE_ADD);
+  EVRY_PLUGIN_UPDATE(p, EVRY_UPDATE_ADD);
 }
 
 
@@ -376,7 +376,7 @@ _dbus_cb_tracklist_metadata(void *data, DBusMessage *reply, DBusError *error)
 	evry_item_free(EVRY_ITEM(t));
 
       p->tracks = p->fetch;
-      evry_plugin_async_update(EVRY_PLUGIN(p), EVRY_ASYNC_UPDATE_ADD);
+      EVRY_PLUGIN_UPDATE(p, EVRY_UPDATE_ADD);
     }
 
   p->tracks = eina_list_remove(p->tracks, t);
@@ -458,7 +458,7 @@ _mpris_get_metadata(Plugin *p)
   if (!p->tracks)
     {
       EVRY_PLUGIN_ITEM_APPEND(p, p->empty);
-      evry_plugin_async_update(EVRY_PLUGIN(p), EVRY_ASYNC_UPDATE_ADD);
+      EVRY_PLUGIN_UPDATE(p, EVRY_UPDATE_ADD);
     }
 }
 
@@ -858,7 +858,7 @@ _add_file(const char *path, int play_now)
     }
   else
     {
-      buf = evry_util_unescape(path, 0);
+      buf = evry_util_url_unescape(path, 0);
     }
 
   DBG("play %s", buf);
