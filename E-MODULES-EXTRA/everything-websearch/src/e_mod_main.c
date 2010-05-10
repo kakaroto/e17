@@ -646,7 +646,7 @@ _youtube_dl_finish(Youtube_Data *yd, int abort)
 
    if (abort)
      {
-	_send_notification(yd->id, "music", N_("Abort download"),
+	_send_notification(yd->id, "emblem-sound", N_("Abort download"),
 			   yd->label, -1);
 
 	if (yd->exe1) ecore_exe_kill(yd->exe1);
@@ -674,7 +674,7 @@ _youtube_dl_timer(void *d)
   Youtube_Data *yd = d;
   struct stat s;
 
-  if (yd->ready || yd->tries++ > 20)
+  if (yd->ready || yd->tries++ > 10)
     {
        _youtube_dl_finish(yd, 1);
       return 0;
@@ -684,17 +684,17 @@ _youtube_dl_timer(void *d)
     {
        if (s.st_size < 262144)
 	{
-	  if (!yd->ready && yd->tries > 10 && s.st_size < 1024)
+	  if (!yd->ready && yd->tries > 5 && s.st_size < 1024)
 	    {
 	       _youtube_dl_finish(yd, 1);
 	       return 0;
 	    }
 
 	  char buf[128];
-	  snprintf(buf, sizeof(buf), N_("Got %d kbytes of\n%s"),
-		   ((unsigned int)s.st_size / 1024), yd->label);
+	  snprintf(buf, sizeof(buf), N_("Got %d kbytes of"),
+		   ((unsigned int)s.st_size / 1024));
 
-	  _send_notification(yd->id, "music", buf, yd->label, 5000);
+	  _send_notification(yd->id, "emblem-sound", buf, yd->label, 5000);
 	  return 1;
 	}
 
@@ -709,14 +709,14 @@ _youtube_dl_timer(void *d)
 	{
 	   act->it1.item = EVRY_ITEM(f);
 	   act->action(act);
-	   _send_notification(yd->id, "music", N_("Enqueue"), yd->label, -1);
+	   _send_notification(yd->id, "emblem-sound", N_("Enqueue"), yd->label, -1);
 	}
       if ((yd->method == YOUTUBE_DL_PLAY) &&
   	  (act = evry_action_find(N_("Play File"))))
 	{
 	   act->it1.item = EVRY_ITEM(f);
 	   act->action(act);
-	   _send_notification(yd->id, "music", N_("Play"), yd->label, -1);
+	   _send_notification(yd->id, "emblem-sound", N_("Play"), yd->label, -1);
 	}
       IF_RELEASE(f->path);
       IF_RELEASE(f->mime);
@@ -746,7 +746,7 @@ _youtube_dl_cb_del(void *data, int type __UNUSED__, void *event)
   yd->exe1 = NULL;
   yd->exe2 = NULL;
 
-  _send_notification(yd->id, "music", N_("Finished download"),
+  _send_notification(yd->id, "emblem-sound", N_("Finished download"),
 		     yd->label, -1);
 
   _youtube_dl_finish(yd, 0);
@@ -819,7 +819,7 @@ _youtube_dl_data_cb(Url_Data *dd)
 	mkfifo(fifo, 0666);
 
 	snprintf(buf, sizeof(buf),
-		 "mplayer %s -cache 256 -cache-min 10 "
+		 "mplayer %s -msglevel all=2 -cache 256 -cache-min 10 "
 		 "-ao pcm:fast:file=%s -vo none </dev/null",
 		 url, fifo);
 	yd->exe1 = ecore_exe_run(buf, yd);
@@ -841,7 +841,7 @@ _youtube_dl_data_cb(Url_Data *dd)
 
 	download_handlers = eina_list_append(download_handlers, yd);
 
-	_send_notification(yd->id, "music", N_("Start download"), yd->label, -1);
+	_send_notification(yd->id, "emblem-sound", N_("Start download"), yd->label, -1);
      }
 
  finish:
@@ -905,7 +905,7 @@ _youtube_dl_action(Evry_Action *act)
 	(method == YOUTUBE_DL_ENQ)) &&
        (youtube_dl_active > 1))
      {
-	_send_notification(1337, "music", N_("Enqueue files for download"), "", -1);
+	_send_notification(1337, "emblem-sound", N_("Enqueue files for download"), "", -1);
 	youtube_dl_queue = eina_list_append(youtube_dl_queue, yd);
      }
    else
@@ -1124,19 +1124,19 @@ _plugins_init(void)
   ACTION_NEW(N_("Feeling Lucky"), EVRY_TYPE_TEXT, "feeling-lucky",
 	     _action, NULL, ACT_FEELING_LUCKY);
 
-  ACTION_NEW(N_("Watch on Youtube"), WEBLINK, "feeling-lucky",
+  ACTION_NEW(N_("Watch on Youtube"), WEBLINK, "youtube",
   	     _action, _youtube_dl_check, ACT_YOUTUBE);
 
-  ACTION_NEW(N_("Download as Audio"), WEBLINK, "feeling-lucky",
+  ACTION_NEW(N_("Download as Audio"), WEBLINK, "youtube",
   	     _youtube_dl_action, _youtube_dl_check, YOUTUBE_DL);
 
-  ACTION_NEW(N_("Play Video"), WEBLINK, "feeling-lucky",
+  ACTION_NEW(N_("Play Video"), WEBLINK, "youtube",
   	     _youtube_dl_action, _youtube_dl_check, YOUTUBE_PLAY);
 
-  ACTION_NEW(N_("Download and enqueue"), WEBLINK, "feeling-lucky",
+  ACTION_NEW(N_("Download and enqueue"), WEBLINK, "youtube",
   	     _youtube_dl_action, _youtube_dl_check, YOUTUBE_DL_ENQ);
 
-  ACTION_NEW(N_("Download and play"), WEBLINK, "feeling-lucky",
+  ACTION_NEW(N_("Download and play"), WEBLINK, "youtube",
   	     _youtube_dl_action, _youtube_dl_check, YOUTUBE_DL_PLAY);
 
   ACTION_NEW(N_("Upload Image"), EVRY_TYPE_FILE, "go-next",
