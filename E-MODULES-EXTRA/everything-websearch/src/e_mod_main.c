@@ -854,12 +854,16 @@ _youtube_dl_dequeue(void)
 {
    Youtube_Data *yd;
 
-   EINA_LIST_FREE (youtube_dl_queue, yd)
+   printf("dequeue %d active\n", youtube_dl_active);
+
+   if (youtube_dl_queue)
      {
+	yd = youtube_dl_queue->data;
+	youtube_dl_queue = eina_list_remove(youtube_dl_queue, youtube_dl_queue);
+	
 	yd->dd = _url_data_new(yd, _youtube_dl_data_cb, NULL, NULL);
 	_url_data_send(yd->dd, yd->url);
 	youtube_dl_active++;
-	break;
      }
 }
 
