@@ -140,7 +140,7 @@ e_modapi_init(E_Module *m)
 
 	Config_Item *cfg = E_NEW(Config_Item, 1);
 	cfg->orient = E_GADCON_ORIENT_FLOAT;
-	cfg->size = 53;
+	cfg->size = 34;
 	cfg->zoom_duration = 0.3;
 	cfg->zoom_range = 0.6;
 	cfg->hide_timeout  = 0.2;

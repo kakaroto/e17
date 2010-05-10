@@ -24,18 +24,24 @@ Configure the keybindings in e's keybindings config dialog (NG Winlist).
 
 - you can also configure it for mouse wheel bindings 
 
+
+KEYS:
+
+Configure the keybindings in e's keybindings config dialog (NG Winlist).
+
 toggles: a - shows all application
 
-d - shows applications from other/all desks (other / all / off)
+d - toggles shows applications from other/all desks (other / all / off)
+
+D - keeps show desktop toggle for next invocation of winlist
 
 s - brings the apps from other desks to the current desk
 
 i - shows also the iconified apps (iconified / off)
 
-c - shows only all apps that are of the same type as the currently selected
+w - shows only all apps that are of the same type as the currently selected
 
--- 
+q - keeps the current state of the app (e.g. when it was moved to the current desk, uniconifed, etc.) when it becomes unselected or one exits winlist. this is for example useful when you want to bring a bunch of windows to the current desk. --
 
-j,k - go back and forth in the list
+esc - restore desktop
 
-esc - restore desktop 

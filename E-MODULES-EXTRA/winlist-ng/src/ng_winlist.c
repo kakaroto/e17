@@ -238,7 +238,7 @@ ngw_winlist_hide(void)
 
   if(animator)
     {
-      ecore_animator_del(animator);
+      ecore_timer_del(animator);
       animator = NULL;
     }
   
