@@ -514,6 +514,12 @@ _cleanup(Evry_Plugin *plugin)
        p->dd = NULL;
     }
 
+  if (p->timer)
+    ecore_timer_del(p->timer);
+  p->timer = NULL;
+
+  IF_RELEASE(p->input);
+  
   EVRY_PLUGIN_ITEMS_FREE(p);
 }
 
@@ -524,6 +530,8 @@ _send_request(void *data)
   char buf[1024];
   char *query;
   int active;
+
+  if (!p->input) return 0;
 
   query = evry_util_url_escape(p->input, 0);
 
@@ -547,9 +555,7 @@ _fetch(Evry_Plugin *plugin, const char *input)
 {
   GET_PLUGIN(p, plugin);
 
-  if (p->input)
-    eina_stringshare_del(p->input);
-  p->input = NULL;
+  IF_RELEASE(p->input);
 
   if (p->timer)
     ecore_timer_del(p->timer);
@@ -1033,6 +1039,7 @@ Evas_Object *
 _icon_get(Evry_Item *it, Evas *e)
 {
   Evas_Object *o = e_icon_add(e);
+
   if (e_icon_file_edje_set(o, _conf->theme, it->icon))
     return o;
 
