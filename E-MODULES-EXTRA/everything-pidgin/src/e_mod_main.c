@@ -14,12 +14,10 @@
  *
  */
 
-/* #include <stdio.h>
- * #include <limits.h>
- * #include "e.h" */
-
-#include "Evry.h"
+#include "e.h"
 #include "e_mod_main.h"
+#include "evry_api.h"
+
 //For debugging purposes
 static int _evry_plugin_source_pidgin_log_dom = -1;
 
@@ -83,10 +81,14 @@ static void
 _update_list();
 
 
+static const Evry_API *evry = NULL;
+static Evry_Module *evry_module = NULL;
+static Eina_Bool active = EINA_FALSE;
+
 static Evry_Plugin *plug = NULL;
 static Eina_List *buddyEveryItems = NULL;
 static E_DBus_Connection *conn = NULL;
-static int active = 0;
+static int fetching = 0;
 static const char *_input = NULL;
 static Evry_Action *act = NULL;
 static Evry_Action *act2 = NULL;
@@ -209,7 +211,7 @@ cb_buddyList(void *data, DBusMessage *reply, DBusError *error)
   Evry_Item* item = NULL;
   buddyInfo *bi;
 
-  if (!active || !check_msg(data, reply, error)) return;
+  if (!fetching || !check_msg(data, reply, error)) return;
 
   dbus_message_iter_init(reply, &itr);
   dbus_message_iter_recurse(&itr, &arr);
@@ -224,7 +226,7 @@ cb_buddyList(void *data, DBusMessage *reply, DBusError *error)
 	  E_FREE(item);
 	  break;
 	}
-      
+
       dbus_message_iter_get_basic(&arr, (dbus_int32_t*) &(bi->buddyListNumber));
       item->data = bi;
       bi->iconReference = -1;
@@ -247,7 +249,7 @@ cb_buddyList(void *data, DBusMessage *reply, DBusError *error)
 static void
 cb_buddyAccount(void *data, DBusMessage *reply, DBusError *error)
 {
-  if (!active || !check_msg(data, reply, error)) return;
+  if (!fetching || !check_msg(data, reply, error)) return;
 
   buddyInfo* info = EVRY_ITEM(data)->data;
 
@@ -260,7 +262,7 @@ cb_buddyAccount(void *data, DBusMessage *reply, DBusError *error)
 static void
 cb_networkID(void *data, DBusMessage *reply, DBusError *error)
 {
-  if (!active || !check_msg(data, reply, error)) return;
+  if (!fetching || !check_msg(data, reply, error)) return;
 
   buddyInfo* info = EVRY_ITEM(data)->data;
   const char* tmpString = NULL;
@@ -277,7 +279,7 @@ cb_networkID(void *data, DBusMessage *reply, DBusError *error)
 static void
 cb_buddyAlias(void *data, DBusMessage *reply, DBusError *error)
 {
-  if (!active || !check_msg(data, reply, error)) return;
+  if (!fetching || !check_msg(data, reply, error)) return;
 
   Evry_Item* item = EVRY_ITEM(data);
   const char* tmpString = NULL;
@@ -294,7 +296,7 @@ cb_buddyAlias(void *data, DBusMessage *reply, DBusError *error)
 static void
 cb_buddyIconReference(void *data, DBusMessage *reply, DBusError *error)
 {
-  if (!active || !check_msg(data, reply, error)) return;
+  if (!fetching || !check_msg(data, reply, error)) return;
 
   buddyInfo* info = EVRY_ITEM(data)->data;
 
@@ -312,7 +314,7 @@ cb_buddyIconReference(void *data, DBusMessage *reply, DBusError *error)
 static void
 cb_buddyIconPath(void *data, DBusMessage *reply, DBusError *error)
 {
-  if (!active || !check_msg(data, reply, error)) return;
+  if (!fetching || !check_msg(data, reply, error)) return;
 
   buddyInfo* info = EVRY_ITEM(data)->data;
   const char* tmpString = NULL;
@@ -357,7 +359,7 @@ static void
 _cleanup(Evry_Plugin *p)
 {
   /* free instances */
-  active = 0;
+  fetching = 0;
   Evry_Item *it;
 
   EINA_LIST_FREE(buddyEveryItems, it)
@@ -399,8 +401,7 @@ _update_list()
 
       EVRY_PLUGIN_ITEM_APPEND(plug, it);
     }
-
-  plug->items = evry_fuzzy_match_sort(plug->items);
+  EVRY_PLUGIN_ITEMS_SORT(plug, evry->items_sort_func);
 }
 
 
@@ -409,10 +410,10 @@ _fetch(Evry_Plugin *p, const char *input)
 {
   _input = input;
 
-  if (!active)
+  if (!fetching)
     {
       getBuddyList();
-      active = 1;
+      fetching = 1;
       return 0;
     }
 
@@ -592,11 +593,27 @@ _action_chat(Evry_Action *act)
 }
 
 
-static Eina_Bool
-_plugins_init(void)
+static int
+_plugins_init(const Evry_API *_api)
 {
-  if (!evry_api_version_check(EVRY_API_VERSION))
+  if (active)
+    return EINA_TRUE;
+
+  evry = _api;
+
+  if (!evry->api_version_check(EVRY_API_VERSION))
     return EINA_FALSE;
+
+  if (!(conn = e_dbus_bus_get(DBUS_BUS_SESSION)))
+    {
+      EINA_LOG_CRIT("could not connect to dbus' session bus");
+      eina_log_domain_unregister(_evry_plugin_source_pidgin_log_dom);
+      return EINA_FALSE;
+    }
+
+  active = EINA_TRUE;
+
+  PIDGIN_CONTACT = evry_type_register("PIDGIN_CONTACT");
 
   plug = EVRY_PLUGIN_NEW(Evry_Plugin, N_("Pidgin"), NULL,
 			 PIDGIN_CONTACT,
@@ -622,17 +639,21 @@ _plugins_init(void)
 static void
 _plugins_shutdown(void)
 {
+  if (!active) return;
+
+  if (conn)
+    e_dbus_connection_close(conn);
+
   EVRY_PLUGIN_FREE(plug);
 
   evry_action_free(act);
   evry_action_free(act2);
   evry_action_free(act3);
+
+  active = EINA_FALSE;
 }
 
 /***************************************************************************/
-
-static E_Module *_module = NULL;
-static Eina_Bool _active = EINA_FALSE;
 
 EAPI E_Module_Api e_modapi =
   {
@@ -650,8 +671,6 @@ e_modapi_init(E_Module *m)
   bindtextdomain(PACKAGE, buf);
   bind_textdomain_codeset(PACKAGE, "UTF-8");
 
-  _module = m;
-
   if (_evry_plugin_source_pidgin_log_dom < 0)
     {
       _evry_plugin_source_pidgin_log_dom =
@@ -664,20 +683,15 @@ e_modapi_init(E_Module *m)
 	}
     }
 
-  if (!(conn = e_dbus_bus_get(DBUS_BUS_SESSION)))
-    {
-      EINA_LOG_CRIT("could not connect to dbus' session bus");
-      eina_log_domain_unregister(_evry_plugin_source_pidgin_log_dom);
-      return NULL;
-    }
 
-  if (e_datastore_get("everything_loaded"))
-    {
-      PIDGIN_CONTACT = evry_type_register("PIDGIN_CONTACT");
+  if ((evry = e_datastore_get("everything_loaded")))
+    _plugins_init(evry);
 
-      _active = _plugins_init();
-    }
-  
+  evry_module = E_NEW(Evry_Module, 1);
+  evry_module->init     = &_plugins_init;
+  evry_module->shutdown = &_plugins_shutdown;
+  EVRY_MODULE_REGISTER(evry_module);
+
   e_module_delayed_set(m, 1);
 
   return m;
@@ -686,18 +700,13 @@ e_modapi_init(E_Module *m)
 EAPI int
 e_modapi_shutdown(E_Module *m)
 {
-  if (_active && e_datastore_get("everything_loaded"))
-    _plugins_shutdown();
+  EVRY_MODULE_UNREGISTER(evry_module);
+  E_FREE(evry_module);
+
+  _plugins_shutdown();
 
   eina_log_domain_unregister(_evry_plugin_source_pidgin_log_dom);
   _evry_plugin_source_pidgin_log_dom = -1;
-
-  if (conn)
-    {
-      e_dbus_connection_close(conn);
-    }
-
-  _module = NULL;
 
   return 1;
 }

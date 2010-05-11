@@ -2,8 +2,9 @@
  * vim:ts=8:sw=3:sts=8:noexpandtab:cino=>5n-3f0^-2{2
  */
 
-#include "Evry.h"
+#include "e.h"
 #include "e_mod_main.h"
+#include "evry_api.h"
 
 #define ACT_PLAY		0
 #define ACT_STOP		1
@@ -70,6 +71,10 @@ struct _Track
   DBusPendingCall *pnd;
 };
 
+static const Evry_API *evry = NULL;
+static Evry_Module *evry_module = NULL;
+static Eina_Bool active = EINA_FALSE;
+
 static Plugin *_plug;
 static Eina_List *actions = NULL;
 static Eina_List *players = NULL;
@@ -90,7 +95,7 @@ static Evry_Type MPRIS_TRACK;
 static Evry_Type TRACKER_MUSIC;
 static Evry_Type FILE_LIST;
 
-static Eina_Bool active = EINA_FALSE;
+static Eina_Bool dbus_active = EINA_FALSE;
 
 #define GET_TRACK(_t, _it) Track *_t = (Track*) (_it);
 
@@ -238,7 +243,7 @@ _update_list(Plugin *p)
 	  else if (EVRY_FILE(t)->url)
 	    {
 	      const char *file = ecore_file_file_get(EVRY_FILE(t)->url);
-	      char *tmp = evry_util_url_unescape(file, 0);
+	      char *tmp = evry->util_url_unescape(file, 0);
 	      if (tmp)
 		{
 		  it->label = eina_stringshare_add(tmp);
@@ -394,11 +399,11 @@ _icon_get(Evry_Item *it, Evas *e)
   if (t->id == p->current_track)
     {
       if (p->status.playing == 0)
-	return evry_icon_theme_get("media-playback-start", e);
+	return evry->icon_theme_get("media-playback-start", e);
       else if (p->status.playing == 1)
-	return evry_icon_theme_get("media-playback-pause", e);
+	return evry->icon_theme_get("media-playback-pause", e);
       else if (p->status.playing == 2)
-	return evry_icon_theme_get("media-playback-stop", e);
+	return evry->icon_theme_get("media-playback-stop", e);
 
     }
   return NULL;
@@ -566,7 +571,7 @@ _begin(Evry_Plugin *plugin, const Evry_Item *item __UNUSED__)
 {
   GET_PLUGIN(p, plugin);
 
-  if (!conn || !active) return 0;
+  if (!conn || !dbus_active) return 0;
 
   _dbus_send_msg("/TrackList", "GetLength", _dbus_cb_tracklist_length, p);
 
@@ -858,7 +863,7 @@ _add_file(const char *path, int play_now)
     }
   else
     {
-      buf = evry_util_url_unescape(path, 0);
+      buf = evry->util_url_unescape(path, 0);
     }
 
   DBG("play %s", buf);
@@ -1097,7 +1102,7 @@ _dbus_cb_name_owner_changed(void *data __UNUSED__, DBusMessage *msg)
 	    {
 	      bus_name = players->data;
 	      DBG("use::%s", bus_name);
-	      active = EINA_TRUE;
+	      dbus_active = EINA_TRUE;
 	    }
 	  else
 	    {
@@ -1117,10 +1122,10 @@ _dbus_cb_name_owner_changed(void *data __UNUSED__, DBusMessage *msg)
 	}
 
       /* no active player - make player current */
-      if (!active)
+      if (!dbus_active)
 	{
 	  bus_name = tmp;
-	  active = EINA_TRUE;
+	  dbus_active = EINA_TRUE;
 	}
     }
 
@@ -1158,7 +1163,7 @@ _dbus_cb_list_names(void *data __UNUSED__, DBusMessage *msg, DBusError *err)
     {
       bus_name = players->data;
       DBG("use::%s", bus_name);
-      active = EINA_TRUE;
+      dbus_active = EINA_TRUE;
     }
 }
 
@@ -1199,22 +1204,41 @@ _cb_key_down(Evry_Plugin *plugin, const Ecore_Event_Key *ev)
   return 0;
 }
 
-static Eina_Bool
-_plugins_init(void)
+static int
+_plugins_init(const Evry_API *_api)
 {
   Evry_Action *act;
   Evry_Plugin *p;
   int prio = 15;
 
-  if (!evry_api_version_check(EVRY_API_VERSION))
+  if (active)
+    return EINA_TRUE;
+
+  evry = _api;
+
+  if (!evry->api_version_check(EVRY_API_VERSION))
     return EINA_FALSE;
+
+  conn = e_dbus_bus_get(DBUS_BUS_SESSION);
+
+  if (!conn)
+    return EINA_FALSE;
+
+  cb_name_owner_changed = e_dbus_signal_handler_add
+    (conn, fdo_bus_name, fdo_path, fdo_interface, "NameOwnerChanged",
+     _dbus_cb_name_owner_changed, NULL);
+
+  e_dbus_list_names(conn, _dbus_cb_list_names, NULL);
+
+  MPRIS_TRACK   = evry_type_register("MPRIS_TRACK");
+  TRACKER_MUSIC = evry_type_register("TRACKER_MUSIC");
+  FILE_LIST     = evry_type_register("FILE_LIST");
+
 
   p = EVRY_PLUGIN_NEW(Plugin, N_("Playlist"), "emblem-sound", MPRIS_TRACK,
 		  _begin, _cleanup, _fetch, NULL);
-
   p->history     = EINA_FALSE;
   p->async_fetch = EINA_TRUE;
-
   p->cb_key_down = &_cb_key_down;
 
   if (evry_plugin_register(p, EVRY_PLUGIN_SUBJECT, 0))
@@ -1290,8 +1314,9 @@ _plugins_init(void)
   ACTION_NEW(N_("Add Music..."), ACT_ADD_FILE,
 	     MPRIS_TRACK, TRACKER_MUSIC, "list-add",
 	     _mpris_add_files, _mpris_check_add_music);
-
 #undef ACTION_NEW
+
+  active = EINA_TRUE;
 
   return EINA_TRUE;
 }
@@ -1300,6 +1325,9 @@ static void
 _plugins_shutdown(void)
 {
   Evry_Action *act;
+  char *player;
+
+  if (!active) return;
 
   EVRY_PLUGIN_FREE(_plug);
 
@@ -1308,12 +1336,20 @@ _plugins_shutdown(void)
       if (act)
 	evry_action_free(act);
     }
+
+  if (conn)
+    {
+      if (cb_name_owner_changed) e_dbus_signal_handler_del(conn, cb_name_owner_changed);
+      e_dbus_connection_close(conn);
+    }
+
+  EINA_LIST_FREE(players, player)
+    eina_stringshare_del(player);
+
+  active = EINA_FALSE;
 }
 
 /***************************************************************************/
-
-static E_Module *_module = NULL;
-static Eina_Bool _active = EINA_FALSE;
 
 /* module setup */
 EAPI E_Module_Api e_modapi =
@@ -1332,26 +1368,13 @@ e_modapi_init(E_Module *m)
   bindtextdomain(PACKAGE, buf);
   bind_textdomain_codeset(PACKAGE, "UTF-8");
 
-  _module = m;
+  if ((evry = e_datastore_get("everything_loaded")))
+    _plugins_init(evry);
 
-  conn = e_dbus_bus_get(DBUS_BUS_SESSION);
-
-  if (!conn) return NULL;
-
-  cb_name_owner_changed = e_dbus_signal_handler_add
-    (conn, fdo_bus_name, fdo_path, fdo_interface, "NameOwnerChanged",
-     _dbus_cb_name_owner_changed, NULL);
-
-  e_dbus_list_names(conn, _dbus_cb_list_names, NULL);
-
-  if (e_datastore_get("everything_loaded"))
-    {
-      MPRIS_TRACK   = evry_type_register("MPRIS_TRACK");
-      TRACKER_MUSIC = evry_type_register("TRACKER_MUSIC");
-      FILE_LIST     = evry_type_register("FILE_LIST");
-
-      _active = _plugins_init();
-    }
+  evry_module = E_NEW(Evry_Module, 1);
+  evry_module->init     = &_plugins_init;
+  evry_module->shutdown = &_plugins_shutdown;
+  EVRY_MODULE_REGISTER(evry_module);
 
   e_module_delayed_set(m, 1);
 
@@ -1361,23 +1384,10 @@ e_modapi_init(E_Module *m)
 EAPI int
 e_modapi_shutdown(E_Module *m)
 {
-  char *player;
+  EVRY_MODULE_UNREGISTER(evry_module);
+  E_FREE(evry_module);
 
-  if (_active && e_datastore_get("everything_loaded"))
-    _plugins_shutdown();
-  else if (actions)
-    eina_list_free(actions);
-
-  if (conn)
-    {
-      if (cb_name_owner_changed) e_dbus_signal_handler_del(conn, cb_name_owner_changed);
-      e_dbus_connection_close(conn);
-    }
-
-  EINA_LIST_FREE(players, player)
-    eina_stringshare_del(player);
-
-  _module = NULL;
+  _plugins_shutdown();
 
   return 1;
 }

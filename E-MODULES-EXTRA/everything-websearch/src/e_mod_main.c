@@ -2,12 +2,14 @@
  * vim:ts=8:sw=3:sts=8:noexpandtab:cino=>5n-3f0^-2{2
  */
 
-#include <Evry.h>
+#include "e.h"
+#include "e_mod_main.h"
+#include "evry_api.h"
+#include "json.h"
+
 #include <curl/curl.h>
 #include <E_Notify.h>
 
-#include "e_mod_main.h"
-#include "json.h"
 
 #define ACT_GOOGLE		1
 #define ACT_FEELING_LUCKY	2
@@ -122,6 +124,10 @@ struct _Json_Data
 
   int is_val;
 };
+
+static const Evry_API *evry = NULL;
+static Evry_Module *evry_module = NULL;
+static Eina_Bool active = EINA_FALSE;
 
 static Module_Config *_conf;
 static char _config_path[] =  "extensions/" PACKAGE;
@@ -292,7 +298,7 @@ _icon_data_cb(Url_Data *dd)
      {
 	fwrite(dd->data, dd->size, sizeof(char), f);
 	fclose(f);
-	evry_event_item_changed(EVRY_ITEM(wl), 1, 0);
+	evry->event_item_changed(EVRY_ITEM(wl), 1, 0);
      }
 
    _url_data_free(dd);
@@ -382,7 +388,7 @@ _web_link_icon_get(Evry_Item *it, Evas *e)
 
   if (!wl->thumb_file)
     {
-      char *sum = evry_util_md5_sum(wl->thumb);
+      char *sum = evry->util_md5_sum(wl->thumb);
 
       snprintf(thumb_buf, sizeof(thumb_buf),
 	       "%s/.cache/youtube/%s.jpeg",
@@ -520,7 +526,7 @@ _cleanup(Evry_Plugin *plugin)
   p->timer = NULL;
 
   IF_RELEASE(p->input);
-  
+
   EVRY_PLUGIN_ITEMS_FREE(p);
 }
 
@@ -534,7 +540,7 @@ _send_request(void *data)
 
   if (!p->input) return 0;
 
-  query = evry_util_url_escape(p->input, 0);
+  query = evry->util_url_escape(p->input, 0);
 
   if (!strcmp(p->base.name, N_("Translate")))
     snprintf(buf, sizeof(buf), p->request, _conf->translate, query);
@@ -591,7 +597,7 @@ _action(Evry_Action *act)
   if (!app->desktop)
     app->file = "xdg-open";
 
-  char *tmp = evry_util_url_escape(act->it1.item->label, 0);
+  char *tmp = evry->util_url_escape(act->it1.item->label, 0);
 
   if (EVRY_ITEM_DATA_INT_GET(act) == ACT_GOOGLE)
     {
@@ -618,7 +624,7 @@ _action(Evry_Action *act)
 
   file->path = buf;
 
-  evry_util_exec_app(EVRY_ITEM(app), EVRY_ITEM(file));
+  evry->util_exec_app(EVRY_ITEM(app), EVRY_ITEM(file));
 
   if (app->desktop)
     {
@@ -712,14 +718,14 @@ _youtube_dl_timer(void *d)
       f->mime = eina_stringshare_add("audio/");
 
       if ((yd->method == YOUTUBE_DL_ENQ) &&
-  	  (act = evry_action_find(N_("Enqueue in Playlist"))))
+  	  (act = evry->action_find(N_("Enqueue in Playlist"))))
 	{
 	   act->it1.item = EVRY_ITEM(f);
 	   act->action(act);
 	   _send_notification(yd->id, "emblem-sound", N_("Enqueue"), yd->label, -1);
 	}
       if ((yd->method == YOUTUBE_DL_PLAY) &&
-  	  (act = evry_action_find(N_("Play File"))))
+  	  (act = evry->action_find(N_("Play File"))))
 	{
 	   act->it1.item = EVRY_ITEM(f);
 	   act->action(act);
@@ -1010,7 +1016,7 @@ _action_upload(Evry_Action *act)
   Upload_Data *ud;
 
   GET_FILE(file, act->it1.item);
-  if (!evry_file_path_get(file))
+  if (!evry->file_path_get(file))
     return 0;
 
   ud = E_NEW(Upload_Data, 1);
@@ -1068,14 +1074,23 @@ _complete(Evry_Plugin *p, const Evry_Item *item, char **input)
   return EVRY_COMPLETE_INPUT;
 }
 
-static Eina_Bool
-_plugins_init(void)
+static int
+_plugins_init(const Evry_API *_api)
 {
   Evry_Plugin *p;
   Evry_Action *act;
 
-  if (!evry_api_version_check(EVRY_API_VERSION))
+  if (active)
+    return EINA_TRUE;
+
+  evry = _api;
+
+  if (!evry->api_version_check(EVRY_API_VERSION))
     return EINA_FALSE;
+
+  active = EINA_TRUE;
+
+  WEBLINK = evry->type_register("WEBLINK");
 
 #define PLUGIN_NEW(_name, _type, _icon, _begin, _cleaup, _fetch, _complete, _request, _data_cb, _host, _trigger) { \
     p = EVRY_PLUGIN_NEW(Plugin, _name, _icon, _type, _begin, _cleanup, _fetch, NULL); \
@@ -1085,7 +1100,7 @@ _plugins_init(void)
     GET_PLUGIN(plug, p);					\
     plug->request = _request;					\
     plug->data_cb = _data_cb;					\
-    if (evry_plugin_register(p, EVRY_PLUGIN_SUBJECT, 10)) {	\
+    if (evry->plugin_register(p, EVRY_PLUGIN_SUBJECT, 10)) {	\
       Plugin_Config *pc = p->config;				\
       pc->view_mode = VIEW_MODE_LIST;				\
       pc->aggregate = EINA_FALSE;				\
@@ -1120,7 +1135,7 @@ _plugins_init(void)
   act = EVRY_ACTION_NEW(_name, _type, 0, _icon, _action, _check);	\
   EVRY_ITEM_DATA_INT_SET(act, _method);					\
   EVRY_ITEM(act)->icon_get = &_icon_get;				\
-  evry_action_register(act, 1);						\
+  evry->action_register(act, 1);				       	\
   actions = eina_list_append(actions, act);				\
 
   ACTION_NEW(N_("Google for it"), EVRY_TYPE_TEXT, "google",
@@ -1151,6 +1166,18 @@ _plugins_init(void)
 	     _action_upload, _action_upload_check, ACT_UPLOAD_IMGUR);
   act->remember_context = EINA_TRUE;
 
+  handlers = eina_list_append
+    (handlers, ecore_event_handler_add
+     (ECORE_CON_EVENT_URL_DATA, _common_data_cb, _conf));
+
+  handlers = eina_list_append
+    (handlers, ecore_event_handler_add
+     (ECORE_CON_EVENT_URL_PROGRESS, _common_progress_cb, _conf));
+
+  handlers = eina_list_append
+    (handlers, ecore_event_handler_add
+     (ECORE_CON_EVENT_URL_COMPLETE, _common_complete_cb, _conf));
+
   return EINA_TRUE;
 }
 
@@ -1159,12 +1186,20 @@ _plugins_shutdown(void)
 {
   Evry_Plugin *p;
   Evry_Action *act;
+  Ecore_Event_Handler *h;
+
+  if (!active) return;
 
   EINA_LIST_FREE(plugins, p)
     EVRY_PLUGIN_FREE(p);
 
   EINA_LIST_FREE(actions, act)
-    evry_action_free(act);
+    evry->action_free(act);
+
+  EINA_LIST_FREE(handlers, h)
+    ecore_event_handler_del(h);
+
+  active = EINA_FALSE;
 }
 
 /***************************************************************************/
@@ -1421,8 +1456,6 @@ e_modapi_init(E_Module *m)
   ecore_con_url_init();
   _conf_init(m);
 
-  WEBLINK = evry_type_register("WEBLINK");
-
   snprintf(buf, sizeof(buf), "%s/.cache/youtube", e_user_homedir_get());
   if (!ecore_file_exists(buf))
     ecore_file_mkdir(buf);
@@ -1430,23 +1463,13 @@ e_modapi_init(E_Module *m)
   if (!ecore_file_exists(buf))
     ecore_file_mkdir(buf);
 
-  if (!_plugins_init())
-    {
-      _conf_shutdown();
-      return NULL;
-    }
+  if ((evry = e_datastore_get("everything_loaded")))
+    _plugins_init(evry);
 
-  handlers = eina_list_append
-    (handlers, ecore_event_handler_add
-     (ECORE_CON_EVENT_URL_DATA, _common_data_cb, _conf));
-
-  handlers = eina_list_append
-    (handlers, ecore_event_handler_add
-     (ECORE_CON_EVENT_URL_PROGRESS, _common_progress_cb, _conf));
-
-  handlers = eina_list_append
-    (handlers, ecore_event_handler_add
-     (ECORE_CON_EVENT_URL_COMPLETE, _common_complete_cb, _conf));
+  evry_module = E_NEW(Evry_Module, 1);
+  evry_module->init     = &_plugins_init;
+  evry_module->shutdown = &_plugins_shutdown;
+  EVRY_MODULE_REGISTER(evry_module);
 
   e_module_delayed_set(m, 1);
 
@@ -1456,25 +1479,16 @@ e_modapi_init(E_Module *m)
 EAPI int
 e_modapi_shutdown(E_Module *m)
 {
-  Ecore_Event_Handler *h;
+  EVRY_MODULE_UNREGISTER(evry_module);
+  E_FREE(evry_module);
 
-  if (e_datastore_get("everything_loaded"))
-    _plugins_shutdown();
-
-  EINA_LIST_FREE(handlers, h)
-    ecore_event_handler_del(h);
+  _plugins_shutdown();
 
   _conf_shutdown();
   e_notification_shutdown();
   ecore_con_url_shutdown();
 
-  /* EINA_LIST_FREE(download_handlers, dd)
-   *   {
-   *     if (dd->exe) ecore_exe_kill(dd->exe);
-   *     E_FREE(dd->file);
-   *     E_FREE(dd);
-   *   } */
-
+  /* XXX free download handler */
   return 1;
 }
 
