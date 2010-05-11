@@ -827,7 +827,6 @@ _plugins_init(const Evry_API *_api)
      p = EVRY_PLUGIN_NEW(Plugin, _name, _icon, _type, _begin, _finish, _fetch, NULL); \
      GET_PLUGIN(p1, p);							\
      p1->query = _query;						\
-     plugins = eina_list_append(plugins, p);				\
      if (evry->plugin_register(p, _plug_type, _prio++)) {		\
 	p->config->min_query = 4;					\
 	p->config->top_level = 0; }					\
@@ -848,11 +847,9 @@ _plugins_init(const Evry_API *_api)
       GET_PLUGIN(p1, p);						\
       p1->query = _query;						\
       p1->filter_result = EINA_TRUE;					\
-      plugins = eina_list_append(plugins, p);				\
       if (evry->plugin_register(p, _plug_type, _prio++)) {		\
 	 p->config->top_level = 0; }					\
       plugins = eina_list_append(plugins, p); }
-
 
    QUERY_PLUGIN_NEW(N_("Albums"), EVRY_PLUGIN_OBJECT, "emblem-sound", TRACKER_MUSIC,
 		    _begin, _finish, _fetch, query_albums);
@@ -874,10 +871,10 @@ _plugins_shutdown(void)
      {
        e_dbus_signal_handler_del(conn, cb_name_owner_changed);
        e_dbus_connection_close(conn);
+       conn = NULL;
      }
 
-   if (mime_dir)
-     eina_stringshare_del(mime_dir);
+   IF_RELEASE(mime_dir);
 
    EINA_LIST_FREE(plugins, p)
      EVRY_PLUGIN_FREE(p);
