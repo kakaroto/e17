@@ -1,27 +1,58 @@
 images 
 {
-   image: "module_icon.png" COMP;
+  image: "module_icon.png" COMP;
+  image: "play.png" COMP;
+  image: "pause.png" COMP;
+  image: "next.png" COMP;
+  image: "prev.png" COMP;
 }
+
+#define ICON(NAME, FILE, SIZE)			\
+    group {					\
+      name: NAME ;				\
+      max: SIZE SIZE;				\
+	parts {					\
+	    part {				\
+	      name: "icon";			\
+	      repeat_events: 1;			\
+		description {			\
+		  state: "default" 0.0;		\
+		  aspect: 1.0 1.0;		\
+		  aspect_preference: BOTH;	\
+		  image.image: FILE COMP;	\
+		  image.normal: FILE ;		\
+		}				\
+	    }					\
+	}					\
+    }
 
 collections 
 {
-   group 
-     {
-	name: "icon";
-	max: 24 24;
+    group 
+    {
+      name: "icon";
+      max: 24 24;
 	parts 
-	  {
-	     part 
-	       {
-		  name: "image";
-		  mouse_events: 0;
-		  type: IMAGE;
-		  description 
-		    {
-		       state: "default" 0.0;
-		       image.normal: "module_icon.png";
-		    }
-	       }
-	  }
-     }
+	{
+	    part 
+	    {
+	      name: "image";
+	      mouse_events: 0;
+	      type: IMAGE;
+		description 
+		{
+		  aspect: 1.0 1.0;			
+		  aspect_preference: BOTH;		
+		  state: "default" 0.0;
+		  image.normal: "module_icon.png";
+		}
+	    }
+	}
+    }
+
+    ICON("play", "play.png", 128);
+    ICON("pause", "pause.png", 128);
+    ICON("stop", "stop.png", 128);
+    ICON("forward", "next.png", 128);
+    ICON("backward", "prev.png", 128);
 }

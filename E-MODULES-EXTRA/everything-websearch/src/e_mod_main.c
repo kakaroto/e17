@@ -127,7 +127,6 @@ struct _Json_Data
 
 static const Evry_API *evry = NULL;
 static Evry_Module *evry_module = NULL;
-static Eina_Bool active = EINA_FALSE;
 
 static Module_Config *_conf;
 static char _config_path[] =  "extensions/" PACKAGE;
@@ -298,7 +297,7 @@ _icon_data_cb(Url_Data *dd)
      {
 	fwrite(dd->data, dd->size, sizeof(char), f);
 	fclose(f);
-	evry->event_item_changed(EVRY_ITEM(wl), 1, 0);
+	evry->item_changed(EVRY_ITEM(wl), 1, 0);
      }
 
    _url_data_free(dd);
@@ -1080,7 +1079,7 @@ _plugins_init(const Evry_API *_api)
   Evry_Plugin *p;
   Evry_Action *act;
 
-  if (active)
+  if (evry_module->active)
     return EINA_TRUE;
 
   evry = _api;
@@ -1088,7 +1087,7 @@ _plugins_init(const Evry_API *_api)
   if (!evry->api_version_check(EVRY_API_VERSION))
     return EINA_FALSE;
 
-  active = EINA_TRUE;
+  evry_module->active = EINA_TRUE;
 
   WEBLINK = evry->type_register("WEBLINK");
 
@@ -1188,7 +1187,7 @@ _plugins_shutdown(void)
   Evry_Action *act;
   Ecore_Event_Handler *h;
 
-  if (!active) return;
+  if (!evry_module->active) return;
 
   EINA_LIST_FREE(plugins, p)
     EVRY_PLUGIN_FREE(p);
@@ -1199,7 +1198,7 @@ _plugins_shutdown(void)
   EINA_LIST_FREE(handlers, h)
     ecore_event_handler_del(h);
 
-  active = EINA_FALSE;
+  evry_module->active = EINA_FALSE;
 }
 
 /***************************************************************************/
@@ -1463,13 +1462,13 @@ e_modapi_init(E_Module *m)
   if (!ecore_file_exists(buf))
     ecore_file_mkdir(buf);
 
-  if ((evry = e_datastore_get("everything_loaded")))
-    _plugins_init(evry);
-
   evry_module = E_NEW(Evry_Module, 1);
   evry_module->init     = &_plugins_init;
   evry_module->shutdown = &_plugins_shutdown;
   EVRY_MODULE_REGISTER(evry_module);
+
+  if ((evry = e_datastore_get("everything_loaded")))
+    _plugins_init(evry);
 
   e_module_delayed_set(m, 1);
 
@@ -1479,10 +1478,10 @@ e_modapi_init(E_Module *m)
 EAPI int
 e_modapi_shutdown(E_Module *m)
 {
+  _plugins_shutdown();
+  
   EVRY_MODULE_UNREGISTER(evry_module);
   E_FREE(evry_module);
-
-  _plugins_shutdown();
 
   _conf_shutdown();
   e_notification_shutdown();

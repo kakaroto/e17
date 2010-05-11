@@ -40,7 +40,6 @@ struct _Query_Item
 
 static const Evry_API *evry = NULL;
 static Evry_Module *evry_module = NULL;
-static Eina_Bool active = EINA_FALSE;
 
 static E_DBus_Connection *conn = NULL;
 static Eina_List *plugins = NULL;
@@ -793,7 +792,7 @@ _plugins_init(const Evry_API *_api)
 {
    Evry_Plugin *p;
 
-   if (active)
+   if (evry_module->active)
      return EINA_TRUE;
 
    evry = _api;
@@ -817,7 +816,7 @@ _plugins_init(const Evry_API *_api)
 
    e_datastore_set("everything_tracker", "");
 
-   active = EINA_TRUE;
+   evry_module->active = EINA_TRUE;
 
    TRACKER_QUERY = evry->type_register("TRACKER_QUERY");
    TRACKER_MUSIC = evry->type_register("TRACKER_MUSIC");
@@ -865,7 +864,7 @@ _plugins_shutdown(void)
 {
    Plugin *p;
 
-   if (!active) return;
+   if (!evry_module->active) return;
 
    if (conn)
      {
@@ -879,7 +878,7 @@ _plugins_shutdown(void)
    EINA_LIST_FREE(plugins, p)
      EVRY_PLUGIN_FREE(p);
 
-   active = EINA_FALSE;
+   evry_module->active = EINA_FALSE;
 }
 
 /***************************************************************************/
@@ -900,13 +899,13 @@ e_modapi_init(E_Module *m)
    bindtextdomain(PACKAGE, buf);
    bind_textdomain_codeset(PACKAGE, "UTF-8");
 
-   if ((evry = e_datastore_get("everything_loaded")))
-     _plugins_init(evry);
-
    evry_module = E_NEW(Evry_Module, 1);
    evry_module->init     = &_plugins_init;
    evry_module->shutdown = &_plugins_shutdown;
    EVRY_MODULE_REGISTER(evry_module);
+
+   if ((evry = e_datastore_get("everything_loaded")))
+     _plugins_init(evry);
 
    e_module_delayed_set(m, 1);
 
@@ -916,10 +915,10 @@ e_modapi_init(E_Module *m)
 EAPI int
 e_modapi_shutdown(E_Module *m)
 {
+   _plugins_shutdown();
+
    EVRY_MODULE_UNREGISTER(evry_module);
    E_FREE(evry_module);
-
-   _plugins_shutdown();
 
    return 1;
 }

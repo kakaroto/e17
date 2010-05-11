@@ -73,7 +73,6 @@ struct _Track
 
 static const Evry_API *evry = NULL;
 static Evry_Module *evry_module = NULL;
-static Eina_Bool active = EINA_FALSE;
 
 static Plugin *_plug;
 static Eina_List *actions = NULL;
@@ -187,12 +186,12 @@ _dbus_cb_current_track(void *data, DBusMessage *reply, DBusError *error)
   if (num != p->current_track)
     {
       it = eina_list_nth(p->tracks, p->current_track);
-      if (it) evry_event_item_changed(it, 1, 0);
+      if (it) evry->item_changed(it, 1, 0);
 
       p->current_track = num;
 
       it = eina_list_nth(p->tracks, p->current_track);
-      if (it) evry_event_item_changed(it, 1, 0);
+      if (it) evry->item_changed(it, 1, 0);
     }
 }
 
@@ -508,7 +507,7 @@ _set_status(Plugin *p, DBusMessage *msg)
   DBG("status %d", p->status.playing);
 
   it = eina_list_nth(p->tracks, p->current_track);
-  if (it) evry_event_item_changed(it, 1, 0);
+  if (it) evry->item_changed(it, 1, 0);
 }
 
 static void
@@ -1106,7 +1105,7 @@ _dbus_cb_name_owner_changed(void *data __UNUSED__, DBusMessage *msg)
 	    }
 	  else
 	    {
-	      active = EINA_FALSE;
+	      dbus_active = EINA_FALSE;
 	    }
 	}
 
@@ -1183,7 +1182,7 @@ _cb_key_down(Evry_Plugin *plugin, const Ecore_Event_Key *ev)
 	    {
 	      /* FIXME send with event ? */
 	      evry_item_select(NULL, EVRY_ITEM(t));
-	      evry_event_item_changed(EVRY_ITEM(t), 1, 1);
+	      evry->item_changed(EVRY_ITEM(t), 1, 1);
 	      return 1;
 	    }
 	}
@@ -1204,6 +1203,19 @@ _cb_key_down(Evry_Plugin *plugin, const Ecore_Event_Key *ev)
   return 0;
 }
 
+/* Evas_Object *
+ * _act_icon_get(Evry_Item *it, Evas *e)
+ * {
+ *   Evas_Object *o = e_icon_add(e);
+ * 
+ *   if (e_icon_file_edje_set(o, _conf->theme, it->icon))
+ *     return o;
+ * 
+ *   evas_object_del(o);
+ * 
+ *   return NULL;
+ * } */
+
 static int
 _plugins_init(const Evry_API *_api)
 {
@@ -1211,7 +1223,7 @@ _plugins_init(const Evry_API *_api)
   Evry_Plugin *p;
   int prio = 15;
 
-  if (active)
+  if (evry_module->active)
     return EINA_TRUE;
 
   evry = _api;
@@ -1258,6 +1270,8 @@ _plugins_init(const Evry_API *_api)
     actions = eina_list_append(actions, act);				\
     EVRY_ITEM_DATA_INT_SET(act, _meth);					\
 
+  /* EVRY_ITEM(act)->icon_get = &_icon_get; */
+  
   ACTION_NEW(N_("Play Track"), ACT_PLAY_TRACK,
 	     MPRIS_TRACK, 0,
 	     "media-playback-start",
@@ -1316,7 +1330,7 @@ _plugins_init(const Evry_API *_api)
 	     _mpris_add_files, _mpris_check_add_music);
 #undef ACTION_NEW
 
-  active = EINA_TRUE;
+  evry_module->active = EINA_TRUE;
 
   return EINA_TRUE;
 }
@@ -1327,7 +1341,7 @@ _plugins_shutdown(void)
   Evry_Action *act;
   char *player;
 
-  if (!active) return;
+  if (!evry_module->active) return;
 
   EVRY_PLUGIN_FREE(_plug);
 
@@ -1346,7 +1360,7 @@ _plugins_shutdown(void)
   EINA_LIST_FREE(players, player)
     eina_stringshare_del(player);
 
-  active = EINA_FALSE;
+  evry_module->active = EINA_FALSE;
 }
 
 /***************************************************************************/
@@ -1368,13 +1382,13 @@ e_modapi_init(E_Module *m)
   bindtextdomain(PACKAGE, buf);
   bind_textdomain_codeset(PACKAGE, "UTF-8");
 
-  if ((evry = e_datastore_get("everything_loaded")))
-    _plugins_init(evry);
-
   evry_module = E_NEW(Evry_Module, 1);
   evry_module->init     = &_plugins_init;
   evry_module->shutdown = &_plugins_shutdown;
   EVRY_MODULE_REGISTER(evry_module);
+
+  if ((evry = e_datastore_get("everything_loaded")))
+    _plugins_init(evry);
 
   e_module_delayed_set(m, 1);
 
@@ -1384,10 +1398,10 @@ e_modapi_init(E_Module *m)
 EAPI int
 e_modapi_shutdown(E_Module *m)
 {
+  _plugins_shutdown();
+  
   EVRY_MODULE_UNREGISTER(evry_module);
   E_FREE(evry_module);
-
-  _plugins_shutdown();
 
   return 1;
 }
