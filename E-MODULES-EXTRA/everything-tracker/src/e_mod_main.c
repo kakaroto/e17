@@ -6,6 +6,9 @@
 #include "e_mod_main.h"
 #include "evry_api.h"
 
+/* #undef DBG
+ * #define DBG(...) ERR(__VA_ARGS__) */
+
 #define QUERY_ITEM(_q, _it) Query_Item *_q = (Query_Item *) _it;
 
 typedef struct _Plugin Plugin;
@@ -483,7 +486,8 @@ _send_query(const char *query, const char *match, const char *match2, void *cb_d
      {
 	_query = strdup(query);
      }
-
+   DBG("%s", query);
+   
    msg = dbus_message_new_method_call(bus_name,
 				      "/org/freedesktop/Tracker1/Resources",
 				      "org.freedesktop.Tracker1.Resources",
@@ -580,12 +584,23 @@ _fetch(Evry_Plugin *plugin, const char *input)
 {
    GET_PLUGIN(p, plugin);
 
+   DBG("%s", input);
+   
    char buf[128];
-   int len = (input ? strlen(input) : 0);
+   int len = 0;
    Evry_Item *it;
 
+   IF_RELEASE(p->input);
+   if (input)
+     {
+	len = strlen(input);
+	p->input = eina_stringshare_add(input);
+     }
+   
    if (!dbus_active)
      {
+	DBG("not active");
+	
 	EVRY_PLUGIN_ITEMS_CLEAR(p);
 
 	EINA_LIST_FREE(p->files, it)
@@ -610,11 +625,8 @@ _fetch(Evry_Plugin *plugin, const char *input)
      dbus_pending_call_cancel(p->pnd);
    p->pnd = NULL;
 
-   if (len > 0 && len >= plugin->config->min_query && !isalnum(input[0]))
+   if (len > 0 && (len >= plugin->config->min_query) && isalnum(input[0]))
      {
-	if (p->input) eina_stringshare_del(p->input);
-	p->input = eina_stringshare_add(input);
-
 	snprintf(buf, sizeof(buf), fts_match, input);
 
 	p->fetching = EINA_TRUE;
