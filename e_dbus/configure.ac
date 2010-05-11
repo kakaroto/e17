@@ -48,55 +48,12 @@ AC_SUBST(enotify_release_info)
 
 dnl Check enabled modules to build
 AC_ARG_ENABLE([ehal],[AC_HELP_STRING([--disable-ehal], [Disable ehal build])],[enable_ehal=$enableval],[enable_ehal="yes"])
-#AS_IF(
-#   [test "x$enableval" != "xno"],
-#      AC_CHECK_LIB([hal],[libhal_get_all_devices],[enable_ehal=yes],[enable_ehal=no])
-#   [enable_ehal=no],
-#)
-
-#AC_ARG_ENABLE([eudev],[AC_HELP_STRING([--disable-eudev], [Disable eudev build])],[enable_eudev=$enableval],[enable_eudev="yes"])
-#AS_IF(
-#   [test "x$enableval" != "xno"],
-#      [enable_eudev="yes"],
-#   [enable_eudev=no],
-#)
-
+##AC_ARG_ENABLE([eudev],[AC_HELP_STRING([--disable-eudev], [Disable eudev build])],[enable_eudev=$enableval],[enable_eudev="yes"])
 AC_ARG_ENABLE([eukit],[AC_HELP_STRING([--disable-eukit], [Disable eukit build])],[enable_eukit=$enableval],[enable_eukit="yes"])
-#AS_IF(
-#   [test "x$enableval" != "xno"],
-#      [enable_eukit="yes"],
-#dnl     AC_CHECK_PROG([enable_eukit],udisks,yes,no)
-#dnl     AC_CHECK_PROG([enable_eukit],upower,yes,no),
-#   [enable_eukit=no],
-#)
-
 AC_ARG_ENABLE([econnman],[AC_HELP_STRING([--disable-econnman], [Disable econnman build])],[enable_econnman=$enableval],[enable_econnman="yes"])
-#AS_IF(
-#   [test "x$enableval" != "xno"],
-#      [enable_econnman="yes"],
-#   [enable_econnman=no],
-#)
-
 AC_ARG_ENABLE([ebluez],[AC_HELP_STRING([--disable-ebluez], [Disable ebluez build])],[enable_ebluez=$enableval],[enable_ebluez="yes"])
-#AS_IF(
-#   [test "x$enableval" != "xno"],
-#      [enable_ebluez="yes"],
-#   [enable_ebluez=no],
-#)
-
 AC_ARG_ENABLE([eofono],[AC_HELP_STRING([--disable-eofono], [Disable eofono build])],[enable_eofono=$enableval],[enable_eofono="yes"])
-#AS_IF(
-#   [test "x$enableval" != "xno"],
-#      [enable_eofono="yes"],
-#   [enable_eofono=no],
-#)
-
 AC_ARG_ENABLE([enotify],[AC_HELP_STRING([--disable-enotify], [Disable enotify build])],[enable_enotify=$enableval],[enable_enotify="yes"])
-#AS_IF(
-#   [test "x$enableval" != "xno"],
-#      [enable_enotify="yes"],
-#   [enable_enotify=no],
-#)
 
 # pkg-config
 PKG_PROG_PKG_CONFIG
@@ -152,7 +109,7 @@ AS_IF(
 #)
 
 AM_CONDITIONAL([BUILD_EHAL],     [test "x${enable_ehal}"     = "xyes"])
-#AM_CONDITIONAL([BUILD_EUDEV],    [test "x${enable_eudev}"    = "xyes"])
+##AM_CONDITIONAL([BUILD_EUDEV],    [test "x${enable_eudev}"    = "xyes"])
 AM_CONDITIONAL([BUILD_EUKIT],    [test "x${enable_eukit}"    = "xyes"])
 AM_CONDITIONAL([BUILD_ENOTIFY],  [test "x${enable_enotify}"  = "xyes"])
 AM_CONDITIONAL([BUILD_ECONNMAN], [test "x${enable_econnman}" = "xyes"])
@@ -210,7 +167,7 @@ echo
 echo "  Modules:"
 echo
 echo "    EHal...............: $enable_ehal"
-echo "    EUdev..............: $enable_eudev"
+##echo "    EUdev..............: $enable_eudev"
 echo "    EUkit..............: $enable_eukit"
 echo "    EConnman...........: $enable_econnman"
 echo "    EBluez.............: $enable_ebluez"
