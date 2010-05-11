@@ -828,8 +828,6 @@ _plugins_init(const Evry_API *_api)
 
    e_datastore_set("everything_tracker", "");
 
-   evry_module->active = EINA_TRUE;
-
    TRACKER_QUERY = evry->type_register("TRACKER_QUERY");
    TRACKER_MUSIC = evry->type_register("TRACKER_MUSIC");
    FILE_LIST     = evry->type_register("FILE_LIST");
@@ -917,7 +915,7 @@ e_modapi_init(E_Module *m)
    EVRY_MODULE_REGISTER(evry_module);
 
    if ((evry = e_datastore_get("everything_loaded")))
-     _plugins_init(evry);
+     evry_module->active = _plugins_init(evry);
 
    e_module_delayed_set(m, 1);
 

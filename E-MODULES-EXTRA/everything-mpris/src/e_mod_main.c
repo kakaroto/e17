@@ -1330,8 +1330,6 @@ _plugins_init(const Evry_API *_api)
 	     _mpris_add_files, _mpris_check_add_music);
 #undef ACTION_NEW
 
-  evry_module->active = EINA_TRUE;
-
   return EINA_TRUE;
 }
 
@@ -1388,7 +1386,7 @@ e_modapi_init(E_Module *m)
   EVRY_MODULE_REGISTER(evry_module);
 
   if ((evry = e_datastore_get("everything_loaded")))
-    _plugins_init(evry);
+    evry_module->active = _plugins_init(evry);
 
   e_module_delayed_set(m, 1);
 

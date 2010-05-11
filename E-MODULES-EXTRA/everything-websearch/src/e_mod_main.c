@@ -383,8 +383,6 @@ _web_link_icon_get(Evry_Item *it, Evas *e)
   Web_Link *wl = (Web_Link *) it;
   Evas_Object *o;
 
-
-
   if (!wl->thumb_file)
     {
       char *sum = evry->util_md5_sum(wl->thumb);
@@ -1087,8 +1085,6 @@ _plugins_init(const Evry_API *_api)
   if (!evry->api_version_check(EVRY_API_VERSION))
     return EINA_FALSE;
 
-  evry_module->active = EINA_TRUE;
-
   WEBLINK = evry->type_register("WEBLINK");
 
 #define PLUGIN_NEW(_name, _type, _icon, _begin, _cleaup, _fetch, _complete, _request, _data_cb, _host, _trigger) { \
@@ -1468,7 +1464,7 @@ e_modapi_init(E_Module *m)
   EVRY_MODULE_REGISTER(evry_module);
 
   if ((evry = e_datastore_get("everything_loaded")))
-    _plugins_init(evry);
+    evry_module->active = _plugins_init(evry);
 
   e_module_delayed_set(m, 1);
 
