@@ -1,3 +1,1 @@
-debian/tmp/usr/lib/libedbus-*.so.*
-debian/tmp/usr/lib/libehal-*.so.*
-debian/tmp/usr/lib/libenotify-*.so.*
+debian/tmp/usr/lib/lib*.so.*
