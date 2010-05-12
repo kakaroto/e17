@@ -166,7 +166,7 @@ collections {
                rel1 {
                   to_x: "notification.swallow.app_icon";
 	          relative: 1.0 0.0;
-                  offset: 10 5;
+                  offset: 4 5;
                }
                rel2 {
                   relative: 1.0 0.0;
@@ -257,7 +257,7 @@ collections {
             clip_to: "clipper_app_icon";
             description {
                state: "default" 0.0;
-               align: 0.0 0.5;
+               align: 0.0 0.0;
                aspect: 1 1;
                aspect_preference: BOTH;
                rel1 {
@@ -288,7 +288,7 @@ collections {
                   to_x: "notification.swallow.app_icon";
                   /* to_y: "notification.text.title"; */
                   relative: 1.0 0.0;
-                  offset: 15 22;
+                  offset: 8 22;
                }
                rel2 {
                   relative: 1.0 1.0;
