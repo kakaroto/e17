@@ -29,59 +29,59 @@ typedef struct _Notification_Box Notification_Box;
 typedef struct _Notification_Box_Icon Notification_Box_Icon;
 
 enum _Popup_Corner
-{
-  CORNER_TL,
-  CORNER_TR,
-  CORNER_BL,
-  CORNER_BR
-};
+  {
+    CORNER_TL,
+    CORNER_TR,
+    CORNER_BL,
+    CORNER_BR
+  };
 
 struct _Config 
 {
-   E_Config_Dialog *cfd;
+  E_Config_Dialog *cfd;
 
-   int version;
-   int show_low;
-   int show_normal;
-   int show_critical;
-   float timeout;
-   Popup_Corner corner;
+  int version;
+  int show_low;
+  int show_normal;
+  int show_critical;
+  float timeout;
+  Popup_Corner corner;
 
-   struct
-     {
-	Eina_Bool presentation;
-	Eina_Bool offline;
-     } last_config_mode;
+  struct
+  {
+    Eina_Bool presentation;
+    Eina_Bool offline;
+  } last_config_mode;
   
-   Eina_List  *instances;
-   Eina_List  *n_box;
-   Eina_List  *config_dialog;
-   E_Menu     *menu;
-   Eina_List  *handlers;
-   Eina_List  *items;
-   Eina_List  *popups;
-   int         next_id;
+  Eina_List  *instances;
+  Eina_List  *n_box;
+  Eina_List  *config_dialog;
+  E_Menu     *menu;
+  Eina_List  *handlers;
+  Eina_List  *items;
+  Eina_List  *popups;
+  int         next_id;
 
-   Ecore_Timer *initial_mode_timer;
-   E_Notification_Daemon *daemon;
+  Ecore_Timer *initial_mode_timer;
+  E_Notification_Daemon *daemon;
 };
 
 struct _Config_Item 
 {
-   const char *id;
-   int show_label;
-   int show_popup;
-   int focus_window;
-   int store_low;
-   int store_normal;
-   int store_critical;
+  const char *id;
+  int show_label;
+  int show_popup;
+  int focus_window;
+  int store_low;
+  int store_normal;
+  int store_critical;
 };
 
 struct _Instance 
 {
-   E_Gadcon_Client  *gcc;
-   Notification_Box *n_box;
-   Config_Item      *ci;
+  E_Gadcon_Client  *gcc;
+  Notification_Box *n_box;
+  Config_Item      *ci;
 };
 
 

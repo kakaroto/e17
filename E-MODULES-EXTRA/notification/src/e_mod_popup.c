@@ -6,7 +6,7 @@
 /* Popup function protos */
 static Popup_Data *_notification_popup_new      (E_Notification *n);
 static Popup_Data *_notification_popup_find     (unsigned int id);
-static void        _notification_popup_place    (Popup_Data *popup, int num);
+static int        _notification_popup_place    (Popup_Data *popup, int num);
 static void        _notification_popup_refresh  (Popup_Data *popup);
 static void        _notification_popup_del      (unsigned int id, 
                                                  E_Notification_Closed_Reason reason);
@@ -30,6 +30,8 @@ static void _notification_theme_cb_find     (void *data,
                                              const char *emission, 
                                              const char *source);
 static int  _notification_timer_cb          (void *data);
+
+static int next_pos = 0;
 
 int
 notification_popup_notify(E_Notification *n, 
@@ -123,7 +125,7 @@ _notification_popup_new(E_Notification *n)
    char buf[PATH_MAX];
    int shaped;
 
-   popup = calloc(1, sizeof(Popup_Data));
+   popup = E_NEW(Popup_Data, 1);
    if (!popup) return NULL;
    e_notification_ref(n);
    popup->notif = n;
@@ -139,47 +141,12 @@ _notification_popup_new(E_Notification *n)
    snprintf(buf, sizeof(buf), "%s/e-module-notification.edj", notification_mod->dir);
    popup->theme = edje_object_add(popup->e);
 
-   shaped = 0;
-   if (e_config->use_composite)
-     {
-	if (e_theme_edje_object_set(popup->theme,
-				    "base/theme/modules/notification",
-				    "modules/notification/main/alpha"))
-	  shaped = 1;
-	else if (edje_object_file_set(popup->theme, buf,
-				      "modules/notification/main/alpha"))
-	  shaped = 1;
-     }
+   if (!e_theme_edje_object_set(popup->theme,
+				"base/theme/modules/notification",
+				"modules/notification/main"))
+     edje_object_file_set(popup->theme, buf, "modules/notification/main");
 
-   if ((!e_config->use_composite) ||
-       (edje_object_load_error_get(popup->theme) != EDJE_LOAD_ERROR_NONE))
-     {
-	const char *shape_option;
-
-	if (!e_theme_edje_object_set(popup->theme,
-				     "base/theme/modules/notification",
-				     "modules/notification/main"))
-	  edje_object_file_set(popup->theme, buf, "modules/notification/main");
-
-	shape_option = edje_object_data_get(popup->theme, "shaped");
-	if (shape_option)
-	  {
-	     if (!strcmp(shape_option, "1"))
-	       shaped = 1;
-	     else
-	       shaped = 0;
-	  }
-     }
-
-   if (e_config->use_composite)
-     {
-	ecore_evas_alpha_set(popup->win->ecore_evas, shaped);
-     }
-   else
-     {
-	ecore_evas_shaped_set(popup->win->ecore_evas, shaped);
-	ecore_evas_avoid_damage_set(popup->win->ecore_evas, shaped);
-     }
+   e_popup_edje_bg_object_set(popup->win, popup->theme);
 
    evas_object_show(popup->theme);
    edje_object_signal_callback_add
@@ -193,15 +160,15 @@ _notification_popup_new(E_Notification *n)
       _notification_theme_cb_find, popup);
 
    _notification_popup_refresh(popup);
-   _notification_popup_place(popup, eina_list_count(notification_cfg->popups));
+   next_pos = _notification_popup_place(popup, next_pos);
    e_popup_show(popup->win);
    e_popup_layer_set(popup->win, 999);
 
    return popup;
 }
 
-static void
-_notification_popup_place(Popup_Data *popup, int num)
+static int
+_notification_popup_place(Popup_Data *popup, int pos)
 {
    int x, y, w, h, dir = 0;
    E_Container *con;
@@ -229,24 +196,26 @@ _notification_popup_place(Popup_Data *popup, int num)
      {
       case CORNER_TL:
 	 e_popup_move(popup->win,
-		      to_edge, to_edge + num * (h + gap));
+		      to_edge, to_edge + pos);
 	 break;
       case CORNER_TR:
 	 e_popup_move(popup->win,
-		      con->w - (w + to_edge) ,
-		      to_edge + num * (h + gap));
+		      con->w - (w + to_edge),
+		      to_edge + pos);
 	 break;
       case CORNER_BL:
 	 e_popup_move(popup->win,
 		      to_edge,
-		      (con->h - h) - (to_edge + num * (h + gap)));
+		      (con->h - h) - (to_edge + pos));
 	 break;
       case CORNER_BR:
 	 e_popup_move(popup->win,
 		      con->w - (w + to_edge),
-		      (con->h - h) - (to_edge + num * (h + gap)));
+		      (con->h - h) - (to_edge + pos));
 	 break;
      }
+   
+   return pos + h + gap;
 }
 
 static void
@@ -400,11 +369,10 @@ _notification_popup_del(unsigned int id, E_Notification_Closed_Reason reason)
 {
    Popup_Data *popup;
    Eina_List *l, *next;
-   int i;
-
-   for (l = notification_cfg->popups, i = 0; l && (popup = l->data); l = next)
+   int pos = 0;
+   
+   EINA_LIST_FOREACH(notification_cfg->popups, l, popup)
      {
-	next = l->next;
 	if (e_notification_id_get(popup->notif) == id)
 	  {
 	     _notification_popdown(popup, reason);
@@ -412,10 +380,11 @@ _notification_popup_del(unsigned int id, E_Notification_Closed_Reason reason)
 	  }
 	else
 	  {
-	     _notification_popup_place(popup, i);
-	     i++;
+	     pos = _notification_popup_place(popup, pos);
 	  }
      }
+
+   next_pos = pos;
 }
 
 static void
@@ -433,64 +402,6 @@ _notification_popdown(Popup_Data *popup, E_Notification_Closed_Reason reason)
    e_notification_unref(popup->notif);
    free(popup);
 }
-
-/* static char *
- * _str_append(char *str, const char *txt, int *len, int *alloc)
- * {
- *    int txt_len = strlen(txt);
- * 
- *    if (txt_len <= 0) return str;
- *    if ((*len + txt_len) >= *alloc)
- *      {
- * 	char *str2;
- * 	int alloc2;
- * 
- * 	alloc2 = *alloc + txt_len + 128;
- * 	str2 = realloc(str, alloc2);
- * 	if (!str2) return str;
- * 	*alloc = alloc2;
- * 	str = str2;
- *      }
- *    strcpy(str + *len, txt);
- *    *len += txt_len;
- *    return str;
- * }
- * 
- * static char *
- * _text_to_mkup(const char *text)
- * {
- *    char *str = NULL;
- *    int str_len = 0, str_alloc = 0;
- *    int ch, pos = 0, pos2 = 0;
- * 
- *    if (!text) return NULL;
- *    for (;;)
- *      {
- * 	pos = pos2;
- *         pos2 = evas_string_char_next_get((char *)(text), pos2, &ch);
- *         if ((ch <= 0) || (pos2 <= 0)) break;
- * 	if (ch == '\n')
- *           str = _str_append(str, "<br>", &str_len, &str_alloc);
- * 	else if (ch == '\t')
- *           str = _str_append(str, "<\t>", &str_len, &str_alloc);
- * 	else if (ch == '<')
- *           str = _str_append(str, "&lt;", &str_len, &str_alloc);
- * 	else if (ch == '>')
- *           str = _str_append(str, "&gt;", &str_len, &str_alloc);
- * 	else if (ch == '&')
- *           str = _str_append(str, "&amp;", &str_len, &str_alloc);
- * 	else
- * 	  {
- * 	     char tstr[16];
- * 
- * 	     strncpy(tstr, text + pos, pos2 - pos);
- * 	     tstr[pos2 - pos] = 0;
- * 	     str = _str_append(str, tstr, &str_len, &str_alloc);
- * 	  }
- *      }
- *    return str;
- * } */
-
 static void
 _notification_format_message(Popup_Data *popup)
 {
@@ -499,12 +410,6 @@ _notification_format_message(Popup_Data *popup)
    const char *b = e_notification_body_get(popup->notif);
    edje_object_part_text_set(o, "notification.textblock.message", b);
    edje_object_part_text_set(o, "notification.text.title", title);
-   /* char *message = _text_to_mkup(b); */
-   /* if (message)
-    *   {
-    * 	edje_object_part_text_set(o, "notification.textblock.message", message);
-    * 	free(message);
-    *   } */
 }
 
 static void
