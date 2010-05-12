@@ -98,7 +98,7 @@ elixir_pos_evas_object_int_params(Eina_Bool (*func)(const Evas_Object* obj, int 
    value = val[1].v.num;
 
    if (func(know, value, &icx, &icy, &icw, &ich))
-     return elixir_new_evas_pos(cx, icx, icy, ich, icw, &(JS_RVAL(cx, vp)));
+     return elixir_new_evas_pos(cx, icx, icy, icw, ich, &(JS_RVAL(cx, vp)));
 
    JS_SET_RVAL(cx, vp, JSVAL_NULL);
    return JS_TRUE;
