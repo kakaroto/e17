@@ -172,6 +172,7 @@ cdef extern from "Elementary.h":
     cdef struct Elm_List_Item
     cdef struct Elm_Carousel_Item
     cdef struct Elm_Genlist_Item
+    cdef struct Elm_Theme
 
     # Basic elementary functions
     void elm_init(int argc,char** argv)
@@ -218,8 +219,8 @@ cdef extern from "Elementary.h":
 
     void         elm_coords_finger_size_adjust(int times_w, evas.c_evas.Evas_Coord *w, int times_h, evas.c_evas.Evas_Coord *h)
 
-    void         elm_theme_overlay_add(char *item)
-    void         elm_theme_extension_add(char *item)
+    void         elm_theme_overlay_add(Elm_Theme *th, char *item)
+    void         elm_theme_extension_add(Elm_Theme *th, char *item)
 
     # Window handling
     evas.c_evas.Evas_Object *elm_win_add(evas.c_evas.Evas_Object* parent,char* name,Elm_Win_Type type)
