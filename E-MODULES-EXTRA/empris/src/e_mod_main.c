@@ -347,36 +347,31 @@ _empris_config_updated (Config_Item * ci)
 }
 
 static void
-_empris_cb_play (void *data, Evas_Object * obj, const char *emission,
-		 const char *source)
+_empris_cb_play (void *data, Evas_Object * obj, const char *emission, const char *source)
 {
    _dbus_send_msg("/Player", "Play", NULL, NULL);
 }
 
 static void
-_empris_cb_previous (void *data, Evas_Object * obj, const char *emission,
-		     const char *source)
+_empris_cb_previous (void *data, Evas_Object * obj, const char *emission, const char *source)
 {
    _dbus_send_msg("/Player", "Prev", NULL, NULL);
 }
 
 static void
-_empris_cb_next (void *data, Evas_Object * obj, const char *emission,
-		 const char *source)
+_empris_cb_next (void *data, Evas_Object * obj, const char *emission, const char *source)
 {
    _dbus_send_msg("/Player", "Next", NULL, NULL);
 }
 
 static void
-_empris_cb_stop (void *data, Evas_Object * obj, const char *emission,
-		 const char *source)
+_empris_cb_stop (void *data, Evas_Object * obj, const char *emission, const char *source)
 {
    _dbus_send_msg("/Player", "Stop", NULL, NULL);
 }
 
 static void
-_empris_cb_pause (void *data, Evas_Object * obj, const char *emission,
-		  const char *source)
+_empris_cb_pause (void *data, Evas_Object * obj, const char *emission, const char *source)
 {
    _dbus_send_msg("/Player", "Pause", NULL, NULL);
 }
@@ -662,8 +657,6 @@ _dbus_cb_current_track(void *data, DBusMessage *reply, DBusError *error)
    DBusMessage *msg;
    int num;
 
-   printf("cb cur track\n");
-
    if (!_dbus_check_msg(reply, error)) return;
 
    dbus_message_get_args(reply, error,
@@ -671,7 +664,6 @@ _dbus_cb_current_track(void *data, DBusMessage *reply, DBusError *error)
 			 DBUS_TYPE_INVALID);
 
    /* XXX inst->pnd*/
-   printf("cb current track %d\n", num);
 
    _dbus_send_msg_int("/TrackList", "GetMetadata",
 		      _dbus_cb_tracklist_metadata, inst, num);
@@ -714,8 +706,6 @@ _dbus_cb_tracklist_metadata(void *data, DBusMessage *reply, DBusError *error)
    int title = 0;
    Evas_Object *empris = inst->empris;
    Evas_Object *o_popup = inst->o_popup;
-
-   printf("cb metadata\n");
 
    if (error)
      {
