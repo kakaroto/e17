@@ -204,44 +204,48 @@ static void
 _notification_popup_place(Popup_Data *popup, int num)
 {
    int x, y, w, h, dir = 0;
-
+   E_Container *con;
+   
+   con = e_container_current_get(e_manager_current_get());
    evas_object_geometry_get(popup->theme, NULL, NULL, &w, &h);
-   if (e_notification_hint_xy_get(popup->notif, &x, &y))
-     {
-	E_Container *con;
-	con = e_container_current_get(e_manager_current_get());
+   int gap = 10;
+   int to_edge = 15;
+   
+   /* if (e_notification_hint_xy_get(popup->notif, &x, &y))
+    *   {
+    * 	E_Container *con;
+    * 	con = e_container_current_get(e_manager_current_get());
+    * 
+    * 	if (x + w > con->w)
+    * 	  x -= w;
+    * 	if (y + h > con->h)
+    * 	  y -= h;
+    * 	e_popup_move(popup->win, x, y);
+    *   }
+    * else
+    *   { */
 
-	if (x + w > con->w)
-	  x -= w;
-	if (y + h > con->h)
-	  y -= h;
-	e_popup_move(popup->win, x, y);
-     }
-   else
+   switch (notification_cfg->corner)
      {
-	switch (notification_cfg->direction)
-	  {
-	   case DIRECTION_DOWN:
-	   case DIRECTION_RIGHT:
-	      dir = 1;
-	      break;
-	   case DIRECTION_UP:
-	   case DIRECTION_LEFT:
-	      dir = -1;
-	      break;
-	  }
-
-	if (notification_cfg->direction == DIRECTION_DOWN ||
-	    notification_cfg->direction == DIRECTION_UP)
-	  e_popup_move(popup->win, 
-		       notification_cfg->placement.x, 
-		       notification_cfg->placement.y 
-		       + dir * num * (h + notification_cfg->gap));
-	else
-	  e_popup_move(popup->win, 
-		       notification_cfg->placement.x 
-		       + dir * num * (w + notification_cfg->gap), 
-		       notification_cfg->placement.y);
+      case CORNER_TL:
+	 e_popup_move(popup->win,
+		      to_edge, to_edge + num * (h + gap));
+	 break;
+      case CORNER_TR:
+	 e_popup_move(popup->win,
+		      con->w - (w + to_edge) ,
+		      to_edge + num * (h + gap));
+	 break;
+      case CORNER_BL:
+	 e_popup_move(popup->win,
+		      to_edge,
+		      (con->h - h) - (to_edge + num * (h + gap)));
+	 break;
+      case CORNER_BR:
+	 e_popup_move(popup->win,
+		      con->w - (w + to_edge),
+		      (con->h - h) - (to_edge + num * (h + gap)));
+	 break;
      }
 }
 
@@ -430,62 +434,62 @@ _notification_popdown(Popup_Data *popup, E_Notification_Closed_Reason reason)
    free(popup);
 }
 
-static char *
-_str_append(char *str, const char *txt, int *len, int *alloc)
-{
-   int txt_len = strlen(txt);
-
-   if (txt_len <= 0) return str;
-   if ((*len + txt_len) >= *alloc)
-     {
-	char *str2;
-	int alloc2;
-
-	alloc2 = *alloc + txt_len + 128;
-	str2 = realloc(str, alloc2);
-	if (!str2) return str;
-	*alloc = alloc2;
-	str = str2;
-     }
-   strcpy(str + *len, txt);
-   *len += txt_len;
-   return str;
-}
-
-static char *
-_text_to_mkup(const char *text)
-{
-   char *str = NULL;
-   int str_len = 0, str_alloc = 0;
-   int ch, pos = 0, pos2 = 0;
-
-   if (!text) return NULL;
-   for (;;)
-     {
-	pos = pos2;
-        pos2 = evas_string_char_next_get((char *)(text), pos2, &ch);
-        if ((ch <= 0) || (pos2 <= 0)) break;
-	if (ch == '\n')
-          str = _str_append(str, "<br>", &str_len, &str_alloc);
-	else if (ch == '\t')
-          str = _str_append(str, "<\t>", &str_len, &str_alloc);
-	else if (ch == '<')
-          str = _str_append(str, "&lt;", &str_len, &str_alloc);
-	else if (ch == '>')
-          str = _str_append(str, "&gt;", &str_len, &str_alloc);
-	else if (ch == '&')
-          str = _str_append(str, "&amp;", &str_len, &str_alloc);
-	else
-	  {
-	     char tstr[16];
-
-	     strncpy(tstr, text + pos, pos2 - pos);
-	     tstr[pos2 - pos] = 0;
-	     str = _str_append(str, tstr, &str_len, &str_alloc);
-	  }
-     }
-   return str;
-}
+/* static char *
+ * _str_append(char *str, const char *txt, int *len, int *alloc)
+ * {
+ *    int txt_len = strlen(txt);
+ * 
+ *    if (txt_len <= 0) return str;
+ *    if ((*len + txt_len) >= *alloc)
+ *      {
+ * 	char *str2;
+ * 	int alloc2;
+ * 
+ * 	alloc2 = *alloc + txt_len + 128;
+ * 	str2 = realloc(str, alloc2);
+ * 	if (!str2) return str;
+ * 	*alloc = alloc2;
+ * 	str = str2;
+ *      }
+ *    strcpy(str + *len, txt);
+ *    *len += txt_len;
+ *    return str;
+ * }
+ * 
+ * static char *
+ * _text_to_mkup(const char *text)
+ * {
+ *    char *str = NULL;
+ *    int str_len = 0, str_alloc = 0;
+ *    int ch, pos = 0, pos2 = 0;
+ * 
+ *    if (!text) return NULL;
+ *    for (;;)
+ *      {
+ * 	pos = pos2;
+ *         pos2 = evas_string_char_next_get((char *)(text), pos2, &ch);
+ *         if ((ch <= 0) || (pos2 <= 0)) break;
+ * 	if (ch == '\n')
+ *           str = _str_append(str, "<br>", &str_len, &str_alloc);
+ * 	else if (ch == '\t')
+ *           str = _str_append(str, "<\t>", &str_len, &str_alloc);
+ * 	else if (ch == '<')
+ *           str = _str_append(str, "&lt;", &str_len, &str_alloc);
+ * 	else if (ch == '>')
+ *           str = _str_append(str, "&gt;", &str_len, &str_alloc);
+ * 	else if (ch == '&')
+ *           str = _str_append(str, "&amp;", &str_len, &str_alloc);
+ * 	else
+ * 	  {
+ * 	     char tstr[16];
+ * 
+ * 	     strncpy(tstr, text + pos, pos2 - pos);
+ * 	     tstr[pos2 - pos] = 0;
+ * 	     str = _str_append(str, tstr, &str_len, &str_alloc);
+ * 	  }
+ *      }
+ *    return str;
+ * } */
 
 static void
 _notification_format_message(Popup_Data *popup)
@@ -493,13 +497,14 @@ _notification_format_message(Popup_Data *popup)
    Evas_Object *o = popup->theme;
    const char *title = e_notification_summary_get(popup->notif);
    const char *b = e_notification_body_get(popup->notif);
-   char *message = _text_to_mkup(b);
+   edje_object_part_text_set(o, "notification.textblock.message", b);
    edje_object_part_text_set(o, "notification.text.title", title);
-   if (message)
-     {
-	edje_object_part_text_set(o, "notification.textblock.message", message);
-	free(message);
-     }
+   /* char *message = _text_to_mkup(b); */
+   /* if (message)
+    *   {
+    * 	edje_object_part_text_set(o, "notification.textblock.message", message);
+    * 	free(message);
+    *   } */
 }
 
 static void

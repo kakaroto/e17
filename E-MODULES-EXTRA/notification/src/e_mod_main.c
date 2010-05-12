@@ -325,57 +325,19 @@ e_modapi_init(E_Module *m)
    E_CONFIG_VAL(D, T, show_low, INT);
    E_CONFIG_VAL(D, T, show_normal, INT);
    E_CONFIG_VAL(D, T, show_critical, INT);
-   E_CONFIG_VAL(D, T, direction, INT);
-   E_CONFIG_VAL(D, T, gap, INT);
-   E_CONFIG_VAL(D, T, placement.x, INT);
-   E_CONFIG_VAL(D, T, placement.y, INT);
+   E_CONFIG_VAL(D, T, corner, INT);
    E_CONFIG_VAL(D, T, timeout, FLOAT);
    E_CONFIG_LIST(D, T, items, conf_item_edd);
 
    notification_cfg = e_config_domain_load("module.notification", conf_edd);
-   if (notification_cfg)
+   if (notification_cfg &&
+       !(e_util_module_config_check
+	 (D_("Notification Module"), notification_cfg->version,
+	  MOD_CFG_FILE_EPOCH, MOD_CFG_FILE_VERSION)))
      {
-	if (notification_cfg->version == 0)
-	  {
-	     _notification_cfg_free(notification_cfg);
-	     notification_cfg = NULL;
-	  }
-	if ((notification_cfg->version >> 16) < MOD_CFG_FILE_EPOCH) 
-	  {
-	     _notification_cfg_free(notification_cfg);
-	     notification_cfg = NULL;
-	     e_util_dialog_show(D_("Notification Configuration Updated"),
-				D_("Notification Module Configuration data needed "
-				   "upgrading. Your old configuration<br> has been"
-				   " wiped and a new set of defaults initialized. "
-				   "This<br>will happen regularly during "
-				   "development, so don't report a<br>bug. "
-				   "This simply means the Notification module needs "
-				   "new configuration<br>data by default for "
-				   "usable functionality that your old<br>"
-				   "configuration simply lacks. This new set of "
-				   "defaults will fix<br>that by adding it in. "
-				   "You can re-configure things now to your<br>"
-				   "liking. Sorry for the inconvenience.<br>"));
-	  }
-	else if (notification_cfg->version > MOD_CFG_FILE_VERSION) 
-	  {
-	     _notification_cfg_free(notification_cfg);
-	     notification_cfg = NULL;
-	     e_util_dialog_show(D_("Notification Configuration Updated"),
-				D_("Your Notification Module Configuration is NEWER "
-				   "than the Notification Module version. This is "
-				   "very<br>strange. This should not happen unless"
-				   " you downgraded<br>the Notification Module or "
-				   "copied the configuration from a place where"
-				   "<br>a newer version of the Notification Module "
-				   "was running. This is bad and<br>as a "
-				   "precaution your configuration has been now "
-				   "restored to<br>defaults. Sorry for the "
-				   "inconvenience.<br>"));
-	  }
+       _notification_cfg_free(notification_cfg);
      }
-
+   
    if (!notification_cfg) 
      {
 	notification_cfg = _notification_cfg_new();
@@ -511,10 +473,7 @@ _notification_cfg_new(void)
    cfg->show_normal   = 1;
    cfg->show_critical = 1;
    cfg->timeout       = 5.0;
-   cfg->direction     = DIRECTION_DOWN;
-   cfg->gap           = 10;
-   cfg->placement.x   = 10;
-   cfg->placement.y   = 10;
+   cfg->corner        = CORNER_TR;
 
    return cfg;
 }

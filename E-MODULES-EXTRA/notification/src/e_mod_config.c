@@ -2,17 +2,11 @@
 
 struct _E_Config_Dialog_Data 
 {
-   int direction;
    int show_low;
    int show_normal;
    int show_critical;
    double timeout;
-   int gap;
-   struct 
-     {
-       int x;
-       int y;
-     } placement;
+   int corner;
 };
 
 /* local function protos */
@@ -71,10 +65,7 @@ _fill_data(E_Config_Dialog_Data *cfdata)
    cfdata->show_normal   = notification_cfg->show_normal;
    cfdata->show_critical = notification_cfg->show_critical;
    cfdata->timeout       = notification_cfg->timeout;
-   cfdata->direction     = notification_cfg->direction;
-   cfdata->gap           = notification_cfg->gap;
-   cfdata->placement.x   = notification_cfg->placement.x;
-   cfdata->placement.y   = notification_cfg->placement.y;
+   cfdata->corner        = notification_cfg->corner;
 }
 
 static Evas_Object *
@@ -102,37 +93,35 @@ _basic_create(E_Config_Dialog *cfd __UNUSED__, Evas *evas, E_Config_Dialog_Data 
    e_widget_framelist_object_append(of, ow);
    e_widget_list_object_append(o, of, 1, 1, 0.5);
 
-   man = e_manager_current_get();
-   of = e_widget_framelist_add(evas, D_("Placement"), 0);
-   ow = e_widget_slider_add(evas, 1, 0, D_("%2.0f x"), 0.0, man->w, 1.0, 0, 
-                            NULL, &(cfdata->placement.x), 200);
+   /* man = e_manager_current_get();
+    * of = e_widget_framelist_add(evas, D_("Placement"), 0);
+    * ow = e_widget_slider_add(evas, 1, 0, D_("%2.0f x"), 0.0, man->w, 1.0, 0, 
+    *                          NULL, &(cfdata->placement.x), 200);
+    * e_widget_framelist_object_append(of, ow);
+    * ow = e_widget_slider_add(evas, 1, 0, D_("%2.0f y"), 0.0, man->h, 1.0, 0, 
+    *                          NULL, &(cfdata->placement.y), 200);
+    * e_widget_framelist_object_append(of, ow);
+    * e_widget_list_object_append(o, of, 1, 1, 0.5); */
+
+   of = e_widget_framelist_add(evas, D_("Popup Corner"), 0);
+   rg = e_widget_radio_group_new(&(cfdata->corner));
+   ow = e_widget_radio_add(evas, "Top left", CORNER_TL, rg);
    e_widget_framelist_object_append(of, ow);
-   ow = e_widget_slider_add(evas, 1, 0, D_("%2.0f y"), 0.0, man->h, 1.0, 0, 
-                            NULL, &(cfdata->placement.y), 200);
+   ow = e_widget_radio_add(evas, "Top right", CORNER_TR, rg);
+   e_widget_framelist_object_append(of, ow);
+   ow = e_widget_radio_add(evas, "Botton left", CORNER_BL, rg);
+   e_widget_framelist_object_append(of, ow);
+   ow = e_widget_radio_add(evas, "Bottom right", CORNER_BR, rg);
    e_widget_framelist_object_append(of, ow);
    e_widget_list_object_append(o, of, 1, 1, 0.5);
 
-   of = e_widget_framelist_add(evas, D_("Direction"), 0);
-   ow = e_widget_label_add(evas, D_("Direction in which popups will stack themselves : "));
-   e_widget_framelist_object_append(of, ow);
-   rg = e_widget_radio_group_new(&(cfdata->direction));
-   ow = e_widget_radio_add(evas, "up", DIRECTION_UP, rg);
-   e_widget_framelist_object_append(of, ow);
-   ow = e_widget_radio_add(evas, "down", DIRECTION_DOWN, rg);
-   e_widget_framelist_object_append(of, ow);
-   ow = e_widget_radio_add(evas, "left", DIRECTION_LEFT, rg);
-   e_widget_framelist_object_append(of, ow);
-   ow = e_widget_radio_add(evas, "right", DIRECTION_RIGHT, rg);
-   e_widget_framelist_object_append(of, ow);
-   e_widget_list_object_append(o, of, 1, 1, 0.5);
-
-   of = e_widget_framelist_add(evas, D_("Gap"), 0);
-   ow = e_widget_label_add(evas, D_("Size of the gap between two popups : "));
-   e_widget_framelist_object_append(of, ow);
-   ow = e_widget_slider_add(evas, 1, 0, D_("%2.0f pixels"), 0.0, 50, 1.0, 0, 
-                            NULL, &(cfdata->gap), 200);
-   e_widget_framelist_object_append(of, ow);
-   e_widget_list_object_append(o, of, 1, 1, 0.5);
+   /* of = e_widget_framelist_add(evas, D_("Gap"), 0);
+    * ow = e_widget_label_add(evas, D_("Size of the gap between two popups : "));
+    * e_widget_framelist_object_append(of, ow);
+    * ow = e_widget_slider_add(evas, 1, 0, D_("%2.0f pixels"), 0.0, 50, 1.0, 0, 
+    *                          NULL, &(cfdata->gap), 200);
+    * e_widget_framelist_object_append(of, ow);
+    * e_widget_list_object_append(o, of, 1, 1, 0.5); */
 
    return o;
 }
@@ -144,10 +133,7 @@ _basic_apply(E_Config_Dialog *cfd __UNUSED__, E_Config_Dialog_Data *cfdata)
    notification_cfg->show_normal   = cfdata->show_normal;
    notification_cfg->show_critical = cfdata->show_critical;
    notification_cfg->timeout       = cfdata->timeout;
-   notification_cfg->direction     = cfdata->direction;
-   notification_cfg->gap           = cfdata->gap;
-   notification_cfg->placement.x   = cfdata->placement.x;
-   notification_cfg->placement.y   = cfdata->placement.y;
+   notification_cfg->corner        = cfdata->corner;
 
    e_modapi_save(notification_mod);
    return 1;
