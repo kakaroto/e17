@@ -55,15 +55,8 @@ struct _Buddy_Info
   int ready;
 };
 
-
-/* #define BUDDYINFO(_it)((Buddy_Info *)_it) */
-
+#define BUDDYINFO(_it)((Buddy_Info *)_it)
 #define GET_BUDDYINFO(_bi, _it) Buddy_Info * _bi = (Buddy_Info *)_it
-
-
-
-static void
-_shutdown(void);
 
 static void
 cb_itemFree(Evry_Item *item);
@@ -94,7 +87,6 @@ _update_list(int async);
 
 static const Evry_API *evry = NULL;
 static Evry_Module *evry_module = NULL;
-
 static Evry_Plugin *plug = NULL;
 static Eina_List *buddyEveryItems = NULL;
 static E_DBus_Connection *conn = NULL;
@@ -105,7 +97,6 @@ static Evry_Action *act2 = NULL;
 static Evry_Action *act3 = NULL;
 static const int DEFAULT_CONVERSATION_TYPE = 1;
 static Evry_Type PIDGIN_CONTACT;
-
 
 
 static void
@@ -203,20 +194,15 @@ Evas_Object *
 _icon_get(Evry_Item *it, Evas *e)
 {
   GET_BUDDYINFO(bi, it);
-  /* printf("get icon, %s %s\n", it->label, bi->iconPath); */
 
   if (bi->iconPath != NULL)
     {
       Evas_Object *obj = e_icon_add(e);
-      /* Evas_Object* obj = evas_object_image_filled_add(e);
-       * evas_object_image_file_set(obj, bi->iconPath, NULL); */
-      if (e_icon_file_set(obj, bi->iconPath));
-      return obj;
+      if (e_icon_file_set(obj, bi->iconPath))
+	return obj;
     }
-  else
-    {
-      return NULL;
-    }
+
+  return NULL;
 }
 
 static void
