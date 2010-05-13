@@ -866,7 +866,8 @@ _mpris_player_position(Evry_Action *act)
 {
   _dbus_send_msg("/Player", "PositionGet", _dbus_cb_position_get, act);
 
-  return 1;
+  /* usually one wants to repeat this action more than one time */
+  return 0;
 }
 
 static void
@@ -939,7 +940,6 @@ _add_files(Evry_Item_File *file)
 
   return 0;
 }
-
 
 static int
 _mpris_play_file(Evry_Action *act)

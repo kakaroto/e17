@@ -48,6 +48,7 @@ static E_DBus_Connection *conn = NULL;
 static Eina_List *plugins = NULL;
 static int _prio = 5;
 static int dbus_active = 0;
+static Ecore_Event_Handler *action_handler = NULL;
 static const char *mime_dir = NULL;
 static DBusPendingCall *pending_get_name_owner = NULL;
 static E_DBus_Signal_Handler *cb_name_owner_changed = NULL;
@@ -70,7 +71,12 @@ static const char query_files[] =
   "      nie:mimeType ?m"
   " %s"
   " %s"
-  "} ORDER BY DESC (fn:starts-with(?m, 'inode/directory')) LIMIT 50";
+  "} ORDER BY DESC nfo:fileLastModified(?match) LIMIT 50";
+
+/* "} ORDER BY DESC (fn:starts-with(?m, 'inode/directory')) LIMIT 50"; */
+
+static const char query_remove_file[] =
+  "DELETE { ?urn a rdfs:Resource } WHERE {?urn a nfo:FileDataObject;  nie:url '%s'} %s";
 
 static const char query_directory[] =
   "SELECT ?match  nie:url(?match) nfo:fileName(?match) ?m WHERE {"
@@ -178,16 +184,15 @@ _query_item_get(Plugin *p, const char *id,
 
 	EINA_LIST_FOREACH(p->files, l, it)
 	  {
-	     if (tmp == EVRY_ITEM(it)->id)
-	       {
-		  eina_stringshare_del(tmp);
-		  evry->item_ref(EVRY_ITEM(it));
+	     if (tmp != EVRY_ITEM(it)->id)
+	       continue;
+	     
+	     eina_stringshare_del(tmp);
+	     evry->item_ref(EVRY_ITEM(it));
 
-		  return it;
-	       }
+	     return it;
 	  }
      }
-
 
    it = EVRY_ITEM_NEW(Query_Item, p, label, _icon_get, _query_item_free);
    EVRY_ITEM(it)->browseable = EINA_TRUE;
@@ -202,7 +207,7 @@ _query_item_get(Plugin *p, const char *id,
      EVRY_ITEM(it)->detail = eina_stringshare_add(detail);;
 
    if (id)
-     EVRY_ITEM(it)->id = eina_stringshare_ref(tmp);
+     EVRY_ITEM(it)->id = tmp;
 
    return it;
 }
@@ -237,6 +242,7 @@ _file_item_get(Plugin *p, const char *urn, char *url, char *label, char *mime, i
 	     return file;
 	  }
      }
+   eina_stringshare_del(id); 
 
    file = EVRY_ITEM_NEW(Evry_Item_File, p, label, _icon_get, _file_item_free);
    EVRY_ITEM(file)->data = (void *)id;
@@ -460,7 +466,7 @@ _dbus_cb_reply(void *data, DBusMessage *msg, DBusError *error)
 }
 
 static DBusPendingCall *
-_send_query(const char *query, const char *match, const char *match2, void *cb_data)
+_send_query(const char *query, const char *match, const char *match2, int update, void *cb_data)
 {
    char *_query = NULL;
    DBusMessage *msg;
@@ -486,24 +492,33 @@ _send_query(const char *query, const char *match, const char *match2, void *cb_d
      {
 	_query = strdup(query);
      }
-   DBG("%s", query);
-   
-   msg = dbus_message_new_method_call(bus_name,
-				      "/org/freedesktop/Tracker1/Resources",
-				      "org.freedesktop.Tracker1.Resources",
-				      "SparqlQuery");
+
+   DBG("%s", _query);
+
+   if (update)
+     msg = dbus_message_new_method_call(bus_name,
+					"/org/freedesktop/Tracker1/Resources",
+					"org.freedesktop.Tracker1.Resources",
+					"SparqlUpdate");
+   else
+     msg = dbus_message_new_method_call(bus_name,
+					"/org/freedesktop/Tracker1/Resources",
+					"org.freedesktop.Tracker1.Resources",
+					"SparqlQuery");
    dbus_message_append_args(msg,
 			    DBUS_TYPE_STRING,  &_query,
 			    DBUS_TYPE_INVALID);
-
-   pnd = e_dbus_message_send(conn, msg, _dbus_cb_reply, -1, cb_data);
+   if (cb_data)
+     pnd = e_dbus_message_send(conn, msg, _dbus_cb_reply, -1, cb_data);
+   else
+     pnd = e_dbus_message_send(conn, msg, NULL, -1, NULL);
+   
    dbus_message_unref(msg);
 
    E_FREE(_query);
 
    return pnd;
 }
-
 
 static Evry_Plugin *
 _browse(Evry_Plugin *plugin, const Evry_Item *item)
@@ -631,14 +646,14 @@ _fetch(Evry_Plugin *plugin, const char *input)
 
 	p->fetching = EINA_TRUE;
 
-	p->pnd = _send_query(p->query, (p->match ? p->match : ""), buf, p);
+	p->pnd = _send_query(p->query, (p->match ? p->match : ""), buf, 0, p);
      }
    else if (p->match)
      {
    	if (/*evry_item_type_check(p, ) ||*/ p->match)
    	  {
    	     p->fetching = EINA_TRUE;
-   	     p->pnd = _send_query(p->query, (p->match ? p->match : ""), "", p);
+   	     p->pnd = _send_query(p->query, (p->match ? p->match : ""), "", 0, p);
    	  }
      }
    else if (len < plugin->config->min_query)
@@ -720,7 +735,7 @@ _icon_get(Evry_Item *item, Evas *e)
 {
    if (CHECK_TYPE(item, TRACKER_MUSIC))
      {
-	if (item->subtype && item->subtype == FILE_LIST)
+       if (CHECK_SUBTYPE(item, FILE_LIST))
 	  {
 	     if (!item->label || !item->detail)
 	       return evry->icon_theme_get("folder", e);
@@ -772,31 +787,36 @@ _icon_get(Evry_Item *item, Evas *e)
 	       return evry->icon_mime_get(it->mime, e);
 	  }
      }
-   else if (CHECK_TYPE(item, EVRY_TYPE_FILE))
-     {
-	GET_FILE(it, item);
-
-	char *sum = evry->util_md5_sum(it->url);
-
-	snprintf(thumb_buf, sizeof(thumb_buf),
-		 "%s/.thumbnails/normal/%s.png",
-		 e_user_homedir_get(), sum);
-	free(sum);
-
-	if (ecore_file_exists(thumb_buf))
-	  {
-	     Evas_Object *o = e_icon_add(e);
-	     e_icon_file_set(o, thumb_buf);
-	     if (o) return o;
-	  }
-
-	if (item->browseable)
-	  return evry->icon_theme_get("folder", e);
-	else
-	  return evry->icon_mime_get(it->mime, e);
-     }
 
    return NULL;
+}
+
+/* TODO remove folders recursively */
+static int
+_cb_action_performed(void *data, int type,void *event)
+{
+   Evry_Event_Action_Performed *ev = event;
+   const char *url;
+   
+   if (!dbus_active)
+     return 1;
+   
+   if (CHECK_TYPE(ev->it1, EVRY_TYPE_FILE) &&
+       (ev->action && !strcmp(ev->action, "Move to Trash")) &&
+       (url = evry->file_url_get(EVRY_FILE(ev->it1))))
+     {
+	printf("file deleted %s\n", url);
+	_send_query(query_remove_file, url, NULL, 1, NULL); 
+     }
+   /* else if (CHECK_TYPE(ev->it1, MPRIS_TRACK) &&
+    *     (ev->action && !strcmp(ev->action, "Play Track")) &&
+    *     (url = evry->file_url_get(EVRY_FILE(ev->it1))))
+    *   {
+    * 	printf("file deleted %s\n", url);
+    * 	_send_query(query_remove_file, url, NULL, 1, NULL); 
+    *   } */
+
+   return 1;
 }
 
 static int
@@ -832,6 +852,9 @@ _plugins_init(const Evry_API *_api)
    TRACKER_MUSIC = evry->type_register("TRACKER_MUSIC");
    FILE_LIST     = evry->type_register("FILE_LIST");
 
+   action_handler = ecore_event_handler_add(EVRY_EVENT_ACTION_PERFORMED,
+					    _cb_action_performed, NULL);
+   
 #define FILE_PLUGIN_NEW(_name, _plug_type, _icon, _type, _begin, _finish, _fetch, _query) { \
      p = EVRY_PLUGIN_NEW(Plugin, _name, _icon, _type, _begin, _finish, _fetch, NULL); \
      GET_PLUGIN(p1, p);							\
@@ -884,6 +907,9 @@ _plugins_shutdown(void)
      }
 
    IF_RELEASE(mime_dir);
+
+   ecore_event_handler_del(action_handler);
+   action_handler = NULL;
 
    EINA_LIST_FREE(plugins, p)
      EVRY_PLUGIN_FREE(p);

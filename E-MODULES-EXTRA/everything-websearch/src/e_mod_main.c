@@ -997,7 +997,7 @@ _upload_progress(Url_Data *dd, Ecore_Con_Event_Url_Progress *ev)
 	char buf[128];
 
 	ud->progress = up;
-	snprintf(buf, sizeof(buf), N_("%1.1f%% of %s"), up * 5.0, ud->file);
+	snprintf(buf, sizeof(buf), N_("Completed %1.1f%% of %s"), up * 5.0, ud->file);
 
 	_send_notification(ud->id, "image", N_("Upload Image"), buf, -1);
      }
@@ -1042,14 +1042,23 @@ _action_upload(Evry_Action *act)
 Evas_Object *
 _icon_get(Evry_Item *it, Evas *e)
 {
-  Evas_Object *o = e_icon_add(e);
+  Evas_Object *o;
+  
+  if (!it->icon)
+    return NULL;
+  
+  if (edje_file_group_exists(_conf->theme, it->icon))
+    {
+      o = e_icon_add(e);
+      if (e_icon_file_edje_set(o, _conf->theme, it->icon))
+	return o;
+      
+      evas_object_del(o);
+    }
 
-  if (e_icon_file_edje_set(o, _conf->theme, it->icon))
-    return o;
-
-  evas_object_del(o);
-
-  return NULL;
+  o = evry->icon_theme_get(it->icon, e);
+  
+  return o;
 }
 
 static int
@@ -1125,7 +1134,6 @@ _plugins_init(const Evry_API *_api)
 	     _request_gtranslate, _gtranslate_data_cb,
 	     "ajax.googleapis.com", _trigger_gtranslate);
 
-
 #define ACTION_NEW(_name, _type, _icon, _action, _check, _method)	\
   act = EVRY_ACTION_NEW(_name, _type, 0, _icon, _action, _check);	\
   EVRY_ITEM_DATA_INT_SET(act, _method);					\
@@ -1157,7 +1165,7 @@ _plugins_init(const Evry_API *_api)
   ACTION_NEW(N_("Download and play"), WEBLINK, "youtube",
   	     _youtube_dl_action, _youtube_dl_check, YOUTUBE_DL_PLAY);
 
-  ACTION_NEW(N_("Upload Image"), EVRY_TYPE_FILE, "go-next",
+  ACTION_NEW(N_("Upload Image"), EVRY_TYPE_FILE, "image",
 	     _action_upload, _action_upload_check, ACT_UPLOAD_IMGUR);
   act->remember_context = EINA_TRUE;
 
