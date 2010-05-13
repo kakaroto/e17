@@ -60,3 +60,6 @@ cdef class Spinner(Object):
 
     def callback_delay_changed_del(self, func):
         self._callback_del("delay,changed", func)
+
+
+_elm_widget_type_register("spinner", Spinner)

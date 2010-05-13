@@ -36,3 +36,5 @@ cdef class Table(Object):
     def clear(self, clear):
         elm_table_clear(self.obj, clear)
 
+
+_elm_widget_type_register("table", Table)

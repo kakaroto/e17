@@ -48,3 +48,4 @@ cdef class Clock(Object):
         elm_clock_show_seconds_set(self.obj, seconds)
 
 
+_elm_widget_type_register("clock", Clock)

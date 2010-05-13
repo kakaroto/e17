@@ -58,3 +58,6 @@ cdef class Scroller(Object):
 
     def region_bring_in(self, x, y, w, h):
         elm_scroller_region_bring_in(self.obj, x, y, w, h)
+
+
+_elm_widget_type_register("scroller", Scroller)

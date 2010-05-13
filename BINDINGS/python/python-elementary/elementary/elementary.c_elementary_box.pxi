@@ -47,3 +47,6 @@ cdef class Box(Object):
 
     def unpack_all(self):
         elm_box_unpack_all(self.obj)
+
+
+_elm_widget_type_register("box", Box)

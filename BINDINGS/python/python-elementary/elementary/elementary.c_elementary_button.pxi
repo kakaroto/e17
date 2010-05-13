@@ -52,3 +52,4 @@ cdef class Button(Object):
         icon = elm_button_icon_get(self.obj)
         return evas.c_evas._Object_from_instance(<long> icon)
 
+_elm_widget_type_register("button", Button)

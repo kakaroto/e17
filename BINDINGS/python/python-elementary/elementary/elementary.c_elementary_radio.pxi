@@ -44,3 +44,6 @@ cdef class Radio(Object):
 
     def callback_changed_del(self, func):
         self._callback_del("changed", func)
+
+
+_elm_widget_type_register("radio", Radio)

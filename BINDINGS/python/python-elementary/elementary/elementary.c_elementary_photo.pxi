@@ -37,3 +37,4 @@ cdef class Photo(Object):
         elm_photo_size_set(self.obj, size)
 
 
+_elm_widget_type_register("photo", Photo)

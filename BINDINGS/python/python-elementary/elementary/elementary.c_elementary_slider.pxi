@@ -67,3 +67,6 @@ cdef class Slider(Object):
 
     def inverted_set(self, inverted):
         elm_slider_inverted_set(self.obj, inverted)
+
+
+_elm_widget_type_register("slider", Slider)

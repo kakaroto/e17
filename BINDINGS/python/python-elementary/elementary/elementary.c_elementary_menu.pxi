@@ -188,3 +188,5 @@ cdef class Menu(Object):
     def item_separator_add(self, item = None):
         return MenuItemSeparator(self, item)
 
+
+_elm_widget_type_register("menu", Menu)

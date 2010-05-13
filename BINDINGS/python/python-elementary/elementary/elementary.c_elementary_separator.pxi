@@ -34,3 +34,5 @@ cdef class Separator(Object):
         def __set__(self, value):
             self.horizontal_set(value)
 
+
+_elm_widget_type_register("separator", Separator)

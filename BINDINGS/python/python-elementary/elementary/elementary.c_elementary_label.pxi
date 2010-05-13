@@ -23,3 +23,6 @@ cdef class Label(Object):
 
     def label_set(self, label):
         elm_label_label_set(self.obj,label)
+
+
+_elm_widget_type_register("label", Label)

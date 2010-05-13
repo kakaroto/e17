@@ -30,3 +30,5 @@ cdef class Frame(Object):
     def best_content_location_get(self, axis):
         elm_hover_best_content_location_get(self.obj, axis)
 
+
+_elm_widget_type_register("frame", Frame)

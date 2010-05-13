@@ -54,3 +54,5 @@ cdef class Progressbar(Object):
     def value_get(self):
         return elm_progressbar_value_get(self.obj)
 
+
+_elm_widget_type_register("progressbar", Progressbar)

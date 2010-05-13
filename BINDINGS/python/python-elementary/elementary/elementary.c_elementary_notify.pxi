@@ -47,3 +47,6 @@ cdef class Notify(Object):
         else:
             o = NULL
         elm_notify_parent_set(self.obj, o)
+
+
+_elm_widget_type_register("notify", Notify)

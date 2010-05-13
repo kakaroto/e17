@@ -384,3 +384,6 @@ cdef class List(Object):
 
     def scroller_policy_set(self, policy_h, policy_v):
         elm_list_scroller_policy_set(self.obj, policy_h, policy_v)
+
+
+_elm_widget_type_register("list", List)

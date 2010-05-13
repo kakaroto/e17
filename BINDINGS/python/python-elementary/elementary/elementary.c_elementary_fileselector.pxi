@@ -71,3 +71,5 @@ cdef class Fileselector(Object):
     def callback_done_del(self, func):
         self._callback_del_full("done", _fs_callback_conv, func)
 
+
+_elm_widget_type_register("fileselector", Fileselector)

@@ -46,3 +46,5 @@ cdef class Hover(Object):
             return None
         return string
 
+
+_elm_widget_type_register("hover", Hover)

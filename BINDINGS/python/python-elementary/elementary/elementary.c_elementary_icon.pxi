@@ -67,3 +67,4 @@ cdef class Icon(Object):
         elm_icon_prescale_set(self.obj, size)
 
 
+_elm_widget_type_register("icon", Icon)

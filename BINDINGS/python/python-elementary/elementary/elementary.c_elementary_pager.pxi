@@ -61,3 +61,5 @@ cdef class Pager(Object):
         obj = _pager_mapping.get(<long>top, None)
         return obj
 
+
+_elm_widget_type_register("pager", Pager)

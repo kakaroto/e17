@@ -104,6 +104,19 @@ def theme_extension_add(item):
     elm_theme_extension_add(NULL, item)
 
 
+cdef object _elm_widget_type_mapping
+
+_elm_widget_type_mapping = {}
+
+cdef _elm_widget_type_register(char *name, cls):
+    if name in _elm_widget_type_mapping:
+        raise ValueError("object type name '%s' already registered." % name)
+    _elm_widget_type_mapping[name] = cls
+
+cdef _elm_widget_type_unregister(char *name):
+    _elm_widget_type_mapping.pop(name)
+
+
 include "elementary.c_elementary_object.pxi"
 include "elementary.c_elementary_window.pxi"
 include "elementary.c_elementary_innerwindow.pxi"

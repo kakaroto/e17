@@ -60,3 +60,6 @@ cdef class Panel(Object):
     property content:
         def __set__(self, c_evas.Object content):
             self.content_set(content)
+
+
+_elm_widget_type_register("panel", Panel)

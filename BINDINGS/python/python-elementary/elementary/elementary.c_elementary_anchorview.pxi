@@ -128,3 +128,5 @@ cdef class AnchorView(Object):
         """
         elm_anchorview_hover_end(self.obj)
 
+
+_elm_widget_type_register("anchorview", AnchorView)

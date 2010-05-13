@@ -41,3 +41,6 @@ cdef class Layout(Object):
 
     def sizing_eval(self):
         elm_layout_sizing_eval(self.obj)
+
+
+_elm_widget_type_register("layout", Layout)

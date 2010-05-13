@@ -129,3 +129,4 @@ cdef class AnchorBlock(Object):
         elm_anchorblock_hover_end(self.obj)
 
 
+_elm_widget_type_register("anchorblock", AnchorBlock)

@@ -58,3 +58,4 @@ cdef class Toggle(Object):
         return False
 
 
+_elm_widget_type_register("toggle", Toggle)

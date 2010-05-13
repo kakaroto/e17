@@ -34,3 +34,4 @@ cdef class InnerWindow(Window):
         elm_win_inwin_content_set(self.obj, content.obj)
 
 
+_elm_widget_type_register("inwin", InnerWindow)

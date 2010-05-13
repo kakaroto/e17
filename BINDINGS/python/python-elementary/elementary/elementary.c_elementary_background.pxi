@@ -46,3 +46,4 @@ cdef class Background(Object):
         elm_bg_file_set(self.obj, filename, group)
 
 
+_elm_widget_type_register("bg", Background)

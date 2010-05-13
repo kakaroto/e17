@@ -208,3 +208,4 @@ cdef class Window(Object):
     """
 
 
+_elm_widget_type_register("win", Window)

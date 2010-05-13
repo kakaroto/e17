@@ -28,3 +28,4 @@ cdef class Notepad(Object):
         elm_notepad_bounce_set(self.obj, h, v)
 
 
+_elm_widget_type_register("notepad", Notepad)

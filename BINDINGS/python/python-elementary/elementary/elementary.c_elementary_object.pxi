@@ -210,3 +210,14 @@ cdef class Object(evas.c_evas.Object):
         """
         return <long>self.obj
 
+
+def __elm_widget_cls_resolver(long ptr):
+    cdef c_evas.Evas_Object *obj = <c_evas.Evas_Object *>ptr
+    cdef char *t
+
+    t = elm_object_widget_type_get(obj)
+    assert t != NULL
+    return _elm_widget_type_mapping.get(t, None)
+
+evas.c_evas._extended_object_mapping_register("elm_widget",
+                                              __elm_widget_cls_resolver)

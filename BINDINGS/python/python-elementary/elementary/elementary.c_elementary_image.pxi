@@ -47,3 +47,6 @@ cdef class Image(Object):
 
     def callback_clicked_del(self, func):
         self._callback_del("clicked", func)
+
+
+_elm_widget_type_register("image", Image)

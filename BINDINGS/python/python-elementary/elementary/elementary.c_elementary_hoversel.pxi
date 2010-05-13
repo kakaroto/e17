@@ -162,3 +162,4 @@ cdef class Hoversel(Object):
         return HoverselItem(self, label, icon_file, icon_type, callback, *args, **kwargs)
 
 
+_elm_widget_type_register("hoversel", Hoversel)

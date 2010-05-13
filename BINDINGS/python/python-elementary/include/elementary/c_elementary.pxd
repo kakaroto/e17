@@ -197,6 +197,8 @@ cdef extern from "Elementary.h":
     int          elm_policy_get(unsigned int policy)
 
     # Object handling
+    char        *elm_object_widget_type_get(evas.c_evas.Evas_Object *obj)
+
     void         elm_object_scale_set(evas.c_evas.Evas_Object *obj, double scale)
     double       elm_object_scale_get(evas.c_evas.Evas_Object *obj)
     void         elm_object_style_set(evas.c_evas.Evas_Object *obj, char *style)

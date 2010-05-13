@@ -777,3 +777,6 @@ cdef class Genlist(Object):
         cdef Elm_Genlist_Item *it
         it = elm_genlist_at_xy_item_get(self.obj, x, y, NULL)
         return _elm_genlist_item_to_python(it)
+
+
+_elm_widget_type_register("genlist", Genlist)

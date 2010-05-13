@@ -161,3 +161,5 @@ cdef class Entry(Object):
 
     utf8_to_markup = staticmethod(Entry_utf8_to_markup)
 
+
+_elm_widget_type_register("entry", Entry)
