@@ -181,7 +181,7 @@ unmarshal_device_get_all_properties(DBusMessage *msg, DBusError *err)
              }
              break;
            default:
-             WARN("EUdev Error: unexpected property type (%s): %c", name, dbus_message_iter_get_arg_type(&v_iter));
+             WARN("EUkit Error: unexpected property type (%s): %c", name, dbus_message_iter_get_arg_type(&v_iter));
              break;
         }
       eina_hash_add(ret->properties, name, prop);

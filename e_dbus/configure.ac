@@ -33,7 +33,6 @@ ebluez_release_info="-release $release"
 eofono_release_info="-release $release"
 edbus_release_info="-release $release"
 ehal_release_info="-release $release"
-##eudev_release_info="-release $release"
 eukit_release_info="-release $release"
 enotify_release_info="-release $release"
 AC_SUBST(version_info)
@@ -42,13 +41,11 @@ AC_SUBST(ebluez_release_info)
 AC_SUBST(eofono_release_info)
 AC_SUBST(edbus_release_info)
 AC_SUBST(ehal_release_info)
-##AC_SUBST(eudev_release_info)
 AC_SUBST(eukit_release_info)
 AC_SUBST(enotify_release_info)
 
 dnl Check enabled modules to build
 AC_ARG_ENABLE([ehal],[AC_HELP_STRING([--disable-ehal], [Disable ehal build])],[enable_ehal=$enableval],[enable_ehal="yes"])
-##AC_ARG_ENABLE([eudev],[AC_HELP_STRING([--disable-eudev], [Disable eudev build])],[enable_eudev=$enableval],[enable_eudev="yes"])
 AC_ARG_ENABLE([eukit],[AC_HELP_STRING([--disable-eukit], [Disable eukit build])],[enable_eukit=$enableval],[enable_eukit="yes"])
 AC_ARG_ENABLE([econnman],[AC_HELP_STRING([--disable-econnman], [Disable econnman build])],[enable_econnman=$enableval],[enable_econnman="yes"])
 AC_ARG_ENABLE([ebluez],[AC_HELP_STRING([--disable-ebluez], [Disable ebluez build])],[enable_ebluez=$enableval],[enable_ebluez="yes"])
@@ -103,13 +100,7 @@ AS_IF(
       [PKG_CHECK_MODULES(EVAS, [evas >= 0.9.9], [], [enable_enotify="no"])]
 )
 
-#AS_IF(
-#   [test "x${enable_eudev}" = "xyes"],
-#     [PKG_CHECK_MODULES(EUDEV, udev, [], [enable_eudev="no"])]
-#)
-
 AM_CONDITIONAL([BUILD_EHAL],     [test "x${enable_ehal}"     = "xyes"])
-##AM_CONDITIONAL([BUILD_EUDEV],    [test "x${enable_eudev}"    = "xyes"])
 AM_CONDITIONAL([BUILD_EUKIT],    [test "x${enable_eukit}"    = "xyes"])
 AM_CONDITIONAL([BUILD_ENOTIFY],  [test "x${enable_enotify}"  = "xyes"])
 AM_CONDITIONAL([BUILD_ECONNMAN], [test "x${enable_econnman}" = "xyes"])
@@ -167,7 +158,6 @@ echo
 echo "  Modules:"
 echo
 echo "    EHal...............: $enable_ehal"
-##echo "    EUdev..............: $enable_eudev"
 echo "    EUkit..............: $enable_eukit"
 echo "    EConnman...........: $enable_econnman"
 echo "    EBluez.............: $enable_ebluez"
