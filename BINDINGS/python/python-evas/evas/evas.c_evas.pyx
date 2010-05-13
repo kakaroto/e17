@@ -18,6 +18,7 @@
 from python_ref cimport PyObject, Py_INCREF, Py_DECREF
 from python_method cimport PyMethod_New
 from python_mem cimport PyMem_Malloc
+import warnings
 
 __extra_epydoc_fields__ = (
     ("parm", "Parameter", "Parameters"), # epydoc don't support pyrex properly
@@ -162,6 +163,20 @@ def _object_mapping_unregister(char *name):
     object_mapping.pop(name)
 
 
+cdef object extended_object_mapping
+
+extended_object_mapping = {}
+
+def _extended_object_mapping_register(char *name, cls_resolver):
+    if name in extended_object_mapping:
+        raise ValueError("object type name '%s' already registered." % name)
+    extended_object_mapping[name] = cls_resolver
+
+
+def _extended_object_mapping_unregister(char *name):
+    extended_object_mapping.pop(name)
+
+
 cdef Object Object_from_instance(Evas_Object *obj):
     cdef void *data
     cdef Object o
@@ -176,8 +191,21 @@ cdef Object Object_from_instance(Evas_Object *obj):
         o = <Object>data
     else:
         t = evas_object_type_get(obj)
+        if t == NULL:
+            raise ValueError("Evas object %#x does not have a type!" %
+                             <long>obj)
         c = Canvas_from_instance(evas_object_evas_get(obj))
-        cls = object_mapping.get(t, Object)
+        cls = object_mapping.get(t, None)
+        if cls is None:
+            cls_resolver = extended_object_mapping.get(t, None)
+            if cls_resolver is None:
+                warnings.warn(
+                    ("Evas_Object %#x of type %s has no direct or "
+                     "extended mapping! Using generic wrapper.") %
+                    (<unsigned long>obj, t))
+                cls = Object
+            else:
+                cls = cls_resolver(<unsigned long>obj)
         o = cls.__new__(cls)
         o._set_evas(c)
         o._set_obj(obj)
