@@ -210,9 +210,9 @@ void ed_twitter_timeline_get(int account_id, char *screen_name, char *password, 
 	if(xml_res != -1) {
 		if (debug) printf("gnome-open %s\n", request->url);
 
-		ed_curl_get(screen_name, password, request, account_id);
+		xml_res = ed_curl_get(screen_name, password, request, account_id);
 
-		if(request->response_code == 200) {
+		if((xml_res == 0) && (request->response_code == 200)) {
 			ed_twitter_init_friends();
 			xmlSubstituteEntitiesDefault(1);
 
@@ -314,7 +314,7 @@ void ed_twitter_statuses_get_avatar(char *screen_name) {
 				request = calloc(1, sizeof(http_request));
 				request->url=avatar;
 				res = ed_curl_get(NULL, NULL, request, -1);
-				if(res == 0)
+				if((res == 0) && (request->response_code == 200))
 					res=write(file, request->content.memory, request->content.size);
 				close(file);
 
@@ -729,24 +729,19 @@ static int ed_twitter_user_get_handler(void *data, int argc, char **argv, char *
 	if(xml_res != -1) {
 		if (debug) printf("gnome-open %s\n", request->url);
 
-		ed_curl_get(screen_name, password, request, ug->account_id);
+		xml_res = ed_curl_get(screen_name, password, request, ug->account_id);
+		if((xml_res == 0) && (request->response_code == 200)) {
 
-		ed_twitter_init_users_show(user);
-		xmlSubstituteEntitiesDefault(1);
+			ed_twitter_init_users_show(user);
+			xmlSubstituteEntitiesDefault(1);
 
-		xml_res = xmlSAXUserParseMemory(&saxHandler, (void*)user, request->content.memory, request->content.size);
+			xml_res = xmlSAXUserParseMemory(&saxHandler, (void*)user, request->content.memory, request->content.size);
 
-		if(xml_res != 0) {
-			fprintf(stderr,_("FAILED TO SAX USERS SHOW: %d\n"),xml_res);
-			if (debug) fprintf(stderr,"%s\n",request->content.memory);
+			if(xml_res != 0) {
+				fprintf(stderr,_("FAILED TO SAX USERS SHOW: %d\n"),xml_res);
+				if (debug) fprintf(stderr,"%s\n",request->content.memory);
+			}
 		}
-
-		//if(statuses->state != HASH) {
-			//now = time(NULL);
-			//messages_insert(account_id, statuses->list, timeline);
-		//} else {
-			////show_error(statuses);
-		//}
 
 	}
 
