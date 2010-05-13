@@ -50,9 +50,9 @@ collections
 	}
     }
 
-    ICON("play", "play.png", 128);
-    ICON("pause", "pause.png", 128);
-    ICON("stop", "stop.png", 128);
-    ICON("forward", "next.png", 128);
-    ICON("backward", "prev.png", 128);
+    ICON("media-playback-start", "play.png", 128);
+    ICON("media-playback-pause", "pause.png", 128);
+    ICON("media-playback-stop", "stop.png", 128);
+    ICON("media-seek-forward", "next.png", 128);
+    ICON("media-seek-backward", "prev.png", 128);
 }

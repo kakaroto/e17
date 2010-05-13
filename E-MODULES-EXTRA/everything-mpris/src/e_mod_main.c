@@ -89,7 +89,7 @@ static const char mpris_interface[] = "org.freedesktop.MediaPlayer";
 static const char fdo_bus_name[] = "org.freedesktop.DBus";
 static const char fdo_interface[] = "org.freedesktop.DBus";
 static const char fdo_path[] = "/org/freedesktop/DBus";
-
+static char *theme_file = NULL;
 static Evry_Type MPRIS_TRACK;
 static Evry_Type TRACKER_MUSIC;
 static Evry_Type FILE_LIST;
@@ -392,20 +392,40 @@ _dbus_cb_tracklist_metadata(void *data, DBusMessage *reply, DBusError *error)
 static Evas_Object *
 _icon_get(Evry_Item *it, Evas *e)
 {
-  GET_TRACK(t, it);
-  GET_PLUGIN(p, it->plugin);
+   Evas_Object *o = NULL;
+   
+   if (CHECK_TYPE(it, MPRIS_TRACK))
+     {
+	GET_TRACK(t, it);
+	GET_PLUGIN(p, it->plugin);
 
-  if (t->id == p->current_track)
-    {
-      if (p->status.playing == 0)
-	return evry->icon_theme_get("media-playback-start", e);
-      else if (p->status.playing == 1)
-	return evry->icon_theme_get("media-playback-pause", e);
-      else if (p->status.playing == 2)
-	return evry->icon_theme_get("media-playback-stop", e);
+	if (t->id == p->current_track)
+	  {
+	     o = e_icon_add(e);
 
-    }
-  return NULL;
+	     if (p->status.playing == 0)
+	       e_icon_file_edje_set(o, theme_file, "media-playback-start");
+	     else if (p->status.playing == 1)
+	       e_icon_file_edje_set(o, theme_file, "media-playback-pause");
+	     else if (p->status.playing == 2)
+	        e_icon_file_edje_set(o, theme_file, "media-playback-stop");
+	  }
+     }
+   else if (CHECK_TYPE(it, EVRY_TYPE_ACTION))
+     {
+	if (edje_file_group_exists(theme_file, it->icon))
+	  {
+	     o = e_icon_add(e);
+
+	     if (e_icon_file_edje_set(o, theme_file, it->icon))
+	       return o;
+
+	     evas_object_del(o);
+	     return NULL;
+	  }
+     }
+   
+   return o;
 }
 
 static int
@@ -1180,41 +1200,43 @@ _cb_key_down(Evry_Plugin *plugin, const Ecore_Event_Key *ev)
 	{
 	  if (!EVRY_ITEM(t)->selected)
 	    {
-	      /* FIXME send with event ? */
 	      evry_item_select(NULL, EVRY_ITEM(t));
 	      evry->item_changed(EVRY_ITEM(t), 1, 1);
 	      return 1;
 	    }
 	}
     }
-  else if ((ev->modifiers & ECORE_EVENT_MODIFIER_ALT) &&
-	   (!strcmp(ev->key, "Down")))
+  else if ((ev->modifiers & ECORE_EVENT_MODIFIER_SHIFT) &&
+	   (!strcmp(ev->key, "Right")))
     {
-      _dbus_send_msg("/Player", "Next", NULL, NULL);
+      if ((t = eina_list_nth(p->tracks, p->current_track + 1)))
+	{
+	  if (!EVRY_ITEM(t)->selected)
+	    {
+	      evry_item_select(NULL, EVRY_ITEM(t));
+	      evry->item_changed(EVRY_ITEM(t), 1, 1);
+	      _dbus_send_msg("/Player", "Next", NULL, NULL);
+	    }
+	}
       return 1;
     }
-  else if ((ev->modifiers & ECORE_EVENT_MODIFIER_ALT) &&
-	   (!strcmp(ev->key, "Up")))
+  else if ((ev->modifiers & ECORE_EVENT_MODIFIER_SHIFT) &&
+	   (!strcmp(ev->key, "Left")))
     {
-      _dbus_send_msg("/Player", "Prev", NULL, NULL);
+      if ((t = eina_list_nth(p->tracks, p->current_track - 1)))
+	{
+	  if (!EVRY_ITEM(t)->selected)
+	    {
+	      evry_item_select(NULL, EVRY_ITEM(t));
+	      evry->item_changed(EVRY_ITEM(t), 1, 1);
+	      _dbus_send_msg("/Player", "Prev", NULL, NULL);
+	    }
+	}
       return 1;
     }
 
   return 0;
 }
-
-/* Evas_Object *
- * _act_icon_get(Evry_Item *it, Evas *e)
- * {
- *   Evas_Object *o = e_icon_add(e);
- * 
- *   if (e_icon_file_edje_set(o, _conf->theme, it->icon))
- *     return o;
- * 
- *   evas_object_del(o);
- * 
- *   return NULL;
- * } */
 
 static int
 _plugins_init(const Evry_API *_api)
@@ -1266,11 +1288,10 @@ _plugins_init(const Evry_API *_api)
 
 #define ACTION_NEW(_label, _meth, _type1, _type2, _icon, _act, _check) \
     act = EVRY_ACTION_NEW(_label, _type1, _type2, _icon, _act, _check); \
+    EVRY_ITEM(act)->icon_get = &_icon_get;				\
     evry_action_register(act,  prio++);					\
     actions = eina_list_append(actions, act);				\
-    EVRY_ITEM_DATA_INT_SET(act, _meth);					\
-
-  /* EVRY_ITEM(act)->icon_get = &_icon_get; */
+    EVRY_ITEM_DATA_INT_SET(act, _meth);
   
   ACTION_NEW(N_("Play Track"), ACT_PLAY_TRACK,
 	     MPRIS_TRACK, 0,
@@ -1380,6 +1401,9 @@ e_modapi_init(E_Module *m)
   bindtextdomain(PACKAGE, buf);
   bind_textdomain_codeset(PACKAGE, "UTF-8");
 
+  snprintf(buf, sizeof(buf), "%s/e-module.edj", e_module_dir_get(m));
+  theme_file = strdup(buf);
+  
   evry_module = E_NEW(Evry_Module, 1);
   evry_module->init     = &_plugins_init;
   evry_module->shutdown = &_plugins_shutdown;
@@ -1401,6 +1425,8 @@ e_modapi_shutdown(E_Module *m)
   EVRY_MODULE_UNREGISTER(evry_module);
   E_FREE(evry_module);
 
+  E_FREE(theme_file);
+  
   return 1;
 }
 
