@@ -75,45 +75,29 @@ _ngi_gadcon_name_new()
 static void
 _ngi_gadcon_item_cb_mouse_down(Ngi_Item *it, Ecore_Event_Mouse_Button *ev)
 {
-   /* if (!it->usable) return; */
-   /* Evas_Coord x, y, w, h;
-    * Ngi_Box *box = it->box; */
-
    //  evas_event_feed_mouse_down(it->box->ng->win->evas, ev->button, 0, 0, NULL);
-
 }
 
 static void
 _ngi_gadcon_item_cb_mouse_up(Ngi_Item *it, Ecore_Event_Mouse_Button *ev)
 {
-   /* if (!it->usable) return;
-    * Evas_Coord x, y, w, h;
-    * Ngi_Box *box = it->box; */
-   //evas_event_feed_mouse_up(it->box->ng->win->evas, ev->button, 0, 0, NULL);
 }
 
 static void
 _ngi_gadcon_item_cb_mouse_in(Ngi_Item *it)
 {
-   /* char buf[256];
-    * char *val; */
-
    evas_object_focus_set(it->obj, 1);
 }
 
 static void
 _ngi_gadcon_item_cb_mouse_out(Ngi_Item *it)
-{ /*TODO check if it is in mouse_down state */
+{
+   /*TODO check if it is in mouse_down state */
    evas_event_feed_mouse_up(it->box->ng->win->evas, 1, 0, 0, NULL);
    evas_event_feed_mouse_up(it->box->ng->win->evas, 2, 0, 0, NULL);
    evas_event_feed_mouse_up(it->box->ng->win->evas, 3, 0, 0, NULL);
    evas_object_focus_set(it->obj, 0);
 }
-
-/* static void
- * _ngi_gadcon_item_menu_append(void *data, E_Menu *menu)
- * {
- * } */
 
 static void
 _ngi_gadcon_locked_set(void *data, int lock)
@@ -135,8 +119,6 @@ _ngi_gadcon_item_new(Ngi_Box *box, const char *name, Ngi_Item *after)
 
    int instant = 1;
 
-   //if(evas_hash_find(ngi_gadcon_hash, name)) return;
-
    it = ngi_item_new(box);
    it->type = gadcon_item;
 
@@ -150,7 +132,6 @@ _ngi_gadcon_item_new(Ngi_Box *box, const char *name, Ngi_Item *after)
    it->gadcon = e_gadcon_swallowed_new(name, 0, ng->o_bg, "e.swallow.content");
    it->gadcon->instant_edit = 0;
    edje_extern_object_min_size_set(it->gadcon->o_container, ng->size, ng->size); /* FIXME */
-   // edje_object_part_swallow(it->ng->o_bg, "e.swallow.content", it->gadcon->o_container);
 
    e_gadcon_min_size_request_callback_set(it->gadcon, _ngi_gadcon_cb_gadcon_min_size_request, it);
    e_gadcon_size_request_callback_set(it->gadcon, _ngi_gadcon_cb_gadcon_size_request, it);
@@ -169,11 +150,8 @@ _ngi_gadcon_item_new(Ngi_Box *box, const char *name, Ngi_Item *after)
 	char buf[256];
 	E_Gadcon_Client *gcc = it->gadcon->clients->data;
 	snprintf(buf, 256, "%s-%d", gcc->name, gcc->id);
-	//snprintf(buf, 256, "temp");
 	it->label = e_datastore_get(buf);
      }
-
-   //e_gadcon_util_menu_attach_func_set(it->gadcon, _ngi_gadcon_item_menu_append, NULL);
 
    it->obj = it->gadcon->o_container;
 
@@ -186,8 +164,6 @@ _ngi_gadcon_item_new(Ngi_Box *box, const char *name, Ngi_Item *after)
 
    ngi_box_item_show(ng, it, instant);
 
-   //  edje_object_signal_emit(it->obj, "e,state,item_show", "e");
-
    return it;
 }
 
@@ -197,25 +173,18 @@ _ngi_gadcon_item_cb_free(Ngi_Item *it)
    it->box->items = eina_list_remove(it->box->items, it);
 
    e_object_del(E_OBJECT(it->gadcon));
-   /*
-     ngi_item_del_icon(it);
-     evas_object_del(it->obj);
-     evas_object_del(it->over);
 
-     efreet_desktop_free(it->app);
-   */
+   if (it->obj) evas_object_del(it->obj);
+   if (it->over) evas_object_del(it->over);
+
    if (it->overlay_signal_timer) ecore_timer_del(it->overlay_signal_timer);
 
-   //eina_stringshare_del(it->label);
-
-   free(it);
+   E_FREE(it);
 }
 
 void
 ngi_gadcon_new(Ng *ng, Config_Box *cfg)
 {
-   // printf("ngi_gadcon_new\n");
-
    Ngi_Box *box = ngi_box_new(ng);
    if(!box) return;
 
@@ -234,32 +203,7 @@ ngi_gadcon_new(Ng *ng, Config_Box *cfg)
 	     it->cfg_gadcon = cg;
 
 	  }
-	/*
-	  char *tmp = strdup(cfg->gadcon_items);
-	  char *token;
-	  const char *delim = " ";
-
-	  token = strtok(tmp, delim);
-
-	  while(1)
-	  {
-	  if (token == NULL)
-	  break;
-
-	  _ngi_gadcon_item_new(box, strdup(token), NULL);
-
-	  token = strtok(NULL, delim);
-	  }
-
-	  free(tmp);*/
      }
-   /* else
-      {
-      cfg->gadcon_items = eina_stringshare_add("ng_gadcon-tmp");
-      _ngi_gadcon_item_new(box, cfg->gadcon_items, NULL);
-      }
-   */
-   // printf("ngi_gadcon_new end\n");
 }
 
 void
@@ -276,49 +220,15 @@ ngi_gadcon_remove(Ngi_Box *box)
 static void
 _ngi_gadcon_cb_gadcon_min_size_request(void *data, E_Gadcon *gc, Evas_Coord w, Evas_Coord h)
 {
-   //printf("_ngi_gadcon_cb_gadcon_min_size_request\n");
-
    Ngi_Item *it;
-   /* Evas_Coord x, y, mw, mh, vx, vy, vw, vh; */
 
    it = data;
-   // printf("REQ MIN %ix%i\n", w, h);
-   // if (ess->animator) ecore_animator_del(ess->animator);
-   //ess->animator = NULL;
-   //ess->out = 0;
 
    if (gc == it->gadcon)
      {
-	//if (h < box->ng->size) h = box->ng->size;
 	edje_extern_object_min_size_set(it->gadcon->o_container, w, h);
-	// edje_object_part_swallow(box->ng->o_bg, "e.swallow.content",
-	// box->gadcon->o_container);
-	//evas_object_resize(box->gadcon->o_container, 20, 20);
-
 	evas_object_show(it->gadcon->o_container);
      }
-   // evas_object_resize(ess->base_obj, ess->popup->w, ess->popup->h);
-
-   else return;
-
-   /*  else if (gc == ess->gadcon_extra)
-       {
-       if (h < ess->extra_size) h = ess->extra_size;
-       edje_extern_object_min_size_set(ess->gadcon_extra->o_container, w, h);
-       edje_object_part_swallow(ess->base_obj, "e.swallow.extra", ess->gadcon_extra->o_container);
-       }*/
-   /*edje_object_size_min_calc(ess->base_obj, &mw, &mh);
-
-     evas_object_resize(ess->base_obj, mw, mh);
-     evas_object_geometry_get(ess->vis_obj, &vx, &vy, &vw, &vh);
-     ess->hidden = vy;
-     x = ess->zone->x;
-     y = ess->zone->y - ess->hidden;
-     mw = ess->zone->w;
-     e_popup_move_resize(ess->popup, x, y, mw, mh);
-     evas_object_resize(ess->base_obj, ess->popup->w, ess->popup->h);*/
-
-   //printf("_ngi_gadcon_cb_gadcon_min_size_request end\n");
 
    return;
 }
@@ -326,19 +236,9 @@ _ngi_gadcon_cb_gadcon_min_size_request(void *data, E_Gadcon *gc, Evas_Coord w, E
 static void
 _ngi_gadcon_cb_gadcon_size_request(void *data, E_Gadcon *gc, Evas_Coord w, Evas_Coord h)
 {
-   //printf("_ngi_gadcon_cb_gadcon_size_request\n");
-
    Ngi_Item *it;
 
    it = data;
-   // printf("REQ %ix%i\n", w, h);
-   // evas_object_resize(box->gadcon->o_container, w, box->ng->size);
-
-   // box->w = w;
-   // ngi_thaw(box->ng);
-   // ngi_reposition(box->ng);
-
-   // printf("_ngi_gadcon_cb_gadcon_size_request\n");
 
    return;
 }
@@ -349,16 +249,6 @@ _ngi_gadcon_cb_gadcon_frame_request(void *data, E_Gadcon_Client *gcc, const char
    /* FIXME: provide an inset look edje thing */
    return NULL;
 }
-
-/*
-  void
-  _ngi_gadcon_config(E_Gadcon *gc)
-  {
-  _e_int_gadcon_config(gc, D_("Gadcon Contents"));
-  }
-*/
-
-/* local functions */
 
 struct _E_Config_Dialog_Data
 {
@@ -390,7 +280,7 @@ ngi_gadcon_config(Ngi_Box *box)
    v->basic.create_widgets = _basic_create;
 
    cfd = e_config_dialog_new(con, "Gadcon Config", "E", "_ngi_gadcon_config_dialog",
-                             "enlightenment/shelf", 0, v, box);
+			     "enlightenment/shelf", 0, v, box);
    //gc->config_dialog = cfd;
    e_dialog_resizable_set(cfd->dia, 1);
 }
@@ -458,7 +348,7 @@ _basic_create(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cfdata)
 
    if (cfdata->hdl) ecore_event_handler_del(cfdata->hdl);
    cfdata->hdl = ecore_event_handler_add(E_EVENT_MODULE_UPDATE,
-                                         _cb_mod_update, cfdata);
+					 _cb_mod_update, cfdata);
    return o;
 }
 
@@ -490,9 +380,9 @@ _avail_list_cb_change(void *data, Evas_Object *obj)
      e_widget_textblock_markup_set(cfdata->o_desc, D_("Description: Unavailable"));
    else
      {
-        sel = e_widget_ilist_selected_get(cfdata->o_avail);
-        name = (char *)e_widget_ilist_nth_data_get(cfdata->o_avail, sel);
-        _set_description(cfdata, name);
+	sel = e_widget_ilist_selected_get(cfdata->o_avail);
+	name = (char *)e_widget_ilist_nth_data_get(cfdata->o_avail, sel);
+	_set_description(cfdata, name);
      }
 }
 
@@ -512,9 +402,9 @@ _sel_list_cb_change(void *data, Evas_Object *obj)
      e_widget_textblock_markup_set(cfdata->o_desc, D_("Description: Unavailable"));
    else
      {
-        sel = e_widget_ilist_selected_get(cfdata->o_sel);
-        name = (char *)e_widget_ilist_nth_data_get(cfdata->o_sel, sel);
-        _set_description(cfdata, name);
+	sel = e_widget_ilist_selected_get(cfdata->o_sel);
+	name = (char *)e_widget_ilist_nth_data_get(cfdata->o_sel, sel);
+	_set_description(cfdata, name);
      }
 }
 
@@ -537,12 +427,12 @@ _load_avail_gadgets(void *data)
    e_widget_ilist_clear(cfdata->o_avail);
    EINA_LIST_FOREACH (e_gadcon_provider_list(), l, cc)
      {
-        if (!cc) continue;
-        if (cc->func.label) lbl = cc->func.label(cc);
-        if (!lbl) lbl = cc->name;
-        if (cc->func.icon) icon = cc->func.icon(cc, evas);
-        e_widget_ilist_append(cfdata->o_avail, icon, lbl, NULL,
-                              (void *)cc->name, NULL);
+	if (!cc) continue;
+	if (cc->func.label) lbl = cc->func.label(cc);
+	if (!lbl) lbl = cc->name;
+	if (cc->func.icon) icon = cc->func.icon(cc, evas);
+	e_widget_ilist_append(cfdata->o_avail, icon, lbl, NULL,
+			      (void *)cc->name, NULL);
      }
    e_widget_ilist_go(cfdata->o_avail);
    e_widget_size_min_get(cfdata->o_avail, &w, NULL);
@@ -585,9 +475,6 @@ _load_sel_gadgets(void *data)
 		  if ((cgc->name) && (gcc->name) &&
 		      (!strcmp(cgc->name, gcc->name)))
 		    {
-		       // printf("list: %s - %s\n", gcc->name, it->label);
-
-
 		       if (gcc->func.label) lbl = gcc->func.label(gcc);
 		       if (!lbl) lbl = gcc->name;
 		       if (gcc->func.icon) icon = gcc->func.icon(gcc, evas);
@@ -621,18 +508,14 @@ _cb_add(void *data, void *data2)
    if (!(cfdata = data)) return;
    for (i = 0, l = e_widget_ilist_items_get(cfdata->o_avail); l; l = l->next, i++)
      {
-        E_Ilist_Item *item = NULL;
-        const char *name = NULL;
+	E_Ilist_Item *item = NULL;
+	const char *name = NULL;
 
-        if (!(item = l->data)) continue;
-        if (!item->selected) continue;
-        name = (char *)e_widget_ilist_nth_data_get(cfdata->o_avail, i);
-        if (!name) continue;
+	if (!(item = l->data)) continue;
+	if (!item->selected) continue;
+	name = (char *)e_widget_ilist_nth_data_get(cfdata->o_avail, i);
+	if (!name) continue;
 	printf("add gadget %s\n", name);
-
-	//	if (!e_gadcon_client_config_new(cfdata->gc, name))
-	//continue;
-	//snprintf(gadcon_name, 256, "ng_gadcon-%d", k++);
 
 	gadcon_name = _ngi_gadcon_name_new();
 	if (!gadcon_name) continue;
@@ -644,7 +527,6 @@ _cb_add(void *data, void *data2)
 	eina_hash_add(ngi_gadcon_hash, cg->name, cg);
 
 	cfdata->box->cfg->gadcon_items = eina_list_append(cfdata->box->cfg->gadcon_items, cg);
-	//cfg->gadcon_items = eina_stringshare_add();
 
 	Ngi_Item *it = _ngi_gadcon_item_new(cfdata->box, cg->name, NULL);
 	it->cfg_gadcon = cg;
@@ -656,7 +538,6 @@ _cb_add(void *data, void *data2)
 
 	     if (!(cgc = g->data)) continue;
 
-	     // printf("remove left over stuff: %s\n",cgc->name);
 	     e_gadcon_unpopulate(it->gadcon);
 	     e_gadcon_client_config_del(it->gadcon->cf, cgc);
 	  }
@@ -675,23 +556,6 @@ _cb_add(void *data, void *data2)
      }
    if (update)
      {
-	// e_gadcon_unpopulate(cfdata->gc);
-	// e_gadcon_populate(cfdata->gc);
-	/* Ngi_Item *it;
-	   char tmp[2048];
-	   char tmp2[128];
-	*/
-	/*for(ll = cfdata->box->items; ll; ll = ll->next)
-	  {
-	  it = ll->data;
-	  snprintf(tmp2, 128, "%s ",it->label);
-
-	  strcat(tmp, tmp2);
-	  }
-	  eina_stringshare_del(cfdata->box->cfg->gadcon_items);
-	*/
-	//cfdata->box->cfg->gadcon_items = eina_stringshare_add(tmp);
-
 	e_config_save_queue();
 
 	_load_sel_gadgets(cfdata);
@@ -713,8 +577,6 @@ _cb_del(void *data, void *data2)
    Ngi_Item *it;
 
    if (!(cfdata = data)) return;
-
-
 
    for (i = 0, l = e_widget_ilist_items_get(cfdata->o_sel); l; l = l->next, i++)
      {
