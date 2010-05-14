@@ -65,7 +65,6 @@ ngi_item_remove(Ngi_Item *it, int instant)
     {
       evas_object_clip_unset(it->obj);
       evas_object_clip_unset(it->over);
-      if (it->border) e_object_unref(E_OBJECT(it->border));
       ITEM_FREE(it);
     }  
   else 
@@ -91,8 +90,12 @@ _ngi_item_cb_free(Ngi_Item *it)
 {
 
   it->box->items = eina_list_remove(it->box->items, it);
-  
-  free(it);
+
+  ngi_item_del_icon(it);
+  evas_object_del(it->obj);
+  evas_object_del(it->over);
+
+  E_FREE(it);
 }
 
 void

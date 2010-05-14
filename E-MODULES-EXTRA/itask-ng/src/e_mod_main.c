@@ -681,7 +681,7 @@ _ngi_win_free(Ngi_Win *win)
 {
    if (win->ee) 
      {
-	e_canvas_del(win->ee);
+        e_canvas_del(win->ee);
 	ecore_evas_free(win->ee);
      }
   

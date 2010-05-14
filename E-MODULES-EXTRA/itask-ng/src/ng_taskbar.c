@@ -343,7 +343,6 @@ _ngi_taskbar_cb_border_event(void *data, int type, void *event)
 	     else if (type == E_EVENT_BORDER_ICON_CHANGE)
 	       {
 		  if (!it) continue;
-		  ngi_item_del_icon(it);
 		  _ngi_taskbar_item_set_icon(it);
 	       }
 
@@ -374,16 +373,16 @@ _ngi_taskbar_cb_border_event(void *data, int type, void *event)
 	     else if (type == E_EVENT_BORDER_URGENT_CHANGE)
 	       {
 		  if (!it) continue;
+		  if (!ng->cfg->autohide_show_urgent)
+		    continue;
+		  
 		  if (bd->client.icccm.urgent)
 		    {
 		       it->urgent = 1;
 		       ngi_item_signal_emit(it, "e,state,taskbar_item_urgent");
 		       ngi_item_signal_emit(it, "e,action,start");
-		       if (ng->cfg->autohide)
-			 {
-			    ng->show_bar++;
-			    ngi_animate(ng);
-			 }
+		       ng->show_bar++;
+		       ngi_animate(ng);
 		    }
 		  else
 		    {
@@ -395,12 +394,9 @@ _ngi_taskbar_cb_border_event(void *data, int type, void *event)
 		       else
 			 ngi_item_signal_emit(it, "e,state,taskbar_item_normal");
 
-		       if (ng->cfg->autohide)
-			 {
-			    if (ng->show_bar > 0)
-			      ng->show_bar--;
-			    ngi_animate(ng);
-			 }
+		       if (ng->show_bar > 0)
+			 ng->show_bar--;
+		       ngi_animate(ng);
 		    }
 	       }
 
@@ -661,6 +657,8 @@ _ngi_taskbar_border_icon_add(E_Border *bd, Evas *evas)
 static void
 _ngi_taskbar_item_set_icon(Ngi_Item *it)
 {
+   ngi_item_del_icon(it);
+
    it->o_icon = _ngi_taskbar_border_icon_add(it->border, it->box->ng->win->evas);
    edje_object_part_swallow(it->obj, "e.swallow.content", it->o_icon);
    evas_object_pass_events_set(it->o_icon, 1);
@@ -721,6 +719,8 @@ _ngi_taskbar_item_cb_free(Ngi_Item *it)
 {
    it->box->items = eina_list_remove(it->box->items, it);
 
+   if (it->border) e_object_unref(E_OBJECT(it->border));
+   
    ngi_item_del_icon(it);
    evas_object_del(it->obj);
    evas_object_del(it->over);
@@ -728,10 +728,8 @@ _ngi_taskbar_item_cb_free(Ngi_Item *it)
    if (it->label) eina_stringshare_del(it->label);
    if (it->class) eina_stringshare_del(it->class);
    if (it->overlay_signal_timer) ecore_timer_del(it->overlay_signal_timer);
-   it->overlay_signal_timer = NULL;
 
-   free(it);
-   it = NULL;
+   E_FREE(it);
 }
 
 static void

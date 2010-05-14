@@ -18,7 +18,7 @@ struct _E_Config_Dialog_Data
   Evas_Object *o_delete;
   Evas_Object *o_config;
 
-  char *cur_ng;
+  const char *cur_ng;
 };
 
 
