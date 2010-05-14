@@ -1,0 +1,7 @@
+Login:          bdilly
+IRC Nick:       bdilly
+Name:           Bruno Dilly
+Location:       Campinas, Brazil
+E-Mail:         bdilly@profusion.mobi
+Contributing:   e_dbus, elementary
+Platform:       Ubuntu (Linux)
