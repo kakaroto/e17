@@ -1,3 +1,7 @@
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+
 #include <E_Ukit.h>
 #include "e_ukit_private.h"
 

@@ -1,8 +1,11 @@
-#ifndef E_UKIT_PRIVFUNC_H
-#define E_UKIT_PRIVFUNC_H
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
 
+#include <E_Ukit.h>
+#include "e_ukit_private.h"
 
-static void *
+void *
 unmarshal_property(DBusMessage *msg, DBusError *err)
 {
    E_Ukit_Get_Property_Return *ret = NULL;
@@ -78,9 +81,7 @@ unmarshal_property(DBusMessage *msg, DBusError *err)
    return ret;
 }
 
-
-
-static void 
+void 
 free_property(void *data)
 {
    E_Ukit_Get_Property_Return *ret = data;
@@ -97,7 +98,7 @@ free_property(void *data)
    free(ret);
 }
 
-static void *
+void *
 unmarshal_device_get_all_properties(DBusMessage *msg, DBusError *err)
 {
    E_Ukit_Get_All_Properties_Return *ret = NULL;
@@ -192,7 +193,7 @@ unmarshal_device_get_all_properties(DBusMessage *msg, DBusError *err)
    return ret;
 }
 
-static void
+void
 free_device_get_all_properties(void *data)
 {
    E_Ukit_Get_All_Properties_Return *ret = data;
@@ -202,7 +203,7 @@ free_device_get_all_properties(void *data)
    free(ret);
 }
 
-static void *
+void *
 unmarshal_string_list(DBusMessage *msg, DBusError *err)
 {
    E_Ukit_String_List_Return *ret = NULL;
@@ -240,7 +241,7 @@ unmarshal_string_list(DBusMessage *msg, DBusError *err)
    return ret;
 }
 
-static void
+void
 free_string_list(void *data)
 {
    E_Ukit_String_List_Return *ret = data;
@@ -251,6 +252,3 @@ free_string_list(void *data)
      eina_stringshare_del(x);
    free(ret);
 }
-
-
-#endif
