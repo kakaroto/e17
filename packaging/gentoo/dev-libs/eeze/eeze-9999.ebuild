@@ -20,7 +20,7 @@ DEPEND="${RDEPEND}"
 src_configure() {
 	export MY_ECONF="
 	  ${MY_ECONF}
-	  $(use_enable udev eudev)
+	  $(use_enable udev udev)
 	"
 	efl_src_configure
 }
