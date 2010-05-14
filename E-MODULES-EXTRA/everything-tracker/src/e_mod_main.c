@@ -63,6 +63,7 @@ static Evas_Object *_icon_get(Evry_Item *item, Evas *e);
 static Evry_Type TRACKER_MUSIC;
 static Evry_Type TRACKER_QUERY;
 static Evry_Type FILE_LIST;
+static Evry_Type MPRIS_TRACK;
 
 static const char query_files[] =
   "SELECT ?match  nie:url(?match) nfo:fileName(?match) ?m WHERE {"
@@ -76,12 +77,12 @@ static const char query_files[] =
 /* "} ORDER BY DESC (fn:starts-with(?m, 'inode/directory')) LIMIT 50"; */
 
 static const char query_remove_file[] =
-  "DELETE { ?urn a rdfs:Resource } WHERE {?urn a nfo:FileDataObject;  nie:url '%s'} %s";
+  "DELETE { ?urn a rdfs:Resource } WHERE {?urn a nfo:FileDataObject;  nie:url \"%s\"} %s";
 
 static const char query_directory[] =
   "SELECT ?match  nie:url(?match) nfo:fileName(?match) ?m WHERE {"
   " ?match a nfo:FileDataObject;"
-  "      nie:isPartOf [nie:url '%s'];"// propery
+  "      nie:isPartOf [nie:url \"%s\"];"// propery
   "      tracker:available true;"
   "      nie:mimeType ?m"
   " %s"  // match
@@ -124,7 +125,7 @@ static const char query_tracks_for_album[] =
   "SELECT ?match nie:url(?match) nfo:fileName(?match) nie:mimeType(?match) WHERE{"
   "  ?match a nmm:MusicPiece;  "
   "   tracker:available true;"
-  "   nmm:musicAlbum '%s'" // property
+  "   nmm:musicAlbum \"%s\"" // property
   "    %s"                 // match
   " OPTIONAL { ?match nmm:trackNumber ?nr}"
   "} ORDER BY ASC(?nr) LIMIT 100";
@@ -133,7 +134,7 @@ static const char query_tracks_no_album[] =
   "SELECT ?match nie:url(?match) nfo:fileName(?match) nie:mimeType(?match) WHERE{"
   "  ?match a nmm:MusicPiece;  "
   "   tracker:available true;"
-  "   nmm:performer[nmm:artistName '%s']" // property
+  "   nmm:performer[nmm:artistName \"%s\"]" // property
   "    %s "              // match
   "  . OPTIONAL { ?match nmm:musicAlbum ?b}"
   "  . FILTER(bound(?b) = false) "
@@ -144,10 +145,35 @@ static const char query_albums_for_artist[] =
   "       nmm:artistName(nmm:performer(?s)) nie:url(?s) WHERE {"
   " ?s a nmm:MusicPiece;"
   "      tracker:available true;"
-  "      nmm:performer '%s'."// property
+  "      nmm:performer \"%s\"."// property
   "  OPTIONAL { ?s nmm:musicAlbum ?match}"
   "  %s"
   "} ORDER BY (?match) LIMIT 500";
+
+static const char query_usage_count[] =
+  "SELECT nie:url(?urn) nie:usageCounter(?urn) WHERE {?urn a nmm:MusicPiece; nie:url \"%s\" }";
+
+static const char update_usage_count[] =
+  "DELETE {"
+  "  ?unknown nie:usageCounter ?count"
+  "} WHERE {"
+  "  ?unknown nie:usageCounter ?count ;"
+  "  nie:url \"%s\" . "
+  "}"
+  "INSERT {"
+  "  ?unknown nie:usageCounter %d"
+  "} WHERE {"
+  "  ?unknown nie:url \"%s\" ."
+  "}";
+
+static const char query_most_played[] =
+  "SELECT  ?match nie:url(?match) nfo:fileName(?match) nie:mimeType(?match)"
+  "WHERE {"
+  "  ?match a nmm:MusicPiece;"
+  "          nie:usageCounter ?count"
+  "   %s" // property
+  "   %s" // match
+  "} ORDER BY DESC(?count) LIMIT 50";
 
 static const char fts_match[] = ". ?match fts:match \"%s*\"";
 
@@ -186,7 +212,7 @@ _query_item_get(Plugin *p, const char *id,
 	  {
 	     if (tmp != EVRY_ITEM(it)->id)
 	       continue;
-	     
+
 	     eina_stringshare_del(tmp);
 	     evry->item_ref(EVRY_ITEM(it));
 
@@ -229,10 +255,9 @@ _file_item_get(Plugin *p, const char *urn, char *url, char *label, char *mime, i
 {
    Evry_Item_File *file;
    Eina_List *l;
+   const char *id;
 
-   /* one could jus check the ref counts (= */
-   const char *id = eina_stringshare_add(urn);
-
+   id = eina_stringshare_add(urn);
    EINA_LIST_FOREACH(p->files, l, file)
      {
 	if (id == EVRY_ITEM(file)->data)
@@ -242,7 +267,6 @@ _file_item_get(Plugin *p, const char *urn, char *url, char *label, char *mime, i
 	     return file;
 	  }
      }
-   eina_stringshare_del(id); 
 
    file = EVRY_ITEM_NEW(Evry_Item_File, p, label, _icon_get, _file_item_free);
    EVRY_ITEM(file)->data = (void *)id;
@@ -254,6 +278,8 @@ _file_item_get(Plugin *p, const char *urn, char *url, char *label, char *mime, i
 
    file->mime = eina_stringshare_add(mime);
    file->url = eina_stringshare_add(url);
+   printf("url: %s\n", url);
+
    EVRY_ITEM(file)->context = eina_stringshare_ref(file->mime);
 
    if (evry->file_path_get(file))
@@ -377,6 +403,29 @@ _add_artist(Plugin *p, const char *urn, DBusMessageIter *iter, Query_Item *it, E
    return it;
 }
 
+static int
+_dbus_message_open(DBusMessage *msg, DBusError *error, DBusMessageIter *iter)
+{
+   DBusMessageIter array;
+
+   if (dbus_error_is_set(error))
+     {
+	ERR("%s - %s\n", error->name, error->message);
+	return 0;
+     }
+
+   dbus_message_iter_init(msg, &array);
+   if (dbus_message_iter_get_arg_type(&array) != DBUS_TYPE_ARRAY)
+     {
+	ERR("got trash!\n");
+	return 0;
+     }
+
+   dbus_message_iter_recurse(&array, iter);
+
+   return 1;
+}
+
 static void
 _dbus_cb_reply(void *data, DBusMessage *msg, DBusError *error)
 {
@@ -394,20 +443,9 @@ _dbus_cb_reply(void *data, DBusMessage *msg, DBusError *error)
 	return;
      }
 
-   if (dbus_error_is_set(error))
-     {
-	ERR("%s - %s\n", error->name, error->message);
-	return;
-     }
+   if (!_dbus_message_open(msg, error, &item))
+     return;
 
-   dbus_message_iter_init(msg, &array);
-   if (dbus_message_iter_get_arg_type(&array) != DBUS_TYPE_ARRAY)
-     {
-	ERR("got trash!\n");
-	goto end;
-     }
-
-   dbus_message_iter_recurse(&array, &item);
    while (dbus_message_iter_get_arg_type(&item) == DBUS_TYPE_ARRAY)
      {
 	dbus_message_iter_recurse(&item, &iter);
@@ -466,7 +504,9 @@ _dbus_cb_reply(void *data, DBusMessage *msg, DBusError *error)
 }
 
 static DBusPendingCall *
-_send_query(const char *query, const char *match, const char *match2, int update, void *cb_data)
+_send_query(const char *query, const char *match, const char *match2, int update,
+	    void (*cb_reply)(void *data, DBusMessage *msg, DBusError *error),
+	    void *cb_data)
 {
    char *_query = NULL;
    DBusMessage *msg;
@@ -493,26 +533,17 @@ _send_query(const char *query, const char *match, const char *match2, int update
 	_query = strdup(query);
      }
 
-   DBG("%s", _query);
+   printf("%s\n", _query);
 
-   if (update)
-     msg = dbus_message_new_method_call(bus_name,
-					"/org/freedesktop/Tracker1/Resources",
-					"org.freedesktop.Tracker1.Resources",
-					"SparqlUpdate");
-   else
-     msg = dbus_message_new_method_call(bus_name,
-					"/org/freedesktop/Tracker1/Resources",
-					"org.freedesktop.Tracker1.Resources",
-					"SparqlQuery");
-   dbus_message_append_args(msg,
-			    DBUS_TYPE_STRING,  &_query,
-			    DBUS_TYPE_INVALID);
-   if (cb_data)
-     pnd = e_dbus_message_send(conn, msg, _dbus_cb_reply, -1, cb_data);
-   else
-     pnd = e_dbus_message_send(conn, msg, NULL, -1, NULL);
-   
+   msg = dbus_message_new_method_call(bus_name,
+				      "/org/freedesktop/Tracker1/Resources",
+				      "org.freedesktop.Tracker1.Resources",
+				      (update ? "SparqlUpdate" : "SparqlQuery"));
+
+   dbus_message_append_args(msg, DBUS_TYPE_STRING, &_query, DBUS_TYPE_INVALID);
+
+   pnd = e_dbus_message_send(conn, msg, cb_reply, -1, cb_data);
+
    dbus_message_unref(msg);
 
    E_FREE(_query);
@@ -530,15 +561,19 @@ _browse(Evry_Plugin *plugin, const Evry_Item *item)
      return NULL;
 
    GET_PLUGIN(parent, plugin);
+   QUERY_ITEM(it, item);
+
+   if (plugin != item->plugin)
+     return NULL;
 
    p = E_NEW(Plugin, 1);
    p->base = *plugin;
    p->base.items = NULL;
-   p->filter_result = parent->filter_result;
 
-   QUERY_ITEM(it, item);
+   p->filter_result = parent->filter_result;
    p->parent = EINA_TRUE;
    p->query = it->query;
+
    if (it->match)
      p->match = eina_stringshare_add(it->match);
 
@@ -600,7 +635,7 @@ _fetch(Evry_Plugin *plugin, const char *input)
    GET_PLUGIN(p, plugin);
 
    DBG("%s", input);
-   
+
    char buf[128];
    int len = 0;
    Evry_Item *it;
@@ -611,11 +646,11 @@ _fetch(Evry_Plugin *plugin, const char *input)
 	len = strlen(input);
 	p->input = eina_stringshare_add(input);
      }
-   
+
    if (!dbus_active)
      {
 	DBG("not active");
-	
+
 	EVRY_PLUGIN_ITEMS_CLEAR(p);
 
 	EINA_LIST_FREE(p->files, it)
@@ -640,21 +675,29 @@ _fetch(Evry_Plugin *plugin, const char *input)
      dbus_pending_call_cancel(p->pnd);
    p->pnd = NULL;
 
-   if (len > 0 && (len >= plugin->config->min_query) && isalnum(input[0]))
+   if ((len > 0 && len >= plugin->config->min_query) && isalnum(input[0]))
      {
-	snprintf(buf, sizeof(buf), fts_match, input);
-
 	p->fetching = EINA_TRUE;
 
-	p->pnd = _send_query(p->query, (p->match ? p->match : ""), buf, 0, p);
+	snprintf(buf, sizeof(buf), fts_match, input);
+	p->pnd = _send_query(p->query, (p->match ? p->match : ""), buf,
+				  0, _dbus_cb_reply, p);
+     }
+   else if (len == 0 && plugin->config->min_query == 0)
+     {
+	p->fetching = EINA_TRUE;
+
+	p->pnd = _send_query(p->query, (p->match ? p->match : ""), "",
+			     0, _dbus_cb_reply, p);
      }
    else if (p->match)
      {
-   	if (/*evry_item_type_check(p, ) ||*/ p->match)
-   	  {
-   	     p->fetching = EINA_TRUE;
-   	     p->pnd = _send_query(p->query, (p->match ? p->match : ""), "", 0, p);
-   	  }
+	printf("match-------\n");
+
+	p->fetching = EINA_TRUE;
+	p->pnd = _send_query(p->query, p->match, "",
+			     0, _dbus_cb_reply, p);
+	return 1;
      }
    else if (len < plugin->config->min_query)
      {
@@ -662,7 +705,6 @@ _fetch(Evry_Plugin *plugin, const char *input)
 
        EINA_LIST_FREE(p->files, it)
 	 evry->item_free(it);
-
      }
 
    return !!(p->base.items);
@@ -791,30 +833,92 @@ _icon_get(Evry_Item *item, Evas *e)
    return NULL;
 }
 
+static void
+_dbus_cb_track_count(void *data, DBusMessage *reply, DBusError *error)
+{
+   DBusMessageIter item, iter;
+   DBusMessage *msg;
+   char *urn = NULL;
+   char *count = NULL;
+   char query[1024];
+   char *tmp;
+
+   printf("track count cb\n");
+
+   if (!_dbus_message_open(reply, error, &item))
+     return;
+
+   while (dbus_message_iter_get_arg_type(&item) == DBUS_TYPE_ARRAY)
+     {
+	dbus_message_iter_recurse(&item, &iter);
+
+	printf("blah\n");
+
+	if (dbus_message_iter_get_arg_type(&iter) == DBUS_TYPE_STRING)
+	  {
+	     dbus_message_iter_get_basic(&iter, &urn);
+	     printf("%s\n", urn);
+
+	     if (!urn) continue;
+	  }
+	dbus_message_iter_next(&iter);
+
+	if (dbus_message_iter_get_arg_type(&iter) == DBUS_TYPE_STRING)
+	  {
+	     dbus_message_iter_get_basic(&iter, &count);
+	     printf("%s\n", count);
+	     if (!count) continue;
+	  }
+	break;
+     }
+
+   if (!urn) return;
+
+   printf("update count %s %s\n", urn, count);
+
+   snprintf(query, sizeof(query), update_usage_count, urn,
+	    (count ? (atoi(count) + 1) : 1), urn);
+
+   printf("send %s\n", query);
+
+   msg = dbus_message_new_method_call(bus_name,
+				      "/org/freedesktop/Tracker1/Resources",
+				      "org.freedesktop.Tracker1.Resources",
+				      "SparqlUpdate");
+   tmp = strdup(query);
+   dbus_message_append_args(msg, DBUS_TYPE_STRING,  &tmp, DBUS_TYPE_INVALID);
+   free(tmp);
+
+   e_dbus_message_send(conn, msg, NULL, -1, NULL);
+   dbus_message_unref(msg);
+}
+
 /* TODO remove folders recursively */
 static int
 _cb_action_performed(void *data, int type,void *event)
 {
    Evry_Event_Action_Performed *ev = event;
    const char *url;
-   
+
    if (!dbus_active)
      return 1;
-   
+
    if (CHECK_TYPE(ev->it1, EVRY_TYPE_FILE) &&
        (ev->action && !strcmp(ev->action, "Move to Trash")) &&
        (url = evry->file_url_get(EVRY_FILE(ev->it1))))
      {
 	printf("file deleted %s\n", url);
-	_send_query(query_remove_file, url, NULL, 1, NULL); 
+	_send_query(query_remove_file, url, NULL, 1,
+		    NULL, NULL);
      }
-   /* else if (CHECK_TYPE(ev->it1, MPRIS_TRACK) &&
-    *     (ev->action && !strcmp(ev->action, "Play Track")) &&
-    *     (url = evry->file_url_get(EVRY_FILE(ev->it1))))
-    *   {
-    * 	printf("file deleted %s\n", url);
-    * 	_send_query(query_remove_file, url, NULL, 1, NULL); 
-    *   } */
+   else if (CHECK_TYPE(ev->it1, MPRIS_TRACK) &&
+       (ev->action && !strcmp(ev->action, "Play Track")) &&
+       (url = evry->file_url_get(EVRY_FILE(ev->it1))))
+     {
+   	printf("play file %s\n", url);
+   	_send_query(query_usage_count, url, NULL, 0,
+		    _dbus_cb_track_count, NULL);
+     }
 
    return 1;
 }
@@ -851,10 +955,11 @@ _plugins_init(const Evry_API *_api)
    TRACKER_QUERY = evry->type_register("TRACKER_QUERY");
    TRACKER_MUSIC = evry->type_register("TRACKER_MUSIC");
    FILE_LIST     = evry->type_register("FILE_LIST");
+   MPRIS_TRACK   = evry->type_register("MPRIS_TRACK");
 
    action_handler = ecore_event_handler_add(EVRY_EVENT_ACTION_PERFORMED,
 					    _cb_action_performed, NULL);
-   
+
 #define FILE_PLUGIN_NEW(_name, _plug_type, _icon, _type, _begin, _finish, _fetch, _query) { \
      p = EVRY_PLUGIN_NEW(Plugin, _name, _icon, _type, _begin, _finish, _fetch, NULL); \
      GET_PLUGIN(p1, p);							\
@@ -872,7 +977,7 @@ _plugins_init(const Evry_API *_api)
 		   _begin, _finish, _fetch, query_files);
 
 
-#define QUERY_PLUGIN_NEW(_name, _plug_type, _icon, _type, _begin, _finish, _fetch, _query) { \
+#define QUERY_PLUGIN_NEW(_name, _plug_type, _icon, _type, _begin, _finish, _fetch, _query, _min_query) { \
       p = EVRY_PLUGIN_NEW(Plugin, _name, _icon, _type, _begin, _finish, _fetch, NULL); \
       p->browse = &_browse;						\
       p->history = EINA_FALSE;						\
@@ -880,14 +985,18 @@ _plugins_init(const Evry_API *_api)
       p1->query = _query;						\
       p1->filter_result = EINA_TRUE;					\
       if (evry->plugin_register(p, _plug_type, _prio++)) {		\
-	 p->config->top_level = 0; }					\
+	 p->config->top_level = 1; 					\
+	 p->config->min_query = _min_query; }				\
       plugins = eina_list_append(plugins, p); }
 
    QUERY_PLUGIN_NEW(N_("Albums"), EVRY_PLUGIN_OBJECT, "emblem-sound", TRACKER_MUSIC,
-		    _begin, _finish, _fetch, query_albums);
+		    _begin, _finish, _fetch, query_albums, 4);
 
    QUERY_PLUGIN_NEW(N_("Artist"), EVRY_PLUGIN_OBJECT, "emblem-sound", TRACKER_MUSIC,
-		    _begin, _finish, _fetch, query_artists);
+		    _begin, _finish, _fetch, query_artists, 4);
+
+   QUERY_PLUGIN_NEW(N_("Most Listened"), EVRY_PLUGIN_OBJECT, "emblem-sound", TRACKER_MUSIC,
+		    _begin, _finish, _fetch, query_most_played, 0);
 
    return EINA_TRUE;
 }

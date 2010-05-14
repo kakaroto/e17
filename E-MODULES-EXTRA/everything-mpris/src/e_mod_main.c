@@ -200,7 +200,9 @@ _update_list(Plugin *p)
 {
   Eina_List *l;
   Track *t, *t2;
-
+  char buf[128];
+  char *tmp;
+  
   EVRY_PLUGIN_ITEMS_CLEAR(p);
 
   /* remove 'empty' item */
@@ -216,22 +218,30 @@ _update_list(Plugin *p)
     {
       t2 = (l ? l->data : NULL);
 
-      if (t2 && (t->id == t2->id) && (EVRY_FILE(t)->url == EVRY_FILE(t2)->url))
+      if (t2 && (t->id == t2->id) && (EVRY_ITEM(t)->id == EVRY_ITEM(t2)->id))
 	{
 	  evry_item_free(EVRY_ITEM(t));
 	  p->tracks = eina_list_append(p->tracks, t2);
 	}
-      else /* new track */
+      else /*** new track ***/
 	{
 	  if (t2) evry_item_free(EVRY_ITEM(t2));
 	  p->tracks = eina_list_append(p->tracks, t);
 
 	  GET_ITEM(it, t);
+	  GET_FILE(file, t);
 
-	  /* set label */
+	  /* TODO fix xmms2 mpris bridge */
+	  tmp = evry->util_url_unescape(it->id, 0);
+	  if (!strncmp(tmp, "file://", 7))
+	    file->path = eina_stringshare_add(tmp + 7); 
+	  else
+	    file->path = eina_stringshare_add(tmp);
+	  free(tmp);
+	  
+	  /*** set label ***/
 	  if (t->artist && t->title)
 	    {
-	      char buf[128];
 	      snprintf(buf, sizeof(buf), "%s - %s", t->artist, t->title);
 	      it->label = eina_stringshare_add(buf);
 	    }
@@ -239,15 +249,11 @@ _update_list(Plugin *p)
 	    {
 	      it->label = eina_stringshare_add(t->title);
 	    }
-	  else if (EVRY_FILE(t)->url)
+	  else if (file->path)
 	    {
-	      const char *file = ecore_file_file_get(EVRY_FILE(t)->url);
-	      char *tmp = evry->util_url_unescape(file, 0);
-	      if (tmp)
-		{
-		  it->label = eina_stringshare_add(tmp);
-		  free(tmp);
-		}
+	      const char *label;
+	      if ((label = ecore_file_file_get(file->path)))
+		it->label = eina_stringshare_add(label);
 	    }
 	  else
 	    {
@@ -346,7 +352,7 @@ _dbus_cb_tracklist_metadata(void *data, DBusMessage *reply, DBusError *error)
 	      dbus_message_iter_recurse (&iter, &iter_val);
 	      dbus_message_iter_get_basic (&iter_val, &tmp);
 	      if (tmp && tmp[0])
-		EVRY_FILE(t)->url = eina_stringshare_add(tmp);
+		EVRY_ITEM(t)->id = eina_stringshare_add(tmp);
 	    }
 	  else if (!strcmp(key, "album"))
 	    {
