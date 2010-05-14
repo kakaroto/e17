@@ -278,7 +278,6 @@ _file_item_get(Plugin *p, const char *urn, char *url, char *label, char *mime, i
 
    file->mime = eina_stringshare_add(mime);
    file->url = eina_stringshare_add(url);
-   printf("url: %s\n", url);
 
    EVRY_ITEM(file)->context = eina_stringshare_ref(file->mime);
 
@@ -533,7 +532,7 @@ _send_query(const char *query, const char *match, const char *match2, int update
 	_query = strdup(query);
      }
 
-   printf("%s\n", _query);
+   DBG("%s\n", _query);
 
    msg = dbus_message_new_method_call(bus_name,
 				      "/org/freedesktop/Tracker1/Resources",
@@ -692,8 +691,6 @@ _fetch(Evry_Plugin *plugin, const char *input)
      }
    else if (p->match)
      {
-	printf("match-------\n");
-
 	p->fetching = EINA_TRUE;
 	p->pnd = _send_query(p->query, p->match, "",
 			     0, _dbus_cb_reply, p);
@@ -843,8 +840,6 @@ _dbus_cb_track_count(void *data, DBusMessage *reply, DBusError *error)
    char query[1024];
    char *tmp;
 
-   printf("track count cb\n");
-
    if (!_dbus_message_open(reply, error, &item))
      return;
 
@@ -852,13 +847,9 @@ _dbus_cb_track_count(void *data, DBusMessage *reply, DBusError *error)
      {
 	dbus_message_iter_recurse(&item, &iter);
 
-	printf("blah\n");
-
 	if (dbus_message_iter_get_arg_type(&iter) == DBUS_TYPE_STRING)
 	  {
 	     dbus_message_iter_get_basic(&iter, &urn);
-	     printf("%s\n", urn);
-
 	     if (!urn) continue;
 	  }
 	dbus_message_iter_next(&iter);
@@ -866,7 +857,6 @@ _dbus_cb_track_count(void *data, DBusMessage *reply, DBusError *error)
 	if (dbus_message_iter_get_arg_type(&iter) == DBUS_TYPE_STRING)
 	  {
 	     dbus_message_iter_get_basic(&iter, &count);
-	     printf("%s\n", count);
 	     if (!count) continue;
 	  }
 	break;
@@ -878,8 +868,6 @@ _dbus_cb_track_count(void *data, DBusMessage *reply, DBusError *error)
 
    snprintf(query, sizeof(query), update_usage_count, urn,
 	    (count ? (atoi(count) + 1) : 1), urn);
-
-   printf("send %s\n", query);
 
    msg = dbus_message_new_method_call(bus_name,
 				      "/org/freedesktop/Tracker1/Resources",
@@ -915,7 +903,6 @@ _cb_action_performed(void *data, int type,void *event)
        (ev->action && !strcmp(ev->action, "Play Track")) &&
        (url = evry->file_url_get(EVRY_FILE(ev->it1))))
      {
-   	printf("play file %s\n", url);
    	_send_query(query_usage_count, url, NULL, 0,
 		    _dbus_cb_track_count, NULL);
      }
