@@ -2,6 +2,10 @@
 #include "config.h"
 #endif
 
+#ifdef _WIN32
+# define DBUS_API_SUBJECT_TO_CHANGE
+#endif
+
 #include <stdio.h>
 #include <string.h>
 

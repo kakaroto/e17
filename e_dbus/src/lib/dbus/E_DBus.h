@@ -9,6 +9,13 @@
 # endif
 #endif
 
+#ifdef _WIN32
+# ifdef interface
+#  undef interface
+# endif
+# define DBUS_API_SUBJECT_TO_CHANGE
+#endif
+
 #include <dbus/dbus.h>
 #include <Eina.h>
 
