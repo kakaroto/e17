@@ -4,8 +4,8 @@ Name:         David Walter Seikel
 Location:     Brisbane, Australia
 E-Mail:       -onefang@gmail.com
 WWW:          http://matrix-rad.net/
-Managing:     e_modules, emu module, e_utils/e17genmenu, ecore_desktop, enlightenment.org FAQs, #get-e FAQ bot, Witch Finder General
-Contributing: e, ecore_exe, .cvsignore monkey, get-e.org web site, edevelop.org
+Managing:     emu module, ecore_desktop, #get-e FAQ bot, Witch Finder General
+Contributing: e, ecore_exe, .cvsignore monkey, e_modules, e_utils/e17genmenu, enlightenment.org FAQs, get-e.org web site, edevelop.org
 Group:        Core, Modules
-Platform:     Ubuntu (Linux), Yellow Dog (Linux)
+Platform:     Ubuntu (Linux)
 GeoData:      -27.5 153.02
