@@ -10,7 +10,7 @@ DESCRIPTION="Enlightenment DR17 window manager"
 HOMEPAGE="http://www.enlightenment.org/"
 
 SLOT="0.17"
-IUSE="exchange pam alsa tracker pm-utils debug xinerama xscreensaver opengl bluetooth \
+IUSE="exchange pam alsa tracker pm-utils debug xinerama xscreensaver opengl bluetooth +hal udev\
 	+battery +clock +comp +conf \
 	+conf-borders +conf-colors +conf-desklock +conf-desk +conf-desks \
 	+conf-dialogs +conf-display +conf-dpms +conf-engine +conf-fonts +conf-imc +conf-intl \
@@ -44,6 +44,7 @@ RDEPEND="
 	 >=dev-libs/e_dbus-9999[hal,connman?]
 	 >=media-libs/edje-9999
 	 >=media-libs/evas-9999[X,opengl?,eet,jpeg,png,safety-checks]
+	udev? ( dev-libs/eeze[udev] )
 	everything-aspell? ( app-text/aspell )
 	everything-calc? ( sys-devel/bc )
 "
@@ -67,6 +68,8 @@ src_configure() {
 	export MY_ECONF="
 	  ${MY_ECONF}
 	  --disable-install-sysactions
+	  $(use_enable hal device-hal)
+	  $(use_enable udev device-udev)
 	  $(use_enable pam)
 	  $(use_enable alsa mixer)
 	  $(use_enable exchange)
