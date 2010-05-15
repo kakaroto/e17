@@ -460,22 +460,6 @@ _ngi_launcher_item_fill(Ngi_Item *it)
      it->label = eina_stringshare_add("");
 }
 
-/* static void
- * _ngi_launcher_item_cb_free(Ngi_Item *it)
- * {
- *    it->box->items = eina_list_remove(it->box->items, it);
- *
- *    ngi_item_del_icon(it);
- *    evas_object_del(it->obj);
- *    evas_object_del(it->over);
- *
- *    efreet_desktop_free(it->app);
- *    eina_stringshare_del(it->label);
- *
- *    free(it);
- * } */
-
-
 static void
 _ngi_launcher_item_cb_drag_del(void *data, Evas *e, Evas_Object *obj, void *event_info)
 {
@@ -489,9 +473,6 @@ _ngi_launcher_item_cb_drag_del(void *data, Evas *e, Evas_Object *obj, void *even
 static void
 _ngi_launcher_item_cb_drag_start(Ngi_Item *it)
 {
-   /* FIXME needed? */
-   return;
-
    E_Drag *d;
    Evas_Object *o;
    Evas_Coord x, y, w, h, px, py;
@@ -510,9 +491,9 @@ _ngi_launcher_item_cb_drag_start(Ngi_Item *it)
 
    o = e_util_desktop_icon_add(it->app, MIN(w, h), e_drag_evas_get(d));
 
-   e_order_remove(it->box->apps, it->app);
-   
    evas_object_hide(it->obj);
+   
+   e_order_remove(it->box->apps, it->app);
 
    e_drag_object_set(d, o);
    e_drag_resize(d, w, h);
@@ -525,7 +506,6 @@ _ngi_launcher_item_cb_drag_start(Ngi_Item *it)
 
    e_drag_start(d, px, py);
 
-   ngi_item_free(it);
    ng->item_drag = NULL;
 
    ng->show_bar++;
