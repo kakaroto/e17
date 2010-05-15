@@ -504,7 +504,8 @@ static void user_free(UserProfile *user) {
 }
 
 static void on_handle_user(void *data, Evas_Object *obj, void *event_info) {
-	Evas_Object *icon=NULL, *box=NULL, *table=NULL, *button=NULL, *buttons=NULL, *frame=NULL, *label=NULL, *bubble=(Evas_Object*)data;
+	AnchorData *anchor = (AnchorData*)data;
+	Evas_Object *icon=NULL, *box=NULL, *table=NULL, *button=NULL, *buttons=NULL, *frame=NULL, *label=NULL, *bubble=anchor->bubble;
 	UserProfile *user;
 	ub_Bubble * ubBubble = eina_hash_find(status2user, &bubble);
 	char *description=NULL,*home, *path=NULL;
@@ -517,7 +518,7 @@ static void on_handle_user(void *data, Evas_Object *obj, void *event_info) {
 	if(!user) return;
 
 	memset(user, 0, sizeof(UserProfile));
-	user->screen_name=(char*)event_info;
+	user->screen_name=anchor->url;
     user->name=NULL;
     user->description=NULL;
     user->profile_image_url=NULL;
@@ -624,17 +625,98 @@ static void on_handle_user(void *data, Evas_Object *obj, void *event_info) {
 	evas_object_show(buttons);
 }
 
-static void on_handle_group(void *data, Evas_Object *obj, void *event_info) {
-	char *group=(char*)event_info;
+static void on_handle_group(void *data, Evas_Object *obj, char *group) {
 	printf("Will do something about group '%s' in the near future!\n", group);
 }
 
-static void on_message_anchor_clicked(void *data, Evas_Object *obj, void *event_info) {
+static void on_handle_url(void *data, Evas_Object *obj, void *event_info) {
 	Elm_Entry_Anchorblock_Info * info = (Elm_Entry_Anchorblock_Info*)event_info;
 	char *url=NULL, *frame_label=NULL;
 	const char *screen_name=NULL;
 	Evas_Object *box=NULL, *box2=NULL, *button=NULL, *buttons=NULL, *frame=NULL, *entry=NULL, *bubble=(Evas_Object*)data;
 	int res = 0;
+
+	url = strndup(1+(char*)info->name,strlen((char*)info->name)-2);
+
+	url_win = elm_win_inwin_add(win);
+		elm_object_style_set(url_win, "minimal_vertical");
+
+		box = elm_box_add(win);
+			evas_object_size_hint_weight_set(box, 1, 1);
+			evas_object_size_hint_align_set(box, -1, 0);
+
+			frame = elm_frame_add(win);
+				evas_object_size_hint_weight_set(frame, 1, 1);
+				evas_object_size_hint_align_set(frame, -1, -1);
+
+				elm_frame_label_set(frame, _("Visit website?"));
+
+				box2 = elm_box_add(win);
+					evas_object_size_hint_weight_set(box2, 1, 1);
+					evas_object_size_hint_align_set(box2, -1, -1);
+					entry = elm_entry_add(win);
+						evas_object_size_hint_weight_set(entry, 1, 1);
+						evas_object_size_hint_align_set(entry, -1, 0);
+						elm_entry_editable_set(entry, FALSE);
+
+						screen_name = elm_bubble_label_get(bubble);
+						res = asprintf(&frame_label, _("%s posted the following URL...<br>"), screen_name);
+						if(res != -1) {
+							elm_entry_entry_set(entry, frame_label);
+							elm_box_pack_end(box2, entry);
+							evas_object_show(entry);
+							free(frame_label);
+						} else {
+							evas_object_del(box2);
+						}
+					entry = elm_entry_add(win);
+						elm_entry_editable_set(entry, FALSE);
+						evas_object_size_hint_weight_set(entry, 1, 1);
+						evas_object_size_hint_align_set(entry, -1, 0);
+						elm_entry_line_char_wrap_set(entry, TRUE);
+						elm_entry_entry_set(entry, url);
+						elm_box_pack_end(box2, entry);
+					evas_object_show(entry);
+				evas_object_show(box2);
+
+				elm_frame_content_set(frame, box2);
+				elm_box_pack_end(box, frame);
+			evas_object_show(frame);
+
+			buttons = elm_box_add(win);
+				evas_object_size_hint_weight_set(buttons, 1, 1);
+				evas_object_size_hint_align_set(buttons, -1, -1);
+				elm_box_horizontal_set(buttons, TRUE);
+
+				button = elm_button_add(win);
+					evas_object_size_hint_weight_set(button, 1, 1);
+					evas_object_size_hint_align_set(button, -1, -1);
+					elm_button_label_set(button, _("Check it out!"));
+					evas_object_smart_callback_add(button, "clicked", on_open_url, url);
+					elm_box_pack_end(buttons, button);
+				evas_object_show(button);
+
+				button = elm_button_add(win);
+					evas_object_size_hint_weight_set(button, 1, 1);
+					evas_object_size_hint_align_set(button, -1, -1);
+					elm_button_label_set(button, _("Close"));
+					evas_object_smart_callback_add(button, "clicked", url_win_del, url);
+					elm_box_pack_end(buttons, button);
+				evas_object_show(button);
+
+				elm_box_pack_end(box, buttons);
+			evas_object_show(buttons);
+		evas_object_show(box);
+
+		elm_win_inwin_content_set(url_win, box);
+	evas_object_show(url_win);
+}
+
+static void on_message_anchor_clicked(void *data, Evas_Object *obj, void *event_info) {
+	Elm_Entry_Anchorblock_Info * info = (Elm_Entry_Anchorblock_Info*)event_info;
+	Evas_Object *frame, *button, *bubble=(Evas_Object*)data;
+	AnchorData  *anchor=calloc(1, sizeof(AnchorData));
+	char *url=NULL;
 
 	if(info->name == NULL || strlen(info->name) <= 9)
 		return;
@@ -642,82 +724,27 @@ static void on_message_anchor_clicked(void *data, Evas_Object *obj, void *event_
 	url = strndup(1+(char*)info->name,strlen((char*)info->name)-2);
 
 	if(url[0] == '@') {
-		on_handle_user(data, obj, 1+url);
+		frame = elm_frame_add(win);
+			evas_object_size_hint_weight_set(frame, 1, 1);
+			evas_object_size_hint_align_set(frame, 0.5, 0);
+
+			elm_frame_label_set(frame, _("View details?"));
+
+			anchor->bubble = bubble;
+			anchor->url = url+1;
+
+			button = elm_button_add(win);
+				elm_button_label_set(button, url);
+				evas_object_smart_callback_add(button, "clicked", on_handle_user, anchor);
+			evas_object_show(button);
+
+			elm_frame_content_set(frame, button);
+			elm_hover_content_set(info->hover, "middle", frame);
+		evas_object_show(frame);
 	} else if(url[0] == '!') {
-		on_handle_group(data, obj, 1+url);
+		on_handle_group(data, obj, url+1);
 	} else {
-		url_win = elm_win_inwin_add(win);
-			elm_object_style_set(url_win, "minimal_vertical");
-
-			box = elm_box_add(win);
-				evas_object_size_hint_weight_set(box, 1, 1);
-				evas_object_size_hint_align_set(box, -1, 0);
-
-				frame = elm_frame_add(win);
-					evas_object_size_hint_weight_set(frame, 1, 1);
-					evas_object_size_hint_align_set(frame, -1, -1);
-
-					elm_frame_label_set(frame, _("Visit website?"));
-
-					box2 = elm_box_add(win);
-						evas_object_size_hint_weight_set(box2, 1, 1);
-						evas_object_size_hint_align_set(box2, -1, -1);
-						entry = elm_entry_add(win);
-							evas_object_size_hint_weight_set(entry, 1, 1);
-							evas_object_size_hint_align_set(entry, -1, 0);
-							elm_entry_editable_set(entry, FALSE);
-	
-							screen_name = elm_bubble_label_get(bubble);
-							res = asprintf(&frame_label, _("%s posted the following URL...<br>"), screen_name);
-							if(res != -1) {
-								elm_entry_entry_set(entry, frame_label);
-								elm_box_pack_end(box2, entry);
-								evas_object_show(entry);
-								free(frame_label);
-							} else {
-								evas_object_del(box2);
-							}
-						entry = elm_entry_add(win);
-							elm_entry_editable_set(entry, FALSE);
-							evas_object_size_hint_weight_set(entry, 1, 1);
-							evas_object_size_hint_align_set(entry, -1, 0);
-							elm_entry_line_char_wrap_set(entry, TRUE);
-							elm_entry_entry_set(entry, url);
-							elm_box_pack_end(box2, entry);
-						evas_object_show(entry);
-					evas_object_show(box2);
-
-					elm_frame_content_set(frame, box2);
-					elm_box_pack_end(box, frame);
-				evas_object_show(frame);
-
-				buttons = elm_box_add(win);
-					evas_object_size_hint_weight_set(buttons, 1, 1);
-					evas_object_size_hint_align_set(buttons, -1, -1);
-					elm_box_horizontal_set(buttons, TRUE);
-
-					button = elm_button_add(win);
-						evas_object_size_hint_weight_set(button, 1, 1);
-						evas_object_size_hint_align_set(button, -1, -1);
-						elm_button_label_set(button, _("Check it out!"));
-						evas_object_smart_callback_add(button, "clicked", on_open_url, url);
-						elm_box_pack_end(buttons, button);
-					evas_object_show(button);
-
-					button = elm_button_add(win);
-						evas_object_size_hint_weight_set(button, 1, 1);
-						evas_object_size_hint_align_set(button, -1, -1);
-						elm_button_label_set(button, _("Close"));
-						evas_object_smart_callback_add(button, "clicked", url_win_del, url);
-						elm_box_pack_end(buttons, button);
-					evas_object_show(button);
-
-					elm_box_pack_end(box, buttons);
-				evas_object_show(buttons);
-			evas_object_show(box);
-
-			elm_win_inwin_content_set(url_win, box);
-		evas_object_show(url_win);
+		on_handle_url(data, obj, event_info);
 	}
 }
 
@@ -757,7 +784,7 @@ static void on_bubble_icon_mouse_up(void *data, Evas *e, Evas_Object *icon, void
 	gettimeofday(&tv, NULL);
 	now = (double)tv.tv_sec + (double)tv.tv_usec/1000000;
 	delta = now - icon_zoom_init;
-	if( (delta >= 0.5) && (delta <= 1.25) )
+	if( (delta >= 0.25) && (delta <= 1.25) )
 		zoom_icon(data);
 	icon_zoom_init = 0;
 }
@@ -779,7 +806,7 @@ static void on_bubble_mouse_up(void *data, Evas *e, Evas_Object *obj, void *even
 	gettimeofday(&tv, NULL);
 	time_delta = ((double)tv.tv_sec + (double)tv.tv_usec/1000000) - mouse_held_down;
 
-	if( time_delta < 0.5 || time_delta >= 1.25 ) return;
+	if( time_delta < 1 || time_delta >= 1.75 ) return;
 	else mouse_held_down=0;
 
 	hover = elm_hover_add(win);

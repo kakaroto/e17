@@ -73,6 +73,11 @@ typedef struct _ub_bubble {
 	Eina_Bool	favorite;
 } ub_Bubble;
 
+typedef struct anchor_data {
+	Evas_Object *bubble;
+	char        *url;
+} AnchorData;
+
 typedef struct _StatusesList {
 	Eina_List	*list;
 	ub_Status 	*current;
