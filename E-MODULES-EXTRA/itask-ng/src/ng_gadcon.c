@@ -4,7 +4,6 @@
 static void _ngi_gadcon_cb_gadcon_min_size_request(void *data, E_Gadcon *gc, Evas_Coord w, Evas_Coord h);
 static void _ngi_gadcon_cb_gadcon_size_request(void *data, E_Gadcon *gc, Evas_Coord w, Evas_Coord h);
 static Evas_Object *_ngi_gadcon_cb_gadcon_frame_request(void *data, E_Gadcon_Client *gcc, const char *style);
-static void _ngi_gadcon_item_cb_free(Ngi_Item *it);
 static void *_create_data(E_Config_Dialog *cfd);
 static void _free_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata);
 static Evas_Object *_basic_create(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cfdata);
@@ -122,7 +121,6 @@ _ngi_gadcon_item_new(Ngi_Box *box, const char *name, Ngi_Item *after)
    it = ngi_item_new(box);
    it->type = gadcon_item;
 
-   it->cb_free       = _ngi_gadcon_item_cb_free;
    it->cb_mouse_in   = _ngi_gadcon_item_cb_mouse_in;
    it->cb_mouse_out  = _ngi_gadcon_item_cb_mouse_out;
    it->cb_mouse_down = _ngi_gadcon_item_cb_mouse_down;
@@ -167,21 +165,6 @@ _ngi_gadcon_item_new(Ngi_Box *box, const char *name, Ngi_Item *after)
    return it;
 }
 
-static void
-_ngi_gadcon_item_cb_free(Ngi_Item *it)
-{
-   it->box->items = eina_list_remove(it->box->items, it);
-
-   e_object_del(E_OBJECT(it->gadcon));
-
-   if (it->obj) evas_object_del(it->obj);
-   if (it->over) evas_object_del(it->over);
-
-   if (it->overlay_signal_timer) ecore_timer_del(it->overlay_signal_timer);
-
-   E_FREE(it);
-}
-
 void
 ngi_gadcon_new(Ng *ng, Config_Box *cfg)
 {
@@ -209,13 +192,8 @@ ngi_gadcon_new(Ng *ng, Config_Box *cfg)
 void
 ngi_gadcon_remove(Ngi_Box *box)
 {
-   while (box->items)
-     ngi_item_remove((Ngi_Item*) box->items->data, 1);
-
    ngi_box_free(box);
 }
-
-
 
 static void
 _ngi_gadcon_cb_gadcon_min_size_request(void *data, E_Gadcon *gc, Evas_Coord w, Evas_Coord h)
@@ -603,7 +581,7 @@ _cb_del(void *data, void *data2)
 	     eina_hash_del_by_key(ngi_gadcon_hash, it->cfg_gadcon->name);
 
 	     e_gadcon_unpopulate(it->gadcon);
-	     ngi_item_remove(it, 1);
+	     ngi_item_free(it);
 	     e_config_save_queue();
 
 	     update = 1;

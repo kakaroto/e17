@@ -11,7 +11,6 @@ static void      _ngi_taskbar_item_new              (Ngi_Box *box, E_Border *bd)
 static void      _ngi_taskbar_item_set_icon         (Ngi_Item *it);
 static void      _ngi_taskbar_item_set_label        (Ngi_Item *it);
 
-static void      _ngi_taskbar_item_cb_free          (Ngi_Item *it);
 static void      _ngi_taskbar_item_cb_mouse_down    (Ngi_Item *it, Ecore_Event_Mouse_Button *ev);
 static void      _ngi_taskbar_item_cb_mouse_up      (Ngi_Item *it, Ecore_Event_Mouse_Button *ev);
 static void      _ngi_taskbar_item_cb_drag_start    (Ngi_Item *it);
@@ -108,20 +107,9 @@ ngi_taskbar_fill(Ngi_Box *box)
 }
 
 void
-ngi_taskbar_empty(Ngi_Box *box)
-{
-   while (box->items)
-     {
-	ngi_item_remove((Ngi_Item*) box->items->data, 1);
-     }
-}
-
-void
 ngi_taskbar_remove(Ngi_Box *box)
 {
    e_drop_handler_del(box->drop_handler);
-
-   ngi_taskbar_empty(box);
 
    ngi_box_free(box);
 }
@@ -354,7 +342,7 @@ _ngi_taskbar_cb_border_event(void *data, int type, void *event)
 	     else if (type == E_EVENT_BORDER_REMOVE)
 	       {
 		  if (!it) continue;
-		  ngi_item_remove(it, 0);
+		  ngi_item_remove(it);
 	       }
 
 	     else if (type == E_EVENT_BORDER_ZONE_SET)
@@ -366,7 +354,7 @@ _ngi_taskbar_cb_border_event(void *data, int type, void *event)
 		    }
 		  else if (it)
 		    {
-		       ngi_item_remove(it, 0);
+		       ngi_item_remove(it);
 		    }
 	       }
 
@@ -375,7 +363,7 @@ _ngi_taskbar_cb_border_event(void *data, int type, void *event)
 		  if (!it) continue;
 		  if (!ng->cfg->autohide_show_urgent)
 		    continue;
-		  
+
 		  if (bd->client.icccm.urgent)
 		    {
 		       it->urgent = 1;
@@ -410,7 +398,7 @@ _ngi_taskbar_cb_border_event(void *data, int type, void *event)
 		  if (it && it->usable)
 		    {
 		       if (!_ngi_taskbar_border_check(box, bd))
-			 ngi_item_remove(it, 0);
+			 ngi_item_remove(it);
 		       else
 			 _ngi_taskbar_item_set_label(it);
 		    }
@@ -482,7 +470,7 @@ _ngi_taskbar_item_new(Ngi_Box *box, E_Border *bd)
 
    it->border = bd;
 
-   it->cb_free       = _ngi_taskbar_item_cb_free;
+   /* it->cb_free       = _ngi_taskbar_item_cb_free; */
    it->cb_mouse_in   = _ngi_taskbar_item_mouse_in;
    it->cb_mouse_out  = _ngi_taskbar_item_mouse_out;
    it->cb_mouse_down = _ngi_taskbar_item_cb_mouse_down;
@@ -592,7 +580,7 @@ _ngi_taskbar_border_icon_add(E_Border *bd, Evas *evas)
 	o = e_icon_add(evas);
 
 	size = bd->client.netwm.icons[0].width;
-	
+
 	for (i = 1; i < bd->client.netwm.num_icons; i++)
 	  {
 	     if ((tmp = bd->client.netwm.icons[i].width) > size)
@@ -720,7 +708,7 @@ _ngi_taskbar_item_cb_free(Ngi_Item *it)
    it->box->items = eina_list_remove(it->box->items, it);
 
    if (it->border) e_object_unref(E_OBJECT(it->border));
-   
+
    ngi_item_del_icon(it);
    evas_object_del(it->obj);
    evas_object_del(it->over);
@@ -856,7 +844,7 @@ static void
 _ngi_taskbar_item_cb_drag_del(void *data, Evas *e, Evas_Object *obj, void *event_info)
 {
    Ng *ng = data;
-   
+
    ng->show_bar--;
    ngi_thaw(ng);
 }
@@ -888,7 +876,7 @@ _ngi_taskbar_item_cb_drag_start(Ngi_Item *it)
    e_drag_resize(d, w, h);
    evas_object_event_callback_add(o, EVAS_CALLBACK_DEL, _ngi_taskbar_item_cb_drag_del, ng);
    ng->show_bar++;
-   
+
    if (ng->cfg->stacking == on_desk)
      ecore_x_pointer_xy_get(ng->zone->container->win, &px, &py);
    else

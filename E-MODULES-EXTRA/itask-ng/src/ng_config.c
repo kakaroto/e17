@@ -692,18 +692,12 @@ _basic_create_box_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data
 static int
 _basic_apply_box_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
 {
-   if (cfdata->cfg_box->type == launcher)
-     {
-	cfdata->cfg_box->launcher_app_dir = strdup(cfdata->app_dir);
-	ngi_launcher_remove(cfdata->cfg_box->box);
-	//      ngi_launcher_new(cfdata->cfg->ng, cfdata->cfg_box);
-	_update_boxes(cfdata->cfg->ng);
-     }
-   else if (cfdata->cfg_box->type == taskbar)
-     {
-	ngi_taskbar_empty(cfdata->cfg_box->box);
-	ngi_taskbar_fill(cfdata->cfg_box->box);
-     }
+  if (cfdata->cfg_box->launcher_app_dir)
+    eina_stringshare_del(cfdata->cfg_box->launcher_app_dir);
+  cfdata->cfg_box->launcher_app_dir = eina_stringshare_add(cfdata->app_dir);
+
+  _update_boxes(cfdata->cfg->ng);
+  
    return 1;
 
 }

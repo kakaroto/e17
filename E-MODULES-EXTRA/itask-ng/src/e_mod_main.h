@@ -201,8 +201,6 @@ struct _Ng
   int             hide_fullscreen;
 };
 
-
-
 struct _Ngi_Item
 {
   enum { taskbar_item, launcher_item, gadcon_item, transient_item } type;
@@ -215,7 +213,6 @@ struct _Ngi_Item
   Evas_Object    *over;
   Evas_Object    *o_icon;
   Evas_Object    *o_icon2;
-
 
   /* FIXME use union for different types */
   E_Border       *border;
@@ -248,8 +245,7 @@ struct _Ngi_Item
   
   Ecore_Timer *overlay_signal_timer;
 
-  void (*cb_free)       (Ngi_Item *it);
-
+  /* void (*cb_free)       (Ngi_Item *it); */
   void (*cb_mouse_down) (Ngi_Item *it, Ecore_Event_Mouse_Button *ev);
   void (*cb_mouse_up)   (Ngi_Item *it, Ecore_Event_Mouse_Button *ev);
   void (*cb_mouse_in)   (Ngi_Item *it);
@@ -260,8 +256,6 @@ struct _Ngi_Item
   
   int visible;
 };
-
-
 
 struct _Ngi_Box
 {
@@ -277,9 +271,6 @@ struct _Ngi_Box
 
   int              pos;
 };
-
-
-
 
 EAPI extern E_Module_Api e_modapi;
 EAPI void *e_modapi_init     (E_Module *m);
@@ -319,7 +310,8 @@ void         ngi_configure_module             (Config_Item *ci);
 void         ngi_configure_box                (Ngi_Box *box);
 
 Ngi_Item    *ngi_item_new                     (Ngi_Box *box);
-void         ngi_item_remove                  (Ngi_Item *it, int instant);
+void         ngi_item_free                    (Ngi_Item *it);
+void         ngi_item_remove                  (Ngi_Item *it);
 void         ngi_item_del_icon                (Ngi_Item *it);
 void         ngi_item_mouse_in                (Ngi_Item *it);
 void         ngi_item_mouse_out               (Ngi_Item *it);
@@ -333,7 +325,6 @@ void         ngi_taskbar_init                 (void);
 void         ngi_taskbar_new                  (Ng *ng, Config_Box *cfg_box);
 void         ngi_taskbar_remove               (Ngi_Box *box);
 void         ngi_taskbar_fill                 (Ngi_Box *box);
-void         ngi_taskbar_empty                (Ngi_Box *box);
 void         ngi_taskbar_item_border_show     (Ngi_Item *it, int to_desk);
 
 void         ngi_gadcon_init                  (void);

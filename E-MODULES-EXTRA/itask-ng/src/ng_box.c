@@ -51,9 +51,16 @@ ngi_box_new(Ng *ng)
 void
 ngi_box_free(Ngi_Box *box)
 {
+  Ngi_Item *it;
+  
   box->ng->boxes = eina_list_remove(box->ng->boxes, box);
+
+  EINA_LIST_FREE(box->items, it)
+    ngi_item_free(it);
+
   if (box->separator) evas_object_del(box->separator);
-  free(box);
+
+  E_FREE(box);
 }
 
 void

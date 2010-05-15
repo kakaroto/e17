@@ -24,8 +24,8 @@ _ngi_item_new(Ngi_Box *box)
   it->usable = 0;
   it->visible = 1;
   it->size = 0;
-  
-  it->cb_free       = _ngi_item_cb_free;
+
+  /* it->cb_free       = _ngi_item_cb_free; */
   it->cb_mouse_in   = ngi_item_mouse_in;
   it->cb_mouse_out  = ngi_item_mouse_out;
   it->cb_mouse_up   = NULL;
@@ -56,28 +56,18 @@ ngi_item_new(Ngi_Box *box)
 }
 
 void
-ngi_item_remove(Ngi_Item *it, int instant)
+ngi_item_remove(Ngi_Item *it)
 {
   Ng *ng = it->box->ng;
-  
-  it->usable = 0;
-  if (instant)
-    {
-      evas_object_clip_unset(it->obj);
-      evas_object_clip_unset(it->over);
-      ITEM_FREE(it);
-    }  
-  else 
-    {  
-      edje_object_signal_emit(it->obj, "e,state,item_hide", "e");
-      it->start_time = ecore_time_get();
-      it->state = disappearing;
 
-      if (!eina_list_data_find(ng->items_scaling, it))
-        ng->items_scaling = eina_list_append(ng->items_scaling, it);
-  
-      if (it->border) e_object_unref(E_OBJECT(it->border));
-    }
+  it->usable = 0;
+
+  edje_object_signal_emit(it->obj, "e,state,item_hide", "e");
+  it->start_time = ecore_time_get();
+  it->state = disappearing;
+
+  if (!eina_list_data_find(ng->items_scaling, it))
+    ng->items_scaling = eina_list_append(ng->items_scaling, it);
 
   if (it == ng->item_active) ng->item_active = NULL;
   if (it == ng->item_drag)   ng->item_drag = NULL;
@@ -85,16 +75,40 @@ ngi_item_remove(Ngi_Item *it, int instant)
   ngi_animate(ng);
 }
 
-static void
-_ngi_item_cb_free(Ngi_Item *it)
+EAPI void
+ngi_item_free(Ngi_Item *it)
 {
-
-  it->box->items = eina_list_remove(it->box->items, it);
-
   ngi_item_del_icon(it);
-  evas_object_del(it->obj);
-  evas_object_del(it->over);
+  
+  if (it->obj)
+    {
+      evas_object_clip_unset(it->obj); 
+      evas_object_del(it->obj);
+    }
+  
+  if (it->over)
+    {
+      evas_object_clip_unset(it->over);     
+      evas_object_del(it->over);
+    }
+  
+  if (it->border) e_object_unref(E_OBJECT(it->border));
+  if (it->gadcon) e_object_del(E_OBJECT(it->gadcon));
+  if (it->app)    efreet_desktop_unref(it->app);
+  if (it->label)  eina_stringshare_del(it->label);
+  if (it->class)  eina_stringshare_del(it->class);
+  if (it->overlay_signal_timer)
+    ecore_timer_del(it->overlay_signal_timer);
 
+  if (it->box && it->box->ng)
+    {
+      if (it->box->ng->item_active)
+	it->box->ng->item_active = NULL;
+      
+      if (it->box->ng->item_drag)
+	it->box->ng->item_drag = NULL;
+    }
+  
   E_FREE(it);
 }
 
@@ -140,7 +154,7 @@ ngi_item_mouse_in(Ngi_Item *it)
 {
   /* edje_object_signal_emit(it->obj, "e,state,item_focused", "e"); */
   /*if (it->box->ng->cfg->mouse_over_anim)
-    {      
+    {
       //      evas_object_show(it->over);
       edje_object_signal_emit(it->over, "e,state,item_focused", "e");
       }*/
@@ -151,7 +165,7 @@ void
 ngi_item_mouse_out(Ngi_Item *it)
 {
   /* edje_object_signal_emit(it->obj, "e,state,item_unfocused", "e"); */
-  /*if (it->box->ng->cfg->mouse_over_anim) // && !it->overlay_signal_timer) 
+  /*if (it->box->ng->cfg->mouse_over_anim) // && !it->overlay_signal_timer)
     {
       //      evas_object_hide(it->over);
       edje_object_signal_emit(it->over, "e,state,item_unfocused", "e");
