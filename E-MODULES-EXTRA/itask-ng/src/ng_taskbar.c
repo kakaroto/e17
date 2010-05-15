@@ -870,7 +870,7 @@ _ngi_taskbar_item_cb_drag_start(Ngi_Item *it)
 		  it->border, -1, NULL, _ngi_taskbar_item_cb_drag_end);
 
 
-   o = e_border_icon_add(it->border, e_drag_evas_get(d));
+   o = _ngi_taskbar_border_icon_add(it->border,e_drag_evas_get(d)); 
    e_object_ref(E_OBJECT(it->border));
    e_drag_object_set(d, o);
    e_drag_resize(d, w, h);
