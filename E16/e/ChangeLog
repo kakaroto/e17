@@ -5214,3 +5214,83 @@ Fix move/resize sometimes not being terminated properly.
 Add function to create inverted shape pixmap.
 Add check, no need for return value in EXFreeGC().
 Fix old translucent move mode when shm pixmaps are not available.
+
+-------------------------------------------------------------------------------
+
+Sat May 15 15:16:26 CEST 2010
+
+--- 1.0.2.001 ---
+Bump version.
+Avoid roundtrip in EWindowGetPixmap().
+Remove special fx ipc commands (use eesh set). Some refactoring.
+Remove grab/ungrab on border part button events.
+"Support" _NET_WM_USER_TIME[_WINDOW].
+edox: Header file cleanups.
+edox: Fix locale initialisation, remove long time broken multibyte support.
+Trivial fixes (clang).
+Fix multihead focus issue.
+Add missing audiofile cflags/libs.
+Simplify loading bindings.cfg.
+No need to query pointer in move/resize start.
+Remove theme config stuff in font alias files.
+More linking fixes for --no-add-needed.
+Fix various background file issues
+Use ThemeFileFind in stead of FindFile.
+Avoid ETranslateCoordinates in window mode.
+Assume ConfigureRequests contain root x,y coordinates for now.
+Fix another name clash (patch by Pietro Cerutti, ticket 487).
+Mode.keybinds_changed should be local.
+No need to look elsewhere if path is absolute (FindFile).
+Don't #define disp - causes trouble.
+Avoid some explicit paths.
+Change some functions to macros, simplify setup stuff.
+Assume windows with depth 32 are ARGB.
+CM: Don't put shadow on ARGB override-redirect windows.
+CM: Change some debug message conditions.
+CM: Handle override-redirect window shape changes.
+Don't put shadow on borderless argb windows.
+Revert "Avoid roundtrip in EWindowGetPixmap()."
+CM: Change some more debug message conditions.
+Avoid QueryPointer during focus switch.
+Cleanups around colormap installation during focus switch.
+Attempt to fix incorrect focusing when using focus list.
+Focus list issue - maybe better?.
+Move config/pix to pix (svn only for now).
+Validate focus list icon mode. Use defs for icon modes.
+Centralise file loading, based on file type.
+Add preload library for roundtrip spotting.
+If CM is active, change snap to live pager mode.
+Fix various issues related to iconification of shaded windows.
+Another focus handling tweak.
+Refactor move/resize shape drawing code.
+Use render for PixImg if available.
+Disable shaded, semi-solid, and translucent move/resize modes by default.
+Move misc/e16.png to icons/.
+Use ConfigFileLoad some more.
+Avoid QueryPointer in PagerHandleMotion.
+e_gen_menu: Drop mozilla, xchat2, add audacious.
+Fix potential segvs.
+More focus work...
+Fix pointer warp between screens.
+updating italian translation
+Fix _XROOT property updates when using set_xroot_info_on_root_window.
+Use XQueryExtension to query extensions.
+Update Simplified Chinese translation.
+Fix incorrect initial coords placement in certain situations.
+Look up/show name of request causing error.
+CM: Skip windows with empty shape.
+In reparent event handler, use parent indicated by event.
+Minor simplification (use GetTime in stead of gettimeofday).
+Better check for focusing transients when group is focused.
+Add option to focus window if window group is focused.
+French translation update (Tristan D.).
+Japanese translation update (Yasufumi Haga).
+Fix moving window to previous desk when current is 0 (noted by BitJam).
+Another focus fix after recent changes.
+Sync translations of e16 from Launchpad.
+po cleanups...
+Fix typo in configure help for --enable-xrender option (ticket 544).
+Remove some trailing spaces from bg show command output.
+Trim whitespace from translatable strings.
+Fix up po files after whitespace removal.
+
