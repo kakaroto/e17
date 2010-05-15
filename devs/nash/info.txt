@@ -1,7 +1,7 @@
 Login:        nash
-IRC Nick:     nas
+IRC Nick:     nash
 Name:         Brett Nash
-Location:     Sydney, Australia
+Location:     Xi'an, China
 E-Mail:       nash@nash.id.au
 WWW:          http://www.nash.id.au
 Managing:     Nothing much
