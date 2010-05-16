@@ -1,7 +1,7 @@
 # translation of el.po to Greek
-# Wlan module (e17), Finnish translation
+# Wlan module (e17), Greek translation
 # This file is put in the public domain.
-# Jani väyrynen <janivayrynen@gmail.com>, 2008.
+# ragecryx <ragecryx@yahoo.gr>, 2009.
 #
 msgid ""
 msgstr ""

@@ -3,11 +3,12 @@
 Type=Link
 Name=Exalt
 Name[eo]=Exalt
+Name[el]=Exalt
 Icon=e-module-exalt
 Comment=A user-friendly tool to setup and manage network interfaces.
 Comment[cs]=Uživatelsky přívětivé rozhraní k nastavení a správě sítových zařízení.
 Comment[it]=Una utilità per configurare e gestire le interfacce di rete.
-Comment[el]=
+Comment[el]=Ένα φιίκό στο χρήστη εργαλείο για οργάνωση και διαχείρηση των διεπαφών δικτύου.
 Comment[eo]=
 Comment[fr]=Un outil pour configurer simplement vos interfaces réseau.
 
