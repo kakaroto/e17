@@ -218,6 +218,12 @@ _update_list(Plugin *p)
     {
       t2 = (l ? l->data : NULL);
 
+      if (!EVRY_ITEM(t)->id)
+	{
+	  EVRY_ITEM_FREE(t);
+	  continue;
+	}
+      
       if (t2 && (t->id == t2->id) && (EVRY_ITEM(t)->id == EVRY_ITEM(t2)->id))
 	{
 	  evry_item_free(EVRY_ITEM(t));
@@ -1008,6 +1014,46 @@ _mpris_enqueue_files(Evry_Action *act)
 }
 
 static int
+_mpris_remove_dups(Evry_Action *act)
+{
+  Eina_List *l, *ll;
+  Evry_Item_File *f, *f2;
+
+  _mpris_tracklist_action_clear(NULL);
+  
+  EINA_LIST_FOREACH(_plug->tracks, l, f)
+    {
+      EINA_LIST_FOREACH(_plug->tracks, ll, f2)
+	{
+	  if (f == f2)
+	    {
+	      _add_file(f->path, 0);
+	      break;
+	    }
+	  else if (f->path == f2->path)
+	    {
+	      break;
+	    }
+	}
+    }
+}
+
+static int
+_mpris_remove_missing(Evry_Action *act)
+{
+  Eina_List *l;
+  Evry_Item_File *f;
+
+  _mpris_tracklist_action_clear(NULL);
+  
+  EINA_LIST_FOREACH(_plug->tracks, l, f)
+    {
+      if (ecore_file_exists(f->path))
+	_add_file(f->path, 0);
+    }
+}
+
+static int
 _mpris_check_file(Evry_Action *act __UNUSED__, const Evry_Item *it)
 {
   GET_FILE(file, it);
@@ -1330,7 +1376,7 @@ _plugins_init(const Evry_API *_api)
   act->it1.accept_list = EINA_TRUE;
 
   ACTION_NEW(N_("Clear Playlist"), ACT_CLEAR,
-	     MPRIS_TRACK, 0, "media-playlist-clear",
+	     MPRIS_TRACK, 0, "list-remove",
 	     _mpris_tracklist_action_clear, _mpris_check_item);
 
   /* ACTION_NEW(N_("Enqueue File"),
@@ -1355,6 +1401,15 @@ _plugins_init(const Evry_API *_api)
   ACTION_NEW(N_("Add Music..."), ACT_ADD_FILE,
 	     MPRIS_TRACK, TRACKER_MUSIC, "list-add",
 	     _mpris_add_files, _mpris_check_add_music);
+
+  ACTION_NEW(N_("Remove Duplicates"), 0,
+	     MPRIS_TRACK, 0, "list-remove",
+	     _mpris_remove_dups, NULL);
+
+  ACTION_NEW(N_("Remove Missing Files"), 0,
+	     MPRIS_TRACK, 0, "list-remove",
+	     _mpris_remove_missing, NULL);
+
 #undef ACTION_NEW
 
   return EINA_TRUE;
