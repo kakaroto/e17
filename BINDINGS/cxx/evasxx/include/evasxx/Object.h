@@ -186,7 +186,6 @@ public:
    */
   static Object *wrap( Evas_Object* o );
 
-private:
   /*!
    * @brief Get the linked C++ object from a C object.
    *
@@ -201,12 +200,14 @@ private:
    * @return The linked C++ object
    */
   static Object* objectLink( Evas_Object* evas_object = 0 );
-
+  
   /*!
    * @@see objectLink but with const variables
    */
   static const Object* objectLink( const Evas_Object* evas_object = 0 );
 
+private:
+  
   void registerCallbacks();
   static void dispatcher( void *data, Evas *evas, Evas_Object *evas_object, void *event_info);
 

@@ -333,12 +333,15 @@ Smart *Object::getSmart ()
 Object* Object::objectLink( Evas_Object* evas_object )
 {
   void *v = evas_object_data_get( evas_object, "obj_c++" );
+  assert (v);
   return static_cast<Object*>( v );
 }
 
 const Object* Object::objectLink( const Evas_Object *evas_object )
 {
-  return static_cast<const Object*>( evas_object_data_get( evas_object, "obj_c++" ) );
+  void *v = evas_object_data_get( evas_object, "obj_c++" );
+  assert (v);
+  return static_cast<const Object*>( v );
 }
 
 // PRIVATE
