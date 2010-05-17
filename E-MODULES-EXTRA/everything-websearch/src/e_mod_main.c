@@ -50,6 +50,25 @@ struct _Plugin
   Url_Data *dd;
 };
 
+struct _Module_Config
+{
+  int version;
+
+  const char *lang;
+  const char *browser;
+  /* gtranslaste*/
+  const char *translate;
+  /* youtube */
+  const char *convert_cmd;
+  const char *download_cmd;
+  const char *download_dir;
+  const char *player_cmd;
+
+  E_Config_Dialog *cfd;
+  E_Module *module;
+  char *theme;
+};
+
 struct _Url_Data
 {
   Ecore_Con_Url *con_url;
@@ -94,21 +113,6 @@ struct _Web_Link
   const char *thumb_file;
 
   Url_Data *dd;
-};
-
-struct _Module_Config
-{
-  int version;
-
-  const char *lang;
-  const char *browser;
-  const char *translate;
-  const char *convert_cmd;
-  const char *download_cmd;
-
-  E_Config_Dialog *cfd;
-  E_Module *module;
-  char *theme;
 };
 
 struct _Json_Data
@@ -326,7 +330,7 @@ _wikipedia_data_cb(Plugin *p, const char *msg, int len)
        EINA_LIST_FOREACH(d->values, l, val)
 	{
 	  it = EVRY_ITEM_NEW(Evry_Item, p, val, NULL, NULL);
-	  it->context = eina_stringshare_ref(EVRY_PLUGIN(p)->name);
+	  EVRY_ITEM_CONTEXT_SET(it, EVRY_PLUGIN(p)->name);
 	  it->fuzzy_match = -1;
 	  EVRY_PLUGIN_ITEM_APPEND(p, it);
 	}
@@ -349,7 +353,7 @@ _gtranslate_data_cb(Plugin *p, const char *msg, int len)
   if ((d = _json_data_find(rsp, "translatedText", 3)))
     {
       it = EVRY_ITEM_NEW(Evry_Item, p, d->value, NULL, NULL);
-      it->context = eina_stringshare_ref(EVRY_PLUGIN(p)->name);
+      EVRY_ITEM_CONTEXT_SET(it, EVRY_PLUGIN(p)->name);
       it->fuzzy_match = -1;
       EVRY_PLUGIN_ITEM_APPEND(p, it);
       ret = 1;
@@ -485,7 +489,7 @@ _google_data_cb(Plugin *p, const char *msg, int len)
 
 	  val = ll->data;
 	  it = EVRY_ITEM_NEW(Evry_Item, p, val, NULL, NULL);
-	  it->context = eina_stringshare_ref(EVRY_PLUGIN(p)->name);
+	  EVRY_ITEM_CONTEXT_SET(it, EVRY_PLUGIN(p)->name);
 	  val = ll->next->data;
 	  EVRY_ITEM_DETAIL_SET(it, val);
 	  it->fuzzy_match = -1;
@@ -575,7 +579,7 @@ _fetch(Evry_Plugin *plugin, const char *input)
       EVRY_PLUGIN_ITEMS_FREE(p);
     }
 
-  return 1;
+  return !!(p->base.items);
 }
 
 /***************************************************************************/
@@ -778,12 +782,12 @@ _youtube_dl_data_cb(Url_Data *dd)
    char fifo[1024];
 
    if (!dd->data)
-     goto finish;
+     goto error;
 
    msg = dd->data;
    msg = strstr(msg, "var swfConfig = ");
    if ((!msg) || !(msg += 16))
-     return 1;
+     goto error;
 
    rsp = _json_parse(msg, dd->size - (msg - dd->data));
 
@@ -797,20 +801,7 @@ _youtube_dl_data_cb(Url_Data *dd)
      }
 
    if (!t || !video_id)
-     {
-	ERR("parse failed\n");
-	_json_data_free(rsp);
-	_url_data_free(dd);
-
-	IF_RELEASE(yd->label);
-	IF_RELEASE(yd->filepath);
-	IF_RELEASE(yd->url);
-	E_FREE(yd);
-
-	youtube_dl_active--;
-	_youtube_dl_dequeue();
-	return 0;
-     }
+     goto error;
 
    snprintf(url, sizeof(url),
 	    "\"http://www.youtube.com/get_video?"
@@ -820,7 +811,7 @@ _youtube_dl_data_cb(Url_Data *dd)
 
    if (yd->method == YOUTUBE_PLAY)
      {
-	snprintf(buf, sizeof(buf), "mplayer %s", url);
+	snprintf(buf, sizeof(buf), _conf->player_cmd, url);
 	exe = ecore_exe_run(buf, NULL);
      }
    else
@@ -854,12 +845,24 @@ _youtube_dl_data_cb(Url_Data *dd)
 	_send_notification(yd->id, "emblem-sound", N_("Start download"), yd->label, -1);
      }
 
- finish:
    _json_data_free(rsp);
    _url_data_free(dd);
    yd->dd = NULL;
-
    return 1;
+
+ error:
+   ERR("parse failed\n");
+   _json_data_free(rsp);
+   _url_data_free(dd);
+
+   IF_RELEASE(yd->label);
+   IF_RELEASE(yd->filepath);
+   IF_RELEASE(yd->url);
+   E_FREE(yd);
+
+   youtube_dl_active--;
+   _youtube_dl_dequeue();
+   return 0;
 }
 
 static void
@@ -890,22 +893,30 @@ _youtube_dl_action(Evry_Action *act)
    char path[PATH_MAX];
    Youtube_Data *yd;
    int i;
+   char file[PATH_MAX];
 
-   snprintf(path, sizeof(path), "%s/Download/%s.mp3",
-	    e_user_homedir_get(), it->label);
+   strcpy(file, it->label);
+   for (i = 0; i < strlen(it->label); i++)
+     if (file[i] == '\"' || file[i] == '/')
+       file[i] = ' ';
+
+   snprintf(path, sizeof(path), "%s/%s/%s.mp3",
+	    e_user_homedir_get(), _conf->download_dir, file);
 
    for (i = 0; i < 10;)
      {
 	if (!ecore_file_exists(path)) break;
 
-	snprintf(path, sizeof(path), "%s/Download/%s-%d.mp3",
-		 e_user_homedir_get(), it->label, ++i);
+	snprintf(path, sizeof(path), "%s/%s/%s-%d.mp3",
+		 e_user_homedir_get(), _conf->download_dir, file, ++i);
      }
+
+   printf("create file %s\n", path);
 
    if (i == 10) return 0;
 
    yd = E_NEW(Youtube_Data, 1);
-   yd->label = eina_stringshare_ref(it->label);
+   yd->label = eina_stringshare_add(file);
    yd->filepath = eina_stringshare_add(path);
    yd->url = eina_stringshare_ref(wl->url);
    yd->method = method;
@@ -1043,21 +1054,21 @@ Evas_Object *
 _icon_get(Evry_Item *it, Evas *e)
 {
   Evas_Object *o;
-  
+
   if (!it->icon)
     return NULL;
-  
+
   if (edje_file_group_exists(_conf->theme, it->icon))
     {
       o = e_icon_add(e);
       if (e_icon_file_edje_set(o, _conf->theme, it->icon))
 	return o;
-      
+
       evas_object_del(o);
     }
 
   o = evry->icon_theme_get(it->icon, e);
-  
+
   return o;
 }
 
@@ -1213,6 +1224,8 @@ struct _E_Config_Dialog_Data
   char *lang;
   char *translate;
   char *convert_cmd;
+  char *player_cmd;
+  char *download_dir;
 };
 
 static void *_create_data(E_Config_Dialog *cfd);
@@ -1271,13 +1284,23 @@ _basic_create(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cfdata)
   e_widget_framelist_object_append(of, ow);
   ow = e_widget_entry_add(evas, &cfdata->translate, NULL, NULL, NULL);
   e_widget_framelist_object_append(of, ow);
+  e_widget_list_object_append(o, of, 1, 1, 0.5);
 
-  ow = e_widget_label_add(evas, _("Youtube converter"));
+  of = e_widget_framelist_add(evas, _("Youtube"), 0);
+  e_widget_framelist_content_align_set(of, 0.0, 0.0);
+
+  ow = e_widget_label_add(evas, _("Video player"));
   e_widget_framelist_object_append(of, ow);
-  ow = e_widget_label_add(evas, _("requires mplayer and mp3lame"));
+  ow = e_widget_entry_add(evas, &cfdata->player_cmd, NULL, NULL, NULL);
   e_widget_framelist_object_append(of, ow);
-  /* ow = e_widget_entry_add(evas, &cfdata->convert_cmd, NULL, NULL, NULL);
-   * e_widget_framelist_object_append(of, ow); */
+
+  ow = e_widget_label_add(evas, _("Download directory"));
+  e_widget_framelist_object_append(of, ow);
+  ow = e_widget_entry_add(evas, &cfdata->download_dir, NULL, NULL, NULL);
+  e_widget_framelist_object_append(of, ow);
+
+  ow = e_widget_label_add(evas, _("Download requires mplayer and mp3lame"));
+  e_widget_framelist_object_append(of, ow);
 
   e_widget_list_object_append(o, of, 1, 1, 0.5);
   return o;
@@ -1295,6 +1318,8 @@ _create_data(E_Config_Dialog *cfd)
   CP(lang);
   CP(translate);
   CP(convert_cmd);
+  CP(download_dir);
+  CP(player_cmd);
 #undef CP
 #undef C
   return cfdata;
@@ -1307,6 +1332,8 @@ _free_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
   E_FREE(cfdata->lang);
   E_FREE(cfdata->translate);
   E_FREE(cfdata->convert_cmd);
+  E_FREE(cfdata->player_cmd);
+  E_FREE(cfdata->download_dir);
   _conf->cfd = NULL;
   E_FREE(cfdata);
 }
@@ -1323,6 +1350,8 @@ _basic_apply(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
   CP(lang);
   CP(translate);
   CP(convert_cmd);
+  CP(download_dir);
+  CP(player_cmd);
 #undef CP
 #undef C
 
@@ -1372,6 +1401,11 @@ _conf_new(void)
      "-audio-preload 2.0 -of rawaudio \"%s\" -o %s");
   IFMODCFGEND;
 
+  IFMODCFG(0x00ed);
+  _conf->player_cmd = eina_stringshare_add("mplayer -fs %s");
+  _conf->download_dir = eina_stringshare_add("Desktop");
+  IFMODCFGEND;
+
   _conf->version = MOD_CONFIG_FILE_VERSION;
 
   e_config_save_queue();
@@ -1385,6 +1419,8 @@ _conf_free(void)
   eina_stringshare_del(_conf->lang);
   eina_stringshare_del(_conf->translate);
   eina_stringshare_del(_conf->convert_cmd);
+  eina_stringshare_del(_conf->player_cmd);
+  eina_stringshare_del(_conf->download_dir);
   free(_conf->theme);
   E_FREE(_conf);
 }
@@ -1413,6 +1449,8 @@ _conf_init(E_Module *m)
   E_CONFIG_VAL(D, T, lang, STR);
   E_CONFIG_VAL(D, T, translate, STR);
   E_CONFIG_VAL(D, T, convert_cmd, STR);
+  E_CONFIG_VAL(D, T, player_cmd, STR);
+  E_CONFIG_VAL(D, T, download_dir, STR);
 #undef T
 #undef D
   _conf = e_config_domain_load(_config_domain, _conf_edd);
@@ -1462,9 +1500,6 @@ e_modapi_init(E_Module *m)
   snprintf(buf, sizeof(buf), "%s/.cache/youtube", e_user_homedir_get());
   if (!ecore_file_exists(buf))
     ecore_file_mkdir(buf);
-  snprintf(buf, sizeof(buf), "%s/Download", e_user_homedir_get());
-  if (!ecore_file_exists(buf))
-    ecore_file_mkdir(buf);
 
   evry_module = E_NEW(Evry_Module, 1);
   evry_module->init     = &_plugins_init;
@@ -1483,7 +1518,7 @@ EAPI int
 e_modapi_shutdown(E_Module *m)
 {
   _plugins_shutdown();
-  
+
   EVRY_MODULE_UNREGISTER(evry_module);
   E_FREE(evry_module);
 
@@ -1513,15 +1548,6 @@ _parse_callback(void *userdata, int type, const char *data, uint32_t length)
   switch (type)
     {
     case JSON_OBJECT_BEGIN:
-      d2 = calloc(1, sizeof(Json_Data));
-      if (d->cur->key)
-	d2->is_val = 1;
-      d2->parent = d->cur;
-      d2->type = type;
-      d->cur->list = eina_list_append(d->cur->list, d2);
-      d->cur = d2;
-      break;
-
     case JSON_ARRAY_BEGIN:
       d2 = calloc(1, sizeof(Json_Data));
       if (d->cur->key)
@@ -1533,16 +1559,9 @@ _parse_callback(void *userdata, int type, const char *data, uint32_t length)
       break;
 
     case JSON_OBJECT_END:
-      if (d->cur->is_val)
-	d->cur = d->cur->parent;
-
-      d->cur = d->cur->parent;
-      break;
-
     case JSON_ARRAY_END:
       if (d->cur->is_val)
 	d->cur = d->cur->parent;
-
       d->cur = d->cur->parent;
       break;
 
