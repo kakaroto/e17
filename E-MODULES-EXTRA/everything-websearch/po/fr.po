@@ -5,8 +5,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Everything-websearch\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2010-05-14 09:43+0400\n"
-"PO-Revision-Date: 2010-05-14 11:01+0400\n"
+"POT-Creation-Date: 2010-05-18 07:50+0400\n"
+"PO-Revision-Date: 2010-05-18 08:28+0400\n"
 "Last-Translator: batden <batden@orange.fr>\n"
 "Language-Team: French <pourunmondesansgourou@gmail.com>\n"
 "MIME-Version: 1.0\n"
@@ -17,145 +17,152 @@ msgstr ""
 "X-Poedit-Country: FRANCE\n"
 "X-Poedit-SourceCharset: utf-8\n"
 
-#: src/e_mod_main.c:542
-#: src/e_mod_main.c:1132
-#: src/e_mod_main.c:1270
+#: src/e_mod_main.c:546
+#: src/e_mod_main.c:1143
+#: src/e_mod_main.c:1283
 msgid "Translate"
 msgstr "Traduction"
 
-#: src/e_mod_main.c:659
+#: src/e_mod_main.c:663
 msgid "Abort download"
 msgstr "Annuler le téléchargement"
 
-#: src/e_mod_main.c:704
+#: src/e_mod_main.c:708
 #, c-format
 msgid "Got %d kbytes of"
 msgstr "%d Ko reçus sur"
 
-#: src/e_mod_main.c:718
+#: src/e_mod_main.c:722
 msgid "Enqueue in Playlist"
 msgstr "Mettre dans la file d'attente"
 
-#: src/e_mod_main.c:722
+#: src/e_mod_main.c:726
 msgid "Enqueue"
 msgstr "Mettre à la file"
 
-#: src/e_mod_main.c:725
+#: src/e_mod_main.c:729
 msgid "Play File"
 msgstr "Lire un fichier"
 
-#: src/e_mod_main.c:729
+#: src/e_mod_main.c:733
 msgid "Play"
 msgstr "Lecture"
 
-#: src/e_mod_main.c:759
+#: src/e_mod_main.c:763
 msgid "Finished download"
 msgstr "Téléchargement terminé"
 
-#: src/e_mod_main.c:854
+#: src/e_mod_main.c:845
 msgid "Start download"
 msgstr "Télécharger maintenant"
 
-#: src/e_mod_main.c:918
+#: src/e_mod_main.c:929
 msgid "Enqueue files for download"
 msgstr "Mettre les fichiers dans la file de téléchargement"
 
-#: src/e_mod_main.c:935
-#: src/e_mod_main.c:1127
+#: src/e_mod_main.c:946
+#: src/e_mod_main.c:1138
+#: src/e_mod_main.c:1289
 msgid "Youtube"
 msgstr "Youtube"
 
-#: src/e_mod_main.c:971
-#: src/e_mod_main.c:975
-#: src/e_mod_main.c:1002
-#: src/e_mod_main.c:1037
-#: src/e_mod_main.c:1168
+#: src/e_mod_main.c:982
+#: src/e_mod_main.c:986
+#: src/e_mod_main.c:1013
+#: src/e_mod_main.c:1048
+#: src/e_mod_main.c:1179
 msgid "Upload Image"
 msgstr "Téléverser l'image"
 
-#: src/e_mod_main.c:971
+#: src/e_mod_main.c:982
 msgid "Link copied to clipboard"
 msgstr "Lien copié dans le presse-papiers"
 
-#: src/e_mod_main.c:975
+#: src/e_mod_main.c:986
 msgid "Something went wrong :("
 msgstr "Il y a eu un problème :("
 
-#: src/e_mod_main.c:1000
+#: src/e_mod_main.c:1011
 #, c-format
 msgid "Completed %1.1f%% of %s"
 msgstr "%1.1f%% accomplis pour %s"
 
-#: src/e_mod_main.c:1117
+#: src/e_mod_main.c:1128
 msgid "Google"
 msgstr "Google"
 
-#: src/e_mod_main.c:1122
+#: src/e_mod_main.c:1133
 msgid "Wikipedia"
 msgstr "Wikipedia"
 
-#: src/e_mod_main.c:1144
+#: src/e_mod_main.c:1155
 msgid "Google for it"
 msgstr "Google for it"
 
-#: src/e_mod_main.c:1147
+#: src/e_mod_main.c:1158
 msgid "Wikipedia Page"
 msgstr "Page Wikipedia"
 
-#: src/e_mod_main.c:1150
+#: src/e_mod_main.c:1161
 msgid "Feeling Lucky"
 msgstr "J'ai de la chance"
 
-#: src/e_mod_main.c:1153
+#: src/e_mod_main.c:1164
 msgid "Watch on Youtube"
 msgstr "Regarder sur Youtube"
 
-#: src/e_mod_main.c:1156
+#: src/e_mod_main.c:1167
 msgid "Download as Audio"
 msgstr "Télécharger en tant que fichier audio"
 
-#: src/e_mod_main.c:1159
+#: src/e_mod_main.c:1170
 msgid "Play Video"
 msgstr "Lire la vidéo"
 
-#: src/e_mod_main.c:1162
+#: src/e_mod_main.c:1173
 msgid "Download and enqueue"
 msgstr "Télécharger et mettre dans la file"
 
-#: src/e_mod_main.c:1165
+#: src/e_mod_main.c:1176
 msgid "Download and play"
 msgstr "Télécharger et lire"
 
-#: src/e_mod_main.c:1243
-#: src/e_mod_main.c:1403
-#: src/e_mod_main.c:1421
+#: src/e_mod_main.c:1256
+#: src/e_mod_main.c:1439
+#: src/e_mod_main.c:1459
 msgid "Everything Websearch"
 msgstr "Omni websearch"
 
-#: src/e_mod_main.c:1257
+#: src/e_mod_main.c:1270
 msgid "General"
 msgstr "Général"
 
-#: src/e_mod_main.c:1260
+#: src/e_mod_main.c:1273
 msgid "Browser"
 msgstr "Navigateur"
 
-#: src/e_mod_main.c:1265
+#: src/e_mod_main.c:1278
 msgid "Language"
 msgstr "Langue"
 
-#: src/e_mod_main.c:1275
-msgid "Youtube converter"
-msgstr "Convertisseur Youtube"
+#: src/e_mod_main.c:1292
+msgid "Video player"
+msgstr "Lecteur vidéo"
 
-#: src/e_mod_main.c:1277
-msgid "requires mplayer and mp3lame"
-msgstr "requiert mencoder et mp3lame"
+#: src/e_mod_main.c:1297
+msgid "Download directory"
+msgstr "Dossier de téléchargement"
 
-#: src/e_mod_main.c:1400
+#: src/e_mod_main.c:1302
+msgid "Download requires mplayer and mp3lame"
+msgstr "Cette fonction requiert mencoder et mp3lame"
+
+#: src/e_mod_main.c:1436
 msgid "Extensions"
 msgstr "Extensions"
 
+#~ msgid "Youtube converter"
+#~ msgstr "Convertisseur Youtube"
 #~ msgid "Image Sent"
 #~ msgstr "Image envoyée"
 
