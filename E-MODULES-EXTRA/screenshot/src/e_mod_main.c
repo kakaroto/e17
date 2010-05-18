@@ -301,7 +301,7 @@ _cfg_free(void)
 static int 
 _cfg_timer(void *data) 
 {
-   e_util_dialog_show(D_("Screenshot Configuration Updated"), data);
+   e_util_dialog_internal(D_("Screenshot Configuration Updated"), data);
    return 0;
 }
 
