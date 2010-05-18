@@ -1,0 +1,7 @@
+[Desktop Entry]
+Type=Link
+Name=Everything Skeleton
+Icon=e-module
+Comment=Everything skeleton example module 
+#Several different types available here. NEED TO DOC THESE.
+X-Enlightenment-ModuleType=everything
