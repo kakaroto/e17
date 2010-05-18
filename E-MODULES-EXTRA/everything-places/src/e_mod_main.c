@@ -24,6 +24,8 @@ static Evry_Module *evry_module = NULL;
 static Evry_Plugin *_plug = NULL;
 static const char _module_icon[] = "find";
 
+/***************************************************************************/
+
 static void
 _item_free(Evry_Item *it)
 {
@@ -36,6 +38,59 @@ _item_free(Evry_Item *it)
    E_FREE(file);
 }
 
+/* taken from fileman module */
+static void
+_parse_gtk_bookmarks(Plugin *p)
+{
+   Evry_Item_File *file;
+   char line[PATH_MAX];
+   char buf[PATH_MAX];
+   E_Menu_Item *mi;
+   Efreet_Uri *uri;
+   char *alias;
+   FILE* fp;
+
+   snprintf(buf, sizeof(buf), "%s/.gtk-bookmarks", e_user_homedir_get());
+   fp = fopen(buf, "r");
+   if (!fp) return;
+
+   while(fgets(line, sizeof(line), fp))
+     {
+	alias = NULL;
+	line[strlen(line) - 1] = '\0';
+	alias = strchr(line, ' ');
+	if (alias)
+	  {
+	     line[alias-line] =  '\0';
+	     alias++;
+	  }
+	uri = efreet_uri_decode(line);
+	if (!(uri) || !(uri->path))
+	  {
+	     if (uri) efreet_uri_free(uri);
+	     continue;
+	  }
+
+	if (!ecore_file_exists(uri->path))
+	  {
+	     efreet_uri_free(uri);
+	     continue;
+	  }
+
+	file = EVRY_ITEM_NEW(Evry_Item_File, p,
+			     ecore_file_file_get(uri->path),
+			     NULL, _item_free);
+	file->path = eina_stringshare_add(uri->path);
+	EVRY_ITEM(file)->id = eina_stringshare_ref(file->path);
+	EVRY_ITEM(file)->browseable = EINA_TRUE;
+	p->files = eina_list_append(p->files, file);
+
+	efreet_uri_free(uri);
+     }
+   fclose(fp);
+
+}
+
 static Evry_Plugin *
 _begin(Evry_Plugin *plugin, const Evry_Item *item)
 {
@@ -45,11 +100,13 @@ _begin(Evry_Plugin *plugin, const Evry_Item *item)
    GET_PLUGIN(p, plugin);
 
    e_user_dir_concat_static(path, "backgrounds");
-
    file = EVRY_ITEM_NEW(Evry_Item_File, p, N_("Wallpaper"), NULL, _item_free);
    file->path = eina_stringshare_add(path);
    EVRY_ITEM(file)->browseable = EINA_TRUE;
+   EVRY_ITEM(file)->id = eina_stringshare_ref(file->path);
    p->files = eina_list_append(p->files, file);
+
+   _parse_gtk_bookmarks(p);
 
    return EVRY_PLUGIN(p);
 }
@@ -73,9 +130,14 @@ _finish(Evry_Plugin *plugin)
 static int
 _fetch(Evry_Plugin *plugin, const char *input)
 {
+   int len = (input ? strlen(input) : 0);
+
    GET_PLUGIN(p, plugin);
 
-   EVRY_PLUGIN_ITEMS_ADD(p, p->files, input, 0, 0);
+   EVRY_PLUGIN_ITEMS_CLEAR(p);
+
+   if (len >= plugin->config->min_query)
+     EVRY_PLUGIN_ITEMS_ADD(p, p->files, input, 0, 0);
 
    return !!(p->base.items);
 }
