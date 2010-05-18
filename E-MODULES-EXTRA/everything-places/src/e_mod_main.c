@@ -23,6 +23,7 @@ static const Evry_API *evry = NULL;
 static Evry_Module *evry_module = NULL;
 static Evry_Plugin *_plug = NULL;
 static const char _module_icon[] = "find";
+static const char *_mime_dir;
 
 /***************************************************************************/
 
@@ -80,8 +81,12 @@ _parse_gtk_bookmarks(Plugin *p)
 	file = EVRY_ITEM_NEW(Evry_Item_File, p,
 			     ecore_file_file_get(uri->path),
 			     NULL, _item_free);
+	printf("%s\n", uri->path);
+
 	file->path = eina_stringshare_add(uri->path);
+	file->mime = eina_stringshare_ref(_mime_dir);
 	EVRY_ITEM(file)->id = eina_stringshare_ref(file->path);
+	EVRY_ITEM(file)->context = eina_stringshare_ref(file->mime);
 	EVRY_ITEM(file)->browseable = EINA_TRUE;
 	p->files = eina_list_append(p->files, file);
 
@@ -102,8 +107,10 @@ _begin(Evry_Plugin *plugin, const Evry_Item *item)
    e_user_dir_concat_static(path, "backgrounds");
    file = EVRY_ITEM_NEW(Evry_Item_File, p, N_("Wallpaper"), NULL, _item_free);
    file->path = eina_stringshare_add(path);
+   file->mime = eina_stringshare_ref(_mime_dir);
    EVRY_ITEM(file)->browseable = EINA_TRUE;
    EVRY_ITEM(file)->id = eina_stringshare_ref(file->path);
+   EVRY_ITEM(file)->context = eina_stringshare_ref(file->mime);
    p->files = eina_list_append(p->files, file);
 
    _parse_gtk_bookmarks(p);
@@ -155,6 +162,8 @@ _plugins_init(const Evry_API *api)
    if (!evry->api_version_check(EVRY_API_VERSION))
      return EINA_FALSE;
 
+   _mime_dir = eina_stringshare_add("inode/directory");
+
    _plug = EVRY_PLUGIN_NEW(Plugin, N_("Places"), NULL, EVRY_TYPE_FILE,
 			   _begin, _finish, _fetch, NULL);
 
@@ -173,6 +182,8 @@ _plugins_shutdown(void)
    Plugin *p;
 
    if (!evry_module->active) return;
+
+   eina_stringshare_del(_mime_dir);
 
    EVRY_PLUGIN_FREE(_plug);
 
