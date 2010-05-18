@@ -226,12 +226,12 @@ _update_list(Plugin *p)
       
       if (t2 && (t->id == t2->id) && (EVRY_ITEM(t)->id == EVRY_ITEM(t2)->id))
 	{
-	  evry_item_free(EVRY_ITEM(t));
+	  EVRY_ITEM_FREE(t);
 	  p->tracks = eina_list_append(p->tracks, t2);
 	}
       else /*** new track ***/
 	{
-	  if (t2) evry_item_free(EVRY_ITEM(t2));
+	  if (t2) EVRY_ITEM_FREE(t2);
 	  p->tracks = eina_list_append(p->tracks, t);
 
 	  GET_ITEM(it, t);
@@ -274,11 +274,11 @@ _update_list(Plugin *p)
     }
 
   EINA_LIST_FREE(l, t)
-    evry_item_free(EVRY_ITEM(t));
+    EVRY_ITEM_FREE(t);
 
   EINA_LIST_FOREACH(p->tracks, l, t)
     {
-      if ((!p->input || evry_fuzzy_match(EVRY_ITEM(t)->label, p->input)))
+      if ((!p->input || evry->fuzzy_match(EVRY_ITEM(t)->label, p->input)))
 	EVRY_PLUGIN_ITEM_APPEND(p, t);
     }
 
@@ -389,14 +389,14 @@ _dbus_cb_tracklist_metadata(void *data, DBusMessage *reply, DBusError *error)
       EVRY_PLUGIN_ITEMS_CLEAR(p);
 
       EINA_LIST_FREE(p->tracks, t)
-	evry_item_free(EVRY_ITEM(t));
+	EVRY_ITEM_FREE(t);
 
       p->tracks = p->fetch;
       EVRY_PLUGIN_UPDATE(p, EVRY_UPDATE_ADD);
     }
 
   p->tracks = eina_list_remove(p->tracks, t);
-  evry_item_free(EVRY_ITEM(t));
+  EVRY_ITEM_FREE(t);
 
   return;
 }
@@ -479,7 +479,7 @@ _mpris_get_metadata(Plugin *p)
       if (t->pnd)
 	{
 	  p->tracks = eina_list_remove_list(p->tracks, l);
-	  evry_item_free(EVRY_ITEM(t));
+	  EVRY_ITEM_FREE(t);
 	}
     }
 
@@ -652,10 +652,10 @@ _cleanup(Evry_Plugin *plugin)
   EINA_LIST_FREE(p->tracks, it)
     {
       if (it != EVRY_ITEM(p->empty))
-	evry_item_free(it);
+	EVRY_ITEM_FREE(it);
     }
 
-  evry_item_free(EVRY_ITEM(p->empty));
+  EVRY_ITEM_FREE(p->empty);
 
   if (p->update_timer)
     ecore_timer_del(p->update_timer);
@@ -684,7 +684,7 @@ _fetch(Evry_Plugin *plugin, const char *input)
 
   EINA_LIST_FOREACH(p->tracks, l, t)
     {
-      if (!input || evry_fuzzy_match(EVRY_ITEM(t)->label, input))
+      if (!input || evry->fuzzy_match(EVRY_ITEM(t)->label, input))
 	EVRY_PLUGIN_ITEM_APPEND(p, t);
     }
 
@@ -1252,7 +1252,6 @@ _cb_key_down(Evry_Plugin *plugin, const Ecore_Event_Key *ev)
 	{
 	  if (!EVRY_ITEM(t)->selected)
 	    {
-	      evry_item_select(NULL, EVRY_ITEM(t));
 	      evry->item_changed(EVRY_ITEM(t), 1, 1);
 	      return 1;
 	    }
@@ -1265,7 +1264,6 @@ _cb_key_down(Evry_Plugin *plugin, const Ecore_Event_Key *ev)
 	{
 	  if (!EVRY_ITEM(t)->selected)
 	    {
-	      evry_item_select(NULL, EVRY_ITEM(t));
 	      evry->item_changed(EVRY_ITEM(t), 1, 1);
 	      _dbus_send_msg("/Player", "Next", NULL, NULL);
 	    }
@@ -1279,7 +1277,6 @@ _cb_key_down(Evry_Plugin *plugin, const Ecore_Event_Key *ev)
 	{
 	  if (!EVRY_ITEM(t)->selected)
 	    {
-	      evry_item_select(NULL, EVRY_ITEM(t));
 	      evry->item_changed(EVRY_ITEM(t), 1, 1);
 	      _dbus_send_msg("/Player", "Prev", NULL, NULL);
 	    }
@@ -1316,9 +1313,9 @@ _plugins_init(const Evry_API *_api)
 
   e_dbus_list_names(conn, _dbus_cb_list_names, NULL);
 
-  MPRIS_TRACK   = evry_type_register("MPRIS_TRACK");
-  TRACKER_MUSIC = evry_type_register("TRACKER_MUSIC");
-  FILE_LIST     = evry_type_register("FILE_LIST");
+  MPRIS_TRACK   = evry->type_register("MPRIS_TRACK");
+  TRACKER_MUSIC = evry->type_register("TRACKER_MUSIC");
+  FILE_LIST     = evry->type_register("FILE_LIST");
 
 
   p = EVRY_PLUGIN_NEW(Plugin, N_("Playlist"), "emblem-sound", MPRIS_TRACK,
@@ -1327,7 +1324,7 @@ _plugins_init(const Evry_API *_api)
   p->async_fetch = EINA_TRUE;
   p->cb_key_down = &_cb_key_down;
 
-  if (evry_plugin_register(p, EVRY_PLUGIN_SUBJECT, 0))
+  if (evry->plugin_register(p, EVRY_PLUGIN_SUBJECT, 0))
     {
       Plugin_Config *pc = p->config;
       pc->view_mode = VIEW_MODE_LIST;
@@ -1341,7 +1338,7 @@ _plugins_init(const Evry_API *_api)
 #define ACTION_NEW(_label, _meth, _type1, _type2, _icon, _act, _check) \
     act = EVRY_ACTION_NEW(_label, _type1, _type2, _icon, _act, _check); \
     EVRY_ITEM(act)->icon_get = &_icon_get;				\
-    evry_action_register(act,  prio++);					\
+    evry->action_register(act,  prio++);					\
     actions = eina_list_append(actions, act);				\
     EVRY_ITEM_DATA_INT_SET(act, _meth);
   
@@ -1428,7 +1425,7 @@ _plugins_shutdown(void)
   EINA_LIST_FREE(actions, act)
     {
       if (act)
-	evry_action_free(act);
+	EVRY_ACTION_FREE(act);
     }
 
   if (conn)
