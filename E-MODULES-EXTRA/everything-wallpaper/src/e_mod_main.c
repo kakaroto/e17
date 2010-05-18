@@ -34,7 +34,8 @@ static const Evry_API *evry = NULL;
 static Evry_Module *evry_module = NULL;
 
 static Import *import = NULL;
-static Evry_Action *_act = NULL;
+static Evry_Action *_act1 = NULL;
+static Evry_Action *_act2 = NULL;
 static Evry_Plugin *_plug = NULL;
 static char _module_icon[] = "preferences-desktop-wallpaper";
 
@@ -48,7 +49,7 @@ _action(Evry_Action *act)
 
   if (!(evry->file_path_get(file)))
     return 0;
-   
+
   if (import)
     {
       if (import->exe_handler)
@@ -73,6 +74,49 @@ _check(Evry_Action *act, const Evry_Item *it)
 
   if (file->mime && (!strncmp(file->mime, "image/", 6)))
     return 1;
+
+  return 0;
+}
+
+static int
+_check_wallpaper(Evry_Action *act, const Evry_Item *it)
+{
+  char *suffix;
+
+  GET_FILE(file, it);
+
+  if ((suffix = strrchr(it->label, '.')))
+    {
+      if (!strncmp(suffix, ".edj", 4))
+	return 1;
+    }
+
+  return 0;
+}
+
+static int
+_act_wallpaper(Evry_Action *act)
+{
+  GET_FILE(file, act->it1.item);
+
+  if (evry->file_path_get(file))
+    {
+      /* all desktops */
+      while (e_config->desktop_backgrounds)
+	{
+	  E_Config_Desktop_Background *cfbg;
+
+	  cfbg = e_config->desktop_backgrounds->data;
+	  e_bg_del(cfbg->container, cfbg->zone, cfbg->desk_x, cfbg->desk_y);
+	}
+
+      e_bg_default_set(file->path);
+
+      e_bg_update();
+      e_config_save_queue();
+
+      return 1;
+    }
 
   return 0;
 }
@@ -103,29 +147,35 @@ _fetch(Evry_Action *act)
   return it->items;
 }
 
-
 static int
-_plugins_init(const Evry_API *_api)
+_plugins_init(const Evry_API *api)
 {
   Evry_Plugin *p;
 
   if (evry_module->active)
     return EINA_TRUE;
 
-  evry = _api;
+  evry = api;
 
   if (!evry->api_version_check(EVRY_API_VERSION))
     return EINA_FALSE;
 
-  _act = EVRY_ACTION_NEW(_("Set as Wallpaper"),
+  _act1 = EVRY_ACTION_NEW(_("Set as Wallpaper"),
 			 EVRY_TYPE_FILE, 0,
 			 _module_icon,
 			 NULL, _check);
-  _act->fetch = _fetch;
-  _act->remember_context = EINA_TRUE;
-  EVRY_ITEM(_act)->browseable = EINA_TRUE;
+  _act1->fetch = _fetch;
+  _act1->remember_context = EINA_TRUE;
+  EVRY_ITEM(_act1)->browseable = EINA_TRUE;
 
-  evry->action_register(_act, 2);
+  evry->action_register(_act1, 2);
+
+  _act2 = EVRY_ACTION_NEW(_("Set as Wallpaper"),
+			  EVRY_TYPE_FILE, 0,
+			  _module_icon,
+			  _act_wallpaper, _check_wallpaper);
+  _act2->remember_context = EINA_TRUE;
+  evry->action_register(_act2, 2);
 
   return EINA_TRUE;
 }
@@ -133,9 +183,10 @@ _plugins_init(const Evry_API *_api)
 static void
 _plugins_shutdown(void)
 {
-  if (!evry_module->active) return;   
+  if (!evry_module->active) return;
 
-  evry->action_free(_act);
+  EVRY_ACTION_FREE(_act1);
+  EVRY_ACTION_FREE(_act2);
 
   evry_module->active = EINA_FALSE;
 }
@@ -388,7 +439,7 @@ EAPI int
 e_modapi_shutdown(E_Module *m)
 {
   _plugins_shutdown();
-   
+
   EVRY_MODULE_UNREGISTER(evry_module);
   E_FREE(evry_module);
 
