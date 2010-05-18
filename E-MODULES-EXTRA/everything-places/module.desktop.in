@@ -1,0 +1,7 @@
+[Desktop Entry]
+Type=Link
+Name=Everything Places
+Icon=e-module
+Comment=Access folder bookmarks and mount drives 
+#Several different types available here. NEED TO DOC THESE.
+X-Enlightenment-ModuleType=everything
