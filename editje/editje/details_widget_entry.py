@@ -92,12 +92,15 @@ class WidgetEntry(Widget, WidgetEntryValidator):
     def _internal_value_get(self):
         return self._value
 
-    def _entry_activate_cb(self, obj, *args, **kwargs):
+    def _update_value(self):
         if self._validated:
             self._value = self._validated_value
             self._callback_call("changed")
         else:
             self.entry.entry_set(self._value)
+
+    def _entry_activate_cb(self, obj, *args, **kwargs):
+        self._update_value()
 
     def _entry_changed_cb(self, obj, *args, **kwargs):
         entry = self.entry.entry_get()
@@ -108,6 +111,7 @@ class WidgetEntry(Widget, WidgetEntryValidator):
         self.entry.select_all()
 
     def _unfocused_cb(self, obj):
+        self._update_value()
         self.entry.select_none()
 
     def _dblclick_cb(self, obj):
