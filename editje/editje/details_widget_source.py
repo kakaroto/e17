@@ -19,10 +19,11 @@ from details_widget_entry_button_list import WidgetEntryButtonList
 
 
 class WidgetSource(WidgetEntryButtonList):
-    def __init__(
-        self, parent, list_get_cb=None, popup_hide_object_signal_list=[]):
+    def __init__(self, parent, title="",
+                 list_get_cb=None, popup_hide_object_signal_list=[]):
         WidgetEntryButtonList.__init__(
             self, parent, list_get_cb, popup_hide_object_signal_list)
+        self._title = title
 
     def _floater_list_items_update(self):
         list = []
@@ -32,7 +33,7 @@ class WidgetSource(WidgetEntryButtonList):
         return list
 
     def _floater_title_init(self):
-        self._floater.title_set("Parts list")
+        self._floater.title_set(self._title)
 
     def _floater_actions_init(self):
         self._floater.action_add("None", self._none_selected)
