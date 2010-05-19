@@ -294,22 +294,22 @@ class Editable(Manager):
 
     #Images
     def images_get(self):
-        return self.edje.images
+        return self.__edje.images
 
     def image_id_get(self, name):
-        return self.edje.image_id_get(name)
+        return self.__edje.image_id_get(name)
 
     def image_add(self, img):
         if os.path.basename(img) not in self.images_get():
-            self.edje.image_add(img)
+            return self.__edje.image_add(img)
 
     #Fonts
     def fonts_get(self):
-        return self.edje.fonts
+        return self.__edje.fonts
 
     def font_add(self, fnt):
         if os.path.basename(fnt) not in self.fonts_get():
-            self.edje.font_add(fnt)
+            self.__edje.font_add(fnt)
 
     # Modifications
     def _modification_init(self):
