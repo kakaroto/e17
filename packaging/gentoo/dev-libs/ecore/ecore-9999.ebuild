@@ -88,7 +88,6 @@ src_configure() {
 		  --disable-ecore-evas-direct3d
 		  --disable-ecore-evas-opengl-glew
 		  --disable-ecore-evas-software-16-ddraw
-		  --disable-ecore-evas-quartz
 		  --disable-ecore-evas-software-16-wince
 		  $(use_enable directfb ecore-evas-directfb)
 		  $(use_enable fbcon ecore-evas-fb)
@@ -170,14 +169,12 @@ src_configure() {
 
 	export MY_ECONF="
 	  ${MY_ECONF}
-	  --disable-ecore-txt
 	  --disable-ecore-config
 	  --enable-ecore-con
 	  --enable-ecore-ipc
 	  --enable-ecore-file
 	  --enable-ecore-imf
 	  --enable-ecore-input
-	  --disable-ecore-quartz
 	  --disable-ecore-win32
 	  --disable-ecore-wince
 	  $(use_enable glib)
