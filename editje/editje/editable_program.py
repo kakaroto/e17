@@ -134,6 +134,9 @@ class EditableProgram(Manager, object):
         """
         return self._program.state_get()
 
+    def state2_get(self):
+        return self._program.state2_get()
+
     def state_set_action_set(self, target):
         """ Set the program's action to "STATE_SET".
 
