@@ -191,10 +191,14 @@ class PropertyTable(elementary.Table):
         self.size_hint_align_set(-1.0, 0.0)
 
         self._props = dict()
+        self._prop_list = []
 
-    def property_add(self, prop):
+    def property_add(self, prop, row=None):
         if prop.name in self._props:
             raise KeyError(prop.name)
+
+        if row:
+            return self._property_add_row(prop, row)
 
         row = len(self._props)
         self.pack(prop.label_obj, 0, row, 1, 1)
@@ -202,6 +206,17 @@ class PropertyTable(elementary.Table):
         self._props[prop.name] = prop
         prop.show()
         prop._change_notifier_cb = self._prop_changed_cb
+        self._prop_list.append(prop)
+
+    def _property_add_row(self, prop, row):
+        list = self._prop_list[row:]
+
+        for it in list:
+            self.property_del(it.name)
+
+        self.property_add(prop)
+        for it in list:
+            self.property_add(it)
 
     def property_del(self, key):
         if not key in self._props:
@@ -213,6 +228,7 @@ class PropertyTable(elementary.Table):
         del self._props[prop.name]
         prop.hide()
         prop._change_notifier_cb = None
+        self._prop_list.remove(prop)
         return prop
 
     def clear(self):
