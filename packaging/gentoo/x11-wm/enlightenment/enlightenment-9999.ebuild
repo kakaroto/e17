@@ -17,10 +17,10 @@ IUSE="exchange pam alsa tracker pm-utils debug xinerama xscreensaver opengl blue
 	+conf-menus +conf-mime +conf-mouse +conf-paths +conf-profiles +conf-scale +conf-shelves \
 	+conf-startup +conf-theme +conf-winlist \
 	connman +cpufreq +dropshadow +everything \
-	+everything-files +everything-apps +everything-calc +everything-aspell +everything-wallpaper +everything-settings +everything-windows \
+	+everything-files +everything-apps +everything-calc +everything-aspell +everything-settings +everything-windows \
 	+fileman +ibar +ibox +illume2 +illume ofono +pager +start +syscon +systray \
 	+temperature +winlist +wizard"
-EVRY_MODS=(everything-files everything-apps everything-calc everything-aspell everything-wallpaper everything-settings everything-windows)
+EVRY_MODS=(everything-files everything-apps everything-calc everything-aspell everything-settings everything-windows)
 CONF_MODS=(conf-borders conf-colors conf-desklock conf-desk conf-desks \
 	conf-dialogs conf-display conf-dpms conf-engine conf-fonts conf-imc conf-intl \
 	conf-menus conf-mime conf-mouse conf-paths conf-profiles conf-scale conf-shelves \
@@ -121,7 +121,6 @@ src_configure() {
 	  $(use_enable everything-apps)
 	  $(use_enable everything-calc)
 	  $(use_enable everything-aspell)
-	  $(use_enable everything-wallpaper)
 	  $(use_enable everything-settings)
 	  $(use_enable everything-windows)
 
