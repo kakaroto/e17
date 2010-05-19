@@ -891,6 +891,7 @@ class Editje(elementary.Window, OpenFileManager):
         toolbar.show()
 
         def play_end(emissor, data):
+            self.e.animation.state = 0.0
             self._animation_toolbar_set("stopped")
 
         self.e.animation.callback_add("animation.play.end", play_end)
