@@ -17,42 +17,17 @@
 
 import elementary
 
-from details_widget import Widget
-from details_widget_entry import WidgetEntryValidator
+from details_widget_entry import WidgetEntry
 
 
-class WidgetEntryButton(Widget, WidgetEntryValidator):
+class WidgetEntryButton(WidgetEntry):
     pop_min_w = 200
     pop_min_h = 300
 
     def __init__(self, parent):
-        Widget.__init__(self)
-        WidgetEntryValidator.__init__(self)
+        WidgetEntry.__init__(self, parent)
 
-        self._value = ""
         self.selection_list = []
-
-        self.parent = parent
-        self.entry = elementary.Entry(parent)
-        self.entry.single_line_set(1)
-        self.entry.style_set("editje.details")
-        self.entry.size_hint_weight_set(1.0, 0.0)
-        self.entry.context_menu_disabled_set(True)
-        self.entry.callback_activated_add(self._entry_activate_cb)
-        self.entry.callback_changed_add(self._entry_changed_cb)
-        self.entry.callback_double_clicked_add(self._dblclick_cb)
-        self.entry.show()
-
-        self.scr = elementary.Scroller(parent)
-        self.scr.style_set("editje.details")
-        self.scr.size_hint_weight_set(1.0, 0.0)
-        self.scr.size_hint_align_set(-1.0, -1.0)
-        self.scr.policy_set(elementary.ELM_SCROLLER_POLICY_OFF,
-                            elementary.ELM_SCROLLER_POLICY_OFF)
-        self.scr.bounce_set(False, False)
-        self.scr.content_set(self.entry)
-        self.scr.content_min_limit(False, True)
-        self.scr.show()
 
         self.rect = elementary.Button(parent)
         self.rect.label_set("...")
@@ -62,15 +37,16 @@ class WidgetEntryButton(Widget, WidgetEntryValidator):
         self.rect.style_set("editje.details")
         self.rect.show()
 
-        self.obj = elementary.Box(parent)
-        self.obj.horizontal_set(True)
-        self.obj.size_hint_weight_set(1.0, 0.0)
-        self.obj.size_hint_align_set(-1.0, -1.0)
-        self.obj.pack_end(self.scr)
-        self.obj.pack_end(self.rect)
-        self.obj.show()
+        self.box = elementary.Box(parent)
+        self.box.horizontal_set(True)
+        self.box.size_hint_weight_set(1.0, 0.0)
+        self.box.size_hint_align_set(-1.0, -1.0)
+        self.box.pack_end(self.scr)
+        self.box.pack_end(self.rect)
+        self.box.show()
 
-        self.delayed_callback = 0
+        self.obj = self.box
+
 
     def _value_set(self, val):
         self._internal_value_set(val)
@@ -81,29 +57,9 @@ class WidgetEntryButton(Widget, WidgetEntryValidator):
     value = property(_value_get, _value_set)
 
     def _entry_changed_cb(self, obj, *args, **kwargs):
-        entry = self.entry.entry_get()
-        text = self.entry.markup_to_utf8(entry)
-        self._validator_call(self.obj, text)
-        if self.delayed_callback:
-            self._callback_call("changed")
-            self.delayed_callback = 0
-
-    def _entry_activate_cb(self, obj, *args, **kwargs):
-        if self._validated:
-            self._value = self._validated_value
-            self._callback_call("changed")
-        else:
-            self.entry.entry_set(self._value)
-
-    def _dblclick_cb(self, obj):
-        self.entry.select_all()
-
-    def _internal_value_get(self):
-        return self.entry.entry_get()
+        WidgetEntry._entry_changed_cb(self, obj, *args, **kwargs)
 
     def _internal_value_set(self, val):
-        if val is None:
-            val = ""
-        self._value = val
-        self.entry.entry_set(val)
+        WidgetEntry._internal_value_set(self, val)
         self.entry.select_all()
+

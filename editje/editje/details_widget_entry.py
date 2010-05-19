@@ -67,16 +67,18 @@ class WidgetEntry(Widget, WidgetEntryValidator):
         self.entry.callback_unfocused_add(self._unfocused_cb)
         self.entry.show()
 
-        self.obj = elementary.Scroller(parent)
-        self.obj.style_set("editje.details")
-        self.obj.size_hint_weight_set(1.0, 0.0)
-        self.obj.size_hint_align_set(-1.0, -1.0)
-        self.obj.content_min_limit(False, True)
-        self.obj.policy_set(elementary.ELM_SCROLLER_POLICY_OFF,
+        self.scr = elementary.Scroller(parent)
+        self.scr.style_set("editje.details")
+        self.scr.size_hint_weight_set(1.0, 0.0)
+        self.scr.size_hint_align_set(-1.0, -1.0)
+        self.scr.content_min_limit(False, True)
+        self.scr.policy_set(elementary.ELM_SCROLLER_POLICY_OFF,
                             elementary.ELM_SCROLLER_POLICY_OFF)
-        self.obj.bounce_set(False, False)
-        self.obj.content_set(self.entry)
-        self.obj.show()
+        self.scr.bounce_set(False, False)
+        self.scr.content_set(self.entry)
+        self.scr.show()
+
+        self.obj = self.scr
 
     def disabled_set(self, val):
         self.entry.disabled_set(val)
@@ -100,7 +102,7 @@ class WidgetEntry(Widget, WidgetEntryValidator):
     def _entry_changed_cb(self, obj, *args, **kwargs):
         entry = self.entry.entry_get()
         text = self.entry.markup_to_utf8(entry)
-        self._validator_call(self.obj, text)
+        self._validator_call(obj, text)
 
     def _focused_cb(self, obj):
         self.entry.select_all()

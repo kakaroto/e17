@@ -22,43 +22,27 @@ import elementary
 from details_widget import Widget
 from floater import Floater
 import colorpicker
-from details_widget_entry import WidgetEntryValidator
+from details_widget_entry import WidgetEntry
+from floater_opener import FloaterOpener
 from misc import validator_rgba
 
 
-class WidgetColor(Widget, WidgetEntryValidator):
+class WidgetColor(FloaterOpener, WidgetEntry):
     padding_x = 20
     padding_y = 20
 
-    def __init__(self, parent, editable):
-        Widget.__init__(self)
-        WidgetEntryValidator.__init__(self)
+    def __init__(self, parent, editable, popup_hide_object_signal_list=[]):
+        FloaterOpener.__init__(self, popup_hide_object_signal_list)
+        WidgetEntry.__init__(self, parent)
         self.validator_set(validator_rgba)
         self._edit_grp = editable
         self.color = (255, 255, 255, 255)
         self.parent = parent
-        self.entry = elementary.Entry(parent)
-        self.entry.single_line_set(1)
-        self.entry.style_set("editje.details")
-        self.entry.size_hint_weight_set(1.0, 0.0)
-        self.entry.context_menu_disabled_set(True)
         self.entry.callback_activated_add(self._entry_activate_cb)
         self.entry.callback_changed_add(self._entry_changed_cb)
         self.entry.callback_double_clicked_add(self._dblclick_cb)
-        self.entry.callback_focused_add(self._focused_cb)
-        self.entry.callback_unfocused_add(self._unfocused_cb)
-        self.entry.show()
 
-        self.scr = elementary.Scroller(parent)
-        self.scr.style_set("editje.details")
-        self.scr.size_hint_weight_set(1.0, 0.0)
-        self.scr.size_hint_align_set(-1.0, -1.0)
-        self.scr.policy_set(elementary.ELM_SCROLLER_POLICY_OFF,
-                            elementary.ELM_SCROLLER_POLICY_OFF)
-        self.scr.bounce_set(False, False)
-        self.scr.content_set(self.entry)
         self.scr.content_min_limit(False, True)
-        self.scr.show()
 
         ed = parent.edje_get()
         file = ed.file_get()[0]
@@ -68,25 +52,15 @@ class WidgetColor(Widget, WidgetEntryValidator):
         self.rect.on_mouse_down_add(self._sample_clicked_cb)
         self.rect.show()
 
-        self.pop = Floater(self.parent, self.rect)
-        self.picker = colorpicker.Colorpicker(self.parent)
-        self.picker.show()
-        self.pop.content_set(self.picker)
-        self.pop.title_set("Color")
-        self.pop.action_add("Set", self._set_clicked)
-        self.pop.action_add("Cancel", self._popup_hide)
-        self._edit_grp.part.callback_add(
-            "part.unselected", self._popup_hide)
-        self._edit_grp.part.callback_add(
-            "part.changed", self._popup_hide)
+        self.box = elementary.Box(parent)
+        self.box.horizontal_set(True)
+        self.box.size_hint_weight_set(1.0, 0.0)
+        self.box.size_hint_align_set(-1.0, -1.0)
+        self.box.pack_end(self.scr)
+        self.box.pack_end(self.rect)
+        self.box.show()
 
-        self.obj = elementary.Box(parent)
-        self.obj.horizontal_set(True)
-        self.obj.size_hint_weight_set(1.0, 0.0)
-        self.obj.size_hint_align_set(-1.0, -1.0)
-        self.obj.pack_end(self.scr)
-        self.obj.pack_end(self.rect)
-        self.obj.show()
+        self.obj = self.box
 
         self.delayed_callback = 0
 
@@ -160,20 +134,27 @@ class WidgetColor(Widget, WidgetEntryValidator):
     def _dblclick_cb(self, obj):
         self.entry.select_all()
 
-    def _focused_cb(self, obj):
-        self.entry.select_all()
-
-    def _unfocused_cb(self, obj):
-        self.entry.select_none()
-
     def _sample_clicked_cb(self, obj, event):
+        self._floater_open(self.parent)
         self.picker.current_color_set(*self.color)
-        self.pop.show()
 
     def _set_clicked(self, popup, data):
         self.value = self.picker.current_color_get()
         self.delayed_callback = 1
-        self.pop.hide()
+        self._floater.hide()
 
-    def _popup_hide(self, *args):
-        self.pop.hide()
+    def _floater_content_init(self):
+        self.picker = colorpicker.Colorpicker(self.parent)
+        self.picker.show()
+        self._edit_grp.part.callback_add(
+            "part.unselected", self._floater_cancel)
+        self._edit_grp.part.callback_add(
+            "part.changed", self._floater_cancel)
+        self._floater.content_set(self.picker)
+
+    def _floater_actions_init(self):
+        self._floater.action_add("Set", self._set_clicked)
+        FloaterOpener._floater_actions_init(self)
+
+    def _floater_title_init(self):
+        self._floater.title_set("Color")
