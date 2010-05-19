@@ -341,7 +341,10 @@ class ExternalSelector(elementary.Box):
     def _type_get(self):
         return self._type
 
-    type = property(_type_get)
+    def _type_set(self, external_type):
+        self._type = external_type
+
+    type = property(fget=_type_get, fset=_type_set)
 
     def _module_get(self):
         return self._module
@@ -390,8 +393,9 @@ class ExternalSelector(elementary.Box):
         modules_list.sort(key=str.lower)
 
         if modules_list:
-            self._modules.item_append(modules_list[0], None, None,
-                                      self._module_select, modules_list[0])
+            self._modules_first = self._modules.item_append(
+                    modules_list[0], None, None,
+                    self._module_select, modules_list[0])
             self._modules_first.selected_set(True)
         for item in modules_list[1:]:
             self._modules.item_append(item, None, None,
@@ -399,6 +403,8 @@ class ExternalSelector(elementary.Box):
         self._modules.go()
 
     def _module_select(self, li, it, module):
+        if self._module:
+            self._clear_types()
         self._module = module
         self._types.clear()
         types_list = self._loaded_types.get(module)
@@ -423,6 +429,14 @@ class ExternalSelector(elementary.Box):
         if self._type_selected_cb:
             name = it.label_get().replace(" ", "")
             self._type_selected_cb(name)
+
+    def _clear_types(self):
+        self._type = ""
+        external_type = self._types.selected_item_get()
+        if external_type:
+            external_type.selected_set(False)
+        if self._type_selected_cb:
+            self._type_selected_cb("")
 
 
 class TypesList(elementary.List):
@@ -530,6 +544,11 @@ class NewPartWizard(Wizard):
             incomplete()
             return
 
+        external_type = self._ext_list.type
+        if self._type == edje.EDJE_PART_TYPE_EXTERNAL and not external_type:
+            incomplete()
+            return
+
         if name in self._edit_grp.parts:
             bad()
             return
@@ -537,8 +556,10 @@ class NewPartWizard(Wizard):
         good()
 
     def _default_name_set(self, label):
-        if self._name_changed and self._part_name_entry.entry:
+        if self._name_changed and self._part_name_entry.entry or not label:
+            self._check_name_and_type()
             return
+
         max_num = 0
         for p in self._edit_grp.parts:
             name = re.match("^%s(\d{2,})$" % label, p)
@@ -595,8 +616,13 @@ class NewPartWizard(Wizard):
         if show:
             self._ext_list.size_hint_weight_set(evas.EVAS_HINT_EXPAND,
                                                 evas.EVAS_HINT_EXPAND)
+            self._ext_list._modules_first.selected_set(True)
         else:
             self._ext_list.size_hint_weight_set(0, 0)
+            external_type = self._ext_list._types.selected_item_get()
+            if external_type:
+                external_type.selected_set(False)
+                self._ext_list.type = ""
 
     def _cancel(self):
         self.close()
