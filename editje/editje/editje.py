@@ -465,7 +465,6 @@ class Editje(elementary.Window):
     def _run_cb(self, obj, emission, source):
 
         def test_window_closed(obj):
-            self.e.group_size = w.size
             #obj.delete()
             self.block(False)
             self._child_to_close.remove(w)
@@ -483,6 +482,8 @@ class Editje(elementary.Window):
         l.size_hint_weight_set(1.0, 1.0)
         l.show()
         w.resize_object_add(l)
+        w.size_hint_min_set(*self.e.group_min)
+        w.size_hint_max_set(*self.e.group_max)
         w.show()
         self._child_to_close.append(w)
         self.block(True)
