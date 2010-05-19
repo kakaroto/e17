@@ -552,12 +552,12 @@ class AnimationDetails(EditjeDetails):
         else:
             self["main"]["previous"].value = str(prev)
 
-        next = self.e.animation.state_next()
+        next_state = self.e.animation.state_next()
         self["main"]["next"].show_value()
-        if next is None:
+        if next_state is None:
             self["main"]["next"].value = "None"
         else:
-            self["main"]["next"].value = str(next)
+            self["main"]["next"].value = str(next_state)
 
         t = self._transitions[self.e.animation.program.transition]
         self["main"]["transition"].show_value()
