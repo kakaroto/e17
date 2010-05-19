@@ -283,13 +283,15 @@ class PartsList(CList):
             part_save = objects_data.Part(self._edit_grp.part_get(part_name))
             relatives = self._edit_grp.relative_parts_get(part_name)
 
+            anims_save = relative_animations_part_clear(part_name)
+            sigs_save = relative_signals_part_clear(part_name)
+
             r = self._edit_grp.part_del(part_name)
             if not r:
                 del part_save
+                del anims_save
+                del sigs_save
                 continue
-
-            anims_save = relative_animations_part_clear(part_name)
-            sigs_save = relative_signals_part_clear(part_name)
 
             op = Operation("part deletion")
             op.redo_callback_add(relative_animations_part_clear, part_name)
