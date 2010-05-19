@@ -15,11 +15,12 @@
 # You should have received a copy of the GNU Lesser General Public
 # License along with Editje. If not, see <http://www.gnu.org/licenses/>.
 
-from os import system, remove, path, getcwd, chdir, listdir
+from os import system, remove, path, getcwd, chdir, listdir, strerror
 from shutil import copyfile, rmtree
 from tempfile import mkstemp, mkdtemp
 from subprocess import Popen, PIPE
 import re
+import errno
 
 import sysconfig
 
@@ -108,6 +109,8 @@ class SwapFile(object):
                 del self.__opened_files[self.__filepath]
             if path.exists(filepath) and mode != REPLACE:
                 raise FileAlreadyExists(self)
+            if not path.exists(path.dirname(filepath)):
+                raise IOError(errno.ENOENT, filepath, strerror(errno.ENOENT))
             self.__filepath = filepath
             self.__file_check()
         elif self.__new:
