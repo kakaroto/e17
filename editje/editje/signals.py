@@ -520,7 +520,9 @@ class SignalDetails(EditjeDetails):
 
         elif group == "actions":
 
-            def afters_change(afters):
+            def afters_change(afters, sig_name):
+                self._context_recall(signal=sig_name)
+
                 self.e.signal.afters_clear()
                 for i in range(len(afters)):
                     self.e.signal.after_add(afters[i])
@@ -540,15 +542,17 @@ class SignalDetails(EditjeDetails):
                 new_afters.pop(action_number - 1)
 
             op = Operation("signal's \"after\" action change")
-            op.redo_callback_add(afters_change, new_afters)
-            op.undo_callback_add(afters_change, old_afters)
+            op.redo_callback_add(afters_change, new_afters, self.e.signal.name)
+            op.undo_callback_add(afters_change, old_afters, self.e.signal.name)
             self._operation_stack_cb(op)
             op.redo()
 
         elif group == "out":
             if prop == "signal":
 
-                def signal_change(value):
+                def signal_change(value, sig_name):
+                    self._context_recall(signal=sig_name)
+
                     self.e.signal.signal_emit_action_set(value)
                     self["out"]["signal"].value = value[0]
 
@@ -556,14 +560,17 @@ class SignalDetails(EditjeDetails):
                 old_val = [self.e.signal.state_get() or "", val[1]]
 
                 op = Operation("signal's \"out\" emission change")
-                op.redo_callback_add(signal_change, val)
-                op.undo_callback_add(signal_change, old_val)
+                op.redo_callback_add(signal_change, val, self.e.signal.name)
+                op.undo_callback_add(signal_change,
+                                     old_val, self.e.signal.name)
                 self._operation_stack_cb(op)
                 op.redo()
 
             elif prop == "source":
 
-                def source_change(value):
+                def source_change(value, sig_name):
+                    self._context_recall(signal=sig_name)
+
                     self.e.signal.signal_emit_action_set(value)
                     self["out"]["source"].value = value[1]
 
@@ -571,7 +578,8 @@ class SignalDetails(EditjeDetails):
                 old_val = [val[0], self.e.signal.state2_get() or ""]
 
                 op = Operation("signal's \"out\" source change")
-                op.redo_callback_add(source_change, val)
-                op.undo_callback_add(source_change, old_val)
+                op.redo_callback_add(source_change, val, self.e.signal.name)
+                op.undo_callback_add(source_change,
+                                     old_val, self.e.signal.name)
                 self._operation_stack_cb(op)
                 op.redo()

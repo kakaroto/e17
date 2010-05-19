@@ -445,17 +445,25 @@ class AnimationDetails(EditjeDetails):
     def _timeline_cb(self, obj, emission, source):
         t = float(source)
         if not t in self.e.animation.timestops:
+            anim_name = self.e.animation.name
+            anim_frame = self.e.animation.state
             self.e.animation.state_add(t)
             op = Operation("animation (%s) frame (%s) creation" % \
                                (self.e.animation.name, t))
-            op.redo_callback_add(self.e.animation.state_add, t)
+            op.redo_callback_add(self._state_add, t, anim_name)
             op.redo_callback_add(setattr, self.e.animation, "state", t)
-            op.undo_callback_add(self._remove_time_point, t)
+            op.undo_callback_add(self._remove_time_point,
+                                 t, anim_name, anim_frame)
             self._operation_stack_cb(op)
 
         self.e.animation.state = t
 
-    def _remove_time_point(self, t):
+    def _state_add(self, t, anim_name):
+        self._context_recall(animation=anim_name)
+        self.e.animation.state_add(t)
+
+    def _remove_time_point(self, t, anim_name, anim_frame):
+        self._context_recall(animation=anim_name, time=anim_frame)
         prog = "@%s@%.2f" % (self.e.animation.name, t)
         self.e.animation.state_prev_goto()
         self.e.animation.state_del(t)
@@ -474,10 +482,6 @@ class AnimationDetails(EditjeDetails):
         self.e.animation.program.transition = trans
         self.e.animation.event_emit("frame.changed")
 
-    def _anim_and_state_select(self, anim, state):
-        self.e.animation.name = anim
-        self.e.animation.state = state
-
     def _timeremove_cb(self, obj, emission, source):
         t = float(source)
         anim_name = self.e.animation.name
@@ -495,16 +499,14 @@ class AnimationDetails(EditjeDetails):
         trans = self.e.animation.program.transition
         op = Operation("animation (%s) frame (%s) deletion" % \
                            (anim_name, t))
-        op.redo_callback_add(
-            self._anim_and_state_select, anim_name, anim_frame)
-        op.redo_callback_add(self._remove_time_point, t)
+        op.redo_callback_add(self._remove_time_point, t, anim_name, anim_frame)
 
         op.undo_callback_add(
             self._frame_readd, t, anim_name, saved_states, trans)
         self._operation_stack_cb(op)
 
         def agree(bt, notification):
-            self._remove_time_point(t)
+            self._remove_time_point(t, anim_name, anim_frame)
             notification.hide()
             notification.delete()
 
@@ -579,10 +581,14 @@ class AnimationDetails(EditjeDetails):
                 self._header_table["name"].value = self.e.animation.name
 
     def _context_recall(self, **kargs):
-        self.e.animation.name = kargs["animation"]
-        self.e.animation.state = kargs["time"]
-        self.e.part.name = kargs["part"]
-        self.e.part.state.name = kargs["state"]
+        if "animation" in kargs:
+            self.e.animation.name = kargs["animation"]
+            if "time" in kargs:
+                self.e.animation.state = kargs["time"]
+        if "part" in kargs:
+            self.e.part.name = kargs["part"]
+            if "state" in kargs:
+                self.e.part.state.name = kargs["state"]
 
     def _prop_object_get(self):
         return self.e.animation.program
