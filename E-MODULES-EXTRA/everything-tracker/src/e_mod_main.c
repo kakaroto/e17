@@ -53,6 +53,8 @@ static const char *mime_dir = NULL;
 static DBusPendingCall *pending_get_name_owner = NULL;
 static E_DBus_Signal_Handler *cb_name_owner_changed = NULL;
 static const char bus_name[] = "org.freedesktop.Tracker1";
+static const char tracker_path[] = "/org/freedesktop/Tracker1/Resources";
+static const char tracker_interface[] = "org.freedesktop.Tracker1.Resources";
 static const char fdo_bus_name[] = "org.freedesktop.DBus";
 static const char fdo_interface[] = "org.freedesktop.DBus";
 static const char fdo_path[] = "/org/freedesktop/DBus";
@@ -74,8 +76,6 @@ static const char query_files[] =
   " %s"
   "} ORDER BY DESC nfo:fileLastModified(?match) LIMIT 50";
 
-/* "} ORDER BY DESC (fn:starts-with(?m, 'inode/directory')) LIMIT 50"; */
-
 static const char query_remove_file[] =
   "DELETE { ?urn a rdfs:Resource } WHERE {?urn a nfo:FileDataObject;  nie:url \"%s\"} %s";
 
@@ -96,7 +96,7 @@ static const char query_albums[] =
   "          %s" // match
   " } LIMIT 20} . "
   " ?s a nmm:MusicPiece;"
-  "      tracker:available true;"
+  // "      tracker:available true;"
   "      nmm:musicAlbum ?match;"
   "      nmm:performer[nmm:artistName ?artist]"
   "} ORDER BY (?match)";
@@ -109,14 +109,14 @@ static const char query_artists[] =
   "          %s" // match
   " } LIMIT 20} . "
   " ?s a nmm:MusicPiece;"
-  "      nmm:performer ?match;"
-  "      tracker:available true"
-  "} ORDER BY (?match) LIMIT 10";
+  "      nmm:performer ?match"
+  // "      tracker:available true"
+  "} ORDER BY (?match)";
 
 static const char query_tracks[] =
   "SELECT ?match nie:url(?match) nfo:fileName(?match) nie:mimeType(?match) WHERE {"
   "  ?match a nmm:MusicPiece;"
-  "   tracker:available true"
+  // "   tracker:available true"
   "   %s" // property
   "   %s" // match
   "} ORDER BY DESC nfo:fileLastModified(?match) LIMIT 30";
@@ -124,7 +124,7 @@ static const char query_tracks[] =
 static const char query_tracks_for_album[] =
   "SELECT ?match nie:url(?match) nfo:fileName(?match) nie:mimeType(?match) WHERE{"
   "  ?match a nmm:MusicPiece;  "
-  "   tracker:available true;"
+  // "   tracker:available true;"
   "   nmm:musicAlbum \"%s\"" // property
   "    %s"                 // match
   " OPTIONAL { ?match nmm:trackNumber ?nr}"
@@ -133,7 +133,7 @@ static const char query_tracks_for_album[] =
 static const char query_tracks_no_album[] =
   "SELECT ?match nie:url(?match) nfo:fileName(?match) nie:mimeType(?match) WHERE{"
   "  ?match a nmm:MusicPiece;  "
-  "   tracker:available true;"
+  // "   tracker:available true;"
   "   nmm:performer[nmm:artistName \"%s\"]" // property
   "    %s "              // match
   "  . OPTIONAL { ?match nmm:musicAlbum ?b}"
@@ -144,7 +144,7 @@ static const char query_albums_for_artist[] =
   "SELECT tracker:coalesce(?match, 'urn:album:UnknownAlbum')"
   "       nmm:artistName(nmm:performer(?s)) nie:url(?s) WHERE {"
   " ?s a nmm:MusicPiece;"
-  "      tracker:available true;"
+  // "      tracker:available true;"
   "      nmm:performer \"%s\"."// property
   "  OPTIONAL { ?s nmm:musicAlbum ?match}"
   "  %s"
@@ -534,9 +534,7 @@ _send_query(const char *query, const char *match, const char *match2, int update
 
    DBG("%s\n", _query);
 
-   msg = dbus_message_new_method_call(bus_name,
-				      "/org/freedesktop/Tracker1/Resources",
-				      "org.freedesktop.Tracker1.Resources",
+   msg = dbus_message_new_method_call(bus_name, tracker_path, tracker_interface,
 				      (update ? "SparqlUpdate" : "SparqlQuery"));
 
    dbus_message_append_args(msg, DBUS_TYPE_STRING, &_query, DBUS_TYPE_INVALID);
@@ -565,9 +563,7 @@ _browse(Evry_Plugin *plugin, const Evry_Item *item)
    if (plugin != item->plugin)
      return NULL;
 
-   p = E_NEW(Plugin, 1);
-   p->base = *plugin;
-   p->base.items = NULL;
+   EVRY_PLUGIN_INSTANCE(p, plugin);
 
    p->filter_result = parent->filter_result;
    p->parent = EINA_TRUE;
@@ -586,11 +582,8 @@ _begin(Evry_Plugin *plugin, const Evry_Item *item)
 
    GET_PLUGIN(parent, plugin);
 
-   p = E_NEW(Plugin, 1);
-   p->base = *plugin;
-   p->base.items = NULL;
+   EVRY_PLUGIN_INSTANCE(p, plugin);
    p->filter_result = parent->filter_result;
-
    p->parent = EINA_TRUE;
    p->query = parent->query;
 
@@ -633,7 +626,7 @@ _fetch(Evry_Plugin *plugin, const char *input)
 {
    GET_PLUGIN(p, plugin);
 
-   DBG("%s", input);
+   DBG("%s %s", plugin->name, input);
 
    char buf[128];
    int len = 0;
@@ -869,9 +862,7 @@ _dbus_cb_track_count(void *data, DBusMessage *reply, DBusError *error)
    snprintf(query, sizeof(query), update_usage_count, urn,
 	    (count ? (atoi(count) + 1) : 1), urn);
 
-   msg = dbus_message_new_method_call(bus_name,
-				      "/org/freedesktop/Tracker1/Resources",
-				      "org.freedesktop.Tracker1.Resources",
+   msg = dbus_message_new_method_call(bus_name, tracker_path, tracker_interface,
 				      "SparqlUpdate");
    tmp = strdup(query);
    dbus_message_append_args(msg, DBUS_TYPE_STRING,  &tmp, DBUS_TYPE_INVALID);
@@ -883,7 +874,7 @@ _dbus_cb_track_count(void *data, DBusMessage *reply, DBusError *error)
 
 /* TODO remove folders recursively */
 static int
-_cb_action_performed(void *data, int type,void *event)
+_cb_action_performed(void *data, int type, void *event)
 {
    Evry_Event_Action_Performed *ev = event;
    const char *url;
@@ -905,6 +896,13 @@ _cb_action_performed(void *data, int type,void *event)
      {
    	_send_query(query_usage_count, url, NULL, 0,
 		    _dbus_cb_track_count, NULL);
+     }
+   else if (CHECK_TYPE(ev->it1, EVRY_TYPE_FILE) &&
+	    (ev->action && !strcmp(ev->action, "Play File")) &&
+	    (url = evry->file_url_get(EVRY_FILE(ev->it1))))
+     {
+       _send_query(query_usage_count, url, NULL, 0,
+		   _dbus_cb_track_count, NULL);
      }
 
    return 1;
