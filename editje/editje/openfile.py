@@ -64,15 +64,6 @@ class OpenFile(elementary.Window):
                                 evas.EVAS_HINT_EXPAND)
         bg.show()
 
-        self._pager = elementary.Pager(self)
-        self._pager.size_hint_weight_set(evas.EVAS_HINT_EXPAND,
-                                         evas.EVAS_HINT_EXPAND)
-        self._pager.size_hint_align_set(evas.EVAS_HINT_FILL,
-                                        evas.EVAS_HINT_FILL)
-        self._pager.style_set("editje.rightwards")
-        self.resize_object_add(self._pager)
-        self._pager.show()
-
         self._fs = FileSelector(self)
         self._fs.filter = self._filter
         self._fs.action_add("New", self._new)
@@ -82,8 +73,8 @@ class OpenFile(elementary.Window):
         self._fs.callback_add("file.clicked", self._file_clicked)
         self._fs.callback_add("file.selected", self._file_selected)
         self._fs.callback_add("file.selection_clear", self._file_unselected)
+        self.resize_object_add(self._fs)
         self._fs.show()
-        self._pager.content_push(self._fs)
 
         self.resize(600, 480)
 
@@ -217,18 +208,3 @@ class OpenFile(elementary.Window):
 
     def _notify_abort(self, bt, data):
         self._notify_del()
-
-    def _templates_load(self):
-        tb = elementary.Table(self)
-        tb.size_hint_weight_set(evas.EVAS_HINT_EXPAND,
-                                evas.EVAS_HINT_EXPAND)
-        tb.size_hint_align_set(evas.EVAS_HINT_FILL,
-                               evas.EVAS_HINT_FILL)
-        tb.show()
-        self._pager.content_push(tb)
-
-    def _templates_cancel(self):
-        self._pager.content_pop()
-
-    def _templates_ok(self):
-        pass
