@@ -212,6 +212,7 @@ class Editable(Manager):
 
         w = self._verify_max_w(w, group_w, group_h, min_w, self.__edje)
         h = self._verify_max_h(h, group_w, group_h, min_h, self.__edje)
+        self._edje_group.w_max = w
         self._edje_group.h_max = h
         self._max = (w, h)
         self.event_emit("group.max.changed", self._max)
