@@ -25,7 +25,6 @@ import elementary
 import edje
 
 from editje.editje import Editje
-from editje.openfile import OpenFile
 import editje.swapfile as swapfile
 from editje.popup_win import PopupWindow
 
@@ -120,7 +119,14 @@ if __name__ == "__main__":
             open_editje(sf, group)
 
     else:
-        OpenFile().show()
+        sf = swapfile.SwapFile()
+        sf.file = ""
+        sf.new = True
+        sf.open()
+
+        editje = Editje(sf)
+        editje.group = "main"
+        editje.show()
 
     elementary.run()
     elementary.shutdown()
