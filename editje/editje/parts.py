@@ -536,16 +536,17 @@ class NewPartWizard(Wizard):
 
         good()
 
-    def _default_name_set(self, name):
-        if self._name_changed:
+    def _default_name_set(self, label):
+        if self._name_changed and self._part_name_entry.entry:
             return
         max_num = 0
         for p in self._edit_grp.parts:
-            if re.match("%s\d{2,}" % name, p):
-                num = int(p[len(name):])
+            name = re.match("^%s(\d{2,})$" % label, p)
+            if name:
+                num = int(name.group(1))
                 if num > max_num:
                     max_num = num
-        self._part_name_entry.entry = name + "%.2d" % (max_num + 1)
+        self._part_name_entry.entry = label + "%.2d" % (max_num + 1)
         edje.message_signal_process()
         self._name_changed = False
 

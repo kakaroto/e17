@@ -143,11 +143,12 @@ class WidgetsList(Collapsable):
 
         max_num = 0
         for p in self._edit_grp.parts:
-            if re.match("%s\d{2,}" % label, p):
-                num = int(p[len(label):])
+            name = re.match("^%s(\d{2,})$" % label, p)
+            if name:
+                num = int(name.group(1))
                 if num > max_num:
                     max_num = num
-        self._part_name = label + "%.2d" % (max + 1)
+        self._part_name = label + "%.2d" % (max_num + 1)
 
         if self._part_type == edje.EDJE_PART_TYPE_EXTERNAL:
             external_name = external_type.name
