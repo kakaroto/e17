@@ -130,7 +130,7 @@ class Part(Object):
                    "SOFT_SHADOW", "OUTLINE_SHADOW", "OUTLINE_SOFT_SHADOW ",
                    "FAR_SHADOW ", "FAR_SOFT_SHADOW", "GLOW"]
         ret += indent + '   effect: %s;\n' % effects[self["effect"]]
-        for state in self["states"].values():
+        for state in self["states"]:
             ret += state.source_get("   ")
         ret += indent + '}\n'
         return ret
@@ -200,7 +200,7 @@ class State(Object):
         return True
 
     def source_get(self, indent=""):
-        ret = indent + 'description { state: "%s" %.2f;\n' % self.name
+        ret = indent + 'description { state: "%s" %.f;\n' % (self.name, self.value)
         ret += indent + '   visible: %d;\n' % int(self["visible"])
         ret += indent + '   align: %f %f;\n' % self["align"]
         ret += indent + '   min: %d %d;\n' % self["min"]
