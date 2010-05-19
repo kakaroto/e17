@@ -20,11 +20,16 @@ import os
 import evas
 import elementary
 
-from editje import Editje
 from fileselector import FileSelector
 import swapfile
 import sysconfig
 from error_notify import ErrorNotify
+
+def openfile(open_cb, dir=None):
+    open = OpenFile(open_cb)
+    if dir:
+        open.path = dir
+    open.show()
 
 
 class OpenFile(elementary.Window):
@@ -34,15 +39,13 @@ class OpenFile(elementary.Window):
             cls._inst = elementary.Window.__new__(cls, *args, **kargs)
         return cls._inst
 
-    def __init__(self, theme="default"):
-        self.theme = sysconfig.theme_file_get(theme)
-        elementary.theme_extension_add(self.theme)
-
+    def __init__(self, open_cb, *args, **kargs):
         elementary.Window.__init__(self, "openfile",
                                    elementary.ELM_WIN_BASIC)
         self.title_set("Open file")
         self.autodel_set(True)
 
+        self._open_cb = (open_cb, args, kargs)
         self._notification = None
         self._swapfile = swapfile.SwapFile()
 
@@ -100,9 +103,9 @@ class OpenFile(elementary.Window):
             self._notify_err(e)
             return
 
-        editje = Editje(self._swapfile)
-        editje.show()
-        self._cancel(bt)
+        self.hide()
+        open_cb, args, kargs = self._open_cb
+        open_cb(sf, *args, **kargs)
 
     def _open_forced(self, bt, data):
         self._open(bt, swapfile.REPLACE)

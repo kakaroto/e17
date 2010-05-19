@@ -26,6 +26,7 @@ import sysconfig
 from about import About
 from editable import Editable
 import objects_data
+from openfile import openfile
 
 from desktop import Desktop
 from collapsable import CollapsablesBox
@@ -87,6 +88,10 @@ class Editje(elementary.Window):
         self._child_to_close = []
 
         self.main_layout.on_key_down_add(self.key_down)
+
+    def open(self, sf):
+        editje = Editje(sf)
+        editje.show()
 
     def key_down(self, win, event):
         key = event.keyname
@@ -454,10 +459,7 @@ class Editje(elementary.Window):
         edje.signal_callback_add("%s,selected" % part, part, callback)
 
     def _open_cb(self, obj, emission, source):
-        from openfile import OpenFile
-        open = OpenFile()
-        open.path = os.path.dirname(self.e.filename)
-        open.show()
+        openfile(self.open, os.path.dirname(self.e.filename))
 
     def _save_cb(self, obj, emission, source):
         self.save()
