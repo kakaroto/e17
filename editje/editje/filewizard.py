@@ -211,10 +211,10 @@ class ImageSelectionWizard(FileSelectionWizard):
         self.page_add("file_preview", "Image Preview",
                       "Delete or select this image")
 
-    def _fs_filter(self, file):
-        return file.endswith(".jpg") or \
-                file.endswith(".jpeg") or \
-                file.endswith(".png")
+    def _fs_filter(self, image_file):
+        return image_file.endswith(".jpg") or \
+                image_file.endswith(".jpeg") or \
+                image_file.endswith(".png")
 
     def _get_title_text(self):
         self.title_text = "Image preview - \"%s\"" % self._selection
@@ -231,8 +231,8 @@ class ImageSelectionWizard(FileSelectionWizard):
         if not selection:
             return
         filename = self._workfile_name_get_cb()
-        id = self._img_id_get_cb(selection)
-        key = "images/" + str(id)
+        image_id = self._img_id_get_cb(selection)
+        key = "images/" + str(image_id)
         self._preview_file.file_set(filename, key)
         self._fix_image_size(self._preview_file)
 
@@ -266,9 +266,9 @@ class FontSelectionWizard(FileSelectionWizard):
         self.page_add("file_preview", "Font Preview",
                       "Delete or select this font.")
 
-    def _fs_filter(self, file):
-        return file.endswith(".otf") or \
-                file.endswith(".ttf")
+    def _fs_filter(self, font_file):
+        return font_file.endswith(".otf") or \
+                font_file.endswith(".ttf")
 
     def _get_title_text(self):
         self.title_text = "Image preview - \"%s\"" % self._selection

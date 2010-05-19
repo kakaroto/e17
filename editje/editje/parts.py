@@ -307,18 +307,18 @@ class PartsList(CList):
     def remove(self, item):
         i = self._items.get(item)
         if i:
-            next = i.next
-            prev = i.prev
-            if not prev:
+            next_item = i.next
+            prev_item = i.prev
+            if not prev_item:
                 self._first = next
             i.delete()
             self._list.go()
             del self._items[item]
             self.event_emit("item.removed", item)
-            if next:
-                next.selected_set(True)
-            elif prev:
-                prev.selected_set(True)
+            if next_item:
+                next_item.selected_set(True)
+            elif prev_item:
+                prev_item.selected_set(True)
 
 
 class ExternalSelector(elementary.Box):
@@ -350,18 +350,19 @@ class ExternalSelector(elementary.Box):
 
     def _types_load(self):
         self._loaded_types = {}
-        for type in edje.ExternalIterator():
-            module = type.module
-            name = type.name
-            label = type.label_get()
 
-            list = self._loaded_types.get(module)
-            if not list:
-                list = []
-                self._loaded_types[module] = list
-            elif (name, label, type) in list:
+        for external_type in edje.ExternalIterator():
+            module = external_type.module
+            name = external_type.name
+            label = external_type.label_get()
+
+            types_list = self._loaded_types.get(module)
+            if not types_list:
+                types_list = []
+                self._loaded_types[module] = types_list
+            elif (name, label, external_type) in types_list:
                 continue
-            list.append((name, label, type))
+            types_list.append((name, label, external_type))
 
     def _modules_init(self):
         self._modules = elementary.List(self)
@@ -384,14 +385,15 @@ class ExternalSelector(elementary.Box):
     def _modules_load(self):
         self._module = ""
         self._modules.clear()
-        list = self._loaded_types.keys()
+        modules_list = self._loaded_types.keys()
 
-        list.sort(key=str.lower)
+        modules_list.sort(key=str.lower)
 
-        if list:
-            self._modules.item_append(list[0], None, None, self._module_select,
-                                      list[0]).selected_set(True)
-        for item in list[1:]:
+        if modules_list:
+            self._modules.item_append(modules_list[0], None, None,
+                                      self._module_select, modules_list[0])
+            self._modules_first.selected_set(True)
+        for item in modules_list[1:]:
             self._modules.item_append(item, None, None,
                                       self._module_select, item)
         self._modules.go()
@@ -399,25 +401,25 @@ class ExternalSelector(elementary.Box):
     def _module_select(self, li, it, module):
         self._module = module
         self._types.clear()
-        list = self._loaded_types.get(module)
+        types_list = self._loaded_types.get(module)
 
-        list.sort(key=lambda x: (str.lower(x[0])))
+        types_list.sort(key=lambda x: (str.lower(x[0])))
 
-        if list:
-            name, label, type = list[0]
+        if types_list:
+            name, label, external_type = types_list[0]
 
-            ico = type.icon_add(self.evas)
+            ico = external_type.icon_add(self.evas)
 
             self._types.item_append(label, ico, None, self._type_select,
                                     name).selected_set(False)
-        for (name, label, type) in list[1:]:
-            ico = type.icon_add(self.evas)
+        for (name, label, external_type) in types_list[1:]:
+            ico = external_type.icon_add(self.evas)
             self._types.item_append(label, ico, None, self._type_select, name)
 
         self._types.go()
 
-    def _type_select(self, li, it, type):
-        self._type = type
+    def _type_select(self, li, it, external_type):
+        self._type = external_type
         if self._type_selected_cb:
             name = it.label_get().replace(" ", "")
             self._type_selected_cb(name)
@@ -537,13 +539,13 @@ class NewPartWizard(Wizard):
     def _default_name_set(self, name):
         if self._name_changed:
             return
-        max = 0
+        max_num = 0
         for p in self._edit_grp.parts:
             if re.match("%s\d{2,}" % name, p):
                 num = int(p[len(name):])
-                if num > max:
-                    max = num
-        self._part_name_entry.entry = name + "%.2d" % (max + 1)
+                if num > max_num:
+                    max_num = num
+        self._part_name_entry.entry = name + "%.2d" % (max_num + 1)
         edje.message_signal_process()
         self._name_changed = False
 

@@ -49,29 +49,30 @@ class WidgetsList(Collapsable):
 
     def _types_load(self):
         self._loaded_types = {}
-        list = []
+        types_list = []
         none = ""
-        self._loaded_types["Edje"] = list
-        list.append(("Rectangle", edje.EDJE_PART_TYPE_RECTANGLE, none))
-        list.append(("Text", edje.EDJE_PART_TYPE_TEXT, none))
-        list.append(("Image", edje.EDJE_PART_TYPE_IMAGE, none))
-        list.append(("Swallow", edje.EDJE_PART_TYPE_SWALLOW, none))
-        list.append(("TextBlock", edje.EDJE_PART_TYPE_TEXTBLOCK, none))
-        list.append(("Group", edje.EDJE_PART_TYPE_GROUP, none))
-        #list.append(("Box", edje.EDJE_PART_TYPE_BOX, none))
-        #list.append(("Table", edje.EDJE_PART_TYPE_TABLE, none))
+        self._loaded_types["Edje"] = types_list
+        types_list.append(("Rectangle", edje.EDJE_PART_TYPE_RECTANGLE, none))
+        types_list.append(("Text", edje.EDJE_PART_TYPE_TEXT, none))
+        types_list.append(("Image", edje.EDJE_PART_TYPE_IMAGE, none))
+        types_list.append(("Swallow", edje.EDJE_PART_TYPE_SWALLOW, none))
+        types_list.append(("TextBlock", edje.EDJE_PART_TYPE_TEXTBLOCK, none))
+        types_list.append(("Group", edje.EDJE_PART_TYPE_GROUP, none))
+        #types_list.append(("Box", edje.EDJE_PART_TYPE_BOX, none))
+        #types_list.append(("Table", edje.EDJE_PART_TYPE_TABLE, none))
 
-        for type in edje.ExternalIterator():
-            module_name = type.module_name
-            label = type.label_get()
+        for external_type in edje.ExternalIterator():
+            module_name = external_type.module_name
+            label = external_type.label_get()
 
-            list = self._loaded_types.get(module_name)
-            if not list:
-                list = []
-                self._loaded_types[module_name] = list
-            elif (type.name, label, type) in list:
+            types_list = self._loaded_types.get(module_name)
+            if not types_list:
+                types_list = []
+                self._loaded_types[module_name] = types_list
+            elif (external_type.name, label, external_type) in types_list:
                 continue
-            list.append((label, edje.EDJE_PART_TYPE_EXTERNAL, type))
+            types_list.append(
+                    (label, edje.EDJE_PART_TYPE_EXTERNAL, external_type))
 
     # Groups
     def _content_load(self):
@@ -102,9 +103,9 @@ class WidgetsList(Collapsable):
 
         self.options = True
 
-        list = elementary.List(self._pager)
-        list.bounce_set(False, False)
-        list.callback_selected_add(self._widget_selected_cb)
+        parts_list = elementary.List(self._pager)
+        parts_list.bounce_set(False, False)
+        parts_list.callback_selected_add(self._widget_selected_cb)
 
         types = self._loaded_types[group]
         types.sort(key=lambda x: (str.lower(x[0])))
@@ -113,13 +114,13 @@ class WidgetsList(Collapsable):
             ico = None
             if widget[1] == edje.EDJE_PART_TYPE_EXTERNAL:
                 ico = widget[2].icon_add(self.evas)
-            list.item_append(widget[0], ico, None, None, widget)
-        list.go()
-        list.show()
+            parts_list.item_append(widget[0], ico, None, None, widget)
+        parts_list.go()
+        parts_list.show()
 
         it.selected = False
 
-        self._pager.content_push(list)
+        self._pager.content_push(parts_list)
 
     # Options
     def _options_load(self):
@@ -140,12 +141,12 @@ class WidgetsList(Collapsable):
     def _widget_selected_cb(self, li, it):
         label, self._part_type, external_type = it.data_get()[0][0]
 
-        max = 0
+        max_num = 0
         for p in self._edit_grp.parts:
             if re.match("%s\d{2,}" % label, p):
                 num = int(p[len(label):])
-                if num > max:
-                    max = num
+                if num > max_num:
+                    max_num = num
         self._part_name = label + "%.2d" % (max + 1)
 
         if self._part_type == edje.EDJE_PART_TYPE_EXTERNAL:

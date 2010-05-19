@@ -96,10 +96,10 @@ class Editje(elementary.Window, OpenFileManager):
 
     def key_down(self, win, event):
         key = event.keyname
-        alt = event.modifier_is_set("Alt")
-        control = event.modifier_is_set("Control")
-        shift = event.modifier_is_set("Shift")
-        super = event.modifier_is_set("Super")
+        alt_key = event.modifier_is_set("Alt")
+        control_key = event.modifier_is_set("Control")
+        shift_key = event.modifier_is_set("Shift")
+        super_key = event.modifier_is_set("Super")
 
         if key == "Delete":
             name = self.e.part.name
@@ -115,16 +115,16 @@ class Editje(elementary.Window, OpenFileManager):
             self._operation_stack(op)
             op.redo()
 
-        elif control:
+        elif control_key:
             if key == "x":
                 self._cut_cb(self, None, None)
             elif key == "c":
                 self._copy_cb(self, None, None)
             elif key == "v":
                 self._paste_cb(self, None, None)
-            elif not shift and key == "z":
+            elif not shift_key and key == "z":
                 self._undo_cb(self, None, None)
-            elif shift and key == "z":
+            elif shift_key and key == "z":
                 self._redo_cb(self, None, None)
 
     def _destroy_cb(self, obj):
@@ -202,20 +202,20 @@ class Editje(elementary.Window, OpenFileManager):
         bg.show()
 
         def save(bt, mode=None):
-            file = fs.file
+            new_file = fs.file
 
-            if not file:
+            if not new_file:
                 notification = ErrorNotify(win)
                 notification.title = "Please set the filename"
                 notification.action_add("Ok", notify_close, None, notification)
                 notification.show()
                 return
 
-            if not accepted_filetype(file):
-                file = file + ".edj"
+            if not accepted_filetype(new_file):
+                new_file += ".edj"
 
             try:
-                self.e.save_as(file, mode)
+                self.e.save_as(new_file, mode)
                 cancel(bt)
             except swapfile.FileAlreadyExists, e:
                 notification = ErrorNotify(win)
@@ -784,9 +784,9 @@ class Editje(elementary.Window, OpenFileManager):
 
         self._modes_selector.label_set("Mode: " + self.mode)
 
-        file, group, type = item.icon_get()
+        theme_file, group, edje_type = item.icon_get()
         ico = elementary.Icon(self)
-        ico.file_set(file, group)
+        ico.file_set(theme_file, group)
         ico.size_hint_aspect_set(evas.EVAS_ASPECT_CONTROL_VERTICAL, 1, 1)
         ico.show()
         self._modes_selector.icon = ico
@@ -828,26 +828,26 @@ class Editje(elementary.Window, OpenFileManager):
                                     evas.EVAS_HINT_FILL)
         mainbar.show()
 
-        list = PartsList(self, self.e, self._operation_stack,
+        parts_list = PartsList(self, self.e, self._operation_stack,
                 img_new_img_cb=self._image_wizard_new_image_cb,
                 img_list_get_cb=self._image_wizard_image_list_get_cb,
                 img_id_get_cb=self._image_wizard_image_id_get_cb,
                 workfile_name_get_cb=self._workfile_name_get_cb)
-        list.title = "Parts"
-        list.options = True
-        list.open = True
-        mainbar.pack_end(list)
-        list.show()
+        parts_list.title = "Parts"
+        parts_list.options = True
+        parts_list.open = True
+        mainbar.pack_end(parts_list)
+        parts_list.show()
 
-        list = WidgetsList(self, self.e, self._operation_stack,
+        widgets_list = WidgetsList(self, self.e, self._operation_stack,
                 img_new_img_cb=self._image_wizard_new_image_cb,
                 img_list_get_cb=self._image_wizard_image_list_get_cb,
                 img_id_get_cb=self._image_wizard_image_id_get_cb,
                 workfile_name_get_cb=self._workfile_name_get_cb)
-        list.title = "Widgets"
-        list.open = True
-        mainbar.pack_end(list)
-        list.show()
+        widgets_list.title = "Widgets"
+        widgets_list.open = True
+        mainbar.pack_end(widgets_list)
+        widgets_list.show()
 
         # Sidebar
         sidebar = self._parts_sidebar_create()
@@ -961,19 +961,19 @@ class Editje(elementary.Window, OpenFileManager):
         def parts_list_cb():
             return self.e.parts
 
-        list = AnimationsList(self, new_anim_cb, anims_list_cb, parts_list_cb,
-                              self._operation_stack)
-        list.options = True
-        list.title = "Animations"
-        list.open = True
-        mainbar.pack_end(list)
-        list.show()
+        animations_list = AnimationsList(self, new_anim_cb, anims_list_cb,
+                              parts_list_cb, self._operation_stack)
+        animations_list.options = True
+        animations_list.title = "Animations"
+        animations_list.open = True
+        mainbar.pack_end(animations_list)
+        animations_list.show()
 
-        list = AnimationsPartsList(self, self.e, self._operation_stack)
-        list.title = "Parts"
-        list.open = True
-        mainbar.pack_end(list)
-        list.show()
+        animations_list = AnimationsPartsList(self, self.e, self._operation_stack)
+        animations_list.title = "Parts"
+        animations_list.open = True
+        mainbar.pack_end(animations_list)
+        animations_list.show()
 
         # Sidebar
         sidebar = self._animations_sidebar_create()
@@ -1039,13 +1039,13 @@ class Editje(elementary.Window, OpenFileManager):
         def sigs_list_cb():
             return self.e.signals
 
-        list = SignalsList(
+        signals_list = SignalsList(
             self, self.e, new_sig_cb, sigs_list_cb, self._operation_stack)
-        list.title = "Signals"
-        list.open = True
-        list.options = True
-        mainbar.pack_end(list)
-        list.show()
+        signals_list.title = "Signals"
+        signals_list.open = True
+        signals_list.options = True
+        mainbar.pack_end(signals_list)
+        signals_list.show()
 
         # Sidebar
         sidebar = self._signals_sidebar_create()

@@ -381,15 +381,15 @@ class Editable(Manager):
     def external_add(self, module):
         return self.__edje.external_add(module)
 
-    def _part_add(self, name, type, source):
-        if type == edje.EDJE_PART_TYPE_EXTERNAL:
+    def _part_add(self, name, edje_type, source):
+        if edje_type == edje.EDJE_PART_TYPE_EXTERNAL:
             external = edje.external_type_get(source)
             if external:
                 self.__edje.external_add(external.module)
-        return self.__edje.part_add(name, type, source)
+        return self.__edje.part_add(name, edje_type, source)
 
-    def part_add(self, name, type, source="", init=None):
-        if not self._part_add(name, type, source):
+    def part_add(self, name, edje_type, source="", init=None):
+        if not self._part_add(name, edje_type, source):
             return False
 
         part = self._part_init(name)
@@ -434,7 +434,7 @@ class Editable(Manager):
 
     def _part_init(self, name):
         part = self.__edje.part_get(name)
-        type = part.type
+        edje_type = part.type
         state = part.state_get(*part.state_selected_get())
 
         w, h = self.__edje.size
@@ -447,10 +447,10 @@ class Editable(Manager):
         state.rel2_relative = (0.0, 0.0)
         state.rel2_offset = (w * 3 / 4, h * 3 / 4)
 
-        if type == edje.EDJE_PART_TYPE_RECTANGLE:
+        if edje_type == edje.EDJE_PART_TYPE_RECTANGLE:
             part.mouse_events = False
 
-        elif type == edje.EDJE_PART_TYPE_TEXT:
+        elif edje_type == edje.EDJE_PART_TYPE_TEXT:
             part.mouse_events = False
             state.color = (0, 0, 0, 255)
             state.text = "YOUR TEXT HERE"

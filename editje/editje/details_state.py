@@ -39,11 +39,11 @@ class StateCopyButton(FloaterListOpener):
         self.e = editable
 
     def _floater_list_items_update(self):
-        list = []
+        items_list = []
         for s in self.e.part.states:
             lbl = "%s %.2f" % s
-            list.append((lbl, s))
-        return list
+            items_list.append((lbl, s))
+        return items_list
 
     def _floater_title_init(self):
         self._floater.title_set("Copy from state")
@@ -593,9 +593,9 @@ class PartStateDetails(EditjeDetails):
         self["image"]["border"].value = self.state.image_border_get()
         self["image"]["middle"].value = self.state.image_border_fill_get()
 
-    def _create_props_by_type(self, type):
-        type = edje.external_type_get(type)
-        self._params_info = type.parameters_info_get()
+    def _create_props_by_type(self, edje_type):
+        edje_type = edje.external_type_get(edje_type)
+        self._params_info = edje_type.parameters_info_get()
         for p in self._params_info:
             prop = Property(self._parent, p.name)
             if p.type == edje.EDJE_EXTERNAL_PARAM_TYPE_BOOL:
