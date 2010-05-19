@@ -43,7 +43,7 @@ class WidgetFont(WidgetEntryButton):
                 file_add_cb=self._fnt_new_fnt_cb,
                 file_list_cb=self._fnt_list_get_cb,
                 fnt_id_get_cb=self._fnt_id_get_cb,
-                workfile_get_cb=self._workfile_name_get_cb).show()
+                workfile_name_get_cb=self._workfile_name_get_cb).show()
 
     def _font_selected_cb(self, font):
         self.value = font
