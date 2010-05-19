@@ -94,6 +94,8 @@ class WidgetEntry(Widget, WidgetEntryValidator):
 
     def _update_value(self):
         if self._validated:
+            if self._value == self._validated_value:
+                return
             self._value = self._validated_value
             self._callback_call("changed")
         else:
