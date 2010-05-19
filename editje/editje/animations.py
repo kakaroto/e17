@@ -497,18 +497,18 @@ class AnimationDetails(EditjeDetails):
             saved_states.append([part.name, state_save])
 
         trans = self.e.animation.program.transition
-        op = Operation("animation (%s) frame (%s) deletion" % \
-                           (anim_name, t))
-        op.redo_callback_add(self._remove_time_point, t, anim_name, anim_frame)
-
-        op.undo_callback_add(
-            self._frame_readd, t, anim_name, saved_states, trans)
-        self._operation_stack_cb(op)
 
         def agree(bt, notification):
             self._remove_time_point(t, anim_name, anim_frame)
             notification.hide()
             notification.delete()
+            op = Operation("animation (%s) frame (%s) deletion" % \
+                               (anim_name, t))
+            op.redo_callback_add(self._remove_time_point, t, anim_name,
+                                 anim_frame)
+            op.undo_callback_add(
+                self._frame_readd, t, anim_name, saved_states, trans)
+            self._operation_stack_cb(op)
 
         def disagree(bt, notification):
             notification.hide()
