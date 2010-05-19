@@ -50,6 +50,8 @@ class WidgetSignal(WidgetEntryButtonList):
         list.append(("Mouse Wheel Up", "mouse,wheel,0,-1"))
         list.append(("Mouse Wheel Down", "mouse,wheel,0,1"))
 
+        list.append(("Animation End", "animation,end"))
+
         return list
 
     def _floater_title_init(self):

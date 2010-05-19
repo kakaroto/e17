@@ -296,9 +296,19 @@ class SignalDetails(EditjeDetails):
         def parts_get():
             return self.e.parts
 
-        prop = Property(parent, "source")
-        prop.widget_add("s", WidgetSource(self, parts_get, popup_hide_cb_list))
-        self["main"].property_add(prop)
+        def animations_get():
+            return self.e.animations
+
+        self._prop_source_parts = Property(parent, "source")
+        wid = WidgetSource(self, "Parts list", parts_get, popup_hide_cb_list)
+        self._prop_source_parts.widget_add("s", wid)
+
+        self._prop_source_animations = Property(parent, "source")
+        wid = WidgetSource(self, "Animation list",
+                           animations_get, popup_hide_cb_list)
+        self._prop_source_animations.widget_add("s", wid)
+
+        self["main"].property_add(self._prop_source_parts)
 
         prop = Property(parent, "delay")
         wid = WidgetEntry(self)
@@ -321,7 +331,8 @@ class SignalDetails(EditjeDetails):
         self["out"].property_add(prop)
 
         prop = Property(parent, "source")
-        prop.widget_add("s", WidgetSource(self, parts_get, popup_hide_cb_list))
+        prop.widget_add("s", WidgetSource(self, "Parts list",
+                                          parts_get, popup_hide_cb_list))
         self["out"].property_add(prop)
 
         self.e.callback_add("signal.added", self._update)
@@ -490,6 +501,11 @@ class SignalDetails(EditjeDetails):
                 args = [["main"], [prop], [value], [None], [False], [None]]
                 self._prop_change_do(
                     "signal's triggering action change", *args)
+                self["main"].property_del("source")
+                if value == "animation,end":
+                    self["main"].property_add(self._prop_source_animations, 1)
+                else:
+                    self["main"].property_add(self._prop_source_parts, 1)
 
             elif prop == "source":
                 args = [["main"], [prop], [value], [None], [False], [None]]
