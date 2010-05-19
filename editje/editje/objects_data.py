@@ -68,6 +68,7 @@ class Part(Object):
         dragable["confine"] = obj.drag_confine
         dragable["events"] = obj.drag_event
 
+        self["state"] = obj.state_selected_get()
         states = []
         self["states"] = states
         for st in obj.states:
@@ -114,6 +115,8 @@ class Part(Object):
             if not obj.state_exist(name, val):
                 obj.state_add(name, val)
             state.apply_to(obj.state_get(name, val))
+
+        obj.state_selected_set(*self["state"])
 
         return True
 
