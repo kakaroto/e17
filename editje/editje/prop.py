@@ -209,13 +209,13 @@ class PropertyTable(elementary.Table):
         self._prop_list.append(prop)
 
     def _property_add_row(self, prop, row):
-        list = self._prop_list[row:]
+        proplist = self._prop_list[row:]
 
-        for it in list:
+        for it in proplist:
             self.property_del(it.name)
 
         self.property_add(prop)
-        for it in list:
+        for it in proplist:
             self.property_add(it)
 
     def property_del(self, key):
