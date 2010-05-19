@@ -549,11 +549,11 @@ class SignalDetails(EditjeDetails):
             if prop == "signal":
 
                 def signal_change(value):
-                    self.e.signal.signal_emit_action_set(val)
+                    self.e.signal.signal_emit_action_set(value)
                     self["out"]["signal"].value = value[0]
 
                 val = [value, self["out"]["source"].value]
-                old_val = [self["out"]["signal"].value, val[1]]
+                old_val = [self.e.signal.state_get() or "", val[1]]
 
                 op = Operation("signal's \"out\" emission change")
                 op.redo_callback_add(signal_change, val)
@@ -564,11 +564,11 @@ class SignalDetails(EditjeDetails):
             elif prop == "source":
 
                 def source_change(value):
-                    self.e.signal.signal_emit_action_set(val)
+                    self.e.signal.signal_emit_action_set(value)
                     self["out"]["source"].value = value[1]
 
                 val = [self["out"]["signal"].value, value]
-                old_val = [val[0], self["out"]["signal"].value]
+                old_val = [val[0], self.e.signal.state2_get() or ""]
 
                 op = Operation("signal's \"out\" source change")
                 op.redo_callback_add(source_change, val)
