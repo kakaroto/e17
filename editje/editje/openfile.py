@@ -22,22 +22,33 @@ import elementary
 
 from fileselector import FileSelector
 import swapfile
-import sysconfig
 from error_notify import ErrorNotify
 
-def openfile(open_cb, dir=None):
-    open = OpenFile(open_cb)
-    if dir:
-        open.path = dir
-    open.show()
+
+class OpenFileManager(object):
+    __openfile = None
+
+    def _openfile(self, open_cb, dir=None):
+        if self.__class__.__openfile:
+            self.__class__.__openfile.show()
+            return
+        self.__class__.__openfile = OpenFile(open_cb)
+        self.__class__.__openfile.on_del_add(self.__openfile_on_del_cb)
+        if dir:
+            self.__class__.__openfile.path = dir
+        self.__class__.__openfile.show()
+
+    def __openfile_on_del_cb(self, obj):
+        if obj == self.__class__.__openfile:
+            self.__class__.__openfile.on_del_del(self.__openfile_on_del_cb)
+            self.__class__.__openfile = None
+
+    def _openfile_close(self):
+        self.__class__.__openfile.delete()
 
 
 class OpenFile(elementary.Window):
-    _inst = None
-    def __new__(cls, *args, **kargs):
-        if not cls._inst:
-            cls._inst = elementary.Window.__new__(cls, *args, **kargs)
-        return cls._inst
+    _notification = None
 
     def __init__(self, open_cb, *args, **kargs):
         elementary.Window.__init__(self, "openfile",
@@ -46,8 +57,6 @@ class OpenFile(elementary.Window):
         self.autodel_set(True)
 
         self._open_cb = (open_cb, args, kargs)
-        self._notification = None
-        self._swapfile = swapfile.SwapFile()
 
         bg = elementary.Background(self)
         self.resize_object_add(bg)
@@ -78,6 +87,10 @@ class OpenFile(elementary.Window):
 
         self.resize(600, 480)
 
+    def show(self):
+        self.activate()
+        elementary.Window.show(self)
+
     def _file_clicked(self, obj, data):
         self._open(None)
 
@@ -96,9 +109,10 @@ class OpenFile(elementary.Window):
     path = property(fset=_path_set)
 
     def _open(self, bt, mode=None):
+        sf = swapfile.SwapFile()
         try:
-            self._swapfile.file = self._fs.file
-            self._swapfile.open(mode)
+            sf.file = self._fs.file
+            sf.open(mode)
         except Exception, e:
             self._notify_err(e)
             return
@@ -106,6 +120,7 @@ class OpenFile(elementary.Window):
         self.hide()
         open_cb, args, kargs = self._open_cb
         open_cb(sf, *args, **kargs)
+        self.delete()
 
     def _open_forced(self, bt, data):
         self._open(bt, swapfile.REPLACE)
@@ -127,11 +142,12 @@ class OpenFile(elementary.Window):
         return files
 
     def _new(self, bt):
-        self._swapfile.file = ""
-        self._swapfile.new = True
-        self._swapfile.open()
+        sf = swapfile.SwapFile()
+        sf.file = ""
+        sf.new = True
+        sf.open()
 
-        editje = Editje(self._swapfile)
+        editje = Editje(sf)
         editje.group = "main"
         editje.show()
         self._cancel(bt)
@@ -139,13 +155,15 @@ class OpenFile(elementary.Window):
 
     def _cancel(self, bt):
         self.hide()
-        self.delete()
 
-    def _notify(self, message):
+    def _notify_del(self):
         if self._notification:
             self._notification.hide()
             self._notification.delete()
             self._notification = None
+
+    def _notify(self, message):
+        self._notify_del()
         self._notification = elementary.Notify(self)
         self._notification.timeout_set(2)
         self._notification.orient_set(
@@ -198,9 +216,7 @@ class OpenFile(elementary.Window):
         self._notification.show()
 
     def _notify_abort(self, bt, data):
-        self._notification.hide()
-        self._notification.delete()
-        self._notification = None
+        self._notify_del()
 
     def _templates_load(self):
         tb = elementary.Table(self)

@@ -26,7 +26,7 @@ import sysconfig
 from about import About
 from editable import Editable
 import objects_data
-from openfile import openfile
+from openfile import OpenFileManager
 
 from desktop import Desktop
 from collapsable import CollapsablesBox
@@ -53,7 +53,8 @@ def debug_cb(obj, emission, source):
     print "%s: %s %s" % (obj, emission, source)
 
 
-class Editje(elementary.Window):
+class Editje(elementary.Window, OpenFileManager):
+
     def __init__(self, swapfile, theme="default"):
         self.theme = sysconfig.theme_file_get(theme)
         elementary.theme_extension_add(self.theme)
@@ -459,7 +460,7 @@ class Editje(elementary.Window):
         edje.signal_callback_add("%s,selected" % part, part, callback)
 
     def _open_cb(self, obj, emission, source):
-        openfile(self.open, os.path.dirname(self.e.filename))
+        self._openfile(self.open, os.path.dirname(self.e.filename))
 
     def _save_cb(self, obj, emission, source):
         self.save()

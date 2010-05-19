@@ -380,6 +380,10 @@ class FileSelector(Manager, elementary.Table):
 
     filter = property(fset=_filter_set)
 
+    def selection_clear(self):
+        for i in self._files.selected_items_get():
+            i.selected_set(False)
+
     def action_add(self, label, func_cb, data=None, icon=None):
         btn = elementary.Button(self)
         btn.size_hint_weight_set(evas.EVAS_HINT_EXPAND, 0.0)
