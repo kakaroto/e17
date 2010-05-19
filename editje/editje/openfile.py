@@ -16,7 +16,6 @@
 # License along with Editje. If not, see <http://www.gnu.org/licenses/>.
 
 import os
-import string
 
 import evas
 import elementary
@@ -185,12 +184,12 @@ class OpenFile(elementary.Window):
         elif isinstance(err, swapfile.CompileError):
             self._notification.title = "Compiler Error"
             lb = elementary.Label(self._notification)
-            lb.label_set(string.replace(str(err.message), '\n', '<br>'))
+            lb.label_set(str(err.message).replace('\n', '<br>'))
             self._notification.pack_end(lb)
             lb.show()
             self._notification.action_add("Ok", self._notify_abort)
         else:
-            self._notification.title = string.replace(str(err), ':', '<br>')
+            self._notification.title = str(err).replace(':', '<br>')
             self._notification.action_add("Ok", self._notify_abort)
 
         self._notification.show()
