@@ -353,9 +353,8 @@ class ExternalSelector(elementary.Box):
 
     def _types_load(self):
         self._loaded_types = {}
-
         for external_type in edje.ExternalIterator():
-            module = external_type.module
+            module = external_type.module_name
             name = external_type.name
             label = external_type.label_get()
 
