@@ -48,6 +48,8 @@ struct _Plugin
   int (*data_cb) (Plugin *p, const char *msg, int len);
 
   Url_Data *dd;
+
+  Evry_Item *item;
 };
 
 struct _Module_Config
@@ -352,9 +354,22 @@ _gtranslate_data_cb(Plugin *p, const char *msg, int len)
 
   if ((d = _json_data_find(rsp, "translatedText", 3)))
     {
-      it = EVRY_ITEM_NEW(Evry_Item, p, d->value, NULL, NULL);
-      EVRY_ITEM_CONTEXT_SET(it, EVRY_PLUGIN(p)->name);
-      it->fuzzy_match = -1;
+      if (!p->item)
+	{
+	  it = EVRY_ITEM_NEW(Evry_Item, p, d->value, NULL, NULL);
+	  EVRY_ITEM_CONTEXT_SET(it, EVRY_PLUGIN(p)->name);
+	  it->fuzzy_match = -1;
+	  EVRY_ITEM_REF(it);
+	  p->item = it;
+	}
+      else
+	{
+	  it = p->item;
+	  EVRY_ITEM_REF(it);
+	  EVRY_ITEM_LABEL_SET(it, d->value);
+	  evry->item_changed(it, 0, 0);
+	}
+
       EVRY_PLUGIN_ITEM_APPEND(p, it);
       ret = 1;
     }
@@ -529,6 +544,10 @@ _cleanup(Evry_Plugin *plugin)
   IF_RELEASE(p->input);
 
   EVRY_PLUGIN_ITEMS_FREE(p);
+
+  if (p->item)
+    EVRY_ITEM_FREE(p->item);
+  p->item = NULL;
 }
 
 static int
@@ -1382,23 +1401,8 @@ _conf_new(void)
   _conf->translate = eina_stringshare_add("en|de");
   IFMODCFGEND;
 
-  /* IFMODCFG(0x00ad);
-   * _conf->convert_cmd = eina_stringshare_add
-   *   ( "ffmpeg -vn -v 0 -y -i $(youtube-dl -g -b \"%s\") "
-   *     "-acodec libmp3lame -ac 2 -ab 128k "
-   *     "%s.mp3 > /dev/null 2>&1");
-   * IFMODCFGEND; */
-
-  /* IFMODCFG(0x00cd);
-   * _conf->convert_cmd = eina_stringshare_add
-   *   ("mencoder -msglevel all=1 -ovc frameno -oac mp3lame -lameopts cbr:br=128 -of rawaudio "
-   *    "$(youtube-dl -g -b \"%s\") -o %s.mp3");
-   * IFMODCFGEND; */
-
   IFMODCFG(0x00dd);
-  _conf->convert_cmd = eina_stringshare_add
-    ("mencoder -msglevel all=1 -ovc frameno -oac mp3lame -lameopts cbr:br=128 "
-     "-audio-preload 2.0 -of rawaudio \"%s\" -o %s");
+  _conf->convert_cmd = eina_stringshare_add("");
   IFMODCFGEND;
 
   IFMODCFG(0x00ed);
@@ -1615,11 +1619,8 @@ _json_data_find2(const Json_Data *jd, const char *key, int level)
 	  break;
 	}
 
-      if (level)
-	{
-	  if ((d = _json_data_find2(d, key, level - 1)))
-	    break;
-	}
+      if (level && (d = _json_data_find2(d, key, level - 1)))
+	break;
     }
 
   return d;
@@ -1645,18 +1646,14 @@ _json_data_free(Json_Data *jd)
   const char *val;
   if (!jd) return;
 
-  if (jd->list) DBG("-------------------");
-
   EINA_LIST_FREE(jd->list, d)
     {
-      DBG("%s : %s", d->key, d->value);
       if (d->key) eina_stringshare_del(d->key);
       if (d->value) eina_stringshare_del(d->value);
       EINA_LIST_FREE(d->values, val)
 	{
 	  eina_stringshare_del(val);
 	}
-
       _json_data_free(d);
     }
 
@@ -1680,7 +1677,7 @@ _json_parse(const char *string, int len)
 
   if (json_parser_init(&parser, NULL, _parse_callback, d))
     {
-      ERR("something wrong happened during init");
+      ERR("something wrong happened in parser init");
       E_FREE(d);
       return NULL;
     }
