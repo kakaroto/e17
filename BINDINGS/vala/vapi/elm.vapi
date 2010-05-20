@@ -117,6 +117,7 @@ public abstract class Object : Evas.Object
     public void disabled_set( bool disabled );
     public bool disabled_get();
 
+    public bool focus_get();
     public void focus();
     public void unfocus();
     public void focus_allow_set( bool enable );
