@@ -1,4 +1,4 @@
-/**
+/*
 * Copyright (C) 2009-2010 Michael 'Mickey' Lauer <mlauer@vanille-media.de>
 *
 * This library is free software; you can redistribute it and/or
@@ -82,7 +82,8 @@ namespace Coords
 //=======================================================================
 namespace Quicklaunch
 {
-    public static delegate void Postfork_Func ( void* data );
+    [CCode (has_target = false)]
+    public delegate void Postfork_Func ( void* data );
     public void init( [CCode(array_length_pos = 0.9)] string[] args );
     public void sub_init( [CCode (array_length_pos = 0.9)] string[] args );
     public void sub_shutdown();
@@ -397,6 +398,20 @@ public class Table : Elm.Object
 
 
 //=======================================================================
+[CCode (cprefix = "ELM_CLOCK__")]
+public enum ClockDigedit
+{
+    NONE,
+    HOUR_DECIMAL,
+    HOUR_UNIT,
+    MIN_DECIMAL,
+    MIN_UNIT,
+    SEC_DECIMAL,
+    SEC_UNIT,
+    ALL
+}
+
+//=======================================================================
 [CCode (cname = "Evas_Object", free_function = "evas_object_del")]
 public class Clock : Elm.Object
 {
@@ -406,6 +421,9 @@ public class Clock : Elm.Object
     public void time_set( int hrs, int min, int sec );
     public void time_get( out int hrs, out int min, out int sec );
     public void edit_set( bool edit );
+    public bool edit_get();
+    public void digit_edit_set( ClockDigedit digedit );
+    public ClockDigedit digit_edit_get();
     public void show_am_pm_set( bool am_pm );
     public void show_seconds_set( bool seconds );
 }
@@ -792,7 +810,8 @@ public class Carousel : Elm.Object
 [CCode (cname = "Evas_Object", free_function = "evas_object_del")]
 public class Slider : Elm.Object
 {
-    public static delegate string IndicatorFormatFunc( double val );
+    [CCode (has_target = false)]
+    public delegate string IndicatorFormatFunc( double val );
 
     [CCode (cname = "elm_slider_add")]
     public Slider( Elm.Object? parent );
@@ -821,14 +840,14 @@ public enum GenlistItemFlags
     SUBITEMS,
 }
 
-[CCode (cname = "GenlistItemLabelGetFunc")]
-public static delegate string GenlistItemLabelGetFunc( Elm.Object obj, string part );
-[CCode (cname = "GenlistItemIconGetFunc")]
-public static delegate Elm.Object? GenlistItemIconGetFunc( Elm.Object obj, string part );
-[CCode (cname = "GenlistItemStateGetFunc")]
-public static delegate bool GenlistItemStateGetFunc( Elm.Object obj, string part );
-[CCode (cname = "GenlistItemDelFunc")]
-public static delegate void GenlistItemDelFunc( Elm.Object obj );
+[CCode (cname = "GenlistItemLabelGetFunc", has_target = false)]
+public delegate string GenlistItemLabelGetFunc( Elm.Object obj, string part );
+[CCode (cname = "GenlistItemIconGetFunc", has_target = false)]
+public delegate Elm.Object? GenlistItemIconGetFunc( Elm.Object obj, string part );
+[CCode (cname = "GenlistItemStateGetFunc", has_target = false)]
+public delegate bool GenlistItemStateGetFunc( Elm.Object obj, string part );
+[CCode (cname = "GenlistItemDelFunc", has_target = false)]
+public delegate void GenlistItemDelFunc( Elm.Object obj );
 
 //=======================================================================
 [CCode (cname = "Elm_Genlist_Item_Class_Func", destroy_function = "")]
