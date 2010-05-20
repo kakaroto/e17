@@ -134,10 +134,11 @@ _volume_list_add(Plugin *p)
 static Evry_Plugin *
 _begin(Evry_Plugin *plugin, const Evry_Item *item)
 {
+   Plugin *p;
    Evry_Item_File *file;
    char path[PATH_MAX];
 
-   GET_PLUGIN(p, plugin);
+   EVRY_PLUGIN_INSTANCE(p, plugin);
 
    e_user_dir_concat_static(path, "backgrounds");
    _item_add(p, N_("Wallpaper"), path, _mime_dir, NULL);
@@ -162,6 +163,8 @@ _finish(Evry_Plugin *plugin)
      EVRY_ITEM_FREE(file);
 
    IF_RELEASE(p->input);
+
+   E_FREE(p);
 }
 
 
@@ -240,6 +243,15 @@ _plugins_init(const Evry_API *api)
 			   _begin, _finish, _fetch, NULL);
 
    if (evry->plugin_register(_plug, EVRY_PLUGIN_SUBJECT, 3))
+     {
+	/* p->config->top_level = EINA_FALSE;
+	 * p->config->min_query = 3; */
+     }
+
+   _plug = EVRY_PLUGIN_NEW(Plugin, N_("Places"), NULL, EVRY_TYPE_FILE,
+			   _begin, _finish, _fetch, NULL);
+
+   if (evry->plugin_register(_plug, EVRY_PLUGIN_OBJECT, 1))
      {
 	/* p->config->top_level = EINA_FALSE;
 	 * p->config->min_query = 3; */

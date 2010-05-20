@@ -40,6 +40,8 @@ struct _Plugin
   Evry_Plugin base;
   Ecore_Timer *timer;
 
+  int browse_mode;
+
   const char *input;
   const char *request;
   const char *host;
@@ -519,11 +521,24 @@ _google_data_cb(Plugin *p, const char *msg, int len)
 static Evry_Plugin *
 _begin(Evry_Plugin *plugin, const Evry_Item *it)
 {
-  GET_PLUGIN(p, plugin);
+  Plugin *p;
+
+  GET_PLUGIN(parent, plugin);
+
+  EVRY_PLUGIN_INSTANCE(p, plugin);
+  p->host    = parent->host;
+  p->request = parent->request;
+  p->data_cb = parent->data_cb;
+
+  if (it && CHECK_TYPE(it, EVRY_TYPE_TEXT))
+    {
+      p->input = eina_stringshare_ref(it->label);
+      p->browse_mode = 1;
+    }
 
   p->dd = _url_data_new(p, _plugin_data_cb, NULL, p->host);
 
-  return plugin;
+  return EVRY_PLUGIN(p);
 }
 
 static void
@@ -532,14 +547,10 @@ _cleanup(Evry_Plugin *plugin)
   GET_PLUGIN(p, plugin);
 
   if (p->dd)
-    {
-       _url_data_free(p->dd);
-       p->dd = NULL;
-    }
+    _url_data_free(p->dd);
 
   if (p->timer)
     ecore_timer_del(p->timer);
-  p->timer = NULL;
 
   IF_RELEASE(p->input);
 
@@ -547,7 +558,8 @@ _cleanup(Evry_Plugin *plugin)
 
   if (p->item)
     EVRY_ITEM_FREE(p->item);
-  p->item = NULL;
+
+  E_FREE(p);
 }
 
 static int
@@ -567,7 +579,7 @@ _send_request(void *data)
   else
     snprintf(buf, sizeof(buf), p->request, _conf->lang, query);
 
-  /* printf("send request %s\n", buf); */
+  DBG("send request %s", buf);
 
   active = _url_data_send(p->dd, buf);
 
@@ -581,6 +593,17 @@ static int
 _fetch(Evry_Plugin *plugin, const char *input)
 {
   GET_PLUGIN(p, plugin);
+
+  if (p->browse_mode)
+    {
+      if (p->browse_mode == 1)
+	{
+	  _send_request(p);
+	  p->browse_mode = 2;
+	  return 1;
+	}
+      return 1;
+    }
 
   IF_RELEASE(p->input);
 
@@ -1097,6 +1120,7 @@ _action_upload_check(Evry_Action *act, const Evry_Item *it)
   return (EVRY_FILE(it)->mime && !(strncmp(EVRY_FILE(it)->mime, "image/", 6)));
 }
 
+
 /***************************************************************************/
 
 static int
@@ -1131,6 +1155,7 @@ _plugins_init(const Evry_API *_api)
     p->config_path = _config_path;				\
     plugins = eina_list_append(plugins, p);			\
     p->complete = _complete;					\
+    p->input_type = EVRY_TYPE_TEXT;				\
     GET_PLUGIN(plug, p);					\
     plug->request = _request;					\
     plug->data_cb = _data_cb;					\
@@ -1198,6 +1223,7 @@ _plugins_init(const Evry_API *_api)
   ACTION_NEW(N_("Upload Image"), EVRY_TYPE_FILE, "image",
 	     _action_upload, _action_upload_check, ACT_UPLOAD_IMGUR);
   act->remember_context = EINA_TRUE;
+
 
   handlers = eina_list_append
     (handlers, ecore_event_handler_add
