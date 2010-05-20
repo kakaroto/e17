@@ -127,6 +127,10 @@ public abstract class Object : Evas.Object
     public void scroll_freeze_push();
     public void scroll_freeze_pop();
 
+    public bool widget_check();
+    public Elm.Object parent_widget_get();
+    public string widget_type_get();
+
     public void theme_set( Theme th );
     public Theme theme_get();
 }
