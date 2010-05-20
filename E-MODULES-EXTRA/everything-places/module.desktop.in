@@ -1,7 +1,11 @@
 [Desktop Entry]
 Type=Link
 Name=Everything Places
+Name[fr]=Omni - Raccourcis
+Name[it]=Everything - Risorse
 Icon=e-module
-Comment=Access folder bookmarks and mount drives 
+Comment=Access folder bookmarks and mount drives
+Comment[fr]=Accès aux signets des dossiers et aux volumes montés. 
+Comment[it]=Accede ai segnalibro delle cartelle e monta le unità. 
 #Several different types available here. NEED TO DOC THESE.
 X-Enlightenment-ModuleType=everything
