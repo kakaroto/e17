@@ -61,18 +61,6 @@ namespace Policy
 
 
 //=======================================================================
-namespace Theme
-{
-    public void overlay_add( string item );
-    public void overlay_del( string item );
-    public void extension_add( string item );
-    public void extension_del( string item );
-    public void flush();
-    public void all_set( string theme );
-}
-
-
-//=======================================================================
 namespace Coords
 {
     public void finger_size_adjust( int times_w, out Evas.Coord w, int times_h, out Evas.Coord h );
@@ -99,6 +87,26 @@ namespace Quicklaunch
 
 
 //=======================================================================
+[CCode (cname = "Elm_Theme", free_function = "elm_theme_free")]
+public class Theme
+{
+    [CCode (cname = "elm_theme_new")]
+    public Theme();
+
+    public void overlay_add( string item );
+    public void overlay_del( string item );
+    public void extension_add( string item );
+    public void extension_del( string item );
+
+    public void @set( string theme );
+    public string get();
+    public void flush();
+    public void full_flush();
+    public void all_set( string theme );
+}
+
+
+//=======================================================================
 [CCode (cname = "Evas_Object", free_function = "evas_object_del")]
 public abstract class Object : Evas.Object
 {
@@ -118,6 +126,9 @@ public abstract class Object : Evas.Object
     public void scroll_hold_pop();
     public void scroll_freeze_push();
     public void scroll_freeze_pop();
+
+    public void theme_set( Theme th );
+    public Theme theme_get();
 }
 
 
