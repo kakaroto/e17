@@ -104,6 +104,7 @@ src_configure() {
 	  $(use_enable threads pthreads)
 	  $(use_enable threads async-events)
 	  $(use_enable threads async-preload)
+	  $(use_enable threads async-render)
 	  $(use_enable fontconfig)
 	  $(use_enable bidi fribidi)
 	  $(use_enable cserve evas-cserve)
