@@ -1357,6 +1357,7 @@ int
 main(int argc, char **argv)
 {
    int i;
+   XInitThreads();
 
    evas_init();
    evas = evas_new();

@@ -37,6 +37,16 @@ engine_software_xlib_args(const char *engine, int width, int height)
    einfo->info.depth = einfo->func.best_depth_get(0, disp, DefaultScreen(disp));
    einfo->info.rotation = 0;
    einfo->info.debug = 0;
+#ifdef EVAS_FRAME_QUEUING
+  {
+     char    *render_mode;
+     render_mode = getenv("EVAS_RENDER_MODE");
+     if (render_mode && !strcmp(render_mode, "non-blocking"))
+       {
+           einfo->render_mode = EVAS_RENDER_MODE_NONBLOCKING;
+       }
+  }
+#endif
    attr.backing_store = NotUseful;
    attr.colormap = einfo->info.colormap;
    attr.border_pixel = 0;

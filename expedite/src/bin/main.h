@@ -84,6 +84,8 @@ extern "C"
 #include "ui.h"
 #include "about.h"
 
+#define EVAS_FRAME_QUEUING	// for test
+
 #define OBNUM 128
 #define LOOPS 128
 
