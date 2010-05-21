@@ -7,6 +7,7 @@
  <name>Enlightenment-Gentoo maintainers</name>
 </maintainer>
 <use>
+ <flag name="udev">Enable devices discovery via udev</flag>
  <flag name="exchange">Enable Enlightenment's <pkg>net-libs/exchange</pkg> to get themes and wallpapers.</flag>
  <flag name="tracker">Enable the search plugin using <pkg>app-misc/tracker</pkg> in Everything launcher.</flag>
  <flag name="pm-utils">Integrate with <pkg>sys-power/pm-utils</pkg> to provide hibernate and suspend.</flag>
@@ -14,6 +15,7 @@
  <flag name="connman">Enable <pkg>net-misc/connman</pkg> support to manage network connections.</flag>
  <flag name="bluetooth">Enable <pkg>net-wireless/bluez</pkg> support to manage bluetooth devices.</flag>
  <flag name="ofono">Enable <pkg>net-misc/ofono</pkg> support to manage telephony (GSM/UMTS).</flag>
+ <flag name="temperature">Enable temperature module.</flag>
  <flag name="battery">Enable battery module.</flag>
  <flag name="clock">Enable clock module.</flag>
  <flag name="comp">Enable composite module for desktop transparency effects.</flag>
@@ -53,11 +55,12 @@
  <flag name="start">Enable the Start module.</flag>
  <flag name="syscon">Enable the Syscon module.</flag>
  <flag name="systray">Enable the Systray module.</flag>
+ <flag name="winlist">Enable the Window Listing (alt-tab) module.</flag>
+ <flag name="wizard">Enable welcome/first run wizard module.</flag>
  <flag name="everything-files">Enable the Everything-Files module.</flag>
  <flag name="everything-apps">Enable the Everything-Apps module.</flag>
  <flag name="everything-calc">Enable the Everything-Calc module.</flag>
  <flag name="everything-aspell">Enable the Everything-Aspell module.</flag>
- <flag name="everything-wallpaper">Enable the Everything-Wallpaper module.</flag>
  <flag name="everything-settings">Enable the Everything-Settings module.</flag>
  <flag name="everything-windows">Enable the Everything-Windows module.</flag>
 </use>

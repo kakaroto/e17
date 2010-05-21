@@ -26,7 +26,6 @@ CONF_MODS=(conf-borders conf-colors conf-desklock conf-desk conf-desks \
 	conf-menus conf-mime conf-mouse conf-paths conf-profiles conf-scale conf-shelves \
 	conf-startup conf-theme conf-winlist)
 
-
 # TODO: pm-utils changes /etc/enlightenment/sysactions.conf
 # TODO: patch to not require -i-really-know-what-i-am-doing-and-accept-full-responsibility-for-it
 # TODO: patch to make e17 "e_alert()" inform how to compile with debug in gentoo

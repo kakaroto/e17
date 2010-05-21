@@ -7,6 +7,7 @@
  <name>Enlightenment-Gentoo maintainers</name>
 </maintainer>
 <use>
+ <flag name="ukit">Enable interfacing with <pkg>sys-power/upower</pkg> and <pkg>sys-fs/udisks</pkg> DBus API.</flag>
  <flag name="hal">Enable interfacing with <pkg>sys-apps/hal</pkg> DBus API.</flag>
  <flag name="connman">Enable interfacing with <pkg>net-misc/connman</pkg> DBus API.</flag>
  <flag name="libnotify">Enable interfacing with <pkg>x11-libs/libnotify</pkg> DBus API.</flag>
