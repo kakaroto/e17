@@ -75,7 +75,9 @@ def report_text():
         print hdrfmt % n[-fmtsize:],
     print
 
-    if options.color and os.environ.get("TERM", "") == "xterm":
+    if options.color and os.environ.get("TERM", "") in (
+        "xterm", "xterm-color", "rxvt", "rxvt-unicode", "screen",
+        "Eterm", "aterm", "gnome", "interix"):
         color_good = "\033[1;32m"
         color_bad = "\033[1;31m"
         color_equal = "\033[1;30m"
