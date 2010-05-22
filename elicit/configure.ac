@@ -1,5 +1,5 @@
 AC_PREREQ(2.59)
-AC_INIT([elicit], [2.0], [rephorm@rephorm.com])
+AC_INIT([elicit], [1.9], [rephorm@rephorm.com])
 AM_INIT_AUTOMAKE([1.6 foreign])
 
 AC_PROG_CC
