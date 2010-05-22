@@ -7,7 +7,8 @@
 #include "e_mod_main.h"
 #include "evry_api.h"
 
-
+#define ACT_MOUNT   0
+#define ACT_UNMOUNT 1
 /* #undef DBG
  * #define DBG(...) ERR(__VA_ARGS__) */
 
@@ -118,16 +119,14 @@ _volume_list_add(Plugin *p)
    E_Volume *vol;
    EINA_LIST_FOREACH(e_fm2_dbus_volume_list_get(), l, vol)
      {
-	if (vol->mount_point && !strcmp(vol->mount_point, "/")) continue;
+	if (vol->mount_point && !strcmp(vol->mount_point, "/"))
+	  continue;
 
 	it = _item_add(p, vol->label, vol->mount_point, _mime_mount, vol->icon);
-	if (it)
-	  {
-	     if (!vol->mounted)
-	       it->browseable = EINA_FALSE;
+	if (!it) continue;
 
-	     it->data = vol;
-	  }
+	it->browseable = vol->mounted;
+	it->data = vol;
      }
 }
 
@@ -139,6 +138,8 @@ _begin(Evry_Plugin *plugin, const Evry_Item *item)
    char path[PATH_MAX];
 
    EVRY_PLUGIN_INSTANCE(p, plugin);
+
+   _item_add(p, N_("Home"), e_user_homedir_get(), _mime_dir, NULL);
 
    e_user_dir_concat_static(path, "backgrounds");
    _item_add(p, N_("Wallpaper"), path, _mime_dir, NULL);
@@ -183,45 +184,79 @@ _fetch(Evry_Plugin *plugin, const char *input)
    return !!(p->base.items);
 }
 
-/* static int
- * _check_mount(Evry_Action *act __UNUSED__, const Evry_Item *it)
- * {
- *    GET_FILE(file, it);
- *    if (file->mime == _mime_mount)
- *      return 1;
- *
- *    return 0;
- * }
- *
- * static int
- * _act_mount(Evry_Action *act)
- * {
- *    GET_FILE(file, act->it1.item);
- *    GET_ITEM(it, act->it1.item);
- *
- *    E_Volume *vol = it->data;
- *    if (vol->mounted)
- *      {
- * 	if (m->zone)
- * 	  e_fwin_new(m->zone->container, NULL, vol->mount_point);
- *      }
- *    else
- *      {
- * 	Eina_List *opt = NULL;
- * 	char buf[256];
- *
- * 	if (!vol->mount_point)
- * 	  vol->mount_point = e_fm2_dbus_volume_mountpoint_get(vol);
- *
- * 	if ((!strcmp(vol->fstype, "vfat")) || (!strcmp(vol->fstype, "ntfs")))
- * 	  {
- * 	     snprintf(buf, sizeof(buf), "uid=%i", (int)getuid());
- * 	     opt = eina_list_append(opt, buf);
- * 	  }
- *
- * 	e_hal_device_volume_mount(conn, vol->udi, vol->mount_point, vol->fstype, opt, NULL, vol);
- *      }
- * } */
+static int
+_check_mount(Evry_Action *act __UNUSED__, const Evry_Item *it)
+{
+   GET_FILE(file, it);
+   if (file->mime == _mime_mount)
+     {
+	E_Volume *vol = it->data;
+	if (!vol) return 0;
+
+	if (!vol->mounted && (EVRY_ITEM_DATA_INT_GET(act) == ACT_MOUNT))
+	  return 1;
+
+	if (vol->mounted && (EVRY_ITEM_DATA_INT_GET(act) == ACT_UNMOUNT))
+	  return 1;
+     }
+
+   return 0;
+}
+
+static void
+_cb_mount_ok(void *data)
+{
+   E_Volume *vol;
+
+   GET_ITEM(it, data);
+
+   vol = it->data;
+   it->browseable = vol->mounted;
+   evry->item_changed(it, 1, 0);
+
+   EVRY_ITEM_FREE(it);
+}
+
+static void
+_cb_mount_fail(void *data)
+{
+   GET_ITEM(it, data);
+   EVRY_ITEM_FREE(it);
+}
+
+static int
+_act_mount(Evry_Action *act)
+{
+   GET_FILE(file, act->it1.item);
+   GET_ITEM(it, act->it1.item);
+
+   E_Volume *vol = it->data;
+   E_Fm2_Mount *mount;
+
+   if (!vol)
+     return 0;
+
+   if (!vol->mounted && EVRY_ITEM_DATA_INT_GET(act) == ACT_MOUNT)
+     {
+	EVRY_ITEM_REF(it);
+	mount = e_fm2_dbus_mount(vol, _cb_mount_ok, _cb_mount_fail,
+			 _cb_mount_ok, _cb_mount_fail, it);
+	/* XXX needs mount to be freed ? */
+     }
+   else if (vol->mounted && EVRY_ITEM_DATA_INT_GET(act) == ACT_UNMOUNT)
+     {
+   	/* if (!(mount = eina_list_data_get(vol->mounts))) */
+	if (!(mount = e_fm2_dbus_mount_find(vol->mount_point)))
+   	  {
+   	     ERR("unmount: no mount point: %s", vol->mount_point);
+   	     return 0;
+   	  }
+
+   	EVRY_ITEM_REF(it);
+   	e_fm2_dbus_unmount(mount);
+     }
+   return 0;
+}
 
 static int
 _plugins_init(const Evry_API *api)
@@ -257,10 +292,15 @@ _plugins_init(const Evry_API *api)
 	 * p->config->min_query = 3; */
      }
 
-   /* act_mount = EVRY_ACTIOn_NEW(N_("Mount Drive"), EVRY_TYPE_FILE, 0, NULL, _act_mount, _check_mount);
-    * EVRY_ITEM_DATA_INT_SET(act_mount, 0);
-    * act_umount = EVRY_ACTIOn_NEW(N_("Unmount Drive"), EVRY_TYPE_FILE, 0, NULL, _act_mount, _check_mount);
-    * EVRY_ITEM_DATA_INT_SET(act_mount, 1); */
+   act_mount = EVRY_ACTION_NEW(N_("Mount Drive"), EVRY_TYPE_FILE, 0,
+			       "drive-harddisk", _act_mount, _check_mount);
+   EVRY_ITEM_DATA_INT_SET(act_mount, ACT_MOUNT);
+   evry->action_register(act_mount, 1);
+
+   act_umount = EVRY_ACTION_NEW(N_("Unmount Drive"), EVRY_TYPE_FILE, 0,
+   				"hdd_unmount", _act_mount, _check_mount);
+   EVRY_ITEM_DATA_INT_SET(act_umount, ACT_UNMOUNT);
+   evry->action_register(act_umount, 2);
 
    return EINA_TRUE;
 }
@@ -276,6 +316,8 @@ _plugins_shutdown(void)
    eina_stringshare_del(_mime_mount);
 
    EVRY_PLUGIN_FREE(_plug);
+   EVRY_ACTION_FREE(act_mount);
+   EVRY_ACTION_FREE(act_umount);
 
    evry_module->active = EINA_FALSE;
 }
