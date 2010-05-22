@@ -26,6 +26,12 @@
 # endif
 #endif
 
+/**
+ * @defgroup EHal_Group EHal
+ *
+ * @{
+ */
+
 #define E_HAL_SENDER "org.freedesktop.Hal"
 #define E_HAL_MANAGER_PATH "/org/freedesktop/Hal/Manager"
 #define E_HAL_MANAGER_INTERFACE "org.freedesktop.Hal.Manager"
@@ -136,5 +142,9 @@ extern "C" {
 #ifdef __cplusplus
 }
 #endif
+
+/**
+ * @}
+ */
 
 #endif

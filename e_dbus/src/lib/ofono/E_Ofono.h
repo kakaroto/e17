@@ -30,6 +30,12 @@
 # endif
 #endif
 
+/**
+ * @defgroup EOfono_Group EOfono
+ *
+ * @{
+ */
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -129,4 +135,9 @@ extern "C" {
 #ifdef __cplusplus
 }
 #endif
+
+/**
+ * @}
+ */
+
 #endif /* E_OFONO_H */

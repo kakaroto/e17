@@ -31,6 +31,12 @@
 # endif
 #endif
 
+/**
+ * @defgroup EConnman_Group EConnman
+ *
+ * @{
+ */
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -323,4 +329,9 @@ extern "C" {
 #ifdef __cplusplus
 }
 #endif
+
+/**
+ * @}
+ */
+
 #endif /* E_CONNMAN_H */

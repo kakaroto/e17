@@ -27,6 +27,12 @@
 # endif
 #endif
 
+/**
+ * @defgroup ENotify_Group ENotify
+ *
+ * @{
+ */
+
 
 /* notifications */
 typedef struct E_Notification_Image E_Notification_Image;
@@ -185,5 +191,9 @@ extern "C" {
 #ifdef __cplusplus
 }
 #endif
+
+/**
+ * @}
+ */
 
 #endif

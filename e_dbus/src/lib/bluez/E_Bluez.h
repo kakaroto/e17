@@ -30,6 +30,12 @@
 # endif
 #endif
 
+/**
+ * @defgroup EBluez_Group EBluez
+ *
+ * @{
+ */
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -163,4 +169,9 @@ extern "C" {
 #ifdef __cplusplus
 }
 #endif
+
+/**
+ * @}
+ */
+
 #endif /* E_BLUEZ_H */

@@ -26,6 +26,12 @@
 # endif
 #endif
 
+/**
+ * @defgroup EUkit_Group EUkit
+ *
+ * @{
+ */
+
 #define E_UKIT_PROP_INTERFACE "org.freedesktop.DBus.Properties"
 
 #define E_UDISKS_BUS "org.freedesktop.UDisks"
@@ -174,5 +180,9 @@ extern "C" {
 #ifdef __cplusplus
 }
 #endif
+
+/**
+ * @}
+ */
 
 #endif

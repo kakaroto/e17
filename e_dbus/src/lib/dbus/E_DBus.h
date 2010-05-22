@@ -45,6 +45,52 @@
 # endif
 #endif
 
+/**
+ * @mainpage EDbus
+ *
+ * @section edbus_intro_sec Introduction
+ *
+ * EDbus is a wrapper around the
+ * <a href="http://www.freedesktop.org/wiki/Software/dbus">dbus</a>
+ * library, which is a message bus system. It also implement a set of
+ * specifications using dbus as interprocess comunication.
+ *
+ * @section edbus_modules_sec Modules
+ *
+ * @li @ref EDbus_Group Wrapper around the dbus library, which
+ * implementent an inter-process communication (IPC) system for
+ * software applications to communicate with one another.
+ * @li @ref EBluez_Group Implementation of the <a
+ * href="http://www.bluez.org/">BlueZ</a> specifications, for wireless
+ * communications with Bleutooth devices.
+ * @li @ref EConnman_Group Implementation of the <a
+ * href="http://connman.net/">connman</a> specifications, which
+ * manages internet connections within embedded devices running the
+ * Linux operating system.
+ * @li @ref EHal_Group Implementation of the <a
+ * href="http://www.freedesktop.org/wiki/Software/hal">HAL</a>
+ * specifications, which is a (software) layer between the hardware
+ * devices of a computer and the softwares that run on that
+ * computer (Hardware Abstraction Layer) . HAL is deprecated, in favor
+ * of DeviceKit.
+ * @li @ref ENotify_Group To de described. 
+ * @li @ref EOfono_Group Implementation of the <a
+ * href="http://ofono.org/">ofono</a> specifications, which is an
+ * interface for mobile telephony applications.
+ * @li @ref EUkit_Group Implementation of the <a
+ * href="http://freedesktop.org/wiki/Software/DeviceKit">DeviceKit</a>
+ * specifications, which is, like HAL, an Hardware Abstraction
+ * Layer. DeviceKit is a replacement of the deprecated HAL system. It
+ * has two submodules: UDisks, which manipulate storage devices, and
+ * UPower, which manage power devices.
+ */
+
+/**
+ * @defgroup EDbus_Group EDbus
+ *
+ * @{
+ */
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -181,5 +227,9 @@ extern "C" {
 #ifdef __cplusplus
 }
 #endif
+
+/**
+ * @}
+ */
 
 #endif
