@@ -120,10 +120,10 @@ _match_append(char *buf, int size, int *used, const char *keyword, int keyword_s
  * Add a signal handler
  *
  * @param conn the dbus connection
- * @param bus name of the signal's sender
+ * @param sender name of the signal's sender
  * @param path the object path of the signal's sender
  * @param interface the signal's interface
- * @param memeber the signal's name
+ * @param member the signal's name
  * @param cb_signal a callback to call when the signal is received
  * @param data custom data to pass in to the callback
  */

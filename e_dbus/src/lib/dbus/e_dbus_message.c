@@ -62,6 +62,7 @@ cb_pending(DBusPendingCall *pending, void *user_data)
  * @param msg  The message to send
  * @param cb_return A callback function for returns (only used if @a msg is a method-call)
  * @param timeout   A timeout in milliseconds, after which a synthetic error will be generated
+ * @param data custom data to pass in to the callback
  * @return a DBusPendingCall that can be used to cancel the current call
  */
 EAPI DBusPendingCall *
