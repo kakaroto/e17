@@ -63,7 +63,7 @@ create_main_win(Viewer *v)
    char buf[4096];
    
    snprintf(buf, sizeof(buf), "%s/edje_viewer.edj", PACKAGE_DATA_DIR);
-   elm_theme_extension_add(buf);
+   elm_theme_extension_add(NULL, buf);
    v->theme_file = eina_stringshare_add(buf);
 
    o = elm_win_add(NULL, "main", ELM_WIN_BASIC);
