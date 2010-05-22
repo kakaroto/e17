@@ -43,7 +43,7 @@ RDEPEND="
 	 >=dev-libs/e_dbus-9999[hal,connman?]
 	 >=media-libs/edje-9999
 	 >=media-libs/evas-9999[X,opengl?,eet,jpeg,png,safety-checks]
-	udev? ( dev-libs/eeze[udev] )
+	udev? ( dev-libs/eeze )
 	everything-aspell? ( app-text/aspell )
 	everything-calc? ( sys-devel/bc )
 "
