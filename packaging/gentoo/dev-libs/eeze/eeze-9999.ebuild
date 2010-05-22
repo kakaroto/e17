@@ -9,18 +9,15 @@ inherit efl
 DESCRIPTION="Enlightenment's integration to various libraries"
 HOMEPAGE="http://www.enlightenment.org"
 
-IUSE="udev"
-
 RDEPEND="
 	>=dev-libs/ecore-9999
-	udev? ( sys-fs/udev )
+	>=sys-fs/udev-141-r1
 "
 DEPEND="${RDEPEND}"
 
 src_configure() {
 	export MY_ECONF="
 	  ${MY_ECONF}
-	  $(use_enable udev udev)
 	"
 	efl_src_configure
 }
