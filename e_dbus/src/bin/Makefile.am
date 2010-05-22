@@ -7,12 +7,7 @@ EDBUS_CPPFLAGS = \
 -I$(top_srcdir)/src/lib/bluez \
 -I$(top_srcdir)/src/lib/ofono \
 -I$(top_srcdir)/src/lib/ukit \
-@EDBUS_CFLAGS@ \
-@EINA_CFLAGS@
-
-LIBS = \
-@EDBUS_LIBS@ \
-@EINA_LIBS@
+@EDBUS_CFLAGS@
 
 EDBUS_PROG = e_dbus_test e_dbus_test_client
 if BUILD_ENOTIFY
@@ -55,6 +50,22 @@ test_client.c
 e_dbus_test_client_CPPFLAGS = $(EDBUS_CPPFLAGS)
 e_dbus_test_client_LDADD = $(top_builddir)/src/lib/dbus/libedbus.la
 
+if BUILD_EBLUEZ
+e_dbus_bluez_test_SOURCES = e_dbus_bluez_test.c
+e_dbus_bluez_test_CPPFLAGS = $(EDBUS_CPPFLAGS)
+e_dbus_bluez_test_LDADD = $(top_builddir)/src/lib/bluez/libebluez.la
+endif
+
+if BUILD_ECONNMAN
+e_dbus_connman_test_SOURCES = e_dbus_connman_test.c
+e_dbus_connman_test_CPPFLAGS = $(EDBUS_CPPFLAGS)
+e_dbus_connman_test_LDADD = $(top_builddir)/src/lib/connman/libeconnman.la
+
+e_dbus_connman_test_api_SOURCES = e_dbus_connman_test_api.c
+e_dbus_connman_test_api_CPPFLAGS = $(EDBUS_CPPFLAGS)
+e_dbus_connman_test_api_LDADD = $(top_builddir)/src/lib/connman/libeconnman.la
+endif
+
 if BUILD_ENOTIFY
 e_dbus_notify_SOURCES = \
 	notify.c
@@ -73,22 +84,6 @@ e_notify_send_SOURCES = \
 
 e_notify_send_CPPFLAGS = $(EDBUS_CPPFLAGS)
 e_notify_send_LDADD = $(top_builddir)/src/lib/notification/libenotify.la
-endif
-
-if BUILD_ECONNMAN
-e_dbus_connman_test_SOURCES = e_dbus_connman_test.c
-e_dbus_connman_test_CPPFLAGS = $(EDBUS_CPPFLAGS)
-e_dbus_connman_test_LDADD = $(top_builddir)/src/lib/connman/libeconnman.la
-
-e_dbus_connman_test_api_SOURCES = e_dbus_connman_test_api.c
-e_dbus_connman_test_api_CPPFLAGS = $(EDBUS_CPPFLAGS)
-e_dbus_connman_test_api_LDADD = $(top_builddir)/src/lib/connman/libeconnman.la
-endif
-
-if BUILD_EBLUEZ
-e_dbus_bluez_test_SOURCES = e_dbus_bluez_test.c
-e_dbus_bluez_test_CPPFLAGS = $(EDBUS_CPPFLAGS)
-e_dbus_bluez_test_LDADD = $(top_builddir)/src/lib/bluez/libebluez.la
 endif
 
 if BUILD_EOFONO

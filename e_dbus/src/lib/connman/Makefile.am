@@ -2,7 +2,7 @@ MAINTAINERCLEANFILES = Makefile.in
 
 AM_CPPFLAGS = \
 -I $(top_srcdir)/src/lib/dbus \
-@EDBUS_CFLAGS@ @EVAS_CFLAGS@ @EINA_CFLAGS@
+@EDBUS_CFLAGS@
 
 if BUILD_ECONNMAN
 
@@ -10,8 +10,6 @@ lib_LTLIBRARIES = libeconnman.la
 include_HEADERS = E_Connman.h
 
 libeconnman_la_SOURCES = \
-E_Connman.h \
-e_connman_private.h \
 e_connman.c \
 e_connman_device.c \
 e_connman_element.c \
@@ -22,10 +20,10 @@ e_connman_service.c \
 e_connman_technology.c
 
 libeconnman_la_LIBADD = \
-@EDBUS_LIBS@ @EVAS_LIBS@ \
-$(top_builddir)/src/lib/dbus/libedbus.la \
-@EINA_LIBS@
+$(top_builddir)/src/lib/dbus/libedbus.la
 
-libeconnman_la_LDFLAGS = -version-info @version_info@ @econnman_release_info@
+libeconnman_la_LDFLAGS = -version-info @econnman_version_info@ @econnman_release_info@
 
 endif
+
+EXTRA_DIST = e_connman_private.h

@@ -5,7 +5,7 @@ includedir=@includedir@
 
 Name: econnman
 Description: network connection manager (connman)
-@pkgconfig_requires_private@: ecore edbus
+@pkgconfig_requires_private@: @requirement_econnman@
 Version: @VERSION@
 Libs: -L${libdir} -leconnman
 Cflags: -I${includedir}

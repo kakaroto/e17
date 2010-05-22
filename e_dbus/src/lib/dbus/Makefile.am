@@ -2,9 +2,8 @@ MAINTAINERCLEANFILES = Makefile.in
 
 AM_CPPFLAGS = \
 @EFL_EDBUS_BUILD@ \
-@EDBUS_CFLAGS@ \
-@EINA_CFLAGS@ \
-@DBUS_VERSION_CFLAGS@
+@DBUS_VERSION_CFLAGS@ \
+@EDBUS_CFLAGS@
 
 
 lib_LTLIBRARIES = libedbus.la
@@ -20,7 +19,7 @@ e_dbus_util.c \
 e_dbus_signal.c
 
 
-libedbus_la_LIBADD = @EDBUS_LIBS@ @EINA_LIBS@
-libedbus_la_LDFLAGS = -no-undefined @lt_enable_auto_import@ -version-info @version_info@ @edbus_release_info@
+libedbus_la_LIBADD = @EDBUS_LIBS@
+libedbus_la_LDFLAGS = -no-undefined @lt_enable_auto_import@ -version-info @edbus_version_info@ @edbus_release_info@
 
 EXTRA_DIST = e_dbus_private.h

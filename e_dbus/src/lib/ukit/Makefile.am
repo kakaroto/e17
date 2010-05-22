@@ -2,7 +2,7 @@ MAINTAINERCLEANFILES = Makefile.in
 
 AM_CPPFLAGS = \
 -I $(top_srcdir)/src/lib/dbus \
-@EDBUS_CFLAGS@ @EINA_CFLAGS@
+@EDBUS_CFLAGS@
 
 if BUILD_EUKIT
 
@@ -17,9 +17,9 @@ e_ukit_main.c \
 e_ukit_private_util.c
 
 libeukit_la_LIBADD = \
-$(top_builddir)/src/lib/dbus/libedbus.la \
-@EINA_LIBS@
-libeukit_la_LDFLAGS = -no-undefined @lt_enable_auto_import@ -version-info @version_info@ @eukit_release_info@
+$(top_builddir)/src/lib/dbus/libedbus.la
+
+libeukit_la_LDFLAGS = -version-info @eukit_version_info@ @eukit_release_info@
 
 endif
 

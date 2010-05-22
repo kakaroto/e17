@@ -1,10 +1,13 @@
 #ifndef E_HAL_H
 #define E_HAL_H
+
+#include <Eina.h>
 #include <E_DBus.h>
 
 #ifdef EAPI
-#undef EAPI
+# undef EAPI
 #endif
+
 #ifdef _MSC_VER
 # ifdef BUILDING_DLL
 #  define EAPI __declspec(dllexport)

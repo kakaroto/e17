@@ -2,28 +2,26 @@ MAINTAINERCLEANFILES = Makefile.in
 
 AM_CPPFLAGS = \
 -I $(top_srcdir)/src/lib/dbus \
-@EDBUS_CFLAGS@ @EVAS_CFLAGS@ @EINA_CFLAGS@
+@EDBUS_CFLAGS@ \
+@EVAS_CFLAGS@
 
 if BUILD_ENOTIFY
 
 lib_LTLIBRARIES = libenotify.la
 include_HEADERS = E_Notify.h E_Notification_Daemon.h
 
-noinst_HEADERS = e_notify_private.h
-
 libenotify_la_SOURCES = \
-E_Notify.h \
-E_Notification_Daemon.h \
-e_notify_private.h \
 notification.c \
 marshal.c \
 client.c \
 daemon.c
 
 libenotify_la_LIBADD = \
-@EDBUS_LIBS@ @EVAS_LIBS@ \
 $(top_builddir)/src/lib/dbus/libedbus.la \
-@EINA_LIBS@
-libenotify_la_LDFLAGS = -no-undefined @lt_enable_auto_import@ -version-info @version_info@ @enotify_release_info@
+@EVAS_LIBS@
+
+libenotify_la_LDFLAGS = -version-info @enotify_version_info@ @enotify_release_info@
 
 endif
+
+EXTRA_DIST = e_notify_private.h

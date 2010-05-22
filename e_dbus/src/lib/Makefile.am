@@ -1,3 +1,3 @@
 MAINTAINERCLEANFILES = Makefile.in
 
-SUBDIRS=dbus hal notification connman bluez ofono ukit
+SUBDIRS = dbus bluez connman hal notification ofono ukit
