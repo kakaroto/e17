@@ -71,7 +71,7 @@
  * href="http://www.freedesktop.org/wiki/Software/hal">HAL</a>
  * specifications, which is a (software) layer between the hardware
  * devices of a computer and the softwares that run on that
- * computer (Hardware Abstraction Layer) . HAL is deprecated, in favor
+ * computer (Hardware Abstraction Layer). HAL is deprecated, in favor
  * of DeviceKit.
  * @li @ref ENotify_Group To de described. 
  * @li @ref EOfono_Group Implementation of the <a
