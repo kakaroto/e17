@@ -942,7 +942,7 @@ _plugins_init(const Evry_API *_api)
    FILE_LIST     = evry->type_register("FILE_LIST");
    MPRIS_TRACK   = evry->type_register("MPRIS_TRACK");
 
-   action_handler = ecore_event_handler_add(EVRY_EVENT_ACTION_PERFORMED,
+   action_handler = evry->event_handler_add(EVRY_EVENT_ACTION_PERFORMED,
 					    _cb_action_performed, NULL);
 
 #define FILE_PLUGIN_NEW(_name, _plug_type, _icon, _type, _begin, _finish, _fetch, _query) { \
