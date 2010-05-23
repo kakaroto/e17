@@ -73,36 +73,45 @@ API documentation auto-generated daily from SVN source for EFL libraries:
    <?php blinkurl("i/logo-s.png", "EDJE", "http://docs.enlightenment.org/auto/edje"); ?>
   </td>
   <td>
+   <?php blinkurl("i/logo-s.png", "EDBUS", "http://docs.enlightenment.org/auto/e_dbus"); ?>
+  </td>
+  <td>
    <?php blinkurl("i/logo-s.png", "EET", "http://docs.enlightenment.org/auto/eet"); ?>
+  </td>
+ </tr>
+ <tr>
+  <td>
+   <?php blinkurl("i/logo-s.png", "EEZE", "http://docs.enlightenment.org/auto/eeze"); ?>
   </td>
   <td>
    <?php blinkurl("i/logo-s.png", "EFREET", "http://docs.enlightenment.org/auto/efreet"); ?>
   </td>
- </tr>
- <tr>
   <td>
    <?php blinkurl("i/logo-s.png", "EINA", "http://docs.enlightenment.org/auto/eina"); ?>
   </td>
   <td>
    <?php blinkurl("i/logo-s.png", "ELEMENTARY", "http://docs.enlightenment.org/auto/elementary"); ?>
   </td>
+ </tr>
+ <tr>
   <td>
    <?php blinkurl("i/logo-s.png", "EMBRYO", "http://docs.enlightenment.org/auto/embryo"); ?>
   </td>
   <td>
    <?php blinkurl("i/logo-s.png", "EPDF", "http://docs.enlightenment.org/auto/epdf"); ?>
   </td>
- </tr>
- <tr>
   <td>
    <?php blinkurl("i/logo-s.png", "ETHUMB", "http://docs.enlightenment.org/auto/ethumb"); ?>
   </td>
   <td>
    <?php blinkurl("i/logo-s.png", "EVAS", "http://docs.enlightenment.org/auto/evas"); ?>
   </td>
+ </tr>
   <td>
    <?php blinkurl("i/logo-s.png", "EVIL", "http://docs.enlightenment.org/auto/evil"); ?>
   </td>
+ <tr>
+ 
  </tr>
 </table>
 <hr>
