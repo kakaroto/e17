@@ -202,7 +202,7 @@ _update_list(Plugin *p)
   Track *t, *t2;
   char buf[128];
   char *tmp;
-  
+
   EVRY_PLUGIN_ITEMS_CLEAR(p);
 
   /* remove 'empty' item */
@@ -223,7 +223,7 @@ _update_list(Plugin *p)
 	  EVRY_ITEM_FREE(t);
 	  continue;
 	}
-      
+
       if (t2 && (t->id == t2->id) && (EVRY_ITEM(t)->id == EVRY_ITEM(t2)->id))
 	{
 	  EVRY_ITEM_FREE(t);
@@ -240,11 +240,11 @@ _update_list(Plugin *p)
 	  /* TODO fix xmms2 mpris bridge */
 	  tmp = evry->util_url_unescape(it->id, 0);
 	  if (!strncmp(tmp, "file://", 7))
-	    file->path = eina_stringshare_add(tmp + 7); 
+	    file->path = eina_stringshare_add(tmp + 7);
 	  else
 	    file->path = eina_stringshare_add(tmp);
 	  free(tmp);
-	  
+
 	  /*** set label ***/
 	  if (t->artist && t->title)
 	    {
@@ -405,7 +405,7 @@ static Evas_Object *
 _icon_get(Evry_Item *it, Evas *e)
 {
    Evas_Object *o = NULL;
-   
+
    if (CHECK_TYPE(it, MPRIS_TRACK))
      {
 	GET_TRACK(t, it);
@@ -420,7 +420,7 @@ _icon_get(Evry_Item *it, Evas *e)
 	     else if (p->status.playing == 1)
 	       e_icon_file_edje_set(o, theme_file, "media-playback-pause");
 	     else if (p->status.playing == 2)
-	        e_icon_file_edje_set(o, theme_file, "media-playback-stop");
+		e_icon_file_edje_set(o, theme_file, "media-playback-stop");
 	  }
      }
    else if (CHECK_TYPE(it, EVRY_TYPE_ACTION))
@@ -436,7 +436,7 @@ _icon_get(Evry_Item *it, Evas *e)
 	     return NULL;
 	  }
      }
-   
+
    return o;
 }
 
@@ -485,10 +485,18 @@ _mpris_get_metadata(Plugin *p)
 
   if (p->fetch_tracks)
     {
+      EVRY_ITEM_LABEL_SET(p->empty, _("Loading Playlist"));
+      evry->item_changed(EVRY_ITEM(p->empty), 0, 0);
+
       if (p->update_timer)
 	ecore_timer_del(p->update_timer);
 
       p->update_timer = ecore_timer_add(0.3, _update_timer, p);
+    }
+  else
+    {
+      EVRY_ITEM_LABEL_SET(p->empty, _("Empty Playlist"));
+      evry->item_changed(EVRY_ITEM(p->empty), 0, 0);
     }
 
   if (!p->tracks)
@@ -620,7 +628,7 @@ _begin(Evry_Plugin *plugin, const Evry_Item *item __UNUSED__)
     (conn, bus_name, "/Player", mpris_interface, "StatusChange",
      _dbus_cb_status_change, p);
 
-  p->empty = EVRY_ITEM_NEW(Track, p, _("Empty Playlist"), NULL, _item_free);
+  p->empty = EVRY_ITEM_NEW(Track, p, _("Loading Playlist"), NULL, _item_free);
   p->empty->id = -1;
 
   p->current_track = -2;
@@ -981,8 +989,8 @@ _mpris_add_files(Evry_Action *act)
 {
   const Evry_Item *it = act->it2.item;
 
-  if (!CHECK_TYPE(act->it1.item, MPRIS_TRACK))
-    return 0;
+  /* if (!CHECK_TYPE(act->it1.item, MPRIS_TRACK))
+   *   return 0; */
 
   if ((!CHECK_TYPE(it, EVRY_TYPE_FILE)) &&
       (!CHECK_TYPE(it, TRACKER_MUSIC)))
@@ -1020,7 +1028,7 @@ _mpris_remove_dups(Evry_Action *act)
   Evry_Item_File *f, *f2;
 
   _mpris_tracklist_action_clear(NULL);
-  
+
   EINA_LIST_FOREACH(_plug->tracks, l, f)
     {
       EINA_LIST_FOREACH(_plug->tracks, ll, f2)
@@ -1045,7 +1053,7 @@ _mpris_remove_missing(Evry_Action *act)
   Evry_Item_File *f;
 
   _mpris_tracklist_action_clear(NULL);
-  
+
   EINA_LIST_FOREACH(_plug->tracks, l, f)
     {
       if (ecore_file_exists(f->path))
@@ -1335,27 +1343,33 @@ _plugins_init(const Evry_API *_api)
 
   _plug = (Plugin *) p;
 
-#define ACTION_NEW(_label, _meth, _type1, _type2, _icon, _act, _check) \
+#define ACTION_NEW(_label, _meth, _type1, _type2, _icon, _act, _check)  \
     act = EVRY_ACTION_NEW(_label, _type1, _type2, _icon, _act, _check); \
     EVRY_ITEM(act)->icon_get = &_icon_get;				\
-    evry->action_register(act,  prio++);					\
+    evry->action_register(act,  prio++);				\
     actions = eina_list_append(actions, act);				\
     EVRY_ITEM_DATA_INT_SET(act, _meth);
-  
+
+#define PLUG_ACTION_NEW(_label, _meth, _type1, _type2, _icon, _act, _check) \
+  act = EVRY_ACTION_NEW(_label, EVRY_TYPE_PLUGIN, _type2, _icon, _act, _check);	\
+  EVRY_ITEM(act)->icon_get = &_icon_get;				\
+  p->actions = eina_list_append(p->actions, act);			\
+  EVRY_ITEM_DATA_INT_SET(act, _meth);
+
   ACTION_NEW(N_("Play Track"), ACT_PLAY_TRACK,
 	     MPRIS_TRACK, 0,
 	     "media-playback-start",
 	     _mpris_play_track, _mpris_check_item);
 
-  ACTION_NEW(N_("Play"), ACT_PLAY,
+  PLUG_ACTION_NEW(N_("Play"), ACT_PLAY,
 	     MPRIS_TRACK, 0, "media-playback-start",
 	     _mpris_player_action, _mpris_check_item);
 
-  ACTION_NEW(N_("Pause"), ACT_PAUSE,
+  PLUG_ACTION_NEW(N_("Pause"), ACT_PAUSE,
 	     MPRIS_TRACK, 0, "media-playback-pause",
 	     _mpris_player_action, _mpris_check_item);
 
-  ACTION_NEW(N_("Stop"), ACT_STOP,
+  PLUG_ACTION_NEW(N_("Stop"), ACT_STOP,
 	     MPRIS_TRACK, 0, "media-playback-stop",
 	     _mpris_player_action, _mpris_check_item);
 
@@ -1372,21 +1386,16 @@ _plugins_init(const Evry_API *_api)
 	     _mpris_tracklist_remove_track, _mpris_check_item);
   act->it1.accept_list = EINA_TRUE;
 
-  ACTION_NEW(N_("Clear Playlist"), ACT_CLEAR,
+  PLUG_ACTION_NEW(N_("Clear Playlist"), ACT_CLEAR,
 	     MPRIS_TRACK, 0, "list-remove",
 	     _mpris_tracklist_action_clear, _mpris_check_item);
-
-  /* ACTION_NEW(N_("Enqueue File"),
-   * 	     EVRY_TYPE_FILE, 0, "list-add",
-   * 	     _mpris_play_file, _mpris_check_file,
-   * 	     ACT_ENQUEUE_FILE); */
 
   ACTION_NEW(N_("Play File"), ACT_PLAY_FILE,
 	     EVRY_TYPE_FILE, 0, "media-playback-start",
 	     _mpris_play_file, _mpris_check_file);
   act->remember_context = EINA_TRUE;
 
-  ACTION_NEW(N_("Add Files..."), ACT_ADD_FILE,
+  PLUG_ACTION_NEW(N_("Add Files..."), ACT_ADD_FILE,
 	     MPRIS_TRACK, EVRY_TYPE_FILE, "list-add",
 	     _mpris_add_files, NULL);
 
@@ -1395,17 +1404,18 @@ _plugins_init(const Evry_API *_api)
 	     _mpris_enqueue_files, _mpris_check_files);
   act->remember_context = EINA_TRUE;
 
-  ACTION_NEW(N_("Add Music..."), ACT_ADD_FILE,
+  PLUG_ACTION_NEW(N_("Add Music..."), ACT_ADD_FILE,
 	     MPRIS_TRACK, TRACKER_MUSIC, "list-add",
 	     _mpris_add_files, _mpris_check_add_music);
 
-  ACTION_NEW(N_("Remove Duplicates"), 0,
+  PLUG_ACTION_NEW(N_("Remove Duplicates"), 0,
 	     MPRIS_TRACK, 0, "list-remove",
 	     _mpris_remove_dups, NULL);
 
-  ACTION_NEW(N_("Remove Missing Files"), 0,
+  PLUG_ACTION_NEW(N_("Remove Missing Files"), 0,
 	     MPRIS_TRACK, 0, "list-remove",
 	     _mpris_remove_missing, NULL);
+
 
 #undef ACTION_NEW
 
@@ -1420,13 +1430,14 @@ _plugins_shutdown(void)
 
   if (!evry_module->active) return;
 
+  GET_EVRY_PLUGIN(p, _plug);
+  EINA_LIST_FREE(p->actions, act)
+    EVRY_ACTION_FREE(act);
+
   EVRY_PLUGIN_FREE(_plug);
 
   EINA_LIST_FREE(actions, act)
-    {
-      if (act)
-	EVRY_ACTION_FREE(act);
-    }
+    EVRY_ACTION_FREE(act);
 
   if (conn)
     {
@@ -1461,7 +1472,7 @@ e_modapi_init(E_Module *m)
 
   snprintf(buf, sizeof(buf), "%s/e-module.edj", e_module_dir_get(m));
   theme_file = strdup(buf);
-  
+
   evry_module = E_NEW(Evry_Module, 1);
   evry_module->init     = &_plugins_init;
   evry_module->shutdown = &_plugins_shutdown;
@@ -1479,12 +1490,12 @@ EAPI int
 e_modapi_shutdown(E_Module *m)
 {
   _plugins_shutdown();
-  
+
   EVRY_MODULE_UNREGISTER(evry_module);
   E_FREE(evry_module);
 
   E_FREE(theme_file);
-  
+
   return 1;
 }
 
