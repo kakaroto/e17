@@ -40,11 +40,12 @@ struct _Plugin
   Evry_Plugin base;
   Ecore_Timer *timer;
 
-  int browse_mode;
-
   const char *input;
   const char *request;
   const char *host;
+
+  int browse_mode;
+  const char *browse_input;
 
   int (*fetch) (void *data);
   int (*data_cb) (Plugin *p, const char *msg, int len);
@@ -184,9 +185,9 @@ _send_notification(unsigned int id, const char *icon, const char *function,
 
 static Url_Data *
 _url_data_new(void *user_data,
-		   int (*data_cb)(Url_Data *dd),
-		   int (*progress_cb)(Url_Data *dd, Ecore_Con_Event_Url_Progress *ev),
-		   const char *host)
+	      int (*data_cb)(Url_Data *dd),
+	      int (*progress_cb)(Url_Data *dd, Ecore_Con_Event_Url_Progress *ev),
+	      const char *host)
 {
    Url_Data *dd = E_NEW(Url_Data, 1);
 
@@ -225,20 +226,20 @@ _url_data_send(Url_Data *dd, const char *url)
 static int
 _common_data_cb(void *data, int ev_type, void *event)
 {
-  Ecore_Con_Event_Url_Data *ev = event;
-  Url_Data *dd;
+   Ecore_Con_Event_Url_Data *ev = event;
+   Url_Data *dd;
 
-  if (!ev || !data || !(data == _conf))
-    return 1;
+   if (!ev || !data || !(data == _conf))
+     return 1;
 
-  if (!(dd = ecore_con_url_data_get(ev->url_con)))
-    return 1;
+   if (!(dd = ecore_con_url_data_get(ev->url_con)))
+     return 1;
 
-  dd->data = realloc(dd->data, sizeof(char) * (dd->size + ev->size));
-  memcpy(dd->data + dd->size, ev->data, ev->size);
-  dd->size += ev->size;
+   dd->data = realloc(dd->data, sizeof(char) * (dd->size + ev->size));
+   memcpy(dd->data + dd->size, ev->data, ev->size);
+   dd->size += ev->size;
 
-  return 1;
+   return 1;
 }
 
 static int
@@ -248,7 +249,7 @@ _common_progress_cb(void *data, int ev_type, void *event)
    Url_Data *dd;
 
    if (!ev || !data || !(data == _conf))
-       return 1;
+     return 1;
 
    if (!(dd = ecore_con_url_data_get(ev->url_con)))
      return 1;
@@ -262,22 +263,22 @@ _common_progress_cb(void *data, int ev_type, void *event)
 static int
 _common_complete_cb(void *data, int ev_type, void *event)
 {
-  Ecore_Con_Event_Url_Complete *ev = event;
-  Url_Data *dd;
+   Ecore_Con_Event_Url_Complete *ev = event;
+   Url_Data *dd;
 
-  if (!ev || !data || !(data == _conf))
-      return 1;
+   if (!ev || !data || !(data == _conf))
+     return 1;
 
-  if (!(dd = ecore_con_url_data_get(ev->url_con)))
-    return 1;
+   if (!(dd = ecore_con_url_data_get(ev->url_con)))
+     return 1;
 
-  if (!dd->data_cb(dd))
-    {
-       ERR("\n %*s\n", dd->size, (char *)dd->data);
-       /* XXX free here ?*/
-    }
+   if (!dd->data_cb(dd))
+     {
+	ERR("\n %*s\n", dd->size, (char *)dd->data);
+	/* XXX free here ?*/
+     }
 
-  return 1;
+   return 1;
 }
 
 static int
@@ -317,311 +318,323 @@ _icon_data_cb(Url_Data *dd)
 static int
 _wikipedia_data_cb(Plugin *p, const char *msg, int len)
 {
-  Json_Data *d, *rsp;
-  const char *val;
-  Eina_List *l;
-  Evry_Item *it;
-  int ret = 0;
+   Json_Data *d, *rsp;
+   const char *val;
+   Eina_List *l;
+   Evry_Item *it;
+   int ret = 0;
 
-  rsp = _json_parse(msg, len);
+   rsp = _json_parse(msg, len);
 
-  if (rsp && rsp->list &&
-      (d = rsp->list->data) &&
-      (d->type == JSON_ARRAY_BEGIN) &&
-      (d = d->list->data) &&
-      (d->type == JSON_ARRAY_BEGIN))
-    {
-       EINA_LIST_FOREACH(d->values, l, val)
-	{
-	  it = EVRY_ITEM_NEW(Evry_Item, p, val, NULL, NULL);
-	  EVRY_ITEM_CONTEXT_SET(it, EVRY_PLUGIN(p)->name);
-	  it->fuzzy_match = -1;
-	  EVRY_PLUGIN_ITEM_APPEND(p, it);
-	}
-       ret = 1;
-    }
-  _json_data_free(rsp);
+   if (rsp && rsp->list &&
+       (d = rsp->list->data) &&
+       (d->type == JSON_ARRAY_BEGIN) &&
+       (d = d->list->data) &&
+       (d->type == JSON_ARRAY_BEGIN))
+     {
+	EINA_LIST_FOREACH(d->values, l, val)
+	  {
+	     it = EVRY_ITEM_NEW(Evry_Item, p, val, NULL, NULL);
+	     EVRY_ITEM_CONTEXT_SET(it, EVRY_PLUGIN(p)->name);
+	     it->fuzzy_match = -1;
+	     EVRY_PLUGIN_ITEM_APPEND(p, it);
+	  }
+	ret = 1;
+     }
+   _json_data_free(rsp);
 
-  return ret;
+   return ret;
 }
 
 static int
 _gtranslate_data_cb(Plugin *p, const char *msg, int len)
 {
-  Json_Data *d, *rsp;
-  Evry_Item *it;
-  int ret = 0;
+   Json_Data *d, *rsp;
+   Evry_Item *it;
+   int ret = 0;
 
-  rsp = _json_parse(msg, len);
+   rsp = _json_parse(msg, len);
 
-  if ((d = _json_data_find(rsp, "translatedText", 3)))
-    {
-      if (!p->item)
-	{
-	  it = EVRY_ITEM_NEW(Evry_Item, p, d->value, NULL, NULL);
-	  EVRY_ITEM_CONTEXT_SET(it, EVRY_PLUGIN(p)->name);
-	  it->fuzzy_match = -1;
-	  EVRY_ITEM_REF(it);
-	  p->item = it;
-	}
-      else
-	{
-	  it = p->item;
-	  EVRY_ITEM_REF(it);
-	  EVRY_ITEM_LABEL_SET(it, d->value);
-	  evry->item_changed(it, 0, 0);
-	}
+   if ((d = _json_data_find(rsp, "translatedText", 3)))
+     {
+	if (!p->item)
+	  {
+	     it = EVRY_ITEM_NEW(Evry_Item, p, d->value, NULL, NULL);
+	     EVRY_ITEM_CONTEXT_SET(it, EVRY_PLUGIN(p)->name);
+	     it->fuzzy_match = -1;
+	     EVRY_ITEM_REF(it);
+	     p->item = it;
+	  }
+	else
+	  {
+	     it = p->item;
+	     EVRY_ITEM_REF(it);
+	     EVRY_ITEM_LABEL_SET(it, d->value);
+	     evry->item_changed(it, 0, 0);
+	  }
 
-      EVRY_PLUGIN_ITEM_APPEND(p, it);
-      ret = 1;
-    }
-  _json_data_free(rsp);
+	EVRY_PLUGIN_ITEM_APPEND(p, it);
+	ret = 1;
+     }
+   _json_data_free(rsp);
 
-  return ret;
+   return ret;
 }
 
 static void
 _web_link_free(Evry_Item *it)
 {
-  GET_WEBLINK(wl, it);
+   GET_WEBLINK(wl, it);
 
-  IF_RELEASE(wl->url);
-  IF_RELEASE(wl->thumb);
-  IF_RELEASE(wl->thumb_file);
+   IF_RELEASE(wl->url);
+   IF_RELEASE(wl->thumb);
+   IF_RELEASE(wl->thumb_file);
 
-  if (wl->dd)
-    _url_data_free(wl->dd);
+   if (wl->dd)
+     _url_data_free(wl->dd);
 
-  E_FREE(wl);
+   E_FREE(wl);
 }
-
-static char thumb_buf[4096];
-
 
 static Evas_Object *
 _web_link_icon_get(Evry_Item *it, Evas *e)
 {
-  Web_Link *wl = (Web_Link *) it;
-  Evas_Object *o;
+   Web_Link *wl = (Web_Link *) it;
+   Evas_Object *o;
 
-  if (!wl->thumb_file)
-    {
-      char *sum = evry->util_md5_sum(wl->thumb);
+   static char thumb_buf[4096];
 
-      snprintf(thumb_buf, sizeof(thumb_buf),
-	       "%s/.cache/youtube/%s.jpeg",
-	       e_user_homedir_get(), sum);
+   if (!wl->thumb_file)
+     {
+	char *sum = evry->util_md5_sum(wl->thumb);
 
-      wl->thumb_file = eina_stringshare_add(thumb_buf);
-      E_FREE(sum);
-    }
+	snprintf(thumb_buf, sizeof(thumb_buf),
+		 "%s/.cache/youtube/%s.jpeg",
+		 e_user_homedir_get(), sum);
 
-  if (ecore_file_exists(wl->thumb_file))
-    {
-      o = e_icon_add(e);
-      e_icon_file_set(o, wl->thumb_file);
-      if (o) return o;
-    }
-  else if (!wl->dd)
-    {
-       wl->dd = _url_data_new(wl, _icon_data_cb, NULL, "i.ytimg.com");
-       _url_data_send(wl->dd, wl->thumb);
-    }
+	wl->thumb_file = eina_stringshare_add(thumb_buf);
+	E_FREE(sum);
+     }
 
-  return NULL;
+   if (ecore_file_exists(wl->thumb_file))
+     {
+	o = e_icon_add(e);
+	e_icon_file_set(o, wl->thumb_file);
+	if (o) return o;
+     }
+   else if (!wl->dd)
+     {
+	wl->dd = _url_data_new(wl, _icon_data_cb, NULL, "i.ytimg.com");
+	_url_data_send(wl->dd, wl->thumb);
+     }
+
+   return NULL;
 }
 
 static int
 _youtube_data_cb(Plugin *p, const char *msg, int len)
 {
-  Json_Data *d, *d2, *rsp;
-  Eina_List *l;
-  Web_Link *it;
+   Json_Data *d, *d2, *rsp;
+   Eina_List *l;
+   Web_Link *it;
 
-  rsp = _json_parse(msg, len);
-  const char *title, *url, *thumb;
+   rsp = _json_parse(msg, len);
+   const char *title, *url, *thumb;
 
-  d = _json_data_find(rsp, "entry", 3);
-  if (d && d->list)
-    {
-      d = d->list->data;
+   d = _json_data_find(rsp, "entry", 3);
+   if (d && d->list)
+     {
+	d = d->list->data;
 
-      EINA_LIST_FOREACH(d->list, l, d)
-  	{
-	  url = thumb = title = NULL;
+	EINA_LIST_FOREACH(d->list, l, d)
+	  {
+	     url = thumb = title = NULL;
 
-  	  if ((d2 = _json_data_find(d, "$t", 2)))
-	    title = d2->value;
+	     if ((d2 = _json_data_find(d, "$t", 2)))
+	       title = d2->value;
 
-  	  if ((d2 = _json_data_find(d, "href", 3)))
-	    url = d2->value;
+	     if ((d2 = _json_data_find(d, "href", 3)))
+	       url = d2->value;
 
-	  if ((d2 = _json_data_find(d, "media$thumbnail", 2)) &&
-	      (d2 = _json_data_find(d2, "url", 2)))
-	    thumb = d2->value;
+	     if ((d2 = _json_data_find(d, "media$thumbnail", 2)) &&
+		 (d2 = _json_data_find(d2, "url", 2)))
+	       thumb = d2->value;
 
-	  if (title && url && thumb)
-	    {
-	      it = EVRY_ITEM_NEW(Web_Link, p, NULL, _web_link_icon_get, _web_link_free);
-	      EVRY_ITEM_LABEL_SET(it, title);
-	      EVRY_ITEM_CONTEXT_SET(it, EVRY_PLUGIN(p)->name);
-	      it->url = eina_stringshare_ref(url);
-	      it->thumb = eina_stringshare_ref(thumb);
+	     if (title && url && thumb)
+	       {
+		  it = EVRY_ITEM_NEW(Web_Link, p, NULL, _web_link_icon_get, _web_link_free);
+		  EVRY_ITEM_LABEL_SET(it, title);
+		  EVRY_ITEM_CONTEXT_SET(it, EVRY_PLUGIN(p)->name);
+		  it->url = eina_stringshare_ref(url);
+		  it->thumb = eina_stringshare_ref(thumb);
 
-	      EVRY_PLUGIN_ITEM_APPEND(p, it);
-	    }
-  	}
-    }
-  _json_data_free(rsp);
-  return 1;
+		  EVRY_PLUGIN_ITEM_APPEND(p, it);
+	       }
+	  }
+     }
+   _json_data_free(rsp);
+   return 1;
 }
 
 static int
 _google_data_cb(Plugin *p, const char *msg, int len)
 {
-  Json_Data *d, *d2, *rsp = NULL;
-  const char *val;
-  Eina_List *l, *ll;
-  Evry_Item *it;
-  char *beg;
+   Json_Data *d, *d2, *rsp = NULL;
+   const char *val;
+   Eina_List *l, *ll;
+   Evry_Item *it;
+   char *beg;
 
-  if (!msg) return 1;
-  beg = strchr(msg, '(');
-  if (beg) beg++;
+   if (!msg) return 1;
+   beg = strchr(msg, '(');
+   if (beg) beg++;
 
-  rsp = _json_parse(beg, len);
+   rsp = _json_parse(beg, len);
 
-  if (rsp && rsp->list &&
-      (d = rsp->list->data) &&
-      (d->type == JSON_ARRAY_BEGIN) &&
-      (d = d->list->data) &&
-      (d->type == JSON_ARRAY_BEGIN))
-    {
-      EINA_LIST_FOREACH(d->list, l, d2)
-	{
-	  ll = d2->values;
+   if (rsp && rsp->list &&
+       (d = rsp->list->data) &&
+       (d->type == JSON_ARRAY_BEGIN) &&
+       (d = d->list->data) &&
+       (d->type == JSON_ARRAY_BEGIN))
+     {
+	EINA_LIST_FOREACH(d->list, l, d2)
+	  {
+	     ll = d2->values;
 
-	  if (!ll->data || !ll->next->data)
-	    continue;
+	     if (!ll->data || !ll->next->data)
+	       continue;
 
-	  val = ll->data;
-	  it = EVRY_ITEM_NEW(Evry_Item, p, val, NULL, NULL);
-	  EVRY_ITEM_CONTEXT_SET(it, EVRY_PLUGIN(p)->name);
-	  val = ll->next->data;
-	  EVRY_ITEM_DETAIL_SET(it, val);
-	  it->fuzzy_match = -1;
-	  EVRY_PLUGIN_ITEM_APPEND(p, it);
-	}
-    }
-  _json_data_free(rsp);
+	     val = ll->data;
+	     it = EVRY_ITEM_NEW(Evry_Item, p, val, NULL, NULL);
+	     EVRY_ITEM_CONTEXT_SET(it, EVRY_PLUGIN(p)->name);
+	     val = ll->next->data;
+	     EVRY_ITEM_DETAIL_SET(it, val);
+	     it->fuzzy_match = -1;
+	     EVRY_PLUGIN_ITEM_APPEND(p, it);
+	  }
+     }
+   _json_data_free(rsp);
 
-  return 1;
+   return 1;
 }
 
 static Evry_Plugin *
 _begin(Evry_Plugin *plugin, const Evry_Item *it)
 {
-  Plugin *p;
+   Plugin *p;
 
-  GET_PLUGIN(parent, plugin);
+   GET_PLUGIN(parent, plugin);
 
-  EVRY_PLUGIN_INSTANCE(p, plugin);
-  p->host    = parent->host;
-  p->request = parent->request;
-  p->data_cb = parent->data_cb;
+   EVRY_PLUGIN_INSTANCE(p, plugin);
+   p->host    = parent->host;
+   p->request = parent->request;
+   p->data_cb = parent->data_cb;
 
-  if (it && CHECK_TYPE(it, EVRY_TYPE_TEXT))
-    {
-      p->input = eina_stringshare_ref(it->label);
-      p->browse_mode = 1;
-    }
+   if (it && CHECK_TYPE(it, EVRY_TYPE_TEXT))
+     {
+	p->browse_input = eina_stringshare_ref(it->label);
+	p->browse_mode = 1;
+     }
 
-  p->dd = _url_data_new(p, _plugin_data_cb, NULL, p->host);
+   p->dd = _url_data_new(p, _plugin_data_cb, NULL, p->host);
 
-  return EVRY_PLUGIN(p);
+   return EVRY_PLUGIN(p);
 }
 
 static void
 _cleanup(Evry_Plugin *plugin)
 {
-  GET_PLUGIN(p, plugin);
+   GET_PLUGIN(p, plugin);
 
-  if (p->dd)
-    _url_data_free(p->dd);
+   if (p->dd)
+     _url_data_free(p->dd);
 
-  if (p->timer)
-    ecore_timer_del(p->timer);
+   if (p->timer)
+     ecore_timer_del(p->timer);
 
-  IF_RELEASE(p->input);
+   IF_RELEASE(p->input);
+   IF_RELEASE(p->browse_input);
 
-  EVRY_PLUGIN_ITEMS_FREE(p);
+   EVRY_PLUGIN_ITEMS_FREE(p);
 
-  if (p->item)
-    EVRY_ITEM_FREE(p->item);
+   if (p->item)
+     EVRY_ITEM_FREE(p->item);
 
-  E_FREE(p);
+   E_FREE(p);
 }
 
 static int
 _send_request(void *data)
 {
-  Plugin *p = data;
-  char buf[1024];
-  char *query;
-  int active;
+   Plugin *p = data;
+   char buf[1024];
+   char *query;
+   int active;
 
-  if (!p->input) return 0;
+   if (!p->input) return 0;
 
-  query = evry->util_url_escape(p->input, 0);
+   query = evry->util_url_escape(p->input, 0);
 
-  if (!strcmp(p->base.name, N_("Translate")))
-    snprintf(buf, sizeof(buf), p->request, _conf->translate, query);
-  else
-    snprintf(buf, sizeof(buf), p->request, _conf->lang, query);
+   if (!strcmp(p->base.name, N_("Translate")))
+     snprintf(buf, sizeof(buf), p->request, _conf->translate, query);
+   else
+     snprintf(buf, sizeof(buf), p->request, _conf->lang, query);
 
-  DBG("send request %s", buf);
+   DBG("send request %s", buf);
 
-  active = _url_data_send(p->dd, buf);
+   active = _url_data_send(p->dd, buf);
 
-  free(query);
-  p->timer = NULL;
+   free(query);
+   p->timer = NULL;
 
-  return !active;
+   return !active;
 }
 
 static int
 _fetch(Evry_Plugin *plugin, const char *input)
 {
-  GET_PLUGIN(p, plugin);
+   GET_PLUGIN(p, plugin);
 
-  if (p->browse_mode)
-    {
-      if (p->browse_mode == 1)
-	{
-	  _send_request(p);
-	  p->browse_mode = 2;
-	  return 1;
-	}
-      return 1;
-    }
+   IF_RELEASE(p->input);
 
-  IF_RELEASE(p->input);
+   if (p->timer)
+     {
+	ecore_timer_del(p->timer);
+	p->timer = NULL;
+     }
 
-  if (p->timer)
-    ecore_timer_del(p->timer);
-  p->timer = NULL;
+   if (p->browse_mode)
+     {
+	char buf[128];
 
-  if (input && strlen(input) >= plugin->config->min_query)
-    {
-      p->input = eina_stringshare_add(input);
-      p->timer = ecore_timer_add(0.1, _send_request, p);
-    }
-  else
-    {
-      EVRY_PLUGIN_ITEMS_FREE(p);
-    }
+	if (p->browse_mode == 1)
+	  {
+	     p->input = eina_stringshare_ref(p->browse_input);
+	     _send_request(p);
+	     p->browse_mode = 2;
+	     return 1;
+	  }
+	else if (input)
+	  {
+	     snprintf(buf, sizeof(buf), "%s %s", p->browse_input, input);
+	     p->input = eina_stringshare_add(buf);
+	  }
+	else
+	  {
+	     p->input = eina_stringshare_ref(p->browse_input);
+	  }
+     }
+   else if (input && strlen(input) >= plugin->config->min_query)
+     {
+	p->input = eina_stringshare_add(input);
+     }
 
-  return !!(p->base.items);
+   if (p->input)
+     p->timer = ecore_timer_add(0.1, _send_request, p);
+   else
+     EVRY_PLUGIN_ITEMS_FREE(p);
+
+   return !!(p->base.items);
 }
 
 /***************************************************************************/
@@ -629,64 +642,64 @@ _fetch(Evry_Plugin *plugin, const char *input)
 static int
 _action(Evry_Action *act)
 {
-  Evry_Item_App *app = E_NEW(Evry_Item_App, 1);
-  Evry_Item_File *file = E_NEW(Evry_Item_File, 1);
-  char buf[1024];
-  Eina_List *l;
-  E_Border *bd;
+   Evry_Item_App *app = E_NEW(Evry_Item_App, 1);
+   Evry_Item_File *file = E_NEW(Evry_Item_File, 1);
+   char buf[1024];
+   Eina_List *l;
+   E_Border *bd;
 
-  app->desktop = efreet_util_desktop_exec_find(_conf->browser);
+   app->desktop = efreet_util_desktop_exec_find(_conf->browser);
 
-  if (!app->desktop)
-    app->file = "xdg-open";
+   if (!app->desktop)
+     app->file = "xdg-open";
 
-  char *tmp = evry->util_url_escape(act->it1.item->label, 0);
+   char *tmp = evry->util_url_escape(act->it1.item->label, 0);
 
-  if (EVRY_ITEM_DATA_INT_GET(act) == ACT_GOOGLE)
-    {
-      snprintf(buf, sizeof(buf), "http://www.google.com/search?hl=%s&q=%s",
-	       _conf->lang, tmp);
-    }
-  else if (EVRY_ITEM_DATA_INT_GET(act) == ACT_WIKIPEDIA)
-    {
-      snprintf(buf, sizeof(buf), "http://%s.wikipedia.org/wiki/%s",
-	       _conf->lang, tmp);
-    }
-  else if (EVRY_ITEM_DATA_INT_GET(act) == ACT_FEELING_LUCKY)
-    {
-      snprintf(buf, sizeof(buf), "http://www.google.com/search?hl=%s&q=%s&btnI=745",
-	       _conf->lang, tmp);
-    }
-  else if (EVRY_ITEM_DATA_INT_GET(act) == ACT_YOUTUBE)
-    {
-      GET_WEBLINK(wl, act->it1.item);
-      snprintf(buf, sizeof(buf), "%s", wl->url);
-    }
+   if (EVRY_ITEM_DATA_INT_GET(act) == ACT_GOOGLE)
+     {
+	snprintf(buf, sizeof(buf), "http://www.google.com/search?hl=%s&q=%s",
+		 _conf->lang, tmp);
+     }
+   else if (EVRY_ITEM_DATA_INT_GET(act) == ACT_WIKIPEDIA)
+     {
+	snprintf(buf, sizeof(buf), "http://%s.wikipedia.org/wiki/%s",
+		 _conf->lang, tmp);
+     }
+   else if (EVRY_ITEM_DATA_INT_GET(act) == ACT_FEELING_LUCKY)
+     {
+	snprintf(buf, sizeof(buf), "http://www.google.com/search?hl=%s&q=%s&btnI=745",
+		 _conf->lang, tmp);
+     }
+   else if (EVRY_ITEM_DATA_INT_GET(act) == ACT_YOUTUBE)
+     {
+	GET_WEBLINK(wl, act->it1.item);
+	snprintf(buf, sizeof(buf), "%s", wl->url);
+     }
 
-  E_FREE(tmp);
+   E_FREE(tmp);
 
-  file->path = buf;
+   file->path = buf;
 
-  evry->util_exec_app(EVRY_ITEM(app), EVRY_ITEM(file));
+   evry->util_exec_app(EVRY_ITEM(app), EVRY_ITEM(file));
 
-  if (app->desktop)
-    {
-      EINA_LIST_FOREACH(e_border_client_list(), l, bd)
-	{
-	  if (bd->desktop && bd->desktop == app->desktop)
-	    {
-	      e_desk_show(bd->desk);
-	      e_border_raise(bd);
-	      break;
-	    }
-	}
-      efreet_desktop_free(app->desktop);
-    }
+   if (app->desktop)
+     {
+	EINA_LIST_FOREACH(e_border_client_list(), l, bd)
+	  {
+	     if (bd->desktop && bd->desktop == app->desktop)
+	       {
+		  e_desk_show(bd->desk);
+		  e_border_raise(bd);
+		  break;
+	       }
+	  }
+	efreet_desktop_free(app->desktop);
+     }
 
-  E_FREE(file);
-  E_FREE(app);
+   E_FREE(file);
+   E_FREE(app);
 
-  return 1;
+   return 1;
 }
 
 /***************************************************************************/
@@ -727,87 +740,87 @@ _youtube_dl_finish(Youtube_Data *yd, int abort)
 static int
 _youtube_dl_timer(void *d)
 {
-  Youtube_Data *yd = d;
-  struct stat s;
+   Youtube_Data *yd = d;
+   struct stat s;
 
-  if (yd->ready || yd->tries++ > 10)
-    {
-       _youtube_dl_finish(yd, 1);
-      return 0;
-    }
+   if (yd->ready || yd->tries++ > 10)
+     {
+	_youtube_dl_finish(yd, 1);
+	return 0;
+     }
 
-  if (stat(yd->filepath, &s) == 0)
-    {
-       if (s.st_size < 262144)
-	{
-	  if (!yd->ready && yd->tries > 5 && s.st_size < 1024)
-	    {
-	       _youtube_dl_finish(yd, 1);
-	       return 0;
-	    }
+   if (stat(yd->filepath, &s) == 0)
+     {
+	if (s.st_size < 262144)
+	  {
+	     if (!yd->ready && yd->tries > 5 && s.st_size < 1024)
+	       {
+		  _youtube_dl_finish(yd, 1);
+		  return 0;
+	       }
 
-	  char buf[128];
-	  snprintf(buf, sizeof(buf), N_("Got %d kbytes of"),
-		   ((unsigned int)s.st_size / 1024));
+	     char buf[128];
+	     snprintf(buf, sizeof(buf), N_("Got %d kbytes of"),
+		      ((unsigned int)s.st_size / 1024));
 
-	  _send_notification(yd->id, "emblem-sound", buf, yd->label, 5000);
-	  return 1;
-	}
+	     _send_notification(yd->id, "emblem-sound", buf, yd->label, 5000);
+	     return 1;
+	  }
 
-      Evry_Item_File *f = E_NEW(Evry_Item_File, 1);
-      Evry_Action *act;
+	Evry_Item_File *f = E_NEW(Evry_Item_File, 1);
+	Evry_Action *act;
 
-      f->path = eina_stringshare_ref(yd->filepath);
-      f->mime = eina_stringshare_add("audio/");
+	f->path = eina_stringshare_ref(yd->filepath);
+	f->mime = eina_stringshare_add("audio/");
 
-      if ((yd->method == YOUTUBE_DL_ENQ) &&
-  	  (act = evry->action_find(N_("Enqueue in Playlist"))))
-	{
-	   act->it1.item = EVRY_ITEM(f);
-	   act->action(act);
-	   _send_notification(yd->id, "emblem-sound", N_("Enqueue"), yd->label, -1);
-	}
-      if ((yd->method == YOUTUBE_DL_PLAY) &&
-  	  (act = evry->action_find(N_("Play File"))))
-	{
-	   act->it1.item = EVRY_ITEM(f);
-	   act->action(act);
-	   _send_notification(yd->id, "emblem-sound", N_("Play"), yd->label, -1);
-	}
-      IF_RELEASE(f->path);
-      IF_RELEASE(f->mime);
-      E_FREE(f);
+	if ((yd->method == YOUTUBE_DL_ENQ) &&
+	    (act = evry->action_find(N_("Enqueue in Playlist"))))
+	  {
+	     act->it1.item = EVRY_ITEM(f);
+	     act->action(act);
+	     _send_notification(yd->id, "emblem-sound", N_("Enqueue"), yd->label, -1);
+	  }
+	if ((yd->method == YOUTUBE_DL_PLAY) &&
+	    (act = evry->action_find(N_("Play File"))))
+	  {
+	     act->it1.item = EVRY_ITEM(f);
+	     act->action(act);
+	     _send_notification(yd->id, "emblem-sound", N_("Play"), yd->label, -1);
+	  }
+	IF_RELEASE(f->path);
+	IF_RELEASE(f->mime);
+	E_FREE(f);
 
-      yd->ready = 1;
+	yd->ready = 1;
 
-      /* after five minutes it should be finished */
-      yd->timer = ecore_timer_add(15 * 60.0, _youtube_dl_timer, yd);
-      return 0;
-    }
+	/* after five minutes it should be finished */
+	yd->timer = ecore_timer_add(15 * 60.0, _youtube_dl_timer, yd);
+	return 0;
+     }
 
-  return 1;
+   return 1;
 }
 
 static int
 _youtube_dl_cb_del(void *data, int type __UNUSED__, void *event)
 {
-  Youtube_Data *yd = data;
-  Ecore_Exe_Event_Del *e = event;
+   Youtube_Data *yd = data;
+   Ecore_Exe_Event_Del *e = event;
 
-  if (e->exe != yd->exe1 && e->exe != yd->exe2)
-    return 1;
+   if (e->exe != yd->exe1 && e->exe != yd->exe2)
+     return 1;
 
-  if (e->exe == yd->exe1) ecore_exe_kill(yd->exe2);
-  if (e->exe == yd->exe2) ecore_exe_kill(yd->exe1);
-  yd->exe1 = NULL;
-  yd->exe2 = NULL;
+   if (e->exe == yd->exe1) ecore_exe_kill(yd->exe2);
+   if (e->exe == yd->exe2) ecore_exe_kill(yd->exe1);
+   yd->exe1 = NULL;
+   yd->exe2 = NULL;
 
-  _send_notification(yd->id, "emblem-sound", N_("Finished download"),
-		     yd->label, -1);
+   _send_notification(yd->id, "emblem-sound", N_("Finished download"),
+		      yd->label, -1);
 
-  _youtube_dl_finish(yd, 0);
+   _youtube_dl_finish(yd, 0);
 
-  return 0;
+   return 0;
 }
 
 static int
@@ -983,13 +996,13 @@ _youtube_dl_action(Evry_Action *act)
 static int
 _youtube_dl_check(Evry_Action *act, const Evry_Item *it)
 {
-  if (EVRY_ITEM_DATA_INT_GET(act) == ACT_YOUTUBE)
-    {
-      if (strcmp(it->plugin->name, N_("Youtube")))
-	return 0;
-    }
+   if (EVRY_ITEM_DATA_INT_GET(act) == ACT_YOUTUBE)
+     {
+	if (strcmp(it->plugin->name, N_("Youtube")))
+	  return 0;
+     }
 
-  return 1;
+   return 1;
 }
 
 
@@ -1009,32 +1022,32 @@ struct _Upload_Data
 static int
 _upload_data(Url_Data *dd)
 {
-  Json_Data *d, *rsp;
-  Upload_Data *ud = dd->user_data;
-  int len;
+   Json_Data *d, *rsp;
+   Upload_Data *ud = dd->user_data;
+   int len;
 
-  rsp = _json_parse(dd->data, dd->size);
-  d = _json_data_find(rsp, "imgur_page", 5);
+   rsp = _json_parse(dd->data, dd->size);
+   d = _json_data_find(rsp, "imgur_page", 5);
 
-  if (d)
-    {
-      len = strlen(d->value);
-      ecore_x_selection_primary_set(ecore_x_window_root_first_get(), d->value, len);
-      ecore_x_selection_clipboard_set(ecore_x_window_root_first_get(), d->value, len);
-      _send_notification(ud->id, "image", N_("Upload Image"), N_("Link copied to clipboard") , -1);
-    }
-  else
-    {
-       _send_notification(ud->id, "image", N_("Upload Image"), N_("Something went wrong :("), -1);
-    }
+   if (d)
+     {
+	len = strlen(d->value);
+	ecore_x_selection_primary_set(ecore_x_window_root_first_get(), d->value, len);
+	ecore_x_selection_clipboard_set(ecore_x_window_root_first_get(), d->value, len);
+	_send_notification(ud->id, "image", N_("Upload Image"), N_("Link copied to clipboard") , -1);
+     }
+   else
+     {
+	_send_notification(ud->id, "image", N_("Upload Image"), N_("Something went wrong :("), -1);
+     }
 
-  _json_data_free(rsp);
+   _json_data_free(rsp);
 
-  _url_data_free(dd);
-  eina_stringshare_del(ud->file);
-  E_FREE(ud);
+   _url_data_free(dd);
+   eina_stringshare_del(ud->file);
+   E_FREE(ud);
 
-  return 1;
+   return 1;
 }
 
 static int
@@ -1061,63 +1074,63 @@ _upload_progress(Url_Data *dd, Ecore_Con_Event_Url_Progress *ev)
 static int
 _action_upload(Evry_Action *act)
 {
-  struct curl_httppost* post = NULL;
-  struct curl_httppost* last = NULL;
-  Upload_Data *ud;
+   struct curl_httppost* post = NULL;
+   struct curl_httppost* last = NULL;
+   Upload_Data *ud;
 
-  GET_FILE(file, act->it1.item);
-  if (!evry->file_path_get(file))
-    return 0;
+   GET_FILE(file, act->it1.item);
+   if (!evry->file_path_get(file))
+     return 0;
 
-  ud = E_NEW(Upload_Data, 1);
-  ud->dd = _url_data_new(ud, _upload_data, _upload_progress, NULL);
-  ecore_con_url_url_set(ud->dd->con_url, "http://imgur.com/api/upload.json");
-  ud->id = rand() + 1;
-  ud->file = eina_stringshare_ref(act->it1.item->label);
+   ud = E_NEW(Upload_Data, 1);
+   ud->dd = _url_data_new(ud, _upload_data, _upload_progress, NULL);
+   ecore_con_url_url_set(ud->dd->con_url, "http://imgur.com/api/upload.json");
+   ud->id = rand() + 1;
+   ud->file = eina_stringshare_ref(act->it1.item->label);
 
-  curl_formadd(&post, &last,
-	       CURLFORM_COPYNAME, "key",
-	       CURLFORM_COPYCONTENTS, _imgur_key,
-	       CURLFORM_END);
+   curl_formadd(&post, &last,
+		CURLFORM_COPYNAME, "key",
+		CURLFORM_COPYCONTENTS, _imgur_key,
+		CURLFORM_END);
 
-  curl_formadd(&post, &last,
-	       CURLFORM_COPYNAME, "image",
-	       CURLFORM_FILE, file->path,
-	       CURLFORM_END);
+   curl_formadd(&post, &last,
+		CURLFORM_COPYNAME, "image",
+		CURLFORM_FILE, file->path,
+		CURLFORM_END);
 
-  ecore_con_url_http_post_send(ud->dd->con_url, post);
+   ecore_con_url_http_post_send(ud->dd->con_url, post);
 
-  _send_notification(ud->id, "image", N_("Upload Image"), ud->file, -1);
+   _send_notification(ud->id, "image", N_("Upload Image"), ud->file, -1);
 
-  return 0;
+   return 0;
 }
 
 Evas_Object *
 _icon_get(Evry_Item *it, Evas *e)
 {
-  Evas_Object *o;
+   Evas_Object *o;
 
-  if (!it->icon)
-    return NULL;
+   if (!it->icon)
+     return NULL;
 
-  if (edje_file_group_exists(_conf->theme, it->icon))
-    {
-      o = e_icon_add(e);
-      if (e_icon_file_edje_set(o, _conf->theme, it->icon))
-	return o;
+   if (edje_file_group_exists(_conf->theme, it->icon))
+     {
+	o = e_icon_add(e);
+	if (e_icon_file_edje_set(o, _conf->theme, it->icon))
+	  return o;
 
-      evas_object_del(o);
-    }
+	evas_object_del(o);
+     }
 
-  o = evry->icon_theme_get(it->icon, e);
+   o = evry->icon_theme_get(it->icon, e);
 
-  return o;
+   return o;
 }
 
 static int
 _action_upload_check(Evry_Action *act, const Evry_Item *it)
 {
-  return (EVRY_FILE(it)->mime && !(strncmp(EVRY_FILE(it)->mime, "image/", 6)));
+   return (EVRY_FILE(it)->mime && !(strncmp(EVRY_FILE(it)->mime, "image/", 6)));
 }
 
 
@@ -1126,139 +1139,139 @@ _action_upload_check(Evry_Action *act, const Evry_Item *it)
 static int
 _complete(Evry_Plugin *p, const Evry_Item *item, char **input)
 {
-  char buf[128];
-  snprintf(buf, sizeof(buf), "%s ", item->label);
+   char buf[128];
+   snprintf(buf, sizeof(buf), "%s ", item->label);
 
-  *input = strdup(buf);
+   *input = strdup(buf);
 
-  return EVRY_COMPLETE_INPUT;
+   return EVRY_COMPLETE_INPUT;
 }
 
 static int
 _plugins_init(const Evry_API *_api)
 {
-  Evry_Plugin *p;
-  Evry_Action *act;
+   Evry_Plugin *p;
+   Evry_Action *act;
 
-  if (evry_module->active)
-    return EINA_TRUE;
+   if (evry_module->active)
+     return EINA_TRUE;
 
-  evry = _api;
+   evry = _api;
 
-  if (!evry->api_version_check(EVRY_API_VERSION))
-    return EINA_FALSE;
+   if (!evry->api_version_check(EVRY_API_VERSION))
+     return EINA_FALSE;
 
-  WEBLINK = evry->type_register("WEBLINK");
+   WEBLINK = evry->type_register("WEBLINK");
 
 #define PLUGIN_NEW(_name, _type, _icon, _begin, _cleaup, _fetch, _complete, _request, _data_cb, _host, _trigger) { \
-    p = EVRY_PLUGIN_NEW(Plugin, _name, _icon, _type, _begin, _cleanup, _fetch, NULL); \
-    p->config_path = _config_path;				\
-    plugins = eina_list_append(plugins, p);			\
-    p->complete = _complete;					\
-    p->input_type = EVRY_TYPE_TEXT;				\
-    GET_PLUGIN(plug, p);					\
-    plug->request = _request;					\
-    plug->data_cb = _data_cb;					\
-    if (evry->plugin_register(p, EVRY_PLUGIN_SUBJECT, 10)) {	\
-      Plugin_Config *pc = p->config;				\
-      pc->view_mode = VIEW_MODE_LIST;				\
-      pc->aggregate = EINA_FALSE;				\
-      pc->top_level = EINA_TRUE;				\
-      pc->view_mode = VIEW_MODE_DETAIL;				\
-      pc->min_query = 3;					\
-      pc->trigger_only = EINA_TRUE;				\
-      pc->trigger = eina_stringshare_add(_trigger); }}		\
+      p = EVRY_PLUGIN_NEW(Plugin, _name, _icon, _type, _begin, _cleanup, _fetch, NULL); \
+      p->config_path = _config_path;					\
+      plugins = eina_list_append(plugins, p);				\
+      p->complete = _complete;						\
+      p->input_type = EVRY_TYPE_TEXT;					\
+      GET_PLUGIN(plug, p);						\
+      plug->request = _request;						\
+      plug->data_cb = _data_cb;						\
+      if (evry->plugin_register(p, EVRY_PLUGIN_SUBJECT, 10)) {		\
+	 Plugin_Config *pc = p->config;					\
+	 pc->view_mode = VIEW_MODE_LIST;				\
+	 pc->aggregate = EINA_FALSE;					\
+	 pc->top_level = EINA_TRUE;					\
+	 pc->view_mode = VIEW_MODE_DETAIL;				\
+	 pc->min_query = 3;						\
+	 pc->trigger_only = EINA_TRUE;					\
+	 pc->trigger = eina_stringshare_add(_trigger); }}		\
 
-  PLUGIN_NEW(N_("Google"), EVRY_TYPE_TEXT, "text-html",
-	     _begin, _cleanup, _fetch, &_complete,
-	     _request_goolge, _google_data_cb,
-	     NULL, _trigger_google);
+   PLUGIN_NEW(N_("Google"), EVRY_TYPE_TEXT, "text-html",
+	      _begin, _cleanup, _fetch, &_complete,
+	      _request_goolge, _google_data_cb,
+	      NULL, _trigger_google);
 
-  PLUGIN_NEW(N_("Wikipedia"), EVRY_TYPE_TEXT, "text-html",
-	     _begin, _cleanup, _fetch, &_complete,
-	     _request_wiki, _wikipedia_data_cb,
-	     NULL, _trigger_wiki);
+   PLUGIN_NEW(N_("Wikipedia"), EVRY_TYPE_TEXT, "text-html",
+	      _begin, _cleanup, _fetch, &_complete,
+	      _request_wiki, _wikipedia_data_cb,
+	      NULL, _trigger_wiki);
 
-  PLUGIN_NEW(N_("Youtube"), WEBLINK, "text-html",
-	     _begin, _cleanup, _fetch, &_complete,
-	     _request_youtube, _youtube_data_cb,
-	     "gdata.youtube.com", _trigger_youtube);
+   PLUGIN_NEW(N_("Youtube"), WEBLINK, "text-html",
+	      _begin, _cleanup, _fetch, &_complete,
+	      _request_youtube, _youtube_data_cb,
+	      "gdata.youtube.com", _trigger_youtube);
 
-  PLUGIN_NEW(N_("Translate"), EVRY_TYPE_TEXT, "text-html",
-	     _begin, _cleanup, _fetch, NULL,
-	     _request_gtranslate, _gtranslate_data_cb,
-	     "ajax.googleapis.com", _trigger_gtranslate);
+   PLUGIN_NEW(N_("Translate"), EVRY_TYPE_TEXT, "text-html",
+	      _begin, _cleanup, _fetch, NULL,
+	      _request_gtranslate, _gtranslate_data_cb,
+	      "ajax.googleapis.com", _trigger_gtranslate);
 
 #define ACTION_NEW(_name, _type, _icon, _action, _check, _method)	\
-  act = EVRY_ACTION_NEW(_name, _type, 0, _icon, _action, _check);	\
-  EVRY_ITEM_DATA_INT_SET(act, _method);					\
-  EVRY_ITEM(act)->icon_get = &_icon_get;				\
-  evry->action_register(act, 1);				       	\
-  actions = eina_list_append(actions, act);				\
+   act = EVRY_ACTION_NEW(_name, _type, 0, _icon, _action, _check);	\
+   EVRY_ITEM_DATA_INT_SET(act, _method);				\
+   EVRY_ITEM(act)->icon_get = &_icon_get;				\
+   evry->action_register(act, 1);				       	\
+   actions = eina_list_append(actions, act);				\
 
-  ACTION_NEW(N_("Google for it"), EVRY_TYPE_TEXT, "google",
-	     _action, NULL, ACT_GOOGLE);
+   ACTION_NEW(N_("Google for it"), EVRY_TYPE_TEXT, "google",
+	      _action, NULL, ACT_GOOGLE);
 
-  ACTION_NEW(N_("Wikipedia Page"), EVRY_TYPE_TEXT, "wikipedia",
-	     _action, NULL, ACT_WIKIPEDIA);
+   ACTION_NEW(N_("Wikipedia Page"), EVRY_TYPE_TEXT, "wikipedia",
+	      _action, NULL, ACT_WIKIPEDIA);
 
-  ACTION_NEW(N_("Feeling Lucky"), EVRY_TYPE_TEXT, "feeling-lucky",
-	     _action, NULL, ACT_FEELING_LUCKY);
+   ACTION_NEW(N_("Feeling Lucky"), EVRY_TYPE_TEXT, "feeling-lucky",
+	      _action, NULL, ACT_FEELING_LUCKY);
 
-  ACTION_NEW(N_("Watch on Youtube"), WEBLINK, "youtube",
-  	     _action, _youtube_dl_check, ACT_YOUTUBE);
+   ACTION_NEW(N_("Watch on Youtube"), WEBLINK, "youtube",
+	      _action, _youtube_dl_check, ACT_YOUTUBE);
 
-  ACTION_NEW(N_("Download as Audio"), WEBLINK, "youtube",
-  	     _youtube_dl_action, _youtube_dl_check, YOUTUBE_DL);
+   ACTION_NEW(N_("Download as Audio"), WEBLINK, "youtube",
+	      _youtube_dl_action, _youtube_dl_check, YOUTUBE_DL);
 
-  ACTION_NEW(N_("Play Video"), WEBLINK, "youtube",
-  	     _youtube_dl_action, _youtube_dl_check, YOUTUBE_PLAY);
+   ACTION_NEW(N_("Play Video"), WEBLINK, "youtube",
+	      _youtube_dl_action, _youtube_dl_check, YOUTUBE_PLAY);
 
-  ACTION_NEW(N_("Download and enqueue"), WEBLINK, "youtube",
-  	     _youtube_dl_action, _youtube_dl_check, YOUTUBE_DL_ENQ);
+   ACTION_NEW(N_("Download and enqueue"), WEBLINK, "youtube",
+	      _youtube_dl_action, _youtube_dl_check, YOUTUBE_DL_ENQ);
 
-  ACTION_NEW(N_("Download and play"), WEBLINK, "youtube",
-  	     _youtube_dl_action, _youtube_dl_check, YOUTUBE_DL_PLAY);
+   ACTION_NEW(N_("Download and play"), WEBLINK, "youtube",
+	      _youtube_dl_action, _youtube_dl_check, YOUTUBE_DL_PLAY);
 
-  ACTION_NEW(N_("Upload Image"), EVRY_TYPE_FILE, "image",
-	     _action_upload, _action_upload_check, ACT_UPLOAD_IMGUR);
-  act->remember_context = EINA_TRUE;
+   ACTION_NEW(N_("Upload Image"), EVRY_TYPE_FILE, "image",
+	      _action_upload, _action_upload_check, ACT_UPLOAD_IMGUR);
+   act->remember_context = EINA_TRUE;
 
 
-  handlers = eina_list_append
-    (handlers, ecore_event_handler_add
-     (ECORE_CON_EVENT_URL_DATA, _common_data_cb, _conf));
+   handlers = eina_list_append
+     (handlers, ecore_event_handler_add
+      (ECORE_CON_EVENT_URL_DATA, _common_data_cb, _conf));
 
-  handlers = eina_list_append
-    (handlers, ecore_event_handler_add
-     (ECORE_CON_EVENT_URL_PROGRESS, _common_progress_cb, _conf));
+   handlers = eina_list_append
+     (handlers, ecore_event_handler_add
+      (ECORE_CON_EVENT_URL_PROGRESS, _common_progress_cb, _conf));
 
-  handlers = eina_list_append
-    (handlers, ecore_event_handler_add
-     (ECORE_CON_EVENT_URL_COMPLETE, _common_complete_cb, _conf));
+   handlers = eina_list_append
+     (handlers, ecore_event_handler_add
+      (ECORE_CON_EVENT_URL_COMPLETE, _common_complete_cb, _conf));
 
-  return EINA_TRUE;
+   return EINA_TRUE;
 }
 
 static void
 _plugins_shutdown(void)
 {
-  Evry_Plugin *p;
-  Evry_Action *act;
-  Ecore_Event_Handler *h;
+   Evry_Plugin *p;
+   Evry_Action *act;
+   Ecore_Event_Handler *h;
 
-  if (!evry_module->active) return;
+   if (!evry_module->active) return;
 
-  EINA_LIST_FREE(plugins, p)
-    EVRY_PLUGIN_FREE(p);
+   EINA_LIST_FREE(plugins, p)
+     EVRY_PLUGIN_FREE(p);
 
-  EINA_LIST_FREE(actions, act)
-    evry->action_free(act);
+   EINA_LIST_FREE(actions, act)
+     evry->action_free(act);
 
-  EINA_LIST_FREE(handlers, h)
-    ecore_event_handler_del(h);
+   EINA_LIST_FREE(handlers, h)
+     ecore_event_handler_del(h);
 
-  evry_module->active = EINA_FALSE;
+   evry_module->active = EINA_FALSE;
 }
 
 /***************************************************************************/
@@ -1281,229 +1294,229 @@ static int _basic_apply(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata);
 static E_Config_Dialog *
 _conf_dialog(E_Container *con, const char *params)
 {
-  E_Config_Dialog *cfd = NULL;
-  E_Config_Dialog_View *v = NULL;
-  char buf[4096];
+   E_Config_Dialog *cfd = NULL;
+   E_Config_Dialog_View *v = NULL;
+   char buf[4096];
 
-  if (e_config_dialog_find(_config_path, _config_path))
-    return NULL;
+   if (e_config_dialog_find(_config_path, _config_path))
+     return NULL;
 
-  v = E_NEW(E_Config_Dialog_View, 1);
-  if (!v) return NULL;
+   v = E_NEW(E_Config_Dialog_View, 1);
+   if (!v) return NULL;
 
-  v->create_cfdata = _create_data;
-  v->free_cfdata = _free_data;
-  v->basic.create_widgets = _basic_create;
-  v->basic.apply_cfdata = _basic_apply;
+   v->create_cfdata = _create_data;
+   v->free_cfdata = _free_data;
+   v->basic.create_widgets = _basic_create;
+   v->basic.apply_cfdata = _basic_apply;
 
-  snprintf(buf, sizeof(buf), "%s/e-module.edj", _conf->module->dir);
+   snprintf(buf, sizeof(buf), "%s/e-module.edj", _conf->module->dir);
 
-  cfd = e_config_dialog_new(con, _("Everything Websearch"),
-			    _config_path, _config_path, buf, 0, v, NULL);
+   cfd = e_config_dialog_new(con, _("Everything Websearch"),
+			     _config_path, _config_path, buf, 0, v, NULL);
 
-  _conf->cfd = cfd;
-  return cfd;
+   _conf->cfd = cfd;
+   return cfd;
 }
 
 static Evas_Object *
 _basic_create(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cfdata)
 {
-  Evas_Object *o = NULL, *of = NULL, *ow = NULL;
+   Evas_Object *o = NULL, *of = NULL, *ow = NULL;
 
-  o = e_widget_list_add(evas, 0, 0);
+   o = e_widget_list_add(evas, 0, 0);
 
-  of = e_widget_framelist_add(evas, _("General"), 0);
-  e_widget_framelist_content_align_set(of, 0.0, 0.0);
+   of = e_widget_framelist_add(evas, _("General"), 0);
+   e_widget_framelist_content_align_set(of, 0.0, 0.0);
 
-  ow = e_widget_label_add(evas, _("Browser"));
-  e_widget_framelist_object_append(of, ow);
-  ow = e_widget_entry_add(evas, &cfdata->browser, NULL, NULL, NULL);
-  e_widget_framelist_object_append(of, ow);
+   ow = e_widget_label_add(evas, _("Browser"));
+   e_widget_framelist_object_append(of, ow);
+   ow = e_widget_entry_add(evas, &cfdata->browser, NULL, NULL, NULL);
+   e_widget_framelist_object_append(of, ow);
 
-  ow = e_widget_label_add(evas, _("Language"));
-  e_widget_framelist_object_append(of, ow);
-  ow = e_widget_entry_add(evas, &cfdata->lang, NULL, NULL, NULL);
-  e_widget_framelist_object_append(of, ow);
+   ow = e_widget_label_add(evas, _("Language"));
+   e_widget_framelist_object_append(of, ow);
+   ow = e_widget_entry_add(evas, &cfdata->lang, NULL, NULL, NULL);
+   e_widget_framelist_object_append(of, ow);
 
-  ow = e_widget_label_add(evas, _("Translate"));
-  e_widget_framelist_object_append(of, ow);
-  ow = e_widget_entry_add(evas, &cfdata->translate, NULL, NULL, NULL);
-  e_widget_framelist_object_append(of, ow);
-  e_widget_list_object_append(o, of, 1, 1, 0.5);
+   ow = e_widget_label_add(evas, _("Translate"));
+   e_widget_framelist_object_append(of, ow);
+   ow = e_widget_entry_add(evas, &cfdata->translate, NULL, NULL, NULL);
+   e_widget_framelist_object_append(of, ow);
+   e_widget_list_object_append(o, of, 1, 1, 0.5);
 
-  of = e_widget_framelist_add(evas, _("Youtube"), 0);
-  e_widget_framelist_content_align_set(of, 0.0, 0.0);
+   of = e_widget_framelist_add(evas, _("Youtube"), 0);
+   e_widget_framelist_content_align_set(of, 0.0, 0.0);
 
-  ow = e_widget_label_add(evas, _("Video player"));
-  e_widget_framelist_object_append(of, ow);
-  ow = e_widget_entry_add(evas, &cfdata->player_cmd, NULL, NULL, NULL);
-  e_widget_framelist_object_append(of, ow);
+   ow = e_widget_label_add(evas, _("Video player"));
+   e_widget_framelist_object_append(of, ow);
+   ow = e_widget_entry_add(evas, &cfdata->player_cmd, NULL, NULL, NULL);
+   e_widget_framelist_object_append(of, ow);
 
-  ow = e_widget_label_add(evas, _("Download directory"));
-  e_widget_framelist_object_append(of, ow);
-  ow = e_widget_entry_add(evas, &cfdata->download_dir, NULL, NULL, NULL);
-  e_widget_framelist_object_append(of, ow);
+   ow = e_widget_label_add(evas, _("Download directory"));
+   e_widget_framelist_object_append(of, ow);
+   ow = e_widget_entry_add(evas, &cfdata->download_dir, NULL, NULL, NULL);
+   e_widget_framelist_object_append(of, ow);
 
-  ow = e_widget_label_add(evas, _("Download requires mplayer and mp3lame"));
-  e_widget_framelist_object_append(of, ow);
+   ow = e_widget_label_add(evas, _("Download requires mplayer and mp3lame"));
+   e_widget_framelist_object_append(of, ow);
 
-  e_widget_list_object_append(o, of, 1, 1, 0.5);
-  return o;
+   e_widget_list_object_append(o, of, 1, 1, 0.5);
+   return o;
 }
 
 static void *
 _create_data(E_Config_Dialog *cfd)
 {
-  E_Config_Dialog_Data *cfdata = NULL;
-  cfdata = E_NEW(E_Config_Dialog_Data, 1);
+   E_Config_Dialog_Data *cfdata = NULL;
+   cfdata = E_NEW(E_Config_Dialog_Data, 1);
 
 #define CP(_name) cfdata->_name = strdup(_conf->_name);
 #define C(_name) cfdata->_name = _conf->_name;
-  CP(browser);
-  CP(lang);
-  CP(translate);
-  CP(convert_cmd);
-  CP(download_dir);
-  CP(player_cmd);
+   CP(browser);
+   CP(lang);
+   CP(translate);
+   CP(convert_cmd);
+   CP(download_dir);
+   CP(player_cmd);
 #undef CP
 #undef C
-  return cfdata;
+   return cfdata;
 }
 
 static void
 _free_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
 {
-  E_FREE(cfdata->browser);
-  E_FREE(cfdata->lang);
-  E_FREE(cfdata->translate);
-  E_FREE(cfdata->convert_cmd);
-  E_FREE(cfdata->player_cmd);
-  E_FREE(cfdata->download_dir);
-  _conf->cfd = NULL;
-  E_FREE(cfdata);
+   E_FREE(cfdata->browser);
+   E_FREE(cfdata->lang);
+   E_FREE(cfdata->translate);
+   E_FREE(cfdata->convert_cmd);
+   E_FREE(cfdata->player_cmd);
+   E_FREE(cfdata->download_dir);
+   _conf->cfd = NULL;
+   E_FREE(cfdata);
 }
 
 static int
 _basic_apply(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
 {
-#define CP(_name)						\
-  if (_conf->_name)						\
-    eina_stringshare_del(_conf->_name);				\
-  _conf->_name = eina_stringshare_add(cfdata->_name);
+#define CP(_name)					\
+   if (_conf->_name)					\
+     eina_stringshare_del(_conf->_name);		\
+   _conf->_name = eina_stringshare_add(cfdata->_name);
 #define C(_name) _conf->_name = cfdata->_name;
-  CP(browser);
-  CP(lang);
-  CP(translate);
-  CP(convert_cmd);
-  CP(download_dir);
-  CP(player_cmd);
+   CP(browser);
+   CP(lang);
+   CP(translate);
+   CP(convert_cmd);
+   CP(download_dir);
+   CP(player_cmd);
 #undef CP
 #undef C
 
-  e_config_domain_save(_config_domain, _conf_edd, _conf);
-  e_config_save_queue();
-  return 1;
+   e_config_domain_save(_config_domain, _conf_edd, _conf);
+   e_config_save_queue();
+   return 1;
 }
 
 static void
 _conf_new(void)
 {
-  if (!_conf)
-    {
-      _conf = E_NEW(Module_Config, 1);
-      _conf->version = (MOD_CONFIG_FILE_EPOCH << 16);
-    }
+   if (!_conf)
+     {
+	_conf = E_NEW(Module_Config, 1);
+	_conf->version = (MOD_CONFIG_FILE_EPOCH << 16);
+     }
 
 #define IFMODCFG(v) if ((_conf->version & 0xffff) < v) {
 #define IFMODCFGEND }
 
-  /* setup defaults */
-  IFMODCFG(0x008d);
-  _conf->browser = eina_stringshare_add("firefox");
-  _conf->lang = eina_stringshare_add("en");
-  IFMODCFGEND;
+   /* setup defaults */
+   IFMODCFG(0x008d);
+   _conf->browser = eina_stringshare_add("firefox");
+   _conf->lang = eina_stringshare_add("en");
+   IFMODCFGEND;
 
-  IFMODCFG(0x009d);
-  _conf->translate = eina_stringshare_add("en|de");
-  IFMODCFGEND;
+   IFMODCFG(0x009d);
+   _conf->translate = eina_stringshare_add("en|de");
+   IFMODCFGEND;
 
-  IFMODCFG(0x00dd);
-  _conf->convert_cmd = eina_stringshare_add("");
-  IFMODCFGEND;
+   IFMODCFG(0x00dd);
+   _conf->convert_cmd = eina_stringshare_add("");
+   IFMODCFGEND;
 
-  IFMODCFG(0x00ed);
-  _conf->player_cmd = eina_stringshare_add("mplayer -fs %s");
-  _conf->download_dir = eina_stringshare_add("Desktop");
-  IFMODCFGEND;
+   IFMODCFG(0x00ed);
+   _conf->player_cmd = eina_stringshare_add("mplayer -fs %s");
+   _conf->download_dir = eina_stringshare_add("Desktop");
+   IFMODCFGEND;
 
-  _conf->version = MOD_CONFIG_FILE_VERSION;
+   _conf->version = MOD_CONFIG_FILE_VERSION;
 
-  e_config_save_queue();
+   e_config_save_queue();
 }
 
 static void
 _conf_free(void)
 {
-  if (!_conf) return;
-  eina_stringshare_del(_conf->browser);
-  eina_stringshare_del(_conf->lang);
-  eina_stringshare_del(_conf->translate);
-  eina_stringshare_del(_conf->convert_cmd);
-  eina_stringshare_del(_conf->player_cmd);
-  eina_stringshare_del(_conf->download_dir);
-  free(_conf->theme);
-  E_FREE(_conf);
+   if (!_conf) return;
+   eina_stringshare_del(_conf->browser);
+   eina_stringshare_del(_conf->lang);
+   eina_stringshare_del(_conf->translate);
+   eina_stringshare_del(_conf->convert_cmd);
+   eina_stringshare_del(_conf->player_cmd);
+   eina_stringshare_del(_conf->download_dir);
+   free(_conf->theme);
+   E_FREE(_conf);
 }
 
 static void
 _conf_init(E_Module *m)
 {
-  char buf[4096];
+   char buf[4096];
 
-  snprintf(buf, sizeof(buf), "%s/e-module.edj", m->dir);
+   snprintf(buf, sizeof(buf), "%s/e-module.edj", m->dir);
 
-  e_configure_registry_category_add
-    ("extensions", 80, _("Extensions"), NULL, "preferences-extensions");
+   e_configure_registry_category_add
+     ("extensions", 80, _("Extensions"), NULL, "preferences-extensions");
 
-  e_configure_registry_item_add
-    (_config_path, 110, _("Everything Websearch"), NULL, buf, _conf_dialog);
+   e_configure_registry_item_add
+     (_config_path, 110, _("Everything Websearch"), NULL, buf, _conf_dialog);
 
-  _conf_edd = E_CONFIG_DD_NEW("Module_Config", Module_Config);
+   _conf_edd = E_CONFIG_DD_NEW("Module_Config", Module_Config);
 
 #undef T
 #undef D
 #define T Module_Config
 #define D _conf_edd
-  E_CONFIG_VAL(D, T, version, INT);
-  E_CONFIG_VAL(D, T, browser, STR);
-  E_CONFIG_VAL(D, T, lang, STR);
-  E_CONFIG_VAL(D, T, translate, STR);
-  E_CONFIG_VAL(D, T, convert_cmd, STR);
-  E_CONFIG_VAL(D, T, player_cmd, STR);
-  E_CONFIG_VAL(D, T, download_dir, STR);
+   E_CONFIG_VAL(D, T, version, INT);
+   E_CONFIG_VAL(D, T, browser, STR);
+   E_CONFIG_VAL(D, T, lang, STR);
+   E_CONFIG_VAL(D, T, translate, STR);
+   E_CONFIG_VAL(D, T, convert_cmd, STR);
+   E_CONFIG_VAL(D, T, player_cmd, STR);
+   E_CONFIG_VAL(D, T, download_dir, STR);
 #undef T
 #undef D
-  _conf = e_config_domain_load(_config_domain, _conf_edd);
+   _conf = e_config_domain_load(_config_domain, _conf_edd);
 
-  if (_conf && !e_util_module_config_check
-      (_("Everything Websearch"), _conf->version,
-       MOD_CONFIG_FILE_EPOCH, MOD_CONFIG_FILE_VERSION))
-    {
-      _conf_free();
-    }
+   if (_conf && !e_util_module_config_check
+       (_("Everything Websearch"), _conf->version,
+	MOD_CONFIG_FILE_EPOCH, MOD_CONFIG_FILE_VERSION))
+     {
+	_conf_free();
+     }
 
-  _conf_new();
+   _conf_new();
 
-  _conf->module = m;
-  _conf->theme = strdup(buf);
+   _conf->module = m;
+   _conf->theme = strdup(buf);
 }
 
 static void
 _conf_shutdown(void)
 {
-  _conf_free();
+   _conf_free();
 
-  E_CONFIG_DD_FREE(_conf_edd);
+   E_CONFIG_DD_FREE(_conf_edd);
 }
 
 /***************************************************************************/
@@ -1517,54 +1530,54 @@ EAPI E_Module_Api e_modapi =
 EAPI void *
 e_modapi_init(E_Module *m)
 {
-  char buf[4096];
+   char buf[4096];
 
-  snprintf(buf, sizeof(buf), "%s/locale", e_module_dir_get(m));
-  bindtextdomain(PACKAGE, buf);
-  bind_textdomain_codeset(PACKAGE, "UTF-8");
+   snprintf(buf, sizeof(buf), "%s/locale", e_module_dir_get(m));
+   bindtextdomain(PACKAGE, buf);
+   bind_textdomain_codeset(PACKAGE, "UTF-8");
 
-  e_notification_init();
-  ecore_con_url_init();
-  _conf_init(m);
+   e_notification_init();
+   ecore_con_url_init();
+   _conf_init(m);
 
-  snprintf(buf, sizeof(buf), "%s/.cache/youtube", e_user_homedir_get());
-  if (!ecore_file_exists(buf))
-    ecore_file_mkdir(buf);
+   snprintf(buf, sizeof(buf), "%s/.cache/youtube", e_user_homedir_get());
+   if (!ecore_file_exists(buf))
+     ecore_file_mkdir(buf);
 
-  evry_module = E_NEW(Evry_Module, 1);
-  evry_module->init     = &_plugins_init;
-  evry_module->shutdown = &_plugins_shutdown;
-  EVRY_MODULE_REGISTER(evry_module);
+   evry_module = E_NEW(Evry_Module, 1);
+   evry_module->init     = &_plugins_init;
+   evry_module->shutdown = &_plugins_shutdown;
+   EVRY_MODULE_REGISTER(evry_module);
 
-  if ((evry = e_datastore_get("everything_loaded")))
-    evry_module->active = _plugins_init(evry);
+   if ((evry = e_datastore_get("everything_loaded")))
+     evry_module->active = _plugins_init(evry);
 
-  e_module_delayed_set(m, 1);
+   e_module_delayed_set(m, 1);
 
-  return m;
+   return m;
 }
 
 EAPI int
 e_modapi_shutdown(E_Module *m)
 {
-  _plugins_shutdown();
+   _plugins_shutdown();
 
-  EVRY_MODULE_UNREGISTER(evry_module);
-  E_FREE(evry_module);
+   EVRY_MODULE_UNREGISTER(evry_module);
+   E_FREE(evry_module);
 
-  _conf_shutdown();
-  e_notification_shutdown();
-  ecore_con_url_shutdown();
+   _conf_shutdown();
+   e_notification_shutdown();
+   ecore_con_url_shutdown();
 
-  /* XXX free download handler */
-  return 1;
+   /* XXX free download handler */
+   return 1;
 }
 
 EAPI int
 e_modapi_save(E_Module *m)
 {
-  e_config_domain_save(_config_domain, _conf_edd, _conf);
-  return 1;
+   e_config_domain_save(_config_domain, _conf_edd, _conf);
+   return 1;
 }
 
 /***************************************************************************/
@@ -1572,167 +1585,151 @@ e_modapi_save(E_Module *m)
 static int
 _parse_callback(void *userdata, int type, const char *data, uint32_t length)
 {
-  Json_Data *d = userdata;
-  Json_Data *d2;
+   Json_Data *d = userdata;
+   Json_Data *d2;
 
-  switch (type)
-    {
-    case JSON_OBJECT_BEGIN:
-    case JSON_ARRAY_BEGIN:
-      d2 = calloc(1, sizeof(Json_Data));
-      if (d->cur->key)
-	d2->is_val = 1;
-      d2->parent = d->cur;
-      d2->type = type;
-      d->cur->list = eina_list_append(d->cur->list, d2);
-      d->cur = d2;
-      break;
+   switch (type)
+     {
+      case JSON_OBJECT_BEGIN:
+      case JSON_ARRAY_BEGIN:
+	 d2 = calloc(1, sizeof(Json_Data));
+	 if (d->cur->key)
+	   d2->is_val = 1;
+	 d2->parent = d->cur;
+	 d2->type = type;
+	 d->cur->list = eina_list_append(d->cur->list, d2);
+	 d->cur = d2;
+	 break;
 
-    case JSON_OBJECT_END:
-    case JSON_ARRAY_END:
-      if (d->cur->is_val)
-	d->cur = d->cur->parent;
-      d->cur = d->cur->parent;
-      break;
+      case JSON_OBJECT_END:
+      case JSON_ARRAY_END:
+	 if (d->cur->is_val)
+	   d->cur = d->cur->parent;
+	 d->cur = d->cur->parent;
+	 break;
 
-    case JSON_KEY:
-      d2 = calloc(1, sizeof(Json_Data));
-      d2->key = eina_stringshare_add_length(data, length);
-      d2->parent = d->cur;
-      d->cur->list =  eina_list_append(d->cur->list, d2);
-      d->cur = d2;
-      break;
+      case JSON_KEY:
+	 d2 = calloc(1, sizeof(Json_Data));
+	 d2->key = eina_stringshare_add_length(data, length);
+	 d2->parent = d->cur;
+	 d->cur->list =  eina_list_append(d->cur->list, d2);
+	 d->cur = d2;
+	 break;
 
-    case JSON_STRING:
-    case JSON_INT:
-    case JSON_FLOAT:
-      if (d->cur->type == JSON_ARRAY_BEGIN)
-	{
-	  d->cur->values = eina_list_append
-	    (d->cur->values, eina_stringshare_add_length(data, length));
-	}
-      else
-	{
-	  d->cur->type = type;
-	  if (d->cur->value) eina_stringshare_del(d->cur->value);
-	  d->cur->value = eina_stringshare_add_length(data, length);
-	  d->cur = d->cur->parent;
-	}
-      break;
+      case JSON_STRING:
+      case JSON_INT:
+      case JSON_FLOAT:
+	 if (d->cur->type == JSON_ARRAY_BEGIN)
+	   {
+	      d->cur->values = eina_list_append
+		(d->cur->values, eina_stringshare_add_length(data, length));
+	   }
+	 else
+	   {
+	      d->cur->type = type;
+	      if (d->cur->value) eina_stringshare_del(d->cur->value);
+	      d->cur->value = eina_stringshare_add_length(data, length);
+	      d->cur = d->cur->parent;
+	   }
+	 break;
 
-    case JSON_NULL:
-    case JSON_TRUE:
-    case JSON_FALSE:
-      d->cur = d->cur->parent;
-    }
+      case JSON_NULL:
+      case JSON_TRUE:
+      case JSON_FALSE:
+	 d->cur = d->cur->parent;
+     }
 
-  return 0;
+   return 0;
 }
 
 static Json_Data *
 _json_data_find2(const Json_Data *jd, const char *key, int level)
 {
-  Json_Data *d = NULL;
-  Eina_List *l;
+   Json_Data *d = NULL;
+   Eina_List *l;
 
-  if (!jd) return NULL;
+   if (!jd) return NULL;
 
-  EINA_LIST_FOREACH(jd->list, l, d)
-    {
-      if (d && d->key == key)
-	{
-	  DBG("found %d %s",level, key);
+   EINA_LIST_FOREACH(jd->list, l, d)
+     {
+	if (d && d->key == key)
+	  {
+	     DBG("found %d %s",level, key);
+	     break;
+	  }
+
+	if (level && (d = _json_data_find2(d, key, level - 1)))
 	  break;
-	}
+     }
 
-      if (level && (d = _json_data_find2(d, key, level - 1)))
-	break;
-    }
-
-  return d;
+   return d;
 }
 
 static Json_Data *
 _json_data_find(const Json_Data *jd, const char *key, int level)
 {
-  Json_Data *d;
-  const char *k;
+   Json_Data *d;
+   const char *k;
 
-  k = eina_stringshare_add(key);
-  d = _json_data_find2(jd, k, level);
-  eina_stringshare_del(k);
+   k = eina_stringshare_add(key);
+   d = _json_data_find2(jd, k, level);
+   eina_stringshare_del(k);
 
-  return d;
+   return d;
 }
 
 static void
 _json_data_free(Json_Data *jd)
 {
-  Json_Data *d;
-  const char *val;
-  if (!jd) return;
+   Json_Data *d;
+   const char *val;
+   if (!jd) return;
 
-  EINA_LIST_FREE(jd->list, d)
-    {
-      if (d->key) eina_stringshare_del(d->key);
-      if (d->value) eina_stringshare_del(d->value);
-      EINA_LIST_FREE(d->values, val)
-	{
-	  eina_stringshare_del(val);
-	}
-      _json_data_free(d);
-    }
+   EINA_LIST_FREE(jd->list, d)
+     {
+	if (d->key) eina_stringshare_del(d->key);
+	if (d->value) eina_stringshare_del(d->value);
+	EINA_LIST_FREE(d->values, val)
+	  {
+	     eina_stringshare_del(val);
+	  }
+	_json_data_free(d);
+     }
 
-  E_FREE(jd);
+   E_FREE(jd);
 }
 
 static Json_Data *
 _json_parse(const char *string, int len)
 {
-  struct json_parser parser;
-  int i, ret;
+   struct json_parser parser;
+   int i, ret;
+   Json_Data *d;
 
-  if (!string)
-    return NULL;
+   if (!string)
+     return NULL;
 
-  if (!len)
-    len = strlen(string);
+   if (!len)
+     len = strlen(string);
 
-  Json_Data *d = E_NEW(Json_Data, 1);
-  d->cur = d;
+   d = E_NEW(Json_Data, 1);
+   d->cur = d;
 
-  if (json_parser_init(&parser, NULL, _parse_callback, d))
-    {
-      ERR("something wrong happened in parser init");
-      E_FREE(d);
-      return NULL;
-    }
+   if (json_parser_init(&parser, NULL, _parse_callback, d))
+     {
+	ERR("something wrong happened in parser init");
+	E_FREE(d);
+	return NULL;
+     }
 
-  for (i = 0; i < len; i += 1)
-    {
-      if ((ret = json_parser_string(&parser, string + i, 1, NULL)))
-	{
-	  if (d->cur == d)
-	    {
-	      ret = 0;
-	      break;
+   if ((ret = json_parser_string(&parser, string, len, NULL)) && !(d->cur == d))
+     {
+	ERR("%d\n", ret);
+	_json_data_free(d);
+	d = NULL;
+     }
 
-	    }
-	  else
-	    {
-	      ERR("%d\n", ret);
-	      break;
-	    }
-	}
-    }
+   json_parser_free(&parser);
 
-  json_parser_free(&parser);
-  if (ret)
-    {
-      _json_data_free(d);
-
-      return NULL;
-    }
-
-  return d;
+   return d;
 }
