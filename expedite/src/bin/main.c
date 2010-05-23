@@ -1357,7 +1357,10 @@ int
 main(int argc, char **argv)
 {
    int i;
+
+#if defined (HAVE_EVAS_SOFTWARE_XLIB) || defined (HAVE_EVAS_XRENDER_X11) ||defined (HAVE_EVAS_OPENGL_X11) || defined (HAVE_EVAS_SOFTWARE_16_X11)
    XInitThreads();
+#endif
 
    evas_init();
    evas = evas_new();
