@@ -244,36 +244,34 @@ _tclock_cb_mouse_in(void *data, Evas *e, Evas_Object *obj, void *event_info)
       case E_GADCON_ORIENT_RIGHT:
 	x = gx - w;
 	y = gy;
-	if ((y + h) >= zone->h)
-	  y = gy + gh - h;
 	break;
       case E_GADCON_ORIENT_LEFT:
       case E_GADCON_ORIENT_CORNER_LT:
       case E_GADCON_ORIENT_CORNER_LB:
 	x = gx + gw;
 	y = gy;
-	if ((y + h) >= zone->h)
-	  y = gy + gh - h;
 	break;
       case E_GADCON_ORIENT_TOP:
       case E_GADCON_ORIENT_CORNER_TL:
       case E_GADCON_ORIENT_CORNER_TR:
 	y = gy + gh;
 	x = gx;
-	if ((x + w) >= zone->w)
-	  x = gx + gw - w;
 	break;
       case E_GADCON_ORIENT_BOTTOM:
       case E_GADCON_ORIENT_CORNER_BL:
       case E_GADCON_ORIENT_CORNER_BR:
 	y = gy - h;
 	x = gx;
-	if ((x + w) >= zone->w)
-	  x = gx + gw - w;
 	break;
       default:
 	break;
      }
+
+   if ((x + w) >= zone->w)
+     x = gx + gw - w;
+   if ((y + h) >= zone->h)
+     y = gy + gh - h;
+
    e_popup_move_resize(inst->tip, x, y, w, h);
    e_popup_show(inst->tip);
 }
