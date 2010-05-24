@@ -419,6 +419,7 @@ _web_link_icon_get(Evry_Item *it, Evas *e)
    if (ecore_file_exists(wl->thumb_file))
      {
 	o = e_icon_add(e);
+	e_icon_preload_set(o, 1);
 	e_icon_file_set(o, wl->thumb_file);
 	if (o) return o;
      }
@@ -1116,6 +1117,7 @@ _icon_get(Evry_Item *it, Evas *e)
    if (edje_file_group_exists(_conf->theme, it->icon))
      {
 	o = e_icon_add(e);
+	e_icon_preload_set(o, 1);
 	if (e_icon_file_edje_set(o, _conf->theme, it->icon))
 	  return o;
 
@@ -1703,7 +1705,7 @@ static Json_Data *
 _json_parse(const char *string, int len)
 {
    struct json_parser parser;
-   int i, ret;
+   int ret;
    Json_Data *d;
 
    if (!string)

@@ -414,7 +414,7 @@ _icon_get(Evry_Item *it, Evas *e)
 	if (t->id == p->current_track)
 	  {
 	     o = e_icon_add(e);
-
+	     e_icon_preload_set(o, 1);
 	     if (p->status.playing == 0)
 	       e_icon_file_edje_set(o, theme_file, "media-playback-start");
 	     else if (p->status.playing == 1)
@@ -428,7 +428,7 @@ _icon_get(Evry_Item *it, Evas *e)
 	if (edje_file_group_exists(theme_file, it->icon))
 	  {
 	     o = e_icon_add(e);
-
+	     e_icon_preload_set(o, 1);
 	     if (e_icon_file_edje_set(o, theme_file, it->icon))
 	       return o;
 

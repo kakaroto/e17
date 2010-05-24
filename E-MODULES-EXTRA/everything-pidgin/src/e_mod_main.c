@@ -48,7 +48,6 @@ struct _Buddy_Info
   int accountNr; //pidgin's internal account ID the buddy is associated to
   const char* networkID; //the network's ID for the buddy. e.g. UIN in AOL's ICQ
   int iconReference; //pidgin's internal reference for a icon
-  const char* iconPath; //real path to the icon on the filesystem
   const char *file;
   const char *message;
 
@@ -97,7 +96,7 @@ static Evry_Action *act2 = NULL;
 static Evry_Action *act3 = NULL;
 static const int DEFAULT_CONVERSATION_TYPE = 1;
 static Evry_Type PIDGIN_CONTACT;
-
+static const char *buddy_icon_default = NULL;
 
 static void
 getBuddyList()
@@ -190,27 +189,6 @@ check_msg(void *data, DBusMessage *reply, DBusError *error)
   return (dbus_message_get_type(reply) == DBUS_MESSAGE_TYPE_METHOD_RETURN);
 }
 
-Evas_Object *
-_icon_get(Evry_Item *it, Evas *e)
-{
-   Evas_Object *obj;
-
-   GET_BUDDYINFO(bi, it);
-
-  if (bi->iconPath != NULL)
-    {
-       if (!(obj = e_icon_add(e)))
-	 return NULL;
-
-      if (e_icon_file_set(obj, bi->iconPath))
-	return obj;
-
-      evas_object_del(obj);
-    }
-
-  return NULL;
-}
-
 static void
 cb_buddyList(void *data, DBusMessage *reply, DBusError *error)
 {
@@ -225,7 +203,7 @@ cb_buddyList(void *data, DBusMessage *reply, DBusError *error)
 
   do
     {
-      bi = EVRY_ITEM_NEW(Buddy_Info, plug, NULL, _icon_get, cb_itemFree);
+      bi = EVRY_ITEM_NEW(Buddy_Info, plug, NULL, NULL, cb_itemFree);
       if (!bi) continue;
 
       dbus_message_iter_get_basic(&arr, (dbus_int32_t*) &(bi->buddyListNumber));
@@ -328,7 +306,7 @@ cb_buddyIconPath(void *data, DBusMessage *reply, DBusError *error)
 
   /* printf("icon %s %s\n", EVRY_ITEM(bi)->label, tmpString); */
 
-  bi->iconPath = eina_stringshare_add(tmpString);
+  EVRY_ITEM_ICON_SET(bi, tmpString);
 
   _item_add(bi);
 }
@@ -348,6 +326,9 @@ _item_add(Buddy_Info *bi)
       return;
     }
 
+  if (!EVRY_ITEM(bi)->icon)
+    EVRY_ITEM(bi)->icon = eina_stringshare_ref(buddy_icon_default);
+  
   bi->ready = 1;
 
   _update_list(1);
@@ -372,7 +353,6 @@ cb_itemFree(Evry_Item *it)
   GET_BUDDYINFO(bi, it);
 
   IF_RELEASE(bi->networkID);
-  IF_RELEASE(bi->iconPath);
   IF_RELEASE(bi->file);
   IF_RELEASE(bi->message);
 
@@ -625,6 +605,8 @@ _plugins_init(const Evry_API *_api)
 
   PIDGIN_CONTACT = evry->type_register("PIDGIN_CONTACT");
 
+  buddy_icon_default = eina_stringshare_add("emblem-people"); 
+  
   plug = EVRY_PLUGIN_NEW(Evry_Plugin, N_("Pidgin"), NULL,
 			 PIDGIN_CONTACT,
 			 NULL, _cleanup, _fetch, NULL);
@@ -660,6 +642,8 @@ _plugins_shutdown(void)
   evry->action_free(act2);
   evry->action_free(act3);
 
+  IF_RELEASE(buddy_icon_default);
+  
   evry_module->active = EINA_FALSE;
 }
 
