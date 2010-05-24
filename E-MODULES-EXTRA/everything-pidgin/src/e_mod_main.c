@@ -193,13 +193,19 @@ check_msg(void *data, DBusMessage *reply, DBusError *error)
 Evas_Object *
 _icon_get(Evry_Item *it, Evas *e)
 {
-  GET_BUDDYINFO(bi, it);
+   Evas_Object *obj;
+
+   GET_BUDDYINFO(bi, it);
 
   if (bi->iconPath != NULL)
     {
-      Evas_Object *obj = e_icon_add(e);
+       if (!(obj = e_icon_add(e)))
+	 return NULL;
+
       if (e_icon_file_set(obj, bi->iconPath))
 	return obj;
+
+      evas_object_del(obj);
     }
 
   return NULL;
