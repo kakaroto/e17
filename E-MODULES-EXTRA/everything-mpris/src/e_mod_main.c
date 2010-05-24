@@ -642,6 +642,8 @@ _cleanup(Evry_Plugin *plugin)
   GET_PLUGIN(p, plugin);
   Evry_Item *it;
 
+  EVRY_PLUGIN_ITEMS_CLEAR(p);
+  
   if (cb_tracklist_change)
     e_dbus_signal_handler_del(conn, cb_tracklist_change);
   if (cb_player_track_change)
@@ -668,8 +670,6 @@ _cleanup(Evry_Plugin *plugin)
   if (p->update_timer)
     ecore_timer_del(p->update_timer);
   p->update_timer = NULL;
-
-  EVRY_PLUGIN_ITEMS_CLEAR(p);
 }
 
 static int
