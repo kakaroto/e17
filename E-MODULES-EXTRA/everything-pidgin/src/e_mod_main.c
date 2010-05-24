@@ -617,7 +617,7 @@ _plugins_init(const Evry_API *_api)
       return EINA_FALSE;
     }
 
-  PIDGIN_CONTACT = evry_type_register("PIDGIN_CONTACT");
+  PIDGIN_CONTACT = evry->type_register("PIDGIN_CONTACT");
 
   plug = EVRY_PLUGIN_NEW(Evry_Plugin, N_("Pidgin"), NULL,
 			 PIDGIN_CONTACT,
