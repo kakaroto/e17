@@ -449,7 +449,7 @@ _action_send(Evry_Action *act)
   DBusMessage *msg;
   const char *path;
 
-  GET_BUDDYINFO(bi, act->it1.item->data);
+  GET_BUDDYINFO(bi, act->it1.item);
 
   if (!(msg = dbus_message_new_method_call(DBUS_PIDGIN_BUS_NAME,
 					   DBUS_PIDGIN_PATH,
@@ -552,7 +552,7 @@ static int
 _action_chat(Evry_Action *act)
 {
   DBusMessage *msg;
-  GET_BUDDYINFO(bi, act->it1.item->data);
+  GET_BUDDYINFO(bi, act->it1.item);
 
   if (!(msg = dbus_message_new_method_call(DBUS_PIDGIN_BUS_NAME,
 					   DBUS_PIDGIN_PATH,
