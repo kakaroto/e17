@@ -328,7 +328,7 @@ _item_add(Buddy_Info *bi)
 
   if (!EVRY_ITEM(bi)->icon)
     EVRY_ITEM(bi)->icon = eina_stringshare_ref(buddy_icon_default);
-  
+
   bi->ready = 1;
 
   _update_list(1);
@@ -414,7 +414,6 @@ cb_sendFile(void *data, DBusMessage *reply, DBusError *error)
 {
   DBusMessage *msg;
   int connection;
-  Evry_Action *act = data;
   GET_BUDDYINFO(bi, data);
 
   if (!check_msg(data, reply, error)) goto end;
@@ -457,25 +456,25 @@ _action_send(Evry_Action *act)
 					   "PurpleAccountGetConnection")))
     return 0;
 
+  IF_RELEASE(bi->message);
+  if (act->it2.item)
+    {
+       GET_FILE(file, act->it2.item);
+
+       if ((path = evry->file_path_get(file)))
+	 bi->file = eina_stringshare_ref(path);
+    }
+
+  /* when action returns and everything hides items will be freed,
+     but we need to wait for the connection.. */
+  EVRY_ITEM_REF(bi);
+
   dbus_message_append_args(msg,
 			   DBUS_TYPE_INT32, &(bi->accountNr),
 			   DBUS_TYPE_INVALID);
 
   e_dbus_message_send(conn, msg, cb_sendFile, -1, bi);
   dbus_message_unref(msg);
-
-  IF_RELEASE(bi->message);
-  if (act->it2.item)
-    {
-      GET_FILE(file, act->it2.item);
-
-      if ((path = evry->file_path_get(file)))
-	bi->file = eina_stringshare_ref(path);
-    }
-
-  /* when action returns and everything hides items will be freed,
-     but we need to wait for the connection.. */
-  EVRY_ITEM_REF(bi);
 
   return EVRY_ACTION_FINISHED;
 }
@@ -563,16 +562,6 @@ _action_chat(Evry_Action *act)
       return EVRY_ACTION_OTHER;
     }
 
-  dbus_message_append_args(msg,
-			   DBUS_TYPE_INT32, &DEFAULT_CONVERSATION_TYPE,
-			   DBUS_TYPE_INT32, &(bi->accountNr),
-			   DBUS_TYPE_STRING,&(bi->networkID),
-			   DBUS_TYPE_INVALID);
-
-  e_dbus_message_send(conn, msg, cb_getImData, -1, act);
-
-  dbus_message_unref(msg);
-
   /* when action returns and everything hides items will be freed,
      but we need to wait for the connection.. */
   IF_RELEASE(bi->message);
@@ -580,6 +569,16 @@ _action_chat(Evry_Action *act)
     bi->message = eina_stringshare_ref(act->it2.item->label);
 
   EVRY_ITEM_REF(bi);
+
+  dbus_message_append_args(msg,
+			   DBUS_TYPE_INT32, &DEFAULT_CONVERSATION_TYPE,
+			   DBUS_TYPE_INT32, &(bi->accountNr),
+			   DBUS_TYPE_STRING,&(bi->networkID),
+			   DBUS_TYPE_INVALID);
+
+  e_dbus_message_send(conn, msg, cb_getImData, -1, bi);
+
+  dbus_message_unref(msg);
 
   return EVRY_ACTION_FINISHED;
 }
@@ -605,8 +604,8 @@ _plugins_init(const Evry_API *_api)
 
   PIDGIN_CONTACT = evry->type_register("PIDGIN_CONTACT");
 
-  buddy_icon_default = eina_stringshare_add("emblem-people"); 
-  
+  buddy_icon_default = eina_stringshare_add("emblem-people");
+
   plug = EVRY_PLUGIN_NEW(Evry_Plugin, N_("Pidgin"), NULL,
 			 PIDGIN_CONTACT,
 			 NULL, _cleanup, _fetch, NULL);
@@ -643,7 +642,7 @@ _plugins_shutdown(void)
   evry->action_free(act3);
 
   IF_RELEASE(buddy_icon_default);
-  
+
   evry_module->active = EINA_FALSE;
 }
 
