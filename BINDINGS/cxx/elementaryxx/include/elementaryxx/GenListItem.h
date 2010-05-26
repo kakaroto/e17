@@ -6,9 +6,13 @@
 
 namespace Elmxx {
 
+/* forward declarations */
+class GenList;
+  
 class GenListItem
 {
 public:
+  friend class GenList;
   
 private:
   Elm_Genlist_Item *mItem;

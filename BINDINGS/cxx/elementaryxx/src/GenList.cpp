@@ -4,6 +4,9 @@
 
 /* Project */
 #include "../include/elementaryxx/GenList.h"
+#include "../include/elementaryxx/GenListItem.h"
+#include "../include/elementaryxx/GenListColumnConstructor.h"
+#include "../include/elementaryxx/GenListColumnSelector.h"
 
 /* STD */
 #include <cassert>
@@ -121,27 +124,56 @@ void GenList::setDataModel (GenListDataModel &model)
 
 void GenList::gl_sel (void *data, Evas_Object *obj, void *event_info)
 {
-  // TODO: sigc
-  printf("sel item data [%p] on genlist obj [%p], item pointer [%p]\n", data, obj, event_info);
+  GenListColumnSelector *selection = (GenListColumnSelector*) data;
+  GenList *gl = selection->mGenList;
+  Evasxx::Object *eo = Evasxx::Object::objectLink (obj);
+  gl->signalSelect.emit (*eo, event_info);
 }
 
 /* operations to add items */
 
-void GenList::append ()
+void GenList::append (GenListColumnConstructor *construction, GenListItem *parent, Elm_Genlist_Item_Flags flags, GenListColumnSelector *selection)
 {
   assert (mModel);
   
   Elm_Genlist_Item *gli;
-    
-  int i = 99;
+  bool internalConstruction = false;
+  bool internalSelection = false;
+  
+  if (!construction)
+  {
+    // create internal construction object if construction==NULL was given and delete if after adding
+    // this is needed to provide the user an easy API to add type save data to item append callbacks
+    internalConstruction = true;
+    construction = new GenListColumnConstructor ();  
+  }
+  
+  if (!selection)
+  {
+    // create internal construction object if construction==NULL was given and delete if after adding
+    // this is needed to provide the user an easy API to add type save data to item append callbacks
+    internalSelection = true;
+    selection = new GenListColumnSelector ();  
+  }
+  
+  construction->mDataModel = mModel;
+  selection->mGenList = this;
 
   gli = elm_genlist_item_append (o, &mModel->mGLIC,
-                                 mModel /* item data */,
-                                 NULL/* parent */,
-                                 ELM_GENLIST_ITEM_NONE,
+                                 construction /* item data */,
+                                 parent ? parent->mItem : NULL /* parent */,
+                                 flags,
                                  GenList::gl_sel/* func */,
-                                 (void *)(i * 10)/* func data */);
+                                 selection /* func data */);
 
+  if (internalConstruction)
+  {
+    delete construction;
+  }
+  if (internalSelection)
+  {
+    delete selection;
+  } 
 }
 
 } // end namespace Elmxx

@@ -12,7 +12,11 @@ namespace Elmxx {
 
 /* forward declarations */
 class GenList;
-  
+class Icon;
+class Window;
+class Object;
+class GenListColumnConstructor;
+
 class GenListDataModel
 {
 public:
@@ -20,7 +24,15 @@ public:
   
   GenListDataModel ();
   
-  std::string getLabel (Evasxx::Object &obj, const std::string &part) const;
+  // TODO: implement these 4 functions pure virtual?
+  
+  std::string getLabel (GenListColumnConstructor *construction, Evasxx::Object &obj, const std::string &part) const;
+  
+  Elmxx::Object *getIcon (GenListColumnConstructor *construction, Evasxx::Object &obj, const std::string &part);
+  
+  bool getState (GenListColumnConstructor *construction, Evasxx::Object &obj, const std::string &part);
+  
+  void del (GenListColumnConstructor *construction, Evasxx::Object &obj);
 
 private:
   static char *gl_label_get (const void *data, Evas_Object *obj, const char *part);

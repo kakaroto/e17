@@ -49,5 +49,7 @@ libelementaryxx_la_SOURCES = \
 	Separator.cpp  \
 	GenList.cpp  \
 	GenListItem.cpp  \
-	GenListDataModel.cpp
+	GenListDataModel.cpp  \
+	GenListColumnConstructor.cpp \
+	GenListColumnSelector.cpp
 
