@@ -94,7 +94,6 @@ test_genlist (void *data, Evas_Object *obj, void *event_info)
 {
   /*Evas_Object *win, *bg, *gl, *bt_50, *bt_1500, *bx;
   Evas_Object *over;
-  Elm_Genlist_Item *gli;
   */
   
   Window *win = Window::factory ("genlist", ELM_WIN_BASIC);
@@ -131,17 +130,17 @@ test_genlist (void *data, Evas_Object *obj, void *event_info)
    evas_object_show(over);
    evas_object_size_hint_weight_set(over, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    elm_win_resize_object_add(win, over);
-
-   bt_50 = elm_button_add(win);
-   elm_button_label_set(bt_50, "Go to 50");
-   evas_object_show(bt_50);
-   elm_box_pack_end(bx, bt_50);
-
-   bt_1500 = elm_button_add(win);
-   elm_button_label_set(bt_1500, "Go to 1500");
-   evas_object_show(bt_1500);
-   elm_box_pack_end(bx, bt_1500);
 #endif
+
+  Button *bt_50 = Button::factory (*win);
+  bt_50->setLabel ("Go to 50");
+  bx->packEnd (*bt_50);
+  bt_50->show ();
+
+  Button *bt_1500 = Button::factory (*win);
+  bt_1500->setLabel ("Go to 1500");
+  bx->packEnd (*bt_1500);
+  bt_1500->show ();
   
   gl->setDataModel (model);
   
@@ -163,9 +162,7 @@ test_genlist (void *data, Evas_Object *obj, void *event_info)
           evas_object_smart_callback_add(bt_1500, "clicked", _bt1500_cb, gli);
 #endif
   }
-  
-
-  
+    
   win->resize (Size (480, 800));
   win->show ();
 }
@@ -337,30 +334,36 @@ my_gl_flush(void *data, Evas_Object *obj, void *event_info)
 {
    ecore_timer_add(1.2, my_gl_flush_delay, NULL);
 }
-
+#endif
 void
 test_genlist2(void *data, Evas_Object *obj, void *event_info)
 {
-   Evas_Object *win, *bg, *gl, *bx, *bx2, *bx3, *bt;
-   Elm_Genlist_Item *gli[10];
-   char buf[PATH_MAX];
+  /*Evas_Object *win, *bg, *gl, *bx, *bx2, *bx3, *bt;
+  Elm_Genlist_Item *gli[10];
+  char buf[PATH_MAX]*/
+    
+  Window *win = Window::factory ("genlist-2", ELM_WIN_BASIC);
+  win->setTitle ("GenList 2");
+  win->setAutoDel (true);
+  
+  Background *bg = Background::factory (*win);
+  win->addObjectResize (*bg);
+  bg->setFile (searchPixmapFile ("elementaryxx/plant_01.jpg"));
+  bg->setWeightHintSize (EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+  bg->show ();
+  
+  Box *bx = Box::factory (*win);
+  bx->setWeightHintSize (EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+  win->addObjectResize (*bx);
+  bx->show ();
 
-   win = elm_win_add(NULL, "genlist-2", ELM_WIN_BASIC);
-   elm_win_title_set(win, "Genlist 2");
-   elm_win_autodel_set(win, 1);
-
-   bg = elm_bg_add(win);
-   snprintf(buf, sizeof(buf), "%s/images/plant_01.jpg", PACKAGE_DATA_DIR);
-   elm_bg_file_set(bg, buf, NULL);
-   elm_win_resize_object_add(win, bg);
-   evas_object_size_hint_weight_set(bg, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-   evas_object_show(bg);
-
-   bx = elm_box_add(win);
-   evas_object_size_hint_weight_set(bx, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-   elm_win_resize_object_add(win, bx);
-   evas_object_show(bx);
-
+  GenList *gl = GenList::factory (*win);
+  gl->setAlignHintSize (EVAS_HINT_FILL, EVAS_HINT_FILL);
+  gl->setWeightHintSize (EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+  bx->packEnd (*gl);
+  gl->show ();
+	
+#if 0
    gl = elm_genlist_add(win);
    evas_object_size_hint_align_set(gl, EVAS_HINT_FILL, EVAS_HINT_FILL);
    evas_object_size_hint_weight_set(gl, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
@@ -503,11 +506,12 @@ test_genlist2(void *data, Evas_Object *obj, void *event_info)
    elm_box_pack_end(bx, bx3);
    evas_object_show(bx3);
 
+#endif
 
-   evas_object_resize(win, 320, 320);
-   evas_object_show(win);
+  win->resize (size320x320);
+  win->show ();
 }
-
+#if 0
 /*************/
 
 static Elm_Genlist_Item_Class itc2;

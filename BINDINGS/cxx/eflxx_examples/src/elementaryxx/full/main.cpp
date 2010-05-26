@@ -43,8 +43,8 @@ void test_scaling(void *data, Evas_Object *obj, void *event_info);
 void test_scaling2(void *data, Evas_Object *obj, void *event_info);*/
 void test_slider(void *data, Evas_Object *obj, void *event_info);
 void test_genlist(void *data, Evas_Object *obj, void *event_info);
-/*void test_genlist2(void *data, Evas_Object *obj, void *event_info);
-void test_genlist3(void *data, Evas_Object *obj, void *event_info);
+void test_genlist2(void *data, Evas_Object *obj, void *event_info);
+/*void test_genlist3(void *data, Evas_Object *obj, void *event_info);
 void test_genlist4(void *data, Evas_Object *obj, void *event_info);
 void test_genlist5(void *data, Evas_Object *obj, void *event_info);
 void test_genlist6(void *data, Evas_Object *obj, void *event_info);*/
@@ -185,8 +185,8 @@ int main (int argc, char **argv)
   li.append("Scaling 2", NULL, NULL, my_bt_27, NULL);*/
   li->append ("Slider", test_slider, NULL);
   li->append("Genlist", test_genlist, NULL);
-  /*li.append("Genlist 2", NULL, NULL, my_bt_30, NULL);
-  li.append("Genlist 3", NULL, NULL, my_bt_31, NULL);
+  li->append("Genlist 2", test_genlist2, NULL);
+  /*li.append("Genlist 3", NULL, NULL, my_bt_31, NULL);
   li.append("Genlist 4", NULL, NULL, my_bt_32, NULL);*/
   li->append ("Checks", test_check, NULL);
   li->append ("Radios", test_radio, NULL);
