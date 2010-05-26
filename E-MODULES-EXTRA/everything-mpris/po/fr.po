@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Everything-mpris module\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2010-05-18 07:50+0400\n"
-"PO-Revision-Date: 2010-05-18 08:41+0400\n"
+"POT-Creation-Date: 2010-05-26 06:26+0400\n"
+"PO-Revision-Date: 2010-05-26 07:21+0400\n"
 "Last-Translator: batden <batden@orange.fr>\n"
 "Language-Team: French <pourunmondesansgourou@gmail.com>\n"
 "MIME-Version: 1.0\n"
@@ -22,67 +22,72 @@ msgstr ""
 msgid "No Title"
 msgstr "Sans Titre"
 
-#: src/e_mod_main.c:623
+#: src/e_mod_main.c:488
+#: src/e_mod_main.c:631
+msgid "Loading Playlist"
+msgstr "Chargement de la liste de lecture"
+
+#: src/e_mod_main.c:498
 msgid "Empty Playlist"
 msgstr "Liste de lecture vide"
 
-#: src/e_mod_main.c:1324
+#: src/e_mod_main.c:1329
 msgid "Playlist"
 msgstr "Liste de lecture"
 
-#: src/e_mod_main.c:1348
+#: src/e_mod_main.c:1359
 msgid "Play Track"
 msgstr "Lire la piste"
 
-#: src/e_mod_main.c:1353
+#: src/e_mod_main.c:1364
 msgid "Play"
 msgstr "Lecture"
 
-#: src/e_mod_main.c:1357
+#: src/e_mod_main.c:1368
 msgid "Pause"
 msgstr "Pause"
 
-#: src/e_mod_main.c:1361
+#: src/e_mod_main.c:1372
 msgid "Stop"
 msgstr "Arrêt"
 
-#: src/e_mod_main.c:1365
+#: src/e_mod_main.c:1376
 msgid "Forward"
 msgstr "Avancer"
 
-#: src/e_mod_main.c:1369
+#: src/e_mod_main.c:1380
 msgid "Rewind"
 msgstr "Reculer"
 
-#: src/e_mod_main.c:1373
+#: src/e_mod_main.c:1384
 msgid "Remove Track"
 msgstr "Supprimer la piste"
 
-#: src/e_mod_main.c:1378
+#: src/e_mod_main.c:1389
 msgid "Clear Playlist"
 msgstr "Vider la liste de lecture"
 
-#: src/e_mod_main.c:1387
+#: src/e_mod_main.c:1393
 msgid "Play File"
 msgstr "Lire un fichier"
 
-#: src/e_mod_main.c:1392
+#: src/e_mod_main.c:1398
 msgid "Add Files..."
 msgstr "Ajouter des fichiers..."
 
-#: src/e_mod_main.c:1396
+#: src/e_mod_main.c:1402
 msgid "Enqueue in Playlist"
 msgstr "Mettre dans la file d'attente"
 
-#: src/e_mod_main.c:1401
+#: src/e_mod_main.c:1407
 msgid "Add Music..."
 msgstr "Ajouter de la musique..."
 
-#: src/e_mod_main.c:1405
+#: src/e_mod_main.c:1411
 msgid "Remove Duplicates"
 msgstr "Supprimer les doublons"
 
-#: src/e_mod_main.c:1409
+#: src/e_mod_main.c:1415
 msgid "Remove Missing Files"
 msgstr "Supprimer les fichiers manquants"
 

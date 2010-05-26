@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Everything-mpris\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2010-05-18 19:54+0200\n"
-"PO-Revision-Date: 2010-05-18 19:55+0200\n"
+"POT-Creation-Date: 2010-05-26 17:36+0200\n"
+"PO-Revision-Date: 2010-05-26 17:37+0200\n"
 "Last-Translator: Massimo Maiurana <maiurana@gmail.com>\n"
 "Language-Team: none\n"
 "MIME-Version: 1.0\n"
@@ -18,66 +18,70 @@ msgstr ""
 msgid "No Title"
 msgstr "Nessun titolo"
 
-#: src/e_mod_main.c:623
+#: src/e_mod_main.c:488 src/e_mod_main.c:631
+msgid "Loading Playlist"
+msgstr "Caricamento playlist"
+
+#: src/e_mod_main.c:498
 msgid "Empty Playlist"
 msgstr "Playlist vuota"
 
-#: src/e_mod_main.c:1321
+#: src/e_mod_main.c:1329
 msgid "Playlist"
 msgstr "Playlist"
 
-#: src/e_mod_main.c:1345
+#: src/e_mod_main.c:1359
 msgid "Play Track"
 msgstr "Esegui traccia"
 
-#: src/e_mod_main.c:1350
+#: src/e_mod_main.c:1364
 msgid "Play"
 msgstr "Esegui"
 
-#: src/e_mod_main.c:1354
+#: src/e_mod_main.c:1368
 msgid "Pause"
 msgstr "Pausa"
 
-#: src/e_mod_main.c:1358
+#: src/e_mod_main.c:1372
 msgid "Stop"
 msgstr "Ferma"
 
-#: src/e_mod_main.c:1362
+#: src/e_mod_main.c:1376
 msgid "Forward"
 msgstr "Avanti"
 
-#: src/e_mod_main.c:1366
+#: src/e_mod_main.c:1380
 msgid "Rewind"
 msgstr "Indietro"
 
-#: src/e_mod_main.c:1370
+#: src/e_mod_main.c:1384
 msgid "Remove Track"
 msgstr "Rimuovi traccia"
 
-#: src/e_mod_main.c:1375
+#: src/e_mod_main.c:1389
 msgid "Clear Playlist"
 msgstr "Svuota playlist"
 
-#: src/e_mod_main.c:1384
+#: src/e_mod_main.c:1393
 msgid "Play File"
 msgstr "Esegui file"
 
-#: src/e_mod_main.c:1389
+#: src/e_mod_main.c:1398
 msgid "Add Files..."
 msgstr "Aggiungi file..."
 
-#: src/e_mod_main.c:1393
+#: src/e_mod_main.c:1402
 msgid "Enqueue in Playlist"
 msgstr "Accoda alla playlist"
 
-#: src/e_mod_main.c:1398
+#: src/e_mod_main.c:1407
 msgid "Add Music..."
 msgstr "Aggiungi musica..."
 
-#: src/e_mod_main.c:1402
+#: src/e_mod_main.c:1411
 msgid "Remove Duplicates"
 msgstr "Rimuovi duplicati"
 
-#: src/e_mod_main.c:1406
+#: src/e_mod_main.c:1415
 msgid "Remove Missing Files"
 msgstr "Rimuovi file mancanti"
