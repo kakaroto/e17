@@ -1,7 +1,5 @@
 #include "test.h"
 
-
-
 typedef struct _Testitem
 {
    Elm_Genlist_Item *item;
@@ -9,8 +7,6 @@ typedef struct _Testitem
    int onoff;
 } Testitem;
 
-
-//static Elm_Genlist_Item_Class itc1;
 static GenListDataModel model;
 
 char *gl_label_get(const void *data, Evas_Object *obj, const char *part)
@@ -42,6 +38,12 @@ gl_sel(void *data, Evas_Object *obj, void *event_info)
 {
    printf("sel item data [%p] on genlist obj [%p], item pointer [%p]\n", data, obj, event_info);
 }
+
+void glSelected (const Evasxx::Object &obj, void *event_info)
+{
+  cout << "glSelected" << endl;
+}
+
 #if 0
 static void
 _move(void *data, Evas *evas, Evas_Object *obj, void *event_info)
@@ -143,9 +145,11 @@ test_genlist (void *data, Evas_Object *obj, void *event_info)
   
   gl->setDataModel (model);
   
+  gl->signalSelect.connect (sigc::ptr_fun (&glSelected));
+  
   for (int i = 0; i < 2000; i++)
   {
-    gl->append ();
+    gl->append (NULL, NULL, ELM_GENLIST_ITEM_NONE, NULL);
 #if 0
         gli = elm_genlist_item_append(gl, &itc1,
                                       (void *)i/* item data */,
