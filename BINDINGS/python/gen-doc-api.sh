@@ -1,5 +1,7 @@
 #!/bin/sh
 
+mkdir -p doc/api/html
+
 epydoc --html -o doc/api/html \
     -n "Python-EFL API" \
     evas.c_evas \
@@ -15,7 +17,6 @@ epydoc --html -o doc/api/html \
     edje.c_edje \
     edje.decorators \
     emotion.c_emotion \
-    epsilon.c_epsilon \
-    epsilon.request \
+    elementary.c_elementary \
     e_dbus
 
