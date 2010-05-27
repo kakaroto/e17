@@ -7,7 +7,7 @@ typedef struct _Testitem
    int onoff;
 } Testitem;
 
-static GenListDataModel model;
+static GenListDataModel model ("default");
 
 char *gl_label_get(const void *data, Evas_Object *obj, const char *part)
 {
@@ -341,6 +341,9 @@ test_genlist2(void *data, Evas_Object *obj, void *event_info)
   /*Evas_Object *win, *bg, *gl, *bx, *bx2, *bx3, *bt;
   Elm_Genlist_Item *gli[10];
   char buf[PATH_MAX]*/
+
+  Button *bt = NULL;
+  Box *bx2 = NULL;
     
   Window *win = Window::factory ("genlist-2", ELM_WIN_BASIC);
   win->setTitle ("GenList 2");
@@ -362,18 +365,22 @@ test_genlist2(void *data, Evas_Object *obj, void *event_info)
   gl->setWeightHintSize (EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
   bx->packEnd (*gl);
   gl->show ();
-	
-#if 0
-   gl = elm_genlist_add(win);
-   evas_object_size_hint_align_set(gl, EVAS_HINT_FILL, EVAS_HINT_FILL);
-   evas_object_size_hint_weight_set(gl, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-   evas_object_show(gl);
 
-   itc1.item_style     = "default";
-   itc1.func.label_get = gl_label_get;
-   itc1.func.icon_get  = gl_icon_get;
-   itc1.func.state_get = gl_state_get;
-   itc1.func.del       = gl_del;
+  gl->setDataModel (model);
+  
+  //gl->signalSelect.connect (sigc::ptr_fun (&glSelected));
+
+  // only for development -> remove
+  gl->append (NULL, NULL, ELM_GENLIST_ITEM_NONE, NULL);
+  gl->append (NULL, NULL, ELM_GENLIST_ITEM_NONE, NULL);
+  gl->append (NULL, NULL, ELM_GENLIST_ITEM_NONE, NULL);
+  gl->append (NULL, NULL, ELM_GENLIST_ITEM_NONE, NULL);
+  gl->append (NULL, NULL, ELM_GENLIST_ITEM_NONE, NULL);
+  gl->append (NULL, NULL, ELM_GENLIST_ITEM_NONE, NULL);
+
+  // FIXME: accessing an item crashes!!
+  
+#if 0
 
    gli[0] = elm_genlist_item_append(gl, &itc1,
 				    (void *)1001/* item data */, NULL/* parent */, ELM_GENLIST_ITEM_NONE, gl_sel/* func */,
@@ -397,116 +404,127 @@ test_genlist2(void *data, Evas_Object *obj, void *event_info)
 					  (void *)1007/* item data */, gli[2]/* rel */, ELM_GENLIST_ITEM_NONE, gl_sel/* func */,
 					  (void *)1007/* func data */);
 
-   elm_box_pack_end(bx, gl);
-
-   bx2 = elm_box_add(win);
-   elm_box_horizontal_set(bx2, 1);
-   elm_box_homogenous_set(bx2, 1);
-   evas_object_size_hint_weight_set(bx2, EVAS_HINT_EXPAND, 0.0);
-   evas_object_size_hint_align_set(bx2, EVAS_HINT_FILL, EVAS_HINT_FILL);
-
-   bt = elm_button_add(win);
-   elm_button_label_set(bt, "/\\");
-   evas_object_smart_callback_add(bt, "clicked", my_gl_first, gl);
-   evas_object_size_hint_align_set(bt, EVAS_HINT_FILL, EVAS_HINT_FILL);
-   evas_object_size_hint_weight_set(bt, EVAS_HINT_EXPAND, 0.0);
-   elm_box_pack_end(bx2, bt);
-   evas_object_show(bt);
-
-   bt = elm_button_add(win);
-   elm_button_label_set(bt, "\\/");
-   evas_object_smart_callback_add(bt, "clicked", my_gl_last, gl);
-   evas_object_size_hint_align_set(bt, EVAS_HINT_FILL, EVAS_HINT_FILL);
-   evas_object_size_hint_weight_set(bt, EVAS_HINT_EXPAND, 0.0);
-   elm_box_pack_end(bx2, bt);
-   evas_object_show(bt);
-
-   bt = elm_button_add(win);
-   elm_button_label_set(bt, "#");
-   evas_object_smart_callback_add(bt, "clicked", my_gl_disable, gl);
-   evas_object_size_hint_align_set(bt, EVAS_HINT_FILL, EVAS_HINT_FILL);
-   evas_object_size_hint_weight_set(bt, EVAS_HINT_EXPAND, 0.0);
-   elm_box_pack_end(bx2, bt);
-   evas_object_show(bt);
-
-   bt = elm_button_add(win);
-   elm_button_label_set(bt, "U");
-   evas_object_smart_callback_add(bt, "clicked", my_gl_update_all, gl);
-   evas_object_size_hint_align_set(bt, EVAS_HINT_FILL, EVAS_HINT_FILL);
-   evas_object_size_hint_weight_set(bt, EVAS_HINT_EXPAND, 0.0);
-   elm_box_pack_end(bx2, bt);
-   evas_object_show(bt);
-
-   elm_box_pack_end(bx, bx2);
-   evas_object_show(bx2);
-
-   bx2 = elm_box_add(win);
-   elm_box_horizontal_set(bx2, 1);
-   elm_box_homogenous_set(bx2, 1);
-   evas_object_size_hint_weight_set(bx2, EVAS_HINT_EXPAND, 0.0);
-   evas_object_size_hint_align_set(bx2, EVAS_HINT_FILL, EVAS_HINT_FILL);
-
-   bt = elm_button_add(win);
-   elm_button_label_set(bt, "X");
-   evas_object_smart_callback_add(bt, "clicked", my_gl_clear, gl);
-   evas_object_size_hint_align_set(bt, EVAS_HINT_FILL, EVAS_HINT_FILL);
-   evas_object_size_hint_weight_set(bt, EVAS_HINT_EXPAND, 0.0);
-   elm_box_pack_end(bx2, bt);
-   evas_object_show(bt);
-
-   bt = elm_button_add(win);
-   elm_button_label_set(bt, "+");
-   evas_object_smart_callback_add(bt, "clicked", my_gl_add, gl);
-   evas_object_size_hint_align_set(bt, EVAS_HINT_FILL, EVAS_HINT_FILL);
-   evas_object_size_hint_weight_set(bt, EVAS_HINT_EXPAND, 0.0);
-   elm_box_pack_end(bx2, bt);
-   evas_object_show(bt);
-
-   bt = elm_button_add(win);
-   elm_button_label_set(bt, "-");
-   evas_object_smart_callback_add(bt, "clicked", my_gl_del, gl);
-   evas_object_size_hint_align_set(bt, EVAS_HINT_FILL, EVAS_HINT_FILL);
-   evas_object_size_hint_weight_set(bt, EVAS_HINT_EXPAND, 0.0);
-   elm_box_pack_end(bx2, bt);
-   evas_object_show(bt);
-
-   elm_box_pack_end(bx, bx2);
-   evas_object_show(bx2);
-
-   bx3 = elm_box_add(win);
-   elm_box_horizontal_set(bx3, 1);
-   elm_box_homogenous_set(bx3, 1);
-   evas_object_size_hint_weight_set(bx3, EVAS_HINT_EXPAND, 0.0);
-   evas_object_size_hint_align_set(bx3, EVAS_HINT_FILL, EVAS_HINT_FILL);
-
-   bt = elm_button_add(win);
-   elm_button_label_set(bt, "+ before");
-   evas_object_smart_callback_add(bt, "clicked", my_gl_insert_before, gl);
-   evas_object_size_hint_align_set(bt, EVAS_HINT_FILL, EVAS_HINT_FILL);
-   evas_object_size_hint_weight_set(bt, EVAS_HINT_EXPAND, 0.0);
-   elm_box_pack_end(bx3, bt);
-   evas_object_show(bt);
-
-   bt = elm_button_add(win);
-   elm_button_label_set(bt, "+ after");
-   evas_object_smart_callback_add(bt, "clicked", my_gl_insert_after, gl);
-   evas_object_size_hint_align_set(bt, EVAS_HINT_FILL, EVAS_HINT_FILL);
-   evas_object_size_hint_weight_set(bt, EVAS_HINT_EXPAND, 0.0);
-   elm_box_pack_end(bx3, bt);
-   evas_object_show(bt);
-
-   bt = elm_button_add(win);
-   elm_button_label_set(bt, "Flush");
-   evas_object_smart_callback_add(bt, "clicked", my_gl_flush, gl);
-   evas_object_size_hint_align_set(bt, EVAS_HINT_FILL, EVAS_HINT_FILL);
-   evas_object_size_hint_weight_set(bt, EVAS_HINT_EXPAND, 0.0);
-   elm_box_pack_end(bx3, bt);
-   evas_object_show(bt);
-
-   elm_box_pack_end(bx, bx3);
-   evas_object_show(bx3);
-
 #endif
+  bx->packEnd (*gl);
+
+  bx2 = Box::factory (*win);
+  bx2->setOrientation (Box::Horizontal);
+  bx2->setHomogenous (true);
+  bx2->setWeightHintSize (EVAS_HINT_EXPAND, 0.0);
+  bx2->setAlignHintSize (EVAS_HINT_FILL, EVAS_HINT_FILL);
+  bx2->show ();
+
+  bt = Button::factory (*win);
+  bt->setLabel ("/\\");
+  //bt->getEventSignal ("clicked")->connect (sigc::ptr_fun (&my_gl_first));
+  // TODO: evas_object_smart_callback_add(bt, "clicked", my_gl_first, gl);
+  bt->setAlignHintSize (EVAS_HINT_FILL, EVAS_HINT_FILL);
+  bt->setWeightHintSize (EVAS_HINT_EXPAND, 0.0);
+  bx2->packEnd (*bt);
+  bt->show ();
+
+  bt = Button::factory (*win);
+  bt->setLabel ("\\/");
+  //bt->getEventSignal ("clicked")->connect (sigc::ptr_fun (&my_gl_last));
+  // TODO: evas_object_smart_callback_add(bt, "clicked", my_gl_last, gl);
+  bt->setAlignHintSize (EVAS_HINT_FILL, EVAS_HINT_FILL);
+  bt->setWeightHintSize (EVAS_HINT_EXPAND, 0.0);
+  bx2->packEnd (*bt);
+  bt->show ();
+
+  bt = Button::factory (*win);
+  bt->setLabel ("#");
+  //bt->getEventSignal ("clicked")->connect (sigc::ptr_fun (&my_gl_disable));
+  // TODO: evas_object_smart_callback_add(bt, "clicked", my_gl_disable, gl);
+  bt->setAlignHintSize (EVAS_HINT_FILL, EVAS_HINT_FILL);
+  bt->setWeightHintSize (EVAS_HINT_EXPAND, 0.0);
+  bx2->packEnd (*bt);
+  bt->show ();
+
+  bt = Button::factory (*win);
+  bt->setLabel ("U");
+  //bt->getEventSignal ("clicked")->connect (sigc::ptr_fun (&my_gl_update_all));
+  // TODO: evas_object_smart_callback_add(bt, "clicked", my_gl_update_all, gl);
+  bt->setAlignHintSize (EVAS_HINT_FILL, EVAS_HINT_FILL);
+  bt->setWeightHintSize (EVAS_HINT_EXPAND, 0.0);
+  bx2->packEnd (*bt);
+  bt->show (); 
+
+  bx->packEnd (*bx2);
+  bx2->show ();
+
+  bx2 = Box::factory (*win);
+  bx2->setOrientation (Box::Horizontal);
+  bx2->setHomogenous (true);
+  bx2->setWeightHintSize (EVAS_HINT_EXPAND, 0.0);
+  bx2->setAlignHintSize (EVAS_HINT_FILL, EVAS_HINT_FILL);
+  bx2->show ();
+
+  bt = Button::factory (*win);
+  bt->setLabel ("X");
+  //bt->getEventSignal ("clicked")->connect (sigc::ptr_fun (&my_gl_clear));
+  // TODO: evas_object_smart_callback_add(bt, "clicked", my_gl_clear, gl);
+  bt->setAlignHintSize (EVAS_HINT_FILL, EVAS_HINT_FILL);
+  bt->setWeightHintSize (EVAS_HINT_EXPAND, 0.0);
+  bx2->packEnd (*bt);
+  bt->show (); 
+
+  bt = Button::factory (*win);
+  bt->setLabel ("+");
+  //bt->getEventSignal ("clicked")->connect (sigc::ptr_fun (&my_gl_add));
+  // TODO: evas_object_smart_callback_add(bt, "clicked", my_gl_add, gl);
+  bt->setAlignHintSize (EVAS_HINT_FILL, EVAS_HINT_FILL);
+  bt->setWeightHintSize (EVAS_HINT_EXPAND, 0.0);
+  bx2->packEnd (*bt);
+  bt->show (); 
+
+  bt = Button::factory (*win);
+  bt->setLabel ("-");
+  //bt->getEventSignal ("clicked")->connect (sigc::ptr_fun (&my_gl_del));
+  // TODO: evas_object_smart_callback_add(bt, "clicked", my_gl_del, gl);
+  bt->setAlignHintSize (EVAS_HINT_FILL, EVAS_HINT_FILL);
+  bt->setWeightHintSize (EVAS_HINT_EXPAND, 0.0);
+  bx2->packEnd (*bt);
+  bt->show (); 
+  
+  bx->packEnd (*bx2);
+  bx2->show ();
+
+  Box *bx3 = Box::factory (*win);
+  bx3->setOrientation (Box::Horizontal);
+  bx3->setHomogenous (true);
+  bx3->setWeightHintSize (EVAS_HINT_EXPAND, 0.0);
+  bx3->setAlignHintSize (EVAS_HINT_FILL, EVAS_HINT_FILL);
+  
+  bt = Button::factory (*win);
+  bt->setLabel ("+ before");
+  //bt->getEventSignal ("clicked")->connect (sigc::ptr_fun (&my_gl_insert_before));
+  // TODO: evas_object_smart_callback_add(bt, "clicked", my_gl_insert_before, gl);
+  bt->setAlignHintSize (EVAS_HINT_FILL, EVAS_HINT_FILL);
+  bt->setWeightHintSize (EVAS_HINT_EXPAND, 0.0);
+  bx3->packEnd (*bt);
+  bt->show (); 
+
+  bt = Button::factory (*win);
+  bt->setLabel ("+ after");
+  //bt->getEventSignal ("clicked")->connect (sigc::ptr_fun (&my_gl_insert_after));
+  // TODO: evas_object_smart_callback_add(bt, "clicked", my_gl_insert_after, gl);
+  bt->setAlignHintSize (EVAS_HINT_FILL, EVAS_HINT_FILL);
+  bt->setWeightHintSize (EVAS_HINT_EXPAND, 0.0);
+  bx3->packEnd (*bt);
+  bt->show ();
+
+  bt = Button::factory (*win);
+  bt->setLabel ("Flush");
+  //bt->getEventSignal ("clicked")->connect (sigc::ptr_fun (&my_gl_flush));
+  // TODO: evas_object_smart_callback_add(bt, "clicked", my_gl_flush, gl);
+  bt->setAlignHintSize (EVAS_HINT_FILL, EVAS_HINT_FILL);
+  bt->setWeightHintSize (EVAS_HINT_EXPAND, 0.0);
+  bx3->packEnd (*bt);
+  bt->show ();
+  
+  bx->packEnd (*bx3);
+  bx3->show ();
 
   win->resize (size320x320);
   win->show ();
