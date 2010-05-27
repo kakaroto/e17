@@ -471,7 +471,7 @@ if __name__ == "__main__":
     usage = "usage: %prog [options]"
     op = OptionParser(usage=usage)
     op.add_option("-e", "--engine", type="choice",
-                  choices=("x11", "x11-16"), default="x11-16",
+                  choices=("x11", "x11-16"), default="x11",
                   help=("which display engine to use (x11, x11-16), "
                         "default=%default"))
     op.add_option("-n", "--no-fullscreen", action="store_true",

@@ -15,6 +15,9 @@ import edje.decorators
 import ecore
 import ecore.evas
 
+# Parse command line
+from optparse import OptionParser
+
 def on_resize(ee):
     x, y, w, h = ee.evas.viewport
     ee.data["main"].size = w, h
@@ -193,11 +196,23 @@ class VirtualKeyboard(edje.Edje):
             o.signal_emit("key_down", k)
 
 
-if ecore.evas.engine_type_supported_get("software_16_x11") and \
-   '-x11' not in sys.argv:
-    ee = ecore.evas.SoftwareX11_16(w=WIDTH, h=HEIGHT)
-else:
+usage = "usage: %prog [options]"
+op = OptionParser(usage=usage)
+op.add_option("-e", "--engine", type="choice",
+              choices=("x11", "x11-16"), default="x11",
+              help=("which display engine to use (x11, x11-16), "
+                    "default=%default"))
+
+# Handle options and create output window
+options, args = op.parse_args()
+if options.engine == "x11":
     ee = ecore.evas.SoftwareX11(w=WIDTH, h=HEIGHT)
+elif options.engine == "x11-16":
+    if ecore.evas.engine_type_supported_get("software_16_x11"):
+        ee = ecore.evas.SoftwareX11_16(w=WIDTH, h=HEIGHT)
+    else:
+        print "warning: x11-16 is not supported, fallback to x11"
+        ee = ecore.evas.SoftwareX11(w=WIDTH, h=HEIGHT)
 
 canvas = ee.evas
 o = VirtualKeyboard(canvas)
