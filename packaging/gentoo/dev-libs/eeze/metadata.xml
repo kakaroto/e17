@@ -6,7 +6,4 @@
  <email>enlightenment@gentoo.org</email>
  <name>Enlightenment-Gentoo maintainers</name>
 </maintainer>
-<use>
- <flag name="udev">Enable udev module (<pkg>sys-fs/udev</pkg>)</flag>
-</use>
 </pkgmetadata>

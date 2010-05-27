@@ -8,6 +8,7 @@ inherit efl
 
 DESCRIPTION="Enlightenment's integration to various libraries"
 HOMEPAGE="http://www.enlightenment.org"
+IUSE=""
 
 RDEPEND="
 	>=dev-libs/ecore-9999
