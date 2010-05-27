@@ -8,6 +8,8 @@ typedef struct _Testitem
 } Testitem;
 
 static GenListDataModel model ("default");
+static GenListDataModel model2 ("default");
+static GenListDataModel model3 ("default");
 
 char *gl_label_get(const void *data, Evas_Object *obj, const char *part)
 {
@@ -363,10 +365,17 @@ test_genlist2(void *data, Evas_Object *obj, void *event_info)
   GenList *gl = GenList::factory (*win);
   gl->setAlignHintSize (EVAS_HINT_FILL, EVAS_HINT_FILL);
   gl->setWeightHintSize (EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-  bx->packEnd (*gl);
   gl->show ();
 
   gl->setDataModel (model);
+
+  /*
+   itc1.item_style     = "default";
+   itc1.func.label_get = gl_label_get;
+   itc1.func.icon_get  = gl_icon_get;
+   itc1.func.state_get = gl_state_get;
+   itc1.func.del       = gl_del;
+   */
   
   //gl->signalSelect.connect (sigc::ptr_fun (&glSelected));
 
@@ -587,31 +596,44 @@ my_gl_update(void *data, Evas_Object *obj, void *event_info)
    tit->mode++;
    elm_genlist_item_update(tit->item);
 }
-
+#endif
 void
 test_genlist3(void *data, Evas_Object *obj, void *event_info)
 {
-   Evas_Object *win, *bg, *gl, *bx, *bx2, *bt;
-   static Testitem tit[3];
+   //Evas_Object *win, *bg, *gl, *bx, *bx2, *bt;
+  Button *bt = NULL;
+  Box *bx2 = NULL;
+  static Testitem tit[3];
 
-   win = elm_win_add(NULL, "genlist-3", ELM_WIN_BASIC);
-   elm_win_title_set(win, "Genlist 3");
-   elm_win_autodel_set(win, 1);
+  Window *win = Window::factory ("genlist-3", ELM_WIN_BASIC);
+  win->setTitle ("GenList 2");
+  win->setAutoDel (true);
+  
+  Background *bg = Background::factory (*win);
+  win->addObjectResize (*bg);
+  bg->setWeightHintSize (EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+  bg->show ();
+  
+  Box *bx = Box::factory (*win);
+  bx->setWeightHintSize (EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+  win->addObjectResize (*bx);
+  bx->show ();
 
-   bg = elm_bg_add(win);
-   elm_win_resize_object_add(win, bg);
-   evas_object_size_hint_weight_set(bg, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-   evas_object_show(bg);
+  GenList *gl = GenList::factory (*win);
+  gl->setAlignHintSize (EVAS_HINT_FILL, EVAS_HINT_FILL);
+  gl->setWeightHintSize (EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+  bx->packEnd (*gl);
+  gl->show ();
 
-   bx = elm_box_add(win);
-   evas_object_size_hint_weight_set(bx, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-   elm_win_resize_object_add(win, bx);
-   evas_object_show(bx);
+  gl->setDataModel (model2);
+  
+  //gl->signalSelect.connect (sigc::ptr_fun (&glSelected));
 
-   gl = elm_genlist_add(win);
-   evas_object_size_hint_align_set(gl, EVAS_HINT_FILL, EVAS_HINT_FILL);
-   evas_object_size_hint_weight_set(gl, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-   evas_object_show(gl);
+  // only for development -> remove
+  //gl->append (NULL, NULL, ELM_GENLIST_ITEM_NONE, NULL);
+
+  
+#if 0
 
    itc2.item_style     = "default";
    itc2.func.label_get = gl2_label_get;
@@ -631,47 +653,48 @@ test_genlist3(void *data, Evas_Object *obj, void *event_info)
    tit[2].item = elm_genlist_item_append(gl, &itc2,
 					 &(tit[2])/* item data */, NULL/* parent */, ELM_GENLIST_ITEM_NONE, gl_sel/* func */,
 					 NULL/* func data */);
+#endif
 
-   elm_box_pack_end(bx, gl);
-   evas_object_show(bx);
+  bx2 = Box::factory (*win);
+  bx2->setOrientation (Box::Horizontal);
+  bx2->setHomogenous (true);
+  bx2->setWeightHintSize (EVAS_HINT_EXPAND, 0.0);
+  bx2->setAlignHintSize (EVAS_HINT_FILL, EVAS_HINT_FILL);
 
-   bx2 = elm_box_add(win);
-   elm_box_horizontal_set(bx2, 1);
-   elm_box_homogenous_set(bx2, 1);
-   evas_object_size_hint_weight_set(bx2, EVAS_HINT_EXPAND, 0.0);
-   evas_object_size_hint_align_set(bx2, EVAS_HINT_FILL, EVAS_HINT_FILL);
+  bt = Button::factory (*win);
+  bt->setLabel ("[1]");
+  //bt->getEventSignal ("clicked")->connect (sigc::ptr_fun (&my_gl_update));
+  // TODO: evas_object_smart_callback_add(bt, "clicked", my_gl_update, &(tit[0]));
+  bt->setAlignHintSize (EVAS_HINT_FILL, EVAS_HINT_FILL);
+  bt->setWeightHintSize (EVAS_HINT_EXPAND, 0.0);
+  bx2->packEnd (*bt);
+  bt->show ();
 
-   bt = elm_button_add(win);
-   elm_button_label_set(bt, "[1]");
-   evas_object_smart_callback_add(bt, "clicked", my_gl_update, &(tit[0]));
-   evas_object_size_hint_align_set(bt, EVAS_HINT_FILL, EVAS_HINT_FILL);
-   evas_object_size_hint_weight_set(bt, EVAS_HINT_EXPAND, 0.0);
-   elm_box_pack_end(bx2, bt);
-   evas_object_show(bt);
+  bt = Button::factory (*win);
+  bt->setLabel ("[2]");
+  //bt->getEventSignal ("clicked")->connect (sigc::ptr_fun (&my_gl_update));
+  // TODO: evas_object_smart_callback_add(bt, "clicked", my_gl_update, &(tit[1]));
+  bt->setAlignHintSize (EVAS_HINT_FILL, EVAS_HINT_FILL);
+  bt->setWeightHintSize (EVAS_HINT_EXPAND, 0.0);
+  bx2->packEnd (*bt);
+  bt->show ();
 
-   bt = elm_button_add(win);
-   elm_button_label_set(bt, "[2]");
-   evas_object_smart_callback_add(bt, "clicked", my_gl_update, &(tit[1]));
-   evas_object_size_hint_align_set(bt, EVAS_HINT_FILL, EVAS_HINT_FILL);
-   evas_object_size_hint_weight_set(bt, EVAS_HINT_EXPAND, 0.0);
-   elm_box_pack_end(bx2, bt);
-   evas_object_show(bt);
+  bt = Button::factory (*win);
+  bt->setLabel ("[3]");
+  //bt->getEventSignal ("clicked")->connect (sigc::ptr_fun (&my_gl_update));
+  // TODO: evas_object_smart_callback_add(bt, "clicked", my_gl_update, &(tit[2]));
+  bt->setAlignHintSize (EVAS_HINT_FILL, EVAS_HINT_FILL);
+  bt->setWeightHintSize (EVAS_HINT_EXPAND, 0.0);
+  bx2->packEnd (*bt);
+  bt->show ();
 
-   bt = elm_button_add(win);
-   elm_button_label_set(bt, "[3]");
-   evas_object_smart_callback_add(bt, "clicked", my_gl_update, &(tit[2]));
-   evas_object_size_hint_align_set(bt, EVAS_HINT_FILL, EVAS_HINT_FILL);
-   evas_object_size_hint_weight_set(bt, EVAS_HINT_EXPAND, 0.0);
-   elm_box_pack_end(bx2, bt);
-   evas_object_show(bt);
+  bx->packEnd (*bx2);
+  bx2->show ();
 
-   elm_box_pack_end(bx, bx2);
-   evas_object_show(bx2);
-
-   evas_object_resize(win, 320, 320);
-   evas_object_show(win);
+  win->resize (size320x320);
+  win->show ();
 }
-
+#if 0
 /*************/
 
 static void
@@ -741,39 +764,47 @@ Eina_Bool gl3_state_get(const void *data, Evas_Object *obj, const char *part)
 void gl3_del(const void *data, Evas_Object *obj)
 {
 }
-
+#endif
 void
 test_genlist4(void *data, Evas_Object *obj, void *event_info)
 {
-   Evas_Object *win, *bg, *gl, *bx, *bx2, *bt;
-   static Testitem tit[3];
+  Button *bt = NULL;
+  Box *bx2 = NULL;
+  //Evas_Object *win, *bg, *gl, *bx, *bx2, *bt;
+  static Testitem tit[3];
 
-   win = elm_win_add(NULL, "genlist-4", ELM_WIN_BASIC);
-   elm_win_title_set(win, "Genlist 4");
-   elm_win_autodel_set(win, 1);
+  Window *win = Window::factory ("genlist-4", ELM_WIN_BASIC);
+  win->setTitle ("GenList 4");
+  win->setAutoDel (true);
+  
+  Background *bg = Background::factory (*win);
+  win->addObjectResize (*bg);
+  bg->setWeightHintSize (EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+  bg->show ();
+  
+  Box *bx = Box::factory (*win);
+  bx->setWeightHintSize (EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+  win->addObjectResize (*bx);
 
-   bg = elm_bg_add(win);
-   elm_win_resize_object_add(win, bg);
-   evas_object_size_hint_weight_set(bg, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-   evas_object_show(bg);
+  GenList *gl = GenList::factory (*win);
+  gl->setAlignHintSize (EVAS_HINT_FILL, EVAS_HINT_FILL);
+  gl->setWeightHintSize (EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
 
-   bx = elm_box_add(win);
-   evas_object_size_hint_weight_set(bx, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-   elm_win_resize_object_add(win, bx);
-   evas_object_show(bx);
+  gl->show ();
 
-   gl = elm_genlist_add(win);
-   elm_genlist_multi_select_set(gl, 1);
-   evas_object_size_hint_align_set(gl, EVAS_HINT_FILL, EVAS_HINT_FILL);
-   evas_object_size_hint_weight_set(gl, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-   evas_object_show(gl);
+  gl->setDataModel (model3);
+  
+  //gl->signalSelect.connect (sigc::ptr_fun (&glSelected));
 
-   itc3.item_style     = "default";
+  // only for development -> remove
+  //gl->append (NULL, NULL, ELM_GENLIST_ITEM_NONE, NULL);
+  
+   /*itc3.item_style     = "default";
    itc3.func.label_get = gl3_label_get;
    itc3.func.icon_get  = gl3_icon_get;
    itc3.func.state_get = gl3_state_get;
-   itc3.func.del       = gl3_del;
-
+   itc3.func.del       = gl3_del;*/
+#if 0
    tit[0].mode = 0;
    tit[0].item = elm_genlist_item_append(gl, &itc3,
 					 &(tit[0])/* item data */, NULL/* parent */, ELM_GENLIST_ITEM_NONE, gl_sel/* func */,
@@ -786,47 +817,50 @@ test_genlist4(void *data, Evas_Object *obj, void *event_info)
    tit[2].item = elm_genlist_item_append(gl, &itc3,
 					 &(tit[2])/* item data */, NULL/* parent */, ELM_GENLIST_ITEM_NONE, gl_sel/* func */,
 					 NULL/* func data */);
+#endif
+  bx->packEnd (*gl);
+  bx->show ();
 
-   elm_box_pack_end(bx, gl);
-   evas_object_show(bx);
+  bx2 = Box::factory (*win);
+  bx2->setOrientation (Box::Horizontal);
+  bx2->setHomogenous (true);
+  bx2->setWeightHintSize (EVAS_HINT_EXPAND, 0.0);
+  bx2->setAlignHintSize (EVAS_HINT_FILL, EVAS_HINT_FILL);
 
-   bx2 = elm_box_add(win);
-   elm_box_horizontal_set(bx2, 1);
-   elm_box_homogenous_set(bx2, 1);
-   evas_object_size_hint_weight_set(bx2, EVAS_HINT_EXPAND, 0.0);
-   evas_object_size_hint_align_set(bx2, EVAS_HINT_FILL, EVAS_HINT_FILL);
+  bt = Button::factory (*win);
+  bt->setLabel ("[1]");
+  //bt->getEventSignal ("clicked")->connect (sigc::ptr_fun (&my_gl_update));
+  // TODO: evas_object_smart_callback_add(bt, "clicked", my_gl_update, &(tit[0]));
+  bt->setAlignHintSize (EVAS_HINT_FILL, EVAS_HINT_FILL);
+  bt->setWeightHintSize (EVAS_HINT_EXPAND, 0.0);
+  bx2->packEnd (*bt);
+  bt->show ();
 
-   bt = elm_button_add(win);
-   elm_button_label_set(bt, "[1]");
-   evas_object_smart_callback_add(bt, "clicked", my_gl_update, &(tit[0]));
-   evas_object_size_hint_align_set(bt, EVAS_HINT_FILL, EVAS_HINT_FILL);
-   evas_object_size_hint_weight_set(bt, EVAS_HINT_EXPAND, 0.0);
-   elm_box_pack_end(bx2, bt);
-   evas_object_show(bt);
+  bt = Button::factory (*win);
+  bt->setLabel ("[2]");
+  //bt->getEventSignal ("clicked")->connect (sigc::ptr_fun (&my_gl_update));
+  // TODO: evas_object_smart_callback_add(bt, "clicked", my_gl_update, &(tit[1]));
+  bt->setAlignHintSize (EVAS_HINT_FILL, EVAS_HINT_FILL);
+  bt->setWeightHintSize (EVAS_HINT_EXPAND, 0.0);
+  bx2->packEnd (*bt);
+  bt->show ();
 
-   bt = elm_button_add(win);
-   elm_button_label_set(bt, "[2]");
-   evas_object_smart_callback_add(bt, "clicked", my_gl_update, &(tit[1]));
-   evas_object_size_hint_align_set(bt, EVAS_HINT_FILL, EVAS_HINT_FILL);
-   evas_object_size_hint_weight_set(bt, EVAS_HINT_EXPAND, 0.0);
-   elm_box_pack_end(bx2, bt);
-   evas_object_show(bt);
+  bt = Button::factory (*win);
+  bt->setLabel ("[3]");
+  //bt->getEventSignal ("clicked")->connect (sigc::ptr_fun (&my_gl_update));
+  // TODO: evas_object_smart_callback_add(bt, "clicked", my_gl_update, &(tit[2]));
+  bt->setAlignHintSize (EVAS_HINT_FILL, EVAS_HINT_FILL);
+  bt->setWeightHintSize (EVAS_HINT_EXPAND, 0.0);
+  bx2->packEnd (*bt);
+  bt->show ();
 
-   bt = elm_button_add(win);
-   elm_button_label_set(bt, "[3]");
-   evas_object_smart_callback_add(bt, "clicked", my_gl_update, &(tit[2]));
-   evas_object_size_hint_align_set(bt, EVAS_HINT_FILL, EVAS_HINT_FILL);
-   evas_object_size_hint_weight_set(bt, EVAS_HINT_EXPAND, 0.0);
-   elm_box_pack_end(bx2, bt);
-   evas_object_show(bt);
+  bx->packEnd (*bx2);
+  bx2->show ();
 
-   elm_box_pack_end(bx, bx2);
-   evas_object_show(bx2);
-
-   evas_object_resize(win, 320, 320);
-   evas_object_show(win);
+  win->resize (size320x320);
+  win->show ();
 }
-
+#if 0
 
 /*************/
 static void
