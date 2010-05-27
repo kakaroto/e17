@@ -274,7 +274,8 @@ _plugins_init(const Evry_API *api)
    _mime_dir = eina_stringshare_add("inode/directory");
    _mime_mount = eina_stringshare_add("inode/mount-point");
 
-   _plug = EVRY_PLUGIN_NEW(Plugin, N_("Places"), NULL, EVRY_TYPE_FILE,
+   _plug = EVRY_PLUGIN_NEW(Plugin, N_("Places"), "drive-harddisk",
+			   EVRY_TYPE_FILE,
 			   _begin, _finish, _fetch, NULL);
 
    if (evry->plugin_register(_plug, EVRY_PLUGIN_SUBJECT, 3))
@@ -283,7 +284,8 @@ _plugins_init(const Evry_API *api)
 	 * p->config->min_query = 3; */
      }
 
-   _plug = EVRY_PLUGIN_NEW(Plugin, N_("Places"), NULL, EVRY_TYPE_FILE,
+   _plug = EVRY_PLUGIN_NEW(Plugin, N_("Places"), "drive-harddisk",
+			   EVRY_TYPE_FILE,
 			   _begin, _finish, _fetch, NULL);
 
    if (evry->plugin_register(_plug, EVRY_PLUGIN_OBJECT, 1))
@@ -299,6 +301,7 @@ _plugins_init(const Evry_API *api)
 
    act_umount = EVRY_ACTION_NEW(N_("Unmount Drive"), EVRY_TYPE_FILE, 0,
    				"hdd_unmount", _act_mount, _check_mount);
+   act_mount->remember_context = EINA_TRUE;
    EVRY_ITEM_DATA_INT_SET(act_umount, ACT_UNMOUNT);
    evry->action_register(act_umount, 2);
 
