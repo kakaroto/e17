@@ -51,5 +51,7 @@ libelementaryxx_la_SOURCES = \
 	GenListItem.cpp  \
 	GenListDataModel.cpp  \
 	GenListColumnConstructor.cpp \
-	GenListColumnSelector.cpp
+	GenListColumnSelector.cpp \
+	localUtil.cpp \
+	localUtil.h
 

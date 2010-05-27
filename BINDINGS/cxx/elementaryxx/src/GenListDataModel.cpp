@@ -11,9 +11,11 @@ using namespace std;
 
 namespace Elmxx {
 
-GenListDataModel::GenListDataModel ()
+GenListDataModel::GenListDataModel (const std::string &style) :
+  mStyle (style)
 {
-  mGLIC.item_style     = "default";
+  cout << "creating GenListDataModel with style = " << mStyle << endl;
+  mGLIC.item_style     = mStyle.c_str ();
   mGLIC.func.label_get = GenListDataModel::gl_label_get;
   mGLIC.func.icon_get  = GenListDataModel::gl_icon_get;
   mGLIC.func.state_get = GenListDataModel::gl_state_get;
@@ -61,6 +63,9 @@ char *GenListDataModel::gl_label_get (const void *data, Evas_Object *obj, const 
   Evasxx::Object *objWrap = Evasxx::Object::objectLink (obj);
     
   const std::string &label = model->getLabel (construction, *objWrap, part);
+  static int counter = 0;
+  ++counter;
+  cout << "label: " << label << " ," << counter << endl;
     
   return (!label.empty ()) ? strdup (label.c_str ()) : NULL;
 }

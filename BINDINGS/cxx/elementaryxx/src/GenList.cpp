@@ -7,6 +7,7 @@
 #include "../include/elementaryxx/GenListItem.h"
 #include "../include/elementaryxx/GenListColumnConstructor.h"
 #include "../include/elementaryxx/GenListColumnSelector.h"
+#include "localUtil.h"
 
 /* STD */
 #include <cassert>
@@ -22,7 +23,10 @@ GenList::GenList (Evasxx::Object &parent)
   elmInit ();
 }
 
-GenList::~GenList () {}
+GenList::~GenList ()
+{
+  delete_stl_container <std::list <GenListColumnSelector*>, GenListColumnSelector*> (mInternalSelList);
+}
 
 GenList *GenList::factory (Evasxx::Object &parent)
 {
@@ -125,9 +129,19 @@ void GenList::setDataModel (GenListDataModel &model)
 void GenList::gl_sel (void *data, Evas_Object *obj, void *event_info)
 {
   GenListColumnSelector *selection = (GenListColumnSelector*) data;
+  assert (selection);
   GenList *gl = selection->mGenList;
+  assert (gl);
   Evasxx::Object *eo = Evasxx::Object::objectLink (obj);
-  gl->signalSelect.emit (*eo, event_info);
+  assert (eo);
+  gl->glSelected (*eo, event_info);
+}
+
+void GenList::glSelected (Evasxx::Object &eo, void *event_info)
+{
+  cout << "GenList::glSelected" << endl;
+  // FIXME: this call seems to segfault after the list is constructed after 2 or 3 seconds
+  //signalSelect.emit (eo, event_info);
 }
 
 /* operations to add items */
@@ -150,7 +164,7 @@ void GenList::append (GenListColumnConstructor *construction, GenListItem *paren
   
   if (!selection)
   {
-    // create internal construction object if construction==NULL was given and delete if after adding
+    // create internal construction object if selection==NULL was given and delete if after adding
     // this is needed to provide the user an easy API to add type save data to item append callbacks
     internalSelection = true;
     selection = new GenListColumnSelector ();  
@@ -172,8 +186,8 @@ void GenList::append (GenListColumnConstructor *construction, GenListItem *paren
   }
   if (internalSelection)
   {
-    delete selection;
-  } 
+      mInternalSelList.push_back (selection);
+  }
 }
 
 } // end namespace Elmxx

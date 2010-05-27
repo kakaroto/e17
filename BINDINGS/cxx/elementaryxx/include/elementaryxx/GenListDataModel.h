@@ -22,16 +22,15 @@ class GenListDataModel
 public:
   friend class GenList;
   
-  GenListDataModel ();
-  
-  // TODO: implement these 4 functions pure virtual?
-  
+  GenListDataModel (const std::string &style);
+
+  // TODO: empty default implementation for these 4 as virtuals leads into nullpointer exception. why?
   std::string getLabel (GenListColumnConstructor *construction, Evasxx::Object &obj, const std::string &part) const;
-  
+
   Elmxx::Object *getIcon (GenListColumnConstructor *construction, Evasxx::Object &obj, const std::string &part);
-  
+
   bool getState (GenListColumnConstructor *construction, Evasxx::Object &obj, const std::string &part);
-  
+
   void del (GenListColumnConstructor *construction, Evasxx::Object &obj);
 
 private:
@@ -41,6 +40,7 @@ private:
   static void gl_del (const void *data, Evas_Object *obj);
   
   Elm_Genlist_Item_Class mGLIC;
+  std::string mStyle;
 };
 
 } // end namespace Elmxx

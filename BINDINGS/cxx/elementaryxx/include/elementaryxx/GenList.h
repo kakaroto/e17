@@ -332,8 +332,12 @@ private:
   ~GenList (); // forbid direct delete -> use Object::destroy()
   
   static void gl_sel (void *data, Evas_Object *obj, void *event_info);
+
+  void glSelected (Evasxx::Object &eo, void *event_info);
   
   GenListDataModel *mModel;
+
+  std::list <GenListColumnSelector*> mInternalSelList;
 };
 
 #if 0
