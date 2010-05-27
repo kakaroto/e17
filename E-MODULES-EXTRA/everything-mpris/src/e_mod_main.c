@@ -104,301 +104,301 @@ static void _mpris_get_metadata(Plugin *p);
 static int
 _dbus_check_msg(DBusMessage *reply, DBusError *error)
 {
-  if (error && dbus_error_is_set(error))
-    {
-      DBG("Error: %s - %s\n", error->name, error->message);
-      return 0;
-    }
-  return (dbus_message_get_type(reply) == DBUS_MESSAGE_TYPE_METHOD_RETURN);
+   if (error && dbus_error_is_set(error))
+     {
+	DBG("Error: %s - %s\n", error->name, error->message);
+	return 0;
+     }
+   return (dbus_message_get_type(reply) == DBUS_MESSAGE_TYPE_METHOD_RETURN);
 }
 
 static DBusPendingCall *
 _dbus_send_msg(const char *path, const char *method,
 	       E_DBus_Method_Return_Cb _cb, void *data)
 {
-  DBusMessage *msg;
-  DBusPendingCall *pnd;
+   DBusMessage *msg;
+   DBusPendingCall *pnd;
 
-  msg = dbus_message_new_method_call(bus_name, path,
-				     mpris_interface,
-				     method);
+   msg = dbus_message_new_method_call(bus_name, path,
+				      mpris_interface,
+				      method);
 
-  pnd = e_dbus_message_send(conn, msg, _cb, -1, data);
-  dbus_message_unref(msg);
+   pnd = e_dbus_message_send(conn, msg, _cb, -1, data);
+   dbus_message_unref(msg);
 
-  return pnd;
+   return pnd;
 }
 
 static DBusPendingCall *
 _dbus_send_msg_int(const char *path, const char *method,
 		   E_DBus_Method_Return_Cb _cb, void *data, int num)
 {
-  DBusMessage *msg;
-  DBusPendingCall *pnd;
+   DBusMessage *msg;
+   DBusPendingCall *pnd;
 
-  msg = dbus_message_new_method_call(bus_name, path,
-				     mpris_interface,
-				     method);
+   msg = dbus_message_new_method_call(bus_name, path,
+				      mpris_interface,
+				      method);
 
-  dbus_message_append_args(msg,
-			   DBUS_TYPE_INT32, &num,
-			   DBUS_TYPE_INVALID);
+   dbus_message_append_args(msg,
+			    DBUS_TYPE_INT32, &num,
+			    DBUS_TYPE_INVALID);
 
-  pnd = e_dbus_message_send(conn, msg, _cb, -1, data);
-  dbus_message_unref(msg);
+   pnd = e_dbus_message_send(conn, msg, _cb, -1, data);
+   dbus_message_unref(msg);
 
-  return pnd;
+   return pnd;
 }
 
 
 static void
 _item_free(Evry_Item *it)
 {
-  GET_TRACK(t, it);
-  GET_FILE(f, it);
+   GET_TRACK(t, it);
+   GET_FILE(f, it);
 
-  if (f->path) eina_stringshare_del(f->path);
-  if (f->url)  eina_stringshare_del(f->url);
+   if (f->path) eina_stringshare_del(f->path);
+   if (f->url)  eina_stringshare_del(f->url);
 
-  if (t->artist) eina_stringshare_del(t->artist);
-  if (t->album) eina_stringshare_del(t->album);
-  if (t->title) eina_stringshare_del(t->title);
+   if (t->artist) eina_stringshare_del(t->artist);
+   if (t->album) eina_stringshare_del(t->album);
+   if (t->title) eina_stringshare_del(t->title);
 
-  if (t->pnd) dbus_pending_call_cancel(t->pnd);
+   if (t->pnd) dbus_pending_call_cancel(t->pnd);
 
-  E_FREE(t);
+   E_FREE(t);
 }
 
 static void
 _dbus_cb_current_track(void *data, DBusMessage *reply, DBusError *error)
 {
-  Plugin *p = data;
-  DBusMessage *msg;
-  Evry_Item *it;
-  int num;
+   Plugin *p = data;
+   DBusMessage *msg;
+   Evry_Item *it;
+   int num;
 
-  if (!_dbus_check_msg(reply, error)) return;
+   if (!_dbus_check_msg(reply, error)) return;
 
-  dbus_message_get_args(reply, error,
-			DBUS_TYPE_INT32, (dbus_int32_t*) &(num),
-			DBUS_TYPE_INVALID);
+   dbus_message_get_args(reply, error,
+			 DBUS_TYPE_INT32, (dbus_int32_t*) &(num),
+			 DBUS_TYPE_INVALID);
 
-  if (num != p->current_track)
-    {
-      it = eina_list_nth(p->tracks, p->current_track);
-      if (it) evry->item_changed(it, 1, 0);
+   if (num != p->current_track)
+     {
+	it = eina_list_nth(p->tracks, p->current_track);
+	if (it) evry->item_changed(it, 1, 0);
 
-      p->current_track = num;
+	p->current_track = num;
 
-      it = eina_list_nth(p->tracks, p->current_track);
-      if (it) evry->item_changed(it, 1, 0);
-    }
+	it = eina_list_nth(p->tracks, p->current_track);
+	if (it) evry->item_changed(it, 1, 0);
+     }
 }
 
 static void
 _update_list(Plugin *p)
 {
-  Eina_List *l;
-  Track *t, *t2;
-  char buf[128];
-  char *tmp;
+   Eina_List *l;
+   Track *t, *t2;
+   char buf[128];
+   char *tmp;
 
-  EVRY_PLUGIN_ITEMS_CLEAR(p);
+   EVRY_PLUGIN_ITEMS_CLEAR(p);
 
-  /* remove 'empty' item */
-  if ((p->tracks && p->tracks->next) &&
-      (p->tracks->data == p->empty))
-    p->tracks = eina_list_remove(p->tracks, p->empty);
+   /* remove 'empty' item */
+   if ((p->tracks && p->tracks->next) &&
+       (p->tracks->data == p->empty))
+     p->tracks = eina_list_remove(p->tracks, p->empty);
 
-  l = p->tracks;
-  p->tracks = NULL;
+   l = p->tracks;
+   p->tracks = NULL;
 
-  /* merge old and new list, keep old when possible */
-  EINA_LIST_FREE(p->fetch, t)
-    {
-      t2 = (l ? l->data : NULL);
+   /* merge old and new list, keep old when possible */
+   EINA_LIST_FREE(p->fetch, t)
+     {
+	t2 = (l ? l->data : NULL);
 
-      if (!EVRY_ITEM(t)->id)
-	{
-	  EVRY_ITEM_FREE(t);
-	  continue;
-	}
+	if (!EVRY_ITEM(t)->id)
+	  {
+	     EVRY_ITEM_FREE(t);
+	     continue;
+	  }
 
-      if (t2 && (t->id == t2->id) && (EVRY_ITEM(t)->id == EVRY_ITEM(t2)->id))
-	{
-	  EVRY_ITEM_FREE(t);
-	  p->tracks = eina_list_append(p->tracks, t2);
-	}
-      else /*** new track ***/
-	{
-	  if (t2) EVRY_ITEM_FREE(t2);
-	  p->tracks = eina_list_append(p->tracks, t);
+	if (t2 && (t->id == t2->id) && (EVRY_ITEM(t)->id == EVRY_ITEM(t2)->id))
+	  {
+	     EVRY_ITEM_FREE(t);
+	     p->tracks = eina_list_append(p->tracks, t2);
+	  }
+	else /*** new track ***/
+	  {
+	     if (t2) EVRY_ITEM_FREE(t2);
+	     p->tracks = eina_list_append(p->tracks, t);
 
-	  GET_ITEM(it, t);
-	  GET_FILE(file, t);
+	     GET_ITEM(it, t);
+	     GET_FILE(file, t);
 
-	  /* TODO fix xmms2 mpris bridge */
-	  tmp = evry->util_url_unescape(it->id, 0);
-	  if (!strncmp(tmp, "file://", 7))
-	    file->path = eina_stringshare_add(tmp + 7);
-	  else
-	    file->path = eina_stringshare_add(tmp);
-	  free(tmp);
+	     /* TODO fix xmms2 mpris bridge */
+	     tmp = evry->util_url_unescape(it->id, 0);
+	     if (!strncmp(tmp, "file://", 7))
+	       file->path = eina_stringshare_add(tmp + 7);
+	     else
+	       file->path = eina_stringshare_add(tmp);
+	     free(tmp);
 
-	  /*** set label ***/
-	  if (t->artist && t->title)
-	    {
-	      snprintf(buf, sizeof(buf), "%s - %s", t->artist, t->title);
-	      it->label = eina_stringshare_add(buf);
-	    }
-	  else if (t->title)
-	    {
-	      it->label = eina_stringshare_add(t->title);
-	    }
-	  else if (file->path)
-	    {
-	      const char *label;
-	      if ((label = ecore_file_file_get(file->path)))
-		it->label = eina_stringshare_add(label);
-	    }
-	  else
-	    {
-	      it->label = eina_stringshare_add(N_("No Title"));
-	    }
+	     /*** set label ***/
+	     if (t->artist && t->title)
+	       {
+		  snprintf(buf, sizeof(buf), "%s - %s", t->artist, t->title);
+		  it->label = eina_stringshare_add(buf);
+	       }
+	     else if (t->title)
+	       {
+		  it->label = eina_stringshare_add(t->title);
+	       }
+	     else if (file->path)
+	       {
+		  const char *label;
+		  if ((label = ecore_file_file_get(file->path)))
+		    it->label = eina_stringshare_add(label);
+	       }
+	     else
+	       {
+		  it->label = eina_stringshare_add(N_("No Title"));
+	       }
 
-	  if (t->album)
-	    EVRY_ITEM(t)->detail = eina_stringshare_ref(t->album);
-	}
+	     if (t->album)
+	       EVRY_ITEM(t)->detail = eina_stringshare_ref(t->album);
+	  }
 
-      if (l) l = eina_list_remove_list(l, l);
-    }
+	if (l) l = eina_list_remove_list(l, l);
+     }
 
-  EINA_LIST_FREE(l, t)
-    EVRY_ITEM_FREE(t);
+   EINA_LIST_FREE(l, t)
+     EVRY_ITEM_FREE(t);
 
-  EINA_LIST_FOREACH(p->tracks, l, t)
-    {
-      if ((!p->input || evry->fuzzy_match(EVRY_ITEM(t)->label, p->input)))
-	EVRY_PLUGIN_ITEM_APPEND(p, t);
-    }
+   EINA_LIST_FOREACH(p->tracks, l, t)
+     {
+	if ((!p->input || evry->fuzzy_match(EVRY_ITEM(t)->label, p->input)))
+	  EVRY_PLUGIN_ITEM_APPEND(p, t);
+     }
 
-  _dbus_send_msg("/TrackList", "GetCurrentTrack",
-		 _dbus_cb_current_track, p);
+   _dbus_send_msg("/TrackList", "GetCurrentTrack",
+		  _dbus_cb_current_track, p);
 
-  EVRY_PLUGIN_UPDATE(p, EVRY_UPDATE_ADD);
+   EVRY_PLUGIN_UPDATE(p, EVRY_UPDATE_ADD);
 }
 
 
 static void
 _dbus_cb_tracklist_metadata(void *data, DBusMessage *reply, DBusError *error)
 {
-  DBusMessageIter array, item, iter, iter_val;
-  Track *t = data;
-  int type, cnt = 0;
-  char *key, *tmp;
-  GET_PLUGIN(p, EVRY_ITEM(t)->plugin);
+   DBusMessageIter array, item, iter, iter_val;
+   Track *t = data;
+   int type, cnt = 0;
+   char *key, *tmp;
+   GET_PLUGIN(p, EVRY_ITEM(t)->plugin);
 
-  t->pnd = NULL;
+   t->pnd = NULL;
 
-  if (!p->fetch_tracks)
-    {
-      ERR("should be nothing to fetch!");
-      goto error;
-    }
+   if (!p->fetch_tracks)
+     {
+	ERR("should be nothing to fetch!");
+	goto error;
+     }
 
-  p->fetch_tracks--;
+   p->fetch_tracks--;
 
-  if (!_dbus_check_msg(reply, error))
-    {
-      ERR("dbus garbage!");
-      goto error;
-    }
+   if (!_dbus_check_msg(reply, error))
+     {
+	ERR("dbus garbage!");
+	goto error;
+     }
 
-  dbus_message_iter_init(reply, &array);
-  if(dbus_message_iter_get_arg_type(&array) == DBUS_TYPE_ARRAY)
-    {
-      dbus_message_iter_recurse(&array, &item);
+   dbus_message_iter_init(reply, &array);
+   if(dbus_message_iter_get_arg_type(&array) == DBUS_TYPE_ARRAY)
+     {
+	dbus_message_iter_recurse(&array, &item);
 
-      while(dbus_message_iter_get_arg_type(&item) == DBUS_TYPE_DICT_ENTRY)
-	{
-	  dbus_message_iter_recurse(&item, &iter);
-	  if (dbus_message_iter_get_arg_type(&iter) == DBUS_TYPE_STRING)
-	    {
-	      dbus_message_iter_get_basic(&iter, &key);
-	    }
-	  else
-	    {
-	      ERR("not string");
-	      goto error;
-	    }
+	while(dbus_message_iter_get_arg_type(&item) == DBUS_TYPE_DICT_ENTRY)
+	  {
+	     dbus_message_iter_recurse(&item, &iter);
+	     if (dbus_message_iter_get_arg_type(&iter) == DBUS_TYPE_STRING)
+	       {
+		  dbus_message_iter_get_basic(&iter, &key);
+	       }
+	     else
+	       {
+		  ERR("not string");
+		  goto error;
+	       }
 
-	  dbus_message_iter_next(&iter);
-	  if (dbus_message_iter_get_arg_type(&iter) != DBUS_TYPE_VARIANT)
-	    {
-      	      ERR("not variant");
-	      goto error;
-	    }
+	     dbus_message_iter_next(&iter);
+	     if (dbus_message_iter_get_arg_type(&iter) != DBUS_TYPE_VARIANT)
+	       {
+		  ERR("not variant");
+		  goto error;
+	       }
 
-	  if (!strcmp(key, "artist"))
-	    {
-	      dbus_message_iter_recurse (&iter, &iter_val);
-	      dbus_message_iter_get_basic (&iter_val, &tmp);
-	      if (tmp && tmp[0])
-		t->artist = eina_stringshare_add(tmp);
-	    }
-	  else if (!strcmp(key, "title"))
-	    {
-	      dbus_message_iter_recurse (&iter, &iter_val);
-	      dbus_message_iter_get_basic (&iter_val, &tmp);
-	      if (tmp && tmp[0])
-		t->title = eina_stringshare_add(tmp);
-	    }
-	  else if (!strcmp(key, "location"))
-	    {
-	      dbus_message_iter_recurse (&iter, &iter_val);
-	      dbus_message_iter_get_basic (&iter_val, &tmp);
-	      if (tmp && tmp[0])
-		EVRY_ITEM(t)->id = eina_stringshare_add(tmp);
-	    }
-	  else if (!strcmp(key, "album"))
-	    {
-	      dbus_message_iter_recurse (&iter, &iter_val);
-	      dbus_message_iter_get_basic (&iter_val, &tmp);
-	      if (tmp && tmp[0])
-		t->album = eina_stringshare_add(tmp);
-	    }
-	  else if (!strcmp(key, "mtime"))
-	    {
-	      dbus_message_iter_recurse (&iter, &iter_val);
-	      dbus_message_iter_get_basic (&iter_val, &(t->length));
-	    }
-	  dbus_message_iter_next(&item);
-	}
-    }
+	     if (!strcmp(key, "artist"))
+	       {
+		  dbus_message_iter_recurse (&iter, &iter_val);
+		  dbus_message_iter_get_basic (&iter_val, &tmp);
+		  if (tmp && tmp[0])
+		    t->artist = eina_stringshare_add(tmp);
+	       }
+	     else if (!strcmp(key, "title"))
+	       {
+		  dbus_message_iter_recurse (&iter, &iter_val);
+		  dbus_message_iter_get_basic (&iter_val, &tmp);
+		  if (tmp && tmp[0])
+		    t->title = eina_stringshare_add(tmp);
+	       }
+	     else if (!strcmp(key, "location"))
+	       {
+		  dbus_message_iter_recurse (&iter, &iter_val);
+		  dbus_message_iter_get_basic (&iter_val, &tmp);
+		  if (tmp && tmp[0])
+		    EVRY_ITEM(t)->id = eina_stringshare_add(tmp);
+	       }
+	     else if (!strcmp(key, "album"))
+	       {
+		  dbus_message_iter_recurse (&iter, &iter_val);
+		  dbus_message_iter_get_basic (&iter_val, &tmp);
+		  if (tmp && tmp[0])
+		    t->album = eina_stringshare_add(tmp);
+	       }
+	     else if (!strcmp(key, "mtime"))
+	       {
+		  dbus_message_iter_recurse (&iter, &iter_val);
+		  dbus_message_iter_get_basic (&iter_val, &(t->length));
+	       }
+	     dbus_message_iter_next(&item);
+	  }
+     }
 
-  /* printf("%d, %s\n", p->fetch_tracks, EVRY_FILE(t)->url); */
+   /* printf("%d, %s\n", p->fetch_tracks, EVRY_FILE(t)->url); */
 
-  if (!p->fetch_tracks)
-    _update_list(p);
+   if (!p->fetch_tracks)
+     _update_list(p);
 
-  return;
+   return;
 
  error:
-  if (!p->fetch_tracks)
-    {
-      EVRY_PLUGIN_ITEMS_CLEAR(p);
+   if (!p->fetch_tracks)
+     {
+	EVRY_PLUGIN_ITEMS_CLEAR(p);
 
-      EINA_LIST_FREE(p->tracks, t)
-	EVRY_ITEM_FREE(t);
+	EINA_LIST_FREE(p->tracks, t)
+	  EVRY_ITEM_FREE(t);
 
-      p->tracks = p->fetch;
-      EVRY_PLUGIN_UPDATE(p, EVRY_UPDATE_ADD);
-    }
+	p->tracks = p->fetch;
+	EVRY_PLUGIN_UPDATE(p, EVRY_UPDATE_ADD);
+     }
 
-  p->tracks = eina_list_remove(p->tracks, t);
-  EVRY_ITEM_FREE(t);
+   p->tracks = eina_list_remove(p->tracks, t);
+   EVRY_ITEM_FREE(t);
 
-  return;
+   return;
 }
 
 static Evas_Object *
@@ -420,7 +420,7 @@ _icon_get(Evry_Item *it, Evas *e)
 	     else if (p->status.playing == 1)
 	       e_icon_file_edje_set(o, theme_file, "media-playback-pause");
 	     else if (p->status.playing == 2)
-		e_icon_file_edje_set(o, theme_file, "media-playback-stop");
+	       e_icon_file_edje_set(o, theme_file, "media-playback-stop");
 	  }
      }
    else if (CHECK_TYPE(it, EVRY_TYPE_ACTION))
@@ -443,1012 +443,1012 @@ _icon_get(Evry_Item *it, Evas *e)
 static int
 _update_timer(void *data)
 {
-  Plugin *p = data;
-  int cnt;
-  Track *t;
+   Plugin *p = data;
+   int cnt;
+   Track *t;
 
-  for (cnt = 0; cnt < p->fetch_tracks; cnt++)
-    {
-      t = EVRY_ITEM_NEW(Track, p, NULL, _icon_get, _item_free);
-      t->id = cnt;
-      EVRY_ITEM(t)->subtype = EVRY_TYPE_FILE;
+   for (cnt = 0; cnt < p->fetch_tracks; cnt++)
+     {
+	t = EVRY_ITEM_NEW(Track, p, NULL, _icon_get, _item_free);
+	t->id = cnt;
+	EVRY_ITEM(t)->subtype = EVRY_TYPE_FILE;
 
-      t->pnd = _dbus_send_msg_int("/TrackList", "GetMetadata",
-				  _dbus_cb_tracklist_metadata, t, cnt);
+	t->pnd = _dbus_send_msg_int("/TrackList", "GetMetadata",
+				    _dbus_cb_tracklist_metadata, t, cnt);
 
-      p->fetch = eina_list_append(p->fetch, t);
-    }
+	p->fetch = eina_list_append(p->fetch, t);
+     }
 
-  p->update_timer = NULL;
-  return 0;
+   p->update_timer = NULL;
+   return 0;
 }
 
 static void
 _mpris_get_metadata(Plugin *p)
 {
 
-  Track *t;
-  Eina_List *l, *ll;
+   Track *t;
+   Eina_List *l, *ll;
 
-  DBG("tracklist changed %d, %d", p->tracklist_cnt, p->fetch_tracks);
-  p->fetch_tracks = p->tracklist_cnt;
-  p->fetch = NULL;
+   DBG("tracklist changed %d, %d", p->tracklist_cnt, p->fetch_tracks);
+   p->fetch_tracks = p->tracklist_cnt;
+   p->fetch = NULL;
 
-  EINA_LIST_FOREACH_SAFE(p->tracks, l, ll, t)
-    {
-      if (t->pnd)
-	{
-	  p->tracks = eina_list_remove_list(p->tracks, l);
-	  EVRY_ITEM_FREE(t);
-	}
-    }
+   EINA_LIST_FOREACH_SAFE(p->tracks, l, ll, t)
+     {
+	if (t->pnd)
+	  {
+	     p->tracks = eina_list_remove_list(p->tracks, l);
+	     EVRY_ITEM_FREE(t);
+	  }
+     }
 
-  if (p->fetch_tracks)
-    {
-      EVRY_ITEM_LABEL_SET(p->empty, _("Loading Playlist"));
-      evry->item_changed(EVRY_ITEM(p->empty), 0, 0);
+   if (p->fetch_tracks)
+     {
+	EVRY_ITEM_LABEL_SET(p->empty, _("Loading Playlist"));
+	evry->item_changed(EVRY_ITEM(p->empty), 0, 0);
 
-      if (p->update_timer)
-	ecore_timer_del(p->update_timer);
+	if (p->update_timer)
+	  ecore_timer_del(p->update_timer);
 
-      p->update_timer = ecore_timer_add(0.3, _update_timer, p);
-    }
-  else
-    {
-      EVRY_ITEM_LABEL_SET(p->empty, _("Empty Playlist"));
-      evry->item_changed(EVRY_ITEM(p->empty), 0, 0);
-    }
+	p->update_timer = ecore_timer_add(0.3, _update_timer, p);
+     }
+   else
+     {
+	EVRY_ITEM_LABEL_SET(p->empty, _("Empty Playlist"));
+	evry->item_changed(EVRY_ITEM(p->empty), 0, 0);
+     }
 
-  if (!p->tracks)
-    {
-      EVRY_PLUGIN_ITEM_APPEND(p, p->empty);
-      EVRY_PLUGIN_UPDATE(p, EVRY_UPDATE_ADD);
-    }
+   if (!p->tracks)
+     {
+	EVRY_PLUGIN_ITEM_APPEND(p, p->empty);
+	EVRY_PLUGIN_UPDATE(p, EVRY_UPDATE_ADD);
+     }
 }
 
 
 static void
 _dbus_cb_tracklist_length(void *data, DBusMessage *reply, DBusError *error)
 {
-  DBusMessage *msg;
-  Plugin *p = data;
+   DBusMessage *msg;
+   Plugin *p = data;
 
-  if (!_dbus_check_msg(reply, error)) return;
+   if (!_dbus_check_msg(reply, error)) return;
 
-  dbus_message_get_args(reply, error,
-			DBUS_TYPE_INT32, (dbus_int32_t*) &(p->tracklist_cnt),
-			DBUS_TYPE_INVALID);
+   dbus_message_get_args(reply, error,
+			 DBUS_TYPE_INT32, (dbus_int32_t*) &(p->tracklist_cnt),
+			 DBUS_TYPE_INVALID);
 
-  _mpris_get_metadata(p);
+   _mpris_get_metadata(p);
 }
 
 static void
 _set_status(Plugin *p, DBusMessage *msg)
 {
-  DBusMessageIter iter, array;
-  Evry_Item *it;
+   DBusMessageIter iter, array;
+   Evry_Item *it;
 
-  dbus_message_iter_init(msg, &iter);
+   dbus_message_iter_init(msg, &iter);
 
-  if (dbus_message_iter_get_arg_type(&iter) != DBUS_TYPE_STRUCT)
-    {
-      ERR("no dbus struct");
-      return;
-    }
+   if (dbus_message_iter_get_arg_type(&iter) != DBUS_TYPE_STRUCT)
+     {
+	ERR("no dbus struct");
+	return;
+     }
 
-  dbus_message_iter_recurse(&iter, &array);
-  dbus_message_iter_get_basic(&array, &(p->status.playing));
-  dbus_message_iter_next(&array);
-  dbus_message_iter_get_basic(&array, &(p->status.random));
-  dbus_message_iter_next(&array);
-  dbus_message_iter_get_basic(&array, &(p->status.repeat));
-  dbus_message_iter_next(&array);
-  dbus_message_iter_get_basic(&array, &(p->status.loop));
-  DBG("status %d", p->status.playing);
+   dbus_message_iter_recurse(&iter, &array);
+   dbus_message_iter_get_basic(&array, &(p->status.playing));
+   dbus_message_iter_next(&array);
+   dbus_message_iter_get_basic(&array, &(p->status.random));
+   dbus_message_iter_next(&array);
+   dbus_message_iter_get_basic(&array, &(p->status.repeat));
+   dbus_message_iter_next(&array);
+   dbus_message_iter_get_basic(&array, &(p->status.loop));
+   DBG("status %d", p->status.playing);
 
-  it = eina_list_nth(p->tracks, p->current_track);
-  if (it) evry->item_changed(it, 1, 0);
+   it = eina_list_nth(p->tracks, p->current_track);
+   if (it) evry->item_changed(it, 1, 0);
 }
 
 static void
 _dbus_cb_get_status(void *data, DBusMessage *reply, DBusError *error)
 {
-  if (!_dbus_check_msg(reply, error)) return;
+   if (!_dbus_check_msg(reply, error)) return;
 
-  _set_status(data, reply);
+   _set_status(data, reply);
 }
 
 static void
 _dbus_cb_tracklist_change(void *data, DBusMessage *msg)
 {
-  GET_PLUGIN(p, data);
+   GET_PLUGIN(p, data);
 
-  DBG("tracklist change");
+   DBG("tracklist change");
 
-  /* FIXME will be needed in some other places.. */
-  p->next_track = 0;
+   /* FIXME will be needed in some other places.. */
+   p->next_track = 0;
 
-  dbus_message_get_args(msg, NULL,
-			DBUS_TYPE_INT32, (dbus_int32_t*) &(p->tracklist_cnt),
-			DBUS_TYPE_INVALID);
+   dbus_message_get_args(msg, NULL,
+			 DBUS_TYPE_INT32, (dbus_int32_t*) &(p->tracklist_cnt),
+			 DBUS_TYPE_INVALID);
 
-  _mpris_get_metadata(p);
+   _mpris_get_metadata(p);
 }
 
 static void
 _dbus_cb_track_change(void *data, DBusMessage *msg)
 {
-  GET_PLUGIN(p, data);
+   GET_PLUGIN(p, data);
 
-  /* XXX just fsckin give the track nr. if I want metadata I would ask for it!*/
+   /* XXX just fsckin give the track nr. if I want metadata I would ask for it!*/
 
-  _dbus_send_msg("/TrackList", "GetCurrentTrack", _dbus_cb_current_track, p);
+   _dbus_send_msg("/TrackList", "GetCurrentTrack", _dbus_cb_current_track, p);
 }
 
 static void
 _dbus_cb_status_change(void *data, DBusMessage *msg)
 {
-  GET_PLUGIN(p, data);
+   GET_PLUGIN(p, data);
 
-  DBusMessageIter iter, array;
+   DBusMessageIter iter, array;
 
-  dbus_message_iter_init(msg, &iter);
+   dbus_message_iter_init(msg, &iter);
 
-  if (dbus_message_iter_get_arg_type(&iter) == DBUS_TYPE_STRUCT)
-    {
-      _set_status(p, msg);
-    }
-  else if (dbus_message_iter_get_arg_type(&iter) == DBUS_TYPE_INT32)
-    {
-      /* XXX audacious.. */
-      _dbus_send_msg("/Player", "GetStatus", _dbus_cb_get_status, p);
-    }
+   if (dbus_message_iter_get_arg_type(&iter) == DBUS_TYPE_STRUCT)
+     {
+	_set_status(p, msg);
+     }
+   else if (dbus_message_iter_get_arg_type(&iter) == DBUS_TYPE_INT32)
+     {
+	/* XXX audacious.. */
+	_dbus_send_msg("/Player", "GetStatus", _dbus_cb_get_status, p);
+     }
 }
 
 static Evry_Plugin *
 _begin(Evry_Plugin *plugin, const Evry_Item *item __UNUSED__)
 {
-  GET_PLUGIN(p, plugin);
+   GET_PLUGIN(p, plugin);
 
-  if (!conn || !dbus_active) return 0;
+   if (!conn || !dbus_active) return 0;
 
-  _dbus_send_msg("/TrackList", "GetLength", _dbus_cb_tracklist_length, p);
+   _dbus_send_msg("/TrackList", "GetLength", _dbus_cb_tracklist_length, p);
 
-  _dbus_send_msg("/Player", "GetStatus", _dbus_cb_get_status, p);
+   _dbus_send_msg("/Player", "GetStatus", _dbus_cb_get_status, p);
 
-  cb_tracklist_change = e_dbus_signal_handler_add
-    (conn, bus_name, "/TrackList", mpris_interface, "TrackListChange",
-     _dbus_cb_tracklist_change, p);
+   cb_tracklist_change = e_dbus_signal_handler_add
+     (conn, bus_name, "/TrackList", mpris_interface, "TrackListChange",
+      _dbus_cb_tracklist_change, p);
 
-  cb_player_track_change = e_dbus_signal_handler_add
-    (conn, bus_name, "/Player", mpris_interface, "TrackChange",
-     _dbus_cb_track_change, p);
+   cb_player_track_change = e_dbus_signal_handler_add
+     (conn, bus_name, "/Player", mpris_interface, "TrackChange",
+      _dbus_cb_track_change, p);
 
-  cb_player_status_change = e_dbus_signal_handler_add
-    (conn, bus_name, "/Player", mpris_interface, "StatusChange",
-     _dbus_cb_status_change, p);
+   cb_player_status_change = e_dbus_signal_handler_add
+     (conn, bus_name, "/Player", mpris_interface, "StatusChange",
+      _dbus_cb_status_change, p);
 
-  p->empty = EVRY_ITEM_NEW(Track, p, _("Loading Playlist"), NULL, _item_free);
-  p->empty->id = -1;
+   p->empty = EVRY_ITEM_NEW(Track, p, _("Loading Playlist"), NULL, _item_free);
+   p->empty->id = -1;
 
-  p->current_track = -2;
+   p->current_track = -2;
 
-  return EVRY_PLUGIN(p);
+   return EVRY_PLUGIN(p);
 }
 
 static void
 _cleanup(Evry_Plugin *plugin)
 {
-  GET_PLUGIN(p, plugin);
-  Evry_Item *it;
+   GET_PLUGIN(p, plugin);
+   Evry_Item *it;
 
-  EVRY_PLUGIN_ITEMS_CLEAR(p);
-  
-  if (cb_tracklist_change)
-    e_dbus_signal_handler_del(conn, cb_tracklist_change);
-  if (cb_player_track_change)
-    e_dbus_signal_handler_del(conn, cb_player_track_change);
-  if (cb_player_status_change)
-    e_dbus_signal_handler_del(conn, cb_player_status_change);
+   EVRY_PLUGIN_ITEMS_CLEAR(p);
 
-  cb_tracklist_change = NULL;
-  cb_player_track_change = NULL;
-  cb_player_status_change = NULL;
+   if (cb_tracklist_change)
+     e_dbus_signal_handler_del(conn, cb_tracklist_change);
+   if (cb_player_track_change)
+     e_dbus_signal_handler_del(conn, cb_player_track_change);
+   if (cb_player_status_change)
+     e_dbus_signal_handler_del(conn, cb_player_status_change);
 
-  if (p->input)
-    eina_stringshare_del(p->input);
-  p->input = NULL;
+   cb_tracklist_change = NULL;
+   cb_player_track_change = NULL;
+   cb_player_status_change = NULL;
 
-  EINA_LIST_FREE(p->tracks, it)
-    {
-      if (it != EVRY_ITEM(p->empty))
-	EVRY_ITEM_FREE(it);
-    }
+   if (p->input)
+     eina_stringshare_del(p->input);
+   p->input = NULL;
 
-  EVRY_ITEM_FREE(p->empty);
+   EINA_LIST_FREE(p->tracks, it)
+     {
+	if (it != EVRY_ITEM(p->empty))
+	  EVRY_ITEM_FREE(it);
+     }
 
-  if (p->update_timer)
-    ecore_timer_del(p->update_timer);
-  p->update_timer = NULL;
+   EVRY_ITEM_FREE(p->empty);
+
+   if (p->update_timer)
+     ecore_timer_del(p->update_timer);
+   p->update_timer = NULL;
 }
 
 static int
 _fetch(Evry_Plugin *plugin, const char *input)
 {
-  GET_PLUGIN(p, plugin);
+   Eina_List *l;
+   Track *t;
 
-  Eina_List *l;
-  Track *t;
+   GET_PLUGIN(p, plugin);
 
-  if (p->input)
-    eina_stringshare_del(p->input);
+   if (p->input)
+     eina_stringshare_del(p->input);
 
-  if (input)
-    p->input = eina_stringshare_add(input);
-  else
-    p->input = NULL;
+   if (input)
+     p->input = eina_stringshare_add(input);
+   else
+     p->input = NULL;
 
-  EVRY_PLUGIN_ITEMS_CLEAR(p);
+   EVRY_PLUGIN_ITEMS_CLEAR(p);
 
-  EINA_LIST_FOREACH(p->tracks, l, t)
-    {
-      if (!input || evry->fuzzy_match(EVRY_ITEM(t)->label, input))
-	EVRY_PLUGIN_ITEM_APPEND(p, t);
-    }
+   EINA_LIST_FOREACH(p->tracks, l, t)
+     {
+	if (!input || evry->fuzzy_match(EVRY_ITEM(t)->label, input))
+	  EVRY_PLUGIN_ITEM_APPEND(p, t);
+     }
 
-  return 1;
+   return 1;
 }
 
 /** ACTIONS **/
 static int
 _mpris_play_track(Evry_Action *act)
 {
-  DBusMessage *msg;
+   DBusMessage *msg;
 
-  GET_TRACK(t, act->it1.item);
-  GET_PLUGIN(p, EVRY_ITEM(t)->plugin);
+   GET_TRACK(t, act->it1.item);
+   GET_PLUGIN(p, EVRY_ITEM(t)->plugin);
 
-  if (!strcmp(bus_name, "org.mpris.amarok") ||
-      !strcmp(bus_name, "org.mpris.xmms2"))
-    {
-      _dbus_send_msg_int("/TrackList", "PlayTrack", NULL, NULL, t->id);
-      return 1;
-    }
-  else if (!strcmp(bus_name, "org.mpris.corn"))
-    {
-      msg = dbus_message_new_method_call(bus_name, "/Corn",
-					 "org.corn.CornPlayer",
-					 "PlayTrack");
+   if (!strcmp(bus_name, "org.mpris.amarok") ||
+       !strcmp(bus_name, "org.mpris.xmms2"))
+     {
+	_dbus_send_msg_int("/TrackList", "PlayTrack", NULL, NULL, t->id);
+	return 1;
+     }
+   else if (!strcmp(bus_name, "org.mpris.corn"))
+     {
+	msg = dbus_message_new_method_call(bus_name, "/Corn",
+					   "org.corn.CornPlayer",
+					   "PlayTrack");
 
-      dbus_message_append_args(msg,
-			       DBUS_TYPE_INT32, &(t->id),
-			       DBUS_TYPE_INVALID);
+	dbus_message_append_args(msg,
+				 DBUS_TYPE_INT32, &(t->id),
+				 DBUS_TYPE_INVALID);
 
-      e_dbus_message_send(conn, msg, NULL, -1, NULL);
-      dbus_message_unref(msg);
+	e_dbus_message_send(conn, msg, NULL, -1, NULL);
+	dbus_message_unref(msg);
 
-    }
-  else if (!strcmp(bus_name, "org.mpris.audacious"))
-    {
-      msg = dbus_message_new_method_call(bus_name, "/org/atheme/audacious",
-					 "org.atheme.audacious",
-					 "Jump");
-      dbus_message_append_args(msg,
-			       DBUS_TYPE_UINT32, &(t->id),
-			       DBUS_TYPE_INVALID);
+     }
+   else if (!strcmp(bus_name, "org.mpris.audacious"))
+     {
+	msg = dbus_message_new_method_call(bus_name, "/org/atheme/audacious",
+					   "org.atheme.audacious",
+					   "Jump");
+	dbus_message_append_args(msg,
+				 DBUS_TYPE_UINT32, &(t->id),
+				 DBUS_TYPE_INVALID);
 
-      e_dbus_message_send(conn, msg, NULL, -1, NULL);
-      dbus_message_unref(msg);
-    }
-  else if (!strcmp(bus_name, "org.mpris.vlc"))
-    {
-      /* the ones that want extra ugly treatment */
-      /* p->next_track = t->id - p->current_track;
-       *
-       * _dbus_send_msg("/Player", "Stop", _mpris_play_track_hack, p);  */
-    }
-  else
-    {
-      _dbus_send_msg("/Player", "Stop", NULL, NULL);
-      p->next_track = t->id - p->current_track;
-      while (p->next_track)
-	{
-	  if (p->next_track > 0)
-	    {
-	      msg = dbus_message_new_method_call(bus_name, "/Player",
-						 mpris_interface,
-						 "Next");
-	      p->next_track--;
-	    }
-	  else
-	    {
-	      msg = dbus_message_new_method_call(bus_name, "/Player",
-						 mpris_interface,
-						 "Prev");
-	      p->next_track++;
-	    }
+	e_dbus_message_send(conn, msg, NULL, -1, NULL);
+	dbus_message_unref(msg);
+     }
+   else if (!strcmp(bus_name, "org.mpris.vlc"))
+     {
+	/* the ones that want extra ugly treatment */
+	/* p->next_track = t->id - p->current_track;
+	 *
+	 * _dbus_send_msg("/Player", "Stop", _mpris_play_track_hack, p);  */
+     }
+   else
+     {
+	_dbus_send_msg("/Player", "Stop", NULL, NULL);
+	p->next_track = t->id - p->current_track;
+	while (p->next_track)
+	  {
+	     if (p->next_track > 0)
+	       {
+		  msg = dbus_message_new_method_call(bus_name, "/Player",
+						     mpris_interface,
+						     "Next");
+		  p->next_track--;
+	       }
+	     else
+	       {
+		  msg = dbus_message_new_method_call(bus_name, "/Player",
+						     mpris_interface,
+						     "Prev");
+		  p->next_track++;
+	       }
 
-	  e_dbus_message_send(conn, msg, NULL, -1, NULL);
+	     e_dbus_message_send(conn, msg, NULL, -1, NULL);
 
-	  dbus_message_unref(msg);
-	}
-      _dbus_send_msg("/Player", "Play", NULL, NULL);
-    }
+	     dbus_message_unref(msg);
+	  }
+	_dbus_send_msg("/Player", "Play", NULL, NULL);
+     }
 
-  return 1;
+   return 1;
 }
 
 static int
 _mpris_tracklist_remove_track(Evry_Action *act)
 {
-  if (!act->it1.items)
-    {
-      GET_TRACK(t, act->it1.item);
-      _dbus_send_msg_int("/TrackList", "DelTrack", NULL, NULL, t->id);
-    }
-  else
-    {
-      Evry_Item *it;
-      Eina_List *l;
+   if (!act->it1.items)
+     {
+	GET_TRACK(t, act->it1.item);
+	_dbus_send_msg_int("/TrackList", "DelTrack", NULL, NULL, t->id);
+     }
+   else
+     {
+	Evry_Item *it;
+	Eina_List *l;
 
-      EINA_LIST_REVERSE_FOREACH(act->it1.items, l, it)
-	{
-	  if (it->type == MPRIS_TRACK)
-	    {
-	      GET_TRACK(t, it);
-	      _dbus_send_msg_int("/TrackList", "DelTrack", NULL, NULL, t->id);
-	    }
-	}
-    }
+	EINA_LIST_REVERSE_FOREACH(act->it1.items, l, it)
+	  {
+	     if (it->type == MPRIS_TRACK)
+	       {
+		  GET_TRACK(t, it);
+		  _dbus_send_msg_int("/TrackList", "DelTrack", NULL, NULL, t->id);
+	       }
+	  }
+     }
 
-  return 1;
+   return 1;
 }
 
 static int
 _mpris_player_action(Evry_Action *act)
 {
-  int m = EVRY_ITEM_DATA_INT_GET(act);
+   int m = EVRY_ITEM_DATA_INT_GET(act);
 
-  switch (m)
-    {
-    case ACT_PLAY:
-      _dbus_send_msg("/Player", "Play", NULL, NULL);
-      break;
-    case ACT_STOP:
-      _dbus_send_msg("/Player", "Stop", NULL, NULL);
-      break;
-    case ACT_PAUSE:
-      _dbus_send_msg("/Player", "Pause", NULL, NULL);
-      break;
-    }
-  return 1;
+   switch (m)
+     {
+      case ACT_PLAY:
+	 _dbus_send_msg("/Player", "Play", NULL, NULL);
+	 break;
+      case ACT_STOP:
+	 _dbus_send_msg("/Player", "Stop", NULL, NULL);
+	 break;
+      case ACT_PAUSE:
+	 _dbus_send_msg("/Player", "Pause", NULL, NULL);
+	 break;
+     }
+   return 1;
 }
 
 static int
 _mpris_tracklist_action_clear(Evry_Action *act)
 {
-  DBusMessage *msg;
+   DBusMessage *msg;
 
-  if (!strcmp(bus_name, "org.mpris.xmms2"))
-    {
-      _dbus_send_msg("/TrackList", "Clear", NULL, NULL);
-      return 1;
-    }
-  else if (!strcmp(bus_name, "org.mpris.corn"))
-    {
-      msg = dbus_message_new_method_call(bus_name, "/Corn",
-					 "org.corn.CornPlayer",
-					 "Clear");
-    }
-  else if (!strcmp(bus_name, "org.mpris.audacious"))
-    {
-      msg = dbus_message_new_method_call(bus_name, "/org/atheme/audacious",
-					 "org.atheme.audacious",
-					 "Clear");
-    }
-  else return 1;
+   if (!strcmp(bus_name, "org.mpris.xmms2"))
+     {
+	_dbus_send_msg("/TrackList", "Clear", NULL, NULL);
+	return 1;
+     }
+   else if (!strcmp(bus_name, "org.mpris.corn"))
+     {
+	msg = dbus_message_new_method_call(bus_name, "/Corn",
+					   "org.corn.CornPlayer",
+					   "Clear");
+     }
+   else if (!strcmp(bus_name, "org.mpris.audacious"))
+     {
+	msg = dbus_message_new_method_call(bus_name, "/org/atheme/audacious",
+					   "org.atheme.audacious",
+					   "Clear");
+     }
+   else return 1;
 
-  e_dbus_message_send(conn, msg, NULL, -1, NULL);
-  dbus_message_unref(msg);
+   e_dbus_message_send(conn, msg, NULL, -1, NULL);
+   dbus_message_unref(msg);
 
-  return 1;
+   return 1;
 }
 
 static void
 _dbus_cb_position_get(void *data, DBusMessage *reply, DBusError *error)
 {
-  Evry_Action *act = data;
-  int pos;
+   Evry_Action *act = data;
+   int pos;
 
-  GET_TRACK(t, act->it1.item);
+   GET_TRACK(t, act->it1.item);
 
-  if (!_dbus_check_msg(reply, error)) return;
+   if (!_dbus_check_msg(reply, error)) return;
 
-  dbus_message_get_args(reply, NULL,
-			DBUS_TYPE_INT32, (dbus_int32_t*) &(pos),
-			DBUS_TYPE_INVALID);
+   dbus_message_get_args(reply, NULL,
+			 DBUS_TYPE_INT32, (dbus_int32_t*) &(pos),
+			 DBUS_TYPE_INVALID);
 
-  if (EVRY_ITEM_DATA_INT_GET(act) == ACT_FORWARD)
-    pos += 60000;
-  else
-    pos -= 60000;
+   if (EVRY_ITEM_DATA_INT_GET(act) == ACT_FORWARD)
+     pos += 60000;
+   else
+     pos -= 60000;
 
-  if (pos < 0)
-    pos = 0;
-  else if (pos > t->length)
-    pos = t->length;
+   if (pos < 0)
+     pos = 0;
+   else if (pos > t->length)
+     pos = t->length;
 
-  _dbus_send_msg_int("/Player", "PositionSet", NULL, NULL, pos);
+   _dbus_send_msg_int("/Player", "PositionSet", NULL, NULL, pos);
 }
 
 static int
 _mpris_player_position(Evry_Action *act)
 {
-  _dbus_send_msg("/Player", "PositionGet", _dbus_cb_position_get, act);
+   _dbus_send_msg("/Player", "PositionGet", _dbus_cb_position_get, act);
 
-  /* usually one wants to repeat this action more than one time */
-  return 0;
+   /* usually one wants to repeat this action more than one time */
+   return 0;
 }
 
 static void
 _add_file(const char *path, int play_now)
 {
-  DBusMessage *msg;
-  char *buf;
+   DBusMessage *msg;
+   char *buf;
 
-  if (strncmp(path, "file://", 7))
-    {
-      buf = malloc(sizeof(char) * (strlen(path) + 8));
-      sprintf(buf, "file://%s", path);
-    }
-  else
-    {
-      buf = evry->util_url_unescape(path, 0);
-    }
+   if (strncmp(path, "file://", 7))
+     {
+	buf = malloc(sizeof(char) * (strlen(path) + 8));
+	sprintf(buf, "file://%s", path);
+     }
+   else
+     {
+	buf = evry->util_url_unescape(path, 0);
+     }
 
-  DBG("play %s", buf);
+   DBG("play %s", buf);
 
-  msg = dbus_message_new_method_call(bus_name, "/TrackList",
-				     mpris_interface,
-				     "AddTrack");
-  dbus_message_append_args(msg,
-			   DBUS_TYPE_STRING, &(buf),
-			   DBUS_TYPE_BOOLEAN,  &(play_now),
-			   DBUS_TYPE_INVALID);
+   msg = dbus_message_new_method_call(bus_name, "/TrackList",
+				      mpris_interface,
+				      "AddTrack");
+   dbus_message_append_args(msg,
+			    DBUS_TYPE_STRING, &(buf),
+			    DBUS_TYPE_BOOLEAN,  &(play_now),
+			    DBUS_TYPE_INVALID);
 
-  e_dbus_message_send(conn, msg, NULL, -1, NULL);
-  dbus_message_unref(msg);
+   e_dbus_message_send(conn, msg, NULL, -1, NULL);
+   dbus_message_unref(msg);
 
-  if (play_now && _plug->status.playing != 0)
-    _dbus_send_msg("/Player", "Play", NULL, NULL);
+   if (play_now && _plug->status.playing != 0)
+     _dbus_send_msg("/Player", "Play", NULL, NULL);
 
-  free(buf);
+   free(buf);
 }
 
 _add_dir(const char *path)
 {
-  Eina_List *files = ecore_file_ls(path);
-  char *f;
-  char buf[PATH_MAX];
-  const char *mime;
+   Eina_List *files = ecore_file_ls(path);
+   char *f;
+   char buf[PATH_MAX];
+   const char *mime;
 
-  EINA_LIST_FREE(files, f)
-    {
-      snprintf(buf, sizeof(buf), "%s/%s", path, f);
-      mime = efreet_mime_type_get(buf);
+   EINA_LIST_FREE(files, f)
+     {
+	snprintf(buf, sizeof(buf), "%s/%s", path, f);
+	mime = efreet_mime_type_get(buf);
 
-      if (mime && strncmp(mime, "audio/", 6) == 0)
-	_add_file(buf, 0);
+	if (mime && strncmp(mime, "audio/", 6) == 0)
+	  _add_file(buf, 0);
 
-      free(f);
-    }
+	free(f);
+     }
 }
 
 static int
 _add_files(Evry_Item_File *file)
 {
-  if (file->mime && strncmp(file->mime, "audio/", 6) == 0)
-    {
-      _add_file(file->path, 0);
-      return 1;
-    }
-  else if (ecore_file_is_dir(file->path))
-    {
-      _add_dir(file->path);
-      return 1;
-    }
+   if (file->mime && strncmp(file->mime, "audio/", 6) == 0)
+     {
+	_add_file(file->path, 0);
+	return 1;
+     }
+   else if (ecore_file_is_dir(file->path))
+     {
+	_add_dir(file->path);
+	return 1;
+     }
 
-  return 0;
+   return 0;
 }
 
 static int
 _mpris_play_file(Evry_Action *act)
 {
-  Evry_Item_File *file;
-  int play = EVRY_ITEM_DATA_INT_GET(act) == ACT_PLAY_FILE;
+   Evry_Item_File *file;
+   int play = EVRY_ITEM_DATA_INT_GET(act) == ACT_PLAY_FILE;
 
-  if (CHECK_TYPE(act->it1.item, MPRIS_TRACK))
-    {
+   if (CHECK_TYPE(act->it1.item, MPRIS_TRACK))
+     {
 
-      file = (Evry_Item_File *)act->it2.item;
-      if (strncmp(file->mime, "audio/", 6) != 0)
-	return 0;
-    }
-  else
-    {
-      file = (Evry_Item_File *)act->it1.item;
-    }
+	file = (Evry_Item_File *)act->it2.item;
+	if (strncmp(file->mime, "audio/", 6) != 0)
+	  return 0;
+     }
+   else
+     {
+	file = (Evry_Item_File *)act->it1.item;
+     }
 
-  _add_file(file->path, play);
+   _add_file(file->path, play);
 
-  return 1;
+   return 1;
 }
 
 static int
 _mpris_add_files(Evry_Action *act)
 {
-  const Evry_Item *it = act->it2.item;
+   const Evry_Item *it = act->it2.item;
 
-  /* if (!CHECK_TYPE(act->it1.item, MPRIS_TRACK))
-   *   return 0; */
+   /* if (!CHECK_TYPE(act->it1.item, MPRIS_TRACK))
+    *   return 0; */
 
-  if ((!CHECK_TYPE(it, EVRY_TYPE_FILE)) &&
-      (!CHECK_TYPE(it, TRACKER_MUSIC)))
-    return 0;
+   if ((!CHECK_TYPE(it, EVRY_TYPE_FILE)) &&
+       (!CHECK_TYPE(it, TRACKER_MUSIC)))
+     return 0;
 
-  if (CHECK_TYPE(it, TRACKER_MUSIC) &&
-      CHECK_SUBTYPE(it, FILE_LIST) &&
-      (act->it2.item->data))
-    {
-      char *file;
-      Eina_List *l;
+   if (CHECK_TYPE(it, TRACKER_MUSIC) &&
+       CHECK_SUBTYPE(it, FILE_LIST) &&
+       (act->it2.item->data))
+     {
+	char *file;
+	Eina_List *l;
 
-      EINA_LIST_REVERSE_FOREACH(act->it2.item->data, l, file)
-      _add_file(file, 0);
-      return 1;
-    }
+	EINA_LIST_REVERSE_FOREACH(act->it2.item->data, l, file)
+	  _add_file(file, 0);
+	return 1;
+     }
 
-  GET_FILE(file, act->it2.item);
+   GET_FILE(file, act->it2.item);
 
-  return _add_files(file);
+   return _add_files(file);
 }
 
 static int
 _mpris_enqueue_files(Evry_Action *act)
 {
-  GET_FILE(file, act->it1.item);
+   GET_FILE(file, act->it1.item);
 
-  return _add_files(file);
+   return _add_files(file);
 }
 
 static int
 _mpris_remove_dups(Evry_Action *act)
 {
-  Eina_List *l, *ll;
-  Evry_Item_File *f, *f2;
+   Eina_List *l, *ll;
+   Evry_Item_File *f, *f2;
 
-  _mpris_tracklist_action_clear(NULL);
+   _mpris_tracklist_action_clear(NULL);
 
-  EINA_LIST_FOREACH(_plug->tracks, l, f)
-    {
-      EINA_LIST_FOREACH(_plug->tracks, ll, f2)
-	{
-	  if (f == f2)
-	    {
-	      _add_file(f->path, 0);
-	      break;
-	    }
-	  else if (f->path == f2->path)
-	    {
-	      break;
-	    }
-	}
-    }
+   EINA_LIST_FOREACH(_plug->tracks, l, f)
+     {
+	EINA_LIST_FOREACH(_plug->tracks, ll, f2)
+	  {
+	     if (f == f2)
+	       {
+		  _add_file(f->path, 0);
+		  break;
+	       }
+	     else if (f->path == f2->path)
+	       {
+		  break;
+	       }
+	  }
+     }
 }
 
 static int
 _mpris_remove_missing(Evry_Action *act)
 {
-  Eina_List *l;
-  Evry_Item_File *f;
+   Eina_List *l;
+   Evry_Item_File *f;
 
-  _mpris_tracklist_action_clear(NULL);
+   _mpris_tracklist_action_clear(NULL);
 
-  EINA_LIST_FOREACH(_plug->tracks, l, f)
-    {
-      if (ecore_file_exists(f->path))
-	_add_file(f->path, 0);
-    }
+   EINA_LIST_FOREACH(_plug->tracks, l, f)
+     {
+	if (ecore_file_exists(f->path))
+	  _add_file(f->path, 0);
+     }
 }
 
 static int
 _mpris_check_file(Evry_Action *act __UNUSED__, const Evry_Item *it)
 {
-  GET_FILE(file, it);
+   GET_FILE(file, it);
 
-  return (file->mime && !strncmp(file->mime, "audio/", 6));
+   return (file->mime && !strncmp(file->mime, "audio/", 6));
 }
 
 static int
 _mpris_check_files(Evry_Action *act __UNUSED__, const Evry_Item *it)
 {
-  GET_FILE(file, it);
+   GET_FILE(file, it);
 
-  return ((it->browseable) || (file->mime && !strncmp(file->mime, "audio/", 6)));
+   return ((it->browseable) || (file->mime && !strncmp(file->mime, "audio/", 6)));
 }
 
 static int
 _mpris_check_add_music(Evry_Action *act __UNUSED__, const Evry_Item *it __UNUSED__)
 {
-  if (e_datastore_get("everything_tracker"))
-    return 1;
+   if (e_datastore_get("everything_tracker"))
+     return 1;
 
-  return 0;
+   return 0;
 }
 
 static int
 _mpris_check_item(Evry_Action *act, const Evry_Item *it)
 {
-  GET_PLUGIN(p, it->plugin);
+   GET_PLUGIN(p, it->plugin);
 
-  if (it == EVRY_ITEM(p->empty))
-    return 0;
+   if (it == EVRY_ITEM(p->empty))
+     return 0;
 
-  int action = EVRY_ITEM_DATA_INT_GET(act);
+   int action = EVRY_ITEM_DATA_INT_GET(act);
 
 
-  if (action == ACT_PLAY_TRACK)
-    {
-      if (p->current_track == ((Track *)it)->id)
-	return 0;
-    }
-  else if (action == ACT_REMOVE_TRACK)
-    {
-      return 1;
-    }
-  else if (action == ACT_STOP)
-    {
-      if (p->status.playing == 2) return 0;
-    }
-  else if (action == ACT_PLAY)
-    {
-      if (p->status.playing == 0) return 0;
-    }
-  else if (action == ACT_PAUSE)
-    {
-      if (p->status.playing != 0) return 0;
-    }
-  else if (action == ACT_FORWARD)
-    {
-      if ((p->current_track != ((Track *)it)->id) ||
-	  (p->status.playing != 0)) return 0;
-    }
-  else if (action == ACT_REWIND)
-    {
-      if ((p->current_track != ((Track *)it)->id) ||
-	  (p->status.playing != 0)) return 0;
-    }
-  else if (action == ACT_CLEAR)
-    {
-      if (strcmp(bus_name, "org.mpris.xmms2") &&
-	  strcmp(bus_name, "org.mpris.audacious") &&
-	  strcmp(bus_name, "org.mpris.corn"))
-	return 0;
-    }
+   if (action == ACT_PLAY_TRACK)
+     {
+	if (p->current_track == ((Track *)it)->id)
+	  return 0;
+     }
+   else if (action == ACT_REMOVE_TRACK)
+     {
+	return 1;
+     }
+   else if (action == ACT_STOP)
+     {
+	if (p->status.playing == 2) return 0;
+     }
+   else if (action == ACT_PLAY)
+     {
+	if (p->status.playing == 0) return 0;
+     }
+   else if (action == ACT_PAUSE)
+     {
+	if (p->status.playing != 0) return 0;
+     }
+   else if (action == ACT_FORWARD)
+     {
+	if ((p->current_track != ((Track *)it)->id) ||
+	    (p->status.playing != 0)) return 0;
+     }
+   else if (action == ACT_REWIND)
+     {
+	if ((p->current_track != ((Track *)it)->id) ||
+	    (p->status.playing != 0)) return 0;
+     }
+   else if (action == ACT_CLEAR)
+     {
+	if (strcmp(bus_name, "org.mpris.xmms2") &&
+	    strcmp(bus_name, "org.mpris.audacious") &&
+	    strcmp(bus_name, "org.mpris.corn"))
+	  return 0;
+     }
 
-  return 1;
+   return 1;
 }
 
 static void
 _dbus_cb_name_owner_changed(void *data __UNUSED__, DBusMessage *msg)
 {
-  DBusError err;
-  Eina_List *l;
-  const char *tmp;
-  const char *name, *from, *to;
+   DBusError err;
+   Eina_List *l;
+   const char *tmp;
+   const char *name, *from, *to;
 
-  if (!conn) return;
+   if (!conn) return;
 
-  dbus_error_init(&err);
-  if (!dbus_message_get_args(msg, &err,
-			     DBUS_TYPE_STRING, &name,
-			     DBUS_TYPE_STRING, &from,
-			     DBUS_TYPE_STRING, &to,
-			     DBUS_TYPE_INVALID))
-    {
-      ERR("could not get NameOwnerChanged arguments: %s: %s",
-	  err.name, err.message);
-      dbus_error_free(&err);
-      return;
-    }
+   dbus_error_init(&err);
+   if (!dbus_message_get_args(msg, &err,
+			      DBUS_TYPE_STRING, &name,
+			      DBUS_TYPE_STRING, &from,
+			      DBUS_TYPE_STRING, &to,
+			      DBUS_TYPE_INVALID))
+     {
+	ERR("could not get NameOwnerChanged arguments: %s: %s",
+	    err.name, err.message);
+	dbus_error_free(&err);
+	return;
+     }
 
-  if (strncmp(name, "org.mpris.", 10) != 0)
-    return;
+   if (strncmp(name, "org.mpris.", 10) != 0)
+     return;
 
-  DBG("NameOwnerChanged from=[%s] to=[%s]\n", from, to);
+   DBG("NameOwnerChanged from=[%s] to=[%s]\n", from, to);
 
-  tmp = eina_stringshare_add(name);
+   tmp = eina_stringshare_add(name);
 
-  if (to[0] == '\0')
-    {
-      players = eina_list_remove(players, tmp);
+   if (to[0] == '\0')
+     {
+	players = eina_list_remove(players, tmp);
 
-      /* vanished player was current? */
-      if (tmp == bus_name)
-	{
-	  /* make another player current */
-	  if (eina_list_count(players) > 0)
-	    {
-	      bus_name = players->data;
-	      DBG("use::%s", bus_name);
-	      dbus_active = EINA_TRUE;
-	    }
-	  else
-	    {
-	      dbus_active = EINA_FALSE;
-	    }
-	}
+	/* vanished player was current? */
+	if (tmp == bus_name)
+	  {
+	     /* make another player current */
+	     if (eina_list_count(players) > 0)
+	       {
+		  bus_name = players->data;
+		  DBG("use::%s", bus_name);
+		  dbus_active = EINA_TRUE;
+	       }
+	     else
+	       {
+		  dbus_active = EINA_FALSE;
+	       }
+	  }
 
-      eina_stringshare_del(tmp);
-    }
-  else
-    {
-      /* new player appeared? */
-      if (!eina_list_data_find(players, tmp))
-	{
-	  eina_stringshare_ref(tmp);
-	  players = eina_list_append(players, tmp);
-	}
+	eina_stringshare_del(tmp);
+     }
+   else
+     {
+	/* new player appeared? */
+	if (!eina_list_data_find(players, tmp))
+	  {
+	     eina_stringshare_ref(tmp);
+	     players = eina_list_append(players, tmp);
+	  }
 
-      /* no active player - make player current */
-      if (!dbus_active)
-	{
-	  bus_name = tmp;
-	  dbus_active = EINA_TRUE;
-	}
-    }
+	/* no active player - make player current */
+	if (!dbus_active)
+	  {
+	     bus_name = tmp;
+	     dbus_active = EINA_TRUE;
+	  }
+     }
 
-  eina_stringshare_del(tmp);
+   eina_stringshare_del(tmp);
 }
 
 static void
 _dbus_cb_list_names(void *data __UNUSED__, DBusMessage *msg, DBusError *err)
 {
-  DBusMessageIter array, iter, item, iter_val;
-  char *name;
+   DBusMessageIter array, iter, item, iter_val;
+   char *name;
 
-  if (!_dbus_check_msg(msg, err)) return;
+   if (!_dbus_check_msg(msg, err)) return;
 
-  dbus_message_iter_init(msg, &array);
-  if(dbus_message_iter_get_arg_type(&array) == DBUS_TYPE_ARRAY)
-    {
-      dbus_message_iter_recurse(&array, &item);
+   dbus_message_iter_init(msg, &array);
+   if(dbus_message_iter_get_arg_type(&array) == DBUS_TYPE_ARRAY)
+     {
+	dbus_message_iter_recurse(&array, &item);
 
-      while(dbus_message_iter_get_arg_type(&item) == DBUS_TYPE_STRING)
-	{
-	  dbus_message_iter_get_basic(&item, &name);
-	  if (strncmp(name, "org.mpris.", 10) == 0)
-	    {
-	      DBG("found %s", name);
+	while(dbus_message_iter_get_arg_type(&item) == DBUS_TYPE_STRING)
+	  {
+	     dbus_message_iter_get_basic(&item, &name);
+	     if (strncmp(name, "org.mpris.", 10) == 0)
+	       {
+		  DBG("found %s", name);
 
-	      players = eina_list_append(players, eina_stringshare_add(name));
-	    }
+		  players = eina_list_append(players, eina_stringshare_add(name));
+	       }
 
-	  dbus_message_iter_next(&item);
-	}
-    }
+	     dbus_message_iter_next(&item);
+	  }
+     }
 
-  if (eina_list_count(players) > 0)
-    {
-      bus_name = players->data;
-      DBG("use::%s", bus_name);
-      dbus_active = EINA_TRUE;
-    }
+   if (eina_list_count(players) > 0)
+     {
+	bus_name = players->data;
+	DBG("use::%s", bus_name);
+	dbus_active = EINA_TRUE;
+     }
 }
 
 static int
 _cb_key_down(Evry_Plugin *plugin, const Ecore_Event_Key *ev)
 {
-  GET_PLUGIN(p, plugin);
-  Track *t;
+   GET_PLUGIN(p, plugin);
+   Track *t;
 
-  if ((ev->modifiers & ECORE_EVENT_MODIFIER_SHIFT) &&
-      ((!strcmp(ev->key, "Up")) ||
-       (!strcmp(ev->key, "Down"))))
-    {
-      if ((t = eina_list_nth(p->tracks, p->current_track)))
-	{
-	  if (!EVRY_ITEM(t)->selected)
-	    {
-	      evry->item_changed(EVRY_ITEM(t), 1, 1);
-	      return 1;
-	    }
-	}
-    }
-  else if ((ev->modifiers & ECORE_EVENT_MODIFIER_SHIFT) &&
-	   (!strcmp(ev->key, "Right")))
-    {
-      if ((t = eina_list_nth(p->tracks, p->current_track + 1)))
-	{
-	  if (!EVRY_ITEM(t)->selected)
-	    {
-	      evry->item_changed(EVRY_ITEM(t), 1, 1);
-	      _dbus_send_msg("/Player", "Next", NULL, NULL);
-	    }
-	}
-      return 1;
-    }
-  else if ((ev->modifiers & ECORE_EVENT_MODIFIER_SHIFT) &&
-	   (!strcmp(ev->key, "Left")))
-    {
-      if ((t = eina_list_nth(p->tracks, p->current_track - 1)))
-	{
-	  if (!EVRY_ITEM(t)->selected)
-	    {
-	      evry->item_changed(EVRY_ITEM(t), 1, 1);
-	      _dbus_send_msg("/Player", "Prev", NULL, NULL);
-	    }
-	}
-      return 1;
-    }
+   if ((ev->modifiers & ECORE_EVENT_MODIFIER_SHIFT) &&
+       ((!strcmp(ev->key, "Up")) ||
+	(!strcmp(ev->key, "Down"))))
+     {
+	if ((t = eina_list_nth(p->tracks, p->current_track)))
+	  {
+	     if (!EVRY_ITEM(t)->selected)
+	       {
+		  evry->item_changed(EVRY_ITEM(t), 1, 1);
+		  return 1;
+	       }
+	  }
+     }
+   else if ((ev->modifiers & ECORE_EVENT_MODIFIER_SHIFT) &&
+	    (!strcmp(ev->key, "Right")))
+     {
+	if ((t = eina_list_nth(p->tracks, p->current_track + 1)))
+	  {
+	     if (!EVRY_ITEM(t)->selected)
+	       {
+		  evry->item_changed(EVRY_ITEM(t), 1, 1);
+		  _dbus_send_msg("/Player", "Next", NULL, NULL);
+	       }
+	  }
+	return 1;
+     }
+   else if ((ev->modifiers & ECORE_EVENT_MODIFIER_SHIFT) &&
+	    (!strcmp(ev->key, "Left")))
+     {
+	if ((t = eina_list_nth(p->tracks, p->current_track - 1)))
+	  {
+	     if (!EVRY_ITEM(t)->selected)
+	       {
+		  evry->item_changed(EVRY_ITEM(t), 1, 1);
+		  _dbus_send_msg("/Player", "Prev", NULL, NULL);
+	       }
+	  }
+	return 1;
+     }
 
-  return 0;
+   return 0;
 }
 
 static int
 _plugins_init(const Evry_API *_api)
 {
-  Evry_Action *act;
-  Evry_Plugin *p;
-  int prio = 15;
+   Evry_Action *act;
+   Evry_Plugin *p;
+   int prio = 15;
 
-  if (evry_module->active)
-    return EINA_TRUE;
+   if (evry_module->active)
+     return EINA_TRUE;
 
-  evry = _api;
+   evry = _api;
 
-  if (!evry->api_version_check(EVRY_API_VERSION))
-    return EINA_FALSE;
+   if (!evry->api_version_check(EVRY_API_VERSION))
+     return EINA_FALSE;
 
-  conn = e_dbus_bus_get(DBUS_BUS_SESSION);
+   conn = e_dbus_bus_get(DBUS_BUS_SESSION);
 
-  if (!conn)
-    return EINA_FALSE;
+   if (!conn)
+     return EINA_FALSE;
 
-  cb_name_owner_changed = e_dbus_signal_handler_add
-    (conn, fdo_bus_name, fdo_path, fdo_interface, "NameOwnerChanged",
-     _dbus_cb_name_owner_changed, NULL);
+   cb_name_owner_changed = e_dbus_signal_handler_add
+     (conn, fdo_bus_name, fdo_path, fdo_interface, "NameOwnerChanged",
+      _dbus_cb_name_owner_changed, NULL);
 
-  e_dbus_list_names(conn, _dbus_cb_list_names, NULL);
+   e_dbus_list_names(conn, _dbus_cb_list_names, NULL);
 
-  MPRIS_TRACK   = evry->type_register("MPRIS_TRACK");
-  TRACKER_MUSIC = evry->type_register("TRACKER_MUSIC");
-  FILE_LIST     = evry->type_register("FILE_LIST");
+   MPRIS_TRACK   = evry->type_register("MPRIS_TRACK");
+   TRACKER_MUSIC = evry->type_register("TRACKER_MUSIC");
+   FILE_LIST     = evry->type_register("FILE_LIST");
 
 
-  p = EVRY_PLUGIN_NEW(Plugin, N_("Playlist"), "emblem-sound", MPRIS_TRACK,
-		  _begin, _cleanup, _fetch, NULL);
-  p->history     = EINA_FALSE;
-  p->async_fetch = EINA_TRUE;
-  p->cb_key_down = &_cb_key_down;
+   p = EVRY_PLUGIN_NEW(Plugin, N_("Playlist"), "emblem-sound", MPRIS_TRACK,
+		       _begin, _cleanup, _fetch, NULL);
+   p->history     = EINA_FALSE;
+   p->async_fetch = EINA_TRUE;
+   p->cb_key_down = &_cb_key_down;
 
-  if (evry->plugin_register(p, EVRY_PLUGIN_SUBJECT, 0))
-    {
-      Plugin_Config *pc = p->config;
-      pc->view_mode = VIEW_MODE_LIST;
-      pc->aggregate = EINA_FALSE;
-      pc->top_level = EINA_FALSE;
-      pc->trigger = eina_stringshare_add("l ");
-    }
+   if (evry->plugin_register(p, EVRY_PLUGIN_SUBJECT, 0))
+     {
+	Plugin_Config *pc = p->config;
+	pc->view_mode = VIEW_MODE_LIST;
+	pc->aggregate = EINA_FALSE;
+	pc->top_level = EINA_FALSE;
+	pc->trigger = eina_stringshare_add("l ");
+     }
 
-  _plug = (Plugin *) p;
+   _plug = (Plugin *) p;
 
 #define ACTION_NEW(_label, _meth, _type1, _type2, _icon, _act, _check)  \
-    act = EVRY_ACTION_NEW(_label, _type1, _type2, _icon, _act, _check); \
-    EVRY_ITEM(act)->icon_get = &_icon_get;				\
-    evry->action_register(act,  prio++);				\
-    actions = eina_list_append(actions, act);				\
-    EVRY_ITEM_DATA_INT_SET(act, _meth);
+   act = EVRY_ACTION_NEW(_label, _type1, _type2, _icon, _act, _check);	\
+   EVRY_ITEM(act)->icon_get = &_icon_get;				\
+   evry->action_register(act,  prio++);					\
+   actions = eina_list_append(actions, act);				\
+   EVRY_ITEM_DATA_INT_SET(act, _meth);
 
 #define PLUG_ACTION_NEW(_label, _meth, _type1, _type2, _icon, _act, _check) \
-  act = EVRY_ACTION_NEW(_label, EVRY_TYPE_PLUGIN, _type2, _icon, _act, _check);	\
-  EVRY_ITEM(act)->icon_get = &_icon_get;				\
-  p->actions = eina_list_append(p->actions, act);			\
-  EVRY_ITEM_DATA_INT_SET(act, _meth);
+   act = EVRY_ACTION_NEW(_label, EVRY_TYPE_PLUGIN, _type2, _icon, _act, _check); \
+   EVRY_ITEM(act)->icon_get = &_icon_get;				\
+   p->actions = eina_list_append(p->actions, act);			\
+   EVRY_ITEM_DATA_INT_SET(act, _meth);
 
-  ACTION_NEW(N_("Play Track"), ACT_PLAY_TRACK,
-	     MPRIS_TRACK, 0,
-	     "media-playback-start",
-	     _mpris_play_track, _mpris_check_item);
+   ACTION_NEW(N_("Play Track"), ACT_PLAY_TRACK,
+	      MPRIS_TRACK, 0,
+	      "media-playback-start",
+	      _mpris_play_track, _mpris_check_item);
 
-  PLUG_ACTION_NEW(N_("Play"), ACT_PLAY,
-	     MPRIS_TRACK, 0, "media-playback-start",
-	     _mpris_player_action, _mpris_check_item);
+   PLUG_ACTION_NEW(N_("Play"), ACT_PLAY,
+		   MPRIS_TRACK, 0, "media-playback-start",
+		   _mpris_player_action, _mpris_check_item);
 
-  PLUG_ACTION_NEW(N_("Pause"), ACT_PAUSE,
-	     MPRIS_TRACK, 0, "media-playback-pause",
-	     _mpris_player_action, _mpris_check_item);
+   PLUG_ACTION_NEW(N_("Pause"), ACT_PAUSE,
+		   MPRIS_TRACK, 0, "media-playback-pause",
+		   _mpris_player_action, _mpris_check_item);
 
-  PLUG_ACTION_NEW(N_("Stop"), ACT_STOP,
-	     MPRIS_TRACK, 0, "media-playback-stop",
-	     _mpris_player_action, _mpris_check_item);
+   PLUG_ACTION_NEW(N_("Stop"), ACT_STOP,
+		   MPRIS_TRACK, 0, "media-playback-stop",
+		   _mpris_player_action, _mpris_check_item);
 
-  ACTION_NEW(N_("Forward"), ACT_FORWARD,
-	     MPRIS_TRACK, 0, "media-seek-forward",
-	     _mpris_player_position, _mpris_check_item);
+   ACTION_NEW(N_("Forward"), ACT_FORWARD,
+	      MPRIS_TRACK, 0, "media-seek-forward",
+	      _mpris_player_position, _mpris_check_item);
 
-  ACTION_NEW(N_("Rewind"), ACT_REWIND,
-	     MPRIS_TRACK, 0, "media-seek-backward",
-	     _mpris_player_position, _mpris_check_item);
+   ACTION_NEW(N_("Rewind"), ACT_REWIND,
+	      MPRIS_TRACK, 0, "media-seek-backward",
+	      _mpris_player_position, _mpris_check_item);
 
-  ACTION_NEW(N_("Remove Track"), ACT_REMOVE_TRACK,
-	     MPRIS_TRACK, 0, "list-remove",
-	     _mpris_tracklist_remove_track, _mpris_check_item);
-  act->it1.accept_list = EINA_TRUE;
+   ACTION_NEW(N_("Remove Track"), ACT_REMOVE_TRACK,
+	      MPRIS_TRACK, 0, "list-remove",
+	      _mpris_tracklist_remove_track, _mpris_check_item);
+   act->it1.accept_list = EINA_TRUE;
 
-  PLUG_ACTION_NEW(N_("Clear Playlist"), ACT_CLEAR,
-	     MPRIS_TRACK, 0, "list-remove",
-	     _mpris_tracklist_action_clear, _mpris_check_item);
+   PLUG_ACTION_NEW(N_("Clear Playlist"), ACT_CLEAR,
+		   MPRIS_TRACK, 0, "list-remove",
+		   _mpris_tracklist_action_clear, _mpris_check_item);
 
-  ACTION_NEW(N_("Play File"), ACT_PLAY_FILE,
-	     EVRY_TYPE_FILE, 0, "media-playback-start",
-	     _mpris_play_file, _mpris_check_file);
-  act->remember_context = EINA_TRUE;
+   ACTION_NEW(N_("Play File"), ACT_PLAY_FILE,
+	      EVRY_TYPE_FILE, 0, "media-playback-start",
+	      _mpris_play_file, _mpris_check_file);
+   act->remember_context = EINA_TRUE;
 
-  PLUG_ACTION_NEW(N_("Add Files..."), ACT_ADD_FILE,
-	     MPRIS_TRACK, EVRY_TYPE_FILE, "list-add",
-	     _mpris_add_files, NULL);
+   PLUG_ACTION_NEW(N_("Add Files..."), ACT_ADD_FILE,
+		   MPRIS_TRACK, EVRY_TYPE_FILE, "list-add",
+		   _mpris_add_files, NULL);
 
-  ACTION_NEW(N_("Enqueue in Playlist"), ACT_ADD_FILE,
-	     EVRY_TYPE_FILE, 0, "list-add",
-	     _mpris_enqueue_files, _mpris_check_files);
-  act->remember_context = EINA_TRUE;
+   ACTION_NEW(N_("Enqueue in Playlist"), ACT_ADD_FILE,
+	      EVRY_TYPE_FILE, 0, "list-add",
+	      _mpris_enqueue_files, _mpris_check_files);
+   act->remember_context = EINA_TRUE;
 
-  PLUG_ACTION_NEW(N_("Add Music..."), ACT_ADD_FILE,
-	     MPRIS_TRACK, TRACKER_MUSIC, "list-add",
-	     _mpris_add_files, _mpris_check_add_music);
+   PLUG_ACTION_NEW(N_("Add Music..."), ACT_ADD_FILE,
+		   MPRIS_TRACK, TRACKER_MUSIC, "list-add",
+		   _mpris_add_files, _mpris_check_add_music);
 
-  PLUG_ACTION_NEW(N_("Remove Duplicates"), 0,
-	     MPRIS_TRACK, 0, "list-remove",
-	     _mpris_remove_dups, NULL);
+   PLUG_ACTION_NEW(N_("Remove Duplicates"), 0,
+		   MPRIS_TRACK, 0, "list-remove",
+		   _mpris_remove_dups, NULL);
 
-  PLUG_ACTION_NEW(N_("Remove Missing Files"), 0,
-	     MPRIS_TRACK, 0, "list-remove",
-	     _mpris_remove_missing, NULL);
+   PLUG_ACTION_NEW(N_("Remove Missing Files"), 0,
+		   MPRIS_TRACK, 0, "list-remove",
+		   _mpris_remove_missing, NULL);
 
 
 #undef ACTION_NEW
 
-  return EINA_TRUE;
+   return EINA_TRUE;
 }
 
 static void
 _plugins_shutdown(void)
 {
-  Evry_Action *act;
-  char *player;
+   Evry_Action *act;
+   char *player;
 
-  if (!evry_module->active) return;
+   if (!evry_module->active) return;
 
-  GET_EVRY_PLUGIN(p, _plug);
-  EINA_LIST_FREE(p->actions, act)
-    EVRY_ACTION_FREE(act);
+   GET_EVRY_PLUGIN(p, _plug);
+   EINA_LIST_FREE(p->actions, act)
+     EVRY_ACTION_FREE(act);
 
-  EVRY_PLUGIN_FREE(_plug);
+   EVRY_PLUGIN_FREE(_plug);
 
-  EINA_LIST_FREE(actions, act)
-    EVRY_ACTION_FREE(act);
+   EINA_LIST_FREE(actions, act)
+     EVRY_ACTION_FREE(act);
 
-  if (conn)
-    {
-      if (cb_name_owner_changed) e_dbus_signal_handler_del(conn, cb_name_owner_changed);
-      e_dbus_connection_close(conn);
-    }
+   if (conn)
+     {
+	if (cb_name_owner_changed) e_dbus_signal_handler_del(conn, cb_name_owner_changed);
+	e_dbus_connection_close(conn);
+     }
 
-  EINA_LIST_FREE(players, player)
-    eina_stringshare_del(player);
+   EINA_LIST_FREE(players, player)
+     eina_stringshare_del(player);
 
-  evry_module->active = EINA_FALSE;
+   evry_module->active = EINA_FALSE;
 }
 
 /***************************************************************************/
@@ -1463,46 +1463,46 @@ EAPI E_Module_Api e_modapi =
 EAPI void *
 e_modapi_init(E_Module *m)
 {
-  char buf[4096];
+   char buf[4096];
 
-  /* Location of message catalogs for localization */
-  snprintf(buf, sizeof(buf), "%s/locale", e_module_dir_get(m));
-  bindtextdomain(PACKAGE, buf);
-  bind_textdomain_codeset(PACKAGE, "UTF-8");
+   /* Location of message catalogs for localization */
+   snprintf(buf, sizeof(buf), "%s/locale", e_module_dir_get(m));
+   bindtextdomain(PACKAGE, buf);
+   bind_textdomain_codeset(PACKAGE, "UTF-8");
 
-  snprintf(buf, sizeof(buf), "%s/e-module.edj", e_module_dir_get(m));
-  theme_file = strdup(buf);
+   snprintf(buf, sizeof(buf), "%s/e-module.edj", e_module_dir_get(m));
+   theme_file = strdup(buf);
 
-  evry_module = E_NEW(Evry_Module, 1);
-  evry_module->init     = &_plugins_init;
-  evry_module->shutdown = &_plugins_shutdown;
-  EVRY_MODULE_REGISTER(evry_module);
+   evry_module = E_NEW(Evry_Module, 1);
+   evry_module->init     = &_plugins_init;
+   evry_module->shutdown = &_plugins_shutdown;
+   EVRY_MODULE_REGISTER(evry_module);
 
-  if ((evry = e_datastore_get("everything_loaded")))
-    evry_module->active = _plugins_init(evry);
+   if ((evry = e_datastore_get("everything_loaded")))
+     evry_module->active = _plugins_init(evry);
 
-  e_module_delayed_set(m, 1);
+   e_module_delayed_set(m, 1);
 
-  return m;
+   return m;
 }
 
 EAPI int
 e_modapi_shutdown(E_Module *m)
 {
-  _plugins_shutdown();
+   _plugins_shutdown();
 
-  EVRY_MODULE_UNREGISTER(evry_module);
-  E_FREE(evry_module);
+   EVRY_MODULE_UNREGISTER(evry_module);
+   E_FREE(evry_module);
 
-  E_FREE(theme_file);
+   E_FREE(theme_file);
 
-  return 1;
+   return 1;
 }
 
 EAPI int
 e_modapi_save(E_Module *m)
 {
-  return 1;
+   return 1;
 }
 
 /***************************************************************************/
