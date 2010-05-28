@@ -1,6 +1,7 @@
 #ifndef TEST_H
 #define TEST_H
 
+#include <evasxx/Evasxx.h>
 #include <elementaryxx/Elementaryxx.h>
 #include "../../common/searchFile.h"
 

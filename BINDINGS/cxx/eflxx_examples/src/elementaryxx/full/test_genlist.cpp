@@ -94,10 +94,6 @@ _gl_longpress (Evas_Object *obj, void *event_info)
 void
 test_genlist (void *data, Evas_Object *obj, void *event_info)
 {
-  /*Evas_Object *win, *bg, *gl, *bt_50, *bt_1500, *bx;
-  Evas_Object *over;
-  */
-  
   Window *win = Window::factory ("genlist", ELM_WIN_BASIC);
   win->setTitle ("GenList");
   win->setAutoDel (true);
@@ -123,6 +119,18 @@ test_genlist (void *data, Evas_Object *obj, void *event_info)
   gl->setAlignHintSize (EVAS_HINT_FILL, EVAS_HINT_FILL);
   bx->packEnd (*gl);
   gl->show ();
+
+  Eflxx::CountedPtr <Evasxx::Canvas> canvas (win->getEvas ());
+  
+  /*Evasxx::Rectangle *over = new Evasxx::Rectangle (*canvas);
+  over->setColor (Eflxx::Color (0, 0, 0, 0));
+  //evas_object_event_callback_add(over, EVAS_CALLBACK_MOUSE_MOVE, _move, gl);
+  //evas_object_repeat_events_set(over, 1);
+  over->show ();
+  over->setWeightHintSize (EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+  win->addObjectResize (*over);*/
+  
+  
 #if 0
 
    over = evas_object_rectangle_add(evas_object_evas_get(win));

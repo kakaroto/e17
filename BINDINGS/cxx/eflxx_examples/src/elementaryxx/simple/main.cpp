@@ -34,16 +34,16 @@ int main (int argc, char **argv)
 
   Evas *e = evas_object_evas_get(bg->obj ());
 
-  Evasxx::Canvas ec (e);
+/*  Evasxx::Canvas ec (e);
 
   Evasxx::Image ei (ec);
   ei.setFile (searchPixmapFile ("elementaryxx/plant_01.jpg"));
   ei.setGeometry (Rect (100,100, 100, 100));
-  ei.show ();
+  ei.show ();*/
 
   Button *elmButton = Button::factory (*elmWin);
   Clock *elmClock = Clock::factory (*elmWin);
-  elmWin->addMember (ei);
+  //elmWin->addMember (ei);
   Toggle *elmToggle = Toggle::factory (*elmWin);
   Scroller *elmScroller = Scroller::factory (*elmWin);
   Entry *elmEntry = Entry::factory (*elmWin);
