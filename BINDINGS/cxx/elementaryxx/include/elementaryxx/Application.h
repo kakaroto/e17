@@ -25,7 +25,6 @@ public:
   
    // EAPI Evas_Coord   elm_finger_size_get(void);
    // EAPI void         elm_finger_size_set(Evas_Coord size);
-
 };
 
 } // end namespace Elmxx
