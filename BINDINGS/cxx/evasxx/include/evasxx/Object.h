@@ -7,7 +7,8 @@
 #include <string>
 
 /* EFLxx */
-#include <eflxx/Common.h>
+#include <eflxx/Eflxx.h>
+//#include "Canvas.h"
 
 /* EFL */
 #include <Evas.h>
@@ -18,6 +19,7 @@ namespace Evasxx {
 
 /* forward declarations */
 class Smart;
+class Canvas;
   
 /*!
  * An Evas Object wrapper
@@ -26,7 +28,7 @@ class Smart;
  */
 class Object
 {
-  friend class Canvas; // needed?
+  //friend class Canvas; // needed?
   friend class EdjePart;   // needed?
 
 protected:
@@ -205,6 +207,13 @@ public:
    * @@see objectLink but with const variables
    */
   static const Object* objectLink( const Evas_Object* evas_object = 0 );
+  
+  /*!
+   * Retrieves the Canvas that the current object is on.
+   *
+   * @return  The Canvas that the object is on.
+   */
+  Eflxx::CountedPtr <Canvas> getEvas ();
 
 private:
   

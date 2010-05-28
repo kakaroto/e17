@@ -2,8 +2,8 @@
 #include <config.h>
 #endif
 
+#include "../include/evasxx/Object.h"
 #include "../include/evasxx/Canvas.h"
-#include <eflxx/Common.h>
 
 using namespace std;
 using namespace Eflxx;
@@ -11,23 +11,26 @@ using namespace Eflxx;
 namespace Evasxx {
 
 Canvas::Canvas()
-    :Eflxx::Trackable( "Canvas" )
+  :Eflxx::Trackable( "Canvas" ),
+  mFree (true)
 {
   AllocTag( this, "Canvas" );
   Dout( dc::notice, "Canvas::Canvas - creating new Evas" );
   o = evas_new();
 }
 
-Canvas::Canvas( Evas* evas )
-    :Eflxx::Trackable( "Canvas" )
+Canvas::Canvas( Evas* evas ) :
+  Eflxx::Trackable( "Canvas" ),
+  mFree (false)
 {
   AllocTag( this, "Canvas" );
   Dout( dc::notice, "Canvas::Canvas - attaching to Evas" );
   o = evas;
 }
 
-Canvas::Canvas( const Eflxx::Size &size )
-    :Eflxx::Trackable( "Canvas" )
+Canvas::Canvas( const Eflxx::Size &size ) :
+  Eflxx::Trackable( "Canvas" ),
+  mFree (true)
 {
   AllocTag( this, "Canvas" );
   Dout( dc::notice, "Canvas::Canvas - creating new Evas" );
@@ -38,8 +41,11 @@ Canvas::Canvas( const Eflxx::Size &size )
 
 Canvas::~Canvas()
 {
-  Dout( dc::notice, "Canvas::~Canvas - freeing Evas" );
-  evas_free( o );
+  if (mFree)
+  {
+    Dout( dc::notice, "Canvas::~Canvas - freeing Evas" );
+    evas_free (o);
+  }
 }
 
 int Canvas::lookupRenderMethod( const std::string &method )
@@ -162,6 +168,11 @@ Object* Canvas::objectAtTop() const
 Object* Canvas::objectAtBottom() const
 {
   return Object::objectLink( evas_object_bottom_get( o ) );
+}
+
+Canvas *Canvas::wrap (Evas_Object* o)
+{
+  return new Canvas (evas_object_evas_get (o));
 }
 
 } // end namespace Evasxx

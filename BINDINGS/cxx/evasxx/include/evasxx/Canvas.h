@@ -5,11 +5,14 @@
 #include <string>
 
 /* EFLxx */
-#include "Object.h"
+#include <eflxx/Eflxx.h>
 
 /* EFL */
 #include <Evas.h>
 #include <Eina.h>
+
+/* forward declaration */
+class Object;
 
 using std::string;
 
@@ -18,11 +21,10 @@ namespace Evasxx {
 /**
  * An Evas Canvas Wrapper
  */
-class Canvas : public Eflxx:: Trackable
+class Canvas : public Eflxx::Trackable
 {
 public:
   Canvas( const Eflxx::Size &size );
-  Canvas( Evas* evas ); // TODO: wrap?
   Canvas();
   ~Canvas();
 
@@ -66,9 +68,24 @@ public:
   Object* focusedObject() const;
   Object* objectAtTop() const;
   Object* objectAtBottom() const;
+
+  /*!
+   * @brief C object wrapper factory method.
+   *
+   * For internal usage only! This return a new allocated Object that holds
+   * the wrapped Evas_Object variable. With a delete on this object the wrapped
+   * C type won't be freed.
+   *
+   * @param o The C to to be wrapped.
+   * @return The wrapped C++ type.
+   */
+  static Canvas *wrap (Evas_Object* o);
   
 private:
+  Canvas( Evas* evas );
+  
   Evas* o;
+  bool mFree;
 };
 
 inline ostream& operator<<( ostream& s, const Canvas& canvas )

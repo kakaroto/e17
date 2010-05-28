@@ -3,6 +3,7 @@
 #endif
 
 #include "../include/evasxx/Object.h"
+#include "../include/evasxx/Canvas.h"
 #include "Evas.h"
 
 #include <cassert>
@@ -319,6 +320,7 @@ bool Object::hasFocus() const
 Object *Object::getParent (const Object &obj)
 {
   Evas_Object *eo = evas_object_smart_parent_get (o);
+  // TODO: try if this works also with objectLink() logic...
   
   return Object::wrap (eo);
 }
@@ -342,6 +344,11 @@ const Object* Object::objectLink( const Evas_Object *evas_object )
   void *v = evas_object_data_get( evas_object, "obj_c++" );
   assert (v);
   return static_cast<const Object*>( v );
+}
+
+Eflxx::CountedPtr <Canvas> Object::getEvas ()
+{
+  return Eflxx::CountedPtr <Canvas> (Canvas::wrap (o));
 }
 
 // PRIVATE

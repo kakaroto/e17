@@ -7,6 +7,7 @@
 /* EFLxx */
 #include <eflxx/CountedPtr.h>
 #include "Canvas.h"
+#include "Object.h"
 
 /**
  * C++ Wrapper for the Enlightenment Smart Object Library (ESMART)
@@ -14,6 +15,9 @@
  */
 
 namespace Evasxx {
+
+/* forward declarations */
+class Smart;
   
 struct CustomEventWrap
 {
