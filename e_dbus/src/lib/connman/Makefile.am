@@ -22,7 +22,7 @@ e_connman_technology.c
 libeconnman_la_LIBADD = \
 $(top_builddir)/src/lib/dbus/libedbus.la
 
-libeconnman_la_LDFLAGS = -version-info @econnman_version_info@ @econnman_release_info@
+libeconnman_la_LDFLAGS = -version-info @version_info@ @release_info@
 
 endif
 

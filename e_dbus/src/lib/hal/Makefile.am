@@ -18,7 +18,7 @@ e_hal_main.c
 libehal_la_LIBADD = \
 $(top_builddir)/src/lib/dbus/libedbus.la
 
-libehal_la_LDFLAGS = -version-info @ehal_version_info@ @ehal_release_info@
+libehal_la_LDFLAGS = -version-info @version_info@ @release_info@
 
 endif
 

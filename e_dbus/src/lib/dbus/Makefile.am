@@ -20,6 +20,6 @@ e_dbus_signal.c
 
 
 libedbus_la_LIBADD = @EDBUS_LIBS@
-libedbus_la_LDFLAGS = -no-undefined @lt_enable_auto_import@ -version-info @edbus_version_info@ @edbus_release_info@
+libedbus_la_LDFLAGS = -no-undefined @lt_enable_auto_import@ -version-info @version_info@ @release_info@
 
 EXTRA_DIST = e_dbus_private.h

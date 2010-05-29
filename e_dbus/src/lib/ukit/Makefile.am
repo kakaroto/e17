@@ -19,7 +19,7 @@ e_ukit_private_util.c
 libeukit_la_LIBADD = \
 $(top_builddir)/src/lib/dbus/libedbus.la
 
-libeukit_la_LDFLAGS = -version-info @eukit_version_info@ @eukit_release_info@
+libeukit_la_LDFLAGS = -version-info @version_info@ @release_info@
 
 endif
 

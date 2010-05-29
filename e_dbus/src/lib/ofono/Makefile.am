@@ -20,7 +20,7 @@ e_ofono_sms.c
 libeofono_la_LIBADD = \
 $(top_builddir)/src/lib/dbus/libedbus.la
 
-libeofono_la_LDFLAGS = -version-info @eofono_version_info@ @eofono_release_info@
+libeofono_la_LDFLAGS = -version-info @version_info@ @release_info@
 
 endif
 
