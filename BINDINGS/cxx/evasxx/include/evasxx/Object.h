@@ -159,6 +159,13 @@ public:
   /* Focus */
   virtual void setFocus( bool focus );
   virtual bool hasFocus() const;
+
+  void setEventsPass (bool pass);
+  bool getEventsPass () const;
+  void setEventsRepeat (bool repeat);
+  bool getEventsRepeat () const;
+  void setEventsPropagate (bool prop);
+  bool getEventsPropagate () const;
   
   /*!
    * @brief Gets the smart parent.

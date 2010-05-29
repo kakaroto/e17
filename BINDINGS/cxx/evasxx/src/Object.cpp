@@ -317,6 +317,38 @@ bool Object::hasFocus() const
   return evas_object_focus_get( o );
 }
 
+void Object::setEventsPass (bool pass)
+{
+  evas_object_pass_events_set (o, pass);
+
+}
+
+bool Object::getEventsPass () const
+{
+  return evas_object_pass_events_get (o);
+
+}
+
+void Object::setEventsRepeat (bool repeat)
+{
+   evas_object_repeat_events_set (o, repeat);
+}
+
+bool Object::getEventsRepeat () const
+{
+  return evas_object_repeat_events_get (o);
+}
+
+void Object::setEventsPropagate (bool prop)
+{
+  evas_object_propagate_events_set (o, prop);
+}
+
+bool Object::getEventsPropagate () const
+{
+  return evas_object_propagate_events_get (o);
+}
+
 Object *Object::getParent (const Object &obj)
 {
   Evas_Object *eo = evas_object_smart_parent_get (o);
