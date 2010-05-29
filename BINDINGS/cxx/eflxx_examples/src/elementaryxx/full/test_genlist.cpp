@@ -46,6 +46,11 @@ void glSelected (const Evasxx::Object &obj, void *event_info)
   cout << "glSelected" << endl;
 }
 
+void _move (const Evasxx::MouseMoveEvent &ev, GenList *gl)
+{
+  // TODO: port _move below to C++
+}
+
 #if 0
 static void
 _move(void *data, Evas *evas, Evas_Object *obj, void *event_info)
@@ -122,25 +127,15 @@ test_genlist (void *data, Evas_Object *obj, void *event_info)
 
   Eflxx::CountedPtr <Evasxx::Canvas> canvas (win->getEvas ());
   
-  /*Evasxx::Rectangle *over = new Evasxx::Rectangle (*canvas);
+  Evasxx::Rectangle *over = new Evasxx::Rectangle (*canvas);
   over->setColor (Eflxx::Color (0, 0, 0, 0));
+  over->signalHandleMouseMove.connect (sigc::bind (sigc::ptr_fun (&_move), gl));
   //evas_object_event_callback_add(over, EVAS_CALLBACK_MOUSE_MOVE, _move, gl);
-  //evas_object_repeat_events_set(over, 1);
+  // -> sigc::signal <void, const MouseMoveEvent&> signalHandleMouseMove; /**< Mouse Move Event */
+  over->setEventsRepeat (true);
   over->show ();
   over->setWeightHintSize (EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-  win->addObjectResize (*over);*/
-  
-  
-#if 0
-
-   over = evas_object_rectangle_add(evas_object_evas_get(win));
-   evas_object_color_set(over, 0, 0, 0, 0);
-   evas_object_event_callback_add(over, EVAS_CALLBACK_MOUSE_MOVE, _move, gl);
-   evas_object_repeat_events_set(over, 1);
-   evas_object_show(over);
-   evas_object_size_hint_weight_set(over, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-   elm_win_resize_object_add(win, over);
-#endif
+  win->addObjectResize (*over);
 
   Button *bt_50 = Button::factory (*win);
   bt_50->setLabel ("Go to 50");
