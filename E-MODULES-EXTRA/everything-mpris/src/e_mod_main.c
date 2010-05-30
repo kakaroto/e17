@@ -157,12 +157,12 @@ _item_free(Evry_Item *it)
    GET_TRACK(t, it);
    GET_FILE(f, it);
 
-   if (f->path) eina_stringshare_del(f->path);
-   if (f->url)  eina_stringshare_del(f->url);
+   IF_RELEASE(f->path);
+   IF_RELEASE(f->url);
 
-   if (t->artist) eina_stringshare_del(t->artist);
-   if (t->album) eina_stringshare_del(t->album);
-   if (t->title) eina_stringshare_del(t->title);
+   IF_RELEASE(t->artist);
+   IF_RELEASE(t->album);
+   IF_RELEASE(t->title);
 
    if (t->pnd) dbus_pending_call_cancel(t->pnd);
 
@@ -565,7 +565,6 @@ _dbus_cb_tracklist_change(void *data, DBusMessage *msg)
 
    DBG("tracklist change");
 
-   /* FIXME will be needed in some other places.. */
    p->next_track = 0;
 
    dbus_message_get_args(msg, NULL,
@@ -608,7 +607,9 @@ _dbus_cb_status_change(void *data, DBusMessage *msg)
 static Evry_Plugin *
 _begin(Evry_Plugin *plugin, const Evry_Item *item __UNUSED__)
 {
-   GET_PLUGIN(p, plugin);
+   Plugin *p;
+   
+   EVRY_PLUGIN_INSTANCE(p, plugin);
 
    if (!conn || !dbus_active) return 0;
 
@@ -651,13 +652,7 @@ _cleanup(Evry_Plugin *plugin)
    if (cb_player_status_change)
      e_dbus_signal_handler_del(conn, cb_player_status_change);
 
-   cb_tracklist_change = NULL;
-   cb_player_track_change = NULL;
-   cb_player_status_change = NULL;
-
-   if (p->input)
-     eina_stringshare_del(p->input);
-   p->input = NULL;
+   IF_RELEASE(p->input);
 
    EINA_LIST_FREE(p->tracks, it)
      {
@@ -669,7 +664,8 @@ _cleanup(Evry_Plugin *plugin)
 
    if (p->update_timer)
      ecore_timer_del(p->update_timer);
-   p->update_timer = NULL;
+
+   E_FREE(p);
 }
 
 static int
@@ -680,13 +676,12 @@ _fetch(Evry_Plugin *plugin, const char *input)
 
    GET_PLUGIN(p, plugin);
 
-   if (p->input)
-     eina_stringshare_del(p->input);
+   IF_RELEASE(p->input);
+
+   printf("fetch %s\n", input);
 
    if (input)
      p->input = eina_stringshare_add(input);
-   else
-     p->input = NULL;
 
    EVRY_PLUGIN_ITEMS_CLEAR(p);
 
@@ -1361,15 +1356,15 @@ _plugins_init(const Evry_API *_api)
 	      "media-playback-start",
 	      _mpris_play_track, _mpris_check_item);
 
-   PLUG_ACTION_NEW(N_("Play"), ACT_PLAY,
+   ACTION_NEW(N_("Play"), ACT_PLAY,
 		   MPRIS_TRACK, 0, "media-playback-start",
 		   _mpris_player_action, _mpris_check_item);
 
-   PLUG_ACTION_NEW(N_("Pause"), ACT_PAUSE,
+   ACTION_NEW(N_("Pause"), ACT_PAUSE,
 		   MPRIS_TRACK, 0, "media-playback-pause",
 		   _mpris_player_action, _mpris_check_item);
 
-   PLUG_ACTION_NEW(N_("Stop"), ACT_STOP,
+   ACTION_NEW(N_("Stop"), ACT_STOP,
 		   MPRIS_TRACK, 0, "media-playback-stop",
 		   _mpris_player_action, _mpris_check_item);
 
@@ -1386,7 +1381,7 @@ _plugins_init(const Evry_API *_api)
 	      _mpris_tracklist_remove_track, _mpris_check_item);
    act->it1.accept_list = EINA_TRUE;
 
-   PLUG_ACTION_NEW(N_("Clear Playlist"), ACT_CLEAR,
+   ACTION_NEW(N_("Clear Playlist"), ACT_CLEAR,
 		   MPRIS_TRACK, 0, "list-remove",
 		   _mpris_tracklist_action_clear, _mpris_check_item);
 
@@ -1395,7 +1390,7 @@ _plugins_init(const Evry_API *_api)
 	      _mpris_play_file, _mpris_check_file);
    act->remember_context = EINA_TRUE;
 
-   PLUG_ACTION_NEW(N_("Add Files..."), ACT_ADD_FILE,
+   ACTION_NEW(N_("Add Files..."), ACT_ADD_FILE,
 		   MPRIS_TRACK, EVRY_TYPE_FILE, "list-add",
 		   _mpris_add_files, NULL);
 
@@ -1404,15 +1399,15 @@ _plugins_init(const Evry_API *_api)
 	      _mpris_enqueue_files, _mpris_check_files);
    act->remember_context = EINA_TRUE;
 
-   PLUG_ACTION_NEW(N_("Add Music..."), ACT_ADD_FILE,
+   ACTION_NEW(N_("Add Music..."), ACT_ADD_FILE,
 		   MPRIS_TRACK, TRACKER_MUSIC, "list-add",
 		   _mpris_add_files, _mpris_check_add_music);
 
-   PLUG_ACTION_NEW(N_("Remove Duplicates"), 0,
+   ACTION_NEW(N_("Remove Duplicates"), 0,
 		   MPRIS_TRACK, 0, "list-remove",
 		   _mpris_remove_dups, NULL);
 
-   PLUG_ACTION_NEW(N_("Remove Missing Files"), 0,
+   ACTION_NEW(N_("Remove Missing Files"), 0,
 		   MPRIS_TRACK, 0, "list-remove",
 		   _mpris_remove_missing, NULL);
 
