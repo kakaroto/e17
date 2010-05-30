@@ -956,15 +956,15 @@ _youtube_dl_action(Evry_Action *act)
      if (file[i] == '\"' || file[i] == '/')
        file[i] = ' ';
 
-   snprintf(path, sizeof(path), "%s/%s/%s.mp3",
-	    e_user_homedir_get(), _conf->download_dir, file);
+   snprintf(path, sizeof(path), "%s/%s.mp3",
+	     _conf->download_dir, file);
 
    for (i = 0; i < 10;)
      {
 	if (!ecore_file_exists(path)) break;
 
-	snprintf(path, sizeof(path), "%s/%s/%s-%d.mp3",
-		 e_user_homedir_get(), _conf->download_dir, file, ++i);
+	snprintf(path, sizeof(path), "%s/%s-%d.mp3",
+		 _conf->download_dir, file, ++i);
      }
 
    printf("create file %s\n", path);
@@ -1171,6 +1171,7 @@ _plugins_init(const Evry_API *_api)
       plugins = eina_list_append(plugins, p);				\
       p->complete = _complete;						\
       p->input_type = EVRY_TYPE_TEXT;					\
+      EVRY_ITEM(p)->icon_get = &_icon_get;				\
       GET_PLUGIN(plug, p);						\
       plug->request = _request;						\
       plug->data_cb = _data_cb;						\
@@ -1184,17 +1185,17 @@ _plugins_init(const Evry_API *_api)
 	 pc->trigger_only = EINA_TRUE;					\
 	 pc->trigger = eina_stringshare_add(_trigger); }}		\
 
-   PLUGIN_NEW(N_("Google"), EVRY_TYPE_TEXT, "text-html",
+   PLUGIN_NEW(N_("Google"), EVRY_TYPE_TEXT, "google",
 	      _begin, _cleanup, _fetch, &_complete,
 	      _request_goolge, _google_data_cb,
 	      NULL, _trigger_google);
 
-   PLUGIN_NEW(N_("Wikipedia"), EVRY_TYPE_TEXT, "text-html",
+   PLUGIN_NEW(N_("Wikipedia"), EVRY_TYPE_TEXT, "wikipedia",
 	      _begin, _cleanup, _fetch, &_complete,
 	      _request_wiki, _wikipedia_data_cb,
 	      NULL, _trigger_wiki);
 
-   PLUGIN_NEW(N_("Youtube"), WEBLINK, "text-html",
+   PLUGIN_NEW(N_("Youtube"), WEBLINK, "youtube",
 	      _begin, _cleanup, _fetch, &_complete,
 	      _request_youtube, _youtube_data_cb,
 	      "gdata.youtube.com", _trigger_youtube);
@@ -1448,7 +1449,11 @@ _conf_new(void)
 
    IFMODCFG(0x00ed);
    _conf->player_cmd = eina_stringshare_add("mplayer -fs %s");
-   _conf->download_dir = eina_stringshare_add("Desktop");
+   IFMODCFGEND;
+
+   IFMODCFG(0x00ee);
+   IF_RELEASE(_conf->download_dir);
+   _conf->download_dir = eina_stringshare_add(e_user_homedir_get());
    IFMODCFGEND;
 
    _conf->version = MOD_CONFIG_FILE_VERSION;
@@ -1594,7 +1599,7 @@ _parse_callback(void *userdata, int type, const char *data, uint32_t length)
      {
       case JSON_OBJECT_BEGIN:
       case JSON_ARRAY_BEGIN:
-	 d2 = calloc(1, sizeof(Json_Data));
+	 d2 = E_NEW(Json_Data, 1);
 	 if (d->cur->key)
 	   d2->is_val = 1;
 	 d2->parent = d->cur;
@@ -1611,7 +1616,7 @@ _parse_callback(void *userdata, int type, const char *data, uint32_t length)
 	 break;
 
       case JSON_KEY:
-	 d2 = calloc(1, sizeof(Json_Data));
+	 d2 = E_NEW(Json_Data, 1);
 	 d2->key = eina_stringshare_add_length(data, length);
 	 d2->parent = d->cur;
 	 d->cur->list =  eina_list_append(d->cur->list, d2);
