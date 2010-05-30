@@ -26,6 +26,7 @@ GenList::GenList (Evasxx::Object &parent)
 GenList::~GenList ()
 {
   delete_stl_container <std::list <GenListColumnSelector*>, GenListColumnSelector*> (mInternalSelList);
+  delete_stl_container <std::list <GenListColumnConstructor*>, GenListColumnConstructor*> (mInternalConstructList);
 }
 
 GenList *GenList::factory (Evasxx::Object &parent)
@@ -128,7 +129,7 @@ void GenList::setDataModel (GenListDataModel &model)
 
 void GenList::gl_sel (void *data, Evas_Object *obj, void *event_info)
 {
-  GenListColumnSelector *selection = (GenListColumnSelector*) data;
+  GenListColumnSelector *selection = static_cast <GenListColumnSelector*> (data);
   assert (selection);
   GenList *gl = selection->mGenList;
   assert (gl);
@@ -139,9 +140,7 @@ void GenList::gl_sel (void *data, Evas_Object *obj, void *event_info)
 
 void GenList::glSelected (Evasxx::Object &eo, void *event_info)
 {
-  cout << "GenList::glSelected" << endl;
-  // FIXME: this call seems to segfault after the list is constructed after 2 or 3 seconds
-  //signalSelect.emit (eo, event_info);
+  signalSelect.emit (eo, event_info);
 }
 
 /* operations to add items */
@@ -182,11 +181,11 @@ void GenList::append (GenListColumnConstructor *construction, GenListItem *paren
 
   if (internalConstruction)
   {
-    delete construction;
+    mInternalConstructList.push_back (construction);
   }
   if (internalSelection)
   {
-      mInternalSelList.push_back (selection);
+    mInternalSelList.push_back (selection);
   }
 }
 

@@ -338,6 +338,7 @@ private:
   GenListDataModel *mModel;
 
   std::list <GenListColumnSelector*> mInternalSelList;
+  std::list <GenListColumnConstructor*> mInternalConstructList;
 };
 
 #if 0

@@ -38,6 +38,9 @@
 #include "Panel.h"
 #include "GenList.h"
 #include "GenListDataModel.h"
+#include "GenListColumnSelector.h"
+#include "GenListColumnConstructor.h"
+#include "GenListItem.h"
 
 #endif // ELEMENTARYXX_H
 

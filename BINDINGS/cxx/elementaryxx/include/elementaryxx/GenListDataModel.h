@@ -23,15 +23,15 @@ public:
   friend class GenList;
   
   GenListDataModel (const std::string &style);
+  virtual ~GenListDataModel () {}
 
-  // TODO: empty default implementation for these 4 as virtuals leads into nullpointer exception. why?
-  std::string getLabel (GenListColumnConstructor *construction, Evasxx::Object &obj, const std::string &part) const;
+  virtual std::string getLabel (GenListColumnConstructor *construction, Evasxx::Object &obj, const std::string &part) const = 0;
 
-  Elmxx::Object *getIcon (GenListColumnConstructor *construction, Evasxx::Object &obj, const std::string &part);
+  virtual Elmxx::Object *getIcon (GenListColumnConstructor *construction, Evasxx::Object &obj, const std::string &part) = 0;
 
-  bool getState (GenListColumnConstructor *construction, Evasxx::Object &obj, const std::string &part);
-
-  void del (GenListColumnConstructor *construction, Evasxx::Object &obj);
+  virtual bool getState (GenListColumnConstructor *construction, Evasxx::Object &obj, const std::string &part) = 0;
+  
+  virtual void del (GenListColumnConstructor *construction, Evasxx::Object &obj) = 0;
 
 private:
   static char *gl_label_get (const void *data, Evas_Object *obj, const char *part);
