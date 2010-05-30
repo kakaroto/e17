@@ -4,6 +4,7 @@
 #include <evasxx/Evasxx.h>
 #include <elementaryxx/Elementaryxx.h>
 #include "../../common/searchFile.h"
+#include "../../common/stringUtil.h"
 
 using namespace std;
 using namespace Eflxx;

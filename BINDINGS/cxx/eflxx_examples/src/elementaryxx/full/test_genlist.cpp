@@ -7,39 +7,68 @@ typedef struct _Testitem
    int onoff;
 } Testitem;
 
-static GenListDataModel model ("default");
-static GenListDataModel model2 ("default");
-static GenListDataModel model3 ("default");
+class GenListColumnConstructor1 : public GenListColumnConstructor
+{
+public:
+  GenListColumnConstructor1 () :
+    mItemNum (0)
+  {}
+  
+  void setItemNum (int num) {mItemNum = num;}
+  int getItemNum () {return mItemNum;}
+  
+private:
+  int mItemNum;
+};
 
-char *gl_label_get(const void *data, Evas_Object *obj, const char *part)
+class GenListDataModel1 : public GenListDataModel
 {
-   char buf[256];
-   snprintf(buf, sizeof(buf), "Item # %i", (int)data);
-   return strdup(buf);
-}
+public:
+  GenListDataModel1 (const std::string &style) :
+    GenListDataModel (style) {}
 
-Evas_Object *gl_icon_get(const void *data, Evas_Object *obj, const char *part)
-{
-   char buf[PATH_MAX];
-   Evas_Object *ic = elm_icon_add(obj);
-   snprintf(buf, sizeof(buf), "%s/images/logo_small.png", PACKAGE_DATA_DIR);
-   elm_icon_file_set(ic, buf, NULL);
-   evas_object_size_hint_aspect_set(ic, EVAS_ASPECT_CONTROL_VERTICAL, 1, 1);
-   return ic;
-}
-Eina_Bool gl_state_get(const void *data, Evas_Object *obj, const char *part)
-{ 
-   return EINA_FALSE;
-}
-void gl_del(const void *data, Evas_Object *obj)
-{
-}
+  ~GenListDataModel1 () {}
 
-static void
-gl_sel(void *data, Evas_Object *obj, void *event_info)
-{
-   printf("sel item data [%p] on genlist obj [%p], item pointer [%p]\n", data, obj, event_info);
-}
+  std::string getLabel (GenListColumnConstructor *construction, Evasxx::Object &obj, const std::string &part) const
+  { 
+    GenListColumnConstructor1 *construct1 = static_cast <GenListColumnConstructor1*> (construction);
+    cout << "GenListDataModel::getLabel" << endl;
+
+    return "Item " + toString <int> (construct1->getItemNum ());
+  }
+    
+  Elmxx::Object *getIcon (GenListColumnConstructor *construction, Evasxx::Object &obj, const std::string &part)
+  {
+    Window *win = static_cast <Window*> (&obj);
+    Icon *ic = Icon::factory (*win);
+    ic->setFile (searchPixmapFile ("elementaryxx/logo_small.png"));
+    ic->setAspectHintSize (EVAS_ASPECT_CONTROL_VERTICAL, Eflxx::Size (1, 1));
+    
+    //part: elm.swallow.icon
+    //part: elm.swallow.end
+
+    return ic;
+  }
+
+  bool getState (GenListColumnConstructor *construction, Evasxx::Object &obj, const std::string &part)
+  {
+    return false;
+  }
+    
+  void del (GenListColumnConstructor *construction, Evasxx::Object &obj)
+  {
+  }
+};
+
+static GenListDataModel1 model ("default");
+static GenListDataModel1 model2 ("default");
+static GenListDataModel1 model3 ("default");
+
+/*
+ * Hint: 'constructList1' isn't cleaned up at exit. Normal applications should do this.
+ *       This could be done at the GenList or Window destructor. For this example it's ok...
+ */
+std::vector <GenListColumnConstructor1*> constructList1;
 
 void glSelected (const Evasxx::Object &obj, void *event_info)
 {
@@ -130,8 +159,6 @@ test_genlist (void *data, Evas_Object *obj, void *event_info)
   Evasxx::Rectangle *over = new Evasxx::Rectangle (*canvas);
   over->setColor (Eflxx::Color (0, 0, 0, 0));
   over->signalHandleMouseMove.connect (sigc::bind (sigc::ptr_fun (&_move), gl));
-  //evas_object_event_callback_add(over, EVAS_CALLBACK_MOUSE_MOVE, _move, gl);
-  // -> sigc::signal <void, const MouseMoveEvent&> signalHandleMouseMove; /**< Mouse Move Event */
   over->setEventsRepeat (true);
   over->show ();
   over->setWeightHintSize (EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
@@ -153,7 +180,12 @@ test_genlist (void *data, Evas_Object *obj, void *event_info)
   
   for (int i = 0; i < 2000; i++)
   {
-    gl->append (NULL, NULL, ELM_GENLIST_ITEM_NONE, NULL);
+    GenListColumnConstructor1 *construct1 = new GenListColumnConstructor1 ();
+    construct1->setItemNum (i);
+    
+    gl->append (construct1, NULL, ELM_GENLIST_ITEM_NONE, NULL);
+
+    constructList1.push_back (construct1);
 #if 0
         gli = elm_genlist_item_append(gl, &itc1,
                                       (void *)i/* item data */,
