@@ -24,7 +24,7 @@ struct _Plugin
 
 static const Evry_API *evry = NULL;
 static Evry_Module *evry_module = NULL;
-static Evry_Plugin *_plug = NULL;
+static Eina_List *_plugins = NULL;
 static const char _module_icon[] = "find";
 static const char *_mime_dir;
 static const char *_mime_mount;
@@ -274,21 +274,23 @@ _plugins_init(const Evry_API *api)
    _mime_dir = eina_stringshare_add("inode/directory");
    _mime_mount = eina_stringshare_add("inode/mount-point");
 
-   _plug = EVRY_PLUGIN_NEW(Plugin, N_("Places"), "drive-harddisk",
-			   EVRY_TYPE_FILE,
-			   _begin, _finish, _fetch, NULL);
+   p = EVRY_PLUGIN_NEW(Plugin, N_("Places"), "drive-harddisk",
+		       EVRY_TYPE_FILE,
+		       _begin, _finish, _fetch, NULL);
+   _plugins = eina_list_append(_plugins, p);
 
-   if (evry->plugin_register(_plug, EVRY_PLUGIN_SUBJECT, 3))
+   if (evry->plugin_register(p, EVRY_PLUGIN_SUBJECT, 3))
      {
 	/* p->config->top_level = EINA_FALSE;
 	 * p->config->min_query = 3; */
      }
 
-   _plug = EVRY_PLUGIN_NEW(Plugin, N_("Places"), "drive-harddisk",
-			   EVRY_TYPE_FILE,
-			   _begin, _finish, _fetch, NULL);
+   p = EVRY_PLUGIN_NEW(Plugin, N_("Places"), "drive-harddisk",
+		       EVRY_TYPE_FILE,
+		       _begin, _finish, _fetch, NULL);
+   _plugins = eina_list_append(_plugins, p);
 
-   if (evry->plugin_register(_plug, EVRY_PLUGIN_OBJECT, 1))
+   if (evry->plugin_register(p, EVRY_PLUGIN_OBJECT, 1))
      {
 	/* p->config->top_level = EINA_FALSE;
 	 * p->config->min_query = 3; */
@@ -318,7 +320,9 @@ _plugins_shutdown(void)
    eina_stringshare_del(_mime_dir);
    eina_stringshare_del(_mime_mount);
 
-   EVRY_PLUGIN_FREE(_plug);
+   EINA_LIST_FREE(_plugins, p)
+     EVRY_PLUGIN_FREE(p);
+
    EVRY_ACTION_FREE(act_mount);
    EVRY_ACTION_FREE(act_umount);
 
