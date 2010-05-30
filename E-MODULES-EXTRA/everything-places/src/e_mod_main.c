@@ -70,7 +70,6 @@ _gtk_bookmarks_add(Plugin *p)
 {
    char line[PATH_MAX];
    char buf[PATH_MAX];
-   E_Menu_Item *mi;
    Efreet_Uri *uri;
    char *alias;
    FILE* fp;
@@ -115,7 +114,6 @@ _volume_list_add(Plugin *p)
 {
    const Eina_List *l;
    Evry_Item *it;
-   Eina_Bool volumes_visible = 0;
    E_Volume *vol;
    EINA_LIST_FOREACH(e_fm2_dbus_volume_list_get(), l, vol)
      {
@@ -134,7 +132,6 @@ static Evry_Plugin *
 _begin(Evry_Plugin *plugin, const Evry_Item *item)
 {
    Plugin *p;
-   Evry_Item_File *file;
    char path[PATH_MAX];
 
    EVRY_PLUGIN_INSTANCE(p, plugin);
@@ -227,7 +224,6 @@ _cb_mount_fail(void *data)
 static int
 _act_mount(Evry_Action *act)
 {
-   GET_FILE(file, act->it1.item);
    GET_ITEM(it, act->it1.item);
 
    E_Volume *vol = it->data;

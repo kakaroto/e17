@@ -428,7 +428,7 @@ _dbus_message_open(DBusMessage *msg, DBusError *error, DBusMessageIter *iter)
 static void
 _dbus_cb_reply(void *data, DBusMessage *msg, DBusError *error)
 {
-   DBusMessageIter array, iter, item;
+   DBusMessageIter iter, item;
    char *urn;
    Eina_List *items = NULL, *l;
    Plugin *p = data;
@@ -473,7 +473,6 @@ _dbus_cb_reply(void *data, DBusMessage *msg, DBusError *error)
 	dbus_message_iter_next(&item);
      }
 
- end:
    EVRY_PLUGIN_ITEMS_CLEAR(p);
 
    if (items)

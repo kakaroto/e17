@@ -36,7 +36,6 @@ static Evry_Module *evry_module = NULL;
 static Import *import = NULL;
 static Evry_Action *_act1 = NULL;
 static Evry_Action *_act2 = NULL;
-static Evry_Plugin *_plug = NULL;
 static char _module_icon[] = "preferences-desktop-wallpaper";
 
 static int
@@ -82,8 +81,6 @@ static int
 _check_wallpaper(Evry_Action *act, const Evry_Item *it)
 {
   char *suffix;
-
-  GET_FILE(file, it);
 
   if ((suffix = strrchr(it->label, '.')))
     {
@@ -150,8 +147,6 @@ _fetch(Evry_Action *act)
 static int
 _plugins_init(const Evry_API *api)
 {
-  Evry_Plugin *p;
-
   if (evry_module->active)
     return EINA_TRUE;
 

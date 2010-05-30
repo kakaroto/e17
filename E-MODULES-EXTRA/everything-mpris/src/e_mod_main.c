@@ -79,7 +79,6 @@ static Eina_List *actions = NULL;
 static Eina_List *players = NULL;
 
 static E_DBus_Connection *conn = NULL;
-static DBusPendingCall *pending_get_name_owner = NULL;
 static E_DBus_Signal_Handler *cb_name_owner_changed = NULL;
 static E_DBus_Signal_Handler *cb_tracklist_change = NULL;
 static E_DBus_Signal_Handler *cb_player_track_change = NULL;
@@ -173,7 +172,6 @@ static void
 _dbus_cb_current_track(void *data, DBusMessage *reply, DBusError *error)
 {
    Plugin *p = data;
-   DBusMessage *msg;
    Evry_Item *it;
    int num;
 
@@ -294,7 +292,6 @@ _dbus_cb_tracklist_metadata(void *data, DBusMessage *reply, DBusError *error)
 {
    DBusMessageIter array, item, iter, iter_val;
    Track *t = data;
-   int type, cnt = 0;
    char *key, *tmp;
    GET_PLUGIN(p, EVRY_ITEM(t)->plugin);
 
@@ -510,7 +507,6 @@ _mpris_get_metadata(Plugin *p)
 static void
 _dbus_cb_tracklist_length(void *data, DBusMessage *reply, DBusError *error)
 {
-   DBusMessage *msg;
    Plugin *p = data;
 
    if (!_dbus_check_msg(reply, error)) return;
@@ -589,7 +585,7 @@ _dbus_cb_status_change(void *data, DBusMessage *msg)
 {
    GET_PLUGIN(p, data);
 
-   DBusMessageIter iter, array;
+   DBusMessageIter iter;
 
    dbus_message_iter_init(msg, &iter);
 
@@ -920,6 +916,7 @@ _add_file(const char *path, int play_now)
    free(buf);
 }
 
+static void
 _add_dir(const char *path)
 {
    Eina_List *files = ecore_file_ls(path);
@@ -1039,6 +1036,7 @@ _mpris_remove_dups(Evry_Action *act)
 	       }
 	  }
      }
+   return 1;
 }
 
 static int
@@ -1054,6 +1052,8 @@ _mpris_remove_missing(Evry_Action *act)
 	if (ecore_file_exists(f->path))
 	  _add_file(f->path, 0);
      }
+
+   return 1;
 }
 
 static int
@@ -1138,7 +1138,6 @@ static void
 _dbus_cb_name_owner_changed(void *data __UNUSED__, DBusMessage *msg)
 {
    DBusError err;
-   Eina_List *l;
    const char *tmp;
    const char *name, *from, *to;
 
@@ -1209,7 +1208,7 @@ _dbus_cb_name_owner_changed(void *data __UNUSED__, DBusMessage *msg)
 static void
 _dbus_cb_list_names(void *data __UNUSED__, DBusMessage *msg, DBusError *err)
 {
-   DBusMessageIter array, iter, item, iter_val;
+   DBusMessageIter array, item;
    char *name;
 
    if (!_dbus_check_msg(msg, err)) return;

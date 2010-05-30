@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Everything-pidgin\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2010-05-01 18:57+0200\n"
+"POT-Creation-Date: 2010-05-30 21:21+0200\n"
 "PO-Revision-Date: 2010-04-19 18:59+0200\n"
 "Last-Translator: Massimo Maiurana <maiurana@gmail.com>\n"
 "Language-Team: none\n"
@@ -14,18 +14,18 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: src/e_mod_main.c:601
+#: src/e_mod_main.c:609
 msgid "Pidgin"
 msgstr "Pidgin"
 
-#: src/e_mod_main.c:606
+#: src/e_mod_main.c:614
 msgid "Chat"
 msgstr "Apri chat"
 
-#: src/e_mod_main.c:609
+#: src/e_mod_main.c:617
 msgid "Send File"
 msgstr "Invia file"
 
-#: src/e_mod_main.c:612
+#: src/e_mod_main.c:620
 msgid "Write Message"
 msgstr "Scrivi messaggio"

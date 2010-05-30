@@ -5,7 +5,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Everything-pidgin module\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2010-15-05 07:50+0400\n"
+"POT-Creation-Date: 2010-05-30 21:21+0200\n"
+"PO-Revision-Date: \n"
 "Last-Translator: Giorgos Koutsikos <ragecryx@yahoo.gr>\n"
 "Language-Team: Greek <ragecryx@yahoo.gr>\n"
 "MIME-Version: 1.0\n"
@@ -15,21 +16,19 @@ msgstr ""
 "X-Poedit-Language: Greek\n"
 "X-Poedit-Country: GREECE\n"
 "X-Poedit-SourceCharset: utf-8\n"
-"PO-Revision-Date: \n"
 
-#: src/e_mod_main.c:601
+#: src/e_mod_main.c:609
 msgid "Pidgin"
 msgstr "Pidgin"
 
-#: src/e_mod_main.c:606
+#: src/e_mod_main.c:614
 msgid "Chat"
 msgstr "Συνομιλία"
 
-#: src/e_mod_main.c:609
+#: src/e_mod_main.c:617
 msgid "Send File"
 msgstr "Αποστολή αρχείου"
 
-#: src/e_mod_main.c:612
+#: src/e_mod_main.c:620
 msgid "Write Message"
 msgstr "Συγγραφή μηνύματος"
-

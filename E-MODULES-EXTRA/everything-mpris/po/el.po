@@ -6,7 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Everything-mpris module\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2010-15-05 08:18+0400\n"
+"POT-Creation-Date: 2010-05-30 21:20+0200\n"
+"PO-Revision-Date: \n"
 "Last-Translator: Giorgos Koutsikos <ragecryx@yahoo.gr>\n"
 "Language-Team: Greek <ragecryx@yahoo.gr>\n"
 "MIME-Version: 1.0\n"
@@ -16,69 +17,79 @@ msgstr ""
 "X-Poedit-Language: Greek\n"
 "X-Poedit-Country: GREECE\n"
 "X-Poedit-SourceCharset: utf-8\n"
-"PO-Revision-Date: \n"
 
-#: src/e_mod_main.c:274
+#: src/e_mod_main.c:266
 msgid "No Title"
 msgstr "Χωρίς τίτλο"
 
-#: src/e_mod_main.c:618
+#: src/e_mod_main.c:488 src/e_mod_main.c:632
+#, fuzzy
+msgid "Loading Playlist"
+msgstr "Λίστα αναπαραγωγής"
+
+#: src/e_mod_main.c:498
 msgid "Empty Playlist"
 msgstr "Κενή λίστα αναπαραγωγής"
 
-#: src/e_mod_main.c:1216
+#: src/e_mod_main.c:1324
 msgid "Playlist"
 msgstr "Λίστα αναπαραγωγής"
 
-#: src/e_mod_main.c:1227
+#: src/e_mod_main.c:1354
 msgid "Play Track"
 msgstr "Αναπαραγωγή κομματιού"
 
-#: src/e_mod_main.c:1239
-msgid "Remove Track"
-msgstr "Αφαίρεση κομματιού"
-
-#: src/e_mod_main.c:1245
+#: src/e_mod_main.c:1359
 msgid "Play"
 msgstr "Αναπαραγωγή"
 
-#: src/e_mod_main.c:1250
+#: src/e_mod_main.c:1363
 msgid "Pause"
 msgstr "Παύση"
 
-#: src/e_mod_main.c:1255
+#: src/e_mod_main.c:1367
 msgid "Stop"
 msgstr "Διακοπή"
 
-#: src/e_mod_main.c:1260
+#: src/e_mod_main.c:1371
 msgid "Forward"
 msgstr "Επόμενο"
 
-#: src/e_mod_main.c:1265
+#: src/e_mod_main.c:1375
 msgid "Rewind"
 msgstr "Προηγούμενο"
 
-#: src/e_mod_main.c:1270
+#: src/e_mod_main.c:1379
+msgid "Remove Track"
+msgstr "Αφαίρεση κομματιού"
+
+#: src/e_mod_main.c:1384
 msgid "Clear Playlist"
 msgstr "Εκκαθάριση λίστας"
 
-#: src/e_mod_main.c:1275
-msgid "Enqueue File"
-msgstr "Προσθήκη αρχείου στη λίστα"
-
-#: src/e_mod_main.c:1280
+#: src/e_mod_main.c:1388
 msgid "Play File"
 msgstr "Αναπαραγωγή αρχείου"
 
-#: src/e_mod_main.c:1285
+#: src/e_mod_main.c:1393
 msgid "Add Files..."
 msgstr "Προσθήκη αρχείων..."
 
-#: src/e_mod_main.c:1290
+#: src/e_mod_main.c:1397
 msgid "Enqueue in Playlist"
 msgstr "Προσθήκη στη λίστα αναπαραγωγής"
 
-#: src/e_mod_main.c:1295
+#: src/e_mod_main.c:1402
 msgid "Add Music..."
 msgstr "Προσθήκη μουσικής..."
 
+#: src/e_mod_main.c:1406
+msgid "Remove Duplicates"
+msgstr ""
+
+#: src/e_mod_main.c:1410
+msgid "Remove Missing Files"
+msgstr ""
+
+#~ msgid "Enqueue File"
+#~ msgstr "Προσθήκη αρχείου στη λίστα"

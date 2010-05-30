@@ -193,7 +193,6 @@ static void
 cb_buddyList(void *data, DBusMessage *reply, DBusError *error)
 {
   DBusMessageIter itr, arr;
-  Evry_Item* item = NULL;
   Buddy_Info *bi;
 
   if (!active || !check_msg(data, reply, error)) return;
@@ -363,7 +362,6 @@ static void
 _update_list(int async)
 {
   Eina_List *l;
-  Evry_Item *it;
   Buddy_Info *bi;
 
   EVRY_PLUGIN_ITEMS_CLEAR(plug);
