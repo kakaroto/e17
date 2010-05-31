@@ -8,7 +8,7 @@ ESVN_URI_APPEND="${PN#e_module-}"
 E_NO_DOC="1"
 inherit efl
 
-DESCRIPTION="Itask NG Module for E17"
+DESCRIPTION="wlan module for enlightenment"
 IUSE=""
 
 RDEPEND=">=x11-wm/enlightenment-9999"

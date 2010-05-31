@@ -8,7 +8,7 @@ ESVN_URI_APPEND="${PN#e_module-}"
 E_NO_DOC="1"
 inherit efl
 
-DESCRIPTION="Places module"
+DESCRIPTION="Places module for E17"
 IUSE=""
 
 RDEPEND=">=x11-wm/enlightenment-9999"
