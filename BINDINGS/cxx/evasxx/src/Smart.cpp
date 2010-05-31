@@ -109,7 +109,7 @@ void Smart::addEventSignal (const std::string &event)
   if (!cew)
   {
     cew = new CustomEventWrap ();
-    sigc::signal <void, Evas_Object*, void*> *ptrSig = new sigc::signal <void, Evas_Object*, void*> ();
+    sigc::signal <void, Object&, void*> *ptrSig = new sigc::signal <void, Object&, void*> ();
 
     cew->es = this;
     cew->customSignal = ptrSig;
@@ -135,7 +135,7 @@ void Smart::delEventSignal (const std::string &event)
   mCustomSignalMap.erase (event);
 }
 
-sigc::signal <void, Evas_Object*, void*> *Smart::getEventSignal (const std::string &event)
+sigc::signal <void, Object&, void*> *Smart::getEventSignal (const std::string &event)
 {
   // implicit add a event signal while get
   addEventSignal (event);
@@ -179,8 +179,11 @@ void Smart::wrapCustomEvent (void *data, Evas_Object *obj, void *event_info)
   
   Smart *es = cew->es;
 
-  sigc::signal <void, Evas_Object*, void*> *ptrSig = es->getEventSignal (cew->event);
-  ptrSig->emit (obj, event_info);
+  Evasxx::Object *eo = Evasxx::Object::objectLink (obj);
+  assert (eo);
+
+  sigc::signal <void, Object&, void*> *ptrSig = es->getEventSignal (cew->event);
+  ptrSig->emit (*eo, event_info);
 }
 
 void Smart::wrap_add( Evas_Object *o ) 

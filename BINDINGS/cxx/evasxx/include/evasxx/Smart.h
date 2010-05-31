@@ -22,7 +22,7 @@ class Smart;
 struct CustomEventWrap
 {
   Smart *es;
-  sigc::signal <void, Evas_Object*, void*> *customSignal; // TODO: C++ style!
+  sigc::signal <void, Object&, void*> *customSignal; // TODO: C++ style!
   string event;
 };
 
@@ -101,7 +101,7 @@ public:
   
   void delEventSignal (const std::string &event);
   
-  sigc::signal <void, Evas_Object*, void*> *getEventSignal (const std::string &event);
+  sigc::signal <void, Object&, void*> *getEventSignal (const std::string &event);
   
   void callEventSignal (const std::string &event, void *event_info);
   
