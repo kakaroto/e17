@@ -194,6 +194,8 @@ extern "C" {
 						      const void *data);
 
 /* standard methods calls on objects */
+   EAPI DBusPendingCall *e_dbus_introspect(E_DBus_Connection *conn, const char *bus,
+       const char *object_path, E_DBus_Method_Return_Cb cb_return, const void *data);
    EAPI DBusPendingCall *e_dbus_peer_ping(E_DBus_Connection *conn, const char *destination,
 					  const char *path, E_DBus_Method_Return_Cb cb_return,
 					  const void *data);
