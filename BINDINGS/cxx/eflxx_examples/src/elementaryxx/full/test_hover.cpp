@@ -2,7 +2,7 @@
 
 
 
-static void my_hover_bt (Evas_Object *obj, void *event_info, Hover *hv)
+static void my_hover_bt (Evasxx::Object &obj, void *event_info, Hover *hv)
 {
   hv->show ();
 }

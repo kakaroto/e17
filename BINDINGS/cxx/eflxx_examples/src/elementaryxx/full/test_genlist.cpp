@@ -15,7 +15,7 @@ public:
   {}
   
   void setItemNum (int num) {mItemNum = num;}
-  int getItemNum () {return mItemNum;}
+  int getItemNum () const {return mItemNum;}
   
 private:
   int mItemNum;
@@ -60,6 +60,16 @@ public:
   }
 };
 
+class GenListColumnSelector1 : public GenListColumnSelector
+{
+public:
+  void setItemNum (int num) {mItemNum = num;}
+  int getItemNum () const {return mItemNum;}
+  
+private:
+  int mItemNum;
+};
+
 static GenListDataModel1 model ("default");
 static GenListDataModel1 model2 ("default");
 static GenListDataModel1 model3 ("default");
@@ -70,9 +80,17 @@ static GenListDataModel1 model3 ("default");
  */
 std::vector <GenListColumnConstructor1*> constructList1;
 
-void glSelected (const Evasxx::Object &obj, void *event_info)
+/*
+ * Hint: 'selectList1' isn't cleaned up at exit. Normal applications should do this.
+ *       This could be done at the GenList or Window destructor. For this example it's ok...
+ */
+std::vector <GenListColumnSelector1*> selectList1; 
+
+void glSelected (GenListColumnSelector &selection, const Evasxx::Object &obj, void *event_info)
 {
-  cout << "glSelected" << endl;
+  GenListColumnSelector1 *selection1 = static_cast <GenListColumnSelector1*> (&selection);
+  
+  cout << "glSelected: " << selection1->getItemNum () << endl;
 }
 
 void _move (const Evasxx::MouseMoveEvent &ev, GenList *gl)
@@ -94,39 +112,33 @@ _move(void *data, Evas *evas, Evas_Object *obj, void *event_info)
    else
      printf("over none, where %i\n", where);
 }
-
-static void
-_bt50_cb(void *data, Evas_Object *obj, void *event_info)
-{
-    elm_genlist_item_bring_in(data);
-}
-
-static void
-_bt1500_cb(void *data, Evas_Object *obj, void *event_info)
-{
-    elm_genlist_item_middle_bring_in(data);
-}
 #endif // 0
-static void
-_gl_selected (Evas_Object *obj, void *event_info)
+static void _bt50_cb (Evasxx::Object &obj, void *event_info)
+{
+  //elm_genlist_item_bring_in(data);
+}
+
+static void _bt1500_cb (Evasxx::Object &obj, void *event_info)
+{
+  //elm_genlist_item_middle_bring_in(data);
+}
+
+static void _gl_selected (Evasxx::Object &obj, void *event_info)
 {
    printf("selected: %p\n", event_info);
 }
 
-static void
-_gl_clicked (Evas_Object *obj, void *event_info)
+static void _gl_clicked (Evasxx::Object &obj, void *event_info)
 {
    printf("clicked: %p\n", event_info);
 }
 
-static void
-_gl_longpress (Evas_Object *obj, void *event_info)
+static void _gl_longpress (Evasxx::Object &obj, void *event_info)
 {
    printf("longpress %p\n", event_info);
 }
 
-void
-test_genlist (void *data, Evas_Object *obj, void *event_info)
+void test_genlist (void *data, Evas_Object *obj, void *event_info)
 {
   Window *win = Window::factory ("genlist", ELM_WIN_BASIC);
   win->setTitle ("GenList");
@@ -182,10 +194,14 @@ test_genlist (void *data, Evas_Object *obj, void *event_info)
   {
     GenListColumnConstructor1 *construct1 = new GenListColumnConstructor1 ();
     construct1->setItemNum (i);
+
+    GenListColumnSelector1 *select1 = new GenListColumnSelector1 ();
+    select1->setItemNum (i * 10);
     
-    gl->append (construct1, NULL, ELM_GENLIST_ITEM_NONE, NULL);
+    gl->append (construct1, NULL, ELM_GENLIST_ITEM_NONE, select1);
 
     constructList1.push_back (construct1);
+    selectList1.push_back (select1);
 #if 0
         gli = elm_genlist_item_append(gl, &itc1,
                                       (void *)i/* item data */,
@@ -193,11 +209,17 @@ test_genlist (void *data, Evas_Object *obj, void *event_info)
                                       ELM_GENLIST_ITEM_NONE,
                                       gl_sel/* func */,
                                       (void *)(i * 10)/* func data */);
-        if (i == 50)
-          evas_object_smart_callback_add(bt_50, "clicked", _bt50_cb, gli);
-        else if (i == 1500)
-          evas_object_smart_callback_add(bt_1500, "clicked", _bt1500_cb, gli);
 #endif
+    if (i == 50)
+    {
+      //evas_object_smart_callback_add(bt_50, "clicked", _bt50_cb, gli);
+      bt_50->getEventSignal ("clicked")->connect (sigc::ptr_fun (&_bt50_cb));
+    }
+    else if (i == 1500)
+    {
+      //evas_object_smart_callback_add(bt_1500, "clicked", _bt1500_cb, gli);
+      bt_1500->getEventSignal ("clicked")->connect (sigc::ptr_fun (&_bt1500_cb));
+    }
   }
     
   win->resize (Size (480, 800));

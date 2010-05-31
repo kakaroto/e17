@@ -1,23 +1,23 @@
 #include "test.h"
 
-static void my_entry_bt_1 (Evas_Object *obj, void *event_info, Entry *en)
+static void my_entry_bt_1 (Evasxx::Object &obj, void *event_info, Entry *en)
 {
   en->setText ("");
 }
 
-static void my_entry_bt_2 (Evas_Object *obj, void *event_info, Entry *en)
+static void my_entry_bt_2 (Evasxx::Object &obj, void *event_info, Entry *en)
 {
   const string s = en->getText ();
   cout << "ENTRY: " << s << endl;
 }
 
-static void my_entry_bt_3 (Evas_Object *obj, void *event_info, Entry *en)
+static void my_entry_bt_3 (Evasxx::Object &obj, void *event_info, Entry *en)
 {
   const string s = en->getSelection ();
   cout << "SELECTION: " << s << endl;
 }
 
-static void my_entry_bt_4 (Evas_Object *obj, void *event_info, Entry *en)
+static void my_entry_bt_4 (Evasxx::Object &obj, void *event_info, Entry *en)
 {
   en->insertText ("Insert some <b>BOLD</> text");
 }

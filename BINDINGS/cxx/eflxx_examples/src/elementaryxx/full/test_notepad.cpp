@@ -2,17 +2,17 @@
 
 
 
-static void my_notepad_bt_1 (Evas_Object *obj, void *event_info, Notepad *np)
+static void my_notepad_bt_1 (Evasxx::Object &obj, void *event_info, Notepad *np)
 {
   // TODO
 }
 
-static void my_notepad_bt_2 (Evas_Object *obj, void *event_info, Notepad *np)
+static void my_notepad_bt_2 (Evasxx::Object &obj, void *event_info, Notepad *np)
 {
   // TODO
 }
 
-static void my_notepad_bt_3 (Evas_Object *obj, void *event_info, Notepad *np)
+static void my_notepad_bt_3 (Evasxx::Object &obj, void *event_info, Notepad *np)
 {
   // TODO
 }

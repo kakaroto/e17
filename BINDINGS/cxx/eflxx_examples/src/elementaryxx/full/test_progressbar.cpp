@@ -44,7 +44,7 @@ static void _my_progressbar_value_set (Ecorexx::Timer *timer)
   }
 }
 
-static void my_progressbar_test_start (Evas_Object *obj, void *event_info)
+static void my_progressbar_test_start (Evasxx::Object &obj, void *event_info)
 {
   _test_progressbar.pb2->pulse (true);
   _test_progressbar.pb5->pulse (true);
@@ -58,7 +58,7 @@ static void my_progressbar_test_start (Evas_Object *obj, void *event_info)
   }
 }
 
-static void my_progressbar_test_stop (Evas_Object *obj, void *event_info)
+static void _test_stop ()
 {
   _test_progressbar.pb2->pulse (false);
   _test_progressbar.pb5->pulse (false);
@@ -71,10 +71,15 @@ static void my_progressbar_test_stop (Evas_Object *obj, void *event_info)
   }
 }
 
-static void my_progressbar_destroy (Evas_Object *obj, void *event_info)
+static void my_progressbar_test_stop (Evasxx::Object &obj, void *event_info)
 {
-  my_progressbar_test_stop (NULL, NULL);
-  evas_object_del (obj);
+  _test_stop ();
+}
+
+static void my_progressbar_destroy (Evasxx::Object &obj, void *event_info)
+{
+  _test_stop ();
+  delete &obj;
 }
 
 void test_progressbar(void *data, Evas_Object *obj, void *event_info)

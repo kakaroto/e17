@@ -11,14 +11,14 @@ using namespace Eflxx;
 using namespace Elmxx;
 
 static void
-my_win_del(Evas_Object *obj, void *event_info)
+my_win_del(Evasxx::Object &obj, void *event_info)
 {
   // TODO
   /* called when my_win_main is requested to be deleted */
   Application::exit(); /* exit the program's main loop that runs in elm_run() */
 }
 
-static void testFunc (Evas_Object *obj, void *event_info)
+static void testFunc (Evasxx::Object &obj, void *event_info)
 {
   cout << "sub-object-del" << endl;
 }

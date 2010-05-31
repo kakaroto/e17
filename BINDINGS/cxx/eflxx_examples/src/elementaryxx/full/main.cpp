@@ -7,7 +7,7 @@
 
 
 #ifndef ELM_LIB_QUICKLAUNCH
-static void my_win_del(Evas_Object *obj, void *event_info);
+static void my_win_del(Evasxx::Object &obj, void *event_info);
 static void my_win_main(void);
 
 //
@@ -71,7 +71,7 @@ Application *elmApp;
 
 
 static void
-my_win_del(Evas_Object *obj, void *event_info)
+my_win_del (Evasxx::Object &obj, void *event_info)
 {
   // TODO
   /* called when my_win_main is requested to be deleted */

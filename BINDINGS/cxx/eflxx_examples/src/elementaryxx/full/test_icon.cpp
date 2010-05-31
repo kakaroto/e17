@@ -2,7 +2,7 @@
 
 
 
-static void icon_clicked (Evas_Object *obj, void *event_info)
+static void icon_clicked (Evasxx::Object &obj, void *event_info)
 {
   cout << "clicked!" << endl;
 }
