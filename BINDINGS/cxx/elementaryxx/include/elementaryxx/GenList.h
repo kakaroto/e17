@@ -323,7 +323,7 @@ public:
   void append (GenListColumnConstructor *construction, GenListItem *parent, Elm_Genlist_Item_Flags flags, GenListColumnSelector *selection);
   
   // TODO: which type is event_info here instead of void*?
-  sigc::signal <void, const Evasxx::Object&, void*> signalSelect;
+  sigc::signal <void, GenListColumnSelector&, const Evasxx::Object&, void*> signalSelect;
 
 private:
   GenList (); // forbid standard constructor
@@ -333,7 +333,7 @@ private:
   
   static void gl_sel (void *data, Evas_Object *obj, void *event_info);
 
-  void glSelected (Evasxx::Object &eo, void *event_info);
+  void glSelected (GenListColumnSelector &selection, const Evasxx::Object &eo, void *event_info);
   
   GenListDataModel *mModel;
 

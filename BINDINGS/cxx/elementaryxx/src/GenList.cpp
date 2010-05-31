@@ -135,12 +135,12 @@ void GenList::gl_sel (void *data, Evas_Object *obj, void *event_info)
   assert (gl);
   Evasxx::Object *eo = Evasxx::Object::objectLink (obj);
   assert (eo);
-  gl->glSelected (*eo, event_info);
+  gl->glSelected (*selection, *eo, event_info);
 }
 
-void GenList::glSelected (Evasxx::Object &eo, void *event_info)
+void GenList::glSelected (GenListColumnSelector &selection, const Evasxx::Object &eo, void *event_info)
 {
-  signalSelect.emit (eo, event_info);
+  signalSelect.emit (selection, eo, event_info);
 }
 
 /* operations to add items */
