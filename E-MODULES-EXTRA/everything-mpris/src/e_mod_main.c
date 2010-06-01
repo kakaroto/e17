@@ -674,8 +674,6 @@ _fetch(Evry_Plugin *plugin, const char *input)
 
    IF_RELEASE(p->input);
 
-   printf("fetch %s\n", input);
-
    if (input)
      p->input = eina_stringshare_add(input);
 
