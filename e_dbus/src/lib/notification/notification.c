@@ -359,32 +359,38 @@ e_notification_image_evas_object_add(Evas *evas, E_Notification_Image *img)
 
   if (img->bits_per_sample == 8)
     {
-      /* Although not specified.
-       * The data are very likely to come from a GdkPixbuf
-       * which align each row on a 4-bytes boundary when using RGB.
-       * And is RGBA otherwise.
-       */
-      int x, y;
-      int32_t *dest;
-      unsigned char *src;
-      for (y = 0; y < img->height; y++)
-        {
-          src  = img->data + y * img->rowstride;
-          dest = imgdata + y * img->width;
+       /* Although not specified.
+	* The data are very likely to come from a GdkPixbuf
+	* which align each row on a 4-bytes boundary when using RGB.
+	* And is RGBA otherwise.
+	*/
+       int x, y;
+       int32_t *dest;
+       unsigned char *src;
+       for (y = 0; y < img->height; y++)
+	 {
+	    src  = img->data + y * img->rowstride;
+	    dest = imgdata + y * img->width;
 
-          for (x = 0; x < img->width; x++, src += img->channels, dest++)
-            {
-              *dest  = *(src + 2);
-              *dest += *(src + 1) << 8;
-              *dest += *(src + 0) << 16;
-              if (img->has_alpha)
-                *dest += *(src + 3) << 24;
-              else
-                *dest += 255 << 24;
-            }
-        }
+	    for (x = 0; x < img->width; x++, src += img->channels, dest++)
+	      {
+		 if (img->has_alpha)
+		   {
+		      *dest  = (*(src + 2) * *(src + 3) / 255);
+		      *dest += (*(src + 1) * *(src + 3) / 255) << 8;
+		      *dest += (*(src + 0) * *(src + 3) / 255) << 16;
+		      *dest += *(src + 3) << 24;
+		   }
+		 else
+		   {
+		      *dest  = *(src + 2);
+		      *dest += *(src + 1) << 8;
+		      *dest += *(src + 0) << 16;
+		      *dest += 255 << 24;
+		   }
+	      }
+	 }
     }
-  evas_object_image_data_update_add(o, 0, 0, img->width, img->height);
-  evas_object_image_data_set(o, imgdata);
+
   return o;
 }
