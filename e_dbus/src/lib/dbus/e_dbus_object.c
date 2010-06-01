@@ -180,7 +180,7 @@ int
 e_dbus_object_init(void)
 {
   introspectable_interface = e_dbus_interface_new("org.freedesktop.DBus.Introspectable");
-  properties_interface = e_dbus_interface_new("org.freedesktop.DBus.Properties");
+  properties_interface = e_dbus_interface_new(E_DBUS_FDO_INTERFACE_PROPERTIES);
   if (!introspectable_interface || !properties_interface)
   {
     if (introspectable_interface) e_dbus_interface_unref(introspectable_interface);

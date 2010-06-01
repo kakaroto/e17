@@ -94,6 +94,7 @@
 #define E_DBUS_FDO_BUS "org.freedesktop.DBus"
 #define E_DBUS_FDO_PATH "/org/freedesktop/DBus"
 #define E_DBUS_FDO_INTERFACE E_DBUS_FDO_BUS
+#define E_DBUS_FDO_INTERFACE_PROPERTIES "org.freedesktop.DBus.Properties"
 
 #ifdef __cplusplus
 extern "C" {

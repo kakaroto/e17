@@ -10,7 +10,7 @@ _dbus_message_method_call(const char *method_name)
    DBusMessage *msg;
 
    msg = dbus_message_new_method_call
-     ("org.freedesktop.DBus", "/org/freedesktop/DBus", "org.freedesktop.DBus",
+     (E_DBUS_FDO_BUS, E_DBUS_FDO_PATH, E_DBUS_FDO_INTERFACE,
       method_name);
    if (!msg)
      ERR("E-dbus Error: failed to create message for method call: %s",

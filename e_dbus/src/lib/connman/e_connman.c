@@ -8,9 +8,6 @@ static unsigned int init_count = 0;
 static char *unique_name = NULL;
 
 static const char bus_name[] = "org.moblin.connman";
-static const char fdo_bus_name[] = "org.freedesktop.DBus";
-static const char fdo_interface[] = "org.freedesktop.DBus";
-static const char fdo_path[] = "/org/freedesktop/DBus";
 
 E_DBus_Connection *e_connman_conn = NULL;
 
@@ -405,7 +402,7 @@ e_connman_system_init(E_DBus_Connection *edbus_conn)
 
    e_connman_conn = edbus_conn;
    cb_name_owner_changed = e_dbus_signal_handler_add
-     (e_connman_conn, fdo_bus_name, fdo_path, fdo_interface, "NameOwnerChanged",
+     (e_connman_conn, E_DBUS_FDO_BUS, E_DBUS_FDO_PATH, E_DBUS_FDO_INTERFACE, "NameOwnerChanged",
       _e_connman_system_name_owner_changed, NULL);
 
    if (pending_get_name_owner)

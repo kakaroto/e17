@@ -77,7 +77,7 @@ _dbus_message_property_method_call(E_DBus_Connection *conn, const char *method_n
     }
 
   msg = dbus_message_new_method_call
-    (destination, path, "org.freedesktop.DBus.Properties", method_name);
+    (destination, path, E_DBUS_FDO_INTERFACE_PROPERTIES, method_name);
   if (!msg)
     {
       ERR("E-dbus Error: failed to create message for method call: %s() at "

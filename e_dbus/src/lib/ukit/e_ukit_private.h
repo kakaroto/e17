@@ -25,7 +25,7 @@ extern int _e_dbus_ukit_log_dom;
 
 #define e_ukit_call_new(udi, member) dbus_message_new_method_call(E_UKIT_BUS, udi, E_UKIT_BUS, member)
 #define e_ukit_device_call_new(udi, member) dbus_message_new_method_call(E_UKIT_BUS, udi, E_UKIT_INTERFACE, member)
-#define e_ukit_property_call_new(udi, member) dbus_message_new_method_call(E_UKIT_BUS, udi, E_UKIT_PROP_INTERFACE, member)
+#define e_ukit_property_call_new(udi, member) dbus_message_new_method_call(E_UKIT_BUS, udi, E_DBUS_FDO_INTERFACE_PROPERTIES, member)
 
 #define DBG(...)   EINA_LOG_DOM_DBG(_e_dbus_ukit_log_dom, __VA_ARGS__)
 #define INFO(...)    EINA_LOG_DOM_INFO(_e_dbus_ukit_log_dom, __VA_ARGS__)

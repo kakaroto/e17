@@ -32,8 +32,6 @@
  * @{
  */
 
-#define E_UKIT_PROP_INTERFACE "org.freedesktop.DBus.Properties"
-
 #define E_UDISKS_BUS "org.freedesktop.UDisks"
 #define E_UDISKS_PATH "/org/freedesktop/UDisks"
 #define E_UDISKS_INTERFACE "org.freedesktop.UDisks.Device"
