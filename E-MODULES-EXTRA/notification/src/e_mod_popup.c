@@ -6,73 +6,79 @@
 /* Popup function protos */
 static Popup_Data *_notification_popup_new      (E_Notification *n);
 static Popup_Data *_notification_popup_find     (unsigned int id);
+static Popup_Data *_notification_popup_merge    (E_Notification *n);
+
 static int        _notification_popup_place    (Popup_Data *popup, int num);
 static void        _notification_popup_refresh  (Popup_Data *popup);
-static void        _notification_popup_del      (unsigned int id, 
-                                                 E_Notification_Closed_Reason reason);
-static void        _notification_popdown        (Popup_Data *popup, 
-                                                 E_Notification_Closed_Reason reason);
+static void        _notification_popup_del      (unsigned int id,
+						 E_Notification_Closed_Reason reason);
+static void        _notification_popdown        (Popup_Data *popup,
+						 E_Notification_Closed_Reason reason);
 
 /* Util function protos */
 static void _notification_format_message    (Popup_Data *popup);
 
 /* Callbacks */
-static void _notification_theme_cb_deleted  (void *data, 
-                                             Evas_Object *obj, 
-                                             const char *emission, 
-                                             const char *source);
-static void _notification_theme_cb_close    (void *data, 
-                                             Evas_Object *obj, 
-                                             const char *emission, 
-                                             const char *source);
-static void _notification_theme_cb_find     (void *data, 
-                                             Evas_Object *obj, 
-                                             const char *emission, 
-                                             const char *source);
+static void _notification_theme_cb_deleted  (void *data,
+					     Evas_Object *obj,
+					     const char *emission,
+					     const char *source);
+static void _notification_theme_cb_close    (void *data,
+					     Evas_Object *obj,
+					     const char *emission,
+					     const char *source);
+static void _notification_theme_cb_find     (void *data,
+					     Evas_Object *obj,
+					     const char *emission,
+					     const char *source);
 static int  _notification_timer_cb          (void *data);
 
 static int next_pos = 0;
 
 int
-notification_popup_notify(E_Notification *n, 
-                          unsigned int replaces_id, 
-                          unsigned int id __UNUSED__,
-                          const char *appname)
+notification_popup_notify(E_Notification *n,
+			  unsigned int replaces_id,
+			  unsigned int id __UNUSED__,
+			  const char *appname)
 {
-   int timeout;
+   double timeout;
    Popup_Data *popup = NULL;
    char urgency;
 
    urgency = e_notification_hint_urgency_get(n);
-   if (urgency == E_NOTIFICATION_URGENCY_LOW && !notification_cfg->show_low)
-     return 0;
-   else if (urgency == E_NOTIFICATION_URGENCY_NORMAL && !notification_cfg->show_normal)
-     return 0;
-   else if (urgency == E_NOTIFICATION_URGENCY_CRITICAL && !notification_cfg->show_critical)
-     return 0;
 
-   if (replaces_id && (popup = _notification_popup_find(replaces_id))) 
+   switch (urgency)
+     {
+      case E_NOTIFICATION_URGENCY_LOW:
+	 if (!notification_cfg->show_low)
+	   return 0;
+	 break;
+      case E_NOTIFICATION_URGENCY_NORMAL:
+	 if (!notification_cfg->show_normal)
+	   return 0;
+	 break;
+      case E_NOTIFICATION_URGENCY_CRITICAL:
+	 if (!notification_cfg->show_critical)
+	   return 0;
+	 break;
+      default:
+	 break;
+     }
+
+   if (replaces_id && (popup = _notification_popup_find(replaces_id)))
      {
 	e_notification_ref(n);
-	if (popup->notif)
-	  {
-	     /* const char *body_old = e_notification_body_get(popup->notif); */
-	     /* const char *body_new = e_notification_body_get(n);
-	      * char *body_final;
-	      * int body_old_len, body_new_len;
-	      * 
-	      * body_old_len = strlen(body_old);
-	      * body_new_len = strlen(body_new);
-	      * body_final = alloca(body_old_len + body_new_len + 2);
-	      * sprintf(body_final, "%s\n%s", body_old, body_new); */
-	     /* e_notification_body_set(n, body_new); */
 
-	     e_notification_unref(popup->notif);
-	  }
+	if (popup->notif)
+	  e_notification_unref(popup->notif);
+
 	popup->notif = n;
-	/* edje_object_signal_emit(popup->theme, "notification,del", "notification"); */
 	_notification_popup_refresh(popup);
-	/* edje_object_signal_emit(popup->theme, "notification,new", "notification"); */
+     }
+   else if (!replaces_id)
+     {
+	if ((popup = _notification_popup_merge(n)))
+	  _notification_popup_refresh(popup);
      }
 
    if (!popup)
@@ -87,13 +93,17 @@ notification_popup_notify(E_Notification *n,
 	ecore_timer_del(popup->timer);
 	popup->timer = NULL;
      }
+
    timeout = e_notification_timeout_get(popup->notif);
-   if ((timeout == 0 || timeout == -1) && notification_cfg->timeout == 0.0)
-     return 1;
+
+   if (timeout < 0)
+     timeout = notification_cfg->timeout;
    else
-     popup->timer = ecore_timer_add(timeout == -1 ? notification_cfg->timeout : (float)timeout / 1000, 
-				    _notification_timer_cb, 
-				    popup);
+     timeout = (double)timeout / 1000.0;
+
+   if (timeout > 0)
+     popup->timer = ecore_timer_add(timeout, _notification_timer_cb, popup);
+
    return 1;
 }
 
@@ -115,6 +125,87 @@ void
 notification_popup_close(unsigned int id)
 {
    _notification_popup_del(id, E_NOTIFICATION_CLOSED_REQUESTED);
+}
+
+static Popup_Data *
+_notification_popup_merge(E_Notification *n)
+{
+   Eina_List *l;
+   Popup_Data *popup;
+   const char *str1, *str2;
+   const char *body_old;
+   const char *body_new;
+   char *body_final;
+   int body_old_len, body_new_len;
+
+   str1 = e_notification_app_name_get(n);
+   /* printf("merge %s\n", str1); */
+
+   if (!str1)
+     return NULL;
+
+   EINA_LIST_FOREACH (notification_cfg->popups, l, popup)
+     {
+	if (!popup->notif)
+	  continue;
+
+	if (!(str2 = e_notification_app_name_get(popup->notif)))
+	  continue;
+
+	if (!strcmp(str1, str2))
+	  break;
+     }
+
+   if (!popup)
+     {
+	/* printf("- no poup to merge\n"); */
+	return NULL;
+     }
+
+   str1 = e_notification_summary_get(n);
+   str2 = e_notification_summary_get(popup->notif);
+
+
+     /* if ((str1 && !str2) || (!str1 && str2)) */
+   if (!(!(str1) == !(str2)))
+     {
+	/* printf("1- summary doesn match, %s, %s\n", str1, str2); */
+	return NULL;
+     }
+
+   if (str1 && str2 && strcmp(str1, str2))
+     {
+	/* printf("- summary doesn match, %s, %s\n", str1, str2); */
+	return NULL;
+     }
+
+   /* TODO if actions check if they are equal... */
+   if (!(e_notification_actions_get(popup->notif)) !=
+       (!(e_notification_actions_get(n))))
+     {
+	/* printf("- actions dont match\n"); */
+	return NULL;
+     }
+
+   /* TODO  p->n is not fallback alert..*/
+   /* TODO  both allow merging */
+
+   body_old = e_notification_body_get(popup->notif);
+   body_new = e_notification_body_get(n);
+
+   body_old_len = strlen(body_old);
+   body_new_len = strlen(body_new);
+   body_final = alloca(body_old_len + body_new_len + 5);
+   sprintf(body_final, "%s<br>%s", body_old, body_new);
+   /* printf("set body %s\n", body_final); */
+
+   e_notification_body_set(n, body_final);
+
+   e_notification_unref(popup->notif);
+   popup->notif = n;
+   e_notification_ref(popup->notif);
+
+   return popup;
 }
 
 static Popup_Data *
@@ -172,25 +263,13 @@ _notification_popup_place(Popup_Data *popup, int pos)
 {
    int x, y, w, h, dir = 0;
    E_Container *con;
-   
+
    con = e_container_current_get(e_manager_current_get());
    evas_object_geometry_get(popup->theme, NULL, NULL, &w, &h);
    int gap = 10;
    int to_edge = 15;
-   
-   /* if (e_notification_hint_xy_get(popup->notif, &x, &y))
-    *   {
-    * 	E_Container *con;
-    * 	con = e_container_current_get(e_manager_current_get());
-    * 
-    * 	if (x + w > con->w)
-    * 	  x -= w;
-    * 	if (y + h > con->h)
-    * 	  y -= h;
-    * 	e_popup_move(popup->win, x, y);
-    *   }
-    * else
-    *   { */
+
+   /* XXX for now ignore placement requests */
 
    switch (notification_cfg->corner)
      {
@@ -214,8 +293,23 @@ _notification_popup_place(Popup_Data *popup, int pos)
 		      (con->h - h) - (to_edge + pos));
 	 break;
      }
-   
+
    return pos + h + gap;
+}
+
+static void
+_notification_popups_place()
+{
+   Popup_Data *popup;
+   Eina_List *l, *next;
+   int pos = 0;
+
+   EINA_LIST_FOREACH(notification_cfg->popups, l, popup)
+     {
+	pos = _notification_popup_place(popup, pos);
+     }
+
+   next_pos = pos;
 }
 
 static void
@@ -231,7 +325,7 @@ _notification_popup_refresh(Popup_Data *popup)
 
    popup->app_name = e_notification_app_name_get(popup->notif);
 
-   if (popup->app_icon) 
+   if (popup->app_icon)
      {
 	edje_object_part_unswallow(popup->theme, popup->app_icon);
 	evas_object_del(popup->app_icon);
@@ -245,7 +339,7 @@ _notification_popup_refresh(Popup_Data *popup)
 
 	errno = 0;
 	width = strtol(app_icon_max, &endptr, 10);
-	if ((errno != 0 && width == 0) || endptr == app_icon_max) 
+	if ((errno != 0 && width == 0) || endptr == app_icon_max)
 	  {
 	     width = 80;
 	     height = 80;
@@ -336,7 +430,7 @@ _notification_popup_refresh(Popup_Data *popup)
 	edje_extern_object_min_size_set(popup->app_icon, w, h);
 	edje_extern_object_max_size_set(popup->app_icon, w, h);
      }
-  
+
    edje_object_calc_force(popup->theme);
    edje_object_part_swallow(popup->theme, "notification.swallow.app_icon", popup->app_icon);
    edje_object_signal_emit(popup->theme, "notification,icon", "notification");
@@ -349,6 +443,8 @@ _notification_popup_refresh(Popup_Data *popup)
    edje_object_size_min_calc(popup->theme, &w, &h);
    e_popup_resize(popup->win, w, h);
    evas_object_resize(popup->theme, w, h);
+
+   _notification_popups_place();
 }
 
 static Popup_Data *
@@ -370,7 +466,7 @@ _notification_popup_del(unsigned int id, E_Notification_Closed_Reason reason)
    Popup_Data *popup;
    Eina_List *l, *next;
    int pos = 0;
-   
+
    EINA_LIST_FOREACH(notification_cfg->popups, l, popup)
      {
 	if (e_notification_id_get(popup->notif) == id)
@@ -396,8 +492,8 @@ _notification_popdown(Popup_Data *popup, E_Notification_Closed_Reason reason)
    evas_object_del(popup->theme);
    e_object_del(E_OBJECT(popup->win));
    e_notification_closed_set(popup->notif, 1);
-   e_notification_daemon_signal_notification_closed(notification_cfg->daemon, 
-						    e_notification_id_get(popup->notif), 
+   e_notification_daemon_signal_notification_closed(notification_cfg->daemon,
+						    e_notification_id_get(popup->notif),
 						    reason);
    e_notification_unref(popup->notif);
    free(popup);
@@ -413,10 +509,10 @@ _notification_format_message(Popup_Data *popup)
 }
 
 static void
-_notification_theme_cb_deleted(void *data, 
-                               Evas_Object *obj __UNUSED__, 
-                               const char *emission __UNUSED__, 
-                               const char *source __UNUSED__)
+_notification_theme_cb_deleted(void *data,
+			       Evas_Object *obj __UNUSED__,
+			       const char *emission __UNUSED__,
+			       const char *source __UNUSED__)
 {
    Popup_Data *popup = data;
    _notification_popup_refresh(popup);
@@ -424,21 +520,21 @@ _notification_theme_cb_deleted(void *data,
 }
 
 static void
-_notification_theme_cb_close(void *data, 
-                             Evas_Object *obj __UNUSED__, 
-                             const char *emission __UNUSED__, 
-                             const char *source __UNUSED__)
+_notification_theme_cb_close(void *data,
+			     Evas_Object *obj __UNUSED__,
+			     const char *emission __UNUSED__,
+			     const char *source __UNUSED__)
 {
    Popup_Data *popup = data;
-   _notification_popup_del(e_notification_id_get(popup->notif), 
+   _notification_popup_del(e_notification_id_get(popup->notif),
 			   E_NOTIFICATION_CLOSED_DISMISSED);
 }
 
 static void
-_notification_theme_cb_find(void *data, 
-                            Evas_Object *obj __UNUSED__, 
-                            const char *emission __UNUSED__, 
-                            const char *source __UNUSED__)
+_notification_theme_cb_find(void *data,
+			    Evas_Object *obj __UNUSED__,
+			    const char *emission __UNUSED__,
+			    const char *source __UNUSED__)
 {
    Popup_Data *popup = data;
    Eina_List *l;
@@ -473,8 +569,7 @@ static int
 _notification_timer_cb(void *data)
 {
    Popup_Data *popup = data;
-   _notification_popup_del(e_notification_id_get(popup->notif), 
+   _notification_popup_del(e_notification_id_get(popup->notif),
 			   E_NOTIFICATION_CLOSED_EXPIRED);
    return 0;
 }
-
