@@ -1,0 +1,252 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR Rui Miguel Silva Seabra
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: elmdentica 0.8.0\n"
+"Report-Msgid-Bugs-To: http://code.google.com/p/elmdentica/\n"
+"POT-Creation-Date: 2009-12-27 21:01+0000\n"
+"PO-Revision-Date: 2010-06-01 10:34+0005\n"
+"Last-Translator: Jorge Puente Sarrín <puentesarrin@gmail.com>\n"
+"Language-Team: Jorge Puente Sarrín <puentesarrin@gmail.com>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: src/curl.c:53 src/elmdentica.c:493
+msgid "Error"
+msgstr "Error"
+
+#: src/curl.c:54
+msgid "HTTP Error"
+msgstr "Error de HTTP"
+
+#: src/curl.c:71
+#, c-format
+msgid "%s failed with HTTP Response %ld"
+msgstr "%s falló con la respuesta de HTTP %ld"
+
+#: src/curl.c:85 src/curl.c:123 src/elmdentica.c:523
+msgid "Close"
+msgstr "Cerrar"
+
+#: src/elmdentica.c:116
+#, c-format
+msgid ""
+"Error setting key %s = %s: %s\n"
+")"
+msgstr ""
+"Error estableciendo %s = %s: %s\n"
+")"
+
+#: src/elmdentica.c:286
+#, c-format
+msgid "Error %d: %s\n"
+msgstr "Error %d: %s\n"
+
+#: src/elmdentica.c:289
+#, c-format
+msgid "System failed, child exited with status %d\n"
+msgstr "Falló el sistema, subproceso terminó con estado %d\n"
+
+#: src/elmdentica.c:346
+msgid "Reply"
+msgstr "Responder"
+
+#: src/elmdentica.c:354
+msgid "Repeat"
+msgstr "Repetir"
+
+#: src/elmdentica.c:362
+msgid "Direct message"
+msgstr "Mensaje directo"
+
+#: src/elmdentica.c:425
+#, c-format
+msgid "%d s ago..."
+msgstr "Hace %d segundos..."
+
+#: src/elmdentica.c:427
+#, c-format
+msgid "± %d min ago..."
+msgstr "Hace ± %d minutos..."
+
+#: src/elmdentica.c:430
+msgid "> 1 h ago..."
+msgstr "Hace más de 1 hora..."
+
+#: src/elmdentica.c:432
+#, c-format
+msgid "± %d hs ago..."
+msgstr "Hace ± %d horas..."
+
+#: src/elmdentica.c:435
+msgid "> a day ago..."
+msgstr "Hace más de un día..."
+
+#: src/elmdentica.c:437
+#, c-format
+msgid "± %d days ago..."
+msgstr "Hace ± %d días..."
+
+#: src/elmdentica.c:439
+msgid "a long ago..."
+msgstr "Hace mucho tiempo..."
+
+#: src/elmdentica.c:494
+msgid "µ-blog Error"
+msgstr "Error de µ-blog"
+
+#: src/elmdentica.c:764 src/elmdentica.c:932
+msgid "Press here to start typing your message..."
+msgstr "Presiona aquí para empezar a escribir tu mensaje"
+
+#: src/elmdentica.c:778
+#, c-format
+msgid ""
+"\n"
+"Usage:\n"
+"\t-d\tDebug mode (extra yummy output)\n"
+"\t-h\tHelp (what you're reading right now)\n"
+"\n"
+msgstr ""
+"\n"
+"Modo de uso:\n"
+"\t-d\tModo de depuración (Resultados más exquisitos)\n"
+"\t-h\tAyuda (Lo que estás leyendo ahora)\n"
+"\n"
+
+#: src/elmdentica.c:853
+msgid "ElmDentica: µ-blog at your fingertips"
+msgstr "ElmDentica: µ-blog en la yema de tus dedos"
+
+#: src/elmdentica.c:881
+msgid "Timeline"
+msgstr "Línea de tiempo"
+
+#: src/elmdentica.c:893
+msgid "Post"
+msgstr "Enviar"
+
+#: src/elmdentica.c:907
+msgid "More..."
+msgstr "Más..."
+
+#: src/elmdentica.c:909
+msgid "Fullscreen"
+msgstr "Pantalla completa"
+
+#: src/elmdentica.c:910 src/settings.c:835
+msgid "Settings"
+msgstr "Configuración"
+
+#: src/elmdentica.c:946
+msgid " <b>Friends timeline...</b>"
+msgstr " <b>Línea de tiempo de amigos...</b>"
+
+#: src/twitter.c:192
+#, c-format
+msgid "FAILED TO SAX FRIENDS: %d\n"
+msgstr "FALLA EN SAX DE AMIGOS: %d\n"
+
+#: src/twitter.c:240
+#, c-format
+msgid "Can't open %s for writing: %s\n"
+msgstr "No se puede abrir %s para escribir: %s\n"
+
+#: src/settings.c:246
+msgid "Screen name"
+msgstr "Usuario"
+
+#: src/settings.c:260
+msgid "Password"
+msgstr "Contraseña"
+
+#: src/settings.c:288
+msgid "Type"
+msgstr "Tipo"
+
+#: src/settings.c:306
+msgid "Secure"
+msgstr "Seguro"
+
+#: src/settings.c:306
+msgid "Faster"
+msgstr "Rápido"
+
+#: src/settings.c:318
+msgid "Domain"
+msgstr "Dominio"
+
+#: src/settings.c:332
+msgid "Base URL"
+msgstr "URL base"
+
+#: src/settings.c:346
+msgid "Receive?"
+msgstr "¿Recibir?"
+
+#: src/settings.c:358
+msgid "Send?"
+msgstr "¿Enviar?"
+
+#: src/settings.c:384
+msgid "OK"
+msgstr "Aceptar"
+
+#: src/settings.c:392
+msgid "Cancel"
+msgstr "Cancelar"
+
+#: src/settings.c:556
+msgid "Accounts..."
+msgstr "Cuentas..."
+
+#: src/settings.c:592
+msgid "Add"
+msgstr "Agregar"
+
+#: src/settings.c:605
+msgid "Edit"
+msgstr "Editar"
+
+#: src/settings.c:619
+msgid "Delete"
+msgstr "Eliminar"
+
+#: src/settings.c:646 src/settings.c:667
+msgid "No posts<br>in cache."
+msgstr "Sin mensajes<br>en memoria."
+
+#: src/settings.c:648
+#, c-format
+msgid "Currently remembering<br>%d posts."
+msgstr "Almacenando %d mensajes<br>en memoria."
+
+#: src/settings.c:682 src/settings.c:703
+msgid "No messages<br>in cache."
+msgstr "Sin mensajes<br>en memoria."
+
+#: src/settings.c:684
+#, c-format
+msgid "Currently remembering<br>%d messages."
+msgstr "%d mensajes almacenados<br>en memoria."
+
+#: src/settings.c:787
+msgid "Displayed messages:"
+msgstr "Mensajes visibles:"
+
+#: src/settings.c:836
+msgid "ElmDentica settings..."
+msgstr "Configuración de ElmDentica..."
+
+#: src/settings.c:864
+msgid "Accounts"
+msgstr "Cuentas"
+
+#: src/settings.c:869
+msgid "Cache"
+msgstr "Memoria"
