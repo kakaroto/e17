@@ -275,18 +275,18 @@ static void on_repeat(void *data, Evas_Object *obj, void *event_info) {
 	int res = 0;
 
 	if(status) {
-		if(!re_link_content)
-			re_link_content = g_regex_new("<a href='(.*?)('>\\[link\\]</a>)", 0, 0, &re_err);
-		tmp = g_regex_replace(re_link_content, status->message, -1, 0, "\\1", 0, &re_err);
-
 		if(!re_nouser)
 			re_nouser = g_regex_new("<a href='@.*?'>(@[a-zA-Z0-9_]+)</a>", 0, 0, &re_err);
-		tmp2 = g_regex_replace(re_nouser, tmp, -1, 0, "\\1", 0, &re_err);
-		free(tmp); tmp=NULL;
+		tmp = g_regex_replace(re_nouser, status->message, -1, 0, "\\1", 0, &re_err);
 
 		if(!re_nogroup)
 			re_nogroup = g_regex_new("<a href='!.*?'>(![a-zA-Z0-9_]+)</a>", 0, 0, &re_err);
-		tmp = g_regex_replace(re_nogroup, tmp2, -1, 0, "\\1", 0, &re_err);
+		tmp2 = g_regex_replace(re_nogroup, tmp, -1, 0, "\\1", 0, &re_err);
+		free(tmp); tmp=NULL;
+
+		if(!re_link_content)
+			re_link_content = g_regex_new("<a href='(.*?)('>\\[link\\]</a>)", 0, 0, &re_err);
+		tmp = g_regex_replace(re_link_content, tmp2, -1, 0, "\\1", 0, &re_err);
 		free(tmp2); tmp2=NULL;
 
 		res = asprintf(&entry_str, "♺ @%s: %s", status->screen_name, tmp);
@@ -806,7 +806,7 @@ static void on_bubble_mouse_up(void *data, Evas *e, Evas_Object *obj, void *even
 	gettimeofday(&tv, NULL);
 	time_delta = ((double)tv.tv_sec + (double)tv.tv_usec/1000000) - mouse_held_down;
 
-	if( time_delta < 1 || time_delta >= 1.75 ) return;
+	if( time_delta < 0.25 || time_delta >= 0.8 ) return;
 	else mouse_held_down=0;
 
 	hover = elm_hover_add(win);
