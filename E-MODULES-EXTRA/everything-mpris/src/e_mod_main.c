@@ -55,6 +55,8 @@ struct _Plugin
   Track *empty;
 
   Ecore_Timer *update_timer;
+
+  int instances;
 };
 
 
@@ -603,11 +605,14 @@ _dbus_cb_status_change(void *data, DBusMessage *msg)
 static Evry_Plugin *
 _begin(Evry_Plugin *plugin, const Evry_Item *item __UNUSED__)
 {
-   Plugin *p;
-   
-   EVRY_PLUGIN_INSTANCE(p, plugin);
+   if (!conn || !dbus_active) return NULL;
 
-   if (!conn || !dbus_active) return 0;
+   GET_PLUGIN(p, plugin);
+
+   p->instances++;
+
+   if (p->instances > 1)
+     return EVRY_PLUGIN(p);
 
    _dbus_send_msg("/TrackList", "GetLength", _dbus_cb_tracklist_length, p);
 
@@ -641,14 +646,19 @@ _cleanup(Evry_Plugin *plugin)
 
    EVRY_PLUGIN_ITEMS_CLEAR(p);
 
+   IF_RELEASE(p->input);
+
+   p->instances--;
+
+   if (p->instances > 0)
+     return;
+
    if (cb_tracklist_change)
      e_dbus_signal_handler_del(conn, cb_tracklist_change);
    if (cb_player_track_change)
      e_dbus_signal_handler_del(conn, cb_player_track_change);
    if (cb_player_status_change)
      e_dbus_signal_handler_del(conn, cb_player_status_change);
-
-   IF_RELEASE(p->input);
 
    EINA_LIST_FREE(p->tracks, it)
      {
@@ -660,8 +670,7 @@ _cleanup(Evry_Plugin *plugin)
 
    if (p->update_timer)
      ecore_timer_del(p->update_timer);
-
-   E_FREE(p);
+   p->update_timer = NULL;
 }
 
 static int
